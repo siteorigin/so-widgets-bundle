@@ -1,8 +1,3 @@
-<?php
-$bundle = SiteOrigin_Widgets_Bundle::single();
-$widgets = $bundle->get_widgets_list();
-?>
-
 <div class="wrap">
 	<h2><?php _e('SiteOrigin Widgets', 'siteorigin-widgets'); ?></h2>
 
@@ -18,9 +13,9 @@ $widgets = $bundle->get_widgets_list();
 					<div class="so-widget-text">
 
 						<?php if( !$widget['Active'] ) : ?>
-							<a href="<?php echo add_query_arg( array( 'widget_action' => 'activate', 'widget' => $widget['ID'] ) ) ?>" class="so-widget-action-link so-widget-action-activate"><?php _e('Activate', 'siteorigin-widgets') ?></a>
+							<a href="<?php echo wp_nonce_url( add_query_arg( array( 'widget_action' => 'activate', 'widget' => $widget['ID'] ) ), 'siteorigin_widget_action' ) ?>" class="so-widget-action-link so-widget-action-activate"><?php _e('Activate', 'siteorigin-widgets') ?></a>
 						<?php else : ?>
-							<a href="<?php echo add_query_arg( array( 'widget_action' => 'deactivate', 'widget' => $widget['ID'] ) ) ?>" class="so-widget-action-link so-widget-action-deactivate"><?php _e('Deactivate', 'siteorigin-widgets') ?></a>
+							<a href="<?php echo wp_nonce_url( add_query_arg( array( 'widget_action' => 'deactivate', 'widget' => $widget['ID'] ) ), 'siteorigin_widget_action') ?>" class="so-widget-action-link so-widget-action-deactivate"><?php _e('Deactivate', 'siteorigin-widgets') ?></a>
 						<?php endif; ?>
 
 						<h4><?php echo esc_html($widget['Name']); ?></h4>
