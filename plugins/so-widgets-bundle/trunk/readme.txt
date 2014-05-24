@@ -14,3 +14,4 @@ Enable the ones you need, all from a neat interface.
 == Changelog ==
 
 = 1.0 =
+* Initial release.

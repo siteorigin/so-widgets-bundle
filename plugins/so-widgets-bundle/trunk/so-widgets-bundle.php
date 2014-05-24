@@ -170,7 +170,7 @@ class SiteOrigin_Widgets_Bundle {
 			do_action('siteorigin_widgets_base_loaded');
 		}
 
-		// Now, lets actually include the file
+		// Now, lets actually include the files
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		if( !is_plugin_active( $widget_id.'/'.$widget_id.'.php' ) ) {
 			// Lets include this widget file
