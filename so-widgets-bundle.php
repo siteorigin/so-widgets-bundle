@@ -50,6 +50,19 @@ class SiteOrigin_Widgets_Bundle {
 	 * Load all the widgets if their plugins aren't already active.
 	 */
 	function load_widget_plugins(){
+		// Lets include the bundled version of the loader
+		if( !class_exists('SiteOrigin_Widgets_Loader') ) include(plugin_dir_path(__FILE__).'base/loader.php');
+
+		$run_base_loaded = false;
+		if( !defined('SITEORIGIN_WIDGETS_BASE_PARENT_FILE') ) {
+			// Always give preference to the base inside the bundle.
+			define( 'SITEORIGIN_WIDGETS_BASE_PARENT_FILE', __FILE__ );
+			define( 'SITEORIGIN_WIDGETS_BASE_VERSION', include plugin_dir_path( __FILE__ ) . 'base/version.php' );
+			include plugin_dir_path( __FILE__ ) . 'base/inc.php';
+
+			$run_base_loaded = true;
+		}
+
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 		$active_widgets = get_option( 'siteorigin_widgets_active', array() );
@@ -59,7 +72,10 @@ class SiteOrigin_Widgets_Bundle {
 				// Lets include this widget file
 				include_once plugin_dir_path(__FILE__).'widgets/'.$widget_id.'/'.$widget_id.'.php';
 			}
+
 		}
+
+		if($run_base_loaded) do_action( 'siteorigin_widgets_base_loaded' );
 	}
 
 	/**
@@ -167,7 +183,7 @@ class SiteOrigin_Widgets_Bundle {
 			define('SITEORIGIN_WIDGETS_BASE_PARENT_FILE', __FILE__);
 			define('SITEORIGIN_WIDGETS_BASE_VERSION', include plugin_dir_path(__FILE__).'/base/version.php' );
 			include plugin_dir_path(__FILE__).'base/inc.php';
-			do_action('siteorigin_widgets_base_loaded');
+			do_action( 'siteorigin_widgets_base_loaded' );
 		}
 
 		// Now, lets actually include the files
@@ -183,6 +199,7 @@ class SiteOrigin_Widgets_Bundle {
 			}
 
 		}
+
 
 		return true;
 	}
