@@ -1,4 +1,4 @@
-=== SiteOrigin Widget Bundle ===
+=== SiteOrigin Widgets Bundle ===
 Tags: slider, widget
 Requires at least: 3.7
 Tested up to: 3.9.1
