@@ -18,6 +18,8 @@ if( !class_exists('SiteOrigin_Widgets_Loader') ) include(plugin_dir_path(__FILE_
 
 class SiteOrigin_Widgets_Bundle {
 
+	private $widget_folders;
+
 	function __construct(){
 		add_action('admin_init', array($this, 'admin_activate_widget') );
 		add_action('admin_menu', array($this, 'admin_menu_init') );
@@ -25,6 +27,8 @@ class SiteOrigin_Widgets_Bundle {
 
 		// Initialize the widgets, but do it fairly late
 		add_action( 'plugins_loaded', array($this, 'load_widget_plugins'), 1 );
+
+		add_action( 'plugin_action_links_' . plugin_basename(__FILE__), array($this, 'plugin_action_links') );
 
 		// These filters are used to activate any widgets that are missing.
 		add_filter( 'siteorigin_panels_data', array($this, 'load_missing_widgets') );
@@ -52,6 +56,10 @@ class SiteOrigin_Widgets_Bundle {
 	 */
 	function load_widget_plugins(){
 
+		$this->widget_folders = apply_filters('siteorigin_widgets_widget_folders', array(
+			plugin_dir_path(__FILE__).'widgets/'
+		) );
+
 		$run_base_loaded = false;
 		if( !defined('SITEORIGIN_WIDGETS_BASE_PARENT_FILE') ) {
 			// Always give preference to the base inside the bundle.
@@ -67,9 +75,14 @@ class SiteOrigin_Widgets_Bundle {
 		$active_widgets = get_option( 'siteorigin_widgets_active', array() );
 		foreach( array_keys($active_widgets) as $widget_id ) {
 
-			if( !is_plugin_active( $widget_id.'/'.$widget_id.'.php' ) && file_exists( plugin_dir_path(__FILE__).'widgets/'.$widget_id.'/'.$widget_id.'.php' ) ) {
-				// Lets include this widget file
-				include_once plugin_dir_path(__FILE__).'widgets/'.$widget_id.'/'.$widget_id.'.php';
+			if( !is_plugin_active( $widget_id.'/'.$widget_id.'.php' ) ) {
+
+				foreach( $this->widget_folders as $folder ) {
+					if( !file_exists($folder . $widget_id.'/'.$widget_id.'.php') ) continue;
+
+					// Lets include this widget file
+					include_once $folder . $widget_id.'/'.$widget_id.'.php';
+				}
 			}
 
 		}
@@ -188,11 +201,15 @@ class SiteOrigin_Widgets_Bundle {
 		// Now, lets actually include the files
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		if( !is_plugin_active( $widget_id.'/'.$widget_id.'.php' ) ) {
-			// Lets include this widget file
-			$loader = include_once plugin_dir_path(__FILE__).'widgets/'.$widget_id.'/'.$widget_id.'.php';
+
+			$loader = false;
+			foreach( $this->widget_folders as $folder ) {
+				if( !file_exists($folder . $widget_id . '/' . $widget_id . '.php') ) continue;
+				$loader = include_once $folder . $widget_id . '/' . $widget_id . '.php';
+			}
 
 			// Call any loader functions that missed their actions.
-			if( is_a($loader, 'SiteOrigin_Widgets_Loader') ) {
+			if( !empty($loader) && is_a($loader, 'SiteOrigin_Widgets_Loader') ) {
 				if ( has_action( 'siteorigin_widgets_base_loaded' ) ) $loader->load_register();
 				if ( has_action( 'widgets_init' ) ) $loader->widgets_init();
 			}
@@ -219,17 +236,31 @@ class SiteOrigin_Widgets_Bundle {
 	 */
 	function get_widgets_list(){
 		$active = get_option('siteorigin_widgets_active', array());
-		$widgets = get_plugins( '/so-widgets-bundle/widgets' );
 
-		foreach($widgets as $file => $widget) {
-			$f = pathinfo($file);
-			$id = $f['filename'];
+		$widgets = array();
+		foreach($this->widget_folders as $folder) {
 
-			$widgets[$file]['ID'] = $id;
-			$widgets[$file]['Active'] = !empty($active[$id]);
+			$folder = str_replace(WP_PLUGIN_DIR, '', $folder);
+			foreach( get_plugins( $folder ) as $file => $widget ) {
+				$f = pathinfo($file);
+				$id = $f['filename'];
+
+				$widget['ID'] = $id;
+				$widget['Active'] = !empty($active[$id]);
+
+				$widgets[$file] = $widget;
+			}
+
 		}
 
+		// Sort the widgets alphabetically
+		uasort($widgets, array($this, 'widget_uasort'));
+
 		return $widgets;
+	}
+
+	function widget_uasort($widget_a, $widget_b) {
+		return $widget_a['Name'] > $widget_b['Name'] ? 1 : -1;
 	}
 
 	/**
@@ -283,6 +314,14 @@ class SiteOrigin_Widgets_Bundle {
 		}
 
 		return $the_widget;
+	}
+
+	/**
+	 * Add action links.
+	 */
+	function plugin_action_links($links){
+		$links[] = '<a href="http://siteorigin.com/thread/" target="_blank">'.__('Support Forum', 'siteorigin-widgets').'</a>';
+		return $links;
 	}
 }
 
