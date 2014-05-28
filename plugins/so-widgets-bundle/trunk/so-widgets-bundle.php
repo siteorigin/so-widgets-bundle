@@ -15,7 +15,6 @@ define('SOW_BUNDLE_VERSION', 'trunk');
 // Include the icons if they exist and we haven't already
 if( !defined('SITEORIGIN_WIDGETS_ICONS') && file_exists( plugin_dir_path(__FILE__).'/icons/icons.php' ) ) include plugin_dir_path(__FILE__).'/icons/icons.php';
 if( !class_exists('SiteOrigin_Widgets_Loader') ) include(plugin_dir_path(__FILE__).'base/loader.php');
-if( !class_exists('SiteOrigin_Widget') ) include( plugin_dir_path(__FILE__).'base/inc.php' );
 
 class SiteOrigin_Widgets_Bundle {
 
@@ -68,7 +67,7 @@ class SiteOrigin_Widgets_Bundle {
 		$active_widgets = get_option( 'siteorigin_widgets_active', array() );
 		foreach( array_keys($active_widgets) as $widget_id ) {
 
-			if( !is_plugin_active( $widget_id.'/'.$widget_id.'.php' ) ) {
+			if( !is_plugin_active( $widget_id.'/'.$widget_id.'.php' ) && file_exists( plugin_dir_path(__FILE__).'widgets/'.$widget_id.'/'.$widget_id.'.php' ) ) {
 				// Lets include this widget file
 				include_once plugin_dir_path(__FILE__).'widgets/'.$widget_id.'/'.$widget_id.'.php';
 			}
