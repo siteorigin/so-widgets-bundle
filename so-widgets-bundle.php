@@ -14,6 +14,8 @@ define('SOW_BUNDLE_VERSION', 'trunk');
 
 // Include the icons if they exist and we haven't already
 if( !defined('SITEORIGIN_WIDGETS_ICONS') && file_exists( plugin_dir_path(__FILE__).'/icons/icons.php' ) ) include plugin_dir_path(__FILE__).'/icons/icons.php';
+if( !class_exists('SiteOrigin_Widgets_Loader') ) include(plugin_dir_path(__FILE__).'base/loader.php');
+if( !class_exists('SiteOrigin_Widget') ) include( plugin_dir_path(__FILE__).'base/inc.php' );
 
 class SiteOrigin_Widgets_Bundle {
 
@@ -50,8 +52,6 @@ class SiteOrigin_Widgets_Bundle {
 	 * Load all the widgets if their plugins aren't already active.
 	 */
 	function load_widget_plugins(){
-		// Lets include the bundled version of the loader
-		if( !class_exists('SiteOrigin_Widgets_Loader') ) include(plugin_dir_path(__FILE__).'base/loader.php');
 
 		$run_base_loaded = false;
 		if( !defined('SITEORIGIN_WIDGETS_BASE_PARENT_FILE') ) {
@@ -178,7 +178,7 @@ class SiteOrigin_Widgets_Bundle {
 		update_option( 'siteorigin_widgets_active', $active_widgets );
 
 		// Load the widget loader and the base if they don't already exist.
-		if( !class_exists('SiteOrigin_Widgets_Loader') ) include(plugin_dir_path(__FILE__).'base/loader.php');
+
 		if( !defined('SITEORIGIN_WIDGETS_BASE_PARENT_FILE') ) {
 			define('SITEORIGIN_WIDGETS_BASE_PARENT_FILE', __FILE__);
 			define('SITEORIGIN_WIDGETS_BASE_VERSION', include plugin_dir_path(__FILE__).'/base/version.php' );
