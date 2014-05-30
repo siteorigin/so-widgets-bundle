@@ -1,6 +1,6 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget
-Requires at least: 3.7
+Requires at least: 3.8
 Tested up to: 3.9.1
 Stable tag: trunk
 License: GPLv3 or later
@@ -8,11 +8,24 @@ Contributors: gpriday
 
 == Description ==
 
-We've built a lot of plugins for Page Builder. Installing them one by one can be a bit of hassle, so we've bundled them all up for you into this single plugin.
+Widgets are great. No matter where you’re using them. In a [Page Builder](http://siteorigin.com/page-builder/) page or on your widgetized areas.
 
-Enable the ones you need, all from a neat interface.
+The SiteOrigin widget bundle gives you a collection of widgets that you can use, abuse and customize. All the widgets are built on the same framework, giving you unlimited colours and 1500+ icons.
+
+The collection is growing, but here’s what we have so far.
+
+* Button Widget that you’ll love to click.
+* Image Widget that’ll let you add images everywhere.
+* Call To Action Widget that’ll get your users performing the actions you want.
+* Slider Widget that slides images and HTML5 videos.
+* Price Table Widget that’ll help you sell more.
+* Post Carousel Widget that displays your posts as a carousel.
+* Features Widget that lets you display a set of site or service features.
 
 == Changelog ==
+
+= 1.0.1 =
+* Clean up of code and bundled widgets.
 
 = 1.0 =
 * Initial release.
