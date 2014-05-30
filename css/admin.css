@@ -51,6 +51,7 @@
   color: #FFFFFF;
 }
 #siteorigin-widgets-bundle .so-widget img {
+  display: block;
   width: 100%;
   height: auto;
   max-height: 140px;
@@ -60,12 +61,13 @@
 }
 #siteorigin-widgets-bundle .so-widget .so-widget-text {
   padding: 20px;
+  border-top: 1px solid #D9D9D9;
 }
 #siteorigin-widgets-bundle .so-widget .so-widget-text h4 {
   margin-top: 0;
   color: #777777;
-  font-weight: normal;
-  font-size: 1.1em;
+  font-weight: bold;
+  font-size: 1.2em;
 }
 #siteorigin-widgets-bundle .so-widget .so-widget-text p {
   margin-bottom: 0;
@@ -103,8 +105,10 @@
 #siteorigin-widgets-bundle .so-widget.so-widget-is-active img {
   opacity: 1;
 }
+#siteorigin-widgets-bundle .so-widget.so-widget-is-active .so-widget-text {
+  border-top: 1px solid #D9D9D9;
+}
 #siteorigin-widgets-bundle .so-widget.so-widget-is-active .so-widget-text h4 {
-  font-weight: bold;
   color: #333333;
 }
 #siteorigin-widgets-bundle .so-widget.so-widget-is-active .so-widget-text p {
