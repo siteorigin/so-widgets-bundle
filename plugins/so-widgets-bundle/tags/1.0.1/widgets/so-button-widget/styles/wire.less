@@ -1,0 +1,36 @@
+@import "../../../base/less/mixins";
+
+@button_color: #41a9d5;
+@text_color: #FFFFFF;
+
+@font_size: 1em;
+@rounding: 0.25em;
+@padding: 1em;
+
+.ow-button-base {
+	.clearfix();
+
+	a {
+		font-size: @font_size;
+		padding: @padding @padding*2;
+		background: transparent;
+		border: 2px solid @button_color;
+
+		color: @button_color !important;
+
+		.rounded(@rounding);
+
+		text-shadow: 0 1px 0 rgba(0,0,0,0.05);
+
+		&:visited,
+		&:active,
+		&:hover{
+			color: @button_color !important;
+		}
+
+		&.ow-button-hover:hover {
+			background: @button_color;
+			color: @text_color;
+		}
+	}
+}

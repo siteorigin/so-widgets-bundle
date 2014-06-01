@@ -1,0 +1,50 @@
+@import "../../../base/less/mixins";
+
+
+.sow-cta-base {
+	.clearfix();
+
+	border: 1px solid #E3E3E3;
+	background: #F8F8F8;
+	padding: 2em 2.5em;
+
+	.sow-cta-text {
+		float: left;
+
+		h4, h5, p {
+			margin: 0.4em 0;
+		}
+
+		h4 {
+			margin-top: 0;
+		}
+
+		h5, p {
+			margin-bottom: 0;
+			font-weight: normal;
+		}
+	}
+
+	.so-widget-sow-button {
+		float: right;
+		margin-left: 1em;
+	}
+
+	@media screen and (max-width: 640px) {
+		& {
+			text-align: center;
+			padding: 1.75em;
+		}
+
+		.sow-cta-text {
+			float: none;
+		}
+
+		.so-widget-sow-button {
+			display: inline-block;
+			float: none;
+			margin-top: 2em;
+		}
+	}
+
+}
