@@ -22,7 +22,7 @@ The collection is growing, but here’s what we have so far.
 * Post Carousel Widget that displays your posts as a carousel.
 * Features Widget that lets you display a set of site or service features.
 
-Once you enable a widget, you'll be able to use it anywhere standard widgets are used.
+Once you enable a widget, you'll be able to use it anywhere standard widgets are used. You can manage your widgets by going to Plugins > SiteOrigin Widgets in your WordPress admin.
 
 == Screenshots ==
 
