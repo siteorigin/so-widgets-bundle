@@ -321,7 +321,8 @@ class SiteOrigin_Widgets_Bundle {
 	 * Add action links.
 	 */
 	function plugin_action_links($links){
-		$links[] = '<a href="http://siteorigin.com/thread/" target="_blank">'.__('Support Forum', 'siteorigin-widgets').'</a>';
+		$links[] = '<a href="' . admin_url('plugins.php?page=so-widgets-plugins') . '">'.__('Manage Widgets', 'siteorigin-widgets').'</a>';
+		$links[] = '<a href="http://siteorigin.com/thread/" target="_blank">'.__('Support', 'siteorigin-widgets').'</a>';
 		return $links;
 	}
 }
