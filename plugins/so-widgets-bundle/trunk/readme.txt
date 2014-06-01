@@ -22,6 +22,14 @@ The collection is growing, but here’s what we have so far.
 * Post Carousel Widget that displays your posts as a carousel.
 * Features Widget that lets you display a set of site or service features.
 
+Once you enable a widget, you'll be able to use it anywhere standard widgets are used.
+
+== Screenshots ==
+
+1. Manage which widgets you want enabled or disabled.
+2. The button widget shows the clean, standard interface all the widgets use.
+3. An example of the button widget.
+
 == Changelog ==
 
 = 1.0.1 =
