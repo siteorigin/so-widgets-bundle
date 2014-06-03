@@ -4,9 +4,9 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	function __construct() {
 		parent::__construct(
 			'sow-button',
-			__('SiteOrigin Button', 'sow-button'),
+			__('SiteOrigin Button', 'siteorigin-widgets'),
 			array(
-				'description' => __('A customizable button widget.', 'sow-button'),
+				'description' => __('A customizable button widget.', 'siteorigin-widgets'),
 				'help' => 'http://siteorigin.com/widgets-bundle/button-widget-documentation/'
 			),
 			array(
@@ -15,38 +15,38 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			array(
 				'text' => array(
 					'type' => 'text',
-					'label' => __('Button Text', 'sow-button'),
+					'label' => __('Button Text', 'siteorigin-widgets'),
 				),
 
 				'url' => array(
 					'type' => 'text',
 					'sanitize' => 'url',
-					'label' => __('Destination URL', 'sow-button'),
+					'label' => __('Destination URL', 'siteorigin-widgets'),
 				),
 
 				'new_window' => array(
 					'type' => 'checkbox',
 					'default' => false,
-					'label' => __('Open in New Window', 'sow-button'),
+					'label' => __('Open in New Window', 'siteorigin-widgets'),
 				),
 
 				'button_icon' => array(
 					'type' => 'section',
-					'label' => __('Icon', 'sow-button'),
+					'label' => __('Icon', 'siteorigin-widgets'),
 					'fields' => array(
 						'icon_selected' => array(
 							'type' => 'icon',
-							'label' => __('Icon', 'sow-button'),
+							'label' => __('Icon', 'siteorigin-widgets'),
 						),
 
 						'icon_color' => array(
 							'type' => 'color',
-							'label' => __('Icon Color', 'sow-button'),
+							'label' => __('Icon Color', 'siteorigin-widgets'),
 						),
 
 						'icon' => array(
 							'type' => 'media',
-							'label' => __('Image Icon', 'sow-button'),
+							'label' => __('Image Icon', 'siteorigin-widgets'),
 							'description' => __('Replaces the icon with your own image icon.'),
 						),
 					),
@@ -54,80 +54,81 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 				'design' => array(
 					'type' => 'section',
-					'label' => __('Design and Layout', 'sow-button'),
+					'label' => __('Design and Layout', 'siteorigin-widgets'),
 					'hide' => true,
 					'fields' => array(
 						'align' => array(
 							'type' => 'select',
-							'label' => __('Align', 'sow-button'),
+							'label' => __('Align', 'siteorigin-widgets'),
+							'default' => 'center',
 							'options' => array(
-								'left' => __('Left', 'sow-button'),
-								'right' => __('Right', 'sow-button'),
-								'center' => __('Center', 'sow-button'),
-								'justify' => __('Justify', 'sow-button'),
+								'left' => __('Left', 'siteorigin-widgets'),
+								'right' => __('Right', 'siteorigin-widgets'),
+								'center' => __('Center', 'siteorigin-widgets'),
+								'justify' => __('Justify', 'siteorigin-widgets'),
 							),
 						),
 
 						'theme' => array(
 							'type' => 'select',
-							'label' => __('Button Theme', 'sow-button'),
+							'label' => __('Button Theme', 'siteorigin-widgets'),
 							'default' => 'atom',
 							'options' => array(
-								'atom' => __('Atom', 'sow-button'),
-								'flat' => __('Flat', 'sow-button'),
-								'wire' => __('Wire', 'sow-button'),
+								'atom' => __('Atom', 'siteorigin-widgets'),
+								'flat' => __('Flat', 'siteorigin-widgets'),
+								'wire' => __('Wire', 'siteorigin-widgets'),
 							),
 						),
 
 
 						'button_color' => array(
 							'type' => 'color',
-							'label' => __('Button Color', 'sow-button'),
+							'label' => __('Button Color', 'siteorigin-widgets'),
 						),
 
 						'text_color' => array(
 							'type' => 'color',
-							'label' => __('Text Color', 'sow-button'),
+							'label' => __('Text Color', 'siteorigin-widgets'),
 						),
 
 						'hover' => array(
 							'type' => 'checkbox',
 							'default' => true,
-							'label' => __('Use Hover Effects', 'sow-button'),
+							'label' => __('Use Hover Effects', 'siteorigin-widgets'),
 						),
 
 						'font_size' => array(
 							'type' => 'select',
-							'label' => __('Font Size', 'sow-button'),
+							'label' => __('Font Size', 'siteorigin-widgets'),
 							'options' => array(
-								'1' => __('Normal', 'sow-button'),
-								'1.15' => __('Medium', 'sow-button'),
-								'1.3' => __('Large', 'sow-button'),
-								'1.45' => __('Extra Large', 'sow-button'),
+								'1' => __('Normal', 'siteorigin-widgets'),
+								'1.15' => __('Medium', 'siteorigin-widgets'),
+								'1.3' => __('Large', 'siteorigin-widgets'),
+								'1.45' => __('Extra Large', 'siteorigin-widgets'),
 							),
 						),
 
 						'rounding' => array(
 							'type' => 'select',
-							'label' => __('Rounding', 'sow-button'),
+							'label' => __('Rounding', 'siteorigin-widgets'),
 							'default' => '0.25',
 							'options' => array(
-								'0' => __('None', 'sow-button'),
-								'0.25' => __('Slight Rounding', 'sow-button'),
-								'0.5' => __('Very Rounded', 'sow-button'),
-								'1.5' => __('Completely Rounded', 'sow-button'),
+								'0' => __('None', 'siteorigin-widgets'),
+								'0.25' => __('Slight Rounding', 'siteorigin-widgets'),
+								'0.5' => __('Very Rounded', 'siteorigin-widgets'),
+								'1.5' => __('Completely Rounded', 'siteorigin-widgets'),
 							),
 						),
 
 						'padding' => array(
 							'type' => 'select',
-							'label' => __('Padding', 'sow-button'),
+							'label' => __('Padding', 'siteorigin-widgets'),
 							'default' => '1',
 							'options' => array(
-								'0.5' => __('Low', 'sow-button'),
-								'1' => __('Medium', 'sow-button'),
-								'1.4' => __('High', 'sow-button'),
-								'1.8' => __('Very High', 'sow-button'),
+								'0.5' => __('Low', 'siteorigin-widgets'),
+								'1' => __('Medium', 'siteorigin-widgets'),
+								'1.4' => __('High', 'siteorigin-widgets'),
+								'1.8' => __('Very High', 'siteorigin-widgets'),
 							),
 						),
 
@@ -136,25 +137,25 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 				'attributes' => array(
 					'type' => 'section',
-					'label' => __('Other Attributes and SEO', 'sow-button'),
+					'label' => __('Other Attributes and SEO', 'siteorigin-widgets'),
 					'hide' => true,
 					'fields' => array(
 						'id' => array(
 							'type' => 'text',
-							'label' => __('Button ID', 'sow-button'),
-							'description' => __('An ID attribute allows you to target this button in Javascript.', 'sow-button'),
+							'label' => __('Button ID', 'siteorigin-widgets'),
+							'description' => __('An ID attribute allows you to target this button in Javascript.', 'siteorigin-widgets'),
 						),
 
 						'title' => array(
 							'type' => 'text',
-							'label' => __('Title Attribute', 'sow-button'),
-							'description' => __('Adds a title attribute to the button link.', 'sow-button'),
+							'label' => __('Title Attribute', 'siteorigin-widgets'),
+							'description' => __('Adds a title attribute to the button link.', 'siteorigin-widgets'),
 						),
 
 						'onclick' => array(
 							'type' => 'text',
-							'label' => __('Onclick', 'sow-button'),
-							'description' => __('Run this Javascript when the button is clicked. Ideal for tracking.', 'sow-button'),
+							'label' => __('Onclick', 'siteorigin-widgets'),
+							'description' => __('Run this Javascript when the button is clicked. Ideal for tracking.', 'siteorigin-widgets'),
 						),
 					)
 				),

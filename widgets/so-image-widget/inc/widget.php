@@ -4,9 +4,9 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 	function __construct() {
 		parent::__construct(
 			'sow-image',
-			__('SiteOrigin Image', 'sow-image'),
+			__('SiteOrigin Image', 'siteorigin-widgets'),
 			array(
-				'description' => __('A simple image widget with massive power.', 'sow-image'),
+				'description' => __('A simple image widget with massive power.', 'siteorigin-widgets'),
 				'help' => 'http://siteorigin.com/widgets-bundle/image-widget-documentation/'
 			),
 			array(
@@ -15,45 +15,45 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			array(
 				'image' => array(
 					'type' => 'media',
-					'label' => __('Image File', 'sow-image'),
+					'label' => __('Image File', 'siteorigin-widgets'),
 				),
 
 				'size' => array(
 					'type' => 'select',
-					'label' => __('Image Size', 'sow-image'),
+					'label' => __('Image Size', 'siteorigin-widgets'),
 					'options' => array(
-						'full' => __('Full', 'sow-image'),
-						'large' => __('Large', 'sow-image'),
-						'medium' => __('Medium', 'sow-image'),
-						'thumb' => __('Thumbnail', 'sow-image'),
+						'full' => __('Full', 'siteorigin-widgets'),
+						'large' => __('Large', 'siteorigin-widgets'),
+						'medium' => __('Medium', 'siteorigin-widgets'),
+						'thumb' => __('Thumbnail', 'siteorigin-widgets'),
 					),
 				),
 
 				'title' => array(
 					'type' => 'text',
-					'label' => __('Title Text', 'sow-image'),
+					'label' => __('Title Text', 'siteorigin-widgets'),
 				),
 
 				'alt' => array(
 					'type' => 'text',
-					'label' => __('Alt Text', 'sow-image'),
+					'label' => __('Alt Text', 'siteorigin-widgets'),
 				),
 
 				'url' => array(
 					'type' => 'text',
-					'label' => __('Destination URL', 'sow-image'),
+					'label' => __('Destination URL', 'siteorigin-widgets'),
 				),
 				'new_window' => array(
 					'type' => 'checkbox',
 					'default' => false,
-					'label' => __('Open in New Window', 'sow-image'),
+					'label' => __('Open in New Window', 'siteorigin-widgets'),
 				),
 
 				'bound' => array(
 					'type' => 'checkbox',
 					'default' => true,
-					'label' => __('Bound', 'sow-image'),
-					'description' => __("Make sure the image doesn't extend beyond its container.", 'sow-image'),
+					'label' => __('Bound', 'siteorigin-widgets'),
+					'description' => __("Make sure the image doesn't extend beyond its container.", 'siteorigin-widgets'),
 				),
 
 			),

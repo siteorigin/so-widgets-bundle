@@ -4,9 +4,9 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 	function __construct() {
 		parent::__construct(
 			'sow-slider',
-			__('SiteOrigin Slider', 'sow-slider'),
+			__('SiteOrigin Slider', 'siteorigin-widgets'),
 			array(
-				'description' => __('A simple slider widget.', 'sow-slider'),
+				'description' => __('A simple slider widget.', 'siteorigin-widgets'),
 				'help' => 'http://siteorigin.com/widgets-bundle/slider-widget-documentation/'
 			),
 			array(
@@ -16,31 +16,31 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 
 				'frames' => array(
 					'type' => 'repeater',
-					'label' => __('Slider Frames', 'sow-slider'),
-					'item_name' => __('Frame', 'sow-slider'),
+					'label' => __('Slider Frames', 'siteorigin-widgets'),
+					'item_name' => __('Frame', 'siteorigin-widgets'),
 					'fields' => array(
 						'background_videos' => array(
 							'type' => 'repeater',
-							'item_name' => __('Video', 'sow-slider'),
-							'label' => __('Background Videos', 'sow-slider'),
+							'item_name' => __('Video', 'siteorigin-widgets'),
+							'label' => __('Background Videos', 'siteorigin-widgets'),
 							'fields' => array(
 								'file' => array(
 									'type' => 'media',
 									'library' => 'video',
-									'label' => __('Video File', 'sow-slider'),
+									'label' => __('Video File', 'siteorigin-widgets'),
 								),
 
 								'url' => array(
 									'type' => 'text',
 									'sanitize' => 'url',
-									'label' => __('Video URL', 'sow-slider'),
+									'label' => __('Video URL', 'siteorigin-widgets'),
 									'optional' => 'true',
 									'description' => __('An external URL of the video. Overrides Video File.')
 								),
 
 								'format' => array(
 									'type' => 'select',
-									'label' => __('Video Format', 'sow-slider'),
+									'label' => __('Video Format', 'siteorigin-widgets'),
 									'options' => array(
 										'video/mp4' => 'MP4',
 										'video/webm' => 'WebM',
@@ -53,15 +53,15 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 						'background_image' => array(
 							'type' => 'media',
 							'library' => 'image',
-							'label' => __('Background Image', 'sow-slider'),
+							'label' => __('Background Image', 'siteorigin-widgets'),
 						),
 
 						'background_image_type' => array(
 							'type' => 'select',
-							'label' => __('Background Image Type', 'sow-slider'),
+							'label' => __('Background Image Type', 'siteorigin-widgets'),
 							'options' => array(
-								'cover' => __('Cover', 'sow-slider'),
-								'tile' => __('Tile', 'sow-slider'),
+								'cover' => __('Cover', 'siteorigin-widgets'),
+								'tile' => __('Tile', 'siteorigin-widgets'),
 							),
 							'default' => 'cover',
 						),
@@ -69,12 +69,12 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 						'foreground_image' => array(
 							'type' => 'media',
 							'library' => 'image',
-							'label' => __('Foreground Image', 'sow-slider'),
+							'label' => __('Foreground Image', 'siteorigin-widgets'),
 						),
 
 						'url' => array(
 							'type' => 'text',
-							'label' => __('Destination URL', 'sow-slider'),
+							'label' => __('Destination URL', 'siteorigin-widgets'),
 							'sanitize' => 'url',
 						),
 					),
@@ -82,43 +82,43 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 
 				'speed' => array(
 					'type' => 'number',
-					'label' => __('Animation Speed', 'sow-slider'),
-					'description' => __('Animation speed in milliseconds.', 'sow-slider'),
+					'label' => __('Animation Speed', 'siteorigin-widgets'),
+					'description' => __('Animation speed in milliseconds.', 'siteorigin-widgets'),
 					'default' => 800,
 				),
 
 				'timeout' => array(
 					'type' => 'number',
-					'label' => __('Timeout', 'sow-slider'),
-					'description' => __('How long each slide is displayed for in milliseconds.', 'sow-slider'),
+					'label' => __('Timeout', 'siteorigin-widgets'),
+					'description' => __('How long each slide is displayed for in milliseconds.', 'siteorigin-widgets'),
 					'default' => 8000,
 				),
 
 				'nav_color_hex' => array(
 					'type' => 'color',
-					'label' => __('Navigation Color', 'sow-slider'),
+					'label' => __('Navigation Color', 'siteorigin-widgets'),
 					'default' => '#FFFFFF',
 				),
 
 				'nav_style' => array(
 					'type' => 'select',
-					'label' => __('Navigation Style', 'sow-slider'),
+					'label' => __('Navigation Style', 'siteorigin-widgets'),
 					'default' => 'thin',
 					'options' => array(
-						'ultra-thin' => __('Ultra Thin', 'sow-slider'),
-						'thin' => __('Thin', 'sow-slider'),
-						'medium' => __('Medium', 'sow-slider'),
-						'thick' => __('Thick', 'sow-slider'),
-						'ultra-thin-rounded' => __('Rounded Ultra Thin', 'sow-slider'),
-						'thin-rounded' => __('Rounded Thin', 'sow-slider'),
-						'medium-rounded' => __('Rounded Medium', 'sow-slider'),
-						'thick-rounded' => __('Rounded Thick', 'sow-slider'),
+						'ultra-thin' => __('Ultra Thin', 'siteorigin-widgets'),
+						'thin' => __('Thin', 'siteorigin-widgets'),
+						'medium' => __('Medium', 'siteorigin-widgets'),
+						'thick' => __('Thick', 'siteorigin-widgets'),
+						'ultra-thin-rounded' => __('Rounded Ultra Thin', 'siteorigin-widgets'),
+						'thin-rounded' => __('Rounded Thin', 'siteorigin-widgets'),
+						'medium-rounded' => __('Rounded Medium', 'siteorigin-widgets'),
+						'thick-rounded' => __('Rounded Thick', 'siteorigin-widgets'),
 					)
 				),
 
 				'nav_size' => array(
 					'type' => 'number',
-					'label' => __('Navigation Size', 'sow-slider'),
+					'label' => __('Navigation Size', 'siteorigin-widgets'),
 					'default' => '25',
 				),
 
