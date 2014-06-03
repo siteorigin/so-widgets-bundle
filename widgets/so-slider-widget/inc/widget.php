@@ -7,7 +7,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 			__('SiteOrigin Slider', 'sow-slider'),
 			array(
 				'description' => __('A simple slider widget.', 'sow-slider'),
-				'help' => 'http://siteorigin.com/slider-widget-documentation/'
+				'help' => 'http://siteorigin.com/widgets-bundle/slider-widget-documentation/'
 			),
 			array(
 

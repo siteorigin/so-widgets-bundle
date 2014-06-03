@@ -7,7 +7,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			__('SiteOrigin Image', 'sow-image'),
 			array(
 				'description' => __('A simple image widget with massive power.', 'sow-image'),
-				'help' => 'http://siteorigin.com/image-widget-documentation/'
+				'help' => 'http://siteorigin.com/widgets-bundle/image-widget-documentation/'
 			),
 			array(
 
