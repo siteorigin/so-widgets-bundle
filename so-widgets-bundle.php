@@ -16,25 +16,6 @@ define('SOW_BUNDLE_VERSION', 'trunk');
 if( !defined('SITEORIGIN_WIDGETS_ICONS') && file_exists( plugin_dir_path(__FILE__).'/icons/icons.php' ) ) include plugin_dir_path(__FILE__).'/icons/icons.php';
 if( !class_exists('SiteOrigin_Widgets_Loader') ) include(plugin_dir_path(__FILE__).'base/loader.php');
 
-/**
- * Handles activation of Widget Bundle plugin.
- */
-function siteorigin_widgets_bundle_plugin_activate(){
-	// Deactivate any legacy plugins and activate the bundled version.
-	$bundle = SiteOrigin_Widgets_Bundle::single();
-	$widgets = $bundle->get_widgets_list();
-
-	// Deactivate any of the old stand alone widgets in favor of the bundle
-	foreach($widgets as $id => $widget) {
-		if( is_plugin_active($id) ) {
-			list($widget_id, $folder) = explode('/', $id, 2);
-			deactivate_plugins($id);
-			$bundle->activate_widget($widget_id);
-		}
-	}
-}
-register_activation_hook(__FILE__, 'siteorigin_widgets_bundle_plugin_activate');
-
 class SiteOrigin_Widgets_Bundle {
 
 	private $widget_folders;
@@ -217,9 +198,11 @@ class SiteOrigin_Widgets_Bundle {
 	 *
 	 * @param $widget_id
 	 *
+	 * @param bool $include
+	 *
 	 * @return bool
 	 */
-	function activate_widget( $widget_id ){
+	function activate_widget( $widget_id, $include = true ){
 		$exists = false;
 		foreach( $this->widget_folders as $folder ) {
 			if( !file_exists($folder . $widget_id . '/' . $widget_id . '.php') ) continue;
@@ -233,6 +216,9 @@ class SiteOrigin_Widgets_Bundle {
 		$active_widgets = get_option( 'siteorigin_widgets_active', array() );
 		$active_widgets[$widget_id] = true;
 		update_option( 'siteorigin_widgets_active', $active_widgets );
+
+		// If we don't want to include the widget files, then our job here is done.
+		if(!$include) return;
 
 		// Load the widget loader and the base if they don't already exist.
 
@@ -373,3 +359,38 @@ class SiteOrigin_Widgets_Bundle {
 
 // create the initial single
 SiteOrigin_Widgets_Bundle::single();
+
+/**
+ * Handles activation of Widget Bundle plugin.
+ */
+function siteorigin_widgets_bundle_plugin_activate(){
+	// Deactivate any legacy plugins and activate the bundled version.
+	$bundle = SiteOrigin_Widgets_Bundle::single();
+	$widgets = $bundle->get_widgets_list();
+
+	global $deactivate_plugins;
+	if(empty($deactivate_plugins)) $deactivate_plugins = array();
+
+	foreach($widgets as $id => $widget) {
+		if( is_plugin_active($id) ) {
+			$deactivate_plugins[] = $id;
+		}
+	}
+	if(!empty($deactivate_plugins)) add_action('shutdown', 'siteorigin_widgets_bundle_plugin_activate_shutdown');
+}
+register_activation_hook(__FILE__, 'siteorigin_widgets_bundle_plugin_activate');
+
+/**
+ * Run this on shutdown if we have any plugins to deactivate.
+ */
+function siteorigin_widgets_bundle_plugin_activate_shutdown(){
+	global $deactivate_plugins;
+	if(empty($deactivate_plugins)) return;
+
+	$bundle = SiteOrigin_Widgets_Bundle::single();
+	foreach((array) $deactivate_plugins as $plugin) {
+		deactivate_plugins($plugin);
+		list($widget_id, $file) = explode('/', $plugin, 2);
+		$bundle->activate_widget($widget_id, false);
+	}
+}
