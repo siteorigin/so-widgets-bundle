@@ -7,7 +7,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			__('SiteOrigin Price Table', 'sow-pt'),
 			array(
 				'description' => __('A simple Price Table.', 'sow-pt'),
-				'help' => 'http://siteorigin.com/price-table-widget/'
+				'help' => 'http://siteorigin.com/widgets-bundle/price-table-widget/'
 			),
 			array(
 

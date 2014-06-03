@@ -7,7 +7,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			__( 'SiteOrigin Features', 'sow-features' ),
 			array(
 				'description' => __( 'Displays a list of features.', 'sow-features' ),
-				'help'        => 'http://siteorigin.com/features-widget-documentation/'
+				'help'        => 'http://siteorigin.com/widgets-bundle/features-widget-documentation/'
 			),
 			array(),
 			array(

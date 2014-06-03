@@ -7,7 +7,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			__('SiteOrigin Button', 'sow-button'),
 			array(
 				'description' => __('A customizable button widget.', 'sow-button'),
-				'help' => 'http://siteorigin.com/button-widget-documentation/'
+				'help' => 'http://siteorigin.com/widgets-bundle/button-widget-documentation/'
 			),
 			array(
 

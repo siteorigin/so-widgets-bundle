@@ -7,7 +7,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			__('SiteOrigin Post Carousel', 'sow-carousel'),
 			array(
 				'description' => __('Display your posts as a carousel.', 'sow-carousel'),
-				'help' => 'http://siteorigin.com/'
+				'help' => 'http://siteorigin.com/widgets-bundle/'
 			),
 			array(
 
