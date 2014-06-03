@@ -4,9 +4,9 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 	function __construct() {
 		parent::__construct(
 			'sow-price-table',
-			__('SiteOrigin Price Table', 'sow-pt'),
+			__('SiteOrigin Price Table', 'siteorigin-widgets'),
 			array(
-				'description' => __('A simple Price Table.', 'sow-pt'),
+				'description' => __('A simple Price Table.', 'siteorigin-widgets'),
 				'help' => 'http://siteorigin.com/widgets-bundle/price-table-widget/'
 			),
 			array(
@@ -15,69 +15,69 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			array(
 				'title' => array(
 					'type' => 'text',
-					'label' => __('Title', 'sow-pt'),
+					'label' => __('Title', 'siteorigin-widgets'),
 				),
 
 				'columns' => array(
 					'type' => 'repeater',
-					'label' => __('Columns', 'sow-pt'),
-					'item_name' => __('Column', 'sow-pt'),
+					'label' => __('Columns', 'siteorigin-widgets'),
+					'item_name' => __('Column', 'siteorigin-widgets'),
 					'fields' => array(
 						'featured' => array(
 							'type' => 'checkbox',
-							'label' => __('Featured', 'sow-pt'),
+							'label' => __('Featured', 'siteorigin-widgets'),
 						),
 						'title' => array(
 							'type' => 'text',
-							'label' => __('Title', 'sow-pt'),
+							'label' => __('Title', 'siteorigin-widgets'),
 						),
 						'subtitle' => array(
 							'type' => 'text',
-							'label' => __('Sub Title', 'sow-pt'),
+							'label' => __('Sub Title', 'siteorigin-widgets'),
 						),
 
 						'image' => array(
 							'type' => 'media',
-							'label' => __('Image', 'sow-pt'),
+							'label' => __('Image', 'siteorigin-widgets'),
 						),
 
 						'price' => array(
 							'type' => 'text',
-							'label' => __('Price', 'sow-pt'),
+							'label' => __('Price', 'siteorigin-widgets'),
 						),
 						'per' => array(
 							'type' => 'text',
-							'label' => __('Per', 'sow-pt'),
+							'label' => __('Per', 'siteorigin-widgets'),
 						),
 						'button' => array(
 							'type' => 'text',
-							'label' => __('Button Text', 'sow-pt'),
+							'label' => __('Button Text', 'siteorigin-widgets'),
 						),
 						'url' => array(
 							'type' => 'text',
 							'sanitize' => 'url',
-							'label' => __('Button URL', 'sow-pt'),
+							'label' => __('Button URL', 'siteorigin-widgets'),
 						),
 						'features' => array(
 							'type' => 'repeater',
-							'label' => __('Features', 'sow-pt'),
-							'item_name' => __('Feature', 'sow-pt'),
+							'label' => __('Features', 'siteorigin-widgets'),
+							'item_name' => __('Feature', 'siteorigin-widgets'),
 							'fields' => array(
 								'text' => array(
 									'type' => 'text',
-									'label' => __('Text', 'sow-pt'),
+									'label' => __('Text', 'siteorigin-widgets'),
 								),
 								'hover' => array(
 									'type' => 'text',
-									'label' => __('Hover Text', 'sow-pt'),
+									'label' => __('Hover Text', 'siteorigin-widgets'),
 								),
 								'icon_new' => array(
 									'type' => 'icon',
-									'label' => __('Icon', 'sow-pt'),
+									'label' => __('Icon', 'siteorigin-widgets'),
 								),
 								'icon_color' => array(
 									'type' => 'color',
-									'label' => __('Icon Color', 'sow-pt'),
+									'label' => __('Icon Color', 'siteorigin-widgets'),
 								),
 							),
 						),
@@ -86,30 +86,30 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 
 				'theme' => array(
 					'type' => 'select',
-					'label' => __('Price Table Theme', 'sow-pt'),
+					'label' => __('Price Table Theme', 'siteorigin-widgets'),
 					'options' => array(
-						'atom' => __('Atom', 'sow-pt'),
+						'atom' => __('Atom', 'siteorigin-widgets'),
 					),
 				),
 
 				'header_color' => array(
 					'type' => 'color',
-					'label' => __('Header Color', 'sow-pt'),
+					'label' => __('Header Color', 'siteorigin-widgets'),
 				),
 
 				'featured_header_color' => array(
 					'type' => 'color',
-					'label' => __('Featured Header Color', 'sow-pt'),
+					'label' => __('Featured Header Color', 'siteorigin-widgets'),
 				),
 
 				'button_color' => array(
 					'type' => 'color',
-					'label' => __('Button Color', 'sow-pt'),
+					'label' => __('Button Color', 'siteorigin-widgets'),
 				),
 
 				'featured_button_color' => array(
 					'type' => 'color',
-					'label' => __('Featured Button Color', 'sow-pt'),
+					'label' => __('Featured Button Color', 'siteorigin-widgets'),
 				),
 			),
 			plugin_dir_path(__FILE__).'../'

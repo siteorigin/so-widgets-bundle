@@ -4,24 +4,24 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 	function __construct() {
 		parent::__construct(
 			'sow-features',
-			__( 'SiteOrigin Features', 'sow-features' ),
+			__( 'SiteOrigin Features', 'siteorigin-widgets' ),
 			array(
-				'description' => __( 'Displays a list of features.', 'sow-features' ),
+				'description' => __( 'Displays a list of features.', 'siteorigin-widgets' ),
 				'help'        => 'http://siteorigin.com/widgets-bundle/features-widget-documentation/'
 			),
 			array(),
 			array(
 				'features' => array(
 					'type' => 'repeater',
-					'label' => __('Features', 'sow-features'),
-					'item_name' => __('Feature', 'sow-features'),
+					'label' => __('Features', 'siteorigin-widgets'),
+					'item_name' => __('Feature', 'siteorigin-widgets'),
 					'fields' => array(
 
 						// The container shape
 
 						'container_color' => array(
 							'type' => 'color',
-							'label' => __('Container Color', 'sow-feature'),
+							'label' => __('Container Color', 'siteorigin-widgets'),
 							'default' => '#404040',
 						),
 
@@ -29,42 +29,42 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 
 						'icon' => array(
 							'type' => 'icon',
-							'label' => __('Icon', 'sow-feature'),
+							'label' => __('Icon', 'siteorigin-widgets'),
 						),
 
 						'icon_color' => array(
 							'type' => 'color',
-							'label' => __('Icon Color', 'sow-feature'),
+							'label' => __('Icon Color', 'siteorigin-widgets'),
 							'default' => '#FFFFFF',
 						),
 
 						'icon_image' => array(
 							'type' => 'media',
 							'library' => 'image',
-							'label' => __('Icon Image', 'sow-feature'),
-							'description' => __('Use your own icon image.', 'sow-feature'),
+							'label' => __('Icon Image', 'siteorigin-widgets'),
+							'description' => __('Use your own icon image.', 'siteorigin-widgets'),
 						),
 
 						// The text under the icon
 
 						'title' => array(
 							'type' => 'text',
-							'label' => __('Title Text', 'sow-feature'),
+							'label' => __('Title Text', 'siteorigin-widgets'),
 						),
 
 						'text' => array(
 							'type' => 'text',
-							'label' => __('Text', 'sow-feature'),
+							'label' => __('Text', 'siteorigin-widgets'),
 						),
 
 						'more_text' => array(
 							'type' => 'text',
-							'label' => __('More Link Text', 'sow-feature'),
+							'label' => __('More Link Text', 'siteorigin-widgets'),
 						),
 
 						'more_url' => array(
 							'type' => 'text',
-							'label' => __('More Link URL', 'sow-feature'),
+							'label' => __('More Link URL', 'siteorigin-widgets'),
 							'sanitize' => 'url',
 						),
 					),
@@ -72,44 +72,44 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 
 				'container_shape' => array(
 					'type' => 'select',
-					'label' => __('Container Shape', 'sow-feature'),
+					'label' => __('Container Shape', 'siteorigin-widgets'),
 					'options' => array(
 					),
 				),
 
 				'container_size' => array(
 					'type' => 'number',
-					'label' => __('Container Size', 'sow-feature'),
+					'label' => __('Container Size', 'siteorigin-widgets'),
 					'default' => 84,
 				),
 
 				'icon_size' => array(
 					'type' => 'number',
-					'label' => __('Icon Size', 'sow-feature'),
+					'label' => __('Icon Size', 'siteorigin-widgets'),
 					'default' => 24,
 				),
 
 				'per_row' => array(
 					'type' => 'number',
-					'label' => __('Features Per Row', 'sow-feature'),
+					'label' => __('Features Per Row', 'siteorigin-widgets'),
 					'default' => 3,
 				),
 
 				'responsive' => array(
 					'type' => 'checkbox',
-					'label' => __('Responsive Layout', 'sow-feature'),
+					'label' => __('Responsive Layout', 'siteorigin-widgets'),
 					'default' => true,
 				),
 
 				'title_link' => array(
 					'type' => 'checkbox',
-					'label' => __('Link Feature Title to More URL', 'sow-feature'),
+					'label' => __('Link Feature Title to More URL', 'siteorigin-widgets'),
 					'default' => false,
 				),
 
 				'new_window' => array(
 					'type' => 'checkbox',
-					'label' => __('Open More URL in New Window', 'sow-feature'),
+					'label' => __('Open More URL in New Window', 'siteorigin-widgets'),
 					'default' => false,
 				),
 
@@ -127,7 +127,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 	}
 
 	function enqueue_frontend_scripts(){
-		wp_enqueue_style('sow-features', siteorigin_widget_get_plugin_dir_url('features').'css/style.css', array(), SOW_BUNDLE_VERSION );
+		wp_enqueue_style('siteorigin-widgets', siteorigin_widget_get_plugin_dir_url('features').'css/style.css', array(), SOW_BUNDLE_VERSION );
 	}
 
 	function modify_form( $form ){

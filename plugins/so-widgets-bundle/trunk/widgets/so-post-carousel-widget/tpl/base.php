@@ -7,8 +7,8 @@ $the_query = new WP_Query( $query );
 	<div class="sow-carousel-title">
 		<?php echo $args['before_title'] . esc_html($instance['title']) . $args['after_title'] ?>
 
-		<a href="#" class="sow-carousel-next" title="<?php esc_attr_e('Next', 'sow-carousel') ?>"></a>
-		<a href="#" class="sow-carousel-previous" title="<?php esc_attr_e('Previous', 'sow-carousel') ?>"></a>
+		<a href="#" class="sow-carousel-next" title="<?php esc_attr_e('Next', 'siteorigin-widgets') ?>"></a>
+		<a href="#" class="sow-carousel-previous" title="<?php esc_attr_e('Previous', 'siteorigin-widgets') ?>"></a>
 	</div>
 
 	<div class="sow-carousel-wrapper"
@@ -19,7 +19,7 @@ $the_query = new WP_Query( $query );
 			<?php while($the_query->have_posts()) : $the_query->the_post(); ?>
 				<li class="sow-carousel-item">
 					<div class="sow-carousel-thumbnail">
-						<?php if( has_post_thumbnail() ) : $img = wp_get_attachment_image_src(get_post_thumbnail_id(), 'vantage-carousel'); ?>
+						<?php if( has_post_thumbnail() ) : $img = wp_get_attachment_image_src(get_post_thumbnail_id(), 'sow-carousel-default'); ?>
 							<a href="<?php the_permalink() ?>" style="background-image: url(<?php echo esc_url($img[0]) ?>)">
 								<span class="overlay"></span>
 							</a>
