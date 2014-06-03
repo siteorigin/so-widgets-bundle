@@ -39,6 +39,9 @@ Once you enable a widget, you'll be able to use it anywhere standard widgets are
 * Added widget previews.
 * Fixed wire button widget hover issue.
 * Old stand alone widget plugins are now deactivated in favor of bundled versions.
+* Fixed centering of CTA widget.
+* Fixed color settings in CTA widget.
+* Fixed button icon color setting.
 
 = 1.0.1 =
 * Clean up of code and bundled widgets.
