@@ -4,19 +4,16 @@
 	<div id="siteorigin-widgets-bundle">
 		<?php foreach( $widgets as $id => $widget ): ?>
 			<div class="so-widget-wrap">
-				<div class="so-widget so-widget-is-<?php echo !$widget['Active'] ? 'inactive' : 'active' ?>">
-
-					<?php if( $widget['Active'] ) : ?><div class="so-widgets-active-banner"><?php _e('Activated', 'siteorigin-widgets') ?></div><?php endif; ?>
+				<div class="so-widget so-widget-is-<?php echo $widget['Active'] ? 'active' : '' ?>">
 
 					<img src="<?php echo plugin_dir_url(__FILE__).'../banners/'.$widget['ID'].'.svg' ?>" />
 
 					<div class="so-widget-text">
-
-						<?php if( !$widget['Active'] ) : ?>
-							<a href="<?php echo wp_nonce_url( add_query_arg( array( 'widget_action' => 'activate', 'widget' => $widget['ID'] ) ), 'siteorigin_widget_action' ) ?>" class="so-widget-action-link so-widget-action-activate"><?php _e('Activate', 'siteorigin-widgets') ?></a>
-						<?php else : ?>
-							<a href="<?php echo wp_nonce_url( add_query_arg( array( 'widget_action' => 'deactivate', 'widget' => $widget['ID'] ) ), 'siteorigin_widget_action') ?>" class="so-widget-action-link so-widget-action-deactivate"><?php _e('Deactivate', 'siteorigin-widgets') ?></a>
-						<?php endif; ?>
+						<label class="switch">
+							<input class="switch-input" type="checkbox" <?php checked( $widget['Active'] ) ?> data-url="<?php echo wp_nonce_url( admin_url('admin-ajax.php?action=so_widgets_bundle_manage&widget='.$widget['ID']), 'manage_so_widget' ) ?>">
+							<span class="switch-label" data-on="<?php _e('On', 'siteorigin-widgets') ?>" data-off="<?php _e('Off', 'siteorigin-widgets') ?>"></span>
+							<span class="switch-handle"></span>
+						</label>
 
 						<h4><?php echo esc_html($widget['Name']); ?></h4>
 						<p class="so-widget-description">

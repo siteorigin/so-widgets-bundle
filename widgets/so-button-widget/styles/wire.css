@@ -28,5 +28,5 @@
 }
 .ow-button-base a.ow-button-hover:hover {
   background: #41a9d5;
-  color: #ffffff;
+  color: #ffffff !important;
 }

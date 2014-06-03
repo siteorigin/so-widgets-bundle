@@ -1,5 +1,5 @@
 === SiteOrigin Widgets Bundle ===
-Tags: bundle, widget
+Tags: bundle, widget, button, slider, image, carousel, price table
 Requires at least: 3.8
 Tested up to: 3.9.1
 Stable tag: trunk
@@ -24,6 +24,8 @@ The collection is growing, but here’s what we have so far.
 
 Once you enable a widget, you'll be able to use it anywhere standard widgets are used. You can manage your widgets by going to Plugins > SiteOrigin Widgets in your WordPress admin.
 
+[Documentation](http://siteorigin.com/widgets-bundle/) is available on SiteOrigin.
+
 == Screenshots ==
 
 1. Manage which widgets you want enabled or disabled.
@@ -31,6 +33,12 @@ Once you enable a widget, you'll be able to use it anywhere standard widgets are
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.0.2 =
+* Manage widgets page now does live updates.
+* Added widget previews.
+* Fixed wire button widget hover issue.
+* Old stand alone widget plugins are now deactivated in favor of bundled versions.
 
 = 1.0.1 =
 * Clean up of code and bundled widgets.

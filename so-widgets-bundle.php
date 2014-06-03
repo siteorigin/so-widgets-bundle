@@ -16,6 +16,25 @@ define('SOW_BUNDLE_VERSION', 'trunk');
 if( !defined('SITEORIGIN_WIDGETS_ICONS') && file_exists( plugin_dir_path(__FILE__).'/icons/icons.php' ) ) include plugin_dir_path(__FILE__).'/icons/icons.php';
 if( !class_exists('SiteOrigin_Widgets_Loader') ) include(plugin_dir_path(__FILE__).'base/loader.php');
 
+/**
+ * Handles activation of Widget Bundle plugin.
+ */
+function siteorigin_widgets_bundle_plugin_activate(){
+	// Deactivate any legacy plugins and activate the bundled version.
+	$bundle = SiteOrigin_Widgets_Bundle::single();
+	$widgets = $bundle->get_widgets_list();
+
+	// Deactivate any of the old stand alone widgets in favor of the bundle
+	foreach($widgets as $id => $widget) {
+		if( is_plugin_active($id) ) {
+			list($widget_id, $folder) = explode('/', $id, 2);
+			deactivate_plugins($id);
+			$bundle->activate_widget($widget_id);
+		}
+	}
+}
+register_activation_hook(__FILE__, 'siteorigin_widgets_bundle_plugin_activate');
+
 class SiteOrigin_Widgets_Bundle {
 
 	private $widget_folders;
@@ -24,6 +43,7 @@ class SiteOrigin_Widgets_Bundle {
 		add_action('admin_init', array($this, 'admin_activate_widget') );
 		add_action('admin_menu', array($this, 'admin_menu_init') );
 		add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_scripts') );
+		add_action('wp_ajax_so_widgets_bundle_manage', array($this, 'admin_ajax_manage_handler') );
 
 		// Initialize the widgets, but do it fairly late
 		add_action( 'plugins_loaded', array($this, 'load_widget_plugins'), 1 );
@@ -35,6 +55,10 @@ class SiteOrigin_Widgets_Bundle {
 		add_filter( 'siteorigin_panels_data', array($this, 'load_missing_widgets') );
 		add_filter( 'siteorigin_panels_prebuilt_layout', array($this, 'load_missing_widgets') );
 		add_filter( 'siteorigin_panels_widget_object', array($this, 'load_missing_widget'), 10, 2 );
+
+		$this->widget_folders = apply_filters('siteorigin_widgets_widget_folders', array(
+			plugin_dir_path(__FILE__).'widgets/'
+		) );
 	}
 
 	/**
@@ -56,10 +80,6 @@ class SiteOrigin_Widgets_Bundle {
 	 * Load all the widgets if their plugins aren't already active.
 	 */
 	function load_widget_plugins(){
-
-		$this->widget_folders = apply_filters('siteorigin_widgets_widget_folders', array(
-			plugin_dir_path(__FILE__).'widgets/'
-		) );
 
 		$run_base_loaded = false;
 		if( !defined('SITEORIGIN_WIDGETS_BASE_PARENT_FILE') ) {
@@ -97,6 +117,7 @@ class SiteOrigin_Widgets_Bundle {
 	function admin_enqueue_scripts($prefix) {
 		if( $prefix != 'plugins_page_so-widgets-plugins' ) return;
 		wp_enqueue_style( 'siteorigin-widgets-bundle-admin', plugin_dir_url( __FILE__ ) . 'css/admin.css', array(), SOW_BUNDLE_VERSION );
+		wp_enqueue_script( 'siteorigin-widgets-bundle-admin', plugin_dir_url( __FILE__ ) . 'js/admin.js', array(), SOW_BUNDLE_VERSION );
 	}
 
 	function admin_activate_widget() {
@@ -125,6 +146,23 @@ class SiteOrigin_Widgets_Bundle {
 			) ) );
 
 		}
+	}
+
+	/**
+	 * Handler for activating and deactivating widgets.
+	 */
+	function admin_ajax_manage_handler(){
+		if(!wp_verify_nonce($_GET['_wpnonce'], 'manage_so_widget')) exit();
+		if(!current_user_can('install_plugins')) exit();
+		if(empty($_GET['widget'])) exit();
+
+		if( $_POST['active'] == 'true' ) $this->activate_widget($_GET['widget']);
+		else $this->deactivate_widget($_GET['widget']);
+
+		// Send a kind of dummy response.
+		header('content-type: application/json');
+		echo json_encode(array('done' => true));
+		exit();
 	}
 
 	/**
@@ -182,7 +220,13 @@ class SiteOrigin_Widgets_Bundle {
 	 * @return bool
 	 */
 	function activate_widget( $widget_id ){
-		if( !file_exists( plugin_dir_path(__FILE__).'widgets/'.$widget_id.'/'.$widget_id.'.php' ) ) return false;
+		$exists = false;
+		foreach( $this->widget_folders as $folder ) {
+			if( !file_exists($folder . $widget_id . '/' . $widget_id . '.php') ) continue;
+			$exists = true;
+		}
+
+		if( !$exists ) return false;
 
 		// There are times when we activate several widgets at once, so clear the cache.
 		// wp_cache_delete( 'siteorigin_widgets_active', 'options' );
