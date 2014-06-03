@@ -1,7 +1,6 @@
 .sow-cta-base {
   zoom: 1;
-  border: 1px solid #E3E3E3;
-  background: #F8F8F8;
+  border: 1px solid ;
   padding: 2em 2.5em;
 }
 .sow-cta-base:before {
@@ -44,6 +43,7 @@
   .sow-cta-base .so-widget-sow-button {
     display: inline-block;
     float: none;
-    margin-top: 2em;
+    margin-top: 2em !important;
+    margin-left: 0!important;
   }
 }

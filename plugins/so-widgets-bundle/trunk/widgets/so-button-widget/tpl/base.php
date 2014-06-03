@@ -27,7 +27,7 @@ if( !empty($instance['design']['hover']) ) $classes[] = 'ow-button-hover';
 				}
 				else {
 					$icon_styles = array();
-					if(!empty($instance['button_icon']['icon_color'])) $icon_styles[] = 'color: '.$feature['button_icon']['icon_color'];
+					if(!empty($instance['button_icon']['icon_color'])) $icon_styles[] = 'color: '.$instance['button_icon']['icon_color'];
 					echo siteorigin_widget_get_icon($instance['button_icon']['icon_selected'], $icon_styles);
 				}
 			?>

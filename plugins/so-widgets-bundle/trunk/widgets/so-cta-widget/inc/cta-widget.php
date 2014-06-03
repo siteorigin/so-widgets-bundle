@@ -36,6 +36,11 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 							'label' => __('Background Color', 'sow-cta'),
 						),
 
+						'border_color' => array(
+							'type' => 'color',
+							'label' => __('Border Color', 'sow-cta'),
+						),
+
 					)
 				),
 
@@ -55,7 +60,6 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 	 */
 	function initialize(){
 		if( !class_exists('SiteOrigin_Widget_Button_Widget') ) {
-			// The bundled version of the button widget is version 1.0.2
 			include plugin_dir_path( __FILE__ ) . '../../so-button-widget/inc/widget.php';
 			siteorigin_widget_register_self( 'button', realpath( plugin_dir_path( __FILE__ ) . '../../so-button-widget/so-button-widget.php' ) );
 		}
@@ -69,8 +73,16 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 		return 'basic';
 	}
 
+	function get_less_variables($instance) {
+		return array(
+			'border_color' => $instance['design']['border_color'],
+			'background_color' => $instance['design']['background_color'],
+		);
+	}
+
 	function enqueue_frontend_scripts(){
 		wp_enqueue_style( 'sow-cta-main', siteorigin_widget_get_plugin_dir_url('cta').'css/style.css', array(), SOW_BUNDLE_VERSION );
+		wp_enqueue_script( 'sow-cta-main', siteorigin_widget_get_plugin_dir_url('cta').'js/cta.js', array('jquery'), SOW_BUNDLE_VERSION );
 	}
 
 }
