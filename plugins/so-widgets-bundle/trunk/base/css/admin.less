@@ -353,6 +353,25 @@
 			padding: 10px;
 			display: block;
 			margin-bottom: 0;
+
+			&:before {
+				float: left;
+				margin: 3px 6px 0 0;
+				display: block;
+				width: 14px;
+				height: 14px;
+				font-size: 14px;
+				line-height: 1;
+				font-family: "dashicons";
+				content:"\f132";
+
+			}
+
+			&.siteorigin-widget-section-visible {
+				&:before {
+					content:"\f460";
+				}
+			}
 		}
 
 		.siteorigin-widget-section {
