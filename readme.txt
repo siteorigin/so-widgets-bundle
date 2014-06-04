@@ -42,6 +42,7 @@ Once you enable a widget, you'll be able to use it anywhere standard widgets are
 * Fixed centering of CTA widget.
 * Fixed color settings in CTA widget.
 * Fixed button icon color setting.
+* Small UI improvements.
 
 = 1.0.1 =
 * Clean up of code and bundled widgets.
