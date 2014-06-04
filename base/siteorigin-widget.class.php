@@ -459,7 +459,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		?><div class="siteorigin-widget-field siteorigin-widget-field-type-<?php echo sanitize_html_class($field['type']) ?> siteorigin-widget-field-<?php echo sanitize_html_class($name) ?>"><?php
 
 		if($field['type'] != 'repeater' && $field['type'] != 'checkbox' && $field['type'] != 'separator') {
-			?><label for="<?php echo $this->so_get_field_id($name, $repeater) ?>"><?php echo $field['label'] ?></label><?php
+			?><label aa for="<?php echo $this->so_get_field_id($name, $repeater) ?>" <?php if( empty($field['hide']) ) echo 'class="siteorigin-widget-section-visible"'; ?>><?php echo $field['label'] ?></label><?php
 		}
 
 		switch( $field['type'] ) {
