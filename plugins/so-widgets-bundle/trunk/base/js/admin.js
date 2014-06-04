@@ -142,15 +142,13 @@
             // Handle toggling of the sub widget form
             $fields.filter('.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section').find('> label').click(function(){
                 var $$ = $(this);
+                $(this).toggleClass( 'siteorigin-widget-section-visible' );
                 $(this).siblings('.siteorigin-widget-section').slideToggle(function(){
 
                     // Center the PB dialog
                     if(typeof $.fn.dialog != 'undefined') {
                         $(this).closest('.panel-dialog').dialog("option", "position", "center");
                     }
-
-                    if($(this).is(':visible')) $$.addClass('siteorigin-widget-section-visible');
-                    else $$.removeClass('siteorigin-widget-section-visible');
                 });
             });
 
