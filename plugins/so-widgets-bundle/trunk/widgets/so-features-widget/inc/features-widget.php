@@ -107,6 +107,12 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					'default' => false,
 				),
 
+				'icon_link' => array(
+					'type' => 'checkbox',
+					'label' => __('Link Icon to More URL', 'siteorigin-widgets'),
+					'default' => false,
+				),
+
 				'new_window' => array(
 					'type' => 'checkbox',
 					'label' => __('Open More URL in New Window', 'siteorigin-widgets'),

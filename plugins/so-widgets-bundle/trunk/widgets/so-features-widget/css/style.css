@@ -28,8 +28,12 @@
   padding: 0 25px;
   margin-bottom: 40px;
 }
+.sow-features-list .sow-features-feature .sow-icon-container {
+  text-decoration: none;
+}
 .sow-features-list .sow-features-feature .sow-icon-container [class^="sow-icon-"],
 .sow-features-list .sow-features-feature .sow-icon-container .sow-icon-image {
+  text-decoration: none;
   display: block;
   color: #FFFFFF;
   width: 1em;

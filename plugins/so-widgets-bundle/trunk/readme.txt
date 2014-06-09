@@ -34,6 +34,9 @@ Once you enable a widget, you'll be able to use it anywhere standard widgets are
 
 == Changelog ==
 
+= 1.0.3 =
+* Features widget icons can now be made clickable.
+
 = 1.0.2 =
 * Manage widgets page now does live updates.
 * Added widget previews.
