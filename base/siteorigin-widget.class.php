@@ -383,6 +383,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$instance[$name][$i] = $this->sanitize($sub_instance, $field['fields']);
 				}
 			}
+			elseif($field['type'] == 'checkbox') {
+				$instance[$name] = !empty($instance[$name]);
+			}
 			elseif($field['type'] == 'widget') {
 
 				if( !empty($field['class']) && class_exists($field['class']) ) {
