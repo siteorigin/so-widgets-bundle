@@ -6,6 +6,7 @@ Description: A collection of all our widgets, neatly bundled into a single plugi
 Version: trunk
 Author: Greg Priday
 Author URI: http://siteorigin.com
+Plugin URI: http://siteorigin.com/widgets-bundle/
 License: GPL3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 */
