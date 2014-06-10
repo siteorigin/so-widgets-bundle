@@ -1,12 +1,10 @@
 <?php
 /*
-Plugin Name: Post Carousel Widget
+Widget Name: Post Carousel Widget
 Description: Gives you a widget to display your posts as a carousel.
 Version: trunk
 Author: Greg Priday
 Author URI: http://siteorigin.com
-License: GPL3
-License URI: https://www.gnu.org/copyleft/gpl.html
 */
 
 /**

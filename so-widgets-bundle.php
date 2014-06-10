@@ -269,11 +269,21 @@ class SiteOrigin_Widgets_Bundle {
 	function get_widgets_list(){
 		$active = get_option('siteorigin_widgets_active', array());
 
+		$default_headers = array(
+			'Name' => 'Widget Name',
+			'Description' => 'Description',
+			'Author' => 'Author',
+			'AuthorURI' => 'Author URI',
+			'WidgetURI' => 'Widget URI',
+			'VideoURI' => 'Video URI',
+		);
+
 		$widgets = array();
 		foreach($this->widget_folders as $folder) {
 
-			$folder = str_replace(WP_PLUGIN_DIR, '', $folder);
-			foreach( get_plugins( $folder ) as $file => $widget ) {
+			$files = glob( $folder.'*/*.php' );
+			foreach($files as $file) {
+				$widget = get_file_data( $file, $default_headers, 'siteorigin-widget' );
 				$f = pathinfo($file);
 				$id = $f['filename'];
 
@@ -286,8 +296,7 @@ class SiteOrigin_Widgets_Bundle {
 		}
 
 		// Sort the widgets alphabetically
-		uasort($widgets, array($this, 'widget_uasort'));
-
+		uasort( $widgets, array($this, 'widget_uasort') );
 		return $widgets;
 	}
 
