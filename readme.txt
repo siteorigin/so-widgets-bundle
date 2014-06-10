@@ -35,7 +35,7 @@ Once you enable a widget, you'll be able to use it anywhere standard widgets are
 == Changelog ==
 
 = 1.0.4 =
-* Changed how widget list is loaded.
+* Changed how widget list is loaded to fix issue with widgets list not displaying.
 
 = 1.0.3 =
 * Features widget icons can now be made clickable.
