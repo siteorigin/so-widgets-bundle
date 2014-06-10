@@ -2,7 +2,7 @@
 Tags: bundle, widget, button, slider, image, carousel, price table
 Requires at least: 3.8
 Tested up to: 3.9.1
-Stable tag: trunk
+Stable tag: 1.0.3
 License: GPLv3 or later
 Contributors: gpriday
 
@@ -33,6 +33,9 @@ Once you enable a widget, you'll be able to use it anywhere standard widgets are
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.0.4 =
+* Changed how widget list is loaded.
 
 = 1.0.3 =
 * Features widget icons can now be made clickable.
