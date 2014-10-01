@@ -112,14 +112,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param $form
 	 * @param $instance
 	 */
-	function add_defaults($form, $instance){
+	function add_defaults($form, $instance, $level = 0){
+		if( $level > 10 ) return $instance;
 
 		foreach($form as $id => $field) {
 
 			if($field['type'] == 'repeater' && !empty($instance[$id]) ) {
 
-				for($i = 0; $i < count($instance[$id]); $i++) {
-					$instance[$id][$i] = $this->add_defaults( $field['fields'], $instance[$id][$i] );
+				foreach( array_keys($instance[$id]) as $i ){
+					$instance[$id][$i] = $this->add_defaults( $field['fields'], $instance[$id][$i], $level + 1 );
 				}
 
 			}
@@ -138,19 +139,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string|void
 	 */
 	public function form( $instance ) {
-		static $enqueued = false;
-		if( empty( $enqueued ) ){
-			$this->enqueue_scripts();
-			$enqueued = true;
-		}
-
+		$this->enqueue_scripts();
 		$instance = $this->modify_instance($instance);
 
 		$form_id = 'siteorigin_widget_form_'.md5( uniqid( rand(), true ) );
-		$class_name = str_replace('_', '-', strtolower(get_class($this)));
+		$class_name = str_replace( '_', '-', strtolower(get_class($this)) );
 
 		?>
-		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>" id="<?php echo $form_id ?>" data-class="<?php echo get_class($this) ?>">
+		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>" id="<?php echo $form_id ?>" data-class="<?php echo get_class($this) ?>" style="display: none">
 			<?php
 			foreach( $this->form_options() as $field_name => $field) {
 
@@ -167,7 +163,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			}
 			?>
 		</div>
-		<div class="siteorigin-widget-preview">
+		<div class="siteorigin-widget-form-no-styles">
+			<p><strong><?php _e('This widget has scripts and styles that need to be loaded before you can use it. Please save and reload your current page.', 'siteorigin-widgets') ?></strong></p>
+			<p><strong><?php _e('You will only need to do this once.', 'siteorigin-widgets') ?></strong></p>
+		</div>
+		<div class="siteorigin-widget-preview" style="display: none">
 			<a href="#" class="siteorigin-widget-preview-button button-secondary"><?php _e('Preview', 'siteorigin-widgets') ?></a>
 		</div>
 
@@ -179,11 +179,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			( function($){
 				if(typeof window.sow_repeater_html == 'undefined') window.sow_repeater_html = {};
 				window.sow_repeater_html["<?php echo get_class($this) ?>"] = <?php echo json_encode($this->repeater_html) ?>;
+
 				if(typeof $.fn.sowSetupForm != 'undefined') {
 					$('#<?php echo $form_id ?>').sowSetupForm();
-				}
-				if( !$('#siteorigin-widget-admin-css').length && $.isReady ) {
-					alert('<?php esc_attr_e('Please refresh this page to start using this widget.', 'siteorigin-widgets') ?>')
 				}
 			} )( jQuery );
 		</script>
@@ -202,7 +200,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			wp_enqueue_script( 'wp-color-picker' );
 			wp_enqueue_media();
-			wp_enqueue_script( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/admin.js', array( 'jquery', 'jquery-ui-sortable', 'editor' ), SOW_BUNDLE_VERSION, true );
+			wp_enqueue_script( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/admin.js', array( 'jquery', 'jquery-ui-sortable' ), SOW_BUNDLE_VERSION, true );
 
 			wp_localize_script( 'siteorigin-widget-admin', 'soWidgets', array(
 				'sure' => __('Are you sure?', 'siteorigin-widgets')
@@ -226,6 +224,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			) );
 		}
 
+		// This lets the widget enqueue any specific admin scripts
 		$this->enqueue_admin_scripts();
 	}
 
