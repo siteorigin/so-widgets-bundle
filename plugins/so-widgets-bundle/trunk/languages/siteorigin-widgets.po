@@ -1,0 +1,736 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SiteOrigin Widgets Bundle\n"
+"POT-Creation-Date: 2014-09-10 09:34+0200\n"
+"PO-Revision-Date: 2014-09-10 09:35+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.7\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: base/inc/post-selector.php:40
+msgid "Post Type"
+msgstr ""
+
+#: base/inc/post-selector.php:42
+msgid "All"
+msgstr ""
+
+#: base/inc/post-selector.php:53
+msgid "Post In"
+msgstr ""
+
+#: base/inc/post-selector.php:55 base/siteorigin-widget.class.php:225
+msgid "Select Posts"
+msgstr ""
+
+#: base/inc/post-selector.php:60
+msgid "Taxonomies"
+msgstr ""
+
+#: base/inc/post-selector.php:67
+msgid "Order By"
+msgstr ""
+
+#: base/inc/post-selector.php:70
+msgid "No Order"
+msgstr ""
+
+#: base/inc/post-selector.php:71
+msgid "Post ID"
+msgstr ""
+
+#: base/inc/post-selector.php:72
+msgid "Author"
+msgstr ""
+
+#: base/inc/post-selector.php:73 widgets/so-cta-widget/inc/cta-widget.php:21
+#: widgets/so-post-carousel-widget/inc/carousel-widget.php:18
+#: widgets/so-price-table-widget/inc/widget.php:18
+#: widgets/so-price-table-widget/inc/widget.php:32
+msgid "Title"
+msgstr ""
+
+#: base/inc/post-selector.php:74
+msgid "Published Date"
+msgstr ""
+
+#: base/inc/post-selector.php:75
+msgid "Modified Date"
+msgstr ""
+
+#: base/inc/post-selector.php:76
+msgid "By Parent"
+msgstr ""
+
+#: base/inc/post-selector.php:77
+msgid "Random Order"
+msgstr ""
+
+#: base/inc/post-selector.php:78
+msgid "Comment Count"
+msgstr ""
+
+#: base/inc/post-selector.php:79
+msgid "Menu Order"
+msgstr ""
+
+#: base/inc/post-selector.php:80
+msgid "By Meta Value"
+msgstr ""
+
+#: base/inc/post-selector.php:81
+msgid "By Numeric Meta Value"
+msgstr ""
+
+#: base/inc/post-selector.php:82
+msgid "By Include Order"
+msgstr ""
+
+#: base/inc/post-selector.php:93
+msgid "Posts Per Page"
+msgstr ""
+
+#: base/inc/preview.tpl.php:3
+msgid "Widget Preview"
+msgstr ""
+
+#: base/siteorigin-widget.class.php:171
+msgid "Preview"
+msgstr ""
+
+#: base/siteorigin-widget.class.php:175
+msgid "Help"
+msgstr ""
+
+#: base/siteorigin-widget.class.php:186
+msgid "Please refresh this page to start using this widget."
+msgstr ""
+
+#: base/siteorigin-widget.class.php:208
+msgid "Are you sure?"
+msgstr ""
+
+#: base/siteorigin-widget.class.php:219
+#, php-format
+msgid ""
+"This query returns <a href=\"#\" class=\"preview-query-posts\">%s posts</a>."
+msgstr ""
+
+#: base/siteorigin-widget.class.php:510
+#, php-format
+msgid ""
+"You need to <a href=\"%s\">upgrade</a> to WordPress 3.5 to use media fields"
+msgstr ""
+
+#: base/siteorigin-widget.class.php:528
+msgid "Choose Media"
+msgstr ""
+
+#: base/siteorigin-widget.class.php:529
+msgid "Set Media"
+msgstr ""
+
+#: base/siteorigin-widget.class.php:544
+msgid "Remove"
+msgstr ""
+
+#: base/siteorigin-widget.class.php:557
+msgid "Build Posts Query"
+msgstr ""
+
+#: base/siteorigin-widget.class.php:612
+msgid "Add"
+msgstr ""
+
+#: base/siteorigin-widget.class.php:677
+msgid "Unknown Field"
+msgstr ""
+
+#: icons/icons.php:1488
+msgid "Font Awesome"
+msgstr ""
+
+#: icons/icons.php:1494
+msgid "Icomoon Free"
+msgstr ""
+
+#: icons/icons.php:1500
+msgid "Genericons"
+msgstr ""
+
+#: icons/icons.php:1506
+msgid "Typicons"
+msgstr ""
+
+#: icons/icons.php:1512
+msgid "Elegant Themes Line Icons"
+msgstr ""
+
+#: so-widgets-bundle.php:170 so-widgets-bundle.php:171 tpl/admin.php:2
+msgid "SiteOrigin Widgets"
+msgstr ""
+
+#: so-widgets-bundle.php:198
+#, php-format
+msgid "%s was %s"
+msgstr ""
+
+#: so-widgets-bundle.php:200
+msgid "Activated"
+msgstr ""
+
+#: so-widgets-bundle.php:200
+msgid "Deactivated"
+msgstr ""
+
+#: so-widgets-bundle.php:378
+msgid "Manage Widgets"
+msgstr ""
+
+#: so-widgets-bundle.php:379
+msgid "Support"
+msgstr ""
+
+#: tpl/admin.php:14
+msgid "On"
+msgstr ""
+
+#: tpl/admin.php:14
+msgid "Off"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:7
+msgid "SiteOrigin Button"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:9
+msgid "A customizable button widget."
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:18
+#: widgets/so-price-table-widget/inc/widget.php:54
+msgid "Button Text"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:24
+#: widgets/so-image-widget/inc/widget.php:44
+#: widgets/so-slider-widget/inc/widget.php:77
+msgid "Destination URL"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:30
+#: widgets/so-image-widget/inc/widget.php:49
+msgid "Open in New Window"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:35
+#: widgets/so-button-widget/inc/widget.php:39
+#: widgets/so-features-widget/inc/features-widget.php:32
+#: widgets/so-price-table-widget/inc/widget.php:76
+msgid "Icon"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:44
+#: widgets/so-features-widget/inc/features-widget.php:37
+#: widgets/so-price-table-widget/inc/widget.php:80
+msgid "Icon Color"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:49
+msgid "Image Icon"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:50
+msgid "Replaces the icon with your own image icon."
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:57
+msgid "Design and Layout"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:62
+msgid "Align"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:65
+msgid "Left"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:66
+msgid "Right"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:67
+msgid "Center"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:68
+msgid "Justify"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:74
+msgid "Button Theme"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:77
+#: widgets/so-price-table-widget/inc/widget.php:91
+msgid "Atom"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:78
+msgid "Flat"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:79
+msgid "Wire"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:86
+#: widgets/so-price-table-widget/inc/widget.php:107
+msgid "Button Color"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:91
+msgid "Text Color"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:97
+msgid "Use Hover Effects"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:102
+msgid "Font Size"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:104
+msgid "Normal"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:105
+#: widgets/so-button-widget/inc/widget.php:129
+#: widgets/so-image-widget/inc/widget.php:27
+#: widgets/so-slider-widget/inc/widget.php:110
+msgid "Medium"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:106
+#: widgets/so-image-widget/inc/widget.php:26
+msgid "Large"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:107
+msgid "Extra Large"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:113
+msgid "Rounding"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:116
+msgid "None"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:117
+msgid "Slight Rounding"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:118
+msgid "Very Rounded"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:119
+msgid "Completely Rounded"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:125
+msgid "Padding"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:128
+msgid "Low"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:130
+msgid "High"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:131
+msgid "Very High"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:140
+msgid "Other Attributes and SEO"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:145
+msgid "Button ID"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:146
+msgid "An ID attribute allows you to target this button in Javascript."
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:151
+msgid "Title Attribute"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:152
+msgid "Adds a title attribute to the button link."
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:157
+msgid "Onclick"
+msgstr ""
+
+#: widgets/so-button-widget/inc/widget.php:158
+msgid "Run this Javascript when the button is clicked. Ideal for tracking."
+msgstr ""
+
+#: widgets/so-cta-widget/inc/cta-widget.php:9
+msgid "SiteOrigin Call To Action"
+msgstr ""
+
+#: widgets/so-cta-widget/inc/cta-widget.php:11
+msgid "A simple call to action widget with massive power."
+msgstr ""
+
+#: widgets/so-cta-widget/inc/cta-widget.php:26
+msgid "Subtitle"
+msgstr ""
+
+#: widgets/so-cta-widget/inc/cta-widget.php:31
+msgid "Design"
+msgstr ""
+
+#: widgets/so-cta-widget/inc/cta-widget.php:36
+msgid "Background Color"
+msgstr ""
+
+#: widgets/so-cta-widget/inc/cta-widget.php:41
+msgid "Border Color"
+msgstr ""
+
+#: widgets/so-cta-widget/inc/cta-widget.php:50
+msgid "Button"
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:7
+msgid "SiteOrigin Features"
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:9
+msgid "Displays a list of features."
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:16
+#: widgets/so-price-table-widget/inc/widget.php:63
+msgid "Features"
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:17
+#: widgets/so-price-table-widget/inc/widget.php:64
+msgid "Feature"
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:24
+msgid "Container Color"
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:44
+msgid "Icon Image"
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:45
+msgid "Use your own icon image."
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:52
+#: widgets/so-image-widget/inc/widget.php:34
+msgid "Title Text"
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:57
+#: widgets/so-price-table-widget/inc/widget.php:68
+msgid "Text"
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:62
+msgid "More Link Text"
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:67
+msgid "More Link URL"
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:75
+msgid "Container Shape"
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:82
+msgid "Container Size"
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:88
+msgid "Icon Size"
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:94
+msgid "Features Per Row"
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:100
+msgid "Responsive Layout"
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:106
+msgid "Link Feature Title to More URL"
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:112
+msgid "Link Icon to More URL"
+msgstr ""
+
+#: widgets/so-features-widget/inc/features-widget.php:118
+msgid "Open More URL in New Window"
+msgstr ""
+
+#: widgets/so-image-widget/inc/widget.php:7
+msgid "SiteOrigin Image"
+msgstr ""
+
+#: widgets/so-image-widget/inc/widget.php:9
+msgid "A simple image widget with massive power."
+msgstr ""
+
+#: widgets/so-image-widget/inc/widget.php:18
+msgid "Image File"
+msgstr ""
+
+#: widgets/so-image-widget/inc/widget.php:23
+msgid "Image Size"
+msgstr ""
+
+#: widgets/so-image-widget/inc/widget.php:25
+msgid "Full"
+msgstr ""
+
+#: widgets/so-image-widget/inc/widget.php:28
+msgid "Thumbnail"
+msgstr ""
+
+#: widgets/so-image-widget/inc/widget.php:39
+msgid "Alt Text"
+msgstr ""
+
+#: widgets/so-image-widget/inc/widget.php:55
+msgid "Bound"
+msgstr ""
+
+#: widgets/so-image-widget/inc/widget.php:56
+msgid "Make sure the image doesn't extend beyond its container."
+msgstr ""
+
+#: widgets/so-post-carousel-widget/inc/carousel-widget.php:7
+msgid "SiteOrigin Post Carousel"
+msgstr ""
+
+#: widgets/so-post-carousel-widget/inc/carousel-widget.php:9
+msgid "Display your posts as a carousel."
+msgstr ""
+
+#: widgets/so-post-carousel-widget/inc/carousel-widget.php:23
+msgid "Posts Query"
+msgstr ""
+
+#: widgets/so-post-carousel-widget/tpl/base.php:10
+msgid "Next"
+msgstr ""
+
+#: widgets/so-post-carousel-widget/tpl/base.php:11
+msgid "Previous"
+msgstr ""
+
+#: widgets/so-price-table-widget/inc/widget.php:7
+msgid "SiteOrigin Price Table"
+msgstr ""
+
+#: widgets/so-price-table-widget/inc/widget.php:9
+msgid "A simple Price Table."
+msgstr ""
+
+#: widgets/so-price-table-widget/inc/widget.php:23
+msgid "Columns"
+msgstr ""
+
+#: widgets/so-price-table-widget/inc/widget.php:24
+msgid "Column"
+msgstr ""
+
+#: widgets/so-price-table-widget/inc/widget.php:28
+msgid "Featured"
+msgstr ""
+
+#: widgets/so-price-table-widget/inc/widget.php:36
+msgid "Sub Title"
+msgstr ""
+
+#: widgets/so-price-table-widget/inc/widget.php:41
+msgid "Image"
+msgstr ""
+
+#: widgets/so-price-table-widget/inc/widget.php:46
+msgid "Price"
+msgstr ""
+
+#: widgets/so-price-table-widget/inc/widget.php:50
+msgid "Per"
+msgstr ""
+
+#: widgets/so-price-table-widget/inc/widget.php:59
+msgid "Button URL"
+msgstr ""
+
+#: widgets/so-price-table-widget/inc/widget.php:72
+msgid "Hover Text"
+msgstr ""
+
+#: widgets/so-price-table-widget/inc/widget.php:89
+msgid "Price Table Theme"
+msgstr ""
+
+#: widgets/so-price-table-widget/inc/widget.php:97
+msgid "Header Color"
+msgstr ""
+
+#: widgets/so-price-table-widget/inc/widget.php:102
+msgid "Featured Header Color"
+msgstr ""
+
+#: widgets/so-price-table-widget/inc/widget.php:112
+msgid "Featured Button Color"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:7
+msgid "SiteOrigin Slider"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:9
+msgid "A simple slider widget."
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:19
+msgid "Slider Frames"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:20
+msgid "Frame"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:24
+msgid "Video"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:25
+msgid "Background Videos"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:30
+msgid "Video File"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:36
+msgid "Video URL"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:38
+msgid "An external URL of the video. Overrides Video File."
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:43
+msgid "Video Format"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:56
+msgid "Background Image"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:61
+msgid "Background Image Type"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:63
+msgid "Cover"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:64
+msgid "Tile"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:72
+msgid "Foreground Image"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:85
+msgid "Animation Speed"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:86
+msgid "Animation speed in milliseconds."
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:92
+msgid "Timeout"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:93
+msgid "How long each slide is displayed for in milliseconds."
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:99
+msgid "Navigation Color"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:105
+msgid "Navigation Style"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:108
+msgid "Ultra Thin"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:109
+msgid "Thin"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:111
+msgid "Thick"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:112
+msgid "Rounded Ultra Thin"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:113
+msgid "Rounded Thin"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:114
+msgid "Rounded Medium"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:115
+msgid "Rounded Thick"
+msgstr ""
+
+#: widgets/so-slider-widget/inc/widget.php:121
+msgid "Navigation Size"
+msgstr ""
