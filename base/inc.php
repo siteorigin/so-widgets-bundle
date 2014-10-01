@@ -1,6 +1,5 @@
 <?php
 
-include plugin_dir_path(__FILE__).'loader.php';
 include plugin_dir_path(__FILE__).'siteorigin-widget.class.php';
 include plugin_dir_path(__FILE__).'inc/post-selector.php';
 
