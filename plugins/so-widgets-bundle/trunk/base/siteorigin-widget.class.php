@@ -112,14 +112,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param $form
 	 * @param $instance
 	 */
-	function add_defaults($form, $instance){
+	function add_defaults($form, $instance, $level = 0){
+		if( $level > 10 ) return $instance;
 
 		foreach($form as $id => $field) {
 
 			if($field['type'] == 'repeater' && !empty($instance[$id]) ) {
 
-				for($i = 0; $i < count($instance[$id]); $i++) {
-					$instance[$id][$i] = $this->add_defaults( $field['fields'], $instance[$id][$i] );
+				foreach( array_keys($instance[$id]) as $i ){
+					$instance[$id][$i] = $this->add_defaults( $field['fields'], $instance[$id][$i], $level + 1 );
 				}
 
 			}
