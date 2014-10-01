@@ -1,0 +1,245 @@
+@import "../../../base/less/mixins";
+
+@font-face {
+	font-family: 'so-slider-pointers';
+	src:url('fonts/slider.eot?8p86w5');
+	src:url('fonts/slider.eot?#iefix8p86w5') format('embedded-opentype'),
+	url('fonts/slider.woff?8p86w5') format('woff'),
+	url('fonts/slider.ttf?8p86w5') format('truetype'),
+	url('fonts/slider.svg?8p86w5#slider') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.sow-slider-base {
+
+	position: relative;
+	overflow: hidden;
+
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+
+	ul.sow-slider-images {
+		list-style: none;
+		margin: 0;
+		overflow: hidden;
+
+		li.sow-slider-image {
+			width: 100%;
+			margin: 0;
+			list-style: none;
+			position: relative;
+			overflow: hidden;
+
+
+			&.sow-slider-image-cover {
+				background-position: center center;
+				background-size: cover;
+			}
+
+			&.sow-slider-image-cover {
+				background-repeat: repeat;
+			}
+
+			.sow-slider-image-container {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				z-index: 2;
+
+				.sow-slider-image-wrapper {
+
+					margin: 0 auto;
+					z-index: 2;
+
+					.box-sizing(border-box);
+				}
+			}
+
+			img {
+				display: block;
+				width: 100%;
+				height: auto;
+				border: none;
+			}
+
+			video.sow-background-element {
+				position:absolute;
+				top: 50%;
+				left: 50%;
+
+				width: auto;
+				height: auto;
+
+				z-index: 1;
+				overflow: hidden;
+			}
+
+			video.sow-full-element {
+				display: block;
+				width: 100%;
+				height: auto;
+			}
+		}
+	}
+
+	.sow-slider-pagination {
+		list-style: none;
+		margin: 0;
+		text-align: right;
+
+		position: absolute;
+		bottom: 20px;
+		left: 0;
+		width: 100%;
+		z-index: 1001;
+		.box-sizing(border-box);
+		padding-right: 30px;
+		line-height: 11px;
+
+		li {
+			text-align: left;
+			margin: 0;
+			display: inline-block;
+
+			a {
+				display: block;
+				text-indent: -9999px;
+				width: 11px;
+				height: 11px;
+				background: #FFFFFF;
+				.rounded(6px);
+				opacity: 0.45;
+			}
+
+			&.sow-active a {
+				opacity: 0.85;
+			}
+		}
+	}
+
+	.sow-slide-nav {
+		list-style: none;
+		z-index: 1001;
+		position: absolute;
+		top: 50%;
+		opacity: 0.75;
+
+		font-size: 25px;
+		margin-top: -0.5em;
+
+		a{
+			display: block;
+
+			height: 1em;
+
+			text-align: center;
+			text-decoration: none;
+			color: #FFFFFF;
+		}
+
+		&.sow-slide-nav-next {
+			right: 20px;
+
+			a {
+				background-position: top right;
+			}
+		}
+
+		&.sow-slide-nav-prev {
+			left: 20px;
+
+			a {
+				background-position: top left;
+			}
+		}
+	}
+
+	/* Some jQuery Cycle Specific CSS */
+
+	.cycle-sentinal {
+		overflow: hidden;
+	}
+
+	&.sow-slider-is-mobile {
+
+		.sow-slide-nav, .sow-slider-pagination{
+			/* display: none; */
+		}
+
+		video.sow-background-element {
+			visibility: hidden;
+		}
+	}
+
+	/* Icon fonts for the left and right slider images */
+
+	[class^="icon-"],
+	[class*=" icon-"] {
+		font-family: 'so-slider-pointers';
+		speak: none;
+		font-style: normal;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+
+		/* Better Font Rendering =========== */
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+
+	.icon-ultra-thin-rounded-left:before {
+		content: "\e600";
+	}
+	.icon-ultra-thin-rounded-right:before {
+		content: "\e601";
+	}
+	.icon-thin-rounded-left:before {
+		content: "\e602";
+	}
+	.icon-thin-rounded-right:before {
+		content: "\e603";
+	}
+	.icon-medium-rounded-left:before {
+		content: "\e604";
+	}
+	.icon-medium-rounded-right:before {
+		content: "\e605";
+	}
+	.icon-thick-rounded-left:before {
+		content: "\e606";
+	}
+	.icon-thick-rounded-right:before {
+		content: "\e607";
+	}
+	.icon-ultra-thin-left:before {
+		content: "\e608";
+	}
+	.icon-ultra-thin-right:before {
+		content: "\e609";
+	}
+	.icon-thin-left:before {
+		content: "\e60a";
+	}
+	.icon-thin-right:before {
+		content: "\e60b";
+	}
+	.icon-medium-left:before {
+		content: "\e60c";
+	}
+	.icon-medium-right:before {
+		content: "\e60d";
+	}
+	.icon-thick-left:before {
+		content: "\e60e";
+	}
+	.icon-thick-right:before {
+		content: "\e60f";
+	}
+
+}
