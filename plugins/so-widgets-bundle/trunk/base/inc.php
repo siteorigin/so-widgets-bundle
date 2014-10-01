@@ -27,6 +27,7 @@ function siteorigin_widgets_widgets_init(){
 	foreach( $siteorigin_widgets_classes as $class ){
 		register_widget($class);
 	}
+	$siteorigin_widgets_classes = array();
 }
 add_action('widgets_init', 'siteorigin_widgets_widgets_init');
 
