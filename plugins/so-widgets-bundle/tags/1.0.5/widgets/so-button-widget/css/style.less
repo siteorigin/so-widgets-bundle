@@ -1,0 +1,49 @@
+@import "../../../base/less/mixins";
+
+.ow-button-base {
+	.clearfix();
+
+	a {
+		text-align: center;
+		display: inline-block;
+
+		text-decoration: none;
+		line-height: 1em;
+
+
+		.sow-icon-image,
+		[class^="sow-icon-"] {
+			font-size: 1.3em;
+			height: 1em;
+			width: auto;
+			margin: -0.1em 0.75em -0.2em -0.75em;
+			display: block;
+			float: left;
+		}
+
+		.sow-icon-image, {
+			width: 1em;
+			background-size: cover;
+		}
+	}
+
+	/* All the special styles */
+
+	&.ow-button-align-left {
+		text-align: left;
+	}
+
+	&.ow-button-align-right {
+		text-align: right;
+	}
+
+	&.ow-button-align-center {
+		text-align: center;
+	}
+
+	&.ow-button-align-justify {
+		a {
+			display: block;
+		}
+	}
+}
