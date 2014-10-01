@@ -1,4 +1,8 @@
+.siteorigin-widget-form-no-styles {
+  display: none !important;
+}
 .siteorigin-widget-form {
+  display: block !important;
   margin: 15px 0;
 }
 .siteorigin-widget-form .siteorigin-widget-field {
@@ -482,6 +486,9 @@
   content: "";
   display: table;
   clear: both;
+}
+.siteorigin-widget-preview {
+  display: block !important;
 }
 .siteorigin-widget-help-link {
   display: block;
