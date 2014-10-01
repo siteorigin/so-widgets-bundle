@@ -1,7 +1,12 @@
 <?php
 
+include plugin_dir_path(__FILE__).'loader.php';
 include plugin_dir_path(__FILE__).'siteorigin-widget.class.php';
 include plugin_dir_path(__FILE__).'inc/post-selector.php';
+
+global $siteorigin_widgets_registered, $siteorigin_widgets_classes;
+$siteorigin_widgets_registered = array();
+$siteorigin_widgets_classes = array();
 
 /**
  * Register a plugin
@@ -9,10 +14,22 @@ include plugin_dir_path(__FILE__).'inc/post-selector.php';
  * @param $name
  * @param $path
  */
-function siteorigin_widget_register_self($name, $path){
-	global $siteorigin_widgets_registered;
+function siteorigin_widget_register($name, $path){
+	global $siteorigin_widgets_registered, $siteorigin_widgets_classes;
 	$siteorigin_widgets_registered[$name] = realpath( $path );
+	$siteorigin_widgets_classes[] = 'SiteOrigin_Widget_' . str_replace( ' ', '', ucwords( str_replace('-', ' ', $name) ) ) . '_Widget';
 }
+
+/**
+ * Initialize all widgets
+ */
+function siteorigin_widgets_widgets_init(){
+	global $siteorigin_widgets_classes;
+	foreach( $siteorigin_widgets_classes as $class ){
+		register_widget($class);
+	}
+}
+add_action('widgets_init', 'siteorigin_widgets_widgets_init');
 
 /**
  * Get the base file of a widget plugin

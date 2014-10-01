@@ -61,7 +61,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$hash = $this->get_style_hash($instance);
 			$css_name = $this->id_base.'-'.$style.'-'.$hash;
 
-			if( isset( $instance['is_preview'] ) && $instance['is_preview'] ) {
+			if( ( isset( $instance['is_preview'] ) && $instance['is_preview'] ) || is_preview() ) {
 				siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
 			}
 			else {
@@ -197,12 +197,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		if( !wp_script_is('siteorigin-widget-admin') ) {
 			wp_enqueue_style( 'wp-color-picker' );
-			wp_enqueue_style( 'siteorigin-widget-admin', plugin_dir_url(SITEORIGIN_WIDGETS_BASE_PARENT_FILE).'base/css/admin.css', array( 'media-views' ), SITEORIGIN_WIDGETS_BASE_VERSION );
+			wp_enqueue_style( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/css/admin.css', array( 'media-views' ), SOW_BUNDLE_VERSION );
 
 
 			wp_enqueue_script( 'wp-color-picker' );
 			wp_enqueue_media();
-			wp_enqueue_script( 'siteorigin-widget-admin', plugin_dir_url(SITEORIGIN_WIDGETS_BASE_PARENT_FILE).'base/js/admin.js', array( 'jquery', 'jquery-ui-sortable', 'editor' ), SITEORIGIN_WIDGETS_BASE_VERSION, true );
+			wp_enqueue_script( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/admin.js', array( 'jquery', 'jquery-ui-sortable', 'editor' ), SOW_BUNDLE_VERSION, true );
 
 			wp_localize_script( 'siteorigin-widget-admin', 'soWidgets', array(
 				'sure' => __('Are you sure?', 'siteorigin-widgets')
@@ -211,7 +211,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		if( !wp_script_is('siteorigin-widget-admin-posts-selector') && $this->using_posts_selector() ) {
 
-			wp_enqueue_script( 'siteorigin-widget-admin-posts-selector', plugin_dir_url(SITEORIGIN_WIDGETS_BASE_PARENT_FILE).'base/js/posts-selector.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'underscore', 'backbone' ), SITEORIGIN_WIDGETS_BASE_VERSION, true );
+			wp_enqueue_script( 'siteorigin-widget-admin-posts-selector', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/posts-selector.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'underscore', 'backbone' ), SOW_BUNDLE_VERSION, true );
 
 			wp_localize_script( 'siteorigin-widget-admin-posts-selector', 'sowPostsSelectorTpl', array(
 				'modal' => file_get_contents( plugin_dir_path(__FILE__).'tpl/posts-selector/modal.html' ),
@@ -746,7 +746,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
-	 * This function should be overwritten by child widgets to filter an instance. Run before rendering form and widget.
+	 * This function should be overwritten by child widgets to filter an instance. Run before rendering the form and widget.
 	 *
 	 * @param $instance
 	 *

@@ -1,1 +1,0 @@
-<?php return SOW_BUNDLE_VERSION; // The version of the base folder, common amongst SiteOrigin widget plugins.
