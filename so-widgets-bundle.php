@@ -267,16 +267,9 @@ class SiteOrigin_Widgets_Bundle {
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		if( !is_plugin_active( $widget_id.'/'.$widget_id.'.php' ) ) {
 
-			$loader = false;
 			foreach( $this->widget_folders as $folder ) {
 				if( !file_exists($folder . $widget_id . '/' . $widget_id . '.php') ) continue;
-				$loader = include_once $folder . $widget_id . '/' . $widget_id . '.php';
-			}
-
-			// Call any loader functions that missed their actions.
-			if( !empty($loader) && is_a($loader, 'SiteOrigin_Widgets_Loader') ) {
-				if ( has_action( 'siteorigin_widgets_base_loaded' ) ) $loader->load_register();
-				if ( has_action( 'widgets_init' ) ) $loader->widgets_init();
+				include_once $folder . $widget_id . '/' . $widget_id . '.php';
 			}
 
 		}
