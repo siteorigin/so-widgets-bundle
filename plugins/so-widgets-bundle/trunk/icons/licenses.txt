@@ -1,0 +1,41 @@
+The following icons are included in this bundle.
+
+== Font Awesome ==
+
+Author: Dave Gandy
+Font URI: http://fortawesome.github.io/Font-Awesome/
+License: SIL OFL 1.1
+License Info: http://fortawesome.github.io/Font-Awesome/license/
+License URI: http://scripts.sil.org/OFL
+
+== Icomoon ==
+
+Author: Icomoon
+Font URI: http://icomoon.io/#icons
+License: GPL
+License Info: http://icomoon.io/#icons
+License URI: http://www.gnu.org/licenses/gpl.html
+
+== Genericons ==
+
+Author: Automattic
+Font URI: http://genericons.com/#unzoom
+License: GPL
+License Info: http://genericons.com/#unzoom
+License URI: http://www.gnu.org/licenses/gpl.html
+
+== Elegant Themes Line Icons ==
+
+Author: Elegant Themes
+Font URI: http://www.elegantthemes.com/blog/freebie-of-the-week/free-line-style-icons
+License: GPL
+License Info: http://www.elegantthemes.com/blog/freebie-of-the-week/free-line-style-icons
+License URI: http://www.gnu.org/licenses/gpl.html
+
+== Typicons ==
+
+Author: Stephen Hutchings
+Font URI: http://typicons.com/
+License: SIL Open Font Licence
+License Info: https://github.com/stephenhutchings/typicons.font
+License URI: http://scripts.sil.org/cms/scripts/page.php?item_id=OFL_web

@@ -14,8 +14,8 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 define('SOW_BUNDLE_VERSION', 'trunk');
 define('SOW_BUNDLE_BASE_FILE', __FILE__);
 
-include plugin_dir_path(__FILE__).'/base/inc.php';
-include plugin_dir_path(__FILE__).'/icons/icons.php';
+include plugin_dir_path(__FILE__).'base/inc.php';
+include plugin_dir_path(__FILE__).'icons/icons.php';
 
 
 class SiteOrigin_Widgets_Bundle {

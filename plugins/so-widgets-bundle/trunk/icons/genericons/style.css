@@ -1,0 +1,29 @@
+@font-face {
+	font-family: 'sow-genericons';
+	src:url('font/genericons.eot?map0iz');
+	src:url('font/genericons.eot?#iefixmap0iz') format('embedded-opentype'),
+	url('font/genericons.woff?map0iz') format('woff'),
+	url('font/genericons.ttf?map0iz') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.sow-icon-genericons {
+	font-family: 'sow-genericons';
+	display: inline-block;
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1em;
+
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-align: center;
+}
+
+.sow-icon-genericons[data-sow-icon]:before {
+	display: inline-block;
+	content: attr(data-sow-icon);
+}
