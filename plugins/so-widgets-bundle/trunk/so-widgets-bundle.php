@@ -139,7 +139,7 @@ class SiteOrigin_Widgets_Bundle {
 	}
 
 	/**
-	 * The fallback URL handler for activating or deactivating a widget
+	 * The fallback (from ajax) URL handler for activating or deactivating a widget
 	 */
 	function admin_activate_widget() {
 		if(
