@@ -89,11 +89,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		$this->enqueue_frontend_scripts();
 
+		// A lot of themes, including Underscores, default themes and SiteOrigin themes wrap their content in entry-content
+		// echo '<div class="entry-content">';
 		echo $args['before_widget'];
 		echo '<div class="so-widget-'.$this->id_base.' so-widget-'.$css_name.'">';
 		@ include siteorigin_widget_get_plugin_dir_path( $this->id_base ) . '/tpl/' . $this->get_template_name($instance) . '.php';
 		echo '</div>';
 		echo $args['after_widget'];
+		// echo '</div>';
 	}
 
 	public function sub_widget($class, $args, $instance){

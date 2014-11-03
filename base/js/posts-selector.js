@@ -9,12 +9,14 @@ var soWidgetPostSelector = ( function ($, _) {
         QueryForm,
         QueryBuilder;
 
+    // Model for a single post
     Post = self.Post = Backbone.Model.extend( {
         title : null,
         thumbnail : null,
         id : null
     } );
 
+    // A collection of posts
     PostCollection = self.PostCollection = Backbone.Collection.extend( {
         model: Post,
         foundPosts: null,
@@ -27,7 +29,7 @@ var soWidgetPostSelector = ( function ($, _) {
             var c = this;
             $.post(
                 ajaxurl,
-                {action: 'sow_get_posts', query: query, 'ignore_pagination' : true},
+                { action: 'sow_get_posts', query: query, 'ignore_pagination' : true },
                 function(data){
                     c.foundPosts = data.found_posts;
                     c.reset(data.posts);
@@ -36,7 +38,7 @@ var soWidgetPostSelector = ( function ($, _) {
         }
     } );
 
-    // This represents a query that will be passed to
+    // This represents a query that will be passed to the widget
     Query = self.Query = Backbone.Model.extend( {
 
         // The original query
@@ -49,11 +51,10 @@ var soWidgetPostSelector = ( function ($, _) {
         post_type: null,
         terms: null,
         post_status: null,
-
         post__in: null,
-
         tax_query: null,
 
+        // The order fields for get_posts.
         orderby: null,
         order: null,
 
@@ -106,7 +107,9 @@ var soWidgetPostSelector = ( function ($, _) {
                 else params[k] = v;
             }
 
+            // This is a simple array that we use to store parts of the query.
             var theQuery = {};
+
             if( params.hasOwnProperty('post_type') ) theQuery.post_type = params.post_type;
             if( params.hasOwnProperty('post__in') ) theQuery.post__in = params.post__in.split(',');
             if( params.hasOwnProperty('tax_query') ) theQuery.tax_query = params.tax_query.split(',');
@@ -153,6 +156,7 @@ var soWidgetPostSelector = ( function ($, _) {
 
         // Initialize the builder
         initialize: function() {
+            // Listen for changes to the model
             this.listenTo(this.model, "change", this.queryModelChange);
 
             // Create the current posts summary view
@@ -422,6 +426,7 @@ var soWidgetPostSelector = ( function ($, _) {
             return this;
         },
 
+        // The button handler is triggerd by QueryBuilder
         buttonHandler: function(){
             this.updateModel();
             return this;
@@ -475,6 +480,7 @@ var soWidgetPostSelector = ( function ($, _) {
             return this;
         },
 
+        // The button handler is triggered by QueryBuilder
         buttonHandler: function(){
             this.builder.setActiveView('form');
             return this;
@@ -611,6 +617,7 @@ var soWidgetPostSelector = ( function ($, _) {
             });
         },
 
+        // The button handler is triggered by QueryBuilder
         buttonHandler: function(){
             // Update the post__in value
             var ids = [];
@@ -629,6 +636,7 @@ var soWidgetPostSelector = ( function ($, _) {
         }
     } );
 
+    // The main QueryBuilder instance.
     var builder = new QueryBuilder( { model: new Query( { query: '' } ) } );
 
     jQuery( function($){
