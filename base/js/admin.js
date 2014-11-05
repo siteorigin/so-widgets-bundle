@@ -252,7 +252,7 @@
 
             $el.find( '*[name]' ).each( function () {
                 var $$ = $(this);
-                var name = /[a-zA-Z\-]+\[[0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
+                var name = /[a-zA-Z\-]+\[[a-z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
 
                 name = name[1];
                 parts = name.split('][');
