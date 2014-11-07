@@ -86,8 +86,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$css_name = $this->id_base.'-base';
 		}
 
-
 		$this->enqueue_frontend_scripts();
+		extract( $this->get_template_variables($instance, $args) );
 
 		// A lot of themes, including Underscores, default themes and SiteOrigin themes wrap their content in entry-content
 		// echo '<div class="entry-content">';
@@ -97,6 +97,18 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		echo '</div>';
 		echo $args['after_widget'];
 		// echo '</div>';
+	}
+
+	/**
+	 * By default, just return an array. Should be overwritten by child widgets.
+	 *
+	 * @param $instance
+	 * @param $args
+	 *
+	 * @return array
+	 */
+	public function get_template_variables( $instance, $args ){
+		return array();
 	}
 
 	public function sub_widget($class, $args, $instance){
