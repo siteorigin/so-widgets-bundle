@@ -42,11 +42,6 @@ class SiteOrigin_Widgets_Bundle {
 		add_filter( 'siteorigin_panels_data', array($this, 'load_missing_widgets') );
 		add_filter( 'siteorigin_panels_prebuilt_layout', array($this, 'load_missing_widgets') );
 		add_filter( 'siteorigin_panels_widget_object', array($this, 'load_missing_widget'), 10, 2 );
-
-		// We can use this filter to add more folders to search for widgets
-		$this->widget_folders = apply_filters('siteorigin_widgets_widget_folders', array(
-			plugin_dir_path(__FILE__).'widgets/'
-		) );
 	}
 
 	/**
@@ -113,6 +108,13 @@ class SiteOrigin_Widgets_Bundle {
 	 * @action plugins_loaded
 	 */
 	function load_widget_plugins(){
+
+		if( empty($this->widget_folders) ) {
+			// We can use this filter to add more folders to search for widgets
+			$this->widget_folders = apply_filters('siteorigin_widgets_widget_folders', array(
+				plugin_dir_path(__FILE__).'widgets/'
+			) );
+		}
 
 		// Load all the widget we currently have active and filter them
 		$active_widgets = apply_filters( 'siteorigin_widgets_active_widgets', get_option( 'siteorigin_widgets_active', array() ) );
