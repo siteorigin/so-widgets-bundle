@@ -220,6 +220,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			wp_localize_script( 'siteorigin-widget-admin', 'soWidgets', array(
 				'sure' => __('Are you sure?', 'siteorigin-widgets')
 			) );
+
+			add_action( 'admin_footer', array( $this, 'footer_admin_templates' ) );
 		}
 
 		if( !wp_script_is('siteorigin-widget-admin-posts-selector') && $this->using_posts_selector() ) {
@@ -241,6 +243,34 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		// This lets the widget enqueue any specific admin scripts
 		$this->enqueue_admin_scripts();
+	}
+
+	/**
+	 * Display all the admin stuff for the footer
+	 */
+	function footer_admin_templates(){
+		?>
+		<script type="text/template" id="so-widgets-bundle-tpl-preview-dialog">
+			<div class="siteorigin-widget-preview-dialog">
+				<div class="siteorigin-widgets-preview-modal-overlay"></div>
+
+				<div class="so-widget-toolbar">
+					<a href="#" class="close"><span class="dashicons dashicons-no"></span></a>
+				</div>
+
+				<div class="so-widget-iframe">
+					<iframe name="siteorigin-widget-preview-iframe" id="siteorigin-widget-preview-iframe"></iframe>
+				</div>
+
+				<form target="siteorigin-widget-preview-iframe" action="<?php echo admin_url('admin-ajax.php') ?>" method="post">
+					<input type="hidden" name="action" value="so_widgets_preview">
+					<input type="hidden" name="data" value="">
+					<input type="hidden" name="class" value="">
+				</form>
+
+			</div>
+		</script>
+		<?php
 	}
 
 	/**

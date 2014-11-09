@@ -134,6 +134,12 @@ function siteorigin_widget_get_icon_list(){
 }
 add_action('wp_ajax_siteorigin_widgets_get_icons', 'siteorigin_widget_get_icon_list');
 
+/**
+ * @param $icon_value
+ * @param bool $icon_styles
+ *
+ * @return bool|string
+ */
 function siteorigin_widget_get_icon($icon_value, $icon_styles = false) {
 	if( empty( $icon_value ) ) return false;
 	list( $family, $icon ) = explode('-', $icon_value, 2);
@@ -155,8 +161,11 @@ function siteorigin_widget_get_icon($icon_value, $icon_styles = false) {
 
 }
 
+/**
+ * Action for displaying the widget preview.
+ */
 function siteorigin_widget_preview_widget_action(){
-	if(!class_exists($_POST['class'])) exit();
+	if( !class_exists($_POST['class']) ) exit();
 	$widget = new $_POST['class'];
 	if(!is_a($widget, 'SiteOrigin_Widget')) exit();
 
@@ -167,28 +176,34 @@ function siteorigin_widget_preview_widget_action(){
 	wp_enqueue_style( 'theme-css', get_stylesheet_uri(), array(), rand(0,65536) );
 	wp_enqueue_style( 'so-widget-preview', plugin_dir_url(__FILE__).'/css/preview.css', array(), rand(0,65536) );
 
+	ob_start();
 	$widget->widget(array(
 		'before_widget' => '',
 		'after_widget' => '',
 		'before_title' => '',
 		'after_title' => '',
 	), $instance);
+	$widget_html = ob_get_clean();
 
 	// Print all the scripts and styles
-	wp_print_scripts();
-	wp_print_styles();
-	siteorigin_widget_print_styles();
-
 	?>
-	<script type="text/javascript">
-		if( typeof jQuery != 'undefined' ) {
-			// So that the widget still has access to the document ready event.
-			jQuery(document).ready();
-		}
-	</script>
+	<html>
+		<head>
+			<title><?php _e('Widget Preview', 'siteorigin-widgets') ?></title>
+			<?php
+			wp_print_scripts();
+			wp_print_styles();
+			siteorigin_widget_print_styles();
+			?>
+		</head>
+		<body>
+			<div class="entry-content">
+				<?php echo $widget_html ?>
+			</div>
+		</body>
+	</html>
+
 	<?php
-
-
 	exit();
 }
 add_action('wp_ajax_so_widgets_preview', 'siteorigin_widget_preview_widget_action');

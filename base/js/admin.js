@@ -248,8 +248,9 @@
 
         previewButton.find('> a').click(function(e){
             e.preventDefault();
-            var data = {};
 
+            // Lets build the data from the widget
+            var data = {};
             $el.find( '*[name]' ).each( function () {
                 var $$ = $(this);
                 var name = /[a-zA-Z\-]+\[[a-z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
@@ -282,26 +283,13 @@
                 }
             } );
 
-            // Create the modal
-            var overlay = $('<div class="siteorigin-widgets-preview-modal-overlay"></div>').appendTo('body');
-            var modal = $('<div class="siteorigin-widgets-preview-modal"></div>').appendTo('body');
-            var close = $('<div class="siteorigin-widgets-preview-close dashicons dashicons-no"></div>').appendTo(modal);
-            var iframe = $('<iframe class="siteorigin-widgets-preview-iframe" scrolling="no"></iframe>').appendTo(modal);
+            // Create a new modal window
+            var modal = $( $('#so-widgets-bundle-tpl-preview-dialog').html()).appendTo('body');
+            modal.find('input[name="data"]').val( JSON.stringify(data) );
+            modal.find('input[name="class"]').val( $el.data('class') );
+            modal.find('form').submit();
 
-            $.post(
-                ajaxurl,
-                {
-                    'action' : 'so_widgets_preview',
-                    'data' : JSON.stringify(data),
-                    'class' : $el.data('class')
-                },
-                function(html) {
-                    iframe.contents().find('body').html( html );
-                }
-            );
-
-            close.add(overlay).click(function(){
-                overlay.remove();
+            modal.find('.close').click(function(){
                 modal.remove();
             });
         });

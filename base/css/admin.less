@@ -621,57 +621,84 @@
 	margin: 1em 0;
 }
 
-.siteorigin-widgets-preview-modal-overlay {
-	position: fixed;
-	z-index: 99999;
-	top: 32px;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: rgba(0,0,0,0.7);
-}
 
-.siteorigin-widgets-preview-modal {
-	position: fixed;
-	z-index: 100003; /* z-index higher than the page builder modal */
-	top: 64px;
-	left: 32px;
-	right: 32px;
-	bottom: 32px;
-	background-color: #ffffff;
+.siteorigin-widget-preview-dialog {
 
-	.siteorigin-widgets-preview-close {
-		position: absolute;
-		z-index: 10;
-		top: 0px;
-		right: 0px;
-		text-align: center;
-		font-size: 32px;
-		line-height: 1em;
-		text-align: center;
-		cursor: pointer;
-		padding: 4px;
-		background: #666666;
-		color: #ffffff;
+	@edge_spacing: 30px;
+	@border_color: #D8D8D8;
 
-		width: 40px;
-		height: 40px;
-
-		.box-sizing(border-box);
-
-		&:hover {
-			background: #FF404B;
-			color: #ffffff;
-		}
-	}
-
-	.siteorigin-widgets-preview-iframe {
-		position: absolute;
+	.siteorigin-widgets-preview-modal-overlay {
+		position: fixed;
+		z-index: 100000;
 		top: 0;
 		left: 0;
 		right: 0;
 		bottom: 0;
-		width: 100%;
-		height: 100%;
+		background: rgba(0,0,0,0.7);
 	}
+
+	.so-widget-toolbar, .so-widget-iframe {
+		position: fixed;
+		z-index: 100000;
+		.box-sizing(border-box);
+	}
+
+	.so-widget-toolbar {
+		left: @edge_spacing;
+		right: @edge_spacing;
+		top: @edge_spacing;
+		height: 50px;
+		background: #fafafa;
+		border-bottom: 1px solid @border_color;
+
+		a {
+			position: absolute;
+			box-sizing: border-box;
+			width: 50px;
+			height: 50px;
+			display: block;
+
+			top: 0;
+			right: 0;
+
+			.transition(0.2s);
+			background: #fafafa;
+			border-left: 1px solid #d8d8d8;
+			border-bottom: 1px solid #d8d8d8;
+
+			&:hover {
+				background: #e9e9e9;
+				.so-dialog-icon {
+					color: #333333;
+				}
+			}
+
+			.dashicons {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				text-decoration: none;
+				width: 20px;
+				height: 20px;
+				margin-left: -10px;
+				margin-top: -10px;
+				color: #666666;
+				text-align: center;
+			}
+		}
+	}
+
+	.so-widget-iframe {
+		top: @edge_spacing + 50px;
+		left: @edge_spacing;
+		right: @edge_spacing;
+		bottom: @edge_spacing;
+		background: #FFFFFF;
+
+		iframe {
+			width: 100%;
+			height: 100%;
+		}
+	}
+
 }

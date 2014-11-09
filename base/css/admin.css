@@ -494,54 +494,74 @@
   display: block;
   margin: 1em 0;
 }
-.siteorigin-widgets-preview-modal-overlay {
+.siteorigin-widget-preview-dialog .siteorigin-widgets-preview-modal-overlay {
   position: fixed;
-  z-index: 99999;
-  top: 32px;
+  z-index: 100000;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.7);
 }
-.siteorigin-widgets-preview-modal {
+.siteorigin-widget-preview-dialog .so-widget-toolbar,
+.siteorigin-widget-preview-dialog .so-widget-iframe {
   position: fixed;
-  z-index: 100003;
-  /* z-index higher than the page builder modal */
-  top: 64px;
-  left: 32px;
-  right: 32px;
-  bottom: 32px;
-  background-color: #ffffff;
-}
-.siteorigin-widgets-preview-modal .siteorigin-widgets-preview-close {
-  position: absolute;
-  z-index: 10;
-  top: 0px;
-  right: 0px;
-  font-size: 32px;
-  line-height: 1em;
-  text-align: center;
-  cursor: pointer;
-  padding: 4px;
-  background: #666666;
-  color: #ffffff;
-  width: 40px;
-  height: 40px;
+  z-index: 100000;
   -ms-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
-.siteorigin-widgets-preview-modal .siteorigin-widgets-preview-close:hover {
-  background: #FF404B;
-  color: #ffffff;
+.siteorigin-widget-preview-dialog .so-widget-toolbar {
+  left: 30px;
+  right: 30px;
+  top: 30px;
+  height: 50px;
+  background: #fafafa;
+  border-bottom: 1px solid #d8d8d8;
 }
-.siteorigin-widgets-preview-modal .siteorigin-widgets-preview-iframe {
+.siteorigin-widget-preview-dialog .so-widget-toolbar a {
   position: absolute;
+  box-sizing: border-box;
+  width: 50px;
+  height: 50px;
+  display: block;
   top: 0;
-  left: 0;
   right: 0;
-  bottom: 0;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  background: #fafafa;
+  border-left: 1px solid #d8d8d8;
+  border-bottom: 1px solid #d8d8d8;
+}
+.siteorigin-widget-preview-dialog .so-widget-toolbar a:hover {
+  background: #e9e9e9;
+}
+.siteorigin-widget-preview-dialog .so-widget-toolbar a:hover .so-dialog-icon {
+  color: #333333;
+}
+.siteorigin-widget-preview-dialog .so-widget-toolbar a .dashicons {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  text-decoration: none;
+  width: 20px;
+  height: 20px;
+  margin-left: -10px;
+  margin-top: -10px;
+  color: #666666;
+  text-align: center;
+}
+.siteorigin-widget-preview-dialog .so-widget-iframe {
+  top: 80px;
+  left: 30px;
+  right: 30px;
+  bottom: 30px;
+  background: #FFFFFF;
+}
+.siteorigin-widget-preview-dialog .so-widget-iframe iframe {
   width: 100%;
   height: 100%;
 }
