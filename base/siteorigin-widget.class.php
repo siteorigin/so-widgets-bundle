@@ -640,8 +640,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						<?php
 						if( !empty( $value ) ) {
 							foreach( $value as $v ) {
+								$item_label_selector = isset( $field['item_label_selector'] ) ? $field['item_label_selector'] : null;
+								$item_label_update_event = isset( $field['item_label_update_event'] ) ? $field['item_label_update_event'] : null;
 								?>
-								<div class="siteorigin-widget-field-repeater-item">
+								<div class="siteorigin-widget-field-repeater-item" <?php echo !empty($item_label_selector) ?'data-item-label-selector="' . esc_attr( $item_label_selector ) . '"' : '' ?> <?php echo !empty( $item_label_update_event ) ? 'data-item-label-update-event="' . esc_attr( $item_label_update_event ) . '"' : '' ?>>
 									<div class="siteorigin-widget-field-repeater-item-top">
 										<div class="siteorigin-widget-field-expand"></div>
 										<div class="siteorigin-widget-field-remove"></div>

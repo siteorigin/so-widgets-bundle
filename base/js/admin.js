@@ -30,7 +30,7 @@
             $fields.find('> .siteorigin-widget-field-repeater').sowSetupRepeater();
 
             // For any repeater items currently in existence
-            $el.find('.siteorigin-widget-field-repeater-item').sowSetupRepeaterActions();
+            $el.find('.siteorigin-widget-field-repeater-item').sowSetupRepeaterItems();
 
             // Set up any color fields
             $fields.find('> .siteorigin-widget-input-color').wpColorPicker()
@@ -397,7 +397,7 @@
                     $('<div class="siteorigin-widget-field-repeater-item-form" />')
                         .html( window.sow_repeater_html[formClass][$el.data('repeater-name')] )
                 )
-                .sowSetupRepeaterActions();
+                .sowSetupRepeaterItems();
 
             // Add the item and refresh
             $el.find('> .siteorigin-widget-field-repeater-items').append(item).sortable( "refresh").trigger('updateFieldPositions');
@@ -406,22 +406,35 @@
         } );
     };
 
-    $.fn.sowSetupRepeaterActions = function(){
+    $.fn.sowSetupRepeaterItems = function(){
         return $(this).each( function(i, el){
             var $el = $(el);
 
             if(typeof $el.data('sowrepeater-actions-setup') == 'undefined') {
                 var top = $el.find('> .siteorigin-widget-field-repeater-item-top');
+                var labelSelector = $el.data('item-label-selector');
+                if(labelSelector) {
+                    var updateLabel = function () {
+                        top.find('h4').html($el.find(labelSelector).text());
+                    };
+                    updateLabel();
+                    var updateEvent = $el.data('item-label-update-event');
+                    if(updateEvent) {
+                        $el.bind(updateEvent, updateLabel);
+                    }
+                }
 
-                top.find('.siteorigin-widget-field-expand')
-                    .click(function(e){
-                        e.preventDefault();
-                        $(this).closest('.siteorigin-widget-field-repeater-item').find('.siteorigin-widget-field-repeater-item-form').eq(0).slideToggle('fast', function(){
-                            if(typeof $.fn.dialog != 'undefined') {
-                                $(this).closest('.panel-dialog').dialog("option", "position", "center");
-                            }
-                        });
+                top.click(function(e){
+                    if (e.target.className == "siteorigin-widget-field-remove") {
+                        return;
+                    }
+                    e.preventDefault();
+                    $(this).closest('.siteorigin-widget-field-repeater-item').find('.siteorigin-widget-field-repeater-item-form').eq(0).slideToggle('fast', function(){
+                        if(typeof $.fn.dialog != 'undefined') {
+                            $(this).closest('.panel-dialog').dialog("option", "position", "center");
+                        }
                     });
+                });
 
                 top.find('.siteorigin-widget-field-remove')
                     .click(function(e){
