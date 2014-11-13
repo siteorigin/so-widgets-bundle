@@ -256,7 +256,7 @@
                 var name = /[a-zA-Z\-]+\[[a-z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
 
                 name = name[1];
-                parts = name.split('][');
+                var parts = name.split('][');
 
                 // Make sure we either have numbers or strings
                 parts = parts.map(function(e){
@@ -269,7 +269,11 @@
                     if(i == parts.length - 1) {
                         // This is the end, so we need to store the actual field value here
                         if( $$.attr('type') == 'checkbox' ){
-                            if ( $$.is(':checked') ) sub[ parts[i] ] = $$.val() != '' ? $$.val() : true;
+                            if ( $$.is(':checked') ) {
+                                sub[ parts[i] ] = $$.val() != '' ? $$.val() : true;
+                            } else {
+                                sub[ parts[i] ] = false;
+                            }
                         }
                         else sub[ parts[i] ] = $$.val();
                     }

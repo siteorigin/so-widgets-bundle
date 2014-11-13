@@ -165,14 +165,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			<?php
 			foreach( $this->form_options() as $field_name => $field) {
 
-				$value = false;
-				if( isset($instance[$field_name]) ) $value = $instance[$field_name];
-				elseif( isset( $field['default'] ) ) $value = $field['default'];
+//				$value = false;
+//				if( isset($instance[$field_name]) ) $value = $instance[$field_name];
+//				elseif( isset( $field['default'] ) ) $value = $field['default'];
 
 				$this->render_field(
 					$field_name,
 					$field,
-					$value,
+					isset($instance[$field_name]) ? $instance[$field_name] : null,
 					false
 				);
 			}
@@ -503,6 +503,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param array $repeater
 	 */
 	function render_field( $name, $field, $value, $repeater = array() ){
+		if ( is_null( $value ) && isset( $field['default'] )) {
+			 $value = $field['default'];
+		}
+
 		?><div class="siteorigin-widget-field siteorigin-widget-field-type-<?php echo sanitize_html_class($field['type']) ?> siteorigin-widget-field-<?php echo sanitize_html_class($name) ?>"><?php
 
 		if($field['type'] != 'repeater' && $field['type'] != 'checkbox' && $field['type'] != 'separator') {
@@ -546,6 +550,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					<input type="checkbox" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $this->so_get_field_id($name, $repeater) ?>" class="siteorigin-widget-input" <?php checked( !empty( $value ) ) ?> />
 					<?php echo $field['label'] ?>
 				</label>
+				<?php
+				break;
+
+			case 'radio':
+				?>
+				<?php foreach( $field['options'] as $k => $v ) : ?>
+					<input type="radio" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" class="siteorigin-widget-input" value="<?php echo esc_attr($k) ?>" <?php checked( $k, $value ) ?>><?php echo esc_html($v) ?>
+				<?php endforeach; ?>
 				<?php
 				break;
 
@@ -610,7 +622,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$this->render_field(
 						$sub_field_name,
 						$sub_field,
-						isset($value[$sub_field_name]) ? $value[$sub_field_name] : false,
+						isset($value[$sub_field_name]) ? $value[$sub_field_name] : null,
 						$repeater
 					);
 				}
@@ -641,7 +653,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 											$this->render_field(
 												$sub_field_name,
 												$sub_field,
-												isset($v[$sub_field_name]) ? $v[$sub_field_name] : false,
+												isset($v[$sub_field_name]) ? $v[$sub_field_name] : null,
 												$repeater
 											);
 										}
@@ -664,14 +676,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				?><div class="siteorigin-widget-section <?php if( !empty($field['hide']) ) echo 'siteorigin-widget-section-hide'; ?>"><?php
 				foreach( $sub_widget->form_options() as $sub_name => $sub_field) {
 
-					if( isset($value[$sub_name]) ) $sub_value  = $value[$sub_name];
-					elseif( isset($sub_field['default']) ) $sub_value  = $sub_field['default'];
-					else $sub_value = false;
+//					if( isset($value[$sub_name]) ) $sub_value  = $value[$sub_name];
+//					elseif( isset($sub_field['default']) ) $sub_value  = $sub_field['default'];
+//					else $sub_value = false;
 
 					$this->render_field(
 						$name.']['.$sub_name,
 						$sub_field,
-						$sub_value,
+						isset($value[$sub_name]) ? $value[$sub_name] : null,
 						$repeater
 					);
 				}
@@ -703,14 +715,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			case 'section' :
 				?><div class="siteorigin-widget-section <?php if( !empty($field['hide']) ) echo 'siteorigin-widget-section-hide'; ?>"><?php
 				foreach( (array) $field['fields'] as $sub_name=> $sub_field ) {
-					if( isset($value[$sub_name]) ) $sub_value  = $value[$sub_name];
-					elseif( isset($sub_field['default']) ) $sub_value  = $sub_field['default'];
-					else $sub_value = false;
+//					if( isset($value[$sub_name]) ) $sub_value  = $value[$sub_name];
+//					elseif( isset($sub_field['default']) ) $sub_value  = $sub_field['default'];
+//					else $sub_value = false;
 
 					$this->render_field(
 						$name.']['.$sub_name,
 						$sub_field,
-						$sub_value,
+						isset($value[$sub_name]) ? $value[$sub_name] : null,
 						$repeater
 					);
 				}
