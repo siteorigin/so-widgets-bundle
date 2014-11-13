@@ -255,7 +255,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				<div class="siteorigin-widgets-preview-modal-overlay"></div>
 
 				<div class="so-widget-toolbar">
-					<a href="#" class="close"><span class="dashicons dashicons-no"></span></a>
+					<a href="#" class="close"><span class="dashicons dashicons-arrow-left-alt2"></span></a>
 				</div>
 
 				<div class="so-widget-iframe">
