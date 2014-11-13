@@ -197,6 +197,7 @@ function siteorigin_widget_preview_widget_action(){
 			?>
 		</head>
 		<body>
+			<?php // A lot of themes use entry-content as their main content wrapper ?>
 			<div class="entry-content">
 				<?php echo $widget_html ?>
 			</div>
