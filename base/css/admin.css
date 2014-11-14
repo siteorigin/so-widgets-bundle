@@ -520,6 +520,9 @@
   background: #fafafa;
   border-bottom: 1px solid #d8d8d8;
 }
+.siteorigin-widget-preview-dialog .so-widget-toolbar h3 {
+  margin: 15px 0 15px 20px;
+}
 .siteorigin-widget-preview-dialog .so-widget-toolbar a {
   position: absolute;
   box-sizing: border-box;
@@ -527,13 +530,13 @@
   height: 50px;
   display: block;
   top: 0;
-  left: 0;
+  right: 0;
   -webkit-transition: all 0.2s ease;
   -moz-transition: all 0.2s ease;
   -o-transition: all 0.2s ease;
   transition: all 0.2s ease;
   background: #fafafa;
-  border-right: 1px solid #d8d8d8;
+  border-left: 1px solid #d8d8d8;
   border-bottom: 1px solid #d8d8d8;
 }
 .siteorigin-widget-preview-dialog .so-widget-toolbar a:hover {
@@ -547,11 +550,11 @@
   top: 50%;
   left: 50%;
   text-decoration: none;
-  width: 24px;
-  height: 24px;
-  margin-left: -13px;
-  margin-top: -12px;
-  font-size: 24px;
+  width: 21px;
+  height: 21px;
+  margin-left: -11px;
+  margin-top: -10px;
+  font-size: 21px;
   color: #666666;
   text-align: center;
 }
@@ -560,7 +563,7 @@
   left: 30px;
   right: 30px;
   bottom: 30px;
-  background: #FFFFFF;
+  background: #ffffff url("img/ajax-loader-small.gif") center center no-repeat;
 }
 .siteorigin-widget-preview-dialog .so-widget-iframe iframe {
   width: 100%;

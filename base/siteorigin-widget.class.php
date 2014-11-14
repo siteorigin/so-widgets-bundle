@@ -255,11 +255,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				<div class="siteorigin-widgets-preview-modal-overlay"></div>
 
 				<div class="so-widget-toolbar">
+					<h3><?php _e('Widget Preview', 'siteorigin-widgets') ?></h3>
 					<a href="#" class="close"><span class="dashicons dashicons-arrow-left-alt2"></span></a>
 				</div>
 
 				<div class="so-widget-iframe">
-					<iframe name="siteorigin-widget-preview-iframe" id="siteorigin-widget-preview-iframe"></iframe>
+					<iframe name="siteorigin-widget-preview-iframe" id="siteorigin-widget-preview-iframe" style="display: none"></iframe>
 				</div>
 
 				<form target="siteorigin-widget-preview-iframe" action="<?php echo admin_url('admin-ajax.php') ?>" method="post">
