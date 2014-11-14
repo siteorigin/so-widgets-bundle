@@ -396,11 +396,11 @@
                 .append(
                     $('<div class="siteorigin-widget-field-repeater-item-form" />')
                         .html( window.sow_repeater_html[formClass][$el.data('repeater-name')] )
-                )
-                .sowSetupRepeaterItems();
+                );
 
             // Add the item and refresh
             $el.find('> .siteorigin-widget-field-repeater-items').append(item).sortable( "refresh").trigger('updateFieldPositions');
+            item.sowSetupRepeaterItems()
             item.hide().slideDown('fast');
 
         } );
@@ -411,20 +411,23 @@
             var $el = $(el);
 
             if(typeof $el.data('sowrepeater-actions-setup') == 'undefined') {
-                var top = $el.find('> .siteorigin-widget-field-repeater-item-top');
-                var labelSelector = $el.data('item-label-selector');
-                if(labelSelector) {
+                var $parentRepeater = $el.closest('.siteorigin-widget-field-repeater');
+                var itemTop = $el.find('> .siteorigin-widget-field-repeater-item-top');
+                var itemLabel = $parentRepeater.data('item-label');
+                if(itemLabel && itemLabel.selector) {
                     var updateLabel = function () {
-                        top.find('h4').html($el.find(labelSelector).text());
+                        var txt = $el.find(itemLabel.selector)[itemLabel.valueMethod]();
+                        if (txt) {
+                            itemTop.find('h4').text(txt);
+                        }
                     };
                     updateLabel();
-                    var updateEvent = $el.data('item-label-update-event');
-                    if(updateEvent) {
-                        $el.bind(updateEvent, updateLabel);
+                    if(itemLabel.updateEvent) {
+                        $el.bind(itemLabel.updateEvent, updateLabel);
                     }
                 }
 
-                top.click(function(e){
+                itemTop.click(function(e){
                     if (e.target.className == "siteorigin-widget-field-remove") {
                         return;
                     }
@@ -436,7 +439,7 @@
                     });
                 });
 
-                top.find('.siteorigin-widget-field-remove')
+                itemTop.find('.siteorigin-widget-field-remove')
                     .click(function(e){
                         e.preventDefault();
                         if(confirm(soWidgets.sure)) {

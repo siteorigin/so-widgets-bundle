@@ -630,8 +630,22 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 				$this->repeater_html[$name] = $html;
 
+				$item_label = isset( $field['item_label'] ) ? $field['item_label'] : null;
+				// convert underscore naming convention to camelCase for javascript
+				// and encode as json string
+				if ( !empty( $item_label ) ) {
+					foreach ( $item_label as $key => $val ) {
+						$jsKey = preg_replace_callback( '/_(.?)/', function ( $matches ) {
+							return strtoupper( $matches[1] );
+						}, $key );
+						unset( $item_label[ $key ] );
+						$item_label[ $jsKey ] = $val;
+					}
+					$item_label = json_encode( $item_label );
+				}
+
 				?>
-				<div class="siteorigin-widget-field-repeater" data-item-name="<?php echo esc_attr( $field['item_name'] ) ?>" data-repeater-name="<?php echo esc_attr($name) ?>">
+				<div class="siteorigin-widget-field-repeater" data-item-name="<?php echo esc_attr( $field['item_name'] ) ?>" data-repeater-name="<?php echo esc_attr($name) ?>" <?php echo ! empty( $item_label ) ? 'data-item-label="' . esc_attr( $item_label ) . '"' : '' ?>>
 					<div class="siteorigin-widget-field-repeater-top">
 						<div class="siteorigin-widget-field-repeater-expend"></div>
 						<h3><?php echo $field['label'] ?></h3>
@@ -640,10 +654,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						<?php
 						if( !empty( $value ) ) {
 							foreach( $value as $v ) {
-								$item_label_selector = isset( $field['item_label_selector'] ) ? $field['item_label_selector'] : null;
-								$item_label_update_event = isset( $field['item_label_update_event'] ) ? $field['item_label_update_event'] : null;
 								?>
-								<div class="siteorigin-widget-field-repeater-item ui-draggable" <?php echo !empty($item_label_selector) ?'data-item-label-selector="' . esc_attr( $item_label_selector ) . '"' : '' ?> <?php echo !empty( $item_label_update_event ) ? 'data-item-label-update-event="' . esc_attr( $item_label_update_event ) . '"' : '' ?>>
+								<div class="siteorigin-widget-field-repeater-item ui-draggable">
 									<div class="siteorigin-widget-field-repeater-item-top">
 										<div class="siteorigin-widget-field-expand"></div>
 										<div class="siteorigin-widget-field-remove"></div>

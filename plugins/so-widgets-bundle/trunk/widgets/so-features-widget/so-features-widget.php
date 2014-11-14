@@ -21,6 +21,11 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					'type' => 'repeater',
 					'label' => __('Features', 'siteorigin-widgets'),
 					'item_name' => __('Feature', 'siteorigin-widgets'),
+					'item_label' => array(
+						'selector' => "[id*='features-title']",
+						'update_event' => 'change',
+						'value_method' => 'val'
+					),
 					'fields' => array(
 
 						// The container shape
