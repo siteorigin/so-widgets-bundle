@@ -260,7 +260,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				</div>
 
 				<div class="so-widget-iframe">
-					<iframe name="siteorigin-widget-preview-iframe" id="siteorigin-widget-preview-iframe" style="display: none"></iframe>
+					<iframe name="siteorigin-widget-preview-iframe" id="siteorigin-widget-preview-iframe" style="visibility: hidden"></iframe>
 				</div>
 
 				<form target="siteorigin-widget-preview-iframe" action="<?php echo admin_url('admin-ajax.php') ?>" method="post">

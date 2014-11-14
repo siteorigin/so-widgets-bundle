@@ -292,7 +292,7 @@
             modal.find('input[name="data"]').val( JSON.stringify(data) );
             modal.find('input[name="class"]').val( $el.data('class') );
             modal.find('iframe').on('load', function(){
-                $(this).show();
+                $(this).css('visibility', 'visible');
             });
             modal.find('form').submit();
 
