@@ -418,6 +418,9 @@
                     var updateLabel = function () {
                         var txt = $el.find(itemLabel.selector)[itemLabel.valueMethod]();
                         if (txt) {
+                            if (txt.length > 80) {
+                                txt = txt.substr(0, 79)+'...'
+                            }
                             itemTop.find('h4').text(txt);
                         }
                     };
