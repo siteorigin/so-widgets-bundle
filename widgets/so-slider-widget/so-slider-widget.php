@@ -24,11 +24,21 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 					'type' => 'repeater',
 					'label' => __('Slider Frames', 'siteorigin-widgets'),
 					'item_name' => __('Frame', 'siteorigin-widgets'),
+					'item_label' => array(
+						'selector' => "[id*='frames-url']",
+						'update_event' => 'change',
+						'value_method' => 'val'
+					),
 					'fields' => array(
 						'background_videos' => array(
 							'type' => 'repeater',
 							'item_name' => __('Video', 'siteorigin-widgets'),
 							'label' => __('Background Videos', 'siteorigin-widgets'),
+							'item_label' => array(
+								'selector' => "[id*='frames-background_videos-url']",
+								'update_event' => 'change',
+								'value_method' => 'val'
+							),
 							'fields' => array(
 								'file' => array(
 									'type' => 'media',
