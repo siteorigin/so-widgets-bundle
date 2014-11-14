@@ -651,6 +651,10 @@
 		background: #fafafa;
 		border-bottom: 1px solid @border_color;
 
+		h3 {
+			margin: 15px 0 15px 20px;
+		}
+
 		a {
 			position: absolute;
 			box-sizing: border-box;
@@ -659,11 +663,11 @@
 			display: block;
 
 			top: 0;
-			left: 0;
+			right: 0;
 
 			.transition(0.2s);
 			background: #fafafa;
-			border-right: 1px solid #d8d8d8;
+			border-left: 1px solid #d8d8d8;
 			border-bottom: 1px solid #d8d8d8;
 
 			&:hover {
@@ -678,11 +682,11 @@
 				top: 50%;
 				left: 50%;
 				text-decoration: none;
-				width: 24px;
-				height: 24px;
-				margin-left: -13px;
-				margin-top: -12px;
-				font-size: 24px;
+				width: 21px;
+				height: 21px;
+				margin-left: -11px;
+				margin-top: -10px;
+				font-size: 21px;
 				text-align: center;
 				color: #666666;
 				text-align: center;
@@ -695,7 +699,7 @@
 		left: @edge_spacing;
 		right: @edge_spacing;
 		bottom: @edge_spacing;
-		background: #FFFFFF;
+		background: #FFFFFF url("img/ajax-loader-small.gif") center center no-repeat;
 
 		iframe {
 			width: 100%;
