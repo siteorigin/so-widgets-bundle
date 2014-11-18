@@ -137,7 +137,7 @@
                         $(this ).fadeOut('fast');
                     });
 
-            })
+            });
 
             // Handle toggling of the sub widget form
             $fields.filter('.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section').find('> label').click(function(){
@@ -409,50 +409,50 @@
         } );
     };
 
-    $.fn.sowSetupRepeaterItems = function(){
-        return $(this).each( function(i, el){
+    $.fn.sowSetupRepeaterItems = function () {
+        return $(this).each(function (i, el) {
             var $el = $(el);
 
-            if(typeof $el.data('sowrepeater-actions-setup') == 'undefined') {
+            if (typeof $el.data('sowrepeater-actions-setup') == 'undefined') {
                 var $parentRepeater = $el.closest('.siteorigin-widget-field-repeater');
                 var itemTop = $el.find('> .siteorigin-widget-field-repeater-item-top');
                 var itemLabel = $parentRepeater.data('item-label');
-                if(itemLabel && itemLabel.selector) {
+                if (itemLabel && itemLabel.selector) {
                     var updateLabel = function () {
                         var txt = $el.find(itemLabel.selector)[itemLabel.valueMethod]();
                         if (txt) {
                             if (txt.length > 80) {
-                                txt = txt.substr(0, 79)+'...'
+                                txt = txt.substr(0, 79) + '...'
                             }
                             itemTop.find('h4').text(txt);
                         }
                     };
                     updateLabel();
-                    if(itemLabel.updateEvent) {
+                    if (itemLabel.updateEvent) {
                         $el.bind(itemLabel.updateEvent, updateLabel);
                     }
                 }
 
-                itemTop.click(function(e){
+                itemTop.click(function (e) {
                     if (e.target.className == "siteorigin-widget-field-remove") {
                         return;
                     }
                     e.preventDefault();
-                    $(this).closest('.siteorigin-widget-field-repeater-item').find('.siteorigin-widget-field-repeater-item-form').eq(0).slideToggle('fast', function(){
-                        if(typeof $.fn.dialog != 'undefined') {
+                    $(this).closest('.siteorigin-widget-field-repeater-item').find('.siteorigin-widget-field-repeater-item-form').eq(0).slideToggle('fast', function () {
+                        if (typeof $.fn.dialog != 'undefined') {
                             $(this).closest('.panel-dialog').dialog("option", "position", "center");
                         }
                     });
                 });
 
                 itemTop.find('.siteorigin-widget-field-remove')
-                    .click(function(e){
+                    .click(function (e) {
                         e.preventDefault();
-                        if(confirm(soWidgets.sure)) {
+                        if (confirm(soWidgets.sure)) {
                             var $s = $(this).closest('.siteorigin-widget-field-repeater-items');
-                            $(this).closest('.siteorigin-widget-field-repeater-item').slideUp('fast', function(){
+                            $(this).closest('.siteorigin-widget-field-repeater-item').slideUp('fast', function () {
                                 $(this).remove();
-                                $s.sortable( "refresh" ).trigger('updateFieldPositions');
+                                $s.sortable("refresh").trigger('updateFieldPositions');
                             });
                         }
                     });
@@ -462,7 +462,7 @@
                 $el.data('sowrepeater-actions-setup', true);
             }
         });
-    }
+    };
 
     // When we click on a widget top
     $('.widgets-holder-wrap').on('click', '.widget:has(.siteorigin-widget-form-main) .widget-top', function(){
