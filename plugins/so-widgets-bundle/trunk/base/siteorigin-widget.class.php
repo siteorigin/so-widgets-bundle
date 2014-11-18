@@ -164,11 +164,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>" id="<?php echo $form_id ?>" data-class="<?php echo get_class($this) ?>" style="display: none">
 			<?php
 			foreach( $this->form_options() as $field_name => $field) {
-
-//				$value = false;
-//				if( isset($instance[$field_name]) ) $value = $instance[$field_name];
-//				elseif( isset( $field['default'] ) ) $value = $field['default'];
-
 				$this->render_field(
 					$field_name,
 					$field,
@@ -197,6 +192,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 				if(typeof $.fn.sowSetupForm != 'undefined') {
 					$('#<?php echo $form_id ?>').sowSetupForm();
+				}
+
+				if(typeof $.fn.initAdminScript != 'undefined') {
+					$('#<?php echo $form_id ?>').initAdminScript();
 				}
 			} )( jQuery );
 		</script>
@@ -690,11 +689,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				$sub_widget = new $field['class'];
 				?><div class="siteorigin-widget-section <?php if( !empty($field['hide']) ) echo 'siteorigin-widget-section-hide'; ?>"><?php
 				foreach( $sub_widget->form_options() as $sub_name => $sub_field) {
-
-//					if( isset($value[$sub_name]) ) $sub_value  = $value[$sub_name];
-//					elseif( isset($sub_field['default']) ) $sub_value  = $sub_field['default'];
-//					else $sub_value = false;
-
 					$this->render_field(
 						$name.']['.$sub_name,
 						$sub_field,
@@ -730,10 +724,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			case 'section' :
 				?><div class="siteorigin-widget-section <?php if( !empty($field['hide']) ) echo 'siteorigin-widget-section-hide'; ?>"><?php
 				foreach( (array) $field['fields'] as $sub_name=> $sub_field ) {
-//					if( isset($value[$sub_name]) ) $sub_value  = $value[$sub_name];
-//					elseif( isset($sub_field['default']) ) $sub_value  = $sub_field['default'];
-//					else $sub_value = false;
-
 					$this->render_field(
 						$name.']['.$sub_name,
 						$sub_field,
