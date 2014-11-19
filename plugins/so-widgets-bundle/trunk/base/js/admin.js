@@ -232,6 +232,23 @@
 
             });
 
+            $fields.filter('.siteorigin-widget-field-type-slider').each(function(){
+                var $$ = $(this);
+                var $input = $$.find('input[type="number"]');
+                var $c = $$.find('.siteorigin-widget-value-slider');
+
+                $c.slider({
+                    max: parseInt( $input.attr('max') ),
+                    min: parseInt( $input.attr('min') ),
+                    value: parseInt( $input.val() ),
+                    step: 1,
+                    slide: function( event, ui ) {
+                        $input.val( parseInt(ui.value) );
+                        $$.find('.siteorigin-widget-slider-value').html( ui.value );
+                    }
+                });
+            });
+
             // Give plugins a chance to influence the form
             $el.trigger('sowsetupform').data('sow-form-setup', true);
             $el.find('.siteorigin-widget-field-repeater-item').trigger('updateFieldPositions');
