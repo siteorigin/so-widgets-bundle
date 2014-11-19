@@ -5,6 +5,9 @@
   display: block !important;
   margin: 15px 0;
 }
+.siteorigin-widget-form .siteorigin-widget-field-is-hidden {
+  display: none;
+}
 .siteorigin-widget-form .siteorigin-widget-field {
   margin: 1em 0;
 }
