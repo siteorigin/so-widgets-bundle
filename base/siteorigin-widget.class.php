@@ -210,7 +210,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			wp_enqueue_script( 'wp-color-picker' );
 			wp_enqueue_media();
-			wp_enqueue_script( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/admin.js', array( 'jquery', 'jquery-ui-sortable' ), SOW_BUNDLE_VERSION, true );
+			wp_enqueue_script( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/admin.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-slider' ), SOW_BUNDLE_VERSION, true );
 
 			wp_localize_script( 'siteorigin-widget-admin', 'soWidgets', array(
 				'sure' => __('Are you sure?', 'siteorigin-widgets')
@@ -527,7 +527,25 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				break;
 
 			case 'editor' :
+				// The editor field doesn't actually work yet, this is just a placeholder
 				?><textarea type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $this->so_get_field_id($name, $repeater) ?>" class="widefat siteorigin-widget-input siteorigin-widget-input-editor" rows="<?php echo !empty($field['rows']) ? intval($field['rows']) : 4 ?>"><?php echo esc_textarea($value) ?></textarea><?php
+				break;
+
+			case 'slider':
+				?>
+				<div class="siteorigin-widget-slider-wrapper">
+					<div class="siteorigin-widget-value-slider"></div>
+				</div>
+				<div class="siteorigin-widget-slider-value"><?php echo esc_attr($value) ?></div>
+				<input
+					type="number"
+					name="<?php echo $this->so_get_field_name($name, $repeater) ?>"
+					id="<?php echo $this->so_get_field_id($name, $repeater) ?>"
+					value="<?php echo esc_attr($value) ?>"
+					min="<?php echo isset($field['min']) ? intval($field['min']) : 0 ?>"
+					max="<?php echo isset($field['max']) ? intval($field['max']) : 100 ?>"
+					data-integer="<?php echo !empty( $field['integer'] ) ? 'true' : 'false' ?>" />
+				<?php
 				break;
 
 			case 'select':
