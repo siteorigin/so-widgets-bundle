@@ -537,10 +537,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			case 'slider':
 				?>
+				<div class="siteorigin-widget-slider-value"><?php echo !empty($value) ? $value : 0 ?></div>
 				<div class="siteorigin-widget-slider-wrapper">
 					<div class="siteorigin-widget-value-slider"></div>
 				</div>
-				<div class="siteorigin-widget-slider-value"><?php echo !empty($value) ? $value : 0 ?></div>
 				<input
 					type="number"
 					name="<?php echo $this->so_get_field_name($name, $repeater) ?>"
