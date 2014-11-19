@@ -19,6 +19,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$this->form_options = $form_options;
 		$this->base_folder = $base_folder;
 		$this->repeater_html = array();
+
+		$control_options = wp_parse_args($widget_options, array(
+			'width' => 600,
+		) );
 		parent::WP_Widget($id, $name, $widget_options, $control_options);
 
 		$this->initialize();
@@ -536,12 +540,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				<div class="siteorigin-widget-slider-wrapper">
 					<div class="siteorigin-widget-value-slider"></div>
 				</div>
-				<div class="siteorigin-widget-slider-value"><?php echo esc_attr($value) ?></div>
+				<div class="siteorigin-widget-slider-value"><?php echo !empty($value) ? $value : 0 ?></div>
 				<input
 					type="number"
 					name="<?php echo $this->so_get_field_name($name, $repeater) ?>"
 					id="<?php echo $this->so_get_field_id($name, $repeater) ?>"
-					value="<?php echo esc_attr($value) ?>"
+					value="<?php echo !empty($value) ? esc_attr($value) : 0 ?>"
 					min="<?php echo isset($field['min']) ? intval($field['min']) : 0 ?>"
 					max="<?php echo isset($field['max']) ? intval($field['max']) : 100 ?>"
 					data-integer="<?php echo !empty( $field['integer'] ) ? 'true' : 'false' ?>" />
