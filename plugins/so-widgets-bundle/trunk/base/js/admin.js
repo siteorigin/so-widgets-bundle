@@ -295,6 +295,11 @@
                                 sub[ parts[i] ] = false;
                             }
                         }
+                        else if( $$.attr('type') == 'radio' ){
+                            if ( $$.is(':checked') ) {
+                                sub[ parts[i] ] = $$.val() != '' ? $$.val() : true;
+                            }
+                        }
                         else sub[ parts[i] ] = $$.val();
                     }
                     else {
