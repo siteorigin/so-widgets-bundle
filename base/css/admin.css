@@ -630,7 +630,13 @@
   left: 30px;
   right: 30px;
   bottom: 30px;
-  background: #ffffff url("img/ajax-loader-small.gif") center center no-repeat;
+  background: #ffffff url("img/wpspin_light.gif") center center no-repeat;
+}
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .siteorigin-widget-preview-dialog .so-widget-iframe {
+    background-image: url("img/wpspin_light-2x.gif");
+    background-size: 16px 16px;
+  }
 }
 .siteorigin-widget-preview-dialog .so-widget-iframe iframe {
   width: 100%;
