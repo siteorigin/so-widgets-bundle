@@ -197,6 +197,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				if(typeof $.fn.sowSetupForm != 'undefined') {
 					$('#<?php echo $form_id ?>').sowSetupForm();
 				}
+				else {
+					// Init once admin scripts have been loaded
+					$( document).on('sowadminloaded', function(){
+						$('#<?php echo $form_id ?>').sowSetupForm();
+					});
+				}
 			} )( jQuery );
 		</script>
 		<?php
