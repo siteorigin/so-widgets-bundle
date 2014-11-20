@@ -4,6 +4,9 @@
         return $(this).each( function(i, el){
             var $el = $(el);
 
+            // Skip this if the widget has any fields with an __i__
+            if( $el.find('input').attr('name').indexOf('__i__') !== -1 ) return this;
+
             // Skip this if we've already set up the form
             if( $el.is('.siteorigin-widget-form-main') ) {
                 if( $el.data('sow-form-setup') == true ) return true;
@@ -491,5 +494,7 @@
     $(document).on('dialogopen', function(e){
         $(e.target).find('.siteorigin-widget-form-main').sowSetupForm();
     });
+
+    $(document).trigger('sowadminloaded');
 
 })(jQuery);
