@@ -36,6 +36,11 @@ Once you enable a widget, you'll be able to use it anywhere standard widgets are
 
 == Changelog ==
 
+= 1.0.6 =
+* Fixed issues with adding extra widget folders.
+* Added compatibility with WordPress Customizer.
+* Added more fields to be used with future widgets.
+
 = 1.0.5 =
 * Removed legacy widget deactivation functions.
 * Improved how widgets are loaded.
