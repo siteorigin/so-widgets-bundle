@@ -5,7 +5,8 @@
             var $el = $(el);
 
             // Skip this if the widget has any fields with an __i__
-            if( $el.find('input').attr('name').indexOf('__i__') !== -1 ) return this;
+            var $inputs = $el.find('input');
+            if( $inputs.length && $inputs.attr('name').indexOf('__i__') !== -1 ) return this;
 
             // Skip this if we've already set up the form
             if( $el.is('.siteorigin-widget-form-main') ) {
