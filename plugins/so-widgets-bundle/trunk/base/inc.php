@@ -208,3 +208,22 @@ function siteorigin_widget_preview_widget_action(){
 	exit();
 }
 add_action('wp_ajax_so_widgets_preview', 'siteorigin_widget_preview_widget_action');
+
+/**
+ * Compatibility with Page Builder, add the groups and icons.
+ *
+ * @param $widgets
+ *
+ * @return mixed
+ */
+function siteorigin_widget_add_bundle_groups($widgets){
+	foreach( $widgets as $class => &$widget ) {
+		if( preg_match('/SiteOrigin_Widget_(.*)_Widget/', $class) ) {
+			$widget['icon'] = 'so-widget-icon so-widget-icon-default';
+			$widget['groups'] = array('so-widgets-bundle');
+		}
+	}
+
+	return $widgets;
+}
+add_filter('siteorigin_panels_widgets', 'siteorigin_widget_add_bundle_groups', 11);
