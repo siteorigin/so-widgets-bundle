@@ -580,7 +580,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			case 'radio':
 				?>
 				<?php foreach( $field['options'] as $k => $v ) : ?>
-					<input type="radio" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" class="siteorigin-widget-input" value="<?php echo esc_attr($k) ?>" <?php checked( $k, $value ) ?>><?php echo esc_html($v) ?>
+					<label for="<?php echo $this->so_get_field_id($name, $repeater) . '-' . $k ?>">
+						<input type="radio" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $this->so_get_field_id($name, $repeater) . '-' . $k ?>" class="siteorigin-widget-input" value="<?php echo esc_attr($k) ?>" <?php checked( $k, $value ) ?>> <?php echo esc_html($v) ?>
+					</label>
 				<?php endforeach; ?>
 				<?php
 				break;
@@ -765,7 +767,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		if(!empty($field['description'])) {
-			?><div class="siteorigin-widget-field-description"><?php echo esc_html($field['description']) ?></div><?php
+			?><div class="siteorigin-widget-field-description"><?php echo wp_kses_post($field['description']) ?></div><?php
 		}
 
 		?></div><?php
