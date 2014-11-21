@@ -409,7 +409,7 @@
 
             var formClass = $el.closest('.siteorigin-widget-form').data('class');
 
-            var item = $('<div class="siteorigin-widget-field-repeater-item" />')
+            var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
                 .append(
                     $('<div class="siteorigin-widget-field-repeater-item-top" />')
                         .append(
