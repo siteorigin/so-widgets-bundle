@@ -657,16 +657,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				$this->repeater_html[$name] = $html;
 
 				$item_label = isset( $field['item_label'] ) ? $field['item_label'] : null;
-				// convert underscore naming convention to camelCase for javascript
-				// and encode as json string
-				if ( !empty( $item_label ) ) {
-					foreach ( $item_label as $key => $val ) {
-						$jsKey = preg_replace_callback( '/_(.?)/', function ( $matches ) {
-							return strtoupper( $matches[1] );
-						}, $key );
-						unset( $item_label[ $key ] );
-						$item_label[ $jsKey ] = $val;
-					}
+				if ( ! empty( $item_label ) ) {
+					// convert underscore naming convention to camelCase for javascript
+					// and encode as json string
+					$item_label = $this->underscores_to_camel_case( $item_label );
 					$item_label = json_encode( $item_label );
 				}
 
@@ -771,6 +765,26 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		?></div><?php
+	}
+
+
+	/**
+	 * Convert underscore naming convention to camel case. Useful for data to be handled by javascript.
+	 *
+	 * @param $array array Input array of which the keys will be transformed.
+	 * @return array The transformed array with camel case keys.
+	 */
+	protected function underscores_to_camel_case( $array ) {
+		$transformed = array();
+		if ( !empty( $array ) ) {
+			foreach ( $array as $key => $val ) {
+				$jsKey = preg_replace_callback( '/_(.?)/', function ( $matches ) {
+					return strtoupper( $matches[1] );
+				}, $key );
+				$transformed[ $jsKey ] = $val;
+			}
+		}
+		return $transformed;
 	}
 
 	/**
