@@ -15,6 +15,9 @@
   display: block;
   margin-bottom: 3px;
 }
+.siteorigin-widget-form .siteorigin-widget-field label.siteorigin-widget-field-label {
+  font-weight: bold;
+}
 .siteorigin-widget-form .siteorigin-widget-field:last-child {
   margin-bottom: 0;
 }
@@ -24,7 +27,7 @@
 .siteorigin-widget-form .siteorigin-widget-field .siteorigin-widget-field-description {
   font-size: 0.9em;
   margin-top: 0.2em;
-  color: #999999;
+  color: #999;
   font-style: italic;
 }
 .siteorigin-widget-form .siteorigin-widget-field.siteorigin-widget-field-separator {
@@ -45,7 +48,7 @@
 .siteorigin-widget-form .siteorigin-widget-field-type-slider .siteorigin-widget-slider-value {
   display: block;
   float: left;
-  margin-top: ;
+  margin-top: 0;
   border: 1px solid #E0E0E0;
   padding: 11px 0;
   background: #F4F4F4;
