@@ -69,8 +69,10 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 
 	function modify_form($form){
 		global $_wp_additional_image_sizes;
-		foreach($_wp_additional_image_sizes as $i => $s) {
-			$form['size']['options'][$i] = $i;
+		if( !empty($_wp_additional_image_sizes) ) {
+			foreach($_wp_additional_image_sizes as $i => $s) {
+				$form['size']['options'][$i] = $i;
+			}
 		}
 
 		return $form;
