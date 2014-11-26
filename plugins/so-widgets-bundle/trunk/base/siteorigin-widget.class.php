@@ -9,6 +9,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	protected $form_options;
 	protected $base_folder;
 	protected $repeater_html;
+	protected $field_ids;
 
 	/**
 	 * @var int How many seconds a CSS file is valid for.
@@ -19,6 +20,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$this->form_options = $form_options;
 		$this->base_folder = $base_folder;
 		$this->repeater_html = array();
+		$this->field_ids = array();
 
 		$control_options = wp_parse_args($widget_options, array(
 			'width' => 600,
@@ -488,15 +490,25 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @param $field_name
 	 * @param array $repeater
+	 * @param boolean $is_template
 	 *
 	 * @return string
 	 */
-	public function so_get_field_id($field_name, $repeater = array()) {
+	public function so_get_field_id( $field_name, $repeater = array(), $is_template = false ) {
 		if( empty($repeater) ) return $this->get_field_id($field_name);
 		else {
 			$name = $repeater;
 			$name[] = $field_name;
-			return $this->get_field_id(implode('-', $name));
+			$field_id_base = $this->get_field_id(implode('-', $name));
+			if ( $is_template ) {
+				return $field_id_base . '-{id}';
+			}
+			if ( ! isset( $this->field_ids[ $field_id_base ] ) ) {
+				$this->field_ids[ $field_id_base ] = 1;
+			}
+			$curId = $this->field_ids[ $field_id_base ]++;
+
+			return $field_id_base . '-' . $curId;
 		}
 	}
 
@@ -508,37 +520,39 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param $value
 	 * @param array $repeater
 	 */
-	function render_field( $name, $field, $value, $repeater = array() ){
+	function render_field( $name, $field, $value, $repeater = array(), $is_template = false ){
 		if ( is_null( $value ) && isset( $field['default'] )) {
 			 $value = $field['default'];
 		}
 
-		?><div class="siteorigin-widget-field siteorigin-widget-field-type-<?php echo sanitize_html_class($field['type']) ?> siteorigin-widget-field-<?php echo sanitize_html_class($name) ?> <?php if( !empty( $field['hidden'] ) ) echo 'siteorigin-widget-field-is-hidden' ?>"><?php
+		?><div class="siteorigin-widget-field siteorigin-widget-field-type-<?php echo sanitize_html_class($field['type']) ?> siteorigin-widget-field-<?php echo sanitize_html_class($name) ?> <?php if( !empty( $field['state_name'] ) ) echo 'siteorigin-widget-field-state-' . $field['state_name'] ?> <?php if( !empty( $field['hidden'] ) ) echo 'siteorigin-widget-field-is-hidden' ?>"><?php
+
+		$field_id = $this->so_get_field_id( $name, $repeater, $is_template );
 
 		if($field['type'] != 'repeater' && $field['type'] != 'checkbox' && $field['type'] != 'separator') {
-			?><label for="<?php echo $this->so_get_field_id($name, $repeater) ?>" class="siteorigin-widget-field-label <?php if( empty($field['hide']) ) echo 'siteorigin-widget-section-visible'; ?>"><?php echo $field['label'] ?></label><?php
+			?><label for="<?php echo $field_id ?>" class="siteorigin-widget-field-label <?php if( empty($field['hide']) ) echo 'siteorigin-widget-section-visible'; ?>"><?php echo $field['label'] ?></label><?php
 		}
 
 		switch( $field['type'] ) {
 			case 'text' :
-				?><input type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $this->so_get_field_id($name, $repeater) ?>" value="<?php echo esc_attr($value) ?>" class="widefat siteorigin-widget-input" /><?php
+				?><input type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" value="<?php echo esc_attr($value) ?>" class="widefat siteorigin-widget-input" /><?php
 				break;
 
 			case 'color' :
-				?><input type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $this->so_get_field_id($name, $repeater) ?>" value="<?php echo esc_attr($value) ?>" class="widefat siteorigin-widget-input siteorigin-widget-input-color" /><?php
+				?><input type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" value="<?php echo esc_attr($value) ?>" class="widefat siteorigin-widget-input siteorigin-widget-input-color" /><?php
 				break;
 
 			case 'number' :
-				?><input type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $this->so_get_field_id($name, $repeater) ?>" value="<?php echo esc_attr($value) ?>" class="widefat siteorigin-widget-input siteorigin-widget-input-number" /><?php
+				?><input type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" value="<?php echo esc_attr($value) ?>" class="widefat siteorigin-widget-input siteorigin-widget-input-number" /><?php
 				break;
 
 			case 'textarea' :
-				?><textarea type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $this->so_get_field_id($name, $repeater) ?>" class="widefat siteorigin-widget-input" rows="<?php echo !empty($field['rows']) ? intval($field['rows']) : 4 ?>"><?php echo esc_textarea($value) ?></textarea><?php
+				?><textarea type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" class="widefat siteorigin-widget-input" rows="<?php echo !empty($field['rows']) ? intval($field['rows']) : 4 ?>"><?php echo esc_textarea($value) ?></textarea><?php
 				break;
 
 			case 'editor' :
 				// The editor field doesn't actually work yet, this is just a placeholder
-				?><textarea type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $this->so_get_field_id($name, $repeater) ?>" class="widefat siteorigin-widget-input siteorigin-widget-input-editor" rows="<?php echo !empty($field['rows']) ? intval($field['rows']) : 4 ?>"><?php echo esc_textarea($value) ?></textarea><?php
+				?><textarea type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" class="widefat siteorigin-widget-input siteorigin-widget-input-editor" rows="<?php echo !empty($field['rows']) ? intval($field['rows']) : 4 ?>"><?php echo esc_textarea($value) ?></textarea><?php
 				break;
 
 			case 'slider':
@@ -550,7 +564,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				<input
 					type="number"
 					name="<?php echo $this->so_get_field_name($name, $repeater) ?>"
-					id="<?php echo $this->so_get_field_id($name, $repeater) ?>"
+					id="<?php echo $field_id ?>"
 					value="<?php echo !empty($value) ? esc_attr($value) : 0 ?>"
 					min="<?php echo isset($field['min']) ? intval($field['min']) : 0 ?>"
 					max="<?php echo isset($field['max']) ? intval($field['max']) : 100 ?>"
@@ -560,7 +574,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			case 'select':
 				?>
-				<select name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $this->so_get_field_id($name, $repeater) ?>" class="siteorigin-widget-input">
+				<select name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" class="siteorigin-widget-input">
 					<?php foreach( $field['options'] as $v => $t ) : ?>
 						<option value="<?php echo esc_attr($v) ?>" <?php selected($v, $value) ?>><?php echo esc_html($t) ?></option>
 					<?php endforeach; ?>
@@ -570,8 +584,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			case 'checkbox':
 				?>
-				<label for="<?php echo $this->so_get_field_id($name, $repeater) ?>">
-					<input type="checkbox" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $this->so_get_field_id($name, $repeater) ?>" class="siteorigin-widget-input" <?php checked( !empty( $value ) ) ?> />
+				<label for="<?php echo $field_id ?>">
+					<input type="checkbox" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" class="siteorigin-widget-input" <?php checked( !empty( $value ) ) ?> />
 					<?php echo $field['label'] ?>
 				</label>
 				<?php
@@ -580,8 +594,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			case 'radio':
 				?>
 				<?php foreach( $field['options'] as $k => $v ) : ?>
-					<label for="<?php echo $this->so_get_field_id($name, $repeater) . '-' . $k ?>">
-						<input type="radio" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $this->so_get_field_id($name, $repeater) . '-' . $k ?>" class="siteorigin-widget-input" value="<?php echo esc_attr($k) ?>" <?php checked( $k, $value ) ?>> <?php echo esc_html($v) ?>
+					<label for="<?php echo $field_id . '-' . $k ?>">
+						<input type="radio" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id . '-' . $k ?>" class="siteorigin-widget-input" value="<?php echo esc_attr($k) ?>" <?php checked( $k, $value ) ?>> <?php echo esc_html($v) ?>
 					</label>
 				<?php endforeach; ?>
 				<?php
@@ -649,7 +663,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						$sub_field_name,
 						$sub_field,
 						isset($value[$sub_field_name]) ? $value[$sub_field_name] : null,
-						$repeater
+						$repeater,
+						true
 					);
 				}
 				$html = ob_get_clean();
