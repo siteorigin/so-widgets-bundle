@@ -4,7 +4,7 @@
 Plugin Name: SiteOrigin Widgets Bundle
 Description: A collection of all our widgets, neatly bundled into a single plugin.
 Version: trunk
-Author: Greg Priday
+Author: SiteOrigin
 Author URI: http://siteorigin.com
 Plugin URI: http://siteorigin.com/widgets-bundle/
 License: GPL3
