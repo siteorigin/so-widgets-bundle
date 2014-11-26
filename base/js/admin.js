@@ -405,9 +405,9 @@
         return $(this).each( function(i, el){
 
             var $el = $(el);
-            var theClass = $el.closest('.siteorigin-widget-form').data('class');
-
             var formClass = $el.closest('.siteorigin-widget-form').data('class');
+            var $nextIndex = $el.find('> .siteorigin-widget-field-repeater-items').children().length+1;
+            var repeaterHtml = window.sow_repeater_html[formClass][$el.data('repeater-name')].replace(/\{id\}/g, $nextIndex);
 
             var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
                 .append(
@@ -424,7 +424,7 @@
                 )
                 .append(
                     $('<div class="siteorigin-widget-field-repeater-item-form" />')
-                        .html( window.sow_repeater_html[formClass][$el.data('repeater-name')] )
+                        .html( repeaterHtml )
                 );
 
             // Add the item and refresh
