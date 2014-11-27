@@ -4,9 +4,17 @@
 	<div id="siteorigin-widgets-bundle">
 		<?php foreach( $widgets as $id => $widget ): ?>
 			<div class="so-widget-wrap">
-				<div class="so-widget so-widget-is-<?php echo $widget['Active'] ? 'active' : '' ?>">
+				<div class="so-widget so-widget-is-<?php echo $widget['Active'] ? 'active' : 'inactive' ?>">
 
-					<img src="<?php echo plugin_dir_url(__FILE__).'../banners/'.$widget['ID'].'.svg' ?>" />
+					<?php
+					$banner = '';
+					if( file_exists( plugin_dir_path(__FILE__) . '../banners/' . $widget['ID'] . '.png' ) ) {
+						$banner = plugin_dir_url(__FILE__) . '../banners/' . $widget['ID'] . '.png';
+					}
+					$banner = apply_filters('siteorigin_widgets_widget_banner', $banner, $widget);
+					?>
+
+					<img src="<?php echo esc_url( !empty($banner) ? $banner : plugin_dir_url(__FILE__) . '../banners/default.png' ) ?>" />
 
 					<div class="so-widget-text">
 						<label class="switch">
