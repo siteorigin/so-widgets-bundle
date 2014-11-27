@@ -133,7 +133,6 @@ class SiteOrigin_Widget_JsGoogleMap_Widget extends SiteOrigin_Widget {
 							'label'   => __( 'Map styles', 'siteorigin-widgets' ),
 							'options' => array(
 								'normal'   => __( 'Normal', 'siteorigin-widgets' ),
-								'preset'   => __( 'Preset', 'siteorigin-widgets' ),
 								'custom'   => __( 'Custom', 'siteorigin-widgets' ),
 								'raw_json' => __( 'Raw JSON', 'siteorigin-widgets' ),
 							)
@@ -142,15 +141,6 @@ class SiteOrigin_Widget_JsGoogleMap_Widget extends SiteOrigin_Widget {
 							'type'       => 'text',
 							'state_name' => 'interactive',
 							'label'      => __( 'Styled map name', 'siteorigin-widgets' )
-						),
-						'preset_map_styles' => array(
-							'type'    => 'select',
-							'label'   => __( 'Preset map styles', 'siteorigin-widgets' ),
-							'options' => array(
-								'apocalypse' => __( 'Apocalypse', 'siteorigin-widgets' ),
-								'cartoon'    => __( 'Cartoon', 'siteorigin-widgets' ),
-								'grayscale'  => __( 'Grayscale', 'siteorigin-widgets' ),
-							)
 						),
 						'raw_json_map_styles'   => array(
 							'type'        => 'textarea',
@@ -359,12 +349,6 @@ class SiteOrigin_Widget_JsGoogleMap_Widget extends SiteOrigin_Widget {
 	private function get_styles( $instance ) {
 		$style_config = $instance['styles'];
 		switch ( $style_config['style_method'] ) {
-			case 'preset':
-				$preset_name   = $style_config['preset_map_styles'];
-				$map_name      = ! empty( $style_config['styled_map_name'] ) ? $style_config['styled_map_name'] : ucwords( $preset_name );
-				$styles_string = file_get_contents( siteorigin_widget_get_plugin_dir_path( 'js-google-map' ) . 'map-styles/' . $preset_name . '.json' );
-
-				return array( 'map_name' => $map_name, 'styles' => json_decode( $styles_string, true ) );
 			case 'custom':
 				if ( empty( $style_config['custom_map_styles'] ) ) {
 					return array();
