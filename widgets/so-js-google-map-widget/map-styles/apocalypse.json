@@ -1,0 +1,23 @@
+[
+  {
+    "stylers": [
+      {"hue": "#ff0000"},
+      {"invert_lightness": true}
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {"invert_lightness": true},
+      {"color": "#0019ff"}
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {"visibility": "off"}
+    ]
+  }
+]
