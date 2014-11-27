@@ -64,7 +64,6 @@
 			width: 100%;
 			height: auto;
 			background: #FFFFFF;
-			opacity: 0.5;
 			border-bottom: 1px solid #D9D9D9;
 		}
 
@@ -217,7 +216,6 @@
 		&.so-widget-is-active {
 
 			img {
-				opacity: 1;
 				border-bottom: 1px solid #D9D9D9;
 			}
 
@@ -233,6 +231,15 @@
 				p {
 					color: #333333;
 				}
+			}
+		}
+
+		&.so-widget-is-inactive {
+			img {
+				filter: url(filters.svg#grayscale);
+				filter: gray;
+				-webkit-filter: grayscale(1);
+				opacity: 0.7;
 			}
 		}
 

@@ -67,7 +67,6 @@
   width: 100%;
   height: auto;
   background: #FFFFFF;
-  opacity: 0.5;
   border-bottom: 1px solid #D9D9D9;
 }
 #siteorigin-widgets-bundle .so-widget .so-widget-text {
@@ -216,7 +215,6 @@
   border: 1px solid #C9C9C9;
 }
 #siteorigin-widgets-bundle .so-widget.so-widget-is-active img {
-  opacity: 1;
   border-bottom: 1px solid #D9D9D9;
 }
 #siteorigin-widgets-bundle .so-widget.so-widget-is-active .so-widget-text h4 {
@@ -224,4 +222,10 @@
 }
 #siteorigin-widgets-bundle .so-widget.so-widget-is-active .so-widget-text p {
   color: #333333;
+}
+#siteorigin-widgets-bundle .so-widget.so-widget-is-inactive img {
+  filter: url(filters.svg#grayscale);
+  filter: gray;
+  -webkit-filter: grayscale(1);
+  opacity: 0.7;
 }
