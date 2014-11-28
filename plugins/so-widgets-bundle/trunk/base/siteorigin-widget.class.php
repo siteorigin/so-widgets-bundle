@@ -398,7 +398,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		if( !empty( $vars ) ){
 			foreach($vars as $name => $value) {
 				if(empty($value)) continue;
-				$less = preg_replace('/\@'.preg_quote($name).' *\:.*?;/', '@'.$name.': '.$value.';', $less);
+
+				if( is_array($value) ) {
+					// TODO make $value output as a LESS array
+					$less = preg_replace('/\@'.preg_quote($name).' *\:.*?;/', '@'.$name.': '.$value.';', $less);
+				}
+				else {
+					$less = preg_replace('/\@'.preg_quote($name).' *\:.*?;/', '@'.$name.': '.$value.';', $less);
+				}
 			}
 		}
 
@@ -816,7 +823,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Get a hash that makes the design unique
+	 * Get a hash that uniquely identifies this instance.
 	 *
 	 * @param $instance
 	 * @return string
