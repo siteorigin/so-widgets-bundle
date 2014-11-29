@@ -1,10 +1,10 @@
 (function($){
 
     // After the form is setup, add some custom stuff.
-    $(document).on( 'sowsetupform', '.siteorigin-widget-form[data-class="SiteOrigin_Widget_JsGoogleMap_Widget"]', function(){
+    $(document).on( 'sowsetupform', '.siteorigin-widget-form[data-class="SiteOrigin_Widget_GoogleMap_Widget"]', function(){
         var $mapWidgetForm = $(this);
 
-        if( typeof $mapWidgetForm.data('sowsetup-map-widget' == 'undefined' ) ) {
+        if( typeof $mapWidgetForm.data('sowsetup-map-widget') == 'undefined' ) {
 
             var $mapTypeField = $mapWidgetForm.find('.siteorigin-widget-field-settingsmap_type');
             var updateFieldsForSelectedMapType = function () {

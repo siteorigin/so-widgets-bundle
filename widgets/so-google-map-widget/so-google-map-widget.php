@@ -1,18 +1,18 @@
 <?php
 
 /*
-Widget Name: Google Maps Widget
+Widget Name: Google Map Widget
 Description: A simple Google Map with customisable initial location and zoom level
 Author: SiteOrigin
 Author URI: http://siteorigin.com
 */
 
-class SiteOrigin_Widget_JsGoogleMap_Widget extends SiteOrigin_Widget {
+class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 	function __construct() {
 
 		parent::__construct(
-			'sow-js-google-map',
+			'sow-google-map',
 			__( 'SiteOrigin Google Map', 'siteorigin-widgets' ),
 			array(
 				'description' => __( 'A Google Maps widget.', 'siteorigin-widgets' ),
@@ -287,11 +287,11 @@ class SiteOrigin_Widget_JsGoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	function enqueue_admin_scripts() {
-		wp_enqueue_script( 'sow-js-google-map', siteorigin_widget_get_plugin_dir_url( 'js-google-map' ) . 'js/js-map-admin.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
+		wp_enqueue_script( 'sow-google-map', siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map-admin.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
 	}
 
 	function enqueue_frontend_scripts() {
-		wp_enqueue_script( 'sow-js-google-map', siteorigin_widget_get_plugin_dir_url( 'js-google-map' ) . 'js/js-map.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
+		wp_enqueue_script( 'sow-google-map', siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
 	}
 
 	function get_template_name( $instance ) {
@@ -473,4 +473,4 @@ class SiteOrigin_Widget_JsGoogleMap_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register( 'js-google-map', __FILE__ );
+siteorigin_widget_register( 'google-map', __FILE__ );
