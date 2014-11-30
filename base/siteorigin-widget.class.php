@@ -250,6 +250,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		// This lets the widget enqueue any specific admin scripts
 		$this->enqueue_admin_scripts();
+		$this->get_javascript_variables();
 	}
 
 	/**
@@ -400,8 +401,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				if(empty($value)) continue;
 
 				if( is_array($value) ) {
-					// TODO make $value output as a LESS array
-					$less = preg_replace('/\@'.preg_quote($name).' *\:.*?;/', '@'.$name.': '.$value.';', $less);
+					$less = preg_replace('/\@'.preg_quote($name).' *\:.*?;/', '@'.$name.': '.implode(', ', $value).';', $less);
+					//lessphp doesn't have an implementation of the length function.
+					//so replace possible call to length function with actual length.
+					$less = preg_replace('/\@'.preg_quote($name).'-length *\:.*?;/', '@'.$name.'-length: '.count($value).';', $less);
 				}
 				else {
 					$less = preg_replace('/\@'.preg_quote($name).' *\:.*?;/', '@'.$name.': '.$value.';', $less);
@@ -600,8 +603,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			case 'select':
 				?>
 				<select name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" class="siteorigin-widget-input">
-					<?php foreach( $field['options'] as $v => $t ) : ?>
-						<option value="<?php echo esc_attr($v) ?>" <?php selected($v, $value) ?>><?php echo esc_html($t) ?></option>
+					<?php
+					if ( isset( $field['prompt'] ) ) {
+						?>
+						<option value="default" disabled="disabled" selected="selected"><?php echo esc_html( $field['prompt'] ) ?></option>
+						<?php
+					}
+					?>
+					<?php foreach( $field['options'] as $key => $val ) : ?>
+							<option value="<?php echo esc_attr($key) ?>" <?php selected($key, $value) ?>><?php echo esc_html($val) ?></option>
 					<?php endforeach; ?>
 				</select>
 				<?php
@@ -898,7 +908,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Can be overwritten by child themes to enqueue scripts and styles for the frontend
+	 * Can be overwritten by child widgets to make variables available to javascript via ajax calls.
+	 */
+	function get_javascript_variables(){ }
+
+	/**
+	 * Can be overwritten by child widgets to enqueue scripts and styles for the frontend.
 	 */
 	function enqueue_frontend_scripts(){ }
 
