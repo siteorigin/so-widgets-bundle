@@ -278,7 +278,8 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						'api_key'     => array(
 							'type'        => 'text',
 							'label'       => __( 'API key', 'siteorigin-widgets' ),
-							'description' => __( 'Enter your API key if you have one. This enables you to monitor your Maps API usage in the Google APIs Console.', 'siteorigin-widgets' )
+							'description' => __( 'Enter your API key if you have one. This enables you to monitor your Maps API usage in the Google APIs Console.', 'siteorigin-widgets' ),
+							'optional'    => true
 						)
 					)
 				)

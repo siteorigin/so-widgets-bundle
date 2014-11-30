@@ -33,6 +33,14 @@
 .siteorigin-widget-form .siteorigin-widget-field.siteorigin-widget-field-separator {
   margin: 1.75em 0;
 }
+.siteorigin-widget-form .siteorigin-widget-field.siteorigin-widget-field-is-optional .field-optional {
+  font-weight: normal;
+  font-size: 0.8em;
+  vertical-align: super;
+  padding-left: 0.5em;
+  color: #005400;
+  font-style: italic;
+}
 .siteorigin-widget-form .siteorigin-widget-field-type-slider .siteorigin-widget-slider-wrapper {
   margin: 10px 0;
   border: 1px solid #E0E0E0;
