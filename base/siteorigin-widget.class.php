@@ -532,12 +532,30 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			 $value = $field['default'];
 		}
 
-		?><div class="siteorigin-widget-field siteorigin-widget-field-type-<?php echo sanitize_html_class($field['type']) ?> siteorigin-widget-field-<?php echo sanitize_html_class($name) ?> <?php if( !empty( $field['state_name'] ) ) echo 'siteorigin-widget-field-state-' . $field['state_name'] ?> <?php if( !empty( $field['hidden'] ) ) echo 'siteorigin-widget-field-is-hidden' ?>"><?php
+		$wrapper_classes = array(
+			'siteorigin-widget-field',
+			'siteorigin-widget-field-type-' . $field['type'],
+			'siteorigin-widget-field-' . $name
+		);
+		if( !empty( $field['state_name'] ) ) $wrapper_classes[] = 'siteorigin-widget-field-state-' . $field['state_name'];
+		if( !empty( $field['hidden'] ) ) $wrapper_classes[] = 'siteorigin-widget-field-is-hidden';
+		if( !empty( $field['optional'] ) ) $wrapper_classes[] = 'siteorigin-widget-field-is-optional';
+
+		?><div class="<?php echo implode(' ', array_map('sanitize_html_class', $wrapper_classes) ) ?>"><?php
 
 		$field_id = $this->so_get_field_id( $name, $repeater, $is_template );
 
 		if($field['type'] != 'repeater' && $field['type'] != 'checkbox' && $field['type'] != 'separator') {
-			?><label for="<?php echo $field_id ?>" class="siteorigin-widget-field-label <?php if( empty($field['hide']) ) echo 'siteorigin-widget-section-visible'; ?>"><?php echo $field['label'] ?></label><?php
+			?>
+			<label for="<?php echo $field_id ?>" class="siteorigin-widget-field-label <?php if( empty($field['hide']) ) echo 'siteorigin-widget-section-visible'; ?>">
+				<?php
+				echo $field['label'];
+				if( !empty( $field['optional'] ) ) {
+					echo ' <span class="field-optional">(' . __('Optional', 'siteorigin-panels') . ')</span>';
+				}
+				?>
+			</label>
+			<?php
 		}
 
 		switch( $field['type'] ) {

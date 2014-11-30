@@ -121,6 +121,9 @@
   text-decoration: none;
   color: #FFFFFF;
 }
+.sow-slider-base .sow-slide-nav a em {
+  display: block;
+}
 .sow-slider-base .sow-slide-nav.sow-slide-nav-next {
   right: 20px;
 }
