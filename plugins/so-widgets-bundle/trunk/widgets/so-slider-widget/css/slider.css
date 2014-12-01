@@ -146,8 +146,8 @@
 .sow-slider-base.sow-slider-is-mobile video.sow-background-element {
   visibility: hidden;
 }
-.sow-slider-base [class^="icon-"],
-.sow-slider-base [class*=" icon-"] {
+.sow-slider-base [class^="sow-sld-icon-"],
+.sow-slider-base [class*=" sow-sld-icon-"] {
   font-family: 'so-slider-pointers';
   speak: none;
   font-style: normal;
@@ -159,51 +159,51 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.sow-slider-base .icon-ultra-thin-rounded-left:before {
+.sow-slider-base .sow-sld-icon-ultra-thin-rounded-left:before {
   content: "\e600";
 }
-.sow-slider-base .icon-ultra-thin-rounded-right:before {
+.sow-slider-base .sow-sld-icon-ultra-thin-rounded-right:before {
   content: "\e601";
 }
-.sow-slider-base .icon-thin-rounded-left:before {
+.sow-slider-base .sow-sld-icon-thin-rounded-left:before {
   content: "\e602";
 }
-.sow-slider-base .icon-thin-rounded-right:before {
+.sow-slider-base .sow-sld-icon-thin-rounded-right:before {
   content: "\e603";
 }
-.sow-slider-base .icon-medium-rounded-left:before {
+.sow-slider-base .sow-sld-icon-medium-rounded-left:before {
   content: "\e604";
 }
-.sow-slider-base .icon-medium-rounded-right:before {
+.sow-slider-base .sow-sld-icon-medium-rounded-right:before {
   content: "\e605";
 }
-.sow-slider-base .icon-thick-rounded-left:before {
+.sow-slider-base .sow-sld-icon-thick-rounded-left:before {
   content: "\e606";
 }
-.sow-slider-base .icon-thick-rounded-right:before {
+.sow-slider-base .sow-sld-icon-thick-rounded-right:before {
   content: "\e607";
 }
-.sow-slider-base .icon-ultra-thin-left:before {
+.sow-slider-base .sow-sld-icon-ultra-thin-left:before {
   content: "\e608";
 }
-.sow-slider-base .icon-ultra-thin-right:before {
+.sow-slider-base .sow-sld-icon-ultra-thin-right:before {
   content: "\e609";
 }
-.sow-slider-base .icon-thin-left:before {
+.sow-slider-base .sow-sld-icon-thin-left:before {
   content: "\e60a";
 }
-.sow-slider-base .icon-thin-right:before {
+.sow-slider-base .sow-sld-icon-thin-right:before {
   content: "\e60b";
 }
-.sow-slider-base .icon-medium-left:before {
+.sow-slider-base .sow-sld-icon-medium-left:before {
   content: "\e60c";
 }
-.sow-slider-base .icon-medium-right:before {
+.sow-slider-base .sow-sld-icon-medium-right:before {
   content: "\e60d";
 }
-.sow-slider-base .icon-thick-left:before {
+.sow-slider-base .sow-sld-icon-thick-left:before {
   content: "\e60e";
 }
-.sow-slider-base .icon-thick-right:before {
+.sow-slider-base .sow-sld-icon-thick-right:before {
   content: "\e60f";
 }

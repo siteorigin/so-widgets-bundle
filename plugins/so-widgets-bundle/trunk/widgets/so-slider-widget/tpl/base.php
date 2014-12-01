@@ -72,13 +72,13 @@ if( empty($instance['frames']) ) return;
 
 	<div class="sow-slide-nav sow-slide-nav-next">
 		<a href="#" data-goto="next" data-action="next">
-			<em class="icon-<?php echo sanitize_html_class( $instance['nav_style'] ) ?>-right"></em>
+			<em class="sow-sld-icon-<?php echo sanitize_html_class( $instance['nav_style'] ) ?>-right"></em>
 		</a>
 	</div>
 
 	<div class="sow-slide-nav sow-slide-nav-prev">
 		<a href="#" data-goto="previous" data-action="prev">
-			<em class="icon-<?php echo sanitize_html_class( $instance['nav_style'] ) ?>-left"></em>
+			<em class="sow-sld-icon-<?php echo sanitize_html_class( $instance['nav_style'] ) ?>-left"></em>
 		</a>
 	</div>
 
