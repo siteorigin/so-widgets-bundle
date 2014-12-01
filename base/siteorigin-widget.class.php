@@ -548,7 +548,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		$field_id = $this->so_get_field_id( $name, $repeater, $is_template );
 
-		if($field['type'] != 'repeater' && $field['type'] != 'checkbox' && $field['type'] != 'separator') {
+		if( $field['type'] != 'repeater' && $field['type'] != 'checkbox' && $field['type'] != 'separator' && !empty($field['label']) ) {
 			?>
 			<label for="<?php echo $field_id ?>" class="siteorigin-widget-field-label <?php if( empty($field['hide']) ) echo 'siteorigin-widget-section-visible'; ?>">
 				<?php
