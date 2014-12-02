@@ -404,7 +404,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$less = preg_replace('/\@'.preg_quote($name).' *\:.*?;/', '@'.$name.': '.implode(', ', $value).';', $less);
 					//lessphp doesn't have an implementation of the length function.
 					//so replace possible call to length function with actual length.
-					$less = preg_replace('/\@'.preg_quote($name).'-length *\:.*?;/', '@'.$name.'-length: '.count($value).';', $less);
+					$less = preg_replace( '/\@' . preg_quote( $name ) . '_length *\:.*?;/', '@' . $name . '_length: ' . count( $value ) . ';', $less );
 				}
 				else {
 					$less = preg_replace('/\@'.preg_quote($name).' *\:.*?;/', '@'.$name.': '.$value.';', $less);
