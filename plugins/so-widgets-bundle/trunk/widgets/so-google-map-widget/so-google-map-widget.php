@@ -2,7 +2,7 @@
 
 /*
 Widget Name: Google Map Widget
-Description: A simple Google Map with customisable initial location and zoom level
+Description: A highly customisable Google Map widget. Help your site find its place and give it some direction.
 Author: SiteOrigin
 Author URI: http://siteorigin.com
 */
@@ -213,8 +213,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'fields'      => array(
 						'origin'             => array(
 							'type'        => 'text',
-							'label'       => __( 'Starting point', 'siteorigin-widgets' ),
-							'description' => __( 'Choose a starting point.', 'siteorigin-widgets' )
+							'label'       => __( 'Starting point', 'siteorigin-widgets' )
 						),
 						'destination'        => array(
 							'type'  => 'text',
@@ -266,7 +265,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							'type'        => 'checkbox',
 							'label'       => __( 'Optimize waypoints', 'siteorigin-widgets' ),
 							'default'     => false,
-							'description' => __( 'Allow the service to reorder waypoints for the shortest travelling distance.', 'siteorigin-widgets' )
+							'description' => __( 'Allow the Google Maps service to reorder waypoints for the shortest travelling distance.', 'siteorigin-widgets' )
 						)
 					)
 				),
