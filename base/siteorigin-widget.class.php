@@ -424,10 +424,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		return $c->compile($less);
 	}
 
-	private function add_less_functions(){
-
-	}
-
 	/**
 	 * @param $instance
 	 * @param $fields
