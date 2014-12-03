@@ -14,8 +14,11 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 define('SOW_BUNDLE_VERSION', 'trunk');
 define('SOW_BUNDLE_BASE_FILE', __FILE__);
 
-include plugin_dir_path(__FILE__).'base/inc.php';
-include plugin_dir_path(__FILE__).'icons/icons.php';
+// We're going to include this check until version 1.2
+if( !function_exists('siteorigin_widget_get_plugin_path') ) {
+	include plugin_dir_path(__FILE__).'base/inc.php';
+	include plugin_dir_path(__FILE__).'icons/icons.php';
+}
 
 
 class SiteOrigin_Widgets_Bundle {
@@ -80,6 +83,7 @@ class SiteOrigin_Widgets_Bundle {
 		if( empty($active_version) || version_compare( $active_version, SOW_BUNDLE_VERSION, '<' ) ) {
 			// If this is a new version, then clear the cache.
 			update_option( 'siteorigin_widget_bundle_version', SOW_BUNDLE_VERSION );
+			siteorigin_widgets_deactivate_legacy_plugins();
 
 			// Remove all cached CSS for SiteOrigin Widgets
 			if( function_exists('WP_Filesystem') && WP_Filesystem() ) {
@@ -110,7 +114,7 @@ class SiteOrigin_Widgets_Bundle {
 	function load_widget_plugins(){
 
 		if( empty($this->widget_folders) ) {
-			// We can use this filter to add more folders to search for widgets
+			// We can use this filter to add more folders to use for widgets
 			$this->widget_folders = apply_filters('siteorigin_widgets_widget_folders', array(
 				plugin_dir_path(__FILE__).'widgets/'
 			) );
@@ -122,7 +126,7 @@ class SiteOrigin_Widgets_Bundle {
 		foreach( array_keys($active_widgets) as $widget_id ) {
 
 			foreach( $this->widget_folders as $folder ) {
-				if( !file_exists($folder . $widget_id.'/'.$widget_id.'.php') ) continue;
+				if ( !file_exists($folder . $widget_id.'/'.$widget_id.'.php') ) continue;
 
 				// Include this widget file
 				include_once $folder . $widget_id.'/'.$widget_id.'.php';
@@ -406,3 +410,18 @@ class SiteOrigin_Widgets_Bundle {
 
 // create the initial single
 SiteOrigin_Widgets_Bundle::single();
+
+/**
+ * Deactivate any old widget plugins that we used to have on the directory. We'll remove this after version 1.2.
+ */
+function siteorigin_widgets_deactivate_legacy_plugins(){
+	// All we want to do here is disable all legacy widgets
+	$the_plugins = get_option('active_plugins');
+	foreach($the_plugins as $plugin_id) {
+		if( preg_match('/^so-([a-z\-]+)-widget\/so-([a-z\-]+)-widget\.php$/', $plugin_id) ) {
+			// Deactivate the legacy plugin
+			deactivate_plugins($plugin_id, true);
+		}
+	}
+}
+register_activation_hook( __FILE__, 'siteorigin_widgets_deactivate_legacy_plugins' );
