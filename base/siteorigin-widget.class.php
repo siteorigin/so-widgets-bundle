@@ -830,13 +830,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$transformed = array();
 		if ( !empty( $array ) ) {
 			foreach ( $array as $key => $val ) {
-				$jsKey = preg_replace_callback( '/_(.?)/', function ( $matches ) {
-					return strtoupper( $matches[1] );
-				}, $key );
+				$jsKey = preg_replace_callback( '/_(.?)/', array($this, 'match_to_upper'), $key );
 				$transformed[ $jsKey ] = $val;
 			}
 		}
 		return $transformed;
+	}
+
+	private function match_to_upper( $matches ) {
+		return strtoupper( $matches[1] );
 	}
 
 	/**
