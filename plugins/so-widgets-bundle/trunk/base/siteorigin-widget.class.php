@@ -387,6 +387,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function get_instance_css( $instance ){
 		if( !class_exists('lessc') ) require plugin_dir_path( __FILE__ ).'inc/lessc.inc.php';
+		if( !class_exists('SiteOrigin_Widgets_Less_Functions') ) require plugin_dir_path( __FILE__ ).'inc/less-functions.php';
 
 		$style_name = $this->get_style_name($instance);
 		if( empty($style_name) ) return '';
@@ -402,9 +403,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 				if( is_array($value) ) {
 					$less = preg_replace('/\@'.preg_quote($name).' *\:.*?;/', '@'.$name.': '.implode(', ', $value).';', $less);
-					//lessphp doesn't have an implementation of the length function.
-					//so replace possible call to length function with actual length.
-					$less = preg_replace( '/\@' . preg_quote( $name ) . '_length *\:.*?;/', '@' . $name . '_length: ' . count( $value ) . ';', $less );
 				}
 				else {
 					$less = preg_replace('/\@'.preg_quote($name).' *\:.*?;/', '@'.$name.': '.$value.';', $less);
@@ -422,7 +420,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$less = '.so-widget-'.$css_name.' { '.$less.' } ';
 
 		$c = new lessc();
+		SiteOrigin_Widgets_Less_Functions::registerFunctions($c);
 		return $c->compile($less);
+	}
+
+	private function add_less_functions(){
+
 	}
 
 	/**
