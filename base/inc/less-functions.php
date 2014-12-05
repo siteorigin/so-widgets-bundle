@@ -13,7 +13,7 @@ class SiteOrigin_Widgets_Less_Functions {
 	 * Register less functions in a lessc object
 	 */
 	static function registerFunctions(&$c){
-		$c->registerFunction( 'length', array('SiteOrigin_Widgets_Less_Functions', 'lengthFunction') );
+		$c->registerFunction( 'length', array('SiteOrigin_Widgets_Less_Functions', 'length') );
 	}
 
 	/**
@@ -23,7 +23,7 @@ class SiteOrigin_Widgets_Less_Functions {
 	 *
 	 * @return int
 	 */
-	static function lengthFunction($arg){
+	static function length($arg){
 		if(empty($arg[0]) || empty($arg[2]) || $arg[0] != 'list') return 1;
 		return count($arg[2]);
 	}
