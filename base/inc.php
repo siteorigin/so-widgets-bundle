@@ -218,8 +218,8 @@ add_action('wp_ajax_so_widgets_preview', 'siteorigin_widget_preview_widget_actio
  */
 function siteorigin_widget_add_bundle_groups($widgets){
 	foreach( $widgets as $class => &$widget ) {
-		if( preg_match('/SiteOrigin_Widget_(.*)_Widget/', $class) ) {
-			$widget['icon'] = 'so-widget-icon so-widget-icon-default';
+		if( preg_match('/SiteOrigin_Widget_(.*)_Widget/', $class, $matches) ) {
+			$widget['icon'] = 'so-widget-icon so-widget-icon-'.strtolower($matches[1]);
 			$widget['groups'] = array('so-widgets-bundle');
 		}
 	}

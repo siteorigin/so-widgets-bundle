@@ -655,11 +655,6 @@
 }
 /* Icons */
 .widget-icon.so-widget-icon {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
   background-size: cover;
-}
-.widget-icon.so-widget-icon.so-widget-icon-default {
-  background-image: url("img/siteorigin.png");
+  background-image: url("img/bundle-icon.png");
 }
