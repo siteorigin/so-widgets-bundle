@@ -321,6 +321,7 @@ class SiteOrigin_Widgets_Bundle {
 
 				$widget['ID'] = $id;
 				$widget['Active'] = !empty($active[$id]);
+				$widget['File'] = $file;
 
 				$widgets[$file] = $widget;
 			}

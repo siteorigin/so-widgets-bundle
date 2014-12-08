@@ -8,8 +8,8 @@
 
 					<?php
 					$banner = '';
-					if( file_exists( plugin_dir_path(__FILE__) . '../banners/' . $widget['ID'] . '.svg' ) ) {
-						$banner = plugin_dir_url(__FILE__) . '../banners/' . $widget['ID'] . '.svg';
+					if( file_exists( plugin_dir_path( $widget['File'] ) . 'assets/banner.svg' ) ) {
+						$banner = plugin_dir_url( $widget['File'] ) . 'assets/banner.svg';
 					}
 					$banner = apply_filters('siteorigin_widgets_widget_banner', $banner, $widget);
 					?>
