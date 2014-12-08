@@ -184,3 +184,13 @@
 	.gradient(@base_color, @gradient_start, @gradient_end);
 	.bordered(@border_top, @border_color, @border_bottom, @border_color);
 }
+
+
+// ............................................................
+// .for-each
+
+.for(@array, @list_length) {.for-impl_(@list_length)}
+// do recursion
+.for-impl_(@i) when (@i > 1) {.for-impl_((@i - 1))}
+//stop recursing at 0
+.for-impl_(@i) when (@i > 0) {.-each(extract(@array, @i))}
