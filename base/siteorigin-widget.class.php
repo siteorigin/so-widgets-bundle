@@ -423,7 +423,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$less = '.so-widget-'.$css_name.' { '.$less.' } ';
 
 		$c = new lessc();
-		SiteOrigin_Widgets_Less_Functions::registerFunctions($c);
+		$lc_functions = new SiteOrigin_Widgets_Less_Functions($this, $instance);
+		$lc_functions->registerFunctions($c);
 		return $c->compile($less);
 	}
 
