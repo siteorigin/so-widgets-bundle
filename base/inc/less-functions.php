@@ -22,7 +22,6 @@ class SiteOrigin_Widgets_Less_Functions {
 	 */
 	function registerFunctions(&$c){
 		$c->registerFunction( 'length', array($this, 'length') );
-		$c->registerFunction( 'widget-function', array($this, 'callWidgetFunction') );
 	}
 
 	/**
@@ -35,19 +34,6 @@ class SiteOrigin_Widgets_Less_Functions {
 	function length($arg){
 		if(empty($arg[0]) || empty($arg[2]) || $arg[0] != 'list') return 1;
 		return count($arg[2]);
-	}
-
-	/**
-	 * Let LESS easily call a widget function.
-	 *
-	 * @param $arg
-	 *
-	 * @return mixed
-	 */
-	function callWidgetFunction( $arg ) {
-		// This needs to be done.
-		// Maybe make it possible to have extra arguments
-		return call_user_func(array($this->widget_instance, $arg[0]), $this->widget_instance);
 	}
 
 }

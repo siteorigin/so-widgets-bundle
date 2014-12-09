@@ -11,6 +11,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	protected $repeater_html;
 	protected $field_ids;
 
+	protected $current_instance;
+
 	/**
 	 * @var int How many seconds a CSS file is valid for.
 	 */
@@ -47,6 +49,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		$instance = $this->modify_instance($instance);
+		$this->current_instance = $instance;
 
 		$args = wp_parse_args( $args, array(
 			'before_widget' => '',
@@ -96,13 +99,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		extract( $this->get_template_variables($instance, $args) );
 
 		// A lot of themes, including Underscores, default themes and SiteOrigin themes wrap their content in entry-content
-		// echo '<div class="entry-content">';
 		echo $args['before_widget'];
 		echo '<div class="so-widget-'.$this->id_base.' so-widget-'.$css_name.'">';
 		@ include siteorigin_widget_get_plugin_dir_path( $this->id_base ) . '/tpl/' . $this->get_template_name($instance) . '.php';
 		echo '</div>';
 		echo $args['after_widget'];
-		// echo '</div>';
+
+		$this->current_instance = false;
 	}
 
 	/**
@@ -416,6 +419,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$mixins = file_get_contents( plugin_dir_path(__FILE__).'less/mixins.less' );
 		$less = preg_replace('/@import \".*mixins\";/', $mixins."\n\n", $less);
 
+		// Lets widgets insert their own custom generated LESS
+		$less = preg_replace_callback('/\.widget-function\((.*)\);/', array($this, 'less_widget_inject'), $less);
+
 		$style = $this->get_style_name( $instance );
 		$hash = $this->get_style_hash( $instance );
 		$css_name = $this->id_base . '-' . $style . '-' . $hash;
@@ -426,6 +432,19 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$lc_functions = new SiteOrigin_Widgets_Less_Functions($this, $instance);
 		$lc_functions->registerFunctions($c);
 		return $c->compile($less);
+	}
+
+	private function less_widget_inject($matches){
+		// We're going to lazily split the arguments by comma
+		$args = explode(',', $matches[1]);
+		if( empty($args[0]) ) return '';
+
+		// Shift the function name from the arguments
+		$func = 'less_' . trim( array_shift($args) , '\'"');
+		if( !method_exists($this, $func) ) return '';
+
+		$args = array_map('trim', $args);
+		return call_user_func( array($this, $func), $this->current_instance, $args );
 	}
 
 	/**
