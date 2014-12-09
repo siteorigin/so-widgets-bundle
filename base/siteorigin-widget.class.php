@@ -404,15 +404,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			foreach($vars as $name => $value) {
 				if(empty($value)) continue;
 
-				if( is_array($value) ) {
-					$less = preg_replace('/\@'.preg_quote($name).' *\:.*?;/', '@'.$name.': '.implode(', ', $value).';', $less);
-					// need to inject count here because lessphp can't distinguish between list of items and a list of
-					// lists containing one item :/
-					$less = preg_replace('/\@'.preg_quote($name).'_length *\:.*?;/', '@'.$name.'_length: '.count($value).';', $less);
-				}
-				else {
-					$less = preg_replace('/\@'.preg_quote($name).' *\:.*?;/', '@'.$name.': '.$value.';', $less);
-				}
+				$less = preg_replace('/\@'.preg_quote($name).' *\:.*?;/', '@'.$name.': '.$value.';', $less);
 			}
 		}
 
