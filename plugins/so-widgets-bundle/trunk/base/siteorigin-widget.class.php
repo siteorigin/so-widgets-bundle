@@ -399,6 +399,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		// Substitute the variables
 		if( !class_exists('SiteOrigin_Widgets_Color_Object') ) require plugin_dir_path( __FILE__ ) . 'inc/color.php';
+
+		// Lets widgets insert their own custom generated LESS
+		$less = preg_replace_callback('/\.widget-function\((.*)\);/', array($this, 'less_widget_inject'), $less);
+
 		$vars = $this->get_less_variables($instance);
 		if( !empty( $vars ) ){
 			foreach($vars as $name => $value) {
@@ -410,9 +414,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		$mixins = file_get_contents( plugin_dir_path(__FILE__).'less/mixins.less' );
 		$less = preg_replace('/@import \".*mixins\";/', $mixins."\n\n", $less);
-
-		// Lets widgets insert their own custom generated LESS
-		$less = preg_replace_callback('/\.widget-function\((.*)\);/', array($this, 'less_widget_inject'), $less);
 
 		$style = $this->get_style_name( $instance );
 		$hash = $this->get_style_hash( $instance );
