@@ -400,8 +400,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// Substitute the variables
 		if( !class_exists('SiteOrigin_Widgets_Color_Object') ) require plugin_dir_path( __FILE__ ) . 'inc/color.php';
 
+		//handle less @import statements
+		$less = preg_replace_callback( '/^@import\s+".*?\/?([\w-\.]+)";/m', array( $this, 'get_less_import_contents' ), $less );
+
 		// Lets widgets insert their own custom generated LESS
-		$less = preg_replace_callback('/\.widget-function\((.*)\);/', array($this, 'less_widget_inject'), $less);
+		$less = preg_replace_callback( '/\.widget-function\((.*)\);/', array( $this, 'less_widget_inject' ), $less );
 
 		$vars = $this->get_less_variables($instance);
 		if( !empty( $vars ) ){
@@ -411,9 +414,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				$less = preg_replace('/\@'.preg_quote($name).' *\:.*?;/', '@'.$name.': '.$value.';', $less);
 			}
 		}
-
-		$mixins = file_get_contents( plugin_dir_path(__FILE__).'less/mixins.less' );
-		$less = preg_replace('/@import \".*mixins\";/', $mixins."\n\n", $less);
 
 		$style = $this->get_style_name( $instance );
 		$hash = $this->get_style_hash( $instance );
@@ -425,6 +425,35 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$lc_functions = new SiteOrigin_Widgets_Less_Functions($this, $instance);
 		$lc_functions->registerFunctions($c);
 		return $c->compile($less);
+	}
+
+	private function get_less_import_contents($matches) {
+		$fileName = $matches[1];
+		//get file extenstion
+		preg_match( '/\.\w+$/', $fileName, $ext );
+		//if there is a file extension and it's not .less or .css we ignore
+		if ( ! empty( $ext ) ) {
+			if ( ! ( $ext[0] == '.less' || $ext[0] == '.css' ) ) {
+				return '';
+			}
+		}
+		else {
+			$fileName .= '.less';
+		}
+		//first check local widget styles directory and then bundle less directory
+		$searchPath = array(
+			siteorigin_widget_get_plugin_dir_path( $this->id_base ) . 'styles/',
+			plugin_dir_path( __FILE__ ) . 'less/'
+		);
+
+		foreach ( $searchPath as $dir ) {
+			if ( file_exists( $dir . $fileName ) ) {
+				return file_get_contents( $dir . $fileName )."\n\n";
+			}
+		}
+
+		//file not found
+		return '';
 	}
 
 	private function less_widget_inject($matches){
