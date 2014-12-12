@@ -37,7 +37,7 @@ function siteorigin_widget_post_selector_form_fields(){
 
 	// The post type field
 	$return['post_type'] = '';
-	$return['post_type'] .= '<label><span>' . __('Post Type', 'siteorigin-widgets') . '</span>';
+	$return['post_type'] .= '<label><span>' . __('Post type', 'siteorigin-widgets') . '</span>';
 	$return['post_type'] .= '<select name="post_type">';
 	$return['post_type'] .= '<option value="_all">' . __('All', 'siteorigin-widgets') . '</option>';
 	foreach( get_post_types( array( 'public' => true  ), 'objects' ) as $id => $type ) {
@@ -50,9 +50,9 @@ function siteorigin_widget_post_selector_form_fields(){
 
 	// The field for specifying individual posts
 	$return['post__in'] = '';
-	$return['post__in'] .= '<label><span>' . __('Post In', 'siteorigin-widgets') . '</span>';
+	$return['post__in'] .= '<label><span>' . __('Post in', 'siteorigin-widgets') . '</span>';
 	$return['post__in'] .= '<input type="text" name="post__in" class="" />';
-	$return['post__in'] .= ' <a href="#" class="sow-select-posts button button-secondary">' . __('Select Posts', 'siteorigin-widget') . '</a>';
+	$return['post__in'] .= ' <a href="#" class="sow-select-posts button button-secondary">' . __('Select posts', 'siteorigin-widget') . '</a>';
 	$return['post__in'] .= '</label>';
 
 	// The taxonomy field
@@ -64,22 +64,22 @@ function siteorigin_widget_post_selector_form_fields(){
 
 	// The order by field
 	$return['orderby'] = '';
-	$return['orderby'] .= '<label><span>' . __('Order By', 'siteorigin-widgets') . '</span>';
+	$return['orderby'] .= '<label><span>' . __('Order by', 'siteorigin-widgets') . '</span>';
 	$return['orderby'] .= '<select name="orderby">';
 	$orderby = array(
-		'none' => __('No Order', 'siteorigin-widgets'),
+		'none' => __('No order', 'siteorigin-widgets'),
 		'ID' => __('Post ID', 'siteorigin-widgets'),
 		'author' => __('Author', 'siteorigin-widgets'),
 		'title' => __('Title', 'siteorigin-widgets'),
-		'date' => __('Published Date', 'siteorigin-widgets'),
-		'modified' => __('Modified Date', 'siteorigin-widgets'),
-		'parent' => __('By Parent', 'siteorigin-widgets'),
-		'rand' => __('Random Order', 'siteorigin-widgets'),
-		'comment_count' => __('Comment Count', 'siteorigin-widgets'),
-		'menu_order' => __('Menu Order', 'siteorigin-widgets'),
-		'meta_value' => __('By Meta Value', 'siteorigin-widgets'),
-		'meta_value_num' => __('By Numeric Meta Value', 'siteorigin-widgets'),
-		'post__in' => __('By Include Order', 'siteorigin-widgets'),
+		'date' => __('Published date', 'siteorigin-widgets'),
+		'modified' => __('Modified date', 'siteorigin-widgets'),
+		'parent' => __('By parent', 'siteorigin-widgets'),
+		'rand' => __('Random order', 'siteorigin-widgets'),
+		'comment_count' => __('Comment count', 'siteorigin-widgets'),
+		'menu_order' => __('Menu order', 'siteorigin-widgets'),
+		'meta_value' => __('By meta value', 'siteorigin-widgets'),
+		'meta_value_num' => __('By numeric meta value', 'siteorigin-widgets'),
+		'post__in' => __('By include order', 'siteorigin-widgets'),
 	);
 	foreach($orderby as $id => $v) {
 		$return['orderby'] .= '<option value="' . $id . '">' . $v . '</option>';
@@ -90,7 +90,7 @@ function siteorigin_widget_post_selector_form_fields(){
 	$return['orderby'] .= '</label>';
 
 	$return['posts_per_page'] = '';
-	$return['posts_per_page'] .= '<label><span>' . __('Posts Per Page', 'siteorigin-widgets') . '</span>';
+	$return['posts_per_page'] .= '<label><span>' . __('Posts per page', 'siteorigin-widgets') . '</span>';
 	$return['posts_per_page'] .= '<input type="number" name="posts_per_page" class="" />';
 	$return['posts_per_page'] .= '</label>';
 

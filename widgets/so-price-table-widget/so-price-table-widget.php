@@ -1,6 +1,6 @@
 <?php
 /*
-Widget Name: Price Table Widget
+Widget Name: Price table widget
 Description: A powerful yet simple price table widget for your sidebars or Page Builder pages.
 Author: Greg Priday
 Author URI: http://siteorigin.com
@@ -45,7 +45,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 						),
 						'subtitle' => array(
 							'type' => 'text',
-							'label' => __('Sub Title', 'siteorigin-widgets'),
+							'label' => __('Subtitle', 'siteorigin-widgets'),
 						),
 
 						'image' => array(
@@ -63,7 +63,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 						),
 						'button' => array(
 							'type' => 'text',
-							'label' => __('Button Text', 'siteorigin-widgets'),
+							'label' => __('Button text', 'siteorigin-widgets'),
 						),
 						'url' => array(
 							'type' => 'text',
@@ -86,7 +86,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 								),
 								'hover' => array(
 									'type' => 'text',
-									'label' => __('Hover Text', 'siteorigin-widgets'),
+									'label' => __('Hover text', 'siteorigin-widgets'),
 								),
 								'icon_new' => array(
 									'type' => 'icon',
@@ -94,7 +94,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 								),
 								'icon_color' => array(
 									'type' => 'color',
-									'label' => __('Icon Color', 'siteorigin-widgets'),
+									'label' => __('Icon color', 'siteorigin-widgets'),
 								),
 							),
 						),
@@ -103,7 +103,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 
 				'theme' => array(
 					'type' => 'select',
-					'label' => __('Price Table Theme', 'siteorigin-widgets'),
+					'label' => __('Price table theme', 'siteorigin-widgets'),
 					'options' => array(
 						'atom' => __('Atom', 'siteorigin-widgets'),
 					),
@@ -111,22 +111,22 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 
 				'header_color' => array(
 					'type' => 'color',
-					'label' => __('Header Color', 'siteorigin-widgets'),
+					'label' => __('Header color', 'siteorigin-widgets'),
 				),
 
 				'featured_header_color' => array(
 					'type' => 'color',
-					'label' => __('Featured Header Color', 'siteorigin-widgets'),
+					'label' => __('Featured header color', 'siteorigin-widgets'),
 				),
 
 				'button_color' => array(
 					'type' => 'color',
-					'label' => __('Button Color', 'siteorigin-widgets'),
+					'label' => __('Button color', 'siteorigin-widgets'),
 				),
 
 				'featured_button_color' => array(
 					'type' => 'color',
-					'label' => __('Featured Button Color', 'siteorigin-widgets'),
+					'label' => __('Featured button color', 'siteorigin-widgets'),
 				),
 			),
 			plugin_dir_path(__FILE__).'../'

@@ -1,6 +1,6 @@
 <?php
 /*
-Widget Name: Features Widget
+Widget Name: Features widget
 Description: Displays a block of features with icons.
 Author: Greg Priday
 Author URI: http://siteorigin.com
@@ -32,7 +32,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 
 						'container_color' => array(
 							'type' => 'color',
-							'label' => __('Container Color', 'siteorigin-widgets'),
+							'label' => __('Container color', 'siteorigin-widgets'),
 							'default' => '#404040',
 						),
 
@@ -45,14 +45,14 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 
 						'icon_color' => array(
 							'type' => 'color',
-							'label' => __('Icon Color', 'siteorigin-widgets'),
+							'label' => __('Icon color', 'siteorigin-widgets'),
 							'default' => '#FFFFFF',
 						),
 
 						'icon_image' => array(
 							'type' => 'media',
 							'library' => 'image',
-							'label' => __('Icon Image', 'siteorigin-widgets'),
+							'label' => __('Icon image', 'siteorigin-widgets'),
 							'description' => __('Use your own icon image.', 'siteorigin-widgets'),
 						),
 
@@ -60,7 +60,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 
 						'title' => array(
 							'type' => 'text',
-							'label' => __('Title Text', 'siteorigin-widgets'),
+							'label' => __('Title text', 'siteorigin-widgets'),
 						),
 
 						'text' => array(
@@ -70,12 +70,12 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 
 						'more_text' => array(
 							'type' => 'text',
-							'label' => __('More Link Text', 'siteorigin-widgets'),
+							'label' => __('More link text', 'siteorigin-widgets'),
 						),
 
 						'more_url' => array(
 							'type' => 'text',
-							'label' => __('More Link URL', 'siteorigin-widgets'),
+							'label' => __('More link URL', 'siteorigin-widgets'),
 							'sanitize' => 'url',
 						),
 					),
@@ -83,50 +83,50 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 
 				'container_shape' => array(
 					'type' => 'select',
-					'label' => __('Container Shape', 'siteorigin-widgets'),
+					'label' => __('Container shape', 'siteorigin-widgets'),
 					'options' => array(
 					),
 				),
 
 				'container_size' => array(
 					'type' => 'number',
-					'label' => __('Container Size', 'siteorigin-widgets'),
+					'label' => __('Container size', 'siteorigin-widgets'),
 					'default' => 84,
 				),
 
 				'icon_size' => array(
 					'type' => 'number',
-					'label' => __('Icon Size', 'siteorigin-widgets'),
+					'label' => __('Icon size', 'siteorigin-widgets'),
 					'default' => 24,
 				),
 
 				'per_row' => array(
 					'type' => 'number',
-					'label' => __('Features Per Row', 'siteorigin-widgets'),
+					'label' => __('Features per row', 'siteorigin-widgets'),
 					'default' => 3,
 				),
 
 				'responsive' => array(
 					'type' => 'checkbox',
-					'label' => __('Responsive Layout', 'siteorigin-widgets'),
+					'label' => __('Responsive layout', 'siteorigin-widgets'),
 					'default' => true,
 				),
 
 				'title_link' => array(
 					'type' => 'checkbox',
-					'label' => __('Link Feature Title to More URL', 'siteorigin-widgets'),
+					'label' => __('Link feature title to more URL', 'siteorigin-widgets'),
 					'default' => false,
 				),
 
 				'icon_link' => array(
 					'type' => 'checkbox',
-					'label' => __('Link Icon to More URL', 'siteorigin-widgets'),
+					'label' => __('Link icon to more URL', 'siteorigin-widgets'),
 					'default' => false,
 				),
 
 				'new_window' => array(
 					'type' => 'checkbox',
-					'label' => __('Open More URL in New Window', 'siteorigin-widgets'),
+					'label' => __('Open more URL in a new window', 'siteorigin-widgets'),
 					'default' => false,
 				),
 

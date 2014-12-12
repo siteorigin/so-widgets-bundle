@@ -1,6 +1,6 @@
 <?php
 /*
-Widget Name: Button Widget
+Widget Name: Button widget
 Description: A powerful yet simple button widget for your sidebars or Page Builder pages.
 Author: Greg Priday
 Author URI: http://siteorigin.com
@@ -22,7 +22,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			array(
 				'text' => array(
 					'type' => 'text',
-					'label' => __('Button Text', 'siteorigin-widgets'),
+					'label' => __('Button text', 'siteorigin-widgets'),
 				),
 
 				'url' => array(
@@ -34,7 +34,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 				'new_window' => array(
 					'type' => 'checkbox',
 					'default' => false,
-					'label' => __('Open in New Window', 'siteorigin-widgets'),
+					'label' => __('Open in a new window', 'siteorigin-widgets'),
 				),
 
 				'button_icon' => array(
@@ -48,12 +48,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 						'icon_color' => array(
 							'type' => 'color',
-							'label' => __('Icon Color', 'siteorigin-widgets'),
+							'label' => __('Icon color', 'siteorigin-widgets'),
 						),
 
 						'icon' => array(
 							'type' => 'media',
-							'label' => __('Image Icon', 'siteorigin-widgets'),
+							'label' => __('Image icon', 'siteorigin-widgets'),
 							'description' => __('Replaces the icon with your own image icon.'),
 						),
 					),
@@ -61,7 +61,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 				'design' => array(
 					'type' => 'section',
-					'label' => __('Design and Layout', 'siteorigin-widgets'),
+					'label' => __('Design and layout', 'siteorigin-widgets'),
 					'hide' => true,
 					'fields' => array(
 						'align' => array(
@@ -78,7 +78,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 						'theme' => array(
 							'type' => 'select',
-							'label' => __('Button Theme', 'siteorigin-widgets'),
+							'label' => __('Button theme', 'siteorigin-widgets'),
 							'default' => 'atom',
 							'options' => array(
 								'atom' => __('Atom', 'siteorigin-widgets'),
@@ -90,28 +90,28 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 						'button_color' => array(
 							'type' => 'color',
-							'label' => __('Button Color', 'siteorigin-widgets'),
+							'label' => __('Button color', 'siteorigin-widgets'),
 						),
 
 						'text_color' => array(
 							'type' => 'color',
-							'label' => __('Text Color', 'siteorigin-widgets'),
+							'label' => __('Text color', 'siteorigin-widgets'),
 						),
 
 						'hover' => array(
 							'type' => 'checkbox',
 							'default' => true,
-							'label' => __('Use Hover Effects', 'siteorigin-widgets'),
+							'label' => __('Use hover effects', 'siteorigin-widgets'),
 						),
 
 						'font_size' => array(
 							'type' => 'select',
-							'label' => __('Font Size', 'siteorigin-widgets'),
+							'label' => __('Font size', 'siteorigin-widgets'),
 							'options' => array(
 								'1' => __('Normal', 'siteorigin-widgets'),
 								'1.15' => __('Medium', 'siteorigin-widgets'),
 								'1.3' => __('Large', 'siteorigin-widgets'),
-								'1.45' => __('Extra Large', 'siteorigin-widgets'),
+								'1.45' => __('Extra large', 'siteorigin-widgets'),
 							),
 						),
 
@@ -121,9 +121,9 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 							'default' => '0.25',
 							'options' => array(
 								'0' => __('None', 'siteorigin-widgets'),
-								'0.25' => __('Slight Rounding', 'siteorigin-widgets'),
-								'0.5' => __('Very Rounded', 'siteorigin-widgets'),
-								'1.5' => __('Completely Rounded', 'siteorigin-widgets'),
+								'0.25' => __('Slightly rounded', 'siteorigin-widgets'),
+								'0.5' => __('Very rounded', 'siteorigin-widgets'),
+								'1.5' => __('Completely rounded', 'siteorigin-widgets'),
 							),
 						),
 
@@ -135,7 +135,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 								'0.5' => __('Low', 'siteorigin-widgets'),
 								'1' => __('Medium', 'siteorigin-widgets'),
 								'1.4' => __('High', 'siteorigin-widgets'),
-								'1.8' => __('Very High', 'siteorigin-widgets'),
+								'1.8' => __('Very high', 'siteorigin-widgets'),
 							),
 						),
 
@@ -144,7 +144,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 				'attributes' => array(
 					'type' => 'section',
-					'label' => __('Other Attributes and SEO', 'siteorigin-widgets'),
+					'label' => __('Other attributes and SEO', 'siteorigin-widgets'),
 					'hide' => true,
 					'fields' => array(
 						'id' => array(
@@ -155,7 +155,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 						'title' => array(
 							'type' => 'text',
-							'label' => __('Title Attribute', 'siteorigin-widgets'),
+							'label' => __('Title attribute', 'siteorigin-widgets'),
 							'description' => __('Adds a title attribute to the button link.', 'siteorigin-widgets'),
 						),
 

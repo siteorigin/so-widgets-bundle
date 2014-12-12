@@ -247,7 +247,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			) );
 
 			wp_localize_script( 'siteorigin-widget-admin-posts-selector', 'sowPostsSelectorVars', array(
-				'modalTitle' => __('Select Posts', 'siteorigin-widgets'),
+				'modalTitle' => __('Select posts', 'siteorigin-widgets'),
 			) );
 		}
 
@@ -729,7 +729,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				<input type="hidden" value="<?php echo esc_attr( is_array( $value ) ? '' : $value ) ?>" name="<?php echo $this->so_get_field_name( $name, $repeater ) ?>" class="siteorigin-widget-input" />
 				<a href="#" class="sow-select-posts button button-secondary">
 					<span class="sow-current-count"><?php echo siteorigin_widget_post_selector_count_posts( is_array( $value ) ? '' : $value ) ?></span>
-					<?php _e('Build Posts Query') ?>
+					<?php _e('Build posts query') ?>
 				</a>
 				<?php
 				break;

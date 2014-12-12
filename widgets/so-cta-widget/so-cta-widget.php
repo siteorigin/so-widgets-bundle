@@ -1,7 +1,7 @@
 <?php
 /*
-Widget Name: Call To Action Widget
-Description: A simple call to action widget. You can do what ever you want with a call to action widget.
+Widget Name: Call-to-action widget
+Description: A simple call-to-action widget. You can do what ever you want with a call-to-action widget.
 Author: Greg Priday
 Author URI: http://siteorigin.com
 */
@@ -12,9 +12,9 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 
 		parent::__construct(
 			'sow-cta',
-			__('SiteOrigin Call To Action', 'siteorigin-widgets'),
+			__('SiteOrigin Call-to-action', 'siteorigin-widgets'),
 			array(
-				'description' => __('A simple call to action widget with massive power.', 'siteorigin-widgets'),
+				'description' => __('A simple call-to-action widget with massive power.', 'siteorigin-widgets'),
 				'help' => 'http://siteorigin.com/widgets-bundle/'
 			),
 			array(
@@ -39,12 +39,12 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 
 						'background_color' => array(
 							'type' => 'color',
-							'label' => __('Background Color', 'siteorigin-widgets'),
+							'label' => __('Background color', 'siteorigin-widgets'),
 						),
 
 						'border_color' => array(
 							'type' => 'color',
-							'label' => __('Border Color', 'siteorigin-widgets'),
+							'label' => __('Border color', 'siteorigin-widgets'),
 						),
 
 					)

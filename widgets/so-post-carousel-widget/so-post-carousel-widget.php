@@ -1,6 +1,6 @@
 <?php
 /*
-Widget Name: Post Carousel Widget
+Widget Name: Post carousel widget
 Description: Gives you a widget to display your posts as a carousel.
 Author: Greg Priday
 Author URI: http://siteorigin.com
@@ -34,7 +34,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 
 				'posts' => array(
 					'type' => 'posts',
-					'label' => __('Posts Query', 'siteorigin-widgets'),
+					'label' => __('Posts query', 'siteorigin-widgets'),
 				),
 			),
 			plugin_dir_path(__FILE__).'../'

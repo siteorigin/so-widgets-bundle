@@ -1,6 +1,6 @@
 <?php
 /*
-Widget Name: Image Widget
+Widget Name: Image widget
 Description: A very simple image widget.
 Author: Greg Priday
 Author URI: http://siteorigin.com
@@ -21,12 +21,12 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			array(
 				'image' => array(
 					'type' => 'media',
-					'label' => __('Image File', 'siteorigin-widgets'),
+					'label' => __('Image file', 'siteorigin-widgets'),
 				),
 
 				'size' => array(
 					'type' => 'select',
-					'label' => __('Image Size', 'siteorigin-widgets'),
+					'label' => __('Image size', 'siteorigin-widgets'),
 					'options' => array(
 						'full' => __('Full', 'siteorigin-widgets'),
 						'large' => __('Large', 'siteorigin-widgets'),
@@ -37,12 +37,12 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 
 				'title' => array(
 					'type' => 'text',
-					'label' => __('Title Text', 'siteorigin-widgets'),
+					'label' => __('Title text', 'siteorigin-widgets'),
 				),
 
 				'alt' => array(
 					'type' => 'text',
-					'label' => __('Alt Text', 'siteorigin-widgets'),
+					'label' => __('Alt text', 'siteorigin-widgets'),
 				),
 
 				'url' => array(
@@ -52,7 +52,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 				'new_window' => array(
 					'type' => 'checkbox',
 					'default' => false,
-					'label' => __('Open in New Window', 'siteorigin-widgets'),
+					'label' => __('Open in new window', 'siteorigin-widgets'),
 				),
 
 				'bound' => array(
