@@ -25,6 +25,17 @@ class SiteOrigin_Widgets_Bundle {
 
 	private $widget_folders;
 
+	/**
+	 * @var array The array of default widgets.
+	 */
+	static $default_active_widgets = array(
+		'so-button-widget' => true,
+		'so-google-map-widget' => true,
+		'so-image-widget' => true,
+		'so-slider-widget' => true,
+		'so-post-carousel-widget' => true,
+	);
+
 	function __construct(){
 		add_action('admin_init', array($this, 'admin_activate_widget') );
 		add_action('admin_menu', array($this, 'admin_menu_init') );
@@ -121,7 +132,7 @@ class SiteOrigin_Widgets_Bundle {
 		}
 
 		// Load all the widget we currently have active and filter them
-		$active_widgets = apply_filters( 'siteorigin_widgets_active_widgets', get_option( 'siteorigin_widgets_active', array() ) );
+		$active_widgets = $this->get_active_widgets();
 
 		foreach( array_keys($active_widgets) as $widget_id ) {
 
@@ -133,6 +144,23 @@ class SiteOrigin_Widgets_Bundle {
 			}
 
 		}
+	}
+
+	/**
+	 * Get a list of currently active widgets.
+	 *
+	 * @param bool $filter
+	 *
+	 * @return mixed|void
+	 */
+	function get_active_widgets( $filter = true ){
+		// Load all the widget we currently have active and filter them
+		$active_widgets = get_option( 'siteorigin_widgets_active', self::$default_active_widgets );
+		if($filter) {
+			$active_widgets = apply_filters( 'siteorigin_widgets_active_widgets',  $active_widgets);
+		}
+
+		return $active_widgets;
 	}
 
 	/**
@@ -260,8 +288,8 @@ class SiteOrigin_Widgets_Bundle {
 		if( !$exists ) return false;
 
 		// There are times when we activate several widgets at once, so clear the cache.
-		// wp_cache_delete( 'siteorigin_widgets_active', 'options' );
-		$active_widgets = get_option( 'siteorigin_widgets_active', array() );
+		wp_cache_delete( 'siteorigin_widgets_active', 'options' );
+		$active_widgets = $this->get_active_widgets();
 		$active_widgets[$widget_id] = true;
 		update_option( 'siteorigin_widgets_active', $active_widgets );
 
@@ -290,7 +318,7 @@ class SiteOrigin_Widgets_Bundle {
 	 * @param $id
 	 */
 	function deactivate_widget($id){
-		$active_widgets = get_option( 'siteorigin_widgets_active', array() );
+		$active_widgets = $this->get_active_widgets();
 		unset($active_widgets[$id]);
 		update_option( 'siteorigin_widgets_active', $active_widgets );
 	}
@@ -299,7 +327,7 @@ class SiteOrigin_Widgets_Bundle {
 	 * Gets a list of all available widgets
 	 */
 	function get_widgets_list(){
-		$active = get_option('siteorigin_widgets_active', array());
+		$active = $this->get_active_widgets();
 
 		$default_headers = array(
 			'Name' => 'Widget Name',
