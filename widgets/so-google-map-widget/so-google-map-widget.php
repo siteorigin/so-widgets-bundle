@@ -287,11 +287,13 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	function enqueue_admin_scripts() {
-		wp_enqueue_script( 'sow-google-map', siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map-admin.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
+		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		wp_enqueue_script( 'sow-google-map', siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map-admin' . $js_suffix . '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
 	}
 
 	function enqueue_frontend_scripts() {
-		wp_enqueue_script( 'sow-google-map', siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
+		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		wp_enqueue_script( 'sow-google-map', siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map' . $js_suffix . '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
 	}
 
 	function get_template_name( $instance ) {

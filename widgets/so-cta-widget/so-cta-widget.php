@@ -87,8 +87,9 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 	}
 
 	function enqueue_frontend_scripts(){
+		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		wp_enqueue_style( 'sow-cta-main', siteorigin_widget_get_plugin_dir_url('cta').'css/style.css', array(), SOW_BUNDLE_VERSION );
-		wp_enqueue_script( 'sow-cta-main', siteorigin_widget_get_plugin_dir_url('cta').'js/cta.js', array('jquery'), SOW_BUNDLE_VERSION );
+		wp_enqueue_script( 'sow-cta-main', siteorigin_widget_get_plugin_dir_url('cta').'js/cta' . $js_suffix . '.js', array('jquery'), SOW_BUNDLE_VERSION );
 	}
 
 }

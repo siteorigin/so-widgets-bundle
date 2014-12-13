@@ -3,7 +3,7 @@
 /**
  * Class SiteOrigin_Widget
  *
- * @author Greg Priday
+ * @author SiteOrigin <support@siteorigin.com>
  */
 abstract class SiteOrigin_Widget extends WP_Widget {
 	protected $form_options;
@@ -218,6 +218,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	function enqueue_scripts(){
 
+		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
 		if( !wp_script_is('siteorigin-widget-admin') ) {
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_style( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/css/admin.css', array( 'media-views' ), SOW_BUNDLE_VERSION );
@@ -225,7 +227,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			wp_enqueue_script( 'wp-color-picker' );
 			wp_enqueue_media();
-			wp_enqueue_script( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/admin.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-slider' ), SOW_BUNDLE_VERSION, true );
+			wp_enqueue_script( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/admin' . $js_suffix . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-slider' ), SOW_BUNDLE_VERSION, true );
 
 			wp_localize_script( 'siteorigin-widget-admin', 'soWidgets', array(
 				'sure' => __('Are you sure?', 'siteorigin-widgets')
@@ -236,7 +238,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		if( !wp_script_is('siteorigin-widget-admin-posts-selector') && $this->using_posts_selector() ) {
 
-			wp_enqueue_script( 'siteorigin-widget-admin-posts-selector', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/posts-selector.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'underscore', 'backbone' ), SOW_BUNDLE_VERSION, true );
+			wp_enqueue_script( 'siteorigin-widget-admin-posts-selector', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/posts-selector' . $js_suffix . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'underscore', 'backbone' ), SOW_BUNDLE_VERSION, true );
 
 			wp_localize_script( 'siteorigin-widget-admin-posts-selector', 'sowPostsSelectorTpl', array(
 				'modal' => file_get_contents( plugin_dir_path(__FILE__).'tpl/posts-selector/modal.html' ),

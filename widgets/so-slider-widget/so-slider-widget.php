@@ -208,9 +208,11 @@ siteorigin_widget_register('slider', __FILE__);
  * Register all the slider scripts
  */
 function sow_slider_register_scripts(){
+	$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
 	wp_register_style('sow-slider-slider', siteorigin_widget_get_plugin_dir_url('slider').'css/slider.css', array(), SOW_BUNDLE_VERSION);
-	wp_register_script('sow-slider-slider-cycle2', siteorigin_widget_get_plugin_dir_url('slider').'js/jquery.cycle.js', array('jquery'), SOW_BUNDLE_VERSION);
-	wp_register_script('sow-slider-slider-cycle2-swipe', siteorigin_widget_get_plugin_dir_url('slider').'js/jquery.cycle.swipe.js', array('jquery'), SOW_BUNDLE_VERSION);
-	wp_register_script('sow-slider-slider', siteorigin_widget_get_plugin_dir_url('slider').'js/slider.js', array('jquery'), SOW_BUNDLE_VERSION);
+	wp_register_script('sow-slider-slider-cycle2', siteorigin_widget_get_plugin_dir_url('slider').'js/jquery.cycle' . $js_suffix . '.js', array('jquery'), SOW_BUNDLE_VERSION);
+	wp_register_script('sow-slider-slider-cycle2-swipe', siteorigin_widget_get_plugin_dir_url('slider').'js/jquery.cycle.swipe' . $js_suffix . '.js', array('jquery'), SOW_BUNDLE_VERSION);
+	wp_register_script('sow-slider-slider', siteorigin_widget_get_plugin_dir_url('slider').'js/slider' . $js_suffix . '.js', array('jquery'), SOW_BUNDLE_VERSION);
 }
 add_action('wp_enqueue_scripts', 'sow_slider_register_scripts', 1);
