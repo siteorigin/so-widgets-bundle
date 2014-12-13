@@ -531,8 +531,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					break;
 
 				case 'repeater':
-					foreach($instance[$name] as $i => $sub_instance) {
-						$instance[$name][$i] = $this->sanitize($sub_instance, $field['fields']);
+					if( !empty($instance[$name]) ) {
+						foreach ( $instance[ $name ] as $i => $sub_instance ) {
+							$instance[ $name ][ $i ] = $this->sanitize( $sub_instance, $field['fields'] );
+						}
 					}
 					break;
 
