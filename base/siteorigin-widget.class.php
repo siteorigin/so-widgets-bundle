@@ -472,43 +472,81 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
+	 * Sanitize all the widget values. Should be used before saving widget into the database.
+	 *
 	 * @param $instance
 	 * @param $fields
 	 */
-	public function sanitize( $instance, $fields ) {
+	public function sanitize( $instance, $fields = false ) {
+
+		if( $fields === false ) {
+			$fields = $this->form_options();
+		}
 
 		foreach($fields as $name => $field) {
-			if(empty($instance[$name])) $instance[$name] = false;
-			elseif($field['type'] == 'select') {
-				$keys = array_keys( $field['options'] );
-				if( !in_array( $instance[$name], $keys ) ) $instance[$name] = isset($field['default']) ? $field['default'] : false;
+			if( empty($instance[$name]) ) {
+				$instance[$name] = false;
 			}
-			elseif($field['type'] == 'number') {
-				$instance[$name] = (float) $instance[$name];
-			}
-			elseif($field['type'] == 'repeater') {
-				foreach($instance[$name] as $i => $sub_instance) {
-					$instance[$name][$i] = $this->sanitize($sub_instance, $field['fields']);
-				}
-			}
-			elseif($field['type'] == 'checkbox') {
-				$instance[$name] = !empty($instance[$name]);
-			}
-			elseif($field['type'] == 'widget') {
 
-				if( !empty($field['class']) && class_exists($field['class']) ) {
-					$the_widget = new $field['class'];
+			switch( $field['type'] ) {
+				case 'select' :
+					$keys = array_keys( $field['options'] );
+					if( !in_array( $instance[$name], $keys ) ) $instance[$name] = isset($field['default']) ? $field['default'] : false;
+					break;
 
-					if( is_a($the_widget, 'SiteOrigin_Widget') ) {
-						$instance[$name] = $the_widget->update($instance[$name], $instance[$name]);
+				case 'number' :
+				case 'slider':
+					$instance[$name] = (float) $instance[$name];
+					break;
+
+				case 'textarea':
+				case 'text' :
+					$instance[$name] = sanitize_text_field($instance[$name]);
+					break;
+
+				case 'color':
+					if ( !preg_match('|^#([A-Fa-f0-9]{3}){1,2}$|', $instance[$name] ) ){
+						// 3 or 6 hex digits, or the empty string.
+						$instance[$name] = false;
 					}
-				}
-			}
-			elseif($field['type'] == 'section') {
-				$instance[$name] = $this->sanitize($instance[$name], $field['fields']);
+					break;
+
+				case 'media' :
+					// Media values should be integer
+					$instance[$name] = intval($instance[$name]);
+					break;
+
+				case 'checkbox':
+					$instance[$name] = !empty($instance[$name]);
+					break;
+
+				case 'widget':
+					if( !empty($field['class']) && class_exists($field['class']) ) {
+						$the_widget = new $field['class'];
+
+						if( is_a($the_widget, 'SiteOrigin_Widget') ) {
+							$instance[$name] = $the_widget->update($instance[$name], $instance[$name]);
+						}
+					}
+					break;
+
+				case 'repeater':
+					foreach($instance[$name] as $i => $sub_instance) {
+						$instance[$name][$i] = $this->sanitize($sub_instance, $field['fields']);
+					}
+					break;
+
+				case 'section':
+					$instance[$name] = $this->sanitize($instance[$name], $field['fields']);
+					break;
+
+				default:
+					$instance[$name] = sanitize_text_field($instance[$name]);
+					break;
 			}
 
 			if( isset($field['sanitize']) ) {
+				// This field also needs some custom sanitization
 				switch($field['sanitize']) {
 					case 'url':
 						$instance[$name] = esc_url_raw($instance[$name]);
