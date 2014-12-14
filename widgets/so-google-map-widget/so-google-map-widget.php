@@ -336,7 +336,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'scroll-zoom'       => $settings['scroll_zoom'],
 					'draggable'         => $settings['draggable'],
 					'marker-icon'       => ! empty( $mrkr_src ) ? $mrkr_src[0] : '',
-					'markers-draggable' => $markers['markers_draggable'],
+					'markers-draggable' => isset( $markers['markers_draggable'] ) ? $markers['markers_draggable'] : '',
 					'marker-at-center'  => $markers['marker_at_center'],
 					'marker-positions'  => isset( $markers['marker_positions'] ) ? json_encode( $markers['marker_positions'] ) : '',
 					'map-name'          => ! empty( $styles ) ? $styles['map_name'] : '',
