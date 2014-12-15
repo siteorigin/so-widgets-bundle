@@ -316,6 +316,10 @@ class SiteOrigin_Widgets_Bundle {
 			$files = glob( $folder.'*/*.php' );
 			foreach($files as $file) {
 				$widget = get_file_data( $file, $default_headers, 'siteorigin-widget' );
+				//skip the widget if it's missing a name
+				if ( empty( $widget['Name'] ) ) {
+					continue;
+				}
 				$f = pathinfo($file);
 				$id = $f['filename'];
 
