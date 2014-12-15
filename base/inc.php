@@ -170,6 +170,7 @@ function siteorigin_widget_preview_widget_action(){
 	if(!is_a($widget, 'SiteOrigin_Widget')) exit();
 
 	$instance = json_decode( stripslashes_deep($_POST['data']), true);
+	$instance = $widget->sanitize($instance);
 	$instance['is_preview'] = true;
 
 	// The theme stylesheet will change how the button looks
