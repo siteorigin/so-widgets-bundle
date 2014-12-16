@@ -1,14 +1,14 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table
 Requires at least: 3.8
-Tested up to: 3.9.1
+Tested up to: 4.1
 Stable tag: 1.1
 License: GPLv3 or later
 Contributors: gpriday, braam-genis
 
 == Description ==
 
-[vimeo http://vimeo.com/102103379]
+[vimeo https://vimeo.com/102103379]
 
 Widgets are great. No matter where you’re using them. In a [Page Builder](http://siteorigin.com/page-builder/) page or on your widgetized areas.
 
@@ -36,6 +36,9 @@ Once you enable a widget, you'll be able to use it anywhere standard widgets are
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.1.1 =
+* Fixed Google Map preview.
 
 = 1.1 =
 * Added powerful Google Maps widget.
