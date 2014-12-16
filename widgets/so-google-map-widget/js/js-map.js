@@ -58,7 +58,7 @@ function loadMap($) {
                                     new google.maps.Marker({
                                         position: res[0].geometry.location,
                                         map: map,
-                                        draggable: Boolean( $$.data('marker-draggable') ),
+                                        draggable: Boolean( $$.data('markers-draggable') ),
                                         icon: $$.data('marker-icon'),
                                         title: ''
                                     });
