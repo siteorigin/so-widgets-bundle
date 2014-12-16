@@ -1,0 +1,5 @@
+.google-map-canvas img {
+  max-width: none !important;
+  line-height: normal !important;
+  zoom: normal !important;
+}
