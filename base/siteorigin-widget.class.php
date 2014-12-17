@@ -101,7 +101,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// A lot of themes, including Underscores, default themes and SiteOrigin themes wrap their content in entry-content
 		echo $args['before_widget'];
 		echo '<div class="so-widget-'.$this->id_base.' so-widget-'.$css_name.'">';
+		ob_start();
 		@ include siteorigin_widget_get_plugin_dir_path( $this->id_base ) . '/tpl/' . $this->get_template_name($instance) . '.php';
+		echo apply_filters('siteorigin_widget_template', ob_get_clean(), get_class($this), $instance, $this );
 		echo '</div>';
 		echo $args['after_widget'];
 
@@ -416,6 +418,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				$less = preg_replace('/\@'.preg_quote($name).' *\:.*?;/', '@'.$name.': '.$value.';', $less);
 			}
 		}
+
+		$less = apply_filters( 'siteorigin_widget_styles', $less, get_class($this), $instance );
 
 		$style = $this->get_style_name( $instance );
 		$hash = $this->get_style_hash( $instance );
