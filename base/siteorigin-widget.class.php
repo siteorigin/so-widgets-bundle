@@ -404,11 +404,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// Substitute the variables
 		if( !class_exists('SiteOrigin_Widgets_Color_Object') ) require plugin_dir_path( __FILE__ ) . 'inc/color.php';
 
-		//handle less @import statements
-		$less = preg_replace_callback( '/^@import\s+".*?\/?([\w-\.]+)";/m', array( $this, 'get_less_import_contents' ), $less );
-
 		// Lets widgets insert their own custom generated LESS
 		$less = preg_replace_callback( '/\.widget-function\((.*)\);/', array( $this, 'less_widget_inject' ), $less );
+
+		//handle less @import statements
+		$less = preg_replace_callback( '/^@import\s+".*?\/?([\w-\.]+)";/m', array( $this, 'get_less_import_contents' ), $less );
 
 		$vars = $this->get_less_variables($instance);
 		if( !empty( $vars ) ){
@@ -425,12 +425,19 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$hash = $this->get_style_hash( $instance );
 		$css_name = $this->id_base . '-' . $style . '-' . $hash;
 
-		$less = '.so-widget-'.$css_name.' { '.$less.' } ';
+		//we assume that any remaining @imports are plain css imports and should be kept outside selectors
+		$css_imports = '';
+		if ( preg_match_all( '/^@import.+/m', $less, $imports ) ) {
+			$css_imports = implode( "\n", $imports[0] );
+		}
+
+		$less = $css_imports . "\n\n" . '.so-widget-'.$css_name.' { '.$less.' } ';
 
 		$c = new lessc();
 		$lc_functions = new SiteOrigin_Widgets_Less_Functions($this, $instance);
 		$lc_functions->registerFunctions($c);
-		return $c->compile($less);
+
+		return $c->compile( $less );
 	}
 
 	private function get_less_import_contents($matches) {
