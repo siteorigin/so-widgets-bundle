@@ -10,6 +10,10 @@
 @sub_headline_align: left;
 @sub_headline_color: #00FF00;
 
+@divider_weight: thin;
+@divider_style: solid;
+@divider_color: #EEEEEE;
+
 .sow-headline {
 
     h1 {
@@ -24,5 +28,12 @@
         font-weight: @sub_headline_font_weight;
         text-align: @sub_headline_align;
         color: @sub_headline_color;
+    }
+
+    .decoration {
+        border-top: @divider_weight @divider_style @divider_color;
+        position: relative;
+        height: 1px;
+        margin: 20px 60px 20px 60px;
     }
 }
