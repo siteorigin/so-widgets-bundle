@@ -1,22 +1,27 @@
 .widget-function('import_google_font');
 
 @headline_font: "Lucida Grande", sans-serif;
+@headline_font_weight: 400;
 @headline_align: left;
 @headline_color: #FF0000;
 
 @sub_headline_font: "Arial", sans-serif;
+@sub_headline_font_weight: 400;
 @sub_headline_align: left;
 @sub_headline_color: #00FF00;
 
 .sow-headline {
+
     h1 {
         font-family: @headline_font;
+        font-weight: @headline_font_weight;
         text-align: @headline_align;
         color: @headline_color;
     }
 
     h3 {
         font-family: @sub_headline_font;
+        font-weight: @sub_headline_font_weight;
         text-align: @sub_headline_align;
         color: @sub_headline_color;
     }
