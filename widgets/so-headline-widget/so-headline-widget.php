@@ -65,7 +65,8 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						),
 						'color' => array(
 							'type' => 'color',
-							'label' => __('Color', 'siteorigin-widgets')
+							'label' => __('Color', 'siteorigin-widgets'),
+							'default' => '#000000'
 						),
 						'align' => array(
 							'type' => 'select',
@@ -95,7 +96,8 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						),
 						'color' => array(
 							'type' => 'color',
-							'label' => __('Color', 'siteorigin-widgets')
+							'label' => __('Color', 'siteorigin-widgets'),
+							'default' => '#000000'
 						),
 						'align' => array(
 							'type' => 'select',
@@ -114,19 +116,11 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 					'label' => __( 'Divider', 'siteorigin-widgets' ),
 					'hide' => true,
 					'fields' => array(
-						'weight' => array(
-							'type' => 'select',
-							'label' => __( 'Weight', 'siteorigin-widgets' ),
-							'options' => array(
-								'thin' => __( 'Thin', 'siteorigin-widgets' ),
-								'medium' => __( 'Medium', 'siteorigin-widgets' ),
-								'thick' => __( 'Thick', 'siteorigin-widgets' ),
-							)
-						),
 						'style' => array(
 							'type' => 'select',
 							'label' => __( 'Style', 'siteorigin-widgets' ),
 							'options' => array(
+								'none' => __('None', 'siteorigin-widgets'),
 								'solid' => __('Solid', 'siteorigin-widgets'),
 								'dotted' => __('Dotted', 'siteorigin-widgets'),
 								'dashed' => __('Dashed', 'siteorigin-widgets'),
@@ -137,10 +131,19 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 								'outset' => __('Outset', 'siteorigin-widgets'),
 							)
 						),
+						'weight' => array(
+							'type' => 'select',
+							'label' => __( 'Weight', 'siteorigin-widgets' ),
+							'options' => array(
+								'thin' => __( 'Thin', 'siteorigin-widgets' ),
+								'medium' => __( 'Medium', 'siteorigin-widgets' ),
+								'thick' => __( 'Thick', 'siteorigin-widgets' ),
+							)
+						),
 						'color' => array(
 							'type' => 'color',
 							'label' => __('Color', 'siteorigin-widgets'),
-							'default' => '#000000'
+							'default' => '#EEEEEE'
 						)
 					)
 				)
@@ -204,12 +207,12 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 		if ( ! empty( $instance['divider'] ) ) {
 			$divider_styles = $instance['divider'];
 
-			if ( ! empty( $divider_styles['weight'] ) ) {
-				$less_vars['divider_weight'] = $divider_styles['weight'];
-			}
-
 			if ( ! empty( $divider_styles['style'] ) ) {
 				$less_vars['divider_style'] = $divider_styles['style'];
+			}
+
+			if ( ! empty( $divider_styles['weight'] ) ) {
+				$less_vars['divider_weight'] = $divider_styles['weight'];
 			}
 
 			if ( ! empty( $divider_styles['color'] ) ) {
