@@ -126,7 +126,12 @@ var soWidgetPostSelector = ( function ($, _) {
         sync: function( method, model ){
 
             if(method == 'create') {
-                this.syncField.val( this.getQuery() );
+                var curVal = this.syncField.val();
+                var newVal = this.getQuery();
+                if(curVal != newVal) {
+                    this.syncField.val(newVal);
+                    this.syncField.trigger('change');
+                }
             }
             else {
                 this.setQuery( this.syncField.val() );
@@ -324,8 +329,8 @@ var soWidgetPostSelector = ( function ($, _) {
             var orderButton = orderField.closest('.query-builder-form-field').find('.sow-order-button');
 
             // Reset the ordering button
-            var resetOrderButton = function(){
-                if(orderField.val() == 'DESC') {
+            var resetOrderButton = function () {
+                if (orderField.val() == 'DESC') {
                     orderButton.removeClass('sow-order-button-asc');
                     orderButton.addClass('sow-order-button-desc');
                 }
@@ -333,7 +338,7 @@ var soWidgetPostSelector = ( function ($, _) {
                     orderButton.addClass('sow-order-button-asc');
                     orderButton.removeClass('sow-order-button-desc');
                 }
-            }
+            };
             resetOrderButton();
 
             orderButton.click(function(e){
@@ -426,7 +431,7 @@ var soWidgetPostSelector = ( function ($, _) {
             return this;
         },
 
-        // The button handler is triggerd by QueryBuilder
+        // The button handler is triggered by QueryBuilder
         buttonHandler: function(){
             this.updateModel();
             return this;

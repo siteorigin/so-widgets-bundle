@@ -1,7 +1,12 @@
 <?php
 
 function siteorigin_widget_post_selector_process_query($query){
-	$query = wp_parse_args($query);
+	$query = wp_parse_args($query,
+		array(
+			'post_status' => 'publish',
+			'posts_per_page' => 100,
+		)
+	);
 
 	if(!empty($query['post_type'])) {
 		if($query['post_type'] == '_all') $query['post_type'] = siteorigin_widget_post_selector_all_post_types();
@@ -124,7 +129,7 @@ function siteorigin_widget_post_selector_count_posts($query){
 		siteorigin_widget_post_selector_process_query($query),
 		array(
 			'post_status' => 'publish',
-			'posts_per_page' => 10,
+			'posts_per_page' => 100,
 		)
 	);
 	$posts = new WP_Query($query);
