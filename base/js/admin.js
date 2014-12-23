@@ -490,6 +490,24 @@
         });
     };
 
+    window.sowFetchWidgetVariable = function (key, widget, callback) {
+        window.sowVars = window.sowVars || {};
+
+        if (typeof window.sowVars[widget] == 'undefined') {
+            $.post(
+                ajaxurl,
+                { 'action': 'sow_get_javascript_variables', 'widget': widget, 'key': key },
+                function (result) {
+                    window.sowVars[widget] = result;
+                    callback(window.sowVars[widget][key]);
+                }
+            );
+        }
+        else {
+            callback(window.sowVars[widget][key]);
+        }
+    };
+
     // When we click on a widget top
     $('.widgets-holder-wrap').on('click', '.widget:has(.siteorigin-widget-form-main) .widget-top', function(){
         var $$ = $(this).closest('.widget').find('.siteorigin-widget-form-main');

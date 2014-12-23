@@ -41,6 +41,7 @@ class SiteOrigin_Widgets_Bundle {
 		add_action('admin_menu', array($this, 'admin_menu_init') );
 		add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_scripts') );
 		add_action('wp_ajax_so_widgets_bundle_manage', array($this, 'admin_ajax_manage_handler') );
+		add_action('wp_ajax_sow_get_javascript_variables', array($this, 'admin_ajax_get_javascript_variables') );
 
 		// Initialize the widgets, but do it fairly late
 		add_action( 'plugins_loaded', array($this, 'set_plugin_textdomain'), 1 );
@@ -268,6 +269,24 @@ class SiteOrigin_Widgets_Bundle {
 		}
 
 		include plugin_dir_path(__FILE__).'tpl/admin.php';
+	}
+
+	/**
+	 * Get javascript variables for admin.
+	 */
+	function admin_ajax_get_javascript_variables() {
+		$result = array();
+		$widget_class = $_POST['widget'];
+		global $wp_widget_factory;
+		if ( ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ) {
+			$widget = $wp_widget_factory->widgets[ $widget_class ];
+			$result = $widget->get_javascript_variables();
+		}
+
+		header('content-type: application/json');
+		echo json_encode($result);
+
+		exit();
 	}
 
 	/**

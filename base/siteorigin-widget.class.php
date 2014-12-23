@@ -257,7 +257,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		// This lets the widget enqueue any specific admin scripts
 		$this->enqueue_admin_scripts();
-		$this->get_javascript_variables();
 	}
 
 	/**
