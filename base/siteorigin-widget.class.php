@@ -12,6 +12,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	protected $field_ids;
 
 	protected $current_instance;
+	protected $instance_storage;
 
 	/**
 	 * @var int How many seconds a CSS file is valid for.
@@ -28,7 +29,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			'width' => 600,
 		) );
 		parent::WP_Widget($id, $name, $widget_options, $control_options);
-
 		$this->initialize();
 	}
 
@@ -98,7 +98,17 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$this->enqueue_frontend_scripts();
 		extract( $this->get_template_variables($instance, $args) );
 
-		// A lot of themes, including Underscores, default themes and SiteOrigin themes wrap their content in entry-content
+		// Storage hash allows
+		$storage_hash = '';
+		if( !empty($this->widget_options['instance_storage']) ) {
+			$stored_instance = $this->filter_stored_instance($instance);
+			$storage_hash = substr( md5( serialize($stored_instance) ), 0, 8 );
+			if( !empty( $stored_instance ) && empty( $instance['is_preview'] ) ) {
+				// Store this if we have a non empty instance and are not previewing
+				set_transient('sow_inst[' . $this->id_base . '][' . $storage_hash . ']', $stored_instance, 7*86400);
+			}
+		}
+
 		echo $args['before_widget'];
 		echo '<div class="so-widget-'.$this->id_base.' so-widget-'.$css_name.'">';
 		ob_start();
@@ -111,7 +121,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
-	 * By default, just return an array. Should be overwritten by child widgets.
+	 * Get an array of variables to make available to templates. By default, just return an array. Should be overwritten by child widgets.
 	 *
 	 * @param $instance
 	 * @param $args
@@ -579,6 +589,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					case 'url':
 						$instance[$name] = esc_url_raw($instance[$name]);
 						break;
+
+					case 'email':
+						$instance[$name] = sanitize_email($instance[$name]);
+						break;
 				}
 			}
 		}
@@ -916,6 +930,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				?></div><?php
 				break;
 
+			case 'bucket' :
+				// A bucket select and explore field
+				?><input type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" value="<?php echo esc_attr($value) ?>" class="widefat siteorigin-widget-input" /><?php
+				break;
+
 			default:
 				?><?php _e('Unknown Field', 'siteorigin-widgets') ?><?php
 				break;
@@ -983,7 +1002,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	abstract function get_template_name($instance);
 
 	/**
-	 * Get the template name that we'll be using to render this widget.
+	 * Get the LESS style name we'll be using for this widget.
 	 *
 	 * @param $instance
 	 * @return mixed
@@ -998,6 +1017,29 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	function get_less_variables($instance){
 		return array();
+	}
+
+	/**
+	 * Filter the variables we'll be storing in temporary storage for this instance if we're using `instance_storage`
+	 *
+	 * @param $instance
+	 *
+	 * @return mixed
+	 */
+	function filter_stored_instance($instance){
+		return $instance;
+	}
+
+	/**
+	 * Get the stored instance based on the hash.
+	 *
+	 * @param $hash
+	 *
+	 * @return object The instance
+	 */
+	function get_stored_instance($hash) {
+
+		return get_transient('sow_inst[' . $this->id_base . '][' . $hash . ']');
 	}
 
 	/**
