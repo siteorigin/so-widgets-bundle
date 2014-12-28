@@ -12,23 +12,15 @@ $siteorigin_widgets_classes = array();
  *
  * @param $name
  * @param $path
+ * @param $class
  */
-function siteorigin_widget_register($name, $path){
+function siteorigin_widget_register($name, $path, $class = false){
 	global $siteorigin_widgets_registered, $siteorigin_widgets_classes;
 	$siteorigin_widgets_registered[$name] = realpath( $path );
-	$siteorigin_widgets_classes[] = 'SiteOrigin_Widget_' . str_replace( ' ', '', ucwords( str_replace('-', ' ', $name) ) ) . '_Widget';
-}
-
-/**
- * Register an external widget which doesn't follow the SiteOrigin namespace convention.
- *
- * @param $name
- * @param $path
- */
-function sow_external_widget_register($name, $path){
-	global $siteorigin_widgets_registered, $siteorigin_widgets_classes;
-	$siteorigin_widgets_registered[$name] = realpath( $path );
-	$siteorigin_widgets_classes[] = str_replace( ' ', '_', ucwords( str_replace('-', ' ', $name) ) );
+	if ( empty( $class ) ) {
+		$class = 'SiteOrigin_Widget_' . str_replace( ' ', '', ucwords( str_replace('-', ' ', $name) ) ) . '_Widget';
+	}
+	$siteorigin_widgets_classes[] = $class;
 }
 
 /**
