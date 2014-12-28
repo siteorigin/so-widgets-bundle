@@ -20,6 +20,18 @@ function siteorigin_widget_register($name, $path){
 }
 
 /**
+ * Register an external widget which doesn't follow the SiteOrigin namespace convention.
+ *
+ * @param $name
+ * @param $path
+ */
+function sow_external_widget_register($name, $path){
+	global $siteorigin_widgets_registered, $siteorigin_widgets_classes;
+	$siteorigin_widgets_registered[$name] = realpath( $path );
+	$siteorigin_widgets_classes[] = str_replace( ' ', '_', ucwords( str_replace('-', ' ', $name) ) );
+}
+
+/**
  * Initialize all widgets
  */
 function siteorigin_widgets_widgets_init(){

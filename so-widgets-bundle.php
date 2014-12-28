@@ -363,7 +363,7 @@ class SiteOrigin_Widgets_Bundle {
 			$files = glob( $folder.'*/*.php' );
 			foreach($files as $file) {
 				$widget = get_file_data( $file, $default_headers, 'siteorigin-widget' );
-				//skip the widget if it's missing a name
+				//skip the file if it's missing a name
 				if ( empty( $widget['Name'] ) ) {
 					continue;
 				}
