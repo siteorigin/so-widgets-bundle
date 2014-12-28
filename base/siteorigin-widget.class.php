@@ -109,7 +109,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			}
 		}
 
-		// A lot of themes, including Underscores, default themes and SiteOrigin themes wrap their content in entry-content
 		echo $args['before_widget'];
 		echo '<div class="so-widget-'.$this->id_base.' so-widget-'.$css_name.'">';
 		ob_start();

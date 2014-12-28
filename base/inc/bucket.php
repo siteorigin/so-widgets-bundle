@@ -7,6 +7,7 @@
  */
 class SiteOrigin_Widgets_Bucket {
 
+	private $widget;
 	private $bucket;
 	private $table_name;
 	private $table_exists;
@@ -14,8 +15,10 @@ class SiteOrigin_Widgets_Bucket {
 	/**
 	 * @param string $bucket The name of the bucket we're dealing with.
 	 */
-	function __construct( $bucket = 'default' ) {
+	function __construct( $widget, $bucket = 'default' ) {
 		global $wpdb;
+
+		$this->widget       = $widget;
 		$this->bucket       = $bucket;
 		$this->table_name   = $wpdb->prefix . 'so_widgets_bucket_entries';
 		$this->table_exists = null;
@@ -33,7 +36,7 @@ class SiteOrigin_Widgets_Bucket {
 	/**
 	 * Save content to the current bucket.
 	 *
-	 * @param $data The object we're storing in the database
+	 * @param mixed $data The object we're storing in the database
 	 * @param string $key The key for this item.
 	 */
 	function save( $data, $key = '' ) {
@@ -50,6 +53,7 @@ class SiteOrigin_Widgets_Bucket {
 				$this->table_name (
 					entry_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 					entry_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+					entry_widget VARCHAR(255),
 					entry_bucket VARCHAR(255),
 					entry_key VARCHAR(255),
 					entry_data TEXT,
@@ -65,12 +69,20 @@ class SiteOrigin_Widgets_Bucket {
 			$wpdb->insert(
 				$this->table_name,
 				array(
+					'entry_widget' => get_class($this->widget),
 					'entry_bucket' => $this->bucket,
 					'entry_key'    => $key,
 					'entry_data'   => json_encode( $data ),
 				)
 			);
 		}
+	}
+
+	/**
+	 * Update a instance by either key or ID
+	 */
+	function update_by($value, $field = 'id', $data){
+
 	}
 
 	/**
@@ -92,22 +104,32 @@ class SiteOrigin_Widgets_Bucket {
 		}
 
 		// Fetch and return the data
-		$data = $wpdb->get_var( $wpdb->prepare( $query, $value ) );
+		$row = $wpdb->get_row( $wpdb->prepare( $query, $value ) );
+		if(empty($row)) return false;
 
-		return empty( $data ) ? false : json_decode( $data, true );
+		$data = empty( $row->data ) ? array() : json_decode( $row->data, true );
+		$data['entry_id'] = $row->entry_id;
+		return $data;
 	}
 
 	/**
 	 * Delete a single entry from the bucket.
 	 *
-	 * @param $id
+	 * @param $value
+	 * @param string $field
 	 */
-	function delete( $id ) {
+	function delete_by( $value, $field = 'id' ) {
 		global $wpdb;
 
-		$wpdb->query( $wpdb->prepare(
-			"DELETE FROM $this->table_name WHERE entry_id = %d", $id
-		) );
+		$query = 'DELETE FROM $this->table_name WHERE ';
+		if ( $field == 'id' ) {
+			$query .= 'entry_id = %d';
+		} elseif ( $field == 'key' ) {
+			$query .= 'entry_key = %s';
+		}
+
+		// Run the delete query
+		$wpdb->query( $wpdb->prepare( $query, $value ) );
 	}
 
 	/**
@@ -120,4 +142,13 @@ class SiteOrigin_Widgets_Bucket {
 			"DELETE FROM $this->table_name WHERE entry_bucket = %s", $this->bucket
 		) );
 	}
+
+	/**
+	 * Get a paginated list of entries.
+	 * @param $page
+	 */
+	function get_entries($per_page = 20, $page){
+
+	}
+
 }
