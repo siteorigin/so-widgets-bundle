@@ -9,7 +9,7 @@ if( empty($instance['frames']) ) return;
 
 ?>
 
-<div class="sow-slider-base <?php if( wp_is_mobile() ) echo 'sow-slider-is-mobile' ?> <?php if( $instance['nav_color'] == 'black' ) echo 'sow-slider-nav-black' ?>" style="display: none">
+<div tabindex="0" class="sow-slider-base <?php if( wp_is_mobile() ) echo 'sow-slider-is-mobile' ?> <?php if( $instance['nav_color'] == 'black' ) echo 'sow-slider-nav-black' ?>" style="display: none">
 
 	<ul class="sow-slider-images" data-settings="<?php echo esc_attr(json_encode($settings)) ?>">
 		<?php

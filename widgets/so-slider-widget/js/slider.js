@@ -165,6 +165,19 @@ jQuery( function($){
                 e.preventDefault();
                 $$.cycle( $(this).data('action') );
             } );
+
+            $base.keydown(
+                function(event) {
+                    if(event.which == 37) {
+                        //left
+                        $$.cycle('prev');
+                    }
+                    else if (event.which == 39) {
+                        //right
+                        $$.cycle('next');
+                    }
+                }
+            );
         }
 
         var images = $$.find('img');
