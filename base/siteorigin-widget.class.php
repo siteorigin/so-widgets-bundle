@@ -19,6 +19,18 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	static $css_expire = 604800; // 7 days
 
+	/**
+	 *
+	 * @param string $id
+	 * @param string $name
+	 * @param array $widget_options Optional Normal WP_Widget widget options and a few extras.
+	 *   - help: A URL which, if present, causes a help link to be displayed on the Edit Widget modal.
+	 *   - instance_storage: Whether or not to temporarily store instances of this widget.
+	 * @param array $control_options Optional Normal WP_Widget control options.
+	 * @param array $form_options Optional An array describing the form fields used to configure SiteOrigin widgets.
+	 * @param bool $base_folder Optional
+	 *
+	 */
 	function __construct($id, $name, $widget_options = array(), $control_options = array(), $form_options = array(), $base_folder = false) {
 		$this->form_options = $form_options;
 		$this->base_folder = $base_folder;
