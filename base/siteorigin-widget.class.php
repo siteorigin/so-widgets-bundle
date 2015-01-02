@@ -28,7 +28,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *   - instance_storage: Whether or not to temporarily store instances of this widget.
 	 * @param array $control_options Optional Normal WP_Widget control options.
 	 * @param array $form_options Optional An array describing the form fields used to configure SiteOrigin widgets.
-	 * @param bool $base_folder Optional
+	 * @param mixed $base_folder Optional
 	 *
 	 */
 	function __construct($id, $name, $widget_options = array(), $control_options = array(), $form_options = array(), $base_folder = false) {
@@ -124,7 +124,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		echo $args['before_widget'];
 		echo '<div class="so-widget-'.$this->id_base.' so-widget-'.$css_name.'">';
 		ob_start();
-		@ include siteorigin_widget_get_plugin_dir_path( $this->id_base ) . '/tpl/' . $this->get_template_name($instance) . '.php';
+		@ include siteorigin_widget_get_plugin_dir_path( $this->id_base ) . '/' . $this->get_template_dir( $instance ) . '/' . $this->get_template_name( $instance ) . '.php';
 		echo apply_filters('siteorigin_widget_template', ob_get_clean(), get_class($this), $instance, $this );
 		echo '</div>';
 		echo $args['after_widget'];
@@ -766,6 +766,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			case 'radio':
 				?>
+				<?php if ( !isset($field['options']) || empty($field['options'])) return; ?>
 				<?php foreach( $field['options'] as $k => $v ) : ?>
 					<label for="<?php echo $field_id . '-' . $k ?>">
 						<input type="radio" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id . '-' . $k ?>" class="siteorigin-widget-input" value="<?php echo esc_attr($k) ?>" <?php checked( $k, $value ) ?>> <?php echo esc_html($v) ?>
@@ -829,6 +830,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				break;
 
 			case 'repeater':
+				if (!isset($field['fields']) || empty($field['fields'])) return;
 				ob_start();
 				$repeater[] = $name;
 				foreach($field['fields'] as $sub_field_name => $sub_field) {
@@ -931,6 +933,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			case 'section' :
 				?><div class="siteorigin-widget-section <?php if( !empty($field['hide']) ) echo 'siteorigin-widget-section-hide'; ?>"><?php
+				if ( !isset($field['fields']) || empty($field['fields']) ) return;
 				foreach( (array) $field['fields'] as $sub_name=> $sub_field ) {
 					$this->render_field(
 						$name.']['.$sub_name,
@@ -1012,6 +1015,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return mixed
 	 */
 	abstract function get_template_name($instance);
+
+	/**
+	 * Get the name of the directory in which we should look for the template.
+	 *
+	 * @return mixed
+	 */
+	function get_template_dir($instance) {
+		return 'tpl';
+	}
 
 	/**
 	 * Get the LESS style name we'll be using for this widget.

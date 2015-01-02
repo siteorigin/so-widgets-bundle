@@ -61,7 +61,7 @@ class SiteOrigin_Widgets_Bucket {
 					INDEX entry_key (entry_bucket, entry_key)
 				)
 			" );
-			$table_exists = ( $wpdb->get_var( "SHOW TABLES LIKE '$this->table_name'" ) == $this->table_name );
+			$this->table_exists = ( $wpdb->get_var( "SHOW TABLES LIKE '$this->table_name'" ) == $this->table_name );
 		}
 
 		if ( $this->table_exists ) {
