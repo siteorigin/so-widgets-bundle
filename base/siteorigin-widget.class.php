@@ -522,6 +522,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			switch( $field['type'] ) {
 				case 'select' :
+				case 'radio' :
 					$keys = array_keys( $field['options'] );
 					if( !in_array( $instance[$name], $keys ) ) $instance[$name] = isset($field['default']) ? $field['default'] : false;
 					break;
@@ -542,7 +543,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 								'href' => true,
 								'target' => true
 							),
-							'b' => array(),
 							'br' => array(),
 							'em' => array(),
 							'strong' => array(),
@@ -795,8 +795,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$src = array('', 0, 0);
 				}
 
-				$choose_title = empty($args['choose']) ? __('Choose Media', 'siteorigin-widgets') : $args['choose'];
-				$update_button = empty($args['update']) ? __('Set Media', 'siteorigin-widgets') : $args['update'];
+				$choose_title = empty($field['choose']) ? __('Choose Media', 'siteorigin-widgets') : $field['choose'];
+				$update_button = empty($field['update']) ? __('Set Media', 'siteorigin-widgets') : $field['update'];
 				$library = empty($field['library']) ? 'image' : $field['library'];
 
 				?>
