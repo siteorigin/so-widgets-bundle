@@ -146,21 +146,24 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 
 	function video_code($videos, $classes = array()){
 		if(empty($videos)) return;
-		?>
-		<video class="<?php echo esc_attr( implode(',', $classes) ) ?>" autoplay loop muted>
+		$video_element = '<video class="' . esc_attr( implode(',', $classes) ) . '" autoplay loop muted>';
 
-			<?php
-			foreach($videos as $video) {
-				if( empty( $video['file'] ) && empty ( $video['url'] ) ) continue;
+		foreach($videos as $video) {
+			if( empty( $video['file'] ) && empty ( $video['url'] ) ) continue;
 
-				if( empty( $video['url'] ) ) $video_file = wp_get_attachment_url($video['file']);
-				else $video_file = $video['url'];
-
-				?><source src="<?php echo esc_url($video_file) ?>" type="<?php echo esc_attr($video['format']) ?>"><?php
+			if( empty( $video['url'] ) ) {
+				$video_file = wp_get_attachment_url($video['file']);
+				$video_element .= '<source src="' . esc_url( $video_file ) . '" type="' . esc_attr( $video['format'] ) . '">';
 			}
-			?>
-		</video>
-	<?php
+			else {
+				echo wp_oembed_get( $video['url'] );
+			}
+		}
+		if ( strpos( $video_element, 'source' ) !== false ) {
+			$video_element .= '</video>';
+			echo $video_element;
+		}
+
 	}
 
 	/**
