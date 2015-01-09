@@ -146,10 +146,6 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 
 	function video_code($videos, $classes = array()){
 		if(empty($videos)) return;
-
-
-
-
 		?>
 		<video class="<?php echo esc_attr( implode(',', $classes) ) ?>" autoplay loop muted>
 

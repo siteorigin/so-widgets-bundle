@@ -47,12 +47,12 @@ if( empty($instance['frames']) ) return;
 					// We need to find another background
 					if(!empty($frame['url'])) echo '<a href="' . esc_url($frame['url']) . '">';
 
-					if( !empty($frame['background_image']) ){
-						echo wp_get_attachment_image($frame['background_image'], 'full');
+					if( !empty($frame['background_videos']) ){
+						$this->video_code($frame['background_videos'], array('sow-full-element'));
 					}
 					else {
-						// Lets use the video
-						$this->video_code($frame['background_videos'], array('sow-full-element'));
+						// Lets use the background image
+						echo wp_get_attachment_image($frame['background_image'], 'full');
 					}
 
 					if(!empty($frame['url'])) echo '</a>';
