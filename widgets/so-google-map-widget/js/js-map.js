@@ -3,7 +3,7 @@
  */
 
 function loadMap($) {
-    $('.google-map-canvas').each(function () {
+    $('.sow-google-map-canvas').each(function () {
         var $$ = $(this);
         // We use the geocoder
         var geocoder = new google.maps.Geocoder();
@@ -112,7 +112,7 @@ function loadMap($) {
 }
 
 function loadApi($) {
-    var apiKey = $('.google-map-canvas').data('api-key');
+    var apiKey = $('.sow-google-map-canvas').data('api-key');
 
     var apiUrl = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=initialize';
     if(apiKey) {
