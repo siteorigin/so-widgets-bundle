@@ -37,6 +37,10 @@ Once you enable a widget, you'll be able to use it anywhere standard widgets are
 
 == Changelog ==
 
+= 1.1.2 =
+* Added social links widget.
+* Framework updates.
+
 = 1.1.1 =
 * Fixed Google Map preview.
 
