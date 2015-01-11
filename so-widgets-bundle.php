@@ -3,7 +3,7 @@
 /*
 Plugin Name: SiteOrigin Widgets Bundle
 Description: A collection of all our widgets, neatly bundled into a single plugin.
-Version: 1.1.1
+Version: 1.1.2
 Author: SiteOrigin
 Author URI: http://siteorigin.com
 Plugin URI: http://siteorigin.com/widgets-bundle/
@@ -11,7 +11,7 @@ License: GPL3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-define('SOW_BUNDLE_VERSION', '1.1.1');
+define('SOW_BUNDLE_VERSION', '1.1.2');
 define('SOW_BUNDLE_BASE_FILE', __FILE__);
 
 // We're going to include this check until version 1.2
@@ -363,7 +363,7 @@ class SiteOrigin_Widgets_Bundle {
 			$files = glob( $folder.'*/*.php' );
 			foreach($files as $file) {
 				$widget = get_file_data( $file, $default_headers, 'siteorigin-widget' );
-				//skip the widget if it's missing a name
+				//skip the file if it's missing a name
 				if ( empty( $widget['Name'] ) ) {
 					continue;
 				}

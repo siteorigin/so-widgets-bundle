@@ -20,13 +20,13 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			),
 			array(),
 			array(
-				'map_center'  => array(
+				'map_center'      => array(
 					'type'        => 'textarea',
 					'rows'        => 2,
 					'label'       => __( 'Map center', 'siteorigin-widgets' ),
 					'description' => __( 'The name of a place, town, city, or even a country. Can be an exact address too.', 'siteorigin-widgets' )
 				),
-				'settings' => array(
+				'settings'        => array(
 					'type'        => 'section',
 					'label'       => __( 'Settings', 'siteorigin-widgets' ),
 					'hide'        => false,
@@ -79,7 +79,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						)
 					)
 				),
-				'markers'     => array(
+				'markers'         => array(
 					'type'        => 'section',
 					'label'       => __( 'Markers', 'siteorigin-widgets' ),
 					'hide'        => true,
@@ -121,35 +121,35 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						)
 					)
 				),
-				'styles'      => array(
+				'styles'          => array(
 					'type'        => 'section',
 					'label'       => __( 'Styles', 'siteorigin-widgets' ),
 					'hide'        => true,
 					'description' => __( 'Apply custom colors to map features, or hide them completely.', 'siteorigin-widgets' ),
 					'fields'      => array(
-							'style_method'        => array(
+						'style_method'        => array(
 							'type'    => 'radio',
 							'default' => 'normal',
 							'label'   => __( 'Map styles', 'siteorigin-widgets' ),
 							'options' => array(
-								'normal'   => __( 'Normal', 'siteorigin-widgets' ),
+								'normal'   => __( 'Default', 'siteorigin-widgets' ),
 								'custom'   => __( 'Custom', 'siteorigin-widgets' ),
-								'raw_json' => __( 'Raw JSON', 'siteorigin-widgets' ),
+								'raw_json' => __( 'Predefined Styles', 'siteorigin-widgets' ),
 							)
 						),
-						'styled_map_name'   => array(
+						'styled_map_name'     => array(
 							'type'       => 'text',
 							'state_name' => 'interactive',
 							'label'      => __( 'Styled map name', 'siteorigin-widgets' )
 						),
-						'raw_json_map_styles'   => array(
+						'raw_json_map_styles' => array(
 							'type'        => 'textarea',
 							'rows'        => 5,
 							'hidden'      => true,
 							'label'       => __( 'Raw JSON styles', 'siteorigin-widgets' ),
 							'description' => __( 'Copy and paste predefined styles here from <a href="http://snazzymaps.com/" target="_blank">Snazzy Maps</a>.', 'siteorigin-widgets' )
 						),
-						'custom_map_styles' => array(
+						'custom_map_styles'   => array(
 							'type'       => 'repeater',
 							'label'      => __( 'Custom map styles', 'siteorigin-widgets' ),
 							'item_name'  => __( 'Style', 'siteorigin-widgets' ),
@@ -161,7 +161,8 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							'fields'     => array(
 								'map_feature'  => array(
 									'type'    => 'select',
-									'label'   => __( 'Select map feature to style', 'siteorigin-widgets' ),
+									'label'   => __( '', 'siteorigin-widgets' ),
+									'prompt'  => __( 'Select map feature to style', 'siteorigin-widgets' ),
 									'options' => array(
 										'water'                       => __( 'Water', 'siteorigin-widgets' ),
 										'road_highway'                => __( 'Highways', 'siteorigin-widgets' ),
@@ -204,7 +205,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						)
 					)
 				),
-				'directions'  => array(
+				'directions'      => array(
 					'type'        => 'section',
 					'label'       => __( 'Directions', 'siteorigin-widgets' ),
 					'state_name'  => 'interactive',
@@ -212,8 +213,8 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'description' => __( 'Display a route on your map, with waypoints between your starting point and destination.', 'siteorigin-widgets' ),
 					'fields'      => array(
 						'origin'             => array(
-							'type'        => 'text',
-							'label'       => __( 'Starting point', 'siteorigin-widgets' )
+							'type'  => 'text',
+							'label' => __( 'Starting point', 'siteorigin-widgets' )
 						),
 						'destination'        => array(
 							'type'  => 'text',
@@ -270,11 +271,11 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					)
 				),
 				'api_key_section' => array(
-					'type'        => 'section',
-					'label'       => __( 'API key', 'siteorigin-widgets' ),
-					'hide'        => true,
-					'fields'      => array(
-						'api_key'     => array(
+					'type'   => 'section',
+					'label'  => __( 'API key', 'siteorigin-widgets' ),
+					'hide'   => true,
+					'fields' => array(
+						'api_key' => array(
 							'type'        => 'text',
 							'label'       => __( 'API key', 'siteorigin-widgets' ),
 							'description' => __( 'Enter your API key if you have one. This enables you to monitor your Google Maps API usage in the Google APIs Console.', 'siteorigin-widgets' ),
@@ -294,7 +295,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	function enqueue_frontend_scripts() {
 		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		wp_enqueue_script( 'sow-google-map', siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map' . $js_suffix . '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
-		wp_enqueue_style( 'sow-google-map', siteorigin_widget_get_plugin_dir_url('google-map').'css/style.css', array(), SOW_BUNDLE_VERSION );
+		wp_enqueue_style( 'sow-google-map', siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'css/style.css', array(), SOW_BUNDLE_VERSION );
 	}
 
 	function get_template_name( $instance ) {
@@ -319,10 +320,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'src_url' => esc_url( $src_url )
 			);
 		} else {
-			$markers = $instance['markers'];
+			$markers         = $instance['markers'];
 			$directions_json = '';
 			if ( ! empty( $instance['directions']['origin'] ) && ! empty( $instance['directions']['destination'] ) ) {
-				if ( empty( $instance['directions']['waypoints'] )) {
+				if ( empty( $instance['directions']['waypoints'] ) ) {
 					unset( $instance['directions']['waypoints'] );
 				}
 				$directions_json = json_encode( $this->underscores_to_camel_case( $instance['directions'] ) );
@@ -387,7 +388,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				if ( empty( $style_config['raw_json_map_styles'] ) ) {
 					return array();
 				} else {
-					$map_name      = ! empty( $style_config['styled_map_name'] ) ? $style_config['styled_map_name'] : __('Custom Map', 'siteorigin-widgets');
+					$map_name      = ! empty( $style_config['styled_map_name'] ) ? $style_config['styled_map_name'] : __( 'Custom Map', 'siteorigin-widgets' );
 					$styles_string = $style_config['raw_json_map_styles'];
 
 					return array( 'map_name' => $map_name, 'styles' => json_decode( $styles_string, true ) );

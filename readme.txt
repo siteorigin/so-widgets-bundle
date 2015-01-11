@@ -27,7 +27,7 @@ The collection is growing, but here’s what we have so far.
 
 Once you enable a widget, you'll be able to use it anywhere standard widgets are used. You can manage your widgets by going to Plugins > SiteOrigin Widgets in your WordPress admin.
 
-[Documentation](http://siteorigin.com/widgets-bundle/) is available on SiteOrigin.
+[Documentation](https://siteorigin.com/widgets-bundle/) is available on SiteOrigin. Read our [Widget Bundle developer documentation](https://siteorigin.com/docs/widgets-bundle/) if you'd like to develop with the Widget Bundle.
 
 == Screenshots ==
 
@@ -36,6 +36,10 @@ Once you enable a widget, you'll be able to use it anywhere standard widgets are
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.1.2 =
+* Added social links widget.
+* Framework updates.
 
 = 1.1.1 =
 * Fixed Google Map preview.
