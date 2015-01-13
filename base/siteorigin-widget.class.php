@@ -1023,7 +1023,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string
 	 */
 	function get_style_hash($instance) {
-		return substr( md5( serialize( $this->get_less_variables( $instance ) ) ), 0, 12 );
+		$vars = method_exists($this, 'get_style_hash_variables') ? $this->get_style_hash_variables( $instance ) : $this->get_less_variables( $instance );
+		return substr( md5( json_encode( $vars ) ), 0, 12 );
 	}
 
 	/**
