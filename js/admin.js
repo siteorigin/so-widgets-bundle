@@ -3,8 +3,12 @@ jQuery(function($){
         var $$ = $(this);
         var s = $$.is(':checked');
 
-        if(s) $$.closest('.so-widget').addClass('so-widget-is-active').removeClass('so-widget-is-inactive');
-        else $$.closest('.so-widget').removeClass('so-widget-is-active').addClass('so-widget-is-inactive');
+        if(s) {
+            $$.closest('.so-widget').addClass('so-widget-is-active').removeClass('so-widget-is-inactive');
+        }
+        else {
+            $$.closest('.so-widget').removeClass('so-widget-is-active').addClass('so-widget-is-inactive');
+        }
 
         // Lets send an ajax request.
         $.post(
