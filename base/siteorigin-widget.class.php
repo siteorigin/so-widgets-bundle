@@ -333,7 +333,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		if( !class_exists('SiteOrigin_Widgets_Color_Object') ) require plugin_dir_path( __FILE__ ).'inc/color.php';
 		$new_instance = $this->sanitize( $new_instance, $this->form_options() );
 		// Remove the old CSS, it'll be regenerated on page load.
-		$this->delete_css($new_instance);
+		$this->delete_css( $this->modify_instance( $new_instance ) );
 		return $new_instance;
 	}
 
