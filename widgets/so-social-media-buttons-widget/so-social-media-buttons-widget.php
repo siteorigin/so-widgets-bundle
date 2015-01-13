@@ -228,6 +228,27 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		}
 		return apply_filters( 'sow_social_media_buttons_networks', $networks, $instance );
 	}
+
+	/**
+	 * This is used to generate the hash of the instance.
+	 *
+	 * @param $instance
+	 *
+	 * @return array
+	 */
+	protected function get_style_hash_variables( $instance ){
+		$networks = $this->get_instance_networks($instance);
+
+		foreach($networks as $i => $network) {
+			// URL is not important for the styling
+			unset($networks[$i]['url']);
+		}
+
+		return array(
+			'less' => $this->get_less_variables($instance),
+			'networks' => $networks
+		);
+	}
 }
 
 siteorigin_widget_register( 'social-media-buttons', __FILE__ );
