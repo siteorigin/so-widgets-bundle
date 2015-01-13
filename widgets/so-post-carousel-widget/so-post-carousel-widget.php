@@ -49,7 +49,9 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 	}
 
 	function enqueue_admin_scripts() {
-		wp_enqueue_script( 'sow-carousel-basic', siteorigin_widget_get_plugin_dir_url( 'post-carousel' ) . 'js/carousel-admin.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
+		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
+		wp_enqueue_script( 'sow-carousel-basic', siteorigin_widget_get_plugin_dir_url( 'post-carousel' ) . 'js/carousel-admin' . $js_suffix . '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
 	}
 
 	function get_template_name($instance){
