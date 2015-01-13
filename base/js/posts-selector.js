@@ -311,24 +311,24 @@ var soWidgetPostSelector = ( function ($, _) {
 
             // The post type field
             this.form.append('<div class="query-builder-form-field">' + sowPostsSelectorTpl.fields.post_type + '</div>');
-            if( this.model.get('post_type') !== null ) this.form.find('select[name="post_type"]').val( this.model.get('post_type'));
+            if( typeof this.model.get('post_type') !== 'undefined' ) this.form.find('select[name="post_type"]').val( this.model.get('post_type'));
 
             // The post__in field
             this.form.append('<div class="query-builder-form-field">' + sowPostsSelectorTpl.fields.post__in + '</div>');
-            if( this.model.get('post__in') !== null ) this.form.find('input[name="post__in"]').val( this.model.get('post__in').join(',') );
+            if( typeof this.model.get('post__in') !== 'undefined' ) this.form.find('input[name="post__in"]').val( this.model.get('post__in').join(',') );
 
             // The taxonomy field
             this.form.append('<div class="query-builder-form-field ui-front">' + sowPostsSelectorTpl.fields.tax_query + '</div>');
-            if( this.model.get('tax_query') !== null ) this.form.find('input[name="tax_query"]').val( this.model.get('tax_query'));
+            if( typeof this.model.get('tax_query') !== 'undefined' ) this.form.find('input[name="tax_query"]').val( this.model.get('tax_query'));
 
             // The order field
             this.form.append($('<div class="query-builder-form-field">' + sowPostsSelectorTpl.fields.orderby + '</div>').disableSelection());
-            if( this.model.get('orderby') !== null ) this.form.find('select[name="orderby"]').val(this.model.get('orderby'));
-            if( this.model.get('order') !== null ) this.form.find('input[name="order"]').val(this.model.get('order'));
+            if( typeof this.model.get('orderby') !== 'undefined' ) this.form.find('select[name="orderby"]').val(this.model.get('orderby'));
+            if( typeof this.model.get('order') !== 'undefined' ) this.form.find('input[name="order"]').val(this.model.get('order'));
 
             // The posts per page field
             this.form.append('<div class="query-builder-form-field">' + sowPostsSelectorTpl.fields.posts_per_page + '</div>');
-            if( this.model.get('posts_per_page') !== null ) this.form.find('input[name="posts_per_page"]').val( this.model.get('posts_per_page'));
+            if( typeof this.model.get('posts_per_page') !== 'undefined' ) this.form.find('input[name="posts_per_page"]').val( this.model.get('posts_per_page'));
 
 
             var orderField =  this.form.find('input[name="order"]')
