@@ -3,12 +3,15 @@
 
 .widget-function('generate_calls_to', .create_social_media_button_style);
 
+.sow-social-media-button {
+	.social-media-button-base();
+}
+
 .create_social_media_button_style(@name, @icon_color, @background_color) {
 
     @border_color: darken(@background_color, 15%);
 
     .sow-social-media-button-@{name} {
-        .social-media-button-base();
         color: @background_color !important;
 
         background: transparent;
