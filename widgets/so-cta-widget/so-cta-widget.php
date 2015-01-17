@@ -36,17 +36,23 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 					'type' => 'section',
 					'label' => __('Design', 'siteorigin-widgets'),
 					'fields' => array(
-
 						'background_color' => array(
 							'type' => 'color',
 							'label' => __('Background color', 'siteorigin-widgets'),
 						),
-
 						'border_color' => array(
 							'type' => 'color',
 							'label' => __('Border color', 'siteorigin-widgets'),
 						),
-
+						'button_align' => array(
+							'type' => 'select',
+							'label' => __( 'Button align', 'siteorigin-widgets' ),
+							'default' => 'right',
+							'options' => array(
+								'left' => __( 'Left', 'siteorigin-widgets'),
+								'right' => __( 'Right', 'siteorigin-widgets'),
+							)
+						)
 					)
 				),
 
@@ -83,7 +89,13 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 		return array(
 			'border_color' => $instance['design']['border_color'],
 			'background_color' => $instance['design']['background_color'],
+			'button_align' => $instance['design']['button_align'],
 		);
+	}
+
+	function modify_child_widget_form($child_widget_form, $child_widget) {
+		unset( $child_widget_form['design']['fields']['align'] );
+		return $child_widget_form;
 	}
 
 	function enqueue_frontend_scripts(){

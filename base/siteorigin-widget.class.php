@@ -49,8 +49,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @return mixed
 	 */
-	function form_options(){
-		return $this->modify_form( $this->form_options );
+	function form_options( $parent = false ) {
+		$form_options = $this->modify_form( $this->form_options );
+		if( !empty($parent) ) {
+			$form_options = $parent->modify_child_widget_form( $form_options, $this );
+		}
+
+		return $form_options;
 	}
 
 	/**
@@ -898,7 +903,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				// Create the extra form entries
 				$sub_widget = new $field['class'];
 				?><div class="siteorigin-widget-section <?php if( !empty($field['hide']) ) echo 'siteorigin-widget-section-hide'; ?>"><?php
-				foreach( $sub_widget->form_options() as $sub_name => $sub_field) {
+				foreach( $sub_widget->form_options($this) as $sub_name => $sub_field) {
 					$this->render_field(
 						$name.']['.$sub_name,
 						$sub_field,
@@ -1074,6 +1079,18 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	function modify_form($form) {
 		return $form;
+	}
+
+
+	/**
+	 * This function can be overwritten to modify form values in the child widget.
+	 *
+	 * @param $child_widget_form
+	 * @param $child_widget
+	 * @return mixed
+	 */
+	function modify_child_widget_form($child_widget_form, $child_widget) {
+		return $child_widget_form;
 	}
 
 	/**
