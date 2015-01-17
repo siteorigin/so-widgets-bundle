@@ -337,7 +337,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	public function update( $new_instance, $old_instance ) {
 		if( !class_exists('SiteOrigin_Widgets_Color_Object') ) require plugin_dir_path( __FILE__ ).'inc/color.php';
 		$new_instance = $this->sanitize( $new_instance, $this->form_options() );
-		$this->save_css($new_instance);
+		// Remove the old CSS, it'll be regenerated on page load.
+		$this->delete_css( $this->modify_instance( $new_instance ) );
 		return $new_instance;
 	}
 
@@ -347,7 +348,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param $instance
 	 * @return bool|string
 	 */
-	public function save_css( $instance ){
+	private function save_css( $instance ){
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 
 		if( WP_Filesystem() ) {
@@ -360,7 +361,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			$style = $this->get_style_name($instance);
 			$hash = $this->get_style_hash( $instance );
-
 			$name = $this->id_base.'-'.$style.'-'.$hash.'.css';
 
 			$css = $this->get_instance_css($instance);
@@ -377,6 +377,24 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 		else {
 			return false;
+		}
+	}
+
+	/**
+	 * Clears CSS for a specific instance
+	 */
+	private function delete_css( $instance ){
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+
+		if( WP_Filesystem() ) {
+			global $wp_filesystem;
+			$upload_dir = wp_upload_dir();
+
+			$style = $this->get_style_name($instance);
+			$hash = $this->get_style_hash( $instance );
+			$name = $this->id_base.'-'.$style.'-'.$hash.'.css';
+
+			$wp_filesystem->delete($upload_dir['basedir'] . '/siteorigin-widgets/'.$name);
 		}
 	}
 
@@ -1010,7 +1028,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string
 	 */
 	function get_style_hash($instance) {
-		return substr( md5( serialize( $this->get_less_variables( $instance ) ) ), 0, 12 );
+		$vars = method_exists($this, 'get_style_hash_variables') ? $this->get_style_hash_variables( $instance ) : $this->get_less_variables( $instance );
+		return substr( md5( json_encode( $vars ) ), 0, 12 );
 	}
 
 	/**

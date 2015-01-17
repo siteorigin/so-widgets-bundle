@@ -1,0 +1,33 @@
+@import "../../../base/less/mixins";
+@import "widget-mixins";
+
+.widget-function('generate_calls_to', .create_social_media_button_style);
+
+.sow-social-media-button {
+	.social-media-button-base();
+}
+
+.create_social_media_button_style(@name, @icon_color, @background_color) {
+
+    @border_color: darken(@background_color, 15%);
+
+    .sow-social-media-button-@{name} {
+        color: @background_color !important;
+
+        background: transparent;
+        border: 2px solid @background_color;
+
+        text-shadow: 0 1px 0 rgba(0,0,0,0.05);
+
+        &:visited,
+        &:active,
+        &:hover{
+            color: @background_color !important;
+        }
+
+        &.ow-button-hover:hover {
+            background: @background_color;
+            color: @icon_color !important;
+        }
+    }
+}

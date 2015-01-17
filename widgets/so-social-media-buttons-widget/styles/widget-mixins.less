@@ -1,0 +1,41 @@
+@icon_size: 1.3em;
+@rounding: 0.25em;
+@padding: 0.75em;
+@margin: 0.1em;
+@align: left;
+
+.social-media-button-container {
+    .clearfix();
+
+    text-align: @align;
+
+    //this little gem allows justified buttons when there's only one row of buttons or if it's the last row of buttons
+	/*
+    &:after {
+        content:"";
+        display:inline-block;
+        width:100%;
+    }
+    */
+}
+
+.social-media-button-base() {
+
+    font-size: @icon_size;
+    padding: @padding @padding;
+    margin: @margin;
+
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+
+	line-height: 1em;
+
+	div {
+		width: 1em;
+		height: 1em;
+		display: inline-block;
+	}
+
+    .rounded(@rounding);
+}

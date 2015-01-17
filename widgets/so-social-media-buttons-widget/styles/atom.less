@@ -1,0 +1,36 @@
+@import "../../../base/less/mixins";
+@import "widget-mixins";
+
+.widget-function('generate_calls_to', .create_social_media_button_style);
+
+.sow-social-media-button {
+	.social-media-button-base();
+}
+
+.create_social_media_button_style(@name, @icon_color, @button_color) {
+
+    @border_color: darken(@button_color, 15%);
+
+    .sow-social-media-button-@{name} {
+        color: @icon_color !important;
+
+        .gradient(@button_color, darken(@button_color, 10%), @button_color);
+        border: 1px solid;
+        border-color: lighten(@border_color, 2%) @border_color darken(@border_color, 3%) @border_color;
+
+        .box-shadow(~"inset 0 1px 0 rgba(255,255,255,0.2), 0 1px 2px rgba(0,0,0,0.065)");
+        text-shadow: 0 1px 0 rgba(0,0,0,0.05);
+
+        &:visited,
+        &:active,
+        &:hover{
+            color: @icon_color !important;
+        }
+
+        &.ow-button-hover:hover {
+            .gradient(lighten(@button_color, 2%), lighten(darken(@button_color, 10%), 2%), lighten(@button_color, 2%));
+            border-color: lighten(lighten(@border_color, 2%), 2%) lighten(@border_color, 2%) darken(lighten(@border_color, 2%), 3%) lighten(@border_color, 2%);
+            color: lighten(@icon_color, 2%);
+        }
+    }
+}
