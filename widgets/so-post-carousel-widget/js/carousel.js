@@ -3,8 +3,7 @@ jQuery( function($){
     $('.sow-carousel-wrapper').each(function(){
 
         var $$ = $(this),
-            wrap = $$.closest('.widget'),
-            title = wrap.find('.sow-carousel-title');
+            title = $$.siblings('.sow-carousel-title');
 
         var position = 0, page = 1, fetching = false, complete = false;
 
