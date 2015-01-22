@@ -168,6 +168,7 @@ function siteorigin_widget_post_selector_get_posts_action(){
 			'title' => $post->post_title,
 			'id' => $post->ID,
 			'thumbnail' => !empty($thumbnail) ? $thumbnail[0] : plugin_dir_url(__FILE__).'../css/img/thumbnail-placeholder.png',
+			'editUrl' => admin_url( 'post.php?post=' . $post->ID . '&action=edit')
 		);
 	}
 
