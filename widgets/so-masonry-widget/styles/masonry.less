@@ -1,0 +1,165 @@
+@import "mixins";
+
+.so-masonry-container {
+	margin: 0 auto 0 auto;
+	width: 100%;
+	.clearfix();
+
+	.masonry-brick {
+		float: left;
+		width: auto;
+		overflow: hidden;
+		position: relative;
+		margin: 0;
+
+		@masonry_background: darken(#343538, 2%);
+		.gradient(@masonry_background,@masonry_background,darken(@masonry_background, 4%));
+		.box-shadow(inset 0 0 6px rgba(0, 0, 0, 0.6));
+
+		.thumbnail-link{
+			display: block;
+			line-height: 0;
+		}
+
+		img.wp-post-image {
+			width: 100%;
+			height: 100%;
+			display: block;
+			border-radius: 0;
+			box-shadow: none;
+		}
+
+		&.size-11,
+		&.size-12{
+			width: 25%;
+		}
+
+		&.size-21,
+		&.size-22{
+			width: 50%;
+		}
+
+		.splitter {
+			position: absolute;
+			z-index: 10;
+			width: 100%;
+			overflow: hidden;
+
+			img {
+				position: absolute;
+				left: 0;
+				width: 100%;
+				height: auto;
+				border-radius: 0;
+				box-shadow: none;
+			}
+
+			&.top {
+				/* Fixes a graphics glitch */
+				border-bottom: 1px solid transparent;
+				.decoration {
+					bottom: 0px;
+				}
+
+				img {
+					top: 0;
+				}
+			}
+
+			&.bottom {
+				border-top: 1px solid transparent;
+				.decoration {
+					top: 0px;
+				}
+
+				img {
+					bottom: 0;
+				}
+			}
+		}
+
+		.post-information {
+			display:none;
+			top: 50%;
+			margin-top: -1em;
+			left: 0;
+			width: 100%;
+			text-align: center;
+			position: absolute;
+			text-decoration: none !important;
+			z-index: 9;
+			padding: 0px 10px;
+			.box-sizing(border-box);
+
+			a {
+				color: inherit;
+				text-decoration: none;
+			}
+
+			h2 {
+				color: #FFFFFF;
+				font-weight: 500;
+				font-size: 22px;
+				margin-bottom: 5px;
+				text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+				line-height: 1.4em;
+			}
+
+			.entry-meta {
+				font-size: 12px;
+				font-style: italic;
+				color: #CCCCCC;
+			}
+		}
+
+		&.no-thumbnail .post-information,
+		&.loading .post-information{
+			display: block;
+		}
+	}
+
+	@media only screen and ( max-width: 680px ) {
+		&.responsive{
+			.post-information {
+				h2 {
+					font-size: 18px;
+				}
+
+				.entry-meta {
+					font-size: 11px;
+				}
+			}
+
+			.masonry-brick {
+				&.size-11,
+				&.size-12{
+					width: 50%;
+				}
+
+				&.size-21,
+				&.size-22{
+					width: 100%;
+				}
+			}
+		}
+	}
+
+	@media only screen and ( max-width: 480px ) {
+		&.responsive{
+			.post-information {
+				h2 {
+					font-size: 16px;
+				}
+			}
+
+			.masonry-brick {
+				&.size-11,
+				&.size-12,
+				&.size-21,
+				&.size-22{
+					width: 100%;
+				}
+			}
+		}
+	}
+}

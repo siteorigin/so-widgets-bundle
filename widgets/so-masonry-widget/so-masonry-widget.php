@@ -7,10 +7,8 @@ Author: SiteOrigin
 Author URI: http://siteorigin.com
 */
 
-
 class SiteOrigin_Widget_Masonry_Widget extends SiteOrigin_Widget {
 	function __construct() {
-
 		parent::__construct(
 			'sow-masonry',
 			__( 'SiteOrigin Masonry Layout', 'siteorigin-widgets' ),
@@ -25,85 +23,46 @@ class SiteOrigin_Widget_Masonry_Widget extends SiteOrigin_Widget {
 					'type' => 'text',
 					'label' => __( 'Title', 'siteorigin-widgets' ),
 				),
-				'post_type' => array(
-					'type' => 'radio',
-					'label' => __( 'Post type', 'siteorigin-widgets' ),
-					'default' => 'post',
-					'options' => array(
-						'post' => __( 'Post', 'siteorigin-widgets' ),
-						'page' => __( 'Page', 'siteorigin-widgets' )
-					)
-				),
-				'posts_per_page' => array(
-					'type' => 'number',
-					'label' => __( 'Posts per page', 'siteorigin-widgets' )
-				),
-				'order_by' => array(
-					'type' => 'select',
-					'label' => 'Order by',
-					'default' => 'none',
-					'options' => array(
-						'none' => __( 'None', 'siteorigin-widgets' ),
-						'ID' => __( 'Post ID', 'siteorigin-widgets' ),
-						'author' => __( 'Author', 'siteorigin-widgets' ),
-						'name' => __( 'Name', 'siteorigin-widgets' ),
-						'date' => __( 'Date', 'siteorigin-widgets' ),
-						'modified' => __( 'Modified', 'siteorigin-widgets' ),
-						'parent' => __( 'Parent', 'siteorigin-widgets' ),
-						'rand' => __( 'Random', 'siteorigin-widgets' ),
-						'comment_count' => __( 'Comment count', 'siteorigin-widgets' ),
-						'menu_order' => __( 'Menu order', 'siteorigin-widgets' ),
-					)
-				),
-				'order' => array(
-					'type' => 'radio',
-					'label' => __( 'Order', 'siteorigin-widgets' ),
-					'default' => 'DESC',
-					'options' => array(
-						'DESC' => __( 'Descending', 'siteorigin-widgets' ),
-						'ASC' => __( 'Ascending', 'siteorigin-widgets' ),
-					)
-				),
-				'sticky_posts' => array(
-					'type' => 'radio',
-					'label' => __( 'Sticky posts', 'siteorigin-widgets' ),
-					'default' => 'default',
-					'options' => array(
-						'default' => __( 'Default', 'siteorigin-widgets' ),
-						'ignore' => __( 'Ignore sticky', 'siteorigin-widgets' ),
-						'exclude' => __( 'Exclude sticky', 'siteorigin-widgets' ),
-						'only' => __( 'Only sticky', 'siteorigin-widgets' ),
-					)
-				),
-				'post_category' => array(
-					'type' => 'select',
-					'label' => __( 'Post category', 'siteorigin-widgets' ),
-					'options' => array(
-						'default' => __( 'Default', 'siteorigin-widgets' ),
-						//append get_categories() in modify_form
-					)
-				),
-				'additional' => array(
-					'type' => 'text',
-					'label' => __( 'Additional', 'siteorigin-widgets' ),
-					'description' => __( 'Additional query arguments. See <a href="http://codex.wordpress.org/Function_Reference/query_posts" target="_blank">query posts</a>.')
+				'posts_query' => array(
+					'type' => 'posts',
+					'label' => __( 'Posts query', 'siteorigin-widgets' )
 				),
 				'responsive' => array(
 					'type' => 'checkbox',
 					'label' => __( 'Responsive layout', 'siteorigin-widgets' ),
-					'default' => true
-				),
-			)
+					'default' =>  true
+				)
+			),
+			plugin_dir_path(__FILE__).'../'
 		);
 	}
 
 	function get_style_name( $instance ) {
-		return '';
+		return 'masonry';
 	}
 
 	function get_template_name( $instance ) {
-		return 'base';
+		return 'masonry';
+	}
+
+	function get_template_variables( $instance , $args ) {
+		$query = siteorigin_widget_post_selector_process_query( $instance['posts_query'] );
+		return array(
+			'responsive' => !empty( $instance['responsive'] ),
+			'posts' => new WP_Query( $query )
+		);
+	}
+
+	function enqueue_frontend_scripts(){
+		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
+		wp_enqueue_script( 'siteorigin-masonry' , plugin_dir_url(__FILE__) . '/js/jquery.masonry'.$js_suffix.'.js', array('jquery'), '2.1.07' );
+		wp_enqueue_script( 'siteorigin-masonry-main' , plugin_dir_url(__FILE__) . '/js/main'.$js_suffix.'.js', array('jquery'), SOW_BUNDLE_VERSION );
+		wp_localize_script( 'siteorigin-masonry-main', 'soMasonrySettings', array(
+			'loader' => plugin_dir_url(__FILE__).'images/ajax-loader.gif'
+		) );
 	}
 }
 
 siteorigin_widget_register( 'masonry', __FILE__ );
+include_once( 'inc/masonry_post_settings.php' );
