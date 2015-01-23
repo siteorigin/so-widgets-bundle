@@ -518,6 +518,7 @@ var soWidgetPostSelector = ( function ($, _) {
 
         render: function(){
             var posts = this.model.get('post__in');
+            var postType = this.model.get('post_type');
 
             this.$el.find('.query-builder-content').empty().html(sowPostsSelectorTpl.selector);
 
@@ -533,8 +534,18 @@ var soWidgetPostSelector = ( function ($, _) {
 
             // Set up the autocomplete
             var v = this;
-            this.$el.find('.query-builder-content #sow-post-selector .sow-search-field').autocomplete({
-                source: ajaxurl + '?action=sow_search_posts',
+            var $searchInput = this.$el.find('.query-builder-content #sow-post-selector .sow-search-field');
+
+            $searchInput.autocomplete({
+                source: function(request, response) {
+                    request.type = postType;
+                    $.get(
+                        ajaxurl + '?action=sow_search_posts',
+                        request,
+                        response
+                    );
+                },
+                minLength: 0,
                 select: function( event, ui ) {
                     event.preventDefault();
                     $(this).val('');
@@ -545,6 +556,11 @@ var soWidgetPostSelector = ( function ($, _) {
                     return false;
                 }
             });
+            $searchInput.focusin(
+                function() {
+                    $searchInput.autocomplete("search", $searchInput.val());
+                }
+            )
 
             // Handle clicking on the remove buttons
             this.$el.find('.query-builder-content').on('click', '.sow-remove', function(e){
@@ -589,7 +605,8 @@ var soWidgetPostSelector = ( function ($, _) {
                                 v.postCache[post.id] = {
                                     id : post.id,
                                     title : post.title,
-                                    thumbnail : post.thumbnail
+                                    thumbnail : post.thumbnail,
+                                    editUrl: post.editUrl
                                 };
                             });
 
@@ -605,7 +622,7 @@ var soWidgetPostSelector = ( function ($, _) {
             for(var i = 0; i < posts.length; i++) {
                 if( typeof this.postCache[posts[i]] === 'undefined' ) {
                     // Create a temporary post
-                    postItem = $(this.postTemplate( {id:posts[i], title: '', thumbnail: ''} )).addClass('sow-post-loading');
+                    postItem = $(this.postTemplate( {id:posts[i], title: '', thumbnail: '', editUrl: '#'} )).addClass('sow-post-loading');
                 }
                 else {
                     postItem = $(this.postTemplate( this.postCache[posts[i]] ));

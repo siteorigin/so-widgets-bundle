@@ -184,18 +184,18 @@ add_action('wp_ajax_sow_get_posts', 'siteorigin_widget_post_selector_get_posts_a
  */
 function siteorigin_widget_post_selector_post_search_action(){
 	$term = !empty($_GET['term']) ? stripslashes($_GET['term']) : '';
+	$type = !empty($_GET['type']) ? stripslashes($_GET['type']) : '_all';
+	if($type == '_all') $type = explode(',', siteorigin_widget_post_selector_all_post_types());
 
 	$results = array();
-	if( !empty($term)){
-		$r = new WP_Query( array('s' => $term, 'post_status' => 'publish') );
-		foreach($r->posts as $post) {
-			$thumbnail = wp_get_attachment_image_src($post->ID);
+	$r = new WP_Query( array('s' => $term, 'post_status' => 'publish', 'posts_per_page' => 20, 'post_type' => $type) );
+	foreach($r->posts as $post) {
+//			$thumbnail = wp_get_attachment_image_src($post->ID);
 
-			$results[] = array(
-				'label' => $post->post_title,
-				'value' => $post->ID,
-			);
-		}
+		$results[] = array(
+			'label' => $post->post_title,
+			'value' => $post->ID,
+		);
 	}
 
 	header('content-type:application/json');

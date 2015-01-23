@@ -524,6 +524,12 @@
   width: 320px;
   margin-left: 10px;
 }
+.siteorigin-widgets-query-builder #sow-post-selector .sow-autocomplete-field .ui-autocomplete {
+  max-height: 182px;
+  overflow-y: auto;
+  /* prevent horizontal scrollbar */
+  overflow-x: hidden;
+}
 .siteorigin-widgets-query-builder #sow-post-selector .sow-posts-sortable .ui-state-highlight {
   display: block;
   float: left;
