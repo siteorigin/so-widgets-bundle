@@ -30,6 +30,7 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 				'sub_title' => array(
 					'type' => 'text',
 					'label' => __('Subtitle', 'siteorigin-widgets'),
+					'allow_html_formatting' => true
 				),
 
 				'design' => array(

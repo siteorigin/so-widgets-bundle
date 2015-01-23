@@ -557,22 +557,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 				case 'textarea':
 				case 'text' :
-					if ( empty( $field['allow_html_formatting'] ) ) {
-						$instance[$name] = sanitize_text_field($instance[$name]);
-					}
-					else {
-						$allowed = array(
-							'a' => array(
-								'href' => true,
-								'target' => true
-							),
-							'br' => array(),
-							'em' => array(),
-							'strong' => array(),
-						);
-
-						$instance[ $name ] = wp_kses( $instance[ $name ], $allowed );
-					}
+					$instance[ $name ] = wp_kses_post( $instance[ $name ] );
+					$instance[ $name ] = balanceTags( $instance[ $name ] , true );
 					break;
 
 				case 'color':
