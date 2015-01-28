@@ -2,6 +2,7 @@
 
 include plugin_dir_path(__FILE__).'siteorigin-widget.class.php';
 include plugin_dir_path(__FILE__).'inc/post-selector.php';
+include plugin_dir_path(__FILE__).'inc/fonts.php';
 
 global $siteorigin_widgets_registered, $siteorigin_widgets_classes;
 $siteorigin_widgets_registered = array();
@@ -163,6 +164,38 @@ function siteorigin_widget_get_icon($icon_value, $icon_styles = false) {
 		return false;
 	}
 
+}
+
+
+
+/**
+ * @param $font_value
+ *
+ * @return array
+ */
+function siteorigin_widget_get_font($font_value) {
+	$web_safe = array(
+		'Helvetica Neue' => 'Arial, Helvetica, Geneva, sans-serif',
+		'Lucida Grande' => 'Lucida, Verdana, sans-serif',
+		'Georgia' => '"Times New Roman", Times, serif',
+		'Courier New' => 'Courier, mono',
+	);
+
+	$font = array();
+	if ( isset( $web_safe[ $font_value ] ) ) {
+		$font['family'] = $web_safe[ $font_value ];
+	}
+	else {
+		$font_parts = explode( ':', $font_value );
+		$font['family'] = $font_parts[0];
+		if ( count( $font_parts ) > 1 ) {
+			$font['weight'] = $font_parts[1];
+		}
+		//TODO: check that this is actually a google font. For now, that's all we have.
+		$font['css_import'] = '@import url(http' . ( is_ssl() ? 's' : '' ) . '://fonts.googleapis.com/css?family=' . $font_value . ');';
+	}
+
+	return $font;
 }
 
 /**

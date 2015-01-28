@@ -9,36 +9,7 @@ Author URI: http://siteorigin.com
 
 class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 
-	static $web_safe = array(
-		'Helvetica Neue' => 'Arial, Helvetica, Geneva, sans-serif',
-		'Lucida Grande' => 'Lucida, Verdana, sans-serif',
-		'Georgia' => '"Times New Roman", Times, serif',
-		'Courier New' => 'Courier, mono',
-	);
-
-	static $google_web_fonts;
-
 	function __construct() {
-		self::$google_web_fonts = include ( dirname(__FILE__) . '/data/google-fonts.php' );
-
-		// Add the default fonts
-		$fonts = array(
-			'Helvetica Neue' => 'Helvetica Neue',
-			'Lucida Grande' => 'Lucida Grande',
-			'Georgia' => 'Georgia',
-			'Courier New' => 'Courier New',
-		);
-
-		foreach ( self::$google_web_fonts as $font => $variants ) {
-			foreach ( $variants as $variant ) {
-				if ( $variant == 'regular' || $variant == 400 ) {
-					$fonts[ $font ] = $font;
-				}
-				else {
-					$fonts[ $font . ':' . $variant ] = $font . ' (' . $variant . ')';
-				}
-			}
-		}
 
 		parent::__construct(
 			'sow-headline',
@@ -59,9 +30,8 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 							'label' => __( 'Text', 'siteorigin-wdigets' ),
 						),
 						'font' => array(
-							'type' => 'select',
+							'type' => 'font',
 							'label' => __( 'Font', 'siteorigin-widgets' ),
-							'options' => $fonts
 						),
 						'color' => array(
 							'type' => 'color',
@@ -90,9 +60,8 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 							'label' => __('Text', 'siteorigin-wdigets')
 						),
 						'font' => array(
-							'type' => 'select',
+							'type' => 'font',
 							'label' => __( 'Font', 'siteorigin-widgets' ),
-							'options' => $fonts
 						),
 						'color' => array(
 							'type' => 'color',
@@ -167,16 +136,10 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 				$less_vars['headline_color'] = $headline_styles['color'];
 			}
 			if ( ! empty( $headline_styles['font'] ) ) {
-				$font = $headline_styles['font'];
-				if ( isset( self::$web_safe[ $font ] ) ) {
-					$less_vars['headline_font'] = self::$web_safe[ $font ];
-				}
-				else {
-					$font_parts = explode( ':', $font );
-					$less_vars['headline_font'] = $font_parts[0];
-					if ( count( $font_parts ) > 1 ) {
-						$less_vars['headline_font_weight'] = $font_parts[1];
-					}
+				$font = siteorigin_widget_get_font( $headline_styles['font'] );
+				$less_vars['headline_font'] = $font['family'];
+				if ( ! empty( $font['weight'] ) ) {
+					$less_vars['headline_font_weight'] = $font['weight'];
 				}
 			}
 		}
@@ -190,16 +153,10 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 				$less_vars['sub_headline_color'] = $sub_headline_styles['color'];
 			}
 			if ( ! empty( $sub_headline_styles['font'] ) ) {
-				$font = $sub_headline_styles['font'];
-				if ( isset( self::$web_safe[ $font ] ) ) {
-					$less_vars['sub_headline_font'] = self::$web_safe[ $font ];
-				}
-				else {
-					$font_parts = explode( ':', $font );
-					$less_vars['sub_headline_font'] = $font_parts[0];
-					if ( count( $font_parts ) > 1 ) {
-						$less_vars['sub_headline_font_weight'] = $font_parts[1];
-					}
+				$font = siteorigin_widget_get_font( $sub_headline_styles['font'] );
+				$less_vars['sub_headline_font'] = $font['family'];
+				if ( ! empty( $font['weight'] ) ) {
+					$less_vars['sub_headline_font_weight'] = $font['weight'];
 				}
 			}
 		}
@@ -224,21 +181,17 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 	}
 
 	function less_import_google_font($instance, $args) {
-		$this->extract_google_font( $instance['headline']['font'], $fonts );
-		$this->extract_google_font( $instance['sub_headline']['font'], $fonts );
-
-		return empty( $fonts ) ? '' : '@import url(http' . ( is_ssl() ? 's' : '' ) . '://fonts.googleapis.com/css?family=' . implode( '|', $fonts ) . '); ';
-	}
-
-	private function extract_google_font($font, &$fonts) {
-		$font_parts = explode( ':', $font );
-		if ( isset( self::$google_web_fonts[ $font_parts[0] ] ) ) {
-			$gfont = urlencode( $font_parts[0] );
-			if ( count( $font_parts ) > 1 ) {
-				$gfont .= ':' . $font_parts[1];
-			}
-			$fonts[] = $gfont;
+		$font_imports = '';
+		$font = siteorigin_widget_get_font( $instance['headline']['font'] );
+		if ( ! empty( $font['css_import'] ) ) {
+			$font_imports .= $font['css_import'];
 		}
+		$font = siteorigin_widget_get_font( $instance['sub_headline']['font'] );
+		if ( ! empty( $font['css_import'] ) ) {
+			$font_imports .= "\n" . $font['css_import'];
+		}
+
+		return $font_imports;
 	}
 
 	function get_template_name( $instance ) {
