@@ -188,11 +188,13 @@ function siteorigin_widget_get_font($font_value) {
 	else {
 		$font_parts = explode( ':', $font_value );
 		$font['family'] = $font_parts[0];
+		$font_url_param = urlencode( $font_parts[0] );
 		if ( count( $font_parts ) > 1 ) {
 			$font['weight'] = $font_parts[1];
+			$font_url_param .= ':' . $font_parts[1];
 		}
-		//TODO: check that this is actually a google font. For now, that's all we have.
-		$font['css_import'] = '@import url(http' . ( is_ssl() ? 's' : '' ) . '://fonts.googleapis.com/css?family=' . $font_value . ');';
+		//TODO: check that this is actually a google font. For now, we only have google fonts.
+		$font['css_import'] = '@import url(http' . ( is_ssl() ? 's' : '' ) . '://fonts.googleapis.com/css?family=' . $font_url_param . ');';
 	}
 
 	return $font;
