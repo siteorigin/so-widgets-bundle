@@ -65,4 +65,4 @@ class SiteOrigin_Widget_Masonry_Widget extends SiteOrigin_Widget {
 }
 
 siteorigin_widget_register( 'masonry', __FILE__ );
-include_once( 'inc/masonry_post_settings.php' );
+include_once plugin_dir_path( __FILE__ ) . 'inc/masonry_post_settings.php';
