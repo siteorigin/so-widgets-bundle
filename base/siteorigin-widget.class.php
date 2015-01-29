@@ -710,7 +710,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		switch( $field['type'] ) {
 			case 'text' :
-				?><input type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" value="<?php echo esc_attr($value) ?>" <?php if ( ! empty( $field['placeholder'] ) ) echo 'placeholder="' . $field['placeholder'] . '"' ?> class="widefat siteorigin-widget-input" /><?php
+				?><input type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" value="<?php echo esc_attr($value) ?>" <?php if ( ! empty( $field['placeholder'] ) ) echo 'placeholder="' . $field['placeholder'] . '"' ?> class="widefat siteorigin-widget-input" <?php if( ! empty( $field['readonly'] ) ) echo 'readonly' ?> /><?php
 				break;
 
 			case 'color' :
@@ -718,16 +718,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				break;
 
 			case 'number' :
-				?><input type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" value="<?php echo esc_attr($value) ?>" <?php if ( ! empty( $field['placeholder'] ) ) echo 'placeholder="' . $field['placeholder'] . '"' ?> class="widefat siteorigin-widget-input siteorigin-widget-input-number" /><?php
+				?><input type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" value="<?php echo esc_attr($value) ?>" <?php if ( ! empty( $field['placeholder'] ) ) echo 'placeholder="' . $field['placeholder'] . '"' ?> class="widefat siteorigin-widget-input siteorigin-widget-input-number" <?php if( ! empty( $field['readonly'] ) ) echo 'readonly' ?> /><?php
 				break;
 
 			case 'textarea' :
-				?><textarea type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" <?php if ( ! empty( $field['placeholder'] ) ) echo 'placeholder="' . $field['placeholder'] . '"' ?> class="widefat siteorigin-widget-input" rows="<?php echo !empty($field['rows']) ? intval($field['rows']) : 4 ?>"><?php echo esc_textarea($value) ?></textarea><?php
+				?><textarea type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" <?php if ( ! empty( $field['placeholder'] ) ) echo 'placeholder="' . $field['placeholder'] . '"' ?> class="widefat siteorigin-widget-input" rows="<?php echo !empty($field['rows']) ? intval($field['rows']) : 4 ?>" <?php if( ! empty( $field['readonly'] ) ) echo 'readonly' ?>><?php echo esc_textarea($value) ?></textarea><?php
 				break;
 
 			case 'editor' :
 				// The editor field doesn't actually work yet, this is just a placeholder
-				?><textarea type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" <?php if ( ! empty( $field['placeholder'] ) ) echo 'placeholder="' . $field['placeholder'] . '"' ?> class="widefat siteorigin-widget-input siteorigin-widget-input-editor" rows="<?php echo !empty($field['rows']) ? intval($field['rows']) : 4 ?>"><?php echo esc_textarea($value) ?></textarea><?php
+				?><textarea type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" <?php if ( ! empty( $field['placeholder'] ) ) echo 'placeholder="' . $field['placeholder'] . '"' ?> class="widefat siteorigin-widget-input siteorigin-widget-input-editor" rows="<?php echo !empty($field['rows']) ? intval($field['rows']) : 4 ?>" <?php if( ! empty( $field['readonly'] ) ) echo 'readonly' ?>><?php echo esc_textarea($value) ?></textarea><?php
 				break;
 
 			case 'slider':
@@ -864,7 +864,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				}
 				$item_name = ! empty( $field['item_name'] ) ? $field['item_name'] : __( 'Item', 'siteorigin-widgets' );
 				?>
-				<div class="siteorigin-widget-field-repeater" data-item-name="<?php echo esc_attr( $item_name ) ?>" data-repeater-name="<?php echo esc_attr($name) ?>" <?php echo ! empty( $item_label ) ? 'data-item-label="' . esc_attr( $item_label ) . '"' : '' ?>>
+				<div class="siteorigin-widget-field-repeater" data-item-name="<?php echo esc_attr( $item_name ) ?>" data-repeater-name="<?php echo esc_attr($name) ?>" <?php echo ! empty( $item_label ) ? 'data-item-label="' . esc_attr( $item_label ) . '"' : '' ?> <?php if( ! empty( $field['readonly'] ) ) echo 'readonly' ?>>
 					<div class="siteorigin-widget-field-repeater-top">
 						<div class="siteorigin-widget-field-repeater-expend"></div>
 						<h3><?php echo $field['label'] ?></h3>
@@ -877,7 +877,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 								<div class="siteorigin-widget-field-repeater-item ui-draggable">
 									<div class="siteorigin-widget-field-repeater-item-top">
 										<div class="siteorigin-widget-field-expand"></div>
+										<?php if( empty( $field['readonly'] ) ) : ?>
 										<div class="siteorigin-widget-field-remove"></div>
+										<?php endif; ?>
 										<h4><?php echo esc_html($field['item_name']) ?></h4>
 									</div>
 									<div class="siteorigin-widget-field-repeater-item-form">
@@ -898,7 +900,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						}
 						?>
 					</div>
-					<div class="siteorigin-widget-field-repeater-add"><?php _e('Add', 'siteorigin-widgets') ?></div>
+					<?php if( empty( $field['readonly'] ) ) : ?>
+						<div class="siteorigin-widget-field-repeater-add"><?php _e('Add', 'siteorigin-widgets') ?></div>
+					<?php endif; ?>
 				</div>
 				<?php
 				break;

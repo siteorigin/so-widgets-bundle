@@ -4,7 +4,7 @@ function siteorigin_widget_post_selector_process_query($query){
 	$query = wp_parse_args($query,
 		array(
 			'post_status' => 'publish',
-			'posts_per_page' => 100,
+			'posts_per_page' => 10,
 		)
 	);
 
@@ -123,13 +123,13 @@ function siteorigin_widget_post_selector_all_post_types(){
  * @return int
  */
 function siteorigin_widget_post_selector_count_posts($query){
-	if( empty($query) ) return 0;
+//	if( empty($query) ) return 0;
 
 	$query = wp_parse_args(
 		siteorigin_widget_post_selector_process_query($query),
 		array(
 			'post_status' => 'publish',
-			'posts_per_page' => 100,
+			'posts_per_page' => 10,
 		)
 	);
 	$posts = new WP_Query($query);
@@ -145,7 +145,7 @@ function siteorigin_widget_post_selector_get_posts_action(){
 		siteorigin_widget_post_selector_process_query($query),
 		array(
 			'post_status' => 'publish',
-			'posts_per_page' => 100,
+			'posts_per_page' => 10,
 		)
 	);
 

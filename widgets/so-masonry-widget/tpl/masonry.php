@@ -1,7 +1,7 @@
 
 <div class="so-masonry-container <?php if( $responsive ) echo 'responsive' ?>">
-	<?php while($posts->have_posts()) : $posts->the_post(); $settings = sow_masonry_get_settings(get_the_ID()); ?>
-		<div class="masonry-brick <?php echo esc_attr('size-'.$settings['size'] . ' ' . (!has_post_thumbnail() ? 'no-thumbnail' : '')) ?>">
+	<?php while($posts->have_posts()) : $posts->the_post(); ?>
+		<div class="masonry-brick <?php echo esc_attr('size-'. $this->get_brick_size(get_the_ID(), $instance) . ' ' . (!has_post_thumbnail() ? 'no-thumbnail' : '')) ?>">
 			<div class="post-information">
 				<h2><a href="<?php the_permalink() ?>"><?php the_title() ?></h2></a>
 				<div class="entry-meta">

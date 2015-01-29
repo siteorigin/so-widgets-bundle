@@ -431,7 +431,7 @@
             var formClass = $el.closest('.siteorigin-widget-form').data('class');
             var $nextIndex = $el.find('> .siteorigin-widget-field-repeater-items').children().length+1;
             var repeaterHtml = window.sow_repeater_html[formClass][$el.data('repeater-name')].replace(/\{id\}/g, $nextIndex);
-
+            var readonly = typeof $el.attr('readonly') != 'undefined';
             var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
                 .append(
                     $('<div class="siteorigin-widget-field-repeater-item-top" />')
@@ -440,7 +440,7 @@
 
                         )
                         .append(
-                            $('<div class="siteorigin-widget-field-remove" />')
+                            readonly ? '' : $('<div class="siteorigin-widget-field-remove" />')
 
                         )
                         .append( $('<h4 />').html( $el.data('item-name') ) )
