@@ -37,6 +37,7 @@ class SiteOrigin_Widget_Masonry_Widget extends SiteOrigin_Widget {
 						'value_method' => 'val'
 					),
 					'readonly' => true,
+					'scroll_count' => 10,
 					'fields' => array(
 						'post_title' => array(
 							'type' => 'text',

@@ -864,7 +864,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				}
 				$item_name = ! empty( $field['item_name'] ) ? $field['item_name'] : __( 'Item', 'siteorigin-widgets' );
 				?>
-				<div class="siteorigin-widget-field-repeater" data-item-name="<?php echo esc_attr( $item_name ) ?>" data-repeater-name="<?php echo esc_attr($name) ?>" <?php echo ! empty( $item_label ) ? 'data-item-label="' . esc_attr( $item_label ) . '"' : '' ?> <?php if( ! empty( $field['readonly'] ) ) echo 'readonly' ?>>
+				<div class="siteorigin-widget-field-repeater" data-item-name="<?php echo esc_attr( $item_name ) ?>" data-repeater-name="<?php echo esc_attr($name) ?>" <?php echo ! empty( $item_label ) ? 'data-item-label="' . esc_attr( $item_label ) . '"' : '' ?> <?php echo ! empty( $field['scroll_count'] ) ? 'data-scroll-count="' . esc_attr( $field['scroll_count'] ) . '"' : '' ?> <?php if( ! empty( $field['readonly'] ) ) echo 'readonly' ?>>
 					<div class="siteorigin-widget-field-repeater-top">
 						<div class="siteorigin-widget-field-repeater-expend"></div>
 						<h3><?php echo $field['label'] ?></h3>

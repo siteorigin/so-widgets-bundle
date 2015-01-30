@@ -37,11 +37,11 @@
                             $.each(data.posts, function (index, post) {
                                 if($rptrItem.find('input[id*="post_id"]').val() == post.id) {
                                     itemFound = true;
-                                    return false;
+                                    return false; //break;
                                 }
                             });
                             if(!itemFound) {
-                                $rptrItem.remove();
+                                $rptrItem.sowRemoveRepeaterItem();
                             }
                         });
                     }
@@ -50,7 +50,6 @@
 
             $masonryWidgetForm.on('change', 'input[type="hidden"][name*="posts_query"]',
                 function() {
-
                     var $valInput = $masonryWidgetForm.find('input[type="hidden"][name*="posts_query"]');
                     if(typeof $masonryWidgetForm.data('so-masonry-widget-posts_query') == 'undefined' || $masonryWidgetForm.data('so-masonry-widget-posts_query') != $valInput.val()) {
                         updatePostsCount();

@@ -360,9 +360,9 @@
 
             $items.bind('updateFieldPositions', function(){
                 var $$ = $(this);
-
+                var $rptrItems = $$.find('> .siteorigin-widget-field-repeater-item');
                 // Set the position for the repeater items
-                $$.find('> .siteorigin-widget-field-repeater-item').each(function(i, el){
+                $rptrItems.each(function(i, el){
                     $(el).find('.siteorigin-widget-input').each(function(j, input){
                         var pos = $(input).data('repeater-positions');
                         if( typeof pos === 'undefined' ) {
@@ -394,6 +394,16 @@
                     }
                 });
 
+                //Setup scrolling.
+                var scrollCount = $el.data('scroll-count') ? parseInt($el.data('scroll-count')) : 0;
+                if( scrollCount > 0 && $rptrItems.length > scrollCount) {
+                    var itemHeight = $rptrItems.first().outerHeight();
+                    $$.css('max-height', itemHeight * scrollCount).css('overflow', 'auto');
+                }
+                else {
+                    //TODO: Check whether there was a value before overriding and set it back to that.
+                    $$.css('max-height', '').css('overflow', '');
+                }
             });
 
             $items.sortable( {
@@ -456,6 +466,14 @@
             item.hide().slideDown('fast');
 
         } );
+    };
+
+    $.fn.sowRemoveRepeaterItem = function () {
+        return $(this).each( function(i, el){
+            var $itemsContainer = $(this).closest('.siteorigin-widget-field-repeater-items');
+            $(this).remove();
+            $itemsContainer.sortable("refresh").trigger('updateFieldPositions');
+        });
     };
 
     $.fn.sowSetupRepeaterItems = function () {
