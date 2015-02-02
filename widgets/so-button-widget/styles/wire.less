@@ -6,6 +6,7 @@
 @font_size: 1em;
 @rounding: 0.25em;
 @padding: 1em;
+@has_text: true;
 
 .ow-button-base {
 	.clearfix();
@@ -21,6 +22,17 @@
 		.rounded(@rounding);
 
 		text-shadow: 0 1px 0 rgba(0,0,0,0.05);
+
+        .sow-icon-image,
+        [class^="sow-icon-"] {
+            .icon-margins() when (@has_text = true) {
+                margin: -0.1em 0.75em -0.2em -0.75em;
+            }
+            .icon-margins() when not (@has_text = true) {
+                margin: 0;
+            }
+            .icon-margins();
+        }
 
 		&:visited,
 		&:active,

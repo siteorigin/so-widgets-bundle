@@ -196,6 +196,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'font_size' => $instance['design']['font_size'] . 'em',
 			'rounding' => $instance['design']['rounding'] . 'em',
 			'padding' => $instance['design']['padding'] . 'em',
+			'has_text' => empty( $instance['text'] ) ? 'false' : 'true',
 		);
 	}
 
