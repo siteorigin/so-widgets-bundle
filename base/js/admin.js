@@ -231,7 +231,7 @@
 
                     if(typeof iconWidgetCache[family] === 'undefined') {
                         $.getJSON(
-                            ajaxurl,
+                            soWidgets.ajaxurl,
                             { 'action' : 'siteorigin_widgets_get_icons', 'family' :  $is.find('select.siteorigin-widget-icon-family').val() },
                             function(data) {
                                 iconWidgetCache[family] = data;
@@ -536,7 +536,7 @@
 
         if (typeof window.sowVars[widget] === 'undefined') {
             $.post(
-                ajaxurl,
+                soWidgets.ajaxurl,
                 { 'action': 'sow_get_javascript_variables', 'widget': widget, 'key': key },
                 function (result) {
                     window.sowVars[widget] = result;

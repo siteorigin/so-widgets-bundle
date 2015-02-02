@@ -30,7 +30,7 @@ var soWidgetPostSelector = ( function ($, _) {
             // Reset the post collection by fetching the results from the server
             var c = this;
             $.post(
-                ajaxurl,
+                soWidgets.ajaxurl,
                 { action: 'sow_get_posts', query: query, 'ignore_pagination' : true },
                 function(data){
                     c.foundPosts = data.found_posts;
@@ -378,9 +378,14 @@ var soWidgetPostSelector = ( function ($, _) {
             // Set up the autocomplete on the taxonomy query
             this.form.find('input[name="tax_query"]').autocomplete({
                 source: function (request, response) {
-                    $.getJSON(ajaxurl + "?action=sow_search_terms", {
-                        term: request.term.split(/,\s*/).pop()
-                    }, response);
+                    $.getJSON(
+                        soWidgets.ajaxurl,
+                        {
+                            term: request.term.split(/,\s*/).pop(),
+                            action: 'sow_search_terms'
+                        },
+                        response
+                    );
                 },
                 search: function () {
                     // custom minLength
@@ -539,8 +544,9 @@ var soWidgetPostSelector = ( function ($, _) {
             $searchInput.autocomplete({
                 source: function(request, response) {
                     request.type = postType;
+                    request.action = 'sow_search_posts';
                     $.get(
-                        ajaxurl + '?action=sow_search_posts',
+                        soWidgets.ajaxurl,
                         request,
                         response
                     );
@@ -591,7 +597,7 @@ var soWidgetPostSelector = ( function ($, _) {
             var v = this;
             if(!_.isEmpty(getPosts)) {
                 $.post(
-                    ajaxurl,
+                    soWidgets.ajaxurl,
                     {
                         action: 'sow_get_posts',
                         query : 'post_type=_all&posts_per_page=-1&post__in=' + getPosts.join(',')

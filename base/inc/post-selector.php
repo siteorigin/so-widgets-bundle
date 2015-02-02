@@ -140,6 +140,7 @@ function siteorigin_widget_post_selector_count_posts($query){
  * The get posts ajax action
  */
 function siteorigin_widget_post_selector_get_posts_action(){
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
 	$query = stripslashes( $_POST['query'] );
 	$query = wp_parse_args(
 		siteorigin_widget_post_selector_process_query($query),
@@ -183,6 +184,7 @@ add_action('wp_ajax_sow_get_posts', 'siteorigin_widget_post_selector_get_posts_a
  * The action handler for searching posts by title
  */
 function siteorigin_widget_post_selector_post_search_action(){
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
 	$term = !empty($_GET['term']) ? stripslashes($_GET['term']) : '';
 	$type = !empty($_GET['type']) ? stripslashes($_GET['type']) : '_all';
 	if($type == '_all') $type = explode(',', siteorigin_widget_post_selector_all_post_types());
@@ -209,6 +211,7 @@ add_action('wp_ajax_sow_search_posts', 'siteorigin_widget_post_selector_post_sea
  * The action handler for searching taxonomy terms
  */
 function siteorigin_widget_post_selector_search_taxonomy_terms(){
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
 	global $wpdb;
 	$term = !empty($_GET['term']) ? stripslashes($_GET['term']) : '';
 	$term = trim($term, '%');

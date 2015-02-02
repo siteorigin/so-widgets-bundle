@@ -275,6 +275,7 @@ class SiteOrigin_Widgets_Bundle {
 	 * Get javascript variables for admin.
 	 */
 	function admin_ajax_get_javascript_variables() {
+		if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
 		$result = array();
 		$widget_class = $_POST['widget'];
 		global $wp_widget_factory;

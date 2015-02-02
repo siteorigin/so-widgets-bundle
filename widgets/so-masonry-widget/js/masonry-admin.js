@@ -8,7 +8,7 @@
             var updatePostsCount = function() {
                 var query = $valInput.val();
                 $.post(
-                    ajaxurl,
+                    soWidgets.ajaxurl,
                     { action: 'sow_get_posts', query: query },
                     function(data){
                         var $rptr = $masonryWidgetForm.find('.siteorigin-widget-field-repeater');
