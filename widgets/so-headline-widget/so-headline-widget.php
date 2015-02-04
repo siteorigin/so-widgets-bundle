@@ -202,6 +202,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 		return array(
 			'headline' => $instance['headline']['text'],
 			'sub_headline' => $instance['sub_headline']['text'],
+			'has_divider' => ! empty( $instance['divider'] ) && $instance['divider']['style'] != 'none'
 		);
 	}
 }
