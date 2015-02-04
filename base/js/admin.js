@@ -231,7 +231,7 @@
 
                     if(typeof iconWidgetCache[family] === 'undefined') {
                         $.getJSON(
-                            ajaxurl,
+                            soWidgets.ajaxurl,
                             { 'action' : 'siteorigin_widgets_get_icons', 'family' :  $is.find('select.siteorigin-widget-icon-family').val() },
                             function(data) {
                                 iconWidgetCache[family] = data;
@@ -360,9 +360,9 @@
 
             $items.bind('updateFieldPositions', function(){
                 var $$ = $(this);
-
+                var $rptrItems = $$.find('> .siteorigin-widget-field-repeater-item');
                 // Set the position for the repeater items
-                $$.find('> .siteorigin-widget-field-repeater-item').each(function(i, el){
+                $rptrItems.each(function(i, el){
                     $(el).find('.siteorigin-widget-input').each(function(j, input){
                         var pos = $(input).data('repeater-positions');
                         if( typeof pos === 'undefined' ) {
@@ -394,6 +394,16 @@
                     }
                 });
 
+                //Setup scrolling.
+                var scrollCount = $el.data('scroll-count') ? parseInt($el.data('scroll-count')) : 0;
+                if( scrollCount > 0 && $rptrItems.length > scrollCount) {
+                    var itemHeight = $rptrItems.first().outerHeight();
+                    $$.css('max-height', itemHeight * scrollCount).css('overflow', 'auto');
+                }
+                else {
+                    //TODO: Check whether there was a value before overriding and set it back to that.
+                    $$.css('max-height', '').css('overflow', '');
+                }
             });
 
             $items.sortable( {
@@ -431,7 +441,7 @@
             var formClass = $el.closest('.siteorigin-widget-form').data('class');
             var $nextIndex = $el.find('> .siteorigin-widget-field-repeater-items').children().length+1;
             var repeaterHtml = window.sow_repeater_html[formClass][$el.data('repeater-name')].replace(/\{id\}/g, $nextIndex);
-
+            var readonly = typeof $el.attr('readonly') != 'undefined';
             var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
                 .append(
                     $('<div class="siteorigin-widget-field-repeater-item-top" />')
@@ -440,7 +450,7 @@
 
                         )
                         .append(
-                            $('<div class="siteorigin-widget-field-remove" />')
+                            readonly ? '' : $('<div class="siteorigin-widget-field-remove" />')
 
                         )
                         .append( $('<h4 />').html( $el.data('item-name') ) )
@@ -456,6 +466,14 @@
             item.hide().slideDown('fast');
 
         } );
+    };
+
+    $.fn.sowRemoveRepeaterItem = function () {
+        return $(this).each( function(i, el){
+            var $itemsContainer = $(this).closest('.siteorigin-widget-field-repeater-items');
+            $(this).remove();
+            $itemsContainer.sortable("refresh").trigger('updateFieldPositions');
+        });
     };
 
     $.fn.sowSetupRepeaterItems = function () {
@@ -518,7 +536,7 @@
 
         if (typeof window.sowVars[widget] === 'undefined') {
             $.post(
-                ajaxurl,
+                soWidgets.ajaxurl,
                 { 'action': 'sow_get_javascript_variables', 'widget': widget, 'key': key },
                 function (result) {
                     window.sowVars[widget] = result;

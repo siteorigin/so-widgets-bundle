@@ -15,6 +15,7 @@ function sow_carousel_register_image_sizes(){
 add_action('init', 'sow_carousel_register_image_sizes');
 
 function sow_carousel_get_next_posts_page() {
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
 	$query = wp_parse_args(
 		siteorigin_widget_post_selector_process_query($_GET['query']),
 		array(

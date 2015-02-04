@@ -69,39 +69,6 @@ function siteorigin_widget_get_plugin_dir_url($name){
 }
 
 /**
- * Render a preview of the widget.
- */
-function siteorigin_widget_render_preview(){
-	$class = $_GET['class'];
-
-
-	if(isset($_POST['widgets'])) {
-		$instance = array_pop($_POST['widgets']);
-	}
-	else {
-
-		foreach($_POST as $n => $v) {
-			if(strpos($n, 'widget-') === 0) {
-				$instance = array_pop($_POST[$n]);
-				break;
-			}
-		}
-
-	}
-
-	if(!class_exists($class)) exit();
-	$widget_obj = new $class();
-	if( ! $widget_obj instanceof SiteOrigin_Widget ) exit();
-
-	$instance = $widget_obj->update($instance, $instance);
-	$instance['style_hash'] = 'preview';
-	include plugin_dir_path(__FILE__).'/inc/preview.tpl.php';
-
-	exit();
-}
-add_action('wp_ajax_siteorigin_widget_preview', 'siteorigin_widget_render_preview');
-
-/**
  * @param $css
  */
 function siteorigin_widget_add_inline_css($css){
@@ -130,6 +97,7 @@ add_action('wp_footer', 'siteorigin_widget_print_styles');
  */
 function siteorigin_widget_get_icon_list(){
 	if(empty($_GET['family'])) exit();
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
 
 	$widget_icon_families = apply_filters('siteorigin_widgets_icon_families', array() );
 
@@ -205,6 +173,7 @@ function siteorigin_widget_get_font($font_value) {
  */
 function siteorigin_widget_preview_widget_action(){
 	if( !class_exists($_POST['class']) ) exit();
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
 	$widget = new $_POST['class'];
 	if(!is_a($widget, 'SiteOrigin_Widget')) exit();
 
@@ -267,3 +236,4 @@ function siteorigin_widget_add_bundle_groups($widgets){
 	return $widgets;
 }
 add_filter('siteorigin_panels_widgets', 'siteorigin_widget_add_bundle_groups', 11);
+
