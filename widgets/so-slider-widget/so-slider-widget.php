@@ -64,6 +64,12 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 										'video/ogg' => 'Ogg',
 									),
 								),
+
+								'height' => array(
+									'type' => 'number',
+									'label' => __( 'Maximum height', 'siteorigin-widgets' )
+								),
+
 							),
 						),
 
@@ -156,14 +162,18 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 				$video_element .= '<source src="' . esc_url( $video_file ) . '" type="' . esc_attr( $video['format'] ) . '">';
 			}
 			else {
-				echo wp_oembed_get( $video['url'] );
+				$args = '';
+				if ( ! empty( $video['height'] ) ) {
+					$args['height'] = $video['height'];
+				}
+
+				echo wp_oembed_get( $video['url'], $args );
 			}
 		}
 		if ( strpos( $video_element, 'source' ) !== false ) {
 			$video_element .= '</video>';
 			echo $video_element;
 		}
-
 	}
 
 	/**

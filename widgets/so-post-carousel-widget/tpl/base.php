@@ -12,7 +12,7 @@ $the_query = new WP_Query( $query );
 	</div>
 
 	<div class="sow-carousel-wrapper"
-		data-query="<?php echo esc_attr(json_encode( $query )) ?>"
+		data-query="<?php echo esc_attr($instance['posts']) ?>"
 		data-ajax-url="<?php echo esc_url( admin_url('admin-ajax.php') ) ?>"
 		>
 		<ul class="sow-carousel-items">

@@ -416,10 +416,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				$upload_dir = wp_upload_dir();
 
 				$list = $wp_filesystem->dirlist( $upload_dir['basedir'] . '/siteorigin-widgets/' );
-				foreach($list as $file) {
-					if( $file['lastmodunix'] < time() - self::$css_expire || $force_delete ) {
-						// Delete the file
-						$wp_filesystem->delete( $upload_dir['basedir'] . '/siteorigin-widgets/' . $file['name'] );
+				if ( ! empty( $list ) ) {
+					foreach($list as $file) {
+						if( $file['lastmodunix'] < time() - self::$css_expire || $force_delete ) {
+							// Delete the file
+							$wp_filesystem->delete( $upload_dir['basedir'] . '/siteorigin-widgets/' . $file['name'] );
+						}
 					}
 				}
 			}
