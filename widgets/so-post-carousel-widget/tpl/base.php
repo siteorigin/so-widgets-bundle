@@ -13,7 +13,7 @@ $the_query = new WP_Query( $query );
 
 	<div class="sow-carousel-wrapper"
 		data-query="<?php echo esc_attr($instance['posts']) ?>"
-		data-ajax-url="<?php echo esc_url( admin_url('admin-ajax.php') ) ?>"
+		data-ajax-url="<?php echo esc_url( wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ) ) ?>"
 		>
 		<ul class="sow-carousel-items">
 			<?php while($the_query->have_posts()) : $the_query->the_post(); ?>
