@@ -21,6 +21,10 @@
   border-radius: 0.25em;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
 }
+.ow-button-base a .sow-icon-image,
+.ow-button-base a [class^="sow-icon-"] {
+  margin: -0.1em 0.75em -0.2em -0.75em;
+}
 .ow-button-base a:visited,
 .ow-button-base a:active,
 .ow-button-base a:hover {

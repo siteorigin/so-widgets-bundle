@@ -27,7 +27,7 @@ jQuery( function($){
                         },
                         function (data, status){
                             var $items = $(data.html);
-                            var count = $items.find('.sow-carousel-item').appendTo( $$.find('.sow-carousel-items') ).hide().fadeIn().length;
+                            var count = $items.appendTo( $$.find('.sow-carousel-items') ).hide().fadeIn().length;
                             if(count == 0) {
                                 complete = true;
                                 $$.find('.sow-carousel-loading').fadeOut(function(){$(this).remove()});

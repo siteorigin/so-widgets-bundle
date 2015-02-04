@@ -417,10 +417,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				$upload_dir = wp_upload_dir();
 
 				$list = $wp_filesystem->dirlist( $upload_dir['basedir'] . '/siteorigin-widgets/' );
-				foreach($list as $file) {
-					if( $file['lastmodunix'] < time() - self::$css_expire || $force_delete ) {
-						// Delete the file
-						$wp_filesystem->delete( $upload_dir['basedir'] . '/siteorigin-widgets/' . $file['name'] );
+				if ( ! empty( $list ) ) {
+					foreach($list as $file) {
+						if( $file['lastmodunix'] < time() - self::$css_expire || $force_delete ) {
+							// Delete the file
+							$wp_filesystem->delete( $upload_dir['basedir'] . '/siteorigin-widgets/' . $file['name'] );
+						}
 					}
 				}
 			}
@@ -943,6 +945,31 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				</div>
 				<?php
 
+				break;
+
+			case 'font':
+				static $widget_font_families;
+				if( empty($widget_font_families) ) {
+
+					// Add the default fonts
+					$widget_font_families = array(
+						'Helvetica Neue' => 'Helvetica Neue',
+						'Lucida Grande' => 'Lucida Grande',
+						'Georgia' => 'Georgia',
+						'Courier New' => 'Courier New',
+					);
+
+					$widget_font_families = apply_filters('siteorigin_widgets_font_families', $widget_font_families );
+				}
+				?>
+				<div class="siteorigin-widget-font-selector siteorigin-widget-field-subcontainer">
+					<select name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" class="siteorigin-widget-input">
+						<?php foreach( $widget_font_families as $key => $val ) : ?>
+							<option value="<?php echo esc_attr($key) ?>" <?php selected($key, $value) ?>><?php echo esc_html($val) ?></option>
+						<?php endforeach; ?>
+					</select>
+				</div>
+				<?php
 				break;
 
 			case 'section' :
