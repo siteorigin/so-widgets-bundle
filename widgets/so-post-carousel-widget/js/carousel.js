@@ -55,5 +55,17 @@ jQuery( function($){
             position += 1;
             updatePosition();
         } );
+
+        $$.swipe( {
+            excludedElements: "",
+            swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
+                position += 1;
+                updatePosition();
+            },
+            swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
+                position -= 1;
+                updatePosition();
+            }
+        });
     } );
 } );

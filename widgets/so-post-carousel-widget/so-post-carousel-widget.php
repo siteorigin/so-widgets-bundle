@@ -48,6 +48,7 @@ function sow_carousel_get_next_posts_page() {
 	exit();
 }
 add_action( 'wp_ajax_sow_carousel_load', 'sow_carousel_get_next_posts_page' );
+add_action( 'wp_ajax_nopriv_sow_carousel_load', 'sow_carousel_get_next_posts_page' );
 
 class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 	function __construct() {
@@ -80,7 +81,8 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		wp_enqueue_style('sow-carousel-basic', siteorigin_widget_get_plugin_dir_url('post-carousel') . 'css/style.css', array(), SOW_BUNDLE_VERSION);
-		wp_enqueue_script('sow-carousel-basic', siteorigin_widget_get_plugin_dir_url('post-carousel') . 'js/carousel' . $js_suffix . '.js', array('jquery'), SOW_BUNDLE_VERSION);
+		wp_register_script( 'touch-swipe' , plugin_dir_url(SOW_BUNDLE_BASE_FILE). 'base/js/jquery.touchSwipe' . $js_suffix . '.js' , array( 'jquery' ), '1.6.6' );
+		wp_enqueue_script('sow-carousel-basic', siteorigin_widget_get_plugin_dir_url('post-carousel') . 'js/carousel' . $js_suffix . '.js', array( 'jquery', 'touch-swipe' ), SOW_BUNDLE_VERSION, true );
 	}
 
 	function get_template_name($instance){
