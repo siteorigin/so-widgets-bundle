@@ -3,7 +3,8 @@ jQuery( function($){
     $('.sow-carousel-wrapper').each(function(){
 
         var $$ = $(this),
-            title = $$.siblings('.sow-carousel-title');
+            title = $$.siblings('.sow-carousel-title'),
+            $itemsContainer = $$.find('.sow-carousel-items');
 
         var position = 0, page = 1, fetching = false, complete = false;
 
@@ -16,7 +17,7 @@ jQuery( function($){
                 if( !fetching && !complete) {
                     fetching = true;
                     page++;
-                    $$.find('.sow-carousel-items').append('<li class="sow-carousel-item sow-carousel-loading"></li>');
+                    $itemsContainer.append('<li class="sow-carousel-item sow-carousel-loading"></li>');
 
                     $.get(
                         $$.data('ajax-url'),
@@ -27,7 +28,7 @@ jQuery( function($){
                         },
                         function (data, status){
                             var $items = $(data.html);
-                            var count = $items.appendTo( $$.find('.sow-carousel-items') ).hide().fadeIn().length;
+                            var count = $items.appendTo( $itemsContainer ).hide().fadeIn().length;
                             if(count == 0) {
                                 complete = true;
                                 $$.find('.sow-carousel-loading').fadeOut(function(){$(this).remove()});
@@ -41,7 +42,8 @@ jQuery( function($){
                 }
             }
             var entry = $$.find('.sow-carousel-item').eq(0);
-            $$.find('.sow-carousel-items').css('margin-left', -( ( entry.width() + parseInt(entry.css('margin-right')) ) * position) + 'px' );
+            $itemsContainer.css('transition-duration', "0.45s");
+            $itemsContainer.css('margin-left', -( ( entry.width() + parseInt(entry.css('margin-right')) ) * position) + 'px' );
         };
 
         title.find('a.sow-carousel-previous').click( function(e){
@@ -55,17 +57,43 @@ jQuery( function($){
             position += 1;
             updatePosition();
         } );
-
+        var validSwipe = false;
         $$.swipe( {
             excludedElements: "",
-            swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                position += 1;
-                updatePosition();
-            },
-            swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
-                position -= 1;
-                updatePosition();
+            triggerOnTouchEnd: true,
+            threshold: 75,
+            swipeStatus: function (event, phase, direction, distance) {
+                var $item = $$.find('.sow-carousel-item');
+                var itemWidth = $item.eq(0).width() + parseInt($item.css('margin-right'));
+               if ( phase == "move" ) {
+                    var curPos = -( itemWidth * position);
+                    if (direction == "left") {
+                        curPos -= distance;
+                    } else if( direction == "right") {
+                        curPos += distance;
+                    }
+                    $itemsContainer.css('transition-duration', "0s");
+                    $itemsContainer.css('margin-left', curPos + 'px' );
+                }
+                else if ( phase == "end" ) {
+                    var swipeFinalPos = parseInt( $itemsContainer.css('margin-left') );
+                    position = Math.abs( Math.round( swipeFinalPos / itemWidth ) );
+                    updatePosition();
+                    validSwipe = true;
+                }
+                else if( phase == "cancel") {
+                    updatePosition();
+                }
             }
-        });
+        } );
+
+        $$.on('click', '.sow-carousel-item a',
+            function (event) {
+                if(validSwipe) {
+                    event.preventDefault();
+                    validSwipe = false;
+                }
+            }
+        )
     } );
 } );
