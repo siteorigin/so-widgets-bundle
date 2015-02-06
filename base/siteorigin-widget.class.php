@@ -215,9 +215,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			<p><strong><?php _e('This widget has scripts and styles that need to be loaded before you can use it. Please save and reload your current page.', 'siteorigin-widgets') ?></strong></p>
 			<p><strong><?php _e('You will only need to do this once.', 'siteorigin-widgets') ?></strong></p>
 		</div>
+
+		<?php if( ! is_customize_preview() ) : ?>
 		<div class="siteorigin-widget-preview" style="display: none">
 			<a href="#" class="siteorigin-widget-preview-button button-secondary"><?php _e('Preview', 'siteorigin-widgets') ?></a>
 		</div>
+		<?php endif; ?>
 
 		<?php if( !empty( $this->widget_options['help'] ) ) : ?>
 			<a href="<?php echo esc_url($this->widget_options['help']) ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank"><?php _e('Help', 'siteorigin-widgets') ?></a>
