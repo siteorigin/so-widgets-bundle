@@ -470,6 +470,9 @@
 .siteorigin-widgets-query-builder .query-builder-content .query-builder-form-field .sow-order-button.sow-order-button-asc {
   background-position: left bottom;
 }
+.siteorigin-widgets-query-builder .query-builder-content .query-builder-form-field small {
+  display: block;
+}
 .siteorigin-widgets-query-builder .media-toolbar-secondary .sow-post-count-message {
   margin-top: 21px;
 }

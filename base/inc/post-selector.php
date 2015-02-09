@@ -55,6 +55,11 @@ function siteorigin_widget_post_selector_process_query($query){
 		unset( $query['sticky'] );
 	}
 
+	if ( ! empty( $query['additional'] ) ) {
+		$query = wp_parse_args( $query['additional'], $query );
+		unset( $query['additional'] );
+	}
+
 	return $query;
 }
 
@@ -134,6 +139,12 @@ function siteorigin_widget_post_selector_form_fields(){
 		$return['sticky'] .= '<option value="' . $id . '">' . $v . '</option>';
 	}
 	$return['sticky'] .= '</select></label>';
+
+	$return['additional'] = '';
+	$return['additional'] .= '<label><span>' . __('Additional', 'siteorigin-widgets') . '</span>';
+	$return['additional'] .= '<input type="text" name="additional" class="" />';
+	$return['additional'] .= '<small>' . __('Additional query arguments. See <a href="http://codex.wordpress.org/Function_Reference/query_posts" target="_blank">query_posts</a>.', 'siteorigin-widgets') . '</small>';
+	$return['additional'] .= '</label>';
 
 	return $return;
 }
