@@ -44,12 +44,23 @@
 .sow-carousel-title a.sow-carousel-previous:before {
   content: "\e600";
 }
+@media screen and (max-width: 600px) {
+  .sow-carousel-title a.sow-carousel-previous {
+    display: none;
+  }
+  .sow-carousel-title a.sow-carousel-next {
+    display: none;
+  }
+}
 .widget_sow-carousel {
   overflow-x: hidden;
   overflow-y: hidden;
 }
 .sow-carousel-wrapper {
   overflow: hidden;
+  position: relative;
+  left: 0;
+  right: 0;
 }
 .sow-carousel-wrapper ul.sow-carousel-items {
   list-style: none;
@@ -81,6 +92,7 @@
   margin-right: 15px;
   width: 242px;
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 .sow-carousel-wrapper ul.sow-carousel-items li.sow-carousel-item:last-child {
   margin-right: 0;
@@ -143,4 +155,52 @@
   float: left;
   background: url(images/carousel-loader.gif) #f6f6f6 center center no-repeat;
   margin: 0;
+}
+a.sow-carousel-previous {
+  display: none;
+}
+a.sow-carousel-next {
+  display: none;
+}
+@media (max-width: 600px) {
+  .sow-carousel-container a.sow-carousel-next,
+  .sow-carousel-container a.sow-carousel-previous {
+    font-family: 'carousel-arrows';
+    speak: none;
+    display: inline-block;
+    height: 200px;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    font-size: 8px;
+    line-height: 200px;
+    width: 28px;
+    text-align: center;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-decoration: none;
+    color: #FFFFFF;
+    background: #333333;
+    border-radius: 2px;
+  }
+  .sow-carousel-container a.sow-carousel-next:hover,
+  .sow-carousel-container a.sow-carousel-previous:hover {
+    background: #444444;
+  }
+  .sow-carousel-container a.sow-carousel-next:before {
+    content: "\e601";
+  }
+  .sow-carousel-container a.sow-carousel-previous:before {
+    content: "\e600";
+  }
+  .sow-carousel-container a.sow-carousel-previous {
+    margin-right: 10px;
+    float: left;
+  }
+  .sow-carousel-container a.sow-carousel-next {
+    margin-left: 10px;
+    float: right;
+  }
 }

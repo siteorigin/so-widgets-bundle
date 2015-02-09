@@ -3,7 +3,7 @@ jQuery( function($){
     $('.sow-carousel-wrapper').each(function(){
 
         var $$ = $(this),
-            title = $$.siblings('.sow-carousel-title'),
+            $container = $$.closest('.sow-carousel-container').parent(),
             $itemsContainer = $$.find('.sow-carousel-items');
 
         var position = 0, page = 1, fetching = false, complete = false;
@@ -46,17 +46,21 @@ jQuery( function($){
             $itemsContainer.css('margin-left', -( ( entry.width() + parseInt(entry.css('margin-right')) ) * position) + 'px' );
         };
 
-        title.find('a.sow-carousel-previous').click( function(e){
-            e.preventDefault();
-            position -= 1;
-            updatePosition();
-        } );
+        $container.on( 'click', 'a.sow-carousel-previous',
+            function(e){
+                e.preventDefault();
+                position -= 1;
+                updatePosition();
+            }
+        );
 
-        title.find('a.sow-carousel-next').click( function(e){
-            e.preventDefault();
-            position += 1;
-            updatePosition();
-        } );
+        $container.on( 'click', 'a.sow-carousel-next',
+            function(e){
+                e.preventDefault();
+                position += 1;
+                updatePosition();
+            }
+        );
         var validSwipe = false;
         $$.swipe( {
             excludedElements: "",
