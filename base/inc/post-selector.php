@@ -34,6 +34,27 @@ function siteorigin_widget_post_selector_process_query($query){
 		}
 	}
 
+	if ( ! empty( $query['sticky'] ) ) {
+		switch($query['sticky']){
+			case 'ignore' :
+				$query['ignore_sticky_posts'] = 1;
+				break;
+			//TODO: Author: Braam
+			//TODO: Revisit this. Not sure if it makes sense to have this as an option in a separate dropdown, but am
+			//TODO: trying to stay as close as possible to Page Builder Post Loop widget post selection options.
+			//TODO: It's probably better in the long run to make this work well and just cope with issues that come up in
+			//TODO: Page Builder Post Loop migrations until it dies.
+			case 'only' :
+				$post_in = empty( $query['post__in'] ) ? array() : $query['post__in'];
+				$query['post__in'] = array_merge( $post_in, get_option( 'sticky_posts' ) );
+				break;
+			case 'exclude' :
+				$query['post__not_in'] = get_option( 'sticky_posts' );
+				break;
+		}
+		unset( $query['sticky'] );
+	}
+
 	return $query;
 }
 
@@ -98,6 +119,21 @@ function siteorigin_widget_post_selector_form_fields(){
 	$return['posts_per_page'] .= '<label><span>' . __('Posts per page', 'siteorigin-widgets') . '</span>';
 	$return['posts_per_page'] .= '<input type="number" name="posts_per_page" class="" />';
 	$return['posts_per_page'] .= '</label>';
+
+
+	$return['sticky'] = '';
+	$return['sticky'] .= '<label><span>' . __('Sticky posts', 'siteorigin-widgets') . '</span>';
+	$return['sticky'] .= '<select name="sticky">';
+	$sticky = array(
+		'' => __('Default', 'siteorigin-widgets'),
+		'ignore' => __('Ignore sticky', 'siteorigin-widgets'),
+		'exclude' => __('Exclude sticky', 'siteorigin-widgets'),
+		'only' => __('Include sticky', 'siteorigin-widgets'),
+	);
+	foreach($sticky as $id => $v) {
+		$return['sticky'] .= '<option value="' . $id . '">' . $v . '</option>';
+	}
+	$return['sticky'] .= '</select></label>';
 
 	return $return;
 }

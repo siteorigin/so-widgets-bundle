@@ -60,12 +60,14 @@ var soWidgetPostSelector = ( function ($, _) {
         // The order fields for get_posts.
         orderby: null,
         order: null,
+        sticky: null,
 
         defaults: {
             'post_type' : 'post',
             'orderby' : 'post_date',
             'order' : 'DESC',
-            'post_status' : 'publish'
+            'post_status' : 'publish',
+            'sticky' : ''
         },
 
         initialize: function(params, options) {
@@ -82,6 +84,7 @@ var soWidgetPostSelector = ( function ($, _) {
             if( typeof this.get('orderby') !== 'undefined' ) query.push( 'orderby=' + this.get('orderby') );
             if( typeof this.get('order') !== 'undefined' ) query.push( 'order=' + this.get('order') );
             if( typeof this.get('posts_per_page') !== 'undefined' ) query.push( 'posts_per_page=' + this.get('posts_per_page') );
+            if( typeof this.get('sticky') !== 'undefined' ) query.push( 'sticky=' + this.get('sticky') );
 
             return query.join('&');
         },
@@ -120,6 +123,7 @@ var soWidgetPostSelector = ( function ($, _) {
             if( params.hasOwnProperty('orderby') ) theQuery.orderby = params.orderby;
             if( params.hasOwnProperty('order') ) theQuery.order = params.order;
             if( params.hasOwnProperty('posts_per_page') ) theQuery.posts_per_page = Number(params.posts_per_page);
+            if( params.hasOwnProperty('sticky') ) theQuery.sticky = params.sticky;
 
             theQuery.query = query;
             return theQuery;
@@ -336,8 +340,12 @@ var soWidgetPostSelector = ( function ($, _) {
             this.form.append('<div class="query-builder-form-field">' + sowPostsSelectorTpl.fields.posts_per_page + '</div>');
             if( typeof this.model.get('posts_per_page') !== 'undefined' ) this.form.find('input[name="posts_per_page"]').val( this.model.get('posts_per_page'));
 
+            // The sticky posts field
+            this.form.append('<div class="query-builder-form-field">' + sowPostsSelectorTpl.fields.sticky + '</div>');
+            if( typeof this.model.get('sticky') !== 'undefined' ) this.form.find('select[name="sticky"]').val( this.model.get('sticky'));
 
-            var orderField =  this.form.find('input[name="order"]')
+
+            var orderField =  this.form.find('input[name="order"]');
             var orderButton = orderField.closest('.query-builder-form-field').find('.sow-order-button');
 
             // Reset the ordering button
@@ -446,6 +454,7 @@ var soWidgetPostSelector = ( function ($, _) {
             this.model.set( 'orderby', this.$el.find('*[name="orderby"]').val() );
             this.model.set( 'order', this.$el.find('*[name="order"]').val() );
             this.model.set( 'posts_per_page', this.$el.find('*[name="posts_per_page"]').val() );
+            this.model.set( 'sticky', this.$el.find('*[name="sticky"]').val() );
 
             this.model.set( 'query', this.model.getQuery() );
 
