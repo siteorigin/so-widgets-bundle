@@ -269,21 +269,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			add_action( 'admin_footer', array( $this, 'footer_admin_templates' ) );
 		}
 
-		if( !wp_script_is('siteorigin-widget-admin-posts-selector') && $this->using_posts_selector() ) {
-
-			wp_enqueue_script( 'siteorigin-widget-admin-posts-selector', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/posts-selector' . $js_suffix . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'underscore', 'backbone' ), SOW_BUNDLE_VERSION, true );
-
-			wp_localize_script( 'siteorigin-widget-admin-posts-selector', 'sowPostsSelectorTpl', array(
-				'modal' => file_get_contents( plugin_dir_path(__FILE__).'tpl/posts-selector/modal.html' ),
-				'postSummary' => file_get_contents( plugin_dir_path(__FILE__).'tpl/posts-selector/post.html' ),
-				'foundPosts' => '<div class="sow-post-count-message">' . sprintf( __('This query returns <a href="#" class="preview-query-posts">%s posts</a>.', 'siteorigin-widgets'), '<%= foundPosts %>') . '</div>',
-				'fields' => siteorigin_widget_post_selector_form_fields(),
-				'selector' => file_get_contents( plugin_dir_path(__FILE__).'tpl/posts-selector/selector.html' ),
-			) );
-
-			wp_localize_script( 'siteorigin-widget-admin-posts-selector', 'sowPostsSelectorVars', array(
-				'modalTitle' => __('Select posts', 'siteorigin-widgets'),
-			) );
+		if( $this->using_posts_selector() ) {
+			siteorigin_widget_post_selector_enqueue_admin_scripts();
 		}
 
 		// This lets the widget enqueue any specific admin scripts
@@ -835,13 +822,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				break;
 
 			case 'posts' :
-				?>
-				<input type="hidden" value="<?php echo esc_attr( is_array( $value ) ? '' : $value ) ?>" name="<?php echo $this->so_get_field_name( $name, $repeater ) ?>" class="siteorigin-widget-input" />
-				<a href="#" class="sow-select-posts button button-secondary">
-					<span class="sow-current-count"><?php echo siteorigin_widget_post_selector_count_posts( is_array( $value ) ? '' : $value ) ?></span>
-					<?php _e('Build posts query') ?>
-				</a>
-				<?php
+				siteorigin_widget_post_selector_admin_form_field( is_array( $value ) ? '' : $value, $this->so_get_field_name( $name, $repeater ) );
 				break;
 
 			case 'repeater':

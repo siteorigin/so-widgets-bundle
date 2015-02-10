@@ -30,7 +30,7 @@ var soWidgetPostSelector = ( function ($, _) {
             // Reset the post collection by fetching the results from the server
             var c = this;
             $.post(
-                soWidgets.ajaxurl,
+                sowPostsSelectorTpl.ajaxurl,
                 { action: 'sow_get_posts', query: query, 'ignore_pagination' : true },
                 function(data){
                     c.foundPosts = data.found_posts;
@@ -398,7 +398,7 @@ var soWidgetPostSelector = ( function ($, _) {
             this.form.find('input[name="tax_query"]').autocomplete({
                 source: function (request, response) {
                     $.getJSON(
-                        soWidgets.ajaxurl,
+                        sowPostsSelectorTpl.ajaxurl,
                         {
                             term: request.term.split(/,\s*/).pop(),
                             action: 'sow_search_terms'
@@ -567,7 +567,7 @@ var soWidgetPostSelector = ( function ($, _) {
                     request.type = postType;
                     request.action = 'sow_search_posts';
                     $.get(
-                        soWidgets.ajaxurl,
+                        sowPostsSelectorTpl.ajaxurl,
                         request,
                         response
                     );
@@ -618,7 +618,7 @@ var soWidgetPostSelector = ( function ($, _) {
             var v = this;
             if(!_.isEmpty(getPosts)) {
                 $.post(
-                    soWidgets.ajaxurl,
+                    sowPostsSelectorTpl.ajaxurl,
                     {
                         action: 'sow_get_posts',
                         query : 'post_type=_all&posts_per_page=-1&post__in=' + getPosts.join(',')
@@ -704,7 +704,7 @@ var soWidgetPostSelector = ( function ($, _) {
     jQuery( function($){
         $('body').on('click', '.sow-select-posts', function(e){
             e.preventDefault();
-            builder.model.setSyncField( $(this).closest( '.siteorigin-widget-field' ).find( '.siteorigin-widget-input' ) );
+            builder.model.setSyncField( $(this).siblings( '.siteorigin-widget-input' ) );
             builder.model.sync('update');
             builder.open();
         });
