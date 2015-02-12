@@ -2,13 +2,15 @@
 
 @borders: 1px solid #D0D0D0;
 @background_color: #FCFCFC;
+@box_shadow: 0 1px 2px rgba(0,0,0,0.1);
 
 & {
 	background: @background_color;
 	border: @borders;
 	padding: 20px;
 	.clearfix();
-	.box-shadow(0 1px 2px rgba(0,0,0,0.1));
+
+	.box-shadow(@box_shadow);
 
 	h5.testimonial-name {
 		margin: 1em 0 5px 0;
