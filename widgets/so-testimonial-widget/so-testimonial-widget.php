@@ -68,6 +68,17 @@ class SiteOrigin_Widget_Testimonial_Widget extends SiteOrigin_Widget  {
 							'label' => __( 'Show border', 'siteorigin-widgets' ),
 							'default' => true
 						),
+						'border_radius' => array(
+							'type' => 'select',
+							'label' => __( 'Border corners', 'siteorigin-widgets' ),
+							'default' => '0',
+							'options' => array(
+								'0' => __( 'Not rounded', 'siteorigin-widgets' ),
+								'4' => __( 'Slightly rounded', 'siteorigin-widgets' ),
+								'8' => __( 'Rounded', 'siteorigin-widgets' ),
+								'16' => __( 'Very rounded', 'siteorigin-widgets' ),
+							)
+						),
 						'background_color' => array(
 							'type'    => 'color',
 							'label'   => __( 'Background color', 'siteorigin-widgets' ),
@@ -77,7 +88,33 @@ class SiteOrigin_Widget_Testimonial_Widget extends SiteOrigin_Widget  {
 							'type' => 'checkbox',
 							'label' => __( 'Show box shadow', 'siteorigin-widgets' ),
 							'default' => true,
-						)
+						),
+						'image_border_radius' => array(
+							'type' => 'select',
+							'label' => __( 'Image corners', 'siteorigin-widgets' ),
+							'default' => '4',
+							'options' => array(
+								'0' => __( 'Not rounded', 'siteorigin-widgets' ),
+								'4' => __( 'Slightly rounded', 'siteorigin-widgets' ),
+								'8' => __( 'Rounded', 'siteorigin-widgets' ),
+								'16' => __( 'Very rounded', 'siteorigin-widgets' ),
+							)
+						),
+						'image_alignment' => array(
+							'type' => 'select',
+							'label' => __( 'Image alignment', 'siteorigin-widgets' ),
+							'default' => 'left',
+							'options' => array(
+								'left' => __( 'Left', 'siteorigin-widgets' ),
+								'right' => __( 'Right', 'siteorigin-widgets' ),
+								'top' => __( 'Top', 'siteorigin-widgets' ),
+							)
+						),
+						'image_height' => array(
+							'type' => 'number',
+							'label' => __( 'Image height', 'siteorigin-widgets' ),
+							'default' => 60,
+						),
 					)
 				),
 			)
@@ -123,8 +160,12 @@ class SiteOrigin_Widget_Testimonial_Widget extends SiteOrigin_Widget  {
 		}
 		return array(
 			'borders' => $border_style,
+			'border_radius' => $instance['design']['border_radius'] . 'px',
 			'background_color' => $instance['design']['background_color'],
-			'box_shadow' => $box_shadow
+			'box_shadow' => $box_shadow,
+			'image_border_radius' => $instance['design']['image_border_radius'] . 'px',
+			'image_alignment' => $instance['design']['image_alignment'],
+			'image_height' => $instance['design']['image_height'] . 'px',
 		);
 	}
 }
