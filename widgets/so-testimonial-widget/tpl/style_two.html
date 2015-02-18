@@ -1,0 +1,28 @@
+<li class="sow-testimonial-item">
+
+    <% if( image ) { %>
+    <div class="sow-testimonial-image-wrapper">
+        <img class="sow-testimonial-image" src="<%- image %>" />
+    </div>
+    <% } %>
+
+    <div class="sow-testimonial-content">
+        `<div class="sow-testimonial-text-background-arrow">
+        </div>
+        <div class="sow-testimonial-text-background">
+            <div class="sow-testimonial-text-container">
+                <div class="sow-testimonial-text">
+                    "<%- text %>"
+                </div>
+            </div>
+        </div>
+        <div class="sow-testimonial-name">
+            <h5>
+                <% if( url ) { %><a href="<%- url %>" <% if( newWindow ) { %>target="_blank"<% } %> > <% } %>
+                <%- name %>
+                <% if( url ) { %></a><% } %>
+            </h5>
+            <small class="sow-testimonial-location"><%- location %></small>
+        </div>
+    </div>`
+</li>
