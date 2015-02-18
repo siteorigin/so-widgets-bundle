@@ -23,150 +23,105 @@ class SiteOrigin_Widget_Testimonial_Widget extends SiteOrigin_Widget  {
 					'type' => 'select',
 					'label' => __( 'Template', 'siteorigin-widgets' ),
 					'options' => array(
-						'default' => __( 'Default', 'siteorigin-widgets' ),
-						'simple-left' => __( 'Simple Image Left', 'siteorigin-widgets' ),
-						'simple-top' => __( 'Simple Image Top', 'siteorigin-widgets' ),
+						'style_one' => __( 'Style One', 'siteorigin-widgets' ),
+						'style_two' => __( 'Style Two', 'siteorigin-widgets' ),
+						'style_three' => __( 'Style Three', 'siteorigin-widgets' ),
 					)
 				),
-				'name' => array(
-					'type' => 'text',
-					'label' => __('Name', 'siteorigin-widgets'),
+				'testimonials_per_page' => array(
+					'type' => 'slider',
+					'label' => __( 'Testimonials per page', 'siteorigin-widgets' ),
+					'min' => 1,
+					'max' => 3,
+					'integer' => true,
+					'default' => 3
 				),
-
-				'location' => array(
-					'type' => 'text',
-					'label' => __('Location', 'siteorigin-widgets'),
+				'transition_style' => array(
+					'type' => 'select',
+					'label' => __( 'Transition style', 'siteorigin-widgets' ),
+					'options' => array(
+						'fade' => __( 'Fade', 'siteorigin-widgets' ),
+						'slide' => __( 'Carousel', 'siteorigin-widgets' ),
+						'thumbnails' => __( 'Thumbnails', 'siteorigin-widgets' )
+					)
 				),
-
-				'image' => array(
-					'type' => 'media',
-					'label' => __('Image', 'siteorigin-widgets'),
-				),
-
-				'text' => array(
-					'type' => 'textarea',
-					'label' => __('Text', 'siteorigin-widgets'),
-				),
-
-				'url' => array(
-					'type' => 'text',
-					'label' => __('URL', 'siteorigin-widgets'),
-				),
-
-				'new_window' => array(
-					'type' => 'checkbox',
-					'label' => __('Open In New Window', 'siteorigin-widgets'),
-				),
-				'design' => array(
-					'type' => 'section',
-					'label' => __( 'Design and layout', 'siteorigin-widgets' ),
-					'hide' => true,
-					'description' => __( 'Style options for the default template.', 'siteorigin-widgets' ),
+				'testimonials' => array(
+					'type' => 'repeater',
+					'label' => __( 'Testimonials', 'siteorigin-widgets' ),
+					'item_name'  => __( 'Testimonial', 'siteorigin-widgets' ),
+					'item_label' => array(
+						'selector'     => "[id*='testimonials-name']",
+						'update_event' => 'change',
+						'value_method' => 'val'
+					),
 					'fields' => array(
-						'show_border' => array(
+						'name' => array(
+							'type' => 'text',
+							'label' => __('Name', 'siteorigin-widgets'),
+						),
+
+						'location' => array(
+							'type' => 'text',
+							'label' => __('Location', 'siteorigin-widgets'),
+						),
+
+						'image' => array(
+							'type' => 'media',
+							'label' => __('Image', 'siteorigin-widgets'),
+						),
+
+						'text' => array(
+							'type' => 'textarea',
+							'label' => __('Text', 'siteorigin-widgets'),
+						),
+
+						'url' => array(
+							'type' => 'text',
+							'label' => __('URL', 'siteorigin-widgets'),
+						),
+
+						'new_window' => array(
 							'type' => 'checkbox',
-							'label' => __( 'Show border', 'siteorigin-widgets' ),
-							'default' => true
-						),
-						'border_radius' => array(
-							'type' => 'select',
-							'label' => __( 'Border corners', 'siteorigin-widgets' ),
-							'default' => '0',
-							'options' => array(
-								'0' => __( 'Not rounded', 'siteorigin-widgets' ),
-								'4' => __( 'Slightly rounded', 'siteorigin-widgets' ),
-								'8' => __( 'Rounded', 'siteorigin-widgets' ),
-								'16' => __( 'Very rounded', 'siteorigin-widgets' ),
-							)
-						),
-						'background_color' => array(
-							'type'    => 'color',
-							'label'   => __( 'Background color', 'siteorigin-widgets' ),
-							'default' => '#FCFCFC'
-						),
-						'box_shadow' => array(
-							'type' => 'checkbox',
-							'label' => __( 'Show box shadow', 'siteorigin-widgets' ),
-							'default' => true,
-						),
-						'image_border_radius' => array(
-							'type' => 'select',
-							'label' => __( 'Image corners', 'siteorigin-widgets' ),
-							'default' => '4',
-							'options' => array(
-								'0' => __( 'Not rounded', 'siteorigin-widgets' ),
-								'4' => __( 'Slightly rounded', 'siteorigin-widgets' ),
-								'8' => __( 'Rounded', 'siteorigin-widgets' ),
-								'16' => __( 'Very rounded', 'siteorigin-widgets' ),
-							)
-						),
-						'image_alignment' => array(
-							'type' => 'select',
-							'label' => __( 'Image alignment', 'siteorigin-widgets' ),
-							'default' => 'left',
-							'options' => array(
-								'left' => __( 'Left', 'siteorigin-widgets' ),
-								'right' => __( 'Right', 'siteorigin-widgets' ),
-								'top' => __( 'Top', 'siteorigin-widgets' ),
-							)
-						),
-						'image_height' => array(
-							'type' => 'number',
-							'label' => __( 'Image height', 'siteorigin-widgets' ),
-							'default' => 60,
+							'label' => __('Open In New Window', 'siteorigin-widgets'),
 						),
 					)
-				),
+				)
 			)
 		);
 	}
 
+	function enqueue_frontend_scripts( $instance ) {
+		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		wp_register_script( 'flex-slider' , plugin_dir_url(SOW_BUNDLE_BASE_FILE). 'base/js/libs/jquery.flexslider' . $js_suffix . '.js' , array( 'jquery' ), '2.3.0' );
+		wp_enqueue_script( 'sow-testimonial-widget', siteorigin_widget_get_plugin_dir_url( 'testimonial' ) . 'js/so-testimonial-widget' . $js_suffix . '.js', array( 'jquery', 'flex-slider', 'underscore', 'backbone' ), '');
+		wp_localize_script( 'sow-testimonial-widget', 'sowTestimonialWidget', array(
+			'testimonialTemplate' => file_get_contents( siteorigin_widget_get_plugin_dir_url( 'testimonial' ) . 'tpl/' . $instance['template'] . '.html' ),
+			'testimonialsPerPage' => $instance['testimonials_per_page'],
+			'transitionStyle' => $instance['transition_style'],
+			'testimonials' => array_map( array( $this, 'toJSONTestimonial' ), $instance['testimonials'] )
+		) );
+	}
+
+	function toJSONTestimonial( $testimonial ) {
+		if ( isset( $testimonial['image'] ) && ! empty( $testimonial['image'] ) ) {
+			$image_src = wp_get_attachment_image_src( $testimonial['image'] );
+			if ( ! empty( $image_src ) ) {
+				$testimonial['image'] = $image_src[0];
+			}
+		}
+		return $this->underscores_to_camel_case( $testimonial );
+	}
+
 	function get_style_name( $instance ) {
-		if ( empty( $instance['template'] ) || $instance['template'] == 'default' ) {
-			return 'default';
-		}
-		else {
-			return $instance['template'];
-		}
+		return $instance['template'];
 	}
 
 	function get_template_name( $instance ) {
-		return ! empty( $instance['template'] ) ? $instance['template'] : 'default';
+		return 'testimonials';
 	}
 
 	function get_template_variables( $instance, $args ) {
-		if ( ! empty( $instance['image'] ) ) {
-			$image_src = wp_get_attachment_image_src( $instance['image'] );
-		}
-
-		return array(
-			'image_url' => ! empty( $image_src ) ? $image_src[0] : '',
-			'testimonial' => $instance['text'],
-			'has_url' => ! empty( $instance['url'] ),
-			'url' => $instance['url'],
-			'location' => $instance['location'],
-			'new_window' => $instance['new_window'],
-		);
-	}
-
-	function get_less_variables( $instance ) {
-		$border_style = '1px solid #D0D0D0';
-		if ( empty( $instance['design']['show_border'] ) ) {
-			$border_style = 'none';
-		}
-		$box_shadow = '0 1px 2px rgba(0,0,0,0.1)';
-		if ( empty($instance['design']['box_shadow'] ) ) {
-			$box_shadow = 'none';
-		}
-		return array(
-			'borders' => $border_style,
-			'border_radius' => $instance['design']['border_radius'] . 'px',
-			'background_color' => $instance['design']['background_color'],
-			'box_shadow' => $box_shadow,
-			'image_border_radius' => $instance['design']['image_border_radius'] . 'px',
-			'image_alignment' => $instance['design']['image_alignment'],
-			'image_height' => $instance['design']['image_height'] . 'px',
-		);
+		return array();
 	}
 }
 

@@ -112,7 +112,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$css_name = $this->id_base.'-base';
 		}
 
-		$this->enqueue_frontend_scripts();
+		$this->enqueue_frontend_scripts( $instance );
 		extract( $this->get_template_variables($instance, $args) );
 
 		// Storage hash allows
@@ -1152,7 +1152,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	/**
 	 * Can be overwritten by child widgets to enqueue scripts and styles for the frontend.
 	 */
-	function enqueue_frontend_scripts(){ }
+	function enqueue_frontend_scripts( $instance ){ }
 
 	/**
 	 * Can be overwritten by child widgets to enqueue admin scripts and styles if necessary.

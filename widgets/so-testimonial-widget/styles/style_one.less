@@ -1,0 +1,70 @@
+@import "../../../less/mixins";
+
+.sow-testimonial-item {
+    padding: 5px 20px;
+
+    .sow-testimonial-image-wrapper {
+        text-align: center;
+
+        .sow-testimonial-image { //0, 0, 2, 0
+            width: 100px;
+            height: 100px;
+            border-radius: 50px;
+            display: inline-block;
+            .box-shadow(0px 2px 1px 2px rgba(0,0,0,0.2));
+        }
+    }
+}
+
+.sow-testimonial-text-background {
+    position: relative;
+    background: white;
+    overflow: visible;
+    .box-shadow(0 0 5px 1px rgba(0,0,0,0.2))
+}
+.sow-testimonial-text-background-arrow {
+    text-align: center;
+    height: 30px;
+    overflow: hidden;
+}
+.sow-testimonial-text-background-arrow:after {
+    position: relative;
+    content: "";
+    width: 20px;
+    height: 20px;
+    background: white;
+    display: inline-block;
+    transform: translate(0px, -10px) rotate(45deg);
+    border: none;
+    overflow: visible;
+    .box-shadow(0 0 5px 1px rgba(0,0,0,0.2))
+}
+
+.sow-testimonial-text-container {
+    padding: 30px;
+}
+.sow-testimonial-text {
+    height: 100px;
+}
+
+.sow-testimonial-name {
+    h5 {
+        margin: 1em 0 5px 0;
+        line-height: 1;
+        color: #333;
+        clear: none;
+
+        a {
+            color: inherit;
+        }
+
+        small.sow-testimonial-location {
+            font-size: 9em;
+            display: block;
+            margin: 0;
+            line-height: 1;
+            color: #999;
+            clear: none;
+        }
+    }
+}

@@ -203,7 +203,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	/**
 	 * Enqueue the basic button CSS.
 	 */
-	function enqueue_frontend_scripts(){
+	function enqueue_frontend_scripts( $instance ){
 		wp_enqueue_style('sow-button-base', siteorigin_widget_get_plugin_dir_url('button').'css/style.css', array(), SOW_BUNDLE_VERSION );
 	}
 

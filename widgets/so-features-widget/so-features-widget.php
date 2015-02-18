@@ -144,7 +144,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		return 'base';
 	}
 
-	function enqueue_frontend_scripts(){
+	function enqueue_frontend_scripts( $instance ){
 		wp_enqueue_style('siteorigin-widgets', siteorigin_widget_get_plugin_dir_url('features').'css/style.css', array(), SOW_BUNDLE_VERSION );
 	}
 
