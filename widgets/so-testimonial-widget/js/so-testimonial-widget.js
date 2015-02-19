@@ -42,15 +42,22 @@ jQuery(function($) {
                 var $testimonialsContainer = $('.sow-testimonials-container');
                 var itemsPerPage = sowTestimonialWidget.testimonialsPerPage;
                 var itemWidth = $testimonialsContainer.width()/itemsPerPage;
-                $testimonialsContainer.flexslider({
+                var options = {
                     selector: '.sow-testimonial-items > .sow-testimonial-item',
                     animation: sowTestimonialWidget.transitionStyle,
                     animationLoop: false,
-                    itemWidth: itemWidth,
-                    minItems: itemsPerPage,
-                    maxItems: itemsPerPage,
-                    move: itemsPerPage
-                });
+                    directionNav: false,
+                    slideshow: false
+                };
+                if(sowTestimonialWidget.transitionStyle == 'slide') {
+                    _.extend(options, {
+                        itemWidth: itemWidth,
+                        minItems: itemsPerPage,
+                        maxItems: itemsPerPage,
+                        move: itemsPerPage
+                    });
+                }
+                $testimonialsContainer.flexslider(options);
                 return this;
             }
         });

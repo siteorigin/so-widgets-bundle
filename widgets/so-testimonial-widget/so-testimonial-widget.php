@@ -93,7 +93,7 @@ class SiteOrigin_Widget_Testimonial_Widget extends SiteOrigin_Widget  {
 	function enqueue_frontend_scripts( $instance ) {
 		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		wp_register_script( 'flex-slider' , plugin_dir_url(SOW_BUNDLE_BASE_FILE). 'base/js/libs/jquery.flexslider' . $js_suffix . '.js' , array( 'jquery' ), '2.3.0' );
-		wp_enqueue_script( 'sow-testimonial-widget', siteorigin_widget_get_plugin_dir_url( 'testimonial' ) . 'js/so-testimonial-widget' . $js_suffix . '.js', array( 'jquery', 'flex-slider', 'underscore', 'backbone' ), '');
+		wp_enqueue_script( 'sow-testimonial-widget', siteorigin_widget_get_plugin_dir_url( 'testimonial' ) . 'js/so-testimonial-widget' . $js_suffix . '.js', array( 'jquery', 'flex-slider', 'underscore', 'backbone' ), SOW_BUNDLE_VERSION );
 		wp_localize_script( 'sow-testimonial-widget', 'sowTestimonialWidget', array(
 			'testimonialTemplate' => file_get_contents( siteorigin_widget_get_plugin_dir_url( 'testimonial' ) . 'tpl/' . $instance['template'] . '.html' ),
 			'testimonialsPerPage' => $instance['testimonials_per_page'],
