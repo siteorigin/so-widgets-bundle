@@ -33,10 +33,8 @@ jQuery(function($) {
                 var _this = this;
                 this.testimonials.each(
                     function (testimonial) {
-                        console.log(testimonial.get('name'));
                         var tstV = new TestimonialView({ model: testimonial });
                         _this.$el.find('.sow-testimonial-items').append(tstV.render().el);
-                        //_this.$el.append(tstV);
                     }
                 );
                 var $testimonialsContainer = $('.sow-testimonials-container');
@@ -55,6 +53,34 @@ jQuery(function($) {
                         minItems: itemsPerPage,
                         maxItems: itemsPerPage,
                         move: itemsPerPage
+                    });
+                } else if (sowTestimonialWidget.transitionStyle == 'thumbnails') {
+                    this.testimonials.each(
+                        function (testimonial) {
+                            var $thmbsCnt =_this.$el.siblings('.sow-testimonials-thumbnails-nav').find('.sow-testimonials-thumbnail-items');
+                            var imgSrc = testimonial.get('image');
+                            if(imgSrc) {
+                                $thmbsCnt.append('<li><img src="' + imgSrc + '"/></li>');
+                            } else {
+                                $thmbsCnt.append('<li><div class="no-image" style="width: 150px; height:150px; background: #404040"/></li>');
+                            }
+                            console.log($thmbsCnt.html());
+                        }
+                    );
+                    $('.sow-testimonials-thumbnails-nav').flexslider({
+                        animation: "slide",
+                        controlNav: false,
+                        animationLoop: false,
+                        slideshow: false,
+                        itemWidth: 210,
+                        itemMargin: 5,
+                        directionNav: false,
+                        asNavFor: '.sow-testimonials-container'
+                    });
+                    _.extend(options, {
+                        animation: 'slide',
+                        controlNav: false,
+                        sync: '.sow-testimonials-thumbnails-nav'
                     });
                 }
                 $testimonialsContainer.flexslider(options);
