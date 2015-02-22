@@ -127,7 +127,7 @@ function initialize() {
 }
 
 jQuery(function ($) {
-    if (window.google) {
+    if (window.google && window.google.maps) {
         loadMap($);
     } else {
         loadApi($);
