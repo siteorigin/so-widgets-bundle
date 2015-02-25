@@ -10,6 +10,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	protected $base_folder;
 	protected $repeater_html;
 	protected $field_ids;
+	protected $frontend_scripts = array();
+	protected $frontend_styles = array();
 
 	protected $current_instance;
 	protected $instance_storage;
@@ -1150,9 +1152,56 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	function get_javascript_variables(){ }
 
 	/**
-	 * Can be overwritten by child widgets to enqueue scripts and styles for the frontend.
+	 * Used by child widgets to register scripts to be enqueued for the frontend.
 	 */
-	function enqueue_frontend_scripts(){ }
+	function register_frontend_scripts( $scripts ){
+		foreach ( $scripts as $script ) {
+			if ( ! isset( $this->frontend_scripts[ $script[0] ] ) ) {
+				$this->frontend_scripts[$script[0]] = $script;
+			}
+		}
+	}
+
+	/**
+	 * Used by child widgets to register styles to be enqueued for the frontend.
+	 */
+	function register_frontend_styles( $styles ) {
+		foreach ( $styles as $style ) {
+			if ( ! isset( $this->frontend_styles[ $style[0] ] ) ) {
+				$this->frontend_styles[$style[0]] = $style;
+			}
+		}
+	}
+
+	/**
+	 * Can be overridden by child widgets to enqueue scripts and styles for the frontend, but child widgets should
+	 * rather register scripts and styles using register_frontend_scripts() and register_frontend_styles(). This function
+	 * will then ensure that the scripts are not enqueued more than once.
+	 */
+	function enqueue_frontend_scripts(){
+		foreach ( $this->frontend_scripts as $f_script ) {
+			if ( ! wp_script_is( $f_script[0] ) ) {
+				wp_enqueue_script(
+					$f_script[0],
+					isset( $f_script[1] ) ? $f_script[1] : false,
+					isset( $f_script[2] ) ? $f_script[2] : array(),
+					isset( $f_script[3] ) ? $f_script[3] : false,
+					isset( $f_script[4] ) ? $f_script[4] : false
+				);
+			}
+		}
+		foreach ( $this->frontend_styles as $f_style ) {
+			if ( ! wp_script_is( $f_style[0] ) ) {
+				wp_enqueue_style(
+					$f_style[0],
+					isset( $f_style[1] ) ? $f_style[1] : false,
+					isset( $f_style[2] ) ? $f_style[2] : array(),
+					isset( $f_style[3] ) ? $f_style[3] : false,
+					isset( $f_style[4] ) ? $f_style[4] : 'all'
+				);
+			}
+		}
+	}
 
 	/**
 	 * Can be overwritten by child widgets to enqueue admin scripts and styles if necessary.
