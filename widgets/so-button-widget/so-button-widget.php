@@ -175,7 +175,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	function initialize() {
 		$this->register_frontend_styles(
 			array(
-				array( 'sow-button-base', siteorigin_widget_get_plugin_dir_url('button').'css/style.css', array(), SOW_BUNDLE_VERSION ),
+				array(
+					'sow-button-base',
+					siteorigin_widget_get_plugin_dir_url( 'button' ) . 'css/style.css',
+					array(),
+					SOW_BUNDLE_VERSION
+				),
 			)
 		);
 	}

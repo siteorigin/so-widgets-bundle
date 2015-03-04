@@ -76,6 +76,27 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 			include plugin_dir_path( __FILE__ ) . '../so-button-widget/so-button-widget.php';
 			siteorigin_widget_register( 'button', realpath( plugin_dir_path( __FILE__ ) . '../so-button-widget/so-button-widget.php' ) );
 		}
+		$this->register_frontend_styles(
+			array(
+				array(
+					'sow-cta-main',
+					siteorigin_widget_get_plugin_dir_url( 'cta' ) . 'css/style.css',
+					array(),
+					SOW_BUNDLE_VERSION
+				)
+			)
+		);
+		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$this->register_frontend_scripts(
+			array(
+				array(
+					'sow-cta-main',
+					siteorigin_widget_get_plugin_dir_url( 'cta' ) . 'js/cta' . $js_suffix . '.js',
+					array( 'jquery' ),
+					SOW_BUNDLE_VERSION
+				)
+			)
+		);
 	}
 
 	function get_template_name($instance) {
@@ -97,12 +118,6 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 	function modify_child_widget_form($child_widget_form, $child_widget) {
 		unset( $child_widget_form['design']['fields']['align'] );
 		return $child_widget_form;
-	}
-
-	function enqueue_frontend_scripts( $instance ){
-		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-		wp_enqueue_style( 'sow-cta-main', siteorigin_widget_get_plugin_dir_url('cta').'css/style.css', array(), SOW_BUNDLE_VERSION );
-		wp_enqueue_script( 'sow-cta-main', siteorigin_widget_get_plugin_dir_url('cta').'js/cta' . $js_suffix . '.js', array('jquery'), SOW_BUNDLE_VERSION );
 	}
 
 }

@@ -78,6 +78,35 @@ class SiteOrigin_Widget_Masonry_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	function initialize() {
+		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$this->register_frontend_scripts(
+			array(
+				array(
+					'siteorigin-masonry',
+					plugin_dir_url( __FILE__ ) . '/js/jquery.masonry' . $js_suffix . '.js',
+					array( 'jquery' ),
+					'2.1.07'
+				),
+				array(
+					'siteorigin-masonry-main',
+					plugin_dir_url( __FILE__ ) . '/js/masonry' . $js_suffix . '.js',
+					array( 'jquery' ),
+					SOW_BUNDLE_VERSION
+				)
+			)
+		);
+	}
+
+	function enqueue_frontend_scripts( $instance ) {
+		parent::enqueue_frontend_scripts( $instance );
+
+		//TODO: find better way to do this
+		wp_localize_script( 'siteorigin-masonry-main', 'soMasonrySettings', array(
+			'loader' => plugin_dir_url(__FILE__).'images/ajax-loader.gif'
+		) );
+	}
+
 	function get_style_name( $instance ) {
 		return 'masonry';
 	}
@@ -101,16 +130,6 @@ class SiteOrigin_Widget_Masonry_Widget extends SiteOrigin_Widget {
 			}
 		}
 		return '11';
-	}
-
-	function enqueue_frontend_scripts( $instance ){
-		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-
-		wp_enqueue_script( 'siteorigin-masonry' , plugin_dir_url(__FILE__) . '/js/jquery.masonry'.$js_suffix.'.js', array('jquery'), '2.1.07' );
-		wp_enqueue_script( 'siteorigin-masonry-main' , plugin_dir_url(__FILE__) . '/js/masonry'.$js_suffix.'.js', array('jquery'), SOW_BUNDLE_VERSION );
-		wp_localize_script( 'siteorigin-masonry-main', 'soMasonrySettings', array(
-			'loader' => plugin_dir_url(__FILE__).'images/ajax-loader.gif'
-		) );
 	}
 
 	function enqueue_admin_scripts() {
