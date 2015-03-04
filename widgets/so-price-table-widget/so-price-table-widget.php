@@ -201,7 +201,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 	/**
 	 * Load the front end scripts for the price table.
 	 */
-	function enqueue_frontend_scripts(){
+	function enqueue_frontend_scripts( $instance ){
 		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		wp_enqueue_script( 'siteorigin-pricetable', siteorigin_widget_get_plugin_dir_url('price-table').'js/pricetable' . $js_suffix . '.js', array('jquery') );
 	}

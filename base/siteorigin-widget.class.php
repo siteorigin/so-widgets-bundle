@@ -12,6 +12,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	protected $field_ids;
 	protected $frontend_scripts = array();
 	protected $frontend_styles = array();
+	protected $generated_css = array();
 
 	protected $current_instance;
 	protected $instance_storage;
@@ -77,44 +78,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			'after_title' => '',
 		) );
 
-		$style = $this->get_style_name( $instance );
-
 		// Add any missing default values to the instance
 		$instance = $this->add_defaults($this->form_options, $instance);
 
-		$upload_dir = wp_upload_dir();
-		$this->clear_file_cache();
-
-		if($style !== false) {
-			$hash = $this->get_style_hash($instance);
-			$css_name = $this->id_base.'-'.$style.'-'.$hash;
-
-			if( ( isset( $instance['is_preview'] ) && $instance['is_preview'] ) || is_preview() ) {
-				siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
-			}
-			else {
-				if( !file_exists( $upload_dir['basedir'] . '/siteorigin-widgets/' . $css_name .'.css' ) || ( defined('SITEORIGIN_WIDGETS_DEBUG') && SITEORIGIN_WIDGETS_DEBUG ) ) {
-					// Attempt to recreate the CSS
-					$this->save_css( $instance );
-				}
-
-				if( file_exists( $upload_dir['basedir'] . '/siteorigin-widgets/' . $css_name .'.css' ) ) {
-					wp_enqueue_style(
-						$css_name,
-						$upload_dir['baseurl'] . '/siteorigin-widgets/' . $css_name .'.css'
-					);
-				}
-				else {
-					// Fall back to using inline CSS if we can't find the cached CSS file.
-					siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
-				}
-			}
-		}
-		else {
-			$css_name = $this->id_base.'-base';
-		}
-
-		$this->enqueue_frontend_scripts();
+		$css_name = $this->generate_and_enqueue_instance_styles( $instance );
+		$this->enqueue_frontend_scripts( $instance );
 		extract( $this->get_template_variables($instance, $args) );
 
 		// Storage hash allows
@@ -137,6 +105,51 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		echo $args['after_widget'];
 
 		$this->current_instance = false;
+	}
+
+	function generate_and_enqueue_instance_styles( $instance ) {
+
+		$style = $this->get_style_name( $instance );
+
+		$upload_dir = wp_upload_dir();
+		$this->clear_file_cache();
+
+		if($style !== false) {
+			$hash = $this->get_style_hash( $instance );
+			$css_name = $this->id_base.'-'.$style.'-'.$hash;
+
+			//Ensure styles aren't generated and enqueued more than once.
+			if ( ! in_array( $css_name, $this->generated_css ) ) {
+				if( ( isset( $instance['is_preview'] ) && $instance['is_preview'] ) || is_preview() ) {
+					siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
+				}
+				else {
+					if( !file_exists( $upload_dir['basedir'] . '/siteorigin-widgets/' . $css_name .'.css' ) || ( defined('SITEORIGIN_WIDGETS_DEBUG') && SITEORIGIN_WIDGETS_DEBUG ) ) {
+						// Attempt to recreate the CSS
+						$this->save_css( $instance );
+					}
+
+					if( file_exists( $upload_dir['basedir'] . '/siteorigin-widgets/' . $css_name .'.css' ) ) {
+						if ( ! wp_style_is( $css_name ) ) {
+							wp_enqueue_style(
+								$css_name,
+								$upload_dir['baseurl'] . '/siteorigin-widgets/' . $css_name .'.css'
+							);
+						}
+					}
+					else {
+						// Fall back to using inline CSS if we can't find the cached CSS file.
+						siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
+					}
+				}
+				$this->generated_css[] = $css_name;
+			}
+		}
+		else {
+			$css_name = $this->id_base.'-base';
+		}
+
+		return $css_name;
 	}
 
 	/**
@@ -1162,23 +1175,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 	}
 
-	/**
-	 * Used by child widgets to register styles to be enqueued for the frontend.
-	 */
-	function register_frontend_styles( $styles ) {
-		foreach ( $styles as $style ) {
-			if ( ! isset( $this->frontend_styles[ $style[0] ] ) ) {
-				$this->frontend_styles[$style[0]] = $style;
-			}
-		}
-	}
-
-	/**
-	 * Can be overridden by child widgets to enqueue scripts and styles for the frontend, but child widgets should
-	 * rather register scripts and styles using register_frontend_scripts() and register_frontend_styles(). This function
-	 * will then ensure that the scripts are not enqueued more than once.
-	 */
-	function enqueue_frontend_scripts(){
+	function enqueue_registered_scripts() {
 		foreach ( $this->frontend_scripts as $f_script ) {
 			if ( ! wp_script_is( $f_script[0] ) ) {
 				wp_enqueue_script(
@@ -1190,17 +1187,41 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				);
 			}
 		}
+	}
+
+	/**
+	 * Used by child widgets to register styles to be enqueued for the frontend.
+	 */
+	function register_frontend_styles( $styles ) {
+		foreach ( $styles as $style ) {
+			if ( ! isset( $this->frontend_styles[ $style[0] ] ) ) {
+				$this->frontend_styles[$style[0]] = $style;
+			}
+		}
+	}
+
+	function enqueue_registered_styles() {
 		foreach ( $this->frontend_styles as $f_style ) {
-			if ( ! wp_script_is( $f_style[0] ) ) {
+			if ( ! wp_style_is( $f_style[0] ) ) {
 				wp_enqueue_style(
 					$f_style[0],
 					isset( $f_style[1] ) ? $f_style[1] : false,
 					isset( $f_style[2] ) ? $f_style[2] : array(),
 					isset( $f_style[3] ) ? $f_style[3] : false,
-					isset( $f_style[4] ) ? $f_style[4] : 'all'
+					isset( $f_style[4] ) ? $f_style[4] : "all"
 				);
 			}
 		}
+	}
+
+	/**
+	 * Can be overridden by child widgets to enqueue scripts and styles for the frontend, but child widgets should
+	 * rather register scripts and styles using register_frontend_scripts() and register_frontend_styles(). This function
+	 * will then ensure that the scripts are not enqueued more than once.
+	 */
+	function enqueue_frontend_scripts( $instance ){
+		$this->enqueue_registered_scripts();
+		$this->enqueue_registered_styles();
 	}
 
 	/**

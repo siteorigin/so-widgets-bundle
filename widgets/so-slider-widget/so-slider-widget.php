@@ -203,7 +203,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 	/**
 	 * Enqueue the slider scripts
 	 */
-	function enqueue_frontend_scripts(){
+	function enqueue_frontend_scripts( $instance ){
 		wp_enqueue_style('sow-slider-slider');
 		wp_enqueue_script('sow-slider-slider-cycle2');
 		if( wp_is_mobile() ) wp_enqueue_script('sow-slider-slider-cycle2-swipe');

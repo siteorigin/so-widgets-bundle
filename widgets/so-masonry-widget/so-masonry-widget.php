@@ -103,7 +103,7 @@ class SiteOrigin_Widget_Masonry_Widget extends SiteOrigin_Widget {
 		return '11';
 	}
 
-	function enqueue_frontend_scripts(){
+	function enqueue_frontend_scripts( $instance ){
 		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		wp_enqueue_script( 'siteorigin-masonry' , plugin_dir_url(__FILE__) . '/js/jquery.masonry'.$js_suffix.'.js', array('jquery'), '2.1.07' );

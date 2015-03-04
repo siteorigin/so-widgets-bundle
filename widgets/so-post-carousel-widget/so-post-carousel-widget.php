@@ -77,7 +77,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function enqueue_frontend_scripts(){
+	function enqueue_frontend_scripts( $instance ){
 		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		wp_enqueue_style('sow-carousel-basic', siteorigin_widget_get_plugin_dir_url('post-carousel') . 'css/style.css', array(), SOW_BUNDLE_VERSION);
