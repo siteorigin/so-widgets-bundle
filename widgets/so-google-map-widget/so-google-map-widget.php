@@ -105,6 +105,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						'marker_positions'  => array(
 							'type'       => 'repeater',
 							'label'      => __( 'Marker positions', 'siteorigin-widgets' ),
+							'description' => __( 'Please be aware that adding more than 10 markers may cause a slight delay before they appear, due to Google Geocoding API rate limits.', 'siteorigin-widgets' ),
 							'item_name'  => __( 'Marker', 'siteorigin-widgets' ),
 							'item_label' => array(
 								'selector'     => "[id*='marker_positions-place']",
