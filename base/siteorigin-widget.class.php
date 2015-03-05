@@ -759,6 +759,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				</div>
 				<input
 					type="number"
+					class="siteorigin-widget-input"
 					name="<?php echo $this->so_get_field_name($name, $repeater) ?>"
 					id="<?php echo $field_id ?>"
 					value="<?php echo !empty($value) ? esc_attr($value) : 0 ?>"
