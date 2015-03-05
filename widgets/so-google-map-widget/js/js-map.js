@@ -53,20 +53,28 @@ function loadMap($) {
                 if ( markerPositions && markerPositions.length ) {
                     markerPositions.forEach(
                         function(mrkr) {
-                            geocoder.geocode( { 'address': mrkr.place }, function (res, status) {
-                                if ( status == google.maps.GeocoderStatus.OK ) {
-                                    new google.maps.Marker({
-                                        position: res[0].geometry.location,
-                                        map: map,
-                                        draggable: Boolean( $$.data('markers-draggable') ),
-                                        icon: $$.data('marker-icon'),
-                                        title: ''
-                                    });
-                                }
-                            });
+                            var geocodeMarker = function () {
+                                geocoder.geocode({'address': mrkr.place}, function (res, status) {
+                                    if (status == google.maps.GeocoderStatus.OK) {
+                                        new google.maps.Marker({
+                                            position: res[0].geometry.location,
+                                            map: map,
+                                            draggable: Boolean($$.data('markers-draggable')),
+                                            icon: $$.data('marker-icon'),
+                                            title: ''
+                                        });
+                                    } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                                        //try again please
+                                        setTimeout(geocodeMarker, Math.random() * 1000, mrkr);
+                                    }
+                                });
+                            };
+                            //set random delays of 0 - 1 seconds when geocoding markers to try avoid hitting the query limit
+                            setTimeout(geocodeMarker, Math.random() * 1000, mrkr);
                         }
                     );
                 }
+
 
                 var directions = $$.data('directions');
                 if ( directions ) {
@@ -127,7 +135,7 @@ function initialize() {
 }
 
 jQuery(function ($) {
-    if (window.google) {
+    if (window.google && window.google.maps) {
         loadMap($);
     } else {
         loadApi($);
