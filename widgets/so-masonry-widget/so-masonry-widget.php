@@ -98,15 +98,6 @@ class SiteOrigin_Widget_Masonry_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function enqueue_frontend_scripts( $instance ) {
-		parent::enqueue_frontend_scripts( $instance );
-
-		//TODO: find better way to do this
-		wp_localize_script( 'siteorigin-masonry-main', 'soMasonrySettings', array(
-			'loader' => plugin_dir_url(__FILE__).'images/ajax-loader.gif'
-		) );
-	}
-
 	function get_style_name( $instance ) {
 		return 'masonry';
 	}
