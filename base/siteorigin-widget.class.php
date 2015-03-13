@@ -265,8 +265,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				'ajaxurl' => wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ),
 				'sure' => __('Are you sure?', 'siteorigin-widgets')
 			) );
-
-			add_action( 'admin_footer', array( $this, 'footer_admin_templates' ) );
+			global $wp_customize;
+			if ( isset( $wp_customize ) ) {
+				$this->footer_admin_templates();
+			} else {
+				add_action( 'admin_footer', array( $this, 'footer_admin_templates' ) );
+			}
 		}
 
 		if( !wp_script_is('siteorigin-widget-admin-posts-selector') && $this->using_posts_selector() ) {
