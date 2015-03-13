@@ -15,7 +15,9 @@
                 if( $el.data('sow-form-setup') === true ) {
                     return true;
                 }
-                if( $('body').hasClass('widgets-php') && !$el.is(':visible') ) {
+                // If we're in the main widgets interface and the form isn't visible and it isn't contained in a
+                // panels dialog (when using the Layout Builder widget), don't worry about setting it up.
+                if( $('body').hasClass('widgets-php') && !$el.is(':visible') && $el.closest('.panel-dialog').length == 0) {
                     return true;
                 }
 
