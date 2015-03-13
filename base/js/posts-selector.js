@@ -246,7 +246,7 @@ var soWidgetPostSelector = ( function ($, _) {
                 if( $('body').hasClass('wp-customizer') ){
                     this.$el.appendTo('#customize-preview');
                 }
-                else {358
+                else {
                     this.$el.appendTo('#wpwrap');
                 }
                 this.attached = true;
