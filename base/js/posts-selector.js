@@ -249,12 +249,7 @@ var soWidgetPostSelector = ( function ($, _) {
             }
 
             if( !this.attached ) {
-                if( $('body').hasClass('wp-customizer') ){
-                    this.$el.appendTo('#customize-preview');
-                }
-                else {358
-                    this.$el.appendTo('#wpwrap');
-                }
+                this.$el.appendTo('body');
                 this.attached = true;
             }
 

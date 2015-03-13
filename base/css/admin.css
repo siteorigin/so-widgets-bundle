@@ -570,7 +570,7 @@
 .siteorigin-widget-preview-dialog .so-widget-toolbar,
 .siteorigin-widget-preview-dialog .so-widget-iframe {
   position: fixed;
-  z-index: 100000;
+  z-index: 500001;
   -ms-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
