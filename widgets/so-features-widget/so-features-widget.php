@@ -65,8 +65,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 
 						'text' => array(
 							'type' => 'text',
-							'label' => __('Text', 'siteorigin-widgets'),
-							'allow_html_formatting' => true
+							'label' => __('Text', 'siteorigin-widgets')
 						),
 
 						'more_text' => array(
