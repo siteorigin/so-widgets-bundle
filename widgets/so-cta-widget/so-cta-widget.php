@@ -86,6 +86,8 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 	}
 
 	function get_less_variables($instance) {
+		if( empty( $instance ) ) return array();
+
 		return array(
 			'border_color' => $instance['design']['border_color'],
 			'background_color' => $instance['design']['background_color'],
