@@ -181,6 +181,8 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 	}
 
 	function less_import_google_font($instance, $args) {
+		if( empty( $instance ) ) return;
+
 		$font_imports = '';
 		$font = siteorigin_widget_get_font( $instance['headline']['font'] );
 		if ( ! empty( $font['css_import'] ) ) {
@@ -199,6 +201,8 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_template_variables( $instance, $args ) {
+		if( empty( $instance ) ) return array();
+
 		return array(
 			'headline' => $instance['headline']['text'],
 			'sub_headline' => $instance['sub_headline']['text'],
