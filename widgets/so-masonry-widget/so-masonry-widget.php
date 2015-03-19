@@ -87,6 +87,8 @@ class SiteOrigin_Widget_Masonry_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_template_variables( $instance , $args ) {
+		if ( empty( $instance['posts_query'] ) ) return;
+
 		$query = siteorigin_widget_post_selector_process_query( $instance['posts_query'] );
 		return array(
 			'responsive' => !empty( $instance['responsive'] ),

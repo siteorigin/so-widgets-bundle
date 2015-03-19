@@ -35,7 +35,6 @@ var soWidgetPostSelector = ( function ($, _) {
                 function(data){
                     c.foundPosts = data.found_posts;
                     c.reset(data.posts);
-                    $('.sow-select-posts .sow-current-count').text(data.found_posts);
                 }
             );
         }
@@ -699,8 +698,12 @@ var soWidgetPostSelector = ( function ($, _) {
     jQuery( function($){
         $('body').on('click', '.sow-select-posts', function(e){
             e.preventDefault();
-            builder.model.setSyncField( $(this).siblings( '.siteorigin-widget-input' ) );
+            var $postSelectorButton = $(this);
+            builder.model.setSyncField( $postSelectorButton.siblings( '.siteorigin-widget-input' ) );
             builder.model.sync('update');
+            builder.views.postSummary.posts.on("reset", function (postsCollection) {
+                $postSelectorButton.find(".sow-current-count").text(postsCollection.foundPosts);
+            });
             builder.open();
         });
     } );

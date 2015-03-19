@@ -29,8 +29,7 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 
 				'sub_title' => array(
 					'type' => 'text',
-					'label' => __('Subtitle', 'siteorigin-widgets'),
-					'allow_html_formatting' => true
+					'label' => __('Subtitle', 'siteorigin-widgets')
 				),
 
 				'design' => array(
@@ -87,6 +86,8 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 	}
 
 	function get_less_variables($instance) {
+		if( empty( $instance ) ) return array();
+
 		return array(
 			'border_color' => $instance['design']['border_color'],
 			'background_color' => $instance['design']['background_color'],
