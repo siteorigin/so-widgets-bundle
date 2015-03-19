@@ -57,6 +57,8 @@ class SiteOrigin_Widgets_Bundle {
 		add_filter( 'siteorigin_panels_data', array($this, 'load_missing_widgets') );
 		add_filter( 'siteorigin_panels_prebuilt_layout', array($this, 'load_missing_widgets') );
 		add_filter( 'siteorigin_panels_widget_object', array($this, 'load_missing_widget'), 10, 2 );
+
+		add_filter( 'wp_enqueue_scripts', array($this, 'sow_enqueue_active_widgets_scripts') );
 	}
 
 	/**
@@ -458,6 +460,30 @@ class SiteOrigin_Widgets_Bundle {
 		$links[] = '<a href="' . admin_url('plugins.php?page=so-widgets-plugins') . '">'.__('Manage Widgets', 'siteorigin-widgets').'</a>';
 		$links[] = '<a href="http://siteorigin.com/thread/" target="_blank">'.__('Support', 'siteorigin-widgets').'</a>';
 		return $links;
+	}
+
+	/**
+	 * Ensure active widgets' scripts are enqueued at the right time.
+	 */
+	function sow_enqueue_active_widgets_scripts() {
+		global $wp_registered_widgets;
+		$sidebars_widgets = wp_get_sidebars_widgets();
+		foreach( $sidebars_widgets as $sidebar => $widgets ) {
+			if ( ! empty( $widgets ) && $sidebar !== "wp_inactive_widgets") {
+				foreach ( $widgets as $i => $id ) {
+					if ( ! empty( $wp_registered_widgets[$id] ) ) {
+						$widget = $wp_registered_widgets[$id]['callback'][0];
+						if ( is_subclass_of($widget, 'SiteOrigin_Widget') && is_active_widget( false, false, $widget->id_base ) ) {
+							$opt_wid = get_option( 'widget_' . $widget->id_base );
+							preg_match( '/-([0-9]+$)/', $id, $num_match );
+							$widget_instance = $opt_wid[ $num_match[1] ];
+							$widget->generate_and_enqueue_instance_styles( $widget_instance );
+							$widget->enqueue_frontend_scripts( $widget_instance);
+						}
+					}
+				}
+			}
+		}
 	}
 }
 

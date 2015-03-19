@@ -133,6 +133,19 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	function initialize() {
+		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$this->register_frontend_scripts(
+			array(
+				array(
+					'siteorigin-pricetable',
+					siteorigin_widget_get_plugin_dir_url( 'price-table' ) . 'js/pricetable' . $js_suffix . '.js',
+					array( 'jquery' )
+				)
+			)
+		);
+	}
+
 	function get_column_classes($column, $i, $columns) {
 		$classes = array();
 		if($i == 0) $classes[] = 'ow-pt-first';
@@ -196,14 +209,6 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 		}
 
 		return $colors;
-	}
-
-	/**
-	 * Load the front end scripts for the price table.
-	 */
-	function enqueue_frontend_scripts(){
-		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-		wp_enqueue_script( 'siteorigin-pricetable', siteorigin_widget_get_plugin_dir_url('price-table').'js/pricetable' . $js_suffix . '.js', array('jquery') );
 	}
 
 	/**
