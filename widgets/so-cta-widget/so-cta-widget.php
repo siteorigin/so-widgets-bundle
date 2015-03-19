@@ -85,12 +85,11 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 				)
 			)
 		);
-		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		$this->register_frontend_scripts(
 			array(
 				array(
 					'sow-cta-main',
-					siteorigin_widget_get_plugin_dir_url( 'cta' ) . 'js/cta' . $js_suffix . '.js',
+					siteorigin_widget_get_plugin_dir_url( 'cta' ) . 'js/cta' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' ),
 					SOW_BUNDLE_VERSION
 				)

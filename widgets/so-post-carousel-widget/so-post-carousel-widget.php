@@ -78,18 +78,17 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 	}
 
 	function initialize() {
-		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		$this->register_frontend_scripts(
 			array(
 				array(
 					'touch-swipe',
-					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'base/js/jquery.touchSwipe' . $js_suffix . '.js',
+					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'base/js/jquery.touchSwipe' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' ),
 					'1.6.6'
 				),
 				array(
 					'sow-carousel-basic',
-					siteorigin_widget_get_plugin_dir_url( 'post-carousel' ) . 'js/carousel' . $js_suffix . '.js',
+					siteorigin_widget_get_plugin_dir_url( 'post-carousel' ) . 'js/carousel' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery', 'touch-swipe' ),
 					SOW_BUNDLE_VERSION,
 					true

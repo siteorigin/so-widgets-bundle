@@ -134,12 +134,11 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 	}
 
 	function initialize() {
-		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		$this->register_frontend_scripts(
 			array(
 				array(
 					'siteorigin-pricetable',
-					siteorigin_widget_get_plugin_dir_url( 'price-table' ) . 'js/pricetable' . $js_suffix . '.js',
+					siteorigin_widget_get_plugin_dir_url( 'price-table' ) . 'js/pricetable' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' )
 				)
 			)

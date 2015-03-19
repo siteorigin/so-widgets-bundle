@@ -289,12 +289,11 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	function initialize() {
-		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		$this->register_frontend_scripts(
 			array(
 				array(
 					'sow-google-map',
-					siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map' . $js_suffix . '.js',
+					siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' ),
 					SOW_BUNDLE_VERSION
 				)
@@ -313,8 +312,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	function enqueue_admin_scripts() {
-		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-		wp_enqueue_script( 'sow-google-map', siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map-admin' . $js_suffix . '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
+		wp_enqueue_script( 'sow-google-map', siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map-admin' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
 	}
 
 	function get_template_name( $instance ) {

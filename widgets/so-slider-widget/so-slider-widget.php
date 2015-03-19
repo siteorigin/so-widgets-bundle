@@ -152,25 +152,24 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 
 	function initialize() {
 
-		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		$frontend_scripts = array();
 		$frontend_scripts[] = array(
 			'sow-slider-slider-cycle2',
-			siteorigin_widget_get_plugin_dir_url( 'slider' ) . 'js/jquery.cycle' . $js_suffix . '.js',
+			siteorigin_widget_get_plugin_dir_url( 'slider' ) . 'js/jquery.cycle' . SOW_BUNDLE_JS_SUFFIX . '.js',
 			array( 'jquery' ),
 			SOW_BUNDLE_VERSION
 		);
 		if( wp_is_mobile() ) {
 			$frontend_scripts[] = array(
 				'sow-slider-slider-cycle2-swipe',
-				siteorigin_widget_get_plugin_dir_url( 'slider' ) . 'js/jquery.cycle.swipe' . $js_suffix . '.js',
+				siteorigin_widget_get_plugin_dir_url( 'slider' ) . 'js/jquery.cycle.swipe' . SOW_BUNDLE_JS_SUFFIX . '.js',
 				array( 'jquery' ),
 				SOW_BUNDLE_VERSION
 			);
 		}
 		$frontend_scripts[] = array(
 			'sow-slider-slider',
-			siteorigin_widget_get_plugin_dir_url( 'slider' ) . 'js/slider' . $js_suffix . '.js',
+			siteorigin_widget_get_plugin_dir_url( 'slider' ) . 'js/slider' . SOW_BUNDLE_JS_SUFFIX . '.js',
 			array( 'jquery' ),
 			SOW_BUNDLE_VERSION
 		);
