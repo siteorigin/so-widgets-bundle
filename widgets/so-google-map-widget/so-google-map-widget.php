@@ -326,6 +326,8 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_template_variables( $instance, $args ) {
+		if( empty( $instance ) ) return array();
+
 		$settings = $instance['settings'];
 
 		$mrkr_src = wp_get_attachment_image_src( $instance['markers']['marker_icon'] );
