@@ -12,13 +12,13 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 
 		<div class="sow-features-feature <?php if(  floor( $i / $instance['per_row'] ) == $last_row ) echo 'sow-features-feature-last-row' ?>" style="width: <?php echo round( 100 / $instance['per_row'], 3 ) ?>%">
 
-			<?php if( !empty( $feature['more_url'] ) && $instance['icon_link'] ) echo '<a href="' . esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank"' : '' ) . '>'; ?>
+			<?php if( !empty( $feature['more_url'] ) && $instance['icon_link'] ) echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank"' : '' ) . '>'; ?>
 			<div class="sow-icon-container sow-container-<?php echo esc_attr($instance['container_shape']) ?>" style="font-size: <?php echo intval($instance['container_size']) ?>px; color: <?php echo esc_attr($feature['container_color']) ?>;">
 				<?php
 				if( !empty($feature['icon_image']) ) {
 					$attachment = wp_get_attachment_image_src($feature['icon_image']);
 					if(!empty($attachment)) {
-						$icon_styles[] = 'background-image: url(' . esc_url($attachment[0]) . ')';
+						$icon_styles[] = 'background-image: url(' . sow_esc_url($attachment[0]) . ')';
 						if(!empty($instance['icon_size'])) $icon_styles[] = 'font-size: '.intval($instance['icon_size']).'px';
 
 						?><div class="sow-icon-image" style="<?php echo implode('; ', $icon_styles) ?>"></div><?php
@@ -38,7 +38,7 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 			<div class="textwidget">
 				<?php if(!empty($feature['title'])) : ?>
 					<h5>
-						<?php if( !empty( $feature['more_url'] ) && $instance['title_link'] ) echo '<a href="' . esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank"' : '' ) . '>'; ?>
+						<?php if( !empty( $feature['more_url'] ) && $instance['title_link'] ) echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank"' : '' ) . '>'; ?>
 						<?php echo wp_kses_post( $feature['title'] ) ?>
 						<?php if( !empty( $feature['more_url'] ) && $instance['title_link'] ) echo '</a>'; ?>
 					</h5>
@@ -50,7 +50,7 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 
 				<?php if(!empty($feature['more_text'])) : ?>
 					<p class="sow-more-text">
-						<?php if( !empty( $feature['more_url'] ) ) echo '<a href="' . esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank"' : '' ) . '>'; ?>
+						<?php if( !empty( $feature['more_url'] ) ) echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank"' : '' ) . '>'; ?>
 						<?php echo wp_kses_post( $feature['more_text'] ) ?>
 						<?php if( !empty( $feature['more_url'] ) ) echo '</a>'; ?>
 					</p>

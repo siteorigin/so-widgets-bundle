@@ -196,7 +196,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 
 			if( empty( $video['url'] ) ) {
 				$video_file = wp_get_attachment_url($video['file']);
-				$video_element .= '<source src="' . esc_url( $video_file ) . '" type="' . esc_attr( $video['format'] ) . '">';
+				$video_element .= '<source src="' . sow_esc_url( $video_file ) . '" type="' . esc_attr( $video['format'] ) . '">';
 			}
 			else {
 				$args = '';

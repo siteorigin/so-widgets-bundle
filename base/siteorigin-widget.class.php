@@ -238,7 +238,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		<?php endif; ?>
 
 		<?php if( !empty( $this->widget_options['help'] ) ) : ?>
-			<a href="<?php echo esc_url($this->widget_options['help']) ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank"><?php _e('Help', 'siteorigin-widgets') ?></a>
+			<a href="<?php echo sow_esc_url($this->widget_options['help']) ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank"><?php _e('Help', 'siteorigin-widgets') ?></a>
 		<?php endif; ?>
 
 		<script type="text/javascript">
@@ -618,7 +618,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				// This field also needs some custom sanitization
 				switch($field['sanitize']) {
 					case 'url':
-						$instance[$name] = esc_url_raw($instance[$name]);
+						$instance[$name] = sow_esc_url_raw($instance[$name]);
 						break;
 
 					case 'email':
@@ -823,7 +823,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				<div class="media-field-wrapper">
 					<div class="current">
 						<div class="thumbnail-wrapper">
-							<img src="<?php echo esc_url( $src[0] ) ?>" class="thumbnail" <?php if( empty( $src[0] ) ) echo "style='display:none'" ?> />
+							<img src="<?php echo sow_esc_url( $src[0] ) ?>" class="thumbnail" <?php if( empty( $src[0] ) ) echo "style='display:none'" ?> />
 						</div>
 						<div class="title"><?php if( !empty( $post ) ) echo esc_attr( $post->post_title ) ?></div>
 					</div>

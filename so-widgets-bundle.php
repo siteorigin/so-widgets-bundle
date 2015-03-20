@@ -505,3 +505,15 @@ function siteorigin_widgets_deactivate_legacy_plugins(){
 	}
 }
 register_activation_hook( __FILE__, 'siteorigin_widgets_deactivate_legacy_plugins' );
+
+function sow_esc_url( $url ) {
+	$protocols = wp_allowed_protocols();
+	$protocols[] = 'skype';
+	return esc_url( $url, $protocols );
+}
+
+function sow_esc_url_raw( $url ) {
+	$protocols = wp_allowed_protocols();
+	$protocols[] = 'skype';
+	return esc_url_raw( $url, $protocols );
+}
