@@ -13,7 +13,7 @@
 
 (function( window, $, undefined ){
 
-  'use strict';
+    'use strict';
 
   /*
    * smartresize: debounced resize event for jQuery

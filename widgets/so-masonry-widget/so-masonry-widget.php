@@ -49,12 +49,6 @@ class SiteOrigin_Widget_Masonry_Widget extends SiteOrigin_Widget {
 							'label' => __( 'Post ID', 'siteorigin-widgets' ),
 							'readonly' => true
 						),
-						//maybe just have an image field...?
-//						'post_thumbnail' => array(
-//							'type' => 'media',
-//							'label' => __( 'Post thumbnail', 'siteorigin-widgets' ),
-//							'editable' => false
-//						),
 						'brick_size' => array(
 							'type' => 'select',
 							'label' => __( 'Brick size', 'siteorigin-widgets' ),

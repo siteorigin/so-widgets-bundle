@@ -1,9 +1,5 @@
-/**
- * Main theme Javascript - (c) Greg Priday, freely distributable under the terms of the GPL 2.0 license.
- */
-
 jQuery(function($){
-    if($('body').has('.so-masonry-container')){
+    if ($('body').has('.so-masonry-container')){
 
         var resizeMasonry = function(){
             // Make sure the width of the masonry container is always divisible by 4

@@ -3,7 +3,7 @@
     $(document).on( 'sowsetupform', '.siteorigin-widget-form[data-class="SiteOrigin_Widget_Masonry_Widget"]', function() {
         var $masonryWidgetForm = $(this);
 
-        if( typeof $masonryWidgetForm.data('sowsetup-masonry-widget') == 'undefined' ) {
+        if ( typeof $masonryWidgetForm.data('sowsetup-masonry-widget') == 'undefined' ) {
             var $valInput = $masonryWidgetForm.find('input[type="hidden"][name*="posts_query"]');
             var updatePostsCount = function() {
                 var query = $valInput.val();
@@ -17,12 +17,12 @@
                             var itemExists = false;
                             $rptrItems.each(function(index , rptrItem) {
                                 var $rptrItem = $(rptrItem);
-                                if( $rptrItem.find('input[id*="post_id"]').val() == post.id) {
+                                if ( $rptrItem.find('input[id*="post_id"]').val() == post.id) {
                                     $rptrItem.find('input[id*="post_title"]').val(post.title);
                                     itemExists = true;
                                 }
                             });
-                            if( !itemExists ) {
+                            if ( !itemExists ) {
                                 $rptr.sowAddRepeaterItem().find('> .siteorigin-widget-field-repeater-items').slideDown('fast');
                                 var $newItem = $rptr.find('.siteorigin-widget-field-repeater-item').last();
                                 $newItem.find('.siteorigin-widget-field-repeater-item-top > h4').html(post.title);
