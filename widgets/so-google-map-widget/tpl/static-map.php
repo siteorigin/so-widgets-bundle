@@ -1,3 +1,3 @@
 <img
 	border="0"
-	src="<?php echo esc_url( $src_url ) ?>">
+	src="<?php echo sow_esc_url( $src_url ) ?>">

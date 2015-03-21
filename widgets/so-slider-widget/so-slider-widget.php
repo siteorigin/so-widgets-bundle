@@ -150,6 +150,43 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	function initialize() {
+
+		$frontend_scripts = array();
+		$frontend_scripts[] = array(
+			'sow-slider-slider-cycle2',
+			siteorigin_widget_get_plugin_dir_url( 'slider' ) . 'js/jquery.cycle' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			SOW_BUNDLE_VERSION
+		);
+		if( wp_is_mobile() ) {
+			$frontend_scripts[] = array(
+				'sow-slider-slider-cycle2-swipe',
+				siteorigin_widget_get_plugin_dir_url( 'slider' ) . 'js/jquery.cycle.swipe' . SOW_BUNDLE_JS_SUFFIX . '.js',
+				array( 'jquery' ),
+				SOW_BUNDLE_VERSION
+			);
+		}
+		$frontend_scripts[] = array(
+			'sow-slider-slider',
+			siteorigin_widget_get_plugin_dir_url( 'slider' ) . 'js/slider' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			SOW_BUNDLE_VERSION
+		);
+
+		$this->register_frontend_scripts( $frontend_scripts );
+		$this->register_frontend_styles(
+			array(
+				array(
+					'sow-slider-slider',
+					siteorigin_widget_get_plugin_dir_url( 'slider' ) . 'css/slider.css',
+					array(),
+					SOW_BUNDLE_VERSION
+				)
+			)
+		);
+	}
+
 	function video_code($videos, $classes = array()){
 		if(empty($videos)) return;
 		$video_element = '<video class="' . esc_attr( implode(',', $classes) ) . '" autoplay loop muted>';
@@ -159,7 +196,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 
 			if( empty( $video['url'] ) ) {
 				$video_file = wp_get_attachment_url($video['file']);
-				$video_element .= '<source src="' . esc_url( $video_file ) . '" type="' . esc_attr( $video['format'] ) . '">';
+				$video_element .= '<source src="' . sow_esc_url( $video_file ) . '" type="' . esc_attr( $video['format'] ) . '">';
 			}
 			else {
 				$args = '';
@@ -200,28 +237,6 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	/**
-	 * Enqueue the slider scripts
-	 */
-	function enqueue_frontend_scripts(){
-		wp_enqueue_style('sow-slider-slider');
-		wp_enqueue_script('sow-slider-slider-cycle2');
-		if( wp_is_mobile() ) wp_enqueue_script('sow-slider-slider-cycle2-swipe');
-		wp_enqueue_script('sow-slider-slider');
-	}
 }
 
 siteorigin_widget_register('slider', __FILE__);
-
-/**
- * Register all the slider scripts
- */
-function sow_slider_register_scripts(){
-	$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-
-	wp_register_style('sow-slider-slider', siteorigin_widget_get_plugin_dir_url('slider').'css/slider.css', array(), SOW_BUNDLE_VERSION);
-	wp_register_script('sow-slider-slider-cycle2', siteorigin_widget_get_plugin_dir_url('slider').'js/jquery.cycle' . $js_suffix . '.js', array('jquery'), SOW_BUNDLE_VERSION);
-	wp_register_script('sow-slider-slider-cycle2-swipe', siteorigin_widget_get_plugin_dir_url('slider').'js/jquery.cycle.swipe' . $js_suffix . '.js', array('jquery'), SOW_BUNDLE_VERSION);
-	wp_register_script('sow-slider-slider', siteorigin_widget_get_plugin_dir_url('slider').'js/slider' . $js_suffix . '.js', array('jquery'), SOW_BUNDLE_VERSION);
-}
-add_action('wp_enqueue_scripts', 'sow_slider_register_scripts', 1);

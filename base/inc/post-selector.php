@@ -1,5 +1,36 @@
 <?php
 
+function siteorigin_widget_post_selector_enqueue_admin_scripts() {
+	if ( ! wp_script_is( 'siteorigin-widget-admin-posts-selector' ) ) {
+
+		wp_enqueue_style( 'siteorigin-widget-admin-posts-selector', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/css/post-selector.css', array(), SOW_BUNDLE_VERSION );
+		wp_enqueue_script( 'siteorigin-widget-admin-posts-selector', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/posts-selector' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'underscore', 'backbone' ), SOW_BUNDLE_VERSION, true );
+
+		wp_localize_script( 'siteorigin-widget-admin-posts-selector', 'sowPostsSelectorTpl', array(
+			'ajaxurl' => wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ),
+			'modal' => file_get_contents( plugin_dir_path(SOW_BUNDLE_BASE_FILE).'base/tpl/posts-selector/modal.html' ),
+			'postSummary' => file_get_contents( plugin_dir_path(SOW_BUNDLE_BASE_FILE).'base/tpl/posts-selector/post.html' ),
+			'foundPosts' => '<div class="sow-post-count-message">' . sprintf( __('This query returns <a href="#" class="preview-query-posts">%s posts</a>.', 'siteorigin-widgets'), '<%= foundPosts %>') . '</div>',
+			'fields' => siteorigin_widget_post_selector_form_fields(),
+			'selector' => file_get_contents( plugin_dir_path(SOW_BUNDLE_BASE_FILE).'base/tpl/posts-selector/selector.html' ),
+		) );
+
+		wp_localize_script( 'siteorigin-widget-admin-posts-selector', 'sowPostsSelectorVars', array(
+			'modalTitle' => __('Select posts', 'siteorigin-widgets'),
+		) );
+	}
+}
+
+function siteorigin_widget_post_selector_admin_form_field( $value, $field_name ) {
+	?>
+	<input type="hidden" value="<?php echo esc_attr( $value ) ?>" name="<?php echo $field_name ?>" class="siteorigin-widget-input" />
+	<a href="#" class="sow-select-posts button button-secondary">
+		<span class="sow-current-count"><?php echo siteorigin_widget_post_selector_count_posts( $value ) ?></span>
+		<?php _e('Build posts query') ?>
+	</a>
+	<?php
+}
+
 function siteorigin_widget_post_selector_process_query($query){
 	$query = wp_parse_args($query,
 		array(
@@ -32,6 +63,32 @@ function siteorigin_widget_post_selector_process_query($query){
 				'terms' => $term
 			);
 		}
+	}
+
+	if ( ! empty( $query['sticky'] ) ) {
+		switch($query['sticky']){
+			case 'ignore' :
+				$query['ignore_sticky_posts'] = 1;
+				break;
+			//TODO: Author: Braam
+			//TODO: Revisit this. Not sure if it makes sense to have this as an option in a separate dropdown, but am
+			//TODO: trying to stay as close as possible to Page Builder Post Loop widget post selection options.
+			//TODO: It's probably better in the long run to make this work well and just cope with issues that come up in
+			//TODO: Page Builder Post Loop migrations until it dies.
+			case 'only' :
+				$post_in = empty( $query['post__in'] ) ? array() : $query['post__in'];
+				$query['post__in'] = array_merge( $post_in, get_option( 'sticky_posts' ) );
+				break;
+			case 'exclude' :
+				$query['post__not_in'] = get_option( 'sticky_posts' );
+				break;
+		}
+		unset( $query['sticky'] );
+	}
+
+	if ( ! empty( $query['additional'] ) ) {
+		$query = wp_parse_args( $query['additional'], $query );
+		unset( $query['additional'] );
 	}
 
 	return $query;
@@ -98,6 +155,27 @@ function siteorigin_widget_post_selector_form_fields(){
 	$return['posts_per_page'] .= '<label><span>' . __('Posts per page', 'siteorigin-widgets') . '</span>';
 	$return['posts_per_page'] .= '<input type="number" name="posts_per_page" class="" />';
 	$return['posts_per_page'] .= '</label>';
+
+
+	$return['sticky'] = '';
+	$return['sticky'] .= '<label><span>' . __('Sticky posts', 'siteorigin-widgets') . '</span>';
+	$return['sticky'] .= '<select name="sticky">';
+	$sticky = array(
+		'' => __('Default', 'siteorigin-widgets'),
+		'ignore' => __('Ignore sticky', 'siteorigin-widgets'),
+		'exclude' => __('Exclude sticky', 'siteorigin-widgets'),
+		'only' => __('Include sticky', 'siteorigin-widgets'),
+	);
+	foreach($sticky as $id => $v) {
+		$return['sticky'] .= '<option value="' . $id . '">' . $v . '</option>';
+	}
+	$return['sticky'] .= '</select></label>';
+
+	$return['additional'] = '';
+	$return['additional'] .= '<label><span>' . __('Additional', 'siteorigin-widgets') . '</span>';
+	$return['additional'] .= '<input type="text" name="additional" class="" />';
+	$return['additional'] .= '<small>' . __('Additional query arguments. See <a href="http://codex.wordpress.org/Function_Reference/query_posts" target="_blank">query_posts</a>.', 'siteorigin-widgets') . '</small>';
+	$return['additional'] .= '</label>';
 
 	return $return;
 }
