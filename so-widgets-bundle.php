@@ -412,10 +412,10 @@ class SiteOrigin_Widgets_Bundle {
 		global $wp_widget_factory;
 
 		foreach($data['widgets'] as $widget) {
-			if( empty($widget['info']['class']) ) continue;
-			if( !empty($wp_widget_factory->widgets[$widget['info']['class']] ) ) continue;
+			if( empty($widget['panels_info']['class']) ) continue;
+			if( !empty($wp_widget_factory->widgets[$widget['panels_info']['class']] ) ) continue;
 
-			$class = $widget['info']['class'];
+			$class = $widget['panels_info']['class'];
 			if( preg_match('/SiteOrigin_Widget_([A-Za-z]+)_Widget/', $class, $matches) ) {
 				$name = $matches[1];
 				$id = 'so'.strtolower( implode( '-', preg_split('/(?=[A-Z])/',$name) ) ).'-widget';
