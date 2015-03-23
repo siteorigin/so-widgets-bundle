@@ -69,7 +69,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		$instance = $this->modify_instance($instance);
-		$this->current_instance = $instance;
 
 		$args = wp_parse_args( $args, array(
 			'before_widget' => '',
@@ -103,12 +102,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		echo apply_filters('siteorigin_widget_template', ob_get_clean(), get_class($this), $instance, $this );
 		echo '</div>';
 		echo $args['after_widget'];
-
-		$this->current_instance = false;
 	}
 
 	function generate_and_enqueue_instance_styles( $instance ) {
 
+		$this->current_instance = $instance;
 		$style = $this->get_style_name( $instance );
 
 		$upload_dir = wp_upload_dir();
@@ -149,6 +147,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$css_name = $this->id_base.'-base';
 		}
 
+		$this->current_instance = false;
 		return $css_name;
 	}
 
