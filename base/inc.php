@@ -142,6 +142,8 @@ function siteorigin_widget_get_icon($icon_value, $icon_styles = false) {
  * @return array
  */
 function siteorigin_widget_get_font($font_value) {
+	if(@$font_value == 'default') return;
+
 	$web_safe = array(
 		'Helvetica Neue' => 'Arial, Helvetica, Geneva, sans-serif',
 		'Lucida Grande' => 'Lucida, Verdana, sans-serif',

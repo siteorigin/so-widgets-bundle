@@ -966,6 +966,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				?>
 				<div class="siteorigin-widget-font-selector siteorigin-widget-field-subcontainer">
 					<select name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" class="siteorigin-widget-input">
+						<option value="default" selected="selected"><?php _e( 'Use theme font', 'siteorigin-widgets' ) ?></option>
 						<?php foreach( $widget_font_families as $key => $val ) : ?>
 							<option value="<?php echo esc_attr($key) ?>" <?php selected($key, $value) ?>><?php echo esc_html($val) ?></option>
 						<?php endforeach; ?>
