@@ -231,6 +231,8 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_less_variables($instance){
+		if ( empty( $instance ) ) return array();
+
 		return array(
 			'nav_color_hex' => $instance['nav_color_hex'],
 			'nav_size' => $instance['nav_size'],
