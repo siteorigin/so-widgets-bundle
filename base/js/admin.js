@@ -100,7 +100,9 @@
                         var attachment = frame.state().get('selection').first().attributes;
 
                         $c.find('.current .title' ).html(attachment.title);
-                        $c.find('input[type=hidden]' ).val(attachment.id);
+                        var $inputField = $c.find( 'input[type=hidden]' );
+                        $inputField.val(attachment.id);
+                        $inputField.trigger('change');
 
                         if(typeof attachment.sizes !== 'undefined'){
                             if(typeof attachment.sizes.thumbnail !== 'undefined')
