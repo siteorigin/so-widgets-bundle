@@ -82,7 +82,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			array(
 				array(
 					'touch-swipe',
-					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'base/js/jquery.touchSwipe' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/jquery.touchSwipe' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' ),
 					'1.6.6'
 				),
