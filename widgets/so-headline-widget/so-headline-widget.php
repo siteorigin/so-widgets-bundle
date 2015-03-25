@@ -32,6 +32,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'font' => array(
 							'type' => 'font',
 							'label' => __( 'Font', 'siteorigin-widgets' ),
+							'default' => 'default'
 						),
 						'color' => array(
 							'type' => 'color',
@@ -41,10 +42,11 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'align' => array(
 							'type' => 'select',
 							'label' => __( 'Align', 'siteorigin-widgets' ),
+							'default' => 'center',
 							'options' => array(
+								'center' => __( 'Center', 'siteorigin-widgets' ),
 								'left' => __( 'Left', 'siteorigin-widgets' ),
 								'right' => __( 'Right', 'siteorigin-widgets' ),
-								'center' => __( 'Center', 'siteorigin-widgets' ),
 								'justify' => __( 'Justify', 'siteorigin-widgets' )
 							)
 						)
@@ -62,6 +64,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'font' => array(
 							'type' => 'font',
 							'label' => __( 'Font', 'siteorigin-widgets' ),
+							'default' => 'default'
 						),
 						'color' => array(
 							'type' => 'color',
@@ -71,10 +74,11 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'align' => array(
 							'type' => 'select',
 							'label' => __( 'Align', 'siteorigin-widgets' ),
+							'default' => 'center',
 							'options' => array(
+								'center' => __( 'Center', 'siteorigin-widgets' ),
 								'left' => __( 'Left', 'siteorigin-widgets' ),
 								'right' => __( 'Right', 'siteorigin-widgets' ),
-								'center' => __( 'Center', 'siteorigin-widgets' ),
 								'justify' => __( 'Justify', 'siteorigin-widgets' )
 							)
 						)
@@ -88,6 +92,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'style' => array(
 							'type' => 'select',
 							'label' => __( 'Style', 'siteorigin-widgets' ),
+							'default' => 'solid',
 							'options' => array(
 								'none' => __('None', 'siteorigin-widgets'),
 								'solid' => __('Solid', 'siteorigin-widgets'),
@@ -103,6 +108,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'weight' => array(
 							'type' => 'select',
 							'label' => __( 'Weight', 'siteorigin-widgets' ),
+							'default' => 'thin',
 							'options' => array(
 								'thin' => __( 'Thin', 'siteorigin-widgets' ),
 								'medium' => __( 'Medium', 'siteorigin-widgets' ),
