@@ -160,11 +160,12 @@
                 var $$ = $(this);
                 $(this).toggleClass( 'siteorigin-widget-section-visible' );
                 $(this).siblings('.siteorigin-widget-section').slideToggle(function(){
-
                     // Center the PB dialog
                     if(typeof $.fn.dialog !== 'undefined') {
                         $(this).closest('.panel-dialog').dialog("option", "position", "center");
                     }
+
+                    $(window).resize();
                 });
             });
 
@@ -421,7 +422,9 @@
                 e.preventDefault();
                 $el.closest('.siteorigin-widget-field-repeater')
                     .sowAddRepeaterItem()
-                    .find('> .siteorigin-widget-field-repeater-items').slideDown('fast');
+                    .find('> .siteorigin-widget-field-repeater-items').slideDown('fast', function(){
+                        $(window).resize();
+                    });
 
                 // Center the PB dialog
                 if(typeof $.fn.dialog !== 'undefined') {
@@ -465,7 +468,9 @@
             // Add the item and refresh
             $el.find('> .siteorigin-widget-field-repeater-items').append(item).sortable( "refresh").trigger('updateFieldPositions');
             item.sowSetupRepeaterItems();
-            item.hide().slideDown('fast');
+            item.hide().slideDown('fast', function(){
+                $(window).resize();
+            });
 
         } );
     };
@@ -522,6 +527,7 @@
                             $(this).closest('.siteorigin-widget-field-repeater-item').slideUp('fast', function () {
                                 $(this).remove();
                                 $s.sortable("refresh").trigger('updateFieldPositions');
+                                $(window).resize();
                             });
                         }
                     });
