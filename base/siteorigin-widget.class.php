@@ -548,7 +548,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$fields = $this->form_options();
 		}
 
-		foreach($fields as $name => $field) {
+		// There is nothing to sanitize
+		if( empty($fields) ) return $instance;
+
+		foreach( $fields as $name => $field ) {
 			if( empty($instance[$name]) ) {
 				$instance[$name] = false;
 			}
@@ -768,9 +771,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						<?php
 					}
 					?>
-					<?php foreach( $field['options'] as $key => $val ) : ?>
+
+					<?php if( isset($field['options']) && !empty($field['options']) ) : ?>
+						<?php foreach( $field['options'] as $key => $val ) : ?>
 							<option value="<?php echo esc_attr($key) ?>" <?php selected($key, $value) ?>><?php echo esc_html($val) ?></option>
-					<?php endforeach; ?>
+						<?php endforeach; ?>
+					<?php endif; ?>
 				</select>
 				<?php
 				break;
