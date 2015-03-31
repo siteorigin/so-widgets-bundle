@@ -14,6 +14,7 @@ if(!empty($instance['bound'])) {
 	$styles[] = 'max-width:100%';
 	$styles[] = 'height:auto';
 }
+$styles[] = 'display:block';
 ?>
 
 <?php if(!empty($instance['url'])) : ?><a href="<?php echo sow_esc_url($instance['url']) ?>" <?php if($instance['new_window']) echo 'target="_blank"' ?>><?php endif; ?>
