@@ -400,31 +400,6 @@
 		}
 	}
 
-	.sow-select-posts {
-		margin-top: 6px;
-		position: relative;
-
-		.sow-current-count {
-			position: absolute;
-			top: -10px;
-			right: -10px;
-			border-radius: 9px;
-			background: #f92700;
-			border: 1px solid #da0900;
-			display: block;
-			line-height: 14px;
-			font-size: 7px;
-			width: 17px;
-			height: 17px;
-			text-align: center;
-			vertical-align: middle;
-			font-weight: bold;
-			color: #FFFFFF;
-			box-sizing: border-box;
-			padding-top: 1px;
-		}
-	}
-
 	.siteorigin-widget-field-type-widget,
 	.siteorigin-widget-field-type-section {
 
@@ -561,6 +536,10 @@
 			}
 
 			margin-bottom: 10px;
+
+            small {
+                display: block;
+            }
 		}
 	}
 
@@ -634,6 +613,13 @@
 			input[type=text] {
 				width: 320px;
 				margin-left: 10px;
+			}
+
+			.ui-autocomplete {
+				max-height: 182px;
+				overflow-y: auto;
+				/* prevent horizontal scrollbar */
+				overflow-x: hidden;
 			}
 		}
 
@@ -720,7 +706,7 @@
 
 	.so-widget-toolbar, .so-widget-iframe {
 		position: fixed;
-		z-index: 100000;
+		z-index: 500001;
 		.box-sizing(border-box);
 	}
 

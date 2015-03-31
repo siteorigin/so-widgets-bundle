@@ -120,6 +120,7 @@
 }
 .ow-pt-columns-atom .ow-pt-column .ow-pt-features .ow-pt-feature p {
   margin: 0;
+  display: inline-block;
 }
 .ow-pt-columns-atom .ow-pt-column .ow-pt-features .ow-pt-feature [class^="sow-icon-"] {
   display: inline-block;

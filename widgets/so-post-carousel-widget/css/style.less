@@ -87,6 +87,16 @@
 		content: "\e600";
 	}
 
+    @media screen and (max-width: 600px) {
+        a.sow-carousel-previous {
+            display: none;
+        }
+
+        a.sow-carousel-next {
+            display: none;
+        }
+    }
+
 }
 
 .widget_sow-carousel {
@@ -96,91 +106,103 @@
 
 .sow-carousel-wrapper {
 
-	overflow: hidden;
+    overflow: hidden;
+    position: relative;
+    left: 0;
+    right: 0;
 
-	ul.sow-carousel-items {
-		list-style: none;
-		.transition(0.45s);
-		height: 200px;
-		margin: 0;
-		padding: 0;
-		.clearfix();
-		width: 99999px;
+    ul.sow-carousel-items {
+        list-style: none;
+        .transition(0.45s);
+        height: 200px;
+        margin: 0;
+        padding: 0;
+        .clearfix();
+        width: 99999px;
 
-		li.sow-carousel-item {
-			list-style: none;
-			margin-left: 0;
-			padding: 0;
-			display: block;
-			float: left;
-			margin-right: 15px;
-			width: 242px;
-			overflow-x: hidden;
+        li.sow-carousel-item {
+            list-style: none;
+            margin-left: 0;
+            padding: 0;
+            display: block;
+            float: left;
+            margin-right: 15px;
+            width: 242px;
+            overflow-x: hidden;
+            overflow-y: hidden;
 
-			&:last-child {
-				margin-right: 0;
-			}
+            &:last-child {
+                margin-right: 0;
+            }
 
-			.sow-carousel-thumbnail {
-				line-height: 0;
+            .sow-carousel-thumbnail {
+                line-height: 0;
 
-				a {
-					display: block;
-					width: 242px;
-					height: 162px;
-					background-size: 242px 162px;
-					background-position: center center;
+                a {
+                    display: block;
+                    width: 242px;
+                    height: 162px;
+                    background-size: 242px 162px;
+                    background-position: center center;
 
-					&, span.overlay {
-						.transition(0.35s);
-					}
+                    &, span.overlay {
+                        .transition(0.35s);
+                    }
 
-					span.overlay {
-						display: block;
-						width: 100%;
-						height: 100%;
-						background: #3279BB;
-						opacity: 0;
-					}
+                    span.overlay {
+                        display: block;
+                        width: 100%;
+                        height: 100%;
+                        background: #3279BB;
+                        opacity: 0;
+                    }
 
-					&:hover {
-						background-size: 272px 182px;
+                    &:hover {
+                        background-size: 272px 182px;
 
-						span {
-							opacity: 0.5;
-						}
-					}
-				}
-			}
+                        span {
+                            opacity: 0.5;
+                        }
+                    }
+                }
+            }
 
-			.sow-carousel-default-thumbnail {
-				display: block;
-				width: 242px;
-				height: 162px;
-				.gradient(#E8E8E8, #E0E0E0, #E8E8E8)
-			}
+            .sow-carousel-default-thumbnail {
+                display: block;
+                width: 242px;
+                height: 162px;
+                .gradient(#E8E8E8, #E0E0E0, #E8E8E8)
+            }
 
-			h3 {
-				font-size: 15px;
-				text-align: center;
-				font-weight: 500;
-				color: #474747;
-				margin: 10px 0 0 0;
+            h3 {
+                font-size: 15px;
+                text-align: center;
+                font-weight: 500;
+                color: #474747;
+                margin: 10px 0 0 0;
 
-				a {
-					text-decoration: none;
-					color: inherit;
-				}
-			}
-		}
+                a {
+                    text-decoration: none;
+                    color: inherit;
+                }
+            }
+        }
 
-		li.sow-carousel-loading {
-			display: block;
-			width: 242px;
-			height: 162px;
-			float: left;
-			background: url(images/carousel-loader.gif) #F6F6F6 center center no-repeat;
-			margin: 0;
-		}
-	}
+        li.sow-carousel-loading {
+            display: block;
+            width: 242px;
+            height: 162px;
+            float: left;
+            background: url(images/carousel-loader.gif) #F6F6F6 center center no-repeat;
+            margin: 0;
+        }
+    }
+}
+
+a.sow-carousel-previous {
+    display: none;
+}
+
+a.sow-carousel-next {
+    display: none;
 }

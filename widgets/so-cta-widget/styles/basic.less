@@ -6,3 +6,35 @@
 	border-color: @border_color;
 	background-color: @background_color;
 }
+
+@button_align: right;
+
+.sow-cta-base {
+	.sow-cta-text-align() when (@button_align = right) {
+		.sow-cta-text {
+			float: left;
+		}
+	}
+
+	.sow-cta-text-align() when (@button_align = left) {
+		.sow-cta-text {
+			float: right;
+		}
+	}
+	.sow-cta-text-align();
+
+	.so-widget-sow-button-align() when (@button_align = right) {
+		.so-widget-sow-button {
+			float: right;
+			margin-left: 1em;
+		}
+	}
+
+	.so-widget-sow-button-align() when (@button_align = left) {
+		.so-widget-sow-button {
+			float: left;
+			margin-right: 1em;
+		}
+	}
+	.so-widget-sow-button-align();
+}

@@ -1,0 +1,44 @@
+.widget-function('import_google_font');
+
+@headline_font: "Lucida Grande", sans-serif;
+@headline_font_weight: 400;
+@headline_align: left;
+@headline_color: #000000;
+
+@sub_headline_font: "Arial", sans-serif;
+@sub_headline_font_weight: 400;
+@sub_headline_align: left;
+@sub_headline_color: #000000;
+
+@divider_weight: thin;
+@divider_style: solid;
+@divider_color: #EEEEEE;
+
+.font(@font, @weight) when not (@font = default) {
+    font-family: @font;
+    font-weight: @weight;
+}
+
+.sow-headline {
+
+    h1 {
+        .font(@headline_font, @headline_font_weight);
+        text-align: @headline_align;
+        color: @headline_color;
+        line-height: 1.3;
+    }
+
+    h3 {
+        .font(@sub_headline_font, @sub_headline_font_weight);
+        text-align: @sub_headline_align;
+        color: @sub_headline_color;
+        line-height: 1.3;
+    }
+
+    .decoration {
+        border-top: @divider_weight @divider_style @divider_color;
+        position: relative;
+        height: 1px;
+        margin: 20px 60px 20px 60px;
+    }
+}

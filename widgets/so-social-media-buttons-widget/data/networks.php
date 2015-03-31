@@ -25,6 +25,12 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#FAA21B'
 	),
+	'envelope'   => array(
+		'label'    => __( 'Email', 'siteorigin-widgets' ),
+		'base_url' => 'mailto:',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#99C4E6'
+	),
 	'linkedin'    => array(
 		'label'    => __( 'LinkedIn', 'siteorigin-widgets' ),
 		'base_url' => 'https://www.linkedin.com/',

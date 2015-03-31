@@ -105,6 +105,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						'marker_positions'  => array(
 							'type'       => 'repeater',
 							'label'      => __( 'Marker positions', 'siteorigin-widgets' ),
+							'description' => __( 'Please be aware that adding more than 10 markers may cause a slight delay before they appear, due to Google Geocoding API rate limits.', 'siteorigin-widgets' ),
 							'item_name'  => __( 'Marker', 'siteorigin-widgets' ),
 							'item_label' => array(
 								'selector'     => "[id*='marker_positions-place']",
@@ -287,15 +288,31 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function enqueue_admin_scripts() {
-		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-		wp_enqueue_script( 'sow-google-map', siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map-admin' . $js_suffix . '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
+	function initialize() {
+		$this->register_frontend_scripts(
+			array(
+				array(
+					'sow-google-map',
+					siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					array( 'jquery' ),
+					SOW_BUNDLE_VERSION
+				)
+			)
+		);
+		$this->register_frontend_styles(
+			array(
+				array(
+					'sow-google-map',
+					siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'css/style.css',
+					array(),
+					SOW_BUNDLE_VERSION
+				)
+			)
+		);
 	}
 
-	function enqueue_frontend_scripts() {
-		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-		wp_enqueue_script( 'sow-google-map', siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map' . $js_suffix . '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
-		wp_enqueue_style( 'sow-google-map', siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'css/style.css', array(), SOW_BUNDLE_VERSION );
+	function enqueue_admin_scripts() {
+		wp_enqueue_script( 'sow-google-map', siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map-admin' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
 	}
 
 	function get_template_name( $instance ) {
@@ -307,6 +324,8 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_template_variables( $instance, $args ) {
+		if( empty( $instance ) ) return array();
+
 		$settings = $instance['settings'];
 
 		$mrkr_src = wp_get_attachment_image_src( $instance['markers']['marker_icon'] );
@@ -317,7 +336,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			$src_url = $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array() );
 
 			return array(
-				'src_url' => esc_url( $src_url )
+				'src_url' => sow_esc_url( $src_url )
 			);
 		} else {
 			$markers         = $instance['markers'];

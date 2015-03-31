@@ -12,9 +12,6 @@
   display: table;
   clear: both;
 }
-.sow-cta-base .sow-cta-text {
-  float: left;
-}
 .sow-cta-base .sow-cta-text h4,
 .sow-cta-base .sow-cta-text h5,
 .sow-cta-base .sow-cta-text p {
@@ -27,10 +24,6 @@
 .sow-cta-base .sow-cta-text p {
   margin-bottom: 0;
   font-weight: normal;
-}
-.sow-cta-base .so-widget-sow-button {
-  float: right;
-  margin-left: 1em;
 }
 @media screen and (max-width: 640px) {
   .sow-cta-base {

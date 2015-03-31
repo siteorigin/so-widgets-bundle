@@ -333,29 +333,6 @@
 .siteorigin-widget-form .media-remove-button:hover {
   color: #BC0B0B;
 }
-.siteorigin-widget-form .sow-select-posts {
-  margin-top: 6px;
-  position: relative;
-}
-.siteorigin-widget-form .sow-select-posts .sow-current-count {
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  border-radius: 9px;
-  background: #f92700;
-  border: 1px solid #da0900;
-  display: block;
-  line-height: 14px;
-  font-size: 7px;
-  width: 17px;
-  height: 17px;
-  text-align: center;
-  vertical-align: middle;
-  font-weight: bold;
-  color: #FFFFFF;
-  box-sizing: border-box;
-  padding-top: 1px;
-}
 .siteorigin-widget-form .siteorigin-widget-field-type-widget > label,
 .siteorigin-widget-form .siteorigin-widget-field-type-section > label {
   background: #F0F0F0;
@@ -470,6 +447,9 @@
 .siteorigin-widgets-query-builder .query-builder-content .query-builder-form-field .sow-order-button.sow-order-button-asc {
   background-position: left bottom;
 }
+.siteorigin-widgets-query-builder .query-builder-content .query-builder-form-field small {
+  display: block;
+}
 .siteorigin-widgets-query-builder .media-toolbar-secondary .sow-post-count-message {
   margin-top: 21px;
 }
@@ -523,6 +503,12 @@
 .siteorigin-widgets-query-builder #sow-post-selector .sow-autocomplete-field input[type=text] {
   width: 320px;
   margin-left: 10px;
+}
+.siteorigin-widgets-query-builder #sow-post-selector .sow-autocomplete-field .ui-autocomplete {
+  max-height: 182px;
+  overflow-y: auto;
+  /* prevent horizontal scrollbar */
+  overflow-x: hidden;
 }
 .siteorigin-widgets-query-builder #sow-post-selector .sow-posts-sortable .ui-state-highlight {
   display: block;
@@ -584,7 +570,7 @@
 .siteorigin-widget-preview-dialog .so-widget-toolbar,
 .siteorigin-widget-preview-dialog .so-widget-iframe {
   position: fixed;
-  z-index: 100000;
+  z-index: 500001;
   -ms-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;

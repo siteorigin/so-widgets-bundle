@@ -2,6 +2,7 @@
 
 include plugin_dir_path(__FILE__).'siteorigin-widget.class.php';
 include plugin_dir_path(__FILE__).'inc/post-selector.php';
+include plugin_dir_path(__FILE__).'inc/fonts.php';
 
 global $siteorigin_widgets_registered, $siteorigin_widgets_classes;
 $siteorigin_widgets_registered = array();
@@ -68,39 +69,6 @@ function siteorigin_widget_get_plugin_dir_url($name){
 }
 
 /**
- * Render a preview of the widget.
- */
-function siteorigin_widget_render_preview(){
-	$class = $_GET['class'];
-
-
-	if(isset($_POST['widgets'])) {
-		$instance = array_pop($_POST['widgets']);
-	}
-	else {
-
-		foreach($_POST as $n => $v) {
-			if(strpos($n, 'widget-') === 0) {
-				$instance = array_pop($_POST[$n]);
-				break;
-			}
-		}
-
-	}
-
-	if(!class_exists($class)) exit();
-	$widget_obj = new $class();
-	if( ! $widget_obj instanceof SiteOrigin_Widget ) exit();
-
-	$instance = $widget_obj->update($instance, $instance);
-	$instance['style_hash'] = 'preview';
-	include plugin_dir_path(__FILE__).'/inc/preview.tpl.php';
-
-	exit();
-}
-add_action('wp_ajax_siteorigin_widget_preview', 'siteorigin_widget_render_preview');
-
-/**
  * @param $css
  */
 function siteorigin_widget_add_inline_css($css){
@@ -129,6 +97,7 @@ add_action('wp_footer', 'siteorigin_widget_print_styles');
  */
 function siteorigin_widget_get_icon_list(){
 	if(empty($_GET['family'])) exit();
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
 
 	$widget_icon_families = apply_filters('siteorigin_widgets_icon_families', array() );
 
@@ -165,11 +134,48 @@ function siteorigin_widget_get_icon($icon_value, $icon_styles = false) {
 
 }
 
+
+
+/**
+ * @param $font_value
+ *
+ * @return array
+ */
+function siteorigin_widget_get_font($font_value) {
+
+	$web_safe = array(
+		'Helvetica Neue' => 'Arial, Helvetica, Geneva, sans-serif',
+		'Lucida Grande' => 'Lucida, Verdana, sans-serif',
+		'Georgia' => '"Times New Roman", Times, serif',
+		'Courier New' => 'Courier, mono',
+		'default' => 'default',
+	);
+
+	$font = array();
+	if ( isset( $web_safe[ $font_value ] ) ) {
+		$font['family'] = $web_safe[ $font_value ];
+	}
+	else {
+		$font_parts = explode( ':', $font_value );
+		$font['family'] = $font_parts[0];
+		$font_url_param = urlencode( $font_parts[0] );
+		if ( count( $font_parts ) > 1 ) {
+			$font['weight'] = $font_parts[1];
+			$font_url_param .= ':' . $font_parts[1];
+		}
+		//TODO: check that this is actually a google font. For now, we only have google fonts.
+		$font['css_import'] = '@import url(http' . ( is_ssl() ? 's' : '' ) . '://fonts.googleapis.com/css?family=' . $font_url_param . ');';
+	}
+
+	return $font;
+}
+
 /**
  * Action for displaying the widget preview.
  */
 function siteorigin_widget_preview_widget_action(){
 	if( !class_exists($_POST['class']) ) exit();
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
 	$widget = new $_POST['class'];
 	if(!is_a($widget, 'SiteOrigin_Widget')) exit();
 
@@ -232,3 +238,4 @@ function siteorigin_widget_add_bundle_groups($widgets){
 	return $widgets;
 }
 add_filter('siteorigin_panels_widgets', 'siteorigin_widget_add_bundle_groups', 11);
+

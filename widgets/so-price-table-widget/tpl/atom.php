@@ -24,16 +24,16 @@
 			<div class="ow-pt-features">
 				<?php foreach($column['features'] as $i => $feature) : ?>
 					<div class="ow-pt-feature ow-pt-feature-<?php echo $i % 2 == 0 ? 'even' : 'odd' ?>">
+
+						<?php
+						if( !empty($feature['icon_new']) ) {
+							$icon_styles = array();
+							if(!empty($feature['icon_color'])) $icon_styles[] = 'color: '.$feature['icon_color'];
+							echo siteorigin_widget_get_icon($feature['icon_new'], $icon_styles);
+						}
+						?>
+
 						<p data-tooltip-text="<?php echo esc_attr($feature['hover']) ?>">
-
-							<?php
-							if( !empty($feature['icon_new']) ) {
-								$icon_styles = array();
-								if(!empty($feature['icon_color'])) $icon_styles[] = 'color: '.$feature['icon_color'];
-								echo siteorigin_widget_get_icon($feature['icon_new'], $icon_styles);
-							}
-							?>
-
 							<?php echo wp_kses_post($feature['text']) ?>
 						</p>
 					</div>
@@ -41,7 +41,7 @@
 			</div>
 
 			<div class="ow-pt-button">
-				<a href='<?php echo esc_url($column['url']) ?>' class="ow-pt-link"><?php echo esc_html($column['button']) ?></a>
+				<a href='<?php echo sow_esc_url($column['url']) ?>' class="ow-pt-link"><?php echo esc_html($column['button']) ?></a>
 			</div>
 		</div>
 	<?php endforeach; ?>

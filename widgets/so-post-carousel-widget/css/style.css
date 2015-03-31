@@ -44,12 +44,23 @@
 .sow-carousel-title a.sow-carousel-previous:before {
   content: "\e600";
 }
+@media screen and (max-width: 600px) {
+  .sow-carousel-title a.sow-carousel-previous {
+    display: none;
+  }
+  .sow-carousel-title a.sow-carousel-next {
+    display: none;
+  }
+}
 .widget_sow-carousel {
   overflow-x: hidden;
   overflow-y: hidden;
 }
 .sow-carousel-wrapper {
   overflow: hidden;
+  position: relative;
+  left: 0;
+  right: 0;
 }
 .sow-carousel-wrapper ul.sow-carousel-items {
   list-style: none;
@@ -81,6 +92,7 @@
   margin-right: 15px;
   width: 242px;
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 .sow-carousel-wrapper ul.sow-carousel-items li.sow-carousel-item:last-child {
   margin-right: 0;
@@ -143,4 +155,10 @@
   float: left;
   background: url(images/carousel-loader.gif) #f6f6f6 center center no-repeat;
   margin: 0;
+}
+a.sow-carousel-previous {
+  display: none;
+}
+a.sow-carousel-next {
+  display: none;
 }

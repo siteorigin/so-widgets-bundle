@@ -93,6 +93,7 @@
   -moz-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
   transition: all 0.5s ease;
+  min-height: 1em;
 }
 #siteorigin-widgets-bundle .so-widget .switch {
   float: right;
@@ -102,7 +103,7 @@
   width: 56px;
   height: 20px;
   padding: 3px;
-  background-color: white;
+  background-color: #ffffff;
   border-radius: 18px;
   box-shadow: inset 0 -1px #ffffff, inset 0 1px 1px rgba(0, 0, 0, 0.05);
   cursor: pointer;
@@ -155,7 +156,7 @@
 #siteorigin-widgets-bundle .so-widget .switch .switch-label:after {
   content: attr(data-on);
   left: 11px;
-  color: white;
+  color: #ffffff;
   text-shadow: 0 1px rgba(0, 0, 0, 0.2);
   opacity: 0;
 }
@@ -175,7 +176,7 @@
   left: 4px;
   width: 18px;
   height: 18px;
-  background: white;
+  background: #ffffff;
   border-radius: 10px;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
   background-image: -webkit-linear-gradient(top, #ffffff 40%, #f0f0f0);

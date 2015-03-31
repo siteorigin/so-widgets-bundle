@@ -14,7 +14,7 @@
 					$banner = apply_filters('siteorigin_widgets_widget_banner', $banner, $widget);
 					?>
 
-					<img src="<?php echo esc_url( !empty($banner) ? $banner : plugin_dir_url(__FILE__) . '../banners/default.png' ) ?>" />
+					<img src="<?php echo sow_esc_url( !empty($banner) ? $banner : plugin_dir_url(__FILE__) . '../banners/default.png' ) ?>" />
 
 					<div class="so-widget-text">
 						<label class="switch">
