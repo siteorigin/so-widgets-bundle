@@ -14,6 +14,9 @@ if(!empty($instance['bound'])) {
 	$styles[] = 'max-width:100%';
 	$styles[] = 'height:auto';
 }
+if(!empty($instance['full_width'])) {
+	$styles[] = 'width:100%';
+}
 $styles[] = 'display:block';
 ?>
 
