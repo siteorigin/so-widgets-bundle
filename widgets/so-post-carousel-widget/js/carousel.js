@@ -8,15 +8,20 @@ jQuery( function($){
             $items = $$.find('.sow-carousel-item'),
             $firstItem = $items.eq(0);
 
-        var position = 0, page = 1, fetching = false, complete = false, numItems = $items.length, itemWidth = ( $firstItem.width() + parseInt($firstItem.css('margin-right')) );
+        var position = 0,
+            page = 1,
+            fetching = false,
+            numItems = $items.length,
+            totalPosts = $$.data('found-posts'),
+            complete = numItems == totalPosts,
+            itemWidth = ( $firstItem.width() + parseInt($firstItem.css('margin-right')) );
 
         var updatePosition = function() {
             if ( position < 0 ) position = 0;
             if ( position >= $$.find('.sow-carousel-item').length - 1 ) {
                 position = $$.find('.sow-carousel-item').length - 1;
-
                 // Fetch the next batch
-                if( !fetching && !complete) {
+                if( !fetching &&  !complete ) {
                     fetching = true;
                     page++;
                     $itemsContainer.append('<li class="sow-carousel-item sow-carousel-loading"></li>');
@@ -30,15 +35,10 @@ jQuery( function($){
                         },
                         function (data, status){
                             var $items = $(data.html);
-                            var count = $items.appendTo( $itemsContainer ).hide().fadeIn().length;
-                            numItems += count;
-                            if(count == 0) {
-                                complete = true;
-                                $$.find('.sow-carousel-loading').fadeOut(function(){$(this).remove()});
-                            }
-                            else {
-                                $$.find('.sow-carousel-loading').remove();
-                            }
+                            $items.appendTo( $itemsContainer ).hide().fadeIn();
+                            $$.find('.sow-carousel-loading').remove();
+                            numItems = $$.find('.sow-carousel-item').length;
+                            complete = numItems == totalPosts;
                             fetching = false;
                         }
                     )
