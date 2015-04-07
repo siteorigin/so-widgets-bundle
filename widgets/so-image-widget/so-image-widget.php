@@ -61,6 +61,12 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 					'label' => __('Bound', 'siteorigin-widgets'),
 					'description' => __("Make sure the image doesn't extend beyond its container.", 'siteorigin-widgets'),
 				),
+				'full_width' => array(
+					'type' => 'checkbox',
+					'default' => false,
+					'label' => __('Full Width', 'siteorigin-widgets'),
+					'description' => __("Resize image to fit its container.", 'siteorigin-widgets'),
+				),
 
 			),
 			plugin_dir_path(__FILE__).'../'

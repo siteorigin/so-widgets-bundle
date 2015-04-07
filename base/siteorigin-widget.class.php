@@ -69,7 +69,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		$instance = $this->modify_instance($instance);
-		$this->current_instance = $instance;
 
 		$args = wp_parse_args( $args, array(
 			'before_widget' => '',
@@ -103,12 +102,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		echo apply_filters('siteorigin_widget_template', ob_get_clean(), get_class($this), $instance, $this );
 		echo '</div>';
 		echo $args['after_widget'];
-
-		$this->current_instance = false;
 	}
 
 	function generate_and_enqueue_instance_styles( $instance ) {
 
+		$this->current_instance = $instance;
 		$style = $this->get_style_name( $instance );
 
 		$upload_dir = wp_upload_dir();
@@ -119,8 +117,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$css_name = $this->id_base.'-'.$style.'-'.$hash;
 
 			//Ensure styles aren't generated and enqueued more than once.
-			if ( ! in_array( $css_name, $this->generated_css ) ) {
-				if( ( isset( $instance['is_preview'] ) && $instance['is_preview'] ) || is_preview() ) {
+			$in_preview = is_preview() || is_customize_preview();
+			if ( ! in_array( $css_name, $this->generated_css ) || $in_preview ) {
+				if( ( isset( $instance['is_preview'] ) && $instance['is_preview'] ) || $in_preview ) {
 					siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
 				}
 				else {
@@ -149,6 +148,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$css_name = $this->id_base.'-base';
 		}
 
+		$this->current_instance = false;
 		return $css_name;
 	}
 
@@ -238,7 +238,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		<?php endif; ?>
 
 		<?php if( !empty( $this->widget_options['help'] ) ) : ?>
-			<a href="<?php echo esc_url($this->widget_options['help']) ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank"><?php _e('Help', 'siteorigin-widgets') ?></a>
+			<a href="<?php echo sow_esc_url($this->widget_options['help']) ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank"><?php _e('Help', 'siteorigin-widgets') ?></a>
 		<?php endif; ?>
 
 		<script type="text/javascript">
@@ -548,7 +548,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$fields = $this->form_options();
 		}
 
-		foreach($fields as $name => $field) {
+		// There is nothing to sanitize
+		if( empty($fields) ) return $instance;
+
+		foreach( $fields as $name => $field ) {
 			if( empty($instance[$name]) ) {
 				$instance[$name] = false;
 			}
@@ -618,7 +621,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				// This field also needs some custom sanitization
 				switch($field['sanitize']) {
 					case 'url':
-						$instance[$name] = esc_url_raw($instance[$name]);
+						$instance[$name] = sow_esc_url_raw($instance[$name]);
 						break;
 
 					case 'email':
@@ -768,9 +771,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						<?php
 					}
 					?>
-					<?php foreach( $field['options'] as $key => $val ) : ?>
+
+					<?php if( isset($field['options']) && !empty($field['options']) ) : ?>
+						<?php foreach( $field['options'] as $key => $val ) : ?>
 							<option value="<?php echo esc_attr($key) ?>" <?php selected($key, $value) ?>><?php echo esc_html($val) ?></option>
-					<?php endforeach; ?>
+						<?php endforeach; ?>
+					<?php endif; ?>
 				</select>
 				<?php
 				break;
@@ -823,7 +829,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				<div class="media-field-wrapper">
 					<div class="current">
 						<div class="thumbnail-wrapper">
-							<img src="<?php echo esc_url( $src[0] ) ?>" class="thumbnail" <?php if( empty( $src[0] ) ) echo "style='display:none'" ?> />
+							<img src="<?php echo sow_esc_url( $src[0] ) ?>" class="thumbnail" <?php if( empty( $src[0] ) ) echo "style='display:none'" ?> />
 						</div>
 						<div class="title"><?php if( !empty( $post ) ) echo esc_attr( $post->post_title ) ?></div>
 					</div>
@@ -966,6 +972,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				?>
 				<div class="siteorigin-widget-font-selector siteorigin-widget-field-subcontainer">
 					<select name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" class="siteorigin-widget-input">
+						<option value="default" selected="selected"><?php _e( 'Use theme font', 'siteorigin-widgets' ) ?></option>
 						<?php foreach( $widget_font_families as $key => $val ) : ?>
 							<option value="<?php echo esc_attr($key) ?>" <?php selected($key, $value) ?>><?php echo esc_html($val) ?></option>
 						<?php endforeach; ?>

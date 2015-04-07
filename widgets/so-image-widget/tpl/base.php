@@ -14,8 +14,12 @@ if(!empty($instance['bound'])) {
 	$styles[] = 'max-width:100%';
 	$styles[] = 'height:auto';
 }
+if(!empty($instance['full_width'])) {
+	$styles[] = 'width:100%';
+}
+$styles[] = 'display:block';
 ?>
 
-<?php if(!empty($instance['url'])) : ?><a href="<?php echo esc_url($instance['url']) ?>" <?php if($instance['new_window']) echo 'target="_blank"' ?>><?php endif; ?>
+<?php if(!empty($instance['url'])) : ?><a href="<?php echo sow_esc_url($instance['url']) ?>" <?php if($instance['new_window']) echo 'target="_blank"' ?>><?php endif; ?>
 	<img <?php foreach($attr as $n => $v) echo $n.'="' . esc_attr($v) . '" ' ?> class="<?php echo esc_attr( implode(' ', $classes) ) ?>" <?php if( !empty($styles) ) echo 'style="'.implode('; ', $styles).'"'; ?> />
 <?php if(!empty($instance['url'])) : ?></a><?php endif; ?>

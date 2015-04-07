@@ -9,7 +9,7 @@ if( !empty($instance['design']['hover']) ) $classes[] = 'ow-button-hover';
 		'class' => esc_attr(implode(' ', $classes))
 	);
 	if(!empty($instance['new_window'])) $button_attributes['target'] = '_blank';
-	if(!empty($instance['url'])) $button_attributes['href'] = esc_url($instance['url']);
+	if(!empty($instance['url'])) $button_attributes['href'] = sow_esc_url($instance['url']);
 	if(!empty($instance['attributes']['id'])) $button_attributes['id'] = esc_attr($instance['attributes']['id']);
 	if(!empty($instance['attributes']['title'])) $button_attributes['title'] = esc_attr($instance['attributes']['title']);
 	if(!empty($instance['attributes']['onclick'])) $button_attributes['onclick'] = esc_attr($instance['attributes']['onclick']);
@@ -21,7 +21,7 @@ if( !empty($instance['design']['hover']) ) $classes[] = 'ow-button-hover';
 				if( !empty($instance['button_icon']['icon']) ) {
 					$attachment = wp_get_attachment_image_src($instance['button_icon']['icon']);
 					if(!empty($attachment)) {
-						$icon_styles[] = 'background-image: url(' . esc_url($attachment[0]) . ')';
+						$icon_styles[] = 'background-image: url(' . sow_esc_url($attachment[0]) . ')';
 						?><div class="sow-icon-image" style="<?php echo implode('; ', $icon_styles) ?>"></div><?php
 					}
 				}

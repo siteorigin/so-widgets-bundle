@@ -1,8 +1,8 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table
-Requires at least: 3.8
-Tested up to: 4.1
-Stable tag: 1.1
+Requires at least: 3.9
+Tested up to: 4.2
+Stable tag: 1.2
 License: GPLv3 or later
 Contributors: gpriday, braam-genis
 
@@ -36,6 +36,21 @@ Once you enable a widget, you'll be able to use it anywhere standard widgets are
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.2 =
+* Added headline widget.
+* All scripts and styles loaded in header instead of lazy loading.
+* Added email to social links widget.
+* Made carousel touch friendly.
+* Improved input sanitization for HTML input.
+* Added nonce request checking in carousel widget.
+* Added sticky field to post selector.
+* Added function to allow Page Builder to use post selector.
+* Added a few developer friendly filters.
+* Fixed: Various customizer related issues.
+* Fixed: Issue limiting maps widget to 10 markers.
+* Fixed: Call to action alignment issues.
+* Fixed: Carousel preview.
 
 = 1.1.2 =
 * Added social links widget.

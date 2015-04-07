@@ -32,7 +32,7 @@ if( empty($instance['frames']) ) return;
 					<div class="sow-slider-image-container">
 						<div class="sow-slider-image-wrapper" style="max-width: <?php echo intval($foreground_image[1]) ?>px; ">
 							<?php
-							if(!empty($frame['url'])) echo '<a href="' . esc_url($frame['url']) . '">';
+							if(!empty($frame['url'])) echo '<a href="' . sow_esc_url($frame['url']) . '">';
 							echo wp_get_attachment_image($frame['foreground_image'], 'full');
 							if(!empty($frame['url'])) echo '</a>';
 							?>
@@ -45,7 +45,7 @@ if( empty($instance['frames']) ) return;
 				}
 				else {
 					// We need to find another background
-					if(!empty($frame['url'])) echo '<a href="' . esc_url($frame['url']) . '">';
+					if(!empty($frame['url'])) echo '<a href="' . sow_esc_url($frame['url']) . '">';
 
 					if( !empty($frame['background_videos']) ){
 						$this->video_code($frame['background_videos'], array('sow-full-element'));

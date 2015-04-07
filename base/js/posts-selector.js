@@ -53,6 +53,7 @@ var soWidgetPostSelector = ( function ($, _) {
         post_type: null,
         terms: null,
         post_status: null,
+        posts_per_page: null,
         post__in: null,
         tax_query: null,
 
@@ -65,6 +66,7 @@ var soWidgetPostSelector = ( function ($, _) {
             'post_type' : 'post',
             'orderby' : 'post_date',
             'order' : 'DESC',
+            'posts_per_page' : '',
             'post_status' : 'publish',
             'sticky' : ''
         },
@@ -122,7 +124,7 @@ var soWidgetPostSelector = ( function ($, _) {
 
             if( params.hasOwnProperty('orderby') ) theQuery.orderby = params.orderby;
             if( params.hasOwnProperty('order') ) theQuery.order = params.order;
-            if( params.hasOwnProperty('posts_per_page') ) theQuery.posts_per_page = Number(params.posts_per_page);
+            if( params.hasOwnProperty('posts_per_page') ) theQuery.posts_per_page = params.posts_per_page;
             if( params.hasOwnProperty('sticky') ) theQuery.sticky = params.sticky;
             if( params.hasOwnProperty('additional') ) theQuery.additional = params.additional;
 

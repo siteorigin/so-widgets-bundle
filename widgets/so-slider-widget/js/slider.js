@@ -192,7 +192,6 @@ jQuery( function($){
         // Preload all the images, when they're loaded, then display the slider
         images.each( function(){
             var $i = $(this);
-
             if( this.complete ) {
                 imagesLoaded++;
             }
@@ -204,7 +203,9 @@ jQuery( function($){
                         setupSlider();
                         sliderLoaded = true;
                     }
-                });
+                })
+                // Reset src attribute to force 'load' event for cached images in IE9 and IE10.
+                .attr('src', $(this).attr('src'));
             }
 
             if(imagesLoaded === images.length && !sliderLoaded) {

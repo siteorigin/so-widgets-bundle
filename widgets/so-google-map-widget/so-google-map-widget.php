@@ -336,7 +336,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			$src_url = $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array() );
 
 			return array(
-				'src_url' => esc_url( $src_url )
+				'src_url' => sow_esc_url( $src_url )
 			);
 		} else {
 			$markers         = $instance['markers'];

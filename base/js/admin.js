@@ -12,6 +12,19 @@
 
             // Skip this if we've already set up the form
             if( $el.is('.siteorigin-widget-form-main') ) {
+                
+                if( $('body').hasClass('wp-customizer') &&  $el.closest('.panel-dialog').length === 0) {
+                    // If in the customizer, we only want to set up admin form for a specific widget when it has been added.
+                    if( !$el.closest('.widget').data('sow-widget-added-form-setup') ) {
+                        // Setup new widgets when they're added in the customizer interface
+                        $(document).on('widget-added', function (e, widget) {
+                            widget.data('sow-widget-added-form-setup', true);
+                            widget.find('.siteorigin-widget-form').sowSetupForm();
+                            widget.removeData('sow-widget-added-form-setup');
+                        });
+                        return true;
+                    }
+                }
                 if( $el.data('sow-form-setup') === true ) {
                     return true;
                 }
@@ -100,7 +113,9 @@
                         var attachment = frame.state().get('selection').first().attributes;
 
                         $c.find('.current .title' ).html(attachment.title);
-                        $c.find('input[type=hidden]' ).val(attachment.id);
+                        var $inputField = $c.find( 'input[type=hidden]' );
+                        $inputField.val(attachment.id);
+                        $inputField.trigger('change');
 
                         if(typeof attachment.sizes !== 'undefined'){
                             if(typeof attachment.sizes.thumbnail !== 'undefined')
@@ -160,11 +175,12 @@
                 var $$ = $(this);
                 $(this).toggleClass( 'siteorigin-widget-section-visible' );
                 $(this).siblings('.siteorigin-widget-section').slideToggle(function(){
-
                     // Center the PB dialog
                     if(typeof $.fn.dialog !== 'undefined') {
                         $(this).closest('.panel-dialog').dialog("option", "position", "center");
                     }
+
+                    $(window).resize();
                 });
             });
 
@@ -421,7 +437,9 @@
                 e.preventDefault();
                 $el.closest('.siteorigin-widget-field-repeater')
                     .sowAddRepeaterItem()
-                    .find('> .siteorigin-widget-field-repeater-items').slideDown('fast');
+                    .find('> .siteorigin-widget-field-repeater-items').slideDown('fast', function(){
+                        $(window).resize();
+                    });
 
                 // Center the PB dialog
                 if(typeof $.fn.dialog !== 'undefined') {
@@ -465,7 +483,9 @@
             // Add the item and refresh
             $el.find('> .siteorigin-widget-field-repeater-items').append(item).sortable( "refresh").trigger('updateFieldPositions');
             item.sowSetupRepeaterItems();
-            item.hide().slideDown('fast');
+            item.hide().slideDown('fast', function(){
+                $(window).resize();
+            });
 
         } );
     };
@@ -522,6 +542,7 @@
                             $(this).closest('.siteorigin-widget-field-repeater-item').slideUp('fast', function () {
                                 $(this).remove();
                                 $s.sortable("refresh").trigger('updateFieldPositions');
+                                $(window).resize();
                             });
                         }
                     });

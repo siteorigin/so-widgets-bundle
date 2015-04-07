@@ -5,9 +5,16 @@
 function loadMap($) {
     $('.sow-google-map-canvas').each(function () {
         var $$ = $(this);
+        var mapCenter = $$.data('address');
+        if(!mapCenter) {
+            var markers = $$.data('marker-positions');
+            if(markers && markers.length) {
+                mapCenter = markers[0].place;
+            }
+        }
         // We use the geocoder
         var geocoder = new google.maps.Geocoder();
-        geocoder.geocode({'address': $$.data('address')}, function (results, status) {
+        geocoder.geocode({'address': mapCenter}, function (results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
                 var zoom = Number($$.data('zoom'));
                 if ( !zoom ) zoom = 14;
