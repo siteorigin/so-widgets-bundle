@@ -10,7 +10,7 @@
                 $.post(
                     soWidgets.ajaxurl,
                     { action: 'sow_get_posts', query: query },
-                    function(data){
+                    function( data ){
                         var $rptr = $masonryWidgetForm.find('.siteorigin-widget-field-repeater');
                         var $rptrItems = $rptr.find('.siteorigin-widget-field-repeater-item');
                         $.each(data.posts, function (index, post) {

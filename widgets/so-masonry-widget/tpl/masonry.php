@@ -1,5 +1,5 @@
 
-<div class="so-masonry-container <?php if( $responsive ) echo 'responsive' ?>">
+<div class="so-masonry-container <?php if ( $responsive ) echo 'responsive' ?>">
 	<?php while($posts->have_posts()) : $posts->the_post(); ?>
 		<div class="masonry-brick <?php echo esc_attr('size-'. $this->get_brick_size(get_the_ID(), $instance) . ' ' . (!has_post_thumbnail() ? 'no-thumbnail' : '')) ?>">
 			<div class="post-information">

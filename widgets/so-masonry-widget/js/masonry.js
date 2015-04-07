@@ -1,5 +1,5 @@
 jQuery(function($){
-    if ($('body').has('.so-masonry-container')){
+    if ( $('body').has('.so-masonry-container') ){
 
         var resizeMasonry = function(){
             // Make sure the width of the masonry container is always divisible by 4

@@ -10,5 +10,4 @@ function sow_masonry_register_image_sizes(){
 	add_image_size( 'so-masonry-size-21', 560, 280, true );
 	add_image_size( 'so-masonry-size-22', 560, 560, true );
 }
-
 add_action('init', 'sow_masonry_register_image_sizes');
