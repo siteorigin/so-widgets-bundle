@@ -11,11 +11,11 @@
                 var selectedType = $mapTypeField.find('input[type="radio"][name*="map_type"]:checked').val();
                 $mapWidgetForm.data('selected-type', selectedType);
                 if (selectedType == 'static') {
-                    $mapWidgetForm.find('.siteorigin-widget-field-state-static').show();
-                    $mapWidgetForm.find('.siteorigin-widget-field-state-interactive').hide();
+                    $mapWidgetForm.find('.siteorigin-widget-field-state-name-static').show();
+                    $mapWidgetForm.find('.siteorigin-widget-field-state-name-interactive').hide();
                 } else {
-                    $mapWidgetForm.find('.siteorigin-widget-field-state-interactive').show();
-                    $mapWidgetForm.find('.siteorigin-widget-field-state-static').hide();
+                    $mapWidgetForm.find('.siteorigin-widget-field-state-name-interactive').show();
+                    $mapWidgetForm.find('.siteorigin-widget-field-state-name-static').hide();
                 }
             };
             $mapTypeField.change(updateFieldsForSelectedMapType);

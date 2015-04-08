@@ -288,6 +288,30 @@
                 });
             });
 
+            // Setup display states
+            var $stateField = $el.find('.siteorigin-widget-field-state-selector');
+            var selectorType, selectorName;
+            var classNames = $stateField.attr('class').split(/\s+/);
+            for ( var i = 0; i < classNames.length; i++ ) {
+                var className = classNames[i];
+                if( className == 'siteorigin-widget-field-state-selector') {
+                    continue;
+                }
+                else if ( className.indexOf('siteorigin-widget-field-type-') > -1 ) {
+                    selectorType = className.replace('siteorigin-widget-field-type-', '');
+                }
+                else if ( className.indexOf('siteorigin-widget-field-') > -1 ) {
+                    selectorName = className.replace('siteorigin-widget-field-', '');
+                }
+            }
+            var updateFieldsForSelectedState = function () {
+                var selectedState = $stateField.find('input[type="' + selectorType + '"][name*="' + selectorName + '"]:checked').val();
+                $el.find('[class*="siteorigin-widget-field-state-name-"]').hide();
+                $el.find('.siteorigin-widget-field-state-name-'+selectedState).show();
+            };
+            $stateField.change(updateFieldsForSelectedState);
+            updateFieldsForSelectedState();
+
             // Give plugins a chance to influence the form
             $el.trigger('sowsetupform').data('sow-form-setup', true);
             $el.find('.siteorigin-widget-field-repeater-item').trigger('updateFieldPositions');
