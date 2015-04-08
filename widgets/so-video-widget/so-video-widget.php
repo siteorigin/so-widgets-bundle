@@ -46,7 +46,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				),
 				'self_video' => array(
 					'type' => 'media',
-					'label' => __( 'Select Video', 'siteorigin-widgets' ),
+					'label' => __( 'Select video', 'siteorigin-widgets' ),
 					'default'     => '',
 					'library' => 'video',
 					'state_name' => 'self',
@@ -55,7 +55,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 					'type' => 'select',
 					'label' => __( '', 'siteorigin-widgets' ),
 					'state_name' => 'external',
-					'prompt'  => __( 'Select external', 'siteorigin-widgets' ),
+					'prompt'  => __( 'Select video host', 'siteorigin-widgets' ),
 					'options' => $video_host_names,
 				),
 				'external_video' => array(

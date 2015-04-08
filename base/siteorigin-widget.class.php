@@ -707,7 +707,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		?><div class="<?php echo implode(' ', array_map('sanitize_html_class', $wrapper_classes) ) ?>"><?php
 
-		$field_id = $this->so_get_field_id( $name, $repeater, $is_template );
+		$field_id = sanitize_html_class( $this->so_get_field_id( $name, $repeater, $is_template ) );
 
 		if( $field['type'] != 'repeater' && $field['type'] != 'checkbox' && $field['type'] != 'separator' && !empty($field['label']) ) {
 			?>
