@@ -221,6 +221,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$field_name,
 					$field,
 					isset($instance[$field_name]) ? $instance[$field_name] : null,
+					$instance,
 					false
 				);
 			}
@@ -584,6 +585,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				case 'media' :
 					// Media values should be integer
 					$instance[$name] = intval($instance[$name]);
+					if( !empty( $field['fallback'] ) && !empty( $instance[ $name . '_fallback' ] ) ) {
+						$instance[ $name . '_fallback' ] = esc_url_raw( $instance[ $name . '_fallback' ] );
+					}
 					break;
 
 				case 'checkbox':
@@ -685,12 +689,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	/**
 	 * Render a form field
 	 *
-	 * @param $name
-	 * @param $field
-	 * @param $value
+	 * @param string $name The field name
+	 * @param string $field The field attributes
+	 * @param mixed $value The current field value
+	 * @param array $all_values An array of all values at the same level as this field
 	 * @param array $repeater
+	 * @param bool $is_template
 	 */
-	function render_field( $name, $field, $value, $repeater = array(), $is_template = false ){
+	function render_field( $name, $field, $value, $all_values, $repeater = array(), $is_template = false ){
 		if ( is_null( $value ) && isset( $field['default'] )) {
 			 $value = $field['default'];
 		}
@@ -803,12 +809,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			case 'media':
 				if( version_compare( get_bloginfo('version'), '3.5', '<' ) ){
-					printf(__('You need to <a href="%s">upgrade</a> to WordPress 3.5 to use media fields', 'siteorigin'), admin_url('update-core.php'));
+					printf( __('You need to <a href="%s">upgrade</a> to WordPress 3.5 to use media fields', 'siteorigin'), admin_url('update-core.php') );
 					break;
 				}
 
-				if(!empty($value)) {
-					if(is_array($value)) {
+				if( !empty($value) ) {
+					if( is_array($value) ) {
 						$src = $value;
 					}
 					else {
@@ -837,8 +843,22 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						<?php echo esc_html($choose_title) ?>
 					</a>
 
-					<a href="#" class="media-remove-button"><?php _e('Remove', 'siteorigin') ?></a>
+					<a href="#" class="media-remove-button"><?php esc_html_e('Remove', 'siteorigin') ?></a>
+
 				</div>
+
+				<?php
+				if( !empty( $field['fallback'] ) ) {
+					$v_name = $name;
+					if( strpos($v_name, '][') !== false ) {
+						// Remove this splitter
+						$v_name = substr( $v_name, strpos($v_name, '][') + 2 );
+					}
+					$fallback_url = !empty( $all_values[$v_name . '_fallback'] ) ? $all_values[$v_name . '_fallback'] : '';
+
+					?><input type="text" value="<?php echo esc_url( $fallback_url ) ?>" placeholder="<?php esc_attr_e('Fallback External URL') ?>" name="<?php echo $this->so_get_field_name( $name . '_fallback', $repeater ) ?>" class="media-fallback-external" /><?php
+				}
+				?>
 
 				<input type="hidden" value="<?php echo esc_attr( is_array( $value ) ? '-1' : $value ) ?>" name="<?php echo $this->so_get_field_name( $name, $repeater ) ?>" class="siteorigin-widget-input" />
 				<div class="clear"></div>
@@ -858,6 +878,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						$sub_field_name,
 						$sub_field,
 						isset($value[$sub_field_name]) ? $value[$sub_field_name] : null,
+						$value,
 						$repeater,
 						true
 					);
@@ -900,6 +921,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 												$sub_field_name,
 												$sub_field,
 												isset($v[$sub_field_name]) ? $v[$sub_field_name] : null,
+												$v,
 												$repeater
 											);
 										}
@@ -927,6 +949,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						$name.']['.$sub_name,
 						$sub_field,
 						isset($value[$sub_name]) ? $value[$sub_name] : null,
+						$value,
 						$repeater
 					);
 				}
@@ -989,6 +1012,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						$name.']['.$sub_name,
 						$sub_field,
 						isset($value[$sub_name]) ? $value[$sub_name] : null,
+						$value,
 						$repeater
 					);
 				}
