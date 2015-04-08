@@ -100,6 +100,12 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 							'label' => __('Destination URL', 'siteorigin-widgets'),
 							'sanitize' => 'url',
 						),
+
+						'new_window' => array(
+							'type' => 'checkbox',
+							'label' => __('Open in new window', 'siteorigin-widgets'),
+							'default' => false,
+						),
 					),
 				),
 

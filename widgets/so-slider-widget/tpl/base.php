@@ -24,9 +24,7 @@ if( empty($instance['frames']) ) return;
 			<li
 				class="sow-slider-image sow-slider-image-<?php echo $frame['background_image_type'] ?>"
 				style="<?php if(!empty($background_image[0]) && (!empty($foreground_image)) || !empty($frame['background_videos']) ) echo 'background-image: url('.$background_image[0].');' ?>">
-
 				<?php
-
 				if( !empty( $frame['foreground_image'] ) ) {
 					?>
 					<div class="sow-slider-image-container">
@@ -45,7 +43,7 @@ if( empty($instance['frames']) ) return;
 				}
 				else {
 					// We need to find another background
-					if(!empty($frame['url'])) echo '<a href="' . sow_esc_url($frame['url']) . '">';
+					if(!empty($frame['url'])) echo '<a href="' . sow_esc_url($frame['url']) . '" ' . ( !empty($frame['new_window']) ? 'target="_blank"' : '' ) . '>';
 
 					if( !empty($frame['background_videos']) ){
 						$this->video_code($frame['background_videos'], array('sow-full-element'));
