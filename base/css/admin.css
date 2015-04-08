@@ -234,31 +234,31 @@
   position: relative;
   display: block;
   float: left;
-  background: #f4f4f4;
-  background: -moz-linear-gradient(top, #f9f9f9 0%, #f2f2f2 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f9f9f9), color-stop(100%, #f2f2f2));
-  background: -webkit-linear-gradient(top, #f9f9f9 0%, #f2f2f2 100%);
-  background: -o-linear-gradient(top, #f9f9f9 0%, #f2f2f2 100%);
-  background: -ms-linear-gradient(top, #f9f9f9 0%, #f2f2f2 100%);
-  background: linear-gradient(to bottom, #f9f9f9 0%, #f2f2f2 100%);
+  background: #f9f9f9;
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #f2f2f2), color-stop(1, #f9f9f9));
+  background: -ms-linear-gradient(bottom, #f2f2f2, #f9f9f9);
+  background: -moz-linear-gradient(center bottom, #f2f2f2 0%, #f9f9f9 100%);
+  background: -o-linear-gradient(#f9f9f9, #f2f2f2);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#f2f2f2', GradientType=0);
-  border: 1px solid #bbbbbb;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
+  border: 1px solid #bbbbbb;
   height: 32px;
 }
 .siteorigin-widget-form .media-field-wrapper:hover {
   background: #ffffff;
-  background: -moz-linear-gradient(top, #ffffff 0%, #f7f7f7 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #f7f7f7));
-  background: -webkit-linear-gradient(top, #ffffff 0%, #f7f7f7 100%);
-  background: -o-linear-gradient(top, #ffffff 0%, #f7f7f7 100%);
-  background: -ms-linear-gradient(top, #ffffff 0%, #f7f7f7 100%);
-  background: linear-gradient(to bottom, #ffffff 0%, #f7f7f7 100%);
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #f7f7f7), color-stop(1, #ffffff));
+  background: -ms-linear-gradient(bottom, #f7f7f7, #ffffff);
+  background: -moz-linear-gradient(center bottom, #f7f7f7 0%, #ffffff 100%);
+  background: -o-linear-gradient(#ffffff, #f7f7f7);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f7f7f7', GradientType=0);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
 }
 .siteorigin-widget-form .media-field-wrapper > div {
   -moz-box-sizing: border-box;
@@ -332,6 +332,12 @@
 }
 .siteorigin-widget-form .media-remove-button:hover {
   color: #BC0B0B;
+}
+.siteorigin-widget-form .media-fallback-external {
+  padding: 4px 8px;
+  display: inline-block;
+  margin: 3px 0 0 15px;
+  width: 250px;
 }
 .siteorigin-widget-form .siteorigin-widget-field-type-widget > label,
 .siteorigin-widget-form .siteorigin-widget-field-type-section > label {
