@@ -847,6 +847,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 				</div>
 
+				<div class="clear"></div>
+
 				<?php
 				if( !empty( $field['fallback'] ) ) {
 					$v_name = $name;
@@ -861,7 +863,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				?>
 
 				<input type="hidden" value="<?php echo esc_attr( is_array( $value ) ? '-1' : $value ) ?>" name="<?php echo $this->so_get_field_name( $name, $repeater ) ?>" class="siteorigin-widget-input" />
-				<div class="clear"></div>
 				<?php
 				break;
 
