@@ -235,7 +235,7 @@ class SiteOrigin_Widgets_Bundle {
 		add_plugins_page(
 			__('SiteOrigin Widgets', 'siteorigin-widgets'),
 			__('SiteOrigin Widgets', 'siteorigin-widgets'),
-			'install_plugins',
+			apply_filters('siteorigin_widgets_admin_menu_capability', 'install_plugins'),
 			'so-widgets-plugins',
 			array($this, 'admin_page')
 		);
