@@ -5,6 +5,9 @@
   display: block !important;
   margin: 15px 0;
 }
+.siteorigin-widget-form.siteorigin-widget-form-main {
+  min-width: 600px;
+}
 .siteorigin-widget-form .siteorigin-widget-field-is-hidden {
   display: none;
 }
@@ -40,6 +43,9 @@
   padding-left: 0.5em;
   color: #54a242;
   font-style: italic;
+}
+.siteorigin-widget-form .siteorigin-widget-field input[type="text"] {
+  width: 100%;
 }
 .siteorigin-widget-form .siteorigin-widget-field-type-slider .siteorigin-widget-slider-wrapper {
   margin: 10px 0;
