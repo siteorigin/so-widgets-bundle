@@ -179,6 +179,8 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_less_variables( $instance ) {
+		if( empty( $instance ) ) return;
+
 		$design = $instance['design'];
 		$m      = $design['margin'];
 		$top = $right = $bottom = $left = $m . 'em';

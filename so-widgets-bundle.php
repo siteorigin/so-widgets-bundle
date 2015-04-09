@@ -3,7 +3,7 @@
 /*
 Plugin Name: SiteOrigin Widgets Bundle
 Description: A collection of all our widgets, neatly bundled into a single plugin.
-Version: 1.1.2
+Version: 1.2
 Author: SiteOrigin
 Author URI: http://siteorigin.com
 Plugin URI: http://siteorigin.com/widgets-bundle/
@@ -11,7 +11,8 @@ License: GPL3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-define('SOW_BUNDLE_VERSION', '1.1.2-dev');
+define('SOW_BUNDLE_VERSION', '1.2');
+define('SOW_BUNDLE_JS_SUFFIX', '');
 define('SOW_BUNDLE_BASE_FILE', __FILE__);
 
 // We're going to include this check until version 1.2
@@ -57,6 +58,8 @@ class SiteOrigin_Widgets_Bundle {
 		add_filter( 'siteorigin_panels_data', array($this, 'load_missing_widgets') );
 		add_filter( 'siteorigin_panels_prebuilt_layout', array($this, 'load_missing_widgets') );
 		add_filter( 'siteorigin_panels_widget_object', array($this, 'load_missing_widget'), 10, 2 );
+
+		add_filter( 'wp_enqueue_scripts', array($this, 'sow_enqueue_active_widgets_scripts') );
 	}
 
 	/**
@@ -412,10 +415,10 @@ class SiteOrigin_Widgets_Bundle {
 		global $wp_widget_factory;
 
 		foreach($data['widgets'] as $widget) {
-			if( empty($widget['info']['class']) ) continue;
-			if( !empty($wp_widget_factory->widgets[$widget['info']['class']] ) ) continue;
+			if( empty($widget['panels_info']['class']) ) continue;
+			if( !empty($wp_widget_factory->widgets[$widget['panels_info']['class']] ) ) continue;
 
-			$class = $widget['info']['class'];
+			$class = $widget['panels_info']['class'];
 			if( preg_match('/SiteOrigin_Widget_([A-Za-z]+)_Widget/', $class, $matches) ) {
 				$name = $matches[1];
 				$id = 'so'.strtolower( implode( '-', preg_split('/(?=[A-Z])/',$name) ) ).'-widget';
@@ -459,6 +462,30 @@ class SiteOrigin_Widgets_Bundle {
 		$links[] = '<a href="http://siteorigin.com/thread/" target="_blank">'.__('Support', 'siteorigin-widgets').'</a>';
 		return $links;
 	}
+
+	/**
+	 * Ensure active widgets' scripts are enqueued at the right time.
+	 */
+	function sow_enqueue_active_widgets_scripts() {
+		global $wp_registered_widgets;
+		$sidebars_widgets = wp_get_sidebars_widgets();
+		foreach( $sidebars_widgets as $sidebar => $widgets ) {
+			if ( ! empty( $widgets ) && $sidebar !== "wp_inactive_widgets") {
+				foreach ( $widgets as $i => $id ) {
+					if ( ! empty( $wp_registered_widgets[$id] ) ) {
+						$widget = $wp_registered_widgets[$id]['callback'][0];
+						if ( is_subclass_of($widget, 'SiteOrigin_Widget') && is_active_widget( false, false, $widget->id_base ) ) {
+							$opt_wid = get_option( 'widget_' . $widget->id_base );
+							preg_match( '/-([0-9]+$)/', $id, $num_match );
+							$widget_instance = $opt_wid[ $num_match[1] ];
+							$widget->generate_and_enqueue_instance_styles( $widget_instance );
+							$widget->enqueue_frontend_scripts( $widget_instance);
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 // create the initial single
@@ -478,3 +505,15 @@ function siteorigin_widgets_deactivate_legacy_plugins(){
 	}
 }
 register_activation_hook( __FILE__, 'siteorigin_widgets_deactivate_legacy_plugins' );
+
+function sow_esc_url( $url ) {
+	$protocols = wp_allowed_protocols();
+	$protocols[] = 'skype';
+	return esc_url( $url, $protocols );
+}
+
+function sow_esc_url_raw( $url ) {
+	$protocols = wp_allowed_protocols();
+	$protocols[] = 'skype';
+	return esc_url_raw( $url, $protocols );
+}

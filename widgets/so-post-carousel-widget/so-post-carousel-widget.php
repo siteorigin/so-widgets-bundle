@@ -31,7 +31,7 @@ function sow_carousel_get_next_posts_page() {
 		<li class="sow-carousel-item">
 			<div class="sow-carousel-thumbnail">
 				<?php if( has_post_thumbnail() ) : $img = wp_get_attachment_image_src(get_post_thumbnail_id(), 'sow-carousel-default'); ?>
-					<a href="<?php the_permalink() ?>" style="background-image: url(<?php echo esc_url($img[0]) ?>)">
+					<a href="<?php the_permalink() ?>" style="background-image: url(<?php echo sow_esc_url($img[0]) ?>)">
 						<span class="overlay"></span>
 					</a>
 				<?php else : ?>
@@ -77,13 +77,34 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function enqueue_frontend_scripts( $instance ){
-		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-
-		wp_enqueue_style('sow-carousel-basic', siteorigin_widget_get_plugin_dir_url('post-carousel') . 'css/style.css', array(), SOW_BUNDLE_VERSION);
-		//register this in base...?
-		wp_register_script( 'touch-swipe' , plugin_dir_url(SOW_BUNDLE_BASE_FILE). 'base/js/libs/jquery.touchSwipe' . $js_suffix . '.js' , array( 'jquery' ), '1.6.6' );
-		wp_enqueue_script('sow-carousel-basic', siteorigin_widget_get_plugin_dir_url('post-carousel') . 'js/carousel' . $js_suffix . '.js', array( 'jquery', 'touch-swipe' ), SOW_BUNDLE_VERSION, true );
+	function initialize() {
+		$this->register_frontend_scripts(
+			array(
+				array(
+					'touch-swipe',
+					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/jquery.touchSwipe' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					array( 'jquery' ),
+					'1.6.6'
+				),
+				array(
+					'sow-carousel-basic',
+					siteorigin_widget_get_plugin_dir_url( 'post-carousel' ) . 'js/carousel' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					array( 'jquery', 'touch-swipe' ),
+					SOW_BUNDLE_VERSION,
+					true
+				)
+			)
+		);
+		$this->register_frontend_styles(
+			array(
+				array(
+					'sow-carousel-basic',
+					siteorigin_widget_get_plugin_dir_url( 'post-carousel' ) . 'css/style.css',
+					array(),
+					SOW_BUNDLE_VERSION
+				)
+			)
+		);
 	}
 
 	function get_template_name($instance){

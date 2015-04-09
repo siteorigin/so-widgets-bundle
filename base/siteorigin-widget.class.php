@@ -10,6 +10,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	protected $base_folder;
 	protected $repeater_html;
 	protected $field_ids;
+	protected $frontend_scripts = array();
+	protected $frontend_styles = array();
+	protected $generated_css = array();
 
 	protected $current_instance;
 	protected $instance_storage;
@@ -66,7 +69,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		$instance = $this->modify_instance($instance);
-		$this->current_instance = $instance;
 
 		$args = wp_parse_args( $args, array(
 			'before_widget' => '',
@@ -75,43 +77,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			'after_title' => '',
 		) );
 
-		$style = $this->get_style_name( $instance );
-
 		// Add any missing default values to the instance
 		$instance = $this->add_defaults($this->form_options, $instance);
 
-		$upload_dir = wp_upload_dir();
-		$this->clear_file_cache();
-
-		if($style !== false) {
-			$hash = $this->get_style_hash($instance);
-			$css_name = $this->id_base.'-'.$style.'-'.$hash;
-
-			if( ( isset( $instance['is_preview'] ) && $instance['is_preview'] ) || is_preview() ) {
-				siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
-			}
-			else {
-				if( !file_exists( $upload_dir['basedir'] . '/siteorigin-widgets/' . $css_name .'.css' ) || ( defined('SITEORIGIN_WIDGETS_DEBUG') && SITEORIGIN_WIDGETS_DEBUG ) ) {
-					// Attempt to recreate the CSS
-					$this->save_css( $instance );
-				}
-
-				if( file_exists( $upload_dir['basedir'] . '/siteorigin-widgets/' . $css_name .'.css' ) ) {
-					wp_enqueue_style(
-						$css_name,
-						$upload_dir['baseurl'] . '/siteorigin-widgets/' . $css_name .'.css'
-					);
-				}
-				else {
-					// Fall back to using inline CSS if we can't find the cached CSS file.
-					siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
-				}
-			}
-		}
-		else {
-			$css_name = $this->id_base.'-base';
-		}
-
+		$css_name = $this->generate_and_enqueue_instance_styles( $instance );
 		$this->enqueue_frontend_scripts( $instance );
 		extract( apply_filters( 'siteorigin_widget_template_variables', $this->get_template_variables($instance, $args) ) );
 
@@ -133,8 +102,54 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		echo apply_filters('siteorigin_widget_template', ob_get_clean(), get_class($this), $instance, $this );
 		echo '</div>';
 		echo $args['after_widget'];
+	}
+
+	function generate_and_enqueue_instance_styles( $instance ) {
+
+		$this->current_instance = $instance;
+		$style = $this->get_style_name( $instance );
+
+		$upload_dir = wp_upload_dir();
+		$this->clear_file_cache();
+
+		if($style !== false) {
+			$hash = $this->get_style_hash( $instance );
+			$css_name = $this->id_base.'-'.$style.'-'.$hash;
+
+			//Ensure styles aren't generated and enqueued more than once.
+			$in_preview = is_preview() || is_customize_preview();
+			if ( ! in_array( $css_name, $this->generated_css ) || $in_preview ) {
+				if( ( isset( $instance['is_preview'] ) && $instance['is_preview'] ) || $in_preview ) {
+					siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
+				}
+				else {
+					if( !file_exists( $upload_dir['basedir'] . '/siteorigin-widgets/' . $css_name .'.css' ) || ( defined('SITEORIGIN_WIDGETS_DEBUG') && SITEORIGIN_WIDGETS_DEBUG ) ) {
+						// Attempt to recreate the CSS
+						$this->save_css( $instance );
+					}
+
+					if( file_exists( $upload_dir['basedir'] . '/siteorigin-widgets/' . $css_name .'.css' ) ) {
+						if ( ! wp_style_is( $css_name ) ) {
+							wp_enqueue_style(
+								$css_name,
+								$upload_dir['baseurl'] . '/siteorigin-widgets/' . $css_name .'.css'
+							);
+						}
+					}
+					else {
+						// Fall back to using inline CSS if we can't find the cached CSS file.
+						siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
+					}
+				}
+				$this->generated_css[] = $css_name;
+			}
+		}
+		else {
+			$css_name = $this->id_base.'-base';
+		}
 
 		$this->current_instance = false;
+		return $css_name;
 	}
 
 	/**
@@ -206,6 +221,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$field_name,
 					$field,
 					isset($instance[$field_name]) ? $instance[$field_name] : null,
+					$instance,
 					false
 				);
 			}
@@ -223,7 +239,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		<?php endif; ?>
 
 		<?php if( !empty( $this->widget_options['help'] ) ) : ?>
-			<a href="<?php echo esc_url($this->widget_options['help']) ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank"><?php _e('Help', 'siteorigin-widgets') ?></a>
+			<a href="<?php echo sow_esc_url($this->widget_options['help']) ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank"><?php _e('Help', 'siteorigin-widgets') ?></a>
 		<?php endif; ?>
 
 		<script type="text/javascript">
@@ -250,8 +266,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	function enqueue_scripts(){
 
-		$js_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-
 		if( !wp_script_is('siteorigin-widget-admin') ) {
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_style( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/css/admin.css', array( 'media-views' ), SOW_BUNDLE_VERSION );
@@ -259,7 +273,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			wp_enqueue_script( 'wp-color-picker' );
 			wp_enqueue_media();
-			wp_enqueue_script( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/admin' . $js_suffix . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-slider' ), SOW_BUNDLE_VERSION, true );
+			wp_enqueue_script( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/admin' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-slider' ), SOW_BUNDLE_VERSION, true );
 
 			wp_localize_script( 'siteorigin-widget-admin', 'soWidgets', array(
 				'ajaxurl' => wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ),
@@ -273,21 +287,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			}
 		}
 
-		if( !wp_script_is('siteorigin-widget-admin-posts-selector') && $this->using_posts_selector() ) {
-
-			wp_enqueue_script( 'siteorigin-widget-admin-posts-selector', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/posts-selector' . $js_suffix . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'underscore', 'backbone' ), SOW_BUNDLE_VERSION, true );
-
-			wp_localize_script( 'siteorigin-widget-admin-posts-selector', 'sowPostsSelectorTpl', array(
-				'modal' => file_get_contents( plugin_dir_path(__FILE__).'tpl/posts-selector/modal.html' ),
-				'postSummary' => file_get_contents( plugin_dir_path(__FILE__).'tpl/posts-selector/post.html' ),
-				'foundPosts' => '<div class="sow-post-count-message">' . sprintf( __('This query returns <a href="#" class="preview-query-posts">%s posts</a>.', 'siteorigin-widgets'), '<%= foundPosts %>') . '</div>',
-				'fields' => siteorigin_widget_post_selector_form_fields(),
-				'selector' => file_get_contents( plugin_dir_path(__FILE__).'tpl/posts-selector/selector.html' ),
-			) );
-
-			wp_localize_script( 'siteorigin-widget-admin-posts-selector', 'sowPostsSelectorVars', array(
-				'modalTitle' => __('Select posts', 'siteorigin-widgets'),
-			) );
+		if( $this->using_posts_selector() ) {
+			siteorigin_widget_post_selector_enqueue_admin_scripts();
 		}
 
 		// This lets the widget enqueue any specific admin scripts
@@ -548,7 +549,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$fields = $this->form_options();
 		}
 
-		foreach($fields as $name => $field) {
+		// There is nothing to sanitize
+		if( empty($fields) ) return $instance;
+
+		foreach( $fields as $name => $field ) {
 			if( empty($instance[$name]) ) {
 				$instance[$name] = false;
 			}
@@ -581,6 +585,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				case 'media' :
 					// Media values should be integer
 					$instance[$name] = intval($instance[$name]);
+					if( !empty( $field['fallback'] ) && !empty( $instance[ $name . '_fallback' ] ) ) {
+						$instance[ $name . '_fallback' ] = esc_url_raw( $instance[ $name . '_fallback' ] );
+					}
 					break;
 
 				case 'checkbox':
@@ -618,7 +625,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				// This field also needs some custom sanitization
 				switch($field['sanitize']) {
 					case 'url':
-						$instance[$name] = esc_url_raw($instance[$name]);
+						$instance[$name] = sow_esc_url_raw($instance[$name]);
 						break;
 
 					case 'email':
@@ -682,12 +689,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	/**
 	 * Render a form field
 	 *
-	 * @param $name
-	 * @param $field
-	 * @param $value
+	 * @param string $name The field name
+	 * @param string $field The field attributes
+	 * @param mixed $value The current field value
+	 * @param array $all_values An array of all values at the same level as this field
 	 * @param array $repeater
+	 * @param bool $is_template
 	 */
-	function render_field( $name, $field, $value, $repeater = array(), $is_template = false ){
+	function render_field( $name, $field, $value, $all_values, $repeater = array(), $is_template = false ){
 		if ( is_null( $value ) && isset( $field['default'] )) {
 			 $value = $field['default'];
 		}
@@ -768,9 +777,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						<?php
 					}
 					?>
-					<?php foreach( $field['options'] as $key => $val ) : ?>
+
+					<?php if( isset($field['options']) && !empty($field['options']) ) : ?>
+						<?php foreach( $field['options'] as $key => $val ) : ?>
 							<option value="<?php echo esc_attr($key) ?>" <?php selected($key, $value) ?>><?php echo esc_html($val) ?></option>
-					<?php endforeach; ?>
+						<?php endforeach; ?>
+					<?php endif; ?>
 				</select>
 				<?php
 				break;
@@ -797,12 +809,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			case 'media':
 				if( version_compare( get_bloginfo('version'), '3.5', '<' ) ){
-					printf(__('You need to <a href="%s">upgrade</a> to WordPress 3.5 to use media fields', 'siteorigin'), admin_url('update-core.php'));
+					printf( __('You need to <a href="%s">upgrade</a> to WordPress 3.5 to use media fields', 'siteorigin'), admin_url('update-core.php') );
 					break;
 				}
 
-				if(!empty($value)) {
-					if(is_array($value)) {
+				if( !empty($value) ) {
+					if( is_array($value) ) {
 						$src = $value;
 					}
 					else {
@@ -823,7 +835,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				<div class="media-field-wrapper">
 					<div class="current">
 						<div class="thumbnail-wrapper">
-							<img src="<?php echo esc_url( $src[0] ) ?>" class="thumbnail" <?php if( empty( $src[0] ) ) echo "style='display:none'" ?> />
+							<img src="<?php echo sow_esc_url( $src[0] ) ?>" class="thumbnail" <?php if( empty( $src[0] ) ) echo "style='display:none'" ?> />
 						</div>
 						<div class="title"><?php if( !empty( $post ) ) echo esc_attr( $post->post_title ) ?></div>
 					</div>
@@ -831,22 +843,31 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						<?php echo esc_html($choose_title) ?>
 					</a>
 
-					<a href="#" class="media-remove-button"><?php _e('Remove', 'siteorigin') ?></a>
+					<a href="#" class="media-remove-button"><?php esc_html_e('Remove', 'siteorigin') ?></a>
+
 				</div>
 
-				<input type="hidden" value="<?php echo esc_attr( is_array( $value ) ? '-1' : $value ) ?>" name="<?php echo $this->so_get_field_name( $name, $repeater ) ?>" class="siteorigin-widget-input" />
 				<div class="clear"></div>
+
+				<?php
+				if( !empty( $field['fallback'] ) ) {
+					$v_name = $name;
+					if( strpos($v_name, '][') !== false ) {
+						// Remove this splitter
+						$v_name = substr( $v_name, strpos($v_name, '][') + 2 );
+					}
+					$fallback_url = !empty( $all_values[$v_name . '_fallback'] ) ? $all_values[$v_name . '_fallback'] : '';
+
+					?><input type="text" value="<?php echo esc_url( $fallback_url ) ?>" placeholder="<?php esc_attr_e('Fallback External URL') ?>" name="<?php echo $this->so_get_field_name( $name . '_fallback', $repeater ) ?>" class="media-fallback-external" /><?php
+				}
+				?>
+
+				<input type="hidden" value="<?php echo esc_attr( is_array( $value ) ? '-1' : $value ) ?>" name="<?php echo $this->so_get_field_name( $name, $repeater ) ?>" class="siteorigin-widget-input" />
 				<?php
 				break;
 
 			case 'posts' :
-				?>
-				<input type="hidden" value="<?php echo esc_attr( is_array( $value ) ? '' : $value ) ?>" name="<?php echo $this->so_get_field_name( $name, $repeater ) ?>" class="siteorigin-widget-input" />
-				<a href="#" class="sow-select-posts button button-secondary">
-					<span class="sow-current-count"><?php echo siteorigin_widget_post_selector_count_posts( is_array( $value ) ? '' : $value ) ?></span>
-					<?php _e('Build posts query') ?>
-				</a>
-				<?php
+				siteorigin_widget_post_selector_admin_form_field( is_array( $value ) ? '' : $value, $this->so_get_field_name( $name, $repeater ) );
 				break;
 
 			case 'repeater':
@@ -858,6 +879,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						$sub_field_name,
 						$sub_field,
 						isset($value[$sub_field_name]) ? $value[$sub_field_name] : null,
+						$value,
 						$repeater,
 						true
 					);
@@ -900,6 +922,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 												$sub_field_name,
 												$sub_field,
 												isset($v[$sub_field_name]) ? $v[$sub_field_name] : null,
+												$v,
 												$repeater
 											);
 										}
@@ -927,6 +950,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						$name.']['.$sub_name,
 						$sub_field,
 						isset($value[$sub_name]) ? $value[$sub_name] : null,
+						$value,
 						$repeater
 					);
 				}
@@ -972,6 +996,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				?>
 				<div class="siteorigin-widget-font-selector siteorigin-widget-field-subcontainer">
 					<select name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" class="siteorigin-widget-input">
+						<option value="default" selected="selected"><?php _e( 'Use theme font', 'siteorigin-widgets' ) ?></option>
 						<?php foreach( $widget_font_families as $key => $val ) : ?>
 							<option value="<?php echo esc_attr($key) ?>" <?php selected($key, $value) ?>><?php echo esc_html($val) ?></option>
 						<?php endforeach; ?>
@@ -988,6 +1013,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						$name.']['.$sub_name,
 						$sub_field,
 						isset($value[$sub_name]) ? $value[$sub_name] : null,
+						$value,
 						$repeater
 					);
 				}
@@ -1155,9 +1181,64 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	function get_javascript_variables(){ }
 
 	/**
-	 * Can be overwritten by child widgets to enqueue scripts and styles for the frontend.
+	 * Used by child widgets to register scripts to be enqueued for the frontend.
 	 */
-	function enqueue_frontend_scripts( $instance ){ }
+	function register_frontend_scripts( $scripts ){
+		foreach ( $scripts as $script ) {
+			if ( ! isset( $this->frontend_scripts[ $script[0] ] ) ) {
+				$this->frontend_scripts[$script[0]] = $script;
+			}
+		}
+	}
+
+	function enqueue_registered_scripts() {
+		foreach ( $this->frontend_scripts as $f_script ) {
+			if ( ! wp_script_is( $f_script[0] ) ) {
+				wp_enqueue_script(
+					$f_script[0],
+					isset( $f_script[1] ) ? $f_script[1] : false,
+					isset( $f_script[2] ) ? $f_script[2] : array(),
+					isset( $f_script[3] ) ? $f_script[3] : false,
+					isset( $f_script[4] ) ? $f_script[4] : false
+				);
+			}
+		}
+	}
+
+	/**
+	 * Used by child widgets to register styles to be enqueued for the frontend.
+	 */
+	function register_frontend_styles( $styles ) {
+		foreach ( $styles as $style ) {
+			if ( ! isset( $this->frontend_styles[ $style[0] ] ) ) {
+				$this->frontend_styles[$style[0]] = $style;
+			}
+		}
+	}
+
+	function enqueue_registered_styles() {
+		foreach ( $this->frontend_styles as $f_style ) {
+			if ( ! wp_style_is( $f_style[0] ) ) {
+				wp_enqueue_style(
+					$f_style[0],
+					isset( $f_style[1] ) ? $f_style[1] : false,
+					isset( $f_style[2] ) ? $f_style[2] : array(),
+					isset( $f_style[3] ) ? $f_style[3] : false,
+					isset( $f_style[4] ) ? $f_style[4] : "all"
+				);
+			}
+		}
+	}
+
+	/**
+	 * Can be overridden by child widgets to enqueue scripts and styles for the frontend, but child widgets should
+	 * rather register scripts and styles using register_frontend_scripts() and register_frontend_styles(). This function
+	 * will then ensure that the scripts are not enqueued more than once.
+	 */
+	function enqueue_frontend_scripts( $instance ){
+		$this->enqueue_registered_scripts();
+		$this->enqueue_registered_styles();
+	}
 
 	/**
 	 * Can be overwritten by child widgets to enqueue admin scripts and styles if necessary.

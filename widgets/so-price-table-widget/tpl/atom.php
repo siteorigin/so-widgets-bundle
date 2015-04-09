@@ -41,7 +41,7 @@
 			</div>
 
 			<div class="ow-pt-button">
-				<a href='<?php echo esc_url($column['url']) ?>' class="ow-pt-link"><?php echo esc_html($column['button']) ?></a>
+				<a href='<?php echo sow_esc_url($column['url']) ?>' class="ow-pt-link"><?php echo esc_html($column['button']) ?></a>
 			</div>
 		</div>
 	<?php endforeach; ?>
