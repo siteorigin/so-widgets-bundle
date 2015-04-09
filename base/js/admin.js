@@ -324,7 +324,9 @@
                 };
 
                 // Toggle display of the existing content
-                $$.find('.select-content-button, .button-close').click( function() {
+                $$.find('.select-content-button, .button-close').click( function(e) {
+                    e.preventDefault();
+                    
                     $(this).blur();
                     var $s = $$.find('.existing-content-selector');
                     $s.toggle();
@@ -336,7 +338,8 @@
                 } );
 
                 // Clicking on one of the url items
-                $$.on( 'click', '.posts li', function(){
+                $$.on( 'click', '.posts li', function(e){
+                    e.preventDefault();
                     var $li = $(this);
                     $$.find('input.siteorigin-widget-input').val( 'post: ' + $li.data('ID') );
 
