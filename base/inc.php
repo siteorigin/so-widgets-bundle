@@ -223,6 +223,47 @@ function siteorigin_widget_preview_widget_action(){
 add_action('wp_ajax_so_widgets_preview', 'siteorigin_widget_preview_widget_action');
 
 /**
+ *
+ */
+function siteorigin_widget_search_posts_action(){
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
+
+	header('content-type: application/json');
+
+	// Get all public post types, besides attachments
+	$post_types = (array) get_post_types( array(
+		'public'   => true
+	) );
+	unset($post_types['attachment']);
+
+
+	global $wpdb;
+	if( !empty($_GET['query']) ) {
+		$query = "AND post_title LIKE '%" . esc_sql( $_GET['query'] ) . "%'";
+	}
+	else {
+		$query = '';
+	}
+
+	$post_types = "'" . implode("', '", array_map( 'esc_sql', $post_types ) ) . "'";
+
+	$results = $wpdb->get_results( "
+		SELECT ID, post_title, post_type
+		FROM {$wpdb->posts}
+		WHERE
+			post_type IN ( {$post_types} ) {$query}
+		ORDER BY post_modified DESC
+		LIMIT 20
+	", ARRAY_A );
+
+	echo json_encode( $results );
+
+
+	wp_die();
+}
+add_action('wp_ajax_so_widgets_search_posts', 'siteorigin_widget_search_posts_action');
+
+/**
  * Compatibility with Page Builder, add the groups and icons.
  *
  * @param $widgets

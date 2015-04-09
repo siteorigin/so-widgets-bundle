@@ -66,8 +66,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 							'label' => __('Button text', 'siteorigin-widgets'),
 						),
 						'url' => array(
-							'type' => 'text',
-							'sanitize' => 'url',
+							'type' => 'link',
 							'label' => __('Button URL', 'siteorigin-widgets'),
 						),
 						'features' => array(

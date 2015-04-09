@@ -8,6 +8,10 @@
 	display: block !important;
 	margin: 15px 0;
 
+	&.siteorigin-widget-form-main {
+		min-width: 600px;
+	}
+
 	.siteorigin-widget-field-is-hidden {
 		display: none;
 	}
@@ -52,6 +56,10 @@
 				color: #54a242;
 				font-style: italic;
 			}
+		}
+
+		input[type="text"] {
+			width: 100%;
 		}
 	}
 
@@ -282,35 +290,18 @@
 		position: relative;
 		display: block;
 		float: left;
-		background: #f4f4f4;
-		background: -moz-linear-gradient(top,  #f9f9f9 0%, #f2f2f2 100%);
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f9f9f9), color-stop(100%,#f2f2f2));
-		background: -webkit-linear-gradient(top,  #f9f9f9 0%,#f2f2f2 100%);
-		background: -o-linear-gradient(top,  #f9f9f9 0%,#f2f2f2 100%);
-		background: -ms-linear-gradient(top,  #f9f9f9 0%,#f2f2f2 100%);
-		background: linear-gradient(to bottom,  #f9f9f9 0%,#f2f2f2 100%);
-		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9f9f9', endColorstr='#f2f2f2',GradientType=0 );
+
+		.gradient( #f9f9f9, #f2f2f2, #f9f9f9 );
+		.box-shadow(~"0 1px 2px rgba(0,0,0,0.1)");
+		.rounded(3px);
+
 		border: 1px solid #bbbbbb;
-
-		box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-
-		-webkit-border-radius: 3px;
-		-moz-border-radius: 3px;
-		border-radius: 3px;
 
 		height: 32px;
 
 		&:hover {
-			background: #ffffff;
-			background: -moz-linear-gradient(top,  #ffffff 0%, #f7f7f7 100%);
-			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f7f7f7));
-			background: -webkit-linear-gradient(top,  #ffffff 0%,#f7f7f7 100%);
-			background: -o-linear-gradient(top,  #ffffff 0%,#f7f7f7 100%);
-			background: -ms-linear-gradient(top,  #ffffff 0%,#f7f7f7 100%);
-			background: linear-gradient(to bottom,  #ffffff 0%,#f7f7f7 100%);
-			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f7f7f7',GradientType=0 );
-
-			box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+			.gradient( #ffffff, #f7f7f7, #ffffff );
+			.box-shadow(~"0 1px 2px rgba(0,0,0,0.15)");
 		}
 
 		> div {
@@ -400,6 +391,13 @@
 		}
 	}
 
+	.media-fallback-external {
+		padding: 4px 8px;
+		display: block;
+		margin-top: 8px !important;
+		width: 320px;
+	}
+
 	.siteorigin-widget-field-type-widget,
 	.siteorigin-widget-field-type-section {
 
@@ -440,6 +438,101 @@
 				display: none;
 			}
 		}
+	}
+
+	.siteorigin-widget-field-type-link {
+
+		position: relative;
+
+		.existing-content-selector {
+			padding: 20px;
+			display: none;
+			position: absolute;
+			top: 110%;
+			right: 0px;
+			width: 360px;
+			z-index: 10;
+			border: 1px solid #c0c0c0;
+			background: #F6F6F6;
+			.box-shadow(~"0 2px 4px rgba(0,0,0,0.2)");
+			.rounded(3px);
+
+			.content-text-search {
+				width: 100%;
+				margin-bottom: 15px;
+			}
+
+			.posts {
+				margin: 0;
+				padding: 0;
+				background: #fff;
+				max-height: 300px;
+				overflow-y: scroll;
+				border: 1px solid #e4e4e4;
+
+				li {
+					cursor: pointer;
+					padding: 5px 10px;
+					color: #32373c;
+					border-bottom: 1px solid #f1f1f1;
+					margin: 0;
+					font-size: 0.95em;
+
+					&:hover {
+						background: #eaf2fa;
+					}
+
+					&:last-child {
+						border-bottom: 0;
+					}
+
+					span {
+						font-size: 0.9em;
+						display: inline-block;
+						float: right;
+						color: #999;
+						margin-left: 10px;
+					}
+				}
+
+				&.loading {
+					min-height: 40px;
+					background: #FFFFFF url("img/wpspin_light.gif") center center no-repeat;
+
+					@media  (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+						& {
+							background-image: url("img/wpspin_light-2x.gif");
+							background-size: 16px 16px;
+						}
+					}
+
+					li {
+						display: none;
+					}
+				}
+			}
+
+			.buttons {
+				margin-top: 15px;
+				text-align: right;
+
+				a {
+					display: inline-block;
+				}
+			}
+		}
+
+		.url-input-wrapper {
+			display: block;
+			margin-right: 130px;
+		}
+
+		.select-content-button {
+			float: right;
+			width: 120px;
+			text-align: center;
+		}
+
 	}
 
 	.siteorigin-widget-icon-selector {

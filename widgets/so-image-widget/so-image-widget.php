@@ -22,6 +22,8 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 				'image' => array(
 					'type' => 'media',
 					'label' => __('Image file', 'siteorigin-widgets'),
+					'library' => 'image',
+					'fallback' => true,
 				),
 
 				'size' => array(
@@ -46,7 +48,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 				),
 
 				'url' => array(
-					'type' => 'text',
+					'type' => 'link',
 					'label' => __('Destination URL', 'siteorigin-widgets'),
 				),
 				'new_window' => array(

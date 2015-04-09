@@ -74,9 +74,8 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 						),
 
 						'more_url' => array(
-							'type' => 'text',
+							'type' => 'link',
 							'label' => __('More link URL', 'siteorigin-widgets'),
-							'sanitize' => 'url',
 						),
 					),
 				),
