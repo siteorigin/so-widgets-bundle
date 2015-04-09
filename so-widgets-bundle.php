@@ -172,8 +172,8 @@ class SiteOrigin_Widgets_Bundle {
 	 */
 	function admin_enqueue_scripts($prefix) {
 		if( $prefix != 'plugins_page_so-widgets-plugins' ) return;
-		wp_enqueue_style( 'siteorigin-widgets-bundle-admin', plugin_dir_url( __FILE__ ) . 'css/admin.css', array(), SOW_BUNDLE_VERSION );
-		wp_enqueue_script( 'siteorigin-widgets-bundle-admin', plugin_dir_url( __FILE__ ) . 'js/admin.js', array(), SOW_BUNDLE_VERSION );
+		wp_enqueue_style( 'siteorigin-widgets-manage-admin', plugin_dir_url( __FILE__ ) . 'css/admin.css', array(), SOW_BUNDLE_VERSION );
+		wp_enqueue_script( 'siteorigin-widgets-manage-admin', plugin_dir_url( __FILE__ ) . 'js/admin' . SOW_BUNDLE_JS_SUFFIX . '.js', array(), SOW_BUNDLE_VERSION );
 	}
 
 	/**
@@ -506,7 +506,19 @@ function siteorigin_widgets_deactivate_legacy_plugins(){
 }
 register_activation_hook( __FILE__, 'siteorigin_widgets_deactivate_legacy_plugins' );
 
+/**
+ * Escape a URL
+ *
+ * @param $url
+ *
+ * @return string
+ */
 function sow_esc_url( $url ) {
+	if( preg_match('/^post: *([0-9]+)/', $url, $matches) ) {
+		// Convert the special post URL into a permalink
+		$url = get_the_permalink( intval($matches[1]) );
+	}
+
 	$protocols = wp_allowed_protocols();
 	$protocols[] = 'skype';
 	return esc_url( $url, $protocols );

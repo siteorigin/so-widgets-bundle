@@ -590,6 +590,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					}
 					break;
 
+				case 'link':
+					$instance[$name] = trim($instance[$name]);
+					if( preg_match( '/^post\: *([0-9]+)/', $instance[ $name ], $matches ) ) {
+						$instance[$name] = 'post: ' . $matches[1];
+					}
+					else {
+						$instance[$name] = sow_esc_url_raw( $instance[$name] );
+					}
+					break;
+
 				case 'checkbox':
 					$instance[$name] = !empty($instance[$name]);
 					break;
@@ -732,6 +742,25 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				?><input type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" value="<?php echo esc_attr($value) ?>" <?php if ( ! empty( $field['placeholder'] ) ) echo 'placeholder="' . $field['placeholder'] . '"' ?> class="widefat siteorigin-widget-input" <?php if( ! empty( $field['readonly'] ) ) echo 'readonly' ?> /><?php
 				break;
 
+			case 'link' :
+				?>
+				<a href="#" class="select-content-button button-secondary"><?php _e('Select Content', 'siteorigin-widgets') ?></a>
+				<div class="existing-content-selector">
+
+					<input type="text" placeholder="<?php esc_attr_e('Search Content', 'siteorigin-widgets') ?>" class="content-text-search" />
+
+					<ul class="posts"></ul>
+
+					<div class="buttons">
+						<a href="#" class="button-close button-secondary"><?php _e('Close', 'siteorigin-widgets') ?></a>
+					</div>
+				</div>
+				<div class="url-input-wrapper">
+					<input type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" value="<?php echo esc_attr($value) ?>" <?php if ( ! empty( $field['placeholder'] ) ) echo 'placeholder="' . $field['placeholder'] . '"' ?> class="widefat siteorigin-widget-input" <?php if( ! empty( $field['readonly'] ) ) echo 'readonly' ?> />
+				</div>
+				<?php
+				break;
+
 			case 'color' :
 				?><input type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" value="<?php echo esc_attr($value) ?>" <?php if ( ! empty( $field['placeholder'] ) ) echo 'placeholder="' . $field['placeholder'] . '"' ?> class="widefat siteorigin-widget-input siteorigin-widget-input-color" /><?php
 				break;
@@ -809,7 +838,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			case 'media':
 				if( version_compare( get_bloginfo('version'), '3.5', '<' ) ){
-					printf( __('You need to <a href="%s">upgrade</a> to WordPress 3.5 to use media fields', 'siteorigin'), admin_url('update-core.php') );
+					printf( __('You need to <a href="%s">upgrade</a> to WordPress 3.5 to use media fields', 'siteorigin-widgets'), admin_url('update-core.php') );
 					break;
 				}
 
@@ -843,7 +872,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						<?php echo esc_html($choose_title) ?>
 					</a>
 
-					<a href="#" class="media-remove-button"><?php esc_html_e('Remove', 'siteorigin') ?></a>
+					<a href="#" class="media-remove-button"><?php esc_html_e('Remove', 'siteorigin-widgets') ?></a>
 
 				</div>
 

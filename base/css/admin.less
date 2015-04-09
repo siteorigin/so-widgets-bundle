@@ -432,6 +432,101 @@
 		}
 	}
 
+	.siteorigin-widget-field-type-link {
+
+		position: relative;
+
+		.existing-content-selector {
+			padding: 20px;
+			display: none;
+			position: absolute;
+			top: 110%;
+			right: 0px;
+			width: 360px;
+			z-index: 10;
+			border: 1px solid #c0c0c0;
+			background: #F6F6F6;
+			.box-shadow(~"0 2px 4px rgba(0,0,0,0.2)");
+			.rounded(3px);
+
+			.content-text-search {
+				width: 100%;
+				margin-bottom: 15px;
+			}
+
+			.posts {
+				margin: 0;
+				padding: 0;
+				background: #fff;
+				max-height: 300px;
+				overflow-y: scroll;
+				border: 1px solid #e4e4e4;
+
+				li {
+					cursor: pointer;
+					padding: 5px 10px;
+					color: #32373c;
+					border-bottom: 1px solid #f1f1f1;
+					margin: 0;
+					font-size: 0.95em;
+
+					&:hover {
+						background: #eaf2fa;
+					}
+
+					&:last-child {
+						border-bottom: 0;
+					}
+
+					span {
+						font-size: 0.9em;
+						display: inline-block;
+						float: right;
+						color: #999;
+						margin-left: 10px;
+					}
+				}
+
+				&.loading {
+					min-height: 40px;
+					background: #FFFFFF url("img/wpspin_light.gif") center center no-repeat;
+
+					@media  (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+						& {
+							background-image: url("img/wpspin_light-2x.gif");
+							background-size: 16px 16px;
+						}
+					}
+
+					li {
+						display: none;
+					}
+				}
+			}
+
+			.buttons {
+				margin-top: 15px;
+				text-align: right;
+
+				a {
+					display: inline-block;
+				}
+			}
+		}
+
+		.url-input-wrapper {
+			display: block;
+			margin-right: 130px;
+		}
+
+		.select-content-button {
+			float: right;
+			width: 120px;
+			text-align: center;
+		}
+
+	}
+
 	.siteorigin-widget-icon-selector {
 		padding: 10px;
 		border: 1px solid #D8D8D8;

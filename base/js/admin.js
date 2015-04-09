@@ -1,3 +1,6 @@
+
+/* globals wp, jQuery, soWidgets, confirm */
+
 (function($){
 
     $.fn.sowSetupForm = function() {
@@ -287,6 +290,70 @@
                     }
                 });
             });
+
+            // Setup the URL fields
+            $fields.filter('.siteorigin-widget-field-type-link').each( function(){
+                var $$ = $(this);
+
+                // Function that refreshes the list of
+                var request = null;
+                var refreshList = function(){
+                    if( request !== null ) {
+                        request.abort();
+                    }
+
+                    var query = $$.find('.content-text-search').val();
+
+                    var $ul = $$.find('ul.posts').empty().addClass('loading');
+                    $.get(
+                        soWidgets.ajaxurl,
+                        { action: 'so_widgets_search_posts', query: query },
+                        function(data){
+                            for( var i = 0; i < data.length; i++ ) {
+                                // Add all the post items
+                                $ul.append(
+                                    $('<li>')
+                                        .addClass('post')
+                                        .html( data[i].post_title + '<span>(' + data[i].post_type + ')</span>' )
+                                        .data( data[i] )
+                                );
+                            }
+                            $ul.removeClass('loading');
+                        }
+                    );
+                };
+
+                // Toggle display of the existing content
+                $$.find('.select-content-button, .button-close').click( function() {
+                    $(this).blur();
+                    var $s = $$.find('.existing-content-selector');
+                    $s.toggle();
+
+                    if( $s.is(':visible') && $s.find('ul.posts li').length === 0 ) {
+                        refreshList();
+                    }
+
+                } );
+
+                // Clicking on one of the url items
+                $$.on( 'click', '.posts li', function(){
+                    var $li = $(this);
+                    $$.find('input.siteorigin-widget-input').val( 'post: ' + $li.data('ID') );
+
+                    $$.find('.existing-content-selector').toggle();
+                } );
+
+                var interval = null;
+                $$.find('.content-text-search').keyup( function(){
+                    if( interval !== null ) {
+                        clearTimeout(interval);
+                    }
+
+                    interval = setTimeout(function(){
+                        refreshList();
+                    }, 500);
+                } );
+            } );
 
             // Give plugins a chance to influence the form
             $el.trigger('sowsetupform').data('sow-form-setup', true);
