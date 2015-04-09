@@ -94,7 +94,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							'type'        => 'media',
 							'default'     => '',
 							'label'       => __( 'Marker icon', 'siteorigin-widgets' ),
-							'description' => __( 'Replaces the default map marker with your own image.' )
+							'description' => __( 'Replaces the default map marker with your own image.', 'siteorigin-widgets' )
 						),
 						'markers_draggable' => array(
 							'type'       => 'checkbox',
@@ -162,7 +162,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							'fields'     => array(
 								'map_feature'  => array(
 									'type'    => 'select',
-									'label'   => __( '', 'siteorigin-widgets' ),
+									'label'   => '',
 									'prompt'  => __( 'Select map feature to style', 'siteorigin-widgets' ),
 									'options' => array(
 										'water'                       => __( 'Water', 'siteorigin-widgets' ),
@@ -259,7 +259,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 									'type'        => 'checkbox',
 									'default'     => true,
 									'label'       => __( 'Stopover', 'siteorigin-widgets' ),
-									'description' => __( 'Whether or not this is a stop on the route or just a route preference.' )
+									'description' => __( 'Whether or not this is a stop on the route or just a route preference.', 'siteorigin-widgets' )
 								)
 							)
 						),

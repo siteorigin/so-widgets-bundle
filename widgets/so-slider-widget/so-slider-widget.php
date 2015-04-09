@@ -52,7 +52,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 									'sanitize' => 'url',
 									'label' => __('Video URL', 'siteorigin-widgets'),
 									'optional' => 'true',
-									'description' => __('An external URL of the video. Overrides video file.')
+									'description' => __('An external URL of the video. Overrides video file.', 'siteorigin-widgets')
 								),
 
 								'format' => array(

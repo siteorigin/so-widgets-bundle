@@ -887,7 +887,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					}
 					$fallback_url = !empty( $all_values[$v_name . '_fallback'] ) ? $all_values[$v_name . '_fallback'] : '';
 
-					?><input type="text" value="<?php echo esc_url( $fallback_url ) ?>" placeholder="<?php esc_attr_e('Fallback External URL') ?>" name="<?php echo $this->so_get_field_name( $name . '_fallback', $repeater ) ?>" class="media-fallback-external" /><?php
+					?><input type="text" value="<?php echo esc_url( $fallback_url ) ?>" placeholder="<?php esc_attr_e('Fallback Image URL', 'siteorigin-widgets') ?>" name="<?php echo $this->so_get_field_name( $name . '_fallback', $repeater ) ?>" class="media-fallback-external" /><?php
 				}
 				?>
 
