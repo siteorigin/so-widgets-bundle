@@ -5,6 +5,9 @@
   display: block !important;
   margin: 15px 0;
 }
+.siteorigin-widget-form a {
+  box-shadow: none;
+}
 .siteorigin-widget-form.siteorigin-widget-form-main {
   min-width: 600px;
 }
