@@ -109,6 +109,17 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$this->enqueue_frontend_scripts( $instance );
 		extract( apply_filters( 'siteorigin_widget_template_variables', $this->get_template_variables($instance, $args) ) );
 
+		// Storage hash allows templates to get access to
+		$storage_hash = '';
+		if( !empty($this->widget_options['instance_storage']) ) {
+			$stored_instance = $this->filter_stored_instance($instance);
+			$storage_hash = substr( md5( serialize($stored_instance) ), 0, 8 );
+			if( !empty( $stored_instance ) && empty( $instance['is_preview'] ) ) {
+				// Store this if we have a non empty instance and are not previewing
+				set_transient('sow_inst[' . $this->id_base . '][' . $storage_hash . ']', $stored_instance, 7*86400);
+			}
+		}
+
 		$template_file = siteorigin_widget_get_plugin_dir_path( $this->id_base ) . $this->get_template_dir( $instance ) . '/' . $this->get_template_name( $instance ) . '.php';
 		$template_file = apply_filters('siteorigin_widget_template_file_' . $this->id_base, $template_file, $instance, $this );
 		$template_file = realpath($template_file);
@@ -1254,7 +1265,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return object The instance
 	 */
 	function get_stored_instance($hash) {
-
 		return get_transient('sow_inst[' . $this->id_base . '][' . $hash . ']');
 	}
 
