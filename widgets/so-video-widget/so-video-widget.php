@@ -10,16 +10,7 @@ Author URI: http://siteorigin.com
 
 class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 
-	private $video_hosts;
-
 	function __construct() {
-
-		$this->video_hosts = include plugin_dir_path( __FILE__ ) . 'data/video_hosts.php';
-
-		$video_host_names = array();
-		foreach ( $this->video_hosts as $key => $value ) {
-			$video_host_names[ $key ] = $value['label'];
-		}
 
 		parent::__construct(
 			'sow-video',
@@ -46,6 +37,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				),
 				'self_video' => array(
 					'type' => 'media',
+					'fallback' => true,
 					'label' => __( 'Select video', 'siteorigin-widgets' ),
 					'default'     => '',
 					'library' => 'video',
@@ -57,13 +49,6 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 					'default'     => '',
 					'library' => 'image',
 					'state_name' => 'self',
-				),
-				'video_host' => array(
-					'type' => 'select',
-					'label' => __( '', 'siteorigin-widgets' ),
-					'state_name' => 'external',
-					'prompt'  => __( 'Select video host', 'siteorigin-widgets' ),
-					'options' => $video_host_names,
 				),
 				'external_video' => array(
 					'type' => 'text',
@@ -110,21 +95,22 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 	}
 
 	function enqueue_frontend_scripts( $instance ) {
-		if ( !empty( $instance['video_host'] ) && $instance['video_host'] == 'vimeo' ) {
+		if ( !empty( $instance['video_url'] ) && strpos( $instance['video_url'], 'vimeo.com' ) !== false ) {
 			wp_enqueue_script( 'froogaloop' );
 		}
 		parent::enqueue_frontend_scripts( $instance );
 	}
 
 	function get_template_name( $instance ) {
-		if ( !empty( $instance['skin'] ) ) {
-			return $instance['skin'];
-		}
+//		if ( !empty( $instance['skin'] ) ) {
+//			return $instance['skin'];
+//		}
 		return 'default';
 	}
 
 	function get_template_variables( $instance, $args ) {
 		$poster = '';
+		$src = '';
 		$video_type = '';
 		if ( $instance['host_type'] == 'self' ) {
 			$vid_info = wp_get_attachment_metadata( $instance['self_video'] );
@@ -132,22 +118,34 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			$src = !empty( $instance['self_video'] ) ? wp_get_attachment_url( $instance['self_video'] ) : '';
 			$poster = !empty( $instance['self_poster'] ) ? wp_get_attachment_url( $instance['self_poster'] ) : '';
 		}
-		else {
-			$video_type = empty( $instance['video_host'] ) ? '' : $instance['video_host'];
-			$video_host = empty( $video_type ) ? '' : $this->video_hosts[$video_type];
-			$src = !empty( $instance['external_video'] ) ? $video_host['base_url'] . $instance['external_video'] : '';
-		}
+//		else {
+//			$video_type = empty( $instance['video_host'] ) ? '' : $instance['video_host'];
+//			$video_host = empty( $video_type ) ? '' : $this->video_hosts[$video_type];
+//			$src = !empty( $instance['external_video'] ) ? $video_host['base_url'] . $instance['external_video'] : '';
+//		}
 		return array(
+			'player_id' => 'player1',
 			'host_type' => $instance['host_type'],
 			'src' => $src,
 			'video_type' => $video_type,
 			'poster' => $poster,
 			'autoplay' => $instance['autoplay'],
+			'skin_class' => $instance['skin']
 		);
 	}
 
 	function get_style_name( $instance ) {
+		if ( !empty( $instance['skin'] ) ) {
+			return $instance['skin'];
+		}
 		return '';
+	}
+
+	function get_less_variables( $instance ) {
+		$controls_url = siteorigin_widget_get_plugin_dir_url( 'video' ) . 'styles/controls-' . $instance['skin'] . '.png';
+		return array(
+			'controls_url' => "'" . $controls_url . "'",
+		);
 	}
 }
 siteorigin_widget_register( 'video', __FILE__ );
