@@ -505,27 +505,3 @@ function siteorigin_widgets_deactivate_legacy_plugins(){
 	}
 }
 register_activation_hook( __FILE__, 'siteorigin_widgets_deactivate_legacy_plugins' );
-
-/**
- * Escape a URL
- *
- * @param $url
- *
- * @return string
- */
-function sow_esc_url( $url ) {
-	if( preg_match('/^post: *([0-9]+)/', $url, $matches) ) {
-		// Convert the special post URL into a permalink
-		$url = get_the_permalink( intval($matches[1]) );
-	}
-
-	$protocols = wp_allowed_protocols();
-	$protocols[] = 'skype';
-	return esc_url( $url, $protocols );
-}
-
-function sow_esc_url_raw( $url ) {
-	$protocols = wp_allowed_protocols();
-	$protocols[] = 'skype';
-	return esc_url_raw( $url, $protocols );
-}
