@@ -454,7 +454,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$style_name = $this->get_style_name($instance);
 		if( empty($style_name) ) return '';
 
-		$less = file_get_contents( siteorigin_widget_get_plugin_dir_path( $this->id_base ).'styles/'.$style_name . '.less' );
+		$file_path = siteorigin_widget_get_plugin_dir_path( $this->id_base ).'styles/'.$style_name . '.less';
+
+		if ( !file_exists( $file_path ) ) return '';
+
+		$less = file_get_contents( $file_path );
 
 		// Substitute the variables
 		if( !class_exists('SiteOrigin_Widgets_Color_Object') ) require plugin_dir_path( __FILE__ ) . 'inc/color.php';
