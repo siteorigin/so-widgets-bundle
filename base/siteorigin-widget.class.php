@@ -10,8 +10,17 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	protected $base_folder;
 	protected $repeater_html;
 	protected $field_ids;
+
+	/**
+	 * @var array The array of registered frontend scripts
+	 */
 	protected $frontend_scripts = array();
+
+	/**
+	 * @var array The array of registered frontend styles
+	 */
 	protected $frontend_styles = array();
+
 	protected $generated_css = array();
 
 	protected $current_instance;
@@ -84,17 +93,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$this->enqueue_frontend_scripts( $instance );
 		extract( apply_filters( 'siteorigin_widget_template_variables', $this->get_template_variables($instance, $args) ) );
 
-		// Storage hash allows
-		$storage_hash = '';
-		if( !empty($this->widget_options['instance_storage']) ) {
-			$stored_instance = $this->filter_stored_instance($instance);
-			$storage_hash = substr( md5( serialize($stored_instance) ), 0, 8 );
-			if( !empty( $stored_instance ) && empty( $instance['is_preview'] ) ) {
-				// Store this if we have a non empty instance and are not previewing
-				set_transient('sow_inst[' . $this->id_base . '][' . $storage_hash . ']', $stored_instance, 7*86400);
-			}
-		}
-
 		echo $args['before_widget'];
 		echo '<div class="so-widget-'.$this->id_base.' so-widget-'.$css_name.'">';
 		ob_start();
@@ -104,6 +102,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		echo $args['after_widget'];
 	}
 
+	/**
+	 * Generate the CSS for this widget and display it in the appropriate way
+	 *
+	 * @param $instance The instance array
+	 *
+	 * @return string The CSS name
+	 */
 	function generate_and_enqueue_instance_styles( $instance ) {
 
 		$this->current_instance = $instance;
@@ -164,6 +169,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		return array();
 	}
 
+	/**
+	 * Render a sub widget. This should be used inside template files.
+	 *
+	 * @param $class
+	 * @param $args
+	 * @param $instance
+	 */
 	public function sub_widget($class, $args, $instance){
 		if(!class_exists($class)) return;
 		$widget = new $class;
@@ -495,9 +507,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		return apply_filters( 'siteorigin_widget_instance_css', $c->compile( $less ), $instance );
 	}
 
+	/**
+	 * Replaces LESS imports with the content from the actual files. This used as a preg callback.
+	 *
+	 * @param $matches
+	 *
+	 * @return string
+	 */
 	private function get_less_import_contents($matches) {
 		$fileName = $matches[1];
-		//get file extenstion
+		//get file extension
 		preg_match( '/\.\w+$/', $fileName, $ext );
 		//if there is a file extension and it's not .less or .css we ignore
 		if ( ! empty( $ext ) ) {
@@ -524,6 +543,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		return '';
 	}
 
+	/**
+	 * Used as a preg callback to replace .widget-function('some_function', ...) with output from less_some_function($instance, $args).
+	 *
+	 * @param $matches
+	 *
+	 * @return mixed|string
+	 */
 	private function less_widget_inject($matches){
 		// We're going to lazily split the arguments by comma
 		$args = explode(',', $matches[1]);
@@ -649,12 +675,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
+	 * Utility function to get a field name for a widget field.
+	 *
 	 * @param $field_name
 	 * @param array $repeater
 	 * @param string $repeater_append
 	 * @return mixed|string
 	 */
-	public function so_get_field_name($field_name, $repeater = array(), $repeater_append = '[]') {
+	protected function so_get_field_name($field_name, $repeater = array(), $repeater_append = '[]') {
 		if( empty($repeater) ) return $this->get_field_name($field_name);
 		else {
 
@@ -1203,12 +1231,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Can be overwritten by child widgets to make variables available to javascript via ajax calls.
+	 * Can be overwritten by child widgets to make variables available to javascript via ajax calls. These are designed to be used in the admin.
 	 */
 	function get_javascript_variables(){ }
 
 	/**
 	 * Used by child widgets to register scripts to be enqueued for the frontend.
+	 *
+	 * @param array $scripts an array of scripts. Each element is an array that corresponds to wp_enqueue_script arguments
 	 */
 	function register_frontend_scripts( $scripts ){
 		foreach ( $scripts as $script ) {
@@ -1218,6 +1248,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 	}
 
+	/**
+	 * Enqueue all the registered scripts
+	 */
 	function enqueue_registered_scripts() {
 		foreach ( $this->frontend_scripts as $f_script ) {
 			if ( ! wp_script_is( $f_script[0] ) ) {
@@ -1234,6 +1267,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 	/**
 	 * Used by child widgets to register styles to be enqueued for the frontend.
+	 *
+	 * @param array $styles an array of styles. Each element is an array that corresponds to wp_enqueue_style arguments
 	 */
 	function register_frontend_styles( $styles ) {
 		foreach ( $styles as $style ) {
@@ -1243,6 +1278,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 	}
 
+	/**
+	 * Enqueue any frontend styles that were registered
+	 */
 	function enqueue_registered_styles() {
 		foreach ( $this->frontend_styles as $f_style ) {
 			if ( ! wp_style_is( $f_style[0] ) ) {

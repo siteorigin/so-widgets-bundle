@@ -284,7 +284,7 @@ class SiteOrigin_Widgets_Bundle {
 		global $wp_widget_factory;
 		if ( ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ) {
 			$widget = $wp_widget_factory->widgets[ $widget_class ];
-			$result = $widget->get_javascript_variables();
+			if( method_exists($widget, 'get_javascript_variables') ) $result = $widget->get_javascript_variables();
 		}
 
 		header('content-type: application/json');
