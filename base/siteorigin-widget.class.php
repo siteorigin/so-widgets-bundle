@@ -871,12 +871,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					<a href="#" class="media-upload-button" data-choose="<?php echo esc_attr($choose_title) ?>" data-update="<?php echo esc_attr( $update_button ) ?>" data-library="<?php echo esc_attr($library) ?>">
 						<?php echo esc_html($choose_title) ?>
 					</a>
-
-					<a href="#" class="media-remove-button"><?php esc_html_e('Remove', 'siteorigin-widgets') ?></a>
-
 				</div>
-
-				<div class="clear"></div>
+				<a href="#" class="media-remove-button <?php if( empty($value) ) echo 'remove-hide'; ?>"><?php esc_html_e('Remove', 'siteorigin-widgets') ?></a>
 
 				<?php
 				if( !empty( $field['fallback'] ) ) {
@@ -890,6 +886,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					?><input type="text" value="<?php echo esc_url( $fallback_url ) ?>" placeholder="<?php esc_attr_e('Fallback Image URL', 'siteorigin-widgets') ?>" name="<?php echo $this->so_get_field_name( $name . '_fallback', $repeater ) ?>" class="media-fallback-external" /><?php
 				}
 				?>
+
+				<div class="clear"></div>
 
 				<input type="hidden" value="<?php echo esc_attr( is_array( $value ) ? '-1' : $value ) ?>" name="<?php echo $this->so_get_field_name( $name, $repeater ) ?>" class="siteorigin-widget-input" />
 				<?php

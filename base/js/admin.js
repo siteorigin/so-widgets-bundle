@@ -71,8 +71,10 @@
             // handle the media field. Check that this is working
             $fields.find('> .media-field-wrapper').each(function(){
                 var $media = $(this);
+                var $field = $media.closest('.siteorigin-widget-field');
+
                 // Handle the media uploader
-                $media.find('a.media-upload-button' ).click(function(event){
+                $media.find('a.media-upload-button' ).click(function(e){
                     if( typeof wp.media === 'undefined' ) {
                         return;
                     }
@@ -121,14 +123,18 @@
                         $inputField.trigger('change');
 
                         if(typeof attachment.sizes !== 'undefined'){
-                            if(typeof attachment.sizes.thumbnail !== 'undefined')
+                            if(typeof attachment.sizes.thumbnail !== 'undefined'){
                                 $c.find('.current .thumbnail' ).attr('src', attachment.sizes.thumbnail.url).fadeIn();
-                            else
+                            }
+                            else {
                                 $c.find('.current .thumbnail' ).attr('src', attachment.sizes.full.url).fadeIn();
+                            }
                         }
                         else{
                             $c.find('.current .thumbnail' ).attr('src', attachment.icon).fadeIn();
                         }
+
+                        $field.find('.media-remove-button').removeClass('remove-hide');
 
                         frame.close();
                     } );
@@ -138,17 +144,6 @@
 
                     return false;
                 });
-
-                // Show/hide the remove button when hovering over the media select button.
-                $media
-                    .mouseenter(function(){
-                        if($(this ).closest('.siteorigin-widget-field').find('input[type=hidden]' ).val() !== '') {
-                            $(this ).find('.media-remove-button').fadeIn('fast');
-                        }
-                    })
-                    .mouseleave(function(){
-                        $(this ).find('.media-remove-button').fadeOut('fast');
-                    })
 
                 $media.find('.current' )
                     .mouseenter(function(){
@@ -161,14 +156,13 @@
                         $(this ).find('.title' ).clearQueue().fadeOut('fast');
                     })
 
-                $media.find('a.media-remove-button' )
-                    .click(function(){
-                        var $$ = $(this ).closest('.siteorigin-widget-field');
-
-                        $$.find('.current .title' ).html('');
-                        $$.find('input[type=hidden]' ).val('');
-                        $$.find('.current .thumbnail' ).fadeOut('fast');
-                        $(this ).fadeOut('fast');
+                $field.find('a.media-remove-button' )
+                    .click(function(e){
+                        e.preventDefault();
+                        $field.find('.current .title' ).html('');
+                        $field.find('input[type=hidden]' ).val('');
+                        $field.find('.current .thumbnail' ).fadeOut('fast');
+                        $(this).addClass('remove-hide');
                     });
 
             });
@@ -180,7 +174,7 @@
                 $(this).siblings('.siteorigin-widget-section').slideToggle(function(){
                     // Center the PB dialog
                     if(typeof $.fn.dialog !== 'undefined') {
-                        $(this).closest('.panel-dialog').dialog("option", "position", "center");
+                        $(this).closest('.panel-dialog').dialog( "option", "position", "center" );
                     }
 
                     $(window).resize();
