@@ -57,7 +57,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
+	 * Initialize this widget in whatever way we need to. Run before rendering widget or form.
+	 */
+	function initialize(){
+
+	}
+
+	/**
 	 * Get the form options and allow child widgets to modify that form.
+	 *
+	 * @param bool $parent
 	 *
 	 * @return mixed
 	 */
@@ -67,7 +76,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$form_options = $parent->modify_child_widget_form( $form_options, $this );
 		}
 
-		return apply_filters( 'siteorigin_widget_form_options', $form_options );
+		// Give other plugins a way to modify this form.
+		$form_options = apply_filters( 'siteorigin_widget_form_options', $form_options, $this );
+		$form_options = apply_filters( 'siteorigin_widget_form_options_' . $this->id_base, $form_options, $this );
+		return $form_options;
 	}
 
 	/**
@@ -78,6 +90,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		$instance = $this->modify_instance($instance);
+
+		// Filter the instance
+		$instance = apply_filters( 'siteorigin_widget_instance', $instance, $this );
+		$instance = apply_filters( 'siteorigin_widget_instance_' . $this->id_base, $instance, $this );
 
 		$args = wp_parse_args( $args, array(
 			'before_widget' => '',
@@ -93,10 +109,20 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$this->enqueue_frontend_scripts( $instance );
 		extract( apply_filters( 'siteorigin_widget_template_variables', $this->get_template_variables($instance, $args) ) );
 
+		$template_file = siteorigin_widget_get_plugin_dir_path( $this->id_base ) . $this->get_template_dir( $instance ) . '/' . $this->get_template_name( $instance ) . '.php';
+		$template_file = apply_filters('siteorigin_widget_template_file_' . $this->id_base, $template_file, $instance, $this );
+		$template_file = realpath($template_file);
+
+		// Don't accept non PHP files
+		if( substr($template_file, -4) != '.php' ) $template_file = false;
+
+		// Exit if the template file is empty or doesn't exist
+		if( empty($template_file) || !file_exists($template_file) ) return;
+
 		echo $args['before_widget'];
 		echo '<div class="so-widget-'.$this->id_base.' so-widget-'.$css_name.'">';
 		ob_start();
-		@ include siteorigin_widget_get_plugin_dir_path( $this->id_base ) . '/' . $this->get_template_dir( $instance ) . '/' . $this->get_template_name( $instance ) . '.php';
+		@ include $template_file;
 		echo apply_filters('siteorigin_widget_template', ob_get_clean(), get_class($this), $instance, $this );
 		echo '</div>';
 		echo $args['after_widget'];
@@ -466,7 +492,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$style_name = $this->get_style_name($instance);
 		if( empty($style_name) ) return '';
 
-		$less = file_get_contents( siteorigin_widget_get_plugin_dir_path( $this->id_base ).'styles/'.$style_name . '.less' );
+		$less_file = siteorigin_widget_get_plugin_dir_path( $this->id_base ).'styles/'.$style_name . '.less';
+		$less_file = apply_filters( 'siteorigin_widget_less_file_' . $this->id_base, $less_file, $instance, $this );
+
+		$less = ( substr( $less_file, -5 ) == '.less' && file_exists($less_file) ) ? file_get_contents( $less_file ) : '';
 
 		// Substitute the variables
 		if( !class_exists('SiteOrigin_Widgets_Color_Object') ) require plugin_dir_path( __FILE__ ) . 'inc/color.php';
@@ -487,6 +516,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		$less = apply_filters( 'siteorigin_widget_styles', $less, get_class($this), $instance );
+		$less = apply_filters( 'siteorigin_widget_less_' . $this->id_base, $less, $instance, $this );
 
 		$style = $this->get_style_name( $instance );
 		$hash = $this->get_style_hash( $instance );
@@ -504,7 +534,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$lc_functions = new SiteOrigin_Widgets_Less_Functions($this, $instance);
 		$lc_functions->registerFunctions($c);
 
-		return apply_filters( 'siteorigin_widget_instance_css', $c->compile( $less ), $instance );
+		return apply_filters( 'siteorigin_widget_instance_css', $c->compile( $less ), $instance, $this );
 	}
 
 	/**
@@ -515,9 +545,21 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string
 	 */
 	private function get_less_import_contents($matches) {
-		$fileName = $matches[1];
+		$filename = $matches[1];
+
+		// First, we'll deal with a few special cases
+		switch( $filename ) {
+			case 'mixins':
+				return file_get_contents( plugin_dir_path( __FILE__ ) . 'less/mixins.less' );
+				break;
+
+			case 'lesshat':
+				return file_get_contents( plugin_dir_path( __FILE__ ) . 'less/lesshat.less' );
+				break;
+		}
+
 		//get file extension
-		preg_match( '/\.\w+$/', $fileName, $ext );
+		preg_match( '/\.\w+$/', $filename, $ext );
 		//if there is a file extension and it's not .less or .css we ignore
 		if ( ! empty( $ext ) ) {
 			if ( ! ( $ext[0] == '.less' || $ext[0] == '.css' ) ) {
@@ -525,17 +567,17 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			}
 		}
 		else {
-			$fileName .= '.less';
+			$filename .= '.less';
 		}
 		//first check local widget styles directory and then bundle less directory
-		$searchPath = array(
+		$search_path = array(
 			siteorigin_widget_get_plugin_dir_path( $this->id_base ) . 'styles/',
 			plugin_dir_path( __FILE__ ) . 'less/'
 		);
 
-		foreach ( $searchPath as $dir ) {
-			if ( file_exists( $dir . $fileName ) ) {
-				return file_get_contents( $dir . $fileName )."\n\n";
+		foreach ( $search_path as $dir ) {
+			if ( file_exists( $dir . $filename ) ) {
+				return file_get_contents( $dir . $filename )."\n\n";
 			}
 		}
 
@@ -559,6 +601,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$func = 'less_' . trim( array_shift($args) , '\'"');
 		if( !method_exists($this, $func) ) return '';
 
+		// Finally call the function and include the
 		$args = array_map('trim', $args);
 		return call_user_func( array($this, $func), $this->current_instance, $args );
 	}
@@ -671,6 +714,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			}
 		}
 
+		// Also let other plugins also sanitize the instance
+		$instance = apply_filters( 'siteorigin_widget_sanitize_instance', $instance, $fields, $this );
 		return $instance;
 	}
 
@@ -683,9 +728,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return mixed|string
 	 */
 	protected function so_get_field_name($field_name, $repeater = array(), $repeater_append = '[]') {
-		if( empty($repeater) ) return $this->get_field_name($field_name);
+		if( empty($repeater) ) {
+			return $this->get_field_name($field_name);
+		}
 		else {
-
+			// We also need to add the repeater fields
 			$repeater_extras = '';
 			foreach($repeater as $r) {
 				$repeater_extras .= '['.$r.'][#'.$r.'#]';
@@ -707,7 +754,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string
 	 */
 	public function so_get_field_id( $field_name, $repeater = array(), $is_template = false ) {
-		if( empty($repeater) ) return $this->get_field_id($field_name);
+		if( empty($repeater) ) {
+			return $this->get_field_id($field_name);
+		}
 		else {
 			$name = $repeater;
 			$name[] = $field_name;
@@ -1079,7 +1128,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				break;
 
 			default:
-				?><?php _e('Unknown Field', 'siteorigin-widgets') ?><?php
+				// We couldn't find the field, so lets give other plugins a chance to provide it
+				echo apply_filters(
+					'siteorigin_widget_missing_field',
+					__('Unknown Field', 'siteorigin-widgets'),
+					$field,
+					$value,
+					$this
+				);
 				break;
 
 		}
@@ -1109,6 +1165,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		return $transformed;
 	}
 
+	/**
+	 * Convert a matched string to uppercase. Used as a preg callback.
+	 *
+	 * @param $matches
+	 *
+	 * @return string
+	 */
 	private function match_to_upper( $matches ) {
 		return strtoupper( $matches[1] );
 	}
@@ -1146,11 +1209,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	abstract function get_template_name($instance);
 
 	/**
-	 * Get the name of the directory in which we should look for the template.
+	 * Get the name of the directory in which we should look for the template. Relative to root of widget folder.
 	 *
 	 * @return mixed
 	 */
-	function get_template_dir($instance) {
+	function get_template_dir( $instance ) {
 		return 'tpl';
 	}
 
@@ -1231,7 +1294,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	/**
 	 * Can be overwritten by child widgets to make variables available to javascript via ajax calls. These are designed to be used in the admin.
 	 */
-	function get_javascript_variables(){ }
+	function get_javascript_variables(){
+
+	}
 
 	/**
 	 * Used by child widgets to register scripts to be enqueued for the frontend.
@@ -1308,8 +1373,4 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	function enqueue_admin_scripts(){ }
 
-	/**
-	 * Initialize this widget in whatever way we need to. Run before rendering widget or form.
-	 */
-	function initialize(){ }
 }
