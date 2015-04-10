@@ -913,7 +913,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					?><input type="text" value="<?php echo esc_url( $fallback_url ) ?>" placeholder="<?php esc_attr_e( 'External URL', 'siteorigin-widgets' ) ?>" name="<?php echo $this->so_get_field_name( $name . '_fallback', $repeater ) ?>" class="media-fallback-external siteorigin-widget-input" /><?php
 				}
 
-				?><input type="hidden" value="<?php echo esc_attr( is_array( $value ) ? '-1' : $value ) ?>" name="<?php echo $this->so_get_field_name( $name, $repeater ) ?>" class="siteorigin-widget-input" /><?php
+				?>
+				<div class="clear"></div>
+				<input type="hidden" value="<?php echo esc_attr( is_array( $value ) ? '-1' : $value ) ?>" name="<?php echo $this->so_get_field_name( $name, $repeater ) ?>" class="siteorigin-widget-input" />
+				<?php
 				break;
 
 			case 'posts' :
