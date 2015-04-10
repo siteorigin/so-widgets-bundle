@@ -1096,15 +1096,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				static $widget_font_families;
 				if( empty($widget_font_families) ) {
 
-					// Add the default fonts
-					$widget_font_families = array(
-						'Helvetica Neue' => 'Helvetica Neue',
-						'Lucida Grande' => 'Lucida Grande',
-						'Georgia' => 'Georgia',
-						'Courier New' => 'Courier New',
-					);
-
-					$widget_font_families = apply_filters('siteorigin_widgets_font_families', $widget_font_families );
+					$widget_font_families = siteorigin_widgets_font_families();
 				}
 				?>
 				<div class="siteorigin-widget-font-selector siteorigin-widget-field-subcontainer">
