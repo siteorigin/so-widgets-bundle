@@ -160,7 +160,7 @@ class SiteOrigin_Widgets_Bundle {
 	function get_active_widgets( $filter = true ){
 		// Load all the widget we currently have active and filter them
 		$active_widgets = get_option( 'siteorigin_widgets_active', self::$default_active_widgets );
-		if($filter) {
+		if( $filter ) {
 			$active_widgets = apply_filters( 'siteorigin_widgets_active_widgets',  $active_widgets);
 		}
 
@@ -213,9 +213,9 @@ class SiteOrigin_Widgets_Bundle {
 	 * @action wp_ajax_so_widgets_bundle_manage
 	 */
 	function admin_ajax_manage_handler(){
-		if(!wp_verify_nonce($_GET['_wpnonce'], 'manage_so_widget')) exit();
-		if(!current_user_can(apply_filters('siteorigin_widgets_admin_menu_capability', 'install_plugins'))) exit();
-		if(empty($_GET['widget'])) exit();
+		if( !wp_verify_nonce($_GET['_wpnonce'], 'manage_so_widget') ) exit();
+		if( !current_user_can( apply_filters('siteorigin_widgets_admin_menu_capability', 'install_plugins') ) ) exit();
+		if( empty($_GET['widget']) ) exit();
 
 		if( $_POST['active'] == 'true' ) $this->activate_widget($_GET['widget']);
 		else $this->deactivate_widget($_GET['widget']);

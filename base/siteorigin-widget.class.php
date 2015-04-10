@@ -77,8 +77,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		// Give other plugins a way to modify this form.
-		$form_options = apply_filters( 'siteorigin_widget_form_options', $form_options, $this );
-		$form_options = apply_filters( 'siteorigin_widget_form_options_' . $this->id_base, $form_options, $this );
+		$form_options = apply_filters( 'siteorigin_widgets_form_options', $form_options, $this );
+		$form_options = apply_filters( 'siteorigin_widgets_form_options_' . $this->id_base, $form_options, $this );
 		return $form_options;
 	}
 
@@ -92,8 +92,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$instance = $this->modify_instance($instance);
 
 		// Filter the instance
-		$instance = apply_filters( 'siteorigin_widget_instance', $instance, $this );
-		$instance = apply_filters( 'siteorigin_widget_instance_' . $this->id_base, $instance, $this );
+		$instance = apply_filters( 'siteorigin_widgets_instance', $instance, $this );
+		$instance = apply_filters( 'siteorigin_widgets_instance_' . $this->id_base, $instance, $this );
 
 		$args = wp_parse_args( $args, array(
 			'before_widget' => '',
@@ -107,7 +107,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		$css_name = $this->generate_and_enqueue_instance_styles( $instance );
 		$this->enqueue_frontend_scripts( $instance );
-		extract( apply_filters( 'siteorigin_widget_template_variables', $this->get_template_variables($instance, $args) ) );
+		extract( apply_filters( 'siteorigin_widgets_template_variables', $this->get_template_variables($instance, $args) ) );
 
 		// Storage hash allows templates to get access to
 		$storage_hash = '';
@@ -121,7 +121,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		$template_file = siteorigin_widget_get_plugin_dir_path( $this->id_base ) . $this->get_template_dir( $instance ) . '/' . $this->get_template_name( $instance ) . '.php';
-		$template_file = apply_filters('siteorigin_widget_template_file_' . $this->id_base, $template_file, $instance, $this );
+		$template_file = apply_filters('siteorigin_widgets_template_file_' . $this->id_base, $template_file, $instance, $this );
 		$template_file = realpath($template_file);
 
 		// Don't accept non PHP files
@@ -134,7 +134,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		echo '<div class="so-widget-'.$this->id_base.' so-widget-'.$css_name.'">';
 		ob_start();
 		@ include $template_file;
-		echo apply_filters('siteorigin_widget_template', ob_get_clean(), get_class($this), $instance, $this );
+		echo apply_filters('siteorigin_widgets_template', ob_get_clean(), get_class($this), $instance, $this );
 		echo '</div>';
 		echo $args['after_widget'];
 	}
@@ -504,7 +504,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		if( empty($style_name) ) return '';
 
 		$less_file = siteorigin_widget_get_plugin_dir_path( $this->id_base ).'styles/'.$style_name . '.less';
-		$less_file = apply_filters( 'siteorigin_widget_less_file_' . $this->id_base, $less_file, $instance, $this );
+		$less_file = apply_filters( 'siteorigin_widgets_less_file_' . $this->id_base, $less_file, $instance, $this );
 
 		$less = ( substr( $less_file, -5 ) == '.less' && file_exists($less_file) ) ? file_get_contents( $less_file ) : '';
 
@@ -526,8 +526,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			}
 		}
 
-		$less = apply_filters( 'siteorigin_widget_styles', $less, get_class($this), $instance );
-		$less = apply_filters( 'siteorigin_widget_less_' . $this->id_base, $less, $instance, $this );
+		$less = apply_filters( 'siteorigin_widgets_styles', $less, get_class($this), $instance );
+		$less = apply_filters( 'siteorigin_widgets_less_' . $this->id_base, $less, $instance, $this );
 
 		$style = $this->get_style_name( $instance );
 		$hash = $this->get_style_hash( $instance );
@@ -545,7 +545,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$lc_functions = new SiteOrigin_Widgets_Less_Functions($this, $instance);
 		$lc_functions->registerFunctions($c);
 
-		return apply_filters( 'siteorigin_widget_instance_css', $c->compile( $less ), $instance, $this );
+		return apply_filters( 'siteorigin_widgets_instance_css', $c->compile( $less ), $instance, $this );
 	}
 
 	/**
@@ -726,7 +726,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		// Also let other plugins also sanitize the instance
-		$instance = apply_filters( 'siteorigin_widget_sanitize_instance', $instance, $fields, $this );
+		$instance = apply_filters( 'siteorigin_widgets_sanitize_instance', $instance, $fields, $this );
 		return $instance;
 	}
 
