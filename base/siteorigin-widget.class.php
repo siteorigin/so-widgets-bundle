@@ -54,6 +54,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		) );
 		parent::WP_Widget($id, $name, $widget_options, $control_options);
 		$this->initialize();
+
+		// Let other plugins do their own additional init here
+		do_action('siteorigin_widgets_initialize_widget_' . $this->id_base, $this);
 	}
 
 	/**
@@ -107,7 +110,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		$css_name = $this->generate_and_enqueue_instance_styles( $instance );
 		$this->enqueue_frontend_scripts( $instance );
-		extract( apply_filters( 'siteorigin_widgets_template_variables', $this->get_template_variables($instance, $args) ) );
+
+		$template_vars = $this->get_template_variables($instance, $args);
+		$template_vars = apply_filters( 'siteorigin_widgets_template_variables_' . $this->id_base, $template_vars, $instance, $args, $this );
+		extract( $template_vars );
 
 		// Storage hash allows templates to get access to
 		$storage_hash = '';
@@ -127,13 +133,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// Don't accept non PHP files
 		if( substr($template_file, -4) != '.php' ) $template_file = false;
 
-		// Exit if the template file is empty or doesn't exist
-		if( empty($template_file) || !file_exists($template_file) ) return;
-
 		echo $args['before_widget'];
 		echo '<div class="so-widget-'.$this->id_base.' so-widget-'.$css_name.'">';
 		ob_start();
-		@ include $template_file;
+		if( !empty($template_file) && file_exists($template_file) ) {
+			@ include $template_file;
+		}
 		echo apply_filters('siteorigin_widgets_template', ob_get_clean(), get_class($this), $instance, $this );
 		echo '</div>';
 		echo $args['after_widget'];
@@ -259,6 +264,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$this->enqueue_scripts();
 		$instance = $this->modify_instance($instance);
 
+		// Filter the instance specifically for the form
+		$instance = apply_filters('siteorigin_widgets_form_instance_' . $this->id_base, $instance, $this);
+
 		$form_id = 'siteorigin_widget_form_'.md5( uniqid( rand(), true ) );
 		$class_name = str_replace( '_', '-', strtolower(get_class($this)) );
 
@@ -342,6 +350,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		// This lets the widget enqueue any specific admin scripts
 		$this->enqueue_admin_scripts();
+		do_action( 'siteorigin_widgets_enqueue_admin_scripts_' . $this->id_base, $this );
 	}
 
 	/**
