@@ -74,52 +74,40 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function initialize() {
-		$this->register_frontend_scripts(
-			array(
-				array(
-					'so-video-widget',
-					siteorigin_widget_get_plugin_dir_url( 'video' ) . 'js/so-video-widget' . SOW_BUNDLE_JS_SUFFIX . '.js',
-					array( 'jquery', 'mediaelement' ),
-					SOW_BUNDLE_VERSION
-				)
-			)
-		);
-		$this->register_frontend_styles(
-			array(
-				array(
-					'wp-mediaelement',
-				)
-			)
-		);
-	}
-
 	function enqueue_frontend_scripts( $instance ) {
-		if ( !empty( $instance['external_video'] ) && $this->get_host_from_url( $instance['external_video'] ) == 'vimeo' ) {
-			wp_enqueue_script( 'froogaloop' );
+		$video_host = !empty( $instance['external_video'] ) ? $this->get_host_from_url( $instance['external_video'] ) : '';
+		if ( $this->is_skinnable_video_host( $video_host ) ) {
+			if ( $video_host == 'vimeo' && ! wp_script_is( 'froogaloop' ) ) {
+				wp_enqueue_script( 'froogaloop' );
+			}
+			if ( !wp_style_is( 'wp-mediaelement' ) ) {
+				wp_enqueue_style( 'wp-mediaelement' );
+			}
+			wp_enqueue_script(
+				'so-video-widget',
+				siteorigin_widget_get_plugin_dir_url( 'video' ) . 'js/so-video-widget' . SOW_BUNDLE_JS_SUFFIX . '.js',
+				array( 'jquery', 'mediaelement' ),
+				SOW_BUNDLE_VERSION
+			);
 		}
 		parent::enqueue_frontend_scripts( $instance );
 	}
 
 	function get_template_name( $instance ) {
-//		if ( !empty( $instance['skin'] ) ) {
-//			return $instance['skin'];
-//		}
 		return 'default';
 	}
 
 	function get_template_variables( $instance, $args ) {
 		$poster = '';
-		$src = '';
-		$video_type = '';
-		if ( $instance['host_type'] == 'self' ) {
+		$video_host = $instance['host_type'];
+		if ( $video_host == 'self' ) {
 			$vid_info = wp_get_attachment_metadata( $instance['self_video'] );
 			$video_type = empty( $vid_info['fileformat'] ) ? '' : $vid_info['fileformat'];
 			$src = !empty( $instance['self_video'] ) ? wp_get_attachment_url( $instance['self_video'] ) : '';
 			$poster = !empty( $instance['self_poster'] ) ? wp_get_attachment_url( $instance['self_poster'] ) : '';
 		}
 		else {
-			$video_type = $this->get_host_from_url( $instance['external_video'] );
+			$video_host = $video_type = $this->get_host_from_url( $instance['external_video'] );
 			$src = !empty( $instance['external_video'] ) ? $instance['external_video'] : '';
 		}
 		return array(
@@ -127,8 +115,9 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'host_type' => $instance['host_type'],
 			'src' => $src,
 			'video_type' => $video_type,
+			'is_skinnable_video_host' => $this->is_skinnable_video_host( $video_host ),
 			'poster' => $poster,
-			'autoplay' => $instance['autoplay'],
+			'autoplay' => ! empty( $instance['autoplay'] ),
 			'skin_class' => $instance['skin']
 		);
 	}
@@ -149,7 +138,12 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 
 	private function get_host_from_url( $video_url ) {
 		preg_match( '/https?:\/\/(www.)?([A-Za-z0-9\-]+)\./', $video_url, $matches );
-		return $matches[2];
+		return ( ! empty( $matches ) && count( $matches ) > 2 ) ? $matches[2] : '';
+	}
+
+	private function is_skinnable_video_host( $video_host ) {
+		global $wp_version;
+		return $video_host == 'self' || $video_host == 'youtube' || ( $video_host == 'vimeo' && $wp_version >= 4.2 );
 	}
 }
 siteorigin_widget_register( 'video', __FILE__ );
