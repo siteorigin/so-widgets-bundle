@@ -282,3 +282,74 @@ function siteorigin_widget_add_bundle_groups($widgets){
 }
 add_filter('siteorigin_panels_widgets', 'siteorigin_widget_add_bundle_groups', 11);
 
+/**
+ * Escape a URL
+ *
+ * @param $url
+ *
+ * @return string
+ */
+function sow_esc_url( $url ) {
+	if( preg_match('/^post: *([0-9]+)/', $url, $matches) ) {
+		// Convert the special post URL into a permalink
+		$url = get_the_permalink( intval($matches[1]) );
+	}
+
+	$protocols = wp_allowed_protocols();
+	$protocols[] = 'skype';
+	return esc_url( $url, $protocols );
+}
+
+/**
+ * A special URL escaping function that handles additional protocols
+ *
+ * @param $url
+ *
+ * @return string
+ */
+function sow_esc_url_raw( $url ) {
+	if( preg_match('/^post: *([0-9]+)/', $url, $matches) ) {
+		// Convert the special post URL into a permalink
+		return 'post: ' . $matches[1];
+	}
+
+	$protocols = wp_allowed_protocols();
+	$protocols[] = 'skype';
+	return esc_url_raw( $url, $protocols );
+}
+
+/**
+ * Get all the Google Web Fonts.
+ *
+ * @return mixed|void
+ */
+function siteorigin_widgets_fonts_google_webfonts( ) {
+	$fonts = include plugin_dir_path(__FILE__) . 'inc/fonts.php';
+	$fonts = apply_filters( '', $fonts );
+	return $fonts;
+}
+add_filter('siteorigin_widgets_fonts_google_webfonts', 'siteorigin_widgets_fonts_google_webfonts_filter');
+
+function siteorigin_widgets_font_families( ){
+	// Add the default fonts
+	$font_families = array(
+		'Helvetica Neue' => 'Helvetica Neue',
+		'Lucida Grande' => 'Lucida Grande',
+		'Georgia' => 'Georgia',
+		'Courier New' => 'Courier New',
+	);
+
+	// Add in all the Google font families
+	foreach ( siteorigin_widgets_fonts_google_webfonts() as $font => $variants ) {
+		foreach ( $variants as $variant ) {
+			if ( $variant == 'regular' || $variant == 400 ) {
+				$font_families[ $font ] = $font;
+			}
+			else {
+				$font_families[ $font . ':' . $variant ] = $font . ' (' . $variant . ')';
+			}
+		}
+	}
+
+	return apply_filters('siteorigin_widgets_font_families', $font_families);
+}
