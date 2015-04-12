@@ -478,8 +478,8 @@ class SiteOrigin_Widgets_Bundle {
 							$opt_wid = get_option( 'widget_' . $widget->id_base );
 							preg_match( '/-([0-9]+$)/', $id, $num_match );
 							$widget_instance = $opt_wid[ $num_match[1] ];
-							$widget->generate_and_enqueue_instance_styles( $widget_instance );
 							$widget->enqueue_frontend_scripts( $widget_instance);
+							$widget->generate_and_enqueue_instance_styles( $widget_instance );
 						}
 					}
 				}
