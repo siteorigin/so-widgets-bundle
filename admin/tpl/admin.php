@@ -8,15 +8,17 @@
 		</span>
 		<h1><?php _e('SiteOrigin Widgets Bundle', 'siteorigin-widgets') ?></h1>
 
+		<!--
 		<div id="sow-widget-search">
 			<input type="search" placeholder="<?php esc_attr_e('Search Widgets', 'siteorigin-widgets') ?>" />
 		</div>
+		-->
 	</div>
 
 	<ul class="page-nav">
-		<li><a href="#">Test Section</a></li>
-		<li><a href="#">Test Section</a></li>
-		<li><a href="#">Test Section</a></li>
+		<li class="active"><a href="#all"><?php _e('All', 'siteorigin-widgets') ?></a></li>
+		<li><a href="#enabled"><?php _e('Enabled', 'siteorigin-widgets') ?></a></li>
+		<li><a href="#disabled"><?php _e('Disabled', 'siteorigin-widgets') ?></a></li>
 	</ul>
 
 
