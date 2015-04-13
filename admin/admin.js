@@ -1,7 +1,11 @@
+/* globals jQuery */
+
 jQuery(function($){
+
     $('.so-widget .switch .switch-input').change(function(e){
         var $$ = $(this);
         var s = $$.is(':checked');
+        var $sw = $$.closest('.switch');
 
         if(s) {
             $$.closest('.so-widget').addClass('so-widget-is-active').removeClass('so-widget-is-inactive');
@@ -15,7 +19,7 @@ jQuery(function($){
             $$.data('url'),
             { 'active' : s },
             function(data){
-
+                $sw.find('.dashicons-yes').clearQueue().fadeIn('fast').delay(750).fadeOut('fast');
             }
         );
     });

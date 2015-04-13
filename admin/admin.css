@@ -238,6 +238,13 @@
   background-image: -o-linear-gradient(top, #eeeeee, #ffffff 25px);
   background-image: linear-gradient(to bottom, #eeeeee, #ffffff 25px);
 }
+#sow-widgets-page #widgets-list .so-widget .switch .dashicons-yes {
+  position: absolute;
+  top: 2px;
+  right: -17px;
+  color: #009200;
+  display: none;
+}
 #sow-widgets-page #widgets-list .so-widget .switch .switch-input {
   position: absolute;
   top: 0;
