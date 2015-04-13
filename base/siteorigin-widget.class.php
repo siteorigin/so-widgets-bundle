@@ -117,7 +117,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$css_name = $this->id_base.'-'.$style.'-'.$hash;
 
 			//Ensure styles aren't generated and enqueued more than once.
-			$in_preview = is_preview() || is_customize_preview();
+			$in_preview = is_preview() || $this->is_customize_preview();
 			if ( ! in_array( $css_name, $this->generated_css ) || $in_preview ) {
 				if( ( isset( $instance['is_preview'] ) && $instance['is_preview'] ) || $in_preview ) {
 					siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
@@ -150,6 +150,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		$this->current_instance = false;
 		return $css_name;
+	}
+
+	private function is_customize_preview(){
+		global $wp_customize;
+		return is_a( $wp_customize, 'WP_Customize_Manager' ) && $wp_customize->is_preview();
 	}
 
 	/**
