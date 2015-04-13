@@ -236,10 +236,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			<p><strong><?php _e('You will only need to do this once.', 'siteorigin-widgets') ?></strong></p>
 		</div>
 
-		<?php if( ! is_customize_preview() ) : ?>
-		<div class="siteorigin-widget-preview" style="display: none">
-			<a href="#" class="siteorigin-widget-preview-button button-secondary"><?php _e('Preview', 'siteorigin-widgets') ?></a>
-		</div>
+		<?php if( ! $this->is_customize_preview() ) : ?>
+			<div class="siteorigin-widget-preview" style="display: none">
+				<a href="#" class="siteorigin-widget-preview-button button-secondary"><?php _e('Preview', 'siteorigin-widgets') ?></a>
+			</div>
 		<?php endif; ?>
 
 		<?php if( !empty( $this->widget_options['help'] ) ) : ?>
