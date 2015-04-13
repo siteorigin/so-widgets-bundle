@@ -356,7 +356,7 @@
             $el.find('.siteorigin-widget-field-state-selector').sowSetupStates();
 
             // Give plugins a chance to influence the form
-            $el.trigger('sowsetupform').data('sow-form-setup', true);
+            $el.trigger( 'sowsetupform', $fields ).data('sow-form-setup', true);
             $el.find('.siteorigin-widget-field-repeater-item').trigger('updateFieldPositions');
 
             /********

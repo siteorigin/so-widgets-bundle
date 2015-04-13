@@ -22,7 +22,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	protected $frontend_styles = array();
 
 	protected $generated_css = array();
-
 	protected $current_instance;
 	protected $instance_storage;
 
@@ -54,6 +53,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		) );
 		parent::WP_Widget($id, $name, $widget_options, $control_options);
 		$this->initialize();
+
+		// Let other plugins do additional initilizing here
+		do_action('siteorigin_widgets_initialize_widget_' . $this->id_base, $this);
 	}
 
 	/**
@@ -66,7 +68,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	/**
 	 * Get the form options and allow child widgets to modify that form.
 	 *
-	 * @param bool $parent
+	 * @param bool|SiteOrigin_Widget $parent
 	 *
 	 * @return mixed
 	 */
@@ -107,7 +109,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		$css_name = $this->generate_and_enqueue_instance_styles( $instance );
 		$this->enqueue_frontend_scripts( $instance );
-		extract( apply_filters( 'siteorigin_widgets_template_variables', $this->get_template_variables($instance, $args) ) );
+
+		$template_vars = $this->get_template_variables($instance, $args);
+		$template_vars = apply_filters( 'siteorigin_widgets_template_variables_' . $this->id_base, $template_vars, $instance, $args, $this );
+		extract( $template_vars );
 
 		// Storage hash allows templates to get access to
 		$storage_hash = '';
@@ -127,13 +132,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// Don't accept non PHP files
 		if( substr($template_file, -4) != '.php' ) $template_file = false;
 
-		// Exit if the template file is empty or doesn't exist
-		if( empty($template_file) || !file_exists($template_file) ) return;
-
 		echo $args['before_widget'];
 		echo '<div class="so-widget-'.$this->id_base.' so-widget-'.$css_name.'">';
 		ob_start();
-		@ include $template_file;
+		if( !empty($template_file) && file_exists($template_file) ) {
+			@ include $template_file;
+		}
 		echo apply_filters('siteorigin_widgets_template', ob_get_clean(), get_class($this), $instance, $this );
 		echo '</div>';
 		echo $args['after_widget'];
@@ -159,7 +163,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$css_name = $this->id_base.'-'.$style.'-'.$hash;
 
 			//Ensure styles aren't generated and enqueued more than once.
-			$in_preview = is_preview() || is_customize_preview();
+			$in_preview = is_preview() || $this->is_customize_preview();
 			if ( ! in_array( $css_name, $this->generated_css ) || $in_preview ) {
 				if( ( isset( $instance['is_preview'] ) && $instance['is_preview'] ) || $in_preview ) {
 					siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
@@ -192,6 +196,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		$this->current_instance = false;
 		return $css_name;
+	}
+
+	private function is_customize_preview(){
+		global $wp_customize;
+		return is_a( $wp_customize, 'WP_Customize_Manager' ) && $wp_customize->is_preview();
 	}
 
 	/**
@@ -259,6 +268,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$this->enqueue_scripts();
 		$instance = $this->modify_instance($instance);
 
+		// Filter the instance specifically for the form
+		$instance = apply_filters('siteorigin_widgets_form_instance_' . $this->id_base, $instance, $this);
+
 		$form_id = 'siteorigin_widget_form_'.md5( uniqid( rand(), true ) );
 		$class_name = str_replace( '_', '-', strtolower(get_class($this)) );
 
@@ -281,10 +293,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			<p><strong><?php _e('You will only need to do this once.', 'siteorigin-widgets') ?></strong></p>
 		</div>
 
-		<?php if( ! is_customize_preview() ) : ?>
-		<div class="siteorigin-widget-preview" style="display: none">
-			<a href="#" class="siteorigin-widget-preview-button button-secondary"><?php _e('Preview', 'siteorigin-widgets') ?></a>
-		</div>
+		<?php if( ! $this->is_customize_preview() ) : ?>
+			<div class="siteorigin-widget-preview" style="display: none">
+				<a href="#" class="siteorigin-widget-preview-button button-secondary"><?php _e('Preview', 'siteorigin-widgets') ?></a>
+			</div>
 		<?php endif; ?>
 
 		<?php if( !empty( $this->widget_options['help'] ) ) : ?>
@@ -328,10 +340,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				'ajaxurl' => wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ),
 				'sure' => __('Are you sure?', 'siteorigin-widgets')
 			) );
+
 			global $wp_customize;
 			if ( isset( $wp_customize ) ) {
 				$this->footer_admin_templates();
-			} else {
+			}
+			else {
 				add_action( 'admin_footer', array( $this, 'footer_admin_templates' ) );
 			}
 		}
@@ -342,6 +356,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		// This lets the widget enqueue any specific admin scripts
 		$this->enqueue_admin_scripts();
+		do_action( 'siteorigin_widgets_enqueue_admin_scripts_' . $this->id_base, $this );
 	}
 
 	/**
@@ -371,6 +386,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			</div>
 		</script>
 		<?php
+
+		// Give other plugins a chance to add their own
+		do_action('siteorigin_widgets_footer_admin_templates');
 	}
 
 	/**
@@ -462,7 +480,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @var bool $force Must we force a cache refresh.
 	 */
 	public static function clear_file_cache( $force_delete = false ){
-		// Use this variable to ensure this only runs once
+		// Use this variable to ensure this only runs once per request
 		static $done = false;
 		if ( $done && !$force_delete ) return;
 
@@ -484,6 +502,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				}
 			}
 
+			// Set this transient so we know when to clear all the generated CSS.
 			set_transient('sow:cleared', true, self::$css_expire);
 		}
 
@@ -641,7 +660,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				case 'select' :
 				case 'radio' :
 					$keys = array_keys( $field['options'] );
-					if( !in_array( $instance[$name], $keys ) ) $instance[$name] = isset($field['default']) ? $field['default'] : false;
+					if( !in_array( $instance[$name], $keys ) ) $instance[$name] = isset( $field['default'] ) ? $field['default'] : false;
 					break;
 
 				case 'number' :
@@ -689,7 +708,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						$the_widget = new $field['class'];
 
 						if( is_a($the_widget, 'SiteOrigin_Widget') ) {
-							$instance[$name] = $the_widget->update($instance[$name], $instance[$name]);
+							$instance[$name] = $the_widget->update( $instance[$name], $instance[$name] );
 						}
 					}
 					break;
@@ -703,11 +722,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					break;
 
 				case 'section':
-					$instance[$name] = $this->sanitize($instance[$name], $field['fields']);
+					$instance[$name] = $this->sanitize( $instance[$name], $field['fields'] );
 					break;
 
 				default:
-					$instance[$name] = sanitize_text_field($instance[$name]);
+					$instance[$name] = sanitize_text_field( $instance[$name] );
 					break;
 			}
 
@@ -715,11 +734,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				// This field also needs some custom sanitization
 				switch($field['sanitize']) {
 					case 'url':
-						$instance[$name] = sow_esc_url_raw($instance[$name]);
+						$instance[$name] = sow_esc_url_raw( $instance[$name] );
 						break;
 
 					case 'email':
-						$instance[$name] = sanitize_email($instance[$name]);
+						$instance[$name] = sanitize_email( $instance[$name] );
+						break;
+
+					default:
+						// This isn't a built in sanitization. Maybe it's handled elsewhere.
+						$instance[$name] = apply_filters( 'siteorigin_widgets_sanitize_field_' . $field['sanitize'], $instance[$name] );
 						break;
 				}
 			}
@@ -727,6 +751,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		// Also let other plugins also sanitize the instance
 		$instance = apply_filters( 'siteorigin_widgets_sanitize_instance', $instance, $fields, $this );
+		$instance = apply_filters( 'siteorigin_widgets_sanitize_instance_' . $this->id_base, $instance, $fields, $this );
 		return $instance;
 	}
 
@@ -738,19 +763,19 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param string $repeater_append
 	 * @return mixed|string
 	 */
-	protected function so_get_field_name($field_name, $repeater = array(), $repeater_append = '[]') {
+	protected function so_get_field_name( $field_name, $repeater = array(), $repeater_append = '[]' ) {
 		if( empty($repeater) ) {
-			return $this->get_field_name($field_name);
+			return $this->get_field_name( $field_name );
 		}
 		else {
 			// We also need to add the repeater fields
 			$repeater_extras = '';
 			foreach($repeater as $r) {
-				$repeater_extras .= '['.$r.'][#'.$r.'#]';
+				$repeater_extras .= '[' . $r . '][#' . $r . '#]';
 			}
 
-			$name = $this->get_field_name('{{{FIELD_NAME}}}');
-			$name = str_replace('[{{{FIELD_NAME}}}]', $repeater_extras.'['.esc_attr($field_name).']', $name);
+			$name = $this->get_field_name( '{{{FIELD_NAME}}}' );
+			$name = str_replace('[{{{FIELD_NAME}}}]', $repeater_extras.'[' . esc_attr($field_name) . ']', $name);
 			return $name;
 		}
 	}
@@ -1186,7 +1211,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param $markdown
 	 * @return string The HTML
 	 */
-	function parse_markdown($markdown){
+	function parse_markdown( $markdown ){
 		if( !class_exists('Markdown_Parser') ) include plugin_dir_path(__FILE__).'inc/markdown.php';
 		$parser = new Markdown_Parser();
 
@@ -1199,9 +1224,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param $instance
 	 * @return string
 	 */
-	function get_style_hash($instance) {
+	function get_style_hash( $instance ) {
 		$vars = method_exists($this, 'get_style_hash_variables') ? $this->get_style_hash_variables( $instance ) : $this->get_less_variables( $instance );
-		return substr( md5( json_encode( $vars ) ), 0, 12 );
+		$version = property_exists( $this, 'version' ) ? $this->version : '';
+
+		return substr( md5( json_encode( $vars ) . $version ), 0, 12 );
 	}
 
 	/**
@@ -1210,7 +1237,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param $instance
 	 * @return mixed
 	 */
-	abstract function get_template_name($instance);
+	abstract function get_template_name( $instance );
 
 	/**
 	 * Get the name of the directory in which we should look for the template. Relative to root of widget folder.
@@ -1227,7 +1254,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param $instance
 	 * @return mixed
 	 */
-	abstract function get_style_name($instance);
+	abstract function get_style_name( $instance );
 
 	/**
 	 * Get any variables that need to be substituted by
@@ -1235,7 +1262,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param $instance
 	 * @return array
 	 */
-	function get_less_variables($instance){
+	function get_less_variables( $instance ){
 		return array();
 	}
 
@@ -1246,7 +1273,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @return mixed
 	 */
-	function filter_stored_instance($instance){
+	function filter_stored_instance( $instance ){
 		return $instance;
 	}
 
@@ -1257,7 +1284,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @return object The instance
 	 */
-	function get_stored_instance($hash) {
+	function get_stored_instance( $hash ) {
 		return get_transient('sow_inst[' . $this->id_base . '][' . $hash . ']');
 	}
 
@@ -1267,7 +1294,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param $form
 	 * @return mixed
 	 */
-	function modify_form($form) {
+	function modify_form( $form ) {
 		return $form;
 	}
 
@@ -1306,7 +1333,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @param array $scripts an array of scripts. Each element is an array that corresponds to wp_enqueue_script arguments
 	 */
-	function register_frontend_scripts( $scripts ){
+	public function register_frontend_scripts( $scripts ){
 		foreach ( $scripts as $script ) {
 			if ( ! isset( $this->frontend_scripts[ $script[0] ] ) ) {
 				$this->frontend_scripts[$script[0]] = $script;
@@ -1336,7 +1363,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @param array $styles an array of styles. Each element is an array that corresponds to wp_enqueue_style arguments
 	 */
-	function register_frontend_styles( $styles ) {
+	public function register_frontend_styles( $styles ) {
 		foreach ( $styles as $style ) {
 			if ( ! isset( $this->frontend_styles[ $style[0] ] ) ) {
 				$this->frontend_styles[$style[0]] = $style;
@@ -1369,6 +1396,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	function enqueue_frontend_scripts( $instance ){
 		$this->enqueue_registered_scripts();
 		$this->enqueue_registered_styles();
+
+		// Give plugins a chance to enqueue additional frontend scripts
+		do_action('siteorigin_widgets_enqueue_frontend_scripts_' . $this->id_base, $instance, $this);
 	}
 
 	/**
