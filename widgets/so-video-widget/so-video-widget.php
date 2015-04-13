@@ -39,6 +39,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 					'type' => 'media',
 					'fallback' => true,
 					'label' => __( 'Select video', 'siteorigin-widgets' ),
+					'description' => __( 'Select an uploaded video in mp4 format. Other formats, such as webm and ogv will work in some browsers. You can use an online service such as <a href="http://video.online-convert.com/convert-to-mp4" target="_blank">online-convert.com</a> to convert your videos to mp4.', 'siteorigin-widgets' ),
 					'default'     => '',
 					'library' => 'video',
 					'state_name' => 'self',
@@ -57,7 +58,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				),
 				'autoplay' => array(
 					'type' => 'checkbox',
-					'default' => true,
+					'default' => false,
 					'label' => __( 'Autoplay', 'siteorigin-widgets' )
 				),
 				'skin' => array(
@@ -80,15 +81,17 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			if ( $video_host == 'vimeo' && ! wp_script_is( 'froogaloop' ) ) {
 				wp_enqueue_script( 'froogaloop' );
 			}
-			if ( !wp_style_is( 'wp-mediaelement' ) ) {
+			if ( ! wp_style_is( 'wp-mediaelement' ) ) {
 				wp_enqueue_style( 'wp-mediaelement' );
 			}
-			wp_enqueue_script(
-				'so-video-widget',
-				siteorigin_widget_get_plugin_dir_url( 'video' ) . 'js/so-video-widget' . SOW_BUNDLE_JS_SUFFIX . '.js',
-				array( 'jquery', 'mediaelement' ),
-				SOW_BUNDLE_VERSION
-			);
+			if ( ! wp_script_is( 'so-video-widget' ) ) {
+				wp_enqueue_script(
+					'so-video-widget',
+					siteorigin_widget_get_plugin_dir_url( 'video' ) . 'js/so-video-widget' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					array( 'jquery', 'mediaelement' ),
+					SOW_BUNDLE_VERSION
+				);
+			}
 		}
 		parent::enqueue_frontend_scripts( $instance );
 	}

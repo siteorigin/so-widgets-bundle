@@ -1,5 +1,5 @@
 jQuery(function ($) {
 
-    var player = new MediaElementPlayer('#player1');
+    $('video').mediaelementplayer();
 
 });
