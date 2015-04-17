@@ -39,9 +39,60 @@ var sowEmitters = {};
                     return true;
                 }
 
-                //
-                $el.on('sowstatechange', function(e, state, value){
+                // Listen for a state change event on the
+                $el.on('sowstatechange', function(e, incomingGroup, incomingState){
 
+                    $el.find('[data-state-handler]').each( function(){
+                        var $$ = $(this);
+                        var handler = $$.data('state-handler');
+
+                        // We need to figure out what the incoming state is
+                        var handlerStateParts, thisState, thisHandler, $$f;
+
+                        if( Object.keys( handler ).length > 0 ) {
+                            for( var state in handler ) {
+                                handlerStateParts = state.match(/^([a-z]+)(\[([a-z]+)\])?(\[\])?$/);
+                                thisState = {
+                                    'group' : 'default',
+                                    'name' : '',
+                                    'multi' : false
+                                };
+
+                                if( handlerStateParts[2] !== undefined ) {
+                                    thisState.group = handlerStateParts[1];
+                                    thisState.name = handlerStateParts[3];
+                                }
+                                else {
+                                    thisState.name = handlerStateParts[0];
+                                }
+
+                                if( thisState.group === incomingGroup && thisState.name === incomingState ) {
+                                    thisHandler = handler[state];
+
+                                    // Now we can handle the the handler
+
+                                    if (!thisState.multi) {
+                                        thisHandler = [thisHandler];
+                                    }
+
+                                    for (var i = 0; i < thisHandler.length; i++) {
+                                        // Choose the item we'll be acting on here
+                                        if (typeof thisHandler[i][1] !== 'undefined' && thisHandler[i][1] !== '') {
+                                            $$f = $$.find(thisHandler[i][1]);
+                                        }
+                                        else {
+                                            $$f = $$;
+                                        }
+
+                                        // Call the fucnction
+                                        $$f[thisHandler[i][0]].apply($$f, typeof thisHandler[i][2] !== 'undefined' ? thisHandler[i][1] : []);
+
+                                    }
+                                }
+                            }
+                        }
+
+                    } );
                 } );
 
                 // Lets set up the preview
@@ -389,7 +440,9 @@ var sowEmitters = {};
                     // Check which states have changed and trigger appropriate sowstatechange
                     var formStates = $mainForm.data('states');
                     if( typeof formStates === 'undefined' ) {
-                        formStates = {};
+                        formStates = {
+                            'default' : ''
+                        };
                     }
                     for( var k in states ) {
                         if( typeof formStates[k] === 'undefined' || states[k] !== formStates[k] ) {
@@ -702,11 +755,13 @@ var sowEmitters = {};
     $(document).trigger('sowadminloaded');
 
     // These are the emitter functions
-    sowEmitters.conditional = function(){
-        return {
-            'default' : 'foobar',
-            'another' : 'bar'
-        };
+    sowEmitters.testEmitter = function(val, args){
+        var returnStates = {};
+        if( val === 'show' || val === 'hide' ) {
+            returnStates['default'] = val;
+        }
+
+        return returnStates;
     };
 
 })(jQuery);

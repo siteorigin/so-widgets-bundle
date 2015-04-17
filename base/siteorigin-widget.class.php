@@ -841,6 +841,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$wrapper_attributes['data-state-emitter'] = json_encode( $field['state_emitter'] );
 		}
 
+		if( !empty($field['state_handler']) ) {
+			$wrapper_attributes['data-state-handler'] = json_encode( $field['state_handler'] );
+		}
+
 		?><div <?php foreach( $wrapper_attributes as $attr => $attr_val ) echo $attr.'="' . esc_attr($attr_val) . '" ' ?>><?php
 
 		$field_id = $this->so_get_field_id( $name, $repeater, $is_template );
