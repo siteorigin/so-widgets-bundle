@@ -1,7 +1,102 @@
 
 /* globals wp, jQuery, soWidgets, confirm */
 
-var sowEmitters = {};
+var sowEmitters = {
+
+    '_': {
+
+        /**
+         * Find the group/state and an extra match part.
+         *
+         * @param arg
+         * @param matchPart
+         * @return {*}
+         */
+        'match': function(arg, matchPart) {
+
+            if( typeof matchPart === 'undefined' ) {
+                matchPart = '.*';
+            }
+
+            // Create the regular expression to match the group/state and extra match
+            var exp = new RegExp( '^([a-z]+)(\\[([a-z]+)\\])? *: *(' + matchPart + ')$' );
+            var m = exp.exec( arg );
+
+            if( m === null ) { return false; }
+
+            var state = '';
+            var group = 'default';
+
+            if( m[3] !== undefined ) {
+                group = m[1];
+                state = m[3];
+            }
+            else {
+                state = m[1];
+            }
+
+            return {
+                'match' : m[4],
+                'group' : group,
+                'state' : state
+            };
+        }
+    },
+
+    /**
+     * The conditional state emitter uses eval to check a given conditional argument.
+     *
+     * @param val
+     * @param args
+     * @return {{}}
+     */
+    'conditional' : function(val, args){
+        var returnStates = {};
+        if( typeof args.length === 'undefined' ) {
+            args = [args];
+        }
+
+        var m;
+        for( var i = 0; i < args.length; i++ ) {
+            m = sowEmitters._.match( args[i], '[^;{}]*' );
+            if ( m === false ) { continue; }
+
+            if( eval( m.match ) ) {
+                returnStates[ m.group ] = m.state;
+            }
+        }
+
+        return returnStates;
+    },
+
+    /**
+     * The in state emitter checks if the value is in an array of functions
+     *
+     * @param val
+     * @param args
+     * @return {{}}
+     */
+    'in' :  function(val, args) {
+        var returnStates = {};
+
+        if( typeof args.length === 'undefined' ) {
+            args = [args];
+        }
+
+        var m, inParts;
+        for( var i = 0; i < args.length; i++ ) {
+            m = sowEmitters._.match( args[i], '[^;{}]*' );
+            if ( m === false ) { continue; }
+
+            inParts = m.match.split(',').map( function(s) { return s.trim(); } );
+            if( inParts.indexOf( val ) !== -1 ) {
+                returnStates[ m.group ] = m.state;
+            }
+        }
+
+        return returnStates;
+    }
+};
 
 (function($){
 
@@ -39,57 +134,69 @@ var sowEmitters = {};
                     return true;
                 }
 
-                // Listen for a state change event on the
-                $el.on('sowstatechange', function(e, incomingGroup, incomingState){
+                // Listen for a state change event if this is the main form wrapper
+                $el.on('sowstatechange', function( e, incomingGroup, incomingState ){
 
+                    // Find all wrappers that have state handlers on them
                     $el.find('[data-state-handler]').each( function(){
                         var $$ = $(this);
+
+                        // Load the list of state change handlers
                         var handler = $$.data('state-handler');
 
                         // We need to figure out what the incoming state is
-                        var handlerStateParts, thisState, thisHandler, $$f;
+                        var handlerStateParts, handlerState, thisHandler, $$f;
 
+                        // Go through all the handlers
                         if( Object.keys( handler ).length > 0 ) {
                             for( var state in handler ) {
+
                                 handlerStateParts = state.match(/^([a-z]+)(\[([a-z]+)\])?(\[\])?$/);
-                                thisState = {
+                                if( handlerStateParts === null ) {
+                                    // Skip this if there's a problem with the state parts
+                                    continue;
+                                }
+
+                                handlerState = {
                                     'group' : 'default',
                                     'name' : '',
                                     'multi' : false
                                 };
 
+                                // Assign the handlerState attributes based on the pasted state
                                 if( handlerStateParts[2] !== undefined ) {
-                                    thisState.group = handlerStateParts[1];
-                                    thisState.name = handlerStateParts[3];
+                                    handlerState.group = handlerStateParts[1];
+                                    handlerState.name = handlerStateParts[3];
                                 }
                                 else {
-                                    thisState.name = handlerStateParts[0];
+                                    handlerState.name = handlerStateParts[0];
                                 }
 
                                 // Check that the current state
-                                if( thisState.group === incomingGroup && thisState.name === incomingState ) {
-                                    thisHandler = handler[state];
+                                if( handlerState.group === incomingGroup && handlerState.name === incomingState ) {
+                                    thisHandler = handler[ state ];
 
                                     // Now we can handle the the handler
-
-                                    if (!thisState.multi) {
-                                        thisHandler = [thisHandler];
+                                    if (!handlerState.multi) {
+                                        thisHandler = [ thisHandler ];
                                     }
 
                                     for (var i = 0; i < thisHandler.length; i++) {
                                         // Choose the item we'll be acting on here
-                                        if (typeof thisHandler[i][1] !== 'undefined' && thisHandler[i][1] !== '') {
-                                            $$f = $$.find(thisHandler[i][1]);
+                                        if ( typeof thisHandler[i][1] !== 'undefined' && Boolean( thisHandler[i][1] ) ) {
+                                            // thisHandler[i][1] is the sub selector
+                                            $$f = $$.find( thisHandler[i][1] );
                                         }
                                         else {
                                             $$f = $$;
                                         }
 
-                                        // Call the function
-                                        $$f[thisHandler[i][0]].apply($$f, typeof thisHandler[i][2] !== 'undefined' ? thisHandler[i][1] : []);
+                                        // Call the function on the
+                                        $$f[thisHandler[i][0]].apply($$f, typeof thisHandler[i][2] !== 'undefined' ? thisHandler[i][2] : []);
 
                                     }
                                 }
+
                             }
                         }
 
@@ -406,7 +513,6 @@ var sowEmitters = {};
                     e.preventDefault();
                     var $li = $(this);
                     $$.find('input.siteorigin-widget-input').val( 'post: ' + $li.data('ID') );
-
                     $$.find('.existing-content-selector').toggle();
                 } );
 
@@ -458,9 +564,6 @@ var sowEmitters = {};
                         }
                     }
 
-
-                    // TODO handle an emitters value with multiple emitters
-
                     // Check which states have changed and trigger appropriate sowstatechange
                     var formStates = $mainForm.data('states');
                     if( typeof formStates === 'undefined' ) {
@@ -470,6 +573,7 @@ var sowEmitters = {};
                     }
                     for( var k in states ) {
                         if( typeof formStates[k] === 'undefined' || states[k] !== formStates[k] ) {
+                            // If the state is different from the original formStates, then trigger a state change
                             formStates[k] = states[k];
                             $mainForm.trigger( 'sowstatechange', [ k, states[k] ] );
                         }
@@ -477,7 +581,8 @@ var sowEmitters = {};
 
                     // Store the form states back in the form
                     $mainForm.data('states', formStates);
-                });
+
+                }).change();
 
             } );
 
@@ -777,65 +882,5 @@ var sowEmitters = {};
     });
 
     $(document).trigger('sowadminloaded');
-
-    // The state emitter for standard comparisons
-    sowEmitters.conditional = function(val, args){
-        var returnStates = {};
-        if( typeof args.length === 'undefined' ) {
-            args = [args];
-        }
-
-        var m, cState, cGroup;
-        for( var i = 0; i < args.length; i++ ) {
-            m = args[i].match(/^([a-z]+)(\[([a-z]+)\])? *: *([^;{}]*)$/);
-            if( m === null ) { continue; }
-
-            if( eval( m[4] ) ) {
-                cGroup = 'default';
-                if( m[3] !== undefined ) {
-                    cGroup = m[1];
-                    cState = m[3];
-                }
-                else {
-                    cState = m[1];
-                }
-
-                returnStates[cGroup] = cState;
-            }
-        }
-
-        return returnStates;
-    };
-
-    // The state emitter for checking if the value is in a list of another values
-    sowEmitters.in = function(val, args) {
-        var returnStates = {};
-
-        if( typeof args.length === 'undefined' ) {
-            args = [args];
-        }
-
-        var m, cState, cGroup, inParts;
-        for( var i = 0; i < args.length; i++ ) {
-            m = args[i].match(/^([a-z]+)(\[([a-z]+)\])? *: *(.*)$/);
-            if( m === null ) { continue; }
-
-            inParts = m[4].split(',').map(function(s) { return s.trim(); });
-            if( inParts.indexOf( val ) !== -1 ) {
-                cGroup = 'default';
-                if( m[3] !== undefined ) {
-                    cGroup = m[1];
-                    cState = m[3];
-                }
-                else {
-                    cState = m[1];
-                }
-
-                returnStates[cGroup] = cState;
-            }
-        }
-
-        return returnStates;
-    };
 
 })(jQuery);
