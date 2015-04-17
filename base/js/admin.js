@@ -1,11 +1,13 @@
 
 /* globals wp, jQuery, soWidgets, confirm */
 
+var sowEmitters = {};
+
 (function($){
 
     $.fn.sowSetupForm = function() {
         return $(this).each( function(i, el){
-            var $el = $(el);
+            var $el = $(el), $mainForm;
 
             // Skip this if the widget has any fields with an __i__
             var $inputs = $el.find('input');
@@ -33,12 +35,21 @@
                 }
                 // If we're in the main widgets interface and the form isn't visible and it isn't contained in a
                 // panels dialog (when using the Layout Builder widget), don't worry about setting it up.
-                if( $('body').hasClass('widgets-php') && !$el.is(':visible') && $el.closest('.panel-dialog').length == 0) {
+                if( $('body').hasClass('widgets-php') && !$el.is(':visible') && $el.closest('.panel-dialog').length === 0 ) {
                     return true;
                 }
 
+                //
+                $el.on('sowstatechange', function(e, state, value){
+
+                } );
+
                 // Lets set up the preview
                 $el.sowSetupPreview();
+                $mainForm = $el;
+            }
+            else {
+                $mainForm = $el.closest('.siteorigin-widget-form-main');
             }
 
             // Find any field or sub widget fields.
@@ -268,6 +279,7 @@
 
             });
 
+            // Handle the slider sections
             $fields.filter('.siteorigin-widget-field-type-slider').each(function(){
                 var $$ = $(this);
                 var $input = $$.find('input[type="number"]');
@@ -350,6 +362,46 @@
                         refreshList();
                     }, 500);
                 } );
+            } );
+
+            // Now lets handle the state emitters
+            $fields.filter('[data-state-emitter]').each( function(){
+
+                $(this).find('.siteorigin-widget-input').on('keyup change', function(){
+                    var $$ = $(this);
+                    var emitters = $$.closest('[data-state-emitter]').data('state-emitter');
+
+                    var handleStateEmitter = function(emitter, currentStates){
+                        if( typeof sowEmitters[ emitter.callback ] === 'undefined' ) {
+                            // The function does not exist, so there is no emitter here
+                            return false;
+                        }
+
+                        // Return an array that has the new states added to the array
+                        return $.extend( currentStates, sowEmitters[emitter.callback]( $$.val(), emitter.args ) );
+                    };
+
+                    // Run the states through the state emitters
+                    var states = { 'default' : '' };
+                    states = handleStateEmitter( emitters, states );
+                    // TODO handle an emitters value with multiple emitters
+
+                    // Check which states have changed and trigger appropriate sowstatechange
+                    var formStates = $mainForm.data('states');
+                    if( typeof formStates === 'undefined' ) {
+                        formStates = {};
+                    }
+                    for( var k in states ) {
+                        if( typeof formStates[k] === 'undefined' || states[k] !== formStates[k] ) {
+                            formStates[k] = states[k];
+                            $mainForm.trigger( 'sowstatechange', [ k, states[k] ] );
+                        }
+                    }
+
+                    // Store the form states back in the form
+                    $mainForm.data('states', formStates);
+                });
+
             } );
 
             // Give plugins a chance to influence the form
@@ -648,5 +700,13 @@
     });
 
     $(document).trigger('sowadminloaded');
+
+    // These are the emitter functions
+    sowEmitters.conditional = function(){
+        return {
+            'default' : 'foobar',
+            'another' : 'bar'
+        };
+    };
 
 })(jQuery);

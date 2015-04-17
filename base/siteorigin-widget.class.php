@@ -824,16 +824,24 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			 $value = $field['default'];
 		}
 
-		$wrapper_classes = array(
-			'siteorigin-widget-field',
-			'siteorigin-widget-field-type-' . $field['type'],
-			'siteorigin-widget-field-' . $name
+		$wrapper_attributes = array(
+			'class' => array(
+				'siteorigin-widget-field',
+				'siteorigin-widget-field-type-' . $field['type'],
+				'siteorigin-widget-field-' . $name
+			)
 		);
-		if( !empty( $field['state_name'] ) ) $wrapper_classes[] = 'siteorigin-widget-field-state-' . $field['state_name'];
-		if( !empty( $field['hidden'] ) ) $wrapper_classes[] = 'siteorigin-widget-field-is-hidden';
-		if( !empty( $field['optional'] ) ) $wrapper_classes[] = 'siteorigin-widget-field-is-optional';
 
-		?><div class="<?php echo implode(' ', array_map('sanitize_html_class', $wrapper_classes) ) ?>"><?php
+		if( !empty( $field['state_name'] ) ) $wrapper_attributes['class'][] = 'siteorigin-widget-field-state-' . $field['state_name'];
+		if( !empty( $field['hidden'] ) ) $wrapper_attributes['class'][] = 'siteorigin-widget-field-is-hidden';
+		if( !empty( $field['optional'] ) ) $wrapper_attributes['class'][] = 'siteorigin-widget-field-is-optional';
+		$wrapper_attributes['class'] = implode(' ', array_map('sanitize_html_class', $wrapper_attributes['class']) );
+
+		if( !empty($field['state_emitter']) ) {
+			$wrapper_attributes['data-state-emitter'] = json_encode( $field['state_emitter'] );
+		}
+
+		?><div <?php foreach( $wrapper_attributes as $attr => $attr_val ) echo $attr.'="' . esc_attr($attr_val) . '" ' ?>><?php
 
 		$field_id = $this->so_get_field_id( $name, $repeater, $is_template );
 
