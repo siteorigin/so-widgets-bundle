@@ -36,11 +36,31 @@ var sowEmitters = {
             }
 
             return {
-                'match' : m[4],
+                'match' : m[4].trim(),
                 'group' : group,
                 'state' : state
             };
+        },
+
+        'checker' : function(val, args, matchPart, callback){
+            var returnStates = {};
+            if( typeof args.length === 'undefined' ) {
+                args = [args];
+            }
+
+            var m;
+            for( var i = 0; i < args.length; i++ ) {
+                m = sowEmitters._.match( args[i], matchPart );
+                if ( m === false ) { continue; }
+
+                if( m.match === 'true' || callback( val, args, m.match ) ) {
+                    returnStates[ m.group ] = m.state;
+                }
+            }
+
+            return returnStates;
         }
+
     },
 
     /**
@@ -51,22 +71,9 @@ var sowEmitters = {
      * @return {{}}
      */
     'conditional' : function(val, args){
-        var returnStates = {};
-        if( typeof args.length === 'undefined' ) {
-            args = [args];
-        }
-
-        var m;
-        for( var i = 0; i < args.length; i++ ) {
-            m = sowEmitters._.match( args[i], '[^;{}]*' );
-            if ( m === false ) { continue; }
-
-            if( eval( m.match ) ) {
-                returnStates[ m.group ] = m.state;
-            }
-        }
-
-        return returnStates;
+        return sowEmitters._.checker( val, args, '[^;{}]*', function( val, args, match ){
+            return eval( match );
+        } );
     },
 
     /**
@@ -77,24 +84,9 @@ var sowEmitters = {
      * @return {{}}
      */
     'in' :  function(val, args) {
-        var returnStates = {};
-
-        if( typeof args.length === 'undefined' ) {
-            args = [args];
-        }
-
-        var m, inParts;
-        for( var i = 0; i < args.length; i++ ) {
-            m = sowEmitters._.match( args[i], '[^;{}]*' );
-            if ( m === false ) { continue; }
-
-            inParts = m.match.split(',').map( function(s) { return s.trim(); } );
-            if( inParts.indexOf( val ) !== -1 ) {
-                returnStates[ m.group ] = m.state;
-            }
-        }
-
-        return returnStates;
+        return sowEmitters._.checker( val, args, '[^;{}]*', function( val, args, match ){
+            return match.split(',').map( function(s) { return s.trim(); } ).indexOf( val ) !== -1;
+        } );
     }
 };
 
