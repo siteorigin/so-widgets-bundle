@@ -778,10 +778,9 @@ var sowEmitters = {};
 
     $(document).trigger('sowadminloaded');
 
-    // These are the emitter functions
+    // The state emitter for standard comparisons
     sowEmitters.conditional = function(val, args){
         var returnStates = {};
-
         if( typeof args.length === 'undefined' ) {
             args = [args];
         }
@@ -789,6 +788,7 @@ var sowEmitters = {};
         var m, cState, cGroup;
         for( var i = 0; i < args.length; i++ ) {
             m = args[i].match(/^([a-z]+)(\[([a-z]+)\])? *: *([^;{}]*)$/);
+            if( m === null ) { continue; }
 
             if( eval( m[4] ) ) {
                 cGroup = 'default';
@@ -803,7 +803,38 @@ var sowEmitters = {};
                 returnStates[cGroup] = cState;
             }
         }
-        
+
+        return returnStates;
+    };
+
+    // The state emitter for checking if the value is in a list of another values
+    sowEmitters.in = function(val, args) {
+        var returnStates = {};
+
+        if( typeof args.length === 'undefined' ) {
+            args = [args];
+        }
+
+        var m, cState, cGroup, inParts;
+        for( var i = 0; i < args.length; i++ ) {
+            m = args[i].match(/^([a-z]+)(\[([a-z]+)\])? *: *(.*)$/);
+            if( m === null ) { continue; }
+
+            inParts = m[4].split(',').map(function(s) { return s.trim(); });
+            if( inParts.indexOf( val ) !== -1 ) {
+                cGroup = 'default';
+                if( m[3] !== undefined ) {
+                    cGroup = m[1];
+                    cState = m[3];
+                }
+                else {
+                    cState = m[1];
+                }
+
+                returnStates[cGroup] = cState;
+            }
+        }
+
         return returnStates;
     };
 
