@@ -85,7 +85,7 @@ var sowEmitters = {};
                                             $$f = $$;
                                         }
 
-                                        // Call the fucnction
+                                        // Call the function
                                         $$f[thisHandler[i][0]].apply($$f, typeof thisHandler[i][2] !== 'undefined' ? thisHandler[i][1] : []);
 
                                     }
@@ -244,7 +244,9 @@ var sowEmitters = {};
                 });
             });
 
+            ///////////////////////////////////////
             // Handle the icon selection
+
             var iconWidgetCache = {};
             $fields.find('> .siteorigin-widget-icon-selector').each(function(){
                 var $is = $(this);
@@ -331,7 +333,9 @@ var sowEmitters = {};
 
             });
 
+            ///////////////////////////////////////
             // Handle the slider sections
+
             $fields.filter('.siteorigin-widget-field-type-slider').each(function(){
                 var $$ = $(this);
                 var $input = $$.find('input[type="number"]');
@@ -349,7 +353,9 @@ var sowEmitters = {};
                 });
             });
 
+            ///////////////////////////////////////
             // Setup the URL fields
+
             $fields.filter('.siteorigin-widget-field-type-link').each( function(){
                 var $$ = $(this);
 
@@ -416,19 +422,22 @@ var sowEmitters = {};
                 } );
             } );
 
+            ///////////////////////////////////////
             // Now lets handle the state emitters
+
             $fields.filter('[data-state-emitter]').each( function(){
 
+                // Listen for any change events on an emitter field
                 $(this).find('.siteorigin-widget-input').on('keyup change', function(){
-                    // When ever an emitter field changes, rerun all the emitter tests
-
                     var $$ = $(this);
+
+                    // These emitters can either be an array or a
                     var emitters = $$.closest('[data-state-emitter]').data('state-emitter');
 
                     var handleStateEmitter = function(emitter, currentStates){
                         if( typeof sowEmitters[ emitter.callback ] === 'undefined' ) {
-                            // The function does not exist, so there is no emitter here
-                            return false;
+                            // The function does not exist, so just return the current states
+                            return currentStates;
                         }
 
                         // Return an array that has the new states added to the array
@@ -440,12 +449,12 @@ var sowEmitters = {};
 
                     if( typeof emitters.length === 'undefined' ) {
                         // This is an emitter with a single
-                        states = handleStateEmitter( emitters['callback'], emitters['args'] );
+                        states = handleStateEmitter( emitters, states );
                     }
                     else {
                         // Go through the array of emitters
                         for( var i = 0; i < emitters.length; i++ ) {
-                            states = $.extend(states, handleStateEmitter( emitters['callback'], emitters['args'] ) );
+                            states = handleStateEmitter( emitters[i], states );
                         }
                     }
 
@@ -772,6 +781,29 @@ var sowEmitters = {};
     // These are the emitter functions
     sowEmitters.conditional = function(val, args){
         var returnStates = {};
+
+        if( typeof args.length === 'undefined' ) {
+            args = [args];
+        }
+
+        var m, cState, cGroup;
+        for( var i = 0; i < args.length; i++ ) {
+            m = args[i].match(/^([a-z]+)(\[([a-z]+)\])? *: *([^;{}]*)$/);
+
+            if( eval( m[4] ) ) {
+                cGroup = 'default';
+                if( m[3] !== undefined ) {
+                    cGroup = m[1];
+                    cState = m[3];
+                }
+                else {
+                    cState = m[1];
+                }
+
+                returnStates[cGroup] = cState;
+            }
+        }
+        
         return returnStates;
     };
 
