@@ -66,6 +66,7 @@ var sowEmitters = {};
                                     thisState.name = handlerStateParts[0];
                                 }
 
+                                // Check that the current state
                                 if( thisState.group === incomingGroup && thisState.name === incomingState ) {
                                     thisHandler = handler[state];
 
@@ -419,6 +420,8 @@ var sowEmitters = {};
             $fields.filter('[data-state-emitter]').each( function(){
 
                 $(this).find('.siteorigin-widget-input').on('keyup change', function(){
+                    // When ever an emitter field changes, rerun all the emitter tests
+
                     var $$ = $(this);
                     var emitters = $$.closest('[data-state-emitter]').data('state-emitter');
 
@@ -434,7 +437,19 @@ var sowEmitters = {};
 
                     // Run the states through the state emitters
                     var states = { 'default' : '' };
-                    states = handleStateEmitter( emitters, states );
+
+                    if( typeof emitters.length === 'undefined' ) {
+                        // This is an emitter with a single
+                        states = handleStateEmitter( emitters['callback'], emitters['args'] );
+                    }
+                    else {
+                        // Go through the array of emitters
+                        for( var i = 0; i < emitters.length; i++ ) {
+                            states = $.extend(states, handleStateEmitter( emitters['callback'], emitters['args'] ) );
+                        }
+                    }
+
+
                     // TODO handle an emitters value with multiple emitters
 
                     // Check which states have changed and trigger appropriate sowstatechange
@@ -755,12 +770,8 @@ var sowEmitters = {};
     $(document).trigger('sowadminloaded');
 
     // These are the emitter functions
-    sowEmitters.testEmitter = function(val, args){
+    sowEmitters.conditional = function(val, args){
         var returnStates = {};
-        if( val === 'show' || val === 'hide' ) {
-            returnStates['default'] = val;
-        }
-
         return returnStates;
     };
 
