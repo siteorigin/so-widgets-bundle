@@ -838,11 +838,18 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$wrapper_attributes['class'] = implode(' ', array_map('sanitize_html_class', $wrapper_attributes['class']) );
 
 		if( !empty($field['state_emitter']) ) {
+			// State emitters create new states for the form
 			$wrapper_attributes['data-state-emitter'] = json_encode( $field['state_emitter'] );
 		}
 
 		if( !empty($field['state_handler']) ) {
+			// State handlers decide what to do with form states
 			$wrapper_attributes['data-state-handler'] = json_encode( $field['state_handler'] );
+		}
+
+		if( !empty($field['state_handler_initial']) ) {
+			// Initial state handlers are only run when the form is first loaded
+			$wrapper_attributes['data-state-handler-initial'] = json_encode( $field['state_handler_initial'] );
 		}
 
 		?><div <?php foreach( $wrapper_attributes as $attr => $attr_val ) echo $attr.'="' . esc_attr($attr_val) . '" ' ?>><?php

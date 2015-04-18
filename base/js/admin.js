@@ -3,64 +3,57 @@
 
 var sowEmitters = {
 
-    '_': {
+    /**
+     * Find the group/state and an extra match part.
+     *
+     * @param arg
+     * @param matchPart
+     * @return {*}
+     */
+    '_match': function(arg, matchPart) {
+        if( typeof matchPart === 'undefined' ) { matchPart = '.*'; }
 
-        /**
-         * Find the group/state and an extra match part.
-         *
-         * @param arg
-         * @param matchPart
-         * @return {*}
-         */
-        'match': function(arg, matchPart) {
+        // Create the regular expression to match the group/state and extra match
+        var exp = new RegExp( '^([a-zA-Z_-]+)(\\[([a-zA-Z_-]+)\\])? *: *(' + matchPart + ') *$' );
+        var m = exp.exec( arg );
 
-            if( typeof matchPart === 'undefined' ) {
-                matchPart = '.*';
-            }
+        if( m === null ) { return false; }
 
-            // Create the regular expression to match the group/state and extra match
-            var exp = new RegExp( '^([a-z]+)(\\[([a-z]+)\\])? *: *(' + matchPart + ')$' );
-            var m = exp.exec( arg );
+        var state = '';
+        var group = 'default';
 
-            if( m === null ) { return false; }
-
-            var state = '';
-            var group = 'default';
-
-            if( m[3] !== undefined ) {
-                group = m[1];
-                state = m[3];
-            }
-            else {
-                state = m[1];
-            }
-
-            return {
-                'match' : m[4].trim(),
-                'group' : group,
-                'state' : state
-            };
-        },
-
-        'checker' : function(val, args, matchPart, callback){
-            var returnStates = {};
-            if( typeof args.length === 'undefined' ) {
-                args = [args];
-            }
-
-            var m;
-            for( var i = 0; i < args.length; i++ ) {
-                m = sowEmitters._.match( args[i], matchPart );
-                if ( m === false ) { continue; }
-
-                if( m.match === 'true' || callback( val, args, m.match ) ) {
-                    returnStates[ m.group ] = m.state;
-                }
-            }
-
-            return returnStates;
+        if( m[3] !== undefined ) {
+            group = m[1];
+            state = m[3];
+        }
+        else {
+            state = m[1];
         }
 
+        return {
+            'match' : m[4].trim(),
+            'group' : group,
+            'state' : state
+        };
+    },
+
+    '_checker' : function(val, args, matchPart, callback){
+        var returnStates = {};
+        if( typeof args.length === 'undefined' ) {
+            args = [args];
+        }
+
+        var m;
+        for( var i = 0; i < args.length; i++ ) {
+            m = sowEmitters._match( args[i], matchPart );
+            if ( m === false ) { continue; }
+
+            if( m.match === '_true' || callback( val, args, m.match ) ) {
+                returnStates[ m.group ] = m.state;
+            }
+        }
+
+        return returnStates;
     },
 
     /**
@@ -71,7 +64,7 @@ var sowEmitters = {
      * @return {{}}
      */
     'conditional' : function(val, args){
-        return sowEmitters._.checker( val, args, '[^;{}]*', function( val, args, match ){
+        return sowEmitters._checker( val, args, '[^;{}]*', function( val, args, match ){
             return eval( match );
         } );
     },
@@ -84,7 +77,7 @@ var sowEmitters = {
      * @return {{}}
      */
     'in' :  function(val, args) {
-        return sowEmitters._.checker( val, args, '[^;{}]*', function( val, args, match ){
+        return sowEmitters._checker( val, args, '[^;{}]*', function( val, args, match ){
             return match.split(',').map( function(s) { return s.trim(); } ).indexOf( val ) !== -1;
         } );
     }
@@ -93,8 +86,9 @@ var sowEmitters = {
 (function($){
 
     $.fn.sowSetupForm = function() {
+
         return $(this).each( function(i, el){
-            var $el = $(el), $mainForm;
+            var $el = $(el), $mainForm, formInitializing = true;
 
             // Skip this if the widget has any fields with an __i__
             var $inputs = $el.find('input');
@@ -133,63 +127,60 @@ var sowEmitters = {
                     $el.find('[data-state-handler]').each( function(){
                         var $$ = $(this);
 
-                        // Load the list of state change handlers
-                        var handler = $$.data('state-handler');
+                        // Create a copy of the current state handlers. Add in initial handlers if the form is initializing.
+                        var handler = $.extend( {}, $$.data( 'state-handler' ), formInitializing ?  $$.data('state-handler-initial' ) : {} ) ;
+                        if( Object.keys( handler ).length === 0 ) { return true; }
 
                         // We need to figure out what the incoming state is
                         var handlerStateParts, handlerState, thisHandler, $$f;
 
                         // Go through all the handlers
-                        if( Object.keys( handler ).length > 0 ) {
-                            for( var state in handler ) {
+                        for( var state in handler ) {
 
-                                handlerStateParts = state.match(/^([a-z]+)(\[([a-z]+)\])?(\[\])?$/);
-                                if( handlerStateParts === null ) {
-                                    // Skip this if there's a problem with the state parts
-                                    continue;
-                                }
-
-                                handlerState = {
-                                    'group' : 'default',
-                                    'name' : '',
-                                    'multi' : false
-                                };
-
-                                // Assign the handlerState attributes based on the pasted state
-                                if( handlerStateParts[2] !== undefined ) {
-                                    handlerState.group = handlerStateParts[1];
-                                    handlerState.name = handlerStateParts[3];
-                                }
-                                else {
-                                    handlerState.name = handlerStateParts[0];
-                                }
-
-                                // Check that the current state
-                                if( handlerState.group === incomingGroup && handlerState.name === incomingState ) {
-                                    thisHandler = handler[ state ];
-
-                                    // Now we can handle the the handler
-                                    if (!handlerState.multi) {
-                                        thisHandler = [ thisHandler ];
-                                    }
-
-                                    for (var i = 0; i < thisHandler.length; i++) {
-                                        // Choose the item we'll be acting on here
-                                        if ( typeof thisHandler[i][1] !== 'undefined' && Boolean( thisHandler[i][1] ) ) {
-                                            // thisHandler[i][1] is the sub selector
-                                            $$f = $$.find( thisHandler[i][1] );
-                                        }
-                                        else {
-                                            $$f = $$;
-                                        }
-
-                                        // Call the function on the
-                                        $$f[thisHandler[i][0]].apply($$f, typeof thisHandler[i][2] !== 'undefined' ? thisHandler[i][2] : []);
-
-                                    }
-                                }
-
+                            handlerStateParts = state.match(/^([a-zA-Z_-]+)(\[([a-zA-Z_-]+)\])?(\[\])?$/);
+                            if( handlerStateParts === null ) {
+                                // Skip this if there's a problem with the state parts
+                                continue;
                             }
+
+                            handlerState = {
+                                'group' : 'default',
+                                'name' : '',
+                                'multi' : false
+                            };
+
+                            // Assign the handlerState attributes based on the pasted state
+                            if( handlerStateParts[2] !== undefined ) {
+                                handlerState.group = handlerStateParts[1];
+                                handlerState.name = handlerStateParts[3];
+                            }
+                            else {
+                                handlerState.name = handlerStateParts[0];
+                            }
+
+                            // Check that the current state
+                            if( handlerState.group === incomingGroup && handlerState.name === incomingState ) {
+                                thisHandler = handler[ state ];
+
+                                // Now we can handle the the handler
+                                if (!handlerState.multi) {
+                                    thisHandler = [ thisHandler ];
+                                }
+
+                                for (var i = 0; i < thisHandler.length; i++) {
+                                    // Choose the item we'll be acting on here
+                                    if ( typeof thisHandler[i][1] !== 'undefined' && Boolean( thisHandler[i][1] ) ) {
+                                        // thisHandler[i][1] is the sub selector
+                                        $$f = $$.find( thisHandler[i][1] );
+                                    }
+                                    else { $$f = $$; }
+
+                                    // Call the function on the
+                                    $$f[thisHandler[i][0]].apply($$f, typeof thisHandler[i][2] !== 'undefined' ? thisHandler[i][2] : []);
+
+                                }
+                            }
+
                         }
 
                     } );
@@ -533,8 +524,8 @@ var sowEmitters = {
                     var emitters = $$.closest('[data-state-emitter]').data('state-emitter');
 
                     var handleStateEmitter = function(emitter, currentStates){
-                        if( typeof sowEmitters[ emitter.callback ] === 'undefined' ) {
-                            // The function does not exist, so just return the current states
+                        if( typeof sowEmitters[ emitter.callback ] === 'undefined' || emitter.callback.substr(0,1) === '_' ) {
+                            // Skip if the function doesn't exist, or it starts with an underscore.
                             return currentStates;
                         }
 
@@ -545,23 +536,16 @@ var sowEmitters = {
                     // Run the states through the state emitters
                     var states = { 'default' : '' };
 
-                    if( typeof emitters.length === 'undefined' ) {
-                        // This is an emitter with a single
-                        states = handleStateEmitter( emitters, states );
-                    }
-                    else {
-                        // Go through the array of emitters
-                        for( var i = 0; i < emitters.length; i++ ) {
-                            states = handleStateEmitter( emitters[i], states );
-                        }
+                    // Go through the array of emitters
+                    if( typeof emitters.length === 'undefined' ) { emitters = [emitters]; }
+                    for( var i = 0; i < emitters.length; i++ ) {
+                        states = handleStateEmitter( emitters[i], states );
                     }
 
                     // Check which states have changed and trigger appropriate sowstatechange
                     var formStates = $mainForm.data('states');
                     if( typeof formStates === 'undefined' ) {
-                        formStates = {
-                            'default' : ''
-                        };
+                        formStates = { 'default' : '' };
                     }
                     for( var k in states ) {
                         if( typeof formStates[k] === 'undefined' || states[k] !== formStates[k] ) {
@@ -582,9 +566,11 @@ var sowEmitters = {
             $el.trigger( 'sowsetupform', $fields ).data('sow-form-setup', true);
             $el.find('.siteorigin-widget-field-repeater-item').trigger('updateFieldPositions');
 
-            /********
-             * The end of the form setup.
-             *******/
+            /////////////////////////////
+            // The end of the form setup.
+            /////////////////////////////
+
+            formInitializing = false;
         } );
     };
 
@@ -599,7 +585,7 @@ var sowEmitters = {
             var data = {};
             $el.find( '*[name]' ).each( function () {
                 var $$ = $(this);
-                var name = /[a-zA-Z\-]+\[[a-z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
+                var name = /[a-zA-Z\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
 
                 name = name[1];
                 var parts = name.split('][');
