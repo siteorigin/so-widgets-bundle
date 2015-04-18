@@ -1,5 +1,5 @@
+
+/* globals jQuery */
 jQuery(function ($) {
-
-    $('video').mediaelementplayer();
-
+    $('video.sow-video-widget').mediaelementplayer();
 });

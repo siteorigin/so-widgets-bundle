@@ -28,7 +28,6 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				'host_type' => array(
 					'type' => 'radio',
 					'label' => __( 'Video location', 'siteorigin-widgets' ),
-					'state_selector' => true,
 					'default' => 'self',
 					'options' => array(
 						'self' => __( 'Self hosted', 'siteorigin-widgets' ),
@@ -42,18 +41,16 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 					'description' => __( 'Select an uploaded video in mp4 format. Other formats, such as webm and ogv will work in some browsers. You can use an online service such as <a href="http://video.online-convert.com/convert-to-mp4" target="_blank">online-convert.com</a> to convert your videos to mp4.', 'siteorigin-widgets' ),
 					'default'     => '',
 					'library' => 'video',
-					'state_name' => 'self',
 				),
 				'self_poster' => array(
 					'type' => 'media',
 					'label' => __( 'Select cover image', 'siteorigin-widgets' ),
 					'default'     => '',
 					'library' => 'image',
-					'state_name' => 'self',
 				),
 				'external_video' => array(
 					'type' => 'text',
-					'state_name' => 'external',
+					'sanitize' => 'url',
 					'label' => __( 'Video URL', 'siteorigin-widgets' )
 				),
 				'autoplay' => array(
@@ -61,14 +58,19 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 					'default' => false,
 					'label' => __( 'Autoplay', 'siteorigin-widgets' )
 				),
+				'width' => array(
+					'type' => 'number',
+					'default' => 640,
+				),
+				'height' => array(
+					'type' => 'number',
+					'default' => 380,
+				),
 				'skin' => array(
 					'type' => 'select',
 					'label' => __( 'Video player skin', 'siteorigin-widgets' ),
 					'options' => array(
 						'default' => __( 'Default', 'siteorigin-widgets' ),
-						'skin_one' => __( 'Skin One', 'siteorigin-widgets' ),
-						'skin_two' => __( 'Skin Two', 'siteorigin-widgets' ),
-						'skin_three' => __( 'Skin Three', 'siteorigin-widgets' ),
 					)
 				)
 			)
@@ -101,6 +103,8 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_template_variables( $instance, $args ) {
+		static $player_id = 1;
+
 		$poster = '';
 		$video_host = $instance['host_type'];
 		if ( $video_host == 'self' ) {
@@ -113,8 +117,11 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			$video_host = $video_type = $this->get_host_from_url( $instance['external_video'] );
 			$src = !empty( $instance['external_video'] ) ? $instance['external_video'] : '';
 		}
+
 		return array(
-			'player_id' => 'player1',
+			'width' => intval($instance['width']),
+			'height' => intval($instance['height']),
+			'player_id' => 'sow-player' . ($player_id++),
 			'host_type' => $instance['host_type'],
 			'src' => $src,
 			'video_type' => $video_type,
@@ -126,9 +133,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_style_name( $instance ) {
-		if ( !empty( $instance['skin'] ) ) {
-			return $instance['skin'];
-		}
+		// For now, we'll only use the default style
 		return '';
 	}
 
@@ -139,11 +144,25 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	/**
+	 * Get the video host from the URL
+	 *
+	 * @param $video_url
+	 *
+	 * @return string
+	 */
 	private function get_host_from_url( $video_url ) {
 		preg_match( '/https?:\/\/(www.)?([A-Za-z0-9\-]+)\./', $video_url, $matches );
 		return ( ! empty( $matches ) && count( $matches ) > 2 ) ? $matches[2] : '';
 	}
 
+	/**
+	 * Check if the current host is skinnable
+	 *
+	 * @param $video_host
+	 *
+	 * @return bool
+	 */
 	private function is_skinnable_video_host( $video_host ) {
 		global $wp_version;
 		return $video_host == 'self' || $video_host == 'youtube' || ( $video_host == 'vimeo' && $wp_version >= 4.2 );
