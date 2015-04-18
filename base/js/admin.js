@@ -352,6 +352,9 @@
                 } );
             } );
 
+            // Setup display states
+            $el.find('.siteorigin-widget-field-state-selector').sowSetupStates();
+
             // Give plugins a chance to influence the form
             $el.trigger( 'sowsetupform', $fields ).data('sow-form-setup', true);
             $el.find('.siteorigin-widget-field-repeater-item').trigger('updateFieldPositions');
@@ -615,6 +618,34 @@
 
                 $el.data('sowrepeater-actions-setup', true);
             }
+        });
+    };
+
+    $.fn.sowSetupStates = function() {
+        return $(this).each( function(i, el) {
+            var $stateField = $(el);
+            var selectorType, selectorName;
+            var classNames = $stateField.attr('class').split(/\s+/);
+            for (var i = 0; i < classNames.length; i++) {
+                var className = classNames[i];
+                if (className == 'siteorigin-widget-field-state-selector') {
+                    continue;
+                }
+                else if (className.indexOf('siteorigin-widget-field-type-') > -1) {
+                    selectorType = className.replace('siteorigin-widget-field-type-', '');
+                }
+                else if (className.indexOf('siteorigin-widget-field-') > -1) {
+                    selectorName = className.replace('siteorigin-widget-field-', '');
+                }
+            }
+            var $parentForm = $stateField.closest('.siteorigin-widget-form');
+            var updateFieldsForSelectedState = function () {
+                var selectedState = $stateField.find('input[type="' + selectorType + '"][id*="' + selectorName + '"]:checked').val();
+                $parentForm.find('[class*="siteorigin-widget-field-state-name-"]').hide();
+                $parentForm.find('.siteorigin-widget-field-state-name-' + selectedState).show();
+            };
+            $stateField.change(updateFieldsForSelectedState);
+            updateFieldsForSelectedState();
         });
     };
 
