@@ -829,8 +829,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			'siteorigin-widget-field-type-' . $field['type'],
 			'siteorigin-widget-field-' . $name
 		);
-		if( !empty( $field['state_name'] ) ) $wrapper_classes[] = 'siteorigin-widget-field-state-name-' . $field['state_name'];
-		if( !empty( $field['state_selector'] ) ) $wrapper_classes[] = 'siteorigin-widget-field-state-selector';
 		if( !empty( $field['hidden'] ) ) $wrapper_classes[] = 'siteorigin-widget-field-is-hidden';
 		if( !empty( $field['optional'] ) ) $wrapper_classes[] = 'siteorigin-widget-field-is-optional';
 
