@@ -1100,8 +1100,21 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			case 'widget' :
 				// Create the extra form entries
-				$sub_widget = new $field['class'];
 				?><div class="siteorigin-widget-section <?php if( !empty($field['hide']) ) echo 'siteorigin-widget-section-hide'; ?>"><?php
+
+				if( !class_exists($field['class']) ) {
+					printf( __('%s does not exist', 'siteorigin-widgets'), $field['class']);
+					echo '</div>';
+					break;
+				}
+
+				$sub_widget = new $field['class'];
+				if( !is_a($sub_widget, 'SiteOrigin_Widget') ) {
+					printf( __('%s is not a SiteOrigin Widget', 'siteorigin-widgets'), $field['class']);
+					echo '</div>';
+					break;
+				}
+
 				foreach( $sub_widget->form_options($this) as $sub_name => $sub_field) {
 					$this->render_field(
 						$name.']['.$sub_name,
