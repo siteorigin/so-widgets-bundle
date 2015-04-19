@@ -202,10 +202,16 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			siteorigin_widget_get_font( $instance['sub_headline']['font'] ),
 		);
 
+		$import_strings = array();
+		foreach( $font_imports as $import ) {
+			$import_strings[] = !empty($import['css_import']) ? empty($import['css_import']) : '';
+		}
+
 		// Remove empty and duplicate items from the array
-		$font_imports = array_filter($font_imports);
-		$font_imports = array_unique($font_imports);
-		return implode("\n", $font_imports);
+		$import_strings = array_filter($import_strings);
+		$import_strings = array_unique($import_strings);
+
+		return implode("\n", $import_strings);
 	}
 
 	/**

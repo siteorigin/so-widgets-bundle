@@ -36,6 +36,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							'type'    => 'radio',
 							'default' => 'interactive',
 							'label'   => __( 'Map type', 'siteorigin-widgets' ),
+							'state_selector' => true,
 							'options' => array(
 								'interactive' => __( 'Interactive', 'siteorigin-widgets' ),
 								'static'      => __( 'Static image', 'siteorigin-widgets' ),

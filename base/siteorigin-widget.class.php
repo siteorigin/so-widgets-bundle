@@ -829,13 +829,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			'siteorigin-widget-field-type-' . $field['type'],
 			'siteorigin-widget-field-' . $name
 		);
-		if( !empty( $field['state_name'] ) ) $wrapper_classes[] = 'siteorigin-widget-field-state-' . $field['state_name'];
 		if( !empty( $field['hidden'] ) ) $wrapper_classes[] = 'siteorigin-widget-field-is-hidden';
 		if( !empty( $field['optional'] ) ) $wrapper_classes[] = 'siteorigin-widget-field-is-optional';
 
 		?><div class="<?php echo implode(' ', array_map('sanitize_html_class', $wrapper_classes) ) ?>"><?php
 
-		$field_id = $this->so_get_field_id( $name, $repeater, $is_template );
+		$field_id = sanitize_html_class( $this->so_get_field_id( $name, $repeater, $is_template ) );
 
 		if( $field['type'] != 'repeater' && $field['type'] != 'checkbox' && $field['type'] != 'separator' && !empty($field['label']) ) {
 			?>
