@@ -1,5 +1,5 @@
 /**
- * (c) Greg Priday, freely distributable under the terms of the GPL 2.0 license.
+ * (c) SiteOrigin, freely distributable under the terms of the GPL 2.0 license.
  */
 
 function loadMap($) {
