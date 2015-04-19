@@ -14,7 +14,7 @@ var sowEmitters = {
         if( typeof matchPart === 'undefined' ) { matchPart = '.*'; }
 
         // Create the regular expression to match the group/state and extra match
-        var exp = new RegExp( '^([a-zA-Z_-]+)(\\[([a-zA-Z_-]+)\\])? *: *(' + matchPart + ') *$' );
+        var exp = new RegExp( '^([a-zA-Z0-9_-]+)(\\[([a-zA-Z0-9_-]+)\\])? *: *(' + matchPart + ') *$' );
         var m = exp.exec( arg );
 
         if( m === null ) { return false; }
@@ -166,7 +166,7 @@ var sowEmitters = {
                             runHandler = false;
 
                             // Parse the handler state parts
-                            handlerStateParts = state.match(/^([a-zA-Z_-]+)(\[([a-zA-Z_-]+)\])?(\[\])?$/);
+                            handlerStateParts = state.match(/^([a-zA-Z0-9_-]+)(\[([a-zA-Z0-9_-]+)\])?(\[\])?$/);
                             if( handlerStateParts === null ) {
                                 // Skip this if there's a problem with the state parts
                                 continue;
@@ -646,7 +646,7 @@ var sowEmitters = {
             var data = {};
             $el.find( '*[name]' ).each( function () {
                 var $$ = $(this);
-                var name = /[a-zA-Z\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
+                var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
 
                 name = name[1];
                 var parts = name.split('][');
