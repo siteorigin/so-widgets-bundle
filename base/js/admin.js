@@ -193,10 +193,9 @@ var sowEmitters = {
                                 // Always run if no handlers from the current group have been run yet
                                 handlerState.group = handlerState.name;
                                 handlerState.name = '';
-                                if( typeof handlerRun[ handlerState.group ] === 'undefined' ) {
-                                    // We will run this handler because none have run for it yet
-                                    runHandler = true;
-                                }
+
+                                // We will run this handler because none have run for it yet
+                                runHandler = ( typeof handlerRun[ handlerState.group ] === 'undefined' );
                             }
                             else {
                                 // Evaluate if we're in the current state
@@ -608,7 +607,19 @@ var sowEmitters = {
                     // Store the form states back in the form
                     $mainForm.data('states', formStates);
 
-                }).change();
+                });
+
+                // Trigger changes on all necessary fields
+                $(this).find('.siteorigin-widget-input').each(function(){
+                    var $$ = $(this);
+                    if( $$.is(':radio') ) {
+                        // Only checked radio inputs must have change events
+                        $$.filter(':checked').change();
+                    }
+                    else{
+                        $$.change();
+                    }
+                });
 
             } );
 
