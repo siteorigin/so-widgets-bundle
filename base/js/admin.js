@@ -156,11 +156,16 @@ var sowEmitters = {
                         if( Object.keys( handler ).length === 0 ) { return true; }
 
                         // We need to figure out what the incoming state is
-                        var handlerStateParts, handlerState, thisHandler, $$f;
+                        var handlerStateParts, handlerState, thisHandler, $$f, runHandler;
+
+                        // Indicates if the handler has run
+                        var handlerRun = {};
 
                         // Go through all the handlers
                         for( var state in handler ) {
+                            runHandler = false;
 
+                            // Parse the handler state parts
                             handlerStateParts = state.match(/^([a-zA-Z_-]+)(\[([a-zA-Z_-]+)\])?(\[\])?$/);
                             if( handlerStateParts === null ) {
                                 // Skip this if there's a problem with the state parts
@@ -173,7 +178,7 @@ var sowEmitters = {
                                 'multi' : false
                             };
 
-                            // Assign the handlerState attributes based on the pasted state
+                            // Assign the handlerState attributes based on the parsed state
                             if( handlerStateParts[2] !== undefined ) {
                                 handlerState.group = handlerStateParts[1];
                                 handlerState.name = handlerStateParts[3];
@@ -181,13 +186,30 @@ var sowEmitters = {
                             else {
                                 handlerState.name = handlerStateParts[0];
                             }
+                            handlerState.multi = (handlerStateParts[4] !== undefined);
 
-                            // Check that the current state
-                            if( handlerState.group === incomingGroup && handlerState.name === incomingState ) {
+                            if( handlerState.group === '_else' ) {
+                                // This is the special case of an group else handler
+                                // Always run if no handlers from the current group have been run yet
+                                handlerState.group = handlerState.name;
+                                handlerState.name = '';
+                                if( typeof handlerRun[ handlerState.group ] === 'undefined' ) {
+                                    // We will run this handler because none have run for it yet
+                                    runHandler = true;
+                                }
+                            }
+                            else {
+                                // Evaluate if we're in the current state
+                                runHandler = (handlerState.group === incomingGroup && handlerState.name === incomingState);
+                            }
+
+
+                            // Run the handler if previous checks have determined we should
+                            if( runHandler ) {
                                 thisHandler = handler[ state ];
 
                                 // Now we can handle the the handler
-                                if (!handlerState.multi) {
+                                if ( !handlerState.multi ) {
                                     thisHandler = [ thisHandler ];
                                 }
 
@@ -197,14 +219,18 @@ var sowEmitters = {
                                         // thisHandler[i][1] is the sub selector
                                         $$f = $$.find( thisHandler[i][1] );
                                     }
-                                    else { $$f = $$; }
+                                    else {
+                                        $$f = $$;
+                                    }
 
-                                    // Call the function on the
+                                    // Call the function on the wrapper we've selected
                                     $$f[thisHandler[i][0]].apply($$f, typeof thisHandler[i][2] !== 'undefined' ? thisHandler[i][2] : []);
 
                                 }
-                            }
 
+                                // Store that we've run a handler
+                                handlerRun[ handlerState.group ] = true;
+                            }
                         }
 
                     } );
