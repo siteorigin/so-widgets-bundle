@@ -57,6 +57,30 @@ var sowEmitters = {
     },
 
     /**
+     * A very simple state emitter that simply sets the given group the value
+     *
+     *
+     * @param val
+     * @param args
+     * @returns {{}}
+     */
+    'select': function(val, args) {
+        if( typeof args.length === 'undefined' ) {
+            args = [args];
+        }
+
+        var returnGroups = {};
+        for( var i = 0; i < args.length; i++ ) {
+            if( args[i] === '' ) {
+                args[i] = 'default';
+            }
+            returnGroups[args[i]] = val;
+        }
+
+        return returnGroups;
+    },
+
+    /**
      * The conditional state emitter uses eval to check a given conditional argument.
      *
      * @param val
