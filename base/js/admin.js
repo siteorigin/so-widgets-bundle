@@ -571,7 +571,8 @@
                 var itemLabel = $parentRepeater.data('item-label');
                 if (itemLabel && itemLabel.selector) {
                     var updateLabel = function () {
-                        var txt = $el.find(itemLabel.selector)[itemLabel.valueMethod]();
+                        var functionName = ( itemLabel.hasOwnProperty('valueMethod') && itemLabel.valueMethod ) ? itemLabel.valueMethod : 'val';
+                        var txt = $el.find(itemLabel.selector)[functionName]();
                         if (txt) {
                             if (txt.length > 80) {
                                 txt = txt.substr(0, 79) + '...';
@@ -580,9 +581,8 @@
                         }
                     };
                     updateLabel();
-                    if (itemLabel.updateEvent) {
-                        $el.bind(itemLabel.updateEvent, updateLabel);
-                    }
+                    var eventName = ( itemLabel.hasOwnProperty('updateEvent') && itemLabel.updateEvent ) ? itemLabel.updateEvent : 'change';
+                    $el.bind(eventName, updateLabel);
                 }
 
                 itemTop.click(function (e) {
