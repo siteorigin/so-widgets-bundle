@@ -1148,11 +1148,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				?></div><?php
 				break;
 
-			case 'bucket' :
-				// A bucket select and explore field
-				?><input type="text" name="<?php echo $this->so_get_field_name($name, $repeater) ?>" id="<?php echo $field_id ?>" value="<?php echo esc_attr($value) ?>" class="widefat siteorigin-widget-input" /><?php
-				break;
-
 			default:
 				// We couldn't find the field, so lets give other plugins a chance to provide it
 				echo apply_filters(
