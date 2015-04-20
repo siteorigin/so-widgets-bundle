@@ -82,15 +82,8 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				'playback' => array(
 					'type' => 'section',
 					'label' => __('Video Playback', 'siteorigin-widgets'),
+					'hide' => true,
 					'fields' => array(
-						'width' => array(
-							'type' => 'number',
-							'default' => 640,
-						),
-						'height' => array(
-							'type' => 'number',
-							'default' => 380,
-						),
 						'autoplay' => array(
 							'type' => 'checkbox',
 							'default' => false,
@@ -133,9 +126,20 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		$poster = '';
 		$video_host = $instance['host_type'];
 		if ( $video_host == 'self' ) {
-			$vid_info = wp_get_attachment_metadata( $instance['video']['self_video'] );
-			$video_type = empty( $vid_info['fileformat'] ) ? '' : $vid_info['fileformat'];
-			$src = !empty( $instance['video']['self_video'] ) ? wp_get_attachment_url( $instance['video']['self_video'] ) : '';
+
+			if( !empty( $instance['video']['self_video'] ) ) {
+				// Handle an attachment video
+				$src = wp_get_attachment_url( $instance['video']['self_video'] );
+				$vid_info = wp_get_attachment_metadata( $instance['video']['self_video'] );
+				$video_type = 'video/'. empty( $vid_info['fileformat'] ) ? '' : $vid_info['fileformat'];
+			}
+			else if( !empty( $instance['video']['self_video_fallback'] ) ) {
+				// Handle an external URL video
+				$src = $instance['video']['self_video_fallback'];
+				$vid_info = wp_check_filetype( basename( $instance['video']['self_video_fallback'] ) );
+				$video_type = $vid_info['type'];
+			}
+
 			$poster = !empty( $instance['video']['self_poster'] ) ? wp_get_attachment_url( $instance['video']['self_poster'] ) : '';
 		}
 		else {
@@ -144,8 +148,6 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
-			'width' => intval($instance['playback']['width']),
-			'height' => intval($instance['playback']['height']),
 			'player_id' => 'sow-player' . ($player_id++),
 			'host_type' => $instance['host_type'],
 			'src' => $src,
