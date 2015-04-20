@@ -1070,7 +1070,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 										<?php if( empty( $field['readonly'] ) ) : ?>
 										<div class="siteorigin-widget-field-remove"></div>
 										<?php endif; ?>
-										<h4><?php echo esc_html($field['item_name']) ?></h4>
+										<h4><?php echo esc_html( $item_name ) ?></h4>
 									</div>
 									<div class="siteorigin-widget-field-repeater-item-form">
 										<?php
