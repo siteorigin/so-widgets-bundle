@@ -927,8 +927,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					id="<?php echo $field_id ?>"
 					value="<?php echo !empty($value) ? esc_attr($value) : 0 ?>"
 					min="<?php echo isset($field['min']) ? intval($field['min']) : 0 ?>"
-					max="<?php echo isset($field['max']) ? intval($field['max']) : 100 ?>"
-					data-integer="<?php echo !empty( $field['integer'] ) ? 'true' : 'false' ?>" />
+					max="<?php echo isset($field['max']) ? intval($field['max']) : 100 ?>" />
 				<?php
 				break;
 

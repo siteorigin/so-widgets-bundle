@@ -484,7 +484,6 @@ var sowEmitters = {
                     max: parseInt( $input.attr('max') ),
                     min: parseInt( $input.attr('min') ),
                     value: parseInt( $input.val() ),
-                    step: 1,
                     slide: function( event, ui ) {
                         $input.val( parseInt(ui.value) );
                         $$.find('.siteorigin-widget-slider-value').html( ui.value );
