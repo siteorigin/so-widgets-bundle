@@ -54,7 +54,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		parent::WP_Widget($id, $name, $widget_options, $control_options);
 		$this->initialize();
 
-		// Let other plugins do additional initilizing here
+		// Let other plugins do additional initializing here
 		do_action('siteorigin_widgets_initialize_widget_' . $this->id_base, $this);
 	}
 
@@ -138,7 +138,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		if( !empty($template_file) && file_exists($template_file) ) {
 			@ include $template_file;
 		}
-		echo apply_filters('siteorigin_widgets_template', ob_get_clean(), get_class($this), $instance, $this );
+		$template_html = ob_get_clean();
+		// This is a legacy, undocumented filter.
+		$template_html = apply_filters( 'siteorigin_widgets_template', $template_html, get_class($this), $instance, $this );
+		$template_html = apply_filters( 'siteorigin_widgets_template_html_' . $this->id_base, $template_html, $instance, $this );
+		echo $template_html;
 		echo '</div>';
 		echo $args['after_widget'];
 	}

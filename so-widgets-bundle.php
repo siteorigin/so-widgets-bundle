@@ -218,7 +218,7 @@ class SiteOrigin_Widgets_Bundle {
 		if( empty($_GET['widget']) ) exit();
 
 		if( $_POST['active'] == 'true' ) $this->activate_widget($_GET['widget']);
-		else $this->deactivate_widget($_GET['widget']);
+		else $this->deactivate_widget( $_GET['widget'] );
 
 		// Send a kind of dummy response.
 		header('content-type: application/json');
