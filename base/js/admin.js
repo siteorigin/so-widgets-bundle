@@ -1,11 +1,118 @@
 
 /* globals wp, jQuery, soWidgets, confirm */
 
+var sowEmitters = {
+
+    /**
+     * Find the group/state and an extra match part.
+     *
+     * @param arg
+     * @param matchPart
+     * @return {*}
+     */
+    '_match': function(arg, matchPart) {
+        if( typeof matchPart === 'undefined' ) { matchPart = '.*'; }
+
+        // Create the regular expression to match the group/state and extra match
+        var exp = new RegExp( '^([a-zA-Z0-9_-]+)(\\[([a-zA-Z0-9_-]+)\\])? *: *(' + matchPart + ') *$' );
+        var m = exp.exec( arg );
+
+        if( m === null ) { return false; }
+
+        var state = '';
+        var group = 'default';
+
+        if( m[3] !== undefined ) {
+            group = m[1];
+            state = m[3];
+        }
+        else {
+            state = m[1];
+        }
+
+        return {
+            'match' : m[4].trim(),
+            'group' : group,
+            'state' : state
+        };
+    },
+
+    '_checker' : function(val, args, matchPart, callback){
+        var returnStates = {};
+        if( typeof args.length === 'undefined' ) {
+            args = [args];
+        }
+
+        var m;
+        for( var i = 0; i < args.length; i++ ) {
+            m = sowEmitters._match( args[i], matchPart );
+            if ( m === false ) { continue; }
+
+            if( m.match === '_true' || callback( val, args, m.match ) ) {
+                returnStates[ m.group ] = m.state;
+            }
+        }
+
+        return returnStates;
+    },
+
+    /**
+     * A very simple state emitter that simply sets the given group the value
+     *
+     *
+     * @param val
+     * @param args
+     * @returns {{}}
+     */
+    'select': function(val, args) {
+        if( typeof args.length === 'undefined' ) {
+            args = [args];
+        }
+
+        var returnGroups = {};
+        for( var i = 0; i < args.length; i++ ) {
+            if( args[i] === '' ) {
+                args[i] = 'default';
+            }
+            returnGroups[args[i]] = val;
+        }
+
+        return returnGroups;
+    },
+
+    /**
+     * The conditional state emitter uses eval to check a given conditional argument.
+     *
+     * @param val
+     * @param args
+     * @return {{}}
+     */
+    'conditional' : function(val, args){
+        return sowEmitters._checker( val, args, '[^;{}]*', function( val, args, match ){
+            return eval( match );
+        } );
+    },
+
+    /**
+     * The in state emitter checks if the value is in an array of functions
+     *
+     * @param val
+     * @param args
+     * @return {{}}
+     */
+    'in' :  function(val, args) {
+        return sowEmitters._checker( val, args, '[^;{}]*', function( val, args, match ){
+            return match.split(',').map( function(s) { return s.trim(); } ).indexOf( val ) !== -1;
+        } );
+    }
+};
+
 (function($){
 
     $.fn.sowSetupForm = function() {
+
         return $(this).each( function(i, el){
-            var $el = $(el);
+            var $el = $(el), $mainForm, formInitializing = true;
 
             // Skip this if the widget has any fields with an __i__
             var $inputs = $el.find('input');
@@ -33,12 +140,107 @@
                 }
                 // If we're in the main widgets interface and the form isn't visible and it isn't contained in a
                 // panels dialog (when using the Layout Builder widget), don't worry about setting it up.
-                if( $('body').hasClass('widgets-php') && !$el.is(':visible') && $el.closest('.panel-dialog').length == 0) {
+                if( $('body').hasClass('widgets-php') && !$el.is(':visible') && $el.closest('.panel-dialog').length === 0 ) {
                     return true;
                 }
 
+                // Listen for a state change event if this is the main form wrapper
+                $el.on('sowstatechange', function( e, incomingGroup, incomingState ){
+
+                    // Find all wrappers that have state handlers on them
+                    $el.find('[data-state-handler]').each( function(){
+                        var $$ = $(this);
+
+                        // Create a copy of the current state handlers. Add in initial handlers if the form is initializing.
+                        var handler = $.extend( {}, $$.data( 'state-handler' ), formInitializing ?  $$.data('state-handler-initial' ) : {} ) ;
+                        if( Object.keys( handler ).length === 0 ) { return true; }
+
+                        // We need to figure out what the incoming state is
+                        var handlerStateParts, handlerState, thisHandler, $$f, runHandler;
+
+                        // Indicates if the handler has run
+                        var handlerRun = {};
+
+                        // Go through all the handlers
+                        for( var state in handler ) {
+                            runHandler = false;
+
+                            // Parse the handler state parts
+                            handlerStateParts = state.match(/^([a-zA-Z0-9_-]+)(\[([a-zA-Z0-9_-]+)\])?(\[\])?$/);
+                            if( handlerStateParts === null ) {
+                                // Skip this if there's a problem with the state parts
+                                continue;
+                            }
+
+                            handlerState = {
+                                'group' : 'default',
+                                'name' : '',
+                                'multi' : false
+                            };
+
+                            // Assign the handlerState attributes based on the parsed state
+                            if( handlerStateParts[2] !== undefined ) {
+                                handlerState.group = handlerStateParts[1];
+                                handlerState.name = handlerStateParts[3];
+                            }
+                            else {
+                                handlerState.name = handlerStateParts[0];
+                            }
+                            handlerState.multi = (handlerStateParts[4] !== undefined);
+
+                            if( handlerState.group === '_else' ) {
+                                // This is the special case of an group else handler
+                                // Always run if no handlers from the current group have been run yet
+                                handlerState.group = handlerState.name;
+                                handlerState.name = '';
+
+                                // We will run this handler because none have run for it yet
+                                runHandler = ( typeof handlerRun[ handlerState.group ] === 'undefined' );
+                            }
+                            else {
+                                // Evaluate if we're in the current state
+                                runHandler = (handlerState.group === incomingGroup && handlerState.name === incomingState);
+                            }
+
+
+                            // Run the handler if previous checks have determined we should
+                            if( runHandler ) {
+                                thisHandler = handler[ state ];
+
+                                // Now we can handle the the handler
+                                if ( !handlerState.multi ) {
+                                    thisHandler = [ thisHandler ];
+                                }
+
+                                for (var i = 0; i < thisHandler.length; i++) {
+                                    // Choose the item we'll be acting on here
+                                    if ( typeof thisHandler[i][1] !== 'undefined' && Boolean( thisHandler[i][1] ) ) {
+                                        // thisHandler[i][1] is the sub selector
+                                        $$f = $$.find( thisHandler[i][1] );
+                                    }
+                                    else {
+                                        $$f = $$;
+                                    }
+
+                                    // Call the function on the wrapper we've selected
+                                    $$f[thisHandler[i][0]].apply($$f, typeof thisHandler[i][2] !== 'undefined' ? thisHandler[i][2] : []);
+
+                                }
+
+                                // Store that we've run a handler
+                                handlerRun[ handlerState.group ] = true;
+                            }
+                        }
+
+                    } );
+                } );
+
                 // Lets set up the preview
                 $el.sowSetupPreview();
+                $mainForm = $el;
+            }
+            else {
+                $mainForm = $el.closest('.siteorigin-widget-form-main');
             }
 
             // Find any field or sub widget fields.
@@ -181,7 +383,9 @@
                 });
             });
 
+            ///////////////////////////////////////
             // Handle the icon selection
+
             var iconWidgetCache = {};
             $fields.find('> .siteorigin-widget-icon-selector').each(function(){
                 var $is = $(this);
@@ -268,6 +472,9 @@
 
             });
 
+            ///////////////////////////////////////
+            // Handle the slider sections
+
             $fields.filter('.siteorigin-widget-field-type-slider').each(function(){
                 var $$ = $(this);
                 var $input = $$.find('input[type="number"]');
@@ -284,7 +491,9 @@
                 });
             });
 
+            ///////////////////////////////////////
             // Setup the URL fields
+
             $fields.filter('.siteorigin-widget-field-type-link').each( function(){
                 var $$ = $(this);
 
@@ -335,7 +544,6 @@
                     e.preventDefault();
                     var $li = $(this);
                     $$.find('input.siteorigin-widget-input').val( 'post: ' + $li.data('ID') );
-
                     $$.find('.existing-content-selector').toggle();
                 } );
 
@@ -351,13 +559,78 @@
                 } );
             } );
 
+            ///////////////////////////////////////
+            // Now lets handle the state emitters
+
+            $fields.filter('[data-state-emitter]').each( function(){
+
+                // Listen for any change events on an emitter field
+                $(this).find('.siteorigin-widget-input').on('keyup change', function(){
+                    var $$ = $(this);
+
+                    // These emitters can either be an array or a
+                    var emitters = $$.closest('[data-state-emitter]').data('state-emitter');
+
+                    var handleStateEmitter = function(emitter, currentStates){
+                        if( typeof sowEmitters[ emitter.callback ] === 'undefined' || emitter.callback.substr(0,1) === '_' ) {
+                            // Skip if the function doesn't exist, or it starts with an underscore.
+                            return currentStates;
+                        }
+
+                        // Return an array that has the new states added to the array
+                        return $.extend( currentStates, sowEmitters[emitter.callback]( $$.val(), emitter.args ) );
+                    };
+
+                    // Run the states through the state emitters
+                    var states = { 'default' : '' };
+
+                    // Go through the array of emitters
+                    if( typeof emitters.length === 'undefined' ) { emitters = [emitters]; }
+                    for( var i = 0; i < emitters.length; i++ ) {
+                        states = handleStateEmitter( emitters[i], states );
+                    }
+
+                    // Check which states have changed and trigger appropriate sowstatechange
+                    var formStates = $mainForm.data('states');
+                    if( typeof formStates === 'undefined' ) {
+                        formStates = { 'default' : '' };
+                    }
+                    for( var k in states ) {
+                        if( typeof formStates[k] === 'undefined' || states[k] !== formStates[k] ) {
+                            // If the state is different from the original formStates, then trigger a state change
+                            formStates[k] = states[k];
+                            $mainForm.trigger( 'sowstatechange', [ k, states[k] ] );
+                        }
+                    }
+
+                    // Store the form states back in the form
+                    $mainForm.data('states', formStates);
+
+                });
+
+                // Trigger changes on all necessary fields
+                $(this).find('.siteorigin-widget-input').each(function(){
+                    var $$ = $(this);
+                    if( $$.is(':radio') ) {
+                        // Only checked radio inputs must have change events
+                        $$.filter(':checked').change();
+                    }
+                    else{
+                        $$.change();
+                    }
+                });
+
+            } );
+
             // Give plugins a chance to influence the form
             $el.trigger( 'sowsetupform', $fields ).data('sow-form-setup', true);
             $el.find('.siteorigin-widget-field-repeater-item').trigger('updateFieldPositions');
 
-            /********
-             * The end of the form setup.
-             *******/
+            /////////////////////////////
+            // The end of the form setup.
+            /////////////////////////////
+
+            formInitializing = false;
         } );
     };
 
@@ -372,7 +645,7 @@
             var data = {};
             $el.find( '*[name]' ).each( function () {
                 var $$ = $(this);
-                var name = /[a-zA-Z\-]+\[[a-z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
+                var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
 
                 name = name[1];
                 var parts = name.split('][');

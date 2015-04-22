@@ -46,7 +46,7 @@ class SiteOrigin_Widgets_Bundle {
 
 		// Initialize the widgets, but do it fairly late
 		add_action( 'plugins_loaded', array($this, 'set_plugin_textdomain'), 1 );
-		add_action( 'plugins_loaded', array($this, 'load_widget_plugins'), 1 );
+		add_action( 'init', array($this, 'load_widget_plugins'), 1 );
 
 		// Add the action links.
 		add_action( 'plugin_action_links_' . plugin_basename(__FILE__), array($this, 'plugin_action_links') );
@@ -59,7 +59,7 @@ class SiteOrigin_Widgets_Bundle {
 		add_filter( 'siteorigin_panels_prebuilt_layout', array($this, 'load_missing_widgets') );
 		add_filter( 'siteorigin_panels_widget_object', array($this, 'load_missing_widget'), 10, 2 );
 
-		add_filter( 'wp_enqueue_scripts', array($this, 'sow_enqueue_active_widgets_scripts') );
+		add_filter( 'wp_enqueue_scripts', array($this, 'enqueue_active_widgets_scripts') );
 	}
 
 	/**
@@ -218,7 +218,7 @@ class SiteOrigin_Widgets_Bundle {
 		if( empty($_GET['widget']) ) exit();
 
 		if( $_POST['active'] == 'true' ) $this->activate_widget($_GET['widget']);
-		else $this->deactivate_widget($_GET['widget']);
+		else $this->deactivate_widget( $_GET['widget'] );
 
 		// Send a kind of dummy response.
 		header('content-type: application/json');
@@ -466,7 +466,7 @@ class SiteOrigin_Widgets_Bundle {
 	/**
 	 * Ensure active widgets' scripts are enqueued at the right time.
 	 */
-	function sow_enqueue_active_widgets_scripts() {
+	function enqueue_active_widgets_scripts() {
 		global $wp_registered_widgets;
 		$sidebars_widgets = wp_get_sidebars_widgets();
 		foreach( $sidebars_widgets as $sidebar => $widgets ) {

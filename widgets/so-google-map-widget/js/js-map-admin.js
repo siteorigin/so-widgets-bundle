@@ -4,7 +4,7 @@
     $(document).on( 'sowsetupform', '.siteorigin-widget-form[data-class="SiteOrigin_Widget_GoogleMap_Widget"]', function(){
         var $mapWidgetForm = $(this);
 
-        if( typeof $mapWidgetForm.data('sowsetup-map-widget') == 'undefined' ) {
+        if( typeof $mapWidgetForm.data('sowsetup-map-widget') === 'undefined' ) {
 
             var $styleMethodField = $mapWidgetForm.find('.siteorigin-widget-field-stylesstyle_method');
 
@@ -14,7 +14,7 @@
                 $mapWidgetForm.find('.siteorigin-widget-field-styles' + selectedMethod + '_map_styles').show();
 
                 var $fieldMapName = $mapWidgetForm.find('.siteorigin-widget-field-stylesstyled_map_name');
-                if ( selectedMethod != 'normal' && $mapWidgetForm.data('selected-type') == 'interactive') {
+                if ( selectedMethod !== 'normal' && $mapWidgetForm.data('selected-type') === 'interactive') {
                     $fieldMapName.show();
                 } else {
                     $fieldMapName.hide();

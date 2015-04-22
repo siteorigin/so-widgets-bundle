@@ -54,7 +54,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		parent::WP_Widget($id, $name, $widget_options, $control_options);
 		$this->initialize();
 
-		// Let other plugins do additional initilizing here
+		// Let other plugins do additional initializing here
 		do_action('siteorigin_widgets_initialize_widget_' . $this->id_base, $this);
 	}
 
@@ -138,7 +138,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		if( !empty($template_file) && file_exists($template_file) ) {
 			@ include $template_file;
 		}
-		echo apply_filters('siteorigin_widgets_template', ob_get_clean(), get_class($this), $instance, $this );
+		$template_html = ob_get_clean();
+		// This is a legacy, undocumented filter.
+		$template_html = apply_filters( 'siteorigin_widgets_template', $template_html, get_class($this), $instance, $this );
+		$template_html = apply_filters( 'siteorigin_widgets_template_html_' . $this->id_base, $template_html, $instance, $this );
+		echo $template_html;
 		echo '</div>';
 		echo $args['after_widget'];
 	}
@@ -824,17 +828,37 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			 $value = $field['default'];
 		}
 
-		$wrapper_classes = array(
-			'siteorigin-widget-field',
-			'siteorigin-widget-field-type-' . $field['type'],
-			'siteorigin-widget-field-' . $name
+		$wrapper_attributes = array(
+			'class' => array(
+				'siteorigin-widget-field',
+				'siteorigin-widget-field-type-' . $field['type'],
+				'siteorigin-widget-field-' . $name
+			)
 		);
-		if( !empty( $field['hidden'] ) ) $wrapper_classes[] = 'siteorigin-widget-field-is-hidden';
-		if( !empty( $field['optional'] ) ) $wrapper_classes[] = 'siteorigin-widget-field-is-optional';
 
-		?><div class="<?php echo implode(' ', array_map('sanitize_html_class', $wrapper_classes) ) ?>"><?php
+		if( !empty( $field['state_name'] ) ) $wrapper_attributes['class'][] = 'siteorigin-widget-field-state-' . $field['state_name'];
+		if( !empty( $field['hidden'] ) ) $wrapper_attributes['class'][] = 'siteorigin-widget-field-is-hidden';
+		if( !empty( $field['optional'] ) ) $wrapper_attributes['class'][] = 'siteorigin-widget-field-is-optional';
+		$wrapper_attributes['class'] = implode(' ', array_map('sanitize_html_class', $wrapper_attributes['class']) );
 
-		$field_id = sanitize_html_class( $this->so_get_field_id( $name, $repeater, $is_template ) );
+		if( !empty($field['state_emitter']) ) {
+			// State emitters create new states for the form
+			$wrapper_attributes['data-state-emitter'] = json_encode( $field['state_emitter'] );
+		}
+
+		if( !empty($field['state_handler']) ) {
+			// State handlers decide what to do with form states
+			$wrapper_attributes['data-state-handler'] = json_encode( $field['state_handler'] );
+		}
+
+		if( !empty($field['state_handler_initial']) ) {
+			// Initial state handlers are only run when the form is first loaded
+			$wrapper_attributes['data-state-handler-initial'] = json_encode( $field['state_handler_initial'] );
+		}
+
+		?><div <?php foreach( $wrapper_attributes as $attr => $attr_val ) echo $attr.'="' . esc_attr($attr_val) . '" ' ?>><?php
+
+		$field_id = $this->so_get_field_id( $name, $repeater, $is_template );
 
 		if( $field['type'] != 'repeater' && $field['type'] != 'checkbox' && $field['type'] != 'separator' && !empty($field['label']) ) {
 			?>
@@ -1049,7 +1073,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 										<?php if( empty( $field['readonly'] ) ) : ?>
 										<div class="siteorigin-widget-field-remove"></div>
 										<?php endif; ?>
-										<h4><?php echo esc_html($field['item_name']) ?></h4>
+										<h4><?php echo esc_html( $item_name ) ?></h4>
 									</div>
 									<div class="siteorigin-widget-field-repeater-item-form">
 										<?php
@@ -1079,8 +1103,21 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			case 'widget' :
 				// Create the extra form entries
-				$sub_widget = new $field['class'];
 				?><div class="siteorigin-widget-section <?php if( !empty($field['hide']) ) echo 'siteorigin-widget-section-hide'; ?>"><?php
+
+				if( !class_exists($field['class']) ) {
+					printf( __('%s does not exist', 'siteorigin-widgets'), $field['class']);
+					echo '</div>';
+					break;
+				}
+
+				$sub_widget = new $field['class'];
+				if( !is_a($sub_widget, 'SiteOrigin_Widget') ) {
+					printf( __('%s is not a SiteOrigin Widget', 'siteorigin-widgets'), $field['class']);
+					echo '</div>';
+					break;
+				}
+
 				foreach( $sub_widget->form_options($this) as $sub_name => $sub_field) {
 					$this->render_field(
 						$name.']['.$sub_name,

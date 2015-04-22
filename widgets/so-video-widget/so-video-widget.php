@@ -33,52 +33,70 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 						'self' => __( 'Self hosted', 'siteorigin-widgets' ),
 						'external' => __( 'Externally hosted', 'siteorigin-widgets' ),
 					),
-				),
-				'self_video' => array(
-					'type' => 'media',
-					'fallback' => true,
-					'label' => __( 'Select video', 'siteorigin-widgets' ),
-					'description' => __( 'Select an uploaded video in mp4 format. Other formats, such as webm and ogv will work in some browsers. You can use an online service such as <a href="http://video.online-convert.com/convert-to-mp4" target="_blank">online-convert.com</a> to convert your videos to mp4.', 'siteorigin-widgets' ),
-					'default'     => '',
-					'library' => 'video',
-				),
-				'self_poster' => array(
-					'type' => 'media',
-					'label' => __( 'Select cover image', 'siteorigin-widgets' ),
-					'default'     => '',
-					'library' => 'image',
-				),
-				'external_video' => array(
-					'type' => 'text',
-					'sanitize' => 'url',
-					'label' => __( 'Video URL', 'siteorigin-widgets' )
-				),
-				'autoplay' => array(
-					'type' => 'checkbox',
-					'default' => false,
-					'label' => __( 'Autoplay', 'siteorigin-widgets' )
-				),
-				'width' => array(
-					'type' => 'number',
-					'default' => 640,
-				),
-				'height' => array(
-					'type' => 'number',
-					'default' => 380,
-				),
-				'skin' => array(
-					'type' => 'select',
-					'label' => __( 'Video player skin', 'siteorigin-widgets' ),
-					'options' => array(
-						'default' => __( 'Default', 'siteorigin-widgets' ),
+
+					// This field should be a video type state emitter
+					'state_emitter' => array(
+						'callback' => 'select',
+						'args' => array('video_type')
 					)
-				)
+				),
+
+				'video' => array(
+					'type' => 'section',
+					'label' => __( 'Video File', 'siteorigin-widgets' ),
+					'fields' => array(
+						'self_video' => array(
+							'type' => 'media',
+							'fallback' => true,
+							'label' => __( 'Select video', 'siteorigin-widgets' ),
+							'description' => __( 'Select an uploaded video in mp4 format. Other formats, such as webm and ogv will work in some browsers. You can use an online service such as <a href="http://video.online-convert.com/convert-to-mp4" target="_blank">online-convert.com</a> to convert your videos to mp4.', 'siteorigin-widgets' ),
+							'default'     => '',
+							'library' => 'video',
+							'state_handler' => array(
+								'video_type[self]' => array('show'),
+								'video_type[external]' => array('hide'),
+							)
+						),
+						'self_poster' => array(
+							'type' => 'media',
+							'label' => __( 'Select cover image', 'siteorigin-widgets' ),
+							'default'     => '',
+							'library' => 'image',
+							'state_handler' => array(
+								'video_type[self]' => array('show'),
+								'video_type[external]' => array('hide'),
+							)
+						),
+						'external_video' => array(
+							'type' => 'text',
+							'sanitize' => 'url',
+							'label' => __( 'Video URL', 'siteorigin-widgets' ),
+							'state_handler' => array(
+								'video_type[external]' => array('show'),
+								'video_type[self]' => array('hide'),
+							)
+						),
+					)
+				),
+
+				'playback' => array(
+					'type' => 'section',
+					'label' => __('Video Playback', 'siteorigin-widgets'),
+					'hide' => true,
+					'fields' => array(
+						'autoplay' => array(
+							'type' => 'checkbox',
+							'default' => false,
+							'label' => __( 'Autoplay', 'siteorigin-widgets' )
+						),
+					),
+				),
 			)
 		);
 	}
 
 	function enqueue_frontend_scripts( $instance ) {
-		$video_host = !empty( $instance['external_video'] ) ? $this->get_host_from_url( $instance['external_video'] ) : '';
+		$video_host = !empty( $instance['video']['external_video'] ) ? $this->get_host_from_url( $instance['video']['external_video'] ) : '';
 		if ( $this->is_skinnable_video_host( $video_host ) ) {
 			if ( $video_host == 'vimeo' && ! wp_script_is( 'froogaloop' ) ) {
 				wp_enqueue_script( 'froogaloop' );
@@ -108,40 +126,42 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		$poster = '';
 		$video_host = $instance['host_type'];
 		if ( $video_host == 'self' ) {
-			$vid_info = wp_get_attachment_metadata( $instance['self_video'] );
-			$video_type = empty( $vid_info['fileformat'] ) ? '' : $vid_info['fileformat'];
-			$src = !empty( $instance['self_video'] ) ? wp_get_attachment_url( $instance['self_video'] ) : '';
-			$poster = !empty( $instance['self_poster'] ) ? wp_get_attachment_url( $instance['self_poster'] ) : '';
+
+			if( !empty( $instance['video']['self_video'] ) ) {
+				// Handle an attachment video
+				$src = wp_get_attachment_url( $instance['video']['self_video'] );
+				$vid_info = wp_get_attachment_metadata( $instance['video']['self_video'] );
+				$video_type = 'video/'. empty( $vid_info['fileformat'] ) ? '' : $vid_info['fileformat'];
+			}
+			else if( !empty( $instance['video']['self_video_fallback'] ) ) {
+				// Handle an external URL video
+				$src = $instance['video']['self_video_fallback'];
+				$vid_info = wp_check_filetype( basename( $instance['video']['self_video_fallback'] ) );
+				$video_type = $vid_info['type'];
+			}
+
+			$poster = !empty( $instance['video']['self_poster'] ) ? wp_get_attachment_url( $instance['video']['self_poster'] ) : '';
 		}
 		else {
-			$video_host = $video_type = $this->get_host_from_url( $instance['external_video'] );
-			$src = !empty( $instance['external_video'] ) ? $instance['external_video'] : '';
+			$video_host = $video_type = $this->get_host_from_url( $instance['video']['external_video'] );
+			$src = !empty( $instance['video']['external_video'] ) ? $instance['video']['external_video'] : '';
 		}
 
 		return array(
-			'width' => intval($instance['width']),
-			'height' => intval($instance['height']),
 			'player_id' => 'sow-player' . ($player_id++),
 			'host_type' => $instance['host_type'],
 			'src' => $src,
 			'video_type' => $video_type,
 			'is_skinnable_video_host' => $this->is_skinnable_video_host( $video_host ),
 			'poster' => $poster,
-			'autoplay' => ! empty( $instance['autoplay'] ),
-			'skin_class' => $instance['skin']
+			'autoplay' => ! empty( $instance['playback']['autoplay'] ),
+			'skin_class' => 'default'
 		);
 	}
 
 	function get_style_name( $instance ) {
 		// For now, we'll only use the default style
 		return '';
-	}
-
-	function get_less_variables( $instance ) {
-		$controls_url = siteorigin_widget_get_plugin_dir_url( 'video' ) . 'styles/controls-' . $instance['skin'] . '.png';
-		return array(
-			'controls_url' => "'" . $controls_url . "'",
-		);
 	}
 
 	/**
