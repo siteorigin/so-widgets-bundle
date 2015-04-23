@@ -82,13 +82,22 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				'playback' => array(
 					'type' => 'section',
 					'label' => __('Video Playback', 'siteorigin-widgets'),
-					'hide' => true,
 					'fields' => array(
 						'autoplay' => array(
 							'type' => 'checkbox',
 							'default' => false,
 							'label' => __( 'Autoplay', 'siteorigin-widgets' )
 						),
+						'oembed' => array(
+							'type' => 'checkbox',
+							'default' => false,
+							'label' => __( 'Always Embed', 'siteorigin-widgets' ),
+							'description' => __( 'Always use the embedded video rather than MediaElement player.', 'siteorigin-widgets' ),
+							'state_handler' => array(
+								'video_type[external]' => array('show'),
+								'video_type[self]' => array('hide'),
+							)
+						)
 					),
 				),
 			)
@@ -147,8 +156,8 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			$src = !empty( $instance['video']['external_video'] ) ? $instance['video']['external_video'] : '';
 		}
 
-		return array(
-			'player_id' => 'sow-player' . ($player_id++),
+		$return = array(
+			'player_id' => 'sow-player-' . ($player_id++),
 			'host_type' => $instance['host_type'],
 			'src' => $src,
 			'video_type' => $video_type,
@@ -157,6 +166,13 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'autoplay' => ! empty( $instance['playback']['autoplay'] ),
 			'skin_class' => 'default'
 		);
+
+		// Force oEmbed for this video
+		if( $instance['host_type'] == 'external' && $instance['playback']['oembed'] ) {
+			$return['is_skinnable_video_host'] = false;
+		}
+
+		return $return;
 	}
 
 	function get_style_name( $instance ) {
