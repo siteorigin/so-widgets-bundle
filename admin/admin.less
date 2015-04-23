@@ -154,12 +154,25 @@
 			float: left;
 			.box-sizing(border-box);
 			padding: 0 12px 24px 12px;
-			width: 33%;
+			width: 20%;
 
-			@media screen and (min-width: 1420px) {
-
+			@media screen and (max-width: 1800px) {
 				&{
 					width: 25%;
+
+				}
+			}
+
+			@media screen and (max-width: 1280px) {
+				&{
+					width: 33.33%;
+
+				}
+			}
+
+			@media screen and (max-width: 800px) {
+				&{
+					width: 50%;
 
 				}
 			}
