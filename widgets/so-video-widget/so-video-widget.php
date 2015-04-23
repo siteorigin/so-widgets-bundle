@@ -202,7 +202,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 	 */
 	private function is_skinnable_video_host( $video_host ) {
 		global $wp_version;
-		return $video_host == 'self' || $video_host == 'youtube' || ( $video_host == 'vimeo' && $wp_version >= 4.2 );
+		return $video_host == 'self' || ( ($video_host == 'youtube' || $video_host == 'vimeo') && $wp_version >= 4.2 );
 	}
 }
 siteorigin_widget_register( 'video', __FILE__ );
