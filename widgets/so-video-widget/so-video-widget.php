@@ -182,6 +182,31 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 	}
 
 	/**
+	 * Gets a video source embed
+	 */
+	function get_video_oembed( $src ){
+		if( empty($src) ) return '';
+
+		global $content_width;
+
+		$video_width = !empty($content_width) ? $content_width : 640;
+
+		$hash = md5( serialize( array(
+			'src' => $src,
+			'width' => $video_width
+		) ) );
+
+		$html = get_transient('sow-vid-embed[' . $hash . ']');
+		if( empty($html) ) {
+			$html = wp_oembed_get( $src, array( 'width' => $video_width ) );
+			if( !empty($html) ) {
+				set_transient( 'sow-vid-embed[' . $hash . ']', $html, 30*86400 );
+			}
+		}
+		return $html;
+	}
+
+	/**
 	 * Get the video host from the URL
 	 *
 	 * @param $video_url
