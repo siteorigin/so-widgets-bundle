@@ -365,6 +365,12 @@
   -webkit-filter: grayscale(1);
   opacity: 0.7;
 }
+#sow-widgets-page .developers-link {
+  padding: 0 30px;
+  text-align: right;
+  color: #777;
+  font-style: italic;
+}
 body.plugins_page_so-widgets-plugins #contextual-help-link-wrap {
   z-index: 10;
 }

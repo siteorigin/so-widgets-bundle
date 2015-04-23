@@ -58,4 +58,9 @@
 
 	</div>
 
+	<div class="developers-link">
+		<?php _e('Developers - create your own widgets for the Widgets Bundle.', 'siteorigin-widgets') ?>
+		<a href="https://siteorigin.com/docs/widgets-bundle/" target="_blank"><?php _e('Read More', 'siteorigin-widgets') ?></a>.
+	</div>
+
 </div>
