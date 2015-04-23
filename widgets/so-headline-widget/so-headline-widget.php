@@ -27,7 +27,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 					'fields' => array(
 						'text' => array(
 							'type' => 'text',
-							'label' => __( 'Text', 'siteorigin-wdigets' ),
+							'label' => __( 'Text', 'siteorigin-widgets' ),
 						),
 						'font' => array(
 							'type' => 'font',
@@ -59,7 +59,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 					'fields' => array(
 						'text' => array(
 							'type' => 'text',
-							'label' => __('Text', 'siteorigin-wdigets')
+							'label' => __('Text', 'siteorigin-widgets')
 						),
 						'font' => array(
 							'type' => 'font',
@@ -186,26 +186,53 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 		return $less_vars;
 	}
 
+	/**
+	 * Less function for importing Google web fonts.
+	 *
+	 * @param $instance
+	 * @param $args
+	 *
+	 * @return string
+	 */
 	function less_import_google_font($instance, $args) {
 		if( empty( $instance ) ) return;
 
-		$font_imports = '';
-		$font = siteorigin_widget_get_font( $instance['headline']['font'] );
-		if ( ! empty( $font['css_import'] ) ) {
-			$font_imports .= $font['css_import'];
-		}
-		$font = siteorigin_widget_get_font( $instance['sub_headline']['font'] );
-		if ( ! empty( $font['css_import'] ) ) {
-			$font_imports .= "\n" . $font['css_import'];
+		$font_imports = array(
+			siteorigin_widget_get_font( $instance['headline']['font'] ),
+			siteorigin_widget_get_font( $instance['sub_headline']['font'] ),
+		);
+
+		$import_strings = array();
+		foreach( $font_imports as $import ) {
+			$import_strings[] = !empty($import['css_import']) ? empty($import['css_import']) : '';
 		}
 
-		return $font_imports;
+		// Remove empty and duplicate items from the array
+		$import_strings = array_filter($import_strings);
+		$import_strings = array_unique($import_strings);
+
+		return implode("\n", $import_strings);
 	}
 
+	/**
+	 * Get the template for the headline widget
+	 *
+	 * @param $instance
+	 *
+	 * @return mixed|string
+	 */
 	function get_template_name( $instance ) {
 		return 'headline';
 	}
 
+	/**
+	 * Get the template variables for the headline
+	 *
+	 * @param $instance
+	 * @param $args
+	 *
+	 * @return array
+	 */
 	function get_template_variables( $instance, $args ) {
 		if( empty( $instance ) ) return array();
 

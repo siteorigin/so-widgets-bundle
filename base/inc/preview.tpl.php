@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title><?php _e('Widget Preview') ?></title>
+	<title><?php _e('Widget Preview', 'siteorigin-widgets') ?></title>
 	<meta id="Viewport" name="viewport" width="width=960, initial-scale=0.25">
 </head>
 <body>

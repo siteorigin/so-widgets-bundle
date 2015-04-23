@@ -36,6 +36,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							'type'    => 'radio',
 							'default' => 'interactive',
 							'label'   => __( 'Map type', 'siteorigin-widgets' ),
+							'state_emitter' => array(
+								'callback' => 'select',
+								'args' => array( 'map_type' )
+							),
 							'options' => array(
 								'interactive' => __( 'Interactive', 'siteorigin-widgets' ),
 								'static'      => __( 'Static image', 'siteorigin-widgets' ),
@@ -45,7 +49,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							'type'       => 'text',
 							'default'    => 640,
 							'hidden'     => true,
-							'state_name' => 'static',
+							'state_handler' => array(
+								'map_type[static]' => array('show'),
+								'_else[map_type]' => array('hide'),
+							),
 							'label'      => __( 'Width', 'siteorigin-widgets' )
 						),
 						'height'      => array(
@@ -66,14 +73,20 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						'scroll_zoom' => array(
 							'type'        => 'checkbox',
 							'default'     => true,
-							'state_name'  => 'interactive',
+							'state_handler' => array(
+								'map_type[interactive]' => array('show'),
+								'_else[map_type]' => array('hide'),
+							),
 							'label'       => __( 'Scroll to zoom', 'siteorigin-widgets' ),
 							'description' => __( 'Allow scrolling over the map to zoom in or out.', 'siteorigin-widgets' )
 						),
 						'draggable'   => array(
 							'type'        => 'checkbox',
 							'default'     => true,
-							'state_name'  => 'interactive',
+							'state_handler' => array(
+								'map_type[interactive]' => array('show'),
+								'_else[map_type]' => array('hide'),
+							),
 							'label'       => __( 'Draggable', 'siteorigin-widgets' ),
 							'description' => __( 'Allow dragging the map to move it around.', 'siteorigin-widgets' )
 						)
@@ -94,12 +107,15 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							'type'        => 'media',
 							'default'     => '',
 							'label'       => __( 'Marker icon', 'siteorigin-widgets' ),
-							'description' => __( 'Replaces the default map marker with your own image.' )
+							'description' => __( 'Replaces the default map marker with your own image.', 'siteorigin-widgets' )
 						),
 						'markers_draggable' => array(
 							'type'       => 'checkbox',
 							'default'    => false,
-							'state_name' => 'interactive',
+							'state_handler' => array(
+								'map_type[interactive]' => array('show'),
+								'_else[map_type]' => array('hide'),
+							),
 							'label'      => __( 'Draggable markers', 'siteorigin-widgets' )
 						),
 						'marker_positions'  => array(
@@ -140,7 +156,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						),
 						'styled_map_name'     => array(
 							'type'       => 'text',
-							'state_name' => 'interactive',
+							'state_handler' => array(
+								'map_type[interactive]' => array('show'),
+								'_else[map_type]' => array('hide'),
+							),
 							'label'      => __( 'Styled map name', 'siteorigin-widgets' )
 						),
 						'raw_json_map_styles' => array(
@@ -162,7 +181,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							'fields'     => array(
 								'map_feature'  => array(
 									'type'    => 'select',
-									'label'   => __( '', 'siteorigin-widgets' ),
+									'label'   => '',
 									'prompt'  => __( 'Select map feature to style', 'siteorigin-widgets' ),
 									'options' => array(
 										'water'                       => __( 'Water', 'siteorigin-widgets' ),
@@ -209,7 +228,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'directions'      => array(
 					'type'        => 'section',
 					'label'       => __( 'Directions', 'siteorigin-widgets' ),
-					'state_name'  => 'interactive',
+					'state_handler' => array(
+						'map_type[interactive]' => array('show'),
+						'_else[map_type]' => array('hide'),
+					),
 					'hide'        => true,
 					'description' => __( 'Display a route on your map, with waypoints between your starting point and destination.', 'siteorigin-widgets' ),
 					'fields'      => array(
@@ -259,7 +281,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 									'type'        => 'checkbox',
 									'default'     => true,
 									'label'       => __( 'Stopover', 'siteorigin-widgets' ),
-									'description' => __( 'Whether or not this is a stop on the route or just a route preference.' )
+									'description' => __( 'Whether or not this is a stop on the route or just a route preference.', 'siteorigin-widgets' )
 								)
 							)
 						),

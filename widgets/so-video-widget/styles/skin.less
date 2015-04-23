@@ -1,0 +1,180 @@
+
+@controls_url: controls-skin.png;
+
+.mejs-container.mejs-skin_one {
+
+}
+.mejs-overlay-button {
+    display:none;
+}
+.mejs-skin_one {
+
+    .mejs-overlay-button {
+        display:none;
+    }
+
+    .mejs-button, .mejs-time {
+        position: absolute;
+        background: #ddd;
+    }
+
+    .mejs-controls {
+        background: #eee;
+        height: 65px;
+
+        .mejs-time-rail {
+            .mejs-time-total {
+                background-color: none;
+                background: url(@controls_url) repeat-x 0 -52px;
+                height: 6px;
+            }
+            .mejs-time-buffering {
+                height: 6px;
+            }
+            .mejs-time-loaded {
+                background-color: none;
+                background: url(@controls_url) repeat-x 0 -52px;
+                width: 0;
+                height: 6px;
+            }
+            .mejs-time-current {
+                width: 0;
+                height: 6px;
+                background-color: none;
+                background: url(@controls_url) repeat-x 0 -59px;
+            }
+            .mejs-time-handle {
+                display: block;
+                margin: 0;
+                width: 14px;
+                height: 21px;
+                top: -7px;
+                border: 0;
+                background: url(@controls_url) no-repeat 0 0;
+            }
+            .mejs-time-float {
+                display: none;
+            }
+        }
+        .mejs-playpause-button {
+            top: 29px;
+            left: 9px;
+            width: 49px;
+            height: 28px;
+
+            button {
+                width: 49px;
+                height: 28px;
+                background: url(@controls_url) no-repeat -50px -23px;
+                margin: 0;
+                padding: 0;
+            }
+        }
+        .mejs-pause button {
+            background-position: 0 -23px;
+        }
+
+        .mejs-fullscreen-button {
+            top: 34px;
+            right: 9px;
+            width: 17px;
+            height: 15px;
+            background: none;
+            button {
+                width: 19px;
+                height: 17px;
+                background: transparent url(@controls_url) no-repeat 0 -66px;
+                margin: 0;
+                padding: 0;
+            }
+        }
+
+        .mejs-unfullscreen button {
+            background: transparent url(@controls_url) no-repeat -21px -66px;
+            margin: 0;
+            padding: 0;
+        }
+        .mejs-volume-button {
+            top: 30px;
+            right: 35px;
+            width: 24px;
+            height: 22px;
+        }
+        .mejs-mute button {
+            background: url(@controls_url) no-repeat -15px 0;
+            width: 24px;
+            height: 22px;
+            margin: 0;
+            padding: 0;
+        }
+        .mejs-unmute button {
+            background: url(@controls_url) no-repeat -40px 0;
+            width: 24px;
+            height: 22px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .mejs-volume-button {
+            .mejs-volume-slider {
+                background: #fff;
+                border: solid 1px #aaa;
+                border-width: 1px 1px 0 1px;
+                width: 22px;
+                height: 65px;
+                top: -65px;
+            }
+            .mejs-volume-total {
+                background: url(@controls_url) repeat-y -41px -66px;
+                left: 8px;
+                width: 6px;
+                height: 50px;
+            }
+            .mejs-volume-current {
+                left: 8px;
+                width: 6px;
+                background: url(@controls_url) repeat-y -48px -66px;
+                height: 50px;
+            }
+
+            .mejs-volume-handle {
+                display: none;
+            }
+        }
+
+        .mejs-time span {
+            color: #333;
+        }
+        .mejs-currenttime-container {
+            position: absolute;
+            top: 32px;
+            right: 100px;
+            border: solid 1px #999;
+            background: #fff;
+            color: #333;
+            padding-top: 2px;
+            border-radius: 3px;
+            color: #333;
+        }
+
+        .mejs-duration-container {
+            position: absolute;
+            top: 32px;
+            right: 65px;
+            border: solid 1px #999;
+            background: #fff;
+            color: #333;
+            padding-top: 2px;
+            border-radius: 3px;
+            color: #333;
+        }
+
+        .mejs-time button {
+            color: #333;
+        }
+
+        .mejs-captions-button {
+            display: none;
+        }
+    }
+}

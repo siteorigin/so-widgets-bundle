@@ -26,8 +26,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 				),
 
 				'url' => array(
-					'type' => 'text',
-					'sanitize' => 'url',
+					'type' => 'link',
 					'label' => __('Destination URL', 'siteorigin-widgets'),
 				),
 

@@ -52,7 +52,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 									'sanitize' => 'url',
 									'label' => __('Video URL', 'siteorigin-widgets'),
 									'optional' => 'true',
-									'description' => __('An external URL of the video. Overrides video file.')
+									'description' => __('An external URL of the video. Overrides video file.', 'siteorigin-widgets')
 								),
 
 								'format' => array(
@@ -96,9 +96,14 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 						),
 
 						'url' => array(
-							'type' => 'text',
+							'type' => 'link',
 							'label' => __('Destination URL', 'siteorigin-widgets'),
-							'sanitize' => 'url',
+						),
+
+						'new_window' => array(
+							'type' => 'checkbox',
+							'label' => __('Open in new window', 'siteorigin-widgets'),
+							'default' => false,
 						),
 					),
 				),

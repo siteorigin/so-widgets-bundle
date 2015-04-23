@@ -125,8 +125,10 @@ function siteorigin_widget_get_icon($icon_value, $icon_styles = false) {
 	if( empty($widget_icon_families[$family]) || empty($widget_icon_families[$family]['icons'][$icon]) ) return false;
 
 	if(empty($widget_icons_enqueued[$family]) && !empty($widget_icon_families[$family]['style_uri'])) {
-		wp_enqueue_style('siteorigin-widget-icon-font-'.$family, $widget_icon_families[$family]['style_uri'] );
-		return '<div class="sow-icon-' . esc_attr($family) . '" data-sow-icon="' . $widget_icon_families[$family]['icons'][$icon] . '" ' . ( !empty($icon_styles) ? 'style="'.implode('; ', $icon_styles).'"' : '' ) . '></div>';
+		if( !wp_style_is( 'siteorigin-widget-icon-font-'.$family ) ) {
+			wp_enqueue_style('siteorigin-widget-icon-font-'.$family, $widget_icon_families[$family]['style_uri'] );
+		}
+		return '<span class="sow-icon-' . esc_attr($family) . '" data-sow-icon="' . $widget_icon_families[$family]['icons'][$icon] . '" ' . ( !empty($icon_styles) ? 'style="'.implode('; ', $icon_styles).'"' : '' ) . '></span>';
 	}
 	else {
 		return false;
@@ -221,6 +223,47 @@ function siteorigin_widget_preview_widget_action(){
 add_action('wp_ajax_so_widgets_preview', 'siteorigin_widget_preview_widget_action');
 
 /**
+ *
+ */
+function siteorigin_widget_search_posts_action(){
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
+
+	header('content-type: application/json');
+
+	// Get all public post types, besides attachments
+	$post_types = (array) get_post_types( array(
+		'public'   => true
+	) );
+	unset($post_types['attachment']);
+
+
+	global $wpdb;
+	if( !empty($_GET['query']) ) {
+		$query = "AND post_title LIKE '%" . esc_sql( $_GET['query'] ) . "%'";
+	}
+	else {
+		$query = '';
+	}
+
+	$post_types = "'" . implode("', '", array_map( 'esc_sql', $post_types ) ) . "'";
+
+	$results = $wpdb->get_results( "
+		SELECT ID, post_title, post_type
+		FROM {$wpdb->posts}
+		WHERE
+			post_type IN ( {$post_types} ) AND post_status = 'publish' {$query}
+		ORDER BY post_modified DESC
+		LIMIT 20
+	", ARRAY_A );
+
+	echo json_encode( $results );
+
+
+	wp_die();
+}
+add_action('wp_ajax_so_widgets_search_posts', 'siteorigin_widget_search_posts_action');
+
+/**
  * Compatibility with Page Builder, add the groups and icons.
  *
  * @param $widgets
@@ -239,3 +282,74 @@ function siteorigin_widget_add_bundle_groups($widgets){
 }
 add_filter('siteorigin_panels_widgets', 'siteorigin_widget_add_bundle_groups', 11);
 
+/**
+ * Escape a URL
+ *
+ * @param $url
+ *
+ * @return string
+ */
+function sow_esc_url( $url ) {
+	if( preg_match('/^post: *([0-9]+)/', $url, $matches) ) {
+		// Convert the special post URL into a permalink
+		$url = get_the_permalink( intval($matches[1]) );
+	}
+
+	$protocols = wp_allowed_protocols();
+	$protocols[] = 'skype';
+	return esc_url( $url, $protocols );
+}
+
+/**
+ * A special URL escaping function that handles additional protocols
+ *
+ * @param $url
+ *
+ * @return string
+ */
+function sow_esc_url_raw( $url ) {
+	if( preg_match('/^post: *([0-9]+)/', $url, $matches) ) {
+		// Convert the special post URL into a permalink
+		return 'post: ' . $matches[1];
+	}
+
+	$protocols = wp_allowed_protocols();
+	$protocols[] = 'skype';
+	return esc_url_raw( $url, $protocols );
+}
+
+/**
+ * Get all the Google Web Fonts.
+ *
+ * @return mixed|void
+ */
+function siteorigin_widgets_fonts_google_webfonts( ) {
+	$fonts = include plugin_dir_path(__FILE__) . 'inc/fonts.php';
+	$fonts = apply_filters( '', $fonts );
+	return $fonts;
+}
+add_filter('siteorigin_widgets_fonts_google_webfonts', 'siteorigin_widgets_fonts_google_webfonts_filter');
+
+function siteorigin_widgets_font_families( ){
+	// Add the default fonts
+	$font_families = array(
+		'Helvetica Neue' => 'Helvetica Neue',
+		'Lucida Grande' => 'Lucida Grande',
+		'Georgia' => 'Georgia',
+		'Courier New' => 'Courier New',
+	);
+
+	// Add in all the Google font families
+	foreach ( siteorigin_widgets_fonts_google_webfonts() as $font => $variants ) {
+		foreach ( $variants as $variant ) {
+			if ( $variant == 'regular' || $variant == 400 ) {
+				$font_families[ $font ] = $font;
+			}
+			else {
+				$font_families[ $font . ':' . $variant ] = $font . ' (' . $variant . ')';
+			}
+		}
+	}
+
+	return apply_filters('siteorigin_widgets_font_families', $font_families);
+}
