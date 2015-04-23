@@ -53,7 +53,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Dev Feature: Additional hooks and filters.
 
 = 1.2.1 =
-* Removed unnecessary action in customizer.
+* Removed is_customizer_preview - only available in newer versions of WordPress.
 
 = 1.2 =
 * Added headline widget.
