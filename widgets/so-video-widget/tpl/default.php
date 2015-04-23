@@ -21,6 +21,6 @@ if( $skin_class != 'default' ) $video_args['class'] = 'mejs-'.$skin_class;
 			<source type="<?php echo esc_attr($video_type) ?>" src="<?php echo esc_url( $src ) ?>" />
 		</video>
 	<?php else : ?>
-		<?php echo wp_oembed_get( $src ); ?>
+		<?php echo $this->get_video_oembed( $src ); ?>
 	<?php endif; ?>
 </div>

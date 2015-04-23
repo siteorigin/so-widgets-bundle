@@ -90,9 +90,9 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 						),
 						'oembed' => array(
 							'type' => 'checkbox',
-							'default' => false,
-							'label' => __( 'Always Embed', 'siteorigin-widgets' ),
-							'description' => __( 'Always use the embedded video rather than MediaElement player.', 'siteorigin-widgets' ),
+							'default' => true,
+							'label' => __( 'Use oEmbed', 'siteorigin-widgets' ),
+							'description' => __( 'Always use the embedded video rather than the MediaElement player.', 'siteorigin-widgets' ),
 							'state_handler' => array(
 								'video_type[external]' => array('show'),
 								'video_type[self]' => array('hide'),
@@ -179,6 +179,31 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 	function get_style_name( $instance ) {
 		// For now, we'll only use the default style
 		return '';
+	}
+
+	/**
+	 * Gets a video source embed
+	 */
+	function get_video_oembed( $src ){
+		if( empty($src) ) return '';
+
+		global $content_width;
+
+		$video_width = !empty($content_width) ? $content_width : 640;
+
+		$hash = md5( serialize( array(
+			'src' => $src,
+			'width' => $video_width
+		) ) );
+
+		$html = get_transient('sow-vid-embed[' . $hash . ']');
+		if( empty($html) ) {
+			$html = wp_oembed_get( $src, array( 'width' => $video_width ) );
+			if( !empty($html) ) {
+				set_transient( 'sow-vid-embed[' . $hash . ']', $html, 30*86400 );
+			}
+		}
+		return $html;
 	}
 
 	/**
