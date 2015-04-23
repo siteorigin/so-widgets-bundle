@@ -251,7 +251,7 @@ function siteorigin_widget_search_posts_action(){
 		SELECT ID, post_title, post_type
 		FROM {$wpdb->posts}
 		WHERE
-			post_type IN ( {$post_types} ) {$query}
+			post_type IN ( {$post_types} ) AND post_status = 'publish' {$query}
 		ORDER BY post_modified DESC
 		LIMIT 20
 	", ARRAY_A );
