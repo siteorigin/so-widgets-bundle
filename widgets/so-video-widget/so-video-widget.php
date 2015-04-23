@@ -90,9 +90,9 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 						),
 						'oembed' => array(
 							'type' => 'checkbox',
-							'default' => false,
-							'label' => __( 'Always Embed', 'siteorigin-widgets' ),
-							'description' => __( 'Always use the embedded video rather than MediaElement player.', 'siteorigin-widgets' ),
+							'default' => true,
+							'label' => __( 'Use oEmbed', 'siteorigin-widgets' ),
+							'description' => __( 'Always use the embedded video rather than the MediaElement player.', 'siteorigin-widgets' ),
 							'state_handler' => array(
 								'video_type[external]' => array('show'),
 								'video_type[self]' => array('hide'),
