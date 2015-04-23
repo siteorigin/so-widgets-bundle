@@ -152,7 +152,8 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			$poster = !empty( $instance['video']['self_poster'] ) ? wp_get_attachment_url( $instance['video']['self_poster'] ) : '';
 		}
 		else {
-			$video_host = $video_type = $this->get_host_from_url( $instance['video']['external_video'] );
+			$video_host = $this->get_host_from_url( $instance['video']['external_video'] );
+			$video_type = 'video/' . $video_host;
 			$src = !empty( $instance['video']['external_video'] ) ? $instance['video']['external_video'] : '';
 		}
 
