@@ -204,7 +204,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 
 		$import_strings = array();
 		foreach( $font_imports as $import ) {
-			$import_strings[] = !empty($import['css_import']) ? empty($import['css_import']) : '';
+			$import_strings[] = !empty($import['css_import']) ? $import['css_import'] : '';
 		}
 
 		// Remove empty and duplicate items from the array

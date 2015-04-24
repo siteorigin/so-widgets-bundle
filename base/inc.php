@@ -157,7 +157,7 @@ function siteorigin_widget_get_font($font_value) {
 	if ( isset( $web_safe[ $font_value ] ) ) {
 		$font['family'] = $web_safe[ $font_value ];
 	}
-	else {
+	else if( is_google_webfont( $font_value ) ) {
 		$font_parts = explode( ':', $font_value );
 		$font['family'] = $font_parts[0];
 		$font_url_param = urlencode( $font_parts[0] );
@@ -165,8 +165,11 @@ function siteorigin_widget_get_font($font_value) {
 			$font['weight'] = $font_parts[1];
 			$font_url_param .= ':' . $font_parts[1];
 		}
-		//TODO: check that this is actually a google font. For now, we only have google fonts.
 		$font['css_import'] = '@import url(http' . ( is_ssl() ? 's' : '' ) . '://fonts.googleapis.com/css?family=' . $font_url_param . ');';
+	}
+	else {
+		$font['family'] = $font_value;
+		$font = apply_filters( 'siteorigin_widget_get_custom_font_family', $font );
 	}
 
 	return $font;
@@ -329,6 +332,12 @@ function siteorigin_widgets_fonts_google_webfonts( ) {
 	return $fonts;
 }
 add_filter('siteorigin_widgets_fonts_google_webfonts', 'siteorigin_widgets_fonts_google_webfonts_filter');
+
+function is_google_webfont( $font_value ) {
+	$google_webfonts = siteorigin_widgets_fonts_google_webfonts();
+	$font_family = explode( ':', $font_value )[0];
+	return isset( $google_webfonts[$font_family] );
+}
 
 function siteorigin_widgets_font_families( ){
 	// Add the default fonts
