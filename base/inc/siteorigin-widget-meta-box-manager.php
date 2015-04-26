@@ -27,19 +27,39 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 		add_action( 'add_meta_boxes', array( $this, 'sow_add_meta_boxes' ) );
 	}
 
-	private function sow_add_meta_boxes() {
+	/**
+	 * @param $post_type
+	 */
+	public function sow_add_meta_boxes( $post_type ) {
 		if ( ! is_admin() ) return;
-		$screen = get_current_screen();
 
 		$this->form_options = array();
 		foreach ( $this->widget_form_fields as $widget_id => $form_fields ) {
-			if ( in_array( 'all', $form_fields['post_types'] ) || in_array( $screen->id, $form_fields['post_types'] ) ) {
+			if ( in_array( 'all', $form_fields['post_types'] ) || in_array( $post_type, $form_fields['post_types'] ) ) {
 				foreach ( $form_fields['fields'] as $field_name => $field ) {
 					$this->form_options[$widget_id . '_' . $field_name] = $field;
 				}
 			}
 		}
 
+		if ( !empty( $this->form_options ) ) {
+			add_meta_box(
+				'siteorigin-widgets-meta-box',
+				__( 'Widgets Bundle', 'siteorigin-widgets' ),
+				array( $this, 'render_widgets_meta_box' ),
+				$post_type,
+				'side'
+			);
+
+		}
+	}
+
+	/**
+	 * @param $post
+	 * @param $meta_box
+	 */
+	public function render_widgets_meta_box( $post, $meta_box ) {
+//		get_post_meta( $post->ID, 'siteorigin-widgets-meta', true );
 		$this->form( array() );
 	}
 

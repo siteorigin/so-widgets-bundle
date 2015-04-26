@@ -1,6 +1,7 @@
 <?php
 
 include plugin_dir_path(__FILE__).'siteorigin-widget.class.php';
+include plugin_dir_path(__FILE__).'inc/siteorigin-widget-meta-box-manager.php';
 include plugin_dir_path(__FILE__).'inc/post-selector.php';
 include plugin_dir_path(__FILE__).'inc/fonts.php';
 
