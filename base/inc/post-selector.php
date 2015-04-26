@@ -26,7 +26,7 @@ function siteorigin_widget_post_selector_admin_form_field( $value, $field_name )
 	<input type="hidden" value="<?php echo esc_attr( $value ) ?>" name="<?php echo $field_name ?>" class="siteorigin-widget-input" />
 	<a href="#" class="sow-select-posts button button-secondary">
 		<span class="sow-current-count"><?php echo siteorigin_widget_post_selector_count_posts( $value ) ?></span>
-		<?php _e('Build posts query') ?>
+		<?php _e('Build posts query', 'siteorigin-widgets') ?>
 	</a>
 	<?php
 }

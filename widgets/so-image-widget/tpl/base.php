@@ -1,10 +1,18 @@
 <?php
 $src = wp_get_attachment_image_src($instance['image'], $instance['size']);
-$attr = array(
-	'src' => $src[0],
-	'width' => $src[1],
-	'height' => $src[2],
-);
+if( !empty($src) ) {
+	$attr = array(
+		'src' => $src[0],
+		'width' => $src[1],
+		'height' => $src[2],
+	);
+}
+else if( !empty( $instance['image_fallback'] ) ) {
+	$attr = array(
+		'src' => esc_url($instance['image_fallback']),
+	);
+}
+
 $styles = array();
 $classes = array('so-widget-image');
 

@@ -5,6 +5,12 @@
   display: block !important;
   margin: 15px 0;
 }
+.siteorigin-widget-form a {
+  box-shadow: none;
+}
+.siteorigin-widget-form.siteorigin-widget-form-main {
+  min-width: 600px;
+}
 .siteorigin-widget-form .siteorigin-widget-field-is-hidden {
   display: none;
 }
@@ -40,6 +46,9 @@
   padding-left: 0.5em;
   color: #54a242;
   font-style: italic;
+}
+.siteorigin-widget-form .siteorigin-widget-field input[type="text"] {
+  width: 100%;
 }
 .siteorigin-widget-form .siteorigin-widget-field-type-slider .siteorigin-widget-slider-wrapper {
   margin: 10px 0;
@@ -234,40 +243,39 @@
   position: relative;
   display: block;
   float: left;
-  background: #f4f4f4;
-  background: -moz-linear-gradient(top, #f9f9f9 0%, #f2f2f2 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f9f9f9), color-stop(100%, #f2f2f2));
-  background: -webkit-linear-gradient(top, #f9f9f9 0%, #f2f2f2 100%);
-  background: -o-linear-gradient(top, #f9f9f9 0%, #f2f2f2 100%);
-  background: -ms-linear-gradient(top, #f9f9f9 0%, #f2f2f2 100%);
-  background: linear-gradient(to bottom, #f9f9f9 0%, #f2f2f2 100%);
+  background: #f9f9f9;
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #f2f2f2), color-stop(1, #f9f9f9));
+  background: -ms-linear-gradient(bottom, #f2f2f2, #f9f9f9);
+  background: -moz-linear-gradient(center bottom, #f2f2f2 0%, #f9f9f9 100%);
+  background: -o-linear-gradient(#f9f9f9, #f2f2f2);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#f2f2f2', GradientType=0);
-  border: 1px solid #bbbbbb;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
+  border: 1px solid #bbbbbb;
   height: 32px;
 }
 .siteorigin-widget-form .media-field-wrapper:hover {
   background: #ffffff;
-  background: -moz-linear-gradient(top, #ffffff 0%, #f7f7f7 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #f7f7f7));
-  background: -webkit-linear-gradient(top, #ffffff 0%, #f7f7f7 100%);
-  background: -o-linear-gradient(top, #ffffff 0%, #f7f7f7 100%);
-  background: -ms-linear-gradient(top, #ffffff 0%, #f7f7f7 100%);
-  background: linear-gradient(to bottom, #ffffff 0%, #f7f7f7 100%);
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #f7f7f7), color-stop(1, #ffffff));
+  background: -ms-linear-gradient(bottom, #f7f7f7, #ffffff);
+  background: -moz-linear-gradient(center bottom, #f7f7f7 0%, #ffffff 100%);
+  background: -o-linear-gradient(#ffffff, #f7f7f7);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f7f7f7', GradientType=0);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
 }
-.siteorigin-widget-form .media-field-wrapper > div {
+.siteorigin-widget-form .media-field-wrapper .current {
+  -ms-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   float: left;
   height: 32px;
-}
-.siteorigin-widget-form .media-field-wrapper .current {
   padding: 4px;
   border-right: 1px solid #bbb;
   position: relative;
@@ -285,29 +293,28 @@
   width: auto;
   white-space: nowrap;
 }
-.siteorigin-widget-form .media-field-wrapper .thumbnail-wrapper {
+.siteorigin-widget-form .media-field-wrapper .current .thumbnail-wrapper {
   border: 1px solid #999;
   line-height: 0;
   box-shadow: 0px 1px 1px #FFF;
   width: 22px;
   height: 22px;
   background: #cfcfcf;
-  background: -moz-linear-gradient(top, #cfcfcf 0%, #dbdbdb 50%, #d1d1d1 51%, #cccccc 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #cfcfcf), color-stop(50%, #dbdbdb), color-stop(51%, #d1d1d1), color-stop(100%, #cccccc));
-  background: -webkit-linear-gradient(top, #cfcfcf 0%, #dbdbdb 50%, #d1d1d1 51%, #cccccc 100%);
-  background: -o-linear-gradient(top, #cfcfcf 0%, #dbdbdb 50%, #d1d1d1 51%, #cccccc 100%);
-  background: -ms-linear-gradient(top, #cfcfcf 0%, #dbdbdb 50%, #d1d1d1 51%, #cccccc 100%);
-  background: linear-gradient(to bottom, #cfcfcf 0%, #dbdbdb 50%, #d1d1d1 51%, #cccccc 100%);
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #cccccc), color-stop(1, #cfcfcf));
+  background: -ms-linear-gradient(bottom, #cccccc, #cfcfcf);
+  background: -moz-linear-gradient(center bottom, #cccccc 0%, #cfcfcf 100%);
+  background: -o-linear-gradient(#cfcfcf, #cccccc);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cfcfcf', endColorstr='#cccccc', GradientType=0);
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
 }
-.siteorigin-widget-form .media-field-wrapper .thumbnail-wrapper img {
+.siteorigin-widget-form .media-field-wrapper .current .thumbnail-wrapper img {
   height: 100%;
   width: 100%;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 .siteorigin-widget-form .media-field-wrapper .media-upload-button {
-  display: inline-block;
+  display: block;
+  float: left;
   color: #666;
   text-decoration: none;
   text-shadow: 0 1px 0 #FFF;
@@ -321,17 +328,32 @@
   color: #707070;
 }
 .siteorigin-widget-form .media-remove-button {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 100%;
+  display: block;
   text-decoration: none;
+  float: left;
   color: #AAA;
   font-size: 11px;
-  padding: 6px 0 6px 8px;
+  line-height: 1em;
+  padding: 11px 0 11px 6px;
+  -webkit-transition: all 0.25s ease;
+  -moz-transition: all 0.25s ease;
+  -o-transition: all 0.25s ease;
+  transition: all 0.25s ease;
+  opacity: 1;
+}
+.siteorigin-widget-form .media-remove-button.remove-hide {
+  pointer-events: none;
+  opacity: 0;
 }
 .siteorigin-widget-form .media-remove-button:hover {
   color: #BC0B0B;
+}
+.siteorigin-widget-form .media-fallback-external {
+  float: left;
+  padding: 4px 8px;
+  margin-top: 2px !important;
+  margin-left: 25px !important;
+  width: 320px !important;
 }
 .siteorigin-widget-form .siteorigin-widget-field-type-widget > label,
 .siteorigin-widget-form .siteorigin-widget-field-type-section > label {
@@ -367,6 +389,88 @@
 .siteorigin-widget-form .siteorigin-widget-field-type-widget .siteorigin-widget-section.siteorigin-widget-section-hide,
 .siteorigin-widget-form .siteorigin-widget-field-type-section .siteorigin-widget-section.siteorigin-widget-section-hide {
   display: none;
+}
+.siteorigin-widget-form .siteorigin-widget-field-type-link {
+  position: relative;
+}
+.siteorigin-widget-form .siteorigin-widget-field-type-link .existing-content-selector {
+  padding: 20px;
+  display: none;
+  position: absolute;
+  top: 110%;
+  right: 0px;
+  width: 360px;
+  z-index: 10;
+  border: 1px solid #c0c0c0;
+  background: #F6F6F6;
+  -webkit-box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  -moz-box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+.siteorigin-widget-form .siteorigin-widget-field-type-link .existing-content-selector .content-text-search {
+  width: 100%;
+  margin-bottom: 15px;
+}
+.siteorigin-widget-form .siteorigin-widget-field-type-link .existing-content-selector .posts {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  max-height: 300px;
+  overflow-y: scroll;
+  border: 1px solid #e4e4e4;
+}
+.siteorigin-widget-form .siteorigin-widget-field-type-link .existing-content-selector .posts li {
+  cursor: pointer;
+  padding: 5px 10px;
+  color: #32373c;
+  border-bottom: 1px solid #f1f1f1;
+  margin: 0;
+  font-size: 0.95em;
+}
+.siteorigin-widget-form .siteorigin-widget-field-type-link .existing-content-selector .posts li:hover {
+  background: #eaf2fa;
+}
+.siteorigin-widget-form .siteorigin-widget-field-type-link .existing-content-selector .posts li:last-child {
+  border-bottom: 0;
+}
+.siteorigin-widget-form .siteorigin-widget-field-type-link .existing-content-selector .posts li span {
+  font-size: 0.9em;
+  display: inline-block;
+  float: right;
+  color: #999;
+  margin-left: 10px;
+}
+.siteorigin-widget-form .siteorigin-widget-field-type-link .existing-content-selector .posts.loading {
+  min-height: 40px;
+  background: #ffffff url("img/wpspin_light.gif") center center no-repeat;
+}
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .siteorigin-widget-form .siteorigin-widget-field-type-link .existing-content-selector .posts.loading {
+    background-image: url("img/wpspin_light-2x.gif");
+    background-size: 16px 16px;
+  }
+}
+.siteorigin-widget-form .siteorigin-widget-field-type-link .existing-content-selector .posts.loading li {
+  display: none;
+}
+.siteorigin-widget-form .siteorigin-widget-field-type-link .existing-content-selector .buttons {
+  margin-top: 15px;
+  text-align: right;
+}
+.siteorigin-widget-form .siteorigin-widget-field-type-link .existing-content-selector .buttons a {
+  display: inline-block;
+}
+.siteorigin-widget-form .siteorigin-widget-field-type-link .url-input-wrapper {
+  display: block;
+  margin-right: 130px;
+}
+.siteorigin-widget-form .siteorigin-widget-field-type-link .select-content-button {
+  float: right;
+  width: 120px;
+  text-align: center;
 }
 .siteorigin-widget-form .siteorigin-widget-icon-selector {
   padding: 10px;
