@@ -18,19 +18,24 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 
 	function __construct() {
 		parent::__construct(
-			'sow-metabox-manager',
-			__('SiteOrigin Metabox Manager', 'siteorigin-widgets'),
-			array(),
+			'sow-meta-box-manager',
+			__('SiteOrigin Meta Box Manager', 'siteorigin-widgets'),
+			array(
+				'has_preview' => false,
+				'help' => 'https://siteorigin.com/docs/widgets-bundle/advanced-concepts/widget-post-meta-box-forms/'
+			),
 			array(),
 			array()
 		);
-		add_action( 'add_meta_boxes', array( $this, 'sow_add_meta_boxes' ) );
+		$this->number = 1;
+		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+		add_action( 'save_post', array( $this, 'save_widget_post_meta' ), 10, 3 );
 	}
 
 	/**
 	 * @param $post_type
 	 */
-	public function sow_add_meta_boxes( $post_type ) {
+	public function add_meta_boxes( $post_type ) {
 		if ( ! is_admin() ) return;
 
 		$this->form_options = array();
@@ -48,7 +53,7 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 				__( 'Widgets Bundle', 'siteorigin-widgets' ),
 				array( $this, 'render_widgets_meta_box' ),
 				$post_type,
-				'side'
+				'advanced'
 			);
 
 		}
@@ -59,8 +64,17 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 	 * @param $meta_box
 	 */
 	public function render_widgets_meta_box( $post, $meta_box ) {
-//		get_post_meta( $post->ID, 'siteorigin-widgets-meta', true );
-		$this->form( array() );
+		wp_enqueue_script(
+			'sow-meta-box-manager-js',
+			plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/meta-box-manager' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			SOW_BUNDLE_VERSION,
+			true
+		);
+		$widget_post_meta = get_post_meta( $post->ID, 'siteorigin-widgets-post-meta', true );
+		$this->form( $widget_post_meta );
+		?><input type="hidden" id="widget_post_meta" name="widget_post_meta"> <?php
+		wp_nonce_field( 'widget_post_meta_save', '_widget_post_meta_nonce' );
 	}
 
 	/**
@@ -77,8 +91,18 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 		);
 	}
 
-	function has_form( $post_type ){
-		// return if
+	function save_widget_post_meta( $post_id ) {
+		$nonce = filter_input( INPUT_POST, '_widget_post_meta_nonce', FILTER_SANITIZE_STRING );
+		if ( !wp_verify_nonce( $nonce, 'widget_post_meta_save' ) ) return;
+		if ( !current_user_can( 'edit_post', $post_id ) ) return;
+
+		$request = filter_input_array( INPUT_POST, array(
+			'widget_post_meta' => FILTER_DEFAULT
+		) );
+		$widget_post_meta = json_decode( $request['widget_post_meta'], true);
+
+		update_post_meta( $post_id, 'siteorigin-widgets-post-meta', $widget_post_meta );
+
 	}
 
 	function get_style_name( $instance ) {
