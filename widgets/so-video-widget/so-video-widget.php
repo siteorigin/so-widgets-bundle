@@ -110,6 +110,14 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			if ( $video_host == 'vimeo' && ! wp_script_is( 'froogaloop' ) ) {
 				wp_enqueue_script( 'froogaloop' );
 			}
+			if ( ! wp_style_is( 'sow-html-player-responsive' ) ) {
+				wp_enqueue_style(
+					'html-player-responsive',
+					siteorigin_widget_get_plugin_dir_url( 'video' ) . 'styles/html-player-responsive',
+					array(),
+					SOW_BUNDLE_VERSION
+				);
+			}
 			if ( ! wp_style_is( 'wp-mediaelement' ) ) {
 				wp_enqueue_style( 'wp-mediaelement' );
 			}
