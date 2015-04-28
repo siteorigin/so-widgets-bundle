@@ -1,9 +1,10 @@
-//Catch Update button click and transform widgets post meta data before propagating event.
+//Catch Update button click and transform widgets post meta data before event is propagated.
 (function($){
     $('#publish').click(
         function(event) {
             var data = {};
             var $el = $('#siteorigin-widgets-meta-box');
+            // This uses the exact same code to extract the model from the view as in the admin.js so could do with some refactoring.
             $el.find( '*[name]' ).each( function () {
                 var $$ = $(this);
                 var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
@@ -52,7 +53,7 @@
                     }
                 }
             } );
-            $('input[name="widget_post_meta"]').val( JSON.stringify( data ));
+            $el.find('input[name="widget_post_meta"]').val( JSON.stringify( data ));
         }
     );
 })(jQuery);
