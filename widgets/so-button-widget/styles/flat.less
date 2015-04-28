@@ -1,7 +1,7 @@
 @import "../../../base/less/mixins";
 
 @button_color: #41a9d5;
-@border_color: darken(@button_color, 15%);
+@border_color: darken(@button_color, 5%);
 @text_color: #FFFFFF;
 
 @font_size: 1em;
@@ -16,9 +16,10 @@
 		font-size: @font_size;
 		padding: @padding @padding*2;
 		background: @button_color;
-		border-bottom: 2px solid @border_color;
 
 		color: @text_color !important;
+		border: 1px solid @button_color;
+		border-width: 1px 0;
 
 		.rounded(@rounding);
 
