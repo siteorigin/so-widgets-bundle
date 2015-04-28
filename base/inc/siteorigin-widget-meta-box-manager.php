@@ -46,6 +46,7 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 		// Initialize number for field name attributes.
 		$this->number = 1;
 		$this->post_types = array();
+		$this->widget_form_fields = array();
 
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 		add_action( 'save_post', array( $this, 'save_widget_post_meta' ), 10, 3 );
@@ -73,7 +74,7 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 		if ( !empty( $this->form_options ) ) {
 			add_meta_box(
 				'siteorigin-widgets-meta-box',
-				__( 'Widgets Bundle', 'siteorigin-widgets' ),
+				__( 'Widgets Bundle Post Meta Data', 'siteorigin-widgets' ),
 				array( $this, 'render_widgets_meta_box' ),
 				$post_type,
 				'advanced'
