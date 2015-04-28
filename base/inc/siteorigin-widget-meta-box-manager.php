@@ -60,10 +60,12 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 	public function add_meta_boxes( $post_type ) {
 
 		$this->form_options = array();
-		foreach ( $this->widget_form_fields as $widget_id => $form_fields ) {
-			if ( in_array( 'all', $form_fields['post_types'] ) || in_array( $post_type, $form_fields['post_types'] ) ) {
-				foreach ( $form_fields['fields'] as $field_name => $field ) {
-					$this->form_options[$widget_id . '_' . $field_name] = $field;
+		foreach ( $this->widget_form_fields as $widget_id => $post_type_form_fields ) {
+			foreach( $post_type_form_fields as $form_fields ) {
+				if ( in_array( 'all', $form_fields['post_types'] ) || in_array( $post_type, $form_fields['post_types'] ) ) {
+					foreach ( $form_fields['fields'] as $field_name => $field ) {
+						$this->form_options[$widget_id . '_' . $field_name] = $field;
+					}
 				}
 			}
 		}
@@ -100,7 +102,8 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 	}
 
 	/**
-	 * This method should be called by any widgets that want to be able to store post meta data.
+	 * This method should be called by any widgets that want to be able to store post meta data. It may be called
+	 * multiple times by a widget and the additional fields for a widget will be appended and rendered.
 	 *
 	 * @param string $widget_id Base id of the widget adding the fields.
 	 * @param array $fields The fields to add.
@@ -119,7 +122,11 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 			}
 		}
 
-		$this->widget_form_fields[$widget_id] = array(
+		if( ! isset( $this->widget_form_fields[$widget_id] ) ) {
+			$this->widget_form_fields[$widget_id] = array();
+		}
+
+		$this->widget_form_fields[$widget_id][] = array(
 			'post_types' =>  $post_types,
 			'fields' => $fields
 		);
