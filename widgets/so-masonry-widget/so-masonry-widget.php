@@ -27,41 +27,6 @@ class SiteOrigin_Widget_Masonry_Widget extends SiteOrigin_Widget {
 					'type' => 'posts',
 					'label' => __( 'Posts query', 'siteorigin-widgets' )
 				),
-				'posts' => array(
-					'type' => 'repeater',
-					'label' => __( 'Selected posts', 'siteorigin-widgets' ),
-					'item_name' => __( 'Post', 'siteorigin-widgets' ),
-					'item_label' => array(
-						'selector'     => "[id*='posts-post_title']",
-						'update_event' => 'change',
-						'value_method' => 'val'
-					),
-					'readonly' => true,
-					'scroll_count' => 10,
-					'fields' => array(
-						'post_title' => array(
-							'type' => 'text',
-							'label' => __( 'Post title', 'siteorigin-widgets' ),
-							'readonly' => true
-						),
-						'post_id' => array(
-							'type' => 'number',
-							'label' => __( 'Post ID', 'siteorigin-widgets' ),
-							'readonly' => true
-						),
-						'brick_size' => array(
-							'type' => 'select',
-							'label' => __( 'Brick size', 'siteorigin-widgets' ),
-							'default' => '11',
-							'options' => array(
-								'11' => __( '1 by 1', 'siteorigin-widgets' ),
-								'12' => __( '1 by 2', 'siteorigin-widgets' ),
-								'21' => __( '2 by 1', 'siteorigin-widgets' ),
-								'22' => __( '2 by 2', 'siteorigin-widgets' ),
-							)
-						)
-					)
-				),
 				'responsive' => array(
 					'type' => 'checkbox',
 					'label' => __( 'Responsive layout', 'siteorigin-widgets' ),
@@ -89,6 +54,23 @@ class SiteOrigin_Widget_Masonry_Widget extends SiteOrigin_Widget {
 				)
 			)
 		);
+		global $sow_meta_box_manager;
+		$sow_meta_box_manager->append_to_form(
+			$this->id_base,
+			array(
+				'brick_size' => array(
+					'type' => 'select',
+					'label' => __( 'Brick size', 'siteorigin-widgets' ),
+					'default' => '11',
+					'options' => array(
+						'11' => __( '1 by 1', 'siteorigin-widgets' ),
+						'12' => __( '1 by 2', 'siteorigin-widgets' ),
+						'21' => __( '2 by 1', 'siteorigin-widgets' ),
+						'22' => __( '2 by 2', 'siteorigin-widgets' ),
+					)
+				)
+			)
+		);
 	}
 
 	function get_style_name( $instance ) {
@@ -100,8 +82,6 @@ class SiteOrigin_Widget_Masonry_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_template_variables( $instance , $args ) {
-		if ( empty( $instance['posts_query'] ) ) return;
-
 		$query = siteorigin_widget_post_selector_process_query( $instance['posts_query'] );
 		return array(
 			'responsive' => !empty( $instance['responsive'] ),
@@ -109,13 +89,14 @@ class SiteOrigin_Widget_Masonry_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_brick_size($post_id, $instance){
-		foreach ( $instance['posts'] as $post ) {
-			if ( $post['post_id'] == $post_id ) {
-				return $post['brick_size'];
-			}
-		}
-		return '11';
+	function get_brick_size( $post_id ){
+		global $sow_meta_box_manager;
+		$brick_size = $sow_meta_box_manager->get_widget_post_meta(
+			$post_id,
+			$this->id_base,
+			'brick_size'
+		);
+		return !empty( $brick_size ) ? $brick_size : '11';
 	}
 
 	function enqueue_admin_scripts() {

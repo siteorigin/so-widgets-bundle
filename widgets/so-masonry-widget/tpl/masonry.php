@@ -1,7 +1,8 @@
 
 <div class="so-masonry-container <?php if ( $responsive ) echo 'responsive' ?>">
 	<?php while($posts->have_posts()) : $posts->the_post(); ?>
-		<div class="masonry-brick <?php echo esc_attr('size-'. $this->get_brick_size(get_the_ID(), $instance) . ' ' . (!has_post_thumbnail() ? 'no-thumbnail' : '')) ?>">
+		<?php $brick_size = $this->get_brick_size( get_the_ID() ); ?>
+		<div class="masonry-brick <?php echo esc_attr('size-'. $brick_size . ' ' . (!has_post_thumbnail() ? 'no-thumbnail' : '')) ?>">
 			<div class="post-information">
 				<h2><a href="<?php the_permalink() ?>"><?php the_title() ?></h2></a>
 				<div class="entry-meta">
@@ -21,7 +22,7 @@
 
 			<a href="<?php the_permalink() ?>" class="thumbnail-link">
 				<?php if(has_post_thumbnail()) : ?>
-					<?php echo get_the_post_thumbnail(get_the_ID(), 'so-masonry-size-'.$settings['size']) ?>
+					<?php echo get_the_post_thumbnail(get_the_ID(), 'so-masonry-size-'.$brick_size) ?>
 				<?php endif; ?>
 			</a>
 		</div>
