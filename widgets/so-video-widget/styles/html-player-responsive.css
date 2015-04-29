@@ -1,0 +1,5 @@
+/*MediaElementJS responsive sizing issue with HTML player is fixed by adding the below style.*/
+iframe.me-plugin {
+    width: 100%;
+    height: 100%;
+}
