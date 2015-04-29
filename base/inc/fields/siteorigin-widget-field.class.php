@@ -5,6 +5,7 @@
  *
  * Class SiteOrigin_Widget_Field
  */
+
 abstract class SiteOrigin_Widget_Field {
 
 	protected $field_options;
@@ -48,5 +49,3 @@ abstract class SiteOrigin_Widget_Field {
 	}
 
 }
-
-// All the implementing fields will go here
