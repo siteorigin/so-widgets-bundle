@@ -281,14 +281,22 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		?>
 		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>" id="<?php echo $form_id ?>" data-class="<?php echo get_class($this) ?>" style="display: none">
 			<?php
-			foreach( $this->form_options() as $field_name => $field) {
-				$this->render_field(
-					$field_name,
-					$field,
-					isset($instance[$field_name]) ? $instance[$field_name] : null,
-					$instance,
-					false
-				);
+			foreach( $this->form_options() as $field_name => $field_options ) {
+				if($field_options['type'] == 'text') {
+					$element_id = $this->so_get_field_id( $field_name );
+					$element_name = $this->so_get_field_name( $field_name );
+					$field = SiteOrigin_Widget_Field_Factory::create_field( $field_name, $element_id, $element_name, $field_options );
+					$field->render( isset( $instance[$field_name] ) ? $instance[$field_name] : null );
+				}
+				else {
+					$this->render_field(
+						$field_name,
+						$field_options,
+						isset( $instance[$field_name] ) ? $instance[$field_name] : null,
+						$instance,
+						false
+					);
+				}
 			}
 			?>
 		</div>
