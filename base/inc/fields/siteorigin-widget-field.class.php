@@ -121,9 +121,9 @@ abstract class SiteOrigin_Widget_Field {
 			$wrapper_attributes['data-state-handler-initial'] = json_encode( $this->state_handler_initial );
 		}
 
-		?><div <?php foreach( $wrapper_attributes as $attr => $attr_val ) echo $attr.'="' . esc_attr($attr_val) . '" ' ?>><?php
+		?><div <?php foreach( $wrapper_attributes as $attr => $attr_val ) echo $attr.'="' . esc_attr( $attr_val ) . '" ' ?>><?php
 
-		// Allow subclasses or plugins to render something before and after the render_field() function is called.
+		// Allow subclasses and/or plugins to render something before and after the render_field() function is called.
 
 //		$this->render_pre_field();
 		$this->render_field_label();
@@ -131,7 +131,7 @@ abstract class SiteOrigin_Widget_Field {
 //		$this->render_post_field();
 
 		if( ! empty( $this->description ) ) {
-			?><div class="siteorigin-widget-field-description"><?php echo wp_kses_post($this->description ) ?></div><?php
+			?><div class="siteorigin-widget-field-description"><?php echo wp_kses_post( $this->description ) ?></div><?php
 		}
 
 		?></div><?php
@@ -185,5 +185,35 @@ abstract class SiteOrigin_Widget_Field {
 	}
 
 	abstract protected function sanitize_field_input( $value );
+
+	//TODO: These functions should not stay here. They are only here temporarily while refactoring fields into classes.
+
+	/**
+	 * Convert underscore naming convention to camel case. Useful for data to be handled by javascript.
+	 *
+	 * @param $array array Input array of which the keys will be transformed.
+	 * @return array The transformed array with camel case keys.
+	 */
+	protected function underscores_to_camel_case( $array ) {
+		$transformed = array();
+		if ( !empty( $array ) ) {
+			foreach ( $array as $key => $val ) {
+				$jsKey = preg_replace_callback( '/_(.?)/', array($this, 'match_to_upper'), $key );
+				$transformed[ $jsKey ] = $val;
+			}
+		}
+		return $transformed;
+	}
+
+	/**
+	 * Convert a matched string to uppercase. Used as a preg callback.
+	 *
+	 * @param $matches
+	 *
+	 * @return string
+	 */
+	private function match_to_upper( $matches ) {
+		return strtoupper( $matches[1] );
+	}
 
 }

@@ -10,6 +10,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	protected $base_folder;
 	protected $repeater_html;
 	protected $field_ids;
+	protected $fields;
 
 	/**
 	 * @var array The array of registered frontend scripts
@@ -47,6 +48,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$this->base_folder = $base_folder;
 		$this->repeater_html = array();
 		$this->field_ids = array();
+		$this->fields = array();
 
 		$control_options = wp_parse_args($widget_options, array(
 			'width' => 600,
@@ -282,20 +284,24 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>" id="<?php echo $form_id ?>" data-class="<?php echo get_class($this) ?>" style="display: none">
 			<?php
 			foreach( $this->form_options() as $field_name => $field_options ) {
-				if($field_options['type'] == 'text') {
-					$element_id = $this->so_get_field_id( $field_name );
-					$element_name = $this->so_get_field_name( $field_name );
-					$field = SiteOrigin_Widget_Field_Factory::create_field( $field_name, $element_id, $element_name, $field_options );
-					$field->render( isset( $instance[$field_name] ) ? $instance[$field_name] : null );
-				}
-				else {
-					$this->render_field(
-						$field_name,
-						$field_options,
-						isset( $instance[$field_name] ) ? $instance[$field_name] : null,
-						$instance,
-						false
-					);
+
+				switch($field_options['type']) {
+					case 'text':
+						$element_id = $this->so_get_field_id( $field_name );
+						$element_name = $this->so_get_field_name( $field_name );
+						$field = SiteOrigin_Widget_Field_Factory::create_field( $field_name, $element_id, $element_name, $field_options );
+						$field->render( isset( $instance[$field_name] ) ? $instance[$field_name] : null );
+						$this->fields[$field_name] = $field;
+						break;
+					default:
+						$this->render_field(
+							$field_name,
+							$field_options,
+							isset( $instance[$field_name] ) ? $instance[$field_name] : null,
+							$instance,
+							false
+						);
+						break;
 				}
 			}
 			?>
@@ -424,7 +430,18 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function update( $new_instance, $old_instance ) {
 		if( !class_exists('SiteOrigin_Widgets_Color_Object') ) require plugin_dir_path( __FILE__ ).'inc/color.php';
+
+		// Old sanitization
 		$new_instance = $this->sanitize( $new_instance, $this->form_options() );
+
+		// New sanitization
+		foreach( $this->form_options() as $field_name => $field_options ) {
+			if( empty( $new_instance[$field_name] ) ) continue;
+			/* @var $field SiteOrigin_Widget_Field */
+			$field = $this->fields[$field_name];
+			$new_instance[$field_name] = $field->sanitize( $new_instance[$field_name] );
+		}
+
 		// Remove the old CSS, it'll be regenerated on page load.
 		$this->delete_css( $this->modify_instance( $new_instance ) );
 		return $new_instance;
