@@ -6,10 +6,8 @@
 class SiteOrigin_Widget_Field_Color extends SiteOrigin_Widget_Field_Text_Input_Base {
 
 	protected function render_field( $value ) {
-		?><input type="text" name="<?php echo $this->element_name ?>" id="<?php echo $this->element_id ?>"
-		         value="<?php echo esc_attr( $value ) ?>"
-		         class="widefat siteorigin-widget-input siteorigin-widget-input-color"
-		<?php if ( ! empty( $this->placeholder ) ) echo 'placeholder="' . $this->placeholder . '"' ?>/><?php
+		$this->input_classes[] = 'siteorigin-widget-input-color';
+		$this->render_text_input( $value );
 	}
 
 	protected function sanitize_field_input( $value ) {
