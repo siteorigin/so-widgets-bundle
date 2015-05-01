@@ -10,6 +10,8 @@ abstract class SiteOrigin_Widget_Field {
 
 	// List of field types available in the Widgets Bundle.
 	const TYPE_TEXT = 'text';
+	const TYPE_LINK = 'link';
+	const TYPE_COLOR = 'color';
 	const TYPE_REPEATER = 'repeater';
 
 	protected $base_name;

@@ -15,6 +15,9 @@ class SiteOrigin_Widget_Field_Factory {
 			case SiteOrigin_Widget_Field::TYPE_LINK:
 				return new SiteOrigin_Widget_Field_Link( $field_name, $element_id, $element_name, $field_options );
 				break;
+			case SiteOrigin_Widget_Field::TYPE_COLOR:
+				return new SiteOrigin_Widget_Field_Color( $field_name, $element_id, $element_name, $field_options );
+				break;
 			case SiteOrigin_Widget_Field::TYPE_REPEATER:
 				return new SiteOrigin_Widget_Field_Repeater( $field_name, $element_id, $element_name, $field_options, $for_widget, $for_repeater );
 				break;

@@ -10,7 +10,8 @@ class SiteOrigin_Widget_Field_Link extends SiteOrigin_Widget_Field_Text_Input_Ba
 		<a href="#" class="select-content-button button-secondary"><?php _e('Select Content', 'siteorigin-widgets') ?></a>
 		<div class="existing-content-selector">
 
-			<input type="text" placeholder="<?php esc_attr_e('Search Content', 'siteorigin-widgets') ?>" class="content-text-search" />
+			<input type="text" class="content-text-search"
+			       placeholder="<?php esc_attr_e('Search Content', 'siteorigin-widgets') ?>"/>
 
 			<ul class="posts"></ul>
 
@@ -19,7 +20,10 @@ class SiteOrigin_Widget_Field_Link extends SiteOrigin_Widget_Field_Text_Input_Ba
 			</div>
 		</div>
 		<div class="url-input-wrapper">
-			<input type="text" name="<?php echo $this->element_name ?>" id="<?php echo $this->element_id ?>" value="<?php echo esc_attr( $value ) ?>" <?php if ( ! empty( $this->placeholder ) ) echo 'placeholder="' . $this->placeholder . '"' ?> class="widefat siteorigin-widget-input" <?php if( ! empty( $this->readonly ) ) echo 'readonly' ?> />
+			<input type="text" name="<?php echo $this->element_name ?>" id="<?php echo $this->element_id ?>"
+			       value="<?php echo esc_attr( $value ) ?>" class="widefat siteorigin-widget-input"
+				<?php if ( ! empty( $this->placeholder ) ) echo 'placeholder="' . $this->placeholder . '"' ?>
+				<?php if( ! empty( $this->readonly ) ) echo 'readonly' ?> />
 		</div>
 		<?php
 	}
