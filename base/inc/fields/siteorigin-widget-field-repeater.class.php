@@ -51,8 +51,21 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field {
 	 * @var array
 	 */
 	private $sub_fields;
+	/**
+	 * Reference to the containing widget required for creating subfields.
+	 *
+	 * @access private
+	 * @var SiteOrigin_Widget
+	 */
+	private $for_widget;
+	/**
+	 * An array of field names of parent repeaters.
+	 *
+	 * @var array
+	 */
+	private $parent_repeater;
 
-	public function __construct( $base_name, $element_id, $element_name, $options) {
+	public function __construct( $base_name, $element_id, $element_name, $options, SiteOrigin_Widget $for_widget, $parent_repeater = array() ) {
 		parent::__construct( $base_name, $element_id, $element_name, $options );
 
 		if( isset( $options['item_name'] ) ) $this->item_name = $options['item_name'];
@@ -60,13 +73,16 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field {
 		if( isset( $options['fields'] ) ) $this->fields = $options['fields'];
 		if( isset( $options['scroll_count'] ) ) $this->scroll_count = $options['scroll_count'];
 		if( isset( $options['readonly'] ) ) $this->readonly = $options['readonly'];
+
+		$this->for_widget = $for_widget;
+		$this->parent_repeater = $parent_repeater;
 	}
 
 	protected function render_field( $value ) {
 		if( !isset( $this->fields ) || empty( $this->fields ) ) return;
 		// Figure out how to get repeater HTML
 //		ob_start();
-		$repeater[] = $this->base_name;
+		$this->parent_repeater[] = $this->base_name;
 //		foreach( $this->fields as $sub_field_name => $sub_field_options ) {
 //			$element_id = $this->so_get_field_id( $sub_field_name );
 //			$element_name = $this->so_get_field_name( $sub_field_name );
@@ -107,9 +123,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field {
 							<div class="siteorigin-widget-field-repeater-item-form">
 								<?php
 								foreach($this->fields as $sub_field_name => $sub_field_options) {
-									$element_id = $this->so_get_field_id( $sub_field_name, $repeater );
-									$element_name = $this->so_get_field_name( $sub_field_name, $repeater );
-									$field = SiteOrigin_Widget_Field_Factory::create_field( $sub_field_name, $element_id, $element_name, $sub_field_options );
+									$field = SiteOrigin_Widget_Field_Factory::create_field( $sub_field_name, $sub_field_options, $this->for_widget, $this->parent_repeater );
 									$field->render( isset( $value[$sub_field_name] ) ? $value[$sub_field_name] : null );
 									$this->sub_fields[$sub_field_name] = $field;
 								}

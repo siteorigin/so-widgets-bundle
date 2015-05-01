@@ -287,9 +287,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 				switch($field_options['type']) {
 					case 'text':
-						$element_id = $this->so_get_field_id( $field_name );
-						$element_name = $this->so_get_field_name( $field_name );
-						$field = SiteOrigin_Widget_Field_Factory::create_field( $field_name, $element_id, $element_name, $field_options );
+						$field = SiteOrigin_Widget_Field_Factory::create_field( $field_name, $field_options, $this );
 						$field->render( isset( $instance[$field_name] ) ? $instance[$field_name] : null );
 						$this->fields[$field_name] = $field;
 						break;
@@ -792,7 +790,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param string $repeater_append
 	 * @return mixed|string
 	 */
-	protected function so_get_field_name( $field_name, $repeater = array(), $repeater_append = '[]' ) {
+	public function so_get_field_name( $field_name, $repeater = array(), $repeater_append = '[]' ) {
 		if( empty($repeater) ) {
 			return $this->get_field_name( $field_name );
 		}
