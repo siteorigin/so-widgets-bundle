@@ -290,6 +290,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					case 'link':
 					case 'color':
 					case 'number':
+					case 'textarea':
 						$field = SiteOrigin_Widget_Field_Factory::create_field( $field_name, $field_options, $this );
 						$field->render( isset( $instance[$field_name] ) ? $instance[$field_name] : null );
 						$this->fields[$field_name] = $field;

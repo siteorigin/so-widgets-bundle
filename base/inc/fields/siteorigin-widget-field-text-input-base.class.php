@@ -5,15 +5,26 @@
  */
 abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget_Field {
 
+	/**
+	 * A string to display before any text has been input.
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $placeholder;
-
+	/**
+	 * If true, this field will not be editable.
+	 *
+	 * @access protected
+	 * @var bool
+	 */
 	protected $readonly;
 
-	public function __construct( $field_name, $element_id, $element_name, $field_options) {
-		parent::__construct( $field_name, $element_id, $element_name, $field_options );
+	public function __construct( $base_name, $element_id, $element_name, $options ){
+		parent::__construct( $base_name, $element_id, $element_name, $options );
 
-		if( isset( $field_options['placeholder'] ) ) $this->placeholder = $field_options['placeholder'];
-		if( isset( $field_options['readonly'] ) ) $this->readonly = $field_options['readonly'];
+		if( isset( $options['placeholder'] ) ) $this->placeholder = $options['placeholder'];
+		if( isset( $options['readonly'] ) ) $this->readonly = $options['readonly'];
 	}
 
 	protected $input_classes = array( 'widefat', 'siteorigin-widget-input' );

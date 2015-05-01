@@ -13,6 +13,7 @@ abstract class SiteOrigin_Widget_Field {
 	const TYPE_LINK = 'link';
 	const TYPE_COLOR = 'color';
 	const TYPE_NUMBER = 'number';
+	const TYPE_TEXTAREA = 'textarea';
 	const TYPE_REPEATER = 'repeater';
 
 	protected $base_name;
@@ -74,7 +75,7 @@ abstract class SiteOrigin_Widget_Field {
 	 * @param $element_name string The name to be used as the name attribute of the wrapping HTML element.
 	 * @param $options array Configuration for the field.
 	 */
-	function __construct( $base_name, $element_id, $element_name, $options ){
+	public function __construct( $base_name, $element_id, $element_name, $options ){
 		$this->base_name = $base_name;
 		$this->element_id = $element_id;
 		$this->element_name = $element_name;
