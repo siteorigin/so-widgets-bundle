@@ -9,11 +9,13 @@ class SiteOrigin_Widget_Field_Factory {
 		$element_id = $for_widget->so_get_field_id( $field_name, $for_repeater, $is_template );
 		$element_name = $for_widget->so_get_field_name( $field_name, $for_repeater );
 		$field_class = 'SiteOrigin_Widget_Field_' . $field_options['type'];
-		if( $field_options['type'] == 'repeater' ) {
-			return new SiteOrigin_Widget_Field_Repeater( $field_name, $element_id, $element_name, $field_options, $for_widget, $for_repeater );
-		}
-		else {
-			return new $field_class( $field_name, $element_id, $element_name, $field_options );
+		switch( $field_options['type'] ) {
+			case 'repeater':
+			case 'media':
+				return new $field_class( $field_name, $element_id, $element_name, $field_options, $for_widget, $for_repeater );
+				break;
+			default:
+				return new $field_class( $field_name, $element_id, $element_name, $field_options );
 		}
 	}
 }
