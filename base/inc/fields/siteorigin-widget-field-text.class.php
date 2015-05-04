@@ -5,7 +5,7 @@
  */
 class SiteOrigin_Widget_Field_Text extends SiteOrigin_Widget_Field_Text_Input_Base {
 
-	protected function render_field( $value ) {
+	protected function render_field( $value, $instance ) {
 		$this->render_text_input( $value );
 	}
 }

@@ -5,7 +5,7 @@
  */
 class SiteOrigin_Widget_Field_Checkbox extends SiteOrigin_Widget_Field {
 
-	protected function render_field( $value ) {
+	protected function render_field( $value, $instance ) {
 		?>
 		<label for="<?php echo $this->element_id ?>">
 			<input type="checkbox" name="<?php echo $this->element_name ?>" id="<?php echo $this->element_id ?>"

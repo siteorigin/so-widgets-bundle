@@ -5,7 +5,7 @@
  */
 class SiteOrigin_Widget_Field_Link extends SiteOrigin_Widget_Field_Text_Input_Base {
 
-	protected function render_field( $value ) {
+	protected function render_field( $value, $instance ) {
 		?>
 		<a href="#" class="select-content-button button-secondary"><?php _e('Select Content', 'siteorigin-widgets') ?></a>
 		<div class="existing-content-selector">

@@ -84,8 +84,9 @@ abstract class SiteOrigin_Widget_Field {
 
 	/**
 	 * @param $value mixed The current instance value of the field.
+	 * @param $instance array Optionally pass in the widget instance, if rendering of additional values is required.
 	 */
-	public function render( $value ) {
+	public function render( $value, $instance = array() ) {
 		if ( is_null( $value ) && isset( $this->default ) ) {
 			$value = $this->default;
 		}
@@ -121,17 +122,15 @@ abstract class SiteOrigin_Widget_Field {
 		?><div <?php foreach( $wrapper_attributes as $attr => $attr_val ) echo $attr.'="' . esc_attr( $attr_val ) . '" ' ?>><?php
 
 		// Allow subclasses and/or plugins to render something before and after the render_field() function is called.
-
-//		$this->render_pre_field();
-		$this->render_field_label();
-		$this->render_field( $value );
-//		$this->render_post_field();
-
-		if( ! empty( $this->description ) ) {
-			?><div class="siteorigin-widget-field-description"><?php echo wp_kses_post( $this->description ) ?></div><?php
-		}
+		$this->render_before_field( $value, $instance );
+		$this->render_field( $value, array() );
+		$this->render_after_field( $value, $instance);
 
 		?></div><?php
+	}
+
+	protected function render_before_field( $value, $instance ) {
+		$this->render_field_label();
 	}
 
 	/**
@@ -150,14 +149,19 @@ abstract class SiteOrigin_Widget_Field {
 		<?php
 	}
 
-	abstract protected function render_field( $value );
+	abstract protected function render_field( $value, $instance );
 
 	/**
 	 * The default sanitization function. Even if implemented in a child class, this should still be called.
+	 *
+	 * @param $value mixed The value to be sanitized.
+	 * @param array $instance array The widget instance.
+	 * @return mixed|string|void
 	 */
-	public function sanitize( $value ) {
+	public function sanitize( $value, $instance = array() ) {
 
 		$this->sanitize_field_input( $value );
+		$this->sanitize_instance( $instance );
 
 		if( isset($this->options['sanitize']) ) {
 			// This field also needs some custom sanitization
@@ -181,7 +185,21 @@ abstract class SiteOrigin_Widget_Field {
 
 	}
 
+	protected function render_after_field( $value, $instance ) {
+		$this->render_field_description();
+	}
+
+	private function render_field_description() {
+		if( ! empty( $this->description ) ) {
+			?><div class="siteorigin-widget-field-description"><?php echo wp_kses_post( $this->description ) ?></div><?php
+		}
+	}
+
 	abstract protected function sanitize_field_input( $value );
+
+	protected function sanitize_instance( $instance ) {
+		//Stub: This function may be overridden by subclasses wishing to sanitize additional instance fields.
+	}
 
 	//TODO: These functions should not stay here. They are only here temporarily while refactoring fields into classes.
 

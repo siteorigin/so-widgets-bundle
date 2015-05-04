@@ -78,7 +78,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field {
 		$this->parent_repeater = $parent_repeater;
 	}
 
-	protected function render_field( $value ) {
+	protected function render_field( $value, $instance ) {
 		if( !isset( $this->fields ) || empty( $this->fields ) ) return;
 		// Figure out how to get repeater HTML
 //		ob_start();

@@ -28,7 +28,7 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field {
 		if( isset( $options['prompt'] ) ) $this->prompt = $options['prompt'];
 	}
 
-	protected function render_field( $value ) {
+	protected function render_field( $value, $instance ) {
 		?>
 		<select name="<?php echo $this->element_name ?>" id="<?php echo $this->element_id ?>"
 		        class="siteorigin-widget-input">

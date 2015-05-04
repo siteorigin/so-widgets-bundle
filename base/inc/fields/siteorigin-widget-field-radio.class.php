@@ -18,7 +18,7 @@ class SiteOrigin_Widget_Field_Radio extends SiteOrigin_Widget_Field {
 		if( isset( $options['options'] ) ) $this->options = $options['options'];
 	}
 
-	protected function render_field( $value ) {
+	protected function render_field( $value, $instance ) {
 		if ( ! isset( $this->options ) || empty( $this->options ) ) return;
 
 		foreach( $this->options as $k => $v ) {

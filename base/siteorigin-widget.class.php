@@ -296,8 +296,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					case 'select':
 					case 'checkbox':
 					case 'radio':
+						/* @var $field SiteOrigin_Widget_Field */
 						$field = SiteOrigin_Widget_Field_Factory::create_field( $field_name, $field_options, $this );
-						$field->render( isset( $instance[$field_name] ) ? $instance[$field_name] : null );
+						$field->render( isset( $instance[$field_name] ) ? $instance[$field_name] : null, $instance );
 						$this->fields[$field_name] = $field;
 						break;
 					default:
@@ -446,7 +447,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			if( empty( $new_instance[$field_name] ) ) continue;
 			/* @var $field SiteOrigin_Widget_Field */
 			$field = $this->fields[$field_name];
-			$new_instance[$field_name] = $field->sanitize( $new_instance[$field_name] );
+			$new_instance[$field_name] = $field->sanitize( $new_instance[$field_name], $new_instance );
 		}
 
 		// Remove the old CSS, it'll be regenerated on page load.
