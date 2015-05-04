@@ -123,6 +123,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field {
 							<div class="siteorigin-widget-field-repeater-item-form">
 								<?php
 								foreach($this->fields as $sub_field_name => $sub_field_options) {
+									/* @var $field SiteOrigin_Widget_Field */
 									$field = SiteOrigin_Widget_Field_Factory::create_field( $sub_field_name, $sub_field_options, $this->for_widget, $this->parent_repeater );
 									$field->render( isset( $value[$sub_field_name] ) ? $value[$sub_field_name] : null );
 									$this->sub_fields[$sub_field_name] = $field;
