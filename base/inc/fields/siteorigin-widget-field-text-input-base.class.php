@@ -34,7 +34,7 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 		<input type="text" name="<?php echo $this->element_name ?>" id="<?php echo $this->element_id ?>"
 		         value="<?php echo esc_attr( $value ) ?>"
 		         <?php if( !empty( $this->input_classes ) ) : ?>
-				    class="<?php implode( ' ', array_map('sanitize_html_class', $this->input_classes ) )?>"
+				    class="<?php echo implode( ' ', array_map('sanitize_html_class', $this->input_classes ) )?>"
 				 <?php endif; ?>
 			<?php if ( ! empty( $this->placeholder ) ) echo 'placeholder="' . $this->placeholder . '"' ?>
 			<?php if( ! empty( $this->readonly ) ) echo 'readonly' ?> />
