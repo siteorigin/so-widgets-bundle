@@ -301,6 +301,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					case 'icon':
 					case 'font':
 					case 'section':
+					case 'widget':
 						/* @var $field SiteOrigin_Widget_Field */
 						$field = SiteOrigin_Widget_Field_Factory::create_field( $field_name, $field_options, $this );
 						$field->render( isset( $instance[$field_name] ) ? $instance[$field_name] : null, $instance );
@@ -451,7 +452,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		foreach( $this->form_options() as $field_name => $field_options ) {
 			if( empty( $new_instance[$field_name] ) ) continue;
 			/* @var $field SiteOrigin_Widget_Field */
-			$field = $this->fields[$field_name];
+			if( !empty( $this->fields ) && ! empty( $this->fields[$field_name] ) ) {
+				$field = $this->fields[$field_name];
+			}
+			else {
+				$field = SiteOrigin_Widget_Field_Factory::create_field( $field_name, $field_options, $this );
+			}
 			$new_instance[$field_name] = $field->sanitize( $new_instance[$field_name], $new_instance );
 		}
 

@@ -13,6 +13,7 @@ class SiteOrigin_Widget_Field_Factory {
 			case 'repeater':
 			case 'media':
 			case 'section':
+			case 'widget':
 				return new $field_class( $field_name, $element_id, $element_name, $field_options, $for_widget, $for_repeater );
 				break;
 			default:

@@ -42,11 +42,17 @@ class SiteOrigin_Widget_Field_Section extends SiteOrigin_Widget_Field {
 	}
 
 	protected function render_field( $value, $instance ) {
+		$this->sub_fields = array();
 		?><div class="siteorigin-widget-section <?php if( !empty( $this->hide ) ) echo 'siteorigin-widget-section-hide'; ?>"><?php
 		if ( !isset( $this->fields ) || empty($this->fields ) ) return;
 		foreach( $this->fields as $sub_field_name => $sub_field_options ) {
 			/* @var $field SiteOrigin_Widget_Field */
-			$field = SiteOrigin_Widget_Field_Factory::create_field( $sub_field_name, $sub_field_options, $this->for_widget, $this->parent_repeater );
+			$field = SiteOrigin_Widget_Field_Factory::create_field(
+				$this->base_name . '][' . $sub_field_name,
+				$sub_field_options,
+				$this->for_widget,
+				$this->parent_repeater
+			);
 			$field->render( isset( $value[$sub_field_name] ) ? $value[$sub_field_name] : null );
 			$this->sub_fields[$sub_field_name] = $field;
 		}
@@ -58,7 +64,17 @@ class SiteOrigin_Widget_Field_Section extends SiteOrigin_Widget_Field {
 		foreach( $this->fields as $sub_field_name => $sub_field_options ) {
 			if( empty( $value[$sub_field_name] ) ) continue;
 			/* @var $sub_field SiteOrigin_Widget_Field */
-			$sub_field = $this->sub_fields[$sub_field_name];
+			if( !empty( $this->sub_fields ) && ! empty( $this->fields[$sub_field_name] ) ) {
+				$sub_field = $this->sub_fields[$sub_field_name];
+			}
+			else {
+				$sub_field = SiteOrigin_Widget_Field_Factory::create_field(
+					$this->base_name . '][' . $sub_field_name,
+					$sub_field_options,
+					$this->for_widget,
+					$this->parent_repeater
+				);
+			}
 			$value[$sub_field_name] = $sub_field->sanitize( $value[$sub_field_name], $value );
 		}
 

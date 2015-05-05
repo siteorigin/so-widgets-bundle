@@ -93,7 +93,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field {
 //		$html = ob_get_clean();
 //
 //		$this->repeater_html[$this->base_name] = $html;
-
+		$this->sub_fields = array();
 		$item_label = isset( $this->item_label ) ? $this->item_label : null;
 		if ( ! empty( $item_label ) ) {
 			// convert underscore naming convention to camelCase for javascript and encode as json string
