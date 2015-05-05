@@ -12,10 +12,10 @@ class SiteOrigin_Widget_Field_Textarea extends SiteOrigin_Widget_Field_Text_Inpu
 	 */
 	protected $rows;
 
-	public function __construct( $base_name, $element_id, $element_name, $options ) {
-		parent::__construct( $base_name, $element_id, $element_name, $options );
+	public function __construct( $base_name, $element_id, $element_name, $field_options ) {
+		parent::__construct( $base_name, $element_id, $element_name, $field_options );
 
-		if( isset( $options['rows'] ) ) $this->rows = $options['rows'];
+		if( isset( $field_options['rows'] ) ) $this->rows = $field_options['rows'];
 	}
 
 	protected function render_field( $value, $instance ) {

@@ -50,28 +50,28 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field {
 	 */
 	private $parent_repeater;
 
-	public function __construct( $base_name, $element_id, $element_name, $options, $for_widget, $parent_repeater = array()  ) {
-		parent::__construct( $base_name, $element_id, $element_name, $options );
+	public function __construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_repeater = array()  ) {
+		parent::__construct( $base_name, $element_id, $element_name, $field_options );
 
-		if( isset( $options['choose'] ) ) {
-			$this->dialog_title = $options['choose'];
+		if( isset( $field_options['choose'] ) ) {
+			$this->dialog_title = $field_options['choose'];
 		}
 		else {
 			$this->dialog_title = __( 'Choose Media', 'siteorigin-widgets' );
 		}
-		if( isset( $options['update'] ) ) {
-			$this->update_button_label = $options['update'];
+		if( isset( $field_options['update'] ) ) {
+			$this->update_button_label = $field_options['update'];
 		}
 		else {
 			$this->update_button_label = __( 'Set Media', 'siteorigin-widgets' );
 		}
-		if( isset( $options['library'] ) ) {
-			$this->library = $options['library'];
+		if( isset( $field_options['library'] ) ) {
+			$this->library = $field_options['library'];
 		}
 		else {
 			$this->library = 'image';
 		}
-		if( isset( $options['fallback'] ) ) $this->fallback = $options['fallback'];
+		if( isset( $field_options['fallback'] ) ) $this->fallback = $field_options['fallback'];
 
 		$this->for_widget = $for_widget;
 		$this->parent_repeater = $parent_repeater;

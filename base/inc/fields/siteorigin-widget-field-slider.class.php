@@ -20,11 +20,11 @@ class SiteOrigin_Widget_Field_Slider extends SiteOrigin_Widget_Field {
 	 */
 	protected $max;
 
-	public function __construct( $base_name, $element_id, $element_name, $options ) {
-		parent::__construct( $base_name, $element_id, $element_name, $options );
+	public function __construct( $base_name, $element_id, $element_name, $field_options ) {
+		parent::__construct( $base_name, $element_id, $element_name, $field_options );
 
-		if( isset( $options['min'] ) ) $this->min = $options['min'];
-		if( isset( $options['max'] ) ) $this->max = $options['max'];
+		if( isset( $field_options['min'] ) ) $this->min = $field_options['min'];
+		if( isset( $field_options['max'] ) ) $this->max = $field_options['max'];
 	}
 
 

@@ -11,7 +11,7 @@ abstract class SiteOrigin_Widget_Field {
 	protected $base_name;
 	protected $element_id;
 	protected $element_name;
-	protected $options;
+	protected $field_options;
 
 	/* BASE FIELD PROPERTIES */
 
@@ -53,6 +53,8 @@ abstract class SiteOrigin_Widget_Field {
 
 	protected $hide;
 
+	protected $sanitize;
+
 	/* FIELD STATES PROPERTIES */
 
 	protected $state_name;
@@ -65,21 +67,22 @@ abstract class SiteOrigin_Widget_Field {
 	 * @param $base_name string The name of the field.
 	 * @param $element_id string The id to be used as the id attribute of the wrapping HTML element.
 	 * @param $element_name string The name to be used as the name attribute of the wrapping HTML element.
-	 * @param $options array Configuration for the field.
+	 * @param $field_options array Configuration for the field.
 	 */
-	public function __construct( $base_name, $element_id, $element_name, $options ){
+	public function __construct( $base_name, $element_id, $element_name, $field_options ){
 		$this->base_name = $base_name;
 		$this->element_id = $element_id;
 		$this->element_name = $element_name;
-		$this->options = $options;
+		$this->field_options = $field_options;
 
-		$this->type = $options['type'];
+		$this->type = $field_options['type'];
 
-		if( isset($options['label'] ) ) $this->label = $options['label'];
-		if( isset($options['default'] ) ) $this->default = $options['default'];
-		if( isset($options['description'] ) ) $this->description = $options['description'];
-		if( isset($options['optional'] ) ) $this->optional = $options['optional'];
-		if( isset($options['hide'] ) ) $this->hide = $options['hide'];
+		if( isset($field_options['label'] ) ) $this->label = $field_options['label'];
+		if( isset($field_options['default'] ) ) $this->default = $field_options['default'];
+		if( isset($field_options['description'] ) ) $this->description = $field_options['description'];
+		if( isset($field_options['optional'] ) ) $this->optional = $field_options['optional'];
+		if( isset($field_options['hide'] ) ) $this->hide = $field_options['hide'];
+		if( isset($field_options['sanitize'] ) ) $this->sanitize = $field_options['sanitize'];
 	}
 
 	public function get_name() {
@@ -167,9 +170,9 @@ abstract class SiteOrigin_Widget_Field {
 		$this->sanitize_field_input( $value );
 		$this->sanitize_instance( $instance );
 
-		if( isset($this->options['sanitize']) ) {
+		if( isset( $this->sanitize ) ) {
 			// This field also needs some custom sanitization
-			switch($this->options['sanitize']) {
+			switch( $this->sanitize ) {
 				case 'url':
 					$value = sow_esc_url_raw( $value );
 					break;
@@ -180,7 +183,7 @@ abstract class SiteOrigin_Widget_Field {
 
 				default:
 					// This isn't a built in sanitization. Maybe it's handled elsewhere.
-					$value = apply_filters( 'siteorigin_widgets_sanitize_field_' . $this->options['sanitize'], $value );
+					$value = apply_filters( 'siteorigin_widgets_sanitize_field_' . $this->sanitize, $value );
 					break;
 			}
 		}

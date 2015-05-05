@@ -4,8 +4,8 @@
  * Class SiteOrigin_Widget_Field_Color
  */
 class SiteOrigin_Widget_Field_Color extends SiteOrigin_Widget_Field_Text_Input_Base {
-	public function __construct( $base_name, $element_id, $element_name, $options ) {
-		parent::__construct( $base_name, $element_id, $element_name, $options );
+	public function __construct( $base_name, $element_id, $element_name, $field_options ) {
+		parent::__construct( $base_name, $element_id, $element_name, $field_options );
 
 		$this->input_classes[] = 'siteorigin-widget-input-color';
 	}

@@ -38,10 +38,10 @@ class SiteOrigin_Widget_Field_Widget extends SiteOrigin_Widget_Field {
 	 */
 	private $sub_widget;
 
-	public function __construct( $base_name, $element_id, $element_name, $options, SiteOrigin_Widget $for_widget, $parent_repeater = array() ) {
-		parent::__construct( $base_name, $element_id, $element_name, $options );
+	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_repeater = array() ) {
+		parent::__construct( $base_name, $element_id, $element_name, $field_options );
 
-		if( isset( $options['class'] ) ) $this->class_name = $options['class'];
+		if( isset( $field_options['class'] ) ) $this->class_name = $field_options['class'];
 
 		$this->for_widget = $for_widget;
 		$this->parent_repeater = $parent_repeater;

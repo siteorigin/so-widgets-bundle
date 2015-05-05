@@ -71,14 +71,14 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field {
 	 */
 	private $repeater_template;
 
-	public function __construct( $base_name, $element_id, $element_name, $options, SiteOrigin_Widget $for_widget, $parent_repeater = array() ) {
-		parent::__construct( $base_name, $element_id, $element_name, $options );
+	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_repeater = array() ) {
+		parent::__construct( $base_name, $element_id, $element_name, $field_options );
 
-		if( isset( $options['item_name'] ) ) $this->item_name = $options['item_name'];
-		if( isset( $options['item_label'] ) ) $this->item_label = $options['item_label'];
-		if( isset( $options['fields'] ) ) $this->fields = $options['fields'];
-		if( isset( $options['scroll_count'] ) ) $this->scroll_count = $options['scroll_count'];
-		if( isset( $options['readonly'] ) ) $this->readonly = $options['readonly'];
+		if( isset( $field_options['item_name'] ) ) $this->item_name = $field_options['item_name'];
+		if( isset( $field_options['item_label'] ) ) $this->item_label = $field_options['item_label'];
+		if( isset( $field_options['fields'] ) ) $this->fields = $field_options['fields'];
+		if( isset( $field_options['scroll_count'] ) ) $this->scroll_count = $field_options['scroll_count'];
+		if( isset( $field_options['readonly'] ) ) $this->readonly = $field_options['readonly'];
 
 		$this->for_widget = $for_widget;
 		$this->parent_repeater = $parent_repeater;
