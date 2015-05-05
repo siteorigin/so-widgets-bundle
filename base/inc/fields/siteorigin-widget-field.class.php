@@ -82,6 +82,10 @@ abstract class SiteOrigin_Widget_Field {
 		if( isset($options['hide'] ) ) $this->hide = $options['hide'];
 	}
 
+	public function get_name() {
+		return $this->base_name;
+	}
+
 	/**
 	 * @param $value mixed The current instance value of the field.
 	 * @param $instance array Optionally pass in the widget instance, if rendering of additional values is required.

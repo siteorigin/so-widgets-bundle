@@ -302,10 +302,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					case 'font':
 					case 'section':
 					case 'widget':
+					case 'repeater':
 						/* @var $field SiteOrigin_Widget_Field */
 						$field = SiteOrigin_Widget_Field_Factory::create_field( $field_name, $field_options, $this );
 						$field->render( isset( $instance[$field_name] ) ? $instance[$field_name] : null, $instance );
 						$this->fields[$field_name] = $field;
+						// Bit of a hack. Revisit this. :/
+						if( $field_options['type'] == 'repeater' ) {
+							/* @var $field SiteOrigin_Widget_Field_Repeater */
+							$this->repeater_html[$field->get_name()] = $field->get_repeater_template();
+						}
 						break;
 					default:
 						$this->render_field(

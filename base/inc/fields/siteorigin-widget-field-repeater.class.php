@@ -64,6 +64,12 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field {
 	 * @var array
 	 */
 	private $parent_repeater;
+	/**
+	 * The HTML template to be repeated together as one item. Used for adding new items to the repeater.
+	 *
+	 * @var array
+	 */
+	private $repeater_template;
 
 	public function __construct( $base_name, $element_id, $element_name, $options, SiteOrigin_Widget $for_widget, $parent_repeater = array() ) {
 		parent::__construct( $base_name, $element_id, $element_name, $options );
@@ -80,20 +86,23 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field {
 
 	protected function render_field( $value, $instance ) {
 		if( !isset( $this->fields ) || empty( $this->fields ) ) return;
-		// Figure out how to get repeater HTML
-//		ob_start();
-		$this->parent_repeater[] = $this->base_name;
-//		foreach( $this->fields as $sub_field_name => $sub_field_options ) {
-//			$element_id = $this->so_get_field_id( $sub_field_name );
-//			$element_name = $this->so_get_field_name( $sub_field_name );
-//			$field = SiteOrigin_Widget_Field_Factory::create_field( $sub_field_name, $element_id, $element_name, $sub_field_options );
-//			$field->render( isset( $value[$sub_field_name] ) ? $value[$sub_field_name] : null );
-//			$this->sub_fields[$sub_field_name] = $field;
-//		}
-//		$html = ob_get_clean();
-//
-//		$this->repeater_html[$this->base_name] = $html;
 		$this->sub_fields = array();
+		ob_start();
+		$this->parent_repeater[] = $this->base_name;
+		foreach( $this->fields as $sub_field_name => $sub_field_options ) {
+			/* @var $field SiteOrigin_Widget_Field */
+			$field = SiteOrigin_Widget_Field_Factory::create_field(
+				$sub_field_name,
+				$sub_field_options,
+				$this->for_widget,
+				$this->parent_repeater
+			);
+			$field->render( null );
+			$this->sub_fields[$sub_field_name] = $field;
+		}
+		$html = ob_get_clean();
+
+		$this->repeater_template = $html;
 		$item_label = isset( $this->item_label ) ? $this->item_label : null;
 		if ( ! empty( $item_label ) ) {
 			// convert underscore naming convention to camelCase for javascript and encode as json string
@@ -122,11 +131,9 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field {
 							</div>
 							<div class="siteorigin-widget-field-repeater-item-form">
 								<?php
-								foreach($this->fields as $sub_field_name => $sub_field_options) {
-									/* @var $field SiteOrigin_Widget_Field */
-									$field = SiteOrigin_Widget_Field_Factory::create_field( $sub_field_name, $sub_field_options, $this->for_widget, $this->parent_repeater );
-									$field->render( isset( $value[$sub_field_name] ) ? $value[$sub_field_name] : null );
-									$this->sub_fields[$sub_field_name] = $field;
+								/* @var $sub_field SiteOrigin_Widget_Field */
+								foreach( $this->sub_fields as $sub_field_name => $sub_field ) {
+									$sub_field->render( isset( $v[$sub_field_name] ) ? $v[$sub_field_name] : null, $v );
 								}
 								?>
 							</div>
@@ -149,6 +156,27 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field {
 
 	protected function sanitize_field_input( $value ) {
 
+		foreach( $this->fields as $sub_field_name => $sub_field_options ) {
+			if( empty( $value[$sub_field_name] ) ) continue;
+			/* @var $sub_field SiteOrigin_Widget_Field */
+			if( !empty( $this->sub_fields ) && ! empty( $this->fields[$sub_field_name] ) ) {
+				$sub_field = $this->sub_fields[$sub_field_name];
+			}
+			else {
+				$sub_field = SiteOrigin_Widget_Field_Factory::create_field(
+					$sub_field_name,
+					$sub_field_options,
+					$this->for_widget,
+					$this->parent_repeater
+				);
+			}
+			$value[$sub_field_name] = $sub_field->sanitize( $value[$sub_field_name], $value );
+		}
+
+		return $value;
 	}
 
+	public function get_repeater_template() {
+		return $this->repeater_template;
+	}
 }
