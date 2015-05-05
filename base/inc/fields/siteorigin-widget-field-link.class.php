@@ -5,7 +5,8 @@
  */
 class SiteOrigin_Widget_Field_Link extends SiteOrigin_Widget_Field_Text_Input_Base {
 
-	protected function render_field( $value, $instance ) {
+	protected function render_before_field( $value, $instance ) {
+		parent::render_before_field( $value, $instance );
 		?>
 		<a href="#" class="select-content-button button-secondary"><?php _e('Select Content', 'siteorigin-widgets') ?></a>
 		<div class="existing-content-selector">
@@ -20,11 +21,14 @@ class SiteOrigin_Widget_Field_Link extends SiteOrigin_Widget_Field_Text_Input_Ba
 			</div>
 		</div>
 		<div class="url-input-wrapper">
-			<?php
-			$this->render_text_input( $value );
-			?>
+		<?php
+	}
+
+	protected function render_after_field( $value, $instance ) {
+		?>
 		</div>
 		<?php
+		parent::render_after_field( $value, $instance );
 	}
 
 	protected function sanitize_field_input( $value ) {

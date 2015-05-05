@@ -19,26 +19,38 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 	 * @var bool
 	 */
 	protected $readonly;
+	/**
+	 * The CSS classes to be applied to the rendered text input.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $input_classes;
 
 	public function __construct( $base_name, $element_id, $element_name, $options ){
 		parent::__construct( $base_name, $element_id, $element_name, $options );
 
 		if( isset( $options['placeholder'] ) ) $this->placeholder = $options['placeholder'];
 		if( isset( $options['readonly'] ) ) $this->readonly = $options['readonly'];
+
+		$this->input_classes = array( 'widefat', 'siteorigin-widget-input' );
 	}
 
-	protected $input_classes = array( 'widefat', 'siteorigin-widget-input' );
 
-	protected function render_text_input( $value ) {
+	protected function render_field( $value, $instance ) {
 		?>
 		<input type="text" name="<?php echo $this->element_name ?>" id="<?php echo $this->element_id ?>"
 		         value="<?php echo esc_attr( $value ) ?>"
-		         <?php if( !empty( $this->input_classes ) ) : ?>
-				    class="<?php echo implode( ' ', array_map('sanitize_html_class', $this->input_classes ) )?>"
-				 <?php endif; ?>
+		         <?php $this->render_input_classes() ?>
 			<?php if ( ! empty( $this->placeholder ) ) echo 'placeholder="' . $this->placeholder . '"' ?>
 			<?php if( ! empty( $this->readonly ) ) echo 'readonly' ?> />
 		<?php
+	}
+
+	protected function render_input_classes() {
+		if( !empty( $this->input_classes ) ) {
+			?>class="<?php echo implode( ' ', array_map( 'sanitize_html_class', $this->input_classes ) ) ?>"<?php
+		}
 	}
 
 	protected function sanitize_field_input( $value ) {
