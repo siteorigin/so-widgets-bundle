@@ -3,7 +3,7 @@
 /**
  * Class SiteOrigin_Widget_Field_Repeater
  */
-class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field {
+class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container_Base {
 
 	/**
 	 *  A default label for each repeated item.
@@ -24,14 +24,6 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field {
 	 */
 	protected $item_label;
 	/**
-	 * The set of fields to be repeated together as one item. This should contain any combination of other field types,
-	 * even repeaters and sections.
-	 *
-	 * @access protected
-	 * @var array
-	 */
-	protected $fields;
-	/**
 	 * The maximum number of repeated items to display before adding a scrollbar to the repeater.
 	 *
 	 * @access protected
@@ -46,25 +38,6 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field {
 	 */
 	protected $readonly;
 	/**
-	 * The set of field classes to be rendered together as one item.
-	 *
-	 * @var array
-	 */
-	private $sub_fields;
-	/**
-	 * Reference to the containing widget required for creating subfields.
-	 *
-	 * @access private
-	 * @var SiteOrigin_Widget
-	 */
-	private $for_widget;
-	/**
-	 * An array of field names of parent repeaters.
-	 *
-	 * @var array
-	 */
-	private $parent_repeater;
-	/**
 	 * The HTML template to be repeated together as one item. Used for adding new items to the repeater.
 	 *
 	 * @var array
@@ -72,34 +45,19 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field {
 	private $repeater_template;
 
 	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_repeater = array() ) {
-		parent::__construct( $base_name, $element_id, $element_name, $field_options );
+		parent::__construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_repeater );
 
 		if( isset( $field_options['item_name'] ) ) $this->item_name = $field_options['item_name'];
 		if( isset( $field_options['item_label'] ) ) $this->item_label = $field_options['item_label'];
-		if( isset( $field_options['fields'] ) ) $this->fields = $field_options['fields'];
 		if( isset( $field_options['scroll_count'] ) ) $this->scroll_count = $field_options['scroll_count'];
 		if( isset( $field_options['readonly'] ) ) $this->readonly = $field_options['readonly'];
-
-		$this->for_widget = $for_widget;
-		$this->parent_repeater = $parent_repeater;
 	}
 
 	protected function render_field( $value, $instance ) {
-		if( !isset( $this->fields ) || empty( $this->fields ) ) return;
-		$this->sub_fields = array();
+		if( !isset( $this->sub_field_options ) || empty( $this->sub_field_options ) ) return;
 		ob_start();
 		$this->parent_repeater[] = $this->base_name;
-		foreach( $this->fields as $sub_field_name => $sub_field_options ) {
-			/* @var $field SiteOrigin_Widget_Field */
-			$field = SiteOrigin_Widget_Field_Factory::create_field(
-				$sub_field_name,
-				$sub_field_options,
-				$this->for_widget,
-				$this->parent_repeater
-			);
-			$field->render( null );
-			$this->sub_fields[$sub_field_name] = $field;
-		}
+		$this->create_and_render_sub_fields( null );
 		$html = ob_get_clean();
 
 		$this->repeater_template = $html;
@@ -152,28 +110,6 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field {
 
 	protected function render_field_label() {
 		// Empty override. This field renders it's own label in the render_field() function.
-	}
-
-	protected function sanitize_field_input( $value ) {
-
-		foreach( $this->fields as $sub_field_name => $sub_field_options ) {
-			if( empty( $value[$sub_field_name] ) ) continue;
-			/* @var $sub_field SiteOrigin_Widget_Field */
-			if( !empty( $this->sub_fields ) && ! empty( $this->fields[$sub_field_name] ) ) {
-				$sub_field = $this->sub_fields[$sub_field_name];
-			}
-			else {
-				$sub_field = SiteOrigin_Widget_Field_Factory::create_field(
-					$sub_field_name,
-					$sub_field_options,
-					$this->for_widget,
-					$this->parent_repeater
-				);
-			}
-			$value[$sub_field_name] = $sub_field->sanitize( $value[$sub_field_name], $value );
-		}
-
-		return $value;
 	}
 
 	public function get_repeater_template() {

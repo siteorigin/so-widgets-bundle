@@ -1,6 +1,9 @@
 <?php
 
 /**
+ *
+ * The common base class for text input type fields.
+ *
  * Class SiteOrigin_Widget_Field_Text
  */
 abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget_Field {
