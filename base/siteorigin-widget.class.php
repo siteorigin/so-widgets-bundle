@@ -8,7 +8,6 @@
 abstract class SiteOrigin_Widget extends WP_Widget {
 	protected $form_options;
 	protected $base_folder;
-	protected $javascript_variables;
 	protected $field_ids;
 	protected $fields;
 
@@ -46,7 +45,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	function __construct($id, $name, $widget_options = array(), $control_options = array(), $form_options = array(), $base_folder = false) {
 		$this->form_options = $form_options;
 		$this->base_folder = $base_folder;
-		$this->javascript_variables = array();
 		$this->field_ids = array();
 		$this->fields = array();
 
@@ -283,13 +281,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		?>
 		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>" id="<?php echo $form_id ?>" data-class="<?php echo get_class($this) ?>" style="display: none">
 			<?php
+			$fields_javascript_variables = array();
 			foreach( $this->form_options() as $field_name => $field_options ) {
 				/* @var $field SiteOrigin_Widget_Field */
 				$field = SiteOrigin_Widget_Field_Factory::create_field( $field_name, $field_options, $this );
 				$field->render( isset( $instance[$field_name] ) ? $instance[$field_name] : null, $instance );
 				$field_js_vars = $field->get_javascript_variables();
 				if( ! empty( $field_js_vars ) ) {
-					$this->javascript_variables[$field_name] = $field_js_vars;
+					$fields_javascript_variables[$field_name] = $field_js_vars;
 				}
 				$this->fields[$field_name] = $field;
 			}
@@ -312,8 +311,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		<script type="text/javascript">
 			( function($) {
-				if(typeof window.sow_javascript_variables == 'undefined') window.sow_javascript_variables = {};
-				window.sow_javascript_variables["<?php echo get_class($this) ?>"] = <?php echo json_encode( $this->javascript_variables ) ?>;
+				if(typeof window.sow_field_javascript_variables == 'undefined') window.sow_field_javascript_variables = {};
+				window.sow_field_javascript_variables["<?php echo get_class($this) ?>"] = <?php echo json_encode( $fields_javascript_variables ) ?>;
 
 				if(typeof $.fn.sowSetupForm != 'undefined') {
 					$('#<?php echo $form_id ?>').sowSetupForm();
