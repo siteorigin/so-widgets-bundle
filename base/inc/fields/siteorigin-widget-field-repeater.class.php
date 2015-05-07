@@ -37,15 +37,9 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 	 * @var bool
 	 */
 	protected $readonly;
-	/**
-	 * The HTML template to be repeated together as one item. Used for adding new items to the repeater.
-	 *
-	 * @var array
-	 */
-	private $repeater_template;
 
-	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_repeater = array() ) {
-		parent::__construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_repeater );
+	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_container = array() ) {
+		parent::__construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_container );
 
 		if( isset( $field_options['item_name'] ) ) $this->item_name = $field_options['item_name'];
 		if( isset( $field_options['item_label'] ) ) $this->item_label = $field_options['item_label'];
@@ -55,12 +49,12 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 
 	protected function render_field( $value, $instance ) {
 		if( !isset( $this->sub_field_options ) || empty( $this->sub_field_options ) ) return;
+		$container = array( 'name' => $this->base_name, 'type' => 'repeater' );
 		ob_start();
-		$this->parent_repeater[] = $this->base_name;
-		$this->create_and_render_sub_fields( null );
+		$this->create_and_render_sub_fields( null, $container, true );
 		$html = ob_get_clean();
 
-		$this->repeater_template = $html;
+		$this->javascript_variables['repeaterHTML'] = $html;
 		$item_label = isset( $this->item_label ) ? $this->item_label : null;
 		if ( ! empty( $item_label ) ) {
 			// convert underscore naming convention to camelCase for javascript and encode as json string
@@ -69,7 +63,13 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 		}
 		if( empty( $this->item_name ) ) $this->item_name = __( 'Item', 'siteorigin-widgets' );
 		?>
-		<div class="siteorigin-widget-field-repeater" data-item-name="<?php echo esc_attr( $this->item_name ) ?>" data-repeater-name="<?php echo esc_attr( $this->base_name ) ?>" <?php echo ! empty( $item_label ) ? 'data-item-label="' . esc_attr( $item_label ) . '"' : '' ?> <?php echo ! empty( $this->scroll_count ) ? 'data-scroll-count="' . esc_attr( $this->scroll_count ) . '"' : '' ?> <?php if( ! empty( $this->readonly ) ) echo 'readonly' ?>>
+		<div class="siteorigin-widget-field-repeater"
+		     data-item-name="<?php echo esc_attr( $this->item_name ) ?>"
+		     data-repeater-name="<?php echo esc_attr( $this->base_name ) ?>"
+		     data-element-name="<?php echo esc_attr( $this->element_name ) ?>"
+			<?php echo ! empty( $item_label ) ? 'data-item-label="' . esc_attr( $item_label ) . '"' : '' ?>
+			<?php echo ! empty( $this->scroll_count ) ? 'data-scroll-count="' . esc_attr( $this->scroll_count ) . '"' : '' ?>
+			<?php if( ! empty( $this->readonly ) ) echo 'readonly' ?>>
 			<div class="siteorigin-widget-field-repeater-top">
 				<div class="siteorigin-widget-field-repeater-expend"></div>
 				<h3><?php echo $this->label ?></h3>
@@ -89,10 +89,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 							</div>
 							<div class="siteorigin-widget-field-repeater-item-form">
 								<?php
-								/* @var $sub_field SiteOrigin_Widget_Field */
-								foreach( $this->sub_fields as $sub_field_name => $sub_field ) {
-									$sub_field->render( isset( $v[$sub_field_name] ) ? $v[$sub_field_name] : null, $v );
-								}
+								$this->create_and_render_sub_fields( $v );
 								?>
 							</div>
 						</div>
@@ -110,9 +107,5 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 
 	protected function render_field_label() {
 		// Empty override. This field renders it's own label in the render_field() function.
-	}
-
-	public function get_repeater_template() {
-		return $this->repeater_template;
 	}
 }

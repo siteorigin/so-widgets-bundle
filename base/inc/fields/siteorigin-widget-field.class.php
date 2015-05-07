@@ -12,6 +12,7 @@ abstract class SiteOrigin_Widget_Field {
 	protected $element_id;
 	protected $element_name;
 	protected $field_options;
+	protected $javascript_variables;
 
 	/* BASE FIELD PROPERTIES */
 
@@ -74,9 +75,9 @@ abstract class SiteOrigin_Widget_Field {
 		$this->element_id = $element_id;
 		$this->element_name = $element_name;
 		$this->field_options = $field_options;
+		$this->javascript_variables = array();
 
 		$this->type = $field_options['type'];
-
 		if( isset($field_options['label'] ) ) $this->label = $field_options['label'];
 		if( isset($field_options['default'] ) ) $this->default = $field_options['default'];
 		if( isset($field_options['description'] ) ) $this->description = $field_options['description'];
@@ -206,6 +207,10 @@ abstract class SiteOrigin_Widget_Field {
 
 	protected function sanitize_instance( $instance ) {
 		//Stub: This function may be overridden by subclasses wishing to sanitize additional instance fields.
+	}
+
+	public function get_javascript_variables() {
+		return $this->javascript_variables;
 	}
 
 	//TODO: These functions should not stay here. They are only here temporarily while refactoring fields into classes.

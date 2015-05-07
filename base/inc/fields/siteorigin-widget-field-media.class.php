@@ -50,7 +50,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field {
 	 */
 	private $parent_repeater;
 
-	public function __construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_repeater = array()  ) {
+	public function __construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_container = array()  ) {
 		parent::__construct( $base_name, $element_id, $element_name, $field_options );
 
 		if( isset( $field_options['choose'] ) ) {
@@ -74,7 +74,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field {
 		if( isset( $field_options['fallback'] ) ) $this->fallback = $field_options['fallback'];
 
 		$this->for_widget = $for_widget;
-		$this->parent_repeater = $parent_repeater;
+		$this->parent_repeater = $parent_container;
 	}
 
 	protected function render_field( $value, $instance ) {

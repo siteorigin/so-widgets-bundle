@@ -12,8 +12,8 @@ class SiteOrigin_Widget_Field_Widget extends SiteOrigin_Widget_Field_Container_B
 	 */
 	protected $class_name;
 
-	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_repeater = array() ) {
-		parent::__construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_repeater );
+	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_container = array() ) {
+		parent::__construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_container );
 
 		if( isset( $field_options['class'] ) ) {
 			$this->class_name = $field_options['class'];
@@ -46,7 +46,7 @@ class SiteOrigin_Widget_Field_Widget extends SiteOrigin_Widget_Field_Container_B
 			echo '</div>';
 			return;
 		}
-		$this->create_and_render_sub_fields( $value );
+		$this->create_and_render_sub_fields( $value, array( 'name' => $this->base_name, 'type' => 'widget' ) );
 		?></div><?php
 	}
 

@@ -8,7 +8,7 @@
 abstract class SiteOrigin_Widget extends WP_Widget {
 	protected $form_options;
 	protected $base_folder;
-	protected $repeater_html;
+	protected $javascript_variables;
 	protected $field_ids;
 	protected $fields;
 
@@ -46,7 +46,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	function __construct($id, $name, $widget_options = array(), $control_options = array(), $form_options = array(), $base_folder = false) {
 		$this->form_options = $form_options;
 		$this->base_folder = $base_folder;
-		$this->repeater_html = array();
+		$this->javascript_variables = array();
 		$this->field_ids = array();
 		$this->fields = array();
 
@@ -287,12 +287,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				/* @var $field SiteOrigin_Widget_Field */
 				$field = SiteOrigin_Widget_Field_Factory::create_field( $field_name, $field_options, $this );
 				$field->render( isset( $instance[$field_name] ) ? $instance[$field_name] : null, $instance );
-				$this->fields[$field_name] = $field;
-				// Bit of a hack. Revisit this. :/
-				if( $field_options['type'] == 'repeater' ) {
-					/* @var $field SiteOrigin_Widget_Field_Repeater */
-					$this->repeater_html[$field->get_name()] = $field->get_repeater_template();
+				$field_js_vars = $field->get_javascript_variables();
+				if( ! empty( $field_js_vars ) ) {
+					$this->javascript_variables[$field_name] = $field_js_vars;
 				}
+				$this->fields[$field_name] = $field;
 			}
 			?>
 		</div>
@@ -312,9 +311,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		<?php endif; ?>
 
 		<script type="text/javascript">
-			( function($){
-				if(typeof window.sow_repeater_html == 'undefined') window.sow_repeater_html = {};
-				window.sow_repeater_html["<?php echo get_class($this) ?>"] = <?php echo json_encode($this->repeater_html) ?>;
+			( function($) {
+				if(typeof window.sow_javascript_variables == 'undefined') window.sow_javascript_variables = {};
+				window.sow_javascript_variables["<?php echo get_class($this) ?>"] = <?php echo json_encode( $this->javascript_variables ) ?>;
 
 				if(typeof $.fn.sowSetupForm != 'undefined') {
 					$('#<?php echo $form_id ?>').sowSetupForm();
@@ -669,23 +668,26 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * Utility function to get a field name for a widget field.
 	 *
 	 * @param $field_name
-	 * @param array $repeater
-	 * @param string $repeater_append
+	 * @param array $container
 	 * @return mixed|string
 	 */
-	public function so_get_field_name( $field_name, $repeater = array(), $repeater_append = '[]' ) {
-		if( empty($repeater) ) {
+	public function so_get_field_name( $field_name, $container = array() ) {
+		if( empty($container) ) {
 			return $this->get_field_name( $field_name );
 		}
 		else {
-			// We also need to add the repeater fields
-			$repeater_extras = '';
-			foreach($repeater as $r) {
-				$repeater_extras .= '[' . $r . '][#' . $r . '#]';
+			// We also need to add the container fields
+			$container_extras = '';
+			foreach($container as $r) {
+				$container_extras .= '[' . $r['name'] . ']';
+
+				if( $r['type'] == 'repeater' ) {
+					$container_extras .= '[#' . $r['name'] . '#]';
+				}
 			}
 
 			$name = $this->get_field_name( '{{{FIELD_NAME}}}' );
-			$name = str_replace('[{{{FIELD_NAME}}}]', $repeater_extras.'[' . esc_attr($field_name) . ']', $name);
+			$name = str_replace('[{{{FIELD_NAME}}}]', $container_extras.'[' . esc_attr($field_name) . ']', $name);
 			return $name;
 		}
 	}
@@ -694,17 +696,20 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * Get the ID of this field.
 	 *
 	 * @param $field_name
-	 * @param array $repeater
+	 * @param array $container
 	 * @param boolean $is_template
 	 *
 	 * @return string
 	 */
-	public function so_get_field_id( $field_name, $repeater = array(), $is_template = false ) {
-		if( empty($repeater) ) {
+	public function so_get_field_id( $field_name, $container = array(), $is_template = false ) {
+		if( empty($container) ) {
 			return $this->get_field_id($field_name);
 		}
 		else {
-			$name = $repeater;
+			$name = array();
+			foreach ( $container as $container_item ) {
+				$name[] = $container_item['name'];
+			}
 			$name[] = $field_name;
 			$field_id_base = $this->get_field_id(implode('-', $name));
 			if ( $is_template ) {
@@ -714,7 +719,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				$this->field_ids[ $field_id_base ] = 1;
 			}
 			$curId = $this->field_ids[ $field_id_base ]++;
-
 			return $field_id_base . '-' . $curId;
 		}
 	}
