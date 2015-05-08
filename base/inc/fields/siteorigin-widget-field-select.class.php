@@ -20,25 +20,40 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field {
 	 * @var string
 	 */
 	protected $prompt;
+	/**
+	 * Determines whether this is a single or multiple select field.
+	 *
+	 * @access protected
+	 * @var bool
+	 */
+	protected $multiple;
 
 	public function __construct( $base_name, $element_id, $element_name, $field_options ) {
 		parent::__construct( $base_name, $element_id, $element_name, $field_options );
 
 		if( isset( $field_options['options'] ) ) $this->options = $field_options['options'];
 		if( isset( $field_options['prompt'] ) ) $this->prompt = $field_options['prompt'];
+		if( isset( $field_options['multiple'] ) ) $this->multiple = $field_options['multiple'];
 	}
 
 	protected function render_field( $value, $instance ) {
 		?>
 		<select name="<?php echo $this->element_name ?>" id="<?php echo $this->element_id ?>"
-		        class="siteorigin-widget-input">
-			<?php if ( isset( $this->prompt ) ) : ?>
+		        class="siteorigin-widget-input" <?php if( ! empty( $this->multiple ) ) echo 'multiple' ?>>
+			<?php if ( empty( $this->multiple ) && isset( $this->prompt ) ) : ?>
 				<option value="default" disabled="disabled" selected="selected"><?php echo esc_html( $this->prompt ) ?></option>
 			<?php endif; ?>
 
 			<?php if( isset( $this->options ) && !empty( $this->options ) ) : ?>
 				<?php foreach( $this->options as $key => $val ) : ?>
-					<option value="<?php echo esc_attr( $key ) ?>" <?php selected( $key, $value ) ?>><?php echo esc_html( $val ) ?></option>
+					<?php
+					if( is_array( $value ) ) {
+						$selected = selected( true, in_array( $key, $value ), false );
+					}
+					else {
+						$selected = selected( $key, $value, false );
+					} ?>
+					<option value="<?php echo esc_attr( $key ) ?>" <?php echo $selected ?>><?php echo esc_html( $val ) ?></option>
 				<?php endforeach; ?>
 			<?php endif; ?>
 		</select>
