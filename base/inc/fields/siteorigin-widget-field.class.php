@@ -8,16 +8,60 @@
 
 abstract class SiteOrigin_Widget_Field {
 
-	protected $base_name;
-	protected $element_id;
-	protected $element_name;
-	protected $field_options;
-	protected $javascript_variables;
+	/* ============================================ */
+	/* CORE FIELD PROPERTIES                        */
+	/* Properties which are essential to successful */
+	/* rendering of fields and saving of data input */
+	/* into fields.                                 */
+	/* ============================================ */
 
-	/* BASE FIELD PROPERTIES */
 
 	/**
-	 * The type. Available types listed as constants.
+	 * The base name for this field. It is used in the generation of HTML element id and name attributes.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $base_name;
+	/**
+	 * The rendered HTML element id attribute.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $element_id;
+	/**
+	 * The rendered HTML element name attribute
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $element_name;
+	/**
+	 * The field configuration options.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $field_options;
+	/**
+	 * Variables may be added to this array which will be propagated to the front end for use in dynamic rendering.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $javascript_variables;
+
+
+	/* =========================================== */
+	/* BASE FIELD CONFIGURATION PROPERTIES         */
+	/* Common configuration properties used by all */
+	/* fields.                                     */
+	/* =========================================== */
+
+
+	/**
+	 * The type.
 	 *
 	 * @access protected
 	 * @var string
@@ -30,6 +74,13 @@ abstract class SiteOrigin_Widget_Field {
 	 * @var string
 	 */
 	protected $label;
+	/**
+	 * The CSS classes to be applied to the rendered label.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $label_classes;
 	/**
 	 * The field will be prepopulated with this default value.
 	 *
@@ -51,9 +102,14 @@ abstract class SiteOrigin_Widget_Field {
 	 * @var bool
 	 */
 	protected $optional;
-
-	protected $hide;
-
+	/**
+	 * Specifies an additional sanitization to be performed. Available sanitizations are 'email' and 'url'. If the
+	 * specified sanitization isn't recognized it is assumed to be a custom sanitization and a filter is applied using
+	 * the pattern `'siteorigin_widgets_sanitize_field_' . $sanitize`, in case the sanitization is defined elsewhere.
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $sanitize;
 
 	/* FIELD STATES PROPERTIES */
@@ -71,23 +127,26 @@ abstract class SiteOrigin_Widget_Field {
 	 * @param $field_options array Configuration for the field.
 	 */
 	public function __construct( $base_name, $element_id, $element_name, $field_options ){
+		$this->type = $field_options['type'];
 		$this->base_name = $base_name;
 		$this->element_id = $element_id;
 		$this->element_name = $element_name;
 		$this->field_options = $field_options;
 		$this->javascript_variables = array();
 
-		$this->type = $field_options['type'];
 		if( isset($field_options['label'] ) ) $this->label = $field_options['label'];
 		if( isset($field_options['default'] ) ) $this->default = $field_options['default'];
 		if( isset($field_options['description'] ) ) $this->description = $field_options['description'];
 		if( isset($field_options['optional'] ) ) $this->optional = $field_options['optional'];
-		if( isset($field_options['hide'] ) ) $this->hide = $field_options['hide'];
 		if( isset($field_options['sanitize'] ) ) $this->sanitize = $field_options['sanitize'];
-	}
 
-	public function get_name() {
-		return $this->base_name;
+		if( isset($field_options['state_name'] ) ) $this->state_name = $field_options['state_name'];
+		if( isset($field_options['hidden'] ) ) $this->hidden = $field_options['hidden'];
+		if( isset($field_options['state_emitter'] ) ) $this->state_emitter = $field_options['state_emitter'];
+		if( isset($field_options['state_handler'] ) ) $this->state_handler = $field_options['state_handler'];
+		if( isset($field_options['state_handler_initial'] ) ) $this->state_handler_initial = $field_options['state_handler_initial'];
+
+		$this->label_classes = array( 'siteorigin-widget-field-label' );
 	}
 
 	/**
@@ -146,7 +205,7 @@ abstract class SiteOrigin_Widget_Field {
 	 */
 	protected function render_field_label() {
 		?>
-		<label for="<?php echo $this->element_id ?>" class="siteorigin-widget-field-label <?php if( empty( $this->hide ) ) echo 'siteorigin-widget-section-visible'; ?>">
+		<label for="<?php echo $this->element_id ?>" <?php $this->render_label_classes() ?>>
 			<?php
 		echo $this->label;
 		if( !empty( $this->optional ) ) {
@@ -157,13 +216,19 @@ abstract class SiteOrigin_Widget_Field {
 		<?php
 	}
 
+	protected function render_label_classes() {
+		if( !empty( $this->label_classes ) ) {
+			?>class="<?php echo implode( ' ', array_map( 'sanitize_html_class', $this->label_classes ) ) ?>"<?php
+		}
+	}
+
 	abstract protected function render_field( $value, $instance );
 
 	/**
-	 * The default sanitization function. Even if implemented in a child class, this should still be called.
+	 * The default sanitization function.
 	 *
 	 * @param $value mixed The value to be sanitized.
-	 * @param array $instance array The widget instance.
+	 * @param $instance array The widget instance.
 	 * @return mixed|string|void
 	 */
 	public function sanitize( $value, $instance = array() ) {

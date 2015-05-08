@@ -34,6 +34,13 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 	 * @var array
 	 */
 	protected $parent_container;
+	/**
+	 * Whether or not this container's fields should initially be hidden.
+	 *
+	 * @access protected
+	 * @var bool
+	 */
+	protected $hide;
 
 	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_container = array()  ) {
 		parent::__construct( $base_name, $element_id, $element_name, $field_options );
@@ -42,6 +49,9 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 		$this->parent_container = $parent_container;
 
 		if( isset( $field_options['fields'] ) ) $this->sub_field_options = $field_options['fields'];
+		if( isset($field_options['hide'] ) ) $this->hide = $field_options['hide'];
+
+		if( empty( $this->hide ) ) $this->label_classes[] = 'siteorigin-widget-section-visible';
 	}
 
 	protected function create_and_render_sub_fields( $values, $parent_container = null, $is_template = false ) {
