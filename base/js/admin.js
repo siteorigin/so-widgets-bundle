@@ -562,61 +562,68 @@ var sowEmitters = {
             ///////////////////////////////////////
             // Now lets handle the state emitters
 
+            var stateEmitterChangeHandle = function(){
+                var $$ = $(this);
+
+                // These emitters can either be an array or a
+                var emitters = $$.closest('[data-state-emitter]').data('state-emitter');
+                console.log( emitters );
+                if( typeof emitters === 'undefined' ) {
+                    return true;
+                }
+
+                var handleStateEmitter = function(emitter, currentStates){
+                    if( typeof sowEmitters[ emitter.callback ] === 'undefined' || emitter.callback.substr(0,1) === '_' ) {
+                        // Skip if the function doesn't exist, or it starts with an underscore.
+                        return currentStates;
+                    }
+
+                    // Return an array that has the new states added to the array
+                    return $.extend( currentStates, sowEmitters[emitter.callback]( $$.val(), emitter.args ) );
+                };
+
+                // Run the states through the state emitters
+                var states = { 'default' : '' };
+
+                // Go through the array of emitters
+                if( typeof emitters.length === 'undefined' ) { emitters = [emitters]; }
+                for( var i = 0; i < emitters.length; i++ ) {
+                    states = handleStateEmitter( emitters[i], states );
+                }
+
+                // Check which states have changed and trigger appropriate sowstatechange
+                var formStates = $mainForm.data('states');
+                if( typeof formStates === 'undefined' ) {
+                    formStates = { 'default' : '' };
+                }
+                for( var k in states ) {
+                    if( typeof formStates[k] === 'undefined' || states[k] !== formStates[k] ) {
+                        // If the state is different from the original formStates, then trigger a state change
+                        formStates[k] = states[k];
+                        $mainForm.trigger( 'sowstatechange', [ k, states[k] ] );
+                    }
+                }
+
+                // Store the form states back in the form
+                $mainForm.data('states', formStates);
+            };
+
             $fields.filter('[data-state-emitter]').each( function(){
 
                 // Listen for any change events on an emitter field
-                $(this).find('.siteorigin-widget-input').on('keyup change', function(){
-                    var $$ = $(this);
-
-                    // These emitters can either be an array or a
-                    var emitters = $$.closest('[data-state-emitter]').data('state-emitter');
-
-                    var handleStateEmitter = function(emitter, currentStates){
-                        if( typeof sowEmitters[ emitter.callback ] === 'undefined' || emitter.callback.substr(0,1) === '_' ) {
-                            // Skip if the function doesn't exist, or it starts with an underscore.
-                            return currentStates;
-                        }
-
-                        // Return an array that has the new states added to the array
-                        return $.extend( currentStates, sowEmitters[emitter.callback]( $$.val(), emitter.args ) );
-                    };
-
-                    // Run the states through the state emitters
-                    var states = { 'default' : '' };
-
-                    // Go through the array of emitters
-                    if( typeof emitters.length === 'undefined' ) { emitters = [emitters]; }
-                    for( var i = 0; i < emitters.length; i++ ) {
-                        states = handleStateEmitter( emitters[i], states );
-                    }
-
-                    // Check which states have changed and trigger appropriate sowstatechange
-                    var formStates = $mainForm.data('states');
-                    if( typeof formStates === 'undefined' ) {
-                        formStates = { 'default' : '' };
-                    }
-                    for( var k in states ) {
-                        if( typeof formStates[k] === 'undefined' || states[k] !== formStates[k] ) {
-                            // If the state is different from the original formStates, then trigger a state change
-                            formStates[k] = states[k];
-                            $mainForm.trigger( 'sowstatechange', [ k, states[k] ] );
-                        }
-                    }
-
-                    // Store the form states back in the form
-                    $mainForm.data('states', formStates);
-
-                });
+                $(this).find('.siteorigin-widget-input').on('keyup change', stateEmitterChangeHandle);
 
                 // Trigger changes on all necessary fields
                 $(this).find('.siteorigin-widget-input').each(function(){
                     var $$ = $(this);
                     if( $$.is(':radio') ) {
                         // Only checked radio inputs must have change events
-                        $$.filter(':checked').change();
+                        if( $$.is(':checked') ) {
+                            stateEmitterChangeHandle.call( $$[0] );
+                        }
                     }
                     else{
-                        $$.change();
+                        stateEmitterChangeHandle.call( $$[0] );
                     }
                 });
 
