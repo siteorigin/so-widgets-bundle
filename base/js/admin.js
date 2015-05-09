@@ -567,7 +567,6 @@ var sowEmitters = {
 
                 // These emitters can either be an array or a
                 var emitters = $$.closest('[data-state-emitter]').data('state-emitter');
-                console.log( emitters );
                 if( typeof emitters === 'undefined' ) {
                     return true;
                 }
