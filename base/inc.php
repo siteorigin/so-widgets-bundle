@@ -1,9 +1,9 @@
 <?php
 
+include plugin_dir_path(__FILE__).'inc/fields/siteorigin-widget-field-class-loader.class.php';
 include plugin_dir_path(__FILE__).'siteorigin-widget.class.php';
 include plugin_dir_path(__FILE__).'inc/post-selector.php';
 include plugin_dir_path(__FILE__).'inc/fonts.php';
-include plugin_dir_path(__FILE__).'inc/fields/siteorigin-widget-field-class-loader.class.php';
 
 global $siteorigin_widgets_registered, $siteorigin_widgets_classes;
 $siteorigin_widgets_registered = array();
