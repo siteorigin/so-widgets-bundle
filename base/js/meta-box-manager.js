@@ -1,3 +1,5 @@
+/* globals jQuery */
+
 //Catch Update button click and transform widgets post meta data before event is propagated.
 (function($){
     $('#publish').click(
@@ -9,7 +11,9 @@
                 var $$ = $(this);
                 var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
 
-                if( ! name ) return;
+                if( ! name ) {
+                    return;
+                }
 
                 name = name[1];
                 var parts = name.split('][');
