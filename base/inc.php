@@ -336,7 +336,10 @@ add_filter('siteorigin_widgets_fonts_google_webfonts', 'siteorigin_widgets_fonts
 
 function siteorigin_widgets_is_google_webfont( $font_value ) {
 	$google_webfonts = siteorigin_widgets_fonts_google_webfonts();
-	$font_family = explode( ':', $font_value )[0];
+
+	$font_family = explode( ':', $font_value );
+	$font_family = $font_family[0];
+
 	return isset( $google_webfonts[$font_family] );
 }
 
