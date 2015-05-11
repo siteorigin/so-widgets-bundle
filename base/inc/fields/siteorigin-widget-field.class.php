@@ -1,19 +1,17 @@
 <?php
 
 /**
- * The class that other fields most extend
+ * The base class for all SiteOrigin_Widget form fields.
  *
  * Class SiteOrigin_Widget_Field
  */
 
 abstract class SiteOrigin_Widget_Field {
 
-	/* ============================================ */
-	/* CORE FIELD PROPERTIES                        */
-	/* Properties which are essential to successful */
-	/* rendering of fields and saving of data input */
-	/* into fields.                                 */
-	/* ============================================ */
+	/* ============================================================================================================== */
+	/* CORE FIELD PROPERTIES                                                                                          */
+	/* Properties which are essential to successful rendering of fields and saving of data input into fields.         */
+	/* ============================================================================================================== */
 
 
 	/**
@@ -53,11 +51,10 @@ abstract class SiteOrigin_Widget_Field {
 	protected $javascript_variables;
 
 
-	/* =========================================== */
-	/* BASE FIELD CONFIGURATION PROPERTIES         */
-	/* Common configuration properties used by all */
-	/* fields.                                     */
-	/* =========================================== */
+	/* ============================================================================================================== */
+	/* BASE FIELD CONFIGURATION PROPERTIES                                                                            */
+	/* Common configuration properties used by all fields.                                                            */
+	/* ============================================================================================================== */
 
 
 	/**
@@ -209,7 +206,7 @@ abstract class SiteOrigin_Widget_Field {
 			<?php
 		echo $this->label;
 		if( !empty( $this->optional ) ) {
-			echo ' <span class="field-optional">(' . __('Optional', 'siteorigin-panels') . ')</span>';
+			echo '<span class="field-optional">(' . __('Optional', 'siteorigin-panels') . ')</span>';
 		}
 		?>
 		</label>
@@ -218,7 +215,7 @@ abstract class SiteOrigin_Widget_Field {
 
 	protected function render_label_classes() {
 		if( !empty( $this->label_classes ) ) {
-			?>class="<?php echo implode( ' ', array_map( 'sanitize_html_class', $this->label_classes ) ) ?>"<?php
+			?>class="<?php echo esc_attr( implode( ' ', array_map( 'sanitize_html_class', $this->label_classes ) ) ) ?>"<?php
 		}
 	}
 

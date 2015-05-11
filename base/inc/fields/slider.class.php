@@ -30,7 +30,7 @@ class SiteOrigin_Widget_Field_Slider extends SiteOrigin_Widget_Field {
 
 	protected function render_field( $value, $instance ) {
 		?>
-		<div class="siteorigin-widget-slider-value"><?php echo ! empty( $value ) ? $value : 0 ?></div>
+		<div class="siteorigin-widget-slider-value"><?php echo ! empty( $value ) ? esc_html( $value ) : 0 ?></div>
 		<div class="siteorigin-widget-slider-wrapper">
 			<div class="siteorigin-widget-value-slider"></div>
 		</div>

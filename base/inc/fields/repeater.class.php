@@ -72,7 +72,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 			<?php if( ! empty( $this->readonly ) ) echo 'readonly' ?>>
 			<div class="siteorigin-widget-field-repeater-top">
 				<div class="siteorigin-widget-field-repeater-expend"></div>
-				<h3><?php echo $this->label ?></h3>
+				<h3><?php echo esc_html( $this->label ) ?></h3>
 			</div>
 			<div class="siteorigin-widget-field-repeater-items">
 				<?php
@@ -99,7 +99,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 				?>
 			</div>
 			<?php if( empty( $this->readonly ) ) : ?>
-				<div class="siteorigin-widget-field-repeater-add"><?php _e('Add', 'siteorigin-widgets') ?></div>
+				<div class="siteorigin-widget-field-repeater-add"><?php esc_html_e( 'Add', 'siteorigin-widgets' ) ?></div>
 			<?php endif; ?>
 		</div>
 		<?php

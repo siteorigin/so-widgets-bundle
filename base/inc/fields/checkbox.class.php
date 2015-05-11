@@ -10,9 +10,13 @@ class SiteOrigin_Widget_Field_Checkbox extends SiteOrigin_Widget_Field {
 		<label for="<?php echo $this->element_id ?>">
 			<input type="checkbox" name="<?php echo $this->element_name ?>" id="<?php echo $this->element_id ?>"
 			       class="siteorigin-widget-input" <?php checked( !empty( $value ) ) ?> />
-			<?php echo $this->label ?>
+			<?php echo esc_attr( $this->label ) ?>
 		</label>
 		<?php
+	}
+
+	protected function render_field_label() {
+		// Empty override. This field renders it's own label in the render_field() function.
 	}
 
 	protected function sanitize_field_input( $value ) {
