@@ -44,6 +44,12 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.2.3 =
+* Fixed Javascript issue with Map widget in customizer.
+* Added meta box manager.
+* Small style change to flat button style.
+* Video widget fixes.
+
 = 1.2.2 =
 * Added video widget with support for self/external videos.
 * New activate/deactivate widgets interface.
