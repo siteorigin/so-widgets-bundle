@@ -1,7 +1,7 @@
 <?php
 
 include plugin_dir_path(__FILE__).'siteorigin-widget.class.php';
-include plugin_dir_path(__FILE__).'inc/siteorigin-widget-meta-box-manager.php';
+include plugin_dir_path(__FILE__).'inc/meta-box-manager.php';
 include plugin_dir_path(__FILE__).'inc/post-selector.php';
 include plugin_dir_path(__FILE__).'inc/fonts.php';
 
@@ -336,7 +336,10 @@ add_filter('siteorigin_widgets_fonts_google_webfonts', 'siteorigin_widgets_fonts
 
 function siteorigin_widgets_is_google_webfont( $font_value ) {
 	$google_webfonts = siteorigin_widgets_fonts_google_webfonts();
-	$font_family = explode( ':', $font_value )[0];
+
+	$font_family = explode( ':', $font_value );
+	$font_family = $font_family[0];
+
 	return isset( $google_webfonts[$font_family] );
 }
 
