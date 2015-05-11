@@ -3,7 +3,7 @@
 /*
 Plugin Name: SiteOrigin Widgets Bundle
 Description: A collection of all our widgets, neatly bundled into a single plugin.
-Version: 1.2.2
+Version: 1.2.3
 Author: SiteOrigin
 Author URI: http://siteorigin.com
 Plugin URI: http://siteorigin.com/widgets-bundle/
