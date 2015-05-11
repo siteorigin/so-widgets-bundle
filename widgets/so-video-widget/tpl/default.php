@@ -6,16 +6,13 @@ $video_args = array(
 	'class' => 'sow-video-widget',
 	'preload' => 'auto',
 	'style' => 'width:100%;height:100%;',
-	// mediaelementjs responsive sizing doesn't work for youtube!?!?! :(
-	'width' => $video_type == 'video/youtube' ? '100%' : '640',
-	'height' => '360',
 );
 if( $autoplay ) $video_args['autoplay'] = 1;
 if( ! empty( $poster ) ) $video_args['poster'] = esc_url( $poster );
 if( $skin_class != 'default' ) $video_args['class'] = 'mejs-'.$skin_class;
 ?>
 
-<div class="sow-video-wrapper" <?php if( $video_type == 'video/youtube' ) echo 'style="min-height:360px;"' ?>>
+<div class="sow-video-wrapper">
 	<?php if ( $is_skinnable_video_host ) : ?>
 		<video <?php foreach( $video_args as $k => $v ) echo $k.'="' . $v . '" '; ?>>
 			<source type="<?php echo esc_attr($video_type) ?>" src="<?php echo esc_url( $src ) ?>" />

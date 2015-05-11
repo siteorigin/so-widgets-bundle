@@ -105,10 +105,21 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 	}
 
 	function enqueue_frontend_scripts( $instance ) {
-		$video_host = !empty( $instance['video']['external_video'] ) ? $this->get_host_from_url( $instance['video']['external_video'] ) : '';
+		$video_host = $instance['host_type'];
+		if( $video_host == 'external' ) {
+			$video_host = !empty( $instance['video']['external_video'] ) ? $this->get_host_from_url( $instance['video']['external_video'] ) : '';
+		}
 		if ( $this->is_skinnable_video_host( $video_host ) ) {
 			if ( $video_host == 'vimeo' && ! wp_script_is( 'froogaloop' ) ) {
 				wp_enqueue_script( 'froogaloop' );
+			}
+			if ( ! wp_style_is( 'sow-html-player-responsive' ) ) {
+				wp_enqueue_style(
+					'html-player-responsive',
+					siteorigin_widget_get_plugin_dir_url( 'video' ) . 'styles/html-player-responsive',
+					array(),
+					SOW_BUNDLE_VERSION
+				);
 			}
 			if ( ! wp_style_is( 'wp-mediaelement' ) ) {
 				wp_enqueue_style( 'wp-mediaelement' );

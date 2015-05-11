@@ -491,6 +491,10 @@ class SiteOrigin_Widgets_Bundle {
 // create the initial single
 SiteOrigin_Widgets_Bundle::single();
 
+// Initialize the Meta Box Manager
+global $sow_meta_box_manager;
+$sow_meta_box_manager = SiteOrigin_Widget_Meta_Box_Manager::single();
+
 /**
  * Deactivate any old widget plugins that we used to have on the directory. We'll remove this after version 1.2.
  */
