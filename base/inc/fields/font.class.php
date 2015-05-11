@@ -23,6 +23,23 @@ class SiteOrigin_Widget_Field_Font extends SiteOrigin_Widget_Field {
 	}
 
 	protected function sanitize_field_input( $value ) {
-	}
+		$sanitized_value = $value;
+		// Any alphanumeric character followed by alphanumeric or whitespace characters (except newline),
+		// with optional colon and number.
+		if( preg_match( '/[\w\d]+[\w\d\t\r ]*(:\d+)?/', $sanitized_value, $sanitized_matches ) ) {
+			$sanitized_value = $sanitized_matches[0];
+		}
+		else {
+			$sanitized_value = 'default';
+		}
 
+		static $widget_font_families;
+		if( empty($widget_font_families) ) {
+			$widget_font_families = siteorigin_widgets_font_families();
+		}
+		$keys = array_keys( $widget_font_families );
+		if( ! in_array( $sanitized_value, $keys ) ) $sanitized_value = isset( $this->default ) ? $this->default : 'default';
+
+ 		return $sanitized_value;
+	}
 }
