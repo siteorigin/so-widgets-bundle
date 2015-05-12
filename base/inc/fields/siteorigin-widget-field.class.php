@@ -109,12 +109,33 @@ abstract class SiteOrigin_Widget_Field {
 	 */
 	protected $sanitize;
 
-	/* FIELD STATES PROPERTIES */
 
-	protected $state_name;
-	protected $hidden;
+	/* ============================================================================================================== */
+	/* FIELD STATES PROPERTIES                                                                                        */
+	/* Configuration of field state emitters and handlers.                                                            */
+	/* See https://siteorigin.com/docs/widgets-bundle/form-building/state-emitters/ for more detail on the topic of   */
+	/* state emitters and handlers.                                                                                   */
+	/* ============================================================================================================== */
+
+	/**
+	 *
+	 * Specifies the callback type and arguments to use when deciding on the state to be emitted.
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $state_emitter;
+	/**
+	 *
+	 * Specifies the different possible states to be handled by this field and the resulting effect of the each state.
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $state_handler;
+	/**
+	 * @var
+	 */
 	protected $state_handler_initial;
 
 	/**
@@ -137,8 +158,6 @@ abstract class SiteOrigin_Widget_Field {
 		if( isset($field_options['optional'] ) ) $this->optional = $field_options['optional'];
 		if( isset($field_options['sanitize'] ) ) $this->sanitize = $field_options['sanitize'];
 
-		if( isset($field_options['state_name'] ) ) $this->state_name = $field_options['state_name'];
-		if( isset($field_options['hidden'] ) ) $this->hidden = $field_options['hidden'];
 		if( isset($field_options['state_emitter'] ) ) $this->state_emitter = $field_options['state_emitter'];
 		if( isset($field_options['state_handler'] ) ) $this->state_handler = $field_options['state_handler'];
 		if( isset($field_options['state_handler_initial'] ) ) $this->state_handler_initial = $field_options['state_handler_initial'];
@@ -163,8 +182,6 @@ abstract class SiteOrigin_Widget_Field {
 			)
 		);
 
-		if( !empty( $this->state_name ) ) $wrapper_attributes['class'][] = 'siteorigin-widget-field-state-' . $this->state_name;
-		if( !empty( $this->hidden ) ) $wrapper_attributes['class'][] = 'siteorigin-widget-field-is-hidden';
 		if( !empty( $this->optional ) ) $wrapper_attributes['class'][] = 'siteorigin-widget-field-is-optional';
 		$wrapper_attributes['class'] = implode(' ', array_map('sanitize_html_class', $wrapper_attributes['class']) );
 
@@ -185,7 +202,7 @@ abstract class SiteOrigin_Widget_Field {
 
 		?><div <?php foreach( $wrapper_attributes as $attr => $attr_val ) echo $attr.'="' . esc_attr( $attr_val ) . '" ' ?>><?php
 
-		// Allow subclasses and/or plugins to render something before and after the render_field() function is called.
+		// Allow subclasses and to render something before and after the render_field() function is called.
 		$this->render_before_field( $value, $instance );
 		$this->render_field( $value, array() );
 		$this->render_after_field( $value, $instance);

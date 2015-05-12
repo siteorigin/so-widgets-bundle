@@ -70,7 +70,6 @@ function siteorigin_widget_post_selector_process_query($query){
 			case 'ignore' :
 				$query['ignore_sticky_posts'] = 1;
 				break;
-			//TODO: Author: Braam
 			//TODO: Revisit this. Not sure if it makes sense to have this as an option in a separate dropdown, but am
 			//TODO: trying to stay as close as possible to Page Builder Post Loop widget post selection options.
 			//TODO: It's probably better in the long run to make this work well and just cope with issues that come up in

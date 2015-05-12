@@ -10,6 +10,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field {
 	}
 
 	protected function sanitize_field_input( $value ) {
+		// Posts selector functions handle sanitization.
 	}
 
 }
