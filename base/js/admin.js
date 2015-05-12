@@ -562,15 +562,13 @@ var sowEmitters = {
             ///////////////////////////////////////
             // Now lets handle the state emitters
 
-            $fields.filter('[data-state-emitter]').each( function(){
+            var stateEmitterChangeHandler = function(){
+                var $$ = $(this);
 
-                // Listen for any change events on an emitter field
-                $(this).find('.siteorigin-widget-input').on('keyup change', function(){
-                    var $$ = $(this);
+                // These emitters can either be an array or a
+                var emitters = $$.closest('[data-state-emitter]').data('state-emitter');
 
-                    // These emitters can either be an array or a
-                    var emitters = $$.closest('[data-state-emitter]').data('state-emitter');
-
+                if( typeof emitters !== 'undefined' ) {
                     var handleStateEmitter = function(emitter, currentStates){
                         if( typeof sowEmitters[ emitter.callback ] === 'undefined' || emitter.callback.substr(0,1) === '_' ) {
                             // Skip if the function doesn't exist, or it starts with an underscore.
@@ -605,18 +603,25 @@ var sowEmitters = {
 
                     // Store the form states back in the form
                     $mainForm.data('states', formStates);
+                }
+            };
 
-                });
+            $fields.filter('[data-state-emitter]').each( function(){
+
+                // Listen for any change events on an emitter field
+                $(this).find('.siteorigin-widget-input').on('keyup change', stateEmitterChangeHandler);
 
                 // Trigger changes on all necessary fields
                 $(this).find('.siteorigin-widget-input').each(function(){
                     var $$ = $(this);
                     if( $$.is(':radio') ) {
                         // Only checked radio inputs must have change events
-                        $$.filter(':checked').change();
+                        if( $$.is(':checked') ) {
+                            stateEmitterChangeHandler.call( $$[0] );
+                        }
                     }
                     else{
-                        $$.change();
+                        stateEmitterChangeHandler.call( $$[0] );
                     }
                 });
 
