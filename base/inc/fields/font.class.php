@@ -3,7 +3,7 @@
 /**
  * Class SiteOrigin_Widget_Field_Font
  */
-class SiteOrigin_Widget_Field_Font extends SiteOrigin_Widget_Field {
+class SiteOrigin_Widget_Field_Font extends SiteOrigin_Widget_Field_Base {
 	protected function render_field( $value, $instance ) {
 		static $widget_font_families;
 		if( empty($widget_font_families) ) {

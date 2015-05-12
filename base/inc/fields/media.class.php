@@ -5,7 +5,7 @@
  *
  * Class SiteOrigin_Widget_Field_Media
  */
-class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field {
+class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 	/**
 	 * A label for the title of the media selector dialog.
 	 *

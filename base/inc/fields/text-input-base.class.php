@@ -6,7 +6,7 @@
  *
  * Class SiteOrigin_Widget_Field_Text
  */
-abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget_Field {
+abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget_Field_Base {
 
 	/**
 	 * A string to display before any text has been input.

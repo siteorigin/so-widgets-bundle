@@ -3,7 +3,7 @@
 /**
  * Class SiteOrigin_Widget_Field_Checkbox
  */
-class SiteOrigin_Widget_Field_Checkbox extends SiteOrigin_Widget_Field {
+class SiteOrigin_Widget_Field_Checkbox extends SiteOrigin_Widget_Field_Base {
 
 	protected function render_field( $value, $instance ) {
 		?>

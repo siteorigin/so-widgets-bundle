@@ -3,7 +3,7 @@
 /**
  * Class SiteOrigin_Widget_Field_Select
  */
-class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field {
+class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 	/**
 	 * The list of options which may be selected.
 	 *

@@ -3,7 +3,7 @@
 /**
  * Class SiteOrigin_Widget_Field_Radio
  */
-class SiteOrigin_Widget_Field_Radio extends SiteOrigin_Widget_Field {
+class SiteOrigin_Widget_Field_Radio extends SiteOrigin_Widget_Field_Base {
 	/**
 	 * The list of options which may be selected.
 	 *

@@ -3,7 +3,7 @@
 /**
  * Class SiteOrigin_Widget_Field_Icon
  */
-class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field {
+class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 
 	protected function render_field( $value, $instance ) {
 		static $widget_icon_families;

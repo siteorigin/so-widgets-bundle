@@ -290,7 +290,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			<?php
 			$fields_javascript_variables = array();
 			foreach( $this->form_options() as $field_name => $field_options ) {
-				/* @var $field SiteOrigin_Widget_Field */
+				/* @var $field SiteOrigin_Widget_Field_Base */
 				$field = SiteOrigin_Widget_Field_Factory::create_field( $field_name, $field_options, $this );
 				$field->render( isset( $instance[$field_name] ) ? $instance[$field_name] : null, $instance );
 				$field_js_vars = $field->get_javascript_variables();
@@ -433,7 +433,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$new_instance[$field_name] = false;
 					continue;
 				}
-				/* @var $field SiteOrigin_Widget_Field */
+				/* @var $field SiteOrigin_Widget_Field_Base */
 				if ( !empty( $this->fields ) && !empty( $this->fields[$field_name] ) ) {
 					$field = $this->fields[$field_name];
 				} else {

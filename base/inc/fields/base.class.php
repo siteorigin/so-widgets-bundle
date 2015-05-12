@@ -6,7 +6,7 @@
  * Class SiteOrigin_Widget_Field
  */
 
-abstract class SiteOrigin_Widget_Field {
+abstract class SiteOrigin_Widget_Field_Base {
 
 	/* ============================================================================================================== */
 	/* CORE FIELD PROPERTIES                                                                                          */
@@ -58,7 +58,7 @@ abstract class SiteOrigin_Widget_Field {
 
 
 	/**
-	 * The type.
+	 * The type of the field.
 	 *
 	 * @access protected
 	 * @var string

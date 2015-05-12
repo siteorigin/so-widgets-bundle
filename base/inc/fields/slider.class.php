@@ -3,7 +3,7 @@
 /**
  * Class SiteOrigin_Widget_Field_Slider
  */
-class SiteOrigin_Widget_Field_Slider extends SiteOrigin_Widget_Field {
+class SiteOrigin_Widget_Field_Slider extends SiteOrigin_Widget_Field_Base {
 
 	/**
 	 * The minimum value of the allowed range.
