@@ -292,34 +292,4 @@ abstract class SiteOrigin_Widget_Field {
 		return $this->javascript_variables;
 	}
 
-	//TODO: These functions should not stay here. They are only here temporarily while refactoring fields into classes.
-
-	/**
-	 * Convert underscore naming convention to camel case. Useful for data to be handled by javascript.
-	 *
-	 * @param $array array Input array of which the keys will be transformed.
-	 * @return array The transformed array with camel case keys.
-	 */
-	protected function underscores_to_camel_case( $array ) {
-		$transformed = array();
-		if ( !empty( $array ) ) {
-			foreach ( $array as $key => $val ) {
-				$jsKey = preg_replace_callback( '/_(.?)/', array($this, 'match_to_upper'), $key );
-				$transformed[ $jsKey ] = $val;
-			}
-		}
-		return $transformed;
-	}
-
-	/**
-	 * Convert a matched string to uppercase. Used as a preg callback.
-	 *
-	 * @param $matches
-	 *
-	 * @return string
-	 */
-	private function match_to_upper( $matches ) {
-		return strtoupper( $matches[1] );
-	}
-
 }

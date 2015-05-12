@@ -58,7 +58,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 		$item_label = isset( $this->item_label ) ? $this->item_label : null;
 		if ( ! empty( $item_label ) ) {
 			// convert underscore naming convention to camelCase for javascript and encode as json string
-			$item_label = $this->underscores_to_camel_case( $item_label );
+			$item_label = siteorigin_widgets_underscores_to_camel_case( $item_label );
 			$item_label = json_encode( $item_label );
 		}
 		if( empty( $this->item_name ) ) $this->item_name = __( 'Item', 'siteorigin-widgets' );
