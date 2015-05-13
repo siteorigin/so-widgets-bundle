@@ -13,7 +13,7 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 	 * @access protected
 	 * @var array
 	 */
-	protected $sub_field_options;
+	protected $fields;
 	/**
 	 * The child field instances.
 	 *
@@ -47,11 +47,11 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 
 		$this->for_widget = $for_widget;
 		$this->parent_container = $parent_container;
+	}
 
-		if( isset( $field_options['fields'] ) ) $this->sub_field_options = $field_options['fields'];
-		if( isset($field_options['hide'] ) ) $this->hide = $field_options['hide'];
-
-		if( empty( $this->hide ) ) $this->label_classes[] = 'siteorigin-widget-section-visible';
+	protected function add_label_classes( $label_classes ) {
+		if( empty( $this->hide ) ) $label_classes[] = 'siteorigin-widget-section-visible';
+		return $label_classes;
 	}
 
 	protected function create_and_render_sub_fields( $values, $parent_container = null, $is_template = false ) {
@@ -59,7 +59,7 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 		if( isset( $parent_container ) ) {
 			$this->parent_container[] = $parent_container;
 		}
-		foreach( $this->sub_field_options as $sub_field_name => $sub_field_options ) {
+		foreach( $this->fields as $sub_field_name => $sub_field_options ) {
 			/* @var $field SiteOrigin_Widget_Field_Base */
 			$field = SiteOrigin_Widget_Field_Factory::create_field(
 				$sub_field_name,
@@ -79,10 +79,10 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 	}
 
 	protected function sanitize_field_input( $value ) {
-		foreach( $this->sub_field_options as $sub_field_name => $sub_field_options ) {
+		foreach( $this->fields as $sub_field_name => $sub_field_options ) {
 			if( empty( $value[$sub_field_name] ) ) continue;
 			/* @var $sub_field SiteOrigin_Widget_Field_Base */
-			if( ! empty( $this->sub_fields ) && ! empty( $this->sub_field_options[$sub_field_name] ) ) {
+			if( ! empty( $this->sub_fields ) && ! empty( $this->fields[$sub_field_name] ) ) {
 				$sub_field = $this->sub_fields[$sub_field_name];
 			}
 			else {

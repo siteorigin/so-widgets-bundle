@@ -12,12 +12,6 @@ class SiteOrigin_Widget_Field_Radio extends SiteOrigin_Widget_Field_Base {
 	 */
 	protected $options;
 
-	public function __construct( $base_name, $element_id, $element_name, $field_options ) {
-		parent::__construct( $base_name, $element_id, $element_name, $field_options );
-
-		if( isset( $field_options['options'] ) ) $this->options = $field_options['options'];
-	}
-
 	protected function render_field( $value, $instance ) {
 		if ( ! isset( $this->options ) || empty( $this->options ) ) return;
 

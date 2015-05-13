@@ -38,17 +38,8 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 	 */
 	protected $readonly;
 
-	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_container = array() ) {
-		parent::__construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_container );
-
-		if( isset( $field_options['item_name'] ) ) $this->item_name = $field_options['item_name'];
-		if( isset( $field_options['item_label'] ) ) $this->item_label = $field_options['item_label'];
-		if( isset( $field_options['scroll_count'] ) ) $this->scroll_count = $field_options['scroll_count'];
-		if( isset( $field_options['readonly'] ) ) $this->readonly = $field_options['readonly'];
-	}
-
 	protected function render_field( $value, $instance ) {
-		if( !isset( $this->sub_field_options ) || empty( $this->sub_field_options ) ) return;
+		if( !isset( $this->fields ) || empty( $this->fields ) ) return;
 		$container = array( 'name' => $this->base_name, 'type' => 'repeater' );
 		ob_start();
 		$this->create_and_render_sub_fields( null, $container, true );

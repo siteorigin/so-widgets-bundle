@@ -20,14 +20,6 @@ class SiteOrigin_Widget_Field_Slider extends SiteOrigin_Widget_Field_Base {
 	 */
 	protected $max;
 
-	public function __construct( $base_name, $element_id, $element_name, $field_options ) {
-		parent::__construct( $base_name, $element_id, $element_name, $field_options );
-
-		if( isset( $field_options['min'] ) ) $this->min = $field_options['min'];
-		if( isset( $field_options['max'] ) ) $this->max = $field_options['max'];
-	}
-
-
 	protected function render_field( $value, $instance ) {
 		?>
 		<div class="siteorigin-widget-slider-value"><?php echo ! empty( $value ) ? esc_html( $value ) : 0 ?></div>

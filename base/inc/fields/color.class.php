@@ -5,10 +5,9 @@
  */
 class SiteOrigin_Widget_Field_Color extends SiteOrigin_Widget_Field_Text_Input_Base {
 
-	public function __construct( $base_name, $element_id, $element_name, $field_options ) {
-		parent::__construct( $base_name, $element_id, $element_name, $field_options );
-
-		$this->input_classes[] = 'siteorigin-widget-input-color';
+	protected function add_input_classes( $input_classes ) {
+		$input_classes[] = 'siteorigin-widget-input-color';
+		return $input_classes;
 	}
 
 	protected function sanitize_field_input( $value ) {

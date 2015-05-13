@@ -12,14 +12,14 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 	 * @access protected
 	 * @var string
 	 */
-	protected $dialog_title;
+	protected $choose;
 	/**
 	 * A label for the confirmation button of the media selector dialog.
 	 *
 	 * @access protected
 	 * @var string
 	 */
-	protected $update_button_label;
+	protected $update;
 	/**
 	 * Sets the media library which to browse and from which media can be selected. Allowed values are 'image',
 	 * 'audio', 'video', and 'file'. The default is 'file'.
@@ -53,28 +53,25 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 	public function __construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_container = array()  ) {
 		parent::__construct( $base_name, $element_id, $element_name, $field_options );
 
-		if( isset( $field_options['choose'] ) ) {
-			$this->dialog_title = $field_options['choose'];
-		}
-		else {
-			$this->dialog_title = __( 'Choose Media', 'siteorigin-widgets' );
-		}
-		if( isset( $field_options['update'] ) ) {
-			$this->update_button_label = $field_options['update'];
-		}
-		else {
-			$this->update_button_label = __( 'Set Media', 'siteorigin-widgets' );
-		}
-		if( isset( $field_options['library'] ) ) {
-			$this->library = $field_options['library'];
-		}
-		else {
-			$this->library = 'image';
-		}
-		if( isset( $field_options['fallback'] ) ) $this->fallback = $field_options['fallback'];
-
 		$this->for_widget = $for_widget;
 		$this->parent_repeater = $parent_container;
+
+	}
+
+	protected function init_options() {
+		$default_options = array(
+			'choose' => __( 'Choose Media', 'siteorigin-widgets' ),
+			'update' => __( 'Set Media', 'siteorigin-widgets' ),
+			'library' => 'image'
+		);
+		foreach ( $default_options as $key => $value ) {
+			if( property_exists( $this, $key ) ) {
+				if ( isset( $default_options[$key] ) ) {
+					$this->$key = $value;
+				}
+			}
+		}
+		parent::init_options();
 	}
 
 	protected function render_field( $value, $instance ) {
@@ -104,10 +101,10 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 				</div>
 				<div class="title"><?php if( !empty( $post ) ) echo esc_attr( $post->post_title ) ?></div>
 			</div>
-			<a href="#" class="media-upload-button" data-choose="<?php echo esc_attr( $this->dialog_title ) ?>"
-			   data-update="<?php echo esc_attr( $this->update_button_label ) ?>"
+			<a href="#" class="media-upload-button" data-choose="<?php echo esc_attr( $this->choose ) ?>"
+			   data-update="<?php echo esc_attr( $this->update ) ?>"
 			   data-library="<?php echo esc_attr( $this->library ) ?>">
-				<?php echo esc_html( $this->dialog_title ) ?>
+				<?php echo esc_html( $this->choose ) ?>
 			</a>
 		</div>
 		<a href="#" class="media-remove-button <?php if( empty( $value ) ) echo 'remove-hide'; ?>"><?php esc_html_e( 'Remove', 'siteorigin-widgets' ) ?></a>

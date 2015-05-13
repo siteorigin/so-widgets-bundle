@@ -15,19 +15,16 @@ class SiteOrigin_Widget_Field_Widget extends SiteOrigin_Widget_Field_Container_B
 	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_container = array() ) {
 		parent::__construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_container );
 
-		if( isset( $field_options['class'] ) ) {
-			$this->class_name = $field_options['class'];
-
+		if( isset( $this->class_name ) ) {
 			if( class_exists( $this->class_name ) ) {
 				/* @var $sub_widget SiteOrigin_Widget */
 				$sub_widget = new $this->class_name;
 				if( is_a( $sub_widget, 'SiteOrigin_Widget' ) ) {
-					$this->sub_field_options = $sub_widget->form_options( $this->for_widget );
+					$this->fields = $sub_widget->form_options( $this->for_widget );
 				}
 			}
 		}
 	}
-
 
 	protected function render_field( $value, $instance ) {
 		// Create the extra form entries

@@ -30,15 +30,14 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 	 */
 	protected $input_classes;
 
-	public function __construct( $base_name, $element_id, $element_name, $field_options ){
-		parent::__construct( $base_name, $element_id, $element_name, $field_options );
-
-		if( isset( $field_options['placeholder'] ) ) $this->placeholder = $field_options['placeholder'];
-		if( isset( $field_options['readonly'] ) ) $this->readonly = $field_options['readonly'];
-
-		$this->input_classes = array( 'widefat', 'siteorigin-widget-input' );
+	protected function initialize() {
+		parent::initialize();
+		$this->input_classes = $this->add_input_classes( array( 'widefat', 'siteorigin-widget-input' ) );
 	}
 
+	protected function add_input_classes( $input_classes ) {
+		return $input_classes;
+	}
 
 	protected function render_field( $value, $instance ) {
 		?>

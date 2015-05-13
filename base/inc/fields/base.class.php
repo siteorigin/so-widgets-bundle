@@ -152,17 +152,27 @@ abstract class SiteOrigin_Widget_Field_Base {
 		$this->field_options = $field_options;
 		$this->javascript_variables = array();
 
-		if( isset($field_options['label'] ) ) $this->label = $field_options['label'];
-		if( isset($field_options['default'] ) ) $this->default = $field_options['default'];
-		if( isset($field_options['description'] ) ) $this->description = $field_options['description'];
-		if( isset($field_options['optional'] ) ) $this->optional = $field_options['optional'];
-		if( isset($field_options['sanitize'] ) ) $this->sanitize = $field_options['sanitize'];
+		$this->initialize();
+	}
 
-		if( isset($field_options['state_emitter'] ) ) $this->state_emitter = $field_options['state_emitter'];
-		if( isset($field_options['state_handler'] ) ) $this->state_handler = $field_options['state_handler'];
-		if( isset($field_options['state_handler_initial'] ) ) $this->state_handler_initial = $field_options['state_handler_initial'];
+	protected function initialize() {
+		$this->init_options();
+		$this->label_classes = $this->add_label_classes( array( 'siteorigin-widget-field-label' ) );
+	}
 
-		$this->label_classes = array( 'siteorigin-widget-field-label' );
+	protected function init_options() {
+		$field_options = $this->field_options;
+		foreach ( $field_options as $key => $value ) {
+			if( property_exists( $this, $key ) ) {
+				if ( isset( $field_options[$key] ) ) {
+					$this->$key = $value;
+				}
+			}
+		}
+	}
+
+	protected function add_label_classes( $label_classes ) {
+		return $label_classes;
 	}
 
 	/**
@@ -231,7 +241,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 	}
 
 	protected function render_label_classes() {
-		if( !empty( $this->label_classes ) ) {
+		if( ! empty( $this->label_classes ) ) {
 			?>class="<?php echo esc_attr( implode( ' ', array_map( 'sanitize_html_class', $this->label_classes ) ) ) ?>"<?php
 		}
 	}

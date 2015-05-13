@@ -14,12 +14,9 @@ class SiteOrigin_Widget_Field_Editor extends SiteOrigin_Widget_Field_Text_Input_
 	 */
 	protected $rows;
 
-	public function __construct( $base_name, $element_id, $element_name, $field_options ) {
-		parent::__construct( $base_name, $element_id, $element_name, $field_options );
-
-		if( isset( $field_options['rows'] ) ) $this->rows = $field_options['rows'];
-
-		$this->input_classes[] = 'siteorigin-widget-input-editor';
+	protected function add_input_classes( $input_classes ) {
+		$input_classes[] = 'siteorigin-widget-input-editor';
+		return $input_classes;
 	}
 
 	protected function render_field( $value, $instance ) {

@@ -4,10 +4,10 @@
  * Class SiteOrigin_Widget_Field_Number
  */
 class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_Base {
-	public function __construct( $base_name, $element_id, $element_name, $field_options ) {
-		parent::__construct( $base_name, $element_id, $element_name, $field_options );
 
-		$this->input_classes[] = 'siteorigin-widget-input-number';
+	protected function add_input_classes( $input_classes ) {
+		$input_classes[] = 'siteorigin-widget-input-number';
+		return $input_classes;
 	}
 
 	protected function sanitize_field_input( $value ) {

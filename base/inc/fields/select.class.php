@@ -28,14 +28,6 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 	 */
 	protected $multiple;
 
-	public function __construct( $base_name, $element_id, $element_name, $field_options ) {
-		parent::__construct( $base_name, $element_id, $element_name, $field_options );
-
-		if( isset( $field_options['options'] ) ) $this->options = $field_options['options'];
-		if( isset( $field_options['prompt'] ) ) $this->prompt = $field_options['prompt'];
-		if( isset( $field_options['multiple'] ) ) $this->multiple = $field_options['multiple'];
-	}
-
 	protected function render_field( $value, $instance ) {
 		?>
 		<select name="<?php echo $this->element_name ?>" id="<?php echo $this->element_id ?>"
