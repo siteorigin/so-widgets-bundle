@@ -158,7 +158,7 @@ function siteorigin_widget_get_font($font_value) {
 	if ( isset( $web_safe[ $font_value ] ) ) {
 		$font['family'] = $web_safe[ $font_value ];
 	}
-	else if( is_google_webfont( $font_value ) ) {
+	else if( siteorigin_widgets_is_google_webfont( $font_value ) ) {
 		$font_parts = explode( ':', $font_value );
 		$font['family'] = $font_parts[0];
 		$font_url_param = urlencode( $font_parts[0] );
