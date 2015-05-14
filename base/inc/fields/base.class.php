@@ -93,6 +93,13 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected $description;
 	/**
+	 * The CSS classes to be applied to the rendered description.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $description_classes;
+	/**
 	 * Append '(Optional)' to this field's label as a small green superscript.
 	 *
 	 * @access protected
@@ -157,7 +164,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 
 	protected function initialize() {
 		$this->init_options();
-		$this->label_classes = $this->add_label_classes( array( 'siteorigin-widget-field-label' ) );
+		$this->init_CSS_classes();
 	}
 
 	protected function init_options() {
@@ -171,8 +178,17 @@ abstract class SiteOrigin_Widget_Field_Base {
 		}
 	}
 
+	protected function init_CSS_classes() {
+		$this->label_classes = $this->add_label_classes( array( 'siteorigin-widget-field-label' ) );
+		$this->description_classes = $this->add_description_classes( array( 'siteorigin-widget-field-description' ) );
+	}
+
 	protected function add_label_classes( $label_classes ) {
 		return $label_classes;
+	}
+
+	protected function add_description_classes( $description_classes ) {
+		return $description_classes;
 	}
 
 	/**
@@ -286,9 +302,15 @@ abstract class SiteOrigin_Widget_Field_Base {
 		$this->render_field_description();
 	}
 
-	private function render_field_description() {
+	protected function render_field_description() {
 		if( ! empty( $this->description ) ) {
-			?><div class="siteorigin-widget-field-description"><?php echo wp_kses_post( $this->description ) ?></div><?php
+			?><div <?php $this->render_description_classes() ?>><?php echo wp_kses_post( $this->description ) ?></div><?php
+		}
+	}
+
+	protected function render_description_classes() {
+		if( ! empty( $this->description_classes ) ) {
+			?>class="<?php echo esc_attr( implode( ' ', array_map( 'sanitize_html_class', $this->description_classes ) ) ) ?>"<?php
 		}
 	}
 
