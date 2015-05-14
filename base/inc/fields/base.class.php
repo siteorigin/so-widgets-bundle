@@ -43,6 +43,13 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected $field_options;
 	/**
+	 * The default field configuration options.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $default_field_options;
+	/**
 	 * Variables may be added to this array which will be propagated to the front end for use in dynamic rendering.
 	 *
 	 * @access protected
@@ -162,12 +169,33 @@ abstract class SiteOrigin_Widget_Field_Base {
 		$this->initialize();
 	}
 
+	/**
+	 * Initialization function which may be overridden if required, in which case, it is recommended that the parent
+	 * class' function is still called using `parent::initialize();`.
+	 */
 	protected function initialize() {
 		$this->init_options();
 		$this->init_CSS_classes();
 	}
 
-	protected function init_options() {
+	/**
+	 * This method ensures that configuration options are set on the corresponding field class instance properties. If
+	 * a field has defined default options, those are set first and then can be overwritten by options which were
+	 * passed in.
+	 */
+	private function init_options() {
+		// First set properties from default options if any have been set.
+		$default_field_options = $this->default_field_options;
+		if( ! empty( $default_field_options ) ) {
+			foreach ( $default_field_options as $key => $value ) {
+				if ( property_exists( $this, $key ) ) {
+					if ( isset( $default_options[$key] ) ) {
+						$this->$key = $value;
+					}
+				}
+			}
+		}
+
 		$field_options = $this->field_options;
 		foreach ( $field_options as $key => $value ) {
 			if( property_exists( $this, $key ) ) {
@@ -178,20 +206,37 @@ abstract class SiteOrigin_Widget_Field_Base {
 		}
 	}
 
+	/**
+	 * Initializes CSS classes used by default label and description.
+	 */
 	protected function init_CSS_classes() {
 		$this->label_classes = $this->add_label_classes( array( 'siteorigin-widget-field-label' ) );
 		$this->description_classes = $this->add_description_classes( array( 'siteorigin-widget-field-description' ) );
 	}
 
+	/**
+	 * This function should be overridden by subclasses when they want to add custom CSS classes to the HTML input label.
+	 *
+	 * @param $label_classes array Existing set of label CSS classes.
+	 * @return array The modified array of label CSS classes.
+	 */
 	protected function add_label_classes( $label_classes ) {
 		return $label_classes;
 	}
 
+	/**
+	 * This function should be overridden by subclasses when they want to add custom CSS classes to the description text.
+	 *
+	 * @param $description_classes array Existing set of description text CSS classes.
+	 * @return array The modified array of description text CSS classes.
+	 */
 	protected function add_description_classes( $description_classes ) {
 		return $description_classes;
 	}
 
 	/**
+	 * This function is called by the containing SiteOrigin_Widget when rendering it's form.
+	 *
 	 * @param $value mixed The current instance value of the field.
 	 * @param $instance array Optionally pass in the widget instance, if rendering of additional values is required.
 	 */
@@ -236,6 +281,12 @@ abstract class SiteOrigin_Widget_Field_Base {
 		?></div><?php
 	}
 
+	/**
+	 * This function is called before the main render function.
+	 *
+	 * @param $value mixed The current value of this field.
+	 * @param $instance array The current widget instance.
+	 */
 	protected function render_before_field( $value, $instance ) {
 		$this->render_field_label();
 	}
@@ -245,7 +296,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected function render_field_label() {
 		?>
-		<label for="<?php echo $this->element_id ?>" <?php $this->render_label_classes() ?>>
+		<label for="<?php echo $this->element_id ?>" <?php $this->render_CSS_classes( $this->label_classes ) ?>>
 			<?php
 		echo $this->label;
 		if( !empty( $this->optional ) ) {
@@ -256,12 +307,24 @@ abstract class SiteOrigin_Widget_Field_Base {
 		<?php
 	}
 
-	protected function render_label_classes() {
-		if( ! empty( $this->label_classes ) ) {
-			?>class="<?php echo esc_attr( implode( ' ', array_map( 'sanitize_html_class', $this->label_classes ) ) ) ?>"<?php
+	/**
+	 * Helper function to render the HTML class attribute with the array of classes.
+	 */
+	protected function render_CSS_classes( $CSS_classes ) {
+		if( ! empty( $CSS_classes ) ) {
+			?>class="<?php echo esc_attr( implode( ' ', array_map( 'sanitize_html_class', $CSS_classes ) ) ) ?>"<?php
 		}
 	}
 
+	/**
+	 *
+	 * The main field rendering function. This function should be overridden by all subclasses and used to render their
+	 * specific form field HTML for display.
+	 *
+	 * @param $value mixed The current value of this field.
+	 * @param $instance array The current widget instance.
+	 * @return mixed Should output the desired HTML.
+	 */
 	abstract protected function render_field( $value, $instance );
 
 	/**
@@ -295,31 +358,55 @@ abstract class SiteOrigin_Widget_Field_Base {
 		}
 
 		return $value;
-
 	}
 
+
+	/**
+	 * This function is called after the main render function.
+	 *
+	 * @param $value mixed The current value of this field.
+	 * @param $instance array The current widget instance.
+	 */
 	protected function render_after_field( $value, $instance ) {
 		$this->render_field_description();
 	}
 
+	/**
+	 * Default description rendering implementation. Subclasses should override if necessary to render descriptions
+	 * differently.
+	 */
 	protected function render_field_description() {
 		if( ! empty( $this->description ) ) {
-			?><div <?php $this->render_description_classes() ?>><?php echo wp_kses_post( $this->description ) ?></div><?php
+			?><div <?php $this->render_CSS_classes( $this->description_classes ) ?>><?php echo wp_kses_post( $this->description ) ?></div><?php
 		}
 	}
 
-	protected function render_description_classes() {
-		if( ! empty( $this->description_classes ) ) {
-			?>class="<?php echo esc_attr( implode( ' ', array_map( 'sanitize_html_class', $this->description_classes ) ) ) ?>"<?php
-		}
-	}
-
+	/**
+	 *
+	 * The main sanitization function. This function should be overridden by all subclasses and used to sanitize the
+	 * input received from their HTML form field.
+	 *
+	 * @param $value mixed The current value of this field.
+	 * @return mixed The sanitized value.
+	 */
 	abstract protected function sanitize_field_input( $value );
 
+	/**
+	 * There are case where a field may affect values on the widget instance, other than it's own input. It then becomes
+	 * necessary to perform additional sanitization on the widget instance, which should be done here.
+	 *
+	 * @param $instance
+	 */
 	protected function sanitize_instance( $instance ) {
 		//Stub: This function may be overridden by subclasses wishing to sanitize additional instance fields.
 	}
 
+	/**
+	 * Occasionally it is necessary for a field to set a variable to be used in the front end. Override this function
+	 * and set any necessary values on the `javascript_variables` instance property.
+	 *
+	 * @return array
+	 */
 	public function get_javascript_variables() {
 		return $this->javascript_variables;
 	}

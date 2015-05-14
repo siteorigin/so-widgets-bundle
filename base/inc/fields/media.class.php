@@ -58,20 +58,13 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 
 	}
 
-	protected function init_options() {
-		$default_options = array(
+	protected function initialize() {
+		$this->default_field_options = array(
 			'choose' => __( 'Choose Media', 'siteorigin-widgets' ),
 			'update' => __( 'Set Media', 'siteorigin-widgets' ),
 			'library' => 'image'
 		);
-		foreach ( $default_options as $key => $value ) {
-			if( property_exists( $this, $key ) ) {
-				if ( isset( $default_options[$key] ) ) {
-					$this->$key = $value;
-				}
-			}
-		}
-		parent::init_options();
+		parent::initialize();
 	}
 
 	protected function render_field( $value, $instance ) {
