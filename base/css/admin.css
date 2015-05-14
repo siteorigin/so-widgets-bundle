@@ -47,6 +47,9 @@
 .siteorigin-widget-form .siteorigin-widget-field input[type="text"] {
   width: 100%;
 }
+.siteorigin-widget-form .siteorigin-widget-field input.siteorigin-widget-input-color {
+  width: auto;
+}
 .siteorigin-widget-form .siteorigin-widget-field-type-slider .siteorigin-widget-slider-wrapper {
   margin: 10px 0;
   border: 1px solid #E0E0E0;

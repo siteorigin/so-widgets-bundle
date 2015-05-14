@@ -10,15 +10,15 @@ class SiteOrigin_Widget_Field_Widget extends SiteOrigin_Widget_Field_Container_B
 	 * @access protected
 	 * @var string
 	 */
-	protected $class_name;
+	protected $class;
 
 	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_container = array() ) {
 		parent::__construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_container );
 
-		if( isset( $this->class_name ) ) {
-			if( class_exists( $this->class_name ) ) {
+		if( isset( $this->class ) ) {
+			if( class_exists( $this->class ) ) {
 				/* @var $sub_widget SiteOrigin_Widget */
-				$sub_widget = new $this->class_name;
+				$sub_widget = new $this->class;
 				if( is_a( $sub_widget, 'SiteOrigin_Widget' ) ) {
 					$this->fields = $sub_widget->form_options( $this->for_widget );
 				}
@@ -30,16 +30,16 @@ class SiteOrigin_Widget_Field_Widget extends SiteOrigin_Widget_Field_Container_B
 		// Create the extra form entries
 		?><div class="siteorigin-widget-section <?php if( !empty($this->hide ) ) echo 'siteorigin-widget-section-hide'; ?>"><?php
 
-		if( ! class_exists( $this->class_name ) ) {
-			printf( __( '%s does not exist', 'siteorigin-widgets' ), $this->class_name );
+		if( ! class_exists( $this->class ) ) {
+			printf( __( '%s does not exist', 'siteorigin-widgets' ), $this->class );
 			echo '</div>';
 			return;
 		}
 
 		/* @var $sub_widget SiteOrigin_Widget */
-		$sub_widget = new $this->class_name;
+		$sub_widget = new $this->class;
 		if( ! is_a( $sub_widget, 'SiteOrigin_Widget' ) ) {
-			printf( __( '%s is not a SiteOrigin Widget', 'siteorigin-widgets' ), $this->class_name );
+			printf( __( '%s is not a SiteOrigin Widget', 'siteorigin-widgets' ), $this->class );
 			echo '</div>';
 			return;
 		}
