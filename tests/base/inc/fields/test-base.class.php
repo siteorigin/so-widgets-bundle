@@ -65,24 +65,6 @@ class SiteOrigin_Widget_Field_BaseTest extends WP_UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function constructor_initializes_description_classes() {
-		$field_options = array(
-			'type' => 'blueberry',
-		);
-
-		$base_field = $this->getMockBuilder( 'SiteOrigin_Widget_Field_Base' )
-		                   ->setConstructorArgs( array( '', '', '', $field_options ) )
-		                   ->getMockForAbstractClass();
-
-		$desc_cls_key = 'description_classes';
-		$description_classes = $base_field->$desc_cls_key;
-		$this->assertCount( 1, $description_classes );
-		$this->assertEquals( 'siteorigin-widget-field-description', $description_classes[0], 'SiteOrigin_Widget_Field_Base did not initialize $description_classes correctly' );
-	}
-
-	/**
-	 * @test
-	 */
 	public function render_adds_base_field_classes() {
 		$field_options = array(
 			'type' => 'blueberry',
@@ -292,13 +274,6 @@ class SiteOrigin_Widget_Field_BaseTest extends WP_UnitTestCase {
 
 		$this->assertEquals( 'user@example.org', $sanitized_email );
 	}
-}
-
-function get_field_render_output( $field, $value = '' ) {
-	ob_start();
-	/* @var $field SiteOrigin_Widget_Field_Base */
-	$field->render( $value );
-	return ob_get_clean();
 }
 
 class SiteOrigin_Widget_Field_Mock extends SiteOrigin_Widget_Field_Base {
