@@ -72,13 +72,6 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected $label;
 	/**
-	 * The CSS classes to be applied to the rendered label.
-	 *
-	 * @access protected
-	 * @var array
-	 */
-	protected $label_classes;
-	/**
 	 * The field will be prepopulated with this default value.
 	 *
 	 * @access protected
@@ -92,13 +85,6 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * @var string
 	 */
 	protected $description;
-	/**
-	 * The CSS classes to be applied to the rendered description.
-	 *
-	 * @access protected
-	 * @var array
-	 */
-	protected $description_classes;
 	/**
 	 * Append '(Optional)' to this field's label as a small green superscript.
 	 *
@@ -176,7 +162,6 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected function initialize() {
 		$this->init_options();
-		$this->init_CSS_classes();
 	}
 
 	/**
@@ -214,31 +199,23 @@ abstract class SiteOrigin_Widget_Field_Base {
 	}
 
 	/**
-	 * Initializes CSS classes used by default label and description.
-	 */
-	protected function init_CSS_classes() {
-		$this->label_classes = $this->add_label_classes( array( 'siteorigin-widget-field-label' ) );
-		$this->description_classes = $this->add_description_classes( array( 'siteorigin-widget-field-description' ) );
-	}
-
-	/**
+	 * The CSS classes to be applied to the default label.
 	 * This function should be overridden by subclasses when they want to add custom CSS classes to the HTML input label.
 	 *
-	 * @param $label_classes array Existing set of label CSS classes.
-	 * @return array The modified array of label CSS classes.
+	 * @return array The array of label CSS classes.
 	 */
-	protected function add_label_classes( $label_classes ) {
-		return $label_classes;
+	protected function get_label_classes() {
+		return array( 'siteorigin-widget-field-label' );
 	}
 
 	/**
+	 * The CSS classes to be applied to the default description.
 	 * This function should be overridden by subclasses when they want to add custom CSS classes to the description text.
 	 *
-	 * @param $description_classes array Existing set of description text CSS classes.
 	 * @return array The modified array of description text CSS classes.
 	 */
-	protected function add_description_classes( $description_classes ) {
-		return $description_classes;
+	protected function get_description_classes() {
+		return array( 'siteorigin-widget-field-description' );
 	}
 
 	/**
@@ -303,7 +280,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected function render_field_label() {
 		?>
-		<label for="<?php echo $this->element_id ?>" <?php $this->render_CSS_classes( $this->label_classes ) ?>>
+		<label for="<?php echo $this->element_id ?>" <?php $this->render_CSS_classes( $this->get_label_classes() ) ?>>
 			<?php
 		echo $this->label;
 		if( !empty( $this->optional ) ) {
@@ -384,7 +361,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected function render_field_description() {
 		if( ! empty( $this->description ) ) {
-			?><div <?php $this->render_CSS_classes( $this->description_classes ) ?>><?php echo wp_kses_post( $this->description ) ?></div><?php
+			?><div <?php $this->render_CSS_classes( $this->get_description_classes() ) ?>><?php echo wp_kses_post( $this->description ) ?></div><?php
 		}
 	}
 

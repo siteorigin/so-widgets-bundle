@@ -49,7 +49,8 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 		$this->parent_container = $parent_container;
 	}
 
-	protected function add_label_classes( $label_classes ) {
+	protected function get_label_classes() {
+		$label_classes = parent::get_label_classes();
 		if( empty( $this->hide ) ) $label_classes[] = 'siteorigin-widget-section-visible';
 		return $label_classes;
 	}

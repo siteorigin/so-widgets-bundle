@@ -14,7 +14,8 @@ class SiteOrigin_Widget_Field_Editor extends SiteOrigin_Widget_Field_Text_Input_
 	 */
 	protected $rows;
 
-	protected function add_input_classes( $input_classes ) {
+	protected function get_input_classes() {
+		$input_classes = parent::get_input_classes();
 		$input_classes[] = 'siteorigin-widget-input-editor';
 		return $input_classes;
 	}
@@ -24,7 +25,7 @@ class SiteOrigin_Widget_Field_Editor extends SiteOrigin_Widget_Field_Text_Input_
 		<textarea type="text" name="<?php echo $this->element_name ?>"
 		          id="<?php echo $this->element_id ?>"
 			<?php if ( ! empty( $this->placeholder ) ) echo 'placeholder="' . esc_attr( $this->placeholder ) . '"' ?>
-			<?php $this->render_input_classes() ?>
+			<?php $this->render_CSS_classes( $this->get_input_classes() ) ?>
 			      rows="<?php echo ! empty( $this->rows ) ? intval( $this->rows ) : 4 ?>"
 			<?php if( ! empty( $this->readonly ) ) echo 'readonly' ?>><?php echo esc_textarea( $value ) ?></textarea>
 		<?php

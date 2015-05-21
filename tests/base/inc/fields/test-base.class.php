@@ -65,24 +65,6 @@ class SiteOrigin_Widget_Field_BaseTest extends WP_UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function constructor_initializes_label_classes() {
-		$field_options = array(
-			'type' => 'blueberry',
-		);
-
-		$base_field = $this->getMockBuilder( 'SiteOrigin_Widget_Field_Base' )
-		                   ->setConstructorArgs( array( '', '', '', $field_options ) )
-		                   ->getMockForAbstractClass();
-
-		$lbl_cls_key = 'label_classes';
-		$label_classes = $base_field->$lbl_cls_key;
-		$this->assertCount( 1, $label_classes );
-		$this->assertEquals( 'siteorigin-widget-field-label', $label_classes[0], 'SiteOrigin_Widget_Field_Base did not initialize $label_classes correctly' );
-	}
-
-	/**
-	 * @test
-	 */
 	public function constructor_initializes_description_classes() {
 		$field_options = array(
 			'type' => 'blueberry',
