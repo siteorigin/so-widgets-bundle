@@ -317,7 +317,8 @@ function sow_esc_url( $url ) {
 function sow_esc_url_raw( $url ) {
 	if( preg_match('/^post: *([0-9]+)/', $url, $matches) ) {
 		// Convert the special post URL into a permalink
-		return 'post: ' . $matches[1];
+//		return 'post: ' . $matches[1];
+		$url = get_the_permalink( intval($matches[1]) );
 	}
 
 	$protocols = wp_allowed_protocols();

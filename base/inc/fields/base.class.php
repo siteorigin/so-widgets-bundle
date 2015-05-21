@@ -43,13 +43,6 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected $field_options;
 	/**
-	 * The default field configuration options.
-	 *
-	 * @access protected
-	 * @var array
-	 */
-	protected $default_field_options;
-	/**
 	 * Variables may be added to this array which will be propagated to the front end for use in dynamic rendering.
 	 *
 	 * @access protected
@@ -157,9 +150,17 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * @param $element_id string The id to be used as the id attribute of the wrapping HTML element.
 	 * @param $element_name string The name to be used as the name attribute of the wrapping HTML element.
 	 * @param $field_options array Configuration for the field.
+	 *
+	 * @throws InvalidArgumentException
 	 */
-	public function __construct( $base_name, $element_id, $element_name, $field_options ){
-		$this->type = $field_options['type'];
+	public function __construct( $base_name, $element_id, $element_name, $field_options ) {
+		if( isset( $field_options['type'] ) ) {
+			$this->type = $field_options['type'];
+		}
+		else {
+			throw new InvalidArgumentException( 'SiteOrigin_Widget_Field_Base::__construct: $field_options must contain a \'type\' field.' );
+		}
+
 		$this->base_name = $base_name;
 		$this->element_id = $element_id;
 		$this->element_name = $element_name;
@@ -185,11 +186,11 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	private function init_options() {
 		// First set properties from default options if any have been set.
-		$default_field_options = $this->default_field_options;
+		$default_field_options = $this->get_default_options();
 		if( ! empty( $default_field_options ) ) {
 			foreach ( $default_field_options as $key => $value ) {
 				if ( property_exists( $this, $key ) ) {
-					if ( isset( $default_options[$key] ) ) {
+					if ( isset( $default_field_options[$key] ) ) {
 						$this->$key = $value;
 					}
 				}
@@ -204,6 +205,12 @@ abstract class SiteOrigin_Widget_Field_Base {
 				}
 			}
 		}
+	}
+
+
+	protected function get_default_options() {
+		//Stub: This function may be overridden by subclasses to have default field options.
+		return null;
 	}
 
 	/**
@@ -392,7 +399,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 	abstract protected function sanitize_field_input( $value );
 
 	/**
-	 * There are case where a field may affect values on the widget instance, other than it's own input. It then becomes
+	 * There are cases where a field may affect values on the widget instance, other than it's own input. It then becomes
 	 * necessary to perform additional sanitization on the widget instance, which should be done here.
 	 *
 	 * @param $instance
@@ -411,4 +418,9 @@ abstract class SiteOrigin_Widget_Field_Base {
 		return $this->javascript_variables;
 	}
 
+	public function __get( $name ) {
+		if ( isset( $this->$name ) ) {
+			return $this->$name;
+		}
+	}
 }
