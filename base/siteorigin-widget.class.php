@@ -288,10 +288,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		?>
 		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>" id="<?php echo $form_id ?>" data-class="<?php echo get_class($this) ?>" style="display: none">
 			<?php
+			/* @var $field_factory SiteOrigin_Widget_Field_Factory */
+			$field_factory = SiteOrigin_Widget_Field_Factory::getInstance();
 			$fields_javascript_variables = array();
 			foreach( $this->form_options() as $field_name => $field_options ) {
 				/* @var $field SiteOrigin_Widget_Field_Base */
-				$field = SiteOrigin_Widget_Field_Factory::create_field( $field_name, $field_options, $this );
+				$field = $field_factory->create_field( $field_name, $field_options, $this );
 				$field->render( isset( $instance[$field_name] ) ? $instance[$field_name] : null, $instance );
 				$field_js_vars = $field->get_javascript_variables();
 				if( ! empty( $field_js_vars ) ) {
@@ -428,6 +430,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		$form_options = $this->form_options();
 		if( ! empty( $form_options ) ) {
+			/* @var $field_factory SiteOrigin_Widget_Field_Factory */
+			$field_factory = SiteOrigin_Widget_Field_Factory::getInstance();
 			foreach ( $form_options as $field_name => $field_options ) {
 				if ( empty( $new_instance[$field_name] ) ) {
 					$new_instance[$field_name] = false;
@@ -437,7 +441,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				if ( !empty( $this->fields ) && !empty( $this->fields[$field_name] ) ) {
 					$field = $this->fields[$field_name];
 				} else {
-					$field = SiteOrigin_Widget_Field_Factory::create_field( $field_name, $field_options, $this );
+					$field = $field_factory->create_field( $field_name, $field_options, $this );
 				}
 				$new_instance[$field_name] = $field->sanitize( $new_instance[$field_name], $new_instance );
 			}

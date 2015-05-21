@@ -11,7 +11,7 @@ class SiteOrigin_Widget_Field_Text_Input_BaseTest extends WP_UnitTestCase {
 			'type' => 'text',
 		);
 
-		/* @var $base_field SiteOrigin_Widget_Field_Base */
+		/* @var $base_field SiteOrigin_Widget_Field_Text_Input_Base */
 		$base_field = $this->getMockBuilder( 'SiteOrigin_Widget_Field_Text_Input_Base' )
 		                   ->setConstructorArgs( array( 'test_base', '', '', $field_options ) )
 		                   ->getMockForAbstractClass();
@@ -30,7 +30,7 @@ class SiteOrigin_Widget_Field_Text_Input_BaseTest extends WP_UnitTestCase {
 			'type' => 'text',
 		);
 
-		/* @var $base_field SiteOrigin_Widget_Field_Base */
+		/* @var $base_field SiteOrigin_Widget_Field_Text_Input_Base */
 		$base_field = $this->getMockBuilder( 'SiteOrigin_Widget_Field_Text_Input_Base' )
 		                   ->setConstructorArgs( array( 'test_base', '', '', $field_options ) )
 		                   ->getMockForAbstractClass();
@@ -50,7 +50,7 @@ class SiteOrigin_Widget_Field_Text_Input_BaseTest extends WP_UnitTestCase {
 			'placeholder' => $placeholder,
 		);
 
-		/* @var $base_field SiteOrigin_Widget_Field_Base */
+		/* @var $base_field SiteOrigin_Widget_Field_Text_Input_Base */
 		$base_field = $this->getMockBuilder( 'SiteOrigin_Widget_Field_Text_Input_Base' )
 		                   ->setConstructorArgs( array( 'test_base', '', '', $field_options ) )
 		                   ->getMockForAbstractClass();
@@ -68,7 +68,7 @@ class SiteOrigin_Widget_Field_Text_Input_BaseTest extends WP_UnitTestCase {
 			'readonly' => true,
 		);
 
-		/* @var $base_field SiteOrigin_Widget_Field_Base */
+		/* @var $base_field SiteOrigin_Widget_Field_Text_Input_Base */
 		$base_field = $this->getMockBuilder( 'SiteOrigin_Widget_Field_Text_Input_Base' )
 		                   ->setConstructorArgs( array( 'test_base', '', '', $field_options ) )
 		                   ->getMockForAbstractClass();

@@ -60,9 +60,11 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 		if( isset( $parent_container ) ) {
 			$this->parent_container[] = $parent_container;
 		}
+		/* @var $field_factory SiteOrigin_Widget_Field_Factory */
+		$field_factory = SiteOrigin_Widget_Field_Factory::getInstance();
 		foreach( $this->fields as $sub_field_name => $sub_field_options ) {
 			/* @var $field SiteOrigin_Widget_Field_Base */
-			$field = SiteOrigin_Widget_Field_Factory::create_field(
+			$field = $field_factory->create_field(
 				$sub_field_name,
 				$sub_field_options,
 				$this->for_widget,
@@ -80,6 +82,8 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 	}
 
 	protected function sanitize_field_input( $value ) {
+		/* @var $field_factory SiteOrigin_Widget_Field_Factory */
+		$field_factory = SiteOrigin_Widget_Field_Factory::getInstance();
 		foreach( $this->fields as $sub_field_name => $sub_field_options ) {
 			if( empty( $value[$sub_field_name] ) ) continue;
 			/* @var $sub_field SiteOrigin_Widget_Field_Base */
@@ -87,7 +91,7 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 				$sub_field = $this->sub_fields[$sub_field_name];
 			}
 			else {
-				$sub_field = SiteOrigin_Widget_Field_Factory::create_field(
+				$sub_field = $field_factory->create_field(
 					$this->base_name . '][' . $sub_field_name,
 					$sub_field_options,
 					$this->for_widget,
