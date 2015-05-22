@@ -320,8 +320,8 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	public function sanitize( $value, $instance = array() ) {
 
-		$this->sanitize_field_input( $value );
-		$this->sanitize_instance( $instance );
+		$value = $this->sanitize_field_input( $value );
+		$instance = $this->sanitize_instance( $instance );
 
 		if( isset( $this->sanitize ) ) {
 			// This field also needs some custom sanitization
@@ -383,6 +383,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected function sanitize_instance( $instance ) {
 		//Stub: This function may be overridden by subclasses wishing to sanitize additional instance fields.
+		return $instance;
 	}
 
 	/**

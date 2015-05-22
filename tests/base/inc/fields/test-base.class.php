@@ -194,14 +194,12 @@ class SiteOrigin_Widget_Field_BaseTest extends WP_UnitTestCase {
 			'sanitize' => 'url',
 		);
 
-		/* @var $base_field SiteOrigin_Widget_Field_Base */
-		$base_field = $this->getMockBuilder( 'SiteOrigin_Widget_Field_Base' )
-		                   ->setConstructorArgs( array( '', '', '', $field_options ) )
-		                   ->getMockForAbstractClass();
+		/* @var $field SiteOrigin_Widget_Field_Base */
+		$field = new SiteOrigin_Widget_Field_Mock( '', '', '', $field_options );
 
 		$raw_url = 'http://www.example.com/?with_queries=tr[ue&more_queries=also]true';
 
-		$sanitized_url = $base_field->sanitize( $raw_url );
+		$sanitized_url = $field->sanitize( $raw_url );
 
 		//Removes square brackets
 		$this->assertEquals( 'http://www.example.com/?with_queries=true&more_queries=alsotrue', $sanitized_url );
@@ -219,14 +217,12 @@ class SiteOrigin_Widget_Field_BaseTest extends WP_UnitTestCase {
 			'sanitize' => 'url',
 		);
 
-		/* @var $base_field SiteOrigin_Widget_Field_Base */
-		$base_field = $this->getMockBuilder( 'SiteOrigin_Widget_Field_Base' )
-		                   ->setConstructorArgs( array( '', '', '', $field_options ) )
-		                   ->getMockForAbstractClass();
+		/* @var $field SiteOrigin_Widget_Field_Base */
+		$field = new SiteOrigin_Widget_Field_Mock( '', '', '', $field_options );
 
 		$raw_url = 'post:' . $post_id;
 
-		$sanitized_url = $base_field->sanitize( $raw_url );
+		$sanitized_url = $field->sanitize( $raw_url );
 
 		$this->assertEquals( 'http://example.org/?p=3', $sanitized_url );
 	}
@@ -241,14 +237,12 @@ class SiteOrigin_Widget_Field_BaseTest extends WP_UnitTestCase {
 			'sanitize' => 'url',
 		);
 
-		/* @var $base_field SiteOrigin_Widget_Field_Base */
-		$base_field = $this->getMockBuilder( 'SiteOrigin_Widget_Field_Base' )
-		                   ->setConstructorArgs( array( '', '', '', $field_options ) )
-		                   ->getMockForAbstractClass();
+		/* @var $field SiteOrigin_Widget_Field_Base */
+		$field = new SiteOrigin_Widget_Field_Mock( '', '', '', $field_options );
 
 		$raw_url = 'skype:somepersonsskypename';
 
-		$sanitized_url = $base_field->sanitize( $raw_url );
+		$sanitized_url = $field->sanitize( $raw_url );
 
 		$this->assertEquals( 'skype:somepersonsskypename', $sanitized_url );
 	}
@@ -263,14 +257,12 @@ class SiteOrigin_Widget_Field_BaseTest extends WP_UnitTestCase {
 			'sanitize' => 'email',
 		);
 
-		/* @var $base_field SiteOrigin_Widget_Field_Base */
-		$base_field = $this->getMockBuilder( 'SiteOrigin_Widget_Field_Base' )
-		                   ->setConstructorArgs( array( '', '', '', $field_options ) )
-		                   ->getMockForAbstractClass();
+		/* @var $field SiteOrigin_Widget_Field_Base */
+		$field = new SiteOrigin_Widget_Field_Mock( '', '', '', $field_options );
 
 		$raw_email = 'us()e[r@example.org';
 
-		$sanitized_email = $base_field->sanitize( $raw_email );
+		$sanitized_email = $field->sanitize( $raw_email );
 
 		$this->assertEquals( 'user@example.org', $sanitized_email );
 	}
@@ -288,7 +280,7 @@ class SiteOrigin_Widget_Field_Mock extends SiteOrigin_Widget_Field_Base {
 	}
 
 	protected function render_field( $value, $instance ) {
-		return '';
+		return $value;
 	}
 
 	protected function sanitize_field_input( $value ) {
