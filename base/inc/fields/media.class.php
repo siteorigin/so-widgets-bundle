@@ -132,15 +132,15 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 		return intval( $value );
 	}
 
-	protected function sanitize_instance( $instance ) {
+	public function sanitize_instance( $instance ) {
 		$fallback_name = $this->get_fallback_field_name( $this->base_name );
-		if( !empty( $field['fallback'] ) && !empty( $instance[ $fallback_name ] ) ) {
+		if( !empty( $this->fallback ) && !empty( $instance[ $fallback_name ] ) ) {
 			$instance[ $fallback_name ] = esc_url_raw( $instance[ $fallback_name ] );
 		}
 		return $instance;
 	}
 
-	private function get_fallback_field_name( $base_name ) {
+	public function get_fallback_field_name( $base_name ) {
 		$v_name = $base_name;
 		if( strpos($v_name, '][') !== false ) {
 			// Remove this splitter

@@ -318,10 +318,9 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * @param $instance array The widget instance.
 	 * @return mixed|string|void
 	 */
-	public function sanitize( $value, $instance = array() ) {
+	public function sanitize( $value ) {
 
 		$value = $this->sanitize_field_input( $value );
-		$instance = $this->sanitize_instance( $instance );
 
 		if( isset( $this->sanitize ) ) {
 			// This field also needs some custom sanitization
@@ -343,7 +342,6 @@ abstract class SiteOrigin_Widget_Field_Base {
 
 		return $value;
 	}
-
 
 	/**
 	 * This function is called after the main render function.
@@ -381,7 +379,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 *
 	 * @param $instance
 	 */
-	protected function sanitize_instance( $instance ) {
+	public function sanitize_instance( $instance ) {
 		//Stub: This function may be overridden by subclasses wishing to sanitize additional instance fields.
 		return $instance;
 	}

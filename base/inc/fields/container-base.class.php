@@ -98,7 +98,8 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 					$this->parent_container
 				);
 			}
-			$value[$sub_field_name] = $sub_field->sanitize( $value[$sub_field_name], $value );
+			$value[$sub_field_name] = $sub_field->sanitize( $value[$sub_field_name] );
+			$value = $sub_field->sanitize_instance( $value );
 		}
 
 		return $value;

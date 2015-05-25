@@ -443,7 +443,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				} else {
 					$field = $field_factory->create_field( $field_name, $field_options, $this );
 				}
-				$new_instance[$field_name] = $field->sanitize( $new_instance[$field_name], $new_instance );
+				$new_instance[$field_name] = $field->sanitize( $new_instance[$field_name] );
+				$new_instance = $field->sanitize_instance( $new_instance );
 			}
 
 			// Also let other plugins also sanitize the instance
