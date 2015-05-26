@@ -22,7 +22,7 @@ class SiteOrigin_Widget_Field_Editor extends SiteOrigin_Widget_Field_Text_Input_
 
 	protected function render_field( $value, $instance ) {
 		?>
-		<textarea type="text" name="<?php echo $this->element_name ?>" id="<?php echo $this->element_id ?>"
+		<textarea type="text" name="<?php echo esc_attr( $this->element_name ) ?>" id="<?php echo esc_attr( $this->element_id ) ?>"
 			<?php if ( ! empty( $this->placeholder ) ) echo 'placeholder="' . esc_attr( $this->placeholder ) . '"' ?>
 			<?php $this->render_CSS_classes( $this->get_input_classes() ) ?>
 			      rows="<?php echo ! empty( $this->rows ) ? intval( $this->rows ) : 4 ?>"

@@ -17,9 +17,9 @@ class SiteOrigin_Widget_Field_Radio extends SiteOrigin_Widget_Field_Base {
 
 		foreach( $this->options as $k => $v ) {
 			?>
-			<label for="<?php echo $this->element_id . '-' . $k ?>">
-				<input type="radio" name="<?php echo $this->element_name ?>"
-			       id="<?php echo $this->element_id . '-' . $k ?>" class="siteorigin-widget-input"
+			<label for="<?php echo esc_attr( $this->element_id . '-' . $k ) ?>">
+				<input type="radio" name="<?php echo esc_attr( $this->element_name ) ?>"
+			       id="<?php echo esc_attr( $this->element_id . '-' . $k ) ?>" class="siteorigin-widget-input"
 			       value="<?php echo esc_attr( $k ) ?>" <?php checked( $k, $value ) ?>> <?php echo esc_html( $v ) ?>
 			</label>
 			<?php

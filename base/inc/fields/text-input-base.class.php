@@ -32,7 +32,7 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 
 	protected function render_field( $value, $instance ) {
 		?>
-		<input type="text" name="<?php echo $this->element_name ?>" id="<?php echo $this->element_id ?>"
+		<input type="text" name="<?php echo esc_attr( $this->element_name ) ?>" id="<?php echo esc_attr( $this->element_id ) ?>"
 		         value="<?php echo esc_attr( $value ) ?>"
 		         <?php $this->render_CSS_classes( $this->get_input_classes() ) ?>
 			<?php if ( ! empty( $this->placeholder ) ) echo 'placeholder="' . esc_attr( $this->placeholder ) . '"' ?>

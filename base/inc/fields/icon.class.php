@@ -20,7 +20,7 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 				<?php endforeach; ?>
 			</select>
 
-			<input type="hidden" name="<?php echo $this->element_name ?>" value="<?php echo esc_attr( $value ) ?>"
+			<input type="hidden" name="<?php echo esc_attr( $this->element_name ) ?>" value="<?php echo esc_attr( $value ) ?>"
 			       class="siteorigin-widget-icon-icon siteorigin-widget-input" />
 
 			<div class="siteorigin-widget-icon-icons"></div>

@@ -28,7 +28,7 @@ class SiteOrigin_Widget_Field_Widget extends SiteOrigin_Widget_Field_Container_B
 
 	protected function render_field( $value, $instance ) {
 		// Create the extra form entries
-		?><div class="siteorigin-widget-section <?php if( !empty($this->hide ) ) echo 'siteorigin-widget-section-hide'; ?>"><?php
+		?><div class="siteorigin-widget-section <?php if( !empty( $this->hide ) ) echo 'siteorigin-widget-section-hide'; ?>"><?php
 
 		if( ! class_exists( $this->class ) ) {
 			printf( __( '%s does not exist', 'siteorigin-widgets' ), $this->class );

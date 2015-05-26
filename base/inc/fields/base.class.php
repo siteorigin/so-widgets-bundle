@@ -280,9 +280,9 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected function render_field_label() {
 		?>
-		<label for="<?php echo $this->element_id ?>" <?php $this->render_CSS_classes( $this->get_label_classes() ) ?>>
+		<label for="<?php echo esc_attr( $this->element_id ) ?>" <?php $this->render_CSS_classes( $this->get_label_classes() ) ?>>
 			<?php
-		echo $this->label;
+		echo esc_html( $this->label );
 		if( !empty( $this->optional ) ) {
 			echo '<span class="field-optional">(' . __('Optional', 'siteorigin-panels') . ')</span>';
 		}
