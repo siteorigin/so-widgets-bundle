@@ -53,10 +53,19 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 	}
 
 	protected function sanitize_field_input( $value ) {
-		$sanitized_value = $value;
+		$values = is_array( $value ) ? $value : array( $value );
 		$keys = array_keys( $this->options );
-		if( ! in_array( $sanitized_value, $keys ) ) $sanitized_value = isset( $this->default ) ? $this->default : false;
-		return $sanitized_value;
+		$sanitized_value = array();
+		foreach( $values as $value ) {
+			if ( !in_array( $value, $keys ) ) {
+				$sanitized_value[] = isset( $this->default ) ? $this->default : false;
+			}
+			else {
+				$sanitized_value[] = $value;
+			}
+		}
+
+		return count( $sanitized_value ) == 1 ? $sanitized_value[0] : $sanitized_value;
 	}
 
 }

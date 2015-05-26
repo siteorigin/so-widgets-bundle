@@ -115,4 +115,28 @@ class SiteOrigin_Widget_Field_SelectTest extends WP_UnitTestCase {
 
 		$this->assertFalse( $sanitized_value );
 	}
+
+	/**
+	 * @test
+	 */
+	public function sanitize_sanitizes_multiple_values_if_multiple_select() {
+		$field_options = array(
+			'type' => 'select',
+			'label' => 'A select input',
+			'multiple' => true,
+			'options' => array(
+				'option_one' => 'Option One',
+				'option_two' => 'Option Two',
+				'option_three' => 'Option Three',
+			)
+		);
+
+		$field = new SiteOrigin_Widget_Field_Select( 'select_field', 'select_field_id', 'select_field_name', $field_options );
+
+		$value = array( 'option_one', 'option_three' );
+		$sanitized_value = $field->sanitize( $value );
+
+		$this->assertEquals( 2, count( $sanitized_value ) );
+
+	}
 }
