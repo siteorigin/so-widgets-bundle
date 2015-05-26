@@ -573,6 +573,10 @@ function siteorigin_widgets_icons_fontawesome_filter( $icons ){
 		'share-alt' => '&#xf1e0;',
 		'share-alt-square' => '&#xf1e1;',
 		'bomb' => '&#xf1e2;',
+		'slideshare' => '&#xf1e7;',
+		'twitch' => '&#xf1e8;',
+		'yelp' => '&#xf1e9;',
+		'lastfm' => '&#xf202;',
 	);
 }
 add_filter('siteorigin_widgets_icons_fontawesome', 'siteorigin_widgets_icons_fontawesome_filter');
