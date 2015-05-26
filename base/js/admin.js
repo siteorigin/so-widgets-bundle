@@ -132,7 +132,8 @@ var sowEmitters = {
                             widget.find('.siteorigin-widget-form').sowSetupForm();
                             widget.removeData('sow-widget-added-form-setup');
                         });
-                        return true;
+                        //Still need to set up form again after saving, to ensure repeaters still work. :/
+                        //return true;
                     }
                 }
                 if( $el.data('sow-form-setup') === true ) {
