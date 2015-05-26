@@ -428,6 +428,7 @@ var sowEmitters = {
                                     $$.addClass('siteorigin-widget-active');
                                     $v.val( $(this).data('value') );
                                 }
+                                $v.trigger('change');
                             });
 
                         if( $v.val() === family + '-' + i ) {
