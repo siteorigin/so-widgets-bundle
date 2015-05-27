@@ -11,9 +11,6 @@
 .siteorigin-widget-form.siteorigin-widget-form-main {
   min-width: 600px;
 }
-.siteorigin-widget-form .siteorigin-widget-field-is-hidden {
-  display: none;
-}
 .siteorigin-widget-form .siteorigin-widget-field {
   margin: 1em 0;
 }
@@ -49,6 +46,9 @@
 }
 .siteorigin-widget-form .siteorigin-widget-field input[type="text"] {
   width: 100%;
+}
+.siteorigin-widget-form .siteorigin-widget-field input.siteorigin-widget-input-color {
+  width: auto;
 }
 .siteorigin-widget-form .siteorigin-widget-field-type-slider .siteorigin-widget-slider-wrapper {
   margin: 10px 0;
