@@ -299,6 +299,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				if( ! empty( $field_js_vars ) ) {
 					$fields_javascript_variables[$field_name] = $field_js_vars;
 				}
+				$field->enqueue_scripts();
 				$this->fields[$field_name] = $field;
 			}
 			?>
