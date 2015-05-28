@@ -1,6 +1,6 @@
 (function( $ ) {
 
-    $(document).on( 'sowsetupform', '.siteorigin-widget-form-main-widget-form-fields', function() {
+    $(document).on( 'sowsetupform', '.siteorigin-widget-form-main', function() {
         var $widgetForm = $(this);
         $widgetForm.find('.siteorigin-widget-input-tinymce').each(function(i, el){
             var formClass = $widgetForm.data('class');
