@@ -19,7 +19,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		$this->javascript_variables['mceSettings'] = $settings;
 		$this->javascript_variables['qtSettings'] = array();
 		?>
-		<div id="<?php echo esc_attr( $this->element_id ) ?>" class="siteorigin-widget-tinymce-container"
+		<div class="siteorigin-widget-tinymce-container" data-element-id="<?php echo esc_attr( $this->element_id ) ?>"
 		     data-element-name="<?php echo esc_attr( $this->element_name ) ?>">
 			<?php
 			wp_editor( $value, 'siteorigin-widget-input-tinymce-field', $settings )
