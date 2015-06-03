@@ -1,12 +1,11 @@
 <?php
-
 /*
 Plugin Name: SiteOrigin Widgets Bundle
 Description: A collection of all our widgets, neatly bundled into a single plugin.
 Version: 1.2.3
 Author: SiteOrigin
-Author URI: http://siteorigin.com
-Plugin URI: http://siteorigin.com/widgets-bundle/
+Author URI: https://siteorigin.com
+Plugin URI: https://siteorigin.com/widgets-bundle/
 License: GPL3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 */
