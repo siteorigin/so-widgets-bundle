@@ -1,3 +1,5 @@
+/* global sowGetWidgetFieldVariable, tinyMCEPreInit, quicktags, QTags, tinymce */
+
 (function( $ ) {
 
     $(document).on( 'sowsetupform', '.siteorigin-widget-form-main', function() {
@@ -13,14 +15,17 @@
                 var html = container.html();
                 var repped = html.replace(/siteorigin-widget-input-tinymce-field/g, id);
                 container.html(repped);
-                var mceSettings = window.sowGetWidgetFieldVariable(formClass, elementName, 'mceSettings');
-                var qtSettings = window.sowGetWidgetFieldVariable(formClass, elementName, 'qtSettings');
+                var mceSettings = sowGetWidgetFieldVariable(formClass, elementName, 'mceSettings');
+                var qtSettings = sowGetWidgetFieldVariable(formClass, elementName, 'qtSettings');
                 $.extend(mceSettings, tinyMCEPreInit.mceInit['siteorigin-widget-input-tinymce-field'], {selector:'#'+id});
                 $.extend(qtSettings, tinyMCEPreInit.qtInit['siteorigin-widget-input-tinymce-field'], {id:id});
                 tinyMCEPreInit.mceInit[id] = mceSettings;
                 tinyMCEPreInit.qtInit[id] = qtSettings;
                 quicktags(tinyMCEPreInit.qtInit[id]);
-                tinymce.init(tinyMCEPreInit.mceInit[id]);
+                var wrapDiv = container.find('div#wp-' + id + '-wrap');
+                if(wrapDiv.hasClass('tmce-active')) {
+                    tinymce.init(tinyMCEPreInit.mceInit[id]);
+                }
             });
             QTags._buttonsInit();
 

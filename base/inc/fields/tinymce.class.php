@@ -8,12 +8,19 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	 * @var int
 	 */
 	protected $rows = 10;
+	/**
+	 * The editor to be displaye initially.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $default_editor = 'tinymce';
 
 	protected function render_field( $value, $instance ) {
 		$settings = array(
 			'textarea_name' => esc_attr( $this->element_name ),
 			'editor_class' => 'siteorigin-widget-input-tinymce',
-			'default_editor' => 'tinymce',
+			'default_editor' => $this->default_editor,
 			'textarea_rows' => $this->rows,
 		);
 		$this->javascript_variables['mceSettings'] = $settings;
@@ -26,6 +33,13 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			?>
 		</div>
 		<?php
+
+		if( $this->default_editor == 'html' ) {
+			remove_filter( 'the_editor_content', 'wp_htmledit_pre' );
+		}
+		if( $this->default_editor == 'tinymce' ) {
+			remove_filter( 'the_editor_content', 'wp_richedit_pre' );
+		}
 	}
 
 	public function enqueue_scripts() {
