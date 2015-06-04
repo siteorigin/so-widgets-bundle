@@ -6,19 +6,22 @@
         var $widgetForm = $(this);
 
         if( typeof $widgetForm.data('sowsetup-tinymce-fields') === 'undefined' ) {
-            $widgetForm.find('.siteorigin-widget-input-tinymce').each(function (i, el) {
+            $widgetForm.find('.siteorigin-widget-tinymce-container').each(function (i, el) {
                 var formClass = $widgetForm.data('class');
-                var $el = $(el);
-                var container = $el.closest('.siteorigin-widget-tinymce-container');
-                var elementName = container.data('element-name');
-                var id = container.data('element-id');
-                var html = container.html();
-                var repped = html.replace(/siteorigin-widget-input-tinymce-field/g, id);
-                container.html(repped);
-                var mceSettings = sowGetWidgetFieldVariable(formClass, elementName, 'mceSettings');
-                var qtSettings = sowGetWidgetFieldVariable(formClass, elementName, 'qtSettings');
-                $.extend(mceSettings, tinyMCEPreInit.mceInit['siteorigin-widget-input-tinymce-field'], {selector:'#'+id});
-                $.extend(qtSettings, tinyMCEPreInit.qtInit['siteorigin-widget-input-tinymce-field'], {id:id});
+                var container = $(el);
+                var id = container.find('textarea').attr('id');
+                var name = container.find('textarea').attr('name');
+                var fieldName = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( name )[1];
+                var mceSettings = sowGetWidgetFieldVariable(formClass, name, 'mceSettings');
+                var qtSettings = sowGetWidgetFieldVariable(formClass, name, 'qtSettings');
+                var idPattern = new RegExp( 'widget-' + formClass.replace(/_/g, '-').toLowerCase() + '-[a-zA-Z0-9]+-' + fieldName );
+                for( var initId in tinyMCEPreInit.mceInit) {
+                    if(initId.match(idPattern)) {
+                        mceSettings = $.extend({}, tinyMCEPreInit.mceInit[initId], mceSettings);
+                    }
+                }
+                mceSettings = $.extend({}, mceSettings, {selector:'#'+id});
+                qtSettings = $.extend({}, tinyMCEPreInit.qtInit['siteorigin-widget-input-tinymce-field'], qtSettings, {id:id});
                 tinyMCEPreInit.mceInit[id] = mceSettings;
                 tinyMCEPreInit.qtInit[id] = qtSettings;
                 quicktags(tinyMCEPreInit.qtInit[id]);
