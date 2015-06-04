@@ -14,7 +14,7 @@
                 var fieldName = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( name )[1];
                 var mceSettings = sowGetWidgetFieldVariable(formClass, name, 'mceSettings');
                 var qtSettings = sowGetWidgetFieldVariable(formClass, name, 'qtSettings');
-                var idPattern = new RegExp( 'widget-' + formClass.replace(/_/g, '-').toLowerCase() + '-[a-zA-Z0-9]+-' + fieldName );
+                var idPattern = new RegExp( 'widget-.+-[a-zA-Z0-9]+-' + fieldName.replace( '][', '-', 'g' ) + '[-\d]*' );
                 for( var initId in tinyMCEPreInit.mceInit) {
                     if(initId.match(idPattern)) {
                         mceSettings = $.extend({}, tinyMCEPreInit.mceInit[initId], mceSettings);
