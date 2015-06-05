@@ -15,6 +15,13 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	 * @var string
 	 */
 	protected $default_editor = 'tinymce';
+	/**
+	 * The editor initial height.
+	 *
+	 * @access protected
+	 * @var int
+	 */
+	protected $editor_height = 200;
 
 	protected function render_field( $value, $instance ) {
 
@@ -22,6 +29,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			'textarea_name' => esc_attr( $this->element_name ),
 			'default_editor' => $this->default_editor,
 			'textarea_rows' => $this->rows,
+			'editor_height' => $this->editor_height,
 		);
 		$this->javascript_variables['mceSettings'] = $settings;
 		$this->javascript_variables['qtSettings'] = array();
