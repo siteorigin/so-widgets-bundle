@@ -77,6 +77,7 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 			if( ! empty( $field_js_vars ) ) {
 				$this->javascript_variables[$sub_field_name] = $field_js_vars;
 			}
+			$field->enqueue_scripts();
 			$this->sub_fields[$sub_field_name] = $field;
 		}
 	}
