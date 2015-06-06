@@ -42,6 +42,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			<?php
 			wp_editor( $value, esc_attr( $this->element_id ), $settings )
 			?>
+			<input type="hidden" name="<?php echo esc_attr( $this->element_name) ?>" value="<?php echo esc_attr( $value ) ?>">
 		</div>
 		<?php
 

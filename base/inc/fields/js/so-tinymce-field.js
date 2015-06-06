@@ -31,6 +31,11 @@
             if(tinymce.get(id) == null && wrapDiv.hasClass('tmce-active')) {
                 tinymce.init(tinyMCEPreInit.mceInit[id]);
             }
+            container.find('#'+id).change(function() {
+                    var content = tinymce.get( id ).save();
+                    container.find('input[type="hidden"]').val(content);
+                }
+            );
             container.data('tinymce-setup-complete', true);
         });
         QTags._buttonsInit();
