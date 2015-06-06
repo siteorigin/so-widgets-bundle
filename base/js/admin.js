@@ -115,7 +115,7 @@ var sowEmitters = {
             var $el = $(el), $mainForm, formInitializing = true;
 
             // Skip this if the widget has any fields with an __i__
-            var $inputs = $el.find('input');
+            var $inputs = $el.find('input[name]');
             if( $inputs.length && $inputs.attr('name').indexOf('__i__') !== -1 ) {
                 return this;
             }
