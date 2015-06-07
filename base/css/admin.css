@@ -123,6 +123,7 @@
 .siteorigin-widget-form .siteorigin-widget-field-repeater .siteorigin-widget-field-repeater-top h3 {
   font-size: 13px;
   margin: 0;
+  padding: 0 !important;
 }
 .siteorigin-widget-form .siteorigin-widget-field-repeater .siteorigin-widget-field-expand,
 .siteorigin-widget-form .siteorigin-widget-field-repeater .siteorigin-widget-field-remove {
