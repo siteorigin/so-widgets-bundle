@@ -31,7 +31,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			'textarea_rows' => $this->rows,
 			'editor_height' => $this->editor_height,
 			'tinymce' => array(
-				'wp_skip_init' => strpos( $this->element_id, '__i__' ) >= 0
+				'wp_skip_init' => strpos( $this->element_id, '__i__' ) != false
 			)
 		);
 		$this->javascript_variables['mceSettings'] = $settings;
