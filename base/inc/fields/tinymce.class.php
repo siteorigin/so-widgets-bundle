@@ -42,7 +42,6 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			<?php
 			wp_editor( $value, esc_attr( $this->element_id ), $settings )
 			?>
-			<input type="hidden" name="<?php echo esc_attr( $this->element_name) ?>" value="<?php echo esc_attr( $value ) ?>">
 		</div>
 		<?php
 
@@ -57,4 +56,5 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	public function enqueue_scripts() {
 		wp_enqueue_script( 'so-tinymce-field', plugin_dir_url(__FILE__) . 'js/so-tinymce-field' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'editor', 'quicktags' ), SOW_BUNDLE_VERSION );
 	}
+
 }
