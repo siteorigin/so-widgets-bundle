@@ -29,6 +29,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			'textarea_name' => esc_attr( $this->element_name ),
 			'default_editor' => $this->default_editor,
 			'textarea_rows' => $this->rows,
+			'editor_class' => 'siteorigin-widget-input',
 			'editor_height' => $this->editor_height,
 			'tinymce' => array(
 				'wp_skip_init' => strpos( $this->element_id, '__i__' ) != false

@@ -31,7 +31,7 @@ class SiteOrigin_Widget_TinyMCE_Widget extends SiteOrigin_Widget {
 
 	public function get_template_variables( $instance, $args ) {
 		return array(
-			'text' => $instance['text']
+			'text' => !empty($instance['text']) ? $instance['text'] : ''
 		);
 	}
 

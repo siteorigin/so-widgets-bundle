@@ -804,7 +804,7 @@ var sowEmitters = {
             var formClass = $el.closest('.siteorigin-widget-form').data('class');
             var repeaterHtml = window.sowGetWidgetFieldVariable(formClass, $el.data('element-name'), 'repeaterHTML' );
             var $nextIndex = $el.find('> .siteorigin-widget-field-repeater-items').children().length+1;
-            repeaterHtml = repeaterHtml.replace(/\{id\}/g, $nextIndex);
+            repeaterHtml = repeaterHtml.replace(/_id_/g, $nextIndex);
             var readonly = typeof $el.attr('readonly') != 'undefined';
             var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
                 .append(
@@ -900,8 +900,9 @@ var sowEmitters = {
 
     window.sowGetWidgetFieldVariable = function ( widgetClass, elementName, key ) {
         var widgetVars = window.sow_field_javascript_variables[widgetClass];
-        // Get rid of any index placeholders
+        // Get rid of any indices or index placeholders
         elementName = elementName.replace( /\[#.*?#\]/g, '');
+        elementName = elementName.replace( /\[\d\]/g, '');
         var variablePath = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( elementName )[1];
         var variablePathParts = variablePath.split('][');
         var elementVars = variablePathParts.length ? widgetVars : null;

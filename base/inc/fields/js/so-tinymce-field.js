@@ -24,7 +24,8 @@
                 });
                 var mceSettings = sowGetWidgetFieldVariable(formClass, name, 'mceSettings');
                 var fieldName = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( name )[1];
-                var idPattern = new RegExp( 'widget-.+-[_a-zA-Z0-9]+-' + fieldName.replace( '][', '-', 'g' ) + '[-\d]*' );
+                var fn = fieldName.replace( /\[\d\]/, '' );
+                var idPattern = new RegExp( 'widget-.+-[_a-zA-Z0-9]+-' + fn.replace( /\]\[/g, '-' ) + '[-\d]*' );
                 for( var initId in tinyMCEPreInit.mceInit) {
                     if(initId.match(idPattern)) {
                         mceSettings = $.extend({}, tinyMCEPreInit.mceInit[initId], mceSettings);

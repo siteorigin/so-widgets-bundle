@@ -725,7 +725,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$name[] = $field_name;
 			$field_id_base = $this->get_field_id(implode('-', $name));
 			if ( $is_template ) {
-				return $field_id_base . '-{id}';
+				return $field_id_base . '-_id_';
 			}
 			if ( ! isset( $this->field_ids[ $field_id_base ] ) ) {
 				$this->field_ids[ $field_id_base ] = 1;
