@@ -900,10 +900,9 @@ var sowEmitters = {
 
     window.sowGetWidgetFieldVariable = function ( widgetClass, elementName, key ) {
         var widgetVars = window.sow_field_javascript_variables[widgetClass];
-        // Get rid of any indices or index placeholders
+        // Get rid of any index placeholders
         elementName = elementName.replace( /\[#.*?#\]/g, '');
-        elementName = elementName.replace( /\[\d\]/g, '');
-        var variablePath = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( elementName )[1];
+        var variablePath = /[a-zA-Z0-9\-]+(?:\[[a-zA-Z0-9]+\])?\[(.*)\]/.exec( elementName )[1];
         var variablePathParts = variablePath.split('][');
         var elementVars = variablePathParts.length ? widgetVars : null;
         while(variablePathParts.length) {
