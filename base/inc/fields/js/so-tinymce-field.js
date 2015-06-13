@@ -17,9 +17,6 @@
             }
             $container.find('.quicktags-toolbar').remove();
             quicktags(tinyMCEPreInit.qtInit[id]);
-            $textarea.on('input propertychange', function () {
-                $container.find('input[type="hidden"]').val($textarea.val());
-            });
             var mceSettings = sowGetWidgetFieldVariable(formClass, name, 'mceSettings');
             var fieldName = /[a-zA-Z0-9\-]+(?:\[[a-zA-Z0-9]+\])?\[(.*)\]/.exec( name )[1];
             var idPattern = new RegExp( 'widget-.+-[_a-zA-Z0-9]+-' + fieldName.replace( /\]\[/g, '-' ) + '[-\d]*' );
@@ -28,21 +25,30 @@
                     mceSettings = $.extend({}, tinyMCEPreInit.mceInit[initId], mceSettings);
                 }
             }
+            var content;
+            var curEd = tinymce.get(id);
+            if(curEd != null) {
+                content = curEd.getContent();
+                curEd.remove();
+            }
             var setupEditor = function(editor) {
-                editor.on('change', function() {
+                editor.onChange.add(
+                    function() {
                         tinymce.get(id).save();
-                        $textarea.trigger('input');
+                    }
+                );
+                editor.onInit.add(
+                    function () {
+                        if(content) {
+                            editor.setContent(content);
+                        }
                     }
                 );
             };
             mceSettings = $.extend({}, mceSettings, {selector:'#'+id, setup:setupEditor});
             tinyMCEPreInit.mceInit[id] = mceSettings;
             var wrapDiv = $container.find('div#wp-' + id + '-wrap');
-            if(tinymce.get(id) != null) {
-                tinymce.get(id).remove();
-            }
             if(wrapDiv.hasClass('tmce-active')) {
-
                 tinymce.init(tinyMCEPreInit.mceInit[id]);
             }
         });
@@ -55,9 +61,15 @@
             var initializeTinyMCEFields = function() {
                 setup(widgetForm);
             };
-            $(widgetForm).find('.siteorigin-widget-field-repeater-items').sortable( "option", "stop", initializeTinyMCEFields);
+            var $repeaters = $(widgetForm).find('.siteorigin-widget-field-repeater-items');
+            if( $repeaters.length) {
+                $repeaters.on('updateFieldPositions', initializeTinyMCEFields);
+                $repeaters.sortable( "option", "stop", initializeTinyMCEFields);
+            }
+            else {
+                initializeTinyMCEFields();
+            }
             $(widgetForm).data('setup-complete', true);
-            initializeTinyMCEFields();
         }
     });
 
