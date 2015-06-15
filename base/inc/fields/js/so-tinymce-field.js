@@ -33,12 +33,13 @@
                 curEd.remove();
             }
             var setupEditor = function(editor) {
-                editor.onChange.add(
+                editor.on('change',
                     function() {
                         tinymce.get(id).save();
+                        $textarea.trigger('change');
                     }
                 );
-                editor.onInit.add(
+                editor.on('init',
                     function () {
                         if(content) {
                             editor.setContent(content);
@@ -64,13 +65,14 @@
 
         var $repeaters = $f.find('> .siteorigin-widget-field-type-repeater > .siteorigin-widget-field-repeater > .siteorigin-widget-field-repeater-items');
         if( $repeaters.length) {
-
-            $repeaters.on('updateFieldPositions', function(e) {
+            var reinitRepeaterItems = function(e) {
                 var $$ = $(e.target);
                 $$.find('> .siteorigin-widget-field-repeater-item > .siteorigin-widget-field-repeater-item-form').each(function(){
                     setup( $(this) );
                 });
-            });
+            };
+            $repeaters.on('updateFieldPositions', reinitRepeaterItems);
+            $repeaters.sortable( "option", "stop", reinitRepeaterItems);
         }
 
         setup( $(e.target) );
