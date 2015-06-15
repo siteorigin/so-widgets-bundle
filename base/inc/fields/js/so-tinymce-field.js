@@ -2,7 +2,8 @@
 
 (function( $ ) {
     var setup = function(widgetForm) {
-        $(widgetForm).find('.siteorigin-widget-tinymce-container').each( function (index, element) {
+
+        $(widgetForm).find('> .siteorigin-widget-field-type-tinymce > .siteorigin-widget-tinymce-container').each( function (index, element) {
             var $container = $(element);
             var formClass = $container.closest('.siteorigin-widget-form-main').data('class');
             var $textarea = $container.find('textarea');
@@ -48,29 +49,31 @@
             mceSettings = $.extend({}, mceSettings, {selector:'#'+id, setup:setupEditor});
             tinyMCEPreInit.mceInit[id] = mceSettings;
             var wrapDiv = $container.find('div#wp-' + id + '-wrap');
-            if(wrapDiv.hasClass('tmce-active')) {
-                tinymce.init(tinyMCEPreInit.mceInit[id]);
+            if( wrapDiv.hasClass('tmce-active') ) {
+                // Add a small timeout to make sure everything is ready - mainly for customizer and widgets interface
+                setTimeout(function(){
+                    tinymce.init(tinyMCEPreInit.mceInit[id]);
+                }, 250);
             }
         });
         QTags._buttonsInit();
     };
 
-    $(document).on( 'sowsetupform', '.siteorigin-widget-form-main', function() {
-        var widgetForm = this;
-        if(!$(widgetForm).data('setup-complete')) {
-            var initializeTinyMCEFields = function() {
-                setup(widgetForm);
-            };
-            var $repeaters = $(widgetForm).find('.siteorigin-widget-field-repeater-items');
-            if( $repeaters.length) {
-                $repeaters.on('updateFieldPositions', initializeTinyMCEFields);
-                $repeaters.sortable( "option", "stop", initializeTinyMCEFields);
-            }
-            else {
-                initializeTinyMCEFields();
-            }
-            $(widgetForm).data('setup-complete', true);
+    $(document).on( 'sowsetupform', function(e) {
+        var $f = $(e.target);
+
+        var $repeaters = $f.find('> .siteorigin-widget-field-type-repeater > .siteorigin-widget-field-repeater > .siteorigin-widget-field-repeater-items');
+        if( $repeaters.length) {
+
+            $repeaters.on('updateFieldPositions', function(e) {
+                var $$ = $(e.target);
+                $$.find('> .siteorigin-widget-field-repeater-item > .siteorigin-widget-field-repeater-item-form').each(function(){
+                    setup( $(this) );
+                });
+            });
         }
+
+        setup( $(e.target) );
     });
 
 })( jQuery );
