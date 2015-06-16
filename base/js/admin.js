@@ -801,10 +801,8 @@ var sowEmitters = {
         return $(this).each( function(i, el){
 
             var $el = $(el);
-            var formClass = $el.closest('.siteorigin-widget-form').data('class');
-            var repeaterHtml = window.sowGetWidgetFieldVariable(formClass, $el.data('element-name'), 'repeaterHTML' );
             var $nextIndex = $el.find('> .siteorigin-widget-field-repeater-items').children().length+1;
-            repeaterHtml = repeaterHtml.replace(/_id_/g, $nextIndex);
+            var repeaterHtml = $el.find('.siteorigin-widget-field-repeatear-item-html').html().replace(/_id_/g, $nextIndex);
             var readonly = typeof $el.attr('readonly') != 'undefined';
             var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
                 .append(

@@ -10,7 +10,7 @@
             var id = $textarea.attr('id');
             if( id.indexOf( '__i__' ) > -1 ) return;
             var name = $textarea.attr('name').replace(/\[\d\]/g, '');
-            var qtSettings = sowGetWidgetFieldVariable(formClass, name, 'qtSettings');
+            var qtSettings = $container.data('qtSettings');
             qtSettings = $.extend({}, tinyMCEPreInit.qtInit['siteorigin-widget-input-tinymce-field'], qtSettings, {id:id});
             tinyMCEPreInit.qtInit[id] = qtSettings;
             if( QTags.instances[ id ] != null ) {
@@ -18,7 +18,7 @@
             }
             $container.find('.quicktags-toolbar').remove();
             quicktags(tinyMCEPreInit.qtInit[id]);
-            var mceSettings = sowGetWidgetFieldVariable(formClass, name, 'mceSettings');
+            var mceSettings = $container.data('mceSettings');
             var fieldName = /[a-zA-Z0-9\-]+(?:\[[a-zA-Z0-9]+\])?\[(.*)\]/.exec( name )[1];
             var idPattern = new RegExp( 'widget-.+-[_a-zA-Z0-9]+-' + fieldName.replace( /\]\[/g, '-' ) + '[-\d]*' );
             for( var initId in tinyMCEPreInit.mceInit) {

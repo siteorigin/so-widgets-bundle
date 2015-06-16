@@ -41,11 +41,6 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 	protected function render_field( $value, $instance ) {
 		if( !isset( $this->fields ) || empty( $this->fields ) ) return;
 		$container = array( 'name' => $this->base_name, 'type' => 'repeater' );
-		ob_start();
-		$this->create_and_render_sub_fields( null, $container, true );
-		$html = ob_get_clean();
-
-		$this->javascript_variables['repeaterHTML'] = $html;
 		$item_label = isset( $this->item_label ) ? $this->item_label : null;
 		if ( ! empty( $item_label ) ) {
 			// convert underscore naming convention to camelCase for javascript and encode as json string
@@ -80,7 +75,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 							</div>
 							<div class="siteorigin-widget-field-repeater-item-form">
 								<?php
-								$this->create_and_render_sub_fields( $v );
+								$this->create_and_render_sub_fields( $v, $container );
 								?>
 							</div>
 						</div>
@@ -92,6 +87,9 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 			<?php if( empty( $this->readonly ) ) : ?>
 				<div class="siteorigin-widget-field-repeater-add"><?php esc_html_e( 'Add', 'siteorigin-widgets' ) ?></div>
 			<?php endif; ?>
+			<div class="siteorigin-widget-field-repeatear-item-html" style="display: none;">
+				<?php $this->create_and_render_sub_fields( null, $container, true ); ?>
+			</div>
 		</div>
 		<?php
 	}

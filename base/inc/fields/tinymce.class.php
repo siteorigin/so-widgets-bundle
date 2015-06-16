@@ -35,11 +35,11 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 				'wp_skip_init' => strpos( $this->element_id, '__i__' ) != false
 			)
 		);
-		$this->javascript_variables['mceSettings'] = $settings;
-		$this->javascript_variables['qtSettings'] = array();
 
 		?>
-		<div class="siteorigin-widget-tinymce-container">
+		<div class="siteorigin-widget-tinymce-container"
+		     data-mce-settings="<?php echo esc_attr( json_encode( $settings ) ) ?>"
+		     data-qt-settings="<?php echo esc_attr( json_encode( array() ) ) ?>">
 			<?php
 			wp_editor( $value, esc_attr( $this->element_id ), $settings )
 			?>
