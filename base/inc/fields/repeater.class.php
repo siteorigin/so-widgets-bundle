@@ -87,8 +87,14 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 			<?php if( empty( $this->readonly ) ) : ?>
 				<div class="siteorigin-widget-field-repeater-add"><?php esc_html_e( 'Add', 'siteorigin-widgets' ) ?></div>
 			<?php endif; ?>
+			<?php
+			ob_start();
+			$this->create_and_render_sub_fields( null, $container, true );
+			$rpt_fields = ob_get_clean();
+			$rpt_fields = preg_replace( '/name="/', 'data-name="', $rpt_fields );
+			?>
 			<div class="siteorigin-widget-field-repeatear-item-html" style="display: none;">
-				<?php $this->create_and_render_sub_fields( null, $container, true ); ?>
+				<?php echo $rpt_fields; ?>
 			</div>
 		</div>
 		<?php
