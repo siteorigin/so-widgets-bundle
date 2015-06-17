@@ -71,7 +71,6 @@
                     setup( $(this) );
                 });
             };
-            $repeaters.on('updateFieldPositions', reinitRepeaterItems);
             $repeaters.sortable( "option", "stop", reinitRepeaterItems);
         }
 
