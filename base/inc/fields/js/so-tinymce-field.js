@@ -19,8 +19,9 @@
             $container.find('.quicktags-toolbar').remove();
             quicktags(tinyMCEPreInit.qtInit[id]);
             var mceSettings = $container.data('mceSettings');
+            var widgetIdBase = $container.data('widgetIdBase');
             var fieldName = /[a-zA-Z0-9\-]+(?:\[[a-zA-Z0-9]+\])?\[(.*)\]/.exec( name )[1];
-            var idPattern = new RegExp( 'widget-.+-[_a-zA-Z0-9]+-' + fieldName.replace( /\]\[/g, '-' ) + '[-\d]*' );
+            var idPattern = new RegExp( 'widget-' + widgetIdBase + '-.*-' + fieldName.replace( /\]\[/g, '-' ) + '[-\d]*' );
             for( var initId in tinyMCEPreInit.mceInit) {
                 if(initId.match(idPattern)) {
                     mceSettings = $.extend({}, tinyMCEPreInit.mceInit[initId], mceSettings);
@@ -52,9 +53,12 @@
             var wrapDiv = $container.find('div#wp-' + id + '-wrap');
             if( wrapDiv.hasClass('tmce-active') ) {
                 // Add a small timeout to make sure everything is ready - mainly for customizer and widgets interface
-                setTimeout(function(){
-                    tinymce.init(tinyMCEPreInit.mceInit[id]);
-                }, 250);
+                var intervalId = setInterval(function(){
+                    if($('#' + id + ':visible').length) {
+                        tinymce.init(tinyMCEPreInit.mceInit[id]);
+                        clearInterval(intervalId);
+                    }
+                }, 300);
             }
         });
         QTags._buttonsInit();
