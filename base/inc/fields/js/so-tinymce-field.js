@@ -2,24 +2,21 @@
 
 (function( $ ) {
     var setup = function(widgetForm) {
-
         $(widgetForm).find('> .siteorigin-widget-field-type-tinymce > .siteorigin-widget-tinymce-container').each( function (index, element) {
             var $container = $(element);
-            var formClass = $container.closest('.siteorigin-widget-form-main').data('class');
             var $textarea = $container.find('textarea');
             var id = $textarea.attr('id');
             if( id.indexOf( '__i__' ) > -1 ) return;
-            var name = $textarea.attr('name').replace(/\[\d\]/g, '');
-            var qtSettings = $container.data('qtSettings');
-            qtSettings = $.extend({}, tinyMCEPreInit.qtInit['siteorigin-widget-input-tinymce-field'], qtSettings, {id:id});
-            tinyMCEPreInit.qtInit[id] = qtSettings;
-            if( QTags.instances[ id ] != null ) {
-                delete QTags.instances[ id ];
+            if( ! QTags.instances[ id ]) {
+                var qtSettings = $container.data('qtSettings');
+                qtSettings = $.extend({}, tinyMCEPreInit.qtInit['siteorigin-widget-input-tinymce-field'], qtSettings, {id:id});
+                tinyMCEPreInit.qtInit[id] = qtSettings;
+                $container.find('.quicktags-toolbar').remove();
+                quicktags(tinyMCEPreInit.qtInit[id]);
             }
-            $container.find('.quicktags-toolbar').remove();
-            quicktags(tinyMCEPreInit.qtInit[id]);
             var mceSettings = $container.data('mceSettings');
             var widgetIdBase = $container.data('widgetIdBase');
+            var name = $textarea.attr('name').replace(/\[\d\]/g, '');
             var fieldName = /[a-zA-Z0-9\-]+(?:\[[a-zA-Z0-9]+\])?\[(.*)\]/.exec( name )[1];
             var idPattern = new RegExp( 'widget-' + widgetIdBase + '-.*-' + fieldName.replace( /\]\[/g, '-' ) + '[-\d]*' );
             for( var initId in tinyMCEPreInit.mceInit) {
@@ -69,13 +66,12 @@
 
         var $repeaters = $f.find('> .siteorigin-widget-field-type-repeater > .siteorigin-widget-field-repeater > .siteorigin-widget-field-repeater-items');
         if( $repeaters.length) {
-            var reinitRepeaterItems = function(e) {
-                var $$ = $(e.target);
-                $$.find('> .siteorigin-widget-field-repeater-item > .siteorigin-widget-field-repeater-item-form').each(function(){
+            var reinitRepeaterItem = function(e, ui) {
+                ui.item.find('> .siteorigin-widget-field-repeater-item-form').each(function(){
                     setup( $(this) );
                 });
             };
-            $repeaters.sortable( "option", "stop", reinitRepeaterItems);
+            $repeaters.sortable( "option", "stop", reinitRepeaterItem);
         }
 
         setup( $(e.target) );
