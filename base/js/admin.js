@@ -873,6 +873,12 @@ var sowEmitters = {
                         if (typeof $.fn.dialog !== 'undefined') {
                             $(this).closest('.panel-dialog').dialog("option", "position", "center");
                         }
+                        if($(this).is(':visible')) {
+                            $(this).trigger('slideToggleOpenComplete');
+                        }
+                        else {
+                            $(this).trigger('slideToggleCloseComplete');
+                        }
                     });
                 });
 
@@ -930,7 +936,9 @@ var sowEmitters = {
     // When we click on a widget top
     $('.widgets-holder-wrap').on('click', '.widget:has(.siteorigin-widget-form-main) .widget-top', function(){
         var $$ = $(this).closest('.widget').find('.siteorigin-widget-form-main');
-        setTimeout( function(){ $$.sowSetupForm(); }, 200);
+        setTimeout( function(){
+            $$.sowSetupForm();
+        }, 200);
     });
 
     // When we open a Page Builder widget dialog

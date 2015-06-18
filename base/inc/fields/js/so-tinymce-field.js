@@ -7,13 +7,6 @@
             var $textarea = $container.find('textarea');
             var id = $textarea.attr('id');
             if( id.indexOf( '__i__' ) > -1 ) return;
-            if( ! QTags.instances[ id ]) {
-                var qtSettings = $container.data('qtSettings');
-                qtSettings = $.extend({}, tinyMCEPreInit.qtInit['siteorigin-widget-input-tinymce-field'], qtSettings, {id:id});
-                tinyMCEPreInit.qtInit[id] = qtSettings;
-                $container.find('.quicktags-toolbar').remove();
-                quicktags(tinyMCEPreInit.qtInit[id]);
-            }
             var mceSettings = $container.data('mceSettings');
             var widgetIdBase = $container.data('widgetIdBase');
             var name = $textarea.attr('name').replace(/\[\d\]/g, '');
@@ -50,12 +43,24 @@
             var wrapDiv = $container.find('div#wp-' + id + '-wrap');
             if( wrapDiv.hasClass('tmce-active') ) {
                 // Add a small timeout to make sure everything is ready - mainly for customizer and widgets interface
-                var intervalId = setInterval(function(){
-                    if($('#' + id + ':visible').length) {
-                        tinymce.init(tinyMCEPreInit.mceInit[id]);
-                        clearInterval(intervalId);
-                    }
-                }, 300);
+                if($('#' + id).is(':visible')) {
+                    tinymce.init(tinyMCEPreInit.mceInit[id]);
+                }
+                else {
+                    var intervalId = setInterval(function () {
+                        if ($('#' + id).is(':visible')) {
+                            tinymce.init(tinyMCEPreInit.mceInit[id]);
+                            clearInterval(intervalId);
+                        }
+                    }, 500);
+                }
+            }
+            if( ! QTags.instances[ id ]) {
+                var qtSettings = $container.data('qtSettings');
+                qtSettings = $.extend({}, tinyMCEPreInit.qtInit['siteorigin-widget-input-tinymce-field'], qtSettings, {id:id});
+                tinyMCEPreInit.qtInit[id] = qtSettings;
+                $container.find('.quicktags-toolbar').remove();
+                quicktags(tinyMCEPreInit.qtInit[id]);
             }
         });
         QTags._buttonsInit();
@@ -74,7 +79,22 @@
             $repeaters.sortable( "option", "stop", reinitRepeaterItem);
         }
 
-        setup( $(e.target) );
+        if($f.is('.siteorigin-widget-field-repeater-item-form')){
+            if($f.is(':visible')) {
+                setup( $f );
+            }
+            else {
+                $f.on('slideToggleOpenComplete', function onSlideToggleComplete() {
+                    if( $f.is(':visible') ){
+                        setup($f);
+                        $f.off('slideToggleOpenComplete');
+                    }
+                })
+            }
+        }
+        else {
+            setup( $f );
+        }
     });
 
 })( jQuery );
