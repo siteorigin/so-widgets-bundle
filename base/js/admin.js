@@ -122,20 +122,6 @@ var sowEmitters = {
 
             // Skip this if we've already set up the form
             if( $el.is('.siteorigin-widget-form-main') ) {
-                
-                if( $('body').hasClass('wp-customizer') &&  $el.closest('.panel-dialog').length === 0) {
-                    // If in the customizer, we only want to set up admin form for a specific widget when it has been added.
-                    if( !$el.closest('.widget').data('sow-widget-added-form-setup') ) {
-                        // Setup new widgets when they're added in the customizer interface
-                        $(document).on('widget-added', function (e, widget) {
-                            widget.data('sow-widget-added-form-setup', true);
-                            widget.find('.siteorigin-widget-form').sowSetupForm();
-                            widget.removeData('sow-widget-added-form-setup');
-                        });
-                        //Still need to set up form again after saving, to ensure repeaters still work. :/
-                        //return true;
-                    }
-                }
                 if( $el.data('sow-form-setup') === true ) {
                     return true;
                 }
@@ -940,6 +926,13 @@ var sowEmitters = {
             $$.sowSetupForm();
         }, 200);
     });
+
+    if( $('body').hasClass('wp-customizer') ) {
+        // Setup new widgets when they're added in the customizer interface
+        $(document).on('widget-added', function (e, widget) {
+            widget.find('.siteorigin-widget-form').sowSetupForm();
+        });
+    }
 
     // When we open a Page Builder widget dialog
     $(document).on('dialogopen', function(e){
