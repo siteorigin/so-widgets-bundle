@@ -386,7 +386,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 				<div class="so-widget-toolbar">
 					<h3><?php _e('Widget Preview', 'siteorigin-widgets') ?></h3>
-					<a href="#" class="close"><span class="dashicons dashicons-arrow-left-alt2"></span></a>
+					<div class="close"><span class="dashicons dashicons-arrow-left-alt2"></span></div>
 				</div>
 
 				<div class="so-widget-iframe">
@@ -394,9 +394,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				</div>
 
 				<form target="siteorigin-widget-preview-iframe" action="<?php echo wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ) ?>" method="post">
-					<input type="hidden" name="action" value="so_widgets_preview">
-					<input type="hidden" name="data" value="">
-					<input type="hidden" name="class" value="">
+					<input type="hidden" name="action" value="so_widgets_preview" />
+					<input type="hidden" name="data" value="" />
+					<input type="hidden" name="class" value="" />
 				</form>
 
 			</div>
