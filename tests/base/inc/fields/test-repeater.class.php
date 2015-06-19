@@ -43,9 +43,8 @@ class SiteOrigin_Widget_Field_RepeaterTest extends WP_UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function render_sets_repeaterHTML_javascript_variable() {
-		$js_vars = $this->field->get_javascript_variables();
-		$this->assertNotNull( $js_vars['repeaterHTML'] );
+	public function render_outputs_repeater_HTML_template() {
+		$this->assertContains( 'siteorigin-widget-field-repeatear-item-html', $this->field_output );
 	}
 
 	/**

@@ -21,7 +21,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	 * @access protected
 	 * @var int
 	 */
-	protected $editor_height = 200;
+	protected $editor_height;
 
 	protected function render_field( $value, $instance ) {
 
@@ -30,16 +30,16 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			'default_editor' => $this->default_editor,
 			'textarea_rows' => $this->rows,
 			'editor_class' => 'siteorigin-widget-input',
-			'editor_height' => $this->editor_height,
 			'tinymce' => array(
 				'wp_skip_init' => strpos( $this->element_id, '__i__' ) != false || strpos( $this->element_id, '_id_' ) != false
 			)
 		);
+		if( isset( $this->editor_height ) ) $settings['editor_height'] = $this->editor_height;
 		preg_match( '/widget-(.+?)\[/', $this->element_name, $id_base_matches );
 		$widget_id_base = empty($id_base_matches) || count($id_base_matches) < 2 ? '' : $id_base_matches[1];
 		?>
 		<div class="siteorigin-widget-tinymce-container"
-		     data-mce-settings="<?php echo esc_attr( json_encode( $settings ) ) ?>"
+		     data-mce-settings="<?php echo esc_attr( json_encode( $settings['tinymce'] ) ) ?>"
 		     data-qt-settings="<?php echo esc_attr( json_encode( array() ) ) ?>"
 		     data-widget-id-base="<?php echo esc_attr( $widget_id_base ) ?>"
 			>
