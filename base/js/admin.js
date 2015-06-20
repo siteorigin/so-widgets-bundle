@@ -684,7 +684,7 @@ var sowEmitters = {
             } );
 
             // Create a new modal window
-            var modal = $( $('#so-widgets-bundle-tpl-preview-dialog').html()).appendTo('body');
+            var modal = $( $('#so-widgets-bundle-tpl-preview-dialog').html().trim() ).appendTo('body');
             modal.find('input[name="data"]').val( JSON.stringify(data) );
             modal.find('input[name="class"]').val( $el.data('class') );
             modal.find('iframe').on('load', function(){

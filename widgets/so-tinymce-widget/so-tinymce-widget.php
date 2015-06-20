@@ -13,7 +13,7 @@ class SiteOrigin_Widget_TinyMCE_Widget extends SiteOrigin_Widget {
 
 		parent::__construct(
 			'sow-tinymce',
-			__('SiteOrigin TinyMCE Widget', 'siteorigin-widgets'),
+			__('SiteOrigin Visual Editor', 'siteorigin-widgets'),
 			array(
 				'description' => __('A TinyMCE Widget.', 'siteorigin-widgets'),
 			),
@@ -21,7 +21,6 @@ class SiteOrigin_Widget_TinyMCE_Widget extends SiteOrigin_Widget {
 			array(
 				'text' => array(
 					'type' => 'tinymce',
-					'label' => __( 'TinyMCE input', 'siteorigin-widgets' ),
 					'editor_height' => 200
 				),
 			),
@@ -30,8 +29,18 @@ class SiteOrigin_Widget_TinyMCE_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_template_variables( $instance, $args ) {
+		$instance = wp_parse_args(
+			$instance,
+			array(
+				'text' => ''
+			)
+		);
+
+		$instance['text'] = do_shortcode( $instance['text'] );
+		$instance['text'] = wpautop( $instance['text'] );
+
 		return array(
-			'text' => !empty($instance['text']) ? $instance['text'] : ''
+			'text' => $instance['text']
 		);
 	}
 
