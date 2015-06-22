@@ -16,12 +16,53 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	 */
 	protected $default_editor = 'tinymce';
 	/**
-	 * The editor initial height.
+	 * The editor initial height. Overrides rows if it is set.
 	 *
 	 * @access protected
 	 * @var int
 	 */
 	protected $editor_height;
+	/**
+	 * An array of filter callbacks to apply to the set of buttons which will be rendered for the editor.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $button_filters;
+
+	protected function initialize() {
+		parent::initialize();
+
+		if ( !empty( $this->button_filters ) ) {
+			foreach ( $this->button_filters as $filter_name => $filter ) {
+				if ( preg_match( '/mce_buttons(?:_[1-4])?|quicktags_settings/', $filter_name ) && !empty( $filter ) && is_callable( $filter ) ) {
+					add_filter( $filter_name, array( $this, $filter_name ), 10, 2 );
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param $name
+	 * @param $arguments
+	 * @return array|mixed
+	 */
+	function __call( $name, $arguments ) {
+		if ( preg_match( '/mce_buttons(?:_[1-4])?|quicktags_settings/', $name ) && !empty( $this->button_filters[$name] ) ) {
+			$filter = $this->button_filters[$name];
+			if ( !empty( $filter[0] ) && is_a( $filter[0], 'SiteOrigin_Widget' ) ) {
+				$widget = $filter[0];
+				$settings = !empty($arguments[0]) ? $arguments[0] : array();
+				$editor_id = !empty($arguments[1]) ? $arguments[1] : '';
+				if ( preg_match( '/widget-' . $widget->id_base . '-.*-' . $this->base_name . '/', $editor_id ) ) {
+					return call_user_func( $filter, $settings, $editor_id );
+				}
+				else {
+					return $settings;
+				}
+			}
+		}
+	}
 
 	protected function render_field( $value, $instance ) {
 

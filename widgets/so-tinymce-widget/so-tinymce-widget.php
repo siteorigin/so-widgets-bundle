@@ -21,11 +21,28 @@ class SiteOrigin_Widget_TinyMCE_Widget extends SiteOrigin_Widget {
 			array(
 				'text' => array(
 					'type' => 'tinymce',
-					'editor_height' => 200
+					'rows' => 20,
+					'button_filters' => array(
+						'mce_buttons' => array( $this, 'mce_buttons_filter'),
+						'quicktags_settings' => array( $this, 'quicktags_settings'),
+					)
 				),
 			),
 			plugin_dir_path(__FILE__)
 		);
+	}
+
+	public function mce_buttons_filter( $buttons, $editor_id ) {
+		if (($key = array_search('fullscreen', $buttons)) !== false) {
+			unset($buttons[$key]);
+		}
+		return $buttons;
+	}
+
+	public function quicktags_settings( $settings, $editor_id ) {
+		$settings['buttons'] = preg_replace( '/,fullscreen/', '', $settings['buttons'] );
+		$settings['buttons'] = preg_replace( '/,dfw/', '', $settings['buttons'] );
+		return $settings;
 	}
 
 	public function get_template_variables( $instance, $args ) {
