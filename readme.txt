@@ -30,7 +30,13 @@ The collection is growing, but here’s what we have so far.
 
 Once you enable a widget, you'll be able to use it anywhere standard widgets are used. You can manage your widgets by going to Plugins > SiteOrigin Widgets in your WordPress admin.
 
-[Documentation](https://siteorigin.com/widgets-bundle/) is available on SiteOrigin.
+== Documentation ==
+
+[Documentation](https://siteorigin.com/css/getting-started/) is available on SiteOrigin.
+
+== Support ==
+
+We offer free support on the [SiteOrigin support forums](https://siteorigin.com/thread/).
 
 = Create Custom Widgets =
 
