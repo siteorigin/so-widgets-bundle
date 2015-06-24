@@ -394,6 +394,12 @@ abstract class SiteOrigin_Widget_Field_Base {
 		return $this->javascript_variables;
 	}
 
+	/**
+	 * Some more complex fields may require some JavaScript in the front end. Enqueue them here.
+	 */
+	public function enqueue_scripts() {
+	}
+
 	public function __get( $name ) {
 		if ( isset( $this->$name ) ) {
 			return $this->$name;
