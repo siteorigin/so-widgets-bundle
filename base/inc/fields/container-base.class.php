@@ -57,8 +57,10 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 
 	protected function create_and_render_sub_fields( $values, $parent_container = null, $is_template = false ) {
 		$this->sub_fields = array();
-		if( isset( $parent_container ) ) {
-			$this->parent_container[] = $parent_container;
+		if( isset( $parent_container )) {
+			if( ! in_array( $parent_container, $this->parent_container, true ) ){
+				$this->parent_container[] = $parent_container;
+			}
 		}
 		/* @var $field_factory SiteOrigin_Widget_Field_Factory */
 		$field_factory = SiteOrigin_Widget_Field_Factory::getInstance();
@@ -77,6 +79,7 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 			if( ! empty( $field_js_vars ) ) {
 				$this->javascript_variables[$sub_field_name] = $field_js_vars;
 			}
+			$field->enqueue_scripts();
 			$this->sub_fields[$sub_field_name] = $field;
 		}
 	}

@@ -299,6 +299,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				if( ! empty( $field_js_vars ) ) {
 					$fields_javascript_variables[$field_name] = $field_js_vars;
 				}
+				$field->enqueue_scripts();
 				$this->fields[$field_name] = $field;
 			}
 			?>
@@ -385,7 +386,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 				<div class="so-widget-toolbar">
 					<h3><?php _e('Widget Preview', 'siteorigin-widgets') ?></h3>
-					<a href="#" class="close"><span class="dashicons dashicons-arrow-left-alt2"></span></a>
+					<div class="close"><span class="dashicons dashicons-arrow-left-alt2"></span></div>
 				</div>
 
 				<div class="so-widget-iframe">
@@ -393,9 +394,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				</div>
 
 				<form target="siteorigin-widget-preview-iframe" action="<?php echo wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ) ?>" method="post">
-					<input type="hidden" name="action" value="so_widgets_preview">
-					<input type="hidden" name="data" value="">
-					<input type="hidden" name="class" value="">
+					<input type="hidden" name="action" value="so_widgets_preview" />
+					<input type="hidden" name="data" value="" />
+					<input type="hidden" name="class" value="" />
 				</form>
 
 			</div>
@@ -724,7 +725,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$name[] = $field_name;
 			$field_id_base = $this->get_field_id(implode('-', $name));
 			if ( $is_template ) {
-				return $field_id_base . '-{id}';
+				return $field_id_base . '-_id_';
 			}
 			if ( ! isset( $this->field_ids[ $field_id_base ] ) ) {
 				$this->field_ids[ $field_id_base ] = 1;
