@@ -733,7 +733,9 @@ var sowEmitters = {
                             $in.data( 'original-name', $in.attr('name') );
                             newName = $in.attr('name');
                         }
-
+                        if( ! newName ) {
+                            return;
+                        }
                         for(var k in pos) {
                             newName = newName.replace('#' + k + '#', pos[k] );
                         }
@@ -788,7 +790,7 @@ var sowEmitters = {
 
             var $el = $(el);
             var $nextIndex = $el.find('> .siteorigin-widget-field-repeater-items').children().length+1;
-            var repeaterHtml = $el.find('.siteorigin-widget-field-repeatear-item-html').html().replace(/data-name="/g, 'name="').replace(/_id_/g, $nextIndex);
+            var repeaterHtml = $el.find('> .siteorigin-widget-field-repeatear-item-html').html().replace(/data-name="/g, 'name="').replace(/_id_/g, $nextIndex);
             var readonly = typeof $el.attr('readonly') != 'undefined';
             var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
                 .append(

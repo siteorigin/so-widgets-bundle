@@ -2,6 +2,16 @@
 
 (function( $ ) {
     var setup = function(widgetForm) {
+        //BS TinyMCE widget sometimes adds 'undefined' as an id when opening PB, which causes a JS error when using repeaters.
+        if(tinyMCEPreInit.mceInit.hasOwnProperty('undefined')) {
+            delete tinyMCEPreInit.mceInit['undefined'];
+        }
+        if(tinyMCEPreInit.qtInit.hasOwnProperty('undefined')) {
+            delete tinyMCEPreInit.qtInit['undefined'];
+        }
+        if(QTags.instances.hasOwnProperty('undefined')) {
+            delete QTags.instances['undefined'];
+        }
         $(widgetForm).find('> .siteorigin-widget-field-type-tinymce > .siteorigin-widget-tinymce-container').each( function (index, element) {
             var $container = $(element);
             var $textarea = $container.find('textarea');
