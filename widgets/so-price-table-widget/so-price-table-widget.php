@@ -127,6 +127,11 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 					'type' => 'color',
 					'label' => __('Featured button color', 'siteorigin-widgets'),
 				),
+
+				'button_new_window' => array(
+					'type' => 'checkbox',
+					'label' => __('Open Button URL in a new window', 'siteorigin-widgets'),
+				),
 			),
 			plugin_dir_path(__FILE__).'../'
 		);
