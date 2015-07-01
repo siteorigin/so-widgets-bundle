@@ -1,0 +1,7 @@
+{
+  "name": "so-widgets-bundle",
+  "version": "1.2.3",
+  "dependencies": {
+    "closure-compiler": "http://dl.google.com/closure-compiler/compiler-latest.zip"
+  }
+}

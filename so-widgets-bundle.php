@@ -3,7 +3,7 @@
 /*
 Plugin Name: SiteOrigin Widgets Bundle
 Description: A collection of all our widgets, neatly bundled into a single plugin.
-Version: 1.2.3
+Version: dev
 Author: SiteOrigin
 Author URI: http://siteorigin.com
 Plugin URI: http://siteorigin.com/widgets-bundle/
@@ -11,7 +11,7 @@ License: GPL3
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-define('SOW_BUNDLE_VERSION', '1.2.3');
+define('SOW_BUNDLE_VERSION', 'dev');
 define('SOW_BUNDLE_JS_SUFFIX', '');
 define('SOW_BUNDLE_BASE_FILE', __FILE__);
 
