@@ -3,7 +3,8 @@ var rename = require('gulp-rename');
 var replace = require('gulp-replace');
 var less = require('gulp-less');
 var uglify = require('gulp-uglify');
-//var closureCompiler = require('gulp-closure-compiler');
+
+var buildDir = 'build';
 
 gulp.task('version', function(version) {
     var args = {};
@@ -21,17 +22,17 @@ gulp.task('version', function(version) {
         console.log("E.g. gulp release 1.2.3");
         return;
     }
-    return gulp.src('so-widgets-bundle.php')
+    return gulp.src('src/so-widgets-bundle.php')
         .pipe(replace(/(Version: ).*/, '$1'+args.v))
         .pipe(replace(/(define\('SOW_BUNDLE_VERSION', ').*('\);)/, '$1'+args.v+'$2'))
         .pipe(replace(/(define\('SOW_BUNDLE_JS_SUFFIX', ').*('\);)/, '$1.min$2'))
-        .pipe(gulp.dest('tmp'));
+        .pipe(gulp.dest(buildDir));
 });
 
 gulp.task('compileLess', function() {
-    return gulp.src(['**/*.less', '!base/less/*.less', '!bower_components/**', '!node_modules/**', '!tmp/**', '!widgets/**'])
-        .pipe(less({paths: ['base/less'], compress: true}))
-        .pipe(gulp.dest('tmp'));
+    return gulp.src(['src/**/*.less', '!src/base/less/*.less', '!src/widgets/**'])
+        .pipe(less({paths: ['src/base/less'], compress: true}))
+        .pipe(gulp.dest(buildDir));
 });
 
 gulp.task('concatScripts', function () {
@@ -39,35 +40,19 @@ gulp.task('concatScripts', function () {
 });
 
 gulp.task('minifyScripts', function () {
-    return gulp.src(['**/*.js', '!bower_components/**', '!node_modules/**', '!tests/**', '!tmp/**', '!gulpfile.js'])
+    return gulp.src(['src/**/*.js'])
         .pipe(rename({ suffix: '.min' }))
         .pipe(uglify())
-        .pipe(gulp.dest('tmp'));
-
-    //return gulp.src('admin/admin.js')
-    //    .pipe(closureCompiler({
-    //        compilerPath: 'bower_components/closure-compiler/compiler.jar',
-    //        fileName: 'admin.js'
-    //    }))
-    //    .pipe(gulp.dest('tmp'));
+        .pipe(gulp.dest(buildDir));
 });
 
 gulp.task('compileJS', ['minifyScripts']);
 
-gulp.task('release', ['version', 'compileLess', 'compileJS'], function () {
-    return gulp.src(
-        [
-            '**/*',
-            '!so-widgets-bundle.php',
-            '!{bower_components,bower_components/**}',
-            '!{node_modules,node_modules/**}',
-            '!{tests,tests/**}',
-            '!{tmp,tmp/**}',
-            '!.gitignore',
-            '!bower.json',
-            '!gulpfile.js',
-            '!package.json'
-        ])
-        .pipe(gulp.dest('tmp'))
+gulp.task('copy', ['version', 'compileLess', 'compileJS'], function () {
+    return gulp.src(['src/**/!(*.js|*.less)', '!src/so-widgets-bundle.php', 'src/**/widgets/**/styles/*.less', '!src/**/widgets/**/styles/*.css'])
+        .pipe(gulp.dest(buildDir));
 });
 
+gulp.task('release', ['copy'], function(){
+
+});
