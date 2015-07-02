@@ -3,4 +3,5 @@ Thumbs.db
 *.min.js
 base/css/lesshat.css
 
-/vendor/
+bower_components/
+node_modules/
