@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var rename = require('gulp-rename');
 var replace = require('gulp-replace');
+var less = require('gulp-less');
 var uglify = require('gulp-uglify');
 //var closureCompiler = require('gulp-closure-compiler');
 
@@ -28,7 +29,9 @@ gulp.task('version', function(version) {
 });
 
 gulp.task('compileLess', function() {
-
+    return gulp.src(['**/*.less', '!base/less/*.less', '!bower_components/**', '!node_modules/**', '!tmp/**', '!widgets/**'])
+        .pipe(less({paths: ['base/less'], compress: true}))
+        .pipe(gulp.dest('tmp'));
 });
 
 gulp.task('concatScripts', function () {
@@ -36,7 +39,7 @@ gulp.task('concatScripts', function () {
 });
 
 gulp.task('minifyScripts', function () {
-    return gulp.src(['**/*.js', '!bower_components/**', '!js/**', '!node_modules/**', '!tests/**', '!tmp/**', '!gulpfile.js'])
+    return gulp.src(['**/*.js', '!bower_components/**', '!node_modules/**', '!tests/**', '!tmp/**', '!gulpfile.js'])
         .pipe(rename({ suffix: '.min' }))
         .pipe(uglify())
         .pipe(gulp.dest('tmp'));
@@ -51,6 +54,20 @@ gulp.task('minifyScripts', function () {
 
 gulp.task('compileJS', ['minifyScripts']);
 
-gulp.task('release', ['version', 'compileLess', 'compileJS'], function() {
-
+gulp.task('release', ['version', 'compileLess', 'compileJS'], function () {
+    return gulp.src(
+        [
+            '**/*',
+            '!so-widgets-bundle.php',
+            '!{bower_components,bower_components/**}',
+            '!{node_modules,node_modules/**}',
+            '!{tests,tests/**}',
+            '!{tmp,tmp/**}',
+            '!.gitignore',
+            '!bower.json',
+            '!gulpfile.js',
+            '!package.json'
+        ])
+        .pipe(gulp.dest('tmp'))
 });
+
