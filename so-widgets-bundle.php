@@ -33,7 +33,7 @@ class SiteOrigin_Widgets_Bundle {
 		'so-image-widget' => true,
 		'so-slider-widget' => true,
 		'so-post-carousel-widget' => true,
-		'so-tinymce-widget' => true,
+		'so-editor-widget' => true,
 	);
 
 	function __construct(){
