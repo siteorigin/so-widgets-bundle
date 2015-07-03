@@ -7,12 +7,12 @@ Author: SiteOrigin
 Author URI: https://siteorigin.com
 */
 
-class SiteOrigin_Widget_TinyMCE_Widget extends SiteOrigin_Widget {
+class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 
 	function __construct() {
 
 		parent::__construct(
-			'sow-tinymce',
+			'sow-editor',
 			__('SiteOrigin Editor', 'siteorigin-widgets'),
 			array(
 				'description' => __('A rich-text, text editor.', 'siteorigin-widgets'),
@@ -78,7 +78,7 @@ class SiteOrigin_Widget_TinyMCE_Widget extends SiteOrigin_Widget {
 
 
 	function get_template_name($instance) {
-		return 'tinymce';
+		return 'editor';
 	}
 
 	function get_style_name($instance) {
@@ -86,4 +86,4 @@ class SiteOrigin_Widget_TinyMCE_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register( 'tinymce', __FILE__ );
+siteorigin_widget_register( 'editor', __FILE__ );
