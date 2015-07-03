@@ -1,7 +1,7 @@
 <?php
 
 /*
-Widget Name: TinyMCE Widget
+Widget Name: Editor Widget
 Description: A widget which allows editing of content using the TinyMCE editor.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
@@ -13,9 +13,9 @@ class SiteOrigin_Widget_TinyMCE_Widget extends SiteOrigin_Widget {
 
 		parent::__construct(
 			'sow-tinymce',
-			__('SiteOrigin Visual Editor', 'siteorigin-widgets'),
+			__('SiteOrigin Editor', 'siteorigin-widgets'),
 			array(
-				'description' => __('A TinyMCE Widget.', 'siteorigin-widgets'),
+				'description' => __('A rich-text, text editor.', 'siteorigin-widgets'),
 			),
 			array(),
 			array(
@@ -48,11 +48,15 @@ class SiteOrigin_Widget_TinyMCE_Widget extends SiteOrigin_Widget {
 	public function get_template_variables( $instance, $args ) {
 		$instance = wp_parse_args(
 			$instance,
-			array(
-				'text' => ''
-			)
+			array(  'text' => '' )
 		);
 
+		$instance['text'] = apply_filters( 'widget_text', $instance['text'] );
+
+		// Run some known stuff
+		if( !empty($GLOBALS['wp_embed']) ) {
+			$instance['text'] = $GLOBALS['wp_embed']->autoembed( $instance['text'] );
+		}
 		$instance['text'] = do_shortcode( $instance['text'] );
 		$instance['text'] = wpautop( $instance['text'] );
 
