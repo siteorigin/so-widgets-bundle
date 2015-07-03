@@ -4,3 +4,7 @@ Thumbs.db
 base/css/lesshat.css
 node_modules/
 dist/
+
+admin/*.css
+base/**/*.css
+widgets/**/*.css
