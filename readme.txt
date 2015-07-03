@@ -60,6 +60,10 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Added networks to social networks widget.
 * Changed how repeater HTML is stored.
 
+= 1.2.4 =
+* Fixed reference to siteorigin_widgets_is_google_webfont.
+* Fixed CSS URL.
+
 = 1.2.3 =
 * Fixed Javascript issue with Map widget in customizer.
 * Added meta box manager.
