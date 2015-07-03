@@ -3,4 +3,4 @@ Thumbs.db
 *.min.js
 base/css/lesshat.css
 node_modules/
-build/
+dist/

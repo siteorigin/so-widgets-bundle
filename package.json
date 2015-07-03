@@ -1,13 +1,12 @@
 {
   "name": "so-widgets-bundle",
-  "version": "1.2.3",
+  "version": "1.2.5",
   "private": true,
   "dependencies": {},
   "devDependencies": {
+    "del": "^1.2.0",
     "gulp": "^3.9.0",
-    "gulp-closure-compiler": "^0.2.19",
     "gulp-less": "^3.0.3",
-    "gulp-load-plugins": "^1.0.0-rc.1",
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.3",
     "gulp-uglify": "^1.2.0"
