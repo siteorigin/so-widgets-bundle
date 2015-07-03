@@ -164,7 +164,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget {
 			array( 'jquery' ),
 			SOW_BUNDLE_VERSION
 		);
-		if( wp_is_mobile() ) {
+		if( function_exists('wp_is_mobile') && wp_is_mobile() ) {
 			$frontend_scripts[] = array(
 				'sow-slider-slider-cycle2-swipe',
 				siteorigin_widget_get_plugin_dir_url( 'slider' ) . 'js/jquery.cycle.swipe' . SOW_BUNDLE_JS_SUFFIX . '.js',

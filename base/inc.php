@@ -1,9 +1,11 @@
 <?php
 
+include plugin_dir_path(__FILE__).'inc/fields/siteorigin-widget-field-class-loader.class.php';
 include plugin_dir_path(__FILE__).'siteorigin-widget.class.php';
 include plugin_dir_path(__FILE__).'inc/meta-box-manager.php';
 include plugin_dir_path(__FILE__).'inc/post-selector.php';
 include plugin_dir_path(__FILE__).'inc/fonts.php';
+include plugin_dir_path(__FILE__).'inc/string-utils.php';
 
 global $siteorigin_widgets_registered, $siteorigin_widgets_classes;
 $siteorigin_widgets_registered = array();
@@ -186,7 +188,8 @@ function siteorigin_widget_preview_widget_action(){
 	if(!is_a($widget, 'SiteOrigin_Widget')) exit();
 
 	$instance = json_decode( stripslashes_deep($_POST['data']), true);
-	$instance = $widget->sanitize($instance);
+	/* @var $widget SiteOrigin_Widget */
+	$instance = $widget->update( $instance, $instance );
 	$instance['is_preview'] = true;
 
 	// The theme stylesheet will change how the button looks
@@ -314,7 +317,8 @@ function sow_esc_url( $url ) {
 function sow_esc_url_raw( $url ) {
 	if( preg_match('/^post: *([0-9]+)/', $url, $matches) ) {
 		// Convert the special post URL into a permalink
-		return 'post: ' . $matches[1];
+//		return 'post: ' . $matches[1];
+		$url = get_the_permalink( intval($matches[1]) );
 	}
 
 	$protocols = wp_allowed_protocols();
@@ -366,3 +370,9 @@ function siteorigin_widgets_font_families( ){
 
 	return apply_filters('siteorigin_widgets_font_families', $font_families);
 }
+
+function siteorigin_widgets_tinymce_admin_print_styles() {
+	wp_enqueue_style( 'editor-buttons' );
+}
+
+add_action( 'admin_print_styles', 'siteorigin_widgets_tinymce_admin_print_styles' );

@@ -145,12 +145,12 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#4679BD'
 	),
-//		'lastfm'   => array(
-//			'label'    => __( 'Last.fm', 'siteorigin-widgets' ),
-//			'base_url' => 'https://www.last.fm/',
-//			'icon_color' => '#FFFFFF',
-//			'button_color' => '#C02C0C'
-//		),
+	'lastfm'   => array(
+		'label'    => __( 'Last.fm', 'siteorigin-widgets' ),
+		'base_url' => 'https://www.last.fm/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#C02C0C'
+	),
 	'reddit'   => array(
 		'label'    => __( 'Reddit', 'siteorigin-widgets' ),
 		'base_url' => 'https://www.reddit.com/',
@@ -163,12 +163,12 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#4D394B'
 	),
-//		'slideshare'   => array(
-//			'label'    => __( 'Slideshare', 'siteorigin-widgets' ),
-//			'base_url' => 'https://www.slideshare.net/',
-//			'icon_color' => '#FFFFFF',
-//			'button_color' => '#00A8AA'
-//		),
+	'slideshare'   => array(
+		'label'    => __( 'Slideshare', 'siteorigin-widgets' ),
+		'base_url' => 'https://www.slideshare.net/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#00A8AA'
+	),
 	'soundcloud'   => array(
 		'label'    => __( 'Soundcloud', 'siteorigin-widgets' ),
 		'base_url' => 'https://soundcloud.com/',
@@ -211,12 +211,12 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#0E74AF'
 	),
-//		'twitch'   => array(
-//			'label'    => __( 'Twitch', 'siteorigin-widgets' ),
-//			'base_url' => 'https://www.twitch.tv/',
-//			'icon_color' => '#FFFFFF',
-//			'button_color' => '#6542A6'
-//		),
+	'twitch'   => array(
+		'label'    => __( 'Twitch', 'siteorigin-widgets' ),
+		'base_url' => 'https://www.twitch.tv/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#6542A6'
+	),
 	'vimeo-square'   => array(
 		'label'    => __( 'Vimeo', 'siteorigin-widgets' ),
 		'base_url' => 'https://vimeo.com/',
@@ -241,12 +241,12 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#4101AF'
 	),
-//		'yelp'   => array(
-//			'label'    => __( 'Yelp', 'siteorigin-widgets' ),
-//			'base_url' => 'https://www.yelp.com/',
-//			'icon_color' => '#FFFFFF',
-//			'button_color' => '#B4282E'
-//		),
+	'yelp'   => array(
+		'label'    => __( 'Yelp', 'siteorigin-widgets' ),
+		'base_url' => 'https://www.yelp.com/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#B4282E'
+	),
 	'youtube'   => array(
 		'label'    => __( 'YouTube', 'siteorigin-widgets' ),
 		'base_url' => 'https://www.youtube.com/',

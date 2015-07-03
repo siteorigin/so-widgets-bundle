@@ -367,7 +367,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				if ( empty( $instance['directions']['waypoints'] ) ) {
 					unset( $instance['directions']['waypoints'] );
 				}
-				$directions_json = json_encode( $this->underscores_to_camel_case( $instance['directions'] ) );
+				$directions_json = json_encode( siteorigin_widgets_underscores_to_camel_case( $instance['directions'] ) );
 			}
 
 			return array(

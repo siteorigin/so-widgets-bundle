@@ -2,3 +2,5 @@
 Thumbs.db
 *.min.js
 base/css/lesshat.css
+
+/vendor/

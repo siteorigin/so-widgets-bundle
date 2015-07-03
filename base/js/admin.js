@@ -115,26 +115,13 @@ var sowEmitters = {
             var $el = $(el), $mainForm, formInitializing = true;
 
             // Skip this if the widget has any fields with an __i__
-            var $inputs = $el.find('input');
+            var $inputs = $el.find('input[name]');
             if( $inputs.length && $inputs.attr('name').indexOf('__i__') !== -1 ) {
                 return this;
             }
 
             // Skip this if we've already set up the form
             if( $el.is('.siteorigin-widget-form-main') ) {
-                
-                if( $('body').hasClass('wp-customizer') &&  $el.closest('.panel-dialog').length === 0) {
-                    // If in the customizer, we only want to set up admin form for a specific widget when it has been added.
-                    if( !$el.closest('.widget').data('sow-widget-added-form-setup') ) {
-                        // Setup new widgets when they're added in the customizer interface
-                        $(document).on('widget-added', function (e, widget) {
-                            widget.data('sow-widget-added-form-setup', true);
-                            widget.find('.siteorigin-widget-form').sowSetupForm();
-                            widget.removeData('sow-widget-added-form-setup');
-                        });
-                        return true;
-                    }
-                }
                 if( $el.data('sow-form-setup') === true ) {
                     return true;
                 }
@@ -427,6 +414,7 @@ var sowEmitters = {
                                     $$.addClass('siteorigin-widget-active');
                                     $v.val( $(this).data('value') );
                                 }
+                                $v.trigger('change');
                             });
 
                         if( $v.val() === family + '-' + i ) {
@@ -696,7 +684,7 @@ var sowEmitters = {
             } );
 
             // Create a new modal window
-            var modal = $( $('#so-widgets-bundle-tpl-preview-dialog').html()).appendTo('body');
+            var modal = $( $('#so-widgets-bundle-tpl-preview-dialog').html().trim() ).appendTo('body');
             modal.find('input[name="data"]').val( JSON.stringify(data) );
             modal.find('input[name="class"]').val( $el.data('class') );
             modal.find('iframe').on('load', function(){
@@ -745,7 +733,9 @@ var sowEmitters = {
                             $in.data( 'original-name', $in.attr('name') );
                             newName = $in.attr('name');
                         }
-
+                        if( ! newName ) {
+                            return;
+                        }
                         for(var k in pos) {
                             newName = newName.replace('#' + k + '#', pos[k] );
                         }
@@ -799,9 +789,8 @@ var sowEmitters = {
         return $(this).each( function(i, el){
 
             var $el = $(el);
-            var formClass = $el.closest('.siteorigin-widget-form').data('class');
             var $nextIndex = $el.find('> .siteorigin-widget-field-repeater-items').children().length+1;
-            var repeaterHtml = window.sow_repeater_html[formClass][$el.data('repeater-name')].replace(/\{id\}/g, $nextIndex);
+            var repeaterHtml = $el.find('> .siteorigin-widget-field-repeatear-item-html').html().replace(/data-name="/g, 'name="').replace(/_id_/g, $nextIndex);
             var readonly = typeof $el.attr('readonly') != 'undefined';
             var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
                 .append(
@@ -872,6 +861,12 @@ var sowEmitters = {
                         if (typeof $.fn.dialog !== 'undefined') {
                             $(this).closest('.panel-dialog').dialog("option", "position", "center");
                         }
+                        if($(this).is(':visible')) {
+                            $(this).trigger('slideToggleOpenComplete');
+                        }
+                        else {
+                            $(this).trigger('slideToggleCloseComplete');
+                        }
                     });
                 });
 
@@ -895,6 +890,19 @@ var sowEmitters = {
         });
     };
 
+    window.sowGetWidgetFieldVariable = function ( widgetClass, elementName, key ) {
+        var widgetVars = window.sow_field_javascript_variables[widgetClass];
+        // Get rid of any index placeholders
+        elementName = elementName.replace( /\[#.*?#\]/g, '');
+        var variablePath = /[a-zA-Z0-9\-]+(?:\[c?[0-9]+\])?\[(.*)\]/.exec( elementName )[1];
+        var variablePathParts = variablePath.split('][');
+        var elementVars = variablePathParts.length ? widgetVars : null;
+        while(variablePathParts.length) {
+            elementVars = elementVars[variablePathParts.shift()];
+        }
+        return elementVars[key];
+    };
+
     window.sowFetchWidgetVariable = function (key, widget, callback) {
         window.sowVars = window.sowVars || {};
 
@@ -916,8 +924,17 @@ var sowEmitters = {
     // When we click on a widget top
     $('.widgets-holder-wrap').on('click', '.widget:has(.siteorigin-widget-form-main) .widget-top', function(){
         var $$ = $(this).closest('.widget').find('.siteorigin-widget-form-main');
-        setTimeout( function(){ $$.sowSetupForm(); }, 200);
+        setTimeout( function(){
+            $$.sowSetupForm();
+        }, 200);
     });
+
+    if( $('body').hasClass('wp-customizer') ) {
+        // Setup new widgets when they're added in the customizer interface
+        $(document).on('widget-added', function (e, widget) {
+            widget.find('.siteorigin-widget-form').sowSetupForm();
+        });
+    }
 
     // When we open a Page Builder widget dialog
     $(document).on('dialogopen', function(e){

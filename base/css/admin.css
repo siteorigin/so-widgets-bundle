@@ -11,9 +11,6 @@
 .siteorigin-widget-form.siteorigin-widget-form-main {
   min-width: 600px;
 }
-.siteorigin-widget-form .siteorigin-widget-field-is-hidden {
-  display: none;
-}
 .siteorigin-widget-form .siteorigin-widget-field {
   margin: 1em 0;
 }
@@ -49,6 +46,9 @@
 }
 .siteorigin-widget-form .siteorigin-widget-field input[type="text"] {
   width: 100%;
+}
+.siteorigin-widget-form .siteorigin-widget-field input.siteorigin-widget-input-color {
+  width: auto;
 }
 .siteorigin-widget-form .siteorigin-widget-field-type-slider .siteorigin-widget-slider-wrapper {
   margin: 10px 0;
@@ -123,6 +123,7 @@
 .siteorigin-widget-form .siteorigin-widget-field-repeater .siteorigin-widget-field-repeater-top h3 {
   font-size: 13px;
   margin: 0;
+  padding: 0 !important;
 }
 .siteorigin-widget-form .siteorigin-widget-field-repeater .siteorigin-widget-field-expand,
 .siteorigin-widget-form .siteorigin-widget-field-repeater .siteorigin-widget-field-remove {
@@ -691,12 +692,13 @@
 .siteorigin-widget-preview-dialog .so-widget-toolbar h3 {
   margin: 15px 0 15px 20px;
 }
-.siteorigin-widget-preview-dialog .so-widget-toolbar a {
+.siteorigin-widget-preview-dialog .so-widget-toolbar .close {
   position: absolute;
   box-sizing: border-box;
   width: 50px;
   height: 50px;
   display: block;
+  cursor: pointer;
   top: 0;
   right: 0;
   -webkit-transition: all 0.2s ease;
@@ -707,13 +709,13 @@
   border-left: 1px solid #d8d8d8;
   border-bottom: 1px solid #d8d8d8;
 }
-.siteorigin-widget-preview-dialog .so-widget-toolbar a:hover {
+.siteorigin-widget-preview-dialog .so-widget-toolbar .close:hover {
   background: #e9e9e9;
 }
-.siteorigin-widget-preview-dialog .so-widget-toolbar a:hover .so-dialog-icon {
+.siteorigin-widget-preview-dialog .so-widget-toolbar .close:hover .so-dialog-icon {
   color: #333333;
 }
-.siteorigin-widget-preview-dialog .so-widget-toolbar a .dashicons {
+.siteorigin-widget-preview-dialog .so-widget-toolbar .close .dashicons {
   position: absolute;
   top: 50%;
   left: 50%;

@@ -1,5 +1,4 @@
-
-<?php echo $args['before_title'] . esc_html($instance['title']) . $args['after_title'] ?>
+<?php if( !empty( $instance['title'] ) ) echo $args['before_title'] . esc_html($instance['title']) . $args['after_title'] ?>
 
 <div class="ow-pt-columns-atom">
 
@@ -41,7 +40,7 @@
 			</div>
 
 			<div class="ow-pt-button">
-				<a href='<?php echo sow_esc_url($column['url']) ?>' class="ow-pt-link"><?php echo esc_html($column['button']) ?></a>
+				<a href='<?php echo sow_esc_url($column['url']) ?>' class="ow-pt-link" <?php if( !empty( $instance['button_new_window'] ) ) echo 'target="_blank"' ?>><?php echo esc_html($column['button']) ?></a>
 			</div>
 		</div>
 	<?php endforeach; ?>

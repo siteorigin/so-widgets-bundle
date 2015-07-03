@@ -25,8 +25,8 @@ function siteorigin_widget_post_selector_admin_form_field( $value, $field_name )
 	?>
 	<input type="hidden" value="<?php echo esc_attr( $value ) ?>" name="<?php echo $field_name ?>" class="siteorigin-widget-input" />
 	<a href="#" class="sow-select-posts button button-secondary">
-		<span class="sow-current-count"><?php echo siteorigin_widget_post_selector_count_posts( $value ) ?></span>
-		<?php _e('Build posts query', 'siteorigin-widgets') ?>
+		<span class="sow-current-count"><?php echo esc_html( siteorigin_widget_post_selector_count_posts( $value ) )?></span>
+		<?php esc_html_e( 'Build posts query', 'siteorigin-widgets' ) ?>
 	</a>
 	<?php
 }
@@ -70,7 +70,6 @@ function siteorigin_widget_post_selector_process_query($query){
 			case 'ignore' :
 				$query['ignore_sticky_posts'] = 1;
 				break;
-			//TODO: Author: Braam
 			//TODO: Revisit this. Not sure if it makes sense to have this as an option in a separate dropdown, but am
 			//TODO: trying to stay as close as possible to Page Builder Post Loop widget post selection options.
 			//TODO: It's probably better in the long run to make this work well and just cope with issues that come up in
