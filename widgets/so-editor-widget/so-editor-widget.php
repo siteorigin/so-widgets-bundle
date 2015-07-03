@@ -1,24 +1,28 @@
 <?php
 
 /*
-Widget Name: TinyMCE Widget
+Widget Name: Editor Widget
 Description: A widget which allows editing of content using the TinyMCE editor.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 */
 
-class SiteOrigin_Widget_TinyMCE_Widget extends SiteOrigin_Widget {
+class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 
 	function __construct() {
 
 		parent::__construct(
-			'sow-tinymce',
-			__('SiteOrigin Visual Editor', 'siteorigin-widgets'),
+			'sow-editor',
+			__('SiteOrigin Editor', 'siteorigin-widgets'),
 			array(
-				'description' => __('A TinyMCE Widget.', 'siteorigin-widgets'),
+				'description' => __('A rich-text, text editor.', 'siteorigin-widgets'),
 			),
 			array(),
 			array(
+				'title' => array(
+					'type' => 'text',
+					'label' => __('Title', 'siteorigin-widgets'),
+				),
 				'text' => array(
 					'type' => 'tinymce',
 					'rows' => 20,
@@ -45,25 +49,40 @@ class SiteOrigin_Widget_TinyMCE_Widget extends SiteOrigin_Widget {
 		return $settings;
 	}
 
+	function unwpautop($string) {
+		$string = str_replace("\n", "", $string);
+		$string = str_replace("<p>", "", $string);
+		$string = str_replace(array("<br />", "<br>", "<br/>"), "\n", $string);
+		$string = str_replace("</p>", "\n\n", $string);
+
+		return $string;
+	}
+
 	public function get_template_variables( $instance, $args ) {
 		$instance = wp_parse_args(
 			$instance,
-			array(
-				'text' => ''
-			)
+			array(  'text' => '' )
 		);
 
+		$instance['text'] = $this->unwpautop( $instance['text'] );
+		$instance['text'] = wp_kses_post( $instance['text'] );
+		$instance['text'] = apply_filters( 'widget_text', $instance['text'] );
+
+		// Run some known stuff
+		if( !empty($GLOBALS['wp_embed']) ) {
+			$instance['text'] = $GLOBALS['wp_embed']->autoembed( $instance['text'] );
+		}
 		$instance['text'] = do_shortcode( $instance['text'] );
 		$instance['text'] = wpautop( $instance['text'] );
 
 		return array(
-			'text' => $instance['text']
+			'text' => $instance['text'],
 		);
 	}
 
 
 	function get_template_name($instance) {
-		return 'tinymce';
+		return 'editor';
 	}
 
 	function get_style_name($instance) {
@@ -71,4 +90,4 @@ class SiteOrigin_Widget_TinyMCE_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register( 'tinymce', __FILE__ );
+siteorigin_widget_register( 'editor', __FILE__ );
