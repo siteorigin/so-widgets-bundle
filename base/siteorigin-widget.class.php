@@ -448,7 +448,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				$new_instance = $field->sanitize_instance( $new_instance );
 			}
 
-			// Also let other plugins also sanitize the instance
+			// Let other plugins also sanitize the instance
 			$new_instance = apply_filters( 'siteorigin_widgets_sanitize_instance', $new_instance, $form_options, $this );
 			$new_instance = apply_filters( 'siteorigin_widgets_sanitize_instance_' . $this->id_base, $new_instance, $form_options, $this );
 		}
