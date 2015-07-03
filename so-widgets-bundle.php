@@ -14,7 +14,6 @@ define('SOW_BUNDLE_VERSION', '1.2.3');
 define('SOW_BUNDLE_JS_SUFFIX', '');
 define('SOW_BUNDLE_BASE_FILE', __FILE__);
 
-// We're going to include this check until version 1.2
 if( !function_exists('siteorigin_widget_get_plugin_path') ) {
 	include plugin_dir_path(__FILE__).'base/inc.php';
 	include plugin_dir_path(__FILE__).'icons/icons.php';
@@ -34,6 +33,7 @@ class SiteOrigin_Widgets_Bundle {
 		'so-image-widget' => true,
 		'so-slider-widget' => true,
 		'so-post-carousel-widget' => true,
+		'so-tinymce-widget' => true,
 	);
 
 	function __construct(){
@@ -137,7 +137,8 @@ class SiteOrigin_Widgets_Bundle {
 		// Load all the widget we currently have active and filter them
 		$active_widgets = $this->get_active_widgets();
 
-		foreach( array_keys($active_widgets) as $widget_id ) {
+		foreach( $active_widgets as $widget_id => $active ) {
+			if( empty($active) ) continue;
 
 			foreach( $this->widget_folders as $folder ) {
 				if ( !file_exists($folder . $widget_id.'/'.$widget_id.'.php') ) continue;
@@ -157,11 +158,10 @@ class SiteOrigin_Widgets_Bundle {
 	 * @return mixed|void
 	 */
 	function get_active_widgets( $filter = true ){
-		// Load all the widget we currently have active and filter them
-		$active_widgets = get_option( 'siteorigin_widgets_active', self::$default_active_widgets );
-		if( $filter ) {
-			$active_widgets = apply_filters( 'siteorigin_widgets_active_widgets',  $active_widgets);
-		}
+		$active_widgets = get_option( 'siteorigin_widgets_active', array() );
+		$active_widgets = wp_parse_args( $active_widgets, apply_filters('siteorigin_widgets_default_active', self::$default_active_widgets) );
+
+		if( $filter ) $active_widgets = apply_filters( 'siteorigin_widgets_active_widgets',  $active_widgets);
 
 		return $active_widgets;
 	}
@@ -216,12 +216,12 @@ class SiteOrigin_Widgets_Bundle {
 		if( !current_user_can( apply_filters('siteorigin_widgets_admin_menu_capability', 'install_plugins') ) ) exit();
 		if( empty($_GET['widget']) ) exit();
 
-		if( $_POST['active'] == 'true' ) $this->activate_widget($_GET['widget']);
+		if( isset($_POST['active']) && $_POST['active'] == 'true' ) $this->activate_widget($_GET['widget']);
 		else $this->deactivate_widget( $_GET['widget'] );
 
 		// Send a kind of dummy response.
 		header('content-type: application/json');
-		echo json_encode(array('done' => true));
+		echo json_encode( array('done' => true) );
 		exit();
 	}
 
@@ -316,7 +316,7 @@ class SiteOrigin_Widgets_Bundle {
 		update_option( 'siteorigin_widgets_active', $active_widgets );
 
 		// If we don't want to include the widget files, then our job here is done.
-		if(!$include) return;
+		if( !$include ) return;
 
 		// Now, lets actually include the files
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
@@ -341,7 +341,7 @@ class SiteOrigin_Widgets_Bundle {
 	 */
 	function deactivate_widget($id){
 		$active_widgets = $this->get_active_widgets();
-		unset($active_widgets[$id]);
+		$active_widgets[$id] = false;
 		update_option( 'siteorigin_widgets_active', $active_widgets );
 	}
 
