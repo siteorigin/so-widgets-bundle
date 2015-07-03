@@ -18,10 +18,12 @@ if(process.argv.length > 2) {
     }
 }
 
-var outDir = 'dist';
+var outDir = args.target == 'build:dev' ? '.' : 'dist';
 
 gulp.task('clean', function () {
-    del([outDir]);
+    if( outDir != '.') {
+        del([outDir]);
+    }
 });
 
 gulp.task('version', ['clean'], function() {
@@ -46,7 +48,7 @@ gulp.task('less', ['clean'], function() {
             '!base/less/*.less',
             '!widgets/**/styles/*.less'
         ], {base: '.'})
-        .pipe(less({paths: ['base/less'], compress: true}))
+        .pipe(less({paths: ['base/less'], compress: args.target == 'build:release'}))
         .pipe(gulp.dest(outDir));
 });
 
@@ -65,6 +67,8 @@ gulp.task('minify', ['concat'], function () {
             '!{tests,tests/**}',                // Ignore tests/ and contents
             '!{dist,dist/**}'                   // Ignore dist/ and contents
         ], {base: '.'})
+        // This will output the non-minified version
+        .pipe(gulp.dest(outDir))
         .pipe(rename({ suffix: '.min' }))
         .pipe(uglify())
         .pipe(gulp.dest(outDir));
@@ -87,3 +91,16 @@ gulp.task('build:release', ['version', 'less', 'minify'], function () {
         .pipe(gulp.dest(outDir));
 });
 
+gulp.task('build:dev', ['less'], function () {
+    console.log('Watching LESS files...');
+    gulp.watch([
+        'admin/**/*.less',
+        'base/**/*.less',
+        'widgets/**/*.less',
+        '!widgets/**/styles/*.less'
+    ], ['less']);
+});
+
+gulp.task('default', ['build:release'], function () {
+
+});
