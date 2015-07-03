@@ -40,12 +40,12 @@ gulp.task('version', ['clean'], function() {
 gulp.task('less', ['clean'], function() {
     return gulp.src(
         [
-            '**/admin/**/*.less',
-            '**/base/**/*.less',
-            '**/widgets/**/*.less',
-            '!base/less/',
+            'admin/**/*.less',
+            'base/**/*.less',
+            'widgets/**/*.less',
+            '!base/less/*.less',
             '!widgets/**/styles/*.less'
-        ])
+        ], {base: '.'})
         .pipe(less({paths: ['base/less'], compress: true}))
         .pipe(gulp.dest(outDir));
 });
@@ -57,31 +57,33 @@ gulp.task('concat', ['clean'], function () {
 gulp.task('minify', ['concat'], function () {
     return gulp.src(
         [
-            '**/admin/**/*.js',
-            '**/base/**/*.js',
-            '**/js/**/*.js',
-            '**/widgets/**/*.js',
+            'admin/**/*.js',
+            'base/**/*.js',
+            'js/**/*.js',
+            'widgets/**/*.js',
             '!{node_modules,node_modules/**}',  // Ignore node_modules/ and contents
-            '!{tests,tests/**}',                 // Ignore tests/ and contents
-            '!{dist,dist/**}'                 // Ignore tests/ and contents
-        ])
+            '!{tests,tests/**}',                // Ignore tests/ and contents
+            '!{dist,dist/**}'                   // Ignore dist/ and contents
+        ], {base: '.'})
         .pipe(rename({ suffix: '.min' }))
         .pipe(uglify())
         .pipe(gulp.dest(outDir));
 });
 
-gulp.task('build', ['version', 'less', 'minify'], function () {
+gulp.task('build:release', ['version', 'less', 'minify'], function () {
     //Just copy remaining files.
     return gulp.src(
         [
             '**/!(*.js|*.less)',                // Everything except .js and .less files
-            '!phpunit.xml',                     // Not the unit tests configuration file.
-            '!so-widgets-bundle.php',           // Not the base plugin file, it is copied by the 'version' task.
-            '**/widgets/**/styles/*.less',      // All the widgets' runtime .less files
-            '!**/widgets/**/styles/*.css',      // Don't copy any .css files compiled from runtime .less files
+            'base/less/*.less',                 // LESS libraries used in runtime styles
+            'widgets/**/styles/*.less',         // All the widgets' runtime .less files
+            '!widgets/**/styles/*.css',         // Don't copy any .css files compiled from runtime .less files
             '!{node_modules,node_modules/**}',  // Ignore node_modules/ and contents
-            '!{tests,tests/**}',                 // Ignore tests/ and contents
-            '!{dist,dist/**}'                 // Ignore tests/ and contents
-        ])
+            '!{tests,tests/**}',                // Ignore tests/ and contents
+            '!{dist,dist/**}',                  // Ignore dist/ and contents
+            '!phpunit.xml',                     // Not the unit tests configuration file.
+            '!so-widgets-bundle.php'            // Not the base plugin file. It is copied by the 'version' task.
+        ], {base: '.'})
         .pipe(gulp.dest(outDir));
 });
+
