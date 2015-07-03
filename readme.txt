@@ -50,6 +50,16 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.3 =
+* Added TinyMCE field type.
+* All fields now use classes to make them easier to extend.
+* Added SiteOrigin Editor widget.
+* Made it possible for other plugins to filter default widgets.
+* Fixed WordPress CLI compatibility.
+* Added unit tests.
+* Added networks to social networks widget.
+* Changed how repeater HTML is stored.
+
 = 1.2.3 =
 * Fixed Javascript issue with Map widget in customizer.
 * Added meta box manager.
