@@ -17,6 +17,10 @@ class SiteOrigin_Widget_Field_Factory {
 	public function create_field( $field_name, $field_options, SiteOrigin_Widget $for_widget, $for_repeater = array(), $is_template = false ) {
 		$element_id = $for_widget->so_get_field_id( $field_name, $for_repeater, $is_template );
 		$element_name = $for_widget->so_get_field_name( $field_name, $for_repeater );
+		if ( empty( $field_options['type'] ) ) {
+			$field_options['type'] = 'text';
+			$field_options['label'] = __( 'This field does not have a type. Please specify a type for it to be rendered correctly.', 'siteorigin-widgets' );
+		}
 		$field_class = $this->get_field_class_name( $field_options['type'] );
 
 		if( $this->is_container_type( $field_options['type'] ) ) {

@@ -1,6 +1,6 @@
 .DS_Store
 Thumbs.db
 *.min.js
-base/css/lesshat.css
 
-/vendor/
+node_modules/
+dist/

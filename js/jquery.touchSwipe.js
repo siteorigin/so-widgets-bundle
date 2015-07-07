@@ -127,7 +127,7 @@
 (function (factory) {
     if (typeof define === 'function' && define.amd && define.amd.jQuery) {
         // AMD. Register as anonymous module.
-        define(['jquery'], factory);
+        define(['jquery.touchSwipe.js'], factory);
     } else {
         // Browser globals.
         factory(jQuery);
