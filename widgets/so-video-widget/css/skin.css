@@ -1,0 +1,154 @@
+.mejs-overlay-button {
+  display: none;
+}
+.mejs-skin_one .mejs-overlay-button {
+  display: none;
+}
+.mejs-skin_one .mejs-button,
+.mejs-skin_one .mejs-time {
+  position: absolute;
+  background: #ddd;
+}
+.mejs-skin_one .mejs-controls {
+  background: #eee;
+  height: 65px;
+}
+.mejs-skin_one .mejs-controls .mejs-time-rail .mejs-time-total {
+  background-color: none;
+  background: url('controls-skin.png') repeat-x 0 -52px;
+  height: 6px;
+}
+.mejs-skin_one .mejs-controls .mejs-time-rail .mejs-time-buffering {
+  height: 6px;
+}
+.mejs-skin_one .mejs-controls .mejs-time-rail .mejs-time-loaded {
+  background-color: none;
+  background: url('controls-skin.png') repeat-x 0 -52px;
+  width: 0;
+  height: 6px;
+}
+.mejs-skin_one .mejs-controls .mejs-time-rail .mejs-time-current {
+  width: 0;
+  height: 6px;
+  background-color: none;
+  background: url('controls-skin.png') repeat-x 0 -59px;
+}
+.mejs-skin_one .mejs-controls .mejs-time-rail .mejs-time-handle {
+  display: block;
+  margin: 0;
+  width: 14px;
+  height: 21px;
+  top: -7px;
+  border: 0;
+  background: url('controls-skin.png') no-repeat 0 0;
+}
+.mejs-skin_one .mejs-controls .mejs-time-rail .mejs-time-float {
+  display: none;
+}
+.mejs-skin_one .mejs-controls .mejs-playpause-button {
+  top: 29px;
+  left: 9px;
+  width: 49px;
+  height: 28px;
+}
+.mejs-skin_one .mejs-controls .mejs-playpause-button button {
+  width: 49px;
+  height: 28px;
+  background: url('controls-skin.png') no-repeat -50px -23px;
+  margin: 0;
+  padding: 0;
+}
+.mejs-skin_one .mejs-controls .mejs-pause button {
+  background-position: 0 -23px;
+}
+.mejs-skin_one .mejs-controls .mejs-fullscreen-button {
+  top: 34px;
+  right: 9px;
+  width: 17px;
+  height: 15px;
+  background: none;
+}
+.mejs-skin_one .mejs-controls .mejs-fullscreen-button button {
+  width: 19px;
+  height: 17px;
+  background: transparent url('controls-skin.png') no-repeat 0 -66px;
+  margin: 0;
+  padding: 0;
+}
+.mejs-skin_one .mejs-controls .mejs-unfullscreen button {
+  background: transparent url('controls-skin.png') no-repeat -21px -66px;
+  margin: 0;
+  padding: 0;
+}
+.mejs-skin_one .mejs-controls .mejs-volume-button {
+  top: 30px;
+  right: 35px;
+  width: 24px;
+  height: 22px;
+}
+.mejs-skin_one .mejs-controls .mejs-mute button {
+  background: url('controls-skin.png') no-repeat -15px 0;
+  width: 24px;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+}
+.mejs-skin_one .mejs-controls .mejs-unmute button {
+  background: url('controls-skin.png') no-repeat -40px 0;
+  width: 24px;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+}
+.mejs-skin_one .mejs-controls .mejs-volume-button .mejs-volume-slider {
+  background: #fff;
+  border: solid 1px #aaa;
+  border-width: 1px 1px 0 1px;
+  width: 22px;
+  height: 65px;
+  top: -65px;
+}
+.mejs-skin_one .mejs-controls .mejs-volume-button .mejs-volume-total {
+  background: url('controls-skin.png') repeat-y -41px -66px;
+  left: 8px;
+  width: 6px;
+  height: 50px;
+}
+.mejs-skin_one .mejs-controls .mejs-volume-button .mejs-volume-current {
+  left: 8px;
+  width: 6px;
+  background: url('controls-skin.png') repeat-y -48px -66px;
+  height: 50px;
+}
+.mejs-skin_one .mejs-controls .mejs-volume-button .mejs-volume-handle {
+  display: none;
+}
+.mejs-skin_one .mejs-controls .mejs-time span {
+  color: #333;
+}
+.mejs-skin_one .mejs-controls .mejs-currenttime-container {
+  position: absolute;
+  top: 32px;
+  right: 100px;
+  border: solid 1px #999;
+  background: #fff;
+  padding-top: 2px;
+  border-radius: 3px;
+  color: #333;
+}
+.mejs-skin_one .mejs-controls .mejs-duration-container {
+  position: absolute;
+  top: 32px;
+  right: 65px;
+  border: solid 1px #999;
+  background: #fff;
+  padding-top: 2px;
+  border-radius: 3px;
+  color: #333;
+}
+.mejs-skin_one .mejs-controls .mejs-time button {
+  color: #333;
+}
+.mejs-skin_one .mejs-controls .mejs-captions-button {
+  display: none;
+}
