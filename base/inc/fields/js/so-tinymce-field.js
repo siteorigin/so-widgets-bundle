@@ -86,16 +86,6 @@
     $(document).on( 'sowsetupform', function(e) {
         var $f = $(e.target);
 
-        var $repeaters = $f.find('> .siteorigin-widget-field-type-repeater > .siteorigin-widget-field-repeater > .siteorigin-widget-field-repeater-items');
-        if( $repeaters.length) {
-            var reinitRepeaterItem = function(e, ui) {
-                ui.item.find('> .siteorigin-widget-field-repeater-item-form').each(function(){
-                    setup( $(this) );
-                });
-            };
-            $repeaters.sortable( "option", "stop", reinitRepeaterItem);
-        }
-
         if($f.is('.siteorigin-widget-field-repeater-item-form')){
             if($f.is(':visible')) {
                 setup( $f );
@@ -110,7 +100,17 @@
             }
         }
         else {
-            setup( $f );
+            setup($f);
+        }
+    });
+    $(document).on('sortstop', function (event, ui) {
+        if(ui.item.is('.siteorigin-widget-field-repeater-item')) {
+            ui.item.find('> .siteorigin-widget-field-repeater-item-form').each(function(){
+                setup( $(this) );
+            });
+        }
+        else {
+            setup(ui.item.find('.siteorigin-widget-form'));
         }
     });
 
