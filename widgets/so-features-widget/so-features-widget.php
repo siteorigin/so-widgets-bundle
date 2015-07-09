@@ -156,7 +156,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 	}
 
 	function modify_form( $form ){
-		$form['container_shape']['options'] = include dirname(__FILE__).'/inc/containers.php';
+		$form['container_shape']['options'] = include dirname( __FILE__ ) . '/inc/containers.php';
 		return $form;
 	}
 }
