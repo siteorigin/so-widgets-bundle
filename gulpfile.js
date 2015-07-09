@@ -4,6 +4,7 @@ var rename = require('gulp-rename');
 var replace = require('gulp-replace');
 var less = require('gulp-less');
 var uglify = require('gulp-uglify');
+var zip = require('gulp-zip');
 
 var args = {};
 args.env = 'dev';
@@ -37,7 +38,7 @@ gulp.task('version', ['clean'], function() {
         .pipe(replace(/(Version:).*/, '$1 '+args.v))
         .pipe(replace(/(define\('SOW_BUNDLE_VERSION', ').*('\);)/, '$1'+args.v+'$2'))
         .pipe(replace(/(define\('SOW_BUNDLE_JS_SUFFIX', ').*('\);)/, '$1.min$2'))
-        .pipe(gulp.dest(outDir));
+        .pipe(gulp.dest('tmp'));
 });
 
 gulp.task('less', ['clean'], function() {
@@ -50,7 +51,7 @@ gulp.task('less', ['clean'], function() {
             '!widgets/**/styles/*.less'
         ], {base: '.'})
         .pipe(less({paths: ['base/less'], compress: args.target == 'build:release'}))
-        .pipe(gulp.dest(outDir));
+        .pipe(gulp.dest('tmp'));
 });
 
 gulp.task('concat', ['clean'], function () {
@@ -69,13 +70,13 @@ gulp.task('minify', ['concat'], function () {
             '!{dist,dist/**}'                   // Ignore dist/ and contents
         ], {base: '.'})
         // This will output the non-minified version
-        .pipe(gulp.dest(outDir))
+        .pipe(gulp.dest('tmp'))
         .pipe(rename({ suffix: '.min' }))
         .pipe(uglify())
-        .pipe(gulp.dest(outDir));
+        .pipe(gulp.dest('tmp'));
 });
 
-gulp.task('build:release', ['version', 'less', 'minify'], function () {
+gulp.task('copy', ['version', 'less', 'minify'], function () {
     //Just copy remaining files.
     return gulp.src(
         [
@@ -87,8 +88,22 @@ gulp.task('build:release', ['version', 'less', 'minify'], function () {
             '!{tests,tests/**}',                // Ignore tests/ and contents
             '!{dist,dist/**}',                  // Ignore dist/ and contents
             '!phpunit.xml',                     // Not the unit tests configuration file.
-            '!so-widgets-bundle.php'            // Not the base plugin file. It is copied by the 'version' task.
+            '!so-widgets-bundle.php',           // Not the base plugin file. It is copied by the 'version' task.
+            '!readme.txt'                       // Not the readme.txt file. It is copied by the 'version' task.
         ], {base: '.'})
+        .pipe(gulp.dest('tmp'));
+});
+
+gulp.task('move', ['copy'], function () {
+    return gulp.src('tmp/**')
+        .pipe(gulp.dest(outDir + '/so-widgets-bundle'));
+});
+
+gulp.task('build:release', ['move'], function () {
+    del(['tmp']);
+    var versionNumber = args.hasOwnProperty('v') ? args.v : 'dev';
+    return gulp.src(outDir + '/**/*')
+        .pipe(zip('so-widgets-bundle.' + versionNumber + '.zip'))
         .pipe(gulp.dest(outDir));
 });
 
