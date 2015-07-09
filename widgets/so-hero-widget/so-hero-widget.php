@@ -65,7 +65,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget {
 									'type' => 'widget',
 									'class' => 'SiteOrigin_Widget_Button_Widget',
 									'label' => __('Button', 'siteorigin-widgets'),
-									'first_level' => true,
+									'collapsible' => false,
 								)
 							)
 						)
