@@ -20,6 +20,14 @@ if( empty($instance['frames']) ) return;
 			if( empty($frame['foreground_image']) ) $foreground_image = false;
 			else $foreground_image = wp_get_attachment_image_src($frame['foreground_image'], 'full');
 
+			if( empty($foreground_image[0]) && !empty($background_image[0]) ) {
+				// Swap around the foreground and background images
+				$foreground_image = $background_image;
+				$background_image = false;
+				$frame['foreground_image'] = $frame['background_image'];
+				$frame['background_image'] = 0;
+			}
+
 			?>
 			<li
 				class="sow-slider-image sow-slider-image-<?php echo $frame['background_image_type'] ?>"
