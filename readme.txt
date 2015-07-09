@@ -50,6 +50,10 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.3.1 =
+* Fix to TinyMCE field when moved in Customizer and Widgets interface.
+* Small developer level improvements.
+
 = 1.3 =
 * Added TinyMCE field type.
 * All fields now use classes to make them easier to extend.
