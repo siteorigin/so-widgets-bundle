@@ -53,6 +53,8 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 = 1.3.1 =
 * Fix to TinyMCE field when moved in Customizer and Widgets interface.
 * Small developer level improvements.
+* Fixed autoplay in video widget.
+* Fixed behaviour of slides in slider widget.
 
 = 1.3 =
 * Added TinyMCE field type.
