@@ -195,7 +195,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 	/**
 	 * Gets a video source embed
 	 */
-	function get_video_oembed( $src ){
+	function get_video_oembed( $src, $autoplay = false ){
 		if( empty($src) ) return '';
 
 		global $content_width;
@@ -204,17 +204,34 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 
 		$hash = md5( serialize( array(
 			'src' => $src,
-			'width' => $video_width
+			'width' => $video_width,
+			'autoplay' => $autoplay,
 		) ) );
 
 		$html = get_transient('sow-vid-embed[' . $hash . ']');
 		if( empty($html) ) {
 			$html = wp_oembed_get( $src, array( 'width' => $video_width ) );
+
+			if( $autoplay) {
+				$html = preg_replace_callback( '/src=["\'](http[^"\']*)["\']/', array( $this, 'autoplay_callback' ), $html );
+			}
+
 			if( !empty($html) ) {
 				set_transient( 'sow-vid-embed[' . $hash . ']', $html, 30*86400 );
 			}
 		}
 		return $html;
+	}
+
+	/**
+	 * The preg_replace callback that adds autoplay.
+	 *
+	 * @param $match
+	 *
+	 * @return mixed
+	 */
+	function autoplay_callback($match){
+		return str_replace($match[1], add_query_arg('autoplay', 1, $match[1]), $match[0]);
 	}
 
 	/**
