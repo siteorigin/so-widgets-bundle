@@ -32,8 +32,9 @@ gulp.task('version', ['clean'], function() {
         console.log("E.g. gulp release 1.2.3");
         return;
     }
-    return gulp.src('so-widgets-bundle.php')
-        .pipe(replace(/(Version: ).*/, '$1'+args.v))
+    return gulp.src(['so-widgets-bundle.php', 'readme.txt'])
+        .pipe(replace(/(Stable tag:).*/, '$1 '+args.v))
+        .pipe(replace(/(Version:).*/, '$1 '+args.v))
         .pipe(replace(/(define\('SOW_BUNDLE_VERSION', ').*('\);)/, '$1'+args.v+'$2'))
         .pipe(replace(/(define\('SOW_BUNDLE_JS_SUFFIX', ').*('\);)/, '$1.min$2'))
         .pipe(gulp.dest(outDir));
