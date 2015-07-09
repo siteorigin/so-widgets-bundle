@@ -236,6 +236,9 @@ var sowEmitters = {
             // Process any sub sections
             $fields.find('> .siteorigin-widget-section').sowSetupForm();
 
+            //Process any sub widgets whose fields aren't contained in a section
+            $fields.filter('.siteorigin-widget-field-type-widget:not(:has(> .siteorigin-widget-section))').sowSetupForm();
+
             // Store the field names
             $fields.find('.siteorigin-widget-input').each(function(i, input){
                 if( $(input).data( 'original-name') === null ) {
