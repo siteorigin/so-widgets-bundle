@@ -31,7 +31,7 @@ jQuery( function($){
             active = $(newActive),
             video = active.find('video.sow-background-element');
 
-        if(speed == undefined) {
+        if( speed == undefined ) {
             sentinel.css( 'height', active.outerHeight() );
         }
         else {
