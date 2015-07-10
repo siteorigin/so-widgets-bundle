@@ -143,6 +143,32 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		return $less;
 	}
+
+	/**
+	 * Change the instance to the new one we're using for sliders
+	 *
+	 * @param $instance
+	 *
+	 * @return mixed|void
+	 */
+	function modify_instance( $instance ){
+		if( empty($instance['controls']) ) {
+			$instance['controls'] = array(
+				'speed' => $instance['speed'],
+				'timeout' => $instance['timeout'],
+				'nav_color_hex' => $instance['nav_color_hex'],
+				'nav_style' => $instance['nav_style'],
+				'nav_size' => $instance['nav_size'],
+			);
+			unset($instance['speed']);
+			unset($instance['timeout']);
+			unset($instance['nav_color_hex']);
+			unset($instance['nav_style']);
+			unset($instance['nav_size']);
+		}
+
+		return $instance;
+	}
 }
 
 siteorigin_widget_register('slider', __FILE__);
