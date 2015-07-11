@@ -116,6 +116,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		else $background_image = wp_get_attachment_image_src($frame['background']['image'], 'full');
 
 		return array(
+			'color' => !empty( $frame['background']['color'] ) ? $frame['background']['color'] : false,
 			'image' => !empty( $background_image ) ? $background_image[0] : false,
 			'image-sizing' => 'cover',
 			'videos' => $frame['background']['videos'],
