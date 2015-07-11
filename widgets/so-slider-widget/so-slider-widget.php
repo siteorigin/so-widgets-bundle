@@ -153,13 +153,12 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 	 */
 	function modify_instance( $instance ){
 		if( empty($instance['controls']) ) {
-			$instance['controls'] = array(
-				'speed' => $instance['speed'],
-				'timeout' => $instance['timeout'],
-				'nav_color_hex' => $instance['nav_color_hex'],
-				'nav_style' => $instance['nav_style'],
-				'nav_size' => $instance['nav_size'],
-			);
+			if( !empty($instance['speed']) ) $instance['controls']['speed'] = $instance['speed'];
+			if( !empty($instance['timeout']) ) $instance['controls']['timeout'] = $instance['timeout'];
+			if( !empty($instance['nav_color_hex']) ) $instance['controls']['nav_color_hex'] = $instance['nav_color_hex'];
+			if( !empty($instance['nav_style']) ) $instance['controls']['nav_style'] = $instance['nav_style'];
+			if( !empty($instance['nav_size']) ) $instance['controls']['nav_size'] = $instance['nav_size'];
+
 			unset($instance['speed']);
 			unset($instance['timeout']);
 			unset($instance['nav_color_hex']);
