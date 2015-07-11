@@ -8,11 +8,6 @@
 .sow-slider-base {
   position: relative;
   overflow: hidden;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-  user-select: none;
   /* Some jQuery Cycle Specific CSS */
   /* Icon fonts for the left and right slider images */
 }
@@ -50,6 +45,12 @@
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
+.sow-slider-base ul.sow-slider-images li.sow-slider-image .sow-slider-image-container .sow-slider-image-wrapper > *:first-child {
+  margin-top: 0;
+}
+.sow-slider-base ul.sow-slider-images li.sow-slider-image .sow-slider-image-container .sow-slider-image-wrapper > *:last-child {
+  margin-bottom: 0;
+}
 .sow-slider-base ul.sow-slider-images li.sow-slider-image img {
   display: block;
   width: 100%;
@@ -85,6 +86,10 @@
   box-sizing: border-box;
   padding-right: 30px;
   line-height: 11px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .sow-slider-base .sow-slider-pagination li {
   text-align: left;
@@ -113,6 +118,10 @@
   opacity: 0.75;
   font-size: 25px;
   margin-top: -0.5em;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .sow-slider-base .sow-slide-nav a {
   display: block;
