@@ -196,6 +196,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	 */
 	function get_frame_background( $i, $frame ) {
 		return array(
+			'color' => false,
 			'image' => false,
 			'image-sizing' => 'cover',              // options for image sizing are cover and contain
 			'videos' => false,
@@ -212,18 +213,19 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	function render_frame( $i, $frame ){
 		$background = $this->get_frame_background( $i, $frame );
 
+		$background_style = array();
+		if( !empty($background['color']) ) $background_style[] = 'background-color: ' . esc_attr($background['color']);
+		if( !empty($background['image']) ) $background_style[] = 'background-image: url(' . esc_url($background['image']) . ')';
+
 		?>
 		<li
 			class="sow-slider-image <?php if( !empty($background['image']) && !empty($background['image-sizing']) ) echo 'sow-slider-image-' . $background['image-sizing'] ?>"
-			style="<?php if( !empty($background['image']) ) echo 'background-image: url(' . esc_url($background['image']) . ');' ?>">
+			<?php if( !empty($background_style) ) echo 'style="' . implode(';', $background_style) . '"' ?>>
 		<?php
-
 		$this->render_frame_contents( $i, $frame );
-
 		if( !empty( $background['videos'] ) ) {
 			$this->video_code( $background['videos'], array('sow-' . $background['video-sizing'] . '-element') );
 		}
-
 		?></li><?php
 
 	}
