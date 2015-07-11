@@ -798,6 +798,7 @@ var sowEmitters = {
             var repeaterObject = $( '<div>' + $el.find('> .siteorigin-widget-field-repeater-item-html').html() + '</div>' );
             repeaterObject.find('[data-name]').each( function(){
                 var $$ = $(this);
+                // Skip out items that are themselves inside repeater HTML wrappers
                 if( $$.closest('.siteorigin-widget-field-repeater-item-html').length === 0 ) {
                     $$.attr('name', $(this).data('name'));
                 }
