@@ -793,7 +793,18 @@ var sowEmitters = {
 
             var $el = $(el);
             var $nextIndex = $el.find('> .siteorigin-widget-field-repeater-items').children().length+1;
-            var repeaterHtml = $el.find('> .siteorigin-widget-field-repeatear-item-html').html().replace(/data-name="/g, 'name="').replace(/_id_/g, $nextIndex);
+            var repeaterHtmlString = '';
+            $el.find('> .siteorigin-widget-field-repeatear-item-html > .siteorigin-widget-field').each(
+                function (index, element) {
+                    if($(element).is('.siteorigin-widget-field-type-repeater')) {
+                        repeaterHtmlString += $(element).html();
+                    }
+                    else {
+                        repeaterHtmlString += $(element).html().replace(/data-name="/g, 'name="');
+                    }
+                }
+            );
+            var repeaterHtml = repeaterHtmlString.replace(/_id_/g, $nextIndex);
             var readonly = typeof $el.attr('readonly') != 'undefined';
             var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
                 .append(
