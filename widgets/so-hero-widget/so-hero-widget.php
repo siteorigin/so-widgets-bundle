@@ -71,6 +71,14 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 									'library' => 'image',
 								),
 
+								'opacity' => array(
+									'label' => __( 'Background image opacity', 'siteorigin-widgets' ),
+									'type' => 'slider',
+									'min' => 0,
+									'max' => 100,
+									'default' => 100,
+								),
+
 								'color' => array(
 									'type' => 'color',
 									'label' => __( 'Background color', 'siteorigin-widgets' ),
@@ -94,15 +102,23 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 				'controls' => array(
 					'type' => 'section',
-					'label' => __('Controls', 'siteorigin-widget'),
+					'label' => __('Slider Controls', 'siteorigin-widget'),
 					'fields' => $this->control_form_fields()
-				)
+				),
+
+				'design' => array(
+					'type' => 'section',
+					'label' => __('Design', 'siteorigin-widgets'),
+					'fields' => array(
+					)
+				),
 			)
 		);
 	}
 
 	function initialize(){
 		if( !class_exists('SiteOrigin_Widget_Button_Widget') ) {
+			// We need to include the button
 			include plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . 'widgets/so-button-widget/so-button-widget.php';
 			siteorigin_widget_register( 'button', plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . 'widgets/so-button-widget/so-button-widget.php' );
 		}
@@ -111,6 +127,14 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		parent::initialize();
 	}
 
+	/**
+	 * Get everything neccessary for the background image.
+	 *
+	 * @param $i
+	 * @param $frame
+	 *
+	 * @return array
+	 */
 	function get_frame_background( $i, $frame ){
 		if( empty($frame['background']['image']) ) $background_image = false;
 		else $background_image = wp_get_attachment_image_src($frame['background']['image'], 'full');
@@ -121,22 +145,29 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			'image-sizing' => 'cover',
 			'videos' => $frame['background']['videos'],
 			'video-sizing' => 'background',
+			'opacity' => intval($frame['background']['opacity'])/100,
 		);
 	}
 
+	/**
+	 * Render the actual content of the frame
+	 *
+	 * @param $i
+	 * @param $frame
+	 */
 	function render_frame_contents($i, $frame) {
 		?>
 		<div class="sow-slider-image-container">
 			<div class="sow-slider-image-wrapper">
-				<?php
-				echo $this->process_content( $frame['content'], $frame );
-				?>
+				<?php echo $this->process_content( $frame['content'], $frame ); ?>
 			</div>
 		</div>
 		<?php
 	}
 
 	/**
+	 * Process the content. Most importantly add the buttons by replacing [buttons] in the content
+	 *
 	 * @param $content
 	 * @param $frame
 	 *
