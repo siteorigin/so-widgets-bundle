@@ -51,6 +51,14 @@
 .sow-slider-base ul.sow-slider-images li.sow-slider-image .sow-slider-image-container .sow-slider-image-wrapper > *:last-child {
   margin-bottom: 0;
 }
+.sow-slider-base ul.sow-slider-images li.sow-slider-image .sow-slider-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-size: cover;
+}
 .sow-slider-base ul.sow-slider-images li.sow-slider-image img {
   display: block;
   width: 100%;
