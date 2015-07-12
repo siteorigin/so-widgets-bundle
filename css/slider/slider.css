@@ -58,6 +58,7 @@
   bottom: 0;
   right: 0;
   background-size: cover;
+  background-position: center center;
 }
 .sow-slider-base ul.sow-slider-images li.sow-slider-image img {
   display: block;

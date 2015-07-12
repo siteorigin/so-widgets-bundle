@@ -127,6 +127,22 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 							'default' => 1280,
 						),
 
+						'heading_size' => array(
+							'type' => 'slider',
+							'label' => __('Heading Size', 'siteorigin-widgets'),
+							'max' => 72,
+							'min' => 6,
+							'default' => 32,
+						),
+
+						'text_size' => array(
+							'type' => 'slider',
+							'label' => __('Text Size', 'siteorigin-widgets'),
+							'max' => 48,
+							'min' => 6,
+							'default' => 16,
+						),
+
 					)
 				),
 			)
@@ -219,6 +235,8 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		// Hero specific design
 		$less['slide_padding'] = intval( $instance['design']['padding'] ) . 'px';
 		$less['slide_width'] = intval( $instance['design']['width'] ) . 'px';
+		$less['heading_size'] = intval( $instance['design']['heading_size'] ) . 'px';
+		$less['text_size'] = intval( $instance['design']['text_size'] ) . 'px';
 
 		return $less;
 	}
