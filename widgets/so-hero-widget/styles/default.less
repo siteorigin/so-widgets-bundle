@@ -1,13 +1,17 @@
 @nav_color_hex: #FFFFFF;
 @nav_size: 25;
+
+@slide_padding: 50px;
+@slide_width: 1280px;
 @heading_size: 32px;
 @text_size: 16px;
 
 .sow-slider-base {
 
 	.sow-slider-image-wrapper {
-		padding-top: 50px;
-		padding-bottom: 50px;
+		padding-top: @slide_padding;
+		padding-bottom: @slide_padding;
+		max-width: @slide_width;
 
 		h1,h2,h3,h4,h5,h6{
 			color: #FFFFFF;
@@ -48,6 +52,7 @@
 
 		.sow-hero-buttons {
 			margin-top: 3em;
+			padding-bottom: 0.2em;
 
 			.so-widget-sow-button {
 				display: inline-block;

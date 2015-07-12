@@ -108,8 +108,25 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 				'design' => array(
 					'type' => 'section',
-					'label' => __('Design', 'siteorigin-widgets'),
+					'label' => __('Design and Layout', 'siteorigin-widgets'),
 					'fields' => array(
+
+						'padding' => array(
+							'type' => 'slider',
+							'label' => __('Padding', 'siteorigin-widgets'),
+							'max' => 150,
+							'min' => 0,
+							'default' => 50,
+						),
+
+						'width' => array(
+							'type' => 'slider',
+							'label' => __('Maximum Container Width', 'siteorigin-widgets'),
+							'max' => 1920,
+							'min' => 280,
+							'default' => 1280,
+						),
+
 					)
 				),
 			)
@@ -183,6 +200,27 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		// Add in the button code
 		$content = preg_replace('/<p *([^>]*)> *\[ *buttons *\] *<\/p>/i', '<div class="sow-hero-buttons" $1>' . $button_code . '</div>', $content);
 		return wp_kses_post( $content );
+	}
+
+	/**
+	 * The less variables to control the design of the slider
+	 *
+	 * @param $instance
+	 *
+	 * @return array
+	 */
+	function get_less_variables($instance) {
+		$less = array();
+
+		// Slider navigation controls
+		$less['nav_color_hex'] = $instance['controls']['nav_color_hex'];
+		$less['nav_size'] = $instance['controls']['nav_size'];
+
+		// Hero specific design
+		$less['slide_padding'] = intval( $instance['design']['padding'] ) . 'px';
+		$less['slide_width'] = intval( $instance['design']['width'] ) . 'px';
+
+		return $less;
 	}
 
 }
