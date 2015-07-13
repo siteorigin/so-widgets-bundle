@@ -232,7 +232,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			}
 
 			if( $background['opacity'] < 1 && !empty($background['image']) ) {
-				?><div class="sow-slider-image-overlay" style="background-image: url(<?php echo esc_url( $background['image'] ) ?>); opacity: <?php echo floatval( $background['opacity'] ) ?>;" ></div><?php
+				?><div class="sow-slider-image-overlay <?php echo 'sow-slider-image-' . $background['image-sizing'] ?>" style="background-image: url(<?php echo esc_url( $background['image'] ) ?>); opacity: <?php echo floatval( $background['opacity'] ) ?>;" ></div><?php
 			}
 
 			?>

@@ -57,8 +57,13 @@
   left: 0;
   bottom: 0;
   right: 0;
-  background-size: cover;
+}
+.sow-slider-base ul.sow-slider-images li.sow-slider-image .sow-slider-image-overlay.sow-slider-image-cover {
   background-position: center center;
+  background-size: cover;
+}
+.sow-slider-base ul.sow-slider-images li.sow-slider-image .sow-slider-image-overlay.sow-slider-image-cover {
+  background-repeat: repeat;
 }
 .sow-slider-base ul.sow-slider-images li.sow-slider-image img {
   display: block;
