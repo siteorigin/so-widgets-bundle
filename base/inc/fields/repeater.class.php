@@ -93,7 +93,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 			$rpt_fields = ob_get_clean();
 			$rpt_fields = preg_replace( '/\s+name\s*=\s*/', ' data-name=', $rpt_fields );
 			?>
-			<div class="siteorigin-widget-field-repeatear-item-html" style="display: none;">
+			<div class="siteorigin-widget-field-repeater-item-html" style="display: none;">
 				<?php echo $rpt_fields; ?>
 			</div>
 		</div>

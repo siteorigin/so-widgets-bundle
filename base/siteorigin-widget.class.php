@@ -767,7 +767,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param $instance
 	 * @return mixed
 	 */
-	abstract function get_template_name( $instance );
+	function get_template_name( $instance ) {
+		return 'default';
+	}
 
 	/**
 	 * Get the name of the directory in which we should look for the template. Relative to root of widget folder.
@@ -784,7 +786,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param $instance
 	 * @return mixed
 	 */
-	abstract function get_style_name( $instance );
+	function get_style_name( $instance ) {
+		return 'default';
+	}
 
 	/**
 	 * Get any variables that need to be substituted by

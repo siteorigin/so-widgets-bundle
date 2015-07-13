@@ -793,18 +793,18 @@ var sowEmitters = {
 
             var $el = $(el);
             var $nextIndex = $el.find('> .siteorigin-widget-field-repeater-items').children().length+1;
-            var repeaterHtmlString = '';
-            $el.find('> .siteorigin-widget-field-repeatear-item-html > .siteorigin-widget-field').each(
-                function (index, element) {
-                    if($(element).is('.siteorigin-widget-field-type-repeater')) {
-                        repeaterHtmlString += $(element).html();
-                    }
-                    else {
-                        repeaterHtmlString += $(element).html().replace(/data-name="/g, 'name="');
-                    }
+
+            // Create an object with the repeater html so we can make some changes to it.
+            var repeaterObject = $( '<div>' + $el.find('> .siteorigin-widget-field-repeater-item-html').html() + '</div>' );
+            repeaterObject.find('[data-name]').each( function(){
+                var $$ = $(this);
+                // Skip out items that are themselves inside repeater HTML wrappers
+                if( $$.closest('.siteorigin-widget-field-repeater-item-html').length === 0 ) {
+                    $$.attr('name', $(this).data('name'));
                 }
-            );
-            var repeaterHtml = repeaterHtmlString.replace(/_id_/g, $nextIndex);
+            } );
+            var repeaterHtml = repeaterObject.html().replace(/_id_/g, $nextIndex);
+
             var readonly = typeof $el.attr('readonly') != 'undefined';
             var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
                 .append(
