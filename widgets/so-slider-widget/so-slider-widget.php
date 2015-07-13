@@ -50,6 +50,11 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 							'label' => __('Background image', 'siteorigin-widgets'),
 						),
 
+						'background_color' => array(
+							'type' => 'color',
+							'label' => __('Background Color', 'siteorigin-widgets'),
+						),
+
 						'background_image_type' => array(
 							'type' => 'select',
 							'label' => __('Background image type', 'siteorigin-widgets'),
@@ -93,7 +98,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 		else $background_image = wp_get_attachment_image_src($frame['background_image'], 'full');
 
 		return array(
-			'color' => false,
+			'color' => !empty( $frame['background_color'] ) ? $frame['background_color'] : '#a0a0a0',
 			'image' => !empty( $background_image ) ? $background_image[0] : false,
 			'opacity' => 1,
 			'image-sizing' => 'cover',

@@ -65,7 +65,8 @@
 .sow-slider-base ul.sow-slider-images li.sow-slider-image .sow-slider-image-overlay.sow-slider-image-cover {
   background-repeat: repeat;
 }
-.sow-slider-base ul.sow-slider-images li.sow-slider-image img {
+.sow-slider-base ul.sow-slider-images li.sow-slider-image > img,
+.sow-slider-base ul.sow-slider-images li.sow-slider-image .sow-slider-image-wrapper > img {
   display: block;
   width: 100%;
   height: auto;

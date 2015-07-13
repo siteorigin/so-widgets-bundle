@@ -25,7 +25,7 @@ jQuery( function($){
     };
 
     var setupActiveSlide = siteoriginSlider.setupActiveSlide = function(slider, newActive, speed){
-        // Start by setting up the active sentinal
+        // Start by setting up the active sentinel
         var
             sentinel = $(slider).find('.cycle-sentinel'),
             active = $(newActive),
@@ -84,13 +84,12 @@ jQuery( function($){
 
                 $(window)
                     .resize(function(){
-                        //$i.height( $i.find('.sow-slider-image-wrapper').outerHeight() );
                         $i.css( 'height', $i.find('.sow-slider-image-wrapper').outerHeight() );
                     })
                     .resize();
             } );
 
-            // Set up the Cycle
+            // Set up the Cycle with videos
             $$
                 .on({
                     'cycle-after' : function(event, optionHash, outgoingSlideEl, incomingSlideEl, forwardFlag){
@@ -101,7 +100,6 @@ jQuery( function($){
 
                     'cycle-before' : function(event, optionHash, outgoingSlideEl, incomingSlideEl, forwardFlag) {
                         var $$ = $(this);
-
                         $p.find('> li').removeClass('sow-active').eq(optionHash.slideNum-1).addClass('sow-active');
                         pauseSlideVideo(outgoingSlideEl);
                         setupActiveSlide($$, incomingSlideEl, optionHash.speed);
