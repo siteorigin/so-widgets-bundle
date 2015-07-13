@@ -93,7 +93,9 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 		else $background_image = wp_get_attachment_image_src($frame['background_image'], 'full');
 
 		return array(
+			'color' => false,
 			'image' => !empty( $background_image ) ? $background_image[0] : false,
+			'opacity' => 1,
 			'image-sizing' => 'cover',
 			'videos' => $frame['background_videos'],
 			'video-sizing' => empty($frame['foreground_image']) ? 'full' : 'background',

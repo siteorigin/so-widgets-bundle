@@ -195,14 +195,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	 * @return array
 	 */
 	function get_frame_background( $i, $frame ) {
-		return array(
-			'color' => false,
-			'image' => false,
-			'opacity' => 1,
-			'image-sizing' => 'cover',              // options for image sizing are cover and contain
-			'videos' => false,
-			'videos-sizing' => 'background',        // options for video sizing are background or full
-		);
+		return array( );
 	}
 
 	/**
@@ -213,6 +206,14 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	 */
 	function render_frame( $i, $frame ){
 		$background = $this->get_frame_background( $i, $frame );
+		$background = wp_parse_args($background, array(
+			'color' => false,
+			'image' => false,
+			'opacity' => 1,
+			'image-sizing' => 'cover',              // options for image sizing are cover and contain
+			'videos' => false,
+			'videos-sizing' => 'background',        // options for video sizing are background or full
+		) );
 
 		$background_style = array();
 		if( !empty($background['color']) ) $background_style[] = 'background-color: ' . esc_attr($background['color']);
