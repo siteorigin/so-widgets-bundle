@@ -113,7 +113,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			$foreground_image = wp_get_attachment_image_src($frame['foreground_image'], 'full');
 			?>
 			<div class="sow-slider-image-container">
-				<div class="sow-slider-image-wrapper" style="max-width: <?php echo intval($foreground_image[1]) ?>px; ">
+				<div class="sow-slider-image-wrapper" style="<?php if(!empty($foreground_image[1])) echo 'max-width: ' . intval($foreground_image[1]) . 'px' ?>">
 					<?php
 					if(!empty($frame['url'])) echo '<a href="' . sow_esc_url($frame['url']) . '">';
 					echo wp_get_attachment_image($frame['foreground_image'], 'full');
