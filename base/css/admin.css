@@ -340,6 +340,7 @@
   -moz-transition: all 0.25s ease;
   -o-transition: all 0.25s ease;
   transition: all 0.25s ease;
+  position: static;
   opacity: 1;
 }
 .siteorigin-widget-form .media-remove-button.remove-hide {
