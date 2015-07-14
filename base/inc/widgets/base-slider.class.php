@@ -242,10 +242,20 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 
 	}
 
-	function render_frame_contents( $i, $frame ){
+	/**
+	 * Render the actual content of the frame.
+	 *
+	 * @param $i
+	 * @param $frame
+	 */
+	abstract function render_frame_contents( $i, $frame );
 
-	}
-
+	/**
+	 * Render the background videos
+	 *
+	 * @param $videos
+	 * @param array $classes
+	 */
 	function video_code( $videos, $classes = array() ){
 		if(empty($videos)) return;
 		$video_element = '<video class="' . esc_attr( implode(',', $classes) ) . '" autoplay loop muted>';
