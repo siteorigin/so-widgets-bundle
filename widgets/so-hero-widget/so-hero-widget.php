@@ -18,7 +18,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			__('SiteOrigin Hero', 'siteorigin-widgets'),
 			array(
 				'description' => __('A big hero image with a few settings to make it your own.', 'siteorigin-widgets'),
-				'help' => 'http://siteorigin.com/widgets-bundle/slider-widget-documentation/',
+				'help' => 'https://siteorigin.com/widgets-bundle/hero-image-widget/',
 				'panels_title' => false,
 			),
 			array( ),
