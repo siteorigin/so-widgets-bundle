@@ -50,6 +50,14 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.4 =
+* Created a base slider widget class.
+* Converted current slider widget to use base slider.
+* Fixed image sizing in slider widget.
+* Added plain background color option to slider widget.
+* Added new Hero Image widget.
+* Fixed repeaters in sub items.
+
 = 1.3.1 =
 * Fix to TinyMCE field when moved in Customizer and Widgets interface.
 * Small developer level improvements.
