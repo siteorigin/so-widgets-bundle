@@ -82,6 +82,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'color' => array(
 									'type' => 'color',
 									'label' => __( 'Background color', 'siteorigin-widgets' ),
+									'default' => '#333333',
 								),
 
 								'videos' => array(
@@ -132,7 +133,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 							'label' => __('Heading Size', 'siteorigin-widgets'),
 							'max' => 72,
 							'min' => 6,
-							'default' => 32,
+							'default' => 38,
 						),
 
 						'text_size' => array(
