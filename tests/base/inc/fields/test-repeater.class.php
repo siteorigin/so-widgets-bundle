@@ -44,7 +44,7 @@ class SiteOrigin_Widget_Field_RepeaterTest extends WP_UnitTestCase {
 	 * @test
 	 */
 	public function render_outputs_repeater_HTML_template() {
-		$this->assertContains( 'siteorigin-widget-field-repeatear-item-html', $this->field_output );
+		$this->assertContains( 'siteorigin-widget-field-repeater-item-html', $this->field_output );
 	}
 
 	/**

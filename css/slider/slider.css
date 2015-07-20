@@ -8,11 +8,6 @@
 .sow-slider-base {
   position: relative;
   overflow: hidden;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-  user-select: none;
   /* Some jQuery Cycle Specific CSS */
   /* Icon fonts for the left and right slider images */
 }
@@ -50,7 +45,28 @@
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
-.sow-slider-base ul.sow-slider-images li.sow-slider-image img {
+.sow-slider-base ul.sow-slider-images li.sow-slider-image .sow-slider-image-container .sow-slider-image-wrapper > *:first-child {
+  margin-top: 0;
+}
+.sow-slider-base ul.sow-slider-images li.sow-slider-image .sow-slider-image-container .sow-slider-image-wrapper > *:last-child {
+  margin-bottom: 0;
+}
+.sow-slider-base ul.sow-slider-images li.sow-slider-image .sow-slider-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+.sow-slider-base ul.sow-slider-images li.sow-slider-image .sow-slider-image-overlay.sow-slider-image-cover {
+  background-position: center center;
+  background-size: cover;
+}
+.sow-slider-base ul.sow-slider-images li.sow-slider-image .sow-slider-image-overlay.sow-slider-image-cover {
+  background-repeat: repeat;
+}
+.sow-slider-base ul.sow-slider-images li.sow-slider-image > img,
+.sow-slider-base ul.sow-slider-images li.sow-slider-image .sow-slider-image-wrapper > img {
   display: block;
   width: 100%;
   height: auto;
@@ -85,6 +101,10 @@
   box-sizing: border-box;
   padding-right: 30px;
   line-height: 11px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .sow-slider-base .sow-slider-pagination li {
   text-align: left;
@@ -113,6 +133,10 @@
   opacity: 0.75;
   font-size: 25px;
   margin-top: -0.5em;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .sow-slider-base .sow-slide-nav a {
   display: block;

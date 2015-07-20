@@ -1,4 +1,4 @@
-@import "../../../base/less/mixins";
+@import "../../base/less/mixins";
 
 @font-face {
 	font-family: 'so-slider-pointers';
@@ -15,12 +15,6 @@
 
 	position: relative;
 	overflow: hidden;
-
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	-o-user-select: none;
-	user-select: none;
 
 	ul.sow-slider-images {
 		list-style: none;
@@ -52,15 +46,39 @@
 				z-index: 2;
 
 				.sow-slider-image-wrapper {
-
 					margin: 0 auto;
 					z-index: 2;
-
 					.box-sizing(border-box);
+
+					> *:first-child {
+						margin-top: 0;
+					}
+
+					> *:last-child {
+						margin-bottom: 0;
+					}
 				}
 			}
 
-			img {
+			.sow-slider-image-overlay {
+				position: absolute;
+				top: 0;
+				left: 0;
+				bottom: 0;
+				right: 0;
+
+				&.sow-slider-image-cover {
+					background-position: center center;
+					background-size: cover;
+				}
+
+				&.sow-slider-image-cover {
+					background-repeat: repeat;
+				}
+			}
+
+			> img,
+			.sow-slider-image-wrapper > img {
 				display: block;
 				width: 100%;
 				height: auto;
@@ -101,6 +119,8 @@
 		padding-right: 30px;
 		line-height: 11px;
 
+		.user-select(none);
+
 		li {
 			text-align: left;
 			margin: 0;
@@ -131,6 +151,8 @@
 
 		font-size: 25px;
 		margin-top: -0.5em;
+
+		.user-select(none);
 
 		a{
 			display: block;

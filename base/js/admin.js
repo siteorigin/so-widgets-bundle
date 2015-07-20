@@ -236,6 +236,9 @@ var sowEmitters = {
             // Process any sub sections
             $fields.find('> .siteorigin-widget-section').sowSetupForm();
 
+            //Process any sub widgets whose fields aren't contained in a section
+            $fields.filter('.siteorigin-widget-field-type-widget:not(:has(> .siteorigin-widget-section))').sowSetupForm();
+
             // Store the field names
             $fields.find('.siteorigin-widget-input').each(function(i, input){
                 if( $(input).data( 'original-name') === null ) {
@@ -790,7 +793,18 @@ var sowEmitters = {
 
             var $el = $(el);
             var $nextIndex = $el.find('> .siteorigin-widget-field-repeater-items').children().length+1;
-            var repeaterHtml = $el.find('> .siteorigin-widget-field-repeatear-item-html').html().replace(/data-name="/g, 'name="').replace(/_id_/g, $nextIndex);
+
+            // Create an object with the repeater html so we can make some changes to it.
+            var repeaterObject = $( '<div>' + $el.find('> .siteorigin-widget-field-repeater-item-html').html() + '</div>' );
+            repeaterObject.find('[data-name]').each( function(){
+                var $$ = $(this);
+                // Skip out items that are themselves inside repeater HTML wrappers
+                if( $$.closest('.siteorigin-widget-field-repeater-item-html').length === 0 ) {
+                    $$.attr('name', $(this).data('name'));
+                }
+            } );
+            var repeaterHtml = repeaterObject.html().replace(/_id_/g, $nextIndex);
+
             var readonly = typeof $el.attr('readonly') != 'undefined';
             var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
                 .append(
