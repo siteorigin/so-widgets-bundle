@@ -182,7 +182,7 @@ var sowEmitters = {
                                 handlerState.name = '';
 
                                 // We will run this handler because none have run for it yet
-                                runHandler = ( typeof handlerRun[ handlerState.group ] === 'undefined' );
+                                runHandler = ( handlerState.group === incomingGroup && typeof handlerRun[ handlerState.group ] === 'undefined' );
                             }
                             else {
                                 // Evaluate if we're in the current state
