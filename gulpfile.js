@@ -19,6 +19,7 @@ if(process.argv.length > 2) {
     }
 }
 
+var pluginName = 'so-widgets-bundle';
 var outDir = args.target == 'build:dev' ? '.' : 'dist';
 
 gulp.task('clean', function () {
@@ -33,7 +34,7 @@ gulp.task('version', ['clean'], function() {
         console.log("E.g. gulp release 1.2.3");
         return;
     }
-    return gulp.src(['so-widgets-bundle.php', 'readme.txt'])
+    return gulp.src([pluginName + '.php', 'readme.txt'])
         .pipe(replace(/(Stable tag:).*/, '$1 '+args.v))
         .pipe(replace(/(Version:).*/, '$1 '+args.v))
         .pipe(replace(/(define\('SOW_BUNDLE_VERSION', ').*('\);)/, '$1'+args.v+'$2'))
@@ -88,7 +89,7 @@ gulp.task('copy', ['version', 'less', 'minify'], function () {
             '!{tests,tests/**}',                // Ignore tests/ and contents
             '!{tmp,tmp/**}',                    // Ignore tmp/ and contents
             '!phpunit.xml',                     // Not the unit tests configuration file.
-            '!so-widgets-bundle.php',           // Not the base plugin file. It is copied by the 'version' task.
+            '!' + pluginName + '.php',           // Not the base plugin file. It is copied by the 'version' task.
             '!readme.txt'                       // Not the readme.txt file. It is copied by the 'version' task.
         ], {base: '.'})
         .pipe(gulp.dest('tmp'));
@@ -96,24 +97,21 @@ gulp.task('copy', ['version', 'less', 'minify'], function () {
 
 gulp.task('move', ['copy'], function () {
     return gulp.src('tmp/**')
-        .pipe(gulp.dest(outDir + '/so-widgets-bundle'));
+        .pipe(gulp.dest(outDir + '/' + pluginName));
 });
 
 gulp.task('build:release', ['move'], function () {
     del(['tmp']);
     var versionNumber = args.hasOwnProperty('v') ? args.v : 'dev';
     return gulp.src(outDir + '/**/*')
-        .pipe(zip('so-widgets-bundle.' + versionNumber + '.zip'))
+        .pipe(zip(pluginName + '.' + versionNumber + '.zip'))
         .pipe(gulp.dest(outDir));
 });
 
 gulp.task('build:dev', ['less'], function () {
     console.log('Watching LESS files...');
     gulp.watch([
-        'admin/**/*.less',
-        'base/**/*.less',
-        'widgets/**/*.less',
-        '!widgets/**/styles/*.less'
+        'css/**/*.less'
     ], ['less']);
 });
 
