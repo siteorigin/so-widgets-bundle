@@ -72,8 +72,8 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 		if( !empty($GLOBALS['wp_embed']) ) {
 			$instance['text'] = $GLOBALS['wp_embed']->autoembed( $instance['text'] );
 		}
-		$instance['text'] = do_shortcode( $instance['text'] );
 		$instance['text'] = wpautop( $instance['text'] );
+		$instance['text'] = do_shortcode( $instance['text'] );
 
 		return array(
 			'text' => $instance['text'],
