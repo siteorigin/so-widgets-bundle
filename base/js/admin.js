@@ -811,11 +811,12 @@ var sowEmitters = {
                     $('<div class="siteorigin-widget-field-repeater-item-top" />')
                         .append(
                             $('<div class="siteorigin-widget-field-expand" />')
-
+                        )
+                        .append(
+                            readonly ? '' : $('<div class="siteorigin-widget-field-copy" />')
                         )
                         .append(
                             readonly ? '' : $('<div class="siteorigin-widget-field-remove" />')
-
                         )
                         .append( $('<h4 />').html( $el.data('item-name') ) )
                 )
@@ -867,7 +868,7 @@ var sowEmitters = {
                 }
 
                 itemTop.click(function (e) {
-                    if (e.target.className === "siteorigin-widget-field-remove") {
+                    if (e.target.className === "siteorigin-widget-field-remove" || e.target.className === "siteorigin-widget-field-copy") {
                         return;
                     }
                     e.preventDefault();
@@ -884,18 +885,55 @@ var sowEmitters = {
                     });
                 });
 
-                itemTop.find('.siteorigin-widget-field-remove')
-                    .click(function (e) {
-                        e.preventDefault();
-                        if ( confirm( soWidgets.sure ) ) {
-                            var $s = $(this).closest('.siteorigin-widget-field-repeater-items');
-                            $(this).closest('.siteorigin-widget-field-repeater-item').slideUp('fast', function () {
-                                $(this).remove();
-                                $s.sortable("refresh").trigger('updateFieldPositions');
-                                $(window).resize();
-                            });
-                        }
+                itemTop.find('.siteorigin-widget-field-remove').click(function (e) {
+                    e.preventDefault();
+                    if ( confirm( soWidgets.sure ) ) {
+                        var $s = $(this).closest('.siteorigin-widget-field-repeater-items');
+                        $(this).closest('.siteorigin-widget-field-repeater-item').slideUp('fast', function () {
+                            $(this).remove();
+                            $s.sortable("refresh").trigger('updateFieldPositions');
+                            $(window).resize();
+                        });
+                    }
+                });
+                itemTop.find('.siteorigin-widget-field-copy').click(function(e){
+                    e.preventDefault();
+                    //var $item = $(this).closest('.siteorigin-widget-field-repeater-item');
+                    //var $data = getDataFromElement($item);
+                    //
+                    //var $newItem = $el.closest('.siteorigin-widget-field-repeater')
+                    //    .sowAddRepeaterItem()
+                    //    .find('> .siteorigin-widget-field-repeater-items').slideDown('fast', function(){
+                    //        $(window).resize();
+                    //    })
+                    //    .find('> .siteorigin-widget-field-repeater-item').last();
+                    //setDataOnElement($newItem, $data);
+                    var $item = $(this).closest('.siteorigin-widget-field-repeater-item');
+                    var $copyItem = $item.clone();
+                    //TODO: increment id.
+                    var $items = $item.closest('.siteorigin-widget-field-repeater-items');
+                    var $nextIndex = $items.children().length;
+                    $items.append($copyItem).sortable( "refresh").trigger('updateFieldPositions');
+
+                    $copyItem.find( '*[name]' ).each( function () {
+                        var $inputElement = $(this);
+                        var nm = $inputElement.attr('name');
+                        var id = $inputElement.attr('id');
+                        var nestLevel = $copyItem.parents('.siteorigin-widget-field-repeater').length;
+                        var newIdIndex = $nextIndex + 1;
+                        var newId = id.replace(/-\d+$/, '-'+newIdIndex);
+                        $inputElement.attr('id', newId);
+                        $copyItem.find( 'label[for=' + id + ']').attr('for', newId);
+                        var newName = nm.replace(new RegExp('((?:.*?\\[\\d+\\]){'+(nestLevel-1).toString()+'})?(.*?\\[)\\d+(\\])'), '$1$2'+$nextIndex.toString()+'$3');
+                        $inputElement.attr('name', newName);
+                        $inputElement.data('original-name', newName);
+                    } );
+
+                    $copyItem.sowSetupRepeaterItems();
+                    $copyItem.hide().slideDown('fast', function(){
+                        $(window).resize();
                     });
+                });
 
                 $el.find('> .siteorigin-widget-field-repeater-item-form').sowSetupForm();
 
@@ -903,6 +941,71 @@ var sowEmitters = {
             }
         });
     };
+
+    function getDataFromElement( element ) {
+
+        // Lets build the data from the widget
+        var data = {};
+        $(element).find( '*[name]' ).each( function () {
+            var $$ = $(this);
+            var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
+
+            name = name[1];
+            var parts = name.split('][');
+
+            // Make sure we either have numbers or strings
+            parts = parts.map(function(e){
+                if( !isNaN(parseFloat(e)) && isFinite(e) ) {
+                    return parseInt(e);
+                }
+                else {
+                    return e;
+                }
+            });
+
+            var sub = data;
+            for(var i = 0; i < parts.length; i++) {
+                if(i === parts.length - 1) {
+                    // This is the end, so we need to store the actual field value here
+                    if( $$.attr('type') === 'checkbox' ){
+                        if ( $$.is(':checked') ) {
+                            sub[ parts[i] ] = $$.val() !== '' ? $$.val() : true;
+                        } else {
+                            sub[ parts[i] ] = false;
+                        }
+                    }
+                    else if( $$.attr('type') === 'radio' ){
+                        if ( $$.is(':checked') ) {
+                            sub[ parts[i] ] = $$.val() !== '' ? $$.val() : true;
+                        }
+                    }
+                    else {
+                        sub[ parts[i] ] = $$.val();
+                    }
+                }
+                else {
+                    if(typeof sub[parts[i]] === 'undefined') {
+                        sub[parts[i]] = {};
+                    }
+                    // Go deeper into the data and continue
+                    sub = sub[parts[i]];
+                }
+            }
+        } );
+
+        return data;
+    }
+
+    function setDataOnElement( element, data ) {
+
+        $(element).find( '*[name]' ).each( function () {
+            var $$ = $(this);
+            var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
+
+            name = name[1];
+            var parts = name.split('][');
+        });
+    }
 
     window.sowGetWidgetFieldVariable = function ( widgetClass, elementName, key ) {
         var widgetVars = window.sow_field_javascript_variables[widgetClass];
