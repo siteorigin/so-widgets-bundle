@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
-Tags: bundle, widget, button, slider, image, carousel, price table
+Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 3.9
-Tested up to: 4.2
+Tested up to: 4.2.4
 Stable tag: trunk
 License: GPLv3 or later
 Contributors: gpriday, braam-genis
