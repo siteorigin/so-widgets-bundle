@@ -109,6 +109,15 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 
 	function render_frame_contents($i, $frame) {
 
+		// Clear out any empty background videos
+		if( !empty($frame['background_videos']) && is_array($frame['background_videos']) ){
+			for( $i = 0; $i < count($frame['background_videos']); $i++ ){
+				if( empty( $frame['background_videos'][$i]['file'] ) && empty($frame['background_videos'][$i]['url']) ) {
+					unset($frame['background_videos'][$i]);
+				}
+			}
+		}
+
 		if( !empty($frame['foreground_image']) ) {
 			$foreground_image = wp_get_attachment_image_src($frame['foreground_image'], 'full');
 			?>

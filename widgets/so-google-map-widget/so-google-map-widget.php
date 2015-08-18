@@ -148,6 +148,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							'type'    => 'radio',
 							'default' => 'normal',
 							'label'   => __( 'Map styles', 'siteorigin-widgets' ),
+							'state_emitter' => array(
+								'callback' => 'select',
+								'args' => array( 'style_method' )
+							),
 							'options' => array(
 								'normal'   => __( 'Default', 'siteorigin-widgets' ),
 								'custom'   => __( 'Custom', 'siteorigin-widgets' ),
@@ -157,13 +161,17 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						'styled_map_name'     => array(
 							'type'       => 'text',
 							'state_handler' => array(
-								'map_type[interactive]' => array('show'),
-								'_else[map_type]' => array('hide'),
+								'style_method[default]' => array('hide'),
+								'_else[style_method]' => array('show'),
 							),
 							'label'      => __( 'Styled map name', 'siteorigin-widgets' )
 						),
 						'raw_json_map_styles' => array(
 							'type'        => 'textarea',
+							'state_handler' => array(
+								'style_method[raw_json]' => array('show'),
+								'_else[style_method]' => array('hide'),
+							),
 							'rows'        => 5,
 							'hidden'      => true,
 							'label'       => __( 'Raw JSON styles', 'siteorigin-widgets' ),
@@ -171,6 +179,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						),
 						'custom_map_styles'   => array(
 							'type'       => 'repeater',
+							'state_handler' => array(
+								'style_method[custom]' => array('show'),
+								'_else[style_method]' => array('hide'),
+							),
 							'label'      => __( 'Custom map styles', 'siteorigin-widgets' ),
 							'item_name'  => __( 'Style', 'siteorigin-widgets' ),
 							'item_label' => array(
@@ -331,10 +343,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				)
 			)
 		);
-	}
-
-	function enqueue_admin_scripts() {
-		wp_enqueue_script( 'sow-google-map', siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map-admin' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
 	}
 
 	function get_template_name( $instance ) {

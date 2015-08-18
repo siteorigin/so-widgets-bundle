@@ -211,6 +211,12 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#0E74AF'
 	),
+	'tripadvisor'   => array(
+		'label'    => __( 'TripAdvisor', 'siteorigin-widgets' ),
+		'base_url' => 'https://www.tripadvisor.com/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#589442'
+	),
 	'twitch'   => array(
 		'label'    => __( 'Twitch', 'siteorigin-widgets' ),
 		'base_url' => 'https://www.twitch.tv/',
