@@ -50,6 +50,9 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.4.2 - August 18 2015 =
+* Urgent fix in preparation for WordPress 4.3 release
+
 = 1.4.1 - August 17 2015 =
 * Updated to latest Font Awesome.
 * Added TripAdvisor to social links widget.
