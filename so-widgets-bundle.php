@@ -45,7 +45,7 @@ class SiteOrigin_Widgets_Bundle {
 
 		// Initialize the widgets, but do it fairly late
 		add_action( 'plugins_loaded', array($this, 'set_plugin_textdomain'), 1 );
-		add_action( 'init', array($this, 'load_widget_plugins'), 1 );
+		add_action( 'after_setup_theme', array($this, 'load_widget_plugins'), 11 );
 
 		// Add the action links.
 		add_action( 'plugin_action_links_' . plugin_basename(__FILE__), array($this, 'plugin_action_links') );
