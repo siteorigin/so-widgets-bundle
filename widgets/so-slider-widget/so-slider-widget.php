@@ -112,7 +112,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 		// Clear out any empty background videos
 		if( !empty($frame['background_videos']) && is_array($frame['background_videos']) ){
 			for( $i = 0; $i < count($frame['background_videos']); $i++ ){
-				if( empty( $frame['background_videos'][$i]['file'] && empty($frame['background_videos'][$i]['url']) ) ) {
+				if( empty( $frame['background_videos'][$i]['file'] ) && empty($frame['background_videos'][$i]['url']) ) {
 					unset($frame['background_videos'][$i]);
 				}
 			}
