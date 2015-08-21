@@ -40,6 +40,33 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 				}
 			}
 		}
+
+		if( class_exists( 'WC_Shortcodes_Admin' ) ) {
+			$screen = get_current_screen();
+			if( !is_null( $screen ) && $screen->id != 'widgets' ) {
+				add_filter( 'mce_external_plugins', array( $this, 'add_wc_shortcode_plugin' ), 15 );
+				add_filter( 'mce_buttons', array( $this, 'register_wc_shortcode_button' ), 15 );
+			}
+		}
+	}
+
+	function add_wc_shortcode_plugin( $plugins ) {
+		if( isset( $plugins['woocommerce_shortcodes'] ) ) {
+			return $plugins;
+		}
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		if( file_exists( plugin_dir_path('woocommerce-shortcodes.php') ) ) {
+			$plugins['woocommerce_shortcodes'] = plugins_url( 'woocommerce-shortcodes/assets/js/editor' . $suffix . '.js' );
+		}
+		return $plugins;
+	}
+
+	function register_wc_shortcode_button( $buttons ) {
+		if( in_array( 'woocommerce_shortcodes', $buttons ) ) {
+			return $buttons;
+		}
+		array_push( $buttons, '|', 'woocommerce_shortcodes' );
+		return $buttons;
 	}
 
 	/**
