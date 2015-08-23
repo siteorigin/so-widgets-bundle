@@ -474,7 +474,65 @@
   width: 120px;
   text-align: center;
 }
+.siteorigin-widget-form .siteorigin-widget-icon-selector-current {
+  display: inline-block;
+  background: #f9f9f9;
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #f2f2f2), color-stop(1, #f9f9f9));
+  background: -ms-linear-gradient(bottom, #f2f2f2, #f9f9f9);
+  background: -moz-linear-gradient(center bottom, #f2f2f2 0%, #f9f9f9 100%);
+  background: -o-linear-gradient(#f9f9f9, #f2f2f2);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#f2f2f2', GradientType=0);
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  margin-bottom: 10px;
+  border: 1px solid #bbbbbb;
+  height: 32px;
+}
+.siteorigin-widget-form .siteorigin-widget-icon-selector-current:hover {
+  background: #ffffff;
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #f7f7f7), color-stop(1, #ffffff));
+  background: -ms-linear-gradient(bottom, #f7f7f7, #ffffff);
+  background: -moz-linear-gradient(center bottom, #f7f7f7 0%, #ffffff 100%);
+  background: -o-linear-gradient(#ffffff, #f7f7f7);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f7f7f7', GradientType=0);
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+.siteorigin-widget-form .siteorigin-widget-icon-selector-current .siteorigin-widget-icon {
+  -ms-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  float: left;
+  margin: 4px;
+  padding: 3px;
+  border: 1px solid #999;
+  background: #ffffff;
+  height: 24px;
+  width: 24px;
+}
+.siteorigin-widget-form .siteorigin-widget-icon-selector-current .siteorigin-widget-icon span {
+  font-size: 16px;
+}
+.siteorigin-widget-form .siteorigin-widget-icon-selector-current label {
+  display: block;
+  float: left;
+  color: #666;
+  text-decoration: none;
+  text-shadow: 0 1px 0 #FFF;
+  font-weight: 600;
+  font-size: 11px;
+  padding: 7px 8px 7px 6px;
+  outline: none;
+  cursor: pointer;
+}
 .siteorigin-widget-form .siteorigin-widget-icon-selector {
+  display: none;
   padding: 10px;
   border: 1px solid #D8D8D8;
   background: #FFFFFF;

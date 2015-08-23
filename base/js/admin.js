@@ -377,9 +377,16 @@ var sowEmitters = {
             // Handle the icon selection
 
             var iconWidgetCache = {};
-            $fields.find('> .siteorigin-widget-icon-selector').each(function(){
-                var $is = $(this);
-                var $v = $is.find('.siteorigin-widget-icon-icon');
+            $fields.filter('.siteorigin-widget-field-type-icon').each(function(){
+                var $$ = $(this),
+                    $is = $$.find('.siteorigin-widget-icon-selector'),
+                    $v = $is.find('.siteorigin-widget-icon-icon'),
+                    $b = $$.find('.siteorigin-widget-icon-selector-current');
+
+                // Clicking on the button should display the icon selector
+                $b.click(function(){
+                    $is.slideToggle();
+                });
 
                 var rerenderIcons = function(){
                     var family = $is.find('select.siteorigin-widget-icon-family').val();
@@ -418,13 +425,23 @@ var sowEmitters = {
                                     $v.val( $(this).data('value') );
                                 }
                                 $v.trigger('change');
+
+                                // Also add this to the button
+                                var $span = $b.find('span');
+                                $span
+                                    .attr( 'data-sow-icon', $$.attr('data-sow-icon') )
+                                    .attr( 'class', '' )
+                                    .addClass( 'sow-icon-' + family );
+
+                                // Hide the icon selector
+                                $is.slideUp();
                             });
 
-                        if( $v.val() === family + '-' + i ) {
-                            icon.addClass('siteorigin-widget-active');
-                        }
-
                         container.append(icon);
+
+                        if( $v.val() === family + '-' + i ) {
+                            icon.addClass('siteorigin-widget-active').click();
+                        }
                     }
 
                     // Move a selcted item to the first position
@@ -460,7 +477,6 @@ var sowEmitters = {
                     $is.find('.siteorigin-widget-icon-icons').empty();
                     changeIconFamily();
                 });
-
             });
 
             ///////////////////////////////////////

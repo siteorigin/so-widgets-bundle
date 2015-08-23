@@ -535,7 +535,53 @@
 
 	}
 
+	.siteorigin-widget-icon-selector-current {
+		display: inline-block;
+		.gradient( #f9f9f9, #f2f2f2, #f9f9f9 );
+		.box-shadow(~"0 1px 2px rgba(0,0,0,0.1)");
+		.rounded(3px);
+		margin-bottom: 10px;
+
+		border: 1px solid #bbbbbb;
+
+		height: 32px;
+
+		&:hover {
+			.gradient( #ffffff, #f7f7f7, #ffffff );
+			.box-shadow(~"0 1px 2px rgba(0,0,0,0.15)");
+		}
+
+		.siteorigin-widget-icon {
+			.box-sizing(border-box);
+			float: left;
+			margin: 4px;
+			padding: 3px;
+			border: 1px solid #999;
+			background: #ffffff;
+			height: 24px;
+			width: 24px;
+
+			span {
+				font-size: 16px;
+			}
+		}
+
+		label {
+			display: block;
+			float: left;
+			color: #666;
+			text-decoration: none;
+			text-shadow: 0 1px 0 #FFF;
+			font-weight: 600;
+			font-size: 11px;
+			padding: 7px 8px 7px 6px;
+			outline: none;
+			cursor: pointer;
+		}
+	}
+
 	.siteorigin-widget-icon-selector {
+		display: none;
 		padding: 10px;
 		border: 1px solid #D8D8D8;
 		background: #FFFFFF;
