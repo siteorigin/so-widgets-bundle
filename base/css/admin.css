@@ -514,7 +514,8 @@
   border: 1px solid #999;
   background: #ffffff;
   height: 24px;
-  width: 24px;
+  width: 28px;
+  text-align: center;
 }
 .siteorigin-widget-form .siteorigin-widget-icon-selector-current .siteorigin-widget-icon span {
   font-size: 16px;
