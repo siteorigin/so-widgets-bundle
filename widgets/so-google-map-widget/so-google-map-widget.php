@@ -407,7 +407,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'draggable'         => $settings['draggable'],
 					'marker-icon'       => ! empty( $mrkr_src ) ? $mrkr_src[0] : '',
 					'markers-draggable' => isset( $markers['markers_draggable'] ) ? $markers['markers_draggable'] : '',
-					'marker-at-center'  => $markers['marker_at_center'],
+					'marker-at-center'  => !empty( $markers['marker_at_center'] ),
 					'marker-info-display' => $markers['info_display'],
 					'marker-positions'  => isset( $markers['marker_positions'] ) ? json_encode( $markers['marker_positions'] ) : '',
 					'map-name'          => ! empty( $styles ) ? $styles['map_name'] : '',
@@ -523,7 +523,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				}
 			}
 
-			if ( $markers['marker_at_center'] ) {
+			if ( !empty( $markers['marker_at_center'] ) ) {
 				if ( ! empty( $markers_st ) ) {
 					$markers_st .= "|";
 				}
