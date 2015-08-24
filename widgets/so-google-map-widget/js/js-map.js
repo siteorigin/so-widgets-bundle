@@ -79,11 +79,16 @@ function loadMap($) {
                                                 infoWindowOptions.maxWidth = mrkr.info_max_width;
                                             }
 
+                                            var infoDisplay = $$.data('marker-info-display');
+                                            infoWindowOptions.disableAutoPan = infoDisplay == 'always';
                                             var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
-
-                                            marker.addListener('click', function() {
+                                            if( infoDisplay == 'always') {
                                                 infoWindow.open(map, marker);
-                                            });
+                                            } else {
+                                                marker.addListener(infoDisplay, function() {
+                                                    infoWindow.open(map, marker);
+                                                });
+                                            }
                                         }
                                     } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
                                         //try again please

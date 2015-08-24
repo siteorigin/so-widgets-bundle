@@ -144,7 +144,17 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 									'label' => __( 'Info Window max width', 'siteorigin-widgets' )
 								),
 							)
-						)
+						),
+						'info_display' => array(
+							'type' => 'radio',
+							'label' => __( 'When should Info Windows be displayed?' ),
+							'default' => 'click',
+							'options' => array(
+								'click'   => __( 'Click', 'siteorigin-widgets' ),
+								'mouseover'   => __( 'Mouse over', 'siteorigin-widgets' ),
+								'always' => __( 'Always', 'siteorigin-widgets' ),
+							)
+						),
 					)
 				),
 				'styles'          => array(
@@ -398,6 +408,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'marker-icon'       => ! empty( $mrkr_src ) ? $mrkr_src[0] : '',
 					'markers-draggable' => isset( $markers['markers_draggable'] ) ? $markers['markers_draggable'] : '',
 					'marker-at-center'  => $markers['marker_at_center'],
+					'marker-info-display' => $markers['info_display'],
 					'marker-positions'  => isset( $markers['marker_positions'] ) ? json_encode( $markers['marker_positions'] ) : '',
 					'map-name'          => ! empty( $styles ) ? $styles['map_name'] : '',
 					'map-styles'        => ! empty( $styles ) ? json_encode( $styles['styles'] ) : '',
