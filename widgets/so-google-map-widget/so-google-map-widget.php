@@ -133,7 +133,16 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 									'type'  => 'textarea',
 									'rows'  => 2,
 									'label' => __( 'Place', 'siteorigin-widgets' )
-								)
+								),
+								'info' => array(
+									'type' => 'tinymce',
+									'rows' => 10,
+									'label' => __( 'Info Window Content', 'siteorigin-widgets' )
+								),
+								'info_max_width' => array(
+									'type' => 'text',
+									'label' => __( 'Info Window max width', 'siteorigin-widgets' )
+								),
 							)
 						)
 					)
