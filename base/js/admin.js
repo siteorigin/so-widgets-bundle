@@ -416,22 +416,27 @@ var sowEmitters = {
                             .click(function(){
                                 var $$ = $(this);
                                 if( $$.hasClass('siteorigin-widget-active') ) {
+                                    // This is being unselected
                                     $$.removeClass('siteorigin-widget-active');
                                     $v.val( '' );
+
+                                    // Hide the button icon
+                                    $b.find('span').hide();
                                 }
                                 else {
+                                    // This is being selected
                                     container.find('.siteorigin-widget-icon-icons-icon').removeClass('siteorigin-widget-active');
                                     $$.addClass('siteorigin-widget-active');
-                                    $v.val( $(this).data('value') );
+                                    $v.val( $$.data('value') );
+
+                                    // Also add this to the button
+                                    $b.find('span')
+                                        .show()
+                                        .attr( 'data-sow-icon', $$.attr('data-sow-icon') )
+                                        .attr( 'class', '' )
+                                        .addClass( 'sow-icon-' + family );
                                 }
                                 $v.trigger('change');
-
-                                // Also add this to the button
-                                var $span = $b.find('span');
-                                $span
-                                    .attr( 'data-sow-icon', $$.attr('data-sow-icon') )
-                                    .attr( 'class', '' )
-                                    .addClass( 'sow-icon-' + family );
 
                                 // Hide the icon selector
                                 $is.slideUp();
@@ -440,7 +445,11 @@ var sowEmitters = {
                         container.append(icon);
 
                         if( $v.val() === family + '-' + i ) {
-                            icon.addClass('siteorigin-widget-active').click();
+                            if( !icon.hasClass('siteorigin-widget-active') ) {
+                                // This is becoming active, so simulate a click
+                                icon.click();
+                            }
+                            icon.addClass('siteorigin-widget-active');
                         }
                     }
 
