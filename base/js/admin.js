@@ -935,7 +935,7 @@ var sowEmitters = {
                         //TinyMCE field :/
                         if($inputElement.is('textarea') && $inputElement.parent().is('.wp-editor-container')) {
                             $inputElement.parent().empty().append($inputElement);
-                            $inputElement.show();
+                            $inputElement.css('display', '');
                         }
                         var id = $inputElement.attr('id');
                         if(id) {
