@@ -932,16 +932,28 @@ var sowEmitters = {
 
                     $copyItem.find( '*[name]' ).each( function () {
                         var $inputElement = $(this);
-                        var nm = $inputElement.attr('name');
-                        var id = $inputElement.attr('id');
-                        var idBase = id.replace(/-\d+$/, '');
-                        var nestLevel = $item.parents('.siteorigin-widget-field-repeater').length;
-                        if(!newIds[idBase]) {
-                            newIds[idBase] = $form.find('[id*='+idBase+']').not('[id*=_id_]').length+1;
+                        //TinyMCE field :/
+                        if($inputElement.is('textarea') && $inputElement.parent().is('.wp-editor-container')) {
+                            $inputElement.parent().empty().append($inputElement);
+                            $inputElement.show();
                         }
-                        var newId = idBase + '-' + newIds[idBase]++;
-                        $inputElement.attr('id', newId);
-                        $copyItem.find( 'label[for=' + id + ']').attr('for', newId);
+                        var id = $inputElement.attr('id');
+                        if(id) {
+                            var idBase = id.replace(/-\d+$/, '');
+                            if (!newIds[idBase]) {
+                                newIds[idBase] = $form.find('.siteorigin-widget-input[id^=' + idBase + ']').not('[id*=_id_]').length + 1;
+                            }
+                            var newId = idBase + '-' + newIds[idBase]++;
+                            $inputElement.attr('id', newId);
+                            $copyItem.find('label[for=' + id + ']').attr('for', newId);
+                            $copyItem.find('[id*=' + id + ']').each(function() {
+                                var oldIdAttr = $(this).attr('id');
+                                var newIdAttr = oldIdAttr.replace(id, newId);
+                                $(this).attr('id', newIdAttr);
+                            });
+                        }
+                        var nm = $inputElement.attr('name');
+                        var nestLevel = $item.parents('.siteorigin-widget-field-repeater').length;
                         var newName = nm.replace(new RegExp('((?:.*?\\[\\d+\\]){'+(nestLevel-1).toString()+'})?(.*?\\[)\\d+(\\])'), '$1$2'+$nextIndex.toString()+'$3');
                         $inputElement.attr('name', newName);
                         $inputElement.data('original-name', newName);
@@ -960,71 +972,6 @@ var sowEmitters = {
             }
         });
     };
-
-    function getDataFromElement( element ) {
-
-        // Lets build the data from the widget
-        var data = {};
-        $(element).find( '*[name]' ).each( function () {
-            var $$ = $(this);
-            var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
-
-            name = name[1];
-            var parts = name.split('][');
-
-            // Make sure we either have numbers or strings
-            parts = parts.map(function(e){
-                if( !isNaN(parseFloat(e)) && isFinite(e) ) {
-                    return parseInt(e);
-                }
-                else {
-                    return e;
-                }
-            });
-
-            var sub = data;
-            for(var i = 0; i < parts.length; i++) {
-                if(i === parts.length - 1) {
-                    // This is the end, so we need to store the actual field value here
-                    if( $$.attr('type') === 'checkbox' ){
-                        if ( $$.is(':checked') ) {
-                            sub[ parts[i] ] = $$.val() !== '' ? $$.val() : true;
-                        } else {
-                            sub[ parts[i] ] = false;
-                        }
-                    }
-                    else if( $$.attr('type') === 'radio' ){
-                        if ( $$.is(':checked') ) {
-                            sub[ parts[i] ] = $$.val() !== '' ? $$.val() : true;
-                        }
-                    }
-                    else {
-                        sub[ parts[i] ] = $$.val();
-                    }
-                }
-                else {
-                    if(typeof sub[parts[i]] === 'undefined') {
-                        sub[parts[i]] = {};
-                    }
-                    // Go deeper into the data and continue
-                    sub = sub[parts[i]];
-                }
-            }
-        } );
-
-        return data;
-    }
-
-    function setDataOnElement( element, data ) {
-
-        $(element).find( '*[name]' ).each( function () {
-            var $$ = $(this);
-            var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
-
-            name = name[1];
-            var parts = name.split('][');
-        });
-    }
 
     window.sowGetWidgetFieldVariable = function ( widgetClass, elementName, key ) {
         var widgetVars = window.sow_field_javascript_variables[widgetClass];
