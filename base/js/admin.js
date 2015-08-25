@@ -923,30 +923,23 @@ var sowEmitters = {
                 });
                 itemTop.find('.siteorigin-widget-field-copy').click(function(e){
                     e.preventDefault();
-                    //var $item = $(this).closest('.siteorigin-widget-field-repeater-item');
-                    //var $data = getDataFromElement($item);
-                    //
-                    //var $newItem = $el.closest('.siteorigin-widget-field-repeater')
-                    //    .sowAddRepeaterItem()
-                    //    .find('> .siteorigin-widget-field-repeater-items').slideDown('fast', function(){
-                    //        $(window).resize();
-                    //    })
-                    //    .find('> .siteorigin-widget-field-repeater-item').last();
-                    //setDataOnElement($newItem, $data);
+                    var $form = $(this).closest('.siteorigin-widget-form-main');
                     var $item = $(this).closest('.siteorigin-widget-field-repeater-item');
                     var $copyItem = $item.clone();
-                    //TODO: increment id.
                     var $items = $item.closest('.siteorigin-widget-field-repeater-items');
                     var $nextIndex = $items.children().length;
-                    $items.append($copyItem).sortable( "refresh").trigger('updateFieldPositions');
+                    var newIds = {};
 
                     $copyItem.find( '*[name]' ).each( function () {
                         var $inputElement = $(this);
                         var nm = $inputElement.attr('name');
                         var id = $inputElement.attr('id');
-                        var nestLevel = $copyItem.parents('.siteorigin-widget-field-repeater').length;
-                        var newIdIndex = $nextIndex + 1;
-                        var newId = id.replace(/-\d+$/, '-'+newIdIndex);
+                        var idBase = id.replace(/-\d+$/, '');
+                        var nestLevel = $item.parents('.siteorigin-widget-field-repeater').length;
+                        if(!newIds[idBase]) {
+                            newIds[idBase] = $form.find('[id*='+idBase+']').not('[id*=_id_]').length+1;
+                        }
+                        var newId = idBase + '-' + newIds[idBase]++;
                         $inputElement.attr('id', newId);
                         $copyItem.find( 'label[for=' + id + ']').attr('for', newId);
                         var newName = nm.replace(new RegExp('((?:.*?\\[\\d+\\]){'+(nestLevel-1).toString()+'})?(.*?\\[)\\d+(\\])'), '$1$2'+$nextIndex.toString()+'$3');
@@ -954,6 +947,7 @@ var sowEmitters = {
                         $inputElement.data('original-name', newName);
                     } );
 
+                    $items.append($copyItem).sortable( "refresh").trigger('updateFieldPositions');
                     $copyItem.sowSetupRepeaterItems();
                     $copyItem.hide().slideDown('fast', function(){
                         $(window).resize();
