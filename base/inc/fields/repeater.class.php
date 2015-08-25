@@ -69,6 +69,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 							<div class="siteorigin-widget-field-repeater-item-top">
 								<div class="siteorigin-widget-field-expand"></div>
 								<?php if( empty( $this->readonly ) ) : ?>
+									<div class="siteorigin-widget-field-copy"></div>
 									<div class="siteorigin-widget-field-remove"></div>
 								<?php endif; ?>
 								<h4><?php echo esc_html( $this->item_name ) ?></h4>

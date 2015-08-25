@@ -141,6 +141,7 @@
 		}
 
 		.siteorigin-widget-field-expand,
+		.siteorigin-widget-field-copy,
 		.siteorigin-widget-field-remove {
 			width: 14px;
 			height: 14px;
@@ -168,16 +169,32 @@
 			}
 
 			&:hover {
-				background: #989fa5;
+				//background: #989fa5;
 
 				&:before {
-					color: #FFFFFF;
+					color: #50575D;
+				}
+			}
+		}
+
+		.siteorigin-widget-field-copy {
+			right: 28px;
+
+			&:before {
+				content: "\f105";
+			}
+
+			&:hover {
+				//background: #989fa5;
+
+				&:before {
+					color: #50575D;
 				}
 			}
 		}
 
 		.siteorigin-widget-field-remove {
-			right: 28px;
+			right: 48px;
 
 			&:before {
 				content: '\f158';
