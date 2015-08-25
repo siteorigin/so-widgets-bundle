@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 3.9
-Tested up to: 4.2.4
+Tested up to: 4.3
 Stable tag: trunk
 License: GPLv3 or later
 Contributors: gpriday, braam-genis
@@ -49,6 +49,9 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.4.2 - August 18 2015 =
+* Urgent fix in preparation for WordPress 4.3 release
 
 = 1.4.1 - August 17 2015 =
 * Updated to latest Font Awesome.

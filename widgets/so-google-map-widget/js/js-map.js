@@ -63,13 +63,33 @@ function loadMap($) {
                             var geocodeMarker = function () {
                                 geocoder.geocode({'address': mrkr.place}, function (res, status) {
                                     if (status == google.maps.GeocoderStatus.OK) {
-                                        new google.maps.Marker({
+
+                                        var marker = new google.maps.Marker({
                                             position: res[0].geometry.location,
                                             map: map,
                                             draggable: Boolean($$.data('markers-draggable')),
                                             icon: $$.data('marker-icon'),
                                             title: ''
                                         });
+
+                                        if(mrkr.hasOwnProperty('info') && mrkr.info) {
+                                            var infoWindowOptions = { content: mrkr.info };
+
+                                            if(mrkr.hasOwnProperty('info_max_width') && mrkr.info_max_width) {
+                                                infoWindowOptions.maxWidth = mrkr.info_max_width;
+                                            }
+
+                                            var infoDisplay = $$.data('marker-info-display');
+                                            infoWindowOptions.disableAutoPan = infoDisplay == 'always';
+                                            var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
+                                            if( infoDisplay == 'always') {
+                                                infoWindow.open(map, marker);
+                                            } else {
+                                                marker.addListener(infoDisplay, function() {
+                                                    infoWindow.open(map, marker);
+                                                });
+                                            }
+                                        }
                                     } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
                                         //try again please
                                         setTimeout(geocodeMarker, Math.random() * 1000, mrkr);
