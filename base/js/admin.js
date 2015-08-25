@@ -959,7 +959,8 @@ var sowEmitters = {
                         $inputElement.data('original-name', newName);
                     } );
 
-                    $items.append($copyItem).sortable( "refresh").trigger('updateFieldPositions');
+                    $item.after($copyItem);
+                    $items.sortable( "refresh").trigger('updateFieldPositions');
                     $copyItem.sowSetupRepeaterItems();
                     $copyItem.hide().slideDown('fast', function(){
                         $(window).resize();
