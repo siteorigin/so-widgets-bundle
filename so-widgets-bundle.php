@@ -325,7 +325,7 @@ class SiteOrigin_Widgets_Bundle {
 			include_once $folder . $widget_id . '/' . $widget_id . '.php';
 
 			if( has_action('widgets_init') ) {
-				siteorigin_widgets_widgets_init();
+				siteorigin_widget_widgets_init();
 			}
 		}
 
