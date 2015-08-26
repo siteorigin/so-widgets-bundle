@@ -25,28 +25,11 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 				),
 				'text' => array(
 					'type' => 'tinymce',
-					'rows' => 20,
-					'button_filters' => array(
-						'mce_buttons' => array( $this, 'mce_buttons_filter'),
-						'quicktags_settings' => array( $this, 'quicktags_settings'),
-					)
+					'rows' => 20
 				),
 			),
 			plugin_dir_path(__FILE__)
 		);
-	}
-
-	public function mce_buttons_filter( $buttons, $editor_id ) {
-		if (($key = array_search('fullscreen', $buttons)) !== false) {
-			unset($buttons[$key]);
-		}
-		return $buttons;
-	}
-
-	public function quicktags_settings( $settings, $editor_id ) {
-		$settings['buttons'] = preg_replace( '/,fullscreen/', '', $settings['buttons'] );
-		$settings['buttons'] = preg_replace( '/,dfw/', '', $settings['buttons'] );
-		return $settings;
 	}
 
 	function unwpautop($string) {

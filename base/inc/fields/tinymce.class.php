@@ -33,6 +33,9 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	protected function initialize() {
 		parent::initialize();
 
+		add_filter( 'mce_buttons', array( $this, 'mce_buttons_filter' ), 10, 2 );
+		add_filter( 'quicktags_settings', array( $this, 'quicktags_settings' ), 10, 2 );
+
 		if ( !empty( $this->button_filters ) ) {
 			foreach ( $this->button_filters as $filter_name => $filter ) {
 				if ( preg_match( '/mce_buttons(?:_[1-4])?|quicktags_settings/', $filter_name ) && !empty( $filter ) && is_callable( $filter ) ) {
@@ -89,6 +92,19 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 				}
 			}
 		}
+	}
+
+	public function mce_buttons_filter( $buttons, $editor_id ) {
+		if (($key = array_search('fullscreen', $buttons)) !== false) {
+			unset($buttons[$key]);
+		}
+		return $buttons;
+	}
+
+	public function quicktags_settings( $settings, $editor_id ) {
+		$settings['buttons'] = preg_replace( '/,fullscreen/', '', $settings['buttons'] );
+		$settings['buttons'] = preg_replace( '/,dfw/', '', $settings['buttons'] );
+		return $settings;
 	}
 
 	protected function render_field( $value, $instance ) {
