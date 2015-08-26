@@ -162,6 +162,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string The CSS name
 	 */
 	function generate_and_enqueue_instance_styles( $instance ) {
+		// We'll assume empty instances don't have styles
+		if( empty($instance) ) return;
+
+		// Make sure all the default values are in place
+		$instance = $this->add_defaults($this->form_options, $instance);
 
 		$this->current_instance = $instance;
 		$style = $this->get_style_name( $instance );
@@ -254,15 +259,23 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		foreach($form as $id => $field) {
 
-			if($field['type'] == 'repeater' && !empty($instance[$id]) ) {
-
-				foreach( array_keys($instance[$id]) as $i ){
-					$instance[$id][$i] = $this->add_defaults( $field['fields'], $instance[$id][$i], $level + 1 );
+			if( $field['type'] == 'repeater' ) {
+				if( !empty($instance[$id]) ) {
+					foreach( array_keys($instance[$id]) as $i ){
+						$instance[$id][$i] = $this->add_defaults( $field['fields'], $instance[$id][$i], $level + 1 );
+					}
 				}
-
+			}
+			else if( $field['type'] == 'section' ) {
+				if( empty($instance[$id]) ) {
+					$instance[$id] = array();
+				}
+				$instance[$id] = $this->add_defaults( $field['fields'], $instance[$id], $level + 1 );
 			}
 			else {
-				if( !isset($instance[$id]) && isset($field['default']) ) $instance[$id] = $field['default'];
+				if( !isset($instance[$id]) && isset($field['default']) && $field['type'] != 'checkbox' ) {
+					$instance[$id] = $field['default'];
+				}
 			}
 		}
 
