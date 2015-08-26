@@ -1,4 +1,4 @@
-/* global sowGetWidgetFieldVariable, tinyMCEPreInit, quicktags, QTags, tinymce */
+/* global tinyMCEPreInit, quicktags, QTags, tinymce */
 
 (function( $ ) {
     var setup = function(widgetForm) {
