@@ -30,14 +30,14 @@ function siteorigin_widget_register($name, $path, $class = false){
 /**
  * Initialize all widgets
  */
-function siteorigin_widgets_widgets_init(){
+function siteorigin_widget_widgets_init(){
 	global $siteorigin_widgets_classes;
 	foreach( $siteorigin_widgets_classes as $class ){
 		register_widget($class);
 	}
 	$siteorigin_widgets_classes = array();
 }
-add_action('widgets_init', 'siteorigin_widgets_widgets_init');
+add_action('widgets_init', 'siteorigin_widget_widgets_init');
 
 /**
  * Get the base file of a widget plugin
@@ -138,8 +138,6 @@ function siteorigin_widget_get_icon($icon_value, $icon_styles = false) {
 	}
 
 }
-
-
 
 /**
  * @param $font_value
@@ -317,7 +315,6 @@ function sow_esc_url( $url ) {
 function sow_esc_url_raw( $url ) {
 	if( preg_match('/^post: *([0-9]+)/', $url, $matches) ) {
 		// Convert the special post URL into a permalink
-//		return 'post: ' . $matches[1];
 		$url = get_the_permalink( intval($matches[1]) );
 	}
 
