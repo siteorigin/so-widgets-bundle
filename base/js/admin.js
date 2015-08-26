@@ -927,7 +927,8 @@ var sowEmitters = {
                     var $item = $(this).closest('.siteorigin-widget-field-repeater-item');
                     var $copyItem = $item.clone();
                     var $items = $item.closest('.siteorigin-widget-field-repeater-items');
-                    var $nextIndex = $item.index()+1;
+                    //var $nextIndex = $item.index()+1;
+                    var $nextIndex = $items.children().length;
                     var newIds = {};
 
                     $copyItem.find( '*[name]' ).each( function () {
@@ -937,8 +938,9 @@ var sowEmitters = {
                         if($inputElement.is('textarea') && $inputElement.parent().is('.wp-editor-container')) {
                             $inputElement.parent().empty().append($inputElement);
                             $inputElement.css('display', '');
-                            if(tinymce.get(id)) {
-                                $inputElement.val(tinymce.get(id).getContent());
+                            var curEd = tinymce.get(id);
+                            if(curEd) {
+                                $inputElement.val(curEd.getContent());
                             }
                         }
                         if(id) {
@@ -954,6 +956,9 @@ var sowEmitters = {
                                 var newIdAttr = oldIdAttr.replace(id, newId);
                                 $(this).attr('id', newIdAttr);
                             });
+                            if(tinymce.get(newId)) {
+                                tinymce.get(newId).remove();
+                            }
                         }
                         var nm = $inputElement.attr('name');
                         var nestLevel = $item.parents('.siteorigin-widget-field-repeater').length;
@@ -962,8 +967,9 @@ var sowEmitters = {
                         $inputElement.data('original-name', newName);
                     } );
 
-                    $item.after($copyItem);
-                    $items.sortable( "refresh").trigger('updateFieldPositions');
+                    //$item.after($copyItem);
+                    //$items.sortable( "refresh").trigger('updateFieldPositions');
+                    $items.append($copyItem).sortable( "refresh").trigger('updateFieldPositions');
                     $copyItem.sowSetupRepeaterItems();
                     $copyItem.hide().slideDown('fast', function(){
                         $(window).resize();
