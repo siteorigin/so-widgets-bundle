@@ -1,5 +1,5 @@
 
-/* globals wp, jQuery, soWidgets, confirm */
+/* globals wp, jQuery, soWidgets, confirm, tinymce */
 
 var sowEmitters = {
 
@@ -927,17 +927,20 @@ var sowEmitters = {
                     var $item = $(this).closest('.siteorigin-widget-field-repeater-item');
                     var $copyItem = $item.clone();
                     var $items = $item.closest('.siteorigin-widget-field-repeater-items');
-                    var $nextIndex = $items.children().length;
+                    var $nextIndex = $item.index()+1;
                     var newIds = {};
 
                     $copyItem.find( '*[name]' ).each( function () {
                         var $inputElement = $(this);
+                        var id = $inputElement.attr('id');
                         //TinyMCE field :/
                         if($inputElement.is('textarea') && $inputElement.parent().is('.wp-editor-container')) {
                             $inputElement.parent().empty().append($inputElement);
                             $inputElement.css('display', '');
+                            if(tinymce.get(id)) {
+                                $inputElement.val(tinymce.get(id).getContent());
+                            }
                         }
-                        var id = $inputElement.attr('id');
                         if(id) {
                             var idBase = id.replace(/-\d+$/, '');
                             if (!newIds[idBase]) {
