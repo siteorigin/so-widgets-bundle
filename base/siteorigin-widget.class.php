@@ -610,9 +610,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$css_imports = '';
 		if ( preg_match_all( '/^@import.+/m', $less, $imports ) ) {
 			$css_imports = implode( "\n", $imports[0] );
+			$less = preg_replace( '/^@import.+/m', '', $less );
 		}
 
-		$less = $css_imports . "\n\n" . '.so-widget-'.$css_name.' { '.$less.' } ';
+		$less = $css_imports . "\n\n" . '.so-widget-'.$css_name." { \n".$less."\n } ";
 
 		$c = new lessc();
 		$lc_functions = new SiteOrigin_Widgets_Less_Functions($this, $instance);
