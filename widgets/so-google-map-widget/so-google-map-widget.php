@@ -89,6 +89,26 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							),
 							'label'       => __( 'Draggable', 'siteorigin-widgets' ),
 							'description' => __( 'Allow dragging the map to move it around.', 'siteorigin-widgets' )
+						),
+						'disable_default_ui' => array(
+							'type' => 'checkbox',
+							'default' => false,
+							'state_handler' => array(
+								'map_type[interactive]' => array('show'),
+								'_else[map_type]' => array('hide'),
+							),
+							'label'       => __( 'Disable default UI', 'siteorigin-widgets' ),
+							'description' => __( 'Hides the default Google Maps controls.', 'siteorigin-widgets' )
+						),
+						'keep_centered' => array(
+							'type' => 'checkbox',
+							'default' => false,
+							'state_handler' => array(
+								'map_type[interactive]' => array('show'),
+								'_else[map_type]' => array('hide'),
+							),
+							'label'       => __( 'Keep map centered', 'siteorigin-widgets' ),
+							'description' => __( 'Keeps the map centered when it\'s container is resized.', 'siteorigin-widgets' )
 						)
 					)
 				),
@@ -348,7 +368,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'sow-google-map',
 					siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' ),
-					SOW_BUNDLE_VERSION
+					SOW_BUNDLE_VERSION .  mt_rand()
 				)
 			)
 		);
@@ -405,6 +425,8 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'zoom'              => $settings['zoom'],
 					'scroll-zoom'       => $settings['scroll_zoom'],
 					'draggable'         => $settings['draggable'],
+					'disable-ui'        => $settings['disable_default_ui'],
+					'keep-centered'     => $settings['keep_centered'],
 					'marker-icon'       => ! empty( $mrkr_src ) ? $mrkr_src[0] : '',
 					'markers-draggable' => isset( $markers['markers_draggable'] ) ? $markers['markers_draggable'] : '',
 					'marker-at-center'  => !empty( $markers['marker_at_center'] ),

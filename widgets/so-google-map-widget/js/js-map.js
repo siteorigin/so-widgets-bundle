@@ -25,6 +25,7 @@ function loadMap($) {
                     zoom: zoom,
                     scrollwheel: Boolean( $$.data('scroll-zoom') ),
                     draggable: Boolean( $$.data('draggable') ),
+                    disableDefaultUI: Boolean( $$.data('disable-ui') ),
                     center: results[0].geometry.location,
                     mapTypeControlOptions: {
                         mapTypeIds: [google.maps.MapTypeId.ROADMAP, userMapTypeId]
@@ -102,7 +103,6 @@ function loadMap($) {
                     );
                 }
 
-
                 var directions = $$.data('directions');
                 if ( directions ) {
 
@@ -126,16 +126,21 @@ function loadMap($) {
                         avoidTolls: Boolean( directions.avoidTolls ),
                         waypoints: directions.waypoints,
                         optimizeWaypoints: Boolean( directions.optimizeWaypoints )
-                        //unitSystem: directions.unitSystem == 'metric' ? 0 : 1,
-                        //transitOptions: TransitOptions,
-                        //durationInTraffic: Boolean,
-                        //provideRouteAlternatives: Boolean,
-                        //region: String
                     },
                     function(result, status) {
                         if (status == google.maps.DirectionsStatus.OK) {
                             directionsRenderer.setDirections(result);
                         }
+                    });
+                }
+
+                if(Boolean( $$.data('keep-centered') )) {
+                    var center;
+                    google.maps.event.addDomListener(map, 'idle', function () {
+                        center = map.getCenter();
+                    });
+                    google.maps.event.addDomListener(window, 'resize', function () {
+                        map.setCenter(center);
                     });
                 }
             }
