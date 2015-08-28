@@ -13,7 +13,9 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 		<div class="sow-features-feature <?php if(  floor( $i / $instance['per_row'] ) == $last_row ) echo 'sow-features-feature-last-row' ?>" style="width: <?php echo round( 100 / $instance['per_row'], 3 ) ?>%">
 
 			<?php if( !empty( $feature['more_url'] ) && $instance['icon_link'] ) echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank"' : '' ) . '>'; ?>
-			<div class="sow-icon-container sow-container-<?php echo esc_attr($instance['container_shape']) ?>" style="font-size: <?php echo intval($instance['container_size']) ?>px; color: <?php echo esc_attr($feature['container_color']) ?>;">
+			<div
+				class="sow-icon-container <?php echo !empty($instance['container_shape']) ? 'sow-container-' . esc_attr($instance['container_shape']) : 'sow-container-none'?>"
+				style="font-size: <?php echo intval($instance['container_size']) ?>px; color: <?php echo esc_attr($feature['container_color']) ?>; width: <?php echo intval($instance['container_size']) ?>px; height: <?php echo intval($instance['container_size']) ?>px;">
 				<?php
 				if( !empty($feature['icon_image']) ) {
 					$attachment = wp_get_attachment_image_src($feature['icon_image']);

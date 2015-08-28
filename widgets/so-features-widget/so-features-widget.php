@@ -83,6 +83,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				'container_shape' => array(
 					'type' => 'select',
 					'label' => __('Container shape', 'siteorigin-widgets'),
+					'default' => 'round',
 					'options' => array(
 					),
 				),
