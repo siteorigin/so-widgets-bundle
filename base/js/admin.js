@@ -528,6 +528,10 @@ var sowEmitters = {
                         { action: 'so_widgets_search_posts', query: query },
                         function(data){
                             for( var i = 0; i < data.length; i++ ) {
+                                if( data[i].post_title === '' ) {
+                                    data[i].post_title = '&nbsp;';
+                                }
+
                                 // Add all the post items
                                 $ul.append(
                                     $('<li>')
