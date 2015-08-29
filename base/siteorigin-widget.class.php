@@ -593,7 +593,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		if( !empty( $vars ) ){
 			foreach($vars as $name => $value) {
 				// Ignore empty string
-				if( $value === '' ) continue;
+				if( $value === '' || $value === false ) continue;
 
 				$less = preg_replace('/\@'.preg_quote($name).' *\:.*?;/', '@'.$name.': '.$value.';', $less);
 			}
