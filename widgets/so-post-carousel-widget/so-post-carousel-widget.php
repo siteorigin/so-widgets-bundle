@@ -57,7 +57,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			__('SiteOrigin Post Carousel', 'siteorigin-widgets'),
 			array(
 				'description' => __('Display your posts as a carousel.', 'siteorigin-widgets'),
-				'help' => 'http://siteorigin.com/widgets-bundle/'
+				'help' => 'https://siteorigin.com/widgets-bundle/post-carousel-widget/'
 			),
 			array(
 

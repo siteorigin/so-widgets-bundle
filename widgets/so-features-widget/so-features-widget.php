@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			__( 'SiteOrigin Features', 'siteorigin-widgets' ),
 			array(
 				'description' => __( 'Displays a list of features.', 'siteorigin-widgets' ),
-				'help'        => 'http://siteorigin.com/widgets-bundle/features-widget-documentation/'
+				'help'        => 'https://siteorigin.com/widgets-bundle/features-widget-documentation/'
 			),
 			array(),
 			array(

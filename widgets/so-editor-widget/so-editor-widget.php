@@ -16,6 +16,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			__('SiteOrigin Editor', 'siteorigin-widgets'),
 			array(
 				'description' => __('A rich-text, text editor.', 'siteorigin-widgets'),
+				'help' => 'https://siteorigin.com/widgets-bundle/editor-widget/'
 			),
 			array(),
 			array(
