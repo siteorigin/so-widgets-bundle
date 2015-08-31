@@ -939,7 +939,7 @@ var sowEmitters = {
                         var $inputElement = $(this);
                         var id = $inputElement.attr('id');
                         //TinyMCE field :/
-                        if($inputElement.is('textarea') && $inputElement.parent().is('.wp-editor-container')) {
+                        if($inputElement.is('textarea') && $inputElement.parent().is('.wp-editor-container') && typeof tinymce != 'undefined') {
                             $inputElement.parent().empty().append($inputElement);
                             $inputElement.css('display', '');
                             var curEd = tinymce.get(id);
@@ -960,12 +960,16 @@ var sowEmitters = {
                                 var newIdAttr = oldIdAttr.replace(id, newId);
                                 $(this).attr('id', newIdAttr);
                             });
-                            if(tinymce.get(newId)) {
+                            if(typeof tinymce != 'undefined' && tinymce.get(newId)) {
                                 tinymce.get(newId).remove();
                             }
                         }
                         var nm = $inputElement.attr('name');
                         var nestLevel = $item.parents('.siteorigin-widget-field-repeater').length;
+                        var $body = $('body');
+                        if( ($body.hasClass('wp-customizer') || $body.hasClass('widgets-php')) && $el.closest('.panel-dialog').length == 0) {
+                            nestLevel += 1;
+                        }
                         var newName = nm.replace(new RegExp('((?:.*?\\[\\d+\\]){'+(nestLevel-1).toString()+'})?(.*?\\[)\\d+(\\])'), '$1$2'+$nextIndex.toString()+'$3');
                         $inputElement.attr('name', newName);
                         $inputElement.data('original-name', newName);
