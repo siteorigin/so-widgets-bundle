@@ -6,6 +6,7 @@ include plugin_dir_path(__FILE__).'inc/meta-box-manager.php';
 include plugin_dir_path(__FILE__).'inc/post-selector.php';
 include plugin_dir_path(__FILE__).'inc/fonts.php';
 include plugin_dir_path(__FILE__).'inc/string-utils.php';
+include plugin_dir_path(__FILE__).'inc/attachments.php';
 
 global $siteorigin_widgets_registered, $siteorigin_widgets_classes;
 $siteorigin_widgets_registered = array();
@@ -366,27 +367,6 @@ function siteorigin_widgets_font_families( ){
 	}
 
 	return apply_filters('siteorigin_widgets_font_families', $font_families);
-}
-
-/**
- * Get the attachment src, but also have the option of getting the fallback URL.
- *
- * @param $attachment
- * @param $size
- * @param bool|false $fallback
- *
- * @return array|bool|false
- */
-function siteorigin_widgets_get_attachment_image_src( $attachment, $size, $fallback = false ){
-	if( empty( $attachment ) && !empty($fallback) ) {
-		// TODO, try get better values than 0 for width and height
-		return array( $fallback, 0, 0, false );
-	}
-	if( !empty( $attachment ) ) {
-		return wp_get_attachment_image_src( $attachment, $size );
-	}
-
-	return false;
 }
 
 function siteorigin_widgets_tinymce_admin_print_styles() {

@@ -1,5 +1,11 @@
 <?php
-$src = siteorigin_widgets_get_attachment_image_src($instance['image'], $instance['size'], !empty($instance['image_fallback']) ? $instance['image_fallback'] : false);
+
+$src = siteorigin_widgets_get_attachment_image_src(
+	$instance['image'],
+	$instance['size'],
+	!empty($instance['image_fallback']) ? $instance['image_fallback'] : false
+);
+
 if( !empty($src) ) {
 	$attr = array(
 		'src' => $src[0],
