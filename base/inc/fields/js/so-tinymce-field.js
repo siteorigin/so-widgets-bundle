@@ -39,6 +39,7 @@
                         function () {
                             tinymce.get(id).save();
                             $textarea.trigger('change');
+                            $textarea.val(window.switchEditors.pre_wpautop(editor.getContent()));
                         }
                     );
                     editor.on('init',
@@ -46,6 +47,11 @@
                             if (content) {
                                 editor.setContent(content);
                             }
+                        }
+                    );
+                    $textarea.on('keyup',
+                        function() {
+                            editor.setContent(window.switchEditors.wpautop( $textarea.val()));
                         }
                     );
                 };
@@ -66,13 +72,13 @@
                         }, 500);
                     }
                 }
-                if (!QTags.instances[id]) {
+                //if (!QTags.instances[id]) {
                     var qtSettings = $container.data('qtSettings');
                     qtSettings = $.extend({}, tinyMCEPreInit.qtInit['siteorigin-widget-input-tinymce-field'], qtSettings, {id: id});
                     tinyMCEPreInit.qtInit[id] = qtSettings;
                     $container.find('.quicktags-toolbar').remove();
                     quicktags(tinyMCEPreInit.qtInit[id]);
-                }
+                //}
             });
             QTags._buttonsInit();
         }
