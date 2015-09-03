@@ -112,7 +112,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		) );
 
 		// Add any missing default values to the instance
-		$instance = $this->add_defaults($this->form_options, $instance);
+		$instance = $this->add_defaults( $this->form_options, $instance );
 
 		$css_name = $this->generate_and_enqueue_instance_styles( $instance );
 		$this->enqueue_frontend_scripts( $instance );
@@ -166,7 +166,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		if( empty($instance) ) return;
 
 		// Make sure all the default values are in place
-		$instance = $this->add_defaults($this->form_options, $instance);
+		$instance = $this->add_defaults( $this->form_options, $instance );
 
 		$this->current_instance = $instance;
 		$style = $this->get_style_name( $instance );
@@ -245,7 +245,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$args['before_widget'] = '';
 		$args['after_widget'] = '';
 
-		$widget->widget($args, $instance);
+		$widget->widget( $args, $instance );
 	}
 
 	/**
@@ -273,7 +273,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				$instance[$id] = $this->add_defaults( $field['fields'], $instance[$id], $level + 1 );
 			}
 			else {
-				if( !isset($instance[$id]) && isset($field['default']) && $field['type'] != 'checkbox' ) {
+				if( !isset($instance[$id]) && isset($field['default']) ) {
 					$instance[$id] = $field['default'];
 				}
 			}
@@ -291,6 +291,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	public function form( $instance ) {
 		$this->enqueue_scripts();
 		$instance = $this->modify_instance($instance);
+		$instance = $this->add_defaults( $this->form_options(), $instance );
 
 		// Filter the instance specifically for the form
 		$instance = apply_filters('siteorigin_widgets_form_instance_' . $this->id_base, $instance, $this);
@@ -447,17 +448,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			/* @var $field_factory SiteOrigin_Widget_Field_Factory */
 			$field_factory = SiteOrigin_Widget_Field_Factory::getInstance();
 			foreach ( $form_options as $field_name => $field_options ) {
-				if ( empty( $new_instance[$field_name] ) ) {
-					$new_instance[$field_name] = false;
-					continue;
-				}
 				/* @var $field SiteOrigin_Widget_Field_Base */
 				if ( !empty( $this->fields ) && !empty( $this->fields[$field_name] ) ) {
 					$field = $this->fields[$field_name];
-				} else {
-					$field = $field_factory->create_field( $field_name, $field_options, $this );
 				}
-				$new_instance[$field_name] = $field->sanitize( $new_instance[$field_name] );
+				else {
+					$field = $field_factory->create_field( $field_name, $field_options, $this );
+					$this->fields[$field_name] = $field;
+				}
+				$new_instance[$field_name] = $field->sanitize( isset( $new_instance[$field_name] ) ? $new_instance[$field_name] : null );
 				$new_instance = $field->sanitize_instance( $new_instance );
 			}
 
