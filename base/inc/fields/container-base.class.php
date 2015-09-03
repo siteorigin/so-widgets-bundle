@@ -103,7 +103,7 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 		foreach( $this->fields as $sub_field_name => $sub_field_options ) {
 
 			/* @var $sub_field SiteOrigin_Widget_Field_Base */
-			if( ! empty( $this->sub_fields ) && ! empty( $this->fields[$sub_field_name] ) ) {
+			if( ! empty( $this->sub_fields ) && ! empty( $this->sub_fields[$sub_field_name] ) ) {
 				$sub_field = $this->sub_fields[$sub_field_name];
 			}
 			else {
