@@ -69,6 +69,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 									'type' => 'media',
 									'label' => __( 'Background image', 'siteorigin-widgets' ),
 									'library' => 'image',
+									'fallback' => true,
 								),
 
 								'opacity' => array(
@@ -182,8 +183,11 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	 * @return array
 	 */
 	function get_frame_background( $i, $frame ){
-		if( empty($frame['background']['image']) ) $background_image = false;
-		else $background_image = wp_get_attachment_image_src($frame['background']['image'], 'full');
+		$background_image = siteorigin_widgets_get_attachment_image_src(
+			$frame['background']['image'],
+			'full',
+			!empty( $frame['background']['image_fallback'] ) ? $frame['background']['image_fallback'] : ''
+		);
 
 		return array(
 			'color' => !empty( $frame['background']['color'] ) ? $frame['background']['color'] : false,

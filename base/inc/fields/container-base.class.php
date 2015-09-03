@@ -87,7 +87,7 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 				$is_template
 			);
 			$sub_value = ( ! empty( $values ) && isset( $values[$sub_field_name] ) ) ? $values[$sub_field_name] : null;
-			$field->render( $sub_value );
+			$field->render( $sub_value, $values );
 			$field_js_vars = $field->get_javascript_variables();
 			if( ! empty( $field_js_vars ) ) {
 				$this->javascript_variables[$sub_field_name] = $field_js_vars;
