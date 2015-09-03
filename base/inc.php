@@ -2,74 +2,12 @@
 
 include plugin_dir_path(__FILE__).'inc/fields/siteorigin-widget-field-class-loader.class.php';
 include plugin_dir_path(__FILE__).'siteorigin-widget.class.php';
+
+include plugin_dir_path(__FILE__).'inc/widget-manager.class.php';
 include plugin_dir_path(__FILE__).'inc/meta-box-manager.php';
 include plugin_dir_path(__FILE__).'inc/post-selector.php';
 include plugin_dir_path(__FILE__).'inc/fonts.php';
 include plugin_dir_path(__FILE__).'inc/string-utils.php';
-
-global $siteorigin_widgets_registered, $siteorigin_widgets_classes;
-$siteorigin_widgets_registered = array();
-$siteorigin_widgets_classes = array();
-
-/**
- * Register a plugin
- *
- * @param $name
- * @param $path
- * @param $class
- */
-function siteorigin_widget_register($name, $path, $class = false){
-	global $siteorigin_widgets_registered, $siteorigin_widgets_classes;
-	$siteorigin_widgets_registered[$name] = realpath( $path );
-	if ( empty( $class ) ) {
-		$class = 'SiteOrigin_Widget_' . str_replace( ' ', '', ucwords( str_replace('-', ' ', $name) ) ) . '_Widget';
-	}
-	$siteorigin_widgets_classes[] = $class;
-}
-
-/**
- * Initialize all widgets
- */
-function siteorigin_widget_widgets_init(){
-	global $siteorigin_widgets_classes;
-	foreach( $siteorigin_widgets_classes as $class ){
-		register_widget($class);
-	}
-	$siteorigin_widgets_classes = array();
-}
-add_action('widgets_init', 'siteorigin_widget_widgets_init');
-
-/**
- * Get the base file of a widget plugin
- *
- * @param $name
- * @return bool
- */
-function siteorigin_widget_get_plugin_path($name){
-	global $siteorigin_widgets_registered;
-	return isset($siteorigin_widgets_registered[$name]) ? $siteorigin_widgets_registered[$name] : false;
-}
-
-/**
- * Get the base path folder of a widget plugin.
- *
- * @param $name
- * @return string
- */
-function siteorigin_widget_get_plugin_dir_path($name){
-	if( strpos($name, 'sow-') === 0 ) $name = substr($name, 4); // Handle raw widget IDs, assuming they're prefixed with sow-
-	return plugin_dir_path( siteorigin_widget_get_plugin_path($name) );
-}
-
-/**
- * Get the base path URL of a widget plugin.
- *
- * @param $name
- * @return string
- */
-function siteorigin_widget_get_plugin_dir_url($name){
-	return plugin_dir_url( siteorigin_widget_get_plugin_path($name) );
-}
 
 /**
  * @param $css
