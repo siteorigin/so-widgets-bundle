@@ -48,7 +48,7 @@ class SiteOrigin_Widgets_Widget_Manager {
 	public function widgets_init(){
 		foreach( $this->regisrered as $id => & $info ) {
 			if( $info->registered ) continue;
-			register_widget( $info['class'] );
+			register_widget( $info->class );
 			$info->registered = true;
 		}
 	}
@@ -81,6 +81,7 @@ class SiteOrigin_Widgets_Widget_Manager {
 		return plugin_dir_url( $this->get_plugin_path( $id ) );
 	}
 }
+SiteOrigin_Widgets_Widget_Manager::single();
 
 /**
  * Register a widget
@@ -90,7 +91,7 @@ class SiteOrigin_Widgets_Widget_Manager {
  * @param bool|string $class The name of the class
  */
 function siteorigin_widget_register( $id, $path, $class = false ){
-	SiteOrigin_Widgets_Widget_Manager::single()->widgets_init( $id, $path, $class );
+	SiteOrigin_Widgets_Widget_Manager::single()->register( $id, $path, $class );
 }
 
 /**
