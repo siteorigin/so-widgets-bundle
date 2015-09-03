@@ -95,14 +95,6 @@ function siteorigin_widget_register( $id, $path, $class = false ){
 }
 
 /**
- * Initialize all widgets. This is a wrapper for SiteOrigin_Widgets_Widget_Manager.
- */
-function siteorigin_widget_widgets_init(){
-	SiteOrigin_Widgets_Widget_Manager::single()->widgets_init();
-}
-add_action('widgets_init', 'siteorigin_widget_widgets_init');
-
-/**
  * Get the base file of a widget plugin
  *
  * @param $name
