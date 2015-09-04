@@ -938,6 +938,7 @@ var sowEmitters = {
                     $copyItem.find( '*[name]' ).each( function () {
                         var $inputElement = $(this);
                         var id = $inputElement.attr('id');
+                        var nm = $inputElement.attr('name');
                         //TinyMCE field :/
                         if($inputElement.is('textarea') && $inputElement.parent().is('.wp-editor-container') && typeof tinymce != 'undefined') {
                             $inputElement.parent().empty().append($inputElement);
@@ -945,6 +946,12 @@ var sowEmitters = {
                             var curEd = tinymce.get(id);
                             if(curEd) {
                                 $inputElement.val(curEd.getContent());
+                            }
+                        }
+                        else {
+                            var $originalInput = $item.find('[name="' + nm + '"]');
+                            if( $originalInput.length && $originalInput.val() != null ){
+                                $inputElement.val($originalInput.val());
                             }
                         }
                         if(id) {
@@ -964,7 +971,6 @@ var sowEmitters = {
                                 tinymce.get(newId).remove();
                             }
                         }
-                        var nm = $inputElement.attr('name');
                         var nestLevel = $item.parents('.siteorigin-widget-field-repeater').length;
                         var $body = $('body');
                         if( ($body.hasClass('wp-customizer') || $body.hasClass('widgets-php')) && $el.closest('.panel-dialog').length == 0) {
