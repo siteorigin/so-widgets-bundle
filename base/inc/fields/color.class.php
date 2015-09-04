@@ -16,10 +16,9 @@ class SiteOrigin_Widget_Field_Color extends SiteOrigin_Widget_Field_Text_Input_B
 		if( ! preg_match('|^#|', $sanitized_value) ) {
 			$sanitized_value = '#' . $sanitized_value;
 		}
-		if( ! preg_match('|^#([A-Fa-f0-9]{3}){1,2}$|', $sanitized_value ) ){
+		if ( ! preg_match('|^#([A-Fa-f0-9]{3}){1,2}$|', $sanitized_value ) ){
 			// 3 or 6 hex digits, or the empty string.
-			// Default to white.
-			$sanitized_value = '#FFFFFF';
+			$sanitized_value = false;
 		}
 		return $sanitized_value;
 	}
