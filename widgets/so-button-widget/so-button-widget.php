@@ -14,7 +14,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			__('SiteOrigin Button', 'siteorigin-widgets'),
 			array(
 				'description' => __('A customizable button widget.', 'siteorigin-widgets'),
-				'help' => 'http://siteorigin.com/widgets-bundle/button-widget-documentation/'
+				'help' => 'https://siteorigin.com/widgets-bundle/button-widget-documentation/'
 			),
 			array(
 

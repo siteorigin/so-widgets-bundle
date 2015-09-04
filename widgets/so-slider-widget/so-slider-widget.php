@@ -15,7 +15,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			__('SiteOrigin Slider', 'siteorigin-widgets'),
 			array(
 				'description' => __('A responsive slider widget that supports images and video.', 'siteorigin-widgets'),
-				'help' => 'http://siteorigin.com/widgets-bundle/slider-widget-documentation/',
+				'help' => 'https://siteorigin.com/widgets-bundle/slider-widget-documentation/',
 				'panels_title' => false,
 			),
 			array(
@@ -48,6 +48,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 							'type' => 'media',
 							'library' => 'image',
 							'label' => __('Background image', 'siteorigin-widgets'),
+							'fallback' => true,
 						),
 
 						'background_color' => array(
@@ -69,6 +70,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 							'type' => 'media',
 							'library' => 'image',
 							'label' => __('Foreground image', 'siteorigin-widgets'),
+							'fallback' => true,
 						),
 
 						'url' => array(
@@ -94,8 +96,11 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 
 	function get_frame_background( $i, $frame ){
-		if( empty($frame['background_image']) ) $background_image = false;
-		else $background_image = wp_get_attachment_image_src($frame['background_image'], 'full');
+		$background_image = siteorigin_widgets_get_attachment_image_src(
+			$frame['background_image'],
+			'full',
+			!empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : ''
+		);
 
 		return array(
 			'color' => !empty( $frame['background_color'] ) ? $frame['background_color'] : '#a0a0a0',
@@ -118,14 +123,19 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			}
 		}
 
-		if( !empty($frame['foreground_image']) ) {
-			$foreground_image = wp_get_attachment_image_src($frame['foreground_image'], 'full');
+		$foreground_image = siteorigin_widgets_get_attachment_image(
+			$frame['foreground_image'],
+			'full',
+			!empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : ''
+		);
+
+		if( !empty($foreground_image) ) {
 			?>
 			<div class="sow-slider-image-container">
 				<div class="sow-slider-image-wrapper" style="<?php if(!empty($foreground_image[1])) echo 'max-width: ' . intval($foreground_image[1]) . 'px' ?>">
 					<?php
 					if(!empty($frame['url'])) echo '<a href="' . sow_esc_url($frame['url']) . '">';
-					echo wp_get_attachment_image($frame['foreground_image'], 'full');
+					echo $foreground_image;
 					if(!empty($frame['url'])) echo '</a>';
 					?>
 				</div>
@@ -137,7 +147,11 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			if(!empty($frame['url'])) echo '<a href="' . sow_esc_url($frame['url']) . '" ' . ( !empty($frame['new_window']) ? 'target="_blank"' : '' ) . '>';
 
 			// Lets use the background image
-			echo wp_get_attachment_image($frame['background_image'], 'full');
+			echo siteorigin_widgets_get_attachment_image(
+				$frame['background_image'],
+				'full',
+				!empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : ''
+			);
 
 			if( !empty($frame['url']) ) echo '</a>';
 		}

@@ -16,7 +16,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			__( 'SiteOrigin Google Maps', 'siteorigin-widgets' ),
 			array(
 				'description' => __( 'A Google Maps widget.', 'siteorigin-widgets' ),
-				'help'        => 'http://siteorigin.com/widgets-bundle/google-maps-widget-documentation/'
+				'help'        => 'https://siteorigin.com/widgets-bundle/google-maps-widget/'
 			),
 			array(),
 			array(

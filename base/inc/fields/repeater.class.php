@@ -104,4 +104,21 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 	protected function render_field_label() {
 		// Empty override. This field renders it's own label in the render_field() function.
 	}
+
+	/**
+	 * Go over the items in the repeater and sanitize each one using the container sanitization function.
+	 *
+	 * @param mixed $value
+	 *
+	 * @return array|mixed
+	 */
+	function sanitize_field_input( $value ){
+		if( empty($value) ) return array();
+
+		foreach( $value as &$el ) {
+			$el = parent::sanitize_field_input( $el );
+		}
+
+		return $value;
+	}
 }

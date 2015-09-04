@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			__('SiteOrigin Image', 'siteorigin-widgets'),
 			array(
 				'description' => __('A simple image widget with massive power.', 'siteorigin-widgets'),
-				'help' => 'http://siteorigin.com/widgets-bundle/image-widget-documentation/'
+				'help' => 'https://siteorigin.com/widgets-bundle/image-widget-documentation/'
 			),
 			array(
 
