@@ -939,7 +939,7 @@ var sowEmitters = {
                         var $inputElement = $(this);
                         var id = $inputElement.attr('id');
                         var nm = $inputElement.attr('name');
-                        //TinyMCE field :/
+                        // TinyMCE field :/
                         if($inputElement.is('textarea') && $inputElement.parent().is('.wp-editor-container') && typeof tinymce != 'undefined') {
                             $inputElement.parent().empty().append($inputElement);
                             $inputElement.css('display', '');
@@ -947,6 +947,13 @@ var sowEmitters = {
                             if(curEd) {
                                 $inputElement.val(curEd.getContent());
                             }
+                        }
+                        // Color field :/
+                        else if( $inputElement.is('.wp-color-picker')) {
+                            var $wpPickerContainer = $inputElement.closest('.wp-picker-container');
+                            var $soWidgetField = $inputElement.closest('.siteorigin-widget-field');
+                            $wpPickerContainer.remove();
+                            $soWidgetField.append($inputElement.remove());
                         }
                         else {
                             var $originalInput = $item.find('[name="' + nm + '"]');
