@@ -27,6 +27,11 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 					'type' => 'tinymce',
 					'rows' => 20
 				),
+				'autop' => array(
+					'type' => 'checkbox',
+					'default' => true,
+					'label' => __('Automatically add paragraphs', 'siteorigin-widgets'),
+				),
 			),
 			plugin_dir_path(__FILE__)
 		);
@@ -55,7 +60,9 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 		if( !empty($GLOBALS['wp_embed']) ) {
 			$instance['text'] = $GLOBALS['wp_embed']->autoembed( $instance['text'] );
 		}
-		$instance['text'] = wpautop( $instance['text'] );
+		if( $instance['autop'] ) {
+			$instance['text'] = wpautop( $instance['text'] );
+		}
 		$instance['text'] = do_shortcode( $instance['text'] );
 
 		return array(
