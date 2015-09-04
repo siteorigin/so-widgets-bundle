@@ -87,7 +87,7 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 				$is_template
 			);
 			$sub_value = ( ! empty( $values ) && isset( $values[$sub_field_name] ) ) ? $values[$sub_field_name] : null;
-			$field->render( $sub_value );
+			$field->render( $sub_value, $values );
 			$field_js_vars = $field->get_javascript_variables();
 			if( ! empty( $field_js_vars ) ) {
 				$this->javascript_variables[$sub_field_name] = $field_js_vars;
@@ -101,9 +101,9 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 		/* @var $field_factory SiteOrigin_Widget_Field_Factory */
 		$field_factory = SiteOrigin_Widget_Field_Factory::getInstance();
 		foreach( $this->fields as $sub_field_name => $sub_field_options ) {
-			if( empty( $value[$sub_field_name] ) ) continue;
+
 			/* @var $sub_field SiteOrigin_Widget_Field_Base */
-			if( ! empty( $this->sub_fields ) && ! empty( $this->fields[$sub_field_name] ) ) {
+			if( ! empty( $this->sub_fields ) && ! empty( $this->sub_fields[$sub_field_name] ) ) {
 				$sub_field = $this->sub_fields[$sub_field_name];
 			}
 			else {
@@ -114,7 +114,7 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 					$this->parent_container
 				);
 			}
-			$value[$sub_field_name] = $sub_field->sanitize( $value[$sub_field_name] );
+			$value[$sub_field_name] = $sub_field->sanitize( isset($value[$sub_field_name]) ? $value[$sub_field_name] : null );
 			$value = $sub_field->sanitize_instance( $value );
 		}
 

@@ -1,16 +1,18 @@
 <?php
-$src = wp_get_attachment_image_src($instance['image'], $instance['size']);
+
+$src = siteorigin_widgets_get_attachment_image_src(
+	$instance['image'],
+	$instance['size'],
+	!empty($instance['image_fallback']) ? $instance['image_fallback'] : false
+);
+
 if( !empty($src) ) {
 	$attr = array(
 		'src' => $src[0],
-		'width' => $src[1],
-		'height' => $src[2],
 	);
-}
-else if( !empty( $instance['image_fallback'] ) ) {
-	$attr = array(
-		'src' => esc_url($instance['image_fallback']),
-	);
+
+	if(!empty($src[1])) $attr['width'] = $src[1];
+	if(!empty($src[2])) $attr['height'] = $src[2];
 }
 
 $styles = array();

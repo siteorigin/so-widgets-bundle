@@ -225,10 +225,6 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * @param $instance array Optionally pass in the widget instance, if rendering of additional values is required.
 	 */
 	public function render( $value, $instance = array() ) {
-		if ( is_null( $value ) && isset( $this->default ) ) {
-			$value = $this->default;
-		}
-
 		$wrapper_attributes = array(
 			'class' => array(
 				'siteorigin-widget-field',
@@ -315,7 +311,6 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * The default sanitization function.
 	 *
 	 * @param $value mixed The value to be sanitized.
-	 * @param $instance array The widget instance.
 	 * @return mixed|string|void
 	 */
 	public function sanitize( $value ) {
