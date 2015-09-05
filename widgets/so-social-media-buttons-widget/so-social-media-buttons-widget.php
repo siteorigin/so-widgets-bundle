@@ -1,7 +1,7 @@
 <?php
 
 /*
-Widget Name: Social media buttons widget
+Widget Name: Social Media Buttons
 Description: Customizable buttons which link to all your social media profiles.
 Author: SiteOrigin
 Author URI: http://siteorigin.com

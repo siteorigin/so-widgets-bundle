@@ -1,6 +1,6 @@
 <?php
 /*
-Widget Name: Features widget
+Widget Name: Features
 Description: Displays a block of features with icons.
 Author: Greg Priday
 Author URI: http://siteorigin.com

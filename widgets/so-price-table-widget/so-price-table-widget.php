@@ -1,6 +1,6 @@
 <?php
 /*
-Widget Name: Price table widget
+Widget Name: Price Table
 Description: A powerful yet simple price table widget for your sidebars or Page Builder pages.
 Author: Greg Priday
 Author URI: http://siteorigin.com

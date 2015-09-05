@@ -1,6 +1,6 @@
 <?php
 /*
-Widget Name: Call-to-action widget
+Widget Name: Call-To-Action
 Description: A simple call-to-action widget. You can do what ever you want with a call-to-action widget.
 Author: Greg Priday
 Author URI: http://siteorigin.com

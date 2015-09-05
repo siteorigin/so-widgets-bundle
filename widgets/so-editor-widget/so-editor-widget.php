@@ -1,7 +1,7 @@
 <?php
 
 /*
-Widget Name: Editor Widget
+Widget Name: Editor
 Description: A widget which allows editing of content using the TinyMCE editor.
 Author: SiteOrigin
 Author URI: https://siteorigin.com

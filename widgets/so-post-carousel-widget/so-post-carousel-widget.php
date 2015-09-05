@@ -1,6 +1,6 @@
 <?php
 /*
-Widget Name: Post carousel widget
+Widget Name: Post Carousel
 Description: Gives you a widget to display your posts as a carousel.
 Author: Greg Priday
 Author URI: http://siteorigin.com

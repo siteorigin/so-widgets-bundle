@@ -8,11 +8,9 @@
 		</span>
 		<h1><?php _e('SiteOrigin Widgets Bundle', 'siteorigin-widgets') ?></h1>
 
-		<!--
 		<div id="sow-widget-search">
 			<input type="search" placeholder="<?php esc_attr_e('Search Widgets', 'siteorigin-widgets') ?>" />
 		</div>
-		-->
 	</div>
 
 	<ul class="page-nav">
@@ -28,15 +26,9 @@
 			<div class="so-widget-wrap">
 				<div class="so-widget so-widget-is-<?php echo $widget['Active'] ? 'active' : 'inactive' ?>">
 
-					<?php
-					$banner = '';
-					if( file_exists( plugin_dir_path( $widget['File'] ) . 'assets/banner.svg' ) ) {
-						$banner = plugin_dir_url( $widget['File'] ) . 'assets/banner.svg';
-					}
-					$banner = apply_filters('siteorigin_widgets_widget_banner', $banner, $widget);
-					?>
-
-					<img src="<?php echo sow_esc_url( !empty($banner) ? $banner : plugin_dir_url(__FILE__) . '../../banners/default.png' ) ?>" />
+					<div class="so-widget-banner" data-seed="<?php echo esc_attr( substr( md5($widget['Name']), 0, 6 ) ) ?>">
+						<h4><?php echo esc_html($widget['Name']); ?></h4>
+					</div>
 
 					<div class="so-widget-text">
 						<label class="switch">
@@ -46,7 +38,6 @@
 							<span class="switch-handle"></span>
 						</label>
 
-						<h4><?php echo esc_html($widget['Name']); ?></h4>
 						<p class="so-widget-description">
 							<?php echo $widget['Description'] ?>
 						</p>

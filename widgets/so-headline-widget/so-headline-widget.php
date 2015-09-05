@@ -1,7 +1,7 @@
 <?php
 
 /*
-Widget Name: Headline widget
+Widget Name: Headline
 Description: A headline to headline all headlines.
 Author: SiteOrigin
 Author URI: http://siteorigin.com

@@ -1,6 +1,6 @@
 <?php
 /*
-Widget Name: Button widget
+Widget Name: Button
 Description: A powerful yet simple button widget for your sidebars or Page Builder pages.
 Author: Greg Priday
 Author URI: http://siteorigin.com

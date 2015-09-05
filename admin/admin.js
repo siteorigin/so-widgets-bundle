@@ -24,23 +24,32 @@ jQuery(function($){
         );
     });
 
+    // Lets fill in the extra header images
+    $('.so-widget-banner').each( function(){
+        var $$ = $(this);
+
+        var pattern = Trianglify({
+            width: 420,
+            height: 210,
+            seed: $$.data('seed')
+        });
+
+        var background = pattern.png();
+        $$.css('background-image', 'url(' + background.replace(/(\r\n|\n|\r)/gm, "") + ')');
+    } );
+
     $(window).resize(function() {
-        var $descriptions = $('div.so-widget-text');
+        var $descriptions = $('.so-widget-text').css('height', 'auto');
         var largestHeight = 0;
+
         $descriptions.each(function () {
-            var headerHeight = $(this).find('h4').height();
-            var bodyHeight = $(this).find('p.so-widget-description').height();
-            var headerMarginBottom = parseFloat($(this).find('h4').css('margin-bottom'));
-            var bodyMarginTop = parseFloat($(this).find('p.so-widget-description').css('margin-top'));
-            var innerMargin = Math.max(headerMarginBottom, bodyMarginTop);
-            var divHeight = headerHeight + bodyHeight + innerMargin;
-            largestHeight = Math.max(largestHeight, divHeight);
+            largestHeight = Math.max(largestHeight, $(this).height()  );
         });
+
         $descriptions.each(function () {
-            var minHeight = parseInt($(this).css('min-height'));
-            var divHeight = Math.max(largestHeight, minHeight);
-            $(this).height(divHeight);
+            $(this).css('height', largestHeight);
         });
+
     }).resize();
 
     // Handle the tabs

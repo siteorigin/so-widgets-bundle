@@ -1,6 +1,6 @@
 <?php
 /*
-Widget Name: Slider widget
+Widget Name: Image Slider
 Description: A very simple slider widget.
 Author: Greg Priday
 Author URI: http://siteorigin.com

@@ -1,6 +1,6 @@
 <?php
 /*
-Widget Name: Image widget
+Widget Name: Image
 Description: A very simple image widget.
 Author: Greg Priday
 Author URI: http://siteorigin.com
