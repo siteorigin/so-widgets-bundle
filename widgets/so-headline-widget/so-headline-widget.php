@@ -15,8 +15,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			'sow-headline',
 			__( 'SiteOrigin Headline', 'siteorigin-widgets' ),
 			array(
-				'description' => __( 'A headline widget.', 'siteorigin-widgets' ),
-				'help'        => 'http://siteorigin.com/widgets-bundle/headline-widget-documentation/'
+				'description' => __( 'A headline widget.', 'siteorigin-widgets' )
 			),
 			array(),
 			array(
