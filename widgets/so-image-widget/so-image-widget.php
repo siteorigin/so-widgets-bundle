@@ -2,8 +2,8 @@
 /*
 Widget Name: Image
 Description: A very simple image widget.
-Author: Greg Priday
-Author URI: http://siteorigin.com
+Author: SiteOrigin
+Author URI: https://siteorigin.com
 */
 
 class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {

@@ -2,8 +2,8 @@
 /*
 Widget Name: Button
 Description: A powerful yet simple button widget for your sidebars or Page Builder pages.
-Author: Greg Priday
-Author URI: http://siteorigin.com
+Author: SiteOrigin
+Author URI: https://siteorigin.com
 */
 
 class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {

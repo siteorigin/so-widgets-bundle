@@ -4,7 +4,7 @@
 Widget Name: Social Media Buttons
 Description: Customizable buttons which link to all your social media profiles.
 Author: SiteOrigin
-Author URI: http://siteorigin.com
+Author URI: https://siteorigin.com
 */
 
 

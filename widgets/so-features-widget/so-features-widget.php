@@ -2,8 +2,8 @@
 /*
 Widget Name: Features
 Description: Displays a block of features with icons.
-Author: Greg Priday
-Author URI: http://siteorigin.com
+Author: SiteOrigin
+Author URI: https://siteorigin.com
 */
 
 class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {

@@ -3,7 +3,7 @@
 Widget Name: Video Player
 Description: Play all your self or externally hosted videos in a customizable video player.
 Author: SiteOrigin
-Author URI: http://siteorigin.com
+Author URI: https://siteorigin.com
 */
 
 

@@ -2,8 +2,8 @@
 /*
 Widget Name: Post Carousel
 Description: Gives you a widget to display your posts as a carousel.
-Author: Greg Priday
-Author URI: http://siteorigin.com
+Author: SiteOrigin
+Author URI: https://siteorigin.com
 */
 
 /**
