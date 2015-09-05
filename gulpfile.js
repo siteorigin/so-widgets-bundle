@@ -111,6 +111,9 @@ gulp.task('build:release', ['move'], function () {
 gulp.task('build:dev', ['less'], function () {
     console.log('Watching LESS files...');
     gulp.watch([
+        'admin/**/*.less',
+        'base/**/*.less',
+        '!base/less/*.less',
         'css/**/*.less'
     ], ['less']);
 });

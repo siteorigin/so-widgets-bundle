@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'feature-background';
-  src: url('fonts/feature-background.eot?-7p8gp3');
-  src: url('fonts/feature-background.eot?#iefix-7p8gp3') format('embedded-opentype'), url('fonts/feature-background.woff?-7p8gp3') format('woff'), url('fonts/feature-background.ttf?-7p8gp3') format('truetype'), url('fonts/feature-background.svg?-7p8gp3#feature-background') format('svg');
+  src: url('fonts/feature-background.eot');
+  src: url('fonts/feature-background.eot') format('embedded-opentype'), url('fonts/feature-background.woff') format('woff'), url('fonts/feature-background.ttf') format('truetype'), url('fonts/feature-background.svg') format('svg');
   font-weight: normal;
   font-style: normal;
 }

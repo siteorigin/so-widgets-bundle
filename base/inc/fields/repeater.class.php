@@ -69,6 +69,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 							<div class="siteorigin-widget-field-repeater-item-top">
 								<div class="siteorigin-widget-field-expand"></div>
 								<?php if( empty( $this->readonly ) ) : ?>
+									<div class="siteorigin-widget-field-copy"></div>
 									<div class="siteorigin-widget-field-remove"></div>
 								<?php endif; ?>
 								<h4><?php echo esc_html( $this->item_name ) ?></h4>
@@ -102,5 +103,22 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 
 	protected function render_field_label() {
 		// Empty override. This field renders it's own label in the render_field() function.
+	}
+
+	/**
+	 * Go over the items in the repeater and sanitize each one using the container sanitization function.
+	 *
+	 * @param mixed $value
+	 *
+	 * @return array|mixed
+	 */
+	function sanitize_field_input( $value ){
+		if( empty($value) ) return array();
+
+		foreach( $value as &$el ) {
+			$el = parent::sanitize_field_input( $el );
+		}
+
+		return $value;
 	}
 }

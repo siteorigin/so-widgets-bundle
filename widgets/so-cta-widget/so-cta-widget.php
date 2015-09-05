@@ -15,7 +15,7 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 			__('SiteOrigin Call-to-action', 'siteorigin-widgets'),
 			array(
 				'description' => __('A simple call-to-action widget with massive power.', 'siteorigin-widgets'),
-				'help' => 'http://siteorigin.com/widgets-bundle/'
+				'help' => 'https://siteorigin.com/widgets-bundle/call-action-widget/'
 			),
 			array(
 

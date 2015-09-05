@@ -1,5 +1,5 @@
 
-/* globals wp, jQuery, soWidgets, confirm */
+/* globals wp, jQuery, soWidgets, confirm, tinymce */
 
 var sowEmitters = {
 
@@ -377,9 +377,16 @@ var sowEmitters = {
             // Handle the icon selection
 
             var iconWidgetCache = {};
-            $fields.find('> .siteorigin-widget-icon-selector').each(function(){
-                var $is = $(this);
-                var $v = $is.find('.siteorigin-widget-icon-icon');
+            $fields.filter('.siteorigin-widget-field-type-icon').each(function(){
+                var $$ = $(this),
+                    $is = $$.find('.siteorigin-widget-icon-selector'),
+                    $v = $is.find('.siteorigin-widget-icon-icon'),
+                    $b = $$.find('.siteorigin-widget-icon-selector-current');
+
+                // Clicking on the button should display the icon selector
+                $b.click(function(){
+                    $is.slideToggle();
+                });
 
                 var rerenderIcons = function(){
                     var family = $is.find('select.siteorigin-widget-icon-family').val();
@@ -409,22 +416,41 @@ var sowEmitters = {
                             .click(function(){
                                 var $$ = $(this);
                                 if( $$.hasClass('siteorigin-widget-active') ) {
+                                    // This is being unselected
                                     $$.removeClass('siteorigin-widget-active');
                                     $v.val( '' );
+
+                                    // Hide the button icon
+                                    $b.find('span').hide();
                                 }
                                 else {
+                                    // This is being selected
                                     container.find('.siteorigin-widget-icon-icons-icon').removeClass('siteorigin-widget-active');
                                     $$.addClass('siteorigin-widget-active');
-                                    $v.val( $(this).data('value') );
+                                    $v.val( $$.data('value') );
+
+                                    // Also add this to the button
+                                    $b.find('span')
+                                        .show()
+                                        .attr( 'data-sow-icon', $$.attr('data-sow-icon') )
+                                        .attr( 'class', '' )
+                                        .addClass( 'sow-icon-' + family );
                                 }
                                 $v.trigger('change');
+
+                                // Hide the icon selector
+                                $is.slideUp();
                             });
 
+                        container.append(icon);
+
                         if( $v.val() === family + '-' + i ) {
+                            if( !icon.hasClass('siteorigin-widget-active') ) {
+                                // This is becoming active, so simulate a click
+                                icon.click();
+                            }
                             icon.addClass('siteorigin-widget-active');
                         }
-
-                        container.append(icon);
                     }
 
                     // Move a selcted item to the first position
@@ -460,7 +486,6 @@ var sowEmitters = {
                     $is.find('.siteorigin-widget-icon-icons').empty();
                     changeIconFamily();
                 });
-
             });
 
             ///////////////////////////////////////
@@ -503,6 +528,10 @@ var sowEmitters = {
                         { action: 'so_widgets_search_posts', query: query },
                         function(data){
                             for( var i = 0; i < data.length; i++ ) {
+                                if( data[i].post_title === '' ) {
+                                    data[i].post_title = '&nbsp;';
+                                }
+
                                 // Add all the post items
                                 $ul.append(
                                     $('<li>')
@@ -811,11 +840,12 @@ var sowEmitters = {
                     $('<div class="siteorigin-widget-field-repeater-item-top" />')
                         .append(
                             $('<div class="siteorigin-widget-field-expand" />')
-
+                        )
+                        .append(
+                            readonly ? '' : $('<div class="siteorigin-widget-field-copy" />')
                         )
                         .append(
                             readonly ? '' : $('<div class="siteorigin-widget-field-remove" />')
-
                         )
                         .append( $('<h4 />').html( $el.data('item-name') ) )
                 )
@@ -867,7 +897,7 @@ var sowEmitters = {
                 }
 
                 itemTop.click(function (e) {
-                    if (e.target.className === "siteorigin-widget-field-remove") {
+                    if (e.target.className === "siteorigin-widget-field-remove" || e.target.className === "siteorigin-widget-field-copy") {
                         return;
                     }
                     e.preventDefault();
@@ -884,18 +914,88 @@ var sowEmitters = {
                     });
                 });
 
-                itemTop.find('.siteorigin-widget-field-remove')
-                    .click(function (e) {
-                        e.preventDefault();
-                        if ( confirm( soWidgets.sure ) ) {
-                            var $s = $(this).closest('.siteorigin-widget-field-repeater-items');
-                            $(this).closest('.siteorigin-widget-field-repeater-item').slideUp('fast', function () {
-                                $(this).remove();
-                                $s.sortable("refresh").trigger('updateFieldPositions');
-                                $(window).resize();
-                            });
+                itemTop.find('.siteorigin-widget-field-remove').click(function (e) {
+                    e.preventDefault();
+                    if ( confirm( soWidgets.sure ) ) {
+                        var $s = $(this).closest('.siteorigin-widget-field-repeater-items');
+                        $(this).closest('.siteorigin-widget-field-repeater-item').slideUp('fast', function () {
+                            $(this).remove();
+                            $s.sortable("refresh").trigger('updateFieldPositions');
+                            $(window).resize();
+                        });
+                    }
+                });
+                itemTop.find('.siteorigin-widget-field-copy').click(function(e){
+                    e.preventDefault();
+                    var $form = $(this).closest('.siteorigin-widget-form-main');
+                    var $item = $(this).closest('.siteorigin-widget-field-repeater-item');
+                    var $copyItem = $item.clone();
+                    var $items = $item.closest('.siteorigin-widget-field-repeater-items');
+                    //var $nextIndex = $item.index()+1;
+                    var $nextIndex = $items.children().length;
+                    var newIds = {};
+
+                    $copyItem.find( '*[name]' ).each( function () {
+                        var $inputElement = $(this);
+                        var id = $inputElement.attr('id');
+                        var nm = $inputElement.attr('name');
+                        // TinyMCE field :/
+                        if($inputElement.is('textarea') && $inputElement.parent().is('.wp-editor-container') && typeof tinymce != 'undefined') {
+                            $inputElement.parent().empty().append($inputElement);
+                            $inputElement.css('display', '');
+                            var curEd = tinymce.get(id);
+                            if(curEd) {
+                                $inputElement.val(curEd.getContent());
+                            }
                         }
+                        // Color field :/
+                        else if( $inputElement.is('.wp-color-picker')) {
+                            var $wpPickerContainer = $inputElement.closest('.wp-picker-container');
+                            var $soWidgetField = $inputElement.closest('.siteorigin-widget-field');
+                            $wpPickerContainer.remove();
+                            $soWidgetField.append($inputElement.remove());
+                        }
+                        else {
+                            var $originalInput = $item.find('[name="' + nm + '"]');
+                            if( $originalInput.length && $originalInput.val() != null ){
+                                $inputElement.val($originalInput.val());
+                            }
+                        }
+                        if(id) {
+                            var idBase = id.replace(/-\d+$/, '');
+                            if (!newIds[idBase]) {
+                                newIds[idBase] = $form.find('.siteorigin-widget-input[id^=' + idBase + ']').not('[id*=_id_]').length + 1;
+                            }
+                            var newId = idBase + '-' + newIds[idBase]++;
+                            $inputElement.attr('id', newId);
+                            $copyItem.find('label[for=' + id + ']').attr('for', newId);
+                            $copyItem.find('[id*=' + id + ']').each(function() {
+                                var oldIdAttr = $(this).attr('id');
+                                var newIdAttr = oldIdAttr.replace(id, newId);
+                                $(this).attr('id', newIdAttr);
+                            });
+                            if(typeof tinymce != 'undefined' && tinymce.get(newId)) {
+                                tinymce.get(newId).remove();
+                            }
+                        }
+                        var nestLevel = $item.parents('.siteorigin-widget-field-repeater').length;
+                        var $body = $('body');
+                        if( ($body.hasClass('wp-customizer') || $body.hasClass('widgets-php')) && $el.closest('.panel-dialog').length == 0) {
+                            nestLevel += 1;
+                        }
+                        var newName = nm.replace(new RegExp('((?:.*?\\[\\d+\\]){'+(nestLevel-1).toString()+'})?(.*?\\[)\\d+(\\])'), '$1$2'+$nextIndex.toString()+'$3');
+                        $inputElement.attr('name', newName);
+                        $inputElement.data('original-name', newName);
+                    } );
+
+                    //$item.after($copyItem);
+                    //$items.sortable( "refresh").trigger('updateFieldPositions');
+                    $items.append($copyItem).sortable( "refresh").trigger('updateFieldPositions');
+                    $copyItem.sowSetupRepeaterItems();
+                    $copyItem.hide().slideDown('fast', function(){
+                        $(window).resize();
                     });
+                });
 
                 $el.find('> .siteorigin-widget-field-repeater-item-form').sowSetupForm();
 

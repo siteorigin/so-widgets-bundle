@@ -69,6 +69,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 									'type' => 'media',
 									'label' => __( 'Background image', 'siteorigin-widgets' ),
 									'library' => 'image',
+									'fallback' => true,
 								),
 
 								'opacity' => array(
@@ -113,34 +114,46 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 					'fields' => array(
 
 						'padding' => array(
+							'type' => 'number',
+							'label' => __('Top and bottom padding', 'siteorigin-widgets'),
+							'default' => 50,
+						),
+
+						'padding_sides' => array(
+							'type' => 'number',
+							'label' => __('Side padding', 'siteorigin-widgets'),
+							'default' => 20,
+						),
+
+						'width' => array(
+							'type' => 'number',
+							'label' => __('Maximum container width', 'siteorigin-widgets'),
+							'default' => 1280,
+						),
+
+						'heading_font' => array(
+							'type' => 'font',
+							'label' => __('Heading font', 'siteorigin-widgets'),
+							'default' => '',
+						),
+
+						'heading_size' => array(
+							'type' => 'number',
+							'label' => __('Heading size', 'siteorigin-widgets'),
+							'default' => 38,
+						),
+
+						'heading_shadow' => array(
 							'type' => 'slider',
-							'label' => __('Padding', 'siteorigin-widgets'),
-							'max' => 150,
+							'label' => __('Heading shadow intensity', 'siteorigin-widgets'),
+							'max' => 100,
 							'min' => 0,
 							'default' => 50,
 						),
 
-						'width' => array(
-							'type' => 'slider',
-							'label' => __('Maximum Container Width', 'siteorigin-widgets'),
-							'max' => 1920,
-							'min' => 280,
-							'default' => 1280,
-						),
-
-						'heading_size' => array(
-							'type' => 'slider',
-							'label' => __('Heading Size', 'siteorigin-widgets'),
-							'max' => 72,
-							'min' => 6,
-							'default' => 38,
-						),
-
 						'text_size' => array(
-							'type' => 'slider',
-							'label' => __('Text Size', 'siteorigin-widgets'),
-							'max' => 48,
-							'min' => 6,
+							'type' => 'number',
+							'label' => __('Text size', 'siteorigin-widgets'),
 							'default' => 16,
 						),
 
@@ -162,7 +175,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 
 	/**
-	 * Get everything neccessary for the background image.
+	 * Get everything necessary for the background image.
 	 *
 	 * @param $i
 	 * @param $frame
@@ -170,8 +183,11 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	 * @return array
 	 */
 	function get_frame_background( $i, $frame ){
-		if( empty($frame['background']['image']) ) $background_image = false;
-		else $background_image = wp_get_attachment_image_src($frame['background']['image'], 'full');
+		$background_image = siteorigin_widgets_get_attachment_image_src(
+			$frame['background']['image'],
+			'full',
+			!empty( $frame['background']['image_fallback'] ) ? $frame['background']['image_fallback'] : ''
+		);
 
 		return array(
 			'color' => !empty( $frame['background']['color'] ) ? $frame['background']['color'] : false,
@@ -235,11 +251,37 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		// Hero specific design
 		$less['slide_padding'] = intval( $instance['design']['padding'] ) . 'px';
+
+		$less['slide_padding_sides'] = intval( $instance['design']['padding_sides'] ) . 'px';
 		$less['slide_width'] = intval( $instance['design']['width'] ) . 'px';
 		$less['heading_size'] = intval( $instance['design']['heading_size'] ) . 'px';
 		$less['text_size'] = intval( $instance['design']['text_size'] ) . 'px';
+		$less['heading_shadow'] = intval( $instance['design']['heading_shadow'] );
+
+		$font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
+		$less['heading_font'] = $font['family'];
+		if ( ! empty( $font['weight'] ) ) {
+			$less['heading_font_weight'] = $font['weight'];
+		}
 
 		return $less;
+	}
+
+	/**
+	 * Less function for importing Google web fonts.
+	 *
+	 * @param $instance
+	 * @param $args
+	 *
+	 * @return string
+	 */
+	function less_import_google_font($instance, $args) {
+		if( empty( $instance ) ) return;
+
+		$font_import = siteorigin_widget_get_font( $instance['design']['heading_font'] );
+		if( !empty( $font_import['css_import'] ) ) {
+			return  $font_import['css_import'];
+		}
 	}
 
 }

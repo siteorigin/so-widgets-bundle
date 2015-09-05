@@ -1,6 +1,7 @@
 <?php
 
 return array(
+	"" => "none",
 	"round" => "round",
 	"sticker" => "sticker",
 	"rounded-sticker" => "rounded-sticker",

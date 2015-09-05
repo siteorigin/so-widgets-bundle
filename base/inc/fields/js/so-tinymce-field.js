@@ -1,4 +1,4 @@
-/* global sowGetWidgetFieldVariable, tinyMCEPreInit, quicktags, QTags, tinymce */
+/* global tinyMCEPreInit, quicktags, QTags, tinymce */
 
 (function( $ ) {
     var setup = function(widgetForm) {
@@ -17,62 +17,70 @@
                 var $container = $(element);
                 var $textarea = $container.find('textarea');
                 var id = $textarea.attr('id');
-                if (id.indexOf('__i__') > -1) return;
-                var mceSettings = $container.data('mceSettings');
-                var widgetIdBase = $container.data('widgetIdBase');
-                var name = $textarea.attr('name').replace(/\[\d\]/g, '');
-                var fieldName = /[a-zA-Z0-9\-]+(?:\[[a-zA-Z0-9]+\])?\[(.*)\]/.exec(name)[1];
-                var idPattern = new RegExp('widget-' + widgetIdBase + '-.*-' + fieldName.replace(/\]\[/g, '-') + '[-\d]*');
-                for (var initId in tinyMCEPreInit.mceInit) {
-                    if (initId.match(idPattern)) {
-                        mceSettings = $.extend({}, tinyMCEPreInit.mceInit[initId], mceSettings);
-                    }
-                }
-                var content;
-                var curEd = tinymce.get(id);
-                if (curEd != null) {
-                    content = curEd.getContent();
-                    curEd.remove();
-                }
-                var setupEditor = function (editor) {
-                    editor.on('change',
-                        function () {
-                            tinymce.get(id).save();
-                            $textarea.trigger('change');
+                if( typeof tinymce != 'undefined') {
+                    if (id.indexOf('__i__') > -1) return;
+                    var mceSettings = $container.data('mceSettings');
+                    var widgetIdBase = $container.data('widgetIdBase');
+                    var name = $textarea.attr('name').replace(/\[\d\]/g, '');
+                    var fieldName = /[a-zA-Z0-9\-]+(?:\[[a-zA-Z0-9]+\])?\[(.*)\]/.exec(name)[1];
+                    var idPattern = new RegExp('widget-' + widgetIdBase + '-.*-' + fieldName.replace(/\]\[/g, '-') + '[-\d]*');
+                    for (var initId in tinyMCEPreInit.mceInit) {
+                        if (initId.match(idPattern)) {
+                            mceSettings = $.extend({}, tinyMCEPreInit.mceInit[initId], mceSettings);
                         }
-                    );
-                    editor.on('init',
-                        function () {
-                            if (content) {
-                                editor.setContent(content);
+                    }
+                    var content;
+                    var curEd = tinymce.get(id);
+                    if (curEd != null) {
+                        content = curEd.getContent();
+                        curEd.remove();
+                    }
+                    var setupEditor = function (editor) {
+                        editor.on('change',
+                            function () {
+                                tinymce.get(id).save();
+                                $textarea.trigger('change');
+                                $textarea.val(window.switchEditors.pre_wpautop(editor.getContent()));
                             }
+                        );
+                        editor.on('init',
+                            function () {
+                                if (content) {
+                                    editor.setContent(content);
+                                }
+                            }
+                        );
+                        $textarea.on('keyup',
+                            function () {
+                                editor.setContent(window.switchEditors.wpautop($textarea.val()));
+                            }
+                        );
+                    };
+                    mceSettings = $.extend({}, mceSettings, {selector: '#' + id, setup: setupEditor});
+                    tinyMCEPreInit.mceInit[id] = mceSettings;
+                    var wrapDiv = $container.find('div#wp-' + id + '-wrap');
+                    if (wrapDiv.hasClass('tmce-active')) {
+                        // Add a small timeout to make sure everything is ready - mainly for customizer and widgets interface
+                        if ($('#' + id).is(':visible')) {
+                            tinymce.init(tinyMCEPreInit.mceInit[id]);
                         }
-                    );
-                };
-                mceSettings = $.extend({}, mceSettings, {selector: '#' + id, setup: setupEditor});
-                tinyMCEPreInit.mceInit[id] = mceSettings;
-                var wrapDiv = $container.find('div#wp-' + id + '-wrap');
-                if (wrapDiv.hasClass('tmce-active')) {
-                    // Add a small timeout to make sure everything is ready - mainly for customizer and widgets interface
-                    if ($('#' + id).is(':visible')) {
-                        tinymce.init(tinyMCEPreInit.mceInit[id]);
-                    }
-                    else {
-                        var intervalId = setInterval(function () {
-                            if ($('#' + id).is(':visible')) {
-                                tinymce.init(tinyMCEPreInit.mceInit[id]);
-                                clearInterval(intervalId);
-                            }
-                        }, 500);
+                        else {
+                            var intervalId = setInterval(function () {
+                                if ($('#' + id).is(':visible')) {
+                                    tinymce.init(tinyMCEPreInit.mceInit[id]);
+                                    clearInterval(intervalId);
+                                }
+                            }, 500);
+                        }
                     }
                 }
-                if (!QTags.instances[id]) {
-                    var qtSettings = $container.data('qtSettings');
-                    qtSettings = $.extend({}, tinyMCEPreInit.qtInit['siteorigin-widget-input-tinymce-field'], qtSettings, {id: id});
-                    tinyMCEPreInit.qtInit[id] = qtSettings;
-                    $container.find('.quicktags-toolbar').remove();
-                    quicktags(tinyMCEPreInit.qtInit[id]);
-                }
+                //if (!QTags.instances[id]) {
+                var qtSettings = $container.data('qtSettings');
+                qtSettings = $.extend({}, tinyMCEPreInit.qtInit['siteorigin-widget-input-tinymce-field'], qtSettings, {id: id});
+                tinyMCEPreInit.qtInit[id] = qtSettings;
+                $container.find('.quicktags-toolbar').remove();
+                quicktags(tinyMCEPreInit.qtInit[id]);
+                //}
             });
             QTags._buttonsInit();
         }

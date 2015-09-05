@@ -1,23 +1,34 @@
+@import "../../../base/less/mixins";
+
+.widget-function('import_google_font');
+
 @nav_color_hex: #FFFFFF;
 @nav_size: 25;
 
 @slide_padding: 50px;
+@slide_padding_sides: 10px;
 @slide_width: 1280px;
 @heading_size: 38px;
 @text_size: 16px;
+@heading_shadow: 50;
+
+@heading_font: "Arial", sans-serif;
+@heading_font_weight: 400;
 
 .sow-slider-base {
 
 	.sow-slider-image-wrapper {
-		padding-top: @slide_padding;
-		padding-bottom: @slide_padding;
+		padding: @slide_padding @slide_padding_sides;
+
 		max-width: @slide_width;
 
 		h1,h2,h3,h4,h5,h6{
 			line-height: 1.375em;
 			color: #FFFFFF;
-			text-shadow: 0 2px 2px rgba(0,0,0,0.5);
+			text-shadow: 0 2px 2px rgba( 0, 0, 0, @heading_shadow/100 );
 			margin: 0.1em 0;
+
+			.font(@heading_font, @heading_font_weight);
 		}
 
 		h1 {

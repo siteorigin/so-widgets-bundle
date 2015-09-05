@@ -16,7 +16,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			__( 'SiteOrigin Google Maps', 'siteorigin-widgets' ),
 			array(
 				'description' => __( 'A Google Maps widget.', 'siteorigin-widgets' ),
-				'help'        => 'http://siteorigin.com/widgets-bundle/google-maps-widget-documentation/'
+				'help'        => 'https://siteorigin.com/widgets-bundle/google-maps-widget/'
 			),
 			array(),
 			array(
@@ -89,6 +89,26 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							),
 							'label'       => __( 'Draggable', 'siteorigin-widgets' ),
 							'description' => __( 'Allow dragging the map to move it around.', 'siteorigin-widgets' )
+						),
+						'disable_default_ui' => array(
+							'type' => 'checkbox',
+							'default' => false,
+							'state_handler' => array(
+								'map_type[interactive]' => array('show'),
+								'_else[map_type]' => array('hide'),
+							),
+							'label'       => __( 'Disable default UI', 'siteorigin-widgets' ),
+							'description' => __( 'Hides the default Google Maps controls.', 'siteorigin-widgets' )
+						),
+						'keep_centered' => array(
+							'type' => 'checkbox',
+							'default' => false,
+							'state_handler' => array(
+								'map_type[interactive]' => array('show'),
+								'_else[map_type]' => array('hide'),
+							),
+							'label'       => __( 'Keep map centered', 'siteorigin-widgets' ),
+							'description' => __( 'Keeps the map centered when it\'s container is resized.', 'siteorigin-widgets' )
 						)
 					)
 				),
@@ -133,9 +153,28 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 									'type'  => 'textarea',
 									'rows'  => 2,
 									'label' => __( 'Place', 'siteorigin-widgets' )
-								)
+								),
+								'info' => array(
+									'type' => 'tinymce',
+									'rows' => 10,
+									'label' => __( 'Info Window Content', 'siteorigin-widgets' )
+								),
+								'info_max_width' => array(
+									'type' => 'text',
+									'label' => __( 'Info Window max width', 'siteorigin-widgets' )
+								),
 							)
-						)
+						),
+						'info_display' => array(
+							'type' => 'radio',
+							'label' => __( 'When should Info Windows be displayed?' ),
+							'default' => 'click',
+							'options' => array(
+								'click'   => __( 'Click', 'siteorigin-widgets' ),
+								'mouseover'   => __( 'Mouse over', 'siteorigin-widgets' ),
+								'always' => __( 'Always', 'siteorigin-widgets' ),
+							)
+						),
 					)
 				),
 				'styles'          => array(
@@ -329,7 +368,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'sow-google-map',
 					siteorigin_widget_get_plugin_dir_url( 'google-map' ) . 'js/js-map' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' ),
-					SOW_BUNDLE_VERSION
+					SOW_BUNDLE_VERSION .  mt_rand()
 				)
 			)
 		);
@@ -386,9 +425,12 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'zoom'              => $settings['zoom'],
 					'scroll-zoom'       => $settings['scroll_zoom'],
 					'draggable'         => $settings['draggable'],
+					'disable-ui'        => $settings['disable_default_ui'],
+					'keep-centered'     => $settings['keep_centered'],
 					'marker-icon'       => ! empty( $mrkr_src ) ? $mrkr_src[0] : '',
 					'markers-draggable' => isset( $markers['markers_draggable'] ) ? $markers['markers_draggable'] : '',
-					'marker-at-center'  => $markers['marker_at_center'],
+					'marker-at-center'  => !empty( $markers['marker_at_center'] ),
+					'marker-info-display' => $markers['info_display'],
 					'marker-positions'  => isset( $markers['marker_positions'] ) ? json_encode( $markers['marker_positions'] ) : '',
 					'map-name'          => ! empty( $styles ) ? $styles['map_name'] : '',
 					'map-styles'        => ! empty( $styles ) ? json_encode( $styles['styles'] ) : '',
@@ -503,7 +545,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				}
 			}
 
-			if ( $markers['marker_at_center'] ) {
+			if ( !empty( $markers['marker_at_center'] ) ) {
 				if ( ! empty( $markers_st ) ) {
 					$markers_st .= "|";
 				}

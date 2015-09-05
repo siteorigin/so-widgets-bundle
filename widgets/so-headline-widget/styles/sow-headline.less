@@ -1,3 +1,5 @@
+@import "../../../base/less/mixins";
+
 .widget-function('import_google_font');
 
 @headline_font: "Lucida Grande", sans-serif;
@@ -13,11 +15,6 @@
 @divider_weight: thin;
 @divider_style: solid;
 @divider_color: #EEEEEE;
-
-.font(@font, @weight) when not (@font = default) {
-    font-family: @font;
-    font-weight: @weight;
-}
 
 #sow-headline-container.sow-headline {
 

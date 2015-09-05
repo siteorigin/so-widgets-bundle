@@ -12,6 +12,12 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 		list( $value_family, $null ) = !empty($value) ? explode('-', $value, 2) : array('fontawesome', '');
 
 		?>
+
+		<div class="siteorigin-widget-icon-selector-current">
+			<div class="siteorigin-widget-icon"><span></span></div>
+			<label><?php _e('Choose Icon', 'siteorigin-widgets') ?></label>
+		</div>
+
 		<div class="siteorigin-widget-icon-selector siteorigin-widget-field-subcontainer">
 			<select class="siteorigin-widget-icon-family" >
 				<?php foreach( $widget_icon_families as $family_id => $family_info ) : ?>

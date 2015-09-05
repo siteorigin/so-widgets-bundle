@@ -315,7 +315,6 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * The default sanitization function.
 	 *
 	 * @param $value mixed The value to be sanitized.
-	 * @param $instance array The widget instance.
 	 * @return mixed|string|void
 	 */
 	public function sanitize( $value ) {
