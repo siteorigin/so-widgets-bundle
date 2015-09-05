@@ -50,7 +50,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
-= 1.4.3 - August 29 2015 =
+= 1.4.3 - September 5 2015 =
 * Added support for WooCommerce shortcodes to TinyMCE field.
 * New streamlined icon selector field.
 * Added info window functionality to maps widget.
