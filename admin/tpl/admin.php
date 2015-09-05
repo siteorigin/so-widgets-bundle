@@ -31,6 +31,7 @@
 					</div>
 
 					<div class="so-widget-text">
+
 						<label class="switch">
 							<span class="dashicons dashicons-yes"></span>
 							<input class="switch-input" type="checkbox" <?php checked( $widget['Active'] ) ?> data-url="<?php echo wp_nonce_url( admin_url('admin-ajax.php?action=so_widgets_bundle_manage&widget='.$widget['ID']), 'manage_so_widget' ) ?>">
@@ -38,9 +39,23 @@
 							<span class="switch-handle"></span>
 						</label>
 
-						<p class="so-widget-description">
+						<div class="so-widget-description">
 							<?php echo $widget['Description'] ?>
-						</p>
+						</div>
+
+						<?php if( !empty( $widget['Author'] ) ) : ?>
+							<div class="so-widget-byline">
+								By
+								<strong>
+								<?php
+									if( !empty($widget['AuthorURI']) ) echo '<a href="' . esc_url( $widget['AuthorURI'] ) . '" target="_blank">';
+									echo esc_html( $widget['Author'] );
+									if( !empty($widget['AuthorURI']) ) echo '</a>';
+								?>
+								</strong>
+							</div>
+						<?php endif; ?>
+
 					</div>
 
 				</div>
