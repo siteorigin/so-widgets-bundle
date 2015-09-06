@@ -2,28 +2,6 @@
 
 jQuery(function($){
 
-    //$('.so-widget .switch .switch-input').change(function(e){
-    //    var $$ = $(this);
-    //    var s = $$.is(':checked');
-    //    var $sw = $$.closest('.switch');
-    //
-    //    if(s) {
-    //        $$.closest('.so-widget').addClass('so-widget-is-active').removeClass('so-widget-is-inactive');
-    //    }
-    //    else {
-    //        $$.closest('.so-widget').removeClass('so-widget-is-active').addClass('so-widget-is-inactive');
-    //    }
-    //
-    //    // Lets send an ajax request.
-    //    $.post(
-    //        $$.data('url'),
-    //        { 'active' : s },
-    //        function(data){
-    //            $sw.find('.dashicons-yes').clearQueue().fadeIn('fast').delay(750).fadeOut('fast');
-    //        }
-    //    );
-    //});
-
     $('.so-widget-toggle-active button').click( function(){
         var $$ = $(this),
             s = $$.data('status'),
@@ -50,7 +28,7 @@ jQuery(function($){
 
     } );
 
-    // Lets fill in the extra header images
+    //  Fill in the missing header images
     $('.so-widget-banner').each( function(){
         var $$ = $(this),
             $img = $$.find('img');
@@ -74,6 +52,31 @@ jQuery(function($){
             }
         }
     } );
+
+    // Lets implement the search
+    var widgetSearch = function(){
+        var q = $(this).val().toLowerCase();
+
+        if( q === '' ) {
+            $('.so-widget-wrap').show();
+        }
+        else {
+            $('.so-widget').each( function(){
+                var $$ = $(this);
+
+                if( $$.find('h3').html().toLowerCase().indexOf(q) > -1 ) {
+                    $$.parent().show();
+                }
+                else {
+                    $$.parent().hide();
+                }
+            } );
+        }
+    };
+    $('#sow-widget-search input').on( {
+        keyup: widgetSearch,
+        search: widgetSearch
+    });
 
     $(window).resize(function() {
         var $descriptions = $('.so-widget-text').css('height', 'auto');

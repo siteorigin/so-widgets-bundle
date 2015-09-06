@@ -9,7 +9,7 @@
 		<h1><?php _e('SiteOrigin Widgets Bundle', 'siteorigin-widgets') ?></h1>
 
 		<div id="sow-widget-search">
-			<input type="search" placeholder="<?php esc_attr_e('Search Widgets', 'siteorigin-widgets') ?>" />
+			<input type="search" placeholder="<?php esc_attr_e('Filter Widgets', 'siteorigin-widgets') ?>" />
 		</div>
 	</div>
 
