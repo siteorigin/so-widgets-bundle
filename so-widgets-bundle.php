@@ -173,6 +173,10 @@ class SiteOrigin_Widgets_Bundle {
 		wp_enqueue_style( 'siteorigin-widgets-manage-admin', plugin_dir_url( __FILE__ ) . 'admin/admin.css', array(), SOW_BUNDLE_VERSION );
 		wp_enqueue_script( 'siteorigin-widgets-trianglify', plugin_dir_url( __FILE__ ) . 'admin/trianglify.min.js', array(), SOW_BUNDLE_VERSION );
 		wp_enqueue_script( 'siteorigin-widgets-manage-admin', plugin_dir_url( __FILE__ ) . 'admin/admin' . SOW_BUNDLE_JS_SUFFIX . '.js', array(), SOW_BUNDLE_VERSION );
+
+		wp_localize_script( 'siteorigin-widgets-manage-admin', 'soWidgetsAdmin', array(
+			'toggleUrl' => wp_nonce_url( admin_url('admin-ajax.php?action=so_widgets_bundle_manage'), 'manage_so_widget' )
+		) );
 	}
 
 	/**
@@ -214,10 +218,10 @@ class SiteOrigin_Widgets_Bundle {
 	function admin_ajax_manage_handler(){
 		if( !wp_verify_nonce($_GET['_wpnonce'], 'manage_so_widget') ) exit();
 		if( !current_user_can( apply_filters('siteorigin_widgets_admin_menu_capability', 'install_plugins') ) ) exit();
-		if( empty($_GET['widget']) ) exit();
+		if( empty($_POST['widget']) ) exit();
 
-		if( isset($_POST['active']) && $_POST['active'] == 'true' ) $this->activate_widget($_GET['widget']);
-		else $this->deactivate_widget( $_GET['widget'] );
+		if( !empty($_POST['active']) ) $this->activate_widget($_POST['widget']);
+		else $this->deactivate_widget( $_POST['widget'] );
 
 		// Send a kind of dummy response.
 		header('content-type: application/json');
