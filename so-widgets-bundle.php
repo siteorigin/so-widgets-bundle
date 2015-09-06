@@ -44,6 +44,7 @@ class SiteOrigin_Widgets_Bundle {
 
 		// Initialize the widgets, but do it fairly late
 		add_action( 'plugins_loaded', array($this, 'set_plugin_textdomain'), 1 );
+		add_action( 'after_setup_theme', array($this, 'get_widget_folders'), 11 );
 		add_action( 'after_setup_theme', array($this, 'load_widget_plugins'), 11 );
 
 		// Add the action links.
@@ -120,12 +121,9 @@ class SiteOrigin_Widgets_Bundle {
 	}
 
 	/**
-	 * Load all the widgets if their plugins are not already active.
-	 *
-	 * @action plugins_loaded
+	 * Setup and return the widget folders
 	 */
-	function load_widget_plugins(){
-
+	function get_widget_folders(){
 		if( empty($this->widget_folders) ) {
 			// We can use this filter to add more folders to use for widgets
 			$this->widget_folders = apply_filters('siteorigin_widgets_widget_folders', array(
@@ -133,8 +131,19 @@ class SiteOrigin_Widgets_Bundle {
 			) );
 		}
 
+		return $this->widget_folders;
+	}
+
+	/**
+	 * Load all the widgets if their plugins are not already active.
+	 *
+	 * @action plugins_loaded
+	 */
+	function load_widget_plugins(){
+
 		// Load all the widget we currently have active and filter them
 		$active_widgets = $this->get_active_widgets();
+		$widget_folders = $this->get_widget_folders();
 
 		foreach( $active_widgets as $widget_id => $active ) {
 			if( empty($active) ) continue;
@@ -339,6 +348,25 @@ class SiteOrigin_Widgets_Bundle {
 	}
 
 	/**
+	 * Include a widget that might not have been registered.
+	 *
+	 * @param $widget_id
+	 *
+	 * @return bool
+	 */
+	function include_widget( $widget_id ) {
+		$folders = $this->get_widget_folders();
+
+		foreach( $folders as $folder ) {
+			if( !file_exists($folder . $widget_id . '/' . $widget_id . '.php') ) continue;
+			include_once $folder . $widget_id . '/' . $widget_id . '.php';
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Deactivate a widget
 	 *
 	 * @param $id
@@ -354,6 +382,7 @@ class SiteOrigin_Widgets_Bundle {
 	 */
 	function get_widgets_list(){
 		$active = $this->get_active_widgets();
+		$folders = $this->get_widget_folders();
 
 		$default_headers = array(
 			'Name' => 'Widget Name',
@@ -365,7 +394,7 @@ class SiteOrigin_Widgets_Bundle {
 		);
 
 		$widgets = array();
-		foreach($this->widget_folders as $folder) {
+		foreach( $folders as $folder ) {
 
 			$files = glob( $folder.'*/*.php' );
 			foreach($files as $file) {
@@ -424,8 +453,8 @@ class SiteOrigin_Widgets_Bundle {
 			$class = $widget['panels_info']['class'];
 			if( preg_match('/SiteOrigin_Widget_([A-Za-z]+)_Widget/', $class, $matches) ) {
 				$name = $matches[1];
+				// TODO change this when we transition to new widget names
 				$id = 'so'.strtolower( implode( '-', preg_split('/(?=[A-Z])/',$name) ) ).'-widget';
-
 				$this->activate_widget($id, true);
 			}
 		}
@@ -447,6 +476,7 @@ class SiteOrigin_Widgets_Bundle {
 
 		if( preg_match('/SiteOrigin_Widget_([A-Za-z]+)_Widget/', $class, $matches) ) {
 			$name = $matches[1];
+			// TODO change this when we transition to new widget names
 			$id = 'so'.strtolower( implode( '-', preg_split('/(?=[A-Z])/',$name) ) ).'-widget';
 
 			$this->activate_widget($id, true);
@@ -462,7 +492,7 @@ class SiteOrigin_Widgets_Bundle {
 	 */
 	function plugin_action_links($links){
 		$links[] = '<a href="' . admin_url('plugins.php?page=so-widgets-plugins') . '">'.__('Manage Widgets', 'siteorigin-widgets').'</a>';
-		$links[] = '<a href="http://siteorigin.com/thread/" target="_blank">'.__('Support', 'siteorigin-widgets').'</a>';
+		$links[] = '<a href="https://siteorigin.com/thread/" target="_blank">'.__('Support', 'siteorigin-widgets').'</a>';
 		return $links;
 	}
 

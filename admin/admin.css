@@ -157,7 +157,7 @@
     width: 50%;
   }
 }
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 960px) {
   #sow-widgets-page #widgets-list .so-widget-wrap {
     width: 100%;
   }

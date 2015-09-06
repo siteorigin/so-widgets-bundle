@@ -164,10 +164,9 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 
 	function initialize(){
+		// This widget requires the button widget
 		if( !class_exists('SiteOrigin_Widget_Button_Widget') ) {
-			// We need to include the button
-			include plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . 'widgets/so-button-widget/so-button-widget.php';
-			siteorigin_widget_register( 'button', plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . 'widgets/so-button-widget/so-button-widget.php' );
+			SiteOrigin_Widgets_Bundle::single()->include_widget( 'so-button-widget' );
 		}
 
 		// Let the slider base class do its initialization
