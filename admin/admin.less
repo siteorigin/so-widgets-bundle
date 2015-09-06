@@ -195,16 +195,17 @@
 				margin: 20px;
 				overflow: hidden;
 
-				img {
+				img, svg {
 					height: 128px;
 					width: auto;
+					.transition(0.45s);
 				}
 			}
 
 			.so-widget-text {
 
 				padding: 20px 20px 20px 0;
-				margin-left: 148px;
+				margin-left: 178px;
 
 				.so-widget-active-indicator {
 					float: right;
@@ -213,6 +214,7 @@
 					padding: 4px 10px;
 					color: #fff;
 					border-radius: 3px;
+					.transition(0.35s);
 				}
 
 				h3 {
@@ -268,7 +270,7 @@
 				}
 
 				.so-widget-active-indicator {
-					visibility: hidden;
+					opacity: 0;
 				}
 
 				h3 {

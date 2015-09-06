@@ -181,13 +181,18 @@
   margin: 20px;
   overflow: hidden;
 }
-#sow-widgets-page #widgets-list .so-widget .so-widget-banner img {
+#sow-widgets-page #widgets-list .so-widget .so-widget-banner img,
+#sow-widgets-page #widgets-list .so-widget .so-widget-banner svg {
   height: 128px;
   width: auto;
+  -webkit-transition: all 0.45s ease;
+  -moz-transition: all 0.45s ease;
+  -o-transition: all 0.45s ease;
+  transition: all 0.45s ease;
 }
 #sow-widgets-page #widgets-list .so-widget .so-widget-text {
   padding: 20px 20px 20px 0;
-  margin-left: 148px;
+  margin-left: 178px;
 }
 #sow-widgets-page #widgets-list .so-widget .so-widget-text .so-widget-active-indicator {
   float: right;
@@ -196,6 +201,10 @@
   padding: 4px 10px;
   color: #fff;
   border-radius: 3px;
+  -webkit-transition: all 0.35s ease;
+  -moz-transition: all 0.35s ease;
+  -o-transition: all 0.35s ease;
+  transition: all 0.35s ease;
 }
 #sow-widgets-page #widgets-list .so-widget .so-widget-text h3 {
   color: #0073aa;
@@ -235,7 +244,7 @@
   display: none;
 }
 #sow-widgets-page #widgets-list .so-widget.so-widget-is-inactive .so-widget-active-indicator {
-  visibility: hidden;
+  opacity: 0;
 }
 #sow-widgets-page #widgets-list .so-widget.so-widget-is-inactive h3 {
   color: #666;
