@@ -123,19 +123,23 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			}
 		}
 
-		$foreground_image = siteorigin_widgets_get_attachment_image(
+		$foreground_src = siteorigin_widgets_get_attachment_image_src(
 			$frame['foreground_image'],
 			'full',
 			!empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : ''
 		);
 
-		if( !empty($foreground_image) ) {
+		if( !empty($foreground_src) ) {
 			?>
 			<div class="sow-slider-image-container">
-				<div class="sow-slider-image-wrapper" style="<?php if(!empty($foreground_image[1])) echo 'max-width: ' . intval($foreground_image[1]) . 'px' ?>">
+				<div class="sow-slider-image-wrapper" style="<?php if(!empty($foreground_src[1])) echo 'max-width: ' . intval($foreground_src[1]) . 'px' ?>">
 					<?php
 					if(!empty($frame['url'])) echo '<a href="' . sow_esc_url($frame['url']) . '">';
-					echo $foreground_image;
+					echo siteorigin_widgets_get_attachment_image(
+						$frame['foreground_image'],
+						'full',
+						!empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : ''
+					);
 					if(!empty($frame['url'])) echo '</a>';
 					?>
 				</div>
