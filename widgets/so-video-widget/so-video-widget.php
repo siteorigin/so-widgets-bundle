@@ -1,10 +1,9 @@
 <?php
-
 /*
-Widget Name: Video widget
+Widget Name: Video Player
 Description: Play all your self or externally hosted videos in a customizable video player.
 Author: SiteOrigin
-Author URI: http://siteorigin.com
+Author URI: https://siteorigin.com
 */
 
 
@@ -14,7 +13,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 
 		parent::__construct(
 			'sow-video',
-			__( 'SiteOrigin Video', 'siteorigin-widgets' ),
+			__( 'SiteOrigin Video Player', 'siteorigin-widgets' ),
 			array(
 				'description' => __( 'A video player widget.', 'siteorigin-widgets' ),
 				'help'        => 'http://siteorigin.com/widgets-bundle/video-widget-documentation/'
@@ -258,4 +257,4 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		return $video_host == 'self' || ( ($video_host == 'youtube' || $video_host == 'vimeo') && $wp_version >= 4.2 );
 	}
 }
-siteorigin_widget_register( 'video', __FILE__ );
+siteorigin_widget_register( 'video', __FILE__, 'SiteOrigin_Widget_Video_Widget' );

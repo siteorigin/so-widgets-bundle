@@ -1,10 +1,10 @@
 <?php
 
 /*
-Widget Name: Social media buttons widget
+Widget Name: Social Media Buttons
 Description: Customizable buttons which link to all your social media profiles.
 Author: SiteOrigin
-Author URI: http://siteorigin.com
+Author URI: https://siteorigin.com
 */
 
 
@@ -252,4 +252,4 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register( 'social-media-buttons', __FILE__ );
+siteorigin_widget_register( 'sow-social-media-buttons', __FILE__, 'SiteOrigin_Widget_SocialMediaButtons_Widget' );

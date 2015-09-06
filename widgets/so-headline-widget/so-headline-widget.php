@@ -1,10 +1,10 @@
 <?php
 
 /*
-Widget Name: Headline widget
+Widget Name: Headline
 Description: A headline to headline all headlines.
 Author: SiteOrigin
-Author URI: http://siteorigin.com
+Author URI: https://siteorigin.com
 */
 
 class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
@@ -243,4 +243,4 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register('headline', __FILE__);
+siteorigin_widget_register('sow-headline', __FILE__, 'SiteOrigin_Widget_Headline_Widget');

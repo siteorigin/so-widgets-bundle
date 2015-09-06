@@ -1,10 +1,10 @@
 <?php
 
 /*
-Widget Name: Google Maps widget
+Widget Name: Google Maps
 Description: A highly customisable Google Maps widget. Help your site find its place and give it some direction.
 Author: SiteOrigin
-Author URI: http://siteorigin.com
+Author URI: https://siteorigin.com
 */
 
 class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
@@ -568,4 +568,4 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register( 'google-map', __FILE__ );
+siteorigin_widget_register( 'sow-google-map', __FILE__, 'SiteOrigin_Widget_GoogleMap_Widget' );

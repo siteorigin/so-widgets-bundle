@@ -1,9 +1,9 @@
 <?php
 /*
-Widget Name: Button widget
+Widget Name: Button
 Description: A powerful yet simple button widget for your sidebars or Page Builder pages.
-Author: Greg Priday
-Author URI: http://siteorigin.com
+Author: SiteOrigin
+Author URI: https://siteorigin.com
 */
 
 class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
@@ -267,4 +267,4 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register('button', __FILE__);
+siteorigin_widget_register('sow-button', __FILE__, 'SiteOrigin_Widget_Button_Widget');

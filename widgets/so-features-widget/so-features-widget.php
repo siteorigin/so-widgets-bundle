@@ -1,9 +1,9 @@
 <?php
 /*
-Widget Name: Features widget
+Widget Name: Features
 Description: Displays a block of features with icons.
-Author: Greg Priday
-Author URI: http://siteorigin.com
+Author: SiteOrigin
+Author URI: https://siteorigin.com
 */
 
 class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
@@ -162,4 +162,4 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register('features', __FILE__);
+siteorigin_widget_register('sow-features', __FILE__, 'SiteOrigin_Widget_Features_Widget');

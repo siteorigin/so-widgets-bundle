@@ -1,9 +1,9 @@
 <?php
 /*
-Widget Name: Call-to-action widget
+Widget Name: Call-To-Action
 Description: A simple call-to-action widget. You can do what ever you want with a call-to-action widget.
-Author: Greg Priday
-Author URI: http://siteorigin.com
+Author: SiteOrigin
+Author URI: https://siteorigin.com
 */
 
 class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
@@ -122,4 +122,4 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 
 }
 
-siteorigin_widget_register('cta', __FILE__);
+siteorigin_widget_register('sow-cta', __FILE__, 'SiteOrigin_Widget_Cta_widget');

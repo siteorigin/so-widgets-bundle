@@ -8,11 +8,9 @@
 		</span>
 		<h1><?php _e('SiteOrigin Widgets Bundle', 'siteorigin-widgets') ?></h1>
 
-		<!--
 		<div id="sow-widget-search">
-			<input type="search" placeholder="<?php esc_attr_e('Search Widgets', 'siteorigin-widgets') ?>" />
+			<input type="search" placeholder="<?php esc_attr_e('Filter Widgets', 'siteorigin-widgets') ?>" />
 		</div>
-		-->
 	</div>
 
 	<ul class="page-nav">
@@ -26,7 +24,7 @@
 
 		<?php foreach( $widgets as $id => $widget ): ?>
 			<div class="so-widget-wrap">
-				<div class="so-widget so-widget-is-<?php echo $widget['Active'] ? 'active' : 'inactive' ?>">
+				<div class="so-widget so-widget-is-<?php echo $widget['Active'] ? 'active' : 'inactive' ?>" data-id="<?php echo esc_attr( $widget['ID'] ) ?>">
 
 					<?php
 					$banner = '';
@@ -35,21 +33,40 @@
 					}
 					$banner = apply_filters('siteorigin_widgets_widget_banner', $banner, $widget);
 					?>
-
-					<img src="<?php echo sow_esc_url( !empty($banner) ? $banner : plugin_dir_url(__FILE__) . '../../banners/default.png' ) ?>" />
+					<div class="so-widget-banner" data-seed="<?php echo esc_attr( substr( md5($widget['ID']), 0, 6 ) ) ?>">
+						<?php if( !empty($banner) ) : ?>
+							<img src="<?php echo esc_url($banner) ?>" />
+						<?php endif; ?>
+					</div>
 
 					<div class="so-widget-text">
-						<label class="switch">
-							<span class="dashicons dashicons-yes"></span>
-							<input class="switch-input" type="checkbox" <?php checked( $widget['Active'] ) ?> data-url="<?php echo wp_nonce_url( admin_url('admin-ajax.php?action=so_widgets_bundle_manage&widget='.$widget['ID']), 'manage_so_widget' ) ?>">
-							<span class="switch-label" data-on="<?php _e('On', 'siteorigin-widgets') ?>" data-off="<?php _e('Off', 'siteorigin-widgets') ?>"></span>
-							<span class="switch-handle"></span>
-						</label>
 
-						<h4><?php echo esc_html($widget['Name']); ?></h4>
-						<p class="so-widget-description">
-							<?php echo $widget['Description'] ?>
-						</p>
+						<div class="so-widget-active-indicator"><?php _e('Active', 'siteorigin-widgets') ?></div>
+
+						<h3><?php echo esc_html( $widget['Name'] ); ?></h3>
+
+						<div class="so-widget-description">
+							<?php echo esc_html( $widget['Description'] ) ?>
+						</div>
+
+						<?php if( !empty( $widget['Author'] ) ) : ?>
+							<div class="so-widget-byline">
+								By
+								<strong>
+								<?php
+									if( !empty($widget['AuthorURI']) ) echo '<a href="' . esc_url( $widget['AuthorURI'] ) . '" target="_blank">';
+									echo esc_html( $widget['Author'] );
+									if( !empty($widget['AuthorURI']) ) echo '</a>';
+								?>
+								</strong>
+							</div>
+						<?php endif; ?>
+
+						<div class="so-widget-toggle-active">
+							<button class="button-secondary so-widget-activate" data-status="1"><?php esc_html_e( 'Activate', 'siteorigin-widgets' ) ?></button>
+							<button class="button-secondary so-widget-deactivate" data-status="0"><?php esc_html_e( 'Deactivate', 'siteorigin-widgets' ) ?></button>
+						</div>
+
 					</div>
 
 				</div>

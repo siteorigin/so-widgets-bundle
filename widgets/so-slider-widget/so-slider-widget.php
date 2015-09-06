@@ -1,9 +1,9 @@
 <?php
 /*
-Widget Name: Slider widget
+Widget Name: Image Slider
 Description: A very simple slider widget.
-Author: Greg Priday
-Author URI: http://siteorigin.com
+Author: SiteOrigin
+Author URI: https://siteorigin.com
 */
 
 if( !class_exists( 'SiteOrigin_Widget_Base_Slider' ) ) include_once plugin_dir_path(SOW_BUNDLE_BASE_FILE) . '/base/inc/widgets/base-slider.class.php';
@@ -200,4 +200,4 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 }
 
-siteorigin_widget_register('slider', __FILE__);
+siteorigin_widget_register('sow-slider', __FILE__, 'SiteOrigin_Widget_Slider_Widget');
