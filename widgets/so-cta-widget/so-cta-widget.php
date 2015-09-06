@@ -122,4 +122,4 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 
 }
 
-siteorigin_widget_register('cta', __FILE__);
+siteorigin_widget_register('sow-cta', __FILE__, 'SiteOrigin_Widget_Cta_widget');

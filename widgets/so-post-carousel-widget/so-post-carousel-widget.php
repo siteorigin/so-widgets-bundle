@@ -116,4 +116,4 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register('post-carousel', __FILE__);
+siteorigin_widget_register('sow-post-carousel', __FILE__, 'SiteOrigin_Widget_PostCarousel_Widget');

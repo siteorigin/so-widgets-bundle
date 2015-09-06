@@ -243,4 +243,4 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register('headline', __FILE__);
+siteorigin_widget_register('sow-headline', __FILE__, 'SiteOrigin_Widget_Headline_Widget');

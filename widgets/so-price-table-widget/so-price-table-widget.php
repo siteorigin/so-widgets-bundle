@@ -235,4 +235,4 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register('price-table', __FILE__);
+siteorigin_widget_register('sow-price-table', __FILE__, 'SiteOrigin_Widget_PriceTable_Widget');

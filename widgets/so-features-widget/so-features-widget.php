@@ -162,4 +162,4 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register('features', __FILE__);
+siteorigin_widget_register('sow-features', __FILE__, 'SiteOrigin_Widget_Features_Widget');

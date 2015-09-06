@@ -257,4 +257,4 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		return $video_host == 'self' || ( ($video_host == 'youtube' || $video_host == 'vimeo') && $wp_version >= 4.2 );
 	}
 }
-siteorigin_widget_register( 'video', __FILE__ );
+siteorigin_widget_register( 'video', __FILE__, 'SiteOrigin_Widget_Video_Widget' );

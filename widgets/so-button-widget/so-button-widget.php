@@ -267,4 +267,4 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register('button', __FILE__);
+siteorigin_widget_register('sow-button', __FILE__, 'SiteOrigin_Widget_Button_Widget');

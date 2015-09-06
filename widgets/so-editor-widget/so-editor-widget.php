@@ -81,4 +81,4 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register( 'editor', __FILE__ );
+siteorigin_widget_register( 'sow-editor', __FILE__, 'SiteOrigin_Widget_Editor_Widget' );

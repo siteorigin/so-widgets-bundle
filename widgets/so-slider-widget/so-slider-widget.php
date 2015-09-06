@@ -200,4 +200,4 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 }
 
-siteorigin_widget_register('slider', __FILE__);
+siteorigin_widget_register('sow-slider', __FILE__, 'SiteOrigin_Widget_Slider_Widget');

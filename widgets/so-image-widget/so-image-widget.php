@@ -103,4 +103,4 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register('image', __FILE__);
+siteorigin_widget_register('sow-image', __FILE__, 'SiteOrigin_Widget_Image_Widget');

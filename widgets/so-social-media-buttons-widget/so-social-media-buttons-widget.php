@@ -252,4 +252,4 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register( 'social-media-buttons', __FILE__ );
+siteorigin_widget_register( 'sow-social-media-buttons', __FILE__, 'SiteOrigin_Widget_SocialMediaButtons_Widget' );

@@ -568,4 +568,4 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register( 'google-map', __FILE__ );
+siteorigin_widget_register( 'sow-google-map', __FILE__, 'SiteOrigin_Widget_GoogleMap_Widget' );
