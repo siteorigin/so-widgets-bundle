@@ -88,7 +88,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 				),
 				array(
 					'sow-carousel-basic',
-					siteorigin_widget_get_plugin_dir_url( 'post-carousel' ) . 'js/carousel' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					plugin_dir_url(__FILE__) . 'js/carousel' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery', 'touch-swipe' ),
 					SOW_BUNDLE_VERSION,
 					true
@@ -99,7 +99,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			array(
 				array(
 					'sow-carousel-basic',
-					siteorigin_widget_get_plugin_dir_url( 'post-carousel' ) . 'css/style.css',
+					plugin_dir_url(__FILE__) . 'css/style.css',
 					array(),
 					SOW_BUNDLE_VERSION
 				)

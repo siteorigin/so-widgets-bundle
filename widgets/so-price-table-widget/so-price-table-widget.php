@@ -141,7 +141,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			array(
 				array(
 					'siteorigin-pricetable',
-					siteorigin_widget_get_plugin_dir_url( 'price-table' ) . 'js/pricetable' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					plugin_dir_url(__FILE__) . 'js/pricetable' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' )
 				)
 			)
