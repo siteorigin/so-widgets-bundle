@@ -137,23 +137,33 @@ var sowEmitters = {
                     // Find all wrappers that have state handlers on them
                     $el.find('[data-state-handler]').each( function(){
                         var $$ = $(this);
-
                         // Create a copy of the current state handlers. Add in initial handlers if the form is initializing.
                         var handler = $.extend( {}, $$.data( 'state-handler' ), formInitializing ?  $$.data('state-handler-initial' ) : {} ) ;
-                        if( Object.keys( handler ).length === 0 ) { return true; }
+                        if( Object.keys( handler ).length === 0 ) {
+                            return true;
+                        }
 
                         // We need to figure out what the incoming state is
-                        var handlerStateParts, handlerState, thisHandler, $$f, runHandler;
+                        var handlerStateParts, handlerState, thisHandler, $$f, runHandler, handlerStateNames;
 
                         // Indicates if the handler has run
                         var handlerRun = {};
+
+                        var repeaterIndex = window.sowGetRepeaterIndex($$);
+                        if( repeaterIndex !== false ) {
+                            var repeaterHandler = {};
+                            for( var state in handler ) {
+                                repeaterHandler[ state.replace('{$i}', repeaterIndex) ] = handler[ state ];
+                            }
+                            handler = repeaterHandler;
+                        }
 
                         // Go through all the handlers
                         for( var state in handler ) {
                             runHandler = false;
 
                             // Parse the handler state parts
-                            handlerStateParts = state.match(/^([a-zA-Z0-9_-]+)(\[([a-zA-Z0-9_-]+)\])?(\[\])?$/);
+                            handlerStateParts = state.match(/^([a-zA-Z0-9_-]+)(\[([a-zA-Z0-9_\-,]+)\])?(\[\])?$/);
                             if( handlerStateParts === null ) {
                                 // Skip this if there's a problem with the state parts
                                 continue;
@@ -186,9 +196,12 @@ var sowEmitters = {
                             }
                             else {
                                 // Evaluate if we're in the current state
-                                runHandler = (handlerState.group === incomingGroup && handlerState.name === incomingState);
+                                handlerStateNames = handlerState.name.split(',').map( function(a){ return a.trim() } );
+                                for( var i = 0; i < handlerStateNames.length; i++ ) {
+                                    runHandler = (handlerState.group === incomingGroup && handlerStateNames[i] === incomingState);
+                                    if( runHandler ) break;
+                                }
                             }
-
 
                             // Run the handler if previous checks have determined we should
                             if( runHandler ) {
@@ -591,8 +604,16 @@ var sowEmitters = {
                 if( typeof emitters !== 'undefined' ) {
                     var handleStateEmitter = function(emitter, currentStates){
                         if( typeof sowEmitters[ emitter.callback ] === 'undefined' || emitter.callback.substr(0,1) === '_' ) {
-                            // Skip if the function doesn't exist, or it starts with an underscore.
+                            // Skip if the function doesn't exist, or it starts with an underscore (internal functions).
                             return currentStates;
+                        }
+
+                        // Check if this is inside a repeater
+                        var repeaterIndex = window.sowGetRepeaterIndex($$);
+                        if( repeaterIndex !== false ) {
+                            emitter.args = emitter.args.map( function( a ){
+                                return a.replace('{$i}', repeaterIndex);
+                            } );
                         }
 
                         // Return an array that has the new states added to the array
@@ -603,7 +624,10 @@ var sowEmitters = {
                     var states = { 'default' : '' };
 
                     // Go through the array of emitters
-                    if( typeof emitters.length === 'undefined' ) { emitters = [emitters]; }
+                    if( typeof emitters.length === 'undefined' ) {
+                        emitters = [emitters];
+                    }
+
                     for( var i = 0; i < emitters.length; i++ ) {
                         states = handleStateEmitter( emitters[i], states );
                     }
@@ -631,7 +655,7 @@ var sowEmitters = {
                 // Listen for any change events on an emitter field
                 $(this).find('.siteorigin-widget-input').on('keyup change', stateEmitterChangeHandler);
 
-                // Trigger changes on all necessary fields
+                // Trigger initial state emitter changes
                 $(this).find('.siteorigin-widget-input').each(function(){
                     var $$ = $(this);
                     if( $$.is(':radio') ) {
@@ -1002,6 +1026,33 @@ var sowEmitters = {
                 $el.data('sowrepeater-actions-setup', true);
             }
         });
+    };
+
+    /**
+     * Get the unique index of a repeater item.
+     *
+     * @param $el
+     * @return {*}
+     */
+    window.sowGetRepeaterIndex = function( $el ) {
+        if( typeof this.id === 'undefined' ) {
+            this.id = 1;
+        }
+
+        var $r = $el.closest('.siteorigin-widget-field-repeater-item');
+        if( $r.length ) {
+            var itemId = $r.data('item-id');
+            if( itemId === undefined ) {
+                itemId = this.id++;
+                console.log(itemId);
+            }
+            $r.data('item-id', itemId);
+
+            return itemId;
+        }
+        else {
+            return false;
+        }
     };
 
     window.sowGetWidgetFieldVariable = function ( widgetClass, elementName, key ) {
