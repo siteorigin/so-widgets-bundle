@@ -71,9 +71,9 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 	 * Initialize the CTA widget
 	 */
 	function initialize(){
+		// This widget requires the button widget
 		if( !class_exists('SiteOrigin_Widget_Button_Widget') ) {
-			include plugin_dir_path( __FILE__ ) . '../so-button-widget/so-button-widget.php';
-			siteorigin_widget_register( 'button', realpath( plugin_dir_path( __FILE__ ) . '../so-button-widget/so-button-widget.php' ) );
+			SiteOrigin_Widgets_Bundle::single()->include_widget( 'so-button-widget' );
 		}
 		$this->register_frontend_styles(
 			array(

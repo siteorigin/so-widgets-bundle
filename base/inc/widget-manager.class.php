@@ -54,8 +54,11 @@ class SiteOrigin_Widgets_Widget_Manager {
 	}
 
 	public function get_plugin_path( $id ) {
-		// Handle raw widget IDs, assuming they're prefixed with sow-
-		if( strpos($id, 'sow-') === 0 ) $id = substr($id, 4);
+		if( empty($this->regisrered[$id]) ) {
+			// This call might be using the incorrect ID convention
+			if( substr($id, 0, 4) == 'sow-' ) $id = substr($id, 4);
+			else $id = 'sow-' . $id;
+		}
 
 		return !empty($this->regisrered[$id]) ? $this->regisrered[$id]->path : false;
 	}
@@ -68,16 +71,10 @@ class SiteOrigin_Widgets_Widget_Manager {
 	 * @todo examine this when using a widget in a theme folder.
 	 */
 	function get_plugin_dir_path( $id ){
-		// Handle raw widget IDs, assuming they're prefixed with sow-
-		if( strpos($id, 'sow-') === 0 ) $id = substr($id, 4);
-
 		return plugin_dir_path( $this->get_plugin_path( $id ) );
 	}
 
 	function get_plugin_dir_url( $id ){
-		// Handle raw widget IDs, assuming they're prefixed with sow-
-		if( strpos($id, 'sow-') === 0 ) $id = substr($id, 4);
-
 		return plugin_dir_url( $this->get_plugin_path( $id ) );
 	}
 }

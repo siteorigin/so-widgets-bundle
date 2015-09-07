@@ -23,6 +23,16 @@ class SiteOrigin_Widget_Field_Factory {
 		}
 		$field_class = $this->get_field_class_name( $field_options['type'] );
 
+		// If we still don't have a class use the 'SiteOrigin_Widget_Field_Error' class to indicate this to the user.
+		if( ! class_exists( $field_class ) ) {
+			return new SiteOrigin_Widget_Field_Error('', '', '',
+				array(
+					'type' => 'error',
+					'message' => 'The class \'' . $field_class . '\' could not be found. Please make sure you specified the correct field type and that the class exists.'
+				)
+			);
+		}
+
 		if( $this->is_container_type( $field_options['type'] ) ) {
 			return new $field_class( $field_name, $element_id, $element_name, $field_options, $for_widget, $for_repeater );
 		}
