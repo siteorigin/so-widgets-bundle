@@ -1,9 +1,9 @@
 <?php
 /*
-Widget Name: Post carousel widget
+Widget Name: Post Carousel
 Description: Gives you a widget to display your posts as a carousel.
-Author: Greg Priday
-Author URI: http://siteorigin.com
+Author: SiteOrigin
+Author URI: https://siteorigin.com
 */
 
 /**
@@ -57,7 +57,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			__('SiteOrigin Post Carousel', 'siteorigin-widgets'),
 			array(
 				'description' => __('Display your posts as a carousel.', 'siteorigin-widgets'),
-				'help' => 'http://siteorigin.com/widgets-bundle/'
+				'help' => 'https://siteorigin.com/widgets-bundle/post-carousel-widget/'
 			),
 			array(
 
@@ -116,4 +116,4 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register('post-carousel', __FILE__);
+siteorigin_widget_register('sow-post-carousel', __FILE__, 'SiteOrigin_Widget_PostCarousel_Widget');

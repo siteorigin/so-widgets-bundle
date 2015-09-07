@@ -50,6 +50,17 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.4.3 - September 5 2015 =
+* Added support for WooCommerce shortcodes to TinyMCE field.
+* New streamlined icon selector field.
+* Added info window functionality to maps widget.
+* Added a button to duplicate repeater items.
+* Added more design settings to hero image widget.
+* Removed full screen mode from TinyMCE field.
+* Option to keep map centered when container is resized.
+* Fixed: CSS bug for Google font imports on generated CSS.
+* Fixed: Post selector for URL fields properly handles empty titles.
+
 = 1.4.2 - August 18 2015 =
 * Urgent fix in preparation for WordPress 4.3 release
 

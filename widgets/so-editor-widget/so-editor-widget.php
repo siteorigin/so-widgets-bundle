@@ -1,7 +1,7 @@
 <?php
 
 /*
-Widget Name: Editor Widget
+Widget Name: Editor
 Description: A widget which allows editing of content using the TinyMCE editor.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
@@ -16,6 +16,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			__('SiteOrigin Editor', 'siteorigin-widgets'),
 			array(
 				'description' => __('A rich-text, text editor.', 'siteorigin-widgets'),
+				'help' => 'https://siteorigin.com/widgets-bundle/editor-widget/'
 			),
 			array(),
 			array(
@@ -26,6 +27,11 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 				'text' => array(
 					'type' => 'tinymce',
 					'rows' => 20
+				),
+				'autop' => array(
+					'type' => 'checkbox',
+					'default' => true,
+					'label' => __('Automatically add paragraphs', 'siteorigin-widgets'),
 				),
 			),
 			plugin_dir_path(__FILE__)
@@ -55,7 +61,9 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 		if( !empty($GLOBALS['wp_embed']) ) {
 			$instance['text'] = $GLOBALS['wp_embed']->autoembed( $instance['text'] );
 		}
-		$instance['text'] = wpautop( $instance['text'] );
+		if( $instance['autop'] ) {
+			$instance['text'] = wpautop( $instance['text'] );
+		}
 		$instance['text'] = do_shortcode( $instance['text'] );
 
 		return array(
@@ -73,4 +81,4 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register( 'editor', __FILE__ );
+siteorigin_widget_register( 'sow-editor', __FILE__, 'SiteOrigin_Widget_Editor_Widget' );

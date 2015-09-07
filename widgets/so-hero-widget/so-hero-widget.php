@@ -2,8 +2,8 @@
 /*
 Widget Name: Hero Image
 Description: A big hero image with a few settings to make it your own.
-Author: Greg Priday
-Author URI: http://siteorigin.com
+Author: SiteOrigin
+Author URI: https://siteorigin.com
 */
 
 if( !class_exists( 'SiteOrigin_Widget_Base_Slider' ) ) include_once plugin_dir_path(SOW_BUNDLE_BASE_FILE) . '/base/inc/widgets/base-slider.class.php';
@@ -286,4 +286,4 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 }
 
-siteorigin_widget_register('hero', __FILE__);
+siteorigin_widget_register('sow-hero', __FILE__, 'SiteOrigin_Widget_Hero_Widget');

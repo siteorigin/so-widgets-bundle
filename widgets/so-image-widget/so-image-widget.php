@@ -1,9 +1,9 @@
 <?php
 /*
-Widget Name: Image widget
+Widget Name: Image
 Description: A very simple image widget.
-Author: Greg Priday
-Author URI: http://siteorigin.com
+Author: SiteOrigin
+Author URI: https://siteorigin.com
 */
 
 class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			__('SiteOrigin Image', 'siteorigin-widgets'),
 			array(
 				'description' => __('A simple image widget with massive power.', 'siteorigin-widgets'),
-				'help' => 'http://siteorigin.com/widgets-bundle/image-widget-documentation/'
+				'help' => 'https://siteorigin.com/widgets-bundle/image-widget-documentation/'
 			),
 			array(
 
@@ -103,4 +103,4 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register('image', __FILE__);
+siteorigin_widget_register('sow-image', __FILE__, 'SiteOrigin_Widget_Image_Widget');

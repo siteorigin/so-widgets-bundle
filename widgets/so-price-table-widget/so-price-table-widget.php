@@ -1,10 +1,9 @@
 <?php
 /*
-Widget Name: Price table widget
+Widget Name: Price Table
 Description: A powerful yet simple price table widget for your sidebars or Page Builder pages.
-Author: Greg Priday
-Author URI: http://siteorigin.com
-Widget URI: http://siteorigin.com/price-table-widget/
+Author: SiteOrigin
+Author URI: https://siteorigin.com
 */
 
 class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
@@ -14,7 +13,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			__('SiteOrigin Price Table', 'siteorigin-widgets'),
 			array(
 				'description' => __('A simple Price Table.', 'siteorigin-widgets'),
-				'help' => 'http://siteorigin.com/widgets-bundle/price-table-widget/'
+				'help' => 'https://siteorigin.com/widgets-bundle/price-table-widget/'
 			),
 			array(
 
@@ -236,4 +235,4 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register('price-table', __FILE__);
+siteorigin_widget_register('sow-price-table', __FILE__, 'SiteOrigin_Widget_PriceTable_Widget');
