@@ -54,7 +54,13 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 		);
 
 		$instance['text'] = $this->unwpautop( $instance['text'] );
-		$instance['text'] = wp_kses_post( $instance['text'] );
+
+		/* @var $field_factory SiteOrigin_Widget_Field_Factory */
+		$field_factory = SiteOrigin_Widget_Field_Factory::getInstance();
+		$form_options = $this->form_options();
+		$field = $field_factory->create_field( $this->id_base, $form_options['text'], $this );
+		$instance['text'] = $field->sanitize( $instance['text'] );
+
 		$instance['text'] = apply_filters( 'widget_text', $instance['text'] );
 
 		// Run some known stuff
