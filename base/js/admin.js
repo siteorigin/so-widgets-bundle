@@ -1045,7 +1045,6 @@ var sowEmitters = {
                 var itemId = $r.data('item-id');
                 if( itemId === undefined ) {
                     itemId = this.id++;
-                    console.log(itemId);
                 }
                 $r.data('item-id', itemId);
 
