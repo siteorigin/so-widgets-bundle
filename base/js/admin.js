@@ -153,7 +153,7 @@ var sowEmitters = {
                         if( repeaterIndex !== false ) {
                             var repeaterHandler = {};
                             for( var state in handler ) {
-                                repeaterHandler[ state.replace('{$i}', repeaterIndex) ] = handler[ state ];
+                                repeaterHandler[ state.replace('{$repeater}', repeaterIndex) ] = handler[ state ];
                             }
                             handler = repeaterHandler;
                         }
@@ -612,7 +612,7 @@ var sowEmitters = {
                         var repeaterIndex = window.sowForms.getRepeaterId($$);
                         if( repeaterIndex !== false ) {
                             emitter.args = emitter.args.map( function( a ){
-                                return a.replace('{$i}', repeaterIndex);
+                                return a.replace('{$repeater}', repeaterIndex);
                             } );
                         }
 
