@@ -5,6 +5,8 @@ class SiteOrigin_Widget_Field_TinyMCETest extends WP_UnitTestCase {
 		parent::setUp();
 		$user_id = $this->factory->user->create( array( 'role' => 'administrator' ) );
 		wp_set_current_user( $user_id );
+
+		add_filter( 'user_can_richedit', function ( $wp_rich_edit ) { return true; } );
 	}
 
 
@@ -87,7 +89,6 @@ class SiteOrigin_Widget_Field_TinyMCETest extends WP_UnitTestCase {
 
 		$field_output = get_field_render_output( $field );
 
-		$this->markTestIncomplete('user_can_richedit returns nothing in testing which causes incorrect default editor to be set.');
 		$this->assertTrue( user_can_richedit() );
 		$this->assertContains( 'tmce-active', $field_output);
 	}
