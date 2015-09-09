@@ -149,7 +149,7 @@ var sowEmitters = {
                         // Indicates if the handler has run
                         var handlerRun = {};
 
-                        var repeaterIndex = window.sowGetRepeaterIndex($$);
+                        var repeaterIndex = window.sowForms.getRepeaterId($$);
                         if( repeaterIndex !== false ) {
                             var repeaterHandler = {};
                             for( var state in handler ) {
@@ -609,7 +609,7 @@ var sowEmitters = {
                         }
 
                         // Check if this is inside a repeater
-                        var repeaterIndex = window.sowGetRepeaterIndex($$);
+                        var repeaterIndex = window.sowForms.getRepeaterId($$);
                         if( repeaterIndex !== false ) {
                             emitter.args = emitter.args.map( function( a ){
                                 return a.replace('{$i}', repeaterIndex);
@@ -1028,63 +1028,68 @@ var sowEmitters = {
         });
     };
 
-    /**
-     * Get the unique index of a repeater item.
-     *
-     * @param $el
-     * @return {*}
-     */
-    window.sowGetRepeaterIndex = function( $el ) {
-        if( typeof this.id === 'undefined' ) {
-            this.id = 1;
-        }
-
-        var $r = $el.closest('.siteorigin-widget-field-repeater-item');
-        if( $r.length ) {
-            var itemId = $r.data('item-id');
-            if( itemId === undefined ) {
-                itemId = this.id++;
-                console.log(itemId);
+    var sowForms = {
+        /**
+         * Get the unique index of a repeater item.
+         *
+         * @param $el
+         * @return {*}
+         */
+        getRepeaterId: function( $el ) {
+            if( typeof this.id === 'undefined' ) {
+                this.id = 1;
             }
-            $r.data('item-id', itemId);
 
-            return itemId;
-        }
-        else {
-            return false;
-        }
-    };
-
-    window.sowGetWidgetFieldVariable = function ( widgetClass, elementName, key ) {
-        var widgetVars = window.sow_field_javascript_variables[widgetClass];
-        // Get rid of any index placeholders
-        elementName = elementName.replace( /\[#.*?#\]/g, '');
-        var variablePath = /[a-zA-Z0-9\-]+(?:\[c?[0-9]+\])?\[(.*)\]/.exec( elementName )[1];
-        var variablePathParts = variablePath.split('][');
-        var elementVars = variablePathParts.length ? widgetVars : null;
-        while(variablePathParts.length) {
-            elementVars = elementVars[variablePathParts.shift()];
-        }
-        return elementVars[key];
-    };
-
-    window.sowFetchWidgetVariable = function (key, widget, callback) {
-        window.sowVars = window.sowVars || {};
-
-        if (typeof window.sowVars[widget] === 'undefined') {
-            $.post(
-                soWidgets.ajaxurl,
-                { 'action': 'sow_get_javascript_variables', 'widget': widget, 'key': key },
-                function (result) {
-                    window.sowVars[widget] = result;
-                    callback(window.sowVars[widget][key]);
+            var $r = $el.closest('.siteorigin-widget-field-repeater-item');
+            if( $r.length ) {
+                var itemId = $r.data('item-id');
+                if( itemId === undefined ) {
+                    itemId = this.id++;
+                    console.log(itemId);
                 }
-            );
-        }
-        else {
-            callback(window.sowVars[widget][key]);
+                $r.data('item-id', itemId);
+
+                return itemId;
+            }
+            else {
+                return false;
+            }
+        },
+
+        getWidgetFieldVariable: function ( widgetClass, elementName, key ) {
+            var widgetVars = window.sow_field_javascript_variables[widgetClass];
+            // Get rid of any index placeholders
+            elementName = elementName.replace( /\[#.*?#\]/g, '');
+            var variablePath = /[a-zA-Z0-9\-]+(?:\[c?[0-9]+\])?\[(.*)\]/.exec( elementName )[1];
+            var variablePathParts = variablePath.split('][');
+            var elementVars = variablePathParts.length ? widgetVars : null;
+            while(variablePathParts.length) {
+                elementVars = elementVars[variablePathParts.shift()];
+            }
+            return elementVars[key];
+        },
+
+        fetchWidgetVariable: function (key, widget, callback) {
+            window.sowVars = window.sowVars || {};
+
+            if (typeof window.sowVars[widget] === 'undefined') {
+                $.post(
+                    soWidgets.ajaxurl,
+                    { 'action': 'sow_get_javascript_variables', 'widget': widget, 'key': key },
+                    function (result) {
+                        window.sowVars[widget] = result;
+                        callback(window.sowVars[widget][key]);
+                    }
+                );
+            }
+            else {
+                callback(window.sowVars[widget][key]);
+            }
         }
     };
+
+    // Make sure this is easily accessible.
+    window.sowForms = sowForms;
 
     // When we click on a widget top
     $('.widgets-holder-wrap').on('click', '.widget:has(.siteorigin-widget-form-main) .widget-top', function(){
