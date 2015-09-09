@@ -29,6 +29,9 @@ jQuery( function($){
 
             } );
         }
+        else {
+            $$.find('img').css('display', 'block');
+        }
 
         var alignImages = function(){
 
