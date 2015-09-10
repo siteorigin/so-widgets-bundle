@@ -124,7 +124,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// Storage hash allows templates to get access to
 		$storage_hash = '';
 		if( !empty($this->widget_options['instance_storage']) ) {
-			$stored_instance = $this->filter_stored_instance($instance);
+			$stored_instance = $this->modify_stored_instance($instance);
+			// We probably don't want panels_info
+			unset($stored_instance['panels_info']);
+
 			$storage_hash = substr( md5( serialize($stored_instance) ), 0, 8 );
 			if( !empty( $stored_instance ) && empty( $instance['is_preview'] ) ) {
 				// Store this if we have a non empty instance and are not previewing
@@ -821,7 +824,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @return mixed
 	 */
-	function filter_stored_instance( $instance ){
+	function modify_stored_instance( $instance ){
 		return $instance;
 	}
 
