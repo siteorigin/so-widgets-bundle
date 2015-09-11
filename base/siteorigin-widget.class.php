@@ -177,7 +177,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$upload_dir = wp_upload_dir();
 		$this->clear_file_cache();
 
-		if($style !== false) {
+		if( !empty($style) ) {
 			$hash = $this->get_style_hash( $instance );
 			$css_name = $this->id_base.'-'.$style.'-'.$hash;
 
