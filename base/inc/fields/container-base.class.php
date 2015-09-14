@@ -64,8 +64,8 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 	}
 
 	protected function render_before_field( $value, $instance ) {
-		if( ! empty( $value[ 'state' ] ) ) {
-			$this->state = $value[ 'state' ];
+		if( ! empty( $value[ 'so_field_container_state' ] ) ) {
+			$this->state = $value[ 'so_field_container_state' ];
 		}
 		else {
 			$this->state = $this->hide ? 'closed' : 'open';
@@ -73,7 +73,6 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 
 		parent::render_before_field( $value, $instance );
 	}
-
 
 	protected function get_label_classes( $value, $instance ) {
 		$label_classes = parent::get_label_classes( $value, $instance );
