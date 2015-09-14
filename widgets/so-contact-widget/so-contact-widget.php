@@ -337,6 +337,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'max' => 50,
 									'min' => 0
 								),
+								'inset_highlight' => array(
+									'type' => 'slider',
+									'label' => __('Inset highlight', 'siteorigin-widgets'),
+									'description' => __('The white highlight at the bottom of the button', 'siteorigin-widgets'),
+									'default' => 50,
+									'max' => 100,
+									'min' => 0
+								),
 							)
 						),
 
@@ -436,6 +444,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'submit_text_color' => $instance['design']['submit']['text_color'],
 			'submit_weight' => $instance['design']['submit']['weight'],
 			'submit_padding' => $instance['design']['submit']['padding'] . 'px',
+			'submit_inset_highlight' => $instance['design']['submit']['inset_highlight'] . '%',
 		);
 
 		return $vars;

@@ -98,7 +98,7 @@
 		@submit_weight: 500;
 		@submit_padding: 10px;
 
-		@submit_inset_shadow: true;
+		@submit_inset_highlight: 50%;
 
 		.sow-submit {
 			color: @submit_text;
@@ -114,11 +114,11 @@
 			padding: @submit_padding @submit_padding * 2;
 			display: inline-block;
 
-			.sow-submit-box-shadow (@shadow) when (@shadow) {
-				.box-shadow( ~"inset 0 -1px 0 rgba(255,255,255,0.5)" );
+			.sow-submit-box-shadow (@percent) when (@percent > 0%) {
+				box-shadow: inset 0 -1px 0 fade( #ffffff, @percent );
 			}
 
-			.sow-submit-box-shadow( @submit_inset_shadow );
+			.sow-submit-box-shadow( @submit_inset_highlight );
 		}
 
 
