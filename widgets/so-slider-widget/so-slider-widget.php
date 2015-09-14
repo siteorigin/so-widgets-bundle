@@ -134,7 +134,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			<div class="sow-slider-image-container">
 				<div class="sow-slider-image-wrapper" style="<?php if(!empty($foreground_src[1])) echo 'max-width: ' . intval($foreground_src[1]) . 'px' ?>">
 					<?php
-					if(!empty($frame['url'])) echo '<a href="' . sow_esc_url($frame['url']) . '">';
+					if(!empty($frame['url'])) echo '<a href="' . sow_esc_url($frame['url']) . '" ' . ( !empty($frame['new_window']) ? 'target="_blank"' : '' ) . '>';
 					echo siteorigin_widgets_get_attachment_image(
 						$frame['foreground_image'],
 						'full',
