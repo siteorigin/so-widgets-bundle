@@ -370,6 +370,8 @@ var sowEmitters = {
                     }
 
                     $(window).resize();
+
+                    $(this).find('> .siteorigin-widget-section-state').val($(this).is(':visible') ? 'open' : 'closed');
                 });
             });
 

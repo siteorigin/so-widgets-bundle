@@ -15,7 +15,7 @@ class SiteOrigin_Widget_Field_Checkbox extends SiteOrigin_Widget_Field_Base {
 		<?php
 	}
 
-	protected function render_field_label() {
+	protected function render_field_label( $value, $instance ) {
 		// Empty override. This field renders it's own label in the render_field() function.
 	}
 

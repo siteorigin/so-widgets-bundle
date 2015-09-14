@@ -101,7 +101,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 		<?php
 	}
 
-	protected function render_field_label() {
+	protected function render_field_label( $value, $instance ) {
 		// Empty override. This field renders it's own label in the render_field() function.
 	}
 
