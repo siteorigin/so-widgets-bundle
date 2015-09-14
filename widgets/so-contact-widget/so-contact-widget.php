@@ -56,6 +56,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'description' => __('Message to display after message successfully sent.', 'siteorigin-widgets'),
 							'default' => __("Thanks for contacting us. We'll get back to you shortly.", 'siteorigin-widgets')
 						),
+						'submit_text' => array(
+							'type' => 'text',
+							'label' => __('Submit button text', 'siteorigin-widgets'),
+							'default' => __("Contact Us", 'siteorigin-widgets')
+						)
 					)
 				),
 
@@ -174,7 +179,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 										'error' => __('Show error message', 'siteorigin-widgets'),
 										'tag' => __('Tag as spam in subject', 'siteorigin-widgets'),
 									),
-									'description' => __('How to handle submissions that are identified as spam', 'siteorigin-widgets'),
+									'description' => __('How to handle submissions that are identified as spam.', 'siteorigin-widgets'),
 									'default' => 'error',
 								),
 							)
@@ -182,15 +187,161 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					)
 				),
 
-//				'design' => array(
-//					'type' => 'section',
-//					'label' => __('Design', 'siteorigin-widgets'),
-//					'fields' => array(
-//						'font_size' => array(
-//
-//						),
-//					)
-//				)
+				'design' => array(
+					'type' => 'section',
+					'label' => __('Design', 'siteorigin-widgets'),
+					'hide' => true,
+					'fields' => array(
+
+						'container' => array(
+							'type' => 'section',
+							'label' => __('Container', 'siteorigin-widgets'),
+							'fields' => array(
+								'background' => array(
+									'type' => 'color',
+									'label' => __('Background color', 'siteorigin-widgets'),
+									'default' => '#f2f2f2',
+								),
+								'padding' => array(
+									'type' => 'slider',
+									'label' => __('Padding', 'siteorigin-widgets'),
+									'default' => 10,
+									'max' => 100,
+									'min' => 0
+								),
+								'border_color' => array(
+									'type' => 'color',
+									'label' => __('Border color', 'siteorigin-widgets'),
+									'default' => '#c0c0c0',
+								),
+								'border_width' => array(
+									'type' => 'slider',
+									'label' => __('Border width', 'siteorigin-widgets'),
+									'default' => 1,
+									'max' => 10,
+									'min' => 0
+								),
+								'border_style' => array(
+									'type' => 'select',
+									'label' => __('Border style', 'siteorigin-widgets'),
+									'default' => 'solid',
+									'options' => array(
+										'none' => __( 'None', 'siteorigin-widgets' ),
+										'hidden' => __( 'Hidden', 'siteorigin-widgets' ),
+										'dotted' => __( 'Dotted', 'siteorigin-widgets' ),
+										'dashed' => __( 'Dashed', 'siteorigin-widgets' ),
+										'solid' => __( 'Solid', 'siteorigin-widgets' ),
+										'double' => __( 'Double', 'siteorigin-widgets' ),
+										'groove' => __( 'Groove', 'siteorigin-widgets' ),
+										'ridge' => __( 'Ridge', 'siteorigin-widgets' ),
+										'inset' => __( 'Inset', 'siteorigin-widgets' ),
+										'outset' => __( 'Outset', 'siteorigin-widgets' ),
+									)
+								),
+							)
+						),
+
+						'errors' => array(
+							'type' => 'section',
+							'label' => __('Error messages', 'siteorigin-widgets'),
+							'fields' => array(
+								'background' => array(
+									'type' => 'color',
+									'label' => __('Error background color', 'siteorigin-widgets'),
+									'default' => '#fce4e5',
+								),
+								'border_color' => array(
+									'type' => 'color',
+									'label' => __('Error background color', 'siteorigin-widgets'),
+									'default' => '#ec666a',
+								),
+								'text_color' => array(
+									'type' => 'color',
+									'label' => __('Error text color', 'siteorigin-widgets'),
+									'default' => '#ec666a',
+								),
+								'padding' => array(
+									'type' => 'slider',
+									'label' => __('Error padding', 'siteorigin-widgets'),
+									'default' => 5,
+								),
+								'margin' => array(
+									'type' => 'slider',
+									'label' => __('Error margin', 'siteorigin-widgets'),
+									'default' => 10,
+								),
+							)
+						),
+
+						'submit' => array(
+							'type' => 'section',
+							'label' => __('Submit button', 'siteorigin-widgets'),
+							'fields' => array(
+								'styled' => array(
+									'type' => 'checkbox',
+									'label' => __('Style submit button', 'siteorigin-widgets'),
+									'description' => __('Style the button or leave it with default theme styling.', 'siteorigin-widgets'),
+									'default' => true,
+								),
+
+								'background_color' => array(
+									'type' => 'color',
+									'label' => __('Background color', 'siteorigin-widgets'),
+									'default' => '#eeeeee',
+								),
+								'background_gradient' => array(
+									'type' => 'slider',
+									'label' => __('Gradient intensity', 'siteorigin-widgets'),
+									'default' => 10,
+								),
+								'border_color' => array(
+									'type' => 'color',
+									'label' => __('Background color', 'siteorigin-widgets'),
+									'default' => '#989a9c',
+								),
+								'border_style' => array(
+									'type' => 'select',
+									'label' => __('Border style', 'siteorigin-widgets'),
+									'default' => 'solid',
+									'options' => array(
+										'none' => __('None', 'siteorigin-widgets'),
+										'solid' => __('Solid', 'siteorigin-widgets'),
+									)
+								),
+								'border_radius' => array(
+									'type' => 'slider',
+									'label' => __('Border rounding', 'siteorigin-widgets'),
+									'default' => 3,
+									'max' => 50,
+									'min' => 0
+								),
+								'text_color' => array(
+									'type' => 'color',
+									'label' => __('Text color', 'siteorigin-widgets'),
+									'default' => '#5a5a5a',
+								),
+								'weight' => array(
+									'type' => 'select',
+									'label' => __('Font weight', 'siteorigin-widgets'),
+									'default' => '500',
+									'options' => array(
+										'normal' => __('Normal', 'siteorigin-widgets'),
+										'500' => __('Semi-bold', 'siteorigin-widgets'),
+										'bold' => __('Bold', 'siteorigin-widgets'),
+									)
+								),
+								'padding' => array(
+									'type' => 'slider',
+									'label' => __('Padding', 'siteorigin-widgets'),
+									'default' => 10,
+									'max' => 50,
+									'min' => 0
+								),
+							)
+						),
+
+					)
+				)
 			)
 		);
 	}
@@ -199,14 +350,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 * Initialize the contact form widget
 	 */
 	function initialize(){
-		static $actions_initialized = false;
 
-		if( empty($actions_initialized) ) {
-			add_action( 'wp_ajax_nopriv_sow_contact_form_send', array( $this, 'contact_form_action' ) );
-			add_action( 'wp_ajax_sow_contact_form_send', array( $this, 'contact_form_action' ) );
-
-			$actions_initialized = true;
-		}
 	}
 
 	function modify_instance( $instance ){
@@ -267,6 +411,36 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		return $vars;
 	}
 
+	function get_less_variables( $instance ){
+		$vars = array(
+			// All the container variables.
+			'container_background' => $instance['design']['container']['background'],
+			'container_padding' => $instance['design']['container']['padding'] . 'px',
+			'container_border_color' => $instance['design']['container']['border_color'],
+			'container_border_width' => $instance['design']['container']['border_width'] . 'px',
+			'container_border_style' => $instance['design']['container']['border_style'],
+
+			// The error message styles
+			'error_background' => $instance['design']['errors']['background'],
+			'error_border' => $instance['design']['errors']['border_color'],
+			'error_text' => $instance['design']['errors']['text_color'],
+			'error_padding' => $instance['design']['errors']['padding'] . 'px',
+			'error_margin' => $instance['design']['errors']['margin'] . 'px',
+
+			// The submit button
+			'submit_background_color' => $instance['design']['submit']['background_color'],
+			'submit_background_gradient' => $instance['design']['submit']['background_gradient'] . '%',
+			'submit_border_color' => $instance['design']['submit']['border_color'],
+			'submit_border_style' => $instance['design']['submit']['border_style'],
+			'submit_border_radius' => $instance['design']['submit']['border_radius'] . 'px',
+			'submit_text_color' => $instance['design']['submit']['text_color'],
+			'submit_weight' => $instance['design']['submit']['weight'],
+			'submit_padding' => $instance['design']['submit']['padding'] . 'px',
+		);
+
+		return $vars;
+	}
+
 	static function name_from_label( $label, & $ids ){
 		$it = 0;
 
@@ -302,9 +476,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				$value = stripslashes_deep( $_POST[$field_name] );
 			}
 
-			?><div class="sow-form-field"><?php
+			?><div class="sow-form-field sow-form-field-<?php echo sanitize_html_class( $field['type'] ) ?>"><?php
 			if( !empty($field['label']) ) {
-				?><label for="<?php echo esc_attr( $field ) ?>"><?php echo esc_html( $field['label'] ) ?></label> <?php
+				?><label for="<?php echo esc_attr( $field_id ) ?>"><strong><?php echo esc_html( $field['label'] ) ?></strong></label> <?php
 			}
 
 			if( !empty($errors[$field_name]) ) {
@@ -318,7 +492,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			switch( $field['type'] ) {
 				case 'email':
 				case 'text':
-					echo '<input type="' . $field['type'] . '" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '" value="' . esc_attr($value) . '" />';
+					echo '<input type="' . $field['type'] . '" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '" value="' . esc_attr($value) . '" class="sow-text-field" />';
 					break;
 
 				case 'select':
@@ -341,7 +515,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						foreach ( $field['options'] as $i => $option ) {
 							echo '<li>';
 							echo '<label>';
-							echo '<input type="checkbox" value="' . esc_attr($option['value']) . '" name="' . esc_attr( $field_name ) . '[]" id="' . esc_attr( $field_id ) . '" ' . checked( in_array($option['value'], $value) , true, false) . ' /> ';
+							echo '<input type="checkbox" value="' . esc_attr($option['value']) . '" name="' . esc_attr( $field_name ) . '[]" id="' . esc_attr( $field_id ) . '-' . $i . '" ' . checked( in_array($option['value'], $value) , true, false) . ' /> ';
 							echo esc_html( $option['value'] );
 							echo '</li>';
 						}
@@ -350,13 +524,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					break;
 
 				case 'textarea':
-					echo '<textarea name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '">' . esc_textarea($value) . '</textarea>';
+					echo '<textarea name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '" rows="10">' . esc_textarea($value) . '</textarea>';
 					break;
 
 				case 'subject':
 				case 'name':
 				default:
-					echo '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '"  value="' . esc_attr($value) . '"  />';
+					echo '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '"  value="' . esc_attr($value) . '"  class="sow-text-field" />';
 					break;
 
 			}
@@ -411,6 +585,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'label' => $field['label'],
 							'value' => implode(', ', $value),
 						);
+						break;
+
 					default:
 						$email_fields['message'][] = array(
 							'label' => $field['label'],
