@@ -255,7 +255,7 @@ var sowEmitters = {
             // Set up any color fields
             $fields.find('> .siteorigin-widget-input-color').wpColorPicker()
                 .closest('.siteorigin-widget-field').find('a').click(function(){
-                    if(typeof $.fn.dialog !== 'undefined') {
+                    if(typeof $.fn.dialog !== 'undefined' && $(this).closest('.panel-dialog').is(':data(dialog)')) {
                         $(this).closest('.panel-dialog').dialog("option", "position", "center");
                     }
                 });
@@ -365,7 +365,7 @@ var sowEmitters = {
                 $(this).toggleClass( 'siteorigin-widget-section-visible' );
                 $(this).siblings('.siteorigin-widget-section').slideToggle(function(){
                     // Center the PB dialog
-                    if(typeof $.fn.dialog !== 'undefined') {
+                    if(typeof $.fn.dialog !== 'undefined' && $(this).closest('.panel-dialog').is(':data(dialog)')) {
                         $(this).closest('.panel-dialog').dialog( "option", "position", "center" );
                     }
 
@@ -807,7 +807,7 @@ var sowEmitters = {
                     });
 
                 // Center the PB dialog
-                if(typeof $.fn.dialog !== 'undefined') {
+                if(typeof $.fn.dialog !== 'undefined' && $(this).closest('.panel-dialog').is(':data(dialog)')) {
                     $(this).closest('.panel-dialog').dialog("option", "position", "center");
                 }
             } );
@@ -904,7 +904,7 @@ var sowEmitters = {
                     }
                     e.preventDefault();
                     $(this).closest('.siteorigin-widget-field-repeater-item').find('.siteorigin-widget-field-repeater-item-form').eq(0).slideToggle('fast', function () {
-                        if (typeof $.fn.dialog !== 'undefined') {
+                        if (typeof $.fn.dialog !== 'undefined' && $(this).closest('.panel-dialog').is(':data(dialog)')) {
                             $(this).closest('.panel-dialog').dialog("option", "position", "center");
                         }
                         if($(this).is(':visible')) {
