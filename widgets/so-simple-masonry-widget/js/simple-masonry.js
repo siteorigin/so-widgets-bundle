@@ -16,6 +16,20 @@ jQuery(function ($) {
             var $$ = $(this);
             var rowSpan = $$.data('rowSpan');
             $$.css('height', columnWidth * rowSpan);
+
+            var $img = $$.find('> img');
+            var imgAR = $img.attr('height') > 0 ? $img.attr('width')/$img.attr('height') : 1;
+            var itemAR = $$.height() > 0 ? $$.width()/$$.height() : 1;
+            imgAR = parseFloat(imgAR.toFixed(3));
+            itemAR = parseFloat(itemAR.toFixed(3));
+            if(imgAR > itemAR) {
+                $img.css('width', 'auto');
+                $img.css('height', '100%');
+            }
+            else {
+                $img.css('height', 'auto');
+                $img.css('width', '100%');
+            }
         });
     };
 
