@@ -1,0 +1,130 @@
+<?php
+/*
+Widget Name: Simple Masonry Layout
+Description: A masonry layout for images or posts.
+Author: SiteOrigin
+Author URI: https://siteorigin.com
+*/
+
+class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
+	function __construct() {
+
+		parent::__construct(
+			'sow-simple-masonry',
+			__('SiteOrigin Simple Masonry', 'siteorigin-widgets'),
+			array(
+				'description' => __('A simple masonry layout widget.', 'siteorigin-widgets'),
+//				'help' => 'https://siteorigin.com/widgets-bundle/simple-masonry-widget-documentation/'
+			),
+			array(
+
+			),
+			array(
+
+				'widget_title' => array(
+					'type' => 'text',
+					'label' => __('Widget Title', 'siteorigin-widgets'),
+				),
+
+				'items' => array(
+					'type' => 'repeater',
+					'label' => __( 'Images', 'siteorigin-widgets' ),
+					'item_label' => array(
+						'selector'     => "[id*='title']"
+					),
+					'fields' => array(
+
+						'image' => array(
+							'type' => 'media',
+							'label' => __( 'Image', 'siteorigin-widgets')
+						),
+
+						'title' => array(
+							'type' => 'text',
+							'label' => __('Title', 'siteorigin-widgets'),
+						),
+
+						'url' => array(
+							'type' => 'link',
+							'label' => __('Destination URL', 'siteorigin-widgets'),
+						),
+
+						'new_window' => array(
+							'type' => 'checkbox',
+							'default' => false,
+							'label' => __('Open in a new window', 'siteorigin-widgets'),
+						),
+
+					)
+				),
+
+				'layout' => array(
+					'type' => 'section',
+					'label' => __( 'Layout', 'siteorigin-widgets' ),
+					'fields' => array(
+						'columns' => array(
+							'type' => 'slider',
+							'label' => __( 'Number of columns', 'siteorigin-widgets' ),
+							'min' => 1,
+							'max' => 10,
+							'default' => 4
+						)
+					)
+				)
+
+			),
+			plugin_dir_path(__FILE__)
+		);
+
+	}
+
+	function initialize() {
+		$this->register_frontend_scripts(
+			array(
+				array(
+					'dessandro-masonry',
+					siteorigin_widget_get_plugin_dir_url( 'sow-simple-masonry' ) . 'js/masonry.pkgd' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					array( 'jquery' ),
+					SOW_BUNDLE_VERSION
+				),
+				array(
+					'sow-simple-masonry',
+					siteorigin_widget_get_plugin_dir_url( 'sow-simple-masonry' ) . 'js/simple-masonry' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					array( 'jquery', 'dessandro-masonry' ),
+					SOW_BUNDLE_VERSION
+				),
+			)
+		);
+	}
+
+	function get_template_name($instance) {
+		return 'simple-masonry';
+	}
+
+	function get_style_name($instance) {
+		return 'simple-masonry';
+	}
+
+	/**
+	 * Get the variables that we'll be injecting into the less stylesheet.
+	 *
+	 * @param $instance
+	 *
+	 * @return array
+	 */
+	function get_less_variables($instance){
+		$cols = empty( $instance['layout']['columns'] ) ? 4 : $instance['layout']['columns'];
+		return array(
+			'num_columns' => $cols
+		);
+	}
+
+	function enqueue_frontend_scripts( $instance ) {
+		$thing = 'wat';
+		parent::enqueue_frontend_scripts( $instance );
+	}
+
+
+}
+
+siteorigin_widget_register('sow-simple-masonry', __FILE__, 'SiteOrigin_Widget_Simple_Masonry_Widget');
