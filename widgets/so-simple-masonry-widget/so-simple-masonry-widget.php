@@ -33,28 +33,35 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 						'selector'     => "[id*='title']"
 					),
 					'fields' => array(
-
 						'image' => array(
 							'type' => 'media',
 							'label' => __( 'Image', 'siteorigin-widgets')
 						),
-
+						'column_span' => array(
+							'type' => 'number',
+							'label' => __( 'Column span', 'siteorigin-widgets' ),
+							'description' => __( 'Number of columns this item should span. (Limited to number of columns selected in Layout section below.)', 'siteorigin-widgets' ),
+							'default' => 1
+						),
+						'row_span' => array(
+							'type' => 'number',
+							'label' => __( 'Row span', 'siteorigin-widgets' ),
+							'description' => __( 'Number of rows this item should span. (Limited to number of columns selected in Layout section below.)', 'siteorigin-widgets' ),
+							'default' => 1
+						),
 						'title' => array(
 							'type' => 'text',
 							'label' => __('Title', 'siteorigin-widgets'),
 						),
-
 						'url' => array(
 							'type' => 'link',
 							'label' => __('Destination URL', 'siteorigin-widgets'),
 						),
-
 						'new_window' => array(
 							'type' => 'checkbox',
 							'default' => false,
 							'label' => __('Open in a new window', 'siteorigin-widgets'),
 						),
-
 					)
 				),
 
@@ -68,7 +75,12 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 							'min' => 1,
 							'max' => 10,
 							'default' => 4
-						)
+						),
+//						'randomize' => array(
+//							'type' => 'checkbox',
+//							'label' => __( 'Randomize item sizes', 'siteorigin-widgets' ),
+//							'description' => __( 'Causes column and row spans to be ignored.', 'siteorigin-widgets' )
+//						),
 					)
 				)
 
@@ -91,7 +103,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 					'sow-simple-masonry',
 					siteorigin_widget_get_plugin_dir_url( 'sow-simple-masonry' ) . 'js/simple-masonry' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery', 'dessandro-masonry' ),
-					SOW_BUNDLE_VERSION
+					SOW_BUNDLE_VERSION . '1'
 				),
 			)
 		);

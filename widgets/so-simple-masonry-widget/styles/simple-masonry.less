@@ -1,13 +1,35 @@
 
 @num_columns: 4;
+@item_width: 100% / @num_columns;
 
 .sow-masonry-grid-sizer,
 .sow-masonry-grid-item {
-    width: 100%/@num_columns;
+    width: @item_width;
     min-width: 100px;
+    overflow: hidden;
 
     img {
         display: block;
-        max-width: 100%;
+        width: 100%;
     }
 }
+
+.col-spans(@num) when (@num > 0) {
+    .col-spans(@num - 1);
+
+    .sow-masonry-grid-item--col-span@{num} {
+        width: @item_width*@num;
+    }
+}
+
+.col-spans(@num_columns);
+
+.row-spans(@num) when (@num > 0) {
+    .row-spans(@num - 1);
+
+    .sow-masonry-grid-item--row-span@{num} {
+        height: @item_width*@num;
+    }
+}
+
+.row-spans(@num_columns);
