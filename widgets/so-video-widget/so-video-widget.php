@@ -115,7 +115,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			if ( ! wp_style_is( 'sow-html-player-responsive' ) ) {
 				wp_enqueue_style(
 					'html-player-responsive',
-					siteorigin_widget_get_plugin_dir_url( 'video' ) . 'css/html-player-responsive.css',
+					plugin_dir_url(__FILE__) . 'css/html-player-responsive.css',
 					array(),
 					SOW_BUNDLE_VERSION
 				);
@@ -126,7 +126,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			if ( ! wp_script_is( 'so-video-widget' ) ) {
 				wp_enqueue_script(
 					'so-video-widget',
-					siteorigin_widget_get_plugin_dir_url( 'video' ) . 'js/so-video-widget' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					plugin_dir_url(__FILE__) . 'js/so-video-widget' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery', 'mediaelement' ),
 					SOW_BUNDLE_VERSION
 				);

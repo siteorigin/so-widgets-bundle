@@ -79,7 +79,7 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 			array(
 				array(
 					'sow-cta-main',
-					siteorigin_widget_get_plugin_dir_url( 'cta' ) . 'css/style.css',
+					plugin_dir_url(__FILE__) . 'css/style.css',
 					array(),
 					SOW_BUNDLE_VERSION
 				)
@@ -89,7 +89,7 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 			array(
 				array(
 					'sow-cta-main',
-					siteorigin_widget_get_plugin_dir_url( 'cta' ) . 'js/cta' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					plugin_dir_url(__FILE__) . 'js/cta' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' ),
 					SOW_BUNDLE_VERSION
 				)

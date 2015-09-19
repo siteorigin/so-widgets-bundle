@@ -119,6 +119,13 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 							'default' => 50,
 						),
 
+						'extra_top_padding' => array(
+							'type' => 'number',
+							'label' => __('Extra top padding', 'siteorigin-widgets'),
+							'description' => __('Additional padding added to the top of the slider', 'siteorigin-widgets'),
+							'default' => 0,
+						),
+
 						'padding_sides' => array(
 							'type' => 'number',
 							'label' => __('Side padding', 'siteorigin-widgets'),
@@ -250,8 +257,9 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		// Hero specific design
 		$less['slide_padding'] = intval( $instance['design']['padding'] ) . 'px';
-
+		$less['slide_padding_extra_top'] = intval( $instance['design']['extra_top_padding'] ) . 'px';
 		$less['slide_padding_sides'] = intval( $instance['design']['padding_sides'] ) . 'px';
+
 		$less['slide_width'] = intval( $instance['design']['width'] ) . 'px';
 		$less['heading_size'] = intval( $instance['design']['heading_size'] ) . 'px';
 		$less['text_size'] = intval( $instance['design']['text_size'] ) . 'px';

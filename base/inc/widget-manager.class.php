@@ -13,6 +13,11 @@ class SiteOrigin_Widgets_Widget_Manager {
 		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
 	}
 
+	/**
+	 * Get the single instance.
+	 *
+	 * @return SiteOrigin_Widgets_Widget_Manager
+	 */
 	static function single() {
 		static $single;
 
@@ -53,6 +58,13 @@ class SiteOrigin_Widgets_Widget_Manager {
 		}
 	}
 
+	/**
+	 * Get the path of the widget
+	 *
+	 * @param $id
+	 *
+	 * @return bool
+	 */
 	public function get_plugin_path( $id ) {
 		if( empty($this->regisrered[$id]) ) {
 			// This call might be using the incorrect ID convention

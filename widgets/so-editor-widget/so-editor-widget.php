@@ -83,7 +83,8 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_style_name($instance) {
-		return '';
+		// We're not using a style
+		return false;
 	}
 }
 

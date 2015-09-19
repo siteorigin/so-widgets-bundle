@@ -121,4 +121,7 @@ jQuery(function($){
 
         $(window).resize();
     });
+
+    // Finally enable css3 animations on the widgets list
+    $('#widgets-list').addClass('so-animated');
 });

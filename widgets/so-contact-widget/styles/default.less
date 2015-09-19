@@ -1,0 +1,126 @@
+@import "../../../base/less/mixins";
+
+.sow-form-field {
+	display: block;
+	margin-bottom: 1em;
+	.clearfix();
+
+	label {
+		display: block;
+		margin-bottom: 5px;
+
+		strong {
+			font-weight: bold;
+		}
+	}
+
+	textarea,
+	input.sow-text-field, {
+		.box-sizing(border-box);
+		display: block;
+		width: 100%;
+		border-radius: 0;
+	}
+
+	&.sow-form-field-checkboxes {
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+
+			li {
+				margin: 0;
+			}
+
+			label {
+				margin-bottom: 0;
+			}
+
+			input {
+				float: left;
+				margin: 0.4em 0.5em 0 0;
+			}
+		}
+	}
+}
+
+.sow-contact-form {
+	// Container Background
+	@container_background: #f2f2f2;
+	@container_padding: 10px;
+
+	// Container border
+	@container_border_color: #c0c0c0;
+	@container_border_width: 1px;
+	@container_border_style: solid;
+
+	padding: @container_padding;
+	border: @container_border_color @container_border_style @container_border_width;
+	background-color: @container_background;
+
+	.sow-error {
+		@error_background: #fce4e5;
+		@error_border: #ec666a;
+		@error_text: #ec666a;
+		@error_padding: 5px;
+		@error_margin: 10px;
+
+		background: @error_background;
+		border: 1px solid @error_border;
+		color: @error_text;
+		border-radius: 2px;
+		padding: @error_padding;
+		font-size: 0.8em;
+		list-style: none;
+		margin: 0 0 @error_margin 0;
+
+		li {
+			margin: 0;
+		}
+	}
+
+	.sow-submit-wrapper {
+
+		.sow-submit {
+
+		}
+
+	}
+
+	.sow-submit-styled {
+
+		@submit_background_color: #eeeeee;
+		@submit_background_gradient: 10%;
+		@submit_border_color: #989a9c;
+		@submit_border_style: solid;
+		@submit_border_radius: 3px;
+		@submit_text_color: #5a5a5a;
+		@submit_weight: 500;
+		@submit_padding: 10px;
+
+		@submit_inset_highlight: 50%;
+
+		.sow-submit {
+			color: @submit_text;
+			.gradient(
+				lighten(@submit_background_color, @submit_background_gradient),
+				darken(@submit_background_color, @submit_background_gradient),
+				lighten(@submit_background_color, @submit_background_gradient)
+			);
+
+			border: 1px @submit_border_style @submit_border_color;
+			border-radius: @submit_border_radius;
+			font-weight: @submit_weight;
+			padding: @submit_padding @submit_padding * 2;
+			display: inline-block;
+
+			.sow-submit-box-shadow (@percent) when (@percent > 0%) {
+				box-shadow: inset 0 -1px 0 fade( #ffffff, @percent );
+			}
+
+			.sow-submit-box-shadow( @submit_inset_highlight );
+		}
+
+
+	}
+}
