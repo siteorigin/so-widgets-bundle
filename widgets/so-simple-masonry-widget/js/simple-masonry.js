@@ -15,7 +15,9 @@ jQuery(function ($) {
         $('.sow-masonry-grid > .sow-masonry-grid-item').each(function(){
             var $$ = $(this);
             var rowSpan = $$.data('rowSpan');
-            $$.css('height', columnWidth * rowSpan);
+            var rowHeight = $grid.data('rowHeight');
+            //Use rowHeight if non-zero else fall back to matching columnWidth.
+            $$.css('height', (rowHeight || columnWidth) * rowSpan);
 
             var $img = $$.find('> img');
             var imgAR = $img.attr('height') > 0 ? $img.attr('width')/$img.attr('height') : 1;

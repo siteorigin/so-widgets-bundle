@@ -1,7 +1,8 @@
 <?php
 $num_columns = $instance['layout']['columns'];
+$row_height = empty( $instance['layout']['row_height'] ) ? 0 : intval( $instance['layout']['row_height'] );
 ?>
-<div class="sow-masonry-grid" data-num-columns="<?php echo $num_columns ?>">
+<div class="sow-masonry-grid" data-num-columns="<?php echo esc_attr( $num_columns ) ?>" data-row-height="<?php echo esc_attr( $row_height ) ?>">
 	<div class="sow-masonry-grid-sizer"></div>
 	<?php
 	foreach($instance['items'] as $item) {
@@ -32,7 +33,7 @@ $num_columns = $instance['layout']['columns'];
 		}
 		?>
 		<div class="sow-masonry-grid-item<?php if( $col_span > 1 ) { ?> sow-masonry-grid-item--col-span<?php echo $col_span; } ?>"
-			data-row-span="<?php echo $row_span ?>">
+			data-row-span="<?php echo esc_attr( $row_span ) ?>">
 			<?php if( !empty( $url ) ) : ?>
 			<a href="<?php echo esc_url( $url ) ?>" <?php if( $new_window ) { ?>target="_blank" <?php } ?>>
 			<?php endif; ?>

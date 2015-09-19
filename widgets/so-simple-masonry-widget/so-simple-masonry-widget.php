@@ -76,6 +76,12 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 							'max' => 10,
 							'default' => 4
 						),
+						'row_height' => array(
+							'type' => 'number',
+							'label' => __( 'Row height', 'siteorigin-widgets' ),
+							'description' => __( 'Leave blank to match calculated column width.', 'siteorigin-widgets' ),
+							'default' => 0
+						)
 //						'randomize' => array(
 //							'type' => 'checkbox',
 //							'label' => __( 'Randomize item sizes', 'siteorigin-widgets' ),
@@ -103,7 +109,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 					'sow-simple-masonry',
 					siteorigin_widget_get_plugin_dir_url( 'sow-simple-masonry' ) . 'js/simple-masonry' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery', 'dessandro-masonry' ),
-					SOW_BUNDLE_VERSION . '1'
+					SOW_BUNDLE_VERSION
 				),
 			)
 		);
@@ -130,13 +136,6 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 			'num_columns' => $cols
 		);
 	}
-
-	function enqueue_frontend_scripts( $instance ) {
-		$thing = 'wat';
-		parent::enqueue_frontend_scripts( $instance );
-	}
-
-
 }
 
 siteorigin_widget_register('sow-simple-masonry', __FILE__, 'SiteOrigin_Widget_Simple_Masonry_Widget');
