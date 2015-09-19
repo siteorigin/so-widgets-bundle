@@ -164,12 +164,7 @@
             $el.find('.siteorigin-widget-field-repeater-item').sowSetupRepeaterItems();
 
             // Set up any color fields
-            $fields.find('> .siteorigin-widget-input-color').wpColorPicker()
-                .closest('.siteorigin-widget-field').find('a').click(function(){
-                    if(typeof $.fn.dialog !== 'undefined') {
-                        $(this).closest('.panel-dialog').dialog("option", "position", "center");
-                    }
-                });
+            $fields.find('> .siteorigin-widget-input-color').wpColorPicker();
 
             ///////////////////////////////////////
             // Handle the media upload field
@@ -277,16 +272,11 @@
 
             $fields.filter('.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section').find('> label').click(function(){
                 var $$ = $(this);
-                $$.toggleClass( 'siteorigin-widget-section-visible' );
-                $$.siblings('.siteorigin-widget-section').slideToggle(function(){
-                    // Center the PB dialog
-                    if(typeof $.fn.dialog !== 'undefined') {
-                        $(this).closest('.panel-dialog').dialog( "option", "position", "center" );
-                    }
-
+                $(this).toggleClass( 'siteorigin-widget-section-visible' );
+                $(this).siblings('.siteorigin-widget-section').slideToggle(function(){
                     $(window).resize();
-                } );
-
+                    $(this).find('> .siteorigin-widget-field-container-state').val($(this).is(':visible') ? 'open' : 'closed');
+                });
             });
 
             ///////////////////////////////////////
@@ -734,11 +724,6 @@
                     .find('> .siteorigin-widget-field-repeater-items').slideDown('fast', function(){
                         $(window).resize();
                     });
-
-                // Center the PB dialog
-                if(typeof $.fn.dialog !== 'undefined') {
-                    $(this).closest('.panel-dialog').dialog("option", "position", "center");
-                }
             } );
 
             $el.find('> .siteorigin-widget-field-repeater-top > .siteorigin-widget-field-repeater-expend').click( function(e){
@@ -833,9 +818,6 @@
                     }
                     e.preventDefault();
                     $(this).closest('.siteorigin-widget-field-repeater-item').find('.siteorigin-widget-field-repeater-item-form').eq(0).slideToggle('fast', function () {
-                        if (typeof $.fn.dialog !== 'undefined') {
-                            $(this).closest('.panel-dialog').dialog("option", "position", "center");
-                        }
                         if($(this).is(':visible')) {
                             $(this).trigger('slideToggleOpenComplete');
                         }

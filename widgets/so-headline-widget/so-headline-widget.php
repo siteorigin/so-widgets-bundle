@@ -28,6 +28,19 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 							'type' => 'text',
 							'label' => __( 'Text', 'siteorigin-widgets' ),
 						),
+						'tag' => array(
+							'type' => 'select',
+							'label' => __( 'H Tag', 'siteorigin-widgets' ),
+							'default' => 'h1',
+							'options' => array(
+								'h1' => __( 'H1', 'siteorigin-widgets' ),
+								'h2' => __( 'H2', 'siteorigin-widgets' ),
+								'h3' => __( 'H3', 'siteorigin-widgets' ),
+								'h4' => __( 'H4', 'siteorigin-widgets' ),
+								'h5' => __( 'H5', 'siteorigin-widgets' ),
+								'h6' => __( 'H6', 'siteorigin-widgets' ),
+							)
+						),
 						'font' => array(
 							'type' => 'font',
 							'label' => __( 'Font', 'siteorigin-widgets' ),
@@ -59,6 +72,19 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'text' => array(
 							'type' => 'text',
 							'label' => __('Text', 'siteorigin-widgets')
+						),
+						'tag' => array(
+							'type' => 'select',
+							'label' => __( 'H Tag', 'siteorigin-widgets' ),
+							'default' => 'h3',
+							'options' => array(
+								'h1' => __( 'H1', 'siteorigin-widgets' ),
+								'h2' => __( 'H2', 'siteorigin-widgets' ),
+								'h3' => __( 'H3', 'siteorigin-widgets' ),
+								'h4' => __( 'H4', 'siteorigin-widgets' ),
+								'h5' => __( 'H5', 'siteorigin-widgets' ),
+								'h6' => __( 'H6', 'siteorigin-widgets' ),
+							)
 						),
 						'font' => array(
 							'type' => 'font',
@@ -134,6 +160,9 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 
 		if ( ! empty( $instance['headline'] ) ) {
 			$headline_styles = $instance['headline'];
+			if ( ! empty( $headline_styles['tag'] ) ) {
+				$less_vars['headline_tag'] = $headline_styles['tag'];
+			}
 			if ( ! empty( $headline_styles['align'] ) ) {
 				$less_vars['headline_align'] = $headline_styles['align'];
 			}
@@ -153,6 +182,9 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			$sub_headline_styles = $instance['sub_headline'];
 			if ( ! empty( $sub_headline_styles['align'] ) ) {
 				$less_vars['sub_headline_align'] = $sub_headline_styles['align'];
+			}
+			if ( ! empty( $sub_headline_styles['tag'] ) ) {
+				$less_vars['sub_headline_tag'] = $sub_headline_styles['tag'];
 			}
 			if ( ! empty( $sub_headline_styles['color'] ) ) {
 				$less_vars['sub_headline_color'] = $sub_headline_styles['color'];
@@ -237,7 +269,9 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 
 		return array(
 			'headline' => $instance['headline']['text'],
+			'headline_tag' => $instance['headline']['tag'],
 			'sub_headline' => $instance['sub_headline']['text'],
+			'sub_headline_tag' => $instance['sub_headline']['tag'],
 			'has_divider' => ! empty( $instance['divider'] ) && $instance['divider']['style'] != 'none'
 		);
 	}
