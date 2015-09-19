@@ -25,10 +25,14 @@ jQuery(function ($) {
             if(imgAR > itemAR) {
                 $img.css('width', 'auto');
                 $img.css('height', '100%');
+                var marginLeft = ($img.width() - $$.width()) * -0.5;
+                $img.css('margin-left', marginLeft+'px');
             }
             else {
                 $img.css('height', 'auto');
                 $img.css('width', '100%');
+                var marginTop = ($img.height() - $$.height()) * -0.5;
+                $img.css('margin-top', marginTop+'px');
             }
         });
     };
