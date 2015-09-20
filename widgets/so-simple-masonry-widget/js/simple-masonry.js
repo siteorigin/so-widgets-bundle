@@ -42,7 +42,7 @@ jQuery(function ($) {
     $(window).resize(resizeMasonry);
     resizeMasonry();
 
-    $grid.masonry({
+    $grid.packery({
         itemSelector: '.sow-masonry-grid-item',
         columnWidth: '.sow-masonry-grid-sizer',
         percentPosition: true
