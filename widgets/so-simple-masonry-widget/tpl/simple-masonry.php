@@ -35,7 +35,7 @@ $row_height = empty( $instance['layout']['row_height'] ) ? 0 : intval( $instance
 		<div class="sow-masonry-grid-item<?php if( $col_span > 1 ) { ?> sow-masonry-grid-item--col-span<?php echo $col_span; } ?>"
 			data-row-span="<?php echo esc_attr( $row_span ) ?>">
 			<?php if( !empty( $url ) ) : ?>
-			<a href="<?php echo esc_url( $url ) ?>" <?php if( $new_window ) { ?>target="_blank" <?php } ?>>
+			<a href="<?php echo sow_esc_url( $url ) ?>" <?php if( $new_window ) { ?>target="_blank" <?php } ?>>
 			<?php endif; ?>
 
 				<?php echo wp_get_attachment_image( $item['image'], 'large', false, array( 'title' => esc_attr( $title ) ) ); ?>
