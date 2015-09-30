@@ -210,6 +210,8 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'color' => false,
 			'image' => false,
 			'opacity' => 1,
+			'url' => false,
+			'new_window' => false,
 			'image-sizing' => 'cover',              // options for image sizing are cover and contain
 			'videos' => false,
 			'videos-sizing' => 'background',        // options for video sizing are background or full

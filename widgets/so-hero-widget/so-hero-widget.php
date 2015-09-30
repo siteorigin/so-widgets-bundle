@@ -86,6 +86,16 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 									'default' => '#333333',
 								),
 
+								'url' => array(
+									'type' => 'link',
+									'label' => __( 'Destination URL', 'siteorigin-widgets' ),
+								),
+
+								'new_window' => array(
+									'type' => 'checkbox',
+									'label' => __( 'Open URL in a new window', 'siteorigin-widgets' ),
+								),
+
 								'videos' => array(
 									'type' => 'repeater',
 									'item_name' => __('Video', 'siteorigin-widgets'),
@@ -199,6 +209,8 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			'color' => !empty( $frame['background']['color'] ) ? $frame['background']['color'] : false,
 			'image' => !empty( $background_image ) ? $background_image[0] : false,
 			'image-sizing' => 'cover',
+			'url' => !empty( $frame['background']['url'] ) ? $frame['background']['url'] : false,
+			'new_window' => !empty( $frame['background']['new_window'] ),
 			'videos' => $frame['background']['videos'],
 			'video-sizing' => 'background',
 			'opacity' => intval($frame['background']['opacity'])/100,
@@ -213,11 +225,15 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	 */
 	function render_frame_contents($i, $frame) {
 		?>
+		<?php
+		if(!empty($frame['background']['url'])) echo '<a href="' . sow_esc_url($frame['background']['url']) . '" ' . ( !empty($frame['background']['new_window']) ? 'target="_blank"' : '' ) . '>';
+		?>
 		<div class="sow-slider-image-container">
 			<div class="sow-slider-image-wrapper">
 				<?php echo $this->process_content( $frame['content'], $frame ); ?>
 			</div>
 		</div>
+		<?php if(!empty($frame['background']['url'])) echo '</a>'; ?>
 		<?php
 	}
 
