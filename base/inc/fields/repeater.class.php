@@ -51,7 +51,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 			$item_label = siteorigin_widgets_underscores_to_camel_case( $item_label );
 			$item_label = json_encode( $item_label );
 		}
-		if( empty( $this->item_name ) ) $this->item_name = __( 'Item', 'siteorigin-widgets' );
+		if( empty( $this->item_name ) ) $this->item_name = __( 'Item', 'so-widgets-bundle' );
 		?>
 		<div class="siteorigin-widget-field-repeater"
 		     data-item-name="<?php echo esc_attr( $this->item_name ) ?>"

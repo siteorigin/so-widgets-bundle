@@ -54,9 +54,9 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 	function __construct() {
 		parent::__construct(
 			'sow-post-carousel',
-			__('SiteOrigin Post Carousel', 'siteorigin-widgets'),
+			__('SiteOrigin Post Carousel', 'so-widgets-bundle'),
 			array(
-				'description' => __('Display your posts as a carousel.', 'siteorigin-widgets'),
+				'description' => __('Display your posts as a carousel.', 'so-widgets-bundle'),
 				'help' => 'https://siteorigin.com/widgets-bundle/post-carousel-widget/'
 			),
 			array(
@@ -65,12 +65,12 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			array(
 				'title' => array(
 					'type' => 'text',
-					'label' => __('Title', 'siteorigin-widgets'),
+					'label' => __('Title', 'so-widgets-bundle'),
 				),
 
 				'posts' => array(
 					'type' => 'posts',
-					'label' => __('Posts query', 'siteorigin-widgets'),
+					'label' => __('Posts query', 'so-widgets-bundle'),
 				),
 			),
 			plugin_dir_path(__FILE__).'../'

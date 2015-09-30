@@ -284,7 +284,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 			<?php
 		echo esc_html( $this->label );
 		if( !empty( $this->optional ) ) {
-			echo '<span class="field-optional">(' . __('Optional', 'siteorigin-panels') . ')</span>';
+			echo '<span class="field-optional">(' . __('Optional', 'so-widgets-bundle') . ')</span>';
 		}
 		?>
 		</label>

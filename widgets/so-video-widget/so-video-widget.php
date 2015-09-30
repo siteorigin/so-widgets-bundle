@@ -13,24 +13,24 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 
 		parent::__construct(
 			'sow-video',
-			__( 'SiteOrigin Video Player', 'siteorigin-widgets' ),
+			__( 'SiteOrigin Video Player', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A video player widget.', 'siteorigin-widgets' ),
+				'description' => __( 'A video player widget.', 'so-widgets-bundle' ),
 				'help'        => 'http://siteorigin.com/widgets-bundle/video-widget-documentation/'
 			),
 			array(),
 			array(
 				'title' => array(
 					'type' => 'text',
-					'label' => __( 'Title', 'siteorigin-widgets' )
+					'label' => __( 'Title', 'so-widgets-bundle' )
 				),
 				'host_type' => array(
 					'type' => 'radio',
-					'label' => __( 'Video location', 'siteorigin-widgets' ),
+					'label' => __( 'Video location', 'so-widgets-bundle' ),
 					'default' => 'self',
 					'options' => array(
-						'self' => __( 'Self hosted', 'siteorigin-widgets' ),
-						'external' => __( 'Externally hosted', 'siteorigin-widgets' ),
+						'self' => __( 'Self hosted', 'so-widgets-bundle' ),
+						'external' => __( 'Externally hosted', 'so-widgets-bundle' ),
 					),
 
 					// This field should be a video type state emitter
@@ -42,13 +42,13 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 
 				'video' => array(
 					'type' => 'section',
-					'label' => __( 'Video File', 'siteorigin-widgets' ),
+					'label' => __( 'Video File', 'so-widgets-bundle' ),
 					'fields' => array(
 						'self_video' => array(
 							'type' => 'media',
 							'fallback' => true,
-							'label' => __( 'Select video', 'siteorigin-widgets' ),
-							'description' => __( 'Select an uploaded video in mp4 format. Other formats, such as webm and ogv will work in some browsers. You can use an online service such as <a href="http://video.online-convert.com/convert-to-mp4" target="_blank">online-convert.com</a> to convert your videos to mp4.', 'siteorigin-widgets' ),
+							'label' => __( 'Select video', 'so-widgets-bundle' ),
+							'description' => __( 'Select an uploaded video in mp4 format. Other formats, such as webm and ogv will work in some browsers. You can use an online service such as <a href="http://video.online-convert.com/convert-to-mp4" target="_blank">online-convert.com</a> to convert your videos to mp4.', 'so-widgets-bundle' ),
 							'default'     => '',
 							'library' => 'video',
 							'state_handler' => array(
@@ -58,7 +58,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 						),
 						'self_poster' => array(
 							'type' => 'media',
-							'label' => __( 'Select cover image', 'siteorigin-widgets' ),
+							'label' => __( 'Select cover image', 'so-widgets-bundle' ),
 							'default'     => '',
 							'library' => 'image',
 							'state_handler' => array(
@@ -69,7 +69,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 						'external_video' => array(
 							'type' => 'text',
 							'sanitize' => 'url',
-							'label' => __( 'Video URL', 'siteorigin-widgets' ),
+							'label' => __( 'Video URL', 'so-widgets-bundle' ),
 							'state_handler' => array(
 								'video_type[external]' => array('show'),
 								'video_type[self]' => array('hide'),
@@ -80,18 +80,18 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 
 				'playback' => array(
 					'type' => 'section',
-					'label' => __('Video Playback', 'siteorigin-widgets'),
+					'label' => __('Video Playback', 'so-widgets-bundle'),
 					'fields' => array(
 						'autoplay' => array(
 							'type' => 'checkbox',
 							'default' => false,
-							'label' => __( 'Autoplay', 'siteorigin-widgets' )
+							'label' => __( 'Autoplay', 'so-widgets-bundle' )
 						),
 						'oembed' => array(
 							'type' => 'checkbox',
 							'default' => true,
-							'label' => __( 'Use oEmbed', 'siteorigin-widgets' ),
-							'description' => __( 'Always use the embedded video rather than the MediaElement player.', 'siteorigin-widgets' ),
+							'label' => __( 'Use oEmbed', 'so-widgets-bundle' ),
+							'description' => __( 'Always use the embedded video rather than the MediaElement player.', 'so-widgets-bundle' ),
 							'state_handler' => array(
 								'video_type[external]' => array('show'),
 								'video_type[self]' => array('hide'),

@@ -11,9 +11,9 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 	function __construct() {
 		parent::__construct(
 			'sow-testimonials',
-			__('SiteOrigin Testimonials', 'siteorigin-widgets'),
+			__('SiteOrigin Testimonials', 'so-widgets-bundle'),
 			array(
-				'description' => __('Share your product/service testimonials in a variety of different ways.', 'siteorigin-widgets'),
+				'description' => __('Share your product/service testimonials in a variety of different ways.', 'so-widgets-bundle'),
 				'help' => 'https://siteorigin.com/widgets-bundle/testimonial-widget-documentation/'
 			),
 			array(
@@ -22,12 +22,12 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 			array(
 				'title' => array(
 					'type' => 'text',
-					'label' => __('Title', 'siteorigin-widgets'),
+					'label' => __('Title', 'so-widgets-bundle'),
 				),
 				'testimonials' => array(
 					'type' => 'repeater',
-					'label' => __( 'Testimonials', 'siteorigin-widgets' ),
-					'item_name'  => __( 'Testimonial', 'siteorigin-widgets' ),
+					'label' => __( 'Testimonials', 'so-widgets-bundle' ),
+					'item_name'  => __( 'Testimonial', 'so-widgets-bundle' ),
 					'item_label' => array(
 						'selector'     => "[id*='testimonials-name']",
 						'update_event' => 'change',
@@ -36,47 +36,47 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 					'fields' => array(
 						'name' => array(
 							'type' => 'text',
-							'label' => __('Name', 'siteorigin-widgets'),
-							'description' => __('The author of the testimonial', 'siteorigin-widgets'),
+							'label' => __('Name', 'so-widgets-bundle'),
+							'description' => __('The author of the testimonial', 'so-widgets-bundle'),
 						),
 
 						'location' => array(
 							'type' => 'text',
-							'label' => __('Location', 'siteorigin-widgets'),
-							'description' => __('Their location or company name', 'siteorigin-widgets'),
+							'label' => __('Location', 'so-widgets-bundle'),
+							'description' => __('Their location or company name', 'so-widgets-bundle'),
 						),
 
 						'image' => array(
 							'type' => 'media',
-							'label' => __('Image', 'siteorigin-widgets'),
+							'label' => __('Image', 'so-widgets-bundle'),
 						),
 
 						'text' => array(
 							'type' => 'tinymce',
-							'label' => __('Text', 'siteorigin-widgets'),
-							'description' => __('What your customer had to say', 'siteorigin-widgets'),
+							'label' => __('Text', 'so-widgets-bundle'),
+							'description' => __('What your customer had to say', 'so-widgets-bundle'),
 						),
 
 						'url' => array(
 							'type' => 'text',
-							'label' => __('URL', 'siteorigin-widgets'),
+							'label' => __('URL', 'so-widgets-bundle'),
 						),
 
 						'new_window' => array(
 							'type' => 'checkbox',
-							'label' => __('Open In New Window', 'siteorigin-widgets'),
+							'label' => __('Open In New Window', 'so-widgets-bundle'),
 						),
 					)
 				),
 
 				'settings' => array(
 					'type' => 'section',
-					'label' => __('Settings', 'siteorigin-widgets'),
+					'label' => __('Settings', 'so-widgets-bundle'),
 					'fields' => array(
 
 						'per_line' => array(
 							'type' => 'slider',
-							'label' => __( 'Testimonials per row', 'siteorigin-widgets' ),
+							'label' => __( 'Testimonials per row', 'so-widgets-bundle' ),
 							'min' => 1,
 							'max' => 5,
 							'integer' => true,
@@ -85,16 +85,16 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 
 						'responsive' => array(
 							'type' => 'section',
-							'label' => __('Responsive', 'siteorigin-widgets'),
+							'label' => __('Responsive', 'so-widgets-bundle'),
 							'hide' => true,
 							'fields' => array(
 								'tablet' => array(
 									'type' => 'section',
-									'label' => __('Tablet', 'siteorigin-widgets'),
+									'label' => __('Tablet', 'so-widgets-bundle'),
 									'fields' => array(
 										'per_line' => array(
 											'type' => 'slider',
-											'label' => __( 'Testimonials per row', 'siteorigin-widgets' ),
+											'label' => __( 'Testimonials per row', 'so-widgets-bundle' ),
 											'min' => 1,
 											'max' => 5,
 											'integer' => true,
@@ -102,8 +102,8 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 										),
 										'width' => array(
 											'type' => 'text',
-											'label' => __('Resolution', 'siteorigin-widgets'),
-											'description' => __('The resolution to treat as a tablet resolution.', 'siteorigin-widgets'),
+											'label' => __('Resolution', 'so-widgets-bundle'),
+											'description' => __('The resolution to treat as a tablet resolution.', 'so-widgets-bundle'),
 											'default' => 800,
 											'sanitize' => 'intval',
 										)
@@ -111,11 +111,11 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 								),
 								'mobile' => array(
 									'type' => 'section',
-									'label' => __('Mobile Phone', 'siteorigin-widgets'),
+									'label' => __('Mobile Phone', 'so-widgets-bundle'),
 									'fields' => array(
 										'per_line' => array(
 											'type' => 'slider',
-											'label' => __( 'Testimonials per row', 'siteorigin-widgets' ),
+											'label' => __( 'Testimonials per row', 'so-widgets-bundle' ),
 											'min' => 1,
 											'max' => 5,
 											'integer' => true,
@@ -123,8 +123,8 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 										),
 										'width' => array(
 											'type' => 'text',
-											'label' => __('Resolution', 'siteorigin-widgets'),
-											'description' => __('The resolution to treat as a tablet resolution.', 'siteorigin-widgets'),
+											'label' => __('Resolution', 'so-widgets-bundle'),
+											'description' => __('The resolution to treat as a tablet resolution.', 'so-widgets-bundle'),
 											'default' => 480,
 											'sanitize' => 'intval',
 										)
@@ -136,34 +136,34 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 
 						'new_window' => array(
 							'type' => 'checkbox',
-							'label' => __('Open links in new window', 'siteorigin-widgets'),
-							'description' => __('Should testimonial URLs open in a new window.', 'siteorigin-widgets'),
+							'label' => __('Open links in new window', 'so-widgets-bundle'),
+							'description' => __('Should testimonial URLs open in a new window.', 'so-widgets-bundle'),
 						),
 					)
 				),
 
 				'design' => array(
 					'type' => 'section',
-					'label' => __('Design', 'siteorigin-widgets'),
+					'label' => __('Design', 'so-widgets-bundle'),
 					'fields' => array(
 
 						'image' => array(
 						    'type' => 'section',
-						    'label' => __('Image', 'siteorigin-widgets'),
+						    'label' => __('Image', 'so-widgets-bundle'),
 						    'fields' => array(
 							    'image_shape' => array(
 								    'type' => 'select',
-								    'label' => __('Testimonial image shape', 'siteorigin-widgets'),
+								    'label' => __('Testimonial image shape', 'so-widgets-bundle'),
 								    'options' => array(
-									    'square' => __('Square', 'siteorigin-widgets'),
-									    'round' => __('Round', 'siteorigin-widgets'),
+									    'square' => __('Square', 'so-widgets-bundle'),
+									    'round' => __('Round', 'so-widgets-bundle'),
 								    ),
 								    'default' => 'square',
 							    ),
 
 							    'image_size' => array(
 								    'type' => 'slider',
-								    'label' => __('Image size', 'siteorigin-widgets'),
+								    'label' => __('Image size', 'so-widgets-bundle'),
 								    'integer' => true,
 								    'default' => 50,
 								    'max' => 150,
@@ -174,20 +174,20 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 
 						'colors' => array(
 							'type' => 'section',
-							'label' => __('Colors', 'siteorigin-widgets'),
+							'label' => __('Colors', 'so-widgets-bundle'),
 							'fields' => array(
 								'testimonial_background' => array(
 									'type' => 'color',
-									'label' => __('Widget Background', 'siteorigin-widgets'),
+									'label' => __('Widget Background', 'so-widgets-bundle'),
 								),
 								'text_background' => array(
 									'type' => 'color',
-									'label' => __('Text Background', 'siteorigin-widgets'),
+									'label' => __('Text Background', 'so-widgets-bundle'),
 									'default' => '#f0f0f0',
 								),
 								'text_color' => array(
 									'type' => 'color',
-									'label' => __('Text Color', 'siteorigin-widgets'),
+									'label' => __('Text Color', 'so-widgets-bundle'),
 									'default' => '#444444',
 								),
 							),
@@ -195,7 +195,7 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 
 						'padding' => array(
 						    'type' => 'slider',
-						    'label' => __('Padding', 'siteorigin-widgets'),
+						    'label' => __('Padding', 'so-widgets-bundle'),
 						    'integer' => true,
 						    'default' => 10,
 							'max' => 100,
@@ -204,7 +204,7 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 
 						'border_radius' => array(
 							'type' => 'slider',
-							'label' => __('Padding', 'siteorigin-widgets'),
+							'label' => __('Padding', 'so-widgets-bundle'),
 							'integer' => true,
 							'default' => 4,
 							'max' => 100,
@@ -213,22 +213,22 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 
 						'user_position' => array(
 							'type' => 'select',
-							'label' => __('User position', 'siteorigin-widgets'),
+							'label' => __('User position', 'so-widgets-bundle'),
 							'options' => array(
-								'left' => __('Left', 'siteorigin-widgets'),
-								'right' => __('Right', 'siteorigin-widgets'),
-								'middle' => __('Middle', 'siteorigin-widgets'),
+								'left' => __('Left', 'so-widgets-bundle'),
+								'right' => __('Right', 'so-widgets-bundle'),
+								'middle' => __('Middle', 'so-widgets-bundle'),
 							),
 							'default' => 'left',
 						),
 
 						'layout' => array(
 							'type' => 'select',
-							'label' => __('Testimonial layout', 'siteorigin-widgets'),
+							'label' => __('Testimonial layout', 'so-widgets-bundle'),
 							'options' => array(
-								'side' => __('Side by side', 'siteorigin-widgets'),
-								'text_above' => __('Text above user', 'siteorigin-widgets'),
-								'text_below' => __('Text below user', 'siteorigin-widgets'),
+								'side' => __('Side by side', 'so-widgets-bundle'),
+								'text_above' => __('Text above user', 'so-widgets-bundle'),
+								'text_below' => __('Text below user', 'so-widgets-bundle'),
 							),
 							'default' => 'side',
 						),

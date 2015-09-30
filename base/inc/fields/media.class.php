@@ -60,15 +60,15 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 
 	protected function get_default_options() {
 		return array(
-			'choose' => __( 'Choose Media', 'siteorigin-widgets' ),
-			'update' => __( 'Set Media', 'siteorigin-widgets' ),
+			'choose' => __( 'Choose Media', 'so-widgets-bundle' ),
+			'update' => __( 'Set Media', 'so-widgets-bundle' ),
 			'library' => 'image'
 		);
 	}
 
 	protected function render_field( $value, $instance ) {
 		if( version_compare( get_bloginfo('version'), '3.5', '<' ) ){
-			printf( __('You need to <a href="%s">upgrade</a> to WordPress 3.5 to use media fields', 'siteorigin-widgets'), admin_url('update-core.php') );
+			printf( __('You need to <a href="%s">upgrade</a> to WordPress 3.5 to use media fields', 'so-widgets-bundle'), admin_url('update-core.php') );
 			return;
 		}
 

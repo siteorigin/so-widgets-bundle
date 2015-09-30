@@ -12,54 +12,54 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		parent::__construct(
 			'sow-contact-form',
-			__('SiteOrigin Contact Form', 'siteorigin-widgets'),
+			__('SiteOrigin Contact Form', 'so-widgets-bundle'),
 			array(
-				'description' => __( 'Create a simple contact form for your users to get hold of you.', 'siteorigin-widgets' ),
+				'description' => __( 'Create a simple contact form for your users to get hold of you.', 'so-widgets-bundle' ),
 			),
 			array(),
 			array(
 				'title' => array(
 					'type' => 'text',
-					'label' => __('Title', 'siteorigin-widgets'),
-					'default' => __('Contact Us', 'siteorigin-widgets'),
+					'label' => __('Title', 'so-widgets-bundle'),
+					'default' => __('Contact Us', 'so-widgets-bundle'),
 				),
 
 				'display_title' => array(
 					'type' => 'checkbox',
-					'label' => __('Display title', 'siteorigin-widgets'),
+					'label' => __('Display title', 'so-widgets-bundle'),
 				),
 
 				'settings' => array(
 					'type' => 'section',
-					'label' => __('Settings', 'siteorigin-widgets'),
+					'label' => __('Settings', 'so-widgets-bundle'),
 					'hide' => true,
 					'fields' => array(
 						'to' => array(
 							'type' => 'text',
-							'label' => __('To email address', 'siteorigin-widgets'),
-							'description' => __('Where contact emails will be delivered to.', 'siteorigin-widgets'),
+							'label' => __('To email address', 'so-widgets-bundle'),
+							'description' => __('Where contact emails will be delivered to.', 'so-widgets-bundle'),
 							'sanitize' => 'email',
 						),
 						'default_subject' => array(
 							'type' => 'text',
-							'label' => __('Default subject', 'siteorigin-widgets'),
-							'description' => __("Subject to use when there isn't one available.", 'siteorigin-widgets'),
+							'label' => __('Default subject', 'so-widgets-bundle'),
+							'description' => __("Subject to use when there isn't one available.", 'so-widgets-bundle'),
 						),
 						'subject_prefix' => array(
 							'type' => 'text',
-							'label' => __('Subject prefix', 'siteorigin-widgets'),
-							'description' => __('Prefix added to all incoming email subjects.', 'siteorigin-widgets'),
+							'label' => __('Subject prefix', 'so-widgets-bundle'),
+							'description' => __('Prefix added to all incoming email subjects.', 'so-widgets-bundle'),
 						),
 						'success_message' => array(
 							'type' => 'tinymce',
-							'label' => __('Success message', 'siteorigin-widgets'),
-							'description' => __('Message to display after message successfully sent.', 'siteorigin-widgets'),
-							'default' => __("Thanks for contacting us. We'll get back to you shortly.", 'siteorigin-widgets')
+							'label' => __('Success message', 'so-widgets-bundle'),
+							'description' => __('Message to display after message successfully sent.', 'so-widgets-bundle'),
+							'default' => __("Thanks for contacting us. We'll get back to you shortly.", 'so-widgets-bundle')
 						),
 						'submit_text' => array(
 							'type' => 'text',
-							'label' => __('Submit button text', 'siteorigin-widgets'),
-							'default' => __("Contact Us", 'siteorigin-widgets')
+							'label' => __('Submit button text', 'so-widgets-bundle'),
+							'default' => __("Contact Us", 'so-widgets-bundle')
 						)
 					)
 				),
@@ -67,8 +67,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				'fields' => array(
 
 					'type' => 'repeater',
-					'label' => __('Fields', 'siteorigin-widgets'),
-					'item_name' => __('Field', 'siteorigin-widgets'),
+					'label' => __('Fields', 'so-widgets-bundle'),
+					'item_name' => __('Field', 'so-widgets-bundle'),
 					'item_label' => array(
 						'selector'     => "[id*='label']",
 					),
@@ -76,15 +76,15 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 						'type' => array(
 							'type' => 'select',
-							'label' => __( 'Field Type', 'siteorigin-widgets' ),
+							'label' => __( 'Field Type', 'so-widgets-bundle' ),
 							'options' => array(
-								'name' => __( 'Name', 'siteorigin-widgets' ),
-								'email' => __( 'Email', 'siteorigin-widgets' ),
-								'subject' => __( 'Subject', 'siteorigin-widgets' ),
-								'text' => __( 'Text', 'siteorigin-widgets' ),
-								'textarea' => __( 'Text Area', 'siteorigin-widgets' ),
-								'select' => __( 'Dropdown Select', 'siteorigin-widgets' ),
-								'checkboxes' => __( 'Checkboxes', 'siteorigin-widgets' ),
+								'name' => __( 'Name', 'so-widgets-bundle' ),
+								'email' => __( 'Email', 'so-widgets-bundle' ),
+								'subject' => __( 'Subject', 'so-widgets-bundle' ),
+								'text' => __( 'Text', 'so-widgets-bundle' ),
+								'textarea' => __( 'Text Area', 'so-widgets-bundle' ),
+								'select' => __( 'Dropdown Select', 'so-widgets-bundle' ),
+								'checkboxes' => __( 'Checkboxes', 'so-widgets-bundle' ),
 							),
 							'state_emitter' => array(
 								'callback' => 'select',
@@ -94,22 +94,22 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 						'label' => array(
 							'type' => 'text',
-							'label' => __('Label', 'siteorigin-widgets'),
+							'label' => __('Label', 'so-widgets-bundle'),
 						),
 
 						'required' => array(
 							'type' => 'section',
-							'label' => __('Required Field', 'siteorigin-widgets'),
+							'label' => __('Required Field', 'so-widgets-bundle'),
 							'fields' => array(
 								'required' => array(
 									'type' => 'checkbox',
-									'label' => __('Required field', 'siteorigin-widgets'),
-									'description' => __('Is this field required?', 'siteorigin-widgets'),
+									'label' => __('Required field', 'so-widgets-bundle'),
+									'description' => __('Is this field required?', 'so-widgets-bundle'),
 								),
 								'missing_message' => array(
 									'type' => 'text',
-									'label' => __('Missing message', 'siteorigin-widgets'),
-									'description' => __('Error message to display if this field is missing.', 'siteorigin-widgets'),
+									'label' => __('Missing message', 'so-widgets-bundle'),
+									'description' => __('Error message to display if this field is missing.', 'so-widgets-bundle'),
 								)
 							)
 						),
@@ -117,13 +117,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						// This are for select and checkboxes
 						'options' => array(
 							'type' => 'repeater',
-							'label' => __( 'Options', 'siteorigin-widgets' ),
-							'item_name' => __( 'Option', 'siteorigin-widgets' ),
+							'label' => __( 'Options', 'so-widgets-bundle' ),
+							'item_name' => __( 'Option', 'so-widgets-bundle' ),
 							'item_label' => array( 'selector' => "[id*='value']" ),
 							'fields' => array(
 								'value' => array(
 									'type' => 'text',
-									'label' => __( 'Value', 'siteorigin-widgets' ),
+									'label' => __( 'Value', 'so-widgets-bundle' ),
 								),
 							),
 
@@ -138,48 +138,48 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 				'spam' => array(
 					'type' => 'section',
-					'label' => __( 'Spam Protection', 'siteorigin-widgets' ),
+					'label' => __( 'Spam Protection', 'so-widgets-bundle' ),
 					'hide' => true,
 					'fields' => array(
 
 
 						'recaptcha' => array(
 							'type' => 'section',
-							'label' => __('Recaptcha', 'siteorigin-widgets'),
+							'label' => __('Recaptcha', 'so-widgets-bundle'),
 							'fields' => array(
 								'use_captcha' => array(
 									'type' => 'checkbox',
-									'label' => __( 'Use Captcha', 'siteorigin-widgets' ),
+									'label' => __( 'Use Captcha', 'so-widgets-bundle' ),
 									'default' => false,
 								),
 								'site_key' => array(
 									'type' => 'text',
-									'label' => __( 'ReCaptcha Site Key', 'siteorigin-widgets' ),
+									'label' => __( 'ReCaptcha Site Key', 'so-widgets-bundle' ),
 								),
 								'secret_key' => array(
 									'type' => 'text',
-									'label' => __( 'ReCaptcha Secret Key', 'siteorigin-widgets' ),
+									'label' => __( 'ReCaptcha Secret Key', 'so-widgets-bundle' ),
 								),
 							)
 						),
 
 						'akismet' => array(
 							'type' => 'section',
-							'label' => __('akismet', 'siteorigin-widgets'),
+							'label' => __('akismet', 'so-widgets-bundle'),
 							'fields' => array(
 								'use_akismet'=> array(
 									'type' => 'checkbox',
-									'label' => __( 'Use Akismet filtering', 'siteorigin-widgets' ),
+									'label' => __( 'Use Akismet filtering', 'so-widgets-bundle' ),
 									'default' => true,
 								),
 								'spam_action'=> array(
 									'type' => 'select',
-									'label' => __( 'Spam action', 'siteorigin-widgets' ),
+									'label' => __( 'Spam action', 'so-widgets-bundle' ),
 									'options' => array(
-										'error' => __('Show error message', 'siteorigin-widgets'),
-										'tag' => __('Tag as spam in subject', 'siteorigin-widgets'),
+										'error' => __('Show error message', 'so-widgets-bundle'),
+										'tag' => __('Tag as spam in subject', 'so-widgets-bundle'),
 									),
-									'description' => __('How to handle submissions that are identified as spam.', 'siteorigin-widgets'),
+									'description' => __('How to handle submissions that are identified as spam.', 'so-widgets-bundle'),
 									'default' => 'error',
 								),
 							)
@@ -189,53 +189,53 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 				'design' => array(
 					'type' => 'section',
-					'label' => __('Design', 'siteorigin-widgets'),
+					'label' => __('Design', 'so-widgets-bundle'),
 					'hide' => true,
 					'fields' => array(
 
 						'container' => array(
 							'type' => 'section',
-							'label' => __('Container', 'siteorigin-widgets'),
+							'label' => __('Container', 'so-widgets-bundle'),
 							'fields' => array(
 								'background' => array(
 									'type' => 'color',
-									'label' => __('Background color', 'siteorigin-widgets'),
+									'label' => __('Background color', 'so-widgets-bundle'),
 									'default' => '#f2f2f2',
 								),
 								'padding' => array(
 									'type' => 'slider',
-									'label' => __('Padding', 'siteorigin-widgets'),
+									'label' => __('Padding', 'so-widgets-bundle'),
 									'default' => 10,
 									'max' => 100,
 									'min' => 0
 								),
 								'border_color' => array(
 									'type' => 'color',
-									'label' => __('Border color', 'siteorigin-widgets'),
+									'label' => __('Border color', 'so-widgets-bundle'),
 									'default' => '#c0c0c0',
 								),
 								'border_width' => array(
 									'type' => 'slider',
-									'label' => __('Border width', 'siteorigin-widgets'),
+									'label' => __('Border width', 'so-widgets-bundle'),
 									'default' => 1,
 									'max' => 10,
 									'min' => 0
 								),
 								'border_style' => array(
 									'type' => 'select',
-									'label' => __('Border style', 'siteorigin-widgets'),
+									'label' => __('Border style', 'so-widgets-bundle'),
 									'default' => 'solid',
 									'options' => array(
-										'none' => __( 'None', 'siteorigin-widgets' ),
-										'hidden' => __( 'Hidden', 'siteorigin-widgets' ),
-										'dotted' => __( 'Dotted', 'siteorigin-widgets' ),
-										'dashed' => __( 'Dashed', 'siteorigin-widgets' ),
-										'solid' => __( 'Solid', 'siteorigin-widgets' ),
-										'double' => __( 'Double', 'siteorigin-widgets' ),
-										'groove' => __( 'Groove', 'siteorigin-widgets' ),
-										'ridge' => __( 'Ridge', 'siteorigin-widgets' ),
-										'inset' => __( 'Inset', 'siteorigin-widgets' ),
-										'outset' => __( 'Outset', 'siteorigin-widgets' ),
+										'none' => __( 'None', 'so-widgets-bundle' ),
+										'hidden' => __( 'Hidden', 'so-widgets-bundle' ),
+										'dotted' => __( 'Dotted', 'so-widgets-bundle' ),
+										'dashed' => __( 'Dashed', 'so-widgets-bundle' ),
+										'solid' => __( 'Solid', 'so-widgets-bundle' ),
+										'double' => __( 'Double', 'so-widgets-bundle' ),
+										'groove' => __( 'Groove', 'so-widgets-bundle' ),
+										'ridge' => __( 'Ridge', 'so-widgets-bundle' ),
+										'inset' => __( 'Inset', 'so-widgets-bundle' ),
+										'outset' => __( 'Outset', 'so-widgets-bundle' ),
 									)
 								),
 							)
@@ -243,31 +243,31 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 						'errors' => array(
 							'type' => 'section',
-							'label' => __('Error messages', 'siteorigin-widgets'),
+							'label' => __('Error messages', 'so-widgets-bundle'),
 							'fields' => array(
 								'background' => array(
 									'type' => 'color',
-									'label' => __('Error background color', 'siteorigin-widgets'),
+									'label' => __('Error background color', 'so-widgets-bundle'),
 									'default' => '#fce4e5',
 								),
 								'border_color' => array(
 									'type' => 'color',
-									'label' => __('Error background color', 'siteorigin-widgets'),
+									'label' => __('Error background color', 'so-widgets-bundle'),
 									'default' => '#ec666a',
 								),
 								'text_color' => array(
 									'type' => 'color',
-									'label' => __('Error text color', 'siteorigin-widgets'),
+									'label' => __('Error text color', 'so-widgets-bundle'),
 									'default' => '#ec666a',
 								),
 								'padding' => array(
 									'type' => 'slider',
-									'label' => __('Error padding', 'siteorigin-widgets'),
+									'label' => __('Error padding', 'so-widgets-bundle'),
 									'default' => 5,
 								),
 								'margin' => array(
 									'type' => 'slider',
-									'label' => __('Error margin', 'siteorigin-widgets'),
+									'label' => __('Error margin', 'so-widgets-bundle'),
 									'default' => 10,
 								),
 							)
@@ -275,72 +275,72 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 						'submit' => array(
 							'type' => 'section',
-							'label' => __('Submit button', 'siteorigin-widgets'),
+							'label' => __('Submit button', 'so-widgets-bundle'),
 							'fields' => array(
 								'styled' => array(
 									'type' => 'checkbox',
-									'label' => __('Style submit button', 'siteorigin-widgets'),
-									'description' => __('Style the button or leave it with default theme styling.', 'siteorigin-widgets'),
+									'label' => __('Style submit button', 'so-widgets-bundle'),
+									'description' => __('Style the button or leave it with default theme styling.', 'so-widgets-bundle'),
 									'default' => true,
 								),
 
 								'background_color' => array(
 									'type' => 'color',
-									'label' => __('Background color', 'siteorigin-widgets'),
+									'label' => __('Background color', 'so-widgets-bundle'),
 									'default' => '#eeeeee',
 								),
 								'background_gradient' => array(
 									'type' => 'slider',
-									'label' => __('Gradient intensity', 'siteorigin-widgets'),
+									'label' => __('Gradient intensity', 'so-widgets-bundle'),
 									'default' => 10,
 								),
 								'border_color' => array(
 									'type' => 'color',
-									'label' => __('Background color', 'siteorigin-widgets'),
+									'label' => __('Background color', 'so-widgets-bundle'),
 									'default' => '#989a9c',
 								),
 								'border_style' => array(
 									'type' => 'select',
-									'label' => __('Border style', 'siteorigin-widgets'),
+									'label' => __('Border style', 'so-widgets-bundle'),
 									'default' => 'solid',
 									'options' => array(
-										'none' => __('None', 'siteorigin-widgets'),
-										'solid' => __('Solid', 'siteorigin-widgets'),
+										'none' => __('None', 'so-widgets-bundle'),
+										'solid' => __('Solid', 'so-widgets-bundle'),
 									)
 								),
 								'border_radius' => array(
 									'type' => 'slider',
-									'label' => __('Border rounding', 'siteorigin-widgets'),
+									'label' => __('Border rounding', 'so-widgets-bundle'),
 									'default' => 3,
 									'max' => 50,
 									'min' => 0
 								),
 								'text_color' => array(
 									'type' => 'color',
-									'label' => __('Text color', 'siteorigin-widgets'),
+									'label' => __('Text color', 'so-widgets-bundle'),
 									'default' => '#5a5a5a',
 								),
 								'weight' => array(
 									'type' => 'select',
-									'label' => __('Font weight', 'siteorigin-widgets'),
+									'label' => __('Font weight', 'so-widgets-bundle'),
 									'default' => '500',
 									'options' => array(
-										'normal' => __('Normal', 'siteorigin-widgets'),
-										'500' => __('Semi-bold', 'siteorigin-widgets'),
-										'bold' => __('Bold', 'siteorigin-widgets'),
+										'normal' => __('Normal', 'so-widgets-bundle'),
+										'500' => __('Semi-bold', 'so-widgets-bundle'),
+										'bold' => __('Bold', 'so-widgets-bundle'),
 									)
 								),
 								'padding' => array(
 									'type' => 'slider',
-									'label' => __('Padding', 'siteorigin-widgets'),
+									'label' => __('Padding', 'so-widgets-bundle'),
 									'default' => 10,
 									'max' => 50,
 									'min' => 0
 								),
 								'inset_highlight' => array(
 									'type' => 'slider',
-									'label' => __('Inset highlight', 'siteorigin-widgets'),
-									'description' => __('The white highlight at the bottom of the button', 'siteorigin-widgets'),
+									'label' => __('Inset highlight', 'so-widgets-bundle'),
+									'description' => __('The white highlight at the bottom of the button', 'so-widgets-bundle'),
 									'default' => 50,
 									'max' => 100,
 									'min' => 0
@@ -371,34 +371,34 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$instance['fields'] = array(
 				array(
 					'type' => 'name',
-					'label' => __('Your Name', 'siteorigin-widgets'),
+					'label' => __('Your Name', 'so-widgets-bundle'),
 					'required' => array(
 						'required' => true,
-						'missing_message' => __('Please enter your name', 'siteorigin-widgets'),
+						'missing_message' => __('Please enter your name', 'so-widgets-bundle'),
 					),
 				),
 				array(
 					'type' => 'email',
-					'label' => __('Your Email', 'siteorigin-widgets'),
+					'label' => __('Your Email', 'so-widgets-bundle'),
 					'required' => array(
 						'required' => true,
-						'missing_message' => __('Please enter a valid email address', 'siteorigin-widgets'),
+						'missing_message' => __('Please enter a valid email address', 'so-widgets-bundle'),
 					),
 				),
 				array(
 					'type' => 'subject',
-					'label' => __('Subject', 'siteorigin-widgets'),
+					'label' => __('Subject', 'so-widgets-bundle'),
 					'required' => array(
 						'required' => true,
-						'missing_message' => __('Please enter a subject', 'siteorigin-widgets'),
+						'missing_message' => __('Please enter a subject', 'so-widgets-bundle'),
 					),
 				),
 				array(
 					'type' => 'textarea',
-					'label' => __('Message', 'siteorigin-widgets'),
+					'label' => __('Message', 'so-widgets-bundle'),
 					'required' => array(
 						'required' => true,
-						'missing_message' => __('Please write something', 'siteorigin-widgets'),
+						'missing_message' => __('Please write something', 'so-widgets-bundle'),
 					),
 				),
 			);
@@ -570,14 +570,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$value = !empty( $post_vars[$field_name] ) ? $post_vars[$field_name] : '';
 
 			if( $field['required']['required'] && empty($value) ) {
-				$errors[$field_name] = !empty($field['required']['missing_message']) ? $field['required']['missing_message'] : __('Required field', 'siteorigin-widgets');
+				$errors[$field_name] = !empty($field['required']['missing_message']) ? $field['required']['missing_message'] : __('Required field', 'so-widgets-bundle');
 				continue;
 			}
 
 			switch( $field['type'] ) {
 				case 'email':
 					if( $value != sanitize_email($value) ) {
-						$errors[$field_name] = __('Invalid email address.', 'siteorigin-widgets');
+						$errors[$field_name] = __('Invalid email address.', 'so-widgets-bundle');
 					}
 					break;
 			}
@@ -641,7 +641,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		if( empty($errors) ) {
 			// We can send the email
 			if( !$this->send_mail( $email_fields, $instance ) ) {
-				$errors['_general']['send'] = __('Error sending email, please try again later.', 'siteorigin-widgets');
+				$errors['_general']['send'] = __('Error sending email, please try again later.', 'so-widgets-bundle');
 			}
 		}
 
@@ -657,14 +657,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	function validate_mail( $email_fields ){
 		$errors = array();
 		if( empty($email_fields['email']) ) {
-			$errors['email'] = __('A valid email is required', 'siteorigin-widgets');
+			$errors['email'] = __('A valid email is required', 'so-widgets-bundle');
 		}
 		elseif( function_exists('filter_var') && !filter_var($email_fields['email'], FILTER_VALIDATE_EMAIL) ) {
-			$errors['email'] = __('The email address is invalid', 'siteorigin-widgets');
+			$errors['email'] = __('The email address is invalid', 'so-widgets-bundle');
 		}
 
 		if( empty($email_fields['subject']) ) {
-			$errors['subject'] = __('Missing subject', 'siteorigin-widgets');
+			$errors['subject'] = __('Missing subject', 'so-widgets-bundle');
 		}
 
 		return $errors;
@@ -696,7 +696,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			if( !is_wp_error($result) && !empty($result['body']) ) {
 				$result = json_decode( $result['body'], true );
 				if( isset($result['success']) && !$result['success'] ) {
-					$errors['recaptcha'] = __('Error validating your Captcha response.', 'siteorigin-widgets');
+					$errors['recaptcha'] = __('Error validating your Captcha response.', 'so-widgets-bundle');
 				}
 			}
 		}
@@ -728,7 +728,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$is_spam = !empty($response[1]) && $response[1] == 'true';
 
 			if( $is_spam ) {
-				$errors['akismet'] = __('Unfortunately our system identified your message as spam.', 'siteorigin-widgets');
+				$errors['akismet'] = __('Unfortunately our system identified your message as spam.', 'so-widgets-bundle');
 			}
 		}
 

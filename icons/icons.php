@@ -1720,32 +1720,32 @@ add_filter('siteorigin_widgets_icons_typicons', 'siteorigin_widgets_icons_typico
 function siteorigin_widgets_icon_families_filter( $families ){
 
 	$families['fontawesome'] = array(
-		'name' => __( 'Font Awesome', 'siteorigin-widgets' ),
+		'name' => __( 'Font Awesome', 'so-widgets-bundle' ),
 //		'style_uri' => plugin_dir_url(__FILE__).'font-awesome-4.4.0/css/fontawesome.css',
 		'style_uri' => plugin_dir_url(__FILE__).'fontawesome/style.css',
 		'icons' => apply_filters('siteorigin_widgets_icons_fontawesome', array() ),
 	);
 
 	$families['icomoon'] = array(
-		'name' => __( 'Icomoon Free', 'siteorigin-widgets' ),
+		'name' => __( 'Icomoon Free', 'so-widgets-bundle' ),
 		'style_uri' => plugin_dir_url(__FILE__).'icomoon/style.css',
 		'icons' => apply_filters('siteorigin_widgets_icons_icomoon', array() ),
 	);
 
 	$families['genericons'] = array(
-		'name' => __( 'Genericons', 'siteorigin-widgets' ),
+		'name' => __( 'Genericons', 'so-widgets-bundle' ),
 		'style_uri' => plugin_dir_url(__FILE__).'genericons/style.css',
 		'icons' => apply_filters('siteorigin_widgets_icons_genericons', array() ),
 	);
 
 	$families['typicons'] = array(
-		'name' => __( 'Typicons', 'siteorigin-widgets' ),
+		'name' => __( 'Typicons', 'so-widgets-bundle' ),
 		'style_uri' => plugin_dir_url(__FILE__).'typicons/style.css',
 		'icons' => apply_filters( 'siteorigin_widgets_icons_typicons', array() ),
 	);
 
 	$families['elegantline'] = array(
-		'name' => __( 'Elegant Themes Line Icons', 'siteorigin-widgets' ),
+		'name' => __( 'Elegant Themes Line Icons', 'so-widgets-bundle' ),
 		'style_uri' => plugin_dir_url(__FILE__).'elegantline/style.css',
 		'icons' => apply_filters( 'siteorigin_widgets_icons_elegantline', array() ),
 	);

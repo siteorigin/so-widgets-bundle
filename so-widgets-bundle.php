@@ -3,6 +3,8 @@
 Plugin Name: SiteOrigin Widgets Bundle
 Description: A collection of all widgets, neatly bundled into a single plugin. It's also a framework to code your own widgets on top of.
 Version: dev
+Text Domain: so-widgets-bundle
+Domain Path: /languages
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Plugin URI: https://siteorigin.com/widgets-bundle/
@@ -82,7 +84,7 @@ class SiteOrigin_Widgets_Bundle {
 	 * @action plugins_loaded
 	 */
 	function set_plugin_textdomain(){
-		load_plugin_textdomain('siteorigin-widgets', false, dirname( plugin_basename( __FILE__ ) ). '/languages/');
+		load_plugin_textdomain('so-widgets-bundle', false, dirname( plugin_basename( __FILE__ ) ). '/languages/');
 	}
 
 	/**
@@ -245,8 +247,8 @@ class SiteOrigin_Widgets_Bundle {
 	 */
 	function admin_menu_init(){
 		add_plugins_page(
-			__('SiteOrigin Widgets', 'siteorigin-widgets'),
-			__('SiteOrigin Widgets', 'siteorigin-widgets'),
+			__('SiteOrigin Widgets', 'so-widgets-bundle'),
+			__('SiteOrigin Widgets', 'so-widgets-bundle'),
 			apply_filters('siteorigin_widgets_admin_menu_capability', 'install_plugins'),
 			'so-widgets-plugins',
 			array($this, 'admin_page')
@@ -273,9 +275,9 @@ class SiteOrigin_Widgets_Bundle {
 				<p>
 				<?php
 				printf(
-					__('%s was %s', 'siteorigin-widgets'),
+					__('%s was %s', 'so-widgets-bundle'),
 					$widgets[ $_GET['widget'].'/'.$_GET['widget'].'.php' ]['Name'],
-					$_GET['widget_action'] == 'activate' ? __('Activated', 'siteorigin-widgets') : __('Deactivated', 'siteorigin-widgets')
+					$_GET['widget_action'] == 'activate' ? __('Activated', 'so-widgets-bundle') : __('Deactivated', 'so-widgets-bundle')
 				)
 				?>
 				</p>
@@ -491,8 +493,8 @@ class SiteOrigin_Widgets_Bundle {
 	 * Add action links.
 	 */
 	function plugin_action_links($links){
-		$links[] = '<a href="' . admin_url('plugins.php?page=so-widgets-plugins') . '">'.__('Manage Widgets', 'siteorigin-widgets').'</a>';
-		$links[] = '<a href="https://siteorigin.com/thread/" target="_blank">'.__('Support', 'siteorigin-widgets').'</a>';
+		$links[] = '<a href="' . admin_url('plugins.php?page=so-widgets-plugins') . '">'.__('Manage Widgets', 'so-widgets-bundle').'</a>';
+		$links[] = '<a href="https://siteorigin.com/thread/" target="_blank">'.__('Support', 'so-widgets-bundle').'</a>';
 		return $links;
 	}
 

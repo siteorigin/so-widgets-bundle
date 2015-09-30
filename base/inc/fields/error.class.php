@@ -17,7 +17,7 @@ class SiteOrigin_Widget_Field_Error extends SiteOrigin_Widget_Field_Base {
 	protected $message;
 
 	protected function render_field( $value, $instance ) {
-		printf( __($this->message, 'siteorigin-widgets') );
+		printf( __($this->message, 'so-widgets-bundle') );
 	}
 
 	protected function sanitize_field_input( $value ) {

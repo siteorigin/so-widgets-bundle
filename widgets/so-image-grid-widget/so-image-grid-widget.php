@@ -12,17 +12,17 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 
 		parent::__construct(
 			'sow-image-grid',
-			__('SiteOrigin Image Grid', 'siteorigin-widgets'),
+			__('SiteOrigin Image Grid', 'so-widgets-bundle'),
 			array(
-				'description' => __('Display a grid of images.', 'siteorigin-widgets'),
+				'description' => __('Display a grid of images.', 'so-widgets-bundle'),
 			),
 			array(),
 			array(
 
 				'images' => array(
 					'type' => 'repeater',
-					'label' => __('Images', 'siteorigin-widgets'),
-					'item_name'  => __( 'Image', 'siteorigin-widgets' ),
+					'label' => __('Images', 'so-widgets-bundle'),
+					'item_name'  => __( 'Image', 'so-widgets-bundle' ),
 					'item_label' => array(
 						'selector'     => "[name*='title']",
 						'update_event' => 'change',
@@ -31,44 +31,44 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 					'fields' => array(
 						'image' => array(
 							'type' => 'media',
-							'label' => __('Image', 'siteorigin-widgets')
+							'label' => __('Image', 'so-widgets-bundle')
 						),
 						'title' => array(
 							'type' => 'text',
-							'label' => __('Image title', 'siteorigin-widgets')
+							'label' => __('Image title', 'so-widgets-bundle')
 						),
 						'url' => array(
 							'type' => 'text',
 							'sanitize' => 'url',
-							'label' => __('URL', 'siteorigin-widgets')
+							'label' => __('URL', 'so-widgets-bundle')
 						),
 					)
 				),
 
 				'display' => array(
 					'type' => 'section',
-					'label' => __('Display', 'siteorigin-widgets'),
+					'label' => __('Display', 'so-widgets-bundle'),
 					'fields' => array(
 						'attachment_size' => array(
-							'label' => __('Image size', 'siteorigin-widgets'),
+							'label' => __('Image size', 'so-widgets-bundle'),
 							'type' => 'select',
 							'options' => array(),
 							'default' => 'full',
 						),
 
 						'max_height' => array(
-							'label' => __('Maximum image height', 'siteorigin-widgets'),
+							'label' => __('Maximum image height', 'so-widgets-bundle'),
 							'type' => 'number',
 						),
 
 						'max_width' => array(
-							'label' => __('Maximum image width', 'siteorigin-widgets'),
+							'label' => __('Maximum image width', 'so-widgets-bundle'),
 							'type' => 'number',
 						),
 
 						'spacing' => array(
-							'label' => __('Spacing', 'siteorigin-widgets'),
-							'description' => __('Amount of spacing between images.', 'siteorigin-widgets'),
+							'label' => __('Spacing', 'so-widgets-bundle'),
+							'description' => __('Amount of spacing between images.', 'so-widgets-bundle'),
 							'type' => 'number',
 							'default' => 10,
 						),
@@ -111,7 +111,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 		foreach( $intermediate as $id => $name ) {
 			$intermediate[$id] = ucwords(str_replace('-', ' ', $name));
 		}
-		$sizes = array_merge( array( 'full' => __('Full', 'siteorigin-widgets') ), $intermediate );
+		$sizes = array_merge( array( 'full' => __('Full', 'so-widgets-bundle') ), $intermediate );
 		$form['display']['fields']['attachment_size']['options'] = $sizes;
 		return $form;
 	}

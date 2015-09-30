@@ -376,7 +376,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			wp_localize_script( 'siteorigin-widget-admin', 'soWidgets', array(
 				'ajaxurl' => wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ),
-				'sure' => __('Are you sure?', 'siteorigin-widgets')
+				'sure' => __('Are you sure?', 'so-widgets-bundle')
 			) );
 
 			global $wp_customize;
