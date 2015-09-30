@@ -73,6 +73,15 @@ jQuery( function($){
         var $slides = $$.find('.sow-slider-image');
         var settings = $$.data('settings');
 
+        $slides.each(function( index, el) {
+            var $slide = $(el);
+            var urlData = $slide.data('url');
+            $slide.click(function(event) {
+                if( event.target == $slide || $(event.target).is('.sow-slider-image-wrapper')) {
+                    window.open(urlData.url, urlData.new_window ? '_blank' : '_self');
+                }
+            })
+        });
 
         var setupSlider = function(){
             // Show everything for this slider
@@ -181,7 +190,7 @@ jQuery( function($){
                     }
                 }
             );
-        }
+        };
 
         var images = $$.find('img');
         var imagesLoaded = 0;

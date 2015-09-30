@@ -225,15 +225,11 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	 */
 	function render_frame_contents($i, $frame) {
 		?>
-		<?php
-		if(!empty($frame['background']['url'])) echo '<a href="' . sow_esc_url($frame['background']['url']) . '" ' . ( !empty($frame['background']['new_window']) ? 'target="_blank"' : '' ) . '>';
-		?>
 		<div class="sow-slider-image-container">
 			<div class="sow-slider-image-wrapper">
 				<?php echo $this->process_content( $frame['content'], $frame ); ?>
 			</div>
 		</div>
-		<?php if(!empty($frame['background']['url'])) echo '</a>'; ?>
 		<?php
 	}
 

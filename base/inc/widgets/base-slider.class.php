@@ -224,9 +224,14 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			if( !empty($background['image']) ) $background_style[] = 'background-image: url(' . esc_url($background['image']) . ')';
 		}
 
+		if( ! empty( $background['url'] ) ) {
+			$background_style[] = 'cursor: pointer;';
+		}
+
 		?>
 		<li
 			class="sow-slider-image <?php if( !empty($background['image']) && !empty($background['image-sizing']) ) echo 'sow-slider-image-' . $background['image-sizing'] ?>"
+			<?php if( !empty( $background['url'] ) ) echo 'data-url=\'' . json_encode(array( 'url' => sow_esc_url($background['url']), 'new_window' => !empty( $background['new_window'] ) ) ) . '\'' ; ?>
 			<?php if( !empty($background_style) ) echo 'style="' . implode(';', $background_style) . '"' ?>>
 			<?php
 			$this->render_frame_contents( $i, $frame );
