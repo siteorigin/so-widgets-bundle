@@ -12,9 +12,9 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 
 		parent::__construct(
 			'sow-cta',
-			__('SiteOrigin Call-to-action', 'siteorigin-widgets'),
+			__('SiteOrigin Call-to-action', 'so-widgets-bundle'),
 			array(
-				'description' => __('A simple call-to-action widget with massive power.', 'siteorigin-widgets'),
+				'description' => __('A simple call-to-action widget with massive power.', 'so-widgets-bundle'),
 				'help' => 'https://siteorigin.com/widgets-bundle/call-action-widget/'
 			),
 			array(
@@ -24,33 +24,33 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 
 				'title' => array(
 					'type' => 'text',
-					'label' => __('Title', 'siteorigin-widgets'),
+					'label' => __('Title', 'so-widgets-bundle'),
 				),
 
 				'sub_title' => array(
 					'type' => 'text',
-					'label' => __('Subtitle', 'siteorigin-widgets')
+					'label' => __('Subtitle', 'so-widgets-bundle')
 				),
 
 				'design' => array(
 					'type' => 'section',
-					'label' => __('Design', 'siteorigin-widgets'),
+					'label' => __('Design', 'so-widgets-bundle'),
 					'fields' => array(
 						'background_color' => array(
 							'type' => 'color',
-							'label' => __('Background color', 'siteorigin-widgets'),
+							'label' => __('Background color', 'so-widgets-bundle'),
 						),
 						'border_color' => array(
 							'type' => 'color',
-							'label' => __('Border color', 'siteorigin-widgets'),
+							'label' => __('Border color', 'so-widgets-bundle'),
 						),
 						'button_align' => array(
 							'type' => 'select',
-							'label' => __( 'Button align', 'siteorigin-widgets' ),
+							'label' => __( 'Button align', 'so-widgets-bundle' ),
 							'default' => 'right',
 							'options' => array(
-								'left' => __( 'Left', 'siteorigin-widgets'),
-								'right' => __( 'Right', 'siteorigin-widgets'),
+								'left' => __( 'Left', 'so-widgets-bundle'),
+								'right' => __( 'Right', 'so-widgets-bundle'),
 							)
 						)
 					)
@@ -59,7 +59,7 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 				'button' => array(
 					'type' => 'widget',
 					'class' => 'SiteOrigin_Widget_Button_Widget',
-					'label' => __('Button', 'siteorigin-widgets'),
+					'label' => __('Button', 'so-widgets-bundle'),
 				),
 
 			),
@@ -79,7 +79,7 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 			array(
 				array(
 					'sow-cta-main',
-					siteorigin_widget_get_plugin_dir_url( 'cta' ) . 'css/style.css',
+					plugin_dir_url(__FILE__) . 'css/style.css',
 					array(),
 					SOW_BUNDLE_VERSION
 				)
@@ -89,7 +89,7 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 			array(
 				array(
 					'sow-cta-main',
-					siteorigin_widget_get_plugin_dir_url( 'cta' ) . 'js/cta' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					plugin_dir_url(__FILE__) . 'js/cta' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' ),
 					SOW_BUNDLE_VERSION
 				)

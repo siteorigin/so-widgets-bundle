@@ -198,7 +198,6 @@
 				img, svg {
 					height: 128px;
 					width: auto;
-					.transition(0.45s);
 				}
 			}
 
@@ -285,6 +284,13 @@
 				}
 			}
 
+		}
+
+		// When animations are enabled on the widgets list
+		&.so-animated {
+			img, svg {
+				.transition(0.45s);
+			}
 		}
 	}
 

@@ -19,7 +19,7 @@ class SiteOrigin_Widget_Field_Factory {
 		$element_name = $for_widget->so_get_field_name( $field_name, $for_repeater );
 		if ( empty( $field_options['type'] ) ) {
 			$field_options['type'] = 'text';
-			$field_options['label'] = __( 'This field does not have a type. Please specify a type for it to be rendered correctly.', 'siteorigin-widgets' );
+			$field_options['label'] = __( 'This field does not have a type. Please specify a type for it to be rendered correctly.', 'so-widgets-bundle' );
 		}
 		$field_class = $this->get_field_class_name( $field_options['type'] );
 

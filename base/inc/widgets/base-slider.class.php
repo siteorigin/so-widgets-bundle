@@ -51,43 +51,43 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		return array(
 			'speed' => array(
 				'type' => 'number',
-				'label' => __('Animation speed', 'siteorigin-widgets'),
-				'description' => __('Animation speed in milliseconds.', 'siteorigin-widgets'),
+				'label' => __('Animation speed', 'so-widgets-bundle'),
+				'description' => __('Animation speed in milliseconds.', 'so-widgets-bundle'),
 				'default' => 800,
 			),
 
 			'timeout' => array(
 				'type' => 'number',
-				'label' => __('Timeout', 'siteorigin-widgets'),
-				'description' => __('How long each frame is displayed for in milliseconds.', 'siteorigin-widgets'),
+				'label' => __('Timeout', 'so-widgets-bundle'),
+				'description' => __('How long each frame is displayed for in milliseconds.', 'so-widgets-bundle'),
 				'default' => 8000,
 			),
 
 			'nav_color_hex' => array(
 				'type' => 'color',
-				'label' => __('Navigation color', 'siteorigin-widgets'),
+				'label' => __('Navigation color', 'so-widgets-bundle'),
 				'default' => '#FFFFFF',
 			),
 
 			'nav_style' => array(
 				'type' => 'select',
-				'label' => __('Navigation style', 'siteorigin-widgets'),
+				'label' => __('Navigation style', 'so-widgets-bundle'),
 				'default' => 'thin',
 				'options' => array(
-					'ultra-thin' => __('Ultra thin', 'siteorigin-widgets'),
-					'thin' => __('Thin', 'siteorigin-widgets'),
-					'medium' => __('Medium', 'siteorigin-widgets'),
-					'thick' => __('Thick', 'siteorigin-widgets'),
-					'ultra-thin-rounded' => __('Rounded ultra thin', 'siteorigin-widgets'),
-					'thin-rounded' => __('Rounded thin', 'siteorigin-widgets'),
-					'medium-rounded' => __('Rounded medium', 'siteorigin-widgets'),
-					'thick-rounded' => __('Rounded thick', 'siteorigin-widgets'),
+					'ultra-thin' => __('Ultra thin', 'so-widgets-bundle'),
+					'thin' => __('Thin', 'so-widgets-bundle'),
+					'medium' => __('Medium', 'so-widgets-bundle'),
+					'thick' => __('Thick', 'so-widgets-bundle'),
+					'ultra-thin-rounded' => __('Rounded ultra thin', 'so-widgets-bundle'),
+					'thin-rounded' => __('Rounded thin', 'so-widgets-bundle'),
+					'medium-rounded' => __('Rounded medium', 'so-widgets-bundle'),
+					'thick-rounded' => __('Rounded thick', 'so-widgets-bundle'),
 				)
 			),
 
 			'nav_size' => array(
 				'type' => 'number',
-				'label' => __('Navigation size', 'siteorigin-widgets'),
+				'label' => __('Navigation size', 'so-widgets-bundle'),
 				'default' => '25',
 			),
 		);
@@ -98,20 +98,20 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'file' => array(
 				'type' => 'media',
 				'library' => 'video',
-				'label' => __('Video file', 'siteorigin-widgets'),
+				'label' => __('Video file', 'so-widgets-bundle'),
 			),
 
 			'url' => array(
 				'type' => 'text',
 				'sanitize' => 'url',
-				'label' => __('Video URL', 'siteorigin-widgets'),
+				'label' => __('Video URL', 'so-widgets-bundle'),
 				'optional' => 'true',
-				'description' => __('An external URL of the video. Overrides video file.', 'siteorigin-widgets')
+				'description' => __('An external URL of the video. Overrides video file.', 'so-widgets-bundle')
 			),
 
 			'format' => array(
 				'type' => 'select',
-				'label' => __('Video format', 'siteorigin-widgets'),
+				'label' => __('Video format', 'so-widgets-bundle'),
 				'options' => array(
 					'video/mp4' => 'MP4',
 					'video/webm' => 'WebM',
@@ -121,7 +121,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 
 			'height' => array(
 				'type' => 'number',
-				'label' => __( 'Maximum height', 'siteorigin-widgets' )
+				'label' => __( 'Maximum height', 'so-widgets-bundle' )
 			),
 
 		);
@@ -210,6 +210,8 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'color' => false,
 			'image' => false,
 			'opacity' => 1,
+			'url' => false,
+			'new_window' => false,
 			'image-sizing' => 'cover',              // options for image sizing are cover and contain
 			'videos' => false,
 			'videos-sizing' => 'background',        // options for video sizing are background or full
@@ -222,9 +224,14 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			if( !empty($background['image']) ) $background_style[] = 'background-image: url(' . esc_url($background['image']) . ')';
 		}
 
+		if( ! empty( $background['url'] ) ) {
+			$background_style[] = 'cursor: pointer;';
+		}
+
 		?>
 		<li
 			class="sow-slider-image <?php if( !empty($background['image']) && !empty($background['image-sizing']) ) echo 'sow-slider-image-' . $background['image-sizing'] ?>"
+			<?php if( !empty( $background['url'] ) ) echo 'data-url=\'' . json_encode(array( 'url' => sow_esc_url($background['url']), 'new_window' => !empty( $background['new_window'] ) ) ) . '\'' ; ?>
 			<?php if( !empty($background_style) ) echo 'style="' . implode(';', $background_style) . '"' ?>>
 			<?php
 			$this->render_frame_contents( $i, $frame );

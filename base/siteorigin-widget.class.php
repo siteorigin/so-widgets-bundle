@@ -124,7 +124,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// Storage hash allows templates to get access to
 		$storage_hash = '';
 		if( !empty($this->widget_options['instance_storage']) ) {
-			$stored_instance = $this->filter_stored_instance($instance);
+			$stored_instance = $this->modify_stored_instance($instance);
+			// We probably don't want panels_info
+			unset($stored_instance['panels_info']);
+
 			$storage_hash = substr( md5( serialize($stored_instance) ), 0, 8 );
 			if( !empty( $stored_instance ) && empty( $instance['is_preview'] ) ) {
 				// Store this if we have a non empty instance and are not previewing
@@ -174,7 +177,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$upload_dir = wp_upload_dir();
 		$this->clear_file_cache();
 
-		if($style !== false) {
+		if( !empty($style) ) {
 			$hash = $this->get_style_hash( $instance );
 			$css_name = $this->id_base.'-'.$style.'-'.$hash;
 
@@ -299,6 +302,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$form_id = 'siteorigin_widget_form_'.md5( uniqid( rand(), true ) );
 		$class_name = str_replace( '_', '-', strtolower(get_class($this)) );
 
+		if( empty( $instance['_sow_form_id'] ) ) {
+			$instance['_sow_form_id'] = uniqid();
+		}
+
 		?>
 		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>" id="<?php echo $form_id ?>" data-class="<?php echo get_class($this) ?>" style="display: none">
 			<?php
@@ -317,6 +324,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				$this->fields[$field_name] = $field;
 			}
 			?>
+			<input type="hidden" name="<?php echo $this->get_field_name('_sow_form_id') ?>" value="<?php echo esc_attr( $instance['_sow_form_id'] ) ?>" class="siteorigin-widgets-form-id" />
 		</div>
 		<div class="siteorigin-widget-form-no-styles">
 			<p><strong><?php _e('This widget has scripts and styles that need to be loaded before you can use it. Please save and reload your current page.', 'siteorigin-widgets') ?></strong></p>
@@ -368,7 +376,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			wp_localize_script( 'siteorigin-widget-admin', 'soWidgets', array(
 				'ajaxurl' => wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ),
-				'sure' => __('Are you sure?', 'siteorigin-widgets')
+				'sure' => __('Are you sure?', 'so-widgets-bundle')
 			) );
 
 			global $wp_customize;
@@ -821,7 +829,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @return mixed
 	 */
-	function filter_stored_instance( $instance ){
+	function modify_stored_instance( $instance ){
 		return $instance;
 	}
 
@@ -899,7 +907,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$f_script[0],
 					isset( $f_script[1] ) ? $f_script[1] : false,
 					isset( $f_script[2] ) ? $f_script[2] : array(),
-					isset( $f_script[3] ) ? $f_script[3] : false,
+					!empty( $f_script[3] ) ? $f_script[3] : SOW_BUNDLE_VERSION,
 					isset( $f_script[4] ) ? $f_script[4] : false
 				);
 			}
@@ -929,7 +937,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$f_style[0],
 					isset( $f_style[1] ) ? $f_style[1] : false,
 					isset( $f_style[2] ) ? $f_style[2] : array(),
-					isset( $f_style[3] ) ? $f_style[3] : false,
+					!empty( $f_script[3] ) ? $f_script[3] : SOW_BUNDLE_VERSION,
 					isset( $f_style[4] ) ? $f_style[4] : "all"
 				);
 			}

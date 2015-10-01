@@ -10,13 +10,13 @@ function siteorigin_widget_post_selector_enqueue_admin_scripts() {
 			'ajaxurl' => wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ),
 			'modal' => file_get_contents( plugin_dir_path(SOW_BUNDLE_BASE_FILE).'base/tpl/posts-selector/modal.html' ),
 			'postSummary' => file_get_contents( plugin_dir_path(SOW_BUNDLE_BASE_FILE).'base/tpl/posts-selector/post.html' ),
-			'foundPosts' => '<div class="sow-post-count-message">' . sprintf( __('This query returns <a href="#" class="preview-query-posts">%s posts</a>.', 'siteorigin-widgets'), '<%= foundPosts %>') . '</div>',
+			'foundPosts' => '<div class="sow-post-count-message">' . sprintf( __('This query returns <a href="#" class="preview-query-posts">%s posts</a>.', 'so-widgets-bundle'), '<%= foundPosts %>') . '</div>',
 			'fields' => siteorigin_widget_post_selector_form_fields(),
 			'selector' => file_get_contents( plugin_dir_path(SOW_BUNDLE_BASE_FILE).'base/tpl/posts-selector/selector.html' ),
 		) );
 
 		wp_localize_script( 'siteorigin-widget-admin-posts-selector', 'sowPostsSelectorVars', array(
-			'modalTitle' => __('Select posts', 'siteorigin-widgets'),
+			'modalTitle' => __('Select posts', 'so-widgets-bundle'),
 		) );
 	}
 }
@@ -98,9 +98,9 @@ function siteorigin_widget_post_selector_form_fields(){
 
 	// The post type field
 	$return['post_type'] = '';
-	$return['post_type'] .= '<label><span>' . __('Post type', 'siteorigin-widgets') . '</span>';
+	$return['post_type'] .= '<label><span>' . __('Post type', 'so-widgets-bundle') . '</span>';
 	$return['post_type'] .= '<select name="post_type">';
-	$return['post_type'] .= '<option value="_all">' . __('All', 'siteorigin-widgets') . '</option>';
+	$return['post_type'] .= '<option value="_all">' . __('All', 'so-widgets-bundle') . '</option>';
 	foreach( get_post_types( array( 'public' => true  ), 'objects' ) as $id => $type ) {
 		if(!empty($type->labels->name)) {
 			$post_types[$id] = $type->labels->name;
@@ -111,36 +111,36 @@ function siteorigin_widget_post_selector_form_fields(){
 
 	// The field for specifying individual posts
 	$return['post__in'] = '';
-	$return['post__in'] .= '<label><span>' . __('Post in', 'siteorigin-widgets') . '</span>';
+	$return['post__in'] .= '<label><span>' . __('Post in', 'so-widgets-bundle') . '</span>';
 	$return['post__in'] .= '<input type="text" name="post__in" class="" />';
-	$return['post__in'] .= ' <a href="#" class="sow-select-posts button button-secondary">' . __('Select posts', 'siteorigin-widget') . '</a>';
+	$return['post__in'] .= ' <a href="#" class="sow-select-posts button button-secondary">' . __('Select posts', 'so-widgets-bundle') . '</a>';
 	$return['post__in'] .= '</label>';
 
 	// The taxonomy field
 	$return['tax_query'] = '';
-	$return['tax_query'] .= '<label><span>' . __('Taxonomies', 'siteorigin-widgets') . '</span>';
+	$return['tax_query'] .= '<label><span>' . __('Taxonomies', 'so-widgets-bundle') . '</span>';
 	$return['tax_query'] .= '<input type="text" name="tax_query" class="" placeholder="search" />';
 	$return['tax_query'] .= '</label>';
 
 
 	// The order by field
 	$return['orderby'] = '';
-	$return['orderby'] .= '<label><span>' . __('Order by', 'siteorigin-widgets') . '</span>';
+	$return['orderby'] .= '<label><span>' . __('Order by', 'so-widgets-bundle') . '</span>';
 	$return['orderby'] .= '<select name="orderby">';
 	$orderby = array(
-		'none' => __('No order', 'siteorigin-widgets'),
-		'ID' => __('Post ID', 'siteorigin-widgets'),
-		'author' => __('Author', 'siteorigin-widgets'),
-		'title' => __('Title', 'siteorigin-widgets'),
-		'date' => __('Published date', 'siteorigin-widgets'),
-		'modified' => __('Modified date', 'siteorigin-widgets'),
-		'parent' => __('By parent', 'siteorigin-widgets'),
-		'rand' => __('Random order', 'siteorigin-widgets'),
-		'comment_count' => __('Comment count', 'siteorigin-widgets'),
-		'menu_order' => __('Menu order', 'siteorigin-widgets'),
-		'meta_value' => __('By meta value', 'siteorigin-widgets'),
-		'meta_value_num' => __('By numeric meta value', 'siteorigin-widgets'),
-		'post__in' => __('By include order', 'siteorigin-widgets'),
+		'none' => __('No order', 'so-widgets-bundle'),
+		'ID' => __('Post ID', 'so-widgets-bundle'),
+		'author' => __('Author', 'so-widgets-bundle'),
+		'title' => __('Title', 'so-widgets-bundle'),
+		'date' => __('Published date', 'so-widgets-bundle'),
+		'modified' => __('Modified date', 'so-widgets-bundle'),
+		'parent' => __('By parent', 'so-widgets-bundle'),
+		'rand' => __('Random order', 'so-widgets-bundle'),
+		'comment_count' => __('Comment count', 'so-widgets-bundle'),
+		'menu_order' => __('Menu order', 'so-widgets-bundle'),
+		'meta_value' => __('By meta value', 'so-widgets-bundle'),
+		'meta_value_num' => __('By numeric meta value', 'so-widgets-bundle'),
+		'post__in' => __('By include order', 'so-widgets-bundle'),
 	);
 	foreach($orderby as $id => $v) {
 		$return['orderby'] .= '<option value="' . $id . '">' . $v . '</option>';
@@ -151,19 +151,19 @@ function siteorigin_widget_post_selector_form_fields(){
 	$return['orderby'] .= '</label>';
 
 	$return['posts_per_page'] = '';
-	$return['posts_per_page'] .= '<label><span>' . __('Posts per page', 'siteorigin-widgets') . '</span>';
+	$return['posts_per_page'] .= '<label><span>' . __('Posts per page', 'so-widgets-bundle') . '</span>';
 	$return['posts_per_page'] .= '<input type="number" name="posts_per_page" class="" />';
 	$return['posts_per_page'] .= '</label>';
 
 
 	$return['sticky'] = '';
-	$return['sticky'] .= '<label><span>' . __('Sticky posts', 'siteorigin-widgets') . '</span>';
+	$return['sticky'] .= '<label><span>' . __('Sticky posts', 'so-widgets-bundle') . '</span>';
 	$return['sticky'] .= '<select name="sticky">';
 	$sticky = array(
-		'' => __('Default', 'siteorigin-widgets'),
-		'ignore' => __('Ignore sticky', 'siteorigin-widgets'),
-		'exclude' => __('Exclude sticky', 'siteorigin-widgets'),
-		'only' => __('Include sticky', 'siteorigin-widgets'),
+		'' => __('Default', 'so-widgets-bundle'),
+		'ignore' => __('Ignore sticky', 'so-widgets-bundle'),
+		'exclude' => __('Exclude sticky', 'so-widgets-bundle'),
+		'only' => __('Include sticky', 'so-widgets-bundle'),
 	);
 	foreach($sticky as $id => $v) {
 		$return['sticky'] .= '<option value="' . $id . '">' . $v . '</option>';
@@ -171,9 +171,9 @@ function siteorigin_widget_post_selector_form_fields(){
 	$return['sticky'] .= '</select></label>';
 
 	$return['additional'] = '';
-	$return['additional'] .= '<label><span>' . __('Additional', 'siteorigin-widgets') . '</span>';
+	$return['additional'] .= '<label><span>' . __('Additional', 'so-widgets-bundle') . '</span>';
 	$return['additional'] .= '<input type="text" name="additional" class="" />';
-	$return['additional'] .= '<small>' . __('Additional query arguments. See <a href="http://codex.wordpress.org/Function_Reference/query_posts" target="_blank">query_posts</a>.', 'siteorigin-widgets') . '</small>';
+	$return['additional'] .= '<small>' . __('Additional query arguments. See <a href="http://codex.wordpress.org/Function_Reference/query_posts" target="_blank">query_posts</a>.', 'so-widgets-bundle') . '</small>';
 	$return['additional'] .= '</label>';
 
 	return $return;
