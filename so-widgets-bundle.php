@@ -155,14 +155,15 @@ class SiteOrigin_Widgets_Bundle {
 			<p><?php echo __( 'New widgets available in the ') . '<a href="' . admin_url('plugins.php?page=so-widgets-plugins') . '">' . __('SiteOrigin Widgets Bundle', 'so-widgets-bundle' ) . '</a>!'; ?></p>
 			<?php
 
-            $default_headers = array(
-                    'Name' => 'Widget Name',
-                    'Description' => 'Description',
-                    'Author' => 'Author',
-                    'AuthorURI' => 'Author URI',
-                    'WidgetURI' => 'Widget URI',
-                    'VideoURI' => 'Video URI',
-            );
+			$default_headers = array(
+				'Name' => 'Widget Name',
+				'Description' => 'Description',
+				'Author' => 'Author',
+				'AuthorURI' => 'Author URI',
+				'WidgetURI' => 'Widget URI',
+				'VideoURI' => 'Video URI',
+			);
+
 			foreach ( $new_widgets as $widget_file_path ) {
 				preg_match( '/.*[\/\\\\](.*).php/', $widget_file_path, $match );
 				$widget = get_file_data( $widget_file_path, $default_headers, 'siteorigin-widget' );
