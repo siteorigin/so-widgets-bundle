@@ -11,81 +11,82 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 
 		parent::__construct(
 			'sow-simple-masonry',
-			__('SiteOrigin Simple Masonry', 'siteorigin-widgets'),
+			__('SiteOrigin Simple Masonry', 'so-widgets-bundle'),
 			array(
-				'description' => __('A simple masonry layout widget.', 'siteorigin-widgets'),
+				'description' => __('A simple masonry layout widget.', 'so-widgets-bundle'),
 //				'help' => 'https://siteorigin.com/widgets-bundle/simple-masonry-widget-documentation/'
 			),
+			array(),
 			array(
-
-			),
-			array(
-
 				'widget_title' => array(
 					'type' => 'text',
-					'label' => __('Widget Title', 'siteorigin-widgets'),
+					'label' => __('Widget Title', 'so-widgets-bundle'),
 				),
-
 				'items' => array(
 					'type' => 'repeater',
-					'label' => __( 'Images', 'siteorigin-widgets' ),
+					'label' => __( 'Images', 'so-widgets-bundle' ),
 					'item_label' => array(
 						'selector'     => "[id*='title']"
 					),
 					'fields' => array(
 						'image' => array(
 							'type' => 'media',
-							'label' => __( 'Image', 'siteorigin-widgets')
+							'label' => __( 'Image', 'so-widgets-bundle')
 						),
 						'column_span' => array(
 							'type' => 'number',
-							'label' => __( 'Column span', 'siteorigin-widgets' ),
-							'description' => __( 'Number of columns this item should span. (Limited to number of columns selected in Layout section below.)', 'siteorigin-widgets' ),
+							'label' => __( 'Column span', 'so-widgets-bundle' ),
+							'description' => __( 'Number of columns this item should span. (Limited to number of columns selected in Layout section below.)', 'so-widgets-bundle' ),
 							'default' => 1
 						),
 						'row_span' => array(
 							'type' => 'number',
-							'label' => __( 'Row span', 'siteorigin-widgets' ),
-							'description' => __( 'Number of rows this item should span. (Limited to number of columns selected in Layout section below.)', 'siteorigin-widgets' ),
+							'label' => __( 'Row span', 'so-widgets-bundle' ),
+							'description' => __( 'Number of rows this item should span. (Limited to number of columns selected in Layout section below.)', 'so-widgets-bundle' ),
 							'default' => 1
 						),
 						'title' => array(
 							'type' => 'text',
-							'label' => __('Title', 'siteorigin-widgets'),
+							'label' => __('Title', 'so-widgets-bundle'),
 						),
 						'url' => array(
 							'type' => 'link',
-							'label' => __('Destination URL', 'siteorigin-widgets'),
+							'label' => __('Destination URL', 'so-widgets-bundle'),
 						),
 						'new_window' => array(
 							'type' => 'checkbox',
 							'default' => false,
-							'label' => __('Open in a new window', 'siteorigin-widgets'),
+							'label' => __('Open in a new window', 'so-widgets-bundle'),
 						),
 					)
 				),
-
-				'layout' => array(
+				'desktop_layout' => array(
 					'type' => 'section',
-					'label' => __( 'Layout', 'siteorigin-widgets' ),
+					'label' => __( 'Layout', 'so-widgets-bundle' ),
 					'fields' => array(
 						'columns' => array(
 							'type' => 'slider',
-							'label' => __( 'Number of columns', 'siteorigin-widgets' ),
+							'label' => __( 'Number of columns', 'so-widgets-bundle' ),
 							'min' => 1,
 							'max' => 10,
 							'default' => 4
 						),
 						'row_height' => array(
 							'type' => 'number',
-							'label' => __( 'Row height', 'siteorigin-widgets' ),
-							'description' => __( 'Leave blank to match calculated column width.', 'siteorigin-widgets' ),
+							'label' => __( 'Row height', 'so-widgets-bundle' ),
+							'description' => __( 'Leave blank to match calculated column width.', 'so-widgets-bundle' ),
+							'default' => 0
+						),
+						'gutter' => array(
+							'type' => 'number',
+							'label' => __( 'Gutter', 'so-widgets-bundle'),
+							'description' => __( 'Space between masonry items.', 'so-widgets-bundle' ),
 							'default' => 0
 						)
 //						'randomize' => array(
 //							'type' => 'checkbox',
-//							'label' => __( 'Randomize item sizes', 'siteorigin-widgets' ),
-//							'description' => __( 'Causes column and row spans to be ignored.', 'siteorigin-widgets' )
+//							'label' => __( 'Randomize item sizes', 'so-widgets-bundle' ),
+//							'description' => __( 'Causes column and row spans to be ignored.', 'so-widgets-bundle' )
 //						),
 					)
 				)
@@ -123,17 +124,13 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 		return 'simple-masonry';
 	}
 
-	/**
-	 * Get the variables that we'll be injecting into the less stylesheet.
-	 *
-	 * @param $instance
-	 *
-	 * @return array
-	 */
-	function get_less_variables($instance){
-		$cols = empty( $instance['layout']['columns'] ) ? 4 : $instance['layout']['columns'];
+	public function get_template_variables( $instance, $args ) {
 		return array(
-			'num_columns' => $cols
+			'packery_settings' => array(
+				'num_columns' => $instance['desktop_layout']['columns'],
+				'row_height' => empty( $instance['desktop_layout']['row_height'] ) ? 0 : intval( $instance['desktop_layout']['row_height'] ),
+				'gutter' => empty( $instance['desktop_layout']['gutter'] ) ? 0 : intval( $instance['desktop_layout']['gutter'] ),
+			)
 		);
 	}
 }

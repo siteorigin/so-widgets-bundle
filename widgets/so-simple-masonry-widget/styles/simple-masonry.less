@@ -1,11 +1,5 @@
 
-@num_columns: 4;
-@item_width: 100% / @num_columns;
-
-.sow-masonry-grid-sizer,
 .sow-masonry-grid-item {
-    width: @item_width;
-    //min-width: 100px;
     overflow: hidden;
 
     img {
@@ -13,13 +7,3 @@
         max-width: inherit;
     }
 }
-
-.col-spans(@num) when (@num > 0) {
-    .col-spans(@num - 1);
-
-    .sow-masonry-grid-item--col-span@{num} {
-        width: @item_width*@num;
-    }
-}
-
-.col-spans(@num_columns);
