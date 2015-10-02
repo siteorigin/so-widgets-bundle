@@ -19,7 +19,7 @@ jQuery(function ($) {
             //Use rowHeight if non-zero else fall back to matching columnWidth.
             $$.css('height', (rowHeight || columnWidth) * rowSpan);
 
-            var $img = $$.find('> img');
+            var $img = $$.find('> img,> a > img');
             var imgAR = $img.attr('height') > 0 ? $img.attr('width')/$img.attr('height') : 1;
             var itemAR = $$.height() > 0 ? $$.width()/$$.height() : 1;
             imgAR = parseFloat(imgAR.toFixed(3));

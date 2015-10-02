@@ -23,13 +23,3 @@
 }
 
 .col-spans(@num_columns);
-
-.row-spans(@num) when (@num > 0) {
-    .row-spans(@num - 1);
-
-    .sow-masonry-grid-item--row-span@{num} {
-        height: @item_width*@num;
-    }
-}
-
-.row-spans(@num_columns);
