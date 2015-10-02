@@ -137,7 +137,7 @@ class SiteOrigin_Widgets_Bundle {
 			update_option( 'siteorigin_widgets_old_widgets', implode( ',', $widgets ) );
 			return;
 		}
-        $old_widgets = explode( ',', $old_widgets );
+		$old_widgets = explode( ',', $old_widgets );
 		$new_widgets = array_diff( $widgets, $old_widgets );
 		if ( ! empty( $new_widgets ) ) {
 			update_option( 'siteorigin_widgets_new_widgets', $new_widgets );
@@ -176,7 +176,7 @@ class SiteOrigin_Widgets_Bundle {
 			?>
 		</div>
 		<?php
-        update_option( 'siteorigin_widgets_new_widgets', array() );
+		update_option( 'siteorigin_widgets_new_widgets', array() );
 	}
 
 	/**
