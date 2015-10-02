@@ -54,6 +54,8 @@ class SiteOrigin_Widgets_Bundle {
 
 		// Version check for cache clearing
 		add_action( 'admin_init', array($this, 'plugin_version_check') );
+		add_action( 'siteorigin_widgets_version_update', array( $this, 'check_for_new_widgets' ) );
+		add_action( 'admin_notices', array( $this, 'display_admin_notices') );
 
 		// These filters are used to activate any widgets that are missing.
 		add_filter( 'siteorigin_panels_data', array($this, 'load_missing_widgets') );
@@ -120,6 +122,60 @@ class SiteOrigin_Widgets_Bundle {
 			do_action( 'siteorigin_widgets_version_update', SOW_BUNDLE_VERSION, $active_version );
 		}
 
+	}
+
+	/**
+	 * Setup and return the widget folders
+	 */
+	function check_for_new_widgets() {
+		// get list of available widgets
+		$widgets = array_keys( $this->get_widgets_list() );
+		// get option for previously installed widgets
+		$old_widgets = get_option( 'siteorigin_widgets_old_widgets' );
+		// if this has never been set before, it's probably a new installation so we don't want to notify for all the widgets
+		if ( empty( $old_widgets ) ) {
+			update_option( 'siteorigin_widgets_old_widgets', implode( ',', $widgets ) );
+			return;
+		}
+        $old_widgets = explode( ',', $old_widgets );
+		$new_widgets = array_diff( $widgets, $old_widgets );
+		if ( ! empty( $new_widgets ) ) {
+			update_option( 'siteorigin_widgets_new_widgets', $new_widgets );
+			update_option( 'siteorigin_widgets_old_widgets', implode( ',', $widgets ) );
+		}
+	}
+
+	function display_admin_notices() {
+		$new_widgets = get_option( 'siteorigin_widgets_new_widgets' );
+		if ( empty( $new_widgets ) ) {
+			return;
+		}
+		?>
+		<div class="updated">
+			<p><?php echo __( 'New widgets available in the ') . '<a href="' . admin_url('plugins.php?page=so-widgets-plugins') . '">' . __('SiteOrigin Widgets Bundle', 'so-widgets-bundle' ) . '</a>!'; ?></p>
+			<?php
+
+            $default_headers = array(
+                    'Name' => 'Widget Name',
+                    'Description' => 'Description',
+                    'Author' => 'Author',
+                    'AuthorURI' => 'Author URI',
+                    'WidgetURI' => 'Widget URI',
+                    'VideoURI' => 'Video URI',
+            );
+			foreach ( $new_widgets as $widget_file_path ) {
+				preg_match( '/.*[\/\\\\](.*).php/', $widget_file_path, $match );
+				$widget = get_file_data( $widget_file_path, $default_headers, 'siteorigin-widget' );
+				$name = empty( $widget['Name'] ) ? $match[1] : $widget['Name'];
+				$description = empty( $widget['Description'] ) ? __( 'A new widget!', 'so-widgets-bundle' ) : $widget['Description'];
+				?>
+				<p><b><?php echo esc_html( $name . ' - ' . $description) ?></b></p>
+				<?php
+			}
+			?>
+		</div>
+		<?php
+        update_option( 'siteorigin_widgets_new_widgets', array() );
 	}
 
 	/**
