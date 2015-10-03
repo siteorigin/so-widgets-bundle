@@ -6,21 +6,31 @@ jQuery(function ($) {
         var columnWidth;
         $grid.each(function(){
             var $gridEl = $(this);
-            var settings = $gridEl.data('settings');
-            var numColumns = settings.numColumns;
+            var layouts = $gridEl.data('layouts');
+            var tabletQuery = window.matchMedia('(max-width: ' + layouts.tablet.breakPoint + 'px)');
+            var mobileQuery = window.matchMedia('(max-width: ' + layouts.mobile.breakPoint + 'px)');
+            var layout = layouts.desktop;
+            if(mobileQuery.matches) {
+                layout = layouts.mobile;
+            } else if (tabletQuery.matches) {
+                layout = layouts.tablet;
+            }
+            var numColumns = layout.numColumns;
             $gridEl.css('width', 'auto');
-            var horizontalGutterSpace = settings.gutter * ( numColumns - 1 );
+            var horizontalGutterSpace = layout.gutter * ( numColumns - 1 );
             columnWidth = Math.floor( ( $gridEl.width() - ( horizontalGutterSpace ) ) / numColumns );
             $gridEl.width( ( columnWidth * numColumns ) + horizontalGutterSpace );
 
             $gridEl.find('> .sow-masonry-grid-item').each(function(){
                 var $$ = $(this);
                 var colSpan = $$.data('colSpan');
-                $$.width( ( columnWidth * colSpan ) + (settings.gutter * (colSpan-1)));
+                colSpan = Math.max(Math.min(colSpan, layout.numColumns), 1);
+                $$.width( ( columnWidth * colSpan ) + (layout.gutter * (colSpan-1)));
                 var rowSpan = $$.data('rowSpan');
+                rowSpan = Math.max(Math.min(rowSpan, layout.numColumns), 1);
                 //Use rowHeight if non-zero else fall back to matching columnWidth.
-                var rowHeight = settings.rowHeight || columnWidth;
-                $$.css('height', (rowHeight * rowSpan) + (settings.gutter * (rowSpan-1)));
+                var rowHeight = layout.rowHeight || columnWidth;
+                $$.css('height', (rowHeight * rowSpan) + (layout.gutter * (rowSpan-1)));
 
                 var $img = $$.find('> img,> a > img');
                 var imgAR = $img.attr('height') > 0 ? $img.attr('width')/$img.attr('height') : 1;
@@ -44,7 +54,7 @@ jQuery(function ($) {
             $gridEl.packery({
                 itemSelector: '.sow-masonry-grid-item',
                 columnWidth: columnWidth,
-                gutter: settings.gutter
+                gutter: layout.gutter
             });
         });
     };

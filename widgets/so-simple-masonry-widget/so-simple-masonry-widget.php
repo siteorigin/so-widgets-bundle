@@ -62,7 +62,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 				),
 				'desktop_layout' => array(
 					'type' => 'section',
-					'label' => __( 'Layout', 'so-widgets-bundle' ),
+					'label' => __( 'Desktop Layout', 'so-widgets-bundle' ),
 					'fields' => array(
 						'columns' => array(
 							'type' => 'slider',
@@ -83,14 +83,68 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 							'description' => __( 'Space between masonry items.', 'so-widgets-bundle' ),
 							'default' => 0
 						)
-//						'randomize' => array(
-//							'type' => 'checkbox',
-//							'label' => __( 'Randomize item sizes', 'so-widgets-bundle' ),
-//							'description' => __( 'Causes column and row spans to be ignored.', 'so-widgets-bundle' )
-//						),
+					)
+				),
+				'tablet_layout' => array(
+					'type' => 'section',
+					'label' => __( 'Tablet Layout', 'so-widgets-bundle' ),
+					'fields' => array(
+						'break_point' => array(
+							'type' => 'number',
+							'lanel' => __( 'Break point', 'so-widgets-bundle' ),
+							'default' => 768
+						),
+						'columns' => array(
+							'type' => 'slider',
+							'label' => __( 'Number of columns', 'so-widgets-bundle' ),
+							'min' => 1,
+							'max' => 10,
+							'default' => 2
+						),
+						'row_height' => array(
+							'type' => 'number',
+							'label' => __( 'Row height', 'so-widgets-bundle' ),
+							'description' => __( 'Leave blank to match calculated column width.', 'so-widgets-bundle' ),
+							'default' => 0
+						),
+						'gutter' => array(
+							'type' => 'number',
+							'label' => __( 'Gutter', 'so-widgets-bundle'),
+							'description' => __( 'Space between masonry items.', 'so-widgets-bundle' ),
+							'default' => 0
+						)
+					)
+				),
+				'mobile_layout' => array(
+					'type' => 'section',
+					'label' => __( 'Mobile Layout', 'so-widgets-bundle' ),
+					'fields' => array(
+						'break_point' => array(
+							'type' => 'number',
+							'lanel' => __( 'Break point', 'so-widgets-bundle' ),
+							'default' => 480
+						),
+						'columns' => array(
+							'type' => 'slider',
+							'label' => __( 'Number of columns', 'so-widgets-bundle' ),
+							'min' => 1,
+							'max' => 10,
+							'default' => 1
+						),
+						'row_height' => array(
+							'type' => 'number',
+							'label' => __( 'Row height', 'so-widgets-bundle' ),
+							'description' => __( 'Leave blank to match calculated column width.', 'so-widgets-bundle' ),
+							'default' => 0
+						),
+						'gutter' => array(
+							'type' => 'number',
+							'label' => __( 'Gutter', 'so-widgets-bundle'),
+							'description' => __( 'Space between masonry items.', 'so-widgets-bundle' ),
+							'default' => 0
+						)
 					)
 				)
-
 			),
 			plugin_dir_path(__FILE__)
 		);
@@ -126,10 +180,31 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 
 	public function get_template_variables( $instance, $args ) {
 		return array(
-			'packery_settings' => array(
-				'num_columns' => $instance['desktop_layout']['columns'],
-				'row_height' => empty( $instance['desktop_layout']['row_height'] ) ? 0 : intval( $instance['desktop_layout']['row_height'] ),
-				'gutter' => empty( $instance['desktop_layout']['gutter'] ) ? 0 : intval( $instance['desktop_layout']['gutter'] ),
+			'items' => $instance['items'],
+			'layouts' => array(
+				'desktop' => siteorigin_widgets_underscores_to_camel_case(
+					array(
+						'num_columns' => $instance['desktop_layout']['columns'],
+						'row_height' => empty( $instance['desktop_layout']['row_height'] ) ? 0 : intval( $instance['desktop_layout']['row_height'] ),
+						'gutter' => empty( $instance['desktop_layout']['gutter'] ) ? 0 : intval( $instance['desktop_layout']['gutter'] ),
+					)
+				),
+				'tablet' => siteorigin_widgets_underscores_to_camel_case(
+					array(
+						'break_point' => $instance['tablet_layout']['break_point'],
+						'num_columns' => $instance['tablet_layout']['columns'],
+						'row_height' => empty( $instance['tablet_layout']['row_height'] ) ? 0 : intval( $instance['tablet_layout']['row_height'] ),
+						'gutter' => empty( $instance['tablet_layout']['gutter'] ) ? 0 : intval( $instance['tablet_layout']['gutter'] ),
+					)
+				),
+				'mobile' => siteorigin_widgets_underscores_to_camel_case(
+					array(
+						'break_point' => $instance['mobile_layout']['break_point'],
+						'num_columns' => $instance['mobile_layout']['columns'],
+						'row_height' => empty( $instance['mobile_layout']['row_height'] ) ? 0 : intval( $instance['mobile_layout']['row_height'] ),
+						'gutter' => empty( $instance['mobile_layout']['gutter'] ) ? 0 : intval( $instance['mobile_layout']['gutter'] ),
+					)
+				),
 			)
 		);
 	}
