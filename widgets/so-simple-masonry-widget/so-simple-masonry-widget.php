@@ -88,6 +88,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 				'tablet_layout' => array(
 					'type' => 'section',
 					'label' => __( 'Tablet Layout', 'so-widgets-bundle' ),
+					'hide' => true,
 					'fields' => array(
 						'break_point' => array(
 							'type' => 'number',
@@ -118,6 +119,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 				'mobile_layout' => array(
 					'type' => 'section',
 					'label' => __( 'Mobile Layout', 'so-widgets-bundle' ),
+					'hide' => true,
 					'fields' => array(
 						'break_point' => array(
 							'type' => 'number',

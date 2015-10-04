@@ -3,7 +3,6 @@ jQuery(function ($) {
     var $grid = $('.sow-masonry-grid');
 
     var resizeMasonry = function(){
-        var columnWidth;
         $grid.each(function(){
             var $gridEl = $(this);
             var layouts = $gridEl.data('layouts');
@@ -18,7 +17,7 @@ jQuery(function ($) {
             var numColumns = layout.numColumns;
             $gridEl.css('width', 'auto');
             var horizontalGutterSpace = layout.gutter * ( numColumns - 1 );
-            columnWidth = Math.floor( ( $gridEl.width() - ( horizontalGutterSpace ) ) / numColumns );
+            var columnWidth = Math.floor( ( $gridEl.width() - ( horizontalGutterSpace ) ) / numColumns );
             $gridEl.width( ( columnWidth * numColumns ) + horizontalGutterSpace );
 
             $gridEl.find('> .sow-masonry-grid-item').each(function(){
@@ -51,11 +50,13 @@ jQuery(function ($) {
                 }
             });
 
-            $gridEl.packery({
-                itemSelector: '.sow-masonry-grid-item',
-                columnWidth: columnWidth,
-                gutter: layout.gutter
-            });
+            setTimeout( function() {
+                $gridEl.packery({
+                    itemSelector: '.sow-masonry-grid-item',
+                    columnWidth: columnWidth,
+                    gutter: layout.gutter
+                });
+            }, 200);
         });
     };
 
