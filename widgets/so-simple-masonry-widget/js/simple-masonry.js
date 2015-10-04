@@ -39,24 +39,24 @@ jQuery(function ($) {
                 if(imgAR > itemAR) {
                     $img.css('width', 'auto');
                     $img.css('height', '100%');
+                    $img.css('margin-top', '');
                     var marginLeft = ($img.width() - $$.width()) * -0.5;
                     $img.css('margin-left', marginLeft+'px');
                 }
                 else {
                     $img.css('height', 'auto');
                     $img.css('width', '100%');
+                    $img.css('margin-left', '');
                     var marginTop = ($img.height() - $$.height()) * -0.5;
                     $img.css('margin-top', marginTop+'px');
                 }
             });
 
-            setTimeout( function() {
-                $gridEl.packery({
-                    itemSelector: '.sow-masonry-grid-item',
-                    columnWidth: columnWidth,
-                    gutter: layout.gutter
-                });
-            }, 200);
+            $gridEl.packery({
+                itemSelector: '.sow-masonry-grid-item',
+                columnWidth: columnWidth,
+                gutter: layout.gutter
+            });
         });
     };
 

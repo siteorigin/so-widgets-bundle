@@ -34,15 +34,19 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 							'label' => __( 'Image', 'so-widgets-bundle')
 						),
 						'column_span' => array(
-							'type' => 'number',
+							'type' => 'slider',
 							'label' => __( 'Column span', 'so-widgets-bundle' ),
 							'description' => __( 'Number of columns this item should span. (Limited to number of columns selected in Layout section below.)', 'so-widgets-bundle' ),
+							'min' => 1,
+							'max' => 10,
 							'default' => 1
 						),
 						'row_span' => array(
-							'type' => 'number',
+							'type' => 'slider',
 							'label' => __( 'Row span', 'so-widgets-bundle' ),
 							'description' => __( 'Number of rows this item should span. (Limited to number of columns selected in Layout section below.)', 'so-widgets-bundle' ),
+							'min' => 1,
+							'max' => 10,
 							'default' => 1
 						),
 						'title' => array(
