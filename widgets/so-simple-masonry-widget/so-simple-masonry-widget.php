@@ -20,7 +20,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 			array(
 				'widget_title' => array(
 					'type' => 'text',
-					'label' => __('Widget Title', 'so-widgets-bundle'),
+					'label' => __('Title', 'so-widgets-bundle'),
 				),
 				'items' => array(
 					'type' => 'repeater',
