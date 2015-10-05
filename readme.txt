@@ -50,6 +50,26 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.5 - October 5 2015 =
+* Fixed: Conflict between WPML and repeaters.
+* Added Simple Masonry Layout widget.
+* Added Contact Form widget.
+* Added Image Grid widget.
+* Added Testimonial widget.
+* Changed layout of widgets activation page.
+* Added Trianglify to generate placeholder widget icons.
+* Added mechanism to use state emitters in repeaters.
+* Section expanded/collapsed states now stored across form loads.
+* Display once off admin notice when new widgets are available.
+* Fixed translation domain.
+* Editor Widget: Allow more HTML in Editor widget for trusted users.
+* Hero Image Widget: Added top padding setting.
+* Hero Image Widget: Can now set background click URL.
+* Hero Image Widget: Improved handling of buttons shortcode.
+* Slider Widget : Fixed open in new window setting.
+* Headline Widget: Added word-break CSS.
+* Headline Widget: Added option to set type of heading tags used.
+
 = 1.4.4 - September 6 2015 =
 * Fixed issue with slider image widths.
 
