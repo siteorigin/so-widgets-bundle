@@ -6,17 +6,17 @@
 			<img src="<?php echo plugin_dir_url(__FILE__) ?>../images/icon-gear.png" class="icon-gear" width="26" height="26">
 			<img src="<?php echo plugin_dir_url(__FILE__) ?>../images/icon-front.png" class="icon-front" width="50" height="43">
 		</span>
-		<h1><?php _e('SiteOrigin Widgets Bundle', 'siteorigin-widgets') ?></h1>
+		<h1><?php _e('SiteOrigin Widgets Bundle', 'so-widgets-bundle') ?></h1>
 
 		<div id="sow-widget-search">
-			<input type="search" placeholder="<?php esc_attr_e('Filter Widgets', 'siteorigin-widgets') ?>" />
+			<input type="search" placeholder="<?php esc_attr_e('Filter Widgets', 'so-widgets-bundle') ?>" />
 		</div>
 	</div>
 
 	<ul class="page-nav">
-		<li class="active"><a href="#all"><?php _e('All', 'siteorigin-widgets') ?></a></li>
-		<li><a href="#enabled"><?php _e('Enabled', 'siteorigin-widgets') ?></a></li>
-		<li><a href="#disabled"><?php _e('Disabled', 'siteorigin-widgets') ?></a></li>
+		<li class="active"><a href="#all"><?php _e('All', 'so-widgets-bundle') ?></a></li>
+		<li><a href="#enabled"><?php _e('Enabled', 'so-widgets-bundle') ?></a></li>
+		<li><a href="#disabled"><?php _e('Disabled', 'so-widgets-bundle') ?></a></li>
 	</ul>
 
 
@@ -41,7 +41,7 @@
 
 					<div class="so-widget-text">
 
-						<div class="so-widget-active-indicator"><?php _e('Active', 'siteorigin-widgets') ?></div>
+						<div class="so-widget-active-indicator"><?php _e('Active', 'so-widgets-bundle') ?></div>
 
 						<h3><?php echo esc_html( $widget['Name'] ); ?></h3>
 
@@ -63,8 +63,8 @@
 						<?php endif; ?>
 
 						<div class="so-widget-toggle-active">
-							<button class="button-secondary so-widget-activate" data-status="1"><?php esc_html_e( 'Activate', 'siteorigin-widgets' ) ?></button>
-							<button class="button-secondary so-widget-deactivate" data-status="0"><?php esc_html_e( 'Deactivate', 'siteorigin-widgets' ) ?></button>
+							<button class="button-secondary so-widget-activate" data-status="1"><?php esc_html_e( 'Activate', 'so-widgets-bundle' ) ?></button>
+							<button class="button-secondary so-widget-deactivate" data-status="0"><?php esc_html_e( 'Deactivate', 'so-widgets-bundle' ) ?></button>
 						</div>
 
 					</div>
@@ -76,8 +76,8 @@
 	</div>
 
 	<div class="developers-link">
-		<?php _e('Developers - create your own widgets for the Widgets Bundle.', 'siteorigin-widgets') ?>
-		<a href="https://siteorigin.com/docs/widgets-bundle/" target="_blank"><?php _e('Read More', 'siteorigin-widgets') ?></a>.
+		<?php _e('Developers - create your own widgets for the Widgets Bundle.', 'so-widgets-bundle') ?>
+		<a href="https://siteorigin.com/docs/widgets-bundle/" target="_blank"><?php _e('Read More', 'so-widgets-bundle') ?></a>.
 	</div>
 
 </div>

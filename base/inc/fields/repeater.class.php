@@ -90,7 +90,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 				?>
 			</div>
 			<?php if( empty( $this->readonly ) ) : ?>
-				<div class="siteorigin-widget-field-repeater-add"><?php esc_html_e( 'Add', 'siteorigin-widgets' ) ?></div>
+				<div class="siteorigin-widget-field-repeater-add"><?php esc_html_e( 'Add', 'so-widgets-bundle' ) ?></div>
 			<?php endif; ?>
 			<?php
 			ob_start();

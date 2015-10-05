@@ -15,7 +15,7 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 
 		<div class="siteorigin-widget-icon-selector-current">
 			<div class="siteorigin-widget-icon"><span></span></div>
-			<label><?php _e('Choose Icon', 'siteorigin-widgets') ?></label>
+			<label><?php _e('Choose Icon', 'so-widgets-bundle') ?></label>
 		</div>
 
 		<div class="siteorigin-widget-icon-selector siteorigin-widget-field-subcontainer">

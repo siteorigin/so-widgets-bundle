@@ -327,18 +327,18 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			<input type="hidden" name="<?php echo $this->get_field_name('_sow_form_id') ?>" value="<?php echo esc_attr( $instance['_sow_form_id'] ) ?>" class="siteorigin-widgets-form-id" />
 		</div>
 		<div class="siteorigin-widget-form-no-styles">
-			<p><strong><?php _e('This widget has scripts and styles that need to be loaded before you can use it. Please save and reload your current page.', 'siteorigin-widgets') ?></strong></p>
-			<p><strong><?php _e('You will only need to do this once.', 'siteorigin-widgets') ?></strong></p>
+			<p><strong><?php _e('This widget has scripts and styles that need to be loaded before you can use it. Please save and reload your current page.', 'so-widgets-bundle') ?></strong></p>
+			<p><strong><?php _e('You will only need to do this once.', 'so-widgets-bundle') ?></strong></p>
 		</div>
 
 		<?php if( $this->widget_options['has_preview'] && ! $this->is_customize_preview() ) : ?>
 			<div class="siteorigin-widget-preview" style="display: none">
-				<a href="#" class="siteorigin-widget-preview-button button-secondary"><?php _e('Preview', 'siteorigin-widgets') ?></a>
+				<a href="#" class="siteorigin-widget-preview-button button-secondary"><?php _e('Preview', 'so-widgets-bundle') ?></a>
 			</div>
 		<?php endif; ?>
 
 		<?php if( !empty( $this->widget_options['help'] ) ) : ?>
-			<a href="<?php echo sow_esc_url($this->widget_options['help']) ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank"><?php _e('Help', 'siteorigin-widgets') ?></a>
+			<a href="<?php echo sow_esc_url($this->widget_options['help']) ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank"><?php _e('Help', 'so-widgets-bundle') ?></a>
 		<?php endif; ?>
 
 		<script type="text/javascript">
@@ -407,7 +407,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				<div class="siteorigin-widgets-preview-modal-overlay"></div>
 
 				<div class="so-widget-toolbar">
-					<h3><?php _e('Widget Preview', 'siteorigin-widgets') ?></h3>
+					<h3><?php _e('Widget Preview', 'so-widgets-bundle') ?></h3>
 					<div class="close"><span class="dashicons dashicons-arrow-left-alt2"></span></div>
 				</div>
 
