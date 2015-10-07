@@ -2,11 +2,13 @@
 
 .widget-function('import_google_font');
 
+@headline_tag: h1;
 @headline_font: "Lucida Grande", sans-serif;
 @headline_font_weight: 400;
 @headline_align: left;
 @headline_color: #000000;
 
+@sub_headline_tag: h3;
 @sub_headline_font: "Arial", sans-serif;
 @sub_headline_font_weight: 400;
 @sub_headline_align: left;
@@ -18,18 +20,20 @@
 
 #sow-headline-container.sow-headline {
 
-    h1 {
+    @{headline_tag} {
         .font(@headline_font, @headline_font_weight);
         text-align: @headline_align;
         color: @headline_color;
         line-height: 1.3;
+        word-break: break-all;
     }
 
-    h3 {
+    @{sub_headline_tag} {
         .font(@sub_headline_font, @sub_headline_font_weight);
         text-align: @sub_headline_align;
         color: @sub_headline_color;
         line-height: 1.3;
+        word-break: break-all;
     }
 
     .decoration {

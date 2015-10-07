@@ -1,19 +1,18 @@
 <?php
 /*
-Widget Name: Price table widget
+Widget Name: Price Table
 Description: A powerful yet simple price table widget for your sidebars or Page Builder pages.
-Author: Greg Priday
-Author URI: http://siteorigin.com
-Widget URI: http://siteorigin.com/price-table-widget/
+Author: SiteOrigin
+Author URI: https://siteorigin.com
 */
 
 class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 	function __construct() {
 		parent::__construct(
 			'sow-price-table',
-			__('SiteOrigin Price Table', 'siteorigin-widgets'),
+			__('SiteOrigin Price Table', 'so-widgets-bundle'),
 			array(
-				'description' => __('A simple Price Table.', 'siteorigin-widgets'),
+				'description' => __('A simple Price Table.', 'so-widgets-bundle'),
 				'help' => 'https://siteorigin.com/widgets-bundle/price-table-widget/'
 			),
 			array(
@@ -22,13 +21,13 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			array(
 				'title' => array(
 					'type' => 'text',
-					'label' => __('Title', 'siteorigin-widgets'),
+					'label' => __('Title', 'so-widgets-bundle'),
 				),
 
 				'columns' => array(
 					'type' => 'repeater',
-					'label' => __('Columns', 'siteorigin-widgets'),
-					'item_name' => __('Column', 'siteorigin-widgets'),
+					'label' => __('Columns', 'so-widgets-bundle'),
+					'item_name' => __('Column', 'so-widgets-bundle'),
 					'item_label' => array(
 						'selector' => "[id*='columns-title']",
 						'update_event' => 'change',
@@ -37,42 +36,42 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 					'fields' => array(
 						'featured' => array(
 							'type' => 'checkbox',
-							'label' => __('Featured', 'siteorigin-widgets'),
+							'label' => __('Featured', 'so-widgets-bundle'),
 						),
 						'title' => array(
 							'type' => 'text',
-							'label' => __('Title', 'siteorigin-widgets'),
+							'label' => __('Title', 'so-widgets-bundle'),
 						),
 						'subtitle' => array(
 							'type' => 'text',
-							'label' => __('Subtitle', 'siteorigin-widgets'),
+							'label' => __('Subtitle', 'so-widgets-bundle'),
 						),
 
 						'image' => array(
 							'type' => 'media',
-							'label' => __('Image', 'siteorigin-widgets'),
+							'label' => __('Image', 'so-widgets-bundle'),
 						),
 
 						'price' => array(
 							'type' => 'text',
-							'label' => __('Price', 'siteorigin-widgets'),
+							'label' => __('Price', 'so-widgets-bundle'),
 						),
 						'per' => array(
 							'type' => 'text',
-							'label' => __('Per', 'siteorigin-widgets'),
+							'label' => __('Per', 'so-widgets-bundle'),
 						),
 						'button' => array(
 							'type' => 'text',
-							'label' => __('Button text', 'siteorigin-widgets'),
+							'label' => __('Button text', 'so-widgets-bundle'),
 						),
 						'url' => array(
 							'type' => 'link',
-							'label' => __('Button URL', 'siteorigin-widgets'),
+							'label' => __('Button URL', 'so-widgets-bundle'),
 						),
 						'features' => array(
 							'type' => 'repeater',
-							'label' => __('Features', 'siteorigin-widgets'),
-							'item_name' => __('Feature', 'siteorigin-widgets'),
+							'label' => __('Features', 'so-widgets-bundle'),
+							'item_name' => __('Feature', 'so-widgets-bundle'),
 							'item_label' => array(
 								'selector' => "[id*='columns-features-text']",
 								'update_event' => 'change',
@@ -81,19 +80,19 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 							'fields' => array(
 								'text' => array(
 									'type' => 'text',
-									'label' => __('Text', 'siteorigin-widgets'),
+									'label' => __('Text', 'so-widgets-bundle'),
 								),
 								'hover' => array(
 									'type' => 'text',
-									'label' => __('Hover text', 'siteorigin-widgets'),
+									'label' => __('Hover text', 'so-widgets-bundle'),
 								),
 								'icon_new' => array(
 									'type' => 'icon',
-									'label' => __('Icon', 'siteorigin-widgets'),
+									'label' => __('Icon', 'so-widgets-bundle'),
 								),
 								'icon_color' => array(
 									'type' => 'color',
-									'label' => __('Icon color', 'siteorigin-widgets'),
+									'label' => __('Icon color', 'so-widgets-bundle'),
 								),
 							),
 						),
@@ -102,35 +101,35 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 
 				'theme' => array(
 					'type' => 'select',
-					'label' => __('Price table theme', 'siteorigin-widgets'),
+					'label' => __('Price table theme', 'so-widgets-bundle'),
 					'options' => array(
-						'atom' => __('Atom', 'siteorigin-widgets'),
+						'atom' => __('Atom', 'so-widgets-bundle'),
 					),
 				),
 
 				'header_color' => array(
 					'type' => 'color',
-					'label' => __('Header color', 'siteorigin-widgets'),
+					'label' => __('Header color', 'so-widgets-bundle'),
 				),
 
 				'featured_header_color' => array(
 					'type' => 'color',
-					'label' => __('Featured header color', 'siteorigin-widgets'),
+					'label' => __('Featured header color', 'so-widgets-bundle'),
 				),
 
 				'button_color' => array(
 					'type' => 'color',
-					'label' => __('Button color', 'siteorigin-widgets'),
+					'label' => __('Button color', 'so-widgets-bundle'),
 				),
 
 				'featured_button_color' => array(
 					'type' => 'color',
-					'label' => __('Featured button color', 'siteorigin-widgets'),
+					'label' => __('Featured button color', 'so-widgets-bundle'),
 				),
 
 				'button_new_window' => array(
 					'type' => 'checkbox',
-					'label' => __('Open Button URL in a new window', 'siteorigin-widgets'),
+					'label' => __('Open Button URL in a new window', 'so-widgets-bundle'),
 				),
 			),
 			plugin_dir_path(__FILE__).'../'
@@ -142,7 +141,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			array(
 				array(
 					'siteorigin-pricetable',
-					siteorigin_widget_get_plugin_dir_url( 'price-table' ) . 'js/pricetable' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					plugin_dir_url(__FILE__) . 'js/pricetable' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' )
 				)
 			)
@@ -236,4 +235,4 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register('price-table', __FILE__);
+siteorigin_widget_register('sow-price-table', __FILE__, 'SiteOrigin_Widget_PriceTable_Widget');

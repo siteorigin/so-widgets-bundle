@@ -1,18 +1,18 @@
 <?php
 /*
-Widget Name: Image widget
+Widget Name: Image
 Description: A very simple image widget.
-Author: Greg Priday
-Author URI: http://siteorigin.com
+Author: SiteOrigin
+Author URI: https://siteorigin.com
 */
 
 class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 	function __construct() {
 		parent::__construct(
 			'sow-image',
-			__('SiteOrigin Image', 'siteorigin-widgets'),
+			__('SiteOrigin Image', 'so-widgets-bundle'),
 			array(
-				'description' => __('A simple image widget with massive power.', 'siteorigin-widgets'),
+				'description' => __('A simple image widget with massive power.', 'so-widgets-bundle'),
 				'help' => 'https://siteorigin.com/widgets-bundle/image-widget-documentation/'
 			),
 			array(
@@ -21,53 +21,53 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			array(
 				'image' => array(
 					'type' => 'media',
-					'label' => __('Image file', 'siteorigin-widgets'),
+					'label' => __('Image file', 'so-widgets-bundle'),
 					'library' => 'image',
 					'fallback' => true,
 				),
 
 				'size' => array(
 					'type' => 'select',
-					'label' => __('Image size', 'siteorigin-widgets'),
+					'label' => __('Image size', 'so-widgets-bundle'),
 					'options' => array(
-						'full' => __('Full', 'siteorigin-widgets'),
-						'large' => __('Large', 'siteorigin-widgets'),
-						'medium' => __('Medium', 'siteorigin-widgets'),
-						'thumb' => __('Thumbnail', 'siteorigin-widgets'),
+						'full' => __('Full', 'so-widgets-bundle'),
+						'large' => __('Large', 'so-widgets-bundle'),
+						'medium' => __('Medium', 'so-widgets-bundle'),
+						'thumb' => __('Thumbnail', 'so-widgets-bundle'),
 					),
 				),
 
 				'title' => array(
 					'type' => 'text',
-					'label' => __('Title text', 'siteorigin-widgets'),
+					'label' => __('Title text', 'so-widgets-bundle'),
 				),
 
 				'alt' => array(
 					'type' => 'text',
-					'label' => __('Alt text', 'siteorigin-widgets'),
+					'label' => __('Alt text', 'so-widgets-bundle'),
 				),
 
 				'url' => array(
 					'type' => 'link',
-					'label' => __('Destination URL', 'siteorigin-widgets'),
+					'label' => __('Destination URL', 'so-widgets-bundle'),
 				),
 				'new_window' => array(
 					'type' => 'checkbox',
 					'default' => false,
-					'label' => __('Open in new window', 'siteorigin-widgets'),
+					'label' => __('Open in new window', 'so-widgets-bundle'),
 				),
 
 				'bound' => array(
 					'type' => 'checkbox',
 					'default' => true,
-					'label' => __('Bound', 'siteorigin-widgets'),
-					'description' => __("Make sure the image doesn't extend beyond its container.", 'siteorigin-widgets'),
+					'label' => __('Bound', 'so-widgets-bundle'),
+					'description' => __("Make sure the image doesn't extend beyond its container.", 'so-widgets-bundle'),
 				),
 				'full_width' => array(
 					'type' => 'checkbox',
 					'default' => false,
-					'label' => __('Full Width', 'siteorigin-widgets'),
-					'description' => __("Resize image to fit its container.", 'siteorigin-widgets'),
+					'label' => __('Full Width', 'so-widgets-bundle'),
+					'description' => __("Resize image to fit its container.", 'so-widgets-bundle'),
 				),
 
 			),
@@ -103,4 +103,4 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register('image', __FILE__);
+siteorigin_widget_register('sow-image', __FILE__, 'SiteOrigin_Widget_Image_Widget');

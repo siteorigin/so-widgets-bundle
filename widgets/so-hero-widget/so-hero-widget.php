@@ -2,8 +2,8 @@
 /*
 Widget Name: Hero Image
 Description: A big hero image with a few settings to make it your own.
-Author: Greg Priday
-Author URI: http://siteorigin.com
+Author: SiteOrigin
+Author URI: https://siteorigin.com
 */
 
 if( !class_exists( 'SiteOrigin_Widget_Base_Slider' ) ) include_once plugin_dir_path(SOW_BUNDLE_BASE_FILE) . '/base/inc/widgets/base-slider.class.php';
@@ -15,9 +15,9 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	function __construct() {
 		parent::__construct(
 			'sow-hero',
-			__('SiteOrigin Hero', 'siteorigin-widgets'),
+			__('SiteOrigin Hero', 'so-widgets-bundle'),
 			array(
-				'description' => __('A big hero image with a few settings to make it your own.', 'siteorigin-widgets'),
+				'description' => __('A big hero image with a few settings to make it your own.', 'so-widgets-bundle'),
 				'help' => 'https://siteorigin.com/widgets-bundle/hero-image-widget/',
 				'panels_title' => false,
 			),
@@ -25,8 +25,8 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			array(
 				'frames' => array(
 					'type' => 'repeater',
-					'label' => __('Hero frames', 'siteorigin-widgets'),
-					'item_name' => __('Frame', 'siteorigin-widgets'),
+					'label' => __('Hero frames', 'so-widgets-bundle'),
+					'item_name' => __('Frame', 'so-widgets-bundle'),
 					'item_label' => array(
 						'selector' => "[id*='frames-title']",
 						'update_event' => 'change',
@@ -37,14 +37,14 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 						'content' => array(
 							'type' => 'tinymce',
-							'label' => __( 'Content', 'siteorigin-widgets' ),
+							'label' => __( 'Content', 'so-widgets-bundle' ),
 						),
 
 						'buttons' => array(
 							'type' => 'repeater',
-							'label' => __('Buttons', 'siteorigin-widgets'),
-							'item_name' => __('Button', 'siteorigin-widgets'),
-							'description' => __('Add [buttons] shortcode to the content to insert these buttons.', 'siteorigin-widgets'),
+							'label' => __('Buttons', 'so-widgets-bundle'),
+							'item_name' => __('Button', 'so-widgets-bundle'),
+							'description' => __('Add [buttons] shortcode to the content to insert these buttons.', 'so-widgets-bundle'),
 
 							'item_label' => array(
 								'selector' => "[id*='buttons-button-text']",
@@ -55,7 +55,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'button' => array(
 									'type' => 'widget',
 									'class' => 'SiteOrigin_Widget_Button_Widget',
-									'label' => __('Button', 'siteorigin-widgets'),
+									'label' => __('Button', 'so-widgets-bundle'),
 									'collapsible' => false,
 								)
 							)
@@ -63,17 +63,17 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 						'background' => array(
 							'type' => 'section',
-							'label' => __('Background', 'siteorigin-widget'),
+							'label' => __('Background', 'so-widgets-bundle'),
 							'fields' => array(
 								'image' => array(
 									'type' => 'media',
-									'label' => __( 'Background image', 'siteorigin-widgets' ),
+									'label' => __( 'Background image', 'so-widgets-bundle' ),
 									'library' => 'image',
 									'fallback' => true,
 								),
 
 								'opacity' => array(
-									'label' => __( 'Background image opacity', 'siteorigin-widgets' ),
+									'label' => __( 'Background image opacity', 'so-widgets-bundle' ),
 									'type' => 'slider',
 									'min' => 0,
 									'max' => 100,
@@ -82,14 +82,24 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 								'color' => array(
 									'type' => 'color',
-									'label' => __( 'Background color', 'siteorigin-widgets' ),
+									'label' => __( 'Background color', 'so-widgets-bundle' ),
 									'default' => '#333333',
+								),
+
+								'url' => array(
+									'type' => 'link',
+									'label' => __( 'Destination URL', 'so-widgets-bundle' ),
+								),
+
+								'new_window' => array(
+									'type' => 'checkbox',
+									'label' => __( 'Open URL in a new window', 'so-widgets-bundle' ),
 								),
 
 								'videos' => array(
 									'type' => 'repeater',
-									'item_name' => __('Video', 'siteorigin-widgets'),
-									'label' => __('Background videos', 'siteorigin-widgets'),
+									'item_name' => __('Video', 'so-widgets-bundle'),
+									'label' => __('Background videos', 'so-widgets-bundle'),
 									'item_label' => array(
 										'selector' => "[id*='frames-background_videos-url']",
 										'update_event' => 'change',
@@ -104,48 +114,55 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 				'controls' => array(
 					'type' => 'section',
-					'label' => __('Slider Controls', 'siteorigin-widget'),
+					'label' => __('Slider Controls', 'so-widgets-bundle'),
 					'fields' => $this->control_form_fields()
 				),
 
 				'design' => array(
 					'type' => 'section',
-					'label' => __('Design and Layout', 'siteorigin-widgets'),
+					'label' => __('Design and Layout', 'so-widgets-bundle'),
 					'fields' => array(
 
 						'padding' => array(
 							'type' => 'number',
-							'label' => __('Top and bottom padding', 'siteorigin-widgets'),
+							'label' => __('Top and bottom padding', 'so-widgets-bundle'),
 							'default' => 50,
+						),
+
+						'extra_top_padding' => array(
+							'type' => 'number',
+							'label' => __('Extra top padding', 'so-widgets-bundle'),
+							'description' => __('Additional padding added to the top of the slider', 'so-widgets-bundle'),
+							'default' => 0,
 						),
 
 						'padding_sides' => array(
 							'type' => 'number',
-							'label' => __('Side padding', 'siteorigin-widgets'),
+							'label' => __('Side padding', 'so-widgets-bundle'),
 							'default' => 20,
 						),
 
 						'width' => array(
 							'type' => 'number',
-							'label' => __('Maximum container width', 'siteorigin-widgets'),
+							'label' => __('Maximum container width', 'so-widgets-bundle'),
 							'default' => 1280,
 						),
 
 						'heading_font' => array(
 							'type' => 'font',
-							'label' => __('Heading font', 'siteorigin-widgets'),
+							'label' => __('Heading font', 'so-widgets-bundle'),
 							'default' => '',
 						),
 
 						'heading_size' => array(
 							'type' => 'number',
-							'label' => __('Heading size', 'siteorigin-widgets'),
+							'label' => __('Heading size', 'so-widgets-bundle'),
 							'default' => 38,
 						),
 
 						'heading_shadow' => array(
 							'type' => 'slider',
-							'label' => __('Heading shadow intensity', 'siteorigin-widgets'),
+							'label' => __('Heading shadow intensity', 'so-widgets-bundle'),
 							'max' => 100,
 							'min' => 0,
 							'default' => 50,
@@ -153,7 +170,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 						'text_size' => array(
 							'type' => 'number',
-							'label' => __('Text size', 'siteorigin-widgets'),
+							'label' => __('Text size', 'so-widgets-bundle'),
 							'default' => 16,
 						),
 
@@ -164,10 +181,9 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 
 	function initialize(){
+		// This widget requires the button widget
 		if( !class_exists('SiteOrigin_Widget_Button_Widget') ) {
-			// We need to include the button
-			include plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . 'widgets/so-button-widget/so-button-widget.php';
-			siteorigin_widget_register( 'button', plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . 'widgets/so-button-widget/so-button-widget.php' );
+			SiteOrigin_Widgets_Bundle::single()->include_widget( 'so-button-widget' );
 		}
 
 		// Let the slider base class do its initialization
@@ -193,6 +209,8 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			'color' => !empty( $frame['background']['color'] ) ? $frame['background']['color'] : false,
 			'image' => !empty( $background_image ) ? $background_image[0] : false,
 			'image-sizing' => 'cover',
+			'url' => !empty( $frame['background']['url'] ) ? $frame['background']['url'] : false,
+			'new_window' => !empty( $frame['background']['new_window'] ),
 			'videos' => $frame['background']['videos'],
 			'video-sizing' => 'background',
 			'opacity' => intval($frame['background']['opacity'])/100,
@@ -231,7 +249,8 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		$button_code = ob_get_clean();
 
 		// Add in the button code
-		$content = preg_replace('/<p *([^>]*)> *\[ *buttons *\] *<\/p>/i', '<div class="sow-hero-buttons" $1>' . $button_code . '</div>', wp_kses_post( $content ) );
+		$san_content = wp_kses_post($content);
+		$content = preg_replace('/<(?:p|h\d|em|strong|li|blockquote) *([^>]*)> *\[ *buttons *\] *<\/(?:p|h\d|em|strong|li|blockquote)>/i', '<div class="sow-hero-buttons" $1>' . $button_code . '</div>', $san_content );
 		return $content;
 	}
 
@@ -251,8 +270,9 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		// Hero specific design
 		$less['slide_padding'] = intval( $instance['design']['padding'] ) . 'px';
-
+		$less['slide_padding_extra_top'] = intval( $instance['design']['extra_top_padding'] ) . 'px';
 		$less['slide_padding_sides'] = intval( $instance['design']['padding_sides'] ) . 'px';
+
 		$less['slide_width'] = intval( $instance['design']['width'] ) . 'px';
 		$less['heading_size'] = intval( $instance['design']['heading_size'] ) . 'px';
 		$less['text_size'] = intval( $instance['design']['text_size'] ) . 'px';
@@ -286,4 +306,4 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 }
 
-siteorigin_widget_register('hero', __FILE__);
+siteorigin_widget_register('sow-hero', __FILE__, 'SiteOrigin_Widget_Hero_Widget');

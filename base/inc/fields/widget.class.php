@@ -29,11 +29,11 @@ class SiteOrigin_Widget_Field_Widget extends SiteOrigin_Widget_Field_Container_B
 	protected function render_field( $value, $instance ) {
 		// Create the extra form entries
 		if ( $this->collapsible ) {
-			?><div class="siteorigin-widget-section <?php if( !empty( $this->hide ) ) echo 'siteorigin-widget-section-hide'; ?>"><?php
+			?><div class="siteorigin-widget-section <?php if( $this->state == 'closed' ) echo 'siteorigin-widget-section-hide'; ?>"><?php
 		}
 
 		if( ! class_exists( $this->class ) ) {
-			printf( __( '%s does not exist', 'siteorigin-widgets' ), $this->class );
+			printf( __( '%s does not exist', 'so-widgets-bundle' ), $this->class );
 			if ( $this->collapsible ) {
 				echo '</div>';
 			}
@@ -43,7 +43,7 @@ class SiteOrigin_Widget_Field_Widget extends SiteOrigin_Widget_Field_Container_B
 		/* @var $sub_widget SiteOrigin_Widget */
 		$sub_widget = new $this->class;
 		if( ! is_a( $sub_widget, 'SiteOrigin_Widget' ) ) {
-			printf( __( '%s is not a SiteOrigin Widget', 'siteorigin-widgets' ), $this->class );
+			printf( __( '%s is not a SiteOrigin Widget', 'so-widgets-bundle' ), $this->class );
 			if ( $this->collapsible ) {
 				echo '</div>';
 			}

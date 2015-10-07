@@ -3,6 +3,8 @@
 Plugin Name: SiteOrigin Widgets Bundle
 Description: A collection of all widgets, neatly bundled into a single plugin. It's also a framework to code your own widgets on top of.
 Version: dev
+Text Domain: so-widgets-bundle
+Domain Path: /languages
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Plugin URI: https://siteorigin.com/widgets-bundle/
@@ -44,6 +46,7 @@ class SiteOrigin_Widgets_Bundle {
 
 		// Initialize the widgets, but do it fairly late
 		add_action( 'plugins_loaded', array($this, 'set_plugin_textdomain'), 1 );
+		add_action( 'after_setup_theme', array($this, 'get_widget_folders'), 11 );
 		add_action( 'after_setup_theme', array($this, 'load_widget_plugins'), 11 );
 
 		// Add the action links.
@@ -51,6 +54,8 @@ class SiteOrigin_Widgets_Bundle {
 
 		// Version check for cache clearing
 		add_action( 'admin_init', array($this, 'plugin_version_check') );
+		add_action( 'siteorigin_widgets_version_update', array( $this, 'check_for_new_widgets' ) );
+		add_action( 'admin_notices', array( $this, 'display_admin_notices') );
 
 		// These filters are used to activate any widgets that are missing.
 		add_filter( 'siteorigin_panels_data', array($this, 'load_missing_widgets') );
@@ -81,7 +86,7 @@ class SiteOrigin_Widgets_Bundle {
 	 * @action plugins_loaded
 	 */
 	function set_plugin_textdomain(){
-		load_plugin_textdomain('siteorigin-widgets', false, dirname( plugin_basename( __FILE__ ) ). '/languages/');
+		load_plugin_textdomain('so-widgets-bundle', false, dirname( plugin_basename( __FILE__ ) ). '/languages/');
 	}
 
 	/**
@@ -120,12 +125,64 @@ class SiteOrigin_Widgets_Bundle {
 	}
 
 	/**
-	 * Load all the widgets if their plugins are not already active.
-	 *
-	 * @action plugins_loaded
+	 * Setup and return the widget folders
 	 */
-	function load_widget_plugins(){
+	function check_for_new_widgets() {
+		// get list of available widgets
+		$widgets = array_keys( $this->get_widgets_list() );
+		// get option for previously installed widgets
+		$old_widgets = get_option( 'siteorigin_widgets_old_widgets' );
+		// if this has never been set before, it's probably a new installation so we don't want to notify for all the widgets
+		if ( empty( $old_widgets ) ) {
+			update_option( 'siteorigin_widgets_old_widgets', implode( ',', $widgets ) );
+			return;
+		}
+		$old_widgets = explode( ',', $old_widgets );
+		$new_widgets = array_diff( $widgets, $old_widgets );
+		if ( ! empty( $new_widgets ) ) {
+			update_option( 'siteorigin_widgets_new_widgets', $new_widgets );
+			update_option( 'siteorigin_widgets_old_widgets', implode( ',', $widgets ) );
+		}
+	}
 
+	function display_admin_notices() {
+		$new_widgets = get_option( 'siteorigin_widgets_new_widgets' );
+		if ( empty( $new_widgets ) ) {
+			return;
+		}
+		?>
+		<div class="updated">
+			<p><?php echo __( 'New widgets available in the ') . '<a href="' . admin_url('plugins.php?page=so-widgets-plugins') . '">' . __('SiteOrigin Widgets Bundle', 'so-widgets-bundle' ) . '</a>!'; ?></p>
+			<?php
+
+			$default_headers = array(
+				'Name' => 'Widget Name',
+				'Description' => 'Description',
+				'Author' => 'Author',
+				'AuthorURI' => 'Author URI',
+				'WidgetURI' => 'Widget URI',
+				'VideoURI' => 'Video URI',
+			);
+
+			foreach ( $new_widgets as $widget_file_path ) {
+				preg_match( '/.*[\/\\\\](.*).php/', $widget_file_path, $match );
+				$widget = get_file_data( $widget_file_path, $default_headers, 'siteorigin-widget' );
+				$name = empty( $widget['Name'] ) ? $match[1] : $widget['Name'];
+				$description = empty( $widget['Description'] ) ? __( 'A new widget!', 'so-widgets-bundle' ) : $widget['Description'];
+				?>
+				<p><b><?php echo esc_html( $name . ' - ' . $description) ?></b></p>
+				<?php
+			}
+			?>
+		</div>
+		<?php
+		update_option( 'siteorigin_widgets_new_widgets', array() );
+	}
+
+	/**
+	 * Setup and return the widget folders
+	 */
+	function get_widget_folders(){
 		if( empty($this->widget_folders) ) {
 			// We can use this filter to add more folders to use for widgets
 			$this->widget_folders = apply_filters('siteorigin_widgets_widget_folders', array(
@@ -133,8 +190,19 @@ class SiteOrigin_Widgets_Bundle {
 			) );
 		}
 
+		return $this->widget_folders;
+	}
+
+	/**
+	 * Load all the widgets if their plugins are not already active.
+	 *
+	 * @action plugins_loaded
+	 */
+	function load_widget_plugins(){
+
 		// Load all the widget we currently have active and filter them
 		$active_widgets = $this->get_active_widgets();
+		$widget_folders = $this->get_widget_folders();
 
 		foreach( $active_widgets as $widget_id => $active ) {
 			if( empty($active) ) continue;
@@ -171,7 +239,12 @@ class SiteOrigin_Widgets_Bundle {
 	function admin_enqueue_scripts($prefix) {
 		if( $prefix != 'plugins_page_so-widgets-plugins' ) return;
 		wp_enqueue_style( 'siteorigin-widgets-manage-admin', plugin_dir_url( __FILE__ ) . 'admin/admin.css', array(), SOW_BUNDLE_VERSION );
+		wp_enqueue_script( 'siteorigin-widgets-trianglify', plugin_dir_url( __FILE__ ) . 'admin/trianglify' . SOW_BUNDLE_JS_SUFFIX . '.js', array(), SOW_BUNDLE_VERSION );
 		wp_enqueue_script( 'siteorigin-widgets-manage-admin', plugin_dir_url( __FILE__ ) . 'admin/admin' . SOW_BUNDLE_JS_SUFFIX . '.js', array(), SOW_BUNDLE_VERSION );
+
+		wp_localize_script( 'siteorigin-widgets-manage-admin', 'soWidgetsAdmin', array(
+			'toggleUrl' => wp_nonce_url( admin_url('admin-ajax.php?action=so_widgets_bundle_manage'), 'manage_so_widget' )
+		) );
 	}
 
 	/**
@@ -213,10 +286,10 @@ class SiteOrigin_Widgets_Bundle {
 	function admin_ajax_manage_handler(){
 		if( !wp_verify_nonce($_GET['_wpnonce'], 'manage_so_widget') ) exit();
 		if( !current_user_can( apply_filters('siteorigin_widgets_admin_menu_capability', 'install_plugins') ) ) exit();
-		if( empty($_GET['widget']) ) exit();
+		if( empty($_POST['widget']) ) exit();
 
-		if( isset($_POST['active']) && $_POST['active'] == 'true' ) $this->activate_widget($_GET['widget']);
-		else $this->deactivate_widget( $_GET['widget'] );
+		if( !empty($_POST['active']) ) $this->activate_widget($_POST['widget']);
+		else $this->deactivate_widget( $_POST['widget'] );
 
 		// Send a kind of dummy response.
 		header('content-type: application/json');
@@ -231,8 +304,8 @@ class SiteOrigin_Widgets_Bundle {
 	 */
 	function admin_menu_init(){
 		add_plugins_page(
-			__('SiteOrigin Widgets', 'siteorigin-widgets'),
-			__('SiteOrigin Widgets', 'siteorigin-widgets'),
+			__('SiteOrigin Widgets', 'so-widgets-bundle'),
+			__('SiteOrigin Widgets', 'so-widgets-bundle'),
 			apply_filters('siteorigin_widgets_admin_menu_capability', 'install_plugins'),
 			'so-widgets-plugins',
 			array($this, 'admin_page')
@@ -259,9 +332,9 @@ class SiteOrigin_Widgets_Bundle {
 				<p>
 				<?php
 				printf(
-					__('%s was %s', 'siteorigin-widgets'),
+					__('%s was %s', 'so-widgets-bundle'),
 					$widgets[ $_GET['widget'].'/'.$_GET['widget'].'.php' ]['Name'],
-					$_GET['widget_action'] == 'activate' ? __('Activated', 'siteorigin-widgets') : __('Deactivated', 'siteorigin-widgets')
+					$_GET['widget_action'] == 'activate' ? __('Activated', 'so-widgets-bundle') : __('Deactivated', 'so-widgets-bundle')
 				)
 				?>
 				</p>
@@ -334,6 +407,25 @@ class SiteOrigin_Widgets_Bundle {
 	}
 
 	/**
+	 * Include a widget that might not have been registered.
+	 *
+	 * @param $widget_id
+	 *
+	 * @return bool
+	 */
+	function include_widget( $widget_id ) {
+		$folders = $this->get_widget_folders();
+
+		foreach( $folders as $folder ) {
+			if( !file_exists($folder . $widget_id . '/' . $widget_id . '.php') ) continue;
+			include_once $folder . $widget_id . '/' . $widget_id . '.php';
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Deactivate a widget
 	 *
 	 * @param $id
@@ -349,6 +441,7 @@ class SiteOrigin_Widgets_Bundle {
 	 */
 	function get_widgets_list(){
 		$active = $this->get_active_widgets();
+		$folders = $this->get_widget_folders();
 
 		$default_headers = array(
 			'Name' => 'Widget Name',
@@ -360,7 +453,7 @@ class SiteOrigin_Widgets_Bundle {
 		);
 
 		$widgets = array();
-		foreach($this->widget_folders as $folder) {
+		foreach( $folders as $folder ) {
 
 			$files = glob( $folder.'*/*.php' );
 			foreach($files as $file) {
@@ -419,8 +512,8 @@ class SiteOrigin_Widgets_Bundle {
 			$class = $widget['panels_info']['class'];
 			if( preg_match('/SiteOrigin_Widget_([A-Za-z]+)_Widget/', $class, $matches) ) {
 				$name = $matches[1];
+				// TODO change this when we transition to new widget names
 				$id = 'so'.strtolower( implode( '-', preg_split('/(?=[A-Z])/',$name) ) ).'-widget';
-
 				$this->activate_widget($id, true);
 			}
 		}
@@ -442,6 +535,7 @@ class SiteOrigin_Widgets_Bundle {
 
 		if( preg_match('/SiteOrigin_Widget_([A-Za-z]+)_Widget/', $class, $matches) ) {
 			$name = $matches[1];
+			// TODO change this when we transition to new widget names
 			$id = 'so'.strtolower( implode( '-', preg_split('/(?=[A-Z])/',$name) ) ).'-widget';
 
 			$this->activate_widget($id, true);
@@ -456,8 +550,8 @@ class SiteOrigin_Widgets_Bundle {
 	 * Add action links.
 	 */
 	function plugin_action_links($links){
-		$links[] = '<a href="' . admin_url('plugins.php?page=so-widgets-plugins') . '">'.__('Manage Widgets', 'siteorigin-widgets').'</a>';
-		$links[] = '<a href="http://siteorigin.com/thread/" target="_blank">'.__('Support', 'siteorigin-widgets').'</a>';
+		$links[] = '<a href="' . admin_url('plugins.php?page=so-widgets-plugins') . '">'.__('Manage Widgets', 'so-widgets-bundle').'</a>';
+		$links[] = '<a href="https://siteorigin.com/thread/" target="_blank">'.__('Support', 'so-widgets-bundle').'</a>';
 		return $links;
 	}
 

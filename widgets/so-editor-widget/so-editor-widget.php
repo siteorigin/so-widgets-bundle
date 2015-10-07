@@ -1,7 +1,7 @@
 <?php
 
 /*
-Widget Name: Editor Widget
+Widget Name: Editor
 Description: A widget which allows editing of content using the TinyMCE editor.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
@@ -13,16 +13,16 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 
 		parent::__construct(
 			'sow-editor',
-			__('SiteOrigin Editor', 'siteorigin-widgets'),
+			__('SiteOrigin Editor', 'so-widgets-bundle'),
 			array(
-				'description' => __('A rich-text, text editor.', 'siteorigin-widgets'),
+				'description' => __('A rich-text, text editor.', 'so-widgets-bundle'),
 				'help' => 'https://siteorigin.com/widgets-bundle/editor-widget/'
 			),
 			array(),
 			array(
 				'title' => array(
 					'type' => 'text',
-					'label' => __('Title', 'siteorigin-widgets'),
+					'label' => __('Title', 'so-widgets-bundle'),
 				),
 				'text' => array(
 					'type' => 'tinymce',
@@ -31,7 +31,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 				'autop' => array(
 					'type' => 'checkbox',
 					'default' => true,
-					'label' => __('Automatically add paragraphs', 'siteorigin-widgets'),
+					'label' => __('Automatically add paragraphs', 'so-widgets-bundle'),
 				),
 			),
 			plugin_dir_path(__FILE__)
@@ -54,7 +54,13 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 		);
 
 		$instance['text'] = $this->unwpautop( $instance['text'] );
-		$instance['text'] = wp_kses_post( $instance['text'] );
+
+		/* @var $field_factory SiteOrigin_Widget_Field_Factory */
+		$field_factory = SiteOrigin_Widget_Field_Factory::getInstance();
+		$form_options = $this->form_options();
+		$field = $field_factory->create_field( $this->id_base, $form_options['text'], $this );
+		$instance['text'] = $field->sanitize( $instance['text'] );
+
 		$instance['text'] = apply_filters( 'widget_text', $instance['text'] );
 
 		// Run some known stuff
@@ -77,8 +83,9 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_style_name($instance) {
-		return '';
+		// We're not using a style
+		return false;
 	}
 }
 
-siteorigin_widget_register( 'editor', __FILE__ );
+siteorigin_widget_register( 'sow-editor', __FILE__, 'SiteOrigin_Widget_Editor_Widget' );

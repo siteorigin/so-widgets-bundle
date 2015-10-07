@@ -1,9 +1,9 @@
 <?php
 /*
-Widget Name: Post carousel widget
+Widget Name: Post Carousel
 Description: Gives you a widget to display your posts as a carousel.
-Author: Greg Priday
-Author URI: http://siteorigin.com
+Author: SiteOrigin
+Author URI: https://siteorigin.com
 */
 
 /**
@@ -54,9 +54,9 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 	function __construct() {
 		parent::__construct(
 			'sow-post-carousel',
-			__('SiteOrigin Post Carousel', 'siteorigin-widgets'),
+			__('SiteOrigin Post Carousel', 'so-widgets-bundle'),
 			array(
-				'description' => __('Display your posts as a carousel.', 'siteorigin-widgets'),
+				'description' => __('Display your posts as a carousel.', 'so-widgets-bundle'),
 				'help' => 'https://siteorigin.com/widgets-bundle/post-carousel-widget/'
 			),
 			array(
@@ -65,12 +65,12 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			array(
 				'title' => array(
 					'type' => 'text',
-					'label' => __('Title', 'siteorigin-widgets'),
+					'label' => __('Title', 'so-widgets-bundle'),
 				),
 
 				'posts' => array(
 					'type' => 'posts',
-					'label' => __('Posts query', 'siteorigin-widgets'),
+					'label' => __('Posts query', 'so-widgets-bundle'),
 				),
 			),
 			plugin_dir_path(__FILE__).'../'
@@ -88,7 +88,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 				),
 				array(
 					'sow-carousel-basic',
-					siteorigin_widget_get_plugin_dir_url( 'post-carousel' ) . 'js/carousel' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					plugin_dir_url(__FILE__) . 'js/carousel' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery', 'touch-swipe' ),
 					SOW_BUNDLE_VERSION,
 					true
@@ -99,7 +99,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			array(
 				array(
 					'sow-carousel-basic',
-					siteorigin_widget_get_plugin_dir_url( 'post-carousel' ) . 'css/style.css',
+					plugin_dir_url(__FILE__) . 'css/style.css',
 					array(),
 					SOW_BUNDLE_VERSION
 				)
@@ -116,4 +116,4 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register('post-carousel', __FILE__);
+siteorigin_widget_register('sow-post-carousel', __FILE__, 'SiteOrigin_Widget_PostCarousel_Widget');

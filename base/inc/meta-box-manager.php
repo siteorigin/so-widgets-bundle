@@ -32,7 +32,7 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 	public function __construct() {
 		parent::__construct(
 			'sow-meta-box-manager',
-			__('SiteOrigin Meta Box Manager', 'siteorigin-widgets'),
+			__('SiteOrigin Meta Box Manager', 'so-widgets-bundle'),
 			array(
 				'has_preview' => false,
 				'help' => 'https://siteorigin.com/docs/widgets-bundle/advanced-concepts/widget-post-meta-box-forms/'
@@ -74,7 +74,7 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 		if ( !empty( $this->form_options ) ) {
 			add_meta_box(
 				'siteorigin-widgets-meta-box',
-				__( 'Widgets Bundle Post Meta Data', 'siteorigin-widgets' ),
+				__( 'Widgets Bundle Post Meta Data', 'so-widgets-bundle' ),
 				array( $this, 'render_widgets_meta_box' ),
 				$post_type,
 				'advanced'

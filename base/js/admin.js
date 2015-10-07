@@ -1,118 +1,15 @@
 
 /* globals wp, jQuery, soWidgets, confirm, tinymce */
 
-var sowEmitters = {
-
-    /**
-     * Find the group/state and an extra match part.
-     *
-     * @param arg
-     * @param matchPart
-     * @return {*}
-     */
-    '_match': function(arg, matchPart) {
-        if( typeof matchPart === 'undefined' ) { matchPart = '.*'; }
-
-        // Create the regular expression to match the group/state and extra match
-        var exp = new RegExp( '^([a-zA-Z0-9_-]+)(\\[([a-zA-Z0-9_-]+)\\])? *: *(' + matchPart + ') *$' );
-        var m = exp.exec( arg );
-
-        if( m === null ) { return false; }
-
-        var state = '';
-        var group = 'default';
-
-        if( m[3] !== undefined ) {
-            group = m[1];
-            state = m[3];
-        }
-        else {
-            state = m[1];
-        }
-
-        return {
-            'match' : m[4].trim(),
-            'group' : group,
-            'state' : state
-        };
-    },
-
-    '_checker' : function(val, args, matchPart, callback){
-        var returnStates = {};
-        if( typeof args.length === 'undefined' ) {
-            args = [args];
-        }
-
-        var m;
-        for( var i = 0; i < args.length; i++ ) {
-            m = sowEmitters._match( args[i], matchPart );
-            if ( m === false ) { continue; }
-
-            if( m.match === '_true' || callback( val, args, m.match ) ) {
-                returnStates[ m.group ] = m.state;
-            }
-        }
-
-        return returnStates;
-    },
-
-    /**
-     * A very simple state emitter that simply sets the given group the value
-     *
-     *
-     * @param val
-     * @param args
-     * @returns {{}}
-     */
-    'select': function(val, args) {
-        if( typeof args.length === 'undefined' ) {
-            args = [args];
-        }
-
-        var returnGroups = {};
-        for( var i = 0; i < args.length; i++ ) {
-            if( args[i] === '' ) {
-                args[i] = 'default';
-            }
-            returnGroups[args[i]] = val;
-        }
-
-        return returnGroups;
-    },
-
-    /**
-     * The conditional state emitter uses eval to check a given conditional argument.
-     *
-     * @param val
-     * @param args
-     * @return {{}}
-     */
-    'conditional' : function(val, args){
-        return sowEmitters._checker( val, args, '[^;{}]*', function( val, args, match ){
-            return eval( match );
-        } );
-    },
-
-    /**
-     * The in state emitter checks if the value is in an array of functions
-     *
-     * @param val
-     * @param args
-     * @return {{}}
-     */
-    'in' :  function(val, args) {
-        return sowEmitters._checker( val, args, '[^;{}]*', function( val, args, match ){
-            return match.split(',').map( function(s) { return s.trim(); } ).indexOf( val ) !== -1;
-        } );
-    }
-};
-
 (function($){
 
     $.fn.sowSetupForm = function() {
 
         return $(this).each( function(i, el){
-            var $el = $(el), $mainForm, formInitializing = true;
+            var $el = $(el),
+                $mainForm,
+                formId,
+                formInitializing = true;
 
             // Skip this if the widget has any fields with an __i__
             var $inputs = $el.find('input[name]');
@@ -137,23 +34,33 @@ var sowEmitters = {
                     // Find all wrappers that have state handlers on them
                     $el.find('[data-state-handler]').each( function(){
                         var $$ = $(this);
-
                         // Create a copy of the current state handlers. Add in initial handlers if the form is initializing.
                         var handler = $.extend( {}, $$.data( 'state-handler' ), formInitializing ?  $$.data('state-handler-initial' ) : {} ) ;
-                        if( Object.keys( handler ).length === 0 ) { return true; }
+                        if( Object.keys( handler ).length === 0 ) {
+                            return true;
+                        }
 
                         // We need to figure out what the incoming state is
-                        var handlerStateParts, handlerState, thisHandler, $$f, runHandler;
+                        var handlerStateParts, handlerState, thisHandler, $$f, runHandler, handlerStateNames;
 
                         // Indicates if the handler has run
                         var handlerRun = {};
+
+                        var repeaterIndex = window.sowForms.getRepeaterId($$);
+                        if( repeaterIndex !== false ) {
+                            var repeaterHandler = {};
+                            for( var state in handler ) {
+                                repeaterHandler[ state.replace('{$repeater}', repeaterIndex) ] = handler[ state ];
+                            }
+                            handler = repeaterHandler;
+                        }
 
                         // Go through all the handlers
                         for( var state in handler ) {
                             runHandler = false;
 
                             // Parse the handler state parts
-                            handlerStateParts = state.match(/^([a-zA-Z0-9_-]+)(\[([a-zA-Z0-9_-]+)\])?(\[\])?$/);
+                            handlerStateParts = state.match(/^([a-zA-Z0-9_-]+)(\[([a-zA-Z0-9_\-,]+)\])?(\[\])?$/);
                             if( handlerStateParts === null ) {
                                 // Skip this if there's a problem with the state parts
                                 continue;
@@ -186,9 +93,12 @@ var sowEmitters = {
                             }
                             else {
                                 // Evaluate if we're in the current state
-                                runHandler = (handlerState.group === incomingGroup && handlerState.name === incomingState);
+                                handlerStateNames = handlerState.name.split(',').map( function(a){ return a.trim() } );
+                                for( var i = 0; i < handlerStateNames.length; i++ ) {
+                                    runHandler = (handlerState.group === incomingGroup && handlerStateNames[i] === incomingState);
+                                    if( runHandler ) break;
+                                }
                             }
-
 
                             // Run the handler if previous checks have determined we should
                             if( runHandler ) {
@@ -229,6 +139,7 @@ var sowEmitters = {
             else {
                 $mainForm = $el.closest('.siteorigin-widget-form-main');
             }
+            formId = $mainForm.find('> .siteorigin-widgets-form-id').val();
 
             // Find any field or sub widget fields.
             var $fields = $el.find('> .siteorigin-widget-field');
@@ -236,7 +147,7 @@ var sowEmitters = {
             // Process any sub sections
             $fields.find('> .siteorigin-widget-section').sowSetupForm();
 
-            //Process any sub widgets whose fields aren't contained in a section
+            // Process any sub widgets whose fields aren't contained in a section
             $fields.filter('.siteorigin-widget-field-type-widget:not(:has(> .siteorigin-widget-section))').sowSetupForm();
 
             // Store the field names
@@ -253,14 +164,11 @@ var sowEmitters = {
             $el.find('.siteorigin-widget-field-repeater-item').sowSetupRepeaterItems();
 
             // Set up any color fields
-            $fields.find('> .siteorigin-widget-input-color').wpColorPicker()
-                .closest('.siteorigin-widget-field').find('a').click(function(){
-                    if(typeof $.fn.dialog !== 'undefined') {
-                        $(this).closest('.panel-dialog').dialog("option", "position", "center");
-                    }
-                });
+            $fields.find('> .siteorigin-widget-input-color').wpColorPicker();
 
-            // handle the media field. Check that this is working
+            ///////////////////////////////////////
+            // Handle the media upload field
+
             $fields.find('> .media-field-wrapper').each(function(){
                 var $media = $(this);
                 var $field = $media.closest('.siteorigin-widget-field');
@@ -359,17 +267,15 @@ var sowEmitters = {
 
             });
 
-            // Handle toggling of the sub widget form
+            ///////////////////////////////////////
+            // Handle the sections
+
             $fields.filter('.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section').find('> label').click(function(){
                 var $$ = $(this);
                 $(this).toggleClass( 'siteorigin-widget-section-visible' );
                 $(this).siblings('.siteorigin-widget-section').slideToggle(function(){
-                    // Center the PB dialog
-                    if(typeof $.fn.dialog !== 'undefined') {
-                        $(this).closest('.panel-dialog').dialog( "option", "position", "center" );
-                    }
-
                     $(window).resize();
+                    $(this).find('> .siteorigin-widget-field-container-state').val($(this).is(':visible') ? 'open' : 'closed');
                 });
             });
 
@@ -489,7 +395,7 @@ var sowEmitters = {
             });
 
             ///////////////////////////////////////
-            // Handle the slider sections
+            // Handle the slider fields
 
             $fields.filter('.siteorigin-widget-field-type-slider').each(function(){
                 var $$ = $(this);
@@ -591,8 +497,16 @@ var sowEmitters = {
                 if( typeof emitters !== 'undefined' ) {
                     var handleStateEmitter = function(emitter, currentStates){
                         if( typeof sowEmitters[ emitter.callback ] === 'undefined' || emitter.callback.substr(0,1) === '_' ) {
-                            // Skip if the function doesn't exist, or it starts with an underscore.
+                            // Skip if the function doesn't exist, or it starts with an underscore (internal functions).
                             return currentStates;
+                        }
+
+                        // Check if this is inside a repeater
+                        var repeaterIndex = window.sowForms.getRepeaterId($$);
+                        if( repeaterIndex !== false ) {
+                            emitter.args = emitter.args.map( function( a ){
+                                return a.replace('{$repeater}', repeaterIndex);
+                            } );
                         }
 
                         // Return an array that has the new states added to the array
@@ -603,7 +517,10 @@ var sowEmitters = {
                     var states = { 'default' : '' };
 
                     // Go through the array of emitters
-                    if( typeof emitters.length === 'undefined' ) { emitters = [emitters]; }
+                    if( typeof emitters.length === 'undefined' ) {
+                        emitters = [emitters];
+                    }
+
                     for( var i = 0; i < emitters.length; i++ ) {
                         states = handleStateEmitter( emitters[i], states );
                     }
@@ -631,7 +548,7 @@ var sowEmitters = {
                 // Listen for any change events on an emitter field
                 $(this).find('.siteorigin-widget-input').on('keyup change', stateEmitterChangeHandler);
 
-                // Trigger changes on all necessary fields
+                // Trigger initial state emitter changes
                 $(this).find('.siteorigin-widget-input').each(function(){
                     var $$ = $(this);
                     if( $$.is(':radio') ) {
@@ -671,6 +588,10 @@ var sowEmitters = {
             $el.find( '*[name]' ).each( function () {
                 var $$ = $(this);
                 var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
+
+                if( name === undefined ) {
+                    return true;
+                }
 
                 name = name[1];
                 var parts = name.split('][');
@@ -803,11 +724,6 @@ var sowEmitters = {
                     .find('> .siteorigin-widget-field-repeater-items').slideDown('fast', function(){
                         $(window).resize();
                     });
-
-                // Center the PB dialog
-                if(typeof $.fn.dialog !== 'undefined') {
-                    $(this).closest('.panel-dialog').dialog("option", "position", "center");
-                }
             } );
 
             $el.find('> .siteorigin-widget-field-repeater-top > .siteorigin-widget-field-repeater-expend').click( function(e){
@@ -902,9 +818,6 @@ var sowEmitters = {
                     }
                     e.preventDefault();
                     $(this).closest('.siteorigin-widget-field-repeater-item').find('.siteorigin-widget-field-repeater-item-form').eq(0).slideToggle('fast', function () {
-                        if (typeof $.fn.dialog !== 'undefined') {
-                            $(this).closest('.panel-dialog').dialog("option", "position", "center");
-                        }
                         if($(this).is(':visible')) {
                             $(this).trigger('slideToggleOpenComplete');
                         }
@@ -1004,36 +917,66 @@ var sowEmitters = {
         });
     };
 
-    window.sowGetWidgetFieldVariable = function ( widgetClass, elementName, key ) {
-        var widgetVars = window.sow_field_javascript_variables[widgetClass];
-        // Get rid of any index placeholders
-        elementName = elementName.replace( /\[#.*?#\]/g, '');
-        var variablePath = /[a-zA-Z0-9\-]+(?:\[c?[0-9]+\])?\[(.*)\]/.exec( elementName )[1];
-        var variablePathParts = variablePath.split('][');
-        var elementVars = variablePathParts.length ? widgetVars : null;
-        while(variablePathParts.length) {
-            elementVars = elementVars[variablePathParts.shift()];
-        }
-        return elementVars[key];
-    };
+    // Widgets Bundle utility functions
+    var sowForms = {
+        /**
+         * Get the unique index of a repeater item.
+         *
+         * @param $el
+         * @return {*}
+         */
+        getRepeaterId: function( $el ) {
+            if( typeof this.id === 'undefined' ) {
+                this.id = 1;
+            }
 
-    window.sowFetchWidgetVariable = function (key, widget, callback) {
-        window.sowVars = window.sowVars || {};
-
-        if (typeof window.sowVars[widget] === 'undefined') {
-            $.post(
-                soWidgets.ajaxurl,
-                { 'action': 'sow_get_javascript_variables', 'widget': widget, 'key': key },
-                function (result) {
-                    window.sowVars[widget] = result;
-                    callback(window.sowVars[widget][key]);
+            var $r = $el.closest('.siteorigin-widget-field-repeater-item');
+            if( $r.length ) {
+                var itemId = $r.data('item-id');
+                if( itemId === undefined ) {
+                    itemId = this.id++;
                 }
-            );
-        }
-        else {
-            callback(window.sowVars[widget][key]);
+                $r.data('item-id', itemId);
+
+                return itemId;
+            }
+            else {
+                return false;
+            }
+        },
+
+        getWidgetFieldVariable: function ( widgetClass, elementName, key ) {
+            var widgetVars = window.sow_field_javascript_variables[widgetClass];
+            // Get rid of any index placeholders
+            elementName = elementName.replace( /\[#.*?#\]/g, '');
+            var variablePath = /[a-zA-Z0-9\-]+(?:\[c?[0-9]+\])?\[(.*)\]/.exec( elementName )[1];
+            var variablePathParts = variablePath.split('][');
+            var elementVars = variablePathParts.length ? widgetVars : null;
+            while(variablePathParts.length) {
+                elementVars = elementVars[variablePathParts.shift()];
+            }
+            return elementVars[key];
+        },
+
+        fetchWidgetVariable: function (key, widget, callback) {
+            window.sowVars = window.sowVars || {};
+
+            if (typeof window.sowVars[widget] === 'undefined') {
+                $.post(
+                    soWidgets.ajaxurl,
+                    { 'action': 'sow_get_javascript_variables', 'widget': widget, 'key': key },
+                    function (result) {
+                        window.sowVars[widget] = result;
+                        callback(window.sowVars[widget][key]);
+                    }
+                );
+            }
+            else {
+                callback(window.sowVars[widget][key]);
+            }
         }
     };
+    window.sowForms = sowForms;
 
     // When we click on a widget top
     $('.widgets-holder-wrap').on('click', '.widget:has(.siteorigin-widget-form-main) .widget-top', function(){
@@ -1058,3 +1001,109 @@ var sowEmitters = {
     $(document).trigger('sowadminloaded');
 
 })(jQuery);
+
+var sowEmitters = {
+
+    /**
+     * Find the group/state and an extra match part.
+     *
+     * @param arg
+     * @param matchPart
+     * @return {*}
+     */
+    '_match': function(arg, matchPart) {
+        if( typeof matchPart === 'undefined' ) { matchPart = '.*'; }
+
+        // Create the regular expression to match the group/state and extra match
+        var exp = new RegExp( '^([a-zA-Z0-9_-]+)(\\[([a-zA-Z0-9_-]+)\\])? *: *(' + matchPart + ') *$' );
+        var m = exp.exec( arg );
+
+        if( m === null ) { return false; }
+
+        var state = '';
+        var group = 'default';
+
+        if( m[3] !== undefined ) {
+            group = m[1];
+            state = m[3];
+        }
+        else {
+            state = m[1];
+        }
+
+        return {
+            'match' : m[4].trim(),
+            'group' : group,
+            'state' : state
+        };
+    },
+
+    '_checker' : function(val, args, matchPart, callback){
+        var returnStates = {};
+        if( typeof args.length === 'undefined' ) {
+            args = [args];
+        }
+
+        var m;
+        for( var i = 0; i < args.length; i++ ) {
+            m = sowEmitters._match( args[i], matchPart );
+            if ( m === false ) { continue; }
+
+            if( m.match === '_true' || callback( val, args, m.match ) ) {
+                returnStates[ m.group ] = m.state;
+            }
+        }
+
+        return returnStates;
+    },
+
+    /**
+     * A very simple state emitter that simply sets the given group the value
+     *
+     *
+     * @param val
+     * @param args
+     * @returns {{}}
+     */
+    'select': function(val, args) {
+        if( typeof args.length === 'undefined' ) {
+            args = [args];
+        }
+
+        var returnGroups = {};
+        for( var i = 0; i < args.length; i++ ) {
+            if( args[i] === '' ) {
+                args[i] = 'default';
+            }
+            returnGroups[args[i]] = val;
+        }
+
+        return returnGroups;
+    },
+
+    /**
+     * The conditional state emitter uses eval to check a given conditional argument.
+     *
+     * @param val
+     * @param args
+     * @return {{}}
+     */
+    'conditional' : function(val, args){
+        return sowEmitters._checker( val, args, '[^;{}]*', function( val, args, match ){
+            return eval( match );
+        } );
+    },
+
+    /**
+     * The in state emitter checks if the value is in an array of functions
+     *
+     * @param val
+     * @param args
+     * @return {{}}
+     */
+    'in' :  function(val, args) {
+        return sowEmitters._checker( val, args, '[^;{}]*', function( val, args, match ){
+            return match.split(',').map( function(s) { return s.trim(); } ).indexOf( val ) !== -1;
+        } );
+    }
+};

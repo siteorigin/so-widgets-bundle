@@ -42,6 +42,13 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 	 */
 	protected $hide;
 	/**
+	 * The current visibility state of this container.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $state;
+	/**
 	 * Whether or not this container's fields are rendered within a collapsible container.
 	 *
 	 * @access protected
@@ -56,15 +63,26 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 		$this->parent_container = $parent_container;
 	}
 
-	protected function get_label_classes() {
-		$label_classes = parent::get_label_classes();
-		if( empty( $this->hide ) ) $label_classes[] = 'siteorigin-widget-section-visible';
+	protected function render_before_field( $value, $instance ) {
+		if( ! empty( $value[ 'so_field_container_state' ] ) ) {
+			$this->state = $value[ 'so_field_container_state' ];
+		}
+		else {
+			$this->state = $this->hide ? 'closed' : 'open';
+		}
+
+		parent::render_before_field( $value, $instance );
+	}
+
+	protected function get_label_classes( $value, $instance ) {
+		$label_classes = parent::get_label_classes( $value, $instance );
+		if( $this->state == 'open' ) $label_classes[] = 'siteorigin-widget-section-visible';
 		return $label_classes;
 	}
 
-	protected function render_field_label() {
+	protected function render_field_label( $value, $instance ) {
 		if ($this->collapsible ) {
-			parent::render_field_label();
+			parent::render_field_label( $value, $instance );
 		}
 	}
 

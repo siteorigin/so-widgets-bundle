@@ -1,0 +1,125 @@
+@import "../../../base/less/mixins";
+
+@image_size: 75px;
+@testimonial_padding: 10px;
+
+@testimonial_background: transparent;
+@text_background: #f0f0f0;
+@text_color: #666;
+@text_border_radius: 4px;
+
+// Testimonial sizes
+@testimonial_size: 33.333%;
+@tablet_testimonial_size: 50%;
+@tablet_width: 800px;
+@mobile_testimonial_size: 100%;
+@mobile_width: 480px;
+
+.sow-testimonials {
+
+	.sow-testimonial-wrapper {
+		width: @testimonial_size;
+
+		@media screen and (max-width: @tablet_width) {
+			width: @tablet_testimonial_size;
+		}
+
+		@media screen and (max-width: @mobile_width) {
+			width: @mobile_testimonial_size;
+		}
+	}
+
+	.sow-testimonial {
+		background: @testimonial_background;
+	}
+
+	.sow-testimonial-text {
+		background: @text_background;
+		color: @text_color;
+		padding: @testimonial_padding @testimonial_padding*1.5;
+		.border-radius(@text_border_radius);
+	}
+
+	.sow-round-image-frame {
+		border-radius: @image_size;
+	}
+
+	// All the specific layouts
+
+	.sow-testimonial-wrapper {
+		.clearfix();
+
+		&.sow-layout-side {
+
+			&.sow-user-left,
+			&.sow-user-middle {
+				.sow-testimonial-user {
+					width: 33%;
+					float: left;
+					padding: @testimonial_padding @testimonial_padding*2 @testimonial_padding @testimonial_padding;
+
+					img {
+						margin: 0 auto;
+						max-width: 100%;
+						height: auto;
+					}
+				}
+
+				.sow-testimonial-text {
+					margin-left: 33%;
+				}
+			}
+
+			&.sow-user-right {
+
+				.sow-testimonial-user {
+					width: 33%;
+					float: right;
+					padding: @testimonial_padding @testimonial_padding @testimonial_padding @testimonial_padding*2;
+
+					img {
+						width: @image_size;
+						margin: 0 auto;
+						max-width: 100%;
+						height: auto;
+					}
+				}
+
+				.sow-testimonial-text {
+					margin-right: 33%;
+				}
+
+			}
+
+		}
+
+		&.sow-layout-text-above,
+		&.sow-layout-text-below {
+
+			.sow-testimonial-user {
+				width: auto;
+				padding: @testimonial_padding;
+
+				img {
+					width: @image_size;
+					height: auto;
+				}
+			}
+
+			.sow-testimonial-text {
+
+			}
+
+		}
+
+		&.sow-layout-text-below {
+
+			.sow-testimonial-user {
+				padding:@testimonial_padding;
+			}
+
+		}
+
+	}
+
+}

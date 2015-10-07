@@ -204,7 +204,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 *
 	 * @return array The array of label CSS classes.
 	 */
-	protected function get_label_classes() {
+	protected function get_label_classes( $value, $instance ) {
 		return array( 'siteorigin-widget-field-label' );
 	}
 
@@ -272,19 +272,19 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * @param $instance array The current widget instance.
 	 */
 	protected function render_before_field( $value, $instance ) {
-		$this->render_field_label();
+		$this->render_field_label( $value, $instance );
 	}
 
 	/**
 	 * Default label rendering implementation. Subclasses should override if necessary to render labels differently.
 	 */
-	protected function render_field_label() {
+	protected function render_field_label( $value, $instance ) {
 		?>
-		<label for="<?php echo esc_attr( $this->element_id ) ?>" <?php $this->render_CSS_classes( $this->get_label_classes() ) ?>>
+		<label for="<?php echo esc_attr( $this->element_id ) ?>" <?php $this->render_CSS_classes( $this->get_label_classes( $value, $instance ) ) ?>>
 			<?php
 		echo esc_html( $this->label );
 		if( !empty( $this->optional ) ) {
-			echo '<span class="field-optional">(' . __('Optional', 'siteorigin-panels') . ')</span>';
+			echo '<span class="field-optional">(' . __('Optional', 'so-widgets-bundle') . ')</span>';
 		}
 		?>
 		</label>
