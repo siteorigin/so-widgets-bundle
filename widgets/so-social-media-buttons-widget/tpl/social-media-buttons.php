@@ -13,9 +13,9 @@
 
 		<a <?php foreach($button_attributes as $name => $val) echo $name . '="' . $val . '" ' ?>>
 			<span>
-				<!-- premium-<?php echo $network['name'] ?> -->
+				<?php if( !empty( $network['is_custom'] ) ) echo '<!-- premium-' . $network['name'] . ' -->'; ?>
 				<?php echo siteorigin_widget_get_icon( $network['icon_name'] ); ?>
-				<!-- endpremium -->
+				<?php if( !empty( $network['is_custom'] ) ) echo '<!-- endpremium -->'; ?>
 			</span>
 		</a>
 	<?php endforeach; ?>

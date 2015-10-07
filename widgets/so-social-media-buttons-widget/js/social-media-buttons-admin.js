@@ -5,7 +5,7 @@
         var $socialMediaForm = $(this);
 
         var setNetworkDefaults = function($selectNetworkInput) {
-            window.sowFetchWidgetVariable('networks', 'SiteOrigin_Widget_SocialMediaButtons_Widget',
+            window.sowForms.fetchWidgetVariable('networks', 'SiteOrigin_Widget_SocialMediaButtons_Widget',
                 function(networks) {
                     var selectedNetwork = networks[$selectNetworkInput.find(':selected').val()];
                     var $closestForm = $selectNetworkInput.closest('.siteorigin-widget-field-repeater-item-form');
