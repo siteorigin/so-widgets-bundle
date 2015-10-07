@@ -148,7 +148,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 
 	protected function sanitize_field_input( $value ) {
 		if( current_user_can( 'unfiltered_html' ) ) {
-			$sanitized_value = preg_replace('/<\s*?script[^>]*?>[\s\S]*?<\s*\/\s*script\s*>/mi', '', $value);
+			$sanitized_value = $value;
 		} else {
 			$sanitized_value = wp_kses_post( $value );
 		}

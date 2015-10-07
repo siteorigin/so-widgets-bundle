@@ -99,7 +99,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 				<?php echo esc_html( $this->choose ) ?>
 			</a>
 		</div>
-		<a href="#" class="media-remove-button <?php if( empty( $value ) ) echo 'remove-hide'; ?>"><?php esc_html_e( 'Remove', 'siteorigin-widgets' ) ?></a>
+		<a href="#" class="media-remove-button <?php if( empty( $value ) ) echo 'remove-hide'; ?>"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ) ?></a>
 
 		<input type="hidden" value="<?php echo esc_attr( is_array( $value ) ? '-1' : $value ) ?>" name="<?php echo esc_attr( $this->element_name ) ?>" class="siteorigin-widget-input" />
 
@@ -112,7 +112,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 			$fallback_url = !empty( $instance[ $fallback_name ] ) ? $instance[ $fallback_name ] : '';
 			?>
 			<input type="text" value="<?php echo esc_url( $fallback_url ) ?>"
-			       placeholder="<?php esc_attr_e( 'External URL', 'siteorigin-widgets' ) ?>"
+			       placeholder="<?php esc_attr_e( 'External URL', 'so-widgets-bundle' ) ?>"
 			       name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_fallback', $this->parent_repeater ) ) ?>"
 			       class="media-fallback-external siteorigin-widget-input" />
 			<div class="clear"></div>

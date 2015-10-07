@@ -7,15 +7,15 @@ $the_query = new WP_Query( $query );
 	<div class="sow-carousel-title">
 		<?php echo $args['before_title'] . esc_html($instance['title']) . $args['after_title'] ?>
 
-		<a href="#" class="sow-carousel-next" title="<?php esc_attr_e('Next', 'siteorigin-widgets') ?>"></a>
-		<a href="#" class="sow-carousel-previous" title="<?php esc_attr_e('Previous', 'siteorigin-widgets') ?>"></a>
+		<a href="#" class="sow-carousel-next" title="<?php esc_attr_e('Next', 'so-widgets-bundle') ?>"></a>
+		<a href="#" class="sow-carousel-previous" title="<?php esc_attr_e('Previous', 'so-widgets-bundle') ?>"></a>
 	</div>
 
 	<div class="sow-carousel-container">
 
-		<a href="#" class="sow-carousel-previous" title="<?php esc_attr_e('Previous', 'siteorigin-widgets') ?>"></a>
+		<a href="#" class="sow-carousel-previous" title="<?php esc_attr_e('Previous', 'so-widgets-bundle') ?>"></a>
 
-		<a href="#" class="sow-carousel-next" title="<?php esc_attr_e('Next', 'siteorigin-widgets') ?>"></a>
+		<a href="#" class="sow-carousel-next" title="<?php esc_attr_e('Next', 'so-widgets-bundle') ?>"></a>
 
 		<div class="sow-carousel-wrapper"
 		     data-query="<?php echo esc_attr($instance['posts']) ?>"
