@@ -50,6 +50,9 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.5.1 - October 7 2015 =
+* Fixed: Issue with Call To Action widget being missing.
+
 = 1.5 - October 5 2015 =
 * Fixed: Conflict between WPML and repeaters.
 * Added Simple Masonry Layout widget.
