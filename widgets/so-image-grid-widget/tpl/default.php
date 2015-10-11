@@ -6,9 +6,11 @@
 		<?php
 		foreach( $instance['images'] as $image ) {
 			echo '<div class="sow-image-grid-image">';
+			if ( ! empty( $image['url'] ) ) echo '<a href="' . sow_esc_url( $image['url'] ) . '">';
 			echo wp_get_attachment_image( $image['image'], $image['display']['image_size'], false, array(
 				'title' => $image['title']
 			) );
+			if ( ! empty( $image['url'] ) ) echo '</a>';
 			echo '</div>';
 		}
 		?>
