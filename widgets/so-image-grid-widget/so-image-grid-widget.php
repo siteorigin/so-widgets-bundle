@@ -38,8 +38,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 							'label' => __('Image title', 'so-widgets-bundle')
 						),
 						'url' => array(
-							'type' => 'text',
-							'sanitize' => 'url',
+							'type' => 'link',
 							'label' => __('URL', 'so-widgets-bundle')
 						),
 					)
