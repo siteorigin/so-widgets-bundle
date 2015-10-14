@@ -80,6 +80,105 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					),
 				),
 
+				'title_options' => array(
+					'type' => 'section',
+					'label' => __( 'Title Style', 'so-widgets-bundle' ),
+					'fields' => array(
+						'font' => array(
+							'type' => 'font',
+							'label' => __( 'Font', 'so-widgets-bundle' ),
+							'default' => 'default'
+						),
+						'size' => array(
+							'type' => 'select',
+							'label' => __( 'Size', 'so-widgets-bundle' ),
+							'default' => '12px',
+							'options' => array(
+								'8px' => '8px',
+								'9px' => '9px',
+								'10px' => '10px',
+								'11px' => '11px',
+								'12px' => '12px',
+								'14px' => '14px',
+								'16px' => '16px',
+								'18px' => '18px',
+								'20px' => '20px',
+							)
+						),
+						'color' => array(
+							'type' => 'color',
+							'label' => __( 'Color', 'so-widgets-bundle' ),
+							'default' => '#000000'
+						)
+					)
+				),
+
+				'text_options' => array(
+					'type' => 'section',
+					'label' => __( 'Text Style', 'so-widgets-bundle' ),
+					'fields' => array(
+						'font' => array(
+							'type' => 'font',
+							'label' => __( 'Font', 'so-widgets-bundle' ),
+							'default' => 'default'
+						),
+						'size' => array(
+							'type' => 'select',
+							'label' => __( 'Size', 'so-widgets-bundle' ),
+							'default' => '12px',
+							'options' => array(
+								'8px' => '8px',
+								'9px' => '9px',
+								'10px' => '10px',
+								'11px' => '11px',
+								'12px' => '12px',
+								'14px' => '14px',
+								'16px' => '16px',
+								'18px' => '18px',
+								'20px' => '20px',
+							)
+						),
+						'color' => array(
+							'type' => 'color',
+							'label' => __( 'Color', 'so-widgets-bundle' ),
+							'default' => '#000000'
+						)
+					)
+				),
+
+				'more_text_options' => array(
+					'type' => 'section',
+					'label' => __( 'More Link Text Style', 'so-widgets-bundle' ),
+					'fields' => array(
+						'font' => array(
+							'type' => 'font',
+							'label' => __( 'Font', 'so-widgets-bundle' ),
+							'default' => 'default'
+						),
+						'size' => array(
+							'type' => 'select',
+							'label' => __( 'Size', 'so-widgets-bundle' ),
+							'default' => '12px',
+							'options' => array(
+								'8px' => '8px',
+								'9px' => '9px',
+								'10px' => '10px',
+								'11px' => '11px',
+								'12px' => '12px',
+								'14px' => '14px',
+								'16px' => '16px',
+								'18px' => '18px',
+								'20px' => '20px',
+							)
+						),
+						'color' => array(
+							'type' => 'color',
+							'label' => __( 'Color', 'so-widgets-bundle' ),
+							'default' => '#000000'
+						)
+					)
+				),
+
 				'container_shape' => array(
 					'type' => 'select',
 					'label' => __('Container shape', 'so-widgets-bundle'),
@@ -149,7 +248,93 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_style_name($instance){
-		return false;
+		return 'features';
+	}
+
+	function get_less_variables( $instance ) {
+		$less_vars = array();
+
+		if ( ! empty( $instance['title_options'] ) ) {
+			$title_styles = $instance['title_options'];
+			if ( ! empty( $title_styles['size'] ) ) {
+				$less_vars['title_size'] = $title_styles['size'];
+			}
+			if ( ! empty( $title_styles['color'] ) ) {
+				$less_vars['title_color'] = $title_styles['color'];
+			}
+			if ( ! empty( $title_styles['font'] ) ) {
+				$font = siteorigin_widget_get_font( $title_styles['font'] );
+				$less_vars['title_font'] = $font['family'];
+				if ( ! empty( $font['weight'] ) ) {
+					$less_vars['title_font_weight'] = $font['weight'];
+				}
+			}
+		}
+
+		if ( ! empty( $instance['text_options'] ) ) {
+			$text_styles = $instance['text_options'];
+			if ( ! empty( $text_styles['size'] ) ) {
+				$less_vars['text_size'] = $text_styles['size'];
+			}
+			if ( ! empty( $text_styles['color'] ) ) {
+				$less_vars['text_color'] = $text_styles['color'];
+			}
+			if ( ! empty( $text_styles['font'] ) ) {
+				$font = siteorigin_widget_get_font( $text_styles['font'] );
+				$less_vars['text_font'] = $font['family'];
+				if ( ! empty( $font['weight'] ) ) {
+					$less_vars['text_font_weight'] = $font['weight'];
+				}
+			}
+		}
+
+		if ( ! empty( $instance['more_text_options'] ) ) {
+			$more_text_styles = $instance['more_text_options'];
+			if ( ! empty( $more_text_styles['size'] ) ) {
+				$less_vars['more_text_size'] = $more_text_styles['size'];
+			}
+			if ( ! empty( $more_text_styles['color'] ) ) {
+				$less_vars['more_text_color'] = $more_text_styles['color'];
+			}
+			if ( ! empty( $more_text_styles['font'] ) ) {
+				$font = siteorigin_widget_get_font( $more_text_styles['font'] );
+				$less_vars['more_text_font'] = $font['family'];
+				if ( ! empty( $font['weight'] ) ) {
+					$less_vars['more_text_font_weight'] = $font['weight'];
+				}
+			}
+		}
+
+		return $less_vars;
+	}
+
+	/**
+	 * Less function for importing Google web fonts.
+	 *
+	 * @param $instance
+	 * @param $args
+	 *
+	 * @return string
+	 */
+	function less_import_google_font($instance, $args) {
+		if( empty( $instance ) ) return;
+
+		$font_imports = array(
+			siteorigin_widget_get_font( $instance['title_options']['font'] ),
+			siteorigin_widget_get_font( $instance['text_options']['font'] ),
+			siteorigin_widget_get_font( $instance['more_text_options']['font'] ),
+		);
+
+		$import_strings = array();
+		foreach( $font_imports as $import ) {
+			$import_strings[] = !empty($import['css_import']) ? $import['css_import'] : '';
+		}
+
+		// Remove empty and duplicate items from the array
+		$import_strings = array_filter($import_strings);
+		$import_strings = array_unique($import_strings);
+
+		return implode("\n", $import_strings);
 	}
 
 	function get_template_name($instance){
