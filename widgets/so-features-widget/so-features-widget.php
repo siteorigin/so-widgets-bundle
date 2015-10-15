@@ -90,20 +90,8 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 							'default' => 'default'
 						),
 						'size' => array(
-							'type' => 'select',
+							'type' => 'measurement',
 							'label' => __( 'Size', 'so-widgets-bundle' ),
-							'default' => '12px',
-							'options' => array(
-								'8px' => '8px',
-								'9px' => '9px',
-								'10px' => '10px',
-								'11px' => '11px',
-								'12px' => '12px',
-								'14px' => '14px',
-								'16px' => '16px',
-								'18px' => '18px',
-								'20px' => '20px',
-							)
 						),
 						'color' => array(
 							'type' => 'color',
@@ -123,20 +111,8 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 							'default' => 'default'
 						),
 						'size' => array(
-							'type' => 'select',
+							'type' => 'measurement',
 							'label' => __( 'Size', 'so-widgets-bundle' ),
-							'default' => '12px',
-							'options' => array(
-								'8px' => '8px',
-								'9px' => '9px',
-								'10px' => '10px',
-								'11px' => '11px',
-								'12px' => '12px',
-								'14px' => '14px',
-								'16px' => '16px',
-								'18px' => '18px',
-								'20px' => '20px',
-							)
 						),
 						'color' => array(
 							'type' => 'color',
@@ -156,20 +132,8 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 							'default' => 'default'
 						),
 						'size' => array(
-							'type' => 'select',
+							'type' => 'measurement',
 							'label' => __( 'Size', 'so-widgets-bundle' ),
-							'default' => '12px',
-							'options' => array(
-								'8px' => '8px',
-								'9px' => '9px',
-								'10px' => '10px',
-								'11px' => '11px',
-								'12px' => '12px',
-								'14px' => '14px',
-								'16px' => '16px',
-								'18px' => '18px',
-								'20px' => '20px',
-							)
 						),
 						'color' => array(
 							'type' => 'color',
@@ -254,53 +218,24 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 	function get_less_variables( $instance ) {
 		$less_vars = array();
 
-		if ( ! empty( $instance['title_options'] ) ) {
-			$title_styles = $instance['title_options'];
-			if ( ! empty( $title_styles['size'] ) ) {
-				$less_vars['title_size'] = $title_styles['size'];
-			}
-			if ( ! empty( $title_styles['color'] ) ) {
-				$less_vars['title_color'] = $title_styles['color'];
-			}
-			if ( ! empty( $title_styles['font'] ) ) {
-				$font = siteorigin_widget_get_font( $title_styles['font'] );
-				$less_vars['title_font'] = $font['family'];
-				if ( ! empty( $font['weight'] ) ) {
-					$less_vars['title_font_weight'] = $font['weight'];
-				}
-			}
-		}
+		$stylable_text_fields = array( 'title', 'text', 'more_text' );
 
-		if ( ! empty( $instance['text_options'] ) ) {
-			$text_styles = $instance['text_options'];
-			if ( ! empty( $text_styles['size'] ) ) {
-				$less_vars['text_size'] = $text_styles['size'];
-			}
-			if ( ! empty( $text_styles['color'] ) ) {
-				$less_vars['text_color'] = $text_styles['color'];
-			}
-			if ( ! empty( $text_styles['font'] ) ) {
-				$font = siteorigin_widget_get_font( $text_styles['font'] );
-				$less_vars['text_font'] = $font['family'];
-				if ( ! empty( $font['weight'] ) ) {
-					$less_vars['text_font_weight'] = $font['weight'];
-				}
-			}
-		}
+		foreach ( $stylable_text_fields as $field_name ) {
 
-		if ( ! empty( $instance['more_text_options'] ) ) {
-			$more_text_styles = $instance['more_text_options'];
-			if ( ! empty( $more_text_styles['size'] ) ) {
-				$less_vars['more_text_size'] = $more_text_styles['size'];
-			}
-			if ( ! empty( $more_text_styles['color'] ) ) {
-				$less_vars['more_text_color'] = $more_text_styles['color'];
-			}
-			if ( ! empty( $more_text_styles['font'] ) ) {
-				$font = siteorigin_widget_get_font( $more_text_styles['font'] );
-				$less_vars['more_text_font'] = $font['family'];
-				if ( ! empty( $font['weight'] ) ) {
-					$less_vars['more_text_font_weight'] = $font['weight'];
+			if ( ! empty( $instance[$field_name.'_options'] ) ) {
+				$styles = $instance[$field_name.'_options'];
+				if ( ! empty( $styles['size'] ) ) {
+					$less_vars[$field_name.'_size'] = $styles['size'] . $styles['size_unit'];
+				}
+				if ( ! empty( $styles['color'] ) ) {
+					$less_vars[$field_name.'_color'] = $styles['color'];
+				}
+				if ( ! empty( $styles['font'] ) ) {
+					$font = siteorigin_widget_get_font( $styles['font'] );
+					$less_vars[$field_name.'_font'] = $font['family'];
+					if ( ! empty( $font['weight'] ) ) {
+						$less_vars[$field_name.'_font_weight'] = $font['weight'];
+					}
 				}
 			}
 		}
