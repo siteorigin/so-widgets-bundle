@@ -98,7 +98,7 @@ class SiteOrigin_Widgets_Bundle {
 
 		$active_version = get_option( 'siteorigin_widget_bundle_version' );
 
-		if( true ) {// empty($active_version) || version_compare( $active_version, SOW_BUNDLE_VERSION, '<' ) ) {
+		if( empty($active_version) || version_compare( $active_version, SOW_BUNDLE_VERSION, '<' ) ) {
 			// If this is a new version, then clear the cache.
 			update_option( 'siteorigin_widget_bundle_version', SOW_BUNDLE_VERSION );
 			siteorigin_widgets_deactivate_legacy_plugins();
