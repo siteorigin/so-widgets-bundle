@@ -29,12 +29,12 @@ class SiteOrigin_Widgets_Bundle {
 	 * @var array The array of default widgets.
 	 */
 	static $default_active_widgets = array(
-		'so-button-widget' => true,
-		'so-google-map-widget' => true,
-		'so-image-widget' => true,
-		'so-slider-widget' => true,
-		'so-post-carousel-widget' => true,
-		'so-editor-widget' => true,
+		'button' => true,
+		'google-map' => true,
+		'image' => true,
+		'slider' => true,
+		'post-carousel' => true,
+		'editor' => true,
 	);
 
 	function __construct(){
@@ -54,7 +54,7 @@ class SiteOrigin_Widgets_Bundle {
 
 		// Version check for cache clearing
 		add_action( 'admin_init', array($this, 'plugin_version_check') );
-		add_action( 'siteorigin_widgets_version_update', array( $this, 'check_for_new_widgets' ) );
+		add_action( 'siteorigin_widgets_version_update', array( $this, 'handle_update' ), 10, 2 );
 		add_action( 'admin_notices', array( $this, 'display_admin_notices') );
 
 		// These filters are used to activate any widgets that are missing.
@@ -98,7 +98,7 @@ class SiteOrigin_Widgets_Bundle {
 
 		$active_version = get_option( 'siteorigin_widget_bundle_version' );
 
-		if( empty($active_version) || version_compare( $active_version, SOW_BUNDLE_VERSION, '<' ) ) {
+		if( true ) {// empty($active_version) || version_compare( $active_version, SOW_BUNDLE_VERSION, '<' ) ) {
 			// If this is a new version, then clear the cache.
 			update_option( 'siteorigin_widget_bundle_version', SOW_BUNDLE_VERSION );
 			siteorigin_widgets_deactivate_legacy_plugins();
@@ -122,6 +122,16 @@ class SiteOrigin_Widgets_Bundle {
 			do_action( 'siteorigin_widgets_version_update', SOW_BUNDLE_VERSION, $active_version );
 		}
 
+	}
+
+	function handle_update($old_version, $new_version) {
+		//Always check for new widgets.
+		$this->check_for_new_widgets();
+
+		//Only ever want to do this when upgrading from 1.5.1 or lower
+		if(version_compare( '1.5.1', $old_version, '>=' )){
+			$this->migrate_widget_names();
+		}
 	}
 
 	/**
@@ -402,7 +412,6 @@ class SiteOrigin_Widgets_Bundle {
 			}
 		}
 
-
 		return true;
 	}
 
@@ -512,8 +521,7 @@ class SiteOrigin_Widgets_Bundle {
 			$class = $widget['panels_info']['class'];
 			if( preg_match('/SiteOrigin_Widget_([A-Za-z]+)_Widget/', $class, $matches) ) {
 				$name = $matches[1];
-				// TODO change this when we transition to new widget names
-				$id = 'so'.strtolower( implode( '-', preg_split('/(?=[A-Z])/',$name) ) ).'-widget';
+				$id = strtolower( implode( '-', array_filter( preg_split( '/(?=[A-Z])/', $name ) ) ) );
 				$this->activate_widget($id, true);
 			}
 		}
@@ -535,9 +543,7 @@ class SiteOrigin_Widgets_Bundle {
 
 		if( preg_match('/SiteOrigin_Widget_([A-Za-z]+)_Widget/', $class, $matches) ) {
 			$name = $matches[1];
-			// TODO change this when we transition to new widget names
-			$id = 'so'.strtolower( implode( '-', preg_split('/(?=[A-Z])/',$name) ) ).'-widget';
-
+			$id = strtolower( implode( '-', array_filter( preg_split( '/(?=[A-Z])/', $name ) ) ) );
 			$this->activate_widget($id, true);
 			global $wp_widget_factory;
 			if( !empty($wp_widget_factory->widgets[$class]) ) return $wp_widget_factory->widgets[$class];
@@ -577,6 +583,19 @@ class SiteOrigin_Widgets_Bundle {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Migrate widget names after changing from so-*-widget convention.
+	 */
+	function migrate_widget_names() {
+		$active_widgets = $this->get_active_widgets();
+		foreach ( $active_widgets as $widget_name => $is_active ) {
+			unset( $active_widgets[ $widget_name ] );
+			$new_name = preg_replace( '/so-([a-z\-]+)-widget/', '$1', $widget_name);
+			$active_widgets[ $new_name ] = $is_active;
+		}
+		update_option( 'siteorigin_widgets_active', $active_widgets );
 	}
 }
 
