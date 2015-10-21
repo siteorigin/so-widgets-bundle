@@ -201,8 +201,8 @@ class SiteOrigin_Widget_Field_BaseTest extends WP_UnitTestCase {
 
 		$sanitized_url = $field->sanitize( $raw_url );
 
-		//Removes square brackets
-		$this->assertEquals( 'http://www.example.com/?with_queries=true&more_queries=alsotrue', $sanitized_url );
+		//Encodes square brackets
+		$this->assertEquals( 'http://www.example.com/?with_queries=tr%5Bue&more_queries=also%5Dtrue', $sanitized_url, 'sanitize_url_sanitizes_url failed to remove square brackets' );
 	}
 
 	/**

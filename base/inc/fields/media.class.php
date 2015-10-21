@@ -135,7 +135,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 	public function sanitize_instance( $instance ) {
 		$fallback_name = $this->get_fallback_field_name( $this->base_name );
 		if( !empty( $this->fallback ) && !empty( $instance[ $fallback_name ] ) ) {
-			$instance[ $fallback_name ] = esc_url_raw( $instance[ $fallback_name ] );
+			$instance[ $fallback_name ] = sow_esc_url_raw( $instance[ $fallback_name ] );
 		}
 		return $instance;
 	}

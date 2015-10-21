@@ -80,6 +80,6 @@ class SiteOrigin_Widget_Field_LinkTest extends WP_UnitTestCase {
 
 		$value = 'http://www.example.org/t[hin]gs';
 		$sanitized_value = $field->sanitize( $value );
-		$this->assertEquals( 'http://www.example.org/things', $sanitized_value );
+		$this->assertEquals( 'http://www.example.org/t%5Bhin%5Dgs', $sanitized_value );
 	}
 }
