@@ -154,7 +154,7 @@ function loadMap($) {
 function loadApi($) {
     var apiKey = $('.sow-google-map-canvas').data('api-key');
 
-    var apiUrl = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=initialize';
+    var apiUrl = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=soGoogleMapInitialize';
     if(apiKey) {
         apiUrl += '&key=' + apiKey;
     }
@@ -162,7 +162,7 @@ function loadApi($) {
     $('body').append(script);
 }
 
-function initialize() {
+function soGoogleMapInitialize() {
     loadMap(window.jQuery);
 }
 
