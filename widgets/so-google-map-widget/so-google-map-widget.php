@@ -368,7 +368,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'sow-google-map',
 					plugin_dir_url(__FILE__) . 'js/js-map' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' ),
-					SOW_BUNDLE_VERSION .  mt_rand()
+					SOW_BUNDLE_VERSION
 				)
 			)
 		);
