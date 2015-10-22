@@ -101,7 +101,6 @@ class SiteOrigin_Widgets_Bundle {
 		if( empty($active_version) || version_compare( $active_version, SOW_BUNDLE_VERSION, '<' ) ) {
 			// If this is a new version, then clear the cache.
 			update_option( 'siteorigin_widget_bundle_version', SOW_BUNDLE_VERSION );
-			siteorigin_widgets_deactivate_legacy_plugins();
 
 			// Remove all cached CSS for SiteOrigin Widgets
 			if( function_exists('WP_Filesystem') && WP_Filesystem() ) {
@@ -605,18 +604,3 @@ SiteOrigin_Widgets_Bundle::single();
 // Initialize the Meta Box Manager
 global $sow_meta_box_manager;
 $sow_meta_box_manager = SiteOrigin_Widget_Meta_Box_Manager::single();
-
-/**
- * Deactivate any old widget plugins that we used to have on the directory. We'll remove this after version 1.2.
- */
-function siteorigin_widgets_deactivate_legacy_plugins(){
-	// All we want to do here is disable all legacy widgets
-	$the_plugins = get_option('active_plugins');
-	foreach($the_plugins as $plugin_id) {
-		if( preg_match('/^so-([a-z\-]+)-widget\/so-([a-z\-]+)-widget\.php$/', $plugin_id) ) {
-			// Deactivate the legacy plugin
-			deactivate_plugins($plugin_id, true);
-		}
-	}
-}
-register_activation_hook( __FILE__, 'siteorigin_widgets_deactivate_legacy_plugins' );
