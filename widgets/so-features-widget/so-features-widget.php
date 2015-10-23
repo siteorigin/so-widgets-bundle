@@ -251,33 +251,15 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		return $less_vars;
 	}
 
-	/**
-	 * Less function for importing Google web fonts.
-	 *
-	 * @param $instance
-	 * @param $args
-	 *
-	 * @return string
-	 */
-	function less_import_google_font($instance, $args) {
-		if( empty( $instance ) ) return;
+	function get_google_font_fields( $instance ) {
+
 		$fonts = $instance['fonts'];
-		$font_imports = array(
-			siteorigin_widget_get_font( $fonts['title_options']['font'] ),
-			siteorigin_widget_get_font( $fonts['text_options']['font'] ),
-			siteorigin_widget_get_font( $fonts['more_text_options']['font'] ),
+
+		return array(
+			$fonts['title_options']['font'],
+			$fonts['text_options']['font'],
+			$fonts['more_text_options']['font'],
 		);
-
-		$import_strings = array();
-		foreach( $font_imports as $import ) {
-			$import_strings[] = !empty($import['css_import']) ? $import['css_import'] : '';
-		}
-
-		// Remove empty and duplicate items from the array
-		$import_strings = array_filter($import_strings);
-		$import_strings = array_unique($import_strings);
-
-		return implode("\n", $import_strings);
 	}
 
 	function get_template_name($instance){
