@@ -80,67 +80,74 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					),
 				),
 
-				'title_options' => array(
+				'fonts' => array(
 					'type' => 'section',
-					'label' => __( 'Title Style', 'so-widgets-bundle' ),
+					'label' => __( 'Fonts', 'so-widgets-bundle' ),
+					'hide' => true,
 					'fields' => array(
-						'font' => array(
-							'type' => 'font',
-							'label' => __( 'Font', 'so-widgets-bundle' ),
-							'default' => 'default'
+						'title_options' => array(
+							'type' => 'section',
+							'label' => __( 'Title', 'so-widgets-bundle' ),
+							'hide' => true,
+							'fields' => array(
+								'font' => array(
+									'type' => 'font',
+									'label' => __( 'Font', 'so-widgets-bundle' ),
+									'default' => 'default'
+								),
+								'size' => array(
+									'type' => 'measurement',
+									'label' => __( 'Size', 'so-widgets-bundle' ),
+								),
+								'color' => array(
+									'type' => 'color',
+									'label' => __( 'Color', 'so-widgets-bundle' ),
+								)
+							)
 						),
-						'size' => array(
-							'type' => 'measurement',
-							'label' => __( 'Size', 'so-widgets-bundle' ),
-						),
-						'color' => array(
-							'type' => 'color',
-							'label' => __( 'Color', 'so-widgets-bundle' ),
-							'default' => '#000000'
-						)
-					)
-				),
 
-				'text_options' => array(
-					'type' => 'section',
-					'label' => __( 'Text Style', 'so-widgets-bundle' ),
-					'fields' => array(
-						'font' => array(
-							'type' => 'font',
-							'label' => __( 'Font', 'so-widgets-bundle' ),
-							'default' => 'default'
+						'text_options' => array(
+							'type' => 'section',
+							'label' => __( 'Text', 'so-widgets-bundle' ),
+							'hide' => true,
+							'fields' => array(
+								'font' => array(
+									'type' => 'font',
+									'label' => __( 'Font', 'so-widgets-bundle' ),
+									'default' => 'default'
+								),
+								'size' => array(
+									'type' => 'measurement',
+									'label' => __( 'Size', 'so-widgets-bundle' ),
+								),
+								'color' => array(
+									'type' => 'color',
+									'label' => __( 'Color', 'so-widgets-bundle' ),
+								)
+							)
 						),
-						'size' => array(
-							'type' => 'measurement',
-							'label' => __( 'Size', 'so-widgets-bundle' ),
-						),
-						'color' => array(
-							'type' => 'color',
-							'label' => __( 'Color', 'so-widgets-bundle' ),
-							'default' => '#000000'
-						)
-					)
-				),
 
-				'more_text_options' => array(
-					'type' => 'section',
-					'label' => __( 'More Link Text Style', 'so-widgets-bundle' ),
-					'fields' => array(
-						'font' => array(
-							'type' => 'font',
-							'label' => __( 'Font', 'so-widgets-bundle' ),
-							'default' => 'default'
+						'more_text_options' => array(
+							'type' => 'section',
+							'label' => __( 'More Link', 'so-widgets-bundle' ),
+							'hide' => true,
+							'fields' => array(
+								'font' => array(
+									'type' => 'font',
+									'label' => __( 'Font', 'so-widgets-bundle' ),
+									'default' => 'default'
+								),
+								'size' => array(
+									'type' => 'measurement',
+									'label' => __( 'Size', 'so-widgets-bundle' ),
+								),
+								'color' => array(
+									'type' => 'color',
+									'label' => __( 'Color', 'so-widgets-bundle' ),
+								)
+							)
 						),
-						'size' => array(
-							'type' => 'measurement',
-							'label' => __( 'Size', 'so-widgets-bundle' ),
-						),
-						'color' => array(
-							'type' => 'color',
-							'label' => __( 'Color', 'so-widgets-bundle' ),
-							'default' => '#000000'
-						)
-					)
+					),
 				),
 
 				'container_shape' => array(
@@ -218,12 +225,13 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 	function get_less_variables( $instance ) {
 		$less_vars = array();
 
-		$stylable_text_fields = array( 'title', 'text', 'more_text' );
+		$fonts = $instance['fonts'];
+		$styleable_text_fields = array( 'title', 'text', 'more_text' );
 
-		foreach ( $stylable_text_fields as $field_name ) {
+		foreach ( $styleable_text_fields as $field_name ) {
 
-			if ( ! empty( $instance[$field_name.'_options'] ) ) {
-				$styles = $instance[$field_name.'_options'];
+			if ( ! empty( $fonts[$field_name.'_options'] ) ) {
+				$styles = $fonts[$field_name.'_options'];
 				if ( ! empty( $styles['size'] ) ) {
 					$less_vars[$field_name.'_size'] = $styles['size'] . $styles['size_unit'];
 				}
@@ -253,11 +261,11 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 	 */
 	function less_import_google_font($instance, $args) {
 		if( empty( $instance ) ) return;
-
+		$fonts = $instance['fonts'];
 		$font_imports = array(
-			siteorigin_widget_get_font( $instance['title_options']['font'] ),
-			siteorigin_widget_get_font( $instance['text_options']['font'] ),
-			siteorigin_widget_get_font( $instance['more_text_options']['font'] ),
+			siteorigin_widget_get_font( $fonts['title_options']['font'] ),
+			siteorigin_widget_get_font( $fonts['text_options']['font'] ),
+			siteorigin_widget_get_font( $fonts['more_text_options']['font'] ),
 		);
 
 		$import_strings = array();
