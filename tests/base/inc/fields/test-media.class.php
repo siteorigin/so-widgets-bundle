@@ -96,6 +96,6 @@ class SiteOrigin_Widget_Field_MediaTest extends WP_UnitTestCase {
 		$value = array( $fallback_field_name => 'http://www.exam[ple.o]rg' );
 		$sanitized_value = $field->sanitize_instance( $value );
 
-		$this->assertEquals( 'http://www.example.org' , $sanitized_value[$fallback_field_name] );
+		$this->assertEquals( 'http://www.exam[ple.o]rg' , $sanitized_value[$fallback_field_name] );
 	}
 }

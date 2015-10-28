@@ -65,7 +65,7 @@ class SiteOrigin_Widget_Field_Factory {
 	}
 
 	private function get_container_types() {
-		return apply_filters( 'siteorigin_widgets_field_container_types', array( 'section', 'widget', 'repeater', 'media' ) );
+		return apply_filters( 'siteorigin_widgets_field_container_types', array( 'section', 'widget', 'repeater', 'media', 'measurement' ) );
 	}
 
 	private function is_container_type( $type ) {

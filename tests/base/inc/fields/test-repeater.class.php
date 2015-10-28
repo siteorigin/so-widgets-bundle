@@ -72,7 +72,7 @@ class SiteOrigin_Widget_Field_RepeaterTest extends WP_UnitTestCase {
 	 * @test
 	 */
 	public function render_outputs_data_item_label_attribute() {
-		$this->assertContains( 'data-item-label="{&quot;selector&quot;:&quot;[id*=&#039;field_one&#039;]&quot;,&quot;updateEvent&quot;:&quot;change&quot;,&quot;valueMethod&quot;:&quot;val&quot;}"', $this->field_output );
+		$this->assertContains( 'data-item-label="{&quot;updateEvent&quot;:&quot;change&quot;,&quot;valueMethod&quot;:&quot;val&quot;,&quot;selector&quot;:&quot;[id*=&#039;field_one&#039;]&quot;}', $this->field_output );
 	}
 
 	/**
