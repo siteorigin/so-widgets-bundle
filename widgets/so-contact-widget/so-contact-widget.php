@@ -470,14 +470,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 * @param $fields
 	 * @param $errors
 	 */
-	function render_form_fields( $fields, $errors = array() ){
+	function render_form_fields( $fields, $errors = array(), $instance ){
 
 		$field_ids = array();
 
 		foreach( $fields as $i => $field ) {
 			if( empty( $field['type'] ) ) continue;
 
-			$field_name = $this->name_from_label( !empty($field['label']) ? $field['label'] : $i, $field_ids );
+			$field_name = $this->name_from_label( !empty($field['label']) ? $field['label'] : $i, $field_ids ) . '-' . $instance['_sow_form_id'];
 			$field_id = 'sow-contact-form-field-' . $field_name;
 
 			$value = '';
@@ -566,7 +566,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		$field_ids = array();
 		foreach( $instance['fields'] as $i => $field ) {
 			if( empty( $field['type'] ) ) continue;
-			$field_name = $this->name_from_label( !empty($field['label']) ? $field['label'] : $i, $field_ids );
+			$field_name = $this->name_from_label( !empty($field['label']) ? $field['label'] : $i, $field_ids ) . '-' . $instance['_sow_form_id'];
 			$value = !empty( $post_vars[$field_name] ) ? $post_vars[$field_name] : '';
 
 			if( $field['required']['required'] && empty($value) ) {
