@@ -81,6 +81,15 @@
                 $container.find('.quicktags-toolbar').remove();
                 quicktags(tinyMCEPreInit.qtInit[id]);
                 //}
+
+                $(this).on( 'click', function(event) {
+
+                    var $target = $(event.target);
+                    if ( $target.hasClass( 'wp-switch-editor' ) ) {
+                        mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
+                        $(this).find('+ .siteorigin-widget-tinymce-selected-editor').val(mode);
+                    }
+                });
             });
             QTags._buttonsInit();
         }
