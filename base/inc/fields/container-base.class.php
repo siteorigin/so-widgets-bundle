@@ -22,19 +22,6 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 	 */
 	protected $sub_fields;
 	/**
-	 * Reference to the parent widget required for creating child fields.
-	 *
-	 * @access private
-	 * @var SiteOrigin_Widget
-	 */
-	protected $for_widget;
-	/**
-	 * An array of field names of parent containers.
-	 *
-	 * @var array
-	 */
-	protected $parent_container;
-	/**
 	 * Whether or not this container's fields should initially be hidden.
 	 *
 	 * @access protected
@@ -55,13 +42,6 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 	 * @var bool
 	 */
 	protected $collapsible = true;
-
-	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_container = array()  ) {
-		parent::__construct( $base_name, $element_id, $element_name, $field_options );
-
-		$this->for_widget = $for_widget;
-		$this->parent_container = $parent_container;
-	}
 
 	protected function render_before_field( $value, $instance ) {
 		if( ! empty( $value[ 'so_field_container_state' ] ) ) {

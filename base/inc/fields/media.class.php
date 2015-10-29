@@ -36,27 +36,6 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 	 * @var bool
 	 */
 	protected $fallback;
-	/**
-	 * Reference to the containing widget required for creating the fallback subfield.
-	 *
-	 * @access private
-	 * @var SiteOrigin_Widget
-	 */
-	private $for_widget;
-	/**
-	 * An array of field names of parent repeaters.
-	 *
-	 * @var array
-	 */
-	private $parent_repeater;
-
-	public function __construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_container = array()  ) {
-		parent::__construct( $base_name, $element_id, $element_name, $field_options );
-
-		$this->for_widget = $for_widget;
-		$this->parent_repeater = $parent_container;
-
-	}
 
 	protected function get_default_options() {
 		return array(

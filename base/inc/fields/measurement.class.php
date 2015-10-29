@@ -4,26 +4,6 @@
  * Class SiteOrigin_Widget_Field_Measurement
  */
 class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_Input_Base {
-	/**
-	 * Reference to the containing widget required for creating the unit subfield.
-	 *
-	 * @access private
-	 * @var SiteOrigin_Widget
-	 */
-	private $for_widget;
-	/**
-	 * An array of field names of parent repeaters.
-	 *
-	 * @var array
-	 */
-	private $parent_repeater;
-
-	public function __construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_container = array()  ) {
-		parent::__construct( $base_name, $element_id, $element_name, $field_options );
-
-		$this->for_widget = $for_widget;
-		$this->parent_repeater = $parent_container;
-	}
 
 	protected function get_input_classes() {
 		$input_classes = parent::get_input_classes();
