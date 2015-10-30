@@ -50,6 +50,14 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			}
 		}
 
+		if( class_exists( 'WC_Shortcodes_TinyMCE_Buttons' ) ) {
+			$screen = get_current_screen();
+			if( !is_null( $screen ) && $screen->id != 'widgets' ) {
+				add_filter( 'mce_external_plugins', array( $this, 'add_wpc_shortcode_plugin' ), 15 );
+				add_filter( 'mce_buttons', array( $this, 'register_wpc_shortcode_button' ), 15 );
+			}
+		}
+
 		if( class_exists( 'WC_Shortcodes_Admin' ) ) {
 			$screen = get_current_screen();
 			if( !is_null( $screen ) && $screen->id != 'widgets' ) {
@@ -64,8 +72,9 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			return $plugins;
 		}
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-		if( file_exists( plugin_dir_path('woocommerce-shortcodes.php') ) ) {
-			$plugins['woocommerce_shortcodes'] = plugins_url( 'woocommerce-shortcodes/assets/js/editor' . $suffix . '.js' );
+		$editor_path = 'woocommerce-shortcodes/assets/js/editor' . $suffix . '.js';
+		if( file_exists( WP_PLUGIN_DIR . '/' . $editor_path ) ) {
+			$plugins['woocommerce_shortcodes'] = plugins_url( $editor_path );
 		}
 		return $plugins;
 	}
@@ -75,6 +84,40 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			return $buttons;
 		}
 		array_push( $buttons, '|', 'woocommerce_shortcodes' );
+		return $buttons;
+	}
+
+	function add_wpc_shortcode_plugin( $plugins ) {
+		global $wp_version;
+		$ver = WC_SHORTCODES_VERSION;
+		$wp_ver_gte_3_9 = version_compare( $wp_version, '3.9', '>=' );
+
+		if( ! isset( $plugins['wpc_shortcodes'] ) ) {
+			$shortcodes_filename = $wp_ver_gte_3_9 ? 'shortcodes-tinymce-4' : 'shortcodes_tinymce';
+			$shortcodes_path = 'wc-shortcodes/includes/mce/js/' . $shortcodes_filename . '.js';
+			if( file_exists( WP_PLUGIN_DIR . '/' . $shortcodes_path ) ) {
+				$plugins['wpc_shortcodes'] = plugins_url( $shortcodes_path .  '?ver=' . $ver );
+			}
+		}
+
+		if( ! isset( $plugins['wpc_font_awesome'] ) ) {
+			$fontawesome_filename = $wp_ver_gte_3_9 ? 'font-awesome-tinymce-4' : 'font_awesome_tinymce';
+			$fontawesome_path = 'wc-shortcodes/includes/mce/js/' . $fontawesome_filename . '.js';
+			if( file_exists( WP_PLUGIN_DIR . '/' . $fontawesome_path ) ) {
+				$plugins['wpc_font_awesome'] = plugins_url( $fontawesome_path . '?ver=' . $ver );
+			}
+		}
+
+		return $plugins;
+	}
+
+	function register_wpc_shortcode_button( $buttons ) {
+		if( ! in_array( 'wpc_shortcodes_button', $buttons ) ) {
+			array_push( $buttons, 'wpc_shortcodes_button' );
+		}
+		if( ! in_array( 'wpcfontAwesomeGlyphSelect', $buttons ) ) {
+			array_push( $buttons, 'wpcfontAwesomeGlyphSelect' );
+		}
 		return $buttons;
 	}
 
