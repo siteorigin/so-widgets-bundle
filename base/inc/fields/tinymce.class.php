@@ -38,7 +38,9 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	protected $button_filters;
 
 	protected function initialize() {
-
+		if ( ! is_admin() ) {
+			return;
+		}
 		add_filter( 'mce_buttons', array( $this, 'mce_buttons_filter' ), 10, 2 );
 		add_filter( 'quicktags_settings', array( $this, 'quicktags_settings' ), 10, 2 );
 
