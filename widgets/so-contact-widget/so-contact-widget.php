@@ -433,7 +433,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_less_variables( $instance ){
-		$thing = "blahs";
 		$vars = array(
 			// All the container variables.
 			'container_background' => $instance['design']['container']['background'],
