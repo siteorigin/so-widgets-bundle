@@ -195,7 +195,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			?>
 		</div>
 		<input type="hidden"
-			   name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_selected_editor', $this->parent_repeater ) ) ?>"
+			   name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_selected_editor', $this->parent_container) ) ?>"
 			   class="siteorigin-widget-input siteorigin-widget-tinymce-selected-editor"
 			   value="<?php echo esc_attr( $this->selected_editor ) ?>"/>
 		<?php

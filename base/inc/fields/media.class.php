@@ -92,7 +92,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 			?>
 			<input type="text" value="<?php echo esc_url( $fallback_url ) ?>"
 			       placeholder="<?php esc_attr_e( 'External URL', 'so-widgets-bundle' ) ?>"
-			       name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_fallback', $this->parent_repeater ) ) ?>"
+			       name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_fallback', $this->parent_container ) ) ?>"
 			       class="media-fallback-external siteorigin-widget-input" />
 			<div class="clear"></div>
 			<?php

@@ -16,7 +16,7 @@ class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_I
 		$unit = ! empty( $instance[ $unit_name ] ) ? $instance[ $unit_name ] : '';
 		?>
 		<select class="sow-measurement-select-unit"
-				name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_unit', $this->parent_repeater ) ) ?>">
+				name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_unit', $this->parent_container ) ) ?>">
 			<?php foreach ( siteorigin_widgets_get_measurements_list() as $measurement ):?>
 				<option value="<?php echo esc_attr( $measurement ) ?>" <?php selected( $measurement, $unit, true ); ?>><?php echo esc_html( $measurement ) ?></option>
 			<?php endforeach?>
