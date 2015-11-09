@@ -332,6 +332,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'font_size' => array(
 									'type' => 'measurement',
 									'label' => __('Font size', 'so-widgets-bundle'),
+									'default' => 'default',
 								),
 								'weight' => array(
 									'type' => 'select',
@@ -433,6 +434,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_less_variables( $instance ){
+		// Newly added field could cause fatal errors with previously saved forms.
+		$font_size = empty( $instance['design']['submit']['font_size'] ) ? 'default' : $instance['design']['submit']['font_size'];
+		$font_size_unit = empty( $instance['design']['submit']['font_size_unit'] ) ? 'px' : $instance['design']['submit']['font_size_unit'];
 		$vars = array(
 			// All the container variables.
 			'container_background' => $instance['design']['container']['background'],
@@ -456,7 +460,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'submit_border_width' => $instance['design']['submit']['border_width'] . 'px',
 			'submit_border_radius' => $instance['design']['submit']['border_radius'] . 'px',
 			'submit_text_color' => $instance['design']['submit']['text_color'],
-			'submit_font_size' => $instance['design']['submit']['font_size'] . $instance['design']['submit']['font_size_unit'],
+			'submit_font_size' => $font_size . $font_size_unit,
 			'submit_weight' => $instance['design']['submit']['weight'],
 			'submit_padding' => $instance['design']['submit']['padding'] . 'px',
 			'submit_inset_highlight' => $instance['design']['submit']['inset_highlight'] . '%',
@@ -491,7 +495,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		foreach( $fields as $i => $field ) {
 			if( empty( $field['type'] ) ) continue;
-
+			// Using `$instance['_sow_form_id']` to uniquely identify contact form fields across widgets.
+			// I.e. if there are many contact form widgets on a page this will prevent field name conflicts.
 			$field_name = $this->name_from_label( !empty($field['label']) ? $field['label'] : $i, $field_ids ) . '-' . $instance['_sow_form_id'];
 			$field_id = 'sow-contact-form-field-' . $field_name;
 
