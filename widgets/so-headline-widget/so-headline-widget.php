@@ -221,8 +221,15 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 				$less_vars['divider_color'] = $divider_styles['color'];
 			}
 
-			$less_vars['divider_top_margin'] = $divider_styles['top_margin'];
-			$less_vars['divider_side_margin'] = $divider_styles['side_margin'];
+			if ( !empty( $divider_styles['top_margin'] ) ) {
+				$less_vars['divider_top_margin'] = $divider_styles['top_margin'];
+			}
+
+			if ( !empty( $divider_styles['side_margin'] ) ) {
+				$less_vars['divider_side_margin'] = $divider_styles['side_margin'];
+			}
+
+
 		}
 
 		return $less_vars;
