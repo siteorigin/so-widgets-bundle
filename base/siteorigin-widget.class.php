@@ -631,6 +631,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// Remove any attributes with default as the value
 		$css = preg_replace('/[a-zA-Z\-]+ *: *default *\;/', '', $css);
 
+		// Remove any empty CSS
+		$css = preg_replace('/[^{^}]*\{\s+\}/m', '', $css);
+		$css = trim($css);
+
 		return apply_filters( 'siteorigin_widgets_instance_css', $css, $instance, $this );
 	}
 
