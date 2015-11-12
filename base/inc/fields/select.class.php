@@ -52,7 +52,7 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 		<?php
 	}
 
-	protected function sanitize_field_input( $value ) {
+	protected function sanitize_field_input( $value, $instance ) {
 		$values = is_array( $value ) ? $value : array( $value );
 		$keys = array_keys( $this->options );
 		$sanitized_value = array();

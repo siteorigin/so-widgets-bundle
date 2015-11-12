@@ -11,7 +11,7 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 		return $input_classes;
 	}
 
-	protected function sanitize_field_input( $value ) {
+	protected function sanitize_field_input( $value, $instance ) {
 		return ( $value === '' ) ? false : (float) $value;
 	}
 }

@@ -95,7 +95,7 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 		}
 	}
 
-	protected function sanitize_field_input( $value ) {
+	protected function sanitize_field_input( $value, $instance ) {
 		/* @var $field_factory SiteOrigin_Widget_Field_Factory */
 		$field_factory = SiteOrigin_Widget_Field_Factory::getInstance();
 		foreach( $this->fields as $sub_field_name => $sub_field_options ) {
@@ -112,7 +112,7 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 					$this->parent_container
 				);
 			}
-			$value[$sub_field_name] = $sub_field->sanitize( isset($value[$sub_field_name]) ? $value[$sub_field_name] : null );
+			$value[$sub_field_name] = $sub_field->sanitize( isset($value[$sub_field_name]) ? $value[$sub_field_name] : null, $value );
 			$value = $sub_field->sanitize_instance( $value );
 		}
 

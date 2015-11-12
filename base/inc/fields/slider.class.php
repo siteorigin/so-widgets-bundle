@@ -33,7 +33,7 @@ class SiteOrigin_Widget_Field_Slider extends SiteOrigin_Widget_Field_Base {
 		<?php
 	}
 
-	protected function sanitize_field_input( $value ) {
+	protected function sanitize_field_input( $value, $instance ) {
 		return (float) $value;
 	}
 

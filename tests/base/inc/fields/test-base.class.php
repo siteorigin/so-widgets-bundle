@@ -283,7 +283,7 @@ class SiteOrigin_Widget_Field_Mock extends SiteOrigin_Widget_Field_Base {
 		return $value;
 	}
 
-	protected function sanitize_field_input( $value ) {
+	protected function sanitize_field_input( $value, $instance ) {
 		return $value;
 	}
 }

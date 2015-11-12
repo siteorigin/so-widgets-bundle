@@ -233,7 +233,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			if ( ! empty( $fonts[$field_name.'_options'] ) ) {
 				$styles = $fonts[$field_name.'_options'];
 				if ( ! empty( $styles['size'] ) ) {
-					$less_vars[$field_name.'_size'] = $styles['size'] . $styles['size_unit'];
+					$less_vars[$field_name.'_size'] = $styles['size'];
 				}
 				if ( ! empty( $styles['color'] ) ) {
 					$less_vars[$field_name.'_color'] = $styles['color'];

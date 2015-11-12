@@ -106,7 +106,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 		parent::render_after_field( $value, $instance );
 	}
 
-	protected function sanitize_field_input( $value ) {
+	protected function sanitize_field_input( $value, $instance ) {
 		// Media values should be integer
 		return intval( $value );
 	}

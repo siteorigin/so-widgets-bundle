@@ -26,7 +26,7 @@ class SiteOrigin_Widget_Field_Radio extends SiteOrigin_Widget_Field_Base {
 		}
 	}
 
-	protected function sanitize_field_input( $value ) {
+	protected function sanitize_field_input( $value, $instance ) {
 		$sanitized_value = $value;
 		$keys = array_keys( $this->options );
 		if( ! in_array( $sanitized_value, $keys ) ) $sanitized_value = isset( $this->default ) ? $this->default : false;
