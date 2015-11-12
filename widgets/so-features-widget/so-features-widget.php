@@ -159,15 +159,15 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				),
 
 				'container_size' => array(
-					'type' => 'number',
+					'type' => 'measurement',
 					'label' => __('Container size', 'so-widgets-bundle'),
-					'default' => 84,
+					'default' => '84px',
 				),
 
 				'icon_size' => array(
-					'type' => 'number',
+					'type' => 'measurement',
 					'label' => __('Icon size', 'so-widgets-bundle'),
-					'default' => 24,
+					'default' => '24px',
 				),
 
 				'per_row' => array(
