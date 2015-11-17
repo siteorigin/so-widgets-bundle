@@ -74,13 +74,11 @@
                         }
                     }
                 }
-                //if (!QTags.instances[id]) {
                 var qtSettings = $container.data('qtSettings');
                 qtSettings = $.extend({}, tinyMCEPreInit.qtInit['siteorigin-widget-input-tinymce-field'], qtSettings, {id: id});
                 tinyMCEPreInit.qtInit[id] = qtSettings;
                 $container.find('.quicktags-toolbar').remove();
                 quicktags(tinyMCEPreInit.qtInit[id]);
-                //}
 
                 $(this).on( 'click', function(event) {
 
