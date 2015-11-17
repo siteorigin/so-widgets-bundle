@@ -127,8 +127,8 @@ class SiteOrigin_Widgets_Bundle {
 		//Always check for new widgets.
 		$this->check_for_new_widgets();
 
-		//Only ever want to do this when upgrading from 1.5.1 or lower
-		if(version_compare( '1.5.1', $old_version, '>=' )){
+		//Only ever want to do this when upgrading from 1.5.3 or lower
+		if(version_compare( '1.5.3', $old_version, '>=' )){
 			$this->migrate_widget_names();
 		}
 	}
