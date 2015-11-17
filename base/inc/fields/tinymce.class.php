@@ -213,7 +213,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		wp_enqueue_style( 'so-tinymce-field', plugin_dir_url(__FILE__) . 'css/so-tinymce-field.css', array(), SOW_BUNDLE_VERSION );
 	}
 
-	protected function sanitize_field_input( $value ) {
+	protected function sanitize_field_input( $value, $instance ) {
 		if( current_user_can( 'unfiltered_html' ) ) {
 			$sanitized_value = $value;
 		} else {

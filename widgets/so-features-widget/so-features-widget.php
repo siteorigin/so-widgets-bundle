@@ -159,15 +159,15 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				),
 
 				'container_size' => array(
-					'type' => 'number',
+					'type' => 'measurement',
 					'label' => __('Container size', 'so-widgets-bundle'),
-					'default' => 84,
+					'default' => '84px',
 				),
 
 				'icon_size' => array(
-					'type' => 'number',
+					'type' => 'measurement',
 					'label' => __('Icon size', 'so-widgets-bundle'),
-					'default' => 24,
+					'default' => '24px',
 				),
 
 				'per_row' => array(
@@ -233,7 +233,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			if ( ! empty( $fonts[$field_name.'_options'] ) ) {
 				$styles = $fonts[$field_name.'_options'];
 				if ( ! empty( $styles['size'] ) ) {
-					$less_vars[$field_name.'_size'] = $styles['size'] . $styles['size_unit'];
+					$less_vars[$field_name.'_size'] = $styles['size'];
 				}
 				if ( ! empty( $styles['color'] ) ) {
 					$less_vars[$field_name.'_color'] = $styles['color'];

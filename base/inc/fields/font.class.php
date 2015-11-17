@@ -23,7 +23,7 @@ class SiteOrigin_Widget_Field_Font extends SiteOrigin_Widget_Field_Base {
 		<?php
 	}
 
-	protected function sanitize_field_input( $value ) {
+	protected function sanitize_field_input( $value, $instance ) {
 		$sanitized_value = trim( $value );
 		// Any alphanumeric character followed by alphanumeric or whitespace characters (except newline),
 		// with optional colon and number.

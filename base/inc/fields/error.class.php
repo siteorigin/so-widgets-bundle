@@ -20,7 +20,7 @@ class SiteOrigin_Widget_Field_Error extends SiteOrigin_Widget_Field_Base {
 		printf( __($this->message, 'so-widgets-bundle') );
 	}
 
-	protected function sanitize_field_input( $value ) {
+	protected function sanitize_field_input( $value, $instance ) {
 		return $value;
 	}
 }

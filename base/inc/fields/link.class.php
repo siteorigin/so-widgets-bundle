@@ -31,7 +31,7 @@ class SiteOrigin_Widget_Field_Link extends SiteOrigin_Widget_Field_Text_Input_Ba
 		parent::render_after_field( $value, $instance );
 	}
 
-	protected function sanitize_field_input( $value ) {
+	protected function sanitize_field_input( $value, $instance ) {
 		$sanitized_value = trim( $value );
 		if( preg_match( '/^post\: *([0-9]+)/', $sanitized_value, $matches ) ) {
 			$sanitized_value = 'post: ' . $matches[1];
