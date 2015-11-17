@@ -29,7 +29,7 @@ else {
 			</ul>
 		<?php endif ?>
 
-		<?php $this->render_form_fields( $instance['fields'], $result['errors'] ) ?>
+		<?php $this->render_form_fields( $instance['fields'], $result['errors'], $instance ) ?>
 		<input type="hidden" name="instance_hash" value="<?php echo esc_attr($instance_hash) ?>" />
 
 		<?php if( $instance['spam']['recaptcha']['use_captcha'] ) : ?>

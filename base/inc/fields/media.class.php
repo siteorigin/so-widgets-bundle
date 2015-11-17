@@ -36,27 +36,6 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 	 * @var bool
 	 */
 	protected $fallback;
-	/**
-	 * Reference to the containing widget required for creating the fallback subfield.
-	 *
-	 * @access private
-	 * @var SiteOrigin_Widget
-	 */
-	private $for_widget;
-	/**
-	 * An array of field names of parent repeaters.
-	 *
-	 * @var array
-	 */
-	private $parent_repeater;
-
-	public function __construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_container = array()  ) {
-		parent::__construct( $base_name, $element_id, $element_name, $field_options );
-
-		$this->for_widget = $for_widget;
-		$this->parent_repeater = $parent_container;
-
-	}
 
 	protected function get_default_options() {
 		return array(
@@ -113,7 +92,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 			?>
 			<input type="text" value="<?php echo esc_url( $fallback_url ) ?>"
 			       placeholder="<?php esc_attr_e( 'External URL', 'so-widgets-bundle' ) ?>"
-			       name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_fallback', $this->parent_repeater ) ) ?>"
+			       name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_fallback', $this->parent_container ) ) ?>"
 			       class="media-fallback-external siteorigin-widget-input" />
 			<div class="clear"></div>
 			<?php
@@ -127,7 +106,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 		parent::render_after_field( $value, $instance );
 	}
 
-	protected function sanitize_field_input( $value ) {
+	protected function sanitize_field_input( $value, $instance ) {
 		// Media values should be integer
 		return intval( $value );
 	}
@@ -135,7 +114,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 	public function sanitize_instance( $instance ) {
 		$fallback_name = $this->get_fallback_field_name( $this->base_name );
 		if( !empty( $this->fallback ) && !empty( $instance[ $fallback_name ] ) ) {
-			$instance[ $fallback_name ] = esc_url_raw( $instance[ $fallback_name ] );
+			$instance[ $fallback_name ] = sow_esc_url_raw( $instance[ $fallback_name ] );
 		}
 		return $instance;
 	}

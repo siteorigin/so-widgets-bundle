@@ -40,7 +40,7 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 		<?php
 	}
 
-	protected function sanitize_field_input( $value ) {
+	protected function sanitize_field_input( $value, $instance ) {
 		$sanitized_value = wp_kses_post( $value );
 		$sanitized_value = balanceTags( $sanitized_value , true );
 		return $sanitized_value;

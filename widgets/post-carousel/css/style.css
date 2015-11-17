@@ -97,6 +97,12 @@
 .sow-carousel-wrapper ul.sow-carousel-items li.sow-carousel-item:last-child {
   margin-right: 0;
 }
+.sow-carousel-wrapper ul.sow-carousel-items li.sow-carousel-item.rtl {
+  float: right;
+}
+.sow-carousel-wrapper ul.sow-carousel-items li.sow-carousel-item.rtl:last-child {
+  margin-right: 15px;
+}
 .sow-carousel-wrapper ul.sow-carousel-items li.sow-carousel-item .sow-carousel-thumbnail {
   line-height: 0;
 }
@@ -131,11 +137,11 @@
   display: block;
   width: 242px;
   height: 162px;
-  background: #e8e8e8;
-  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #e0e0e0), color-stop(1, #e8e8e8));
-  background: -ms-linear-gradient(bottom, #e0e0e0, #e8e8e8);
-  background: -moz-linear-gradient(center bottom, #e0e0e0 0%, #e8e8e8 100%);
-  background: -o-linear-gradient(#e8e8e8, #e0e0e0);
+  background: #E8E8E8;
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #E0E0E0), color-stop(1, #E8E8E8));
+  background: -ms-linear-gradient(bottom, #E0E0E0, #E8E8E8);
+  background: -moz-linear-gradient(center bottom, #E0E0E0 0%, #E8E8E8 100%);
+  background: -o-linear-gradient(#E8E8E8, #E0E0E0);
 }
 .sow-carousel-wrapper ul.sow-carousel-items li.sow-carousel-item h3 {
   font-size: 15px;
@@ -153,7 +159,7 @@
   width: 242px;
   height: 162px;
   float: left;
-  background: url(images/carousel-loader.gif) #f6f6f6 center center no-repeat;
+  background: url(images/carousel-loader.gif) #F6F6F6 center center no-repeat;
   margin: 0;
 }
 a.sow-carousel-previous {

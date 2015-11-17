@@ -74,13 +74,20 @@
                         }
                     }
                 }
-                //if (!QTags.instances[id]) {
                 var qtSettings = $container.data('qtSettings');
                 qtSettings = $.extend({}, tinyMCEPreInit.qtInit['siteorigin-widget-input-tinymce-field'], qtSettings, {id: id});
                 tinyMCEPreInit.qtInit[id] = qtSettings;
                 $container.find('.quicktags-toolbar').remove();
                 quicktags(tinyMCEPreInit.qtInit[id]);
-                //}
+
+                $(this).on( 'click', function(event) {
+
+                    var $target = $(event.target);
+                    if ( $target.hasClass( 'wp-switch-editor' ) ) {
+                        mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
+                        $(this).find('+ .siteorigin-widget-tinymce-selected-editor').val(mode);
+                    }
+                });
             });
             QTags._buttonsInit();
         }

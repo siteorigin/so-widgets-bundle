@@ -80,6 +80,76 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					),
 				),
 
+				'fonts' => array(
+					'type' => 'section',
+					'label' => __( 'Fonts', 'so-widgets-bundle' ),
+					'hide' => true,
+					'fields' => array(
+						'title_options' => array(
+							'type' => 'section',
+							'label' => __( 'Title', 'so-widgets-bundle' ),
+							'hide' => true,
+							'fields' => array(
+								'font' => array(
+									'type' => 'font',
+									'label' => __( 'Font', 'so-widgets-bundle' ),
+									'default' => 'default'
+								),
+								'size' => array(
+									'type' => 'measurement',
+									'label' => __( 'Size', 'so-widgets-bundle' ),
+								),
+								'color' => array(
+									'type' => 'color',
+									'label' => __( 'Color', 'so-widgets-bundle' ),
+								)
+							)
+						),
+
+						'text_options' => array(
+							'type' => 'section',
+							'label' => __( 'Text', 'so-widgets-bundle' ),
+							'hide' => true,
+							'fields' => array(
+								'font' => array(
+									'type' => 'font',
+									'label' => __( 'Font', 'so-widgets-bundle' ),
+									'default' => 'default'
+								),
+								'size' => array(
+									'type' => 'measurement',
+									'label' => __( 'Size', 'so-widgets-bundle' ),
+								),
+								'color' => array(
+									'type' => 'color',
+									'label' => __( 'Color', 'so-widgets-bundle' ),
+								)
+							)
+						),
+
+						'more_text_options' => array(
+							'type' => 'section',
+							'label' => __( 'More Link', 'so-widgets-bundle' ),
+							'hide' => true,
+							'fields' => array(
+								'font' => array(
+									'type' => 'font',
+									'label' => __( 'Font', 'so-widgets-bundle' ),
+									'default' => 'default'
+								),
+								'size' => array(
+									'type' => 'measurement',
+									'label' => __( 'Size', 'so-widgets-bundle' ),
+								),
+								'color' => array(
+									'type' => 'color',
+									'label' => __( 'Color', 'so-widgets-bundle' ),
+								)
+							)
+						),
+					),
+				),
+
 				'container_shape' => array(
 					'type' => 'select',
 					'label' => __('Container shape', 'so-widgets-bundle'),
@@ -89,15 +159,15 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				),
 
 				'container_size' => array(
-					'type' => 'number',
+					'type' => 'measurement',
 					'label' => __('Container size', 'so-widgets-bundle'),
-					'default' => 84,
+					'default' => '84px',
 				),
 
 				'icon_size' => array(
-					'type' => 'number',
+					'type' => 'measurement',
 					'label' => __('Icon size', 'so-widgets-bundle'),
-					'default' => 24,
+					'default' => '24px',
 				),
 
 				'per_row' => array(
@@ -149,7 +219,47 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_style_name($instance){
-		return false;
+		return 'features';
+	}
+
+	function get_less_variables( $instance ) {
+		$less_vars = array();
+
+		$fonts = $instance['fonts'];
+		$styleable_text_fields = array( 'title', 'text', 'more_text' );
+
+		foreach ( $styleable_text_fields as $field_name ) {
+
+			if ( ! empty( $fonts[$field_name.'_options'] ) ) {
+				$styles = $fonts[$field_name.'_options'];
+				if ( ! empty( $styles['size'] ) ) {
+					$less_vars[$field_name.'_size'] = $styles['size'];
+				}
+				if ( ! empty( $styles['color'] ) ) {
+					$less_vars[$field_name.'_color'] = $styles['color'];
+				}
+				if ( ! empty( $styles['font'] ) ) {
+					$font = siteorigin_widget_get_font( $styles['font'] );
+					$less_vars[$field_name.'_font'] = $font['family'];
+					if ( ! empty( $font['weight'] ) ) {
+						$less_vars[$field_name.'_font_weight'] = $font['weight'];
+					}
+				}
+			}
+		}
+
+		return $less_vars;
+	}
+
+	function get_google_font_fields( $instance ) {
+
+		$fonts = $instance['fonts'];
+
+		return array(
+			$fonts['title_options']['font'],
+			$fonts['text_options']['font'],
+			$fonts['more_text_options']['font'],
+		);
 	}
 
 	function get_template_name($instance){

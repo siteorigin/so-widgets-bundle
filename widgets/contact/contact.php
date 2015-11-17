@@ -252,7 +252,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								),
 								'border_color' => array(
 									'type' => 'color',
-									'label' => __('Error background color', 'so-widgets-bundle'),
+									'label' => __('Error border color', 'so-widgets-bundle'),
 									'default' => '#ec666a',
 								),
 								'text_color' => array(
@@ -296,7 +296,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								),
 								'border_color' => array(
 									'type' => 'color',
-									'label' => __('Background color', 'so-widgets-bundle'),
+									'label' => __('Border color', 'so-widgets-bundle'),
 									'default' => '#989a9c',
 								),
 								'border_style' => array(
@@ -306,7 +306,16 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'options' => array(
 										'none' => __('None', 'so-widgets-bundle'),
 										'solid' => __('Solid', 'so-widgets-bundle'),
+										'dotted' => __('Dotted', 'so-widgets-bundle'),
+										'dashed' => __('Dashed', 'so-widgets-bundle'),
 									)
+								),
+								'border_width' => array(
+									'type' => 'slider',
+									'label' => __('Border width', 'so-widgets-bundle'),
+									'default' => 1,
+									'max' => 10,
+									'min' => 0
 								),
 								'border_radius' => array(
 									'type' => 'slider',
@@ -319,6 +328,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'type' => 'color',
 									'label' => __('Text color', 'so-widgets-bundle'),
 									'default' => '#5a5a5a',
+								),
+								'font_size' => array(
+									'type' => 'measurement',
+									'label' => __('Font size', 'so-widgets-bundle'),
+									'default' => 'default',
 								),
 								'weight' => array(
 									'type' => 'select',
@@ -440,8 +454,10 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'submit_background_gradient' => $instance['design']['submit']['background_gradient'] . '%',
 			'submit_border_color' => $instance['design']['submit']['border_color'],
 			'submit_border_style' => $instance['design']['submit']['border_style'],
+			'submit_border_width' => $instance['design']['submit']['border_width'] . 'px',
 			'submit_border_radius' => $instance['design']['submit']['border_radius'] . 'px',
 			'submit_text_color' => $instance['design']['submit']['text_color'],
+			'submit_font_size' => $instance['design']['submit']['font_size'],
 			'submit_weight' => $instance['design']['submit']['weight'],
 			'submit_padding' => $instance['design']['submit']['padding'] . 'px',
 			'submit_inset_highlight' => $instance['design']['submit']['inset_highlight'] . '%',
@@ -470,14 +486,15 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 * @param $fields
 	 * @param $errors
 	 */
-	function render_form_fields( $fields, $errors = array() ){
+	function render_form_fields( $fields, $errors = array(), $instance ){
 
 		$field_ids = array();
 
 		foreach( $fields as $i => $field ) {
 			if( empty( $field['type'] ) ) continue;
-
-			$field_name = $this->name_from_label( !empty($field['label']) ? $field['label'] : $i, $field_ids );
+			// Using `$instance['_sow_form_id']` to uniquely identify contact form fields across widgets.
+			// I.e. if there are many contact form widgets on a page this will prevent field name conflicts.
+			$field_name = $this->name_from_label( !empty($field['label']) ? $field['label'] : $i, $field_ids ) . '-' . $instance['_sow_form_id'];
 			$field_id = 'sow-contact-form-field-' . $field_name;
 
 			$value = '';
@@ -566,7 +583,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		$field_ids = array();
 		foreach( $instance['fields'] as $i => $field ) {
 			if( empty( $field['type'] ) ) continue;
-			$field_name = $this->name_from_label( !empty($field['label']) ? $field['label'] : $i, $field_ids );
+			$field_name = $this->name_from_label( !empty($field['label']) ? $field['label'] : $i, $field_ids ) . '-' . $instance['_sow_form_id'];
 			$value = !empty( $post_vars[$field_name] ) ? $post_vars[$field_name] : '';
 
 			if( $field['required']['required'] && empty($value) ) {

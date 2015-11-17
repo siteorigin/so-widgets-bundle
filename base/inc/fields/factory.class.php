@@ -33,12 +33,7 @@ class SiteOrigin_Widget_Field_Factory {
 			);
 		}
 
-		if( $this->is_container_type( $field_options['type'] ) ) {
-			return new $field_class( $field_name, $element_id, $element_name, $field_options, $for_widget, $for_repeater );
-		}
-		else {
-			return new $field_class( $field_name, $element_id, $element_name, $field_options );
-		}
+		return new $field_class( $field_name, $element_id, $element_name, $field_options, $for_widget, $for_repeater );
 	}
 
 	private function get_field_class_name( $field_type ) {
@@ -62,14 +57,5 @@ class SiteOrigin_Widget_Field_Factory {
 
 	private function get_class_prefixes() {
 		return apply_filters( 'siteorigin_widgets_field_class_prefixes', array( 'SiteOrigin_Widget_Field_' ) );
-	}
-
-	private function get_container_types() {
-		return apply_filters( 'siteorigin_widgets_field_container_types', array( 'section', 'widget', 'repeater', 'media' ) );
-	}
-
-	private function is_container_type( $type ) {
-		$container_types = SiteOrigin_Widget_Field_Factory::get_container_types();
-		return in_array( $type, $container_types );
 	}
 }

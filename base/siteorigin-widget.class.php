@@ -464,7 +464,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$field = $field_factory->create_field( $field_name, $field_options, $this );
 					$this->fields[$field_name] = $field;
 				}
-				$new_instance[$field_name] = $field->sanitize( isset( $new_instance[$field_name] ) ? $new_instance[$field_name] : null );
+				$new_instance[$field_name] = $field->sanitize( isset( $new_instance[$field_name] ) ? $new_instance[$field_name] : null, $new_instance );
 				$new_instance = $field->sanitize_instance( $new_instance );
 			}
 
@@ -626,7 +626,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$lc_functions = new SiteOrigin_Widgets_Less_Functions($this, $instance);
 		$lc_functions->registerFunctions($c);
 
-		return apply_filters( 'siteorigin_widgets_instance_css', $c->compile( $less ), $instance, $this );
+		$css = $c->compile( $less );
+
+		// Remove any attributes with default as the value
+		$css = preg_replace('/[a-zA-Z\-]+ *: *default *;/', '', $css);
+
+		// Remove any empty CSS
+		$css = preg_replace('/[^{}]*\{\s*\}/m', '', $css);
+		$css = trim($css);
+
+		return apply_filters( 'siteorigin_widgets_instance_css', $css, $instance, $this );
 	}
 
 	/**
@@ -696,6 +705,47 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// Finally call the function and include the
 		$args = array_map('trim', $args);
 		return call_user_func( array($this, $func), $this->current_instance, $args );
+	}
+
+	/**
+	 * Less function for importing Google web fonts.
+	 *
+	 * @param $instance
+	 * @param $args
+	 *
+	 * @return string
+	 */
+	function less_import_google_font($instance, $args) {
+		if( empty( $instance ) ) return;
+
+		$fonts = $this->get_google_font_fields($instance);
+		$font_imports = array();
+
+		foreach ( $fonts as $font ) {
+			$font_imports[] = siteorigin_widget_get_font( $font );
+		}
+
+		$import_strings = array();
+		foreach( $font_imports as $import ) {
+			$import_strings[] = !empty($import['css_import']) ? $import['css_import'] : '';
+		}
+
+		// Remove empty and duplicate items from the array
+		$import_strings = array_filter($import_strings);
+		$import_strings = array_unique($import_strings);
+
+		return implode("\n", $import_strings);
+	}
+
+	/**
+	 * Get any font fields which may be used by this widget.
+	 *
+	 * @param $instance
+	 *
+	 * @return array
+	 */
+	function get_google_font_fields( $instance ) {
+		return array();
 	}
 
 	/**

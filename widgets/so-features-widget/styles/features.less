@@ -1,0 +1,41 @@
+@import "../../../base/less/mixins";
+
+.widget-function('import_google_font');
+
+@title_font: default;
+@title_font_weight: 400;
+@title_size: default;
+@title_color: default;
+
+@text_font: default;
+@text_font_weight: 400;
+@text_size: default;
+@text_color: default;
+
+@more_text_font: default;
+@more_text_font_weight: 400;
+@more_text_size: default;
+@more_text_color: default;
+
+.sow-features-list .sow-features-feature {
+
+   .textwidget {
+       > h5 {
+           .font(@title_font, @title_font_weight);
+           font-size: @title_size;
+           color: @title_color;
+       }
+
+       > p {
+           .font(@text_font, @text_font_weight);
+           font-size: @text_size;
+           color: @text_color;
+       }
+
+       > p.sow-more-text {
+           .font(@more_text_font, @more_text_font_weight);
+           font-size: @more_text_size;
+           color: @more_text_color;
+       }
+   }
+}

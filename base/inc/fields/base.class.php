@@ -101,6 +101,26 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * @var string
 	 */
 	protected $sanitize;
+	/**
+	 * Reference to the parent widget required for creating child fields.
+	 *
+	 * @access private
+	 * @var SiteOrigin_Widget
+	 */
+	protected $for_widget;
+	/**
+	 * An array of field names of parent containers.
+	 *
+	 * @var array
+	 */
+	protected $parent_container;
+	/**
+	 * Whether or not this field contains other fields.
+	 *
+	 * @access protected
+	 * @var boolean
+	 */
+	protected $is_container;
 
 
 	/* ============================================================================================================== */
@@ -137,9 +157,12 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * @param $element_name string The name to be used as the name attribute of the wrapping HTML element.
 	 * @param $field_options array Configuration for the field.
 	 *
+	 * @param SiteOrigin_Widget $for_widget
+	 * @param array $parent_container
+	 *
 	 * @throws InvalidArgumentException
 	 */
-	public function __construct( $base_name, $element_id, $element_name, $field_options ) {
+	public function __construct( $base_name, $element_id, $element_name, $field_options, $for_widget = null, $parent_container = array() ) {
 		if( isset( $field_options['type'] ) ) {
 			$this->type = $field_options['type'];
 		}
@@ -153,15 +176,21 @@ abstract class SiteOrigin_Widget_Field_Base {
 		$this->field_options = $field_options;
 		$this->javascript_variables = array();
 
+		$this->for_widget = $for_widget;
+		$this->parent_container = $parent_container;
+
+		$this->init();
+	}
+
+	private function init() {
+		$this->init_options();
 		$this->initialize();
 	}
 
 	/**
-	 * Initialization function which may be overridden if required, in which case, it is recommended that the parent
-	 * class' function is still called using `parent::initialize();`.
+	 * Initialization function which may be overridden if required.
 	 */
 	protected function initialize() {
-		$this->init_options();
 	}
 
 	/**
@@ -228,7 +257,6 @@ abstract class SiteOrigin_Widget_Field_Base {
 		if ( is_null( $value ) && isset( $this->default ) ) {
 			$value = $this->default;
 		}
-
 		$wrapper_attributes = array(
 			'class' => array(
 				'siteorigin-widget-field',
@@ -315,11 +343,13 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * The default sanitization function.
 	 *
 	 * @param $value mixed The value to be sanitized.
+	 * @param $instance array The widget instance.
+	 *
 	 * @return mixed|string|void
 	 */
-	public function sanitize( $value ) {
+	public function sanitize( $value, $instance = array() ) {
 
-		$value = $this->sanitize_field_input( $value );
+		$value = $this->sanitize_field_input( $value, $instance );
 
 		if( isset( $this->sanitize ) ) {
 			// This field also needs some custom sanitization
@@ -368,9 +398,11 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * input received from their HTML form field.
 	 *
 	 * @param $value mixed The current value of this field.
+	 * @param $instance array The widget instance.
+	 *
 	 * @return mixed The sanitized value.
 	 */
-	abstract protected function sanitize_field_input( $value );
+	abstract protected function sanitize_field_input( $value, $instance );
 
 	/**
 	 * There are cases where a field may affect values on the widget instance, other than it's own input. It then becomes

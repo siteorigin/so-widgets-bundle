@@ -49,7 +49,6 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'color' => array(
 							'type' => 'color',
 							'label' => __('Color', 'so-widgets-bundle'),
-							'default' => '#000000'
 						),
 						'align' => array(
 							'type' => 'select',
@@ -94,7 +93,6 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'color' => array(
 							'type' => 'color',
 							'label' => __('Color', 'so-widgets-bundle'),
-							'default' => '#000000'
 						),
 						'align' => array(
 							'type' => 'select',
@@ -144,6 +142,16 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 							'type' => 'color',
 							'label' => __('Color', 'so-widgets-bundle'),
 							'default' => '#EEEEEE'
+						),
+						'side_margin' => array(
+							'type' => 'measurement',
+							'label' => __('Side Margin', 'so-widgets-bundle'),
+							'default' => '60px',
+						),
+						'top_margin' => array(
+							'type' => 'measurement',
+							'label' => __('Top/Bottom Margin', 'so-widgets-bundle'),
+							'default' => '20px',
 						)
 					)
 				)
@@ -212,37 +220,27 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			if ( ! empty( $divider_styles['color'] ) ) {
 				$less_vars['divider_color'] = $divider_styles['color'];
 			}
+
+			if ( !empty( $divider_styles['top_margin'] ) && !empty( $divider_styles['top_margin_unit'] ) ) {
+				$less_vars['divider_top_margin'] = $divider_styles['top_margin'] . $divider_styles['top_margin_unit'];
+			}
+
+			if ( !empty( $divider_styles['side_margin'] ) && !empty( $divider_styles['side_margin_unit'] ) ) {
+				$less_vars['divider_side_margin'] = $divider_styles['side_margin'] . $divider_styles['side_margin_unit'];
+			}
+
+
 		}
 
 		return $less_vars;
 	}
 
-	/**
-	 * Less function for importing Google web fonts.
-	 *
-	 * @param $instance
-	 * @param $args
-	 *
-	 * @return string
-	 */
-	function less_import_google_font($instance, $args) {
-		if( empty( $instance ) ) return;
+	function get_google_font_fields( $instance ) {
 
-		$font_imports = array(
-			siteorigin_widget_get_font( $instance['headline']['font'] ),
-			siteorigin_widget_get_font( $instance['sub_headline']['font'] ),
+		return array(
+			$instance['headline']['font'],
+			$instance['sub_headline']['font'],
 		);
-
-		$import_strings = array();
-		foreach( $font_imports as $import ) {
-			$import_strings[] = !empty($import['css_import']) ? $import['css_import'] : '';
-		}
-
-		// Remove empty and duplicate items from the array
-		$import_strings = array_filter($import_strings);
-		$import_strings = array_unique($import_strings);
-
-		return implode("\n", $import_strings);
 	}
 
 	/**

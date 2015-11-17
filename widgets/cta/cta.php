@@ -6,7 +6,7 @@ Author: SiteOrigin
 Author URI: https://siteorigin.com
 */
 
-class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
+class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 
 	function __construct() {
 
@@ -122,4 +122,4 @@ class SiteOrigin_Widget_Cta_widget extends SiteOrigin_Widget {
 
 }
 
-siteorigin_widget_register('sow-cta', __FILE__, 'SiteOrigin_Widget_Cta_widget');
+siteorigin_widget_register('sow-cta', __FILE__, 'SiteOrigin_Widget_Cta_Widget');

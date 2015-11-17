@@ -15,7 +15,7 @@
 	}
 
 	textarea,
-	input.sow-text-field, {
+	input.sow-text-field {
 		.box-sizing(border-box);
 		display: block;
 		width: 100%;
@@ -93,24 +93,27 @@
 		@submit_background_gradient: 10%;
 		@submit_border_color: #989a9c;
 		@submit_border_style: solid;
+		@submit_border_width: 1px;
 		@submit_border_radius: 3px;
 		@submit_text_color: #5a5a5a;
+		@submit_font_size: default;
 		@submit_weight: 500;
 		@submit_padding: 10px;
 
 		@submit_inset_highlight: 50%;
 
 		.sow-submit {
-			color: @submit_text;
+			color: @submit_text_color;
 			.gradient(
 				lighten(@submit_background_color, @submit_background_gradient),
 				darken(@submit_background_color, @submit_background_gradient),
 				lighten(@submit_background_color, @submit_background_gradient)
 			);
 
-			border: 1px @submit_border_style @submit_border_color;
+			border: @submit_border_width @submit_border_style @submit_border_color;
 			border-radius: @submit_border_radius;
 			font-weight: @submit_weight;
+			font-size: @submit_font_size;
 			padding: @submit_padding @submit_padding * 2;
 			display: inline-block;
 
