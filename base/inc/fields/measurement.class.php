@@ -11,6 +11,13 @@ class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_I
 		return $input_classes;
 	}
 
+	/**
+	 * Parse a value into a unit and value.
+	 *
+	 * @param $value
+	 *
+	 * @return array
+	 */
 	protected function get_render_values( $value ) {
 		preg_match('/(\d+)([a-z%]+)*/', $value, $matches);
 		$num_matches = count( $matches );
@@ -21,13 +28,13 @@ class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_I
 	}
 
 	protected function render_field( $value, $instance ) {
-		$num_value = $this->get_render_values($value)['value'];
-
-		parent::render_field( $num_value, $instance );
+		$value_parts = $this->get_render_values($value);
+		parent::render_field( $value_parts['value'], $instance );
 	}
 
 	protected function render_after_field( $value, $instance ) {
-		$unit = $this->get_render_values($value)['unit'];
+		$value_parts = $this->get_render_values($value);
+		$unit = $value_parts['unit'];
 		if ( is_null( $unit ) ) {
 			$unit_name = $this->get_unit_field_name( $this->base_name );
 
@@ -35,7 +42,8 @@ class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_I
 				$unit = $instance[ $unit_name ];
 			}
 			else if ( isset( $this->default ) ) {
-				$unit = $this->get_render_values( $this->default )['unit'];
+				$default_parts = $this->get_render_values($this->default);
+				$unit = $default_parts['unit'];
 			}
 		}
 		?>
@@ -60,8 +68,10 @@ class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_I
 	protected function sanitize_field_input( $value, $instance ) {
 		//Get the property name of the unit field
 		$unit_name = $this->get_unit_field_name( $this->base_name );
+
 		//Initialize with default value, if any.
-		$unit = $this->get_render_values( $this->default )['unit'];
+		$default_parts = $this->get_render_values($this->default);
+		$unit = $default_parts['unit'];
 		if( isset( $instance[ $unit_name ] ) ) {
 			$units = siteorigin_widgets_get_measurements_list();
 			if ( in_array( $instance[ $unit_name ], $units ) ) {
