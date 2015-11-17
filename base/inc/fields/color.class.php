@@ -11,7 +11,7 @@ class SiteOrigin_Widget_Field_Color extends SiteOrigin_Widget_Field_Text_Input_B
 		return $input_classes;
 	}
 
-	protected function sanitize_field_input( $value ) {
+	protected function sanitize_field_input( $value, $instance ) {
 		$sanitized_value = $value;
 		if( ! preg_match('|^#|', $sanitized_value) ) {
 			$sanitized_value = '#' . $sanitized_value;

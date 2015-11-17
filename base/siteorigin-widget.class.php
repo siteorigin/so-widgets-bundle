@@ -464,7 +464,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$field = $field_factory->create_field( $field_name, $field_options, $this );
 					$this->fields[$field_name] = $field;
 				}
-				$new_instance[$field_name] = $field->sanitize( isset( $new_instance[$field_name] ) ? $new_instance[$field_name] : null );
+				$new_instance[$field_name] = $field->sanitize( isset( $new_instance[$field_name] ) ? $new_instance[$field_name] : null, $new_instance );
 				$new_instance = $field->sanitize_instance( $new_instance );
 			}
 
@@ -626,7 +626,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$lc_functions = new SiteOrigin_Widgets_Less_Functions($this, $instance);
 		$lc_functions->registerFunctions($c);
 
-		return apply_filters( 'siteorigin_widgets_instance_css', $c->compile( $less ), $instance, $this );
+		$css = $c->compile( $less );
+
+		// Remove any attributes with default as the value
+		$css = preg_replace('/[a-zA-Z\-]+ *: *default *;/', '', $css);
+
+		// Remove any empty CSS
+		$css = preg_replace('/[^{}]*\{\s*\}/m', '', $css);
+		$css = trim($css);
+
+		return apply_filters( 'siteorigin_widgets_instance_css', $css, $instance, $this );
 	}
 
 	/**

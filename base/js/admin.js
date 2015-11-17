@@ -583,6 +583,8 @@
         previewButton.find('> a').click(function(e){
             e.preventDefault();
 
+            // TODO: This very closely resembles the data extraction code in Page Builder. Try find a way to avoid having
+            // to maintain it in two places.
             // Lets build the data from the widget
             var data = {};
             $el.find( '*[name]' ).each( function () {
@@ -620,6 +622,20 @@
                         else if( $$.attr('type') === 'radio' ){
                             if ( $$.is(':checked') ) {
                                 sub[ parts[i] ] = $$.val() !== '' ? $$.val() : true;
+                            }
+                        }
+                        else if($$.prop('tagName') === 'TEXTAREA' && $$.hasClass('wp-editor-area')) {
+                            // This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
+                            var editor = null;
+                            if ( typeof tinyMCE !== 'undefined' ) {
+                                editor = tinyMCE.get( $$.attr('id') );
+                            }
+
+                            if( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
+                                sub[ parts[i] ] = editor.getContent();
+                            }
+                            else {
+                                sub[ parts[i] ] = $$.val();
                             }
                         }
                         else {

@@ -50,6 +50,13 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.5.3 - November 17 2015 =
+* Fixed defaults for Features widget and Hero Image widget.
+* Fixed previewing for Editor widget.
+* Change measurement field to work as single string.
+* Use new measurement field for existing widgets.
+* Carousel widget supports RTL.
+
 = 1.5.2 - November 10 2015 =
 * Removed word break style from headline widget.
 * Fixed image grid URL field.

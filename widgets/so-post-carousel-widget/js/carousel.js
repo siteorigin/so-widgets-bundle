@@ -3,6 +3,7 @@ jQuery( function($){
     $('.sow-carousel-wrapper').each(function(){
 
         var $$ = $(this),
+            $postsContainer = $$.closest('.sow-carousel-container'),
             $container = $$.closest('.sow-carousel-container').parent(),
             $itemsContainer = $$.find('.sow-carousel-items'),
             $items = $$.find('.sow-carousel-item'),
@@ -14,7 +15,9 @@ jQuery( function($){
             numItems = $items.length,
             totalPosts = $$.data('found-posts'),
             complete = numItems == totalPosts,
-            itemWidth = ( $firstItem.width() + parseInt($firstItem.css('margin-right')) );
+            itemWidth = ( $firstItem.width() + parseInt($firstItem.css('margin-right')) ),
+            isRTL = $postsContainer.hasClass('js-rtl'),
+            updateProp = isRTL ? 'margin-right' : 'margin-left';
 
         var updatePosition = function() {
             if ( position < 0 ) position = 0;
@@ -45,13 +48,13 @@ jQuery( function($){
                 }
             }
             $itemsContainer.css('transition-duration', "0.45s");
-            $itemsContainer.css('margin-left', -( itemWidth * position) + 'px' );
+            $itemsContainer.css(updateProp, -( itemWidth * position) + 'px' );
         };
 
         $container.on( 'click', 'a.sow-carousel-previous',
             function(e){
                 e.preventDefault();
-                position -= 1;
+                position -= isRTL ? -1 : 1;
                 updatePosition();
             }
         );
@@ -59,7 +62,7 @@ jQuery( function($){
         $container.on( 'click', 'a.sow-carousel-next',
             function(e){
                 e.preventDefault();
-                position += 1;
+                position += isRTL ? -1 : 1;
                 updatePosition();
             }
         );
@@ -69,6 +72,7 @@ jQuery( function($){
         var velocity = 0;
         var prevTime = 0;
         var posInterval;
+        var negativeDirection = isRTL ? 'right' : 'left';
         $$.swipe( {
             excludedElements: "",
             triggerOnTouchEnd: true,
@@ -80,7 +84,7 @@ jQuery( function($){
                     clearInterval(posInterval);
                 }
                 else if ( phase == "move" ) {
-                    if( direction == "left" ) distance *= -1;
+                    if( direction == negativeDirection ) distance *= -1;
                     setNewPosition(startPosition + distance);
                     var newTime = new Date().getTime();
                     var timeDelta = (newTime - prevTime) / 1000;
@@ -90,7 +94,7 @@ jQuery( function($){
                 }
                 else if ( phase == "end" ) {
                     validSwipe = true;
-                    if( direction == "left" ) distance *= -1;
+                    if( direction == negativeDirection ) distance *= -1;
                     if(Math.abs(velocity) > 400) {
                         velocity *= 0.1;
                         var startTime = new Date().getTime();
@@ -101,7 +105,7 @@ jQuery( function($){
                             var newPos = startPosition + distance + cumulativeDistance;
                             var decel = 30;
                             var end = (Math.abs(velocity) - decel) < 0;
-                            if(direction == "left") {
+                            if(direction == negativeDirection) {
                                 velocity += decel;
                             } else {
                                 velocity -= decel;
@@ -123,13 +127,13 @@ jQuery( function($){
         var setNewPosition = function(newPosition) {
             if(newPosition < 50 && newPosition >  -( itemWidth * numItems )) {
                 $itemsContainer.css('transition-duration', "0s");
-                $itemsContainer.css('margin-left', newPosition + 'px' );
+                $itemsContainer.css(updateProp, newPosition + 'px' );
                 return true;
             }
             return false;
         };
         var setFinalPosition = function() {
-            var finalPosition = parseInt( $itemsContainer.css('margin-left') );
+            var finalPosition = parseInt( $itemsContainer.css(updateProp) );
             position = Math.abs( Math.round( finalPosition / itemWidth ) );
             updatePosition();
         };

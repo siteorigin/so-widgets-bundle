@@ -142,6 +142,16 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 							'type' => 'color',
 							'label' => __('Color', 'so-widgets-bundle'),
 							'default' => '#EEEEEE'
+						),
+						'side_margin' => array(
+							'type' => 'measurement',
+							'label' => __('Side Margin', 'so-widgets-bundle'),
+							'default' => '60px',
+						),
+						'top_margin' => array(
+							'type' => 'measurement',
+							'label' => __('Top/Bottom Margin', 'so-widgets-bundle'),
+							'default' => '20px',
 						)
 					)
 				)
@@ -210,6 +220,16 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			if ( ! empty( $divider_styles['color'] ) ) {
 				$less_vars['divider_color'] = $divider_styles['color'];
 			}
+
+			if ( !empty( $divider_styles['top_margin'] ) && !empty( $divider_styles['top_margin_unit'] ) ) {
+				$less_vars['divider_top_margin'] = $divider_styles['top_margin'] . $divider_styles['top_margin_unit'];
+			}
+
+			if ( !empty( $divider_styles['side_margin'] ) && !empty( $divider_styles['side_margin_unit'] ) ) {
+				$less_vars['divider_side_margin'] = $divider_styles['side_margin'] . $divider_styles['side_margin_unit'];
+			}
+
+
 		}
 
 		return $less_vars;

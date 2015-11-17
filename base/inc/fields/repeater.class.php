@@ -116,11 +116,11 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 	 *
 	 * @return array|mixed
 	 */
-	function sanitize_field_input( $value ){
+	function sanitize_field_input( $value, $instance ){
 		if( empty($value) ) return array();
 
 		foreach( $value as &$el ) {
-			$el = parent::sanitize_field_input( $el );
+			$el = parent::sanitize_field_input( $el, $instance );
 		}
 
 		return $value;

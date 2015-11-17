@@ -257,7 +257,6 @@ abstract class SiteOrigin_Widget_Field_Base {
 		if ( is_null( $value ) && isset( $this->default ) ) {
 			$value = $this->default;
 		}
-
 		$wrapper_attributes = array(
 			'class' => array(
 				'siteorigin-widget-field',
@@ -344,11 +343,13 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * The default sanitization function.
 	 *
 	 * @param $value mixed The value to be sanitized.
+	 * @param $instance array The widget instance.
+	 *
 	 * @return mixed|string|void
 	 */
-	public function sanitize( $value ) {
+	public function sanitize( $value, $instance = array() ) {
 
-		$value = $this->sanitize_field_input( $value );
+		$value = $this->sanitize_field_input( $value, $instance );
 
 		if( isset( $this->sanitize ) ) {
 			// This field also needs some custom sanitization
@@ -397,9 +398,11 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * input received from their HTML form field.
 	 *
 	 * @param $value mixed The current value of this field.
+	 * @param $instance array The widget instance.
+	 *
 	 * @return mixed The sanitized value.
 	 */
-	abstract protected function sanitize_field_input( $value );
+	abstract protected function sanitize_field_input( $value, $instance );
 
 	/**
 	 * There are cases where a field may affect values on the widget instance, other than it's own input. It then becomes
