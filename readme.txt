@@ -50,6 +50,9 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.5.4 - November 18 2015 =
+* Fixed compatibility with PHP 5.2
+
 = 1.5.3 - November 17 2015 =
 * Fixed defaults for Features widget and Hero Image widget.
 * Fixed previewing for Editor widget.
