@@ -15,7 +15,9 @@ if( $result['status'] == 'success' ) {
 	<?php
 }
 else {
-	if( $instance['spam']['recaptcha']['use_captcha'] ) {
+	$recaptcha_config = $instance['spam']['recaptcha'];
+	$use_recaptcha = $recaptcha_config['use_captcha'] && ! empty( $recaptcha_config['site_key'] ) && ! empty( $recaptcha_config['secret_key'] );
+	if ( $use_recaptcha ) {
 		wp_enqueue_script('google-recaptcha', 'https://www.google.com/recaptcha/api.js');
 	}
 	?>
@@ -32,12 +34,25 @@ else {
 		<?php $this->render_form_fields( $instance['fields'], $result['errors'], $instance ) ?>
 		<input type="hidden" name="instance_hash" value="<?php echo esc_attr($instance_hash) ?>" />
 
-		<?php if( $instance['spam']['recaptcha']['use_captcha'] ) : ?>
-			<div class="g-recaptcha" data-sitekey="<?php echo esc_attr( $instance['spam']['recaptcha']['site_key'] ) ?>"></div>
+		<?php if( $use_recaptcha ) : ?>
+			<div class="g-recaptcha" data-sitekey="<?php echo esc_attr( $instance['spam']['recaptcha']['site_key'] ) ?>" data-callback="soOnCaptchaSuccess"></div>
+
+			<script type="application/javascript">
+				jQuery(function ($) {
+					// Ensure we're getting the right submit input in case there are multiple widgets on a page.
+					var $input = $("<?php echo '.js-sow-submit-' . $instance['_sow_form_id'] ?>");
+					window.soOnCaptchaSuccess = function (response) {
+						if(response) {
+							$input.prop('disabled', false);
+						}
+					};
+				});
+			</script>
 		<?php endif; ?>
 
 		<div class="sow-submit-wrapper <?php if( $instance['design']['submit']['styled'] ) echo 'sow-submit-styled' ?>">
-			<input type="submit" value="<?php echo esc_attr( $instance['settings']['submit_text'] ) ?>" class="sow-submit">
+			<input type="submit" value="<?php echo esc_attr( $instance['settings']['submit_text'] ) ?>"
+				   class="sow-submit <?php echo 'js-sow-submit-' . $instance['_sow_form_id'] ?>" <?php if( $use_recaptcha ) echo 'disabled="true"'; ?>>
 		</div>
 	</form>
 	<?php

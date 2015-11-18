@@ -698,7 +698,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	function spam_check( $post_vars, $email_fields, $instance ){
 		$errors = array();
 
-		if( $instance['spam']['recaptcha']['use_captcha'] ) {
+		$recaptcha_config = $instance['spam']['recaptcha'];
+		$use_recaptcha = $recaptcha_config['use_captcha'] && ! empty( $recaptcha_config['site_key'] ) && ! empty( $recaptcha_config['secret_key'] );
+		if( $use_recaptcha ) {
 			$result = wp_remote_post(
 				'https://www.google.com/recaptcha/api/siteverify',
 				array(

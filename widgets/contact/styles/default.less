@@ -85,6 +85,10 @@
 
 		}
 
+		.sow-submit:disabled {
+
+		}
+
 	}
 
 	.sow-submit-styled {
@@ -122,6 +126,13 @@
 			}
 
 			.sow-submit-box-shadow( @submit_inset_highlight );
+		}
+
+		.sow-submit:disabled {
+			color: lighten(@submit_text_color, 50%);
+			background: lighten(@submit_background_color, 50%);
+			border: @submit_border_width @submit_border_style lighten(@submit_border_color, 20%);
+
 		}
 
 
