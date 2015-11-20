@@ -362,8 +362,41 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							)
 						),
 
-					)
-				)
+						'focus' => array(
+							'type' => 'section',
+							'label' => __('Input focus', 'so-widgets-bundle'),
+							'fields' => array(
+								'style' => array(
+									'type' => 'select',
+									'label' => __( 'Style', 'so-widgets-bundle' ),
+									'default' => 'solid',
+									'options' => array(
+										'dotted' => __( 'Dotted', 'so-widgets-bundle' ),
+										'dashed' => __( 'Dashed', 'so-widgets-bundle' ),
+										'solid' => __( 'Solid', 'so-widgets-bundle' ),
+										'double' => __( 'Double', 'so-widgets-bundle' ),
+										'groove' => __( 'Groove', 'so-widgets-bundle' ),
+										'ridge' => __( 'Ridge', 'so-widgets-bundle' ),
+										'inset' => __( 'Inset', 'so-widgets-bundle' ),
+										'outset' => __( 'Outset', 'so-widgets-bundle' ),
+										'none' => __( 'None', 'so-widgets-bundle' ),
+										'hidden' => __( 'Hidden', 'so-widgets-bundle' ),
+									)
+								),
+								'color' => array(
+										'type' => 'color',
+										'label' => __( 'Color', 'so-widgets-bundle' ),
+										'default' => 'default',
+								),
+								'width' => array(
+									'type' => 'measurement',
+									'label' => __( 'Width', 'so-widgets-bundle' ),
+									'default' => '1px',
+								),
+							),
+						),
+					),
+				),
 			)
 		);
 	}
@@ -461,6 +494,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'submit_weight' => $instance['design']['submit']['weight'],
 			'submit_padding' => $instance['design']['submit']['padding'] . 'px',
 			'submit_inset_highlight' => $instance['design']['submit']['inset_highlight'] . '%',
+
+			// Input focus styles
+			'outline_style' => $instance['design']['focus']['style'],
+			'outline_color' => $instance['design']['focus']['color'],
+			'outline_width' => $instance['design']['focus']['width'],
 		);
 
 		return $vars;

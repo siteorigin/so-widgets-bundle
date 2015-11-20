@@ -36,7 +36,7 @@ else {
 
 		<?php if( $use_recaptcha ) : ?>
 			<div class="g-recaptcha" data-sitekey="<?php echo esc_attr( $instance['spam']['recaptcha']['site_key'] ) ?>" data-callback="soOnCaptchaSuccess"></div>
-
+			<?php if( !is_admin() ) : ?>
 			<script type="application/javascript">
 				jQuery(function ($) {
 					// Ensure we're getting the right submit input in case there are multiple widgets on a page.
@@ -48,11 +48,12 @@ else {
 					};
 				});
 			</script>
+			<?php endif; ?>
 		<?php endif; ?>
 
 		<div class="sow-submit-wrapper <?php if( $instance['design']['submit']['styled'] ) echo 'sow-submit-styled' ?>">
 			<input type="submit" value="<?php echo esc_attr( $instance['settings']['submit_text'] ) ?>"
-				   class="sow-submit <?php echo 'js-sow-submit-' . $instance['_sow_form_id'] ?>" <?php if( $use_recaptcha ) echo 'disabled="true"'; ?>>
+				   class="sow-submit <?php echo 'js-sow-submit-' . $instance['_sow_form_id'] ?>" <?php if( $use_recaptcha && !is_admin() ) echo 'disabled="true"'; ?>>
 		</div>
 	</form>
 	<?php
