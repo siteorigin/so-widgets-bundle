@@ -236,6 +236,28 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							)
 						),
 
+						'labels' => array(
+							'type' => 'section',
+							'label' => __( 'Field labels', 'so-widgets-bundle' ),
+							'fields' => array(
+								'font' => array(
+									'type' => 'font',
+									'label' => __( 'Font', 'so-widgets-bundle' ),
+									'default' => 'default',
+								),
+								'size' => array(
+									'type' => 'measurement',
+									'label' => __( 'Size', 'so-widgets-bundle' ),
+									'default' => 'default',
+								),
+								'color' => array(
+									'type' => 'color',
+									'label' => __( 'Color', 'so-widgets-bundle' ),
+									'default' => 'default',
+								),
+							),
+						),
+
 						'errors' => array(
 							'type' => 'section',
 							'label' => __('Error messages', 'so-widgets-bundle'),
@@ -458,6 +480,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_less_variables( $instance ){
+		if( empty( $instance['design']['labels']['font'] ) ) {
+			$instance['design']['labels'] = array('font' => '');
+		}
+		$font = siteorigin_widget_get_font( $instance['design']['labels']['font'] );
+
 		$vars = array(
 			// All the container variables.
 			'container_background' => $instance['design']['container']['background'],
@@ -465,6 +492,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'container_border_color' => $instance['design']['container']['border_color'],
 			'container_border_width' => $instance['design']['container']['border_width'],
 			'container_border_style' => $instance['design']['container']['border_style'],
+
+			// Field labels
+			'label_font_family' => $font['family'],
+			'label_font_weight' => ! empty( $font['weight'] ) ? $font['weight'] : '',
+			'label_font_size' => $instance['design']['labels']['size'],
+			'label_font_color' => $instance['design']['labels']['color'],
 
 			// The error message styles
 			'error_background' => $instance['design']['errors']['background'],
@@ -493,6 +526,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		);
 
 		return $vars;
+	}
+
+	function get_google_font_fields( $instance ) {
+		return array(
+			$instance['design']['labels']['font'],
+		);
 	}
 
 	static function name_from_label( $label, & $ids ){

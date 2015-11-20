@@ -1,5 +1,7 @@
 @import "../../../base/less/mixins";
 
+.widget-function('import_google_font');
+
 .sow-form-field {
 	display: block;
 	margin-bottom: 1em;
@@ -10,7 +12,14 @@
 		margin-bottom: 5px;
 
 		strong {
-			font-weight: bold;
+			@label_font_family: default;
+			@label_font_weight: default;
+			.font(@label_font_family, @label_font_weight);
+
+			@label_font_size: default;
+			@label_font_color: default;
+			font-size: @label_font_size;
+			color: @label_font_color;
 		}
 	}
 
