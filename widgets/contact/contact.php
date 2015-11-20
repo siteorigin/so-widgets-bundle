@@ -142,7 +142,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					'hide' => true,
 					'fields' => array(
 
-
 						'recaptcha' => array(
 							'type' => 'section',
 							'label' => __('Recaptcha', 'so-widgets-bundle'),
@@ -203,11 +202,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'default' => '#f2f2f2',
 								),
 								'padding' => array(
-									'type' => 'slider',
+									'type' => 'measurement',
 									'label' => __('Padding', 'so-widgets-bundle'),
-									'default' => 10,
-									'max' => 100,
-									'min' => 0
+									'default' => '10px',
 								),
 								'border_color' => array(
 									'type' => 'color',
@@ -215,11 +212,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'default' => '#c0c0c0',
 								),
 								'border_width' => array(
-									'type' => 'slider',
+									'type' => 'measurement',
 									'label' => __('Border width', 'so-widgets-bundle'),
-									'default' => 1,
-									'max' => 10,
-									'min' => 0
+									'default' => '1px',
 								),
 								'border_style' => array(
 									'type' => 'select',
@@ -261,14 +256,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'default' => '#ec666a',
 								),
 								'padding' => array(
-									'type' => 'slider',
+									'type' => 'measurement',
 									'label' => __('Error padding', 'so-widgets-bundle'),
-									'default' => 5,
+									'default' => '5px',
 								),
 								'margin' => array(
-									'type' => 'slider',
+									'type' => 'measurement',
 									'label' => __('Error margin', 'so-widgets-bundle'),
-									'default' => 10,
+									'default' => '10px',
 								),
 							)
 						),
@@ -311,11 +306,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									)
 								),
 								'border_width' => array(
-									'type' => 'slider',
+									'type' => 'measurement',
 									'label' => __('Border width', 'so-widgets-bundle'),
-									'default' => 1,
-									'max' => 10,
-									'min' => 0
+									'default' => '1px',
 								),
 								'border_radius' => array(
 									'type' => 'slider',
@@ -345,11 +338,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									)
 								),
 								'padding' => array(
-									'type' => 'slider',
+									'type' => 'measurement',
 									'label' => __('Padding', 'so-widgets-bundle'),
-									'default' => 10,
-									'max' => 50,
-									'min' => 0
+									'default' => '10px',
 								),
 								'inset_highlight' => array(
 									'type' => 'slider',
@@ -470,29 +461,29 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		$vars = array(
 			// All the container variables.
 			'container_background' => $instance['design']['container']['background'],
-			'container_padding' => $instance['design']['container']['padding'] . 'px',
+			'container_padding' => $instance['design']['container']['padding'],
 			'container_border_color' => $instance['design']['container']['border_color'],
-			'container_border_width' => $instance['design']['container']['border_width'] . 'px',
+			'container_border_width' => $instance['design']['container']['border_width'],
 			'container_border_style' => $instance['design']['container']['border_style'],
 
 			// The error message styles
 			'error_background' => $instance['design']['errors']['background'],
 			'error_border' => $instance['design']['errors']['border_color'],
 			'error_text' => $instance['design']['errors']['text_color'],
-			'error_padding' => $instance['design']['errors']['padding'] . 'px',
-			'error_margin' => $instance['design']['errors']['margin'] . 'px',
+			'error_padding' => $instance['design']['errors']['padding'],
+			'error_margin' => $instance['design']['errors']['margin'],
 
 			// The submit button
 			'submit_background_color' => $instance['design']['submit']['background_color'],
 			'submit_background_gradient' => $instance['design']['submit']['background_gradient'] . '%',
 			'submit_border_color' => $instance['design']['submit']['border_color'],
 			'submit_border_style' => $instance['design']['submit']['border_style'],
-			'submit_border_width' => $instance['design']['submit']['border_width'] . 'px',
+			'submit_border_width' => $instance['design']['submit']['border_width'],
 			'submit_border_radius' => $instance['design']['submit']['border_radius'] . 'px',
 			'submit_text_color' => $instance['design']['submit']['text_color'],
 			'submit_font_size' => $instance['design']['submit']['font_size'],
 			'submit_weight' => $instance['design']['submit']['weight'],
-			'submit_padding' => $instance['design']['submit']['padding'] . 'px',
+			'submit_padding' => $instance['design']['submit']['padding'],
 			'submit_inset_highlight' => $instance['design']['submit']['inset_highlight'] . '%',
 
 			// Input focus styles
