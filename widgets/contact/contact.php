@@ -610,10 +610,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 			?><div class="sow-form-field sow-form-field-<?php echo sanitize_html_class( $field['type'] ) ?>"><?php
 
-			if( empty( $label_position ) ||
-				( $label_position != 'below' && $label_position != 'inside') ) {
+			$is_text_input_field = ($field['type'] != 'select' && $field['type'] != 'checkboxes');
+			// label should be rendered before the field, then CSS will do the exact positioning.
+			$render_label_before_field = ( $label_position != 'below' && $label_position != 'inside' ) || ( $label_position == 'inside' && ! $is_text_input_field );
+			if( empty( $label_position ) || $render_label_before_field ) {
 				$this->render_form_label( $field_id, $field['label'], $instance );
 			}
+
+			$show_placeholder = $label_position == 'inside';
 
 			if( !empty($errors[$field_name]) ) {
 				?>
@@ -626,7 +630,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			switch( $field['type'] ) {
 				case 'email':
 				case 'text':
-					echo '<input type="' . $field['type'] . '" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '" value="' . esc_attr($value) . '" class="sow-text-field" />';
+					echo '<input type="' . $field['type'] . '" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '" value="' . esc_attr($value) . '" class="sow-text-field"' . ( $show_placeholder ? 'placeholder="' . esc_attr( $field['label'] ) . '"' : '' ) . '/>';
 					break;
 
 				case 'select':
@@ -658,13 +662,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					break;
 
 				case 'textarea':
-					echo '<textarea name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '" rows="10">' . esc_textarea($value) . '</textarea>';
+					echo '<textarea name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '" rows="10"' . ( $show_placeholder ? 'placeholder="' . esc_attr( $field['label'] ) . '"' : '' ) . '>' . esc_textarea($value) . '</textarea>';
 					break;
 
 				case 'subject':
 				case 'name':
 				default:
-					echo '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '"  value="' . esc_attr($value) . '"  class="sow-text-field" />';
+					echo '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '"  value="' . esc_attr($value) . '"  class="sow-text-field" ' . ( $show_placeholder ? 'placeholder="' . esc_attr( $field['label'] ) . '"' : '' ) . '/>';
 					break;
 
 			}
