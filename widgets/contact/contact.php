@@ -247,13 +247,41 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								),
 								'size' => array(
 									'type' => 'measurement',
-									'label' => __( 'Size', 'so-widgets-bundle' ),
+									'label' => __( 'Font size', 'so-widgets-bundle' ),
 									'default' => 'default',
 								),
 								'color' => array(
 									'type' => 'color',
 									'label' => __( 'Color', 'so-widgets-bundle' ),
 									'default' => 'default',
+								),
+								'position' => array(
+									'type' => 'select',
+									'label' => __( 'Position', 'so-widgets-bundle' ),
+									'default' => 'above',
+									'options' => array(
+										'above' => __( 'Above', 'so-widgets-bundle' ),
+										'below' => __( 'Below', 'so-widgets-bundle' ),
+										'left' => __( 'Left', 'so-widgets-bundle' ),
+										'right' => __( 'Right', 'so-widgets-bundle' ),
+										'inside' => __( 'Inside', 'so-widgets-bundle' ),
+									),
+								),
+								'width' => array(
+									'type' => 'measurement',
+									'label' => __( 'Width', 'so-widgets-bundle' ),
+									'default' => '',
+								),
+								'align' => array(
+									'type' => 'select',
+									'label' => __( 'Align', 'so-widgets-bundle' ),
+									'default' => 'left',
+									'options' => array(
+										'left' => __( 'Left', 'so-widgets-bundle' ),
+										'right' => __( 'Right', 'so-widgets-bundle' ),
+										'center' => __( 'Center', 'so-widgets-bundle' ),
+										'justify' => __( 'Justify', 'so-widgets-bundle' ),
+									)
 								),
 							),
 						),
@@ -485,6 +513,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 		$font = siteorigin_widget_get_font( $instance['design']['labels']['font'] );
 
+		$label_position = $instance['design']['labels']['position'];
+		if ( $label_position != 'left' && $label_position != 'right' ) {
+			$label_position = 'default';
+		}
+
 		$vars = array(
 			// All the container variables.
 			'container_background' => $instance['design']['container']['background'],
@@ -498,6 +531,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'label_font_weight' => ! empty( $font['weight'] ) ? $font['weight'] : '',
 			'label_font_size' => $instance['design']['labels']['size'],
 			'label_font_color' => $instance['design']['labels']['color'],
+			'label_position' => $label_position,
+			'label_width' => $instance['design']['labels']['width'],
+			'label_align' => $instance['design']['labels']['align'],
 
 			// The error message styles
 			'error_background' => $instance['design']['errors']['background'],
@@ -552,11 +588,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 * Render the form fields
 	 *
 	 * @param $fields
-	 * @param $errors
+	 * @param array $errors
+	 * @param $instance
 	 */
 	function render_form_fields( $fields, $errors = array(), $instance ){
 
 		$field_ids = array();
+		$label_position = $instance['design']['labels']['position'];
 
 		foreach( $fields as $i => $field ) {
 			if( empty( $field['type'] ) ) continue;
@@ -571,8 +609,10 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 
 			?><div class="sow-form-field sow-form-field-<?php echo sanitize_html_class( $field['type'] ) ?>"><?php
-			if( !empty($field['label']) ) {
-				?><label for="<?php echo esc_attr( $field_id ) ?>"><strong><?php echo esc_html( $field['label'] ) ?></strong></label> <?php
+
+			if( empty( $label_position ) ||
+				( $label_position != 'below' && $label_position != 'inside') ) {
+				$this->render_form_label( $field_id, $field['label'], $instance );
 			}
 
 			if( !empty($errors[$field_name]) ) {
@@ -582,7 +622,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				</div>
 				<?php
 			}
-
+			?><span class="sow-field-container"><?php
 			switch( $field['type'] ) {
 				case 'email':
 				case 'text':
@@ -628,8 +668,24 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					break;
 
 			}
+			?></span><?php
+
+			if( ! empty( $label_position ) && $label_position == 'below' ) {
+				$this->render_form_label( $field_id, $field['label'], $instance );
+			}
 
 			?></div><?php
+		}
+	}
+
+	function render_form_label( $field_id, $label, $position ) {
+		if( !empty($label) ) {
+			$label_class = '';
+			if( ! empty( $position ) ) {
+				$label_class = ' class="sow-form-field-label-' . $position . '"';
+			}
+			?><label<?php if( ! empty( $label_class ) ) echo $label_class; ?> for="<?php echo esc_attr( $field_id ) ?>"><strong><?php echo esc_html( $label ) ?></strong></label>
+			<?php
 		}
 	}
 

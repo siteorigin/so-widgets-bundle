@@ -7,9 +7,14 @@
 	margin-bottom: 1em;
 	.clearfix();
 
-	label {
+	> label {
 		display: block;
 		margin-bottom: 5px;
+
+		@label_width: default;
+		@label_align: default;
+		width: @label_width;
+		text-align: @label_align;
 
 		strong {
 			@label_font_family: default;
@@ -21,6 +26,21 @@
 			font-size: @label_font_size;
 			color: @label_font_color;
 		}
+
+		&.sow-form-field-label-left {
+			float: left;
+			margin-right: 10px;
+		}
+
+		&.sow-form-field-label-right {
+			float: right;
+			margin-left: 10px;
+		}
+	}
+
+	.sow-field-container {
+		overflow: hidden;
+		display: block;
 	}
 
 	textarea,
