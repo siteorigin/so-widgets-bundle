@@ -13,6 +13,9 @@ if( !empty($src) ) {
 
 	if(!empty($src[1])) $attr['width'] = $src[1];
 	if(!empty($src[2])) $attr['height'] = $src[2];
+	if (function_exists('wp_get_attachment_image_srcset')) {
+		$attr['srcset'] = esc_attr(wp_get_attachment_image_srcset($instance['image'], $instance['size']));
+ 	}
 }
 
 $styles = array();
