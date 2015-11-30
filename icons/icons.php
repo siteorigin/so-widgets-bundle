@@ -1718,10 +1718,21 @@ function siteorigin_widgets_icons_typicons_filter($icons) {
 add_filter('siteorigin_widgets_icons_typicons', 'siteorigin_widgets_icons_typicons_filter');
 
 function siteorigin_widgets_icon_families_filter( $families ){
+	$bundled = array(
+		'ionicons' => __( 'Ionicons', 'so-widgets-bundle' ),
+	);
+
+	foreach ( $bundled as $font => $name) {
+		include_once plugin_dir_path(__FILE__) . $font . '/filter.php';
+		$families[$font] = array(
+			'name' => $name,
+			'style_uri' => plugin_dir_url(__FILE__) . $font . '/style.css',
+			'icons' => apply_filters('siteorigin_widgets_icons_' . $font, array() ),
+		);
+	}
 
 	$families['fontawesome'] = array(
 		'name' => __( 'Font Awesome', 'so-widgets-bundle' ),
-//		'style_uri' => plugin_dir_url(__FILE__).'font-awesome-4.4.0/css/fontawesome.css',
 		'style_uri' => plugin_dir_url(__FILE__).'fontawesome/style.css',
 		'icons' => apply_filters('siteorigin_widgets_icons_fontawesome', array() ),
 	);
