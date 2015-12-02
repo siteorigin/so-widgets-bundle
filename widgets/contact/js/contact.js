@@ -1,3 +1,40 @@
+var SiteOriginContactForm = {
+  init: function ($, useRecaptcha) {
+    var $contactForms = $('form.sow-contact-form');
+    $contactForms.each(function () {
+      var $el = $(this);
+      if(useRecaptcha) {
+        // Render recaptcha
+        var $recaptchaDiv = $el.find('.sow-recaptcha');
+        if ($recaptchaDiv.length) {
+          var sitekey = $recaptchaDiv.data('sitekey');
+          grecaptcha.render($recaptchaDiv.get(0),
+            {
+              'sitekey': sitekey,
+              'callback': function(response) {
+                // Enable the submit button once we have a response from recaptcha.
+                $(this).find('.sow-submit-wrapper > input.sow-submit').prop('disabled', false);
+              }.bind(this),
+            }
+          );
+        }
+      }
+
+      // Disable the submit button on click to avoid multiple submits.
+      var $submitButton = $el.find('.sow-submit-wrapper > input.sow-submit');
+      $submitButton.click(function () {
+        $submitButton.prop('disabled', true);
+        //Ensure the form still submits
+        $el.submit();
+      });
+    });
+  },
+};
+
+function soContactFormInitialize() {
+  SiteOriginContactForm.init(window.jQuery, true);
+}
+
 jQuery(function ($) {
 
   var $contactForms = $('form.sow-contact-form');
@@ -19,40 +56,3 @@ jQuery(function ($) {
     SiteOriginContactForm.init($, useRecaptcha);
   }
 });
-
-function soContactFormInitialize() {
-  SiteOriginContactForm.init(window.jQuery, true);
-}
-
-var SiteOriginContactForm = {
-  init: function ($, useRecaptcha) {
-    var $contactForms = $('form.sow-contact-form');
-    $contactForms.each(function () {
-      var $el = $(this);
-      if(useRecaptcha) {
-        // Render recaptcha
-        var $recaptchaDiv = $el.find('.sow-recaptcha');
-        if ($recaptchaDiv.length) {
-          var sitekey = $recaptchaDiv.data('sitekey');
-          grecaptcha.render($recaptchaDiv.get(0),
-            {
-              'sitekey': sitekey,
-              'callback': function(response) {
-                  // Enable the submit button once we have a response from recaptcha.
-                  $(this).find('.sow-submit-wrapper > input.sow-submit').prop('disabled', false);
-              }.bind(this),
-            }
-          );
-        }
-      }
-
-      // Disable the submit button on click to avoid multiple submits.
-      var $submitButton = $el.find('.sow-submit-wrapper > input.sow-submit');
-      $submitButton.click(function () {
-        $submitButton.prop('disabled', true);
-        //Ensure the form still submits
-        $el.submit();
-      });
-    });
-  },
-};
