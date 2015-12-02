@@ -17,6 +17,16 @@ if( $result['status'] == 'success' ) {
 else {
 	$recaptcha_config = $instance['spam']['recaptcha'];
 	$use_recaptcha = $recaptcha_config['use_captcha'] && ! empty( $recaptcha_config['site_key'] ) && ! empty( $recaptcha_config['secret_key'] );
+
+	$settings = null;
+	if( $use_recaptcha ) {
+		$settings = array(
+			'sitekey' => $recaptcha_config['site_key'],
+			'theme'   => $recaptcha_config['theme'],
+			'type'    => $recaptcha_config['type'],
+			'size'    => $recaptcha_config['size']
+		);
+	}
 	?>
 	<form action="<?php echo add_query_arg( false, false ) ?>#contact-form-<?php echo esc_attr( substr( $instance_hash, 0, 4 ) ) ?>" method="POST" class="sow-contact-form" id="contact-form-<?php echo esc_attr( substr( $instance_hash, 0, 4 ) ) ?>">
 
@@ -32,7 +42,8 @@ else {
 		<input type="hidden" name="instance_hash" value="<?php echo esc_attr($instance_hash) ?>" />
 
 		<?php if( $use_recaptcha ) : ?>
-			<div class="sow-recaptcha" data-sitekey="<?php echo esc_attr( $instance['spam']['recaptcha']['site_key'] ) ?>"></div>
+			<div class="sow-recaptcha"
+				 data-config="<?php echo esc_attr( json_encode( $settings ) ) ?>"></div>
 		<?php endif; ?>
 
 		<div class="sow-submit-wrapper <?php if( $instance['design']['submit']['styled'] ) echo 'sow-submit-styled' ?>">

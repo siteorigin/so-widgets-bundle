@@ -7,10 +7,13 @@ var SiteOriginContactForm = {
         // Render recaptcha
         var $recaptchaDiv = $el.find('.sow-recaptcha');
         if ($recaptchaDiv.length) {
-          var sitekey = $recaptchaDiv.data('sitekey');
+          var config = $recaptchaDiv.data('config');
           grecaptcha.render($recaptchaDiv.get(0),
             {
-              'sitekey': sitekey,
+              'sitekey': config.sitekey,
+              'theme': config.theme,
+              'type': config.type,
+              'size': config.size,
               'callback': function(response) {
                 // Enable the submit button once we have a response from recaptcha.
                 $(this).find('.sow-submit-wrapper > input.sow-submit').prop('disabled', false);
