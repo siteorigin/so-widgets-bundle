@@ -191,7 +191,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 						'akismet' => array(
 							'type' => 'section',
-							'label' => __('akismet', 'so-widgets-bundle'),
+							'label' => __('Akismet', 'so-widgets-bundle'),
 							'fields' => array(
 								'use_akismet'=> array(
 									'type' => 'checkbox',
