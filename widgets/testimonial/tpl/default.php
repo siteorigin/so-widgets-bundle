@@ -17,7 +17,8 @@
 				<?php endif; ?>
 
 				<div class="sow-testimonial-user">
-					<?php if( $sow_user_image = $this->testimonial_user_image($testimonial, $design) ){ ?>
+					<?php $sow_user_image = $this->testimonial_user_image($testimonial, $design); ?>
+          <?php if( !empty( $sow_user_image ) ){ ?>
 					<div class="sow-image-wrapper">
 						<?php echo $sow_user_image ?>
 					</div>
@@ -28,9 +29,9 @@
 						<?php   if( empty( $testimonial['url'] ) ){ ?>
 						<?php echo esc_html( $testimonial['location'] ) ?>
 						<?php   }elseif( $testimonial['new_window'] ){ ?>
-						<a href="<?php echo $testimonial['url']; ?>" target="_blank"><?php echo esc_html( $testimonial['location'] ) ?></a>
+						<a href="<?php echo sow_esc_url( $testimonial['url'] ); ?>" target="_blank"><?php echo esc_html( $testimonial['location'] ) ?></a>
 						<?php   }else{ ?>
-						<a href="<?php echo $testimonial['url']; ?>"><?php echo esc_html( $testimonial['location'] ) ?></a>
+						<a href="<?php echo sow_esc_url( $testimonial['url'] ); ?>"><?php echo esc_html( $testimonial['location'] ) ?></a>
 						<?php   }
 						      } ?>
 					</div>
