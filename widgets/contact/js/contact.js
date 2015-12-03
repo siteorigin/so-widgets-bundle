@@ -3,11 +3,13 @@ var SiteOriginContactForm = {
 		var $contactForms = $('form.sow-contact-form');
 		$contactForms.each(function () {
 			var $el = $(this);
+			var $submitButton = $(this).find('.sow-submit-wrapper > input.sow-submit');
 			if (useRecaptcha) {
 				// Render recaptcha
 				var $recaptchaDiv = $el.find('.sow-recaptcha');
 				if ($recaptchaDiv.length) {
 					var config = $recaptchaDiv.data('config');
+					$submitButton.prop('disabled', true);
 					grecaptcha.render($recaptchaDiv.get(0),
 						{
 							'sitekey': config.sitekey,
@@ -16,15 +18,14 @@ var SiteOriginContactForm = {
 							'size': config.size,
 							'callback': function (response) {
 								// Enable the submit button once we have a response from recaptcha.
-								$(this).find('.sow-submit-wrapper > input.sow-submit').prop('disabled', false);
-							}.bind(this),
+								$submitButton.prop('disabled', false);
+							},
 						}
 					);
 				}
 			}
 
 			// Disable the submit button on click to avoid multiple submits.
-			var $submitButton = $el.find('.sow-submit-wrapper > input.sow-submit');
 			$submitButton.click(function () {
 				$submitButton.prop('disabled', true);
 				//Ensure the form still submits

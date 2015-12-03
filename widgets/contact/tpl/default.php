@@ -48,7 +48,7 @@ else {
 
 		<div class="sow-submit-wrapper <?php if( $instance['design']['submit']['styled'] ) echo 'sow-submit-styled' ?>">
 			<input type="submit" value="<?php echo esc_attr( $instance['settings']['submit_text'] ) ?>"
-				   class="sow-submit" <?php if( $use_recaptcha && !is_admin() ) echo 'disabled="true"'; ?>>
+				   class="sow-submit">
 		</div>
 	</form>
 	<?php

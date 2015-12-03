@@ -473,11 +473,15 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 * Initialize the contact form widget
 	 */
 	function initialize(){
-		wp_enqueue_script(
-			'sow-contact',
-			plugin_dir_url(__FILE__) . 'js/contact' . SOW_BUNDLE_JS_SUFFIX . '.js',
-			array( 'jquery' ),
-			SOW_BUNDLE_VERSION
+		$this->register_frontend_scripts(
+			array(
+				array(
+					'sow-contact',
+					plugin_dir_url(__FILE__) . 'js/contact' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					array( 'jquery' ),
+					SOW_BUNDLE_VERSION
+				)
+			)
 		);
 	}
 
