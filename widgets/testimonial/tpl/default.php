@@ -17,12 +17,22 @@
 				<?php endif; ?>
 
 				<div class="sow-testimonial-user">
+					<?php if( $sow_user_image = $this->testimonial_user_image($testimonial, $design) ){ ?>
 					<div class="sow-image-wrapper">
-						<?php echo $this->testimonial_user_image($testimonial, $design) ?>
+						<?php echo $sow_user_image ?>
 					</div>
+					<?php } ?>
 					<div class="sow-text">
 						<strong><?php echo esc_html( $testimonial['name'] ) ?></strong>
-						<a><?php echo esc_html( $testimonial['location'] ) ?></a>
+						<?php if( !empty( $testimonial['location'] ) ){ ?>
+						<?php   if( empty( $testimonial['url'] ) ){ ?>
+						<?php echo esc_html( $testimonial['location'] ) ?>
+						<?php   }elseif( $testimonial['new_window'] ){ ?>
+						<a href="<?php echo $testimonial['url']; ?>" target="_blank"><?php echo esc_html( $testimonial['location'] ) ?></a>
+						<?php   }else{ ?>
+						<a href="<?php echo $testimonial['url']; ?>"><?php echo esc_html( $testimonial['location'] ) ?></a>
+						<?php   }
+						      } ?>
 					</div>
 
 					<?php // $this->testimonial_pointer($design) ?>
