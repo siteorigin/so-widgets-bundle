@@ -40,6 +40,11 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 							'description' => __('The author of the testimonial', 'so-widgets-bundle'),
 						),
 
+						'link_name' => array(
+							'type' => 'checkbox',
+							'label' => __('Link name', 'so-widgets-bundle'),
+						),
+
 						'location' => array(
 							'type' => 'text',
 							'label' => __('Location', 'so-widgets-bundle'),
@@ -49,6 +54,11 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 						'image' => array(
 							'type' => 'media',
 							'label' => __('Image', 'so-widgets-bundle'),
+						),
+
+						'link_image' => array(
+							'type' => 'checkbox',
+							'label' => __('Link image', 'so-widgets-bundle'),
 						),
 
 						'text' => array(
@@ -132,12 +142,6 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 								)
 
 							)
-						),
-
-						'new_window' => array(
-							'type' => 'checkbox',
-							'label' => __('Open links in new window', 'so-widgets-bundle'),
-							'description' => __('Should testimonial URLs open in a new window.', 'so-widgets-bundle'),
 						),
 					)
 				),
