@@ -308,15 +308,17 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function testimonial_user_image( $testimonial, $design ){
-		if( !empty($testimonial['image']) && $design['image']['image_shape'] == 'square') {
-			return wp_get_attachment_image( $testimonial['image'], array( $design['image']['image_size'], $design['image']['image_size'] ), false, array(
-				'class' => 'sow-image-shape-' . $design['image']['image_shape'],
-			) );
-		}
-		else {
-			$src = wp_get_attachment_image_src( $testimonial['image'], array( $design['image']['image_size'], $design['image']['image_size'] ) );
-			return '<div class="sow-round-image-frame" style="background-image: url(' . esc_url( $src[0] ) . '); width:' . intval($design['image']['image_size']) . 'px; height:' . intval($design['image']['image_size']) . 'px"></div>';
+	function testimonial_user_image( $image_id, $design ){
+		if ( ! empty( $image_id ) ) {
+			if( $design['image']['image_shape'] == 'square') {
+				return wp_get_attachment_image( $image_id, array( $design['image']['image_size'], $design['image']['image_size'] ), false, array(
+					'class' => 'sow-image-shape-' . $design['image']['image_shape'],
+				) );
+			}
+			else {
+				$src = wp_get_attachment_image_src( $image_id, array( $design['image']['image_size'], $design['image']['image_size'] ) );
+				return '<div class="sow-round-image-frame" style="background-image: url(' . esc_url( $src[0] ) . '); width:' . intval($design['image']['image_size']) . 'px; height:' . intval($design['image']['image_size']) . 'px"></div>';
+			}
 		}
 	}
 

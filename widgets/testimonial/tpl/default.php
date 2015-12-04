@@ -12,6 +12,7 @@
 		$url = $testimonial['url'];
 		$new_window = $testimonial['new_window'];
 		$location = $testimonial['location'];
+		$image_id = $testimonial['image'];
 		$link_location = ! empty( $url );
 		$link_name = ! empty( $testimonial['link_name'] ) && ! empty( $url );
 		$link_image = ! empty( $testimonial['link_image'] ) && ! empty( $url );
@@ -25,15 +26,17 @@
 				<?php endif; ?>
 
 				<div class="sow-testimonial-user">
+					<?php if( ! empty( $image_id ) ) : ?>
 					<div class="sow-image-wrapper">
 						<?php if( $link_image ) : ?>
 						<a href="<?php echo sow_esc_url( $url ) ?>" <?php if( ! empty( $new_window ) ) { echo 'target="_blank"'; } ?>>
 						<?php endif; ?>
-						<?php echo $this->testimonial_user_image($testimonial, $design) ?>
+						<?php echo $this->testimonial_user_image( $image_id, $design ); ?>
 						<?php if( $link_image ) : ?>
 						</a>
 						<?php endif; ?>
 					</div>
+					<?php endif; ?>
 
 					<div class="sow-text">
 						<?php if( $link_name ) : ?>
