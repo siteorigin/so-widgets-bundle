@@ -17,8 +17,15 @@ if( $result['status'] == 'success' ) {
 else {
 	$recaptcha_config = $instance['spam']['recaptcha'];
 	$use_recaptcha = $recaptcha_config['use_captcha'] && ! empty( $recaptcha_config['site_key'] ) && ! empty( $recaptcha_config['secret_key'] );
-	if ( $use_recaptcha ) {
-		wp_enqueue_script('google-recaptcha', 'https://www.google.com/recaptcha/api.js');
+
+	$settings = null;
+	if( $use_recaptcha ) {
+		$settings = array(
+			'sitekey' => $recaptcha_config['site_key'],
+			'theme'   => $recaptcha_config['theme'],
+			'type'    => $recaptcha_config['type'],
+			'size'    => $recaptcha_config['size']
+		);
 	}
 	?>
 	<form action="<?php echo add_query_arg( false, false ) ?>#contact-form-<?php echo esc_attr( substr( $instance_hash, 0, 4 ) ) ?>" method="POST" class="sow-contact-form" id="contact-form-<?php echo esc_attr( substr( $instance_hash, 0, 4 ) ) ?>">
@@ -35,25 +42,13 @@ else {
 		<input type="hidden" name="instance_hash" value="<?php echo esc_attr($instance_hash) ?>" />
 
 		<?php if( $use_recaptcha ) : ?>
-			<div class="g-recaptcha" data-sitekey="<?php echo esc_attr( $instance['spam']['recaptcha']['site_key'] ) ?>" data-callback="soOnCaptchaSuccess"></div>
-			<?php if( !is_admin() ) : ?>
-			<script type="application/javascript">
-				jQuery(function ($) {
-					// Ensure we're getting the right submit input in case there are multiple widgets on a page.
-					var $input = $("<?php echo '.js-sow-submit-' . $instance['_sow_form_id'] ?>");
-					window.soOnCaptchaSuccess = function (response) {
-						if(response) {
-							$input.prop('disabled', false);
-						}
-					};
-				});
-			</script>
-			<?php endif; ?>
+			<div class="sow-recaptcha"
+				 data-config="<?php echo esc_attr( json_encode( $settings ) ) ?>"></div>
 		<?php endif; ?>
 
 		<div class="sow-submit-wrapper <?php if( $instance['design']['submit']['styled'] ) echo 'sow-submit-styled' ?>">
 			<input type="submit" value="<?php echo esc_attr( $instance['settings']['submit_text'] ) ?>"
-				   class="sow-submit <?php echo 'js-sow-submit-' . $instance['_sow_form_id'] ?>" <?php if( $use_recaptcha && !is_admin() ) echo 'disabled="true"'; ?>>
+				   class="sow-submit">
 		</div>
 	</form>
 	<?php

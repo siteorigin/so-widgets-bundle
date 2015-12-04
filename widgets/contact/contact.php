@@ -159,12 +159,39 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'type' => 'text',
 									'label' => __( 'ReCaptcha Secret Key', 'so-widgets-bundle' ),
 								),
+								'theme' => array(
+									'type' => 'select',
+									'label' => __( 'Theme', 'so-widgets-bundle' ),
+									'default' => 'light',
+									'options' => array(
+										'light' => __( 'Light', 'so-widgets-bundle' ),
+										'dark' => __( 'Dark', 'so-widgets-bundle' ),
+									),
+								),
+								'type' => array(
+									'type' => 'select',
+									'label' => __( 'Challenge type', 'so-widgets-bundle' ),
+									'default' => 'image',
+									'options' => array(
+										'image' => __( 'Image', 'so-widgets-bundle' ),
+										'audio' => __( 'Audio', 'so-widgets-bundle' ),
+									),
+								),
+								'size' => array(
+									'type' => 'select',
+									'label' => __( 'Size', 'so-widgets-bundle' ),
+									'default' => 'normal',
+									'options' => array(
+										'normal' => __( 'Normal', 'so-widgets-bundle' ),
+										'compact' => __( 'Compact', 'so-widgets-bundle' ),
+									),
+								),
 							)
 						),
 
 						'akismet' => array(
 							'type' => 'section',
-							'label' => __('akismet', 'so-widgets-bundle'),
+							'label' => __('Akismet', 'so-widgets-bundle'),
 							'fields' => array(
 								'use_akismet'=> array(
 									'type' => 'checkbox',
@@ -446,7 +473,16 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 * Initialize the contact form widget
 	 */
 	function initialize(){
-
+		$this->register_frontend_scripts(
+			array(
+				array(
+					'sow-contact',
+					plugin_dir_url(__FILE__) . 'js/contact' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					array( 'jquery' ),
+					SOW_BUNDLE_VERSION
+				)
+			)
+		);
 	}
 
 	function modify_instance( $instance ){
