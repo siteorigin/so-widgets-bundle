@@ -323,9 +323,15 @@ function siteorigin_widgets_get_measurements_list() {
 		'cm',
 		'mm',
 		'em',
-		'ex',
+		'rem',
 		'pt',
 		'pc',
+		'ex',
+		'ch',
+		'vw',
+		'vh',
+		'vmin',
+		'vmax',
 	);
 
 	// Allow themes and plugins to trim or enhance the list.
