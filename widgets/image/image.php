@@ -42,6 +42,17 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 					'label' => __('Title text', 'so-widgets-bundle'),
 				),
 
+				'title_position' => array(
+					'type' => 'select',
+					'label' => __('Title position', 'so-widgets-bundle'),
+					'default' => 'hidden',
+					'options' => array(
+						'hidden' => __( 'Hidden', 'so-widgets-bundle' ),
+						'above' => __( 'Above', 'so-widgets-bundle' ),
+						'below' => __( 'Below', 'so-widgets-bundle' ),
+					),
+				),
+
 				'alt' => array(
 					'type' => 'text',
 					'label' => __('Alt text', 'so-widgets-bundle'),
@@ -93,6 +104,22 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 	function get_template_name($instance) {
 		return 'base';
 	}
+
+	public function get_template_variables( $instance, $args ) {
+		return array(
+			'title' => $instance['title'],
+			'title_position' => $instance['title_position'],
+			'image' => $instance['image'],
+			'size' => $instance['size'],
+			'image_fallback' => ! empty( $instance['image_fallback'] ) ? $instance['image_fallback'] : false,
+			'alt' => $instance['alt'],
+			'bound' => $instance['bound'],
+			'full_width' => $instance['full_width'],
+			'url' => $instance['url'],
+			'new_window' => $instance['new_window'],
+		);
+	}
+
 
 	function get_style_name($instance) {
 		return false;
