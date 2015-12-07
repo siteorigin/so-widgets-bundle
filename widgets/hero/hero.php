@@ -123,29 +123,35 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 					'label' => __('Design and Layout', 'so-widgets-bundle'),
 					'fields' => array(
 
+						'height' => array(
+							'type' => 'measurement',
+							'label' => __( 'Height', 'so-widgets-bundle' ),
+							'default' => 'default',
+						),
+
 						'padding' => array(
-							'type' => 'number',
+							'type' => 'measurement',
 							'label' => __('Top and bottom padding', 'so-widgets-bundle'),
-							'default' => 50,
+							'default' => '50px',
 						),
 
 						'extra_top_padding' => array(
-							'type' => 'number',
+							'type' => 'measurement',
 							'label' => __('Extra top padding', 'so-widgets-bundle'),
 							'description' => __('Additional padding added to the top of the slider', 'so-widgets-bundle'),
-							'default' => 0,
+							'default' => '0px',
 						),
 
 						'padding_sides' => array(
-							'type' => 'number',
+							'type' => 'measurement',
 							'label' => __('Side padding', 'so-widgets-bundle'),
-							'default' => 20,
+							'default' => '20px',
 						),
 
 						'width' => array(
-							'type' => 'number',
+							'type' => 'measurement',
 							'label' => __('Maximum container width', 'so-widgets-bundle'),
-							'default' => 1280,
+							'default' => '1280px',
 						),
 
 						'heading_font' => array(
@@ -155,9 +161,9 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 						),
 
 						'heading_size' => array(
-							'type' => 'number',
+							'type' => 'measurement',
 							'label' => __('Heading size', 'so-widgets-bundle'),
-							'default' => 38,
+							'default' => '38px',
 						),
 
 						'heading_shadow' => array(
@@ -169,9 +175,9 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 						),
 
 						'text_size' => array(
-							'type' => 'number',
+							'type' => 'measurement',
 							'label' => __('Text size', 'so-widgets-bundle'),
-							'default' => 16,
+							'default' => '16px',
 						),
 
 					)
@@ -269,13 +275,14 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		$less['nav_size'] = $instance['controls']['nav_size'];
 
 		// Hero specific design
-		$less['slide_padding'] = intval( $instance['design']['padding'] ) . 'px';
-		$less['slide_padding_extra_top'] = intval( $instance['design']['extra_top_padding'] ) . 'px';
-		$less['slide_padding_sides'] = intval( $instance['design']['padding_sides'] ) . 'px';
+		$less['slide_padding'] =  $instance['design']['padding'];
+		$less['slide_padding_extra_top'] = $instance['design']['extra_top_padding'];
+		$less['slide_padding_sides'] = $instance['design']['padding_sides'];
+		$less['slide_width'] = $instance['design']['width'];
+		$less['slide_height'] = $instance['design']['height'];
 
-		$less['slide_width'] = intval( $instance['design']['width'] ) . 'px';
-		$less['heading_size'] = intval( $instance['design']['heading_size'] ) . 'px';
-		$less['text_size'] = intval( $instance['design']['text_size'] ) . 'px';
+		$less['heading_size'] = $instance['design']['heading_size'];
+		$less['text_size'] = $instance['design']['text_size'];
 		$less['heading_shadow'] = intval( $instance['design']['heading_shadow'] );
 
 		$font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
