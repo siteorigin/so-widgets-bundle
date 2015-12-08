@@ -38,7 +38,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'type' => 'text',
 							'label' => __('To email address', 'so-widgets-bundle'),
 							'description' => __('Where contact emails will be delivered to.', 'so-widgets-bundle'),
-							'sanitize' => 'email',
+							'sanitize' => 'multiple_emails',
 						),
 						'default_subject' => array(
 							'type' => 'text',
@@ -483,6 +483,15 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				)
 			)
 		);
+		add_filter( 'siteorigin_widgets_sanitize_field_multiple_emails', array( $this, 'sanitize_multiple_emails' ) );
+	}
+
+	function sanitize_multiple_emails( $value ) {
+		$values = explode( ',', $value );
+		foreach ( $values as $i => $email ) {
+			$values[$i] = sanitize_email( $email );
+		}
+		return implode(',', $values);
 	}
 
 	function modify_instance( $instance ){
