@@ -161,6 +161,12 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 		$this->register_frontend_scripts(
 			array(
 				array(
+					'dessandro-imagesLoaded',
+					siteorigin_widget_get_plugin_dir_url( 'sow-simple-masonry' ) . 'js/imagesLoaded.pkgd' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					array( 'jquery' ),
+					SOW_BUNDLE_VERSION
+				),
+				array(
 					'dessandro-packery',
 					siteorigin_widget_get_plugin_dir_url( 'sow-simple-masonry' ) . 'js/packery.pkgd' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' ),
@@ -169,7 +175,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 				array(
 					'sow-simple-masonry',
 					siteorigin_widget_get_plugin_dir_url( 'sow-simple-masonry' ) . 'js/simple-masonry' . SOW_BUNDLE_JS_SUFFIX . '.js',
-					array( 'jquery', 'dessandro-packery' ),
+					array( 'jquery', 'dessandro-imagesLoaded', 'dessandro-packery' ),
 					SOW_BUNDLE_VERSION . '1'
 				),
 			)

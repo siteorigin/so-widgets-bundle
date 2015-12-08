@@ -51,12 +51,13 @@ jQuery(function ($) {
                     $img.css('margin-top', marginTop+'px');
                 }
             });
-
-            $gridEl.packery({
-                itemSelector: '.sow-masonry-grid-item',
-                columnWidth: columnWidth,
-                gutter: layout.gutter
-            });
+			$gridEl.imagesLoaded( function() {
+				$gridEl.packery({
+					itemSelector: '.sow-masonry-grid-item',
+					columnWidth: columnWidth,
+					gutter: layout.gutter
+				});
+			});
         });
     };
 
