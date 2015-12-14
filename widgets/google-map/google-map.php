@@ -409,34 +409,36 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			);
 		} else {
 			$markers         = $instance['markers'];
-			$directions_json = '';
+			$directions = '';
 			if ( ! empty( $instance['directions']['origin'] ) && ! empty( $instance['directions']['destination'] ) ) {
 				if ( empty( $instance['directions']['waypoints'] ) ) {
 					unset( $instance['directions']['waypoints'] );
 				}
-				$directions_json = json_encode( siteorigin_widgets_underscores_to_camel_case( $instance['directions'] ) );
+				$directions = siteorigin_widgets_underscores_to_camel_case( $instance['directions'] );
 			}
+
+			$map_data = siteorigin_widgets_underscores_to_camel_case( array(
+				'address'           => $instance['map_center'],
+				'zoom'              => $settings['zoom'],
+				'scroll_zoom'       => $settings['scroll_zoom'],
+				'draggable'         => $settings['draggable'],
+				'disable_ui'        => $settings['disable_default_ui'],
+				'keep_centered'     => $settings['keep_centered'],
+				'marker_icon'       => ! empty( $mrkr_src ) ? $mrkr_src[0] : '',
+				'markers_draggable' => isset( $markers['markers_draggable'] ) ? $markers['markers_draggable'] : '',
+				'marker_at_center'  => !empty( $markers['marker_at_center'] ),
+				'marker_info_display' => $markers['info_display'],
+				'marker_positions'  => isset( $markers['marker_positions'] ) ? $markers['marker_positions'] : '',
+				'map_name'          => ! empty( $styles ) ? $styles['map_name'] : '',
+				'map_styles'        => ! empty( $styles ) ? $styles['styles'] : '',
+				'directions'        => $directions,
+				'api_key'           => $instance['api_key_section']['api_key']
+			));
 
 			return array(
 				'map_id'   => md5( $instance['map_center'] ),
 				'height'   => $settings['height'],
-				'map_data' => array(
-					'address'           => $instance['map_center'],
-					'zoom'              => $settings['zoom'],
-					'scroll-zoom'       => $settings['scroll_zoom'],
-					'draggable'         => $settings['draggable'],
-					'disable-ui'        => $settings['disable_default_ui'],
-					'keep-centered'     => $settings['keep_centered'],
-					'marker-icon'       => ! empty( $mrkr_src ) ? $mrkr_src[0] : '',
-					'markers-draggable' => isset( $markers['markers_draggable'] ) ? $markers['markers_draggable'] : '',
-					'marker-at-center'  => !empty( $markers['marker_at_center'] ),
-					'marker-info-display' => $markers['info_display'],
-					'marker-positions'  => isset( $markers['marker_positions'] ) ? json_encode( $markers['marker_positions'] ) : '',
-					'map-name'          => ! empty( $styles ) ? $styles['map_name'] : '',
-					'map-styles'        => ! empty( $styles ) ? json_encode( $styles['styles'] ) : '',
-					'directions'        => $directions_json,
-					'api-key'           => $instance['api_key_section']['api_key']
-				)
+				'map_data' => $map_data,
 			);
 		}
 	}

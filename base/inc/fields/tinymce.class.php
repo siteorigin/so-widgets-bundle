@@ -225,8 +225,8 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 
 	public function sanitize_instance( $instance ) {
 		$selected_editor_name = $this->get_selected_editor_field_name( $this->base_name );
-		$selected_editor = $instance[ $selected_editor_name ];
-		if( ! empty( $selected_editor ) ) {
+		if( ! empty( $instance[ $selected_editor_name ] ) ) {
+			$selected_editor = $instance[ $selected_editor_name ];
 			$instance[ $selected_editor_name ] = in_array( $selected_editor, array( 'tinymce', 'tmce', 'html' ) ) ? $selected_editor : $this->default_editor;
 		}
 		return $instance;
@@ -236,7 +236,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		$v_name = $base_name;
 		if( strpos($v_name, '][') !== false ) {
 			// Remove this splitter
-			$v_name = substr( $v_name, strpos($v_name, '][') + 2 );
+			$v_name = substr( $v_name, strrpos($v_name, '][') + 2 );
 		}
 		return $v_name . '_selected_editor';
 	}
