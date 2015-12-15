@@ -39,7 +39,6 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 	}
 
 	function unwpautop($string) {
-		$string = str_replace("\n", "", $string);
 		$string = str_replace("<p>", "", $string);
 		$string = str_replace(array("<br />", "<br>", "<br/>"), "\n", $string);
 		$string = str_replace("</p>", "\n\n", $string);
