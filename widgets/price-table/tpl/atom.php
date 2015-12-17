@@ -16,7 +16,7 @@
 
 			<?php if(!empty($column['image'])) : ?>
 				<div class="ow-pt-image">
-					<?php $this->column_image($column['image']) ?>
+					<?php $this->column_image($column) ?>
 				</div>
 			<?php endif; ?>
 

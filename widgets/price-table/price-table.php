@@ -52,6 +52,11 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 							'label' => __('Image', 'so-widgets-bundle'),
 						),
 
+						'image_alt' => array(
+							'type' => 'text',
+							'label' => __('Image alt text', 'so-widgets-bundle'),
+						),
+
 						'price' => array(
 							'type' => 'text',
 							'label' => __('Price', 'so-widgets-bundle'),
@@ -160,9 +165,9 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 		return implode(' ', $classes);
 	}
 
-	function column_image($image){
-		$src = wp_get_attachment_image_src($image, 'full');
-		?><img src="<?php echo $src[0] ?>" /> <?php
+	function column_image($column){
+		$src = wp_get_attachment_image_src($column['image'], 'full');
+		?><img src="<?php echo $src[0] ?>"<?php if( ! empty( $column['image_alt'] ) ) echo ' alt="' . $column['image_alt'] . '"' ?>/> <?php
 	}
 
 	function get_template_name($instance) {
