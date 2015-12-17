@@ -52,6 +52,11 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 							'label' => __('Image', 'so-widgets-bundle'),
 						),
 
+						'image_title' => array(
+							'type' => 'text',
+							'label' => __('Image title', 'so-widgets-bundle'),
+						),
+
 						'image_alt' => array(
 							'type' => 'text',
 							'label' => __('Image alt text', 'so-widgets-bundle'),
@@ -167,7 +172,14 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 
 	function column_image($column){
 		$src = wp_get_attachment_image_src($column['image'], 'full');
-		?><img src="<?php echo $src[0] ?>"<?php if( ! empty( $column['image_alt'] ) ) echo ' alt="' . $column['image_alt'] . '"' ?>/> <?php
+		$img_attrs = array();
+		if ( !empty( $column['image_title'] ) ) $img_attrs['title'] = $column['image_title'];
+		if ( !empty( $column['image_alt'] ) ) $img_attrs['alt'] = $column['image_alt'];
+		$attr_string = '';
+		foreach ( $img_attrs as $attr => $val ) {
+			$attr_string .= ' ' . $attr . '="' . esc_attr( $val ) . '"';
+		}
+		?><img src="<?php echo $src[0] ?>"<?php echo $attr_string ?>/> <?php
 	}
 
 	function get_template_name($instance) {
