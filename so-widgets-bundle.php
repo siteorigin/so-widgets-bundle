@@ -294,7 +294,7 @@ class SiteOrigin_Widgets_Bundle {
 	 */
 	function admin_ajax_manage_handler(){
 		if( !wp_verify_nonce($_GET['_wpnonce'], 'manage_so_widget') ) exit();
-		if( !current_user_can( apply_filters('siteorigin_widgets_admin_menu_capability', 'install_plugins') ) ) exit();
+		if( !current_user_can( apply_filters('siteorigin_widgets_admin_menu_capability', 'manage_options') ) ) exit();
 		if( empty($_POST['widget']) ) exit();
 
 		if( !empty($_POST['active']) ) $this->activate_widget($_POST['widget']);
