@@ -5,11 +5,11 @@ $result = $this->contact_form_action( $instance, $instance_hash );
 if( $instance['display_title'] ) {
 	echo $args['before_title'] . $instance['title'] . $args['after_title'];
 }
-
+$short_hash = substr( $instance_hash, 0, 4 );
 if( $result['status'] == 'success' ) {
 	// Display the success message
 	?>
-	<div class="sow-contact-form-success" id="contact-form-<?php echo esc_attr( $instance_hash ) ?>">
+	<div class="sow-contact-form-success" id="contact-form-<?php echo esc_attr( $short_hash ) ?>">
 		<?php echo wp_kses_post( wpautop( $instance['settings']['success_message'] ) ) ?>
 	</div>
 	<?php
@@ -28,7 +28,7 @@ else {
 		);
 	}
 	?>
-	<form action="<?php echo add_query_arg( false, false ) ?>#contact-form-<?php echo esc_attr( substr( $instance_hash, 0, 4 ) ) ?>" method="POST" class="sow-contact-form" id="contact-form-<?php echo esc_attr( substr( $instance_hash, 0, 4 ) ) ?>">
+	<form action="<?php echo add_query_arg( false, false ) ?>#contact-form-<?php echo esc_attr( $short_hash ) ?>" method="POST" class="sow-contact-form" id="contact-form-<?php echo esc_attr( $short_hash ) ?>">
 
 		<?php if( !empty($result['errors']['_general']) ) : ?>
 			<ul class="sow-error">
