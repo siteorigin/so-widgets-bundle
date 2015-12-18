@@ -6,8 +6,6 @@
  * @var $size
  * @var $image_fallback
  * @var $alt
- * @var $bound
- * @var $full_width
  * @var $url
  * @var $new_window
  */
@@ -39,24 +37,17 @@ if( !empty($src) ) {
  	}
 }
 
-$styles = array();
 $classes = array('so-widget-image');
 
 if(!empty($title)) $attr['title'] = $title;
 if(!empty($alt)) $attr['alt'] = $alt;
-if(!empty($bound)) {
-	$styles[] = 'max-width:100%';
-	$styles[] = 'height:auto';
-}
-if(!empty($full_width)) {
-	$styles[] = 'width:100%';
-}
-$styles[] = 'display:block';
-?>
 
+?>
+<div class="sow-image-container">
 <?php if(!empty($url)) : ?><a href="<?php echo sow_esc_url($url) ?>" <?php if($new_window) echo 'target="_blank"' ?>><?php endif; ?>
-	<img <?php foreach($attr as $n => $v) echo $n.'="' . esc_attr($v) . '" ' ?> class="<?php echo esc_attr( implode(' ', $classes) ) ?>" <?php if( !empty($styles) ) echo 'style="'.implode('; ', $styles).'"'; ?> />
+	<img <?php foreach($attr as $n => $v) echo $n.'="' . esc_attr($v) . '" ' ?> class="<?php echo esc_attr( implode(' ', $classes) ) ?>"/>
 <?php if(!empty($url)) : ?></a><?php endif; ?>
+</div>
 
 <?php if( $title_position == 'below' ) : ?>
 	<?php echo $args['before_title']; ?>

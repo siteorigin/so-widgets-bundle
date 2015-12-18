@@ -37,6 +37,18 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 					),
 				),
 
+				'align' => array(
+					'type' => 'select',
+					'label' => __('Image alignment', 'so-widgets-bundle'),
+					'default' => 'default',
+					'options' => array(
+						'default' => __('Default', 'so-widgets-bundle'),
+						'left' => __('Left', 'so-widgets-bundle'),
+						'right' => __('Right', 'so-widgets-bundle'),
+						'center' => __('Center', 'so-widgets-bundle'),
+					),
+				),
+
 				'title' => array(
 					'type' => 'text',
 					'label' => __('Title text', 'so-widgets-bundle'),
@@ -113,20 +125,23 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			'size' => $instance['size'],
 			'image_fallback' => ! empty( $instance['image_fallback'] ) ? $instance['image_fallback'] : false,
 			'alt' => $instance['alt'],
-			'bound' => $instance['bound'],
-			'full_width' => $instance['full_width'],
 			'url' => $instance['url'],
 			'new_window' => $instance['new_window'],
 		);
 	}
 
-
 	function get_style_name($instance) {
-		return false;
+		return 'sow-image';
 	}
 
 	function get_less_variables($instance){
-		return array();
+		return array(
+			'image_alignment' => $instance['align'],
+			'image_display' => $instance['align'] == 'default' ? 'block' : 'inline-block',
+			'image_max_width' => ! empty( $instance['bound'] ) ? '100%' : '',
+			'image_height' => ! empty( $instance['bound'] ) ? 'auto' : '',
+			'image_width' => ! empty( $instance['full_width'] ) ? '100%' : '',
+		);
 	}
 }
 
