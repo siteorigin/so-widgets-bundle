@@ -928,21 +928,32 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	function send_mail( $email_fields, $instance ){
-		$body = '<strong>From:</strong> ' . $email_fields['name'] . ' <' . sanitize_email( $email_fields['email'] ) . ">\n\n";
+		$body = '<strong>From:</strong> <a href="mailto:' . sanitize_email( $email_fields['email'] ) . '">' . esc_html( $email_fields['name'] ) . "</a>>\n\n";
 		foreach( $email_fields['message'] as $m ) {
 			$body .= '<strong>' . $m['label'] . ':</strong>';
 			$body .= "\n";
-			$body .= $m['value'];
+			$body .= htmlspecialchars( $m['value'] );
 			$body .= "\n\n";
 		}
 		$body = wpautop( trim($body) );
 
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
-			'From: ' . $email_fields['name'] . ' <' . sanitize_email( $email_fields['email'] ) . '>'
+			'From: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . sanitize_email( $email_fields['email'] ) . '>',
 		);
 
 		return wp_mail( $instance['settings']['to'], $email_fields['subject'], $body, $headers );
+	}
+
+	/**
+	 * Sanitize a value for an email header
+	 *
+	 * @param $value
+	 *
+	 * @return mixed
+	 */
+	static function sanitize_header( $value ){
+		return preg_replace('=((<CR>|<LF>|0x0A/%0A|0x0D/%0D|\\n|\\r)\S).*=i', null, $value);
 	}
 
 }
