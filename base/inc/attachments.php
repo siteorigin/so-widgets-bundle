@@ -51,6 +51,7 @@ function siteorigin_widgets_get_attachment_image( $attachment, $size, $fallback 
 		foreach( $atts as $id => $val ) {
 			$return .= $id . '="' . esc_attr($val) . '" ';
 		}
+		$return .= '>';
 		return $return;
 	}
 }
