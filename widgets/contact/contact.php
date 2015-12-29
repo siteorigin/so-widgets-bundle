@@ -946,7 +946,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	/**
-	 * Sanitize a value for an email header
+	 * Sanitize a value for an email header.
+	 *
+	 * From Pear Mail https://pear.php.net/package/Mail (BSD Style license - https://pear.php.net/copyright.php).
 	 *
 	 * @param $value
 	 *
