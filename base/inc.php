@@ -266,11 +266,10 @@ function sow_esc_url_raw( $url ) {
  * @return mixed|void
  */
 function siteorigin_widgets_fonts_google_webfonts( ) {
-	$fonts = include plugin_dir_path(__FILE__) . 'inc/fonts.php';
-	$fonts = apply_filters( '', $fonts );
-	return $fonts;
+	$fonts = include plugin_dir_path( __FILE__ ) . 'inc/fonts.php';
+	$fonts = apply_filters( 'siteorigin_widgets_google_webfonts', $fonts );
+	return !empty( $fonts ) ? $fonts : array();
 }
-add_filter('siteorigin_widgets_fonts_google_webfonts', 'siteorigin_widgets_fonts_google_webfonts_filter');
 
 function siteorigin_widgets_is_google_webfont( $font_value ) {
 	$google_webfonts = siteorigin_widgets_fonts_google_webfonts();
