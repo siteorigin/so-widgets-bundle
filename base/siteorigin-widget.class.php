@@ -626,7 +626,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$lc_functions = new SiteOrigin_Widgets_Less_Functions($this, $instance);
 		$lc_functions->registerFunctions($c);
 
-		$css = $c->compile( $less );
+		try {
+			$css = $c->compile( $less );
+		}
+		catch ( Exception $e ) {
+			$css = '';
+		}
 
 		// Remove any attributes with default as the value
 		$css = preg_replace('/[a-zA-Z\-]+ *: *default *;/', '', $css);
