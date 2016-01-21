@@ -50,6 +50,35 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.5.5 - January 21 2016 =
+* Changed widget folder names to make them less verbose.
+* Properly handle LESS compile errors.
+* Fixed regex causing only the first 10 TinyMCE fields to be initialized.
+* Fixed sanitization in the contact form.
+* Fixed Google webfont function.
+* Fixed image output for slider base.
+* Image Widget: Added alignment options.
+* Contact Form: Use anchor to return to form after submit
+* Change default caps to manage options.
+* Contact form widget: fixed - form in customizer doesn't resize.
+* Price Table: Added image alt tags.
+* Editor Widget: Fixed issue where only admins can view unfiltered content.
+* Editor Widget: Fixed issue where Editor Widget was removing new lines in code.
+* Post Selector Field: Support for date fields.
+* Maps Widget: Fixed Lat/Long coordinate handling.
+* Masonry widget: fixed layout and sizing.
+* Image Widget: Allow display of image title above or below image.
+* Added more relative measurement units to base.
+* Hero Image Widget: Added height setting.
+* Testimonial widget: Prevent outputting related image HTML if no image is set.
+* Testimonial Widget: Use testimonial URLs to link location and optionally link names and images.
+* Contact Form: Prevent multiple submit button clicks.
+* Image Widget: Add support for srcset to Image widget
+* Contact Form: Allow user to set field label position.
+* Contact Form: Allow user to set field label font styles.
+* Contact Form: Allow user setting focussed field outline styles.
+* Contact Form: Don't do recaptcha validation in admin preview.
+
 = 1.5.4 - November 18 2015 =
 * Fixed compatibility with PHP 5.2
 
