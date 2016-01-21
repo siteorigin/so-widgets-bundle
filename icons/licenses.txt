@@ -39,3 +39,11 @@ Font URI: http://typicons.com/
 License: SIL Open Font Licence
 License Info: https://github.com/stephenhutchings/typicons.font
 License URI: http://scripts.sil.org/cms/scripts/page.php?item_id=OFL_web
+
+== Ionicons ==
+
+Author: Ionic (Ben Sperry)
+Font URI: http://ionicons.com/
+License: MIT
+License Info: https://github.com/driftyco/ionicons
+License URI: http://opensource.org/licenses/MIT

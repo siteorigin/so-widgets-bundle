@@ -454,7 +454,7 @@
                 // Toggle display of the existing content
                 $$.find('.select-content-button, .button-close').click( function(e) {
                     e.preventDefault();
-                    
+
                     $(this).blur();
                     var $s = $$.find('.existing-content-selector');
                     $s.toggle();
@@ -742,9 +742,11 @@
                     });
             } );
 
-            $el.find('> .siteorigin-widget-field-repeater-top > .siteorigin-widget-field-repeater-expend').click( function(e){
+            $el.find('> .siteorigin-widget-field-repeater-top > .siteorigin-widget-field-repeater-expand').click( function(e){
                 e.preventDefault();
-                $el.closest('.siteorigin-widget-field-repeater').find('> .siteorigin-widget-field-repeater-items').slideToggle('fast');
+                $el.closest('.siteorigin-widget-field-repeater').find('> .siteorigin-widget-field-repeateritems-').slideToggle('fast', function() {
+					$(window).resize();
+				});
             } );
         } );
     };
@@ -834,6 +836,7 @@
                     }
                     e.preventDefault();
                     $(this).closest('.siteorigin-widget-field-repeater-item').find('.siteorigin-widget-field-repeater-item-form').eq(0).slideToggle('fast', function () {
+						$(window).resize();
                         if($(this).is(':visible')) {
                             $(this).trigger('slideToggleOpenComplete');
                         }

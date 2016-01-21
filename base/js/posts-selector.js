@@ -56,6 +56,7 @@ var soWidgetPostSelector = ( function ($, _) {
         posts_per_page: null,
         post__in: null,
         tax_query: null,
+        date_range: null,
 
         // The order fields for get_posts.
         orderby: null,
@@ -81,6 +82,7 @@ var soWidgetPostSelector = ( function ($, _) {
             if( typeof this.get('post_type') !== 'undefined' ) query.push('post_type=' + this.get('post_type'));
             if( typeof this.get('post__in') !== 'undefined' && !_.isEmpty( this.get('post__in') ) ) query.push( 'post__in=' + this.get('post__in').join(',') );
             if( typeof this.get('tax_query') !== 'undefined' && !_.isEmpty( this.get('tax_query') ) ) query.push( 'tax_query=' + this.get('tax_query').join(',') );
+            if( typeof this.get('date_query') !== 'undefined' && !_.isEmpty( this.get('date_query') ) ) query.push( 'date_query=' + JSON.stringify(this.get('date_query')) );
 
             if( typeof this.get('orderby') !== 'undefined' ) query.push( 'orderby=' + this.get('orderby') );
             if( typeof this.get('order') !== 'undefined' ) query.push( 'order=' + this.get('order') );
@@ -121,6 +123,7 @@ var soWidgetPostSelector = ( function ($, _) {
             if( params.hasOwnProperty('post_type') ) theQuery.post_type = params.post_type;
             if( params.hasOwnProperty('post__in') ) theQuery.post__in = params.post__in.split(',');
             if( params.hasOwnProperty('tax_query') ) theQuery.tax_query = params.tax_query.split(',');
+            if( params.hasOwnProperty('date_query') ) theQuery.date_query = JSON.parse(params.date_query);
 
             if( params.hasOwnProperty('orderby') ) theQuery.orderby = params.orderby;
             if( params.hasOwnProperty('order') ) theQuery.order = params.order;
@@ -329,6 +332,14 @@ var soWidgetPostSelector = ( function ($, _) {
             this.form.append('<div class="query-builder-form-field ui-front">' + sowPostsSelectorTpl.fields.tax_query + '</div>');
             if( typeof this.model.get('tax_query') !== 'undefined' ) this.form.find('input[name="tax_query"]').val( this.model.get('tax_query'));
 
+            // The date range fields
+            this.form.append('<div class="query-builder-form-field">' + sowPostsSelectorTpl.fields.date_query + '</div>');
+            if( typeof this.model.get('date_query') !== 'undefined' ) {
+				var dateQuery = this.model.get('date_query');
+				if( dateQuery.hasOwnProperty('after')) this.form.find('input[name="after"]').val(dateQuery.after);
+				if( dateQuery.hasOwnProperty('before')) this.form.find('input[name="before"]').val(dateQuery.before);
+			}
+
             // The order field
             this.form.append($('<div class="query-builder-form-field">' + sowPostsSelectorTpl.fields.orderby + '</div>').disableSelection());
             if( typeof this.model.get('orderby') !== 'undefined' ) this.form.find('select[name="orderby"]').val(this.model.get('orderby'));
@@ -452,7 +463,7 @@ var soWidgetPostSelector = ( function ($, _) {
             else {
                 this.model.set( 'tax_query', []);
             }
-
+			this.model.set( 'date_query', {after: this.$el.find('*[name="after"]').val(), before: this.$el.find('*[name="before"]').val()});
             this.model.set( 'orderby', this.$el.find('*[name="orderby"]').val() );
             this.model.set( 'order', this.$el.find('*[name="order"]').val() );
             this.model.set( 'posts_per_page', this.$el.find('*[name="posts_per_page"]').val() );

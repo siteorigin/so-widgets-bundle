@@ -65,6 +65,10 @@ function siteorigin_widget_post_selector_process_query($query){
 		}
 	}
 
+	if ( ! empty( $query['date_query'] ) ) {
+		$query['date_query'] = (array) json_decode( $query['date_query'] );
+	}
+
 	if ( ! empty( $query['sticky'] ) ) {
 		switch($query['sticky']){
 			case 'ignore' :
@@ -121,6 +125,15 @@ function siteorigin_widget_post_selector_form_fields(){
 	$return['tax_query'] .= '<label><span>' . __('Taxonomies', 'so-widgets-bundle') . '</span>';
 	$return['tax_query'] .= '<input type="text" name="tax_query" class="" placeholder="search" />';
 	$return['tax_query'] .= '</label>';
+
+	$return['date_query'] = '';
+	$return['date_query'] .= '<label><span>' . __('Date range', 'so-widgets-bundle') . '</span>';
+	$return['date_query'] .= __( 'From', 'so-widgets-bundle' );
+	$return['date_query'] .= '<input type="date" name="after" class="" />';
+	$return['date_query'] .= __( 'To', 'so-widgets-bundle' );
+	$return['date_query'] .= '<input type="date" name="before" class="" />';
+	$return['date_query'] .= '<small>' . __('In the format \'yyyy-mm-dd\'.', 'so-widgets-bundle') . '</small>';
+	$return['date_query'] .= '</label>';
 
 
 	// The order by field
