@@ -2,6 +2,7 @@
  * (c) SiteOrigin, freely distributable under the terms of the GPL 2.0 license.
  */
 
+var latlng_re = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
 var SiteOriginGoogleMap = function($) {
 	return {
 		showMap: function(element, location, options) {
@@ -61,47 +62,66 @@ var SiteOriginGoogleMap = function($) {
 		},
 		showMarkers: function(markerPositions, map, options) {
 			if ( markerPositions && markerPositions.length ) {
+				var delay_geocoder = false;
+				var _marker ={
+					map: map,
+					draggable: options.markersDraggable,
+					icon: options.markerIcon,
+					title: ''
+				};
 				var geocoder = new google.maps.Geocoder();
 				markerPositions.forEach(
 					function (mrkr) {
 						var geocodeMarker = function () {
-							geocoder.geocode({'address': mrkr.place}, function (res, status) {
-								if (status == google.maps.GeocoderStatus.OK) {
-
-									var marker = new google.maps.Marker({
-										position: res[0].geometry.location,
-										map: map,
-										draggable: options.markersDraggable,
-										icon: options.markerIcon,
-										title: ''
-									});
-
-									if (mrkr.hasOwnProperty('info') && mrkr.info) {
-										var infoWindowOptions = {content: mrkr.info};
-
-										if (mrkr.hasOwnProperty('info_max_width') && mrkr.info_max_width) {
-											infoWindowOptions.maxWidth = mrkr.info_max_width;
-										}
-
-										var infoDisplay = options.markerInfoDisplay;
-										infoWindowOptions.disableAutoPan = infoDisplay == 'always';
-										var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
-										if (infoDisplay == 'always') {
-											infoWindow.open(map, marker);
-										} else {
-											marker.addListener(infoDisplay, function () {
-												infoWindow.open(map, marker);
-											});
-										}
-									}
-								} else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
-									//try again please
-									setTimeout(geocodeMarker, Math.random() * 1000, mrkr);
+							// Decide whether we have latlng as pair of coordinates as "lat,lng"
+							// Or an address we have to Reverse Geocode
+							if(mrkr.place && mrkr.place.search(latlng_re) > -1) {
+								delay_geocoder = false;
+								var vals = mrkr.place.split(',');
+								// A latlng value should be of the format 'lat,lng'
+								latLng = new google.maps.LatLng(vals[0], vals[1]);
+								if(!(isNaN(latLng.lat()) || isNaN(latLng.lng()))) {
+									_marker.position = latLng;
+									var marker = new google.maps.Marker(_marker);
 								}
-							});
+							} else {
+								geocoder.geocode({'address': mrkr.place}, function (res, status) {								geocoder_delay = false;
+									delay_geocoder= true;
+									if (status == google.maps.GeocoderStatus.OK) {
+										_marker.position = res[0].geometry.location;
+										var marker = new google.maps.Marker(_marker);
+									} else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+										// try again please
+										setTimeout(geocodeMarker, Math.random() * 1000, mrkr);
+									}
+								});
+							}
+							// Beautify marker w user definied properties
+							if (mrkr.hasOwnProperty('info') && mrkr.info) {
+								var infoWindowOptions = {content: mrkr.info};
+
+								if (mrkr.hasOwnProperty('info_max_width') && mrkr.info_max_width) {
+									infoWindowOptions.maxWidth = mrkr.info_max_width;
+								}
+
+								var infoDisplay = options.markerInfoDisplay;
+								infoWindowOptions.disableAutoPan = infoDisplay == 'always';
+								var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
+								if (infoDisplay == 'always') {
+									infoWindow.open(map, marker);
+								} else {
+									marker.addListener(infoDisplay, function () {
+										infoWindow.open(map, marker);
+									});
+								}
+							}
 						};
 						//set random delays of 0 - 1 seconds when geocoding markers to try avoid hitting the query limit
-						setTimeout(geocodeMarker, Math.random() * 1000, mrkr);
+						if (delay_geocoder) {
+							setTimeout(geocodeMarker, Math.random() * 1000, mrkr);
+						} else {
+							geocodeMarker();
+						}
 					}
 				);
 			}
@@ -153,15 +173,13 @@ var SiteOriginGoogleMap = function($) {
 
 				//check if address is actually a valid latlng
 				var latLng;
-				if(address && address.indexOf(',') > -1) {
+				if(address && address.search(latlng_re) > -1) {
 					var vals = address.split(',');
 					// A latlng value should be of the format 'lat,lng'
-					if(vals && vals.length == 2) {
-						latLng = new google.maps.LatLng(vals[0], vals[1]);
-						// If we have a valid latlng
-						if(!(isNaN(latLng.lat()) || isNaN(latLng.lng()))) {
-							args = {'location': {lat:latLng.lat(), lng:latLng.lng()}};
-						}
+					latLng = new google.maps.LatLng(vals[0], vals[1]);
+					// If we have a valid latlng
+					if(!(isNaN(latLng.lat()) || isNaN(latLng.lng()))) {
+						args = {'location': {lat:latLng.lat(), lng:latLng.lng()}};
 					}
 				}
 
