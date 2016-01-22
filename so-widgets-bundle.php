@@ -126,11 +126,6 @@ class SiteOrigin_Widgets_Bundle {
 	function handle_update($old_version, $new_version) {
 		//Always check for new widgets.
 		$this->check_for_new_widgets();
-
-		//Only ever want to do this when upgrading from 1.5.4 or lower
-		if(version_compare( '1.5.4', $old_version, '>=' )){
-			$this->migrate_widget_names();
-		}
 	}
 
 	/**
@@ -234,10 +229,30 @@ class SiteOrigin_Widgets_Bundle {
 	 * @return mixed|void
 	 */
 	function get_active_widgets( $filter = true ){
-		$active_widgets = get_option( 'siteorigin_widgets_active', array() );
-		$active_widgets = wp_parse_args( $active_widgets, apply_filters('siteorigin_widgets_default_active', self::$default_active_widgets) );
+		// Basic caching of the current active widgets
+		$active_widgets = wp_cache_get( 'active_widgets', 'siteorigin_widgets' );
 
-		if( $filter ) $active_widgets = apply_filters( 'siteorigin_widgets_active_widgets',  $active_widgets);
+		if( empty($active_widgets) ) {
+			$active_widgets = get_option( 'siteorigin_widgets_active', array() );
+			$active_widgets = wp_parse_args( $active_widgets, apply_filters( 'siteorigin_widgets_default_active', self::$default_active_widgets ) );
+
+			// Migrate any old names
+			foreach ( $active_widgets as $widget_name => $is_active ) {
+				if ( substr( $widget_name, 0, 3 ) !== 'so-' ) {
+					continue;
+				}
+				if ( preg_match( '/so-([a-z\-]+)-widget/', $widget_name, $matches ) && ! isset( $active_widgets[ $matches[1] ] ) ) {
+					unset( $active_widgets[ $widget_name ] );
+					$active_widgets[ $matches[1] ] = $is_active;
+				}
+			}
+
+			if ( $filter ) {
+				$active_widgets = apply_filters( 'siteorigin_widgets_active_widgets', $active_widgets );
+			}
+
+			wp_cache_add( 'active_widgets', $active_widgets, 'siteorigin_widgets' );
+		}
 
 		return $active_widgets;
 	}
@@ -395,6 +410,7 @@ class SiteOrigin_Widgets_Bundle {
 		$active_widgets = $this->get_active_widgets();
 		$active_widgets[$widget_id] = true;
 		update_option( 'siteorigin_widgets_active', $active_widgets );
+		wp_cache_delete( 'active_widgets', 'siteorigin_widgets' );
 
 		// If we don't want to include the widget files, then our job here is done.
 		if( !$include ) return;
@@ -442,6 +458,7 @@ class SiteOrigin_Widgets_Bundle {
 		$active_widgets = $this->get_active_widgets();
 		$active_widgets[$id] = false;
 		update_option( 'siteorigin_widgets_active', $active_widgets );
+		wp_cache_delete( 'active_widgets', 'siteorigin_widgets' );
 	}
 
 	/**
@@ -582,19 +599,6 @@ class SiteOrigin_Widgets_Bundle {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Migrate widget names after changing from so-*-widget convention.
-	 */
-	function migrate_widget_names() {
-		$active_widgets = $this->get_active_widgets();
-		foreach ( $active_widgets as $widget_name => $is_active ) {
-			unset( $active_widgets[ $widget_name ] );
-			$new_name = preg_replace( '/so-([a-z\-]+)-widget/', '$1', $widget_name);
-			$active_widgets[ $new_name ] = $is_active;
-		}
-		update_option( 'siteorigin_widgets_active', $active_widgets );
 	}
 }
 
