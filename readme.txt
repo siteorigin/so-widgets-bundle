@@ -53,6 +53,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 = 1.5.6 - January 23 2016 =
 * Fixed widget name migration
 * Fixed hero image height issue.
+* Fixed admin page layout.
 
 = 1.5.5 - January 21 2016 =
 * Changed widget folder names to make them less verbose.
