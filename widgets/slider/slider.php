@@ -103,7 +103,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 		);
 
 		return array(
-			'color' => !empty( $frame['background_color'] ) ? $frame['background_color'] : '#a0a0a0',
+			'color' => !empty( $frame['background_color'] ) ? $frame['background_color'] : false,
 			'image' => !empty( $background_image ) ? $background_image[0] : false,
 			'opacity' => 1,
 			'image-sizing' => 'cover',
