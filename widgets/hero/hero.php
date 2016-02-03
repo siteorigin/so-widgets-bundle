@@ -275,14 +275,21 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		$less['nav_size'] = $instance['controls']['nav_size'];
 
 		// Hero specific design
-		$less['slide_padding'] =  $instance['design']['padding'];
-		$less['slide_padding_extra_top'] = $instance['design']['extra_top_padding'];
-		$less['slide_padding_sides'] = $instance['design']['padding_sides'];
-		$less['slide_width'] = $instance['design']['width'];
-		$less['slide_height'] = $instance['design']['height'];
+		//Measurement field type options
+		$meas_options = array();
+		$meas_options['slide_padding'] = $instance['design']['padding'];
+		$meas_options['slide_padding_extra_top'] = $instance['design']['extra_top_padding'];
+		$meas_options['slide_padding_sides'] = $instance['design']['padding_sides'];
+		$meas_options['slide_width'] = $instance['design']['width'];
+		$meas_options['slide_height'] = $instance['design']['height'];
 
-		$less['heading_size'] = $instance['design']['heading_size'];
-		$less['text_size'] = $instance['design']['text_size'];
+		$meas_options['heading_size'] = $instance['design']['heading_size'];
+		$meas_options['text_size'] = $instance['design']['text_size'];
+
+		foreach ( $meas_options as $key => $val ) {
+			$less[ $key ] = $this->add_default_measurement_unit( $val );
+		}
+
 		$less['heading_shadow'] = intval( $instance['design']['heading_shadow'] );
 
 		$font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
@@ -292,6 +299,15 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		}
 
 		return $less;
+	}
+
+	function add_default_measurement_unit($val) {
+		if (!empty($val)) {
+			if (!preg_match('/\d+([a-zA-Z%]+)/', $val)) {
+				$val .= 'px';
+			}
+		}
+		return $val;
 	}
 
 	/**

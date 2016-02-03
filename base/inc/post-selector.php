@@ -66,7 +66,7 @@ function siteorigin_widget_post_selector_process_query($query){
 	}
 
 	if ( ! empty( $query['date_query'] ) ) {
-		$query['date_query'] = (array) json_decode( $query['date_query'] );
+		$query['date_query'] = json_decode( $query['date_query'], true );
 	}
 
 	if ( ! empty( $query['sticky'] ) ) {
