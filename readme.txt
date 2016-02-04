@@ -50,6 +50,9 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.5.7 - February 4 2016 =
+* Restored old class name for Image Grid Widget.
+
 = 1.5.6 - January 23 2016 =
 * Fixed widget name migration
 * Fixed hero image height issue.
