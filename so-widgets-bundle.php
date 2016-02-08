@@ -583,6 +583,7 @@ class SiteOrigin_Widgets_Bundle {
 	function enqueue_active_widgets_scripts() {
 		global $wp_registered_widgets;
 		$sidebars_widgets = wp_get_sidebars_widgets();
+		if( empty($sidebars_widgets) ) return;
 		foreach( $sidebars_widgets as $sidebar => $widgets ) {
 			if ( ! empty( $widgets ) && $sidebar !== "wp_inactive_widgets") {
 				foreach ( $widgets as $i => $id ) {
