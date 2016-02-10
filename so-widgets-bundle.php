@@ -98,7 +98,10 @@ class SiteOrigin_Widgets_Bundle {
 
 		$active_version = get_option( 'siteorigin_widget_bundle_version' );
 
-		if( empty($active_version) || version_compare( $active_version, SOW_BUNDLE_VERSION, '<' ) ) {
+		$is_new = empty($active_version) || version_compare( $active_version, SOW_BUNDLE_VERSION, '<' );
+		$is_new = apply_filters( 'siteorigin_widgets_is_new_version', $is_new );
+
+		if( $is_new ) {
 			// If this is a new version, then clear the cache.
 			update_option( 'siteorigin_widget_bundle_version', SOW_BUNDLE_VERSION );
 
