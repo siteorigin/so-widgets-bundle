@@ -110,6 +110,7 @@ class SiteOrigin_Widgets_Bundle {
 			update_option( 'siteorigin_widget_bundle_version', SOW_BUNDLE_VERSION );
 			// If this is a new version, then trigger an action to let widgets handle the updates.
 			do_action( 'siteorigin_widgets_version_update', SOW_BUNDLE_VERSION, $active_version );
+			$this->clear_widget_cache();
 		}
 
 	}
