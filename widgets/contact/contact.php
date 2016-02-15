@@ -830,7 +830,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		if( empty($errors) ) {
 			// We can send the email
-			if( !$this->send_mail( $email_fields, $instance ) ) {
+			$success = $this->send_mail( $email_fields, $instance );
+
+			if( is_wp_error( $success ) ) {
+				$errors['_general']['send'] = $success->get_error_message();
+			}
+			else if( !$success ) {
 				$errors['_general']['send'] = __('Error sending email, please try again later.', 'so-widgets-bundle');
 			}
 		}
@@ -942,7 +947,35 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'From: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . sanitize_email( $email_fields['email'] ) . '>',
 		);
 
-		return wp_mail( $instance['settings']['to'], $email_fields['subject'], $body, $headers );
+
+		// Check if this is a duplicated send
+		$hash = md5( json_encode( array(
+			'body' => $body,
+			'headers' => $headers
+		) ) );
+		$hash_check = get_option( 'so_contact_hashes', array() );
+		// Remove expired hashes
+		foreach( $hash_check as $hash => $time ) {
+			if( $time < time() - 5 * 60 ) {
+				unset( $hash_check[$hash] );
+			}
+		}
+
+		if( isset( $hash_check[$hash] ) ) {
+			// Store the version with the expired hashes removed
+			update_option( 'so_contact_hashes', $hash_check, true );
+
+			// This is a duplicate message
+			return new WP_Error( 1, __('Message already sent', 'so-widgets-bundle') );
+		}
+
+		$mail_success = wp_mail( $instance['settings']['to'], $email_fields['subject'], $body, $headers );
+		if( $mail_success ) {
+			$hash_check[$hash] = time();
+			update_option( 'so_contact_hashes', $hash_check, true );
+		}
+
+		return $mail_success;
 	}
 
 	/**
