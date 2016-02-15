@@ -65,7 +65,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 		if( $instance['autop'] ) {
 			$instance['text'] = wpautop( $instance['text'] );
 		}
-		$instance['text'] = do_shortcode( $instance['text'] );
+		$instance['text'] = do_shortcode( shortcode_unautop( $instance['text'] ) );
 
 		return array(
 			'text' => $instance['text'],
