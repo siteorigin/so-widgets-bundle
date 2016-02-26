@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 3.9
-Tested up to: 4.3
+Tested up to: 4.4.2
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
@@ -50,6 +50,9 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.5.7 - February 4 2016 =
+* Restored old class name for Image Grid Widget.
 
 = 1.5.6 - January 23 2016 =
 * Fixed widget name migration
