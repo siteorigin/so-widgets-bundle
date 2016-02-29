@@ -196,7 +196,7 @@
 
                         // Tell the modal to show only images.
                         library: {
-                            type: $$.data('library').split(',').map(function(v){ return v.trim() })
+                            type: $$.data('library').split(',').map(function(v){ return v.trim(); })
                         },
 
                         // Customize the submit button.
