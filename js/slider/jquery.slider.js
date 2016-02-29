@@ -76,11 +76,18 @@ jQuery( function($){
         $slides.each(function( index, el) {
             var $slide = $(el);
             var urlData = $slide.data('url');
+
             $slide.click(function(event) {
-                if( event.target == $slide || $(event.target).is('.sow-slider-image-wrapper')) {
-                    window.open(urlData.url, urlData.new_window ? '_blank' : '_self');
+
+                if( urlData !== undefined ) {
+                    var $t = $(event.target);
+                    // If this isn't a link, we'll use the URL of the frame
+                    if( $t.prop("tagName") !== 'A' ) {
+                        event.preventDefault();
+                        window.open(urlData.url, urlData.new_window ? '_blank' : '_self');
+                    }
                 }
-            })
+            } );
         });
 
         var setupSlider = function(){
@@ -92,7 +99,7 @@ jQuery( function($){
                 var $i = $(this);
 
                 $(window)
-                    .resize(function(){
+                    .on('resize panelsStretchRows', function(){
                         $i.css( 'height', $i.find('.sow-slider-image-wrapper').outerHeight() );
                     })
                     .resize();

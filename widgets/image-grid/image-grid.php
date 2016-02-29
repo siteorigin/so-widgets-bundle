@@ -107,10 +107,11 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	 */
 	function modify_form( $form ){
 		$intermediate = get_intermediate_image_sizes();
-		foreach( $intermediate as $id => $name ) {
-			$intermediate[$id] = ucwords(str_replace('-', ' ', $name));
+		$sizes = array();
+		foreach( $intermediate as $name ) {
+			$sizes[$name] = ucwords(preg_replace('/[-_]/', ' ', $name));
 		}
-		$sizes = array_merge( array( 'full' => __('Full', 'so-widgets-bundle') ), $intermediate );
+		$sizes = array_merge( array( 'full' => __('Full', 'so-widgets-bundle') ), $sizes );
 		$form['display']['fields']['attachment_size']['options'] = $sizes;
 		return $form;
 	}

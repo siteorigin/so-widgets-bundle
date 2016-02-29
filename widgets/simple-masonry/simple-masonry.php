@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Simple Masonry Layout
-Description: A masonry layout for images or posts.
+Description: A masonry layout for images. Images can link to your posts.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 */

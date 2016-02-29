@@ -228,11 +228,22 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			$background_style[] = 'cursor: pointer;';
 		}
 
+		$wrapper_attributes = array(
+			'class' => 'sow-slider-image'
+		);
+
+		if( !empty($background['image']) && !empty($background['image-sizing']) ) {
+			$wrapper_attributes['class'] .= ' ' . 'sow-slider-image-' . $background['image-sizing'];
+		}
+		if( !empty( $background['url'] ) ) {
+			$wrapper_attributes['data-url'] = json_encode(array( 'url' => sow_esc_url($background['url']), 'new_window' => !empty( $background['new_window'] ) ) );
+		}
+		if( !empty($background_style) ) {
+			$wrapper_attributes['style'] = implode(';', $background_style);
+		}
+
 		?>
-		<li
-			class="sow-slider-image <?php if( !empty($background['image']) && !empty($background['image-sizing']) ) echo 'sow-slider-image-' . $background['image-sizing'] ?>"
-			<?php if( !empty( $background['url'] ) ) echo 'data-url=\'' . json_encode(array( 'url' => sow_esc_url($background['url']), 'new_window' => !empty( $background['new_window'] ) ) ) . '\'' ; ?>
-			<?php if( !empty($background_style) ) echo 'style="' . implode(';', $background_style) . '"' ?>>
+		<li <?php foreach( $wrapper_attributes as $attr => $val ) echo $attr . '="' . esc_attr( $val ) . '" '; ?> >
 			<?php
 			$this->render_frame_contents( $i, $frame );
 			if( !empty( $background['videos'] ) ) {
