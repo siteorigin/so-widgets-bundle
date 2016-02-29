@@ -6,7 +6,7 @@ Author: SiteOrigin
 Author URI: https://siteorigin.com
 */
 
-class SiteOrigin_Widget_ImageGrid_Widget extends SiteOrigin_Widget {
+class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 
 	function __construct(){
 
