@@ -62,6 +62,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Masonry widget: properly handles full width rows in Page Builder.
 * Hero Image widget: Fix backgrounds URL.
 * Price Table widget: Skip empty buttons.
+* Maps Widget: Allow clicking markers to reopen info windows if closed.
 
 = 1.5.7 - February 4 2016 =
 * Restored old class name for Image Grid Widget.
