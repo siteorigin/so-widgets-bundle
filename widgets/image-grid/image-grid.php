@@ -133,4 +133,4 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register( 'sow-image-grid', __FILE__, 'SiteOrigin_Widget_ImageGrid_Widget' );
+siteorigin_widget_register( 'sow-image-grid', __FILE__, 'SiteOrigin_Widgets_ImageGrid_Widget' );
