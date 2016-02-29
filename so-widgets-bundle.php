@@ -49,7 +49,7 @@ class SiteOrigin_Widgets_Bundle {
 		add_action( 'after_setup_theme', array($this, 'get_widget_folders'), 11 );
 		add_action( 'after_setup_theme', array($this, 'load_widget_plugins'), 11 );
 
-		// Add the action links.
+		// Add the plugin_action_links links.
 		add_action( 'plugin_action_links_' . plugin_basename(__FILE__), array($this, 'plugin_action_links') );
 
 		add_action( 'admin_init', array($this, 'plugin_version_check') );
