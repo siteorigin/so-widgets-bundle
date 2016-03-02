@@ -355,7 +355,7 @@ var soWidgetPostSelector = ( function ($, _) {
 
             // The additional query arguments field
             this.form.append('<div class="query-builder-form-field">' + sowPostsSelectorTpl.fields.additional + '</div>');
-            if( typeof this.model.get('additional') !== 'undefined' ) this.form.find('input[name="additional"]').val( this.model.get('additional'));
+            if( typeof this.model.get('additional') !== 'undefined' ) this.form.find('input[name="additional"]').val( this.model.get('additional').split(',').join('&'));
 
 
             var orderField =  this.form.find('input[name="order"]');
@@ -468,7 +468,7 @@ var soWidgetPostSelector = ( function ($, _) {
             this.model.set( 'order', this.$el.find('*[name="order"]').val() );
             this.model.set( 'posts_per_page', this.$el.find('*[name="posts_per_page"]').val() );
             this.model.set( 'sticky', this.$el.find('*[name="sticky"]').val() );
-            this.model.set( 'additional', this.$el.find('*[name="additional"]').val() );
+            this.model.set( 'additional', this.$el.find('*[name="additional"]').val().split('&').join(',') );
 
             this.model.set( 'query', this.model.getQuery() );
 

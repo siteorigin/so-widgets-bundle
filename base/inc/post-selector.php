@@ -91,7 +91,8 @@ function siteorigin_widget_post_selector_process_query($query){
 	}
 
 	if ( ! empty( $query['additional'] ) ) {
-		$query = wp_parse_args( $query['additional'], $query );
+		$additional = implode( '&', explode( ',', $query['additional'] ) );
+		$query = wp_parse_args( $additional, $query );
 		unset( $query['additional'] );
 	}
 
