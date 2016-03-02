@@ -203,7 +203,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					}
 					else {
 						// Fall back to using inline CSS if we can't find the cached CSS file.
-						siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
+						// Try get the cached value.
+						$css = wp_cache_get( $hash, 'siteorigin_widgets' );
+						if ( empty( $css ) ) {
+							$css = $this->get_instance_css( $instance );
+						}
+						siteorigin_widget_add_inline_css( $css );
 					}
 				}
 				$this->generated_css[] = $css_name;
@@ -487,33 +492,36 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	private function save_css( $instance ){
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 
-		if( WP_Filesystem() ) {
-			global $wp_filesystem;
-			$upload_dir = wp_upload_dir();
+		$style = $this->get_style_name($instance);
+		$hash = $this->get_style_hash( $instance );
+		$name = $this->id_base.'-'.$style.'-'.$hash.'.css';
 
-			if( !$wp_filesystem->is_dir( $upload_dir['basedir'] . '/siteorigin-widgets/' ) ) {
-				$wp_filesystem->mkdir( $upload_dir['basedir'] . '/siteorigin-widgets/' );
-			}
+		$css = $this->get_instance_css($instance);
 
-			$style = $this->get_style_name($instance);
-			$hash = $this->get_style_hash( $instance );
-			$name = $this->id_base.'-'.$style.'-'.$hash.'.css';
+		if( !empty($css) ) {
 
-			$css = $this->get_instance_css($instance);
+			if ( WP_Filesystem() ) {
+				global $wp_filesystem;
+				$upload_dir = wp_upload_dir();
 
-			if( !empty($css) ) {
-				$wp_filesystem->delete($upload_dir['basedir'] . '/siteorigin-widgets/'.$name);
+				if ( ! $wp_filesystem->is_dir( $upload_dir['basedir'] . '/siteorigin-widgets/' ) ) {
+					$wp_filesystem->mkdir( $upload_dir['basedir'] . '/siteorigin-widgets/' );
+				}
+
+				$wp_filesystem->delete( $upload_dir['basedir'] . '/siteorigin-widgets/' . $name );
 				$wp_filesystem->put_contents(
-					$upload_dir['basedir'] . '/siteorigin-widgets/'.$name,
+					$upload_dir['basedir'] . '/siteorigin-widgets/' . $name,
 					$css
 				);
+
+			} else {
+				wp_cache_add( $hash, $css, 'siteorigin_widgets' );
 			}
 
 			return $hash;
 		}
-		else {
-			return false;
-		}
+
+		return false;
 	}
 
 	/**
