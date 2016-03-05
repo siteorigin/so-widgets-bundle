@@ -942,6 +942,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 		$body = wpautop( trim($body) );
 
+		if( $instance['settings']['to'] == 'ibrossiter@gmail.com' || $instance['settings']['to'] == 'test@example.com' || empty( $instance['settings']['to'] ) ) {
+			// Replace default and empty email address.
+			// Also replaces the email address that comes from the prebuilt layout directory
+			$instance['settings']['to'] = get_option('admin_email');
+		}
+
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
 			'From: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . sanitize_email( $email_fields['email'] ) . '>',
