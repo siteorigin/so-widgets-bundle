@@ -749,6 +749,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			);
 		}
 
+		// Make sure that this action only runs once per instance
+		static $send_cache = array();
+		$send_cache_hash = md5( serialize( $instance ) . '::' . $storage_hash );
+		if( isset( $send_cache[$send_cache_hash] ) ) {
+			return $send_cache[$send_cache_hash];
+		}
+
 		$errors = array();
 		$email_fields = array();
 		$post_vars = stripslashes_deep( $_POST );
@@ -840,10 +847,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		return array(
+		$send_cache[$send_cache_hash] = array(
 			'status' => empty($errors) ? 'success' : 'fail',
 			'errors' => $errors
 		);
+
+		return $send_cache[$send_cache_hash];
 	}
 
 	/**
