@@ -51,6 +51,10 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.5.9 - February 26 2016 =
+* Contact Form: Fixed hash checking for duplicate emails.
+* Contact Form: Replace default emails with admin_email.
+
 = 1.5.8 - February 26 2016 =
 * Skip empty sidebars when loading widget scripts.
 * Changes to cache clearing.
