@@ -204,7 +204,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					else {
 						// Fall back to using inline CSS if we can't find the cached CSS file.
 						// Try get the cached value.
-						$css = wp_cache_get( $hash, 'siteorigin_widgets' );
+						$css = wp_cache_get( $css_name, 'siteorigin_widgets' );
 						if ( empty( $css ) ) {
 							$css = $this->get_instance_css( $instance );
 						}
@@ -515,7 +515,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				);
 
 			} else {
-				wp_cache_add( $hash, $css, 'siteorigin_widgets' );
+				wp_cache_add( $name, $css, 'siteorigin_widgets' );
 			}
 
 			return $hash;
