@@ -182,7 +182,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$css_name = $this->id_base.'-'.$style.'-'.$hash;
 
 			//Ensure styles aren't generated and enqueued more than once.
-			$in_preview = is_preview() || $this->is_customize_preview();
+			$in_preview = is_preview() || $this->is_customize_preview() || !empty( $_GET['siteorigin_panels_live_editor'] );
 			if ( ! in_array( $css_name, $this->generated_css ) || $in_preview ) {
 				if( ( isset( $instance['is_preview'] ) && $instance['is_preview'] ) || $in_preview ) {
 					siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
