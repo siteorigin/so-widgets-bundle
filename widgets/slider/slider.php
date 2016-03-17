@@ -106,9 +106,11 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			'color' => !empty( $frame['background_color'] ) ? $frame['background_color'] : false,
 			'image' => !empty( $background_image ) ? $background_image[0] : false,
 			'opacity' => 1,
-			'image-sizing' => 'cover',
+			'image-sizing' => $frame['background_image_type'],
 			'videos' => $frame['background_videos'],
 			'video-sizing' => empty($frame['foreground_image']) ? 'full' : 'background',
+			'url' => ! empty( $frame['url'] ) ? $frame['url'] : false,
+			'new_window' => ! empty( $frame['new_window'] ) ? $frame['new_window'] : false,
 		);
 	}
 
