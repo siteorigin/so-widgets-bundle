@@ -160,6 +160,12 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 							'default' => '',
 						),
 
+						'heading_color' => array(
+							'type' => 'color',
+							'label' => __('Heading color', 'so-widgets-bundle'),
+							'default' => '#FFFFFF',
+						),
+
 						'heading_size' => array(
 							'type' => 'measurement',
 							'label' => __('Heading size', 'so-widgets-bundle'),
@@ -178,6 +184,12 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 							'type' => 'measurement',
 							'label' => __('Text size', 'so-widgets-bundle'),
 							'default' => '16px',
+						),
+
+						'text_color' => array(
+							'type' => 'color',
+							'label' => __('Text color', 'so-widgets-bundle'),
+							'default' => '#F6F6F6',
 						),
 
 					)
@@ -291,6 +303,9 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		}
 
 		$less['heading_shadow'] = intval( $instance['design']['heading_shadow'] );
+
+		$less['heading_color'] = $instance['design']['heading_color'];
+		$less['text_color'] = $instance['design']['text_color'];
 
 		$font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
 		$less['heading_font'] = $font['family'];
