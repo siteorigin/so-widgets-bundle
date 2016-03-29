@@ -8,11 +8,6 @@ Author URI: https://siteorigin.com
 
 class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 	function __construct() {
-		$image_size_configs = $this->get_image_sizes();
-		$sizes = array();
-		foreach( $image_size_configs as $name => $size_config) {
-			$sizes[$name] = ucwords(preg_replace('/[-_]/', ' ', $name)) . ' (' . $size_config['width'] . 'x' . $size_config['height'] . ')';
-		}
 		parent::__construct(
 			'sow-features',
 			__( 'SiteOrigin Features', 'so-widgets-bundle' ),
@@ -64,7 +59,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 						'icon_image_size' => array(
 							'type' => 'select',
 							'label' => __('Icon image size', 'so-widgets-bundle'),
-							'options' => $sizes,
+							'options' => array(), // Set in modify_form() below.
 						),
 
 						// The text under the icon
@@ -165,8 +160,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					'type' => 'select',
 					'label' => __('Container shape', 'so-widgets-bundle'),
 					'default' => 'round',
-					'options' => array(
-					),
+					'options' => array(),// Set in modify_form() below.
 				),
 
 				'container_size' => array(
@@ -303,12 +297,20 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_template_name($instance){
+	function get_template_name($instance) {
 		return 'base';
 	}
 
-	function modify_form( $form ){
+	function modify_form( $form ) {
 		$form['container_shape']['options'] = include dirname( __FILE__ ) . '/inc/containers.php';
+
+		$image_size_configs = $this->get_image_sizes();
+		$sizes = array();
+		foreach( $image_size_configs as $name => $size_config) {
+			$sizes[$name] = ucwords(preg_replace('/[-_]/', ' ', $name)) . ' (' . $size_config['width'] . 'x' . $size_config['height'] . ')';
+		}
+		$form['features']['fields']['icon_image_size']['options'] = $sizes;
+
 		return $form;
 	}
 }
