@@ -1,5 +1,7 @@
 @import "../../../base/less/mixins";
 
+@button_width: '';
+@has_button_width: false;
 @button_color: #41a9d5;
 @border_color: darken(@button_color, 5%);
 @text_color: #FFFFFF;
@@ -11,6 +13,14 @@
 
 .ow-button-base {
 	.clearfix();
+
+	.ow-button-layout-wrapper {
+		display: inline-block;
+		.btn_width() when( @has_button_width = true) {
+			width: @button_width;
+		}
+		.btn_width();
+	}
 
 	a {
 		font-size: @font_size;

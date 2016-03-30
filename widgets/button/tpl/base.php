@@ -14,7 +14,9 @@ if( !empty($instance['design']['hover']) ) $classes[] = 'ow-button-hover';
 	if(!empty($instance['attributes']['title'])) $button_attributes['title'] = esc_attr($instance['attributes']['title']);
 	if(!empty($instance['attributes']['onclick'])) $button_attributes['onclick'] = esc_attr($instance['attributes']['onclick']);
 	?>
-
+	<?php if( !empty( $instance['design']['width'] ) ) { ?>
+	<div class="ow-button-layout-wrapper">
+	<?php } ?>
 	<a <?php foreach($button_attributes as $name => $val) echo $name . '="' . $val . '" ' ?>>
 		<span>
 			<?php
@@ -35,4 +37,7 @@ if( !empty($instance['design']['hover']) ) $classes[] = 'ow-button-hover';
 			<?php echo wp_kses_post($instance['text']) ?>
 		</span>
 	</a>
+	<?php if( !empty( $instance['design']['width'] ) ) { ?>
+	</div>
+	<?php } ?>
 </div>

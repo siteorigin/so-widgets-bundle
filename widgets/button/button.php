@@ -63,6 +63,13 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 					'label' => __('Design and layout', 'so-widgets-bundle'),
 					'hide' => true,
 					'fields' => array(
+
+						'width' => array(
+							'type' => 'measurement',
+							'label' => __( 'Width', 'so-widgets-bundle' ),
+							'description' => __( 'Leave blank to let the button resize according to content.', 'so-widgets-bundle' )
+						),
+
 						'align' => array(
 							'type' => 'select',
 							'label' => __('Align', 'so-widgets-bundle'),
@@ -202,8 +209,9 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	 */
 	function get_less_variables($instance){
 		if( empty( $instance ) || empty( $instance['design'] ) ) return array();
-
 		return array(
+			'button_width' => $instance['design']['width'],
+			'has_button_width' => empty( $instance['design']['width'] ) ? 'false' : 'true',
 			'button_color' => $instance['design']['button_color'],
 			'text_color' => $instance['design']['text_color'],
 
