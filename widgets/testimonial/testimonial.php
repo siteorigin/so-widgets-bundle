@@ -19,226 +19,8 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 			array(
 
 			),
-			array(
-				'title' => array(
-					'type' => 'text',
-					'label' => __('Title', 'so-widgets-bundle'),
-				),
-				'testimonials' => array(
-					'type' => 'repeater',
-					'label' => __( 'Testimonials', 'so-widgets-bundle' ),
-					'item_name'  => __( 'Testimonial', 'so-widgets-bundle' ),
-					'item_label' => array(
-						'selector'     => "[id*='testimonials-name']",
-						'update_event' => 'change',
-						'value_method' => 'val'
-					),
-					'fields' => array(
-						'name' => array(
-							'type' => 'text',
-							'label' => __('Name', 'so-widgets-bundle'),
-							'description' => __('The author of the testimonial', 'so-widgets-bundle'),
-						),
-
-						'link_name' => array(
-							'type' => 'checkbox',
-							'label' => __('Link name', 'so-widgets-bundle'),
-						),
-
-						'location' => array(
-							'type' => 'text',
-							'label' => __('Location', 'so-widgets-bundle'),
-							'description' => __('Their location or company name', 'so-widgets-bundle'),
-						),
-
-						'image' => array(
-							'type' => 'media',
-							'label' => __('Image', 'so-widgets-bundle'),
-						),
-
-						'link_image' => array(
-							'type' => 'checkbox',
-							'label' => __('Link image', 'so-widgets-bundle'),
-						),
-
-						'text' => array(
-							'type' => 'tinymce',
-							'label' => __('Text', 'so-widgets-bundle'),
-							'description' => __('What your customer had to say', 'so-widgets-bundle'),
-						),
-
-						'url' => array(
-							'type' => 'text',
-							'label' => __('URL', 'so-widgets-bundle'),
-						),
-
-						'new_window' => array(
-							'type' => 'checkbox',
-							'label' => __('Open In New Window', 'so-widgets-bundle'),
-						),
-					)
-				),
-
-				'settings' => array(
-					'type' => 'section',
-					'label' => __('Settings', 'so-widgets-bundle'),
-					'fields' => array(
-
-						'per_line' => array(
-							'type' => 'slider',
-							'label' => __( 'Testimonials per row', 'so-widgets-bundle' ),
-							'min' => 1,
-							'max' => 5,
-							'integer' => true,
-							'default' => 3
-						),
-
-						'responsive' => array(
-							'type' => 'section',
-							'label' => __('Responsive', 'so-widgets-bundle'),
-							'hide' => true,
-							'fields' => array(
-								'tablet' => array(
-									'type' => 'section',
-									'label' => __('Tablet', 'so-widgets-bundle'),
-									'fields' => array(
-										'per_line' => array(
-											'type' => 'slider',
-											'label' => __( 'Testimonials per row', 'so-widgets-bundle' ),
-											'min' => 1,
-											'max' => 5,
-											'integer' => true,
-											'default' => 2
-										),
-										'width' => array(
-											'type' => 'text',
-											'label' => __('Resolution', 'so-widgets-bundle'),
-											'description' => __('The resolution to treat as a tablet resolution.', 'so-widgets-bundle'),
-											'default' => 800,
-											'sanitize' => 'intval',
-										)
-									)
-								),
-								'mobile' => array(
-									'type' => 'section',
-									'label' => __('Mobile Phone', 'so-widgets-bundle'),
-									'fields' => array(
-										'per_line' => array(
-											'type' => 'slider',
-											'label' => __( 'Testimonials per row', 'so-widgets-bundle' ),
-											'min' => 1,
-											'max' => 5,
-											'integer' => true,
-											'default' => 1
-										),
-										'width' => array(
-											'type' => 'text',
-											'label' => __('Resolution', 'so-widgets-bundle'),
-											'description' => __('The resolution to treat as a tablet resolution.', 'so-widgets-bundle'),
-											'default' => 480,
-											'sanitize' => 'intval',
-										)
-									)
-								)
-
-							)
-						),
-					)
-				),
-
-				'design' => array(
-					'type' => 'section',
-					'label' => __('Design', 'so-widgets-bundle'),
-					'fields' => array(
-
-						'image' => array(
-						    'type' => 'section',
-						    'label' => __('Image', 'so-widgets-bundle'),
-						    'fields' => array(
-							    'image_shape' => array(
-								    'type' => 'select',
-								    'label' => __('Testimonial image shape', 'so-widgets-bundle'),
-								    'options' => array(
-									    'square' => __('Square', 'so-widgets-bundle'),
-									    'round' => __('Round', 'so-widgets-bundle'),
-								    ),
-								    'default' => 'square',
-							    ),
-
-							    'image_size' => array(
-								    'type' => 'slider',
-								    'label' => __('Image size', 'so-widgets-bundle'),
-								    'integer' => true,
-								    'default' => 50,
-								    'max' => 150,
-								    'min' => 20,
-							    ),
-						    ),
-						),
-
-						'colors' => array(
-							'type' => 'section',
-							'label' => __('Colors', 'so-widgets-bundle'),
-							'fields' => array(
-								'testimonial_background' => array(
-									'type' => 'color',
-									'label' => __('Widget Background', 'so-widgets-bundle'),
-								),
-								'text_background' => array(
-									'type' => 'color',
-									'label' => __('Text Background', 'so-widgets-bundle'),
-									'default' => '#f0f0f0',
-								),
-								'text_color' => array(
-									'type' => 'color',
-									'label' => __('Text Color', 'so-widgets-bundle'),
-									'default' => '#444444',
-								),
-							),
-						),
-
-						'padding' => array(
-						    'type' => 'slider',
-						    'label' => __('Padding', 'so-widgets-bundle'),
-						    'integer' => true,
-						    'default' => 10,
-							'max' => 100,
-							'min' => 0,
-						),
-
-						'border_radius' => array(
-							'type' => 'slider',
-							'label' => __('Padding', 'so-widgets-bundle'),
-							'integer' => true,
-							'default' => 4,
-							'max' => 100,
-							'min' => 0,
-						),
-
-						'user_position' => array(
-							'type' => 'select',
-							'label' => __('User position', 'so-widgets-bundle'),
-							'options' => array(
-								'left' => __('Left', 'so-widgets-bundle'),
-								'right' => __('Right', 'so-widgets-bundle'),
-								'middle' => __('Middle', 'so-widgets-bundle'),
-							),
-							'default' => 'left',
-						),
-
-						'layout' => array(
-							'type' => 'select',
-							'label' => __('Testimonial layout', 'so-widgets-bundle'),
-							'options' => array(
-								'side' => __('Side by side', 'so-widgets-bundle'),
-								'text_above' => __('Text above user', 'so-widgets-bundle'),
-								'text_below' => __('Text below user', 'so-widgets-bundle'),
-							),
-							'default' => 'side',
-						),
-					),
-				),
-			)
+			false,
+			plugin_dir_path( __FILE__ )
 		);
 	}
 
@@ -249,6 +31,229 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 				plugin_dir_url(__FILE__) . 'css/style.css'
 			)
 		) );
+	}
+
+	function initialize_form(){
+		return array(
+			'title' => array(
+				'type' => 'text',
+				'label' => __('Title', 'so-widgets-bundle'),
+			),
+			'testimonials' => array(
+				'type' => 'repeater',
+				'label' => __( 'Testimonials', 'so-widgets-bundle' ),
+				'item_name'  => __( 'Testimonial', 'so-widgets-bundle' ),
+				'item_label' => array(
+					'selector'     => "[id*='testimonials-name']",
+					'update_event' => 'change',
+					'value_method' => 'val'
+				),
+				'fields' => array(
+					'name' => array(
+						'type' => 'text',
+						'label' => __('Name', 'so-widgets-bundle'),
+						'description' => __('The author of the testimonial', 'so-widgets-bundle'),
+					),
+
+					'link_name' => array(
+						'type' => 'checkbox',
+						'label' => __('Link name', 'so-widgets-bundle'),
+					),
+
+					'location' => array(
+						'type' => 'text',
+						'label' => __('Location', 'so-widgets-bundle'),
+						'description' => __('Their location or company name', 'so-widgets-bundle'),
+					),
+
+					'image' => array(
+						'type' => 'media',
+						'label' => __('Image', 'so-widgets-bundle'),
+					),
+
+					'link_image' => array(
+						'type' => 'checkbox',
+						'label' => __('Link image', 'so-widgets-bundle'),
+					),
+
+					'text' => array(
+						'type' => 'tinymce',
+						'label' => __('Text', 'so-widgets-bundle'),
+						'description' => __('What your customer had to say', 'so-widgets-bundle'),
+					),
+
+					'url' => array(
+						'type' => 'text',
+						'label' => __('URL', 'so-widgets-bundle'),
+					),
+
+					'new_window' => array(
+						'type' => 'checkbox',
+						'label' => __('Open In New Window', 'so-widgets-bundle'),
+					),
+				)
+			),
+
+			'settings' => array(
+				'type' => 'section',
+				'label' => __('Settings', 'so-widgets-bundle'),
+				'fields' => array(
+
+					'per_line' => array(
+						'type' => 'slider',
+						'label' => __( 'Testimonials per row', 'so-widgets-bundle' ),
+						'min' => 1,
+						'max' => 5,
+						'integer' => true,
+						'default' => 3
+					),
+
+					'responsive' => array(
+						'type' => 'section',
+						'label' => __('Responsive', 'so-widgets-bundle'),
+						'hide' => true,
+						'fields' => array(
+							'tablet' => array(
+								'type' => 'section',
+								'label' => __('Tablet', 'so-widgets-bundle'),
+								'fields' => array(
+									'per_line' => array(
+										'type' => 'slider',
+										'label' => __( 'Testimonials per row', 'so-widgets-bundle' ),
+										'min' => 1,
+										'max' => 5,
+										'integer' => true,
+										'default' => 2
+									),
+									'width' => array(
+										'type' => 'text',
+										'label' => __('Resolution', 'so-widgets-bundle'),
+										'description' => __('The resolution to treat as a tablet resolution.', 'so-widgets-bundle'),
+										'default' => 800,
+										'sanitize' => 'intval',
+									)
+								)
+							),
+							'mobile' => array(
+								'type' => 'section',
+								'label' => __('Mobile Phone', 'so-widgets-bundle'),
+								'fields' => array(
+									'per_line' => array(
+										'type' => 'slider',
+										'label' => __( 'Testimonials per row', 'so-widgets-bundle' ),
+										'min' => 1,
+										'max' => 5,
+										'integer' => true,
+										'default' => 1
+									),
+									'width' => array(
+										'type' => 'text',
+										'label' => __('Resolution', 'so-widgets-bundle'),
+										'description' => __('The resolution to treat as a tablet resolution.', 'so-widgets-bundle'),
+										'default' => 480,
+										'sanitize' => 'intval',
+									)
+								)
+							)
+
+						)
+					),
+				)
+			),
+
+			'design' => array(
+				'type' => 'section',
+				'label' => __('Design', 'so-widgets-bundle'),
+				'fields' => array(
+
+					'image' => array(
+						'type' => 'section',
+						'label' => __('Image', 'so-widgets-bundle'),
+						'fields' => array(
+							'image_shape' => array(
+								'type' => 'select',
+								'label' => __('Testimonial image shape', 'so-widgets-bundle'),
+								'options' => array(
+									'square' => __('Square', 'so-widgets-bundle'),
+									'round' => __('Round', 'so-widgets-bundle'),
+								),
+								'default' => 'square',
+							),
+
+							'image_size' => array(
+								'type' => 'slider',
+								'label' => __('Image size', 'so-widgets-bundle'),
+								'integer' => true,
+								'default' => 50,
+								'max' => 150,
+								'min' => 20,
+							),
+						),
+					),
+
+					'colors' => array(
+						'type' => 'section',
+						'label' => __('Colors', 'so-widgets-bundle'),
+						'fields' => array(
+							'testimonial_background' => array(
+								'type' => 'color',
+								'label' => __('Widget Background', 'so-widgets-bundle'),
+							),
+							'text_background' => array(
+								'type' => 'color',
+								'label' => __('Text Background', 'so-widgets-bundle'),
+								'default' => '#f0f0f0',
+							),
+							'text_color' => array(
+								'type' => 'color',
+								'label' => __('Text Color', 'so-widgets-bundle'),
+								'default' => '#444444',
+							),
+						),
+					),
+
+					'padding' => array(
+						'type' => 'slider',
+						'label' => __('Padding', 'so-widgets-bundle'),
+						'integer' => true,
+						'default' => 10,
+						'max' => 100,
+						'min' => 0,
+					),
+
+					'border_radius' => array(
+						'type' => 'slider',
+						'label' => __('Padding', 'so-widgets-bundle'),
+						'integer' => true,
+						'default' => 4,
+						'max' => 100,
+						'min' => 0,
+					),
+
+					'user_position' => array(
+						'type' => 'select',
+						'label' => __('User position', 'so-widgets-bundle'),
+						'options' => array(
+							'left' => __('Left', 'so-widgets-bundle'),
+							'right' => __('Right', 'so-widgets-bundle'),
+							'middle' => __('Middle', 'so-widgets-bundle'),
+						),
+						'default' => 'left',
+					),
+
+					'layout' => array(
+						'type' => 'select',
+						'label' => __('Testimonial layout', 'so-widgets-bundle'),
+						'options' => array(
+							'side' => __('Side by side', 'so-widgets-bundle'),
+							'text_above' => __('Text above user', 'so-widgets-bundle'),
+							'text_below' => __('Text below user', 'so-widgets-bundle'),
+						),
+						'default' => 'side',
+					),
+				),
+			),
+		);
 	}
 
 	function caret_svg(){

@@ -19,87 +19,92 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				'help'        => 'http://siteorigin.com/widgets-bundle/video-widget-documentation/'
 			),
 			array(),
-			array(
-				'title' => array(
-					'type' => 'text',
-					'label' => __( 'Title', 'so-widgets-bundle' )
-				),
-				'host_type' => array(
-					'type' => 'radio',
-					'label' => __( 'Video location', 'so-widgets-bundle' ),
-					'default' => 'self',
-					'options' => array(
-						'self' => __( 'Self hosted', 'so-widgets-bundle' ),
-						'external' => __( 'Externally hosted', 'so-widgets-bundle' ),
-					),
+			false,
+			plugin_dir_path( __FILE__ )
+		);
+	}
 
-					// This field should be a video type state emitter
-					'state_emitter' => array(
-						'callback' => 'select',
-						'args' => array('video_type')
-					)
-				),
-
-				'video' => array(
-					'type' => 'section',
-					'label' => __( 'Video File', 'so-widgets-bundle' ),
-					'fields' => array(
-						'self_video' => array(
-							'type' => 'media',
-							'fallback' => true,
-							'label' => __( 'Select video', 'so-widgets-bundle' ),
-							'description' => __( 'Select an uploaded video in mp4 format. Other formats, such as webm and ogv will work in some browsers. You can use an online service such as <a href="http://video.online-convert.com/convert-to-mp4" target="_blank">online-convert.com</a> to convert your videos to mp4.', 'so-widgets-bundle' ),
-							'default'     => '',
-							'library' => 'video',
-							'state_handler' => array(
-								'video_type[self]' => array('show'),
-								'video_type[external]' => array('hide'),
-							)
-						),
-						'self_poster' => array(
-							'type' => 'media',
-							'label' => __( 'Select cover image', 'so-widgets-bundle' ),
-							'default'     => '',
-							'library' => 'image',
-							'state_handler' => array(
-								'video_type[self]' => array('show'),
-								'video_type[external]' => array('hide'),
-							)
-						),
-						'external_video' => array(
-							'type' => 'text',
-							'sanitize' => 'url',
-							'label' => __( 'Video URL', 'so-widgets-bundle' ),
-							'state_handler' => array(
-								'video_type[external]' => array('show'),
-								'video_type[self]' => array('hide'),
-							)
-						),
-					)
+	function initialize_form(){
+		return array(
+			'title' => array(
+				'type' => 'text',
+				'label' => __( 'Title', 'so-widgets-bundle' )
+			),
+			'host_type' => array(
+				'type' => 'radio',
+				'label' => __( 'Video location', 'so-widgets-bundle' ),
+				'default' => 'self',
+				'options' => array(
+					'self' => __( 'Self hosted', 'so-widgets-bundle' ),
+					'external' => __( 'Externally hosted', 'so-widgets-bundle' ),
 				),
 
-				'playback' => array(
-					'type' => 'section',
-					'label' => __('Video Playback', 'so-widgets-bundle'),
-					'fields' => array(
-						'autoplay' => array(
-							'type' => 'checkbox',
-							'default' => false,
-							'label' => __( 'Autoplay', 'so-widgets-bundle' )
-						),
-						'oembed' => array(
-							'type' => 'checkbox',
-							'default' => true,
-							'label' => __( 'Use oEmbed', 'so-widgets-bundle' ),
-							'description' => __( 'Always use the embedded video rather than the MediaElement player.', 'so-widgets-bundle' ),
-							'state_handler' => array(
-								'video_type[external]' => array('show'),
-								'video_type[self]' => array('hide'),
-							)
+				// This field should be a video type state emitter
+				'state_emitter' => array(
+					'callback' => 'select',
+					'args' => array('video_type')
+				)
+			),
+
+			'video' => array(
+				'type' => 'section',
+				'label' => __( 'Video File', 'so-widgets-bundle' ),
+				'fields' => array(
+					'self_video' => array(
+						'type' => 'media',
+						'fallback' => true,
+						'label' => __( 'Select video', 'so-widgets-bundle' ),
+						'description' => __( 'Select an uploaded video in mp4 format. Other formats, such as webm and ogv will work in some browsers. You can use an online service such as <a href="http://video.online-convert.com/convert-to-mp4" target="_blank">online-convert.com</a> to convert your videos to mp4.', 'so-widgets-bundle' ),
+						'default'     => '',
+						'library' => 'video',
+						'state_handler' => array(
+							'video_type[self]' => array('show'),
+							'video_type[external]' => array('hide'),
 						)
 					),
+					'self_poster' => array(
+						'type' => 'media',
+						'label' => __( 'Select cover image', 'so-widgets-bundle' ),
+						'default'     => '',
+						'library' => 'image',
+						'state_handler' => array(
+							'video_type[self]' => array('show'),
+							'video_type[external]' => array('hide'),
+						)
+					),
+					'external_video' => array(
+						'type' => 'text',
+						'sanitize' => 'url',
+						'label' => __( 'Video URL', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'video_type[external]' => array('show'),
+							'video_type[self]' => array('hide'),
+						)
+					),
+				)
+			),
+
+			'playback' => array(
+				'type' => 'section',
+				'label' => __('Video Playback', 'so-widgets-bundle'),
+				'fields' => array(
+					'autoplay' => array(
+						'type' => 'checkbox',
+						'default' => false,
+						'label' => __( 'Autoplay', 'so-widgets-bundle' )
+					),
+					'oembed' => array(
+						'type' => 'checkbox',
+						'default' => true,
+						'label' => __( 'Use oEmbed', 'so-widgets-bundle' ),
+						'description' => __( 'Always use the embedded video rather than the MediaElement player.', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'video_type[external]' => array('show'),
+							'video_type[self]' => array('hide'),
+						)
+					)
 				),
-			)
+			),
 		);
 	}
 
