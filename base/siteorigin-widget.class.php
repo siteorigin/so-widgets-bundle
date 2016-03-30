@@ -73,6 +73,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
+	 * Return the form array. Widgets should implement this if they don't have a form in the form array.
+	 *
+	 * @return array
+	 */
+	function initialize_form( ){
+		return array();
+	}
+
+	/**
 	 * Get the form options and allow child widgets to modify that form.
 	 *
 	 * @param bool|SiteOrigin_Widget $parent
@@ -80,6 +89,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return mixed
 	 */
 	function form_options( $parent = false ) {
+		if( empty( $this->form_options ) ) {
+			$this->form_options = $this->initialize_form();
+		}
+
 		$form_options = $this->modify_form( $this->form_options );
 		if( !empty($parent) ) {
 			$form_options = $parent->modify_child_widget_form( $form_options, $this );
@@ -98,6 +111,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param array $instance
 	 */
 	public function widget( $args, $instance ) {
+		if( empty( $this->form_options ) ) {
+			$this->form_options = $this->initialize_form();
+		}
+
 		$instance = $this->modify_instance($instance);
 
 		// Filter the instance
@@ -165,6 +182,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string The CSS name
 	 */
 	function generate_and_enqueue_instance_styles( $instance ) {
+		if( empty( $this->form_options ) ) {
+			$this->form_options = $this->initialize_form();
+		}
+
 		// We'll assume empty instances don't have styles
 		if( empty($instance) ) return;
 
@@ -440,6 +461,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return bool
 	 */
 	function using_posts_selector(){
+		if( empty( $this->form_options ) ) {
+			$this->form_options = $this->initialize_form();
+		}
+
 		foreach($this->form_options as $field) {
 			if(!empty($field['type']) && $field['type'] == 'posts') return true;
 		}
