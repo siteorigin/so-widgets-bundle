@@ -1,0 +1,14 @@
+@color: h1;
+@size: '';
+@has_size: false;
+
+#sow-icon-container.sow-icon span,
+#sow-icon-container.sow-icon a span {
+
+	color: @color;
+
+	.fontsize() when (@has_size = true) {
+		font-size: @size;
+	}
+	.fontsize();
+}
