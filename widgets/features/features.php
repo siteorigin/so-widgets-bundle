@@ -187,7 +187,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				'type' => 'select',
 				'label' => __('Container shape', 'so-widgets-bundle'),
 				'default' => 'round',
-				'options' => array(),// Set in modify_form() below.
+				'options' => array(),
 			),
 
 			'container_size' => array(

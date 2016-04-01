@@ -110,19 +110,6 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	}
 
 	/**
-	 * Modify the form widget
-	 *
-	 * @param $form
-	 *
-	 * @return mixed
-	 */
-	function modify_form( $form ){
-
-		$form['display']['fields']['attachment_size']['options'] = $sizes;
-		return $form;
-	}
-
-	/**
 	 * Get the less variables for the image grid
 	 *
 	 * @param $instance
