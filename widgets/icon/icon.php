@@ -58,8 +58,6 @@ class SiteOrigin_Widget_Icon_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_less_variables( $instance ) {
-		$les = ';asda';
-
 		return array(
 			'color'    => $instance['color'],
 			'size'     => $instance['size'],

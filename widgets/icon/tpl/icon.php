@@ -15,5 +15,5 @@
 		?>
 	<?php if ( ! empty( $url ) ) { ?>
 	</a>
-<?php } ?>
+	<?php } ?>
 </div>
