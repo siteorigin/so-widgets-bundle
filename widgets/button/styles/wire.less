@@ -13,15 +13,13 @@
 .ow-button-base {
 	.clearfix();
 
-	.ow-button-layout-wrapper {
-		display: inline-block;
+	a {
+		.box-sizing(border-box);
 		.btn_width() when( @has_button_width = true) {
 			width: @button_width;
 		}
 		.btn_width();
-	}
 
-	a {
 		font-size: @font_size;
 		padding: @padding @padding*2;
 		background: transparent;
