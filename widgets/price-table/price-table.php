@@ -18,130 +18,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			array(
 
 			),
-			array(
-				'title' => array(
-					'type' => 'text',
-					'label' => __('Title', 'so-widgets-bundle'),
-				),
-
-				'columns' => array(
-					'type' => 'repeater',
-					'label' => __('Columns', 'so-widgets-bundle'),
-					'item_name' => __('Column', 'so-widgets-bundle'),
-					'item_label' => array(
-						'selector' => "[id*='columns-title']",
-						'update_event' => 'change',
-						'value_method' => 'val'
-					),
-					'fields' => array(
-						'featured' => array(
-							'type' => 'checkbox',
-							'label' => __('Featured', 'so-widgets-bundle'),
-						),
-						'title' => array(
-							'type' => 'text',
-							'label' => __('Title', 'so-widgets-bundle'),
-						),
-						'subtitle' => array(
-							'type' => 'text',
-							'label' => __('Subtitle', 'so-widgets-bundle'),
-						),
-
-						'image' => array(
-							'type' => 'media',
-							'label' => __('Image', 'so-widgets-bundle'),
-						),
-
-						'image_title' => array(
-							'type' => 'text',
-							'label' => __('Image title', 'so-widgets-bundle'),
-						),
-
-						'image_alt' => array(
-							'type' => 'text',
-							'label' => __('Image alt text', 'so-widgets-bundle'),
-						),
-
-						'price' => array(
-							'type' => 'text',
-							'label' => __('Price', 'so-widgets-bundle'),
-						),
-						'per' => array(
-							'type' => 'text',
-							'label' => __('Per', 'so-widgets-bundle'),
-						),
-						'button' => array(
-							'type' => 'text',
-							'label' => __('Button text', 'so-widgets-bundle'),
-						),
-						'url' => array(
-							'type' => 'link',
-							'label' => __('Button URL', 'so-widgets-bundle'),
-						),
-						'features' => array(
-							'type' => 'repeater',
-							'label' => __('Features', 'so-widgets-bundle'),
-							'item_name' => __('Feature', 'so-widgets-bundle'),
-							'item_label' => array(
-								'selector' => "[id*='columns-features-text']",
-								'update_event' => 'change',
-								'value_method' => 'val'
-							),
-							'fields' => array(
-								'text' => array(
-									'type' => 'text',
-									'label' => __('Text', 'so-widgets-bundle'),
-								),
-								'hover' => array(
-									'type' => 'text',
-									'label' => __('Hover text', 'so-widgets-bundle'),
-								),
-								'icon_new' => array(
-									'type' => 'icon',
-									'label' => __('Icon', 'so-widgets-bundle'),
-								),
-								'icon_color' => array(
-									'type' => 'color',
-									'label' => __('Icon color', 'so-widgets-bundle'),
-								),
-							),
-						),
-					),
-				),
-
-				'theme' => array(
-					'type' => 'select',
-					'label' => __('Price table theme', 'so-widgets-bundle'),
-					'options' => array(
-						'atom' => __('Atom', 'so-widgets-bundle'),
-					),
-				),
-
-				'header_color' => array(
-					'type' => 'color',
-					'label' => __('Header color', 'so-widgets-bundle'),
-				),
-
-				'featured_header_color' => array(
-					'type' => 'color',
-					'label' => __('Featured header color', 'so-widgets-bundle'),
-				),
-
-				'button_color' => array(
-					'type' => 'color',
-					'label' => __('Button color', 'so-widgets-bundle'),
-				),
-
-				'featured_button_color' => array(
-					'type' => 'color',
-					'label' => __('Featured button color', 'so-widgets-bundle'),
-				),
-
-				'button_new_window' => array(
-					'type' => 'checkbox',
-					'label' => __('Open Button URL in a new window', 'so-widgets-bundle'),
-				),
-			),
+			false,
 			plugin_dir_path(__FILE__).'../'
 		);
 	}
@@ -155,6 +32,133 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 					array( 'jquery' )
 				)
 			)
+		);
+	}
+
+	function initialize_form(){
+		return array(
+			'title' => array(
+				'type' => 'text',
+				'label' => __('Title', 'so-widgets-bundle'),
+			),
+
+			'columns' => array(
+				'type' => 'repeater',
+				'label' => __('Columns', 'so-widgets-bundle'),
+				'item_name' => __('Column', 'so-widgets-bundle'),
+				'item_label' => array(
+					'selector' => "[id*='columns-title']",
+					'update_event' => 'change',
+					'value_method' => 'val'
+				),
+				'fields' => array(
+					'featured' => array(
+						'type' => 'checkbox',
+						'label' => __('Featured', 'so-widgets-bundle'),
+					),
+					'title' => array(
+						'type' => 'text',
+						'label' => __('Title', 'so-widgets-bundle'),
+					),
+					'subtitle' => array(
+						'type' => 'text',
+						'label' => __('Subtitle', 'so-widgets-bundle'),
+					),
+
+					'image' => array(
+						'type' => 'media',
+						'label' => __('Image', 'so-widgets-bundle'),
+					),
+
+					'image_title' => array(
+						'type' => 'text',
+						'label' => __('Image title', 'so-widgets-bundle'),
+					),
+
+					'image_alt' => array(
+						'type' => 'text',
+						'label' => __('Image alt text', 'so-widgets-bundle'),
+					),
+
+					'price' => array(
+						'type' => 'text',
+						'label' => __('Price', 'so-widgets-bundle'),
+					),
+					'per' => array(
+						'type' => 'text',
+						'label' => __('Per', 'so-widgets-bundle'),
+					),
+					'button' => array(
+						'type' => 'text',
+						'label' => __('Button text', 'so-widgets-bundle'),
+					),
+					'url' => array(
+						'type' => 'link',
+						'label' => __('Button URL', 'so-widgets-bundle'),
+					),
+					'features' => array(
+						'type' => 'repeater',
+						'label' => __('Features', 'so-widgets-bundle'),
+						'item_name' => __('Feature', 'so-widgets-bundle'),
+						'item_label' => array(
+							'selector' => "[id*='columns-features-text']",
+							'update_event' => 'change',
+							'value_method' => 'val'
+						),
+						'fields' => array(
+							'text' => array(
+								'type' => 'text',
+								'label' => __('Text', 'so-widgets-bundle'),
+							),
+							'hover' => array(
+								'type' => 'text',
+								'label' => __('Hover text', 'so-widgets-bundle'),
+							),
+							'icon_new' => array(
+								'type' => 'icon',
+								'label' => __('Icon', 'so-widgets-bundle'),
+							),
+							'icon_color' => array(
+								'type' => 'color',
+								'label' => __('Icon color', 'so-widgets-bundle'),
+							),
+						),
+					),
+				),
+			),
+
+			'theme' => array(
+				'type' => 'select',
+				'label' => __('Price table theme', 'so-widgets-bundle'),
+				'options' => array(
+					'atom' => __('Atom', 'so-widgets-bundle'),
+				),
+			),
+
+			'header_color' => array(
+				'type' => 'color',
+				'label' => __('Header color', 'so-widgets-bundle'),
+			),
+
+			'featured_header_color' => array(
+				'type' => 'color',
+				'label' => __('Featured header color', 'so-widgets-bundle'),
+			),
+
+			'button_color' => array(
+				'type' => 'color',
+				'label' => __('Button color', 'so-widgets-bundle'),
+			),
+
+			'featured_button_color' => array(
+				'type' => 'color',
+				'label' => __('Featured button color', 'so-widgets-bundle'),
+			),
+
+			'button_new_window' => array(
+				'type' => 'checkbox',
+				'label' => __('Open Button URL in a new window', 'so-widgets-bundle'),
+			),
 		);
 	}
 
