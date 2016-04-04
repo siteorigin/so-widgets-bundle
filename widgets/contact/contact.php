@@ -346,11 +346,25 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'type' => 'section',
 						'label' => __( 'Field descriptions', 'so-widgets-bundle' ),
 						'fields' => array(
+							'size' =>  array(
+								'type' => 'measurement',
+								'label' => __( 'Size', 'so-widgets-bundle' ),
+								'default' => '0.9em',
+							),
 							'color' =>  array(
 								'type' => 'color',
 								'label' => __( 'Color', 'so-widgets-bundle' ),
 								'default' => '#999999',
-							)
+							),
+							'style' =>  array(
+								'type' => 'select',
+								'label' => __( 'Style', 'so-widgets-bundle' ),
+								'default' => 'italic',
+								'options' => array(
+									'italic' => __( 'Italic', 'so-widgets-bundle' ),
+									'normal' => __( 'Normal', 'so-widgets-bundle' ),
+								)
+							),
 						)
 					),
 
@@ -604,7 +618,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'label_align' => $instance['design']['labels']['align'],
 
 			// Field descriptions
+			'description_font_size' => $instance['design']['descriptions']['size'],
 			'description_font_color' => $instance['design']['descriptions']['color'],
+			'description_font_style' => $instance['design']['descriptions']['style'],
 
 			// The error message styles
 			'error_background' => $instance['design']['errors']['background'],
