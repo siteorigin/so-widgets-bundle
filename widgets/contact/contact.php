@@ -120,6 +120,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'label' => __('Label', 'so-widgets-bundle'),
 					),
 
+					'description' => array(
+						'type' => 'text',
+						'label' => __('Description', 'so-widgets-bundle'),
+						'description' => __('This text will appear small beneath the input field.', 'so-widgets-bundle'),
+					),
+
 					'required' => array(
 						'type' => 'section',
 						'label' => __('Required Field', 'so-widgets-bundle'),
@@ -334,6 +340,32 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								)
 							),
 						),
+					),
+
+					'descriptions' => array(
+						'type' => 'section',
+						'label' => __( 'Field descriptions', 'so-widgets-bundle' ),
+						'fields' => array(
+							'size' =>  array(
+								'type' => 'measurement',
+								'label' => __( 'Size', 'so-widgets-bundle' ),
+								'default' => '0.9em',
+							),
+							'color' =>  array(
+								'type' => 'color',
+								'label' => __( 'Color', 'so-widgets-bundle' ),
+								'default' => '#999999',
+							),
+							'style' =>  array(
+								'type' => 'select',
+								'label' => __( 'Style', 'so-widgets-bundle' ),
+								'default' => 'italic',
+								'options' => array(
+									'italic' => __( 'Italic', 'so-widgets-bundle' ),
+									'normal' => __( 'Normal', 'so-widgets-bundle' ),
+								)
+							),
+						)
 					),
 
 					'errors' => array(
@@ -585,6 +617,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'label_width' => $instance['design']['labels']['width'],
 			'label_align' => $instance['design']['labels']['align'],
 
+			// Field descriptions
+			'description_font_size' => $instance['design']['descriptions']['size'],
+			'description_font_color' => $instance['design']['descriptions']['color'],
+			'description_font_style' => $instance['design']['descriptions']['style'],
+
 			// The error message styles
 			'error_background' => $instance['design']['errors']['background'],
 			'error_border' => $instance['design']['errors']['border_color'],
@@ -726,6 +763,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 			if( ! empty( $label_position ) && $label_position == 'below' ) {
 				$this->render_form_label( $field_id, $field['label'], $instance );
+			}
+
+			if ( ! empty( $field['description'] ) ) {
+				?>
+				<div class="sow-form-field-description">
+				<?php echo wp_kses_post( $field['description'] ) ?>
+				</div>
+				<?php
 			}
 
 			?></div><?php
