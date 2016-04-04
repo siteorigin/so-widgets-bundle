@@ -120,6 +120,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'label' => __('Label', 'so-widgets-bundle'),
 					),
 
+					'description' => array(
+						'type' => 'text',
+						'label' => __('Description', 'so-widgets-bundle'),
+						'description' => __('This text will appear small beneath the input field.', 'so-widgets-bundle'),
+					),
+
 					'required' => array(
 						'type' => 'section',
 						'label' => __('Required Field', 'so-widgets-bundle'),
@@ -726,6 +732,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 			if( ! empty( $label_position ) && $label_position == 'below' ) {
 				$this->render_form_label( $field_id, $field['label'], $instance );
+			}
+
+			if ( ! empty( $field['description'] ) ) {
+				?>
+				<div class="sow-form-field-description">
+				<?php echo wp_kses_post( $field['description'] ) ?>
+				</div>
+				<?php
 			}
 
 			?></div><?php
