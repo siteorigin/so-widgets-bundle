@@ -146,7 +146,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			unset($stored_instance['panels_info']);
 
 			$storage_hash = substr( md5( serialize($stored_instance) ), 0, 8 );
-			if( !empty( $stored_instance ) && empty( $instance['is_preview'] ) ) {
+			if( !empty( $stored_instance ) && !$this->is_preview( $instance ) ) {
 				// Store this if we have a non empty instance and are not previewing
 				set_transient('sow_inst[' . $this->id_base . '][' . $storage_hash . ']', $stored_instance, 7*86400);
 			}
@@ -203,7 +203,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$css_name = $this->id_base.'-'.$style.'-'.$hash;
 
 			//Ensure styles aren't generated and enqueued more than once.
-			$in_preview = is_preview() || $this->is_customize_preview() || !empty( $_GET['siteorigin_panels_live_editor'] );
+			$in_preview = $this->is_preview( $instance );
 			if ( ! in_array( $css_name, $this->generated_css ) || $in_preview ) {
 				if( ( isset( $instance['is_preview'] ) && $instance['is_preview'] ) || $in_preview ) {
 					siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
@@ -1051,5 +1051,20 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * Can be overwritten by child widgets to enqueue admin scripts and styles if necessary.
 	 */
 	function enqueue_admin_scripts(){ }
+
+	/**
+	 * Check if we're currently in a preview
+	 *
+	 * @param array $instance
+	 *
+	 * @return bool
+	 */
+	function is_preview( $instance = array() ){
+		// Check if the instance is a preview
+		if( !empty( $instance[ 'is_preview' ] ) ) return true;
+
+		// Check if the general request is a preview
+		return is_preview() || $this->is_customize_preview() || !empty( $_GET['siteorigin_panels_live_editor'] );
+	}
 
 }
