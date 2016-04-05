@@ -205,7 +205,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			//Ensure styles aren't generated and enqueued more than once.
 			$in_preview = $this->is_preview( $instance );
 			if ( ! in_array( $css_name, $this->generated_css ) || $in_preview ) {
-				if( ( isset( $instance['is_preview'] ) && $instance['is_preview'] ) || $in_preview ) {
+				if( $in_preview ) {
 					siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
 				}
 				else {
@@ -1064,7 +1064,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		if( !empty( $instance[ 'is_preview' ] ) ) return true;
 
 		// Check if the general request is a preview
-		return is_preview() || $this->is_customize_preview() || !empty( $_GET['siteorigin_panels_live_editor'] );
+		return
+			is_preview() ||  // is this a standard preview
+			$this->is_customize_preview() ||    // Is this a customizer preview
+			!empty( $_GET['siteorigin_panels_live_editor'] ) ||     // Is this a Page Builder live editor request
+			( !empty( $_REQUEST['action'] ) && $_REQUEST['action'] == 'so_panels_builder_content' );    // Is this a Page Builder content ajax request
 	}
 
 }
