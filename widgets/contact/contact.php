@@ -1031,8 +1031,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			// Store the version with the expired hashes removed
 			update_option( 'so_contact_hashes', $hash_check, true );
 
-			// This is a duplicate message
-			return new WP_Error( 1, __('Message already sent', 'so-widgets-bundle') );
+			// This message has already been sent successfully
+			return true;
 		}
 
 		$mail_success = wp_mail( $instance['settings']['to'], $email_fields['subject'], $body, $headers );
