@@ -40,6 +40,17 @@ class SiteOrigin_Widget_Icon_Widget extends SiteOrigin_Widget {
 				'label' => __( 'Size', 'so-widgets-bundle' ),
 			),
 
+			'alignment' => array(
+				'type'  => 'select',
+				'label' => __( 'Alignment', 'so-widgets-bundle' ),
+				'options' => array(
+					'center' => __( 'Center', 'so-widgets-bundle' ),
+					'left' => __( 'Left', 'so-widgets-bundle' ),
+					'right' => __( 'Right', 'so-widgets-bundle' ),
+				),
+				'default' => 'center',
+			),
+
 			'url' => array(
 				'type'  => 'link',
 				'label' => __( 'Destination URL', 'so-widgets-bundle' ),
@@ -60,6 +71,7 @@ class SiteOrigin_Widget_Icon_Widget extends SiteOrigin_Widget {
 	function get_less_variables( $instance ) {
 		return array(
 			'color'    => $instance['color'],
+			'alignment'    => $instance['alignment'],
 			'size'     => $instance['size'],
 			'has_size' => empty( $instance['size'] ) ? 'false' : 'true',
 		);
