@@ -18,141 +18,146 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 				'description' => __( 'A headline widget.', 'so-widgets-bundle' )
 			),
 			array(),
-			array(
-				'headline' => array(
-					'type' => 'section',
-					'label'  => __( 'Headline', 'so-widgets-bundle' ),
-					'hide'   => false,
-					'fields' => array(
-						'text' => array(
-							'type' => 'text',
-							'label' => __( 'Text', 'so-widgets-bundle' ),
-						),
-						'tag' => array(
-							'type' => 'select',
-							'label' => __( 'H Tag', 'so-widgets-bundle' ),
-							'default' => 'h1',
-							'options' => array(
-								'h1' => __( 'H1', 'so-widgets-bundle' ),
-								'h2' => __( 'H2', 'so-widgets-bundle' ),
-								'h3' => __( 'H3', 'so-widgets-bundle' ),
-								'h4' => __( 'H4', 'so-widgets-bundle' ),
-								'h5' => __( 'H5', 'so-widgets-bundle' ),
-								'h6' => __( 'H6', 'so-widgets-bundle' ),
-							)
-						),
-						'font' => array(
-							'type' => 'font',
-							'label' => __( 'Font', 'so-widgets-bundle' ),
-							'default' => 'default'
-						),
-						'color' => array(
-							'type' => 'color',
-							'label' => __('Color', 'so-widgets-bundle'),
-						),
-						'align' => array(
-							'type' => 'select',
-							'label' => __( 'Align', 'so-widgets-bundle' ),
-							'default' => 'center',
-							'options' => array(
-								'center' => __( 'Center', 'so-widgets-bundle' ),
-								'left' => __( 'Left', 'so-widgets-bundle' ),
-								'right' => __( 'Right', 'so-widgets-bundle' ),
-								'justify' => __( 'Justify', 'so-widgets-bundle' )
-							)
+			false,
+			plugin_dir_path(__FILE__)
+		);
+	}
+
+	function initialize_form(){
+		return array(
+			'headline' => array(
+				'type' => 'section',
+				'label'  => __( 'Headline', 'so-widgets-bundle' ),
+				'hide'   => false,
+				'fields' => array(
+					'text' => array(
+						'type' => 'text',
+						'label' => __( 'Text', 'so-widgets-bundle' ),
+					),
+					'tag' => array(
+						'type' => 'select',
+						'label' => __( 'H Tag', 'so-widgets-bundle' ),
+						'default' => 'h1',
+						'options' => array(
+							'h1' => __( 'H1', 'so-widgets-bundle' ),
+							'h2' => __( 'H2', 'so-widgets-bundle' ),
+							'h3' => __( 'H3', 'so-widgets-bundle' ),
+							'h4' => __( 'H4', 'so-widgets-bundle' ),
+							'h5' => __( 'H5', 'so-widgets-bundle' ),
+							'h6' => __( 'H6', 'so-widgets-bundle' ),
+						)
+					),
+					'font' => array(
+						'type' => 'font',
+						'label' => __( 'Font', 'so-widgets-bundle' ),
+						'default' => 'default'
+					),
+					'color' => array(
+						'type' => 'color',
+						'label' => __('Color', 'so-widgets-bundle'),
+					),
+					'align' => array(
+						'type' => 'select',
+						'label' => __( 'Align', 'so-widgets-bundle' ),
+						'default' => 'center',
+						'options' => array(
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'left' => __( 'Left', 'so-widgets-bundle' ),
+							'right' => __( 'Right', 'so-widgets-bundle' ),
+							'justify' => __( 'Justify', 'so-widgets-bundle' )
 						)
 					)
-				),
-				'sub_headline' => array(
-					'type' => 'section',
-					'label'  => __( 'Sub headline', 'so-widgets-bundle' ),
-					'hide'   => true,
-					'fields' => array(
-						'text' => array(
-							'type' => 'text',
-							'label' => __('Text', 'so-widgets-bundle')
-						),
-						'tag' => array(
-							'type' => 'select',
-							'label' => __( 'H Tag', 'so-widgets-bundle' ),
-							'default' => 'h3',
-							'options' => array(
-								'h1' => __( 'H1', 'so-widgets-bundle' ),
-								'h2' => __( 'H2', 'so-widgets-bundle' ),
-								'h3' => __( 'H3', 'so-widgets-bundle' ),
-								'h4' => __( 'H4', 'so-widgets-bundle' ),
-								'h5' => __( 'H5', 'so-widgets-bundle' ),
-								'h6' => __( 'H6', 'so-widgets-bundle' ),
-							)
-						),
-						'font' => array(
-							'type' => 'font',
-							'label' => __( 'Font', 'so-widgets-bundle' ),
-							'default' => 'default'
-						),
-						'color' => array(
-							'type' => 'color',
-							'label' => __('Color', 'so-widgets-bundle'),
-						),
-						'align' => array(
-							'type' => 'select',
-							'label' => __( 'Align', 'so-widgets-bundle' ),
-							'default' => 'center',
-							'options' => array(
-								'center' => __( 'Center', 'so-widgets-bundle' ),
-								'left' => __( 'Left', 'so-widgets-bundle' ),
-								'right' => __( 'Right', 'so-widgets-bundle' ),
-								'justify' => __( 'Justify', 'so-widgets-bundle' )
-							)
+				)
+			),
+			'sub_headline' => array(
+				'type' => 'section',
+				'label'  => __( 'Sub headline', 'so-widgets-bundle' ),
+				'hide'   => true,
+				'fields' => array(
+					'text' => array(
+						'type' => 'text',
+						'label' => __('Text', 'so-widgets-bundle')
+					),
+					'tag' => array(
+						'type' => 'select',
+						'label' => __( 'H Tag', 'so-widgets-bundle' ),
+						'default' => 'h3',
+						'options' => array(
+							'h1' => __( 'H1', 'so-widgets-bundle' ),
+							'h2' => __( 'H2', 'so-widgets-bundle' ),
+							'h3' => __( 'H3', 'so-widgets-bundle' ),
+							'h4' => __( 'H4', 'so-widgets-bundle' ),
+							'h5' => __( 'H5', 'so-widgets-bundle' ),
+							'h6' => __( 'H6', 'so-widgets-bundle' ),
+						)
+					),
+					'font' => array(
+						'type' => 'font',
+						'label' => __( 'Font', 'so-widgets-bundle' ),
+						'default' => 'default'
+					),
+					'color' => array(
+						'type' => 'color',
+						'label' => __('Color', 'so-widgets-bundle'),
+					),
+					'align' => array(
+						'type' => 'select',
+						'label' => __( 'Align', 'so-widgets-bundle' ),
+						'default' => 'center',
+						'options' => array(
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'left' => __( 'Left', 'so-widgets-bundle' ),
+							'right' => __( 'Right', 'so-widgets-bundle' ),
+							'justify' => __( 'Justify', 'so-widgets-bundle' )
 						)
 					)
-				),
-				'divider' => array(
-					'type' => 'section',
-					'label' => __( 'Divider', 'so-widgets-bundle' ),
-					'hide' => true,
-					'fields' => array(
-						'style' => array(
-							'type' => 'select',
-							'label' => __( 'Style', 'so-widgets-bundle' ),
-							'default' => 'solid',
-							'options' => array(
-								'none' => __('None', 'so-widgets-bundle'),
-								'solid' => __('Solid', 'so-widgets-bundle'),
-								'dotted' => __('Dotted', 'so-widgets-bundle'),
-								'dashed' => __('Dashed', 'so-widgets-bundle'),
-								'double' => __('Double', 'so-widgets-bundle'),
-								'groove' => __('Groove', 'so-widgets-bundle'),
-								'ridge' => __('Ridge', 'so-widgets-bundle'),
-								'inset' => __('Inset', 'so-widgets-bundle'),
-								'outset' => __('Outset', 'so-widgets-bundle'),
-							)
-						),
-						'weight' => array(
-							'type' => 'select',
-							'label' => __( 'Weight', 'so-widgets-bundle' ),
-							'default' => 'thin',
-							'options' => array(
-								'thin' => __( 'Thin', 'so-widgets-bundle' ),
-								'medium' => __( 'Medium', 'so-widgets-bundle' ),
-								'thick' => __( 'Thick', 'so-widgets-bundle' ),
-							)
-						),
-						'color' => array(
-							'type' => 'color',
-							'label' => __('Color', 'so-widgets-bundle'),
-							'default' => '#EEEEEE'
-						),
-						'side_margin' => array(
-							'type' => 'measurement',
-							'label' => __('Side Margin', 'so-widgets-bundle'),
-							'default' => '60px',
-						),
-						'top_margin' => array(
-							'type' => 'measurement',
-							'label' => __('Top/Bottom Margin', 'so-widgets-bundle'),
-							'default' => '20px',
+				)
+			),
+			'divider' => array(
+				'type' => 'section',
+				'label' => __( 'Divider', 'so-widgets-bundle' ),
+				'hide' => true,
+				'fields' => array(
+					'style' => array(
+						'type' => 'select',
+						'label' => __( 'Style', 'so-widgets-bundle' ),
+						'default' => 'solid',
+						'options' => array(
+							'none' => __('None', 'so-widgets-bundle'),
+							'solid' => __('Solid', 'so-widgets-bundle'),
+							'dotted' => __('Dotted', 'so-widgets-bundle'),
+							'dashed' => __('Dashed', 'so-widgets-bundle'),
+							'double' => __('Double', 'so-widgets-bundle'),
+							'groove' => __('Groove', 'so-widgets-bundle'),
+							'ridge' => __('Ridge', 'so-widgets-bundle'),
+							'inset' => __('Inset', 'so-widgets-bundle'),
+							'outset' => __('Outset', 'so-widgets-bundle'),
 						)
+					),
+					'weight' => array(
+						'type' => 'select',
+						'label' => __( 'Weight', 'so-widgets-bundle' ),
+						'default' => 'thin',
+						'options' => array(
+							'thin' => __( 'Thin', 'so-widgets-bundle' ),
+							'medium' => __( 'Medium', 'so-widgets-bundle' ),
+							'thick' => __( 'Thick', 'so-widgets-bundle' ),
+						)
+					),
+					'color' => array(
+						'type' => 'color',
+						'label' => __('Color', 'so-widgets-bundle'),
+						'default' => '#EEEEEE'
+					),
+					'side_margin' => array(
+						'type' => 'measurement',
+						'label' => __('Side Margin', 'so-widgets-bundle'),
+						'default' => '60px',
+					),
+					'top_margin' => array(
+						'type' => 'measurement',
+						'label' => __('Top/Bottom Margin', 'so-widgets-bundle'),
+						'default' => '20px',
 					)
 				)
 			)

@@ -20,49 +20,7 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 			array(
 
 			),
-			array(
-
-				'title' => array(
-					'type' => 'text',
-					'label' => __('Title', 'so-widgets-bundle'),
-				),
-
-				'sub_title' => array(
-					'type' => 'text',
-					'label' => __('Subtitle', 'so-widgets-bundle')
-				),
-
-				'design' => array(
-					'type' => 'section',
-					'label' => __('Design', 'so-widgets-bundle'),
-					'fields' => array(
-						'background_color' => array(
-							'type' => 'color',
-							'label' => __('Background color', 'so-widgets-bundle'),
-						),
-						'border_color' => array(
-							'type' => 'color',
-							'label' => __('Border color', 'so-widgets-bundle'),
-						),
-						'button_align' => array(
-							'type' => 'select',
-							'label' => __( 'Button align', 'so-widgets-bundle' ),
-							'default' => 'right',
-							'options' => array(
-								'left' => __( 'Left', 'so-widgets-bundle'),
-								'right' => __( 'Right', 'so-widgets-bundle'),
-							)
-						)
-					)
-				),
-
-				'button' => array(
-					'type' => 'widget',
-					'class' => 'SiteOrigin_Widget_Button_Widget',
-					'label' => __('Button', 'so-widgets-bundle'),
-				),
-
-			),
+			false ,
 			plugin_dir_path(__FILE__)
 		);
 	}
@@ -94,6 +52,52 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 					SOW_BUNDLE_VERSION
 				)
 			)
+		);
+	}
+
+	function initialize_form(){
+		return array(
+
+			'title' => array(
+				'type' => 'text',
+				'label' => __('Title', 'so-widgets-bundle'),
+			),
+
+			'sub_title' => array(
+				'type' => 'text',
+				'label' => __('Subtitle', 'so-widgets-bundle')
+			),
+
+			'design' => array(
+				'type' => 'section',
+				'label' => __('Design', 'so-widgets-bundle'),
+				'fields' => array(
+					'background_color' => array(
+						'type' => 'color',
+						'label' => __('Background color', 'so-widgets-bundle'),
+					),
+					'border_color' => array(
+						'type' => 'color',
+						'label' => __('Border color', 'so-widgets-bundle'),
+					),
+					'button_align' => array(
+						'type' => 'select',
+						'label' => __( 'Button align', 'so-widgets-bundle' ),
+						'default' => 'right',
+						'options' => array(
+							'left' => __( 'Left', 'so-widgets-bundle'),
+							'right' => __( 'Right', 'so-widgets-bundle'),
+						)
+					)
+				)
+			),
+
+			'button' => array(
+				'type' => 'widget',
+				'class' => 'SiteOrigin_Widget_Button_Widget',
+				'label' => __('Button', 'so-widgets-bundle'),
+			),
+
 		);
 	}
 

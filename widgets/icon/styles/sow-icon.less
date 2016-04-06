@@ -1,0 +1,19 @@
+@color: #000000;
+@size: 12px;
+@has_size: false;
+@alignment: center;
+
+.sow-icon {
+	text-align: @alignment;
+}
+
+.sow-icon span,
+.sow-icon a span {
+	display: inline-block;
+	color: @color !important;
+
+	.fontsize() when (@has_size = true) {
+		font-size: @size !important;
+	}
+	.fontsize();
+}

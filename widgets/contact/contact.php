@@ -17,455 +17,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				'description' => __( 'Create a simple contact form for your users to get hold of you.', 'so-widgets-bundle' ),
 			),
 			array(),
-			array(
-				'title' => array(
-					'type' => 'text',
-					'label' => __('Title', 'so-widgets-bundle'),
-					'default' => __('Contact Us', 'so-widgets-bundle'),
-				),
-
-				'display_title' => array(
-					'type' => 'checkbox',
-					'label' => __('Display title', 'so-widgets-bundle'),
-				),
-
-				'settings' => array(
-					'type' => 'section',
-					'label' => __('Settings', 'so-widgets-bundle'),
-					'hide' => true,
-					'fields' => array(
-						'to' => array(
-							'type' => 'text',
-							'label' => __('To email address', 'so-widgets-bundle'),
-							'description' => __('Where contact emails will be delivered to.', 'so-widgets-bundle'),
-							'sanitize' => 'multiple_emails',
-						),
-						'default_subject' => array(
-							'type' => 'text',
-							'label' => __('Default subject', 'so-widgets-bundle'),
-							'description' => __("Subject to use when there isn't one available.", 'so-widgets-bundle'),
-						),
-						'subject_prefix' => array(
-							'type' => 'text',
-							'label' => __('Subject prefix', 'so-widgets-bundle'),
-							'description' => __('Prefix added to all incoming email subjects.', 'so-widgets-bundle'),
-						),
-						'success_message' => array(
-							'type' => 'tinymce',
-							'label' => __('Success message', 'so-widgets-bundle'),
-							'description' => __('Message to display after message successfully sent.', 'so-widgets-bundle'),
-							'default' => __("Thanks for contacting us. We'll get back to you shortly.", 'so-widgets-bundle')
-						),
-						'submit_text' => array(
-							'type' => 'text',
-							'label' => __('Submit button text', 'so-widgets-bundle'),
-							'default' => __("Contact Us", 'so-widgets-bundle')
-						)
-					)
-				),
-
-				'fields' => array(
-
-					'type' => 'repeater',
-					'label' => __('Fields', 'so-widgets-bundle'),
-					'item_name' => __('Field', 'so-widgets-bundle'),
-					'item_label' => array(
-						'selector'     => "[id*='label']",
-					),
-					'fields' => array(
-
-						'type' => array(
-							'type' => 'select',
-							'label' => __( 'Field Type', 'so-widgets-bundle' ),
-							'options' => array(
-								'name' => __( 'Name', 'so-widgets-bundle' ),
-								'email' => __( 'Email', 'so-widgets-bundle' ),
-								'subject' => __( 'Subject', 'so-widgets-bundle' ),
-								'text' => __( 'Text', 'so-widgets-bundle' ),
-								'textarea' => __( 'Text Area', 'so-widgets-bundle' ),
-								'select' => __( 'Dropdown Select', 'so-widgets-bundle' ),
-								'checkboxes' => __( 'Checkboxes', 'so-widgets-bundle' ),
-							),
-							'state_emitter' => array(
-								'callback' => 'select',
-								'args' => array( 'field_type_{$repeater}' ),
-							)
-						),
-
-						'label' => array(
-							'type' => 'text',
-							'label' => __('Label', 'so-widgets-bundle'),
-						),
-
-						'required' => array(
-							'type' => 'section',
-							'label' => __('Required Field', 'so-widgets-bundle'),
-							'fields' => array(
-								'required' => array(
-									'type' => 'checkbox',
-									'label' => __('Required field', 'so-widgets-bundle'),
-									'description' => __('Is this field required?', 'so-widgets-bundle'),
-								),
-								'missing_message' => array(
-									'type' => 'text',
-									'label' => __('Missing message', 'so-widgets-bundle'),
-									'description' => __('Error message to display if this field is missing.', 'so-widgets-bundle'),
-								)
-							)
-						),
-
-						// This are for select and checkboxes
-						'options' => array(
-							'type' => 'repeater',
-							'label' => __( 'Options', 'so-widgets-bundle' ),
-							'item_name' => __( 'Option', 'so-widgets-bundle' ),
-							'item_label' => array( 'selector' => "[id*='value']" ),
-							'fields' => array(
-								'value' => array(
-									'type' => 'text',
-									'label' => __( 'Value', 'so-widgets-bundle' ),
-								),
-							),
-
-							// These are only required for a few states
-							'state_handler' => array(
-								'field_type_{$repeater}[select,checkboxes]' => array('show'),
-								'_else[field_type_{$repeater}]' => array( 'hide' ),
-							),
-						),
-					),
-				),
-
-				'spam' => array(
-					'type' => 'section',
-					'label' => __( 'Spam Protection', 'so-widgets-bundle' ),
-					'hide' => true,
-					'fields' => array(
-
-						'recaptcha' => array(
-							'type' => 'section',
-							'label' => __('Recaptcha', 'so-widgets-bundle'),
-							'fields' => array(
-								'use_captcha' => array(
-									'type' => 'checkbox',
-									'label' => __( 'Use Captcha', 'so-widgets-bundle' ),
-									'default' => false,
-								),
-								'site_key' => array(
-									'type' => 'text',
-									'label' => __( 'ReCaptcha Site Key', 'so-widgets-bundle' ),
-								),
-								'secret_key' => array(
-									'type' => 'text',
-									'label' => __( 'ReCaptcha Secret Key', 'so-widgets-bundle' ),
-								),
-								'theme' => array(
-									'type' => 'select',
-									'label' => __( 'Theme', 'so-widgets-bundle' ),
-									'default' => 'light',
-									'options' => array(
-										'light' => __( 'Light', 'so-widgets-bundle' ),
-										'dark' => __( 'Dark', 'so-widgets-bundle' ),
-									),
-								),
-								'type' => array(
-									'type' => 'select',
-									'label' => __( 'Challenge type', 'so-widgets-bundle' ),
-									'default' => 'image',
-									'options' => array(
-										'image' => __( 'Image', 'so-widgets-bundle' ),
-										'audio' => __( 'Audio', 'so-widgets-bundle' ),
-									),
-								),
-								'size' => array(
-									'type' => 'select',
-									'label' => __( 'Size', 'so-widgets-bundle' ),
-									'default' => 'normal',
-									'options' => array(
-										'normal' => __( 'Normal', 'so-widgets-bundle' ),
-										'compact' => __( 'Compact', 'so-widgets-bundle' ),
-									),
-								),
-							)
-						),
-
-						'akismet' => array(
-							'type' => 'section',
-							'label' => __('Akismet', 'so-widgets-bundle'),
-							'fields' => array(
-								'use_akismet'=> array(
-									'type' => 'checkbox',
-									'label' => __( 'Use Akismet filtering', 'so-widgets-bundle' ),
-									'default' => true,
-								),
-								'spam_action'=> array(
-									'type' => 'select',
-									'label' => __( 'Spam action', 'so-widgets-bundle' ),
-									'options' => array(
-										'error' => __('Show error message', 'so-widgets-bundle'),
-										'tag' => __('Tag as spam in subject', 'so-widgets-bundle'),
-									),
-									'description' => __('How to handle submissions that are identified as spam.', 'so-widgets-bundle'),
-									'default' => 'error',
-								),
-							)
-						),
-					)
-				),
-
-				'design' => array(
-					'type' => 'section',
-					'label' => __('Design', 'so-widgets-bundle'),
-					'hide' => true,
-					'fields' => array(
-
-						'container' => array(
-							'type' => 'section',
-							'label' => __('Container', 'so-widgets-bundle'),
-							'fields' => array(
-								'background' => array(
-									'type' => 'color',
-									'label' => __('Background color', 'so-widgets-bundle'),
-									'default' => '#f2f2f2',
-								),
-								'padding' => array(
-									'type' => 'measurement',
-									'label' => __('Padding', 'so-widgets-bundle'),
-									'default' => '10px',
-								),
-								'border_color' => array(
-									'type' => 'color',
-									'label' => __('Border color', 'so-widgets-bundle'),
-									'default' => '#c0c0c0',
-								),
-								'border_width' => array(
-									'type' => 'measurement',
-									'label' => __('Border width', 'so-widgets-bundle'),
-									'default' => '1px',
-								),
-								'border_style' => array(
-									'type' => 'select',
-									'label' => __('Border style', 'so-widgets-bundle'),
-									'default' => 'solid',
-									'options' => array(
-										'none' => __( 'None', 'so-widgets-bundle' ),
-										'hidden' => __( 'Hidden', 'so-widgets-bundle' ),
-										'dotted' => __( 'Dotted', 'so-widgets-bundle' ),
-										'dashed' => __( 'Dashed', 'so-widgets-bundle' ),
-										'solid' => __( 'Solid', 'so-widgets-bundle' ),
-										'double' => __( 'Double', 'so-widgets-bundle' ),
-										'groove' => __( 'Groove', 'so-widgets-bundle' ),
-										'ridge' => __( 'Ridge', 'so-widgets-bundle' ),
-										'inset' => __( 'Inset', 'so-widgets-bundle' ),
-										'outset' => __( 'Outset', 'so-widgets-bundle' ),
-									)
-								),
-							)
-						),
-
-						'labels' => array(
-							'type' => 'section',
-							'label' => __( 'Field labels', 'so-widgets-bundle' ),
-							'fields' => array(
-								'font' => array(
-									'type' => 'font',
-									'label' => __( 'Font', 'so-widgets-bundle' ),
-									'default' => 'default',
-								),
-								'size' => array(
-									'type' => 'measurement',
-									'label' => __( 'Font size', 'so-widgets-bundle' ),
-									'default' => 'default',
-								),
-								'color' => array(
-									'type' => 'color',
-									'label' => __( 'Color', 'so-widgets-bundle' ),
-									'default' => 'default',
-								),
-								'position' => array(
-									'type' => 'select',
-									'label' => __( 'Position', 'so-widgets-bundle' ),
-									'default' => 'above',
-									'options' => array(
-										'above' => __( 'Above', 'so-widgets-bundle' ),
-										'below' => __( 'Below', 'so-widgets-bundle' ),
-										'left' => __( 'Left', 'so-widgets-bundle' ),
-										'right' => __( 'Right', 'so-widgets-bundle' ),
-										'inside' => __( 'Inside', 'so-widgets-bundle' ),
-									),
-								),
-								'width' => array(
-									'type' => 'measurement',
-									'label' => __( 'Width', 'so-widgets-bundle' ),
-									'default' => '',
-								),
-								'align' => array(
-									'type' => 'select',
-									'label' => __( 'Align', 'so-widgets-bundle' ),
-									'default' => 'left',
-									'options' => array(
-										'left' => __( 'Left', 'so-widgets-bundle' ),
-										'right' => __( 'Right', 'so-widgets-bundle' ),
-										'center' => __( 'Center', 'so-widgets-bundle' ),
-										'justify' => __( 'Justify', 'so-widgets-bundle' ),
-									)
-								),
-							),
-						),
-
-						'errors' => array(
-							'type' => 'section',
-							'label' => __('Error messages', 'so-widgets-bundle'),
-							'fields' => array(
-								'background' => array(
-									'type' => 'color',
-									'label' => __('Error background color', 'so-widgets-bundle'),
-									'default' => '#fce4e5',
-								),
-								'border_color' => array(
-									'type' => 'color',
-									'label' => __('Error border color', 'so-widgets-bundle'),
-									'default' => '#ec666a',
-								),
-								'text_color' => array(
-									'type' => 'color',
-									'label' => __('Error text color', 'so-widgets-bundle'),
-									'default' => '#ec666a',
-								),
-								'padding' => array(
-									'type' => 'measurement',
-									'label' => __('Error padding', 'so-widgets-bundle'),
-									'default' => '5px',
-								),
-								'margin' => array(
-									'type' => 'measurement',
-									'label' => __('Error margin', 'so-widgets-bundle'),
-									'default' => '10px',
-								),
-							)
-						),
-
-						'submit' => array(
-							'type' => 'section',
-							'label' => __('Submit button', 'so-widgets-bundle'),
-							'fields' => array(
-								'styled' => array(
-									'type' => 'checkbox',
-									'label' => __('Style submit button', 'so-widgets-bundle'),
-									'description' => __('Style the button or leave it with default theme styling.', 'so-widgets-bundle'),
-									'default' => true,
-								),
-
-								'background_color' => array(
-									'type' => 'color',
-									'label' => __('Background color', 'so-widgets-bundle'),
-									'default' => '#eeeeee',
-								),
-								'background_gradient' => array(
-									'type' => 'slider',
-									'label' => __('Gradient intensity', 'so-widgets-bundle'),
-									'default' => 10,
-								),
-								'border_color' => array(
-									'type' => 'color',
-									'label' => __('Border color', 'so-widgets-bundle'),
-									'default' => '#989a9c',
-								),
-								'border_style' => array(
-									'type' => 'select',
-									'label' => __('Border style', 'so-widgets-bundle'),
-									'default' => 'solid',
-									'options' => array(
-										'none' => __('None', 'so-widgets-bundle'),
-										'solid' => __('Solid', 'so-widgets-bundle'),
-										'dotted' => __('Dotted', 'so-widgets-bundle'),
-										'dashed' => __('Dashed', 'so-widgets-bundle'),
-									)
-								),
-								'border_width' => array(
-									'type' => 'measurement',
-									'label' => __('Border width', 'so-widgets-bundle'),
-									'default' => '1px',
-								),
-								'border_radius' => array(
-									'type' => 'slider',
-									'label' => __('Border rounding', 'so-widgets-bundle'),
-									'default' => 3,
-									'max' => 50,
-									'min' => 0
-								),
-								'text_color' => array(
-									'type' => 'color',
-									'label' => __('Text color', 'so-widgets-bundle'),
-									'default' => '#5a5a5a',
-								),
-								'font_size' => array(
-									'type' => 'measurement',
-									'label' => __('Font size', 'so-widgets-bundle'),
-									'default' => 'default',
-								),
-								'weight' => array(
-									'type' => 'select',
-									'label' => __('Font weight', 'so-widgets-bundle'),
-									'default' => '500',
-									'options' => array(
-										'normal' => __('Normal', 'so-widgets-bundle'),
-										'500' => __('Semi-bold', 'so-widgets-bundle'),
-										'bold' => __('Bold', 'so-widgets-bundle'),
-									)
-								),
-								'padding' => array(
-									'type' => 'measurement',
-									'label' => __('Padding', 'so-widgets-bundle'),
-									'default' => '10px',
-								),
-								'inset_highlight' => array(
-									'type' => 'slider',
-									'label' => __('Inset highlight', 'so-widgets-bundle'),
-									'description' => __('The white highlight at the bottom of the button', 'so-widgets-bundle'),
-									'default' => 50,
-									'max' => 100,
-									'min' => 0
-								),
-							)
-						),
-
-						'focus' => array(
-							'type' => 'section',
-							'label' => __('Input focus', 'so-widgets-bundle'),
-							'fields' => array(
-								'style' => array(
-									'type' => 'select',
-									'label' => __( 'Style', 'so-widgets-bundle' ),
-									'default' => 'solid',
-									'options' => array(
-										'dotted' => __( 'Dotted', 'so-widgets-bundle' ),
-										'dashed' => __( 'Dashed', 'so-widgets-bundle' ),
-										'solid' => __( 'Solid', 'so-widgets-bundle' ),
-										'double' => __( 'Double', 'so-widgets-bundle' ),
-										'groove' => __( 'Groove', 'so-widgets-bundle' ),
-										'ridge' => __( 'Ridge', 'so-widgets-bundle' ),
-										'inset' => __( 'Inset', 'so-widgets-bundle' ),
-										'outset' => __( 'Outset', 'so-widgets-bundle' ),
-										'none' => __( 'None', 'so-widgets-bundle' ),
-										'hidden' => __( 'Hidden', 'so-widgets-bundle' ),
-									)
-								),
-								'color' => array(
-										'type' => 'color',
-										'label' => __( 'Color', 'so-widgets-bundle' ),
-										'default' => 'default',
-								),
-								'width' => array(
-									'type' => 'measurement',
-									'label' => __( 'Width', 'so-widgets-bundle' ),
-									'default' => '1px',
-								),
-							),
-						),
-					),
-				),
-			)
+			false,
+			plugin_dir_path(__FILE__)
 		);
 	}
 
@@ -484,6 +37,490 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			)
 		);
 		add_filter( 'siteorigin_widgets_sanitize_field_multiple_emails', array( $this, 'sanitize_multiple_emails' ) );
+	}
+
+	function initialize_form(){
+		return array(
+			'title' => array(
+				'type' => 'text',
+				'label' => __('Title', 'so-widgets-bundle'),
+				'default' => __('Contact Us', 'so-widgets-bundle'),
+			),
+
+			'display_title' => array(
+				'type' => 'checkbox',
+				'label' => __('Display title', 'so-widgets-bundle'),
+			),
+
+			'settings' => array(
+				'type' => 'section',
+				'label' => __('Settings', 'so-widgets-bundle'),
+				'hide' => true,
+				'fields' => array(
+					'to' => array(
+						'type' => 'text',
+						'label' => __('To email address', 'so-widgets-bundle'),
+						'description' => __('Where contact emails will be delivered to.', 'so-widgets-bundle'),
+						'sanitize' => 'multiple_emails',
+					),
+					'default_subject' => array(
+						'type' => 'text',
+						'label' => __('Default subject', 'so-widgets-bundle'),
+						'description' => __("Subject to use when there isn't one available.", 'so-widgets-bundle'),
+					),
+					'subject_prefix' => array(
+						'type' => 'text',
+						'label' => __('Subject prefix', 'so-widgets-bundle'),
+						'description' => __('Prefix added to all incoming email subjects.', 'so-widgets-bundle'),
+					),
+					'success_message' => array(
+						'type' => 'tinymce',
+						'label' => __('Success message', 'so-widgets-bundle'),
+						'description' => __('Message to display after message successfully sent.', 'so-widgets-bundle'),
+						'default' => __("Thanks for contacting us. We'll get back to you shortly.", 'so-widgets-bundle')
+					),
+					'submit_text' => array(
+						'type' => 'text',
+						'label' => __('Submit button text', 'so-widgets-bundle'),
+						'default' => __("Contact Us", 'so-widgets-bundle')
+					)
+				)
+			),
+
+			'fields' => array(
+
+				'type' => 'repeater',
+				'label' => __('Fields', 'so-widgets-bundle'),
+				'item_name' => __('Field', 'so-widgets-bundle'),
+				'item_label' => array(
+					'selector'     => "[id*='label']",
+				),
+				'fields' => array(
+
+					'type' => array(
+						'type' => 'select',
+						'label' => __( 'Field Type', 'so-widgets-bundle' ),
+						'options' => array(
+							'name' => __( 'Name', 'so-widgets-bundle' ),
+							'email' => __( 'Email', 'so-widgets-bundle' ),
+							'subject' => __( 'Subject', 'so-widgets-bundle' ),
+							'text' => __( 'Text', 'so-widgets-bundle' ),
+							'textarea' => __( 'Text Area', 'so-widgets-bundle' ),
+							'select' => __( 'Dropdown Select', 'so-widgets-bundle' ),
+							'checkboxes' => __( 'Checkboxes', 'so-widgets-bundle' ),
+						),
+						'state_emitter' => array(
+							'callback' => 'select',
+							'args' => array( 'field_type_{$repeater}' ),
+						)
+					),
+
+					'label' => array(
+						'type' => 'text',
+						'label' => __('Label', 'so-widgets-bundle'),
+					),
+
+					'description' => array(
+						'type' => 'text',
+						'label' => __('Description', 'so-widgets-bundle'),
+						'description' => __('This text will appear small beneath the input field.', 'so-widgets-bundle'),
+					),
+
+					'required' => array(
+						'type' => 'section',
+						'label' => __('Required Field', 'so-widgets-bundle'),
+						'fields' => array(
+							'required' => array(
+								'type' => 'checkbox',
+								'label' => __('Required field', 'so-widgets-bundle'),
+								'description' => __('Is this field required?', 'so-widgets-bundle'),
+							),
+							'missing_message' => array(
+								'type' => 'text',
+								'label' => __('Missing message', 'so-widgets-bundle'),
+								'description' => __('Error message to display if this field is missing.', 'so-widgets-bundle'),
+							)
+						)
+					),
+
+					// This are for select and checkboxes
+					'options' => array(
+						'type' => 'repeater',
+						'label' => __( 'Options', 'so-widgets-bundle' ),
+						'item_name' => __( 'Option', 'so-widgets-bundle' ),
+						'item_label' => array( 'selector' => "[id*='value']" ),
+						'fields' => array(
+							'value' => array(
+								'type' => 'text',
+								'label' => __( 'Value', 'so-widgets-bundle' ),
+							),
+						),
+
+						// These are only required for a few states
+						'state_handler' => array(
+							'field_type_{$repeater}[select,checkboxes]' => array('show'),
+							'_else[field_type_{$repeater}]' => array( 'hide' ),
+						),
+					),
+				),
+			),
+
+			'spam' => array(
+				'type' => 'section',
+				'label' => __( 'Spam Protection', 'so-widgets-bundle' ),
+				'hide' => true,
+				'fields' => array(
+
+					'recaptcha' => array(
+						'type' => 'section',
+						'label' => __('Recaptcha', 'so-widgets-bundle'),
+						'fields' => array(
+							'use_captcha' => array(
+								'type' => 'checkbox',
+								'label' => __( 'Use Captcha', 'so-widgets-bundle' ),
+								'default' => false,
+							),
+							'site_key' => array(
+								'type' => 'text',
+								'label' => __( 'ReCaptcha Site Key', 'so-widgets-bundle' ),
+							),
+							'secret_key' => array(
+								'type' => 'text',
+								'label' => __( 'ReCaptcha Secret Key', 'so-widgets-bundle' ),
+							),
+							'theme' => array(
+								'type' => 'select',
+								'label' => __( 'Theme', 'so-widgets-bundle' ),
+								'default' => 'light',
+								'options' => array(
+									'light' => __( 'Light', 'so-widgets-bundle' ),
+									'dark' => __( 'Dark', 'so-widgets-bundle' ),
+								),
+							),
+							'type' => array(
+								'type' => 'select',
+								'label' => __( 'Challenge type', 'so-widgets-bundle' ),
+								'default' => 'image',
+								'options' => array(
+									'image' => __( 'Image', 'so-widgets-bundle' ),
+									'audio' => __( 'Audio', 'so-widgets-bundle' ),
+								),
+							),
+							'size' => array(
+								'type' => 'select',
+								'label' => __( 'Size', 'so-widgets-bundle' ),
+								'default' => 'normal',
+								'options' => array(
+									'normal' => __( 'Normal', 'so-widgets-bundle' ),
+									'compact' => __( 'Compact', 'so-widgets-bundle' ),
+								),
+							),
+						)
+					),
+
+					'akismet' => array(
+						'type' => 'section',
+						'label' => __('Akismet', 'so-widgets-bundle'),
+						'fields' => array(
+							'use_akismet'=> array(
+								'type' => 'checkbox',
+								'label' => __( 'Use Akismet filtering', 'so-widgets-bundle' ),
+								'default' => true,
+							),
+							'spam_action'=> array(
+								'type' => 'select',
+								'label' => __( 'Spam action', 'so-widgets-bundle' ),
+								'options' => array(
+									'error' => __('Show error message', 'so-widgets-bundle'),
+									'tag' => __('Tag as spam in subject', 'so-widgets-bundle'),
+								),
+								'description' => __('How to handle submissions that are identified as spam.', 'so-widgets-bundle'),
+								'default' => 'error',
+							),
+						)
+					),
+				)
+			),
+
+			'design' => array(
+				'type' => 'section',
+				'label' => __('Design', 'so-widgets-bundle'),
+				'hide' => true,
+				'fields' => array(
+
+					'container' => array(
+						'type' => 'section',
+						'label' => __('Container', 'so-widgets-bundle'),
+						'fields' => array(
+							'background' => array(
+								'type' => 'color',
+								'label' => __('Background color', 'so-widgets-bundle'),
+								'default' => '#f2f2f2',
+							),
+							'padding' => array(
+								'type' => 'measurement',
+								'label' => __('Padding', 'so-widgets-bundle'),
+								'default' => '10px',
+							),
+							'border_color' => array(
+								'type' => 'color',
+								'label' => __('Border color', 'so-widgets-bundle'),
+								'default' => '#c0c0c0',
+							),
+							'border_width' => array(
+								'type' => 'measurement',
+								'label' => __('Border width', 'so-widgets-bundle'),
+								'default' => '1px',
+							),
+							'border_style' => array(
+								'type' => 'select',
+								'label' => __('Border style', 'so-widgets-bundle'),
+								'default' => 'solid',
+								'options' => array(
+									'none' => __( 'None', 'so-widgets-bundle' ),
+									'hidden' => __( 'Hidden', 'so-widgets-bundle' ),
+									'dotted' => __( 'Dotted', 'so-widgets-bundle' ),
+									'dashed' => __( 'Dashed', 'so-widgets-bundle' ),
+									'solid' => __( 'Solid', 'so-widgets-bundle' ),
+									'double' => __( 'Double', 'so-widgets-bundle' ),
+									'groove' => __( 'Groove', 'so-widgets-bundle' ),
+									'ridge' => __( 'Ridge', 'so-widgets-bundle' ),
+									'inset' => __( 'Inset', 'so-widgets-bundle' ),
+									'outset' => __( 'Outset', 'so-widgets-bundle' ),
+								)
+							),
+						)
+					),
+
+					'labels' => array(
+						'type' => 'section',
+						'label' => __( 'Field labels', 'so-widgets-bundle' ),
+						'fields' => array(
+							'font' => array(
+								'type' => 'font',
+								'label' => __( 'Font', 'so-widgets-bundle' ),
+								'default' => 'default',
+							),
+							'size' => array(
+								'type' => 'measurement',
+								'label' => __( 'Font size', 'so-widgets-bundle' ),
+								'default' => 'default',
+							),
+							'color' => array(
+								'type' => 'color',
+								'label' => __( 'Color', 'so-widgets-bundle' ),
+								'default' => 'default',
+							),
+							'position' => array(
+								'type' => 'select',
+								'label' => __( 'Position', 'so-widgets-bundle' ),
+								'default' => 'above',
+								'options' => array(
+									'above' => __( 'Above', 'so-widgets-bundle' ),
+									'below' => __( 'Below', 'so-widgets-bundle' ),
+									'left' => __( 'Left', 'so-widgets-bundle' ),
+									'right' => __( 'Right', 'so-widgets-bundle' ),
+									'inside' => __( 'Inside', 'so-widgets-bundle' ),
+								),
+							),
+							'width' => array(
+								'type' => 'measurement',
+								'label' => __( 'Width', 'so-widgets-bundle' ),
+								'default' => '',
+							),
+							'align' => array(
+								'type' => 'select',
+								'label' => __( 'Align', 'so-widgets-bundle' ),
+								'default' => 'left',
+								'options' => array(
+									'left' => __( 'Left', 'so-widgets-bundle' ),
+									'right' => __( 'Right', 'so-widgets-bundle' ),
+									'center' => __( 'Center', 'so-widgets-bundle' ),
+									'justify' => __( 'Justify', 'so-widgets-bundle' ),
+								)
+							),
+						),
+					),
+
+					'descriptions' => array(
+						'type' => 'section',
+						'label' => __( 'Field descriptions', 'so-widgets-bundle' ),
+						'fields' => array(
+							'size' =>  array(
+								'type' => 'measurement',
+								'label' => __( 'Size', 'so-widgets-bundle' ),
+								'default' => '0.9em',
+							),
+							'color' =>  array(
+								'type' => 'color',
+								'label' => __( 'Color', 'so-widgets-bundle' ),
+								'default' => '#999999',
+							),
+							'style' =>  array(
+								'type' => 'select',
+								'label' => __( 'Style', 'so-widgets-bundle' ),
+								'default' => 'italic',
+								'options' => array(
+									'italic' => __( 'Italic', 'so-widgets-bundle' ),
+									'normal' => __( 'Normal', 'so-widgets-bundle' ),
+								)
+							),
+						)
+					),
+
+					'errors' => array(
+						'type' => 'section',
+						'label' => __('Error messages', 'so-widgets-bundle'),
+						'fields' => array(
+							'background' => array(
+								'type' => 'color',
+								'label' => __('Error background color', 'so-widgets-bundle'),
+								'default' => '#fce4e5',
+							),
+							'border_color' => array(
+								'type' => 'color',
+								'label' => __('Error border color', 'so-widgets-bundle'),
+								'default' => '#ec666a',
+							),
+							'text_color' => array(
+								'type' => 'color',
+								'label' => __('Error text color', 'so-widgets-bundle'),
+								'default' => '#ec666a',
+							),
+							'padding' => array(
+								'type' => 'measurement',
+								'label' => __('Error padding', 'so-widgets-bundle'),
+								'default' => '5px',
+							),
+							'margin' => array(
+								'type' => 'measurement',
+								'label' => __('Error margin', 'so-widgets-bundle'),
+								'default' => '10px',
+							),
+						)
+					),
+
+					'submit' => array(
+						'type' => 'section',
+						'label' => __('Submit button', 'so-widgets-bundle'),
+						'fields' => array(
+							'styled' => array(
+								'type' => 'checkbox',
+								'label' => __('Style submit button', 'so-widgets-bundle'),
+								'description' => __('Style the button or leave it with default theme styling.', 'so-widgets-bundle'),
+								'default' => true,
+							),
+
+							'background_color' => array(
+								'type' => 'color',
+								'label' => __('Background color', 'so-widgets-bundle'),
+								'default' => '#eeeeee',
+							),
+							'background_gradient' => array(
+								'type' => 'slider',
+								'label' => __('Gradient intensity', 'so-widgets-bundle'),
+								'default' => 10,
+							),
+							'border_color' => array(
+								'type' => 'color',
+								'label' => __('Border color', 'so-widgets-bundle'),
+								'default' => '#989a9c',
+							),
+							'border_style' => array(
+								'type' => 'select',
+								'label' => __('Border style', 'so-widgets-bundle'),
+								'default' => 'solid',
+								'options' => array(
+									'none' => __('None', 'so-widgets-bundle'),
+									'solid' => __('Solid', 'so-widgets-bundle'),
+									'dotted' => __('Dotted', 'so-widgets-bundle'),
+									'dashed' => __('Dashed', 'so-widgets-bundle'),
+								)
+							),
+							'border_width' => array(
+								'type' => 'measurement',
+								'label' => __('Border width', 'so-widgets-bundle'),
+								'default' => '1px',
+							),
+							'border_radius' => array(
+								'type' => 'slider',
+								'label' => __('Border rounding', 'so-widgets-bundle'),
+								'default' => 3,
+								'max' => 50,
+								'min' => 0
+							),
+							'text_color' => array(
+								'type' => 'color',
+								'label' => __('Text color', 'so-widgets-bundle'),
+								'default' => '#5a5a5a',
+							),
+							'font_size' => array(
+								'type' => 'measurement',
+								'label' => __('Font size', 'so-widgets-bundle'),
+								'default' => 'default',
+							),
+							'weight' => array(
+								'type' => 'select',
+								'label' => __('Font weight', 'so-widgets-bundle'),
+								'default' => '500',
+								'options' => array(
+									'normal' => __('Normal', 'so-widgets-bundle'),
+									'500' => __('Semi-bold', 'so-widgets-bundle'),
+									'bold' => __('Bold', 'so-widgets-bundle'),
+								)
+							),
+							'padding' => array(
+								'type' => 'measurement',
+								'label' => __('Padding', 'so-widgets-bundle'),
+								'default' => '10px',
+							),
+							'inset_highlight' => array(
+								'type' => 'slider',
+								'label' => __('Inset highlight', 'so-widgets-bundle'),
+								'description' => __('The white highlight at the bottom of the button', 'so-widgets-bundle'),
+								'default' => 50,
+								'max' => 100,
+								'min' => 0
+							),
+						)
+					),
+
+					'focus' => array(
+						'type' => 'section',
+						'label' => __('Input focus', 'so-widgets-bundle'),
+						'fields' => array(
+							'style' => array(
+								'type' => 'select',
+								'label' => __( 'Style', 'so-widgets-bundle' ),
+								'default' => 'solid',
+								'options' => array(
+									'dotted' => __( 'Dotted', 'so-widgets-bundle' ),
+									'dashed' => __( 'Dashed', 'so-widgets-bundle' ),
+									'solid' => __( 'Solid', 'so-widgets-bundle' ),
+									'double' => __( 'Double', 'so-widgets-bundle' ),
+									'groove' => __( 'Groove', 'so-widgets-bundle' ),
+									'ridge' => __( 'Ridge', 'so-widgets-bundle' ),
+									'inset' => __( 'Inset', 'so-widgets-bundle' ),
+									'outset' => __( 'Outset', 'so-widgets-bundle' ),
+									'none' => __( 'None', 'so-widgets-bundle' ),
+									'hidden' => __( 'Hidden', 'so-widgets-bundle' ),
+								)
+							),
+							'color' => array(
+								'type' => 'color',
+								'label' => __( 'Color', 'so-widgets-bundle' ),
+								'default' => 'default',
+							),
+							'width' => array(
+								'type' => 'measurement',
+								'label' => __( 'Width', 'so-widgets-bundle' ),
+								'default' => '1px',
+							),
+						),
+					),
+				),
+			),
+		);
 	}
 
 	function sanitize_multiple_emails( $value ) {
@@ -546,7 +583,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		unset($instance['title']);
 		unset($instance['display_title']);
 		unset($instance['design']);
-		unset($instance['panels_data']);
+		unset($instance['panels_info']);
+		unset($instance['_sow_form_id']);
 
 		$vars['instance_hash'] = md5( serialize( $instance) );
 		return $vars;
@@ -579,6 +617,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'label_position' => $label_position,
 			'label_width' => $instance['design']['labels']['width'],
 			'label_align' => $instance['design']['labels']['align'],
+
+			// Field descriptions
+			'description_font_size' => $instance['design']['descriptions']['size'],
+			'description_font_color' => $instance['design']['descriptions']['color'],
+			'description_font_style' => $instance['design']['descriptions']['style'],
 
 			// The error message styles
 			'error_background' => $instance['design']['errors']['background'],
@@ -723,6 +766,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				$this->render_form_label( $field_id, $field['label'], $instance );
 			}
 
+			if ( ! empty( $field['description'] ) ) {
+				?>
+				<div class="sow-form-field-description">
+				<?php echo wp_kses_post( $field['description'] ) ?>
+				</div>
+				<?php
+			}
+
 			?></div><?php
 		}
 	}
@@ -747,6 +798,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			array(
 				'status' => null,
 			);
+		}
+
+		// Make sure that this action only runs once per instance
+		static $send_cache = array();
+		$send_cache_hash = md5( serialize( $instance ) . '::' . $storage_hash );
+		if( isset( $send_cache[$send_cache_hash] ) ) {
+			return $send_cache[$send_cache_hash];
 		}
 
 		$errors = array();
@@ -840,10 +898,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		return array(
+		$send_cache[$send_cache_hash] = array(
 			'status' => empty($errors) ? 'success' : 'fail',
 			'errors' => $errors
 		);
+
+		return $send_cache[$send_cache_hash];
 	}
 
 	/**
@@ -972,8 +1032,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			// Store the version with the expired hashes removed
 			update_option( 'so_contact_hashes', $hash_check, true );
 
-			// This is a duplicate message
-			return new WP_Error( 1, __('Message already sent', 'so-widgets-bundle') );
+			// This message has already been sent successfully
+			return true;
 		}
 
 		$mail_success = wp_mail( $instance['settings']['to'], $email_fields['subject'], $body, $headers );

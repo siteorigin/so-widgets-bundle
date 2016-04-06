@@ -41,6 +41,19 @@
 	.sow-field-container {
 		overflow: hidden;
 		display: block;
+
+		textarea:focus,
+		input:focus,
+		> :focus {
+			@outline_style: solid;
+			@outline_color: default;
+			@outline_width: 1px;
+
+			// NB: Do not optimize this into a single line, otherwise the removal of 'default' values won't work.
+			outline-style: @outline_style;
+			outline-color: @outline_color;
+			outline-width: @outline_width;
+		}
 	}
 
 	textarea,
@@ -72,15 +85,16 @@
 		}
 	}
 
-	> :focus {
-		@outline_style: solid;
-		@outline_color: default;
-		@outline_width: 1px;
+	@description_font_size: 0.9em;
+	@description_font_color: #999999;
+	@description_font_style: italic;
 
-		// NB: Do not optimize this into a single line, otherwise the removal of 'default' values won't work.
-		outline-style: @outline_style;
-		outline-color: @outline_color;
-		outline-width: @outline_width;
+	.sow-form-field-description {
+		font-size: @description_font_size;
+		margin-top: 0.2em;
+		margin-left: 0.2em;
+		color: @description_font_color;
+		font-style: @description_font_style;
 	}
 }
 

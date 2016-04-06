@@ -17,8 +17,10 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 				class="sow-icon-container <?php echo !empty($instance['container_shape']) ? 'sow-container-' . esc_attr($instance['container_shape']) : 'sow-container-none'?>"
 				style="font-size: <?php echo intval($instance['container_size']) ?>px; color: <?php echo esc_attr($feature['container_color']) ?>; width: <?php echo intval($instance['container_size']) ?>px; height: <?php echo intval($instance['container_size']) ?>px;">
 				<?php
+				$icon_styles = array();
 				if( !empty($feature['icon_image']) ) {
-					$attachment = wp_get_attachment_image_src($feature['icon_image']);
+					$size = empty( $feature['icon_image_size'] ) ? 'thumbnail' : $feature['icon_image_size'];
+					$attachment = wp_get_attachment_image_src( $feature['icon_image'], $size );
 					if(!empty($attachment)) {
 						$icon_styles[] = 'background-image: url(' . sow_esc_url($attachment[0]) . ')';
 						if(!empty($instance['icon_size'])) $icon_styles[] = 'font-size: '.intval($instance['icon_size']).'px';
@@ -27,7 +29,6 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 					}
 				}
 				else {
-					$icon_styles = array();
 					if(!empty($instance['icon_size'])) $icon_styles[] = 'font-size: '.intval($instance['icon_size']).'px';
 					if(!empty($feature['icon_color'])) $icon_styles[] = 'color: '.$feature['icon_color'];
 

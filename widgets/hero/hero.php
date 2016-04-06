@@ -22,167 +22,8 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 				'panels_title' => false,
 			),
 			array( ),
-			array(
-				'frames' => array(
-					'type' => 'repeater',
-					'label' => __('Hero frames', 'so-widgets-bundle'),
-					'item_name' => __('Frame', 'so-widgets-bundle'),
-					'item_label' => array(
-						'selector' => "[id*='frames-title']",
-						'update_event' => 'change',
-						'value_method' => 'val'
-					),
-
-					'fields' => array(
-
-						'content' => array(
-							'type' => 'tinymce',
-							'label' => __( 'Content', 'so-widgets-bundle' ),
-						),
-
-						'buttons' => array(
-							'type' => 'repeater',
-							'label' => __('Buttons', 'so-widgets-bundle'),
-							'item_name' => __('Button', 'so-widgets-bundle'),
-							'description' => __('Add [buttons] shortcode to the content to insert these buttons.', 'so-widgets-bundle'),
-
-							'item_label' => array(
-								'selector' => "[id*='buttons-button-text']",
-								'update_event' => 'change',
-								'value_method' => 'val'
-							),
-							'fields' => array(
-								'button' => array(
-									'type' => 'widget',
-									'class' => 'SiteOrigin_Widget_Button_Widget',
-									'label' => __('Button', 'so-widgets-bundle'),
-									'collapsible' => false,
-								)
-							)
-						),
-
-						'background' => array(
-							'type' => 'section',
-							'label' => __('Background', 'so-widgets-bundle'),
-							'fields' => array(
-								'image' => array(
-									'type' => 'media',
-									'label' => __( 'Background image', 'so-widgets-bundle' ),
-									'library' => 'image',
-									'fallback' => true,
-								),
-
-								'opacity' => array(
-									'label' => __( 'Background image opacity', 'so-widgets-bundle' ),
-									'type' => 'slider',
-									'min' => 0,
-									'max' => 100,
-									'default' => 100,
-								),
-
-								'color' => array(
-									'type' => 'color',
-									'label' => __( 'Background color', 'so-widgets-bundle' ),
-									'default' => '#333333',
-								),
-
-								'url' => array(
-									'type' => 'link',
-									'label' => __( 'Destination URL', 'so-widgets-bundle' ),
-								),
-
-								'new_window' => array(
-									'type' => 'checkbox',
-									'label' => __( 'Open URL in a new window', 'so-widgets-bundle' ),
-								),
-
-								'videos' => array(
-									'type' => 'repeater',
-									'item_name' => __('Video', 'so-widgets-bundle'),
-									'label' => __('Background videos', 'so-widgets-bundle'),
-									'item_label' => array(
-										'selector' => "[id*='frames-background_videos-url']",
-										'update_event' => 'change',
-										'value_method' => 'val'
-									),
-									'fields' => $this->video_form_fields(),
-								),
-							)
-						),
-					),
-				),
-
-				'controls' => array(
-					'type' => 'section',
-					'label' => __('Slider Controls', 'so-widgets-bundle'),
-					'fields' => $this->control_form_fields()
-				),
-
-				'design' => array(
-					'type' => 'section',
-					'label' => __('Design and Layout', 'so-widgets-bundle'),
-					'fields' => array(
-
-						'height' => array(
-							'type' => 'measurement',
-							'label' => __( 'Height', 'so-widgets-bundle' ),
-							'default' => 'default',
-						),
-
-						'padding' => array(
-							'type' => 'measurement',
-							'label' => __('Top and bottom padding', 'so-widgets-bundle'),
-							'default' => '50px',
-						),
-
-						'extra_top_padding' => array(
-							'type' => 'measurement',
-							'label' => __('Extra top padding', 'so-widgets-bundle'),
-							'description' => __('Additional padding added to the top of the slider', 'so-widgets-bundle'),
-							'default' => '0px',
-						),
-
-						'padding_sides' => array(
-							'type' => 'measurement',
-							'label' => __('Side padding', 'so-widgets-bundle'),
-							'default' => '20px',
-						),
-
-						'width' => array(
-							'type' => 'measurement',
-							'label' => __('Maximum container width', 'so-widgets-bundle'),
-							'default' => '1280px',
-						),
-
-						'heading_font' => array(
-							'type' => 'font',
-							'label' => __('Heading font', 'so-widgets-bundle'),
-							'default' => '',
-						),
-
-						'heading_size' => array(
-							'type' => 'measurement',
-							'label' => __('Heading size', 'so-widgets-bundle'),
-							'default' => '38px',
-						),
-
-						'heading_shadow' => array(
-							'type' => 'slider',
-							'label' => __('Heading shadow intensity', 'so-widgets-bundle'),
-							'max' => 100,
-							'min' => 0,
-							'default' => 50,
-						),
-
-						'text_size' => array(
-							'type' => 'measurement',
-							'label' => __('Text size', 'so-widgets-bundle'),
-							'default' => '16px',
-						),
-
-					)
-				),
-			)
+			false,
+			plugin_dir_path(__FILE__)
 		);
 	}
 
@@ -194,6 +35,182 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		// Let the slider base class do its initialization
 		parent::initialize();
+	}
+
+	function initialize_form(){
+		return array(
+			'frames' => array(
+				'type' => 'repeater',
+				'label' => __('Hero frames', 'so-widgets-bundle'),
+				'item_name' => __('Frame', 'so-widgets-bundle'),
+				'item_label' => array(
+					'selector' => "[id*='frames-title']",
+					'update_event' => 'change',
+					'value_method' => 'val'
+				),
+
+				'fields' => array(
+
+					'content' => array(
+						'type' => 'tinymce',
+						'label' => __( 'Content', 'so-widgets-bundle' ),
+					),
+
+					'buttons' => array(
+						'type' => 'repeater',
+						'label' => __('Buttons', 'so-widgets-bundle'),
+						'item_name' => __('Button', 'so-widgets-bundle'),
+						'description' => __('Add [buttons] shortcode to the content to insert these buttons.', 'so-widgets-bundle'),
+
+						'item_label' => array(
+							'selector' => "[id*='buttons-button-text']",
+							'update_event' => 'change',
+							'value_method' => 'val'
+						),
+						'fields' => array(
+							'button' => array(
+								'type' => 'widget',
+								'class' => 'SiteOrigin_Widget_Button_Widget',
+								'label' => __('Button', 'so-widgets-bundle'),
+								'collapsible' => false,
+							)
+						)
+					),
+
+					'background' => array(
+						'type' => 'section',
+						'label' => __('Background', 'so-widgets-bundle'),
+						'fields' => array(
+							'image' => array(
+								'type' => 'media',
+								'label' => __( 'Background image', 'so-widgets-bundle' ),
+								'library' => 'image',
+								'fallback' => true,
+							),
+
+							'opacity' => array(
+								'label' => __( 'Background image opacity', 'so-widgets-bundle' ),
+								'type' => 'slider',
+								'min' => 0,
+								'max' => 100,
+								'default' => 100,
+							),
+
+							'color' => array(
+								'type' => 'color',
+								'label' => __( 'Background color', 'so-widgets-bundle' ),
+								'default' => '#333333',
+							),
+
+							'url' => array(
+								'type' => 'link',
+								'label' => __( 'Destination URL', 'so-widgets-bundle' ),
+							),
+
+							'new_window' => array(
+								'type' => 'checkbox',
+								'label' => __( 'Open URL in a new window', 'so-widgets-bundle' ),
+							),
+
+							'videos' => array(
+								'type' => 'repeater',
+								'item_name' => __('Video', 'so-widgets-bundle'),
+								'label' => __('Background videos', 'so-widgets-bundle'),
+								'item_label' => array(
+									'selector' => "[id*='frames-background_videos-url']",
+									'update_event' => 'change',
+									'value_method' => 'val'
+								),
+								'fields' => $this->video_form_fields(),
+							),
+						)
+					),
+				),
+			),
+
+			'controls' => array(
+				'type' => 'section',
+				'label' => __('Slider Controls', 'so-widgets-bundle'),
+				'fields' => $this->control_form_fields()
+			),
+
+			'design' => array(
+				'type' => 'section',
+				'label' => __('Design and Layout', 'so-widgets-bundle'),
+				'fields' => array(
+
+					'height' => array(
+						'type' => 'measurement',
+						'label' => __( 'Height', 'so-widgets-bundle' ),
+						'default' => 'default',
+					),
+
+					'padding' => array(
+						'type' => 'measurement',
+						'label' => __('Top and bottom padding', 'so-widgets-bundle'),
+						'default' => '50px',
+					),
+
+					'extra_top_padding' => array(
+						'type' => 'measurement',
+						'label' => __('Extra top padding', 'so-widgets-bundle'),
+						'description' => __('Additional padding added to the top of the slider', 'so-widgets-bundle'),
+						'default' => '0px',
+					),
+
+					'padding_sides' => array(
+						'type' => 'measurement',
+						'label' => __('Side padding', 'so-widgets-bundle'),
+						'default' => '20px',
+					),
+
+					'width' => array(
+						'type' => 'measurement',
+						'label' => __('Maximum container width', 'so-widgets-bundle'),
+						'default' => '1280px',
+					),
+
+					'heading_font' => array(
+						'type' => 'font',
+						'label' => __('Heading font', 'so-widgets-bundle'),
+						'default' => '',
+					),
+
+					'heading_color' => array(
+						'type' => 'color',
+						'label' => __('Heading color', 'so-widgets-bundle'),
+						'default' => '#FFFFFF',
+					),
+
+					'heading_size' => array(
+						'type' => 'measurement',
+						'label' => __('Heading size', 'so-widgets-bundle'),
+						'default' => '38px',
+					),
+
+					'heading_shadow' => array(
+						'type' => 'slider',
+						'label' => __('Heading shadow intensity', 'so-widgets-bundle'),
+						'max' => 100,
+						'min' => 0,
+						'default' => 50,
+					),
+
+					'text_size' => array(
+						'type' => 'measurement',
+						'label' => __('Text size', 'so-widgets-bundle'),
+						'default' => '16px',
+					),
+
+					'text_color' => array(
+						'type' => 'color',
+						'label' => __('Text color', 'so-widgets-bundle'),
+						'default' => '#F6F6F6',
+					),
+
+				)
+			),
+		);
 	}
 
 	/**
@@ -291,6 +308,9 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		}
 
 		$less['heading_shadow'] = intval( $instance['design']['heading_shadow'] );
+
+		$less['heading_color'] = $instance['design']['heading_color'];
+		$less['text_color'] = $instance['design']['text_color'];
 
 		$font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
 		$less['heading_font'] = $font['family'];
