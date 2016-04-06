@@ -51,6 +51,17 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.5.10 - April 5 2016 =
+* Added Icon widget.
+* Moved widget form arrays into separate functions to improve performance.
+* Cache widget style CSS if it can't be saved to filesystem.
+* Improved preview checking so preview style CSS isn't stored.
+* Contact Form: Improved instance hashing for compatibility with Yoast SEO.
+* Contact Form: Added description field and customisation.
+* Slider: Ensure correct styles are applied to slider images when a link is defined.
+* Features: Allow user to select size for uploaded icon image.
+* Price Table: Ensure feature icons always vertically centered, alongside feature text.
+
 = 1.5.9 - February 26 2016 =
 * Contact Form: Fixed hash checking for duplicate emails.
 * Contact Form: Replace default emails with admin_email.
