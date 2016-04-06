@@ -6,7 +6,7 @@
  */
 ?>
 
-<div id="sow-icon-container" class="sow-icon">
+<div class="sow-icon-widget-container sow-icon">
 	<?php if ( ! empty( $url ) ) { ?>
 	<a href="<?php esc_attr_e( $url ) ?>" <?php if ( ! empty( $new_window ) ) echo 'target="_blank"'; ?>>
 	<?php } ?>
