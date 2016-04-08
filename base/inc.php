@@ -174,11 +174,24 @@ function siteorigin_widget_search_posts_action(){
 
 	header('content-type: application/json');
 
+
 	// Get all public post types, besides attachments
-	$post_types = (array) get_post_types( array(
+	$available_post_types = (array) get_post_types( array(
 		'public'   => true
 	) );
-	unset($post_types['attachment']);
+
+	$pt_input = empty( $_GET['postTypes'] ) ? false : explode( ',', $_GET['postTypes'] );
+	$post_types = array();
+	if ( ! empty( $pt_input ) ) {
+		foreach ( $pt_input as $post_type ) {
+			if ( in_array( $post_type, $available_post_types ) ) {
+				$post_types[] = $post_type;
+			}
+		}
+	} else {
+		$post_types = $available_post_types;
+		unset($post_types['attachment']);
+	}
 
 	$post_types = apply_filters( 'siteorigin_widgets_search_posts_post_types', $post_types );
 
