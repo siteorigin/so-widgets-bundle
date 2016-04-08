@@ -35,8 +35,6 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 	}
 
 	function initialize_form(){
-		$form['container_shape']['options'] = include dirname( __FILE__ ) . '/inc/containers.php';
-
 		$image_size_configs = $this->get_image_sizes();
 		$sizes = array();
 		foreach( $image_size_configs as $name => $size_config) {
@@ -187,7 +185,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				'type' => 'select',
 				'label' => __('Container shape', 'so-widgets-bundle'),
 				'default' => 'round',
-				'options' => array(),
+				'options' => include dirname( __FILE__ ) . '/inc/containers.php',
 			),
 
 			'container_size' => array(
