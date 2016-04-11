@@ -73,7 +73,7 @@ class SiteOrigin_Widget_Field_Class_Loader {
 	/**
 	 * Initialize and register the class field loader
 	 */
-	function extend(){
+	public function extend(){
 		$class_prefixes = apply_filters( 'siteorigin_widgets_field_class_prefixes', array() );
 		$this->add_class_prefixes( $class_prefixes );
 
