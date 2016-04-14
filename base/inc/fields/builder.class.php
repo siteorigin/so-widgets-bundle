@@ -9,30 +9,19 @@ class SiteOrigin_Widget_Field_Builder extends SiteOrigin_Widget_Field_Base {
 
 	protected function render_field( $value, $instance ){
 		if( defined('SITEORIGIN_PANELS_VERSION') ) {
-			if( ! is_string( $value ) ) {
-				$value = json_encode( $value );
-			}
-
 			// Normal rendering code
 			?>
-			<div class="siteorigin-page-builder-widget" data-mode="dialog">
+			<div class="siteorigin-page-builder-field" data-mode="dialog">
 				<p>
 					<button class="button-secondary siteorigin-panels-display-builder" ><?php _e('Open Builder', 'siteorigin-panels') ?></button>
 				</p>
 				<input
 					type="hidden"
 					class="siteorigin-widget-input panels-data"
-					value="<?php echo esc_attr( $value ) ?>"
+					value="<?php echo esc_attr( json_encode( $value ) ) ?>"
 					name="<?php echo esc_attr( $this->element_name ) ?>"
 					id="<?php echo esc_attr( $this->element_id ) ?>"
 					/>
-
-				<script type="text/javascript">
-					( function( panelsData ){
-						// Create the panels_data input
-						document.getElementById('<?php echo $this->element_id ?>').value = JSON.stringify( panelsData );
-					} )( <?php echo $value ?> );
-				</script>
 			</div>
 			<?php
 		}

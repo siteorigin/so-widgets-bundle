@@ -492,7 +492,7 @@
 	        if( typeof jQuery.fn.soPanelsSetupBuilderWidget !== 'undefined' ) {
 		        $fields.filter( '.siteorigin-widget-field-type-builder' ).each( function(){
 			        var $$ = $(this);
-			        $$.find('> .siteorigin-page-builder-widget' ).soPanelsSetupBuilderWidget();
+			        $$.find('> .siteorigin-page-builder-field' ).soPanelsSetupBuilderWidget();
 		        } );
 	        }
 
