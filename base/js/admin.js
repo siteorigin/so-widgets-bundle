@@ -487,6 +487,15 @@
                 } );
             } );
 
+	        ///////////////////////////////////////
+	        // Setup the Builder fields
+	        if( typeof jQuery.fn.soPanelsSetupBuilderWidget !== 'undefined' ) {
+		        $fields.filter( '.siteorigin-widget-field-type-builder' ).each( function(){
+			        var $$ = $(this);
+			        $$.find('> .siteorigin-page-builder-widget' ).soPanelsSetupBuilderWidget();
+		        } );
+	        }
+
             ///////////////////////////////////////
             // Now lets handle the state emitters
 
