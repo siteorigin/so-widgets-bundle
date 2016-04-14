@@ -14,7 +14,6 @@ if( !empty($instance['design']['hover']) ) $classes[] = 'ow-button-hover';
 	if(!empty($instance['attributes']['title'])) $button_attributes['title'] = esc_attr($instance['attributes']['title']);
 	if(!empty($instance['attributes']['onclick'])) $button_attributes['onclick'] = esc_attr($instance['attributes']['onclick']);
 	?>
-
 	<a <?php foreach($button_attributes as $name => $val) echo $name . '="' . $val . '" ' ?>>
 		<span>
 			<?php
