@@ -43,6 +43,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 
 					'content' => array(
 						'type' => 'builder',
+						'builder_type' => 'layout_slider_builder',
 						'label' => __( 'Content', 'so-widgets-bundle' ),
 					),
 

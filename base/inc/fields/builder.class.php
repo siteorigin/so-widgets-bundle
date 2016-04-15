@@ -11,7 +11,11 @@ class SiteOrigin_Widget_Field_Builder extends SiteOrigin_Widget_Field_Base {
 		if( defined('SITEORIGIN_PANELS_VERSION') ) {
 			// Normal rendering code
 			?>
-			<div class="siteorigin-page-builder-field" data-mode="dialog">
+			<div
+				class="siteorigin-page-builder-field"
+				data-mode="dialog"
+				data-type="<?php echo isset( $this->field_options['builder_type'] ) ? esc_attr( $this->field_options['builder_type'] ) : 'sow-builder-field' ?>"
+				>
 				<p>
 					<button class="button-secondary siteorigin-panels-display-builder" ><?php _e('Open Builder', 'siteorigin-panels') ?></button>
 				</p>
