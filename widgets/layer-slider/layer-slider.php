@@ -1,7 +1,7 @@
 <?php
 /*
-Widget Name: Hero Image
-Description: A big hero image with a few settings to make it your own.
+Widget Name: Layer Slider
+Description: A slider that allows you to create responsive columnized content for each slide.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 */
@@ -17,7 +17,7 @@ class SiteOrigin_Widget_LayerSlider_Widget extends SiteOrigin_Widget_Base_Slider
 			'sow-layer-slider',
 			__('SiteOrigin Layer Slider', 'so-widgets-bundle'),
 			array(
-				'description' => __('A big hero image with a few settings to make it your own.', 'so-widgets-bundle'),
+				'description' => __('A slider that allows you to create responsive columnized content for each slide.', 'so-widgets-bundle'),
 				'help' => 'https://siteorigin.com/widgets-bundle/layer-slider-widget/',
 				'panels_title' => false,
 			),
@@ -41,7 +41,7 @@ class SiteOrigin_Widget_LayerSlider_Widget extends SiteOrigin_Widget_Base_Slider
 		return array(
 			'frames' => array(
 				'type' => 'repeater',
-				'label' => __('Hero frames', 'so-widgets-bundle'),
+				'label' => __('Slider frames', 'so-widgets-bundle'),
 				'item_name' => __('Frame', 'so-widgets-bundle'),
 				'item_label' => array(
 					'selector' => "[id*='frames-title']",
@@ -56,27 +56,6 @@ class SiteOrigin_Widget_LayerSlider_Widget extends SiteOrigin_Widget_Base_Slider
 						'label' => __( 'Content', 'so-widgets-bundle' ),
 					),
 
-					'buttons' => array(
-						'type' => 'repeater',
-						'label' => __('Buttons', 'so-widgets-bundle'),
-						'item_name' => __('Button', 'so-widgets-bundle'),
-						'description' => __('Add [buttons] shortcode to the content to insert these buttons.', 'so-widgets-bundle'),
-
-						'item_label' => array(
-							'selector' => "[id*='buttons-button-text']",
-							'update_event' => 'change',
-							'value_method' => 'val'
-						),
-						'fields' => array(
-							'button' => array(
-								'type' => 'widget',
-								'class' => 'SiteOrigin_Widget_Button_Widget',
-								'label' => __('Button', 'so-widgets-bundle'),
-								'collapsible' => false,
-							)
-						)
-					),
-
 					'background' => array(
 						'type' => 'section',
 						'label' => __('Background', 'so-widgets-bundle'),
@@ -86,6 +65,15 @@ class SiteOrigin_Widget_LayerSlider_Widget extends SiteOrigin_Widget_Base_Slider
 								'label' => __( 'Background image', 'so-widgets-bundle' ),
 								'library' => 'image',
 								'fallback' => true,
+							),
+
+							'image_type' => array(
+								'type' => 'select',
+								'label' => __('Background image type', 'so-widgets-bundle'),
+								'options' => array(
+									'cover' => __('Cover', 'so-widgets-bundle'),
+								),
+								'default' => 'cover',
 							),
 
 							'opacity' => array(
