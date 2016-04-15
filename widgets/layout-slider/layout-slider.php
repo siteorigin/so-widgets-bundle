@@ -27,16 +27,6 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		);
 	}
 
-	function initialize(){
-		// This widget requires the button widget
-		if( !class_exists('SiteOrigin_Widget_Button_Widget') ) {
-			SiteOrigin_Widgets_Bundle::single()->include_widget( 'button' );
-		}
-
-		// Let the slider base class do its initialization
-		parent::initialize();
-	}
-
 	function initialize_form(){
 		return array(
 			'frames' => array(
@@ -245,7 +235,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 	}
 
 	/**
-	 * Process the content. Most importantly add the buttons by replacing [buttons] in the content
+	 * Process the content.
 	 *
 	 * @param $content
 	 * @param $frame
@@ -253,8 +243,13 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 	 * @return string
 	 */
 	function process_content( $content, $frame ) {
-		$content_builder_id = substr( md5( json_encode( $content ) ), 0, 8 );
-		echo siteorigin_panels_render( 'w'.$content_builder_id, true, $content );
+		if( function_exists( 'siteorigin_panels_render' ) ) {
+			$content_builder_id = substr( md5( json_encode( $content ) ), 0, 8 );
+			echo siteorigin_panels_render( 'w'.$content_builder_id, true, $content );
+		}
+		else {
+			echo __( 'This widget requires Page Builder.', 'so-widgets-bundle' );
+		}
 	}
 
 	/**
