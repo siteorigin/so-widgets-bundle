@@ -214,7 +214,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	function get_less_variables($instance){
 		if( empty( $instance ) || empty( $instance['design'] ) ) return array();
 		return array(
-			'button_width' => $instance['design']['width'],
+			'button_width' => isset( $instance['design']['width'] ) ? $instance['design']['width'] : '',
 			'has_button_width' => empty( $instance['design']['width'] ) ? 'false' : 'true',
 			'button_color' => $instance['design']['button_color'],
 			'text_color' => $instance['design']['text_color'],
