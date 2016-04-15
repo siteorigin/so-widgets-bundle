@@ -1,6 +1,6 @@
 <?php
 /*
-Widget Name: Layer Slider
+Widget Name: Layout Slider
 Description: A slider that allows you to create responsive columnized content for each slide.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
@@ -8,17 +8,17 @@ Author URI: https://siteorigin.com
 
 if( !class_exists( 'SiteOrigin_Widget_Base_Slider' ) ) include_once plugin_dir_path(SOW_BUNDLE_BASE_FILE) . '/base/inc/widgets/base-slider.class.php';
 
-class SiteOrigin_Widget_LayerSlider_Widget extends SiteOrigin_Widget_Base_Slider {
+class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slider {
 
 	protected $buttons = array();
 
 	function __construct() {
 		parent::__construct(
-			'sow-layer-slider',
-			__('SiteOrigin Layer Slider', 'so-widgets-bundle'),
+			'sow-layout-slider',
+			__('SiteOrigin Layout Slider', 'so-widgets-bundle'),
 			array(
 				'description' => __('A slider that allows you to create responsive columnized content for each slide.', 'so-widgets-bundle'),
-				'help' => 'https://siteorigin.com/widgets-bundle/layer-slider-widget/',
+				'help' => 'https://siteorigin.com/widgets-bundle/layout-slider-widget/',
 				'panels_title' => false,
 			),
 			array( ),
@@ -329,4 +329,4 @@ class SiteOrigin_Widget_LayerSlider_Widget extends SiteOrigin_Widget_Base_Slider
 
 }
 
-siteorigin_widget_register('sow-layer-slider', __FILE__, 'SiteOrigin_Widget_LayerSlider_Widget');
+siteorigin_widget_register('sow-layout-slider', __FILE__, 'SiteOrigin_Widget_LayoutSlider_Widget');
