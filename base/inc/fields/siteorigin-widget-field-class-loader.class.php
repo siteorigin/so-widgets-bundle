@@ -33,7 +33,11 @@ class SiteOrigin_Widget_Field_Class_Loader {
 	 */
 	public function add_class_prefixes( $class_prefixes ) {
 		if( !isset( $this->class_prefixes ) ) $this->class_prefixes = array();
-		$this->class_prefixes = array_merge( $this->class_prefixes, $class_prefixes );
+		foreach ( $class_prefixes as $prefix ) {
+			if ( ! in_array( $prefix, $this->class_prefixes ) ) {
+				$this->class_prefixes[] = $prefix;
+			}
+		}
 	}
 
 	/**
@@ -43,7 +47,11 @@ class SiteOrigin_Widget_Field_Class_Loader {
 	 */
 	public function add_class_paths( $class_paths ) {
 		if( !isset( $this->class_paths ) ) $this->class_paths = array();
-		$this->class_paths = array_merge( $this->class_paths, $class_paths );
+		foreach ( $class_paths as $path ) {
+			if ( ! in_array( $path, $this->class_paths ) ) {
+				$this->class_paths[] = $path;
+			}
+		}
 	}
 
 	/**
@@ -64,6 +72,8 @@ class SiteOrigin_Widget_Field_Class_Loader {
 
 		foreach( $this->class_paths as $class_path ) {
 			$filepath = $class_path . $filename . '.class.php';
+			// TODO: Fix. Currently, if there is more than one file with the same name in the different class paths,
+			//they will all be loaded. Shouldn't cause any problems, just not as efficient as it could be.
 			if ( file_exists( $filepath ) ) {
 				require_once $filepath;
 			}

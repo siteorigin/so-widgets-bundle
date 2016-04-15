@@ -716,47 +716,33 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 			?><span class="sow-field-container"><?php
 			switch( $field['type'] ) {
-				case 'email':
 				case 'text':
-					echo '<input type="' . $field['type'] . '" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '" value="' . esc_attr($value) . '" class="sow-text-field"' . ( $show_placeholder ? 'placeholder="' . esc_attr( $field['label'] ) . '"' : '' ) . '/>';
-					break;
-
+				case 'email':
 				case 'select':
-					echo '<select  name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '">';
-					if( !empty($field['options']) ) {
-						foreach( $field['options'] as $option ) {
-							echo '<option value="' . esc_attr( $option['value'] ) . '" ' . selected( $option['value'], $value, false ) . '>' . esc_html($option['value']) . '</option>';
-						}
-					}
-					echo '</select>';
-					break;
-
 				case 'checkboxes':
-					if( !empty($field['options']) ) {
-						if( empty($value) || !is_array( $value ) ) {
-							$value = array();
-						}
-
-						echo '<ul>';
-						foreach ( $field['options'] as $i => $option ) {
-							echo '<li>';
-							echo '<label>';
-							echo '<input type="checkbox" value="' . esc_attr($option['value']) . '" name="' . esc_attr( $field_name ) . '[]" id="' . esc_attr( $field_id ) . '-' . $i . '" ' . checked( in_array($option['value'], $value) , true, false) . ' /> ';
-							echo esc_html( $option['value'] );
-							echo '</li>';
-						}
-						echo '</ul>';
-					}
-					break;
-
 				case 'textarea':
-					echo '<textarea name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '" rows="10"' . ( $show_placeholder ? 'placeholder="' . esc_attr( $field['label'] ) . '"' : '' ) . '>' . esc_textarea($value) . '</textarea>';
-					break;
-
 				case 'subject':
 				case 'name':
+					$class_name = 'SiteOrigin_Widget_Field_ContactForm_' . ucwords( $field['type'] );
+					// This does autoloading if required.
+					if ( class_exists( $class_name ) ) {
+						/**
+						 * @var $contact_field SiteOrigin_Widget_Field_ContactForm_Base
+						 */
+						$contact_field = new $class_name();
+						$field_input_options = array(
+							'field' => $field,
+							'field_id' => $field_id,
+							'field_name' => $field_name,
+							'value' => $value,
+							'show_placeholder' => $show_placeholder
+						);
+						$contact_field->render( $field_input_options );
+					}
+					break;
+
 				default:
-					echo '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '"  value="' . esc_attr($value) . '"  class="sow-text-field" ' . ( $show_placeholder ? 'placeholder="' . esc_attr( $field['label'] ) . '"' : '' ) . '/>';
+					echo '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '"  value="' . esc_attr( $value ) . '"  class="sow-text-field" ' . ( $show_placeholder ? 'placeholder="' . esc_attr( $field['label'] ) . '"' : '' ) . '/>';
 					break;
 
 			}
@@ -1060,3 +1046,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 }
 siteorigin_widget_register( 'sow-contact-form', __FILE__, 'SiteOrigin_Widgets_ContactForm_Widget' );
+
+// Tell the autoloader where to look for contactform field classes.
+function contactform_fields_class_paths( $class_paths ) {
+	$class_paths[] = plugin_dir_path( __FILE__ ) . 'fields/';
+	return $class_paths;
+}
+add_filter( 'siteorigin_widgets_field_class_paths', 'contactform_fields_class_paths' );
+
+$loader = SiteOrigin_Widget_Field_Class_Loader::single();
+$loader->extend();
