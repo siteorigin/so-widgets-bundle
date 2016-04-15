@@ -218,32 +218,38 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'videos-sizing' => 'background',        // options for video sizing are background or full
 		) );
 
-		$background_style = array();
-		if( !empty($background['color']) ) $background_style[] = 'background-color: ' . esc_attr($background['color']);
+		$wrapper_attributes = array(
+			'class' => array( 'sow-slider-image' ),
+			'style' => array(),
+		);
+
+		if( !empty($background['color']) ) {
+			$wrapper_attributes['style'][] = 'background-color: ' . esc_attr($background['color']);
+		}
 
 		if( $background['opacity'] >= 1 ) {
-			if( !empty($background['image']) ) $background_style[] = 'background-image: url(' . esc_url($background['image']) . ')';
+			if( !empty($background['image']) ) {
+				$wrapper_attributes['style'][] = 'background-image: url(' . esc_url($background['image']) . ')';
+			}
 		}
 
 		if( ! empty( $background['url'] ) ) {
-			$background_style[] = 'cursor: pointer;';
+			$wrapper_attributes['style'][] = 'cursor: pointer;';
 		}
-
-		$wrapper_attributes = array(
-			'class' => 'sow-slider-image'
-		);
 
 		if( !empty($background['image']) && !empty($background['image-sizing']) ) {
-			$wrapper_attributes['class'] .= ' ' . 'sow-slider-image-' . $background['image-sizing'];
+			$wrapper_attributes['class'][] = ' ' . 'sow-slider-image-' . $background['image-sizing'];
 		}
 		if( !empty( $background['url'] ) ) {
-			$wrapper_attributes['data-url'] = json_encode(array( 'url' => sow_esc_url($background['url']), 'new_window' => !empty( $background['new_window'] ) ) );
+			$wrapper_attributes['data-url'] = json_encode( array(
+				'url' => sow_esc_url($background['url']),
+				'new_window' => !empty( $background['new_window'] )
+			) );
 		}
-		if( !empty($background_style) ) {
-			$wrapper_attributes['style'] = implode(';', $background_style);
-		}
-
 		$wrapper_attributes = apply_filters( 'siteorigin_widgets_slider_wrapper_attributes', $wrapper_attributes, $frame, $background );
+
+		$wrapper_attributes['class'] = implode( ' ', $wrapper_attributes['class'] );
+		$wrapper_attributes['style'] = implode( ';', $wrapper_attributes['style'] );
 
 		?>
 		<li <?php foreach( $wrapper_attributes as $attr => $val ) echo $attr . '="' . esc_attr( $val ) . '" '; ?>>
@@ -254,7 +260,19 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			}
 
 			if( $background['opacity'] < 1 && !empty($background['image']) ) {
-				?><div class="sow-slider-image-overlay <?php echo 'sow-slider-image-' . $background['image-sizing'] ?>" style="background-image: url(<?php echo esc_url( $background['image'] ) ?>); opacity: <?php echo floatval( $background['opacity'] ) ?>;" ></div><?php
+				$overlay_attributes = array(
+					'class' => array( 'sow-slider-image-overlay', 'sow-slider-image-' . $background['image-sizing'] ),
+					'style' => array(
+						'background-image: url(' . $background['image'] . ')',
+						'opacity: ' . floatval( $background['opacity'] ),
+					)
+				);
+				$overlay_attributes = apply_filters( 'siteorigin_widgets_slider_overlay_attributes', $overlay_attributes, $frame, $background );
+
+				$overlay_attributes['class'] = implode( ' ', $overlay_attributes['class'] );
+				$overlay_attributes['style'] = implode( ';', $overlay_attributes['style'] );
+
+				?><div <?php foreach( $overlay_attributes as $attr => $val ) echo $attr . '="' . esc_attr( $val ) . '" '; ?> ></div><?php
 			}
 
 			?>
