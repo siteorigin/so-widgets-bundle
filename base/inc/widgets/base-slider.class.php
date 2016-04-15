@@ -205,10 +205,11 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	 * @param $frame
 	 */
 	function render_frame( $i, $frame ){
-		$background = $this->get_frame_background( $i, $frame );
-		$background = wp_parse_args($background, array(
+		$background = wp_parse_args( $this->get_frame_background( $i, $frame ), array(
 			'color' => false,
 			'image' => false,
+			'image-width' => 0,
+			'image-height' => 0,
 			'opacity' => 1,
 			'url' => false,
 			'new_window' => false,
@@ -242,8 +243,10 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			$wrapper_attributes['style'] = implode(';', $background_style);
 		}
 
+		$wrapper_attributes = apply_filters( 'siteorigin_widgets_slider_wrapper_attributes', $wrapper_attributes, $frame, $background );
+
 		?>
-		<li <?php foreach( $wrapper_attributes as $attr => $val ) echo $attr . '="' . esc_attr( $val ) . '" '; ?> >
+		<li <?php foreach( $wrapper_attributes as $attr => $val ) echo $attr . '="' . esc_attr( $val ) . '" '; ?>>
 			<?php
 			$this->render_frame_contents( $i, $frame );
 			if( !empty( $background['videos'] ) ) {

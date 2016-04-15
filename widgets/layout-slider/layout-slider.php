@@ -208,8 +208,10 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 
 		return array(
 			'color' => !empty( $frame['background']['color'] ) ? $frame['background']['color'] : false,
-			'image' => !empty( $background_image ) ? $background_image[0] : false,
-			'image-sizing' => 'cover',
+			'image' => !empty( $background_image[0] ) ? $background_image[0] : false,
+			'image-width' => !empty( $background_image[1] ) ? $background_image[1] : 0,
+			'image-height' => !empty( $background_image[2] ) ? $background_image[2] : 0,
+			'image-sizing' => $frame['background']['image_type'],
 			'url' => !empty( $frame['background']['url'] ) ? $frame['background']['url'] : false,
 			'new_window' => !empty( $frame['background']['new_window'] ),
 			'videos' => $frame['background']['videos'],
