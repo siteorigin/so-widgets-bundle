@@ -51,6 +51,9 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.5.11 - April 11 2016 =
+* Fixed features widget container shape setting.
+
 = 1.5.10 - April 5 2016 =
 * Added Icon widget.
 * Moved widget form arrays into separate functions to improve performance.

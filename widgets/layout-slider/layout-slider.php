@@ -1,24 +1,24 @@
 <?php
 /*
-Widget Name: Hero Image
-Description: A big hero image with a few settings to make it your own.
+Widget Name: Layout Slider
+Description: A slider that allows you to create responsive columnized content for each slide.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 */
 
 if( !class_exists( 'SiteOrigin_Widget_Base_Slider' ) ) include_once plugin_dir_path(SOW_BUNDLE_BASE_FILE) . '/base/inc/widgets/base-slider.class.php';
 
-class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
+class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slider {
 
 	protected $buttons = array();
 
 	function __construct() {
 		parent::__construct(
-			'sow-hero',
-			__('SiteOrigin Hero', 'so-widgets-bundle'),
+			'sow-layout-slider',
+			__('SiteOrigin Layout Slider', 'so-widgets-bundle'),
 			array(
-				'description' => __('A big hero image with a few settings to make it your own.', 'so-widgets-bundle'),
-				'help' => 'https://siteorigin.com/widgets-bundle/hero-image-widget/',
+				'description' => __('A slider that allows you to create responsive columnized content for each slide.', 'so-widgets-bundle'),
+				'help' => 'https://siteorigin.com/widgets-bundle/layout-slider-widget/',
 				'panels_title' => false,
 			),
 			array( ),
@@ -27,21 +27,11 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		);
 	}
 
-	function initialize(){
-		// This widget requires the button widget
-		if( !class_exists('SiteOrigin_Widget_Button_Widget') ) {
-			SiteOrigin_Widgets_Bundle::single()->include_widget( 'button' );
-		}
-
-		// Let the slider base class do its initialization
-		parent::initialize();
-	}
-
 	function initialize_form(){
 		return array(
 			'frames' => array(
 				'type' => 'repeater',
-				'label' => __('Hero frames', 'so-widgets-bundle'),
+				'label' => __('Slider frames', 'so-widgets-bundle'),
 				'item_name' => __('Frame', 'so-widgets-bundle'),
 				'item_label' => array(
 					'selector' => "[id*='frames-title']",
@@ -52,29 +42,9 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 				'fields' => array(
 
 					'content' => array(
-						'type' => 'tinymce',
+						'type' => 'builder',
+						'builder_type' => 'layout_slider_builder',
 						'label' => __( 'Content', 'so-widgets-bundle' ),
-					),
-
-					'buttons' => array(
-						'type' => 'repeater',
-						'label' => __('Buttons', 'so-widgets-bundle'),
-						'item_name' => __('Button', 'so-widgets-bundle'),
-						'description' => __('Add [buttons] shortcode to the content to insert these buttons.', 'so-widgets-bundle'),
-
-						'item_label' => array(
-							'selector' => "[id*='buttons-button-text']",
-							'update_event' => 'change',
-							'value_method' => 'val'
-						),
-						'fields' => array(
-							'button' => array(
-								'type' => 'widget',
-								'class' => 'SiteOrigin_Widget_Button_Widget',
-								'label' => __('Button', 'so-widgets-bundle'),
-								'collapsible' => false,
-							)
-						)
 					),
 
 					'background' => array(
@@ -268,7 +238,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 
 	/**
-	 * Process the content. Most importantly add the buttons by replacing [buttons] in the content
+	 * Process the content.
 	 *
 	 * @param $content
 	 * @param $frame
@@ -276,16 +246,13 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	 * @return string
 	 */
 	function process_content( $content, $frame ) {
-		ob_start();
-		foreach( $frame['buttons'] as $button ) {
-			$this->sub_widget('SiteOrigin_Widget_Button_Widget', array(), $button['button']);
+		if( function_exists( 'siteorigin_panels_render' ) ) {
+			$content_builder_id = substr( md5( json_encode( $content ) ), 0, 8 );
+			echo siteorigin_panels_render( 'w'.$content_builder_id, true, $content );
 		}
-		$button_code = ob_get_clean();
-
-		// Add in the button code
-		$san_content = wp_kses_post($content);
-		$content = preg_replace('/(?:<(?:p|h\d|em|strong|li|blockquote) *([^>]*)> *)?\[ *buttons *\](:? *<\/(?:p|h\d|em|strong|li|blockquote)>)?/i', '<div class="sow-hero-buttons" $1>' . $button_code . '</div>', $san_content );
-		return $content;
+		else {
+			echo __( 'This widget requires Page Builder.', 'so-widgets-bundle' );
+		}
 	}
 
 	/**
@@ -303,7 +270,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		$less['nav_size'] = $instance['controls']['nav_size'];
 
 		// Hero specific design
-		// Measurement field type options
+		//Measurement field type options
 		$meas_options = array();
 		$meas_options['slide_padding'] = $instance['design']['padding'];
 		$meas_options['slide_padding_extra_top'] = $instance['design']['extra_top_padding'];
@@ -360,4 +327,4 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 }
 
-siteorigin_widget_register('sow-hero', __FILE__, 'SiteOrigin_Widget_Hero_Widget');
+siteorigin_widget_register('sow-layout-slider', __FILE__, 'SiteOrigin_Widget_LayoutSlider_Widget');
