@@ -47,7 +47,7 @@ class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_I
 			}
 		}
 		?>
-		<select class="sow-measurement-select-unit"
+		<select class="sow-measurement-select-unit siteorigin-widget-input"
 				name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_unit', $this->parent_container ) ) ?>">
 			<?php foreach ( siteorigin_widgets_get_measurements_list() as $measurement ):?>
 				<option value="<?php echo esc_attr( $measurement ) ?>" <?php selected( $measurement, $unit, true ); ?>><?php echo esc_html( $measurement ) ?></option>
