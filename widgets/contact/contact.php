@@ -715,36 +715,23 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				<?php
 			}
 			?><span class="sow-field-container"><?php
-			switch( $field['type'] ) {
-				case 'text':
-				case 'email':
-				case 'select':
-				case 'checkboxes':
-				case 'textarea':
-				case 'subject':
-				case 'name':
-					$class_name = 'SiteOrigin_Widget_Field_ContactForm_' . ucwords( $field['type'] );
-					// This does autoloading if required.
-					if ( class_exists( $class_name ) ) {
-						/**
-						 * @var $contact_field SiteOrigin_Widget_Field_ContactForm_Base
-						 */
-						$contact_field = new $class_name();
-						$field_input_options = array(
-							'field' => $field,
-							'field_id' => $field_id,
-							'field_name' => $field_name,
-							'value' => $value,
-							'show_placeholder' => $show_placeholder
-						);
-						$contact_field->render( $field_input_options );
-					}
-					break;
-
-				default:
-					echo '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '"  value="' . esc_attr( $value ) . '"  class="sow-text-field" ' . ( $show_placeholder ? 'placeholder="' . esc_attr( $field['label'] ) . '"' : '' ) . '/>';
-					break;
-
+			$class_name = empty( $field['type'] ) ? '' : 'SiteOrigin_Widget_Field_ContactForm_' . ucwords( $field['type'] );
+			// This does autoloading if required.
+			if ( class_exists( $class_name ) ) {
+				/**
+				 * @var $contact_field SiteOrigin_Widget_Field_ContactForm_Base
+				 */
+				$contact_field       = new $class_name();
+				$field_input_options = array(
+					'field'            => $field,
+					'field_id'         => $field_id,
+					'field_name'       => $field_name,
+					'value'            => $value,
+					'show_placeholder' => $show_placeholder
+				);
+				$contact_field->render( $field_input_options );
+			} else {
+				echo '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '"  value="' . esc_attr( $value ) . '"  class="sow-text-field" ' . ( $show_placeholder ? 'placeholder="' . esc_attr( $field['label'] ) . '"' : '' ) . '/>';
 			}
 			?></span><?php
 
