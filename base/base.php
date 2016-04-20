@@ -6,7 +6,6 @@ include plugin_dir_path(__FILE__).'siteorigin-widget.class.php';
 include plugin_dir_path(__FILE__).'inc/widget-manager.class.php';
 include plugin_dir_path(__FILE__).'inc/meta-box-manager.php';
 include plugin_dir_path(__FILE__).'inc/post-selector.php';
-include plugin_dir_path(__FILE__).'inc/fonts.php';
 include plugin_dir_path(__FILE__).'inc/string-utils.php';
 include plugin_dir_path(__FILE__).'inc/attachments.php';
 
