@@ -22,7 +22,7 @@ class SiteOrigin_Widgets_Widget_Manager {
 		static $single;
 
 		if( empty($single) ) {
-			$single = new SiteOrigin_Widgets_Widget_Manager ();
+			$single = new self();
 		}
 
 		return $single;

@@ -17,7 +17,7 @@ define('SOW_BUNDLE_JS_SUFFIX', '');
 define('SOW_BUNDLE_BASE_FILE', __FILE__);
 
 if( !function_exists('siteorigin_widget_get_plugin_path') ) {
-	include plugin_dir_path(__FILE__).'base/inc.php';
+	include plugin_dir_path(__FILE__).'base/base.php';
 	include plugin_dir_path(__FILE__).'icons/icons.php';
 }
 
