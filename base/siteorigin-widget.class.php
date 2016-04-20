@@ -393,12 +393,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		if( !wp_script_is('siteorigin-widget-admin') ) {
 			wp_enqueue_style( 'wp-color-picker' );
-			wp_enqueue_style( 'siteorigin-widget-admin', plugin_dir_url( __FILE__ ).'css/admin.css', array( 'media-views' ), $this->get_version() );
+			wp_enqueue_style( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/css/admin.css', array( 'media-views' ), SOW_BUNDLE_VERSION );
 
 
 			wp_enqueue_script( 'wp-color-picker' );
 			wp_enqueue_media();
-			wp_enqueue_script( 'siteorigin-widget-admin', plugin_dir_url( __FILE__ ).'js/admin' . $this->get_js_suffix() . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-slider' ), $this->get_version(), true );
+			wp_enqueue_script( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/admin' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-slider' ), SOW_BUNDLE_VERSION, true );
 
 			wp_localize_script( 'siteorigin-widget-admin', 'soWidgets', array(
 				'ajaxurl' => wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ),
@@ -997,7 +997,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$f_script[0],
 					isset( $f_script[1] ) ? $f_script[1] : false,
 					isset( $f_script[2] ) ? $f_script[2] : array(),
-					!empty( $f_script[3] ) ? $f_script[3] : $this->get_version(),
+					!empty( $f_script[3] ) ? $f_script[3] : SOW_BUNDLE_VERSION,
 					isset( $f_script[4] ) ? $f_script[4] : false
 				);
 			}
@@ -1027,7 +1027,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$f_style[0],
 					isset( $f_style[1] ) ? $f_style[1] : false,
 					isset( $f_style[2] ) ? $f_style[2] : array(),
-					!empty( $f_script[3] ) ? $f_script[3] : $this->get_version(),
+					!empty( $f_script[3] ) ? $f_script[3] : SOW_BUNDLE_VERSION,
 					isset( $f_style[4] ) ? $f_style[4] : "all"
 				);
 			}
@@ -1069,24 +1069,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$this->is_customize_preview() ||    // Is this a customizer preview
 			!empty( $_GET['siteorigin_panels_live_editor'] ) ||     // Is this a Page Builder live editor request
 			( !empty( $_REQUEST['action'] ) && $_REQUEST['action'] == 'so_panels_builder_content' );    // Is this a Page Builder content ajax request
-	}
-
-	/**
-	 * Get the current version of this widget class
-	 *
-	 * @return string
-	 */
-	private function get_version(){
-		return defined( 'SOW_BUNDLE_VERSION' ) ? SOW_BUNDLE_VERSION : 'dev';
-	}
-
-	/**
-	 * Get the JS suffix of the widget class
-	 *
-	 * @return string
-	 */
-	private function get_js_suffix(){
-		return defined( 'SOW_BUNDLE_JS_SUFFIX' ) ? SOW_BUNDLE_JS_SUFFIX : '';
 	}
 
 }
