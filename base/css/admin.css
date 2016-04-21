@@ -24,6 +24,12 @@
 .siteorigin-widget-form .siteorigin-widget-field label.siteorigin-widget-field-label {
   font-weight: bold;
 }
+.siteorigin-widget-form .siteorigin-widget-field label.so-checkbox-label {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 .siteorigin-widget-form .siteorigin-widget-field .siteorigin-widget-field-description {
   font-size: 0.9em;
   margin-top: 0.2em;
