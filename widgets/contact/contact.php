@@ -818,8 +818,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$value = !empty( $post_vars[$field_name] ) ? $post_vars[$field_name] : '';
 
 			if( $field['required']['required'] && empty($value) ) {
-				$errors[$field_name] = !empty($field['required']['missing_message']) ? $field['required']['missing_message'] : __('Required field', 'so-widgets-bundle');
-				continue;
+				// Add in the default subject
+				if( $field['type'] == 'subject' && !empty($instance['settings']['default_subject'] ) ) {
+					$value = $instance['settings']['default_subject'];
+				} else {
+					$errors[ $field_name ] = ! empty( $field['required']['missing_message'] ) ? $field['required']['missing_message'] : __( 'Required field', 'so-widgets-bundle' );
+					continue;
+				}
 			}
 
 			switch( $field['type'] ) {
@@ -854,17 +859,19 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		// Add in the default subject and subject prefix
-		if( empty($email_fields['subject']) && !empty($instance['settings']['default_subject']) ) {
-			$email_fields['subject'] = $instance['settings']['default_subject'];
-		}
-		if( !empty($instance['settings']['subject_prefix']) ) {
+		// Add in the default subject prefix
+		if( !empty( $email_fields['subject'] ) && !empty($instance['settings']['subject_prefix']) ) {
 			$email_fields['subject'] = $instance['settings']['subject_prefix'] . ' ' . $email_fields['subject'];
 		}
 
 		// Now we do some email message validation
 		if( empty($errors) ) {
 			$email_errors = $this->validate_mail( $email_fields );
+			// Missing subject input and no default subject set. Revert to using a generic default 'SiteName Contact Form'
+			if ( ! isset( $email_fields['subject'] ) && ! empty( $email_errors['subject'] ) ) {
+				unset($email_errors['subject']);
+				$email_fields['subject'] = get_bloginfo() . ' ' . __( 'Contact Form', 'siteorigin-widgets' );
+			}
 			if( !empty($email_errors) ) {
 				$errors['_general'] = $email_errors;
 			}
