@@ -353,8 +353,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			<input type="hidden" name="<?php echo $this->get_field_name('_sow_form_id') ?>" value="<?php echo esc_attr( $instance['_sow_form_id'] ) ?>" class="siteorigin-widgets-form-id" />
 		</div>
 		<div class="siteorigin-widget-form-no-styles">
-			<p><strong><?php _e('This widget has scripts and styles that need to be loaded before you can use it. Please save and reload your current page.', 'so-widgets-bundle') ?></strong></p>
-			<p><strong><?php _e('You will only need to do this once.', 'so-widgets-bundle') ?></strong></p>
+			<?php $this->scripts_loading_message() ?>
 		</div>
 
 		<?php if( $this->widget_options['has_preview'] && ! $this->is_customize_preview() ) : ?>
@@ -383,6 +382,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				}
 			} )( jQuery );
 		</script>
+		<?php
+	}
+
+	function scripts_loading_message(){
+		?>
+		<p><strong><?php _e('This widget has scripts and styles that need to be loaded before you can use it. Please save and reload your current page.', 'so-widgets-bundle') ?></strong></p>
+		<p><strong><?php _e('You will only need to do this once.', 'so-widgets-bundle') ?></strong></p>
 		<?php
 	}
 
