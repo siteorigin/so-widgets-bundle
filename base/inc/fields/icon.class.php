@@ -8,16 +8,7 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 	protected $icons_callback;
 
 	protected function render_field( $value, $instance ) {
-		if( !empty( $this->icons_callback ) ) {
-			// We'll get the icons from the callback function
-			$widget_icon_families = call_user_func( $this->icons_callback );
-		}
-		else {
-			// We'll get icons from the main filter
-			static $widget_icon_families;
-			if( empty( $widget_icon_families ) ) $widget_icon_families = apply_filters('siteorigin_widgets_icon_families', array() );
-		}
-
+		$widget_icon_families = $this->get_widget_icon_families();
 		list( $value_family, $null ) = !empty($value) ? explode('-', $value, 2) : array('fontawesome', '');
 
 		?>
@@ -58,15 +49,26 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 		}
 		list( $value_family, $value_icon ) = ( ! empty( $sanitized_value ) && strpos( $sanitized_value, '-' ) !== false ) ? explode( '-', $sanitized_value, 2 ) : array('', '');
 
-		static $widget_icon_families;
-		if( empty( $widget_icon_families ) ) {
-			$widget_icon_families = apply_filters( 'siteorigin_widgets_icon_families', array() );
-		}
+		$widget_icon_families = $this->get_widget_icon_families();
 		if( ! ( isset( $widget_icon_families[$value_family] ) && isset( $widget_icon_families[$value_family]['icons'][$value_icon] ) ) ) {
 			$sanitized_value = isset( $this->default ) ? $this->default : '';
 		}
 
 		return $sanitized_value;
+	}
+
+	private function get_widget_icon_families(){
+		if( !empty( $this->icons_callback ) ) {
+			// We'll get the icons from the callback function
+			$widget_icon_families = call_user_func( $this->icons_callback );
+		}
+		else {
+			// We'll get icons from the main filter
+			static $widget_icon_families;
+			if( empty( $widget_icon_families ) ) $widget_icon_families = apply_filters('siteorigin_widgets_icon_families', array() );
+		}
+
+		return $widget_icon_families;
 	}
 
 }
