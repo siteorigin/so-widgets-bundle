@@ -5,9 +5,18 @@
  */
 class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 
+	protected $icons_callback;
+
 	protected function render_field( $value, $instance ) {
-		static $widget_icon_families;
-		if( empty( $widget_icon_families ) ) $widget_icon_families = apply_filters('siteorigin_widgets_icon_families', array() );
+		if( !empty( $this->icons_callback ) ) {
+			// We'll get the icons from the callback function
+			$widget_icon_families = call_user_func( $this->icons_callback );
+		}
+		else {
+			// We'll get icons from the main filter
+			static $widget_icon_families;
+			if( empty( $widget_icon_families ) ) $widget_icon_families = apply_filters('siteorigin_widgets_icon_families', array() );
+		}
 
 		list( $value_family, $null ) = !empty($value) ? explode('-', $value, 2) : array('fontawesome', '');
 
@@ -22,7 +31,11 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 			<select class="siteorigin-widget-icon-family" >
 				<?php foreach( $widget_icon_families as $family_id => $family_info ) : ?>
 					<option value="<?php echo esc_attr( $family_id ) ?>"
-						<?php selected( $value_family, $family_id ) ?>><?php echo esc_html( $family_info['name'] ) ?> (<?php echo count( $family_info['icons'] ) ?>)</option>
+						<?php selected( $value_family, $family_id ) ?>
+						<?php if( !empty( $this->icons_callback ) ) echo 'data-icons="' . esc_attr( json_encode( $family_info ) ) . '"' ?>
+						>
+						<?php echo esc_html( $family_info['name'] ) ?> (<?php echo count( $family_info['icons'] ) ?>)
+					</option>
 				<?php endforeach; ?>
 			</select>
 

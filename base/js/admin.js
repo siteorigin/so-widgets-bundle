@@ -369,6 +369,13 @@
                 var changeIconFamily = function(){
                     // Fetch the family icons from the server
                     var family = $is.find('select.siteorigin-widget-icon-family').val();
+
+	                var dataIcons = $is.find('select.siteorigin-widget-icon-family option:selected' ).data('icons');
+	                if( dataIcons !== null ) {
+		                iconWidgetCache[family] = dataIcons;
+	                }
+
+
                     if(typeof family === 'undefined' || family === '') {
                         return;
                     }
