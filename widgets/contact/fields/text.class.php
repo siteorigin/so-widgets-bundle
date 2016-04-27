@@ -1,6 +1,6 @@
 <?php
 
-class SiteOrigin_Widget_Field_ContactForm_Text extends SiteOrigin_Widget_Field_ContactForm_Base {
+class SiteOrigin_Widget_ContactForm_Field_Text extends SiteOrigin_Widget_ContactForm_Field_Base {
 
 	public function render_field( $options ) {
 

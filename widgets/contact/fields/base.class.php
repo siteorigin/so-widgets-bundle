@@ -1,5 +1,5 @@
 <?php
-abstract class SiteOrigin_Widget_Field_ContactForm_Base {
+abstract class SiteOrigin_Widget_ContactForm_Field_Base {
 
 	public function __construct() {
 		$this->init();

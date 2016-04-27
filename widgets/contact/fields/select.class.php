@@ -1,6 +1,6 @@
 <?php
 
-class SiteOrigin_Widget_Field_ContactForm_Select extends SiteOrigin_Widget_Field_ContactForm_Base {
+class SiteOrigin_Widget_ContactForm_Field_Select extends SiteOrigin_Widget_ContactForm_Field_Base {
 
 	public function render_field( $options ) {
 		?><select  name="<?php echo esc_attr( $options['field_name'] ) ?>"

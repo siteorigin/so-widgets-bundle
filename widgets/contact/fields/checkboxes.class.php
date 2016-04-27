@@ -1,6 +1,6 @@
 <?php
 
-class SiteOrigin_Widget_Field_ContactForm_Checkboxes extends SiteOrigin_Widget_Field_ContactForm_Base {
+class SiteOrigin_Widget_ContactForm_Field_Checkboxes extends SiteOrigin_Widget_ContactForm_Field_Base {
 
 	public function render_field( $options ) {
 

@@ -715,7 +715,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				<?php
 			}
 			?><span class="sow-field-container"><?php
-			$class_name = empty( $field['type'] ) ? '' : 'SiteOrigin_Widget_Field_ContactForm_' . ucwords( $field['type'] );
+			$class_name = empty( $field['type'] ) ? '' : 'SiteOrigin_Widget_ContactForm_Field_' . ucwords( $field['type'] );
 			// This does autoloading if required.
 			if ( class_exists( $class_name ) ) {
 				/**
@@ -1036,10 +1036,22 @@ siteorigin_widget_register( 'sow-contact-form', __FILE__, 'SiteOrigin_Widgets_Co
 
 // Tell the autoloader where to look for contactform field classes.
 function contactform_fields_class_paths( $class_paths ) {
-	$class_paths[] = plugin_dir_path( __FILE__ ) . 'fields/';
+	$loader = SiteOrigin_Widget_Field_Class_Loader::single();
+
+	$loader->add_class_prefixes(
+		apply_filters( 'siteorigin_widgets_contact_form_field_class_prefixes', array(
+			'SiteOrigin_Widget_ContactForm_Field_'
+		) ),
+		'contact-form'
+	);
+
+	$loader->add_class_paths(
+		apply_filters( 'siteorigin_widgets_contact_form_field_class_paths', array(
+			plugin_dir_path( __FILE__ ) . 'fields/'
+		) ),
+		'contact-form'
+	);
+
 	return $class_paths;
 }
-add_filter( 'siteorigin_widgets_field_class_paths', 'contactform_fields_class_paths' );
-
-$loader = SiteOrigin_Widget_Field_Class_Loader::single();
-$loader->extend();
+add_filter( 'init', 'contactform_fields_class_paths' );
