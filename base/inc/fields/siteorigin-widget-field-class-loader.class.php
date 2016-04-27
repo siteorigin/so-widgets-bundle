@@ -12,8 +12,9 @@ class SiteOrigin_Widget_Field_Class_Loader {
 
 	function __construct(){
 		// Setup the loader with default prefixes and paths
-		$this->add_class_prefixes( array( 'SiteOrigin_Widget_Field_' ) );
-		$this->add_class_paths( array( plugin_dir_path( __FILE__ ) ) );
+		$this->add_class_prefixes( array( 'SiteOrigin_Widget_Field_' ), 'core' );
+		$this->add_class_paths( array( plugin_dir_path( __FILE__ ) ), 'core' );
+
 		spl_autoload_register( array( $this, 'load_field_class' ) );
 	}
 
@@ -29,29 +30,35 @@ class SiteOrigin_Widget_Field_Class_Loader {
 	/**
 	 * Regsiter class prefixes to watch for in this loader
 	 *
-	 * @param $class_prefixes
+	 * @param string|array $class_prefixes
+	 * @param string $group
 	 */
-	public function add_class_prefixes( $class_prefixes ) {
+	public function add_class_prefixes( $class_prefixes, $group = 'core' ) {
 		if( !isset( $this->class_prefixes ) ) $this->class_prefixes = array();
-		foreach ( $class_prefixes as $prefix ) {
-			if ( ! in_array( $prefix, $this->class_prefixes ) ) {
-				$this->class_prefixes[] = $prefix;
-			}
-		}
+		if( !isset( $this->class_prefixes[$group] ) ) $this->class_prefixes[$group] = array();
+
+		$this->class_prefixes[$group] = array_merge(
+			$this->class_prefixes[$group],
+			$class_prefixes
+		);
+		$this->class_prefixes[$group] = array_unique( $this->class_prefixes[$group] );
 	}
 
 	/**
 	 * Register paths where we'll look for these classes.
 	 *
-	 * @param $class_paths
+	 * @param string|array $class_paths
+	 * @param string $group
 	 */
-	public function add_class_paths( $class_paths ) {
+	public function add_class_paths( $class_paths, $group = 'core' ) {
 		if( !isset( $this->class_paths ) ) $this->class_paths = array();
-		foreach ( $class_paths as $path ) {
-			if ( ! in_array( $path, $this->class_paths ) ) {
-				$this->class_paths[] = $path;
-			}
-		}
+		if( !isset( $this->class_paths[$group] ) ) $this->class_paths[$group] = array();
+
+		$this->class_paths[$group] = array_merge(
+			$this->class_paths[$group],
+			$class_paths
+		);
+		$this->class_paths[$group] = array_unique( $this->class_paths[$group] );
 	}
 
 	/**
@@ -62,20 +69,26 @@ class SiteOrigin_Widget_Field_Class_Loader {
 	public function load_field_class( $field_classname ) {
 		$valid_classname = false;
 		$class_prefix = '';
-		foreach ( $this->class_prefixes as $class_prefix ) {
-			$valid_classname = strpos( $field_classname, $class_prefix ) !== false;
-			if( $valid_classname ) break;
+		$class_group = '';
+		foreach ( $this->class_prefixes as $class_group => $class_prefixes ) {
+			foreach( $class_prefixes as $class_prefix ) {
+				$valid_classname = strpos( $field_classname, $class_prefix ) !== false;
+				if( $valid_classname ) {
+					break 2;
+				}
+			}
 		}
 		if ( ! $valid_classname ) return;
 
 		$filename = strtolower( str_replace( '_', '-', str_replace( $class_prefix, '', $field_classname ) ) );
 
-		foreach( $this->class_paths as $class_path ) {
+		if( empty( $this->class_paths[$class_group] ) ) return;
+
+		foreach( $this->class_paths[$class_group] as $class_path ) {
 			$filepath = $class_path . $filename . '.class.php';
-			// TODO: Fix. Currently, if there is more than one file with the same name in the different class paths,
-			//they will all be loaded. Shouldn't cause any problems, just not as efficient as it could be.
 			if ( file_exists( $filepath ) ) {
 				require_once $filepath;
+				continue;
 			}
 		}
 	}
@@ -84,11 +97,15 @@ class SiteOrigin_Widget_Field_Class_Loader {
 	 * Initialize and register the class field loader
 	 */
 	public function extend(){
-		$class_prefixes = apply_filters( 'siteorigin_widgets_field_class_prefixes', array() );
-		$this->add_class_prefixes( $class_prefixes );
+		$this->add_class_prefixes(
+			apply_filters( 'siteorigin_widgets_field_class_prefixes', array() ),
+			'core'
+		);
 
-		$class_paths = apply_filters( 'siteorigin_widgets_field_class_paths', array() );
-		$this->add_class_paths( $class_paths );
+		$this->add_class_paths(
+			apply_filters( 'siteorigin_widgets_field_class_paths', array() ),
+			'core'
+		);
 	}
 }
 
