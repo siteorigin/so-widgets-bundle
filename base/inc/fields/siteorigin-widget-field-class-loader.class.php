@@ -12,8 +12,8 @@ class SiteOrigin_Widget_Field_Class_Loader {
 
 	function __construct(){
 		// Setup the loader with default prefixes and paths
-		$this->add_class_prefixes( array( 'SiteOrigin_Widget_Field_' ), 'core' );
-		$this->add_class_paths( array( plugin_dir_path( __FILE__ ) ), 'core' );
+		$this->add_class_prefixes( array( 'SiteOrigin_Widget_Field_' ), 'base' );
+		$this->add_class_paths( array( plugin_dir_path( __FILE__ ) ), 'base' );
 
 		spl_autoload_register( array( $this, 'load_field_class' ) );
 	}
@@ -33,7 +33,7 @@ class SiteOrigin_Widget_Field_Class_Loader {
 	 * @param string|array $class_prefixes
 	 * @param string $group
 	 */
-	public function add_class_prefixes( $class_prefixes, $group = 'core' ) {
+	public function add_class_prefixes( $class_prefixes, $group = 'base' ) {
 		if( !isset( $this->class_prefixes ) ) $this->class_prefixes = array();
 		if( !isset( $this->class_prefixes[$group] ) ) $this->class_prefixes[$group] = array();
 
@@ -50,7 +50,7 @@ class SiteOrigin_Widget_Field_Class_Loader {
 	 * @param string|array $class_paths
 	 * @param string $group
 	 */
-	public function add_class_paths( $class_paths, $group = 'core' ) {
+	public function add_class_paths( $class_paths, $group = 'base' ) {
 		if( !isset( $this->class_paths ) ) $this->class_paths = array();
 		if( !isset( $this->class_paths[$group] ) ) $this->class_paths[$group] = array();
 
@@ -99,12 +99,12 @@ class SiteOrigin_Widget_Field_Class_Loader {
 	public function extend(){
 		$this->add_class_prefixes(
 			apply_filters( 'siteorigin_widgets_field_class_prefixes', array() ),
-			'core'
+			'base'
 		);
 
 		$this->add_class_paths(
 			apply_filters( 'siteorigin_widgets_field_class_paths', array() ),
-			'core'
+			'base'
 		);
 	}
 }
