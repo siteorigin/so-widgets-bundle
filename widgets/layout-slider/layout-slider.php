@@ -149,12 +149,6 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 						'default' => '1280px',
 					),
 
-					'heading_font' => array(
-						'type' => 'font',
-						'label' => __('Heading font', 'so-widgets-bundle'),
-						'default' => '',
-					),
-
 					'heading_color' => array(
 						'type' => 'color',
 						'label' => __('Heading color', 'so-widgets-bundle'),
@@ -289,12 +283,6 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 
 		$less['heading_color'] = $instance['design']['heading_color'];
 		$less['text_color'] = $instance['design']['text_color'];
-
-		$font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
-		$less['heading_font'] = $font['family'];
-		if ( ! empty( $font['weight'] ) ) {
-			$less['heading_font_weight'] = $font['weight'];
-		}
 
 		return $less;
 	}
