@@ -719,9 +719,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			// This does autoloading if required.
 			if ( class_exists( $class_name ) ) {
 				/**
-				 * @var $contact_field SiteOrigin_Widget_Field_ContactForm_Base
+				 * @var $contact_field SiteOrigin_Widget_ContactForm_Field_Base
 				 */
-				$contact_field       = new $class_name();
 				$field_input_options = array(
 					'field'            => $field,
 					'field_id'         => $field_id,
@@ -729,7 +728,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					'value'            => $value,
 					'show_placeholder' => $show_placeholder
 				);
-				$contact_field->render( $field_input_options );
+				$contact_field       = new $class_name( $field_input_options );
+				$contact_field->render();
 			} else {
 				echo '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '"  value="' . esc_attr( $value ) . '"  class="sow-text-field" ' . ( $show_placeholder ? 'placeholder="' . esc_attr( $field['label'] ) . '"' : '' ) . '/>';
 			}
