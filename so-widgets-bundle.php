@@ -235,7 +235,7 @@ class SiteOrigin_Widgets_Bundle {
 		foreach( $active_widgets as $widget_id => $active ) {
 			if( empty($active) ) continue;
 
-			foreach( $this->widget_folders as $folder ) {
+			foreach( $widget_folders as $folder ) {
 				if ( !file_exists($folder . $widget_id.'/'.$widget_id.'.php') ) continue;
 
 				// Include this widget file
