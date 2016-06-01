@@ -79,11 +79,29 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 					'below' => __( 'Below', 'so-widgets-bundle' ),
 				),
 			),
+			
+			/****BY SGC****/
+			'subtitle' => array(
+				'type' => 'text',
+				'label' => __('Subtitle text', 'so-widgets-bundle'),
+			),
+			'subtitle_position' => array(
+				'type' => 'select',
+				'label' => __('Subtitle position', 'so-widgets-bundle'),
+				'default' => 'hidden',
+				'options' => array(
+					'hidden' => __( 'Hidden', 'so-widgets-bundle' ),
+					'above' => __( 'Above', 'so-widgets-bundle' ),
+					'below' => __( 'Below', 'so-widgets-bundle' ),
+				),
+			),
+			/******************/
 
 			'alt' => array(
 				'type' => 'text',
 				'label' => __('Alt text', 'so-widgets-bundle'),
 			),
+
 
 			'url' => array(
 				'type' => 'link',
@@ -123,6 +141,10 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		return array(
 			'title' => $instance['title'],
 			'title_position' => $instance['title_position'],
+			/****BY SGC****/
+			'subtitle' => $instance['subtitle'],
+			'subtitle_position' => $instance['subtitle_position'],
+			/**************/
 			'image' => $instance['image'],
 			'size' => $instance['size'],
 			'image_fallback' => ! empty( $instance['image_fallback'] ) ? $instance['image_fallback'] : false,
