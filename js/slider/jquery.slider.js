@@ -143,7 +143,7 @@ jQuery( function($){
                     'slides' : '> .sow-slider-image',
                     'speed' : settings.speed,
                     'timeout' : settings.timeout,
-                    'swipe' : true,
+                    'swipe' : settings.swipe,
                     'swipe-fx' : 'scrollHorz'
                 } );
 

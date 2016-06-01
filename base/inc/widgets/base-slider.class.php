@@ -90,6 +90,13 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'label' => __('Navigation size', 'so-widgets-bundle'),
 				'default' => '25',
 			),
+
+			'swipe' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Swipe Control', 'so-widgets-bundle' ),
+				'description' => __( 'Allow users to swipe through frames on mobile devices.', 'so-widgets-bundle' ),
+				'default' => true,
+			)
 		);
 	}
 
@@ -132,6 +139,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'pagination' => true,
 			'speed' => $controls['speed'],
 			'timeout' => $controls['timeout'],
+			'swipe' => $controls['swipe'],
 		);
 	}
 
