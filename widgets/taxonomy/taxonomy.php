@@ -24,12 +24,13 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 	}
 
 	function initialize_form(){
-
+		// Gets taxonomy objects and extracts the 'label' field from each one.
+		$taxonomies = wp_list_pluck( get_taxonomies( array(), 'objects' ), 'label' );
 		return array(
 			'taxonomy' => array(
 				'type' => 'select',
 				'label' => __( 'Taxonomies', 'so-widgets-bundle' ),
-				'options' => get_taxonomies()
+				'options' => $taxonomies,
 			),
 		);
 	}
