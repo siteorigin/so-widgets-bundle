@@ -85,7 +85,8 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
-			'taxonomy' => $instance['taxonomy'],
+			'taxonomy_name' => $instance['taxonomy'],
+			'show_label' => $instance['show_label'],
 		);
 	}
 }
