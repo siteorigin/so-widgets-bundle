@@ -1,0 +1,42 @@
+@color: #b0b0b0;
+@has_color: false;
+@hover_color: #cdcdcd;
+@has_hover_color: false;
+
+a {
+	&.so-taxonomy-link {
+		.color() when (@has_color = true) {
+			color: @color;
+		}
+		.color();
+
+		.hover() when (@has_hover_color = true) {
+			&:hover {
+				color: @hover_color;
+			}
+		}
+		.hover();
+	}
+
+	&.so-taxonomy-button {
+		margin-top: 1em;
+		color: #fff;
+		background: @color;
+		display: inline-block;
+		margin-right: 0.5em;
+		margin-bottom: 0.5em;
+		text-decoration: none;
+		line-height: 1em;
+		font-size: 0.9em;
+		padding: 0.65em 1em;
+
+		&:hover {
+			background: @hover_color;
+		}
+	}
+}
+
+label {
+	display: inline-block;
+	margin-right: 0.5em;
+}
