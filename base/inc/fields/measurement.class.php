@@ -60,7 +60,7 @@ class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_I
 	}
 
 	public function enqueue_scripts() {
-		wp_enqueue_style( 'so-measurement-field', plugin_dir_url(__FILE__) . 'css/so-measurement-field.css', array(), SOW_BUNDLE_VERSION );
+		wp_enqueue_style( 'so-measurement-field', plugin_dir_url(__FILE__) . 'css/measurement-field.css', array(), SOW_BUNDLE_VERSION );
 	}
 
 	// This is doing sanitization and is being used to concatenate the numeric measurement value and the selected
