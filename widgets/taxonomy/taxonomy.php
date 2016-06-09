@@ -28,14 +28,18 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 		$taxonomies = wp_list_pluck( get_taxonomies( array(), 'objects' ), 'label' );
 
 		return array(
+			'title' => array(
+				'type'    => 'text',
+				'label'   => __( 'Title', 'so-widgets-bundle' ),
+			),
 			'taxonomy'       => array(
 				'type'    => 'select',
 				'label'   => __( 'Taxonomies', 'so-widgets-bundle' ),
 				'options' => $taxonomies,
 			),
-			'show_label'     => array(
-				'type'  => 'checkbox',
-				'label' => __( 'Show Taxonomy Label', 'so-widgets-bundle' ),
+			'label'     => array(
+				'type'  => 'text',
+				'label' => __( 'Label', 'so-widgets-bundle' ),
 			),
 			'display_format' => array(
 				'type'    => 'select',
@@ -56,10 +60,6 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_style_name( $instance ) {
-		return 'taxonomy';
-	}
-
 	function get_less_variables( $instance ) {
 		return array(
 			'color' => $instance['color'],
@@ -67,17 +67,6 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 			'hover_color' => $instance['hover_color'],
 			'has_hover_color' => empty($instance['hover_color']) ? 'false' : 'true',
 		);
-	}
-
-	/**
-	 * Get the template for the taxonomy widget
-	 *
-	 * @param $instance
-	 *
-	 * @return mixed|string
-	 */
-	function get_template_name( $instance ) {
-		return 'taxonomy';
 	}
 
 	/**
@@ -94,8 +83,9 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
+			'title' => $instance['title'],
 			'taxonomy_name' => $instance['taxonomy'],
-			'show_label' => $instance['show_label'],
+			'label' => $instance['label'],
 			'display_format' => $instance['display_format'],
 		);
 	}
