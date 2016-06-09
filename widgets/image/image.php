@@ -115,10 +115,6 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		return substr( md5( serialize( $this->get_less_variables( $instance ) ) ), 0, 12 );
 	}
 
-	function get_template_name($instance) {
-		return 'base';
-	}
-
 	public function get_template_variables( $instance, $args ) {
 		return array(
 			'title' => $instance['title'],
@@ -130,10 +126,6 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			'url' => $instance['url'],
 			'new_window' => $instance['new_window'],
 		);
-	}
-
-	function get_style_name($instance) {
-		return 'sow-image';
 	}
 
 	function get_less_variables($instance){

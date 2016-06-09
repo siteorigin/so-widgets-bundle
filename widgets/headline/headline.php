@@ -164,10 +164,6 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_style_name( $instance ) {
-		return 'sow-headline';
-	}
-
 	function get_less_variables( $instance ) {
 		$less_vars = array();
 
@@ -246,17 +242,6 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			$instance['headline']['font'],
 			$instance['sub_headline']['font'],
 		);
-	}
-
-	/**
-	 * Get the template for the headline widget
-	 *
-	 * @param $instance
-	 *
-	 * @return mixed|string
-	 */
-	function get_template_name( $instance ) {
-		return 'headline';
 	}
 
 	/**

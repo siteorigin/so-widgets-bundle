@@ -263,10 +263,6 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		return $sizes;
 	}
 
-	function get_style_name($instance){
-		return 'features';
-	}
-
 	function get_less_variables( $instance ) {
 		$less_vars = array();
 
@@ -305,10 +301,6 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			$fonts['text_options']['font'],
 			$fonts['more_text_options']['font'],
 		);
-	}
-
-	function get_template_name($instance) {
-		return 'base';
 	}
 }
 

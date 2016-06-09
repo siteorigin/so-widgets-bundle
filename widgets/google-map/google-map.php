@@ -394,7 +394,8 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_style_name( $instance ) {
-		return '';
+		// We aren't using a LESS style for this widget.
+		return false;
 	}
 
 	function get_template_variables( $instance, $args ) {

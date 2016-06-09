@@ -170,10 +170,6 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		wp_enqueue_script( 'sow-social-media-buttons', plugin_dir_url(__FILE__) . 'js/social-media-buttons-admin.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
 	}
 
-	function get_template_name( $instance ) {
-		return 'social-media-buttons';
-	}
-
 	function get_style_name( $instance ) {
 		if ( empty( $instance['design']['theme'] ) ) {
 			return 'atom';

@@ -195,10 +195,6 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_template_name($instance) {
-		return 'base';
-	}
-
 	function get_style_name($instance) {
 		if(empty($instance['design']['theme'])) return 'atom';
 		return $instance['design']['theme'];
