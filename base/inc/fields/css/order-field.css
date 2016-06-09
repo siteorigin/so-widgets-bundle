@@ -1,0 +1,12 @@
+.siteorigin-widget-field-type-order .siteorigin-widget-order-items .siteorigin-widget-order-item {
+  display: block;
+  max-width: 200px;
+  background-color: #f4f4f4;
+  margin-bottom: 2px;
+  padding: 4px 6px;
+  cursor: move;
+  border: 1px solid #e0e0e0;
+}
+.siteorigin-widget-field-type-order .siteorigin-widget-order-items .siteorigin-widget-order-item:last-child {
+  margin-bottom: 0;
+}
