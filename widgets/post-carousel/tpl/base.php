@@ -23,7 +23,7 @@ $posts = new WP_Query( $query );
 		     data-ajax-url="<?php echo sow_esc_url( wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ) ) ?>"
 			>
 			<ul class="sow-carousel-items">
-				<?php include 'carousel-post-loop.php' ?>
+				<?php include plugin_dir_path( __FILE__ ) . 'carousel-post-loop.php' ?>
 			</ul>
 		</div>
 	</div>
