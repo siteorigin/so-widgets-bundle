@@ -149,7 +149,7 @@
   color: #999999;
 }
 .siteorigin-widget-form .siteorigin-widget-field-repeater .siteorigin-widget-field-expand {
-  right: 12px;
+  right: 48px;
 }
 .siteorigin-widget-form .siteorigin-widget-field-repeater .siteorigin-widget-field-expand:before {
   content: "\f140";
@@ -167,7 +167,7 @@
   color: #50575D;
 }
 .siteorigin-widget-form .siteorigin-widget-field-repeater .siteorigin-widget-field-remove {
-  right: 48px;
+  right: 12px;
 }
 .siteorigin-widget-form .siteorigin-widget-field-repeater .siteorigin-widget-field-remove:before {
   content: '\f158';
