@@ -3,6 +3,7 @@
  * @var $post
  * @var $taxonomy_name
  * @var $show_label
+ * @var $display_format
  */
 ?>
 
@@ -14,10 +15,11 @@
 	?>
 		<h3 class="widget-title"><?php echo $taxonomy->label; ?></h3>
 	<?php } ?>
+
 	<?php $terms = get_the_terms( $post->ID, $taxonomy_name ); ?>
 
 	<?php foreach ( $terms as $term ) : ?>
-		<a href="<?php get_term_link( $term, $taxonomy_name ) ?>" rel="tag"><?php echo $term->name ?></a>
+		<a class="so-taxonomy-<?php echo esc_attr( $display_format )?>" href="<?php get_term_link( $term, $taxonomy_name ) ?>" rel="tag"><?php echo esc_html( $term->name ) ?></a>
 	<?php endforeach; ?>
 
 </div>

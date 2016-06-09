@@ -41,8 +41,8 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 				'type'    => 'select',
 				'label'   => __( 'Display as', 'so-widgets-bundle' ),
 				'options' => array(
-					'links'   => __( 'Links', 'so-widgets-bundle' ),
-					'buttons' => __( 'Buttons', 'so-widgets-bundle' ),
+					'link'   => __( 'Links', 'so-widgets-bundle' ),
+					'button' => __( 'Buttons', 'so-widgets-bundle' ),
 				),
 			),
 			'color'          => array(
@@ -57,7 +57,16 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_style_name( $instance ) {
-		return 'sow-taxonomy';
+		return 'taxonomy';
+	}
+
+	function get_less_variables( $instance ) {
+		return array(
+			'color' => $instance['color'],
+			'has_color' => empty($instance['color']) ? 'false' : 'true',
+			'hover_color' => $instance['hover_color'],
+			'has_hover_color' => empty($instance['hover_color']) ? 'false' : 'true',
+		);
 	}
 
 	/**
@@ -87,6 +96,7 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 		return array(
 			'taxonomy_name' => $instance['taxonomy'],
 			'show_label' => $instance['show_label'],
+			'display_format' => $instance['display_format'],
 		);
 	}
 }
