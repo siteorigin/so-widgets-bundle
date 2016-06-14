@@ -51,17 +51,22 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				'type'   => 'section',
 				'label'  => __( 'Video File', 'so-widgets-bundle' ),
 				'fields' => array(
-					'self_video'     => array(
-						'type'          => 'media',
-						'fallback'      => true,
-						'label'         => __( 'Select video', 'so-widgets-bundle' ),
-						'description'   => __( 'Select an uploaded video in mp4 format. Other formats, such as webm and ogv will work in some browsers. You can use an online service such as <a href="http://video.online-convert.com/convert-to-mp4" target="_blank">online-convert.com</a> to convert your videos to mp4.', 'so-widgets-bundle' ),
-						'default'       => '',
-						'library'       => 'video',
+					'self_sources'   => array(
+						'type'          => 'repeater',
+						'label'         => __( 'Sources', 'so-widgets-bundle' ),
+						'fields'        => array(
+							'self_video' => array(
+								'type'     => 'media',
+								'fallback' => true,
+								'label'    => __( 'Select video', 'so-widgets-bundle' ),
+								'default'  => '',
+								'library'  => 'video',
+							),
+						),
 						'state_handler' => array(
 							'video_type[self]'     => array( 'show' ),
 							'video_type[external]' => array( 'hide' ),
-						)
+						),
 					),
 					'self_poster'    => array(
 						'type'          => 'media',
@@ -71,7 +76,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 						'state_handler' => array(
 							'video_type[self]'     => array( 'show' ),
 							'video_type[external]' => array( 'hide' ),
-						)
+						),
 					),
 					'external_video' => array(
 						'type'          => 'text',
@@ -80,9 +85,9 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 						'state_handler' => array(
 							'video_type[external]' => array( 'show' ),
 							'video_type[self]'     => array( 'hide' ),
-						)
+						),
 					),
-				)
+				),
 			),
 
 			'playback' => array(
@@ -148,34 +153,44 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 	function get_template_variables( $instance, $args ) {
 		static $player_id = 1;
 
-		$poster     = '';
-		$video_host = $instance['host_type'];
+		$self_sources = array();
+		$external_src = '';
+		$external_video_type = '';
+		$poster       = '';
+		$video_host   = $instance['host_type'];
 		if ( $video_host == 'self' ) {
 
-			if ( ! empty( $instance['video']['self_video'] ) ) {
-				// Handle an attachment video
-				$src        = wp_get_attachment_url( $instance['video']['self_video'] );
-				$vid_info   = wp_get_attachment_metadata( $instance['video']['self_video'] );
-				$video_type = 'video/' . empty( $vid_info['fileformat'] ) ? '' : $vid_info['fileformat'];
-			} else if ( ! empty( $instance['video']['self_video_fallback'] ) ) {
-				// Handle an external URL video
-				$src        = $instance['video']['self_video_fallback'];
-				$vid_info   = wp_check_filetype( basename( $instance['video']['self_video_fallback'] ) );
-				$video_type = $vid_info['type'];
+			foreach ( $instance['video']['self_sources'] as $source ) {
+				$src        = '';
+				$video_type = '';
+				if ( ! empty( $source['self_video'] ) ) {
+					// Handle an attachment video
+					$src        = wp_get_attachment_url( $source['self_video'] );
+					$vid_info   = wp_get_attachment_metadata( $source['self_video'] );
+					$video_type = 'video/' . empty( $vid_info['fileformat'] ) ? '' : $vid_info['fileformat'];
+				} else if ( ! empty( $source['self_video_fallback'] ) ) {
+					// Handle an external URL video
+					$src        = $source['self_video_fallback'];
+					$vid_info   = wp_check_filetype( basename( $source['self_video_fallback'] ) );
+					$video_type = $vid_info['type'];
+				}
+				if ( ! empty( $src ) ) {
+					$self_sources[] = array( 'src' => $src, 'video_type' => $video_type );
+				}
 			}
-
 			$poster = ! empty( $instance['video']['self_poster'] ) ? wp_get_attachment_url( $instance['video']['self_poster'] ) : '';
 		} else {
-			$video_host = $this->get_host_from_url( $instance['video']['external_video'] );
-			$video_type = 'video/' . $video_host;
-			$src        = ! empty( $instance['video']['external_video'] ) ? $instance['video']['external_video'] : '';
+			$video_host          = $this->get_host_from_url( $instance['video']['external_video'] );
+			$external_video_type = 'video/' . $video_host;
+			$external_src        = ! empty( $instance['video']['external_video'] ) ? $instance['video']['external_video'] : '';
 		}
 
 		$return = array(
 			'player_id'               => 'sow-player-' . ( $player_id ++ ),
 			'host_type'               => $instance['host_type'],
-			'src'                     => $src,
-			'video_type'              => $video_type,
+			'src'                     => $external_src,
+			'sources'                 => $self_sources,
+			'video_type'              => $external_video_type,
 			'is_skinnable_video_host' => $this->is_skinnable_video_host( $video_host ),
 			'poster'                  => $poster,
 			'autoplay'                => ! empty( $instance['playback']['autoplay'] ),
@@ -267,6 +282,24 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		global $wp_version;
 
 		return $video_host == 'self' || ( ( $video_host == 'youtube' || $video_host == 'vimeo' ) && $wp_version >= 4.2 );
+	}
+
+	function modify_instance( $instance ) {
+		$video_src = array();
+		if ( isset( $instance['video']['self_video'] ) ) {
+			$video_src['self_video'] = $instance['video']['self_video'];
+		}
+		if ( isset( $instance['video']['self_video_fallback'] ) ) {
+			$video_src['self_video_fallback'] = $instance['video']['self_video_fallback'];
+		}
+		if ( ! empty( $video_src ) ) {
+			if ( ! isset( $instance['video']['self_sources'] ) ) {
+				$instance['video']['self_sources'] = array();
+			}
+			$instance['video']['self_sources'][] = $video_src;
+		}
+
+		return $instance;
 	}
 }
 

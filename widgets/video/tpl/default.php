@@ -4,6 +4,8 @@
  * @var $autoplay
  * @var $skin_class
  * @var $is_skinnable_video_host
+ * @var $sources
+ * @var $src
  * @var $video_type
  */
 
@@ -30,12 +32,14 @@ if ( $skin_class != 'default' ) {
 
 <div class="sow-video-wrapper">
 	<?php if ( $is_skinnable_video_host ) : ?>
-		<video <?php foreach ( $video_args as $k => $v ) {
-			echo $k . '="' . $v . '" ';
-		} ?>>
-			<source type="<?php echo esc_attr( $video_type ) ?>" src="<?php echo esc_url( $src ) ?>"/>
-		</video>
+	<video <?php foreach ( $video_args as $k => $v ) {
+		echo $k . '="' . $v . '" ';
+	} ?>>
+		<?php foreach ( $sources as $source ) { ?>
+		<source type="<?php echo esc_attr( $source['video_type'] ) ?>" src="<?php echo esc_url( $source['src'] ) ?>"/>
+		<?php } ?>
+	</video>
 	<?php else : ?>
-		<?php echo $this->get_video_oembed( $src, $autoplay ); ?>
+	<?php echo $this->get_video_oembed( $src, $autoplay ); ?>
 	<?php endif; ?>
 </div>
