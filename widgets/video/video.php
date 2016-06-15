@@ -153,11 +153,11 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 	function get_template_variables( $instance, $args ) {
 		static $player_id = 1;
 
-		$self_sources = array();
-		$external_src = '';
+		$self_sources        = array();
+		$external_src        = '';
 		$external_video_type = '';
-		$poster       = '';
-		$video_host   = $instance['host_type'];
+		$poster              = '';
+		$video_host          = $instance['host_type'];
 		if ( $video_host == 'self' ) {
 
 			foreach ( $instance['video']['self_sources'] as $source ) {
@@ -166,8 +166,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				if ( ! empty( $source['self_video'] ) ) {
 					// Handle an attachment video
 					$src        = wp_get_attachment_url( $source['self_video'] );
-					$vid_info   = wp_get_attachment_metadata( $source['self_video'] );
-					$video_type = 'video/' . empty( $vid_info['fileformat'] ) ? '' : $vid_info['fileformat'];
+					$video_type = get_post_mime_type( $source['self_video'] );
 				} else if ( ! empty( $source['self_video_fallback'] ) ) {
 					// Handle an external URL video
 					$src        = $source['self_video_fallback'];
