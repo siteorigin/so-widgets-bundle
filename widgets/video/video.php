@@ -283,13 +283,23 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		return $video_host == 'self' || ( ( $video_host == 'youtube' || $video_host == 'vimeo' ) && $wp_version >= 4.2 );
 	}
 
+	/**
+	 *
+	 * Update older versions of widget to use multiple sources.
+	 *
+	 * @param $instance
+	 *
+	 * @return mixed
+	 */
 	function modify_instance( $instance ) {
 		$video_src = array();
-		if ( isset( $instance['video']['self_video'] ) ) {
+		if ( isset( $instance['video']['self_video'] ) && ! empty( $instance['video']['self_video'] ) ) {
 			$video_src['self_video'] = $instance['video']['self_video'];
+			unset( $instance['video']['self_video'] );
 		}
-		if ( isset( $instance['video']['self_video_fallback'] ) ) {
+		if ( isset( $instance['video']['self_video_fallback'] ) && ! empty( $instance['video']['self_video_fallback'] ) ) {
 			$video_src['self_video_fallback'] = $instance['video']['self_video_fallback'];
+			unset( $instance['video']['self_video_fallback'] );
 		}
 		if ( ! empty( $video_src ) ) {
 			if ( ! isset( $instance['video']['self_sources'] ) ) {
