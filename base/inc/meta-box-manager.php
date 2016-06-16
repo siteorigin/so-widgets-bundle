@@ -90,7 +90,7 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 	 */
 	public function render_widgets_meta_box( $post ) {
 		wp_enqueue_script(
-			'sow-meta-box-manager-js',
+			'sow-meta-box-manager',
 			plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/meta-box-manager' . SOW_BUNDLE_JS_SUFFIX . '.js',
 			array( 'jquery' ),
 			SOW_BUNDLE_VERSION,
