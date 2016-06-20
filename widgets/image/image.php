@@ -23,20 +23,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function initialize_form(){
-
-		global $_wp_additional_image_sizes;
-		$sizes = array(
-			'full' => __('Full', 'so-widgets-bundle'),
-			'large' => __('Large', 'so-widgets-bundle'),
-			'medium' => __('Medium', 'so-widgets-bundle'),
-			'thumb' => __('Thumbnail', 'so-widgets-bundle'),
-		);
-		if( !empty($_wp_additional_image_sizes) ) {
-			foreach($_wp_additional_image_sizes as $i => $s) {
-				$sizes[$i] = $i;
-			}
-		}
+	function initialize_form() {
 
 		return array(
 			'image' => array(
@@ -47,9 +34,8 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			),
 
 			'size' => array(
-				'type' => 'select',
+				'type' => 'image-size',
 				'label' => __('Image size', 'so-widgets-bundle'),
-				'options' => $sizes,
 			),
 
 			'align' => array(
