@@ -31,7 +31,12 @@ class SiteOrigin_Widget_Field_Builder extends SiteOrigin_Widget_Field_Base {
 		}
 		else {
 			// Let the user know that they need Page Builder installed
-			?><p><?php _e( 'This field requires SiteOrigin Page Builder.', 'so-widgets-bundle' ) ?></p><?php
+			?>
+			<p>
+				<?php _e( 'This field requires: ', 'so-widgets-bundle' ) ?>
+				<a href="https://siteorigin.com/page-builder/" target="_blank"><?php _e( 'SiteOrigin Page Builder', 'so-widgets-bundle' ) ?></a>
+			</p>
+			<?php
 		}
 	}
 

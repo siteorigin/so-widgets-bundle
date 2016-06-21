@@ -295,24 +295,6 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		}
 		return $val;
 	}
-
-	/**
-	 * Less function for importing Google web fonts.
-	 *
-	 * @param $instance
-	 * @param $args
-	 *
-	 * @return string
-	 */
-	function less_import_google_font($instance, $args) {
-		if( empty( $instance ) ) return;
-
-		$font_import = siteorigin_widget_get_font( $instance['design']['heading_font'] );
-		if( !empty( $font_import['css_import'] ) ) {
-			return  $font_import['css_import'];
-		}
-	}
-
 }
 
 siteorigin_widget_register('sow-layout-slider', __FILE__, 'SiteOrigin_Widget_LayoutSlider_Widget');
