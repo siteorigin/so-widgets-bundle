@@ -27,10 +27,17 @@
 		label {
 			display: block;
 			margin-bottom: 3px;
-		}
 
-		label.siteorigin-widget-field-label {
-			font-weight: bold;
+			&.siteorigin-widget-field-label {
+				font-weight: bold;
+			}
+
+			&.so-checkbox-label {
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+			}
 		}
 
 		.siteorigin-widget-field-description {
@@ -159,7 +166,7 @@
 		}
 
 		.siteorigin-widget-field-expand {
-			right: 12px;
+			right: 48px;
 
 			&:before {
 				content: "\f140";
@@ -191,7 +198,7 @@
 		}
 
 		.siteorigin-widget-field-remove {
-			right: 48px;
+			right: 12px;
 
 			&:before {
 				content: '\f158';

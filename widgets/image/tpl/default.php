@@ -12,9 +12,7 @@
 ?>
 
 <?php if( $title_position == 'above' ) : ?>
-	<?php echo $args['before_title']; ?>
-	<h2> <?php echo $title ?> </h2>
-	<?php echo $args['after_title']; ?>
+	<?php echo $args['before_title'] . esc_html( $title ) . $args['after_title']; ?>
 <?php endif; ?>
 
 <?php
@@ -33,9 +31,10 @@ if( !empty($src) ) {
 	if(!empty($src[1])) $attr['width'] = $src[1];
 	if(!empty($src[2])) $attr['height'] = $src[2];
 	if (function_exists('wp_get_attachment_image_srcset')) {
-		$attr['srcset'] = wp_get_attachment_image_srcset($image, $size);
+		$attr['srcset'] = wp_get_attachment_image_srcset( $image, $size );
  	}
 }
+$attr = apply_filters( 'siteorigin_widgets_image_attr', $attr, $instance, $this );
 
 $classes = array('so-widget-image');
 
@@ -50,7 +49,5 @@ if(!empty($alt)) $attr['alt'] = $alt;
 </div>
 
 <?php if( $title_position == 'below' ) : ?>
-	<?php echo $args['before_title']; ?>
-	<h2> <?php echo $title ?> </h2>
-	<?php echo $args['after_title']; ?>
+	<?php echo $args['before_title'] . esc_html( $title ) . $args['after_title']; ?>
 <?php endif; ?>

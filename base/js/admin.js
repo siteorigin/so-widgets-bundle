@@ -369,6 +369,13 @@
                 var changeIconFamily = function(){
                     // Fetch the family icons from the server
                     var family = $is.find('select.siteorigin-widget-icon-family').val();
+
+	                var dataIcons = $is.find('select.siteorigin-widget-icon-family option:selected' ).data('icons');
+	                if( dataIcons !== null ) {
+		                iconWidgetCache[family] = dataIcons;
+	                }
+
+
                     if(typeof family === 'undefined' || family === '') {
                         return;
                     }
@@ -486,6 +493,15 @@
                     }, 500);
                 } );
             } );
+
+	        ///////////////////////////////////////
+	        // Setup the Builder fields
+	        if( typeof jQuery.fn.soPanelsSetupBuilderWidget !== 'undefined' ) {
+		        $fields.filter( '.siteorigin-widget-field-type-builder' ).each( function(){
+			        var $$ = $(this);
+			        $$.find('> .siteorigin-page-builder-field' ).soPanelsSetupBuilderWidget();
+		        } );
+	        }
 
             ///////////////////////////////////////
             // Now lets handle the state emitters

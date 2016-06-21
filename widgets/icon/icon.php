@@ -64,10 +64,6 @@ class SiteOrigin_Widget_Icon_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_style_name( $instance ) {
-		return 'sow-icon';
-	}
-
 	function get_less_variables( $instance ) {
 		return array(
 			'color'    => $instance['color'],
@@ -75,18 +71,6 @@ class SiteOrigin_Widget_Icon_Widget extends SiteOrigin_Widget {
 			'size'     => $instance['size'],
 			'has_size' => empty( $instance['size'] ) ? 'false' : 'true',
 		);
-	}
-
-
-	/**
-	 * Get the template for the headline widget
-	 *
-	 * @param $instance
-	 *
-	 * @return mixed|string
-	 */
-	function get_template_name( $instance ) {
-		return 'icon';
 	}
 
 	/**

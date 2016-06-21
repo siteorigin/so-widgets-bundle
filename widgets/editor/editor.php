@@ -77,10 +77,6 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 	}
 
 
-	function get_template_name($instance) {
-		return 'editor';
-	}
-
 	function get_style_name($instance) {
 		// We're not using a style
 		return false;

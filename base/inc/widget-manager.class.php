@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Handles registering Widgets Bundle widgets.
+ *
+ * Class SiteOrigin_Widgets_Widget_Manager
+ */
 class SiteOrigin_Widgets_Widget_Manager {
 	/**
 	 * Regsitered widgets
@@ -22,7 +27,7 @@ class SiteOrigin_Widgets_Widget_Manager {
 		static $single;
 
 		if( empty($single) ) {
-			$single = new SiteOrigin_Widgets_Widget_Manager ();
+			$single = new self();
 		}
 
 		return $single;
@@ -32,6 +37,7 @@ class SiteOrigin_Widgets_Widget_Manager {
 	 * @param $id
 	 * @param $path
 	 * @param bool|false $class
+	 * @return mixed
 	 */
 	public function register( $id, $path, $class = false ){
 		$path = realpath( $path );

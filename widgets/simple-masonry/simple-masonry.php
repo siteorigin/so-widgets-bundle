@@ -186,14 +186,6 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_template_name($instance) {
-		return 'simple-masonry';
-	}
-
-	function get_style_name($instance) {
-		return 'simple-masonry';
-	}
-
 	public function get_template_variables( $instance, $args ) {
 		return array(
 			'items' => $instance['items'],

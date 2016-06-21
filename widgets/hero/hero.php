@@ -88,6 +88,15 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'fallback' => true,
 							),
 
+							'image_type' => array(
+								'type' => 'select',
+								'label' => __('Background image type', 'so-widgets-bundle'),
+								'options' => array(
+									'cover' => __('Cover', 'so-widgets-bundle'),
+								),
+								'default' => 'cover',
+							),
+
 							'opacity' => array(
 								'label' => __( 'Background image opacity', 'so-widgets-bundle' ),
 								'type' => 'slider',
@@ -230,8 +239,10 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		return array(
 			'color' => !empty( $frame['background']['color'] ) ? $frame['background']['color'] : false,
-			'image' => !empty( $background_image ) ? $background_image[0] : false,
-			'image-sizing' => 'cover',
+			'image' => !empty( $background_image[0] ) ? $background_image[0] : false,
+			'image-width' => !empty( $background_image[1] ) ? $background_image[1] : 0,
+			'image-height' => !empty( $background_image[2] ) ? $background_image[2] : 0,
+			'image-sizing' => $frame['background']['image_type'],
 			'url' => !empty( $frame['background']['url'] ) ? $frame['background']['url'] : false,
 			'new_window' => !empty( $frame['background']['new_window'] ),
 			'videos' => $frame['background']['videos'],
@@ -292,7 +303,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		$less['nav_size'] = $instance['controls']['nav_size'];
 
 		// Hero specific design
-		//Measurement field type options
+		// Measurement field type options
 		$meas_options = array();
 		$meas_options['slide_padding'] = $instance['design']['padding'];
 		$meas_options['slide_padding_extra_top'] = $instance['design']['extra_top_padding'];

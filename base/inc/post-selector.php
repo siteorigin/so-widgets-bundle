@@ -39,10 +39,14 @@ function siteorigin_widget_post_selector_process_query($query){
 		)
 	);
 
-	if(!empty($query['post_type'])) {
+	if( !empty( $query['post_type'] ) ) {
 		if($query['post_type'] == '_all') $query['post_type'] = siteorigin_widget_post_selector_all_post_types();
-		$query['post_type'] = explode(',', $query['post_type']);
+		$query['post_type'] = strpos( $query['post_type'], ',' ) !== false ? explode( ',', $query['post_type'] ) : $query['post_type'];
 	}
+	if( $query['post_type'] == 'attachment' && $query['post_status'] == 'publish' ) {
+		$query['post_status'] = 'inherit';
+	}
+
 
 	if(!empty($query['post__in'])) {
 		$query['post__in'] = explode(',', $query['post__in']);
@@ -91,8 +95,7 @@ function siteorigin_widget_post_selector_process_query($query){
 	}
 
 	if ( ! empty( $query['additional'] ) ) {
-		$additional = implode( '&', explode( ',', $query['additional'] ) );
-		$query = wp_parse_args( $additional, $query );
+		$query = wp_parse_args( $query['additional'], $query );
 		unset( $query['additional'] );
 	}
 
@@ -215,15 +218,7 @@ function siteorigin_widget_post_selector_all_post_types(){
  * @return int
  */
 function siteorigin_widget_post_selector_count_posts($query){
-//	if( empty($query) ) return 0;
-
-	$query = wp_parse_args(
-		siteorigin_widget_post_selector_process_query($query),
-		array(
-			'post_status' => 'publish',
-			'posts_per_page' => 10,
-		)
-	);
+	$query = siteorigin_widget_post_selector_process_query( $query );
 	$posts = new WP_Query($query);
 	return $posts->found_posts;
 }
@@ -233,14 +228,8 @@ function siteorigin_widget_post_selector_count_posts($query){
  */
 function siteorigin_widget_post_selector_get_posts_action(){
 	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
-	$query = stripslashes( $_POST['query'] );
-	$query = wp_parse_args(
-		siteorigin_widget_post_selector_process_query($query),
-		array(
-			'post_status' => 'publish',
-			'posts_per_page' => 10,
-		)
-	);
+
+	$query = siteorigin_widget_post_selector_process_query( stripslashes( $_POST['query'] ) );
 
 	if(!empty($_POST['ignore_pagination'])) {
 		$query['posts_per_page'] = 100;
@@ -284,8 +273,6 @@ function siteorigin_widget_post_selector_post_search_action(){
 	$results = array();
 	$r = new WP_Query( array('s' => $term, 'post_status' => 'publish', 'posts_per_page' => 20, 'post_type' => $type) );
 	foreach($r->posts as $post) {
-//			$thumbnail = wp_get_attachment_image_src($post->ID);
-
 		$results[] = array(
 			'label' => $post->post_title,
 			'value' => $post->ID,

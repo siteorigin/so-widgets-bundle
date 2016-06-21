@@ -197,7 +197,7 @@ jQuery(function ($) {
     if (window.google && window.google.maps) {
         new SiteOriginGoogleMap($).loadMaps();
     } else {
-        var apiKey = $('.sow-google-map-canvas').data('api-key');
+        var apiKey = $('.sow-google-map-canvas').data('options').apiKey;
 
         var apiUrl = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=soGoogleMapInitialize';
         if(apiKey) {

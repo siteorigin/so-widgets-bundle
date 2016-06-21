@@ -13,11 +13,15 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 */
 
 define('SOW_BUNDLE_VERSION', 'dev');
-define('SOW_BUNDLE_JS_SUFFIX', '');
 define('SOW_BUNDLE_BASE_FILE', __FILE__);
 
+// Allow JS suffix to be pre-set
+if( !defined( 'SOW_BUNDLE_JS_SUFFIX' ) ) {
+	define('SOW_BUNDLE_JS_SUFFIX', '');
+}
+
 if( !function_exists('siteorigin_widget_get_plugin_path') ) {
-	include plugin_dir_path(__FILE__).'base/inc.php';
+	include plugin_dir_path(__FILE__).'base/base.php';
 	include plugin_dir_path(__FILE__).'icons/icons.php';
 }
 
@@ -235,7 +239,7 @@ class SiteOrigin_Widgets_Bundle {
 		foreach( $active_widgets as $widget_id => $active ) {
 			if( empty($active) ) continue;
 
-			foreach( $this->widget_folders as $folder ) {
+			foreach( $widget_folders as $folder ) {
 				if ( !file_exists($folder . $widget_id.'/'.$widget_id.'.php') ) continue;
 
 				// Include this widget file

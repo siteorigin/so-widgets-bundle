@@ -23,20 +23,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function initialize_form(){
-
-		global $_wp_additional_image_sizes;
-		$sizes = array(
-			'full' => __('Full', 'so-widgets-bundle'),
-			'large' => __('Large', 'so-widgets-bundle'),
-			'medium' => __('Medium', 'so-widgets-bundle'),
-			'thumb' => __('Thumbnail', 'so-widgets-bundle'),
-		);
-		if( !empty($_wp_additional_image_sizes) ) {
-			foreach($_wp_additional_image_sizes as $i => $s) {
-				$sizes[$i] = $i;
-			}
-		}
+	function initialize_form() {
 
 		return array(
 			'image' => array(
@@ -47,9 +34,8 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			),
 
 			'size' => array(
-				'type' => 'select',
+				'type' => 'image-size',
 				'label' => __('Image size', 'so-widgets-bundle'),
-				'options' => $sizes,
 			),
 
 			'align' => array(
@@ -115,10 +101,6 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		return substr( md5( serialize( $this->get_less_variables( $instance ) ) ), 0, 12 );
 	}
 
-	function get_template_name($instance) {
-		return 'base';
-	}
-
 	public function get_template_variables( $instance, $args ) {
 		return array(
 			'title' => $instance['title'],
@@ -130,10 +112,6 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			'url' => $instance['url'],
 			'new_window' => $instance['new_window'],
 		);
-	}
-
-	function get_style_name($instance) {
-		return 'sow-image';
 	}
 
 	function get_less_variables($instance){

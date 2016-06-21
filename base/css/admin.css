@@ -24,6 +24,12 @@
 .siteorigin-widget-form .siteorigin-widget-field label.siteorigin-widget-field-label {
   font-weight: bold;
 }
+.siteorigin-widget-form .siteorigin-widget-field label.so-checkbox-label {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 .siteorigin-widget-form .siteorigin-widget-field .siteorigin-widget-field-description {
   font-size: 0.9em;
   margin-top: 0.2em;
@@ -143,7 +149,7 @@
   color: #999999;
 }
 .siteorigin-widget-form .siteorigin-widget-field-repeater .siteorigin-widget-field-expand {
-  right: 12px;
+  right: 48px;
 }
 .siteorigin-widget-form .siteorigin-widget-field-repeater .siteorigin-widget-field-expand:before {
   content: "\f140";
@@ -161,7 +167,7 @@
   color: #50575D;
 }
 .siteorigin-widget-form .siteorigin-widget-field-repeater .siteorigin-widget-field-remove {
-  right: 48px;
+  right: 12px;
 }
 .siteorigin-widget-form .siteorigin-widget-field-repeater .siteorigin-widget-field-remove:before {
   content: '\f158';

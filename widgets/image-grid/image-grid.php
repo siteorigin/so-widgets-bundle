@@ -43,12 +43,6 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	}
 
 	function initialize_form(){
-		$intermediate = get_intermediate_image_sizes();
-		$sizes = array();
-		foreach( $intermediate as $name ) {
-			$sizes[$name] = ucwords(preg_replace('/[-_]/', ' ', $name));
-		}
-		$sizes = array_merge( array( 'full' => __('Full', 'so-widgets-bundle') ), $sizes );
 
 		return array(
 
@@ -83,8 +77,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				'fields' => array(
 					'attachment_size' => array(
 						'label' => __('Image size', 'so-widgets-bundle'),
-						'type' => 'select',
-						'options' => $sizes,
+						'type' => 'image-size',
 						'default' => 'full',
 					),
 

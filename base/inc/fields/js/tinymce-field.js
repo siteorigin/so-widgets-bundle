@@ -111,7 +111,7 @@
                         setup($f);
                         $f.off('slideToggleOpenComplete');
                     }
-                })
+                });
             }
         }
         else {

@@ -1,5 +1,7 @@
 @import "../../../base/less/mixins";
 
+@button_width: '';
+@has_button_width: false;
 @button_color: #41a9d5;
 @text_color: #FFFFFF;
 
@@ -12,6 +14,12 @@
 	.clearfix();
 
 	a {
+		.box-sizing(border-box);
+		.btn_width() when( @has_button_width = true) {
+			width: @button_width;
+		}
+		.btn_width();
+
 		font-size: @font_size;
 		padding: @padding @padding*2;
 		background: transparent;

@@ -112,6 +112,7 @@ jQuery( function($){
                         var $$ = $(this);
                         playSlideVideo(incomingSlideEl);
                         setupActiveSlide( $$, incomingSlideEl );
+	                    $( incomingSlideEl ).trigger('sowSlideCycleAfter');
                     },
 
                     'cycle-before' : function(event, optionHash, outgoingSlideEl, incomingSlideEl, forwardFlag) {
@@ -119,6 +120,7 @@ jQuery( function($){
                         $p.find('> li').removeClass('sow-active').eq(optionHash.slideNum-1).addClass('sow-active');
                         pauseSlideVideo(outgoingSlideEl);
                         setupActiveSlide($$, incomingSlideEl, optionHash.speed);
+	                    $( incomingSlideEl ).trigger('sowSlideCycleBefore');
                     },
 
                     'cycle-initialized' : function(event, optionHash){
@@ -126,6 +128,8 @@ jQuery( function($){
                         setupActiveSlide( $$, optionHash.slides[0] );
 
                         $p.find('>li').removeClass('sow-active').eq(0).addClass('sow-active');
+	                    $( this ).find('.cycle-slide-active').trigger( 'sowSlideInitial' );
+
                         if(optionHash.slideCount <= 1) {
                             // Special case when there is only one slide
                             $p.hide();
@@ -139,7 +143,7 @@ jQuery( function($){
                     'slides' : '> .sow-slider-image',
                     'speed' : settings.speed,
                     'timeout' : settings.timeout,
-                    'swipe' : true,
+                    'swipe' : settings.swipe,
                     'swipe-fx' : 'scrollHorz'
                 } );
 
