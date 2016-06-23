@@ -187,7 +187,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		if ( ! empty( $instance['sub_headline'] ) && ! empty ( $instance['sub_headline']['text'] ) ) {
+		if ( ! empty( $instance['sub_headline'] ) ) {
 			$sub_headline_styles = $instance['sub_headline'];
 			if ( ! empty( $sub_headline_styles['align'] ) ) {
 				$less_vars['sub_headline_align'] = $sub_headline_styles['align'];
