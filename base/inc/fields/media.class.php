@@ -13,6 +13,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 	 * @var string
 	 */
 	protected $choose;
+
 	/**
 	 * A label for the confirmation button of the media selector dialog.
 	 *
@@ -20,6 +21,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 	 * @var string
 	 */
 	protected $update;
+
 	/**
 	 * Sets the media library which to browse and from which media can be selected. Allowed values are 'image',
 	 * 'audio', 'video', and 'file'. The default is 'file'.
@@ -28,6 +30,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 	 * @var string
 	 */
 	protected $library;
+
 	/**
 	 * Whether or not to display a URL input field which allows for specification of a fallback URL to be used in case
 	 * the selected media resource isn't available.
@@ -126,5 +129,10 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 			$v_name = substr( $v_name, strpos($v_name, '][') + 2 );
 		}
 		return $v_name . '_fallback';
+	}
+
+	function enqueue_scripts(){
+		wp_enqueue_script( 'so-media-field', plugin_dir_url( __FILE__ ) . '/js/media-field' . SOW_BUNDLE_JS_SUFFIX .  '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
+		wp_enqueue_style( 'so-media-field', plugin_dir_url( __FILE__ ) . '/css/media-field.css', array( ), SOW_BUNDLE_VERSION );
 	}
 }
