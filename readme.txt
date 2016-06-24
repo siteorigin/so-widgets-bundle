@@ -52,11 +52,11 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 == Changelog ==
 
 = 1.6.1 - 24 June 2016 =
-* Social Links: Fixed auto filling of network colors.
+* Social Links: Fixed auto-filling of network colors.
 * Social Links: Added 500px network.
-* Social Links: Added title tag to links.
+* Social Links: Added title tag to link tags.
 * Maps: Prevent JS error in when maps widget script is enqueued but widget isn't displayed.
-* Maps: Made API field more prominent as it's now required by the Google Maps API
+* Maps: Made API field more prominent as it's now required by the Google Maps API.
 * Added more general error checking.
 
 = 1.6 - 21 June 2016 =
