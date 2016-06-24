@@ -16,7 +16,6 @@
 		height: 32px;
 
 		&:hover {
-			.gradient( #ffffff, #f7f7f7, #ffffff );
 			.box-shadow(~"0 1px 2px rgba(0,0,0,0.15)");
 		}
 
@@ -62,7 +61,8 @@
 			}
 		}
 
-		.media-upload-button {
+		.media-upload-button,
+		.find-image-button {
 			display: block;
 			float: left;
 			color: #666;
@@ -70,9 +70,18 @@
 			text-shadow: 0 1px 0 #FFF;
 			font-weight: 600;
 			font-size: 11px;
-			padding: 7px 8px 7px 6px;
+			padding: 7px 8px;
 			outline: none;
 			cursor: pointer;
+			.rounded(2px);
+
+			&:hover {
+				background: rgba( 255,255,255,0.75 );
+			}
+		}
+
+		.find-image-button {
+			border-left: 1px solid #bbbbbb;
 		}
 
 		&:hover .media-upload-button{

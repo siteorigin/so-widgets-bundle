@@ -18,12 +18,6 @@
   height: 32px;
 }
 .siteorigin-widget-form .siteorigin-widget-field-type-media .media-field-wrapper:hover {
-  background: #ffffff;
-  background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #f7f7f7), color-stop(1, #ffffff));
-  background: -ms-linear-gradient(bottom, #f7f7f7, #ffffff);
-  background: -moz-linear-gradient(center bottom, #f7f7f7 0%, #ffffff 100%);
-  background: -o-linear-gradient(#ffffff, #f7f7f7);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f7f7f7', GradientType=0);
   -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.15);
   -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.15);
   box-shadow: 0 1px 2px rgba(0,0,0,0.15);
@@ -71,7 +65,8 @@
   width: 100%;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
 }
-.siteorigin-widget-form .siteorigin-widget-field-type-media .media-field-wrapper .media-upload-button {
+.siteorigin-widget-form .siteorigin-widget-field-type-media .media-field-wrapper .media-upload-button,
+.siteorigin-widget-form .siteorigin-widget-field-type-media .media-field-wrapper .find-image-button {
   display: block;
   float: left;
   color: #666;
@@ -79,9 +74,19 @@
   text-shadow: 0 1px 0 #FFF;
   font-weight: 600;
   font-size: 11px;
-  padding: 7px 8px 7px 6px;
+  padding: 7px 8px;
   outline: none;
   cursor: pointer;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.siteorigin-widget-form .siteorigin-widget-field-type-media .media-field-wrapper .media-upload-button:hover,
+.siteorigin-widget-form .siteorigin-widget-field-type-media .media-field-wrapper .find-image-button:hover {
+  background: rgba(255, 255, 255, 0.75);
+}
+.siteorigin-widget-form .siteorigin-widget-field-type-media .media-field-wrapper .find-image-button {
+  border-left: 1px solid #bbbbbb;
 }
 .siteorigin-widget-form .siteorigin-widget-field-type-media .media-field-wrapper:hover .media-upload-button {
   color: #707070;

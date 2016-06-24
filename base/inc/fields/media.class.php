@@ -23,6 +23,13 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 	protected $update;
 
 	/**
+	 * A label to search for external images.
+	 *
+	 * @var
+	 */
+	protected $find_image;
+
+	/**
 	 * Sets the media library which to browse and from which media can be selected. Allowed values are 'image',
 	 * 'audio', 'video', and 'file'. The default is 'file'.
 	 *
@@ -44,6 +51,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 		return array(
 			'choose' => __( 'Choose Media', 'so-widgets-bundle' ),
 			'update' => __( 'Set Media', 'so-widgets-bundle' ),
+			'find_image' => __( 'Find Image', 'so-widgets-bundle' ),
 			'library' => 'image'
 		);
 	}
@@ -80,9 +88,14 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 			   data-library="<?php echo esc_attr( $this->library ) ?>">
 				<?php echo esc_html( $this->choose ) ?>
 			</a>
+			<?php if( $this->library == 'image' ) : ?>
+				<a href="#" class="find-image-button">
+					<?php echo esc_html( $this->find_image ) ?>
+				</a>
+			<?php endif; ?>
 		</div>
-		<a href="#" class="media-remove-button <?php if( empty( $value ) ) echo 'remove-hide'; ?>"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ) ?></a>
 
+		<a href="#" class="media-remove-button <?php if( empty( $value ) ) echo 'remove-hide'; ?>"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ) ?></a>
 		<input type="hidden" value="<?php echo esc_attr( is_array( $value ) ? '-1' : $value ) ?>" name="<?php echo esc_attr( $this->element_name ) ?>" class="siteorigin-widget-input" />
 
 		<?php

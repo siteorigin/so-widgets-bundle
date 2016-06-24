@@ -5,7 +5,8 @@ jQuery( function( $ ) {
         var $field = $media.closest('.siteorigin-widget-field');
 
         // Handle the media uploader
-        $media.find('a.media-upload-button' ).click(function(e){
+        $media.find( '.media-upload-button' ).click(function(e){
+            e.preventDefault();
             if( typeof wp.media === 'undefined' ) {
                 return;
             }
@@ -72,9 +73,11 @@ jQuery( function( $ ) {
 
             // Finally, open the modal.
             frame.open();
-
-            return false;
         });
+
+        $media.find( '.find-image-button' ).click( function(e){
+            e.preventDefault();
+        } );
 
         $media.find('.current' )
             .mouseenter(function(){
