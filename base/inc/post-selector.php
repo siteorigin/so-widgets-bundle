@@ -43,7 +43,7 @@ function siteorigin_widget_post_selector_process_query($query){
 		if($query['post_type'] == '_all') $query['post_type'] = siteorigin_widget_post_selector_all_post_types();
 		$query['post_type'] = strpos( $query['post_type'], ',' ) !== false ? explode( ',', $query['post_type'] ) : $query['post_type'];
 	}
-	if( $query['post_type'] == 'attachment' && $query['post_status'] == 'publish' ) {
+	if( !empty( $query['post_type'] ) && $query['post_type'] == 'attachment' && $query['post_status'] == 'publish' ) {
 		$query['post_status'] = 'inherit';
 	}
 

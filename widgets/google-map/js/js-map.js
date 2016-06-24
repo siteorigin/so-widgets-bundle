@@ -197,12 +197,12 @@ jQuery(function ($) {
     if (window.google && window.google.maps) {
         new SiteOriginGoogleMap($).loadMaps();
     } else {
-        var apiKey = $('.sow-google-map-canvas').data('options').apiKey;
+		var mapOptions = $('.sow-google-map-canvas').data('options');
 
-        var apiUrl = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=soGoogleMapInitialize';
-        if(apiKey) {
-            apiUrl += '&key=' + apiKey;
-        }
+		var apiUrl = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=soGoogleMapInitialize';
+		if(mapOptions && mapOptions.apiKey) {
+			apiUrl += '&key=' + mapOptions.apiKey;
+		}
         var script = $('<script type="text/javascript" src="' + apiUrl + '">');
         $('body').append(script);
     }

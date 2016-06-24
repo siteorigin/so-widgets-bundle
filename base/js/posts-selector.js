@@ -631,10 +631,7 @@ var soWidgetPostSelector = ( function ($, _) {
                         query : 'post_type=_all&posts_per_page=-1&post__in=' + getPosts.join(',')
                     },
                     function(data){
-
-                        console.log(data);
                         if(typeof data.posts !== 'undefined') {
-
                             _.each(data.posts, function(post, i){
                                 v.postCache[post.id] = {
                                     id : post.id,
@@ -643,7 +640,6 @@ var soWidgetPostSelector = ( function ($, _) {
                                     editUrl: post.editUrl
                                 };
                             });
-
                         }
 
                         v.refreshLoading();
