@@ -341,7 +341,7 @@ var soWidgetPostSelector = ( function ($, _) {
 			}
 
             // The order field
-            this.form.append($('<div class="query-builder-form-field">' + sowPostsSelectorTpl.fields.orderby + '</div>').disableSelection());
+            this.form.append($('<div class="query-builder-form-field">' + sowPostsSelectorTpl.fields.orderby + '</div>'));
             if( typeof this.model.get('orderby') !== 'undefined' ) this.form.find('select[name="orderby"]').val(this.model.get('orderby'));
             if( typeof this.model.get('order') !== 'undefined' ) this.form.find('input[name="order"]').val(this.model.get('order'));
 
