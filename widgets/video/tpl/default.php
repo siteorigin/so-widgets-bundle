@@ -1,5 +1,7 @@
 <?php
 /**
+ * @var $instance
+ * @var $args
  * @var $player_id
  * @var $autoplay
  * @var $skin_class
@@ -8,6 +10,8 @@
  * @var $src
  * @var $video_type
  */
+
+apply_filters( 'siteorigin_widgets_sow-video_before_video', $instance );
 
 if ( ! empty( $instance['title'] ) ) {
 	echo $args['before_title'] . esc_html( $instance['title'] ) . $args['after_title'];
@@ -45,3 +49,4 @@ if ( $skin_class != 'default' ) {
 	<?php echo $this->get_video_oembed( $src, $autoplay ); ?>
 	<?php endif; ?>
 </div>
+<?php apply_filters( 'siteorigin_widgets_sow-video_after_video', $instance ); ?>
