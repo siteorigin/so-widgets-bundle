@@ -768,12 +768,12 @@
 }
 
 
-.siteorigin-widget-preview-dialog {
+.so-widgets-dialog {
 
 	@edge_spacing: 30px;
 	@border_color: #D8D8D8;
 
-	.siteorigin-widgets-preview-modal-overlay {
+	.so-widgets-dialog-overlay {
 		position: fixed;
 		z-index: 100000;
 		top: 0;
@@ -783,13 +783,14 @@
 		background: rgba(0,0,0,0.7);
 	}
 
-	.so-widget-toolbar, .so-widget-iframe {
+	.so-widgets-toolbar,
+	.so-widgets-dialog-frame {
 		position: fixed;
 		z-index: 500001;
 		.box-sizing(border-box);
 	}
 
-	.so-widget-toolbar {
+	.so-widgets-toolbar {
 		left: @edge_spacing;
 		right: @edge_spacing;
 		top: @edge_spacing;
@@ -841,7 +842,7 @@
 		}
 	}
 
-	.so-widget-iframe {
+	.so-widgets-dialog-frame {
 		top: @edge_spacing + 50px;
 		left: @edge_spacing;
 		right: @edge_spacing;

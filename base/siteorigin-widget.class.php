@@ -435,19 +435,19 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	function footer_admin_templates(){
 		?>
 		<script type="text/template" id="so-widgets-bundle-tpl-preview-dialog">
-			<div class="siteorigin-widget-preview-dialog">
-				<div class="siteorigin-widgets-preview-modal-overlay"></div>
+			<div class="so-widgets-dialog">
+				<div class="so-widgets-dialog-overlay"></div>
 
-				<div class="so-widget-toolbar">
+				<div class="so-widgets-toolbar">
 					<h3><?php _e('Widget Preview', 'so-widgets-bundle') ?></h3>
 					<div class="close"><span class="dashicons dashicons-arrow-left-alt2"></span></div>
 				</div>
 
-				<div class="so-widget-iframe">
-					<iframe name="siteorigin-widget-preview-iframe" id="siteorigin-widget-preview-iframe" style="visibility: hidden"></iframe>
+				<div class="so-widgets-dialog-frame">
+					<iframe name="siteorigin-widgets-preview-iframe" id="siteorigin-widget-preview-iframe" style="visibility: hidden"></iframe>
 				</div>
 
-				<form target="siteorigin-widget-preview-iframe" action="<?php echo wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ) ?>" method="post">
+				<form target="siteorigin-widgets-preview-iframe" action="<?php echo wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ) ?>" method="post">
 					<input type="hidden" name="action" value="so_widgets_preview" />
 					<input type="hidden" name="data" value="" />
 					<input type="hidden" name="class" value="" />

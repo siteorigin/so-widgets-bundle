@@ -639,7 +639,7 @@
   display: block;
   margin: 1em 0;
 }
-.siteorigin-widget-preview-dialog .siteorigin-widgets-preview-modal-overlay {
+.so-widgets-dialog .so-widgets-dialog-overlay {
   position: fixed;
   z-index: 100000;
   top: 0;
@@ -648,8 +648,8 @@
   bottom: 0;
   background: rgba(0, 0, 0, 0.7);
 }
-.siteorigin-widget-preview-dialog .so-widget-toolbar,
-.siteorigin-widget-preview-dialog .so-widget-iframe {
+.so-widgets-dialog .so-widgets-toolbar,
+.so-widgets-dialog .so-widgets-dialog-frame {
   position: fixed;
   z-index: 500001;
   -ms-box-sizing: border-box;
@@ -657,7 +657,7 @@
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
-.siteorigin-widget-preview-dialog .so-widget-toolbar {
+.so-widgets-dialog .so-widgets-toolbar {
   left: 30px;
   right: 30px;
   top: 30px;
@@ -665,10 +665,10 @@
   background: #fafafa;
   border-bottom: 1px solid #D8D8D8;
 }
-.siteorigin-widget-preview-dialog .so-widget-toolbar h3 {
+.so-widgets-dialog .so-widgets-toolbar h3 {
   margin: 15px 0 15px 20px;
 }
-.siteorigin-widget-preview-dialog .so-widget-toolbar .close {
+.so-widgets-dialog .so-widgets-toolbar .close {
   position: absolute;
   box-sizing: border-box;
   width: 50px;
@@ -685,13 +685,13 @@
   border-left: 1px solid #d8d8d8;
   border-bottom: 1px solid #d8d8d8;
 }
-.siteorigin-widget-preview-dialog .so-widget-toolbar .close:hover {
+.so-widgets-dialog .so-widgets-toolbar .close:hover {
   background: #e9e9e9;
 }
-.siteorigin-widget-preview-dialog .so-widget-toolbar .close:hover .so-dialog-icon {
+.so-widgets-dialog .so-widgets-toolbar .close:hover .so-dialog-icon {
   color: #333333;
 }
-.siteorigin-widget-preview-dialog .so-widget-toolbar .close .dashicons {
+.so-widgets-dialog .so-widgets-toolbar .close .dashicons {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -704,7 +704,7 @@
   color: #666666;
   text-align: center;
 }
-.siteorigin-widget-preview-dialog .so-widget-iframe {
+.so-widgets-dialog .so-widgets-dialog-frame {
   top: 80px;
   left: 30px;
   right: 30px;
@@ -712,12 +712,12 @@
   background: #FFFFFF url("img/wpspin_light.gif") center center no-repeat;
 }
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .siteorigin-widget-preview-dialog .so-widget-iframe {
+  .so-widgets-dialog .so-widgets-dialog-frame {
     background-image: url("img/wpspin_light-2x.gif");
     background-size: 16px 16px;
   }
 }
-.siteorigin-widget-preview-dialog .so-widget-iframe iframe {
+.so-widgets-dialog .so-widgets-dialog-frame iframe {
   width: 100%;
   height: 100%;
 }
