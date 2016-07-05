@@ -1,0 +1,51 @@
+@import "../../../base/less/mixins";
+
+.ow-accordion {
+	.clearfix();
+
+	.ow-accordion-header {
+		display: block;
+		cursor: pointer;
+		position: relative;
+		margin: 5px 0 0 0;
+		padding: .5em .5em .5em .7em;
+		min-height: 0; /* support: IE7 */
+		font-size: 100%;
+		background: #ddd;
+
+		h3 {
+			margin: 0;
+			&:after {
+				content: '\02795';
+				margin-left: 5px;
+				float: right;
+				font-size: 0.8em;
+				color: #777;
+			}
+		}
+
+		&.active {
+			h3:after { content: "\2796"; }
+		}
+
+		.ow-accordion-header-icon {
+			position: absolute;
+			left: .5em;
+			top: 50%;
+			margin-top: -8px;
+		}
+	}
+
+	.ow-accordion-icons {
+		padding-left: 2.2em;
+		.ow-accordion-icons  { padding-left: 2.2em; }
+	}
+
+	.ow-accordion-content {
+	   padding: 0.5em 1.2em;
+	   border-top: 0;
+	   overflow: auto;
+	   display: none;
+	   background: #f1f1f1;
+   }
+}
