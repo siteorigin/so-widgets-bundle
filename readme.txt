@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 3.9
-Tested up to: 4.5.2
+Tested up to: 4.5.3
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
@@ -50,6 +50,11 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.6.2 - 11 July 2016 =
+* Fixed Firefox issue in post selector builder.
+* Properly escape all uses off add_query_arg.
+* Added filter after video
 
 = 1.6.1 - 24 June 2016 =
 * Social Links: Fixed auto-filling of network colors.

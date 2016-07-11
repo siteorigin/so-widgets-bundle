@@ -1,5 +1,7 @@
 <?php
 /**
+ * @var $instance
+ * @var $args
  * @var $player_id
  * @var $autoplay
  * @var $skin_class
@@ -28,6 +30,8 @@ if ( ! empty( $poster ) ) {
 if ( $skin_class != 'default' ) {
 	$video_args['class'] = 'mejs-' . $skin_class;
 }
+
+do_action( 'siteorigin_widgets_sow-video_before_video', $instance );
 ?>
 
 <div class="sow-video-wrapper">
@@ -45,3 +49,4 @@ if ( $skin_class != 'default' ) {
 	<?php echo $this->get_video_oembed( $src, $autoplay ); ?>
 	<?php endif; ?>
 </div>
+<?php do_action( 'siteorigin_widgets_sow-video_after_video', $instance ); ?>
