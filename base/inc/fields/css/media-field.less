@@ -128,23 +128,54 @@
 	padding: 25px;
 	overflow-y: scroll;
 
-	.so-widgets-search-input {
-		padding: 11px 12px;
-		font-size: 1.2em;
-		height: 48px;
-		margin-bottom: 10px;
-	}
+	#so-widgets-image-search-form{
+		max-width: 420px;
+		width:100%;
+		position: relative;
+		padding-right: 48px;
+		margin-bottom: 15px;
 
-	.so-widgets-search-button {
-		padding: 10px 24px;
-		font-size: 1.2em;
-		height: 48px;
+		.so-widgets-search-input {
+			padding: 9px 12px;
+			margin-bottom: 0px;
+			box-shadow: none;
+
+			&:focus {
+				box-shadow: none;
+			}
+
+		}
+
+		.so-widgets-search-button {
+			position: absolute;
+			padding: 9px 14px;
+			font-size: 1.2em;
+			height: 100%;
+			top: 0;
+			right: 0;
+			border-width: 1px;
+			box-shadow: none;
+		}
 	}
 
 	.so-widgets-image-results {
 		.clearfix();
 
 		margin: 0 -8px;
+		min-height: 60px;
+
+		&.so-loading, .so-loading {
+			background-image: url("images/wpspin_light.gif");
+			background-position: center center;
+			background-repeat: no-repeat;
+
+			@media  (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+				& {
+					background-image: url(images/wpspin_light-2x.gif);
+					background-size: 16px 16px;
+				}
+			}
+		}
 
 		.so-widgets-result {
 			.box-sizing(border-box);
@@ -158,6 +189,7 @@
 				display: block;
 				width: 260px;
 				height: 180px;
+				background-color: #e8e8e8;
 			}
 		}
 

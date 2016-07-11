@@ -164,7 +164,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 				<div class="so-widgets-dialog-overlay"></div>
 
 				<div class="so-widgets-toolbar">
-					<h3><?php _e('Search For Images', 'so-widgets-bundle') ?></h3>
+					<h3><?php _e( 'Search For Images', 'so-widgets-bundle' ) ?></h3>
 					<div class="close"><span class="dashicons dashicons-no-alt"></span></div>
 				</div>
 
@@ -172,10 +172,10 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 					<div id="so-widgets-image-search-frame">
 
 						<form id="so-widgets-image-search-form">
-							<input type="text" value="" name="s" class="widefat so-widgets-search-input" />
+							<input type="text" value="" name="s" class="widefat so-widgets-search-input" placeholder="<?php echo esc_attr_e( 'Search For Images', 'so-widgets-bundle' ) ?>" />
 							<?php wp_nonce_field( 'so-image', '_sononce', false ) ?>
-							<button type="submit" class="button-secondary so-widgets-search-button">
-								<?php _e('Search', 'so-widgets-bundle') ?>
+							<button type="submit" class="button-primary so-widgets-search-button">
+								<span class="dashicons dashicons-search"></span>
 							</button>
 						</form>
 

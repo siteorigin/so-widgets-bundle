@@ -135,6 +135,8 @@ jQuery( function( $ ) {
 
                     if( q !== '' ) {
                         // Send the query to the server
+                        results.empty().addClass( 'so-loading' );
+
                         $.get(
                             ajaxurl,
                             {
@@ -148,14 +150,16 @@ jQuery( function( $ ) {
                                     return;
                                 }
 
-                                results.empty();
+                                results.removeClass( 'so-loading' );
                                 $.each( response, function( i, r ){
                                     var result = $( $('#so-widgets-bundle-tpl-image-search-result').html().trim() )
                                         .appendTo( results )
                                         .addClass( 'source-' + r.source );
                                     var img = result.find('.so-widgets-result-image');
 
+                                    // Preload the image
                                     img.css('background-image', 'url(' + r.preview[1] + ')' );
+
                                     if( r.url ) {
                                         img.attr( {
                                             'href': r.url,
