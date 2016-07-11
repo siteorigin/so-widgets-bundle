@@ -128,6 +128,9 @@ jQuery( function( $ ) {
 
                 var fetchImages = function( query, page ){
                     dialog.find( '.so-widgets-results-loading' ).fadeIn('fast');
+                    dialog.find( '.so-widgets-results-loading strong' ).html(
+                        dialog.find( '.so-widgets-results-loading strong' ).data( 'loading' )
+                    );
                     dialog.find( '.so-widgets-results-more' ).hide();
 
                     $.get(
@@ -206,10 +209,12 @@ jQuery( function( $ ) {
 
                 dialog.on( 'click', '.so-widgets-result-image', function( e ){
                     var $$ = $(this);
-                    if( ! $$.data( 'full_url' ) ) return;
+                    if( ! $$.data( 'full_url' ) ) {
+                        return;
+                    }
 
                     e.preventDefault();
-                    
+
                     if( confirm( dialog.data('confirm-import') ) ) {
                         var postId = $( '#post_ID' ).val();
                         if( postId === null ) {
@@ -230,11 +235,24 @@ jQuery( function( $ ) {
                                 if( response.error === false ) {
                                     // This was a success
                                     dialog.hide();
+                                    dialog.find( '.so-widgets-results-loading' ).hide();
                                     $field.find( 'input[type=hidden]' ).val( response.attachment_id );
                                     $field.find('.current .thumbnail' ).attr('src', response.thumb ).fadeIn();
                                 }
+                                else {
+                                    alert( response.message );
+                                    dialog.find( '.so-widgets-results-loading' ).hide();
+                                }
                             }
                         );
+
+                        // Clear the dialog
+                        dialog.find( '.so-widgets-results-loading' ).fadeIn('fast');
+                        dialog.find( '.so-widgets-results-loading strong' ).html(
+                            dialog.find( '.so-widgets-results-loading strong' ).data( 'importing' )
+                        );
+                        dialog.find( '.so-widgets-results-more' ).hide();
+                        results.empty();
                     }
                 } );
             }

@@ -178,11 +178,23 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 								<span class="dashicons dashicons-search"></span>
 							</button>
 						</form>
+						<div id="so-widgets-image-search-powered">
+							<?php
+							printf(
+								__( 'Powered by %s - sponsored results from %s', 'so-widgets-bundle' ),
+								'<a href="https://pixabay.com/" target="_blank">Pixabay</a>',
+								'<a href="http://shutterstock.7eer.net/c/269244/42119/1305" target="_blank">Shutterstock</a>'
+							);
+							?>
+						</div>
 
 						<div class="so-widgets-image-results"></div>
 
 						<div class="so-widgets-results-loading">
-							<div class="so-widgets-loading-icon"></div> <strong><?php _e( 'Loading Results', 'so-widgets-bundle' ) ?></strong>
+							<div class="so-widgets-loading-icon"></div>
+							<strong
+								data-loading="<?php esc_attr_e( 'Loading Images', 'so-widgets-bundle' ) ?>"
+								data-importing="<?php esc_attr_e( 'Importing Image', 'so-widgets-bundle' ) ?>"></strong>
 						</div>
 						<div class="so-widgets-results-more">
 							<button class="button-secondary"><?php esc_html_e( 'Load More', 'so-widgets-bundle' ) ?></button>

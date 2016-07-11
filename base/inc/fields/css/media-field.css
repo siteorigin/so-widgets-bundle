@@ -131,11 +131,12 @@
   overflow-y: scroll;
 }
 #so-widgets-image-search-frame #so-widgets-image-search-form {
+  display: inline-block;
   max-width: 420px;
   width: 100%;
   position: relative;
   padding-right: 48px;
-  margin-bottom: 15px;
+  margin-bottom: 2px;
 }
 #so-widgets-image-search-frame #so-widgets-image-search-form .so-widgets-search-input {
   padding: 9px 12px;
@@ -154,6 +155,11 @@
   right: 0;
   border-width: 1px;
   box-shadow: none;
+}
+#so-widgets-image-search-frame #so-widgets-image-search-powered {
+  font-size: 0.85em;
+  margin-bottom: 15px;
+  color: #888;
 }
 #so-widgets-image-search-frame .so-widgets-image-results {
   zoom: 1;
@@ -194,6 +200,7 @@
   background: #59946B;
   line-height: 1em;
   padding: 5px;
+  border-radius: 2px;
 }
 #so-widgets-image-search-frame .so-widgets-results-loading {
   display: none;
