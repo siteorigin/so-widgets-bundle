@@ -51,6 +51,11 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.6.2 - 11 July 2016 =
+* Fixed Firefox issue in post selector builder.
+* Properly escape all uses off add_query_arg.
+* Added filter after video
+
 = 1.6.1 - 24 June 2016 =
 * Social Links: Fixed auto-filling of network colors.
 * Social Links: Added 500px network.
