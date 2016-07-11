@@ -11,8 +11,6 @@
  * @var $video_type
  */
 
-apply_filters( 'siteorigin_widgets_sow-video_before_video', $instance );
-
 if ( ! empty( $instance['title'] ) ) {
 	echo $args['before_title'] . esc_html( $instance['title'] ) . $args['after_title'];
 }
@@ -32,6 +30,8 @@ if ( ! empty( $poster ) ) {
 if ( $skin_class != 'default' ) {
 	$video_args['class'] = 'mejs-' . $skin_class;
 }
+
+do_action( 'siteorigin_widgets_sow-video_before_video', $instance );
 ?>
 
 <div class="sow-video-wrapper">
@@ -49,4 +49,4 @@ if ( $skin_class != 'default' ) {
 	<?php echo $this->get_video_oembed( $src, $autoplay ); ?>
 	<?php endif; ?>
 </div>
-<?php apply_filters( 'siteorigin_widgets_sow-video_after_video', $instance ); ?>
+<?php do_action( 'siteorigin_widgets_sow-video_after_video', $instance ); ?>
