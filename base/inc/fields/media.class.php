@@ -179,8 +179,13 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 							</button>
 						</form>
 
-						<div class="so-widgets-image-results">
+						<div class="so-widgets-image-results"></div>
 
+						<div class="so-widgets-results-loading">
+							<div class="so-widgets-loading-icon"></div> <strong><?php _e( 'Loading Results', 'so-widgets-bundle' ) ?></strong>
+						</div>
+						<div class="so-widgets-results-more">
+							<button class="button-secondary"><?php esc_html_e( 'Load More', 'so-widgets-bundle' ) ?></button>
 						</div>
 					</div>
 				</div>
@@ -190,10 +195,12 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 
 		<script type="text/template" id="so-widgets-bundle-tpl-image-search-result">
 			<div class="so-widgets-result">
-				<a class="so-widgets-result-image">
-
-				</a>
+				<a class="so-widgets-result-image"></a>
 			</div>
+		</script>
+
+		<script type="text/template" id="so-widgets-bundle-tpl-image-search-result-sponsored">
+			<span class="so-widgets-result-sponsored"><?php esc_html_e( 'Sponsored', 'so-widgets-bundle' ) ?></span>
 		</script>
 		<?php
 	}

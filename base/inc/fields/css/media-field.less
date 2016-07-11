@@ -162,9 +162,49 @@
 		.clearfix();
 
 		margin: 0 -8px;
-		min-height: 60px;
 
-		&.so-loading, .so-loading {
+		.so-widgets-result {
+			.box-sizing(border-box);
+
+			float: left;
+			margin: 8px;
+
+			a {
+				position: relative;
+				background-repeat: no-repeat;
+				background-size: cover;
+				display: block;
+				width: 260px;
+				height: 180px;
+				background-color: #e8e8e8;
+
+				.so-widgets-result-sponsored {
+					font-size: 0.8em;
+					position: absolute;
+					top: 5px;
+					right: 5px;
+					color: #fff;
+					background: #59946B;
+					line-height: 1em;
+					padding: 5px;
+				}
+			}
+		}
+	}
+
+	.so-widgets-results-loading{
+		display: none;
+		font-size: 1.1em;
+		padding: 15px 5px;
+		background-color: #f7f7f7;
+		text-align: center;
+		margin-top: 20px;
+
+		.so-widgets-loading-icon {
+			margin: 0 6px -3px 0;
+			display: inline-block;
+			width: 16px;
+			height: 16px;
 			background-image: url("images/wpspin_light.gif");
 			background-position: center center;
 			background-repeat: no-repeat;
@@ -176,23 +216,13 @@
 				}
 			}
 		}
+	}
 
-		.so-widgets-result {
-			.box-sizing(border-box);
-
-			float: left;
-			margin: 8px;
-
-			a {
-				background-repeat: no-repeat;
-				background-size: cover;
-				display: block;
-				width: 260px;
-				height: 180px;
-				background-color: #e8e8e8;
-			}
-		}
-
+	.so-widgets-results-more {
+		display: none;
+		text-align: center;
+		margin-top: 20px;
+		padding-bottom: 20px;
 	}
 
 }

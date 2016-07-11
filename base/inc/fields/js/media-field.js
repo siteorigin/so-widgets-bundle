@@ -126,65 +126,82 @@ jQuery( function( $ ) {
 
                 var results = dialog.find( '.so-widgets-image-results' );
 
+                var fetchImages = function( query, page ){
+                    dialog.find( '.so-widgets-results-loading' ).fadeIn('fast');
+                    dialog.find( '.so-widgets-results-more' ).hide();
+
+                    $.get(
+                        ajaxurl,
+                        {
+                            'action' : 'so_widgets_image_search',
+                            'q' : query,
+                            'page' : page,
+                            '_sononce' : dialog.find('input[name="_sononce"]').val()
+                        },
+                        function( response ){
+                            if( response.error ) {
+                                alert( 'Error fetching result' );
+                                return;
+                            }
+
+                            results.removeClass( 'so-loading' );
+                            $.each( response, function( i, r ){
+                                var result = $( $('#so-widgets-bundle-tpl-image-search-result').html().trim() )
+                                    .appendTo( results )
+                                    .addClass( 'source-' + r.source );
+                                var img = result.find('.so-widgets-result-image');
+
+                                // Preload the image
+                                img.css('background-image', 'url(' + r.preview[1] + ')' );
+
+                                if( r.url ) {
+                                    img.attr( {
+                                        'href': r.url,
+                                        'target': '_blank'
+                                    } );
+                                }
+
+                                if( r.full_url ) {
+                                    img.data( {
+                                        'full_url' : r.full_url,
+                                        'import_signature' : r.import_signature
+                                    } );
+                                    img.attr( 'href', r.full_url );
+                                }
+
+                                if( r.source === 'shutterstock' ) {
+                                    img.append( $('#so-widgets-bundle-tpl-image-search-result-sponsored').html() );
+                                }
+                            } );
+
+                            dialog.find( '.so-widgets-results-loading' ).fadeOut('fast');
+
+                            reflowDialog();
+                            dialog
+                                .find( '.so-widgets-results-more' ).show()
+                                .find( 'button' ).data( { 'query': query, 'page' : page+1 } );
+                        }
+                    );
+
+                }
+
                 // Setup the search
                 dialog.find('#so-widgets-image-search-form').submit( function( e ){
                     e.preventDefault();
 
                     // Perform the search
                     var q = dialog.find('.so-widgets-search-input').val();
+                    results.empty();
 
                     if( q !== '' ) {
                         // Send the query to the server
-                        results.empty().addClass( 'so-loading' );
-
-                        $.get(
-                            ajaxurl,
-                            {
-                                'action' : 'so_widgets_image_search',
-                                'q' : q,
-                                '_sononce' : dialog.find('input[name="_sononce"]').val()
-                            },
-                            function( response ){
-                                if( response.error ) {
-                                    alert( 'Error fetching result' );
-                                    return;
-                                }
-
-                                results.removeClass( 'so-loading' );
-                                $.each( response, function( i, r ){
-                                    var result = $( $('#so-widgets-bundle-tpl-image-search-result').html().trim() )
-                                        .appendTo( results )
-                                        .addClass( 'source-' + r.source );
-                                    var img = result.find('.so-widgets-result-image');
-
-                                    // Preload the image
-                                    img.css('background-image', 'url(' + r.preview[1] + ')' );
-
-                                    if( r.url ) {
-                                        img.attr( {
-                                            'href': r.url,
-                                            'target': '_blank'
-                                        } );
-                                    }
-
-                                    if( r.full_url ) {
-                                        img.data( {
-                                            'full_url' : r.full_url,
-                                            'import_signature' : r.import_signature
-                                        } );
-                                        img.attr( 'href', r.full_url );
-                                    }
-
-                                    if( r.source === 'shutterstock' ) {
-
-                                    }
-
-                                } );
-
-                                reflowDialog();
-                            }
-                        );
+                        fetchImages( q, 1 );
                     }
+                } );
+
+                dialog.find('.so-widgets-results-more button').click( function(){
+                    var $$ = $(this);
+                    fetchImages( $$.data( 'query' ), $$.data( 'page' ) );
                 } );
 
                 dialog.on( 'click', '.so-widgets-result-image', function( e ){

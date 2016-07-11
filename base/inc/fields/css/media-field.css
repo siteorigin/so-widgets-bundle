@@ -158,7 +158,6 @@
 #so-widgets-image-search-frame .so-widgets-image-results {
   zoom: 1;
   margin: 0 -8px;
-  min-height: 60px;
 }
 #so-widgets-image-search-frame .so-widgets-image-results:before {
   content: '';
@@ -169,19 +168,6 @@
   display: table;
   clear: both;
 }
-#so-widgets-image-search-frame .so-widgets-image-results.so-loading,
-#so-widgets-image-search-frame .so-widgets-image-results .so-loading {
-  background-image: url("images/wpspin_light.gif");
-  background-position: center center;
-  background-repeat: no-repeat;
-}
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  #so-widgets-image-search-frame .so-widgets-image-results.so-loading,
-  #so-widgets-image-search-frame .so-widgets-image-results .so-loading {
-    background-image: url(images/wpspin_light-2x.gif);
-    background-size: 16px 16px;
-  }
-}
 #so-widgets-image-search-frame .so-widgets-image-results .so-widgets-result {
   -ms-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -191,10 +177,50 @@
   margin: 8px;
 }
 #so-widgets-image-search-frame .so-widgets-image-results .so-widgets-result a {
+  position: relative;
   background-repeat: no-repeat;
   background-size: cover;
   display: block;
   width: 260px;
   height: 180px;
   background-color: #e8e8e8;
+}
+#so-widgets-image-search-frame .so-widgets-image-results .so-widgets-result a .so-widgets-result-sponsored {
+  font-size: 0.8em;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: #fff;
+  background: #59946B;
+  line-height: 1em;
+  padding: 5px;
+}
+#so-widgets-image-search-frame .so-widgets-results-loading {
+  display: none;
+  font-size: 1.1em;
+  padding: 15px 5px;
+  background-color: #f7f7f7;
+  text-align: center;
+  margin-top: 20px;
+}
+#so-widgets-image-search-frame .so-widgets-results-loading .so-widgets-loading-icon {
+  margin: 0 6px -3px 0;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url("images/wpspin_light.gif");
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  #so-widgets-image-search-frame .so-widgets-results-loading .so-widgets-loading-icon {
+    background-image: url(images/wpspin_light-2x.gif);
+    background-size: 16px 16px;
+  }
+}
+#so-widgets-image-search-frame .so-widgets-results-more {
+  display: none;
+  text-align: center;
+  margin-top: 20px;
+  padding-bottom: 20px;
 }
