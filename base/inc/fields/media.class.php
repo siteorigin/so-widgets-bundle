@@ -47,6 +47,14 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 	 */
 	protected $fallback;
 
+	protected function initialize(){
+		static $once;
+		if( empty( $once ) ) {
+			add_action( 'siteorigin_widgets_footer_admin_templates', array( $this, 'image_search_dialog' ) );
+		}
+		$once = true;
+	}
+
 	protected function get_default_options() {
 		return array(
 			'choose' => __( 'Choose Media', 'so-widgets-bundle' ),
@@ -147,5 +155,46 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 	function enqueue_scripts(){
 		wp_enqueue_script( 'so-media-field', plugin_dir_url( __FILE__ ) . '/js/media-field' . SOW_BUNDLE_JS_SUFFIX .  '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
 		wp_enqueue_style( 'so-media-field', plugin_dir_url( __FILE__ ) . '/css/media-field.css', array( ), SOW_BUNDLE_VERSION );
+	}
+
+	function image_search_dialog(){
+		?>
+		<script type="text/template" id="so-widgets-bundle-tpl-image-search-dialog">
+			<div class="so-widgets-dialog" id="so-widgets-image-search" data-confirm-import="<?php esc_attr_e( 'Would you like to import this image into your media library?', 'so-widgets-bundle' ) ?>">
+				<div class="so-widgets-dialog-overlay"></div>
+
+				<div class="so-widgets-toolbar">
+					<h3><?php _e('Search For Images', 'so-widgets-bundle') ?></h3>
+					<div class="close"><span class="dashicons dashicons-arrow-left-alt2"></span></div>
+				</div>
+
+				<div class="so-widgets-dialog-frame">
+					<div id="so-widgets-image-search-frame">
+
+						<form id="so-widgets-image-search-form">
+							<input type="text" value="" name="s" class="widefat so-widgets-search-input" />
+							<?php wp_nonce_field( 'so-image', '_sononce', false ) ?>
+							<button type="submit" class="button-secondary so-widgets-search-button">
+								<?php _e('Search', 'so-widgets-bundle') ?>
+							</button>
+						</form>
+
+						<div class="so-widgets-image-results">
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</script>
+
+		<script type="text/template" id="so-widgets-bundle-tpl-image-search-result">
+			<div class="so-widgets-result">
+				<a class="so-widgets-result-image">
+
+				</a>
+			</div>
+		</script>
+		<?php
 	}
 }
