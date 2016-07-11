@@ -165,7 +165,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 
 				<div class="so-widgets-toolbar">
 					<h3><?php _e('Search For Images', 'so-widgets-bundle') ?></h3>
-					<div class="close"><span class="dashicons dashicons-arrow-left-alt2"></span></div>
+					<div class="close"><span class="dashicons dashicons-no-alt"></span></div>
 				</div>
 
 				<div class="so-widgets-dialog-frame">
