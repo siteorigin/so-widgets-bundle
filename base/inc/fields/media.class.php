@@ -194,14 +194,18 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 							<div class="so-widgets-loading-icon"></div>
 							<strong
 								data-loading="<?php esc_attr_e( 'Loading Images', 'so-widgets-bundle' ) ?>"
-								data-importing="<?php esc_attr_e( 'Importing Image', 'so-widgets-bundle' ) ?>"></strong>
+								data-importing="<?php esc_attr_e( 'Downloading Image - Please Wait', 'so-widgets-bundle' ) ?>"></strong>
 						</div>
 						<div class="so-widgets-results-more">
 							<button class="button-secondary"><?php esc_html_e( 'Load More', 'so-widgets-bundle' ) ?></button>
 						</div>
+
+						<div class="so-widgets-preview-window">
+							<div class="so-widgets-preview-window-inside">
+							</div>
+						</div>
 					</div>
 				</div>
-
 			</div>
 		</script>
 

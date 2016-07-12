@@ -143,7 +143,7 @@ jQuery( function( $ ) {
                         },
                         function( response ){
                             if( response.error ) {
-                                alert( 'Error fetching result' );
+                                alert( response.message );
                                 return;
                             }
 
@@ -155,7 +155,9 @@ jQuery( function( $ ) {
                                 var img = result.find('.so-widgets-result-image');
 
                                 // Preload the image
-                                img.css('background-image', 'url(' + r.preview[1] + ')' );
+                                img.css( 'background-image', 'url(' + r.thumbnail + ')' );
+                                img.data( 'thumbnail', r.thumbnail );
+                                img.data( 'preview', r.preview );
 
                                 if( r.url ) {
                                     img.attr( {
@@ -202,11 +204,15 @@ jQuery( function( $ ) {
                     }
                 } );
 
+                // Clicking on the more button
                 dialog.find('.so-widgets-results-more button').click( function(){
                     var $$ = $(this);
                     fetchImages( $$.data( 'query' ), $$.data( 'page' ) );
                 } );
 
+                var hoverTimeout;
+
+                // Clicking on an image to import it
                 dialog.on( 'click', '.so-widgets-result-image', function( e ){
                     var $$ = $(this);
                     if( ! $$.data( 'full_url' ) ) {
@@ -216,6 +222,8 @@ jQuery( function( $ ) {
                     e.preventDefault();
 
                     if( confirm( dialog.data('confirm-import') ) ) {
+                        dialog.addClass( 'so-widgets-importing' );
+
                         var postId = $( '#post_ID' ).val();
                         if( postId === null ) {
                             postId = '';
@@ -232,6 +240,8 @@ jQuery( function( $ ) {
                                 '_sononce' : dialog.find('input[name="_sononce"]').val()
                             },
                             function( response ) {
+                                dialog.find('#so-widgets-image-search-frame').removeClass( 'so-widgets-importing' );
+
                                 if( response.error === false ) {
                                     // This was a success
                                     dialog.hide();
@@ -252,7 +262,78 @@ jQuery( function( $ ) {
                             dialog.find( '.so-widgets-results-loading strong' ).data( 'importing' )
                         );
                         dialog.find( '.so-widgets-results-more' ).hide();
-                        results.empty();
+                        dialog.find('#so-widgets-image-search-frame').addClass( 'so-widgets-importing' );
+                    }
+                } );
+
+                // Hovering over an image to preview it
+                var previewWindow = dialog.find('.so-widgets-preview-window');
+                dialog
+                    .on( 'mouseenter', '.so-widgets-result-image', function(){
+                        var $$ = $(this),
+                            preview = $$.data('preview');
+
+                        clearTimeout( hoverTimeout );
+
+                        hoverTimeout = setTimeout( function(){
+                            // Scale the preview sizes
+                            var scalePreviewX = 1, scalePreviewY = 1;
+                            if( preview[1] > $( window ).outerWidth() *0.33 ) {
+                                scalePreviewX = $( window ).outerWidth() *0.33 / preview[1];
+                            }
+                            if( preview[2] > $( window ).outerHeight() *0.5 ) {
+                                scalePreviewY = $( window ).outerHeight() *0.5 / preview[2];
+                            }
+                            var scalePreview = Math.min( scalePreviewX, scalePreviewY );
+                            // Never upscale
+                            if( scalePreview > 1 ) {
+                                scalePreview = 1;
+                            }
+
+                            previewWindow.show()
+                                .find('.so-widgets-preview-window-inside')
+                                .css( {
+                                    'background-image' : 'url(' + $$.data('thumbnail') + ')',
+                                    'width' : preview[1] * scalePreview,
+                                    'height' : preview[2] * scalePreview
+                                } )
+                                .append( $( '<img />' ).attr( 'src', preview[0] ) );
+
+                            dialog.trigger('mousemove');
+                        }, 350 );
+
+                    } )
+                    .on( 'mouseleave', '.so-widgets-result-image', function(){
+                        previewWindow.hide().find('img').remove();
+                        clearTimeout( hoverTimeout );
+                    } );
+
+                var lastX, lastY;
+                dialog.on( 'mousemove', function( e ){
+                    if( e.clientX ) lastX = e.clientX;
+                    if( e.clientY ) lastY = e.clientY;
+
+                    if( previewWindow.is( ':visible' ) ) {
+                        var ph = previewWindow.outerHeight(),
+                            pw = previewWindow.outerWidth(),
+                            wh = $( window ).outerHeight(),
+                            ww = $( window ).outerWidth();
+
+
+                        // Calculate the top position
+                        var top = lastY - ph/2;
+                        top = Math.max( top, 10 );
+                        top = Math.min( top, wh - 10 - ph );
+
+                        // Calculate the left position
+                        var left = (lastX < ww/2) ? lastX + 15 : lastX - 15 - pw;
+
+                        // Figure out where the preview needs to go
+                        previewWindow.css({
+                            'top': top,
+                            'left': left
+                        });
+
                     }
                 } );
             }
