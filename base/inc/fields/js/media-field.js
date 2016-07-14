@@ -300,7 +300,7 @@ jQuery( function( $ ) {
                                 .append( $( '<img />' ).attr( 'src', preview[0] ) );
 
                             dialog.trigger('mousemove');
-                        }, 350 );
+                        }, 1000 );
 
                     } )
                     .on( 'mouseleave', '.so-widgets-result-image', function(){
