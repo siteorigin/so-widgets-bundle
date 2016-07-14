@@ -27,7 +27,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 	 *
 	 * @var
 	 */
-	protected $find_image;
+	protected $image_search;
 
 	/**
 	 * Sets the media library which to browse and from which media can be selected. Allowed values are 'image',
@@ -59,7 +59,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 		return array(
 			'choose' => __( 'Choose Media', 'so-widgets-bundle' ),
 			'update' => __( 'Set Media', 'so-widgets-bundle' ),
-			'find_image' => __( 'Find Image', 'so-widgets-bundle' ),
+			'image_search' => __( 'Image Search', 'so-widgets-bundle' ),
 			'library' => 'image'
 		);
 	}
@@ -98,7 +98,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 			</a>
 			<?php if( $this->library == 'image' ) : ?>
 				<a href="#" class="find-image-button">
-					<?php echo esc_html( $this->find_image ) ?>
+					<?php echo esc_html( $this->image_search ) ?>
 				</a>
 			<?php endif; ?>
 		</div>
@@ -183,7 +183,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 							printf(
 								__( 'Powered by %s - sponsored results from %s', 'so-widgets-bundle' ),
 								'<a href="https://pixabay.com/" target="_blank">Pixabay</a>',
-								'<a href="http://shutterstock.7eer.net/c/269244/42119/1305" target="_blank">Shutterstock</a>'
+								'<a href="http://stock.siteorigin.com/?shutterstock=home" target="_blank">Shutterstock</a>'
 							);
 							?>
 						</div>

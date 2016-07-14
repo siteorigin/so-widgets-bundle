@@ -241,6 +241,7 @@
 }
 #so-widgets-image-search-frame .so-widgets-preview-window .so-widgets-preview-window-inside {
   background-size: cover;
+  overflow: hidden;
 }
 #so-widgets-image-search-frame .so-widgets-preview-window img {
   width: 100%;
