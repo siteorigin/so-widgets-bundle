@@ -318,7 +318,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string|void
 	 */
 	public function form( $instance ) {
-		$this->enqueue_scripts();
 		$instance = $this->modify_instance($instance);
 		$instance = $this->add_defaults( $this->form_options(), $instance );
 
@@ -371,7 +370,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				if(typeof window.sow_field_javascript_variables == 'undefined') window.sow_field_javascript_variables = {};
 				window.sow_field_javascript_variables["<?php echo get_class($this) ?>"] = <?php echo json_encode( $fields_javascript_variables ) ?>;
 
-				if(typeof $.fn.sowSetupForm != 'undefined') {
+				if( typeof $.fn.sowSetupForm != 'undefined' ) {
 					$('#<?php echo $form_id ?>').sowSetupForm();
 				}
 				else {
@@ -383,6 +382,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			} )( jQuery );
 		</script>
 		<?php
+
+		$this->enqueue_scripts();
 	}
 
 	function scripts_loading_message(){
@@ -397,10 +398,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	function enqueue_scripts(){
 
-		if( !wp_script_is('siteorigin-widget-admin') ) {
+		if( ! wp_script_is('siteorigin-widget-admin') ) {
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_style( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/css/admin.css', array( 'media-views' ), SOW_BUNDLE_VERSION );
-
 
 			wp_enqueue_script( 'wp-color-picker' );
 			wp_enqueue_media();
