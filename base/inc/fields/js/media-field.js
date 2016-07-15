@@ -1,4 +1,4 @@
-jQuery( function( $ ) {
+( function( $ ) {
 
     $(document).on( 'sowsetupformfield', '.siteorigin-widget-field-type-media', function(e) {
         var $media = $(this).find('> .media-field-wrapper');
@@ -350,4 +350,4 @@ jQuery( function( $ ) {
 
     });
 
-} );
+} )( jQuery );
