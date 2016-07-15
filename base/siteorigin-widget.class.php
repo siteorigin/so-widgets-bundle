@@ -321,6 +321,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$instance = $this->modify_instance($instance);
 		$instance = $this->add_defaults( $this->form_options(), $instance );
 
+		if( empty( $this->number ) ) {
+			// Compatibility with form widgets.
+			$this->number = 1;
+		}
+
 		// Filter the instance specifically for the form
 		$instance = apply_filters('siteorigin_widgets_form_instance_' . $this->id_base, $instance, $this);
 
