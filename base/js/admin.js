@@ -936,7 +936,9 @@
         $(e.target).find('.siteorigin-widget-form-main').sowSetupForm();
     });
 
-    $(document).trigger('sowadminloaded');
+    $( function(){
+        $(document).trigger('sowadminloaded');
+    } );
 
 })(jQuery);
 
