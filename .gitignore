@@ -6,3 +6,4 @@ node_modules/
 dist/
 widgets/*/styles/*.css
 npm-debug.log
+tmp
