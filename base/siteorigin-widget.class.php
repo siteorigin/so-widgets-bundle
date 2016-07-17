@@ -136,19 +136,18 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		$template_vars = $this->get_template_variables($instance, $args);
 		$template_vars = apply_filters( 'siteorigin_widgets_template_variables_' . $this->id_base, $template_vars, $instance, $args, $this );
-		extract( $template_vars );
 
 		// Storage hash allows templates to get access to
-		$storage_hash = '';
+		$template_vars[ 'storage_hash' ] = '';
 		if( !empty($this->widget_options['instance_storage']) ) {
 			$stored_instance = $this->modify_stored_instance($instance);
 			// We probably don't want panels_info
-			unset($stored_instance['panels_info']);
+			unset( $stored_instance['panels_info'] );
 
-			$storage_hash = substr( md5( serialize($stored_instance) ), 0, 8 );
+			$template_vars[ 'storage_hash' ] = substr( md5( serialize( $stored_instance ) ), 0, 8 );
 			if( !empty( $stored_instance ) && !$this->is_preview( $instance ) ) {
 				// Store this if we have a non empty instance and are not previewing
-				set_transient('sow_inst[' . $this->id_base . '][' . $storage_hash . ']', $stored_instance, 7*86400);
+				set_transient('sow_inst[' . $this->id_base . '][' . $template_vars['storage_hash'] . ']', $stored_instance, 7*86400);
 			}
 		}
 
@@ -162,6 +161,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			ob_start();
 			if( !empty($template_file) && file_exists($template_file) ) {
+				extract( $template_vars );
 				@ include $template_file;
 			}
 			$template_html = ob_get_clean();
@@ -171,7 +171,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$template_html = apply_filters( 'siteorigin_widgets_template_html_' . $this->id_base, $template_html, $instance, $this );
 		}
 		else {
-			$template_html = $this->get_html_content( $instance, $args, array_merge( array( 'storage_hash' => $storage_hash ), $template_vars ), $css_name );
+			$template_html = $this->get_html_content( $instance, $args, $template_vars, $css_name );
 		}
 
 		echo $args['before_widget'];
