@@ -10,7 +10,7 @@ class SiteOrigin_Widgets_Builder {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 		add_action( 'save_post', array( $this, 'save_post' ) );
 
-		add_action( 'widgets_init', array( $this, 'register_widgets' ), 20 );
+		add_action( 'widgets_init', array( $this, 'register_widgets' ) );
 	}
 
 	static function single(){

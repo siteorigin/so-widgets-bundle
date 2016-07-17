@@ -37,6 +37,51 @@ class SiteOrigin_Widgets_Builder_Form extends SiteOrigin_Widget {
 				'label' => __( 'Widget Form Fields', 'so-widgets-bundle' ),
 				'fields' => $this->get_field_array( 4 ),
 			),
+
+			'scripts' => array(
+				'type' => 'repeater',
+				'label' => __( 'Javascript Scripts', 'so-widgets-bundle' ),
+				'fields' => array(
+					'file' => array(
+						'type' => 'media',
+						'label' => __( 'Javascript File', 'so-widgets-bundle' ),
+						'choose' => __( 'Choose Script', 'so-widgets-bundle' ),
+						'update' => __( 'Update Script', 'so-widgets-bundle' ),
+						'library' => 'file',
+					),
+					'jquery' => array(
+						'type' => 'checkbox',
+						'label' => __( 'Requires jQuery', 'so-widgets-bundle' ),
+						'default' => false
+					)
+				)
+			),
+
+			'styles' => array(
+				'type' => 'repeater',
+				'label' => __( 'CSS Styles', 'so-widgets-bundle' ),
+				'fields' => array(
+					'file' => array(
+						'type' => 'media',
+						'label' => __( 'CSS File', 'so-widgets-bundle' ),
+						'choose' => __( 'Choose Style', 'so-widgets-bundle' ),
+						'update' => __( 'Update Style', 'so-widgets-bundle' ),
+						'library' => 'file',
+					),
+				)
+			),
+
+			'template_code' => array(
+				'type' => 'code',
+				'rows' => 8,
+				'label' => __( 'Template HTML Code', 'so-widgets-bundle' ),
+			),
+
+			'less_code' => array(
+				'type' => 'code',
+				'rows' => 8,
+				'label' => __( 'Template LESS Code', 'so-widgets-bundle' ),
+			),
 		);
 	}
 
