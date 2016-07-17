@@ -638,5 +638,3 @@ SiteOrigin_Widgets_Bundle::single();
 // Initialize the Meta Box Manager
 global $sow_meta_box_manager;
 $sow_meta_box_manager = SiteOrigin_Widget_Meta_Box_Manager::single();
-
-include plugin_dir_path( __FILE__ ) . '/builder/builder.php';
