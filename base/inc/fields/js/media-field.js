@@ -148,7 +148,7 @@
                             }
 
                             results.removeClass( 'so-loading' );
-                            $.each( response, function( i, r ){
+                            $.each( response.items, function( i, r ){
                                 var result = $( $('#so-widgets-bundle-tpl-image-search-result').html().trim() )
                                     .appendTo( results )
                                     .addClass( 'source-' + r.source );
@@ -179,6 +179,16 @@
                                 }
                             } );
 
+                            if( page === 1 ) {
+                                dialog.find('#so-widgets-image-search-suggestions ul').empty();
+                                $.each( response.keywords, function( i, r ){
+                                    dialog.find('#so-widgets-image-search-suggestions').show();
+                                    dialog.find('#so-widgets-image-search-suggestions ul').append(
+                                        $('<li></li>') . append( $('<a href="#"></a>').html( r ).data( 'keyword', r ) )
+                                    );
+                                } );
+                            }
+
                             dialog.find( '.so-widgets-results-loading' ).fadeOut('fast');
 
                             reflowDialog();
@@ -202,6 +212,14 @@
                         // Send the query to the server
                         fetchImages( q, 1 );
                     }
+                } );
+
+                // Clicking on the related search buttons
+                dialog.on( 'click', '.so-keywords-list a', function( e ){
+                    e.preventDefault();
+                    var $$ = $(this).blur();
+                    dialog.find('.so-widgets-search-input').val( $$.data( 'keyword' ) );
+                    dialog.find('#so-widgets-image-search-form').submit();
                 } );
 
                 // Clicking on the more button

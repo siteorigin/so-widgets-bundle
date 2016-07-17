@@ -156,6 +156,25 @@
   border-width: 1px;
   box-shadow: none;
 }
+#so-widgets-image-search-frame #so-widgets-image-search-suggestions {
+  display: none;
+  float: right;
+  font-size: 1.1em;
+  margin-top: 15px;
+}
+#so-widgets-image-search-frame #so-widgets-image-search-suggestions strong {
+  margin-right: 0.5em;
+}
+#so-widgets-image-search-frame #so-widgets-image-search-suggestions ul {
+  display: inline-block;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#so-widgets-image-search-frame #so-widgets-image-search-suggestions ul li {
+  display: inline-block;
+  margin-right: 4px;
+}
 #so-widgets-image-search-frame #so-widgets-image-search-powered {
   font-size: 0.85em;
   margin-bottom: 15px;
