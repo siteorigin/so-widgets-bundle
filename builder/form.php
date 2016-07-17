@@ -32,6 +32,13 @@ class SiteOrigin_Widgets_Builder_Form extends SiteOrigin_Widget {
 				'default' => '',
 			),
 
+			'has_title' => array(
+				'label' => __( 'Title Field', 'so-widgets-bundle' ),
+				'description' => __( 'Does this widget need a title field', 'so-widgets-bundle' ),
+				'type' => 'checkbox',
+				'default' => true,
+			),
+
 			'fields' => array(
 				'type' => 'repeater',
 				'label' => __( 'Widget Form Fields', 'so-widgets-bundle' ),
@@ -267,5 +274,7 @@ class SiteOrigin_Widgets_Builder_Form extends SiteOrigin_Widget {
 	 * @param array $args
 	 * @param array $instance
 	 */
-	function widget( $args, $instance ) { }
+	function widget( $args, $instance ) {
+
+	}
 }

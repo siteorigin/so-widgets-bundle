@@ -31,7 +31,17 @@ class SiteOrigin_Widget_Custom_Built_Widget extends SiteOrigin_Widget {
 	 */
 	function initialize_form(){
 		// Convert the $custom_options into a form array
-		return $this->generate_form_array( $this->custom_options[ 'fields' ] );
+		$form = $this->generate_form_array( $this->custom_options[ 'fields' ] );
+		if( $this->custom_options['has_title'] ) {
+			$form = array_merge( array(
+				'title' => array(
+					'label' => __( 'Title', 'so-widgets-bundle' ),
+					'type' => 'text',
+				),
+			), $form );
+		}
+
+		return $form;
 	}
 
 	/**
@@ -98,8 +108,8 @@ class SiteOrigin_Widget_Custom_Built_Widget extends SiteOrigin_Widget {
 
 		foreach( $custom_fields as $cf ) {
 			$cf_args = $cf;
-			unset( $cf_args['variable'] );
-			unset( $cf_args['sub_fields'] );
+			unset( $cf_args[ 'variable' ] );
+			unset( $cf_args[ 'sub_fields' ] );
 			$fields[ $cf[ 'variable' ] ] = $cf_args;
 
 			if( $cf[ 'type' ] == 'repeater' || $cf['type'] == 'section' ) {
@@ -110,5 +120,20 @@ class SiteOrigin_Widget_Custom_Built_Widget extends SiteOrigin_Widget {
 		return $fields;
 	}
 
+	function get_html_content( $instance, $args, $template_vars, $css_name ){
+		$tpl = $this->custom_options[ 'template_code' ];
 
+		// TODO Process the code
+
+		// Add the title field if there is one
+		if( $this->custom_options[ 'has_title' ] && !empty( $instance['title'] ) ) {
+			$tpl = $args[ 'before_title' ] . $instance['title'] . $args[ 'after_title' ] . $tpl;
+		}
+
+		return $tpl;
+	}
+
+	function get_less_content( $instance ){
+		return $this->custom_options[ 'less_code' ];
+	}
 }
