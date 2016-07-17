@@ -244,7 +244,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * @return array The modified array of description text CSS classes.
 	 */
 	protected function get_description_classes() {
-		return array( 'siteorigin-widget-field-description' );
+		return array( 'siteorigin-widget-description' );
 	}
 
 	/**
