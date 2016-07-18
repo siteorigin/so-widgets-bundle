@@ -4,10 +4,14 @@
  * Action for displaying the widget preview.
  */
 function siteorigin_widget_preview_widget_action(){
-	if( !class_exists($_POST['class']) ) exit();
+	if( empty( $_POST['class'] ) ) exit();
 	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
-	$widget = new $_POST['class'];
-	if(!is_a($widget, 'SiteOrigin_Widget')) exit();
+
+	// Get the widget from the widget factory
+	global $wp_widget_factory;
+	$widget = ! empty( $wp_widget_factory->widgets[ $_POST['class'] ] ) ? $wp_widget_factory->widgets[ $_POST['class'] ] : false;
+
+	if( !is_a($widget, 'SiteOrigin_Widget') ) exit();
 
 	$instance = json_decode( stripslashes_deep($_POST['data']), true);
 	/* @var $widget SiteOrigin_Widget */
@@ -15,15 +19,15 @@ function siteorigin_widget_preview_widget_action(){
 	$instance['is_preview'] = true;
 
 	// The theme stylesheet will change how the button looks
-	wp_enqueue_style( 'theme-css', get_stylesheet_uri(), array(), rand(0,65536) );
-	wp_enqueue_style( 'so-widget-preview', plugin_dir_url(__FILE__).'/css/preview.css', array(), rand(0,65536) );
+	wp_enqueue_style( 'theme-css', get_stylesheet_uri(), array(), rand( 0, 65536 ) );
+	wp_enqueue_style( 'so-widget-preview', plugin_dir_url( __FILE__ ) . '../css/preview.css', array(), rand( 0,65536 ) );
 
 	ob_start();
-	$widget->widget(array(
+	$widget->widget( array(
 		'before_widget' => '',
 		'after_widget' => '',
-		'before_title' => '',
-		'after_title' => '',
+		'before_title' => '<h3 class="widget-title">',
+		'after_title' => '</h3>',
 	), $instance);
 	$widget_html = ob_get_clean();
 
@@ -95,7 +99,7 @@ function siteorigin_widget_remote_image_search(){
 	if( empty( $_GET[ '_sononce' ] ) || ! wp_verify_nonce( $_GET[ '_sononce' ], 'so-image' ) ) {
 		exit();
 	}
-	
+
 	if( empty( $_GET['q'] ) ) {
 		exit();
 	}

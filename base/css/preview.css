@@ -3,3 +3,6 @@ body {
   background: #FFFFFF !important;
   background-image: none !important;
 }
+h3.widget-title {
+  margin-top: 0;
+}
