@@ -12,6 +12,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	protected $fields;
 
 	/**
+	 * The name of this widget class. Whatever the key for $wp_widgets_factory is.
+	 *
+	 * @var string
+	 */
+	protected $widget_class;
+
+	/**
 	 * @var array The array of registered frontend scripts
 	 */
 	protected $frontend_scripts = array();
@@ -57,6 +64,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$control_options = wp_parse_args($widget_options, array(
 			'width' => 600,
 		) );
+
+		if( empty( $this->widget_class ) ) {
+			$this->widget_class = get_class( $this );
+		}
 
 		parent::__construct($id, $name, $widget_options, $control_options);
 		$this->initialize();
@@ -167,7 +178,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$template_html = ob_get_clean();
 
 			// This is a legacy, undocumented filter.
-			$template_html = apply_filters( 'siteorigin_widgets_template', $template_html, get_class($this), $instance, $this );
+			$template_html = apply_filters( 'siteorigin_widgets_template', $template_html, $this->widget_class, $instance, $this );
 			$template_html = apply_filters( 'siteorigin_widgets_template_html_' . $this->id_base, $template_html, $instance, $this );
 		}
 		else {
@@ -337,14 +348,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$instance = apply_filters('siteorigin_widgets_form_instance_' . $this->id_base, $instance, $this);
 
 		$form_id = 'siteorigin_widget_form_'.md5( uniqid( rand(), true ) );
-		$class_name = str_replace( '_', '-', strtolower(get_class($this)) );
+		$class_name = str_replace( '_', '-', strtolower( $this->widget_class ) );
 
 		if( empty( $instance['_sow_form_id'] ) ) {
 			$instance['_sow_form_id'] = uniqid();
 		}
 
 		?>
-		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>" id="<?php echo $form_id ?>" data-class="<?php echo get_class($this) ?>" style="display: none">
+		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>" id="<?php echo $form_id ?>" data-class="<?php echo esc_attr( $this->widget_class ) ?>" style="display: none">
 			<?php
 			/* @var $field_factory SiteOrigin_Widget_Field_Factory */
 			$field_factory = SiteOrigin_Widget_Field_Factory::getInstance();
@@ -380,7 +391,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		<script type="text/javascript">
 			( function($) {
 				if(typeof window.sow_field_javascript_variables == 'undefined') window.sow_field_javascript_variables = {};
-				window.sow_field_javascript_variables["<?php echo get_class($this) ?>"] = <?php echo json_encode( $fields_javascript_variables ) ?>;
+				window.sow_field_javascript_variables["<?php echo addslashes( $this->widget_class ) ?>"] = <?php echo json_encode( $fields_javascript_variables ) ?>;
 
 				if( typeof $.fn.sowSetupForm != 'undefined' ) {
 					$('#<?php echo $form_id ?>').sowSetupForm();
@@ -663,7 +674,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			}
 		}
 
-		$less = apply_filters( 'siteorigin_widgets_styles', $less, get_class($this), $instance );
+		$less = apply_filters( 'siteorigin_widgets_styles', $less, $this->widget_class, $instance );
 		$less = apply_filters( 'siteorigin_widgets_less_' . $this->id_base, $less, $instance, $this );
 
 		$style = $this->get_style_name( $instance );
