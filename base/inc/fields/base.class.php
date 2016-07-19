@@ -244,7 +244,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * @return array The modified array of description text CSS classes.
 	 */
 	protected function get_description_classes() {
-		return array( 'siteorigin-widget-field-description' );
+		return array( 'siteorigin-widget-description' );
 	}
 
 	/**
@@ -409,6 +409,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * necessary to perform additional sanitization on the widget instance, which should be done here.
 	 *
 	 * @param $instance
+	 * @return mixed
 	 */
 	public function sanitize_instance( $instance ) {
 		//Stub: This function may be overridden by subclasses wishing to sanitize additional instance fields.
