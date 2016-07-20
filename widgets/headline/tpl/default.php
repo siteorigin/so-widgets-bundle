@@ -1,4 +1,4 @@
-<div id="sow-headline-container" class="sow-headline">
+<div class="sow-headline-container sow-headline">
 
 	<?php if ( !empty( $headline ) ) : ?>
 		<<?php echo $headline_tag ?>><?php echo $headline ?></<?php echo $headline_tag ?>>
