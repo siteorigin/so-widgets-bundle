@@ -52,6 +52,14 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'label' => __( 'Font', 'so-widgets-bundle' ),
 						'default' => 'default'
 					),
+					'font_size' => array(
+						'type' => 'measurement',
+						'label' => __('Font Size', 'so-widgets-bundle')
+					),
+					'line_height' => array(
+						'type' => 'measurement',
+						'label' => __('Line Height', 'so-widgets-bundle')
+					),
 					'color' => array(
 						'type' => 'color',
 						'label' => __('Color', 'so-widgets-bundle'),
@@ -95,6 +103,14 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'type' => 'font',
 						'label' => __( 'Font', 'so-widgets-bundle' ),
 						'default' => 'default'
+					),
+					'font_size' => array(
+						'type' => 'measurement',
+						'label' => __('Font Size', 'so-widgets-bundle')
+					),
+					'line_height' => array(
+						'type' => 'measurement',
+						'label' => __('Line Height', 'so-widgets-bundle')
 					),
 					'color' => array(
 						'type' => 'color',
@@ -160,7 +176,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'default' => '20px',
 					)
 				)
-			)
+			),
 		);
 	}
 
@@ -168,66 +184,74 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 		$less_vars = array();
 
 		if ( ! empty( $instance['headline'] ) ) {
-			$headline_styles = $instance['headline'];
-			if ( ! empty( $headline_styles['tag'] ) ) {
-				$less_vars['headline_tag'] = $headline_styles['tag'];
+			if ( ! empty( $instance['headline']['tag'] ) ) {
+				$less_vars['headline_tag'] = $instance['headline']['tag'];
 			}
-			if ( ! empty( $headline_styles['align'] ) ) {
-				$less_vars['headline_align'] = $headline_styles['align'];
+			if ( ! empty( $instance['headline']['align'] ) ) {
+				$less_vars['headline_align'] = $instance['headline']['align'];
 			}
-			if ( ! empty( $headline_styles['color'] ) ) {
-				$less_vars['headline_color'] = $headline_styles['color'];
+			if ( ! empty( $instance['headline']['color'] ) ) {
+				$less_vars['headline_color'] = $instance['headline']['color'];
 			}
-			if ( ! empty( $headline_styles['font'] ) ) {
-				$font = siteorigin_widget_get_font( $headline_styles['font'] );
+			if ( ! empty( $instance['headline']['font'] ) ) {
+				$font = siteorigin_widget_get_font( $instance['headline']['font'] );
 				$less_vars['headline_font'] = $font['family'];
 				if ( ! empty( $font['weight'] ) ) {
 					$less_vars['headline_font_weight'] = $font['weight'];
 				}
 			}
+			if( ! empty( $instance['headline']['font_size'] ) ) {
+				$less_vars['headline_font_size'] = $instance['headline']['font_size'];
+			}
+			if( ! empty( $instance['headline']['line_height'] ) ) {
+				$less_vars['headline_line_height'] = $instance['headline']['line_height'];
+			}
 		}
 
 		if ( ! empty( $instance['sub_headline'] ) ) {
-			$sub_headline_styles = $instance['sub_headline'];
-			if ( ! empty( $sub_headline_styles['align'] ) ) {
-				$less_vars['sub_headline_align'] = $sub_headline_styles['align'];
+			if ( ! empty( $instance['sub_headline']['align'] ) ) {
+				$less_vars['sub_headline_align'] = $instance['sub_headline']['align'];
 			}
-			if ( ! empty( $sub_headline_styles['tag'] ) ) {
-				$less_vars['sub_headline_tag'] = $sub_headline_styles['tag'];
+			if ( ! empty( $instance['sub_headline']['tag'] ) ) {
+				$less_vars['sub_headline_tag'] = $instance['sub_headline']['tag'];
 			}
-			if ( ! empty( $sub_headline_styles['color'] ) ) {
-				$less_vars['sub_headline_color'] = $sub_headline_styles['color'];
+			if ( ! empty( $instance['sub_headline']['color'] ) ) {
+				$less_vars['sub_headline_color'] = $instance['sub_headline']['color'];
 			}
-			if ( ! empty( $sub_headline_styles['font'] ) ) {
-				$font = siteorigin_widget_get_font( $sub_headline_styles['font'] );
+			if ( ! empty( $instance['sub_headline']['font'] ) ) {
+				$font = siteorigin_widget_get_font( $instance['sub_headline']['font'] );
 				$less_vars['sub_headline_font'] = $font['family'];
 				if ( ! empty( $font['weight'] ) ) {
 					$less_vars['sub_headline_font_weight'] = $font['weight'];
 				}
 			}
+			if( ! empty( $instance['sub_headline']['font_size'] ) ) {
+				$less_vars['sub_headline_font_size'] = $instance['headline']['font_size'];
+			}
+			if( ! empty( $instance['sub_headline']['line_height'] ) ) {
+				$less_vars['sub_headline_line_height'] = $instance['sub_headline']['line_height'];
+			}
 		}
 
 		if ( ! empty( $instance['divider'] ) ) {
-			$divider_styles = $instance['divider'];
-
-			if ( ! empty( $divider_styles['style'] ) ) {
-				$less_vars['divider_style'] = $divider_styles['style'];
+			if ( ! empty( $instance['divider']['style'] ) ) {
+				$less_vars['divider_style'] = $instance['divider']['style'];
 			}
 
-			if ( ! empty( $divider_styles['weight'] ) ) {
-				$less_vars['divider_weight'] = $divider_styles['weight'];
+			if ( ! empty( $instance['divider']['weight'] ) ) {
+				$less_vars['divider_weight'] = $instance['divider']['weight'];
 			}
 
-			if ( ! empty( $divider_styles['color'] ) ) {
-				$less_vars['divider_color'] = $divider_styles['color'];
+			if ( ! empty( $instance['divider']['color'] ) ) {
+				$less_vars['divider_color'] = $instance['divider']['color'];
 			}
 
-			if ( !empty( $divider_styles['top_margin'] ) ) {
-				$less_vars['divider_top_margin'] = $divider_styles['top_margin'];
+			if ( !empty( $instance['divider']['top_margin'] ) ) {
+				$less_vars['divider_top_margin'] = $instance['divider']['top_margin'];
 			}
 
-			if ( !empty( $divider_styles['side_margin'] ) ) {
-				$less_vars['divider_side_margin'] = $divider_styles['side_margin'];
+			if ( !empty( $instance['divider']['side_margin'] ) ) {
+				$less_vars['divider_side_margin'] = $instance['divider']['side_margin'];
 			}
 
 
