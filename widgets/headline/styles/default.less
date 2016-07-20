@@ -18,11 +18,13 @@
 @sub_headline_align: center;
 @sub_headline_color: default;
 
-@divider_weight: thin;
 @divider_style: solid;
+@divider_width: 80%;
+@divider_thickness: 1px;
 @divider_color: #EEEEEE;
 @divider_top_margin: 20px;
-@divider_side_margin: 60px;
+@divider_bottom_margin: 20px;
+@divider_alignment: center;
 
 .sow-headline-container {
 
@@ -48,10 +50,19 @@
         font-size: @sub_headline_font_size;
     }
 
+
     .decoration {
-        border-top: @divider_weight @divider_style @divider_color;
-        position: relative;
-        height: 1px;
-        margin: @divider_top_margin @divider_side_margin;
+        line-height: 0em;
+        text-align: @divider_alignment;
+
+        margin-top: @divider_top_margin;
+        margin-bottom: @divider_bottom_margin;
+
+        .decoration-inside {
+            height: 1px;
+            display: inline-block;
+            border-top: @divider_thickness @divider_style @divider_color;
+            width: @divider_width;
+        }
     }
 }

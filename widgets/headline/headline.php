@@ -167,9 +167,24 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'label' => __('Divider Width', 'so-widgets-bundle'),
 						'default' => '80%',
 					),
+					'alignment' => array(
+						'type' => 'select',
+						'label' => __('Divider Alignment', 'so-widgets-bundle'),
+						'default' => 'center',
+						'options' => array(
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'left' => __( 'Left', 'so-widgets-bundle' ),
+							'right' => __( 'Right', 'so-widgets-bundle' ),
+						),
+					),
 					'top_margin' => array(
 						'type' => 'measurement',
-						'label' => __('Top/Bottom Margin', 'so-widgets-bundle'),
+						'label' => __('Top Margin', 'so-widgets-bundle'),
+						'default' => '20px',
+					),
+					'bottom_margin' => array(
+						'type' => 'measurement',
+						'label' => __('Bottom Margin', 'so-widgets-bundle'),
 						'default' => '20px',
 					)
 				)
@@ -235,22 +250,29 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 				$less_vars['divider_style'] = $instance['divider']['style'];
 			}
 
-			if ( ! empty( $instance['divider']['weight'] ) ) {
-				$less_vars['divider_weight'] = $instance['divider']['weight'];
+			if ( ! empty( $instance['divider']['thickness'] ) ) {
+				$less_vars['divider_thickness'] = intval( $instance['divider']['thickness'] ) . 'px';
+			}
+
+			if ( ! empty( $instance['divider']['width'] ) ) {
+				$less_vars['divider_width'] = $instance['divider']['width'];
+			}
+
+			if ( ! empty( $instance['divider']['alignment'] ) ) {
+				$less_vars['divider_alignment'] = $instance['divider']['alignment'];
 			}
 
 			if ( ! empty( $instance['divider']['color'] ) ) {
 				$less_vars['divider_color'] = $instance['divider']['color'];
 			}
 
+			if ( !empty( $instance['divider']['bottom_margin'] ) ) {
+				$less_vars['divider_bottom_margin'] = $instance['divider']['bottom_margin'];
+			}
+
 			if ( !empty( $instance['divider']['top_margin'] ) ) {
 				$less_vars['divider_top_margin'] = $instance['divider']['top_margin'];
 			}
-
-			if ( !empty( $instance['divider']['side_margin'] ) ) {
-				$less_vars['divider_side_margin'] = $instance['divider']['side_margin'];
-			}
-
 
 		}
 
@@ -258,7 +280,6 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_google_font_fields( $instance ) {
-
 		return array(
 			$instance['headline']['font'],
 			$instance['sub_headline']['font'],
@@ -327,6 +348,12 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 
 			unset( $instance['divider']['side_margin'] );
 			unset( $instance['divider']['side_margin_unit'] );
+		}
+
+		// Copy top margin over to bottom margin
+		if( isset( $instance['divider']['top_margin'] ) && ! isset( $instance['divider']['bottom_margin'] ) ) {
+			$instance['divider']['bottom_margin'] = $instance['divider']['top_margin'];
+			$instance['divider']['bottom_margin_unit'] = $instance['divider']['top_margin_unit'];
 		}
 
 		return $instance;
