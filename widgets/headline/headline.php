@@ -189,6 +189,17 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 					)
 				)
 			),
+
+			'order' => array(
+				'type' => 'order',
+				'label' => __( 'Element Order', 'so-widgets-bundle' ),
+				'options' => array(
+					'headline' => __( 'Headline', 'so-widgets-bundle' ),
+					'divider' => __( 'Divider', 'so-widgets-bundle' ),
+					'sub_headline' => __( 'Sub Headline', 'so-widgets-bundle' ),
+				),
+				'default' => array( 'headline', 'divider', 'sub_headline' ),
+			)
 		);
 	}
 
@@ -261,6 +272,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			'headline_tag' => $instance['headline']['tag'],
 			'sub_headline' => $instance['sub_headline']['text'],
 			'sub_headline_tag' => $instance['sub_headline']['tag'],
+			'order' => $instance['order'],
 			'has_divider' => ! empty( $instance['divider'] ) && $instance['divider']['style'] != 'none'
 		);
 	}
