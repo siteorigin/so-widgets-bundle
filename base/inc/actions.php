@@ -116,9 +116,11 @@ function siteorigin_widget_remote_image_search(){
 
 	if( ! is_wp_error( $result ) ) {
 		$result = json_decode( $result['body'], true );
-		foreach( $result as & $r ) {
-			if( !empty( $r['full_url'] ) ) {
-				$r['import_signature'] = md5( $r['full_url'] . '::' . NONCE_SALT );
+		if( !empty( $result['items'] ) ) {
+			foreach( $result['items'] as & $r ) {
+				if( !empty( $r['full_url'] ) ) {
+					$r['import_signature'] = md5( $r['full_url'] . '::' . NONCE_SALT );
+				}
 			}
 		}
 	}
@@ -142,7 +144,11 @@ function siteorigin_widget_image_import(){
 			'message' => __( 'Nonce error', 'so-widgets-bundle' ),
 		);
 	}
-	else if( empty( $_GET['import_signature'] ) || empty( $_GET['full_url'] ) || md5( $_GET['full_url'] . '::' . NONCE_SALT ) !== $_GET['import_signature'] ) {
+	else if(
+		empty( $_GET['import_signature'] ) ||
+		empty( $_GET['full_url'] ) ||
+		md5( $_GET['full_url'] . '::' . NONCE_SALT ) !== $_GET['import_signature']
+	) {
 		$result = array(
 			'error' => true,
 			'message' => __( 'Signature error', 'so-widgets-bundle' ),
