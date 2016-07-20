@@ -227,21 +227,7 @@ add_action( 'admin_print_styles', 'siteorigin_widgets_tinymce_admin_print_styles
  */
 function siteorigin_widgets_get_measurements_list() {
 	$measurements = array(
-		'px',
-		'%',
-		'in',
-		'cm',
-		'mm',
-		'em',
-		'rem',
-		'pt',
-		'pc',
-		'ex',
-		'ch',
-		'vw',
-		'vh',
-		'vmin',
-		'vmax',
+		'px', '%', 'in', 'cm', 'mm', 'em', 'rem', 'pt', 'pc', 'ex', 'ch', 'vw', 'vh', 'vmin', 'vmax',
 	);
 
 	// Allow themes and plugins to trim or enhance the list.
