@@ -129,14 +129,15 @@
   background-color: #fff;
   padding: 25px;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 #so-widgets-image-search-frame #so-widgets-image-search-form {
-  display: inline-block;
-  max-width: 420px;
+  display: block;
   width: 100%;
   position: relative;
-  padding-right: 48px;
+  padding-right: 368px;
   margin-bottom: 2px;
+  box-sizing: border-box;
 }
 #so-widgets-image-search-frame #so-widgets-image-search-form .so-widgets-search-input {
   padding: 9px 12px;
@@ -152,21 +153,26 @@
   font-size: 1.2em;
   height: 100%;
   top: 0;
-  right: 0;
+  right: 320px;
   border-width: 1px;
   box-shadow: none;
 }
 #so-widgets-image-search-frame #so-widgets-image-search-suggestions {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 300px;
+  height: 40px;
+  text-align: right;
   display: none;
-  float: right;
   font-size: 1.1em;
-  margin-top: 15px;
+  overflow: hidden;
 }
 #so-widgets-image-search-frame #so-widgets-image-search-suggestions strong {
-  margin-right: 0.5em;
+  display: block;
 }
 #so-widgets-image-search-frame #so-widgets-image-search-suggestions ul {
-  display: inline-block;
+  display: block;
   list-style: none;
   margin: 0;
   padding: 0;

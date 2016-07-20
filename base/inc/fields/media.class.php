@@ -177,11 +177,12 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 							<button type="submit" class="button-primary so-widgets-search-button">
 								<span class="dashicons dashicons-search"></span>
 							</button>
+
+							<div id="so-widgets-image-search-suggestions">
+								<strong><?php esc_html_e( 'Related Searches: ', 'so-widgets-bundle' ) ?></strong>
+								<ul class="so-keywords-list"></ul>
+							</div>
 						</form>
-						<div id="so-widgets-image-search-suggestions">
-							<strong><?php esc_html_e( 'Related Searches: ', 'so-widgets-bundle' ) ?></strong>
-							<ul class="so-keywords-list"></ul>
-						</div>
 						<div id="so-widgets-image-search-powered">
 							<?php
 							printf(
