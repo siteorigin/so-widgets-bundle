@@ -195,86 +195,45 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 	function get_less_variables( $instance ) {
 		$less_vars = array();
 
-		if ( ! empty( $instance['headline'] ) ) {
-			if ( ! empty( $instance['headline']['tag'] ) ) {
-				$less_vars['headline_tag'] = $instance['headline']['tag'];
-			}
-			if ( ! empty( $instance['headline']['align'] ) ) {
-				$less_vars['headline_align'] = $instance['headline']['align'];
-			}
-			if ( ! empty( $instance['headline']['color'] ) ) {
-				$less_vars['headline_color'] = $instance['headline']['color'];
-			}
-			if ( ! empty( $instance['headline']['font'] ) ) {
-				$font = siteorigin_widget_get_font( $instance['headline']['font'] );
-				$less_vars['headline_font'] = $font['family'];
-				if ( ! empty( $font['weight'] ) ) {
-					$less_vars['headline_font_weight'] = $font['weight'];
-				}
-			}
-			if( ! empty( $instance['headline']['font_size'] ) ) {
-				$less_vars['headline_font_size'] = $instance['headline']['font_size'];
-			}
-			if( ! empty( $instance['headline']['line_height'] ) ) {
-				$less_vars['headline_line_height'] = $instance['headline']['line_height'];
+		// All the headline attributes
+		$less_vars['headline_tag'] = isset( $instance['headline']['tag'] ) ? $instance['headline']['tag'] : false;
+		$less_vars['headline_align'] = isset( $instance['headline']['align'] ) ? $instance['headline']['align'] : false;
+		$less_vars['headline_color'] = isset( $instance['headline']['color'] ) ? $instance['headline']['color'] : false;
+		$less_vars['headline_font_size'] = isset( $instance['headline']['font_size'] ) ? $instance['headline']['font_size'] : false;
+		$less_vars['headline_line_height'] = isset( $instance['headline']['line_height'] ) ? $instance['headline']['line_height'] : false;
+
+		// Headline font family and weight
+		if ( ! empty( $instance['headline']['font'] ) ) {
+			$font = siteorigin_widget_get_font( $instance['headline']['font'] );
+			$less_vars['headline_font'] = $font['family'];
+			if ( ! empty( $font['weight'] ) ) {
+				$less_vars['headline_font_weight'] = $font['weight'];
 			}
 		}
 
-		if ( ! empty( $instance['sub_headline'] ) ) {
-			if ( ! empty( $instance['sub_headline']['align'] ) ) {
-				$less_vars['sub_headline_align'] = $instance['sub_headline']['align'];
-			}
-			if ( ! empty( $instance['sub_headline']['tag'] ) ) {
-				$less_vars['sub_headline_tag'] = $instance['sub_headline']['tag'];
-			}
-			if ( ! empty( $instance['sub_headline']['color'] ) ) {
-				$less_vars['sub_headline_color'] = $instance['sub_headline']['color'];
-			}
-			if ( ! empty( $instance['sub_headline']['font'] ) ) {
-				$font = siteorigin_widget_get_font( $instance['sub_headline']['font'] );
-				$less_vars['sub_headline_font'] = $font['family'];
-				if ( ! empty( $font['weight'] ) ) {
-					$less_vars['sub_headline_font_weight'] = $font['weight'];
-				}
-			}
-			if( ! empty( $instance['sub_headline']['font_size'] ) ) {
-				$less_vars['sub_headline_font_size'] = $instance['headline']['font_size'];
-			}
-			if( ! empty( $instance['sub_headline']['line_height'] ) ) {
-				$less_vars['sub_headline_line_height'] = $instance['sub_headline']['line_height'];
+		// Set the sub headline attributes
+		$less_vars['sub_headline_align'] = isset( $instance['sub_headline']['align'] ) ? $instance['sub_headline']['align'] : false;
+		$less_vars['sub_headline_tag'] = isset( $instance['sub_headline']['tag'] ) ? $instance['sub_headline']['tag'] : false;
+		$less_vars['sub_headline_color'] = isset( $instance['sub_headline']['color'] ) ? $instance['sub_headline']['color'] : false;
+		$less_vars['sub_headline_font_size'] = isset( $instance['sub_headline']['font_size'] ) ? $instance['sub_headline']['font_size'] : false;
+		$less_vars['sub_headline_line_height'] = isset( $instance['sub_headline']['line_height'] ) ? $instance['sub_headline']['line_height'] : false;
+
+		// Sub headline font family and weight
+		if ( ! empty( $instance['sub_headline']['font'] ) ) {
+			$font = siteorigin_widget_get_font( $instance['sub_headline']['font'] );
+			$less_vars['sub_headline_font'] = $font['family'];
+			if ( ! empty( $font['weight'] ) ) {
+				$less_vars['sub_headline_font_weight'] = $font['weight'];
 			}
 		}
 
-		if ( ! empty( $instance['divider'] ) ) {
-			if ( ! empty( $instance['divider']['style'] ) ) {
-				$less_vars['divider_style'] = $instance['divider']['style'];
-			}
-
-			if ( ! empty( $instance['divider']['thickness'] ) ) {
-				$less_vars['divider_thickness'] = intval( $instance['divider']['thickness'] ) . 'px';
-			}
-
-			if ( ! empty( $instance['divider']['width'] ) ) {
-				$less_vars['divider_width'] = $instance['divider']['width'];
-			}
-
-			if ( ! empty( $instance['divider']['alignment'] ) ) {
-				$less_vars['divider_alignment'] = $instance['divider']['alignment'];
-			}
-
-			if ( ! empty( $instance['divider']['color'] ) ) {
-				$less_vars['divider_color'] = $instance['divider']['color'];
-			}
-
-			if ( !empty( $instance['divider']['bottom_margin'] ) ) {
-				$less_vars['divider_bottom_margin'] = $instance['divider']['bottom_margin'];
-			}
-
-			if ( !empty( $instance['divider']['top_margin'] ) ) {
-				$less_vars['divider_top_margin'] = $instance['divider']['top_margin'];
-			}
-
-		}
+		$less_vars['divider_style'] = isset( $instance['divider']['style'] ) ? $instance['divider']['style'] : false;
+		$less_vars['divider_width'] = isset( $instance['divider']['width'] ) ? $instance['divider']['width'] : false;
+		$less_vars['divider_thickness'] = isset( $instance['divider']['thickness'] ) ? intval( $instance['divider']['thickness'] ) . 'px' : false;
+		$less_vars['divider_alignment'] = isset( $instance['divider']['alignment'] ) ? $instance['divider']['alignment'] : false;
+		$less_vars['divider_color'] = isset( $instance['divider']['color'] ) ? $instance['divider']['color'] : false;
+		$less_vars['divider_bottom_margin'] = isset( $instance['divider']['bottom_margin'] ) ? $instance['divider']['bottom_margin'] : false;
+		$less_vars['divider_top_margin'] = isset( $instance['divider']['top_margin'] ) ? $instance['divider']['top_margin'] : false;
 
 		return $less_vars;
 	}
