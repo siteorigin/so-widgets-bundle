@@ -36,7 +36,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 					),
 					'tag' => array(
 						'type' => 'select',
-						'label' => __( 'H Tag', 'so-widgets-bundle' ),
+						'label' => __( 'HTML Tag', 'so-widgets-bundle' ),
 						'default' => 'h1',
 						'options' => array(
 							'h1' => __( 'H1', 'so-widgets-bundle' ),
@@ -47,6 +47,10 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 							'h6' => __( 'H6', 'so-widgets-bundle' ),
 						)
 					),
+					'color' => array(
+						'type' => 'color',
+						'label' => __('Color', 'so-widgets-bundle'),
+					),
 					'font' => array(
 						'type' => 'font',
 						'label' => __( 'Font', 'so-widgets-bundle' ),
@@ -55,6 +59,17 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 					'font_size' => array(
 						'type' => 'measurement',
 						'label' => __('Font Size', 'so-widgets-bundle')
+					),
+					'align' => array(
+						'type' => 'select',
+						'label' => __( 'Alignment', 'so-widgets-bundle' ),
+						'default' => 'center',
+						'options' => array(
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'left' => __( 'Left', 'so-widgets-bundle' ),
+							'right' => __( 'Right', 'so-widgets-bundle' ),
+							'justify' => __( 'Justify', 'so-widgets-bundle' )
+						)
 					),
 					'line_height' => array(
 						'type' => 'measurement',
@@ -65,21 +80,6 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'label' => __('Top and Bottom Margin', 'so-widgets-bundle'),
 						'default' => '',
 					),
-					'color' => array(
-						'type' => 'color',
-						'label' => __('Color', 'so-widgets-bundle'),
-					),
-					'align' => array(
-						'type' => 'select',
-						'label' => __( 'Align', 'so-widgets-bundle' ),
-						'default' => 'center',
-						'options' => array(
-							'center' => __( 'Center', 'so-widgets-bundle' ),
-							'left' => __( 'Left', 'so-widgets-bundle' ),
-							'right' => __( 'Right', 'so-widgets-bundle' ),
-							'justify' => __( 'Justify', 'so-widgets-bundle' )
-						)
-					)
 				)
 			),
 			'sub_headline' => array(
@@ -93,7 +93,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 					),
 					'tag' => array(
 						'type' => 'select',
-						'label' => __( 'H Tag', 'so-widgets-bundle' ),
+						'label' => __( 'HTML Tag', 'so-widgets-bundle' ),
 						'default' => 'h3',
 						'options' => array(
 							'h1' => __( 'H1', 'so-widgets-bundle' ),
@@ -104,6 +104,10 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 							'h6' => __( 'H6', 'so-widgets-bundle' ),
 						)
 					),
+					'color' => array(
+						'type' => 'color',
+						'label' => __('Color', 'so-widgets-bundle'),
+					),
 					'font' => array(
 						'type' => 'font',
 						'label' => __( 'Font', 'so-widgets-bundle' ),
@@ -112,6 +116,17 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 					'font_size' => array(
 						'type' => 'measurement',
 						'label' => __('Font Size', 'so-widgets-bundle')
+					),
+					'align' => array(
+						'type' => 'select',
+						'label' => __( 'Alignment', 'so-widgets-bundle' ),
+						'default' => 'center',
+						'options' => array(
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'left' => __( 'Left', 'so-widgets-bundle' ),
+							'right' => __( 'Right', 'so-widgets-bundle' ),
+							'justify' => __( 'Justify', 'so-widgets-bundle' )
+						)
 					),
 					'line_height' => array(
 						'type' => 'measurement',
@@ -122,21 +137,6 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'label' => __('Top and Bottom Margin', 'so-widgets-bundle'),
 						'default' => '',
 					),
-					'color' => array(
-						'type' => 'color',
-						'label' => __('Color', 'so-widgets-bundle'),
-					),
-					'align' => array(
-						'type' => 'select',
-						'label' => __( 'Align', 'so-widgets-bundle' ),
-						'default' => 'center',
-						'options' => array(
-							'center' => __( 'Center', 'so-widgets-bundle' ),
-							'left' => __( 'Left', 'so-widgets-bundle' ),
-							'right' => __( 'Right', 'so-widgets-bundle' ),
-							'justify' => __( 'Justify', 'so-widgets-bundle' )
-						)
-					)
 				)
 			),
 			'divider' => array(
@@ -160,6 +160,11 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 							'outset' => __('Outset', 'so-widgets-bundle'),
 						)
 					),
+					'color' => array(
+						'type' => 'color',
+						'label' => __('Color', 'so-widgets-bundle'),
+						'default' => '#EEEEEE'
+					),
 					'thickness' => array(
 						'type' => 'slider',
 						'label' => __( 'Thickness', 'so-widgets-bundle' ),
@@ -167,25 +172,20 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'max' => 20,
 						'default' => 1
 					),
-					'color' => array(
-						'type' => 'color',
-						'label' => __('Color', 'so-widgets-bundle'),
-						'default' => '#EEEEEE'
-					),
-					'width' => array(
-						'type' => 'measurement',
-						'label' => __('Divider Width', 'so-widgets-bundle'),
-						'default' => '80%',
-					),
-					'alignment' => array(
+					'align' => array(
 						'type' => 'select',
-						'label' => __('Divider Alignment', 'so-widgets-bundle'),
+						'label' => __('Alignment', 'so-widgets-bundle'),
 						'default' => 'center',
 						'options' => array(
 							'center' => __( 'Center', 'so-widgets-bundle' ),
 							'left' => __( 'Left', 'so-widgets-bundle' ),
 							'right' => __( 'Right', 'so-widgets-bundle' ),
 						),
+					),
+					'width' => array(
+						'type' => 'measurement',
+						'label' => __('Divider Width', 'so-widgets-bundle'),
+						'default' => '80%',
 					),
 					'margin' => array(
 						'type' => 'measurement',
@@ -248,7 +248,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 		$less_vars['divider_style'] = isset( $instance['divider']['style'] ) ? $instance['divider']['style'] : false;
 		$less_vars['divider_width'] = isset( $instance['divider']['width'] ) ? $instance['divider']['width'] : false;
 		$less_vars['divider_thickness'] = isset( $instance['divider']['thickness'] ) ? intval( $instance['divider']['thickness'] ) . 'px' : false;
-		$less_vars['divider_alignment'] = isset( $instance['divider']['alignment'] ) ? $instance['divider']['alignment'] : false;
+		$less_vars['divider_align'] = isset( $instance['divider']['align'] ) ? $instance['divider']['align'] : false;
 		$less_vars['divider_color'] = isset( $instance['divider']['color'] ) ? $instance['divider']['color'] : false;
 		$less_vars['divider_margin'] = isset( $instance['divider']['margin'] ) ? $instance['divider']['margin'] : false;
 
