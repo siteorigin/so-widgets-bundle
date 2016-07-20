@@ -887,6 +887,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @param $markdown
 	 * @return string The HTML
+	 *
+	 * @deprecated Will be removed in version 2.0
 	 */
 	function parse_markdown( $markdown ){
 		if( !class_exists('Markdown_Parser') ) include plugin_dir_path(__FILE__).'inc/markdown.php';
