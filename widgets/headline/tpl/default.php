@@ -1,4 +1,4 @@
-<div class="sow-headline-container">
+<div class="sow-headline-container <?php if( $instance['fittext'] ) ?>">
 	<?php
 	foreach( $order as $item ) {
 		switch( $item ) {

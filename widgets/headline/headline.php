@@ -23,6 +23,10 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	function initialize(){
+		add_filter( 'siteorigin_widgets_wrapper_classes_' . $this->id_base, array( $this, 'wrapper_class_filter' ), 10, 2 );
+	}
+
 	function initialize_form(){
 		return array(
 			'headline' => array(
@@ -204,6 +208,13 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 					'sub_headline' => __( 'Sub Headline', 'so-widgets-bundle' ),
 				),
 				'default' => array( 'headline', 'divider', 'sub_headline' ),
+			),
+
+			'fittext' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Use FitText', 'so-widgets-bundle' ),
+				'description' => __( 'Dynamically adjust your heading font size based on screen size.', 'so-widgets-bundle' ),
+				'default' => false,
 			)
 		);
 	}
@@ -281,6 +292,14 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			'order' => $instance['order'],
 			'has_divider' => ! empty( $instance['divider'] ) && $instance['divider']['style'] != 'none'
 		);
+	}
+
+	function wrapper_class_filter( $classes, $instance ){
+		if( $instance[ 'fittext' ] ) {
+			$classes[] = 'so-widget-fittext-wrapper';
+			wp_enqueue_script( 'sow-fittext' );
+		}
+		return $classes;
 	}
 
 	function modify_instance( $instance ) {
