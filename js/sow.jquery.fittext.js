@@ -44,7 +44,7 @@ jQuery( function( $ ){
     // Apply FitText to all Widgets Bundle FitText wrappers
     $('.so-widget-fittext-wrapper').find( 'h1,h2,h3,h4,h5,h6' ).each( function(){
         var $$ = $(this);
-        $$.fitText( 0.75, {
+        $$.fitText( 0.85, {
             maxFontSize: $$.css('font-size')
         } );
     } );
