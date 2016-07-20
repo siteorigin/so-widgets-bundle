@@ -150,25 +150,22 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 							'outset' => __('Outset', 'so-widgets-bundle'),
 						)
 					),
-					'weight' => array(
-						'type' => 'select',
-						'label' => __( 'Weight', 'so-widgets-bundle' ),
-						'default' => 'thin',
-						'options' => array(
-							'thin' => __( 'Thin', 'so-widgets-bundle' ),
-							'medium' => __( 'Medium', 'so-widgets-bundle' ),
-							'thick' => __( 'Thick', 'so-widgets-bundle' ),
-						)
+					'thickness' => array(
+						'type' => 'slider',
+						'label' => __( 'Thickness', 'so-widgets-bundle' ),
+						'min' => 0,
+						'max' => 20,
+						'default' => 1
 					),
 					'color' => array(
 						'type' => 'color',
 						'label' => __('Color', 'so-widgets-bundle'),
 						'default' => '#EEEEEE'
 					),
-					'side_margin' => array(
+					'width' => array(
 						'type' => 'measurement',
-						'label' => __('Side Margin', 'so-widgets-bundle'),
-						'default' => '60px',
+						'label' => __('Divider Width', 'so-widgets-bundle'),
+						'default' => '80%',
 					),
 					'top_margin' => array(
 						'type' => 'measurement',
@@ -286,6 +283,53 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			'sub_headline_tag' => $instance['sub_headline']['tag'],
 			'has_divider' => ! empty( $instance['divider'] ) && $instance['divider']['style'] != 'none'
 		);
+	}
+
+	function modify_instance( $instance ) {
+		// Change the old divider weight into a divider thickness
+		if( isset( $instance['divider']['weight'] ) && ! isset( $instance['divider']['thickness'] ) ) {
+			switch( $instance['divider']['weight'] ) {
+				case 'medium':
+					$instance['divider']['thickness'] = 3;
+					break;
+				case 'thick':
+					$instance['divider']['thickness'] = 5;
+					break;
+				case 'thin' :
+				default :
+					$instance['divider']['thickness'] = 1;
+					break;
+			}
+			unset( $instance['divider']['weight'] );
+		}
+
+		// Change the old divider side margin into overall width
+		if( isset( $instance['divider']['side_margin'] ) && ! isset( $instance['divider']['width'] ) ) {
+			global $content_width;
+			$value = floatval( $instance['divider']['side_margin'] );
+
+			switch( $instance['divider']['side_margin_unit'] ) {
+				case 'px' :
+					$instance['divider']['width'] = ( ( !empty( $content_width ) ? $content_width : 960 ) - ( 2 * $value ) ) . 'px';
+					$instance['divider']['width_unit'] = 'px';
+					break;
+
+				case '%' :
+					$instance['divider']['width'] = ( 100 - (2 * $value) ) . '%';
+					$instance['divider']['width_unit'] = '%';
+					break;
+
+				default :
+					$instance['divider']['width'] = '80%';
+					$instance['divider']['width_unit'] = '%';
+					break;
+			}
+
+			unset( $instance['divider']['side_margin'] );
+			unset( $instance['divider']['side_margin_unit'] );
+		}
+
+		return $instance;
 	}
 }
 
