@@ -20,7 +20,7 @@
 
 			case 'sub_headline' :
 				if( !empty( $sub_headline ) ) {
-					echo '<' . $sub_headline_tag . ' class="sow-headline">' . wp_kses_post( $sub_headline ) . '</' . $sub_headline_tag . '>';
+					echo '<' . $sub_headline_tag . ' class="sow-sub-headline">' . wp_kses_post( $sub_headline ) . '</' . $sub_headline_tag . '>';
 				}
 				break;
 		}

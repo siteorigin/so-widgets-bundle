@@ -60,6 +60,11 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'type' => 'measurement',
 						'label' => __('Line Height', 'so-widgets-bundle')
 					),
+					'margin' => array(
+						'type' => 'measurement',
+						'label' => __('Top and Bottom Margin', 'so-widgets-bundle'),
+						'default' => '',
+					),
 					'color' => array(
 						'type' => 'color',
 						'label' => __('Color', 'so-widgets-bundle'),
@@ -111,6 +116,11 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 					'line_height' => array(
 						'type' => 'measurement',
 						'label' => __('Line Height', 'so-widgets-bundle')
+					),
+					'margin' => array(
+						'type' => 'measurement',
+						'label' => __('Top and Bottom Margin', 'so-widgets-bundle'),
+						'default' => '',
 					),
 					'color' => array(
 						'type' => 'color',
@@ -177,16 +187,11 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 							'right' => __( 'Right', 'so-widgets-bundle' ),
 						),
 					),
-					'top_margin' => array(
+					'margin' => array(
 						'type' => 'measurement',
-						'label' => __('Top Margin', 'so-widgets-bundle'),
-						'default' => '20px',
+						'label' => __('Top and Bottom Margin', 'so-widgets-bundle'),
+						'default' => '',
 					),
-					'bottom_margin' => array(
-						'type' => 'measurement',
-						'label' => __('Bottom Margin', 'so-widgets-bundle'),
-						'default' => '20px',
-					)
 				)
 			),
 
@@ -212,6 +217,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 		$less_vars['headline_color'] = isset( $instance['headline']['color'] ) ? $instance['headline']['color'] : false;
 		$less_vars['headline_font_size'] = isset( $instance['headline']['font_size'] ) ? $instance['headline']['font_size'] : false;
 		$less_vars['headline_line_height'] = isset( $instance['headline']['line_height'] ) ? $instance['headline']['line_height'] : false;
+		$less_vars['headline_margin'] = isset( $instance['headline']['margin'] ) ? $instance['headline']['margin'] : false;
 
 		// Headline font family and weight
 		if ( ! empty( $instance['headline']['font'] ) ) {
@@ -228,6 +234,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 		$less_vars['sub_headline_color'] = isset( $instance['sub_headline']['color'] ) ? $instance['sub_headline']['color'] : false;
 		$less_vars['sub_headline_font_size'] = isset( $instance['sub_headline']['font_size'] ) ? $instance['sub_headline']['font_size'] : false;
 		$less_vars['sub_headline_line_height'] = isset( $instance['sub_headline']['line_height'] ) ? $instance['sub_headline']['line_height'] : false;
+		$less_vars['sub_headline_margin'] = isset( $instance['sub_headline']['margin'] ) ? $instance['sub_headline']['margin'] : false;
 
 		// Sub headline font family and weight
 		if ( ! empty( $instance['sub_headline']['font'] ) ) {
@@ -243,8 +250,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 		$less_vars['divider_thickness'] = isset( $instance['divider']['thickness'] ) ? intval( $instance['divider']['thickness'] ) . 'px' : false;
 		$less_vars['divider_alignment'] = isset( $instance['divider']['alignment'] ) ? $instance['divider']['alignment'] : false;
 		$less_vars['divider_color'] = isset( $instance['divider']['color'] ) ? $instance['divider']['color'] : false;
-		$less_vars['divider_bottom_margin'] = isset( $instance['divider']['bottom_margin'] ) ? $instance['divider']['bottom_margin'] : false;
-		$less_vars['divider_top_margin'] = isset( $instance['divider']['top_margin'] ) ? $instance['divider']['top_margin'] : false;
+		$less_vars['divider_margin'] = isset( $instance['divider']['margin'] ) ? $instance['divider']['margin'] : false;
 
 		return $less_vars;
 	}
