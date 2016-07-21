@@ -126,7 +126,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$this->form_options = $this->initialize_form();
 		}
 
-		$instance = $this->modify_instance($instance);
+		$instance = $this->modify_instance( $instance );
 
 		// Filter the instance
 		$instance = apply_filters( 'siteorigin_widgets_instance', $instance, $this );
@@ -185,8 +185,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$template_html = $this->get_html_content( $instance, $args, $template_vars, $css_name );
 		}
 
+		$wrapper_classes = apply_filters(
+			'siteorigin_widgets_wrapper_classes_' . $this->id_base,
+			array( 'so-widget-' . $this->id_base, 'so-widget-'.$css_name ),
+			$instance,
+			$this
+		);
+		$wrapper_classes = array_map( 'sanitize_html_class', $wrapper_classes );
+
 		echo $args['before_widget'];
-		echo '<div class="so-widget-'.$this->id_base.' so-widget-'.$css_name.'">';
+		echo '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '">';
 		echo $template_html;
 		echo '</div>';
 		echo $args['after_widget'];
@@ -667,8 +675,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$vars = $this->get_less_variables($instance);
 		if( !empty( $vars ) ){
 			foreach($vars as $name => $value) {
-				// Ignore empty string
-				if( $value === '' || $value === false ) continue;
+				// Ignore empty string, false and null values (but keep '0')
+				if( $value === '' || $value === false || $value === null ) continue;
 
 				$less = preg_replace('/\@'.preg_quote($name).' *\:.*?;/', '@'.$name.': '.$value.';', $less);
 			}
