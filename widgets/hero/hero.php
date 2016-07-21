@@ -33,6 +33,8 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			SiteOrigin_Widgets_Bundle::single()->include_widget( 'button' );
 		}
 
+		add_filter( 'siteorigin_widgets_wrapper_classes_' . $this->id_base, array( $this, 'wrapper_class_filter' ), 10, 2 );
+
 		// Let the slider base class do its initialization
 		parent::initialize();
 	}
@@ -197,6 +199,13 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 						'default' => '38px',
 					),
 
+					'fittext' => array(
+						'type' => 'checkbox',
+						'label' => __( 'Use FitText', 'so-widgets-bundle' ),
+						'description' => __( 'Dynamically adjust your heading font size based on screen size.', 'so-widgets-bundle' ),
+						'default' => true,
+					),
+
 					'heading_shadow' => array(
 						'type' => 'slider',
 						'label' => __('Heading shadow intensity', 'so-widgets-bundle'),
@@ -356,6 +365,14 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		if( !empty( $font_import['css_import'] ) ) {
 			return  $font_import['css_import'];
 		}
+	}
+
+	function wrapper_class_filter( $classes, $instance ){
+		if( $instance['design']['fittext'] ) {
+			$classes[] = 'so-widget-fittext-wrapper';
+			wp_enqueue_script( 'sow-fittext' );
+		}
+		return $classes;
 	}
 
 }
