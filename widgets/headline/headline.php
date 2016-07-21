@@ -49,6 +49,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 							'h4' => __( 'H4', 'so-widgets-bundle' ),
 							'h5' => __( 'H5', 'so-widgets-bundle' ),
 							'h6' => __( 'H6', 'so-widgets-bundle' ),
+							'p' => __( 'Paragraph', 'so-widgets-bundle' ),
 						)
 					),
 					'color' => array(
@@ -106,6 +107,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 							'h4' => __( 'H4', 'so-widgets-bundle' ),
 							'h5' => __( 'H5', 'so-widgets-bundle' ),
 							'h6' => __( 'H6', 'so-widgets-bundle' ),
+							'p' => __( 'Paragraph', 'so-widgets-bundle' ),
 						)
 					),
 					'color' => array(
