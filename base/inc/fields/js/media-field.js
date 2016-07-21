@@ -264,7 +264,7 @@
                                     // This was a success
                                     dialog.hide();
                                     dialog.find( '.so-widgets-results-loading' ).hide();
-                                    $field.find( 'input[type=hidden]' ).val( response.attachment_id );
+                                    $field.find( 'input[type=hidden]' ).val( response.attachment_id ).trigger('change');
                                     $field.find('.current .thumbnail' ).attr('src', response.thumb ).fadeIn();
                                 }
                                 else {
