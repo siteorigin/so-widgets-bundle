@@ -51,6 +51,11 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.6.4 - 21 July 2016 =
+* More settings and customizability for Headline widget.
+* Added FitText to Headline and Hero Image widgets.
+* Fixed Pixabay image importing.
+
 = 1.6.3 - 19 July 2016 =
 * Added image search functionality to media field.
 * Moved actions into their own file.
