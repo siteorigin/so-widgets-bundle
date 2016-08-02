@@ -47,6 +47,14 @@
   color: #54a242;
   font-style: italic;
 }
+.siteorigin-widget-form .siteorigin-widget-field.siteorigin-widget-field-is-required .field-required {
+  font-weight: normal;
+  font-size: 0.8em;
+  vertical-align: super;
+  padding-left: 0.5em;
+  color: #F02311;
+  font-style: italic;
+}
 .siteorigin-widget-form .siteorigin-widget-field input[type="text"] {
   width: 100%;
 }
