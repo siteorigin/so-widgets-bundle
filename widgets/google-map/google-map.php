@@ -63,6 +63,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'api_key' => array(
 						'type'        => 'text',
 						'label'       => __( 'API key', 'so-widgets-bundle' ),
+						'required'    => true,
 						'description' => sprintf(
 							__( 'Enter your %sAPI key%s. Your map may not function correctly without one.', 'so-widgets-bundle' ),
 							'<a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank">',
