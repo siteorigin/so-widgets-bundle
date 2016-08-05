@@ -352,10 +352,11 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 *
 	 * @param $value mixed The value to be sanitized.
 	 * @param $instance array The widget instance.
+	 * @param $old_value The old value of this field.
 	 *
 	 * @return mixed|string|void
 	 */
-	public function sanitize( $value, $instance = array() ) {
+	public function sanitize( $value, $instance = array(), $old_value = null ) {
 
 		$value = $this->sanitize_field_input( $value, $instance );
 
@@ -372,7 +373,12 @@ abstract class SiteOrigin_Widget_Field_Base {
 
 				default:
 					// This isn't a built in sanitization. Maybe it's handled elsewhere.
-					$value = apply_filters( 'siteorigin_widgets_sanitize_field_' . $this->sanitize, $value );
+					if( is_callable( $this->sanitize ) ) {
+						$value = call_user_func( $this->sanitize, $value, $old_value );
+					}
+					else if( is_string( $this->sanitize ) ) {
+						$value = apply_filters( 'siteorigin_widgets_sanitize_field_' . $this->sanitize, $value );
+					}
 					break;
 			}
 		}
