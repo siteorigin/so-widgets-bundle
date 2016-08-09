@@ -195,7 +195,7 @@ function soGoogleMapInitialize() {
 
 jQuery(function ($) {
     if (window.google && window.google.maps) {
-        new SiteOriginGoogleMap($).loadMaps();
+		soGoogleMapInitialize();
     } else {
 		var mapOptions = $('.sow-google-map-canvas').data('options');
 
