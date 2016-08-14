@@ -51,6 +51,14 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.6.5 - 15 August 2016 =
+* Fixed dialog z-index.
+* Added field required argument.
+* Properly trigger change for image search import.
+* Sanitize arg can now be a callback.
+* Improved multi checkbox field
+* Maps: Just call initialization function if maps API already loaded.
+
 = 1.6.4 - 21 July 2016 =
 * More settings and customizability for Headline widget.
 * Added FitText to Headline and Hero Image widgets.
