@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 3.9
-Tested up to: 4.5.3
+Tested up to: 4.6
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
@@ -50,6 +50,14 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.6.5 - 15 August 2016 =
+* Fixed dialog z-index.
+* Added field required argument.
+* Properly trigger change for image search import.
+* Sanitize arg can now be a callback.
+* Improved multi checkbox field
+* Maps: Just call initialization function if maps API already loaded.
 
 = 1.6.4 - 21 July 2016 =
 * More settings and customizability for Headline widget.
