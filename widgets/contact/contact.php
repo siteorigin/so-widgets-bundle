@@ -63,6 +63,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'description' => __('Where contact emails will be delivered to.', 'so-widgets-bundle'),
 						'sanitize' => 'multiple_emails',
 					),
+					'default_sender' => array(
+						'type' => 'text',
+						'label' => __('Sender email address', 'so-widgets-bundle'),
+						'description' => __('Sender address to be used when there is no email field defined.', 'so-widgets-bundle'),
+						'sanitize' => 'sanitize_email',
+					),
 					'default_subject' => array(
 						'type' => 'text',
 						'label' => __('Default subject', 'so-widgets-bundle'),
@@ -830,6 +836,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						break;
 				}
 			}
+		}
+
+		// Add in the default sender if no email field is defined 
+		if ( !isset( $email_fields['email'] ) && !empty($instance['settings']['default_sender']) ) {
+			$email_fields['email'] = $instance['settings']['default_sender'];
 		}
 
 		// Add in the default subject prefix
