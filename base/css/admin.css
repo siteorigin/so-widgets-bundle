@@ -47,6 +47,14 @@
   color: #54a242;
   font-style: italic;
 }
+.siteorigin-widget-form .siteorigin-widget-field.siteorigin-widget-field-is-required .field-required {
+  font-weight: normal;
+  font-size: 0.8em;
+  vertical-align: super;
+  padding-left: 0.5em;
+  color: #F02311;
+  font-style: italic;
+}
 .siteorigin-widget-form .siteorigin-widget-field input[type="text"] {
   width: 100%;
 }
@@ -644,7 +652,7 @@
 }
 .so-widgets-dialog .so-widgets-dialog-overlay {
   position: fixed;
-  z-index: 100000;
+  z-index: 500000;
   top: 0;
   left: 0;
   right: 0;

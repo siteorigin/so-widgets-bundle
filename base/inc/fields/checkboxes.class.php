@@ -34,6 +34,10 @@ class SiteOrigin_Widget_Field_Checkboxes extends SiteOrigin_Widget_Field_Base {
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
+		if( empty( $value ) ) {
+			$value = array();
+		}
+
 		$values = is_array( $value ) ? $value : array( $value );
 		$keys = array_keys( $this->options );
 		$sanitized_value = array();
@@ -46,7 +50,7 @@ class SiteOrigin_Widget_Field_Checkboxes extends SiteOrigin_Widget_Field_Base {
 			}
 		}
 
-		return count( $sanitized_value ) == 1 ? $sanitized_value[0] : $sanitized_value;
+		return $sanitized_value;
 	}
 
 }
