@@ -186,9 +186,8 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 						<div id="so-widgets-image-search-powered">
 							<?php
 							printf(
-								__( 'Powered by %s - sponsored results from %s', 'so-widgets-bundle' ),
-								'<a href="https://pixabay.com/" target="_blank">Pixabay</a>',
-								'<a href="http://stock.siteorigin.com/?shutterstock=home" target="_blank">Shutterstock</a>'
+								__( 'Powered by %s', 'so-widgets-bundle' ),
+								'<a href="https://pixabay.com/" target="_blank">Pixabay</a>'
 							);
 							?>
 						</div>
