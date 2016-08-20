@@ -350,9 +350,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * Display the widget form.
 	 *
 	 * @param array $instance
+	 * @param array|boolean $form_options The form array to use
+	 *
 	 * @return string|void
 	 */
-	public function form( $instance ) {
+	public function form( $instance, $form_options = false ) {
 		$instance = $this->modify_instance($instance);
 		$instance = $this->add_defaults( $this->form_options(), $instance );
 
@@ -371,13 +373,17 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$instance['_sow_form_id'] = uniqid();
 		}
 
+		if( empty( $form_options ) ) {
+			$form_options = $this->form_options();
+		}
+
 		?>
 		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>" id="<?php echo $form_id ?>" data-class="<?php echo esc_attr( $this->widget_class ) ?>" style="display: none">
 			<?php
 			/* @var $field_factory SiteOrigin_Widget_Field_Factory */
 			$field_factory = SiteOrigin_Widget_Field_Factory::getInstance();
 			$fields_javascript_variables = array();
-			foreach( $this->form_options() as $field_name => $field_options ) {
+			foreach( $form_options as $field_name => $field_options ) {
 				/* @var $field SiteOrigin_Widget_Field_Base */
 				$field = $field_factory->create_field( $field_name, $field_options, $this );
 				$field->render( isset( $instance[$field_name] ) ? $instance[$field_name] : null, $instance );
@@ -522,12 +528,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @param array $new_instance
 	 * @param array $old_instance
+	 * @param array|boolean $form_options The form array to use
 	 * @return array|void
 	 */
-	public function update( $new_instance, $old_instance ) {
+	public function update( $new_instance, $old_instance, $form_options = false ) {
 		if( !class_exists('SiteOrigin_Widgets_Color_Object') ) require plugin_dir_path( __FILE__ ).'inc/color.php';
 
-		$form_options = $this->form_options();
+		if( empty( $form_options ) ) {
+			$form_options = $this->form_options();
+		}
+
 		if( ! empty( $form_options ) ) {
 			/* @var $field_factory SiteOrigin_Widget_Field_Factory */
 			$field_factory = SiteOrigin_Widget_Field_Factory::getInstance();

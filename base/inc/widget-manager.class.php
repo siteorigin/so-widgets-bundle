@@ -72,8 +72,8 @@ class SiteOrigin_Widgets_Widget_Manager {
 	 * @return bool
 	 */
 	public function get_plugin_path( $id ) {
-		if( empty($this->registered[$id]) ) {
-			// This call might be using the incorrect ID convention
+		if( empty( $this->registered[ $id ] ) ) {
+			// This call might be using the incorrect ID convention.
 			if( substr($id, 0, 4) == 'sow-' ) $id = substr($id, 4);
 			else $id = 'sow-' . $id;
 		}

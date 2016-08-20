@@ -45,8 +45,13 @@ class SiteOrigin_Widgets_Bundle {
 		add_action('admin_init', array($this, 'admin_activate_widget') );
 		add_action('admin_menu', array($this, 'admin_menu_init') );
 		add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_scripts') );
+
+		// All the ajax actions
 		add_action('wp_ajax_so_widgets_bundle_manage', array($this, 'admin_ajax_manage_handler') );
 		add_action('wp_ajax_sow_get_javascript_variables', array($this, 'admin_ajax_get_javascript_variables') );
+
+		add_action('wp_ajax_so_widgets_setting_form', array($this, 'admin_ajax_settings_form') );
+		add_action('wp_ajax_so_widgets_setting_save', array($this, 'admin_ajax_settings_save') );
 
 		// Initialize the widgets, but do it fairly late
 		add_action( 'plugins_loaded', array($this, 'set_plugin_textdomain'), 1 );
@@ -219,7 +224,7 @@ class SiteOrigin_Widgets_Bundle {
 		if( empty($this->widget_folders) ) {
 			// We can use this filter to add more folders to use for widgets
 			$this->widget_folders = apply_filters('siteorigin_widgets_widget_folders', array(
-				plugin_dir_path(__FILE__).'widgets/'
+				plugin_dir_path(__FILE__) . 'widgets/'
 			) );
 		}
 
@@ -351,6 +356,59 @@ class SiteOrigin_Widgets_Bundle {
 	}
 
 	/**
+	 *
+	 */
+	function admin_ajax_settings_form(){
+		$widget_objects = $this->get_widget_objects();
+		$widget_object = !empty( $widget_objects[ $_GET['id'] ] ) ? $widget_objects[ $_GET['id'] ] : false;
+
+		if( empty( $widget_object ) ) exit();
+
+		$form_options = $widget_object->initialize_settings_form();
+		if( empty( $form_options ) ) exit();
+
+		unset( $widget_object->widget_options['has_preview'] );
+
+		$action_url = admin_url( 'admin-ajax.php' );
+		$action_url = add_query_arg( array(
+			'id' => $_GET['id'],
+			'action' => 'so_widgets_setting_save',
+		), $action_url );
+		$action_url = wp_nonce_url( $action_url, 'save-widget-settings' );
+
+		$value = get_option( 'so_widget_settings[' . get_class( $widget_object ) . ']', array() );
+
+		?>
+		<form method="post" action="<?php echo esc_url( $action_url ) ?>" target="so-widget-settings-save">
+			<?php $widget_object->form( $value, $form_options ) ?>
+		</form>
+		<?php
+
+		exit();
+	}
+
+	/**
+	 *
+	 */
+	function admin_ajax_settings_save(){
+		$widget_objects = $this->get_widget_objects();
+		$widget_object = !empty( $widget_objects[ $_GET['id'] ] ) ? $widget_objects[ $_GET['id'] ] : false;
+
+		if( empty( $widget_object ) ) exit();
+
+		$form_options = $widget_object->initialize_settings_form();
+		if( empty( $form_options ) ) exit();
+
+		$form_values = array_shift( array_shift( array_values( $_POST ) ) );
+		$value = get_option( 'so_widget_settings[' . get_class( $widget_object ) . ']', array() );
+
+		$value = $widget_object->update( $form_values, $value, $form_options );
+
+		unset( $value['_sow_form_id'] );
+		update_option( 'so_widget_settings[' . get_class( $widget_object ) . ']', $value );
+	}
+
+	/**
 	 * Add the admin menu page.
 	 *
 	 * @action admin_menu
@@ -369,7 +427,6 @@ class SiteOrigin_Widgets_Bundle {
 	 * Display the admin page.
 	 */
 	function admin_page(){
-
 		$widgets = $this->get_widgets_list();
 		$widget_objects = $this->get_widget_objects();
 
@@ -379,7 +436,6 @@ class SiteOrigin_Widgets_Bundle {
 			&& !empty($_GET['widget'])
 			&& !empty( $widgets[ $_GET['widget'].'/'.$_GET['widget'].'.php' ] )
 		) {
-
 			?>
 			<div class="updated">
 				<p>
@@ -395,6 +451,17 @@ class SiteOrigin_Widgets_Bundle {
 			<?php
 		}
 
+		// Enqueue all the admin page scripts
+		ob_start();
+		foreach( $widget_objects as $widget ) {
+			$widget->enqueue_scripts();
+
+			if( $settings_form = $widget->initialize_settings_form() ) {
+				$widget->form( $settings_form );
+			}
+		}
+		ob_clean();
+
 		include plugin_dir_path(__FILE__).'admin/tpl/admin.php';
 	}
 
@@ -408,7 +475,7 @@ class SiteOrigin_Widgets_Bundle {
 		global $wp_widget_factory;
 		if ( ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ) {
 			$widget = $wp_widget_factory->widgets[ $widget_class ];
-			if( method_exists($widget, 'get_javascript_variables') ) $result = $widget->get_javascript_variables();
+			if( method_exists( $widget, 'get_javascript_variables' ) ) $result = $widget->get_javascript_variables();
 		}
 
 		header('content-type: application/json');
@@ -520,7 +587,7 @@ class SiteOrigin_Widgets_Bundle {
 				$id = $f['filename'];
 
 				$widget['ID'] = $id;
-				$widget['Active'] = !empty($active[$id]);
+				$widget['Active'] = !empty( $active[ $id ] );
 				$widget['File'] = $file;
 
 				$widgets[ $file ] = $widget;

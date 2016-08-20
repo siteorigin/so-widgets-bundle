@@ -68,9 +68,21 @@
 						</div>
 
 						<?php
-						$widget_object = !empty( $widget_objects[$file] ) ? $widget_objects[$file] : false;
+						$widget_object = !empty( $widget_objects[ $file ] ) ? $widget_objects[ $file ] : false;
 						if( !empty( $widget_object ) && $widget_object->initialize_settings_form() ) {
-							?><button class="button-secondary so-widget-settings"><?php esc_html_e( 'Settings', 'so-widgets-bundle' ) ?></button><?php
+							$form_url = add_query_arg( array(
+									'id' => $file,
+									'action' => 'so_widgets_setting_form',
+								),
+								admin_url( 'admin-ajax.php' )
+							);
+							$form_url = wp_nonce_url( $form_url, 'display-widget-form' );
+
+							?>
+							<button class="button-secondary so-widget-settings" data-form-url="<?php echo esc_url( $form_url ) ?>">
+								<?php esc_html_e( 'Settings', 'so-widgets-bundle' ) ?>
+							</button>
+							<?php
 						}
 						?>
 					</div>
@@ -85,5 +97,27 @@
 		<?php _e('Developers - create your own widgets for the Widgets Bundle.', 'so-widgets-bundle') ?>
 		<a href="https://siteorigin.com/docs/widgets-bundle/" target="_blank"><?php _e('Read More', 'so-widgets-bundle') ?></a>.
 	</div>
+
+	<div id="sow-settings-dialog">
+		<div class="so-overlay"></div>
+
+		<div class="so-title-bar">
+			<h3 class="so-title">Widget Settings</h3>
+			<a class="so-close">
+				<span class="so-dialog-icon"></span>
+			</a>
+		</div>
+
+		<div class="so-content so-loading">
+		</div>
+
+		<div class="so-toolbar">
+			<div class="so-buttons">
+				<button class="button-primary so-save"><?php _e( 'Save', 'so-widgets-bundle' ) ?></button>
+			</div>
+		</div>
+	</div>
+
+	<iframe id="so-widget-settings-save" name="so-widget-settings-save"></iframe>
 
 </div>
