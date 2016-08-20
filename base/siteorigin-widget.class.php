@@ -93,6 +93,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
+	 * Return a form array for a widget's global settings.
+	 *
+	 * @return array
+	 */
+	function initialize_settings_form(){
+		return array();
+	}
+
+	/**
 	 * Get the form options and allow child widgets to modify that form.
 	 *
 	 * @param bool|SiteOrigin_Widget $parent

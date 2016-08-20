@@ -22,7 +22,7 @@
 
 	<div id="widgets-list">
 
-		<?php foreach( $widgets as $id => $widget ): ?>
+		<?php foreach( $widgets as $file => $widget ): ?>
 			<div class="so-widget-wrap">
 				<div class="so-widget so-widget-is-<?php echo $widget['Active'] ? 'active' : 'inactive' ?>" data-id="<?php echo esc_attr( $widget['ID'] ) ?>">
 
@@ -67,6 +67,12 @@
 							<button class="button-secondary so-widget-deactivate" data-status="0"><?php esc_html_e( 'Deactivate', 'so-widgets-bundle' ) ?></button>
 						</div>
 
+						<?php
+						$widget_object = !empty( $widget_objects[$file] ) ? $widget_objects[$file] : false;
+						if( !empty( $widget_object ) && $widget_object->initialize_settings_form() ) {
+							?><button class="button-secondary so-widget-settings"><?php esc_html_e( 'Settings', 'so-widgets-bundle' ) ?></button><?php
+						}
+						?>
 					</div>
 
 				</div>

@@ -229,6 +229,7 @@
 }
 #sow-widgets-page #widgets-list .so-widget .so-widget-toggle-active {
   margin-top: 15px;
+  display: inline-block;
 }
 #sow-widgets-page #widgets-list .so-widget .so-widget-toggle-active button:focus {
   outline: none;
@@ -251,6 +252,10 @@
   filter: gray;
   -webkit-filter: grayscale(1);
   opacity: 0.7;
+}
+#sow-widgets-page #widgets-list .so-widget .so-widget-settings {
+  margin-top: 15px;
+  display: inline-block;
 }
 #sow-widgets-page #widgets-list.so-animated img,
 #sow-widgets-page #widgets-list.so-animated svg {

@@ -370,8 +370,8 @@ class SiteOrigin_Widgets_Bundle {
 	 */
 	function admin_page(){
 
-		$bundle = SiteOrigin_Widgets_Bundle::single();
-		$widgets = $bundle->get_widgets_list();
+		$widgets = $this->get_widgets_list();
+		$widget_objects = $this->get_widget_objects();
 
 		if(
 			isset($_GET['widget_action_done'])
@@ -509,7 +509,7 @@ class SiteOrigin_Widgets_Bundle {
 		$widgets = array();
 		foreach( $folders as $folder ) {
 
-			$files = glob( $folder.'*/*.php' );
+			$files = glob( $folder . '*/*.php' );
 			foreach($files as $file) {
 				$widget = get_file_data( $file, $default_headers, 'siteorigin-widget' );
 				//skip the file if it's missing a name
@@ -523,13 +523,39 @@ class SiteOrigin_Widgets_Bundle {
 				$widget['Active'] = !empty($active[$id]);
 				$widget['File'] = $file;
 
-				$widgets[$file] = $widget;
+				$widgets[ $file ] = $widget;
 			}
 
 		}
 
 		// Sort the widgets alphabetically
 		uasort( $widgets, array($this, 'widget_uasort') );
+		return $widgets;
+	}
+
+	/**
+	 * Get instances of all the widgets. Even ones that are not active.
+	 */
+	function get_widget_objects(){
+		$folders = $this->get_widget_folders();
+
+		$widgets = array();
+		$manager = SiteOrigin_Widgets_Widget_Manager::single();
+
+		foreach( $folders as $folder ) {
+
+			$files = glob( $folder . '*/*.php' );
+			foreach ($files as $file) {
+				include_once $file;
+
+				$widget_class = $manager->get_class_from_path( $file );
+
+				if( $widget_class && class_exists( $widget_class ) ) {
+					$widgets[ $file ] = new $widget_class();
+				}
+			}
+		}
+
 		return $widgets;
 	}
 
