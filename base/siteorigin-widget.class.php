@@ -1139,4 +1139,39 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			( !empty( $_REQUEST['action'] ) && $_REQUEST['action'] == 'so_panels_builder_content' );    // Is this a Page Builder content ajax request
 	}
 
+	/**
+	 * Get the global settings from the options table.
+	 *
+	 * @return mixed|void
+	 */
+	function get_global_settings( ){
+		$values = get_option( 'so_widget_settings[' . $this->widget_class . ']', array() );
+
+		// Add in the defaults
+		$form_options = $this->initialize_settings_form();
+		if( ! empty( $form_options ) ) {
+			$values = $this->add_defaults( $form_options, $values );
+		}
+
+		return $values;
+	}
+
+	/**
+	 * Save the global settings. Handles validation too.
+	 *
+	 * @param array $values The new values
+	 * @return array The sanitized values.
+	 */
+	function save_global_settings( $values ){
+		$current = $this->get_global_settings();
+
+		$form_options = $this->initialize_settings_form();
+		$values = $this->update( $values, $current, $form_options );
+
+		unset( $values['_sow_form_id'] );
+		update_option( 'so_widget_settings[' . $this->widget_class . ']', $values );
+
+		return $values;
+	}
+
 }

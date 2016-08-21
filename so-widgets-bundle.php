@@ -356,9 +356,14 @@ class SiteOrigin_Widgets_Bundle {
 	}
 
 	/**
+	 * Handler for displaying the Widget settings form.
 	 *
+	 * @action wp_ajax_so_widgets_setting_form
 	 */
 	function admin_ajax_settings_form(){
+		if( ! wp_verify_nonce($_GET['_wpnonce'], 'display-widget-form') ) exit();
+		if( ! current_user_can( apply_filters( 'siteorigin_widgets_admin_menu_capability', 'manage_options' ) ) ) exit();
+
 		$widget_objects = $this->get_widget_objects();
 		$widget_object = !empty( $widget_objects[ $_GET['id'] ] ) ? $widget_objects[ $_GET['id'] ] : false;
 
@@ -376,7 +381,7 @@ class SiteOrigin_Widgets_Bundle {
 		), $action_url );
 		$action_url = wp_nonce_url( $action_url, 'save-widget-settings' );
 
-		$value = get_option( 'so_widget_settings[' . get_class( $widget_object ) . ']', array() );
+		$value = $widget_object->get_global_settings();
 
 		?>
 		<form method="post" action="<?php echo esc_url( $action_url ) ?>" target="so-widget-settings-save">
@@ -388,9 +393,14 @@ class SiteOrigin_Widgets_Bundle {
 	}
 
 	/**
+	 * Handler for saving the widget settings.
 	 *
+	 * @action wp_ajax_so_widgets_setting_save
 	 */
 	function admin_ajax_settings_save(){
+		if( ! wp_verify_nonce( $_GET['_wpnonce'], 'save-widget-settings' ) ) exit();
+		if( ! current_user_can( apply_filters( 'siteorigin_widgets_admin_menu_capability', 'manage_options' ) ) ) exit();
+
 		$widget_objects = $this->get_widget_objects();
 		$widget_object = !empty( $widget_objects[ $_GET['id'] ] ) ? $widget_objects[ $_GET['id'] ] : false;
 
@@ -400,12 +410,7 @@ class SiteOrigin_Widgets_Bundle {
 		if( empty( $form_options ) ) exit();
 
 		$form_values = array_shift( array_shift( array_values( $_POST ) ) );
-		$value = get_option( 'so_widget_settings[' . get_class( $widget_object ) . ']', array() );
-
-		$value = $widget_object->update( $form_values, $value, $form_options );
-
-		unset( $value['_sow_form_id'] );
-		update_option( 'so_widget_settings[' . get_class( $widget_object ) . ']', $value );
+		$widget_object->save_global_settings( $form_values );
 	}
 
 	/**
