@@ -457,15 +457,9 @@ class SiteOrigin_Widgets_Bundle {
 		}
 
 		// Enqueue all the admin page scripts
-		ob_start();
 		foreach( $widget_objects as $widget ) {
-			$widget->enqueue_scripts();
-
-			if( $settings_form = $widget->initialize_settings_form() ) {
-				$widget->form( $settings_form );
-			}
+			$widget->enqueue_scripts( $widget->initialize_settings_form() );
 		}
-		ob_clean();
 
 		include plugin_dir_path(__FILE__).'admin/tpl/admin.php';
 	}

@@ -429,7 +429,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		</script>
 		<?php
 
-		$this->enqueue_scripts();
+		$this->enqueue_scripts( );
 	}
 
 	function scripts_loading_message(){
@@ -441,8 +441,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 	/**
 	 * Enqueue the admin scripts for the widget form.
+	 *
+	 * @param bool|array $form_options Should we enqueue the field scripts too?
 	 */
-	function enqueue_scripts(){
+	function enqueue_scripts( $form_options = false ){
 
 		if( ! wp_script_is('siteorigin-widget-admin') ) {
 			wp_enqueue_style( 'wp-color-picker' );
@@ -470,9 +472,28 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			siteorigin_widget_post_selector_enqueue_admin_scripts();
 		}
 
+		if( !empty( $form_options ) ) {
+			$this->enqueue_field_scripts( $form_options );
+		}
+
 		// This lets the widget enqueue any specific admin scripts
 		$this->enqueue_admin_scripts();
 		do_action( 'siteorigin_widgets_enqueue_admin_scripts_' . $this->id_base, $this );
+	}
+
+	function enqueue_field_scripts( $fields ){
+		/* @var $field_factory SiteOrigin_Widget_Field_Factory */
+		$field_factory = SiteOrigin_Widget_Field_Factory::single();
+
+		foreach( $fields as $field_name => $field_options ) {
+			/* @var $field SiteOrigin_Widget_Field_Base */
+			$field = $field_factory->create_field( $field_name, $field_options, $this );
+			$field->enqueue_scripts();
+
+			if( !empty( $field_options['fields'] ) ) {
+				$this->enqueue_field_scripts( $field_options['fields'] );
+			}
+		}
 	}
 
 	/**
@@ -485,7 +506,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				<div class="so-widgets-dialog-overlay"></div>
 
 				<div class="so-widgets-toolbar">
-					<h3><?php _e('Widget Preview', 'so-widgets-bundle') ?></h3>
+					<h3><?php _e( 'Widget Preview', 'so-widgets-bundle' ) ?></h3>
 					<div class="close"><span class="dashicons dashicons-arrow-left-alt2"></span></div>
 				</div>
 
