@@ -82,6 +82,13 @@
 }
 .siteorigin-widget-form .siteorigin-widget-field-icon .siteorigin-widget-icon-selector select.siteorigin-widget-icon-family {
   font-size: 11px;
+  display: inline-block;
+}
+.siteorigin-widget-form .siteorigin-widget-field-icon .siteorigin-widget-icon-selector .siteorigin-widget-icon-search {
+  font-size: 11px;
+  display: inline-block;
+  width: 260px;
+  padding: 6px 8px;
 }
 .siteorigin-widget-form .siteorigin-widget-field-icon .siteorigin-widget-icon-selector .siteorigin-widget-icon-icons {
   height: 160px;

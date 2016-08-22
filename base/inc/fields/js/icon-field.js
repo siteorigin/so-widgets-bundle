@@ -7,11 +7,14 @@
             $is = $$.find('.siteorigin-widget-icon-selector'),
             $v = $is.find('.siteorigin-widget-icon-icon'),
             $b = $$.find('.siteorigin-widget-icon-selector-current'),
-            $remove = $$.find( '.so-icon-remove' );
+            $remove = $$.find( '.so-icon-remove' ),
+	        $search = $$.find( '.siteorigin-widget-icon-search' );
 
         // Clicking on the button should display the icon selector
         $b.click( function(){
             $is.slideToggle();
+	        $search.val( '' );
+	        searchIcons();
         } );
 
         // Clicking on the remove button
@@ -21,6 +24,29 @@
             // Trigger a click on the existing icon to remove it.
             $$.find('.siteorigin-widget-active').click();
         } );
+
+	    var searchIcons = function(){
+	    	var q = $search.val().toLowerCase();
+		    if( q === '' ) {
+			    $is.find('.siteorigin-widget-icon-icons-icon').show();
+		    }
+		    else {
+			    $is.find('.siteorigin-widget-icon-icons-icon').each( function(){
+				    var $$ = $( this ),
+					    value = $$.attr( 'data-value' );
+
+				    value = value.replace( /-/, '' );
+				    if( value.indexOf( q ) === -1 ) {
+				    	$$.hide();
+				    }
+				    else {
+				    	$$.show();
+				    }
+			    } );
+		    }
+	    };
+
+	    $search.keyup( searchIcons ).change( searchIcons );
 
         var rerenderIcons = function(){
             var family = $is.find('select.siteorigin-widget-icon-family').val();
@@ -40,7 +66,6 @@
                     .appendTo('head');
             }
 
-
             for ( var i in iconWidgetCache[family].icons ) {
 
                 var icon = $('<div data-sow-icon="' + iconWidgetCache[family].icons[i] +  '"/>')
@@ -49,6 +74,7 @@
                     .addClass( 'siteorigin-widget-icon-icons-icon' )
                     .click(function(){
                         var $$ = $(this);
+
                         if( $$.hasClass('siteorigin-widget-active') ) {
                             // This is being unselected
                             $$.removeClass('siteorigin-widget-active');
@@ -95,6 +121,8 @@
 
             // Move a selected item to the first position
             container.prepend( container.find('.siteorigin-widget-active') );
+
+	        searchIcons();
         };
 
         // Create the function for changing the icon family and call it once
@@ -115,7 +143,10 @@
             if(typeof iconWidgetCache[family] === 'undefined') {
                 $.getJSON(
                     soWidgets.ajaxurl,
-                    { 'action' : 'siteorigin_widgets_get_icons', 'family' :  $is.find('select.siteorigin-widget-icon-family').val() },
+                    {
+                    	'action' : 'siteorigin_widgets_get_icons',
+	                    'family' :  $is.find('select.siteorigin-widget-icon-family').val()
+                    },
                     function(data) {
                         iconWidgetCache[family] = data;
                         rerenderIcons();
