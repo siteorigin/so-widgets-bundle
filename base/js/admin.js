@@ -596,6 +596,7 @@
             $items.bind('updateFieldPositions', function(){
                 var $$ = $(this);
                 var $rptrItems = $$.find('> .siteorigin-widget-field-repeater-item');
+
                 // Set the position for the repeater items
                 $rptrItems.each(function(i, el){
                     $(el).find('.siteorigin-widget-input').each(function(j, input){
@@ -615,19 +616,22 @@
                     var $in = $(input);
 
                     if(typeof pos !== 'undefined') {
-                        var newName = $in.data('original-name');
+                        var newName = $in.attr('data-original-name');
 
-                        if(typeof newName === 'undefined') {
-                            $in.data( 'original-name', $in.attr('name') );
+                        if( ! newName ) {
+                            $in.attr( 'data-original-name', $in.attr('name') );
                             newName = $in.attr('name');
                         }
                         if( ! newName ) {
                             return;
                         }
-                        for(var k in pos) {
-                            newName = newName.replace('#' + k + '#', pos[k] );
+
+                        if( pos ) {
+                            for( var k in pos ) {
+                                newName = newName.replace('#' + k + '#', pos[k] );
+                            }
                         }
-                        $(input).attr('name', newName);
+                        $in.attr('name', newName);
                     }
                 });
 
