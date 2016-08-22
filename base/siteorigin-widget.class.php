@@ -540,7 +540,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		if( ! empty( $form_options ) ) {
 			/* @var $field_factory SiteOrigin_Widget_Field_Factory */
-			$field_factory = SiteOrigin_Widget_Field_Factory::getInstance();
+			$field_factory = SiteOrigin_Widget_Field_Factory::single();
 			foreach ( $form_options as $field_name => $field_options ) {
 				/* @var $field SiteOrigin_Widget_Field_Base */
 				if ( !empty( $this->fields ) && !empty( $this->fields[$field_name] ) ) {
