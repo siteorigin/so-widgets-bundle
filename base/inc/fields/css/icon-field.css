@@ -12,6 +12,7 @@
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
+  float: left;
   border: 1px solid #bbbbbb;
   height: 35px;
 }
@@ -55,6 +56,19 @@
   padding: 9px 10px 7px 7px;
   outline: none;
   cursor: pointer;
+}
+.siteorigin-widget-form .siteorigin-widget-field-icon .so-icon-remove {
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+  float: left;
+  color: #AAA;
+  font-size: 11px;
+  line-height: 1em;
+  padding: 11px 0 11px 6px;
+}
+.siteorigin-widget-form .siteorigin-widget-field-icon.siteorigin-widget-active .so-icon-remove {
+  display: none;
 }
 .siteorigin-widget-form .siteorigin-widget-field-icon .siteorigin-widget-icon-selector {
   display: none;

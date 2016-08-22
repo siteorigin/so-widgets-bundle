@@ -18,6 +18,10 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 			<label><?php _e('Choose Icon', 'so-widgets-bundle') ?></label>
 		</div>
 
+		<a class="so-icon-remove" style="display: <?php echo !empty( $value ) ? 'block' : 'none' ?>;"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ) ?></a>
+
+		<div class="clear"></div>
+
 		<div class="siteorigin-widget-icon-selector siteorigin-widget-field-subcontainer">
 			<select class="siteorigin-widget-icon-family" >
 				<?php foreach( $widget_icon_families as $family_id => $family_info ) : ?>

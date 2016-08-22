@@ -6,12 +6,21 @@
         var $$ = $(this),
             $is = $$.find('.siteorigin-widget-icon-selector'),
             $v = $is.find('.siteorigin-widget-icon-icon'),
-            $b = $$.find('.siteorigin-widget-icon-selector-current');
+            $b = $$.find('.siteorigin-widget-icon-selector-current'),
+            $remove = $$.find( '.so-icon-remove' );
 
         // Clicking on the button should display the icon selector
-        $b.click(function(){
+        $b.click( function(){
             $is.slideToggle();
-        });
+        } );
+
+        // Clicking on the remove button
+        $remove.click( function( e ){
+            e.preventDefault();
+
+            // Trigger a click on the existing icon to remove it.
+            $$.find('.siteorigin-widget-active').click();
+        } );
 
         var rerenderIcons = function(){
             var family = $is.find('select.siteorigin-widget-icon-family').val();
@@ -47,6 +56,8 @@
 
                             // Hide the button icon
                             $b.find('span').hide();
+
+                            $remove.hide();
                         }
                         else {
                             // This is being selected
@@ -60,6 +71,8 @@
                                 .attr( 'data-sow-icon', $$.attr('data-sow-icon') )
                                 .attr( 'class', '' )
                                 .addClass( 'sow-icon-' + family );
+
+                            $remove.show();
                         }
                         $v.trigger('change');
 
@@ -80,7 +93,7 @@
                 }
             }
 
-            // Move a selcted item to the first position
+            // Move a selected item to the first position
             container.prepend( container.find('.siteorigin-widget-active') );
         };
 
@@ -113,7 +126,6 @@
                 rerenderIcons();
             }
         };
-
         changeIconFamily();
 
         $is.find('select.siteorigin-widget-icon-family').change(function(){
