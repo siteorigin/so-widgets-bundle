@@ -381,7 +381,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>" id="<?php echo $form_id ?>" data-class="<?php echo esc_attr( $this->widget_class ) ?>" style="display: none">
 			<?php
 			/* @var $field_factory SiteOrigin_Widget_Field_Factory */
-			$field_factory = SiteOrigin_Widget_Field_Factory::getInstance();
+			$field_factory = SiteOrigin_Widget_Field_Factory::single();
 			$fields_javascript_variables = array();
 			foreach( $form_options as $field_name => $field_options ) {
 				/* @var $field SiteOrigin_Widget_Field_Base */
