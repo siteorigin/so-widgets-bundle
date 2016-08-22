@@ -35,7 +35,7 @@
 				    var $$ = $( this ),
 					    value = $$.attr( 'data-value' );
 
-				    value = value.replace( /-/, '' );
+				    value = value.replace( /-/, ' ' );
 				    if( value.indexOf( q ) === -1 ) {
 				    	$$.hide();
 				    }
