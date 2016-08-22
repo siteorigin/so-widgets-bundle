@@ -137,7 +137,7 @@ jQuery( function( $ ){
             .addClass('so-loading')
             .load( $$.data('form-url'), function(){
                 $(this).removeClass('so-loading');
-            } )
+            } );
 
         dialog.show();
     } );
@@ -152,11 +152,17 @@ jQuery( function( $ ){
 
 	    var $$ = $(this);
 	    $$.prop('disabled', true);
+        $( '#widgets-list .so-widget-settings' ).prop('disabled', true);
 
 	    dialog.find( 'form' ).submit( function( ){
 		    $$.prop('disabled', false);
 		    dialog.hide();
 	    } ).submit();
+    } );
+
+    // Enable all widget settings button after the save iframe has loaded.
+    $('#so-widget-settings-save').load( function(){
+        $( '#widgets-list .so-widget-settings' ).prop('disabled', false);
     } );
 
 } );
