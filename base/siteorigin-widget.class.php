@@ -548,13 +548,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Checks if the current widget is using a posts selector
+	 * Checks if the current widget is using a posts selector in the main form.
 	 *
 	 * @return bool
 	 */
 	function using_posts_selector(){
 		if( empty( $this->form_options ) ) {
-			$this->form_options = $this->get_widget_form();
+			$this->form_options = $this->form_options();
 		}
 
 		foreach($this->form_options as $field) {
