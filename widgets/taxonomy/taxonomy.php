@@ -23,7 +23,7 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function initialize_form() {
+	function get_widget_form() {
 		// Gets taxonomy objects and extracts the 'label' field from each one.
 		$taxonomies = wp_list_pluck( get_taxonomies( array(), 'objects' ), 'label' );
 

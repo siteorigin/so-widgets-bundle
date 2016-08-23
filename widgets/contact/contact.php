@@ -39,7 +39,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		add_filter( 'siteorigin_widgets_sanitize_field_multiple_emails', array( $this, 'sanitize_multiple_emails' ) );
 	}
 
-	function initialize_form(){
+	function get_widget_form(){
 		return array(
 			'title' => array(
 				'type' => 'text',

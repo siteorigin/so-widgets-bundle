@@ -24,7 +24,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function initialize_form(){
+	function get_widget_form(){
 		return array(
 			'title' => array(
 				'type' => 'text',

@@ -48,7 +48,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function initialize_form(){
+	function get_widget_form(){
 		return array(
 			'widget_title' => array(
 				'type' => 'text',

@@ -38,7 +38,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function initialize_form() {
+	function get_widget_form() {
 		return array(
 			'text' => array(
 				'type' => 'text',
