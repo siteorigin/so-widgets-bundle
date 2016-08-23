@@ -38,7 +38,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	static $css_expire = 604800; // 7 days
 
 	/**
-	 *
 	 * @param string $id
 	 * @param string $name
 	 * @param array $widget_options Optional Normal WP_Widget widget options and a few extras.
@@ -103,7 +102,17 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Get the form options and allow child widgets to modify that form.
+	 * Get a specific type of form.
+	 *
+	 * @param $form_type
+	 * @return array The form array, or an empty array if the form doesn't exist.
+	 */
+	function get_form( $form_type ) {
+		return $this->has_form( $form_type ) ? call_user_func( array( $this, 'get_' . $form_type . '_form'  ) ) : array();
+	}
+
+	/**
+	 * Get the main form options and allow child widgets to modify that form.
 	 *
 	 * @param bool|SiteOrigin_Widget $parent
 	 *
@@ -111,6 +120,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	function form_options( $parent = false ) {
 		if( empty( $this->form_options ) ) {
+			// If the widget doesn't have form_options defined from the constructor, then it might be defining them in the get_widget_form function
 			$this->form_options = $this->get_widget_form();
 		}
 
@@ -356,8 +366,18 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string|void
 	 */
 	public function form( $instance, $form_type = 'widget' ) {
+		if( $form_type == 'widget' ) {
+			if( empty( $this->form_options ) ) {
+				$this->form_options = $this->form_options();
+			}
+			$form_options = $this->form_options;
+		}
+		else {
+			$form_options = $this->get_form( $form_type );
+		}
+
 		$instance = $this->modify_instance($instance);
-		$instance = $this->add_defaults( $this->form_options(), $instance );
+		$instance = $this->add_defaults( $form_options, $instance );
 
 		if( empty( $this->number ) ) {
 			// Compatibility with form widgets.
@@ -372,10 +392,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		if( empty( $instance['_sow_form_id'] ) ) {
 			$instance['_sow_form_id'] = uniqid();
-		}
-
-		if( method_exists( $this, 'get_' . $form_type . '_form' ) ) {
-			$form_options = call_user_func( array( $this, 'get_' . $form_type . '_form' ) );
 		}
 
 		?>
@@ -558,8 +574,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	public function update( $new_instance, $old_instance, $form_type = 'widget' ) {
 		if( !class_exists('SiteOrigin_Widgets_Color_Object') ) require plugin_dir_path( __FILE__ ).'inc/color.php';
 
-		if( method_exists( $this, 'get_' . $form_type . '_form' ) ) {
-			$form_options = call_user_func( array( $this, 'get_' . $form_type . '_form' ) );
+		if( $form_type == 'widget' ) {
+			if( empty( $this->form_options ) ) {
+				$this->form_options = $this->form_options();
+			}
+			$form_options = $this->form_options;
+		}
+		else {
+			$form_options = $this->get_form( $form_type );
 		}
 
 		if( ! empty( $form_options ) ) {
