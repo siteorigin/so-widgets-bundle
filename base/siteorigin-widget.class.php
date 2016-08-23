@@ -491,7 +491,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		if( !empty( $form_type ) && $this->has_form( $form_type ) ) {
 			// Enqueue field scripts for the given form type
-			$form_options = call_user_func( array( $this, 'get_' . $form_type . '_form' ) );
+			$form_options = $this->get_form( $form_type );
 			$this->enqueue_field_scripts( $form_options );
 		}
 
