@@ -367,10 +367,7 @@ class SiteOrigin_Widgets_Bundle {
 		$widget_objects = $this->get_widget_objects();
 		$widget_object = !empty( $widget_objects[ $_GET['id'] ] ) ? $widget_objects[ $_GET['id'] ] : false;
 
-		if( empty( $widget_object ) ) exit();
-
-		$form_options = $widget_object->initialize_settings_form();
-		if( empty( $form_options ) ) exit();
+		if( empty( $widget_object ) || ! $widget_object->has_form( 'settings' ) ) exit();
 
 		unset( $widget_object->widget_options['has_preview'] );
 
@@ -385,7 +382,7 @@ class SiteOrigin_Widgets_Bundle {
 
 		?>
 		<form method="post" action="<?php echo esc_url( $action_url ) ?>" target="so-widget-settings-save">
-			<?php $widget_object->form( $value, $form_options ) ?>
+			<?php $widget_object->form( $value, 'settings' ) ?>
 		</form>
 		<?php
 
@@ -404,10 +401,7 @@ class SiteOrigin_Widgets_Bundle {
 		$widget_objects = $this->get_widget_objects();
 		$widget_object = !empty( $widget_objects[ $_GET['id'] ] ) ? $widget_objects[ $_GET['id'] ] : false;
 
-		if( empty( $widget_object ) ) exit();
-
-		$form_options = $widget_object->initialize_settings_form();
-		if( empty( $form_options ) ) exit();
+		if( empty( $widget_object ) || ! $widget_object->has_form( 'settings' ) ) exit();
 
 		$form_values = array_shift( array_shift( array_values( $_POST ) ) );
 		$widget_object->save_global_settings( $form_values );
@@ -458,7 +452,7 @@ class SiteOrigin_Widgets_Bundle {
 
 		// Enqueue all the admin page scripts
 		foreach( $widget_objects as $widget ) {
-			$widget->enqueue_scripts( $widget->initialize_settings_form() );
+			$widget->enqueue_scripts( 'settings' );
 		}
 
 		include plugin_dir_path(__FILE__).'admin/tpl/admin.php';
@@ -602,7 +596,7 @@ class SiteOrigin_Widgets_Bundle {
 	/**
 	 * Get instances of all the widgets. Even ones that are not active.
 	 */
-	function get_widget_objects(){
+	private function get_widget_objects(){
 		$folders = $this->get_widget_folders();
 
 		$widgets = array();

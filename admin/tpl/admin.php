@@ -69,7 +69,7 @@
 
 						<?php
 						$widget_object = !empty( $widget_objects[ $file ] ) ? $widget_objects[ $file ] : false;
-						if( !empty( $widget_object ) && $widget_object->initialize_settings_form() ) {
+						if( !empty( $widget_object ) && $widget_object->has_form( 'settings' ) ) {
 							$form_url = add_query_arg( array(
 									'id' => $file,
 									'action' => 'so_widgets_setting_form',

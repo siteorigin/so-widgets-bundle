@@ -84,21 +84,22 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Return the form array. Widgets should implement this if they don't have a form in the form array.
+	 * Get the main widget form. This should be overwritten by child widgets.
 	 *
 	 * @return array
 	 */
-	function initialize_form( ){
-		return array();
+	function get_widget_form(){
+		return method_exists( $this, 'initialize_form' ) ? $this->initialize_form() : array();
 	}
 
 	/**
-	 * Return a form array for a widget's global settings.
+	 * Check if a child widget implements a specific form type.
 	 *
-	 * @return array
+	 * @param string $form_type
+	 * @return bool
 	 */
-	function initialize_settings_form(){
-		return array();
+	function has_form( $form_type = 'widget' ){
+		return method_exists( $this, 'get_' . $form_type . '_form' );
 	}
 
 	/**
@@ -110,7 +111,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	function form_options( $parent = false ) {
 		if( empty( $this->form_options ) ) {
-			$this->form_options = $this->initialize_form();
+			$this->form_options = $this->get_widget_form();
 		}
 
 		$form_options = $this->modify_form( $this->form_options );
@@ -132,7 +133,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		if( empty( $this->form_options ) ) {
-			$this->form_options = $this->initialize_form();
+			$this->form_options = $this->get_widget_form();
 		}
 
 		$instance = $this->modify_instance( $instance );
@@ -218,7 +219,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	function generate_and_enqueue_instance_styles( $instance ) {
 		if( empty( $this->form_options ) ) {
-			$this->form_options = $this->initialize_form();
+			$this->form_options = $this->get_widget_form();
 		}
 
 		// We'll assume empty instances don't have styles
@@ -318,7 +319,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param $form
 	 * @param $instance
 	 */
-	function add_defaults($form, $instance, $level = 0){
+	function add_defaults( $form, $instance, $level = 0 ){
 		if( $level > 10 ) return $instance;
 
 		foreach($form as $id => $field) {
@@ -350,11 +351,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * Display the widget form.
 	 *
 	 * @param array $instance
-	 * @param array|boolean $form_options The form array to use
+	 * @param string $form_type Which type of form we're using
 	 *
 	 * @return string|void
 	 */
-	public function form( $instance, $form_options = false ) {
+	public function form( $instance, $form_type = 'widget' ) {
 		$instance = $this->modify_instance($instance);
 		$instance = $this->add_defaults( $this->form_options(), $instance );
 
@@ -373,8 +374,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$instance['_sow_form_id'] = uniqid();
 		}
 
-		if( empty( $form_options ) ) {
-			$form_options = $this->form_options();
+		if( method_exists( $this, 'get_' . $form_type . '_form' ) ) {
+			$form_options = call_user_func( array( $this, 'get_' . $form_type . '_form' ) );
 		}
 
 		?>
@@ -442,9 +443,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	/**
 	 * Enqueue the admin scripts for the widget form.
 	 *
-	 * @param bool|array $form_options Should we enqueue the field scripts too?
+	 * @param bool|string $form_type Should we enqueue the field scripts too?
 	 */
-	function enqueue_scripts( $form_options = false ){
+	function enqueue_scripts( $form_type = false ){
 
 		if( ! wp_script_is('siteorigin-widget-admin') ) {
 			wp_enqueue_style( 'wp-color-picker' );
@@ -472,7 +473,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			siteorigin_widget_post_selector_enqueue_admin_scripts();
 		}
 
-		if( !empty( $form_options ) ) {
+		if( !empty( $form_type ) && $this->has_form( $form_type ) ) {
+			// Enqueue field scripts for the given form type
+			$form_options = call_user_func( array( $this, 'get_' . $form_type . '_form' ) );
 			$this->enqueue_field_scripts( $form_options );
 		}
 
@@ -535,7 +538,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	function using_posts_selector(){
 		if( empty( $this->form_options ) ) {
-			$this->form_options = $this->initialize_form();
+			$this->form_options = $this->get_widget_form();
 		}
 
 		foreach($this->form_options as $field) {
@@ -549,14 +552,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @param array $new_instance
 	 * @param array $old_instance
-	 * @param array|boolean $form_options The form array to use
+	 * @param string $form_type The type of form we're using.
 	 * @return array|void
 	 */
-	public function update( $new_instance, $old_instance, $form_options = false ) {
+	public function update( $new_instance, $old_instance, $form_type = 'widget' ) {
 		if( !class_exists('SiteOrigin_Widgets_Color_Object') ) require plugin_dir_path( __FILE__ ).'inc/color.php';
 
-		if( empty( $form_options ) ) {
-			$form_options = $this->form_options();
+		if( method_exists( $this, 'get_' . $form_type . '_form' ) ) {
+			$form_options = call_user_func( array( $this, 'get_' . $form_type . '_form' ) );
 		}
 
 		if( ! empty( $form_options ) ) {
@@ -1169,9 +1172,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$values = get_option( 'so_widget_settings[' . $this->widget_class . ']', array() );
 
 		// Add in the defaults
-		$form_options = $this->initialize_settings_form();
-		if( ! empty( $form_options ) ) {
-			$values = $this->add_defaults( $form_options, $values );
+		if( $this->has_form( 'settings' ) ) {
+			$values = $this->add_defaults( $this->get_settings_form(), $values );
 		}
 
 		return $values;
@@ -1186,13 +1188,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	function save_global_settings( $values ){
 		$current = $this->get_global_settings();
 
-		$form_options = $this->initialize_settings_form();
-		$values = $this->update( $values, $current, $form_options );
+		$values = $this->update( $values, $current, 'settings' );
 
 		unset( $values['_sow_form_id'] );
 		update_option( 'so_widget_settings[' . $this->widget_class . ']', $values );
 
 		return $values;
 	}
-
 }
