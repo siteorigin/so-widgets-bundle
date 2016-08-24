@@ -42,7 +42,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 		) );
 	}
 
-	function initialize_form(){
+	function get_widget_form(){
 
 		return array(
 

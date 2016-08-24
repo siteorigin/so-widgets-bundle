@@ -23,7 +23,7 @@ class SiteOrigin_Widget_Icon_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function initialize_form() {
+	function get_widget_form() {
 		return array(
 			'icon' => array(
 				'type'  => 'icon',

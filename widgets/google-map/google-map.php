@@ -47,7 +47,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function initialize_form(){
+	function get_widget_form(){
 		return array(
 			'map_center'      => array(
 				'type'        => 'textarea',

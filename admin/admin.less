@@ -249,6 +249,7 @@
 
 			.so-widget-toggle-active {
 				margin-top: 15px;
+				display: inline-block;
 
 				button:focus {
 					outline: none;
@@ -284,6 +285,11 @@
 				}
 			}
 
+			.so-widget-settings {
+				margin-top: 15px;
+				display: inline-block;
+			}
+
 		}
 
 		// When animations are enabled on the widgets list
@@ -301,6 +307,207 @@
 		font-style: italic;
 	}
 
+	#sow-settings-dialog {
+		display: none;
+
+		@edge_spacing: 30px;
+
+		@title_bar_height: 50px;
+		@toolbar_height: 58px;
+		@sidebar_width: 290px;
+
+		@pane_padding: 15px;
+		@border_color: #D8D8D8;
+
+		.so-overlay, .so-content, .so-title-bar, .so-toolbar, .so-left-sidebar, .so-right-sidebar {
+			z-index: 100001;
+			position: fixed;
+			.box-sizing(border-box);
+			padding: @pane_padding;
+		}
+
+		.so-overlay {
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(0,0,0,0.5);
+		}
+
+		.so-content {
+			overflow-y: auto;
+			top: @edge_spacing + @title_bar_height;
+			left: @edge_spacing;
+			right: @edge_spacing;
+			bottom: @edge_spacing + @toolbar_height;
+			background-color: #fdfdfd;
+			overflow-x: hidden;
+
+			.box-shadow(~"inset 0 2px 2px rgba(0,0,0,0.03)");
+
+			> *:first-child, form > *:first-child {
+				margin-top: 0;
+			}
+
+			> *:last-child, form > *:last-child {
+				margin-bottom: 0;
+			}
+
+			.so-content-tabs > * {
+				display: none;
+			}
+
+			&.so-loading {
+				background-image: url("images/wpspin_light.gif");
+				background-position: center center;
+				background-repeat: no-repeat;
+
+				@media  (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+					& {
+						background-image: url(images/wpspin_light-2x.gif);
+						background-size: 16px 16px;
+					}
+				}
+			}
+		}
+
+		.so-title-bar {
+			left: @edge_spacing;
+			right: @edge_spacing;
+			top: @edge_spacing;
+			height: @title_bar_height;
+			background-color: #fafafa;
+			border-bottom: 1px solid @border_color;
+
+			h3.so-title {
+				margin: 0 !important;
+				padding: 0 !important;
+			}
+
+			/* These are the action buttons in the title bar */
+			a {
+				cursor: pointer;
+				position: absolute;
+				box-sizing: border-box;
+				width: 50px;
+				height: 50px;
+				display: block;
+
+				top: 0;
+				right: 0;
+
+				.transition(0.2s);
+				background: #fafafa;
+				border-left: 1px solid #d8d8d8;
+				border-bottom: 1px solid #d8d8d8;
+
+				&:hover {
+					background: #e9e9e9;
+					.so-dialog-icon {
+						color: #333333;
+					}
+				}
+
+				.so-dialog-icon {
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					text-decoration: none;
+					width: 20px;
+					height: 20px;
+					margin-left: -10px;
+					margin-top: -10px;
+					color: #666666;
+					text-align: center;
+
+					&:before {
+						font: 400 20px/1em dashicons;
+
+						top: 7px;
+						left: 13px;
+					}
+				}
+
+				&.so-close {
+					right: 0;
+
+					.so-dialog-icon:before  {
+						content: "\f335";
+					}
+				}
+			}
+		}
+
+		.so-toolbar {
+			left: @edge_spacing;
+			right: @edge_spacing;
+			bottom: @edge_spacing;
+			height: @toolbar_height;
+			background-color: #fafafa;
+			border-top: 1px solid @border_color;
+			z-index: 100002; // 1 more than the rest to ensure dropdowns etc appear above the other content.
+
+			.so-status {
+				float: left;
+				padding-top: 6px;
+				padding-bottom: 6px;
+				font-style: italic;
+				color: #999999;
+				line-height: 1em;
+
+				&.so-panels-loading {
+					padding-left: 26px;
+					background-position: left center;
+				}
+			}
+
+			.so-buttons {
+
+				.action-buttons {
+
+					position: absolute;
+					left: 15px;
+					top: 50%;
+					margin-top: -0.65em;
+
+					a {
+						cursor: pointer;
+						display: inline;
+						padding: 0.2em 0.5em;
+						line-height: 1em;
+						margin-right: 0.5em;
+						text-decoration: none;
+					}
+
+					.so-delete {
+						color: #a00;
+
+						&:hover {
+							background: #a00;
+							color: #FFFFFF;
+						}
+					}
+
+					.so-duplicate:hover {
+						text-decoration: underline;
+					}
+
+				}
+
+				float: right;
+			}
+		}
+
+		.siteorigin-widget-help-link {
+			display: none;
+		}
+	}
+
+	#so-widget-settings-save {
+		width: 0;
+		height: 0;
+		border: none;
+	}
 }
 
 body.plugins_page_so-widgets-plugins {

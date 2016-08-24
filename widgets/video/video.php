@@ -25,7 +25,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function initialize_form() {
+	function get_widget_form() {
 		return array(
 			'title'     => array(
 				'type'  => 'text',
