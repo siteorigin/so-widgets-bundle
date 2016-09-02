@@ -135,6 +135,17 @@
                 // Lets set up the preview
                 $el.sowSetupPreview();
                 $mainForm = $el;
+
+                var $teaser = $el.find( '.siteorigin-widget-teaser' );
+                $teaser.find('.dashicons-dismiss').click( function(){
+                    var $$ = $(this);
+	                $.get( $$.data( 'dismiss-url' ) );
+	                console.log( $$.data( 'dismiss-url' ) );
+
+                    $teaser.slideUp( 'normal', function(){
+                        $teaser.remove();
+                    } );
+                } );
             }
             else {
                 $mainForm = $el.closest('.siteorigin-widget-form-main');

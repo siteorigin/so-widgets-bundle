@@ -189,3 +189,23 @@ function siteorigin_widget_image_import(){
 	exit();
 }
 add_action('wp_ajax_so_widgets_image_import', 'siteorigin_widget_image_import');
+
+/**
+ * Action to handle a user dismissing a teaser notice.
+ */
+function siteorigin_widgets_dismiss_widget_action(){
+	if( empty( $_GET[ '_wpnonce' ] ) || ! wp_verify_nonce( $_GET[ '_wpnonce' ], 'dismiss-widget-teaser' ) ) exit();
+	if( empty( $_GET[ 'widget' ] ) ) exit();
+
+	$dismissed = get_user_meta( get_current_user_id(), 'teasers_dismissed', true );
+	if( empty( $dismissed ) ) {
+		$dismissed = array();
+	}
+
+	$dismissed[ $_GET[ 'widget' ] ] = true;
+
+	update_user_meta( get_current_user_id(), 'teasers_dismissed', $dismissed );
+
+	exit();
+}
+add_action( 'wp_ajax_so_dismiss_widget_teaser', 'siteorigin_widgets_dismiss_widget_action' );
