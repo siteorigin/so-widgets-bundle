@@ -396,27 +396,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		?>
 		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>" id="<?php echo $form_id ?>" data-class="<?php echo esc_attr( $this->widget_class ) ?>" style="display: none">
 			<?php
-			if(
-				method_exists( $this, 'get_form_teaser' ) &&
-				( $teaser = $this->get_form_teaser() )
-			) {
-				$dismissed = get_user_meta( get_current_user_id(), 'teasers_dismissed', true );
-				if( empty( $dismissed[ $this->id_base ] ) ) {
-					$dismiss_url = add_query_arg( array(
-						'action' => 'so_dismiss_widget_teaser',
-						'widget' => $this->id_base,
-					), admin_url( 'admin-ajax.php' ) );
-					$dismiss_url = wp_nonce_url( $dismiss_url, 'dismiss-widget-teaser' );
-
-					?>
-					<div class="siteorigin-widget-teaser">
-						<?php echo wp_kses_post( $teaser ) ?>
-						<span class="dashicons dashicons-dismiss" data-dismiss-url="<?php echo esc_url( $dismiss_url ) ?>"></span>
-					</div>
-					<?php
-				}
-			}
-
+			$this->display_teaser_message();
 			/* @var $field_factory SiteOrigin_Widget_Field_Factory */
 			$field_factory = SiteOrigin_Widget_Field_Factory::single();
 			$fields_javascript_variables = array();
@@ -469,8 +449,27 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$this->enqueue_scripts( );
 	}
 
-	function is_teaser_dismissed(){
+	function display_teaser_message(){
+		if(
+			method_exists( $this, 'get_form_teaser' ) &&
+			( $teaser = $this->get_form_teaser() )
+		) {
+			$dismissed = get_user_meta( get_current_user_id(), 'teasers_dismissed', true );
+			if( empty( $dismissed[ $this->id_base ] ) ) {
+				$dismiss_url = add_query_arg( array(
+					'action' => 'so_dismiss_widget_teaser',
+					'widget' => $this->id_base,
+				), admin_url( 'admin-ajax.php' ) );
+				$dismiss_url = wp_nonce_url( $dismiss_url, 'dismiss-widget-teaser' );
 
+				?>
+				<div class="siteorigin-widget-teaser">
+					<?php echo wp_kses_post( $teaser ) ?>
+					<span class="dashicons dashicons-dismiss" data-dismiss-url="<?php echo esc_url( $dismiss_url ) ?>"></span>
+				</div>
+				<?php
+			}
+		}
 	}
 
 	function scripts_loading_message(){
