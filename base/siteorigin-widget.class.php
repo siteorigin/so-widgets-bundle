@@ -449,6 +449,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$this->enqueue_scripts( );
 	}
 
+	/**
+	 * Display the teaser message.
+	 */
 	function display_teaser_message(){
 		if(
 			method_exists( $this, 'get_form_teaser' ) &&
@@ -470,6 +473,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				<?php
 			}
 		}
+	}
+
+	/**
+	 * Should we display the teaser for SiteOrigin Premium
+	 *
+	 * @return bool
+	 */
+	function display_siteorigin_premium_teaser(){
+		return apply_filters( 'siteorigin_premium_upgrade_teaser', true ) &&
+		       ! defined( 'SITEORIGIN_PREMIUM_VERSION' );
 	}
 
 	function scripts_loading_message(){
