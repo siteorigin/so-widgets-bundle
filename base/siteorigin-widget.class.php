@@ -393,10 +393,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		if( empty( $instance['_sow_form_id'] ) ) {
 			$instance['_sow_form_id'] = uniqid();
 		}
-
 		?>
 		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>" id="<?php echo $form_id ?>" data-class="<?php echo esc_attr( $this->widget_class ) ?>" style="display: none">
 			<?php
+			$this->display_teaser_message();
 			/* @var $field_factory SiteOrigin_Widget_Field_Factory */
 			$field_factory = SiteOrigin_Widget_Field_Factory::single();
 			$fields_javascript_variables = array();
@@ -447,6 +447,42 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		<?php
 
 		$this->enqueue_scripts( );
+	}
+
+	/**
+	 * Display the teaser message.
+	 */
+	function display_teaser_message(){
+		if(
+			method_exists( $this, 'get_form_teaser' ) &&
+			( $teaser = $this->get_form_teaser() )
+		) {
+			$dismissed = get_user_meta( get_current_user_id(), 'teasers_dismissed', true );
+			if( empty( $dismissed[ $this->id_base ] ) ) {
+				$dismiss_url = add_query_arg( array(
+					'action' => 'so_dismiss_widget_teaser',
+					'widget' => $this->id_base,
+				), admin_url( 'admin-ajax.php' ) );
+				$dismiss_url = wp_nonce_url( $dismiss_url, 'dismiss-widget-teaser' );
+
+				?>
+				<div class="siteorigin-widget-teaser">
+					<?php echo wp_kses_post( $teaser ) ?>
+					<span class="dashicons dashicons-dismiss" data-dismiss-url="<?php echo esc_url( $dismiss_url ) ?>"></span>
+				</div>
+				<?php
+			}
+		}
+	}
+
+	/**
+	 * Should we display the teaser for SiteOrigin Premium
+	 *
+	 * @return bool
+	 */
+	function display_siteorigin_premium_teaser(){
+		return apply_filters( 'siteorigin_premium_upgrade_teaser', true ) &&
+		       ! defined( 'SITEORIGIN_PREMIUM_VERSION' );
 	}
 
 	function scripts_loading_message(){
