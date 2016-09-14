@@ -26,11 +26,9 @@ var SiteOriginContactForm = {
 			}
 
 			// Disable the submit button on click to avoid multiple submits.
-			$submitButton.click(function () {
+			$contactForms.submit( function () {
 				$submitButton.prop('disabled', true);
-				//Ensure the form still submits
-				$el.submit();
-			});
+			} );
 		});
 	},
 };
