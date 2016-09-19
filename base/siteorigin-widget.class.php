@@ -60,7 +60,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			'has_preview' => true,
 		) );
 
-		$control_options = wp_parse_args($widget_options, array(
+		$control_options = wp_parse_args( $control_options, array(
 			'width' => 800,
 		) );
 
