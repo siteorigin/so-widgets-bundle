@@ -39,7 +39,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		parent::initialize();
 	}
 
-	function initialize_form(){
+	function get_widget_form(){
 		return array(
 			'frames' => array(
 				'type' => 'repeater',

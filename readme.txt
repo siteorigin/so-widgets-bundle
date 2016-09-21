@@ -51,6 +51,15 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.7 - 20 September 2016 =
+* Added mechanism for creating global widget setting.
+* Added mechanism for adding dismissible notices to widget forms.
+* Unified Google Maps JS working for maps widget and contact form location field.
+* Added icon search for icon field.
+* Added remove button to icon field.
+* Contact Form: Fixed clash with Firefox field validation.
+* Properly display remove button after importing Pixabay image.
+
 = 1.6.5 - 15 August 2016 =
 * Fixed dialog z-index.
 * Added field required argument.

@@ -4,14 +4,14 @@
  * Class SiteOrigin_Widget_Field_Factory
  */
 class SiteOrigin_Widget_Field_Factory {
+	public static function single(){
+		static $single;
 
-	private static $instance;
-
-	public static function getInstance() {
-		if( ! isset( SiteOrigin_Widget_Field_Factory::$instance ) ) {
-			SiteOrigin_Widget_Field_Factory::$instance = new SiteOrigin_Widget_Field_Factory();
+		if( empty( $single ) ) {
+			$single = new self();
 		}
-		return SiteOrigin_Widget_Field_Factory::$instance;
+
+		return $single;
 	}
 
 	public function create_field( $field_name, $field_options, SiteOrigin_Widget $for_widget, $for_repeater = array(), $is_template = false ) {

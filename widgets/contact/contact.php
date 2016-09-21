@@ -39,7 +39,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		add_filter( 'siteorigin_widgets_sanitize_field_multiple_emails', array( $this, 'sanitize_multiple_emails' ) );
 	}
 
-	function initialize_form(){
+	function get_widget_form(){
 		return array(
 			'title' => array(
 				'type' => 'text',
@@ -520,6 +520,20 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					),
 				),
 			),
+		);
+	}
+
+	function get_form_teaser(){
+		if( ! $this->display_siteorigin_premium_teaser() ) return false;
+
+		$url = add_query_arg( array(
+			'featured_addon' => 'plugin/contact-form-fields',
+			'featured_plugin' => 'widgets-bundle'
+		), 'https://siteorigin.com/downloads/premium/' );
+
+		return sprintf(
+			__( 'Get more form fields for the Contact Form Widget in %s', 'so-widgets-bundle' ),
+			'<a href="' . esc_url( $url ) . '" target="_blank">' . __( 'SiteOrigin Premium', 'so-widgets-bundle' ) . '</a>'
 		);
 	}
 

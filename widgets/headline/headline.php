@@ -27,7 +27,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 		add_filter( 'siteorigin_widgets_wrapper_classes_' . $this->id_base, array( $this, 'wrapper_class_filter' ), 10, 2 );
 	}
 
-	function initialize_form(){
+	function get_widget_form(){
 		return array(
 			'headline' => array(
 				'type' => 'section',

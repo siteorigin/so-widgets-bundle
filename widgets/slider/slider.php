@@ -26,7 +26,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 		);
 	}
 
-	function initialize_form(){
+	function get_widget_form(){
 		return array(
 			'frames' => array(
 				'type' => 'repeater',
