@@ -213,11 +213,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		);
 		$wrapper_classes = array_map( 'sanitize_html_class', $wrapper_classes );
 
+		do_action( 'siteorigin_widgets_before_widget_' . $this->id_base );
 		echo $args['before_widget'];
 		echo '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '">';
 		echo $template_html;
 		echo '</div>';
 		echo $args['after_widget'];
+		do_action( 'siteorigin_widgets_after_widget_' . $this->id_base );
 	}
 
 	/**
