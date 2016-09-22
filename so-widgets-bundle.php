@@ -569,8 +569,18 @@ class SiteOrigin_Widgets_Bundle {
 		$widgets = array();
 		foreach( $folders as $folder ) {
 
-			$files = glob( $folder . '*/*.php' );
-			foreach($files as $file) {
+			$Directory = new RecursiveDirectoryIterator($folder);
+			$Iterator = new RecursiveIteratorIterator($Directory);
+			$files = new RegexIterator($Iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
+			
+			foreach($files as $file_r) {
+				
+				if(is_array( $file_r)){
+					$file = $file_r[0];
+				} else {
+					$file = $file_r;
+				}
+				
 				$widget = get_file_data( $file, $default_headers, 'siteorigin-widget' );
 				//skip the file if it's missing a name
 				if ( empty( $widget['Name'] ) ) {
@@ -604,8 +614,18 @@ class SiteOrigin_Widgets_Bundle {
 
 		foreach( $folders as $folder ) {
 
-			$files = glob( $folder . '*/*.php' );
-			foreach ($files as $file) {
+			$Directory = new RecursiveDirectoryIterator($folder);
+			$Iterator = new RecursiveIteratorIterator($Directory);
+			$files = new RegexIterator($Iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
+			
+			foreach($files as $file_r) {
+				
+				if(is_array( $file_r)){
+					$file = $file_r[0];
+				} else {
+					$file = $file_r;
+				}				
+				
 				include_once $file;
 
 				$widget_class = $manager->get_class_from_path( $file );
