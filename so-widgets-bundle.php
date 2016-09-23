@@ -232,6 +232,25 @@ class SiteOrigin_Widgets_Bundle {
 	}
 
 	/**
+	* Get all files in a folder
+	*/
+	static function get_folder_files( $folder, $regex = '^.+\.php$', $max_depth = -1 ){
+
+		if( ! extension_loaded("SPL") ){
+			return array();
+		}
+
+		$directory = new RecursiveDirectoryIterator( $folder, FilesystemIterator::SKIP_DOTS | FilesystemIterator::KEY_AS_PATHNAME );
+		$iterator = new RecursiveIteratorIterator( $directory );
+		$iterator->setMaxDepth( $max_depth );
+		$files = new RegexIterator( $iterator, '/'.$regex.'/i', RecursiveRegexIterator::GET_MATCH );
+
+		//return keys because we set FilesystemIterator::KEY_AS_PATHNAME
+		return array_keys( iterator_to_array( $files ) );
+
+	}
+
+	/**
 	 * Load all the widgets if their plugins are not already active.
 	 *
 	 * @action plugins_loaded
@@ -569,18 +588,10 @@ class SiteOrigin_Widgets_Bundle {
 		$widgets = array();
 		foreach( $folders as $folder ) {
 
-			$Directory = new RecursiveDirectoryIterator($folder);
-			$Iterator = new RecursiveIteratorIterator($Directory);
-			$files = new RegexIterator($Iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
-			
-			foreach($files as $file_r) {
-				
-				if(is_array( $file_r)){
-					$file = $file_r[0];
-				} else {
-					$file = $file_r;
-				}
-				
+			$files = self::get_folder_files( $folder, '^.+\.php$', 2 );
+
+			foreach( $files as $file ) {
+
 				$widget = get_file_data( $file, $default_headers, 'siteorigin-widget' );
 				//skip the file if it's missing a name
 				if ( empty( $widget['Name'] ) ) {
@@ -614,18 +625,10 @@ class SiteOrigin_Widgets_Bundle {
 
 		foreach( $folders as $folder ) {
 
-			$Directory = new RecursiveDirectoryIterator($folder);
-			$Iterator = new RecursiveIteratorIterator($Directory);
-			$files = new RegexIterator($Iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
-			
-			foreach($files as $file_r) {
-				
-				if(is_array( $file_r)){
-					$file = $file_r[0];
-				} else {
-					$file = $file_r;
-				}				
-				
+			$files = self::get_folder_files( $folder, '^.+\.php$', 2 );
+
+			foreach($files as $file) {
+
 				include_once $file;
 
 				$widget_class = $manager->get_class_from_path( $file );
