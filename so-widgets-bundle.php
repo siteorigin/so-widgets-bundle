@@ -234,19 +234,35 @@ class SiteOrigin_Widgets_Bundle {
 	/**
 	* Get all files in a folder
 	*/
-	static function get_folder_files( $folder, $regex = '^.+\.php$', $max_depth = -1 ){
+	static function get_folder_files( $folder, $extension = 'php', $max_depth = -1 ){
 
-		if( ! extension_loaded("SPL") ){
-			return array();
+		if( extension_loaded('SPL') && class_exists('RegexIterator') ){
+
+			$directory = new RecursiveDirectoryIterator( $folder, FilesystemIterator::SKIP_DOTS | FilesystemIterator::KEY_AS_PATHNAME );
+			$iterator = new RecursiveIteratorIterator( $directory );
+			$iterator->setMaxDepth( $max_depth );
+			$files = new RegexIterator( $iterator, '/^.+\.' . $extension . '$/i', RecursiveRegexIterator::GET_MATCH );
+
+			//return only keys because we set FilesystemIterator::KEY_AS_PATHNAME
+			return array_keys( iterator_to_array( $files ) );
+
+		} elseif ( function_exists('glob') ) {
+
+			$pattern = $folder;
+
+			if( 1 === $max_depth ){
+				$pattern .= '*/';
+			} elseif( $max_depth > 1 ){
+				$pattern .= '**/';
+			}
+
+			$pattern .= '*.' . $extension;
+
+			return glob($pattern);
+
 		}
 
-		$directory = new RecursiveDirectoryIterator( $folder, FilesystemIterator::SKIP_DOTS | FilesystemIterator::KEY_AS_PATHNAME );
-		$iterator = new RecursiveIteratorIterator( $directory );
-		$iterator->setMaxDepth( $max_depth );
-		$files = new RegexIterator( $iterator, '/'.$regex.'/i', RecursiveRegexIterator::GET_MATCH );
-
-		//return keys because we set FilesystemIterator::KEY_AS_PATHNAME
-		return array_keys( iterator_to_array( $files ) );
+		return array();
 
 	}
 
@@ -588,7 +604,7 @@ class SiteOrigin_Widgets_Bundle {
 		$widgets = array();
 		foreach( $folders as $folder ) {
 
-			$files = self::get_folder_files( $folder, '^.+\.php$', 2 );
+			$files = self::get_folder_files( $folder, 'php', 1 );
 
 			foreach( $files as $file ) {
 
@@ -625,7 +641,7 @@ class SiteOrigin_Widgets_Bundle {
 
 		foreach( $folders as $folder ) {
 
-			$files = self::get_folder_files( $folder, '^.+\.php$', 2 );
+			$files = self::get_folder_files( $folder, 'php', 1 );
 
 			foreach($files as $file) {
 
