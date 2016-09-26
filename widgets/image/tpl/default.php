@@ -38,8 +38,17 @@ $attr = apply_filters( 'siteorigin_widgets_image_attr', $attr, $instance, $this 
 
 $classes = array('so-widget-image');
 
-if(!empty($title)) $attr['title'] = $title;
-if(!empty($alt)) $attr['alt'] = $alt;
+if( !empty( $title ) ){
+	$attr['title'] = $title;
+}else{
+	$attr['title'] = get_the_title( $image );
+}
+
+if( empty( $alt ) ){
+	$attr['alt'] = $alt;
+}else{
+	$attr['alt'] = get_post_meta( $image, '_wp_attachment_image_alt', true );
+}
 
 ?>
 <div class="sow-image-container">
