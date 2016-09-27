@@ -15,7 +15,7 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 			<?php if( !empty( $feature['more_url'] ) && $instance['icon_link'] ) echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank"' : '' ) . '>'; ?>
 			<div
 				class="sow-icon-container <?php echo !empty($instance['container_shape']) ? 'sow-container-' . esc_attr($instance['container_shape']) : 'sow-container-none'?>"
-				style="font-size: <?php echo intval($instance['container_size']) ?>px; color: <?php echo esc_attr($feature['container_color']) ?>; width: <?php echo intval($instance['container_size']) ?>px; height: <?php echo intval($instance['container_size']) ?>px;">
+				style="font-size: <?php echo intval($instance['container_size']) . esc_attr( $instance['container_size_unit'] ); ?>; color: <?php echo esc_attr($feature['container_color']) ?>; width: <?php echo intval($instance['container_size']) . esc_attr( $instance['container_size_unit'] ); ?>; height: <?php echo intval($instance['container_size']) . esc_attr( $instance['container_size_unit'] ); ?>;">
 				<?php
 				$icon_styles = array();
 				if( !empty($feature['icon_image']) ) {
@@ -23,7 +23,7 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 					$attachment = wp_get_attachment_image_src( $feature['icon_image'], $size );
 					if(!empty($attachment)) {
 						$icon_styles[] = 'background-image: url(' . sow_esc_url($attachment[0]) . ')';
-						if(!empty($instance['icon_size'])) $icon_styles[] = 'font-size: '.intval($instance['icon_size']).'px';
+						if(!empty($instance['icon_size'])) $icon_styles[] = 'font-size: '.intval($instance['icon_size']) . esc_attr( $instance['icon_size_unit'] );
 
 						?><div class="sow-icon-image" style="<?php echo implode('; ', $icon_styles) ?>"></div><?php
 					}
