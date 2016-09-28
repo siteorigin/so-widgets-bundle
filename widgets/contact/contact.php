@@ -173,20 +173,20 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 					'recaptcha' => array(
 						'type' => 'section',
-						'label' => __('Recaptcha', 'so-widgets-bundle'),
+						'label' => __('reCAPTCHA', 'so-widgets-bundle'),
 						'fields' => array(
 							'use_captcha' => array(
 								'type' => 'checkbox',
-								'label' => __( 'Use Captcha', 'so-widgets-bundle' ),
+								'label' => __( 'Use reCAPTCHA', 'so-widgets-bundle' ),
 								'default' => false,
 							),
 							'site_key' => array(
 								'type' => 'text',
-								'label' => __( 'ReCaptcha Site Key', 'so-widgets-bundle' ),
+								'label' => __( 'reCAPTCHA Site Key', 'so-widgets-bundle' ),
 							),
 							'secret_key' => array(
 								'type' => 'text',
-								'label' => __( 'ReCaptcha Secret Key', 'so-widgets-bundle' ),
+								'label' => __( 'reCAPTCHA Secret Key', 'so-widgets-bundle' ),
 							),
 							'theme' => array(
 								'type' => 'select',
