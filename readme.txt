@@ -51,6 +51,10 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.7.1 - 21 September 2016 =
+* Fixed case of Maps widget in sidebar causing an error on pages without that sidebar.
+* Fixed icon field CSS.
+
 = 1.7 - 20 September 2016 =
 * Added mechanism for creating global widget setting.
 * Added mechanism for adding dismissible notices to widget forms.
