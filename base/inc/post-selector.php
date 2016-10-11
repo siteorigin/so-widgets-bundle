@@ -181,7 +181,7 @@ function siteorigin_widget_post_selector_form_fields(){
 		'' => __('Default', 'so-widgets-bundle'),
 		'ignore' => __('Ignore sticky', 'so-widgets-bundle'),
 		'exclude' => __('Exclude sticky', 'so-widgets-bundle'),
-		'only' => __('Include sticky', 'so-widgets-bundle'),
+		'only' => __('Only sticky', 'so-widgets-bundle'),
 	);
 	foreach($sticky as $id => $v) {
 		$return['sticky'] .= '<option value="' . $id . '">' . $v . '</option>';
