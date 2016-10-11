@@ -352,7 +352,7 @@ function soGoogleMapInitialize() {
 
 jQuery(function ($) {
 	var mapOptions = $( '.sow-google-map-canvas' ).data( 'options' );
-	var mapsApiLoaded = typeof window.google !== 'undefined' && window.google.maps !== 'undefined';
+	var mapsApiLoaded = typeof window.google !== 'undefined' && typeof window.google.maps !== 'undefined';
 	var isLoaded = function (element) {
 		var lib = window.google.maps[element];
 		return window.google.maps.hasOwnProperty(element) && typeof lib !== 'undefined' && lib !== null;
