@@ -12,7 +12,7 @@
 ?>
 
 <?php if( $title_position == 'above' ) : ?>
-	<?php echo $args['before_title'] . esc_html( $title ) . $args['after_title']; ?>
+	<?php echo $args['before_title'] . wp_kses_post( $title ) . $args['after_title']; ?>
 <?php endif; ?>
 
 <?php
@@ -49,5 +49,5 @@ if(!empty($alt)) $attr['alt'] = $alt;
 </div>
 
 <?php if( $title_position == 'below' ) : ?>
-	<?php echo $args['before_title'] . esc_html( $title ) . $args['after_title']; ?>
+	<?php echo $args['before_title'] . wp_kses_post( $title ) . $args['after_title']; ?>
 <?php endif; ?>
