@@ -111,7 +111,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	 */
 	function get_less_variables( $instance ) {
 		$less = array();
-		if( !empty( $instance['display']['spacing'] ) ) {
+		if( isset( $instance['display']['spacing'] ) ) {
 			$less['spacing'] = intval($instance['display']['spacing']) . 'px';
 		}
 
