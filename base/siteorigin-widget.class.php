@@ -792,6 +792,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$less = apply_filters( 'siteorigin_widgets_styles', $less, $this->widget_class, $instance );
 		$less = apply_filters( 'siteorigin_widgets_less_' . $this->id_base, $less, $instance, $this );
 
+		$css = '';
+
+		if( ! empty( $less ) ) {
 		$style = $this->get_style_name( $instance );
 		$hash = $this->get_style_hash( $instance );
 		$css_name = $this->id_base . '-' . $style . '-' . $hash;
@@ -824,6 +827,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// Remove any empty CSS
 		$css = preg_replace('/[^{}]*\{\s*\}/m', '', $css);
 		$css = trim($css);
+		}
 
 		return apply_filters( 'siteorigin_widgets_instance_css', $css, $instance, $this );
 	}
