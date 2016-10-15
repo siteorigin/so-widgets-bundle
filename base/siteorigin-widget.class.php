@@ -818,7 +818,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				}
 			}
 			catch ( Exception $e ) {
-				$css = '';
+				
 			}
 
 			// Remove any attributes with default as the value
