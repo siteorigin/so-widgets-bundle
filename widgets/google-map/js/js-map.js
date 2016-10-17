@@ -181,12 +181,13 @@ sowb.SiteOriginGoogleMap = function($) {
 										var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
 										if (infoDisplay == 'always') {
 											infoWindow.open(map, marker);
-											marker.addListener('click', function () {
-												infoWindow.open(map, marker);
-											});
-										} else {
-											marker.addListener(infoDisplay, function () {
-												infoWindow.open(map, marker);
+										}
+										marker.addListener(infoDisplay, function () {
+											infoWindow.open(map, marker);
+										});
+										if(infoDisplay == 'mouseover') {
+											marker.addListener('mouseout', function () {
+												infoWindow.close();
 											});
 										}
 									}
