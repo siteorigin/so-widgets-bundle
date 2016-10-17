@@ -155,6 +155,7 @@ sowb.SiteOriginGoogleMap = function($) {
 		showMarkers: function(markerPositions, map, options) {
 			if ( markerPositions && markerPositions.length ) {
 				var geocoder = new google.maps.Geocoder();
+				this.infoWindows = [];
 				markerPositions.forEach(
 					function (mrkr) {
 						var geocodeMarker = function () {
@@ -179,15 +180,27 @@ sowb.SiteOriginGoogleMap = function($) {
 										var infoDisplay = options.markerInfoDisplay;
 										infoWindowOptions.disableAutoPan = infoDisplay == 'always';
 										var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
+										this.infoWindows.push(infoWindow);
+										var openEvent = infoDisplay;
 										if (infoDisplay == 'always') {
+											openEvent = 'click';
 											infoWindow.open(map, marker);
 										}
-										marker.addListener(infoDisplay, function () {
+										marker.addListener(openEvent, function () {
 											infoWindow.open(map, marker);
-										});
+											if(infoDisplay != 'always' && !options.markerInfoMultiple) {
+												this.infoWindows.forEach(function(iw) {
+													if (iw !== infoWindow) {
+														iw.close();
+													}
+												});
+											}
+										}.bind(this));
 										if(infoDisplay == 'mouseover') {
 											marker.addListener('mouseout', function () {
-												infoWindow.close();
+												setTimeout(function() {
+													infoWindow.close();
+												}, 100);
 											});
 										}
 									}
@@ -195,11 +208,11 @@ sowb.SiteOriginGoogleMap = function($) {
 									//try again please
 									setTimeout(geocodeMarker, Math.random() * 1000, mrkr);
 								}
-							});
-						};
+							}.bind(this));
+						}.bind(this);
 						//set random delays of 0 - 1 seconds when geocoding markers to try avoid hitting the query limit
 						setTimeout(geocodeMarker, Math.random() * 1000, mrkr);
-					}
+					}.bind(this)
 				);
 			}
 		},
