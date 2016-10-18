@@ -179,6 +179,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'description' => __('An ID attribute allows you to target this button in Javascript.', 'so-widgets-bundle'),
 					),
 
+					'classes' => array(
+						'type' => 'text',
+						'label' => __('Button Classes', 'so-widgets-bundle'),
+						'description' => __('Additional CSS classes added to the button link.', 'so-widgets-bundle'),
+					),
+
 					'title' => array(
 						'type' => 'text',
 						'label' => __('Title attribute', 'so-widgets-bundle'),

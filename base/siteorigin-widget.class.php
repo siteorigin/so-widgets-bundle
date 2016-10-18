@@ -305,7 +305,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return array
 	 */
 	public function get_template_variables( $instance, $args ){
-		return array();
+		$vars = array();
+
+		if( ! empty( $instance[ 'attributes' ][ 'classes' ] ) ) {
+			$vars[ 'classes' ] = explode( ' ', $instance[ 'attributes' ][ 'classes' ] );
+		}
+
+		return $vars;
 	}
 
 	/**
