@@ -78,29 +78,29 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 				),
 			),
 
-				'design' => array(
-					'type' => 'section',
-					'label' => __('Design and layout', 'so-widgets-bundle'),
-					'hide' => true,
-					'fields' => array(
+			'design' => array(
+				'type' => 'section',
+				'label' => __('Design and layout', 'so-widgets-bundle'),
+				'hide' => true,
+				'fields' => array(
 
-						'width' => array(
-							'type' => 'measurement',
-							'label' => __( 'Width', 'so-widgets-bundle' ),
-							'description' => __( 'Leave blank to let the button resize according to content.', 'so-widgets-bundle' )
-						),
+					'width' => array(
+						'type' => 'measurement',
+						'label' => __( 'Width', 'so-widgets-bundle' ),
+						'description' => __( 'Leave blank to let the button resize according to content.', 'so-widgets-bundle' )
+					),
 
-						'align' => array(
-							'type' => 'select',
-							'label' => __('Align', 'so-widgets-bundle'),
-							'default' => 'center',
-							'options' => array(
-								'left' => __('Left', 'so-widgets-bundle'),
-								'right' => __('Right', 'so-widgets-bundle'),
-								'center' => __('Center', 'so-widgets-bundle'),
-								'justify' => __('Justify', 'so-widgets-bundle'),
-							),
+					'align' => array(
+						'type' => 'select',
+						'label' => __('Align', 'so-widgets-bundle'),
+						'default' => 'center',
+						'options' => array(
+							'left' => __('Left', 'so-widgets-bundle'),
+							'right' => __('Right', 'so-widgets-bundle'),
+							'center' => __('Center', 'so-widgets-bundle'),
+							'justify' => __('Justify', 'so-widgets-bundle'),
 						),
+					),
 
 					'theme' => array(
 						'type' => 'select',
