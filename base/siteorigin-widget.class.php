@@ -1012,10 +1012,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @deprecated Will be removed in version 2.0
 	 */
 	function parse_markdown( $markdown ){
-		if( !class_exists('Markdown_Parser') ) include plugin_dir_path(__FILE__).'inc/markdown.php';
-		$parser = new Markdown_Parser();
+		if( !class_exists('Parsedown') ) include plugin_dir_path(__FILE__).'inc/Parsedown.php';
+		$parser = new Parsedown();
 
-		return $parser->transform($markdown);
+		return $parser->text($markdown);
 	}
 
 	/**
