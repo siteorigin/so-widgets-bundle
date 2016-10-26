@@ -705,32 +705,11 @@ class SiteOrigin_Widgets_Bundle {
 		$sidebars_widgets = wp_get_sidebars_widgets();
 		// Check if Beaver Builder exists and is being used to edit this post. Then enqueue required back end scripts.
 		if ( class_exists( 'FLBuilderModel' ) && FLBuilderModel::is_builder_active() ) {
-			$layout_data = FLBuilderModel::get_layout_data();
-			foreach ( $layout_data as $node_id => $node ) {
-				if ( $node->type == 'module' ) {
-					$settings = $node->settings;
-					if ( !isset( $settings->widget ) ) {
-						continue;
-					}
-					$widget_slug = $settings->widget;
-					if ( empty( $widget_slug ) ) {
-						continue;
-					}
-					$factory_instance   = $wp_widget_factory->widgets[$widget_slug];
-					$widget_class       = get_class($factory_instance);
-					$widget_instance    = new $widget_class($factory_instance->id_base, $factory_instance->name, $factory_instance->widget_options);
-
-					$settings_key = 'widget-' . $widget_instance->id_base;
-					$widget_settings = array();
-
-					if(isset($settings->$settings_key)) {
-						$widget_settings = (array)$settings->$settings_key;
-					}
-
+			foreach($wp_widget_factory->widgets as $class => $widget_obj){
+				if ( !empty($widget_obj) && is_object($widget_obj) && is_subclass_of($widget_obj, 'SiteOrigin_Widget') ) {
 					ob_start();
-					$widget_instance->form(array());
+					$widget_obj->form( array() );
 					ob_clean();
-
 				}
 			}
 		}
