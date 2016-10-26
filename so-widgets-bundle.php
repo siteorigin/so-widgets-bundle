@@ -701,8 +701,39 @@ class SiteOrigin_Widgets_Bundle {
 	 * Ensure active widgets' scripts are enqueued at the right time.
 	 */
 	function enqueue_active_widgets_scripts() {
-		global $wp_registered_widgets;
+		global $wp_registered_widgets, $wp_widget_factory;
 		$sidebars_widgets = wp_get_sidebars_widgets();
+		// Check if Beaver Builder exists and is being used to edit this post. Then enqueue required back end scripts.
+		if ( class_exists( 'FLBuilderModel' ) && FLBuilderModel::is_builder_active() ) {
+			$layout_data = FLBuilderModel::get_layout_data();
+			foreach ( $layout_data as $node_id => $node ) {
+				if ( $node->type == 'module' ) {
+					$settings = $node->settings;
+					if ( !isset( $settings->widget ) ) {
+						continue;
+					}
+					$widget_slug = $settings->widget;
+					if ( empty( $widget_slug ) ) {
+						continue;
+					}
+					$factory_instance   = $wp_widget_factory->widgets[$widget_slug];
+					$widget_class       = get_class($factory_instance);
+					$widget_instance    = new $widget_class($factory_instance->id_base, $factory_instance->name, $factory_instance->widget_options);
+
+					$settings_key = 'widget-' . $widget_instance->id_base;
+					$widget_settings = array();
+
+					if(isset($settings->$settings_key)) {
+						$widget_settings = (array)$settings->$settings_key;
+					}
+
+					ob_start();
+					$widget_instance->form(array());
+					ob_clean();
+
+				}
+			}
+		}
 		if( empty($sidebars_widgets) ) return;
 		foreach( $sidebars_widgets as $sidebar => $widgets ) {
 			if ( ! empty( $widgets ) && $sidebar !== "wp_inactive_widgets") {

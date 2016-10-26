@@ -448,7 +448,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		</script>
 		<?php
 
-		$this->enqueue_scripts( );
+		$this->enqueue_scripts( $form_type );
 	}
 
 	/**
@@ -505,9 +505,20 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_style( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/css/admin.css', array( 'media-views' ), SOW_BUNDLE_VERSION );
 
-			wp_enqueue_script( 'wp-color-picker' );
+			// Need full enqueue args for compat with builders that do their building outside WP admin.
+			wp_enqueue_script( 'iris', '/wp-admin/js/iris.min.js', array( 'jquery-ui-draggable', 'jquery-ui-slider', 'jquery-touch-punch' ), '1.0.7', 1 );
+			wp_enqueue_script(  'wp-color-picker', '/wp-admin/js/color-picker' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'iris' ), false, 1 );
+
 			wp_enqueue_media();
 			wp_enqueue_script( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/admin' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-slider' ), SOW_BUNDLE_VERSION, true );
+
+			// Localization args for when wp-color-picker script hasn't been registered.
+			wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', array(
+				'clear' => __( 'Clear' ),
+				'defaultString' => __( 'Default' ),
+				'pick' => __( 'Select Color' ),
+				'current' => __( 'Current Color' ),
+			) );
 
 			wp_localize_script( 'siteorigin-widget-admin', 'soWidgets', array(
 				'ajaxurl' => wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ),
@@ -947,7 +958,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function so_get_field_name( $field_name, $container = array() ) {
 		if( empty($container) ) {
-			return $this->get_field_name( $field_name );
+			$name = $this->get_field_name( $field_name );
 		}
 		else {
 			// We also need to add the container fields
@@ -962,8 +973,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			$name = $this->get_field_name( '{{{FIELD_NAME}}}' );
 			$name = str_replace('[{{{FIELD_NAME}}}]', $container_extras.'[' . esc_attr($field_name) . ']', $name);
-			return $name;
 		}
+
+		// Beaver Builder compat
+		if ( class_exists( 'FLBuilderModel' ) && FLBuilderModel::is_builder_active() ) {
+			$name = preg_replace( '/\[[^\]]*\]/', '[]', $name, 1 );
+		}
+		return $name;
 	}
 
 	/**
