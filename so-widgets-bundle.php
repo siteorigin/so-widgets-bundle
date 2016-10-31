@@ -25,6 +25,8 @@ if( !function_exists('siteorigin_widget_get_plugin_path') ) {
 	include plugin_dir_path(__FILE__).'icons/icons.php';
 }
 
+include_once plugin_dir_path(__FILE__).'compat/sow-compat.php';
+
 class SiteOrigin_Widgets_Bundle {
 
 	private $widget_folders;
@@ -701,18 +703,8 @@ class SiteOrigin_Widgets_Bundle {
 	 * Ensure active widgets' scripts are enqueued at the right time.
 	 */
 	function enqueue_active_widgets_scripts() {
-		global $wp_registered_widgets, $wp_widget_factory;
+		global $wp_registered_widgets;
 		$sidebars_widgets = wp_get_sidebars_widgets();
-		// Check if Beaver Builder exists and is being used to edit this post. Then enqueue required back end scripts.
-		if ( class_exists( 'FLBuilderModel' ) && FLBuilderModel::is_builder_active() ) {
-			foreach($wp_widget_factory->widgets as $class => $widget_obj){
-				if ( !empty($widget_obj) && is_object($widget_obj) && is_subclass_of($widget_obj, 'SiteOrigin_Widget') ) {
-					ob_start();
-					$widget_obj->form( array() );
-					ob_clean();
-				}
-			}
-		}
 		if( empty($sidebars_widgets) ) return;
 		foreach( $sidebars_widgets as $sidebar => $widgets ) {
 			if ( ! empty( $widgets ) && $sidebar !== "wp_inactive_widgets") {
