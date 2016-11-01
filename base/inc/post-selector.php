@@ -98,7 +98,7 @@ function siteorigin_widget_post_selector_process_query($query){
 		$query = wp_parse_args( $query['additional'], $query );
 		unset( $query['additional'] );
 
-		// Acount for post_not_in being set
+		// If post_not_in is set, we need to convert it to an array to avoid issues with the query. 
 		if( !empty( $query['post__not_in'] ) && !is_array( $query['post__not_in'] ) ){
 			$query['post__not_in'] = explode( ',', $query['post__not_in'] );
 			$query['post__not_in'] = array_map( 'intval', $query['post__not_in'] );
