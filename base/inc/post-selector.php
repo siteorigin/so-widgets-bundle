@@ -97,6 +97,12 @@ function siteorigin_widget_post_selector_process_query($query){
 	if ( ! empty( $query['additional'] ) ) {
 		$query = wp_parse_args( $query['additional'], $query );
 		unset( $query['additional'] );
+
+		// Acount for post_not_in being set
+		if( !empty( $query['post__not_in'] ) && !is_array( $query['post__not_in'] ) ){
+			$query['post__not_in'] = explode( ',', $query['post__not_in'] );
+			$query['post__not_in'] = array_map( 'intval', $query['post__not_in'] );
+		}
 	}
 
 	return $query;
