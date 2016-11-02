@@ -776,7 +776,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// Lets widgets insert their own custom generated LESS
 		$less = preg_replace_callback( '/\.widget-function\((.*)\);/', array( $this, 'less_widget_inject' ), $less );
 
-		//handle less @import statements
+		// Handle less @import statements
 		$less = preg_replace_callback( '/^@import\s+".*?\/?([\w-\.]+)";/m', array( $this, 'get_less_import_contents' ), $less );
 
 		$vars = $this->get_less_variables($instance);
