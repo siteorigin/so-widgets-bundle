@@ -247,23 +247,18 @@ class SiteOrigin_Widgets_Bundle {
 			return array_keys( iterator_to_array( $files ) );
 
 		} elseif ( function_exists('glob') ) {
-
 			$pattern = $folder;
-
 			if( 1 === $max_depth ){
 				$pattern .= '*/';
 			} elseif( $max_depth > 1 ){
 				$pattern .= '**/';
 			}
-
 			$pattern .= '*.' . $extension;
 
 			return glob($pattern);
-
 		}
 
 		return array();
-
 	}
 
 	/**
