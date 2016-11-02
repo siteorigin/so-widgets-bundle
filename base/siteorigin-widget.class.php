@@ -814,6 +814,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$compiler = new lessc();
 		$lc_functions = new SiteOrigin_Widgets_Less_Functions($this, $instance);
 		$lc_functions->registerFunctions( $compiler );
+		$compiler = apply_filters( 'siteorigin_widgets_less_compiler', $compiler, $instance, $this );
 
 		try {
 			if( method_exists( $compiler, 'compile' ) ) {
