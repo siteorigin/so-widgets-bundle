@@ -33,3 +33,34 @@
 .fl-lightbox .sow-icon-typicons {
   font-family: 'sow-typicons';
 }
+/* Button styles copied from wp-core for default UI look. */
+.wp-picker-container .wp-picker-input-wrap input[type="button"].button.button-small {
+  font-family: inherit;
+  font-weight: normal;
+  text-transform: capitalize;
+  color: #555;
+  background: #f7f7f7;
+  box-shadow: 0 1px 0 #cccccc;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  box-sizing: border-box;
+  height: 24px;
+  line-height: 22px;
+  padding: 0 8px 1px;
+  font-size: 11px;
+}
+.wp-picker-container .wp-picker-input-wrap input[type="button"].button.button-small:hover,
+.wp-picker-container .wp-picker-input-wrap input[type="button"].button.button-small:focus {
+  background: #fafafa;
+  border-color: #999;
+  color: #23282d;
+}
+.wp-picker-container .wp-picker-input-wrap input[type="button"].button.button-small:active,
+.wp-picker-container .wp-picker-input-wrap input[type="button"].button.button-small:focus {
+  outline: none;
+}
+.wp-picker-container .wp-picker-input-wrap input[type="button"].button.button-small.hidden {
+  display: none;
+}
