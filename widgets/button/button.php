@@ -207,6 +207,24 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	}
 
 	/**
+	 * Get the variables for the button widget.
+	 *
+	 * @param $instance
+	 * @param $args
+	 *
+	 * @return array
+	 */
+	function get_template_variables( $instance, $args ) {
+		$vars = array();
+
+		if( ! empty( $instance[ 'attributes' ][ 'classes' ] ) ) {
+			$vars[ 'classes' ] = explode( ' ', $instance[ 'attributes' ][ 'classes' ] );
+		}
+
+		return $vars;
+	}
+
+	/**
 	 * Get the variables that we'll be injecting into the less stylesheet.
 	 *
 	 * @param $instance
