@@ -7,14 +7,9 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 	 *
 	 * @return SiteOrigin_Widgets_Bundle_Beaver_Builder
 	 */
-	static function single() {
+	public static function single() {
 		static $single;
-
-		if ( empty( $single ) ) {
-			$single = new SiteOrigin_Widgets_Bundle_Beaver_Builder();
-		}
-
-		return $single;
+		return empty( $single ) ? $single = new self() : $single;
 	}
 
 	function __construct() {
@@ -49,10 +44,10 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 
 			// Localization args for when wp-color-picker script hasn't been registered.
 			wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', array(
-				'clear'         => __( 'Clear' ),
-				'defaultString' => __( 'Default' ),
-				'pick'          => __( 'Select Color' ),
-				'current'       => __( 'Current Color' ),
+				'clear'         => __( 'Clear', 'so-widgets-bundle' ),
+				'defaultString' => __( 'Default', 'so-widgets-bundle' ),
+				'pick'          => __( 'Select Color', 'so-widgets-bundle' ),
+				'current'       => __( 'Current Color', 'so-widgets-bundle' ),
 			) );
 		}
 

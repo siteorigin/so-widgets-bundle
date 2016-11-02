@@ -9,14 +9,9 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 	 *
 	 * @return SiteOrigin_Widgets_Bundle_Compatibility
 	 */
-	static function single() {
+	public static function single() {
 		static $single;
-
-		if( empty($single) ) {
-			$single = new SiteOrigin_Widgets_Bundle_Compatibility();
-		}
-
-		return $single;
+		return empty( $single ) ? $single = new self() : $single;
 	}
 
 	function __construct() {
