@@ -819,7 +819,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				}
 			}
 			catch ( Exception $e ) {
-
+				if( defined('SITEORIGIN_WIDGETS_DEBUG') && SITEORIGIN_WIDGETS_DEBUG ) {
+					throw $e;
+				}
 			}
 
 			// Remove any attributes with default as the value
