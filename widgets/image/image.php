@@ -102,17 +102,21 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_template_variables( $instance, $args ) {
+
+		$existing_alt = get_post_meta( $instance['image'], '_wp_attachment_image_alt', true );
+
 		return array(
-			'title' => $instance['title'],
+			'title' => !empty( $instance['title'] ) ? $instance['title'] : get_the_title( $instance['image'] ),
 			'title_position' => $instance['title_position'],
 			'image' => $instance['image'],
 			'size' => $instance['size'],
 			'image_fallback' => ! empty( $instance['image_fallback'] ) ? $instance['image_fallback'] : false,
-			'alt' => $instance['alt'],
+			'alt' => !empty( $instance['alt'] ) ? $instance['alt'] : $existing_alt,
 			'url' => $instance['url'],
 			'new_window' => $instance['new_window'],
 		);
 	}
+
 
 	function get_less_variables($instance){
 		return array(
