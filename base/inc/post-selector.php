@@ -50,7 +50,7 @@ function siteorigin_widget_post_selector_process_query($query){
 
 	if(!empty($query['post__in'])) {
 		$query['post__in'] = explode(',', $query['post__in']);
-		array_map('intval', $query['post__in']);
+		$query['post__in'] = array_map('intval', $query['post__in']);
 	}
 
 	if(!empty($query['tax_query'])) {
