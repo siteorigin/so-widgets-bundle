@@ -51,7 +51,13 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 			) );
 		}
 
-		wp_enqueue_style( 'sow-icons-for-beaver', plugin_dir_url( __FILE__ ) . 'styles.css' );
+		wp_enqueue_style( 'sowb-styles-for-beaver', plugin_dir_url( __FILE__ ) . 'styles.css' );
+
+		wp_enqueue_script(
+			'sowb-js-for-beaver',
+			plugin_dir_url( __FILE__ ) . 'sowb-beaver-builder' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery', 'fl-builder' )
+		);
 	}
 
 	function bb_get_field_name( $name ) {
