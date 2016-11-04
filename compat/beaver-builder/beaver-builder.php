@@ -14,6 +14,7 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 
 	function __construct() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
+		add_action( 'wp_print_footer_scripts', array( $this, 'print_footer_templates' ) );
 
 		add_filter( 'siteorigin_widgets_get_field_name', array( $this, 'bb_get_field_name' ) );
 	}
@@ -61,6 +62,17 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 
 		wp_enqueue_style( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/css/admin.css', array( 'media-views' ), SOW_BUNDLE_VERSION );
 
+	}
+
+	function print_footer_templates() {
+		global $wp_widget_factory;
+
+		// Beaver Builder does it's editing in the front end so print required footer templates for active widgets.
+		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
+			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
+				$widget_obj->footer_admin_templates();
+			}
+		}
 	}
 
 	function bb_get_field_name( $name ) {
