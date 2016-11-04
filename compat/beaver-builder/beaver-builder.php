@@ -58,6 +58,9 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 			plugin_dir_url( __FILE__ ) . 'sowb-beaver-builder' . SOW_BUNDLE_JS_SUFFIX . '.js',
 			array( 'jquery', 'fl-builder' )
 		);
+
+		wp_enqueue_style( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/css/admin.css', array( 'media-views' ), SOW_BUNDLE_VERSION );
+
 	}
 
 	function bb_get_field_name( $name ) {

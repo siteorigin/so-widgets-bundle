@@ -1,61 +1,72 @@
 /* Styles required for icons, otherwise they are overridden by Beaver Builder's form styles */
-.fl-lightbox .sow-icon-elegantline, .fl-lightbox .sow-icon-fontawesome, .fl-lightbox .sow-icon-genericons,
-.fl-lightbox .sow-icon-icomoon, .fl-lightbox .sow-icon-ionicons, .fl-lightbox .sow-icon-typicons {
+.fl-lightbox .siteorigin-widget-form {
+	&.siteorigin-widget-form-main {
+		min-width: inherit;
+	}
 
-	display: inline-block;
-	speak: none;
-	font-style: normal;
-	font-weight: normal;
-	font-variant: normal;
-	text-transform: none;
-	line-height: 1;
+	.siteorigin-widget-field input[type="text"] {
+		margin: 0 !important; //unfortunately necessary to override beaver's !important. :/
+	}
 
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-}
+	.sow-icon-elegantline, .sow-icon-fontawesome, .sow-icon-genericons,
+	.sow-icon-icomoon, .sow-icon-ionicons, .sow-icon-typicons {
 
-.fl-lightbox .sow-icon-elegantline {
-	font-family: 'sow-elegantline';
-}
+		display: inline-block;
+		speak: none;
+		font-style: normal;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
 
-.fl-lightbox .sow-icon-fontawesome {
-	font-family: 'sow-fontawesome';
-}
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
 
-.fl-lightbox .sow-icon-genericons {
-	font-family: 'sow-genericons';
-}
+	.sow-icon-elegantline {
+		font-family: 'sow-elegantline';
+	}
 
-.fl-lightbox .sow-icon-icomoon {
-	font-family: 'sow-icomoon';
-}
+	.sow-icon-fontawesome {
+		font-family: 'sow-fontawesome';
+	}
 
-.fl-lightbox .sow-icon-ionicons {
-	font-family: 'sow-ionicons';
-}
+	.sow-icon-genericons {
+		font-family: 'sow-genericons';
+	}
 
-.fl-lightbox .sow-icon-typicons {
-	font-family: 'sow-typicons';
-}
+	.sow-icon-icomoon {
+		font-family: 'sow-icomoon';
+	}
 
-/* Button styles copied from wp-core for default UI look. */
-.wp-picker-container .wp-picker-input-wrap {
-	input[type="button"].button.button-small {
+	.sow-icon-ionicons {
+		font-family: 'sow-ionicons';
+	}
+
+	.sow-icon-typicons {
+		font-family: 'sow-typicons';
+	}
+
+	/* Button styles copied from wp-core for default UI look. */
+	.button, .button-secondary {
+		display: inline-block;
+		text-decoration: none;
+		font-size: 13px;
+		line-height: 26px;
+		height: 28px;
+		margin: 0;
+		padding: 0 10px 1px;
+		cursor: pointer;
+		border: 1px solid #cccccc;
+		border-radius: 3px;
+		white-space: nowrap;
+		box-sizing: border-box;
+
 		font-family: inherit;
 		font-weight: normal;
 		text-transform: capitalize;
 		color: #555;
 		background: #f7f7f7;
-		box-shadow: 0 1px 0 #cccccc;
-		text-decoration: none;
-		cursor: pointer;
-		border: 1px solid #cccccc;
-		border-radius: 3px;
-		box-sizing: border-box;
-		height: 24px;
-		line-height: 22px;
-		padding: 0 8px 1px;
-		font-size: 11px;
 
 		&:hover,
 		&:focus {
@@ -72,5 +83,12 @@
 		&.hidden {
 			display: none;
 		}
+	}
+
+	.button.button-small {
+		height: 23px;
+		line-height: 22px;
+		padding: 0 8px 1px;
+		font-size: 11px;
 	}
 }

@@ -1,10 +1,19 @@
 /* Styles required for icons, otherwise they are overridden by Beaver Builder's form styles */
-.fl-lightbox .sow-icon-elegantline,
-.fl-lightbox .sow-icon-fontawesome,
-.fl-lightbox .sow-icon-genericons,
-.fl-lightbox .sow-icon-icomoon,
-.fl-lightbox .sow-icon-ionicons,
-.fl-lightbox .sow-icon-typicons {
+.fl-lightbox .siteorigin-widget-form {
+  /* Button styles copied from wp-core for default UI look. */
+}
+.fl-lightbox .siteorigin-widget-form.siteorigin-widget-form-main {
+  min-width: inherit;
+}
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field input[type="text"] {
+  margin: 0 !important;
+}
+.fl-lightbox .siteorigin-widget-form .sow-icon-elegantline,
+.fl-lightbox .siteorigin-widget-form .sow-icon-fontawesome,
+.fl-lightbox .siteorigin-widget-form .sow-icon-genericons,
+.fl-lightbox .siteorigin-widget-form .sow-icon-icomoon,
+.fl-lightbox .siteorigin-widget-form .sow-icon-ionicons,
+.fl-lightbox .siteorigin-widget-form .sow-icon-typicons {
   display: inline-block;
   speak: none;
   font-style: normal;
@@ -15,52 +24,65 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.fl-lightbox .sow-icon-elegantline {
+.fl-lightbox .siteorigin-widget-form .sow-icon-elegantline {
   font-family: 'sow-elegantline';
 }
-.fl-lightbox .sow-icon-fontawesome {
+.fl-lightbox .siteorigin-widget-form .sow-icon-fontawesome {
   font-family: 'sow-fontawesome';
 }
-.fl-lightbox .sow-icon-genericons {
+.fl-lightbox .siteorigin-widget-form .sow-icon-genericons {
   font-family: 'sow-genericons';
 }
-.fl-lightbox .sow-icon-icomoon {
+.fl-lightbox .siteorigin-widget-form .sow-icon-icomoon {
   font-family: 'sow-icomoon';
 }
-.fl-lightbox .sow-icon-ionicons {
+.fl-lightbox .siteorigin-widget-form .sow-icon-ionicons {
   font-family: 'sow-ionicons';
 }
-.fl-lightbox .sow-icon-typicons {
+.fl-lightbox .siteorigin-widget-form .sow-icon-typicons {
   font-family: 'sow-typicons';
 }
-/* Button styles copied from wp-core for default UI look. */
-.wp-picker-container .wp-picker-input-wrap input[type="button"].button.button-small {
+.fl-lightbox .siteorigin-widget-form .button,
+.fl-lightbox .siteorigin-widget-form .button-secondary {
+  display: inline-block;
+  text-decoration: none;
+  font-size: 13px;
+  line-height: 26px;
+  height: 28px;
+  margin: 0;
+  padding: 0 10px 1px;
+  cursor: pointer;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  white-space: nowrap;
+  box-sizing: border-box;
   font-family: inherit;
   font-weight: normal;
   text-transform: capitalize;
   color: #555;
   background: #f7f7f7;
-  box-shadow: 0 1px 0 #cccccc;
-  text-decoration: none;
-  cursor: pointer;
-  border: 1px solid #cccccc;
-  border-radius: 3px;
-  box-sizing: border-box;
-  height: 24px;
-  line-height: 22px;
-  padding: 0 8px 1px;
-  font-size: 11px;
 }
-.wp-picker-container .wp-picker-input-wrap input[type="button"].button.button-small:hover,
-.wp-picker-container .wp-picker-input-wrap input[type="button"].button.button-small:focus {
+.fl-lightbox .siteorigin-widget-form .button:hover,
+.fl-lightbox .siteorigin-widget-form .button-secondary:hover,
+.fl-lightbox .siteorigin-widget-form .button:focus,
+.fl-lightbox .siteorigin-widget-form .button-secondary:focus {
   background: #fafafa;
   border-color: #999;
   color: #23282d;
 }
-.wp-picker-container .wp-picker-input-wrap input[type="button"].button.button-small:active,
-.wp-picker-container .wp-picker-input-wrap input[type="button"].button.button-small:focus {
+.fl-lightbox .siteorigin-widget-form .button:active,
+.fl-lightbox .siteorigin-widget-form .button-secondary:active,
+.fl-lightbox .siteorigin-widget-form .button:focus,
+.fl-lightbox .siteorigin-widget-form .button-secondary:focus {
   outline: none;
 }
-.wp-picker-container .wp-picker-input-wrap input[type="button"].button.button-small.hidden {
+.fl-lightbox .siteorigin-widget-form .button.hidden,
+.fl-lightbox .siteorigin-widget-form .button-secondary.hidden {
   display: none;
+}
+.fl-lightbox .siteorigin-widget-form .button.button-small {
+  height: 23px;
+  line-height: 22px;
+  padding: 0 8px 1px;
+  font-size: 11px;
 }
