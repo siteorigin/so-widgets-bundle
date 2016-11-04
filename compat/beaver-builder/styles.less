@@ -1,11 +1,32 @@
 /* Styles required for icons, otherwise they are overridden by Beaver Builder's form styles */
 .fl-lightbox .siteorigin-widget-form {
+
 	&.siteorigin-widget-form-main {
 		min-width: inherit;
 	}
 
-	.siteorigin-widget-field input[type="text"] {
-		margin: 0 !important; //unfortunately necessary to override beaver's !important. :/
+	.siteorigin-widget-field {
+		input {
+			margin: 0 !important; //unfortunately necessary to override beaver's !important. :/
+		}
+
+		input[type="checkbox"] {
+			vertical-align: middle;
+		}
+
+		input.siteorigin-widget-input-color {
+			margin: 5px !important; //unfortunately necessary to override beaver's !important. :/
+		}
+
+		input.siteorigin-widget-input-measurement {
+			margin: 1px !important; //unfortunately necessary to override beaver's !important. :/
+			height: inherit;
+		}
+
+		select.siteorigin-widget-input {
+			height: inherit;
+			padding: 3px;
+		}
 	}
 
 	.sow-icon-elegantline, .sow-icon-fontawesome, .sow-icon-genericons,

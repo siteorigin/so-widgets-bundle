@@ -5,8 +5,22 @@
 .fl-lightbox .siteorigin-widget-form.siteorigin-widget-form-main {
   min-width: inherit;
 }
-.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field input[type="text"] {
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field input {
   margin: 0 !important;
+}
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field input[type="checkbox"] {
+  vertical-align: middle;
+}
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field input.siteorigin-widget-input-color {
+  margin: 5px !important;
+}
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field input.siteorigin-widget-input-measurement {
+  margin: 1px !important;
+  height: inherit;
+}
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field select.siteorigin-widget-input {
+  height: inherit;
+  padding: 3px;
 }
 .fl-lightbox .siteorigin-widget-form .sow-icon-elegantline,
 .fl-lightbox .siteorigin-widget-form .sow-icon-fontawesome,
