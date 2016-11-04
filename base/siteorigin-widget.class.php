@@ -420,7 +420,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			<?php $this->scripts_loading_message() ?>
 		</div>
 
-		<?php if( $this->widget_options['has_preview'] && ! $this->is_customize_preview() ) : ?>
+		<?php if( $this->show_preview_button() ) : ?>
 			<div class="siteorigin-widget-preview" style="display: none">
 				<a href="#" class="siteorigin-widget-preview-button button-secondary"><?php _e('Preview', 'so-widgets-bundle') ?></a>
 			</div>
@@ -1225,6 +1225,17 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$this->is_customize_preview() ||    // Is this a customizer preview
 			!empty( $_GET['siteorigin_panels_live_editor'] ) ||     // Is this a Page Builder live editor request
 			( !empty( $_REQUEST['action'] ) && $_REQUEST['action'] == 'so_panels_builder_content' );    // Is this a Page Builder content ajax request
+	}
+
+	/**
+	 * Whether or not so show the 'Preview' button
+	 *
+	 * @return bool
+	 */
+	function show_preview_button(){
+		$show_preview = $this->widget_options['has_preview'] && ! $this->is_customize_preview();
+		$show_preview = apply_filters( 'siteorigin_widgets_form_show_preview_button', $show_preview, $this );
+		return $show_preview;
 	}
 
 	/**
