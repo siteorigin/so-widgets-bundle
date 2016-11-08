@@ -459,6 +459,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			method_exists( $this, 'get_form_teaser' ) &&
 			( $teaser = $this->get_form_teaser() )
 		) {
+			if ( ! is_admin() ) {
+				wp_enqueue_style( 'dashicons' );
+			}
+
 			$dismissed = get_user_meta( get_current_user_id(), 'teasers_dismissed', true );
 			if( empty( $dismissed[ $this->id_base ] ) ) {
 				$dismiss_url = add_query_arg( array(

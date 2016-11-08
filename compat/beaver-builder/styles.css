@@ -5,6 +5,9 @@
 .fl-lightbox .siteorigin-widget-form.siteorigin-widget-form-main {
   min-width: inherit;
 }
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-teaser .dashicons {
+  font-family: dashicons;
+}
 .fl-lightbox .siteorigin-widget-form .siteorigin-widget-field input {
   margin: 0 !important;
 }
@@ -21,6 +24,9 @@
 .fl-lightbox .siteorigin-widget-form .siteorigin-widget-field select.siteorigin-widget-input {
   height: inherit;
   padding: 3px;
+}
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field .siteorigin-widget-field-type-slider input[type="number"] {
+  display: none !important;
 }
 .fl-lightbox .siteorigin-widget-form .sow-icon-elegantline,
 .fl-lightbox .siteorigin-widget-form .sow-icon-fontawesome,
