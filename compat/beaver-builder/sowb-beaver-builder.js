@@ -103,4 +103,12 @@ var sowb = window.sowb || {};
 			return settings;
 		}
 	}
+	
+	// To ensure necessary scripts are executed again when settings are changed
+	$( document ).on( 'fl-builder.preview-rendered fl-builder.layout-rendered', '.fl-builder-content', function() {
+		if( typeof sowb !== 'undefined' && typeof sowb.setupGoogleMaps !== 'undefined') {
+			sowb.setupGoogleMaps();
+		}
+	} );
+	
 })(jQuery);

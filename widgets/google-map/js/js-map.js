@@ -364,7 +364,8 @@ function soGoogleMapInitialize() {
     new sowb.SiteOriginGoogleMap(window.jQuery).initMaps();
 }
 
-jQuery(function ($) {
+sowb.setupGoogleMaps = function() {
+	var $ = jQuery;
 	var mapOptions = $( '.sow-google-map-canvas' ).data( 'options' );
 	var mapsApiLoaded = typeof window.google !== 'undefined' && typeof window.google.maps !== 'undefined';
 	var isLoaded = function (element) {
@@ -375,10 +376,10 @@ jQuery(function ($) {
 	if(hasLibraries) {
 		mapsApiLoaded = mapsApiLoaded && mapOptions.libraries.every(isLoaded);
 	}
-	 
-    if (mapsApiLoaded) {
+	
+	if (mapsApiLoaded) {
 		soGoogleMapInitialize();
-    } else {
+	} else {
 		var apiUrl = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=soGoogleMapInitialize';
 		if(mapOptions) {
 			if( hasLibraries ) {
@@ -388,7 +389,11 @@ jQuery(function ($) {
 				apiUrl += '&key=' + mapOptions.apiKey;
 			}
 		}
-        var script = $('<script type="text/javascript" src="' + apiUrl + '">');
-        $('body').append(script);
-    }
+		var script = $('<script type="text/javascript" src="' + apiUrl + '">');
+		$('body').append(script);
+	}
+};
+
+jQuery(function ($) {
+	sowb.setupGoogleMaps();
 });
