@@ -143,7 +143,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		if( empty( $this->form_options ) ) {
-			$this->form_options = $this->get_widget_form();
+			$form_options = $this->get_widget_form();
+		}
+		else {
+			$form_options = $this->modify_form( $this->form_options );
 		}
 
 		$instance = $this->modify_instance( $instance );
@@ -160,7 +163,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		) );
 
 		// Add any missing default values to the instance
-		$instance = $this->add_defaults( $this->form_options, $instance );
+		$instance = $this->add_defaults( $form_options, $instance );
 
 		$css_name = $this->generate_and_enqueue_instance_styles( $instance );
 		$this->enqueue_frontend_scripts( $instance );
@@ -230,15 +233,18 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string The CSS name
 	 */
 	function generate_and_enqueue_instance_styles( $instance ) {
-		if( empty( $this->form_options ) ) {
-			$this->form_options = $this->get_widget_form();
+		if( empty( $form_options ) ) {
+			$form_options = $this->get_widget_form();
+		}
+		else {
+			$form_options = $this->modify_form( $this->form_options );
 		}
 
 		// We'll assume empty instances don't have styles
 		if( empty($instance) ) return;
 
 		// Make sure all the default values are in place
-		$instance = $this->add_defaults( $this->form_options, $instance );
+		$instance = $this->add_defaults( $form_options, $instance );
 
 		$this->current_instance = $instance;
 		$style = $this->get_style_name( $instance );
