@@ -1,4 +1,5 @@
 /* Styles required for icons, otherwise they are overridden by Beaver Builder's form styles */
+/* Unfortunately a lot of `!important`s necessary to override beaver's `!important`s. :/ */
 .fl-lightbox .siteorigin-widget-form {
 
 	&.siteorigin-widget-form-main {
@@ -11,7 +12,7 @@
 
 	.siteorigin-widget-field {
 		input {
-			margin: 0 !important; //unfortunately necessary to override beaver's !important. :/
+			margin: 0 !important;
 		}
 
 		input[type="checkbox"] {
@@ -19,11 +20,11 @@
 		}
 
 		input.siteorigin-widget-input-color {
-			margin: 5px !important; //unfortunately necessary to override beaver's !important. :/
+			margin: 5px !important;
 		}
 
 		input.siteorigin-widget-input-measurement {
-			margin: 1px !important; //unfortunately necessary to override beaver's !important. :/
+			margin: 1px !important;
 			height: inherit;
 		}
 
@@ -34,6 +35,18 @@
 
 		.siteorigin-widget-field-type-slider input[type="number"] {
 			display: none !important;
+		}
+
+		.clear {
+			clear: both;
+		}
+
+		.siteorigin-widget-field-type-media {
+			.media-fallback-external {
+				margin-top: 4px !important;
+				margin-left: 15px !important;
+				max-width: 220px;
+			}
 		}
 	}
 

@@ -1,4 +1,5 @@
 /* Styles required for icons, otherwise they are overridden by Beaver Builder's form styles */
+/* Unfortunately a lot of `!important`s necessary to override beaver's `!important`s. :/ */
 .fl-lightbox .siteorigin-widget-form {
   /* Button styles copied from wp-core for default UI look. */
 }
@@ -27,6 +28,14 @@
 }
 .fl-lightbox .siteorigin-widget-form .siteorigin-widget-field .siteorigin-widget-field-type-slider input[type="number"] {
   display: none !important;
+}
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field .clear {
+  clear: both;
+}
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field .siteorigin-widget-field-type-media .media-fallback-external {
+  margin-top: 4px !important;
+  margin-left: 15px !important;
+  max-width: 220px;
 }
 .fl-lightbox .siteorigin-widget-form .sow-icon-elegantline,
 .fl-lightbox .siteorigin-widget-form .sow-icon-fontawesome,
