@@ -250,7 +250,7 @@ sowb.SiteOriginGoogleMap = function($) {
 			// Init any autocomplete fields first.
 			var $autoCompleteFields = $( '.sow-google-map-autocomplete' );
 			var autoCompleteInit = new $.Deferred();
-			if( $autoCompleteFields.length == 0) {
+			if( $autoCompleteFields.length == 0 || typeof google.maps.places === 'undefined') {
 				autoCompleteInit.resolve();
 			} else {
 				$autoCompleteFields.each(function (index, element) {
@@ -366,32 +366,44 @@ function soGoogleMapInitialize() {
 
 sowb.setupGoogleMaps = function() {
 	var $ = jQuery;
-	var mapOptions = $( '.sow-google-map-canvas' ).data( 'options' );
-	var mapsApiLoaded = typeof window.google !== 'undefined' && typeof window.google.maps !== 'undefined';
-	var isLoaded = function (element) {
-		var lib = window.google.maps[element];
-		return window.google.maps.hasOwnProperty(element) && typeof lib !== 'undefined' && lib !== null;
-	};
-	var hasLibraries = typeof mapOptions.libraries !== 'undefined' && mapOptions.libraries !== null;
-	if(hasLibraries) {
-		mapsApiLoaded = mapsApiLoaded && mapOptions.libraries.every(isLoaded);
-	}
-	
-	if (mapsApiLoaded) {
-		soGoogleMapInitialize();
-	} else {
-		var apiUrl = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=soGoogleMapInitialize';
-		if(mapOptions) {
-			if( hasLibraries ) {
-				apiUrl += '&libraries=' + mapOptions.libraries.join(',');
-			}
-			if( mapOptions.apiKey ) {
-				apiUrl += '&key=' + mapOptions.apiKey;
+	var libraries = [];
+	var apiKey;
+	$('.sow-google-map-canvas').each(function(index, element) {
+		var $this = $(element);
+		var mapOptions = $this.data( 'options' );
+		var mapsApiLoaded = typeof window.google !== 'undefined' && typeof window.google.maps !== 'undefined';
+		var isLoaded = function (element) {
+			var lib = window.google.maps[element];
+			return window.google.maps.hasOwnProperty(element) && typeof lib !== 'undefined' && lib !== null;
+		};
+		var hasLibraries = typeof mapOptions.libraries !== 'undefined' && mapOptions.libraries !== null;
+		if(hasLibraries) {
+			mapsApiLoaded = mapsApiLoaded && mapOptions.libraries.every(isLoaded);
+		}
+		
+		if (mapsApiLoaded) {
+			soGoogleMapInitialize();
+		} else {
+			if(mapOptions) {
+				if( hasLibraries ) {
+					libraries = libraries.concat(mapOptions.libraries);
+				}
+				if( !apiKey && mapOptions.apiKey ) {
+					apiKey = mapOptions.apiKey;
+				}
 			}
 		}
-		var script = $('<script type="text/javascript" src="' + apiUrl + '">');
-		$('body').append(script);
+	});
+	
+	var apiUrl = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=soGoogleMapInitialize';
+	if(libraries && libraries.length) {
+		apiUrl += '&libraries=' + libraries.join(',');
 	}
+	if(apiKey) {
+		apiUrl += '&key=' + apiKey;
+	}
+	var script = $('<script type="text/javascript" src="' + apiUrl + '">');
+	$('body').append(script);
 };
 
 jQuery(function ($) {
