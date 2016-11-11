@@ -1,5 +1,9 @@
-jQuery( function($){
 
+var sowb = window.sowb || {};
+
+sowb.setupImageGrid = function() {
+	var $ = jQuery;
+	
     $('.sow-image-grid-wrapper').each( function(){
         var $$ = $(this);
 
@@ -42,4 +46,8 @@ jQuery( function($){
 
     } );
 
+};
+
+jQuery( function($){
+	sowb.setupImageGrid();
 } );
