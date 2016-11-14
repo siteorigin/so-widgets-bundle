@@ -137,11 +137,10 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	function slider_settings( $controls ){
 		return array(
 			'pagination' => true,
-			'speed' => $controls['speed'],
+			'speed' => $controls['speed'] != 0 ? $controls['speed'] : 1,
 			'timeout' => $controls['timeout'],
 			'swipe' => $controls['swipe'],
 		);
-	}
 
 	function render_template( $controls, $frames ){
 		$this->render_template_part('before_slider', $controls, $frames);
