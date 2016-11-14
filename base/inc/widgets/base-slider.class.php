@@ -141,6 +141,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'timeout' => $controls['timeout'],
 			'swipe' => $controls['swipe'],
 		);
+	}
 
 	function render_template( $controls, $frames ){
 		$this->render_template_part('before_slider', $controls, $frames);
