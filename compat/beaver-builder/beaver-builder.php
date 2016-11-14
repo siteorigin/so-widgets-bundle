@@ -55,6 +55,9 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 			) );
 		}
 
+		wp_enqueue_style( 'dashicons' );
+		wp_enqueue_media();
+
 		wp_enqueue_style( 'sowb-styles-for-beaver', plugin_dir_url( __FILE__ ) . 'styles.css' );
 
 		wp_enqueue_script(
