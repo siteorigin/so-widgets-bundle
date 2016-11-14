@@ -118,6 +118,10 @@ var sowb = window.sowb || {};
 			if( typeof sowb.setupImageGrid !== 'undefined' ) {
 				sowb.setupImageGrid();
 			}
+			
+			if( typeof sowb.setupSimpleMasonry !== 'undefined' ) {
+				sowb.setupSimpleMasonry();
+			}
 		}
 	} );
 	
