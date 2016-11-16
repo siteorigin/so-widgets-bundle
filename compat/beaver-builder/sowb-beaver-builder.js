@@ -122,6 +122,10 @@ var sowb = window.sowb || {};
 			if( typeof sowb.setupSimpleMasonry !== 'undefined' ) {
 				sowb.setupSimpleMasonry();
 			}
+			
+			if( typeof sowb.setupVideoPlayer !== 'undefined' ) {
+				sowb.setupVideoPlayer();
+			}
 		}
 	} );
 	
