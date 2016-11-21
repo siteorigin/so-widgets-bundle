@@ -813,36 +813,39 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					continue;
 				}
 			}
-
+			
+			// Type Validation
 			switch( $field['type'] ) {
 				case 'email':
-					if( $value != sanitize_email($value) ) {
-						$errors[$field_name] = __('Invalid email address.', 'so-widgets-bundle');
+					if( $value != sanitize_email( $value ) ) {
+						$errors[ $field_name ] = __( 'Invalid email address.', 'so-widgets-bundle' );
 					}
+
+				case 'name':
+					// Check if this name field is empty or not. This prevents an empty name field type from overriding a name field with a value
+
+					if( empty( $value ) ) {
+						continue;
+					}
+
+				case 'subject':
+					$email_fields[ $field['type'] ] = $value;
+
 					break;
-			}
 
-			if( in_array( $field['type'], array( 'email', 'name', 'subject' ) ) ) {
-				$email_fields[$field['type']] = $value;
-			}
-			else {
-				if( empty($email_fields['message']) ) $email_fields['message'] = array();
+				case 'checkboxes':
+					$email_fields['message'][] = array(
+						'label' => $field['label'],
+						'value' => implode( ', ', $value ),
+					);
+					break;
 
-				switch( $field['type'] ) {
-					case 'checkboxes':
-						$email_fields['message'][] = array(
-							'label' => $field['label'],
-							'value' => implode(', ', $value),
-						);
-						break;
-
-					default:
-						$email_fields['message'][] = array(
-							'label' => $field['label'],
-							'value' => $value,
-						);
-						break;
-				}
+				default:
+					$email_fields['message'][] = array(
+						'label' => $field['label'],
+						'value' => $value,
+					);
+					break;
 			}
 		}
 
