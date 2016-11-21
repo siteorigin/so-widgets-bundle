@@ -814,6 +814,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				}
 			}
 			
+			// Don't process an unrequired empty field
+			if( empty( $value ) ) {
+				continue;
+			}
+
 			// Type Validation
 			switch( $field['type'] ) {
 				case 'email':
