@@ -827,12 +827,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					}
 
 				case 'name':
-					// Check if this name field is empty or not. This prevents an empty name field type from overriding a name field with a value
-
-					if( empty( $value ) ) {
-						continue;
-					}
-
 				case 'subject':
 					$email_fields[ $field['type'] ] = $value;
 
