@@ -1,12 +1,15 @@
 <?php
-$classes = array();
+/**
+ * @var array $classes
+ */
+
 if( !empty($instance['design']['hover']) ) $classes[] = 'ow-button-hover';
 ?>
 <div class="ow-button-base ow-button-align-<?php echo esc_attr($instance['design']['align']) ?>">
 
 	<?php
 	$button_attributes = array(
-		'class' => esc_attr(implode(' ', $classes))
+		'class' => esc_attr( implode(' ', $classes) )
 	);
 	if(!empty($instance['new_window'])) $button_attributes['target'] = '_blank';
 	if(!empty($instance['url'])) $button_attributes['href'] = sow_esc_url($instance['url']);
