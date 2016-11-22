@@ -78,29 +78,29 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 				),
 			),
 
-				'design' => array(
-					'type' => 'section',
-					'label' => __('Design and layout', 'so-widgets-bundle'),
-					'hide' => true,
-					'fields' => array(
+			'design' => array(
+				'type' => 'section',
+				'label' => __('Design and layout', 'so-widgets-bundle'),
+				'hide' => true,
+				'fields' => array(
 
-						'width' => array(
-							'type' => 'measurement',
-							'label' => __( 'Width', 'so-widgets-bundle' ),
-							'description' => __( 'Leave blank to let the button resize according to content.', 'so-widgets-bundle' )
-						),
+					'width' => array(
+						'type' => 'measurement',
+						'label' => __( 'Width', 'so-widgets-bundle' ),
+						'description' => __( 'Leave blank to let the button resize according to content.', 'so-widgets-bundle' )
+					),
 
-						'align' => array(
-							'type' => 'select',
-							'label' => __('Align', 'so-widgets-bundle'),
-							'default' => 'center',
-							'options' => array(
-								'left' => __('Left', 'so-widgets-bundle'),
-								'right' => __('Right', 'so-widgets-bundle'),
-								'center' => __('Center', 'so-widgets-bundle'),
-								'justify' => __('Justify', 'so-widgets-bundle'),
-							),
+					'align' => array(
+						'type' => 'select',
+						'label' => __('Align', 'so-widgets-bundle'),
+						'default' => 'center',
+						'options' => array(
+							'left' => __('Left', 'so-widgets-bundle'),
+							'right' => __('Right', 'so-widgets-bundle'),
+							'center' => __('Center', 'so-widgets-bundle'),
+							'justify' => __('Justify', 'so-widgets-bundle'),
 						),
+					),
 
 					'theme' => array(
 						'type' => 'select',
@@ -179,6 +179,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'description' => __('An ID attribute allows you to target this button in Javascript.', 'so-widgets-bundle'),
 					),
 
+					'classes' => array(
+						'type' => 'text',
+						'label' => __('Button Classes', 'so-widgets-bundle'),
+						'description' => __('Additional CSS classes added to the button link.', 'so-widgets-bundle'),
+					),
+
 					'title' => array(
 						'type' => 'text',
 						'label' => __('Title attribute', 'so-widgets-bundle'),
@@ -198,6 +204,24 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	function get_style_name($instance) {
 		if(empty($instance['design']['theme'])) return 'atom';
 		return $instance['design']['theme'];
+	}
+
+	/**
+	 * Get the variables for the button widget.
+	 *
+	 * @param $instance
+	 * @param $args
+	 *
+	 * @return array
+	 */
+	function get_template_variables( $instance, $args ) {
+		$vars = array();
+
+		if( ! empty( $instance[ 'attributes' ][ 'classes' ] ) ) {
+			$vars[ 'classes' ] = explode( ' ', $instance[ 'attributes' ][ 'classes' ] );
+		}
+
+		return $vars;
 	}
 
 	/**

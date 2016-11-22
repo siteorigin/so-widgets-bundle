@@ -202,6 +202,12 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							'always' => __( 'Always', 'so-widgets-bundle' ),
 						)
 					),
+					'info_multiple' => array(
+						'type' => 'checkbox',
+						'label' => __( 'Allow multiple simultaneous Info Windows?', 'so-widgets-bundle' ),
+						'default' => true,
+						'description' => __( 'This setting is ignored when Info Windows are set to always display.' )
+					),
 				)
 			),
 			'styles'          => array(
@@ -419,6 +425,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'markers_draggable' => isset( $markers['markers_draggable'] ) ? $markers['markers_draggable'] : '',
 				'marker_at_center'  => !empty( $markers['marker_at_center'] ),
 				'marker_info_display' => $markers['info_display'],
+				'marker_info_multiple' => $markers['info_multiple'],
 				'marker_positions'  => isset( $markers['marker_positions'] ) ? $markers['marker_positions'] : '',
 				'map_name'          => ! empty( $styles ) ? $styles['map_name'] : '',
 				'map_styles'        => ! empty( $styles ) ? $styles['styles'] : '',

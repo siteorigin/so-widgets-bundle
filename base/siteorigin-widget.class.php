@@ -143,7 +143,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		if( empty( $this->form_options ) ) {
-			$this->form_options = $this->get_widget_form();
+			$form_options = $this->get_widget_form();
+		}
+		else {
+			$form_options = $this->modify_form( $this->form_options );
 		}
 
 		$instance = $this->modify_instance( $instance );
@@ -160,7 +163,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		) );
 
 		// Add any missing default values to the instance
-		$instance = $this->add_defaults( $this->form_options, $instance );
+		$instance = $this->add_defaults( $form_options, $instance );
 
 		$css_name = $this->generate_and_enqueue_instance_styles( $instance );
 		$this->enqueue_frontend_scripts( $instance );
@@ -230,15 +233,18 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string The CSS name
 	 */
 	function generate_and_enqueue_instance_styles( $instance ) {
-		if( empty( $this->form_options ) ) {
-			$this->form_options = $this->get_widget_form();
+		if( empty( $form_options ) ) {
+			$form_options = $this->get_widget_form();
+		}
+		else {
+			$form_options = $this->modify_form( $this->form_options );
 		}
 
 		// We'll assume empty instances don't have styles
 		if( empty($instance) ) return;
 
 		// Make sure all the default values are in place
-		$instance = $this->add_defaults( $this->form_options, $instance );
+		$instance = $this->add_defaults( $form_options, $instance );
 
 		$this->current_instance = $instance;
 		$style = $this->get_style_name( $instance );
@@ -792,38 +798,45 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$less = apply_filters( 'siteorigin_widgets_styles', $less, $this->widget_class, $instance );
 		$less = apply_filters( 'siteorigin_widgets_less_' . $this->id_base, $less, $instance, $this );
 
-		$style = $this->get_style_name( $instance );
-		$hash = $this->get_style_hash( $instance );
-		$css_name = $this->id_base . '-' . $style . '-' . $hash;
+		$css = '';
 
-		//we assume that any remaining @imports are plain css imports and should be kept outside selectors
-		$css_imports = '';
-		if ( preg_match_all( '/^@import.+/m', $less, $imports ) ) {
-			$css_imports = implode( "\n", $imports[0] );
-			$less = preg_replace( '/^@import.+/m', '', $less );
-		}
+		if( ! empty( $less ) ) {
+			$style = $this->get_style_name( $instance );
+			$hash = $this->get_style_hash( $instance );
+			$css_name = $this->id_base . '-' . $style . '-' . $hash;
 
-		$less = $css_imports . "\n\n" . '.so-widget-'.$css_name." { \n".$less."\n } ";
-
-		$compiler = new lessc();
-		$lc_functions = new SiteOrigin_Widgets_Less_Functions($this, $instance);
-		$lc_functions->registerFunctions( $compiler );
-
-		try {
-			if( method_exists( $compiler, 'compile' ) ) {
-				$css = $compiler->compile( $less );
+			//we assume that any remaining @imports are plain css imports and should be kept outside selectors
+			$css_imports = '';
+			if ( preg_match_all( '/^@import.+/m', $less, $imports ) ) {
+				$css_imports = implode( "\n", $imports[0] );
+				$less = preg_replace( '/^@import.+/m', '', $less );
 			}
-		}
-		catch ( Exception $e ) {
-			$css = '';
-		}
 
-		// Remove any attributes with default as the value
-		$css = preg_replace('/[a-zA-Z\-]+ *: *default *;/', '', $css);
+			$less = $css_imports . "\n\n" . '.so-widget-'.$css_name." { \n".$less."\n } ";
 
-		// Remove any empty CSS
-		$css = preg_replace('/[^{}]*\{\s*\}/m', '', $css);
-		$css = trim($css);
+			$compiler = new lessc();
+			$lc_functions = new SiteOrigin_Widgets_Less_Functions($this, $instance);
+			$lc_functions->registerFunctions( $compiler );
+			$compiler = apply_filters( 'siteorigin_widgets_less_compiler', $compiler, $instance, $this );
+
+			try {
+				if( method_exists( $compiler, 'compile' ) ) {
+					$css = $compiler->compile( $less );
+				}
+			}
+			catch ( Exception $e ) {
+				if( defined( 'SITEORIGIN_WIDGETS_DEBUG' ) && SITEORIGIN_WIDGETS_DEBUG ) {
+					throw $e;
+				}
+			}
+
+			// Remove any attributes with default as the value
+			$css = preg_replace('/[a-zA-Z\-]+ *: *default *;/', '', $css);
+
+			// Remove any empty CSS
+			$css = preg_replace('/[^{}]*\{\s*\}/m', '', $css);
+			$css = trim($css);
+		}
 
 		return apply_filters( 'siteorigin_widgets_instance_css', $css, $instance, $this );
 	}
@@ -1006,10 +1019,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @deprecated Will be removed in version 2.0
 	 */
 	function parse_markdown( $markdown ){
-		if( !class_exists('Markdown_Parser') ) include plugin_dir_path(__FILE__).'inc/markdown.php';
-		$parser = new Markdown_Parser();
+		if( !class_exists('Parsedown') ) include plugin_dir_path(__FILE__).'inc/Parsedown.php';
+		$parser = new Parsedown();
 
-		return $parser->transform($markdown);
+		return $parser->text($markdown);
 	}
 
 	/**
