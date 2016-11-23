@@ -521,6 +521,16 @@
                         $in.attr('name', newName);
                     }
                 });
+				
+				if( ! $$.data('initialSetup') ) {
+					// Setup default checked values, now that we've updated input names.
+					// Without this radio inputs in repeaters will be rendered as if they all belong to the same group.
+					$$.find('.siteorigin-widget-input').each(function(i, input) {
+						var $in = $(input);
+						$in.prop('checked', $in.prop('defaultChecked'));
+					});
+					$$.data('initialSetup', true);
+				}
 
                 //Setup scrolling.
                 var scrollCount = $el.data('scroll-count') ? parseInt($el.data('scroll-count')) : 0;
