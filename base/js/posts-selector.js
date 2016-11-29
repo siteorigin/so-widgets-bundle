@@ -54,8 +54,8 @@ var soWidgetPostSelector = ( function ($, _) {
         terms: null,
         post_status: null,
         posts_per_page: null,
-        post__in: null,
-        tax_query: null,
+        post__in: [],
+		tax_query: [],
         date_range: null,
 
         // The order fields for get_posts.
@@ -80,9 +80,9 @@ var soWidgetPostSelector = ( function ($, _) {
         getQuery: function(){
             var query = [];
             if( typeof this.get('post_type') !== 'undefined' ) query.push('post_type=' + this.get('post_type'));
-            if( typeof this.get('post__in') !== 'undefined' && !_.isEmpty( this.get('post__in') ) ) query.push( 'post__in=' + this.get('post__in').join(',') );
-            if( typeof this.get('tax_query') !== 'undefined' && !_.isEmpty( this.get('tax_query') ) ) query.push( 'tax_query=' + this.get('tax_query').join(',') );
-            if( typeof this.get('date_query') !== 'undefined' && !_.isEmpty( this.get('date_query') ) ) query.push( 'date_query=' + JSON.stringify(this.get('date_query')) );
+            if( typeof this.get('post__in') !== 'undefined' && !_.isEmpty( this.get('post__in') ) ) query.push( 'post__in=' + this.get('post__in').join(',') ); else query.push('post__in=')
+			if( typeof this.get('tax_query') !== 'undefined' && !_.isEmpty( this.get('tax_query') ) ) query.push( 'tax_query=' + this.get('tax_query').join(',') );else query.push('tax_query=')
+			if( typeof this.get('date_query') !== 'undefined' && !_.isEmpty( this.get('date_query') ) ) query.push( 'date_query=' + JSON.stringify(this.get('date_query')) );
 
             if( typeof this.get('orderby') !== 'undefined' ) query.push( 'orderby=' + this.get('orderby') );
             if( typeof this.get('order') !== 'undefined' ) query.push( 'order=' + this.get('order') );
@@ -121,9 +121,9 @@ var soWidgetPostSelector = ( function ($, _) {
             var theQuery = {};
 
             if( params.hasOwnProperty('post_type') ) theQuery.post_type = params.post_type;
-            if( params.hasOwnProperty('post__in') ) theQuery.post__in = params.post__in.split(',');
-            if( params.hasOwnProperty('tax_query') ) theQuery.tax_query = params.tax_query.split(',');
-            if( params.hasOwnProperty('date_query') ) theQuery.date_query = JSON.parse(params.date_query);
+            if( params.hasOwnProperty('post__in') ) theQuery.post__in = params.post__in.split(',');else theQuery.post__in=[]
+			if( params.hasOwnProperty('tax_query') ) theQuery.tax_query = params.tax_query.split(',');else theQuery.tax_query =[]
+			if( params.hasOwnProperty('date_query') ) theQuery.date_query = JSON.parse(params.date_query);
 
             if( params.hasOwnProperty('orderby') ) theQuery.orderby = params.orderby;
             if( params.hasOwnProperty('order') ) theQuery.order = params.order;
