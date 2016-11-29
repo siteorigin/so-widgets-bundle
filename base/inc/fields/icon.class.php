@@ -78,8 +78,8 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 	}
 
 	public function enqueue_scripts(){
-		wp_enqueue_script( 'so-icon-field', plugin_dir_url( __FILE__ ) . '/js/icon-field' . SOW_BUNDLE_JS_SUFFIX .  '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
-		wp_enqueue_style( 'so-icon-field', plugin_dir_url( __FILE__ ) . '/css/icon-field.css', array( ), SOW_BUNDLE_VERSION );
+		wp_enqueue_script( 'so-icon-field', plugin_dir_url( __FILE__ ) . 'js/icon-field' . SOW_BUNDLE_JS_SUFFIX .  '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
+		wp_enqueue_style( 'so-icon-field', plugin_dir_url( __FILE__ ) . 'css/icon-field.css', array( ), SOW_BUNDLE_VERSION );
 	}
 
 }

@@ -14,15 +14,16 @@ class SiteOrigin_Widget_Field_Radio extends SiteOrigin_Widget_Field_Base {
 
 	protected function render_field( $value, $instance ) {
 		if ( ! isset( $this->options ) || empty( $this->options ) ) return;
-
+		$i = 0;
 		foreach( $this->options as $k => $v ) {
 			?>
-			<label for="<?php echo esc_attr( $this->element_id . '-' . $k ) ?>">
+			<label for="<?php echo esc_attr( $this->element_id . '-' . $i ) ?>">
 				<input type="radio" name="<?php echo esc_attr( $this->element_name ) ?>"
-			       id="<?php echo esc_attr( $this->element_id . '-' . $k ) ?>" class="siteorigin-widget-input"
+			       id="<?php echo esc_attr( $this->element_id . '-' . $i ) ?>" class="siteorigin-widget-input"
 			       value="<?php echo esc_attr( $k ) ?>" <?php checked( $k, $value ) ?>> <?php echo esc_html( $v ) ?>
 			</label>
 			<?php
+			$i += 1;
 		}
 	}
 
