@@ -25,6 +25,8 @@ if( !function_exists('siteorigin_widget_get_plugin_path') ) {
 	include plugin_dir_path(__FILE__).'icons/icons.php';
 }
 
+include_once plugin_dir_path(__FILE__).'compat/compat.php';
+
 class SiteOrigin_Widgets_Bundle {
 
 	private $widget_folders;
