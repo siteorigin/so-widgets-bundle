@@ -426,7 +426,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			<?php $this->scripts_loading_message() ?>
 		</div>
 
-		<?php if( $this->widget_options['has_preview'] && ! $this->is_customize_preview() ) : ?>
+		<?php if( $this->show_preview_button() ) : ?>
 			<div class="siteorigin-widget-preview" style="display: none">
 				<a href="#" class="siteorigin-widget-preview-button button-secondary"><?php _e('Preview', 'so-widgets-bundle') ?></a>
 			</div>
@@ -454,7 +454,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		</script>
 		<?php
 
-		$this->enqueue_scripts( );
+		$this->enqueue_scripts( $form_type );
 	}
 
 	/**
@@ -465,6 +465,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			method_exists( $this, 'get_form_teaser' ) &&
 			( $teaser = $this->get_form_teaser() )
 		) {
+			if ( ! is_admin() ) {
+				wp_enqueue_style( 'dashicons' );
+			}
+
 			$dismissed = get_user_meta( get_current_user_id(), 'teasers_dismissed', true );
 			if( empty( $dismissed[ $this->id_base ] ) ) {
 				$dismiss_url = add_query_arg( array(
@@ -505,7 +509,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @param bool|string $form_type Should we enqueue the field scripts too?
 	 */
-	function enqueue_scripts( $form_type = false ){
+	function enqueue_scripts( $form_type = false ) {
 
 		if( ! wp_script_is('siteorigin-widget-admin') ) {
 			wp_enqueue_style( 'wp-color-picker' );
@@ -960,7 +964,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function so_get_field_name( $field_name, $container = array() ) {
 		if( empty($container) ) {
-			return $this->get_field_name( $field_name );
+			$name = $this->get_field_name( $field_name );
 		}
 		else {
 			// We also need to add the container fields
@@ -975,8 +979,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			$name = $this->get_field_name( '{{{FIELD_NAME}}}' );
 			$name = str_replace('[{{{FIELD_NAME}}}]', $container_extras.'[' . esc_attr($field_name) . ']', $name);
-			return $name;
 		}
+
+		$name = apply_filters( 'siteorigin_widgets_get_field_name', $name );
+		$name = apply_filters( 'siteorigin_widgets_get_field_name_' . $this->id_base, $name );
+
+		return $name;
 	}
 
 	/**
@@ -1234,6 +1242,17 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$this->is_customize_preview() ||    // Is this a customizer preview
 			!empty( $_GET['siteorigin_panels_live_editor'] ) ||     // Is this a Page Builder live editor request
 			( !empty( $_REQUEST['action'] ) && $_REQUEST['action'] == 'so_panels_builder_content' );    // Is this a Page Builder content ajax request
+	}
+
+	/**
+	 * Whether or not so show the 'Preview' button
+	 *
+	 * @return bool
+	 */
+	function show_preview_button(){
+		$show_preview = $this->widget_options['has_preview'] && ! $this->is_customize_preview();
+		$show_preview = apply_filters( 'siteorigin_widgets_form_show_preview_button', $show_preview, $this );
+		return $show_preview;
 	}
 
 	/**

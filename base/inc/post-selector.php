@@ -128,7 +128,7 @@ function siteorigin_widget_post_selector_form_fields(){
 	$return['post__in'] = '';
 	$return['post__in'] .= '<label><span>' . __('Post in', 'so-widgets-bundle') . '</span>';
 	$return['post__in'] .= '<input type="text" name="post__in" class="" />';
-	$return['post__in'] .= ' <a href="#" class="sow-select-posts button button-secondary">' . __('Select posts', 'so-widgets-bundle') . '</a>';
+	$return['post__in'] .= ' <a href="#" class="sow-select-posts button button-small">' . __('Select posts', 'so-widgets-bundle') . '</a>';
 	$return['post__in'] .= '</label>';
 
 	// The taxonomy field
