@@ -155,6 +155,7 @@ sowb.SiteOriginGoogleMap = function($) {
 		showMarkers: function(markerPositions, map, options) {
 			if ( markerPositions && markerPositions.length ) {
 				var geocoder = new google.maps.Geocoder();
+				this.infoWindows = [];
 				markerPositions.forEach(
 					function (mrkr) {
 						var geocodeMarker = function () {
@@ -179,14 +180,27 @@ sowb.SiteOriginGoogleMap = function($) {
 										var infoDisplay = options.markerInfoDisplay;
 										infoWindowOptions.disableAutoPan = infoDisplay == 'always';
 										var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
+										this.infoWindows.push(infoWindow);
+										var openEvent = infoDisplay;
 										if (infoDisplay == 'always') {
+											openEvent = 'click';
 											infoWindow.open(map, marker);
-											marker.addListener('click', function () {
-												infoWindow.open(map, marker);
-											});
-										} else {
-											marker.addListener(infoDisplay, function () {
-												infoWindow.open(map, marker);
+										}
+										marker.addListener(openEvent, function () {
+											infoWindow.open(map, marker);
+											if(infoDisplay != 'always' && !options.markerInfoMultiple) {
+												this.infoWindows.forEach(function(iw) {
+													if (iw !== infoWindow) {
+														iw.close();
+													}
+												});
+											}
+										}.bind(this));
+										if(infoDisplay == 'mouseover') {
+											marker.addListener('mouseout', function () {
+												setTimeout(function() {
+													infoWindow.close();
+												}, 100);
 											});
 										}
 									}
@@ -194,11 +208,11 @@ sowb.SiteOriginGoogleMap = function($) {
 									//try again please
 									setTimeout(geocodeMarker, Math.random() * 1000, mrkr);
 								}
-							});
-						};
+							}.bind(this));
+						}.bind(this);
 						//set random delays of 0 - 1 seconds when geocoding markers to try avoid hitting the query limit
 						setTimeout(geocodeMarker, Math.random() * 1000, mrkr);
-					}
+					}.bind(this)
 				);
 			}
 		},
@@ -236,7 +250,7 @@ sowb.SiteOriginGoogleMap = function($) {
 			// Init any autocomplete fields first.
 			var $autoCompleteFields = $( '.sow-google-map-autocomplete' );
 			var autoCompleteInit = new $.Deferred();
-			if( $autoCompleteFields.length == 0) {
+			if( $autoCompleteFields.length == 0 || typeof google.maps.places === 'undefined') {
 				autoCompleteInit.resolve();
 			} else {
 				$autoCompleteFields.each(function (index, element) {
@@ -350,31 +364,48 @@ function soGoogleMapInitialize() {
     new sowb.SiteOriginGoogleMap(window.jQuery).initMaps();
 }
 
-jQuery(function ($) {
-	var mapOptions = $( '.sow-google-map-canvas' ).data( 'options' );
-	var mapsApiLoaded = typeof window.google !== 'undefined' && window.google.maps !== 'undefined';
-	var isLoaded = function (element) {
-		var lib = window.google.maps[element];
-		return window.google.maps.hasOwnProperty(element) && typeof lib !== 'undefined' && lib !== null;
-	};
-	var hasLibraries = typeof mapOptions.libraries !== 'undefined' && mapOptions.libraries !== null;
-	if(hasLibraries) {
-		mapsApiLoaded = mapsApiLoaded && mapOptions.libraries.every(isLoaded);
-	}
-	 
-    if (mapsApiLoaded) {
-		soGoogleMapInitialize();
-    } else {
-		var apiUrl = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=soGoogleMapInitialize';
-		if(mapOptions) {
-			if( hasLibraries ) {
-				apiUrl += '&libraries=' + mapOptions.libraries.join(',');
-			}
-			if( mapOptions.apiKey ) {
-				apiUrl += '&key=' + mapOptions.apiKey;
+sowb.setupGoogleMaps = function() {
+	var $ = jQuery;
+	var libraries = [];
+	var apiKey;
+	$('.sow-google-map-canvas').each(function(index, element) {
+		var $this = $(element);
+		var mapOptions = $this.data( 'options' );
+		var mapsApiLoaded = typeof window.google !== 'undefined' && typeof window.google.maps !== 'undefined';
+		var isLoaded = function (element) {
+			var lib = window.google.maps[element];
+			return window.google.maps.hasOwnProperty(element) && typeof lib !== 'undefined' && lib !== null;
+		};
+		var hasLibraries = typeof mapOptions.libraries !== 'undefined' && mapOptions.libraries !== null;
+		if(hasLibraries) {
+			mapsApiLoaded = mapsApiLoaded && mapOptions.libraries.every(isLoaded);
+		}
+		
+		if (mapsApiLoaded) {
+			soGoogleMapInitialize();
+		} else {
+			if(mapOptions) {
+				if( hasLibraries ) {
+					libraries = libraries.concat(mapOptions.libraries);
+				}
+				if( !apiKey && mapOptions.apiKey ) {
+					apiKey = mapOptions.apiKey;
+				}
 			}
 		}
-        var script = $('<script type="text/javascript" src="' + apiUrl + '">');
-        $('body').append(script);
-    }
+	});
+	
+	var apiUrl = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=soGoogleMapInitialize';
+	if(libraries && libraries.length) {
+		apiUrl += '&libraries=' + libraries.join(',');
+	}
+	if(apiKey) {
+		apiUrl += '&key=' + apiKey;
+	}
+	var script = $('<script type="text/javascript" src="' + apiUrl + '">');
+	$('body').append(script);
+};
+
+jQuery(function ($) {
+	sowb.setupGoogleMaps();
 });

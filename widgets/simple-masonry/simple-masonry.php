@@ -188,7 +188,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 
 	public function get_template_variables( $instance, $args ) {
 		return array(
-			'items' => $instance['items'],
+			'items' => isset( $instance['items'] ) ? $instance['items'] : array(),
 			'layouts' => array(
 				'desktop' => siteorigin_widgets_underscores_to_camel_case(
 					array(

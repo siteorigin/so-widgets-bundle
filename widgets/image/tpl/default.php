@@ -12,7 +12,7 @@
 ?>
 
 <?php if( $title_position == 'above' ) : ?>
-	<?php echo $args['before_title'] . esc_html( $title ) . $args['after_title']; ?>
+	<?php echo $args['before_title'] . wp_kses_post( $title ) . $args['after_title']; ?>
 <?php endif; ?>
 
 <?php
@@ -38,8 +38,8 @@ $attr = apply_filters( 'siteorigin_widgets_image_attr', $attr, $instance, $this 
 
 $classes = array('so-widget-image');
 
-if(!empty($title)) $attr['title'] = $title;
-if(!empty($alt)) $attr['alt'] = $alt;
+if( !empty( $title ) ) $attr['title'] = $title;
+if( !empty( $alt ) ) $attr['alt'] = $alt;
 
 ?>
 <div class="sow-image-container">
@@ -49,5 +49,5 @@ if(!empty($alt)) $attr['alt'] = $alt;
 </div>
 
 <?php if( $title_position == 'below' ) : ?>
-	<?php echo $args['before_title'] . esc_html( $title ) . $args['after_title']; ?>
+	<?php echo $args['before_title'] . wp_kses_post( $title ) . $args['after_title']; ?>
 <?php endif; ?>

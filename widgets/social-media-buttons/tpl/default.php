@@ -8,8 +8,8 @@
 			'class' => esc_attr( implode(' ', $classes) ),
 			'title' => sprintf( __( '%s on %s', 'so-widgets-bundle' ), get_bloginfo( 'name' ), ucwords( str_replace( '-', ' ', $network['name'] ) ) ),
 		);
-		if(!empty($instance['design']['new_window'])) $button_attributes['target'] = '_blank';
-		if ( ! empty( $network['url'] ) ) $button_attributes['href'] = sow_esc_url( $network['url'] );
+		if( !empty( $instance['design']['new_window'] ) ) $button_attributes['target'] = '_blank';
+		if ( ! empty( $network['url'] ) ) $button_attributes['href'] = sow_esc_url( trim( $network['url'] ) );
 		?>
 
 		<a <?php foreach($button_attributes as $name => $val) echo $name . '="' . esc_attr( $val ) . '" ' ?>>
