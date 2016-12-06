@@ -253,6 +253,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			}
 		}
 
+		$less_vars['responsive_breakpoint'] = siteorigin_panels_setting('mobile-width') . 'px';
 		return $less_vars;
 	}
 
