@@ -41,28 +41,32 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 			}
 		}
 
-		if ( ! wp_script_is( 'wp-color-picker' ) ) {
 			// wp-color-picker hasn't been registered because we're in the front end, so enqueue with full args.
-			wp_enqueue_script( 'iris', '/wp-admin/js/iris.min.js', array(
-				'jquery-ui-draggable',
-				'jquery-ui-slider',
-				'jquery-touch-punch'
-			), '1.0.7', 1 );
+		wp_enqueue_script( 'iris', '/wp-admin/js/iris.min.js', array(
+			'jquery-ui-draggable',
+			'jquery-ui-slider',
+			'jquery-touch-punch'
+		), '1.0.7', 1 );
 
-			wp_enqueue_script( 'wp-color-picker', '/wp-admin/js/color-picker' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'iris' ), false, 1 );
+		wp_enqueue_script( 'wp-color-picker', '/wp-admin/js/color-picker' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'iris' ), false, 1 );
 
-			wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_style( 'wp-color-picker' );
 
-			// Localization args for when wp-color-picker script hasn't been registered.
-			wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', array(
-				'clear'         => __( 'Clear', 'so-widgets-bundle' ),
-				'defaultString' => __( 'Default', 'so-widgets-bundle' ),
-				'pick'          => __( 'Select Color', 'so-widgets-bundle' ),
-				'current'       => __( 'Current Color', 'so-widgets-bundle' ),
-			) );
-		}
+		// Localization args for when wp-color-picker script hasn't been registered.
+		wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', array(
+			'clear'         => __( 'Clear', 'so-widgets-bundle' ),
+			'defaultString' => __( 'Default', 'so-widgets-bundle' ),
+			'pick'          => __( 'Select Color', 'so-widgets-bundle' ),
+			'current'       => __( 'Current Color', 'so-widgets-bundle' ),
+		) );
 
-		wp_enqueue_style( 'dashicons' );
+		$suffix = SCRIPT_DEBUG ? '' : '.min';
+
+		wp_enqueue_style( 'buttons', "/wp-includes/css/buttons$suffix.css" );
+		wp_enqueue_style( 'dashicons', "/wp-includes/css/dashicons$suffix.css" );
+		wp_enqueue_style( 'wp-mediaelement', "/wp-includes/js/mediaelement/wp-mediaelement$suffix.css", array( 'mediaelement' ) );
+		wp_enqueue_style( 'mediaelement', "/wp-includes/js/mediaelement/mediaelementplayer.min.css", array(), '2.18.1' );
+
 		wp_enqueue_media();
 
 		wp_enqueue_style( 'sowb-styles-for-elementor', plugin_dir_url( __FILE__ ) . 'styles.css' );

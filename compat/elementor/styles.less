@@ -1,9 +1,93 @@
-.elementor-control-content .siteorigin-widget-form {
+.elementor-panel #elementor-panel-page-editor .elementor-control-content .siteorigin-widget-form {
 	min-width: inherit;
+
+	.wp-picker-container {
+		float: none;
+
+		&.wp-picker-active {
+			transform: none;
+			float: none;
+			position: relative;
+			padding: 0;
+			border: none;
+			background: none;
+
+			.wp-color-result {
+				float: none;
+				margin: 0;
+			}
+
+			.wp-picker-input-wrap {
+				padding: 0;
+				float: none;
+			}
+
+			.iris-picker.iris-border {
+				background: none;
+				.iris-picker-inner {
+					left: 0;
+					right: 0;
+				}
+			}
+
+			.wp-picker-clear {
+				height: 28px;
+			}
+		}
+	}
 
 	.siteorigin-widget-field {
 		&.siteorigin-widget-field-type-link .existing-content-selector {
 			width: inherit;
 		}
+
+		& .siteorigin-widget-input-color {
+			width: 120px;
+			margin: 0 3px;
+		}
+	}
+	/* Button styles copied from wp-core for default UI look. */
+	.button, .button-secondary {
+		display: inline-block;
+		text-decoration: none;
+		font-size: 13px;
+		line-height: 26px;
+		height: 28px;
+		margin: 0;
+		padding: 0 10px 1px;
+		cursor: pointer;
+		border: 1px solid #cccccc;
+		border-radius: 3px;
+		white-space: nowrap;
+		box-sizing: border-box;
+
+		font-family: inherit;
+		font-weight: normal;
+		text-transform: capitalize;
+		color: #555;
+		background: #f7f7f7;
+
+		&:hover,
+		&:focus {
+			background: #fafafa;
+			border-color: #999;
+			color: #23282d;
+		}
+
+		&:active,
+		&:focus {
+			outline: none;
+		}
+
+		&.hidden {
+			display: none;
+		}
+	}
+
+	.button.button-small {
+		height: 25px;
+		line-height: 23px;
+		padding: 0 8px;
+		font-size: 11px;
 	}
 }
