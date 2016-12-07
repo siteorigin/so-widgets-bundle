@@ -71,19 +71,6 @@
 .sow-features-list .sow-features-clear {
   clear: both;
 }
-@media (max-width: 520px) {
-  .sow-features-list.sow-features-responsive .sow-features-feature {
-    width: 100% !important;
-    float: none;
-    margin-bottom: 40px;
-  }
-  .sow-features-list.sow-features-responsive .sow-features-feature:last-child {
-    margin-bottom: 0px;
-  }
-  .sow-features-list.sow-features-responsive .sow-features-clear {
-    clear: none;
-  }
-}
 .sow-features-list {
   /*
 	The Container Icons
