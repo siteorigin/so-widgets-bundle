@@ -926,6 +926,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		if( empty( $instance ) ) return;
 
 		$fonts = $this->get_google_font_fields($instance);
+		if( empty( $fonts ) || ! is_array( $fonts ) ) return '';
+
 		$font_imports = array();
 
 		foreach ( $fonts as $font ) {
@@ -938,10 +940,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		// Remove empty and duplicate items from the array
-		$import_strings = array_filter($import_strings);
-		$import_strings = array_unique($import_strings);
+		$import_strings = array_filter( $import_strings );
+		$import_strings = array_unique( $import_strings );
 
-		return implode("\n", $import_strings);
+		return implode( "\n", $import_strings );
 	}
 
 	/**
