@@ -15,12 +15,20 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 	private $plugin;
 
 	function __construct() {
-		$this->plugin = Elementor\Plugin::instance();
+		add_action( 'template_redirect', [ $this, 'init' ] );
+
+		add_action( 'wp_ajax_elementor_render_widget', [ $this, 'print_inline_widget_styles' ] );
+	}
+
+	function init() {
+
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_frontend_scripts' ] );
+
+		$this->plugin     = Elementor\Plugin::instance();
 		$elementor_editor = $this->plugin->editor;
-		if( is_admin() || ! $elementor_editor->is_edit_mode()) {
+		if ( is_admin() || ! $elementor_editor->is_edit_mode() ) {
 			return;
 		}
-
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ), 9999999 );
 		add_action( 'wp_print_footer_scripts', array( $this, 'print_footer_templates' ) );
 
@@ -28,11 +36,30 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 		add_filter( 'siteorigin_widgets_form_show_preview_button', '__return_false' );
 	}
 
+	function enqueue_frontend_scripts() {
+
+		global $wp_widget_factory;
+
+		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
+			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
+				ob_start();
+				$widget_obj->widget( array() );
+				ob_clean();
+			}
+		}
+	}
+
+	function is_preview() {
+		$is_preview = true;
+
+		return $is_preview;
+	}
+
 	function enqueue_active_widgets_scripts() {
 
 		global $wp_widget_factory;
 
-		// Elementor does it's editing in the front end so enqueue required form scripts for active widgets.
+		// Elementor does it's editing in it's own front end so enqueue required form scripts for active widgets.
 		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
 			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
 				ob_start();
@@ -84,6 +111,19 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 				$widget_obj->footer_admin_templates();
 			}
 		}
+	}
+
+	function print_inline_widget_styles() {
+
+		add_filter( 'siteorigin_widgets_is_preview', array( $this, 'is_preview' ) );
+
+		add_filter( 'elementor/widget/render_content', array( $this, 'render_widget_preview' ) );
+	}
+
+	function render_widget_preview( $widget_output, $elementor_widget_base ) {
+		siteorigin_widget_print_styles();
+
+		return $widget_output;
 	}
 }
 

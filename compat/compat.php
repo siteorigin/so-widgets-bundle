@@ -2,8 +2,8 @@
 
 class SiteOrigin_Widgets_Bundle_Compatibility {
 
-	const BEAVER_BUILDER = 'BEAVER_BUILDER';
-	const ELEMENTOR = 'ELEMENTOR';
+	const BEAVER_BUILDER = 'Beaver Builder';
+	const ELEMENTOR = 'Elementor';
 
 	/**
 	 * Get the singleton instance
@@ -16,22 +16,29 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 	}
 
 	function __construct() {
-		add_action('wp', array( $this, 'init' ), 9 );
+		$builder = $this->get_active_builder();
+		if ( ! empty( $builder ) ) {
+			require_once $builder['file_path'];
+		}
 	}
 
-	function init() {
-		if ( $this->is_active( self::BEAVER_BUILDER ) ) {
-			require_once plugin_dir_path( __FILE__ ) . 'beaver-builder/beaver-builder.php';
+	function get_active_builder() {
+
+		$builders = include_once 'builders.php';
+
+		foreach ( $builders as $builder ) {
+			if ( $this->is_active( $builder ) ) {
+				return $builder;
+			}
 		}
-		if ( $this->is_active( self::ELEMENTOR ) ) {
-			require_once plugin_dir_path( __FILE__ ) . 'elementor/elementor.php';
-		}
+
+		return null;
 	}
 
 	function is_active( $builder ) {
-		switch ( $builder ) {
+		switch ( $builder[ 'name' ] ) {
 			case self::BEAVER_BUILDER:
-				return class_exists( 'FLBuilderModel' ) && FLBuilderModel::is_builder_active();
+				return class_exists( 'FLBuilderModel' );
 			break;
 			case self::ELEMENTOR:
 				return version_compare( PHP_VERSION, '5.4', '>=' ) && class_exists( 'Elementor\\Plugin' );
