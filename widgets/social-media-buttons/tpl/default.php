@@ -8,7 +8,7 @@
 		$classes[] = "sow-social-media-button";
 		$button_attributes = array(
 			'class' => esc_attr( implode(' ', $classes) ),
-			'title' => sprintf( __( '%s on %s', 'so-widgets-bundle' ), get_bloginfo( 'name' ), ucwords( str_replace( '-', ' ', $network['name'] ) ) ),
+			'title' => empty( $network['icon_title'] ) ? sprintf( __( '%s on %s', 'so-widgets-bundle' ), get_bloginfo( 'name' ), ucwords( str_replace( '-', ' ', $network['name'] ) ) ) : $network['icon_title'],
 		);
 		if( !empty( $instance['design']['new_window'] ) ) $button_attributes['target'] = '_blank';
 		if ( ! empty( $network['url'] ) ) $button_attributes['href'] = sow_esc_url( trim( $network['url'] ) );

@@ -61,6 +61,10 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 						'type'  => 'text',
 						'label' => __( 'URL', 'so-widgets-bundle' )
 					),
+					'icon_title' => array(
+						'type' => 'text',
+						'label' => __( 'Icon title', 'so-widgets-bundle' ),
+					),
 					'icon_color'   => array(
 						'type'  => 'color',
 						'label' => __( 'Icon color', 'so-widgets-bundle' )
