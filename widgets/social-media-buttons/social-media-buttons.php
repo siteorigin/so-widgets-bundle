@@ -37,6 +37,10 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
+			'title' => array(
+				'type' => 'text',
+				'label' => __( 'Title', 'so-widgets-bundle' ),
+			),
 			'networks' => array(
 				'type'       => 'repeater',
 				'label'      => __( 'Networks', 'so-widgets-bundle' ),

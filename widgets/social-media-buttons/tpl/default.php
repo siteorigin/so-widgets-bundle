@@ -1,3 +1,5 @@
+<?php if ( !empty( $instance['title'] ) ) echo $args['before_title'] . esc_html( $instance['title'] ) . $args['after_title']; ?>
+
 <div class="social-media-button-container">
 	<?php foreach( $networks as $network ) :
 		$classes = array();
