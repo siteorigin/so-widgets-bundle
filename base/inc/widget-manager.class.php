@@ -117,6 +117,7 @@ class SiteOrigin_Widgets_Widget_Manager {
 	 * @return mixed
 	 */
 	function get_class_from_path( $path ) {
+		$path = realpath( $path );
 		foreach( $this->registered as $id => $r ) {
 			if( $r->path == $path ) return $r->class;
 		}
