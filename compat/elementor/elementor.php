@@ -17,7 +17,7 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 	function __construct() {
 		add_action( 'template_redirect', [ $this, 'init' ] );
 
-		add_action( 'wp_ajax_elementor_render_widget', [ $this, 'print_inline_widget_styles' ] );
+		add_action( 'wp_ajax_elementor_render_widget', [ $this, 'wp_ajax_render_widget_preview' ] );
 	}
 
 	function init() {
@@ -47,12 +47,6 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 				ob_clean();
 			}
 		}
-	}
-
-	function is_preview() {
-		$is_preview = true;
-
-		return $is_preview;
 	}
 
 	function enqueue_active_widgets_scripts() {
@@ -113,14 +107,20 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 		}
 	}
 
-	function print_inline_widget_styles() {
+	function wp_ajax_render_widget_preview() {
 
-		add_filter( 'siteorigin_widgets_is_preview', array( $this, 'is_preview' ) );
-
-		add_filter( 'elementor/widget/render_content', array( $this, 'render_widget_preview' ) );
+		add_filter( 'elementor/widget/render_content', array( $this, 'render_widget_preview' ), 10, 2 );
 	}
 
 	function render_widget_preview( $widget_output, $elementor_widget_base ) {
+
+		$wp_scripts = wp_scripts();
+		$wp_styles = wp_styles();
+
+		// Print any scripts and styles we may have enqueued for live preview.
+		wp_print_scripts( $wp_scripts->queue );
+		wp_print_styles( $wp_styles->queue );
+
 		siteorigin_widget_print_styles();
 
 		return $widget_output;
