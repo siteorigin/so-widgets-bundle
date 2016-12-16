@@ -713,6 +713,7 @@ class SiteOrigin_Widgets_Bundle {
 					if ( ! empty( $wp_registered_widgets[$id] ) ) {
 						$widget = $wp_registered_widgets[$id]['callback'][0];
 						if ( !empty($widget) && is_object($widget) && is_subclass_of($widget, 'SiteOrigin_Widget') && is_active_widget( false, false, $widget->id_base ) ) {
+							/* @var $widget SiteOrigin_Widget */
 							$opt_wid = get_option( 'widget_' . $widget->id_base );
 							preg_match( '/-([0-9]+$)/', $id, $num_match );
 							$widget_instance = $opt_wid[ $num_match[1] ];

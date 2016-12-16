@@ -115,7 +115,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 	}
 
 	function enqueue_frontend_scripts( $instance ) {
-		$video_host = $instance['host_type'];
+		$video_host = empty( $instance['host_type'] ) ? '' : $instance['host_type'];
 		if ( $video_host == 'external' ) {
 			$video_host = ! empty( $instance['video']['external_video'] ) ? $this->get_host_from_url( $instance['video']['external_video'] ) : '';
 		}

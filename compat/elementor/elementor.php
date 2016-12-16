@@ -17,7 +17,8 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 	function __construct() {
 		add_action( 'template_redirect', [ $this, 'init' ] );
 
-		add_action( 'wp_ajax_elementor_render_widget', [ $this, 'wp_ajax_render_widget_preview' ] );
+		add_action( 'wp_ajax_elementor_render_widget', [ $this, 'ajax_render_widget_preview' ] );
+		add_action( 'wp_ajax_elementor_editor_get_wp_widget_form', [ $this, 'ajax_render_widget_form' ] );
 	}
 
 	function init() {
@@ -31,9 +32,6 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 		}
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ), 9999999 );
 		add_action( 'wp_print_footer_scripts', array( $this, 'print_footer_templates' ) );
-
-		// Don't want to show the form preview button when using Elementor
-		add_filter( 'siteorigin_widgets_form_show_preview_button', '__return_false' );
 	}
 
 	function enqueue_frontend_scripts() {
@@ -43,6 +41,7 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
 			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
 				ob_start();
+				/* @var $widget_obj SiteOrigin_Widget */
 				$widget_obj->widget( array() );
 				ob_clean();
 			}
@@ -56,43 +55,12 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 		// Elementor does it's editing in it's own front end so enqueue required form scripts for active widgets.
 		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
 			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
-				ob_start();
-				$widget_obj->form( array() );
-				ob_clean();
+				/* @var $widget_obj SiteOrigin_Widget */
+				$widget_obj->enqueue_scripts( 'widget' );
 			}
 		}
 
-			// wp-color-picker hasn't been registered because we're in the front end, so enqueue with full args.
-		wp_enqueue_script( 'iris', '/wp-admin/js/iris.min.js', array(
-			'jquery-ui-draggable',
-			'jquery-ui-slider',
-			'jquery-touch-punch'
-		), '1.0.7', 1 );
-
-		wp_enqueue_script( 'wp-color-picker', '/wp-admin/js/color-picker' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'iris' ), false, 1 );
-
-		wp_enqueue_style( 'wp-color-picker' );
-
-		// Localization args for when wp-color-picker script hasn't been registered.
-		wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', array(
-			'clear'         => __( 'Clear', 'so-widgets-bundle' ),
-			'defaultString' => __( 'Default', 'so-widgets-bundle' ),
-			'pick'          => __( 'Select Color', 'so-widgets-bundle' ),
-			'current'       => __( 'Current Color', 'so-widgets-bundle' ),
-		) );
-
-		$suffix = SCRIPT_DEBUG ? '' : '.min';
-
-		wp_enqueue_style( 'buttons', "/wp-includes/css/buttons$suffix.css" );
-		wp_enqueue_style( 'dashicons', "/wp-includes/css/dashicons$suffix.css" );
-		wp_enqueue_style( 'wp-mediaelement', "/wp-includes/js/mediaelement/wp-mediaelement$suffix.css", array( 'mediaelement' ) );
-		wp_enqueue_style( 'mediaelement', "/wp-includes/js/mediaelement/mediaelementplayer.min.css", array(), '2.18.1' );
-
-		wp_enqueue_media();
-
 		wp_enqueue_style( 'sowb-styles-for-elementor', plugin_dir_url( __FILE__ ) . 'styles.css' );
-
-		wp_enqueue_style( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/css/admin.css', array( 'media-views' ), SOW_BUNDLE_VERSION );
 
 	}
 
@@ -102,17 +70,18 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 		// Elementor does it's editing in the front end so print required footer templates for active widgets.
 		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
 			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
+				/* @var $widget_obj SiteOrigin_Widget */
 				$widget_obj->footer_admin_templates();
 			}
 		}
 	}
 
-	function wp_ajax_render_widget_preview() {
+	function ajax_render_widget_preview() {
 
-		add_filter( 'elementor/widget/render_content', array( $this, 'render_widget_preview' ), 10, 2 );
+		add_filter( 'elementor/widget/render_content', array( $this, 'render_widget_preview' ), 10 );
 	}
 
-	function render_widget_preview( $widget_output, $elementor_widget_base ) {
+	function render_widget_preview( $widget_output) {
 
 		$wp_scripts = wp_scripts();
 		$wp_styles = wp_styles();
@@ -121,9 +90,12 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 		wp_print_scripts( $wp_scripts->queue );
 		wp_print_styles( $wp_styles->queue );
 
-		siteorigin_widget_print_styles();
-
 		return $widget_output;
+	}
+
+	function ajax_render_widget_form() {
+		// Don't want to show the form preview button when using Elementor
+		add_filter( 'siteorigin_widgets_form_show_preview_button', array( $this, '__return_false') );
 	}
 }
 

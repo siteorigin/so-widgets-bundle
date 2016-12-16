@@ -228,7 +228,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	/**
 	 * Generate the CSS for this widget and display it in the appropriate way
 	 *
-	 * @param $instance The instance array
+	 * @param $instance array The instance array
 	 *
 	 * @return string The CSS name
 	 */
