@@ -853,17 +853,17 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 
 		// Add in the default sender if no email field is defined 
-		if ( !isset( $email_fields['email'] ) && !empty($instance['settings']['default_sender']) ) {
+		if ( ! isset( $email_fields['email'] ) && ! empty( $instance['settings']['default_sender'] ) ) {
 			$email_fields['email'] = $instance['settings']['default_sender'];
 		}
 
 		// Add in the default subject if no subject field is defined in the form at all
-		if ( !isset( $email_fields['subject'] ) && !empty($instance['settings']['default_subject']) ) {
+		if ( ! isset( $email_fields['subject'] ) && ! empty( $instance['settings']['default_subject'] ) ) {
 			$email_fields['subject'] = $instance['settings']['default_subject'];
 		}
 
 		// Add in the default subject prefix
-		if( !empty( $email_fields['subject'] ) && !empty($instance['settings']['subject_prefix']) ) {
+		if( ! empty( $email_fields['subject'] ) && ! empty( $instance['settings']['subject_prefix'] ) ) {
 			$email_fields['subject'] = $instance['settings']['subject_prefix'] . ' ' . $email_fields['subject'];
 		}
 
