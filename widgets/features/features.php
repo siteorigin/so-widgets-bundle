@@ -34,7 +34,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function initialize_form(){
+	function get_widget_form(){
 
 		return array(
 			'features' => array(
@@ -61,6 +61,11 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					'icon' => array(
 						'type' => 'icon',
 						'label' => __('Icon', 'so-widgets-bundle'),
+					),
+
+					'icon_title' => array(
+						'type' => 'text',
+						'label' => __( 'Icon title', 'so-widgets-bundle' ),
 					),
 
 					'icon_color' => array(

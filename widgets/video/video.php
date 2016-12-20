@@ -25,7 +25,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function initialize_form() {
+	function get_widget_form() {
 		return array(
 			'title'     => array(
 				'type'  => 'text',
@@ -160,21 +160,23 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		$video_host          = $instance['host_type'];
 		if ( $video_host == 'self' ) {
 
-			foreach ( $instance['video']['self_sources'] as $source ) {
-				$src        = '';
-				$video_type = '';
-				if ( ! empty( $source['self_video'] ) ) {
-					// Handle an attachment video
-					$src        = wp_get_attachment_url( $source['self_video'] );
-					$video_type = get_post_mime_type( $source['self_video'] );
-				} else if ( ! empty( $source['self_video_fallback'] ) ) {
-					// Handle an external URL video
-					$src        = $source['self_video_fallback'];
-					$vid_info   = wp_check_filetype( basename( $source['self_video_fallback'] ) );
-					$video_type = $vid_info['type'];
-				}
-				if ( ! empty( $src ) ) {
-					$self_sources[] = array( 'src' => $src, 'video_type' => $video_type );
+			if ( isset( $instance['video']['self_sources'] ) ) {
+				foreach ( $instance['video']['self_sources'] as $source ) {
+					$src        = '';
+					$video_type = '';
+					if ( ! empty( $source['self_video'] ) ) {
+						// Handle an attachment video
+						$src        = wp_get_attachment_url( $source['self_video'] );
+						$video_type = get_post_mime_type( $source['self_video'] );
+					} else if ( ! empty( $source['self_video_fallback'] ) ) {
+						// Handle an external URL video
+						$src        = $source['self_video_fallback'];
+						$vid_info   = wp_check_filetype( basename( $source['self_video_fallback'] ) );
+						$video_type = $vid_info['type'];
+					}
+					if ( ! empty( $src ) ) {
+						$self_sources[] = array( 'src' => $src, 'video_type' => $video_type );
+					}
 				}
 			}
 			$poster = ! empty( $instance['video']['self_poster'] ) ? wp_get_attachment_url( $instance['video']['self_poster'] ) : '';

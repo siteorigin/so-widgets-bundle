@@ -31,6 +31,12 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#99C4E6'
 	),
+	'snapchat'    => array(
+		'label'    => __( 'Snapchat', 'so-widgets-bundle' ),
+		'base_url' => 'https://www.snapchat.com/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#FFFC00'
+	),
 	'linkedin'    => array(
 		'label'    => __( 'LinkedIn', 'so-widgets-bundle' ),
 		'base_url' => 'https://www.linkedin.com/',
@@ -239,7 +245,7 @@ return array(
 		'button_color' => '#5BC8FF'
 	),
 	'wordpress'   => array(
-		'label'    => __( 'Wordpress', 'so-widgets-bundle' ),
+		'label'    => __( 'WordPress', 'so-widgets-bundle' ),
 		'base_url' => 'https://wordpress.org/',
 		'icon_color' => '#797979',
 		'button_color' => '#222222'

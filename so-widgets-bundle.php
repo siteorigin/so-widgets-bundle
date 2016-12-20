@@ -25,6 +25,8 @@ if( !function_exists('siteorigin_widget_get_plugin_path') ) {
 	include plugin_dir_path(__FILE__).'icons/icons.php';
 }
 
+include_once plugin_dir_path(__FILE__).'compat/compat.php';
+
 class SiteOrigin_Widgets_Bundle {
 
 	private $widget_folders;
@@ -45,8 +47,13 @@ class SiteOrigin_Widgets_Bundle {
 		add_action('admin_init', array($this, 'admin_activate_widget') );
 		add_action('admin_menu', array($this, 'admin_menu_init') );
 		add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_scripts') );
+
+		// All the ajax actions
 		add_action('wp_ajax_so_widgets_bundle_manage', array($this, 'admin_ajax_manage_handler') );
 		add_action('wp_ajax_sow_get_javascript_variables', array($this, 'admin_ajax_get_javascript_variables') );
+
+		add_action('wp_ajax_so_widgets_setting_form', array($this, 'admin_ajax_settings_form') );
+		add_action('wp_ajax_so_widgets_setting_save', array($this, 'admin_ajax_settings_save') );
 
 		// Initialize the widgets, but do it fairly late
 		add_action( 'plugins_loaded', array($this, 'set_plugin_textdomain'), 1 );
@@ -219,7 +226,7 @@ class SiteOrigin_Widgets_Bundle {
 		if( empty($this->widget_folders) ) {
 			// We can use this filter to add more folders to use for widgets
 			$this->widget_folders = apply_filters('siteorigin_widgets_widget_folders', array(
-				plugin_dir_path(__FILE__).'widgets/'
+				plugin_dir_path(__FILE__) . 'widgets/'
 			) );
 		}
 
@@ -351,6 +358,58 @@ class SiteOrigin_Widgets_Bundle {
 	}
 
 	/**
+	 * Handler for displaying the Widget settings form.
+	 *
+	 * @action wp_ajax_so_widgets_setting_form
+	 */
+	function admin_ajax_settings_form(){
+		if( ! wp_verify_nonce($_GET['_wpnonce'], 'display-widget-form') ) exit();
+		if( ! current_user_can( apply_filters( 'siteorigin_widgets_admin_menu_capability', 'manage_options' ) ) ) exit();
+
+		$widget_objects = $this->get_widget_objects();
+		$widget_object = !empty( $widget_objects[ $_GET['id'] ] ) ? $widget_objects[ $_GET['id'] ] : false;
+
+		if( empty( $widget_object ) || ! $widget_object->has_form( 'settings' ) ) exit();
+
+		unset( $widget_object->widget_options['has_preview'] );
+
+		$action_url = admin_url( 'admin-ajax.php' );
+		$action_url = add_query_arg( array(
+			'id' => $_GET['id'],
+			'action' => 'so_widgets_setting_save',
+		), $action_url );
+		$action_url = wp_nonce_url( $action_url, 'save-widget-settings' );
+
+		$value = $widget_object->get_global_settings();
+
+		?>
+		<form method="post" action="<?php echo esc_url( $action_url ) ?>" target="so-widget-settings-save">
+			<?php $widget_object->form( $value, 'settings' ) ?>
+		</form>
+		<?php
+
+		exit();
+	}
+
+	/**
+	 * Handler for saving the widget settings.
+	 *
+	 * @action wp_ajax_so_widgets_setting_save
+	 */
+	function admin_ajax_settings_save(){
+		if( ! wp_verify_nonce( $_GET['_wpnonce'], 'save-widget-settings' ) ) exit();
+		if( ! current_user_can( apply_filters( 'siteorigin_widgets_admin_menu_capability', 'manage_options' ) ) ) exit();
+
+		$widget_objects = $this->get_widget_objects();
+		$widget_object = !empty( $widget_objects[ $_GET['id'] ] ) ? $widget_objects[ $_GET['id'] ] : false;
+
+		if( empty( $widget_object ) || ! $widget_object->has_form( 'settings' ) ) exit();
+
+		$form_values = array_shift( array_shift( array_values( $_POST ) ) );
+		$widget_object->save_global_settings( $form_values );
+	}
+
+	/**
 	 * Add the admin menu page.
 	 *
 	 * @action admin_menu
@@ -369,9 +428,8 @@ class SiteOrigin_Widgets_Bundle {
 	 * Display the admin page.
 	 */
 	function admin_page(){
-
-		$bundle = SiteOrigin_Widgets_Bundle::single();
-		$widgets = $bundle->get_widgets_list();
+		$widgets = $this->get_widgets_list();
+		$widget_objects = $this->get_widget_objects();
 
 		if(
 			isset($_GET['widget_action_done'])
@@ -379,7 +437,6 @@ class SiteOrigin_Widgets_Bundle {
 			&& !empty($_GET['widget'])
 			&& !empty( $widgets[ $_GET['widget'].'/'.$_GET['widget'].'.php' ] )
 		) {
-
 			?>
 			<div class="updated">
 				<p>
@@ -395,6 +452,11 @@ class SiteOrigin_Widgets_Bundle {
 			<?php
 		}
 
+		// Enqueue all the admin page scripts
+		foreach( $widget_objects as $widget ) {
+			$widget->enqueue_scripts( 'settings' );
+		}
+
 		include plugin_dir_path(__FILE__).'admin/tpl/admin.php';
 	}
 
@@ -408,7 +470,7 @@ class SiteOrigin_Widgets_Bundle {
 		global $wp_widget_factory;
 		if ( ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ) {
 			$widget = $wp_widget_factory->widgets[ $widget_class ];
-			if( method_exists($widget, 'get_javascript_variables') ) $result = $widget->get_javascript_variables();
+			if( method_exists( $widget, 'get_javascript_variables' ) ) $result = $widget->get_javascript_variables();
 		}
 
 		header('content-type: application/json');
@@ -509,7 +571,7 @@ class SiteOrigin_Widgets_Bundle {
 		$widgets = array();
 		foreach( $folders as $folder ) {
 
-			$files = glob( $folder.'*/*.php' );
+			$files = glob( $folder . '*/*.php' );
 			foreach($files as $file) {
 				$widget = get_file_data( $file, $default_headers, 'siteorigin-widget' );
 				//skip the file if it's missing a name
@@ -520,16 +582,42 @@ class SiteOrigin_Widgets_Bundle {
 				$id = $f['filename'];
 
 				$widget['ID'] = $id;
-				$widget['Active'] = !empty($active[$id]);
+				$widget['Active'] = !empty( $active[ $id ] );
 				$widget['File'] = $file;
 
-				$widgets[$file] = $widget;
+				$widgets[ $file ] = $widget;
 			}
 
 		}
 
 		// Sort the widgets alphabetically
 		uasort( $widgets, array($this, 'widget_uasort') );
+		return $widgets;
+	}
+
+	/**
+	 * Get instances of all the widgets. Even ones that are not active.
+	 */
+	private function get_widget_objects(){
+		$folders = $this->get_widget_folders();
+
+		$widgets = array();
+		$manager = SiteOrigin_Widgets_Widget_Manager::single();
+
+		foreach( $folders as $folder ) {
+
+			$files = glob( $folder . '*/*.php' );
+			foreach ($files as $file) {
+				include_once $file;
+
+				$widget_class = $manager->get_class_from_path( $file );
+
+				if( $widget_class && class_exists( $widget_class ) ) {
+					$widgets[ $file ] = new $widget_class();
+				}
+			}
+		}
+
 		return $widgets;
 	}
 

@@ -27,7 +27,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		);
 	}
 
-	function initialize_form(){
+	function get_widget_form(){
 		return array(
 			'frames' => array(
 				'type' => 'repeater',
@@ -184,6 +184,19 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 				)
 			),
 		);
+	}
+
+	function form( $instance, $form_type = 'widget' ) {
+		if( defined('SITEORIGIN_PANELS_VERSION') ) {
+			parent::form( $instance, $form_type );
+		} else {
+			?>
+			<p>
+				<?php _e( 'This widget requires: ', 'so-widgets-bundle' ) ?>
+				<a href="https://siteorigin.com/page-builder/" target="_blank"><?php _e( 'SiteOrigin Page Builder', 'so-widgets-bundle' ) ?></a>
+			</p>
+			<?php
+		}
 	}
 
 	/**

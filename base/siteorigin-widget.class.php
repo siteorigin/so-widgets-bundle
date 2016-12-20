@@ -38,7 +38,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	static $css_expire = 604800; // 7 days
 
 	/**
-	 *
 	 * @param string $id
 	 * @param string $name
 	 * @param array $widget_options Optional Normal WP_Widget widget options and a few extras.
@@ -61,7 +60,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			'has_preview' => true,
 		) );
 
-		$control_options = wp_parse_args($widget_options, array(
+		$control_options = wp_parse_args( $control_options, array(
 			'width' => 800,
 		) );
 
@@ -84,16 +83,36 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Return the form array. Widgets should implement this if they don't have a form in the form array.
+	 * Get the main widget form. This should be overwritten by child widgets.
 	 *
 	 * @return array
 	 */
-	function initialize_form( ){
-		return array();
+	function get_widget_form(){
+		return method_exists( $this, 'initialize_form' ) ? $this->initialize_form() : array();
 	}
 
 	/**
-	 * Get the form options and allow child widgets to modify that form.
+	 * Check if a child widget implements a specific form type.
+	 *
+	 * @param string $form_type
+	 * @return bool
+	 */
+	function has_form( $form_type = 'widget' ){
+		return method_exists( $this, 'get_' . $form_type . '_form' );
+	}
+
+	/**
+	 * Get a specific type of form.
+	 *
+	 * @param $form_type
+	 * @return array The form array, or an empty array if the form doesn't exist.
+	 */
+	function get_form( $form_type ) {
+		return $this->has_form( $form_type ) ? call_user_func( array( $this, 'get_' . $form_type . '_form'  ) ) : array();
+	}
+
+	/**
+	 * Get the main form options and allow child widgets to modify that form.
 	 *
 	 * @param bool|SiteOrigin_Widget $parent
 	 *
@@ -101,7 +120,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	function form_options( $parent = false ) {
 		if( empty( $this->form_options ) ) {
-			$this->form_options = $this->initialize_form();
+			// If the widget doesn't have form_options defined from the constructor, then it might be defining them in the get_widget_form function
+			$this->form_options = $this->get_widget_form();
 		}
 
 		$form_options = $this->modify_form( $this->form_options );
@@ -123,7 +143,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		if( empty( $this->form_options ) ) {
-			$this->form_options = $this->initialize_form();
+			$form_options = $this->get_widget_form();
+		}
+		else {
+			$form_options = $this->modify_form( $this->form_options );
 		}
 
 		$instance = $this->modify_instance( $instance );
@@ -140,7 +163,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		) );
 
 		// Add any missing default values to the instance
-		$instance = $this->add_defaults( $this->form_options, $instance );
+		$instance = $this->add_defaults( $form_options, $instance );
 
 		$css_name = $this->generate_and_enqueue_instance_styles( $instance );
 		$this->enqueue_frontend_scripts( $instance );
@@ -193,11 +216,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		);
 		$wrapper_classes = array_map( 'sanitize_html_class', $wrapper_classes );
 
+		do_action( 'siteorigin_widgets_before_widget_' . $this->id_base, $instance, $this );
 		echo $args['before_widget'];
 		echo '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '">';
 		echo $template_html;
 		echo '</div>';
 		echo $args['after_widget'];
+		do_action( 'siteorigin_widgets_after_widget_' . $this->id_base, $instance, $this );
 	}
 
 	/**
@@ -208,15 +233,18 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string The CSS name
 	 */
 	function generate_and_enqueue_instance_styles( $instance ) {
-		if( empty( $this->form_options ) ) {
-			$this->form_options = $this->initialize_form();
+		if( empty( $form_options ) ) {
+			$form_options = $this->get_widget_form();
+		}
+		else {
+			$form_options = $this->modify_form( $this->form_options );
 		}
 
 		// We'll assume empty instances don't have styles
 		if( empty($instance) ) return;
 
 		// Make sure all the default values are in place
-		$instance = $this->add_defaults( $this->form_options, $instance );
+		$instance = $this->add_defaults( $form_options, $instance );
 
 		$this->current_instance = $instance;
 		$style = $this->get_style_name( $instance );
@@ -309,7 +337,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param $form
 	 * @param $instance
 	 */
-	function add_defaults($form, $instance, $level = 0){
+	function add_defaults( $form, $instance, $level = 0 ){
 		if( $level > 10 ) return $instance;
 
 		foreach($form as $id => $field) {
@@ -341,11 +369,23 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * Display the widget form.
 	 *
 	 * @param array $instance
+	 * @param string $form_type Which type of form we're using
+	 *
 	 * @return string|void
 	 */
-	public function form( $instance ) {
+	public function form( $instance, $form_type = 'widget' ) {
+		if( $form_type == 'widget' ) {
+			if( empty( $this->form_options ) ) {
+				$this->form_options = $this->form_options();
+			}
+			$form_options = $this->form_options;
+		}
+		else {
+			$form_options = $this->get_form( $form_type );
+		}
+
 		$instance = $this->modify_instance($instance);
-		$instance = $this->add_defaults( $this->form_options(), $instance );
+		$instance = $this->add_defaults( $form_options, $instance );
 
 		if( empty( $this->number ) ) {
 			// Compatibility with form widgets.
@@ -361,14 +401,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		if( empty( $instance['_sow_form_id'] ) ) {
 			$instance['_sow_form_id'] = uniqid();
 		}
-
 		?>
 		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>" id="<?php echo $form_id ?>" data-class="<?php echo esc_attr( $this->widget_class ) ?>" style="display: none">
 			<?php
+			$this->display_teaser_message();
 			/* @var $field_factory SiteOrigin_Widget_Field_Factory */
-			$field_factory = SiteOrigin_Widget_Field_Factory::getInstance();
+			$field_factory = SiteOrigin_Widget_Field_Factory::single();
 			$fields_javascript_variables = array();
-			foreach( $this->form_options() as $field_name => $field_options ) {
+			foreach( $form_options as $field_name => $field_options ) {
 				/* @var $field SiteOrigin_Widget_Field_Base */
 				$field = $field_factory->create_field( $field_name, $field_options, $this );
 				$field->render( isset( $instance[$field_name] ) ? $instance[$field_name] : null, $instance );
@@ -386,7 +426,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			<?php $this->scripts_loading_message() ?>
 		</div>
 
-		<?php if( $this->widget_options['has_preview'] && ! $this->is_customize_preview() ) : ?>
+		<?php if( $this->show_preview_button() ) : ?>
 			<div class="siteorigin-widget-preview" style="display: none">
 				<a href="#" class="siteorigin-widget-preview-button button-secondary"><?php _e('Preview', 'so-widgets-bundle') ?></a>
 			</div>
@@ -414,7 +454,47 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		</script>
 		<?php
 
-		$this->enqueue_scripts();
+		$this->enqueue_scripts( $form_type );
+	}
+
+	/**
+	 * Display the teaser message.
+	 */
+	function display_teaser_message(){
+		if(
+			method_exists( $this, 'get_form_teaser' ) &&
+			( $teaser = $this->get_form_teaser() )
+		) {
+			if ( ! is_admin() ) {
+				wp_enqueue_style( 'dashicons' );
+			}
+
+			$dismissed = get_user_meta( get_current_user_id(), 'teasers_dismissed', true );
+			if( empty( $dismissed[ $this->id_base ] ) ) {
+				$dismiss_url = add_query_arg( array(
+					'action' => 'so_dismiss_widget_teaser',
+					'widget' => $this->id_base,
+				), admin_url( 'admin-ajax.php' ) );
+				$dismiss_url = wp_nonce_url( $dismiss_url, 'dismiss-widget-teaser' );
+
+				?>
+				<div class="siteorigin-widget-teaser">
+					<?php echo wp_kses_post( $teaser ) ?>
+					<span class="dashicons dashicons-dismiss" data-dismiss-url="<?php echo esc_url( $dismiss_url ) ?>"></span>
+				</div>
+				<?php
+			}
+		}
+	}
+
+	/**
+	 * Should we display the teaser for SiteOrigin Premium
+	 *
+	 * @return bool
+	 */
+	function display_siteorigin_premium_teaser(){
+		return apply_filters( 'siteorigin_premium_upgrade_teaser', true ) &&
+		       ! defined( 'SITEORIGIN_PREMIUM_VERSION' );
 	}
 
 	function scripts_loading_message(){
@@ -426,8 +506,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 	/**
 	 * Enqueue the admin scripts for the widget form.
+	 *
+	 * @param bool|string $form_type Should we enqueue the field scripts too?
 	 */
-	function enqueue_scripts(){
+	function enqueue_scripts( $form_type = false ) {
 
 		if( ! wp_script_is('siteorigin-widget-admin') ) {
 			wp_enqueue_style( 'wp-color-picker' );
@@ -455,9 +537,30 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			siteorigin_widget_post_selector_enqueue_admin_scripts();
 		}
 
+		if( !empty( $form_type ) && $this->has_form( $form_type ) ) {
+			// Enqueue field scripts for the given form type
+			$form_options = $this->get_form( $form_type );
+			$this->enqueue_field_scripts( $form_options );
+		}
+
 		// This lets the widget enqueue any specific admin scripts
 		$this->enqueue_admin_scripts();
 		do_action( 'siteorigin_widgets_enqueue_admin_scripts_' . $this->id_base, $this );
+	}
+
+	function enqueue_field_scripts( $fields ){
+		/* @var $field_factory SiteOrigin_Widget_Field_Factory */
+		$field_factory = SiteOrigin_Widget_Field_Factory::single();
+
+		foreach( $fields as $field_name => $field_options ) {
+			/* @var $field SiteOrigin_Widget_Field_Base */
+			$field = $field_factory->create_field( $field_name, $field_options, $this );
+			$field->enqueue_scripts();
+
+			if( !empty( $field_options['fields'] ) ) {
+				$this->enqueue_field_scripts( $field_options['fields'] );
+			}
+		}
 	}
 
 	/**
@@ -470,7 +573,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				<div class="so-widgets-dialog-overlay"></div>
 
 				<div class="so-widgets-toolbar">
-					<h3><?php _e('Widget Preview', 'so-widgets-bundle') ?></h3>
+					<h3><?php _e( 'Widget Preview', 'so-widgets-bundle' ) ?></h3>
 					<div class="close"><span class="dashicons dashicons-arrow-left-alt2"></span></div>
 				</div>
 
@@ -493,13 +596,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Checks if the current widget is using a posts selector
+	 * Checks if the current widget is using a posts selector in the main form.
 	 *
 	 * @return bool
 	 */
 	function using_posts_selector(){
 		if( empty( $this->form_options ) ) {
-			$this->form_options = $this->initialize_form();
+			$this->form_options = $this->form_options();
 		}
 
 		foreach($this->form_options as $field) {
@@ -513,15 +616,25 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @param array $new_instance
 	 * @param array $old_instance
+	 * @param string $form_type The type of form we're using.
 	 * @return array|void
 	 */
-	public function update( $new_instance, $old_instance ) {
+	public function update( $new_instance, $old_instance, $form_type = 'widget' ) {
 		if( !class_exists('SiteOrigin_Widgets_Color_Object') ) require plugin_dir_path( __FILE__ ).'inc/color.php';
 
-		$form_options = $this->form_options();
+		if( $form_type == 'widget' ) {
+			if( empty( $this->form_options ) ) {
+				$this->form_options = $this->form_options();
+			}
+			$form_options = $this->form_options;
+		}
+		else {
+			$form_options = $this->get_form( $form_type );
+		}
+
 		if( ! empty( $form_options ) ) {
 			/* @var $field_factory SiteOrigin_Widget_Field_Factory */
-			$field_factory = SiteOrigin_Widget_Field_Factory::getInstance();
+			$field_factory = SiteOrigin_Widget_Field_Factory::single();
 			foreach ( $form_options as $field_name => $field_options ) {
 				/* @var $field SiteOrigin_Widget_Field_Base */
 				if ( !empty( $this->fields ) && !empty( $this->fields[$field_name] ) ) {
@@ -531,7 +644,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$field = $field_factory->create_field( $field_name, $field_options, $this );
 					$this->fields[$field_name] = $field;
 				}
-				$new_instance[$field_name] = $field->sanitize( isset( $new_instance[$field_name] ) ? $new_instance[$field_name] : null, $new_instance );
+				$new_instance[$field_name] = $field->sanitize(
+					isset( $new_instance[$field_name] ) ? $new_instance[$field_name] : null,
+					$new_instance,
+					isset( $old_instance[$field_name] ) ? $old_instance[$field_name] : null
+				);
 				$new_instance = $field->sanitize_instance( $new_instance );
 			}
 
@@ -685,38 +802,45 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$less = apply_filters( 'siteorigin_widgets_styles', $less, $this->widget_class, $instance );
 		$less = apply_filters( 'siteorigin_widgets_less_' . $this->id_base, $less, $instance, $this );
 
-		$style = $this->get_style_name( $instance );
-		$hash = $this->get_style_hash( $instance );
-		$css_name = $this->id_base . '-' . $style . '-' . $hash;
+		$css = '';
 
-		//we assume that any remaining @imports are plain css imports and should be kept outside selectors
-		$css_imports = '';
-		if ( preg_match_all( '/^@import.+/m', $less, $imports ) ) {
-			$css_imports = implode( "\n", $imports[0] );
-			$less = preg_replace( '/^@import.+/m', '', $less );
-		}
+		if( ! empty( $less ) ) {
+			$style = $this->get_style_name( $instance );
+			$hash = $this->get_style_hash( $instance );
+			$css_name = $this->id_base . '-' . $style . '-' . $hash;
 
-		$less = $css_imports . "\n\n" . '.so-widget-'.$css_name." { \n".$less."\n } ";
-
-		$compiler = new lessc();
-		$lc_functions = new SiteOrigin_Widgets_Less_Functions($this, $instance);
-		$lc_functions->registerFunctions( $compiler );
-
-		try {
-			if( method_exists( $compiler, 'compile' ) ) {
-				$css = $compiler->compile( $less );
+			//we assume that any remaining @imports are plain css imports and should be kept outside selectors
+			$css_imports = '';
+			if ( preg_match_all( '/^@import.+/m', $less, $imports ) ) {
+				$css_imports = implode( "\n", $imports[0] );
+				$less = preg_replace( '/^@import.+/m', '', $less );
 			}
-		}
-		catch ( Exception $e ) {
-			$css = '';
-		}
 
-		// Remove any attributes with default as the value
-		$css = preg_replace('/[a-zA-Z\-]+ *: *default *;/', '', $css);
+			$less = $css_imports . "\n\n" . '.so-widget-'.$css_name." { \n".$less."\n } ";
 
-		// Remove any empty CSS
-		$css = preg_replace('/[^{}]*\{\s*\}/m', '', $css);
-		$css = trim($css);
+			$compiler = new lessc();
+			$lc_functions = new SiteOrigin_Widgets_Less_Functions($this, $instance);
+			$lc_functions->registerFunctions( $compiler );
+			$compiler = apply_filters( 'siteorigin_widgets_less_compiler', $compiler, $instance, $this );
+
+			try {
+				if( method_exists( $compiler, 'compile' ) ) {
+					$css = $compiler->compile( $less );
+				}
+			}
+			catch ( Exception $e ) {
+				if( defined( 'SITEORIGIN_WIDGETS_DEBUG' ) && SITEORIGIN_WIDGETS_DEBUG ) {
+					throw $e;
+				}
+			}
+
+			// Remove any attributes with default as the value
+			$css = preg_replace('/[a-zA-Z\-]+ *: *default *;/', '', $css);
+
+			// Remove any empty CSS
+			$css = preg_replace('/[^{}]*\{\s*\}/m', '', $css);
+			$css = trim($css);
+		}
 
 		return apply_filters( 'siteorigin_widgets_instance_css', $css, $instance, $this );
 	}
@@ -802,6 +926,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		if( empty( $instance ) ) return;
 
 		$fonts = $this->get_google_font_fields($instance);
+		if( empty( $fonts ) || ! is_array( $fonts ) ) return '';
+
 		$font_imports = array();
 
 		foreach ( $fonts as $font ) {
@@ -814,10 +940,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		// Remove empty and duplicate items from the array
-		$import_strings = array_filter($import_strings);
-		$import_strings = array_unique($import_strings);
+		$import_strings = array_filter( $import_strings );
+		$import_strings = array_unique( $import_strings );
 
-		return implode("\n", $import_strings);
+		return implode( "\n", $import_strings );
 	}
 
 	/**
@@ -840,7 +966,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function so_get_field_name( $field_name, $container = array() ) {
 		if( empty($container) ) {
-			return $this->get_field_name( $field_name );
+			$name = $this->get_field_name( $field_name );
 		}
 		else {
 			// We also need to add the container fields
@@ -855,8 +981,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			$name = $this->get_field_name( '{{{FIELD_NAME}}}' );
 			$name = str_replace('[{{{FIELD_NAME}}}]', $container_extras.'[' . esc_attr($field_name) . ']', $name);
-			return $name;
 		}
+
+		$name = apply_filters( 'siteorigin_widgets_get_field_name', $name );
+		$name = apply_filters( 'siteorigin_widgets_get_field_name_' . $this->id_base, $name );
+
+		return $name;
 	}
 
 	/**
@@ -899,10 +1029,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @deprecated Will be removed in version 2.0
 	 */
 	function parse_markdown( $markdown ){
-		if( !class_exists('Markdown_Parser') ) include plugin_dir_path(__FILE__).'inc/markdown.php';
-		$parser = new Markdown_Parser();
+		if( !class_exists('Parsedown') ) include plugin_dir_path(__FILE__).'inc/Parsedown.php';
+		$parser = new Parsedown();
 
-		return $parser->transform($markdown);
+		return $parser->text($markdown);
 	}
 
 	/**
@@ -1116,4 +1246,47 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			( !empty( $_REQUEST['action'] ) && $_REQUEST['action'] == 'so_panels_builder_content' );    // Is this a Page Builder content ajax request
 	}
 
+	/**
+	 * Whether or not so show the 'Preview' button
+	 *
+	 * @return bool
+	 */
+	function show_preview_button(){
+		$show_preview = $this->widget_options['has_preview'] && ! $this->is_customize_preview();
+		$show_preview = apply_filters( 'siteorigin_widgets_form_show_preview_button', $show_preview, $this );
+		return $show_preview;
+	}
+
+	/**
+	 * Get the global settings from the options table.
+	 *
+	 * @return mixed|void
+	 */
+	function get_global_settings( ){
+		$values = get_option( 'so_widget_settings[' . $this->widget_class . ']', array() );
+
+		// Add in the defaults
+		if( $this->has_form( 'settings' ) ) {
+			$values = $this->add_defaults( $this->get_settings_form(), $values );
+		}
+
+		return $values;
+	}
+
+	/**
+	 * Save the global settings. Handles validation too.
+	 *
+	 * @param array $values The new values
+	 * @return array The sanitized values.
+	 */
+	function save_global_settings( $values ){
+		$current = $this->get_global_settings();
+
+		$values = $this->update( $values, $current, 'settings' );
+
+		unset( $values['_sow_form_id'] );
+		update_option( 'so_widget_settings[' . $this->widget_class . ']', $values );
+
+		return $values;
+	}
 }

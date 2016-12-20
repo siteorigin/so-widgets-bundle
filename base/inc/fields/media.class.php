@@ -153,8 +153,8 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 	}
 
 	function enqueue_scripts(){
-		wp_enqueue_script( 'so-media-field', plugin_dir_url( __FILE__ ) . '/js/media-field' . SOW_BUNDLE_JS_SUFFIX .  '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
-		wp_enqueue_style( 'so-media-field', plugin_dir_url( __FILE__ ) . '/css/media-field.css', array( ), SOW_BUNDLE_VERSION );
+		wp_enqueue_script( 'so-media-field', plugin_dir_url( __FILE__ ) . 'js/media-field' . SOW_BUNDLE_JS_SUFFIX .  '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
+		wp_enqueue_style( 'so-media-field', plugin_dir_url( __FILE__ ) . 'css/media-field.css', array( ), SOW_BUNDLE_VERSION );
 	}
 
 	function image_search_dialog(){
@@ -186,9 +186,8 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 						<div id="so-widgets-image-search-powered">
 							<?php
 							printf(
-								__( 'Powered by %s - sponsored results from %s', 'so-widgets-bundle' ),
-								'<a href="https://pixabay.com/" target="_blank">Pixabay</a>',
-								'<a href="http://stock.siteorigin.com/?shutterstock=home" target="_blank">Shutterstock</a>'
+								__( 'Powered by %s', 'so-widgets-bundle' ),
+								'<a href="https://pixabay.com/" target="_blank">Pixabay</a>'
 							);
 							?>
 						</div>

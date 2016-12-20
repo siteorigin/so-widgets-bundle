@@ -1,6 +1,6 @@
 /* globals jQuery, soWidgetsAdmin */
 
-jQuery(function($){
+jQuery( function( $ ){
 
     $('.so-widget-toggle-active button').click( function(){
         var $$ = $(this),
@@ -122,6 +122,47 @@ jQuery(function($){
         $(window).resize();
     });
 
-    // Finally enable css3 animations on the widgets list
+    // Enable css3 animations on the widgets list
     $('#widgets-list').addClass('so-animated');
-});
+
+    // Handle the dialog
+    var dialog = $('#sow-settings-dialog');
+
+    $( '#widgets-list .so-widget-settings' ).click( function( e ){
+        var $$ = $(this);
+        e.preventDefault();
+
+        dialog.find('.so-content')
+            .empty()
+            .addClass('so-loading')
+            .load( $$.data('form-url'), function(){
+                $(this).removeClass('so-loading');
+            } );
+
+        dialog.show();
+    } );
+
+    dialog.find('.so-close').click( function( e ){
+        e.preventDefault();
+        dialog.hide();
+    } );
+
+    dialog.find('.so-save').click( function( e ){
+        e.preventDefault();
+
+	    var $$ = $(this);
+	    $$.prop('disabled', true);
+        $( '#widgets-list .so-widget-settings' ).prop('disabled', true);
+
+	    dialog.find( 'form' ).submit( function( ){
+		    $$.prop('disabled', false);
+		    dialog.hide();
+	    } ).submit();
+    } );
+
+    // Enable all widget settings button after the save iframe has loaded.
+    $('#so-widget-settings-save').load( function(){
+        $( '#widgets-list .so-widget-settings' ).prop('disabled', false);
+    } );
+
+} );

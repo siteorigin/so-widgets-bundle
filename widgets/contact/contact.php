@@ -39,7 +39,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		add_filter( 'siteorigin_widgets_sanitize_field_multiple_emails', array( $this, 'sanitize_multiple_emails' ) );
 	}
 
-	function initialize_form(){
+	function get_widget_form(){
 		return array(
 			'title' => array(
 				'type' => 'text',
@@ -179,20 +179,20 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 					'recaptcha' => array(
 						'type' => 'section',
-						'label' => __('Recaptcha', 'so-widgets-bundle'),
+						'label' => __('reCAPTCHA', 'so-widgets-bundle'),
 						'fields' => array(
 							'use_captcha' => array(
 								'type' => 'checkbox',
-								'label' => __( 'Use Captcha', 'so-widgets-bundle' ),
+								'label' => __( 'Use reCAPTCHA', 'so-widgets-bundle' ),
 								'default' => false,
 							),
 							'site_key' => array(
 								'type' => 'text',
-								'label' => __( 'ReCaptcha Site Key', 'so-widgets-bundle' ),
+								'label' => __( 'reCAPTCHA Site Key', 'so-widgets-bundle' ),
 							),
 							'secret_key' => array(
 								'type' => 'text',
-								'label' => __( 'ReCaptcha Secret Key', 'so-widgets-bundle' ),
+								'label' => __( 'reCAPTCHA Secret Key', 'so-widgets-bundle' ),
 							),
 							'theme' => array(
 								'type' => 'select',
@@ -529,6 +529,20 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	function get_form_teaser(){
+		if( ! $this->display_siteorigin_premium_teaser() ) return false;
+
+		$url = add_query_arg( array(
+			'featured_addon' => 'plugin/contact-form-fields',
+			'featured_plugin' => 'widgets-bundle'
+		), 'https://siteorigin.com/downloads/premium/' );
+
+		return sprintf(
+			__( 'Get more form fields for the Contact Form Widget in %s', 'so-widgets-bundle' ),
+			'<a href="' . esc_url( $url ) . '" target="_blank">' . __( 'SiteOrigin Premium', 'so-widgets-bundle' ) . '</a>'
+		);
+	}
+
 	function sanitize_multiple_emails( $value ) {
 		$values = explode( ',', $value );
 		foreach ( $values as $i => $email ) {
@@ -841,6 +855,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		// Add in the default sender if no email field is defined 
 		if ( !isset( $email_fields['email'] ) && !empty($instance['settings']['default_sender']) ) {
 			$email_fields['email'] = $instance['settings']['default_sender'];
+		}
+
+		// Add in the default subject if no subject field is defined in the form at all
+		if ( !isset( $email_fields['subject'] ) && !empty($instance['settings']['default_subject']) ) {
+			$email_fields['subject'] = $instance['settings']['default_subject'];
 		}
 
 		// Add in the default subject prefix

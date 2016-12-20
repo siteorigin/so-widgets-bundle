@@ -93,6 +93,10 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected $optional;
 	/**
+	 * @var bool Is this field required.
+	 */
+	protected $required;
+	/**
 	 * Specifies an additional sanitization to be performed. Available sanitizations are 'email' and 'url'. If the
 	 * specified sanitization isn't recognized it is assumed to be a custom sanitization and a filter is applied using
 	 * the pattern `'siteorigin_widgets_sanitize_field_' . $sanitize`, in case the sanitization is defined elsewhere.
@@ -266,6 +270,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 		);
 
 		if( !empty( $this->optional ) ) $wrapper_attributes['class'][] = 'siteorigin-widget-field-is-optional';
+		if( !empty( $this->required ) ) $wrapper_attributes['class'][] = 'siteorigin-widget-field-is-required';
 		$wrapper_attributes['class'] = implode(' ', array_map('sanitize_html_class', $wrapper_attributes['class']) );
 
 		if( !empty( $this->state_emitter ) ) {
@@ -310,11 +315,14 @@ abstract class SiteOrigin_Widget_Field_Base {
 		?>
 		<label for="<?php echo esc_attr( $this->element_id ) ?>" <?php $this->render_CSS_classes( $this->get_label_classes( $value, $instance ) ) ?>>
 			<?php
-		echo esc_html( $this->label );
-		if( !empty( $this->optional ) ) {
-			echo '<span class="field-optional">(' . __('Optional', 'so-widgets-bundle') . ')</span>';
-		}
-		?>
+			echo esc_html( $this->label );
+			if( !empty( $this->optional ) ) {
+				echo '<span class="field-optional">(' . __('Optional', 'so-widgets-bundle') . ')</span>';
+			}
+			if( !empty( $this->required ) ) {
+				echo '<span class="field-required">(' . __('Required', 'so-widgets-bundle') . ')</span>';
+			}
+			?>
 		</label>
 		<?php
 	}
@@ -344,10 +352,11 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 *
 	 * @param $value mixed The value to be sanitized.
 	 * @param $instance array The widget instance.
+	 * @param $old_value The old value of this field.
 	 *
 	 * @return mixed|string|void
 	 */
-	public function sanitize( $value, $instance = array() ) {
+	public function sanitize( $value, $instance = array(), $old_value = null ) {
 
 		$value = $this->sanitize_field_input( $value, $instance );
 
@@ -364,7 +373,12 @@ abstract class SiteOrigin_Widget_Field_Base {
 
 				default:
 					// This isn't a built in sanitization. Maybe it's handled elsewhere.
-					$value = apply_filters( 'siteorigin_widgets_sanitize_field_' . $this->sanitize, $value );
+					if( is_callable( $this->sanitize ) ) {
+						$value = call_user_func( $this->sanitize, $value, $old_value );
+					}
+					else if( is_string( $this->sanitize ) ) {
+						$value = apply_filters( 'siteorigin_widgets_sanitize_field_' . $this->sanitize, $value );
+					}
 					break;
 			}
 		}
