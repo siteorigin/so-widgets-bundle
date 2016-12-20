@@ -9,6 +9,7 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 	 */
 	public static function single() {
 		static $single;
+
 		return empty( $single ) ? $single = new self() : $single;
 	}
 
@@ -23,9 +24,12 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 
 	function init() {
 
-		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_frontend_scripts' ] );
+		$this->plugin = Elementor\Plugin::instance();
 
-		$this->plugin     = Elementor\Plugin::instance();
+		if ( $this->plugin->preview->is_preview_mode() ) {
+			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_frontend_scripts' ] );
+		}
+
 		$elementor_editor = $this->plugin->editor;
 		if ( is_admin() || ! $elementor_editor->is_edit_mode() ) {
 			return;
@@ -36,16 +40,11 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 
 	function enqueue_frontend_scripts() {
 
-		global $wp_widget_factory;
+		$post_id = get_the_ID();
 
-		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
-			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
-				ob_start();
-				/* @var $widget_obj SiteOrigin_Widget */
-				$widget_obj->widget( array() );
-				ob_clean();
-			}
-		}
+		// This is necessary to ensure styles and scripts are enqueued. Not sure why this is enough, but I assume
+		// Elementor is calling widgets' `widget` method with instance data in the process of retrieving editor data.
+		$this->plugin->db->get_builder( $post_id, Elementor\DB::REVISION_DRAFT );
 	}
 
 	function enqueue_active_widgets_scripts() {
@@ -78,13 +77,13 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 
 	function ajax_render_widget_preview() {
 
-		add_filter( 'elementor/widget/render_content', array( $this, 'render_widget_preview' ), 10 );
+		add_filter( 'elementor/widget/render_content', array( $this, 'render_widget_preview' ) );
 	}
 
-	function render_widget_preview( $widget_output) {
+	function render_widget_preview( $widget_output ) {
 
 		$wp_scripts = wp_scripts();
-		$wp_styles = wp_styles();
+		$wp_styles  = wp_styles();
 
 		// Print any scripts and styles we may have enqueued for live preview.
 		wp_print_scripts( $wp_scripts->queue );
@@ -95,7 +94,7 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 
 	function ajax_render_widget_form() {
 		// Don't want to show the form preview button when using Elementor
-		add_filter( 'siteorigin_widgets_form_show_preview_button', array( $this, '__return_false') );
+		add_filter( 'siteorigin_widgets_form_show_preview_button', array( $this, '__return_false' ) );
 	}
 }
 
