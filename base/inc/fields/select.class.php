@@ -31,7 +31,8 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 	protected function render_field( $value, $instance ) {
 		?>
 		<select name="<?php echo esc_attr( $this->element_name ) ?>" id="<?php echo esc_attr( $this->element_id ) ?>"
-		        class="siteorigin-widget-input" <?php if( ! empty( $this->multiple ) ) echo 'multiple' ?>>
+		        class="siteorigin-widget-input<?php if ( ! empty( $this->input_css_classes ) ) echo ' ' . implode( ' ', $this->input_css_classes ) ?>"
+			<?php if( ! empty( $this->multiple ) ) echo 'multiple' ?>>
 			<?php if ( empty( $this->multiple ) && isset( $this->prompt ) ) : ?>
 				<option value="default" disabled="disabled" selected="selected"><?php echo esc_html( $this->prompt ) ?></option>
 			<?php endif; ?>

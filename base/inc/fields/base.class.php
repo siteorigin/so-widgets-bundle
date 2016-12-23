@@ -125,6 +125,14 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * @var boolean
 	 */
 	protected $is_container;
+	/**
+	 * Additional CSS classes to output in this field's HTML class attribute. It is left up to the field's render_field
+	 * function to output these classes.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $input_css_classes;
 
 
 	/* ============================================================================================================== */
