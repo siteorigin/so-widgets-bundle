@@ -6,6 +6,9 @@
 @border_color: darken(@button_color, 5%);
 @text_color: #FFFFFF;
 
+@button_font: default;
+@button_font_weight: default;
+
 @font_size: 1em;
 @rounding: 0.25em;
 @padding: 1em;
@@ -20,7 +23,8 @@
 			width: @button_width;
 		}
 		.btn_width();
-
+		.font(@button_font, @button_font_weight);
+		
 		font-size: @font_size;
 		padding: @padding @padding*2;
 		background: @button_color;
