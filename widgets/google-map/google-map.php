@@ -417,13 +417,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		$mrkr_src = wp_get_attachment_image_src( $instance['markers']['marker_icon'] );
 
 		$styles = $this->get_styles( $instance );
-
 		if ( $settings['map_type'] == 'static' ) {
-			$src_url = $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array() );
-			
 			return array(
-				'src_url'         => sow_esc_url( $src_url ),
-				'destination_url' =>  sow_esc_url( $instance['settings']['destination_url'] ),
+				'src_url'         => $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array() ),
+				'destination_url' => $instance['settings']['destination_url'],
 				'new_window'      => $instance['settings']['new_window'],
 			);
 		} else {
