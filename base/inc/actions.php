@@ -65,7 +65,8 @@ function siteorigin_widget_search_posts_action(){
 
 	// Get all public post types, besides attachments
 	$post_types = (array) get_post_types( array(
-		'public'   => true
+		'public'             => true,
+		'publicly_queryable' => true
 	) );
 	unset($post_types['attachment']);
 
