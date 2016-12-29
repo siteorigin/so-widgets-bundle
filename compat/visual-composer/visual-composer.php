@@ -19,9 +19,19 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 	}
 
 	function init() {
+
+		global $wp_widget_factory;
+
+		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
+			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
+				/* @var $widget_obj SiteOrigin_Widget */
+				$widget_obj->enqueue_scripts( 'widget' );
+			}
+		}
+
 		vc_add_shortcode_param(
 			'siteorigin_widget',
-			array( $this, 'siteorigin_widgets_grid' ),
+			array( $this, 'siteorigin_widget_form' ),
 			plugin_dir_url( __FILE__ ) . 'sowb-visual-composer.js'
 		);
 
@@ -29,7 +39,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 		$settings = array(
 			'name'                    => __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
 			// shortcode name
-			'base'                    => 'test_element',
+			'base'                    => 'siteorigin_widget',
 			// shortcode base [test_element]
 			'category'                => __( 'SiteOrigin Widgets', 'so-widgets-bundle' ),
 			// param category tab in add elements view
@@ -56,14 +66,14 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 				array(
 					'type'        => 'siteorigin_widget',
 					'heading'     => __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
-					'param_name'  => 'so_widget',
+					'param_name'  => 'so_widget_data',
 				),
 			)
 		);
 		vc_map( $settings );
 	}
 
-	function siteorigin_widgets_grid( $settings, $value ) {
+	function siteorigin_widget_form( $settings, $value ) {
 		$so_widget_names = array();
 
 		global $wp_widget_factory;
@@ -76,19 +86,33 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 		/* @var $select SiteOrigin_Widget_Field_Select */
 		$select = new SiteOrigin_Widget_Field_Select(
-			$settings['param_name'],
-			$settings['param_name'],
-			$settings['param_name'],
+			'so_widget_class',
+			'so_widget_class',
+			'so_widget_class',
 			array(
 				'type' => 'select',
-				'input_css_classes' => array( 'wpb_vc_param_value' ),
 				'options' => $so_widget_names,
 			)
 		);
+
+		global $wp_widget_factory;
+
+		$parsed_value = json_decode( $value, true );
+
+		$widget = !empty($wp_widget_factory->widgets[$parsed_value['widget_class']]) ? $wp_widget_factory->widgets[$parsed_value['widget_class']] : false;
+
 		ob_start();
-		$select->render( $value ); ?>
+		$select->render( $parsed_value['widget_class'] ); ?>
 		<input type="hidden" name="ajaxurl" data-ajax-url="<?php echo wp_nonce_url( admin_url('admin-ajax.php'), 'sowb_vc_widget_render_form', '_sowbnonce' ) ?>">
-		<div class="siteorigin_widget_form"></div>
+		<input type="hidden" name="so_widget_data" class="wpb_vc_param_value" value="<?php echo $parsed_value ?>">
+		<div class="siteorigin_widget_form_container">
+			<?php
+			if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
+				/* @var $widget SiteOrigin_Widget */
+				$widget->form( $parsed_value['widget_data'] );
+			}
+			?>
+		</div>
 		<?php
 		return ob_get_clean();
 	}
@@ -107,16 +131,8 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
 			/* @var $widget SiteOrigin_Widget */
-			$form = $widget->form( array() );
-			echo $form;
+			$widget->form( array() );
 		}
-
-		$wp_scripts = wp_scripts();
-		$wp_styles  = wp_styles();
-
-		// Print any scripts and styles we may have enqueued for live preview.
-		wp_print_scripts( $wp_scripts->queue );
-		wp_print_styles( $wp_styles->queue );
 
 		wp_die();
 	}

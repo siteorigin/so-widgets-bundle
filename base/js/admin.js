@@ -391,72 +391,7 @@
 
             // TODO: This very closely resembles the data extraction code in Page Builder. Try find a way to avoid having
             // to maintain it in two places.
-            // Lets build the data from the widget
-            var data = {};
-            $el.find( '*[name]' ).each( function () {
-                var $$ = $(this);
-                var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
-
-                if( name === undefined ) {
-                    return true;
-                }
-
-                name = name[1];
-                var parts = name.split('][');
-
-                // Make sure we either have numbers or strings
-                parts = parts.map(function(e){
-                    if( !isNaN(parseFloat(e)) && isFinite(e) ) {
-                        return parseInt(e);
-                    }
-                    else {
-                        return e;
-                    }
-                });
-
-                var sub = data;
-                for(var i = 0; i < parts.length; i++) {
-                    if(i === parts.length - 1) {
-                        // This is the end, so we need to store the actual field value here
-                        if( $$.attr('type') === 'checkbox' ){
-                            if ( $$.is(':checked') ) {
-                                sub[ parts[i] ] = $$.val() !== '' ? $$.val() : true;
-                            } else {
-                                sub[ parts[i] ] = false;
-                            }
-                        }
-                        else if( $$.attr('type') === 'radio' ){
-                            if ( $$.is(':checked') ) {
-                                sub[ parts[i] ] = $$.val() !== '' ? $$.val() : true;
-                            }
-                        }
-                        else if($$.prop('tagName') === 'TEXTAREA' && $$.hasClass('wp-editor-area')) {
-                            // This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
-                            var editor = null;
-                            if ( typeof tinyMCE !== 'undefined' ) {
-                                editor = tinyMCE.get( $$.attr('id') );
-                            }
-
-                            if( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
-                                sub[ parts[i] ] = editor.getContent();
-                            }
-                            else {
-                                sub[ parts[i] ] = $$.val();
-                            }
-                        }
-                        else {
-                            sub[ parts[i] ] = $$.val();
-                        }
-                    }
-                    else {
-                        if(typeof sub[parts[i]] === 'undefined') {
-                            sub[parts[i]] = {};
-                        }
-                        // Go deeper into the data and continue
-                        sub = sub[parts[i]];
-                    }
-                }
-            } );
+			var data = sowForms.getWidgetFormValues($el);
 
             // Create a new modal window
             var modal = $( $('#so-widgets-bundle-tpl-preview-dialog').html().trim() ).appendTo('body');
@@ -848,7 +783,78 @@
             else {
                 callback(window.sowVars[widget][key]);
             }
-        }
+        },
+		
+		getWidgetFormValues: function(formContainer) {
+			
+			// Lets build the data from the widget
+			var data = {};
+			formContainer.find( '*[name]' ).each( function () {
+				var $$ = $(this);
+				var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
+				
+				if( name === undefined ) {
+					return true;
+				}
+				
+				name = name[1];
+				var parts = name.split('][');
+				
+				// Make sure we either have numbers or strings
+				parts = parts.map(function(e){
+					if( !isNaN(parseFloat(e)) && isFinite(e) ) {
+						return parseInt(e);
+					}
+					else {
+						return e;
+					}
+				});
+				
+				var sub = data;
+				for(var i = 0; i < parts.length; i++) {
+					if(i === parts.length - 1) {
+						// This is the end, so we need to store the actual field value here
+						if( $$.attr('type') === 'checkbox' ){
+							if ( $$.is(':checked') ) {
+								sub[ parts[i] ] = $$.val() !== '' ? $$.val() : true;
+							} else {
+								sub[ parts[i] ] = false;
+							}
+						}
+						else if( $$.attr('type') === 'radio' ){
+							if ( $$.is(':checked') ) {
+								sub[ parts[i] ] = $$.val() !== '' ? $$.val() : true;
+							}
+						}
+						else if($$.prop('tagName') === 'TEXTAREA' && $$.hasClass('wp-editor-area')) {
+							// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
+							var editor = null;
+							if ( typeof tinyMCE !== 'undefined' ) {
+								editor = tinyMCE.get( $$.attr('id') );
+							}
+							
+							if( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
+								sub[ parts[i] ] = editor.getContent();
+							}
+							else {
+								sub[ parts[i] ] = $$.val();
+							}
+						}
+						else {
+							sub[ parts[i] ] = $$.val();
+						}
+					}
+					else {
+						if(typeof sub[parts[i]] === 'undefined') {
+							sub[parts[i]] = {};
+						}
+						// Go deeper into the data and continue
+						sub = sub[parts[i]];
+					}
+				}
+			} );
+			return data;
+		}
     };
     window.sowForms = sowForms;
 
