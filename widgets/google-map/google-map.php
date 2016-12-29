@@ -87,6 +87,26 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						'default' => 480,
 						'label'   => __( 'Height', 'so-widgets-bundle' )
 					),
+					'destination_url' => array(
+						'type' => 'link',
+						'label' => __( 'Destination URL', 'so-widgets-bundle' ),
+						'hidden'     => true,
+						'state_handler' => array(
+							'map_type[static]' => array('show'),
+							'_else[map_type]' => array('hide'),
+						),
+					),
+
+					'new_window' => array(
+						'type' => 'checkbox',
+						'default' => false,
+						'label' => __( 'Open in a new window', 'so-widgets-bundle' ),
+						'hidden'     => true,
+						'state_handler' => array(
+							'map_type[static]' => array('show'),
+							'_else[map_type]' => array('hide'),
+						),
+					),
 					'zoom'        => array(
 						'type'        => 'slider',
 						'label'       => __( 'Zoom level', 'so-widgets-bundle' ),
@@ -397,12 +417,11 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		$mrkr_src = wp_get_attachment_image_src( $instance['markers']['marker_icon'] );
 
 		$styles = $this->get_styles( $instance );
-
 		if ( $settings['map_type'] == 'static' ) {
-			$src_url = $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array() );
-
 			return array(
-				'src_url' => sow_esc_url( $src_url )
+				'src_url'         => $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array() ),
+				'destination_url' => $instance['settings']['destination_url'],
+				'new_window'      => $instance['settings']['new_window'],
 			);
 		} else {
 			$markers         = $instance['markers'];
