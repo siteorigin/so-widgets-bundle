@@ -105,7 +105,7 @@ function siteorigin_widget_post_selector_process_query($query){
 		}
 	}
 
-	return $query;
+	return apply_filters( 'siteorigin_widgets_posts_selector_query', $query );
 }
 
 function siteorigin_widget_post_selector_form_fields(){
