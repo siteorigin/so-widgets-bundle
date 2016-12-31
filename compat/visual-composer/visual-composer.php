@@ -16,6 +16,8 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 		add_action('vc_after_init', array( $this, 'init' ) );
 
 		add_action( 'wp_ajax_sowb_vc_widget_render_form', array( $this, 'sowb_vc_widget_render_form' ) );
+
+		add_filter( 'siteorigin_widgets_form_show_preview_button', array( $this, '__return_false' ) );
 	}
 
 	function init() {
@@ -49,7 +51,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 			// don't show params window after adding
 			'weight'                  => - 5,
 			// Depends on ordering in list, Higher weight first
-			'html_template'           => dirname( __FILE__ ) . '/vc_templates/test_element.php',
+			'html_template'           => dirname( __FILE__ ) . '/siteorigin_widget_vc_template.php',
 			// if you extend VC within your theme then you don't need this, VC will look for shortcode template in 'wp-content/themes/your_theme/vc_templates/test_element.php' automatically. In this example we are extending VC from plugin, so we rewrite template
 			'admin_enqueue_js'        => preg_replace( '/\s/', '%20', plugins_url( 'assets/admin_enqueue_js.js', __FILE__ ) ),
 			// This will load extra js file in backend (when you edit page with VC)
@@ -104,7 +106,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 		ob_start();
 		$select->render( $parsed_value['widget_class'] ); ?>
 		<input type="hidden" name="ajaxurl" data-ajax-url="<?php echo wp_nonce_url( admin_url('admin-ajax.php'), 'sowb_vc_widget_render_form', '_sowbnonce' ) ?>">
-		<input type="hidden" name="so_widget_data" class="wpb_vc_param_value" value="<?php echo $parsed_value ?>">
+		<input type="hidden" name="so_widget_data" class="wpb_vc_param_value" value="<?php echo esc_attr( $value ); ?>">
 		<div class="siteorigin_widget_form_container">
 			<?php
 			if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
@@ -123,7 +125,6 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 		$request = array_map('stripslashes_deep', $_REQUEST);
 		$widget_class = $request['widget'];
-
 
 		global $wp_widget_factory;
 
@@ -144,35 +145,66 @@ SiteOrigin_Widgets_Bundle_Visual_Composer::single();
 if ( class_exists( 'WPBakeryShortCode' ) ) {
 	// Class Name should be WPBakeryShortCode_Your_Short_Code
 	// See more in vc_composer/includes/classes/shortcodes/shortcodes.php
-	class WPBakeryShortCode_Test_Element extends WPBakeryShortCode {
+	class WPBakeryShortCode_SiteOrigin_Widget extends WPBakeryShortCode {
 		public function __construct( $settings ) {
 			parent::__construct( $settings ); // !Important to call parent constructor to active all logic for shortcode.
 			$this->jsCssScripts();
 		}
+
 		public function vcLoadIframeJsCss() {
-			wp_enqueue_style( 'test_element_iframe' );
+//			wp_enqueue_style( 'test_element_iframe' );
 		}
 		public function contentInline( $atts, $content ) {
-			$this->vcLoadIframeJsCss();
+
+			$widget_settings = json_decode( $atts['so_widget_data'], true );
+
+			ob_start();
+			$instance = $this->update_widget( $widget_settings['widget_class'], $widget_settings['widget_data'] );
+			$this->render_widget( $widget_settings['widget_class'], $instance );
+
+			return ob_get_clean();
 		}
 		// Register scripts and styles there (for preview and frontend editor mode).
 		public function jsCssScripts() {
-			wp_register_script( 'test_element', plugins_url( 'assets/js/test_element.js', __FILE__ ), array( 'jquery' ), time(), false );
-			wp_register_style( 'test_element_iframe', plugins_url( 'assets/front_enqueue_iframe_css.css', __FILE__ ) );
+//			wp_register_script( 'test_element', plugins_url( 'assets/js/test_element.js', __FILE__ ), array( 'jquery' ), time(), false );
+//			wp_register_style( 'test_element_iframe', plugins_url( 'assets/front_enqueue_iframe_css.css', __FILE__ ) );
 		}
+
+		private function get_so_widget( $widget_class ) {
+			global $wp_widget_factory;
+
+			$widget = !empty($wp_widget_factory->widgets[$widget_class]) ? $wp_widget_factory->widgets[$widget_class] : false;
+
+			if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
+				/* @var $widget SiteOrigin_Widget */
+				return $widget;
+			} else {
+				return null;
+			}
+		}
+
 		// Some custom helper function that can be used in content element template (vc_templates/test_element.php)
 		// This function check some string if it matches 'yes','true',1,'1' return TRUE if yes, false if NOT.
-		public function checkBool( $in ) {
-			if ( strlen( $in ) > 0 && in_array( strtolower( $in ), array(
-					'yes',
-					'true',
-					'1',
-					1
-				) )
-			) {
-				return true;
+		public function render_widget( $widget_class, $widget_instance ) {
+
+			/* @var $widget SiteOrigin_Widget */
+			$widget = $this->get_so_widget( $widget_class );
+
+			if ( ! empty( $widget ) ) {
+				$widget->widget( array(), $widget_instance );
 			}
-			return false;
+		}
+
+		public function update_widget( $widget_class, $widget_instance ) {
+
+			/* @var $widget SiteOrigin_Widget */
+			$widget = $this->get_so_widget( $widget_class );
+
+			if ( ! empty( $widget ) ) {
+				return $widget->update( $widget_instance, $widget_instance );
+			} else {
+				return $widget_instance;
+			}
 		}
 	}
 } // End Class

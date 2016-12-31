@@ -715,9 +715,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			$style = $this->get_style_name($instance);
 			$hash = $this->get_style_hash( $instance );
-			$name = $this->id_base.'-'.$style.'-'.$hash.'.css';
+			$name = $this->id_base.'-'.$style.'-'.$hash;
 
-			$wp_filesystem->delete($upload_dir['basedir'] . '/siteorigin-widgets/'.$name);
+			$wp_filesystem->delete($upload_dir['basedir'] . '/siteorigin-widgets/' . $name . '.css');
+			if ( in_array( $name, $this->generated_css ) ) {
+				$index = array_search( $name, $this->generated_css );
+				unset( $this->generated_css[$index] );
+				//Reindex array
+				$this->generated_css = array_values( $this->generated_css );
+			}
 		}
 	}
 
