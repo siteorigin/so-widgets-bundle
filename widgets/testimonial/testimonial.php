@@ -125,6 +125,14 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 										'integer' => true,
 										'default' => 2
 									),
+									'image_size' => array(
+										'type' => 'slider',
+										'label' => __( 'Image size', 'so-widgets-bundle' ),
+										'integer' => true,
+										'default' => 50,
+										'max' => 150,
+										'min' => 20,
+									),
 									'width' => array(
 										'type' => 'text',
 										'label' => __('Resolution', 'so-widgets-bundle'),
@@ -145,6 +153,14 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 										'max' => 5,
 										'integer' => true,
 										'default' => 1
+									),
+									'image_size' => array(
+										'type' => 'slider',
+										'label' => __( 'Image size', 'so-widgets-bundle' ),
+										'integer' => true,
+										'default' => 50,
+										'max' => 150,
+										'min' => 20,
 									),
 									'width' => array(
 										'type' => 'text',
@@ -299,8 +315,10 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 
 			// All the responsive sizes
 			'tablet_testimonial_size' => round(100/$instance['settings']['responsive']['tablet']['per_line'], 4) . '%',
+			'tablet_image_size' => intval( $instance['settings']['responsive']['tablet']['image_size'] ) . 'px',
 			'tablet_width' => intval($instance['settings']['responsive']['tablet']['width']) . 'px',
 			'mobile_testimonial_size' => round(100/$instance['settings']['responsive']['mobile']['per_line'], 4) . '%',
+			'mobile_image_size' => intval( $instance['settings']['responsive']['mobile']['image_size'] ) . 'px',
 			'mobile_width' => intval($instance['settings']['responsive']['mobile']['width']) . 'px',
 		);
 	}
