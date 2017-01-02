@@ -340,7 +340,7 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 			}
 			else {
 				$src = wp_get_attachment_image_src( $image_id, array( $design['image']['image_size'], $design['image']['image_size'] ) );
-				return '<div class="sow-round-image-frame" style="background-image: url(' . esc_url( $src[0] ) . '); width:' . intval($design['image']['image_size']) . 'px; height:' . intval($design['image']['image_size']) . 'px"></div>';
+				return '<div class="sow-round-image-frame" style="background-image: url(' . esc_url( $src[0] ) . ');"></div>';
 			}
 		}
 	}

@@ -48,6 +48,18 @@
 
 	.sow-round-image-frame {
 		border-radius: @image_size;
+		width: @image_size;
+		height: @image_size;
+		
+		@media screen and (max-width: @tablet_width) {
+			width: @tablet_image_size;
+			height: @tablet_image_size;
+		}
+
+		@media screen and (max-width: @mobile_width) {
+			width: @mobile_image_size;
+			height: @mobile_image_size;
+		}
 	}
 
 	// All the specific layouts
