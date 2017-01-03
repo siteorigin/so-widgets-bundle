@@ -27,6 +27,8 @@ sowb.setupVcWidgetForm = function() {
 			data,
 			function(result) {
 				$formContainer.html(result);
+				// To ensure data is updated.
+				$formContainer.trigger('change');
 			},
 			'html'
 		);

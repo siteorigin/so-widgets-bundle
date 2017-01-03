@@ -18,6 +18,8 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 		add_action( 'wp_ajax_sowb_vc_widget_render_form', array( $this, 'sowb_vc_widget_render_form' ) );
 
 		add_filter( 'siteorigin_widgets_form_show_preview_button', array( $this, '__return_false' ) );
+
+		add_filter( 'content_save_pre', array( $this, 'update_widget_data' ) );
 	}
 
 	function init() {
@@ -47,7 +49,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 			// param category tab in add elements view
 //			'description'             => __( 'Test element description', 'js_composer' ),
 			// element description in add elements view
-			'show_settings_on_create' => false,
+			'show_settings_on_create' => true,
 			// don't show params window after adding
 			'weight'                  => - 5,
 			// Depends on ordering in list, Higher weight first
@@ -100,11 +102,17 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 		global $wp_widget_factory;
 
 		$parsed_value = json_decode( $value, true );
+		if( empty( $parsed_value ) ) {
+			reset( $so_widget_names );
+			$widget_class = key( $so_widget_names );
+		} else {
+			$widget_class = $parsed_value['widget_class'];
+		}
 
-		$widget = !empty($wp_widget_factory->widgets[$parsed_value['widget_class']]) ? $wp_widget_factory->widgets[$parsed_value['widget_class']] : false;
+		$widget = !empty($wp_widget_factory->widgets[$widget_class]) ? $wp_widget_factory->widgets[$widget_class] : false;
 
 		ob_start();
-		$select->render( $parsed_value['widget_class'] ); ?>
+		$select->render( $widget_class ); ?>
 		<input type="hidden" name="ajaxurl" data-ajax-url="<?php echo wp_nonce_url( admin_url('admin-ajax.php'), 'sowb_vc_widget_render_form', '_sowbnonce' ) ?>">
 		<input type="hidden" name="so_widget_data" class="wpb_vc_param_value" value="<?php echo esc_attr( $value ); ?>">
 		<div class="siteorigin_widget_form_container">
@@ -136,6 +144,56 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 		}
 
 		wp_die();
+	}
+
+	function update_widget_data( $content ) {
+
+		$content = preg_replace_callback( '/\[siteorigin_widget [^\]]*\]/', array( $this, 'update_shortcode' ), $content );
+
+		return $content;
+	}
+
+	private function update_shortcode( $shortcode ) {
+
+		preg_match( '/so_widget_data="([^"]*)"/', stripslashes( $shortcode[0] ), $widget_json );
+
+		$widget_json = str_replace( array(
+			'`{`',
+			'`}`',
+			'``',
+		), array(
+			'[',
+			']',
+			'"',
+		), $widget_json[1] );
+
+		$widget_atts = json_decode( $widget_json, true );
+
+		global $wp_widget_factory;
+
+		$widget = !empty($wp_widget_factory->widgets[$widget_atts['widget_class']]) ? $wp_widget_factory->widgets[$widget_atts['widget_class']] : false;
+
+		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
+			$widget_atts['widget_data'] = $widget->update( $widget_atts['widget_data'], $widget_atts['widget_data'] );
+		}
+
+		$widget_json = json_encode( $widget_atts );
+
+		$widget_json = str_replace( array(
+			'[',
+			']',
+			'"',
+		), array(
+			'`{`',
+			'`}`',
+			'``',
+		), $widget_json );
+
+		$slashed = addslashes( 'so_widget_data="' . $widget_json . '"' );
+
+		preg_replace( '/so_widget_data="([^"]*)"/', $slashed, $shortcode );
+
+		return '[siteorigin_widget ' . $slashed . ']';
 	}
 }
 
