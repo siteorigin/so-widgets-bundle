@@ -175,7 +175,13 @@
             $el.find('.siteorigin-widget-field-repeater-item').sowSetupRepeaterItems();
 
             // Set up any color fields
-            $fields.find('> .siteorigin-widget-input-color').wpColorPicker();
+			$fields.find('> .siteorigin-widget-input-color').wpColorPicker( {
+				change: function(event, ui) {
+					setTimeout(function() {
+						$(event.target).trigger('change');
+					}, 100);
+				}
+			} );
 
             ///////////////////////////////////////
             // Handle the sections
