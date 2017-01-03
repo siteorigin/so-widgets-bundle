@@ -209,6 +209,7 @@
                     value: parseInt( $input.val() ),
                     slide: function( event, ui ) {
                         $input.val( parseInt(ui.value) );
+                        $input.trigger( 'change' );
                         $$.find('.siteorigin-widget-slider-value').html( ui.value );
                     }
                 });
