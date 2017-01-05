@@ -228,7 +228,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	/**
 	 * Generate the CSS for this widget and display it in the appropriate way
 	 *
-	 * @param $instance The instance array
+	 * @param $instance array The instance array
 	 *
 	 * @return string The CSS name
 	 */
@@ -1214,7 +1214,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * rather register scripts and styles using register_frontend_scripts() and register_frontend_styles(). This function
 	 * will then ensure that the scripts are not enqueued more than once.
 	 */
-	function enqueue_frontend_scripts( $instance ){
+	function enqueue_frontend_scripts( $instance ) {
 		$this->enqueue_registered_scripts();
 		$this->enqueue_registered_styles();
 
@@ -1234,16 +1234,18 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @return bool
 	 */
-	function is_preview( $instance = array() ){
+	function is_preview( $instance = array() ) {
 		// Check if the instance is a preview
 		if( !empty( $instance[ 'is_preview' ] ) ) return true;
 
 		// Check if the general request is a preview
-		return
+		$is_preview =
 			is_preview() ||  // is this a standard preview
 			$this->is_customize_preview() ||    // Is this a customizer preview
 			!empty( $_GET['siteorigin_panels_live_editor'] ) ||     // Is this a Page Builder live editor request
 			( !empty( $_REQUEST['action'] ) && $_REQUEST['action'] == 'so_panels_builder_content' );    // Is this a Page Builder content ajax request
+
+		return apply_filters( 'siteorigin_widgets_is_preview', $is_preview, $this );
 	}
 
 	/**

@@ -23,7 +23,7 @@
                     var widgetIdBase = $container.data('widgetIdBase');
                     var name = $textarea.attr('name').replace(/\[\d*\]/g, '');
                     var fieldName = /[a-zA-Z0-9\-]+(?:\[[a-zA-Z0-9]+\])?\[(.*)\]/.exec(name)[1];
-                    var idPattern = new RegExp('widget-' + widgetIdBase + '-.*-' + fieldName.replace(/\]\[/g, '-') + '[-\d]*');
+                    var idPattern = new RegExp('widget-' + widgetIdBase + '-?.*-' + fieldName.replace(/\]\[/g, '-') + '[-\d]*');
                     for (var initId in tinyMCEPreInit.mceInit) {
                         if (initId.match(idPattern)) {
                             mceSettings = $.extend({}, tinyMCEPreInit.mceInit[initId], mceSettings);
