@@ -55,7 +55,9 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
 			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
 				/* @var $widget_obj SiteOrigin_Widget */
-				$widget_obj->enqueue_scripts( 'widget' );
+				ob_start();
+				$widget_obj->form( array() );
+				ob_clean();
 			}
 		}
 
