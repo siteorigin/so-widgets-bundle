@@ -765,6 +765,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	public function get_instance_css( $instance ){
 		if( !class_exists('lessc') ) require plugin_dir_path( __FILE__ ).'inc/lessc.inc.php';
 		if( !class_exists('SiteOrigin_Widgets_Less_Functions') ) require plugin_dir_path( __FILE__ ).'inc/less-functions.php';
+		if( !class_exists('SiteOrigin_Widgets_Color_Object') ) require plugin_dir_path( __FILE__ ) . 'inc/color.php';
 
 		if( !method_exists( $this, 'get_less_content' ) ) {
 			$style_name = $this->get_style_name($instance);
@@ -780,15 +781,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$less = $this->get_less_content( $instance );
 		}
 
-		// Substitute the variables
-		if( !class_exists('SiteOrigin_Widgets_Color_Object') ) require plugin_dir_path( __FILE__ ) . 'inc/color.php';
-
 		// Lets widgets insert their own custom generated LESS
 		$less = preg_replace_callback( '/\.widget-function\((.*)\);/', array( $this, 'less_widget_inject' ), $less );
 
-		//handle less @import statements
+		// Handle less @import statements
 		$less = preg_replace_callback( '/^@import\s+".*?\/?([\w-\.]+)";/m', array( $this, 'get_less_import_contents' ), $less );
 
+		// Substitute the variables
 		$vars = $this->get_less_variables($instance);
 		if( !empty( $vars ) ){
 			foreach($vars as $name => $value) {
