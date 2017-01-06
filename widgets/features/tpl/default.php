@@ -17,7 +17,7 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 				<div
 					class="sow-icon-container <?php echo !empty($instance['container_shape']) ? 'sow-container-' . esc_attr($instance['container_shape']) : 'sow-container-none'?>"
 					style="font-size: <?php echo intval($instance['container_size']) . esc_attr( $instance['container_size_unit'] ); ?>; color: <?php echo esc_attr($feature['container_color']) ?>; width: <?php echo intval($instance['container_size']) . esc_attr( $instance['container_size_unit'] ); ?>; height: <?php echo intval($instance['container_size']) . esc_attr( $instance['container_size_unit'] ); ?>;"
-					<?php  ! empty( $feature['icon_title'] ) ? echo 'title="' . esc_attr( $feature['icon_title'] ) . '"' : ''; ?>>
+					<?php  echo ( ! empty( $feature['icon_title'] ) ? 'title="' . esc_attr( $feature['icon_title'] ) . '"' : '' ); ?>>
 					<?php
 					$icon_styles = array();
 					if( !empty($feature['icon_image']) ) {
