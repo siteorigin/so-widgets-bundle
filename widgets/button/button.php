@@ -129,7 +129,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'default' => true,
 						'label' => __('Use hover effects', 'so-widgets-bundle'),
 					),
-					
+
 					'font' => array(
 						'type' => 'font',
 						'label' => __( 'Font', 'so-widgets-bundle' ),
@@ -251,7 +251,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'padding' => $instance['design']['padding'] . 'em',
 			'has_text' => empty( $instance['text'] ) ? 'false' : 'true',
 		);
-		
+
 		if ( ! empty( $instance['design']['font'] ) ) {
 			$font = siteorigin_widget_get_font( $instance['design']['font'] );
 			$less_vars['button_font'] = $font['family'];
@@ -264,7 +264,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 	function get_google_font_fields( $instance ) {
 		return array(
-			$instance['button_font'],
+			$instance['design']['font'],
 		);
 	}
 	/**
