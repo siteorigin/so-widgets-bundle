@@ -1,4 +1,6 @@
-@import "mixins";
+@import "../../../base/less/mixins";
+
+.widget-function('import_google_font');
 
 @button_width: '';
 @has_button_width: false;
@@ -23,7 +25,7 @@
 		}
 		.btn_width();
 		.font(@button_font, @button_font_weight);
-		
+
 		font-size: @font_size;
 		padding: @padding @padding*2;
 		.gradient(@button_color, darken(@button_color, 10%), @button_color);
