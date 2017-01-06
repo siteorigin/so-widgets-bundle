@@ -11,6 +11,7 @@ module.exports = {
         src: [
             'admin/**/*.less',
             'base/**/*.less',
+            'compat/**/*.less',
             'css/**/*.less',
             'widgets/**/*.less',
             '!base/less/*.less',
@@ -26,6 +27,7 @@ module.exports = {
         src: [
             'admin/**/*.js',
             'base/**/*.js',
+            'compat/**/*.js',
             'js/**/*.js',
             'widgets/**/*.js',
             '!{node_modules,node_modules/**}',  // Ignore node_modules/ and contents
