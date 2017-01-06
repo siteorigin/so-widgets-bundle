@@ -13,6 +13,7 @@ module.exports = {
             'base/**/*.less',
             'css/**/*.less',
             'widgets/**/*.less',
+            'compat/**/*.less',
             '!base/less/*.less',
             '!widgets/**/styles/*.less'
         ],
