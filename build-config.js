@@ -11,7 +11,6 @@ module.exports = {
         src: [
             'admin/**/*.less',
             'base/**/*.less',
-            'compat/**/*.less',
             'css/**/*.less',
             'widgets/**/*.less',
             'compat/**/*.less',
