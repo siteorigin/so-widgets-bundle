@@ -223,7 +223,7 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 
 					'border_radius' => array(
 						'type' => 'slider',
-						'label' => __('Padding', 'so-widgets-bundle'),
+						'label' => __( 'Testimonial Radius', 'so-widgets-bundle' ),
 						'integer' => true,
 						'default' => 4,
 						'max' => 100,
