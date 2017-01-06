@@ -42,9 +42,11 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 
 		$post_id = get_the_ID();
 
-		// This is necessary to ensure styles and scripts are enqueued. Not sure why this is enough, but I assume
-		// Elementor is calling widgets' `widget` method with instance data in the process of retrieving editor data.
-		$this->plugin->db->get_builder( $post_id, Elementor\DB::STATUS_DRAFT );
+		if( defined( 'Elementor\\DB::STATUS_DRAFT' ) ) {
+			// This is necessary to ensure styles and scripts are enqueued. Not sure why this is enough, but I assume
+			// Elementor is calling widgets' `widget` method with instance data in the process of retrieving editor data.
+			$this->plugin->db->get_builder( $post_id, Elementor\DB::STATUS_DRAFT );
+		}
 	}
 
 	function enqueue_active_widgets_scripts() {
