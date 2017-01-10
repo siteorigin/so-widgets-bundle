@@ -1,4 +1,5 @@
-/* globals jQuery, sowb */
+/* globals jQuery, packery, sowb */
+
 var sowb = window.sowb || {};
 
 sowb.setupSimpleMasonry = function() {
@@ -66,7 +67,7 @@ sowb.setupSimpleMasonry = function() {
 	
 	$(window).on('resize panelsStretchRows', resizeMasonry);
 	
-	// Ensure that the masonry has resized correct on load.
+	// Ensure that the masonry has resized correctly on load.
 	setTimeout( function () {
 		resizeMasonry();
 	}, 100 );
@@ -76,3 +77,5 @@ sowb.setupSimpleMasonry = function() {
 jQuery( function($){
 	sowb.setupSimpleMasonry();
 } );
+
+window.sowb = sowb;

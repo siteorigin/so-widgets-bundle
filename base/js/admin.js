@@ -1,5 +1,7 @@
 
-/* globals wp, jQuery, soWidgets, confirm, tinymce */
+/* globals wp, jQuery, soWidgets, confirm, tinymce, sowbForms */
+
+var sowbForms = window.sowbForms || {};
 
 (function($){
 
@@ -46,7 +48,7 @@
                         // Indicates if the handler has run
                         var handlerRun = {};
 
-                        var repeaterIndex = window.sowForms.getRepeaterId($$);
+                        var repeaterIndex = sowbForms.getRepeaterId($$);
                         if( repeaterIndex !== false ) {
                             var repeaterHandler = {};
                             for( var state in handler ) {
@@ -313,7 +315,7 @@
                         }
 
                         // Check if this is inside a repeater
-                        var repeaterIndex = window.sowForms.getRepeaterId($$);
+                        var repeaterIndex = sowbForms.getRepeaterId($$);
                         if( repeaterIndex !== false ) {
                             emitter.args = emitter.args.map( function( a ){
                                 return a.replace('{$repeater}', repeaterIndex);
@@ -398,7 +400,7 @@
 
             // TODO: This very closely resembles the data extraction code in Page Builder. Try find a way to avoid having
             // to maintain it in two places.
-			var data = sowForms.getWidgetFormValues($el);
+			var data = sowbForms.getWidgetFormValues($el);
 
             // Create a new modal window
             var modal = $( $('#so-widgets-bundle-tpl-preview-dialog').html().trim() ).appendTo('body');
@@ -734,136 +736,133 @@
     };
 
     // Widgets Bundle utility functions
-    var sowForms = {
-        /**
-         * Get the unique index of a repeater item.
-         *
-         * @param $el
-         * @return {*}
-         */
-        getRepeaterId: function( $el ) {
-            if( typeof this.id === 'undefined' ) {
-                this.id = 1;
-            }
+	/**
+	 * Get the unique index of a repeater item.
+	 *
+	 * @param $el
+	 * @return {*}
+	 */
+	sowbForms.getRepeaterId = function( $el ) {
+		if( typeof this.id === 'undefined' ) {
+			this.id = 1;
+		}
 
-            var $r = $el.closest('.siteorigin-widget-field-repeater-item');
-            if( $r.length ) {
-                var itemId = $r.data('item-id');
-                if( itemId === undefined ) {
-                    itemId = this.id++;
-                }
-                $r.data('item-id', itemId);
+		var $r = $el.closest('.siteorigin-widget-field-repeater-item');
+		if( $r.length ) {
+			var itemId = $r.data('item-id');
+			if( itemId === undefined ) {
+				itemId = this.id++;
+			}
+			$r.data('item-id', itemId);
 
-                return itemId;
-            }
-            else {
-                return false;
-            }
-        },
+			return itemId;
+		}
+		else {
+			return false;
+		}
+	};
 
-        getWidgetFieldVariable: function ( widgetClass, elementName, key ) {
-            var widgetVars = window.sow_field_javascript_variables[widgetClass];
-            // Get rid of any index placeholders
-            elementName = elementName.replace( /\[#.*?#\]/g, '');
-            var variablePath = /[a-zA-Z0-9\-]+(?:\[c?[0-9]+\])?\[(.*)\]/.exec( elementName )[1];
-            var variablePathParts = variablePath.split('][');
-            var elementVars = variablePathParts.length ? widgetVars : null;
-            while(variablePathParts.length) {
-                elementVars = elementVars[variablePathParts.shift()];
-            }
-            return elementVars[key];
-        },
+	sowbForms.getWidgetFieldVariable = function ( widgetClass, elementName, key ) {
+		var widgetVars = window.sow_field_javascript_variables[widgetClass];
+		// Get rid of any index placeholders
+		elementName = elementName.replace( /\[#.*?#\]/g, '');
+		var variablePath = /[a-zA-Z0-9\-]+(?:\[c?[0-9]+\])?\[(.*)\]/.exec( elementName )[1];
+		var variablePathParts = variablePath.split('][');
+		var elementVars = variablePathParts.length ? widgetVars : null;
+		while(variablePathParts.length) {
+			elementVars = elementVars[variablePathParts.shift()];
+		}
+		return elementVars[key];
+	};
 
-        fetchWidgetVariable: function (key, widget, callback) {
-            window.sowVars = window.sowVars || {};
+	sowbForms.fetchWidgetVariable = function (key, widget, callback) {
+		window.sowVars = window.sowVars || {};
 
-            if (typeof window.sowVars[widget] === 'undefined') {
-                $.post(
-                    soWidgets.ajaxurl,
-                    { 'action': 'sow_get_javascript_variables', 'widget': widget, 'key': key },
-                    function (result) {
-                        window.sowVars[widget] = result;
-                        callback(window.sowVars[widget][key]);
-                    }
-                );
-            }
-            else {
-                callback(window.sowVars[widget][key]);
-            }
-        },
-		
-		getWidgetFormValues: function(formContainer) {
-			
-			// Lets build the data from the widget
-			var data = {};
-			formContainer.find( '*[name]' ).each( function () {
-				var $$ = $(this);
-				var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
-				
-				if( name === undefined ) {
-					return true;
+		if (typeof window.sowVars[widget] === 'undefined') {
+			$.post(
+				soWidgets.ajaxurl,
+				{ 'action': 'sow_get_javascript_variables', 'widget': widget, 'key': key },
+				function (result) {
+					window.sowVars[widget] = result;
+					callback(window.sowVars[widget][key]);
 				}
-				
-				name = name[1];
-				var parts = name.split('][');
-				
-				// Make sure we either have numbers or strings
-				parts = parts.map(function(e){
-					if( !isNaN(parseFloat(e)) && isFinite(e) ) {
-						return parseInt(e);
-					}
-					else {
-						return e;
-					}
-				});
-				
-				var sub = data;
-				for(var i = 0; i < parts.length; i++) {
-					if(i === parts.length - 1) {
-						// This is the end, so we need to store the actual field value here
-						if( $$.attr('type') === 'checkbox' ){
-							if ( $$.is(':checked') ) {
-								sub[ parts[i] ] = $$.val() !== '' ? $$.val() : true;
-							} else {
-								sub[ parts[i] ] = false;
-							}
+			);
+		}
+		else {
+			callback(window.sowVars[widget][key]);
+		}
+	};
+		
+	sowbForms.getWidgetFormValues = function(formContainer) {
+		
+		// Lets build the data from the widget
+		var data = {};
+		formContainer.find( '*[name]' ).each( function () {
+			var $$ = $(this);
+			var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
+			
+			if( name === undefined ) {
+				return true;
+			}
+			
+			name = name[1];
+			var parts = name.split('][');
+			
+			// Make sure we either have numbers or strings
+			parts = parts.map(function(e){
+				if( !isNaN(parseFloat(e)) && isFinite(e) ) {
+					return parseInt(e);
+				}
+				else {
+					return e;
+				}
+			});
+			
+			var sub = data;
+			for(var i = 0; i < parts.length; i++) {
+				if(i === parts.length - 1) {
+					// This is the end, so we need to store the actual field value here
+					if( $$.attr('type') === 'checkbox' ){
+						if ( $$.is(':checked') ) {
+							sub[ parts[i] ] = $$.val() !== '' ? $$.val() : true;
+						} else {
+							sub[ parts[i] ] = false;
 						}
-						else if( $$.attr('type') === 'radio' ){
-							if ( $$.is(':checked') ) {
-								sub[ parts[i] ] = $$.val() !== '' ? $$.val() : true;
-							}
+					}
+					else if( $$.attr('type') === 'radio' ){
+						if ( $$.is(':checked') ) {
+							sub[ parts[i] ] = $$.val() !== '' ? $$.val() : true;
 						}
-						else if($$.prop('tagName') === 'TEXTAREA' && $$.hasClass('wp-editor-area')) {
-							// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
-							var editor = null;
-							if ( typeof tinyMCE !== 'undefined' ) {
-								editor = tinyMCE.get( $$.attr('id') );
-							}
-							
-							if( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
-								sub[ parts[i] ] = editor.getContent();
-							}
-							else {
-								sub[ parts[i] ] = $$.val();
-							}
+					}
+					else if($$.prop('tagName') === 'TEXTAREA' && $$.hasClass('wp-editor-area')) {
+						// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
+						var editor = null;
+						if ( typeof tinyMCE !== 'undefined' ) {
+							editor = tinyMCE.get( $$.attr('id') );
+						}
+						
+						if( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
+							sub[ parts[i] ] = editor.getContent();
 						}
 						else {
 							sub[ parts[i] ] = $$.val();
 						}
 					}
 					else {
-						if(typeof sub[parts[i]] === 'undefined') {
-							sub[parts[i]] = {};
-						}
-						// Go deeper into the data and continue
-						sub = sub[parts[i]];
+						sub[ parts[i] ] = $$.val();
 					}
 				}
-			} );
-			return data;
-		}
-    };
-    window.sowForms = sowForms;
+				else {
+					if(typeof sub[parts[i]] === 'undefined') {
+						sub[parts[i]] = {};
+					}
+					// Go deeper into the data and continue
+					sub = sub[parts[i]];
+				}
+			}
+		} );
+		return data;
+	};
 
     // When we click on a widget top
     $('.widgets-holder-wrap').on('click', '.widget:has(.siteorigin-widget-form-main) .widget-top', function(){
@@ -996,3 +995,5 @@ var sowEmitters = {
         } );
     }
 };
+
+window.sowbForms = sowbForms;

@@ -1,5 +1,4 @@
-
-/* globals jQuery */
+/* globals jQuery, sowb */
 
 var sowb = window.sowb || {};
 
@@ -11,3 +10,5 @@ sowb.setupVideoPlayer = function() {
 jQuery(function ($) {
 	sowb.setupVideoPlayer();
 });
+
+window.sowb = sowb;

@@ -1,4 +1,4 @@
-
+/* globals jQuery, sowb */
 var sowb = window.sowb || {};
 
 sowb.setupImageGrid = function() {
@@ -51,3 +51,5 @@ sowb.setupImageGrid = function() {
 jQuery( function($){
 	sowb.setupImageGrid();
 } );
+
+window.sowb = sowb;

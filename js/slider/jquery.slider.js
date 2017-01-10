@@ -1,9 +1,4 @@
-/**
- * SiteOrigin Slider Javascript.
- *
- * Copyright 2014, Greg Priday
- * Released under GPL 2.0 - see http://www.gnu.org/licenses/gpl-2.0.html
- */
+/* globals jQuery, sowb */
 
 var sowb = window.sowb || {};
 
@@ -249,3 +244,5 @@ sowb.setupSlider = function() {
 jQuery( function($){
 	sowb.setupSlider();
 } );
+
+window.sowb = sowb;

@@ -1,3 +1,4 @@
+/* globals jQuery, google, sowb */
 var sowb = window.sowb || {};
 
 sowb.SiteOriginGoogleMap = function($) {
@@ -409,3 +410,5 @@ sowb.setupGoogleMaps = function() {
 jQuery(function ($) {
 	sowb.setupGoogleMaps();
 });
+
+window.sowb = sowb;
