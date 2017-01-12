@@ -73,11 +73,17 @@
 
 	textarea,
 	input.sow-text-field {
+		display: block;
+		width: 100%;
+	}
+	
+	textarea,
+	input.sow-text-field,
+	.so-premium-datepicker,
+	.so-premium-timepicker {
 		.box-sizing(border-box);
 		.rounded(@field_border_radius);
 
-		display: block;
-		width: 100%;
 		margin: @field_margin 0;
 		padding: @field_padding 0;
 		border: @field_border_width @field_border_style @field_border_color;
