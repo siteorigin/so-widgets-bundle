@@ -1,4 +1,4 @@
-@import "../../../base/less/mixins";
+@import "mixins";
 
 .widget-function('import_google_font');
 
@@ -56,12 +56,36 @@
 		}
 	}
 
+	@field_font_family: default;
+	@field_font_weight: default;
+	@field_font_size: default;
+	@field_font_color: default;
+
+	@field_background: default;
+
+	@field_margin: 0;
+	@field_padding: 0;
+
+	@field_border_radius: 0;
+	@field_border_color: default;
+	@field_border_width: default;
+	@field_border_style: default;
+
 	textarea,
 	input.sow-text-field {
 		.box-sizing(border-box);
+		.rounded(@field_border_radius);
+
 		display: block;
 		width: 100%;
-		border-radius: 0;
+		margin: @field_margin 0;
+		padding: @field_padding 0;
+		border: @field_border_width @field_border_style @field_border_color;
+		background: @field_background;
+		color: @field_font_color;
+		
+		font-size: @field_font_size;
+		.font(@field_font_family, @field_font_weight);
 	}
 
 	&.sow-form-field-checkboxes, &.sow-form-field-radio {
@@ -126,7 +150,7 @@
 		background: @error_background;
 		border: 1px solid @error_border;
 		color: @error_text;
-		border-radius: 2px;
+		.rounded(2px);
 		padding: @error_padding;
 		font-size: 0.8em;
 		list-style: none;
@@ -173,7 +197,7 @@
 			);
 
 			border: @submit_border_width @submit_border_style @submit_border_color;
-			border-radius: @submit_border_radius;
+			.rounded(@submit_border_radius);
 			font-weight: @submit_weight;
 			font-size: @submit_font_size;
 			padding: @submit_padding @submit_padding * 2;
