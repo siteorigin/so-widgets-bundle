@@ -354,11 +354,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'font_size' =>  array(
 								'type'  => 'measurement',
-								'label' => __( 'Size', 'so-widgets-bundle' )
+								'label' => __( 'Font Size', 'so-widgets-bundle' )
 							),
 							'color' =>  array(
 								'type'  => 'color',
-								'label' => __( 'Color', 'so-widgets-bundle' ),
+								'label' => __( 'Text Color', 'so-widgets-bundle' ),
 							),
 							'margin' => array(
 								'type'  => 'measurement',
@@ -371,7 +371,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'background' =>  array(
 								'type'  => 'color',
 								'label' => __( 'Background', 'so-widgets-bundle' ),
-							),
+							), 
 							'border_color' => array(
 								'type'    => 'color',
 								'label'   => __( 'Border color', 'so-widgets-bundle' ),
