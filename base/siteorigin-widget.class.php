@@ -789,7 +789,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		//handle less @import statements
 		$less = preg_replace_callback( '/^@import\s+".*?\/?([\w-\.]+)";/m', array( $this, 'get_less_import_contents' ), $less );
 
-		$vars = $this->get_less_variables($instance);
+		$vars = apply_filters( 'siteorigin_widgets_less_variables_' . $this->id_base, $this->get_less_variables( $instance ), $instance, $this );
 		if( !empty( $vars ) ){
 			foreach($vars as $name => $value) {
 				// Ignore empty string, false and null values (but keep '0')
@@ -1042,7 +1042,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string
 	 */
 	function get_style_hash( $instance ) {
-		$vars = method_exists($this, 'get_style_hash_variables') ? $this->get_style_hash_variables( $instance ) : $this->get_less_variables( $instance );
+		if( method_exists( $this, 'get_style_hash_variables' ) ) {
+			$vars = apply_filters( 'siteorigin_widgets_hash_variables_' . $this->id_base, $this->get_style_hash_variables( $instance ), $instance, $this );
+		} else {
+			$vars = apply_filters( 'siteorigin_widgets_less_variables_' . $this->id_base, $this->get_less_variables( $instance ), $instance, $this );
+		}
 		$version = property_exists( $this, 'version' ) ? $this->version : '';
 
 		return substr( md5( json_encode( $vars ) . $version ), 0, 12 );
