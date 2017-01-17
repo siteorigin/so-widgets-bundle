@@ -80,7 +80,7 @@ class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_I
 			unset( $instance[ $unit_name ] );
 		}
 
-		$value = ( $value === '' ) ? false : ( (float) $value ) . $unit;
+		$value = ( $value === '' || $value === false ) ? false : ( (float) $value ) . $unit;
 		return $value;
 	}
 
