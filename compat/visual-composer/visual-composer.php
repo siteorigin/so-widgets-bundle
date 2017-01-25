@@ -87,7 +87,8 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 		global $wp_widget_factory;
 
-		$parsed_value = json_decode( $value, true );
+		$unesc = str_replace( '\`', '`', $value );
+		$parsed_value = json_decode( $unesc, true );
 		if ( empty( $parsed_value ) ) {
 			//Get the first value as the default.
 			reset( $so_widget_names );
@@ -156,10 +157,14 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 			'`{`',
 			'`}`',
 			'``',
+			'\\\\',
+			'\`',
 		), array(
 			'[',
 			']',
 			'"',
+			'\\',
+			'`',
 		), $widget_json[1] );
 
 		$widget_atts = json_decode( $widget_json, true );
@@ -173,13 +178,23 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 			$widget_atts['widget_data'] = $widget->update( $widget_atts['widget_data'], $widget_atts['widget_data'] );
 		}
 
-		$widget_json = json_encode( $widget_atts );
+		$widget_json = json_encode( $widget_atts, JSON_UNESCAPED_SLASHES );
+
+		$tmp = str_replace( '`', '\`', $widget_json );
+		$tmp = str_replace( '\\', '\\\\', $tmp );
+		$tmp = str_replace( '[', '`{`', $tmp );
+		$tmp = str_replace( ']', '`}`', $tmp );
+		$tmp = str_replace( '"', '``', $tmp );
 
 		$widget_json = str_replace( array(
+			'`',
+			'\\',
 			'[',
 			']',
 			'"',
 		), array(
+			'\`',
+			'\\\\',
 			'`{`',
 			'`}`',
 			'``',
@@ -195,7 +210,6 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 SiteOrigin_Widgets_Bundle_Visual_Composer::single();
 
-
 if ( class_exists( 'WPBakeryShortCode' ) ) {
 	class WPBakeryShortCode_SiteOrigin_Widget extends WPBakeryShortCode {
 		public function __construct( $settings ) {
@@ -203,13 +217,17 @@ if ( class_exists( 'WPBakeryShortCode' ) ) {
 		}
 
 		public function contentInline( $atts, $content ) {
-			$widget_settings = json_decode( $atts['so_widget_data'], true );
-
+			$widget_settings = $this->get_widget_settings( $atts );
 			ob_start();
 			$instance = $this->update_widget( $widget_settings['widget_class'], $widget_settings['widget_data'] );
 			$this->render_widget( $widget_settings['widget_class'], $instance );
 
 			return ob_get_clean();
+		}
+
+		public function get_widget_settings( $atts ) {
+			$unesc = str_replace( '\`', '`', $atts['so_widget_data'] );
+			return json_decode( $unesc, true );
 		}
 
 		private function get_so_widget( $widget_class ) {
@@ -227,6 +245,10 @@ if ( class_exists( 'WPBakeryShortCode' ) ) {
 
 		public function render_widget( $widget_class, $widget_instance ) {
 
+			if ( empty( $widget_instance ) ) {
+				return;
+			}
+
 			/* @var $widget SiteOrigin_Widget */
 			$widget = $this->get_so_widget( $widget_class );
 
@@ -236,6 +258,10 @@ if ( class_exists( 'WPBakeryShortCode' ) ) {
 		}
 
 		public function update_widget( $widget_class, $widget_instance ) {
+
+			if ( empty( $widget_instance ) ) {
+				return;
+			}
 
 			/* @var $widget SiteOrigin_Widget */
 			$widget = $this->get_so_widget( $widget_class );

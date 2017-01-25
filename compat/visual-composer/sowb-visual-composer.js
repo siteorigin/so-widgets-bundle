@@ -6,11 +6,17 @@ sowbForms.setupVcWidgetForm = function() {
 	var $widgetDropdown = $('[name="so_widget_class"]');
 	var ajaxUrl = $('[name="ajaxurl"]').data('ajaxUrl');
 	var $formContainer = $('.siteorigin_widget_form_container');
+	debugger;
+	
+	window.tinyMCEPreInit.mceInit['content'].wpautop = false;
 	
 	$formContainer.on('change', '.siteorigin-widget-field', function() {
 		var widgetData = sowbForms.getWidgetFormValues( $formContainer );
 		var widgetClass = $widgetDropdown.val();
-		$('[name="so_widget_data"]').val( JSON.stringify( {widget_class: widgetClass, widget_data: widgetData} ) );
+		
+		var jsonString = JSON.stringify({widget_class: widgetClass, widget_data: widgetData});
+		jsonString = jsonString.replace(/`/g, '\\`').replace(/\\/g, '\\\\');
+		$('[name="so_widget_data"]').val( jsonString );
 	});
 	
 	$widgetDropdown.on('change', function() {
