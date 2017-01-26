@@ -854,7 +854,12 @@ var sowbForms = window.sowbForms || {};
 				}
 				else {
 					if(typeof sub[parts[i]] === 'undefined') {
-						sub[parts[i]] = {};
+						// We assume that a numeric key means it's an array.
+						if( !isNaN( parts[i+1] ) ) {
+							sub[parts[i]] = [];
+						} else {
+							sub[parts[i]] = {};
+						}
 					}
 					// Go deeper into the data and continue
 					sub = sub[parts[i]];

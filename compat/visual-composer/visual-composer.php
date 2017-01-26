@@ -87,8 +87,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 		global $wp_widget_factory;
 
-		$unesc = str_replace( '\`', '`', $value );
-		$parsed_value = json_decode( $unesc, true );
+		$parsed_value = json_decode( $value, true );
 		if ( empty( $parsed_value ) ) {
 			//Get the first value as the default.
 			reset( $so_widget_names );
@@ -153,19 +152,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 		preg_match( '/so_widget_data="([^"]*)"/', stripslashes( $shortcode[0] ), $widget_json );
 
-		$widget_json = str_replace( array(
-			'`{`',
-			'`}`',
-			'``',
-			'\\\\',
-			'\`',
-		), array(
-			'[',
-			']',
-			'"',
-			'\\',
-			'`',
-		), $widget_json[1] );
+		$widget_json = html_entity_decode( $widget_json[1] );
 
 		$widget_atts = json_decode( $widget_json, true );
 
@@ -178,26 +165,16 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 			$widget_atts['widget_data'] = $widget->update( $widget_atts['widget_data'], $widget_atts['widget_data'] );
 		}
 
-		$widget_json = json_encode( $widget_atts, JSON_UNESCAPED_SLASHES );
+		$widget_json = json_encode( $widget_atts );
 
-		$tmp = str_replace( '`', '\`', $widget_json );
-		$tmp = str_replace( '\\', '\\\\', $tmp );
-		$tmp = str_replace( '[', '`{`', $tmp );
-		$tmp = str_replace( ']', '`}`', $tmp );
-		$tmp = str_replace( '"', '``', $tmp );
+		$widget_json = htmlentities( $widget_json );
 
 		$widget_json = str_replace( array(
-			'`',
-			'\\',
 			'[',
 			']',
-			'"',
 		), array(
-			'\`',
-			'\\\\',
-			'`{`',
-			'`}`',
-			'``',
+			'&#91;',
+			'&#93;',
 		), $widget_json );
 
 		$slashed = addslashes( 'so_widget_data="' . $widget_json . '"' );

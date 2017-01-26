@@ -15,7 +15,7 @@ sowbForms.setupVcWidgetForm = function() {
 		var widgetClass = $widgetDropdown.val();
 		
 		var jsonString = JSON.stringify({widget_class: widgetClass, widget_data: widgetData});
-		jsonString = jsonString.replace(/`/g, '\\`').replace(/\\/g, '\\\\');
+		jsonString = jsonString.replace(/\\/g, '\\\\');
 		$('[name="so_widget_data"]').val( jsonString );
 	});
 	
