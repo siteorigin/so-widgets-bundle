@@ -8,7 +8,6 @@
  */
 ?>
 
-
 <?php if( !empty( $title ) ) echo $args['before_title'] . esc_html( $title ) . $args['after_title']; ?>
 
 <div class="sow-taxonomy">
@@ -18,7 +17,7 @@
 	<?php endif; ?>
 
 	<?php foreach ( get_the_terms( $post->ID, $taxonomy_name ) as $term ) : ?>
-		<a class="so-taxonomy-<?php echo esc_attr( $display_format )?>" href="<?php echo get_term_link( $term, $taxonomy_name ) ?>" rel="tag"><?php echo esc_html( $term->name ) ?></a>
+		<a class="so-taxonomy-<?php echo esc_attr( $display_format )?>" href="<?php echo get_term_link( $term, $taxonomy_name ) ?>" rel="tag"  <?php if ( ! empty( $new_window ) ) echo 'target="_blank"'; ?>><?php echo esc_html( $term->name ) ?></a>
 	<?php endforeach; ?>
 
 </div>
