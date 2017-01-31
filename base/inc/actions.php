@@ -75,6 +75,8 @@ function siteorigin_widget_search_posts_action(){
 		unset( $post_types['attachment'] );
 	}
 
+	$post_types = apply_filters( 'siteorigin_widgets_search_posts_post_types', $post_types );
+
 	global $wpdb;
 	if( !empty($_GET['query']) ) {
 		$query = "AND post_title LIKE '%" . esc_sql( $_GET['query'] ) . "%'";
