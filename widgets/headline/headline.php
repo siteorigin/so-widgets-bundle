@@ -38,6 +38,15 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'type' => 'text',
 						'label' => __( 'Text', 'so-widgets-bundle' ),
 					),
+					'destination_url' => array(
+						'type' => 'link',
+						'label' => __( 'Destination URL', 'so-widgets-bundle' ),
+					),
+					'new_window' => array(
+						'type' => 'checkbox',
+						'default' => false,
+						'label' => __( 'Open in a new window', 'so-widgets-bundle' ),
+					),
 					'tag' => array(
 						'type' => 'select',
 						'label' => __( 'HTML Tag', 'so-widgets-bundle' ),
@@ -55,6 +64,10 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 					'color' => array(
 						'type' => 'color',
 						'label' => __('Color', 'so-widgets-bundle'),
+					),
+					'hover_color' => array(
+						'type' => 'color',
+						'label' => __('Hover Color', 'so-widgets-bundle'),
 					),
 					'font' => array(
 						'type' => 'font',
@@ -96,6 +109,15 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'type' => 'text',
 						'label' => __('Text', 'so-widgets-bundle')
 					),
+					'destination_url' => array(
+						'type' => 'link',
+						'label' => __( 'Destination URL', 'so-widgets-bundle' ),
+					),
+					'new_window' => array(
+						'type' => 'checkbox',
+						'default' => false,
+						'label' => __( 'Open in a new window', 'so-widgets-bundle' ),
+					),
 					'tag' => array(
 						'type' => 'select',
 						'label' => __( 'HTML Tag', 'so-widgets-bundle' ),
@@ -113,6 +135,10 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 					'color' => array(
 						'type' => 'color',
 						'label' => __('Color', 'so-widgets-bundle'),
+					),
+					'hover_color' => array(
+						'type' => 'color',
+						'label' => __('Hover Color', 'so-widgets-bundle'),
 					),
 					'font' => array(
 						'type' => 'font',
@@ -226,6 +252,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 
 		// All the headline attributes
 		$less_vars['headline_tag'] = isset( $instance['headline']['tag'] ) ? $instance['headline']['tag'] : false;
+		$less_vars['headline_hover_color'] = isset( $instance['headline']['hover_color'] ) ? $instance['headline']['hover_color'] : false;
 		$less_vars['headline_align'] = isset( $instance['headline']['align'] ) ? $instance['headline']['align'] : false;
 		$less_vars['headline_color'] = isset( $instance['headline']['color'] ) ? $instance['headline']['color'] : false;
 		$less_vars['headline_font_size'] = isset( $instance['headline']['font_size'] ) ? $instance['headline']['font_size'] : false;
@@ -243,6 +270,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 
 		// Set the sub headline attributes
 		$less_vars['sub_headline_align'] = isset( $instance['sub_headline']['align'] ) ? $instance['sub_headline']['align'] : false;
+		$less_vars['sub_headline_hover_color'] = isset( $instance['sub_headline']['hover_color'] ) ? $instance['sub_headline']['hover_color'] : false;
 		$less_vars['sub_headline_tag'] = isset( $instance['sub_headline']['tag'] ) ? $instance['sub_headline']['tag'] : false;
 		$less_vars['sub_headline_color'] = isset( $instance['sub_headline']['color'] ) ? $instance['sub_headline']['color'] : false;
 		$less_vars['sub_headline_font_size'] = isset( $instance['sub_headline']['font_size'] ) ? $instance['sub_headline']['font_size'] : false;
@@ -288,8 +316,12 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 
 		return array(
 			'headline' => $instance['headline']['text'],
+			'headline_destination_url' => $instance['headline']['destination_url'],
+			'headline_new_window' => $instance['headline']['new_window'],
 			'headline_tag' => $instance['headline']['tag'],
 			'sub_headline' => $instance['sub_headline']['text'],
+			'sub_headline_destination_url' => $instance['sub_headline']['destination_url'],
+			'sub_headline_new_window' => $instance['headline']['new_window'],
 			'sub_headline_tag' => $instance['sub_headline']['tag'],
 			'order' => $instance['order'],
 			'has_divider' => ! empty( $instance['divider'] ) && $instance['divider']['style'] != 'none'
