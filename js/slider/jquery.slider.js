@@ -5,66 +5,74 @@
  * Released under GPL 2.0 - see http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-var siteoriginSlider = {};
-jQuery( function($){
+var sowb = window.sowb || {};
 
-    var playSlideVideo = siteoriginSlider.playSlideVideo = function(el) {
-        $(el).find('video').each(function(){
-            if(typeof this.play !== 'undefined') {
-                this.play();
-            }
-        });
-    };
+sowb.SiteOriginSlider = function($) {
+	return {
+		playSlideVideo: function(el) {
+			$(el).find('video').each(function(){
+				if(typeof this.play !== 'undefined') {
+					this.play();
+				}
+			});
+		},
+		
+		pauseSlideVideo: function(el) {
+			$(el).find('video').each(function(){
+				if(typeof this.pause !== 'undefined') {
+					this.pause();
+				}
+			});
+		},
+		
+		setupActiveSlide: function(slider, newActive, speed){
+			// Start by setting up the active sentinel
+			var
+				sentinel = $(slider).find('.cycle-sentinel'),
+				active = $(newActive),
+				video = active.find('video.sow-background-element');
+			
+			if( speed == undefined ) {
+				sentinel.css( 'height', active.outerHeight() );
+			}
+			else {
+				sentinel.animate( {height: active.outerHeight()}, speed );
+			}
+			
+			if( video.length ) {
+				
+				// Resize the video so it fits in the current slide
+				var
+					slideRatio = active.outerWidth() / active.outerHeight(),
+					videoRatio = video.outerWidth() / video.outerHeight();
+				
+				if( slideRatio > videoRatio ) {
+					video.css( {
+						'width' : '100%',
+						'height' : 'auto'
+					} );
+				}
+				else {
+					video.css( {
+						'width' : 'auto',
+						'height' : '100%'
+					} );
+				}
+				
+				video.css( {
+					'margin-left' : -Math.ceil(video.width()/2),
+					'margin-top' : -Math.ceil(video.height()/2)
+				} );
+			}
+		},
+	};
+};
 
-    var pauseSlideVideo = siteoriginSlider.pauseSlideVideo = function(el) {
-        $(el).find('video').each(function(){
-            if(typeof this.pause !== 'undefined') {
-                this.pause();
-            }
-        });
-    };
-
-    var setupActiveSlide = siteoriginSlider.setupActiveSlide = function(slider, newActive, speed){
-        // Start by setting up the active sentinel
-        var
-            sentinel = $(slider).find('.cycle-sentinel'),
-            active = $(newActive),
-            video = active.find('video.sow-background-element');
-
-        if( speed == undefined ) {
-            sentinel.css( 'height', active.outerHeight() );
-        }
-        else {
-            sentinel.animate( {height: active.outerHeight()}, speed );
-        }
-
-        if( video.length ) {
-
-            // Resize the video so it fits in the current slide
-            var
-                slideRatio = active.outerWidth() / active.outerHeight(),
-                videoRatio = video.outerWidth() / video.outerHeight();
-
-            if( slideRatio > videoRatio ) {
-                video.css( {
-                    'width' : '100%',
-                    'height' : 'auto'
-                } );
-            }
-            else {
-                video.css( {
-                    'width' : 'auto',
-                    'height' : '100%'
-                } );
-            }
-
-            video.css( {
-                'margin-left' : -Math.ceil(video.width()/2),
-                'margin-top' : -Math.ceil(video.height()/2)
-            } );
-        }
-    };
-
+sowb.setupSlider = function() {
+	var $ = jQuery;
+	
+	var siteoriginSlider = new sowb.SiteOriginSlider($);
+	
     $('.sow-slider-images').each(function(){
         var $$ = $(this);
         var $p = $$.siblings('.sow-slider-pagination');
@@ -104,28 +112,32 @@ jQuery( function($){
                     })
                     .resize();
             } );
-
+			
             // Set up the Cycle with videos
             $$
                 .on({
                     'cycle-after' : function(event, optionHash, outgoingSlideEl, incomingSlideEl, forwardFlag){
                         var $$ = $(this);
-                        playSlideVideo(incomingSlideEl);
-                        setupActiveSlide( $$, incomingSlideEl );
+                        siteoriginSlider.playSlideVideo(incomingSlideEl);
+                        siteoriginSlider.setupActiveSlide( $$, incomingSlideEl );
+	                    $( incomingSlideEl ).trigger('sowSlideCycleAfter');
                     },
 
                     'cycle-before' : function(event, optionHash, outgoingSlideEl, incomingSlideEl, forwardFlag) {
                         var $$ = $(this);
                         $p.find('> li').removeClass('sow-active').eq(optionHash.slideNum-1).addClass('sow-active');
-                        pauseSlideVideo(outgoingSlideEl);
-                        setupActiveSlide($$, incomingSlideEl, optionHash.speed);
+                        siteoriginSlider.pauseSlideVideo(outgoingSlideEl);
+                        siteoriginSlider.setupActiveSlide($$, incomingSlideEl, optionHash.speed);
+	                    $( incomingSlideEl ).trigger('sowSlideCycleBefore');
                     },
 
                     'cycle-initialized' : function(event, optionHash){
-                        playSlideVideo( $(this).find('.cycle-slide-active') );
-                        setupActiveSlide( $$, optionHash.slides[0] );
+                        siteoriginSlider.playSlideVideo( $(this).find('.cycle-slide-active') );
+                        siteoriginSlider.setupActiveSlide( $$, optionHash.slides[0] );
 
                         $p.find('>li').removeClass('sow-active').eq(0).addClass('sow-active');
+	                    $( this ).find('.cycle-slide-active').trigger( 'sowSlideInitial' );
+
                         if(optionHash.slideCount <= 1) {
                             // Special case when there is only one slide
                             $p.hide();
@@ -139,12 +151,12 @@ jQuery( function($){
                     'slides' : '> .sow-slider-image',
                     'speed' : settings.speed,
                     'timeout' : settings.timeout,
-                    'swipe' : true,
+                    'swipe' : settings.swipe,
                     'swipe-fx' : 'scrollHorz'
-                } );
+                } )	;
 
             $$ .find('video.sow-background-element').on('loadeddata', function(){
-                setupActiveSlide( $$, $$.find( '.cycle-slide-active' ) );
+                siteoriginSlider.setupActiveSlide( $$, $$.find( '.cycle-slide-active' ) );
             } );
 
             // Set up showing and hiding navs
@@ -170,7 +182,7 @@ jQuery( function($){
 
             // Resize the sentinel when ever the window is resized
             $( window ).resize( function(){
-                setupActiveSlide( $$, $$.find( '.cycle-slide-active' ) );
+                siteoriginSlider.setupActiveSlide( $$, $$.find( '.cycle-slide-active' ) );
             } );
 
             // Setup clicks on the pagination
@@ -232,4 +244,8 @@ jQuery( function($){
             setupSlider();
         }
     });
+};
+
+jQuery( function($){
+	sowb.setupSlider();
 } );

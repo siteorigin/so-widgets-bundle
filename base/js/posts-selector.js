@@ -341,7 +341,7 @@ var soWidgetPostSelector = ( function ($, _) {
 			}
 
             // The order field
-            this.form.append($('<div class="query-builder-form-field">' + sowPostsSelectorTpl.fields.orderby + '</div>').disableSelection());
+            this.form.append($('<div class="query-builder-form-field">' + sowPostsSelectorTpl.fields.orderby + '</div>'));
             if( typeof this.model.get('orderby') !== 'undefined' ) this.form.find('select[name="orderby"]').val(this.model.get('orderby'));
             if( typeof this.model.get('order') !== 'undefined' ) this.form.find('input[name="order"]').val(this.model.get('order'));
 
@@ -355,7 +355,7 @@ var soWidgetPostSelector = ( function ($, _) {
 
             // The additional query arguments field
             this.form.append('<div class="query-builder-form-field">' + sowPostsSelectorTpl.fields.additional + '</div>');
-            if( typeof this.model.get('additional') !== 'undefined' ) this.form.find('input[name="additional"]').val( this.model.get('additional').split(',').join('&'));
+            if( typeof this.model.get('additional') !== 'undefined' ) this.form.find('input[name="additional"]').val( decodeURIComponent( this.model.get('additional') ) );
 
 
             var orderField =  this.form.find('input[name="order"]');
@@ -468,7 +468,7 @@ var soWidgetPostSelector = ( function ($, _) {
             this.model.set( 'order', this.$el.find('*[name="order"]').val() );
             this.model.set( 'posts_per_page', this.$el.find('*[name="posts_per_page"]').val() );
             this.model.set( 'sticky', this.$el.find('*[name="sticky"]').val() );
-            this.model.set( 'additional', this.$el.find('*[name="additional"]').val().split('&').join(',') );
+            this.model.set( 'additional', encodeURIComponent( this.$el.find('*[name="additional"]').val() ) );
 
             this.model.set( 'query', this.model.getQuery() );
 
@@ -631,10 +631,7 @@ var soWidgetPostSelector = ( function ($, _) {
                         query : 'post_type=_all&posts_per_page=-1&post__in=' + getPosts.join(',')
                     },
                     function(data){
-
-                        console.log(data);
                         if(typeof data.posts !== 'undefined') {
-
                             _.each(data.posts, function(post, i){
                                 v.postCache[post.id] = {
                                     id : post.id,
@@ -643,7 +640,6 @@ var soWidgetPostSelector = ( function ($, _) {
                                     editUrl: post.editUrl
                                 };
                             });
-
                         }
 
                         v.refreshLoading();

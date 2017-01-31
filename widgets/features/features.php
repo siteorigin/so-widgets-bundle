@@ -34,14 +34,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function initialize_form(){
-		$form['container_shape']['options'] = include dirname( __FILE__ ) . '/inc/containers.php';
-
-		$image_size_configs = $this->get_image_sizes();
-		$sizes = array();
-		foreach( $image_size_configs as $name => $size_config) {
-			$sizes[$name] = ucwords(preg_replace('/[-_]/', ' ', $name)) . ' (' . $size_config['width'] . 'x' . $size_config['height'] . ')';
-		}
+	function get_widget_form(){
 
 		return array(
 			'features' => array(
@@ -70,6 +63,11 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 						'label' => __('Icon', 'so-widgets-bundle'),
 					),
 
+					'icon_title' => array(
+						'type' => 'text',
+						'label' => __( 'Icon title', 'so-widgets-bundle' ),
+					),
+
 					'icon_color' => array(
 						'type' => 'color',
 						'label' => __('Icon color', 'so-widgets-bundle'),
@@ -84,9 +82,8 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					),
 
 					'icon_image_size' => array(
-						'type' => 'select',
+						'type' => 'image-size',
 						'label' => __('Icon image size', 'so-widgets-bundle'),
-						'options' => $sizes,
 					),
 
 					// The text under the icon
@@ -187,7 +184,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				'type' => 'select',
 				'label' => __('Container shape', 'so-widgets-bundle'),
 				'default' => 'round',
-				'options' => array(),
+				'options' => include dirname( __FILE__ ) . '/inc/containers.php',
 			),
 
 			'container_size' => array(
@@ -235,40 +232,6 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	/**
-	 * Get size information for all currently-registered image sizes.
-	 * From codex example here: https://codex.wordpress.org/Function_Reference/get_intermediate_image_sizes
-	 *
-	 * @global $_wp_additional_image_sizes
-	 * @uses   get_intermediate_image_sizes()
-	 * @return array $sizes Data for all currently-registered image sizes.
-	 */
-	function get_image_sizes() {
-		global $_wp_additional_image_sizes;
-
-		$sizes = array();
-
-		foreach ( get_intermediate_image_sizes() as $_size ) {
-			if ( in_array( $_size, array('thumbnail', 'medium', 'medium_large', 'large') ) ) {
-				$sizes[ $_size ]['width']  = get_option( "{$_size}_size_w" );
-				$sizes[ $_size ]['height'] = get_option( "{$_size}_size_h" );
-				$sizes[ $_size ]['crop']   = (bool) get_option( "{$_size}_crop" );
-			} elseif ( isset( $_wp_additional_image_sizes[ $_size ] ) ) {
-				$sizes[ $_size ] = array(
-					'width'  => $_wp_additional_image_sizes[ $_size ]['width'],
-					'height' => $_wp_additional_image_sizes[ $_size ]['height'],
-					'crop'   => $_wp_additional_image_sizes[ $_size ]['crop'],
-				);
-			}
-		}
-
-		return $sizes;
-	}
-
-	function get_style_name($instance){
-		return 'features';
-	}
-
 	function get_less_variables( $instance ) {
 		$less_vars = array();
 
@@ -307,10 +270,6 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			$fonts['text_options']['font'],
 			$fonts['more_text_options']['font'],
 		);
-	}
-
-	function get_template_name($instance) {
-		return 'base';
 	}
 }
 

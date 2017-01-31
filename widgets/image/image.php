@@ -23,20 +23,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function initialize_form(){
-
-		global $_wp_additional_image_sizes;
-		$sizes = array(
-			'full' => __('Full', 'so-widgets-bundle'),
-			'large' => __('Large', 'so-widgets-bundle'),
-			'medium' => __('Medium', 'so-widgets-bundle'),
-			'thumb' => __('Thumbnail', 'so-widgets-bundle'),
-		);
-		if( !empty($_wp_additional_image_sizes) ) {
-			foreach($_wp_additional_image_sizes as $i => $s) {
-				$sizes[$i] = $i;
-			}
-		}
+	function get_widget_form() {
 
 		return array(
 			'image' => array(
@@ -47,9 +34,8 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			),
 
 			'size' => array(
-				'type' => 'select',
+				'type' => 'image-size',
 				'label' => __('Image size', 'so-widgets-bundle'),
-				'options' => $sizes,
 			),
 
 			'align' => array(
@@ -115,26 +101,30 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		return substr( md5( serialize( $this->get_less_variables( $instance ) ) ), 0, 12 );
 	}
 
-	function get_template_name($instance) {
-		return 'base';
-	}
-
 	public function get_template_variables( $instance, $args ) {
+		// Workout the image title
+		if ( ! empty( $instance['title'] ) ) {
+			$title = $instance['title'];
+		} else {
+			// We do not want to use the default image titles as they're based on the file name without the extension
+			$file_name = pathinfo( get_post_meta( $instance['image'], '_wp_attached_file', true ), PATHINFO_FILENAME );
+			$title = get_the_title( $instance['image'] );
+			if ( $title == $file_name ) {
+				$title = '';
+			}
+		}
 		return array(
-			'title' => $instance['title'],
+			'title' => $title,
 			'title_position' => $instance['title_position'],
 			'image' => $instance['image'],
 			'size' => $instance['size'],
 			'image_fallback' => ! empty( $instance['image_fallback'] ) ? $instance['image_fallback'] : false,
-			'alt' => $instance['alt'],
+			'alt' => !empty( $instance['alt'] ) ? $instance['alt'] : get_post_meta( $instance['image'], '_wp_attachment_image_alt', true ),
 			'url' => $instance['url'],
 			'new_window' => $instance['new_window'],
 		);
 	}
 
-	function get_style_name($instance) {
-		return 'sow-image';
-	}
 
 	function get_less_variables($instance){
 		return array(

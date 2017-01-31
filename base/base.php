@@ -6,9 +6,9 @@ include plugin_dir_path(__FILE__).'siteorigin-widget.class.php';
 include plugin_dir_path(__FILE__).'inc/widget-manager.class.php';
 include plugin_dir_path(__FILE__).'inc/meta-box-manager.php';
 include plugin_dir_path(__FILE__).'inc/post-selector.php';
-include plugin_dir_path(__FILE__).'inc/fonts.php';
 include plugin_dir_path(__FILE__).'inc/string-utils.php';
 include plugin_dir_path(__FILE__).'inc/attachments.php';
+include plugin_dir_path(__FILE__).'inc/actions.php';
 
 /**
  * @param $css
@@ -105,7 +105,7 @@ function siteorigin_widget_get_font($font_value) {
 			$font['weight'] = $font_parts[1];
 			$font_url_param .= ':' . $font_parts[1];
 		}
-		$font['css_import'] = '@import url(http' . ( is_ssl() ? 's' : '' ) . '://fonts.googleapis.com/css?family=' . $font_url_param . ');';
+		$font['css_import'] = '@import url(https://fonts.googleapis.com/css?family=' . $font_url_param . ');';
 	}
 	else {
 		$font['family'] = $font_value;
@@ -114,110 +114,6 @@ function siteorigin_widget_get_font($font_value) {
 
 	return $font;
 }
-
-/**
- * Action for displaying the widget preview.
- */
-function siteorigin_widget_preview_widget_action(){
-	if( !class_exists($_POST['class']) ) exit();
-	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
-	$widget = new $_POST['class'];
-	if(!is_a($widget, 'SiteOrigin_Widget')) exit();
-
-	$instance = json_decode( stripslashes_deep($_POST['data']), true);
-	/* @var $widget SiteOrigin_Widget */
-	$instance = $widget->update( $instance, $instance );
-	$instance['is_preview'] = true;
-
-	// The theme stylesheet will change how the button looks
-	wp_enqueue_style( 'theme-css', get_stylesheet_uri(), array(), rand(0,65536) );
-	wp_enqueue_style( 'so-widget-preview', plugin_dir_url(__FILE__).'/css/preview.css', array(), rand(0,65536) );
-
-	ob_start();
-	$widget->widget(array(
-		'before_widget' => '',
-		'after_widget' => '',
-		'before_title' => '',
-		'after_title' => '',
-	), $instance);
-	$widget_html = ob_get_clean();
-
-	// Print all the scripts and styles
-	?>
-	<html>
-		<head>
-			<title><?php _e('Widget Preview', 'so-widgets-bundle') ?></title>
-			<?php
-			wp_print_scripts();
-			wp_print_styles();
-			siteorigin_widget_print_styles();
-			?>
-		</head>
-		<body>
-			<?php // A lot of themes use entry-content as their main content wrapper ?>
-			<div class="entry-content">
-				<?php echo $widget_html ?>
-			</div>
-		</body>
-	</html>
-
-	<?php
-	exit();
-}
-add_action('wp_ajax_so_widgets_preview', 'siteorigin_widget_preview_widget_action');
-
-/**
- * Action to handle searching
- */
-function siteorigin_widget_search_posts_action(){
-	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
-
-	header('content-type: application/json');
-
-
-	// Get all public post types, besides attachments
-	$available_post_types = (array) get_post_types( array(
-		'public'   => true
-	) );
-
-	$pt_input = empty( $_GET['postTypes'] ) ? false : explode( ',', $_GET['postTypes'] );
-	$post_types = array();
-	if ( ! empty( $pt_input ) ) {
-		foreach ( $pt_input as $post_type ) {
-			if ( in_array( $post_type, $available_post_types ) ) {
-				$post_types[] = $post_type;
-			}
-		}
-	} else {
-		$post_types = $available_post_types;
-		unset($post_types['attachment']);
-	}
-
-	$post_types = apply_filters( 'siteorigin_widgets_search_posts_post_types', $post_types );
-
-	global $wpdb;
-	if( !empty($_GET['query']) ) {
-		$query = "AND post_title LIKE '%" . esc_sql( $_GET['query'] ) . "%'";
-	}
-	else {
-		$query = '';
-	}
-
-	$post_types = "'" . implode("', '", array_map( 'esc_sql', $post_types ) ) . "'";
-
-	$results = $wpdb->get_results( "
-		SELECT ID, post_title, post_type
-		FROM {$wpdb->posts}
-		WHERE
-			post_type IN ( {$post_types} ) AND post_status = 'publish' {$query}
-		ORDER BY post_modified DESC
-		LIMIT 20
-	", ARRAY_A );
-
-	echo json_encode( apply_filters( 'siteorigin_widgets_search_posts_results', $results ) );
-	wp_die();
-}
-add_action('wp_ajax_so_widgets_search_posts', 'siteorigin_widget_search_posts_action');
 
 /**
  * Compatibility with Page Builder, add the groups and icons.
@@ -331,21 +227,7 @@ add_action( 'admin_print_styles', 'siteorigin_widgets_tinymce_admin_print_styles
  */
 function siteorigin_widgets_get_measurements_list() {
 	$measurements = array(
-		'px',
-		'%',
-		'in',
-		'cm',
-		'mm',
-		'em',
-		'rem',
-		'pt',
-		'pc',
-		'ex',
-		'ch',
-		'vw',
-		'vh',
-		'vmin',
-		'vmax',
+		'px', '%', 'in', 'cm', 'mm', 'em', 'rem', 'pt', 'pc', 'ex', 'ch', 'vw', 'vh', 'vmin', 'vmax',
 	);
 
 	// Allow themes and plugins to trim or enhance the list.

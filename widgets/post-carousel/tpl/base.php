@@ -5,7 +5,7 @@ $posts = new WP_Query( $query );
 
 <?php if($posts->have_posts()) : ?>
 	<div class="sow-carousel-title">
-		<?php echo $args['before_title'] . esc_html($instance['title']) . $args['after_title'] ?>
+		<?php if( !empty( $instance['title'] ) ) echo $args['before_title'] . esc_html($instance['title']) . $args['after_title'] ?>
 
 		<a href="#" class="sow-carousel-next" title="<?php esc_attr_e('Next', 'so-widgets-bundle') ?>"></a>
 		<a href="#" class="sow-carousel-previous" title="<?php esc_attr_e('Previous', 'so-widgets-bundle') ?>"></a>
@@ -23,7 +23,7 @@ $posts = new WP_Query( $query );
 		     data-ajax-url="<?php echo sow_esc_url( wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ) ) ?>"
 			>
 			<ul class="sow-carousel-items">
-				<?php include 'carousel-post-loop.php' ?>
+				<?php include plugin_dir_path( __FILE__ ) . 'carousel-post-loop.php' ?>
 			</ul>
 		</div>
 	</div>

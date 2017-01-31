@@ -33,11 +33,13 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			SiteOrigin_Widgets_Bundle::single()->include_widget( 'button' );
 		}
 
+		add_filter( 'siteorigin_widgets_wrapper_classes_' . $this->id_base, array( $this, 'wrapper_class_filter' ), 10, 2 );
+
 		// Let the slider base class do its initialization
 		parent::initialize();
 	}
 
-	function initialize_form(){
+	function get_widget_form(){
 		return array(
 			'frames' => array(
 				'type' => 'repeater',
@@ -86,6 +88,15 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'label' => __( 'Background image', 'so-widgets-bundle' ),
 								'library' => 'image',
 								'fallback' => true,
+							),
+
+							'image_type' => array(
+								'type' => 'select',
+								'label' => __('Background image type', 'so-widgets-bundle'),
+								'options' => array(
+									'cover' => __('Cover', 'so-widgets-bundle'),
+								),
+								'default' => 'cover',
 							),
 
 							'opacity' => array(
@@ -188,6 +199,13 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 						'default' => '38px',
 					),
 
+					'fittext' => array(
+						'type' => 'checkbox',
+						'label' => __( 'Use FitText', 'so-widgets-bundle' ),
+						'description' => __( 'Dynamically adjust your heading font size based on screen size.', 'so-widgets-bundle' ),
+						'default' => true,
+					),
+
 					'heading_shadow' => array(
 						'type' => 'slider',
 						'label' => __('Heading shadow intensity', 'so-widgets-bundle'),
@@ -230,8 +248,10 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		return array(
 			'color' => !empty( $frame['background']['color'] ) ? $frame['background']['color'] : false,
-			'image' => !empty( $background_image ) ? $background_image[0] : false,
-			'image-sizing' => 'cover',
+			'image' => !empty( $background_image[0] ) ? $background_image[0] : false,
+			'image-width' => !empty( $background_image[1] ) ? $background_image[1] : 0,
+			'image-height' => !empty( $background_image[2] ) ? $background_image[2] : 0,
+			'image-sizing' => $frame['background']['image_type'],
 			'url' => !empty( $frame['background']['url'] ) ? $frame['background']['url'] : false,
 			'new_window' => !empty( $frame['background']['new_window'] ),
 			'videos' => $frame['background']['videos'],
@@ -292,7 +312,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		$less['nav_size'] = $instance['controls']['nav_size'];
 
 		// Hero specific design
-		//Measurement field type options
+		// Measurement field type options
 		$meas_options = array();
 		$meas_options['slide_padding'] = $instance['design']['padding'];
 		$meas_options['slide_padding_extra_top'] = $instance['design']['extra_top_padding'];
@@ -345,6 +365,14 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		if( !empty( $font_import['css_import'] ) ) {
 			return  $font_import['css_import'];
 		}
+	}
+
+	function wrapper_class_filter( $classes, $instance ){
+		if( $instance['design']['fittext'] ) {
+			$classes[] = 'so-widget-fittext-wrapper';
+			wp_enqueue_script( 'sow-fittext' );
+		}
+		return $classes;
 	}
 
 }

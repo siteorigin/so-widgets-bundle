@@ -1,0 +1,51 @@
+<?php
+
+class SiteOrigin_Widgets_Bundle_Compatibility {
+
+	const BEAVER_BUILDER = 'Beaver Builder';
+	const ELEMENTOR = 'Elementor';
+
+	/**
+	 * Get the singleton instance
+	 *
+	 * @return SiteOrigin_Widgets_Bundle_Compatibility
+	 */
+	public static function single() {
+		static $single;
+		return empty( $single ) ? $single = new self() : $single;
+	}
+
+	function __construct() {
+		$builder = $this->get_active_builder();
+		if ( ! empty( $builder ) ) {
+			require_once $builder['file_path'];
+		}
+	}
+
+	function get_active_builder() {
+
+		$builders = include_once 'builders.php';
+
+		foreach ( $builders as $builder ) {
+			if ( $this->is_active( $builder ) ) {
+				return $builder;
+			}
+		}
+
+		return null;
+	}
+
+	function is_active( $builder ) {
+		switch ( $builder[ 'name' ] ) {
+			case self::BEAVER_BUILDER:
+				return class_exists( 'FLBuilderModel', false );
+			break;
+			case self::ELEMENTOR:
+				return class_exists( 'Elementor\\Plugin', false );
+			break;
+		}
+	}
+
+}
+
+SiteOrigin_Widgets_Bundle_Compatibility::single();

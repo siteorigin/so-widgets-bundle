@@ -1,11 +1,12 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 3.9
-Tested up to: 4.4.2
+Tested up to: 4.6
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
 Contributors: gpriday, braam-genis
+Donate link: https://siteorigin.com/downloads/contribution/
 
 == Description ==
 
@@ -50,6 +51,91 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.7.2 - 09 November 2016 =
+* Made fixes to pass PHP 7 compatibility checks.
+* Image Widget: Get alt and title text from chosen image.
+* Replaced markup parser with more actively maintained one.
+* Simple Masonry: ensure resize on load
+* Image Grid: Allow 0 as valid spacing value.
+* Editor Widget: Call `WP_Embed::run_shortcode` on Editor widget content
+* Maps: Added missing `typeof` causing maps api not to load properly.
+* Icon: Fixed URL output.
+* Fixed double slash in URLs.
+* Features: Use Measurement fields.
+* Apply modify_form to form arrays created in the constructor.
+* Contact Form: add email default email subject if no subject defined.
+
+= 1.7.1 - 21 September 2016 =
+* Fixed case of Maps widget in sidebar causing an error on pages without that sidebar.
+* Fixed icon field CSS.
+
+= 1.7 - 20 September 2016 =
+* Added mechanism for creating global widget setting.
+* Added mechanism for adding dismissible notices to widget forms.
+* Unified Google Maps JS working for maps widget and contact form location field.
+* Added icon search for icon field.
+* Added remove button to icon field.
+* Contact Form: Fixed clash with Firefox field validation.
+* Properly display remove button after importing Pixabay image.
+
+= 1.6.5 - 15 August 2016 =
+* Fixed dialog z-index.
+* Added field required argument.
+* Properly trigger change for image search import.
+* Sanitize arg can now be a callback.
+* Improved multi checkbox field
+* Maps: Just call initialization function if maps API already loaded.
+
+= 1.6.4 - 21 July 2016 =
+* More settings and customizability for Headline widget.
+* Added FitText to Headline and Hero Image widgets.
+* Fixed Pixabay image importing.
+
+= 1.6.3 - 19 July 2016 =
+* Added image search functionality to media field.
+* Moved actions into their own file.
+* Allow widgets to provide their own LESS/HTML.
+* Added very simple code field.
+* Multiple widgets can have the same class. Allowing widget functionality to come from configuration.
+* Various tweaks for upcoming Widgets Builder plugin.
+
+= 1.6.2 - 11 July 2016 =
+* Fixed Firefox issue in post selector builder.
+* Properly escape all uses off add_query_arg.
+* Added filter after video
+
+= 1.6.1 - 24 June 2016 =
+* Social Links: Fixed auto-filling of network colors.
+* Social Links: Added 500px network.
+* Social Links: Added title tag to link tags.
+* Maps: Prevent JS error in when maps widget script is enqueued but widget isn't displayed.
+* Maps: Made API field more prominent as it's now required by the Google Maps API.
+* Added more general error checking.
+
+= 1.6 - 21 June 2016 =
+* Added builder field.
+* Added new multi checkboxes field.
+* Added Layout Slider widget.
+* Added taxonomy widget.
+* Added slider wrapper attributes and filter.
+* Fix for measurement field inside a repeater.
+* Modified base folder to work independently of Widgets Bundle.
+* Added custom icon families callback argument to icon field.
+* Properly handle attachments in post selector
+* Contact Form: Refactored form fields.
+* Hero Image: Added image type to Hero Image widget.
+* Button: Handle empty width.
+* Image: Added filter for SiteOrigin image attributes.
+* Image: Add dimensions to sizes dropdown.
+* Maps: Ensure maps widget works with API key.
+* Hero Image: Added setting to disable swipe on mobile Hero Image Widget.
+* Fixed title syntax in Image widget.
+* Video: Correctly get video file mime-types.
+* Video Widget: Allow specifying multiple self-hosted video sources to support various formats.
+
+= 1.5.11 - April 11 2016 =
+* Fixed features widget container shape setting.
 
 = 1.5.10 - April 5 2016 =
 * Added Icon widget.

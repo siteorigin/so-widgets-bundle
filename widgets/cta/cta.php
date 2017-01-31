@@ -55,7 +55,7 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function initialize_form(){
+	function get_widget_form(){
 		return array(
 
 			'title' => array(
@@ -80,6 +80,14 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 						'type' => 'color',
 						'label' => __('Border color', 'so-widgets-bundle'),
 					),
+					'title_color' => array(
+						'type' => 'color',
+						'label' => __('Title color', 'so-widgets-bundle'),
+					),
+					'subtitle_color' => array(
+						'type' => 'color',
+						'label' => __('Subtitle color', 'so-widgets-bundle'),
+					),
 					'button_align' => array(
 						'type' => 'select',
 						'label' => __( 'Button align', 'so-widgets-bundle' ),
@@ -101,20 +109,14 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_template_name($instance) {
-		return 'base';
-	}
-
-	function get_style_name($instance) {
-		return 'basic';
-	}
-
 	function get_less_variables($instance) {
 		if( empty( $instance ) ) return array();
 
 		return array(
 			'border_color' => $instance['design']['border_color'],
 			'background_color' => $instance['design']['background_color'],
+			'title_color'      => $instance['design']['title_color'],
+			'subtitle_color'   => $instance['design']['subtitle_color'],
 			'button_align' => $instance['design']['button_align'],
 		);
 	}

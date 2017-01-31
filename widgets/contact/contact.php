@@ -39,7 +39,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		add_filter( 'siteorigin_widgets_sanitize_field_multiple_emails', array( $this, 'sanitize_multiple_emails' ) );
 	}
 
-	function initialize_form(){
+	function get_widget_form(){
 		return array(
 			'title' => array(
 				'type' => 'text',
@@ -108,6 +108,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'textarea' => __( 'Text Area', 'so-widgets-bundle' ),
 							'select' => __( 'Dropdown Select', 'so-widgets-bundle' ),
 							'checkboxes' => __( 'Checkboxes', 'so-widgets-bundle' ),
+							'radio' => __( 'Radio', 'so-widgets-bundle' ),
 						),
 						'state_emitter' => array(
 							'callback' => 'select',
@@ -143,7 +144,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						)
 					),
 
-					// This are for select and checkboxes
+					// This are for select, radio, and checkboxes
 					'options' => array(
 						'type' => 'repeater',
 						'label' => __( 'Options', 'so-widgets-bundle' ),
@@ -158,7 +159,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 						// These are only required for a few states
 						'state_handler' => array(
-							'field_type_{$repeater}[select,checkboxes]' => array('show'),
+							'field_type_{$repeater}[select,checkboxes,radio]' => array( 'show' ),
 							'_else[field_type_{$repeater}]' => array( 'hide' ),
 						),
 					),
@@ -173,20 +174,20 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 					'recaptcha' => array(
 						'type' => 'section',
-						'label' => __('Recaptcha', 'so-widgets-bundle'),
+						'label' => __('reCAPTCHA', 'so-widgets-bundle'),
 						'fields' => array(
 							'use_captcha' => array(
 								'type' => 'checkbox',
-								'label' => __( 'Use Captcha', 'so-widgets-bundle' ),
+								'label' => __( 'Use reCAPTCHA', 'so-widgets-bundle' ),
 								'default' => false,
 							),
 							'site_key' => array(
 								'type' => 'text',
-								'label' => __( 'ReCaptcha Site Key', 'so-widgets-bundle' ),
+								'label' => __( 'reCAPTCHA Site Key', 'so-widgets-bundle' ),
 							),
 							'secret_key' => array(
 								'type' => 'text',
-								'label' => __( 'ReCaptcha Secret Key', 'so-widgets-bundle' ),
+								'label' => __( 'reCAPTCHA Secret Key', 'so-widgets-bundle' ),
 							),
 							'theme' => array(
 								'type' => 'select',
@@ -523,6 +524,20 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	function get_form_teaser(){
+		if( ! $this->display_siteorigin_premium_teaser() ) return false;
+
+		$url = add_query_arg( array(
+			'featured_addon' => 'plugin/contact-form-fields',
+			'featured_plugin' => 'widgets-bundle'
+		), 'https://siteorigin.com/downloads/premium/' );
+
+		return sprintf(
+			__( 'Get more form fields for the Contact Form Widget in %s', 'so-widgets-bundle' ),
+			'<a href="' . esc_url( $url ) . '" target="_blank">' . __( 'SiteOrigin Premium', 'so-widgets-bundle' ) . '</a>'
+		);
+	}
+
 	function sanitize_multiple_emails( $value ) {
 		$values = explode( ',', $value );
 		foreach ( $values as $i => $email ) {
@@ -698,7 +713,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 			?><div class="sow-form-field sow-form-field-<?php echo sanitize_html_class( $field['type'] ) ?>"><?php
 
-			$is_text_input_field = ($field['type'] != 'select' && $field['type'] != 'checkboxes');
+			$is_text_input_field = ( $field['type'] != 'select' && $field['type'] != 'radio' && $field['type'] != 'checkboxes');
 			// label should be rendered before the field, then CSS will do the exact positioning.
 			$render_label_before_field = ( $label_position != 'below' && $label_position != 'inside' ) || ( $label_position == 'inside' && ! $is_text_input_field );
 			if( empty( $label_position ) || $render_label_before_field ) {
@@ -715,50 +730,23 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				<?php
 			}
 			?><span class="sow-field-container"><?php
-			switch( $field['type'] ) {
-				case 'email':
-				case 'text':
-					echo '<input type="' . $field['type'] . '" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '" value="' . esc_attr($value) . '" class="sow-text-field"' . ( $show_placeholder ? 'placeholder="' . esc_attr( $field['label'] ) . '"' : '' ) . '/>';
-					break;
-
-				case 'select':
-					echo '<select  name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '">';
-					if( !empty($field['options']) ) {
-						foreach( $field['options'] as $option ) {
-							echo '<option value="' . esc_attr( $option['value'] ) . '" ' . selected( $option['value'], $value, false ) . '>' . esc_html($option['value']) . '</option>';
-						}
-					}
-					echo '</select>';
-					break;
-
-				case 'checkboxes':
-					if( !empty($field['options']) ) {
-						if( empty($value) || !is_array( $value ) ) {
-							$value = array();
-						}
-
-						echo '<ul>';
-						foreach ( $field['options'] as $i => $option ) {
-							echo '<li>';
-							echo '<label>';
-							echo '<input type="checkbox" value="' . esc_attr($option['value']) . '" name="' . esc_attr( $field_name ) . '[]" id="' . esc_attr( $field_id ) . '-' . $i . '" ' . checked( in_array($option['value'], $value) , true, false) . ' /> ';
-							echo esc_html( $option['value'] );
-							echo '</li>';
-						}
-						echo '</ul>';
-					}
-					break;
-
-				case 'textarea':
-					echo '<textarea name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '" rows="10"' . ( $show_placeholder ? 'placeholder="' . esc_attr( $field['label'] ) . '"' : '' ) . '>' . esc_textarea($value) . '</textarea>';
-					break;
-
-				case 'subject':
-				case 'name':
-				default:
-					echo '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '"  value="' . esc_attr($value) . '"  class="sow-text-field" ' . ( $show_placeholder ? 'placeholder="' . esc_attr( $field['label'] ) . '"' : '' ) . '/>';
-					break;
-
+			$class_name = empty( $field['type'] ) ? '' : 'SiteOrigin_Widget_ContactForm_Field_' . ucwords( $field['type'] );
+			// This does autoloading if required.
+			if ( class_exists( $class_name ) ) {
+				/**
+				 * @var $contact_field SiteOrigin_Widget_ContactForm_Field_Base
+				 */
+				$field_input_options = array(
+					'field'            => $field,
+					'field_id'         => $field_id,
+					'field_name'       => $field_name,
+					'value'            => $value,
+					'show_placeholder' => $show_placeholder
+				);
+				$contact_field       = new $class_name( $field_input_options );
+				$contact_field->render();
+			} else {
+				echo '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '"  value="' . esc_attr( $value ) . '"  class="sow-text-field" ' . ( $show_placeholder ? 'placeholder="' . esc_attr( $field['label'] ) . '"' : '' ) . '/>';
 			}
 			?></span><?php
 
@@ -818,8 +806,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$value = !empty( $post_vars[$field_name] ) ? $post_vars[$field_name] : '';
 
 			if( $field['required']['required'] && empty($value) ) {
-				$errors[$field_name] = !empty($field['required']['missing_message']) ? $field['required']['missing_message'] : __('Required field', 'so-widgets-bundle');
-				continue;
+				// Add in the default subject
+				if( $field['type'] == 'subject' && !empty($instance['settings']['default_subject'] ) ) {
+					$value = $instance['settings']['default_subject'];
+				} else {
+					$errors[ $field_name ] = ! empty( $field['required']['missing_message'] ) ? $field['required']['missing_message'] : __( 'Required field', 'so-widgets-bundle' );
+					continue;
+				}
 			}
 
 			switch( $field['type'] ) {
@@ -854,17 +847,24 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		// Add in the default subject and subject prefix
-		if( empty($email_fields['subject']) && !empty($instance['settings']['default_subject']) ) {
+		// Add in the default subject if no subject field is defined in the form at all
+		if ( !isset( $email_fields['subject'] ) && !empty($instance['settings']['default_subject']) ) {
 			$email_fields['subject'] = $instance['settings']['default_subject'];
 		}
-		if( !empty($instance['settings']['subject_prefix']) ) {
+
+		// Add in the default subject prefix
+		if( !empty( $email_fields['subject'] ) && !empty($instance['settings']['subject_prefix']) ) {
 			$email_fields['subject'] = $instance['settings']['subject_prefix'] . ' ' . $email_fields['subject'];
 		}
 
 		// Now we do some email message validation
 		if( empty($errors) ) {
 			$email_errors = $this->validate_mail( $email_fields );
+			// Missing subject input and no default subject set. Revert to using a generic default 'SiteName Contact Form'
+			if ( ! isset( $email_fields['subject'] ) && ! empty( $email_errors['subject'] ) ) {
+				unset($email_errors['subject']);
+				$email_fields['subject'] = get_bloginfo() . ' ' . __( 'Contact Form', 'siteorigin-widgets' );
+			}
 			if( !empty($email_errors) ) {
 				$errors['_general'] = $email_errors;
 			}
@@ -1060,3 +1060,25 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 }
 siteorigin_widget_register( 'sow-contact-form', __FILE__, 'SiteOrigin_Widgets_ContactForm_Widget' );
+
+// Tell the autoloader where to look for contactform field classes.
+function contactform_fields_class_paths( $class_paths ) {
+	$loader = SiteOrigin_Widget_Field_Class_Loader::single();
+
+	$loader->add_class_prefixes(
+		apply_filters( 'siteorigin_widgets_contact_form_field_class_prefixes', array(
+			'SiteOrigin_Widget_ContactForm_Field_'
+		) ),
+		'contact-form'
+	);
+
+	$loader->add_class_paths(
+		apply_filters( 'siteorigin_widgets_contact_form_field_class_paths', array(
+			plugin_dir_path( __FILE__ ) . 'fields/'
+		) ),
+		'contact-form'
+	);
+
+	return $class_paths;
+}
+add_filter( 'init', 'contactform_fields_class_paths' );

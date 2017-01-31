@@ -135,6 +135,17 @@
                 // Lets set up the preview
                 $el.sowSetupPreview();
                 $mainForm = $el;
+
+                var $teaser = $el.find( '.siteorigin-widget-teaser' );
+                $teaser.find('.dashicons-dismiss').click( function(){
+                    var $$ = $(this);
+	                $.get( $$.data( 'dismiss-url' ) );
+	                console.log( $$.data( 'dismiss-url' ) );
+
+                    $teaser.slideUp( 'normal', function(){
+                        $teaser.remove();
+                    } );
+                } );
             }
             else {
                 $mainForm = $el.closest('.siteorigin-widget-form-main');
@@ -164,108 +175,13 @@
             $el.find('.siteorigin-widget-field-repeater-item').sowSetupRepeaterItems();
 
             // Set up any color fields
-            $fields.find('> .siteorigin-widget-input-color').wpColorPicker();
-
-            ///////////////////////////////////////
-            // Handle the media upload field
-
-            $fields.find('> .media-field-wrapper').each(function(){
-                var $media = $(this);
-                var $field = $media.closest('.siteorigin-widget-field');
-
-                // Handle the media uploader
-                $media.find('a.media-upload-button' ).click(function(e){
-                    if( typeof wp.media === 'undefined' ) {
-                        return;
-                    }
-
-                    var $$ = $(this);
-                    var $c = $(this ).closest('.siteorigin-widget-field');
-                    var frame = $(this ).data('frame');
-
-                    // If the media frame already exists, reopen it.
-                    if ( frame ) {
-                        frame.open();
-                        return false;
-                    }
-
-                    // Create the media frame.
-                    frame = wp.media( {
-                        // Set the title of the modal.
-                        title: $$.data('choose'),
-
-                        // Tell the modal to show only images.
-                        library: {
-                            type: $$.data('library').split(',').map(function(v){ return v.trim(); })
-                        },
-
-                        // Customize the submit button.
-                        button: {
-                            // Set the text of the button.
-                            text: $$.data('update'),
-                            // Tell the button not to close the modal, since we're
-                            // going to refresh the page when the image is selected.
-                            close: false
-                        }
-                    } );
-
-                    // Store the frame
-                    $$.data('frame', frame);
-
-                    // When an image is selected, run a callback.
-                    frame.on( 'select', function() {
-                        // Grab the selected attachment.
-                        var attachment = frame.state().get('selection').first().attributes;
-
-                        $c.find('.current .title' ).html(attachment.title);
-                        var $inputField = $c.find( 'input[type=hidden]' );
-                        $inputField.val(attachment.id);
-                        $inputField.trigger('change');
-
-                        if(typeof attachment.sizes !== 'undefined'){
-                            if(typeof attachment.sizes.thumbnail !== 'undefined'){
-                                $c.find('.current .thumbnail' ).attr('src', attachment.sizes.thumbnail.url).fadeIn();
-                            }
-                            else {
-                                $c.find('.current .thumbnail' ).attr('src', attachment.sizes.full.url).fadeIn();
-                            }
-                        }
-                        else{
-                            $c.find('.current .thumbnail' ).attr('src', attachment.icon).fadeIn();
-                        }
-
-                        $field.find('.media-remove-button').removeClass('remove-hide');
-
-                        frame.close();
-                    } );
-
-                    // Finally, open the modal.
-                    frame.open();
-
-                    return false;
-                });
-
-                $media.find('.current' )
-                    .mouseenter(function(){
-                        var t = $(this ).find('.title' );
-                        if( t.html() !== ''){
-                            t.fadeIn('fast');
-                        }
-                    })
-                    .mouseleave(function(){
-                        $(this ).find('.title' ).clearQueue().fadeOut('fast');
-                    })
-
-                $field.find('a.media-remove-button' )
-                    .click(function(e){
-                        e.preventDefault();
-                        $field.find('.current .title' ).html('');
-                        $field.find('input[type=hidden]' ).val('');
-                        $field.find('.current .thumbnail' ).fadeOut('fast');
-                        $(this).addClass('remove-hide');
-                    });
-
-            });
+			$fields.find('> .siteorigin-widget-input-color').wpColorPicker( {
+				change: function(event, ui) {
+					setTimeout(function() {
+						$(event.target).trigger('change');
+					}, 100);
+				}
+			} );
 
             ///////////////////////////////////////
             // Handle the sections
@@ -276,123 +192,6 @@
                 $(this).siblings('.siteorigin-widget-section').slideToggle(function(){
                     $(window).resize();
                     $(this).find('> .siteorigin-widget-field-container-state').val($(this).is(':visible') ? 'open' : 'closed');
-                });
-            });
-
-            ///////////////////////////////////////
-            // Handle the icon selection
-
-            var iconWidgetCache = {};
-            $fields.filter('.siteorigin-widget-field-type-icon').each(function(){
-                var $$ = $(this),
-                    $is = $$.find('.siteorigin-widget-icon-selector'),
-                    $v = $is.find('.siteorigin-widget-icon-icon'),
-                    $b = $$.find('.siteorigin-widget-icon-selector-current');
-
-                // Clicking on the button should display the icon selector
-                $b.click(function(){
-                    $is.slideToggle();
-                });
-
-                var rerenderIcons = function(){
-                    var family = $is.find('select.siteorigin-widget-icon-family').val();
-                    var container = $is.find('.siteorigin-widget-icon-icons');
-
-                    if(typeof iconWidgetCache[family] === 'undefined') {
-                        return;
-                    }
-
-                    container.empty();
-
-                    if( $('#'+'siteorigin-widget-font-'+family).length === 0) {
-
-                        $("<link rel='stylesheet' type='text/css'>")
-                            .attr('id', 'siteorigin-widget-font-' + family)
-                            .attr('href', iconWidgetCache[family].style_uri)
-                            .appendTo('head');
-                    }
-
-
-                    for ( var i in iconWidgetCache[family].icons ) {
-
-                        var icon = $('<div data-sow-icon="' + iconWidgetCache[family].icons[i] +  '"/>')
-                            .attr('data-value', family + '-' + i)
-                            .addClass( 'sow-icon-' + family )
-                            .addClass( 'siteorigin-widget-icon-icons-icon' )
-                            .click(function(){
-                                var $$ = $(this);
-                                if( $$.hasClass('siteorigin-widget-active') ) {
-                                    // This is being unselected
-                                    $$.removeClass('siteorigin-widget-active');
-                                    $v.val( '' );
-
-                                    // Hide the button icon
-                                    $b.find('span').hide();
-                                }
-                                else {
-                                    // This is being selected
-                                    container.find('.siteorigin-widget-icon-icons-icon').removeClass('siteorigin-widget-active');
-                                    $$.addClass('siteorigin-widget-active');
-                                    $v.val( $$.data('value') );
-
-                                    // Also add this to the button
-                                    $b.find('span')
-                                        .show()
-                                        .attr( 'data-sow-icon', $$.attr('data-sow-icon') )
-                                        .attr( 'class', '' )
-                                        .addClass( 'sow-icon-' + family );
-                                }
-                                $v.trigger('change');
-
-                                // Hide the icon selector
-                                $is.slideUp();
-                            });
-
-                        container.append(icon);
-
-                        if( $v.val() === family + '-' + i ) {
-							// Add selected icon to the button.
-							$b.find('span')
-								.show()
-								.attr( 'data-sow-icon', icon.attr('data-sow-icon') )
-								.attr( 'class', '' )
-								.addClass( 'sow-icon-' + family );
-                            icon.addClass('siteorigin-widget-active');
-                        }
-                    }
-
-                    // Move a selcted item to the first position
-                    container.prepend( container.find('.siteorigin-widget-active') );
-                };
-
-                // Create the function for changing the icon family and call it once
-                var changeIconFamily = function(){
-                    // Fetch the family icons from the server
-                    var family = $is.find('select.siteorigin-widget-icon-family').val();
-                    if(typeof family === 'undefined' || family === '') {
-                        return;
-                    }
-
-                    if(typeof iconWidgetCache[family] === 'undefined') {
-                        $.getJSON(
-                            soWidgets.ajaxurl,
-                            { 'action' : 'siteorigin_widgets_get_icons', 'family' :  $is.find('select.siteorigin-widget-icon-family').val() },
-                            function(data) {
-                                iconWidgetCache[family] = data;
-                                rerenderIcons();
-                            }
-                        );
-                    }
-                    else {
-                        rerenderIcons();
-                    }
-                };
-
-                changeIconFamily();
-
-                $is.find('select.siteorigin-widget-icon-family').change(function(){
-                    $is.find('.siteorigin-widget-icon-icons').empty();
-                    changeIconFamily();
                 });
             });
 
@@ -410,6 +209,7 @@
                     value: parseInt( $input.val() ),
                     slide: function( event, ui ) {
                         $input.val( parseInt(ui.value) );
+                        $input.trigger( 'change' );
                         $$.find('.siteorigin-widget-slider-value').html( ui.value );
                     }
                 });
@@ -488,6 +288,15 @@
                     }, 500);
                 } );
             } );
+
+	        ///////////////////////////////////////
+	        // Setup the Builder fields
+	        if( typeof jQuery.fn.soPanelsSetupBuilderWidget !== 'undefined' ) {
+		        $fields.filter( '.siteorigin-widget-field-type-builder' ).each( function(){
+			        var $$ = $(this);
+			        $$.find('> .siteorigin-page-builder-field' ).soPanelsSetupBuilderWidget();
+		        } );
+	        }
 
             ///////////////////////////////////////
             // Now lets handle the state emitters
@@ -570,6 +379,8 @@
 
             // Give plugins a chance to influence the form
             $el.trigger( 'sowsetupform', $fields ).data('sow-form-setup', true);
+            $fields.trigger( 'sowsetupformfield' );
+
             $el.find('.siteorigin-widget-field-repeater-item').trigger('updateFieldPositions');
 
             /////////////////////////////
@@ -681,6 +492,7 @@
             $items.bind('updateFieldPositions', function(){
                 var $$ = $(this);
                 var $rptrItems = $$.find('> .siteorigin-widget-field-repeater-item');
+
                 // Set the position for the repeater items
                 $rptrItems.each(function(i, el){
                     $(el).find('.siteorigin-widget-input').each(function(j, input){
@@ -700,21 +512,34 @@
                     var $in = $(input);
 
                     if(typeof pos !== 'undefined') {
-                        var newName = $in.data('original-name');
+                        var newName = $in.attr('data-original-name');
 
-                        if(typeof newName === 'undefined') {
-                            $in.data( 'original-name', $in.attr('name') );
+                        if( ! newName ) {
+                            $in.attr( 'data-original-name', $in.attr('name') );
                             newName = $in.attr('name');
                         }
                         if( ! newName ) {
                             return;
                         }
-                        for(var k in pos) {
-                            newName = newName.replace('#' + k + '#', pos[k] );
+
+                        if( pos ) {
+                            for( var k in pos ) {
+                                newName = newName.replace('#' + k + '#', pos[k] );
+                            }
                         }
-                        $(input).attr('name', newName);
+                        $in.attr('name', newName);
                     }
                 });
+				
+				if( ! $$.data('initialSetup') ) {
+					// Setup default checked values, now that we've updated input names.
+					// Without this radio inputs in repeaters will be rendered as if they all belong to the same group.
+					$$.find('.siteorigin-widget-input').each(function(i, input) {
+						var $in = $(input);
+						$in.prop('checked', $in.prop('defaultChecked'));
+					});
+					$$.data('initialSetup', true);
+				}
 
                 //Setup scrolling.
                 var scrollCount = $el.data('scroll-count') ? parseInt($el.data('scroll-count')) : 0;
@@ -898,11 +723,46 @@
                             }
                         }
                         if(id) {
-                            var idBase = id.replace(/-\d+$/, '');
-                            if (!newIds[idBase]) {
-                                newIds[idBase] = $form.find('.siteorigin-widget-input[id^=' + idBase + ']').not('[id*=_id_]').length + 1;
-                            }
-                            var newId = idBase + '-' + newIds[idBase]++;
+							var idRegExp;
+                            var idBase;
+                            var newId;
+	
+							// Radio inputs are slightly different because there are multiple `input` elements for
+							// a single field, i.e. multiple `inputs` for selecting a single value.
+							if( $inputElement.is('[type="radio"]') ) {
+								// Radio inputs have their position appended to the id.
+								idBase = id.replace(/-\d+-\d+$/, '');
+								var radioIdBase = id.replace(/-\d+$/, '');
+								if (!newIds[idBase]) {
+									var radioNames = {};
+									newIds[idBase] = $form
+										// find all inputs containing idBase in their id attribute
+										.find('.siteorigin-widget-input[id^=' + idBase + ']')
+										// exclude inputs from templates
+										.not('[id*=_id_]')
+										// reduce to one element per radio input group.
+										.filter(function(index, element) {
+											var eltName = $(element).attr('name');
+											if(radioNames[eltName]) {
+												return false;
+											} else {
+												radioNames[eltName] = true;
+												return true;
+											}
+										}).length + 1;
+								}
+								var newRadioIdBase = idBase + '-' + newIds[idBase];
+								newId = newRadioIdBase + id.match(/-\d+$/)[0];
+								$copyItem.find('label[for=' + radioIdBase + ']').attr('for', newRadioIdBase);
+							} else {
+								idRegExp = new RegExp('-\\d+$');
+								idBase = id.replace(idRegExp, '');
+								if (!newIds[idBase]) {
+									newIds[idBase] = $form.find('.siteorigin-widget-input[id^=' + idBase + ']').not('[id*=_id_]').length + 1;
+								}
+								newId = idBase + '-' + newIds[idBase]++;
+							}
+							
                             $inputElement.attr('id', newId);
                             $copyItem.find('label[for=' + id + ']').attr('for', newId);
                             $copyItem.find('[id*=' + id + ']').each(function() {
@@ -1021,7 +881,9 @@
         $(e.target).find('.siteorigin-widget-form-main').sowSetupForm();
     });
 
-    $(document).trigger('sowadminloaded');
+    $( function(){
+        $(document).trigger('sowadminloaded');
+    } );
 
 })(jQuery);
 
