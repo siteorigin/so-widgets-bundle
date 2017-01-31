@@ -68,9 +68,12 @@ function siteorigin_widget_search_posts_action(){
 		'public'             => true,
 		'publicly_queryable' => true
 	) );
-	unset($post_types['attachment']);
 
-	$post_types = apply_filters( 'siteorigin_widgets_search_posts_post_types', $post_types );
+	if ( ! empty( $_REQUEST['postTypes'] ) ) {
+		$post_types = array_intersect( explode( ',', $_REQUEST['postTypes'] ), $post_types );
+	} else {
+		unset( $post_types['attachment'] );
+	}
 
 	global $wpdb;
 	if( !empty($_GET['query']) ) {
