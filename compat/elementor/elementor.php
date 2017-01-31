@@ -23,26 +23,23 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 	}
 
 	function init() {
-
 		$this->plugin = Elementor\Plugin::instance();
-
-		if ( $this->plugin->preview->is_preview_mode() ) {
+		if ( !empty( $this->plugin->preview ) && method_exists( $this->plugin->preview, 'is_preview_mode' ) && $this->plugin->preview->is_preview_mode() ) {
 			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_frontend_scripts' ] );
 		}
 
 		$elementor_editor = $this->plugin->editor;
-		if ( is_admin() || ! $elementor_editor->is_edit_mode() ) {
-			return;
+		if( ! is_admin() && method_exists( $elementor_editor, 'is_edit_mode' ) && $elementor_editor->is_edit_mode() ) {
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ), 9999999 );
+			add_action( 'wp_print_footer_scripts', array( $this, 'print_footer_templates' ) );
 		}
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ), 9999999 );
-		add_action( 'wp_print_footer_scripts', array( $this, 'print_footer_templates' ) );
 	}
 
 	function enqueue_frontend_scripts() {
 
 		$post_id = get_the_ID();
 
-		if( defined( 'Elementor\\DB::STATUS_DRAFT' ) ) {
+		if( defined( 'Elementor\\DB::STATUS_DRAFT' ) && ! empty( $this->plugin->db ) && method_exists( $this->plugin->db, 'get_builder' ) ) {
 			// This is necessary to ensure styles and scripts are enqueued. Not sure why this is enough, but I assume
 			// Elementor is calling widgets' `widget` method with instance data in the process of retrieving editor data.
 			$this->plugin->db->get_builder( $post_id, Elementor\DB::STATUS_DRAFT );
