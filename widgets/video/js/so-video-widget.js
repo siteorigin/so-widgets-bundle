@@ -1,13 +1,11 @@
-
 /* globals jQuery */
 
-var sowb = window.sowb || {};
+jQuery( function ( $ ) {
+	var setupVideoPlayers = function() {
+		var $ = jQuery;
+		$('video.sow-video-widget').mediaelementplayer();
+	};
+	setupVideoPlayers();
 
-sowb.setupVideoPlayer = function() {
-	var $ = jQuery;
-	$('video.sow-video-widget').mediaelementplayer();
-};
-
-jQuery(function ($) {
-	sowb.setupVideoPlayer();
-});
+	$( document ).on( 'sowb_setup_widgets', setupVideoPlayers );
+} );
