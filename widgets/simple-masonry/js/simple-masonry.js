@@ -64,9 +64,9 @@ sowb.setupSimpleMasonry = function() {
         });
     };
 	
-	$(window).on('resize panelsStretchRows', resizeMasonry);
+	$(window).on('resize panelsStretchRows load', resizeMasonry);
 	
-	// Ensure that the masonry has resized correct on load.
+	// Ensure that the masonry has resized correctly on load.
 	setTimeout( function () {
 		resizeMasonry();
 	}, 100 );
