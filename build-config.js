@@ -13,6 +13,7 @@ module.exports = {
             'base/**/*.less',
             'css/**/*.less',
             'widgets/**/*.less',
+            'compat/**/*.less',
             '!base/less/*.less',
             '!widgets/**/styles/*.less'
         ],
@@ -26,6 +27,7 @@ module.exports = {
         src: [
             'admin/**/*.js',
             'base/**/*.js',
+            'compat/**/*.js',
             'js/**/*.js',
             'widgets/**/*.js',
             '!{node_modules,node_modules/**}',  // Ignore node_modules/ and contents

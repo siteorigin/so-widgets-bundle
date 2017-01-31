@@ -228,7 +228,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	/**
 	 * Generate the CSS for this widget and display it in the appropriate way
 	 *
-	 * @param $instance The instance array
+	 * @param $instance array The instance array
 	 *
 	 * @return string The CSS name
 	 */
@@ -426,7 +426,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			<?php $this->scripts_loading_message() ?>
 		</div>
 
-		<?php if( $this->widget_options['has_preview'] && ! $this->is_customize_preview() ) : ?>
+		<?php if( $this->show_preview_button() ) : ?>
 			<div class="siteorigin-widget-preview" style="display: none">
 				<a href="#" class="siteorigin-widget-preview-button button-secondary"><?php _e('Preview', 'so-widgets-bundle') ?></a>
 			</div>
@@ -454,7 +454,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		</script>
 		<?php
 
-		$this->enqueue_scripts( );
+		$this->enqueue_scripts( $form_type );
 	}
 
 	/**
@@ -465,6 +465,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			method_exists( $this, 'get_form_teaser' ) &&
 			( $teaser = $this->get_form_teaser() )
 		) {
+			if ( ! is_admin() ) {
+				wp_enqueue_style( 'dashicons' );
+			}
+
 			$dismissed = get_user_meta( get_current_user_id(), 'teasers_dismissed', true );
 			if( empty( $dismissed[ $this->id_base ] ) ) {
 				$dismiss_url = add_query_arg( array(
@@ -505,7 +509,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @param bool|string $form_type Should we enqueue the field scripts too?
 	 */
-	function enqueue_scripts( $form_type = false ){
+	function enqueue_scripts( $form_type = false ) {
 
 		if( ! wp_script_is('siteorigin-widget-admin') ) {
 			wp_enqueue_style( 'wp-color-picker' );
@@ -785,7 +789,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		//handle less @import statements
 		$less = preg_replace_callback( '/^@import\s+".*?\/?([\w-\.]+)";/m', array( $this, 'get_less_import_contents' ), $less );
 
-		$vars = $this->get_less_variables($instance);
+		$vars = apply_filters( 'siteorigin_widgets_less_variables_' . $this->id_base, $this->get_less_variables( $instance ), $instance, $this );
 		if( !empty( $vars ) ){
 			foreach($vars as $name => $value) {
 				// Ignore empty string, false and null values (but keep '0')
@@ -922,6 +926,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		if( empty( $instance ) ) return;
 
 		$fonts = $this->get_google_font_fields($instance);
+		if( empty( $fonts ) || ! is_array( $fonts ) ) return '';
+
 		$font_imports = array();
 
 		foreach ( $fonts as $font ) {
@@ -934,10 +940,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		// Remove empty and duplicate items from the array
-		$import_strings = array_filter($import_strings);
-		$import_strings = array_unique($import_strings);
+		$import_strings = array_filter( $import_strings );
+		$import_strings = array_unique( $import_strings );
 
-		return implode("\n", $import_strings);
+		return implode( "\n", $import_strings );
 	}
 
 	/**
@@ -960,7 +966,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function so_get_field_name( $field_name, $container = array() ) {
 		if( empty($container) ) {
-			return $this->get_field_name( $field_name );
+			$name = $this->get_field_name( $field_name );
 		}
 		else {
 			// We also need to add the container fields
@@ -975,8 +981,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			$name = $this->get_field_name( '{{{FIELD_NAME}}}' );
 			$name = str_replace('[{{{FIELD_NAME}}}]', $container_extras.'[' . esc_attr($field_name) . ']', $name);
-			return $name;
 		}
+
+		$name = apply_filters( 'siteorigin_widgets_get_field_name', $name );
+		$name = apply_filters( 'siteorigin_widgets_get_field_name_' . $this->id_base, $name );
+
+		return $name;
 	}
 
 	/**
@@ -1032,7 +1042,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string
 	 */
 	function get_style_hash( $instance ) {
-		$vars = method_exists($this, 'get_style_hash_variables') ? $this->get_style_hash_variables( $instance ) : $this->get_less_variables( $instance );
+		if( method_exists( $this, 'get_style_hash_variables' ) ) {
+			$vars = apply_filters( 'siteorigin_widgets_hash_variables_' . $this->id_base, $this->get_style_hash_variables( $instance ), $instance, $this );
+		} else {
+			$vars = apply_filters( 'siteorigin_widgets_less_variables_' . $this->id_base, $this->get_less_variables( $instance ), $instance, $this );
+		}
 		$version = property_exists( $this, 'version' ) ? $this->version : '';
 
 		return substr( md5( json_encode( $vars ) . $version ), 0, 12 );
@@ -1204,7 +1218,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * rather register scripts and styles using register_frontend_scripts() and register_frontend_styles(). This function
 	 * will then ensure that the scripts are not enqueued more than once.
 	 */
-	function enqueue_frontend_scripts( $instance ){
+	function enqueue_frontend_scripts( $instance ) {
 		$this->enqueue_registered_scripts();
 		$this->enqueue_registered_styles();
 
@@ -1224,16 +1238,29 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @return bool
 	 */
-	function is_preview( $instance = array() ){
+	function is_preview( $instance = array() ) {
 		// Check if the instance is a preview
 		if( !empty( $instance[ 'is_preview' ] ) ) return true;
 
 		// Check if the general request is a preview
-		return
+		$is_preview =
 			is_preview() ||  // is this a standard preview
 			$this->is_customize_preview() ||    // Is this a customizer preview
 			!empty( $_GET['siteorigin_panels_live_editor'] ) ||     // Is this a Page Builder live editor request
 			( !empty( $_REQUEST['action'] ) && $_REQUEST['action'] == 'so_panels_builder_content' );    // Is this a Page Builder content ajax request
+
+		return apply_filters( 'siteorigin_widgets_is_preview', $is_preview, $this );
+	}
+
+	/**
+	 * Whether or not so show the 'Preview' button
+	 *
+	 * @return bool
+	 */
+	function show_preview_button(){
+		$show_preview = $this->widget_options['has_preview'] && ! $this->is_customize_preview();
+		$show_preview = apply_filters( 'siteorigin_widgets_form_show_preview_button', $show_preview, $this );
+		return $show_preview;
 	}
 
 	/**

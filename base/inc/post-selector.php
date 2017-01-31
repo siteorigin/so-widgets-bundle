@@ -93,6 +93,11 @@ function siteorigin_widget_post_selector_process_query($query){
 		}
 		unset( $query['sticky'] );
 	}
+	
+	// Exclude the current post (if applicable) to avoid any issues associated with showing the same post again
+	if( get_the_id() != false ){
+		$query['post__not_in'][] = get_the_id();
+	}
 
 	if ( ! empty( $query['additional'] ) ) {
 		$query = wp_parse_args( $query['additional'], $query );
@@ -105,7 +110,7 @@ function siteorigin_widget_post_selector_process_query($query){
 		}
 	}
 
-	return $query;
+	return apply_filters( 'siteorigin_widgets_posts_selector_query', $query );
 }
 
 function siteorigin_widget_post_selector_form_fields(){
@@ -128,7 +133,7 @@ function siteorigin_widget_post_selector_form_fields(){
 	$return['post__in'] = '';
 	$return['post__in'] .= '<label><span>' . __('Post in', 'so-widgets-bundle') . '</span>';
 	$return['post__in'] .= '<input type="text" name="post__in" class="" />';
-	$return['post__in'] .= ' <a href="#" class="sow-select-posts button button-secondary">' . __('Select posts', 'so-widgets-bundle') . '</a>';
+	$return['post__in'] .= ' <a href="#" class="sow-select-posts button button-small">' . __('Select posts', 'so-widgets-bundle') . '</a>';
 	$return['post__in'] .= '</label>';
 
 	// The taxonomy field

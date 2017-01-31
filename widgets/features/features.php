@@ -63,6 +63,11 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 						'label' => __('Icon', 'so-widgets-bundle'),
 					),
 
+					'icon_title' => array(
+						'type' => 'text',
+						'label' => __( 'Icon title', 'so-widgets-bundle' ),
+					),
+
 					'icon_color' => array(
 						'type' => 'color',
 						'label' => __('Icon color', 'so-widgets-bundle'),

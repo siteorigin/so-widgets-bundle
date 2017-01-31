@@ -21,9 +21,9 @@
                     if (id.indexOf('__i__') > -1) return;
                     var mceSettings = $container.data('mceSettings');
                     var widgetIdBase = $container.data('widgetIdBase');
-                    var name = $textarea.attr('name').replace(/\[\d+\]/g, '');
+                    var name = $textarea.attr('name').replace(/\[\d*\]/g, '');
                     var fieldName = /[a-zA-Z0-9\-]+(?:\[[a-zA-Z0-9]+\])?\[(.*)\]/.exec(name)[1];
-                    var idPattern = new RegExp('widget-' + widgetIdBase + '-.*-' + fieldName.replace(/\]\[/g, '-') + '[-\d]*');
+                    var idPattern = new RegExp('widget-' + widgetIdBase + '-?.*-' + fieldName.replace(/\]\[/g, '-') + '[-\d]*');
                     for (var initId in tinyMCEPreInit.mceInit) {
                         if (initId.match(idPattern)) {
                             mceSettings = $.extend({}, tinyMCEPreInit.mceInit[initId], mceSettings);
@@ -48,11 +48,6 @@
                                 if (content) {
                                     editor.setContent(content);
                                 }
-                            }
-                        );
-                        $textarea.on('keyup',
-                            function () {
-                                editor.setContent(window.switchEditors.wpautop($textarea.val()));
                             }
                         );
                     };
@@ -81,10 +76,25 @@
                 quicktags(tinyMCEPreInit.qtInit[id]);
 
                 $(this).on( 'click', function(event) {
-
+					
                     var $target = $(event.target);
                     if ( $target.hasClass( 'wp-switch-editor' ) ) {
-                        mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
+						mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
+						if ( mode == 'tmce') {
+							// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex
+							var editor = tinymce.get(id);
+							if (editor != null) {
+								var content = $textarea.val();
+								if (content.search('<') != -1) {
+									if (content.search('>') == -1) {
+										content = content.replace(/</g, '');
+										$textarea.val(content);
+									}
+								}
+								editor.setContent(window.switchEditors.wpautop(content));
+							}
+						}
+						
                         $(this).find('+ .siteorigin-widget-tinymce-selected-editor').val(mode);
                     }
                 });

@@ -1,0 +1,172 @@
+/* Styles required for icons, otherwise they are overridden by Beaver Builder's form styles */
+/* Unfortunately a lot of `!important`s necessary to override beaver's `!important`s. :/ */
+.fl-lightbox .siteorigin-widget-form,
+.siteorigin-widgets-query-builder.media-modal {
+
+	&.siteorigin-widget-form-main {
+		min-width: inherit;
+	}
+
+	.siteorigin-widget-teaser .dashicons {
+		font-family: dashicons;
+	}
+
+	.siteorigin-widget-field {
+		input {
+			margin: 0 !important;
+		}
+
+		input[type="checkbox"] {
+			vertical-align: middle;
+		}
+
+		input.siteorigin-widget-input-color {
+			margin: 5px !important;
+		}
+
+		input.siteorigin-widget-input-measurement {
+			margin: 1px !important;
+			height: inherit;
+		}
+
+		select.siteorigin-widget-input {
+			height: inherit;
+			padding: 3px;
+		}
+
+		.siteorigin-widget-field-type-slider input[type="number"] {
+			display: none !important;
+		}
+
+		.clear {
+			clear: both;
+		}
+
+		&.siteorigin-widget-field-type-media {
+			.media-fallback-external {
+				margin-top: 4px !important;
+				margin-left: 15px !important;
+				max-width: 220px;
+			}
+		}
+	}
+
+	.sow-icon-elegantline, .sow-icon-fontawesome, .sow-icon-genericons,
+	.sow-icon-icomoon, .sow-icon-ionicons, .sow-icon-typicons {
+
+		display: inline-block;
+		speak: none;
+		font-style: normal;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+
+	.sow-icon-elegantline {
+		font-family: 'sow-elegantline';
+	}
+
+	.sow-icon-fontawesome {
+		font-family: 'sow-fontawesome';
+	}
+
+	.sow-icon-genericons {
+		font-family: 'sow-genericons';
+	}
+
+	.sow-icon-icomoon {
+		font-family: 'sow-icomoon';
+	}
+
+	.sow-icon-ionicons {
+		font-family: 'sow-ionicons';
+	}
+
+	.sow-icon-typicons {
+		font-family: 'sow-typicons';
+	}
+
+	/* Button styles copied from wp-core for default UI look. */
+	.button, .button-secondary {
+		display: inline-block;
+		text-decoration: none;
+		font-size: 13px;
+		line-height: 26px;
+		height: 28px;
+		margin: 0;
+		padding: 0 10px 1px;
+		cursor: pointer;
+		border: 1px solid #cccccc;
+		border-radius: 3px;
+		white-space: nowrap;
+		box-sizing: border-box;
+
+		font-family: inherit;
+		font-weight: normal;
+		text-transform: capitalize;
+		color: #555;
+		background: #f7f7f7;
+
+		&:hover,
+		&:focus {
+			background: #fafafa;
+			border-color: #999;
+			color: #23282d;
+		}
+
+		&:active,
+		&:focus {
+			outline: none;
+		}
+
+		&.hidden {
+			display: none;
+		}
+	}
+
+	.button.button-small {
+		height: 23px;
+		line-height: 22px;
+		padding: 0 8px 1px;
+		font-size: 11px;
+	}
+
+	select, input[type=text] {
+		margin: 1px;
+		border-radius: 0;
+		font-weight: inherit;
+		border: 1px solid #ddd;
+		box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
+		background-color: #fff;
+		color: #32373c;
+		outline: 0;
+		transition: 50ms border-color ease-in-out;
+	}
+
+	.ui-autocomplete {
+		padding: 0;
+		margin: 0;
+		list-style: none;
+		position: absolute;
+		z-index: 10000;
+		border: 1px solid #5b9dd9;
+		box-shadow: 0 1px 2px rgba(30,140,190,.8);
+		background-color: #fff;
+
+		li {
+			margin-bottom: 0;
+			padding: 4px 10px;
+			white-space: nowrap;
+			text-align: left;
+
+			&.ui-state-focus {
+				background-color: #ddd;
+				cursor: pointer;
+			}
+		}
+	}
+}

@@ -80,6 +80,14 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 						'type' => 'color',
 						'label' => __('Border color', 'so-widgets-bundle'),
 					),
+					'title_color' => array(
+						'type' => 'color',
+						'label' => __('Title color', 'so-widgets-bundle'),
+					),
+					'subtitle_color' => array(
+						'type' => 'color',
+						'label' => __('Subtitle color', 'so-widgets-bundle'),
+					),
 					'button_align' => array(
 						'type' => 'select',
 						'label' => __( 'Button align', 'so-widgets-bundle' ),
@@ -107,6 +115,8 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 		return array(
 			'border_color' => $instance['design']['border_color'],
 			'background_color' => $instance['design']['background_color'],
+			'title_color'      => $instance['design']['title_color'],
+			'subtitle_color'   => $instance['design']['subtitle_color'],
 			'button_align' => $instance['design']['button_align'],
 		);
 	}

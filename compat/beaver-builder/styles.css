@@ -1,0 +1,190 @@
+/* Styles required for icons, otherwise they are overridden by Beaver Builder's form styles */
+/* Unfortunately a lot of `!important`s necessary to override beaver's `!important`s. :/ */
+.fl-lightbox .siteorigin-widget-form,
+.siteorigin-widgets-query-builder.media-modal {
+  /* Button styles copied from wp-core for default UI look. */
+}
+.fl-lightbox .siteorigin-widget-form.siteorigin-widget-form-main,
+.siteorigin-widgets-query-builder.media-modal.siteorigin-widget-form-main {
+  min-width: inherit;
+}
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-teaser .dashicons,
+.siteorigin-widgets-query-builder.media-modal .siteorigin-widget-teaser .dashicons {
+  font-family: dashicons;
+}
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field input,
+.siteorigin-widgets-query-builder.media-modal .siteorigin-widget-field input {
+  margin: 0 !important;
+}
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field input[type="checkbox"],
+.siteorigin-widgets-query-builder.media-modal .siteorigin-widget-field input[type="checkbox"] {
+  vertical-align: middle;
+}
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field input.siteorigin-widget-input-color,
+.siteorigin-widgets-query-builder.media-modal .siteorigin-widget-field input.siteorigin-widget-input-color {
+  margin: 5px !important;
+}
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field input.siteorigin-widget-input-measurement,
+.siteorigin-widgets-query-builder.media-modal .siteorigin-widget-field input.siteorigin-widget-input-measurement {
+  margin: 1px !important;
+  height: inherit;
+}
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field select.siteorigin-widget-input,
+.siteorigin-widgets-query-builder.media-modal .siteorigin-widget-field select.siteorigin-widget-input {
+  height: inherit;
+  padding: 3px;
+}
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field .siteorigin-widget-field-type-slider input[type="number"],
+.siteorigin-widgets-query-builder.media-modal .siteorigin-widget-field .siteorigin-widget-field-type-slider input[type="number"] {
+  display: none !important;
+}
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field .clear,
+.siteorigin-widgets-query-builder.media-modal .siteorigin-widget-field .clear {
+  clear: both;
+}
+.fl-lightbox .siteorigin-widget-form .siteorigin-widget-field.siteorigin-widget-field-type-media .media-fallback-external,
+.siteorigin-widgets-query-builder.media-modal .siteorigin-widget-field.siteorigin-widget-field-type-media .media-fallback-external {
+  margin-top: 4px !important;
+  margin-left: 15px !important;
+  max-width: 220px;
+}
+.fl-lightbox .siteorigin-widget-form .sow-icon-elegantline,
+.siteorigin-widgets-query-builder.media-modal .sow-icon-elegantline,
+.fl-lightbox .siteorigin-widget-form .sow-icon-fontawesome,
+.siteorigin-widgets-query-builder.media-modal .sow-icon-fontawesome,
+.fl-lightbox .siteorigin-widget-form .sow-icon-genericons,
+.siteorigin-widgets-query-builder.media-modal .sow-icon-genericons,
+.fl-lightbox .siteorigin-widget-form .sow-icon-icomoon,
+.siteorigin-widgets-query-builder.media-modal .sow-icon-icomoon,
+.fl-lightbox .siteorigin-widget-form .sow-icon-ionicons,
+.siteorigin-widgets-query-builder.media-modal .sow-icon-ionicons,
+.fl-lightbox .siteorigin-widget-form .sow-icon-typicons,
+.siteorigin-widgets-query-builder.media-modal .sow-icon-typicons {
+  display: inline-block;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.fl-lightbox .siteorigin-widget-form .sow-icon-elegantline,
+.siteorigin-widgets-query-builder.media-modal .sow-icon-elegantline {
+  font-family: 'sow-elegantline';
+}
+.fl-lightbox .siteorigin-widget-form .sow-icon-fontawesome,
+.siteorigin-widgets-query-builder.media-modal .sow-icon-fontawesome {
+  font-family: 'sow-fontawesome';
+}
+.fl-lightbox .siteorigin-widget-form .sow-icon-genericons,
+.siteorigin-widgets-query-builder.media-modal .sow-icon-genericons {
+  font-family: 'sow-genericons';
+}
+.fl-lightbox .siteorigin-widget-form .sow-icon-icomoon,
+.siteorigin-widgets-query-builder.media-modal .sow-icon-icomoon {
+  font-family: 'sow-icomoon';
+}
+.fl-lightbox .siteorigin-widget-form .sow-icon-ionicons,
+.siteorigin-widgets-query-builder.media-modal .sow-icon-ionicons {
+  font-family: 'sow-ionicons';
+}
+.fl-lightbox .siteorigin-widget-form .sow-icon-typicons,
+.siteorigin-widgets-query-builder.media-modal .sow-icon-typicons {
+  font-family: 'sow-typicons';
+}
+.fl-lightbox .siteorigin-widget-form .button,
+.siteorigin-widgets-query-builder.media-modal .button,
+.fl-lightbox .siteorigin-widget-form .button-secondary,
+.siteorigin-widgets-query-builder.media-modal .button-secondary {
+  display: inline-block;
+  text-decoration: none;
+  font-size: 13px;
+  line-height: 26px;
+  height: 28px;
+  margin: 0;
+  padding: 0 10px 1px;
+  cursor: pointer;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  white-space: nowrap;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-weight: normal;
+  text-transform: capitalize;
+  color: #555;
+  background: #f7f7f7;
+}
+.fl-lightbox .siteorigin-widget-form .button:hover,
+.siteorigin-widgets-query-builder.media-modal .button:hover,
+.fl-lightbox .siteorigin-widget-form .button-secondary:hover,
+.siteorigin-widgets-query-builder.media-modal .button-secondary:hover,
+.fl-lightbox .siteorigin-widget-form .button:focus,
+.siteorigin-widgets-query-builder.media-modal .button:focus,
+.fl-lightbox .siteorigin-widget-form .button-secondary:focus,
+.siteorigin-widgets-query-builder.media-modal .button-secondary:focus {
+  background: #fafafa;
+  border-color: #999;
+  color: #23282d;
+}
+.fl-lightbox .siteorigin-widget-form .button:active,
+.siteorigin-widgets-query-builder.media-modal .button:active,
+.fl-lightbox .siteorigin-widget-form .button-secondary:active,
+.siteorigin-widgets-query-builder.media-modal .button-secondary:active,
+.fl-lightbox .siteorigin-widget-form .button:focus,
+.siteorigin-widgets-query-builder.media-modal .button:focus,
+.fl-lightbox .siteorigin-widget-form .button-secondary:focus,
+.siteorigin-widgets-query-builder.media-modal .button-secondary:focus {
+  outline: none;
+}
+.fl-lightbox .siteorigin-widget-form .button.hidden,
+.siteorigin-widgets-query-builder.media-modal .button.hidden,
+.fl-lightbox .siteorigin-widget-form .button-secondary.hidden,
+.siteorigin-widgets-query-builder.media-modal .button-secondary.hidden {
+  display: none;
+}
+.fl-lightbox .siteorigin-widget-form .button.button-small,
+.siteorigin-widgets-query-builder.media-modal .button.button-small {
+  height: 23px;
+  line-height: 22px;
+  padding: 0 8px 1px;
+  font-size: 11px;
+}
+.fl-lightbox .siteorigin-widget-form select,
+.siteorigin-widgets-query-builder.media-modal select,
+.fl-lightbox .siteorigin-widget-form input[type=text],
+.siteorigin-widgets-query-builder.media-modal input[type=text] {
+  margin: 1px;
+  border-radius: 0;
+  font-weight: inherit;
+  border: 1px solid #ddd;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.07);
+  background-color: #fff;
+  color: #32373c;
+  outline: 0;
+  transition: 50ms border-color ease-in-out;
+}
+.fl-lightbox .siteorigin-widget-form .ui-autocomplete,
+.siteorigin-widgets-query-builder.media-modal .ui-autocomplete {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  position: absolute;
+  z-index: 10000;
+  border: 1px solid #5b9dd9;
+  box-shadow: 0 1px 2px rgba(30, 140, 190, 0.8);
+  background-color: #fff;
+}
+.fl-lightbox .siteorigin-widget-form .ui-autocomplete li,
+.siteorigin-widgets-query-builder.media-modal .ui-autocomplete li {
+  margin-bottom: 0;
+  padding: 4px 10px;
+  white-space: nowrap;
+  text-align: left;
+}
+.fl-lightbox .siteorigin-widget-form .ui-autocomplete li.ui-state-focus,
+.siteorigin-widgets-query-builder.media-modal .ui-autocomplete li.ui-state-focus {
+  background-color: #ddd;
+  cursor: pointer;
+}

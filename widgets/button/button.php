@@ -130,6 +130,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'label' => __('Use hover effects', 'so-widgets-bundle'),
 					),
 
+					'font' => array(
+						'type' => 'font',
+						'label' => __( 'Font', 'so-widgets-bundle' ),
+						'default' => 'default'
+					),
+
 					'font_size' => array(
 						'type' => 'select',
 						'label' => __('Font size', 'so-widgets-bundle'),
@@ -233,7 +239,8 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	 */
 	function get_less_variables($instance){
 		if( empty( $instance ) || empty( $instance['design'] ) ) return array();
-		return array(
+
+		$less_vars = array(
 			'button_width' => isset( $instance['design']['width'] ) ? $instance['design']['width'] : '',
 			'has_button_width' => empty( $instance['design']['width'] ) ? 'false' : 'true',
 			'button_color' => $instance['design']['button_color'],
@@ -244,8 +251,22 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'padding' => $instance['design']['padding'] . 'em',
 			'has_text' => empty( $instance['text'] ) ? 'false' : 'true',
 		);
+
+		if ( ! empty( $instance['design']['font'] ) ) {
+			$font = siteorigin_widget_get_font( $instance['design']['font'] );
+			$less_vars['button_font'] = $font['family'];
+			if ( ! empty( $font['weight'] ) ) {
+				$less_vars['button_font_weight'] = $font['weight'];
+			}
+		}
+		return $less_vars;
 	}
 
+	function get_google_font_fields( $instance ) {
+		return array(
+			$instance['design']['font'],
+		);
+	}
 	/**
 	 * Make sure the instance is the most up to date version.
 	 *

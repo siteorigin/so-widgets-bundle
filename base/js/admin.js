@@ -175,7 +175,13 @@
             $el.find('.siteorigin-widget-field-repeater-item').sowSetupRepeaterItems();
 
             // Set up any color fields
-            $fields.find('> .siteorigin-widget-input-color').wpColorPicker();
+			$fields.find('> .siteorigin-widget-input-color').wpColorPicker( {
+				change: function(event, ui) {
+					setTimeout(function() {
+						$(event.target).trigger('change');
+					}, 100);
+				}
+			} );
 
             ///////////////////////////////////////
             // Handle the sections
@@ -203,6 +209,7 @@
                     value: parseInt( $input.val() ),
                     slide: function( event, ui ) {
                         $input.val( parseInt(ui.value) );
+                        $input.trigger( 'change' );
                         $$.find('.siteorigin-widget-slider-value').html( ui.value );
                     }
                 });
@@ -221,12 +228,14 @@
                         request.abort();
                     }
 
-                    var query = $$.find('.content-text-search').val();
+                    var $contentSearchInput = $$.find('.content-text-search');
+                    var query = $contentSearchInput.val();
+					var postTypes = $contentSearchInput.data('postTypes');
 
                     var $ul = $$.find('ul.posts').empty().addClass('loading');
                     $.get(
                         soWidgets.ajaxurl,
-                        { action: 'so_widgets_search_posts', query: query },
+                        { action: 'so_widgets_search_posts', query: query, postTypes: postTypes },
                         function(data){
                             for( var i = 0; i < data.length; i++ ) {
                                 if( data[i].post_title === '' ) {
@@ -521,6 +530,16 @@
                         $in.attr('name', newName);
                     }
                 });
+				
+				if( ! $$.data('initialSetup') ) {
+					// Setup default checked values, now that we've updated input names.
+					// Without this radio inputs in repeaters will be rendered as if they all belong to the same group.
+					$$.find('.siteorigin-widget-input').each(function(i, input) {
+						var $in = $(input);
+						$in.prop('checked', $in.prop('defaultChecked'));
+					});
+					$$.data('initialSetup', true);
+				}
 
                 //Setup scrolling.
                 var scrollCount = $el.data('scroll-count') ? parseInt($el.data('scroll-count')) : 0;
@@ -704,11 +723,46 @@
                             }
                         }
                         if(id) {
-                            var idBase = id.replace(/-\d+$/, '');
-                            if (!newIds[idBase]) {
-                                newIds[idBase] = $form.find('.siteorigin-widget-input[id^=' + idBase + ']').not('[id*=_id_]').length + 1;
-                            }
-                            var newId = idBase + '-' + newIds[idBase]++;
+							var idRegExp;
+                            var idBase;
+                            var newId;
+	
+							// Radio inputs are slightly different because there are multiple `input` elements for
+							// a single field, i.e. multiple `inputs` for selecting a single value.
+							if( $inputElement.is('[type="radio"]') ) {
+								// Radio inputs have their position appended to the id.
+								idBase = id.replace(/-\d+-\d+$/, '');
+								var radioIdBase = id.replace(/-\d+$/, '');
+								if (!newIds[idBase]) {
+									var radioNames = {};
+									newIds[idBase] = $form
+										// find all inputs containing idBase in their id attribute
+										.find('.siteorigin-widget-input[id^=' + idBase + ']')
+										// exclude inputs from templates
+										.not('[id*=_id_]')
+										// reduce to one element per radio input group.
+										.filter(function(index, element) {
+											var eltName = $(element).attr('name');
+											if(radioNames[eltName]) {
+												return false;
+											} else {
+												radioNames[eltName] = true;
+												return true;
+											}
+										}).length + 1;
+								}
+								var newRadioIdBase = idBase + '-' + newIds[idBase];
+								newId = newRadioIdBase + id.match(/-\d+$/)[0];
+								$copyItem.find('label[for=' + radioIdBase + ']').attr('for', newRadioIdBase);
+							} else {
+								idRegExp = new RegExp('-\\d+$');
+								idBase = id.replace(idRegExp, '');
+								if (!newIds[idBase]) {
+									newIds[idBase] = $form.find('.siteorigin-widget-input[id^=' + idBase + ']').not('[id*=_id_]').length + 1;
+								}
+								newId = idBase + '-' + newIds[idBase]++;
+							}
+							
                             $inputElement.attr('id', newId);
                             $copyItem.find('label[for=' + id + ']').attr('for', newId);
                             $copyItem.find('[id*=' + id + ']').each(function() {
