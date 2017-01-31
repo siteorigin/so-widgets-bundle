@@ -403,7 +403,12 @@ sowb.setupGoogleMaps = function() {
 		apiUrl += '&key=' + apiKey;
 	}
 	var script = $('<script type="text/javascript" src="' + apiUrl + '">');
-	$('body').append(script);
+	var $body = $('body');
+	if( $body.find('script[src="' + apiUrl + '"]').length == 0 ) {
+		$('body').append(script);
+	} else {
+		
+	}
 };
 
 jQuery(function ($) {

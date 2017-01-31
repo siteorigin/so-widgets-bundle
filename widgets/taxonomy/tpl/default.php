@@ -8,7 +8,6 @@
  */
 ?>
 
-
 <?php if( !empty( $title ) ) echo $args['before_title'] . esc_html( $title ) . $args['after_title']; ?>
 
 <div class="sow-taxonomy">
