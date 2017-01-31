@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 3.9
-Tested up to: 4.6
+Tested up to: 4.7.2
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
@@ -51,6 +51,25 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.8 - 31 January 2017 =
+* Introduced compatibility system.
+* Added compatibility with Elementor and Beaver Builder.
+* Ensure radio inputs in repeaters have their checked property set correctly.
+* Various Call to Action widget improvements.
+* Use `text-align: center;` for features icons.
+* Always use HTTPS for Google Webfonts.
+* Post Selector: Exclude current post id
+* Post Selector: Add filter returned query
+* Post Carousel: Prevent empty title output.
+* Google Maps: Add ability to set link for Static Map.
+* Social Links: Add title field and title attributes for links.
+* Features: Add title text field for features
+* Button Widget: Add Font setting
+* Contact: Add radio field Type
+* Taxonomy: New Window Setting
+* Added a way of specifying post types for link field.
+* Introduced a global widget setup action.
 
 = 1.7.2 - 09 November 2016 =
 * Made fixes to pass PHP 7 compatibility checks.
