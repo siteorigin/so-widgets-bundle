@@ -1,11 +1,12 @@
-/* globals jQuery */
+/* globals jQuery, sowb */
+var sowb = window.sowb || {};
 
 jQuery( function ( $ ) {
-	var setupVideoPlayers = function() {
+	sowb.setupVideoPlayers = function() {
 		var $ = jQuery;
 		$('video.sow-video-widget').mediaelementplayer();
 	};
-	setupVideoPlayers();
+	sowb.setupVideoPlayers();
 
-	$( document ).on( 'sowb_setup_widgets', setupVideoPlayers );
+	$( sowb ).on( 'setup_widgets', sowb.setupVideoPlayers );
 } );

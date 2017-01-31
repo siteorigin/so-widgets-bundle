@@ -70,7 +70,7 @@ sowb.SiteOriginSlider = function($) {
 
 
 jQuery( function($){
-	var setupSliders = sowb.setupSlider = function() {
+	sowb.setupSliders = sowb.setupSlider = function() {
 		var siteoriginSlider = new sowb.SiteOriginSlider($);
 
 		$('.sow-slider-images').each(function(){
@@ -245,7 +245,7 @@ jQuery( function($){
 			}
 		});
 	};
-	setupSliders();
+	sowb.setupSliders();
 
-	$( document ).on( 'sowb_setup_widgets', setupSliders );
+	$( sowb ).on( 'setup_widgets', sowb.setupSliders );
 } );

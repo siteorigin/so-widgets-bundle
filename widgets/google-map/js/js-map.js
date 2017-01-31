@@ -1,4 +1,4 @@
-/* globals jQuery */
+/* globals jQuery, sowb */
 
 var sowb = window.sowb || {};
 
@@ -368,7 +368,7 @@ function soGoogleMapInitialize() {
 
 jQuery(function ($) {
 
-	var setupGoogleMaps = function(){
+	sowb.setupGoogleMaps = function(){
 		var libraries = [];
 		var apiKey;
 		$('.sow-google-map-canvas').each(function(index, element) {
@@ -413,8 +413,8 @@ jQuery(function ($) {
 
 		}
 	};
-	setupGoogleMaps();
+	sowb.setupGoogleMaps();
 
-	$( document ).on( 'sowb_setup_widgets', setupGoogleMaps );
+	$( sowb ).on( 'setup_widgets', sowb.setupGoogleMaps );
 
 });

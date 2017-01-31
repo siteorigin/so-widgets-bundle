@@ -1,7 +1,8 @@
 /* globals jQuery, sowb */
+var sowb = window.sowb || {};
 
 jQuery( function($){
-	var setupSimpleMasonries = function() {
+	sowb.setupSimpleMasonries = function() {
 		var $ = jQuery;
 		var $grid = $('.sow-masonry-grid');
 
@@ -71,7 +72,7 @@ jQuery( function($){
 			resizeMasonry();
 		}, 100 );
 	};
-	setupSimpleMasonries();
+	sowb.setupSimpleMasonries();
 
-	$( document ).on( 'sowb_setup_widgets', setupSimpleMasonries );
+	$( sowb ).on( 'setup_widgets', sowb.setupSimpleMasonries );
 } );

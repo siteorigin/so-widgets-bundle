@@ -1,6 +1,8 @@
+/* globals jQuery, sowb */
+var sowb = window.sowb || {};
 
 jQuery( function($){
-	var setupImageGrids = function(){
+	sowb.setupImageGrids = function(){
 		$('.sow-image-grid-wrapper').each( function(){
 			var $$ = $(this);
 
@@ -42,8 +44,8 @@ jQuery( function($){
 
 		} );
 	};
-	setupImageGrids();
+	sowb.setupImageGrids();
 
-	$(document).on( 'sowb_setup_widgets', setupImageGrids );
+	$( sowb ).on( 'setup_widgets', sowb.setupImageGrids );
 
 } );

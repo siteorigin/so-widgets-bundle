@@ -1,5 +1,6 @@
 var sowb = window.sowb || {};
-(function($){
+
+( function($){
 	if( typeof FLBuilder !== 'undefined') {
 		sowb.orig_FLBuilder_getSettings = FLBuilder._getSettings;
 
@@ -107,7 +108,7 @@ var sowb = window.sowb || {};
 	// To ensure necessary scripts are executed again when settings are changed
 	$( document ).on( 'fl-builder.preview-rendered fl-builder.layout-rendered', '.fl-builder-content', function() {
 		// Trigger Widgets Bundle widgets to setup
-		$( document ).trigger( 'sowb_setup_widgets' );
+		$( sowb ).trigger( 'setup_widgets' );
 	} );
 
 })(jQuery);
