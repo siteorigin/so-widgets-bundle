@@ -38,7 +38,7 @@
 						?>
 						<div class="sow-feature-text">
 							<p <?php if(!empty( $feature['hover'] ) ) : ?>data-tooltip-text="<?php echo esc_attr($feature['hover']) ?>"<?php endif; ?>>
-								<?php echo wp_kses_post($feature['text']) ?>
+								<?php echo wp_kses_post( do_shortcode( $feature['text'] ) ) ?>
 							</p>
 						</div>
 					</div>
