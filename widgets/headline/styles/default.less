@@ -10,6 +10,7 @@
 @headline_margin: default;
 @headline_align: center;
 @headline_color: default;
+@headline_hover_color: default;
 
 @sub_headline_tag: h3;
 @sub_headline_font: default;
@@ -19,6 +20,7 @@
 @sub_headline_margin: default;
 @sub_headline_align: center;
 @sub_headline_color: default;
+@sub_headline_hover_color: default;
 
 @divider_style: solid;
 @divider_width: 80%;
@@ -38,6 +40,13 @@
 
         margin-top: @headline_margin;
         margin-bottom: @headline_margin;
+
+        & a {
+            color: @headline_color;
+            &:hover {
+                color: @headline_hover_color;
+            }
+        }
     }
 
     @{sub_headline_tag}.sow-sub-headline {
@@ -49,6 +58,13 @@
 
         margin-top: @sub_headline_margin;
         margin-bottom: @sub_headline_margin;
+
+        & a {
+            color: @sub_headline_color;
+            &:hover {
+                color: @sub_headline_hover_color;
+            }
+        }
     }
 
     .decoration {

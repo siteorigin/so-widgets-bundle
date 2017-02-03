@@ -57,6 +57,11 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 				'type'  => 'color',
 				'label' => __( 'Hover color', 'so-widgets-bundle' ),
 			),
+			'new_window' => array(
+				'type' => 'checkbox',
+				'default' => false,
+				'label' => __( 'Open in a new window', 'so-widgets-bundle' ),
+			),
 		);
 	}
 
@@ -87,6 +92,7 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 			'taxonomy_name' => $instance['taxonomy'],
 			'label' => $instance['label'],
 			'display_format' => $instance['display_format'],
+			'new_window' => $instance['new_window'],
 		);
 	}
 }

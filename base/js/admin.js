@@ -175,7 +175,13 @@
             $el.find('.siteorigin-widget-field-repeater-item').sowSetupRepeaterItems();
 
             // Set up any color fields
-            $fields.find('> .siteorigin-widget-input-color').wpColorPicker();
+			$fields.find('> .siteorigin-widget-input-color').wpColorPicker( {
+				change: function(event, ui) {
+					setTimeout(function() {
+						$(event.target).trigger('change');
+					}, 100);
+				}
+			} );
 
             ///////////////////////////////////////
             // Handle the sections
@@ -203,6 +209,7 @@
                     value: parseInt( $input.val() ),
                     slide: function( event, ui ) {
                         $input.val( parseInt(ui.value) );
+                        $input.trigger( 'change' );
                         $$.find('.siteorigin-widget-slider-value').html( ui.value );
                     }
                 });
@@ -221,12 +228,14 @@
                         request.abort();
                     }
 
-                    var query = $$.find('.content-text-search').val();
+                    var $contentSearchInput = $$.find('.content-text-search');
+                    var query = $contentSearchInput.val();
+					var postTypes = $contentSearchInput.data('postTypes');
 
                     var $ul = $$.find('ul.posts').empty().addClass('loading');
                     $.get(
                         soWidgets.ajaxurl,
-                        { action: 'so_widgets_search_posts', query: query },
+                        { action: 'so_widgets_search_posts', query: query, postTypes: postTypes },
                         function(data){
                             for( var i = 0; i < data.length; i++ ) {
                                 if( data[i].post_title === '' ) {

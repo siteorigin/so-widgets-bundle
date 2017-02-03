@@ -13,7 +13,7 @@
 	<?php
 	if( ! empty( $items ) ) {
 		foreach ( $items as $item ) {
-			$src        = wp_get_attachment_image_src( $item['image'], 'large' );
+			$src        = wp_get_attachment_image_src( $item['image'], 'full' );
 			$src        = empty( $src ) ? '' : $src[0];
 			$title      = empty( $item['title'] ) ? '' : $item['title'];
 			$url        = empty( $item['url'] ) ? '' : $item['url'];
@@ -25,7 +25,7 @@
 				<a href="<?php echo sow_esc_url( $url ) ?>" <?php if ( $new_window ) { ?>target="_blank" <?php } ?>>
 					<?php endif; ?>
 
-					<?php echo wp_get_attachment_image( $item['image'], 'large', false, array( 'title' => esc_attr( $title ) ) ); ?>
+					<?php echo wp_get_attachment_image( $item['image'], 'full', false, array( 'title' => esc_attr( $title ) ) ); ?>
 
 					<?php if ( ! empty( $url ) ) : ?>
 				</a>

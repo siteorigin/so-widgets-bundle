@@ -102,8 +102,19 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_template_variables( $instance, $args ) {
+		// Workout the image title
+		if ( ! empty( $instance['title'] ) ) {
+			$title = $instance['title'];
+		} else {
+			// We do not want to use the default image titles as they're based on the file name without the extension
+			$file_name = pathinfo( get_post_meta( $instance['image'], '_wp_attached_file', true ), PATHINFO_FILENAME );
+			$title = get_the_title( $instance['image'] );
+			if ( $title == $file_name ) {
+				$title = '';
+			}
+		}
 		return array(
-			'title' => !empty( $instance['title'] ) ? $instance['title'] : get_the_title( $instance['image'] ),
+			'title' => $title,
 			'title_position' => $instance['title_position'],
 			'image' => $instance['image'],
 			'size' => $instance['size'],

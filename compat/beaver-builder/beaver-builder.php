@@ -13,6 +13,14 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 	}
 
 	function __construct() {
+		add_action('wp', array( $this, 'init' ), 9 );
+	}
+
+	function init() {
+		if ( ! FLBuilderModel::is_builder_active() ) {
+			return;
+		}
+
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
 		add_action( 'wp_print_footer_scripts', array( $this, 'print_footer_templates' ) );
 
