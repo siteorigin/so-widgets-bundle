@@ -15,6 +15,13 @@ class SiteOrigin_Widget_Field_Link extends SiteOrigin_Widget_Field_Text_Input_Ba
 
 	protected function render_before_field( $value, $instance ) {
 		parent::render_before_field( $value, $instance );
+		if( is_string( $this->post_types ) ) {
+			$this->post_types = array( $this->post_types );
+		}
+		else if ( ! is_array( $this->post_types ) ) {
+			$this->post_types = array();
+		}
+
 		?>
 		<a href="#" class="select-content-button button button-small"><?php esc_html_e('Select Content', 'so-widgets-bundle') ?></a>
 		<div class="existing-content-selector">
