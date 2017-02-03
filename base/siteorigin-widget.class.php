@@ -355,6 +355,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				}
 				$instance[$id] = $this->add_defaults( $field['fields'], $instance[$id], $level + 1 );
 			}
+			else if( $field['type'] == 'measurement' ) {
+				if( ! isset( $instance[$id] ) ) {
+					$instance[$id] = isset( $field['default'] ) ? $field['default'] : '';
+				}
+				if ( ! isset( $instance[ $id . '_unit' ] ) || empty( $instance[ $id . '_unit' ] ) ) {
+					$instance[ $id . '_unit' ] = 'px';
+				}
+			}
 			else {
 				if( !isset( $instance[$id] ) ) {
 					$instance[$id] = isset( $field['default'] ) ? $field['default'] : '';

@@ -43,6 +43,8 @@
   top: 50%;
   margin-top: -0.5em;
   background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 .sow-features-list .sow-features-feature h5 {
   margin: 1em 0;
