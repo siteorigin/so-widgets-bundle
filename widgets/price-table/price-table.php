@@ -190,6 +190,25 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 		return $this->get_style_name($instance);
 	}
 
+	function get_template_variables( $instance, $args ) {
+		$columns = array();
+		foreach( $instance['columns'] as $column ) {
+			foreach( $column['features'] as &$feature ) {
+				$feature['text'] = do_shortcode( $feature['text'] );
+			}
+			$columns[] = $column;
+		}
+
+		return array(
+			'title' => $instance['title'],
+			'columns' => $columns,
+			'before_title' => $args['before_title'],
+			'after_title' => $args['after_title'],
+			'button_new_window' => $instance['button_new_window'],
+		);
+	}
+
+
 	function get_style_name($instance) {
 		if(empty($instance['theme'])) return 'atom';
 		return $instance['theme'];
