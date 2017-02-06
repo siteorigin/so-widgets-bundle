@@ -386,14 +386,6 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			$instance['divider']['bottom_margin_unit'] = $instance['divider']['top_margin_unit'];
 		}
 
-		// Fix possibly broken order field by resetting to default value.
-		if ( isset( $instance['order'] ) && empty( $instance['order'] ) ) {
-			$form = $this->get_widget_form();
-			if( ! empty( $form['order']['default'] ) ) {
-				$instance['order'] = $form['order']['default'];
-			}
-		}
-
 		return $instance;
 	}
 }
