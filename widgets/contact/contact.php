@@ -804,19 +804,18 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$field_name = $this->name_from_label( !empty($field['label']) ? $field['label'] : $i, $field_ids ) . '-' . $instance['_sow_form_id'];
 			$value = !empty( $post_vars[$field_name] ) ? $post_vars[$field_name] : '';
 
-			if( $field['required']['required'] && empty($value) ) {
-				// Add in the default subject
-				if( $field['type'] == 'subject' && !empty($instance['settings']['default_subject'] ) ) {
-					$value = $instance['settings']['default_subject'];
-				} else {
-					$errors[ $field_name ] = ! empty( $field['required']['missing_message'] ) ? $field['required']['missing_message'] : __( 'Required field', 'so-widgets-bundle' );
-					continue;
-				}
-			}
-			
-			// Don't process an unrequired empty field
 			if( empty( $value ) ) {
-				continue;
+				if( $field['required']['required'] ) {
+					// Add in the default subject
+					if( $field['type'] == 'subject' && !empty($instance['settings']['default_subject'] ) ) {
+						$value = $instance['settings']['default_subject'];
+					} else {
+						$errors[ $field_name ] = ! empty( $field['required']['missing_message'] ) ? $field['required']['missing_message'] : __( 'Required field', 'so-widgets-bundle' );
+						continue;
+					}
+				} else {
+					continue; // Don't process an empty field that's not required
+				}
 			}
 
 			// Type Validation
@@ -825,11 +824,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					if( $value != sanitize_email( $value ) ) {
 						$errors[ $field_name ] = __( 'Invalid email address.', 'so-widgets-bundle' );
 					}
+					$email_fields[ $field['type'] ] = $value;
+
+					break;
 
 				case 'name':
 				case 'subject':
 					$email_fields[ $field['type'] ] = $value;
-
+					
 					break;
 
 				case 'checkboxes':
