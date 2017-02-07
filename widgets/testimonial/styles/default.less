@@ -1,6 +1,5 @@
 @import "../../../base/less/mixins";
 
-@image_size: 75px;
 @testimonial_padding: 10px;
 
 @testimonial_background: transparent;
@@ -11,8 +10,15 @@
 // Testimonial sizes
 @testimonial_size: 33.333%;
 @tablet_testimonial_size: 50%;
-@tablet_width: 800px;
 @mobile_testimonial_size: 100%;
+
+// Image Sizes
+@image_size: 75px;
+@tablet_image_size: default;
+@mobile_image_size: default;
+
+// Responsive breakpoints
+@tablet_width: 800px;
 @mobile_width: 480px;
 
 .sow-testimonials {
@@ -42,6 +48,18 @@
 
 	.sow-round-image-frame {
 		border-radius: @image_size;
+		width: @image_size;
+		height: @image_size;
+		
+		@media screen and (max-width: @tablet_width) {
+			width: @tablet_image_size;
+			height: @tablet_image_size;
+		}
+
+		@media screen and (max-width: @mobile_width) {
+			width: @mobile_image_size;
+			height: @mobile_image_size;
+		}
 	}
 
 	// All the specific layouts
@@ -62,6 +80,15 @@
 						margin: 0 auto;
 						max-width: 100%;
 						height: auto;
+
+						@media screen and (max-width: @tablet_width) {
+							width: @tablet_image_size;
+						}
+
+						@media screen and (max-width: @mobile_width) {
+							width: @mobile_image_size;
+						}
+
 					}
 				}
 
