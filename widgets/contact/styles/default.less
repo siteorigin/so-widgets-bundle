@@ -1,4 +1,4 @@
-@import "mixins";
+@import "../../../base/less/mixins";
 
 .widget-function('import_google_font');
 
@@ -65,11 +65,11 @@
 
 	@field_margin: 0;
 	@field_padding: 0;
-
 	@field_border_radius: 0;
 	@field_border_color: default;
 	@field_border_width: default;
 	@field_border_style: default;
+	@field_height: 0;
 
 	textarea,
 	input.sow-text-field {
@@ -78,15 +78,15 @@
 	}
 	
 	textarea,
-	input.sow-text-field,
-	.so-premium-datepicker,
-	.so-premium-timepicker {
+	input {
 		.box-sizing(border-box);
-		.rounded(@field_border_radius);
+		border-radius: @field_border_radius;
 
 		margin: @field_margin 0;
-		padding: @field_padding 0;
 		border: @field_border_width @field_border_style @field_border_color;
+		padding: @field_padding 0;
+		height: @field_height;
+		
 		background: @field_background;
 		color: @field_font_color;
 		
@@ -111,6 +111,7 @@
 			input {
 				float: left;
 				margin: 0.4em 0.5em 0 0;
+				height: auto;
 			}
 		}
 	}
@@ -156,7 +157,7 @@
 		background: @error_background;
 		border: 1px solid @error_border;
 		color: @error_text;
-		.rounded(2px);
+		border-radius: 2px;
 		padding: @error_padding;
 		font-size: 0.8em;
 		list-style: none;
@@ -203,7 +204,7 @@
 			);
 
 			border: @submit_border_width @submit_border_style @submit_border_color;
-			.rounded(@submit_border_radius);
+			border-radius: (@submit_border_radius);
 			font-weight: @submit_weight;
 			font-size: @submit_font_size;
 			padding: @submit_padding @submit_padding * 2;
