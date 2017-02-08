@@ -717,7 +717,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			// label should be rendered before the field, then CSS will do the exact positioning.
 			$render_label_before_field = ( $label_position != 'below' && $label_position != 'inside' ) || ( $label_position == 'inside' && ! $is_text_input_field );
 			if( empty( $label_position ) || $render_label_before_field ) {
-				$this->render_form_label( $field_id, $field['label'], $instance );
+				$this->render_form_label( $field_id, $field['label'], $label_position );
 			}
 
 			$show_placeholder = $label_position == 'inside';
