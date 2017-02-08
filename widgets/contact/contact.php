@@ -891,45 +891,49 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$field_name = $this->name_from_label( !empty($field['label']) ? $field['label'] : $i, $field_ids ) . '-' . $instance['_sow_form_id'];
 			$value = !empty( $post_vars[$field_name] ) ? $post_vars[$field_name] : '';
 
-			if( $field['required']['required'] && empty($value) ) {
-				// Add in the default subject
-				if( $field['type'] == 'subject' && !empty($instance['settings']['default_subject'] ) ) {
-					$value = $instance['settings']['default_subject'];
+			if( empty( $value ) ) {
+				if( $field['required']['required'] ) {
+					// Add in the default subject
+					if( $field['type'] == 'subject' && !empty($instance['settings']['default_subject'] ) ) {
+						$value = $instance['settings']['default_subject'];
+					} else {
+						$errors[ $field_name ] = ! empty( $field['required']['missing_message'] ) ? $field['required']['missing_message'] : __( 'Required field', 'so-widgets-bundle' );
+						continue;
+					}
 				} else {
-					$errors[ $field_name ] = ! empty( $field['required']['missing_message'] ) ? $field['required']['missing_message'] : __( 'Required field', 'so-widgets-bundle' );
-					continue;
+					continue; // Don't process an empty field that's not required
 				}
 			}
 
+			// Type Validation
 			switch( $field['type'] ) {
 				case 'email':
-					if( $value != sanitize_email($value) ) {
-						$errors[$field_name] = __('Invalid email address.', 'so-widgets-bundle');
+					if( $value != sanitize_email( $value ) ) {
+						$errors[ $field_name ] = __( 'Invalid email address.', 'so-widgets-bundle' );
 					}
+					$email_fields[ $field['type'] ] = $value;
+
 					break;
-			}
 
-			if( in_array( $field['type'], array( 'email', 'name', 'subject' ) ) ) {
-				$email_fields[$field['type']] = $value;
-			}
-			else {
-				if( empty($email_fields['message']) ) $email_fields['message'] = array();
+				case 'name':
+				case 'subject':
+					$email_fields[ $field['type'] ] = $value;
+					
+					break;
 
-				switch( $field['type'] ) {
-					case 'checkboxes':
-						$email_fields['message'][] = array(
-							'label' => $field['label'],
-							'value' => implode(', ', $value),
-						);
-						break;
+				case 'checkboxes':
+					$email_fields['message'][] = array(
+						'label' => $field['label'],
+						'value' => implode( ', ', $value ),
+					);
+					break;
 
-					default:
-						$email_fields['message'][] = array(
-							'label' => $field['label'],
-							'value' => $value,
-						);
-						break;
-				}
+				default:
+					$email_fields['message'][] = array(
+						'label' => $field['label'],
+						'value' => $value,
+					);
+					break;
 			}
 		}
 
