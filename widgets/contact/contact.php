@@ -343,6 +343,76 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						),
 					),
 
+					'fields' => array(
+						'type'   => 'section',
+						'label'  => __( 'Fields', 'so-widgets-bundle' ),
+						'fields' => array(
+							'font' => array(
+								'type'    => 'font',
+								'label'   => __( 'Font', 'so-widgets-bundle' ),
+								'default' => 'default',
+							),
+							'font_size' =>  array(
+								'type'  => 'measurement',
+								'label' => __( 'Font Size', 'so-widgets-bundle' )
+							),
+							'color' =>  array(
+								'type'  => 'color',
+								'label' => __( 'Text Color', 'so-widgets-bundle' ),
+							),
+							'margin' => array(
+								'type'  => 'measurement',
+								'label' => __( 'Margin', 'so-widgets-bundle' )
+							),
+							'padding' => array(
+								'type'  => 'measurement',
+								'label' => __( 'Padding', 'so-widgets-bundle' )
+							),
+							'height' => array(
+								'type'  => 'measurement',
+								'label' => __( 'Height', 'so-widgets-bundle' )
+							),
+							'background' =>  array(
+								'type'  => 'color',
+								'label' => __( 'Background', 'so-widgets-bundle' ),
+							), 
+							'border_color' => array(
+								'type'    => 'color',
+								'label'   => __( 'Border color', 'so-widgets-bundle' ),
+								'default' => '#c0c0c0',
+							),
+							'border_width' => array(
+								'type'    => 'measurement',
+								'label'   => __( 'Border width', 'so-widgets-bundle' ),
+								'default' => '1px',
+							),
+							'border_style' => array(
+								'type'    => 'select',
+								'label'   => __(' Border style', 'so-widgets-bundle' ),
+								'default' => 'solid',
+								'options' => array(
+									'none'   => __( 'None', 'so-widgets-bundle' ),
+									'hidden' => __( 'Hidden', 'so-widgets-bundle' ),
+									'dotted' => __( 'Dotted', 'so-widgets-bundle' ),
+									'dashed' => __( 'Dashed', 'so-widgets-bundle' ),
+									'solid'  => __( 'Solid', 'so-widgets-bundle' ),
+									'double' => __( 'Double', 'so-widgets-bundle' ),
+									'groove' => __( 'Groove', 'so-widgets-bundle' ),
+									'ridge'  => __( 'Ridge', 'so-widgets-bundle' ),
+									'inset'  => __( 'Inset', 'so-widgets-bundle' ),
+									'outset' => __( 'Outset', 'so-widgets-bundle' ),
+								)
+							),
+							'border_radius' => array(
+								'type'    => 'slider',
+								'label'   => __( 'Border rounding', 'so-widgets-bundle' ),
+								'default' => 0,
+								'max'     => 50,
+								'min'     => 0
+							),
+						)
+					),
+
 					'descriptions' => array(
 						'type' => 'section',
 						'label' => __( 'Field descriptions', 'so-widgets-bundle' ),
@@ -609,7 +679,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		if( empty( $instance['design']['labels']['font'] ) ) {
 			$instance['design']['labels'] = array('font' => '');
 		}
-		$font = siteorigin_widget_get_font( $instance['design']['labels']['font'] );
+		$label_font = siteorigin_widget_get_font( $instance['design']['labels']['font'] );
+		$field_font = siteorigin_widget_get_font( $instance['design']['fields']['font'] );
 
 		$label_position = $instance['design']['labels']['position'];
 		if ( $label_position != 'left' && $label_position != 'right' ) {
@@ -625,13 +696,27 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'container_border_style' => $instance['design']['container']['border_style'],
 
 			// Field labels
-			'label_font_family' => $font['family'],
-			'label_font_weight' => ! empty( $font['weight'] ) ? $font['weight'] : '',
+			'label_font_family' => $label_font['family'],
+			'label_font_weight' => ! empty( $label_font['weight'] ) ? $label_font['weight'] : '',
 			'label_font_size' => $instance['design']['labels']['size'],
 			'label_font_color' => $instance['design']['labels']['color'],
 			'label_position' => $label_position,
 			'label_width' => $instance['design']['labels']['width'],
 			'label_align' => $instance['design']['labels']['align'],
+
+			// Fields
+			'field_font_family' => $field_font['family'],
+			'field_font_weight' => ! empty( $field_font['weight'] ) ? $field_font['weight'] : '',
+			'field_font_size' => $instance['design']['fields']['font_size'],
+			'field_font_color' => $instance['design']['fields']['color'],
+			'field_margin' => $instance['design']['fields']['margin'],
+			'field_padding' => $instance['design']['fields']['padding'],
+			'field_height' => $instance['design']['fields']['height'],
+			'field_background' => $instance['design']['fields']['background'],
+			'field_border_color' => $instance['design']['fields']['border_color'],
+			'field_border_width' => $instance['design']['fields']['border_width'],
+			'field_border_style' => $instance['design']['fields']['border_style'],
+			'field_border_radius' => $instance['design']['fields']['border_radius'] . 'px',
 
 			// Field descriptions
 			'description_font_size' => $instance['design']['descriptions']['size'],
@@ -670,6 +755,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	function get_google_font_fields( $instance ) {
 		return array(
 			$instance['design']['labels']['font'],
+			$instance['design']['fields']['font'],
 		);
 	}
 
@@ -805,45 +891,49 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$field_name = $this->name_from_label( !empty($field['label']) ? $field['label'] : $i, $field_ids ) . '-' . $instance['_sow_form_id'];
 			$value = !empty( $post_vars[$field_name] ) ? $post_vars[$field_name] : '';
 
-			if( $field['required']['required'] && empty($value) ) {
-				// Add in the default subject
-				if( $field['type'] == 'subject' && !empty($instance['settings']['default_subject'] ) ) {
-					$value = $instance['settings']['default_subject'];
+			if( empty( $value ) ) {
+				if( $field['required']['required'] ) {
+					// Add in the default subject
+					if( $field['type'] == 'subject' && !empty($instance['settings']['default_subject'] ) ) {
+						$value = $instance['settings']['default_subject'];
+					} else {
+						$errors[ $field_name ] = ! empty( $field['required']['missing_message'] ) ? $field['required']['missing_message'] : __( 'Required field', 'so-widgets-bundle' );
+						continue;
+					}
 				} else {
-					$errors[ $field_name ] = ! empty( $field['required']['missing_message'] ) ? $field['required']['missing_message'] : __( 'Required field', 'so-widgets-bundle' );
-					continue;
+					continue; // Don't process an empty field that's not required
 				}
 			}
 
+			// Type Validation
 			switch( $field['type'] ) {
 				case 'email':
-					if( $value != sanitize_email($value) ) {
-						$errors[$field_name] = __('Invalid email address.', 'so-widgets-bundle');
+					if( $value != sanitize_email( $value ) ) {
+						$errors[ $field_name ] = __( 'Invalid email address.', 'so-widgets-bundle' );
 					}
+					$email_fields[ $field['type'] ] = $value;
+
 					break;
-			}
 
-			if( in_array( $field['type'], array( 'email', 'name', 'subject' ) ) ) {
-				$email_fields[$field['type']] = $value;
-			}
-			else {
-				if( empty($email_fields['message']) ) $email_fields['message'] = array();
+				case 'name':
+				case 'subject':
+					$email_fields[ $field['type'] ] = $value;
+					
+					break;
 
-				switch( $field['type'] ) {
-					case 'checkboxes':
-						$email_fields['message'][] = array(
-							'label' => $field['label'],
-							'value' => implode(', ', $value),
-						);
-						break;
+				case 'checkboxes':
+					$email_fields['message'][] = array(
+						'label' => $field['label'],
+						'value' => implode( ', ', $value ),
+					);
+					break;
 
-					default:
-						$email_fields['message'][] = array(
-							'label' => $field['label'],
-							'value' => $value,
-						);
-						break;
-				}
+				default:
+					$email_fields['message'][] = array(
+						'label' => $field['label'],
+						'value' => $value,
+					);
+					break;
 			}
 		}
 
