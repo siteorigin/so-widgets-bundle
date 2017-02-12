@@ -701,18 +701,18 @@ var soWidgetPostSelector = ( function ($, _) {
         }
     } );
 
-    // The main QueryBuilder instance.
-    var builder = new QueryBuilder( { model: new Query( { query: '' } ) } );
-
     jQuery( function($){
         $('body').on('click', '.sow-select-posts', function(e){
             e.preventDefault();
             var $postSelectorButton = $(this);
-            builder.model.setSyncField( $postSelectorButton.siblings( '.siteorigin-widget-input' ) );
-            builder.model.sync('update');
-            builder.views.postSummary.posts.on("reset", function (postsCollection) {
-                $postSelectorButton.find(".sow-current-count").text(postsCollection.foundPosts);
-            });
+	
+			// The main QueryBuilder instance.
+			var builder = new QueryBuilder( { model: new Query( { query: '' } ) } );
+			builder.model.setSyncField( $postSelectorButton.siblings('.siteorigin-widget-input') );
+			builder.model.sync( 'update' );
+			builder.views.postSummary.posts.on( 'reset', function( postsCollection ) {
+				$postSelectorButton.find( '.sow-current-count' ).text( postsCollection.foundPosts );
+			});
             builder.open();
         });
     } );
