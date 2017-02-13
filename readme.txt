@@ -52,6 +52,18 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.8.1 - 3 February 2017 =
+* Fixed empty array warning.
+* Contact Form: Prevent empty title markup from being echoed.
+* Contact Form: Display email after name
+* Slider: Account for 0 speed.
+* Features: Fix sizing issue when using images instead of icons.
+* Use default unit if missing for measurement fields.
+* Price Table: Shortcode support for feature text.
+* Testimonial: Updated text radius label and fixed resulting functionality.
+* Revert change made to post search for link field.
+* Link Field: Make sure we have a valid post_types value.
+
 = 1.8 - 31 January 2017 =
 * Introduced compatibility system.
 * Added compatibility with Elementor and Beaver Builder.
