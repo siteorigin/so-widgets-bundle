@@ -145,6 +145,12 @@ jQuery( function($){
 							}
 
 							$(window).resize();
+							
+							setTimeout(function() {
+								siteoriginSlider.setupActiveSlide( $$, optionHash.slides[0] );
+								// Ensure we keep auto-height functionality, but we don't want the duplicated content.
+								$$.find('.cycle-sentinel').empty();
+							}, 200);
 						}
 					})
 					.cycle( {
