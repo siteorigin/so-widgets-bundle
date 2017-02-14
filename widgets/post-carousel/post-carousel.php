@@ -25,8 +25,17 @@ function sow_carousel_get_next_posts_page() {
 		)
 	);
 
+	$instance_hash = $_GET['instance_hash'];
+	$template_vars = array();
+	if ( ! empty( $instance_hash ) ) {
+		$widget = new SiteOrigin_Widget_PostCarousel_Widget();
+		$instance = $widget->get_stored_instance($instance_hash);
+		$template_vars = $widget->get_template_variables( $instance, array() );
+	}
+
 	$posts = new WP_Query($query);
 	ob_start();
+	extract( $template_vars );
 	include 'tpl/carousel-post-loop.php';
 	$result = array( 'html' => ob_get_clean() );
 	header('content-type: application/json');
@@ -44,6 +53,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			__('SiteOrigin Post Carousel', 'so-widgets-bundle'),
 			array(
 				'description' => __('Display your posts as a carousel.', 'so-widgets-bundle'),
+				'instance_storage' => true,
 				'help' => 'https://siteorigin.com/widgets-bundle/post-carousel-widget/'
 			),
 			array(

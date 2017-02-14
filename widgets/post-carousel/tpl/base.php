@@ -1,4 +1,10 @@
 <?php
+/**
+ * @var $instance
+ * @var $args
+ * @var $storage_hash
+ */
+
 $query = siteorigin_widget_post_selector_process_query( $instance['posts'] );
 $posts = new WP_Query( $query );
 ?>
@@ -27,4 +33,5 @@ $posts = new WP_Query( $query );
 			</ul>
 		</div>
 	</div>
+	<input type="hidden" name="instance_hash" value="<?php echo esc_attr( $storage_hash ) ?>"/>
 <?php endif; ?>
