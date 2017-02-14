@@ -124,7 +124,7 @@ function siteorigin_widget_get_font($font_value) {
  */
 function siteorigin_widget_add_bundle_groups($widgets){
 	foreach( $widgets as $class => &$widget ) {
-		if( preg_match('/SiteOrigin_Widget_(.*)_Widget/i', $class, $matches) ) {
+		if( preg_match('/SiteOrigin_Widgets?_(.*)_Widget/i', $class, $matches) ) {
 			$widget['icon'] = 'so-widget-icon so-widget-icon-'.strtolower($matches[1]);
 			$widget['groups'] = array('so-widgets-bundle');
 		}
