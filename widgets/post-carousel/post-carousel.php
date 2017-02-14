@@ -91,11 +91,32 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 				'label' => __('Title', 'so-widgets-bundle'),
 			),
 
+			'default_thumbnail' => array(
+				'type'     => 'media',
+				'library'  => 'image',
+				'label'    => __( 'Default Thumbnail', 'so-widgets-bundle' ),
+				'choose'   => __( 'Choose Thumbnail', 'so-widgets-bundle' ),
+				'update'   => __( 'Set Thumbnail', 'so-widgets-bundle' ),
+				'fallback' => true,
+			),
+
 			'posts' => array(
 				'type' => 'posts',
 				'label' => __('Posts query', 'so-widgets-bundle'),
 			),
 		);
+	}
+
+	public function get_template_variables( $instance, $args ) {
+		if ( ! empty( $instance['default_thumbnail'] ) ) {
+			$default_thumbnail = wp_get_attachment_image_src( $instance['default_thumbnail'], 'sow-carousel-default' );
+			if( $default_thumbnail ){
+				return array(
+					'default_thumbnail' => $default_thumbnail[0],
+				);
+			}
+		}
+		return array();
 	}
 
 	function get_template_name($instance){
