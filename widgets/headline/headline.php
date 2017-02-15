@@ -321,7 +321,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			'headline_tag' => $instance['headline']['tag'],
 			'sub_headline' => $instance['sub_headline']['text'],
 			'sub_headline_destination_url' => $instance['sub_headline']['destination_url'],
-			'sub_headline_new_window' => $instance['headline']['new_window'],
+			'sub_headline_new_window' => $instance['sub_headline']['new_window'],
 			'sub_headline_tag' => $instance['sub_headline']['tag'],
 			'order' => $instance['order'],
 			'has_divider' => ! empty( $instance['divider'] ) && $instance['divider']['style'] != 'none'
