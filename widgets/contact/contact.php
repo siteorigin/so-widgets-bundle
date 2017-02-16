@@ -799,11 +799,15 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 			?><div class="sow-form-field sow-form-field-<?php echo sanitize_html_class( $field['type'] ) ?>"><?php
 
+            $label = $field['label'];
+			if ( ! empty( $field['required']['required'] ) ) {
+                $label .= '*';
+            }
 			$is_text_input_field = ( $field['type'] != 'select' && $field['type'] != 'radio' && $field['type'] != 'checkboxes');
 			// label should be rendered before the field, then CSS will do the exact positioning.
 			$render_label_before_field = ( $label_position != 'below' && $label_position != 'inside' ) || ( $label_position == 'inside' && ! $is_text_input_field );
 			if( empty( $label_position ) || $render_label_before_field ) {
-				$this->render_form_label( $field_id, $field['label'], $label_position );
+				$this->render_form_label( $field_id, $label, $label_position );
 			}
 
 			$show_placeholder = $label_position == 'inside';
@@ -827,17 +831,18 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					'field_id'         => $field_id,
 					'field_name'       => $field_name,
 					'value'            => $value,
-					'show_placeholder' => $show_placeholder
+					'show_placeholder' => $show_placeholder,
+					'label'            => $label,
 				);
 				$contact_field       = new $class_name( $field_input_options );
 				$contact_field->render();
 			} else {
-				echo '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '"  value="' . esc_attr( $value ) . '"  class="sow-text-field" ' . ( $show_placeholder ? 'placeholder="' . esc_attr( $field['label'] ) . '"' : '' ) . '/>';
+				echo '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '"  value="' . esc_attr( $value ) . '"  class="sow-text-field" ' . ( $show_placeholder ? 'placeholder="' . esc_attr( $label ) . '"' : '' ) . '/>';
 			}
 			?></span><?php
 
 			if( ! empty( $label_position ) && $label_position == 'below' ) {
-				$this->render_form_label( $field_id, $field['label'], $instance );
+				$this->render_form_label( $field_id, $label, $instance );
 			}
 
 			if ( ! empty( $field['description'] ) ) {
