@@ -16,24 +16,21 @@ add_action('init', 'sow_carousel_register_image_sizes');
 
 function sow_carousel_get_next_posts_page() {
 	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
-	$query = wp_parse_args(
-		siteorigin_widget_post_selector_process_query($_GET['query']),
-		array(
-			'post_status' => 'publish',
-			'posts_per_page' => 10,
-			'paged' => empty( $_GET['paged'] ) ? 1 : $_GET['paged']
-		)
-	);
 
 	$instance_hash = $_GET['instance_hash'];
+
 	$template_vars = array();
 	if ( ! empty( $instance_hash ) ) {
-		$widget = new SiteOrigin_Widget_PostCarousel_Widget();
-		$instance = $widget->get_stored_instance($instance_hash);
-		$template_vars = $widget->get_template_variables( $instance, array() );
+		global $wp_widget_factory;
+        /** @var SiteOrigin_Widget $widget */
+		$widget = ! empty ( $wp_widget_factory->widgets['SiteOrigin_Widget_PostCarousel_Widget'] ) ?
+            $wp_widget_factory->widgets['SiteOrigin_Widget_PostCarousel_Widget'] : null;
+		if ( ! empty( $widget ) ) {
+            $instance = $widget->get_stored_instance($instance_hash);
+            $instance['paged'] = $_GET['paged'];
+            $template_vars = $widget->get_template_variables($instance, array());
+        }
 	}
-
-	$posts = new WP_Query($query);
 	ob_start();
 	extract( $template_vars );
 	include 'tpl/carousel-post-loop.php';
@@ -120,13 +117,21 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 	public function get_template_variables( $instance, $args ) {
 		if ( ! empty( $instance['default_thumbnail'] ) ) {
 			$default_thumbnail = wp_get_attachment_image_src( $instance['default_thumbnail'], 'sow-carousel-default' );
-			if( $default_thumbnail ){
-				return array(
-					'default_thumbnail' => $default_thumbnail[0],
-				);
-			}
 		}
-		return array();
+
+        $query = wp_parse_args(
+            siteorigin_widget_post_selector_process_query( $instance['posts'] ),
+            array(
+                'paged' => empty( $instance['paged'] ) ? 1 : $instance['paged']
+            )
+        );
+        $posts = new WP_Query( $query );
+
+        return array(
+            'title' => $instance['title'],
+            'posts' => $posts,
+            'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : '',
+        );
 	}
 
 	function get_template_name($instance){

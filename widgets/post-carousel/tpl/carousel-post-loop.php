@@ -1,5 +1,8 @@
 <?php
-$posts = new WP_Query($query);
+/**
+ * @var WP_Query $posts
+ * @var string $default_thumbnail
+ */
 while($posts->have_posts()) : $posts->the_post(); ?>
 	<li class="sow-carousel-item<?php if( is_rtl() ) echo ' rtl' ?>">
 		<div class="sow-carousel-thumbnail">
@@ -9,7 +12,7 @@ while($posts->have_posts()) : $posts->the_post(); ?>
 				</a>
 			<?php else : ?>
 				<a href="<?php the_permalink() ?>" class="sow-carousel-default-thumbnail"
-				<?php echo isset( $default_thumbnail ) ? 
+				<?php echo ! empty( $default_thumbnail ) ?
 				'style="background-image: url('. sow_esc_url( $default_thumbnail ) .')"' : '' ?>><span class="overlay"></span></a>
 			<?php endif; ?>
 		</div>
