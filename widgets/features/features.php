@@ -56,6 +56,18 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 						'default' => '#404040',
 					),
 
+                    'container_position' => array(
+                        'type' => 'select',
+                        'label' => __('Container Position', 'so-widgets-bundle'),
+                        'options' => array(
+                            'top' => __( 'Top', 'so-widgets-bundle' ),
+                            'right' => __( 'Right', 'so-widgets-bundle' ),
+                            'bottom' => __( 'Bottom', 'so-widgets-bundle' ),
+                            'left' => __( 'Left', 'so-widgets-bundle' ),
+                        ),
+                        'default' => 'top',
+                    ),
+
 					// The Icon
 
 					'icon' => array(
@@ -257,6 +269,8 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				}
 			}
 		}
+
+        $less_vars['container_size'] = $instance['container_size'];
 
 		return $less_vars;
 	}
