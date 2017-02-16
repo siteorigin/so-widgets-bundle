@@ -83,7 +83,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'type' => 'text',
 						'label' => __('Submit button text', 'so-widgets-bundle'),
 						'default' => __("Contact Us", 'so-widgets-bundle')
-					)
+					),
+                    'required_field_indicator' => array(
+                        'type' => 'checkbox',
+                        'label' => __( 'Indicate required fields with asterisk (*)', 'so-widgets-bundle' ),
+                    ),
+
 				)
 			),
 
@@ -785,6 +790,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		$field_ids = array();
 		$label_position = $instance['design']['labels']['position'];
 
+		$indicate_required_fields = $instance['settings']['required_field_indicator'];
+
+		if( ! empty( $indicate_required_fields ) ) {
+		    ?>
+            <p><em><?php esc_html_e( 'Fields marked with * are required', 'so-widgets-bundle' ) ?></em></p>
+            <?php
+        }
+
 		foreach( $fields as $i => $field ) {
 			if( empty( $field['type'] ) ) continue;
 			// Using `$instance['_sow_form_id']` to uniquely identify contact form fields across widgets.
@@ -800,7 +813,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			?><div class="sow-form-field sow-form-field-<?php echo sanitize_html_class( $field['type'] ) ?>"><?php
 
             $label = $field['label'];
-			if ( ! empty( $field['required']['required'] ) ) {
+			if ( $indicate_required_fields && ! empty( $field['required']['required'] ) ) {
                 $label .= '*';
             }
 			$is_text_input_field = ( $field['type'] != 'select' && $field['type'] != 'radio' && $field['type'] != 'checkboxes');
