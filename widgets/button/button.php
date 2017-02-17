@@ -202,6 +202,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'label' => __('Onclick', 'so-widgets-bundle'),
 						'description' => __('Run this Javascript when the button is clicked. Ideal for tracking.', 'so-widgets-bundle'),
 					),
+
+					'rel' => array(
+						'type' => 'text',
+						'label' => __('Rel attribute', 'so-widgets-bundle'),
+						'description' => __('Adds a rel attribute to the button link.', 'so-widgets-bundle'),
+					),
 				)
 			),
 		);
@@ -247,6 +253,9 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		}
 		if ( ! empty( $attributes['onclick'] ) ) {
 			$button_attributes['onclick'] = $attributes['onclick'];
+		}
+		if ( ! empty( $attributes['rel'] ) ) {
+			$button_attributes['rel'] = $attributes['rel'];
 		}
 
 		$icon_image_url = '';
