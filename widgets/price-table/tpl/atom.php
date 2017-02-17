@@ -5,12 +5,13 @@
  * @var $before_title string
  * @var $after_title string
  * @var $button_new_window boolean
+ * @var $equalize_row_heights boolean
  */
 ?>
 
 <?php if( !empty( $title ) ) echo $before_title . esc_html( $title ) . $after_title; ?>
 
-<div class="ow-pt-columns-atom">
+<div class="ow-pt-columns-atom<?php echo ($equalize_row_heights ? ' sow-equalize-row-heights' : '') ?>">
 
 	<?php foreach($columns as $i => $column) : ?>
 		<div class="ow-pt-column <?php echo $this->get_column_classes($column, $i, $columns) ?>" style="width: <?php echo round(100/count($columns), 3) ?>%">
@@ -24,15 +25,15 @@
 				<div class="ow-pt-per"><?php echo esc_html($column['per']) ?></div>
 			</div>
 
-			<?php if(!empty($column['image'])) : ?>
-				<div class="ow-pt-image">
-					<?php $this->column_image($column) ?>
-				</div>
-			<?php endif; ?>
+            <div class="ow-pt-image">
+			    <?php if(!empty($column['image'])) : ?>
+                    <?php $this->column_image($column) ?>
+			    <?php endif; ?>
+            </div>
 
 			<div class="ow-pt-features">
 				<?php foreach($column['features'] as $i => $feature) : ?>
-					<div class="ow-pt-feature ow-pt-feature-<?php echo $i % 2 == 0 ? 'even' : 'odd' ?>">
+					<div class="ow-pt-feature ow-pt-feature-<?php echo $i % 2 == 0 ? 'even' : 'odd' ?> ow-pt-feature-index-<?php echo $i ?>">
 
 						<?php
 						if( !empty($feature['icon_new']) ) : ?>

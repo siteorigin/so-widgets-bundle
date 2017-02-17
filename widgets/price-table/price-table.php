@@ -159,6 +159,11 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 				'type' => 'checkbox',
 				'label' => __('Open Button URL in a new window', 'so-widgets-bundle'),
 			),
+
+			'equalize_row_heights' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Equalize row heights', 'so-widgets-bundle' ),
+			),
 		);
 	}
 
@@ -205,6 +210,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			'before_title' => $args['before_title'],
 			'after_title' => $args['after_title'],
 			'button_new_window' => $instance['button_new_window'],
+            'equalize_row_heights' => ! empty( $instance['equalize_row_heights'] ),
 		);
 	}
 
