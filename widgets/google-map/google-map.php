@@ -400,6 +400,21 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	function get_settings_form() {
+		return array(
+			'api_key' => array(
+				'type'        => 'text',
+				'label'       => __( 'API key', 'so-widgets-bundle' ),
+				'required'    => true,
+				'description' => sprintf(
+					__( 'Enter your %sAPI key%s. Your map may not function correctly without one.', 'so-widgets-bundle' ),
+					'<a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank">',
+					'</a>'
+				)
+			)
+		);
+	}
+
 	function get_template_name( $instance ) {
 		return $instance['settings']['map_type'] == 'static' ? 'static-map' : 'js-map';
 	}
@@ -417,6 +432,14 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		$mrkr_src = wp_get_attachment_image_src( $instance['markers']['marker_icon'] );
 
 		$styles = $this->get_styles( $instance );
+
+		if ( empty( $instance['api_key_section']['api_key'] ) ) {
+			$global_settings = $this->get_global_settings();
+			if ( ! empty( $global_settings['api_key'] ) ) {
+				$instance['api_key_section']['api_key'] = $global_settings['api_key'];
+			}
+		}
+
 		if ( $settings['map_type'] == 'static' ) {
 			return array(
 				'src_url'         => $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array() ),
@@ -449,7 +472,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'map_name'          => ! empty( $styles ) ? $styles['map_name'] : '',
 				'map_styles'        => ! empty( $styles ) ? $styles['styles'] : '',
 				'directions'        => $directions,
-				'api_key'           => $instance['api_key_section']['api_key']
+				'api_key'           => $instance['api_key_section']['api_key'],
 			));
 
 			return array(

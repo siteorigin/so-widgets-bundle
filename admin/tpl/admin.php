@@ -68,6 +68,7 @@
 						</div>
 
 						<?php
+                        /** @var SiteOrigin_Widget $widget_object */
 						$widget_object = !empty( $widget_objects[ $file ] ) ? $widget_objects[ $file ] : false;
 						if( !empty( $widget_object ) && $widget_object->has_form( 'settings' ) ) {
 							$form_url = add_query_arg( array(
