@@ -1,4 +1,4 @@
-@import "../../../base/less/mixins";
+@import "mixins";
 
 .widget-function('import_google_font');
 
@@ -17,25 +17,49 @@
 @more_text_size: default;
 @more_text_color: default;
 
-.sow-features-list .sow-features-feature {
+@responsive_breakpoint: 540px;
 
-   .textwidget {
-       > h5 {
-           .font(@title_font, @title_font_weight);
-           font-size: @title_size;
-           color: @title_color;
-       }
+.sow-features-list {
+   @media (max-width: @responsive_breakpoint) {
+      &.sow-features-responsive {
 
-       > p {
-           .font(@text_font, @text_font_weight);
-           font-size: @text_size;
-           color: @text_color;
-       }
+         .sow-features-feature {
+            width: 100% !important;
+            float: none;
+            margin-bottom: 40px;
 
-       > p.sow-more-text {
-           .font(@more_text_font, @more_text_font_weight);
-           font-size: @more_text_size;
-           color: @more_text_color;
-       }
+            &:last-child {
+               margin-bottom: 0px;
+            }
+         }
+
+         .sow-features-clear {
+            clear: none;
+         }
+
+      }
+   }
+
+   .sow-features-feature {
+
+       .textwidget {
+         > h5 {
+            .font(@title_font, @title_font_weight);
+            font-size: @title_size;
+            color: @title_color;
+         }
+
+         > p {
+            .font(@text_font, @text_font_weight);
+            font-size: @text_size;
+            color: @text_color;
+         }
+
+         > p.sow-more-text {
+            .font(@more_text_font, @more_text_font_weight);
+            font-size: @more_text_size;
+            color: @more_text_color;
+         }
+      }
    }
 }
