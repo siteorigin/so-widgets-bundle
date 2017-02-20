@@ -1281,7 +1281,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	/**
 	 * Get the global settings from the options table.
 	 *
-	 * @return mixed|void
+	 * @return mixed
 	 */
 	function get_global_settings( ){
 		$values = get_option( 'so_widget_settings[' . $this->widget_class . ']', array() );
