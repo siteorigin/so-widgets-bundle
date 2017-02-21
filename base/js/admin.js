@@ -175,13 +175,20 @@
             $el.find('.siteorigin-widget-field-repeater-item').sowSetupRepeaterItems();
 
             // Set up any color fields
-			$fields.find('> .siteorigin-widget-input-color').wpColorPicker( {
-				change: function(event, ui) {
-					setTimeout(function() {
-						$(event.target).trigger('change');
-					}, 100);
-				}
-			} );
+            $fields.find('> .siteorigin-widget-input-color').each(function () {
+                var colorField = $(this);
+                var colorFieldOptions = {
+                    change: function(event, ui) {
+                        setTimeout(function() {
+                            $(event.target).trigger('change');
+                        }, 100);
+                    }
+                };
+                if( colorField.data('defaultColor') ) {
+                    colorFieldOptions.defaultColor = colorField.data('defaultColor');
+                }
+                colorField.wpColorPicker( colorFieldOptions );
+            });
 
             ///////////////////////////////////////
             // Handle the sections
