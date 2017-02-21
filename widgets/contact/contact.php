@@ -87,6 +87,22 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
                     'required_field_indicator' => array(
                         'type' => 'checkbox',
                         'label' => __( 'Indicate required fields with asterisk (*)', 'so-widgets-bundle' ),
+                        'state_emitter' => array(
+	                        'callback' => 'conditional',
+	                        'args' => array(
+                                'required_fields[show]: val',
+                                'required_fields[hide]: ! val'
+                            ),
+                        )
+                    ),
+                    'required_field_indicator_message' => array(
+                        'type' => 'text',
+                        'label' => __( 'Required field indicator message', 'so-widgets-bundle' ),
+                        'default' => __( 'Fields marked with * are required', 'so-widgets-bundle' ),
+                        'state_handler' => array(
+                            'required_fields[show]' => array( 'show' ),
+                            'required_fields[hide]' => array( 'hide' ),
+                        )
                     ),
 
 				)
@@ -794,7 +810,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		if( ! empty( $indicate_required_fields ) ) {
 		    ?>
-            <p><em><?php esc_html_e( 'Fields marked with * are required', 'so-widgets-bundle' ) ?></em></p>
+            <p><em><?php echo esc_html( $instance['settings']['required_field_indicator_message'] ) ?></em></p>
             <?php
         }
 
