@@ -187,26 +187,33 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 		return implode( ' ', $classes );
 	}
 
-	function column_image($column){
+	function column_image( $column ) {
 		$image = $column['image'];
-		$size = 'full';
-		$src = wp_get_attachment_image_src($image, $size);
 
-		$img_attrs = array();
-		if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
-			$img_attrs['srcset'] = wp_get_attachment_image_srcset( $image, $size );
-		}
-		if ( function_exists( 'wp_get_attachment_image_sizes' ) ) {
-			$img_attrs['sizes'] = wp_get_attachment_image_sizes( $image, $size );
-		}
+		if ( ! empty( $image ) ) {
+			$size = 'full';
+			$src  = wp_get_attachment_image_src( $image, $size );
 
-		if ( !empty( $column['image_title'] ) ) $img_attrs['title'] = $column['image_title'];
-		if ( !empty( $column['image_alt'] ) ) $img_attrs['alt'] = $column['image_alt'];
-		$attr_string = '';
-		foreach ( $img_attrs as $attr => $val ) {
-			$attr_string .= ' ' . $attr . '="' . esc_attr( $val ) . '"';
+			$img_attrs = array();
+			if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
+				$img_attrs['srcset'] = wp_get_attachment_image_srcset( $image, $size );
+			}
+			if ( function_exists( 'wp_get_attachment_image_sizes' ) ) {
+				$img_attrs['sizes'] = wp_get_attachment_image_sizes( $image, $size );
+			}
+
+			if ( ! empty( $column['image_title'] ) ) {
+				$img_attrs['title'] = $column['image_title'];
+			}
+			if ( ! empty( $column['image_alt'] ) ) {
+				$img_attrs['alt'] = $column['image_alt'];
+			}
+			$attr_string = '';
+			foreach ( $img_attrs as $attr => $val ) {
+				$attr_string .= ' ' . $attr . '="' . esc_attr( $val ) . '"';
+			}
+			?><img src="<?php echo $src[0] ?>"<?php echo $attr_string ?>/> <?php
 		}
-		?><img src="<?php echo $src[0] ?>"<?php echo $attr_string ?>/> <?php
 	}
 
 	function get_template_name( $instance ) {
