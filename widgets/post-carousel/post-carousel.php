@@ -91,6 +91,12 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 				'label' => __('Title', 'so-widgets-bundle'),
 			),
 
+			'image_size' => array(
+				'type' => 'image-size',
+				'label' => __('Featured Image size', 'so-widgets-bundle'),
+				'default' => 'sow-carousel-default',
+			),
+
 			'posts' => array(
 				'type' => 'posts',
 				'label' => __('Posts query', 'so-widgets-bundle'),
@@ -98,12 +104,30 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_template_name($instance){
-		return 'base';
+	function get_less_variables( $instance ) {
+		$size = siteorigin_widgets_get_image_size( $instance['image_size'] );
+
+		$thumb_width = '';
+		$thumb_height = '';
+		$thumb_hover_width = '';
+		$thumb_hover_height = '';
+		if ( ! ( empty( $size['width'] ) || empty( $size['height'] ) ) ) {
+			$thumb_width = $size['width'] - $size['width'] * 0.1;
+			$thumb_height = $size['height'] - $size['height'] * 0.1;
+			$thumb_hover_width = $size['width'];
+			$thumb_hover_height = $size['height'];
+		}
+
+		return array(
+			'thumbnail_width' => $thumb_width . 'px',
+			'thumbnail_height'=> $thumb_height . 'px',
+			'thumbnail_hover_width' => $thumb_hover_width . 'px',
+			'thumbnail_hover_height'=> $thumb_hover_height . 'px',
+		);
 	}
 
-	function get_style_name($instance){
-		return false;
+	function get_template_name($instance){
+		return 'base';
 	}
 }
 

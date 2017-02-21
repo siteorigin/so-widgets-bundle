@@ -90,7 +90,6 @@
   display: block;
   float: left;
   margin-right: 15px;
-  width: 242px;
   overflow-x: hidden;
   overflow-y: hidden;
 }
@@ -108,9 +107,6 @@
 }
 .sow-carousel-wrapper ul.sow-carousel-items li.sow-carousel-item .sow-carousel-thumbnail a {
   display: block;
-  width: 242px;
-  height: 162px;
-  background-size: 242px 162px;
   background-position: center center;
 }
 .sow-carousel-wrapper ul.sow-carousel-items li.sow-carousel-item .sow-carousel-thumbnail a,
@@ -127,16 +123,11 @@
   background: #3279BB;
   opacity: 0;
 }
-.sow-carousel-wrapper ul.sow-carousel-items li.sow-carousel-item .sow-carousel-thumbnail a:hover {
-  background-size: 272px 182px;
-}
 .sow-carousel-wrapper ul.sow-carousel-items li.sow-carousel-item .sow-carousel-thumbnail a:hover span {
   opacity: 0.5;
 }
 .sow-carousel-wrapper ul.sow-carousel-items li.sow-carousel-item .sow-carousel-default-thumbnail {
   display: block;
-  width: 242px;
-  height: 162px;
   background: #E8E8E8;
   background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #E0E0E0), color-stop(1, #E8E8E8));
   background: -ms-linear-gradient(bottom, #E0E0E0, #E8E8E8);
@@ -156,8 +147,6 @@
 }
 .sow-carousel-wrapper ul.sow-carousel-items li.sow-carousel-loading {
   display: block;
-  width: 242px;
-  height: 162px;
   float: left;
   background: url(images/carousel-loader.gif) #F6F6F6 center center no-repeat;
   margin: 0;
