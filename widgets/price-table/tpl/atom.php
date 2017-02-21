@@ -6,6 +6,7 @@
  * @var $after_title string
  * @var $button_new_window boolean
  * @var $equalize_row_heights boolean
+ * @var $any_column_has_image boolean
  */
 ?>
 
@@ -25,11 +26,11 @@
 				<div class="ow-pt-per"><?php echo esc_html($column['per']) ?></div>
 			</div>
 
+            <?php if ( ( $equalize_row_heights && $any_column_has_image ) || ! ( $equalize_row_heights || empty( $column['image'] ) ) ) : ?>
             <div class="ow-pt-image">
-			    <?php if(!empty($column['image'])) : ?>
-                    <?php $this->column_image($column) ?>
-			    <?php endif; ?>
+                <?php $this->column_image( $column ) ?>
             </div>
+            <?php endif; ?>
 
 			<div class="ow-pt-features">
 				<?php foreach($column['features'] as $i => $feature) : ?>

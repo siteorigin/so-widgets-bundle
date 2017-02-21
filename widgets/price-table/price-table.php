@@ -179,16 +179,18 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 		return implode(' ', $classes);
 	}
 
-	function column_image($column){
-		$src = wp_get_attachment_image_src($column['image'], 'full');
-		$img_attrs = array();
-		if ( !empty( $column['image_title'] ) ) $img_attrs['title'] = $column['image_title'];
-		if ( !empty( $column['image_alt'] ) ) $img_attrs['alt'] = $column['image_alt'];
-		$attr_string = '';
-		foreach ( $img_attrs as $attr => $val ) {
-			$attr_string .= ' ' . $attr . '="' . esc_attr( $val ) . '"';
-		}
-		?><img src="<?php echo $src[0] ?>"<?php echo $attr_string ?>/> <?php
+	function column_image( $column ){
+		if ( ! empty( $column['image'] ) ) {
+            $src = wp_get_attachment_image_src($column['image'], 'full');
+            $img_attrs = array();
+            if ( !empty( $column['image_title'] ) ) $img_attrs['title'] = $column['image_title'];
+            if ( !empty( $column['image_alt'] ) ) $img_attrs['alt'] = $column['image_alt'];
+            $attr_string = '';
+            foreach ( $img_attrs as $attr => $val ) {
+                $attr_string .= ' ' . $attr . '="' . esc_attr( $val ) . '"';
+            }
+            ?><img src="<?php echo $src[0] ?>"<?php echo $attr_string ?>/> <?php
+        }
 	}
 
 	function get_template_name($instance) {
@@ -197,7 +199,9 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 
 	function get_template_variables( $instance, $args ) {
 		$columns = array();
-		foreach( $instance['columns'] as $column ) {
+		$any_column_has_image = false;
+		foreach ( $instance['columns'] as $column ) {
+			$any_column_has_image = $any_column_has_image || ! empty( $column['image'] );
 			foreach( $column['features'] as &$feature ) {
 				$feature['text'] = do_shortcode( $feature['text'] );
 			}
@@ -211,6 +215,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			'after_title' => $args['after_title'],
 			'button_new_window' => $instance['button_new_window'],
             'equalize_row_heights' => ! empty( $instance['equalize_row_heights'] ),
+            'any_column_has_image' => $any_column_has_image,
 		);
 	}
 
