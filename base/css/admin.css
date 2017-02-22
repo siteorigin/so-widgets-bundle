@@ -277,6 +277,7 @@
 .siteorigin-widget-form .siteorigin-widget-field-repeater .siteorigin-widget-field-repeater .siteorigin-widget-field-repeater-add:hover {
   background: #edf5f9;
 }
+.siteorigin-widget-form .siteorigin-widget-field-type-posts > label,
 .siteorigin-widget-form .siteorigin-widget-field-type-widget > label,
 .siteorigin-widget-form .siteorigin-widget-field-type-section > label {
   background: #F0F0F0;
@@ -285,6 +286,7 @@
   display: block;
   margin-bottom: 0;
 }
+.siteorigin-widget-form .siteorigin-widget-field-type-posts > label:before,
 .siteorigin-widget-form .siteorigin-widget-field-type-widget > label:before,
 .siteorigin-widget-form .siteorigin-widget-field-type-section > label:before {
   float: left;
@@ -297,10 +299,12 @@
   font-family: "dashicons";
   content: "\f132";
 }
+.siteorigin-widget-form .siteorigin-widget-field-type-posts > label.siteorigin-widget-section-visible:before,
 .siteorigin-widget-form .siteorigin-widget-field-type-widget > label.siteorigin-widget-section-visible:before,
 .siteorigin-widget-form .siteorigin-widget-field-type-section > label.siteorigin-widget-section-visible:before {
   content: "\f460";
 }
+.siteorigin-widget-form .siteorigin-widget-field-type-posts .siteorigin-widget-section,
 .siteorigin-widget-form .siteorigin-widget-field-type-widget .siteorigin-widget-section,
 .siteorigin-widget-form .siteorigin-widget-field-type-section .siteorigin-widget-section {
   padding: 1px 10px;
@@ -308,6 +312,7 @@
   border: 1px solid #EEEEEE;
   border-top: 0;
 }
+.siteorigin-widget-form .siteorigin-widget-field-type-posts .siteorigin-widget-section.siteorigin-widget-section-hide,
 .siteorigin-widget-form .siteorigin-widget-field-type-widget .siteorigin-widget-section.siteorigin-widget-section-hide,
 .siteorigin-widget-form .siteorigin-widget-field-type-section .siteorigin-widget-section.siteorigin-widget-section-hide {
   display: none;

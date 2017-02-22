@@ -193,7 +193,7 @@
             ///////////////////////////////////////
             // Handle the sections
 
-            $fields.filter('.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section').find('> label').click(function(){
+            $fields.filter('.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section, .siteorigin-widget-field-type-posts').find('> label').click(function(){
                 var $$ = $(this);
                 $(this).toggleClass( 'siteorigin-widget-section-visible' );
                 $(this).siblings('.siteorigin-widget-section').slideToggle(function(){
