@@ -418,6 +418,10 @@
 .siteorigin-widgets-query-builder .query-builder-content .query-builder-form-field input[type="number"] {
   width: 150px;
 }
+.siteorigin-widgets-query-builder .query-builder-content .query-builder-form-field select[multiple] {
+  min-width: 150px;
+  max-height: 83px;
+}
 .siteorigin-widgets-query-builder .query-builder-content .query-builder-form-field input[type="date"] {
   width: 150px;
   margin: 0 10px;
