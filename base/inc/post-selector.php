@@ -119,7 +119,7 @@ function siteorigin_widget_post_selector_form_fields(){
 	// The post type field
 	$return['post_type'] = '';
 	$return['post_type'] .= '<label><span>' . __('Post type', 'so-widgets-bundle') . '</span>';
-	$return['post_type'] .= '<select name="post_type">';
+	$return['post_type'] .= '<select name="post_type" multiple>';
 	$return['post_type'] .= '<option value="_all">' . __('All', 'so-widgets-bundle') . '</option>';
 	foreach( get_post_types( array( 'public' => true  ), 'objects' ) as $id => $type ) {
 		if(!empty($type->labels->name)) {
@@ -279,7 +279,9 @@ function siteorigin_widget_post_selector_post_search_action(){
 	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
 	$term = !empty($_GET['term']) ? stripslashes($_GET['term']) : '';
 	$type = !empty($_GET['type']) ? stripslashes($_GET['type']) : '_all';
-	if($type == '_all') $type = explode(',', siteorigin_widget_post_selector_all_post_types());
+	if($type == '_all') $type = siteorigin_widget_post_selector_all_post_types();
+
+	$type = explode(',', $type);
 
 	$results = array();
 	$r = new WP_Query( array('s' => $term, 'post_status' => 'publish', 'posts_per_page' => 20, 'post_type' => $type) );
