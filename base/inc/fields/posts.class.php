@@ -8,7 +8,12 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_container = array() ) {
 		parent::__construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_container );
 
-		$types = get_post_types( array( 'public' => true ) );
+		$types        = get_post_types( array( 'public' => true ), 'objects' );
+		$type_options = array( '_all' => __( 'All', 'so-widgets-bundle' ) );
+
+		foreach ( $types as $id => $type ) {
+			$type_options[ $id ] = $type->labels->name;
+		}
 
 		$this->fields = array(
 
@@ -16,7 +21,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 				'type'     => 'select',
 				'label'    => __( 'Post type', 'so-widgets-bundle' ),
 				'multiple' => true,
-				'options'  => $types,
+				'options'  => $type_options,
 			),
 
 			'post_in' => array(
@@ -80,16 +85,16 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 				),
 			),
 
-            'additional' => array(
-                'type' => 'text',
-                'label' => __( 'Additional', 'so-widgets-bundle' ),
-                'description' => __('Additional query arguments. See <a href="http://codex.wordpress.org/Function_Reference/query_posts" target="_blank">query_posts</a>.', 'so-widgets-bundle')
-            ),
+			'additional' => array(
+				'type'        => 'text',
+				'label'       => __( 'Additional', 'so-widgets-bundle' ),
+				'description' => __( 'Additional query arguments. See <a href="http://codex.wordpress.org/Function_Reference/query_posts" target="_blank">query_posts</a>.', 'so-widgets-bundle' )
+			),
 		);
 	}
 
 	protected function render_field_label( $value, $instance ) {
-        parent::render_field_label( $value, $instance );
+		parent::render_field_label( $value, $instance );
 	}
 
 	protected function render_field( $value, $instance ) {
@@ -99,11 +104,15 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 			} ?>"><?php
 		}
 
-		$this->create_and_render_sub_fields( $value, array( 'name' => $this->base_name, 'type' => 'posts' ) );
+		$this->create_and_render_sub_fields( $value, array( 'name' => $this->base_name, 'type' => 'composite' ) );
 
 		if ( $this->collapsible ) {
 			?></div><?php
 		}
+	}
+
+	public function enqueue_scripts() {
+	    wp_enqueue_script( 'so-posts-selector-field', plugin_dir_url( __FILE__ ) . 'js/posts-selector-field' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'underscore', 'backbone' ), SOW_BUNDLE_VERSION, true );
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
