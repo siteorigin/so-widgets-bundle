@@ -37,7 +37,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 		vc_add_shortcode_param(
 			'siteorigin_widget',
 			array( $this, 'siteorigin_widget_form' ),
-			plugin_dir_url( __FILE__ ) . 'sowb-visual-composer.js'
+			plugin_dir_url( __FILE__ ) . 'sowb-vc-widget' . SOW_BUNDLE_JS_SUFFIX . '.js'
 		);
 
 		$settings = array(
@@ -61,6 +61,17 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 			)
 		);
 		vc_map( $settings );
+
+		$vc_manager = Vc_Manager::getInstance();
+		$vc_mode = $vc_manager->mode();
+		if ( in_array( $vc_mode, array( 'admin_frontend_editor', 'admin_page' ) ) ) {
+            wp_enqueue_script(
+                'sowb-js-for-vc',
+                plugin_dir_url( __FILE__ ) . 'sowb-visual-composer' . SOW_BUNDLE_JS_SUFFIX . '.js',
+                array(),
+                SOW_BUNDLE_VERSION
+            );
+		}
 	}
 
 	function siteorigin_widget_form( $settings, $value ) {
@@ -248,6 +259,22 @@ if ( class_exists( 'WPBakeryShortCode' ) ) {
 			} else {
 				return $widget_instance;
 			}
+		}
+
+		/**
+		 * @param $atts
+		 *
+		 * @return array
+		 */
+		protected function prepareAtts( $atts ) {
+			$return = array();
+			if ( is_array( $atts ) ) {
+				foreach ( $atts as $key => $val ) {
+					$return[ $key ] = html_entity_decode( $val );
+				}
+			}
+
+			return $return;
 		}
 	}
 } // End Class
