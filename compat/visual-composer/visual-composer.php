@@ -35,9 +35,9 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 		}
 
 		vc_add_shortcode_param(
-			'siteorigin_widget',
+			'sowb_json_escaped',
 			array( $this, 'siteorigin_widget_form' ),
-			plugin_dir_url( __FILE__ ) . 'sowb-vc-widget' . SOW_BUNDLE_JS_SUFFIX . '.js'
+			plugin_dir_url( __FILE__ ) . 'sowb-visual-composer' . SOW_BUNDLE_JS_SUFFIX . '.js'
 		);
 
 		$settings = array(
@@ -54,24 +54,13 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 			'front_enqueue_css'       => preg_replace( '/\s/', '%20', plugins_url( 'styles.css', __FILE__ ) ),
 			'params'                  => array(
 				array(
-					'type'       => 'siteorigin_widget',
+					'type'       => 'sowb_json_escaped',
 					'heading'    => __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
 					'param_name' => 'so_widget_data',
 				),
 			)
 		);
 		vc_map( $settings );
-
-		$vc_manager = Vc_Manager::getInstance();
-		$vc_mode = $vc_manager->mode();
-		if ( in_array( $vc_mode, array( 'admin_frontend_editor', 'admin_page' ) ) ) {
-            wp_enqueue_script(
-                'sowb-js-for-vc',
-                plugin_dir_url( __FILE__ ) . 'sowb-visual-composer' . SOW_BUNDLE_JS_SUFFIX . '.js',
-                array(),
-                SOW_BUNDLE_VERSION
-            );
-		}
 	}
 
 	function siteorigin_widget_form( $settings, $value ) {
@@ -214,7 +203,7 @@ if ( class_exists( 'WPBakeryShortCode' ) ) {
 		}
 
 		public function get_widget_settings( $atts ) {
-			$unesc = str_replace( '\`', '`', $atts['so_widget_data'] );
+			$unesc = html_entity_decode( $atts['so_widget_data'] );
 			return json_decode( $unesc, true );
 		}
 

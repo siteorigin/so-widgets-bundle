@@ -38,6 +38,17 @@ sowbForms.setupVcWidgetForm = function() {
 			'html'
 		);
 	});
+
+    vc.atts.sowb_json_escaped = {
+        parse: function (param) {
+            var $field = this.content().find('.wpb_vc_param_value[name=' + param.param_name + ']'),
+                new_value = $field.val();
+            return _.escape(new_value.toString()).replace(/\[/g, '&#91;').replace(/\]/g, '&#93;');
+        },
+        render: function (param, value) {
+            return _.unescape(value).replace(/&#91;/g, '[').replace(/&#93;/g, ']');
+        }
+    };
 	
 	vc.events.on("shortcodeView:updated:siteorigin_widget", function() {
 		
