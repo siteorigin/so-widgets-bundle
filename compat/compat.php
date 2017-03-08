@@ -39,10 +39,10 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 	function is_active( $builder ) {
 		switch ( $builder[ 'name' ] ) {
 			case self::BEAVER_BUILDER:
-				return class_exists( 'FLBuilderModel' );
+				return class_exists( 'FLBuilderModel', false );
 			break;
 			case self::ELEMENTOR:
-				return version_compare( PHP_VERSION, '5.4', '>=' ) && class_exists( 'Elementor\\Plugin' );
+				return class_exists( 'Elementor\\Plugin', false );
 			break;
 			case self::VISUAL_COMPOSER:
 				return class_exists( 'Vc_Manager' );

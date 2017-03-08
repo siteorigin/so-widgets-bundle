@@ -130,6 +130,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'label' => __('Use hover effects', 'so-widgets-bundle'),
 					),
 
+					'font' => array(
+						'type' => 'font',
+						'label' => __( 'Font', 'so-widgets-bundle' ),
+						'default' => 'default'
+					),
+
 					'font_size' => array(
 						'type' => 'select',
 						'label' => __('Font size', 'so-widgets-bundle'),
@@ -196,6 +202,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'label' => __('Onclick', 'so-widgets-bundle'),
 						'description' => __('Run this Javascript when the button is clicked. Ideal for tracking.', 'so-widgets-bundle'),
 					),
+
+					'rel' => array(
+						'type' => 'text',
+						'label' => __('Rel attribute', 'so-widgets-bundle'),
+						'description' => __('Adds a rel attribute to the button link.', 'so-widgets-bundle'),
+					),
 				)
 			),
 		);
@@ -215,13 +227,54 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	 * @return array
 	 */
 	function get_template_variables( $instance, $args ) {
-		$vars = array();
+		$button_attributes = array();
 
-		if( ! empty( $instance[ 'attributes' ][ 'classes' ] ) ) {
-			$vars[ 'classes' ] = explode( ' ', $instance[ 'attributes' ][ 'classes' ] );
+		$attributes = $instance['attributes'];
+		if( ! empty( $attributes['classes'] ) ) {
+			$classes = $attributes['classes'];
+			if( !empty($instance['design']['hover']) ) {
+				$classes .= ' ow-button-hover';
+			}
+			$button_attributes['class'] = $classes;
 		}
 
-		return $vars;
+		if ( ! empty( $instance['new_window'] ) ) {
+			$button_attributes['target'] = '_blank';
+		}
+
+		if ( ! empty( $instance['url'] ) ) {
+			$button_attributes['href'] = $instance['url'];
+		}
+		if ( ! empty( $attributes['id'] ) ) {
+			$button_attributes['id'] = $attributes['id'];
+		}
+		if ( ! empty( $attributes['title'] ) ) {
+			$button_attributes['title'] = $attributes['title'];
+		}
+		if ( ! empty( $attributes['onclick'] ) ) {
+			$button_attributes['onclick'] = $attributes['onclick'];
+		}
+		if ( ! empty( $attributes['rel'] ) ) {
+			$button_attributes['rel'] = $attributes['rel'];
+		}
+
+		$icon_image_url = '';
+		if( ! empty( $instance['button_icon']['icon'] ) ) {
+			$attachment = wp_get_attachment_image_src( $instance['button_icon']['icon'] );
+
+			if ( ! empty( $attachment ) ) {
+				$icon_image_url = $attachment[0];
+			}
+		}
+
+		return array(
+			'button_attributes' => $button_attributes,
+			'align' => $instance['design']['align'],
+			'icon_image_url' => $icon_image_url,
+			'icon' => $instance['button_icon']['icon_selected'],
+			'icon_color' => $instance['button_icon']['icon_color'],
+			'text' => $instance['text'],
+		);
 	}
 
 	/**
@@ -233,7 +286,8 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	 */
 	function get_less_variables($instance){
 		if( empty( $instance ) || empty( $instance['design'] ) ) return array();
-		return array(
+
+		$less_vars = array(
 			'button_width' => isset( $instance['design']['width'] ) ? $instance['design']['width'] : '',
 			'has_button_width' => empty( $instance['design']['width'] ) ? 'false' : 'true',
 			'button_color' => $instance['design']['button_color'],
@@ -244,8 +298,22 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'padding' => $instance['design']['padding'] . 'em',
 			'has_text' => empty( $instance['text'] ) ? 'false' : 'true',
 		);
+
+		if ( ! empty( $instance['design']['font'] ) ) {
+			$font = siteorigin_widget_get_font( $instance['design']['font'] );
+			$less_vars['button_font'] = $font['family'];
+			if ( ! empty( $font['weight'] ) ) {
+				$less_vars['button_font_weight'] = $font['weight'];
+			}
+		}
+		return $less_vars;
 	}
 
+	function get_google_font_fields( $instance ) {
+		return array(
+			$instance['design']['font'],
+		);
+	}
 	/**
 	 * Make sure the instance is the most up to date version.
 	 *

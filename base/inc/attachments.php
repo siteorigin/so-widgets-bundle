@@ -44,12 +44,19 @@ function siteorigin_widgets_get_attachment_image( $attachment, $size, $fallback 
 			'src' => $src[0],
 		);
 
+		if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
+			$atts['srcset'] = wp_get_attachment_image_srcset( $attachment, $size );
+		}
+		if ( function_exists( 'wp_get_attachment_image_sizes' ) ) {
+			$atts['sizes'] = wp_get_attachment_image_sizes( $attachment, $size );
+		}
+
 		if( !empty($src[1]) ) $atts['width'] = $src[1];
 		if( !empty($src[2]) ) $atts['height'] = $src[2];
 
 		$return = '<img ';
 		foreach( $atts as $id => $val ) {
-			$return .= $id . '="' . esc_attr($val) . '" ';
+			$return .= $id . '="' . esc_attr( $val ) . '" ';
 		}
 		$return .= '>';
 		return $return;

@@ -1,12 +1,25 @@
 
 @border_color: #E3E3E3;
 @background_color: #F8F8F8;
+@title_color: default;
+@subtitle_color: default;
 
 .sow-cta-base {
 	border-color: @border_color;
 	background-color: @background_color;
-}
+	
+	.sow-cta-text {
+		.sow-cta- {
+			&title {
+				color: @title_color;
+			}
 
+			&subtitle {
+				color: @subtitle_color;
+			}
+		}
+	}
+}
 @button_align: right;
 
 .sow-cta-base {

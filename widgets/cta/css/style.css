@@ -12,15 +12,15 @@
   display: table;
   clear: both;
 }
-.sow-cta-base .sow-cta-text h4,
-.sow-cta-base .sow-cta-text h5,
+.sow-cta-base .sow-cta-text .sow-cta-title,
+.sow-cta-base .sow-cta-text .sow-cta-subtitle,
 .sow-cta-base .sow-cta-text p {
   margin: 0.4em 0;
 }
-.sow-cta-base .sow-cta-text h4 {
+.sow-cta-base .sow-cta-text .sow-cta-title {
   margin-top: 0;
 }
-.sow-cta-base .sow-cta-text h5,
+.sow-cta-base .sow-cta-text .sow-cta-subtitle,
 .sow-cta-base .sow-cta-text p {
   margin-bottom: 0;
   font-weight: normal;

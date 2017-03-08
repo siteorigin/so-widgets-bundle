@@ -37,6 +37,10 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
+			'title' => array(
+				'type' => 'text',
+				'label' => __( 'Title', 'so-widgets-bundle' ),
+			),
 			'networks' => array(
 				'type'       => 'repeater',
 				'label'      => __( 'Networks', 'so-widgets-bundle' ),
@@ -56,6 +60,10 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 					'url'          => array(
 						'type'  => 'text',
 						'label' => __( 'URL', 'so-widgets-bundle' )
+					),
+					'icon_title' => array(
+						'type' => 'text',
+						'label' => __( 'Icon title', 'so-widgets-bundle' ),
 					),
 					'icon_color'   => array(
 						'type'  => 'color',

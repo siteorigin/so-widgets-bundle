@@ -1,3 +1,6 @@
 .wp-customizer .mce-floatpanel {
   z-index: 1000000 !important;
 }
+.wp-customizer .mce-inline-toolbar-grp {
+  z-index: 1000000 !important;
+}

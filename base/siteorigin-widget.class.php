@@ -355,6 +355,21 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				}
 				$instance[$id] = $this->add_defaults( $field['fields'], $instance[$id], $level + 1 );
 			}
+			else if( $field['type'] == 'measurement' ) {
+				if( ! isset( $instance[$id] ) ) {
+					$instance[$id] = isset( $field['default'] ) ? $field['default'] : '';
+				}
+				if ( empty( $instance[ $id . '_unit' ] ) ) {
+					$instance[ $id . '_unit' ] = 'px';
+				}
+			}
+			else if ( $field['type'] == 'order') {
+				if ( empty( $instance[$id] ) ) {
+					if( ! empty( $field['default'] ) ) {
+						$instance[$id] = $field['default'];
+					}
+				}
+			}
 			else {
 				if( !isset( $instance[$id] ) ) {
 					$instance[$id] = isset( $field['default'] ) ? $field['default'] : '';
@@ -795,7 +810,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		//handle less @import statements
 		$less = preg_replace_callback( '/^@import\s+".*?\/?([\w-\.]+)";/m', array( $this, 'get_less_import_contents' ), $less );
 
-		$vars = $this->get_less_variables($instance);
+		$vars = apply_filters( 'siteorigin_widgets_less_variables_' . $this->id_base, $this->get_less_variables( $instance ), $instance, $this );
 		if( !empty( $vars ) ){
 			foreach($vars as $name => $value) {
 				// Ignore empty string, false and null values (but keep '0')
@@ -932,6 +947,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		if( empty( $instance ) ) return;
 
 		$fonts = $this->get_google_font_fields($instance);
+		if( empty( $fonts ) || ! is_array( $fonts ) ) return '';
+
 		$font_imports = array();
 
 		foreach ( $fonts as $font ) {
@@ -944,10 +961,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		// Remove empty and duplicate items from the array
-		$import_strings = array_filter($import_strings);
-		$import_strings = array_unique($import_strings);
+		$import_strings = array_filter( $import_strings );
+		$import_strings = array_unique( $import_strings );
 
-		return implode("\n", $import_strings);
+		return implode( "\n", $import_strings );
 	}
 
 	/**
@@ -1046,7 +1063,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string
 	 */
 	function get_style_hash( $instance ) {
-		$vars = method_exists($this, 'get_style_hash_variables') ? $this->get_style_hash_variables( $instance ) : $this->get_less_variables( $instance );
+		if( method_exists( $this, 'get_style_hash_variables' ) ) {
+			$vars = apply_filters( 'siteorigin_widgets_hash_variables_' . $this->id_base, $this->get_style_hash_variables( $instance ), $instance, $this );
+		} else {
+			$vars = apply_filters( 'siteorigin_widgets_less_variables_' . $this->id_base, $this->get_less_variables( $instance ), $instance, $this );
+		}
 		$version = property_exists( $this, 'version' ) ? $this->version : '';
 
 		return substr( md5( json_encode( $vars ) . $version ), 0, 12 );
@@ -1266,7 +1287,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	/**
 	 * Get the global settings from the options table.
 	 *
-	 * @return mixed|void
+	 * @return mixed
 	 */
 	function get_global_settings( ){
 		$values = get_option( 'so_widget_settings[' . $this->widget_class . ']', array() );

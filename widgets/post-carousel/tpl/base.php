@@ -5,7 +5,7 @@ $posts = new WP_Query( $query );
 
 <?php if($posts->have_posts()) : ?>
 	<div class="sow-carousel-title">
-		<?php echo $args['before_title'] . esc_html($instance['title']) . $args['after_title'] ?>
+		<?php if( !empty( $instance['title'] ) ) echo $args['before_title'] . esc_html($instance['title']) . $args['after_title'] ?>
 
 		<a href="#" class="sow-carousel-next" title="<?php esc_attr_e('Next', 'so-widgets-bundle') ?>"></a>
 		<a href="#" class="sow-carousel-previous" title="<?php esc_attr_e('Previous', 'so-widgets-bundle') ?>"></a>
