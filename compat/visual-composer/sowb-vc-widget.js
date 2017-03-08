@@ -6,27 +6,24 @@ sowbForms.setupVcWidgetForm = function() {
 	var $widgetDropdown = $('[name="so_widget_class"]');
 	var ajaxUrl = $('[name="ajaxurl"]').data('ajaxUrl');
 	var $formContainer = $('.siteorigin_widget_form_container');
-	debugger;
-	
-	window.tinyMCEPreInit.mceInit['content'].wpautop = false;
-	
+
 	$formContainer.on('change', '.siteorigin-widget-field', function() {
 		var widgetData = sowbForms.getWidgetFormValues( $formContainer );
 		var widgetClass = $widgetDropdown.val();
-		
+
 		var jsonString = JSON.stringify({widget_class: widgetClass, widget_data: widgetData});
 		jsonString = jsonString.replace(/\\/g, '\\\\');
 		$('[name="so_widget_data"]').val( jsonString );
 	});
-	
+
 	$widgetDropdown.on('change', function() {
 		var widget = $widgetDropdown.val();
-		
+
 		var data = {
 			'action': 'sowb_vc_widget_render_form',
 			'widget': widget,
 		};
-		
+
 		$.post(
 			ajaxUrl,
 			data,
@@ -38,7 +35,6 @@ sowbForms.setupVcWidgetForm = function() {
 			'html'
 		);
 	});
-
     vc.atts.sowb_json_escaped = {
         parse: function (param) {
             var $field = this.content().find('.wpb_vc_param_value[name=' + param.param_name + ']'),
@@ -49,9 +45,9 @@ sowbForms.setupVcWidgetForm = function() {
             return _.unescape(value).replace(/&#91;/g, '[').replace(/&#93;/g, ']');
         }
     };
-	
+
 	vc.events.on("shortcodeView:updated:siteorigin_widget", function() {
-		
+
 		if( typeof vc.frame_window !== 'undefined' && typeof vc.frame_window.sowb !== 'undefined') {
 			var sowb = vc.frame_window.sowb;
 			if( typeof sowb.setupGoogleMaps !== 'undefined' ) {
@@ -75,7 +71,7 @@ sowbForms.setupVcWidgetForm = function() {
 			}
 		}
 	});
-	
+
 };
 
 jQuery(function ($) {

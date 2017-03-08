@@ -16,28 +16,22 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 	function __construct() {
 		add_action( 'vc_after_init', array( $this, 'init' ) );
 
+		add_action( 'admin_print_scripts-post-new.php', array( $this, 'enqueue_active_widgets_scripts' ) );
+		add_action( 'admin_print_scripts-post.php', array( $this, 'enqueue_active_widgets_scripts' ) );
+
 		add_action( 'wp_ajax_sowb_vc_widget_render_form', array( $this, 'sowb_vc_widget_render_form' ) );
 
-		add_filter( 'siteorigin_widgets_form_show_preview_button', array( $this, '__return_false' ) );
+		add_filter( 'siteorigin_widgets_form_show_preview_button', '__return_false' );
 
 		add_filter( 'content_save_pre', array( $this, 'update_widget_data' ) );
 	}
 
 	function init() {
 
-		global $wp_widget_factory;
-
-		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
-			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
-				/* @var $widget_obj SiteOrigin_Widget */
-				$widget_obj->enqueue_scripts( 'widget' );
-			}
-		}
-
 		vc_add_shortcode_param(
 			'sowb_json_escaped',
 			array( $this, 'siteorigin_widget_form' ),
-			plugin_dir_url( __FILE__ ) . 'sowb-visual-composer' . SOW_BUNDLE_JS_SUFFIX . '.js'
+			plugin_dir_url( __FILE__ ) . 'sowb-vc-widget' . SOW_BUNDLE_JS_SUFFIX . '.js'
 		);
 
 		$settings = array(
@@ -61,6 +55,20 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 			)
 		);
 		vc_map( $settings );
+	}
+
+	function enqueue_active_widgets_scripts() {
+
+		global $wp_widget_factory;
+
+		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
+			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
+				/* @var $widget_obj SiteOrigin_Widget */
+				ob_start();
+				$widget_obj->form( array() );
+				ob_clean();
+			}
+		}
 	}
 
 	function siteorigin_widget_form( $settings, $value ) {
