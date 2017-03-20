@@ -57,20 +57,25 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 		);
 
 		$instance['text'] = $this->unwpautop( $instance['text'] );
-		$instance['text'] = apply_filters( 'widget_text', $instance['text'] );
 
-		// Run some known stuff
-		if( !empty($GLOBALS['wp_embed']) ) {
-			$instance['text'] = $GLOBALS['wp_embed']->run_shortcode( $instance['text'] );
-			$instance['text'] = $GLOBALS['wp_embed']->autoembed( $instance['text'] );
-		}
 		if (function_exists('wp_make_content_images_responsive')) {
 			$instance['text'] = wp_make_content_images_responsive( $instance['text'] );
 		}
+
+		if( ! function_exists( 'siteorigin_panels_is_database_render' ) || ! siteorigin_panels_is_database_render() ) {
+			// Run some known stuff
+			if( !empty($GLOBALS['wp_embed']) ) {
+				$instance['text'] = $GLOBALS['wp_embed']->run_shortcode( $instance['text'] );
+				$instance['text'] = $GLOBALS['wp_embed']->autoembed( $instance['text'] );
+			}
+
+			$instance['text'] = apply_filters( 'widget_text', $instance['text'] );
+			$instance['text'] = do_shortcode( shortcode_unautop( $instance['text'] ) );
+		}
+
 		if( $instance['autop'] ) {
 			$instance['text'] = wpautop( $instance['text'] );
 		}
-		$instance['text'] = do_shortcode( shortcode_unautop( $instance['text'] ) );
 
 		return array(
 			'text' => $instance['text'],
