@@ -62,7 +62,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			$instance['text'] = wp_make_content_images_responsive( $instance['text'] );
 		}
 
-		if( ! function_exists( 'siteorigin_panels_is_database_render' ) || ! siteorigin_panels_is_database_render() ) {
+		if( ! defined( 'SITEORIGIN_PANELS_DATABASE_RENDER' ) ) {
 			// Run some known stuff
 			if( !empty($GLOBALS['wp_embed']) ) {
 				$instance['text'] = $GLOBALS['wp_embed']->run_shortcode( $instance['text'] );
