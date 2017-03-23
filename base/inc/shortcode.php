@@ -18,13 +18,10 @@ function siteorigin_widget_shortcode( $attr, $content = '' ){
 	if( ! empty( $attr[ 'class' ] ) && isset( $wp_widget_factory->widgets[ $attr[ 'class' ] ] ) ) {
 		$the_widget = $wp_widget_factory->widgets[ $attr[ 'class' ] ];
 
-		list( $post_id, $widget_id ) = explode( ':', $attr['id'] );
-		if( empty( $post_id ) ) return '';
+		$meta = json_decode( htmlspecialchars_decode( $content ), true );
 
-		$meta = get_post_meta( $post_id, 'siteorigin_widget_instances', true );
-
-		$widget_args = ! empty( $meta[ $widget_id ][ 'args' ] ) ? $meta[ $widget_id ][ 'args' ] : array();
-		$widget_instance = ! empty( $meta[ $widget_id ][ 'instance' ] ) ? $meta[ $widget_id ][ 'instance' ] : array();
+		$widget_args = ! empty( $meta[ 'args' ] ) ? $meta[ 'args' ] : array();
+		$widget_instance = ! empty( $meta[ 'instance' ] ) ? $meta[ 'instance' ] : array();
 
 		$widget_args = wp_parse_args( array(
 			'before_widget' => '',
@@ -90,9 +87,9 @@ function siteorigin_widget_shortcode_for_database_render( $html, $the_widget, $a
 
 		$html .= $before_widget;
 		$html .= '[siteorigin_widget ';
-		$html .= 'class="' . get_class( $the_widget ) . '" ';
-		$html .= 'id="' . get_the_ID() . ':' . $i . '" ';
-		$html .= '/]';
+		$html .= 'class="' . get_class( $the_widget ) . '"]';
+		$html .= htmlspecialchars( wp_json_encode( $meta[ $i ] ) );
+		$html .= '[/siteorigin_widget]';
 		$html .= $after_widget;
 	}
 
