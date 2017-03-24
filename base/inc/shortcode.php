@@ -18,7 +18,7 @@ function siteorigin_widget_shortcode( $attr, $content = '' ){
 	if( ! empty( $attr[ 'class' ] ) && isset( $wp_widget_factory->widgets[ $attr[ 'class' ] ] ) ) {
 		$the_widget = $wp_widget_factory->widgets[ $attr[ 'class' ] ];
 
-		$meta = json_decode( htmlspecialchars_decode( $content ), true );
+		$meta = json_decode( html_entity_decode( $content ), true );
 
 		$widget_args = ! empty( $meta[ 'args' ] ) ? $meta[ 'args' ] : array();
 		$widget_instance = ! empty( $meta[ 'instance' ] ) ? $meta[ 'instance' ] : array();
@@ -88,7 +88,7 @@ function siteorigin_widget_shortcode_for_database_render( $html, $the_widget, $a
 		$html .= $before_widget;
 		$html .= '[siteorigin_widget ';
 		$html .= 'class="' . get_class( $the_widget ) . '"]';
-		$html .= htmlspecialchars( wp_json_encode( $meta[ $i ] ) );
+		$html .= htmlentities( wp_json_encode( $meta[ $i ] ) );
 		$html .= '[/siteorigin_widget]';
 		$html .= $after_widget;
 	}
