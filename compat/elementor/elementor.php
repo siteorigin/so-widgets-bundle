@@ -29,7 +29,6 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 		}
 
 		add_action( 'elementor/editor/before_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
-		add_action( 'wp_print_footer_scripts', array( $this, 'print_footer_templates' ) );
 	}
 
 	function enqueue_frontend_scripts() {
@@ -44,6 +43,8 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 	}
 
 	function enqueue_active_widgets_scripts() {
+
+		add_action( 'wp_print_footer_scripts', array( $this, 'print_footer_templates' ) );
 
 		global $wp_widget_factory;
 
