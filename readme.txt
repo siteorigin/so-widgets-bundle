@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
-Requires at least: 3.9
-Tested up to: 4.7.2
+Requires at least: 4.2
+Tested up to: 4.7.3
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
@@ -53,6 +53,11 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.8.2 - 3 February 2017 =
+* Compatibility with upcoming Page Builder 2.5 release.
+* Fixed compatibility with Elementor 1.4+.
+* Fixed incompatibility with Jetpack.
 
 = 1.8.1 - 3 February 2017 =
 * Fixed empty array warning.
