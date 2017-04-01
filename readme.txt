@@ -54,7 +54,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
-= 1.8.2 - 3 February 2017 =
+= 1.8.2 - 1 April 2017 =
 * Compatibility with upcoming Page Builder 2.5 release.
 * Fixed compatibility with Elementor 1.4+.
 * Fixed incompatibility with Jetpack.
