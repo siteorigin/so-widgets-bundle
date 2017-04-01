@@ -12,7 +12,7 @@ function siteorigin_widget_shortcode( $attr, $content = '' ){
 	$attr = shortcode_atts( array(
 		'class' => false,
 		'id' => '',
-	), $attr, 'panels_widget' );
+	), $attr, 'siteorigin_widget' );
 
 	$attr[ 'class' ] = html_entity_decode( $attr[ 'class' ] );
 
