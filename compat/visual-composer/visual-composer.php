@@ -36,7 +36,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 		$settings = array(
 			'name'                    => __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
-			'base'                    => 'siteorigin_widget',
+			'base'                    => 'siteorigin_widget_vc',
 			'category'                => __( 'SiteOrigin Widgets', 'so-widgets-bundle' ),
 			'description'             => __( 'Allows you to add any active SiteOrigin Widgets Bundle widgets.', 'so-widgets-bundle' ),
 			// element description in add elements view
@@ -148,7 +148,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 	function update_widget_data( $content ) {
 
-		$content = preg_replace_callback( '/\[siteorigin_widget [^\]]*\]/', array(
+		$content = preg_replace_callback( '/\[siteorigin_widget_vc [^\]]*\]/', array(
 			$this,
 			'update_shortcode'
 		), $content );
@@ -189,14 +189,14 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 		preg_replace( '/so_widget_data="([^"]*)"/', $slashed, $shortcode );
 
-		return '[siteorigin_widget ' . $slashed . ']';
+		return '[siteorigin_widget_vc ' . $slashed . ']';
 	}
 }
 
 SiteOrigin_Widgets_Bundle_Visual_Composer::single();
 
 if ( class_exists( 'WPBakeryShortCode' ) ) {
-	class WPBakeryShortCode_SiteOrigin_Widget extends WPBakeryShortCode {
+	class WPBakeryShortCode_SiteOrigin_Widget_VC extends WPBakeryShortCode {
 		public function __construct( $settings ) {
 			parent::__construct( $settings );
 		}

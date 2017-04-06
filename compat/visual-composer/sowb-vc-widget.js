@@ -6,7 +6,6 @@ sowbForms.setupVcWidgetForm = function() {
 	var $widgetDropdown = $('[name="so_widget_class"]');
 	var ajaxUrl = $('[name="ajaxurl"]').data('ajaxUrl');
 	var $formContainer = $('.siteorigin_widget_form_container');
-
 	$formContainer.on('change', '.siteorigin-widget-field', function() {
 		var widgetData = sowbForms.getWidgetFormValues( $formContainer );
 		var widgetClass = $widgetDropdown.val();
@@ -46,10 +45,15 @@ sowbForms.setupVcWidgetForm = function() {
         }
     };
 
-	vc.events.on("shortcodeView:updated:siteorigin_widget", function() {
+	vc.events.on("shortcodeView:updated:siteorigin_widget_vc", function() {
 
 		if( typeof vc.frame_window !== 'undefined' && typeof vc.frame_window.sowb !== 'undefined') {
 			var sowb = vc.frame_window.sowb;
+
+			// Trigger Widgets Bundle widgets to setup
+			// This isn't working for some reason, so keep calling the functions directly for now.
+			$( sowb ).trigger( 'setup_widgets' );
+
 			if( typeof sowb.setupGoogleMaps !== 'undefined' ) {
 				sowb.setupGoogleMaps();
 			}
