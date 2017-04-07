@@ -36,12 +36,13 @@ sowbForms.setupVcWidgetForm = function() {
 	});
     vc.atts.sowb_json_escaped = {
         parse: function (param) {
-            var $field = this.content().find('.wpb_vc_param_value[name=' + param.param_name + ']'),
-                new_value = $field.val();
-            return _.escape(new_value.toString()).replace(/\[/g, '&#91;').replace(/\]/g, '&#93;');
+            var $field = this.content().find( '.wpb_vc_param_value[name=' + param.param_name + ']' );
+	        // We double encode in the front end to prevent accidental decoding when the content is set on the
+	        // WP visual editor.
+            return _.escape( _.escape( $field.val().toString() ).replace( /\[/g, '&#91;' ).replace( /\]/g, '&#93;' ) );
         },
         render: function (param, value) {
-            return _.unescape(value).replace(/&#91;/g, '[').replace(/&#93;/g, ']');
+            return _.unescape( _.unescape( value ) ).replace( /&#91;/g, '[' ).replace( /&#93;/g, ']' );
         }
     };
 

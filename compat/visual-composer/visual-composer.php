@@ -95,7 +95,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 		global $wp_widget_factory;
 
-		$parsed_value = json_decode( $value, true );
+		$parsed_value = json_decode( html_entity_decode( $value ), true );
 		if ( empty( $parsed_value ) ) {
 			//Get the first value as the default.
 			reset( $so_widget_names );
@@ -160,7 +160,9 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 		preg_match( '/so_widget_data="([^"]*)"/', stripslashes( $shortcode[0] ), $widget_json );
 
-		$widget_json = html_entity_decode( $widget_json[1] );
+		// We double encode in the front end to prevent accidental decoding when the content is set on the
+		// WP visual editor.
+		$widget_json = html_entity_decode( html_entity_decode( $widget_json[1] ) );
 
 		$widget_atts = json_decode( $widget_json, true );
 
@@ -211,7 +213,7 @@ if ( class_exists( 'WPBakeryShortCode' ) ) {
 		}
 
 		public function get_widget_settings( $atts ) {
-			$unesc = html_entity_decode( $atts['so_widget_data'] );
+			$unesc = $atts['so_widget_data'];
 			return json_decode( $unesc, true );
 		}
 
@@ -267,7 +269,9 @@ if ( class_exists( 'WPBakeryShortCode' ) ) {
 			$return = array();
 			if ( is_array( $atts ) ) {
 				foreach ( $atts as $key => $val ) {
-					$return[ $key ] = html_entity_decode( $val );
+					// We double encode in the front end to prevent accidental decoding when the content is set on the
+					// WP visual editor.
+					$return[ $key ] = html_entity_decode( html_entity_decode( $val ) );
 				}
 			}
 
