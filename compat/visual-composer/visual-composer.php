@@ -177,7 +177,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 		$widget_json = json_encode( $widget_atts );
 
-		$widget_json = htmlentities( $widget_json );
+		$widget_json = htmlentities( htmlentities( $widget_json ) );
 
 		$widget_json = str_replace( array(
 			'[',
