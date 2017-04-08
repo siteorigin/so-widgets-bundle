@@ -106,7 +106,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					),
 
 					'text' => array(
-						'type' => 'text',
+						'type' => 'tinymce',
 						'label' => __('Text', 'so-widgets-bundle')
 					),
 
