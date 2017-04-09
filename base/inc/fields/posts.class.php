@@ -25,7 +25,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 			),
 
 			'post_in' => array(
-				'type'  => 'text',
+				'type'  => 'autocomplete',
 				'label' => __( 'Post in', 'so-widgets-bundle' ),
 			),
 
@@ -115,9 +115,9 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 	    wp_enqueue_script( 'so-posts-selector-field', plugin_dir_url( __FILE__ ) . 'js/posts-selector-field' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'underscore', 'backbone' ), SOW_BUNDLE_VERSION, true );
 	}
 
-	protected function sanitize_field_input( $value, $instance ) {
-		// Posts selector functions handle sanitization.
-		return $value;
-	}
+//	protected function sanitize_field_input( $value, $instance ) {
+//		// Posts selector functions handle sanitization.
+//		return $value;
+//	}
 
 }
