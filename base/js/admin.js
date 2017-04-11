@@ -407,8 +407,6 @@ var sowbForms = window.sowbForms || {};
         previewButton.find('> a').click(function(e){
             e.preventDefault();
 
-            // TODO: This very closely resembles the data extraction code in Page Builder. Try find a way to avoid having
-            // to maintain it in two places.
 			var data = sowbForms.getWidgetFormValues($el);
 
             // Create a new modal window
@@ -474,7 +472,7 @@ var sowbForms = window.sowbForms || {};
                         $in.attr('name', newName);
                     }
                 });
-				
+
 				if( ! $$.data('initialSetup') ) {
 					// Setup default checked values, now that we've updated input names.
 					// Without this radio inputs in repeaters will be rendered as if they all belong to the same group.
@@ -670,7 +668,7 @@ var sowbForms = window.sowbForms || {};
 							var idRegExp;
                             var idBase;
                             var newId;
-	
+
 							// Radio inputs are slightly different because there are multiple `input` elements for
 							// a single field, i.e. multiple `inputs` for selecting a single value.
 							if( $inputElement.is('[type="radio"]') ) {
@@ -706,7 +704,7 @@ var sowbForms = window.sowbForms || {};
 								}
 								newId = idBase + '-' + newIds[idBase]++;
 							}
-							
+
                             $inputElement.attr('id', newId);
                             $copyItem.find('label[for=' + id + ']').attr('for', newId);
                             $copyItem.find('[id*=' + id + ']').each(function() {
@@ -771,6 +769,14 @@ var sowbForms = window.sowbForms || {};
 		}
 	};
 
+	/**
+	 * Retrieve a variable for a field with the given identifier, elementName.
+	 *
+	 * @return {*}
+	 * @param widgetClass The class name of the widget for which to retrieve a variable.
+	 * @param elementName The name of the field for which to retrieve a variable.
+	 * @param key The name of the variable to retrieve.
+	 */
 	sowbForms.getWidgetFieldVariable = function ( widgetClass, elementName, key ) {
 		var widgetVars = window.sow_field_javascript_variables[widgetClass];
 		// Get rid of any index placeholders
@@ -801,22 +807,22 @@ var sowbForms = window.sowbForms || {};
 			callback(window.sowVars[widget][key]);
 		}
 	};
-		
+
 	sowbForms.getWidgetFormValues = function(formContainer) {
-		
+
 		// Lets build the data from the widget
 		var data = {};
 		formContainer.find( '*[name]' ).each( function () {
 			var $$ = $(this);
 			var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
-			
+
 			if( name === undefined ) {
 				return true;
 			}
-			
+
 			name = name[1];
 			var parts = name.split('][');
-			
+
 			// Make sure we either have numbers or strings
 			parts = parts.map(function(e){
 				if( !isNaN(parseFloat(e)) && isFinite(e) ) {
@@ -826,7 +832,7 @@ var sowbForms = window.sowbForms || {};
 					return e;
 				}
 			});
-			
+
 			var sub = data;
 			for(var i = 0; i < parts.length; i++) {
 				if(i === parts.length - 1) {
@@ -849,7 +855,7 @@ var sowbForms = window.sowbForms || {};
 						if ( typeof tinyMCE !== 'undefined' ) {
 							editor = tinyMCE.get( $$.attr('id') );
 						}
-						
+
 						if( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
 							sub[ parts[i] ] = editor.getContent();
 						}

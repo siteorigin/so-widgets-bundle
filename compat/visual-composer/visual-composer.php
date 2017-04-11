@@ -148,17 +148,22 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 	function update_widget_data( $content ) {
 
-		$content = preg_replace_callback( '/\[siteorigin_widget_vc [^\]]*\]/', array(
-			$this,
-			'update_shortcode'
-		), $content );
+		$content = preg_replace_callback(
+			'/\[siteorigin_widget_vc [^\]]*\]/',
+			array( $this, 'update_shortcode' ),
+			$content
+		);
 
 		return $content;
 	}
 
 	function update_shortcode( $shortcode ) {
 
-		preg_match( '/so_widget_data="([^"]*)"/', stripslashes( $shortcode[0] ), $widget_json );
+		preg_match(
+			'/so_widget_data="([^"]*)"/',
+			stripslashes( $shortcode[0] ),
+			$widget_json
+		);
 
 		// We double encode in the front end to prevent accidental decoding when the content is set on the
 		// WP visual editor.
@@ -179,13 +184,11 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 		$widget_json = htmlentities( htmlentities( $widget_json ) );
 
-		$widget_json = str_replace( array(
-			'[',
-			']',
-		), array(
-			'&#91;',
-			'&#93;',
-		), $widget_json );
+		$widget_json = str_replace(
+			array( '[', ']' ),
+			array( '&#91;', '&#93;' ),
+			$widget_json
+		);
 
 		$slashed = addslashes( 'so_widget_data="' . $widget_json . '"' );
 
