@@ -207,6 +207,9 @@ if ( class_exists( 'WPBakeryShortCode' ) ) {
 		}
 
 		public function contentInline( $atts, $content ) {
+			if ( empty( $atts ) ) {
+				return '';
+			}
 			$widget_settings = $this->get_widget_settings( $atts );
 			ob_start();
 			$instance = $this->update_widget( $widget_settings['widget_class'], $widget_settings['widget_data'] );
@@ -216,6 +219,9 @@ if ( class_exists( 'WPBakeryShortCode' ) ) {
 		}
 
 		public function get_widget_settings( $atts ) {
+			if ( empty( $atts ) || empty( $atts['so_widget_data'] ) ) {
+				return array();
+			}
 			$unesc = $atts['so_widget_data'];
 			return json_decode( $unesc, true );
 		}
