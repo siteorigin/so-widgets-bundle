@@ -38,6 +38,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 			'name'                    => __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
 			'base'                    => 'siteorigin_widget_vc',
 			'category'                => __( 'SiteOrigin Widgets', 'so-widgets-bundle' ),
+			'icon'                    => 'so-widget-icon',
 			'description'             => __( 'Allows you to add any active SiteOrigin Widgets Bundle widgets.', 'so-widgets-bundle' ),
 			// element description in add elements view
 			'show_settings_on_create' => true,
