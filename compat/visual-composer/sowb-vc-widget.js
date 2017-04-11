@@ -45,35 +45,16 @@ sowbForms.setupVcWidgetForm = function () {
 			return _.unescape( _.unescape( value ) ).replace( /&#91;/g, '[' ).replace( /&#93;/g, ']' );
 		}
 	};
-
 	vc.events.on( "shortcodeView:updated:siteorigin_widget_vc", function () {
 
 		if ( typeof vc.frame_window !== 'undefined' && typeof vc.frame_window.sowb !== 'undefined' ) {
+
+			// Have to use jQuery from iframe window for triggered events to be detected there.
+			var $ = vc.frame_window.jQuery;
 			var sowb = vc.frame_window.sowb;
 
 			// Trigger Widgets Bundle widgets to setup
-			// This isn't working for some reason, so keep calling the functions directly for now.
 			$( sowb ).trigger( 'setup_widgets' );
-
-			if ( typeof sowb.setupGoogleMaps !== 'undefined' ) {
-				sowb.setupGoogleMaps();
-			}
-
-			if ( typeof sowb.setupSlider !== 'undefined' ) {
-				sowb.setupSlider();
-			}
-
-			if ( typeof sowb.setupImageGrid !== 'undefined' ) {
-				sowb.setupImageGrid();
-			}
-
-			if ( typeof sowb.setupSimpleMasonry !== 'undefined' ) {
-				sowb.setupSimpleMasonry();
-			}
-
-			if ( typeof sowb.setupVideoPlayer !== 'undefined' ) {
-				sowb.setupVideoPlayer();
-			}
 		}
 	} );
 
