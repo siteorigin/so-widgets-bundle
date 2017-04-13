@@ -1,12 +1,13 @@
-/* globals jQuery, sowbForms */
+/* globals jQuery, sowbForms, confirm, soWidgetsVC */
 var sowbForms = window.sowbForms || {};
 
 sowbForms.setupVcWidgetForm = function () {
 	var $ = jQuery;
 	var $widgetDropdown = $( '[name="so_widget_class"]' );
-	var ajaxUrl = $( '[name="ajaxurl"]' ).data( 'ajaxUrl' );
 	var $formContainer = $( '.siteorigin_widget_form_container' );
+	var formDirty = false;
 	$formContainer.on( 'change', '.siteorigin-widget-field', function () {
+		formDirty = true;
 		var widgetData = sowbForms.getWidgetFormValues( $formContainer );
 		var widgetClass = $widgetDropdown.val();
 
@@ -15,7 +16,19 @@ sowbForms.setupVcWidgetForm = function () {
 		$( '[name="so_widget_data"]' ).val( jsonString );
 	} );
 
-	$widgetDropdown.on( 'change', function () {
+	var prevWidget;
+	$widgetDropdown.mousedown( function () {
+		prevWidget = $widgetDropdown.find( 'option:selected' );
+	} );
+
+	$widgetDropdown.on( 'change', function ( event ) {
+		if ( formDirty && !confirm( soWidgetsVC.confirmChangeWidget ) ) {
+			prevWidget.attr( 'selected', true );
+			return;
+		}
+
+		formDirty = false;
+
 		var widget = $widgetDropdown.val();
 
 		var data = {
@@ -24,7 +37,7 @@ sowbForms.setupVcWidgetForm = function () {
 		};
 
 		$.post(
-			ajaxUrl,
+			soWidgetsVC.ajaxUrl,
 			data,
 			function ( result ) {
 				$formContainer.html( result );

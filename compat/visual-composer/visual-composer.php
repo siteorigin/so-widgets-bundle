@@ -70,6 +70,11 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 				ob_clean();
 			}
 		}
+
+		wp_localize_script( 'siteorigin-widget-admin', 'soWidgetsVC', array(
+			'ajaxUrl' => wp_nonce_url( admin_url( 'admin-ajax.php' ), 'sowb_vc_widget_render_form', '_sowbnonce' ),
+			'confirmChangeWidget' => __( 'Selecting a different widget will revert any changes. Continue?', 'so-widgets-bundle' ),
+		) );
 	}
 
 	function siteorigin_widget_form( $settings, $value ) {
@@ -109,8 +114,6 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 		ob_start();
 		$select->render( $widget_class ); ?>
-		<input type="hidden" name="ajaxurl"
-		       data-ajax-url="<?php echo wp_nonce_url( admin_url( 'admin-ajax.php' ), 'sowb_vc_widget_render_form', '_sowbnonce' ) ?>">
 		<input type="hidden" name="so_widget_data" class="wpb_vc_param_value" value="<?php echo esc_attr( $value ); ?>">
 		<div class="siteorigin_widget_form_container">
 			<?php
