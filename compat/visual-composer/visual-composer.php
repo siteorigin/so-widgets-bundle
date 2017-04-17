@@ -47,6 +47,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 			'html_template'           => dirname( __FILE__ ) . '/siteorigin_widget_vc_template.php',
 			'admin_enqueue_css'       => preg_replace( '/\s/', '%20', plugins_url( 'styles.css', __FILE__ ) ),
 			'front_enqueue_css'       => preg_replace( '/\s/', '%20', plugins_url( 'styles.css', __FILE__ ) ),
+			'front_enqueue_js'        => preg_replace( '/\s/', '%20', plugins_url( 'front_enqueue_js.js', __FILE__ ) ),
 			'params'                  => array(
 				array(
 					'type'       => 'sowb_json_escaped',
@@ -101,7 +102,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 		global $wp_widget_factory;
 
-		$parsed_value = json_decode( html_entity_decode( $value ), true );
+		$parsed_value = json_decode( html_entity_decode( stripslashes( $value ) ), true );
 		if ( empty( $parsed_value ) ) {
 			//Get the first value as the default.
 			reset( $so_widget_names );
@@ -165,7 +166,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 
 		preg_match(
 			'/so_widget_data="([^"]*)"/',
-			stripslashes( $shortcode[0] ),
+			stripslashes( stripslashes( $shortcode[0] ) ),
 			$widget_json
 		);
 
@@ -194,7 +195,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 			$widget_json
 		);
 
-		$slashed = addslashes( 'so_widget_data="' . $widget_json . '"' );
+		$slashed = addslashes( 'so_widget_data="' . addslashes( $widget_json ) . '"' );
 
 		preg_replace( '/so_widget_data="([^"]*)"/', $slashed, $shortcode );
 
