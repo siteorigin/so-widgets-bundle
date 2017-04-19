@@ -106,7 +106,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					),
 
 					'text' => array(
-						'type' => 'text',
+						'type' => 'tinymce',
 						'label' => __('Text', 'so-widgets-bundle')
 					),
 
@@ -124,7 +124,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 
 			'fonts' => array(
 				'type' => 'section',
-				'label' => __( 'Fonts', 'so-widgets-bundle' ),
+				'label' => __( 'Font Design', 'so-widgets-bundle' ),
 				'hide' => true,
 				'fields' => array(
 					'title_options' => array(

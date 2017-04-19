@@ -368,7 +368,10 @@ class SiteOrigin_Widgets_Bundle {
 		if( ! current_user_can( apply_filters( 'siteorigin_widgets_admin_menu_capability', 'manage_options' ) ) ) exit();
 
 		$widget_objects = $this->get_widget_objects();
-		$widget_object = !empty( $widget_objects[ $_GET['id'] ] ) ? $widget_objects[ $_GET['id'] ] : false;
+
+		$widget_path = empty( $_GET['id'] ) ? false : WP_PLUGIN_DIR . $_GET['id'];
+
+		$widget_object = empty( $widget_objects[ $widget_path ] ) ? false : $widget_objects[ $widget_path ];
 
 		if( empty( $widget_object ) || ! $widget_object->has_form( 'settings' ) ) exit();
 

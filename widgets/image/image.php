@@ -132,7 +132,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			'image_display' => $instance['align'] == 'default' ? 'block' : 'inline-block',
 			'image_max_width' => ! empty( $instance['bound'] ) ? '100%' : '',
 			'image_height' => ! empty( $instance['bound'] ) ? 'auto' : '',
-			'image_width' => ! empty( $instance['full_width'] ) ? '100%' : '',
+			'image_width' => ! empty( $instance['full_width'] ) ? '100%' : ( ! empty( $instance['bound'] ) ? 'inherit' : '' ),
 		);
 	}
 }
