@@ -69,7 +69,7 @@
 	@field_border_color: default;
 	@field_border_width: default;
 	@field_border_style: default;
-	@field_height: 0;
+	@field_height: default;
 
 	textarea,
 	.sow-text-field {
@@ -78,9 +78,9 @@
 		.box-sizing(border-box);
 		border-radius: @field_border_radius;
 
-		margin: @field_margin 0;
+		margin: @field_margin;
 		border: @field_border_width @field_border_style @field_border_color;
-		padding: @field_padding 0;
+		padding: @field_padding;
 		height: @field_height;
 		
 		background: @field_background;
