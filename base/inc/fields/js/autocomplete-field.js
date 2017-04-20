@@ -5,6 +5,10 @@
 	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-autocomplete', function ( e ) {
 		var $$ = $(this);
 
+		var getSelectedPosts = function() {
+			var selectedPosts = $$.find( 'input.siteorigin-widget-input' ).val();
+			return selectedPosts.length === 0 ? [] : selectedPosts.split( ',' );
+		};
 		// Function that refreshes the list of
 		var request = null;
 		var refreshList = function(){
@@ -17,23 +21,25 @@
 			var postTypes = $contentSearchInput.data('postTypes');
 
 			var $ul = $$.find('ul.posts').empty().addClass('loading');
+			var selectedPosts = getSelectedPosts();
 			$.get(
 				soWidgets.ajaxurl,
 				{ action: 'so_widgets_search_posts', query: query, postTypes: postTypes },
-				function(data){
-					for( var i = 0; i < data.length; i++ ) {
-						if( data[i].post_title === '' ) {
-							data[i].post_title = '&nbsp;';
+				function(posts) {
+					posts.forEach(function (post) {
+						if (post.post_title === '') {
+							post.post_title = '&nbsp;';
 						}
-
+						var isSelected = selectedPosts.indexOf(post.ID) > -1;
 						// Add all the post items
 						$ul.append(
 							$('<li>')
 								.addClass('post')
-								.html( data[i].post_title + '<span>(' + data[i].post_type + ')</span>' )
-								.data( data[i] )
+								.addClass(isSelected ? 'selected' : '')
+								.html(post.post_title + '<span>(' + post.post_type + ')</span>')
+								.data(post)
 						);
-					}
+					});
 					$ul.removeClass('loading');
 				}
 			);
@@ -65,16 +71,17 @@
 		$$.on( 'click', '.posts li', function(e) {
 			e.preventDefault();
 			var $li = $(this);
-			var selectedPosts = $$.find( 'input.siteorigin-widget-input' ).val();
-			selectedPosts = selectedPosts.length === 0 ? [] : selectedPosts.split( ',' );
+			var selectedPosts = getSelectedPosts();
 			var clickedPost = $li.data( 'ID' );
 
 			var curIndex = selectedPosts.indexOf( clickedPost );
 
 			if ( curIndex > -1 ) {
 				selectedPosts.splice( curIndex, 1 );
+				$li.removeClass( 'selected' );
 			} else {
 				selectedPosts.push( clickedPost );
+				$li.addClass( 'selected' );
 			}
 			$$.find('input.siteorigin-widget-input').val( selectedPosts.join(',') );
 		} );
