@@ -247,10 +247,16 @@ sowb.SiteOriginGoogleMap = function($) {
 			// Init any autocomplete fields first.
 			var $autoCompleteFields = $( '.sow-google-map-autocomplete' );
 			var autoCompleteInit = new $.Deferred();
-			if( $autoCompleteFields.length === 0 || typeof google.maps.places === 'undefined') {
+			if( $autoCompleteFields.length === 0 ) {
 				autoCompleteInit.resolve();
 			} else {
 				$autoCompleteFields.each(function (index, element) {
+
+					if ( typeof google.maps.places === 'undefined' ) {
+						autoCompleteInit.reject('Sorry, we couldn\'t load the "places" library due to another plugin, so the autocomplete feature is not available.');
+						return;
+					}
+
 					var autocomplete = new google.maps.places.Autocomplete(
 						element,
 						{types: ['address']}
@@ -276,7 +282,7 @@ sowb.SiteOriginGoogleMap = function($) {
 				}.bind(this));
 			}
 
-			autoCompleteInit.done(function(){
+			autoCompleteInit.always(function(){
 				$('.sow-google-map-canvas').each(function (index, element) {
 					var $$ = $(element);
 
@@ -305,7 +311,10 @@ sowb.SiteOriginGoogleMap = function($) {
 					} );
 
 				}.bind(this));
-			}.bind(this));
+			}.bind(this))
+			.fail(function(error){
+				console.log(error);
+			});
 		},
 		getGeocoder: function () {
 			if ( !this._geocoder ) {
@@ -365,49 +374,37 @@ function soGoogleMapInitialize() {
 
 jQuery(function ($) {
 
-	sowb.setupGoogleMaps = function(){
+	sowb.setupGoogleMaps = function() {
 		var libraries = [];
 		var apiKey;
 		$('.sow-google-map-canvas').each(function(index, element) {
 			var $this = $(element);
 			var mapOptions = $this.data( 'options' );
-			var mapsApiLoaded = typeof window.google !== 'undefined' && typeof window.google.maps !== 'undefined';
-			var isLoaded = function (element) {
-				var lib = window.google.maps[element];
-				return window.google.maps.hasOwnProperty(element) && typeof lib !== 'undefined' && lib !== null;
-			};
-			var hasLibraries = typeof mapOptions.libraries !== 'undefined' && mapOptions.libraries !== null;
-			if(hasLibraries) {
-				mapsApiLoaded = mapsApiLoaded && mapOptions.libraries.every(isLoaded);
-			}
-
-			if (mapsApiLoaded) {
-				soGoogleMapInitialize();
-			} else {
-				if(mapOptions) {
-					if( hasLibraries ) {
-						libraries = libraries.concat(mapOptions.libraries);
-					}
-					if( !apiKey && mapOptions.apiKey ) {
-						apiKey = mapOptions.apiKey;
-					}
+			if ( mapOptions) {
+				if( typeof mapOptions.libraries !== 'undefined' && mapOptions.libraries !== null ) {
+					libraries = libraries.concat(mapOptions.libraries);
+				}
+				if( !apiKey && mapOptions.apiKey ) {
+					apiKey = mapOptions.apiKey;
 				}
 			}
 		});
 
-		var apiUrl = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=soGoogleMapInitialize';
-		if(libraries && libraries.length) {
-			apiUrl += '&libraries=' + libraries.join(',');
-		}
-		if(apiKey) {
-			apiUrl += '&key=' + apiKey;
-		}
-		var script = $('<script type="text/javascript" src="' + apiUrl + '">');
-		var $body = $('body');
-		if( $body.find('script[src="' + apiUrl + '"]').length == 0 ) {
-			$('body').append(script);
+		var mapsApiLoaded = typeof window.google !== 'undefined' && typeof window.google.maps !== 'undefined';
+		if ( mapsApiLoaded ) {
+			soGoogleMapInitialize();
 		} else {
+			var apiUrl = 'https://maps.googleapis.com/maps/api/js?callback=soGoogleMapInitialize';
 
+			if ( libraries && libraries.length ) {
+				apiUrl += '&libraries=' + libraries.join(',');
+			}
+
+			if ( apiKey ) {
+				apiUrl += '&key=' + apiKey;
+			}
+
+			$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );
 		}
 	};
 	sowb.setupGoogleMaps();
