@@ -1,4 +1,4 @@
-/* global jQuery, _, soWidgets */
+/* global jQuery, soWidgets */
 
 (function( $ ) {
 
@@ -39,26 +39,44 @@
 			);
 		};
 
-		// Toggle display of the existing content
-		$$.click( function(e) {
-			e.preventDefault();
-
-			// $(this).blur();
+		$$.find('.siteorigin-widget-autocomplete-input').click(function () {
 			var $s = $$.find('.existing-content-selector');
-			$s.toggle();
+			$s.show();
 
 			if( $s.is(':visible') && $s.find('ul.posts li').length === 0 ) {
 				refreshList();
 			}
+		});
 
-		} );
+		var closeContent = function () {
+			$$.find('.existing-content-selector').hide();
+		};
+
+		$(window).mousedown(function (event) {
+			var mouseDownOutside = $$.find(event.target).length === 0;
+			if ( mouseDownOutside ) {
+				closeContent();
+			}
+		});
+
+		$$.find('.button-close').click( closeContent );
 
 		// Clicking on one of the url items
-		$$.on( 'click', '.posts li', function(e){
+		$$.on( 'click', '.posts li', function(e) {
 			e.preventDefault();
 			var $li = $(this);
-			$$.find('input.siteorigin-widget-input').val( 'post: ' + $li.data('ID') );
-			$$.find('.existing-content-selector').toggle();
+			var selectedPosts = $$.find( 'input.siteorigin-widget-input' ).val();
+			selectedPosts = selectedPosts.length === 0 ? [] : selectedPosts.split( ',' );
+			var clickedPost = $li.data( 'ID' );
+
+			var curIndex = selectedPosts.indexOf( clickedPost );
+
+			if ( curIndex > -1 ) {
+				selectedPosts.splice( curIndex, 1 );
+			} else {
+				selectedPosts.push( clickedPost );
+			}
+			$$.find('input.siteorigin-widget-input').val( selectedPosts.join(',') );
 		} );
 
 		var interval = null;
