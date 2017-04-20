@@ -8,7 +8,9 @@ while($posts->have_posts()) : $posts->the_post(); ?>
 					<span class="overlay"></span>
 				</a>
 			<?php else : ?>
-				<a href="<?php the_permalink() ?>" class="sow-carousel-default-thumbnail"><span class="overlay"></span></a>
+				<a href="<?php the_permalink() ?>" class="sow-carousel-default-thumbnail"
+				<?php echo isset( $default_thumbnail ) ? 
+				'style="background-image: url('. sow_esc_url( $default_thumbnail ) .')"' : '' ?>><span class="overlay"></span></a>
 			<?php endif; ?>
 		</div>
 		<h3><a href="<?php the_permalink() ?>"><?php the_title() ?></a></h3>
