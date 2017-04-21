@@ -10,5 +10,6 @@ tmp
 # Ignore all styles compiled from LESS files
 *.css
 
-# But not icon CSS files.
+# But not icon or lib CSS files.
 !icons/**/*.css
+!**/lib/**/*.css

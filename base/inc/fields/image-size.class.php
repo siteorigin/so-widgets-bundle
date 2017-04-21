@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class SiteOrigin_Widget_Field_Select
+ * Class SiteOrigin_Widget_Field_Image_Size
  */
 class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select {
 
