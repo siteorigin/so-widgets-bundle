@@ -27,11 +27,13 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 			'post_in' => array(
 				'type'  => 'autocomplete',
 				'label' => __( 'Post in', 'so-widgets-bundle' ),
+				'source' => 'posts',
 			),
 
 			'taxonomies' => array(
-				'type'  => 'text',
+				'type'  => 'autocomplete',
 				'label' => __( 'Taxonomies', 'so-widgets-bundle' ),
+				'source' => 'terms',
 			),
 
 			'date_range' => array(

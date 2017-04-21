@@ -6,12 +6,21 @@
 class SiteOrigin_Widget_Field_Autocomplete extends SiteOrigin_Widget_Field_Text_Input_Base {
 
 	/**
-	 * An array of post types to use in the autocomplete query.
+	 * An array of post types to use in the autocomplete query. Only used for posts.
 	 *
 	 * @access protected
 	 * @var array
 	 */
 	protected $post_types;
+
+	/**
+	 * Indicates which database table will be used to retrieve autocomplete suggestions.
+	 * Currently only `posts` and `terms` are allowed.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $source;
 
 	/**
 	 * The CSS classes to be applied to the rendered text input.
@@ -27,9 +36,10 @@ class SiteOrigin_Widget_Field_Autocomplete extends SiteOrigin_Widget_Field_Text_
 
 			<input type="text" class="content-text-search"
 			       data-post-types="<?php echo esc_attr( $post_types ) ?>"
-			       placeholder="<?php esc_attr_e( 'Search Content', 'so-widgets-bundle' ) ?>"/>
+			       data-source="<?php echo esc_attr( $this->source ) ?>"
+			       placeholder="<?php esc_attr_e( 'Search', 'so-widgets-bundle' ) ?>"/>
 
-			<ul class="posts"></ul>
+			<ul class="items"></ul>
 
 			<div class="buttons">
 				<a href="#" class="button-close button"><?php esc_html_e('Close', 'so-widgets-bundle') ?></a>
@@ -39,7 +49,7 @@ class SiteOrigin_Widget_Field_Autocomplete extends SiteOrigin_Widget_Field_Text_
 		parent::render_after_field( $value, $instance );
 	}
 
-	function enqueue_scripts(){
+	function enqueue_scripts() {
 		wp_enqueue_script( 'so-autocomplete-field', plugin_dir_url( __FILE__ ) . 'js/autocomplete-field' . SOW_BUNDLE_JS_SUFFIX .  '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
 	}
 }

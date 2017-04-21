@@ -5,9 +5,9 @@
 	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-autocomplete', function ( e ) {
 		var $$ = $(this);
 
-		var getSelectedPosts = function() {
-			var selectedPosts = $$.find( 'input.siteorigin-widget-input' ).val();
-			return selectedPosts.length === 0 ? [] : selectedPosts.split( ',' );
+		var getSelectedItems = function() {
+			var selectedItems = $$.find( 'input.siteorigin-widget-input' ).val();
+			return selectedItems.length === 0 ? [] : selectedItems.split( ',' );
 		};
 		// Function that refreshes the list of
 		var request = null;
@@ -18,26 +18,26 @@
 
 			var $contentSearchInput = $$.find('.content-text-search');
 			var query = $contentSearchInput.val();
+			var source = $contentSearchInput.data('source');
 			var postTypes = $contentSearchInput.data('postTypes');
 
-			var $ul = $$.find('ul.posts').empty().addClass('loading');
-			var selectedPosts = getSelectedPosts();
+			var $ul = $$.find('ul.items').empty().addClass('loading');
+			var selectedItems = getSelectedItems();
 			$.get(
 				soWidgets.ajaxurl,
-				{ action: 'so_widgets_search_posts', query: query, postTypes: postTypes },
-				function(posts) {
-					posts.forEach(function (post) {
-						if (post.post_title === '') {
-							post.post_title = '&nbsp;';
+				{ action: 'so_widgets_search_' + source, query: query, postTypes: postTypes },
+				function(results) {
+					results.forEach(function (item) {
+						if (item.label === '') {
+							item.label = '&nbsp;';
 						}
-						var isSelected = selectedPosts.indexOf(post.ID) > -1;
-						// Add all the post items
+						var isSelected = selectedItems.indexOf(item.value) > -1;
+						// Add all the items
 						$ul.append(
 							$('<li>')
-								.addClass('post')
 								.addClass(isSelected ? 'selected' : '')
-								.html(post.post_title + '<span>(' + post.post_type + ')</span>')
-								.data(post)
+								.html(item.label + '<span>(' + item.type + ')</span>')
+								.data(item)
 						);
 					});
 					$ul.removeClass('loading');
@@ -49,7 +49,7 @@
 			var $s = $$.find('.existing-content-selector');
 			$s.show();
 
-			if( $s.is(':visible') && $s.find('ul.posts li').length === 0 ) {
+			if( $s.is(':visible') && $s.find('ul.items li').length === 0 ) {
 				refreshList();
 			}
 		});
@@ -68,22 +68,22 @@
 		$$.find('.button-close').click( closeContent );
 
 		// Clicking on one of the url items
-		$$.on( 'click', '.posts li', function(e) {
+		$$.on( 'click', '.items li', function(e) {
 			e.preventDefault();
 			var $li = $(this);
-			var selectedPosts = getSelectedPosts();
-			var clickedPost = $li.data( 'ID' );
+			var selectedItems = getSelectedItems();
+			var clickedItem = $li.data( 'value' );
 
-			var curIndex = selectedPosts.indexOf( clickedPost );
+			var curIndex = selectedItems.indexOf( clickedItem );
 
 			if ( curIndex > -1 ) {
-				selectedPosts.splice( curIndex, 1 );
+				selectedItems.splice( curIndex, 1 );
 				$li.removeClass( 'selected' );
 			} else {
-				selectedPosts.push( clickedPost );
+				selectedItems.push( clickedItem );
 				$li.addClass( 'selected' );
 			}
-			$$.find('input.siteorigin-widget-input').val( selectedPosts.join(',') );
+			$$.find('input.siteorigin-widget-input').val( selectedItems.join(',') );
 		} );
 
 		var interval = null;

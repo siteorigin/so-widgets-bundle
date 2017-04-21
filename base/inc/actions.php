@@ -56,16 +56,14 @@ function siteorigin_widget_preview_widget_action(){
 add_action('wp_ajax_so_widgets_preview', 'siteorigin_widget_preview_widget_action');
 
 /**
- * Action to handle searching
+ * Action to handle searching posts
  */
-function siteorigin_widget_search_posts_action(){
+function siteorigin_widget_action_search_posts() {
 	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
-
-	header('content-type: application/json');
 
 	// Get all public post types, besides attachments
 	$post_types = (array) get_post_types( array(
-		'public'             => true
+		'public' => true,
 	) );
 
 	if ( ! empty( $_REQUEST['postTypes'] ) ) {
@@ -87,7 +85,7 @@ function siteorigin_widget_search_posts_action(){
 	$post_types = "'" . implode("', '", array_map( 'esc_sql', $post_types ) ) . "'";
 
 	$results = $wpdb->get_results( "
-		SELECT ID, post_title, post_type
+		SELECT ID AS 'value', post_title AS label, post_type AS 'type'
 		FROM {$wpdb->posts}
 		WHERE
 			post_type IN ( {$post_types} ) AND post_status = 'publish' {$query}
@@ -95,10 +93,35 @@ function siteorigin_widget_search_posts_action(){
 		LIMIT 20
 	", ARRAY_A );
 
+	header('content-type: application/json');
 	echo json_encode( apply_filters( 'siteorigin_widgets_search_posts_results', $results ) );
 	exit();
 }
-add_action('wp_ajax_so_widgets_search_posts', 'siteorigin_widget_search_posts_action');
+add_action('wp_ajax_so_widgets_search_posts', 'siteorigin_widget_action_search_posts');
+
+/**
+ * Action to handle searching taxonomy terms.
+ */
+function siteorigin_widget_action_search_terms() {
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
+	global $wpdb;
+	$term = !empty($_GET['term']) ? stripslashes($_GET['term']) : '';
+	$term = trim($term, '%');
+
+	$query = $wpdb->prepare("
+		SELECT terms.term_id, terms.slug AS 'value', terms.name AS 'label', termtaxonomy.taxonomy AS 'type'
+		FROM $wpdb->terms AS terms
+		JOIN $wpdb->term_taxonomy AS termtaxonomy ON terms.term_id = termtaxonomy.term_id
+		WHERE
+			terms.name LIKE '%s'
+		LIMIT 20
+	", '%'.$term.'%');
+
+	header('content-type:application/json');
+	echo json_encode( $wpdb->get_results( $query ) );
+	exit();
+}
+add_action('wp_ajax_so_widgets_search_terms', 'siteorigin_widget_action_search_terms');
 
 function siteorigin_widget_remote_image_search(){
 	if( empty( $_GET[ '_sononce' ] ) || ! wp_verify_nonce( $_GET[ '_sononce' ], 'so-image' ) ) {
