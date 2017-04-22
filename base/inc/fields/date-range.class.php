@@ -25,6 +25,15 @@ class SiteOrigin_Widget_Field_Date_Range extends SiteOrigin_Widget_Field_Base {
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
-
+		if ( ! empty( $value ) ) {
+			$value = json_decode( $value, true );
+			$value_after = new DateTime( $value['after'] );
+			$value['after'] = $value_after->format( 'Y-m-d' );
+			$value_before = new DateTime($value['before']);
+			$value['before'] = $value_before->format( 'Y-m-d' );
+		} else {
+			$value = array( 'after' => '', 'before' => '' );
+		}
+		return json_encode( $value );
 	}
 }
