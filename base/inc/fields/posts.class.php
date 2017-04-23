@@ -24,24 +24,24 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 				'options'  => $type_options,
 			),
 
-			'post_in' => array(
+			'post__in' => array(
 				'type'  => 'autocomplete',
 				'label' => __( 'Post in', 'so-widgets-bundle' ),
 				'source' => 'posts',
 			),
 
-			'taxonomies' => array(
+			'tax_query' => array(
 				'type'  => 'autocomplete',
 				'label' => __( 'Taxonomies', 'so-widgets-bundle' ),
 				'source' => 'terms',
 			),
 
-			'date_range' => array(
+			'date_query' => array(
 				'type'  => 'date-range',
 				'label' => __( 'Date range', 'so-widgets-bundle' ),
 			),
 
-			'order_by' => array(
+			'orderby' => array(
 				'type'    => 'select',
 				'label'   => __( 'Order by', 'so-widgets-bundle' ),
 				'options' => array(
@@ -61,7 +61,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 				),
 			),
 
-			'order_direction' => array(
+			'order' => array(
 				'type'    => 'radio',
 				'label'   => __( 'Order direction', 'so-widgets-bundle' ),
 				'options' => array(
@@ -76,7 +76,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 				'label' => __( 'Posts per page', 'so-widgets-bundle' ),
 			),
 
-			'sticky_posts' => array(
+			'sticky' => array(
 				'type'    => 'select',
 				'label'   => __( 'Sticky posts', 'so-widgets-bundle' ),
 				'options' => array(
@@ -100,6 +100,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 	}
 
 	protected function render_field( $value, $instance ) {
+		$value = wp_parse_args( $value );
 		if ( $this->collapsible ) {
 			?><div class="siteorigin-widget-section <?php if ( $this->state == 'closed' ) {
 				echo 'siteorigin-widget-section-hide';
@@ -115,6 +116,18 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 
 	public function enqueue_scripts() {
 	    wp_enqueue_script( 'so-posts-selector-field', plugin_dir_url( __FILE__ ) . 'js/posts-selector-field' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'underscore', 'backbone' ), SOW_BUNDLE_VERSION, true );
+	}
+
+	protected function sanitize_field_input( $value, $instance ) {
+		$value = parent::sanitize_field_input( $value, $instance );
+		$result = '';
+		foreach ( $value as $key => $item ) {
+			if ( ! empty( $item ) ) {
+				$result .= ( empty( $result ) ? '' : '&' ) . $key . '=' . $item;
+			}
+		}
+
+		return $result;
 	}
 
 }
