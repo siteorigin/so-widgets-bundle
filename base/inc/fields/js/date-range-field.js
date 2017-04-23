@@ -4,7 +4,7 @@
 		var valField = $( this ).find( 'input[type="hidden"][class="siteorigin-widget-input"]' );
 
 		var createPikadayInput = function ( inputName, initVal ) {
-			var $field = $( this ).find( '[name="' + inputName + '"]' );
+			var $field = $( this ).find( '.' + inputName + '-picker' );
 			var picker = new Pikaday( {
 				field: $field[0],
 				onSelect: function(date) {
