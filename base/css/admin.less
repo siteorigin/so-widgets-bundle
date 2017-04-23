@@ -351,7 +351,56 @@
 		}
 	}
 
-	.siteorigin-widget-field-type-posts,
+	.siteorigin-widget-field-type-posts {
+		.posts-container-label-wrapper {
+			background: #F0F0F0;
+			border: 1px solid #D0D0D0;
+			padding: 10px;
+			display: block;
+			margin-bottom: 0;
+
+			> label {
+				display: inline;
+			}
+
+			&:before {
+				float: left;
+				margin: 3px 6px 0 0;
+				display: block;
+				width: 14px;
+				height: 14px;
+				font-size: 14px;
+				line-height: 1;
+				font-family: "dashicons";
+				content:"\f132";
+			}
+
+			&.siteorigin-widget-section-visible {
+				&:before {
+					content:"\f460";
+				}
+			}
+
+			span.sow-current-count {
+				display: inline-block;
+				border-radius: 9px;
+				background: #f92700;
+				border: 1px solid #da0900;
+				line-height: 14px;
+				font-size: 7px;
+				width: 17px;
+				height: 17px;
+				text-align: center;
+				vertical-align: middle;
+				font-weight: bold;
+				color: #FFFFFF;
+				box-sizing: border-box;
+				margin: 1px 5px;
+			}
+
+		}
+	}
+
 	.siteorigin-widget-field-type-widget,
 	.siteorigin-widget-field-type-section {
 
@@ -372,7 +421,6 @@
 				line-height: 1;
 				font-family: "dashicons";
 				content:"\f132";
-
 			}
 
 			&.siteorigin-widget-section-visible {
@@ -381,7 +429,11 @@
 				}
 			}
 		}
+	}
 
+	.siteorigin-widget-field-type-posts,
+	.siteorigin-widget-field-type-widget,
+	.siteorigin-widget-field-type-section {
 		.siteorigin-widget-section {
 			padding: 1px 10px;
 			background: #FCFCFC;

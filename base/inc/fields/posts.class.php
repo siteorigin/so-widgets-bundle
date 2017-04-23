@@ -96,7 +96,12 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 	}
 
 	protected function render_field_label( $value, $instance ) {
+		?><div class="posts-container-label-wrapper<?php if ( $this->state == 'open' ) {
+			echo ' siteorigin-widget-section-visible';
+		} ?>"><?php
 		parent::render_field_label( $value, $instance );
+		?><span class="sow-current-count"><?php echo esc_html( siteorigin_widget_post_selector_count_posts( $value ) )?></span>
+		</div><?php
 	}
 
 	protected function render_field( $value, $instance ) {
@@ -115,7 +120,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 	}
 
 	public function enqueue_scripts() {
-	    wp_enqueue_script( 'so-posts-selector-field', plugin_dir_url( __FILE__ ) . 'js/posts-selector-field' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'underscore', 'backbone' ), SOW_BUNDLE_VERSION, true );
+	    wp_enqueue_script( 'so-posts-selector-field', plugin_dir_url( __FILE__ ) . 'js/posts-field' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'underscore', 'backbone' ), SOW_BUNDLE_VERSION, true );
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {

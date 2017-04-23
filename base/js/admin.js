@@ -192,15 +192,16 @@
 
             ///////////////////////////////////////
             // Handle the sections
-
-            $fields.filter('.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section, .siteorigin-widget-field-type-posts').find('> label').click(function(){
-                var $$ = $(this);
-                $(this).toggleClass( 'siteorigin-widget-section-visible' );
-                $(this).siblings('.siteorigin-widget-section').slideToggle(function(){
-                    $(window).resize();
-                    $(this).find('> .siteorigin-widget-field-container-state').val($(this).is(':visible') ? 'open' : 'closed');
-                });
-            });
+			var expandContainer = function () {
+				var $$ = $( this );
+				$( this ).toggleClass( 'siteorigin-widget-section-visible' );
+				$( this ).siblings( '.siteorigin-widget-section' ).slideToggle( function () {
+					$( window ).resize();
+					$( this ).find( '> .siteorigin-widget-field-container-state' ).val( $( this ).is( ':visible' ) ? 'open' : 'closed' );
+				} );
+			};
+            $fields.filter('.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section').find('> label').click(expandContainer);
+            $fields.filter('.siteorigin-widget-field-type-posts').find('.posts-container-label-wrapper').click(expandContainer);
 
             ///////////////////////////////////////
             // Handle the slider fields
@@ -538,7 +539,7 @@
                         $in.attr('name', newName);
                     }
                 });
-				
+
 				if( ! $$.data('initialSetup') ) {
 					// Setup default checked values, now that we've updated input names.
 					// Without this radio inputs in repeaters will be rendered as if they all belong to the same group.
@@ -734,7 +735,7 @@
 							var idRegExp;
                             var idBase;
                             var newId;
-	
+
 							// Radio inputs are slightly different because there are multiple `input` elements for
 							// a single field, i.e. multiple `inputs` for selecting a single value.
 							if( $inputElement.is('[type="radio"]') ) {
@@ -770,7 +771,7 @@
 								}
 								newId = idBase + '-' + newIds[idBase]++;
 							}
-							
+
                             $inputElement.attr('id', newId);
                             $copyItem.find('label[for=' + id + ']').attr('for', newId);
                             $copyItem.find('[id*=' + id + ']').each(function() {
