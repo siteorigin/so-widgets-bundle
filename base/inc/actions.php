@@ -117,8 +117,18 @@ function siteorigin_widget_action_search_terms() {
 		LIMIT 20
 	", '%'.$term.'%');
 
+	$results = array();
+
+	foreach ( $wpdb->get_results( $query ) as $result ) {
+		$results[] = array(
+			'value' => $result->type . ':' . $result->value,
+			'label' => $result->label,
+			'type' => $result->type,
+		);
+	}
+
 	header('content-type:application/json');
-	echo json_encode( $wpdb->get_results( $query ) );
+	echo json_encode( $results );
 	exit();
 }
 add_action('wp_ajax_so_widgets_search_terms', 'siteorigin_widget_action_search_terms');
