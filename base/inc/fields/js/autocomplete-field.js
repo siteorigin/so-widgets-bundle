@@ -83,7 +83,9 @@
 				selectedItems.push( clickedItem );
 				$li.addClass( 'selected' );
 			}
-			$$.find('input.siteorigin-widget-input').val( selectedItems.join(',') );
+			var $input = $$.find('input.siteorigin-widget-input');
+			$input.val( selectedItems.join(',') );
+			$input.change();
 		} );
 
 		var interval = null;

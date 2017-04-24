@@ -7,12 +7,20 @@
 			var $field = $( this ).find( '.' + inputName + '-picker' );
 			var picker = new Pikaday( {
 				field: $field[0],
+				blurFieldOnSelect: false,
 				onSelect: function(date) {
 					var curVal = valField.val() === '' ? {} : JSON.parse( valField.val() );
 					curVal[inputName] = date.toLocaleDateString({}, {year: 'numeric', month:'2-digit', day:'2-digit'})
 					$field.val( curVal[inputName] );
 					valField.val( JSON.stringify( curVal ) );
+					valField.change();
 				},
+			} );
+
+			// We trigger the change event on the hidden value field, so prevent 'change' from individual date inputs.
+			$field.change( function ( event ) {
+				event.preventDefault();
+				return false;
 			} );
 
 			if ( initVal ) {

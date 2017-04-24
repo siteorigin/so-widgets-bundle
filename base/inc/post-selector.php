@@ -93,7 +93,7 @@ function siteorigin_widget_post_selector_process_query($query){
 		}
 		unset( $query['sticky'] );
 	}
-	
+
 	// Exclude the current post (if applicable) to avoid any issues associated with showing the same post again
 	if( get_the_id() != false ){
 		$query['post__not_in'][] = get_the_id();
@@ -103,7 +103,7 @@ function siteorigin_widget_post_selector_process_query($query){
 		$query = wp_parse_args( $query['additional'], $query );
 		unset( $query['additional'] );
 
-		// If post_not_in is set, we need to convert it to an array to avoid issues with the query. 
+		// If post_not_in is set, we need to convert it to an array to avoid issues with the query.
 		if( !empty( $query['post__not_in'] ) && !is_array( $query['post__not_in'] ) ){
 			$query['post__not_in'] = explode( ',', $query['post__not_in'] );
 			$query['post__not_in'] = array_map( 'intval', $query['post__not_in'] );
@@ -233,6 +233,21 @@ function siteorigin_widget_post_selector_count_posts($query){
 	$posts = new WP_Query($query);
 	return $posts->found_posts;
 }
+
+function siteorigin_widget_get_posts_count_action() {
+
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
+
+	$query = stripslashes( $_POST['query'] );
+
+	header('content-type: application/json');
+
+	echo json_encode( array( 'posts_count' => siteorigin_widget_post_selector_count_posts( $query ) ) );
+
+	exit();
+}
+
+add_action( 'wp_ajax_sow_get_posts_count', 'siteorigin_widget_get_posts_count_action' );
 
 /**
  * The get posts ajax action
