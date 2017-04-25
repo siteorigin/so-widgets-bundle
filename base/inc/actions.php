@@ -133,6 +133,25 @@ function siteorigin_widget_action_search_terms() {
 }
 add_action('wp_ajax_so_widgets_search_terms', 'siteorigin_widget_action_search_terms');
 
+/**
+ * Action for getting the number of posts returned by a query.
+ */
+function siteorigin_widget_get_posts_count_action() {
+
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
+
+	$query = stripslashes( $_POST['query'] );
+
+	header('content-type: application/json');
+
+	echo json_encode( array( 'posts_count' => siteorigin_widget_post_selector_count_posts( $query ) ) );
+
+	exit();
+}
+
+add_action( 'wp_ajax_sow_get_posts_count', 'siteorigin_widget_get_posts_count_action' );
+
+
 function siteorigin_widget_remote_image_search(){
 	if( empty( $_GET[ '_sononce' ] ) || ! wp_verify_nonce( $_GET[ '_sononce' ], 'so-image' ) ) {
 		exit();

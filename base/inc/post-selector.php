@@ -55,10 +55,6 @@ function siteorigin_widget_post_selector_process_query( $query ){
 			case 'ignore' :
 				$query['ignore_sticky_posts'] = 1;
 				break;
-			//TODO: Revisit this. Not sure if it makes sense to have this as an option in a separate dropdown, but am
-			//TODO: trying to stay as close as possible to Page Builder Post Loop widget post selection options.
-			//TODO: It's probably better in the long run to make this work well and just cope with issues that come up in
-			//TODO: Page Builder Post Loop migrations until it dies.
 			case 'only' :
 				$post_in = empty( $query['post__in'] ) ? array() : $query['post__in'];
 				$query['post__in'] = array_merge( $post_in, get_option( 'sticky_posts' ) );
@@ -110,17 +106,8 @@ function siteorigin_widget_post_selector_all_post_types(){
  * @param $query
  * @return int
  */
-function siteorigin_widget_post_selector_count_posts( $query ){
+function siteorigin_widget_post_selector_count_posts( $query ) {
 	$query = siteorigin_widget_post_selector_process_query( $query );
 	$posts = new WP_Query($query);
 	return $posts->found_posts;
 }
-
-function siteorigin_widget_get_posts_count_action() {
-	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
-	$query = stripslashes( $_POST['query'] );
-	header('content-type: application/json');
-	echo json_encode( array( 'posts_count' => siteorigin_widget_post_selector_count_posts( $query ) ) );
-	exit();
-}
-add_action( 'wp_ajax_sow_get_posts_count', 'siteorigin_widget_get_posts_count_action' );
