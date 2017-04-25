@@ -205,8 +205,8 @@ sowb.SiteOriginGoogleMap = function($) {
 									}
 								}
 
-							} );
-						}.bind(this);
+							}.bind( this ) );
+						}.bind( this );
 						//set random delays of 0 - 1 seconds when geocoding markers to try avoid hitting the query limit
 						setTimeout(geocodeMarker, Math.random() * 1000, mrkr);
 					}.bind(this)
