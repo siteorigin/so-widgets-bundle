@@ -4,7 +4,7 @@ Plugin Name: SiteOrigin Widgets Bundle
 Description: A collection of all widgets, neatly bundled into a single plugin. It's also a framework to code your own widgets on top of.
 Version: dev
 Text Domain: so-widgets-bundle
-Domain Path: /languages
+Domain Path: /lang
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Plugin URI: https://siteorigin.com/widgets-bundle/
@@ -103,7 +103,7 @@ class SiteOrigin_Widgets_Bundle {
 	 * @action plugins_loaded
 	 */
 	function set_plugin_textdomain(){
-		load_plugin_textdomain('so-widgets-bundle', false, dirname( plugin_basename( __FILE__ ) ). '/languages/');
+		load_plugin_textdomain('so-widgets-bundle', false, dirname( plugin_basename( __FILE__ ) ). '/lang/');
 	}
 
 	/**
