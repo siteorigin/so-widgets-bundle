@@ -54,6 +54,11 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.8.4 - 27 April 2017 =
+* Fixed button URLs.
+* Removed image `sizes` attribute when Jetpack Photon is enabled.
+* Fixed missing widget handling for misnamed widgets.
+
 = 1.8.3 - 26 April 2017 =
 * Contact Form: Improved type Validation and added empty name check
 * Contact Form: Add Field Design Settings
