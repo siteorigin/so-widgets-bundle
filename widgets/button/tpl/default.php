@@ -10,7 +10,7 @@
 
 ?>
 <div class="ow-button-base ow-button-align-<?php echo esc_attr( $align ) ?>">
-	<a<?php foreach( $button_attributes as $name => $val ) echo ' ' . $name . '="' . esc_attr( $val ) . '"' ?>>
+	<a href="<?php echo sow_esc_url( $href ) ?>" <?php foreach( $button_attributes as $name => $val ) echo $name . '="' . esc_attr( $val ) . '" ' ?>>
 		<span>
 			<?php
 				if( ! empty( $icon_image_url ) ) {
