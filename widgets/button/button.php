@@ -242,9 +242,6 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			$button_attributes['target'] = '_blank';
 		}
 
-		if ( ! empty( $instance['url'] ) ) {
-			$button_attributes['href'] = $instance['url'];
-		}
 		if ( ! empty( $attributes['id'] ) ) {
 			$button_attributes['id'] = $attributes['id'];
 		}
@@ -269,6 +266,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 		return array(
 			'button_attributes' => $button_attributes,
+			'href' => !empty( $instance['url'] ) ? $instance['url'] : '#',
 			'align' => $instance['design']['align'],
 			'icon_image_url' => $icon_image_url,
 			'icon' => $instance['button_icon']['icon_selected'],
