@@ -85,7 +85,8 @@ class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_I
 			$unit = 'px';
 		}
 
-		$value = ( $value === '' ) ? false : ( (float) $value ) . $unit;
+		// `strlen( $value ) == 0` should prevent 0, 0.0, or '0' from being seen as empty.
+		$value = ( empty( $value ) && strlen( $value ) == 0 ) ? false : ( (float) $value ) . $unit;
 		return $value;
 	}
 

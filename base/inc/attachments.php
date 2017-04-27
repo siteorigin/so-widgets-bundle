@@ -44,14 +44,66 @@ function siteorigin_widgets_get_attachment_image( $attachment, $size, $fallback 
 			'src' => $src[0],
 		);
 
+		if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
+			$atts['srcset'] = wp_get_attachment_image_srcset( $attachment, $size );
+		}
+		if ( function_exists( 'wp_get_attachment_image_sizes' ) ) {
+			$atts['sizes'] = wp_get_attachment_image_sizes( $attachment, $size );
+		}
+
 		if( !empty($src[1]) ) $atts['width'] = $src[1];
 		if( !empty($src[2]) ) $atts['height'] = $src[2];
 
 		$return = '<img ';
 		foreach( $atts as $id => $val ) {
-			$return .= $id . '="' . esc_attr($val) . '" ';
+			$return .= $id . '="' . esc_attr( $val ) . '" ';
 		}
 		$return .= '>';
 		return $return;
 	}
+}
+
+/**
+ * Get size information for all currently-registered image sizes.
+ * From codex example here: https://codex.wordpress.org/Function_Reference/get_intermediate_image_sizes
+ *
+ * @global $_wp_additional_image_sizes
+ * @uses   get_intermediate_image_sizes()
+ * @return array $sizes Data for all currently-registered image sizes.
+ */
+function siteorigin_widgets_get_image_sizes() {
+	global $_wp_additional_image_sizes;
+
+	$sizes = array();
+
+	foreach ( get_intermediate_image_sizes() as $_size ) {
+		if ( in_array( $_size, array('thumbnail', 'medium', 'medium_large', 'large') ) ) {
+			$sizes[ $_size ]['width']  = get_option( "{$_size}_size_w" );
+			$sizes[ $_size ]['height'] = get_option( "{$_size}_size_h" );
+			$sizes[ $_size ]['crop']   = (bool) get_option( "{$_size}_crop" );
+		} elseif ( isset( $_wp_additional_image_sizes[ $_size ] ) ) {
+			$sizes[ $_size ] = array(
+				'width'  => $_wp_additional_image_sizes[ $_size ]['width'],
+				'height' => $_wp_additional_image_sizes[ $_size ]['height'],
+				'crop'   => $_wp_additional_image_sizes[ $_size ]['crop'],
+			);
+		}
+	}
+
+	return $sizes;
+}
+
+
+/**
+ * @param $size
+ *
+ * @return mixed
+ */
+function siteorigin_widgets_get_image_size( $size ) {
+	$sizes = siteorigin_widgets_get_image_sizes();
+	if ( ! empty( $sizes[ $size ] ) ) {
+		return $sizes[ $size ];
+	}
+
+	return null;
 }

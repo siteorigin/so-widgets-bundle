@@ -15,19 +15,13 @@ class SiteOrigin_Widget_Field_Link extends SiteOrigin_Widget_Field_Text_Input_Ba
 
 	protected function render_before_field( $value, $instance ) {
 		parent::render_before_field( $value, $instance );
-		if( is_string( $this->post_types ) ) {
-			$this->post_types = array( $this->post_types );
-		}
-		else if ( ! is_array( $this->post_types ) ) {
-			$this->post_types = array();
-		}
-
+		$post_types = ! empty( $this->post_types ) && is_array( $this->post_types ) ? implode( ',', $this->post_types ) : '';
 		?>
 		<a href="#" class="select-content-button button button-small"><?php esc_html_e('Select Content', 'so-widgets-bundle') ?></a>
 		<div class="existing-content-selector">
 
 			<input type="text" class="content-text-search"
-			       data-post-types="<?php echo esc_attr( implode( ',', $this->post_types ) ) ?>"
+			       data-post-types="<?php echo esc_attr( $post_types ) ?>"
 			       placeholder="<?php esc_attr_e( 'Search Content', 'so-widgets-bundle' ) ?>"/>
 
 			<ul class="posts"></ul>

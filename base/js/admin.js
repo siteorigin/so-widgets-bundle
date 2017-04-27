@@ -175,13 +175,20 @@
             $el.find('.siteorigin-widget-field-repeater-item').sowSetupRepeaterItems();
 
             // Set up any color fields
-			$fields.find('> .siteorigin-widget-input-color').wpColorPicker( {
-				change: function(event, ui) {
-					setTimeout(function() {
-						$(event.target).trigger('change');
-					}, 100);
-				}
-			} );
+            $fields.find('> .siteorigin-widget-input-color').each(function () {
+                var colorField = $(this);
+                var colorFieldOptions = {
+                    change: function(event, ui) {
+                        setTimeout(function() {
+                            $(event.target).trigger('change');
+                        }, 100);
+                    }
+                };
+                if( colorField.data('defaultColor') ) {
+                    colorFieldOptions.defaultColor = colorField.data('defaultColor');
+                }
+                colorField.wpColorPicker( colorFieldOptions );
+            });
 
             ///////////////////////////////////////
             // Handle the sections
@@ -322,8 +329,9 @@
                             } );
                         }
 
+                        var val = $$.is('[type="checkbox"]') ? $$.is(':checked') : $$.val();
                         // Return an array that has the new states added to the array
-                        return $.extend( currentStates, sowEmitters[emitter.callback]( $$.val(), emitter.args ) );
+                        return $.extend( currentStates, sowEmitters[emitter.callback]( val, emitter.args ) );
                     };
 
                     // Run the states through the state emitters

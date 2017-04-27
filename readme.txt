@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 4.2
-Tested up to: 4.7.3
+Tested up to: 4.7.4
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
@@ -53,6 +53,36 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.8.3 - 26 April 2017 =
+* Contact Form: Improved type Validation and added empty name check
+* Contact Form: Add Field Design Settings
+* Testimonial: Add responsive image sizes settings
+* Added checks to prevent PHP warnings
+* Improved handling of empty order fields.
+* Small code refactoring in price table widget.
+* Ensure all SiteOrigin widgets are grouped together in Page Builder.
+* Slider: Remove slider sentinel contents to avoid things like duplicated video iframe for embedded videos
+* Fix TinyMCE z-index.
+* Headline: Fixed typo that tied subheadline new window to headline
+* Ensure fittext is done before setting up hero slider.
+* Ensure google font fields work in live editors/previews.
+* Features: Allow specifying position of features widgets icons.
+* Added * next to labels of required fields.
+* Make required field indicator optional and display legend when enabled.
+* Set default color option in wpColorPicker.
+* Small refactor to make more use of `get_template_variables`.
+* Button: Added field for `rel` attribute.
+* Maps: Added setting for global Google API key.
+* Small fix to allow checkboxes to act as 'conditional' state emitters.
+* Features: Change text form field to a tinymce field
+* Properly work with new Page Builder caching system
+* Ensure footer templates only printed when editing with Elementor.
+* Small IE8 fix
+* Contact: Prevent form fields from having 0px height if no height specified.
+* Fixed Google Maps info windows.
+* Image: Don't output empty attributes.
+* Don't attempt to load maps API if already loaded.
 
 = 1.8.2 - 1 April 2017 =
 * Compatibility with upcoming Page Builder 2.5 release.

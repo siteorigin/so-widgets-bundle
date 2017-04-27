@@ -156,62 +156,57 @@ sowb.SiteOriginGoogleMap = function($) {
 
 		showMarkers: function(markerPositions, map, options) {
 			if ( markerPositions && markerPositions.length ) {
-				var geocoder = new google.maps.Geocoder();
 				this.infoWindows = [];
 				markerPositions.forEach(
 					function (mrkr) {
 						var geocodeMarker = function () {
-							geocoder.geocode({'address': mrkr.place}, function (res, status) {
-								if (status == google.maps.GeocoderStatus.OK) {
+							this.getLocation( mrkr.place ).done( function( location ) {
 
-									var marker = new google.maps.Marker({
-										position: res[0].geometry.location,
-										map: map,
-										draggable: options.markersDraggable,
-										icon: options.markerIcon,
-										title: ''
-									});
+								var marker = new google.maps.Marker({
+									position: location,
+									map: map,
+									draggable: options.markersDraggable,
+									icon: options.markerIcon,
+									title: ''
+								});
 
-									if (mrkr.hasOwnProperty('info') && mrkr.info) {
-										var infoWindowOptions = {content: mrkr.info};
+								if (mrkr.hasOwnProperty('info') && mrkr.info) {
+									var infoWindowOptions = {content: mrkr.info};
 
-										if (mrkr.hasOwnProperty('info_max_width') && mrkr.info_max_width) {
-											infoWindowOptions.maxWidth = mrkr.info_max_width;
-										}
+									if (mrkr.hasOwnProperty('info_max_width') && mrkr.info_max_width) {
+										infoWindowOptions.maxWidth = mrkr.info_max_width;
+									}
 
-										var infoDisplay = options.markerInfoDisplay;
-										infoWindowOptions.disableAutoPan = infoDisplay == 'always';
-										var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
-										this.infoWindows.push(infoWindow);
-										var openEvent = infoDisplay;
-										if (infoDisplay == 'always') {
-											openEvent = 'click';
-											infoWindow.open(map, marker);
-										}
-										marker.addListener(openEvent, function () {
-											infoWindow.open(map, marker);
-											if(infoDisplay != 'always' && !options.markerInfoMultiple) {
-												this.infoWindows.forEach(function(iw) {
-													if (iw !== infoWindow) {
-														iw.close();
-													}
-												});
-											}
-										}.bind(this));
-										if(infoDisplay == 'mouseover') {
-											marker.addListener('mouseout', function () {
-												setTimeout(function() {
-													infoWindow.close();
-												}, 100);
+									var infoDisplay = options.markerInfoDisplay;
+									infoWindowOptions.disableAutoPan = infoDisplay === 'always';
+									var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
+									this.infoWindows.push(infoWindow);
+									var openEvent = infoDisplay;
+									if (infoDisplay === 'always') {
+										openEvent = 'click';
+										infoWindow.open(map, marker);
+									}
+									marker.addListener(openEvent, function () {
+										infoWindow.open(map, marker);
+										if(infoDisplay !== 'always' && !options.markerInfoMultiple) {
+											this.infoWindows.forEach(function(iw) {
+												if (iw !== infoWindow) {
+													iw.close();
+												}
 											});
 										}
+									}.bind(this));
+									if(infoDisplay === 'mouseover') {
+										marker.addListener('mouseout', function () {
+											setTimeout(function() {
+												infoWindow.close();
+											}, 100);
+										});
 									}
-								} else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
-									//try again please
-									setTimeout(geocodeMarker, Math.random() * 1000, mrkr);
 								}
-							}.bind(this));
-						}.bind(this);
+
+							}.bind( this ) );
+						}.bind( this );
 						//set random delays of 0 - 1 seconds when geocoding markers to try avoid hitting the query limit
 						setTimeout(geocodeMarker, Math.random() * 1000, mrkr);
 					}.bind(this)
@@ -242,7 +237,7 @@ sowb.SiteOriginGoogleMap = function($) {
 						optimizeWaypoints: directions.optimizeWaypoints,
 					},
 					function(result, status) {
-						if (status == google.maps.DirectionsStatus.OK) {
+						if (status === google.maps.DirectionsStatus.OK) {
 							directionsRenderer.setDirections(result);
 						}
 					});
@@ -252,10 +247,16 @@ sowb.SiteOriginGoogleMap = function($) {
 			// Init any autocomplete fields first.
 			var $autoCompleteFields = $( '.sow-google-map-autocomplete' );
 			var autoCompleteInit = new $.Deferred();
-			if( $autoCompleteFields.length == 0 || typeof google.maps.places === 'undefined') {
+			if( $autoCompleteFields.length === 0 ) {
 				autoCompleteInit.resolve();
 			} else {
 				$autoCompleteFields.each(function (index, element) {
+
+					if ( typeof google.maps.places === 'undefined' ) {
+						autoCompleteInit.reject('Sorry, we couldn\'t load the "places" library due to another plugin, so the autocomplete feature is not available.');
+						return;
+					}
+
 					var autocomplete = new google.maps.places.Autocomplete(
 						element,
 						{types: ['address']}
@@ -281,7 +282,7 @@ sowb.SiteOriginGoogleMap = function($) {
 				}.bind(this));
 			}
 
-			autoCompleteInit.done(function(){
+			autoCompleteInit.always(function(){
 				$('.sow-google-map-canvas').each(function (index, element) {
 					var $$ = $(element);
 
@@ -310,7 +311,10 @@ sowb.SiteOriginGoogleMap = function($) {
 					} );
 
 				}.bind(this));
-			}.bind(this));
+			}.bind(this))
+			.fail(function(error){
+				console.log(error);
+			});
 		},
 		getGeocoder: function () {
 			if ( !this._geocoder ) {
@@ -326,7 +330,7 @@ sowb.SiteOriginGoogleMap = function($) {
 			if ( inputLocation && inputLocation.indexOf( ',' ) > -1 ) {
 				var vals = inputLocation.split( ',' );
 				// A latlng value should be of the format 'lat,lng'
-				if ( vals && vals.length == 2 ) {
+				if ( vals && vals.length === 2 ) {
 					latLng = new google.maps.LatLng( vals[ 0 ], vals[ 1 ] );
 					// Let the API decide if we have a valid latlng
 					// This should fail if the input is an address containing a comma
@@ -348,10 +352,12 @@ sowb.SiteOriginGoogleMap = function($) {
 					location.address = this.DEFAULT_LOCATIONS[ rndIndx ];
 				}
 				this.getGeocoder().geocode( location, function ( results, status ) {
-					if ( status == google.maps.GeocoderStatus.OK ) {
+					if ( status === google.maps.GeocoderStatus.OK ) {
 						locationPromise.resolve( results[ 0 ].geometry.location );
-					}
-					else if ( status == google.maps.GeocoderStatus.ZERO_RESULTS ) {
+					} else if (status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+						//try again please
+						setTimeout( this.getLocation, Math.random() * 1000, inputLocation );
+					} else if ( status === google.maps.GeocoderStatus.ZERO_RESULTS ) {
 						locationPromise.reject( status );
 					}
 				} );
@@ -368,49 +374,37 @@ function soGoogleMapInitialize() {
 
 jQuery(function ($) {
 
-	sowb.setupGoogleMaps = function(){
+	sowb.setupGoogleMaps = function() {
 		var libraries = [];
 		var apiKey;
 		$('.sow-google-map-canvas').each(function(index, element) {
 			var $this = $(element);
 			var mapOptions = $this.data( 'options' );
-			var mapsApiLoaded = typeof window.google !== 'undefined' && typeof window.google.maps !== 'undefined';
-			var isLoaded = function (element) {
-				var lib = window.google.maps[element];
-				return window.google.maps.hasOwnProperty(element) && typeof lib !== 'undefined' && lib !== null;
-			};
-			var hasLibraries = typeof mapOptions.libraries !== 'undefined' && mapOptions.libraries !== null;
-			if(hasLibraries) {
-				mapsApiLoaded = mapsApiLoaded && mapOptions.libraries.every(isLoaded);
-			}
-
-			if (mapsApiLoaded) {
-				soGoogleMapInitialize();
-			} else {
-				if(mapOptions) {
-					if( hasLibraries ) {
-						libraries = libraries.concat(mapOptions.libraries);
-					}
-					if( !apiKey && mapOptions.apiKey ) {
-						apiKey = mapOptions.apiKey;
-					}
+			if ( mapOptions) {
+				if( typeof mapOptions.libraries !== 'undefined' && mapOptions.libraries !== null ) {
+					libraries = libraries.concat(mapOptions.libraries);
+				}
+				if( !apiKey && mapOptions.apiKey ) {
+					apiKey = mapOptions.apiKey;
 				}
 			}
 		});
 
-		var apiUrl = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=soGoogleMapInitialize';
-		if(libraries && libraries.length) {
-			apiUrl += '&libraries=' + libraries.join(',');
-		}
-		if(apiKey) {
-			apiUrl += '&key=' + apiKey;
-		}
-		var script = $('<script type="text/javascript" src="' + apiUrl + '">');
-		var $body = $('body');
-		if( $body.find('script[src="' + apiUrl + '"]').length == 0 ) {
-			$('body').append(script);
+		var mapsApiLoaded = typeof window.google !== 'undefined' && typeof window.google.maps !== 'undefined';
+		if ( mapsApiLoaded ) {
+			soGoogleMapInitialize();
 		} else {
+			var apiUrl = 'https://maps.googleapis.com/maps/api/js?callback=soGoogleMapInitialize';
 
+			if ( libraries && libraries.length ) {
+				apiUrl += '&libraries=' + libraries.join(',');
+			}
+
+			if ( apiKey ) {
+				apiUrl += '&key=' + apiKey;
+			}
+
+			$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );
 		}
 	};
 	sowb.setupGoogleMaps();

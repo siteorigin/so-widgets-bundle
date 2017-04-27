@@ -56,12 +56,38 @@
 		}
 	}
 
+	@field_font_family: default;
+	@field_font_weight: default;
+	@field_font_size: default;
+	@field_font_color: default;
+
+	@field_background: default;
+
+	@field_margin: default;
+	@field_padding: default;
+	@field_border_radius: default;
+	@field_border_color: default;
+	@field_border_width: default;
+	@field_border_style: default;
+	@field_height: default;
+
 	textarea,
-	input.sow-text-field {
-		.box-sizing(border-box);
+	.sow-text-field {
 		display: block;
 		width: 100%;
-		border-radius: 0;
+		.box-sizing(border-box);
+		border-radius: @field_border_radius;
+
+		margin: @field_margin;
+		border: @field_border_width @field_border_style @field_border_color;
+		padding: @field_padding;
+		height: @field_height;
+		
+		background: @field_background;
+		color: @field_font_color;
+		
+		font-size: @field_font_size;
+		.font(@field_font_family, @field_font_weight);
 	}
 
 	&.sow-form-field-checkboxes, &.sow-form-field-radio {
@@ -81,6 +107,7 @@
 			input {
 				float: left;
 				margin: 0.4em 0.5em 0 0;
+				height: auto;
 			}
 		}
 	}
