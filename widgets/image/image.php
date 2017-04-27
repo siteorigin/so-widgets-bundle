@@ -134,8 +134,13 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
 				$attr['srcset'] = wp_get_attachment_image_srcset( $instance['image'], $instance['size'] );
 			}
-			if ( function_exists( 'wp_get_attachment_image_sizes' ) ) {
-				$attr['sizes'] = wp_get_attachment_image_sizes( $instance['image'], $instance['size'] );
+			// Don't add sizes attribute when Jetpack Photon is enabled, as it tends to have unexpected side effects.
+			// This was to hotfix an issue. Can remove it when we find a way to make sure output of
+			// `wp_get_attachment_image_sizes` is predictable with Photon enabled.
+			if ( ! ( class_exists( 'Jetpack_Photon' ) && Jetpack::is_module_active( 'photon' ) ) ) {
+				if ( function_exists( 'wp_get_attachment_image_sizes' ) ) {
+					$attr['sizes'] = wp_get_attachment_image_sizes( $instance['image'], $instance['size'] );
+				}
 			}
 		}
 		$attr = apply_filters( 'siteorigin_widgets_image_attr', $attr, $instance, $this );
