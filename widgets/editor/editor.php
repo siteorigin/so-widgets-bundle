@@ -24,7 +24,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_widget_form(){
+	function get_widget_form() {
 		return array(
 			'title' => array(
 				'type' => 'text',
@@ -62,13 +62,22 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			$instance['text'] = wp_make_content_images_responsive( $instance['text'] );
 		}
 
-		if(
+		if (
 			// Only run these parts if we're rendering for the frontend
 			empty( $GLOBALS[ 'SITEORIGIN_PANELS_CACHE_RENDER' ] ) &&
 			empty( $GLOBALS[ 'SITEORIGIN_PANELS_POST_CONTENT_RENDER' ] )
 		) {
+			// Manual support for Jetpack Markdown module.
+			if ( class_exists( 'WPCom_Markdown' ) &&
+			     Jetpack::is_module_active( 'markdown' ) &&
+			     $instance['text_selected_editor'] == 'html'
+			) {
+				$markdown_parser = WPCom_Markdown::get_instance();
+				$instance['text'] = $markdown_parser->transform( $instance['text'] );
+			}
+
 			// Run some known stuff
-			if( !empty($GLOBALS['wp_embed']) ) {
+			if( ! empty( $GLOBALS['wp_embed'] ) ) {
 				$instance['text'] = $GLOBALS['wp_embed']->run_shortcode( $instance['text'] );
 				$instance['text'] = $GLOBALS['wp_embed']->autoembed( $instance['text'] );
 			}
