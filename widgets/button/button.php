@@ -230,11 +230,13 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		$button_attributes = array();
 
 		$attributes = $instance['attributes'];
-		if( ! empty( $attributes['classes'] ) ) {
-			$classes = $attributes['classes'];
-			if( !empty($instance['design']['hover']) ) {
-				$classes .= ' ow-button-hover';
-			}
+		
+		$classes = ! empty( $attributes['classes'] ) ? $attributes['classes'] : '';
+		if( !empty($instance['design']['hover']) ) {
+			$classes .= ' ow-button-hover';
+		}
+		
+		if( ! empty( $classes ) ) {
 			$button_attributes['class'] = $classes;
 		}
 

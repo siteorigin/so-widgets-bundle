@@ -647,21 +647,16 @@ class SiteOrigin_Widgets_Bundle {
 	 *
 	 * @action siteorigin_panels_data
 	 */
-	function load_missing_widgets($data){
+	function load_missing_widgets( $data ){
 		if(empty($data['widgets'])) return $data;
 
 		global $wp_widget_factory;
 
 		foreach($data['widgets'] as $widget) {
-			if( empty($widget['panels_info']['class']) ) continue;
-			if( !empty($wp_widget_factory->widgets[$widget['panels_info']['class']] ) ) continue;
-
-			$class = $widget['panels_info']['class'];
-			if( preg_match('/SiteOrigin_Widget_([A-Za-z]+)_Widget/', $class, $matches) ) {
-				$name = $matches[1];
-				$id = strtolower( implode( '-', array_filter( preg_split( '/(?=[A-Z])/', $name ) ) ) );
-				$this->activate_widget($id, true);
-			}
+			if( empty( $widget['panels_info']['class'] ) ) continue;
+			if( !empty( $wp_widget_factory->widgets[ $widget['panels_info']['class'] ] ) ) continue;
+			
+			$this->load_missing_widget( false, $widget['panels_info']['class'] );
 		}
 
 		return $data;
@@ -675,13 +670,19 @@ class SiteOrigin_Widgets_Bundle {
 	 *
 	 * @return
 	 */
-	function load_missing_widget($the_widget, $class){
+	function load_missing_widget( $the_widget, $class ){
 		// We only want to worry about missing widgets
-		if( !empty($the_widget) ) return $the_widget;
+		if( ! empty( $the_widget ) ) return $the_widget;
 
-		if( preg_match('/SiteOrigin_Widget_([A-Za-z]+)_Widget/', $class, $matches) ) {
+		if( preg_match('/SiteOrigin_Widgets?_([A-Za-z]+)_Widget/', $class, $matches) ) {
 			$name = $matches[1];
 			$id = strtolower( implode( '-', array_filter( preg_split( '/(?=[A-Z])/', $name ) ) ) );
+			
+			if( $id == 'contact-form' ) {
+				// Handle the special case of the contact form widget, which is incorrectly named
+				$id = 'contact';
+			}
+			
 			$this->activate_widget($id, true);
 			global $wp_widget_factory;
 			if( !empty($wp_widget_factory->widgets[$class]) ) return $wp_widget_factory->widgets[$class];

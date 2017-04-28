@@ -203,8 +203,10 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 	function get_template_variables( $instance, $args ) {
 		$columns = array();
 		foreach( $instance['columns'] as $column ) {
-			foreach( $column['features'] as &$feature ) {
-				$feature['text'] = do_shortcode( $feature['text'] );
+			if( ! empty( $column['features'] ) ) {
+				foreach( $column['features'] as &$feature ) {
+					$feature['text'] = do_shortcode( $feature['text'] );
+				}
 			}
 			$columns[] = $column;
 		}
