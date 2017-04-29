@@ -1,4 +1,4 @@
-/* globals jQuery, sowb */
+/* globals jQuery, google, sowb */
 
 var sowb = window.sowb || {};
 
@@ -412,3 +412,5 @@ jQuery(function ($) {
 	$( sowb ).on( 'setup_widgets', sowb.setupGoogleMaps );
 
 });
+
+window.sowb = sowb;

@@ -49,3 +49,5 @@ jQuery( function($){
 	$( sowb ).on( 'setup_widgets', sowb.setupImageGrids );
 
 } );
+
+window.sowb = sowb;

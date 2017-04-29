@@ -71,7 +71,7 @@ function siteorigin_widget_post_selector_process_query($query){
 	}
 
 	if ( ! empty( $query['date_query'] ) ) {
-		$query['date_query'] = json_decode( $query['date_query'], true );
+		$query['date_query'] = json_decode( stripslashes( $query['date_query'] ), true );
 	}
 
 	if ( ! empty( $query['sticky'] ) ) {
@@ -93,7 +93,7 @@ function siteorigin_widget_post_selector_process_query($query){
 		}
 		unset( $query['sticky'] );
 	}
-	
+
 	// Exclude the current post (if applicable) to avoid any issues associated with showing the same post again
 	if( get_the_id() != false ){
 		$query['post__not_in'][] = get_the_id();
@@ -103,7 +103,7 @@ function siteorigin_widget_post_selector_process_query($query){
 		$query = wp_parse_args( $query['additional'], $query );
 		unset( $query['additional'] );
 
-		// If post_not_in is set, we need to convert it to an array to avoid issues with the query. 
+		// If post_not_in is set, we need to convert it to an array to avoid issues with the query.
 		if( !empty( $query['post__not_in'] ) && !is_array( $query['post__not_in'] ) ){
 			$query['post__not_in'] = explode( ',', $query['post__not_in'] );
 			$query['post__not_in'] = array_map( 'intval', $query['post__not_in'] );
