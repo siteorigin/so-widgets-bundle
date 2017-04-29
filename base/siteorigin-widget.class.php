@@ -560,10 +560,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			}
 		}
 
-		if( $this->using_posts_selector() ) {
-			siteorigin_widget_post_selector_enqueue_admin_scripts();
-		}
-
 		if( !empty( $form_type ) && $this->has_form( $form_type ) ) {
 			// Enqueue field scripts for the given form type
 			$form_options = $this->get_form( $form_type );
