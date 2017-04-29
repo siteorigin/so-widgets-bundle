@@ -82,12 +82,12 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 		$so_widget_names = array();
 
 		global $wp_widget_factory;
-
 		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
 			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
-				$so_widget_names[ $class ] = $widget_obj->name;
+				$so_widget_names[ $class ] = preg_replace( '/^SiteOrigin /', '', $widget_obj->name );
 			}
 		}
+		asort( $so_widget_names );
 
 		/* @var $select SiteOrigin_Widget_Field_Select */
 		$select = new SiteOrigin_Widget_Field_Select(
