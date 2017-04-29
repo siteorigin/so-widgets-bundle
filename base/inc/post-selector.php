@@ -234,6 +234,21 @@ function siteorigin_widget_post_selector_count_posts($query){
 	return $posts->found_posts;
 }
 
+function siteorigin_widget_get_posts_count_action() {
+
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
+
+	$query = stripslashes( $_POST['query'] );
+
+	header('content-type: application/json');
+
+	echo json_encode( array( 'posts_count' => siteorigin_widget_post_selector_count_posts( $query ) ) );
+
+	exit();
+}
+
+add_action( 'wp_ajax_sow_get_posts_count', 'siteorigin_widget_get_posts_count_action' );
+
 /**
  * The get posts ajax action
  */

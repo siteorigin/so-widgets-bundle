@@ -15,6 +15,7 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 	 * @var string
 	 */
 	protected $placeholder;
+
 	/**
 	 * If true, this field will not be editable.
 	 *
@@ -22,6 +23,14 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 	 * @var bool
 	 */
 	protected $readonly;
+
+	/**
+	 * The type of this input.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $input_type;
 
 	/**
 	 * The CSS classes to be applied to the rendered text input.
@@ -37,6 +46,12 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 		return array();
 	}
 
+	protected function get_default_options() {
+		return array(
+			'input_type' => 'text',
+		);
+	}
+
 	protected function render_data_attributes( $data_attributes ) {
 		$attr_string = '';
 		foreach ( $data_attributes as $name => $value ) {
@@ -47,7 +62,9 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 
 	protected function render_field( $value, $instance ) {
 		?>
-		<input type="text" name="<?php echo esc_attr( $this->element_name ) ?>" id="<?php echo esc_attr( $this->element_id ) ?>"
+		<input type="<?php echo esc_attr( $this->input_type ) ?>"
+			   name="<?php echo esc_attr( $this->element_name ) ?>"
+			   id="<?php echo esc_attr( $this->element_id ) ?>"
 		         value="<?php echo esc_attr( $value ) ?>"
 		         <?php $this->render_data_attributes( $this->get_input_data_attributes() ) ?>
 		         <?php $this->render_CSS_classes( $this->get_input_classes() ) ?>

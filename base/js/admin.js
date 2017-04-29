@@ -194,15 +194,16 @@ var sowbForms = window.sowbForms || {};
 
             ///////////////////////////////////////
             // Handle the sections
-
-            $fields.filter('.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section').find('> label').click(function(){
-                var $$ = $(this);
-                $(this).toggleClass( 'siteorigin-widget-section-visible' );
-                $(this).siblings('.siteorigin-widget-section').slideToggle(function(){
-                    $(window).resize();
-                    $(this).find('> .siteorigin-widget-field-container-state').val($(this).is(':visible') ? 'open' : 'closed');
-                });
-            });
+			var expandContainer = function () {
+				var $$ = $( this );
+				$( this ).toggleClass( 'siteorigin-widget-section-visible' );
+				$( this ).siblings( '.siteorigin-widget-section' ).slideToggle( function () {
+					$( window ).resize();
+					$( this ).find( '> .siteorigin-widget-field-container-state' ).val( $( this ).is( ':visible' ) ? 'open' : 'closed' );
+				} );
+			};
+            $fields.filter('.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section').find('> label').click(expandContainer);
+            $fields.filter('.siteorigin-widget-field-type-posts').find('.posts-container-label-wrapper').click(expandContainer);
 
             ///////////////////////////////////////
             // Handle the slider fields
