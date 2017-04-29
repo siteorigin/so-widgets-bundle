@@ -91,6 +91,18 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		return method_exists( $this, 'initialize_form' ) ? $this->initialize_form() : array();
 	}
 
+	private function get_cached_widget_form() {
+		$cache_key = $this->id_base . '_form';
+		$form_options = wp_cache_get( $cache_key, 'siteorigin_widgets' );
+
+		if ( empty( $form_options ) ) {
+			$form_options = $this->get_widget_form();
+			wp_cache_set( $cache_key, $form_options, 'siteorigin_widgets' );
+		}
+
+		return $form_options;
+	}
+
 	/**
 	 * Check if a child widget implements a specific form type.
 	 *
@@ -121,7 +133,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	function form_options( $parent = false ) {
 		if( empty( $this->form_options ) ) {
 			// If the widget doesn't have form_options defined from the constructor, then it might be defining them in the get_widget_form function
-			$this->form_options = $this->get_widget_form();
+			$this->form_options = $this->get_cached_widget_form();
 		}
 
 		$form_options = $this->modify_form( $this->form_options );
@@ -143,7 +155,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		if( empty( $this->form_options ) ) {
-			$form_options = $this->get_widget_form();
+			$form_options = $this->get_cached_widget_form();
 		}
 		else {
 			$form_options = $this->modify_form( $this->form_options );
@@ -234,7 +246,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	function generate_and_enqueue_instance_styles( $instance ) {
 		if( empty( $form_options ) ) {
-			$form_options = $this->get_widget_form();
+			$form_options = $this->get_cached_widget_form();
 		}
 		else {
 			$form_options = $this->modify_form( $this->form_options );
