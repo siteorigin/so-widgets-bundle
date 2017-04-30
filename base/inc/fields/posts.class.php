@@ -14,7 +14,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 		foreach ( $types as $id => $type ) {
 			$type_options[ $id ] = $type->labels->name;
 		}
-
+		
 		$this->fields = array(
 
 			'post_type' => array(
@@ -22,6 +22,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 				'label'    => __( 'Post type', 'so-widgets-bundle' ),
 				'multiple' => true,
 				'options'  => $type_options,
+				'default'  => 'post'
 			),
 
 			'post__in' => array(
@@ -59,6 +60,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 					'meta_value_num' => __( 'By numeric meta value', 'so-widgets-bundle' ),
 					'post__in'       => __( 'By include order', 'so-widgets-bundle' ),
 				),
+				'default' => 'date',
 			),
 
 			'order' => array(
