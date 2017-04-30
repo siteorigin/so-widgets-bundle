@@ -54,6 +54,9 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.8.5 - 27 April 2017 =
+* Fixed button hover class.
+
 = 1.8.4 - 27 April 2017 =
 * Fixed button URLs.
 * Removed image `sizes` attribute when Jetpack Photon is enabled.
