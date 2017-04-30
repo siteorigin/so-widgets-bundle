@@ -202,6 +202,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'label' => __('Onclick', 'so-widgets-bundle'),
 						'description' => __('Run this Javascript when the button is clicked. Ideal for tracking.', 'so-widgets-bundle'),
 					),
+
+					'rel' => array(
+						'type' => 'text',
+						'label' => __('Rel attribute', 'so-widgets-bundle'),
+						'description' => __('Adds a rel attribute to the button link.', 'so-widgets-bundle'),
+					),
 				)
 			),
 		);
@@ -221,13 +227,54 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	 * @return array
 	 */
 	function get_template_variables( $instance, $args ) {
-		$vars = array();
+		$button_attributes = array();
 
-		if( ! empty( $instance[ 'attributes' ][ 'classes' ] ) ) {
-			$vars[ 'classes' ] = explode( ' ', $instance[ 'attributes' ][ 'classes' ] );
+		$attributes = $instance['attributes'];
+		
+		$classes = ! empty( $attributes['classes'] ) ? $attributes['classes'] : '';
+		if( !empty($instance['design']['hover']) ) {
+			$classes .= ' ow-button-hover';
+		}
+		
+		if( ! empty( $classes ) ) {
+			$button_attributes['class'] = $classes;
 		}
 
-		return $vars;
+		if ( ! empty( $instance['new_window'] ) ) {
+			$button_attributes['target'] = '_blank';
+		}
+
+		if ( ! empty( $attributes['id'] ) ) {
+			$button_attributes['id'] = $attributes['id'];
+		}
+		if ( ! empty( $attributes['title'] ) ) {
+			$button_attributes['title'] = $attributes['title'];
+		}
+		if ( ! empty( $attributes['onclick'] ) ) {
+			$button_attributes['onclick'] = $attributes['onclick'];
+		}
+		if ( ! empty( $attributes['rel'] ) ) {
+			$button_attributes['rel'] = $attributes['rel'];
+		}
+
+		$icon_image_url = '';
+		if( ! empty( $instance['button_icon']['icon'] ) ) {
+			$attachment = wp_get_attachment_image_src( $instance['button_icon']['icon'] );
+
+			if ( ! empty( $attachment ) ) {
+				$icon_image_url = $attachment[0];
+			}
+		}
+
+		return array(
+			'button_attributes' => $button_attributes,
+			'href' => !empty( $instance['url'] ) ? $instance['url'] : '#',
+			'align' => $instance['design']['align'],
+			'icon_image_url' => $icon_image_url,
+			'icon' => $instance['button_icon']['icon_selected'],
+			'icon_color' => $instance['button_icon']['icon_color'],
+			'text' => $instance['text'],
+		);
 	}
 
 	/**

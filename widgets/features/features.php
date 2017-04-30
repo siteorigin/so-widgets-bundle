@@ -56,6 +56,18 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 						'default' => '#404040',
 					),
 
+                    'container_position' => array(
+                        'type' => 'select',
+                        'label' => __('Container Position', 'so-widgets-bundle'),
+                        'options' => array(
+                            'top' => __( 'Top', 'so-widgets-bundle' ),
+                            'right' => __( 'Right', 'so-widgets-bundle' ),
+                            'bottom' => __( 'Bottom', 'so-widgets-bundle' ),
+                            'left' => __( 'Left', 'so-widgets-bundle' ),
+                        ),
+                        'default' => 'top',
+                    ),
+
 					// The Icon
 
 					'icon' => array(
@@ -94,7 +106,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					),
 
 					'text' => array(
-						'type' => 'text',
+						'type' => 'tinymce',
 						'label' => __('Text', 'so-widgets-bundle')
 					),
 
@@ -112,7 +124,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 
 			'fonts' => array(
 				'type' => 'section',
-				'label' => __( 'Fonts', 'so-widgets-bundle' ),
+				'label' => __( 'Font Design', 'so-widgets-bundle' ),
 				'hide' => true,
 				'fields' => array(
 					'title_options' => array(
@@ -257,6 +269,8 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				}
 			}
 		}
+
+        $less_vars['container_size'] = $instance['container_size'];
 
 		return $less_vars;
 	}

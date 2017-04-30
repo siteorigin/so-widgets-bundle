@@ -4,6 +4,12 @@ Thumbs.db
 
 node_modules/
 dist/
-widgets/*/styles/*.css
 npm-debug.log
 tmp
+
+# Ignore all styles compiled from LESS files
+*.css
+
+# But not icon or lib CSS files.
+!icons/**/*.css
+!**/lib/**/*.css

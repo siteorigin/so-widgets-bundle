@@ -28,11 +28,7 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_frontend_scripts' ] );
 		}
 
-		$elementor_editor = $this->plugin->editor;
-		if( ! is_admin() && method_exists( $elementor_editor, 'is_edit_mode' ) && $elementor_editor->is_edit_mode() ) {
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ), 9999999 );
-			add_action( 'wp_print_footer_scripts', array( $this, 'print_footer_templates' ) );
-		}
+		add_action( 'elementor/editor/before_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
 	}
 
 	function enqueue_frontend_scripts() {
@@ -47,6 +43,8 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 	}
 
 	function enqueue_active_widgets_scripts() {
+
+		add_action( 'wp_print_footer_scripts', array( $this, 'print_footer_templates' ) );
 
 		global $wp_widget_factory;
 

@@ -4,7 +4,7 @@ Plugin Name: SiteOrigin Widgets Bundle
 Description: A collection of all widgets, neatly bundled into a single plugin. It's also a framework to code your own widgets on top of.
 Version: dev
 Text Domain: so-widgets-bundle
-Domain Path: /languages
+Domain Path: /lang
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Plugin URI: https://siteorigin.com/widgets-bundle/
@@ -103,7 +103,7 @@ class SiteOrigin_Widgets_Bundle {
 	 * @action plugins_loaded
 	 */
 	function set_plugin_textdomain(){
-		load_plugin_textdomain('so-widgets-bundle', false, dirname( plugin_basename( __FILE__ ) ). '/languages/');
+		load_plugin_textdomain('so-widgets-bundle', false, dirname( plugin_basename( __FILE__ ) ). '/lang/');
 	}
 
 	/**
@@ -368,7 +368,10 @@ class SiteOrigin_Widgets_Bundle {
 		if( ! current_user_can( apply_filters( 'siteorigin_widgets_admin_menu_capability', 'manage_options' ) ) ) exit();
 
 		$widget_objects = $this->get_widget_objects();
-		$widget_object = !empty( $widget_objects[ $_GET['id'] ] ) ? $widget_objects[ $_GET['id'] ] : false;
+
+		$widget_path = empty( $_GET['id'] ) ? false : WP_PLUGIN_DIR . $_GET['id'];
+
+		$widget_object = empty( $widget_objects[ $widget_path ] ) ? false : $widget_objects[ $widget_path ];
 
 		if( empty( $widget_object ) || ! $widget_object->has_form( 'settings' ) ) exit();
 
@@ -402,7 +405,8 @@ class SiteOrigin_Widgets_Bundle {
 		if( ! current_user_can( apply_filters( 'siteorigin_widgets_admin_menu_capability', 'manage_options' ) ) ) exit();
 
 		$widget_objects = $this->get_widget_objects();
-		$widget_object = !empty( $widget_objects[ $_GET['id'] ] ) ? $widget_objects[ $_GET['id'] ] : false;
+		$widget_path = empty( $_GET['id'] ) ? false : WP_PLUGIN_DIR . $_GET['id'];
+		$widget_object = empty( $widget_objects[ $widget_path ] ) ? false : $widget_objects[ $widget_path ];
 
 		if( empty( $widget_object ) || ! $widget_object->has_form( 'settings' ) ) exit();
 
@@ -643,21 +647,16 @@ class SiteOrigin_Widgets_Bundle {
 	 *
 	 * @action siteorigin_panels_data
 	 */
-	function load_missing_widgets($data){
+	function load_missing_widgets( $data ){
 		if(empty($data['widgets'])) return $data;
 
 		global $wp_widget_factory;
 
 		foreach($data['widgets'] as $widget) {
-			if( empty($widget['panels_info']['class']) ) continue;
-			if( !empty($wp_widget_factory->widgets[$widget['panels_info']['class']] ) ) continue;
-
-			$class = $widget['panels_info']['class'];
-			if( preg_match('/SiteOrigin_Widget_([A-Za-z]+)_Widget/', $class, $matches) ) {
-				$name = $matches[1];
-				$id = strtolower( implode( '-', array_filter( preg_split( '/(?=[A-Z])/', $name ) ) ) );
-				$this->activate_widget($id, true);
-			}
+			if( empty( $widget['panels_info']['class'] ) ) continue;
+			if( !empty( $wp_widget_factory->widgets[ $widget['panels_info']['class'] ] ) ) continue;
+			
+			$this->load_missing_widget( false, $widget['panels_info']['class'] );
 		}
 
 		return $data;
@@ -671,13 +670,19 @@ class SiteOrigin_Widgets_Bundle {
 	 *
 	 * @return
 	 */
-	function load_missing_widget($the_widget, $class){
+	function load_missing_widget( $the_widget, $class ){
 		// We only want to worry about missing widgets
-		if( !empty($the_widget) ) return $the_widget;
+		if( ! empty( $the_widget ) ) return $the_widget;
 
-		if( preg_match('/SiteOrigin_Widget_([A-Za-z]+)_Widget/', $class, $matches) ) {
+		if( preg_match('/SiteOrigin_Widgets?_([A-Za-z]+)_Widget/', $class, $matches) ) {
 			$name = $matches[1];
 			$id = strtolower( implode( '-', array_filter( preg_split( '/(?=[A-Z])/', $name ) ) ) );
+			
+			if( $id == 'contact-form' ) {
+				// Handle the special case of the contact form widget, which is incorrectly named
+				$id = 'contact';
+			}
+			
 			$this->activate_widget($id, true);
 			global $wp_widget_factory;
 			if( !empty($wp_widget_factory->widgets[$class]) ) return $wp_widget_factory->widgets[$class];

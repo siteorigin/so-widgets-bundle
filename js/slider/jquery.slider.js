@@ -1,9 +1,4 @@
-/**
- * SiteOrigin Slider Javascript.
- *
- * Copyright 2014, SiteOrigin
- * Released under GPL 2.0 - see http://www.gnu.org/licenses/gpl-2.0.html
- */
+/* globals jQuery, sowb */
 
 var sowb = window.sowb || {};
 
@@ -99,6 +94,17 @@ jQuery( function($){
 			});
 
 			var setupSlider = function(){
+
+				// If we're inside a fittext wrapper, wait for it to complete, before setting up the slider.
+                var fitTextWrapper = $$.closest('.so-widget-fittext-wrapper');
+                if ( fitTextWrapper.length > 0 && ! $$.data('fitTextDone') ) {
+                    fitTextWrapper.on('fitTextDone', function () {
+                        $$.data('fitTextDone', true);
+                        setupSlider();
+                    });
+                    return;
+                }
+
 				// Show everything for this slider
 				$base.show();
 
@@ -145,7 +151,7 @@ jQuery( function($){
 							}
 
 							$(window).resize();
-							
+
 							setTimeout(function() {
 								siteoriginSlider.setupActiveSlide( $$, optionHash.slides[0] );
 								// Ensure we keep auto-height functionality, but we don't want the duplicated content.
@@ -255,3 +261,5 @@ jQuery( function($){
 
 	$( sowb ).on( 'setup_widgets', sowb.setupSliders );
 } );
+
+window.sowb = sowb;
