@@ -38,13 +38,24 @@
 	}
 
 	.siteorigin-widget-field {
-		&.siteorigin-widget-field-type-link .existing-content-selector {
-			width: inherit;
+		&.siteorigin-widget-field-type-autocomplete,
+		&.siteorigin-widget-field-type-link {
+			.existing-content-selector {
+				width: inherit;
+			}
 		}
 
 		& .siteorigin-widget-input-color {
 			width: 120px;
 			margin: 0 3px;
+		}
+
+		&.siteorigin-widget-field-type-icon {
+			.siteorigin-widget-icon-selector {
+				.siteorigin-widget-icon-search {
+					width: 100%;
+				}
+			}
 		}
 
 		&.siteorigin-widget-field-type-measurement {
@@ -60,6 +71,7 @@
 			}
 
 			.sow-measurement-select-unit {
+				min-width: inherit;
 				width: 33%;
 				margin-left: 1px;
 			}
@@ -127,7 +139,6 @@
 	}
 
 	select, input[type=text] {
-		width: inherit;
 		margin: 1px;
 		border-radius: 0;
 		font-weight: inherit;
@@ -170,8 +181,4 @@
 		margin-top: 5px;
 	}
 
-}
-
-.elementor-panel {
-	width: 400px;
 }

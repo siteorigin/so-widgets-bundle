@@ -6,10 +6,13 @@
 class SiteOrigin_Widget_Field_Date_Range extends SiteOrigin_Widget_Field_Base {
 
 	protected function render_field( $value, $instance ) {
+		?><div><span><?php
 		_e( 'From', 'so-widgets-bundle' );
-		?><input type="text" class="datepicker after-picker"/><?php
+		?></span><input type="text" class="datepicker after-picker"/></div><?php
+
+		?><div><span><?php
 		_e( 'To', 'so-widgets-bundle' );
-		?><input type="text" class="datepicker before-picker"/>
+		?></span><input type="text" class="datepicker before-picker"/></div>
 		<input type="hidden"
 			   class="siteorigin-widget-input"
 			   value="<?php echo esc_attr( $value ) ?>"
