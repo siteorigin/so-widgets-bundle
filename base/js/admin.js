@@ -249,15 +249,15 @@ var sowbForms = window.sowbForms || {};
 						{action: 'so_widgets_search_posts', query: query, postTypes: postTypes},
 						function (data) {
 							for (var i = 0; i < data.length; i++) {
-								if (data[i].post_title === '') {
-									data[i].post_title = '&nbsp;';
+								if (data[i].label === '') {
+									data[i].label = '&nbsp;';
 								}
 
 								// Add all the post items
 								$ul.append(
 									$('<li>')
 										.addClass('post')
-										.html(data[i].post_title + '<span>(' + data[i].post_type + ')</span>')
+										.html(data[i].label + '<span>(' + data[i].type + ')</span>')
 										.data(data[i])
 								);
 							}
@@ -284,7 +284,7 @@ var sowbForms = window.sowbForms || {};
 				$$.on('click', '.posts li', function (e) {
 					e.preventDefault();
 					var $li = $(this);
-					$$.find('input.siteorigin-widget-input').val('post: ' + $li.data('ID'));
+					$$.find('input.siteorigin-widget-input').val('post: ' + $li.data('value'));
 					$$.find('.existing-content-selector').toggle();
 				});
 

@@ -396,6 +396,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				if ( empty( $instance[$id] ) ) {
 					if( ! empty( $field['default'] ) ) {
 						$instance[$id] = $field['default'];
+					} else {
+						// If no default order is specified, just use the order of the options.
+						$instance[$id] = array_keys( $field['options'] );
 					}
 				}
 			}
