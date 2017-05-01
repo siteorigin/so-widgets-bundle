@@ -1,3 +1,15 @@
+body #elementor-editor-wrapper .elementor-panel {
+	min-width: 400px;
+}
+
+body.elementor-editor-preview #elementor-editor-wrapper #elementor-panel {
+	left: -400px;
+}
+
+body.elementor-editor-active #elementor-editor-wrapper #elementor-preview {
+	left: 400px;
+}
+
 .elementor-panel #elementor-panel-page-editor .elementor-control-content .siteorigin-widget-form,
 .siteorigin-widgets-query-builder, .siteorigin-widgets-query-builder.media-modal {
 	min-width: inherit;
@@ -192,8 +204,4 @@
 		margin-top: 5px;
 	}
 
-}
-
-.elementor-panel {
-	min-width: 400px;
 }
