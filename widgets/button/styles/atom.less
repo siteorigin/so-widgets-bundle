@@ -3,7 +3,6 @@
 .widget-function('import_google_font');
 
 @button_width: '';
-@has_button_width: false;
 @button_color: #41a9d5;
 @border_color: darken(@button_color, 15%);
 @text_color: #FFFFFF;
@@ -20,10 +19,9 @@
 
 	a {
 		.box-sizing(border-box);
-		.btn_width() when( @has_button_width = true) {
+		& when( isnumber( @button_width ) ) {
 			width: @button_width;
 		}
-		.btn_width();
 		.font(@button_font, @button_font_weight);
 
 		font-size: @font_size;
@@ -41,13 +39,12 @@
 
         .sow-icon-image,
         [class^="sow-icon-"] {
-            .icon-margins() when (@has_text = true) {
+            & when ( @has_text ) {
                 margin: -0.1em 0.75em -0.2em -0.75em;
             }
-            .icon-margins() when not (@has_text = true) {
+            & when not ( @has_text ) {
                 margin: 0;
             }
-            .icon-margins();
         }
 
 		&:visited,
