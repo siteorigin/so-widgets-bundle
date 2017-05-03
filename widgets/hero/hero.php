@@ -387,7 +387,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 
 	function wrapper_class_filter( $classes, $instance ){
-		if( $instance['design']['fittext'] ) {
+		if( ! empty( $instance['design']['fittext'] ) ) {
 			$classes[] = 'so-widget-fittext-wrapper';
 			wp_enqueue_script( 'sow-fittext' );
 		}
@@ -395,8 +395,8 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 
 	function wrapper_data_filter( $data, $instance ) {
-		if( $instance['design']['fittext'] ) {
-			$data['fit-text-compressor'] = $instance['fittext_compressor'];
+		if( ! empty( $instance['design']['fittext'] ) && ! empty( $instance['design']['fittext_compressor'] ) ) {
+			$data['fit-text-compressor'] = $instance['design']['fittext_compressor'];
 		}
 		return $data;
 	}
