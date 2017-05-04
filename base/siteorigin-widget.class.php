@@ -1238,7 +1238,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$f_style[0],
 					isset( $f_style[1] ) ? $f_style[1] : false,
 					isset( $f_style[2] ) ? $f_style[2] : array(),
-					!empty( $f_script[3] ) ? $f_script[3] : SOW_BUNDLE_VERSION,
+					!empty( $f_style[3] ) ? $f_style[3] : SOW_BUNDLE_VERSION,
 					isset( $f_style[4] ) ? $f_style[4] : "all"
 				);
 			}
