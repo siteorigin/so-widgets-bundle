@@ -164,7 +164,18 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						),
 						'label'       => __( 'Keep map centered', 'so-widgets-bundle' ),
 						'description' => __( 'Keeps the map centered when it\'s container is resized.', 'so-widgets-bundle' )
-					)
+					),
+					'fallback_image' => array(
+						'type' => 'media',
+						'label' => __( 'Fallback Image', 'so-widgets-bundle' ),
+						'description' => __( 'This image will be displayed if there are any problems with displaying the specified map.', 'so-widgets-bundle' ),
+						'library' => 'image',
+					),
+					'fallback_image_size' => array(
+						'type' => 'select',
+						'label' => __( 'Fallback Image Size', 'so-widgets-bundle' ),
+						'options' => siteorigin_widgets_get_image_sizes(),
+					),
 				)
 			),
 			'markers'         => array(
@@ -483,10 +494,19 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'api_key'           => $instance['api_key_section']['api_key'],
 			));
 
+			$fallback_image = '';
+			if ( ! empty ( $instance['settings']['fallback_image'] ) ) {
+				$fallback_image = siteorigin_widgets_get_attachment_image(
+					$instance['settings']['fallback_image'],
+					$instance['settings']['fallback_image_size'],
+					false );
+			}
+
 			return array(
 				'map_id'   => md5( $instance['map_center'] ),
 				'height'   => $settings['height'],
 				'map_data' => $map_data,
+				'fallback_image_data' => array( 'img' => $fallback_image ),
 			);
 		}
 	}

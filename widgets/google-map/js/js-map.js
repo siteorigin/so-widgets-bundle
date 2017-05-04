@@ -404,6 +404,30 @@ jQuery(function ($) {
 				apiUrl += '&key=' + apiKey;
 			}
 
+			// This allows us to "catch" Google Maps JavaScript API errors and do a bit of custom handling. In this case,
+			// we display a user-specified fallback image if there is one.
+			if ( window.console && window.console.error ) {
+				var errLog = window.console.error;
+
+				sowb.onLoadMapsApiError = function ( error ) {
+					var matchError = error.match( /^Google Maps API (error|warning): ([^\s]*)\s([^\s]*)(?:\s(.*))?/ );
+					if ( matchError[0] ) {
+						$( '.sow-google-map-canvas' ).each( function ( index, element ) {
+							var $this = $( element );
+							if ( $this.data( 'fallbackImage' ) ) {
+								var imgData = $this.data( 'fallbackImage' );
+								if ( imgData.hasOwnProperty( 'img' ) ) {
+									$this.append( imgData.img );
+								}
+							}
+						} );
+					}
+					errLog.apply( window.console, arguments );
+				};
+
+				window.console.error = sowb.onLoadMapsApiError;
+			}
+
 			$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );
 		}
 	};
