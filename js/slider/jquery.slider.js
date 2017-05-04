@@ -102,9 +102,8 @@ jQuery( function($){
 
 				// If we're inside a fittext wrapper, wait for it to complete, before setting up the slider.
                 var fitTextWrapper = $$.closest('.so-widget-fittext-wrapper');
-                if ( fitTextWrapper.length > 0 && ! $$.data('fitTextDone') ) {
+                if ( fitTextWrapper.length > 0 && ! fitTextWrapper.data('fitTextDone') ) {
                     fitTextWrapper.on('fitTextDone', function () {
-                        $$.data('fitTextDone', true);
                         setupSlider();
                     });
                     return;
