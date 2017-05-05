@@ -459,11 +459,20 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			}
 		}
 
+		$fallback_image = '';
+		if ( ! empty ( $instance['settings']['fallback_image'] ) ) {
+			$fallback_image = siteorigin_widgets_get_attachment_image(
+				$instance['settings']['fallback_image'],
+				$instance['settings']['fallback_image_size'],
+				false );
+		}
+
 		if ( $settings['map_type'] == 'static' ) {
 			return array(
-				'src_url'         => $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array() ),
-				'destination_url' => $instance['settings']['destination_url'],
-				'new_window'      => $instance['settings']['new_window'],
+				'src_url'             => $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array() ),
+				'destination_url'     => $instance['settings']['destination_url'],
+				'new_window'          => $instance['settings']['new_window'],
+				'fallback_image_data' => array( 'img' => $fallback_image ),
 			);
 		} else {
 			$markers         = $instance['markers'];
@@ -494,14 +503,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'api_key'           => $instance['api_key_section']['api_key'],
 			));
 
-			$fallback_image = '';
-			if ( ! empty ( $instance['settings']['fallback_image'] ) ) {
-				$fallback_image = siteorigin_widgets_get_attachment_image(
-					$instance['settings']['fallback_image'],
-					$instance['settings']['fallback_image_size'],
-					false );
-			}
-
 			return array(
 				'map_id'   => md5( $instance['map_center'] ),
 				'height'   => $settings['height'],
@@ -511,15 +512,24 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		}
 	}
 
-	public function enqueue_widget_scripts() {
-		wp_enqueue_script( 'sow-google-map' );
+	public function enqueue_widget_scripts( $instance ) {
+		if ( $instance['settings']['map_type'] == 'interactive' ) {
+			wp_enqueue_script( 'sow-google-map' );
 
-		wp_enqueue_style(
-			'sow-google-map',
-			plugin_dir_url(__FILE__) . 'css/style.css',
-			array(),
-			SOW_BUNDLE_VERSION
-		);
+			wp_enqueue_style(
+				'sow-google-map',
+				plugin_dir_url(__FILE__) . 'css/style.css',
+				array(),
+				SOW_BUNDLE_VERSION
+			);
+		} else {
+			wp_enqueue_script(
+				'sow-google-map-static',
+				plugin_dir_url( __FILE__ ) . 'js/static-map' . SOW_BUNDLE_JS_SUFFIX . '.js',
+				array( 'jquery' ),
+				SOW_BUNDLE_VERSION
+			);
+		}
 	}
 
 
