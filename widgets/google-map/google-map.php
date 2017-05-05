@@ -172,9 +172,8 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						'library' => 'image',
 					),
 					'fallback_image_size' => array(
-						'type' => 'select',
+						'type' => 'image-size',
 						'label' => __( 'Fallback Image Size', 'so-widgets-bundle' ),
-						'options' => siteorigin_widgets_get_image_sizes(),
 					),
 				)
 			),
