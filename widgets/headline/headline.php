@@ -350,7 +350,13 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 	function wrapper_class_filter( $classes, $instance ){
 		if( $instance[ 'fittext' ] ) {
 			$classes[] = 'so-widget-fittext-wrapper';
-			wp_enqueue_script( 'sow-fittext' );
+			wp_enqueue_script(
+				'sow-fittext',
+				plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/sow.jquery.fittext' . SOW_BUNDLE_JS_SUFFIX . '.js',
+				array( 'jquery' ),
+				'1.2',
+				true
+			);
 		}
 		return $classes;
 	}
