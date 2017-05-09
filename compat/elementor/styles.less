@@ -1,4 +1,17 @@
-.elementor-panel #elementor-panel-page-editor .elementor-control-content .siteorigin-widget-form {
+body #elementor-editor-wrapper .elementor-panel {
+	min-width: 400px;
+}
+
+body.elementor-editor-preview #elementor-editor-wrapper #elementor-panel {
+	left: -400px;
+}
+
+body.elementor-editor-active #elementor-editor-wrapper #elementor-preview {
+	left: 400px;
+}
+
+.elementor-panel #elementor-panel-page-editor .elementor-control-content .siteorigin-widget-form,
+.siteorigin-widgets-query-builder, .siteorigin-widgets-query-builder.media-modal {
 	min-width: inherit;
 
 	.wp-picker-container {
@@ -71,8 +84,19 @@
 
 			.sow-measurement-select-unit {
 				min-width: inherit;
-				width: 33%;
+				width: 32%;
 				margin-left: 1px;
+			}
+		}
+
+		&.siteorigin-widget-field-type-posts {
+
+			select[multiple] {
+				height: inherit;
+			}
+
+			.siteorigin-widget-field-type-date-range > div input[type="text"].datepicker {
+				width: 100%;
 			}
 		}
 

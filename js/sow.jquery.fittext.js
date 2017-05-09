@@ -45,7 +45,7 @@ jQuery( function( $ ){
 
     // Apply FitText to all Widgets Bundle FitText wrappers
 	sowb.runFitText = function () {
-		$( '.so-widget-fittext-wrapper' ).each(function(index, element) {
+		$( '.so-widget-fittext-wrapper' ).each( function() {
 			var fitTextWrapper = $( this );
 
 			var compressor = fitTextWrapper.data( 'fitTextCompressor' ) || 0.85;
@@ -55,6 +55,7 @@ jQuery( function( $ ){
 					maxFontSize: $$.css( 'font-size' )
 				} );
 			} );
+			fitTextWrapper.data( 'fitTextDone', true );
 			fitTextWrapper.trigger( 'fitTextDone' );
 		});
 	};
