@@ -348,7 +348,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 	}
 
 	function wrapper_class_filter( $classes, $instance ){
-		if( $instance[ 'fittext' ] ) {
+		if( ! empty( $instance[ 'fittext' ] ) ) {
 			$classes[] = 'so-widget-fittext-wrapper';
 			wp_enqueue_script(
 				'sow-fittext',
@@ -362,7 +362,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 	}
 
 	function wrapper_data_filter( $data, $instance ) {
-		if( $instance['fittext'] ) {
+		if( ! empty( $instance['fittext'] ) && ! empty( $instance['fittext_compressor'] ) ) {
 			$data['fit-text-compressor'] = $instance['fittext_compressor'];
 		}
 		return $data;
