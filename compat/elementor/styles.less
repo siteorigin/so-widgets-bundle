@@ -10,8 +10,7 @@ body.elementor-editor-active #elementor-editor-wrapper #elementor-preview {
 	left: 400px;
 }
 
-.elementor-panel #elementor-panel-page-editor .elementor-control-content .siteorigin-widget-form,
-.siteorigin-widgets-query-builder, .siteorigin-widgets-query-builder.media-modal {
+.elementor-panel #elementor-panel-page-editor .elementor-control-content .siteorigin-widget-form {
 	min-width: inherit;
 
 	.wp-picker-container {
@@ -161,7 +160,8 @@ body.elementor-editor-active #elementor-editor-wrapper #elementor-preview {
 		font-size: 11px;
 	}
 
-	select, input[type=text] {
+	select,
+	input[type=text] {
 		margin: 1px;
 		border-radius: 0;
 		font-weight: inherit;
@@ -171,6 +171,17 @@ body.elementor-editor-active #elementor-editor-wrapper #elementor-preview {
 		color: #32373c;
 		outline: 0;
 		transition: 50ms border-color ease-in-out;
+
+		max-width: 100%;
+	}
+
+	select[multiple] {
+		min-height: 83px;
+	}
+
+	input[type="text"].datepicker {
+		width: auto;
+		max-width: 100%;
 	}
 
 	.ui-autocomplete {
