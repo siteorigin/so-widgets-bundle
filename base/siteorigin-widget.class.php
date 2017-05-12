@@ -216,13 +216,30 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		);
 		$wrapper_classes = array_map( 'sanitize_html_class', $wrapper_classes );
 
+		$wrapper_data_string = $this->get_wrapper_data( $instance );
+
 		do_action( 'siteorigin_widgets_before_widget_' . $this->id_base, $instance, $this );
 		echo $args['before_widget'];
-		echo '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '">';
+		echo '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"' . $wrapper_data_string . '>';
 		echo $template_html;
 		echo '</div>';
 		echo $args['after_widget'];
 		do_action( 'siteorigin_widgets_after_widget_' . $this->id_base, $instance, $this );
+	}
+
+	private function get_wrapper_data( $instance ) {
+		$data = apply_filters(
+			'siteorigin_widgets_wrapper_data_' . $this->id_base,
+			array(),
+			$instance,
+			$this
+		);
+		$wrapper_attr_string = '';
+		foreach ( $data as $name => $value ) {
+			$wrapper_attr_string = ' data-' . esc_html( $name ) . '="' . esc_attr( $value ) . '"';
+		}
+
+		return $wrapper_attr_string;
 	}
 
 	/**
@@ -1221,7 +1238,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$f_style[0],
 					isset( $f_style[1] ) ? $f_style[1] : false,
 					isset( $f_style[2] ) ? $f_style[2] : array(),
-					!empty( $f_script[3] ) ? $f_script[3] : SOW_BUNDLE_VERSION,
+					!empty( $f_style[3] ) ? $f_style[3] : SOW_BUNDLE_VERSION,
 					isset( $f_style[4] ) ? $f_style[4] : "all"
 				);
 			}
