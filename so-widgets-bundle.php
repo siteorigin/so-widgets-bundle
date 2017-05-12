@@ -708,6 +708,20 @@ class SiteOrigin_Widgets_Bundle {
 			'1.2',
 			true
 		);
+		wp_register_script(
+			'dessandro-imagesLoaded',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/imagesloaded.pkgd' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			'3.2.0',
+			true
+		);
+		wp_register_script(
+			'dessandro-packery',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/packery.pkgd' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			'1.4.3',
+			true
+		);
 	}
 
 	/**
