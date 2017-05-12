@@ -47,6 +47,7 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 				'options' => array(
 					'link'   => __( 'Links', 'so-widgets-bundle' ),
 					'button' => __( 'Buttons', 'so-widgets-bundle' ),
+					'text' => __( 'Text', 'so-widgets-bundle' ),
 				),
 			),
 			'color'          => array(
