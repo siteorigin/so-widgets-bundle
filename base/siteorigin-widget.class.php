@@ -468,6 +468,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			}
 			?>
 			<input type="hidden" name="<?php echo $this->get_field_name('_sow_form_id') ?>" value="<?php echo esc_attr( $instance['_sow_form_id'] ) ?>" class="siteorigin-widgets-form-id" />
+			<input type="hidden" name="<?php echo $this->get_field_name('_sow_form_timestamp') ?>" value="<?php echo ! empty( $instance['_sow_form_timestamp'] ) ? esc_attr( $instance['_sow_form_timestamp'] ) : '' ?>" class="siteorigin-widgets-form-timestamp" />
 		</div>
 		<div class="siteorigin-widget-form-no-styles">
 			<?php $this->scripts_loading_message() ?>
@@ -568,7 +569,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			wp_localize_script( 'siteorigin-widget-admin', 'soWidgets', array(
 				'ajaxurl' => wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ),
-				'sure' => __('Are you sure?', 'so-widgets-bundle')
+				'sure' => __('Are you sure?', 'so-widgets-bundle'),
+				'backup' => array(
+					'newerVersion' => __(
+						'There is a newer version of this widget\'s content available.',
+						'so-widgets-bundle'
+					),
+					'restore' => __( 'Restore', 'so-widgets-bundle' ),
+					'dismiss' => __( 'Dismiss', 'so-widgets-bundle' ),
+				),
 			) );
 
 			global $wp_customize;

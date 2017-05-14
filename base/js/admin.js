@@ -143,12 +143,43 @@ var sowbForms = window.sowbForms || {};
 				$teaser.find('.dashicons-dismiss').click(function () {
 					var $$ = $(this);
 					$.get($$.data('dismiss-url'));
-					console.log($$.data('dismiss-url'));
 
 					$teaser.slideUp('normal', function () {
 						$teaser.remove();
 					});
 				});
+
+				var _sow_form_id = $el.find( '> .siteorigin-widgets-form-id' ).val();
+				var $timestampField = $el.find( '> .siteorigin-widgets-form-timestamp' );
+				var _sow_form_timestamp = parseInt( $timestampField.val() || 0 );
+				var data = JSON.parse( localStorage.getItem( _sow_form_id ) );
+				if ( data ) {
+					if ( data['_sow_form_timestamp'] > _sow_form_timestamp ) {
+						var $newerNotification = $( '<div class="siteorigin-widget-form-notification">' +
+							'<span>' + soWidgets.backup.newerVersion + '</span>' +
+							'<a class="button button-small so-backup-restore">' + soWidgets.backup.restore + '</a>' +
+							'<a class="button button-small so-backup-dismiss">' + soWidgets.backup.dismiss + '</a>' +
+							'</div>' );
+						$el.prepend( $newerNotification );
+						$newerNotification.find( '.so-backup-restore' ).click( function () {
+							console.log( 'RESTORE BACKUP' );
+							// localStorage.removeItem( _sow_form_id );
+						} );
+						$newerNotification.find( '.so-backup-dismiss' ).click( function () {
+							console.log( 'DISMISS BACKUP' );
+							localStorage.removeItem( _sow_form_id );
+							$newerNotification.remove();
+						} );
+					} else {
+						localStorage.removeItem( _sow_form_id );
+					}
+				}
+
+				$el.change( function () {
+					$timestampField.val( new Date().getTime() );
+					var data = sowbForms.getWidgetFormValues( $el );
+					localStorage.setItem( _sow_form_id, JSON.stringify( data ) );
+				} );
 			}
 			else {
 				$mainForm = $el.closest('.siteorigin-widget-form-main');
