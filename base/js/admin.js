@@ -153,7 +153,7 @@ var sowbForms = window.sowbForms || {};
 				var $timestampField = $el.find( '> .siteorigin-widgets-form-timestamp' );
 				var _sow_form_timestamp = parseInt( $timestampField.val() || 0 );
 				var data = JSON.parse( localStorage.getItem( _sow_form_id ) );
-				if ( data ) {
+				if ( ! $mainForm.data( 'isBackup' ) && data ) {
 					if ( data['_sow_form_timestamp'] > _sow_form_timestamp ) {
 						var $newerNotification = $( '<div class="siteorigin-widget-form-notification">' +
 							'<span>' + soWidgets.backup.newerVersion + '</span>' +
@@ -162,11 +162,23 @@ var sowbForms = window.sowbForms || {};
 							'</div>' );
 						$el.prepend( $newerNotification );
 						$newerNotification.find( '.so-backup-restore' ).click( function () {
-							console.log( 'RESTORE BACKUP' );
-							// localStorage.removeItem( _sow_form_id );
+							$.get(
+								soWidgets.ajaxurl,
+								{
+									action: 'so_widget_render_form',
+									data: data,
+									widget_class: $mainForm.data( 'class' ),
+								},
+								function ( result ) {
+									var $result = $( result );
+									$result.data( 'isBackup', true );
+									var $formContainer = $mainForm.parent();
+									$formContainer.html( $result );
+
+								}
+							);
 						} );
 						$newerNotification.find( '.so-backup-dismiss' ).click( function () {
-							console.log( 'DISMISS BACKUP' );
 							localStorage.removeItem( _sow_form_id );
 							$newerNotification.remove();
 						} );
