@@ -249,9 +249,16 @@ var sowbForms = window.sowbForms || {};
 					min: parseInt($input.attr('min')),
 					value: parseInt($input.val()),
 					slide: function (event, ui) {
-						$input.val(parseInt(ui.value));
-						$input.trigger('change');
+						$input.val( parseInt( ui.value ) );
+						$input.trigger( 'change' );
+					},
+					change: function( event, ui ) {
 						$$.find('.siteorigin-widget-slider-value').html(ui.value);
+					},
+				});
+				$input.change(function(event, data) {
+					if ( ! ( data && data.silent ) ) {
+						$c.slider( 'value', parseInt( $input.val() ) );
 					}
 				});
 			});
@@ -953,13 +960,8 @@ var sowbForms = window.sowbForms || {};
 			}
 
 			// This is the end, so we need to set the value on the field here.
-			if ( $$.attr( 'type' ) === 'checkbox' )  {
+			if ( $$.attr( 'type' ) === 'checkbox' || $$.attr( 'type' ) === 'radio' )  {
 				$$.prop( 'checked', value );
-			}
-			else if ( $$.attr( 'type' ) === 'radio' ) {
-				if ($$.is(':checked')) {
-					$$.prop( 'checked', value );
-				}
 			}
 			else if ( $$.prop( 'tagName' ) === 'TEXTAREA' && $$.hasClass( 'wp-editor-area' ) ) {
 				// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
