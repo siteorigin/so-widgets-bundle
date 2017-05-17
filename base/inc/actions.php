@@ -1,31 +1,5 @@
 <?php
 
-function siteorigin_widget_render_form() {
-	if ( empty( $_GET['widget_class'] ) ) {
-		exit();
-	}
-
-	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
-		exit();
-	}
-
-	// Get the widget from the widget factory
-	global $wp_widget_factory;
-	/** @var SiteOrigin_Widget $widget */
-	$widget = ! empty( $wp_widget_factory->widgets[ $_GET['widget_class'] ] ) ? $wp_widget_factory->widgets[ $_GET['widget_class'] ] : false;
-
-	if ( ! is_a( $widget, 'SiteOrigin_Widget' ) ) {
-		exit();
-	}
-
-	$instance = stripslashes_deep( $_GET['data'] );
-
-	$widget->form( $instance );
-
-	exit();
-}
-add_action( 'wp_ajax_so_widget_render_form', 'siteorigin_widget_render_form' );
-
 /**
  * Action for displaying the widget preview.
  */

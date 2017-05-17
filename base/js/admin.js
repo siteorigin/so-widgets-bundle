@@ -19,7 +19,7 @@ var sowbForms = window.sowbForms || {};
 			}
 
 			// Skip this if we've already set up the form
-			if ($el.is('.siteorigin-widget-form-main')) {
+			if ( $el.is('.siteorigin-widget-form-main') ) {
 				if ($el.data('sow-form-setup') === true) {
 					return true;
 				}
@@ -153,7 +153,7 @@ var sowbForms = window.sowbForms || {};
 				var $timestampField = $el.find( '> .siteorigin-widgets-form-timestamp' );
 				var _sow_form_timestamp = parseInt( $timestampField.val() || 0 );
 				var data = JSON.parse( localStorage.getItem( _sow_form_id ) );
-				if ( ! $mainForm.data( 'isBackup' ) && data ) {
+				if ( data ) {
 					if ( data['_sow_form_timestamp'] > _sow_form_timestamp ) {
 						var $newerNotification = $( '<div class="siteorigin-widget-form-notification">' +
 							'<span>' + soWidgets.backup.newerVersion + '</span>' +
@@ -161,22 +161,9 @@ var sowbForms = window.sowbForms || {};
 							'<a class="button button-small so-backup-dismiss">' + soWidgets.backup.dismiss + '</a>' +
 							'</div>' );
 						$el.prepend( $newerNotification );
-						$newerNotification.find( '.so-backup-restore' ).click( function () {
-							$.get(
-								soWidgets.ajaxurl,
-								{
-									action: 'so_widget_render_form',
-									data: data,
-									widget_class: $mainForm.data( 'class' ),
-								},
-								function ( result ) {
-									var $result = $( result );
-									$result.data( 'isBackup', true );
-									var $formContainer = $mainForm.parent();
-									$formContainer.html( $result );
 
-								}
-							);
+						$newerNotification.find( '.so-backup-restore' ).click( function () {
+							sowbForms.setWidgetFormValues( $mainForm, data );
 						} );
 						$newerNotification.find( '.so-backup-dismiss' ).click( function () {
 							localStorage.removeItem( _sow_form_id );
@@ -434,6 +421,7 @@ var sowbForms = window.sowbForms || {};
 
 			// Give plugins a chance to influence the form
 			$el.trigger('sowsetupform', $fields).data('sow-form-setup', true);
+
 			$fields.trigger('sowsetupformfield');
 
 			$el.find('.siteorigin-widget-field-repeater-item').trigger('updateFieldPositions');
@@ -928,6 +916,72 @@ var sowbForms = window.sowbForms || {};
 			}
 		});
 		return data;
+	};
+
+	sowbForms.setWidgetFormValues = function (formContainer, data) {
+
+		formContainer.find('*[name]').each(function () {
+			var $$ = $(this);
+			var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec($$.attr('name'));
+
+			if (name === undefined) {
+				return true;
+			}
+
+			name = name[1];
+			var parts = name.split('][');
+
+			// Make sure we either have numbers or strings
+			parts = parts.map(function (e) {
+				if (!isNaN(parseFloat(e)) && isFinite(e)) {
+					return parseInt(e);
+				}
+				else {
+					return e;
+				}
+			});
+
+			var sub = data;
+			var value;
+			for (var i = 0; i < parts.length; i++) {
+				if (i === parts.length - 1) {
+					value = sub[ parts[ i ] ];
+				}
+				else {
+					sub = sub[ parts[ i ] ];
+				}
+			}
+
+			// This is the end, so we need to set the value on the field here.
+			if ( $$.attr( 'type' ) === 'checkbox' )  {
+				$$.prop( 'checked', value );
+			}
+			else if ( $$.attr( 'type' ) === 'radio' ) {
+				if ($$.is(':checked')) {
+					$$.prop( 'checked', value );
+				}
+			}
+			else if ( $$.prop( 'tagName' ) === 'TEXTAREA' && $$.hasClass( 'wp-editor-area' ) ) {
+				// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
+				var editor = null;
+				if ( typeof tinyMCE !== 'undefined' ) {
+					editor = tinyMCE.get( $$.attr( 'id' ) );
+				}
+
+				if ( editor !== null && typeof( editor.getContent ) === "function" && ! editor.isHidden() ) {
+					editor.setContent( value );
+				}
+				else {
+					$$.val( value );
+				}
+			}
+			else {
+				$$.val( value );
+			}
+
+			$$.trigger( 'change' );
+
+		});
 	};
 
 	// When we click on a widget top

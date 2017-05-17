@@ -48,7 +48,7 @@
 
 	    $search.keyup( searchIcons ).change( searchIcons );
 
-        var rerenderIcons = function(){
+        var rerenderIcons = function() {
             var family = $is.find('select.siteorigin-widget-icon-family').val();
             var container = $is.find('.siteorigin-widget-icon-icons');
 
@@ -100,7 +100,8 @@
 
                             $remove.show();
                         }
-                        $v.trigger('change');
+
+                        $v.trigger( 'change', { isRendering: true });
 
                         // Hide the icon selector
                         $is.slideUp();
@@ -163,6 +164,12 @@
             $is.find('.siteorigin-widget-icon-icons').empty();
             changeIconFamily();
         });
+
+		$v.change( function ( event, data ) {
+			if ( ! ( data && data.isRendering ) ) {
+				rerenderIcons();
+			}
+		} );
     } );
 
 } )( jQuery );
