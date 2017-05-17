@@ -960,10 +960,11 @@ var sowbForms = window.sowbForms || {};
 			}
 
 			// This is the end, so we need to set the value on the field here.
-			if ( $$.attr( 'type' ) === 'checkbox' || $$.attr( 'type' ) === 'radio' )  {
+			if ( $$.attr( 'type' ) === 'checkbox' )  {
 				$$.prop( 'checked', value );
-			}
-			else if ( $$.prop( 'tagName' ) === 'TEXTAREA' && $$.hasClass( 'wp-editor-area' ) ) {
+			} else if ( $$.attr( 'type' ) === 'radio' ) {
+				$$.prop( 'checked', value === $$.val() );
+			} else if ( $$.prop( 'tagName' ) === 'TEXTAREA' && $$.hasClass( 'wp-editor-area' ) ) {
 				// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
 				var editor = null;
 				if ( typeof tinyMCE !== 'undefined' ) {
