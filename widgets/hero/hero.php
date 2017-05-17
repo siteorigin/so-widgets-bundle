@@ -389,14 +389,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	function wrapper_class_filter( $classes, $instance ){
 		if( ! empty( $instance['design']['fittext'] ) ) {
 			$classes[] = 'so-widget-fittext-wrapper';
-			//TODO: find better way to deal with shared script dependencies like this.
-			wp_enqueue_script(
-				'sow-fittext',
-				plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/sow.jquery.fittext' . SOW_BUNDLE_JS_SUFFIX . '.js',
-				array( 'jquery' ),
-				'1.2',
-				true
-			);
+			wp_enqueue_script( 'sow-fittext' );
 		}
 		return $classes;
 	}
