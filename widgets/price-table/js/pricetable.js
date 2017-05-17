@@ -1,5 +1,5 @@
 jQuery( function($){
-    $('.ow-pt-columns-atom.sow-equalize-row-heights').each(function () {
+    $('.so-widget-sow-price-table .sow-equalize-row-heights').each(function () {
         var $pt = $(this);
         var equalizeHeights = function ( selector ) {
             var maxHeight = 0;
@@ -33,7 +33,7 @@ jQuery( function($){
                 'max-height' : 24
             });
 
-            if($$.data('icon-color') != '') {
+            if($$.data('icon-color') !== '') {
                 svg.find('path').css( 'fill', $$.data('icon-color') );
             }
             else {
