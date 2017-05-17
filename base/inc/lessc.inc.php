@@ -8,7 +8,7 @@
 
 // Register autoloader for non-composer installations
 if ( !class_exists( 'Less_Parser' ) ) {
-	require_once __DIR__ . '/lib/Less/Autoloader.php';
+	require_once dirname( __FILE__ ) . '/lib/Less/Autoloader.php';
 	Less_Autoloader::register();
 }
 
@@ -67,11 +67,11 @@ class lessc {
 			$this->setOption( $name, $value);
 		}
 	}
-	
+
 	public function setOption( $name, $value ) {
 		$this->options[$name] = $value;
 	}
-	
+
 	public function parse( $buffer, $presets = array() ) {
 
 		$this->setVariables( $presets );
