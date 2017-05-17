@@ -218,6 +218,12 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 								'type' => 'text',
 								'label' => __( 'Info Window max width', 'so-widgets-bundle' )
 							),
+							'custom_marker_icon'       => array(
+								'type'        => 'media',
+								'default'     => '',
+								'label'       => __( 'Custom Marker icon', 'so-widgets-bundle' ),
+								'description' => __( 'Replace the default map marker with your own image for each marker.', 'so-widgets-bundle' )
+							),
 						)
 					),
 					'info_display' => array(
@@ -464,6 +470,15 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				$directions = siteorigin_widgets_underscores_to_camel_case( $instance['directions'] );
 			}
 
+			$markerpos = isset( $markers['marker_positions'] ) ? $markers['marker_positions'] : '';
+			if( ! empty($markerpos)) {
+				foreach ($markerpos as $key => $pos) {
+					if(! empty($pos['custom_marker_icon'])) {
+						$markerpos[$key]['custom_marker_icon'] = wp_get_attachment_image_src( $pos['custom_marker_icon'] )[0];
+					}
+				}
+			}
+
 			$map_data = siteorigin_widgets_underscores_to_camel_case( array(
 				'address'           => $instance['map_center'],
 				'zoom'              => $settings['zoom'],
@@ -476,7 +491,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'marker_at_center'  => !empty( $markers['marker_at_center'] ),
 				'marker_info_display' => $markers['info_display'],
 				'marker_info_multiple' => $markers['info_multiple'],
-				'marker_positions'  => isset( $markers['marker_positions'] ) ? $markers['marker_positions'] : '',
+				'marker_positions'  => ! empty( $markerpos ) ? $markerpos : '',
 				'map_name'          => ! empty( $styles ) ? $styles['map_name'] : '',
 				'map_styles'        => ! empty( $styles ) ? $styles['styles'] : '',
 				'directions'        => $directions,
