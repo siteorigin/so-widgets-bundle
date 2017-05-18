@@ -17,7 +17,7 @@
                 var $container = $(element);
                 var $textarea = $container.find('textarea');
                 var id = $textarea.attr('id');
-                if( typeof tinymce != 'undefined') {
+                if( typeof tinymce !== 'undefined') {
                     if (id.indexOf('__i__') > -1) return;
                     var mceSettings = $container.data('mceSettings');
                     var widgetIdBase = $container.data('widgetIdBase');
@@ -31,8 +31,11 @@
                     }
                     var content;
                     var curEd = tinymce.get(id);
-                    if (curEd != null) {
-                        content = curEd.getContent();
+                    if ( curEd !== null ) {
+                        // Only keep content when we're not in Visual Composer.
+	                    if ( typeof vc === 'undefined' && $container.closest('.vc_active').length === 0 ) {
+                            content = curEd.getContent();
+	                    }
                         curEd.remove();
                     }
                     var setupEditor = function (editor) {
@@ -76,7 +79,7 @@
                 quicktags(tinyMCEPreInit.qtInit[id]);
 
                 $(this).on( 'click', function(event) {
-					
+
                     var $target = $(event.target);
                     if ( $target.hasClass( 'wp-switch-editor' ) ) {
 						mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
@@ -94,7 +97,7 @@
 								editor.setContent(window.switchEditors.wpautop(content));
 							}
 						}
-						
+
                         $(this).find('+ .siteorigin-widget-tinymce-selected-editor').val(mode);
                     }
                 });

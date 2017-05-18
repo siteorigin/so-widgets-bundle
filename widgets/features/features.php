@@ -106,7 +106,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					),
 
 					'text' => array(
-						'type' => 'text',
+						'type' => 'tinymce',
 						'label' => __('Text', 'so-widgets-bundle')
 					),
 
@@ -124,7 +124,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 
 			'fonts' => array(
 				'type' => 'section',
-				'label' => __( 'Fonts', 'so-widgets-bundle' ),
+				'label' => __( 'Font Design', 'so-widgets-bundle' ),
 				'hide' => true,
 				'fields' => array(
 					'title_options' => array(
@@ -211,6 +211,12 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				'default' => '24px',
 			),
 
+			'icon_size_custom' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Use icon size for custom icon', 'so-widgets-bundle' ),
+				'default' => false,
+			),
+
 			'per_row' => array(
 				'type' => 'number',
 				'label' => __('Features per row', 'so-widgets-bundle'),
@@ -271,6 +277,8 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		}
 
         $less_vars['container_size'] = $instance['container_size'];
+        $less_vars['icon_size'] = $instance['icon_size'];
+        $less_vars['use_icon_size'] = empty( $instance['icon_size_custom'] ) ? 'false' : 'true';
 
 		return $less_vars;
 	}

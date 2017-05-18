@@ -1,4 +1,5 @@
-/* globals jQuery, sowb */
+/* globals jQuery , sowb */
+
 var sowb = window.sowb || {};
 
 jQuery( function ( $ ) {
@@ -10,3 +11,5 @@ jQuery( function ( $ ) {
 
 	$( sowb ).on( 'setup_widgets', sowb.setupVideoPlayers );
 } );
+
+window.sowb = sowb;

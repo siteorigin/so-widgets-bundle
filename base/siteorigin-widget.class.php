@@ -91,6 +91,18 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		return method_exists( $this, 'initialize_form' ) ? $this->initialize_form() : array();
 	}
 
+	private function get_cached_widget_form() {
+		$cache_key = $this->id_base . '_form';
+		$form_options = wp_cache_get( $cache_key, 'siteorigin_widgets' );
+
+		if ( empty( $form_options ) ) {
+			$form_options = $this->get_widget_form();
+			wp_cache_set( $cache_key, $form_options, 'siteorigin_widgets' );
+		}
+
+		return $form_options;
+	}
+
 	/**
 	 * Check if a child widget implements a specific form type.
 	 *
@@ -121,7 +133,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	function form_options( $parent = false ) {
 		if( empty( $this->form_options ) ) {
 			// If the widget doesn't have form_options defined from the constructor, then it might be defining them in the get_widget_form function
-			$this->form_options = $this->get_widget_form();
+			$this->form_options = $this->get_cached_widget_form();
 		}
 
 		$form_options = $this->modify_form( $this->form_options );
@@ -143,7 +155,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		if( empty( $this->form_options ) ) {
-			$form_options = $this->get_widget_form();
+			$form_options = $this->get_cached_widget_form();
 		}
 		else {
 			$form_options = $this->modify_form( $this->form_options );
@@ -216,13 +228,30 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		);
 		$wrapper_classes = array_map( 'sanitize_html_class', $wrapper_classes );
 
+		$wrapper_data_string = $this->get_wrapper_data( $instance );
+
 		do_action( 'siteorigin_widgets_before_widget_' . $this->id_base, $instance, $this );
 		echo $args['before_widget'];
-		echo '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '">';
+		echo '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"' . $wrapper_data_string . '>';
 		echo $template_html;
 		echo '</div>';
 		echo $args['after_widget'];
 		do_action( 'siteorigin_widgets_after_widget_' . $this->id_base, $instance, $this );
+	}
+
+	private function get_wrapper_data( $instance ) {
+		$data = apply_filters(
+			'siteorigin_widgets_wrapper_data_' . $this->id_base,
+			array(),
+			$instance,
+			$this
+		);
+		$wrapper_attr_string = '';
+		foreach ( $data as $name => $value ) {
+			$wrapper_attr_string = ' data-' . esc_html( $name ) . '="' . esc_attr( $value ) . '"';
+		}
+
+		return $wrapper_attr_string;
 	}
 
 	/**
@@ -234,7 +263,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	function generate_and_enqueue_instance_styles( $instance ) {
 		if( empty( $form_options ) ) {
-			$form_options = $this->get_widget_form();
+			$form_options = $this->get_cached_widget_form();
 		}
 		else {
 			$form_options = $this->modify_form( $this->form_options );
@@ -367,6 +396,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				if ( empty( $instance[$id] ) ) {
 					if( ! empty( $field['default'] ) ) {
 						$instance[$id] = $field['default'];
+					} else {
+						// If no default order is specified, just use the order of the options.
+						$instance[$id] = array_keys( $field['options'] );
 					}
 				}
 			}
@@ -548,10 +580,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			}
 		}
 
-		if( $this->using_posts_selector() ) {
-			siteorigin_widget_post_selector_enqueue_admin_scripts();
-		}
-
 		if( !empty( $form_type ) && $this->has_form( $form_type ) ) {
 			// Enqueue field scripts for the given form type
 			$form_options = $this->get_form( $form_type );
@@ -608,22 +636,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		// Give other plugins a chance to add their own
 		do_action('siteorigin_widgets_footer_admin_templates');
-	}
-
-	/**
-	 * Checks if the current widget is using a posts selector in the main form.
-	 *
-	 * @return bool
-	 */
-	function using_posts_selector(){
-		if( empty( $this->form_options ) ) {
-			$this->form_options = $this->form_options();
-		}
-
-		foreach($this->form_options as $field) {
-			if(!empty($field['type']) && $field['type'] == 'posts') return true;
-		}
-		return false;
 	}
 
 	/**
@@ -730,9 +742,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			$style = $this->get_style_name($instance);
 			$hash = $this->get_style_hash( $instance );
-			$name = $this->id_base.'-'.$style.'-'.$hash.'.css';
+			$name = $this->id_base.'-'.$style.'-'.$hash;
 
-			$wp_filesystem->delete($upload_dir['basedir'] . '/siteorigin-widgets/'.$name);
+			$wp_filesystem->delete($upload_dir['basedir'] . '/siteorigin-widgets/' . $name . '.css');
+			if ( in_array( $name, $this->generated_css ) ) {
+				$index = array_search( $name, $this->generated_css );
+				unset( $this->generated_css[$index] );
+				//Reindex array
+				$this->generated_css = array_values( $this->generated_css );
+			}
 		}
 	}
 
@@ -1221,7 +1239,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$f_style[0],
 					isset( $f_style[1] ) ? $f_style[1] : false,
 					isset( $f_style[2] ) ? $f_style[2] : array(),
-					!empty( $f_script[3] ) ? $f_script[3] : SOW_BUNDLE_VERSION,
+					!empty( $f_style[3] ) ? $f_style[3] : SOW_BUNDLE_VERSION,
 					isset( $f_style[4] ) ? $f_style[4] : "all"
 				);
 			}

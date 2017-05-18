@@ -69,7 +69,7 @@
 	@field_border_color: default;
 	@field_border_width: default;
 	@field_border_style: default;
-	@field_height: 0;
+	@field_height: default;
 
 	textarea,
 	.sow-text-field {
@@ -78,9 +78,9 @@
 		.box-sizing(border-box);
 		border-radius: @field_border_radius;
 
-		margin: @field_margin 0;
+		margin: @field_margin;
 		border: @field_border_width @field_border_style @field_border_color;
-		padding: @field_padding 0;
+		padding: @field_padding;
 		height: @field_height;
 		
 		background: @field_background;
@@ -214,8 +214,8 @@
 		}
 
 		.sow-submit:disabled {
-			color: lighten(@submit_text_color, 50%);
-			background: lighten(@submit_background_color, 50%);
+			color: lighten(@submit_text_color, 20%);
+			background: lighten(@submit_background_color, 20%);
 			border: @submit_border_width @submit_border_style lighten(@submit_border_color, 20%);
 
 		}

@@ -225,8 +225,10 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 		$any_column_has_image = false;
 		foreach ( $instance['columns'] as $column ) {
 			$any_column_has_image = $any_column_has_image || ! empty( $column['image'] );
-			foreach ( $column['features'] as &$feature ) {
-				$feature['text'] = do_shortcode( $feature['text'] );
+			if( ! empty( $column['features'] ) ) {
+				foreach ( $column['features'] as &$feature ) {
+					$feature['text'] = do_shortcode( $feature['text'] );
+				}
 			}
 			$columns[] = $column;
 		}

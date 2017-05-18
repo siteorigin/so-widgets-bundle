@@ -4,6 +4,7 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 
 	const BEAVER_BUILDER = 'Beaver Builder';
 	const ELEMENTOR = 'Elementor';
+	const VISUAL_COMPOSER = 'Visual Composer';
 
 	/**
 	 * Get the singleton instance
@@ -42,6 +43,9 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 			break;
 			case self::ELEMENTOR:
 				return class_exists( 'Elementor\\Plugin', false );
+			break;
+			case self::VISUAL_COMPOSER:
+				return class_exists( 'Vc_Manager' );
 			break;
 		}
 	}

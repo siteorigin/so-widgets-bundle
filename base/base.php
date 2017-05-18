@@ -9,6 +9,7 @@ include plugin_dir_path(__FILE__).'inc/post-selector.php';
 include plugin_dir_path(__FILE__).'inc/string-utils.php';
 include plugin_dir_path(__FILE__).'inc/attachments.php';
 include plugin_dir_path(__FILE__).'inc/actions.php';
+include plugin_dir_path(__FILE__).'inc/shortcode.php';
 
 /**
  * @param $css
