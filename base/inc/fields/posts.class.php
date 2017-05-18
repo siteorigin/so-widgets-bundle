@@ -44,7 +44,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 					'specific' => __( 'Specific', 'so-widgets-bundle' ),
 					'relative' => __( 'Relative', 'so-widgets-bundle' ),
 				),
-				'description' => __( 'Select a range between specific dates or relative the current date.', 'so-widgets-bundle' ),
+				'description' => __( 'Select a range between specific dates or relative to the current date.', 'so-widgets-bundle' ),
 				'default' => 'specific',
 				'state_emitter' => array(
 					'callback' => 'select',
