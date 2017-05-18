@@ -1,27 +1,28 @@
-@color: #b0b0b0;
-@has_color: false;
-@hover_color: #cdcdcd;
-@has_hover_color: false;
+@color: '';
+@hover_color: '';
 
 a {
 	&.so-taxonomy-link {
-		.color() when (@has_color = true) {
+		& when ( iscolor( @color ) ) {
 			color: @color;
 		}
-		.color();
 
-		.hover() when (@has_hover_color = true) {
+		& when ( iscolor( @hover_color ) ) {
 			&:hover {
 				color: @hover_color;
 			}
 		}
-		.hover();
 	}
 
 	&.so-taxonomy-button {
 		margin-top: 1em;
 		color: #fff;
-		background: @color;
+		& when ( iscolor( @color ) ) {
+			background: @color;
+		}
+		& when not ( iscolor( @color ) ) {
+			background: #b0b0b0;
+		}
 		display: inline-block;
 		margin-right: 0.5em;
 		margin-bottom: 0.5em;
@@ -31,7 +32,12 @@ a {
 		padding: 0.65em 1em;
 
 		&:hover {
-			background: @hover_color;
+			& when ( iscolor( @hover_color ) ) {
+				background: @hover_color;
+			}
+			& when not ( iscolor( @hover_color ) ) {
+				background: #cdcdcd;
+			}
 		}
 	}
 }
