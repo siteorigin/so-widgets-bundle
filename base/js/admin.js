@@ -159,15 +159,21 @@ var sowbForms = window.sowbForms || {};
 							'<span>' + soWidgets.backup.newerVersion + '</span>' +
 							'<a class="button button-small so-backup-restore">' + soWidgets.backup.restore + '</a>' +
 							'<a class="button button-small so-backup-dismiss">' + soWidgets.backup.dismiss + '</a>' +
+							'<div><small>' + soWidgets.backup.replaceWarning + '</small></div>' +
 							'</div>' );
 						$el.prepend( $newerNotification );
 
 						$newerNotification.find( '.so-backup-restore' ).click( function () {
 							sowbForms.setWidgetFormValues( $mainForm, data );
+							$newerNotification.slideUp( 'fast', function () {
+								$newerNotification.remove();
+							} );
 						} );
 						$newerNotification.find( '.so-backup-dismiss' ).click( function () {
-							localStorage.removeItem( _sow_form_id );
-							$newerNotification.remove();
+							$newerNotification.slideUp( 'fast', function () {
+								localStorage.removeItem( _sow_form_id );
+								$newerNotification.remove();
+							} );
 						} );
 					} else {
 						localStorage.removeItem( _sow_form_id );

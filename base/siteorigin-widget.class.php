@@ -571,12 +571,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				'ajaxurl' => wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ),
 				'sure' => __('Are you sure?', 'so-widgets-bundle'),
 				'backup' => array(
-					'newerVersion' => __(
-						'There is a newer version of this widget\'s content available.',
-						'so-widgets-bundle'
-					),
+					'newerVersion' => __( "There is a newer version of this widget's content available.", 'so-widgets-bundle' ),
 					'restore' => __( 'Restore', 'so-widgets-bundle' ),
 					'dismiss' => __( 'Dismiss', 'so-widgets-bundle' ),
+					'replaceWarning' => sprintf(
+						__( 'Clicking %s will replace the current widget contents. You can revert by refreshing the page before updating.', 'so-widgets-bundle' ),
+						'<em>' . __( 'Restore', 'so-widgets-bundle' ) . '</em>'
+					),
 				),
 			) );
 
