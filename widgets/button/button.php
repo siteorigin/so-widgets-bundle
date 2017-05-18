@@ -244,7 +244,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'button_width' => isset( $instance['design']['width'] ) ? $instance['design']['width'] : '',
 			'has_button_width' => empty( $instance['design']['width'] ) ? 'false' : 'true',
 			'button_color' => isset($instance['design']['button_color']) ? $instance['design']['button_color'] : '',
-			'text_color' =>   isset($instance['design']['text_color']) ? $instance['design']['button_color'] : '',
+			'text_color' =>   isset($instance['design']['text_color']) ? $instance['design']['text_color'] : '',
 
 			'font_size' => isset($instance['design']['font_size']) ? $instance['design']['font_size'] . 'em' : '',
 			'rounding' => isset($instance['design']['rounding']) ? $instance['design']['rounding'] . 'em' : '',
