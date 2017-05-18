@@ -5,7 +5,7 @@
  *
  * @param $query
  *
- * @return mixed|void
+ * @return mixed
  */
 function siteorigin_widget_post_selector_process_query( $query ){
 	$query = wp_parse_args($query,
@@ -46,8 +46,29 @@ function siteorigin_widget_post_selector_process_query( $query ){
 		}
 	}
 
-	if ( ! empty( $query['date_query'] ) ) {
+	if ( isset( $query['date_type'] ) && $query['date_type'] == 'relative' ) {
+
+		$date_query_rel  = json_decode(
+			stripslashes( $query['date_query_relative'] ),
+			true
+		);
+		$value_after     = new DateTime(
+			$date_query_rel['from']['value'] . ' ' . $date_query_rel['from']['unit'] . ' ago'
+		);
+		$value['after']  = $value_after->format( 'Y-m-d' );
+		$value_before    = new DateTime(
+			$date_query_rel['to']['value'] . ' ' . $date_query_rel['to']['unit'] . ' ago'
+		);
+		$value['before'] = $value_before->format( 'Y-m-d' );
+		$query['date_query'] = $value;
+		unset( $query['date_type'] );
+		unset( $query['date_query_relative'] );
+	} else if ( ! empty( $query['date_query'] ) ) {
 		$query['date_query'] = json_decode( stripslashes( $query['date_query'] ), true );
+	}
+
+	if ( ! empty( $query['date_query'] ) ) {
+		$query['date_query']['inclusive'] = true;
 	}
 
 	if ( ! empty( $query['sticky'] ) ) {

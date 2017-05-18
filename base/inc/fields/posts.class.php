@@ -14,7 +14,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 		foreach ( $types as $id => $type ) {
 			$type_options[ $id ] = $type->labels->name;
 		}
-		
+
 		$this->fields = array(
 
 			'post_type' => array(
@@ -37,9 +37,39 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 				'source' => 'terms',
 			),
 
+			'date_type' => array(
+				'type' => 'radio',
+				'label' => __( 'Date selection type', 'so-widgets-bundle' ),
+				'options' => array(
+					'specific' => __( 'Specific', 'so-widgets-bundle' ),
+					'relative' => __( 'Relative', 'so-widgets-bundle' ),
+				),
+				'description' => __( 'Select a range between specific dates or relative to the current date.', 'so-widgets-bundle' ),
+				'default' => 'specific',
+				'state_emitter' => array(
+					'callback' => 'select',
+					'args' => array( 'date_type' )
+				),
+			),
+
 			'date_query' => array(
 				'type'  => 'date-range',
-				'label' => __( 'Date range', 'so-widgets-bundle' ),
+				'label' => __( 'Dates', 'so-widgets-bundle' ),
+				'date_type' => 'specific',
+				'state_handler' => array(
+					'date_type[specific]' => array('show'),
+					'_else[date_type]' => array('hide'),
+				),
+			),
+
+			'date_query_relative' => array(
+				'type'  => 'date-range',
+				'label' => __( 'Dates', 'so-widgets-bundle' ),
+				'date_type' => 'relative',
+				'state_handler' => array(
+					'date_type[relative]' => array('show'),
+					'_else[date_type]' => array('hide'),
+				),
 			),
 
 			'orderby' => array(
