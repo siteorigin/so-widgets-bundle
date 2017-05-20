@@ -586,7 +586,7 @@ var sowbForms = window.sowbForms || {};
 			});
 			var repeaterHtml = repeaterObject.html().replace(/_id_/g, $nextIndex);
 
-			var readonly = typeof $el.attr('readonly') != 'undefined';
+			var readonly = typeof $el.attr('readonly') !== 'undefined';
 			var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
 				.append(
 					$('<div class="siteorigin-widget-field-repeater-item-top" />')
@@ -664,15 +664,19 @@ var sowbForms = window.sowbForms || {};
 					});
 				});
 
-				itemTop.find('.siteorigin-widget-field-remove').click(function (e) {
+				itemTop.find('.siteorigin-widget-field-remove').click(function (e, params) {
 					e.preventDefault();
-					if (confirm(soWidgets.sure)) {
-						var $s = $(this).closest('.siteorigin-widget-field-repeater-items');
-						$(this).closest('.siteorigin-widget-field-repeater-item').slideUp('fast', function () {
-							$(this).remove();
-							$s.sortable("refresh").trigger('updateFieldPositions');
-							$(window).resize();
-						});
+					var $s = $( this ).closest( '.siteorigin-widget-field-repeater-items' );
+					var $item = $( this ).closest( '.siteorigin-widget-field-repeater-item' );
+					var removeItem = function () {
+						$item.remove();
+						$s.sortable( "refresh" ).trigger( 'updateFieldPositions' );
+						$( window ).resize();
+					};
+					if ( params && params.silent ) {
+						removeItem();
+					} else if ( confirm( soWidgets.sure ) ) {
+						$item.slideUp('fast', removeItem );
 					}
 				});
 				itemTop.find('.siteorigin-widget-field-copy').click(function (e) {
@@ -759,13 +763,13 @@ var sowbForms = window.sowbForms || {};
 								var newIdAttr = oldIdAttr.replace(id, newId);
 								$(this).attr('id', newIdAttr);
 							});
-							if (typeof tinymce != 'undefined' && tinymce.get(newId)) {
+							if (typeof tinymce !== 'undefined' && tinymce.get(newId)) {
 								tinymce.get(newId).remove();
 							}
 						}
 						var nestLevel = $item.parents('.siteorigin-widget-field-repeater').length;
 						var $body = $('body');
-						if (($body.hasClass('wp-customizer') || $body.hasClass('widgets-php')) && $el.closest('.panel-dialog').length == 0) {
+						if (($body.hasClass('wp-customizer') || $body.hasClass('widgets-php')) && $el.closest('.panel-dialog').length === 0) {
 							nestLevel += 1;
 						}
 						var newName = nm.replace(new RegExp('((?:.*?\\[\\d+\\]){' + (nestLevel - 1).toString() + '})?(.*?\\[)\\d+(\\])'), '$1$2' + $nextIndex.toString() + '$3');
@@ -933,6 +937,40 @@ var sowbForms = window.sowbForms || {};
 
 	sowbForms.setWidgetFormValues = function (formContainer, data) {
 
+		// First check if this form has any repeaters.
+		var updateRepeaterChildren = function ( formParent, formData ) {
+			// Only direct child fields which are repeaters.
+			formParent.find( '> .siteorigin-widget-field-type-repeater' ).each( function () {
+				var $repeater = $( this ).find( '> .siteorigin-widget-field-repeater' );
+				var repeaterName = $repeater.data( 'repeaterName' );
+				var repeaterData = formData.hasOwnProperty( repeaterName ) ? formData[ repeaterName ] : null;
+				if ( ! repeaterData || ! Array.isArray( repeaterData ) || repeaterData.length === 0 ) {
+					return;
+				}
+				// Check that the number of child items matches the number of data items.
+				var repeaterChildren = $repeater.find( '> .siteorigin-widget-field-repeater-items > .siteorigin-widget-field-repeater-item' );
+				var numItems = repeaterData.length;
+				var numChildren = repeaterChildren.length;
+				if ( numItems > numChildren ) {
+					// If data items > child items, create extra child items.
+					for ( var i = 0; i < numItems - numChildren; i++) {
+						$repeater.find( '> .siteorigin-widget-field-repeater-add' ).click();
+					}
+
+				} else if ( numItems < numChildren ) {
+					// If child items > data items, remove extra child items.
+					for ( var j = numItems; j < numChildren; j++) {
+						var $child = $( repeaterChildren.eq( j ) );
+						$child.find( '> .siteorigin-widget-field-repeater-item-top' )
+							.find( '.siteorigin-widget-field-remove' )
+							.trigger( 'click', { silent: true } );
+					}
+				}
+			} );
+		};
+
+		updateRepeaterChildren(formContainer, data);
+
 		formContainer.find('*[name]').each(function () {
 			var $$ = $(this);
 			var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec($$.attr('name'));
@@ -945,22 +983,21 @@ var sowbForms = window.sowbForms || {};
 			var parts = name.split('][');
 
 			// Make sure we either have numbers or strings
-			parts = parts.map(function (e) {
-				if (!isNaN(parseFloat(e)) && isFinite(e)) {
-					return parseInt(e);
-				}
-				else {
+			parts = parts.map( function ( e ) {
+				if ( !isNaN( parseFloat( e ) ) && isFinite( e ) ) {
+					return parseInt( e );
+				} else {
 					return e;
 				}
-			});
+			} );
 
 			var sub = data;
 			var value;
 			for (var i = 0; i < parts.length; i++) {
+
 				if (i === parts.length - 1) {
 					value = sub[ parts[ i ] ];
-				}
-				else {
+				} else {
 					sub = sub[ parts[ i ] ];
 				}
 			}
