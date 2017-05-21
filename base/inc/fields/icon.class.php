@@ -4,6 +4,14 @@
  * Class SiteOrigin_Widget_Field_Icon
  */
 class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
+	/**
+	 * The number of visible rows in the icons selector.
+	 *
+	 * @access protected
+	 * @var int
+	 *
+	 */
+	protected $rows = 3;
 
 	protected $icons_callback;
 
@@ -39,7 +47,7 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 			<input type="hidden" name="<?php echo esc_attr( $this->element_name ) ?>" value="<?php echo esc_attr( $value ) ?>"
 			       class="siteorigin-widget-icon-icon siteorigin-widget-input" />
 
-			<div class="siteorigin-widget-icon-icons"></div>
+			<div class="siteorigin-widget-icon-icons" style="height: <?php echo ( $this->rows * 54 ) - 3 ?>px;"></div>
 		</div>
 		<?php
 	}
