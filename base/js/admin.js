@@ -938,7 +938,11 @@ var sowbForms = window.sowbForms || {};
 	sowbForms.setWidgetFormValues = function (formContainer, data) {
 
 		// First check if this form has any repeaters.
+		var depth = 0;
 		var updateRepeaterChildren = function ( formParent, formData ) {
+			if ( ++depth === 10 ) {
+				return;
+			}
 			// Only direct child fields which are repeaters.
 			formParent.find( '> .siteorigin-widget-field-type-repeater' ).each( function () {
 				var $repeater = $( this ).find( '> .siteorigin-widget-field-repeater' );
@@ -965,6 +969,14 @@ var sowbForms = window.sowbForms || {};
 							.find( '.siteorigin-widget-field-remove' )
 							.trigger( 'click', { silent: true } );
 					}
+				}
+				repeaterChildren = $repeater.find( '> .siteorigin-widget-field-repeater-items > .siteorigin-widget-field-repeater-item' );
+				for ( var k = 0; k < repeaterChildren.length; k++ ) {
+					repeaterChildren.eq( k ).find( '> .siteorigin-widget-field-repeater-item-form' );
+					updateRepeaterChildren(
+						repeaterChildren.eq( k ).find( '> .siteorigin-widget-field-repeater-item-form' ),
+						repeaterData[ k ]
+					);
 				}
 			} );
 		};
