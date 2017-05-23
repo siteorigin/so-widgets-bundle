@@ -1,4 +1,4 @@
-/* globals wp, jQuery, soWidgets, confirm, tinymce, sowbForms */
+/* globals wp, jQuery, _, soWidgets, confirm, tinymce, sowbForms */
 
 var sowbForms = window.sowbForms || {};
 
@@ -859,77 +859,109 @@ var sowbForms = window.sowbForms || {};
 		}
 	};
 
-	sowbForms.getWidgetFormValues = function (formContainer) {
+	sowbForms.getWidgetFormValues = function ( formContainer ) {
 
-		// Lets build the data from the widget
+		if ( _.isUndefined( formContainer ) ) {
+			return null;
+		}
+
 		var data = {};
+
 		formContainer.find('*[name]').each(function () {
 			var $$ = $(this);
-			var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec($$.attr('name'));
 
-			if (name === undefined) {
-				return true;
-			}
+			try {
+				var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr( 'name' ) );
 
-			name = name[1];
-			var parts = name.split('][');
-
-			// Make sure we either have numbers or strings
-			parts = parts.map(function (e) {
-				if (!isNaN(parseFloat(e)) && isFinite(e)) {
-					return parseInt(e);
+				if ( _.isEmpty( name ) ) {
+					return true;
 				}
-				else {
-					return e;
-				}
-			});
 
-			var sub = data;
-			for (var i = 0; i < parts.length; i++) {
-				if (i === parts.length - 1) {
-					// This is the end, so we need to store the actual field value here
-					if ($$.attr('type') === 'checkbox') {
-						if ($$.is(':checked')) {
-							sub[parts[i]] = $$.val() !== '' ? $$.val() : true;
+				// Create an array with the parts of the name
+				name = name[1];
+				var parts = name.split( '][' );
+
+				// Make sure we either have numbers or strings
+				parts = parts.map( function ( e ) {
+					if ( ! isNaN( parseFloat( e ) ) && isFinite( e ) ) {
+						return parseInt( e );
+					}
+					else {
+						return e;
+					}
+				} );
+
+				var sub = data;
+				var fieldValue = null;
+
+				var fieldType = _.isString( $$.attr( 'type' ) ) ? $$.attr( 'type' ).toLowerCase() : null;
+
+				if ( fieldType === 'checkbox' ) {
+					if ( $$.is( ':checked' ) ) {
+						fieldValue = $$.val() !== '' ? $$.val() : true;
+					} else {
+						fieldValue = false;
+					}
+				} else if ( fieldType === 'radio' ) {
+					if ( $$.is( ':checked' ) ) {
+						fieldValue = $$.val();
+					} else {
+						return;
+					}
+				} else if ( $$.prop( 'tagName' ) === 'TEXTAREA' && $$.hasClass( 'wp-editor-area' ) ) {
+					// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
+					var editor = null;
+					if ( typeof tinyMCE !== 'undefined' ) {
+						editor = tinyMCE.get( $$.attr( 'id' ) );
+					}
+
+					if ( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
+						fieldValue = editor.getContent();
+					}
+					else {
+						fieldValue = $$.val();
+					}
+				} else if ( $$.prop( 'tagName' ) === 'SELECT' ) {
+					var selected = $$.find( 'option:selected' );
+
+					if ( selected.length === 1 ) {
+						fieldValue = $$.find( 'option:selected' ).val();
+					}
+					else if ( selected.length > 1 ) {
+						// This is a mutli-select field
+						fieldValue = _.map( $$.find( 'option:selected' ), function ( n, i ) {
+							return $( n ).val();
+						} );
+					}
+
+				} else {
+					fieldValue = $$.val();
+				}
+
+				for ( var i = 0; i < parts.length; i++ ) {
+					if ( i === parts.length - 1 ) {
+						if ( parts[i] === '' ) {
+							// This needs to be an array
+							sub.push( fieldValue );
 						} else {
-							sub[parts[i]] = false;
-						}
-					}
-					else if ($$.attr('type') === 'radio') {
-						if ($$.is(':checked')) {
-							sub[parts[i]] = $$.val() !== '' ? $$.val() : true;
-						}
-					}
-					else if ($$.prop('tagName') === 'TEXTAREA' && $$.hasClass('wp-editor-area')) {
-						// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
-						var editor = null;
-						if (typeof tinyMCE !== 'undefined') {
-							editor = tinyMCE.get($$.attr('id'));
-						}
-
-						if (editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden()) {
-							sub[parts[i]] = editor.getContent();
-						}
-						else {
-							sub[parts[i]] = $$.val();
+							sub[ parts[ i ] ] = fieldValue;
 						}
 					}
 					else {
-						sub[parts[i]] = $$.val();
-					}
-				}
-				else {
-					if (typeof sub[parts[i]] === 'undefined') {
-						// We assume that a numeric key means it's an array.
-						if (!isNaN(parts[i + 1])) {
-							sub[parts[i]] = [];
-						} else {
-							sub[parts[i]] = {};
+						if ( _.isUndefined( sub[ parts[ i ] ] ) ) {
+							// We assume that a numeric key means it's an array. (or empty string??)
+							if ( _.isNumber( parts[ i + 1 ] ) || parts[ i + 1 ] === '' ) {
+								sub[ parts[ i ] ] = [];
+							} else {
+								sub[ parts[ i ] ] = {};
+							}
 						}
+						// Go deeper into the data and continue
+						sub = sub[ parts[ i ] ];
 					}
-					// Go deeper into the data and continue
-					sub = sub[parts[i]];
 				}
+			} catch ( error ) {
+				console.error( 'Field [' + $$.attr( 'name' ) + '] could not be processed and was skipped - ' + error.message );
 			}
 		});
 		return data;
