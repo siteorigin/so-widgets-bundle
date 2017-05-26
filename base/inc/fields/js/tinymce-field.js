@@ -82,7 +82,7 @@
 
 					var $target = $(event.target);
 					if ( $target.hasClass( 'wp-switch-editor' ) ) {
-						mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
+						var mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
 						if ( mode == 'tmce') {
 							// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex
 							var editor = tinymce.get(id);

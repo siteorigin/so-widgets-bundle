@@ -637,7 +637,7 @@
 
 	$(document).on( 'sowsetupformfield', '.siteorigin-widget-field-type-code', function(e) {
 		var $$ = $(this);
-		var editor = new Behave({
+		new Behave({
 			textarea: $$.find( '.siteorigin-widget-code-input' ).get( 0 ),
 		});
 	} );
