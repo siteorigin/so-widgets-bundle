@@ -632,6 +632,7 @@
 
 }).call(this);
 
+/* global jQuery, soWidgets */
 
 ( function( $ ) {
 

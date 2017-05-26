@@ -1,3 +1,5 @@
+/* global jQuery, soWidgets */
+
 ( function( $ ) {
 
 	var iconWidgetCache = {};

@@ -1,3 +1,5 @@
+/* global jQuery, soWidgets */
+
 ( function($){
 
 	$(document).on( 'sowsetupform', function(e) {

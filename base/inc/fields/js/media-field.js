@@ -1,3 +1,5 @@
+/* global jQuery, soWidgets */
+
 ( function( $ ) {
 
 	$(document).on( 'sowsetupformfield', '.siteorigin-widget-field-type-media', function(e) {
