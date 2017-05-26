@@ -493,7 +493,8 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			if( ! empty($markerpos)) {
 				foreach ($markerpos as $key => $pos) {
 					if(! empty($pos['custom_marker_icon'])) {
-						$markerpos[$key]['custom_marker_icon'] = wp_get_attachment_image_src( $pos['custom_marker_icon'] )[0];
+						$icon_src = wp_get_attachment_image_src( $pos['custom_marker_icon'] );
+						$markerpos[$key]['custom_marker_icon'] = $icon_src[0];
 					}
 				}
 			}
