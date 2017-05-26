@@ -1,8 +1,9 @@
 ( function( $ ) {
 
     $(document).on( 'sowsetupformfield', '.siteorigin-widget-field-type-media', function(e) {
-        var $media = $(this).find('> .media-field-wrapper');
-        var $field = $media.closest('.siteorigin-widget-field');
+		var $field = $( this );
+        var $media = $field.find('> .media-field-wrapper');
+		var $inputField = $field.find( '.siteorigin-widget-input' );
 
         // Handle the media uploader
         $media.find( '.media-upload-button' ).click(function(e){
@@ -12,7 +13,6 @@
             }
 
             var $$ = $(this);
-            var $c = $(this ).closest('.siteorigin-widget-field');
             var frame = $(this ).data('frame');
 
             // If the media frame already exists, reopen it.
@@ -49,21 +49,22 @@
                 // Grab the selected attachment.
                 var attachment = frame.state().get('selection').first().attributes;
 
-                $c.find('.current .title' ).html(attachment.title);
-                var $inputField = $c.find( 'input[type=hidden]' );
+                $field.find('.current .title' ).html(attachment.title);
                 $inputField.val(attachment.id);
-                $inputField.trigger('change');
+                $inputField.trigger( 'change', { silent: true } );
+
+				var $thumbnail = $field.find( '.current .thumbnail' );
 
                 if(typeof attachment.sizes !== 'undefined'){
                     if(typeof attachment.sizes.thumbnail !== 'undefined'){
-                        $c.find('.current .thumbnail' ).attr('src', attachment.sizes.thumbnail.url).fadeIn();
+						$thumbnail.attr('src', attachment.sizes.thumbnail.url).fadeIn();
                     }
                     else {
-                        $c.find('.current .thumbnail' ).attr('src', attachment.sizes.full.url).fadeIn();
+						$thumbnail.attr('src', attachment.sizes.full.url).fadeIn();
                     }
                 }
                 else{
-                    $c.find('.current .thumbnail' ).attr('src', attachment.icon).fadeIn();
+					$thumbnail.attr('src', attachment.icon).fadeIn();
                 }
 
                 $field.find('.media-remove-button').removeClass('remove-hide');
@@ -90,7 +91,7 @@
             .click( function( e ){
                 e.preventDefault();
                 $field.find('.current .title' ).html('');
-                $field.find('input[type=hidden]' ).val('');
+                $inputField.val('');
                 $field.find('.current .thumbnail' ).fadeOut('fast');
                 $(this).addClass('remove-hide');
             } );
@@ -108,7 +109,7 @@
                 perRow = Math.floor( width / 276 ),
                 spare = ( width - perRow * 276 ),
                 resultWidth = spare / perRow + 260;
-            
+
             results.find( '.so-widgets-result-image' ).css( {
                 'width' : resultWidth,
                 'height' : resultWidth / 1.4
@@ -198,7 +199,7 @@
                         }
                     );
 
-                }
+                };
 
                 // Setup the search
                 dialog.find('#so-widgets-image-search-form').submit( function( e ){
@@ -264,9 +265,9 @@
                                     // This was a success
                                     dialog.hide();
                                     dialog.find( '.so-widgets-results-loading' ).hide();
-                                    $field.find( 'input[type=hidden]' ).val( response.attachment_id ).trigger('change');
+                                    $inputField.val( response.attachment_id ).trigger('change', { silent: true } );
                                     $field.find('.current .thumbnail' ).attr('src', response.thumb ).fadeIn();
-                                    
+
                                     $field.find('.media-remove-button').removeClass('remove-hide');
                                 }
                                 else {
@@ -367,6 +368,33 @@
             e.preventDefault();
             setupDialog();
         } );
+
+		$inputField.change( function ( event, data ) {
+			if ( ! ( data && data.silent ) ) {
+				var newVal = $inputField.val();
+				if ( newVal) {
+					var $thumbnail = $field.find( '.current .thumbnail' );
+					var attachment = wp.media.attachment( newVal );
+					attachment.fetch().done( function () {
+						if ( attachment.has( 'sizes' ) ) {
+							var sizes = attachment.get( 'sizes' );
+							if ( typeof sizes.thumbnail !== 'undefined' ) {
+								$thumbnail.attr( 'src', sizes.thumbnail.url ).fadeIn();
+							}
+							else {
+								$thumbnail.attr( 'src', sizes.full.url ).fadeIn();
+							}
+						}
+						else {
+							$thumbnail.attr( 'src', attachment.get('icon') ).fadeIn();
+						}
+						$field.find('.media-remove-button').removeClass('remove-hide');
+					} );
+				} else {
+					$field.find( 'a.media-remove-button' ).click();
+				}
+			}
+		} );
 
     });
 

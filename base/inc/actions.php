@@ -3,7 +3,7 @@
 /**
  * Action for displaying the widget preview.
  */
-function siteorigin_widget_preview_widget_action(){
+function siteorigin_widget_preview_widget_action() {
 	if( empty( $_POST['class'] ) ) exit();
 	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
 

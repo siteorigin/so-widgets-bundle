@@ -468,6 +468,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			}
 			?>
 			<input type="hidden" name="<?php echo $this->get_field_name('_sow_form_id') ?>" value="<?php echo esc_attr( $instance['_sow_form_id'] ) ?>" class="siteorigin-widgets-form-id" />
+			<input type="hidden" name="<?php echo $this->get_field_name('_sow_form_timestamp') ?>" value="<?php echo ! empty( $instance['_sow_form_timestamp'] ) ? esc_attr( $instance['_sow_form_timestamp'] ) : '' ?>" class="siteorigin-widgets-form-timestamp" />
 		</div>
 		<div class="siteorigin-widget-form-no-styles">
 			<?php $this->scripts_loading_message() ?>
@@ -564,11 +565,26 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			wp_enqueue_script( 'wp-color-picker' );
 			wp_enqueue_media();
-			wp_enqueue_script( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/admin' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-slider' ), SOW_BUNDLE_VERSION, true );
+			wp_enqueue_script(
+				'siteorigin-widget-admin',
+				plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'base/js/admin' . SOW_BUNDLE_JS_SUFFIX . '.js',
+				array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-slider', 'underscore' ),
+				SOW_BUNDLE_VERSION,
+				true
+			);
 
 			wp_localize_script( 'siteorigin-widget-admin', 'soWidgets', array(
 				'ajaxurl' => wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ),
-				'sure' => __('Are you sure?', 'so-widgets-bundle')
+				'sure' => __('Are you sure?', 'so-widgets-bundle'),
+				'backup' => array(
+					'newerVersion' => __( "There is a newer version of this widget's content available.", 'so-widgets-bundle' ),
+					'restore' => __( 'Restore', 'so-widgets-bundle' ),
+					'dismiss' => __( 'Dismiss', 'so-widgets-bundle' ),
+					'replaceWarning' => sprintf(
+						__( 'Clicking %s will replace the current widget contents. You can revert by refreshing the page before updating.', 'so-widgets-bundle' ),
+						'<em>' . __( 'Restore', 'so-widgets-bundle' ) . '</em>'
+					),
+				),
 			) );
 
 			global $wp_customize;

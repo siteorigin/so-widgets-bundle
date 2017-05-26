@@ -1,4 +1,4 @@
-/* globals wp, jQuery, soWidgets, confirm, tinymce, sowbForms */
+/* globals wp, jQuery, _, soWidgets, confirm, tinymce, sowbForms */
 
 var sowbForms = window.sowbForms || {};
 
@@ -19,7 +19,7 @@ var sowbForms = window.sowbForms || {};
 			}
 
 			// Skip this if we've already set up the form
-			if ($el.is('.siteorigin-widget-form-main')) {
+			if ( $el.is('.siteorigin-widget-form-main') ) {
 				if ($el.data('sow-form-setup') === true) {
 					return true;
 				}
@@ -143,12 +143,48 @@ var sowbForms = window.sowbForms || {};
 				$teaser.find('.dashicons-dismiss').click(function () {
 					var $$ = $(this);
 					$.get($$.data('dismiss-url'));
-					console.log($$.data('dismiss-url'));
 
 					$teaser.slideUp('normal', function () {
 						$teaser.remove();
 					});
 				});
+
+				var _sow_form_id = $el.find( '> .siteorigin-widgets-form-id' ).val();
+				var $timestampField = $el.find( '> .siteorigin-widgets-form-timestamp' );
+				var _sow_form_timestamp = parseInt( $timestampField.val() || 0 );
+				var data = JSON.parse( localStorage.getItem( _sow_form_id ) );
+				if ( data ) {
+					if ( data['_sow_form_timestamp'] > _sow_form_timestamp ) {
+						var $newerNotification = $( '<div class="siteorigin-widget-form-notification">' +
+							'<span>' + soWidgets.backup.newerVersion + '</span>' +
+							'<a class="button button-small so-backup-restore">' + soWidgets.backup.restore + '</a>' +
+							'<a class="button button-small so-backup-dismiss">' + soWidgets.backup.dismiss + '</a>' +
+							'<div><small>' + soWidgets.backup.replaceWarning + '</small></div>' +
+							'</div>' );
+						$el.prepend( $newerNotification );
+
+						$newerNotification.find( '.so-backup-restore' ).click( function () {
+							sowbForms.setWidgetFormValues( $mainForm, data );
+							$newerNotification.slideUp( 'fast', function () {
+								$newerNotification.remove();
+							} );
+						} );
+						$newerNotification.find( '.so-backup-dismiss' ).click( function () {
+							$newerNotification.slideUp( 'fast', function () {
+								localStorage.removeItem( _sow_form_id );
+								$newerNotification.remove();
+							} );
+						} );
+					} else {
+						localStorage.removeItem( _sow_form_id );
+					}
+				}
+
+				$el.change( function () {
+					$timestampField.val( new Date().getTime() );
+					var data = sowbForms.getWidgetFormValues( $el );
+					localStorage.setItem( _sow_form_id, JSON.stringify( data ) );
+				} );
 			}
 			else {
 				$mainForm = $el.closest('.siteorigin-widget-form-main');
@@ -219,9 +255,16 @@ var sowbForms = window.sowbForms || {};
 					min: parseInt($input.attr('min')),
 					value: parseInt($input.val()),
 					slide: function (event, ui) {
-						$input.val(parseInt(ui.value));
-						$input.trigger('change');
+						$input.val( parseInt( ui.value ) );
+						$input.trigger( 'change' );
+					},
+					change: function( event, ui ) {
 						$$.find('.siteorigin-widget-slider-value').html(ui.value);
+					},
+				});
+				$input.change(function(event, data) {
+					if ( ! ( data && data.silent ) ) {
+						$c.slider( 'value', parseInt( $input.val() ) );
 					}
 				});
 			});
@@ -391,6 +434,7 @@ var sowbForms = window.sowbForms || {};
 
 			// Give plugins a chance to influence the form
 			$el.trigger('sowsetupform', $fields).data('sow-form-setup', true);
+
 			$fields.trigger('sowsetupformfield');
 
 			$el.find('.siteorigin-widget-field-repeater-item').trigger('updateFieldPositions');
@@ -533,7 +577,7 @@ var sowbForms = window.sowbForms || {};
 
 			// Create an object with the repeater html so we can make some changes to it.
 			var repeaterObject = $('<div>' + $el.find('> .siteorigin-widget-field-repeater-item-html').html() + '</div>');
-			repeaterObject.find('[data-name]').each(function () {
+			repeaterObject.find('.siteorigin-widget-input[data-name]').each(function () {
 				var $$ = $(this);
 				// Skip out items that are themselves inside repeater HTML wrappers
 				if ($$.closest('.siteorigin-widget-field-repeater-item-html').length === 0) {
@@ -542,7 +586,7 @@ var sowbForms = window.sowbForms || {};
 			});
 			var repeaterHtml = repeaterObject.html().replace(/_id_/g, $nextIndex);
 
-			var readonly = typeof $el.attr('readonly') != 'undefined';
+			var readonly = typeof $el.attr('readonly') !== 'undefined';
 			var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
 				.append(
 					$('<div class="siteorigin-widget-field-repeater-item-top" />')
@@ -620,15 +664,19 @@ var sowbForms = window.sowbForms || {};
 					});
 				});
 
-				itemTop.find('.siteorigin-widget-field-remove').click(function (e) {
+				itemTop.find('.siteorigin-widget-field-remove').click(function (e, params) {
 					e.preventDefault();
-					if (confirm(soWidgets.sure)) {
-						var $s = $(this).closest('.siteorigin-widget-field-repeater-items');
-						$(this).closest('.siteorigin-widget-field-repeater-item').slideUp('fast', function () {
-							$(this).remove();
-							$s.sortable("refresh").trigger('updateFieldPositions');
-							$(window).resize();
-						});
+					var $s = $( this ).closest( '.siteorigin-widget-field-repeater-items' );
+					var $item = $( this ).closest( '.siteorigin-widget-field-repeater-item' );
+					var removeItem = function () {
+						$item.remove();
+						$s.sortable( "refresh" ).trigger( 'updateFieldPositions' );
+						$( window ).resize();
+					};
+					if ( params && params.silent ) {
+						removeItem();
+					} else if ( confirm( soWidgets.sure ) ) {
+						$item.slideUp('fast', removeItem );
 					}
 				});
 				itemTop.find('.siteorigin-widget-field-copy').click(function (e) {
@@ -715,13 +763,13 @@ var sowbForms = window.sowbForms || {};
 								var newIdAttr = oldIdAttr.replace(id, newId);
 								$(this).attr('id', newIdAttr);
 							});
-							if (typeof tinymce != 'undefined' && tinymce.get(newId)) {
+							if (typeof tinymce !== 'undefined' && tinymce.get(newId)) {
 								tinymce.get(newId).remove();
 							}
 						}
 						var nestLevel = $item.parents('.siteorigin-widget-field-repeater').length;
 						var $body = $('body');
-						if (($body.hasClass('wp-customizer') || $body.hasClass('widgets-php')) && $el.closest('.panel-dialog').length == 0) {
+						if (($body.hasClass('wp-customizer') || $body.hasClass('widgets-php')) && $el.closest('.panel-dialog').length === 0) {
 							nestLevel += 1;
 						}
 						var newName = nm.replace(new RegExp('((?:.*?\\[\\d+\\]){' + (nestLevel - 1).toString() + '})?(.*?\\[)\\d+(\\])'), '$1$2' + $nextIndex.toString() + '$3');
@@ -811,10 +859,162 @@ var sowbForms = window.sowbForms || {};
 		}
 	};
 
-	sowbForms.getWidgetFormValues = function (formContainer) {
+	sowbForms.getWidgetFormValues = function ( formContainer ) {
 
-		// Lets build the data from the widget
+		if ( _.isUndefined( formContainer ) ) {
+			return null;
+		}
+
 		var data = {};
+
+		formContainer.find('*[name]').each(function () {
+			var $$ = $(this);
+
+			try {
+				var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr( 'name' ) );
+
+				if ( _.isEmpty( name ) ) {
+					return true;
+				}
+
+				// Create an array with the parts of the name
+				name = name[1];
+				var parts = name.split( '][' );
+
+				// Make sure we either have numbers or strings
+				parts = parts.map( function ( e ) {
+					if ( ! isNaN( parseFloat( e ) ) && isFinite( e ) ) {
+						return parseInt( e );
+					}
+					else {
+						return e;
+					}
+				} );
+
+				var sub = data;
+				var fieldValue = null;
+
+				var fieldType = _.isString( $$.attr( 'type' ) ) ? $$.attr( 'type' ).toLowerCase() : null;
+
+				if ( fieldType === 'checkbox' ) {
+					if ( $$.is( ':checked' ) ) {
+						fieldValue = $$.val() !== '' ? $$.val() : true;
+					} else {
+						fieldValue = false;
+					}
+				} else if ( fieldType === 'radio' ) {
+					if ( $$.is( ':checked' ) ) {
+						fieldValue = $$.val();
+					} else {
+						return;
+					}
+				} else if ( $$.prop( 'tagName' ) === 'TEXTAREA' && $$.hasClass( 'wp-editor-area' ) ) {
+					// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
+					var editor = null;
+					if ( typeof tinyMCE !== 'undefined' ) {
+						editor = tinyMCE.get( $$.attr( 'id' ) );
+					}
+
+					if ( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
+						fieldValue = editor.getContent();
+					}
+					else {
+						fieldValue = $$.val();
+					}
+				} else if ( $$.prop( 'tagName' ) === 'SELECT' ) {
+					var selected = $$.find( 'option:selected' );
+
+					if ( selected.length === 1 ) {
+						fieldValue = $$.find( 'option:selected' ).val();
+					}
+					else if ( selected.length > 1 ) {
+						// This is a mutli-select field
+						fieldValue = _.map( $$.find( 'option:selected' ), function ( n, i ) {
+							return $( n ).val();
+						} );
+					}
+
+				} else {
+					fieldValue = $$.val();
+				}
+
+				for ( var i = 0; i < parts.length; i++ ) {
+					if ( i === parts.length - 1 ) {
+						if ( parts[i] === '' ) {
+							// This needs to be an array
+							sub.push( fieldValue );
+						} else {
+							sub[ parts[ i ] ] = fieldValue;
+						}
+					}
+					else {
+						if ( _.isUndefined( sub[ parts[ i ] ] ) ) {
+							// We assume that a numeric key means it's an array. (or empty string??)
+							if ( _.isNumber( parts[ i + 1 ] ) || parts[ i + 1 ] === '' ) {
+								sub[ parts[ i ] ] = [];
+							} else {
+								sub[ parts[ i ] ] = {};
+							}
+						}
+						// Go deeper into the data and continue
+						sub = sub[ parts[ i ] ];
+					}
+				}
+			} catch ( error ) {
+				console.error( 'Field [' + $$.attr( 'name' ) + '] could not be processed and was skipped - ' + error.message );
+			}
+		});
+		return data;
+	};
+
+	sowbForms.setWidgetFormValues = function (formContainer, data) {
+
+		// First check if this form has any repeaters.
+		var depth = 0;
+		var updateRepeaterChildren = function ( formParent, formData ) {
+			if ( ++depth === 10 ) {
+				return;
+			}
+			// Only direct child fields which are repeaters.
+			formParent.find( '> .siteorigin-widget-field-type-repeater' ).each( function () {
+				var $repeater = $( this ).find( '> .siteorigin-widget-field-repeater' );
+				var repeaterName = $repeater.data( 'repeaterName' );
+				var repeaterData = formData.hasOwnProperty( repeaterName ) ? formData[ repeaterName ] : null;
+				if ( ! repeaterData || ! Array.isArray( repeaterData ) || repeaterData.length === 0 ) {
+					return;
+				}
+				// Check that the number of child items matches the number of data items.
+				var repeaterChildren = $repeater.find( '> .siteorigin-widget-field-repeater-items > .siteorigin-widget-field-repeater-item' );
+				var numItems = repeaterData.length;
+				var numChildren = repeaterChildren.length;
+				if ( numItems > numChildren ) {
+					// If data items > child items, create extra child items.
+					for ( var i = 0; i < numItems - numChildren; i++) {
+						$repeater.find( '> .siteorigin-widget-field-repeater-add' ).click();
+					}
+
+				} else if ( numItems < numChildren ) {
+					// If child items > data items, remove extra child items.
+					for ( var j = numItems; j < numChildren; j++) {
+						var $child = $( repeaterChildren.eq( j ) );
+						$child.find( '> .siteorigin-widget-field-repeater-item-top' )
+							.find( '.siteorigin-widget-field-remove' )
+							.trigger( 'click', { silent: true } );
+					}
+				}
+				repeaterChildren = $repeater.find( '> .siteorigin-widget-field-repeater-items > .siteorigin-widget-field-repeater-item' );
+				for ( var k = 0; k < repeaterChildren.length; k++ ) {
+					repeaterChildren.eq( k ).find( '> .siteorigin-widget-field-repeater-item-form' );
+					updateRepeaterChildren(
+						repeaterChildren.eq( k ).find( '> .siteorigin-widget-field-repeater-item-form' ),
+						repeaterData[ k ]
+					);
+				}
+			} );
+		};
+
+		updateRepeaterChildren(formContainer, data);
+
 		formContainer.find('*[name]').each(function () {
 			var $$ = $(this);
 			var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec($$.attr('name'));
@@ -827,64 +1027,51 @@ var sowbForms = window.sowbForms || {};
 			var parts = name.split('][');
 
 			// Make sure we either have numbers or strings
-			parts = parts.map(function (e) {
-				if (!isNaN(parseFloat(e)) && isFinite(e)) {
-					return parseInt(e);
-				}
-				else {
+			parts = parts.map( function ( e ) {
+				if ( !isNaN( parseFloat( e ) ) && isFinite( e ) ) {
+					return parseInt( e );
+				} else {
 					return e;
 				}
-			});
+			} );
 
 			var sub = data;
+			var value;
 			for (var i = 0; i < parts.length; i++) {
-				if (i === parts.length - 1) {
-					// This is the end, so we need to store the actual field value here
-					if ($$.attr('type') === 'checkbox') {
-						if ($$.is(':checked')) {
-							sub[parts[i]] = $$.val() !== '' ? $$.val() : true;
-						} else {
-							sub[parts[i]] = false;
-						}
-					}
-					else if ($$.attr('type') === 'radio') {
-						if ($$.is(':checked')) {
-							sub[parts[i]] = $$.val() !== '' ? $$.val() : true;
-						}
-					}
-					else if ($$.prop('tagName') === 'TEXTAREA' && $$.hasClass('wp-editor-area')) {
-						// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
-						var editor = null;
-						if (typeof tinyMCE !== 'undefined') {
-							editor = tinyMCE.get($$.attr('id'));
-						}
 
-						if (editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden()) {
-							sub[parts[i]] = editor.getContent();
-						}
-						else {
-							sub[parts[i]] = $$.val();
-						}
-					}
-					else {
-						sub[parts[i]] = $$.val();
-					}
-				}
-				else {
-					if (typeof sub[parts[i]] === 'undefined') {
-						// We assume that a numeric key means it's an array.
-						if (!isNaN(parts[i + 1])) {
-							sub[parts[i]] = [];
-						} else {
-							sub[parts[i]] = {};
-						}
-					}
-					// Go deeper into the data and continue
-					sub = sub[parts[i]];
+				if (i === parts.length - 1) {
+					value = sub[ parts[ i ] ];
+				} else {
+					sub = sub[ parts[ i ] ];
 				}
 			}
+
+			// This is the end, so we need to set the value on the field here.
+			if ( $$.attr( 'type' ) === 'checkbox' )  {
+				$$.prop( 'checked', value );
+			} else if ( $$.attr( 'type' ) === 'radio' ) {
+				$$.prop( 'checked', value === $$.val() );
+			} else if ( $$.prop( 'tagName' ) === 'TEXTAREA' && $$.hasClass( 'wp-editor-area' ) ) {
+				// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
+				var editor = null;
+				if ( typeof tinyMCE !== 'undefined' ) {
+					editor = tinyMCE.get( $$.attr( 'id' ) );
+				}
+
+				if ( editor !== null && typeof( editor.getContent ) === "function" && ! editor.isHidden() ) {
+					editor.setContent( value );
+				}
+				else {
+					$$.val( value );
+				}
+			}
+			else {
+				$$.val( value );
+			}
+
+			$$.trigger( 'change' );
+
 		});
-		return data;
 	};
 
 	// When we click on a widget top
