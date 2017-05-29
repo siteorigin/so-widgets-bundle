@@ -78,7 +78,6 @@ class SiteOrigin_Widgets_Bundle {
 		add_filter( 'siteorigin_panels_prebuilt_layout', array($this, 'load_missing_widgets') );
 		add_filter( 'siteorigin_panels_widget_object', array($this, 'load_missing_widget'), 10, 2 );
 
-		add_filter( 'wp_enqueue_scripts', array($this, 'register_general_scripts') );
 		add_filter( 'wp_enqueue_scripts', array($this, 'enqueue_active_widgets_scripts') );
 	}
 
@@ -405,7 +404,8 @@ class SiteOrigin_Widgets_Bundle {
 		if( ! current_user_can( apply_filters( 'siteorigin_widgets_admin_menu_capability', 'manage_options' ) ) ) exit();
 
 		$widget_objects = $this->get_widget_objects();
-		$widget_object = !empty( $widget_objects[ $_GET['id'] ] ) ? $widget_objects[ $_GET['id'] ] : false;
+		$widget_path = empty( $_GET['id'] ) ? false : WP_PLUGIN_DIR . $_GET['id'];
+		$widget_object = empty( $widget_objects[ $widget_path ] ) ? false : $widget_objects[ $widget_path ];
 
 		if( empty( $widget_object ) || ! $widget_object->has_form( 'settings' ) ) exit();
 
@@ -654,7 +654,7 @@ class SiteOrigin_Widgets_Bundle {
 		foreach($data['widgets'] as $widget) {
 			if( empty( $widget['panels_info']['class'] ) ) continue;
 			if( !empty( $wp_widget_factory->widgets[ $widget['panels_info']['class'] ] ) ) continue;
-			
+
 			$this->load_missing_widget( false, $widget['panels_info']['class'] );
 		}
 
@@ -676,12 +676,12 @@ class SiteOrigin_Widgets_Bundle {
 		if( preg_match('/SiteOrigin_Widgets?_([A-Za-z]+)_Widget/', $class, $matches) ) {
 			$name = $matches[1];
 			$id = strtolower( implode( '-', array_filter( preg_split( '/(?=[A-Z])/', $name ) ) ) );
-			
+
 			if( $id == 'contact-form' ) {
 				// Handle the special case of the contact form widget, which is incorrectly named
 				$id = 'contact';
 			}
-			
+
 			$this->activate_widget($id, true);
 			global $wp_widget_factory;
 			if( !empty($wp_widget_factory->widgets[$class]) ) return $wp_widget_factory->widgets[$class];
@@ -698,10 +698,6 @@ class SiteOrigin_Widgets_Bundle {
 		$links['manage'] = '<a href="' . admin_url('plugins.php?page=so-widgets-plugins') . '">'.__('Manage Widgets', 'so-widgets-bundle').'</a>';
 		$links['support'] = '<a href="https://siteorigin.com/thread/" target="_blank">'.__('Support', 'so-widgets-bundle').'</a>';
 		return $links;
-	}
-
-	function register_general_scripts(){
-		wp_register_script( 'sow-fittext', plugin_dir_url( __FILE__ ) . 'js/sow.jquery.fittext' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery' ), '1.2', true );
 	}
 
 	/**

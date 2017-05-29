@@ -54,6 +54,13 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.8.6 - 10 May 2017 =
+* Editor widget supports Jetpack Markdown.
+* Editor widget global setting for enabling/disabling 'autop' by default.
+* Allow setting FitText compressor strength in hero and headline widgets.
+* Fix variable name in `enqueue_registered_styles`.
+* Fix FitText not working previews.
+
 = 1.8.5 - 27 April 2017 =
 * Fixed button hover class.
 
