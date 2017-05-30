@@ -152,7 +152,7 @@ var sowbForms = window.sowbForms || {};
 				var _sow_form_id = $el.find( '> .siteorigin-widgets-form-id' ).val();
 				var $timestampField = $el.find( '> .siteorigin-widgets-form-timestamp' );
 				var _sow_form_timestamp = parseInt( $timestampField.val() || 0 );
-				var data = JSON.parse( localStorage.getItem( _sow_form_id ) );
+				var data = JSON.parse( sessionStorage.getItem( _sow_form_id ) );
 				if ( data ) {
 					if ( data['_sow_form_timestamp'] > _sow_form_timestamp ) {
 						var $newerNotification = $( '<div class="siteorigin-widget-form-notification">' +
@@ -171,19 +171,19 @@ var sowbForms = window.sowbForms || {};
 						} );
 						$newerNotification.find( '.so-backup-dismiss' ).click( function () {
 							$newerNotification.slideUp( 'fast', function () {
-								localStorage.removeItem( _sow_form_id );
+								sessionStorage.removeItem( _sow_form_id );
 								$newerNotification.remove();
 							} );
 						} );
 					} else {
-						localStorage.removeItem( _sow_form_id );
+						sessionStorage.removeItem( _sow_form_id );
 					}
 				}
 
 				$el.change( function () {
 					$timestampField.val( new Date().getTime() );
 					var data = sowbForms.getWidgetFormValues( $el );
-					localStorage.setItem( _sow_form_id, JSON.stringify( data ) );
+					sessionStorage.setItem( _sow_form_id, JSON.stringify( data ) );
 				} );
 			}
 			else {
