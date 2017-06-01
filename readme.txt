@@ -54,6 +54,9 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.9.1 - 1 June 2017 =
+* Fixed Maps widget JS error.
+
 = 1.9 - 30 May 2017 =
 * Compatibility with Visual Composer.
 * Taxonomy widget text display.
