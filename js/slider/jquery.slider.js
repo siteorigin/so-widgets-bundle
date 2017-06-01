@@ -1,9 +1,4 @@
-/**
- * SiteOrigin Slider Javascript.
- *
- * Copyright 2014, SiteOrigin
- * Released under GPL 2.0 - see http://www.gnu.org/licenses/gpl-2.0.html
- */
+/* globals jQuery, sowb */
 
 var sowb = window.sowb || {};
 
@@ -155,7 +150,7 @@ jQuery( function($){
 							}
 
 							$(window).resize();
-							
+
 							setTimeout(function() {
 								siteoriginSlider.setupActiveSlide( $$, optionHash.slides[0] );
 								// Ensure we keep auto-height functionality, but we don't want the duplicated content.
@@ -265,3 +260,5 @@ jQuery( function($){
 
 	$( sowb ).on( 'setup_widgets', sowb.setupSliders );
 } );
+
+window.sowb = sowb;

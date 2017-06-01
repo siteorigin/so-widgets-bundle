@@ -230,12 +230,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		$button_attributes = array();
 
 		$attributes = $instance['attributes'];
-		
+
 		$classes = ! empty( $attributes['classes'] ) ? $attributes['classes'] : '';
 		if( !empty($instance['design']['hover']) ) {
 			$classes .= ' ow-button-hover';
 		}
-		
+
 		if( ! empty( $classes ) ) {
 			$button_attributes['class'] = $classes;
 		}
@@ -289,7 +289,6 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 		$less_vars = array(
 			'button_width' => isset( $instance['design']['width'] ) ? $instance['design']['width'] : '',
-			'has_button_width' => empty( $instance['design']['width'] ) ? 'false' : 'true',
 			'button_color' => isset($instance['design']['button_color']) ? $instance['design']['button_color'] : '',
 			'text_color' =>   isset($instance['design']['text_color']) ? $instance['design']['text_color'] : '',
 

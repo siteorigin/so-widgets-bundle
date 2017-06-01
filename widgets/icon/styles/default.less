@@ -1,6 +1,5 @@
 @color: #000000;
-@size: 12px;
-@has_size: false;
+@size: '';
 @alignment: center;
 
 .sow-icon {
@@ -12,8 +11,7 @@
 	display: inline-block;
 	color: @color !important;
 
-	.fontsize() when (@has_size = true) {
+	& when ( isnumber( @size ) ) {
 		font-size: @size !important;
 	}
-	.fontsize();
 }

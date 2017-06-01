@@ -21,6 +21,22 @@
 	}
 }
 
+.siteorigin-widget-form-notification {
+	padding: 8px 12px;
+	border: 1px solid #a4cadd;
+	background-color: #CDE2EC;
+	margin-bottom: 20px;
+
+	> span {
+		line-height: 22px;
+	}
+
+	> a.button.button-small {
+		margin-left: 10px;
+		height: 22px;
+	}
+}
+
 .siteorigin-widget-form {
 
 	> div:first-child {
@@ -100,6 +116,14 @@
 
 		textarea.siteorigin-widget-code-input {
 			font-family: "Courier New", Courier, monospace;
+		}
+
+		select {
+			min-width: 150px;
+
+			&[multiple] {
+				max-height: 83px;
+			}
 		}
 	}
 
@@ -343,6 +367,56 @@
 		}
 	}
 
+	.siteorigin-widget-field-type-posts {
+		.posts-container-label-wrapper {
+			background: #F0F0F0;
+			border: 1px solid #D0D0D0;
+			padding: 10px;
+			display: block;
+			margin-bottom: 0;
+
+			> label {
+				display: inline;
+			}
+
+			&:before {
+				float: left;
+				margin: 3px 6px 0 0;
+				display: block;
+				width: 14px;
+				height: 14px;
+				font-size: 14px;
+				line-height: 1;
+				font-family: "dashicons";
+				content:"\f132";
+			}
+
+			&.siteorigin-widget-section-visible {
+				&:before {
+					content:"\f460";
+				}
+			}
+
+			span.sow-current-count {
+				display: inline-block;
+				border-radius: 9px;
+				background: #f92700;
+				border: 1px solid #da0900;
+				line-height: 14px;
+				font-size: 7px;
+				width: 17px;
+				height: 17px;
+				text-align: center;
+				vertical-align: middle;
+				font-weight: bold;
+				color: #FFFFFF;
+				box-sizing: border-box;
+				margin: 1px 5px;
+			}
+
+		}
+	}
+
 	.siteorigin-widget-field-type-widget,
 	.siteorigin-widget-field-type-section {
 
@@ -363,7 +437,6 @@
 				line-height: 1;
 				font-family: "dashicons";
 				content:"\f132";
-
 			}
 
 			&.siteorigin-widget-section-visible {
@@ -372,7 +445,11 @@
 				}
 			}
 		}
+	}
 
+	.siteorigin-widget-field-type-posts,
+	.siteorigin-widget-field-type-widget,
+	.siteorigin-widget-field-type-section {
 		.siteorigin-widget-section {
 			padding: 1px 10px;
 			background: #FCFCFC;
@@ -385,6 +462,7 @@
 		}
 	}
 
+	.siteorigin-widget-field-type-autocomplete,
 	.siteorigin-widget-field-type-link {
 
 		position: relative;
@@ -394,7 +472,6 @@
 			display: none;
 			position: absolute;
 			top: 110%;
-			right: 0px;
 			width: 360px;
 			z-index: 10;
 			border: 1px solid #c0c0c0;
@@ -407,7 +484,7 @@
 				margin-bottom: 15px;
 			}
 
-			.posts {
+			.items, .posts {
 				margin: 0;
 				padding: 0;
 				background: #fff;
@@ -422,6 +499,10 @@
 					border-bottom: 1px solid #f1f1f1;
 					margin: 0;
 					font-size: 0.95em;
+
+					&.selected {
+						background: #e1edfa;
+					}
 
 					&:hover {
 						background: #eaf2fa;
@@ -480,226 +561,14 @@
 
 	}
 
+	.siteorigin-widget-field-type-link {
+		.existing-content-selector {
+			right: 0;
+		}
+	}
+
 	.siteorigin-widget-description {
 		clear: both;
-	}
-}
-
-.siteorigin-widgets-query-builder {
-
-	.query-builder-content {
-		padding: 20px;
-
-		.query-builder-form-field {
-			label {
-				span {
-					display: block;
-					font-size: 13px;
-					line-height: 24px;
-					color: #666;
-				}
-			}
-
-			.sow-select-posts {
-				margin-top: 2px;
-			}
-
-			input[type="text"] {
-				width: 400px;
-			}
-
-			input[type="number"] {
-				width: 150px;
-			}
-
-			select[multiple] {
-				min-width: 150px;
-				max-height: 83px;
-			}
-
-			input[type="date"] {
-				width: 150px;
-				margin: 0 10px;
-			}
-
-			.sow-order-button {
-				display: inline-block;
-				width: 19px;
-				height: 19px;
-				margin: 0 0 -6px 10px;
-				cursor: pointer;
-				background: url(img/ordering-icons.png);
-
-				&.sow-order-button-desc {
-					background-position: left top;
-				}
-
-				&.sow-order-button-asc {
-					background-position: left bottom;
-				}
-			}
-
-			margin-bottom: 10px;
-
-            small {
-                display: block;
-            }
-		}
-	}
-
-	.media-toolbar-secondary {
-
-		.sow-post-count-message {
-			margin-top: 21px;
-		}
-
-		.sow-post-selector-summary {
-			margin-top: 10px;
-			display: block;
-			width: 41px;
-			height: 41px;
-			float: left;
-			overflow: hidden;
-			background: green;
-			margin-right: 10px;
-
-			&:last-child {
-				margin-right: 0;
-			}
-		}
-	}
-
-	.sow-post-selector-summary {
-		display: block;
-		float: left;
-		margin: 0 15px 15px 0;
-
-		width: 130px;
-
-		.sow-thumbnail {
-			width: 130px;
-			height: 130px;
-
-			img {
-				width: 100%;
-				height: auto;
-			}
-			margin-bottom: 4px;
-		}
-
-		.sow-title {
-			height: 2.5em;
-			overflow: hidden;
-			line-height: 1.2em;
-			text-align: center;
-		}
-
-		&.sow-post-loading {
-			.sow-thumbnail {
-				background: url(img/loading.gif) center center no-repeat #EEEEEE;
-
-				img {
-					display: none;
-				}
-			}
-		}
-
-		.sow-remove {
-			display: none;
-		}
-	}
-
-	#sow-post-selector {
-		.sow-autocomplete-field {
-			text-align: right;
-			margin-bottom: 20px;
-
-			input[type=text] {
-				width: 320px;
-				margin-left: 10px;
-			}
-
-			.ui-autocomplete {
-				max-height: 182px;
-				overflow-y: auto;
-				/* prevent horizontal scrollbar */
-				overflow-x: hidden;
-			}
-		}
-
-		.sow-posts-sortable {
-
-			.ui-state-highlight {
-				display: block;
-				float: left;
-				margin: 0 15px 15px 0;
-				background: #F3F3F3;
-			}
-
-			.sow-post-selector-summary {
-				cursor: move;
-				position: relative;
-
-				.sow-remove {
-					position: absolute;
-					top: -5px;
-					right: -5px;
-					width: 19px;
-					height: 19px;
-					z-index: 10;
-					text-decoration: none;
-					background: #333333;
-					text-align: center;
-
-					&:before {
-						content: '\f158';
-						font: 14px/1 dashicons;
-						vertical-align: middle;
-						color: #EEEEEE;
-					}
-
-					&:hover {
-
-						background: #444444;
-
-						&:before {
-							color: #FFFFFF;
-						}
-
-					}
-				}
-
-				&:hover .sow-remove {
-					display: block;
-				}
-			}
-
-			&:after {
-				content: "";
-				display: table;
-				clear: both;
-			}
-		}
-	}
-
-	.media-modal-close .media-modal-icon {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		text-decoration: none;
-		width: 20px;
-		height: 20px;
-		margin-left: -10px;
-		margin-top: -10px;
-		color: #666666;
-		text-align: center;
-
-		&:before {
-			font: 400 20px/1em dashicons;
-
-			top: 7px;
-			left: 13px;
-		}
 	}
 }
 

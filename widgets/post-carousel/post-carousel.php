@@ -100,6 +100,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			'posts' => array(
 				'type' => 'posts',
 				'label' => __('Posts query', 'so-widgets-bundle'),
+				'hide' => true,
 			),
 		);
 	}

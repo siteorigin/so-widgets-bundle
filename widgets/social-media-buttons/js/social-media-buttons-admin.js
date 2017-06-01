@@ -5,7 +5,7 @@
         var $socialMediaForm = $(this);
 
         var setNetworkDefaults = function($selectNetworkInput) {
-            window.sowForms.fetchWidgetVariable('networks', 'SiteOrigin_Widget_SocialMediaButtons_Widget',
+            window.sowbForms.fetchWidgetVariable('networks', 'SiteOrigin_Widget_SocialMediaButtons_Widget',
                 function(networks) {
                     var selectedNetwork = networks[$selectNetworkInput.find(':selected').val()];
 					if( selectedNetwork ) {

@@ -3,7 +3,7 @@
 /**
  * Action for displaying the widget preview.
  */
-function siteorigin_widget_preview_widget_action(){
+function siteorigin_widget_preview_widget_action() {
 	if( empty( $_POST['class'] ) ) exit();
 	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
 
@@ -21,6 +21,9 @@ function siteorigin_widget_preview_widget_action(){
 	// The theme stylesheet will change how the button looks
 	wp_enqueue_style( 'theme-css', get_stylesheet_uri(), array(), rand( 0, 65536 ) );
 	wp_enqueue_style( 'so-widget-preview', plugin_dir_url( __FILE__ ) . '../css/preview.css', array(), rand( 0,65536 ) );
+
+	$sowb = SiteOrigin_Widgets_Bundle::single();
+	$sowb->register_general_scripts();
 
 	ob_start();
 	$widget->widget( array(
@@ -56,16 +59,14 @@ function siteorigin_widget_preview_widget_action(){
 add_action('wp_ajax_so_widgets_preview', 'siteorigin_widget_preview_widget_action');
 
 /**
- * Action to handle searching
+ * Action to handle searching posts
  */
-function siteorigin_widget_search_posts_action(){
+function siteorigin_widget_action_search_posts() {
 	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
-
-	header('content-type: application/json');
 
 	// Get all public post types, besides attachments
 	$post_types = (array) get_post_types( array(
-		'public'             => true
+		'public' => true,
 	) );
 
 	if ( ! empty( $_REQUEST['postTypes'] ) ) {
@@ -87,7 +88,7 @@ function siteorigin_widget_search_posts_action(){
 	$post_types = "'" . implode("', '", array_map( 'esc_sql', $post_types ) ) . "'";
 
 	$results = $wpdb->get_results( "
-		SELECT ID, post_title, post_type
+		SELECT ID AS 'value', post_title AS label, post_type AS 'type'
 		FROM {$wpdb->posts}
 		WHERE
 			post_type IN ( {$post_types} ) AND post_status = 'publish' {$query}
@@ -95,10 +96,64 @@ function siteorigin_widget_search_posts_action(){
 		LIMIT 20
 	", ARRAY_A );
 
+	header('content-type: application/json');
 	echo json_encode( apply_filters( 'siteorigin_widgets_search_posts_results', $results ) );
 	exit();
 }
-add_action('wp_ajax_so_widgets_search_posts', 'siteorigin_widget_search_posts_action');
+add_action('wp_ajax_so_widgets_search_posts', 'siteorigin_widget_action_search_posts');
+
+/**
+ * Action to handle searching taxonomy terms.
+ */
+function siteorigin_widget_action_search_terms() {
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
+	global $wpdb;
+	$term = !empty($_GET['term']) ? stripslashes($_GET['term']) : '';
+	$term = trim($term, '%');
+
+	$query = $wpdb->prepare("
+		SELECT terms.term_id, terms.slug AS 'value', terms.name AS 'label', termtaxonomy.taxonomy AS 'type'
+		FROM $wpdb->terms AS terms
+		JOIN $wpdb->term_taxonomy AS termtaxonomy ON terms.term_id = termtaxonomy.term_id
+		WHERE
+			terms.name LIKE '%s'
+		LIMIT 20
+	", '%'.$term.'%');
+
+	$results = array();
+
+	foreach ( $wpdb->get_results( $query ) as $result ) {
+		$results[] = array(
+			'value' => $result->type . ':' . $result->value,
+			'label' => $result->label,
+			'type' => $result->type,
+		);
+	}
+
+	header('content-type:application/json');
+	echo json_encode( $results );
+	exit();
+}
+add_action('wp_ajax_so_widgets_search_terms', 'siteorigin_widget_action_search_terms');
+
+/**
+ * Action for getting the number of posts returned by a query.
+ */
+function siteorigin_widget_get_posts_count_action() {
+
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
+
+	$query = stripslashes( $_POST['query'] );
+
+	header('content-type: application/json');
+
+	echo json_encode( array( 'posts_count' => siteorigin_widget_post_selector_count_posts( $query ) ) );
+
+	exit();
+}
+
+add_action( 'wp_ajax_sow_get_posts_count', 'siteorigin_widget_get_posts_count_action' );
+
 
 function siteorigin_widget_remote_image_search(){
 	if( empty( $_GET[ '_sononce' ] ) || ! wp_verify_nonce( $_GET[ '_sononce' ], 'so-image' ) ) {
