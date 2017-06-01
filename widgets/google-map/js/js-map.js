@@ -160,14 +160,12 @@ sowb.SiteOriginGoogleMap = function($) {
 				var markerBatches = [];
 				var BATCH_SIZE = 10;
 				// Group markers into batches of 10 in attempt to avoid query limits
-				if ( markerPositions.length > BATCH_SIZE ) {
-					for ( var i = 0; i < markerPositions.length; i++ ) {
-						var batchIndex = parseInt( i / BATCH_SIZE ); // truncate decimals
-						if ( markerBatches.length === batchIndex ) {
-							markerBatches[ batchIndex ] = [];
-						}
-						markerBatches[ batchIndex ][ i % BATCH_SIZE ] = markerPositions[ i ];
+				for ( var i = 0; i < markerPositions.length; i++ ) {
+					var batchIndex = parseInt( i / BATCH_SIZE ); // truncate decimals
+					if ( markerBatches.length === batchIndex ) {
+						markerBatches[ batchIndex ] = [];
 					}
+					markerBatches[ batchIndex ][ i % BATCH_SIZE ] = markerPositions[ i ];
 				}
 
 				var geocodeMarkerBatch = function ( markerBatchHead, markerBatchTail ) {
