@@ -16,17 +16,22 @@ add_action('init', 'sow_carousel_register_image_sizes');
 
 function sow_carousel_get_next_posts_page() {
 	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
-	$query = wp_parse_args(
-		siteorigin_widget_post_selector_process_query($_GET['query']),
-		array(
-			'post_status' => 'publish',
-			'posts_per_page' => 10,
-			'paged' => empty( $_GET['paged'] ) ? 1 : $_GET['paged']
-		)
-	);
-
-	$posts = new WP_Query($query);
+	
+	$template_vars = array();
+	if ( ! empty( $_GET['instance_hash'] ) ) {
+		$instance_hash = $_GET['instance_hash'];
+		global $wp_widget_factory;
+        /** @var SiteOrigin_Widget $widget */
+		$widget = ! empty ( $wp_widget_factory->widgets['SiteOrigin_Widget_PostCarousel_Widget'] ) ?
+            $wp_widget_factory->widgets['SiteOrigin_Widget_PostCarousel_Widget'] : null;
+		if ( ! empty( $widget ) ) {
+            $instance = $widget->get_stored_instance($instance_hash);
+            $instance['paged'] = $_GET['paged'];
+            $template_vars = $widget->get_template_variables($instance, array());
+        }
+	}
 	ob_start();
+	extract( $template_vars );
 	include 'tpl/carousel-post-loop.php';
 	$result = array( 'html' => ob_get_clean() );
 	header('content-type: application/json');
@@ -44,6 +49,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			__('SiteOrigin Post Carousel', 'so-widgets-bundle'),
 			array(
 				'description' => __('Display your posts as a carousel.', 'so-widgets-bundle'),
+				'instance_storage' => true,
 				'help' => 'https://siteorigin.com/widgets-bundle/post-carousel-widget/'
 			),
 			array(
@@ -91,6 +97,15 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 				'label' => __('Title', 'so-widgets-bundle'),
 			),
 
+			'default_thumbnail' => array(
+				'type'     => 'media',
+				'library'  => 'image',
+				'label'    => __( 'Default Thumbnail', 'so-widgets-bundle' ),
+				'choose'   => __( 'Choose Thumbnail', 'so-widgets-bundle' ),
+				'update'   => __( 'Set Thumbnail', 'so-widgets-bundle' ),
+				'fallback' => true,
+			),
+
 			'image_size' => array(
 				'type' => 'image-size',
 				'label' => __('Featured Image size', 'so-widgets-bundle'),
@@ -125,6 +140,26 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			'thumbnail_hover_width' => $thumb_hover_width . 'px',
 			'thumbnail_hover_height'=> $thumb_hover_height . 'px',
 		);
+	}
+
+	public function get_template_variables( $instance, $args ) {
+		if ( ! empty( $instance['default_thumbnail'] ) ) {
+			$default_thumbnail = wp_get_attachment_image_src( $instance['default_thumbnail'], 'sow-carousel-default' );
+		}
+
+        $query = wp_parse_args(
+            siteorigin_widget_post_selector_process_query( $instance['posts'] ),
+            array(
+                'paged' => empty( $instance['paged'] ) ? 1 : $instance['paged']
+            )
+        );
+        $posts = new WP_Query( $query );
+
+        return array(
+            'title' => $instance['title'],
+            'posts' => $posts,
+            'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : '',
+        );
 	}
 
 	function get_template_name($instance){
