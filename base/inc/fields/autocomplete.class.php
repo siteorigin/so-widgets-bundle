@@ -29,6 +29,12 @@ class SiteOrigin_Widget_Field_Autocomplete extends SiteOrigin_Widget_Field_Text_
 		return array( 'widefat', 'siteorigin-widget-input', 'siteorigin-widget-autocomplete-input' );
 	}
 
+	protected function get_default_options() {
+		$defaults = parent::get_default_options();
+		$defaults['source'] = 'posts';
+		return $defaults;
+	}
+
 	protected function render_after_field( $value, $instance ) {
 		$post_types = ! empty( $this->post_types ) && is_array( $this->post_types ) ? implode( ',', $this->post_types ) : '';
 		?>

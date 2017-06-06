@@ -164,7 +164,17 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						),
 						'label'       => __( 'Keep map centered', 'so-widgets-bundle' ),
 						'description' => __( 'Keeps the map centered when it\'s container is resized.', 'so-widgets-bundle' )
-					)
+					),
+					'fallback_image' => array(
+						'type' => 'media',
+						'label' => __( 'Fallback Image', 'so-widgets-bundle' ),
+						'description' => __( 'This image will be displayed if there are any problems with displaying the specified map.', 'so-widgets-bundle' ),
+						'library' => 'image',
+					),
+					'fallback_image_size' => array(
+						'type' => 'image-size',
+						'label' => __( 'Fallback Image Size', 'so-widgets-bundle' ),
+					),
 				)
 			),
 			'markers'         => array(
@@ -217,6 +227,12 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							'info_max_width' => array(
 								'type' => 'text',
 								'label' => __( 'Info Window max width', 'so-widgets-bundle' )
+							),
+							'custom_marker_icon'       => array(
+								'type'        => 'media',
+								'default'     => '',
+								'label'       => __( 'Custom Marker icon', 'so-widgets-bundle' ),
+								'description' => __( 'Replace the default map marker with your own image for each marker.', 'so-widgets-bundle' )
 							),
 						)
 					),
@@ -448,11 +464,20 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			}
 		}
 
+		$fallback_image = '';
+		if ( ! empty ( $instance['settings']['fallback_image'] ) ) {
+			$fallback_image = siteorigin_widgets_get_attachment_image(
+				$instance['settings']['fallback_image'],
+				$instance['settings']['fallback_image_size'],
+				false );
+		}
+
 		if ( $settings['map_type'] == 'static' ) {
 			return array(
-				'src_url'         => $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array() ),
-				'destination_url' => $instance['settings']['destination_url'],
-				'new_window'      => $instance['settings']['new_window'],
+				'src_url'             => $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array() ),
+				'destination_url'     => $instance['settings']['destination_url'],
+				'new_window'          => $instance['settings']['new_window'],
+				'fallback_image_data' => array( 'img' => $fallback_image ),
 			);
 		} else {
 			$markers         = $instance['markers'];
@@ -462,6 +487,16 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					unset( $instance['directions']['waypoints'] );
 				}
 				$directions = siteorigin_widgets_underscores_to_camel_case( $instance['directions'] );
+			}
+
+			$markerpos = isset( $markers['marker_positions'] ) ? $markers['marker_positions'] : '';
+			if( ! empty($markerpos)) {
+				foreach ($markerpos as $key => $pos) {
+					if(! empty($pos['custom_marker_icon'])) {
+						$icon_src = wp_get_attachment_image_src( $pos['custom_marker_icon'] );
+						$markerpos[$key]['custom_marker_icon'] = $icon_src[0];
+					}
+				}
 			}
 
 			$map_data = siteorigin_widgets_underscores_to_camel_case( array(
@@ -476,7 +511,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'marker_at_center'  => !empty( $markers['marker_at_center'] ),
 				'marker_info_display' => $markers['info_display'],
 				'marker_info_multiple' => $markers['info_multiple'],
-				'marker_positions'  => isset( $markers['marker_positions'] ) ? $markers['marker_positions'] : '',
+				'marker_positions'  => ! empty( $markerpos ) ? $markerpos : '',
 				'map_name'          => ! empty( $styles ) ? $styles['map_name'] : '',
 				'map_styles'        => ! empty( $styles ) ? $styles['styles'] : '',
 				'directions'        => $directions,
@@ -487,19 +522,29 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'map_id'   => md5( $instance['map_center'] ),
 				'height'   => $settings['height'],
 				'map_data' => $map_data,
+				'fallback_image_data' => array( 'img' => $fallback_image ),
 			);
 		}
 	}
 
-	public function enqueue_widget_scripts() {
-		wp_enqueue_script( 'sow-google-map' );
+	public function enqueue_widget_scripts( $instance ) {
+		if ( $instance['settings']['map_type'] == 'interactive' ) {
+			wp_enqueue_script( 'sow-google-map' );
 
-		wp_enqueue_style(
-			'sow-google-map',
-			plugin_dir_url(__FILE__) . 'css/style.css',
-			array(),
-			SOW_BUNDLE_VERSION
-		);
+			wp_enqueue_style(
+				'sow-google-map',
+				plugin_dir_url(__FILE__) . 'css/style.css',
+				array(),
+				SOW_BUNDLE_VERSION
+			);
+		} else {
+			wp_enqueue_script(
+				'sow-google-map-static',
+				plugin_dir_url( __FILE__ ) . 'js/static-map' . SOW_BUNDLE_JS_SUFFIX . '.js',
+				array( 'jquery' ),
+				SOW_BUNDLE_VERSION
+			);
+		}
 	}
 
 

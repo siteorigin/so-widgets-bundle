@@ -228,13 +228,30 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		);
 		$wrapper_classes = array_map( 'sanitize_html_class', $wrapper_classes );
 
+		$wrapper_data_string = $this->get_wrapper_data( $instance );
+
 		do_action( 'siteorigin_widgets_before_widget_' . $this->id_base, $instance, $this );
 		echo $args['before_widget'];
-		echo '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '">';
+		echo '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"' . $wrapper_data_string . '>';
 		echo $template_html;
 		echo '</div>';
 		echo $args['after_widget'];
 		do_action( 'siteorigin_widgets_after_widget_' . $this->id_base, $instance, $this );
+	}
+
+	private function get_wrapper_data( $instance ) {
+		$data = apply_filters(
+			'siteorigin_widgets_wrapper_data_' . $this->id_base,
+			array(),
+			$instance,
+			$this
+		);
+		$wrapper_attr_string = '';
+		foreach ( $data as $name => $value ) {
+			$wrapper_attr_string = ' data-' . esc_html( $name ) . '="' . esc_attr( $value ) . '"';
+		}
+
+		return $wrapper_attr_string;
 	}
 
 	/**
@@ -379,6 +396,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				if ( empty( $instance[$id] ) ) {
 					if( ! empty( $field['default'] ) ) {
 						$instance[$id] = $field['default'];
+					} else {
+						// If no default order is specified, just use the order of the options.
+						$instance[$id] = array_keys( $field['options'] );
 					}
 				}
 			}
@@ -448,6 +468,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			}
 			?>
 			<input type="hidden" name="<?php echo $this->get_field_name('_sow_form_id') ?>" value="<?php echo esc_attr( $instance['_sow_form_id'] ) ?>" class="siteorigin-widgets-form-id" />
+			<input type="hidden" name="<?php echo $this->get_field_name('_sow_form_timestamp') ?>" value="<?php echo ! empty( $instance['_sow_form_timestamp'] ) ? esc_attr( $instance['_sow_form_timestamp'] ) : '' ?>" class="siteorigin-widgets-form-timestamp" />
 		</div>
 		<div class="siteorigin-widget-form-no-styles">
 			<?php $this->scripts_loading_message() ?>
@@ -544,11 +565,26 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			wp_enqueue_script( 'wp-color-picker' );
 			wp_enqueue_media();
-			wp_enqueue_script( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/admin' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-slider' ), SOW_BUNDLE_VERSION, true );
+			wp_enqueue_script(
+				'siteorigin-widget-admin',
+				plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'base/js/admin' . SOW_BUNDLE_JS_SUFFIX . '.js',
+				array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-slider', 'underscore' ),
+				SOW_BUNDLE_VERSION,
+				true
+			);
 
 			wp_localize_script( 'siteorigin-widget-admin', 'soWidgets', array(
 				'ajaxurl' => wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ),
-				'sure' => __('Are you sure?', 'so-widgets-bundle')
+				'sure' => __('Are you sure?', 'so-widgets-bundle'),
+				'backup' => array(
+					'newerVersion' => __( "There is a newer version of this widget's content available.", 'so-widgets-bundle' ),
+					'restore' => __( 'Restore', 'so-widgets-bundle' ),
+					'dismiss' => __( 'Dismiss', 'so-widgets-bundle' ),
+					'replaceWarning' => sprintf(
+						__( 'Clicking %s will replace the current widget contents. You can revert by refreshing the page before updating.', 'so-widgets-bundle' ),
+						'<em>' . __( 'Restore', 'so-widgets-bundle' ) . '</em>'
+					),
+				),
 			) );
 
 			global $wp_customize;
@@ -1219,7 +1255,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$f_style[0],
 					isset( $f_style[1] ) ? $f_style[1] : false,
 					isset( $f_style[2] ) ? $f_style[2] : array(),
-					!empty( $f_script[3] ) ? $f_script[3] : SOW_BUNDLE_VERSION,
+					!empty( $f_style[3] ) ? $f_style[3] : SOW_BUNDLE_VERSION,
 					isset( $f_style[4] ) ? $f_style[4] : "all"
 				);
 			}

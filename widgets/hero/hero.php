@@ -34,6 +34,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		}
 
 		add_filter( 'siteorigin_widgets_wrapper_classes_' . $this->id_base, array( $this, 'wrapper_class_filter' ), 10, 2 );
+		add_filter( 'siteorigin_widgets_wrapper_data_' . $this->id_base, array( $this, 'wrapper_data_filter' ), 10, 2 );
 
 		// Let the slider base class do its initialization
 		parent::initialize();
@@ -204,6 +205,24 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 						'label' => __( 'Use FitText', 'so-widgets-bundle' ),
 						'description' => __( 'Dynamically adjust your heading font size based on screen size.', 'so-widgets-bundle' ),
 						'default' => true,
+						'state_emitter' => array(
+							'callback' => 'conditional',
+							'args'     => array(
+								'use_fittext[show]: val',
+								'use_fittext[hide]: ! val'
+							),
+						),
+					),
+
+					'fittext_compressor' => array(
+						'type' => 'number',
+						'label' => __( 'FitText Compressor Strength', 'so-widgets-bundle' ),
+						'description' => __( 'How aggressively FitText should resize your heading.', 'so-widgets-bundle' ),
+						'default' => 0.85,
+						'state_handler' => array(
+							'use_fittext[show]' => array( 'show' ),
+							'use_fittext[hide]' => array( 'hide' ),
+						)
 					),
 
 					'heading_shadow' => array(
@@ -368,11 +387,18 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 
 	function wrapper_class_filter( $classes, $instance ){
-		if( $instance['design']['fittext'] ) {
+		if( ! empty( $instance['design']['fittext'] ) ) {
 			$classes[] = 'so-widget-fittext-wrapper';
 			wp_enqueue_script( 'sow-fittext' );
 		}
 		return $classes;
+	}
+
+	function wrapper_data_filter( $data, $instance ) {
+		if( ! empty( $instance['design']['fittext'] ) && ! empty( $instance['design']['fittext_compressor'] ) ) {
+			$data['fit-text-compressor'] = $instance['design']['fittext_compressor'];
+		}
+		return $data;
 	}
 
 }

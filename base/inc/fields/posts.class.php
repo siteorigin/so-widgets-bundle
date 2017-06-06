@@ -22,6 +22,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 				'label'    => __( 'Post type', 'so-widgets-bundle' ),
 				'multiple' => true,
 				'options'  => $type_options,
+				'default'  => 'post'
 			),
 
 			'post__in' => array(
@@ -36,9 +37,39 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 				'source' => 'terms',
 			),
 
+			'date_type' => array(
+				'type' => 'radio',
+				'label' => __( 'Date selection type', 'so-widgets-bundle' ),
+				'options' => array(
+					'specific' => __( 'Specific', 'so-widgets-bundle' ),
+					'relative' => __( 'Relative', 'so-widgets-bundle' ),
+				),
+				'description' => __( 'Select a range between specific dates or relative to the current date.', 'so-widgets-bundle' ),
+				'default' => 'specific',
+				'state_emitter' => array(
+					'callback' => 'select',
+					'args' => array( 'date_type' )
+				),
+			),
+
 			'date_query' => array(
 				'type'  => 'date-range',
-				'label' => __( 'Date range', 'so-widgets-bundle' ),
+				'label' => __( 'Dates', 'so-widgets-bundle' ),
+				'date_type' => 'specific',
+				'state_handler' => array(
+					'date_type[specific]' => array('show'),
+					'_else[date_type]' => array('hide'),
+				),
+			),
+
+			'date_query_relative' => array(
+				'type'  => 'date-range',
+				'label' => __( 'Dates', 'so-widgets-bundle' ),
+				'date_type' => 'relative',
+				'state_handler' => array(
+					'date_type[relative]' => array('show'),
+					'_else[date_type]' => array('hide'),
+				),
 			),
 
 			'orderby' => array(
@@ -59,6 +90,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 					'meta_value_num' => __( 'By numeric meta value', 'so-widgets-bundle' ),
 					'post__in'       => __( 'By include order', 'so-widgets-bundle' ),
 				),
+				'default' => 'date',
 			),
 
 			'order' => array(
@@ -120,7 +152,13 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 	}
 
 	public function enqueue_scripts() {
-	    wp_enqueue_script( 'so-posts-selector-field', plugin_dir_url( __FILE__ ) . 'js/posts-field' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete', 'underscore', 'backbone' ), SOW_BUNDLE_VERSION, true );
+		wp_enqueue_script(
+			'so-posts-selector-field',
+			plugin_dir_url( __FILE__ ) . 'js/posts-field' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			SOW_BUNDLE_VERSION,
+			true
+		);
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {

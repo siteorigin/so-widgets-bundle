@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 4.2
-Tested up to: 4.7.4
+Tested up to: 4.8
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
@@ -53,6 +53,37 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.9.1 - 1 June 2017 =
+* Fixed Maps widget JS error.
+
+= 1.9 - 30 May 2017 =
+* Compatibility with Visual Composer.
+* Taxonomy widget text display.
+* Price table widget: option to make feature row heights equal.
+* New posts selector field based on other existing fields.
+* New autocomplete field. Currently supports showing results from posts and taxonomies.
+* New date-range field with option to select specific or relative dates.
+* Editor widget: Global widget setting for default 'autop' state.
+* Some layout fixes for widget forms in Elementor.
+* Google Maps: fallback image when maps API not available or returns error.
+* Contact form: Reduced intensity of disabled button styling.
+* Google Maps: Fix markers not displaying when queries are rate limited.
+* Features: Option to use specified icon size for custom icon images.
+* Updated FontAwesome icon set to 4.7.0
+* Updated IcoMoon icon set.
+* Contact form: Allow duplicate forms on same page.
+* Widget temp backup in browser storage.
+* Google Maps: Custom marker icon for each marker.
+* Option to specify default number of visible rows in icon field.
+* Changed PHP LESS compiler to a better maintained version.
+
+= 1.8.6 - 10 May 2017 =
+* Editor widget supports Jetpack Markdown.
+* Editor widget global setting for enabling/disabling 'autop' by default.
+* Allow setting FitText compressor strength in hero and headline widgets.
+* Fix variable name in `enqueue_registered_styles`.
+* Fix FitText not working previews.
 
 = 1.8.5 - 27 April 2017 =
 * Fixed button hover class.

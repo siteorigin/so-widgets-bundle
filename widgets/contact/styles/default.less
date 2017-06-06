@@ -82,10 +82,10 @@
 		border: @field_border_width @field_border_style @field_border_color;
 		padding: @field_padding;
 		height: @field_height;
-		
+
 		background: @field_background;
 		color: @field_font_color;
-		
+
 		font-size: @field_font_size;
 		.font(@field_font_family, @field_font_weight);
 	}
@@ -206,7 +206,7 @@
 			padding: @submit_padding @submit_padding * 2;
 			display: inline-block;
 
-			.sow-submit-box-shadow (@percent) when (@percent > 0%) {
+			.sow-submit-box-shadow ( @percent ) when ( @percent > 0% ) {
 				box-shadow: inset 0 -1px 0 fade( #ffffff, @percent );
 			}
 
@@ -214,8 +214,8 @@
 		}
 
 		.sow-submit:disabled {
-			color: lighten(@submit_text_color, 50%);
-			background: lighten(@submit_background_color, 50%);
+			color: lighten(@submit_text_color, 20%);
+			background: lighten(@submit_background_color, 20%);
 			border: @submit_border_width @submit_border_style lighten(@submit_border_color, 20%);
 
 		}

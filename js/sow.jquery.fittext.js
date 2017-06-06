@@ -45,15 +45,19 @@ jQuery( function( $ ){
 
     // Apply FitText to all Widgets Bundle FitText wrappers
 	sowb.runFitText = function () {
-		var fitTextWrapper = $( '.so-widget-fittext-wrapper' );
+		$( '.so-widget-fittext-wrapper' ).each( function() {
+			var fitTextWrapper = $( this );
 
-		fitTextWrapper.find( 'h1,h2,h3,h4,h5,h6' ).each( function () {
-			var $$ = $( this );
-			$$.fitText( 0.85, {
-				maxFontSize: $$.css( 'font-size' )
+			var compressor = fitTextWrapper.data( 'fitTextCompressor' ) || 0.85;
+			fitTextWrapper.find( 'h1,h2,h3,h4,h5,h6' ).each( function () {
+				var $$ = $( this );
+				$$.fitText( compressor, {
+					maxFontSize: $$.css( 'font-size' )
+				} );
 			} );
-		} );
-		fitTextWrapper.trigger( 'fitTextDone' );
+			fitTextWrapper.data( 'fitTextDone', true );
+			fitTextWrapper.trigger( 'fitTextDone' );
+		});
 	};
 
 	$( sowb ).on( 'setup_widgets', sowb.runFitText );

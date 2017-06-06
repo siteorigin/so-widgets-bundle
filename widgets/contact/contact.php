@@ -694,9 +694,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		unset( $instance['display_title'] );
 		unset( $instance['design'] );
 		unset( $instance['panels_info'] );
-		unset( $instance['_sow_form_id'] );
 
+		// Include '_sow_form_id' in generation of 'instance_hash' to allow multiple instances of the same form on a page.
 		$vars['instance_hash'] = md5( serialize( $instance ) );
+
+		unset( $instance['_sow_form_id'] );
 
 		return $vars;
 	}

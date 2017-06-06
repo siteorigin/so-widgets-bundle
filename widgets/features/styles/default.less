@@ -18,6 +18,8 @@
 @more_text_color: default;
 
 @container_size: 84px;
+@icon_size: 24px;
+@use_icon_size: false;
 
 .sow-features-list {
 
@@ -77,17 +79,23 @@
 
             [class^="sow-icon-"],
             .sow-icon-image {
-                text-decoration: none;
-                color: #FFFFFF;
-                width: @container_size;
-                height: @container_size;
+				text-decoration: none;
+				color: #FFFFFF;
+				width: @container_size;
+				height: @container_size;
 				position: absolute;
 				top: 0;
 				display: flex;
 				align-items: center;
 				justify-content: center;
 
-                background-size: contain;
+				.icon_size() when ( @use_icon_size = true) {
+                	background-size: @icon_size @icon_size;
+				}
+				.icon_size() when not ( @use_icon_size = true) {
+                	background-size: contain;
+				}
+				.icon_size();
                 background-repeat: no-repeat;
                 background-position: center;
             }

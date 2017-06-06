@@ -655,7 +655,7 @@ class SiteOrigin_Widgets_Bundle {
 		foreach($data['widgets'] as $widget) {
 			if( empty( $widget['panels_info']['class'] ) ) continue;
 			if( !empty( $wp_widget_factory->widgets[ $widget['panels_info']['class'] ] ) ) continue;
-			
+
 			$this->load_missing_widget( false, $widget['panels_info']['class'] );
 		}
 
@@ -677,12 +677,12 @@ class SiteOrigin_Widgets_Bundle {
 		if( preg_match('/SiteOrigin_Widgets?_([A-Za-z]+)_Widget/', $class, $matches) ) {
 			$name = $matches[1];
 			$id = strtolower( implode( '-', array_filter( preg_split( '/(?=[A-Z])/', $name ) ) ) );
-			
+
 			if( $id == 'contact-form' ) {
 				// Handle the special case of the contact form widget, which is incorrectly named
 				$id = 'contact';
 			}
-			
+
 			$this->activate_widget($id, true);
 			global $wp_widget_factory;
 			if( !empty($wp_widget_factory->widgets[$class]) ) return $wp_widget_factory->widgets[$class];
@@ -701,8 +701,27 @@ class SiteOrigin_Widgets_Bundle {
 		return $links;
 	}
 
-	function register_general_scripts(){
-		wp_register_script( 'sow-fittext', plugin_dir_url( __FILE__ ) . 'js/sow.jquery.fittext' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery' ), '1.2', true );
+	function register_general_scripts() {
+		wp_register_script( 'sow-fittext',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/sow.jquery.fittext' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			'1.2',
+			true
+		);
+		wp_register_script(
+			'dessandro-imagesLoaded',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/imagesloaded.pkgd' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			'3.2.0',
+			true
+		);
+		wp_register_script(
+			'dessandro-packery',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/packery.pkgd' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			'1.4.3',
+			true
+		);
 	}
 
 	/**

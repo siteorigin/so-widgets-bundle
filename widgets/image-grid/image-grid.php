@@ -29,15 +29,17 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 		$this->register_frontend_styles( array(
 			array(
 				'sow-image-grid',
-				plugin_dir_url(__FILE__) . 'css/image-grid.css',
+				plugin_dir_url( __FILE__ ) . 'css/image-grid.css',
 			)
 		) );
 
 		$this->register_frontend_scripts( array(
 			array(
 				'sow-image-grid',
-				plugin_dir_url(__FILE__) . 'js/image-grid' . SOW_BUNDLE_JS_SUFFIX . '.js',
-				array( 'jquery' )
+				plugin_dir_url( __FILE__ ) . 'js/image-grid' . SOW_BUNDLE_JS_SUFFIX . '.js',
+				array( 'jquery', 'dessandro-imagesLoaded' ),
+				SOW_BUNDLE_VERSION,
+				true,
 			)
 		) );
 	}

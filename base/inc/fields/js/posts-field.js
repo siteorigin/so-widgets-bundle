@@ -1,4 +1,4 @@
-/* global jQuery, _,  */
+/* global jQuery, soWidgets */
 
 (function( $ ) {
 

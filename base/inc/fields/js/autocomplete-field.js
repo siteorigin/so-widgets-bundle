@@ -9,6 +9,20 @@
 			var selectedItems = $$.find( 'input.siteorigin-widget-input' ).val();
 			return selectedItems.length === 0 ? [] : selectedItems.split( ',' );
 		};
+
+		var updateSelectedItems = function() {
+			var selectedItems = getSelectedItems();
+			$$.find( 'ul.items > li' ).each( function ( index, element ) {
+				var $li = $( this );
+
+				if ( selectedItems.indexOf( $li.data( 'value' ) ) > -1 ) {
+					$li.addClass( 'selected' );
+				} else {
+					$li.removeClass( 'selected' );
+				}
+			} );
+		};
+
 		// Function that refreshes the list of
 		var request = null;
 		var refreshList = function(){
@@ -22,8 +36,7 @@
 			var postTypes = $contentSearchInput.data('postTypes');
 
 			var $ul = $$.find('ul.items').empty().addClass('loading');
-			var selectedItems = getSelectedItems();
-			$.get(
+			return $.get(
 				soWidgets.ajaxurl,
 				{ action: 'so_widgets_search_' + source, query: query, postTypes: postTypes },
 				function(results) {
@@ -31,11 +44,9 @@
 						if (item.label === '') {
 							item.label = '&nbsp;';
 						}
-						var isSelected = selectedItems.indexOf(item.value) > -1;
 						// Add all the items
 						$ul.append(
 							$('<li>')
-								.addClass(isSelected ? 'selected' : '')
 								.html(item.label + '<span>(' + item.type + ')</span>')
 								.data(item)
 						);
@@ -49,9 +60,14 @@
 			var $s = $$.find('.existing-content-selector');
 			$s.show();
 
+			var refreshPromise = new $.Deferred();
 			if( $s.is(':visible') && $s.find('ul.items li').length === 0 ) {
-				refreshList();
+				refreshPromise = refreshList();
+			} else {
+				refreshPromise.resolve();
 			}
+
+			refreshPromise.done( updateSelectedItems );
 		});
 
 		var closeContent = function () {
