@@ -66,18 +66,18 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			$instance,
 			array(  'text' => '' )
 		);
-
-		$instance['text'] = $this->unwpautop( $instance['text'] );
-
-		if (function_exists('wp_make_content_images_responsive')) {
-			$instance['text'] = wp_make_content_images_responsive( $instance['text'] );
-		}
-
+		
 		if (
 			// Only run these parts if we're rendering for the frontend
 			empty( $GLOBALS[ 'SITEORIGIN_PANELS_CACHE_RENDER' ] ) &&
 			empty( $GLOBALS[ 'SITEORIGIN_PANELS_POST_CONTENT_RENDER' ] )
 		) {
+			$instance['text'] = $this->unwpautop( $instance['text'] );
+			
+			if (function_exists('wp_make_content_images_responsive')) {
+				$instance['text'] = wp_make_content_images_responsive( $instance['text'] );
+			}
+			
 			// Manual support for Jetpack Markdown module.
 			if ( class_exists( 'WPCom_Markdown' ) &&
 			     Jetpack::is_module_active( 'markdown' ) &&
@@ -94,12 +94,14 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			}
 
 			$instance['text'] = apply_filters( 'widget_text', $instance['text'] );
+			
+			if( $instance['autop'] ) {
+					$instance['text'] = wpautop( $instance['text'] );
+			}
+			
 			$instance['text'] = do_shortcode( shortcode_unautop( $instance['text'] ) );
 		}
 
-		if( $instance['autop'] ) {
-			$instance['text'] = wpautop( $instance['text'] );
-		}
 
 		return array(
 			'text' => $instance['text'],
