@@ -16,11 +16,10 @@ add_action('init', 'sow_carousel_register_image_sizes');
 
 function sow_carousel_get_next_posts_page() {
 	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
-
-	$instance_hash = $_GET['instance_hash'];
-
+	
 	$template_vars = array();
-	if ( ! empty( $instance_hash ) ) {
+	if ( ! empty( $_GET['instance_hash'] ) ) {
+		$instance_hash = $_GET['instance_hash'];
 		global $wp_widget_factory;
         /** @var SiteOrigin_Widget $widget */
 		$widget = ! empty ( $wp_widget_factory->widgets['SiteOrigin_Widget_PostCarousel_Widget'] ) ?
