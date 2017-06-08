@@ -229,7 +229,11 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		$networks = $this->get_instance_networks( $instance );
 		$calls    = array();
 		foreach ( $networks as $network ) {
-			$calls[] = $args[0] . '(' . $network['name'] . ', ' . $network['icon_color'] . ', ' . $network['button_color'] . ');';
+			$call = $args[0] . '(' . $network['name'];
+			$call .= ! empty( $network['icon_color'] ) ? ', @icon_color:' . $network['icon_color'] : '';
+			$call .= ! empty( $network['button_color'] ) ? ', @button_color:' . $network['button_color'] : '';
+			$call .= ');';
+			$calls[] = $call;
 		}
 
 		return implode( "\n", $calls );
