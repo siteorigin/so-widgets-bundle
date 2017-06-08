@@ -54,6 +54,13 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.9.2 - 8 June 2017 =
+* Post Carousel: default image for posts without featured images.
+* Social Media Buttons: allow empty colors.
+* Editor: prevent text processing for cache and post content rendering.
+* Post selector field: Fix additional args encoding.
+* Post selector field: Fix taxonomy search.
+
 = 1.9.1 - 1 June 2017 =
 * Fixed Maps widget JS error.
 
