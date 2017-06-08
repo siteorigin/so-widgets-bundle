@@ -122,7 +122,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 			'additional' => array(
 				'type'        => 'text',
 				'label'       => __( 'Additional', 'so-widgets-bundle' ),
-				'description' => __( 'Additional query arguments. See <a href="http://codex.wordpress.org/Function_Reference/query_posts" target="_blank">query_posts</a>.', 'so-widgets-bundle' )
+				'description' => __( 'Additional query arguments. See <a href="http://codex.wordpress.org/Function_Reference/query_posts" target="_blank">query_posts</a>.', 'so-widgets-bundle' ),
 			),
 		);
 	}
@@ -162,6 +162,10 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
+		// Special handling for the 'additional' args field.
+		if ( ! empty( $value['additional'] ) ) {
+			$value['additional'] = urlencode( $value['additional'] );
+		}
 		$value = parent::sanitize_field_input( $value, $instance );
 		$result = '';
 		foreach ( $value as $key => $item ) {
