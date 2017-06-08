@@ -9,10 +9,6 @@
 
 .create_social_media_button_style(@name, @icon_color:'', @button_color:'') {
 
-	& when( iscolor( @button_color ) ) {
-		@border_color: darken(@button_color, 15%);
-	}
-
     .sow-social-media-button-@{name} {
         border: 1px solid;
 
@@ -20,8 +16,15 @@
 		text-shadow: 0 1px 0 rgba(0,0,0,0.05);
 
 		& when( iscolor( @button_color ) ) {
+			@border_color: darken(@button_color, 15%);
+
 			.gradient(@button_color, darken(@button_color, 10%), @button_color);
 			border-color: lighten(@border_color, 2%) @border_color darken(@border_color, 3%) @border_color;
+
+			&.ow-button-hover:hover {
+				.gradient(lighten(@button_color, 2%), lighten(darken(@button_color, 10%), 2%), lighten(@button_color, 2%));
+				border-color: lighten(lighten(@border_color, 2%), 2%) lighten(@border_color, 2%) darken(lighten(@border_color, 2%), 3%) lighten(@border_color, 2%);
+			}
 		}
 
 		& when( iscolor( @icon_color ) ) {
@@ -31,16 +34,10 @@
 			&:hover {
 				color: @icon_color !important;
 			}
-		}
 
-        &.ow-button-hover:hover {
-			& when( iscolor( @button_color ) ) {
-				.gradient(lighten(@button_color, 2%), lighten(darken(@button_color, 10%), 2%), lighten(@button_color, 2%));
-				border-color: lighten(lighten(@border_color, 2%), 2%) lighten(@border_color, 2%) darken(lighten(@border_color, 2%), 3%) lighten(@border_color, 2%);
-			}
-			& when( iscolor( @icon_color ) ) {
+			&.ow-button-hover:hover {
 				color: lighten(@icon_color, 2%);
 			}
-        }
+		}
     }
 }
