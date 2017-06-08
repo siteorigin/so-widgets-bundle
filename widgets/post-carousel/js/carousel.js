@@ -28,13 +28,15 @@ jQuery( function($){
                     fetching = true;
                     page++;
                     $itemsContainer.append('<li class="sow-carousel-item sow-carousel-loading"></li>');
-
+                    var instanceHash = $container.find('input[name="instance_hash"]').val();
+                    
                     $.get(
                         $$.data('ajax-url'),
                         {
                             query : $$.data('query'),
                             action : 'sow_carousel_load',
-                            paged : page
+                            paged : page,
+                            instance_hash : instanceHash,
                         },
                         function (data, status){
                             var $items = $(data.html);

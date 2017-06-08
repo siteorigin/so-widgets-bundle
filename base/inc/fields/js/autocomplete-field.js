@@ -34,11 +34,17 @@
 			var query = $contentSearchInput.val();
 			var source = $contentSearchInput.data('source');
 			var postTypes = $contentSearchInput.data('postTypes');
-
+			var ajaxData = { action: 'so_widgets_search_' + source };
+			if ( source === 'posts' ) {
+				ajaxData.query = query;
+				ajaxData.postTypes = postTypes;
+			} else if ( source === 'terms' ) {
+				ajaxData.term = query;
+			}
 			var $ul = $$.find('ul.items').empty().addClass('loading');
 			return $.get(
 				soWidgets.ajaxurl,
-				{ action: 'so_widgets_search_' + source, query: query, postTypes: postTypes },
+				ajaxData,
 				function(results) {
 					results.forEach(function (item) {
 						if (item.label === '') {
