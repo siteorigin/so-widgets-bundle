@@ -152,12 +152,18 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		} else {
 			$attr['alt'] = get_post_meta( $instance['image'], '_wp_attachment_image_alt', true );
 		}
+		
+		$link_atts = array();
+		if ( ! empty( $instance['new_window'] ) ) {
+			$link_atts['target'] = '_blank';
+		}
 
 		return array(
 			'title' => $title,
 			'title_position' => $instance['title_position'],
 			'url' => $instance['url'],
 			'new_window' => $instance['new_window'],
+			'link_attributes' => $link_atts,
 			'attributes' => $attr,
 			'classes' => array( 'so-widget-image' ),
 		);
