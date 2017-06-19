@@ -103,7 +103,17 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 			)
 		);
 	}
-
+	
+	function get_template_variables( $instance, $args ) {
+		
+		return array(
+			'images' => $instance['images'],
+			'max_height' => $instance['display']['max_height'],
+			'max_width' => $instance['display']['max_width'],
+			'attachment_size' => $instance['display']['attachment_size'],
+		);
+	}
+	
 	/**
 	 * Get the less variables for the image grid
 	 *
