@@ -141,22 +141,39 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			?>
 			<div class="sow-slider-image-container">
 				<div class="sow-slider-image-wrapper" style="<?php if(!empty($foreground_src[1])) echo 'max-width: ' . intval($foreground_src[1]) . 'px' ?>">
+					<?php if ( ! empty( $frame['url'] ) ) : ?>
+						<a href="<?php echo sow_esc_url( $frame['url'] ) ?>"
+						<?php foreach( $frame['link_attributes'] as $att => $val ) : ?>
+							<?php if ( ! empty( $val ) ) : ?>
+								<?php echo $att . '="' . esc_attr( $val ) . '" '; ?>
+							<?php endif; ?>
+						<?php endforeach; ?>>
+					<?php endif; ?>
 					<?php
-					if(!empty($frame['url'])) echo '<a href="' . sow_esc_url($frame['url']) . '" ' . ( !empty($frame['new_window']) ? 'target="_blank"' : '' ) . '>';
 					echo siteorigin_widgets_get_attachment_image(
 						$frame['foreground_image'],
 						'full',
 						!empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : ''
 					);
-					if(!empty($frame['url'])) echo '</a>';
 					?>
+					<?php if ( ! empty( $frame['url'] ) ) : ?>
+						</a>
+					<?php endif; ?>
 				</div>
 			</div>
 			<?php
 		}
 		else if( empty($frame['background_videos']) ) {
-			// We need to find another background
-			if(!empty($frame['url'])) echo '<a href="' . sow_esc_url($frame['url']) . '" ' . ( !empty($frame['new_window']) ? 'target="_blank"' : '' ) . '>';
+			?>
+			<?php if ( ! empty( $frame['url'] ) ) : ?>
+				<a href="<?php echo sow_esc_url( $frame['url'] ) ?>"
+				<?php foreach( $frame['link_attributes'] as $att => $val ) : ?>
+					<?php if ( ! empty( $val ) ) : ?>
+						<?php echo $att . '="' . esc_attr( $val ) . '" '; ?>
+					<?php endif; ?>
+				<?php endforeach; ?>>
+			<?php endif; ?>
+			<?php
 
 			// Lets use the background image
 			echo siteorigin_widgets_get_attachment_image(
@@ -165,11 +182,30 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				!empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : ''
 			);
 
-			if( !empty($frame['url']) ) echo '</a>';
+			?>
+			<?php if ( ! empty( $frame['url'] ) ) : ?>
+				</a>
+			<?php endif; ?>
+			<?php
 		}
 
 	}
-
+	
+	function get_template_variables( $instance, $args ) {
+		$frames = $instance['frames'];
+		foreach ( $frames as &$frame ) {
+			$link_atts = array();
+			if ( ! empty( $frame['new_window'] ) ) {
+				$link_atts['target'] = '_blank';
+			}
+			$frame['link_attributes'] = $link_atts;
+		}
+		return array(
+			'controls' => $instance['controls'],
+			'frames' => $frames,
+		);
+	}
+	
 	/**
 	 * The less variables to control the design of the slider
 	 *
