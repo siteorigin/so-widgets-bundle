@@ -50,7 +50,7 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 					<?php endif; ?>
 
 					<?php if(!empty($feature['text'])) : ?>
-						<p><?php echo wp_kses_post( $feature['text'] ) ?></p>
+						<?php echo wp_kses_post( $feature['text'] ) ?>
 					<?php endif; ?>
 
 					<?php if(!empty($feature['more_text'])) : ?>
