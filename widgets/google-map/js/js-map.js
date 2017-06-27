@@ -431,7 +431,7 @@ jQuery(function ($) {
 
 				sowb.onLoadMapsApiError = function ( error ) {
 					var matchError = error.match( /^Google Maps API (error|warning): ([^\s]*)\s([^\s]*)(?:\s(.*))?/ );
-					if ( matchError[0] ) {
+					if ( matchError && matchError.length && matchError[0] ) {
 						$( '.sow-google-map-canvas' ).each( function ( index, element ) {
 							var $this = $( element );
 							if ( $this.data( 'fallbackImage' ) ) {
