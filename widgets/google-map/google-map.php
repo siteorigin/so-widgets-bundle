@@ -42,7 +42,11 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'type'        => 'textarea',
 				'rows'        => 2,
 				'label'       => __( 'Map center', 'so-widgets-bundle' ),
-				'description' => __( 'The name of a place, town, city, or even a country. Can be an exact address too.', 'so-widgets-bundle' )
+				'description' => sprintf(
+					__( 'The name of a place, town, city, or even a country. Can be an exact address too. Please ensure you have enabled the <strong>Geocoding API</strong> in the %sGoogle APIs Dashboard%s.', 'so-widgets-bundle' ),
+					'<a href="https://console.developers.google.com/apis/dashboard?project=_" target="_blank">',
+					'</a>'
+				),
 			),
 			'api_key_section' => array(
 				'type'   => 'section',
@@ -361,7 +365,11 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'_else[map_type]' => array('hide'),
 				),
 				'hide'        => true,
-				'description' => __( 'Display a route on your map, with waypoints between your starting point and destination.', 'so-widgets-bundle' ),
+				'description' => sprintf(
+					__( 'Display a route on your map, with waypoints between your starting point and destination. Please ensure you have enabled the <strong>Directions API</strong> in the %sGoogle APIs Dashboard%s.', 'so-widgets-bundle' ),
+					'<a href="https://console.developers.google.com/apis/dashboard?project=_" target="_blank">',
+					'</a>'
+					),
 				'fields'      => array(
 					'origin'             => array(
 						'type'  => 'text',
@@ -536,6 +544,16 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				plugin_dir_url(__FILE__) . 'css/style.css',
 				array(),
 				SOW_BUNDLE_VERSION
+			);
+			
+			wp_localize_script(
+				'sow-google-map',
+				'soWidgetsGoogleMap',
+				array(
+					'geocode' => array(
+						'noResults' => __( 'There were no results for the place you entered. Please try another.', 'so-widgets-bundle' ),
+					),
+				)
 			);
 		} else {
 			wp_enqueue_script(

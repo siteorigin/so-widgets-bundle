@@ -1,8 +1,8 @@
 <?php
 /**
- * @var $args
- * @var $items
- * @var $layouts
+ * @var $args array
+ * @var $items array
+ * @var $layouts array
  */
 ?>
 
@@ -17,19 +17,23 @@
 			$src        = empty( $src ) ? '' : $src[0];
 			$title      = empty( $item['title'] ) ? '' : $item['title'];
 			$url        = empty( $item['url'] ) ? '' : $item['url'];
-			$new_window = ! empty( $item['new_window'] );
 			?>
 			<div class="sow-masonry-grid-item" data-col-span="<?php echo esc_attr( $item['column_span'] ) ?>"
 			     data-row-span="<?php echo esc_attr( $item['row_span'] ) ?>">
 				<?php if ( ! empty( $url ) ) : ?>
-				<a href="<?php echo sow_esc_url( $url ) ?>" <?php if ( $new_window ) { ?>target="_blank" <?php } ?>>
-					<?php endif; ?>
+					<a href="<?php echo sow_esc_url( $url ) ?>"
+					<?php foreach( $item['link_attributes'] as $att => $val ) : ?>
+						<?php if ( ! empty( $val ) ) : ?>
+							<?php echo $att.'="' . esc_attr( $val ) . '" '; ?>
+						<?php endif; ?>
+					<?php endforeach; ?>>
+				<?php endif; ?>
 
-					<?php echo wp_get_attachment_image( $item['image'], 'full', false, array( 'title' => esc_attr( $title ) ) ); ?>
+				<?php echo wp_get_attachment_image( $item['image'], 'full', false, array( 'title' => esc_attr( $title ) ) ); ?>
 
-					<?php if ( ! empty( $url ) ) : ?>
-				</a>
-			<?php endif; ?>
+				<?php if ( ! empty( $url ) ) : ?>
+					</a>
+				<?php endif; ?>
 			</div>
 			<?php
 		}

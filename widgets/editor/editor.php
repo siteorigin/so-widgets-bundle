@@ -38,7 +38,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			'autop' => array(
 				'type' => 'checkbox',
 				'default' => $global_settings['autop_default'],
-				'label' => __('Automatically add paragraphs', 'so-widgets-bundle'),
+				'label' => __( 'Automatically add paragraphs', 'so-widgets-bundle' ),
 			),
 		);
 	}
@@ -48,7 +48,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			'autop_default' => array(
 				'type'    => 'checkbox',
 				'default' => true,
-				'label'   => __( 'Enable the <em>Automatically add paragraphs</em> setting by default.', 'so-widgets-bundle' ),
+				'label'   => __( 'Enable the "Automatically add paragraphs" setting by default.', 'so-widgets-bundle' ),
 			),
 		);
 	}

@@ -105,7 +105,7 @@
 		<div class="so-overlay"></div>
 
 		<div class="so-title-bar">
-			<h3 class="so-title">Widget Settings</h3>
+			<h3 class="so-title"><?php _e( 'Widget Settings', 'so-widgets-bundle' ) ?></h3>
 			<a class="so-close">
 				<span class="so-dialog-icon"></span>
 			</a>

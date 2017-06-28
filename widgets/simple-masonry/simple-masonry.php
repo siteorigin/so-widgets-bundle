@@ -175,8 +175,19 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_template_variables( $instance, $args ) {
+		$items = isset( $instance['items'] ) ? $instance['items'] : array();
+		
+		foreach ( $items as &$item ) {
+			$link_atts = empty( $item['link_attributes'] ) ? array() : $item['link_attributes'];
+			if ( ! empty( $item['new_window'] ) ) {
+				$link_atts['target'] = '_blank';
+			}
+			$item['link_attributes'] = $link_atts;
+		}
+		
 		return array(
-			'items' => isset( $instance['items'] ) ? $instance['items'] : array(),
+			'args' => $args,
+			'items' => $items,
 			'layouts' => array(
 				'desktop' => siteorigin_widgets_underscores_to_camel_case(
 					array(

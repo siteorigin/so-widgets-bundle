@@ -70,6 +70,11 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 						'type' => 'link',
 						'label' => __('URL', 'so-widgets-bundle')
 					),
+					'new_window' => array(
+						'type' => 'checkbox',
+						'default' => false,
+						'label' => __( 'Open in new window', 'so-widgets-bundle' ),
+					),
 				)
 			),
 
@@ -103,7 +108,26 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 			)
 		);
 	}
-
+	
+	function get_template_variables( $instance, $args ) {
+		$images = isset( $instance['images'] ) ? $instance['images'] : array();
+		
+		foreach ( $images as &$image ) {
+			$link_atts = empty( $image['link_attributes'] ) ? array() : $image['link_attributes'];
+			if ( ! empty( $image['new_window'] ) ) {
+				$link_atts['target'] = '_blank';
+			}
+			$image['link_attributes'] = $link_atts;
+		}
+		
+		return array(
+			'images' => $images,
+			'max_height' => $instance['display']['max_height'],
+			'max_width' => $instance['display']['max_width'],
+			'attachment_size' => $instance['display']['attachment_size'],
+		);
+	}
+	
 	/**
 	 * Get the less variables for the image grid
 	 *

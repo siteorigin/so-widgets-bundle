@@ -5,7 +5,7 @@
 	$(document).on( 'sowsetupformfield', '.siteorigin-widget-field-type-media', function(e) {
 		var $field = $( this );
 		var $media = $field.find('> .media-field-wrapper');
-		var $inputField = $field.find( '.siteorigin-widget-input' );
+		var $inputField = $field.find( '.siteorigin-widget-input' ).not('.media-fallback-external');
 
 		// Handle the media uploader
 		$media.find( '.media-upload-button' ).click(function(e){
