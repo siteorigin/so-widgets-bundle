@@ -54,6 +54,21 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.9.3 - 28 June 2017 =
+* Editor: Fix settings form label.
+* Don't select the external fallback field as value input.
+* Social media buttons: Don't output calls when missing network name.
+* Use gettext for widget global settings dialog title.
+* Image: Added link attributes to template variables.
+* Image grid: Use `get_template_variables`.
+* Image grid: Template code structure a bit more readable.
+* Simple masonry: Assign link attributes in `get_template_variables`.
+* Slider widget: Output link attributes.
+* Features: Remove redundant paragraph from template.
+* Google Maps: Fix issue when no matches found in maps API error string.
+* Google Maps: Mention required Google Maps APIs in field descriptions.
+* Google Maps: Localized strings used in JS.
+
 = 1.9.2 - 8 June 2017 =
 * Post Carousel: default image for posts without featured images.
 * Social Media Buttons: allow empty colors.
