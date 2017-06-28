@@ -291,7 +291,7 @@ sowb.SiteOriginGoogleMap = function($) {
 								autoCompleteInit.resolve();
 							}.bind(this)
 						).fail(function () {
-							$mapField.append('<div><p><strong>There were no results for the place you entered. Please try another.</strong></p></div>');
+							$mapField.append('<div><p><strong>' + soWidgetsGoogleMap.geocode.noResults + '</strong></p></div>');
 							autoCompleteInit.reject();
 						});
 					}
@@ -323,7 +323,7 @@ sowb.SiteOriginGoogleMap = function($) {
 							$$.data( 'initialized' );
 						}.bind( this )
 					).fail( function () {
-						$$.append( '<div><p><strong>There were no results for the place you entered. Please try another.</strong></p></div>' );
+						$$.append( '<div><p><strong>' + soWidgetsGoogleMap.geocode.noResults + '</strong></p></div>' );
 					} );
 
 				}.bind(this));

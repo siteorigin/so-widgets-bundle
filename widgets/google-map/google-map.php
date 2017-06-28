@@ -545,6 +545,16 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				array(),
 				SOW_BUNDLE_VERSION
 			);
+			
+			wp_localize_script(
+				'sow-google-map',
+				'soWidgetsGoogleMap',
+				array(
+					'geocode' => array(
+						'noResults' => __( 'There were no results for the place you entered. Please try another.', 'so-widgets-bundle' ),
+					),
+				)
+			);
 		} else {
 			wp_enqueue_script(
 				'sow-google-map-static',
