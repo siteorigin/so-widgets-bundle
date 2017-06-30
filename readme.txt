@@ -54,7 +54,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
-= 1.9.3 - 28 June 2017 =
+= 1.9.3 - 30 June 2017 =
 * Editor: Fix settings form label.
 * Don't select the external fallback field as value input.
 * Social media buttons: Don't output calls when missing network name.
@@ -68,6 +68,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Google Maps: Fix issue when no matches found in maps API error string.
 * Google Maps: Mention required Google Maps APIs in field descriptions.
 * Google Maps: Localized strings used in JS.
+* Elementor 1.5: Ensure widgets' setup scripts are run after editing.
 
 = 1.9.2 - 8 June 2017 =
 * Post Carousel: default image for posts without featured images.
