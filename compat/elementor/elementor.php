@@ -59,6 +59,12 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 		}
 
 		wp_enqueue_style( 'sowb-styles-for-elementor', plugin_dir_url( __FILE__ ) . 'styles.css' );
+		
+		wp_enqueue_script(
+			'sowb-js-for-elementor',
+			plugin_dir_url( __FILE__ ) . 'sowb-elementor' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' )
+		);
 
 	}
 
