@@ -389,7 +389,7 @@ sowb.SiteOriginGoogleMap = function($) {
 
 // Called by Google Maps API when it has loaded.
 function soGoogleMapInitialize() {
-    new sowb.SiteOriginGoogleMap(window.jQuery).initMaps();
+	new sowb.SiteOriginGoogleMap(jQuery).initMaps();
 }
 
 jQuery(function ($) {
