@@ -6,9 +6,18 @@ var sowb = window.sowb || {};
 	$( window ).on( 'elementor:init', function() {
 		elementor.on( 'preview:loaded', function () {
 			var preview_window = elementor.$preview.get( 0 ).contentWindow;
-			elementorFrontend.hooks.addAction( 'frontend/element_ready/widget', function() {
-				// Trigger Widgets Bundle widgets to setup
-				preview_window.jQuery( preview_window.sowb ).trigger( 'setup_widgets' );
+			var $sowb = preview_window.jQuery( preview_window.sowb );
+			var timeoutId;
+			elementorFrontend.hooks.addAction( 'frontend/element_ready/widget', function(){
+				// Debounce
+				if ( timeoutId ) {
+					clearTimeout( timeoutId );
+				}
+				timeoutId = setTimeout( function () {
+					// Trigger Widgets Bundle widgets to setup
+					$sowb.trigger( 'setup_widgets' );
+					timeoutId = null;
+				}, 300 );
 			} );
 		} );
 	} );
