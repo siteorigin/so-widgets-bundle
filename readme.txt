@@ -54,7 +54,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
-= 1.9.3 - 30 June 2017 =
+= 1.9.3 - 3 July 2017 =
 * Editor: Fix settings form label.
 * Don't select the external fallback field as value input.
 * Social media buttons: Don't output calls when missing network name.
