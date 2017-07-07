@@ -1,6 +1,20 @@
 <?php
 
 class SiteOrigin_Widget_Field_Editor extends SiteOrigin_Widget_Field_Text_Input_Base {
+	/**
+	 * The number of visible rows in the textarea.
+	 *
+	 * @access protected
+	 * @var int
+	 */
+	protected $rows = 10;
+	/**
+	 * The editor initial height. Overrides rows if it is set.
+	 *
+	 * @access protected
+	 * @var int
+	 */
+	protected $editor_height;
 
 	protected function initialize() {
 		if ( ! is_admin() ) {
@@ -27,6 +41,11 @@ class SiteOrigin_Widget_Field_Editor extends SiteOrigin_Widget_Field_Text_Input_
 		       data-editor-settings="<?php echo esc_attr( json_encode( $settings ) ) ?>">
 			<textarea id="<?php echo esc_attr( $this->element_id ) ?>"
 			          name="<?php echo esc_attr( $this->element_name ) ?>"
+			          <?php if ( isset( $this->editor_height ) ) : ?>
+				          style="height: <?php echo intval( $this->editor_height ) ?>px"
+			          <?php else : ?>
+				          rows="<?php echo esc_attr( $this->rows ) ?>"
+			          <?php endif; ?>
 				<?php $this->render_data_attributes( $this->get_input_data_attributes() ) ?>
 				<?php $this->render_CSS_classes( $this->get_input_classes() ) ?>
 				<?php if ( ! empty( $this->placeholder ) ) echo 'placeholder="' . esc_attr( $this->placeholder ) . '"' ?>
