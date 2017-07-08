@@ -29,11 +29,94 @@ class SiteOrigin_Widget_Field_Editor extends SiteOrigin_Widget_Field_Text_Input_
 	 * @var string
 	 */
 	protected $selected_editor;
+	/**
+	 * An array of the buttons which will be rendered for the first toolbar of the TinyMCE editor.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $mce_buttons;
+	/**
+	 * An array of the buttons which will be rendered for the second toolbar of the TinyMCE editor.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $mce_buttons_2;
+	/**
+	 * An array of the buttons which will be rendered for the third toolbar of the TinyMCE editor.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $mce_buttons_3;
+	/**
+	 * An array of the buttons which will be rendered for the fourth toolbar of the TinyMCE editor.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $mce_buttons_4;
+	/**
+	 * An array of the buttons which will be rendered for the QuickTags editor.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $quicktags_buttons;
 
 	protected function initialize() {
 		if ( ! is_admin() ) {
 			return;
 		}
+	}
+	
+	protected function get_default_options() {
+		return array(
+			'mce_buttons' => array(
+				'formatselect',
+				'bold',
+				'italic',
+				'bullist',
+				'numlist',
+				'blockquote',
+				'alignleft',
+				'aligncenter',
+				'alignright',
+				'link',
+				'unlink',
+				'wp_more',
+				'wp_adv',
+			),
+			'mce_buttons_2' => array(
+				'strikethrough',
+				'hr',
+				'forecolor',
+				'pastetext',
+				'removeformat',
+				'charmap',
+				'outdent',
+				'indent',
+				'undo',
+				'redo',
+				'wp_help',
+			),
+			'quicktags_buttons' => array(
+				'strong',
+				'em',
+				'link',
+				'block',
+				'del',
+				'ins',
+				'img',
+				'ul',
+				'ol',
+				'li',
+				'code',
+				'more',
+				'close',
+			),
+		);
 	}
 	
 	protected function get_input_classes() {
@@ -63,12 +146,14 @@ class SiteOrigin_Widget_Field_Editor extends SiteOrigin_Widget_Field_Text_Input_
 			'tinymce' => array(
 				'wp_skip_init' => strpos( $this->element_id, '__i__' ) != false ||
 				                  strpos( $this->element_id, '_id_' ) != false,
-				'toolbar1' => 'formatselect,bold,italic,bullist,numlist,blockquote,alignleft,aligncenter,alignright,link,unlink,wp_more,wp_adv',
-				'toolbar2' => 'strikethrough,hr,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help',
+				'toolbar1' => implode( ',', $this->mce_buttons ),
+				'toolbar2' => implode( ',', $this->mce_buttons_2 ),
+				'toolbar3' => implode( ',', $this->mce_buttons_3 ),
+				'toolbar4' => implode( ',', $this->mce_buttons_4 ),
 				'wpautop' => true,
 			),
 			'quicktags' => array(
-				'buttons' => 'strong,em,link,block,del,ins,img,ul,ol,li,code,more,close',
+				'buttons' => implode( ',', $this->quicktags_buttons ),
 			),
 		);
 		
