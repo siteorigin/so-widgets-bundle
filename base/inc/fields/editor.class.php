@@ -64,12 +64,13 @@ class SiteOrigin_Widget_Field_Editor extends SiteOrigin_Widget_Field_Text_Input_
 	 * @var array
 	 */
 	protected $quicktags_buttons;
-
-	protected function initialize() {
-		if ( ! is_admin() ) {
-			return;
-		}
-	}
+	/**
+	 * An array of filter callbacks to apply to the set of buttons which will be rendered for the editor.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $button_filters;
 	
 	protected function get_default_options() {
 		return array(
@@ -119,6 +120,44 @@ class SiteOrigin_Widget_Field_Editor extends SiteOrigin_Widget_Field_Text_Input_
 		);
 	}
 	
+	protected function initialize() {
+		if ( ! is_admin() ) {
+			return;
+		}
+		
+		// This is no longer necessary as the buttons can be specified in the appropriate fields, but need for backwards
+		// compatibility.
+		if ( !empty( $this->button_filters ) ) {
+			foreach ( $this->button_filters as $filter_name => $filter ) {
+				if ( preg_match( '/mce_buttons(?:_[1-4])?|quicktags_settings/', $filter_name ) && !empty( $filter ) && is_callable( $filter ) ) {
+					add_filter( $filter_name, array( $this, $filter_name ), 10, 2 );
+				}
+			}
+		}
+	}
+	
+	/**
+	 * @param $name
+	 * @param $arguments
+	 * @return array|mixed
+	 */
+	function __call( $name, $arguments ) {
+		if ( preg_match( '/mce_buttons(?:_[1-4])?|quicktags_settings/', $name ) && !empty( $this->button_filters[$name] ) ) {
+			$filter = $this->button_filters[$name];
+			if ( !empty( $filter[0] ) && is_a( $filter[0], 'SiteOrigin_Widget' ) ) {
+				$widget = $filter[0];
+				$settings = !empty($arguments[0]) ? $arguments[0] : array();
+				$editor_id = !empty($arguments[1]) ? $arguments[1] : '';
+				if ( preg_match( '/widget-' . $widget->id_base . '-.*-' . $this->base_name . '/', $editor_id ) ) {
+					return call_user_func( $filter, $settings, $editor_id );
+				}
+				else {
+					return $settings;
+				}
+			}
+		}
+	}
+	
 	protected function get_input_classes() {
 		$classes = parent::get_input_classes();
 		$classes[] = 'wp-editor-area';
@@ -141,19 +180,38 @@ class SiteOrigin_Widget_Field_Editor extends SiteOrigin_Widget_Field_Text_Input_
 		
 		$selected_editor = in_array( $this->selected_editor, array( 'tinymce', 'tmce' ) ) ? 'tmce' : 'html';
 		
+		$toolbar_buttons = array(
+			'mce_buttons' => apply_filters( 'mce_buttons', $this->mce_buttons, $this->element_id ),
+			'mce_buttons_2' => apply_filters( 'mce_buttons_2', $this->mce_buttons_2, $this->element_id  ),
+			'mce_buttons_3' => apply_filters( 'mce_buttons_3',$this->mce_buttons_3, $this->element_id  ),
+			'mce_buttons_4' => apply_filters( 'mce_buttons_4',$this->mce_buttons_4, $this->element_id  ),
+		);
+		
+		foreach ( $toolbar_buttons as $name => $buttons ) {
+			$toolbar_buttons[ $name ] = is_array( $buttons ) ? implode( ',', $buttons ) : '';
+		}
+		
+		$qt_settings = apply_filters(
+			'quicktags_settings',
+			array( 'buttons' => $this->quicktags_buttons ),
+			$this->element_id
+		);
+		
+		$qt_buttons = ! empty( $qt_settings['buttons'] ) ? $qt_settings['buttons'] : array();
+		
 		$settings = array(
 			'selectedEditor' => $selected_editor,
 			'tinymce' => array(
 				'wp_skip_init' => strpos( $this->element_id, '__i__' ) != false ||
 				                  strpos( $this->element_id, '_id_' ) != false,
-				'toolbar1' => implode( ',', $this->mce_buttons ),
-				'toolbar2' => implode( ',', $this->mce_buttons_2 ),
-				'toolbar3' => implode( ',', $this->mce_buttons_3 ),
-				'toolbar4' => implode( ',', $this->mce_buttons_4 ),
+				'toolbar1' => $toolbar_buttons['mce_buttons'],
+				'toolbar2' => $toolbar_buttons['mce_buttons_2'],
+				'toolbar3' => $toolbar_buttons['mce_buttons_3'],
+				'toolbar4' => $toolbar_buttons['mce_buttons_4'],
 				'wpautop' => true,
 			),
 			'quicktags' => array(
-				'buttons' => implode( ',', $this->quicktags_buttons ),
+				'buttons' => is_array( $qt_buttons ) ? implode( ',', $qt_buttons ) : '',
 			),
 		);
 		
