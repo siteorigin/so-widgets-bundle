@@ -17,6 +17,10 @@
 		};
 
 		settings.tinymce = $.extend( {}, settings.tinymce, { selector: '#' + id, setup: setupEditor } );
+		$( document ).on( 'wp-before-tinymce-init', function () {
+			var mediaButtons = $container.data( 'mediaButtons' );
+			$$.find( '.wp-editor-tabs' ).before( mediaButtons.html );
+		} );
 		$( document ).on( 'tinymce-editor-setup', function () {
 			if ( !$$.find( '.wp-editor-wrap' ).hasClass( settings.selectedEditor + '-active' ) ) {
 				setTimeout( function () {

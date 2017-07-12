@@ -310,8 +310,11 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			$value = preg_replace( '%</textarea%i', '&lt;/textarea', $value );
 		}
 		
+		$media_buttons = $this->render_media_buttons( $this->element_id );
+		
 		?><div class="siteorigin-widget-tinymce-container"
-		       data-editor-settings="<?php echo esc_attr( json_encode( $settings ) ) ?>">
+		       data-editor-settings="<?php echo esc_attr( json_encode( $settings ) ) ?>"
+		       data-media-buttons="<?php echo esc_attr( json_encode( array( 'html' => $media_buttons ) ) ) ?>">
 		<textarea id="<?php echo esc_attr( $this->element_id ) ?>"
 		          name="<?php echo esc_attr( $this->element_name ) ?>"
 			<?php if ( isset( $this->editor_height ) ) : ?>
@@ -364,5 +367,21 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			$v_name = substr( $v_name, strrpos($v_name, '][') + 2 );
 		}
 		return $v_name . '_selected_editor';
+	}
+	
+	private function render_media_buttons( $editor_id ) {
+		
+		ob_start();
+		if ( ! function_exists( 'media_buttons' ) ) {
+			include( ABSPATH . 'wp-admin/includes/media.php' );
+		}
+		
+		echo '<div id="wp-' . esc_attr( $editor_id ) . '-media-buttons" class="wp-media-buttons">';
+		
+		do_action( 'media_buttons', $editor_id );
+		
+		echo "</div>\n";
+		
+		return ob_get_clean();
 	}
 }
