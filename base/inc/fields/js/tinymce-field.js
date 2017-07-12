@@ -17,11 +17,13 @@
 		};
 
 		settings.tinymce = $.extend( {}, settings.tinymce, { selector: '#' + id, setup: setupEditor } );
-		$( document ).on( 'wp-before-tinymce-init', function () {
-			var mediaButtons = $container.data( 'mediaButtons' );
-			$$.find( '.wp-editor-tabs' ).before( mediaButtons.html );
+		$( document ).one( 'wp-before-tinymce-init', function ( event, init ) {
+			if ( init.selector === settings.tinymce.selector ) {
+				var mediaButtons = $container.data( 'mediaButtons' );
+				$$.find( '.wp-editor-tabs' ).before( mediaButtons.html );
+			}
 		} );
-		$( document ).on( 'tinymce-editor-setup', function () {
+		$( document ).one( 'tinymce-editor-setup', function () {
 			if ( !$$.find( '.wp-editor-wrap' ).hasClass( settings.selectedEditor + '-active' ) ) {
 				setTimeout( function () {
 					window.switchEditors.go( id );

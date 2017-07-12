@@ -547,6 +547,18 @@ var sowbForms = window.sowbForms || {};
 				items: '> .siteorigin-widget-field-repeater-item',
 				update: function () {
 					$items.trigger('updateFieldPositions');
+				},
+				sortstop: function (event, ui) {
+					if ( ui.item.is( '.siteorigin-widget-field-repeater-item' ) ) {
+						ui.item.find( '> .siteorigin-widget-field-repeater-item-form' ).each( function () {
+							var $fields = $( this ).find( '> .siteorigin-widget-field' );
+							$fields.trigger( 'sowsetupformfield' );
+						} );
+					}
+					else {
+						var $fields = ui.item.find( '.siteorigin-widget-form' ).find( '> .siteorigin-widget-field' );
+						$fields.trigger( 'sowsetupformfield' );
+					}
 				}
 			});
 			$items.trigger('updateFieldPositions');
