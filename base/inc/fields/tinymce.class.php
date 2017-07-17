@@ -234,23 +234,17 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	}
 	
 	function add_wpc_shortcodes_plugin( $plugins ) {
-		global $wp_version;
-		$ver = WC_SHORTCODES_VERSION;
-		$wp_ver_gte_3_9 = version_compare( $wp_version, '3.9', '>=' );
-		
 		if( ! isset( $plugins['wpc_shortcodes'] ) ) {
-			$shortcodes_filename = $wp_ver_gte_3_9 ? 'shortcodes-tinymce-4' : 'shortcodes_tinymce';
-			$shortcodes_path     = 'wc-shortcodes/includes/mce/js/' . $shortcodes_filename . '.js';
+			$shortcodes_path     = 'wc-shortcodes/includes/mce/js/shortcodes-tinymce-4.js';
 			if ( file_exists( WP_PLUGIN_DIR . '/' . $shortcodes_path ) ) {
-				$plugins['wpc_shortcodes'] = plugins_url( $shortcodes_path . '?ver=' . $ver );
+				$plugins['wpc_shortcodes'] = plugins_url( $shortcodes_path . '?ver=' . WC_SHORTCODES_VERSION );
 			}
 		}
 		
 		if( ! isset( $plugins['wpc_font_awesome'] ) ) {
-			$fontawesome_filename = $wp_ver_gte_3_9 ? 'font-awesome-tinymce-4' : 'font_awesome_tinymce';
-			$fontawesome_path     = 'wc-shortcodes/includes/mce/js/' . $fontawesome_filename . '.js';
+			$fontawesome_path     = 'wc-shortcodes/includes/mce/js/font-awesome-tinymce-4.js';
 			if ( file_exists( WP_PLUGIN_DIR . '/' . $fontawesome_path ) ) {
-				$plugins['wpc_font_awesome'] = plugins_url( $fontawesome_path . '?ver=' . $ver );
+				$plugins['wpc_font_awesome'] = plugins_url( $fontawesome_path . '?ver=' . WC_SHORTCODES_VERSION );
 			}
 		}
 		
