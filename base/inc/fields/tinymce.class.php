@@ -194,8 +194,8 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 					add_filter( 'mce_buttons', array( $this, 'register_wpc_shortcodes_button' ), 15 );
 				}
 			} else {
-				$this->add_wpc_shortcodes_plugin( $this->mce_external_plugins );
-				$this->register_wpc_shortcodes_button( $this->mce_buttons );
+				$this->mce_external_plugins = $this->add_wpc_shortcodes_plugin( $this->mce_external_plugins );
+				$this->mce_buttons = $this->register_wpc_shortcodes_button( $this->mce_buttons );
 			}
 		}
 		
@@ -208,8 +208,8 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 					add_filter( 'mce_buttons', array( $this, 'register_wc_shortcodes_button' ), 15 );
 				}
 			} else {
-				$this->add_wc_shortcodes_plugin( $this->mce_external_plugins );
-				$this->register_wc_shortcodes_button( $this->mce_buttons );
+				$this->mce_external_plugins = $this->add_wc_shortcodes_plugin( $this->mce_external_plugins );
+				$this->mce_buttons = $this->register_wc_shortcodes_button( $this->mce_buttons );
 			}
 		}
 	}
@@ -365,7 +365,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		);
 		
 		foreach ( $tmce_settings as $name => $setting ) {
-			if ( ! empty( $settings['tinymce'][ $name ] ) ) {
+			if ( ! empty( $tmce_settings[ $name ] ) ) {
 				$settings['tinymce'][$name] = $setting;
 			}
 		}
