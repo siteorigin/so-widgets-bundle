@@ -440,9 +440,9 @@ var sowbForms = window.sowbForms || {};
 
 			$el.find('.siteorigin-widget-field-repeater-item').trigger('updateFieldPositions');
 
-			if ( $body.hasClass( 'wp-customizer' ) ) {
+			if ( $body.hasClass( 'wp-customizer' ) || $body.hasClass( 'widgets-php' ) ) {
 				// Reinitialize widget fields when they're dragged and dropped.
-				$el.closest( '.accordion-section-content' ).on( 'sortstop', function (event, ui) {
+				$el.closest( '.ui-sortable' ).on( 'sortstop', function (event, ui) {
 					var $fields = ui.item.find( '.siteorigin-widget-form' ).find( '> .siteorigin-widget-field' );
 					$fields.trigger( 'sowsetupformfield' );
 				} );
