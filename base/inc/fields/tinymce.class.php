@@ -189,13 +189,13 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		if( class_exists( 'WC_Shortcodes_TinyMCE_Buttons' ) ) {
 			if ( ! empty( $this->wp_version_lt_4_8 ) ) {
 				$screen = get_current_screen();
-				if( !is_null( $screen ) && $screen->id != 'widgets' ) {
-					add_filter( 'mce_external_plugins', array( $this, 'add_wpc_shortcode_plugin' ), 15 );
-					add_filter( 'mce_buttons', array( $this, 'register_wpc_shortcode_button' ), 15 );
+				if( ! is_null( $screen ) && $screen->id != 'widgets' ) {
+					add_filter( 'mce_external_plugins', array( $this, 'add_wpc_shortcodes_plugin' ), 15 );
+					add_filter( 'mce_buttons', array( $this, 'register_wpc_shortcodes_button' ), 15 );
 				}
 			} else {
-				$this->add_wpc_shortcode_plugin( $this->mce_external_plugins );
-				$this->register_wpc_shortcode_button( $this->mce_buttons );
+				$this->add_wpc_shortcodes_plugin( $this->mce_external_plugins );
+				$this->register_wpc_shortcodes_button( $this->mce_buttons );
 			}
 		}
 		
@@ -203,18 +203,21 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			if ( ! empty( $this->wp_version_lt_4_8 ) ) {
 				
 				$screen = get_current_screen();
-				if( !is_null( $screen ) && $screen->id != 'widgets' ) {
-					add_filter( 'mce_external_plugins', array( $this, 'add_wc_shortcode_plugin' ), 15 );
-					add_filter( 'mce_buttons', array( $this, 'register_wc_shortcode_button' ), 15 );
+				if( ! is_null( $screen ) && $screen->id != 'widgets' ) {
+					add_filter( 'mce_external_plugins', array( $this, 'add_wc_shortcodes_plugin' ), 15 );
+					add_filter( 'mce_buttons', array( $this, 'register_wc_shortcodes_button' ), 15 );
 				}
 			} else {
 				$this->add_wc_shortcodes_plugin( $this->mce_external_plugins );
-				$this->register_wc_shortcode_button( $this->mce_buttons );
+				$this->register_wc_shortcodes_button( $this->mce_buttons );
 			}
 		}
 	}
 	
 	function add_wc_shortcodes_plugin( $plugins ) {
+		if( isset( $plugins['woocommerce_shortcodes'] ) ) {
+			return $plugins;
+		}
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		$editor_path = 'woocommerce-shortcodes/assets/js/editor' . $suffix . '.js';
 		if( file_exists( WP_PLUGIN_DIR . '/' . $editor_path ) ) {
@@ -223,34 +226,38 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		return $plugins;
 	}
 	
-	function register_wc_shortcode_button( $buttons ) {
+	function register_wc_shortcodes_button( $buttons ) {
 		if( ! in_array( 'woocommerce_shortcodes', $buttons ) ) {
 			array_push( $buttons, '|', 'woocommerce_shortcodes' );
 		}
 		return $buttons;
 	}
 	
-	function add_wpc_shortcode_plugin( $plugins ) {
+	function add_wpc_shortcodes_plugin( $plugins ) {
 		global $wp_version;
 		$ver = WC_SHORTCODES_VERSION;
 		$wp_ver_gte_3_9 = version_compare( $wp_version, '3.9', '>=' );
 		
-		$shortcodes_filename = $wp_ver_gte_3_9 ? 'shortcodes-tinymce-4' : 'shortcodes_tinymce';
-		$shortcodes_path = 'wc-shortcodes/includes/mce/js/' . $shortcodes_filename . '.js';
-		if( file_exists( WP_PLUGIN_DIR . '/' . $shortcodes_path ) ) {
-			$plugins['wpc_shortcodes'] = plugins_url( $shortcodes_path .  '?ver=' . $ver );
+		if( ! isset( $plugins['wpc_shortcodes'] ) ) {
+			$shortcodes_filename = $wp_ver_gte_3_9 ? 'shortcodes-tinymce-4' : 'shortcodes_tinymce';
+			$shortcodes_path     = 'wc-shortcodes/includes/mce/js/' . $shortcodes_filename . '.js';
+			if ( file_exists( WP_PLUGIN_DIR . '/' . $shortcodes_path ) ) {
+				$plugins['wpc_shortcodes'] = plugins_url( $shortcodes_path . '?ver=' . $ver );
+			}
 		}
 		
-		$fontawesome_filename = $wp_ver_gte_3_9 ? 'font-awesome-tinymce-4' : 'font_awesome_tinymce';
-		$fontawesome_path = 'wc-shortcodes/includes/mce/js/' . $fontawesome_filename . '.js';
-		if( file_exists( WP_PLUGIN_DIR . '/' . $fontawesome_path ) ) {
-			$plugins['wpc_font_awesome'] = plugins_url( $fontawesome_path . '?ver=' . $ver );
+		if( ! isset( $plugins['wpc_font_awesome'] ) ) {
+			$fontawesome_filename = $wp_ver_gte_3_9 ? 'font-awesome-tinymce-4' : 'font_awesome_tinymce';
+			$fontawesome_path     = 'wc-shortcodes/includes/mce/js/' . $fontawesome_filename . '.js';
+			if ( file_exists( WP_PLUGIN_DIR . '/' . $fontawesome_path ) ) {
+				$plugins['wpc_font_awesome'] = plugins_url( $fontawesome_path . '?ver=' . $ver );
+			}
 		}
 		
 		return $plugins;
 	}
 	
-	function register_wpc_shortcode_button( $buttons ) {
+	function register_wpc_shortcodes_button( $buttons ) {
 		if( ! in_array( 'wpc_shortcodes_button', $buttons ) ) {
 			array_push( $buttons, 'wpc_shortcodes_button' );
 		}
