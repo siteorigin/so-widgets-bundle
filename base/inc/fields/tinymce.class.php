@@ -85,6 +85,13 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	 * @var array
 	 */
 	protected $mce_external_plugins;
+	/**
+	 * Updated Editor JS API was introduced in WP 4.8 so need to check for compatibility with older versions.
+	 *
+	 * @access private
+	 * @var bool
+	 */
+	private $wp_version_lt_4_8;
 	
 	protected function get_default_options() {
 		return array(
@@ -160,66 +167,98 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			return;
 		}
 		
-		// This is no longer necessary as the buttons can be specified in the appropriate fields, but need for backwards
-		// compatibility.
-		if ( !empty( $this->button_filters ) ) {
-			foreach ( $this->button_filters as $filter_name => $filter ) {
-				if ( preg_match( '/mce_buttons(?:_[1-4])?|quicktags_settings/', $filter_name ) && !empty( $filter ) && is_callable( $filter ) ) {
-					add_filter( $filter_name, array( $this, $filter_name ), 10, 2 );
+		global $wp_version;
+		$this->wp_version_lt_4_8 = version_compare( $wp_version, '4.8', '<' );
+		
+		if ( ! empty( $this->wp_version_lt_4_8 ) ) {
+			add_filter( 'mce_buttons', array( $this, 'mce_buttons_filter' ), 10, 2 );
+			add_filter( 'quicktags_settings', array( $this, 'quicktags_settings' ), 10, 2 );
+			
+			if ( ! empty( $this->button_filters ) ) {
+				foreach ( $this->button_filters as $filter_name => $filter ) {
+					$is_valid_filter = preg_match(
+						'/mce_buttons(?:_[1-4])?|quicktags_settings/', $filter_name
+					) && ! empty( $filter ) && is_callable( $filter );
+					if ( $is_valid_filter ) {
+						add_filter( $filter_name, array( $this, $filter_name ), 10, 2 );
+					}
 				}
 			}
 		}
 		
 		if( class_exists( 'WC_Shortcodes_TinyMCE_Buttons' ) ) {
-			$this->add_wpc_shortcode_plugin();
-		}
-		
-		if( class_exists( 'WC_Shortcodes_Admin' ) ) {
-			$this->add_wc_shortcodes_plugin();
-		}
-	}
-	
-	function add_wc_shortcodes_plugin() {
-		if( empty( $this->mce_external_plugins['woocommerce_shortcodes'] ) ) {
-			$suffix      = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-			$editor_path = 'woocommerce-shortcodes/assets/js/editor' . $suffix . '.js';
-			if ( file_exists( WP_PLUGIN_DIR . '/' . $editor_path ) ) {
-				$this->mce_external_plugins['woocommerce_shortcodes'] = plugins_url( $editor_path );
+			if ( ! empty( $this->wp_version_lt_4_8 ) ) {
+				$screen = get_current_screen();
+				if( !is_null( $screen ) && $screen->id != 'widgets' ) {
+					add_filter( 'mce_external_plugins', array( $this, 'add_wpc_shortcode_plugin' ), 15 );
+					add_filter( 'mce_buttons', array( $this, 'register_wpc_shortcode_button' ), 15 );
+				}
+			} else {
+				$this->add_wpc_shortcode_plugin( $this->mce_external_plugins );
+				$this->register_wpc_shortcode_button( $this->mce_buttons );
 			}
 		}
 		
-		if ( ! in_array( 'woocommerce_shortcodes', $this->mce_buttons ) ) {
-			array_push( $this->mce_buttons, '|', 'woocommerce_shortcodes' );
+		if( class_exists( 'WC_Shortcodes_Admin' ) ) {
+			if ( ! empty( $this->wp_version_lt_4_8 ) ) {
+				
+				$screen = get_current_screen();
+				if( !is_null( $screen ) && $screen->id != 'widgets' ) {
+					add_filter( 'mce_external_plugins', array( $this, 'add_wc_shortcode_plugin' ), 15 );
+					add_filter( 'mce_buttons', array( $this, 'register_wc_shortcode_button' ), 15 );
+				}
+			} else {
+				$this->add_wc_shortcodes_plugin( $this->mce_external_plugins );
+				$this->register_wc_shortcode_button( $this->mce_buttons );
+			}
 		}
 	}
 	
-	function add_wpc_shortcode_plugin() {
+	function add_wc_shortcodes_plugin( $plugins ) {
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$editor_path = 'woocommerce-shortcodes/assets/js/editor' . $suffix . '.js';
+		if( file_exists( WP_PLUGIN_DIR . '/' . $editor_path ) ) {
+			$plugins['woocommerce_shortcodes'] = plugins_url( $editor_path );
+		}
+		return $plugins;
+	}
+	
+	function register_wc_shortcode_button( $buttons ) {
+		if( ! in_array( 'woocommerce_shortcodes', $buttons ) ) {
+			array_push( $buttons, '|', 'woocommerce_shortcodes' );
+		}
+		return $buttons;
+	}
+	
+	function add_wpc_shortcode_plugin( $plugins ) {
 		global $wp_version;
 		$ver = WC_SHORTCODES_VERSION;
 		$wp_ver_gte_3_9 = version_compare( $wp_version, '3.9', '>=' );
 		
-		if( empty( $this->mce_external_plugins['wpc_shortcodes'] ) ) {
-			$shortcodes_filename = $wp_ver_gte_3_9 ? 'shortcodes-tinymce-4' : 'shortcodes_tinymce';
-			$shortcodes_path = 'wc-shortcodes/includes/mce/js/' . $shortcodes_filename . '.js';
-			if( file_exists( WP_PLUGIN_DIR . '/' . $shortcodes_path ) ) {
-				$this->mce_external_plugins['wpc_shortcodes'] = plugins_url( $shortcodes_path .  '?ver=' . $ver );
-			}
+		$shortcodes_filename = $wp_ver_gte_3_9 ? 'shortcodes-tinymce-4' : 'shortcodes_tinymce';
+		$shortcodes_path = 'wc-shortcodes/includes/mce/js/' . $shortcodes_filename . '.js';
+		if( file_exists( WP_PLUGIN_DIR . '/' . $shortcodes_path ) ) {
+			$plugins['wpc_shortcodes'] = plugins_url( $shortcodes_path .  '?ver=' . $ver );
 		}
 		
-		if( empty( $this->mce_external_plugins['wpc_font_awesome'] ) ) {
-			$fontawesome_filename = $wp_ver_gte_3_9 ? 'font-awesome-tinymce-4' : 'font_awesome_tinymce';
-			$fontawesome_path = 'wc-shortcodes/includes/mce/js/' . $fontawesome_filename . '.js';
-			if( file_exists( WP_PLUGIN_DIR . '/' . $fontawesome_path ) ) {
-				$this->mce_external_plugins['wpc_font_awesome'] = plugins_url( $fontawesome_path . '?ver=' . $ver );
-			}
+		$fontawesome_filename = $wp_ver_gte_3_9 ? 'font-awesome-tinymce-4' : 'font_awesome_tinymce';
+		$fontawesome_path = 'wc-shortcodes/includes/mce/js/' . $fontawesome_filename . '.js';
+		if( file_exists( WP_PLUGIN_DIR . '/' . $fontawesome_path ) ) {
+			$plugins['wpc_font_awesome'] = plugins_url( $fontawesome_path . '?ver=' . $ver );
 		}
 		
-		if( ! in_array( 'wpc_shortcodes_button', $this->mce_buttons ) ) {
-			array_push( $this->mce_buttons, 'wpc_shortcodes_button' );
+		return $plugins;
+	}
+	
+	function register_wpc_shortcode_button( $buttons ) {
+		if( ! in_array( 'wpc_shortcodes_button', $buttons ) ) {
+			array_push( $buttons, 'wpc_shortcodes_button' );
 		}
-		if( ! in_array( 'wpcfontAwesomeGlyphSelect', $this->mce_buttons ) ) {
-			array_push( $this->mce_buttons, 'wpcfontAwesomeGlyphSelect' );
+		if( ! in_array( 'wpcfontAwesomeGlyphSelect', $buttons ) ) {
+			array_push( $buttons, 'wpcfontAwesomeGlyphSelect' );
 		}
+		
+		return $buttons;
 	}
 	
 	/**
@@ -244,12 +283,24 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		}
 	}
 	
+	public function mce_buttons_filter( $buttons, $editor_id ) {
+		if (($key = array_search('fullscreen', $buttons)) !== false) {
+			unset($buttons[$key]);
+		}
+		return $buttons;
+	}
+	
+	public function quicktags_settings( $settings, $editor_id ) {
+		$settings['buttons'] = preg_replace( '/,fullscreen/', '', $settings['buttons'] );
+		$settings['buttons'] = preg_replace( '/,dfw/', '', $settings['buttons'] );
+		return $settings;
+	}
+	
 	protected function get_input_classes() {
 		$classes = parent::get_input_classes();
 		$classes[] = 'wp-editor-area';
 		return $classes;
 	}
-	
 	
 	protected function render_before_field( $value, $instance ) {
 		$selected_editor_name = $this->get_selected_editor_field_name( $this->base_name );
@@ -264,18 +315,26 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	
 	protected function render_field( $value, $instance ) {
 		
+		if ( $this->wp_version_lt_4_8 ) {
+			$this->render_field_pre48( $value, $instance );
+			return;
+		}
+		
 		$selected_editor = in_array( $this->selected_editor, array( 'tinymce', 'tmce' ) ) ? 'tmce' : 'html';
 		
-		$toolbar_buttons = array(
-			'mce_buttons' => apply_filters( 'mce_buttons', $this->mce_buttons, $this->element_id ),
-			'mce_buttons_2' => apply_filters( 'mce_buttons_2', $this->mce_buttons_2, $this->element_id  ),
-			'mce_buttons_3' => apply_filters( 'mce_buttons_3',$this->mce_buttons_3, $this->element_id  ),
-			'mce_buttons_4' => apply_filters( 'mce_buttons_4',$this->mce_buttons_4, $this->element_id  ),
+		$tmce_settings = array(
+			'toolbar1' => apply_filters( 'mce_buttons', $this->mce_buttons, $this->element_id ),
+			'toolbar2' => apply_filters( 'mce_buttons_2', $this->mce_buttons_2, $this->element_id  ),
+			'toolbar3' => apply_filters( 'mce_buttons_3',$this->mce_buttons_3, $this->element_id  ),
+			'toolbar4' => apply_filters( 'mce_buttons_4',$this->mce_buttons_4, $this->element_id  ),
+			'plugins' => $this->mce_plugins,
 		);
 		
-		foreach ( $toolbar_buttons as $name => $buttons ) {
-			$toolbar_buttons[ $name ] = is_array( $buttons ) ? implode( ',', $buttons ) : '';
+		foreach ( $tmce_settings as $name => $buttons ) {
+			$tmce_settings[ $name ] = is_array( $buttons ) ? implode( ',', $buttons ) : '';
 		}
+		
+		$tmce_settings['external_plugins'] = $this->mce_external_plugins;
 		
 		$qt_settings = apply_filters(
 			'quicktags_settings',
@@ -291,18 +350,18 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			'tinymce' => array(
 				'wp_skip_init' => strpos( $this->element_id, '__i__' ) != false ||
 				                  strpos( $this->element_id, '_id_' ) != false,
-				'toolbar1' => $toolbar_buttons['mce_buttons'],
-				'toolbar2' => $toolbar_buttons['mce_buttons_2'],
-				'toolbar3' => $toolbar_buttons['mce_buttons_3'],
-				'toolbar4' => $toolbar_buttons['mce_buttons_4'],
 				'wpautop' => true,
-				'plugins' => implode(',', $this->mce_plugins ),
-				'external_plugins' => $this->mce_external_plugins,
 			),
 			'quicktags' => array(
 				'buttons' => $qt_settings['buttons'],
 			),
 		);
+		
+		foreach ( $tmce_settings as $name => $setting ) {
+			if ( ! empty( $settings['tinymce'][ $name ] ) ) {
+				$settings['tinymce'][$name] = $setting;
+			}
+		}
 		
 		$value = apply_filters( 'the_editor_content', $value, $this->selected_editor );
 		
@@ -335,10 +394,59 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		
 	}
 	
+	private function render_field_pre48( $value, $instance ) {
+		
+		$settings = array(
+			'textarea_name' => esc_attr( $this->element_name ),
+			'default_editor' => $this->selected_editor,
+			'textarea_rows' => $this->rows,
+			'editor_class' => 'siteorigin-widget-input',
+			'tinymce' => array(
+				'wp_skip_init' => strpos( $this->element_id, '__i__' ) != false || strpos( $this->element_id, '_id_' ) != false
+			)
+		);
+		if( isset( $this->editor_height ) ) $settings['editor_height'] = $this->editor_height;
+		preg_match( '/widget-(.+?)\[/', $this->element_name, $id_base_matches );
+		$widget_id_base = empty($id_base_matches) || count($id_base_matches) < 2 ? '' : $id_base_matches[1];
+		?>
+		<div class="siteorigin-widget-tinymce-container"
+		     data-mce-settings="<?php echo esc_attr( json_encode( $settings['tinymce'] ) ) ?>"
+		     data-qt-settings="<?php echo esc_attr( json_encode( array() ) ) ?>"
+		     data-widget-id-base="<?php echo esc_attr( $widget_id_base ) ?>"
+		>
+			<?php
+			wp_editor( $value, esc_attr( $this->element_id ), $settings )
+			?>
+		</div>
+		<input type="hidden"
+		       name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_selected_editor', $this->parent_container) ) ?>"
+		       class="siteorigin-widget-input siteorigin-widget-tinymce-selected-editor"
+		       value="<?php echo esc_attr( $this->selected_editor ) ?>"/>
+		<?php
+		
+		if( $this->selected_editor == 'html' ) {
+			remove_filter( 'the_editor_content', 'wp_htmledit_pre' );
+		}
+		if( $this->selected_editor == 'tinymce' ) {
+			remove_filter( 'the_editor_content', 'wp_richedit_pre' );
+		}
+	}
+	
 	public function enqueue_scripts() {
-		wp_enqueue_editor();
-		wp_enqueue_script( 'so-tinymce-field', plugin_dir_url(__FILE__) . 'js/tinymce-field' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
-		wp_enqueue_style( 'so-tinymce-field', plugin_dir_url(__FILE__) . 'css/tinymce-field.css', array(), SOW_BUNDLE_VERSION );
+		
+		if ( $this->wp_version_lt_4_8 ) {
+			$src = plugin_dir_url( __FILE__ ) . 'js/tinymce-field-pre48' . SOW_BUNDLE_JS_SUFFIX . '.js';
+			$deps = array( 'jquery', 'editor', 'quicktags' );
+		} else {
+			wp_enqueue_editor();
+			$src = plugin_dir_url( __FILE__ ) . 'js/tinymce-field' . SOW_BUNDLE_JS_SUFFIX . '.js';
+			$deps = array( 'jquery' );
+		}
+		
+		wp_enqueue_script( 'so-tinymce-field', $src, $deps, SOW_BUNDLE_VERSION );
+		wp_enqueue_style(
+			'so-tinymce-field', plugin_dir_url( __FILE__ ) . 'css/tinymce-field.css', array(), SOW_BUNDLE_VERSION
+		);
 	}
 	
 	protected function sanitize_field_input( $value, $instance ) {
