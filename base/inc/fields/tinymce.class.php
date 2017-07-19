@@ -328,14 +328,14 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			'toolbar2' => apply_filters( 'mce_buttons_2', $this->mce_buttons_2, $this->element_id  ),
 			'toolbar3' => apply_filters( 'mce_buttons_3',$this->mce_buttons_3, $this->element_id  ),
 			'toolbar4' => apply_filters( 'mce_buttons_4',$this->mce_buttons_4, $this->element_id  ),
-			'plugins' => $this->mce_plugins,
+			'plugins' => array_unique( apply_filters( 'tiny_mce_plugins', $this->mce_plugins ) ),
 		);
 		
 		foreach ( $tmce_settings as $name => $buttons ) {
 			$tmce_settings[ $name ] = is_array( $buttons ) ? implode( ',', $buttons ) : '';
 		}
 		
-		$tmce_settings['external_plugins'] = $this->mce_external_plugins;
+		$tmce_settings['external_plugins'] = array_unique( apply_filters( 'mce_external_plugins', $this->mce_external_plugins ) );
 		
 		$qt_settings = apply_filters(
 			'quicktags_settings',
