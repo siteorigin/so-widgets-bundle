@@ -12,6 +12,7 @@ var sowbForms = window.sowbForms || {};
 				formId,
 				formInitializing = true;
 
+			var $body = $( 'body' );
 			// Skip this if the widget has any fields with an __i__
 			var $inputs = $el.find('input[name]');
 			if ($inputs.length && $inputs.attr('name').indexOf('__i__') !== -1) {
@@ -25,7 +26,7 @@ var sowbForms = window.sowbForms || {};
 				}
 				// If we're in the main widgets interface and the form isn't visible and it isn't contained in a
 				// panels dialog (when using the Layout Builder widget), don't worry about setting it up.
-				if ($('body').hasClass('widgets-php') && !$el.is(':visible') && $el.closest('.panel-dialog').length === 0) {
+				if ($body.hasClass('widgets-php') && !$el.is(':visible') && $el.closest('.panel-dialog').length === 0) {
 					return true;
 				}
 
@@ -439,6 +440,14 @@ var sowbForms = window.sowbForms || {};
 
 			$el.find('.siteorigin-widget-field-repeater-item').trigger('updateFieldPositions');
 
+			if ( $body.hasClass( 'wp-customizer' ) || $body.hasClass( 'widgets-php' ) ) {
+				// Reinitialize widget fields when they're dragged and dropped.
+				$el.closest( '.ui-sortable' ).on( 'sortstop', function (event, ui) {
+					var $fields = ui.item.find( '.siteorigin-widget-form' ).find( '> .siteorigin-widget-field' );
+					$fields.trigger( 'sowsetupformfield' );
+				} );
+			}
+
 			/////////////////////////////
 			// The end of the form setup.
 			/////////////////////////////
@@ -547,6 +556,18 @@ var sowbForms = window.sowbForms || {};
 				items: '> .siteorigin-widget-field-repeater-item',
 				update: function () {
 					$items.trigger('updateFieldPositions');
+				},
+				sortstop: function (event, ui) {
+					if ( ui.item.is( '.siteorigin-widget-field-repeater-item' ) ) {
+						ui.item.find( '> .siteorigin-widget-field-repeater-item-form' ).each( function () {
+							var $fields = $( this ).find( '> .siteorigin-widget-field' );
+							$fields.trigger( 'sowsetupformfield' );
+						} );
+					}
+					else {
+						var $fields = ui.item.find( '.siteorigin-widget-form' ).find( '> .siteorigin-widget-field' );
+						$fields.trigger( 'sowsetupformfield' );
+					}
 				}
 			});
 			$items.trigger('updateFieldPositions');
@@ -1082,16 +1103,19 @@ var sowbForms = window.sowbForms || {};
 		}, 200);
 	});
 
-	if ($('body').hasClass('wp-customizer')) {
+	if ( $('body').hasClass('wp-customizer') ) {
 		// Setup new widgets when they're added in the customizer interface
 		$(document).on('widget-added', function (e, widget) {
 			widget.find('.siteorigin-widget-form').sowSetupForm();
 		});
 	}
 
-	// When we open a Page Builder widget dialog
-	$(document).on('dialogopen', function (e) {
-		$(e.target).find('.siteorigin-widget-form-main').sowSetupForm();
+	$( document ).on( 'open_dialog', function ( e, dialog ) {
+		// When we open a Page Builder edit widget dialog
+		if ( dialog.$el.find( '.so-panels-dialog' ).is( '.so-panels-dialog-edit-widget' ) ) {
+			var $fields = $( e.target ).find( '.siteorigin-widget-form-main' ).find( '> .siteorigin-widget-field' );
+			$fields.trigger( 'sowsetupformfield' );
+		}
 	});
 
 	$(function () {
