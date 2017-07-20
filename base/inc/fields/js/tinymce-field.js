@@ -6,6 +6,9 @@
 		var $container = $$.find( '.siteorigin-widget-tinymce-container' );
 		var settings = $container.data( 'editorSettings' );
 		var $textarea = $container.find( 'textarea' );
+		if ( ! $textarea.is( ':visible') ) {
+			return;
+		}
 		var id = $textarea.attr( 'id' );
 		var setupEditor = function ( editor ) {
 			editor.on( 'change',
