@@ -1103,16 +1103,19 @@ var sowbForms = window.sowbForms || {};
 		}, 200);
 	});
 
-	if ($('body').hasClass('wp-customizer')) {
+	if ( $('body').hasClass('wp-customizer') ) {
 		// Setup new widgets when they're added in the customizer interface
 		$(document).on('widget-added', function (e, widget) {
 			widget.find('.siteorigin-widget-form').sowSetupForm();
 		});
 	}
 
-	// When we open a Page Builder widget dialog
-	$(document).on('dialogopen', function (e) {
-		$(e.target).find('.siteorigin-widget-form-main').sowSetupForm();
+	$( document ).on( 'open_dialog', function ( e, dialog ) {
+		// When we open a Page Builder edit widget dialog
+		if ( dialog.$el.find( '.so-panels-dialog' ).is( '.so-panels-dialog-edit-widget' ) ) {
+			var $fields = $( e.target ).find( '.siteorigin-widget-form-main' ).find( '> .siteorigin-widget-field' );
+			$fields.trigger( 'sowsetupformfield' );
+		}
 	});
 
 	$(function () {
