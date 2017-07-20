@@ -1131,7 +1131,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	function send_mail( $email_fields, $instance ) {
-		$body = '<strong>From:</strong> <a href="mailto:' . sanitize_email( $email_fields['email'] ) . '">' . esc_html( $email_fields['name'] ) . '</a> &#60;' . sanitize_email( $email_fields['email'] ) . "&#62; \n\n";
+		$body = '<strong>' . __( 'From', 'so-widgets-bundle' ) . ':</strong> <a href="mailto:' . sanitize_email( $email_fields['email'] ) . '">' . esc_html( $email_fields['name'] ) . '</a> &#60;' . sanitize_email( $email_fields['email'] ) . "&#62; \n\n";
 		foreach ( $email_fields['message'] as $m ) {
 			$body .= '<strong>' . $m['label'] . ':</strong>';
 			$body .= "\n";
