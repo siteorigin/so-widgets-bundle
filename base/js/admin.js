@@ -233,11 +233,15 @@ var sowbForms = window.sowbForms || {};
 			///////////////////////////////////////
 			// Handle the sections
 			var expandContainer = function () {
-				var $$ = $(this);
 				$(this).toggleClass('siteorigin-widget-section-visible');
-				$(this).siblings('.siteorigin-widget-section').slideToggle(function () {
+				$(this).siblings('.siteorigin-widget-section').slideToggle('fast', function () {
 					$(window).resize();
 					$(this).find('> .siteorigin-widget-field-container-state').val($(this).is(':visible') ? 'open' : 'closed');
+
+					if ( $( this ).is( ':visible' ) ) {
+						var $fields = $( this ).find( '> .siteorigin-widget-field' );
+						$fields.trigger( 'sowsetupformfield' );
+					}
 				});
 			};
 			$fields.filter('.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section').find('> label').click(expandContainer);
@@ -678,6 +682,9 @@ var sowbForms = window.sowbForms || {};
 						$(window).resize();
 						if ($(this).is(':visible')) {
 							$(this).trigger('slideToggleOpenComplete');
+
+							var $fields = $( this ).find( '> .siteorigin-widget-field' );
+							$fields.trigger( 'sowsetupformfield' );
 						}
 						else {
 							$(this).trigger('slideToggleCloseComplete');

@@ -24,7 +24,7 @@
 			}
 		} );
 		$( document ).one( 'tinymce-editor-setup', function () {
-			if ( !$$.find( '.wp-editor-wrap' ).hasClass( settings.selectedEditor + '-active' ) ) {
+			if ( ! $$.find( '.wp-editor-wrap' ).hasClass( settings.selectedEditor + '-active' ) ) {
 				setTimeout( function () {
 					window.switchEditors.go( id );
 				}, 10 );
@@ -32,7 +32,21 @@
 		} );
 
 		wp.editor.remove( id );
-		wp.editor.initialize( id, settings );
+
+		if (settings.selectedEditor === 'tmce' ) {
+			// Add a small timeout to make sure everything is ready - mainly for customizer and widgets interface
+			if ( $textarea.is( ':visible' ) ) {
+				wp.editor.initialize( id, settings );
+			}
+			else {
+				var intervalId = setInterval( function () {
+					if ( $textarea.is( ':visible' ) ) {
+						wp.editor.initialize( id, settings );
+						clearInterval( intervalId );
+					}
+				}, 500);
+			}
+		}
 
 		$$.on( 'click', function ( event ) {
 			var $target = $( event.target );
