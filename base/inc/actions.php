@@ -118,7 +118,7 @@ function siteorigin_widget_action_search_terms() {
 		WHERE
 			terms.name LIKE '%s'
 		LIMIT 20
-	", '%'.$term.'%');
+	", '%' . esc_sql( $term ) . '%');
 
 	$results = array();
 
