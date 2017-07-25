@@ -170,6 +170,9 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 		$result = '';
 		foreach ( $value as $key => $item ) {
 			if ( ! empty( $item ) ) {
+				if ( is_array( $item ) ) {
+					$item = implode( ',', $item );
+				}
 				$result .= ( empty( $result ) ? '' : '&' ) . $key . '=' . $item;
 			}
 		}
