@@ -5,6 +5,10 @@
 	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-autocomplete', function ( e ) {
 		var $$ = $(this);
 
+		if ( $$.data( 'initialized' ) ) {
+			return;
+		}
+
 		var getSelectedItems = function() {
 			var selectedItems = $$.find( 'input.siteorigin-widget-input' ).val();
 			return selectedItems.length === 0 ? [] : selectedItems.split( ',' );
@@ -120,6 +124,8 @@
 				refreshList();
 			}, 500);
 		} );
+
+		$$.data( 'initialized', true );
 	} );
 
 })( jQuery );
