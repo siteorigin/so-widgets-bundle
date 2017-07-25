@@ -33,19 +33,17 @@
 
 		wp.editor.remove( id );
 
-		if (settings.selectedEditor === 'tmce' ) {
-			// Add a small timeout to make sure everything is ready - mainly for customizer and widgets interface
-			if ( $textarea.is( ':visible' ) ) {
-				wp.editor.initialize( id, settings );
-			}
-			else {
-				var intervalId = setInterval( function () {
-					if ( $textarea.is( ':visible' ) ) {
-						wp.editor.initialize( id, settings );
-						clearInterval( intervalId );
-					}
-				}, 500);
-			}
+		// Wait for textarea to be visible before initialization.
+		if ( $textarea.is( ':visible' ) ) {
+			wp.editor.initialize( id, settings );
+		}
+		else {
+			var intervalId = setInterval( function () {
+				if ( $textarea.is( ':visible' ) ) {
+					wp.editor.initialize( id, settings );
+					clearInterval( intervalId );
+				}
+			}, 500);
 		}
 
 		$$.on( 'click', function ( event ) {
