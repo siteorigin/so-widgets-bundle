@@ -54,6 +54,12 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.9.5 - 25 July 2017 =
+* Fixed icon field selection.
+* TinyMCE field is initialized when quicktags is selected.
+* Autocomplete field only initialized once.
+* Posts field sanitization handles multiple post types.
+
 = 1.9.4 - 24 July 2017 =
 * Using new Editor JS API for TinyMCE field.
 * Carousel: apply static position on `.overlay`.

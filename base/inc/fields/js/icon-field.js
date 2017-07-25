@@ -12,6 +12,10 @@
 			$remove = $$.find( '.so-icon-remove' ),
 			$search = $$.find( '.siteorigin-widget-icon-search' );
 
+		if ( $$.data( 'initialized' ) ) {
+			return;
+		}
+
 		// Clicking on the button should display the icon selector
 		$b.click( function(){
 			$is.slideToggle();
@@ -172,6 +176,8 @@
 				rerenderIcons();
 			}
 		} );
+
+		$$.data( 'initialized', true );
 	} );
 
 } )( jQuery );
