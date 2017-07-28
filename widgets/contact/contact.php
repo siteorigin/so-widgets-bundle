@@ -914,7 +914,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 */
 	function contact_form_action( $instance, $storage_hash ) {
 		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ) ) {
-			exit();
+			return false;
 		}
 		if ( empty( $_POST['instance_hash'] ) || $_POST['instance_hash'] != $storage_hash ) {
 			return false;
