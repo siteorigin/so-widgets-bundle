@@ -1151,7 +1151,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
-			'From: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . sanitize_email( $email_fields['email'] ) . '>',
+			'From: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . get_option( 'admin_email' ) . '>',
+			'Reply-To: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . sanitize_email( $email_fields['email'] ) . '>',
 		);
 
 		// Check if this is a duplicated send
