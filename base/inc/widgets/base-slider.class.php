@@ -304,23 +304,24 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	 * @param array $classes
 	 */
 	function video_code( $videos, $classes = array() ){
-		if(empty($videos)) return;
-		$video_element = '<video class="' . esc_attr( implode(',', $classes) ) . '" autoplay loop muted>';
+		if( empty( $videos ) ) return;
+		$video_element = '<video class="' . esc_attr( implode( ',', $classes ) ) . '" autoplay loop muted>';
 
-		foreach($videos as $video) {
+		foreach( $videos as $video ) {
 			if( empty( $video['file'] ) && empty ( $video['url'] ) ) continue;
 			// If video is an external file, try and display it using oEmbed
 			if( !empty( $video['url'] ) ) {
+				$args = array();
 				if ( ! empty( $video['height'] ) ) {
 					$args['height'] = $video['height'];
 				}
-				$embeded_video = wp_oembed_get( $video['url'], $args );
+				$embedded_video = wp_oembed_get( $video['url'], $args );
 
 				// Check if we can oEmbed the video or not
-				if( !$embeded_video ) {
+				if( !$embedded_video ) {
 					$video_file = sow_esc_url( $video['url'] );
 				}else{
-					echo $embeded_video;
+					echo $embedded_video;
 					continue;
 				}
 			}
