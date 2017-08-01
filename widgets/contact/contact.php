@@ -914,6 +914,10 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 */
 	function contact_form_action( $instance, $storage_hash ) {
 		if ( ! wp_verify_nonce( $_POST['_wpnonce'], '_contact_form_submit' ) ) {
+			// Using `return false;` instead of `wp_die` because this function may sometimes be called as a side effect
+			// of trying to enqueue scripts required for the front end. In those cases `$_POST['_wpnonce']` doesn't exist
+			// and calling `wp_die` will halt script execution and break things. Ideally it should be possible to enqueue
+			// front end scripts without calling widgets' render functions, but that will mean a fairly large refactor.
 			return false;
 		}
 		if ( empty( $_POST['instance_hash'] ) || $_POST['instance_hash'] != $storage_hash ) {
@@ -1151,7 +1155,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
-			'From: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . sanitize_email( $email_fields['email'] ) . '>',
+			'From: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . get_option( 'admin_email' ) . '>',
+			'Reply-To: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . sanitize_email( $email_fields['email'] ) . '>',
 		);
 
 		// Check if this is a duplicated send
