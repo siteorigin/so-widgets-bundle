@@ -304,24 +304,33 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	 * @param array $classes
 	 */
 	function video_code( $videos, $classes = array() ){
-		if(empty($videos)) return;
-		$video_element = '<video class="' . esc_attr( implode(',', $classes) ) . '" autoplay loop muted>';
+		if( empty( $videos ) ) return;
+		$video_element = '<video class="' . esc_attr( implode( ',', $classes ) ) . '" autoplay loop muted>';
 
-		foreach($videos as $video) {
+		foreach( $videos as $video ) {
 			if( empty( $video['file'] ) && empty ( $video['url'] ) ) continue;
-
-			if( empty( $video['url'] ) ) {
-				$video_file = wp_get_attachment_url($video['file']);
-				$video_element .= '<source src="' . sow_esc_url( $video_file ) . '" type="' . esc_attr( $video['format'] ) . '">';
-			}
-			else {
-				$args = '';
+			// If video is an external file, try and display it using oEmbed
+			if( !empty( $video['url'] ) ) {
+				$args = array();
 				if ( ! empty( $video['height'] ) ) {
 					$args['height'] = $video['height'];
 				}
+				$embedded_video = wp_oembed_get( $video['url'], $args );
 
-				echo wp_oembed_get( $video['url'], $args );
+				// Check if we can oEmbed the video or not
+				if( !$embedded_video ) {
+					$video_file = sow_esc_url( $video['url'] );
+				}else{
+					echo $embedded_video;
+					continue;
+				}
 			}
+
+			// If $video_file isn't set video is a local file
+			if( !isset( $video_file ) ) {
+				$video_file = wp_get_attachment_url( $video['file'] );
+			}
+			$video_element .= '<source src="' . sow_esc_url( $video_file ) . '" type="' . esc_attr( $video['format'] ) . '">';
 		}
 		if ( strpos( $video_element, 'source' ) !== false ) {
 			$video_element .= '</video>';
