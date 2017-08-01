@@ -173,15 +173,15 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		if ( ! empty( $this->wp_version_lt_4_8 ) ) {
 			add_filter( 'mce_buttons', array( $this, 'mce_buttons_filter' ), 10, 2 );
 			add_filter( 'quicktags_settings', array( $this, 'quicktags_settings' ), 10, 2 );
-			
-			if ( ! empty( $this->button_filters ) ) {
-				foreach ( $this->button_filters as $filter_name => $filter ) {
-					$is_valid_filter = preg_match(
-						'/mce_buttons(?:_[1-4])?|quicktags_settings/', $filter_name
-					) && ! empty( $filter ) && is_callable( $filter );
-					if ( $is_valid_filter ) {
-						add_filter( $filter_name, array( $this, $filter_name ), 10, 2 );
-					}
+		}
+		
+		if ( ! empty( $this->button_filters ) ) {
+			foreach ( $this->button_filters as $filter_name => $filter ) {
+				$is_valid_filter = preg_match(
+					'/mce_buttons(?:_[1-4])?|quicktags_settings/', $filter_name
+				) && ! empty( $filter ) && is_callable( $filter );
+				if ( $is_valid_filter ) {
+					add_filter( $filter_name, array( $this, $filter_name ), 10, 2 );
 				}
 			}
 		}
