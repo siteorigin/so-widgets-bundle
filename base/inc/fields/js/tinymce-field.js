@@ -62,7 +62,7 @@
 								$textarea.val( content );
 							}
 						}
-						editor.setContent(window.switchEditors.wpautop(content));
+						editor.setContent( window.switchEditors.wpautop( content ) );
 					}
 				}
 
