@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 4.2
-Tested up to: 4.8
+Tested up to: 4.8.1
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
@@ -53,6 +53,15 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.9.6 - 4 August 2017 =
+* Slider: Background Video: Try embedding the video if oEmbed fails.
+* Contact: Added some nonce checks.
+* Contact: add reply-to header.
+* Remove elementor panel width override.
+* Editor: Fix TinyMCE editor button filters in WP >= 4.8.
+* Editor: Preserve encoded HTML entities in TinyMCE field.
+* TinyMCE field: Added missing `tiny_mce_before_init` filter.
 
 = 1.9.5 - 25 July 2017 =
 * Fixed icon field selection.

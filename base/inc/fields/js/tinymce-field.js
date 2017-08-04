@@ -3,6 +3,10 @@
 (function ( $ ) {
 	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-tinymce', function ( e ) {
 		var $$ = $( this );
+		if( $$.data( 'initialized' ) ) {
+			return;
+		}
+
 		var $container = $$.find( '.siteorigin-widget-tinymce-container' );
 		var settings = $container.data( 'editorSettings' );
 		var $textarea = $container.find( 'textarea' );
@@ -62,13 +66,15 @@
 								$textarea.val( content );
 							}
 						}
-						editor.setContent(window.switchEditors.wpautop(content));
+						editor.setContent( window.switchEditors.wpautop( content ) );
 					}
 				}
 
 				$$.find( '.siteorigin-widget-tinymce-selected-editor' ).val( mode );
 			}
 		} );
+
+		$$.data( 'initialized', true );
 	} );
 
 })( jQuery );

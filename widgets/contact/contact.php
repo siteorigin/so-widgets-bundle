@@ -831,7 +831,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$field_id   = 'sow-contact-form-field-' . $field_name;
 
 			$value = '';
-			if ( ! empty( $_POST[ $field_name ] ) ) {
+			if ( ! empty( $_POST[ $field_name ] ) && wp_verify_nonce( $_POST['_wpnonce'] ) ) {
 				$value = stripslashes_deep( $_POST[ $field_name ] );
 			}
 
@@ -913,6 +913,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 * Ajax action handler to send the form
 	 */
 	function contact_form_action( $instance, $storage_hash ) {
+		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ) ) {
+			return false;
+		}
 		if ( empty( $_POST['instance_hash'] ) || $_POST['instance_hash'] != $storage_hash ) {
 			return false;
 		}
@@ -1148,7 +1151,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
-			'From: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . sanitize_email( $email_fields['email'] ) . '>',
+			'From: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . get_option( 'admin_email' ) . '>',
+			'Reply-To: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . sanitize_email( $email_fields['email'] ) . '>',
 		);
 
 		// Check if this is a duplicated send

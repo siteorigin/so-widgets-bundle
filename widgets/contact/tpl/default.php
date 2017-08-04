@@ -39,7 +39,8 @@ else {
 		<?php endif ?>
 
 		<?php $this->render_form_fields( $instance['fields'], $result['errors'], $instance ) ?>
-		<input type="hidden" name="instance_hash" value="<?php echo esc_attr($instance_hash) ?>" />
+		<input type="hidden" name="instance_hash" value="<?php echo esc_attr( $instance_hash ) ?>" />
+		<?php echo wp_nonce_field() ?>
 
 		<?php if( $use_recaptcha ) : ?>
 			<div class="sow-recaptcha"
