@@ -64,6 +64,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'description' => __( 'Where contact emails will be delivered to.', 'so-widgets-bundle' ),
 						'sanitize'    => 'multiple_emails',
 					),
+					'from'                               => array(
+						'type'        => 'text',
+						'label'       => __( 'From email address', 'so-widgets-bundle' ),
+						'description' => __( 'It will appear as if emails are sent from this address. Ideally this should be in the same domain as this server to avoid spam filters.', 'so-widgets-bundle' ),
+						'sanitize'    => 'email',
+					),
 					'default_subject'                  => array(
 						'type'        => 'text',
 						'label'       => __( 'Default subject', 'so-widgets-bundle' ),
@@ -647,6 +653,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$current_user               = wp_get_current_user();
 			$instance['settings']['to'] = $current_user->user_email;
 		}
+		if ( empty( $instance['settings']['from'] ) ) {
+			$instance['settings']['from'] = get_option( 'admin_email' );
+		}
 		if ( empty( $instance['fields'] ) ) {
 			$instance['fields'] = array(
 				array(
@@ -1148,10 +1157,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			// Also replaces the email address that comes from the prebuilt layout directory
 			$instance['settings']['to'] = get_option( 'admin_email' );
 		}
+		
+		if ( $instance['settings']['from'] == 'test@example.com' || empty( $instance['settings']['from'] ) ) {
+			$instance['settings']['from'] = get_option( 'admin_email' );
+		}
 
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
-			'From: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . get_option( 'admin_email' ) . '>',
+			'From: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . $instance['settings']['from'] . '>',
 			'Reply-To: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . sanitize_email( $email_fields['email'] ) . '>',
 		);
 
