@@ -193,16 +193,18 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 	
 	function get_template_variables( $instance, $args ) {
 		$frames = $instance['frames'];
-		foreach ( $frames as &$frame ) {
-			$link_atts = array();
-			if ( ! empty( $frame['new_window'] ) ) {
-				$link_atts['target'] = '_blank';
+		if ( ! empty( $frames ) ) {
+			foreach ( $frames as &$frame ) {
+				$link_atts = array();
+				if ( ! empty( $frame['new_window'] ) ) {
+					$link_atts['target'] = '_blank';
+				}
+				$frame['link_attributes'] = $link_atts;
 			}
-			$frame['link_attributes'] = $link_atts;
 		}
 		return array(
 			'controls' => $instance['controls'],
-			'frames' => $frames,
+			'frames' => empty( $frames ) ? array() : $frames,
 		);
 	}
 	
