@@ -331,11 +331,32 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			'plugins' => array_unique( apply_filters( 'tiny_mce_plugins', $this->mce_plugins ) ),
 		);
 		
-		foreach ( $tmce_settings as $name => $buttons ) {
-			$tmce_settings[ $name ] = is_array( $buttons ) ? implode( ',', $buttons ) : '';
+		foreach ( $tmce_settings as $name => $setting ) {
+			$tmce_settings[ $name ] = is_array( $setting ) ? implode( ',', $setting ) : '';
 		}
 		
 		$tmce_settings['external_plugins'] = array_unique( apply_filters( 'mce_external_plugins', $this->mce_external_plugins ) );
+		
+		$suffix = SCRIPT_DEBUG ? '' : '.min';
+		$version = 'ver=' . get_bloginfo( 'version' );
+		// Default stylesheets
+		$mce_css = includes_url( "css/dashicons$suffix.css?$version" ) . ',' .
+		                                includes_url( "js/tinymce/skins/wordpress/wp-content.css?$version" );
+		
+		$editor_styles = get_editor_stylesheets();
+		
+		if ( ! empty( $editor_styles ) ) {
+			// Force urlencoding of commas.
+			foreach ( $editor_styles as $key => $url ) {
+				if ( strpos( $url, ',' ) !== false ) {
+					$editor_styles[ $key ] = str_replace( ',', '%2C', $url );
+				}
+			}
+			
+			$mce_css .= ',' . implode( ',', $editor_styles );
+		}
+		$mce_css = trim( apply_filters( 'mce_css', $mce_css ), ' ,' );
+		$tmce_settings['content_css'] = $mce_css;
 		
 		$qt_settings = apply_filters(
 			'quicktags_settings',
@@ -372,6 +393,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			$value = preg_replace( '%</textarea%i', '&lt;/textarea', $value );
 		}
 		
+		
 		$media_buttons = $this->render_media_buttons( $this->element_id );
 		
 		?><div class="siteorigin-widget-tinymce-container"
@@ -387,7 +409,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			<?php $this->render_data_attributes( $this->get_input_data_attributes() ) ?>
 			<?php $this->render_CSS_classes( $this->get_input_classes() ) ?>
 			<?php if ( ! empty( $this->placeholder ) ) echo 'placeholder="' . esc_attr( $this->placeholder ) . '"' ?>
-			<?php if( ! empty( $this->readonly ) ) echo 'readonly' ?>><?php echo htmlentities( $value ) ?></textarea>
+			<?php if( ! empty( $this->readonly ) ) echo 'readonly' ?>><?php echo htmlentities( $value, ENT_QUOTES, 'UTF-8' ) ?></textarea>
 		</div>
 		<input type="hidden"
 		       name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_selected_editor', $this->parent_container) ) ?>"
