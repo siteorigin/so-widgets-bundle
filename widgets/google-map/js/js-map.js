@@ -254,6 +254,7 @@ sowb.SiteOriginGoogleMap = function($) {
 					},
 					function(result, status) {
 						if (status === google.maps.DirectionsStatus.OK) {
+							directionsRenderer.setOptions( { preserveViewport: directions.preserveViewport } );
 							directionsRenderer.setDirections(result);
 						}
 					});
