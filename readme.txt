@@ -54,6 +54,13 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.9.7 - 11 August 2017 =
+* Contact: Added user configurable field for 'From:' address.
+* TinyMCE field: Use editor stylesheets for new TinyMCE editor.
+* TinyMCE field: Use UTF-8 encoding for text output.
+* Sliders: Check whether `$frames` is empty before using.
+* Google Maps: Prevent automatic center for routes.
+
 = 1.9.6 - 4 August 2017 =
 * Slider: Background Video: Try embedding the video if oEmbed fails.
 * Contact: Added some nonce checks.
