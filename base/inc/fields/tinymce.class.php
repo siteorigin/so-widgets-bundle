@@ -383,7 +383,9 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		
 		foreach ( $tmce_settings as $name => $setting ) {
 			if ( ! empty( $tmce_settings[ $name ] ) ) {
-				$settings['tinymce'][$name] = $setting;
+				// Attempt to decode setting as JSON. For back compat with filters used by WP editor.
+				$jdec = json_decode( $setting, true );
+				$settings['tinymce'][ $name ] = empty( $jdec ) ? $setting : $jdec;
 			}
 		}
 		
