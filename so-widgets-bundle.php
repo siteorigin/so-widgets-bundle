@@ -80,6 +80,9 @@ class SiteOrigin_Widgets_Bundle {
 
 		add_filter( 'wp_enqueue_scripts', array($this, 'register_general_scripts') );
 		add_filter( 'wp_enqueue_scripts', array($this, 'enqueue_active_widgets_scripts') );
+		
+		// This is a temporary filter to disable the new Jetpack Grunion contact form editor.
+		add_filter( 'tmp_grunion_allow_editor_view', '__return_false' );
 	}
 
 	/**
