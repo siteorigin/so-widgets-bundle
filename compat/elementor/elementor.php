@@ -16,20 +16,23 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 	private $plugin;
 
 	function __construct() {
-		add_action( 'template_redirect', array( $this, 'init' ) );
+		add_action( 'admin_action_elementor', array( $this, 'init_editor' ) );
+		add_action( 'template_redirect', array( $this, 'init_preview' ) );
 
 		add_action( 'wp_ajax_elementor_render_widget', array( $this, 'ajax_render_widget_preview' ) );
 		add_action( 'wp_ajax_elementor_editor_get_wp_widget_form', array( $this, 'ajax_render_widget_form' ) );
 	}
 
-	function init() {
+	function init_editor() {
+		add_action( 'elementor/editor/before_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
+	}
+	
+	function init_preview() {
 		$this->plugin = Elementor\Plugin::instance();
 		if ( !empty( $this->plugin->preview ) && method_exists( $this->plugin->preview, 'is_preview_mode' ) && $this->plugin->preview->is_preview_mode() ) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ) );
 			add_action( 'elementor/preview/enqueue_styles', array( $this, 'enqueue_preview_scripts' ) );
 		}
-
-		add_action( 'elementor/editor/before_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
 	}
 
 	function enqueue_frontend_scripts() {
@@ -103,10 +106,7 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 
 	function render_widget_preview( $widget_output ) {
 		
-		$wp_styles  = wp_styles();
-
-		// Print any styles we may have enqueued for live preview.
-		wp_print_styles( $wp_styles->queue );
+		siteorigin_widget_print_styles();
 
 		return $widget_output;
 	}
