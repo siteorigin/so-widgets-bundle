@@ -398,6 +398,11 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						'type'  => 'checkbox',
 						'label' => __( 'Avoid tolls', 'so-widgets-bundle' ),
 					),
+					'preserve_viewport' => array(
+						'type'  => 'checkbox',
+						'label' => __( 'Preserve viewport', 'so-widgets-bundle' ),
+						'description' => __( 'This will prevent the map from centering and zooming around the directions. Use this when you have other markers or features on your map.', 'so-widgets-bundle' ),
+					),
 					'waypoints'          => array(
 						'type'       => 'repeater',
 						'label'      => __( 'Waypoints', 'so-widgets-bundle' ),

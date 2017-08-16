@@ -1,8 +1,10 @@
 /* globals jQuery, sowb */
 var sowb = window.sowb || {};
 
-jQuery( function($){
-	sowb.setupImageGrids = function(){
+jQuery( function() {
+	// Some page builders (ahem Beaver Builder) override the jQuery `ready` function, but don't pass in the jQuery object. :(
+	var $ = jQuery;
+	sowb.setupImageGrids = function() {
 		$('.sow-image-grid-wrapper').each( function(){
 			var $$ = $(this);
 			$$.imagesLoaded( function () {
