@@ -5,7 +5,7 @@
  */
 function siteorigin_widget_preview_widget_action() {
 	if ( empty( $_REQUEST['_widgets_nonce'] ) ||
-	     ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
+		! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
 		
 		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
 	} else if ( empty( $_POST['class'] ) ) {
