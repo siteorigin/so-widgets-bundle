@@ -840,7 +840,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$field_id   = 'sow-contact-form-field-' . $field_name;
 
 			$value = '';
-			if ( ! empty( $_POST[ $field_name ] ) && wp_verify_nonce( $_POST['_wpnonce'] ) ) {
+			if ( ! empty( $_POST[ $field_name ] ) && wp_verify_nonce( $_POST['_wpnonce'], '_contact_form_submit' ) ) {
 				$value = stripslashes_deep( $_POST[ $field_name ] );
 			}
 
@@ -922,7 +922,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 * Ajax action handler to send the form
 	 */
 	function contact_form_action( $instance, $storage_hash ) {
-		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ) ) {
+		if ( ! wp_verify_nonce( $_POST['_wpnonce'], '_contact_form_submit' ) ) {
+			// Using `return false;` instead of `wp_die` because this function may sometimes be called as a side effect
+			// of trying to enqueue scripts required for the front end. In those cases `$_POST['_wpnonce']` doesn't exist
+			// and calling `wp_die` will halt script execution and break things. Ideally it should be possible to enqueue
+			// front end scripts without calling widgets' render functions, but that will mean a fairly large refactor.
 			return false;
 		}
 		if ( empty( $_POST['instance_hash'] ) || $_POST['instance_hash'] != $storage_hash ) {
