@@ -3,7 +3,8 @@
 (function ( $ ) {
 	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-tinymce', function ( e ) {
 		var $$ = $( this );
-		if( $$.data( 'initialized' ) ) {
+
+		if ( $$.data( 'initialized' ) ) {
 			return;
 		}
 
@@ -52,22 +53,17 @@
 
 		$$.on( 'click', function ( event ) {
 			var $target = $( event.target );
-			if ( $target.hasClass( 'wp-switch-editor' ) ) {
-				var mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
-				if ( mode === 'tmce' ) {
-					// TODO: This might not be necessary anymore with the updated version of TinyMCE.
-					// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex
-					var editor = window.tinymce.get( id );
-					if ( editor !== null ) {
-						var content = $textarea.val();
-						if ( content.search( '<' ) !== -1 ) {
-							if ( content.search( '>' ) === -1 ) {
-								content = content.replace( /</g, '' );
-								$textarea.val( content );
-							}
-						}
-						editor.setContent( window.switchEditors.wpautop( content ) );
+			var mode = $target.hasClass( 'wp-switch-editor' ) ? 'tmce' : 'html';
+			if ( mode === 'tmce' ) {
+				var editor = window.tinymce.get( id );
+				// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex
+				if ( $target.hasClass( 'switch-tmce' ) && editor !== null ) {
+					var content = $textarea.val();
+					if ( content.search( '<' ) !== -1 && content.search( '>' ) === -1) {
+						content = content.replace( /</g, '' );
+						$textarea.val( content );
 					}
+					editor.setContent(window.switchEditors.wpautop(content));
 				}
 
 				$$.find( '.siteorigin-widget-tinymce-selected-editor' ).val( mode );

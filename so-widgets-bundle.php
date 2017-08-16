@@ -349,17 +349,22 @@ class SiteOrigin_Widgets_Bundle {
 	 * @action wp_ajax_so_widgets_bundle_manage
 	 */
 	function admin_ajax_manage_handler(){
-		if( !wp_verify_nonce($_GET['_wpnonce'], 'manage_so_widget') ) exit();
-		if( ! current_user_can( apply_filters( 'siteorigin_widgets_admin_menu_capability', 'manage_options' ) ) ) exit();
-		if( empty($_POST['widget']) ) exit();
+		if ( ! wp_verify_nonce( $_GET['_wpnonce'], 'manage_so_widget' ) ) {
+			wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
+		}
+		
+		if ( ! current_user_can( apply_filters( 'siteorigin_widgets_admin_menu_capability', 'manage_options' ) ) ) {
+			wp_die( __( 'Insufficient permissions.', 'so-widgets-bundle' ), 403 );
+		}
+		if ( empty( $_POST['widget'] ) ) {
+			wp_die( __( 'Invalid post.', 'so-widgets-bundle' ), 400 );
+		}
 
 		if( !empty($_POST['active']) ) $this->activate_widget($_POST['widget']);
 		else $this->deactivate_widget( $_POST['widget'] );
 
 		// Send a kind of dummy response.
-		header('content-type: application/json');
-		echo json_encode( array('done' => true) );
-		exit();
+		wp_send_json( array( 'done' => true ) );
 	}
 
 	/**
@@ -368,16 +373,22 @@ class SiteOrigin_Widgets_Bundle {
 	 * @action wp_ajax_so_widgets_setting_form
 	 */
 	function admin_ajax_settings_form(){
-		if( ! wp_verify_nonce($_GET['_wpnonce'], 'display-widget-form') ) exit();
-		if( ! current_user_can( apply_filters( 'siteorigin_widgets_admin_menu_capability', 'manage_options' ) ) ) exit();
+		if ( ! wp_verify_nonce( $_GET['_wpnonce'], 'display-widget-form' ) ) {
+			wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
+		}
+		if ( ! current_user_can( apply_filters( 'siteorigin_widgets_admin_menu_capability', 'manage_options' ) ) ) {
+			wp_die( __( 'Insufficient permissions.', 'so-widgets-bundle' ), 403 );
+		}
 
 		$widget_objects = $this->get_widget_objects();
 
 		$widget_path = empty( $_GET['id'] ) ? false : WP_PLUGIN_DIR . $_GET['id'];
 
 		$widget_object = empty( $widget_objects[ $widget_path ] ) ? false : $widget_objects[ $widget_path ];
-
-		if( empty( $widget_object ) || ! $widget_object->has_form( 'settings' ) ) exit();
+		
+		if ( empty( $widget_object ) || ! $widget_object->has_form( 'settings' ) ) {
+			wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );
+		}
 
 		unset( $widget_object->widget_options['has_preview'] );
 
@@ -395,8 +406,8 @@ class SiteOrigin_Widgets_Bundle {
 			<?php $widget_object->form( $value, 'settings' ) ?>
 		</form>
 		<?php
-
-		exit();
+		
+		wp_die();
 	}
 
 	/**
@@ -405,17 +416,25 @@ class SiteOrigin_Widgets_Bundle {
 	 * @action wp_ajax_so_widgets_setting_save
 	 */
 	function admin_ajax_settings_save(){
-		if( ! wp_verify_nonce( $_GET['_wpnonce'], 'save-widget-settings' ) ) exit();
-		if( ! current_user_can( apply_filters( 'siteorigin_widgets_admin_menu_capability', 'manage_options' ) ) ) exit();
+		if ( ! wp_verify_nonce( $_GET['_wpnonce'], 'save-widget-settings' ) ) {
+			wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
+		}
+		if ( ! current_user_can( apply_filters( 'siteorigin_widgets_admin_menu_capability', 'manage_options' ) ) ) {
+			wp_die( __( 'Insufficient permissions.', 'so-widgets-bundle' ), 403 );
+		}
 
 		$widget_objects = $this->get_widget_objects();
 		$widget_path = empty( $_GET['id'] ) ? false : WP_PLUGIN_DIR . $_GET['id'];
 		$widget_object = empty( $widget_objects[ $widget_path ] ) ? false : $widget_objects[ $widget_path ];
-
-		if( empty( $widget_object ) || ! $widget_object->has_form( 'settings' ) ) exit();
+		
+		if ( empty( $widget_object ) || ! $widget_object->has_form( 'settings' ) ) {
+			wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );
+		}
 
 		$form_values = array_shift( array_shift( array_values( $_POST ) ) );
 		$widget_object->save_global_settings( $form_values );
+		
+		wp_send_json_success();
 	}
 
 	/**
@@ -473,19 +492,25 @@ class SiteOrigin_Widgets_Bundle {
 	 * Get javascript variables for admin.
 	 */
 	function admin_ajax_get_javascript_variables() {
-		if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
-		$result = array();
+		if ( empty( $_REQUEST['_widgets_nonce'] ) ||
+		     ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
+			wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
+		}
+		
 		$widget_class = $_POST['widget'];
 		global $wp_widget_factory;
-		if ( ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ) {
-			$widget = $wp_widget_factory->widgets[ $widget_class ];
-			if( method_exists( $widget, 'get_javascript_variables' ) ) $result = $widget->get_javascript_variables();
+		if ( empty( $wp_widget_factory->widgets[ $widget_class ] ) ) {
+			wp_die( __( 'Invalid post.', 'so-widgets-bundle' ), 400 );
 		}
-
-		header('content-type: application/json');
-		echo json_encode($result);
-
-		exit();
+		
+		$widget = $wp_widget_factory->widgets[ $widget_class ];
+		if ( ! method_exists( $widget, 'get_javascript_variables' ) ) {
+			wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );
+		}
+		
+		$result = $widget->get_javascript_variables();
+		
+		wp_send_json( $result );
 	}
 
 	/**

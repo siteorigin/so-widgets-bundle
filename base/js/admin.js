@@ -51,8 +51,8 @@ var sowbForms = window.sowbForms || {};
 						var repeaterIndex = sowbForms.getRepeaterId($$);
 						if (repeaterIndex !== false) {
 							var repeaterHandler = {};
-							for (var state in handler) {
-								repeaterHandler[state.replace('{$repeater}', repeaterIndex)] = handler[state];
+							for ( var rptrState in handler) {
+								repeaterHandler[rptrState.replace('{$repeater}', repeaterIndex)] = handler[rptrState];
 							}
 							handler = repeaterHandler;
 						}

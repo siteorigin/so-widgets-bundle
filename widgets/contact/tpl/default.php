@@ -40,7 +40,7 @@ else {
 
 		<?php $this->render_form_fields( $instance['fields'], $result['errors'], $instance ) ?>
 		<input type="hidden" name="instance_hash" value="<?php echo esc_attr( $instance_hash ) ?>" />
-		<?php echo wp_nonce_field() ?>
+		<?php echo wp_nonce_field( '_contact_form_submit' ) ?>
 
 		<?php if( $use_recaptcha ) : ?>
 			<div class="sow-recaptcha"
