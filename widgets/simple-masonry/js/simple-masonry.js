@@ -2,8 +2,7 @@
 
 var sowb = window.sowb || {};
 
-jQuery( function(){
-	var $ = jQuery;
+jQuery( function($){
 	sowb.setupSimpleMasonries = function() {
 		var $grid = $('.sow-masonry-grid');
 
