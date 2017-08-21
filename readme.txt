@@ -54,6 +54,17 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.9.8 - 21 August 2017 =
+* Use WordPress functions to exit AJAX actions.
+* TinyMCE field: Initialized once.
+* TinyMCE field: Simplified switching between TinyMCE and QuickTags.
+* TinyMCE field: Check if individual TinyMCE settings are encoded as JSON and decode before re-encoding all settings.
+* Some compat fixes for Elementor.
+* TinyMCE field: Temporarily disable Jetpack Grunion editor.
+* Use correct JS dependencies for Beaver Builder compatibility when `WP_DEBUG` not defined.
+* Removed unnecessary enqueues in Beaver Builder compat for dashicons and wp media scripts.
+* Post carousel: Only handle horizontal swipes.
+
 = 1.9.7 - 11 August 2017 =
 * Contact: Added user configurable field for 'From:' address.
 * TinyMCE field: Use editor stylesheets for new TinyMCE editor.
