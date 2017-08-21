@@ -1,8 +1,8 @@
 /* globals jQuery, sowb */
 var sowb = window.sowb || {};
 
-jQuery( function($){
-	sowb.setupImageGrids = function(){
+jQuery( function($) {
+	sowb.setupImageGrids = function() {
 		$('.sow-image-grid-wrapper').each( function(){
 			var $$ = $(this);
 			$$.imagesLoaded( function () {

@@ -63,15 +63,13 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 			) );
 		}
 
-		wp_enqueue_style( 'dashicons' );
-		wp_enqueue_media();
-
 		wp_enqueue_style( 'sowb-styles-for-beaver', plugin_dir_url( __FILE__ ) . 'styles.css' );
-
+		
+		$deps = ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? array( 'jquery', 'fl-builder' ) : array( 'fl-builder-min' );
 		wp_enqueue_script(
 			'sowb-js-for-beaver',
 			plugin_dir_url( __FILE__ ) . 'sowb-beaver-builder' . SOW_BUNDLE_JS_SUFFIX . '.js',
-			array( 'jquery', 'fl-builder' )
+			$deps
 		);
 
 		wp_enqueue_style( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/css/admin.css', array( 'media-views' ), SOW_BUNDLE_VERSION );

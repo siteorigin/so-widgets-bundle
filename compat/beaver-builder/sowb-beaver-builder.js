@@ -2,6 +2,12 @@ var sowb = window.sowb || {};
 
 ( function($){
 	if( typeof FLBuilder !== 'undefined') {
+		// If you're going to override jQuery's `ready` function, at least make sure it still works. :/
+		sowb.orig_FLBuilder_initJQueryReadyFix = FLBuilder._initJQueryReadyFix;
+		FLBuilder._initJQueryReadyFix = function() {
+			return;
+		};
+
 		sowb.orig_FLBuilder_getSettings = FLBuilder._getSettings;
 
 		/**
