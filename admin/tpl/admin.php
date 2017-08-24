@@ -2,9 +2,9 @@
 	<div class="page-banner">
 
 		<span class="icon">
-			<img src="<?php echo plugin_dir_url(__FILE__) ?>../images/icon-back.png" class="icon-back" width="50" height="43">
-			<img src="<?php echo plugin_dir_url(__FILE__) ?>../images/icon-gear.png" class="icon-gear" width="26" height="26">
-			<img src="<?php echo plugin_dir_url(__FILE__) ?>../images/icon-front.png" class="icon-front" width="50" height="43">
+			<img src="<?php echo siteorigin_widgets_url( 'admin/images/icon-back.png' )?>" class="icon-back" width="50" height="43">
+			<img src="<?php echo siteorigin_widgets_url( 'admin/images/icon-gear.png' ) ?>" class="icon-gear" width="26" height="26">
+			<img src="<?php echo siteorigin_widgets_url( 'admin/images/icon-front.png' ) ?>" class="icon-front" width="50" height="43">
 		</span>
 		<h1><?php _e('SiteOrigin Widgets Bundle', 'so-widgets-bundle') ?></h1>
 

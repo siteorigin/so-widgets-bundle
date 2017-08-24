@@ -27,7 +27,7 @@ function siteorigin_widget_preview_widget_action() {
 
 	// The theme stylesheet will change how the button looks
 	wp_enqueue_style( 'theme-css', get_stylesheet_uri(), array(), rand( 0, 65536 ) );
-	wp_enqueue_style( 'so-widget-preview', plugin_dir_url( __FILE__ ) . '../css/preview.css', array(), rand( 0,65536 ) );
+	wp_enqueue_style( 'so-widget-preview', siteorigin_widgets_url( 'base/css/preview.css' ), array(), rand( 0,65536 ) );
 
 	$sowb = SiteOrigin_Widgets_Bundle::single();
 	$sowb->register_general_scripts();
