@@ -223,14 +223,16 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 	function get_template_variables( $instance, $args ) {
 		$columns              = array();
 		$any_column_has_image = false;
-		foreach ( $instance['columns'] as $column ) {
-			$any_column_has_image = $any_column_has_image || ! empty( $column['image'] );
-			if( ! empty( $column['features'] ) ) {
-				foreach ( $column['features'] as &$feature ) {
-					$feature['text'] = do_shortcode( $feature['text'] );
+		if( ! empty( $instance[ 'columns' ] ) ) {
+			foreach ( $instance['columns'] as $column ) {
+				$any_column_has_image = $any_column_has_image || ! empty( $column['image'] );
+				if ( ! empty( $column['features'] ) ) {
+					foreach ( $column['features'] as &$feature ) {
+						$feature['text'] = do_shortcode( $feature['text'] );
+					}
 				}
+				$columns[] = $column;
 			}
-			$columns[] = $column;
 		}
 
 		return array(
