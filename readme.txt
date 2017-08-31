@@ -54,6 +54,10 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.9.9 - 31 August 2017 =
+* Avoid using relative paths in asset URLs.
+* Fixed compat with latest Elementor update.
+
 = 1.9.8 - 21 August 2017 =
 * Use WordPress functions to exit AJAX actions.
 * TinyMCE field: Initialized once.
