@@ -239,3 +239,15 @@ function siteorigin_widgets_get_measurements_list() {
 	// Allow themes and plugins to trim or enhance the list.
 	return apply_filters('siteorigin_widgets_get_measurements_list', $measurements);
 }
+
+
+/**
+ * Returns the base URL of our widget with `$path` appended.
+ *
+ * @param string $path Extra path to append to the end of the URL.
+ *
+ * @return string Base URL of the widget, with $path appended.
+ */
+function siteorigin_widgets_url( $path = '' ) {
+	return plugins_url( 'so-widgets-bundle/' . $path );
+}
