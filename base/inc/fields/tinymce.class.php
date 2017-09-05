@@ -382,6 +382,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		$tmce_settings = apply_filters( 'tiny_mce_before_init', $tmce_settings, $this->element_id );
 		
 		foreach ( $tmce_settings as $name => $setting ) {
+			unset( $jdec );
 			if ( ! empty( $tmce_settings[ $name ] ) ) {
 				// Attempt to decode setting as JSON. For back compat with filters used by WP editor.
 				if ( is_string( $setting )  ) {
