@@ -45,7 +45,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 						'type' => 'text',
 						'label' => __( 'Title', 'so-widgets-bundle' ),
 					),
-					'panel_content' => $panel_content,
+					'content' => $panel_content,
 					'initial_state_open' => array(
 						'type' => 'checkbox',
 						'label' => __( 'Open?' )
@@ -102,6 +102,11 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 								'type' => 'font',
 								'label' => __( 'Title font', 'so-widgets-bundle' ),
 							),
+							'title_font_size' => array(
+								'type' => 'measurement',
+								'label' => __( 'Title font sizee', 'so-widgets-bundle' ),
+								'default' => '20px',
+							),
 							'border_color' => array(
 								'type' => 'color',
 								'label' => __( 'Border color', 'so-widgets-bundle' ),
@@ -146,10 +151,15 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 								'type' => 'color',
 								'label' => __( 'Open/close icon hover color', 'so-widgets-bundle' ),
 							),
-							'padding' => array(
+							'padding_left_right' => array(
 								'type' => 'measurement',
-								'label' => __( 'Padding', 'so-widgets-bundle' ),
-//								'default' => '30px',
+								'label' => __( 'Padding left and right', 'so-widgets-bundle' ),
+								'default' => '30px',
+							),
+							'padding_top_bottom' => array(
+								'type' => 'measurement',
+								'label' => __( 'Padding top and bottom', 'so-widgets-bundle' ),
+								'default' => '15px',
 							),
 						),
 					),
@@ -198,6 +208,31 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 					),
 				),
 			),
+		);
+	}
+	
+	public function get_less_variables( $instance ) {
+		$design = $instance['design'];
+		
+		return array(
+			'heading_background_color' => $design['heading']['background_color'],
+			'heading_background_hover_color' => $design['heading']['background_hover_color'],
+			'title_color' => $design['heading']['title_color'],
+			'title_hover_color' => $design['heading']['title_hover_color'],
+			'heading_border_color' => $design['heading']['border_color'],
+			'heading_border_hover_color' => $design['heading']['border_hover_color'],
+			'heading_border_width' => $design['heading']['border_width'],
+			'heading_border_radius' => $design['heading']['border_radius'],
+			'heading_padding_left_right' => $design['heading']['padding_left_right'],
+			'heading_padding_top_bottom' => $design['heading']['padding_top_bottom'],
+		);
+	}
+	
+	public function get_template_variables( $instance, $args ) {
+		if( empty( $instance ) ) return array();
+		
+		return array(
+			'panels' => $instance['panels'],
 		);
 	}
 }
