@@ -21,6 +21,22 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 		);
 	}
 	
+	/**
+	 * Initialize the accordion widget.
+	 */
+	function initialize() {
+		$this->register_frontend_scripts(
+			array(
+				array(
+					'sow-accordion',
+					plugin_dir_url( __FILE__ ) . 'js/accordion' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					array( 'jquery' ),
+					SOW_BUNDLE_VERSION
+				)
+			)
+		);
+	}
+	
 	function get_widget_form() {
 		
 		$panel_content = array(
@@ -173,15 +189,6 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 								'label' => __( 'Background color' . 'so-widgets-bundle' ),
 								'default' => '#F9F9F9',
 							),
-							// Not sure whether these font settings are appropriate.
-							'text_color' => array(
-								'type' => 'color',
-								'label' => __( 'Text color', 'so-widgets-bundle' ),
-							),
-							'text_font_family' => array(
-								'type' => 'font',
-								'label' => __( 'Text font family', 'so-widgets-bundle' ),
-							),
 							'border_color' => array(
 								'type' => 'color',
 								'label' => __( 'Border color', 'so-widgets-bundle' ),
@@ -194,10 +201,15 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 								'type' => 'measurement',
 								'label' => __( 'Border radius', 'so-widgets-bundle' ),
 							),
-							'padding' => array(
+							'padding_left_right' => array(
 								'type' => 'measurement',
-								'label' => __( 'Padding', 'so-widgets-bundle' ),
-//								'default' => '30px',
+								'label' => __( 'Padding left and right', 'so-widgets-bundle' ),
+								'default' => '30px',
+							),
+							'padding_top_bottom' => array(
+								'type' => 'measurement',
+								'label' => __( 'Padding top and bottom', 'so-widgets-bundle' ),
+								'default' => '15px',
 							),
 							'margin_bottom' => array(
 								'type' => 'measurement',
@@ -225,6 +237,13 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			'heading_border_radius' => $design['heading']['border_radius'],
 			'heading_padding_left_right' => $design['heading']['padding_left_right'],
 			'heading_padding_top_bottom' => $design['heading']['padding_top_bottom'],
+			'panels_background_color' => $design['panels']['background_color'],
+			'panels_border_color' => $design['panels']['border_color'],
+			'panels_border_width' => $design['panels']['border_width'],
+			'panels_border_radius' => $design['panels']['border_radius'],
+			'panels_padding_left_right' => $design['panels']['padding_left_right'],
+			'panels_padding_top_bottom' => $design['panels']['padding_top_bottom'],
+			'panels_margin_bottom' => $design['panels']['margin_bottom'],
 		);
 	}
 	
