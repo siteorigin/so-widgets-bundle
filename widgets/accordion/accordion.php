@@ -62,15 +62,17 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 						'label' => __( 'Title', 'so-widgets-bundle' ),
 					),
 					'content' => $panel_content,
-					'initial_state_open' => array(
-						'type' => 'checkbox',
-						'label' => __( 'Open?' )
+					'initial_state' => array(
+						'type' => 'radio',
+						'label' => __( 'Initial state', 'so-widgets-bundle' ),
+						'description' => __( 'Whether this panel should be open or closed when the page first loads.', 'so-widgets-bundle' ),
+						'options' => array(
+							'open' => __( 'Open', 'so-widgets-bundle' ),
+							'closed' => __( 'Closed', 'so-widgets-bundle' ),
+						),
+						'default' => 'closed',
 					),
 				),
-			),
-			'max_open_panels' => array(
-				'type' => 'number',
-				'label' => __( 'Maximum number of simultaneous open panels', 'so-widgets-bundle' ),
 			),
 			'design' => array(
 				'type' =>  'section',
@@ -101,28 +103,6 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 								'type' => 'color',
 								'label' => __( 'Title hover color', 'so-widgets-bundle' ),
 							),
-							'title_icon' => array(
-								'type' => 'icon',
-								'label' => __( 'Title icon', 'so-widgets-bundle' ),
-							),
-							'title_icon_location' => array(
-								'type' => 'select',
-								'label' => __( 'Title icon location', 'so-widgets-bundle' ),
-								'options' => array(
-									'left' => __( 'Left', 'so-widgets-bundle' ),
-									'right' => __( 'Right', 'so-widgets-bundle' ),
-								),
-								'default' => 'left',
-							),
-							'title_font_family' => array(
-								'type' => 'font',
-								'label' => __( 'Title font', 'so-widgets-bundle' ),
-							),
-							'title_font_size' => array(
-								'type' => 'measurement',
-								'label' => __( 'Title font sizee', 'so-widgets-bundle' ),
-								'default' => '20px',
-							),
 							'border_color' => array(
 								'type' => 'color',
 								'label' => __( 'Border color', 'so-widgets-bundle' ),
@@ -135,48 +115,6 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 								'type' => 'measurement',
 								'label' => __( 'Border width', 'so-widgets-bundle' ),
 							),
-							'border_radius' => array(
-								'type' => 'measurement',
-								'label' => __( 'Border radius', 'so-widgets-bundle' ),
-							),
-							'icon_open' => array(
-								'type' => 'icon',
-								'label' => __( 'Open icon', 'so-widgets-bundle' ),
-								'default' => 'fontawesome-plus',
-							),
-							'icon_close' => array(
-								'type' => 'icon',
-								'label' => __( 'Close icon', 'so-widgets-bundle' ),
-								'default' => 'fontawesome-minus',
-							),
-							'open_close_icon_location' => array(
-								'type' => 'select',
-								'label' => __( 'Open/close icon location', 'so-widgets-bundle' ),
-								'options' => array(
-									'left' => __( 'Left', 'so-widgets-bundle' ),
-									'right' => __( 'Right', 'so-widgets-bundle' ),
-								),
-								'default' => 'right',
-							),
-							'open_close_icon_color' => array(
-								'type' => 'color',
-								'label' => __( 'Open/close icon color', 'so-widgets-bundle' ),
-								'default' => '#FFFFFF',
-							),
-							'open_close_icon_hover_color' => array(
-								'type' => 'color',
-								'label' => __( 'Open/close icon hover color', 'so-widgets-bundle' ),
-							),
-							'padding_left_right' => array(
-								'type' => 'measurement',
-								'label' => __( 'Padding left and right', 'so-widgets-bundle' ),
-								'default' => '30px',
-							),
-							'padding_top_bottom' => array(
-								'type' => 'measurement',
-								'label' => __( 'Padding top and bottom', 'so-widgets-bundle' ),
-								'default' => '15px',
-							),
 						),
 					),
 					'panels' => array(
@@ -186,7 +124,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 						'fields' => array(
 							'background_color' => array(
 								'type' => 'color',
-								'label' => __( 'Background color' . 'so-widgets-bundle' ),
+								'label' => __( 'Background color',  'so-widgets-bundle' ),
 								'default' => '#F9F9F9',
 							),
 							'border_color' => array(
@@ -196,25 +134,6 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 							'border_width' => array(
 								'type' => 'measurement',
 								'label' => __( 'Border width', 'so-widgets-bundle' ),
-							),
-							'border_radius' => array(
-								'type' => 'measurement',
-								'label' => __( 'Border radius', 'so-widgets-bundle' ),
-							),
-							'padding_left_right' => array(
-								'type' => 'measurement',
-								'label' => __( 'Padding left and right', 'so-widgets-bundle' ),
-								'default' => '30px',
-							),
-							'padding_top_bottom' => array(
-								'type' => 'measurement',
-								'label' => __( 'Padding top and bottom', 'so-widgets-bundle' ),
-								'default' => '15px',
-							),
-							'margin_bottom' => array(
-								'type' => 'measurement',
-								'label' => __( 'Bottom margin', 'so-widgets-bundle' ),
-								'default' => '10px',
 							),
 						),
 					),
@@ -234,16 +153,9 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			'heading_border_color' => $design['heading']['border_color'],
 			'heading_border_hover_color' => $design['heading']['border_hover_color'],
 			'heading_border_width' => $design['heading']['border_width'],
-			'heading_border_radius' => $design['heading']['border_radius'],
-			'heading_padding_left_right' => $design['heading']['padding_left_right'],
-			'heading_padding_top_bottom' => $design['heading']['padding_top_bottom'],
 			'panels_background_color' => $design['panels']['background_color'],
 			'panels_border_color' => $design['panels']['border_color'],
 			'panels_border_width' => $design['panels']['border_width'],
-			'panels_border_radius' => $design['panels']['border_radius'],
-			'panels_padding_left_right' => $design['panels']['padding_left_right'],
-			'panels_padding_top_bottom' => $design['panels']['padding_top_bottom'],
-			'panels_margin_bottom' => $design['panels']['margin_bottom'],
 		);
 	}
 	
