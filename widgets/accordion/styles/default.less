@@ -5,36 +5,58 @@
 @heading_border_color: default;
 @heading_border_hover_color: default;
 @heading_border_width: default;
-@heading_border_radius: default;
 @heading_padding_left_right: 30px;
 @heading_padding_top_bottom: 15px;
 
 @panels_background_color: #F9F9F9;
 @panels_border_color: default;
 @panels_border_width: default;
-@panels_border_radius: default;
-@panels_padding_left_right: 30px;
-@panels_padding_top_bottom: 15px;
-@panels_margin_bottom: 10px;
 
 .sow-accordion {
 	.sow-accordion-panel {
 		.sow-accordion-panel-header {
+			position: relative;
 			cursor: pointer;
+			padding: @heading_padding_top_bottom @heading_padding_left_right;
 			background-color: @heading_background_color;
 			color: @title_color;
+
 			& when( isnumber( @heading_border_width ) ) {
 				border-style: solid;
 				border-color: @heading_border_color;
 				border-width: @heading_border_width;
-				border-radius: @heading_border_radius;
 			}
-			padding: @heading_padding_top_bottom @heading_padding_left_right;
 
 			&:hover {
 				background-color: @heading_background_hover_color;
 				color: @title_hover_color;
 				border-color: @heading_border_hover_color;
+			}
+
+			.sow-accordion-open-button,
+			.sow-accordion-close-button {
+				position: absolute;
+				right: @heading_padding_left_right;
+				top: 50%;
+				> span {
+					margin-top: -50%;
+				}
+			}
+		}
+		&:not(.sow-accordion-panel-open) .sow-accordion-panel-header {
+			.sow-accordion-open-button {
+				display: block;
+			}
+			.sow-accordion-close-button {
+				display: none;
+			}
+		}
+		&.sow-accordion-panel-open .sow-accordion-panel-header {
+			.sow-accordion-open-button {
+				display: none;
+			}
+			.sow-accordion-close-button {
+				display: block;
 			}
 		}
 		.sow-accordion-panel-content {
@@ -43,10 +65,7 @@
 				border-style: solid;
 				border-color: @panels_border_color;
 				border-width: @panels_border_width;
-				border-radius: @panels_border_radius;
 			}
-			padding: @panels_padding_top_bottom @panels_padding_left_right;
-			margin-bottom: @panels_margin_bottom;
 		}
 	}
 }

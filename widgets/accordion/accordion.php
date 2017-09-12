@@ -162,8 +162,27 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 	public function get_template_variables( $instance, $args ) {
 		if( empty( $instance ) ) return array();
 		
+		foreach ( $instance['panels'] as &$panel ) {
+			if ( empty( $panel['before_title'] ) ) {
+				$panel['before_title'] = '';
+			}
+			if ( empty( $panel['after_title'] ) ) {
+				$panel['after_title'] = '';
+			}
+		}
+		
+		if ( empty( $instance['design']['heading']['icon_open'] ) ) {
+			$instance['design']['heading']['icon_open'] = 'fontawesome-plus';
+		}
+		
+		if ( empty( $instance['design']['heading']['icon_close'] ) ) {
+			$instance['design']['heading']['icon_close'] = 'fontawesome-minus';
+		}
+		
 		return array(
 			'panels' => $instance['panels'],
+			'icon_open' => $instance['design']['heading']['icon_open'],
+			'icon_close' => $instance['design']['heading']['icon_close'],
 		);
 	}
 }

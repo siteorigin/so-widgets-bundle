@@ -1003,7 +1003,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return array
 	 */
 	function get_google_font_fields( $instance ) {
-		return array();
+		return apply_filters( 'siteorigin_widgets_google_font_fields_' . $this->id_base, array(), $instance, $this );
 	}
 
 	/**
