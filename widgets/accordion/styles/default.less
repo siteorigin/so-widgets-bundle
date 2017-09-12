@@ -11,6 +11,9 @@
 @panels_background_color: #F9F9F9;
 @panels_border_color: default;
 @panels_border_width: default;
+@panels_padding_left_right: 30px;
+@panels_padding_top_bottom: 15px;
+@panels_margin_bottom: 10px;
 
 .sow-accordion {
 	.sow-accordion-panel {
@@ -66,6 +69,8 @@
 				border-color: @panels_border_color;
 				border-width: @panels_border_width;
 			}
+			padding: @panels_padding_top_bottom @panels_padding_left_right;
 		}
+		margin-bottom: @panels_margin_bottom;
 	}
 }
