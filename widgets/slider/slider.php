@@ -258,6 +258,16 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		return $instance;
 	}
+
+	function get_form_teaser(){
+		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
+
+		return sprintf(
+			__( 'Add a Lightbox to your image slides with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lightbox" target="_blank">',
+			'</a>'
+		);
+	}
 }
 
 siteorigin_widget_register('sow-slider', __FILE__, 'SiteOrigin_Widget_Slider_Widget');

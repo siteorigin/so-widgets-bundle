@@ -179,6 +179,16 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			'image_width' => ! empty( $instance['full_width'] ) ? '100%' : ( ! empty( $instance['bound'] ) ? 'inherit' : '' ),
 		);
 	}
+
+	function get_form_teaser(){
+		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
+
+		return sprintf(
+			__( 'Add a Lightbox to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lightbox" target="_blank">',
+			'</a>'
+		);
+	}
 }
 
 siteorigin_widget_register('sow-image', __FILE__, 'SiteOrigin_Widget_Image_Widget');
