@@ -36,25 +36,29 @@
 				border-color: @heading_border_hover_color;
 			}
 
-			.sow-accordion-open-button,
-			.sow-accordion-close-button {
+			.sow-accordion-open-close-button {
 				float: right;
+
+				.sow-accordion-open-button,
+				.sow-accordion-close-button {
+					position: absolute;
+				}
 			}
 		}
 		&:not(.sow-accordion-panel-open) .sow-accordion-panel-header {
 			.sow-accordion-open-button {
-				display: block;
+				visibility: visible;
 			}
 			.sow-accordion-close-button {
-				display: none;
+				visibility: hidden;
 			}
 		}
 		&.sow-accordion-panel-open .sow-accordion-panel-header {
 			.sow-accordion-open-button {
-				display: none;
+				visibility: hidden;
 			}
 			.sow-accordion-close-button {
-				display: block;
+				visibility: visible;
 			}
 		}
 		.sow-accordion-panel-content {
