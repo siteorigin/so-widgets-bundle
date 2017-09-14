@@ -54,6 +54,10 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.9.10 - 14 September 2017 =
+* TinyMCE field: fixed issue with filter for TinyMCE plugins.
+* Added teaser messages for SiteOrigin Premium addons.
+
 = 1.9.9 - 31 August 2017 =
 * Avoid using relative paths in asset URLs.
 * Fixed compat with latest Elementor update.
