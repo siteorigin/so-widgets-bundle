@@ -36,29 +36,22 @@
 				border-color: @heading_border_hover_color;
 			}
 
+			.sow-accordion-title {
+				display: inline-block;
+			}
+
 			.sow-accordion-open-close-button {
 				float: right;
-
-				.sow-accordion-open-button,
-				.sow-accordion-close-button {
-					position: absolute;
-				}
 			}
 		}
 		&:not(.sow-accordion-panel-open) .sow-accordion-panel-header {
-			.sow-accordion-open-button {
-				visibility: visible;
-			}
 			.sow-accordion-close-button {
-				visibility: hidden;
+				display: none;
 			}
 		}
 		&.sow-accordion-panel-open .sow-accordion-panel-header {
 			.sow-accordion-open-button {
-				visibility: hidden;
-			}
-			.sow-accordion-close-button {
-				visibility: visible;
+				display: none;
 			}
 		}
 		.sow-accordion-panel-content {

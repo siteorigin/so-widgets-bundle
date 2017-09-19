@@ -11,9 +11,11 @@
 	<?php foreach ( $panels as $panel ) : ?>
 		<div class="sow-accordion-panel<?php if ( $panel['initial_state'] == 'open' ) echo ' sow-accordion-panel-open'; ?>">
 			<div class="sow-accordion-panel-header">
-				<?php echo $panel['before_title']; ?>
-				<?php echo wp_kses_post( $panel['title'] ); ?>
-				<?php echo $panel['after_title']; ?>
+				<div class="sow-accordion-title">
+					<?php echo $panel['before_title']; ?>
+					<?php echo wp_kses_post( $panel['title'] ); ?>
+					<?php echo $panel['after_title']; ?>
+				</div>
 				<div class="sow-accordion-open-close-button">
 					<div class="sow-accordion-open-button">
 						<?php echo siteorigin_widget_get_icon( $icon_open ); ?>
