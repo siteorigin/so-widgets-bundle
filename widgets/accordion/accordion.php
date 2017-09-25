@@ -125,6 +125,11 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 								'type' => 'measurement',
 								'label' => __( 'Border width', 'so-widgets-bundle' ),
 							),
+							'margin_bottom' => array(
+								'type' => 'measurement',
+								'label' => __( 'Bottom margin', 'so-widgets-bundle' ),
+								'default' => '10px',
+							),
 						),
 					),
 				),
@@ -146,6 +151,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			'panels_background_color' => $design['panels']['background_color'],
 			'panels_border_color' => $design['panels']['border_color'],
 			'panels_border_width' => $design['panels']['border_width'],
+			'panels_margin_bottom' => $design['panels']['margin_bottom'],
 		);
 	}
 	
