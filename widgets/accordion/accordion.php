@@ -39,19 +39,6 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 	
 	function get_widget_form() {
 		
-		$panel_content = array(
-			'type'  => 'tinymce',
-			'label' => __( 'Text', 'so-widgets-bundle' ),
-		);
-		$page_builder_active = false;
-		if ( $page_builder_active ) {
-			$panel_content = array(
-				'type'  => 'widget',
-				'label' => __( 'Layout', 'so-widgets-bundle' ),
-				'class' => 'SiteOrigin_Panels_Widgets_Layout',
-			);
-		}
-		
 		return array(
 			'panels' => array(
 				'type' => 'repeater',
@@ -61,7 +48,10 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 						'type' => 'text',
 						'label' => __( 'Title', 'so-widgets-bundle' ),
 					),
-					'content' => $panel_content,
+					'content' => array(
+						'type'  => 'tinymce',
+						'label' => __( 'Content', 'so-widgets-bundle' ),
+					),
 					'initial_state' => array(
 						'type' => 'radio',
 						'label' => __( 'Initial state', 'so-widgets-bundle' ),
@@ -184,6 +174,12 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			'icon_open' => $instance['design']['heading']['icon_open'],
 			'icon_close' => $instance['design']['heading']['icon_close'],
 		);
+	}
+	
+	public function render_panel_content( $panel, $instance ) {
+		$content = wp_kses_post( $panel['content'] );
+		
+		echo apply_filters( 'siteorigin_widgets_accordion_render_panel_content', $content, $panel, $instance );
 	}
 }
 

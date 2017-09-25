@@ -1,5 +1,6 @@
 <?php
 /**
+ * @var array $instance
  * @var array $panels
  * @var string $icon_open
  * @var string $icon_close
@@ -26,7 +27,7 @@
 				</div>
 			</div>
 			<div class="sow-accordion-panel-content">
-				<?php echo wp_kses_post( $panel['content'] ); ?>
+				<?php $this->render_panel_content( $panel, $instance ); ?>
 			</div>
 		</div>
 	<?php endforeach; ?>
