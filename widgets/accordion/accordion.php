@@ -48,7 +48,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 						'type' => 'text',
 						'label' => __( 'Title', 'so-widgets-bundle' ),
 					),
-					'content' => array(
+					'content_text' => array(
 						'type'  => 'tinymce',
 						'label' => __( 'Content', 'so-widgets-bundle' ),
 					),
@@ -183,7 +183,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 	}
 	
 	public function render_panel_content( $panel, $instance ) {
-		$content = wp_kses_post( $panel['content'] );
+		$content = wp_kses_post( $panel['content_text'] );
 		
 		echo apply_filters( 'siteorigin_widgets_accordion_render_panel_content', $content, $panel, $instance );
 	}
