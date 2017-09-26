@@ -55,13 +55,15 @@
 			}
 		}
 		.sow-accordion-panel-content {
-			background-color: @panels_background_color;
-			& when( isnumber( @panels_border_width ) ) {
-				border-style: solid;
-				border-color: @panels_border_color;
-				border-width: @panels_border_width;
+			.sow-accordion-panel-border {
+				background-color: @panels_background_color;
+				& when ( isnumber( @panels_border_width ) ) {
+					border-style: solid;
+					border-color: @panels_border_color;
+					border-width: @panels_border_width;
+				}
+				padding: @panels_padding_top_bottom @panels_padding_left_right;
 			}
-			padding: @panels_padding_top_bottom @panels_padding_left_right;
 		}
 		margin-bottom: @panels_margin_bottom;
 	}

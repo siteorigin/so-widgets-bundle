@@ -27,7 +27,9 @@
 				</div>
 			</div>
 			<div class="sow-accordion-panel-content">
-				<?php $this->render_panel_content( $panel, $instance ); ?>
+				<div class="sow-accordion-panel-border">
+					<?php $this->render_panel_content( $panel, $instance ); ?>
+				</div>
 			</div>
 		</div>
 	<?php endforeach; ?>
