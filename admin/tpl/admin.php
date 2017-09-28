@@ -28,8 +28,9 @@
 
 					<?php
 					$banner = '';
-					if( file_exists( plugin_dir_path( $widget['File'] ) . 'assets/banner.svg' ) ) {
-						$banner = plugin_dir_url( $widget['File'] ) . 'assets/banner.svg';
+					$widget_dir = dirname( $widget['File'] );
+					if( file_exists( $widget_dir . '/assets/banner.svg' ) ) {
+						$banner = str_replace( WP_CONTENT_DIR, content_url(), $widget_dir ) . '/assets/banner.svg';
 					}
 					$banner = apply_filters('siteorigin_widgets_widget_banner', $banner, $widget);
 					?>
