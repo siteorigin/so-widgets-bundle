@@ -35,12 +35,14 @@ class SiteOrigin_Widget_Field_Multi_Measurement extends SiteOrigin_Widget_Field_
 	
 	protected function render_field( $value, $instance ) {
 		foreach ( $this->measurements as $name => $label ) {
+			$input_name = $this->element_name . $name;
 			?>
 			<div class="sow-multi-measurement-input-container">
-				<input class="sow-multi-measurement-input" placeholder="<?php echo esc_attr( $label ) ?>">
+				<label for="<?php echo esc_attr( $input_name ) ?>"><?php echo esc_html( $label ) ?></label>
+				<input id="<?php echo esc_attr( $input_name ) ?>" class="sow-multi-measurement-input">
 				<select class="sow-multi-measurement-select-unit">
 					<?php foreach ( siteorigin_widgets_get_measurements_list() as $measurement_unit ):?>
-						<option value="<?php echo esc_attr( $measurement_unit ) ?>" <?php selected( $measurement_unit, $value[$name], true ); ?>><?php echo esc_html( $measurement_unit ) ?></option>
+						<option value="<?php echo esc_attr( $measurement_unit ) ?>"><?php echo esc_html( $measurement_unit ) ?></option>
 					<?php endforeach?>
 				</select>
 				<div class="clear"></div>
