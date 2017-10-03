@@ -22,7 +22,10 @@
 
 	<div id="widgets-list">
 
-		<?php foreach( $widgets as $file => $widget ): ?>
+		<?php
+		foreach( $widgets as $file => $widget ): 
+			$file = wp_normalize_path( $file );
+			?>
 			<div class="so-widget-wrap">
 				<div class="so-widget so-widget-is-<?php echo $widget['Active'] ? 'active' : 'inactive' ?>" data-id="<?php echo esc_attr( $widget['ID'] ) ?>">
 
@@ -72,8 +75,8 @@
 						/** @var SiteOrigin_Widget $widget_object */
 						$widget_object = !empty( $widget_objects[ $file ] ) ? $widget_objects[ $file ] : false;
 						if( !empty( $widget_object ) && $widget_object->has_form( 'settings' ) ) {
-							$rel_path = str_replace( WP_PLUGIN_DIR, '', $file );
-
+							$rel_path = str_replace( wp_normalize_path( WP_PLUGIN_DIR ), '', $file );
+							
 							$form_url = add_query_arg( array(
 									'id' => $rel_path,
 									'action' => 'so_widgets_setting_form',
