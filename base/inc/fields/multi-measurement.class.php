@@ -34,12 +34,15 @@ class SiteOrigin_Widget_Field_Multi_Measurement extends SiteOrigin_Widget_Field_
 	}
 	
 	protected function render_field( $value, $instance ) {
+		?>
+		<div class="sow-multi-measurement-container">
+		<?php
 		foreach ( $this->measurements as $name => $label ) {
 			$input_name = $this->element_name . $name;
 			?>
 			<div class="sow-multi-measurement-input-container">
 				<label for="<?php echo esc_attr( $input_name ) ?>"><?php echo esc_html( $label ) ?></label>
-				<input id="<?php echo esc_attr( $input_name ) ?>" class="sow-multi-measurement-input">
+				<input id="<?php echo esc_attr( $input_name ) ?>" type="text" class="sow-multi-measurement-input">
 				<select class="sow-multi-measurement-select-unit">
 					<?php foreach ( siteorigin_widgets_get_measurements_list() as $measurement_unit ):?>
 						<option value="<?php echo esc_attr( $measurement_unit ) ?>"><?php echo esc_html( $measurement_unit ) ?></option>
@@ -49,14 +52,18 @@ class SiteOrigin_Widget_Field_Multi_Measurement extends SiteOrigin_Widget_Field_
 			</div>
 			<?php
 		}
-		?><input type="hidden"
-				 class="siteorigin-widget-input"
-				 value="<?php echo esc_attr( $value ) ?>"
-				 name="<?php echo esc_attr( $this->element_name ) ?>"
-				 data-separator="<?php echo esc_attr( $this->separator ) ?>"/><?php
+		?>
+		</div>
+		<input type="hidden"
+			   class="siteorigin-widget-input"
+			   value="<?php echo esc_attr( $value ) ?>"
+			   name="<?php echo esc_attr( $this->element_name ) ?>"
+			   data-separator="<?php echo esc_attr( $this->separator ) ?>"/><?php
 	}
 	
 	public function enqueue_scripts() {
+		wp_enqueue_style( 'so-multi-measurement-field', plugin_dir_url( __FILE__ ) . 'css/multi-measurement-field.css', array(),
+			SOW_BUNDLE_VERSION );
 		wp_enqueue_script( 'so-multi-measurement-field',
 			plugin_dir_url( __FILE__ ) . 'js/multi-measurement-field' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery' ),
 			SOW_BUNDLE_VERSION );
