@@ -168,11 +168,11 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 		}
 		
 		if ( empty( $instance['design']['heading']['icon_open'] ) ) {
-			$instance['design']['heading']['icon_open'] = 'fontawesome-plus';
+			$instance['design']['heading']['icon_open'] = 'ionicons-plus';
 		}
 		
 		if ( empty( $instance['design']['heading']['icon_close'] ) ) {
-			$instance['design']['heading']['icon_close'] = 'fontawesome-minus';
+			$instance['design']['heading']['icon_close'] = 'ionicons-minus';
 		}
 		
 		return array(
