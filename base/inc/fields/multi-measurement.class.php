@@ -27,9 +27,19 @@ class SiteOrigin_Widget_Field_Multi_Measurement extends SiteOrigin_Widget_Field_
 	 */
 	protected $separator;
 	
+	/**
+	 * Whether to automatically fill the rest of the inputs when the first value is entered.
+	 * Default is false.
+	 *
+	 * @access protected
+	 * @var boolean
+	 */
+	protected $autofill;
+	
 	protected function get_default_options() {
 		return array(
 			'separator' => ' ',
+			'autofill' => false,
 		);
 	}
 	
@@ -58,6 +68,7 @@ class SiteOrigin_Widget_Field_Multi_Measurement extends SiteOrigin_Widget_Field_
 			   class="siteorigin-widget-input"
 			   value="<?php echo esc_attr( $value ) ?>"
 			   name="<?php echo esc_attr( $this->element_name ) ?>"
+			   data-autofill="<?php echo empty( $this->autofill ) ? 'false' : 'true'; ?>"
 			   data-separator="<?php echo esc_attr( $this->separator ) ?>"/><?php
 	}
 	

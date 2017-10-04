@@ -5,6 +5,7 @@
 		
 		var valField = $( this ).find( 'input[type="hidden"][class="siteorigin-widget-input"]' );
 		var separator = valField.data( 'separator' );
+		var autoFillEnabled = valField.data( 'autofill' );
 		var values = valField.val() === '' ? [] : valField.val().split( separator );
 		var $inputs = $( this ).find( '.sow-multi-measurement-input' );
 		
@@ -31,7 +32,23 @@
 		} );
 		
 		$inputs.change( function ( event ) {
-			updateValue( $( event.target ) );
+			var doAutofill = autoFillEnabled;
+			if ( autoFillEnabled ) {
+				$inputs.each( function ( index, element ) {
+					// Only want to autofill if it has been enabled and no other inputs have values.
+					if ( element !== event.target ) {
+						doAutofill = doAutofill && !( $( element ).val() );
+					}
+				} );
+			}
+			if ( doAutofill ) {
+				$inputs.each( function( index, element ) {
+					$( element ).val( $( event.target ).val() );
+					updateValue( $( element ) );
+				} );
+			} else {
+				updateValue( $( event.target ) );
+			}
 		} );
 		
 	} );
