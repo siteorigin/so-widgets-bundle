@@ -4,11 +4,13 @@
 @title_hover_color: default;
 @heading_border_color: default;
 @heading_border_hover_color: default;
+@has_heading_border_width: default;
 @heading_border_width: default;
 @heading_padding: 15px 30px 15px 30px;
 
 @panels_background_color: #F9F9F9;
 @panels_border_color: default;
+@has_panels_border_width: default;
 @panels_border_width: default;
 @panels_padding: 15px 30px 15px 30px;
 @panels_margin_bottom: 10px;
@@ -22,7 +24,7 @@
 			background-color: @heading_background_color;
 			color: @title_color;
 
-			& when( isnumber( @heading_border_width ) ) {
+			& when( @has_heading_border_width = true ) {
 				border-style: solid;
 				border-color: @heading_border_color;
 				border-width: @heading_border_width;
@@ -55,7 +57,7 @@
 		.sow-accordion-panel-content {
 			.sow-accordion-panel-border {
 				background-color: @panels_background_color;
-				& when ( isnumber( @panels_border_width ) ) {
+				& when ( @has_panels_border_width = true ) {
 					border-style: solid;
 					border-color: @panels_border_color;
 					border-width: @panels_border_width;

@@ -148,9 +148,11 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			'heading_border_color' => $design['heading']['border_color'],
 			'heading_border_hover_color' => $design['heading']['border_hover_color'],
 			'heading_border_width' => $design['heading']['border_width'],
+			'has_heading_border_width' => empty( $design['heading']['border_width'] ) ? 'false' : 'true',
 			'panels_background_color' => $design['panels']['background_color'],
 			'panels_border_color' => $design['panels']['border_color'],
 			'panels_border_width' => $design['panels']['border_width'],
+			'has_panels_border_width' => empty( $design['panels']['border_width'] ) ? 'false' : 'true',
 			'panels_margin_bottom' => $design['panels']['margin_bottom'],
 		);
 	}
