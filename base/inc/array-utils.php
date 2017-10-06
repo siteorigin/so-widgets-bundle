@@ -1,19 +1,19 @@
 <?php
 
 /**
- * From this SO answer: https://stackoverflow.com/a/18781630/3710600
+ * From this SO answer by Halil Özgür: https://stackoverflow.com/a/18781630/3710600
  *
  * Works with both integer and string positions.
  *
- * @param array      $array
+ * @param array $array
  * @param int|string $position
- * @param mixed      $insert
+ * @param mixed $insert
  */
-function array_insert( &$array, $position, $insert ) {
+function siteorigin_widgets_array_insert( &$array, $position, $insert ) {
 	if ( is_int( $position ) ) {
-		array_splice($array, $position, 0, $insert);
+		array_splice( $array, $position, 0, $insert );
 	} else {
-		$pos = array_search( $position, array_keys( $array ) );
+		$pos   = array_search( $position, array_keys( $array ) );
 		$array = array_merge(
 			array_slice( $array, 0, $pos ),
 			$insert,
