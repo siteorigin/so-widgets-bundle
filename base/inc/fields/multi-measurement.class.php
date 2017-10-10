@@ -8,11 +8,16 @@ class SiteOrigin_Widget_Field_Multi_Measurement extends SiteOrigin_Widget_Field_
 	/**
 	 * Configuration of the measurements to be taken. Should be in the form:
 	 * `array(
-	 *      'padding_left' => __( 'Padding left', 'so-widgets-bundle' ),
+	 *      'padding_left' => array(
+	 * 			'label' => __( 'Padding left', 'so-widgets-bundle' ),
+	 * 			'units' => array( 'px', 'rem', 'em', '%' ),
+	 * 		),
 	 *      'padding_right' => __( 'Padding right', 'so-widgets-bundle' ),
 	 *      'padding_bottom' => __( 'Padding bottom', 'so-widgets-bundle' ),
 	 *      'padding_top' => __( 'Padding top', 'so-widgets-bundle' ),
 	 * )`
+	 *
+	 * The 'units' property is optional and defaults to the list returned by `siteorigin_widgets_get_measurements_list`.
 	 *
 	 * @access protected
 	 * @var array
@@ -47,15 +52,19 @@ class SiteOrigin_Widget_Field_Multi_Measurement extends SiteOrigin_Widget_Field_
 		?>
 		<div class="sow-multi-measurement-container">
 		<?php
-		foreach ( $this->measurements as $name => $label ) {
+		foreach ( $this->measurements as $name => $measurement_config ) {
+			$label = empty( $measurement_config['label'] ) ? '' : $measurement_config['label'];
+			$units = empty( $measurement_config['units'] ) ?
+				siteorigin_widgets_get_measurements_list() :
+				$measurement_config['units'];
 			$input_id = $this->element_id . '-' . $name;
 			?>
 			<div class="sow-multi-measurement-input-container">
 				<label for="<?php echo esc_attr( $input_id ) ?>"><?php echo esc_html( $label ) ?></label>
 				<input id="<?php echo esc_attr( $input_id ) ?>" type="text" class="sow-multi-measurement-input">
 				<select class="sow-multi-measurement-select-unit">
-					<?php foreach ( siteorigin_widgets_get_measurements_list() as $measurement_unit ):?>
-						<option value="<?php echo esc_attr( $measurement_unit ) ?>"><?php echo esc_html( $measurement_unit ) ?></option>
+					<?php foreach ( $units as $unit ):?>
+						<option value="<?php echo esc_attr( $unit ) ?>"><?php echo esc_html( $unit ) ?></option>
 					<?php endforeach?>
 				</select>
 				<div class="clear"></div>
