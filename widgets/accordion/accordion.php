@@ -160,7 +160,9 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 	public function get_template_variables( $instance, $args ) {
 		if( empty( $instance ) ) return array();
 		
-		foreach ( $instance['panels'] as &$panel ) {
+		$panels = empty( $instance['panels'] ) ? array() : $instance['panels'];
+		
+		foreach ( $panels as &$panel ) {
 			if ( empty( $panel['before_title'] ) ) {
 				$panel['before_title'] = '';
 			}
@@ -178,7 +180,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 		}
 		
 		return array(
-			'panels' => $instance['panels'],
+			'panels' => $panels,
 			'icon_open' => $instance['design']['heading']['icon_open'],
 			'icon_close' => $instance['design']['heading']['icon_close'],
 		);
