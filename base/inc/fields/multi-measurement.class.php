@@ -48,11 +48,11 @@ class SiteOrigin_Widget_Field_Multi_Measurement extends SiteOrigin_Widget_Field_
 		<div class="sow-multi-measurement-container">
 		<?php
 		foreach ( $this->measurements as $name => $label ) {
-			$input_name = $this->element_name . $name;
+			$input_id = $this->element_id . '-' . $name;
 			?>
 			<div class="sow-multi-measurement-input-container">
-				<label for="<?php echo esc_attr( $input_name ) ?>"><?php echo esc_html( $label ) ?></label>
-				<input id="<?php echo esc_attr( $input_name ) ?>" type="text" class="sow-multi-measurement-input">
+				<label for="<?php echo esc_attr( $input_id ) ?>"><?php echo esc_html( $label ) ?></label>
+				<input id="<?php echo esc_attr( $input_id ) ?>" type="text" class="sow-multi-measurement-input">
 				<select class="sow-multi-measurement-select-unit">
 					<?php foreach ( siteorigin_widgets_get_measurements_list() as $measurement_unit ):?>
 						<option value="<?php echo esc_attr( $measurement_unit ) ?>"><?php echo esc_html( $measurement_unit ) ?></option>
@@ -81,6 +81,24 @@ class SiteOrigin_Widget_Field_Multi_Measurement extends SiteOrigin_Widget_Field_
 	}
 	
 	protected function sanitize_field_input( $value, $instance ) {
-		return $value;
+		if ( empty( $value ) ) {
+			return $value;
+		}
+		
+		$values = explode( $this->separator, $value );
+		$any_values = false;
+		foreach ( $values as $index => $measurement ) {
+			$any_values = $any_values || ! empty( $measurement );
+			preg_match('/(\d+\.?\d*)([a-z%]+)*/', $measurement, $matches);
+			
+			$num_matches = count( $matches );
+			
+			$val = $num_matches > 1 ? $matches[1] : '0';
+			$unit = $num_matches > 2 ? $matches[2] : 'px';
+			$measurement = $val . $unit;
+			$values[ $index ] = $measurement;
+		}
+		// If all values are empty, just return an empty string.
+		return $any_values ? implode( $this->separator, $values ) : '';
 	}
 }

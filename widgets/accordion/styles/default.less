@@ -81,7 +81,7 @@
 		.sow-accordion-panel-content {
 			.sow-accordion-panel-border {
 				background-color: @panels_background_color;
-				& when ( @has_panels_border_width ) {
+				& when ( @has_panels_border_width = true ) {
 					border-style: solid;
 					border-color: @panels_border_color;
 					border-width: @panels_border_width;
