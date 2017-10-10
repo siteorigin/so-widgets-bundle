@@ -7,17 +7,18 @@
 		var separator = valField.data( 'separator' );
 		var autoFillEnabled = valField.data( 'autofill' );
 		var values = valField.val() === '' ? [] : valField.val().split( separator );
-		var $inputs = $( this ).find( '.sow-multi-measurement-input' );
+		var $valInputs = $( this ).find( '.sow-multi-measurement-input' );
+		var $inputContainers = $( this ).find( '.sow-multi-measurement-input-container' );
 		
 		var updateValue = function ( $element ) {
 			var vals = valField.val() === '' ? [] : valField.val().split( separator );
 			var $unitInput = $element.find( '+ .sow-multi-measurement-select-unit' );
-			var index = $inputs.index( $element );
+			var index = $valInputs.index( $element );
 			vals[ index ] = $element.val() + ( $element.val() === '' ? '' : $unitInput.val() );
 			valField.val( vals.join( separator ) );
 		};
 		
-		$inputs.each( function ( index, element ) {
+		$valInputs.each( function ( index, element ) {
 			if ( values.length > index ) {
 				var valueResult = values[ index ].match( /(\d+\.?\d*)([a-z%]+)*/ );
 				if ( valueResult && valueResult.length ) {
@@ -31,23 +32,24 @@
 			}
 		} );
 		
-		$inputs.change( function ( event ) {
+		$inputContainers.change( function ( event ) {
+			var $valInput = $( event.currentTarget ).find( '> .sow-multi-measurement-input' );
 			var doAutofill = autoFillEnabled;
 			if ( autoFillEnabled ) {
-				$inputs.each( function ( index, element ) {
+				$valInputs.each( function ( index, element ) {
 					// Only want to autofill if it has been enabled and no other inputs have values.
-					if ( element !== event.target ) {
+					if ( element !== $valInput.eq( 0 ) ) {
 						doAutofill = doAutofill && !( $( element ).val() );
 					}
 				} );
 			}
 			if ( doAutofill ) {
-				$inputs.each( function( index, element ) {
-					$( element ).val( $( event.target ).val() );
+				$valInputs.each( function( index, element ) {
+					$( element ).val( $valInput.val() );
 					updateValue( $( element ) );
 				} );
 			} else {
-				updateValue( $( event.target ) );
+				updateValue( $valInput );
 			}
 		} );
 		
