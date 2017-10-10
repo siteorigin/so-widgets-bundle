@@ -14,6 +14,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			__( 'SiteOrigin Accordion', 'so-widgets-bundle' ),
 			array(
 				'description' => __( 'An accordion widget.', 'so-widgets-bundle' ),
+				'help' => 'https://siteorigin.com/widgets-bundle/accordion-widget/',
 			),
 			array(),
 			false,
