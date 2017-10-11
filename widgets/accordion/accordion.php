@@ -14,6 +14,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			__( 'SiteOrigin Accordion', 'so-widgets-bundle' ),
 			array(
 				'description' => __( 'An accordion widget.', 'so-widgets-bundle' ),
+				'help' => 'https://siteorigin.com/widgets-bundle/accordion-widget/',
 			),
 			array(),
 			false,
@@ -117,6 +118,10 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 								'label' => __( 'Background color',  'so-widgets-bundle' ),
 								'default' => '#F9F9F9',
 							),
+							'font_color' => array(
+								'type' => 'color',
+								'label' => __( 'Font color',  'so-widgets-bundle' ),
+							),
 							'border_color' => array(
 								'type' => 'color',
 								'label' => __( 'Border color', 'so-widgets-bundle' ),
@@ -150,6 +155,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			'heading_border_width' => $design['heading']['border_width'],
 			'has_heading_border_width' => empty( $design['heading']['border_width'] ) ? 'false' : 'true',
 			'panels_background_color' => $design['panels']['background_color'],
+			'panels_font_color' => $design['panels']['font_color'],
 			'panels_border_color' => $design['panels']['border_color'],
 			'panels_border_width' => $design['panels']['border_width'],
 			'has_panels_border_width' => empty( $design['panels']['border_width'] ) ? 'false' : 'true',
@@ -160,7 +166,9 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 	public function get_template_variables( $instance, $args ) {
 		if( empty( $instance ) ) return array();
 		
-		foreach ( $instance['panels'] as &$panel ) {
+		$panels = empty( $instance['panels'] ) ? array() : $instance['panels'];
+		
+		foreach ( $panels as &$panel ) {
 			if ( empty( $panel['before_title'] ) ) {
 				$panel['before_title'] = '';
 			}
@@ -178,7 +186,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 		}
 		
 		return array(
-			'panels' => $instance['panels'],
+			'panels' => $panels,
 			'icon_open' => $instance['design']['heading']['icon_open'],
 			'icon_close' => $instance['design']['heading']['icon_close'],
 		);
