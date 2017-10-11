@@ -4,6 +4,7 @@
  * @var $args
  * @var $player_id
  * @var $autoplay
+ * @var $related_videos
  * @var $skin_class
  * @var $is_skinnable_video_host
  * @var $sources
@@ -46,7 +47,7 @@ do_action( 'siteorigin_widgets_sow-video_before_video', $instance );
 		<?php endforeach; ?>
 	</video>
 	<?php else : ?>
-	<?php echo $this->get_video_oembed( $src, $autoplay ); ?>
+	<?php echo $this->get_video_oembed( $src, $autoplay, $related_videos ); ?>
 	<?php endif; ?>
 </div>
 <?php do_action( 'siteorigin_widgets_sow-video_after_video', $instance ); ?>

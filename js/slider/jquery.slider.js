@@ -82,14 +82,17 @@ jQuery( function($){
 
 				$slide.click(function(event) {
 
-					if( urlData !== undefined ) {
-						var $t = $(event.target);
-						// If this isn't a link, we'll use the URL of the frame
-						if( $t.prop("tagName") !== 'A' ) {
-							event.preventDefault();
-							window.open(urlData.url, urlData.new_window ? '_blank' : '_self');
-						}
+					if( urlData !== undefined && urlData.hasOwnProperty( 'url' ) ) {
+						event.preventDefault();
+						window.open(
+							urlData.url,
+							urlData.hasOwnProperty( 'new_window' ) && urlData.new_window ? '_blank' : '_self'
+						);
 					}
+				} );
+
+				$slide.find( 'a' ).click( function ( event ) {
+					event.stopPropagation();
 				} );
 			});
 

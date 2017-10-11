@@ -48,13 +48,30 @@ var sowbForms = window.sowbForms || {};
 						// Indicates if the handler has run
 						var handlerRun = {};
 
-						var repeaterIndex = sowbForms.getRepeaterId($$);
+						var repeaterIndex = sowbForms.getContainerFieldId( $$, 'repeater', '.siteorigin-widget-field-repeater-item' );
 						if (repeaterIndex !== false) {
 							var repeaterHandler = {};
 							for ( var rptrState in handler) {
 								repeaterHandler[rptrState.replace('{$repeater}', repeaterIndex)] = handler[rptrState];
 							}
 							handler = repeaterHandler;
+						}
+						
+						var widgetFieldId = sowbForms.getContainerFieldId( $$, 'widget', '.siteorigin-widget-widget' );
+						if ( widgetFieldId !== false ) {
+							var widgetFieldHandler = {};
+							for ( var wdgFldState in handler) {
+								var stMatches = wdgFldState.match( /_else\[(.*)\]|(.*)\[(.*)\]/ );
+								var st = '';
+								if ( stMatches && stMatches.length && stMatches[1] === undefined ) {
+									st = stMatches[ 2 ] + '_' + widgetFieldId + '[' + stMatches[ 3 ] + ']';
+								} else {
+									st = '_else[' + stMatches[ 1 ] + '_' + widgetFieldId + ']';
+								}
+								
+								widgetFieldHandler[st] = handler[wdgFldState];
+							}
+							handler = widgetFieldHandler;
 						}
 
 						// Go through all the handlers
@@ -196,10 +213,10 @@ var sowbForms = window.sowbForms || {};
 			var $fields = $el.find('> .siteorigin-widget-field');
 
 			// Process any sub sections
-			$fields.find('> .siteorigin-widget-section').sowSetupForm();
+			$fields.find('> .siteorigin-widget-section, > .siteorigin-widget-widget > .siteorigin-widget-section').sowSetupForm();
 
 			// Process any sub widgets whose fields aren't contained in a section
-			$fields.filter('.siteorigin-widget-field-type-widget:not(:has(> .siteorigin-widget-section))').sowSetupForm();
+			$fields.filter('.siteorigin-widget-widget:not(:has(> .siteorigin-widget-section))').sowSetupForm();
 
 			// Store the field names
 			$fields.find('.siteorigin-widget-input').each(function (i, input) {
@@ -234,15 +251,16 @@ var sowbForms = window.sowbForms || {};
 			// Handle the sections
 			var expandContainer = function () {
 				$(this).toggleClass('siteorigin-widget-section-visible');
-				$(this).siblings('.siteorigin-widget-section').slideToggle('fast', function () {
-					$(window).resize();
-					$(this).find('> .siteorigin-widget-field-container-state').val($(this).is(':visible') ? 'open' : 'closed');
+				$(this).parent().find('> .siteorigin-widget-section, > .siteorigin-widget-widget > .siteorigin-widget-section')
+					.slideToggle('fast', function () {
+						$(window).resize();
+						$(this).find('> .siteorigin-widget-field-container-state').val($(this).is(':visible') ? 'open' : 'closed');
 
-					if ( $( this ).is( ':visible' ) ) {
-						var $fields = $( this ).find( '> .siteorigin-widget-field' );
-						$fields.trigger( 'sowsetupformfield' );
-					}
-				});
+						if ( $( this ).is( ':visible' ) ) {
+							var $fields = $( this ).find( '> .siteorigin-widget-field' );
+							$fields.trigger( 'sowsetupformfield' );
+						}
+					} );
 			};
 			$fields.filter('.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section').find('> label').click(expandContainer);
 			$fields.filter('.siteorigin-widget-field-type-posts').find('.posts-container-label-wrapper').click(expandContainer);
@@ -374,10 +392,18 @@ var sowbForms = window.sowbForms || {};
 						}
 
 						// Check if this is inside a repeater
-						var repeaterIndex = sowbForms.getRepeaterId($$);
+						var repeaterIndex = sowbForms.getContainerFieldId( $$, 'repeater', '.siteorigin-widget-field-repeater-item' );
 						if (repeaterIndex !== false) {
 							emitter.args = emitter.args.map(function (a) {
 								return a.replace('{$repeater}', repeaterIndex);
+							});
+						}
+						
+						var widgetFieldId = sowbForms.getContainerFieldId( $$, 'widget', '.siteorigin-widget-widget' );
+						if ( widgetFieldId !== false && ! emitter.hasOwnProperty( 'widgetFieldId' ) ) {
+							emitter.widgetFieldId = widgetFieldId;
+							emitter.args = emitter.args.map(function (arg) {
+								return arg + '_' + widgetFieldId;
 							});
 						}
 
@@ -823,25 +849,29 @@ var sowbForms = window.sowbForms || {};
 
 	// Widgets Bundle utility functions
 	/**
-	 * Get the unique index of a repeater item.
+	 * Get the unique index of a repeated item. Could be in a repeater or if multiple widget fields with the same
+	 * widget class.
 	 *
 	 * @param $el
+	 * @param containerType
+	 * @param containerClass
 	 * @return {*}
 	 */
-	sowbForms.getRepeaterId = function ($el) {
-		if (typeof this.id === 'undefined') {
-			this.id = 1;
+	sowbForms.getContainerFieldId = function ( $el, containerType, containerClass ) {
+		var fieldIdPropName = containerType + 'FieldId';
+		if ( ! this.hasOwnProperty( fieldIdPropName ) ) {
+			this[ fieldIdPropName ] = 1;
 		}
-
-		var $r = $el.closest('.siteorigin-widget-field-repeater-item');
-		if ($r.length) {
-			var itemId = $r.data('item-id');
-			if (itemId === undefined) {
-				itemId = this.id++;
+		
+		var $field = $el.closest( containerClass );
+		if ( $field.length ) {
+			var fieldId = $field.data( 'field-id' );
+			if ( fieldId === undefined ) {
+				fieldId = this[ fieldIdPropName ]++;
 			}
-			$r.data('item-id', itemId);
-
-			return itemId;
+			$field.data( 'field-id', fieldId );
+			
+			return fieldId;
 		}
 		else {
 			return false;

@@ -1003,7 +1003,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return array
 	 */
 	function get_google_font_fields( $instance ) {
-		return array();
+		return apply_filters( 'siteorigin_widgets_google_font_fields_' . $this->id_base, array(), $instance, $this );
 	}
 
 	/**
@@ -1218,8 +1218,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	/**
 	 * Enqueue all the registered scripts
 	 */
-	function enqueue_registered_scripts() {
-		foreach ( $this->frontend_scripts as $f_script ) {
+	function enqueue_registered_scripts( $instance ) {
+		$f_scripts = apply_filters(
+			'siteorigin_widgets_frontend_scripts_' . $this->id_base,
+			$this->frontend_scripts,
+			$instance,
+			$this
+		);
+		
+		foreach ( $f_scripts as $f_script ) {
 			if ( ! wp_script_is( $f_script[0] ) ) {
 				wp_enqueue_script(
 					$f_script[0],
@@ -1248,8 +1255,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	/**
 	 * Enqueue any frontend styles that were registered
 	 */
-	function enqueue_registered_styles() {
-		foreach ( $this->frontend_styles as $f_style ) {
+	function enqueue_registered_styles( $instance ) {
+		$f_styles = apply_filters(
+			'siteorigin_widgets_frontend_styles_' . $this->id_base,
+			$this->frontend_styles,
+			$instance,
+			$this
+		);
+		
+		foreach ( $f_styles as $f_style ) {
 			if ( ! wp_style_is( $f_style[0] ) ) {
 				wp_enqueue_style(
 					$f_style[0],
@@ -1268,8 +1282,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * will then ensure that the scripts are not enqueued more than once.
 	 */
 	function enqueue_frontend_scripts( $instance ) {
-		$this->enqueue_registered_scripts();
-		$this->enqueue_registered_styles();
+		$this->enqueue_registered_scripts( $instance );
+		$this->enqueue_registered_styles( $instance );
 
 		// Give plugins a chance to enqueue additional frontend scripts
 		do_action('siteorigin_widgets_enqueue_frontend_scripts_' . $this->id_base, $instance, $this);

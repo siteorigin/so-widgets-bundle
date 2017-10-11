@@ -108,7 +108,17 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 							'video_type[external]' => array( 'show' ),
 							'video_type[self]'     => array( 'hide' ),
 						)
-					)
+					),
+					'related_videos' => array(
+						'type'          => 'checkbox',
+						'default'       => true,
+						'label'         => __( 'Show related videos.', 'so-widgets-bundle' ),
+						'description'   => __( 'If the external host supports it.', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'video_type[external]' => array( 'show' ),
+							'video_type[self]'     => array( 'hide' ),
+						)
+					),
 				),
 			),
 		);
@@ -195,6 +205,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'is_skinnable_video_host' => $this->is_skinnable_video_host( $video_host ),
 			'poster'                  => $poster,
 			'autoplay'                => ! empty( $instance['playback']['autoplay'] ),
+			'related_videos'          => ! empty( $instance['playback']['related_videos'] ),
 			'skin_class'              => 'default'
 		);
 
@@ -214,7 +225,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 	/**
 	 * Gets a video source embed
 	 */
-	function get_video_oembed( $src, $autoplay = false ) {
+	function get_video_oembed( $src, $autoplay = false, $related_videos = true ) {
 		if ( empty( $src ) ) {
 			return '';
 		}
@@ -239,6 +250,13 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 					'autoplay_callback'
 				), $html );
 			}
+			
+			if ( empty( $related_videos ) ) {
+				$html = preg_replace_callback( '/src=["\'](http[^"\']*)["\']/', array(
+					$this,
+					'remove_related_videos'
+				), $html );
+			}
 
 			if ( ! empty( $html ) ) {
 				set_transient( 'sow-vid-embed[' . $hash . ']', $html, 30 * 86400 );
@@ -257,6 +275,17 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 	 */
 	function autoplay_callback( $match ) {
 		return str_replace( $match[1], add_query_arg( 'autoplay', 1, $match[1] ), $match[0] );
+	}
+
+	/**
+	 * The preg_replace callback that adds the rel param for YouTube videos.
+	 *
+	 * @param $match
+	 *
+	 * @return mixed
+	 */
+	function remove_related_videos( $match ) {
+		return str_replace( $match[1], add_query_arg( 'rel', 0, $match[1] ), $match[0] );
 	}
 
 	/**

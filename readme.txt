@@ -54,6 +54,17 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.10.0 - 11 October 2017 =
+* New Accordion widget!
+* Prevent multiple initialization of media field.
+* Use correct path for widget banner when defined in a theme.
+* Video: Added option to show/hide related YouTube videos at end of video.
+* Slider: Handle links inside slider frames first and then allow processing of frame background clicks.
+* Give repeated fields in widget fields unique ids for state handling.
+* New multi-measurement field.
+* Widget Manager Path Comparison fix. (allows for settings to work)
+* Button: Use `esc_js` instead of `esc_attr` for onclick.
+
 = 1.9.10 - 14 September 2017 =
 * TinyMCE field: fixed issue with filter for TinyMCE plugins.
 * Added teaser messages for SiteOrigin Premium addons.

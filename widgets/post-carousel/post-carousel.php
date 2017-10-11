@@ -146,20 +146,20 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 		if ( ! empty( $instance['default_thumbnail'] ) ) {
 			$default_thumbnail = wp_get_attachment_image_src( $instance['default_thumbnail'], 'sow-carousel-default' );
 		}
-
-        $query = wp_parse_args(
-            siteorigin_widget_post_selector_process_query( $instance['posts'] ),
-            array(
-                'paged' => empty( $instance['paged'] ) ? 1 : $instance['paged']
-            )
-        );
-        $posts = new WP_Query( $query );
-
-        return array(
-            'title' => $instance['title'],
-            'posts' => $posts,
-            'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : '',
-        );
+		
+		$query = wp_parse_args(
+			siteorigin_widget_post_selector_process_query( $instance['posts'] ),
+			array(
+				'paged' => empty( $instance['paged'] ) ? 1 : $instance['paged']
+			)
+		);
+		$posts = new WP_Query( $query );
+		
+		return array(
+			'title' => $instance['title'],
+			'posts' => $posts,
+			'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : '',
+		);
 	}
 
 	function get_template_name($instance){

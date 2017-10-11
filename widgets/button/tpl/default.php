@@ -1,6 +1,8 @@
 <?php
 /**
  * @var array $button_attributes
+ * @var string $href
+ * @var string $onclick
  * @var string $align
  * @var string $icon_image_url
  * @var string $icon
@@ -10,7 +12,8 @@
 
 ?>
 <div class="ow-button-base ow-button-align-<?php echo esc_attr( $align ) ?>">
-	<a href="<?php echo sow_esc_url( $href ) ?>" <?php foreach( $button_attributes as $name => $val ) echo $name . '="' . esc_attr( $val ) . '" ' ?>>
+	<a href="<?php echo sow_esc_url( $href ) ?>" <?php foreach( $button_attributes as $name => $val ) echo $name . '="' . esc_attr( $val ) . '" ' ?>
+		<?php if ( ! empty( $onclick ) ) echo 'onclick="' . esc_js( $onclick ) . '"'; ?>>
 		<span>
 			<?php
 				if( ! empty( $icon_image_url ) ) {
