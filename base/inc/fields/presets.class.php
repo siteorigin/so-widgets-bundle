@@ -28,8 +28,7 @@ class SiteOrigin_Widget_Field_Presets extends SiteOrigin_Widget_Field_Base {
 		}
 		
 		?>
-		<select name="<?php echo esc_attr( $this->element_name ) ?>"
-				id="<?php echo esc_attr( $this->element_id ) ?>"
+		<select id="<?php echo esc_attr( $this->element_id ) ?>"
 				class="siteorigin-widget-input"
 				data-presets="<?php echo esc_attr( json_encode( $this->options ) ) ?>">
 			<option value="default"></option>
