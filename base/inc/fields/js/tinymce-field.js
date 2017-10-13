@@ -1,14 +1,13 @@
 /* global tinymce, switchEditors */
 
 (function ( $ ) {
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-tinymce', function ( e ) {
-		var $$ = $( this );
+	var setup = function( $field ) {
 
-		if ( $$.data( 'initialized' ) ) {
+		if ( $field.data( 'initialized' ) ) {
 			return;
 		}
 
-		var $container = $$.find( '.siteorigin-widget-tinymce-container' );
+		var $container = $field.find( '.siteorigin-widget-tinymce-container' );
 		var settings = $container.data( 'editorSettings' );
 		var $textarea = $container.find( 'textarea' );
 		var id = $textarea.attr( 'id' );
@@ -25,11 +24,11 @@
 		$( document ).one( 'wp-before-tinymce-init', function ( event, init ) {
 			if ( init.selector === settings.tinymce.selector ) {
 				var mediaButtons = $container.data( 'mediaButtons' );
-				$$.find( '.wp-editor-tabs' ).before( mediaButtons.html );
+				$field.find( '.wp-editor-tabs' ).before( mediaButtons.html );
 			}
 		} );
 		$( document ).one( 'tinymce-editor-setup', function () {
-			if ( ! $$.find( '.wp-editor-wrap' ).hasClass( settings.selectedEditor + '-active' ) ) {
+			if ( ! $field.find( '.wp-editor-wrap' ).hasClass( settings.selectedEditor + '-active' ) ) {
 				setTimeout( function () {
 					window.switchEditors.go( id );
 				}, 10 );
@@ -50,8 +49,8 @@
 				}
 			}, 500);
 		}
-
-		$$.on( 'click', function ( event ) {
+		
+		$field.on( 'click', function ( event ) {
 			var $target = $( event.target );
 			var mode = $target.hasClass( 'wp-switch-editor' ) ? 'tmce' : 'html';
 			if ( mode === 'tmce' ) {
@@ -65,12 +64,50 @@
 					}
 					editor.setContent(window.switchEditors.wpautop(content));
 				}
-
-				$$.find( '.siteorigin-widget-tinymce-selected-editor' ).val( mode );
+				
+				$field.find( '.siteorigin-widget-tinymce-selected-editor' ).val( mode );
 			}
 		} );
-
-		$$.data( 'initialized', true );
-	} );
+		
+		$field.data( 'initialized', true );
+	};
+	
+	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-tinymce', function () {
+		var $field = $( this );
+		var $parentRepeaterItem = $field.closest( '.siteorigin-widget-field-repeater-item-form' );
+		
+		if ( $parentRepeaterItem.length > 0 ) {
+			if ( $parentRepeaterItem.is( ':visible' ) ) {
+				setup( $field );
+			}
+			else {
+				$parentRepeaterItem.on('slideToggleOpenComplete', function onSlideToggleComplete() {
+					if ( $parentRepeaterItem.is( ':visible' ) ) {
+						setup( $field );
+						$parentRepeaterItem.off( 'slideToggleOpenComplete' );
+					}
+				});
+			}
+		}
+		else {
+			setup( $field );
+		}
+	});
+	
+	$( document ).on( 'sortstop', function ( event, ui ) {
+		var $form;
+		if ( ui.item.is( '.siteorigin-widget-field-repeater-item' ) ) {
+			$form = ui.item.find( '> .siteorigin-widget-field-repeater-item-form' );
+		}
+		else {
+			$form = ui.item.find('.siteorigin-widget-form');
+		}
+		
+		$form.find( '.siteorigin-widget-field-type-tinymce' ).each( function () {
+			$( this ).data( 'initialized', null );
+			setup( $( this ) );
+		} );
+		
+	});
 
 })( jQuery );

@@ -213,10 +213,13 @@ var sowbForms = window.sowbForms || {};
 			var $fields = $el.find('> .siteorigin-widget-field');
 
 			// Process any sub sections
-			$fields.find('> .siteorigin-widget-section, > .siteorigin-widget-widget > .siteorigin-widget-section').sowSetupForm();
+			$fields.find('> .siteorigin-widget-section').sowSetupForm();
+			
+			var $subwidgetFields = $fields.find('> .siteorigin-widget-widget');
+			$subwidgetFields.find('> .siteorigin-widget-section').sowSetupForm();
 
 			// Process any sub widgets whose fields aren't contained in a section
-			$fields.filter('.siteorigin-widget-widget:not(:has(> .siteorigin-widget-section))').sowSetupForm();
+			$subwidgetFields.filter(':not(:has(> .siteorigin-widget-section))').sowSetupForm();
 
 			// Store the field names
 			$fields.find('.siteorigin-widget-input').each(function (i, input) {
