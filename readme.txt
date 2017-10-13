@@ -54,6 +54,10 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.10.1 - 13 October 2017 =
+* Fix subwidget fields initializion when not contained in a section.
+* TinyMCE field: fix initialization in repeaters.
+
 = 1.10.0 - 11 October 2017 =
 * New Accordion widget!
 * Prevent multiple initialization of media field.
