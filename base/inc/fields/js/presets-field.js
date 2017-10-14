@@ -13,7 +13,7 @@
 			var selectedPreset = $presetSelect.val();
 			if ( selectedPreset && presets.hasOwnProperty( selectedPreset ) ) {
 				var presetValues = presets[ selectedPreset ].values;
-				sowbForms.setWidgetFormValues( $presetSelect.closest( '.siteorigin-widget-form-main' ), presetValues );
+				sowbForms.setWidgetFormValues( $presetSelect.closest( '.siteorigin-widget-form-main' ), presetValues, true );
 			}
 		} );
 		
