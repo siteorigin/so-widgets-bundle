@@ -20,13 +20,15 @@
 				var presetValues = presets[ selectedPreset ].values;
 				
 				var $formContainer = $presetSelect.closest( '.siteorigin-widget-form-main' );
-				var id = $presetSelect.attr( 'id' );
-				var formData = JSON.parse( sessionStorage.getItem( id ) );
-				if ( ! formData ) {
+				var previousValues = $presetSelect.data( 'previousValues' );
+				if ( ! previousValues ) {
 					var presetClone = JSON.parse( JSON.stringify( presetValues ) );
 					var widgetData = sowbForms.getWidgetFormValues( $formContainer );
-					
+					var recurseDepth = 0;
 					var copyValues = function( from, to ) {
+						if ( ++recurseDepth > 10 ) {
+							return to;
+						}
 						for ( var key in to ) {
 							if ( from.hasOwnProperty( key ) ) {
 								var fromItem = from[ key ];
@@ -38,14 +40,19 @@
 								}
 							}
 						}
+						return to;
 					};
-					// Copy existing widget values for preset properties to a session storage backup to be able to undo.
-					copyValues( widgetData, presetClone );
-					sessionStorage.setItem( id, JSON.stringify( presetClone ) );
+					// Copy existing widget values for preset properties to allow for undo.
+					previousValues = copyValues( widgetData, presetClone );
+					$presetSelect.data( 'previousValues', previousValues );
+				}
+				if ( $undoLink.not( ':visible' ) ) {
 					$undoLink.show();
 					$undoLink.click( function ( event ) {
 						event.preventDefault();
-						//TODO: Revert changes made by presets selection.
+						sowbForms.setWidgetFormValues( $formContainer, previousValues, true );
+						$presetSelect.removeData( 'previousValues' );
+						$undoLink.hide();
 					} );
 				}
 				
