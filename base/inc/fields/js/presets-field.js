@@ -50,9 +50,10 @@
 					$undoLink.show();
 					$undoLink.click( function ( event ) {
 						event.preventDefault();
+						$undoLink.hide();
 						sowbForms.setWidgetFormValues( $formContainer, previousValues, true );
 						$presetSelect.removeData( 'previousValues' );
-						$undoLink.hide();
+						$presetSelect.val( '' );
 					} );
 				}
 				
