@@ -1,0 +1,207 @@
+<?php
+/*
+Widget Name: Tabs
+Description: A tabby widget to switch between tabbed content panels.
+Author: SiteOrigin
+Author URI: https://siteorigin.com
+*/
+
+class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
+	function __construct() {
+		
+		parent::__construct(
+			'sow-tabs',
+			__( 'SiteOrigin Tabs', 'so-widgets-bundle' ),
+			array(
+				'description' => __( 'A tabs widget.', 'so-widgets-bundle' ),
+				'help' => 'https://siteorigin.com/widgets-bundle/tabs-widget/',
+			),
+			array(),
+			false,
+			plugin_dir_path( __FILE__ )
+		);
+	}
+	
+	/**
+	 * Initialize the tabs widget.
+	 */
+	function initialize() {
+		$this->register_frontend_scripts(
+			array(
+				array(
+					'sow-tabs',
+					plugin_dir_url( __FILE__ ) . 'js/tabs' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					array( 'jquery' ),
+					SOW_BUNDLE_VERSION
+				)
+			)
+		);
+	}
+	
+	function get_widget_form() {
+		
+		return array(
+			'title' => array(
+				'type' => 'text',
+				'label' => __( 'Title', 'so-widgets-bundle' ),
+			),
+			'tabs' => array(
+				'type' => 'repeater',
+				'label' => __( 'Tabs', 'so-widgets-bundle' ),
+				'fields' => array(
+					'title' => array(
+						'type' => 'text',
+						'label' => __( 'Title', 'so-widgets-bundle' ),
+					),
+					'content_text' => array(
+						'type'  => 'tinymce',
+						'label' => __( 'Content', 'so-widgets-bundle' ),
+					),
+				),
+			),
+			'initial_tab_index' => array(
+				'type' => 'number',
+				'label' => __( 'Initial tab index', 'so-widgets-bundle' ),
+				'default' => 0,
+			),
+			'design' => array(
+				'type' =>  'section',
+				'label' => __( 'Design', 'so-widgets-bundle' ),
+				'hide' => true,
+				'fields' => array(
+					'tabs_container' => array(
+						'type' => 'section',
+						'label' => __( 'Tabs container', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'background_color' => array(
+								'type' => 'color',
+								'label' => __( 'Background color', 'so-widgets-bundle' ),
+								'default' => '#828282',
+							),
+							'border_color' => array(
+								'type' => 'color',
+								'label' => __( 'Border color', 'so-widgets-bundle' ),
+							),
+							'border_width' => array(
+								'type' => 'measurement',
+								'label' => __( 'Border width', 'so-widgets-bundle' ),
+							),
+						),
+					),
+					'tabs' => array(
+						'type' => 'section',
+						'label' => __( 'Tabs', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'background_color' => array(
+								'type' => 'color',
+								'label' => __( 'Background color', 'so-widgets-bundle' ),
+								'default' => '#828282',
+							),
+							'background_hover_color' => array(
+								'type' => 'color',
+								'label' => __( 'Background hover color', 'so-widgets-bundle' ),
+								'default' => '#8C8C8C',
+							),
+							'title_color' => array(
+								'type' => 'color',
+								'label' => __( 'Title color',  'so-widgets-bundle' ),
+							),
+							'title_hover_color' => array(
+								'type' => 'color',
+								'label' => __( 'Title hover color', 'so-widgets-bundle' ),
+							),
+							'border_color' => array(
+								'type' => 'color',
+								'label' => __( 'Border color', 'so-widgets-bundle' ),
+							),
+							'border_hover_color' => array(
+								'type' => 'color',
+								'label' => __( 'Border hover color', 'so-widgets-bundle' ),
+							),
+							'border_width' => array(
+								'type' => 'measurement',
+								'label' => __( 'Border width', 'so-widgets-bundle' ),
+							),
+							'border_hover_width' => array(
+								'type' => 'measurement',
+								'label' => __( 'Border hover width', 'so-widgets-bundle' ),
+							),
+						),
+					),
+					'panels' => array(
+						'type' => 'section',
+						'label' => __( 'Panels', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'background_color' => array(
+								'type' => 'color',
+								'label' => __( 'Background color',  'so-widgets-bundle' ),
+								'default' => '#F9F9F9',
+							),
+							'font_color' => array(
+								'type' => 'color',
+								'label' => __( 'Font color',  'so-widgets-bundle' ),
+							),
+							'border_color' => array(
+								'type' => 'color',
+								'label' => __( 'Border color', 'so-widgets-bundle' ),
+							),
+							'border_width' => array(
+								'type' => 'measurement',
+								'label' => __( 'Border width', 'so-widgets-bundle' ),
+							),
+							'margin_bottom' => array(
+								'type' => 'measurement',
+								'label' => __( 'Bottom margin', 'so-widgets-bundle' ),
+								'default' => '10px',
+							),
+						),
+					),
+				),
+			),
+		);
+	}
+	
+	public function get_less_variables( $instance ) {
+		return array();
+	}
+	
+	public function get_template_variables( $instance, $args ) {
+		if( empty( $instance ) ) return array();
+		
+		$tabs = empty( $instance['tabs'] ) ? array() : $instance['tabs'];
+		
+		foreach ( $tabs as &$panel ) {
+			if ( empty( $panel['before_title'] ) ) {
+				$panel['before_title'] = '';
+			}
+			if ( empty( $panel['after_title'] ) ) {
+				$panel['after_title'] = '';
+			}
+		}
+		
+		return array(
+			'tabs' => $tabs,
+			'initial_tab_index' => empty( $instance['initial_tab_index'] ) ? 0 : $instance['initial_tab_index'],
+		);
+	}
+	
+	public function render_panel_content( $panel, $instance ) {
+		$content = wp_kses_post( $panel['content_text'] );
+		
+		echo apply_filters( 'siteorigin_widgets_tabs_render_panel_content', $content, $panel, $instance );
+	}
+	
+	function get_form_teaser(){
+		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
+		return sprintf(
+			__( 'Get more customization options and the ability to use widgets and layouts as your tabs content with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tabs" target="_blank">',
+			'</a>'
+		);
+	}
+}
+
+siteorigin_widget_register('sow-tabs', __FILE__, 'SiteOrigin_Widget_Tabs_Widget');
