@@ -2,18 +2,84 @@
 
 .widget-function('import_google_font');
 
+@tabs_container_background_color: default;
+@tabs_container_border_color: default;
+@tabs_container_border_width: default;
+@has_tabs_container_border_width: default;
+@tabs_container_border_radius: default;
+@tabs_container_padding: 12px 10px 0px 10px;
+
+@tabs_background_color: default;
+@tabs_background_hover_color: default;
+@tabs_title_color: default;
+@tabs_title_hover_color: default;
+@tabs_title_font_family: default;
+@tabs_title_font_weight: default;
+@tabs_title_font_size: 16px;
+@tabs_border_color: default;
+@tabs_border_hover_color: default;
+@tabs_border_width: default;
+@has_tabs_border_width: default;
+@tabs_border_hover_width: default;
+@has_tabs_border_hover_width: default;
+@tabs_border_radius: default;
+@tabs_padding: 7px 20px 7px 20px;
+
+@panels_background_color: default;
+@panels_font_color: default;
+@panels_border_width: default;
+@has_panels_border_width: default;
+@panels_border_color: default;
+@panels_border_radius: default;
+@panels_padding: 10px 30px 10px 30px;
+
 .sow-tabs {
 	.sow-tabs-tab-container {
+		background-color: @tabs_container_background_color;
+		padding: @tabs_container_padding;
+
+		//noinspection CssOptimizeSimilarProperties
+		& when( @has_tabs_container_border_width = true ) {
+			border-style: solid;
+			border-color: @tabs_container_border_color;
+			border-width: @tabs_container_border_width;
+			border-radius: @tabs_container_border_radius;
+		}
+
 		.sow-tabs-tab {
 			display: inline-block;
 			cursor: pointer;
+			background-color: @tabs_background_color;
+			padding: @tabs_padding;
+			color: @tabs_title_color;
+			font-family: @tabs_title_font_family;
+			font-weight: @tabs_title_font_weight;
+			font-size: @tabs_title_font_size;
+			transition: all 0.3s;
+
+			&.sow-tabs-tab-selected, &:hover {
+				background-color: @tabs_background_hover_color;
+				color: @tabs_title_hover_color;
+			}
 		}
 	}
 
 	.sow-tabs-panel-container {
 		position: relative;
+
+		//noinspection CssOptimizeSimilarProperties
+		& when( @has_panels_border_width = true ) {
+			border-style: solid;
+			border-width: @panels_border_width;
+			border-color: @panels_border_color;
+			border-radius: @panels_border_radius;
+		}
+
 		.sow-tabs-panel {
 			position: absolute;
+			background-color: @panels_background_color;
+			padding: @panels_padding;
+			color: @panels_font_color;
 			.sow-tabs-panel-content {
 			}
 		}

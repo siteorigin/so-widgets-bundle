@@ -1,11 +1,14 @@
 <?php
 /**
+ * @var array $args
  * @var array $instance
  * @var array $tabs
  * @var array $initial_tab_index
  */
 
 $last_index = count( $tabs ) - 1;
+
+echo $args['before_title'] . $instance['title'] . $args['after_title'];
 ?>
 <div class="sow-tabs">
 	<div class="sow-tabs-tab-container">

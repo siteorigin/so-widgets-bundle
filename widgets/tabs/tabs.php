@@ -102,15 +102,17 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 							'background_hover_color' => array(
 								'type' => 'color',
 								'label' => __( 'Background hover color', 'so-widgets-bundle' ),
-								'default' => '#8C8C8C',
+								'default' => '#F9F9F9',
 							),
 							'title_color' => array(
 								'type' => 'color',
 								'label' => __( 'Title color',  'so-widgets-bundle' ),
+								'default' => '#FFFFFF',
 							),
 							'title_hover_color' => array(
 								'type' => 'color',
 								'label' => __( 'Title hover color', 'so-widgets-bundle' ),
+								'default' => '#000000',
 							),
 							'border_color' => array(
 								'type' => 'color',
@@ -152,11 +154,6 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 								'type' => 'measurement',
 								'label' => __( 'Border width', 'so-widgets-bundle' ),
 							),
-							'margin_bottom' => array(
-								'type' => 'measurement',
-								'label' => __( 'Bottom margin', 'so-widgets-bundle' ),
-								'default' => '10px',
-							),
 						),
 					),
 				),
@@ -165,7 +162,29 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 	}
 	
 	public function get_less_variables( $instance ) {
-		return array();
+		$design = $instance['design'];
+		
+		return array(
+			'tabs_container_background_color' => $design['tabs_container']['background_color'],
+			'tabs_container_border_color' => $design['tabs_container']['border_color'],
+			'tabs_container_border_width' => $design['tabs_container']['border_width'],
+			'has_tabs_container_border_width' => empty( $design['tabs_container']['border_width'] ) ? 'false' : 'true',
+			'tabs_background_color' => $design['tabs']['background_color'],
+			'tabs_background_hover_color' => $design['tabs']['background_hover_color'],
+			'tabs_title_color' => $design['tabs']['title_color'],
+			'tabs_title_hover_color' => $design['tabs']['title_hover_color'],
+			'tabs_border_color' => $design['tabs_container']['border_color'],
+			'tabs_border_hover_color' => $design['tabs']['border_hover_color'],
+			'tabs_border_width' => $design['tabs']['border_width'],
+			'has_tabs_border_width' => empty( $design['tabs']['border_width'] ) ? 'false' : 'true',
+			'tabs_border_hover_width' => $design['tabs']['border_hover_width'],
+			'has_tabs_border_hover_width' => empty( $design['tabs']['border_hover_width'] ) ? 'false' : 'true',
+			'panels_background_color' => $design['panels']['background_color'],
+			'panels_font_color' => $design['panels']['font_color'],
+			'panels_border_color' => $design['panels']['border_color'],
+			'panels_border_width' => $design['panels']['border_width'],
+			'has_panels_border_width' => empty( $design['panels']['border_width'] ) ? 'false' : 'true',
+		);
 	}
 	
 	public function get_template_variables( $instance, $args ) {
