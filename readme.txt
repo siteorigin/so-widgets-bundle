@@ -54,6 +54,10 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.10.2 - 20 October 2017 =
+* Fix for links sometimes not working in slider widgets.
+* Fix multi-measurement field labels.
+
 = 1.10.1 - 13 October 2017 =
 * Fix subwidget fields initializion when not contained in a section.
 * TinyMCE field: fix initialization in repeaters.
