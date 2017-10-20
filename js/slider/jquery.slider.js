@@ -80,23 +80,22 @@ jQuery( function($){
 				var $slide = $(el);
 				var urlData = $slide.data('url');
 
-				$slide.click(function(event) {
+				if( urlData !== undefined && urlData.hasOwnProperty( 'url' ) ) {
+					$slide.click(function(event) {
 
-					if( urlData !== undefined && urlData.hasOwnProperty( 'url' ) ) {
 						event.preventDefault();
 						window.open(
 							urlData.url,
 							urlData.hasOwnProperty( 'new_window' ) && urlData.new_window ? '_blank' : '_self'
 						);
-					}
-				} );
-
-				$slide.find( 'a' ).click( function ( event ) {
-					event.stopPropagation();
-				} );
+					} );
+					$slide.find( 'a' ).click( function ( event ) {
+						event.stopPropagation();
+					} );
+				}
 			});
 
-			var setupSlider = function(){
+			var setupSlider = function() {
 
 				// If we're inside a fittext wrapper, wait for it to complete, before setting up the slider.
                 var fitTextWrapper = $$.closest('.so-widget-fittext-wrapper');
