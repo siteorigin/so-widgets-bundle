@@ -53,7 +53,12 @@ class SiteOrigin_Widget_Field_Multi_Measurement extends SiteOrigin_Widget_Field_
 		<div class="sow-multi-measurement-container">
 		<?php
 		foreach ( $this->measurements as $name => $measurement_config ) {
-			$label = empty( $measurement_config['label'] ) ? '' : $measurement_config['label'];
+			
+			if ( is_array( $measurement_config ) ) {
+				$label = empty( $measurement_config['label'] ) ? '' : $measurement_config['label'];
+			} else {
+				$label = $measurement_config;
+			}
 			$units = empty( $measurement_config['units'] ) ?
 				siteorigin_widgets_get_measurements_list() :
 				$measurement_config['units'];
