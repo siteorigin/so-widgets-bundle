@@ -27,6 +27,9 @@
 @tabs_padding: 15px 15px 15px 15px;
 
 @panels_background_color: default;
+@panels_font_family: default;
+@panels_font_weight: default;
+@panels_font_size: 16px;
 @panels_font_color: default;
 @panels_border_width: default;
 @has_panels_border_width: default;
@@ -89,20 +92,23 @@
 	.sow-tabs-panel-container {
 		position: relative;
 
-		//noinspection CssOptimizeSimilarProperties
-		& when( @has_panels_border_width = true ) {
-			border-style: solid;
-			border-width: @panels_border_width;
-			border-color: @panels_border_color;
-			border-radius: @panels_border_radius;
-		}
-
 		.sow-tabs-panel {
 			position: absolute;
 			background-color: @panels_background_color;
 			padding: @panels_padding;
 			color: @panels_font_color;
 			.sow-tabs-panel-content {
+				font-family: @panels_font_family;
+				font-weight: @panels_font_weight;
+				font-size: @panels_font_size;
+			}
+
+			//noinspection CssOptimizeSimilarProperties
+			& when( @has_panels_border_width = true ) {
+				border-style: solid;
+				border-width: @panels_border_width;
+				border-color: @panels_border_color;
+				border-radius: @panels_border_radius;
 			}
 		}
 	}
