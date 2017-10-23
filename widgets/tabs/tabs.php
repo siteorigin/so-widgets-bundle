@@ -173,7 +173,7 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 			'tabs_background_hover_color' => $design['tabs']['background_hover_color'],
 			'tabs_title_color' => $design['tabs']['title_color'],
 			'tabs_title_hover_color' => $design['tabs']['title_hover_color'],
-			'tabs_border_color' => $design['tabs_container']['border_color'],
+			'tabs_border_color' => $design['tabs']['border_color'],
 			'tabs_border_hover_color' => $design['tabs']['border_hover_color'],
 			'tabs_border_width' => $design['tabs']['border_width'],
 			'has_tabs_border_width' => empty( $design['tabs']['border_width'] ) ? 'false' : 'true',

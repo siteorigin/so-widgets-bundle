@@ -8,6 +8,7 @@
 @has_tabs_container_border_width: default;
 @tabs_container_border_radius: default;
 @tabs_container_padding: 12px 10px 0px 10px;
+@tabs_container_tabs_align: default;
 
 @tabs_background_color: default;
 @tabs_background_hover_color: default;
@@ -37,9 +38,10 @@
 	.sow-tabs-tab-container {
 		background-color: @tabs_container_background_color;
 		padding: @tabs_container_padding;
+		text-align: @tabs_container_tabs_align;
 
 		//noinspection CssOptimizeSimilarProperties
-		& when( @has_tabs_container_border_width = true ) {
+		& when ( @has_tabs_container_border_width = true ) {
 			border-style: solid;
 			border-color: @tabs_container_border_color;
 			border-width: @tabs_container_border_width;
@@ -57,9 +59,29 @@
 			font-size: @tabs_title_font_size;
 			transition: all 0.3s;
 
+			//noinspection CssOptimizeSimilarProperties
+			& when ( @has_tabs_border_width = true ) {
+				border-style: solid;
+				border-color: @tabs_border_color;
+				border-width: @tabs_border_width;
+				border-radius: @tabs_border_radius;
+			}
+
 			&.sow-tabs-tab-selected, &:hover {
 				background-color: @tabs_background_hover_color;
 				color: @tabs_title_hover_color;
+
+				//noinspection CssOptimizeSimilarProperties
+				& when ( @has_tabs_border_hover_width = true ) {
+					border-style: solid;
+					border-color: @tabs_border_hover_color;
+					border-width: @tabs_border_hover_width;
+					border-radius: @tabs_border_radius;
+				}
+			}
+
+			.sow-tabs-title {
+				line-height: 1;
 			}
 		}
 	}
