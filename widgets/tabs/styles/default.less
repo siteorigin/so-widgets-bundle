@@ -7,7 +7,7 @@
 @tabs_container_border_width: default;
 @has_tabs_container_border_width: default;
 @tabs_container_border_radius: default;
-@tabs_container_padding: 10px 10px 0px 10px;
+@tabs_container_padding: 12px 10px 0px 10px;
 @tabs_container_tabs_align: default;
 
 @tabs_background_color: default;
@@ -35,7 +35,7 @@
 @has_panels_border_width: default;
 @panels_border_color: default;
 @panels_border_radius: default;
-@panels_padding: 10px 30px 10px 30px;
+@panels_padding: 10px 25px 10px 25px;
 
 .sow-tabs {
 	.sow-tabs-tab-container {
@@ -92,12 +92,12 @@
 	.sow-tabs-panel-container {
 		position: relative;
 		transition: height 0.3s;
+		background-color: @panels_background_color;
+		padding: @panels_padding;
+		color: @panels_font_color;
 
 		.sow-tabs-panel {
 			position: absolute;
-			background-color: @panels_background_color;
-			padding: @panels_padding;
-			color: @panels_font_color;
 			.sow-tabs-panel-content {
 				font-family: @panels_font_family;
 				font-weight: @panels_font_weight;
