@@ -97,7 +97,6 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 							'background_color' => array(
 								'type' => 'color',
 								'label' => __( 'Background color', 'so-widgets-bundle' ),
-								'default' => '#828282',
 							),
 							'background_hover_color' => array(
 								'type' => 'color',
