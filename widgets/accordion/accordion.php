@@ -44,6 +44,11 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			'panels' => array(
 				'type' => 'repeater',
 				'label' => __( 'Panels', 'so-widgets-bundle' ),
+				'item_label' => array(
+					'selector' => "[id*='panels-title']",
+					'update_event' => 'change',
+					'value_method' => 'val'
+				),
 				'fields' => array(
 					'title' => array(
 						'type' => 'text',
