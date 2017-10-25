@@ -191,12 +191,12 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 		
 		$tabs = empty( $instance['tabs'] ) ? array() : $instance['tabs'];
 		
-		foreach ( $tabs as &$panel ) {
-			if ( empty( $panel['before_title'] ) ) {
-				$panel['before_title'] = '';
+		foreach ( $tabs as &$tab ) {
+			if ( empty( $tab['before_title'] ) ) {
+				$tab['before_title'] = '';
 			}
-			if ( empty( $panel['after_title'] ) ) {
-				$panel['after_title'] = '';
+			if ( empty( $tab['after_title'] ) ) {
+				$tab['after_title'] = '';
 			}
 		}
 		
