@@ -52,11 +52,11 @@
 		
 		$field.on( 'click', function ( event ) {
 			var $target = $( event.target );
-			var mode = $target.hasClass( 'wp-switch-editor' ) ? 'tmce' : 'html';
+			var mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
 			if ( mode === 'tmce' ) {
 				var editor = window.tinymce.get( id );
 				// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex
-				if ( $target.hasClass( 'switch-tmce' ) && editor !== null ) {
+				if ( $target.hasClass( 'wp-switch-editor' ) && editor !== null ) {
 					var content = $textarea.val();
 					if ( content.search( '<' ) !== -1 && content.search( '>' ) === -1) {
 						content = content.replace( /</g, '' );
@@ -64,9 +64,8 @@
 					}
 					editor.setContent(window.switchEditors.wpautop(content));
 				}
-				
-				$field.find( '.siteorigin-widget-tinymce-selected-editor' ).val( mode );
 			}
+			$field.find( '.siteorigin-widget-tinymce-selected-editor' ).val( mode );
 		} );
 		
 		$field.data( 'initialized', true );
