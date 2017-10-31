@@ -634,7 +634,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		return sprintf(
 			__( 'Get more form fields for the Contact Form Widget in %s', 'so-widgets-bundle' ),
-			'<a href="' . esc_url( $url ) . '" target="_blank" rel="noopener">' . __( 'SiteOrigin Premium', 'so-widgets-bundle' ) . '</a>'
+			'<a href="' . esc_url( $url ) . '" target="_blank" rel="noopener noreferrer">' . __( 'SiteOrigin Premium', 'so-widgets-bundle' ) . '</a>'
 		);
 	}
 
