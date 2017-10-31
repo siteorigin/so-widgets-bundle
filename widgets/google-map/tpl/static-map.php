@@ -8,7 +8,7 @@
 ?>
 
 <?php if( !empty( $destination_url ) ): ?>
-<a href="<?php echo sow_esc_url( $destination_url ) ?>" <?php echo $new_window ? 'target="_blank"' : '' ?>>
+<a href="<?php echo sow_esc_url( $destination_url ) ?>" <?php echo $new_window ? 'target="_blank" rel="noopener noreferrer"' : '' ?>>
 <?php endif; ?>
 
 <img
