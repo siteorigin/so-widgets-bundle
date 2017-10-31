@@ -12,7 +12,7 @@
 		);
 		if( !empty( $instance['design']['new_window'] ) ) {
 			$button_attributes['target'] = '_blank';
-			$button_attributes['rel'] = 'noopener';
+			$button_attributes['rel'] = 'noopener noreferrer';
 		}
 		if ( ! empty( $network['url'] ) ) $button_attributes['href'] = sow_esc_url( trim( $network['url'] ) );
 		?>

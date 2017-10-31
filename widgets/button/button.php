@@ -242,7 +242,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 		if ( ! empty( $instance['new_window'] ) ) {
 			$button_attributes['target'] = '_blank';
-			$button_attributes['rel'] = 'noopener';
+			$button_attributes['rel'] = 'noopener noreferrer';
 		}
 
 		if ( ! empty( $attributes['id'] ) ) {
