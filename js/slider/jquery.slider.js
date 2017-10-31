@@ -84,10 +84,11 @@ jQuery( function($){
 
 					if( urlData !== undefined && urlData.hasOwnProperty( 'url' ) ) {
 						event.preventDefault();
-						window.open(
+						var sliderWindow = window.open(
 							urlData.url,
 							urlData.hasOwnProperty( 'new_window' ) && urlData.new_window ? '_blank' : '_self'
 						);
+						sliderWindow.opener = null;
 					}
 				} );
 
