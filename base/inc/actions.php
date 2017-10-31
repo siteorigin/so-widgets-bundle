@@ -3,15 +3,22 @@
 /**
  * Action for displaying the widget preview.
  */
-function siteorigin_widget_preview_widget_action(){
-	if( empty( $_POST['class'] ) ) exit();
-	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
+function siteorigin_widget_preview_widget_action() {
+	if ( empty( $_REQUEST['_widgets_nonce'] ) ||
+		! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
+		
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
+	} else if ( empty( $_POST['class'] ) ) {
+		wp_die( __( 'Invalid post.', 'so-widgets-bundle' ), 400 );
+	}
 
 	// Get the widget from the widget factory
 	global $wp_widget_factory;
 	$widget = ! empty( $wp_widget_factory->widgets[ $_POST['class'] ] ) ? $wp_widget_factory->widgets[ $_POST['class'] ] : false;
 
-	if( !is_a($widget, 'SiteOrigin_Widget') ) exit();
+	if( ! is_a( $widget, 'SiteOrigin_Widget' ) ) {
+		wp_die( __( 'Invalid post.', 'so-widgets-bundle' ), 400 );
+	}
 
 	$instance = json_decode( stripslashes_deep($_POST['data']), true);
 	/* @var $widget SiteOrigin_Widget */
@@ -20,7 +27,10 @@ function siteorigin_widget_preview_widget_action(){
 
 	// The theme stylesheet will change how the button looks
 	wp_enqueue_style( 'theme-css', get_stylesheet_uri(), array(), rand( 0, 65536 ) );
-	wp_enqueue_style( 'so-widget-preview', plugin_dir_url( __FILE__ ) . '../css/preview.css', array(), rand( 0,65536 ) );
+	wp_enqueue_style( 'so-widget-preview', siteorigin_widgets_url( 'base/css/preview.css' ), array(), rand( 0,65536 ) );
+
+	$sowb = SiteOrigin_Widgets_Bundle::single();
+	$sowb->register_general_scripts();
 
 	ob_start();
 	$widget->widget( array(
@@ -51,23 +61,28 @@ function siteorigin_widget_preview_widget_action(){
 	</html>
 
 	<?php
-	exit();
+	wp_die();
 }
 add_action('wp_ajax_so_widgets_preview', 'siteorigin_widget_preview_widget_action');
 
 /**
- * Action to handle searching
+ * Action to handle searching posts
  */
-function siteorigin_widget_search_posts_action(){
-	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
-
-	header('content-type: application/json');
+function siteorigin_widget_action_search_posts() {
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
+	}
 
 	// Get all public post types, besides attachments
 	$post_types = (array) get_post_types( array(
-		'public'   => true
+		'public' => true,
 	) );
-	unset($post_types['attachment']);
+
+	if ( ! empty( $_REQUEST['postTypes'] ) ) {
+		$post_types = array_intersect( explode( ',', $_REQUEST['postTypes'] ), $post_types );
+	} else {
+		unset( $post_types['attachment'] );
+	}
 
 	$post_types = apply_filters( 'siteorigin_widgets_search_posts_post_types', $post_types );
 
@@ -82,26 +97,77 @@ function siteorigin_widget_search_posts_action(){
 	$post_types = "'" . implode("', '", array_map( 'esc_sql', $post_types ) ) . "'";
 
 	$results = $wpdb->get_results( "
-		SELECT ID, post_title, post_type
+		SELECT ID AS 'value', post_title AS label, post_type AS 'type'
 		FROM {$wpdb->posts}
 		WHERE
 			post_type IN ( {$post_types} ) AND post_status = 'publish' {$query}
 		ORDER BY post_modified DESC
 		LIMIT 20
 	", ARRAY_A );
-
-	echo json_encode( apply_filters( 'siteorigin_widgets_search_posts_results', $results ) );
-	exit();
+	
+	wp_send_json( apply_filters( 'siteorigin_widgets_search_posts_results', $results ) );
 }
-add_action('wp_ajax_so_widgets_search_posts', 'siteorigin_widget_search_posts_action');
+add_action('wp_ajax_so_widgets_search_posts', 'siteorigin_widget_action_search_posts');
+
+/**
+ * Action to handle searching taxonomy terms.
+ */
+function siteorigin_widget_action_search_terms() {
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
+	}
+	
+	global $wpdb;
+	$term = ! empty($_GET['term']) ? stripslashes($_GET['term']) : '';
+	$term = trim($term, '%');
+
+	$query = $wpdb->prepare("
+		SELECT terms.term_id, terms.slug AS 'value', terms.name AS 'label', termtaxonomy.taxonomy AS 'type'
+		FROM $wpdb->terms AS terms
+		JOIN $wpdb->term_taxonomy AS termtaxonomy ON terms.term_id = termtaxonomy.term_id
+		WHERE
+			terms.name LIKE '%s'
+		LIMIT 20
+	", '%' . esc_sql( $term ) . '%');
+
+	$results = array();
+
+	foreach ( $wpdb->get_results( $query ) as $result ) {
+		$results[] = array(
+			'value' => $result->type . ':' . $result->value,
+			'label' => $result->label,
+			'type' => $result->type,
+		);
+	}
+
+	wp_send_json( $results );
+}
+add_action('wp_ajax_so_widgets_search_terms', 'siteorigin_widget_action_search_terms');
+
+/**
+ * Action for getting the number of posts returned by a query.
+ */
+function siteorigin_widget_get_posts_count_action() {
+
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
+	}
+
+	$query = stripslashes( $_POST['query'] );
+	
+	wp_send_json( array( 'posts_count' => siteorigin_widget_post_selector_count_posts( $query ) ) );
+}
+
+add_action( 'wp_ajax_sow_get_posts_count', 'siteorigin_widget_get_posts_count_action' );
+
 
 function siteorigin_widget_remote_image_search(){
 	if( empty( $_GET[ '_sononce' ] ) || ! wp_verify_nonce( $_GET[ '_sononce' ], 'so-image' ) ) {
-		exit();
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
 	}
 
 	if( empty( $_GET['q'] ) ) {
-		exit();
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );
 	}
 
 	// Send the query to stock search server
@@ -123,17 +189,16 @@ function siteorigin_widget_remote_image_search(){
 				}
 			}
 		}
+		wp_send_json( $result );
 	}
 	else {
 		$result = array(
 			'error' => true,
 			'message' => $result->get_error_message()
 		);
+		wp_send_json_error( $result );
 	}
 
-	header( 'content-type:application/json' );
-	echo json_encode( $result );
-	exit();
 }
 add_action('wp_ajax_so_widgets_image_search', 'siteorigin_widget_remote_image_search');
 
@@ -184,9 +249,7 @@ function siteorigin_widget_image_import(){
 	}
 
 	// Return the result
-	header( 'content-type:application/json' );
-	echo json_encode( $result );
-	exit();
+	wp_send_json( $result );
 }
 add_action('wp_ajax_so_widgets_image_import', 'siteorigin_widget_image_import');
 
@@ -194,8 +257,12 @@ add_action('wp_ajax_so_widgets_image_import', 'siteorigin_widget_image_import');
  * Action to handle a user dismissing a teaser notice.
  */
 function siteorigin_widgets_dismiss_widget_action(){
-	if( empty( $_GET[ '_wpnonce' ] ) || ! wp_verify_nonce( $_GET[ '_wpnonce' ], 'dismiss-widget-teaser' ) ) exit();
-	if( empty( $_GET[ 'widget' ] ) ) exit();
+	if( empty( $_GET[ '_wpnonce' ] ) || ! wp_verify_nonce( $_GET[ '_wpnonce' ], 'dismiss-widget-teaser' ) ) {
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
+	}
+	if( empty( $_GET[ 'widget' ] ) ) {
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );
+	}
 
 	$dismissed = get_user_meta( get_current_user_id(), 'teasers_dismissed', true );
 	if( empty( $dismissed ) ) {
@@ -205,7 +272,7 @@ function siteorigin_widgets_dismiss_widget_action(){
 	$dismissed[ $_GET[ 'widget' ] ] = true;
 
 	update_user_meta( get_current_user_id(), 'teasers_dismissed', $dismissed );
-
-	exit();
+	
+	wp_die();
 }
 add_action( 'wp_ajax_so_dismiss_widget_teaser', 'siteorigin_widgets_dismiss_widget_action' );

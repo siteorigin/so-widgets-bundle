@@ -47,6 +47,7 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 				'options' => array(
 					'link'   => __( 'Links', 'so-widgets-bundle' ),
 					'button' => __( 'Buttons', 'so-widgets-bundle' ),
+					'text' => __( 'Text', 'so-widgets-bundle' ),
 				),
 			),
 			'color'          => array(
@@ -56,6 +57,11 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 			'hover_color'    => array(
 				'type'  => 'color',
 				'label' => __( 'Hover color', 'so-widgets-bundle' ),
+			),
+			'new_window' => array(
+				'type' => 'checkbox',
+				'default' => false,
+				'label' => __( 'Open in a new window', 'so-widgets-bundle' ),
 			),
 		);
 	}
@@ -87,6 +93,7 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 			'taxonomy_name' => $instance['taxonomy'],
 			'label' => $instance['label'],
 			'display_format' => $instance['display_format'],
+			'new_window' => $instance['new_window'],
 		);
 	}
 }

@@ -1,53 +1,53 @@
-
+/* globals jQuery, sowb */
 var sowb = window.sowb || {};
 
-sowb.setupImageGrid = function() {
-	var $ = jQuery;
-	
-    $('.sow-image-grid-wrapper').each( function(){
-        var $$ = $(this);
+jQuery( function($) {
+	sowb.setupImageGrids = function() {
+		$('.sow-image-grid-wrapper').each( function(){
+			var $$ = $(this);
+			$$.imagesLoaded( function () {
+				var maxWidth = $$.data( 'max-width' ),
+					maxHeight = $$.data( 'max-height' );
 
-        var maxWidth = $$.data('max-width'),
-            maxHeight =  $$.data('max-height');
+				if ( maxWidth !== undefined || maxHeight !== undefined ) {
+					$$.find( 'img' ).each( function () {
+						var $img = $( this ).css( 'display', 'block' ),
+							ratio = $img.width() / $img.height();
 
-        if( maxWidth !== undefined || maxHeight !== undefined ) {
-            $$.find('img').each( function(){
-                var $img = $(this).css('display', 'block'),
-                    ratio = $img.width() / $img.height();
+						var width = [];
 
-                var width = [];
+						// Lets set the widths of the image
+						if ( maxWidth !== undefined && $img.width() > maxWidth ) {
+							width.push( maxWidth );
+						}
 
-                // Lets set the widths of the image
-                if( maxWidth != undefined && $img.width() > maxWidth ) {
-                    width.push( maxWidth );
-                }
+						if ( maxHeight !== undefined && $img.height() > maxHeight ) {
+							width.push( Math.round( maxHeight * ratio ) );
+						}
 
-                if( maxHeight != undefined && $img.height() > maxHeight  ) {
-                    width.push( Math.round( maxHeight * ratio ) );
-                }
+						if ( width.length ) {
+							width = Math.min.apply( Math, width );
+							$img.css( 'max-width', width );
+						}
 
-                if( width.length ) {
-                    width = Math.min.apply( Math, width );
-                    $img.css('max-width', width);
-                }
+					} );
+				}
+				else {
+					$$.find( 'img' ).css( 'display', 'block' );
+				}
 
-            } );
-        }
-        else {
-            $$.find('img').css('display', 'block');
-        }
+				var alignImages = function () {
+				};
+				alignImages();
 
-        var alignImages = function(){
+				$( window ).resize( alignImages );
+			} );
+		} );
+	};
+	sowb.setupImageGrids();
 
-        };
-        alignImages();
+	$( sowb ).on( 'setup_widgets', sowb.setupImageGrids );
 
-        $(window).resize(alignImages);
-
-    } );
-
-};
-
-jQuery( function($){
-	sowb.setupImageGrid();
 } );
+
+window.sowb = sowb;

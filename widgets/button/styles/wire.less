@@ -1,9 +1,13 @@
 @import "../../../base/less/mixins";
 
+.widget-function('import_google_font');
+
 @button_width: '';
-@has_button_width: false;
 @button_color: #41a9d5;
 @text_color: #FFFFFF;
+
+@button_font: default;
+@button_font_weight: default;
 
 @font_size: 1em;
 @rounding: 0.25em;
@@ -15,10 +19,10 @@
 
 	a {
 		.box-sizing(border-box);
-		.btn_width() when( @has_button_width = true) {
+		& when( isnumber( @button_width ) ) {
 			width: @button_width;
 		}
-		.btn_width();
+		.font(@button_font, @button_font_weight);
 
 		font-size: @font_size;
 		padding: @padding @padding*2;
@@ -33,13 +37,12 @@
 
         .sow-icon-image,
         [class^="sow-icon-"] {
-            .icon-margins() when (@has_text = true) {
-                margin: -0.1em 0.75em -0.2em -0.75em;
-            }
-            .icon-margins() when not (@has_text = true) {
-                margin: 0;
-            }
-            .icon-margins();
+			& when ( @has_text = true ) {
+				margin: -0.1em 0.75em -0.2em -0.75em;
+			}
+			& when not ( @has_text = true ) {
+				margin: 0;
+			}
         }
 
 		&:visited,

@@ -37,6 +37,10 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
+			'title' => array(
+				'type' => 'text',
+				'label' => __( 'Title', 'so-widgets-bundle' ),
+			),
 			'networks' => array(
 				'type'       => 'repeater',
 				'label'      => __( 'Networks', 'so-widgets-bundle' ),
@@ -56,6 +60,10 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 					'url'          => array(
 						'type'  => 'text',
 						'label' => __( 'URL', 'so-widgets-bundle' )
+					),
+					'icon_title' => array(
+						'type' => 'text',
+						'label' => __( 'Icon title', 'so-widgets-bundle' ),
 					),
 					'icon_color'   => array(
 						'type'  => 'color',
@@ -173,7 +181,12 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 	}
 
 	function enqueue_admin_scripts() {
-		wp_enqueue_script( 'sow-social-media-buttons', plugin_dir_url(__FILE__) . 'js/social-media-buttons-admin.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
+		wp_enqueue_script(
+			'sow-social-media-buttons',
+			plugin_dir_url( __FILE__ ) . 'js/social-media-buttons-admin' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			SOW_BUNDLE_VERSION
+		);
 	}
 
 	function get_style_name( $instance ) {
@@ -216,7 +229,13 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		$networks = $this->get_instance_networks( $instance );
 		$calls    = array();
 		foreach ( $networks as $network ) {
-			$calls[] = $args[0] . '(' . $network['name'] . ', ' . $network['icon_color'] . ', ' . $network['button_color'] . ');';
+			if ( ! empty( $network['name'] ) ) {
+				$call = $args[0] . '( @name:' . $network['name'];
+				$call .= ! empty( $network['icon_color'] ) ? ', @icon_color:' . $network['icon_color'] : '';
+				$call .= ! empty( $network['button_color'] ) ? ', @button_color:' . $network['button_color'] : '';
+				$call .= ');';
+				$calls[] = $call;
+			}
 		}
 
 		return implode( "\n", $calls );

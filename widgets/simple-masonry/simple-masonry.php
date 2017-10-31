@@ -27,18 +27,6 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 		$this->register_frontend_scripts(
 			array(
 				array(
-					'dessandro-imagesLoaded',
-					siteorigin_widget_get_plugin_dir_url( 'sow-simple-masonry' ) . 'js/imagesloaded.pkgd' . SOW_BUNDLE_JS_SUFFIX . '.js',
-					array( 'jquery' ),
-					SOW_BUNDLE_VERSION
-				),
-				array(
-					'dessandro-packery',
-					siteorigin_widget_get_plugin_dir_url( 'sow-simple-masonry' ) . 'js/packery.pkgd' . SOW_BUNDLE_JS_SUFFIX . '.js',
-					array( 'jquery' ),
-					SOW_BUNDLE_VERSION
-				),
-				array(
 					'sow-simple-masonry',
 					siteorigin_widget_get_plugin_dir_url( 'sow-simple-masonry' ) . 'js/simple-masonry' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery', 'dessandro-imagesLoaded', 'dessandro-packery' ),
@@ -187,8 +175,19 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_template_variables( $instance, $args ) {
+		$items = isset( $instance['items'] ) ? $instance['items'] : array();
+		
+		foreach ( $items as &$item ) {
+			$link_atts = empty( $item['link_attributes'] ) ? array() : $item['link_attributes'];
+			if ( ! empty( $item['new_window'] ) ) {
+				$link_atts['target'] = '_blank';
+			}
+			$item['link_attributes'] = $link_atts;
+		}
+		
 		return array(
-			'items' => isset( $instance['items'] ) ? $instance['items'] : array(),
+			'args' => $args,
+			'items' => $items,
 			'layouts' => array(
 				'desktop' => siteorigin_widgets_underscores_to_camel_case(
 					array(
@@ -214,6 +213,16 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 					)
 				),
 			)
+		);
+	}
+
+	function get_form_teaser(){
+		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
+
+		return sprintf(
+			__( 'Add a Lightbox to your masonry images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lightbox" target="_blank">',
+			'</a>'
 		);
 	}
 }

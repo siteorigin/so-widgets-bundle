@@ -1,0 +1,39 @@
+@thumbnail_width: default;
+@thumbnail_height: default;
+
+@thumbnail_hover_width: default;
+@thumbnail_hover_height: default;
+
+.sow-carousel-wrapper {
+
+  ul.sow-carousel-items {
+
+    li.sow-carousel-item {
+      width: @thumbnail_width;
+
+      .sow-carousel-thumbnail a {
+        background-repeat: no-repeat;
+        background-size: @thumbnail_width @thumbnail_height;
+
+        &, span.overlay {
+          width: @thumbnail_width;
+          height: @thumbnail_height;
+        }
+
+        &:hover {
+          background-size: @thumbnail_hover_width @thumbnail_hover_height;
+        }
+      }
+
+      .sow-carousel-default-thumbnail {
+        width: @thumbnail_width;
+        height: @thumbnail_height;
+      }
+    }
+
+    li.sow-carousel-loading {
+      width: @thumbnail_width;
+      height: @thumbnail_height;
+    }
+  }
+}

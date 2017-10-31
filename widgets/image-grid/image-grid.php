@@ -29,15 +29,17 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 		$this->register_frontend_styles( array(
 			array(
 				'sow-image-grid',
-				plugin_dir_url(__FILE__) . 'css/image-grid.css',
+				plugin_dir_url( __FILE__ ) . 'css/image-grid.css',
 			)
 		) );
 
 		$this->register_frontend_scripts( array(
 			array(
 				'sow-image-grid',
-				plugin_dir_url(__FILE__) . 'js/image-grid' . SOW_BUNDLE_JS_SUFFIX . '.js',
-				array( 'jquery' )
+				plugin_dir_url( __FILE__ ) . 'js/image-grid' . SOW_BUNDLE_JS_SUFFIX . '.js',
+				array( 'jquery', 'dessandro-imagesLoaded' ),
+				SOW_BUNDLE_VERSION,
+				true,
 			)
 		) );
 	}
@@ -67,6 +69,11 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 					'url' => array(
 						'type' => 'link',
 						'label' => __('URL', 'so-widgets-bundle')
+					),
+					'new_window' => array(
+						'type' => 'checkbox',
+						'default' => false,
+						'label' => __( 'Open in new window', 'so-widgets-bundle' ),
 					),
 				)
 			),
@@ -101,7 +108,26 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 			)
 		);
 	}
-
+	
+	function get_template_variables( $instance, $args ) {
+		$images = isset( $instance['images'] ) ? $instance['images'] : array();
+		
+		foreach ( $images as &$image ) {
+			$link_atts = empty( $image['link_attributes'] ) ? array() : $image['link_attributes'];
+			if ( ! empty( $image['new_window'] ) ) {
+				$link_atts['target'] = '_blank';
+			}
+			$image['link_attributes'] = $link_atts;
+		}
+		
+		return array(
+			'images' => $images,
+			'max_height' => $instance['display']['max_height'],
+			'max_width' => $instance['display']['max_width'],
+			'attachment_size' => $instance['display']['attachment_size'],
+		);
+	}
+	
 	/**
 	 * Get the less variables for the image grid
 	 *
@@ -116,6 +142,16 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 		}
 
 		return $less;
+	}
+
+	function get_form_teaser(){
+		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
+
+		return sprintf(
+			__( 'Add a Lightbox to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lightbox" target="_blank">',
+			'</a>'
+		);
 	}
 }
 

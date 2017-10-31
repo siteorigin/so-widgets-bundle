@@ -40,7 +40,7 @@ class SiteOrigin_Widgets_Widget_Manager {
 	 * @return mixed
 	 */
 	public function register( $id, $path, $class = false ){
-		$path = realpath( $path );
+		$path = wp_normalize_path( $path );
 		if ( empty( $class ) ) {
 			$class = 'SiteOrigin_Widget_' . str_replace( ' ', '', ucwords( str_replace('-', ' ', $id) ) ) . '_Widget';
 		}

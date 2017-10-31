@@ -2,7 +2,7 @@
 $result = $this->contact_form_action( $instance, $instance_hash );
 
 // Display the title
-if( $instance['display_title'] ) {
+if( $instance['display_title'] && !empty( $instance['title'] ) ) {
 	echo $args['before_title'] . $instance['title'] . $args['after_title'];
 }
 $short_hash = substr( $instance_hash, 0, 4 );
@@ -39,7 +39,8 @@ else {
 		<?php endif ?>
 
 		<?php $this->render_form_fields( $instance['fields'], $result['errors'], $instance ) ?>
-		<input type="hidden" name="instance_hash" value="<?php echo esc_attr($instance_hash) ?>" />
+		<input type="hidden" name="instance_hash" value="<?php echo esc_attr( $instance_hash ) ?>" />
+		<?php echo wp_nonce_field( '_contact_form_submit' ) ?>
 
 		<?php if( $use_recaptcha ) : ?>
 			<div class="sow-recaptcha"

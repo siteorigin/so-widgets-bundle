@@ -7,27 +7,33 @@
 	.social-media-button-base();
 }
 
-.create_social_media_button_style(@name, @icon_color, @background_color) {
-
-    @border_color: darken(@background_color, 15%);
+.create_social_media_button_style(@name, @icon_color:'', @button_color:'') {
 
     .sow-social-media-button-@{name} {
-        color: @background_color !important;
-
         background: transparent;
-        border: 2px solid @background_color;
-
         text-shadow: 0 1px 0 rgba(0,0,0,0.05);
 
-        &:visited,
-        &:active,
-        &:hover{
-            color: @background_color !important;
-        }
+		& when( iscolor( @button_color ) ) {
+			@border_color: darken(@button_color, 15%);
 
-        &.ow-button-hover:hover {
-            background: @background_color;
-            color: @icon_color !important;
+			color: @button_color !important;
+        	border: 2px solid @button_color;
+
+			&:visited,
+			&:active,
+			&:hover{
+				color: @button_color !important;
+			}
+
+			&.ow-button-hover:hover {
+				background: @button_color;
+			}
+		}
+
+		& when( iscolor( @icon_color ) ) {
+        	&.ow-button-hover:hover {
+				color: @icon_color !important;
+			}
         }
     }
 }

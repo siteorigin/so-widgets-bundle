@@ -127,7 +127,6 @@
             display: block;
             float: left;
             margin-right: 15px;
-            width: 242px;
             overflow-x: hidden;
             overflow-y: hidden;
 
@@ -148,9 +147,6 @@
 
                 a {
                     display: block;
-                    width: 242px;
-                    height: 162px;
-                    background-size: 242px 162px;
                     background-position: center center;
 
                     &, span.overlay {
@@ -163,11 +159,10 @@
                         height: 100%;
                         background: #3279BB;
                         opacity: 0;
+						position: static;
                     }
 
                     &:hover {
-                        background-size: 272px 182px;
-
                         span {
                             opacity: 0.5;
                         }
@@ -177,8 +172,6 @@
 
             .sow-carousel-default-thumbnail {
                 display: block;
-                width: 242px;
-                height: 162px;
                 .gradient(#E8E8E8, #E0E0E0, #E8E8E8)
             }
 
@@ -198,8 +191,6 @@
 
         li.sow-carousel-loading {
             display: block;
-            width: 242px;
-            height: 162px;
             float: left;
             background: url(images/carousel-loader.gif) #F6F6F6 center center no-repeat;
             margin: 0;

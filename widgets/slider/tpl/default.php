@@ -1,3 +1,7 @@
 <?php
+/**
+ * @var $controls array
+ * @var $frames array
+ */
 
-$this->render_template($instance['controls'], $instance['frames']);
+$this->render_template( $controls, $frames );

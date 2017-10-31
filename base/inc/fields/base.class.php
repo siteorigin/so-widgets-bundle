@@ -125,6 +125,14 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * @var boolean
 	 */
 	protected $is_container;
+	/**
+	 * Additional CSS classes to output in this field's HTML class attribute. It is left up to the field's render_field
+	 * function to output these classes.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $input_css_classes;
 
 
 	/* ============================================================================================================== */
@@ -352,9 +360,9 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 *
 	 * @param $value mixed The value to be sanitized.
 	 * @param $instance array The widget instance.
-	 * @param $old_value The old value of this field.
+	 * @param $old_value mixed The old value of this field.
 	 *
-	 * @return mixed|string|void
+	 * @return mixed|string
 	 */
 	public function sanitize( $value, $instance = array(), $old_value = null ) {
 

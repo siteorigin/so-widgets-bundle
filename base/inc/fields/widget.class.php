@@ -27,7 +27,8 @@ class SiteOrigin_Widget_Field_Widget extends SiteOrigin_Widget_Field_Container_B
 	}
 
 	protected function render_field( $value, $instance ) {
-		// Create the extra form entries
+		
+		echo '<div class="siteorigin-widget-widget">';
 		if ( $this->collapsible ) {
 			?><div class="siteorigin-widget-section <?php if( $this->state == 'closed' ) echo 'siteorigin-widget-section-hide'; ?>"><?php
 		}
@@ -53,6 +54,7 @@ class SiteOrigin_Widget_Field_Widget extends SiteOrigin_Widget_Field_Container_B
 		if ( $this->collapsible ) {
 			?></div><?php
 		}
+		echo '</div>';
 	}
 
 }

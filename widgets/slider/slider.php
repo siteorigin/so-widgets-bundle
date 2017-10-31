@@ -141,22 +141,39 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			?>
 			<div class="sow-slider-image-container">
 				<div class="sow-slider-image-wrapper" style="<?php if(!empty($foreground_src[1])) echo 'max-width: ' . intval($foreground_src[1]) . 'px' ?>">
+					<?php if ( ! empty( $frame['url'] ) ) : ?>
+						<a href="<?php echo sow_esc_url( $frame['url'] ) ?>"
+						<?php foreach( $frame['link_attributes'] as $att => $val ) : ?>
+							<?php if ( ! empty( $val ) ) : ?>
+								<?php echo $att . '="' . esc_attr( $val ) . '" '; ?>
+							<?php endif; ?>
+						<?php endforeach; ?>>
+					<?php endif; ?>
 					<?php
-					if(!empty($frame['url'])) echo '<a href="' . sow_esc_url($frame['url']) . '" ' . ( !empty($frame['new_window']) ? 'target="_blank"' : '' ) . '>';
 					echo siteorigin_widgets_get_attachment_image(
 						$frame['foreground_image'],
 						'full',
 						!empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : ''
 					);
-					if(!empty($frame['url'])) echo '</a>';
 					?>
+					<?php if ( ! empty( $frame['url'] ) ) : ?>
+						</a>
+					<?php endif; ?>
 				</div>
 			</div>
 			<?php
 		}
 		else if( empty($frame['background_videos']) ) {
-			// We need to find another background
-			if(!empty($frame['url'])) echo '<a href="' . sow_esc_url($frame['url']) . '" ' . ( !empty($frame['new_window']) ? 'target="_blank"' : '' ) . '>';
+			?>
+			<?php if ( ! empty( $frame['url'] ) ) : ?>
+				<a href="<?php echo sow_esc_url( $frame['url'] ) ?>"
+				<?php foreach( $frame['link_attributes'] as $att => $val ) : ?>
+					<?php if ( ! empty( $val ) ) : ?>
+						<?php echo $att . '="' . esc_attr( $val ) . '" '; ?>
+					<?php endif; ?>
+				<?php endforeach; ?>>
+			<?php endif; ?>
+			<?php
 
 			// Lets use the background image
 			echo siteorigin_widgets_get_attachment_image(
@@ -165,11 +182,32 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				!empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : ''
 			);
 
-			if( !empty($frame['url']) ) echo '</a>';
+			?>
+			<?php if ( ! empty( $frame['url'] ) ) : ?>
+				</a>
+			<?php endif; ?>
+			<?php
 		}
 
 	}
-
+	
+	function get_template_variables( $instance, $args ) {
+		$frames = empty( $instance['frames'] ) ? array() : $instance['frames'];
+		if ( ! empty( $frames ) ) {
+			foreach ( $frames as &$frame ) {
+				$link_atts = array();
+				if ( ! empty( $frame['new_window'] ) ) {
+					$link_atts['target'] = '_blank';
+				}
+				$frame['link_attributes'] = $link_atts;
+			}
+		}
+		return array(
+			'controls' => $instance['controls'],
+			'frames' => $frames,
+		);
+	}
+	
 	/**
 	 * The less variables to control the design of the slider
 	 *
@@ -191,24 +229,44 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 	 *
 	 * @param $instance
 	 *
-	 * @return mixed|void
+	 * @return mixed
 	 */
 	function modify_instance( $instance ){
 		if( empty($instance['controls']) ) {
-			if( !empty($instance['speed']) ) $instance['controls']['speed'] = $instance['speed'];
-			if( !empty($instance['timeout']) ) $instance['controls']['timeout'] = $instance['timeout'];
-			if( !empty($instance['nav_color_hex']) ) $instance['controls']['nav_color_hex'] = $instance['nav_color_hex'];
-			if( !empty($instance['nav_style']) ) $instance['controls']['nav_style'] = $instance['nav_style'];
-			if( !empty($instance['nav_size']) ) $instance['controls']['nav_size'] = $instance['nav_size'];
+			if ( ! empty( $instance['speed'] ) ) {
+				$instance['controls']['speed'] = $instance['speed'];
+				unset($instance['speed']);
+			}
+			if ( ! empty( $instance['timeout'] ) ) {
+				$instance['controls']['timeout'] = $instance['timeout'];
+				unset($instance['timeout']);
+			}
+			if ( ! empty( $instance['nav_color_hex'] ) ) {
+				$instance['controls']['nav_color_hex'] = $instance['nav_color_hex'];
+				unset($instance['nav_color_hex']);
+			}
+			if ( ! empty( $instance['nav_style'] ) ) {
+				$instance['controls']['nav_style'] = $instance['nav_style'];
+				unset($instance['nav_style']);
+			}
+			if ( ! empty( $instance['nav_size'] ) ) {
+				$instance['controls']['nav_size'] = $instance['nav_size'];
+				unset($instance['nav_size']);
+			}
 
-			unset($instance['speed']);
-			unset($instance['timeout']);
-			unset($instance['nav_color_hex']);
-			unset($instance['nav_style']);
-			unset($instance['nav_size']);
 		}
 
 		return $instance;
+	}
+
+	function get_form_teaser(){
+		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
+
+		return sprintf(
+			__( 'Add a Lightbox to your image slides with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lightbox" target="_blank">',
+			'</a>'
+		);
 	}
 }
 

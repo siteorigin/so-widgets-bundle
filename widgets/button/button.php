@@ -130,6 +130,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'label' => __('Use hover effects', 'so-widgets-bundle'),
 					),
 
+					'font' => array(
+						'type' => 'font',
+						'label' => __( 'Font', 'so-widgets-bundle' ),
+						'default' => 'default'
+					),
+
 					'font_size' => array(
 						'type' => 'select',
 						'label' => __('Font size', 'so-widgets-bundle'),
@@ -196,6 +202,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'label' => __('Onclick', 'so-widgets-bundle'),
 						'description' => __('Run this Javascript when the button is clicked. Ideal for tracking.', 'so-widgets-bundle'),
 					),
+
+					'rel' => array(
+						'type' => 'text',
+						'label' => __('Rel attribute', 'so-widgets-bundle'),
+						'description' => __('Adds a rel attribute to the button link.', 'so-widgets-bundle'),
+					),
 				)
 			),
 		);
@@ -215,13 +227,52 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	 * @return array
 	 */
 	function get_template_variables( $instance, $args ) {
-		$vars = array();
+		$button_attributes = array();
 
-		if( ! empty( $instance[ 'attributes' ][ 'classes' ] ) ) {
-			$vars[ 'classes' ] = explode( ' ', $instance[ 'attributes' ][ 'classes' ] );
+		$attributes = $instance['attributes'];
+
+		$classes = ! empty( $attributes['classes'] ) ? $attributes['classes'] : '';
+		if( !empty($instance['design']['hover']) ) {
+			$classes .= ' ow-button-hover';
 		}
 
-		return $vars;
+		if( ! empty( $classes ) ) {
+			$button_attributes['class'] = $classes;
+		}
+
+		if ( ! empty( $instance['new_window'] ) ) {
+			$button_attributes['target'] = '_blank';
+		}
+
+		if ( ! empty( $attributes['id'] ) ) {
+			$button_attributes['id'] = $attributes['id'];
+		}
+		if ( ! empty( $attributes['title'] ) ) {
+			$button_attributes['title'] = $attributes['title'];
+		}
+		if ( ! empty( $attributes['rel'] ) ) {
+			$button_attributes['rel'] = $attributes['rel'];
+		}
+
+		$icon_image_url = '';
+		if( ! empty( $instance['button_icon']['icon'] ) ) {
+			$attachment = wp_get_attachment_image_src( $instance['button_icon']['icon'] );
+
+			if ( ! empty( $attachment ) ) {
+				$icon_image_url = $attachment[0];
+			}
+		}
+
+		return array(
+			'button_attributes' => $button_attributes,
+			'href' => !empty( $instance['url'] ) ? $instance['url'] : '#',
+			'onclick' => ! empty( $attributes['onclick'] ) ? $attributes['onclick'] : '',
+			'align' => $instance['design']['align'],
+			'icon_image_url' => $icon_image_url,
+			'icon' => $instance['button_icon']['icon_selected'],
+			'icon_color' => $instance['button_icon']['icon_color'],
+			'text' => $instance['text'],
+		);
 	}
 
 	/**
@@ -233,19 +284,33 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	 */
 	function get_less_variables($instance){
 		if( empty( $instance ) || empty( $instance['design'] ) ) return array();
-		return array(
-			'button_width' => isset( $instance['design']['width'] ) ? $instance['design']['width'] : '',
-			'has_button_width' => empty( $instance['design']['width'] ) ? 'false' : 'true',
-			'button_color' => $instance['design']['button_color'],
-			'text_color' => $instance['design']['text_color'],
 
-			'font_size' => $instance['design']['font_size'] . 'em',
-			'rounding' => $instance['design']['rounding'] . 'em',
-			'padding' => $instance['design']['padding'] . 'em',
+		$less_vars = array(
+			'button_width' => isset( $instance['design']['width'] ) ? $instance['design']['width'] : '',
+			'button_color' => isset($instance['design']['button_color']) ? $instance['design']['button_color'] : '',
+			'text_color' =>   isset($instance['design']['text_color']) ? $instance['design']['text_color'] : '',
+
+			'font_size' => isset($instance['design']['font_size']) ? $instance['design']['font_size'] . 'em' : '',
+			'rounding' => isset($instance['design']['rounding']) ? $instance['design']['rounding'] . 'em' : '',
+			'padding' => isset($instance['design']['padding']) ? $instance['design']['padding'] . 'em' : '',
 			'has_text' => empty( $instance['text'] ) ? 'false' : 'true',
 		);
+
+		if ( ! empty( $instance['design']['font'] ) ) {
+			$font = siteorigin_widget_get_font( $instance['design']['font'] );
+			$less_vars['button_font'] = $font['family'];
+			if ( ! empty( $font['weight'] ) ) {
+				$less_vars['button_font_weight'] = $font['weight'];
+			}
+		}
+		return $less_vars;
 	}
 
+	function get_google_font_fields( $instance ) {
+		return array(
+			$instance['design']['font'],
+		);
+	}
 	/**
 	 * Make sure the instance is the most up to date version.
 	 *
@@ -253,46 +318,38 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	 *
 	 * @return mixed
 	 */
-	function modify_instance($instance){
-
-		if( empty($instance['button_icon']) ) {
-			$instance['button_icon'] = array();
-
-			if(isset($instance['icon_selected'])) $instance['button_icon']['icon_selected'] = $instance['icon_selected'];
-			if(isset($instance['icon_color'])) $instance['button_icon']['icon_color'] = $instance['icon_color'];
-			if(isset($instance['icon'])) $instance['button_icon']['icon'] = $instance['icon'];
-
-			unset($instance['icon_selected']);
-			unset($instance['icon_color']);
-			unset($instance['icon']);
-		}
-
-		if( empty($instance['design']) ) {
-			$instance['design'] = array();
-
-			if(isset($instance['align'])) $instance['design']['align'] = $instance['align'];
-			if(isset($instance['theme'])) $instance['design']['theme'] = $instance['theme'];
-			if(isset($instance['button_color'])) $instance['design']['button_color'] = $instance['button_color'];
-			if(isset($instance['text_color'])) $instance['design']['text_color'] = $instance['text_color'];
-			if(isset($instance['hover'])) $instance['design']['hover'] = $instance['hover'];
-			if(isset($instance['font_size'])) $instance['design']['font_size'] = $instance['font_size'];
-			if(isset($instance['rounding'])) $instance['design']['rounding'] = $instance['rounding'];
-			if(isset($instance['padding'])) $instance['design']['padding'] = $instance['padding'];
-
-			unset($instance['align']);
-			unset($instance['theme']);
-			unset($instance['button_color']);
-			unset($instance['text_color']);
-			unset($instance['hover']);
-			unset($instance['font_size']);
-			unset($instance['rounding']);
-			unset($instance['padding']);
-		}
-
-		if( empty($instance['attributes']) ) {
-			$instance['attributes'] = array();
-			if(isset($instance['id'])) $instance['attributes']['id'] = $instance['id'];
-			unset($instance['id']);
+	function modify_instance( $instance ) {
+		$migrate_props = array(
+			'button_icon' => array(
+				'icon_selected',
+				'icon_color',
+				'icon',
+			),
+			'design' => array(
+				'align',
+				'theme',
+				'button_color',
+				'text_color',
+				'hover',
+				'font_size',
+				'rounding',
+				'padding',
+			),
+			'attributes' => array(
+				'id'
+			),
+		);
+		
+		foreach ( $migrate_props as $prop => $sub_props ) {
+			if ( empty( $instance[ $prop ] ) ) {
+				$instance[ $prop ] = array();
+				foreach ( $sub_props as $sub_prop ) {
+					if ( isset( $instance[ $sub_prop ] ) ) {
+						$instance[ $prop ][ $sub_prop ] = $instance[ $sub_prop ];
+						unset( $instance[ $sub_prop ] );
+					}
+				}
+			}
 		}
 
 		return $instance;

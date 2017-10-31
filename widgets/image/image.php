@@ -102,15 +102,70 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_template_variables( $instance, $args ) {
+		// Workout the image title
+		if ( ! empty( $instance['title'] ) ) {
+			$title = $instance['title'];
+		} else {
+			// We do not want to use the default image titles as they're based on the file name without the extension
+			$file_name = pathinfo( get_post_meta( $instance['image'], '_wp_attached_file', true ), PATHINFO_FILENAME );
+			$title = get_the_title( $instance['image'] );
+			if ( $title == $file_name ) {
+				$title = '';
+			}
+		}
+		$src = siteorigin_widgets_get_attachment_image_src(
+			$instance['image'],
+			$instance['size'],
+			! empty( $instance['image_fallback'] ) ? $instance['image_fallback'] : false
+		);
+
+		$attr = array();
+		if( !empty($src) ) {
+			$attr = array( 'src' => $src[0] );
+
+			if ( ! empty( $src[1] ) ) {
+				$attr['width'] = $src[1];
+			}
+
+			if ( ! empty( $src[2] ) ) {
+				$attr['height'] = $src[2];
+			}
+
+			if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
+				$attr['srcset'] = wp_get_attachment_image_srcset( $instance['image'], $instance['size'] );
+			}
+			// Don't add sizes attribute when Jetpack Photon is enabled, as it tends to have unexpected side effects.
+			// This was to hotfix an issue. Can remove it when we find a way to make sure output of
+			// `wp_get_attachment_image_sizes` is predictable with Photon enabled.
+			if ( ! ( class_exists( 'Jetpack_Photon' ) && Jetpack::is_module_active( 'photon' ) ) ) {
+				if ( function_exists( 'wp_get_attachment_image_sizes' ) ) {
+					$attr['sizes'] = wp_get_attachment_image_sizes( $instance['image'], $instance['size'] );
+				}
+			}
+		}
+		$attr = apply_filters( 'siteorigin_widgets_image_attr', $attr, $instance, $this );
+
+		$attr['title'] = $title;
+
+		if ( ! empty( $instance['alt'] ) ) {
+			$attr['alt'] = $instance['alt'];
+		} else {
+			$attr['alt'] = get_post_meta( $instance['image'], '_wp_attachment_image_alt', true );
+		}
+		
+		$link_atts = array();
+		if ( ! empty( $instance['new_window'] ) ) {
+			$link_atts['target'] = '_blank';
+		}
+
 		return array(
-			'title' => !empty( $instance['title'] ) ? $instance['title'] : get_the_title( $instance['image'] ),
+			'title' => $title,
 			'title_position' => $instance['title_position'],
-			'image' => $instance['image'],
-			'size' => $instance['size'],
-			'image_fallback' => ! empty( $instance['image_fallback'] ) ? $instance['image_fallback'] : false,
-			'alt' => !empty( $instance['alt'] ) ? $instance['alt'] : get_post_meta( $instance['image'], '_wp_attachment_image_alt', true ),
 			'url' => $instance['url'],
 			'new_window' => $instance['new_window'],
+			'link_attributes' => $link_atts,
+			'attributes' => $attr,
+			'classes' => array( 'so-widget-image' ),
 		);
 	}
 
@@ -121,7 +176,17 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			'image_display' => $instance['align'] == 'default' ? 'block' : 'inline-block',
 			'image_max_width' => ! empty( $instance['bound'] ) ? '100%' : '',
 			'image_height' => ! empty( $instance['bound'] ) ? 'auto' : '',
-			'image_width' => ! empty( $instance['full_width'] ) ? '100%' : '',
+			'image_width' => ! empty( $instance['full_width'] ) ? '100%' : ( ! empty( $instance['bound'] ) ? 'inherit' : '' ),
+		);
+	}
+
+	function get_form_teaser(){
+		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
+
+		return sprintf(
+			__( 'Add a Lightbox to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lightbox" target="_blank">',
+			'</a>'
 		);
 	}
 }
