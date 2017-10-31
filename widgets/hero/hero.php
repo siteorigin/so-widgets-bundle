@@ -91,6 +91,11 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'fallback' => true,
 							),
 
+							'size' => array(
+								'type' => 'image-size',
+								'label' => __('Image size', 'so-widgets-bundle'),
+							),
+
 							'image_type' => array(
 								'type' => 'select',
 								'label' => __('Background image type', 'so-widgets-bundle'),
@@ -261,7 +266,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	function get_frame_background( $i, $frame ){
 		$background_image = siteorigin_widgets_get_attachment_image_src(
 			$frame['background']['image'],
-			'full',
+			!empty( $frame['background']['size'] ) ? $frame['background']['size'] : 'full',
 			!empty( $frame['background']['image_fallback'] ) ? $frame['background']['image_fallback'] : ''
 		);
 

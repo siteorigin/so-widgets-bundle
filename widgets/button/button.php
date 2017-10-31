@@ -251,9 +251,6 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		if ( ! empty( $attributes['title'] ) ) {
 			$button_attributes['title'] = $attributes['title'];
 		}
-		if ( ! empty( $attributes['onclick'] ) ) {
-			$button_attributes['onclick'] = $attributes['onclick'];
-		}
 		if ( ! empty( $attributes['rel'] ) ) {
 			if ( isset ( $button_attributes['rel'] ) ) {
 				$button_attributes['rel'] .= " $attributes[rel]";
@@ -274,6 +271,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		return array(
 			'button_attributes' => $button_attributes,
 			'href' => !empty( $instance['url'] ) ? $instance['url'] : '#',
+			'onclick' => ! empty( $attributes['onclick'] ) ? $attributes['onclick'] : '',
 			'align' => $instance['design']['align'],
 			'icon_image_url' => $icon_image_url,
 			'icon' => $instance['button_icon']['icon_selected'],
