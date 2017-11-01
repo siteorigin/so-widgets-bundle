@@ -79,6 +79,8 @@ jQuery( function ( $ ) {
 			$( window ).on( 'hashchange', updatePanelStates );
 			if ( window.location.hash ) {
 				updatePanelStates();
+			} else {
+				updateHash();
 			}
 		}
 	} );
