@@ -58,7 +58,7 @@
 								By
 								<strong>
 								<?php
-									if( !empty($widget['AuthorURI']) ) echo '<a href="' . esc_url( $widget['AuthorURI'] ) . '" target="_blank">';
+									if( !empty($widget['AuthorURI']) ) echo '<a href="' . esc_url( $widget['AuthorURI'] ) . '" target="_blank" rel="noopener noreferrer">';
 									echo esc_html( $widget['Author'] );
 									if( !empty($widget['AuthorURI']) ) echo '</a>';
 								?>
@@ -102,7 +102,7 @@
 
 	<div class="developers-link">
 		<?php _e('Developers - create your own widgets for the Widgets Bundle.', 'so-widgets-bundle') ?>
-		<a href="https://siteorigin.com/docs/widgets-bundle/" target="_blank"><?php _e('Read More', 'so-widgets-bundle') ?></a>.
+		<a href="https://siteorigin.com/docs/widgets-bundle/" target="_blank" rel="noopener noreferrer"><?php _e('Read More', 'so-widgets-bundle') ?></a>.
 	</div>
 
 	<div id="sow-settings-dialog">

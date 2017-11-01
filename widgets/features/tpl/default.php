@@ -13,7 +13,7 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 
 			<div class="sow-features-feature sow-icon-container-position-<?php echo esc_attr( $feature['container_position'] ) ?> <?php if(  floor( $i / $instance['per_row'] ) == $last_row ) echo 'sow-features-feature-last-row' ?>" style="width: <?php echo round( 100 / $instance['per_row'], 3 ) ?>%">
 
-				<?php if( !empty( $feature['more_url'] ) && $instance['icon_link'] ) echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank"' : '' ) . '>'; ?>
+				<?php if( !empty( $feature['more_url'] ) && $instance['icon_link'] ) echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : '' ) . '>'; ?>
 				<div
 					class="sow-icon-container <?php echo !empty($instance['container_shape']) ? 'sow-container-' . esc_attr($instance['container_shape']) : 'sow-container-none'?>"
                     style="color: <?php echo esc_attr($feature['container_color']) ?>; "
@@ -43,7 +43,7 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 				<div class="textwidget">
 					<?php if(!empty($feature['title'])) : ?>
 						<h5>
-							<?php if( !empty( $feature['more_url'] ) && $instance['title_link'] ) echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank"' : '' ) . '>'; ?>
+							<?php if( !empty( $feature['more_url'] ) && $instance['title_link'] ) echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : '' ) . '>'; ?>
 							<?php echo wp_kses_post( $feature['title'] ) ?>
 							<?php if( !empty( $feature['more_url'] ) && $instance['title_link'] ) echo '</a>'; ?>
 						</h5>
@@ -55,7 +55,7 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 
 					<?php if(!empty($feature['more_text'])) : ?>
 						<p class="sow-more-text">
-							<?php if( !empty( $feature['more_url'] ) ) echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank"' : '' ) . '>'; ?>
+							<?php if( !empty( $feature['more_url'] ) ) echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : '' ) . '>'; ?>
 							<?php echo wp_kses_post( $feature['more_text'] ) ?>
 							<?php if( !empty( $feature['more_url'] ) ) echo '</a>'; ?>
 						</p>

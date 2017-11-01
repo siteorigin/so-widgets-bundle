@@ -44,6 +44,11 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			'panels' => array(
 				'type' => 'repeater',
 				'label' => __( 'Panels', 'so-widgets-bundle' ),
+				'item_label' => array(
+					'selector' => "[id*='panels-title']",
+					'update_event' => 'change',
+					'value_method' => 'val'
+				),
 				'fields' => array(
 					'title' => array(
 						'type' => 'text',
@@ -202,7 +207,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
 		return sprintf(
 			__( 'Get more customization options and the ability to use widgets and layouts as your accordion content with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/accordion" target="_blank">',
+			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/accordion" target="_blank" rel="noopener noreferrer">',
 			'</a>'
 		);
 	}
