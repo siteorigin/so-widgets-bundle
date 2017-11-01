@@ -248,7 +248,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		);
 		$wrapper_attr_string = '';
 		foreach ( $data as $name => $value ) {
-			$wrapper_attr_string = ' data-' . esc_html( $name ) . '="' . esc_attr( $value ) . '"';
+			$wrapper_attr_string .= ' data-' . esc_html( $name ) . '="' . esc_attr( $value ) . '"';
 		}
 
 		return $wrapper_attr_string;
