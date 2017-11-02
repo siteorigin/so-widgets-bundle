@@ -48,6 +48,11 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 			'tabs' => array(
 				'type' => 'repeater',
 				'label' => __( 'Tabs', 'so-widgets-bundle' ),
+				'item_label' => array(
+					'selector' => "[id*='tabs-title']",
+					'update_event' => 'change',
+					'value_method' => 'val'
+				),
 				'fields' => array(
 					'title' => array(
 						'type' => 'text',
