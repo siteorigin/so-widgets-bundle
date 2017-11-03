@@ -116,15 +116,17 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 							'title_hover_color' => array(
 								'type' => 'color',
 								'label' => __( 'Title hover color', 'so-widgets-bundle' ),
-								'default' => '#000000',
+								'default' => '#2D2D2D',
 							),
 							'border_color' => array(
 								'type' => 'color',
 								'label' => __( 'Border color', 'so-widgets-bundle' ),
+								'default' => '#828282',
 							),
 							'border_hover_color' => array(
 								'type' => 'color',
 								'label' => __( 'Border hover color', 'so-widgets-bundle' ),
+								'default' => '#F9F9F9',
 							),
 							'border_width' => array(
 								'type' => 'measurement',
