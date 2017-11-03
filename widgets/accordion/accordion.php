@@ -173,14 +173,21 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 		
 		$panels = empty( $instance['panels'] ) ? array() : $instance['panels'];
 		
-		foreach ( $panels as &$panel ) {
+		foreach ( $panels as $i => &$panel ) {
 			if ( empty( $panel['before_title'] ) ) {
 				$panel['before_title'] = '';
 			}
 			if ( empty( $panel['after_title'] ) ) {
 				$panel['after_title'] = '';
 			}
+			
+			if ( empty( $panel['title'] ) ) {
+				$panel['anchor'] = $this->id_base . $instance['_sow_form_id'] . '-' . $i;
+			} else {
+				$panel['anchor'] = $panel['title'];
+			}
 		}
+		
 		
 		if ( empty( $instance['design']['heading']['icon_open'] ) ) {
 			$instance['design']['heading']['icon_open'] = 'ionicons-plus';
