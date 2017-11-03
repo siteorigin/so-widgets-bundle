@@ -61,7 +61,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					'to'                               => array(
 						'type'        => 'text',
 						'label'       => __( 'To email address', 'so-widgets-bundle' ),
-						'description' => __( 'Where contact emails will be delivered to.', 'so-widgets-bundle' ),
+						'description' => __( 'Where contact emails will be delivered to. You can send to multiple emails by separating the emails with a comma (,)', 'so-widgets-bundle' ),
 						'sanitize'    => 'multiple_emails',
 					),
 					'from'                               => array(
