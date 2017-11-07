@@ -64,10 +64,11 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 					),
 				),
 			),
-			'initial_tab_index' => array(
+			'initial_tab_position' => array(
 				'type' => 'number',
-				'label' => __( 'Initial tab index', 'so-widgets-bundle' ),
-				'default' => 0,
+				'label' => __( 'Initially selected tab', 'so-widgets-bundle' ),
+				'default' => 1,
+				'description' => __( 'The position of the tab to be selected when the page first loads.', 'so-widgets-bundle' ),
 			),
 			'design' => array(
 				'type' =>  'section',
@@ -212,9 +213,18 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 			}
 		}
 		
+		if ( empty( $instance['initial_tab_position'] ) ||
+			 $instance['initial_tab_position'] < 1 ||
+			 $instance['initial_tab_position'] > count( $tabs ) ) {
+			
+			$init_tab_index = 0;
+		} else {
+			$init_tab_index = $instance['initial_tab_position'] - 1;
+		}
+		
 		return array(
 			'tabs' => $tabs,
-			'initial_tab_index' => empty( $instance['initial_tab_index'] ) ? 0 : $instance['initial_tab_index'],
+			'initial_tab_index' => $init_tab_index,
 		);
 	}
 	

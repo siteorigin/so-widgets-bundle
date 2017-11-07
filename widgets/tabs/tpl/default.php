@@ -6,8 +6,6 @@
  * @var array $initial_tab_index
  */
 
-$last_index = count( $tabs ) - 1;
-
 echo $args['before_title'] . $instance['title'] . $args['after_title'];
 ?>
 <div class="sow-tabs">

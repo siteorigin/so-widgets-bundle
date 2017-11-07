@@ -97,6 +97,14 @@
 		background-color: @panels_background_color;
 		color: @panels_font_color;
 
+		//noinspection CssOptimizeSimilarProperties
+		& when( @has_panels_border_width = true ) {
+			border-style: solid;
+			border-width: @panels_border_width;
+			border-color: @panels_border_color;
+			border-radius: @panels_border_radius;
+		}
+
 		.sow-tabs-panel {
 			position: absolute;
 			padding: @panels_padding;
@@ -108,14 +116,6 @@
 				> p {
 					margin: 0;
 				}
-			}
-
-			//noinspection CssOptimizeSimilarProperties
-			& when( @has_panels_border_width = true ) {
-				border-style: solid;
-				border-width: @panels_border_width;
-				border-color: @panels_border_color;
-				border-radius: @panels_border_radius;
 			}
 		}
 	}
