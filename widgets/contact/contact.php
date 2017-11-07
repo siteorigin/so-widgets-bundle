@@ -61,7 +61,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					'to'                               => array(
 						'type'        => 'text',
 						'label'       => __( 'To email address', 'so-widgets-bundle' ),
-						'description' => __( 'Where contact emails will be delivered to.', 'so-widgets-bundle' ),
+						'description' => __( 'Where contact emails will be delivered to. You can send to multiple emails by separating the emails with a comma (,)', 'so-widgets-bundle' ),
 						'sanitize'    => 'multiple_emails',
 					),
 					'from'                               => array(
@@ -634,7 +634,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		return sprintf(
 			__( 'Get more form fields for the Contact Form Widget in %s', 'so-widgets-bundle' ),
-			'<a href="' . esc_url( $url ) . '" target="_blank">' . __( 'SiteOrigin Premium', 'so-widgets-bundle' ) . '</a>'
+			'<a href="' . esc_url( $url ) . '" target="_blank" rel="noopener noreferrer">' . __( 'SiteOrigin Premium', 'so-widgets-bundle' ) . '</a>'
 		);
 	}
 

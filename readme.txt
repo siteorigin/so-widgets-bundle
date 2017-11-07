@@ -54,6 +54,17 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.11.0 - 7 November 2017 =
+* New Tabs widget!
+* Contact: mention it's possible to send to multiple emails.
+* Features: Fixes margin causing extended page.
+* Presets field.
+* Accordion: Add Repeater Label Title.
+* Hero: ability to select an image size.
+* TinyMCE field: Remember last selected editor.
+* Add rel="noopener noreferrer" for all 3rd party/unknown links.
+* Social Media Buttons Widget: comply WCAG 2.4.4
+
 = 1.10.2 - 20 October 2017 =
 * Fix for links sometimes not working in slider widgets.
 * Fix multi-measurement field labels.

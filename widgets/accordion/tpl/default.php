@@ -10,7 +10,8 @@
 <div>
 	<div class="sow-accordion">
 	<?php foreach ( $panels as $panel ) : ?>
-		<div class="sow-accordion-panel<?php if ( $panel['initial_state'] == 'open' ) echo ' sow-accordion-panel-open'; ?>">
+		<div class="sow-accordion-panel<?php if ( $panel['initial_state'] == 'open' ) echo ' sow-accordion-panel-open'; ?>"
+			 data-anchor="<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>">
 			<div class="sow-accordion-panel-header">
 				<div class="sow-accordion-title">
 					<?php echo $panel['before_title']; ?>

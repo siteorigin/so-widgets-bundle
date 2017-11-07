@@ -30,7 +30,7 @@
 					<?php if( ! empty( $image_id ) ) : ?>
 					<div class="sow-image-wrapper">
 						<?php if( $link_image ) : ?>
-						<a href="<?php echo sow_esc_url( $url ) ?>" <?php if( ! empty( $new_window ) ) { echo 'target="_blank"'; } ?>>
+						<a href="<?php echo sow_esc_url( $url ) ?>" <?php if( ! empty( $new_window ) ) { echo 'target="_blank" rel="noopener noreferrer"'; } ?>>
 						<?php endif; ?>
 						<?php echo $this->testimonial_user_image( $image_id, $design ); ?>
 						<?php if( $link_image ) : ?>
@@ -41,14 +41,14 @@
 
 					<div class="sow-text">
 						<?php if( $link_name ) : ?>
-						<a href="<?php echo sow_esc_url( $url ) ?>" <?php if( ! empty( $new_window ) ) { echo 'target="_blank"'; } ?>>
+						<a href="<?php echo sow_esc_url( $url ) ?>" <?php if( ! empty( $new_window ) ) { echo 'target="_blank" rel="noopener noreferrer"'; } ?>>
 						<?php endif; ?>
 							<strong><?php echo esc_html( $testimonial['name'] ) ?></strong>
 						<?php if( $link_name ) : ?>
 						</a>
 						<?php endif; ?>
 						<?php if( $link_location ) : ?>
-							<a href="<?php echo sow_esc_url( $url ) ?>" <?php if( ! empty( $new_window ) ) { echo 'target="_blank"'; } ?>>
+							<a href="<?php echo sow_esc_url( $url ) ?>" <?php if( ! empty( $new_window ) ) { echo 'target="_blank" rel="noopener noreferrer"'; } ?>>
 						<?php endif; ?>
 						<?php if( ! empty( $location ) ) : ?>
 							<span><?php echo esc_html( $location ) ?></span>

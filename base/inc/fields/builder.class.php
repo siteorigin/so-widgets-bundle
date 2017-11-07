@@ -34,7 +34,7 @@ class SiteOrigin_Widget_Field_Builder extends SiteOrigin_Widget_Field_Base {
 			?>
 			<p>
 				<?php _e( 'This field requires: ', 'so-widgets-bundle' ) ?>
-				<a href="https://siteorigin.com/page-builder/" target="_blank"><?php _e( 'SiteOrigin Page Builder', 'so-widgets-bundle' ) ?></a>
+				<a href="https://siteorigin.com/page-builder/" target="_blank" rel="noopener noreferrer"><?php _e( 'SiteOrigin Page Builder', 'so-widgets-bundle' ) ?></a>
 			</p>
 			<?php
 		}
