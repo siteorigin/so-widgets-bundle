@@ -26,10 +26,20 @@ jQuery( function ( $ ) {
 			}
 			var selectedIndex = $tab.index();
 			if ( selectedIndex > -1 ) {
-				$tabs.removeClass( 'sow-tabs-tab-selected' );
-				$tabPanels.not( ':eq(' + selectedIndex + ')' ).fadeOut( 'fast' );
+				var $prevTab = $tabs.filter( '.sow-tabs-tab-selected' );
+				$prevTab.removeClass( 'sow-tabs-tab-selected' );
+				var prevTabIndex = $prevTab.index();
+				$tabPanels.eq( prevTabIndex ).fadeOut( 'fast',
+					function() {
+						$( this ).trigger( 'hide' );
+					}
+				);
 				$tab.addClass( 'sow-tabs-tab-selected' );
-				$tabPanels.eq( selectedIndex ).fadeIn( 'fast' );
+				$tabPanels.eq( selectedIndex ).fadeIn( 'fast',
+					function() {
+						$( this ).trigger( 'show' );
+					}
+				);
 				setTimeout( function () {
 					$tabPanelsContainer.height( $tabPanels.eq( selectedIndex ).outerHeight() );
 				}, 100 );

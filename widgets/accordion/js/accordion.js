@@ -16,7 +16,11 @@ jQuery( function ( $ ) {
 		var openPanel = function ( panel, preventHashChange ) {
 			var $panel = $( panel );
 			if ( ! $panel.is( '.sow-accordion-panel-open' ) ) {
-				$panel.find( '> .sow-accordion-panel-content' ).slideDown();
+				$panel.find( '> .sow-accordion-panel-content' ).slideDown(
+					function() {
+						$( this ).trigger( 'show' );
+					}
+				);
 				$panel.addClass( 'sow-accordion-panel-open' );
 				openPanels.push( panel );
 				if ( ! preventHashChange ) {
@@ -28,7 +32,11 @@ jQuery( function ( $ ) {
 		var closePanel = function ( panel, preventHashChange ) {
 			var $panel = $( panel );
 			if ( $panel.is( '.sow-accordion-panel-open' ) ) {
-				$panel.find( '> .sow-accordion-panel-content' ).slideUp();
+				$panel.find( '> .sow-accordion-panel-content' ).slideUp(
+					function() {
+						$( this ).trigger( 'hide' );
+					}
+				);
 				$panel.removeClass( 'sow-accordion-panel-open' );
 				openPanels.splice( openPanels.indexOf( panel ), 1 );
 				if ( ! preventHashChange ) {
