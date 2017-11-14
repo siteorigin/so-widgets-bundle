@@ -70,6 +70,17 @@ sowb.SiteOriginGoogleMap = function($) {
 			this.linkAutocompleteField(options.autocomplete, options.autocompleteElement, map, options);
 			this.showMarkers(options.markerPositions, map, options);
 			this.showDirections(options.directions, map, options);
+			
+			// If the Google Maps element is hidden it won't display properly. This is an attempt to make it display by
+			// calling resize when a custom 'show' event is fired. The 'show' event is something we fire in a few widgets
+			// like Accordion and Tabs and in future any widgets which might show and hide content using `display:none;`.
+			if ( $( element ).is( ':hidden' ) ) {
+				var $visParent = $( element ).closest( ':visible' );
+				$visParent.find( '> :hidden' ).on( 'show', function () {
+					google.maps.event.trigger(map, 'resize');
+				} );
+			}
+			
 		},
 
 		linkAutocompleteField: function (autocomplete, autocompleteElement, map, options) {
