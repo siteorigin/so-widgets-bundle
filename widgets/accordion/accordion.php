@@ -182,7 +182,13 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			}
 			
 			if ( empty( $panel['title'] ) ) {
-				$panel['anchor'] = $this->id_base . $instance['_sow_form_id'] . '-' . $i;
+				$id = $this->id_base;
+				if ( ! empty( $instance['_sow_form_id'] ) ) {
+					$id .= '-' . $instance['_sow_form_id'];
+				} else if ( ! empty( $args['widget_id'] ) ) {
+					$id .= '-' . $args['widget_id'];
+				}
+				$panel['anchor'] = $id . '-' . $i;
 			} else {
 				$panel['anchor'] = $panel['title'];
 			}
