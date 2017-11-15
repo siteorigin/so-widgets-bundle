@@ -373,8 +373,10 @@ var sowbForms = window.sowbForms || {};
 			// Setup the Builder fields
 			if (typeof jQuery.fn.soPanelsSetupBuilderWidget !== 'undefined') {
 				$fields.filter('.siteorigin-widget-field-type-builder').each(function () {
-					var $$ = $(this);
-					$$.find('> .siteorigin-page-builder-field').soPanelsSetupBuilderWidget();
+					$( this ).find( '> .siteorigin-page-builder-field' ).each( function () {
+						var $$ = $( this );
+						$$.soPanelsSetupBuilderWidget( { builderType: $$.data( 'type' ) } );
+					} );
 				});
 			}
 
