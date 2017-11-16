@@ -24,8 +24,6 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
 		add_action( 'wp_print_footer_scripts', array( $this, 'print_footer_templates' ) );
 
-		add_filter( 'siteorigin_widgets_get_field_name', array( $this, 'bb_get_field_name' ) );
-
 		// Don't want to show the form preview button when using Beaver Builder
 		add_filter( 'siteorigin_widgets_form_show_preview_button', '__return_false' );
 	}
@@ -86,10 +84,7 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 			}
 		}
 	}
-
-	function bb_get_field_name( $name ) {
-		return preg_replace( '/\[[^\]]*\]/', '[]', $name, 1 );
-	}
+	
 }
 
 SiteOrigin_Widgets_Bundle_Beaver_Builder::single();

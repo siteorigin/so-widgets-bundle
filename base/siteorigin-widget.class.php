@@ -467,8 +467,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				$this->fields[$field_name] = $field;
 			}
 			?>
-			<input type="hidden" name="<?php echo $this->get_field_name('_sow_form_id') ?>" value="<?php echo esc_attr( $instance['_sow_form_id'] ) ?>" class="siteorigin-widgets-form-id" />
-			<input type="hidden" name="<?php echo $this->get_field_name('_sow_form_timestamp') ?>" value="<?php echo ! empty( $instance['_sow_form_timestamp'] ) ? esc_attr( $instance['_sow_form_timestamp'] ) : '' ?>" class="siteorigin-widgets-form-timestamp" />
+			<input type="hidden" name="<?php echo $this->so_get_field_name('_sow_form_id') ?>" value="<?php echo esc_attr( $instance['_sow_form_id'] ) ?>" class="siteorigin-widgets-form-id" />
+			<input type="hidden" name="<?php echo $this->so_get_field_name('_sow_form_timestamp') ?>" value="<?php echo ! empty( $instance['_sow_form_timestamp'] ) ? esc_attr( $instance['_sow_form_timestamp'] ) : '' ?>" class="siteorigin-widgets-form-timestamp" />
 		</div>
 		<div class="siteorigin-widget-form-no-styles">
 			<?php $this->scripts_loading_message() ?>

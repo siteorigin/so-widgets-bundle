@@ -1091,7 +1091,7 @@ var sowbForms = window.sowbForms || {};
 			var $$ = $(this);
 			var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec($$.attr('name'));
 
-			if (name === undefined) {
+			if ( name === undefined || name === null ) {
 				return true;
 			}
 
