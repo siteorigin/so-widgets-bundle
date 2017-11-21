@@ -216,7 +216,7 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 				}
 				$tab['anchor'] = $id . '-' . $i;
 			} else {
-				$panel['anchor'] = $tab['title'];
+				$tab['anchor'] = $tab['title'];
 			}
 		}
 		
