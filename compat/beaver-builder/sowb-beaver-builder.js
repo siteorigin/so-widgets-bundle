@@ -1,3 +1,5 @@
+/* globals jQuery, FLBuilder, sowb, sowbForms */
+
 var sowb = window.sowb || {};
 
 ( function($){
