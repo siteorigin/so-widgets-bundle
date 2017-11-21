@@ -541,8 +541,8 @@ var sowbForms = window.sowbForms || {};
 
 				// Update the field names for all the input items
 				$$.find('.siteorigin-widget-input').each(function (i, input) {
-					var pos = $(input).data('repeater-positions');
 					var $in = $(input);
+					var pos = $in.data('repeater-positions');
 
 					if (typeof pos !== 'undefined') {
 						var newName = $in.attr('data-original-name');
@@ -590,6 +590,9 @@ var sowbForms = window.sowbForms || {};
 				handle: '.siteorigin-widget-field-repeater-item-top',
 				items: '> .siteorigin-widget-field-repeater-item',
 				update: function () {
+					// Clear `name` attributes for radio inputs. They'll be reassigned on update.
+					// This prevents some radio inputs values being cleared during the update process.
+					$items.find( 'input[type="radio"].siteorigin-widget-input' ).attr( 'name', '' );
 					$items.trigger('updateFieldPositions');
 				},
 				sortstop: function (event, ui) {
