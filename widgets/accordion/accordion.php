@@ -41,6 +41,10 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 	function get_widget_form() {
 		
 		return array(
+			'title' => array(
+				'type' => 'text',
+				'label' => __( 'Title', 'so-widgets-bundle' ),
+			),
 			'panels' => array(
 				'type' => 'repeater',
 				'label' => __( 'Panels', 'so-widgets-bundle' ),
