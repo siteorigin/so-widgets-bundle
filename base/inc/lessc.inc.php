@@ -4,6 +4,13 @@
  * to be a drop-in replacement for following products:
  *  - Drupal 7, by the less module v3.0+ (https://drupal.org/project/less)
  *  - Symfony 2
+ *
+ * @SiteOrigin: We originally used leafo/lessphp (https://github.com/leafo/lessphp), until we found it wasn't
+ * maintained and missed some newer LESS features. We then migrated to a more recent and maintained repo
+ * (https://github.com/oyejorge/less.php) simply replacing leafo's lessc.inc.php with the one from oyejorge. This
+ * worked well until users started running PHP 7 compatibility checkers which found some issues, so now we have our own
+ * fork here: https://github.com/siteorigin/less.php We have fixed the PHP 7 compatibility issues and will only make
+ * more changes if there are severe issues.
  */
 
 // Register autoloader for non-composer installations
