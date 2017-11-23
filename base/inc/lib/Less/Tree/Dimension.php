@@ -157,11 +157,16 @@ class Less_Tree_Dimension extends Less_Tree{
 
 		if( is_string($conversions) ){
 			$derivedConversions = array();
-			foreach( Less_Tree_UnitConversions::$groups as $i ){
-				if( isset(Less_Tree_UnitConversions::${$i}[$conversions]) ){
-					$derivedConversions = array( $i => $conversions);
-				}
+			if( isset(Less_Tree_UnitConversions::$length[$conversions]) ){
+				$derivedConversions = array( 'length' => $conversions );
 			}
+			if( isset(Less_Tree_UnitConversions::$duration[$conversions]) ){
+				$derivedConversions = array( 'duration' => $conversions );
+			}
+			if( isset(Less_Tree_UnitConversions::$angle[$conversions]) ){
+				$derivedConversions = array( 'angle' => $conversions );
+			}
+			
 			$conversions = $derivedConversions;
 		}
 
