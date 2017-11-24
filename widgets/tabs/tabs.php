@@ -206,8 +206,15 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 			if ( empty( $tab['after_title'] ) ) {
 				$tab['after_title'] = '';
 			}
+			
 			if ( empty( $tab['title'] ) ) {
-				$tab['anchor'] = 'tabs-' . $instance['_sow_form_id'] . '-' . $i;
+				$id = $this->id_base;
+				if ( ! empty( $instance['_sow_form_id'] ) ) {
+					$id .= '-' . $instance['_sow_form_id'];
+				} else if ( ! empty( $args['widget_id'] ) ) {
+					$id .= '-' . $args['widget_id'];
+				}
+				$tab['anchor'] = $id . '-' . $i;
 			} else {
 				$tab['anchor'] = $tab['title'];
 			}

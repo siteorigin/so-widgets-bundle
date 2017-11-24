@@ -318,6 +318,9 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		// Add in the button code
 		$san_content = wp_kses_post($content);
 		$content = preg_replace('/(?:<(?:p|h\d|em|strong|li|blockquote) *([^>]*)> *)?\[ *buttons *\](:? *<\/(?:p|h\d|em|strong|li|blockquote)>)?/i', '<div class="sow-hero-buttons" $1>' . $button_code . '</div>', $san_content );
+		
+		// Process normal shortcodes
+		$content = do_shortcode( shortcode_unautop( $content ) );
 		return $content;
 	}
 
