@@ -54,6 +54,19 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.11.1 - 24 November 2017 =
+* Hero: Allow for shortcodes to work.
+* Fix posts field not displaying selected values when multiple selected.
+* Widgets Page: Fix missing icon issue on windows.
+* Trigger 'hide' and 'show' events in Accordion and Tabs widgets when toggling content.
+* Fix Google Maps widget not displaying when map is initially hidden.
+* Fix Beaver Builder compatibility.
+* Builder field: Pass builder type when setting up builder fields.
+* Tabs: Use correct variable for tab anchor.
+* Repeater field: Prevent radio inputs values being cleared in repeaters when sorting.
+* Accordion: Added title field.
+* Fix PHP version compatibility checker errors.
+
 = 1.11.0 - 7 November 2017 =
 * New Tabs widget!
 * Contact: mention it's possible to send to multiple emails.
