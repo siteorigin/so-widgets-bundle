@@ -54,6 +54,10 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.11.2 - 27 November 2017 =
+* Fix compatibility with Beaver Builder Lite.
+* Tabs: Recalculate height on resize.
+
 = 1.11.1 - 24 November 2017 =
 * Hero: Allow for shortcodes to work.
 * Fix posts field not displaying selected values when multiple selected.

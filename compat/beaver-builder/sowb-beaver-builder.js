@@ -108,8 +108,11 @@ var sowb = window.sowb || {};
 				}
 			}
 			
-			// Merge in the original settings in case legacy fields haven't rendered yet.
-			settings = $.extend( {}, FLBuilder._getOriginalSettings( form ), settings );
+			if ( typeof FLBuilder._getOriginalSettings === 'function' ) {
+				// Merge in the original settings in case legacy fields haven't rendered yet.
+				settings = $.extend( {}, FLBuilder._getOriginalSettings( form ), settings );
+			}
+			
 			settings[ name ] = sowbWidgetValues;
 			// Return the settings.
 			return settings;
