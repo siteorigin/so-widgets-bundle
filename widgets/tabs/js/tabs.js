@@ -20,9 +20,17 @@ jQuery( function ( $ ) {
 			var $tabPanels = $tabPanelsContainer.find( '> .sow-tabs-panel' );
 			$tabPanels.not( ':eq(' + selectedIndex + ')' ).hide();
 			
-			setTimeout( function () {
-				$tabPanelsContainer.height( $tabPanels.eq( selectedIndex ).outerHeight() );
-			}, 100 );
+			var setContainerHeight = function () {
+				var selTab = $this.find( '.sow-tabs-tab-selected' );
+				
+				setTimeout( function () {
+					$tabPanelsContainer.height( $tabPanels.eq( selTab.index() ).outerHeight() );
+				}, 100 );
+			};
+			
+			setContainerHeight();
+			
+			$( window ).on( 'resize', setContainerHeight );
 			
 			var selectTab = function ( tab, preventHashChange ) {
 				var $tab = $( tab );
@@ -45,9 +53,9 @@ jQuery( function ( $ ) {
 							$( this ).trigger( 'show' );
 						}
 					);
-					setTimeout( function () {
-						$tabPanelsContainer.height( $tabPanels.eq( selectedIndex ).outerHeight() );
-					}, 100 );
+					
+					setContainerHeight();
+					
 					if ( useAnchorTags && !preventHashChange ) {
 						window.location.hash = $tab.data( 'anchor' );
 					}
