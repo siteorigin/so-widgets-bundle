@@ -128,6 +128,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					'type' => array(
 						'type'          => 'select',
 						'label'         => __( 'Field Type', 'so-widgets-bundle' ),
+						'prompt'  => __( 'Select Field Type', 'so-widgets-bundle' ),
 						'options'       => array(
 							'name'       => __( 'Name', 'so-widgets-bundle' ),
 							'email'      => __( 'Email', 'so-widgets-bundle' ),
