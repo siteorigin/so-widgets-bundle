@@ -196,11 +196,13 @@
 		text-align: @submit_align;
 		.sow-submit {
 			color: @submit_text_color;
-			.gradient(
-				lighten(@submit_background_color, @submit_background_gradient),
-				darken(@submit_background_color, @submit_background_gradient),
-				lighten(@submit_background_color, @submit_background_gradient)
-			);
+			& when( @submit_background_gradient > 0% ) {
+				.gradient(
+					lighten(@submit_background_color, @submit_background_gradient),
+					darken(@submit_background_color, @submit_background_gradient),
+					lighten(@submit_background_color, @submit_background_gradient)
+				);
+			}
 
 			border: @submit_border_width @submit_border_style @submit_border_color;
 			border-radius: @submit_border_radius;
