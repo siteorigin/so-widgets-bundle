@@ -143,6 +143,17 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 							'justify' => __( 'Justify', 'so-widgets-bundle' ),
 						),
 					),
+					'mobile_align'      => array(
+						'type'    => 'select',
+						'label'   => __( 'Mobile Alignment', 'so-widgets-bundle' ),
+						'default' => 'left',
+						'options' => array(
+							'left'    => __( 'Left', 'so-widgets-bundle' ),
+							'right'   => __( 'Right', 'so-widgets-bundle' ),
+							'center'  => __( 'Center', 'so-widgets-bundle' ),
+							'justify' => __( 'Justify', 'so-widgets-bundle' ),
+						),
+					),
 					'margin'     => array(
 						'type'    => 'select',
 						'label'   => __( 'Margin', 'so-widgets-bundle' ),
@@ -154,6 +165,13 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 							'0.4' => __( 'Very high', 'so-widgets-bundle' ),
 						),
 					),
+					'mobile_width' => array(
+						'type' => 'text',
+						'label' => __( 'Mobile Collapse Width', 'so-widgets-bundle' ),
+						'description' => __( 'The resolution to treat as a mobile resolution.', 'so-widgets-bundle' ),
+						'default' => ( function_exists( 'siteorigin_panels_render' ) ) ? siteorigin_panels_setting( 'mobile-width' ) : 780,
+						'sanitize' => 'intval',
+					)
 				)
 			),
 		);
@@ -217,11 +235,13 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		$margin = $top . ' ' . $right . ' ' . $bottom . ' ' . $left;
 
 		return array(
-			'icon_size' => $design['icon_size'] . 'em',
-			'rounding'  => $design['rounding'] . 'em',
-			'padding'   => $design['padding'] . 'em',
-			'align'     => $design['align'],
-			'margin'    => $margin
+			'icon_size'    => $design['icon_size'] . 'em',
+			'rounding'     => $design['rounding'] . 'em',
+			'padding'      => $design['padding'] . 'em',
+			'align'        => $design['align'],
+			'mobile_align' => $design['mobile_align'],
+			'mobile_width' => intval($design['mobile_width']) . 'px',
+			'margin'       => $margin
 		);
 	}
 
