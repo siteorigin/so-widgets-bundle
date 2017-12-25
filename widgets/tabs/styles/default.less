@@ -1,0 +1,124 @@
+@import "../../../base/less/mixins";
+
+.widget-function('import_google_font');
+
+@tabs_container_background_color: default;
+@tabs_container_border_color: default;
+@tabs_container_border_width: default;
+@has_tabs_container_border_width: default;
+@tabs_container_border_radius: default;
+@tabs_container_padding: 12px 10px 0px 10px;
+@tabs_container_tabs_align: default;
+
+@tabs_background_color: default;
+@tabs_background_hover_color: default;
+@tabs_title_color: default;
+@tabs_title_hover_color: default;
+@tabs_font_family: default;
+@tabs_font_weight: default;
+@tabs_font_size: 18px;
+@tabs_border_color: default;
+@tabs_border_hover_color: default;
+@tabs_border_width: default;
+@has_tabs_border_width: default;
+@tabs_border_hover_width: default;
+@has_tabs_border_hover_width: default;
+@tabs_border_radius: default;
+@tabs_padding: 16px 15px 16px 15px;
+@tabs_margin: 0px 5px 0px 5px;
+
+@panels_background_color: default;
+@panels_font_family: default;
+@panels_font_weight: default;
+@panels_font_size: 16px;
+@panels_font_color: default;
+@panels_border_width: default;
+@has_panels_border_width: default;
+@panels_border_color: default;
+@panels_border_radius: default;
+@panels_padding: 30px 30px 30px 35px;
+
+.sow-tabs {
+	.sow-tabs-tab-container {
+		background-color: @tabs_container_background_color;
+		padding: @tabs_container_padding;
+		text-align: @tabs_container_tabs_align;
+
+		//noinspection CssOptimizeSimilarProperties
+		& when ( @has_tabs_container_border_width = true ) {
+			border-style: solid;
+			border-color: @tabs_container_border_color;
+			border-width: @tabs_container_border_width;
+			border-radius: @tabs_container_border_radius;
+		}
+
+		.sow-tabs-tab {
+			display: inline-block;
+			cursor: pointer;
+			background-color: @tabs_background_color;
+			padding: @tabs_padding;
+			margin: @tabs_margin;
+			color: @tabs_title_color;
+			font-family: @tabs_font_family;
+			font-weight: @tabs_font_weight;
+			font-size: @tabs_font_size;
+			transition: all 0.3s;
+
+			//noinspection CssOptimizeSimilarProperties
+			& when ( @has_tabs_border_width = true ) {
+				border-style: solid;
+				border-color: @tabs_border_color;
+				border-width: @tabs_border_width;
+				border-radius: @tabs_border_radius;
+			}
+
+			&.sow-tabs-tab-selected, &:hover {
+				background-color: @tabs_background_hover_color;
+				color: @tabs_title_hover_color;
+
+				//noinspection CssOptimizeSimilarProperties
+				& when ( @has_tabs_border_hover_width = true ) {
+					border-style: solid;
+					border-color: @tabs_border_hover_color;
+					border-width: @tabs_border_hover_width;
+					border-radius: @tabs_border_radius;
+				}
+			}
+
+			.sow-tabs-title {
+				line-height: 1;
+			}
+		}
+	}
+
+	.sow-tabs-panel-container {
+		position: relative;
+		transition: height 0.3s;
+		background-color: @panels_background_color;
+		color: @panels_font_color;
+
+		//noinspection CssOptimizeSimilarProperties
+		& when( @has_panels_border_width = true ) {
+			border-style: solid;
+			border-width: @panels_border_width;
+			border-color: @panels_border_color;
+			border-radius: @panels_border_radius;
+		}
+
+		.sow-tabs-panel {
+			position: absolute;
+			left: 0;
+			right: 0;
+			padding: @panels_padding;
+			.sow-tabs-panel-content {
+				font-family: @panels_font_family;
+				font-weight: @panels_font_weight;
+				font-size: @panels_font_size;
+
+				> p {
+					margin: 0;
+				}
+			}
+		}
+	}
+}

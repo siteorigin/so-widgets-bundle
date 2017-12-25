@@ -41,6 +41,10 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 	function get_widget_form() {
 		
 		return array(
+			'title' => array(
+				'type' => 'text',
+				'label' => __( 'Title', 'so-widgets-bundle' ),
+			),
 			'panels' => array(
 				'type' => 'repeater',
 				'label' => __( 'Panels', 'so-widgets-bundle' ),
@@ -173,14 +177,27 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 		
 		$panels = empty( $instance['panels'] ) ? array() : $instance['panels'];
 		
-		foreach ( $panels as &$panel ) {
+		foreach ( $panels as $i => &$panel ) {
 			if ( empty( $panel['before_title'] ) ) {
 				$panel['before_title'] = '';
 			}
 			if ( empty( $panel['after_title'] ) ) {
 				$panel['after_title'] = '';
 			}
+			
+			if ( empty( $panel['title'] ) ) {
+				$id = $this->id_base;
+				if ( ! empty( $instance['_sow_form_id'] ) ) {
+					$id .= '-' . $instance['_sow_form_id'];
+				} else if ( ! empty( $args['widget_id'] ) ) {
+					$id .= '-' . $args['widget_id'];
+				}
+				$panel['anchor'] = $id . '-' . $i;
+			} else {
+				$panel['anchor'] = $panel['title'];
+			}
 		}
+		
 		
 		if ( empty( $instance['design']['heading']['icon_open'] ) ) {
 			$instance['design']['heading']['icon_open'] = 'ionicons-plus';

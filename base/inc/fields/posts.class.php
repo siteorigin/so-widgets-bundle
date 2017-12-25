@@ -138,6 +138,11 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 
 	protected function render_field( $value, $instance ) {
 		$value = wp_parse_args( $value );
+		
+		if( !empty( $value['post_type'] ) ) {
+			$value['post_type'] = strpos( $value['post_type'], ',' ) !== false ? explode( ',', $value['post_type'] ) : $value['post_type'];
+		}
+		
 		if ( $this->collapsible ) {
 			?><div class="siteorigin-widget-section <?php if ( $this->state == 'closed' ) {
 				echo 'siteorigin-widget-section-hide';
