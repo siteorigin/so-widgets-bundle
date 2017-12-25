@@ -116,6 +116,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 			$link_atts = empty( $image['link_attributes'] ) ? array() : $image['link_attributes'];
 			if ( ! empty( $image['new_window'] ) ) {
 				$link_atts['target'] = '_blank';
+				$link_atts['rel'] = 'noopener noreferrer';
 			}
 			$image['link_attributes'] = $link_atts;
 		}
@@ -149,7 +150,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 
 		return sprintf(
 			__( 'Add a Lightbox to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lightbox" target="_blank">',
+			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lightbox" target="_blank" rel="noopener noreferrer">',
 			'</a>'
 		);
 	}

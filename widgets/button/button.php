@@ -242,6 +242,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 		if ( ! empty( $instance['new_window'] ) ) {
 			$button_attributes['target'] = '_blank';
+			$button_attributes['rel'] = 'noopener noreferrer';
 		}
 
 		if ( ! empty( $attributes['id'] ) ) {
@@ -251,7 +252,11 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			$button_attributes['title'] = $attributes['title'];
 		}
 		if ( ! empty( $attributes['rel'] ) ) {
-			$button_attributes['rel'] = $attributes['rel'];
+			if ( isset ( $button_attributes['rel'] ) ) {
+				$button_attributes['rel'] .= " $attributes[rel]";
+			} else {
+				$button_attributes['rel'] = $attributes['rel'];
+			}
 		}
 
 		$icon_image_url = '';
