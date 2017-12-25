@@ -1,3 +1,5 @@
+/* globals jQuery, FLBuilder, sowb, sowbForms */
+
 var sowb = window.sowb || {};
 
 ( function($){
@@ -15,7 +17,7 @@ var sowb = window.sowb || {};
 		 */
 		FLBuilder._getSettings = function(form) {
 			FLBuilder._updateEditorFields();
-			form.find('.siteorigin-widget-input');
+			
 			var data     	= form.serializeArray(),
 				i        	= 0,
 				k        	= 0,
@@ -25,31 +27,31 @@ var sowb = window.sowb || {};
 				keys      	= [],
 				matches	 	= [],
 				settings 	= {};
-
+			var sowbWidgetValues = sowbForms.getWidgetFormValues( form.find( '.siteorigin-widget-form' ) );
 			// Loop through the form data.
 			for ( i = 0; i < data.length; i++ ) {
-
+				
 				value = data[ i ].value.replace( /\r/gm, '' );
-
+				
 				// Don't save text editor textareas.
 				if ( data[ i ].name.indexOf( 'flrich' ) > -1 ) {
 					continue;
 				}
 				// Support foo[]... setting keys.
 				else if ( data[ i ].name.indexOf( '[' ) > -1 ) {
-
+					
 					name 	= data[ i ].name.replace( /\[(.*)\]/, '' );
 					key  	= data[ i ].name.replace( name, '' );
 					keys	= [];
 					matches = key.match( /\[[^\]]*\]/g );
-
+					
 					// Remove [] from the keys.
 					for ( k = 0; k < matches.length; k++ ) {
-
+						
 						if ( '[]' == matches[ k ] ) {
 							continue;
 						}
-
+						
 						keys.push( matches[ k ].replace( /\[|\]/g, '' ) );
 					}
 
@@ -86,26 +88,32 @@ var sowb = window.sowb || {};
 					settings[ data[ i ].name ] = value;
 				}
 			}
-
+			
 			// Update auto suggest values.
 			for ( key in settings ) {
-
+				
 				if ( 'undefined' != typeof settings[ 'as_values_' + key ] ) {
-
+					
 					settings[ key ] = $.grep(
 						settings[ 'as_values_' + key ].split( ',' ),
 						function( n ) {
 							return n !== '';
 						}
 					).join( ',' );
-
+					
 					try {
 						delete settings[ 'as_values_' + key ];
 					}
 					catch( e ) {}
 				}
 			}
-
+			
+			if ( typeof FLBuilder._getOriginalSettings === 'function' ) {
+				// Merge in the original settings in case legacy fields haven't rendered yet.
+				settings = $.extend( {}, FLBuilder._getOriginalSettings( form ), settings );
+			}
+			
+			settings[ name ] = sowbWidgetValues;
 			// Return the settings.
 			return settings;
 		}
@@ -118,3 +126,5 @@ var sowb = window.sowb || {};
 	} );
 
 })(jQuery);
+
+window.sowb = sowb;

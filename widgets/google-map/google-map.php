@@ -26,13 +26,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 	function initialize() {
 
-		wp_register_script(
-			'sow-google-map',
-			plugin_dir_url( __FILE__ ) . 'js/js-map' . SOW_BUNDLE_JS_SUFFIX . '.js',
-			array( 'jquery' ),
-			SOW_BUNDLE_VERSION
-		);
-
 		add_action( 'siteorigin_widgets_before_widget_sow-google-map', array( $this, 'enqueue_widget_scripts' ) );
 	}
 

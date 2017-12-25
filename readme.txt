@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 4.2
-Tested up to: 4.8.1
+Tested up to: 4.9
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
@@ -53,6 +53,34 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.11.2 - 27 November 2017 =
+* Fix compatibility with Beaver Builder Lite.
+* Tabs: Recalculate height on resize.
+
+= 1.11.1 - 24 November 2017 =
+* Hero: Allow for shortcodes to work.
+* Fix posts field not displaying selected values when multiple selected.
+* Widgets Page: Fix missing icon issue on windows.
+* Trigger 'hide' and 'show' events in Accordion and Tabs widgets when toggling content.
+* Fix Google Maps widget not displaying when map is initially hidden.
+* Fix Beaver Builder compatibility.
+* Builder field: Pass builder type when setting up builder fields.
+* Tabs: Use correct variable for tab anchor.
+* Repeater field: Prevent radio inputs values being cleared in repeaters when sorting.
+* Accordion: Added title field.
+* Fix PHP version compatibility checker errors.
+
+= 1.11.0 - 7 November 2017 =
+* New Tabs widget!
+* Contact: mention it's possible to send to multiple emails.
+* Features: Fixes margin causing extended page.
+* Presets field.
+* Accordion: Add Repeater Label Title.
+* Hero: ability to select an image size.
+* TinyMCE field: Remember last selected editor.
+* Add rel="noopener noreferrer" for all 3rd party/unknown links.
+* Social Media Buttons Widget: comply WCAG 2.4.4
 
 = 1.10.2 - 20 October 2017 =
 * Fix for links sometimes not working in slider widgets.
