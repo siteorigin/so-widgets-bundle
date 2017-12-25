@@ -577,6 +577,16 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'type'    => 'measurement',
 								'label'   => __( 'Width', 'so-widgets-bundle' ),
 							),
+							'align'    => array(
+								'type'    => 'select',
+								'label'   => __( 'Align', 'so-widgets-bundle' ),
+								'default' => 'left',
+								'options' => array(
+									'left'    => __( 'Left', 'so-widgets-bundle' ),
+									'right'   => __( 'Right', 'so-widgets-bundle' ),
+									'center'  => __( 'Center', 'so-widgets-bundle' ),
+								)
+							),
 							'inset_highlight'     => array(
 								'type'        => 'slider',
 								'label'       => __( 'Inset highlight', 'so-widgets-bundle' ),
@@ -783,6 +793,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'submit_weight'              => $instance['design']['submit']['weight'],
 			'submit_padding'             => $instance['design']['submit']['padding'],			
 			'submit_width'               => $instance['design']['submit']['width'],
+			'submit_align'               => $instance['design']['submit']['align'],
 			'submit_inset_highlight'     => $instance['design']['submit']['inset_highlight'] . '%',
 
 			// Input focus styles
