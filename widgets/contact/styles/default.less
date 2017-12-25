@@ -188,6 +188,7 @@
 		@submit_font_size: default;
 		@submit_weight: 500;
 		@submit_padding: 10px;
+		@submit_width: default;
 
 		@submit_inset_highlight: 50%;
 
@@ -205,6 +206,7 @@
 			font-size: @submit_font_size;
 			padding: @submit_padding @submit_padding * 2;
 			display: inline-block;
+			width: @submit_width;
 
 			.sow-submit-box-shadow ( @percent ) when ( @percent > 0% ) {
 				box-shadow: inset 0 -1px 0 fade( #ffffff, @percent );

@@ -573,6 +573,10 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'label'   => __( 'Padding', 'so-widgets-bundle' ),
 								'default' => '10px',
 							),
+							'width' => array(
+								'type'    => 'measurement',
+								'label'   => __( 'Width', 'so-widgets-bundle' ),
+							),
 							'inset_highlight'     => array(
 								'type'        => 'slider',
 								'label'       => __( 'Inset highlight', 'so-widgets-bundle' ),
@@ -777,7 +781,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'submit_text_color'          => $instance['design']['submit']['text_color'],
 			'submit_font_size'           => $instance['design']['submit']['font_size'],
 			'submit_weight'              => $instance['design']['submit']['weight'],
-			'submit_padding'             => $instance['design']['submit']['padding'],
+			'submit_padding'             => $instance['design']['submit']['padding'],			
+			'submit_width'               => $instance['design']['submit']['width'],
 			'submit_inset_highlight'     => $instance['design']['submit']['inset_highlight'] . '%',
 
 			// Input focus styles
