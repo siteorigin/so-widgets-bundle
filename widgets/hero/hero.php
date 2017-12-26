@@ -232,10 +232,18 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 					'heading_shadow' => array(
 						'type' => 'slider',
-						'label' => __('Heading shadow intensity', 'so-widgets-bundle'),
+						'label' => __( 'Heading shadow intensity', 'so-widgets-bundle' ),
 						'max' => 100,
 						'min' => 0,
 						'default' => 50,
+					),
+
+					'text_shadow' => array(
+						'type' => 'slider',
+						'label' => __( 'Text shadow intensity', 'so-widgets-bundle' ),
+						'max' => 100,
+						'min' => 0,
+						'default' => 25,
 					),
 
 					'text_size' => array(
@@ -355,9 +363,10 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		}
 
 		$less['heading_shadow'] = intval( $instance['design']['heading_shadow'] );
-
 		$less['heading_color'] = $instance['design']['heading_color'];
+		$less['text_shadow'] = intval( $instance['design']['text_shadow'] );
 		$less['text_color'] = $instance['design']['text_color'];
+		
 
 		$font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
 		$less['heading_font'] = $font['family'];
