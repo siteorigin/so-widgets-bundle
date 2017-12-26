@@ -75,6 +75,13 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'label' => __('Image icon', 'so-widgets-bundle'),
 						'description' => __('Replaces the icon with your own image icon.', 'so-widgets-bundle'),
 					),
+
+					'icon_placement' => array(
+						'type' => 'select',
+						'default' => 'left',
+						'options' => array(
+						),
+					),
 				),
 			),
 
@@ -231,14 +238,15 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 		$attributes = $instance['attributes'];
 
+		// 'icon_placement' => $instance['button_icon']['icon_placement'],
+
 		$classes = ! empty( $attributes['classes'] ) ? $attributes['classes'] : '';
+		$classes .= ' ow-icon-placement-'. $instance['button_icon']['icon_placement'];
 		if( !empty($instance['design']['hover']) ) {
 			$classes .= ' ow-button-hover';
 		}
 
-		if( ! empty( $classes ) ) {
-			$button_attributes['class'] = $classes;
-		}
+		$button_attributes['class'] = $classes;
 
 		if ( ! empty( $instance['new_window'] ) ) {
 			$button_attributes['target'] = '_blank';
