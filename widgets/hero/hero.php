@@ -238,6 +238,21 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 						'default' => 50,
 					),
 
+					'text_color' => array(
+						'type' => 'color',
+						'label' => __( 'Text color', 'so-widgets-bundle' ),
+						'default' => '#F6F6F6',
+					),
+					'text_size' => array(
+						'type' => 'measurement',
+						'label' => __( 'Text size', 'so-widgets-bundle' ),
+						'default' => '16px',
+					),
+					'text_font' => array(
+						'type' => 'font',
+						'label' => __( 'Text font', 'so-widgets-bundle' ),
+						'default' => '',
+					),
 					'text_shadow' => array(
 						'type' => 'slider',
 						'label' => __( 'Text shadow intensity', 'so-widgets-bundle' ),
@@ -246,17 +261,6 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 						'default' => 25,
 					),
 
-					'text_size' => array(
-						'type' => 'measurement',
-						'label' => __('Text size', 'so-widgets-bundle'),
-						'default' => '16px',
-					),
-
-					'text_color' => array(
-						'type' => 'color',
-						'label' => __('Text color', 'so-widgets-bundle'),
-						'default' => '#F6F6F6',
-					),
 
 				)
 			),
@@ -368,10 +372,16 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		$less['text_color'] = $instance['design']['text_color'];
 		
 
-		$font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
-		$less['heading_font'] = $font['family'];
-		if ( ! empty( $font['weight'] ) ) {
-			$less['heading_font_weight'] = $font['weight'];
+		$text_font = siteorigin_widget_get_font( $instance['design']['text_font'] );
+		$less['text_font'] = $text_font['family'];
+		if ( ! empty( $text_font['weight'] ) ) {
+			$less['text_font_weight'] = $text_font['weight'];
+		}
+
+		$heading_font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
+		$less['heading_font'] = $heading_font['family'];
+		if ( ! empty( $heading_font['weight'] ) ) {
+			$less['heading_font_weight'] = $heading_font['weight'];
 		}
 
 		return $less;
@@ -394,13 +404,11 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	 *
 	 * @return string
 	 */
-	function less_import_google_font($instance, $args) {
-		if( empty( $instance ) ) return;
-
-		$font_import = siteorigin_widget_get_font( $instance['design']['heading_font'] );
-		if( !empty( $font_import['css_import'] ) ) {
-			return  $font_import['css_import'];
-		}
+	function get_google_font_fields( $instance ) {
+		return array(
+			$instance['design']['heading_font'],
+			$instance['design']['text_font'],
+		);
 	}
 
 	function wrapper_class_filter( $classes, $instance ){

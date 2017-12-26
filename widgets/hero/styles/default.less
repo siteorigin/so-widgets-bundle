@@ -14,6 +14,9 @@
 @text_size: 16px;
 @text_color: #F6F6F6;
 @text_shadow: 25;
+@text_font: default;
+@text_font_weight: 500;
+
 
 @heading_font: default;
 @heading_font_weight: 400;
@@ -72,6 +75,8 @@
 				}
 				margin: 1em 0;
 				font-size: @text_size;
+
+				.font(@text_font, @text_font_weight);
 			}
 
 			.sow-hero-buttons {
