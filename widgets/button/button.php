@@ -78,8 +78,13 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 					'icon_placement' => array(
 						'type' => 'select',
+						'label' => __( 'Icon Placement', 'so-widgets-bundle' ),
 						'default' => 'left',
 						'options' => array(
+							'top'    => __( 'Top', 'so-widgets-bundle' ),
+							'right'  => __( 'Right', 'so-widgets-bundle' ),
+							'bottom' => __( 'Bottom', 'so-widgets-bundle' ),
+							'left'   => __( 'Left', 'so-widgets-bundle' ),
 						),
 					),
 				),
