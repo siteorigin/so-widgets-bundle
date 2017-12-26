@@ -18,6 +18,11 @@
 @text_font_weight: 500;
 
 
+@link_color: default;
+@link_color_hover: default;
+
+
+
 @heading_font: default;
 @heading_font_weight: 400;
 @heading_color: #FFFFFF;
@@ -68,7 +73,14 @@
 				font-size: @heading_size * 0.4;
 			}
 
-			p{
+			a {
+				color: @link_color;
+				&:hover {
+					color: @link_color_hover;
+				}
+			}
+
+			p {
 				color: @text_color;
 				& when not ( @text_shadow = 0 ) {
 					text-shadow: 0 2px 2px rgba( 0, 0, 0, @text_shadow/100 );

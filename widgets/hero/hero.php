@@ -261,6 +261,15 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 						'default' => 25,
 					),
 
+					'link_color' => array(
+						'type' => 'color',
+						'label' => __( 'Link color', 'so-widgets-bundle' )
+					),
+
+					'link_color_hover' => array(
+						'type' => 'color',
+						'label' => __( 'Link Hover Color', 'so-widgets-bundle' )
+					),
 
 				)
 			),
@@ -370,7 +379,9 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		$less['heading_color'] = $instance['design']['heading_color'];
 		$less['text_shadow'] = intval( $instance['design']['text_shadow'] );
 		$less['text_color'] = $instance['design']['text_color'];
-		
+
+		$less['link_color'] = $instance['design']['link_color'];
+		$less['link_color_hover'] = $instance['design']['link_color_hover'];
 
 		$text_font = siteorigin_widget_get_font( $instance['design']['text_font'] );
 		$less['text_font'] = $text_font['family'];
