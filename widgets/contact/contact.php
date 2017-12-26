@@ -91,6 +91,16 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'label'   => __( 'Submit button text', 'so-widgets-bundle' ),
 						'default' => __( "Contact Us", 'so-widgets-bundle' )
 					),
+					'id' => array(
+						'type' => 'text',
+						'label' => __( 'Button ID', 'so-widgets-bundle' ),
+						'description' => __( 'An ID attribute allows you to target this button in JavaScript.', 'so-widgets-bundle' ),
+					),
+					'onclick' => array(
+						'type'        => 'text',
+						'label'       => __( 'Onclick', 'so-widgets-bundle' ),
+						'description' => __( 'Run this JavaScript when the button is clicked. Ideal for tracking.', 'so-widgets-bundle' ),
+					),
 					'required_field_indicator'         => array(
 						'type'          => 'checkbox',
 						'label'         => __( 'Indicate required fields with asterisk (*)', 'so-widgets-bundle' ),
@@ -111,8 +121,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'required_fields[hide]' => array( 'hide' ),
 						)
 					),
-
-				)
+				),
 			),
 
 			'fields' => array(
@@ -126,10 +135,10 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				'fields'     => array(
 
 					'type' => array(
-						'type'          => 'select',
-						'label'         => __( 'Field Type', 'so-widgets-bundle' ),
+						'type'    => 'select',
+						'label'   => __( 'Field Type', 'so-widgets-bundle' ),
 						'prompt'  => __( 'Select Field Type', 'so-widgets-bundle' ),
-						'options'       => array(
+						'options' => array(
 							'name'       => __( 'Name', 'so-widgets-bundle' ),
 							'email'      => __( 'Email', 'so-widgets-bundle' ),
 							'subject'    => __( 'Subject', 'so-widgets-bundle' ),
@@ -269,7 +278,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 						)
 					),
-				)
+				),
 			),
 
 			'design' => array(
@@ -712,19 +721,24 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_template_variables( $instance, $args ) {
-		$vars = array();
-
 		unset( $instance['title'] );
 		unset( $instance['display_title'] );
 		unset( $instance['design'] );
 		unset( $instance['panels_info'] );
 
 		// Include '_sow_form_id' in generation of 'instance_hash' to allow multiple instances of the same form on a page.
-		$vars['instance_hash'] = md5( serialize( $instance ) );
-
+		$instance_hash = md5( serialize( $instance ) );
 		unset( $instance['_sow_form_id'] );
 
-		return $vars;
+		if ( ! empty( $instance['settings']['submit_attributes']['submit_id'] ) ) {
+			$submit_attributes['id'] = $instance['settings']['submit_id'];
+		}
+
+		return array(
+			'instance_hash' => $instance_hash,
+			'submit_attributes' => isset( $submit_attributes ) ? $submit_attributes : '',
+			'onclick' => ! empty( $instance['settings']['onclick'] ) ? $instance['settings']['onclick'] : '',
+		);
 	}
 
 	function get_less_variables( $instance ) {
