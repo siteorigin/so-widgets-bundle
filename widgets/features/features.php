@@ -281,17 +281,10 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		$less_vars['use_icon_size'] = empty( $instance['icon_size_custom'] ) ? 'false' : 'true';
 
 		$global_settings = $this->get_global_settings();
-		if ( function_exists( 'siteorigin_panels_setting' ) ) {
-			// If the global widget setting is different to the page builder responsive setting, we should use the global widget setting
-			if ( ! empty( $global_settings['responsive_breakpoint'] ) && siteorigin_panels_setting( 'mobile-width' ) != intval( $global_settings['responsive_breakpoint'] ) ) {
-				$less_vars['responsive_breakpoint'] = $global_settings['responsive_breakpoint'];
-			} else {
-				$less_vars['responsive_breakpoint'] = siteorigin_panels_setting( 'mobile-width' );
-			}
-		} else {
+
+		if ( ! empty( $global_settings['responsive_breakpoint'] ) ) {
 			$less_vars['responsive_breakpoint'] = $global_settings['responsive_breakpoint'];
 		}
-		$less_vars['responsive_breakpoint'] .= 'px';
 
 		return $less_vars;
 	}
@@ -299,13 +292,10 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 	function get_settings_form() {
 		return array(
 			'responsive_breakpoint' => array(
-				'type'        => 'number',
+				'type'        => 'measurement',
 				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
-				'default'     => ( ! function_exists( 'siteorigin_panels_setting' ) ? 520 : false ), // We want to default to the global setting if Page Builder is enabled so we're not going to set anything
-				'description' => sprintf(
-					__( 'At what resolution the features widget will collapse. %s', 'so-widgets-bundle' ),
-					( function_exists( 'siteorigin_panels_setting' ) ?  sprintf( __( 'This setting will override the global mobile breakpoint which is currently set to %dpx'), siteorigin_panels_setting( 'mobile-width' ) ) : '' )
-				)
+				'default'     => '520px',
+				'description' => __( 'This setting controls when the features widget will collapse for mobile devices. The default value is 520px', 'so-widgets-bundle' )
 			)
 		);
 	}
