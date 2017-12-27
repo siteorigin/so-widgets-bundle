@@ -1,11 +1,26 @@
 @import "../../../base/less/mixins";
 
+.widget-function('import_google_font');
+
 @testimonial_padding: 10px;
 
 @testimonial_background: transparent;
 @text_background: #f0f0f0;
 @text_color: #666;
 @text_border_radius: 4px;
+
+@title_font_family: default;
+@title_font_weight: default;
+@title_font_size: default;
+@name_font_family: default;
+@name_font_weight: default;
+@name_font_size: default;
+@location_font_family: default;
+@location_font_weight: default;
+@location_font_size: default;
+@text_font_family: default;
+@text_font_weight: default;
+@text_font_size: default;
 
 // Testimonial sizes
 @testimonial_size: 33.333%;
@@ -20,6 +35,12 @@
 // Responsive breakpoints
 @tablet_width: 800px;
 @mobile_width: 480px;
+
+.widget-title {
+	font-family: @title_font_family;
+	font-weight: @title_font_weight;
+	font-size: @title_font_size;
+}
 
 .sow-testimonials {
 
@@ -39,7 +60,22 @@
 		background: @testimonial_background;
 	}
 
+	.sow-testimonial-name {
+		font-family: @name_font_family;
+		font-weight: @name_font_weight;
+		font-size: @name_font_size;
+	}
+
+	.sow-testimonial-location {
+		font-family: @location_font_family;
+		font-weight: @location_font_weight;
+		font-size: @location_font_size;
+	}
+
 	.sow-testimonial-text {
+		font-family: @text_font_family;
+		font-weight: @text_font_weight;
+		font-size: @text_font_size;
 		background: @text_background;
 		color: @text_color;
 		padding: @testimonial_padding @testimonial_padding*1.5;
