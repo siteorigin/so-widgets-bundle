@@ -276,11 +276,38 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-        $less_vars['container_size'] = $instance['container_size'];
-        $less_vars['icon_size'] = $instance['icon_size'];
-        $less_vars['use_icon_size'] = empty( $instance['icon_size_custom'] ) ? 'false' : 'true';
+		$less_vars['container_size'] = $instance['container_size'];
+		$less_vars['icon_size'] = $instance['icon_size'];
+		$less_vars['use_icon_size'] = empty( $instance['icon_size_custom'] ) ? 'false' : 'true';
+
+		$global_settings = $this->get_global_settings();
+		if ( function_exists( 'siteorigin_panels_setting' ) ) {
+			// If the global widget setting is different to the page builder responsive setting, we should use the global widget setting
+			if ( ! empty( $global_settings['responsive_breakpoint'] ) && siteorigin_panels_setting( 'mobile-width' ) != intval( $global_settings['responsive_breakpoint'] ) ) {
+				$less_vars['responsive_breakpoint'] = $global_settings['responsive_breakpoint'];
+			} else {
+				$less_vars['responsive_breakpoint'] = siteorigin_panels_setting( 'mobile-width' );
+			}
+		} else {
+			$less_vars['responsive_breakpoint'] = $global_settings['responsive_breakpoint'];
+		}
+		$less_vars['responsive_breakpoint'] .= 'px';
 
 		return $less_vars;
+	}
+
+	function get_settings_form() {
+		return array(
+			'responsive_breakpoint' => array(
+				'type'        => 'number',
+				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
+				'default'     => ( ! function_exists( 'siteorigin_panels_setting' ) ? 520 : false ), // We want to default to the global setting if Page Builder is enabled so we're not going to set anything
+				'description' => sprintf(
+					__( 'At what resolution the features widget will collapse. %s', 'so-widgets-bundle' ),
+					( function_exists( 'siteorigin_panels_setting' ) ?  sprintf( __( 'This setting will override the global mobile breakpoint which is currently set to %dpx'), siteorigin_panels_setting( 'mobile-width' ) ) : '' )
+				)
+			)
+		);
 	}
 
 	function get_google_font_fields( $instance ) {
