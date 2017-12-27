@@ -1,8 +1,17 @@
+@import "../../../base/less/mixins";
+
+.widget-function('import_google_font');
 
 @border_color: #E3E3E3;
 @background_color: #F8F8F8;
 @title_color: default;
+@title_font_family: default;
+@title_font_weight: default;
+@title_font_size: default;
 @subtitle_color: default;
+@subtitle_font_family: default;
+@subtitle_font_weight: default;
+@subtitle_font_size: default;
 
 .sow-cta-base {
 	border-color: @border_color;
@@ -12,10 +21,16 @@
 		.sow-cta- {
 			&title {
 				color: @title_color;
+				font-family: @title_font_family;
+				font-weight: @title_font_weight;
+				font-size: @title_font_size;
 			}
 
 			&subtitle {
 				color: @subtitle_color;
+				font-family: @subtitle_font_family;
+				font-weight: @subtitle_font_weight;
+				font-size: @subtitle_font_size;
 			}
 		}
 	}
