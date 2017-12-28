@@ -730,7 +730,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		$instance_hash = md5( serialize( $instance ) );
 		unset( $instance['_sow_form_id'] );
 
-		if ( ! empty( $instance['settings']['submit_attributes']['submit_id'] ) ) {
+		if ( ! empty( $instance['settings']['submit_id'] ) ) {
 			$submit_attributes['id'] = $instance['settings']['submit_id'];
 		}
 
@@ -807,8 +807,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'submit_font_size'           => $instance['design']['submit']['font_size'],
 			'submit_weight'              => $instance['design']['submit']['weight'],
 			'submit_padding'             => $instance['design']['submit']['padding'],			
-			'submit_width'               => $instance['design']['submit']['width'],
-			'submit_align'               => $instance['design']['submit']['align'],
+			'submit_width'               => ! empty( $instance['design']['submit']['width'] ) ? $instance['design']['submit']['width'] : '',
+			'submit_align'               => ! empty( $instance['design']['submit']['align'] ) ? $instance['design']['submit']['align'] : '',
 			'submit_inset_highlight'     => $instance['design']['submit']['inset_highlight'] . '%',
 
 			// Input focus styles
@@ -1082,9 +1082,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			} else if ( ! $success ) {
 				$errors['_general']['send'] = __( 'Error sending email, please try again later.', 'so-widgets-bundle' );
 			} else {
-				// This action to allow other plugins to run code when contact form has successfully been sent 
+				// This action will allow other plugins to run code when contact form has successfully been sent 
 				do_action( 'siteorigin_widgets_contact_sent', $instance, $email_fields );
 			}
+		} else {
+			// This action will allow other plugins to run code when the contact form submission has resulted in error
+			do_action( 'siteorigin_widgets_contact_error', $instance, $email_fields, $errors );
 		}
 
 		$send_cache[ $send_cache_hash ] = array(
