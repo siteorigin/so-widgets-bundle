@@ -4,14 +4,14 @@
 @margin: 0.1em;
 @align: left;
 @mobile_align: left;
-@mobile_width: default;
+@responsive_breakpoint: 780px;
 
 .social-media-button-container {
     .clearfix();
 
     text-align: @align;
 
-    @media (max-width: @mobile_width) {
+    @media (max-width: @responsive_breakpoint) {
         text-align: @mobile_align;
     }
 

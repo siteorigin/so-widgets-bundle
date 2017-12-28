@@ -25,6 +25,17 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	function get_settings_form() {
+		return array(
+			'responsive_breakpoint' => array(
+				'type'        => 'measurement',
+				'label'       => __( 'Mobile Collapse Width', 'so-widgets-bundle' ),
+				'default'     => ( function_exists( 'siteorigin_panels_render' ) ) ? siteorigin_panels_setting( 'mobile-width' ) : 780,
+				'description' => __( 'This setting allows you to set the resoloution for when the Mobile Align setting will be used.', 'so-widgets-bundle' )
+			)
+		);
+	}
+
 	function get_widget_form(){
 
 		if( empty( $this->networks ) ) {
@@ -145,7 +156,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 					),
 					'mobile_align'      => array(
 						'type'    => 'select',
-						'label'   => __( 'Mobile Alignment', 'so-widgets-bundle' ),
+						'label'   => __( 'Mobile Align', 'so-widgets-bundle' ),
 						'default' => 'left',
 						'options' => array(
 							'left'    => __( 'Left', 'so-widgets-bundle' ),
@@ -164,13 +175,6 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 							'0.3' => __( 'High', 'so-widgets-bundle' ),
 							'0.4' => __( 'Very high', 'so-widgets-bundle' ),
 						),
-					),
-					'mobile_width' => array(
-						'type' => 'text',
-						'label' => __( 'Mobile Collapse Width', 'so-widgets-bundle' ),
-						'description' => __( 'The resolution to treat as a mobile resolution.', 'so-widgets-bundle' ),
-						'default' => ( function_exists( 'siteorigin_panels_render' ) ) ? siteorigin_panels_setting( 'mobile-width' ) : 780,
-						'sanitize' => 'intval',
 					)
 				)
 			),
@@ -234,14 +238,15 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		}
 		$margin = $top . ' ' . $right . ' ' . $bottom . ' ' . $left;
 
+		$global_settings = $this->get_global_settings();
 		return array(
-			'icon_size'    => $design['icon_size'] . 'em',
-			'rounding'     => $design['rounding'] . 'em',
-			'padding'      => $design['padding'] . 'em',
-			'align'        => $design['align'],
-			'mobile_align' => $design['mobile_align'],
-			'mobile_width' => intval($design['mobile_width']) . 'px',
-			'margin'       => $margin
+			'icon_size'             => $design['icon_size'] . 'em',
+			'rounding'              => $design['rounding'] . 'em',
+			'padding'               => $design['padding'] . 'em',
+			'align'                 => $design['align'],
+			'mobile_align'          => $design['mobile_align'],
+			'responsive_breakpoint' => $global_settings['responsive_breakpoint'],
+			'margin'                => $margin
 		);
 	}
 
