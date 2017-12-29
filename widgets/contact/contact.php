@@ -91,7 +91,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'label'   => __( 'Submit button text', 'so-widgets-bundle' ),
 						'default' => __( "Contact Us", 'so-widgets-bundle' )
 					),
-					'id' => array(
+					'submit_id' => array(
 						'type' => 'text',
 						'label' => __( 'Button ID', 'so-widgets-bundle' ),
 						'description' => __( 'An ID attribute allows you to target this button in JavaScript.', 'so-widgets-bundle' ),
