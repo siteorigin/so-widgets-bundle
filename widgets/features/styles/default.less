@@ -21,6 +21,8 @@
 @icon_size: 24px;
 @use_icon_size: false;
 
+@responsive_breakpoint: 520px;
+
 .sow-features-list {
 
     margin: 0 -25px;
@@ -162,7 +164,7 @@
         clear: both;
     }
 
-    @media (max-width: 520px) {
+    @media (max-width: @responsive_breakpoint) {
         &.sow-features-responsive {
             margin: 0;
 

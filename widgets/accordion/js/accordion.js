@@ -74,7 +74,11 @@ jQuery( function ( $ ) {
 						}
 					}
 					
-					window.location.hash = anchors.join( ',' );
+					if ( anchors && anchors.length ) {
+						window.location.hash = anchors.join( ',' );
+					} else {
+						window.history.pushState( '', document.title, window.location.pathname + window.location.search );
+					}
 				};
 				
 				var updatePanelStates = function () {
