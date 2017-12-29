@@ -30,7 +30,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			'responsive_breakpoint' => array(
 				'type'        => 'measurement',
 				'label'       => __( 'Mobile Collapse Width', 'so-widgets-bundle' ),
-				'default'     => ( function_exists( 'siteorigin_panels_render' ) ) ? siteorigin_panels_setting( 'mobile-width' ) : 780,
+				'default'     => 780,
 				'description' => __( 'This setting allows you to set the resoloution for when the Mobile Align setting will be used.', 'so-widgets-bundle' )
 			)
 		);
@@ -244,8 +244,8 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			'rounding'              => $design['rounding'] . 'em',
 			'padding'               => $design['padding'] . 'em',
 			'align'                 => $design['align'],
-			'mobile_align'          => $design['mobile_align'],
-			'responsive_breakpoint' => $global_settings['responsive_breakpoint'],
+			'mobile_align'          => ! empty( $design['mobile_align'] ) ? $design['mobile_align'] : '',
+			'responsive_breakpoint' => ! empty( $global_settings['responsive_breakpoint'] ) ? $global_settings['responsive_breakpoint'] : '',
 			'margin'                => $margin
 		);
 	}
