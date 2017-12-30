@@ -11,13 +11,12 @@
 		text-decoration: none;
 		line-height: 1em;
 
-
 		.sow-icon-image,
 		[class^="sow-icon-"] {
 			font-size: 1.3em;
 			height: 1em;
 			width: auto;
-			margin: -0.1em 0.75em -0.2em -0.75em;
+			margin: -0.1em 0.75em -0.2em -0.75em; // Allows for the default value if no placement is set
 			display: block;
 			float: left;
 		}
@@ -25,6 +24,43 @@
 		.sow-icon-image {
 			width: 1em;
 			background-size: cover;
+		}
+
+		&.ow-icon-placement-top {
+			.sow-icon-image,
+			[class^="sow-icon-"] {
+				margin: 0 auto 0.5em;
+				float: none;
+			}
+		}
+
+		&.ow-icon-placement-right {
+			.sow-icon-image,
+			[class^="sow-icon-"] {
+				margin: -0.1em -0.75em -0.2em 0.75em;
+				float: right;
+			}
+		}
+
+		&.ow-icon-placement-bottom {
+			.sow-icon-image,
+			[class^="sow-icon-"] {
+				float: none;
+				margin: 0.5em auto 0;
+			}
+		}
+
+		&.ow-icon-placement-bottom > span {
+			display: flex;
+			flex-direction: column-reverse;
+		}
+
+		&.ow-icon-placement-left {
+			.sow-icon-image,
+			[class^="sow-icon-"] {
+				margin: -0.1em 0.75em -0.2em -0.75em;
+				float: left;
+			}
 		}
 	}
 
