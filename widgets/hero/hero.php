@@ -256,9 +256,10 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 					'text_shadow' => array(
 						'type' => 'slider',
 						'label' => __( 'Text shadow intensity', 'so-widgets-bundle' ),
-						'max' => 100,
+						'max' => 1,
 						'min' => 0,
-						'default' => 25,
+						'step' => 0.01,
+						'default' => 0.25,
 					),
 
 					'link_color' => array(
@@ -377,11 +378,12 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		$less['heading_shadow'] = intval( $instance['design']['heading_shadow'] );
 		$less['heading_color'] = $instance['design']['heading_color'];
-		$less['text_shadow'] = intval( $instance['design']['text_shadow'] );
+		$less['text_shadow'] = ! empty( $instance['design']['text_shadow'] ) ? floatval( $instance['design']['text_shadow'] ) : '';
 		$less['text_color'] = $instance['design']['text_color'];
 
-		$less['link_color'] = $instance['design']['link_color'];
-		$less['link_color_hover'] = $instance['design']['link_color_hover'];
+
+		$less['link_color'] = ! empty( $instance['design']['link_color'] ) ? $instance['design']['link_color'] : '';
+		$less['link_color_hover'] = ! empty( $instance['design']['link_color_hover'] ) ? $instance['design']['link_color_hover'] : '';
 
 		$text_font = siteorigin_widget_get_font( $instance['design']['text_font'] );
 		$less['text_font'] = $text_font['family'];
@@ -389,10 +391,12 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			$less['text_font_weight'] = $text_font['weight'];
 		}
 
-		$heading_font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
-		$less['heading_font'] = $heading_font['family'];
-		if ( ! empty( $heading_font['weight'] ) ) {
-			$less['heading_font_weight'] = $heading_font['weight'];
+		if ( ! empty( $instance['design']['heading_font'] ) ) {
+			$heading_font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
+			$less['heading_font'] = $heading_font['family'];
+			if ( ! empty( $heading_font['weight'] ) ) {
+				$less['heading_font_weight'] = $heading_font['weight'];
+			}
 		}
 
 		return $less;
