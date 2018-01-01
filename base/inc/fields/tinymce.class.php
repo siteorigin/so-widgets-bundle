@@ -517,18 +517,16 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		echo '<div id="wp-' . esc_attr( $editor_id ) . '-media-buttons" class="wp-media-buttons">';
 		
 		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
-		if ( function_exists( 'grunion_media_button' ) && ! is_null( $screen ) ) {
-			// Temporarily disable the Jetpack Grunion contact form editor on the widgets screen.
-			if( $screen->id == 'widgets' ) {
-				remove_action( 'media_buttons', 'grunion_media_button', 999 );
-			}
-			do_action( 'media_buttons', $editor_id );
-			// Temporarily disable the Jetpack Grunion contact form editor on the widgets screen.
-			if( $screen->id == 'widgets' ) {
-				add_action( 'media_buttons', 'grunion_media_button', 999 );
-			}
-		} else {
-			do_action( 'media_buttons', $editor_id );
+		// Temporarily disable the Jetpack Grunion contact form editor on the widgets screen.
+		$disable_grunion = function_exists( 'grunion_media_button' ) && ! is_null( $screen ) && $screen->id == 'widgets';
+
+		if( $disable_grunion ) {
+			remove_action( 'media_buttons', 'grunion_media_button', 999 );
+		}
+		do_action( 'media_buttons', $editor_id );
+		// Temporarily disable the Jetpack Grunion contact form editor on the widgets screen.
+		if( $disable_grunion ) {
+			add_action( 'media_buttons', 'grunion_media_button', 999 );
 		}
 		
 		echo "</div>\n";
