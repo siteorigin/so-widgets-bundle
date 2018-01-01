@@ -385,17 +385,18 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		$less['link_color'] = ! empty( $instance['design']['link_color'] ) ? $instance['design']['link_color'] : '';
 		$less['link_color_hover'] = ! empty( $instance['design']['link_color_hover'] ) ? $instance['design']['link_color_hover'] : '';
 
-		$text_font = siteorigin_widget_get_font( $instance['design']['text_font'] );
-		$less['text_font'] = $text_font['family'];
-		if ( ! empty( $text_font['weight'] ) ) {
-			$less['text_font_weight'] = $text_font['weight'];
-		}
 
-		if ( ! empty( $instance['design']['heading_font'] ) ) {
-			$heading_font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
-			$less['heading_font'] = $heading_font['family'];
-			if ( ! empty( $heading_font['weight'] ) ) {
-				$less['heading_font_weight'] = $heading_font['weight'];
+		$heading_font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
+		$less['heading_font'] = $heading_font['family'];
+		if ( ! empty( $heading_font['weight'] ) ) {
+			$less['heading_font_weight'] = $heading_font['weight'];
+		}
+		
+		if ( ! empty( $instance['design']['text_font'] ) ) {
+			$text_font = siteorigin_widget_get_font( $instance['design']['text_font'] );
+			$less['text_font'] = $text_font['family'];
+			if ( ! empty( $text_font['weight'] ) ) {
+				$less['text_font_weight'] = $text_font['weight'];
 			}
 		}
 
@@ -422,7 +423,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	function get_google_font_fields( $instance ) {
 		return array(
 			$instance['design']['heading_font'],
-			$instance['design']['text_font'],
+			! empty( $instance['design']['text_font'] ) ? $instance['design']['text_font'] : '',
 		);
 	}
 
