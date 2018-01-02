@@ -518,12 +518,14 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		
 		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
 		// Temporarily disable the Jetpack Grunion contact form editor on the widgets screen.
-		if( ! is_null( $screen ) && $screen->id == 'widgets' ) {
+		$disable_grunion = function_exists( 'grunion_media_button' ) && ! is_null( $screen ) && $screen->id == 'widgets';
+
+		if( $disable_grunion ) {
 			remove_action( 'media_buttons', 'grunion_media_button', 999 );
 		}
 		do_action( 'media_buttons', $editor_id );
 		// Temporarily disable the Jetpack Grunion contact form editor on the widgets screen.
-		if( ! is_null( $screen ) && $screen->id == 'widgets' ) {
+		if( $disable_grunion ) {
 			add_action( 'media_buttons', 'grunion_media_button', 999 );
 		}
 		
