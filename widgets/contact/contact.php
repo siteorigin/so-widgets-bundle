@@ -730,13 +730,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		$instance_hash = md5( serialize( $instance ) );
 		unset( $instance['_sow_form_id'] );
 
+		$submit_attributes = array();
 		if ( ! empty( $instance['settings']['submit_id'] ) ) {
 			$submit_attributes['id'] = $instance['settings']['submit_id'];
 		}
 
 		return array(
 			'instance_hash' => $instance_hash,
-			'submit_attributes' => isset( $submit_attributes ) ? $submit_attributes : '',
+			'submit_attributes' => $submit_attributes,
 			'onclick' => ! empty( $instance['settings']['onclick'] ) ? $instance['settings']['onclick'] : '',
 		);
 	}
