@@ -48,8 +48,9 @@ else {
 		<?php endif; ?>
 
 		<div class="sow-submit-wrapper <?php if( $instance['design']['submit']['styled'] ) echo 'sow-submit-styled' ?>">
-			<input type="submit" value="<?php echo esc_attr( $instance['settings']['submit_text'] ) ?>"
-				   class="sow-submit">
+			<input type="submit" value="<?php echo esc_attr( $instance['settings']['submit_text'] ) ?>" class="sow-submit"
+				   <?php foreach( $submit_attributes as $name => $val ) echo $name . '="' . esc_attr( $val ) . '" ' ?>
+			<?php if ( ! empty( $onclick ) ) echo 'onclick="' . esc_js( $onclick ) . '"'; ?>>
 		</div>
 	</form>
 	<?php
