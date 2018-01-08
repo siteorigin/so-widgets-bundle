@@ -773,7 +773,7 @@ var sowbForms = window.sowbForms || {};
 							$soWidgetField.append($inputElement.remove());
 						}
 						else {
-							var $originalInput = $item.find('[name="' + nm + '"]');
+							var $originalInput = id ? $item.find( '#' + id ) : $item.find('[name="' + nm + '"]');
 							if ($originalInput.length && $originalInput.val() != null) {
 								$inputElement.val($originalInput.val());
 							}
