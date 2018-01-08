@@ -88,7 +88,7 @@ function siteorigin_widget_post_selector_process_query( $query ){
 	}
 
 	// Exclude the current post (if applicable) to avoid any issues associated with showing the same post again
-	if( get_the_id() != false ){
+	if( is_singular() && get_the_id() != false ){
 		$query['post__not_in'][] = get_the_id();
 	}
 
