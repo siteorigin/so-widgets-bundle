@@ -376,9 +376,10 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			$less[ $key ] = $this->add_default_measurement_unit( $val );
 		}
 
+		var_dump($instance['design']['text_shadow']);
 		$less['heading_shadow'] = intval( $instance['design']['heading_shadow'] );
 		$less['heading_color'] = $instance['design']['heading_color'];
-		$less['text_shadow'] = ! empty( $instance['design']['text_shadow'] ) ? floatval( $instance['design']['text_shadow'] ) : '';
+		$less['text_shadow'] = isset( $instance['design']['text_shadow'] ) ? floatval( $instance['design']['text_shadow'] ) : 0.25;
 		$less['text_color'] = $instance['design']['text_color'];
 
 
