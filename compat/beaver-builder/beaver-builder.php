@@ -32,12 +32,19 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 		global $wp_widget_factory;
 
 		// Beaver Builder does it's editing in the front end so enqueue required form scripts for active widgets.
+		$any_widgets_active = false;
 		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
 			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
+				$any_widgets_active = true;
 				ob_start();
 				$widget_obj->form( array() );
 				ob_clean();
 			}
+		}
+
+		// No widgets active. :/ Let's get outta here.
+		if ( ! $any_widgets_active ) {
+			return;
 		}
 
 		if ( ! wp_script_is( 'wp-color-picker' ) ) {

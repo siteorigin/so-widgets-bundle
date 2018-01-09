@@ -91,6 +91,16 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'label'   => __( 'Submit button text', 'so-widgets-bundle' ),
 						'default' => __( "Contact Us", 'so-widgets-bundle' )
 					),
+					'submit_id' => array(
+						'type' => 'text',
+						'label' => __( 'Button ID', 'so-widgets-bundle' ),
+						'description' => __( 'An ID attribute allows you to target this button in JavaScript.', 'so-widgets-bundle' ),
+					),
+					'onclick' => array(
+						'type'        => 'text',
+						'label'       => __( 'Onclick', 'so-widgets-bundle' ),
+						'description' => __( 'Run this JavaScript when the button is clicked. Ideal for tracking.', 'so-widgets-bundle' ),
+					),
 					'required_field_indicator'         => array(
 						'type'          => 'checkbox',
 						'label'         => __( 'Indicate required fields with asterisk (*)', 'so-widgets-bundle' ),
@@ -111,8 +121,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'required_fields[hide]' => array( 'hide' ),
 						)
 					),
-
-				)
+				),
 			),
 
 			'fields' => array(
@@ -126,9 +135,10 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				'fields'     => array(
 
 					'type' => array(
-						'type'          => 'select',
-						'label'         => __( 'Field Type', 'so-widgets-bundle' ),
-						'options'       => array(
+						'type'    => 'select',
+						'label'   => __( 'Field Type', 'so-widgets-bundle' ),
+						'prompt'  => __( 'Select Field Type', 'so-widgets-bundle' ),
+						'options' => array(
 							'name'       => __( 'Name', 'so-widgets-bundle' ),
 							'email'      => __( 'Email', 'so-widgets-bundle' ),
 							'subject'    => __( 'Subject', 'so-widgets-bundle' ),
@@ -268,7 +278,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 						)
 					),
-				)
+				),
 			),
 
 			'design' => array(
@@ -573,6 +583,20 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'label'   => __( 'Padding', 'so-widgets-bundle' ),
 								'default' => '10px',
 							),
+							'width' => array(
+								'type'    => 'measurement',
+								'label'   => __( 'Width', 'so-widgets-bundle' ),
+							),
+							'align'    => array(
+								'type'    => 'select',
+								'label'   => __( 'Align', 'so-widgets-bundle' ),
+								'default' => 'left',
+								'options' => array(
+									'left'    => __( 'Left', 'so-widgets-bundle' ),
+									'right'   => __( 'Right', 'so-widgets-bundle' ),
+									'center'  => __( 'Center', 'so-widgets-bundle' ),
+								)
+							),
 							'inset_highlight'     => array(
 								'type'        => 'slider',
 								'label'       => __( 'Inset highlight', 'so-widgets-bundle' ),
@@ -697,19 +721,25 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_template_variables( $instance, $args ) {
-		$vars = array();
-
 		unset( $instance['title'] );
 		unset( $instance['display_title'] );
 		unset( $instance['design'] );
 		unset( $instance['panels_info'] );
 
 		// Include '_sow_form_id' in generation of 'instance_hash' to allow multiple instances of the same form on a page.
-		$vars['instance_hash'] = md5( serialize( $instance ) );
-
+		$instance_hash = md5( serialize( $instance ) );
 		unset( $instance['_sow_form_id'] );
 
-		return $vars;
+		$submit_attributes = array();
+		if ( ! empty( $instance['settings']['submit_id'] ) ) {
+			$submit_attributes['id'] = $instance['settings']['submit_id'];
+		}
+
+		return array(
+			'instance_hash' => $instance_hash,
+			'submit_attributes' => $submit_attributes,
+			'onclick' => ! empty( $instance['settings']['onclick'] ) ? $instance['settings']['onclick'] : '',
+		);
 	}
 
 	function get_less_variables( $instance ) {
@@ -777,7 +807,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'submit_text_color'          => $instance['design']['submit']['text_color'],
 			'submit_font_size'           => $instance['design']['submit']['font_size'],
 			'submit_weight'              => $instance['design']['submit']['weight'],
-			'submit_padding'             => $instance['design']['submit']['padding'],
+			'submit_padding'             => $instance['design']['submit']['padding'],			
+			'submit_width'               => ! empty( $instance['design']['submit']['width'] ) ? $instance['design']['submit']['width'] : '',
+			'submit_align'               => ! empty( $instance['design']['submit']['align'] ) ? $instance['design']['submit']['align'] : '',
 			'submit_inset_highlight'     => $instance['design']['submit']['inset_highlight'] . '%',
 
 			// Input focus styles
@@ -1050,7 +1082,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				$errors['_general']['send'] = $success->get_error_message();
 			} else if ( ! $success ) {
 				$errors['_general']['send'] = __( 'Error sending email, please try again later.', 'so-widgets-bundle' );
+			} else {
+				// This action will allow other plugins to run code when contact form has successfully been sent 
+				do_action( 'siteorigin_widgets_contact_sent', $instance, $email_fields );
 			}
+		} else {
+			// This action will allow other plugins to run code when the contact form submission has resulted in error
+			do_action( 'siteorigin_widgets_contact_error', $instance, $email_fields, $errors );
 		}
 
 		$send_cache[ $send_cache_hash ] = array(

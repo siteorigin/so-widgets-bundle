@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 4.2
-Tested up to: 4.9
+Tested up to: 4.9.1
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
@@ -31,6 +31,17 @@ The collection is growing, but here’s what we have so far.
 * Video Widget to get your videos out there.
 * Headline Widget to get you noticed.
 * Social Links Widget to show you're active.
+* Accordion Widget to compress your content.
+* Contact Form Widget to let people know you care.
+* Editor Widget let's you richly edit text anywhere.
+* Hero Widget that'll save your site design.
+* Icon Widget for when only icons will do.
+* Image Grid Widget that'll let you add images everywhere... in a grid.
+* Layout Slider Widget lets you build layouts on slides using SiteOrigin Page Builder.
+* Masonry Widget to add images in a masonry layout.
+* Tabs Widget that'll let you group content into tabbed sections.
+* Taxonomy Widget to display a post's taxonomies.
+* Testimonials Widget to show people what your users/customers think of you.
 
 Once you enable a widget, you'll be able to use it anywhere standard widgets are used. You can manage your widgets by going to Plugins > SiteOrigin Widgets in your WordPress admin.
 

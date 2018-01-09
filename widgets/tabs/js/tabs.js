@@ -55,10 +55,13 @@ jQuery( function ( $ ) {
 			if ( useAnchorTags ) {
 				var updateSelectedTab = function () {
 					if ( window.location.hash ) {
-						var tab = $tabs.filter( '[data-anchor="' + window.location.hash.replace( '#', '' ) + '"]' );
-						if ( tab ) {
-							selectTab( tab, true );
-						}
+						var anchors = window.location.hash.replace( '#', '' ).split( ',' );
+						anchors.forEach( function ( anchor ) {
+							var tab = $tabs.filter( '[data-anchor="' + anchor + '"]' );
+							if ( tab ) {
+								selectTab( tab, true );
+							}
+						} );
 					}
 				};
 				$( window ).on( 'hashchange', updateSelectedTab );

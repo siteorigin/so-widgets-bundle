@@ -27,6 +27,9 @@ var SiteOriginContactForm = {
 
 			// Disable the submit button on click to avoid multiple submits.
 			$contactForms.submit( function () {
+				if ( window.location.hash ) {
+					$( this ).attr( 'action', $( this ).attr( 'action' ) + ',' + window.location.hash.replace( /^#/, '' ) );
+				}
 				$submitButton.prop('disabled', true);
 			} );
 		});
