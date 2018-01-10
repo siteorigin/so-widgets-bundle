@@ -20,7 +20,7 @@ class SiteOrigin_Widget_Field_Checkbox extends SiteOrigin_Widget_Field_Base {
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
-		return ! empty( $value );
+		return ! empty( $value ) && ! ( is_string( $value ) && $value === 'false' );
 	}
 
 }

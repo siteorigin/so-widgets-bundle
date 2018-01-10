@@ -28,7 +28,8 @@ else {
 		);
 	}
 	?>
-	<form action="<?php echo esc_url( add_query_arg( false, false ) ) ?>#contact-form-<?php echo esc_attr( $short_hash ) ?>" method="POST" class="sow-contact-form" id="contact-form-<?php echo esc_attr( $short_hash ) ?>">
+	<form action="<?php echo esc_url( add_query_arg( false, false ) ) ?>#contact-form-<?php echo esc_attr( $short_hash ) ?>"
+          method="POST" class="sow-contact-form" id="contact-form-<?php echo esc_attr( $short_hash ) ?>">
 
 		<?php if( !empty($result['errors']['_general']) ) : ?>
 			<ul class="sow-error">
@@ -48,8 +49,9 @@ else {
 		<?php endif; ?>
 
 		<div class="sow-submit-wrapper <?php if( $instance['design']['submit']['styled'] ) echo 'sow-submit-styled' ?>">
-			<input type="submit" value="<?php echo esc_attr( $instance['settings']['submit_text'] ) ?>"
-				   class="sow-submit">
+			<input type="submit" value="<?php echo esc_attr( $instance['settings']['submit_text'] ) ?>" class="sow-submit"
+				   <?php foreach( $submit_attributes as $name => $val ) echo $name . '="' . esc_attr( $val ) . '" ' ?>
+			<?php if ( ! empty( $onclick ) ) echo 'onclick="' . esc_js( $onclick ) . '"'; ?>>
 		</div>
 	</form>
 	<?php

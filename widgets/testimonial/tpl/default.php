@@ -43,7 +43,7 @@
 						<?php if( $link_name ) : ?>
 						<a href="<?php echo sow_esc_url( $url ) ?>" <?php if( ! empty( $new_window ) ) { echo 'target="_blank" rel="noopener noreferrer"'; } ?>>
 						<?php endif; ?>
-							<strong><?php echo esc_html( $testimonial['name'] ) ?></strong>
+							<span class="sow-testimonial-name"><strong><?php echo esc_html( $testimonial['name'] ) ?></strong></span>
 						<?php if( $link_name ) : ?>
 						</a>
 						<?php endif; ?>
@@ -51,7 +51,7 @@
 							<a href="<?php echo sow_esc_url( $url ) ?>" <?php if( ! empty( $new_window ) ) { echo 'target="_blank" rel="noopener noreferrer"'; } ?>>
 						<?php endif; ?>
 						<?php if( ! empty( $location ) ) : ?>
-							<span><?php echo esc_html( $location ) ?></span>
+							<span class="sow-testimonial-location"><?php echo esc_html( $location ) ?></span>
 						<?php endif; ?>
 						<?php if( $link_location ) : ?>
 							</a>

@@ -60,6 +60,7 @@
 
 			.sow-accordion-title {
 				display: inline-block;
+				width: ~"calc(100% - 20px)";
 				& when ( @show_open_close_icon = true ) and ( @heading_title_align = @open_close_location ) {
 					margin-@{open_close_location}: 5px;
 				}
@@ -96,6 +97,7 @@
 				color: @panels_font_color;
 				font-family: @panels_font_family;
 				font-size: @panels_font_size;
+				overflow: auto;
 			}
 		}
 		margin-bottom: @panels_margin_bottom;

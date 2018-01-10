@@ -37,15 +37,12 @@
 
 		text-shadow: 0 1px 0 rgba(0,0,0,0.05);
 
-        .sow-icon-image,
-        [class^="sow-icon-"] {
-            & when ( @has_text = true ) {
-                margin: -0.1em 0.75em -0.2em -0.75em;
-            }
-            & when not ( @has_text = true ) {
-                margin: 0;
-            }
-        }
+		& when not ( @has_text = true ) {
+			.sow-icon-image,
+			[class^="sow-icon-"] {
+					margin: 0;
+			}
+		}
 
 		&:visited,
 		&:active,

@@ -9,16 +9,25 @@ class SiteOrigin_Widget_Field_Slider extends SiteOrigin_Widget_Field_Base {
 	 * The minimum value of the allowed range.
 	 *
 	 * @access protected
-	 * @var int
+	 * @var float
 	 */
 	protected $min;
+
 	/**
 	 * The maximum value of the allowed range.
 	 *
 	 * @access protected
-	 * @var int
+	 * @var float
 	 */
 	protected $max;
+
+    /**
+     * The step size when moving in the range.
+     *
+     * @access protected
+     * @var float
+     */
+    protected $step;
 
 	protected function render_field( $value, $instance ) {
 		?>
@@ -28,8 +37,9 @@ class SiteOrigin_Widget_Field_Slider extends SiteOrigin_Widget_Field_Base {
 		</div>
 		<input type="number" class="siteorigin-widget-input" name="<?php echo esc_attr(  $this->element_name ) ?>" id="<?php echo esc_attr( $this->element_id ) ?>"
 			value="<?php echo !empty( $value ) ? esc_attr( $value ) : 0 ?>"
-			min="<?php echo isset( $this->min ) ? intval( $this->min ) : 0 ?>"
-			max="<?php echo isset( $this->max ) ? intval( $this->max ) : 100 ?>" />
+			min="<?php echo isset( $this->min ) ? floatval( $this->min ) : 0 ?>"
+			max="<?php echo isset( $this->max ) ? floatval( $this->max ) : 100 ?>"
+			step="<?php echo isset( $this->step ) ? floatval( $this->step ) : 1 ?>"/>
 		<?php
 	}
 

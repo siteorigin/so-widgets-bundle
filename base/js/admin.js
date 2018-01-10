@@ -277,11 +277,12 @@ var sowbForms = window.sowbForms || {};
 				var $c = $$.find('.siteorigin-widget-value-slider');
 
 				$c.slider({
-					max: parseInt($input.attr('max')),
-					min: parseInt($input.attr('min')),
-					value: parseInt($input.val()),
+					max: parseFloat($input.attr('max')),
+					min: parseFloat($input.attr('min')),
+					step: parseFloat($input.attr('step')),
+					value: parseFloat($input.val()),
 					slide: function (event, ui) {
-						$input.val( parseInt( ui.value ) );
+						$input.val( parseFloat( ui.value ) );
 						$input.trigger( 'change' );
 					},
 					change: function( event, ui ) {
@@ -290,7 +291,7 @@ var sowbForms = window.sowbForms || {};
 				});
 				$input.change(function(event, data) {
 					if ( ! ( data && data.silent ) ) {
-						$c.slider( 'value', parseInt( $input.val() ) );
+						$c.slider( 'value', parseFloat( $input.val() ) );
 					}
 				});
 			});
@@ -772,7 +773,7 @@ var sowbForms = window.sowbForms || {};
 							$soWidgetField.append($inputElement.remove());
 						}
 						else {
-							var $originalInput = $item.find('[name="' + nm + '"]');
+							var $originalInput = id ? $item.find( '#' + id ) : $item.find('[name="' + nm + '"]');
 							if ($originalInput.length && $originalInput.val() != null) {
 								$inputElement.val($originalInput.val());
 							}

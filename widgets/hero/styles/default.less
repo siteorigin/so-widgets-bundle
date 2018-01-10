@@ -13,11 +13,17 @@
 @heading_size: 38px;
 @text_size: 16px;
 @text_color: #F6F6F6;
-@heading_shadow: 50;
+@text_shadow: 0.25;
+@text_font: default;
+@text_font_weight: 500;
+
+@link_color: default;
+@link_color_hover: default;
 
 @heading_font: default;
 @heading_font_weight: 400;
 @heading_color: #FFFFFF;
+@heading_shadow: 50;
 
 .sow-slider-base {
 
@@ -32,7 +38,9 @@
 			h1,h2,h3,h4,h5,h6{
 				line-height: 1.375em;
 				color: @heading_color;
-				text-shadow: 0 2px 2px rgba( 0, 0, 0, @heading_shadow/100 );
+				& when not ( @heading_shadow = 0 ) {
+					text-shadow: 0 2px 2px rgba( 0, 0, 0, @heading_shadow/100 );
+				}
 				margin: 0.1em 0;
 
 				.font(@heading_font, @heading_font_weight);
@@ -62,11 +70,22 @@
 				font-size: @heading_size * 0.4;
 			}
 
-			p{
+			a {
+				color: @link_color;
+				&:hover {
+					color: @link_color_hover;
+				}
+			}
+
+			p {
 				color: @text_color;
-				text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+				& when not ( @text_shadow = 0 ) {
+					text-shadow: 0 2px 2px rgba( 0, 0, 0, @text_shadow );
+				}
 				margin: 1em 0;
 				font-size: @text_size;
+
+				.font(@text_font, @text_font_weight);
 			}
 
 			.sow-hero-buttons {
@@ -75,7 +94,7 @@
 
 				.so-widget-sow-button {
 					display: inline-block;
-					margin: 0 6px;
+					margin: 3px 6px 0;
 				}
 
 			}

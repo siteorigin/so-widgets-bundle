@@ -232,22 +232,44 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 					'heading_shadow' => array(
 						'type' => 'slider',
-						'label' => __('Heading shadow intensity', 'so-widgets-bundle'),
+						'label' => __( 'Heading shadow intensity', 'so-widgets-bundle' ),
 						'max' => 100,
 						'min' => 0,
 						'default' => 50,
 					),
 
-					'text_size' => array(
-						'type' => 'measurement',
-						'label' => __('Text size', 'so-widgets-bundle'),
-						'default' => '16px',
-					),
-
 					'text_color' => array(
 						'type' => 'color',
-						'label' => __('Text color', 'so-widgets-bundle'),
+						'label' => __( 'Text color', 'so-widgets-bundle' ),
 						'default' => '#F6F6F6',
+					),
+					'text_size' => array(
+						'type' => 'measurement',
+						'label' => __( 'Text size', 'so-widgets-bundle' ),
+						'default' => '16px',
+					),
+					'text_font' => array(
+						'type' => 'font',
+						'label' => __( 'Text font', 'so-widgets-bundle' ),
+						'default' => '',
+					),
+					'text_shadow' => array(
+						'type' => 'slider',
+						'label' => __( 'Text shadow intensity', 'so-widgets-bundle' ),
+						'max' => 1,
+						'min' => 0,
+						'step' => 0.01,
+						'default' => 0.25,
+					),
+
+					'link_color' => array(
+						'type' => 'color',
+						'label' => __( 'Link color', 'so-widgets-bundle' )
+					),
+
+					'link_color_hover' => array(
+						'type' => 'color',
+						'label' => __( 'Link Hover Color', 'so-widgets-bundle' )
 					),
 
 				)
@@ -355,14 +377,27 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		}
 
 		$less['heading_shadow'] = intval( $instance['design']['heading_shadow'] );
-
 		$less['heading_color'] = $instance['design']['heading_color'];
+		$less['text_shadow'] = isset( $instance['design']['text_shadow'] ) ? floatval( $instance['design']['text_shadow'] ) : 0.25;
 		$less['text_color'] = $instance['design']['text_color'];
 
-		$font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
-		$less['heading_font'] = $font['family'];
-		if ( ! empty( $font['weight'] ) ) {
-			$less['heading_font_weight'] = $font['weight'];
+
+		$less['link_color'] = ! empty( $instance['design']['link_color'] ) ? $instance['design']['link_color'] : '';
+		$less['link_color_hover'] = ! empty( $instance['design']['link_color_hover'] ) ? $instance['design']['link_color_hover'] : '';
+
+
+		$heading_font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
+		$less['heading_font'] = $heading_font['family'];
+		if ( ! empty( $heading_font['weight'] ) ) {
+			$less['heading_font_weight'] = $heading_font['weight'];
+		}
+		
+		if ( ! empty( $instance['design']['text_font'] ) ) {
+			$text_font = siteorigin_widget_get_font( $instance['design']['text_font'] );
+			$less['text_font'] = $text_font['family'];
+			if ( ! empty( $text_font['weight'] ) ) {
+				$less['text_font_weight'] = $text_font['weight'];
+			}
 		}
 
 		return $less;
@@ -385,13 +420,11 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	 *
 	 * @return string
 	 */
-	function less_import_google_font($instance, $args) {
-		if( empty( $instance ) ) return;
-
-		$font_import = siteorigin_widget_get_font( $instance['design']['heading_font'] );
-		if( !empty( $font_import['css_import'] ) ) {
-			return  $font_import['css_import'];
-		}
+	function get_google_font_fields( $instance ) {
+		return array(
+			$instance['design']['heading_font'],
+			! empty( $instance['design']['text_font'] ) ? $instance['design']['text_font'] : '',
+		);
 	}
 
 	function wrapper_class_filter( $classes, $instance ){
