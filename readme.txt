@@ -65,6 +65,33 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.11.3 - 10 January 2018 =
+* Hero: Add margin-top to so-widget-sow-button for spacing.
+* Accordion: Added overflow to prevent Image overlap.
+* Google Maps: Always register Google Maps script.
+* Social Buttons: Mobile Alignment global widget settings
+* Contact Form: Ability to control the width of the submit button.
+* Contact Form: Add alignment options for submit button.
+* Contact Form: Setting submit button gradient intensity to 0 removes gradient.
+* Contact Form: Add success and error hooks.
+* Accordion: Don't output widget title if not set.
+* Accordion: Icon title collapse fix.
+* Contact Form: Add placeholder for field type input.
+* Button: Icon placement setting.
+* Hero: Adjustable Paragraph text shadow.
+* Hero: Add font family setting for paragraphs.
+* Hero: Add link color picker.
+* Slider field: allow float values and allow specifying step size.
+* Contact Form: Add ability to set onclick and id for submit button.
+* Features: Add ability to control responsive breakpoint.
+* Global Settings: Add support for global settings added by themes.
+* Beaver Builder Compat: Don't enqueue assets when all widgets are deactivated.
+* Hero: Text font empty check.
+* Contact Form: Preserve existing location hash when contact form is submitted.
+* Post Selector: Only include current post id in exclusion if singular.
+* Copy correct radio values when duplicating repeater items.
+* Checkbox field: Parse string value 'false' in checkbox field sanitization.
+
 = 1.11.2 - 27 November 2017 =
 * Fix compatibility with Beaver Builder Lite.
 * Tabs: Recalculate height on resize.
