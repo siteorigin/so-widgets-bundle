@@ -980,22 +980,8 @@ var sowbForms = window.sowbForms || {};
 					} else {
 						return;
 					}
-				} else if ( $$.prop( 'tagName' ) === 'TEXTAREA' && $$.hasClass( 'wp-editor-area' ) ) {
-					// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
-					var editor = null;
-					if ( typeof tinyMCE !== 'undefined' ) {
-						editor = tinyMCE.get( $$.attr( 'id' ) );
-					}
-
-					if ( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
-						fieldValue = editor.getContent();
-					}
-					else {
-						fieldValue = $$.val();
-					}
 				} else if ( $$.prop( 'tagName' ) === 'SELECT' ) {
 					var selected = $$.find( 'option:selected' );
-
 					if ( selected.length === 1 ) {
 						fieldValue = $$.find( 'option:selected' ).val();
 					}
@@ -1005,11 +991,9 @@ var sowbForms = window.sowbForms || {};
 							return $( n ).val();
 						} );
 					}
-
 				} else {
 					fieldValue = $$.val();
 				}
-
 				for ( var i = 0; i < parts.length; i++ ) {
 					if ( i === parts.length - 1 ) {
 						if ( parts[i] === '' ) {
