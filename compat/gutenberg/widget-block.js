@@ -106,7 +106,9 @@
 			} );
 			
 			if ( props.editing ) {
-				return el(
+				var widgetForm = props.widgetform ? props.widgetform.data : '';
+				
+				return !! focus && el(
 					Placeholder,
 					{
 						key: 'placeholder',
@@ -124,7 +126,7 @@
 					),
 					el( 'div', {
 						className: 'so-widget-gutenberg-form-container',
-						dangerouslySetInnerHTML: { __html: props.widgetform.data },
+						dangerouslySetInnerHTML: { __html: widgetForm },
 						ref: setupWidgetForm,
 					} )
 				);

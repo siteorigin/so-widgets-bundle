@@ -401,6 +401,9 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		
 		$media_buttons = $this->render_media_buttons( $this->element_id );
 		
+		$settings['baseURL'] = includes_url( 'js/tinymce' );
+		$settings['suffix'] = SCRIPT_DEBUG ? '' : '.min';
+		
 		?><div class="siteorigin-widget-tinymce-container"
 		       data-editor-settings="<?php echo esc_attr( json_encode( $settings ) ) ?>"
 		       data-media-buttons="<?php echo esc_attr( json_encode( array( 'html' => $media_buttons ) ) ) ?>">

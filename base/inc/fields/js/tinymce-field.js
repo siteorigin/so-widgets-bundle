@@ -6,7 +6,8 @@
 		if ( $field.data( 'initialized' ) ) {
 			return;
 		}
-
+		
+		var wpEditor = $( 'body' ).is( '.gutenberg-editor-page' ) ? wp.oldEditor : wp.editor;
 		var $container = $field.find( '.siteorigin-widget-tinymce-container' );
 		var settings = $container.data( 'editorSettings' );
 		var $textarea = $container.find( 'textarea' );
@@ -35,16 +36,16 @@
 			}
 		} );
 
-		wp.editor.remove( id );
-
+		wpEditor.remove( id );
+		window.tinymce.EditorManager.overrideDefaults( { base_url: settings.baseURL, suffix: settings.suffix } );
 		// Wait for textarea to be visible before initialization.
 		if ( $textarea.is( ':visible' ) ) {
-			wp.editor.initialize( id, settings );
+			wpEditor.initialize( id, settings );
 		}
 		else {
 			var intervalId = setInterval( function () {
 				if ( $textarea.is( ':visible' ) ) {
-					wp.editor.initialize( id, settings );
+					wpEditor.initialize( id, settings );
 					clearInterval( intervalId );
 				}
 			}, 500);
