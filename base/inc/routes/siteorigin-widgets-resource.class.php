@@ -158,7 +158,8 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
 			ob_start();
 			/* @var $widget SiteOrigin_Widget */
-			$widget->widget( array(), $widget_data );
+			$instance = $widget->update( $widget_data, $widget_data );
+			$widget->widget( array(), $instance );
 			siteorigin_widget_print_styles();
 			$rendered_widget = ob_get_clean();
 		} else {
