@@ -410,7 +410,11 @@ jQuery(function ($) {
 	sowb.setupGoogleMaps = function() {
 		var libraries = [];
 		var apiKey;
-		$('.sow-google-map-canvas').each(function(index, element) {
+		var $mapCanvas = $('.sow-google-map-canvas');
+		if ( ! $mapCanvas.length ) {
+			return;
+		}
+		$mapCanvas.each(function(index, element) {
 			var $this = $(element);
 			var mapOptions = $this.data( 'options' );
 			if ( mapOptions) {
