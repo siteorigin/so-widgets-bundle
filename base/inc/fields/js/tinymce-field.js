@@ -7,7 +7,11 @@
 			return;
 		}
 		
-		var wpEditor = $( 'body' ).is( '.gutenberg-editor-page' ) ? wp.oldEditor : wp.editor;
+		var inGutenberg = $( 'body' ).is( '.gutenberg-editor-page' );
+		var wpEditor = inGutenberg ? wp.oldEditor : wp.editor;
+		wp.editor.autop = wpEditor.autop;
+		wp.editor.removep = wpEditor.removep;
+		
 		var $container = $field.find( '.siteorigin-widget-tinymce-container' );
 		var settings = $container.data( 'editorSettings' );
 		var $textarea = $container.find( 'textarea' );
@@ -15,7 +19,8 @@
 		var setupEditor = function ( editor ) {
 			editor.on( 'change',
 				function () {
-					window.tinymce.get( id ).save();
+					var ed = window.tinymce.get( id );
+					ed.save();
 					$textarea.trigger( 'change' );
 				}
 			);
