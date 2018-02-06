@@ -305,7 +305,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	 */
 	function video_code( $videos, $classes = array() ){
 		if( empty( $videos ) ) return;
-		$video_element = '<video class="' . esc_attr( implode( ',', $classes ) ) . '" autoplay loop muted>';
+		$video_element = '<video class="' . esc_attr( implode( ',', $classes ) ) . '" autoplay loop muted playsinline>';
 
 		foreach( $videos as $video ) {
 			if( empty( $video['file'] ) && empty ( $video['url'] ) ) continue;
