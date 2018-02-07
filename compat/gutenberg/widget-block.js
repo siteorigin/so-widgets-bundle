@@ -29,7 +29,7 @@
 		},
 		
 		edit: withState( {
-			editing: true,
+			editing: false,
 			formInitialized: false,
 			previewInitialized: false,
 		} )( withAPIData( function( props ) {
@@ -47,6 +47,8 @@
 						'&widgetData=' +
 						encodeURIComponent( JSON.stringify( data ) );
 				}
+			} else if ( ! props.editing ) {
+				props.setState( { editing: true } );
 			}
 			
 			return toGet;
@@ -145,7 +147,7 @@
 							}
 						)
 					),
-					el( 'div', {
+					!! props.widgetpreview && el( 'div', {
 						key: 'preview',
 						className: 'so-widget-gutenberg-preview-container',
 						dangerouslySetInnerHTML: { __html: props.widgetpreview.data },
