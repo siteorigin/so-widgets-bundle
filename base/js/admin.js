@@ -166,43 +166,45 @@ var sowbForms = window.sowbForms || {};
 						$teaser.remove();
 					});
 				});
-
-				var _sow_form_id = $el.find( '> .siteorigin-widgets-form-id' ).val();
-				var $timestampField = $el.find( '> .siteorigin-widgets-form-timestamp' );
-				var _sow_form_timestamp = parseInt( $timestampField.val() || 0 );
-				var data = JSON.parse( sessionStorage.getItem( _sow_form_id ) );
-				if ( data ) {
-					if ( data['_sow_form_timestamp'] > _sow_form_timestamp ) {
-						var $newerNotification = $( '<div class="siteorigin-widget-form-notification">' +
-							'<span>' + soWidgets.backup.newerVersion + '</span>' +
-							'<a class="button button-small so-backup-restore">' + soWidgets.backup.restore + '</a>' +
-							'<a class="button button-small so-backup-dismiss">' + soWidgets.backup.dismiss + '</a>' +
-							'<div><small>' + soWidgets.backup.replaceWarning + '</small></div>' +
-							'</div>' );
-						$el.prepend( $newerNotification );
-
-						$newerNotification.find( '.so-backup-restore' ).click( function () {
-							sowbForms.setWidgetFormValues( $mainForm, data );
-							$newerNotification.slideUp( 'fast', function () {
-								$newerNotification.remove();
+				
+				
+				if ( ! $el.data( 'backupDisabled' ) ) {
+					var _sow_form_id = $el.find( '> .siteorigin-widgets-form-id' ).val();
+					var $timestampField = $el.find( '> .siteorigin-widgets-form-timestamp' );
+					var _sow_form_timestamp = parseInt( $timestampField.val() || 0 );
+					var data = JSON.parse( sessionStorage.getItem( _sow_form_id ) );
+					if ( data ) {
+						if ( data['_sow_form_timestamp'] > _sow_form_timestamp ) {
+							var $newerNotification = $( '<div class="siteorigin-widget-form-notification">' +
+								'<span>' + soWidgets.backup.newerVersion + '</span>' +
+								'<a class="button button-small so-backup-restore">' + soWidgets.backup.restore + '</a>' +
+								'<a class="button button-small so-backup-dismiss">' + soWidgets.backup.dismiss + '</a>' +
+								'<div><small>' + soWidgets.backup.replaceWarning + '</small></div>' +
+								'</div>' );
+							$el.prepend( $newerNotification );
+	
+							$newerNotification.find( '.so-backup-restore' ).click( function () {
+								sowbForms.setWidgetFormValues( $mainForm, data );
+								$newerNotification.slideUp( 'fast', function () {
+									$newerNotification.remove();
+								} );
 							} );
-						} );
-						$newerNotification.find( '.so-backup-dismiss' ).click( function () {
-							$newerNotification.slideUp( 'fast', function () {
-								sessionStorage.removeItem( _sow_form_id );
-								$newerNotification.remove();
+							$newerNotification.find( '.so-backup-dismiss' ).click( function () {
+								$newerNotification.slideUp( 'fast', function () {
+									sessionStorage.removeItem( _sow_form_id );
+									$newerNotification.remove();
+								} );
 							} );
-						} );
-					} else {
-						sessionStorage.removeItem( _sow_form_id );
+						} else {
+							sessionStorage.removeItem( _sow_form_id );
+						}
 					}
+					$el.change( function () {
+						$timestampField.val( new Date().getTime() );
+						var data = sowbForms.getWidgetFormValues( $el );
+						sessionStorage.setItem( _sow_form_id, JSON.stringify( data ) );
+					} );
 				}
-
-				$el.change( function () {
-					$timestampField.val( new Date().getTime() );
-					var data = sowbForms.getWidgetFormValues( $el );
-					sessionStorage.setItem( _sow_form_id, JSON.stringify( data ) );
-				} );
 			}
 			else {
 				$mainForm = $el.closest('.siteorigin-widget-form-main');
@@ -1033,9 +1035,11 @@ var sowbForms = window.sowbForms || {};
 	 * @param data The data from which to set the widget form field values.
 	 * @param skipMissingValues If `true`, this will skip form fields for which the data values are missing.
 	 * 							If `false`, the form fields will be cleared. Default is `false`.
+	 * @param triggerChange If `true`, trigger a 'change' event on each element after it's value is set. Default is `true`.
 	 */
-	sowbForms.setWidgetFormValues = function (formContainer, data, skipMissingValues) {
+	sowbForms.setWidgetFormValues = function (formContainer, data, skipMissingValues, triggerChange) {
 		skipMissingValues = skipMissingValues || false;
+		triggerChange = triggerChange && true;
 		// First check if this form has any repeaters.
 		var depth = 0;
 		var updateRepeaterChildren = function ( formParent, formData ) {
@@ -1148,9 +1152,10 @@ var sowbForms = window.sowbForms || {};
 			else {
 				$$.val( value );
 			}
-
-			$$.trigger( 'change' );
-
+			
+			if ( triggerChange ) {
+				$$.trigger( 'change' );
+			}
 		});
 	};
 

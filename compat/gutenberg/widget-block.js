@@ -79,9 +79,10 @@
 						event.stopImmediatePropagation();
 						props.setState( { editing: false, previewInitialized: false } );
 					} );
+					$mainForm.data( 'backupDisabled', true );
 					$mainForm.sowSetupForm();
 					if ( props.attributes.widgetData ) {
-						sowbForms.setWidgetFormValues( $mainForm, props.attributes.widgetData );
+						sowbForms.setWidgetFormValues( $mainForm, props.attributes.widgetData, false, false );
 					}
 					$mainForm.on( 'change', function () {
 						props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
