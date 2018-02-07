@@ -595,6 +595,7 @@ var sowbForms = window.sowbForms || {};
 					// This prevents some radio inputs values being cleared during the update process.
 					$items.find( 'input[type="radio"].siteorigin-widget-input' ).attr( 'name', '' );
 					$items.trigger('updateFieldPositions');
+					$el.trigger( 'change' );
 				},
 				sortstop: function (event, ui) {
 					if ( ui.item.is( '.siteorigin-widget-field-repeater-item' ) ) {
@@ -607,6 +608,7 @@ var sowbForms = window.sowbForms || {};
 						var $fields = ui.item.find( '.siteorigin-widget-form' ).find( '> .siteorigin-widget-field' );
 						$fields.trigger( 'sowsetupformfield' );
 					}
+					$el.trigger( 'change' );
 				}
 			});
 			$items.trigger('updateFieldPositions');
@@ -672,7 +674,7 @@ var sowbForms = window.sowbForms || {};
 			item.hide().slideDown('fast', function () {
 				$(window).resize();
 			});
-
+			$el.trigger( 'change' );
 		});
 	};
 
@@ -681,6 +683,7 @@ var sowbForms = window.sowbForms || {};
 			var $itemsContainer = $(this).closest('.siteorigin-widget-field-repeater-items');
 			$(this).remove();
 			$itemsContainer.sortable("refresh").trigger('updateFieldPositions');
+			$( el ).trigger( 'change' );
 		});
 	};
 
@@ -741,6 +744,7 @@ var sowbForms = window.sowbForms || {};
 					} else if ( confirm( soWidgets.sure ) ) {
 						$item.slideUp('fast', removeItem );
 					}
+					$el.trigger( 'change' );
 				});
 				itemTop.find('.siteorigin-widget-field-copy').click(function (e) {
 					e.preventDefault();
@@ -847,6 +851,7 @@ var sowbForms = window.sowbForms || {};
 					$copyItem.hide().slideDown('fast', function () {
 						$(window).resize();
 					});
+					$el.trigger( 'change' );
 				});
 
 				$el.find('> .siteorigin-widget-field-repeater-item-form').sowSetupForm();
@@ -975,22 +980,8 @@ var sowbForms = window.sowbForms || {};
 					} else {
 						return;
 					}
-				} else if ( $$.prop( 'tagName' ) === 'TEXTAREA' && $$.hasClass( 'wp-editor-area' ) ) {
-					// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
-					var editor = null;
-					if ( typeof tinyMCE !== 'undefined' ) {
-						editor = tinyMCE.get( $$.attr( 'id' ) );
-					}
-
-					if ( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
-						fieldValue = editor.getContent();
-					}
-					else {
-						fieldValue = $$.val();
-					}
 				} else if ( $$.prop( 'tagName' ) === 'SELECT' ) {
 					var selected = $$.find( 'option:selected' );
-
 					if ( selected.length === 1 ) {
 						fieldValue = $$.find( 'option:selected' ).val();
 					}
@@ -1000,11 +991,9 @@ var sowbForms = window.sowbForms || {};
 							return $( n ).val();
 						} );
 					}
-
 				} else {
 					fieldValue = $$.val();
 				}
-
 				for ( var i = 0; i < parts.length; i++ ) {
 					if ( i === parts.length - 1 ) {
 						if ( parts[i] === '' ) {

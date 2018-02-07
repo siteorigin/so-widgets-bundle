@@ -356,6 +356,14 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 		return str_replace( '_', '-', implode( ' ', $classes ) );
 	}
 
+	function get_form_teaser(){
+		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
+		return sprintf(
+			__( 'Get more font customization options with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/testimonial" target="_blank" rel="noopener noreferrer">',
+			'</a>'
+		);
+	}
 }
 
 siteorigin_widget_register( 'sow-testimonials', __FILE__, 'SiteOrigin_Widgets_Testimonials_Widget' );
