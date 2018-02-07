@@ -105,11 +105,10 @@
 			var widgetsOptions = props.widgets.data.map( function ( widget ) {
 				return { value: widget.class, label: widget.name };
 			} );
-			
 			if ( props.editing ) {
 				var widgetForm = props.widgetform ? props.widgetform.data : '';
 				
-				return !! focus && el(
+				return el(
 					Placeholder,
 					{
 						key: 'placeholder',
@@ -133,7 +132,7 @@
 				);
 			} else {
 				return [
-					!! focus && el(
+					!! props.focus && el(
 						BlockControls,
 						{ key: 'controls' },
 						el(
