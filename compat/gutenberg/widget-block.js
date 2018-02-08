@@ -65,13 +65,21 @@
 				}
 			}
 			
+			function switchToEditing() {
+				props.setState( { editing: true, formInitialized: false } );
+			}
+			
+			function switchToPreview() {
+				props.setState( { editing: false, previewInitialized: false } );
+			}
+			
 			function setupWidgetForm( formContainer ) {
 				var $mainForm = $( formContainer ).find( '.siteorigin-widget-form-main' );
 				if ( $mainForm.length > 0 && ! props.formInitialized ) {
 					var $previewContainer = $mainForm.siblings('.siteorigin-widget-preview');
 					$previewContainer.find( '> a' ).on( 'click', function ( event ) {
 						event.stopImmediatePropagation();
-						props.setState( { editing: false, previewInitialized: false } );
+						switchToPreview();
 					} );
 					$mainForm.data( 'backupDisabled', true );
 					$mainForm.sowSetupForm();
@@ -83,10 +91,6 @@
 					} );
 					props.setState( { formInitialized: true } );
 				}
-			}
-			
-			function switchToEditing() {
-				props.setState( { editing: true, formInitialized: false } );
 			}
 			
 			function setupWidgetPreview() {
@@ -108,35 +112,50 @@
 				
 				var widgetForm = props.widgetform ? props.widgetform.data : '';
 				
-				return el(
-					Placeholder,
-					{
-						key: 'placeholder',
-						icon: 'so-widget-icon',
-						label: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
-						instructions: __( 'Select the type of widget you want to use:', 'so-widgets-bundle' )
-					},
-					( loadingWidgets || loadingWidgetForm ?
-						el( Spinner ) :
+				return [
+					!! props.focus && !! widgetForm && el(
+						BlockControls,
+						{ key: 'controls' },
 						el(
-							'div',
-							{ className: 'so-widget-gutenberg-container' },
+							IconButton,
+							{
+								className: 'components-icon-button components-toolbar__control',
+								label: __( 'Preview widget.', 'so-widgets-bundle' ),
+								onClick: switchToPreview,
+								icon: 'visibility'
+							}
+						)
+					),
+					el(
+						Placeholder,
+						{
+							key: 'placeholder',
+							icon: 'so-widget-icon',
+							label: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
+							instructions: __( 'Select the type of widget you want to use:', 'so-widgets-bundle' )
+						},
+						( loadingWidgets || loadingWidgetForm ?
+							el( Spinner ) :
 							el(
-								SelectControl,
-								{
-									options: widgetsOptions,
-									value: props.attributes.widgetClass,
-									onChange: onWidgetClassChange,
-								}
-							),
-							el( 'div', {
-								className: 'so-widget-gutenberg-form-container',
-								dangerouslySetInnerHTML: { __html: widgetForm },
-								ref: setupWidgetForm,
-							} )
+								'div',
+								{ className: 'so-widget-gutenberg-container' },
+								el(
+									SelectControl,
+									{
+										options: widgetsOptions,
+										value: props.attributes.widgetClass,
+										onChange: onWidgetClassChange,
+									}
+								),
+								el( 'div', {
+									className: 'so-widget-gutenberg-form-container',
+									dangerouslySetInnerHTML: { __html: widgetForm },
+									ref: setupWidgetForm,
+								} )
+							)
 						)
 					)
-				);
+				];
 			} else {
 				var widgetPreview = props.widgetpreview ? props.widgetpreview.data : '';
 				return [
