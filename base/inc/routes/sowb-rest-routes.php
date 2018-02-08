@@ -6,12 +6,15 @@
  * Class SiteOrigin_Widgets_Rest_Routes
  */
 
-include plugin_dir_path(__FILE__).'siteorigin-widgets-resource.class.php';
-
 class SiteOrigin_Widgets_Rest_Routes {
 	
 	function __construct() {
-		add_action( 'rest_api_init', array( $this, 'register_rest_routes') );
+		
+		global $wp_version;
+		if ( version_compare( $wp_version, '4.7', '>=' ) && class_exists( 'WP_REST_Controller' ) ) {
+			include plugin_dir_path(__FILE__).'siteorigin-widgets-resource.class.php';
+			add_action( 'rest_api_init', array( $this, 'register_rest_routes') );
+		}
 	}
 	
 	/**
