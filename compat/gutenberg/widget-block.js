@@ -69,8 +69,10 @@
 			}
 			
 			function onWidgetClassChange( newWidgetClass ) {
-				props.setAttributes( { widgetClass: newWidgetClass, widgetData: null } );
-				props.setState( { formInitialized: false } );
+				if ( newWidgetClass !== '' ) {
+					props.setAttributes( { widgetClass: newWidgetClass, widgetData: null } );
+					props.setState( { formInitialized: false } );
+				}
 			}
 			
 			function setupWidgetForm( formContainer ) {
@@ -107,6 +109,7 @@
 			var widgetsOptions = props.widgets.data.map( function ( widget ) {
 				return { value: widget.class, label: widget.name };
 			} );
+			widgetsOptions.unshift( { value: '', label: __( 'Select widget type', 'so-widgets-bundle' ) } );
 			if ( props.editing ) {
 				var widgetForm = props.widgetform ? props.widgetform.data : '';
 				
