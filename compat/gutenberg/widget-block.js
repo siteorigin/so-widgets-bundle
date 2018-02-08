@@ -8,6 +8,7 @@
 	var withState = components.withState;
 	var IconButton = components.IconButton;
 	var Placeholder = components.Placeholder;
+	var Spinner  = components.Spinner;
 	var __ = i18n.__;
 	
 	blocks.registerBlockType( 'sowb/widget-block', {
@@ -53,20 +54,9 @@
 			
 			return toGet;
 		} )( function ( props ) {
-			if ( ! props.widgets.data ) {
-				return "loading widgets!";
-			}
-			
-			if ( props.attributes.widgetClass ) {
-				
-				if ( props.editing && ! props.widgetform.data ) {
-					return "loading widget form!";
-				}
-				
-				if ( ! props.editing && ! props.widgetpreview.data ) {
-					return "loading widget preview!";
-				}
-			}
+			var loadingWidgets = !props.widgets.data;
+			var loadingWidgetForm = props.attributes.widgetClass && props.widgetform && !props.widgetform.data;
+			var loadingWidgetPreview = props.attributes.widgetClass && props.widgetpreview && !props.widgetpreview.data;
 			
 			function onWidgetClassChange( newWidgetClass ) {
 				if ( newWidgetClass !== '' ) {
@@ -106,11 +96,16 @@
 				}
 			}
 			
-			var widgetsOptions = props.widgets.data.map( function ( widget ) {
-				return { value: widget.class, label: widget.name };
-			} );
-			widgetsOptions.unshift( { value: '', label: __( 'Select widget type', 'so-widgets-bundle' ) } );
 			if ( props.editing ) {
+				
+				var widgetsOptions = [];
+				if ( props.widgets && props.widgets.data ) {
+					widgetsOptions = props.widgets.data.map( function ( widget ) {
+						return { value: widget.class, label: widget.name };
+					} );
+					widgetsOptions.unshift( { value: '', label: __( 'Select widget type', 'so-widgets-bundle' ) } );
+				}
+				
 				var widgetForm = props.widgetform ? props.widgetform.data : '';
 				
 				return el(
@@ -121,21 +116,29 @@
 						label: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
 						instructions: __( 'Select the type of widget you want to use:', 'so-widgets-bundle' )
 					},
-					el(
-						SelectControl,
-						{
-							options: widgetsOptions,
-							value: props.attributes.widgetClass,
-							onChange: onWidgetClassChange,
-						}
-					),
-					el( 'div', {
-						className: 'so-widget-gutenberg-form-container',
-						dangerouslySetInnerHTML: { __html: widgetForm },
-						ref: setupWidgetForm,
-					} )
+					( loadingWidgets || loadingWidgetForm ?
+						el( Spinner ) :
+						el(
+							'div',
+							{ className: 'so-widget-gutenberg-container' },
+							el(
+								SelectControl,
+								{
+									options: widgetsOptions,
+									value: props.attributes.widgetClass,
+									onChange: onWidgetClassChange,
+								}
+							),
+							el( 'div', {
+								className: 'so-widget-gutenberg-form-container',
+								dangerouslySetInnerHTML: { __html: widgetForm },
+								ref: setupWidgetForm,
+							} )
+						)
+					)
 				);
 			} else {
+				var widgetPreview = props.widgetpreview ? props.widgetpreview.data : '';
 				return [
 					!! props.focus && el(
 						BlockControls,
@@ -150,12 +153,20 @@
 							}
 						)
 					),
-					!! props.widgetpreview && el( 'div', {
-						key: 'preview',
-						className: 'so-widget-gutenberg-preview-container',
-						dangerouslySetInnerHTML: { __html: props.widgetpreview.data },
-						ref: setupWidgetPreview,
-					} )
+					el(
+						'div',
+						{
+							key: 'preview',
+							className: 'so-widget-gutenberg-preview-container'
+						},
+						( loadingWidgetPreview ?
+							el( Spinner ) :
+							el( 'div', {
+								dangerouslySetInnerHTML: { __html: widgetPreview },
+								ref: setupWidgetPreview,
+							} )
+						)
+					)
 				];
 			}
 		} ) ),
