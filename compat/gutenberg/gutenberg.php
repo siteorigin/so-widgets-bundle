@@ -28,7 +28,7 @@ class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
 	public function enqueue_widget_block_editor_assets() {
 		wp_enqueue_script(
 			'sowb-widget-block',
-			plugins_url( 'widget-block.js', __FILE__ ),
+			plugins_url( 'widget-block' . SOW_BUNDLE_JS_SUFFIX . '.js', __FILE__ ),
 			array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components' ),
 			SOW_BUNDLE_VERSION
 		);
