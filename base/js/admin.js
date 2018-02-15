@@ -1166,11 +1166,18 @@ var sowbForms = window.sowbForms || {};
 			$$.sowSetupForm();
 		}, 200);
 	});
-
-	if ( $('body').hasClass('wp-customizer') ) {
+	var $body = $( 'body' );
+	if ( $body.hasClass('wp-customizer') ) {
 		// Setup new widgets when they're added in the customizer interface
 		$(document).on('widget-added', function (e, widget) {
 			widget.find('.siteorigin-widget-form').sowSetupForm();
+		});
+	}
+	
+	if ( $body.hasClass('gutenberg-editor-page') ) {
+		// Setup new widgets when they're added in the customizer interface
+		$(document).on('panels_setup_preview', function () {
+			$( sowb ).trigger( 'setup_widgets' );
 		});
 	}
 
