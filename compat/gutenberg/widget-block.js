@@ -16,7 +16,14 @@
 		
 		description: __( 'Select a SiteOrigin widget from the dropdown.', 'so-widgets-bundle' ),
 		
-		icon: 'so-widget-icon',
+		icon: function() {
+			return el(
+				'span',
+				{
+					className: 'widget-icon so-widget-icon so-gutenberg-icon'
+				}
+			)
+		},
 		
 		category: 'widgets',
 		
@@ -130,7 +137,6 @@
 						Placeholder,
 						{
 							key: 'placeholder',
-							icon: 'so-widget-icon',
 							label: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
 							instructions: __( 'Select the type of widget you want to use:', 'so-widgets-bundle' )
 						},
