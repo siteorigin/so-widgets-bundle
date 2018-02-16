@@ -32,12 +32,6 @@ class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
 			array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components' ),
 			SOW_BUNDLE_VERSION
 		);
-		wp_enqueue_style(
-			'sowb-widget-block',
-			plugins_url( 'styles.css', __FILE__ ),
-			array(),
-			SOW_BUNDLE_VERSION
-		);
 		
 		$so_widgets_bundle = SiteOrigin_Widgets_Bundle::single();
 		// This is to ensure necessary scripts can be enqueued for previews.
