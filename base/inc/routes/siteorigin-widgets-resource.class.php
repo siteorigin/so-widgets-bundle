@@ -160,7 +160,6 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 			/* @var $widget SiteOrigin_Widget */
 			$instance = $widget->update( $widget_data, $widget_data );
 			$widget->widget( array(), $instance );
-			siteorigin_widget_print_styles();
 			$rendered_widget = ob_get_clean();
 		} else {
 			$rendered_widget = new WP_Error( '', 'Invalid widget class.' );
