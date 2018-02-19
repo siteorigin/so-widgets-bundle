@@ -137,6 +137,7 @@
 						Placeholder,
 						{
 							key: 'placeholder',
+							className: 'so-widget-placeholder',
 							label: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
 							instructions: __( 'Select the type of widget you want to use:', 'so-widgets-bundle' )
 						},
