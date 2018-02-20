@@ -2,8 +2,7 @@
 	
 	var el = element.createElement;
 	var BlockControls = blocks.BlockControls;
-	var InspectorControls = blocks.InspectorControls;
-	var SelectControl = InspectorControls.SelectControl;
+	var SelectControl = components.SelectControl;
 	var withAPIData = components.withAPIData;
 	var withState = components.withState;
 	var IconButton = components.IconButton;
@@ -26,6 +25,10 @@
 		},
 		
 		category: 'widgets',
+		
+		supports: {
+			html: false,
+		},
 		
 		attributes: {
 			widgetClass: {
