@@ -5,6 +5,7 @@
 	var SelectControl = components.SelectControl;
 	var withAPIData = components.withAPIData;
 	var withState = components.withState;
+	var Toolbar = components.Toolbar;
 	var IconButton = components.IconButton;
 	var Placeholder = components.Placeholder;
 	var Spinner  = components.Spinner;
@@ -127,13 +128,17 @@
 						BlockControls,
 						{ key: 'controls' },
 						el(
-							IconButton,
-							{
-								className: 'components-icon-button components-toolbar__control',
-								label: __( 'Preview widget.', 'so-widgets-bundle' ),
-								onClick: switchToPreview,
-								icon: 'visibility'
-							}
+							Toolbar,
+							null,
+							el(
+								IconButton,
+								{
+									className: 'components-icon-button components-toolbar__control',
+									label: __( 'Preview widget.', 'so-widgets-bundle' ),
+									onClick: switchToPreview,
+									icon: 'visibility'
+								}
+							)
 						)
 					),
 					el(
@@ -173,13 +178,17 @@
 						BlockControls,
 						{ key: 'controls' },
 						el(
-							IconButton,
-							{
-								className: 'components-icon-button components-toolbar__control',
-								label: __( 'Edit widget.', 'so-widgets-bundle' ),
-								onClick: switchToEditing,
-								icon: 'edit'
-							}
+							Toolbar,
+							null,
+							el(
+								IconButton,
+								{
+									className: 'components-icon-button components-toolbar__control',
+									label: __( 'Edit widget.', 'so-widgets-bundle' ),
+									onClick: switchToEditing,
+									icon: 'edit'
+								}
+							)
 						)
 					),
 					el(
