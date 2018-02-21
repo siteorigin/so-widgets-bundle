@@ -52,6 +52,12 @@ class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
 	}
 	
 	public function render_widget_block( $attributes ) {
+		if ( empty( $attributes['widgetClass'] ) ) {
+			return '<div>'.
+				   __( 'You need to select a widget type before you\'ll see anything here. :)', 'so-widgets-bundle' ) .
+				   '</div>';
+		}
+		
 		$widget_class = $attributes['widgetClass'];
 		
 		global $wp_widget_factory;
