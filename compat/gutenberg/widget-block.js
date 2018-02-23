@@ -198,7 +198,15 @@
 							className: 'so-widget-gutenberg-preview-container'
 						},
 						( loadingWidgetPreview ?
-							el( Spinner ) :
+							el( 'div', {
+									className: 'so-widgets-spinner-container'
+								},
+								el(
+									'span',
+									null,
+									el( Spinner )
+								)
+							) :
 							el( 'div', {
 								dangerouslySetInnerHTML: { __html: widgetPreview },
 								ref: setupWidgetPreview,
