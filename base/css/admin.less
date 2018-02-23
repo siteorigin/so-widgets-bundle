@@ -57,7 +57,7 @@
 	.siteorigin-widget-field {
 		margin: 1em 0;
 
-		label {
+		> label {
 			display: block;
 			margin-bottom: 3px;
 
@@ -689,8 +689,36 @@
 	}
 }
 
-.so-widget-placeholder > .components-placeholder__label {
-	background: url("img/bundle-icon.png") no-repeat left;
-	background-size: 20px;
-	padding-left: 25px;
+.gutenberg__editor {
+
+	// WB icon for placeholder.
+	.so-widget-placeholder > .components-placeholder__label {
+		background: url("img/bundle-icon.png") no-repeat left;
+		background-size: 20px;
+		padding-left: 25px;
+	}
+
+	.siteorigin-widget-form {
+		.siteorigin-widget-field {
+			text-align: left;
+
+			input {
+				padding: 3px 5px;
+			}
+
+			&.siteorigin-widget-field-type-autocomplete, &.siteorigin-widget-field-type-link {
+				.select-content-button {
+					box-shadow: unset;
+					font-size: 13px;
+					height: 28px;
+				}
+			}
+
+			&.siteorigin-widget-field-type-icon .siteorigin-widget-icon-selector-current {
+				height: 37px;
+			}
+		}
+	}
+
+
 }
