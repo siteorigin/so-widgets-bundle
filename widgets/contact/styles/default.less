@@ -203,6 +203,10 @@
 					lighten(@submit_background_color, @submit_background_gradient)
 				);
 			}
+			
+			& when( @submit_background_gradient = 0% ) {
+				background: @submit_background_color;
+			}
 
 			border: @submit_border_width @submit_border_style @submit_border_color;
 			border-radius: @submit_border_radius;
