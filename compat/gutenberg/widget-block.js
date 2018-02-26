@@ -115,6 +115,14 @@
 				
 				var widgetsOptions = [];
 				if ( props.widgets && props.widgets.data ) {
+					props.widgets.data.sort( function ( a, b ) {
+						if ( a.name < b.name ) {
+							return -1;
+						} else if ( a.name > b.name ) {
+							return 1;
+						}
+						return 0;
+					} );
 					widgetsOptions = props.widgets.data.map( function ( widget ) {
 						return { value: widget.class, label: widget.name };
 					} );
