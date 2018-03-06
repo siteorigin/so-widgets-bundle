@@ -27,7 +27,7 @@ var sowb = window.sowb || {};
 				keys      	= [],
 				matches	 	= [],
 				settings 	= {};
-			var sowbWidgetValues = sowbForms.getWidgetFormValues( form.find( '.siteorigin-widget-form' ) );
+			
 			// Loop through the form data.
 			for ( i = 0; i < data.length; i++ ) {
 				
@@ -113,7 +113,10 @@ var sowb = window.sowb || {};
 				settings = $.extend( {}, FLBuilder._getOriginalSettings( form ), settings );
 			}
 			
-			settings[ name ] = sowbWidgetValues;
+			var widgetForm = form.find( '.siteorigin-widget-form' );
+			if ( widgetForm.length ) {
+				settings[ name ] = sowbForms.getWidgetFormValues( widgetForm );
+			}
 			// Return the settings.
 			return settings;
 		}
