@@ -441,12 +441,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		// Filter the instance specifically for the form
 		$instance = apply_filters('siteorigin_widgets_form_instance_' . $this->id_base, $instance, $this);
-
-		$form_id = 'siteorigin_widget_form_'.md5( uniqid( rand(), true ) );
+		
+		$id = uniqid( rand(), true );
+		$form_id = 'siteorigin_widget_form_' . md5( $id );
 		$class_name = str_replace( '_', '-', strtolower( $this->widget_class ) );
 
 		if( empty( $instance['_sow_form_id'] ) ) {
-			$instance['_sow_form_id'] = uniqid();
+			$instance['_sow_form_id'] = $id;
 		}
 		?>
 		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>" id="<?php echo $form_id ?>" data-class="<?php echo esc_attr( $this->widget_class ) ?>" style="display: none">
