@@ -48,7 +48,7 @@ var sowb = window.sowb || {};
 					// Remove [] from the keys.
 					for ( k = 0; k < matches.length; k++ ) {
 						
-						if ( '[]' == matches[ k ] ) {
+						if ( '[]' === matches[ k ] ) {
 							continue;
 						}
 						
@@ -57,10 +57,10 @@ var sowb = window.sowb || {};
 
 
 					var f = function(object, val, head, tail) {
-						if( tail.length == 0) {
+						if( tail.length === 0) {
 							object[ head ] = val;
 						} else {
-							if( 'undefined' == typeof object [ head ] ) {
+							if( 'undefined' === typeof object [ head ] ) {
 								object [ head ] = {};
 							}
 							f(object[ head ], val, tail.shift(), tail);
@@ -70,13 +70,13 @@ var sowb = window.sowb || {};
 					if(keys.length > 0) {
 
 						var keysCopy = keys.slice();
-						if ( 'undefined' == typeof settings[ name ] ) {
+						if ( 'undefined' === typeof settings[ name ] ) {
 							settings[ name ] = {};
 						}
 						f(settings[ name ], value, keysCopy.shift(), keysCopy);
 					} else {
 
-						if ( 'undefined' == typeof settings[ name ] ) {
+						if ( 'undefined' === typeof settings[ name ] ) {
 							settings[ name ] = [];
 						}
 
@@ -92,7 +92,7 @@ var sowb = window.sowb || {};
 			// Update auto suggest values.
 			for ( key in settings ) {
 				
-				if ( 'undefined' != typeof settings[ 'as_values_' + key ] ) {
+				if ( 'undefined' !== typeof settings[ 'as_values_' + key ] ) {
 					
 					settings[ key ] = $.grep(
 						settings[ 'as_values_' + key ].split( ',' ),
