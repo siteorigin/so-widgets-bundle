@@ -3,7 +3,7 @@
 /**
  * Class siteorigin_lessc
  *
- * An extension to the lessc class that adds a few custom functions
+ * An extension to the SiteOrigin_LessC class that adds a few custom functions
  */
 class SiteOrigin_Widgets_Less_Functions {
 
@@ -16,9 +16,9 @@ class SiteOrigin_Widgets_Less_Functions {
 	}
 
 	/**
-	 * @param lessc $c
+	 * @param SiteOrigin_LessC $c
 	 *
-	 * Register less functions in a lessc object
+	 * Register less functions in a SiteOrigin_LessC object
 	 */
 	function registerFunctions(&$c){
 		if( method_exists( $c, 'registerFunction' ) ) {

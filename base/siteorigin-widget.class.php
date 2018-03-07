@@ -813,7 +813,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string
 	 */
 	public function get_instance_css( $instance ){
-		if( !class_exists('lessc') ) require plugin_dir_path( __FILE__ ).'inc/lessc.inc.php';
+		if( !class_exists( 'SiteOrigin_LessC' ) ) require plugin_dir_path( __FILE__ ) . 'inc/lessc.inc.php';
 		if( !class_exists('SiteOrigin_Widgets_Less_Functions') ) require plugin_dir_path( __FILE__ ).'inc/less-functions.php';
 
 		if( !method_exists( $this, 'get_less_content' ) ) {
@@ -868,7 +868,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			$less = $css_imports . "\n\n" . '.so-widget-'.$css_name." { \n".$less."\n } ";
 
-			$compiler = new lessc();
+			$compiler = new SiteOrigin_LessC();
 			$lc_functions = new SiteOrigin_Widgets_Less_Functions($this, $instance);
 			$lc_functions->registerFunctions( $compiler );
 			$compiler = apply_filters( 'siteorigin_widgets_less_compiler', $compiler, $instance, $this );
