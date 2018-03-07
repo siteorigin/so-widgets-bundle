@@ -146,6 +146,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'options' => array(
 							'name'       => __( 'Name', 'so-widgets-bundle' ),
 							'email'      => __( 'Email', 'so-widgets-bundle' ),
+							'tel'        => __( 'Phone Number', 'so-widgets-bundle' ),
 							'subject'    => __( 'Subject', 'so-widgets-bundle' ),
 							'text'       => __( 'Text', 'so-widgets-bundle' ),
 							'textarea'   => __( 'Text Area', 'so-widgets-bundle' ),
