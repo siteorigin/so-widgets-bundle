@@ -350,7 +350,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 	function wrapper_class_filter( $classes, $instance ){
 		if( $instance[ 'fittext' ] ) {
 			$classes[] = 'so-widget-fittext-wrapper';
-			wp_enqueue_script( 'sow-fittext' );
+			wp_enqueue_script( 'sowb-fittext' );
 		}
 		return $classes;
 	}
