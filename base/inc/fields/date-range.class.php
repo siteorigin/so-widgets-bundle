@@ -28,7 +28,7 @@ class SiteOrigin_Widget_Field_Date_Range extends SiteOrigin_Widget_Field_Base {
 
 	private function render_specific_date_selector() {
 		?><div class="sowb-specific-date-after"><span><?php
-		_e( 'From', 'so-widgets-bundle' );
+		_ex( 'From', 'From this date' 'so-widgets-bundle' );
 		?></span><input type="text" class="datepicker after-picker"/></div><?php
 		?><div class="sowb-specific-date-before"><span><?php
 		_e( 'to', 'so-widgets-bundle' );
