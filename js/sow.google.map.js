@@ -28,7 +28,11 @@ sowb.SiteOriginGoogleMap = function($) {
 				panControl: options.panControl,
 				center: location,
 				mapTypeControlOptions: {
-					mapTypeIds: [google.maps.MapTypeId.ROADMAP, userMapTypeId]
+					mapTypeIds: [
+						google.maps.MapTypeId.ROADMAP,
+						google.maps.MapTypeId.SATELLITE,
+						userMapTypeId
+					]
 				}
 			};
 
