@@ -1191,7 +1191,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	function send_mail( $email_fields, $instance ) {
-		$body = '<strong>' . __( 'From', 'so-widgets-bundle' ) . ':</strong> ' .
+		$body = '<strong>' . _x( 'From', 'The name of who sent this email', 'so-widgets-bundle' ) . ':</strong> ' .
 				'<a href="mailto:' . sanitize_email( $email_fields['email'] ) . '">' . esc_html( $email_fields['name'] ) . '</a> ' .
 				'&#60;' . sanitize_email( $email_fields['email'] ) . '&#62; ' .
 				( ! empty( $instance['settings']['log_ip_address'] ) ? '( ' . $_SERVER['REMOTE_ADDR'] . ' )' : '' ) .
