@@ -455,7 +455,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	function wrapper_class_filter( $classes, $instance ){
 		if( ! empty( $instance['design']['fittext'] ) ) {
 			$classes[] = 'so-widget-fittext-wrapper';
-			wp_enqueue_script( 'sow-fittext' );
+			wp_enqueue_script( 'sowb-fittext' );
 		}
 		return $classes;
 	}

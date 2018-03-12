@@ -65,6 +65,12 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.11.4 - 7 February 2018 =
+* Slider: Add playsinline for Video backgrounds for iOS.
+* Repeater field: Trigger change events for repeater when adding, removing or duplicating items.
+* TinyMCE field: Removed special handling for TinyMCE fields when retrieving data. Just use field value directly.
+* Fixed build overwriting some CSS files.
+
 = 1.11.3 - 10 January 2018 =
 * Hero: Add margin-top to so-widget-sow-button for spacing.
 * Accordion: Added overflow to prevent Image overlap.

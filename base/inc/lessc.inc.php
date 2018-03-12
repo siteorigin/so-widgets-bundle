@@ -19,7 +19,7 @@ if ( !class_exists( 'Less_Parser' ) ) {
 	Less_Autoloader::register();
 }
 
-class lessc {
+class SiteOrigin_LessC {
 
 	static public $VERSION = Less_Version::less_version;
 

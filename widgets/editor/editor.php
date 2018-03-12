@@ -33,7 +33,8 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			),
 			'text' => array(
 				'type' => 'tinymce',
-				'rows' => 20
+				'rows' => 20,
+				'wpautop' => false, // Let the editor handle it's own processing.
 			),
 			'autop' => array(
 				'type' => 'checkbox',
