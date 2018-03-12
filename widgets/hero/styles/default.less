@@ -38,9 +38,11 @@
 			max-width: @slide_width;
 			height: @slide_height;
 
-			@media (max-width: @responsive_breakpoint) {
-				&{
-					height: @slide_height_responsive;
+			& when ( isnumber( @slide_height_responsive ) ) {
+				@media (max-width: @responsive_breakpoint) {
+					&{
+						height: @slide_height_responsive;
+					}
 				}
 			}
 
