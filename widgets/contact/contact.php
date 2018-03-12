@@ -125,6 +125,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'type' => 'checkbox',
 						'label' => __( 'Log IP addresses.', 'so-widgets-bundle' ),
 						'description' => __( 'When logging IP addresses, you probably update your privacy policy to notify people you\'re doing so, and why.', 'so-widgets-bundle' ),
+						'default' => false,
 					),
 				),
 			),

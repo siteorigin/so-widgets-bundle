@@ -15,8 +15,7 @@
 				var picker = new Pikaday( {
 					field: $field[ 0 ],
 					blurFieldOnSelect: false,
-					toString( date, format ) {
-						
+					toString: function( date, format ) {
 						var day = date.getDate();
 						day = day < 10 ? '0' + day.toString() : day.toString();
 						var month = date.getMonth() + 1;
@@ -24,7 +23,7 @@
 						var year = date.getFullYear();
 						return year + '-' + month + '-' + day;
 					},
-					parse( dateString, format ) {
+					parse: function( dateString, format ) {
 						
 						var parts = dateString.split( '-' );
 						var day = parseInt( parts[2] );
