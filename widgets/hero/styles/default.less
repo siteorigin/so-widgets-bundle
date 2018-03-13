@@ -25,6 +25,9 @@
 @heading_color: #FFFFFF;
 @heading_shadow: 50;
 
+@responsive_breakpoint: 780px;
+@slide_height_responsive: default;
+
 .sow-slider-base {
 
 	ul.sow-slider-images {
@@ -34,6 +37,14 @@
 
 			max-width: @slide_width;
 			height: @slide_height;
+
+			& when ( isnumber( @slide_height_responsive ) ) {
+				@media (max-width: @responsive_breakpoint) {
+					&{
+						height: @slide_height_responsive;
+					}
+				}
+			}
 
 			h1,h2,h3,h4,h5,h6{
 				line-height: 1.375em;
