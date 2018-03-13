@@ -121,6 +121,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'required_fields[hide]' => array( 'hide' ),
 						)
 					),
+					'log_ip_address' => array(
+						'type' => 'checkbox',
+						'label' => __( 'Log IP addresses.', 'so-widgets-bundle' ),
+						'default' => false,
+					),
 				),
 			),
 
@@ -141,6 +146,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'options' => array(
 							'name'       => __( 'Name', 'so-widgets-bundle' ),
 							'email'      => __( 'Email', 'so-widgets-bundle' ),
+							'tel'        => __( 'Phone Number', 'so-widgets-bundle' ),
 							'subject'    => __( 'Subject', 'so-widgets-bundle' ),
 							'text'       => __( 'Text', 'so-widgets-bundle' ),
 							'textarea'   => __( 'Text Area', 'so-widgets-bundle' ),
@@ -1185,7 +1191,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	function send_mail( $email_fields, $instance ) {
-		$body = '<strong>' . __( 'From', 'so-widgets-bundle' ) . ':</strong> <a href="mailto:' . sanitize_email( $email_fields['email'] ) . '">' . esc_html( $email_fields['name'] ) . '</a> &#60;' . sanitize_email( $email_fields['email'] ) . "&#62; \n\n";
+		$body = '<strong>' . _x( 'From', 'The name of who sent this email', 'so-widgets-bundle' ) . ':</strong> ' .
+				'<a href="mailto:' . sanitize_email( $email_fields['email'] ) . '">' . esc_html( $email_fields['name'] ) . '</a> ' .
+				'&#60;' . sanitize_email( $email_fields['email'] ) . '&#62; ' .
+				( ! empty( $instance['settings']['log_ip_address'] ) ? '( ' . $_SERVER['REMOTE_ADDR'] . ' )' : '' ) .
+				"\n\n";
 		foreach ( $email_fields['message'] as $m ) {
 			$body .= '<strong>' . $m['label'] . ':</strong>';
 			$body .= "\n";
@@ -1206,7 +1216,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
-			'From: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . $instance['settings']['from'] . '>',
+			'From: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . sanitize_email( $instance['settings']['from'] ) . '>',
 			'Reply-To: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . sanitize_email( $email_fields['email'] ) . '>',
 		);
 

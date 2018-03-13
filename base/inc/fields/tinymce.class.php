@@ -65,6 +65,13 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	 */
 	protected $quicktags_buttons;
 	/**
+	 * Whether to apply `wpautop` processing. (Adds paragraphs for double linebreaks) Default is true.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $wpautop;
+	/**
 	 * An array of filter callbacks to apply to the set of buttons which will be rendered for the editor.
 	 *
 	 * @access protected
@@ -93,8 +100,17 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	 */
 	private $wp_version_lt_4_8;
 	
+	public static function unautop( $text ) {
+		$text = str_replace('<p>', '', $text);
+		$text = str_replace(array('<br />', '<br>', '<br/>'), "\n", $text);
+		$text = str_replace('</p>', "\n\n", $text);
+		
+		return $text;
+	}
+	
 	protected function get_default_options() {
 		return array(
+			'wpautop' => true,
 			'mce_buttons' => array(
 				'formatselect',
 				'bold',
@@ -372,7 +388,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			'tinymce' => array(
 				'wp_skip_init' => strpos( $this->element_id, '__i__' ) != false ||
 				                  strpos( $this->element_id, '_id_' ) != false,
-				'wpautop' => true,
+				'wpautop' => ! empty( $this->wpautop ),
 			),
 			'quicktags' => array(
 				'buttons' => $qt_settings['buttons'],
@@ -480,6 +496,9 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	}
 	
 	protected function sanitize_field_input( $value, $instance ) {
+		if ( ! empty( $this->wpautop ) ) {
+			$value = wpautop( self::unautop( $value ) );
+		}
 		if( current_user_can( 'unfiltered_html' ) ) {
 			$sanitized_value = $value;
 		} else {

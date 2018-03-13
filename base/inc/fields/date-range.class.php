@@ -28,7 +28,7 @@ class SiteOrigin_Widget_Field_Date_Range extends SiteOrigin_Widget_Field_Base {
 
 	private function render_specific_date_selector() {
 		?><div class="sowb-specific-date-after"><span><?php
-		_e( 'From', 'so-widgets-bundle' );
+		_ex( 'From', 'From this date', 'so-widgets-bundle' );
 		?></span><input type="text" class="datepicker after-picker"/></div><?php
 		?><div class="sowb-specific-date-before"><span><?php
 		_e( 'to', 'so-widgets-bundle' );
@@ -74,10 +74,18 @@ class SiteOrigin_Widget_Field_Date_Range extends SiteOrigin_Widget_Field_Base {
 	}
 
 	public function enqueue_scripts() {
-		wp_register_style( 'sowb-pikaday', plugin_dir_url(__FILE__) . 'js/lib/pikaday/pikaday.css' );
-		wp_register_script( 'sowb-pikaday', plugin_dir_url(__FILE__) . 'js/lib/pikaday/pikaday' . SOW_BUNDLE_JS_SUFFIX . '.js', array( ), '1.5.1' );
-		wp_enqueue_style( 'so-date-range-field', plugin_dir_url(__FILE__) . 'css/date-range-field.css', array( 'sowb-pikaday' ), SOW_BUNDLE_VERSION );
-		wp_enqueue_script( 'so-date-range-field', plugin_dir_url(__FILE__) . 'js/date-range-field' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'sowb-pikaday' ), SOW_BUNDLE_VERSION );
+		wp_enqueue_style(
+			'so-date-range-field',
+			plugin_dir_url(__FILE__) . 'css/date-range-field.css',
+			array( 'sowb-pikaday' ),
+			SOW_BUNDLE_VERSION
+		);
+		wp_enqueue_script(
+			'so-date-range-field',
+			plugin_dir_url(__FILE__) . 'js/date-range-field' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery', 'sowb-pikaday' ),
+			SOW_BUNDLE_VERSION
+		);
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
