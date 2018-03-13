@@ -102,8 +102,8 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	
 	public static function unautop( $text ) {
 		$text = str_replace('<p>', '', $text);
-		$text = str_replace(array('<br />', '<br>', '<br/>'), '\n', $text);
-		$text = str_replace('</p>', '\n\n', $text);
+		$text = str_replace(array('<br />', '<br>', '<br/>'), "\n", $text);
+		$text = str_replace('</p>', "\n\n", $text);
 		
 		return $text;
 	}
