@@ -34,12 +34,15 @@
         padding: 0 25px;
         display: flex;
 
-        &:nth-of-type(@{per_row}n+1) {
-            padding-left: 0;
-        }
+        @media (min-width: @responsive_breakpoint) {
+            &:nth-of-type(@{per_row}n+1) {
+                padding-left: 0;
+                clear: left;
+            }
 
-        &:nth-of-type(@{per_row}n) {
-            padding-right: 0;
+            &:nth-of-type(@{per_row}n) {
+                padding-right: 0;
+            }
         }
 
         &.sow-icon-container-position-top {
