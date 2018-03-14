@@ -776,6 +776,22 @@ class SiteOrigin_Widgets_Bundle {
 			array( 'jquery' ),
 			SOW_BUNDLE_VERSION
 		);
+		wp_register_script(
+			'sowb-pikaday',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/pikaday' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( ),
+			'1.6.1'
+		);
+		wp_register_script(
+			'sowb-pikaday-jquery',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/pikaday.jquery' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'sowb-pikaday' ),
+			'1.6.1'
+		);
+		wp_register_style(
+			'sowb-pikaday',
+			plugin_dir_url(__FILE__) . 'js/lib/pikaday.css'
+		);
 	}
 
 	/**
