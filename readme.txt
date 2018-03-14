@@ -65,6 +65,11 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.11.6 - 14 March 2018 =
+* Hero: Add responsive height settings.
+* Added pikaday jQuery plugin and register pikaday scripts for front end too.
+* Features: item float clearing and padding mobile specific.
+
 = 1.11.5 - 13 March 2018 =
 * Features: Better feature padding removal on row ends.
 * Sliders: WCAG 2.4.4 compliance.
