@@ -451,12 +451,14 @@ var sowbForms = window.sowbForms || {};
 			};
 
 			$fields.filter('[data-state-emitter]').each(function () {
-
+				
+				var $input = $( this ).find( '.siteorigin-widget-input' );
+				
 				// Listen for any change events on an emitter field
-				$(this).find('.siteorigin-widget-input').on('keyup change', stateEmitterChangeHandler);
+				$input.on('keyup change', stateEmitterChangeHandler);
 
 				// Trigger initial state emitter changes
-				$(this).find('.siteorigin-widget-input').each(function () {
+				$input.each(function () {
 					var $$ = $(this);
 					if ($$.is(':radio')) {
 						// Only checked radio inputs must have change events
@@ -984,7 +986,6 @@ var sowbForms = window.sowbForms || {};
 					}
 				} else if ( $$.prop( 'tagName' ) === 'SELECT' ) {
 					var selected = $$.find( 'option:selected' );
-
 					if ( selected.length === 1 ) {
 						fieldValue = $$.find( 'option:selected' ).val();
 					}
@@ -997,7 +998,6 @@ var sowbForms = window.sowbForms || {};
 				} else {
 					fieldValue = $$.val();
 				}
-
 				for ( var i = 0; i < parts.length; i++ ) {
 					if ( i === parts.length - 1 ) {
 						if ( parts[i] === '' ) {

@@ -172,18 +172,18 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				?>
 				<ol class="sow-slider-pagination">
 					<?php foreach($frames as $i => $frame) : ?>
-						<li><a href="#" data-goto="<?php echo $i ?>"><?php echo $i+1 ?></a></li>
+						<li><a href="#" data-goto="<?php echo $i ?>" aria-label="<?php printf( __( 'display slide %s', 'so-widgets-bundle' ), $i+1 ) ?>"><?php echo $i+1 ?></a></li>
 					<?php endforeach; ?>
 				</ol>
 
 				<div class="sow-slide-nav sow-slide-nav-next">
-					<a href="#" data-goto="next" data-action="next">
+					<a href="#" data-goto="next" aria-label="<?php _e( 'next slide', 'so-widgets-bundle' ) ?>" data-action="next">
 						<em class="sow-sld-icon-<?php echo sanitize_html_class( $controls['nav_style'] ) ?>-right"></em>
 					</a>
 				</div>
 
 				<div class="sow-slide-nav sow-slide-nav-prev">
-					<a href="#" data-goto="previous" data-action="prev">
+					<a href="#" data-goto="previous" aria-label="<?php _e( 'previous slide', 'so-widgets-bundle' ) ?>" data-action="prev">
 						<em class="sow-sld-icon-<?php echo sanitize_html_class( $controls['nav_style'] ) ?>-left"></em>
 					</a>
 				</div>

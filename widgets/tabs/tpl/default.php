@@ -6,7 +6,9 @@
  * @var array $initial_tab_index
  */
 
-echo $args['before_title'] . $instance['title'] . $args['after_title'];
+if( ! empty( $instance['title'] ) ) {
+	echo $args['before_title'] . $instance['title'] . $args['after_title'];
+}
 ?>
 <div class="sow-tabs">
 	<div class="sow-tabs-tab-container">

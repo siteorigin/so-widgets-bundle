@@ -162,6 +162,12 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 						'default' => 'default',
 					),
 
+					'height_responsive' => array(
+						'type' => 'measurement',
+						'label' => __( 'Responsive Height', 'so-widgets-bundle' ),
+						'default' => 'default',
+					),
+
 					'padding' => array(
 						'type' => 'measurement',
 						'label' => __('Top and bottom padding', 'so-widgets-bundle'),
@@ -343,7 +349,8 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		
 		// Process normal shortcodes
 		$content = do_shortcode( shortcode_unautop( $content ) );
-		return $content;
+		
+		return apply_filters( 'siteorigin_hero_frame_content', $content, $frame );
 	}
 
 	/**
@@ -368,7 +375,9 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		$meas_options['slide_padding_sides'] = $instance['design']['padding_sides'];
 		$meas_options['slide_width'] = $instance['design']['width'];
 		$meas_options['slide_height'] = $instance['design']['height'];
-
+		if ( ! empty( $instance['design']['height_responsive'] ) ) {
+			$meas_options['slide_height_responsive'] = $instance['design']['height_responsive'];
+		}
 		$meas_options['heading_size'] = $instance['design']['heading_size'];
 		$meas_options['text_size'] = $instance['design']['text_size'];
 
@@ -400,7 +409,24 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			}
 		}
 
+		$global_settings = $this->get_global_settings();
+
+		if ( ! empty( $global_settings['responsive_breakpoint'] ) ) {
+			$less_vars['responsive_breakpoint'] = $global_settings['responsive_breakpoint'];
+		}
+
 		return $less;
+	}
+
+	function get_settings_form() {
+		return array(
+			'responsive_breakpoint' => array(
+				'type'        => 'measurement',
+				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
+				'default'     => '780px',
+				'description' => __( 'This setting controls when the Hero widget will switch to the responsive height for slides. This breakpoint will only be used if a responsive height is set in the hero settings. The default value is 780px', 'so-widgets-bundle' )
+			)
+		);
 	}
 
 	function add_default_measurement_unit($val) {
@@ -430,7 +456,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	function wrapper_class_filter( $classes, $instance ){
 		if( ! empty( $instance['design']['fittext'] ) ) {
 			$classes[] = 'so-widget-fittext-wrapper';
-			wp_enqueue_script( 'sow-fittext' );
+			wp_enqueue_script( 'sowb-fittext' );
 		}
 		return $classes;
 	}
