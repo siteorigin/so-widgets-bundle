@@ -65,6 +65,14 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.11.7 - 23 March 2018 =
+* Image: Add title alignment setting.
+* Button: Add max-width to ensure buttons are responsive.
+* Hero: New filter for frame content 'siteorigin_hero_frame_content'
+* Features: Don't set margin for one column left/right feature.
+* Updated widget icons.
+* Updated google web fonts.
+
 = 1.11.6 - 14 March 2018 =
 * Hero: Add responsive height settings.
 * Added pikaday jQuery plugin and register pikaday scripts for front end too.
