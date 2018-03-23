@@ -1085,14 +1085,16 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$success = $this->send_mail( $email_fields, $instance );
 
 			if ( is_wp_error( $success ) ) {
-				$errors['_general']['send'] = $success->get_error_message();
-			} else if ( ! $success ) {
-				$errors['_general']['send'] = __( 'Error sending email, please try again later.', 'so-widgets-bundle' );
+				$errors['_general'] = array( 'send' => $success->get_error_message() );
+			} else if ( empty( $success ) ) {
+				$errors['_general'] = array( 'send' => __( 'Error sending email, please try again later.', 'so-widgets-bundle' ) );
 			} else {
 				// This action will allow other plugins to run code when contact form has successfully been sent 
 				do_action( 'siteorigin_widgets_contact_sent', $instance, $email_fields );
 			}
-		} else {
+		}
+		
+		if ( ! empty( $errors ) ) {
 			// This action will allow other plugins to run code when the contact form submission has resulted in error
 			do_action( 'siteorigin_widgets_contact_error', $instance, $email_fields, $errors );
 		}

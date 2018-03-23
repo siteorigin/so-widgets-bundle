@@ -349,7 +349,8 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		
 		// Process normal shortcodes
 		$content = do_shortcode( shortcode_unautop( $content ) );
-		return $content;
+		
+		return apply_filters( 'siteorigin_hero_frame_content', $content, $frame );
 	}
 
 	/**

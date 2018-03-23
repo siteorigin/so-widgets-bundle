@@ -8,6 +8,7 @@ jQuery( function ( $ ) {
 		$( '.sow-accordion' ).each( function ( index, element ) {
 			var $widget = $( this ).closest( '.so-widget-sow-accordion' );
 			var useAnchorTags = $widget.data( 'useAnchorTags' );
+			var initialScrollPanel = $widget.data( 'initialScrollPanel' );
 			
 			var $accordionPanels = $( element ).find( '> .sow-accordion-panel' );
 			
@@ -98,6 +99,13 @@ jQuery( function ( $ ) {
 					updatePanelStates();
 				} else {
 					updateHash();
+				}
+				if ( initialScrollPanel > 0 ) {
+					var $initialScrollPanel = initialScrollPanel > $accordionPanels.length ?
+						$accordionPanels.last() :
+						$accordionPanels.eq( initialScrollPanel - 1 );
+					var navOffset = 90;// Add some magic number offset to make space for possible nav menus etc.
+					window.scrollTo( 0, $initialScrollPanel.offset().top - navOffset );
 				}
 			}
 		} );

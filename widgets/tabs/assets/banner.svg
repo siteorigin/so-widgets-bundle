@@ -8,9 +8,10 @@
 	.st2{fill:#8ED9EF;stroke:#324249;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 </style>
 <rect id="Call_to_Action" class="st0" width="120" height="120"/>
-<g transform="translate(3 9)">
-	<rect x="28" y="28" class="st1" width="58" height="46"/>
-	<path class="st1" d="M38,44h38 M42,50h30 M44,38h26"/>
-	<rect x="47" y="60" class="st2" width="20" height="6"/>
+<g transform="translate(5 5)">
+	<path class="st1" d="M31,28h48c1.7,0,3,1.3,3,3v48c0,1.7-1.3,3-3,3H31c-1.7,0-3-1.3-3-3V31C28,29.3,29.3,28,31,28z"/>
+	<path class="st1" d="M40,54h18 M40,62h30 M40,70h22"/>
+	<path class="st2" d="M64,28h15c1.7,0,3,1.3,3,3v11H64V28z"/>
+	<rect x="46" y="28" class="st2" width="18" height="14"/>
 </g>
 </svg>
