@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 120 120" style="enable-background:new 0 0 120 120;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#1880B6;}
+	.st1{fill:#8ED9EF;stroke:#324249;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+	.st2{fill:#F2F0DA;stroke:#324249;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+</style>
+<rect id="Call_to_Action" y="0" class="st0" width="120" height="120"/>
+<g transform="translate(4 4)">
+	<g transform="translate(0 30)">
+		<rect x="28" y="28" class="st1" width="26" height="26"/>
+		<path class="st2" d="M54,54H28l14.6-14.6c0.8-0.8,2-0.8,2.8,0L54,48V54z"/>
+		<circle class="st2" cx="36" cy="36" r="4"/>
+	</g>
+	<g transform="translate(30 30)">
+		<polygon class="st1" points="28,28 54,28 54,54 28,54 		"/>
+		<path class="st2" d="M54,54H28l14.6-14.6c0.8-0.8,2-0.8,2.8,0L54,48V54z"/>
+		<circle class="st2" cx="36" cy="36" r="4"/>
+	</g>
+	<rect x="28" y="28" class="st1" width="26" height="26"/>
+	<path class="st2" d="M54,54H28l14.6-14.6c0.8-0.8,2-0.8,2.8,0L54,48V54z"/>
+	<circle class="st2" cx="36" cy="36" r="4"/>
+	<g transform="translate(30)">
+		<rect x="28" y="28" class="st1" width="26" height="26"/>
+		<path class="st2" d="M54,54H28l14.6-14.6c0.8-0.8,2-0.8,2.8,0L54,48V54z"/>
+		<circle class="st2" cx="36" cy="36" r="4"/>
+	</g>
+</g>
+</svg>

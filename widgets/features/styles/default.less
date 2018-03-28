@@ -80,13 +80,24 @@
                 margin-top: 10px;
             }
         }
-
+        
+        & when ( @per_row = 1 ) {
+            &.sow-icon-container-position-top, &.sow-icon-container-position-bottom {
+                .sow-icon-container {
+                    margin: auto;
+                }
+            }
+        }
+        
         .sow-icon-container {
             width: @container_size;
             height: @container_size;
             font-size: @container_size;
             text-decoration: none;
-            margin: auto;
+
+            & when not ( @per_row = 1 ) {
+                margin: auto;
+            }
 
             [class^="sow-icon-"],
             .sow-icon-image {
