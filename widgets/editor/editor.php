@@ -54,27 +54,17 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function unwpautop($string) {
-		$string = str_replace("<p>", "", $string);
-		$string = str_replace(array("<br />", "<br>", "<br/>"), "\n", $string);
-		$string = str_replace("</p>", "\n\n", $string);
-
-		return $string;
-	}
-
 	public function get_template_variables( $instance, $args ) {
 		$instance = wp_parse_args(
 			$instance,
 			array(  'text' => '' )
-		);
+	);
 		
 		if (
 			// Only run these parts if we're rendering for the frontend
 			empty( $GLOBALS[ 'SITEORIGIN_PANELS_CACHE_RENDER' ] ) &&
 			empty( $GLOBALS[ 'SITEORIGIN_PANELS_POST_CONTENT_RENDER' ] )
 		) {
-			$instance['text'] = $this->unwpautop( $instance['text'] );
-			
 			if (function_exists('wp_make_content_images_responsive')) {
 				$instance['text'] = wp_make_content_images_responsive( $instance['text'] );
 			}
@@ -97,7 +87,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			$instance['text'] = apply_filters( 'widget_text', $instance['text'] );
 			
 			if( $instance['autop'] ) {
-					$instance['text'] = wpautop( $instance['text'] );
+				$instance['text'] = wpautop( $instance['text'] );
 			}
 			
 			$instance['text'] = do_shortcode( shortcode_unautop( $instance['text'] ) );
