@@ -34,7 +34,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			'text' => array(
 				'type' => 'tinymce',
 				'rows' => 20,
-				'wpautop' => false, // Let the editor handle it's own processing.
+				'wpautop_toggle_field' => '.siteorigin-widget-field-autop input[type="checkbox"]',
 			),
 			'autop' => array(
 				'type' => 'checkbox',
