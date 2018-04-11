@@ -83,8 +83,19 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 				$instance['text'] = $GLOBALS['wp_embed']->run_shortcode( $instance['text'] );
 				$instance['text'] = $GLOBALS['wp_embed']->autoembed( $instance['text'] );
 			}
-
+			
+			// As in the Text Widget, we need to prevent plugins and themes from running `do_shortcode` in the `widget_text`
+			// filter to avoid running it twice and to prevent `wpautop` from interfering with shortcodes' output.
+			$widget_text_do_shortcode_priority = has_filter( 'widget_text', 'do_shortcode' );
+			if ( $widget_text_do_shortcode_priority !== false ) {
+				remove_filter( 'widget_text', 'do_shortcode', $widget_text_do_shortcode_priority );
+			}
+			
 			$instance['text'] = apply_filters( 'widget_text', $instance['text'] );
+			
+			if ( $widget_text_do_shortcode_priority !== false ) {
+				add_filter( 'widget_text', 'do_shortcode', $widget_text_do_shortcode_priority );
+			}
 			
 			if( $instance['autop'] ) {
 				$instance['text'] = wpautop( $instance['text'] );
