@@ -100,14 +100,6 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	 */
 	private $wp_version_lt_4_8;
 	
-	public static function unautop( $text ) {
-		$text = str_replace('<p>', '', $text);
-		$text = str_replace(array('<br />', '<br>', '<br/>'), "\n", $text);
-		$text = str_replace('</p>', "\n\n", $text);
-		
-		return $text;
-	}
-	
 	protected function get_default_options() {
 		return array(
 			'wpautop' => true,
@@ -320,9 +312,9 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	}
 	
 	protected function render_before_field( $value, $instance ) {
-		$selected_editor_name = $this->get_selected_editor_field_name( $this->base_name );
-		if( ! empty( $instance[ $selected_editor_name ] ) ) {
-			$this->selected_editor = $instance[ $selected_editor_name ];
+		$selected_editor = $this->get_selected_editor( $instance );
+		if( ! empty( $selected_editor ) ) {
+			$this->selected_editor = $selected_editor;
 		}
 		else {
 			$this->selected_editor = $this->default_editor;
@@ -496,8 +488,9 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	}
 	
 	protected function sanitize_field_input( $value, $instance ) {
-		if ( ! empty( $this->wpautop ) ) {
-			$value = wpautop( self::unautop( $value ) );
+		$selected_editor = $this->get_selected_editor( $instance );
+		if ( in_array( $selected_editor, array( 'tinymce', 'tmce' ) ) && ! empty( $this->wpautop ) ) {
+			$value = wpautop( $value );
 		}
 		if( current_user_can( 'unfiltered_html' ) ) {
 			$sanitized_value = $value;
@@ -515,6 +508,16 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			$instance[ $selected_editor_name ] = in_array( $selected_editor, array( 'tinymce', 'tmce', 'quicktags', 'html' ) ) ? $selected_editor : $this->default_editor;
 		}
 		return $instance;
+	}
+	
+	public function get_selected_editor( $instance ) {
+		$selected_editor = null;
+		$selected_editor_name = $this->get_selected_editor_field_name( $this->base_name );
+		if( ! empty( $instance[ $selected_editor_name ] ) ) {
+			$selected_editor = $instance[ $selected_editor_name ];
+		}
+		
+		return $selected_editor;
 	}
 	
 	public function get_selected_editor_field_name( $base_name ) {
