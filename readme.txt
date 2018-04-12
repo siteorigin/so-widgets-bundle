@@ -47,7 +47,7 @@ Once you enable a widget, you'll be able to use it anywhere standard widgets are
 
 == Documentation ==
 
-[Documentation](https://siteorigin.com/css/getting-started/) is available on SiteOrigin.
+[Documentation](https://siteorigin.com/widgets-bundle/getting-started/) is available on SiteOrigin.
 
 == Support ==
 
