@@ -47,7 +47,7 @@ Once you enable a widget, you'll be able to use it anywhere standard widgets are
 
 == Documentation ==
 
-[Documentation](https://siteorigin.com/css/getting-started/) is available on SiteOrigin.
+[Documentation](https://siteorigin.com/widgets-bundle/getting-started/) is available on SiteOrigin.
 
 == Support ==
 
@@ -64,6 +64,13 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.11.8 - 12 April 2018 =
+* Added action just before rendering widget previews.
+* Editor: Removed `unwpautop`.
+* Editor: Ensure TinyMCE field knows whether to apply `autop` or not.
+* Editor: Only apply `autop` on display when using HTML editor.
+* Editor: Prevent `widget_text` filters from running `do_shortcode`.
 
 = 1.11.7 - 23 March 2018 =
 * Image: Add title alignment setting.
