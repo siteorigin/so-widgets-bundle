@@ -64,6 +64,16 @@ jQuery( function($){
 				});
 			});
 		};
+		
+		// If the Simple Masonry container is hidden it won't display properly. This is an attempt to make it display by
+		// calling resize when a custom 'show' event is fired. The 'show' event is something we fire in a few widgets
+		// like Accordion and Tabs and in future any widgets which might show and hide content using `display:none;`.
+		if ( $( $grid ).is( ':hidden' ) ) {
+			var $visParent = $( $grid ).closest( ':visible' );
+			$visParent.find( '> :hidden' ).on( 'show', function () {
+				resizeMasonry();
+			} );
+		}
 
 		$(window).on('resize panelsStretchRows', resizeMasonry);
 
