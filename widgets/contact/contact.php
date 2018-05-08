@@ -416,6 +416,10 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'type'  => 'measurement',
 								'label' => __( 'Height', 'so-widgets-bundle' )
 							),
+							'height_textarea' => array(
+								'type'  => 'measurement',
+								'label' => __( 'Text Area Height', 'so-widgets-bundle' )
+							),
 							'background'    => array(
 								'type'  => 'color',
 								'label' => __( 'Background', 'so-widgets-bundle' ),
@@ -785,6 +789,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'field_margin'               => $instance['design']['fields']['margin'],
 			'field_padding'              => $instance['design']['fields']['padding'],
 			'field_height'               => $instance['design']['fields']['height'],
+			'field_height_textarea'      => ! empty( $instance['design']['fields']['height_textarea'] ) ? $instance['design']['fields']['height_textarea'] : '',
 			'field_background'           => $instance['design']['fields']['background'],
 			'field_border_color'         => $instance['design']['fields']['border_color'],
 			'field_border_width'         => $instance['design']['fields']['border_width'],
