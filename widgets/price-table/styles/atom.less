@@ -207,8 +207,13 @@
 
 @media (max-width:680px) {
 	.ow-pt-columns-atom {
-
 		padding-top: 0;
+		
+		&.sow-equalize-row-heights {
+			.ow-pt-title, .ow-pt-details, .ow-pt-image, .ow-pt-features, .ow-pt-button, .ow-pt-feature {
+				height: auto !important;
+			}
+		}
 
 		.ow-pt-column {
 			float: none;
