@@ -98,6 +98,7 @@
 				e.preventDefault();
 				$field.find('.current .title' ).html('');
 				$inputField.val('');
+				$inputField.trigger( 'change', { silent: true } );
 				$field.find('.current .thumbnail' ).fadeOut('fast');
 				$(this).addClass('remove-hide');
 			} );

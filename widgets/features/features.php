@@ -278,6 +278,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 
 		$less_vars['container_size'] = $instance['container_size'];
 		$less_vars['icon_size'] = $instance['icon_size'];
+		$less_vars['per_row'] = $instance['per_row'];
 		$less_vars['use_icon_size'] = empty( $instance['icon_size_custom'] ) ? 'false' : 'true';
 
 		$global_settings = $this->get_global_settings();

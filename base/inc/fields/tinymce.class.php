@@ -65,6 +65,13 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	 */
 	protected $quicktags_buttons;
 	/**
+	 * Whether to apply `wpautop` processing. (Adds paragraphs for double linebreaks) Default is true.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $wpautop;
+	/**
 	 * An array of filter callbacks to apply to the set of buttons which will be rendered for the editor.
 	 *
 	 * @access protected
@@ -95,6 +102,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	
 	protected function get_default_options() {
 		return array(
+			'wpautop' => true,
 			'mce_buttons' => array(
 				'formatselect',
 				'bold',
@@ -304,9 +312,9 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	}
 	
 	protected function render_before_field( $value, $instance ) {
-		$selected_editor_name = $this->get_selected_editor_field_name( $this->base_name );
-		if( ! empty( $instance[ $selected_editor_name ] ) ) {
-			$this->selected_editor = $instance[ $selected_editor_name ];
+		$selected_editor = $this->get_selected_editor( $instance );
+		if( ! empty( $selected_editor ) ) {
+			$this->selected_editor = $selected_editor;
 		}
 		else {
 			$this->selected_editor = $this->default_editor;
@@ -372,7 +380,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			'tinymce' => array(
 				'wp_skip_init' => strpos( $this->element_id, '__i__' ) != false ||
 				                  strpos( $this->element_id, '_id_' ) != false,
-				'wpautop' => true,
+				'wpautop' => ! empty( $this->wpautop ),
 			),
 			'quicktags' => array(
 				'buttons' => $qt_settings['buttons'],
@@ -480,6 +488,10 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	}
 	
 	protected function sanitize_field_input( $value, $instance ) {
+		$selected_editor = $this->get_selected_editor( $instance );
+		if ( in_array( $selected_editor, array( 'tinymce', 'tmce' ) ) && ! empty( $this->wpautop ) ) {
+			$value = wpautop( $value );
+		}
 		if( current_user_can( 'unfiltered_html' ) ) {
 			$sanitized_value = $value;
 		} else {
@@ -496,6 +508,16 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			$instance[ $selected_editor_name ] = in_array( $selected_editor, array( 'tinymce', 'tmce', 'quicktags', 'html' ) ) ? $selected_editor : $this->default_editor;
 		}
 		return $instance;
+	}
+	
+	public function get_selected_editor( $instance ) {
+		$selected_editor = null;
+		$selected_editor_name = $this->get_selected_editor_field_name( $this->base_name );
+		if( ! empty( $instance[ $selected_editor_name ] ) ) {
+			$selected_editor = $instance[ $selected_editor_name ];
+		}
+		
+		return $selected_editor;
 	}
 	
 	public function get_selected_editor_field_name( $base_name ) {

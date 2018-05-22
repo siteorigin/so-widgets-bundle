@@ -244,6 +244,12 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#5BC8FF'
 	),
+	'whatsapp'   => array(
+		'label'    => __( 'WhatsApp', 'so-widgets-bundle' ),
+		'base_url' => 'https://www.whatsapp.com/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#25D366'
+	),
 	'wordpress'   => array(
 		'label'    => __( 'WordPress', 'so-widgets-bundle' ),
 		'base_url' => 'https://wordpress.org/',

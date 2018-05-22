@@ -50,6 +50,18 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 				),
 			),
 
+			'title_align' => array(
+				'type' => 'select',
+				'label' => __( 'Title alignment', 'so-widgets-bundle' ),
+				'default' => 'default',
+				'options' => array(
+					'default' => __( 'Default', 'so-widgets-bundle' ),
+					'left' =>    __( 'Left', 'so-widgets-bundle' ),
+					'right' =>   __( 'Right', 'so-widgets-bundle' ),
+					'center' =>  __( 'Center', 'so-widgets-bundle' ),
+				),
+			),
+
 			'title' => array(
 				'type' => 'text',
 				'label' => __('Title text', 'so-widgets-bundle'),
@@ -173,6 +185,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 
 	function get_less_variables($instance){
 		return array(
+			'title_alignment' => ! empty( $instance['title_align'] ) ? $instance['title_align'] : '',
 			'image_alignment' => $instance['align'],
 			'image_display' => $instance['align'] == 'default' ? 'block' : 'inline-block',
 			'image_max_width' => ! empty( $instance['bound'] ) ? '100%' : '',
