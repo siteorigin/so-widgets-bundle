@@ -52,13 +52,13 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 
 					'container_color' => array(
 						'type' => 'color',
-						'label' => __('Container color', 'so-widgets-bundle'),
+						'label' => __('Icon Container Color', 'so-widgets-bundle'),
 						'default' => '#404040',
 					),
 
                     'container_position' => array(
                         'type' => 'select',
-                        'label' => __('Container Position', 'so-widgets-bundle'),
+                        'label' => __('Icon Container Position', 'so-widgets-bundle'),
                         'options' => array(
                             'top' => __( 'Top', 'so-widgets-bundle' ),
                             'right' => __( 'Right', 'so-widgets-bundle' ),
