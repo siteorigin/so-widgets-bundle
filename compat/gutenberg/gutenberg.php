@@ -15,8 +15,6 @@ class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_widget_block' ) );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_widget_block_editor_assets' ) );
-		
-		add_action( 'wp_default_scripts', array( $this, 'gutenberg_shim_fix_api_request_plain_permalinks' ) );
 	}
 	
 	public function register_widget_block() {
@@ -29,7 +27,7 @@ class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
 		wp_enqueue_script(
 			'sowb-widget-block',
 			plugins_url( 'widget-block' . SOW_BUNDLE_JS_SUFFIX . '.js', __FILE__ ),
-			array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components' ),
+			array( 'wp-editor', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components' ),
 			SOW_BUNDLE_VERSION
 		);
 		
@@ -73,36 +71,6 @@ class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
 			$rendered_widget = new WP_Error( '', 'Invalid widget class.' );
 		}
 		return $rendered_widget;
-	}
-	
-	/**
-	 * This is copied from this PR: https://github.com/WordPress/gutenberg/pull/4877
-	 * Can be removed when the PR has been merged or the WP Core issue linked below has been fixed.
-	 *
-	 * Shims fix for apiRequest on sites configured to use plain permalinks.
-	 *
-	 * @see https://core.trac.wordpress.org/ticket/42382
-	 *
-	 * @param WP_Scripts $scripts WP_Scripts instance (passed by reference).
-	 */
-	function gutenberg_shim_fix_api_request_plain_permalinks( $scripts ) {
-		$api_request_fix = <<<JS
-( function( wp, wpApiSettings ) {
-	var buildAjaxOptions;
-	if ( 'string' !== typeof wpApiSettings.root ||
-			-1 === wpApiSettings.root.indexOf( '?' ) ) {
-		return;
-	}
-	buildAjaxOptions = wp.apiRequest.buildAjaxOptions;
-	wp.apiRequest.buildAjaxOptions = function( options ) {
-		if ( 'string' === typeof options.path ) {
-			options.path = options.path.replace( '?', '&' );
-		}
-		return buildAjaxOptions.call( wp.apiRequest, options );
-	};
-} )( window.wp, window.wpApiSettings );
-JS;
-		$scripts->add_inline_script( 'wp-api-request', $api_request_fix, 'after' );
 	}
 }
 

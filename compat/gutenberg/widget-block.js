@@ -1,7 +1,8 @@
-( function ( blocks, i18n, element, components ) {
+( function ( editor, blocks, i18n, element, components ) {
 	
 	var el = element.createElement;
-	var BlockControls = blocks.BlockControls;
+	var registerBlockType = blocks.registerBlockType;
+	var BlockControls = editor.BlockControls;
 	var SelectControl = components.SelectControl;
 	var withAPIData = components.withAPIData;
 	var withState = components.withState;
@@ -11,7 +12,7 @@
 	var Spinner  = components.Spinner;
 	var __ = i18n.__;
 	
-	blocks.registerBlockType( 'sowb/widget-block', {
+	registerBlockType( 'sowb/widget-block', {
 		title: __( 'SiteOrigin Widget' ),
 		
 		description: __( 'Select a SiteOrigin widget from the dropdown.' ),
@@ -230,4 +231,4 @@
 			return null;
 		}
 	} );
-} )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components );
+} )( window.wp.editor, window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components );
