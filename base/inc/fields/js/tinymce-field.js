@@ -14,6 +14,12 @@
 		
 		var $container = $field.find( '.siteorigin-widget-tinymce-container' );
 		var settings = $container.data( 'editorSettings' );
+		var $wpautopToggleField;
+		if ( settings.wpautopToggleField ) {
+			var $widgetForm = $container.closest( '.siteorigin-widget-form' );
+			$wpautopToggleField = $widgetForm.find( settings.wpautopToggleField );
+			settings.tinymce.wpautop = $wpautopToggleField.is( ':checked' );
+		}
 		var $textarea = $container.find( 'textarea' );
 		var id = $textarea.attr( 'id' );
 		var setupEditor = function ( editor ) {
@@ -24,16 +30,24 @@
 					$textarea.trigger( 'change' );
 				}
 			);
+			if ( $wpautopToggleField ) {
+				$wpautopToggleField.off( 'change' );
+				$wpautopToggleField.on( 'change', function () {
+					wp.editor.remove( id );
+					settings.tinymce.wpautop = $wpautopToggleField.is( ':checked' );
+					wp.editor.initialize( id, settings );
+				} );
+			}
 		};
 
 		settings.tinymce = $.extend( {}, settings.tinymce, { selector: '#' + id, setup: setupEditor } );
-		$( document ).one( 'wp-before-tinymce-init', function ( event, init ) {
+		$( document ).on( 'wp-before-tinymce-init', function ( event, init ) {
 			if ( init.selector === settings.tinymce.selector ) {
 				var mediaButtons = $container.data( 'mediaButtons' );
 				$field.find( '.wp-editor-tabs' ).before( mediaButtons.html );
 			}
 		} );
-		$( document ).one( 'tinymce-editor-setup', function () {
+		$( document ).on( 'tinymce-editor-setup', function () {
 			if ( ! $field.find( '.wp-editor-wrap' ).hasClass( settings.selectedEditor + '-active' ) ) {
 				setTimeout( function () {
 					window.switchEditors.go( id );
@@ -71,6 +85,7 @@
 					editor.setContent(window.switchEditors.wpautop(content));
 				}
 			}
+			settings.selectedEditor = mode;
 			$field.find( '.siteorigin-widget-tinymce-selected-editor' ).val( mode );
 		} );
 		
