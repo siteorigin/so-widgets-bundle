@@ -772,7 +772,7 @@ class SiteOrigin_Widgets_Bundle {
 		);
 		wp_register_script(
 			'sow-google-map',
-			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/sow.google.map' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/sow.google-map' . SOW_BUNDLE_JS_SUFFIX . '.js',
 			array( 'jquery' ),
 			SOW_BUNDLE_VERSION
 		);
