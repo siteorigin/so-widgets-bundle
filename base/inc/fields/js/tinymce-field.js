@@ -33,8 +33,10 @@
 				} );
 			}
 		};
-
-		settings.tinymce = $.extend( {}, settings.tinymce, { selector: '#' + id, setup: setupEditor } );
+		
+		if ( settings.tinymce ) {
+			settings.tinymce = $.extend( {}, settings.tinymce, { selector: '#' + id, setup: setupEditor } );
+		}
 		$( document ).on( 'wp-before-tinymce-init', function ( event, init ) {
 			if ( init.selector === settings.tinymce.selector ) {
 				var mediaButtons = $container.data( 'mediaButtons' );
