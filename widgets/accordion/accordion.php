@@ -220,8 +220,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 	
 	public function render_panel_content( $panel, $instance ) {
 		$content = wp_kses_post( $panel['content_text'] );
-
-		if ( function_exists('wp_make_content_images_responsive' ) ) {
+		if ( function_exists( 'wp_make_content_images_responsive' ) ) {
 			$content = wp_make_content_images_responsive( $content );
 		}
 
