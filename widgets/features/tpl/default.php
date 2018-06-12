@@ -27,7 +27,7 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 						}
 					}
 					else {
-						if(!empty($instance['icon_size'])) $icon_styles[] = 'font-size: '.intval($instance['icon_size']).'px';
+						if(!empty($instance['icon_size'])) $icon_styles[] = 'font-size: '.intval($instance['icon_size']) . esc_attr( $instance['icon_size_unit'] );
 						if(!empty($feature['icon_color'])) $icon_styles[] = 'color: '.$feature['icon_color'];
 
 						echo siteorigin_widget_get_icon($feature['icon'], $icon_styles);
