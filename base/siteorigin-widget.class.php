@@ -1093,9 +1093,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string
 	 */
 	function get_style_hash( $instance ) {
-		if( siteorigin_panels_setting('hash-by-number') ) {
-			return substr( md5( json_encode( $this->number ) ), 0, 12 );
-		} else {
+		$style_hash = apply_filters('siteorigin_widgets_widget_style_hash', '', $this);
+		if( empty( $style_hash ) ) {
 			if( method_exists( $this, 'get_style_hash_variables' ) ) {
 				$vars = apply_filters( 'siteorigin_widgets_hash_variables_' . $this->id_base, $this->get_style_hash_variables( $instance ), $instance, $this );
 			} else {
