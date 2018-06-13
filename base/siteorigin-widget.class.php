@@ -1102,8 +1102,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			}
 			$version = property_exists( $this, 'version' ) ? $this->version : '';
 
-			return substr( md5( json_encode( $vars ) . $version ), 0, 12 );
+			$style_hash = substr( md5( json_encode( $vars ) . $version ), 0, 12 );
 		}
+
+		return $style_hash;
 	}
 
 	/**
