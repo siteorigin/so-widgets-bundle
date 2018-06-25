@@ -11,6 +11,7 @@ include plugin_dir_path(__FILE__).'inc/array-utils.php';
 include plugin_dir_path(__FILE__).'inc/attachments.php';
 include plugin_dir_path(__FILE__).'inc/actions.php';
 include plugin_dir_path(__FILE__).'inc/shortcode.php';
+include plugin_dir_path(__FILE__).'inc/video.php';
 
 /**
  * @param $css
