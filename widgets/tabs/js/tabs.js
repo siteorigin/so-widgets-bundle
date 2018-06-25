@@ -8,6 +8,9 @@ jQuery( function ( $ ) {
 		$( '.sow-tabs' ).each( function ( index, element ) {
 			var $this = $( element );
 			var $widget = $this.closest( '.so-widget-sow-tabs' );
+			if ( $widget.data( 'initialized' ) ) {
+				return $( this );
+			}
 			var useAnchorTags = $widget.data( 'useAnchorTags' );
 			
 			var $tabPanelsContainer = $this.find( '> .sow-tabs-panel-container' );
@@ -36,6 +39,7 @@ jQuery( function ( $ ) {
 							$tabPanels.eq( selectedIndex ).fadeIn( 'fast',
 								function () {
 									$( this ).trigger( 'show' );
+									$( sowb ).trigger( 'setup_widgets' );
 								}
 							);
 						}
@@ -71,6 +75,8 @@ jQuery( function ( $ ) {
 					window.location.hash = $selectedTab.data( 'anchor' );
 				}
 			}
+			
+			$widget.data( 'initialized', true );
 		} );
 	};
 	
