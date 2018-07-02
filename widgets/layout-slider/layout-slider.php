@@ -188,7 +188,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 	}
 
 	function form( $instance, $form_type = 'widget' ) {
-		if( defined('SITEORIGIN_PANELS_VERSION') ) {
+		if( is_admin() && defined('SITEORIGIN_PANELS_VERSION') ) {
 			parent::form( $instance, $form_type );
 		} else {
 			?>
