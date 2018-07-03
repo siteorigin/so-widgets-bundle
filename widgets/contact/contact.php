@@ -1046,7 +1046,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		// Add in the default subject if no subject field is defined in the form at all
+		// Add in a default email address if no email field is defined in the form at all.
+		if ( ! isset( $email_fields['email'] ) && ! empty( $instance['settings']['from'] ) ) {
+			$email_fields['email'] = $instance['settings']['from'];
+		}
+
+		// Add in the default subject if no subject field is defined in the form at all.
 		if ( ! isset( $email_fields['subject'] ) && ! empty( $instance['settings']['default_subject'] ) ) {
 			$email_fields['subject'] = $instance['settings']['default_subject'];
 		}
