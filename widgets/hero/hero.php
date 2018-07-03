@@ -75,6 +75,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'type' => 'widget',
 								'class' => 'SiteOrigin_Widget_Button_Widget',
 								'label' => __('Button', 'so-widgets-bundle'),
+								'form_filter' => array( $this, 'filter_button_widget_form' ),
 								'collapsible' => false,
 							)
 						)
@@ -281,6 +282,13 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 				)
 			),
 		);
+	}
+	
+	function filter_button_widget_form( $form_fields ) {
+		
+		unset( $form_fields['design']['fields']['align'] );
+		
+		return $form_fields;
 	}
 
 	/**
