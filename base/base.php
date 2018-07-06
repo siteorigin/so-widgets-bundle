@@ -202,7 +202,7 @@ function siteorigin_widgets_is_google_webfont( $font_value ) {
 function siteorigin_widgets_font_families( ){
 	// Add the default fonts
 	$font_families = array(
-		'Helvetica Neue' => 'Helvetica Neue',
+		'Helvetica Neue' => 'Arial',
 		'Lucida Grande' => 'Lucida Grande',
 		'Georgia' => 'Georgia',
 		'Courier New' => 'Courier New',
