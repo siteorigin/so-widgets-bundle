@@ -441,7 +441,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		// Filter the instance specifically for the form
 		$instance = apply_filters('siteorigin_widgets_form_instance_' . $this->id_base, $instance, $this);
-		
+
 		// `more_entropy` adds a period to the id.
 		$id = str_replace( '.', '', uniqid( rand(), true ) );
 		$form_id = 'siteorigin_widget_form_' . md5( $id );
@@ -1093,14 +1093,19 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return string
 	 */
 	function get_style_hash( $instance ) {
-		if( method_exists( $this, 'get_style_hash_variables' ) ) {
-			$vars = apply_filters( 'siteorigin_widgets_hash_variables_' . $this->id_base, $this->get_style_hash_variables( $instance ), $instance, $this );
-		} else {
-			$vars = apply_filters( 'siteorigin_widgets_less_variables_' . $this->id_base, $this->get_less_variables( $instance ), $instance, $this );
-		}
-		$version = property_exists( $this, 'version' ) ? $this->version : '';
+		$style_hash = apply_filters('siteorigin_widgets_widget_style_hash', '', $this);
+		if( empty( $style_hash ) ) {
+			if( method_exists( $this, 'get_style_hash_variables' ) ) {
+				$vars = apply_filters( 'siteorigin_widgets_hash_variables_' . $this->id_base, $this->get_style_hash_variables( $instance ), $instance, $this );
+			} else {
+				$vars = apply_filters( 'siteorigin_widgets_less_variables_' . $this->id_base, $this->get_less_variables( $instance ), $instance, $this );
+			}
+			$version = property_exists( $this, 'version' ) ? $this->version : '';
 
-		return substr( md5( json_encode( $vars ) . $version ), 0, 12 );
+			$style_hash = substr( md5( json_encode( $vars ) . $version ), 0, 12 );
+		}
+
+		return $style_hash;
 	}
 
 	/**
@@ -1227,7 +1232,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$instance,
 			$this
 		);
-		
+
 		foreach ( $f_scripts as $f_script ) {
 			if ( ! wp_script_is( $f_script[0] ) ) {
 				wp_enqueue_script(
@@ -1264,7 +1269,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$instance,
 			$this
 		);
-		
+
 		foreach ( $f_styles as $f_style ) {
 			if ( ! wp_style_is( $f_style[0] ) ) {
 				wp_enqueue_style(

@@ -65,6 +65,27 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.12.0 - 11 July 2018 =
+* Contact: Add dedicated textarea height.
+* Social Media Buttons: Adds WhatsApp social network.
+* Features: Allow icon size to use a different unit of measurement.
+* Repeater field: Update editor id in media buttons when duplicating item with TinyMCE editor.
+* Posts field: taxonomy description.
+* Price Table: Disable equalized row heights on mobile.
+* Beaver Builder: Force icon fonts.
+* Slider widgets: Added autoplay option for background videos.
+* Maps: Renamed Google maps script to more sensible `sow.google-map.js`
+* Editor: Prevent errors when visual editing is disabled for a user.
+* Optimized images.
+* Accordion/tabs: Trigger 'setup_widgets' to ensure any widgets in panels are initialized correctly.
+* Contact: Use 'From' email address if there is no email field in the form.
+* Hero: Filter out the align field in the button sub-widget form.
+* Testimonials: Switch mobile and tablet resolution width field descriptions.
+* Posts field: Allow clearing dates.
+* Font field: Use correct value for 'Helvetica Neue' and added 'Arial' option.
+* TA: Additional setting to allow clearing the default background colors.
+* Contact: Allow a value of '0' for required fields and subject values.
+
 = 1.11.8 - 12 April 2018 =
 * Added action just before rendering widget previews.
 * Editor: Removed `unwpautop`.

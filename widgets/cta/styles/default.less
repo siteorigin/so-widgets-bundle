@@ -2,8 +2,8 @@
 
 .widget-function('import_google_font');
 
-@border_color: #E3E3E3;
-@background_color: #F8F8F8;
+@border_color: default;
+@background_color: default;
 @title_color: default;
 @title_font_family: default;
 @title_font_weight: default;
@@ -14,8 +14,12 @@
 @subtitle_font_size: default;
 
 .sow-cta-base {
-	border-color: @border_color;
-	background-color: @background_color;
+	& when ( iscolor( @border_color ) ) {
+		border: 1px solid @border_color;
+	}
+	& when ( iscolor( @background_color ) ) {
+		background-color: @background_color;
+	}
 
 	.sow-cta-text {
 		.sow-cta- {

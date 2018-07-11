@@ -5,6 +5,10 @@ var sowb = window.sowb || {};
 jQuery( function($){
 	sowb.setupSimpleMasonries = function() {
 		var $grid = $('.sow-masonry-grid');
+		
+		if ( !$grid.is( ':visible' ) || $grid.data( 'initialized' ) ) {
+			return $grid;
+		}
 
 		var resizeMasonry = function(){
 			$grid.each(function(){
@@ -71,6 +75,8 @@ jQuery( function($){
 		setTimeout( function () {
 			resizeMasonry();
 		}, 100 );
+		
+		$grid.data( 'initialized', true );
 	};
 	sowb.setupSimpleMasonries();
 

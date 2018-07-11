@@ -826,6 +826,15 @@ var sowbForms = window.sowbForms || {};
 							}
 
 							$inputElement.attr('id', newId);
+							if ( $inputElement.is( '.wp-editor-area' ) ) {
+								var tmceContainer = $inputElement.closest( '.siteorigin-widget-tinymce-container' );
+								var mediaButtons = tmceContainer.data( 'media-buttons' );
+								if ( mediaButtons && mediaButtons.html ) {
+									var idRegExp = new RegExp( id, 'g');
+									mediaButtons.html = mediaButtons.html.replace( idRegExp, newId );
+									tmceContainer.data( 'media-buttons', mediaButtons );
+								}
+							}
 							$copyItem.find('label[for=' + id + ']').attr('for', newId);
 							$copyItem.find('[id*=' + id + ']').each(function () {
 								var oldIdAttr = $(this).attr('id');
