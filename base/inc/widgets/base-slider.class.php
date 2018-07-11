@@ -120,6 +120,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'type' => 'checkbox',
 				'label' => __( 'Autoplay', 'so-widgets-bundle' ),
 				'default' => false,
+				'description' => __( 'Currently only for YouTube videos.', 'so-widgets-bundle' ),
 			),
 
 			'format' => array(
