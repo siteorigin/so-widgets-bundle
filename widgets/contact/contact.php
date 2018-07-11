@@ -999,8 +999,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 			$field_name = $this->name_from_label( ! empty( $field['label'] ) ? $field['label'] : $i, $field_ids ) . '-' . $instance['_sow_form_id'];
 			$value      = isset( $post_vars[ $field_name ] ) ? $post_vars[ $field_name ] : '';
-
-			if ( empty( $value ) && $value !== '0' ) {
+			
+			if ( strlen( $value ) == 0 ) {
 				if ( $field['required']['required'] ) {
 					// Add in the default subject
 					if ( $field['type'] == 'subject' && ! empty( $instance['settings']['default_subject'] ) ) {
