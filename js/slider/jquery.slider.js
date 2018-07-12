@@ -101,25 +101,23 @@ jQuery( function($){
 				// If we're inside a fittext wrapper, wait for it to complete, before setting up the slider.
 				var fitTextWrapper = $$.closest('.so-widget-fittext-wrapper');
 				if ( fitTextWrapper.length > 0 && ! fitTextWrapper.data('fitTextDone') ) {
-				fitTextWrapper.on('fitTextDone', function () {
-					setupSlider();
-				});
-				return;
+					fitTextWrapper.on('fitTextDone', function () {
+						setupSlider();
+					});
+					return;
 				}
 
 				// Show everything for this slider
 				$base.show();
-
+				
+				var resizeFrames = function () {
+					$$.find( '.sow-slider-image' ).each( function () {
+						var $i = $( this );
+						$i.css( 'height', $i.find( '.sow-slider-image-wrapper' ).outerHeight() );
+					} );
+				};
 				// Setup each of the slider frames
-				$$.find('.sow-slider-image').each( function(){
-					var $i = $(this);
-
-					$(window)
-						.on('resize panelsStretchRows', function(){
-							$i.css( 'height', $i.find('.sow-slider-image-wrapper').outerHeight() );
-						})
-						.resize();
-				} );
+				$(window).on('resize panelsStretchRows', resizeFrames ).resize();
 
 				// Set up the Cycle with videos
 				$$
@@ -155,6 +153,7 @@ jQuery( function($){
 							$(window).resize();
 
 							setTimeout(function() {
+								resizeFrames();
 								siteoriginSlider.setupActiveSlide( $$, optionHash.slides[0] );
 								// Ensure we keep auto-height functionality, but we don't want the duplicated content.
 								$$.find('.cycle-sentinel').empty();

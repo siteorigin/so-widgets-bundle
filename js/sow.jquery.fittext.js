@@ -47,7 +47,10 @@ jQuery( function( $ ){
 	sowb.runFitText = function () {
 		$( '.so-widget-fittext-wrapper' ).each( function() {
 			var fitTextWrapper = $( this );
-
+			if ( ! fitTextWrapper.is( ':visible' ) || fitTextWrapper.data( 'fitTextDone' ) ) {
+				return fitTextWrapper;
+			}
+			$( window ).off( 'resize.fittext orientationchange.fittext' );
 			var compressor = fitTextWrapper.data( 'fitTextCompressor' ) || 0.85;
 			fitTextWrapper.find( 'h1,h2,h3,h4,h5,h6' ).each( function () {
 				var $$ = $( this );

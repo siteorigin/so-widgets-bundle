@@ -7,6 +7,9 @@ jQuery( function ( $ ) {
 	sowb.setupAccordion = function() {
 		$( '.sow-accordion' ).each( function ( index, element ) {
 			var $widget = $( this ).closest( '.so-widget-sow-accordion' );
+			if ( $widget.data( 'initialized' ) ) {
+				return $( this );
+			}
 			var useAnchorTags = $widget.data( 'useAnchorTags' );
 			var initialScrollPanel = $widget.data( 'initialScrollPanel' );
 			
@@ -25,6 +28,7 @@ jQuery( function ( $ ) {
 					$panel.find( '> .sow-accordion-panel-content' ).slideDown(
 						function() {
 							$( this ).trigger( 'show' );
+							$( sowb ).trigger( 'setup_widgets' );
 						}
 					);
 					$panel.addClass( 'sow-accordion-panel-open' );
@@ -108,6 +112,8 @@ jQuery( function ( $ ) {
 					window.scrollTo( 0, $initialScrollPanel.offset().top - navOffset );
 				}
 			}
+			
+			$widget.data( 'initialized', true );
 		} );
 	};
 	

@@ -136,7 +136,7 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 									'width' => array(
 										'type' => 'text',
 										'label' => __( 'Resolution', 'so-widgets-bundle' ),
-										'description' => __( 'The resolution to treat as a mobile resolution.', 'so-widgets-bundle' ),
+										'description' => __( 'The resolution to treat as a tablet resolution.', 'so-widgets-bundle' ),
 										'default' => 800,
 										'sanitize' => 'intval',
 									)
@@ -165,7 +165,7 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 									'width' => array(
 										'type' => 'text',
 										'label' => __( 'Resolution', 'so-widgets-bundle' ),
-										'description' => __( 'The resolution to treat as a tablet resolution.', 'so-widgets-bundle' ),
+										'description' => __( 'The resolution to treat as a mobile resolution.', 'so-widgets-bundle' ),
 										'default' => 480,
 										'sanitize' => 'intval',
 									)
