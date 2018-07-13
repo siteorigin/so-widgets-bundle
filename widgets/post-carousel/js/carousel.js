@@ -1,14 +1,14 @@
 jQuery( function ( $ ) {
 	// The carousel widget
 	$( '.sow-carousel-wrapper' ).each( function () {
-
+		
 		var $$ = $( this ),
 			$postsContainer = $$.closest( '.sow-carousel-container' ),
 			$container = $$.closest( '.sow-carousel-container' ).parent(),
 			$itemsContainer = $$.find( '.sow-carousel-items' ),
 			$items = $$.find( '.sow-carousel-item' ),
 			$firstItem = $items.eq( 0 );
-
+		
 		var position = 0,
 			page = 1,
 			fetching = false,
@@ -18,7 +18,7 @@ jQuery( function ( $ ) {
 			itemWidth = ( $firstItem.width() + parseInt( $firstItem.css( 'margin-right' ) ) ),
 			isRTL = $postsContainer.hasClass( 'js-rtl' ),
 			updateProp = isRTL ? 'margin-right' : 'margin-left';
-
+		
 		var updatePosition = function () {
 			if ( position < 0 ) position = 0;
 			if ( position >= $$.find( '.sow-carousel-item' ).length - 1 ) {
@@ -29,7 +29,7 @@ jQuery( function ( $ ) {
 					page++;
 					$itemsContainer.append( '<li class="sow-carousel-item sow-carousel-loading"></li>' );
 					var instanceHash = $container.find( 'input[name="instance_hash"]' ).val();
-
+					
 					$.get(
 						$$.data( 'ajax-url' ),
 						{
@@ -50,9 +50,9 @@ jQuery( function ( $ ) {
 				}
 			}
 			$itemsContainer.css( 'transition-duration', "0.45s" );
-			$itemsContainer.css( updateProp, -( itemWidth * position) + 'px' );
+			$itemsContainer.css( updateProp, -( itemWidth * position ) + 'px' );
 		};
-
+		
 		$container.on( 'click', 'a.sow-carousel-previous',
 			function ( e ) {
 				e.preventDefault();
@@ -60,7 +60,7 @@ jQuery( function ( $ ) {
 				updatePosition();
 			}
 		);
-
+		
 		$container.on( 'click', 'a.sow-carousel-next',
 			function ( e ) {
 				e.preventDefault();
@@ -68,7 +68,7 @@ jQuery( function ( $ ) {
 				updatePosition();
 			}
 		);
-
+		
 		// Verify "swipe" method exists prior to invoking it.
 		if ( 'function' === typeof $$.swipe ) {
 			var validSwipe = false;
@@ -78,7 +78,7 @@ jQuery( function ( $ ) {
 			var prevTime = 0;
 			var posInterval;
 			var negativeDirection = isRTL ? 'right' : 'left';
-
+			
 			var setNewPosition = function ( newPosition ) {
 				if ( newPosition < 50 && newPosition > -( itemWidth * numItems ) ) {
 					$itemsContainer.css( 'transition-duration', "0s" );
@@ -87,13 +87,13 @@ jQuery( function ( $ ) {
 				}
 				return false;
 			};
-
+			
 			var setFinalPosition = function () {
 				var finalPosition = parseInt( $itemsContainer.css( updateProp ) );
 				position = Math.abs( Math.round( finalPosition / itemWidth ) );
 				updatePosition();
 			};
-
+			
 			$$.on( 'click', '.sow-carousel-item a',
 				function ( event ) {
 					if ( validSwipe ) {
@@ -102,7 +102,7 @@ jQuery( function ( $ ) {
 					}
 				}
 			);
-
+			
 			$$.swipe( {
 				excludedElements: "",
 				triggerOnTouchEnd: true,
@@ -111,9 +111,9 @@ jQuery( function ( $ ) {
 					if ( direction === 'up' || direction === 'down' ) {
 						return false;
 					}
-
+					
 					if ( phase === "start" ) {
-						startPosition = -( itemWidth * position);
+						startPosition = -( itemWidth * position );
 						prevTime = new Date().getTime();
 						clearInterval( posInterval );
 					}
@@ -121,8 +121,8 @@ jQuery( function ( $ ) {
 						if ( direction === negativeDirection ) distance *= -1;
 						setNewPosition( startPosition + distance );
 						var newTime = new Date().getTime();
-						var timeDelta = (newTime - prevTime) / 1000;
-						velocity = (distance - prevDistance) / timeDelta;
+						var timeDelta = ( newTime - prevTime ) / 1000;
+						velocity = ( distance - prevDistance ) / timeDelta;
 						prevTime = newTime;
 						prevDistance = distance;
 					}
@@ -134,11 +134,11 @@ jQuery( function ( $ ) {
 							var startTime = new Date().getTime();
 							var cumulativeDistance = 0;
 							posInterval = setInterval( function () {
-								var time = (new Date().getTime() - startTime) / 1000;
+								var time = ( new Date().getTime() - startTime ) / 1000;
 								cumulativeDistance += velocity * time;
 								var newPos = startPosition + distance + cumulativeDistance;
 								var decel = 30;
-								var end = (Math.abs( velocity ) - decel) < 0;
+								var end = ( Math.abs( velocity ) - decel ) < 0;
 								if ( direction === negativeDirection ) {
 									velocity += decel;
 								} else {
