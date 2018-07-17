@@ -4,7 +4,7 @@ var sowb = window.sowb || {};
 
 jQuery( function ( $ ) {
 	
-	sowb.setupTabs = function() {
+	sowb.setupTabs = function () {
 		$( '.sow-tabs' ).each( function ( index, element ) {
 			var $this = $( element );
 			var $widget = $this.closest( '.so-widget-sow-tabs' );

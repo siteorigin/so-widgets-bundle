@@ -65,6 +65,10 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.12.1 - 17 July 2018 =
+* Contact: Allow non-string values in required field validation.
+* Initialize CTA, Price Table and Video JS widgets correctly when in accordion/tabs widgets.
+
 = 1.12.0 - 11 July 2018 =
 * Contact: Add dedicated textarea height.
 * Social Media Buttons: Adds WhatsApp social network.
