@@ -1145,7 +1145,7 @@ var sowbForms = window.sowbForms || {};
 					editor = tinyMCE.get( $$.attr( 'id' ) );
 				}
 
-				if ( editor !== null && typeof( editor.setContent ) === "function" && ! editor.isHidden() ) {
+				if ( editor !== null && typeof( editor.setContent ) === "function" && ! editor.isHidden() && $$.parent().is( ':visible' ) ) {
 					if ( editor.initialized ) {
 						editor.setContent( value );
 					} else {

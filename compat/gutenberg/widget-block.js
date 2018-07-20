@@ -67,7 +67,7 @@
 			return toGet;
 		} )( function ( props ) {
 			var loadingWidgets = !props.widgets.data;
-			var loadingWidgetForm = props.editing && ! ( props.widgetform && props.widgetform.data );
+			var loadingWidgetForm = props.editing && props.attributes.widgetClass && ! ( props.widgetform && props.widgetform.data );
 			var loadingWidgetPreview = !props.editing && ! ( props.widgetpreview && props.widgetpreview.data );
 			
 			function onWidgetClassChange( newWidgetClass ) {
