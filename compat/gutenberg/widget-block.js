@@ -67,8 +67,8 @@
 			return toGet;
 		} )( function ( props ) {
 			var loadingWidgets = !props.widgets.data;
-			var loadingWidgetForm = props.attributes.widgetClass && props.widgetform && !props.widgetform.data;
-			var loadingWidgetPreview = props.attributes.widgetClass && props.widgetpreview && !props.widgetpreview.data;
+			var loadingWidgetForm = props.editing && ! ( props.widgetform && props.widgetform.data );
+			var loadingWidgetPreview = !props.editing && ! ( props.widgetpreview && props.widgetpreview.data );
 			
 			function onWidgetClassChange( newWidgetClass ) {
 				if ( newWidgetClass !== '' ) {
@@ -133,7 +133,7 @@
 				var widgetForm = props.widgetform ? props.widgetform.data : '';
 				
 				return [
-					!! props.focus && !! widgetForm && el(
+					!! widgetForm && el(
 						BlockControls,
 						{ key: 'controls' },
 						el(
@@ -183,7 +183,7 @@
 			} else {
 				var widgetPreview = props.widgetpreview ? props.widgetpreview.data : '';
 				return [
-					!! props.focus && el(
+					el(
 						BlockControls,
 						{ key: 'controls' },
 						el(
