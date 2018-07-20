@@ -691,12 +691,27 @@
 
 // Gutenberg compatibility styles
 .gutenberg__editor {
-
-	// WB icon for placeholder.
-	.so-widget-placeholder > .components-placeholder__label {
-		background: url("img/bundle-icon.png") no-repeat left;
-		background-size: 20px;
-		padding-left: 25px;
+	
+	.so-widget-placeholder {
+		
+		// WB icon for placeholder.
+		& > .components-placeholder__label {
+			background: url("img/bundle-icon.png") no-repeat left;
+			background-size: 20px;
+			padding-left: 25px;
+		}
+		
+		& > .components-placeholder__fieldset {
+			max-width: unset;
+			
+			.so-widget-gutenberg-container {
+				width: 100%;
+				
+				.siteorigin-widget-form.siteorigin-widget-form-main {
+					min-width: unset;
+				}
+			}
+		}
 	}
 
 	.siteorigin-widget-form {
