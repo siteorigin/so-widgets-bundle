@@ -76,13 +76,23 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 	}
 	
 	/**
-	 * TODO: Check that current user has permission to access the requested data.
 	 *
-	 * @param $request
-	 *
-	 * @return bool
+	 * @param WP_REST_Request $request Request.
+	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
 	 */
 	public function permissions_check( $request ) {
+		
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			$status_code = rest_authorization_required_code();
+			return new WP_Error(
+				$status_code,
+				__( '', 'so-widgets-bundle' ),
+				array(
+					'status' => $status_code,
+				)
+			);
+		}
+		
 		return true;
 	}
 	
@@ -126,7 +136,8 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 	}
 	
 	/**
-	 * TODO: Implement.
+	 * For now widget data is validated in the below `get_widget_preview` function.
+	 * Leaving this here for possible later implementation.
 	 *
 	 * @param $param
 	 * @param $request
