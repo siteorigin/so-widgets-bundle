@@ -62,10 +62,13 @@ class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
 		
 		$widget = ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ? $wp_widget_factory->widgets[ $widget_class ] : false;
 		
+		$instance = $attributes['widgetData'];
+		
 		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
 			ob_start();
 			/* @var $widget SiteOrigin_Widget */
-			$widget->widget( array(), $attributes['widgetData'] );
+			$instance = $widget->update( $instance, $instance );
+			$widget->widget( array(), $instance );
 			$rendered_widget = ob_get_clean();
 		} else {
 			$rendered_widget = new WP_Error( '', 'Invalid widget class.' );
