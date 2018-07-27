@@ -99,7 +99,9 @@
 					$mainForm.data( 'backupDisabled', true );
 					$mainForm.sowSetupForm();
 					if ( props.attributes.widgetData ) {
-						sowbForms.setWidgetFormValues( $mainForm, props.attributes.widgetData, false, false );
+						// If we call `setWidgetFormValues` with the last parameter ( `triggerChange` ) set to false,
+						// it won't show the correct values for some fields e.g. color and media fields.
+						sowbForms.setWidgetFormValues( $mainForm, props.attributes.widgetData );
 					}
 					$mainForm.on( 'change', function () {
 						props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
