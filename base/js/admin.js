@@ -1061,7 +1061,7 @@ var sowbForms = window.sowbForms || {};
 	 */
 	sowbForms.setWidgetFormValues = function (formContainer, data, skipMissingValues, triggerChange) {
 		skipMissingValues = skipMissingValues || false;
-		triggerChange = triggerChange && true;
+		triggerChange = (typeof triggerChange !== 'undefined' && triggerChange) || typeof triggerChange === 'undefined';
 		// First check if this form has any repeaters.
 		var depth = 0;
 		var updateRepeaterChildren = function ( formParent, formData ) {
