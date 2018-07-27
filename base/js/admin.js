@@ -357,6 +357,7 @@ var sowbForms = window.sowbForms || {};
 					e.preventDefault();
 					var $li = $(this);
 					$$.find('input.siteorigin-widget-input').val('post: ' + $li.data('value'));
+					$$.change();
 					$$.find('.existing-content-selector').toggle();
 				});
 
