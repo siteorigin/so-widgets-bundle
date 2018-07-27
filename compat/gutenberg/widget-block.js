@@ -72,8 +72,10 @@
 			
 			function onWidgetClassChange( newWidgetClass ) {
 				if ( newWidgetClass !== '' ) {
+					if ( props.widgetform ) {
+						props.widgetform.data = null;
+					}
 					props.setAttributes( { widgetClass: newWidgetClass, widgetData: null } );
-					props.widgetform.data = null;
 					props.setState( { formInitialized: false } );
 				}
 			}
