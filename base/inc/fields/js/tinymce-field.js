@@ -74,11 +74,14 @@
 		
 		$field.on( 'click', function ( event ) {
 			var $target = $( event.target );
+			if ( ! $target.is( 'wp-switch-editor' ) ) {
+				return;
+			}
 			var mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
 			if ( mode === 'tmce' ) {
 				var editor = window.tinymce.get( id );
 				// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex
-				if ( $target.hasClass( 'wp-switch-editor' ) && editor !== null ) {
+				if ( editor !== null ) {
 					var content = $textarea.val();
 					if ( content.search( '<' ) !== -1 && content.search( '>' ) === -1) {
 						content = content.replace( /</g, '' );
