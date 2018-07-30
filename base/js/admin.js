@@ -1067,6 +1067,7 @@ var sowbForms = window.sowbForms || {};
 		var depth = 0;
 		var updateRepeaterChildren = function ( formParent, formData ) {
 			if ( ++depth === 10 ) {
+				--depth;
 				return;
 			}
 			// Only direct child fields which are repeaters.
@@ -1105,6 +1106,7 @@ var sowbForms = window.sowbForms || {};
 					);
 				}
 			} );
+			--depth;
 		};
 
 		updateRepeaterChildren(formContainer, data);
