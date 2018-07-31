@@ -1071,10 +1071,26 @@ var sowbForms = window.sowbForms || {};
 				return;
 			}
 			// Only direct child fields which are repeaters.
-			formParent.find( '> .siteorigin-widget-field-type-repeater' ).each( function () {
-				var $repeater = $( this ).find( '> .siteorigin-widget-field-repeater' );
+			formParent.find( '> .siteorigin-widget-field-type-repeater,> .siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field-type-repeater' )
+			.each( function ( index, element ) {
+				var $this = $( this );
+				var $repeater = $this.find( '> .siteorigin-widget-field-repeater' );
 				var repeaterName = $repeater.data( 'repeaterName' );
 				var repeaterData = formData.hasOwnProperty( repeaterName ) ? formData[ repeaterName ] : null;
+				var isInSection = $this.parent().is( '.siteorigin-widget-section' );
+				if ( isInSection ) {
+					var elementName = $repeater.data( 'element-name' );
+					// Get rid of any index placeholders
+					elementName = elementName.replace(/\[#.*?#\]/g, '');
+					var variablePath = /[a-zA-Z0-9\-]+(?:\[c?[0-9]+\])?\[(.*)\]/.exec(elementName)[1];
+					var variablePathParts = variablePath.split('][');
+					var elementVars = variablePathParts.length ? formData : null;
+					while (variablePathParts.length) {
+						elementVars = elementVars[variablePathParts.shift()];
+					}
+					repeaterData = elementVars;
+				}
+				
 				if ( ! repeaterData || ! Array.isArray( repeaterData ) ) {
 					return;
 				}
