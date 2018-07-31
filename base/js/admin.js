@@ -399,6 +399,11 @@ var sowbForms = window.sowbForms || {};
 							// Skip if the function doesn't exist, or it starts with an underscore (internal functions).
 							return currentStates;
 						}
+						
+						// Skip if this is an unselected radio input.
+						if ( $$.is( '[type="radio"]' ) && !$$.is( ':checked' ) ) {
+							return currentStates;
+						}
 
 						// Check if this is inside a repeater
 						var repeaterIndex = sowbForms.getContainerFieldId( $$, 'repeater', '.siteorigin-widget-field-repeater-item' );
@@ -439,7 +444,7 @@ var sowbForms = window.sowbForms || {};
 						formStates = {'default': ''};
 					}
 					for (var k in states) {
-						if (typeof formStates[k] === 'undefined' || states[k] !== formStates[k]) {
+						if ( typeof formStates[k] === 'undefined' || states[k] !== formStates[k] ) {
 							// If the state is different from the original formStates, then trigger a state change
 							formStates[k] = states[k];
 							$mainForm.trigger('sowstatechange', [k, states[k]]);
