@@ -31,6 +31,12 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#99C4E6'
 	),
+	'phone'   => array(
+		'label'    => __( 'Phone', 'so-widgets-bundle' ),
+		'base_url' => 'tel:',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#99E5AA'
+	),
 	'snapchat'    => array(
 		'label'    => __( 'Snapchat', 'so-widgets-bundle' ),
 		'base_url' => 'https://www.snapchat.com/',

@@ -6,7 +6,19 @@
 		if( !empty($instance['design']['hover']) ) $classes[] = 'ow-button-hover';
 		$classes[] = "sow-social-media-button-" . sanitize_html_class( $network['name'] );
 		$classes[] = "sow-social-media-button";
-		$title = empty( $network['icon_title'] ) ? sprintf( __( '%s on %s', 'so-widgets-bundle' ), get_bloginfo( 'name' ), ucwords( str_replace( '-', ' ', $network['name'] ) ) ) : $network['icon_title'];
+
+		if( ! empty( $network['icon_title'] ) ) {
+			$title = $network['icon_title'];
+		} else {
+			if ( $network['name'] == 'email' || $network['name'] == 'phone' ) {
+				if ( $network['title'] == 'envelope' ) $network['name'] == 'email';
+
+				/* translators: Social Media Button with a verb and then site name. As an example, Call Eastlink Windows */
+				$title = sprintf( __( '%s %s', 'so-widgets-bundle' ), ucfirst( $network['name'] ), get_bloginfo( 'name' ) );
+			} else {
+				$title = sprintf( __( '%s on %s', 'so-widgets-bundle' ), get_bloginfo( 'name' ), ucwords( str_replace( '-', ' ', $network['name'] ) ) );
+			}
+		}
 		$button_attributes = array(
 			'class' => esc_attr( implode(' ', $classes) ),
 			'title' => $title,
