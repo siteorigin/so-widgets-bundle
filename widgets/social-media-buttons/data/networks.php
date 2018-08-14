@@ -88,6 +88,12 @@ return array(
 
 	// The rest of the networks, alphabetically
 
+	'angellist'   => array(
+		'label'    => __( 'AngelList', 'so-widgets-bundle' ),
+		'base_url' => 'https://angel.co/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#2A2929'
+	),
 	'500px'   => array(
 		'label'    => __( '500px', 'so-widgets-bundle' ),
 		'base_url' => 'https://500px.com/',
