@@ -742,7 +742,9 @@ class SiteOrigin_Widgets_Bundle {
 	 * Add action links.
 	 */
 	function plugin_action_links($links){
-		if ( isset( $links['edit'] ) ) unset( $links['edit'] );
+		if ( isset( $links['edit'] ) ) {
+			unset( $links['edit'] );
+		}
 		$links['manage'] = '<a href="' . admin_url('plugins.php?page=so-widgets-plugins') . '">'.__('Manage Widgets', 'so-widgets-bundle').'</a>';
 		$links['support'] = '<a href="https://siteorigin.com/thread/" target="_blank" rel="noopener noreferrer">'.__('Support', 'so-widgets-bundle').'</a>';
 		return $links;
