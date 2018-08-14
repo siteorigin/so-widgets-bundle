@@ -10,8 +10,8 @@
 		if( ! empty( $network['icon_title'] ) ) {
 			$title = $network['icon_title'];
 		} else {
-			if ( $network['name'] == 'email' || $network['name'] == 'phone' ) {
-				if ( $network['title'] == 'envelope' ) $network['name'] == 'email';
+			if ( $network['name'] == 'envelope' || $network['name'] == 'phone' ) {
+				if ( $network['name'] == 'envelope' ) $network['name'] == 'email';
 
 				/* translators: Social Media Button with a verb and then site name. As an example, Call Eastlink Windows */
 				$title = sprintf( __( '%s %s', 'so-widgets-bundle' ), ucfirst( $network['name'] ), get_bloginfo( 'name' ) );
