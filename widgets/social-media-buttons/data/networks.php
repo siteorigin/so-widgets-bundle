@@ -25,11 +25,17 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#FAA21B'
 	),
-	'envelope'   => array(
+	'email'   => array(
 		'label'    => __( 'Email', 'so-widgets-bundle' ),
 		'base_url' => 'mailto:',
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#99C4E6'
+	),
+	'phone'   => array(
+		'label'    => __( 'Phone', 'so-widgets-bundle' ),
+		'base_url' => 'tel:',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#99E5AA'
 	),
 	'snapchat'    => array(
 		'label'    => __( 'Snapchat', 'so-widgets-bundle' ),
@@ -87,6 +93,12 @@ return array(
 		'base_url' => 'https://500px.com/',
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#292929'
+	),
+	'angellist'   => array(
+		'label'    => __( 'AngelList', 'so-widgets-bundle' ),
+		'base_url' => 'https://angel.co/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#2A2929'
 	),
 	'behance'   => array(
 		'label'    => __( 'Behance', 'so-widgets-bundle' ),
