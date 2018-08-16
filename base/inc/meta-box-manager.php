@@ -97,6 +97,9 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 			true
 		);
 		$widget_post_meta = get_post_meta( $post->ID, self::POST_META_KEY, true );
+		if ( empty( $widget_post_meta ) ) {
+			$widget_post_meta = array();
+		}
 		$this->form( $widget_post_meta );
 		?><input type="hidden" id="widget_post_meta" name="widget_post_meta"> <?php
 		wp_nonce_field( 'widget_post_meta_save', '_widget_post_meta_nonce' );
