@@ -1,11 +1,11 @@
-( function ( editor, blocks, i18n, element, components ) {
+( function ( editor, blocks, i18n, element, components, compose ) {
 	
 	var el = element.createElement;
 	var registerBlockType = blocks.registerBlockType;
 	var BlockControls = editor.BlockControls;
 	var SelectControl = components.SelectControl;
 	var withAPIData = components.withAPIData;
-	var withState = components.withState;
+	var withState = compose.withState;
 	var Toolbar = components.Toolbar;
 	var IconButton = components.IconButton;
 	var Placeholder = components.Placeholder;
@@ -238,4 +238,4 @@
 			return null;
 		}
 	} );
-} )( window.wp.editor, window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components );
+} )( window.wp.editor, window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.compose );
