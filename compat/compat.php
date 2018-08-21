@@ -21,6 +21,12 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 		if ( ! empty( $builder ) ) {
 			require_once $builder['file_path'];
 		}
+		$gutenberg_dev_mode = defined( 'GUTENBERG_DEVELOPMENT_MODE' ) && ! empty( GUTENBERG_DEVELOPMENT_MODE );
+		$gutenberg_supported = defined( 'GUTENBERG_VERSION' ) &&
+							   version_compare( GUTENBERG_VERSION, '2.0.0', '>=' );
+		if ( $gutenberg_supported || $gutenberg_dev_mode ) {
+			require_once plugin_dir_path( __FILE__ ) . 'gutenberg/gutenberg.php';
+		}
 	}
 
 	function get_active_builder() {

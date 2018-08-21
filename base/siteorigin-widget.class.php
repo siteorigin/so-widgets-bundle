@@ -237,6 +237,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		echo '</div>';
 		echo $args['after_widget'];
 		do_action( 'siteorigin_widgets_after_widget_' . $this->id_base, $instance, $this );
+		
+		if ( $this->is_preview( $instance ) ) {
+			// print inline styles if we're preview the widget.
+			siteorigin_widget_print_styles();
+		}
 	}
 
 	private function get_wrapper_data( $instance ) {
@@ -1314,10 +1319,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		// Check if the general request is a preview
 		$is_preview =
-			is_preview() ||  // is this a standard preview
-			$this->is_customize_preview() ||    // Is this a customizer preview
-			!empty( $_GET['siteorigin_panels_live_editor'] ) ||     // Is this a Page Builder live editor request
-			( !empty( $_REQUEST['action'] ) && $_REQUEST['action'] == 'so_panels_builder_content' );    // Is this a Page Builder content ajax request
+			is_preview() || // Is this a standard preview
+			$this->is_customize_preview() || // Is this a customizer preview
+			!empty( $_GET['siteorigin_panels_live_editor'] ) || // Is this a Page Builder live editor request
+			( !empty( $_REQUEST['action'] ) && $_REQUEST['action'] == 'so_panels_builder_content' ) || // Is this a Page Builder content ajax request
+			! empty( $GLOBALS[ 'SITEORIGIN_PANELS_PREVIEW_RENDER' ] ); // Is this a Page Builder preview render.
 
 		return apply_filters( 'siteorigin_widgets_is_preview', $is_preview, $this );
 	}

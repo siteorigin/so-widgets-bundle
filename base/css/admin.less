@@ -57,7 +57,7 @@
 	.siteorigin-widget-field {
 		margin: 1em 0;
 
-		label {
+		> label {
 			display: block;
 			margin-bottom: 3px;
 
@@ -682,4 +682,70 @@
 .widget-icon.so-widget-icon {
 	background-size: cover;
 	background-image: url("img/bundle-icon.png");
+
+	&.so-gutenberg-icon {
+		width: 20px;
+		height: 20px;
+	}
+}
+
+// Gutenberg compatibility styles
+.gutenberg__editor {
+	
+	.so-widget-placeholder {
+		
+		// WB icon for placeholder.
+		& > .components-placeholder__label {
+			background: url("img/bundle-icon.png") no-repeat left;
+			background-size: 20px;
+			padding-left: 25px;
+		}
+		
+		& > .components-placeholder__fieldset {
+			max-width: unset;
+			
+			.so-widget-gutenberg-container {
+				width: 100%;
+				
+				.siteorigin-widget-form.siteorigin-widget-form-main {
+					min-width: unset;
+				}
+			}
+		}
+	}
+
+	.siteorigin-widget-form {
+		.siteorigin-widget-field {
+			text-align: left;
+
+			input {
+				padding: 3px 5px;
+			}
+
+			&.siteorigin-widget-field-type-autocomplete, &.siteorigin-widget-field-type-link {
+				.select-content-button {
+					box-shadow: unset;
+					font-size: 13px;
+					height: 28px;
+				}
+			}
+
+			&.siteorigin-widget-field-type-icon .siteorigin-widget-icon-selector-current {
+				height: 37px;
+			}
+
+			&.siteorigin-widget-field-type-tinymce .wp-switch-editor {
+				box-sizing: content-box;
+			}
+		}
+	}
+
+	.so-widget-gutenberg-preview-container {
+		.so-widgets-spinner-container {
+			text-align: center;
+			> span {
+				display: inline-block;
+			}
+		}
+	}
 }

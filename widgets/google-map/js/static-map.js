@@ -10,7 +10,7 @@ jQuery( function ( $ ) {
 			var showFallbackImage = function () {
 				if ( $this.data( 'fallbackImage' ) ) {
 					var imgData = $this.data( 'fallbackImage' );
-					if ( imgData.hasOwnProperty( 'img' ) ) {
+					if ( imgData.hasOwnProperty( 'img' ) && imgData.img.length > 0 ) {
 						$this.parent().append( imgData.img );
 						$this.remove();
 					}

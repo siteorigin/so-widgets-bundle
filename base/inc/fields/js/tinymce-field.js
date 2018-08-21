@@ -6,7 +6,12 @@
 		if ( $field.data( 'initialized' ) ) {
 			return;
 		}
-
+		
+		var inGutenberg = $( 'body' ).is( '.gutenberg-editor-page' );
+		var wpEditor = inGutenberg ? wp.oldEditor : wp.editor;
+		wp.editor.autop = wpEditor.autop;
+		wp.editor.removep = wpEditor.removep;
+		
 		var $container = $field.find( '.siteorigin-widget-tinymce-container' );
 		var settings = $container.data( 'editorSettings' );
 		var $wpautopToggleField;
@@ -20,7 +25,8 @@
 		var setupEditor = function ( editor ) {
 			editor.on( 'change',
 				function () {
-					window.tinymce.get( id ).save();
+					var ed = window.tinymce.get( id );
+					ed.save();
 					$textarea.trigger( 'change' );
 				}
 			);
@@ -51,16 +57,16 @@
 			}
 		} );
 
-		wp.editor.remove( id );
-
+		wpEditor.remove( id );
+		window.tinymce.EditorManager.overrideDefaults( { base_url: settings.baseURL, suffix: settings.suffix } );
 		// Wait for textarea to be visible before initialization.
 		if ( $textarea.is( ':visible' ) ) {
-			wp.editor.initialize( id, settings );
+			wpEditor.initialize( id, settings );
 		}
 		else {
 			var intervalId = setInterval( function () {
 				if ( $textarea.is( ':visible' ) ) {
-					wp.editor.initialize( id, settings );
+					wpEditor.initialize( id, settings );
 					clearInterval( intervalId );
 				}
 			}, 500);
@@ -68,11 +74,14 @@
 		
 		$field.on( 'click', function ( event ) {
 			var $target = $( event.target );
+			if ( ! $target.is( 'wp-switch-editor' ) ) {
+				return;
+			}
 			var mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
 			if ( mode === 'tmce' ) {
 				var editor = window.tinymce.get( id );
 				// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex
-				if ( $target.hasClass( 'wp-switch-editor' ) && editor !== null ) {
+				if ( editor !== null ) {
 					var content = $textarea.val();
 					if ( content.search( '<' ) !== -1 && content.search( '>' ) === -1) {
 						content = content.replace( /</g, '' );

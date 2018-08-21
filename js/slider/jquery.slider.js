@@ -70,6 +70,12 @@ jQuery( function($){
 
 		$('.sow-slider-images').each(function(){
 			var $$ = $(this);
+			
+			
+			if ( $$.data( 'initialized' ) ) {
+				return $$;
+			}
+			
 			var $p = $$.siblings('.sow-slider-pagination');
 			var $base = $$.closest('.sow-slider-base');
 			var $n = $base.find('.sow-slide-nav');
@@ -256,6 +262,8 @@ jQuery( function($){
 			if(images.length === 0) {
 				setupSlider();
 			}
+			
+			$$.data( 'initialized', true );
 		});
 	};
 	sowb.setupSliders();
