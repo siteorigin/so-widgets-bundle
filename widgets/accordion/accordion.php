@@ -62,6 +62,10 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 						'type'  => 'tinymce',
 						'label' => __( 'Content', 'so-widgets-bundle' ),
 					),
+					'autop' => array(
+						'type' => 'checkbox',
+						'label' => __( 'Automatically add paragraphs', 'so-widgets-bundle' ),
+					),
 					'initial_state' => array(
 						'type' => 'radio',
 						'label' => __( 'Initial state', 'so-widgets-bundle' ),
@@ -216,6 +220,13 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 	
 	public function render_panel_content( $panel, $instance ) {
 		$content = wp_kses_post( $panel['content_text'] );
+
+		if ( function_exists( 'wp_make_content_images_responsive' ) ) {
+			$content = wp_make_content_images_responsive( $content );
+		}
+		if( $panel['autop'] ) {
+			$content = wpautop( $content );
+		}
 		
 		echo apply_filters( 'siteorigin_widgets_accordion_render_panel_content', $content, $panel, $instance );
 	}
