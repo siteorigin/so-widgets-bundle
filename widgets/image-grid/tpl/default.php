@@ -19,7 +19,7 @@
 						<?php endif; ?>
 					<?php endforeach; ?>>
 				<?php endif; ?>
-				<?php echo $image['image_html'];	?>
+				<?php echo $image['image_html']; ?>
 				<?php if ( ! empty( $image['url'] ) ) : ?>
 					</a>
 				<?php endif; ?>
