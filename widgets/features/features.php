@@ -194,14 +194,14 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 
 			'container_shape' => array(
 				'type' => 'select',
-				'label' => __('Container shape', 'so-widgets-bundle'),
+				'label' => __('Icon Container Position', 'so-widgets-bundle'),
 				'default' => 'round',
 				'options' => include dirname( __FILE__ ) . '/inc/containers.php',
 			),
 
 			'container_size' => array(
 				'type' => 'measurement',
-				'label' => __('Container size', 'so-widgets-bundle'),
+				'label' => __('Icon Container Size', 'so-widgets-bundle'),
 				'default' => '84px',
 			),
 
