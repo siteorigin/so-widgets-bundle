@@ -731,7 +731,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			if ( WP_Filesystem() ) {
 				global $wp_filesystem;
 				$upload_dir = wp_upload_dir();
-						$add_cache = true;
+				$add_cache = true;
 
 				if ( ! $wp_filesystem->is_dir( $upload_dir['basedir'] . '/siteorigin-widgets/' ) ) {
 					$directory_created = $wp_filesystem->mkdir( $upload_dir['basedir'] . '/siteorigin-widgets/' );
