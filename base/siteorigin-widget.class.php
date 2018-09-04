@@ -727,23 +727,34 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		$css = $this->get_instance_css($instance);
 
-		if( !empty($css) ) {
-
+		if ( !empty( $css ) ) {
 			if ( WP_Filesystem() ) {
 				global $wp_filesystem;
 				$upload_dir = wp_upload_dir();
+						$add_cache = true;
 
 				if ( ! $wp_filesystem->is_dir( $upload_dir['basedir'] . '/siteorigin-widgets/' ) ) {
-					$wp_filesystem->mkdir( $upload_dir['basedir'] . '/siteorigin-widgets/' );
+					$directory_created = $wp_filesystem->mkdir( $upload_dir['basedir'] . '/siteorigin-widgets/' );
+					if ( ! $directory_created ) {
+						$add_cache = true;
+					}
 				}
 
-				$wp_filesystem->delete( $upload_dir['basedir'] . '/siteorigin-widgets/' . $name );
-				$wp_filesystem->put_contents(
-					$upload_dir['basedir'] . '/siteorigin-widgets/' . $name,
-					$css
-				);
-
+				if ( !isset( $add_cache ) ) {
+					$wp_filesystem->delete( $upload_dir['basedir'] . '/siteorigin-widgets/' . $name );
+					$file_created = $wp_filesystem->put_contents(
+						$upload_dir['basedir'] . '/siteorigin-widgets/' . $name,
+						$css
+					);
+					if ( ! $file_created ) {
+						$add_cache = true;
+					}
+				}
 			} else {
+				$add_cache = true;
+			}
+
+			if ( !empty( $add_cache ) ) {
 				wp_cache_add( $name, $css, 'siteorigin_widgets' );
 			}
 
