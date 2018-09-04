@@ -33,6 +33,10 @@ jQuery( function ( $ ) {
 					);
 					$panel.addClass( 'sow-accordion-panel-open' );
 					openPanels.push( panel );
+					parentPanel = $( panel ).parents( '.sow-accordion-panel' );
+					if ( parentPanel.length && openPanels.indexOf( parentPanel.get(0) ) == -1 ) {
+						openPanels.push( parentPanel.get(0) );
+					}
 					if ( ! preventHashChange ) {
 						updateHash();
 					}
