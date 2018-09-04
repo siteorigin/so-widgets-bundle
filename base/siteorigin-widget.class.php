@@ -727,7 +727,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		$css = $this->get_instance_css($instance);
 
-		if ( !empty( $css ) ) {
+		if ( ! empty( $css ) ) {
 			if ( WP_Filesystem() ) {
 				global $wp_filesystem;
 				$upload_dir = wp_upload_dir();
