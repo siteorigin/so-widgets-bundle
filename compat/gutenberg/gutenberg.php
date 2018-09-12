@@ -30,6 +30,14 @@ class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
 			array( 'wp-editor', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-compose' ),
 			SOW_BUNDLE_VERSION
 		);
+		wp_localize_script(
+			'sowb-widget-block',
+			'sowbGutenbergAdmin',
+			array(
+				'restUrl' => esc_url_raw( rest_url() ),
+				'nonce' => wp_create_nonce( 'wp_rest' ),
+			)
+		);
 		
 		$so_widgets_bundle = SiteOrigin_Widgets_Bundle::single();
 		// This is to ensure necessary scripts can be enqueued for previews.

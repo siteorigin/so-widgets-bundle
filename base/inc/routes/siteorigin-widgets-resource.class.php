@@ -158,7 +158,7 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 	 */
 	public function get_widget_preview( $request ) {
 		$widget_class = $request['widgetClass'];
-		$widget_data = json_decode( $request['widgetData'], true );
+		$widget_data = $request['widgetData'];
 		
 		global $wp_widget_factory;
 		

@@ -4,7 +4,6 @@
 	var registerBlockType = blocks.registerBlockType;
 	var BlockControls = editor.BlockControls;
 	var SelectControl = components.SelectControl;
-	var withAPIData = components.withAPIData;
 	var withState = compose.withState;
 	var Toolbar = components.Toolbar;
 	var IconButton = components.IconButton;
@@ -42,41 +41,35 @@
 		},
 		
 		edit: withState( {
+			loadingWidgets: true,
 			editing: false,
 			formInitialized: false,
 			previewInitialized: false,
-		} )( withAPIData( function( props ) {
-			var toGet = {
-				widgets: '/sowb/v1/widgets'
-			};
-			
-			if ( props.attributes.widgetClass ) {
-				if ( props.editing ) {
-					toGet.widgetform = '/sowb/v1/widgets/forms?widgetClass=' + props.attributes.widgetClass;
-				} else {
-					var data = props.attributes.widgetData || {};
-					toGet.widgetpreview = '/sowb/v1/widgets/previews?widgetClass=' +
-						props.attributes.widgetClass +
-						'&widgetData=' +
-						encodeURIComponent( JSON.stringify( data ) );
-				}
-			} else if ( ! props.editing ) {
-				props.setState( { editing: true } );
-			}
-			
-			return toGet;
+			widgets: null,
+			widgetFormHtml: '',
+			widgetPreviewHtml: '',
 		} )( function ( props ) {
-			var loadingWidgets = !props.widgets.data;
-			var loadingWidgetForm = props.editing && props.attributes.widgetClass && ! ( props.widgetform && props.widgetform.data );
-			var loadingWidgetPreview = !props.editing && ! ( props.widgetpreview && props.widgetpreview.data );
+			
+			if ( props.loadingWidgets ) {
+				$.get( {
+					url: sowbGutenbergAdmin.restUrl + 'sowb/v1/widgets',
+					beforeSend: function ( xhr ) {
+						xhr.setRequestHeader( 'X-WP-Nonce', sowbGutenbergAdmin.nonce );
+					}
+				} )
+				.then( function( widgets ) {
+					var newState = { widgets: widgets, loadingWidgets: false };
+					if ( !props.attributes.widgetClass ) {
+						newState.editing = true;
+					}
+					props.setState( newState );
+				} );
+			}
 			
 			function onWidgetClassChange( newWidgetClass ) {
 				if ( newWidgetClass !== '' ) {
-					if ( props.widgetform ) {
-						props.widgetform.data = null;
-					}
 					props.setAttributes( { widgetClass: newWidgetClass, widgetData: null } );
-					props.setState( { formInitialized: false } );
+					props.setState( { widgetFormHtml: null, formInitialized: false, widgetPreviewHtml: null, previewInitialized: false } );
 				}
 			}
 			
@@ -107,6 +100,7 @@
 					}
 					$mainForm.on( 'change', function () {
 						props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
+						props.setState( { widgetPreviewHtml: null, previewInitialized: false } );
 					} );
 					props.setState( { formInitialized: true } );
 				}
@@ -120,10 +114,9 @@
 			}
 			
 			if ( props.editing ) {
-				
 				var widgetsOptions = [];
-				if ( props.widgets && props.widgets.data ) {
-					props.widgets.data.sort( function ( a, b ) {
+				if ( props.widgets ) {
+					props.widgets.sort( function ( a, b ) {
 						if ( a.name < b.name ) {
 							return -1;
 						} else if ( a.name > b.name ) {
@@ -131,13 +124,29 @@
 						}
 						return 0;
 					} );
-					widgetsOptions = props.widgets.data.map( function ( widget ) {
+					widgetsOptions = props.widgets.map( function ( widget ) {
 						return { value: widget.class, label: widget.name };
 					} );
 					widgetsOptions.unshift( { value: '', label: __( 'Select widget type' ) } );
 				}
 				
-				var widgetForm = props.widgetform ? props.widgetform.data : '';
+				var loadingWidgetForm = props.attributes.widgetClass && !props.widgetFormHtml;
+				if ( loadingWidgetForm ) {
+					$.get( {
+						url: sowbGutenbergAdmin.restUrl + 'sowb/v1/widgets/forms',
+						beforeSend: function ( xhr ) {
+							xhr.setRequestHeader( 'X-WP-Nonce', sowbGutenbergAdmin.nonce );
+						},
+						data: {
+							widgetClass: props.attributes.widgetClass
+						}
+					} )
+					.then( function( widgetForm ) {
+						props.setState( { widgetFormHtml: widgetForm } );
+					} );
+				}
+				
+				var widgetForm = props.widgetFormHtml ? props.widgetFormHtml : '';
 				
 				return [
 					!! widgetForm && el(
@@ -165,7 +174,7 @@
 							label: __( 'SiteOrigin Widget' ),
 							instructions: __( 'Select the type of widget you want to use:' )
 						},
-						( loadingWidgets || loadingWidgetForm ?
+						( props.loadingWidgets || loadingWidgetForm ?
 							el( Spinner ) :
 							el(
 								'div',
@@ -188,7 +197,24 @@
 					)
 				];
 			} else {
-				var widgetPreview = props.widgetpreview ? props.widgetpreview.data : '';
+				
+				var loadingWidgetPreview = !props.editing && !props.widgetPreviewHtml;
+				if ( loadingWidgetPreview ) {
+					$.get( {
+						url: sowbGutenbergAdmin.restUrl + 'sowb/v1/widgets/previews',
+						beforeSend: function ( xhr ) {
+							xhr.setRequestHeader( 'X-WP-Nonce', sowbGutenbergAdmin.nonce );
+						},
+						data: {
+							widgetClass: props.attributes.widgetClass,
+							widgetData: props.attributes.widgetData || {}
+						}
+					} )
+					.then( function( widgetPreview ) {
+						props.setState( { widgetPreviewHtml: widgetPreview } );
+					} );
+				}
+				var widgetPreview = props.widgetPreviewHtml ? props.widgetPreviewHtml : '';
 				return [
 					el(
 						BlockControls,
@@ -231,7 +257,7 @@
 					)
 				];
 			}
-		} ) ),
+		} ),
 		
 		save: function () {
 			// Render in PHP
