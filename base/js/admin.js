@@ -1091,7 +1091,8 @@ var sowbForms = window.sowbForms || {};
 					var variablePathParts = variablePath.split('][');
 					var elementVars = variablePathParts.length ? formData : null;
 					while (variablePathParts.length) {
-						elementVars = elementVars[variablePathParts.shift()];
+						var key = variablePathParts.shift();
+						elementVars = elementVars.hasOwnProperty( key ) ? elementVars[ key ] : elementVars;
 					}
 					repeaterData = elementVars;
 				}
