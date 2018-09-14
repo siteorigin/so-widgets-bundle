@@ -21,6 +21,10 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 		if ( ! empty( $builder ) ) {
 			require_once $builder['file_path'];
 		}
+		
+		if ( function_exists( 'register_block_type' ) ) {
+			require_once plugin_dir_path( __FILE__ ) . 'gutenberg/gutenberg.php';
+		}
 	}
 
 	function get_active_builder() {
