@@ -65,6 +65,18 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.13.0 - 13 September 2018 =
+* SiteOrigin Widgets Gutenberg block!
+* Google Map: Prevent script from running further if no map canvas elements found.
+* Removed style to set `p` margins to zero.
+* Check that fallback image for static maps is not an empty string before attempting to use it.
+* TinyMCE: Ensure target is one of the editor tabs when switching modes.
+* Set values for repeaters which are direct children of section fields.
+* Prevent unselected radio input state emitters from affecting form states, when form values are set programmatically.
+* Plugin Action Links: Check if edit link is present before removal.
+* Social Media Buttons: Added Phone and Angelist. Changed email title text.
+* Metabox manager: Set empty post meta string value to array. Ensure metabox widget form values are saved when saving drafts too.
+
 = 1.12.1 - 17 July 2018 =
 * Contact: Allow non-string values in required field validation.
 * Initialize CTA, Price Table and Video JS widgets correctly when in accordion/tabs widgets.
