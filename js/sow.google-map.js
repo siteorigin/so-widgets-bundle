@@ -349,6 +349,8 @@ sowb.SiteOriginGoogleMap = function($) {
 			var location = { address: inputLocation };
 			//check if address is actually a valid latlng
 			var latLng, geocodetimer;
+			var geocodeIteration = 0;
+			
 			if ( inputLocation && inputLocation.indexOf( ',' ) > -1 ) {
 				var vals = inputLocation.split( ',' );
 				// A latlng value should be of the format 'lat,lng'
@@ -378,9 +380,14 @@ sowb.SiteOriginGoogleMap = function($) {
 						locationPromise.resolve( results[ 0 ].geometry.location );
 					} else if ( status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT ) {
 						//try again please
-						if ( geocodetimer != null ) {
-							geocodetimer = setTimeout( function () {
-								this.getGeocoder().geocode.call( this, location, onGeocodeResults );
+						if ( geocodeTimer == null ) {
+							geocodeTimer = setInterval( function () {
+								if ( geocodeIteration <= 2 ) {
+									geocodeIteration++;
+									this.getGeocoder().geocode.call( this, location, onGeocodeResults );
+								} else {
+									clearInterval( geocodeTimer );
+								}
 							}.bind( this ), 100 );
 						}
 					} else if ( status === google.maps.GeocoderStatus.ZERO_RESULTS ) {
