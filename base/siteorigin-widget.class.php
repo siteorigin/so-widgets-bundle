@@ -733,24 +733,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				$upload_dir = wp_upload_dir();
 
 				if ( ! $wp_filesystem->is_dir( $upload_dir['basedir'] . '/siteorigin-widgets/' ) ) {
-					$directory_created = $wp_filesystem->mkdir( $upload_dir['basedir'] . '/siteorigin-widgets/' );
-					if ( ! $directory_created ) {
-						$add_cache = true;
-					}
+					$add_cache = $wp_filesystem->mkdir( $upload_dir['basedir'] . '/siteorigin-widgets/' );
 				}
 
 				if ( !isset( $add_cache ) ) {
 					$wp_filesystem->delete( $upload_dir['basedir'] . '/siteorigin-widgets/' . $name );
-					$file_created = $wp_filesystem->put_contents(
+					$add_cache = $wp_filesystem->put_contents(
 						$upload_dir['basedir'] . '/siteorigin-widgets/' . $name,
 						$css
 					);
-					if ( ! $file_created ) {
-						$add_cache = true;
-					}
 				}
-			} else {
-				$add_cache = true;
 			}
 
 			if ( !empty( $add_cache ) ) {
