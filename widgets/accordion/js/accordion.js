@@ -69,7 +69,26 @@ jQuery( function ( $ ) {
 					openPanel( $panel.get( 0 ) );
 				}
 				if ( ! isNaN( maxOpenPanels ) && maxOpenPanels > 0 && openPanels.length > maxOpenPanels ) {
-					closePanel( openPanels[ 0 ] );
+					parentPanel = $panel.parents( '.sow-accordion-panel' );
+					if ( parentPanel.length ) {
+						skippedPanels = 0;
+						$.each( openPanels.reverse(), function( index, el ) {
+							parentPanel = $( el ).parents( '.sow-accordion-panel' );
+
+							if( ! parentPanel.length ) {
+								return true;
+							}
+
+							if ( skippedPanels != maxOpenPanels) {
+								skippedPanels++;
+								return true;
+							} else {
+								closePanel( openPanels[ openPanels.indexOf( el ) ] );
+							}
+						} );
+					} else {
+						closePanel( 0 );
+					}
 				}
 			} );
 			
