@@ -124,14 +124,9 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 			}
 			$image['link_attributes'] = $link_atts;
 
-			if ( ! empty( $image['alt'] ) ) {
-				 $image['alt'] = $image['alt'];
-			} else {
-				$image['alt'] = get_post_meta( $image['image'], '_wp_attachment_image_alt', true );
-			}
-
-			if ( empty( $image['image'] ) && !empty( $image['image_fallback'] ) ) {
-				$image['image_html'] = '<img src="'. esc_url( $image['image_fallback'] ) .'" alt="'. $image['alt'] .'" title="'. $image['title'] .'">';
+			if ( empty( $image['image'] ) && ! empty( $image['image_fallback'] ) ) {
+				$alt = ! empty ( $image['alt'] ) ? $image['alt'] .'"' : '';
+				$image['image_html'] = '<img src="'. esc_url( $image['image_fallback'] ) .'" alt="'. esc_attr( $alt ) .'" title="'. esc_attr( $image['title'] ) .'">';
 			} else {
 				$image['image_html'] = wp_get_attachment_image( $image['image'], $instance['display']['attachment_size'], false, array(
 					'title' => $image['title'],
