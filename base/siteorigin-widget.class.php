@@ -733,19 +733,20 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				$upload_dir = wp_upload_dir();
 
 				if ( ! $wp_filesystem->is_dir( $upload_dir['basedir'] . '/siteorigin-widgets/' ) ) {
-					$add_cache = $wp_filesystem->mkdir( $upload_dir['basedir'] . '/siteorigin-widgets/' );
+					$store_css = $wp_filesystem->mkdir( $upload_dir['basedir'] . '/siteorigin-widgets/' );
 				}
-
-				if ( !isset( $add_cache ) ) {
+				
+				if ( empty( $store_css ) ) {
 					$wp_filesystem->delete( $upload_dir['basedir'] . '/siteorigin-widgets/' . $name );
-					$add_cache = $wp_filesystem->put_contents(
+					$store_css = $wp_filesystem->put_contents(
 						$upload_dir['basedir'] . '/siteorigin-widgets/' . $name,
 						$css
 					);
 				}
 			}
 
-			if ( !empty( $add_cache ) ) {
+			// Check if we're able to store CSS (based on the above checks) and if we are, store a record of it
+			if ( empty( $store_css ) ) {
 				wp_cache_add( $name, $css, 'siteorigin_widgets' );
 			}
 
