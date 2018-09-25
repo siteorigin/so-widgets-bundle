@@ -100,7 +100,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 
 			'background_video_mobile' => array(
 				'type' => 'checkbox',
-				'label' => __( 'Show Slide Background Videos on mobile', 'so-widgets-bundle' ),
+				'label' => __( 'Show slide background videos on mobile', 'so-widgets-bundle' ),
 				'description' => __( 'Ticking this setting will allow for slide backgorund videos to appear on devices that support autoplaying videos on mobile.', 'so-widgets-bundle' ),
 			)
 		);
@@ -279,7 +279,10 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			if( !empty( $background['videos'] ) ) {
 
 				$classes = array( 'sow-' . $background['video-sizing'] . '-element' );
-				$classes[] = ! empty( $controls['background_video_mobile'] ) ? 'sow-mobile-video_enabled' : '';
+				if ( ! empty( $controls['background_video_mobile'] ) ) {
+					$classes[] = 'sow-mobile-video_enabled';
+				}
+
 				$this->video_code( $background['videos'], $classes );
 			}
 
