@@ -172,10 +172,15 @@ sowb.SiteOriginGoogleMap = function($) {
 					}
 					markerBatches[ batchIndex ][ i % BATCH_SIZE ] = markerPositions[ i ];
 				}
-
+				var overQuota = false;
 				var geocodeMarkerBatch = function ( markerBatchHead, markerBatchTail ) {
 					var doneCount = 0;
-					markerBatchHead.forEach( function ( mrkr ) {
+					for ( var i = 0; i < markerBatchHead.length; i++ ) {
+						// If we're over the quota we want to stop making any more requests.
+						if ( overQuota ) {
+							break;
+						}
+						var mrkr = markerBatchHead[ i ];
 						this.getLocation( mrkr.place ).done( function ( location ) {
 							var mrkerIcon = options.markerIcon;
 							if ( mrkr.custom_marker_icon ) {
@@ -229,9 +234,10 @@ sowb.SiteOriginGoogleMap = function($) {
 							}
 						}.bind( this ) )
 						.fail( function ( errorStatus ) {
+							overQuota = errorStatus === google.maps.GeocoderStatus.OVER_QUERY_LIMIT;
 							console.log( errorStatus );
 						} );
-					}.bind( this ) );
+					}
 				}.bind( this );
 				geocodeMarkerBatch( markerBatches.shift(), markerBatches );
 
