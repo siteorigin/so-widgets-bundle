@@ -12,16 +12,15 @@ jQuery( function ( $ ) {
 			}
 			var useAnchorTags = $widget.data( 'useAnchorTags' );
 			var initialScrollPanel = $widget.data( 'initialScrollPanel' );
-			
-			var $accordionPanels = $( element ).find( '> .sow-accordion-panel' );
-			
+
+			var $accordionPanels = $( element ).find( '> .sow-accordion-panel' );			
 			$accordionPanels.not( '.sow-accordion-panel-open' ).find( '.sow-accordion-panel-content' ).hide();
-			
 			var openPanels = $accordionPanels.filter( '.sow-accordion-panel-open' ).toArray();
+
 			var updateHash = function () {
 				// noop
 			};
-			
+
 			var openPanel = function ( panel, preventHashChange ) {
 				var $panel = $( panel );
 				if ( ! $panel.is( '.sow-accordion-panel-open' ) ) {
@@ -33,9 +32,11 @@ jQuery( function ( $ ) {
 					);
 					$panel.addClass( 'sow-accordion-panel-open' );
 					openPanels.push( panel );
-					parentPanel = $( panel ).parents( '.sow-accordion-panel' );
-					if ( parentPanel.length && openPanels.indexOf( parentPanel.get(0) ) == -1 ) {
-						openPanels.push( parentPanel.get(0) );
+
+					// Check if accordion is within an accordion and if it is, ensure parent is visible
+					$parentPanel = $( panel ).parents( '.sow-accordion-panel' );
+					if ( $parentPanel.length && ! $parentPanel.hasClass( 'sow-accordion-panel-open' ) ) {
+						openPanel( $parentPanel.get( 0 ), true );
 					}
 					if ( ! preventHashChange ) {
 						updateHash();
@@ -68,35 +69,26 @@ jQuery( function ( $ ) {
 				} else {
 					openPanel( $panel.get( 0 ) );
 				}
+
 				if ( ! isNaN( maxOpenPanels ) && maxOpenPanels > 0 && openPanels.length > maxOpenPanels ) {
-					parentPanel = $panel.parents( '.sow-accordion-panel' );
-					if ( parentPanel.length ) {
-						skippedPanels = 0;
-						$.each( openPanels.reverse(), function( index, el ) {
-							parentPanel = $( el ).parents( '.sow-accordion-panel' );
-
-							if( ! parentPanel.length ) {
-								return true;
-							}
-
-							if ( skippedPanels != maxOpenPanels) {
-								skippedPanels++;
-								return true;
-							} else {
-								closePanel( openPanels[ openPanels.indexOf( el ) ] );
-							}
-						} );
-					} else {
-						closePanel( 0 );
-					}
+					skippedPanels = 0;
+					$.each( openPanels.reverse(), function( index, el ) {
+						if ( skippedPanels != maxOpenPanels) {
+							skippedPanels++;
+						} else {
+							closePanel( openPanels[ index ] );
+						}
+					} );
 				}
 			} );
 			
 			if ( useAnchorTags ) {
 				updateHash = function () {
 					var anchors = [];
-					for ( var i = 0; i < openPanels.length; i++ ) {
-						var anchor = $( openPanels[ i ] ).data( 'anchor' );
+					allOpenPanels = $( '.sow-accordion-panel-open' ).toArray();
+
+					for ( var i = 0; i < allOpenPanels.length; i++ ) {
+						var anchor = $( allOpenPanels[ i ] ).data( 'anchor' );
 						if ( anchor ) {
 							anchors[ i ] = anchor;
 						}
