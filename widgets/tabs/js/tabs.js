@@ -52,7 +52,7 @@ jQuery( function ( $ ) {
 				}
 			};
 			
-			$tabs.click( function () {
+			$tabs.on('keyup click', function () {
 				selectTab( this );
 			} );
 			

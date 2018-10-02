@@ -14,7 +14,7 @@ if( ! empty( $instance['title'] ) ) {
 	<div class="sow-tabs-tab-container">
 	<?php foreach ( $tabs as $i => $tab ) : ?>
 		<div class="sow-tabs-tab<?php if ( $i == $initial_tab_index ) echo ' sow-tabs-tab-selected'; ?>"
-			 data-anchor="<?php echo sanitize_title_with_dashes( $tab['anchor'] ); ?>">
+			 data-anchor="<?php echo sanitize_title_with_dashes( $tab['anchor'] ); ?>" tabindex="0">
 			<div class="sow-tabs-title">
 				<?php echo $tab['before_title']; ?>
 				<?php echo wp_kses_post( $tab['title'] ); ?>
