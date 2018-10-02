@@ -8,7 +8,7 @@ Author URI: https://siteorigin.com
 
 class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 
-	function __construct(){
+	function __construct() {
 
 		parent::__construct(
 			'sow-image-grid',
@@ -25,7 +25,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	/**
 	 * Initialize the image grid, mainly to add scripts and styles.
 	 */
-	function initialize(){
+	function initialize() {
 		$this->register_frontend_scripts( array(
 			array(
 				'sow-image-grid',
@@ -37,7 +37,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 		) );
 	}
 
-	function get_widget_form(){
+	function get_widget_form() {
 
 		return array(
 
@@ -142,6 +142,21 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 		);
 	}
 	
+	// Account for number to measurement form field type changes
+	function modify_instance ( $instance ) {
+		if ( is_numeric( $instance['display']['max_height'] ) ) {
+			$instance['display']['max_height'] = $instance['display']['max_height'] .'px';
+		}
+		
+		if ( is_numeric( $instance['display']['max_width'] ) ) {
+			$instance['display']['max_width'] = $instance['display']['max_width'] .'px';
+		}
+
+		if ( is_numeric( $instance['display']['spacing'] ) ) {
+			$instance['display']['spacing'] = $instance['display']['spacing'] .'px';
+		}
+	}
+
 	/**
 	 * Get the less variables for the image grid
 	 *
@@ -158,7 +173,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 		return $less;
 	}
 
-	function get_form_teaser(){
+	function get_form_teaser() {
 		if ( class_exists( 'SiteOrigin_Premium' ) ) {
 			return false;
 		}
