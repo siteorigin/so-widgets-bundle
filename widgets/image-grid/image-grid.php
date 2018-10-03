@@ -143,7 +143,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	}
 	
 	// Account for number to measurement form field type changes
-	function modify_instance ( $instance ) {
+	function modify_instance( $instance ) {
 		if ( is_numeric( $instance['display']['max_height'] ) ) {
 			$instance['display']['max_height'] = $instance['display']['max_height'] .'px';
 		}
@@ -155,6 +155,8 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 		if ( is_numeric( $instance['display']['spacing'] ) ) {
 			$instance['display']['spacing'] = $instance['display']['spacing'] .'px';
 		}
+		
+		return $instance;
 	}
 
 	/**
