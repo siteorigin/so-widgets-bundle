@@ -22,6 +22,7 @@ jQuery( function ( $ ) {
 			
 			var $tabPanels = $tabPanelsContainer.find( '> .sow-tabs-panel' );
 			$tabPanels.not( ':eq(' + selectedIndex + ')' ).hide();
+			var tabAnimation;
 			
 			var selectTab = function ( tab, preventHashChange ) {
 				var $tab = $( tab );
@@ -30,14 +31,31 @@ jQuery( function ( $ ) {
 				}
 				var selectedIndex = $tab.index();
 				if ( selectedIndex > -1 ) {
+					if (tabAnimation ) {
+						tabAnimation.finish();
+					}
+					
 					var $prevTab = $tabs.filter( '.sow-tabs-tab-selected' );
 					$prevTab.removeClass( 'sow-tabs-tab-selected' );
 					var prevTabIndex = $prevTab.index();
-					$tabPanels.eq( prevTabIndex ).attr( 'aria-hidden', 'true' );
-					$tabPanels.eq( prevTabIndex ).fadeOut( 'fast',
+					var prevTabContent = $tabPanels.eq( prevTabIndex ).children();
+					var selectedTabContent = $tabPanels.eq( selectedIndex ).children();
+
+					// Set previous tab as inactive
+					$prevTab.attr( 'tabindex', -1 );
+					$prevTab.attr( 'aria-selected', false );
+					prevTabContent.attr( 'tabindex', -1 );
+					
+					// Set new tab as active
+					$tab.attr( 'tabindex', 0 );
+					$tab.attr( 'aria-selected', true );
+					selectedTabContent.attr( 'tabindex', 0 );
+					
+					prevTabContent.attr( 'aria-hidden', 'true' );
+					tabAnimation = $tabPanels.eq( prevTabIndex ).fadeOut( 'fast',
 						function () {
 							$( this ).trigger( 'hide' );
-							$tabPanels.eq( selectedIndex ).removeAttr( 'aria-hidden' );
+							selectedTabContent.removeAttr( 'aria-hidden' );
 							$tabPanels.eq( selectedIndex ).fadeIn( 'fast',
 								function () {
 									$( this ).trigger( 'show' );
@@ -59,7 +77,7 @@ jQuery( function ( $ ) {
 			} );
 
 			$tabs.keyup( function( e ) {
-				$currentTab = $(this);
+				$currentTab = $( this );
 
 				if ( e.keyCode != 37 && e.keyCode != 39 ){
 					return false;
@@ -87,14 +105,7 @@ jQuery( function ( $ ) {
 				if ( $currentTab == $newTab ){
 					return false;
 				}
-				// Set previous tab as inactive
-				$currentTab.attr('tabindex', -1);
-				$currentTab.attr('aria-selected', false);
-				
-				// Set new tab as active
 				$newTab.focus();
-				$newTab.attr('tabindex', 0);
-				$newTab.attr('aria-selected', true);
 				selectTab( $newTab.get(0) );				
 			} );
 			
