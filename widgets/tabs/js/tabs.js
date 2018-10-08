@@ -33,9 +33,11 @@ jQuery( function ( $ ) {
 					var $prevTab = $tabs.filter( '.sow-tabs-tab-selected' );
 					$prevTab.removeClass( 'sow-tabs-tab-selected' );
 					var prevTabIndex = $prevTab.index();
+					$tabPanels.eq( prevTabIndex ).attr( 'aria-hidden', 'true' );
 					$tabPanels.eq( prevTabIndex ).fadeOut( 'fast',
 						function () {
 							$( this ).trigger( 'hide' );
+							$tabPanels.eq( selectedIndex ).removeAttr( 'aria-hidden' );
 							$tabPanels.eq( selectedIndex ).fadeIn( 'fast',
 								function () {
 									$( this ).trigger( 'show' );
@@ -52,8 +54,48 @@ jQuery( function ( $ ) {
 				}
 			};
 			
-			$tabs.on('keyup click', function () {
+			$tabs.click( function() {
 				selectTab( this );
+			} );
+
+			$tabs.keyup( function( e ) {
+				$currentTab = $(this);
+
+				if ( e.keyCode != 37 && e.keyCode != 39 ){
+					return false;
+				}
+
+				// did the user press left arrow?
+				if ( e.keyCode == 37 ) {
+					// Check if there are any additional tabs to the left
+					if( ! $currentTab.prev().get(0) ) { // no tabs to left
+						$newTab = $currentTab.siblings().last();
+					} else {
+						$newTab = $currentTab.prev();
+					}
+				}
+
+				// did the user press right arrow?
+				if ( e.keyCode == 39 ) {
+					// Check if there are any additional tabs to the right
+					if( ! $currentTab.next().get(0) ) { // no tabs to right
+						$newTab = $currentTab.siblings().first();
+					} else {
+						$newTab = $currentTab.next();
+					}
+				}
+				if ( $currentTab == $newTab ){
+					return false;
+				}
+				// Set previous tab as inactive
+				$currentTab.attr('tabindex', -1);
+				$currentTab.attr('aria-selected', false);
+				
+				// Set new tab as active
+				$newTab.focus();
+				$newTab.attr('tabindex', 0);
+				$newTab.attr('aria-selected', true);
+				selectTab( $newTab.get(0) );				
 			} );
 			
 			if ( useAnchorTags ) {
