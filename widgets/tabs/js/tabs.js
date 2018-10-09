@@ -77,14 +77,14 @@ jQuery( function ( $ ) {
 			} );
 
 			$tabs.keyup( function( e ) {
-				$currentTab = $( this );
+				var $currentTab = $( this );
 
-				if ( e.keyCode != 37 && e.keyCode != 39 ){
-					return false;
+				if ( e.keyCode !== 37 && e.keyCode !== 39 ){
+					return;
 				}
 
 				// did the user press left arrow?
-				if ( e.keyCode == 37 ) {
+				if ( e.keyCode === 37 ) {
 					// Check if there are any additional tabs to the left
 					if( ! $currentTab.prev().get(0) ) { // no tabs to left
 						$newTab = $currentTab.siblings().last();
@@ -94,7 +94,7 @@ jQuery( function ( $ ) {
 				}
 
 				// did the user press right arrow?
-				if ( e.keyCode == 39 ) {
+				if ( e.keyCode === 39 ) {
 					// Check if there are any additional tabs to the right
 					if( ! $currentTab.next().get(0) ) { // no tabs to right
 						$newTab = $currentTab.siblings().first();
@@ -103,7 +103,7 @@ jQuery( function ( $ ) {
 					}
 				}
 				if ( $currentTab == $newTab ){
-					return false;
+					return;
 				}
 				$newTab.focus();
 				selectTab( $newTab.get(0) );				
