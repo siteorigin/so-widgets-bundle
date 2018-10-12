@@ -101,5 +101,15 @@
 			}
 		}
 		margin-bottom: @panels_margin_bottom;
+
+		@media print {
+			.sow-accordion-open-close-button {
+				display: none;
+			}
+
+			.sow-accordion-panel-content {
+				display: block !important;
+			}
+		}
 	}
 }

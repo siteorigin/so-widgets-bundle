@@ -122,6 +122,15 @@ class SiteOrigin_Widgets_Widget_Manager {
 		}
 		return false;
 	}
+	
+	/**
+	 * Get the list of registered widgets.
+	 *
+	 * @return array
+	 */
+	function get_registered_widgets() {
+		return $this->registered;
+	}
 }
 SiteOrigin_Widgets_Widget_Manager::single();
 

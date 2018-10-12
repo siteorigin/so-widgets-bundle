@@ -3,12 +3,20 @@
 var sowb = window.sowb || {};
 
 jQuery( function ( $ ) {
-	sowb.setupVideoPlayers = function() {
+	sowb.setupVideoPlayers = function () {
 		var $ = jQuery;
-		$('video.sow-video-widget').mediaelementplayer();
+		var $video = $( 'video.sow-video-widget' );
+		
+		if ( !$video.is( ':visible' ) || $video.data( 'initialized' ) ) {
+			return $video;
+		}
+		
+		$video.mediaelementplayer();
+		
+		$video.data( 'initialized', true );
 	};
 	sowb.setupVideoPlayers();
-
+	
 	$( sowb ).on( 'setup_widgets', sowb.setupVideoPlayers );
 } );
 

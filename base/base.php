@@ -11,6 +11,8 @@ include plugin_dir_path(__FILE__).'inc/array-utils.php';
 include plugin_dir_path(__FILE__).'inc/attachments.php';
 include plugin_dir_path(__FILE__).'inc/actions.php';
 include plugin_dir_path(__FILE__).'inc/shortcode.php';
+include plugin_dir_path(__FILE__).'inc/video.php';
+include plugin_dir_path(__FILE__).'inc/routes/sowb-rest-routes.php';
 
 /**
  * @param $css
@@ -93,7 +95,8 @@ function siteorigin_widget_get_icon($icon_value, $icon_styles = false) {
 function siteorigin_widget_get_font($font_value) {
 
 	$web_safe = array(
-		'Helvetica Neue' => 'Arial, Helvetica, Geneva, sans-serif',
+		'Arial' => 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+		'Helvetica Neue' => '"Helvetica Neue", Helvetica, Arial, sans-serif',
 		'Lucida Grande' => 'Lucida, Verdana, sans-serif',
 		'Georgia' => '"Times New Roman", Times, serif',
 		'Courier New' => 'Courier, mono',
@@ -201,6 +204,7 @@ function siteorigin_widgets_is_google_webfont( $font_value ) {
 function siteorigin_widgets_font_families( ){
 	// Add the default fonts
 	$font_families = array(
+		'Arial' => 'Arial',
 		'Helvetica Neue' => 'Helvetica Neue',
 		'Lucida Grande' => 'Lucida Grande',
 		'Georgia' => 'Georgia',

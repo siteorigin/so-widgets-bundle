@@ -101,14 +101,6 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 
 	function ajax_render_widget_preview() {
 		add_filter( 'siteorigin_widgets_is_preview', '__return_true' );
-		add_filter( 'elementor/widget/render_content', array( $this, 'render_widget_preview' ) );
-	}
-
-	function render_widget_preview( $widget_output ) {
-		
-		siteorigin_widget_print_styles();
-
-		return $widget_output;
 	}
 
 	function ajax_render_widget_form() {

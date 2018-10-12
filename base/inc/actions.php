@@ -51,7 +51,6 @@ function siteorigin_widget_preview_widget_action() {
 		<?php
 		wp_print_scripts();
 		wp_print_styles();
-		siteorigin_widget_print_styles();
 		?>
 	</head>
 	<body>

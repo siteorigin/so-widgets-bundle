@@ -188,7 +188,11 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 	function modify_instance( $instance ) {
 		if ( ! empty( $instance['networks'] ) ) {
 			foreach ( $instance['networks'] as $name => $network ) {
-				$instance['networks'][$name]['icon_name'] = 'fontawesome-' . $network['name'];
+				if ( $network['name'] == 'envelope' ) {
+					$network['name'] = 'email';
+				}
+				$network['icon_name'] = 'fontawesome-' . ( $network['name'] == 'email' ? 'envelope' : $network['name'] );
+				$instance['networks'][$name] = $network;
 			}
 		}
 		return $instance;
