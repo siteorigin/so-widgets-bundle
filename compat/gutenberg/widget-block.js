@@ -47,6 +47,7 @@
 			previewInitialized: false,
 			widgets: null,
 			widgetFormHtml: '',
+			widgetSettingsChanged: false,
 			widgetPreviewHtml: '',
 		} )( function ( props ) {
 			
@@ -68,8 +69,17 @@
 			
 			function onWidgetClassChange( newWidgetClass ) {
 				if ( newWidgetClass !== '' ) {
+					if ( props.widgetSettingsChanged && ! confirm( sowbGutenbergAdmin.confirmChangeWidget ) ) {
+						return false;
+					}
 					props.setAttributes( { widgetClass: newWidgetClass, widgetData: null } );
-					props.setState( { widgetFormHtml: null, formInitialized: false, widgetPreviewHtml: null, previewInitialized: false } );
+					props.setState( {
+						widgetFormHtml: null,
+						formInitialized: false,
+						widgetSettingsChanged: false,
+						widgetPreviewHtml: null,
+						previewInitialized: false
+					} );
 				}
 			}
 			
@@ -100,7 +110,11 @@
 					}
 					$mainForm.on( 'change', function () {
 						props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
-						props.setState( { widgetPreviewHtml: null, previewInitialized: false } );
+						props.setState( {
+							widgetSettingsChanged: true,
+							widgetPreviewHtml: null,
+							previewInitialized: false
+						} );
 					} );
 					props.setState( { formInitialized: true } );
 				}

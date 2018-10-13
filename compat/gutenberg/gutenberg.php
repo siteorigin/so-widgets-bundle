@@ -36,6 +36,7 @@ class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
 			array(
 				'restUrl' => esc_url_raw( rest_url() ),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
+				'confirmChangeWidget' => __( 'Selecting a different widget will revert any changes. Continue?', 'so-widgets-bundle' ),
 			)
 		);
 		
