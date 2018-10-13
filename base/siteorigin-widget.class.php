@@ -731,22 +731,26 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			if ( WP_Filesystem() ) {
 				global $wp_filesystem;
 				$upload_dir = wp_upload_dir();
-
-				if ( ! $wp_filesystem->is_dir( $upload_dir['basedir'] . '/siteorigin-widgets/' ) ) {
-					$store_css = $wp_filesystem->mkdir( $upload_dir['basedir'] . '/siteorigin-widgets/' );
+				
+				$dir_exists = $wp_filesystem->is_dir( $upload_dir['basedir'] . '/siteorigin-widgets/' );
+				
+				if ( empty( $dir_exists ) ) {
+					// The 'siteorigin-widgets' directory doesn't exist, so try to create it.
+					$dir_exists = $wp_filesystem->mkdir( $upload_dir['basedir'] . '/siteorigin-widgets/' );
 				}
 				
-				if ( empty( $store_css ) ) {
+				if ( ! empty( $dir_exists ) ) {
+					// The 'siteorigin-widgets' directory exists, so we can try to write the CSS to a file.
 					$wp_filesystem->delete( $upload_dir['basedir'] . '/siteorigin-widgets/' . $name );
-					$store_css = $wp_filesystem->put_contents(
+					$file_put_success = $wp_filesystem->put_contents(
 						$upload_dir['basedir'] . '/siteorigin-widgets/' . $name,
 						$css
 					);
 				}
 			}
 
-			// Check if we're able to store CSS (based on the above checks) and if we are, store a record of it
-			if ( empty( $store_css ) ) {
+			// We couldn't write to file, so let's use cache instead.
+			if ( empty( $file_put_success ) ) {
 				wp_cache_add( $name, $css, 'siteorigin_widgets' );
 			}
 
