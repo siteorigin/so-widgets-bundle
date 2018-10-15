@@ -90,12 +90,8 @@ jQuery( function ( $ ) {
 						var anchor = $( allOpenPanels[ i ] ).data( 'anchor' );
 						if ( anchor ) {
 							$parentPanel = $( allOpenPanels[ i ] ).parents( '.sow-accordion-panel' );
-							if ( $parentPanel.length ) {
-								if ( $parentPanel.hasClass( 'sow-accordion-panel-open' ) ) {
-									anchors[ i ] = anchor;
-								}
-							} else {
-									anchors[ i ] = anchor;
+							if ( ! $parentPanel.length || ( $parentPanel.length && $parentPanel.hasClass( 'sow-accordion-panel-open' ) ) ) {
+								anchors[ i ] = anchor;
 							}
 						}
 					}
