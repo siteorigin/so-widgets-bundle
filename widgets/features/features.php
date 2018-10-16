@@ -194,7 +194,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 
 			'container_shape' => array(
 				'type' => 'select',
-				'label' => __( 'Icon container position', 'so-widgets-bundle' ),
+				'label' => __( 'Container shape', 'so-widgets-bundle' ),
 				'default' => 'round',
 				'options' => include dirname( __FILE__ ) . '/inc/containers.php',
 			),
