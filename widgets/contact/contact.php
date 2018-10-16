@@ -891,15 +891,16 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
             <div class="sow-form-field sow-form-field-<?php echo sanitize_html_class( $field['type'] ) ?>"><?php
 
 			$label = $field['label'];
+			$required = ! empty( $field['required']['required'] );
 			$is_text_input_field = ( $field['type'] != 'select' && $field['type'] != 'radio' && $field['type'] != 'checkboxes' );
 			// label should be rendered before the field, then CSS will do the exact positioning.
 			$render_label_before_field = ( $label_position != 'below' && $label_position != 'inside' ) || ( $label_position == 'inside' && ! $is_text_input_field );
 			if ( empty( $label_position ) || $render_label_before_field ) {
-				$this->render_form_label( $field_id, $label, $label_position );
+				$this->render_form_label( $field_id, $label, $label_position, $required );
 			}
 
 			$show_placeholder = $label_position == 'inside';
-			if ( $show_placeholder && $indicate_required_fields && ! empty( $field['required']['required'] ) ) {
+			if ( $show_placeholder && $indicate_required_fields && $required ) {
 				$label .= '*';
 			}
 
@@ -933,7 +934,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			?></span><?php
 
 			if ( ! empty( $label_position ) && $label_position == 'below' ) {
-				$this->render_form_label( $field_id, $label, $instance );
+				$this->render_form_label( $field_id, $label, $instance, $required );
 			}
 
 			if ( ! empty( $field['description'] ) ) {
@@ -948,15 +949,20 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 	}
 
-	function render_form_label( $field_id, $label, $position ) {
+	function render_form_label( $field_id, $label, $position, $required ) {
 		if ( ! empty( $label ) ) {
 			$label_class = '';
 			if ( ! empty( $position ) ) {
 				$label_class = ' class="sow-form-field-label-' . $position . '"';
 			}
-			?><label<?php if ( ! empty( $label_class ) ) {
-				echo $label_class;
-			} ?> for="<?php echo esc_attr( $field_id ) ?>"><strong><?php echo esc_html( $label ) ?><span class="sow-form-required">*</span></strong></label>
+
+			if ( $required ) {
+				$required = '<span class="sow-form-required">*</span>';
+			}
+			?>
+			<label<?php echo ! empty( $label_class ) ? $label_class : ''; ?> for="<?php echo esc_attr( $field_id ) ?>">
+				<strong><?php echo esc_html( $label ) . $required; ?></strong>
+			</label>
 			<?php
 		}
 	}
