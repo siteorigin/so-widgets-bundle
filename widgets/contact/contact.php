@@ -867,7 +867,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		$indicate_required_fields = $instance['settings']['required_field_indicator'];
 
-		if ( ! empty( $indicate_required_fields ) ) {
+		if ( ! empty( $indicate_required_fields ) && ! empty( $instance['settings']['required_field_indicator_message'] ) ) {
 			?>
             <p><em><?php echo esc_html( $instance['settings']['required_field_indicator_message'] ) ?></em></p>
 			<?php
@@ -891,9 +891,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
             <div class="sow-form-field sow-form-field-<?php echo sanitize_html_class( $field['type'] ) ?>"><?php
 
 			$label = $field['label'];
-			if ( $indicate_required_fields && ! empty( $field['required']['required'] ) ) {
-				$label .= '*';
-			}
 			$is_text_input_field = ( $field['type'] != 'select' && $field['type'] != 'radio' && $field['type'] != 'checkboxes' );
 			// label should be rendered before the field, then CSS will do the exact positioning.
 			$render_label_before_field = ( $label_position != 'below' && $label_position != 'inside' ) || ( $label_position == 'inside' && ! $is_text_input_field );
@@ -902,6 +899,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 
 			$show_placeholder = $label_position == 'inside';
+			if ( $show_placeholder && $indicate_required_fields && ! empty( $field['required']['required'] ) ) {
+				$label .= '*';
+			}
 
 			if ( ! empty( $errors[ $field_name ] ) ) {
 				?>
@@ -956,7 +956,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 			?><label<?php if ( ! empty( $label_class ) ) {
 				echo $label_class;
-			} ?> for="<?php echo esc_attr( $field_id ) ?>"><strong><?php echo esc_html( $label ) ?></strong></label>
+			} ?> for="<?php echo esc_attr( $field_id ) ?>"><strong><?php echo esc_html( $label ) ?><span class="sow-form-required">*</span></strong></label>
 			<?php
 		}
 	}
@@ -1227,6 +1227,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$instance['settings']['from'] = get_option( 'admin_email' );
 		}
 
+		if ( $instance['settings']['from'] == $instance['settings']['from'] ) {
+			$domain = parse_url( esc_url( get_site_url() ), PHP_URL_HOST );
+			$domain = str_replace( 'www.', '', $domain );
+			$instance['settings']['from'] = "wordpress@$domain";
+		}
+		
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
 			'From: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . sanitize_email( $instance['settings']['from'] ) . '>',
