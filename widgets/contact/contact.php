@@ -69,6 +69,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'label'       => __( 'From email address', 'so-widgets-bundle' ),
 						'description' => __( 'It will appear as if emails are sent from this address. Ideally this should be in the same domain as this server to avoid spam filters.', 'so-widgets-bundle' ),
 						'sanitize'    => 'email',
+						'default'     => $this->default_domain_email(),
 					),
 					'default_subject'                  => array(
 						'type'        => 'text',
@@ -682,14 +683,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	function modify_instance( $instance ) {
-		// Use this to set up an initial version of the
-		if ( empty( $instance['settings']['to'] ) ) {
-			$current_user               = wp_get_current_user();
-			$instance['settings']['to'] = $current_user->user_email;
-		}
-		if ( empty( $instance['settings']['from'] ) ) {
-			$instance['settings']['from'] = get_option( 'admin_email' );
-		}
+		$instance = $this->email_validation( $instance );
+
 		if ( empty( $instance['fields'] ) ) {
 			$instance['fields'] = array(
 				array(
@@ -853,6 +848,28 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		return $id;
 	}
 
+	function email_validation( $instance ) {
+		// Replace default and empty email address.
+		// Also replaces the email address that comes from the prebuilt layout directory
+		if ( empty( $instance['settings']['to'] || $instance['settings']['to'] == 'ibrossiter@gmail.com' || $instance['settings']['to'] == 'test@example.com' ) ) {
+			$instance['settings']['to'] = get_option( 'admin_email' );
+		}
+
+		if ( empty( $instance['settings']['from'] ) || $instance['settings']['from'] == 'test@example.com' || $instance['settings']['from'] = $instance['settings']['from'] ) {
+			$instance['settings']['from'] = $this->default_domain_email();
+		}
+
+		return $instance;
+	}
+
+	function default_domain_email () {
+		$domain = parse_url( esc_url( get_site_url() ), PHP_URL_HOST );
+		$domain = str_replace( 'www.', '', $domain );
+		$domain = "wordpress@$domain";
+
+		return apply_filters( 'siteorigin_widgets_contact_default_email', $domain );
+	}
+
 	/**
 	 * Render the form fields
 	 *
@@ -891,16 +908,16 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
             <div class="sow-form-field sow-form-field-<?php echo sanitize_html_class( $field['type'] ) ?>"><?php
 
 			$label = $field['label'];
-			$required = ! empty( $field['required']['required'] );
+			$required_indicator = ! empty( $field['required']['required'] );
 			$is_text_input_field = ( $field['type'] != 'select' && $field['type'] != 'radio' && $field['type'] != 'checkboxes' );
 			// label should be rendered before the field, then CSS will do the exact positioning.
 			$render_label_before_field = ( $label_position != 'below' && $label_position != 'inside' ) || ( $label_position == 'inside' && ! $is_text_input_field );
 			if ( empty( $label_position ) || $render_label_before_field ) {
-				$this->render_form_label( $field_id, $label, $label_position, $required );
+				$this->render_form_label( $field_id, $label, $label_position, $required_indicator );
 			}
 
 			$show_placeholder = $label_position == 'inside';
-			if ( $show_placeholder && $indicate_required_fields && $required ) {
+			if ( $show_placeholder && $indicate_required_fields && $required_indicator ) {
 				$label .= '*';
 			}
 
@@ -934,7 +951,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			?></span><?php
 
 			if ( ! empty( $label_position ) && $label_position == 'below' ) {
-				$this->render_form_label( $field_id, $label, $instance, $required );
+				$this->render_form_label( $field_id, $label, $instance, $required_indicator );
 			}
 
 			if ( ! empty( $field['description'] ) ) {
@@ -949,19 +966,15 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 	}
 
-	function render_form_label( $field_id, $label, $position, $required ) {
+	function render_form_label( $field_id, $label, $position, $required_indicator ) {
 		if ( ! empty( $label ) ) {
 			$label_class = '';
 			if ( ! empty( $position ) ) {
 				$label_class = ' class="sow-form-field-label-' . $position . '"';
 			}
-
-			if ( $required ) {
-				$required = '<span class="sow-form-required">*</span>';
-			}
 			?>
 			<label<?php echo ! empty( $label_class ) ? $label_class : ''; ?> for="<?php echo esc_attr( $field_id ) ?>">
-				<strong><?php echo esc_html( $label ) . $required; ?></strong>
+				<strong><?php echo esc_html( $label ) . ( $required_indicator ? '<span class="sow-form-required">*</span>' : '' ); ?></strong>
 			</label>
 			<?php
 		}
@@ -1223,21 +1236,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 		$body = wpautop( trim( $body ) );
 
-		if ( $instance['settings']['to'] == 'ibrossiter@gmail.com' || $instance['settings']['to'] == 'test@example.com' || empty( $instance['settings']['to'] ) ) {
-			// Replace default and empty email address.
-			// Also replaces the email address that comes from the prebuilt layout directory
-			$instance['settings']['to'] = get_option( 'admin_email' );
-		}
-		
-		if ( $instance['settings']['from'] == 'test@example.com' || empty( $instance['settings']['from'] ) ) {
-			$instance['settings']['from'] = get_option( 'admin_email' );
-		}
-
-		if ( $instance['settings']['from'] == $instance['settings']['from'] ) {
-			$domain = parse_url( esc_url( get_site_url() ), PHP_URL_HOST );
-			$domain = str_replace( 'www.', '', $domain );
-			$instance['settings']['from'] = "wordpress@$domain";
-		}
+		$instance = $this->email_validation( $instance );
 		
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
