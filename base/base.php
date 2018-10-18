@@ -182,6 +182,26 @@ function sow_esc_url_raw( $url ) {
 }
 
 /**
+ * Escape an HTML attribute
+ *
+ * This is a copy of the WP core `esc_attr` function, but modified to allow specifying arguments to the
+ * `_wp_specialchars` function for a bit more control. This was specifically necessary to allow double-encoding for
+ * the layout builder field.
+ *
+ * @param $text
+ * @param int $quote_style
+ * @param bool $charset
+ * @param bool $double_encode
+ *
+ * @return string
+ */
+function sow_esc_attr( $text, $quote_style = ENT_QUOTES, $charset = false, $double_encode = false ) {
+	$safe_text = wp_check_invalid_utf8( $text );
+	$safe_text = _wp_specialchars( $safe_text, $quote_style, $charset, $double_encode );
+	return apply_filters( 'attribute_escape', $safe_text, $text );
+}
+
+/**
  * Get all the Google Web Fonts.
  *
  * @return mixed|void
