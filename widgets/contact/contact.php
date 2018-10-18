@@ -855,7 +855,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$instance['settings']['to'] = get_option( 'admin_email' );
 		}
 
-		if ( empty( $instance['settings']['from'] ) || $instance['settings']['from'] == 'test@example.com' || $instance['settings']['from'] = $instance['settings']['from'] ) {
+		if ( empty( $instance['settings']['from'] ) || $instance['settings']['from'] == 'test@example.com' || $instance['settings']['to'] == $instance['settings']['from'] ) {
 			$instance['settings']['from'] = $this->default_domain_email();
 		}
 
