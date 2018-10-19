@@ -27,10 +27,14 @@ var SiteOriginContactForm = {
 
 			// Disable the submit button on click to avoid multiple submits.
 			$contactForms.submit( function () {
+				$submitButton.prop( 'disabled', true );
+				// Preserve existing anchors, if any.
 				if ( window.location.hash ) {
-					$( this ).attr( 'action', $( this ).attr( 'action' ) + ',' + window.location.hash.replace( /^#/, '' ) );
+					var formAction = $( this ).attr( 'action' );
+					if ( formAction.indexOf( window.location.hash ) === -1 ) {
+						$( this ).attr( 'action', formAction + ',' + window.location.hash.replace( /^#/, '' ) );
+					}
 				}
-				$submitButton.prop('disabled', true);
 			} );
 		});
 	},
