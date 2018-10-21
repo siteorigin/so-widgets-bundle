@@ -1,8 +1,39 @@
-var SiteOriginContactForm = {
+/* globals sowb, jQuery */
+
+window.sowb = window.sowb || {};
+
+sowb.SiteOriginContactForm = {
 	init: function ($, useRecaptcha) {
-		var $contactForms = $('form.sow-contact-form');
+		var $contactForms = $('form.sow-contact-form,.sow-contact-form-success');
 		$contactForms.each(function () {
-			var $el = $(this);
+			var $el = $( this );
+			var formId = $el.attr( 'id' );
+			var formSubmitted = window.location.hash.indexOf( formId ) > -1;
+			var formSubmitSuccess = $el.is( '.sow-contact-form-success' );
+			if ( formSubmitted ) {
+				// The form was submitted. Let's try to scroll to it so the user can see the result.
+				var formPosition = $el.offset().top;
+				if ( $el.is( ':hidden' ) ) {
+					// The form is hidden, so scroll to it's closest visible ancestor.
+					var $container = $el.closest( ':visible' );
+					formPosition = $container.offset().top;
+					// If the closest visible ancestor is either SOWB Accordion or Tabs widget, try to open the panel.
+					if ( $container.is( '.sow-accordion-panel' ) ) {
+						$container.find( '> .sow-accordion-panel-header' ).click();
+					} else if ( $container.is( '.sow-tabs-panel-container' ) ) {
+						var tabIndex = $el.closest( '.sow-tabs-panel' ).index();
+						$container.siblings( '.sow-tabs-tab-container' ).find( '> .sow-tabs-tab' ).eq( tabIndex ).click();
+					}
+				}
+				$( 'html, body' ).animate( {
+					scrollTop: formPosition
+				}, 1000 );
+				
+				if ( formSubmitSuccess ) {
+					// The form was submitted successfully, so we don't need to do anything else.
+					return;
+				}
+			}
 			var $submitButton = $(this).find('.sow-submit-wrapper > input.sow-submit');
 			if (useRecaptcha) {
 				// Render recaptcha
@@ -29,19 +60,23 @@ var SiteOriginContactForm = {
 			$contactForms.submit( function () {
 				$submitButton.prop( 'disabled', true );
 				// Preserve existing anchors, if any.
-				if ( window.location.hash ) {
+				var locationHash = window.location.hash;
+				if ( locationHash ) {
 					var formAction = $( this ).attr( 'action' );
-					if ( formAction.indexOf( window.location.hash ) === -1 ) {
-						$( this ).attr( 'action', formAction + ',' + window.location.hash.replace( /^#/, '' ) );
+					
+					if ( locationHash.indexOf( formId ) > -1 ) {
+						var re = new RegExp( formId + ',?', 'g' );
+						locationHash = locationHash.replace( re, '' );
 					}
+					$( this ).attr( 'action', formAction + ',' + locationHash.replace( /^#/, '' ) );
 				}
 			} );
-		});
+		} );
 	},
 };
 
 function soContactFormInitialize() {
-	SiteOriginContactForm.init(window.jQuery, true);
+	sowb.SiteOriginContactForm.init(window.jQuery, true);
 }
 
 jQuery(function ($) {
@@ -54,7 +89,7 @@ jQuery(function ($) {
 
 	if (useRecaptcha) {
 		if (window.recaptcha) {
-			SiteOriginContactForm.init($, useRecaptcha);
+			sowb.SiteOriginContactForm.init($, useRecaptcha);
 		} else {
 			// Load the recaptcha API
 			var apiUrl = 'https://www.google.com/recaptcha/api.js?onload=soContactFormInitialize&render=explicit';
@@ -62,6 +97,6 @@ jQuery(function ($) {
 			$('body').append(script);
 		}
 	} else {
-		SiteOriginContactForm.init($, useRecaptcha);
+		sowb.SiteOriginContactForm.init($, useRecaptcha);
 	}
 });
