@@ -69,7 +69,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'label'       => __( 'From email address', 'so-widgets-bundle' ),
 						'description' => __( 'It will appear as if emails are sent from this address. Ideally this should be in the same domain as this server to avoid spam filters.', 'so-widgets-bundle' ),
 						'sanitize'    => 'email',
-						'default'     => $this->default_domain_email(),
 					),
 					'default_subject'                  => array(
 						'type'        => 'text',
@@ -851,23 +850,19 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	function email_validation( $instance ) {
 		// Replace default and empty email address.
 		// Also replaces the email address that comes from the prebuilt layout directory
-		if ( empty( $instance['settings']['to'] || $instance['settings']['to'] == 'ibrossiter@gmail.com' || $instance['settings']['to'] == 'test@example.com' ) ) {
+		if ( empty( $instance['settings']['to'] ) || $instance['settings']['to'] == 'ibrossiter@gmail.com' || $instance['settings']['to'] == 'test@example.com' ) {
 			$instance['settings']['to'] = get_option( 'admin_email' );
 		}
 
 		if ( empty( $instance['settings']['from'] ) || $instance['settings']['from'] == 'test@example.com' || $instance['settings']['to'] == $instance['settings']['from'] ) {
-			$instance['settings']['from'] = $this->default_domain_email();
+			$domain = parse_url( esc_url( get_site_url() ), PHP_URL_HOST );
+			$domain = str_replace( 'www.', '', $domain );
+			$domain = "wordpress@$domain";
+
+			$instance['settings']['from'] = apply_filters( 'siteorigin_widgets_contact_default_email', $domain );
 		}
 
 		return $instance;
-	}
-
-	function default_domain_email () {
-		$domain = parse_url( esc_url( get_site_url() ), PHP_URL_HOST );
-		$domain = str_replace( 'www.', '', $domain );
-		$domain = "wordpress@$domain";
-
-		return apply_filters( 'siteorigin_widgets_contact_default_email', $domain );
 	}
 
 	/**
