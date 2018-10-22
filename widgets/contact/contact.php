@@ -682,7 +682,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	function modify_instance( $instance ) {
-		$instance = $this->email_validation( $instance );
+		$instance = $this->sanitize_emails( $instance );
 
 		if ( empty( $instance['fields'] ) ) {
 			$instance['fields'] = array(
@@ -847,7 +847,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		return $id;
 	}
 
-	function email_validation( $instance ) {
+	private function sanitize_emails( $instance ) {
 		// Replace default and empty email address.
 		// Also replaces the email address that comes from the prebuilt layout directory
 		if ( empty( $instance['settings']['to'] ) || $instance['settings']['to'] == 'ibrossiter@gmail.com' || $instance['settings']['to'] == 'test@example.com' ) {
@@ -1231,7 +1231,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 		$body = wpautop( trim( $body ) );
 
-		$instance = $this->email_validation( $instance );
+		$instance = $this->sanitize_emails( $instance );
 		
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
