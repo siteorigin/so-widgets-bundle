@@ -1195,8 +1195,13 @@ var sowbForms = window.sowbForms || {};
 				else {
 					$$.val( value );
 				}
-			}
-			else {
+			} else if ( $$.is( '.panels-data' ) ) {
+				$$.val( value );
+				var builder = $$.data( 'builder' );
+				if ( builder ) {
+					builder.setDataField( $$ );
+				}
+			} else {
 				$$.val( value );
 			}
 			
