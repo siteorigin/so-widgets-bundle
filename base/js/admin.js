@@ -658,16 +658,10 @@ var sowbForms = window.sowbForms || {};
 			});
 			
 			// Replace repeater item id placeholders with the index of the repeater item.
-			var repeaterHtml = '';
-			repeaterObject.find( '> .siteorigin-widget-field' )
-			.each( function ( index, element ) {
-				var html = element.outerHTML;
-				// Skip child repeaters, so they can setup their own id's when necessary.
-				if ( ! $( element ).is( '.siteorigin-widget-field-type-repeater' ) ) {
-					html = html.replace( /_id_/g, $nextIndex );
-				}
-				repeaterHtml += html;
-			} );
+			var repeaterName = $el.data( 'repeater-name' );
+			var re = new RegExp( repeaterName + '-_id_', 'g' );
+			var repeaterItemId = repeaterName + '-' + $nextIndex;
+			var repeaterHtml = repeaterObject.html().replace( re, repeaterItemId );
 
 			var readonly = typeof $el.attr('readonly') !== 'undefined';
 			var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
