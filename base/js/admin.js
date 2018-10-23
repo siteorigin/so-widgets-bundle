@@ -656,7 +656,18 @@ var sowbForms = window.sowbForms || {};
 					$$.attr('name', $(this).data('name'));
 				}
 			});
-			var repeaterHtml = repeaterObject.html().replace(/_id_/g, $nextIndex);
+			
+			// Replace repeater item id placeholders with the index of the repeater item.
+			var repeaterHtml = '';
+			repeaterObject.find( '> .siteorigin-widget-field' )
+			.each( function ( index, element ) {
+				var html = element.outerHTML;
+				// Skip child repeaters, so they can setup their own id's when necessary.
+				if ( ! $( element ).is( '.siteorigin-widget-field-type-repeater' ) ) {
+					html = html.replace( /_id_/g, $nextIndex );
+				}
+				repeaterHtml += html;
+			} );
 
 			var readonly = typeof $el.attr('readonly') !== 'undefined';
 			var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
