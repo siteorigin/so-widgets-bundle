@@ -89,7 +89,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					),
 					'height'      => array(
 						'type'    => 'text',
-						'default' => 480,
 						'label'   => __( 'Height', 'so-widgets-bundle' )
 					),
 					'destination_url' => array(
@@ -122,6 +121,21 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						'integer'     => true,
 
 					),
+
+					// Mobile Zoom is hidden for static maps as there's no reliable way to check for mobile devices that will bypass caching
+					'mobile_zoom'        => array(
+						'type'        => 'slider',
+						'label'       => __( 'Mobile Zoom Level', 'so-widgets-bundle' ),
+						'description' => __( 'A value from 0 (the world) to 21 (street level). This zoom is specific to mobile devices.', 'so-widgets-bundle' ),
+						'min'         => 0,
+						'max'         => 21,
+						'integer'     => true,
+						'state_handler' => array(
+							'map_type[interactive]' => array('show'),
+							'_else[map_type]' => array('hide'),
+						),
+					),
+
 					'scroll_zoom' => array(
 						'type'        => 'checkbox',
 						'default'     => true,
@@ -445,6 +459,18 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	function modify_instance( $instance ) {
+		if ( empty( $instance['settings']['mobile_zoom'] ) ) {
+			$instance['settings']['mobile_zoom'] = $instance['settings']['zoom'];
+		}
+
+		if ( empty( $instance['settings']['height'] ) ) {
+			$instance['settings']['height'] = 480;
+		}
+
+		return $instance;
+	}
+
 	function get_template_name( $instance ) {
 		return $instance['settings']['map_type'] == 'static' ? 'static-map' : 'js-map';
 	}
@@ -505,11 +531,20 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				}
 			}
 
+			// Work out what we need to set gestureHandling to
+			if ( ( ! $settings['draggable'] && ! $settings['scroll_zoom'] ) || ! $settings['draggable'] ) {
+				$gestureHandling = 'none';
+			} elseif ( ! $settings['scroll_zoom'] ) {
+				$gestureHandling = 'cooperative';
+			} else {
+				$gestureHandling = 'greedy';
+			}
+
 			$map_data = siteorigin_widgets_underscores_to_camel_case( array(
 				'address'           => $instance['map_center'],
 				'zoom'              => $settings['zoom'],
-				'scroll_zoom'       => $settings['scroll_zoom'],
-				'draggable'         => $settings['draggable'],
+				'mobileZoom'        => $settings['mobile_zoom'],
+				'gestureHandling'   => $gestureHandling,
 				'disable_ui'        => $settings['disable_default_ui'],
 				'keep_centered'     => $settings['keep_centered'],
 				'marker_icon'       => ! empty( $mrkr_src ) ? $mrkr_src[0] : '',
