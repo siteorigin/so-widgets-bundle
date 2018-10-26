@@ -43,9 +43,9 @@ class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
 		$so_widgets_bundle = SiteOrigin_Widgets_Bundle::single();
 		// This is to ensure necessary scripts can be enqueued for previews.
 		$so_widgets_bundle->register_general_scripts();
-		
+
 		global $wp_widget_factory;
-		
+
 		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
 			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
 				/* @var $widget_obj SiteOrigin_Widget */
@@ -80,7 +80,14 @@ class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
 			$widget->widget( array(), $instance );
 			$rendered_widget = ob_get_clean();
 		} else {
-			$rendered_widget = new WP_Error( '', 'Invalid widget class.' );
+			return '<div>'.
+				   sprintf(
+			   			__( 'Invalid widget class %s. Please make sure the widget has been activated in %sSiteOrigin Widgets%s.', 'so-widgets-bundle' ),
+					   $widget_class,
+					   '<a href="' . admin_url( 'plugins.php?page=so-widgets-plugins' ) . '">',
+					   '</a>'
+				   ) .
+				   '</div>';
 		}
 		return $rendered_widget;
 	}
