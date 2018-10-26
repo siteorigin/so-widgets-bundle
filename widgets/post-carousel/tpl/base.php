@@ -9,7 +9,7 @@
 
 ?>
 
-<?php if($posts->have_posts()) : ?>
+<?php if(! empty( $posts ) && $posts->have_posts() ) : ?>
 	<div class="sow-carousel-title">
 		<?php if( ! empty( $title ) ) echo $args['before_title'] . esc_html( $title ) . $args['after_title'] ?>
 

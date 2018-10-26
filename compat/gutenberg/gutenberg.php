@@ -43,19 +43,7 @@ class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
 		$so_widgets_bundle = SiteOrigin_Widgets_Bundle::single();
 		// This is to ensure necessary scripts can be enqueued for previews.
 		$so_widgets_bundle->register_general_scripts();
-
-		global $wp_widget_factory;
-
-		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
-			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
-				/* @var $widget_obj SiteOrigin_Widget */
-				ob_start();
-				$widget_obj->form( array() );
-				// Enqueue scripts for previews.
-				$widget_obj->widget( array(), array() );
-				ob_clean();
-			}
-		}
+		$so_widgets_bundle->enqueue_registered_widgets_scripts();
 	}
 	
 	public function render_widget_block( $attributes ) {
