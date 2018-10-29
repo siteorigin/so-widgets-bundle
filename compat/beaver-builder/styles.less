@@ -68,6 +68,26 @@
 				max-width: 220px;
 			}
 		}
+		
+		&.siteorigin-widget-field-type-autocomplete,
+		&.siteorigin-widget-field-type-link {
+			.select-content-button {
+				height: 36px;
+				padding: 6px 0;
+			}
+		}
+		
+		.siteorigin-widget-field-repeater {
+			.siteorigin-widget-field-repeater-items {
+				.siteorigin-widget-field-repeater-item {
+					.siteorigin-widget-field-repeater-item-top {
+						& > h4 {
+							padding: initial;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	.sow-icon-elegantline, .sow-icon-fontawesome, .sow-icon-genericons,
@@ -192,4 +212,142 @@
 
 .so-widgets-dialog .so-widgets-search-input {
 	width: 100%;
+}
+
+.fl-builder-ui-skin--dark {
+	.fl-lightbox .siteorigin-widget-form,
+	.siteorigin-widgets-query-builder.media-modal {
+		
+		&-notification {
+			background-color: #383f46;
+			border-color: transparent;
+		}
+		
+		.siteorigin-widget-field-type-widget,
+		.siteorigin-widget-field-type-section {
+			> label {
+				background: #383f46;
+				border-color: #676d72;
+			}
+		}
+		
+		.siteorigin-widget-field-type-posts,
+		.siteorigin-widget-field-type-widget,
+		.siteorigin-widget-field-type-section {
+			.siteorigin-widget-section {
+				background-color: transparent;
+				border-color: #676d72;
+			}
+		}
+		
+		.siteorigin-widget-field-type-icon {
+			
+			.siteorigin-widget-icon-selector-current,
+			.siteorigin-widget-icon-selector {
+				background: #383f46;
+				border-color: #676d72;
+				
+				.siteorigin-widget-icon,
+				.siteorigin-widget-icon-icons-icon {
+					background-color: #131a22;
+					border-color: #676d72;
+				}
+				
+				> label {
+					text-shadow: none;
+				}
+			}
+		}
+		
+		.wp-picker-container {
+			.wp-color-result.button {
+				.wp-color-result-text {
+					border-color: #424242;
+					background-color: #131a22;
+				}
+			}
+			
+			.wp-picker-holder .iris-border {
+				border-color: #424242;
+				background-color: #131a22;
+			}
+		}
+		
+		.siteorigin-widget-field-type-media {
+			.media-field-wrapper {
+				background: #383f46;
+				border-color: #676d72;
+				
+				> .current {
+					border-right: 1px solid #676d72;
+					box-shadow: none;
+					.thumbnail-wrapper {
+						background: #131a22;
+						border-color: #676d72;
+					}
+				}
+				
+				.find-image-button {
+					border-left: 1px solid #676d72;
+				}
+				
+				> a {
+					text-shadow: none;
+					&:hover {
+						background-color: transparent;
+					}
+				}
+			}
+		}
+		
+		.siteorigin-widget-field-repeater {
+			.siteorigin-widget-field-repeater-top {
+				background: #383f46;
+				border-color: #676d72;
+			}
+			
+			.siteorigin-widget-field-repeater-items {
+				background: #383f46;
+				border-color: #676d72;
+				.siteorigin-widget-field-repeater-item {
+					background: #383f46;
+					border-color: #676d72;
+					.siteorigin-widget-field-repeater-item-top {
+						background: #383f46;
+						border-color: #676d72;
+					}
+					.siteorigin-widget-field-repeater-item-form {
+						border-top: 1px solid #676d72;
+					}
+				}
+			}
+			
+			.siteorigin-widget-field-repeater-add {
+				background: #383f46;
+				border-color: #676d72;
+			}
+		}
+		
+		.siteorigin-widget-field-type-posts {
+			.posts-container-label-wrapper {
+				background: #383f46;
+				border-color: #676d72;
+			}
+		}
+		
+		.siteorigin-widget-field-type-posts,
+		.siteorigin-widget-field-type-widget,
+		.siteorigin-widget-field-type-section {
+			.siteorigin-widget-section {
+				background: #32373c;
+				border-color: #424242;
+			}
+		}
+		
+		.button, .wp-color-result-text, .button.button-small {
+			border-color: #424242;
+			background-color: #131a22;
+		}
+	}
+
 }

@@ -74,7 +74,7 @@
 		
 		$field.on( 'click', function ( event ) {
 			var $target = $( event.target );
-			if ( ! $target.is( 'wp-switch-editor' ) ) {
+			if ( ! $target.is( '.wp-switch-editor' ) ) {
 				return;
 			}
 			var mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';

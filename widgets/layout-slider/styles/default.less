@@ -8,6 +8,8 @@
 @slide_padding_sides: 10px;
 @slide_width: 1280px;
 @slide_height: default;
+@responsive_breakpoint: 780px;
+@slide_height_responsive: default;
 @heading_size: 38px;
 @text_size: 16px;
 @text_color: #F6F6F6;
@@ -24,6 +26,18 @@
 
 			max-width: @slide_width;
 			height: @slide_height;
+
+			@media (max-width: @responsive_breakpoint) {
+				// If no responsive height is set, remove slider height
+				& when not ( isnumber( @slide_height_responsive ) ) {
+					height: auto;
+				}
+				
+				// If responsive height is set, use it
+				& when ( isnumber( @slide_height_responsive ) ) {
+					height: @slide_height_responsive;
+				}
+			}
 
 			h1,h2,h3,h4,h5,h6{
 				line-height: 1.375em;

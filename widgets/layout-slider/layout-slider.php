@@ -122,7 +122,11 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 					'height' => array(
 						'type' => 'measurement',
 						'label' => __( 'Height', 'so-widgets-bundle' ),
-						'default' => 'default',
+					),
+
+					'height_responsive' => array(
+						'type' => 'measurement',
+						'label' => __( 'Responsive Height', 'so-widgets-bundle' ),
 					),
 
 					'padding' => array(
@@ -285,6 +289,9 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		$meas_options['slide_padding_sides'] = $instance['design']['padding_sides'];
 		$meas_options['slide_width'] = $instance['design']['width'];
 		$meas_options['slide_height'] = $instance['design']['height'];
+		if ( ! empty( $instance['design']['height_responsive'] ) ) {
+			$meas_options['slide_height_responsive'] = $instance['design']['height_responsive'];
+		}
 
 		$meas_options['heading_size'] = $instance['design']['heading_size'];
 		$meas_options['text_size'] = $instance['design']['text_size'];
@@ -298,7 +305,25 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		$less['heading_color'] = $instance['design']['heading_color'];
 		$less['text_color'] = $instance['design']['text_color'];
 
+		$global_settings = $this->get_global_settings();
+
+		if ( ! empty( $global_settings['responsive_breakpoint'] ) ) {
+			$less['responsive_breakpoint'] = $global_settings['responsive_breakpoint'];
+		}
+
+
 		return $less;
+	}
+
+	function get_settings_form() {
+		return array(
+			'responsive_breakpoint' => array(
+				'type'        => 'measurement',
+				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
+				'default'     => '780px',
+				'description' => __( "This setting controls when the Layout Slider widget will switch to the responsive height for slides. This breakpoint will only be used if a responsive height is set in the Layout Slider's settings. The default value is 780px.", 'so-widgets-bundle' )
+			)
+		);
 	}
 
 	function add_default_measurement_unit($val) {

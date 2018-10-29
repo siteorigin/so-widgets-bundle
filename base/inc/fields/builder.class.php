@@ -10,6 +10,11 @@ class SiteOrigin_Widget_Field_Builder extends SiteOrigin_Widget_Field_Base {
 	protected function render_field( $value, $instance ){
 		if( defined('SITEORIGIN_PANELS_VERSION') ) {
 			// Normal rendering code
+			// In some contexts this is already encoded, e.g. accordion widget using a layout field for content,
+			// inside a PB block in Gutenberg.
+			if ( empty( is_string( $value ) ) ) {
+				$value = json_encode( $value );
+			}
 			?>
 			<div
 				class="siteorigin-page-builder-field"
@@ -22,7 +27,7 @@ class SiteOrigin_Widget_Field_Builder extends SiteOrigin_Widget_Field_Base {
 				<input
 					type="hidden"
 					class="siteorigin-widget-input panels-data"
-					value="<?php echo esc_attr( json_encode( $value ) ) ?>"
+					value="<?php echo sow_esc_attr( $value, ENT_QUOTES, false, true ); ?>"
 					name="<?php echo esc_attr( $this->element_name ) ?>"
 					id="<?php echo esc_attr( $this->element_id ) ?>"
 					/>

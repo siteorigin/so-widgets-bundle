@@ -256,7 +256,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			'fittext_compressor' => array(
 				'type' => 'number',
 				'label' => __( 'FitText Compressor Strength', 'so-widgets-bundle' ),
-				'description' => __( 'How aggressively FitText should resize your heading.', 'so-widgets-bundle' ),
+				'description' => __( 'The lower the value, the more your headings will be scaled down. Values above 1 are allowed.', 'so-widgets-bundle' ),
 				'default' => 0.85,
 				'state_handler' => array(
 					'use_fittext[show]' => array( 'show' ),
