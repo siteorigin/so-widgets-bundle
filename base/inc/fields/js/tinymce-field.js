@@ -6,28 +6,50 @@
 		if ( $field.data( 'initialized' ) ) {
 			return;
 		}
-
+		
+		var inGutenberg = $( 'body' ).is( '.gutenberg-editor-page' );
+		var wpEditor = inGutenberg ? wp.oldEditor : wp.editor;
+		wp.editor.autop = wpEditor.autop;
+		wp.editor.removep = wpEditor.removep;
+		
 		var $container = $field.find( '.siteorigin-widget-tinymce-container' );
 		var settings = $container.data( 'editorSettings' );
+		var $wpautopToggleField;
+		if ( settings.wpautopToggleField ) {
+			var $widgetForm = $container.closest( '.siteorigin-widget-form' );
+			$wpautopToggleField = $widgetForm.find( settings.wpautopToggleField );
+			settings.tinymce.wpautop = $wpautopToggleField.is( ':checked' );
+		}
 		var $textarea = $container.find( 'textarea' );
 		var id = $textarea.attr( 'id' );
 		var setupEditor = function ( editor ) {
 			editor.on( 'change',
 				function () {
-					window.tinymce.get( id ).save();
+					var ed = window.tinymce.get( id );
+					ed.save();
 					$textarea.trigger( 'change' );
 				}
 			);
+			if ( $wpautopToggleField ) {
+				$wpautopToggleField.off( 'change' );
+				$wpautopToggleField.on( 'change', function () {
+					wp.editor.remove( id );
+					settings.tinymce.wpautop = $wpautopToggleField.is( ':checked' );
+					wp.editor.initialize( id, settings );
+				} );
+			}
 		};
-
-		settings.tinymce = $.extend( {}, settings.tinymce, { selector: '#' + id, setup: setupEditor } );
-		$( document ).one( 'wp-before-tinymce-init', function ( event, init ) {
+		
+		if ( settings.tinymce ) {
+			settings.tinymce = $.extend( {}, settings.tinymce, { selector: '#' + id, setup: setupEditor } );
+		}
+		$( document ).on( 'wp-before-tinymce-init', function ( event, init ) {
 			if ( init.selector === settings.tinymce.selector ) {
 				var mediaButtons = $container.data( 'mediaButtons' );
 				$field.find( '.wp-editor-tabs' ).before( mediaButtons.html );
 			}
 		} );
-		$( document ).one( 'tinymce-editor-setup', function () {
+		$( document ).on( 'tinymce-editor-setup', function () {
 			if ( ! $field.find( '.wp-editor-wrap' ).hasClass( settings.selectedEditor + '-active' ) ) {
 				setTimeout( function () {
 					window.switchEditors.go( id );
@@ -35,16 +57,16 @@
 			}
 		} );
 
-		wp.editor.remove( id );
-
+		wpEditor.remove( id );
+		window.tinymce.EditorManager.overrideDefaults( { base_url: settings.baseURL, suffix: settings.suffix } );
 		// Wait for textarea to be visible before initialization.
 		if ( $textarea.is( ':visible' ) ) {
-			wp.editor.initialize( id, settings );
+			wpEditor.initialize( id, settings );
 		}
 		else {
 			var intervalId = setInterval( function () {
 				if ( $textarea.is( ':visible' ) ) {
-					wp.editor.initialize( id, settings );
+					wpEditor.initialize( id, settings );
 					clearInterval( intervalId );
 				}
 			}, 500);
@@ -52,11 +74,14 @@
 		
 		$field.on( 'click', function ( event ) {
 			var $target = $( event.target );
+			if ( ! $target.is( '.wp-switch-editor' ) ) {
+				return;
+			}
 			var mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
 			if ( mode === 'tmce' ) {
 				var editor = window.tinymce.get( id );
 				// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex
-				if ( $target.hasClass( 'wp-switch-editor' ) && editor !== null ) {
+				if ( editor !== null ) {
 					var content = $textarea.val();
 					if ( content.search( '<' ) !== -1 && content.search( '>' ) === -1) {
 						content = content.replace( /</g, '' );
@@ -65,6 +90,7 @@
 					editor.setContent(window.switchEditors.wpautop(content));
 				}
 			}
+			settings.selectedEditor = mode;
 			$field.find( '.siteorigin-widget-tinymce-selected-editor' ).val( mode );
 		} );
 		

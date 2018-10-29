@@ -75,6 +75,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'type' => 'widget',
 								'class' => 'SiteOrigin_Widget_Button_Widget',
 								'label' => __('Button', 'so-widgets-bundle'),
+								'form_filter' => array( $this, 'filter_button_widget_form' ),
 								'collapsible' => false,
 							)
 						)
@@ -228,7 +229,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 					'fittext_compressor' => array(
 						'type' => 'number',
 						'label' => __( 'FitText Compressor Strength', 'so-widgets-bundle' ),
-						'description' => __( 'How aggressively FitText should resize your heading.', 'so-widgets-bundle' ),
+						'description' => __( 'The lower the value, the more your headings will be scaled down. Values above 1 are allowed.', 'so-widgets-bundle' ),
 						'default' => 0.85,
 						'state_handler' => array(
 							'use_fittext[show]' => array( 'show' ),
@@ -282,6 +283,13 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			),
 		);
 	}
+	
+	function filter_button_widget_form( $form_fields ) {
+		
+		unset( $form_fields['design']['fields']['align'] );
+		
+		return $form_fields;
+	}
 
 	/**
 	 * Get everything necessary for the background image.
@@ -291,7 +299,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	 *
 	 * @return array
 	 */
-	function get_frame_background( $i, $frame ){
+	function get_frame_background( $i, $frame ) {
 		$background_image = siteorigin_widgets_get_attachment_image_src(
 			$frame['background']['image'],
 			!empty( $frame['background']['size'] ) ? $frame['background']['size'] : 'full',

@@ -3,14 +3,14 @@
 var sowb = window.sowb || {};
 
 jQuery( function ( $ ) {
-	var setupStaticMapErrorHandler = function() {
-
+	var setupStaticMapErrorHandler = function () {
+		
 		$( '.sowb-google-map-static' ).each( function () {
 			var $this = $( this );
-			var showFallbackImage = function() {
+			var showFallbackImage = function () {
 				if ( $this.data( 'fallbackImage' ) ) {
 					var imgData = $this.data( 'fallbackImage' );
-					if ( imgData.hasOwnProperty( 'img' ) ) {
+					if ( imgData.hasOwnProperty( 'img' ) && imgData.img.length > 0 ) {
 						$this.parent().append( imgData.img );
 						$this.remove();
 					}
@@ -18,11 +18,11 @@ jQuery( function ( $ ) {
 			};
 			if ( this.sowbLoadError ) {
 				showFallbackImage();
-			} else if ( ! this.complete ) {
+			} else if ( !this.complete ) {
 				$this.error( showFallbackImage );
 			}
 		} );
-
+		
 	};
 	setupStaticMapErrorHandler();
 } );

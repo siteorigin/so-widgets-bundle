@@ -11,6 +11,13 @@ class SiteOrigin_Widget_Field_Widget extends SiteOrigin_Widget_Field_Container_B
 	 * @var string
 	 */
 	protected $class;
+	/**
+	 * A filter for the widget's form fields. In some cases we may want to filter some fields out of a sub-widget form.
+	 *
+	 * @access protected
+	 * @var callable
+	 */
+	protected $form_filter;
 
 	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_container = array() ) {
 		parent::__construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_container );
@@ -20,7 +27,11 @@ class SiteOrigin_Widget_Field_Widget extends SiteOrigin_Widget_Field_Container_B
 				/* @var $sub_widget SiteOrigin_Widget */
 				$sub_widget = new $this->class;
 				if( is_a( $sub_widget, 'SiteOrigin_Widget' ) ) {
-					$this->fields = $sub_widget->form_options( $this->for_widget );
+					if ( ! empty( $this->form_filter ) && is_callable( $this->form_filter ) ) {
+						$this->fields = call_user_func( $this->form_filter, $sub_widget->form_options( $this->for_widget ) );
+					} else {
+						$this->fields = $sub_widget->form_options( $this->for_widget );
+					}
 				}
 			}
 		}

@@ -1,18 +1,1 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 120 120" style="enable-background:new 0 0 120 120;" xml:space="preserve">
-<style type="text/css">
-	.st0{fill:#1880B6;}
-	.st1{fill:#8ED9EF;stroke:#324249;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-	.st2{fill:#F2F0DA;stroke:#324249;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-</style>
-<rect id="Call_to_Action" class="st0" width="120" height="120"/>
-<g transform="translate(7 1)">
-	<rect x="28" y="70" class="st1" width="50" height="20"/>
-	<path class="st2" d="M28,80h50"/>
-	<rect x="30" y="38" class="st2" width="46" height="32"/>
-	<path class="st2" d="M38,46h18 M38,54h30 M38,62h22"/>
-	<rect x="28" y="28" class="st1" width="50" height="10"/>
-</g>
-</svg>
+<svg enable-background="new 0 0 120 120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h120v120h-120z" fill="#1880b6"/><g stroke="#324249" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" transform="translate(7 1)"><path d="m28 70h50v20h-50z" fill="#8ed9ef"/><g fill="#f2f0da"><path d="m28 80h50"/><path d="m30 38h46v32h-46z"/><path d="m38 46h18m-18 8h30m-30 8h22"/></g><path d="m28 28h50v10h-50z" fill="#8ed9ef"/></g></svg>

@@ -1,17 +1,1 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 120 120" style="enable-background:new 0 0 120 120;" xml:space="preserve">
-<style type="text/css">
-	.st0{fill:#1880B6;}
-	.st1{fill:#8ED9EF;stroke:#324249;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-	.st2{fill:#F2F0DA;stroke:#324249;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-</style>
-<rect id="Call_to_Action" class="st0" width="120" height="120"/>
-<g transform="translate(1 1)">
-	<path class="st1" d="M45,57L28,40V28h12l17,17L45,57z M34,36c1.1,0,2-0.9,2-2s-0.9-2-2-2s-2,0.9-2,2S32.9,36,34,36z M78,90L61,73
-		V61h12l17,17L78,90z M67,69c1.1,0,2-0.9,2-2s-0.9-2-2-2s-2,0.9-2,2S65.9,69,67,69z"/>
-	<path class="st2" d="M78,57L61,40V28h12l17,17L78,57z M67,36c1.1,0,2-0.9,2-2s-0.9-2-2-2s-2,0.9-2,2S65.9,36,67,36z M45,90L28,73
-		V61h12l17,17L45,90z M34,69c1.1,0,2-0.9,2-2s-0.9-2-2-2s-2,0.9-2,2S32.9,69,34,69z"/>
-</g>
-</svg>
+<svg enable-background="new 0 0 120 120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h120v120h-120z" fill="#1880b6"/><g stroke="#324249" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" transform="translate(1 1)"><path d="m45 57-17-17v-12h12l17 17zm-11-21c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm44 54-17-17v-12h12l17 17zm-11-21c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" fill="#8ed9ef"/><path d="m78 57-17-17v-12h12l17 17zm-11-21c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-22 54-17-17v-12h12l17 17zm-11-21c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" fill="#f2f0da"/></g></svg>

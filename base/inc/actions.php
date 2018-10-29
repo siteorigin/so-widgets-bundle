@@ -31,6 +31,8 @@ function siteorigin_widget_preview_widget_action() {
 
 	$sowb = SiteOrigin_Widgets_Bundle::single();
 	$sowb->register_general_scripts();
+	
+	do_action( 'siteorigin_widgets_render_preview_' . $widget->id_base, $widget );
 
 	ob_start();
 	$widget->widget( array(
@@ -49,7 +51,6 @@ function siteorigin_widget_preview_widget_action() {
 		<?php
 		wp_print_scripts();
 		wp_print_styles();
-		siteorigin_widget_print_styles();
 		?>
 	</head>
 	<body>

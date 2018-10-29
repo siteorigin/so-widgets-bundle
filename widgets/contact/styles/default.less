@@ -70,7 +70,16 @@
 	@field_border_width: default;
 	@field_border_style: default;
 	@field_height: default;
+	@field_height_textarea: default;
 
+	.sow-text-field {
+		height: @field_height;
+	}
+
+	textarea {
+		height: @field_height_textarea;
+	}
+	
 	textarea,
 	.sow-text-field {
 		display: block;
@@ -81,7 +90,6 @@
 		margin: @field_margin;
 		border: @field_border_width @field_border_style @field_border_color;
 		padding: @field_padding;
-		height: @field_height;
 
 		background: @field_background;
 		color: @field_font_color;

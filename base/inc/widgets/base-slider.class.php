@@ -96,6 +96,12 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'label' => __( 'Swipe Control', 'so-widgets-bundle' ),
 				'description' => __( 'Allow users to swipe through frames on mobile devices.', 'so-widgets-bundle' ),
 				'default' => true,
+			),
+
+			'background_video_mobile' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Show slide background videos on mobile', 'so-widgets-bundle' ),
+				'description' => __( 'Ticking this setting will allow for slide backgorund videos to appear on devices that support autoplaying videos on mobile.', 'so-widgets-bundle' ),
 			)
 		);
 	}
@@ -114,6 +120,13 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'label' => __('Video URL', 'so-widgets-bundle'),
 				'optional' => 'true',
 				'description' => __('An external URL of the video. Overrides video file.', 'so-widgets-bundle')
+			),
+			
+			'autoplay' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Autoplay', 'so-widgets-bundle' ),
+				'default' => false,
+				'description' => __( 'Currently only for YouTube videos.', 'so-widgets-bundle' ),
 			),
 
 			'format' => array(
@@ -136,10 +149,10 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 
 	function slider_settings( $controls ){
 		return array(
-			'pagination' => true,
-			'speed'      => empty( $controls['speed'] ) ? 1 : $controls['speed'],
-			'timeout'    => $controls['timeout'],
-			'swipe'      => $controls['swipe'],
+			'pagination'               => true,
+			'speed'                    => empty( $controls['speed'] ) ? 1 : $controls['speed'],
+			'timeout'                  => $controls['timeout'],
+			'swipe'                    => $controls['swipe'],
 		);
 	}
 
@@ -148,7 +161,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		$this->render_template_part('before_slides', $controls, $frames);
 
 		foreach( $frames as $i => $frame ) {
-			$this->render_frame( $i, $frame );
+			$this->render_frame( $i, $frame, $controls );
 		}
 
 		$this->render_template_part('after_slides', $controls, $frames);
@@ -212,7 +225,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	 * @param $i
 	 * @param $frame
 	 */
-	function render_frame( $i, $frame ){
+	function render_frame( $i, $frame, $controls ){
 		$background = wp_parse_args( $this->get_frame_background( $i, $frame ), array(
 			'color' => false,
 			'image' => false,
@@ -264,7 +277,13 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			<?php
 			$this->render_frame_contents( $i, $frame );
 			if( !empty( $background['videos'] ) ) {
-				$this->video_code( $background['videos'], array('sow-' . $background['video-sizing'] . '-element') );
+
+				$classes = array( 'sow-' . $background['video-sizing'] . '-element' );
+				if ( ! empty( $controls['background_video_mobile'] ) ) {
+					$classes[] = 'sow-mobile-video_enabled';
+				}
+
+				$this->video_code( $background['videos'], $classes );
 			}
 
 			if( $background['opacity'] < 1 && !empty($background['image']) ) {
@@ -305,8 +324,9 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	 */
 	function video_code( $videos, $classes = array() ){
 		if( empty( $videos ) ) return;
-		$video_element = '<video class="' . esc_attr( implode( ',', $classes ) ) . '" autoplay loop muted playsinline>';
+		$video_element = '<video class="' . esc_attr( implode( ' ', $classes ) ) . '" autoplay loop muted playsinline>';
 
+		$so_video = new SiteOrigin_Video();
 		foreach( $videos as $video ) {
 			if( empty( $video['file'] ) && empty ( $video['url'] ) ) continue;
 			// If video is an external file, try and display it using oEmbed
@@ -315,13 +335,13 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				if ( ! empty( $video['height'] ) ) {
 					$args['height'] = $video['height'];
 				}
-				$embedded_video = wp_oembed_get( $video['url'], $args );
+				$can_oembed = $so_video->can_oembed( $video['url'] );
 
 				// Check if we can oEmbed the video or not
-				if( !$embedded_video ) {
+				if( ! $can_oembed ) {
 					$video_file = sow_esc_url( $video['url'] );
-				}else{
-					echo $embedded_video;
+				} else {
+					echo $so_video->get_video_oembed( $video['url'], ! empty( $video['autoplay'] ) );
 					continue;
 				}
 			}

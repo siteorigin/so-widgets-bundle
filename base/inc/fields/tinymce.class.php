@@ -100,14 +100,6 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	 */
 	private $wp_version_lt_4_8;
 	
-	public static function unautop( $text ) {
-		$text = str_replace('<p>', '', $text);
-		$text = str_replace(array('<br />', '<br>', '<br/>'), "\n", $text);
-		$text = str_replace('</p>', "\n\n", $text);
-		
-		return $text;
-	}
-	
 	protected function get_default_options() {
 		return array(
 			'wpautop' => true,
@@ -320,9 +312,9 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	}
 	
 	protected function render_before_field( $value, $instance ) {
-		$selected_editor_name = $this->get_selected_editor_field_name( $this->base_name );
-		if( ! empty( $instance[ $selected_editor_name ] ) ) {
-			$this->selected_editor = $instance[ $selected_editor_name ];
+		$selected_editor = $this->get_selected_editor( $instance );
+		if( ! empty( $selected_editor ) ) {
+			$this->selected_editor = $selected_editor;
 		}
 		else {
 			$this->selected_editor = $this->default_editor;
@@ -337,42 +329,72 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			return;
 		}
 		
-		$selected_editor = in_array( $this->selected_editor, array( 'tinymce', 'tmce' ) ) ? 'tmce' : 'html';
+		$user_can_richedit = user_can_richedit();
 		
-		$tmce_settings = array(
-			'toolbar1' => apply_filters( 'mce_buttons', $this->mce_buttons, $this->element_id ),
-			'toolbar2' => apply_filters( 'mce_buttons_2', $this->mce_buttons_2, $this->element_id  ),
-			'toolbar3' => apply_filters( 'mce_buttons_3',$this->mce_buttons_3, $this->element_id  ),
-			'toolbar4' => apply_filters( 'mce_buttons_4',$this->mce_buttons_4, $this->element_id  ),
-			'plugins' => array_unique( apply_filters( 'tiny_mce_plugins', $this->mce_plugins ) ),
+		$selected_editor = $user_can_richedit && in_array( $this->selected_editor, array( 'tinymce', 'tmce' ) ) ? 'tmce' : 'html';
+		
+		$settings = array(
+			'selectedEditor' => $selected_editor,
 		);
 		
-		foreach ( $tmce_settings as $name => $setting ) {
-			$tmce_settings[ $name ] = is_array( $setting ) ? implode( ',', $setting ) : '';
-		}
-		
-		$tmce_settings['external_plugins'] = array_unique( apply_filters( 'mce_external_plugins', $this->mce_external_plugins ) );
-		
-		$suffix = SCRIPT_DEBUG ? '' : '.min';
-		$version = 'ver=' . get_bloginfo( 'version' );
-		// Default stylesheets
-		$mce_css = includes_url( "css/dashicons$suffix.css?$version" ) . ',' .
-		                                includes_url( "js/tinymce/skins/wordpress/wp-content.css?$version" );
-		
-		$editor_styles = get_editor_stylesheets();
-		
-		if ( ! empty( $editor_styles ) ) {
-			// Force urlencoding of commas.
-			foreach ( $editor_styles as $key => $url ) {
-				if ( strpos( $url, ',' ) !== false ) {
-					$editor_styles[ $key ] = str_replace( ',', '%2C', $url );
+		if ( $user_can_richedit ) {
+			
+			$tmce_settings = array(
+				'toolbar1' => apply_filters( 'mce_buttons', $this->mce_buttons, $this->element_id ),
+				'toolbar2' => apply_filters( 'mce_buttons_2', $this->mce_buttons_2, $this->element_id  ),
+				'toolbar3' => apply_filters( 'mce_buttons_3',$this->mce_buttons_3, $this->element_id  ),
+				'toolbar4' => apply_filters( 'mce_buttons_4',$this->mce_buttons_4, $this->element_id  ),
+				'plugins' => array_unique( apply_filters( 'tiny_mce_plugins', $this->mce_plugins ) ),
+			);
+			
+			foreach ( $tmce_settings as $name => $setting ) {
+				$tmce_settings[ $name ] = is_array( $setting ) ? implode( ',', $setting ) : '';
+			}
+			
+			$tmce_settings['external_plugins'] = array_unique( apply_filters( 'mce_external_plugins', $this->mce_external_plugins ) );
+			
+			$suffix = SCRIPT_DEBUG ? '' : '.min';
+			$version = 'ver=' . get_bloginfo( 'version' );
+			// Default stylesheets
+			$mce_css = includes_url( "css/dashicons$suffix.css?$version" ) . ',' .
+											includes_url( "js/tinymce/skins/wordpress/wp-content.css?$version" );
+			
+			$editor_styles = get_editor_stylesheets();
+			
+			if ( ! empty( $editor_styles ) ) {
+				// Force urlencoding of commas.
+				foreach ( $editor_styles as $key => $url ) {
+					if ( strpos( $url, ',' ) !== false ) {
+						$editor_styles[ $key ] = str_replace( ',', '%2C', $url );
+					}
+				}
+				
+				$mce_css .= ',' . implode( ',', $editor_styles );
+			}
+			$mce_css = trim( apply_filters( 'mce_css', $mce_css ), ' ,' );
+			$tmce_settings['content_css'] = $mce_css;
+			
+			$settings['tinymce'] = array(
+				'wp_skip_init' => strpos( $this->element_id, '__i__' ) != false ||
+								  strpos( $this->element_id, '_id_' ) != false,
+				'wpautop' => ! empty( $this->wpautop ),
+			);
+			
+			$tmce_settings = apply_filters( 'tiny_mce_before_init', $tmce_settings, $this->element_id );
+			
+			foreach ( $tmce_settings as $name => $setting ) {
+				unset( $jdec );
+				if ( ! empty( $tmce_settings[ $name ] ) ) {
+					// Attempt to decode setting as JSON. For back compat with filters used by WP editor.
+					if ( is_string( $setting )  ) {
+						$jdec = json_decode( $setting, true );
+					}
+					$settings['tinymce'][ $name ] = empty( $jdec ) ? $setting : $jdec;
 				}
 			}
 			
-			$mce_css .= ',' . implode( ',', $editor_styles );
+			$media_buttons = $this->render_media_buttons( $this->element_id );
 		}
-		$mce_css = trim( apply_filters( 'mce_css', $mce_css ), ' ,' );
-		$tmce_settings['content_css'] = $mce_css;
 		
 		$qt_settings = apply_filters(
 			'quicktags_settings',
@@ -383,30 +405,9 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		$qt_settings['buttons'] = ! empty( $qt_settings['buttons'] ) ? $qt_settings['buttons'] : array();
 		$qt_settings['buttons'] = is_array( $qt_settings['buttons'] ) ? implode( ',', $qt_settings['buttons'] ) : '';
 		
-		$settings = array(
-			'selectedEditor' => $selected_editor,
-			'tinymce' => array(
-				'wp_skip_init' => strpos( $this->element_id, '__i__' ) != false ||
-				                  strpos( $this->element_id, '_id_' ) != false,
-				'wpautop' => ! empty( $this->wpautop ),
-			),
-			'quicktags' => array(
-				'buttons' => $qt_settings['buttons'],
-			),
+		$settings['quicktags'] = array(
+			'buttons' => $qt_settings['buttons'],
 		);
-		
-		$tmce_settings = apply_filters( 'tiny_mce_before_init', $tmce_settings, $this->element_id );
-		
-		foreach ( $tmce_settings as $name => $setting ) {
-			unset( $jdec );
-			if ( ! empty( $tmce_settings[ $name ] ) ) {
-				// Attempt to decode setting as JSON. For back compat with filters used by WP editor.
-				if ( is_string( $setting )  ) {
-					$jdec = json_decode( $setting, true );
-				}
-				$settings['tinymce'][ $name ] = empty( $jdec ) ? $setting : $jdec;
-			}
-		}
 		
 		$value = apply_filters( 'the_editor_content', $value, $this->selected_editor );
 		
@@ -417,9 +418,14 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		
 		$media_buttons = $this->render_media_buttons( $this->element_id );
 		
+		$settings['baseURL'] = includes_url( 'js/tinymce' );
+		$settings['suffix'] = SCRIPT_DEBUG ? '' : '.min';
+		
 		?><div class="siteorigin-widget-tinymce-container"
-		       data-editor-settings="<?php echo esc_attr( json_encode( $settings ) ) ?>"
-		       data-media-buttons="<?php echo esc_attr( json_encode( array( 'html' => $media_buttons ) ) ) ?>">
+			<?php if ( ! empty( $media_buttons ) ) : ?>
+			   data-media-buttons="<?php echo esc_attr( json_encode( array( 'html' => $media_buttons ) ) ) ?>"
+			<?php endif; ?>
+			   data-editor-settings="<?php echo esc_attr( json_encode( $settings ) ) ?>">
 		<textarea id="<?php echo esc_attr( $this->element_id ) ?>"
 		          name="<?php echo esc_attr( $this->element_name ) ?>"
 			<?php if ( isset( $this->editor_height ) ) : ?>
@@ -496,8 +502,9 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	}
 	
 	protected function sanitize_field_input( $value, $instance ) {
-		if ( ! empty( $this->wpautop ) ) {
-			$value = wpautop( self::unautop( $value ) );
+		$selected_editor = $this->get_selected_editor( $instance );
+		if ( in_array( $selected_editor, array( 'tinymce', 'tmce' ) ) && ! empty( $this->wpautop ) ) {
+			$value = wpautop( $value );
 		}
 		if( current_user_can( 'unfiltered_html' ) ) {
 			$sanitized_value = $value;
@@ -515,6 +522,16 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			$instance[ $selected_editor_name ] = in_array( $selected_editor, array( 'tinymce', 'tmce', 'quicktags', 'html' ) ) ? $selected_editor : $this->default_editor;
 		}
 		return $instance;
+	}
+	
+	public function get_selected_editor( $instance ) {
+		$selected_editor = null;
+		$selected_editor_name = $this->get_selected_editor_field_name( $this->base_name );
+		if( ! empty( $instance[ $selected_editor_name ] ) ) {
+			$selected_editor = $instance[ $selected_editor_name ];
+		}
+		
+		return $selected_editor;
 	}
 	
 	public function get_selected_editor_field_name( $base_name ) {

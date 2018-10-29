@@ -35,6 +35,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 				'type'  => 'autocomplete',
 				'label' => __( 'Taxonomies', 'so-widgets-bundle' ),
 				'source' => 'terms',
+				'description' => __( 'Taxonomies are groups such as categories, tags, posts and products.', 'so-widgets-bundle' ),
 			),
 
 			'date_type' => array(

@@ -29,9 +29,9 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		return array(
 			'responsive_breakpoint' => array(
 				'type'        => 'measurement',
-				'label'       => __( 'Mobile Collapse Width', 'so-widgets-bundle' ),
+				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
 				'default'     => 780,
-				'description' => __( 'This setting allows you to set the resoloution for when the Mobile Align setting will be used.', 'so-widgets-bundle' )
+				'description' => __( 'This setting controls when the Mobile Align setting will be used. The default value is 780px', 'so-widgets-bundle' ),
 			)
 		);
 	}
@@ -188,7 +188,11 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 	function modify_instance( $instance ) {
 		if ( ! empty( $instance['networks'] ) ) {
 			foreach ( $instance['networks'] as $name => $network ) {
-				$instance['networks'][$name]['icon_name'] = 'fontawesome-' . $network['name'];
+				if ( $network['name'] == 'envelope' ) {
+					$network['name'] = 'email';
+				}
+				$network['icon_name'] = 'fontawesome-' . ( $network['name'] == 'email' ? 'envelope' : $network['name'] );
+				$instance['networks'][$name] = $network;
 			}
 		}
 		return $instance;

@@ -742,7 +742,9 @@ class SiteOrigin_Widgets_Bundle {
 	 * Add action links.
 	 */
 	function plugin_action_links($links){
-		unset( $links['edit'] );
+		if ( isset( $links['edit'] ) ) {
+			unset( $links['edit'] );
+		}
 		$links['manage'] = '<a href="' . admin_url('plugins.php?page=so-widgets-plugins') . '">'.__('Manage Widgets', 'so-widgets-bundle').'</a>';
 		$links['support'] = '<a href="https://siteorigin.com/thread/" target="_blank" rel="noopener noreferrer">'.__('Support', 'so-widgets-bundle').'</a>';
 		return $links;
@@ -772,7 +774,7 @@ class SiteOrigin_Widgets_Bundle {
 		);
 		wp_register_script(
 			'sow-google-map',
-			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/sow.google.map' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/sow.google-map' . SOW_BUNDLE_JS_SUFFIX . '.js',
 			array( 'jquery' ),
 			SOW_BUNDLE_VERSION
 		);

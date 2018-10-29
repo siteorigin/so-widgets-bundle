@@ -12,36 +12,46 @@
 		if ( $dateRangeField.find( '[class*="sowb-specific-date"]' ).length > 0 ) {
 			var createPikadayInput = function ( inputName, initVal ) {
 				var $field = $dateRangeField.find( '.' + inputName + '-picker' );
-				var picker = new Pikaday( {
-					field: $field[ 0 ],
-					blurFieldOnSelect: false,
-					toString: function( date, format ) {
+				var dateToString = function ( date, format ) {
+					var dateString = '';
+					if ( ! isNaN( date.valueOf() ) ) {
 						var day = date.getDate();
 						day = day < 10 ? '0' + day.toString() : day.toString();
 						var month = date.getMonth() + 1;
 						month = month < 10 ? '0' + month.toString() : month.toString();
 						var year = date.getFullYear();
 						return year + '-' + month + '-' + day;
-					},
-					parse: function( dateString, format ) {
-						
-						var parts = dateString.split( '-' );
-						var day = parseInt( parts[2] );
-						var month = parseInt( parts[1] ) - 1;
-						var year = parseInt( parts[0] );
-						return new Date(year, month, day);
-					},
-					onSelect: function ( date ) {
-						var curVal = valField.val() === '' ? {} : JSON.parse( valField.val() );
-						curVal[ inputName ] = this.toString( date, this.format );
-						$field.val( curVal[ inputName ] );
-						valField.val( JSON.stringify( curVal ) );
-						valField.trigger( 'change', { silent: true } );
-					},
+					}
+					
+					return dateString;
+				};
+				var parse = function ( dateString, format ) {
+					var parts = dateString.split( '-' );
+					var day = parseInt( parts[ 2 ] );
+					var month = parseInt( parts[ 1 ] ) - 1;
+					var year = parseInt( parts[ 0 ] );
+					return new Date( year, month, day );
+				};
+				var updateValField = function ( date ) {
+					var curVal = valField.val() === '' ? {} : JSON.parse( valField.val() );
+					curVal[ inputName ] = dateToString( date );
+					$field.val( curVal[ inputName ] );
+					valField.val( JSON.stringify( curVal ) );
+					valField.trigger( 'change', { silent: true } );
+				};
+				var picker = new Pikaday( {
+					field: $field[ 0 ],
+					blurFieldOnSelect: false,
+					toString: dateToString,
+					parse: parse,
+					onSelect: updateValField,
 				} );
 
-				// We trigger the change event on the hidden value field, so prevent 'change' from individual date inputs.
 				$field.change( function ( event ) {
+					var dateVal = parse( $field.val() );
+					updateValField( dateVal );
+					
+					// We trigger the change event on the hidden value field, so prevent 'change' from individual date inputs.
 					event.preventDefault();
 					return false;
 				} );
