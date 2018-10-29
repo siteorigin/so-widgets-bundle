@@ -101,7 +101,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'background_video_mobile' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Show slide background videos on mobile', 'so-widgets-bundle' ),
-				'description' => __( 'Ticking this setting will allow for slide backgorund videos to appear on devices that support autoplaying videos on mobile.', 'so-widgets-bundle' ),
+				'description' => __( 'Allow slide background videos to appear on mobile devices that support autoplay.', 'so-widgets-bundle' ),
 			)
 		);
 	}
