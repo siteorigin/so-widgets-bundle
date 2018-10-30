@@ -22,6 +22,8 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			false,
 			plugin_dir_path(__FILE__)
 		);
+
+		add_action( 'siteorigin_widgets_enqueue_admin_scripts_sow-editor', array( $this, 'enqueue_tinymce' ) );
 	}
 
 	function get_widget_form() {
@@ -114,6 +116,10 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 	function get_style_name($instance) {
 		// We're not using a style
 		return false;
+	}
+
+	function enqueue_tinymce() {
+		wp_enqueue_style( 'editor-buttons' );
 	}
 }
 
