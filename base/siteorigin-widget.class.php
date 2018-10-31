@@ -1068,12 +1068,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		else {
 			$name = array();
 			foreach ( $container as $container_item ) {
-				$name[] = $container_item['name'];
+				$name[] = $container_item['name'] . ( ! empty( $container_item['is_template'] ) ? '-_id_' : '' );
 			}
 			$name[] = $field_name;
-			$field_id_base = $this->get_field_id(implode('-', $name));
+			$field_id_base = $this->get_field_id( implode( '-', $name ) );
 			if ( $is_template ) {
-				return $field_id_base . '-_id_';
+				return $field_id_base;
 			}
 			if ( ! isset( $this->field_ids[ $field_id_base ] ) ) {
 				$this->field_ids[ $field_id_base ] = 1;

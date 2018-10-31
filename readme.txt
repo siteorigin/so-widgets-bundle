@@ -65,6 +65,11 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.13.2 - 31 October 2018 =
+* Builder field: Prevent error in PHP <= 5.4
+* Avoid replacing repeater item id placeholders for child repeaters.
+* Repeaters: In repeater setup, don't setup child repeaters.
+
 = 1.13.1 - 29 October 2018 =
 * Gutenberg: Alert user that changes will be lost when changing the widget type.
 * Tabs: Keyboard navigation and more accessibility improvements.

@@ -530,7 +530,7 @@ var sowbForms = window.sowbForms || {};
 
 		return $(this).each(function (i, el) {
 			var $el = $(el);
-			var $items = $el.find('.siteorigin-widget-field-repeater-items');
+			var $items = $el.find('> .siteorigin-widget-field-repeater-items');
 			var name = $el.data('repeater-name');
 
 			$items.bind('updateFieldPositions', function () {
@@ -549,36 +549,39 @@ var sowbForms = window.sowbForms || {};
 						$(input).data('repeater-positions', pos);
 					});
 				});
-
+				
+				// Skip child repeaters as they'll go through this setup process for themselves.
+				var $fieldsExclRepeaters = $$.find( '> .siteorigin-widget-field-repeater-item > .siteorigin-widget-field-repeater-item-form > .siteorigin-widget-field' )
+				.not( '.siteorigin-widget-field-type-repeater' );
 				// Update the field names for all the input items
-				$$.find('.siteorigin-widget-input').each(function (i, input) {
-					var $in = $(input);
-					var pos = $in.data('repeater-positions');
-
-					if (typeof pos !== 'undefined') {
-						var newName = $in.attr('data-original-name');
-
-						if (!newName) {
-							$in.attr('data-original-name', $in.attr('name'));
-							newName = $in.attr('name');
+				$fieldsExclRepeaters.find('.siteorigin-widget-input').each( function ( i, input ) {
+					var $in = $( input );
+					var pos = $in.data( 'repeater-positions' );
+					
+					if ( typeof pos !== 'undefined' ) {
+						var newName = $in.attr( 'data-original-name' );
+						
+						if ( !newName ) {
+							$in.attr( 'data-original-name', $in.attr( 'name' ) );
+							newName = $in.attr( 'name' );
 						}
-						if (!newName) {
+						if ( !newName ) {
 							return;
 						}
-
-						if (pos) {
-							for (var k in pos) {
-								newName = newName.replace('#' + k + '#', pos[k]);
+						
+						if ( pos ) {
+							for ( var k in pos ) {
+								newName = newName.replace( '#' + k + '#', pos[ k ] );
 							}
 						}
-						$in.attr('name', newName);
+						$in.attr( 'name', newName );
 					}
-				});
-
-				if (!$$.data('initialSetup')) {
+				} );
+				
+				if ( !$$.data( 'initialSetup' ) ) {
 					// Setup default checked values, now that we've updated input names.
 					// Without this radio inputs in repeaters will be rendered as if they all belong to the same group.
-					$$.find('.siteorigin-widget-input').each(function (i, input) {
+					$fieldsExclRepeaters.find('input[type="radio"].siteorigin-widget-input').each(function (i, input) {
 						var $in = $(input);
 						$in.prop('checked', $in.prop('defaultChecked'));
 					});
@@ -656,7 +659,12 @@ var sowbForms = window.sowbForms || {};
 					$$.attr('name', $(this).data('name'));
 				}
 			});
-			var repeaterHtml = repeaterObject.html().replace(/_id_/g, $nextIndex);
+			
+			// Replace repeater item id placeholders with the index of the repeater item.
+			var repeaterName = $el.data( 'repeater-name' );
+			var re = new RegExp( repeaterName + '-_id_', 'g' );
+			var repeaterItemId = repeaterName + '-' + $nextIndex;
+			var repeaterHtml = repeaterObject.html().replace( re, repeaterItemId );
 
 			var readonly = typeof $el.attr('readonly') !== 'undefined';
 			var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
