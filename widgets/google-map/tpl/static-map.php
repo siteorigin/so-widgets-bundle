@@ -14,7 +14,8 @@
 <img
 	class="sowb-google-map-static"
 	border="0"
-	src="<?php echo sow_esc_url( $src_url ) ?>"
+	src="<?php echo sow_esc_url( $src_url['desktop'] ) ?>"
+	data-src="<?php echo ! empty( $src_url['mobile'] ) ? esc_attr( json_encode( $src_url ) ) : ''; ?>"
 	data-fallback-image="<?php echo esc_attr( json_encode( $fallback_image_data ) ); ?>"
 	onerror="this.sowbLoadError = true;">
 

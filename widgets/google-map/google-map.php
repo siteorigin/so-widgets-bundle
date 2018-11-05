@@ -122,18 +122,13 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 					),
 
-					// Mobile Zoom is hidden for static maps as there's no reliable way to check for mobile devices that will bypass caching
 					'mobile_zoom'        => array(
 						'type'        => 'slider',
-						'label'       => __( 'Mobile Zoom Level', 'so-widgets-bundle' ),
+						'label'       => __( 'Mobile zoom level', 'so-widgets-bundle' ),
 						'description' => __( 'A value from 0 (the world) to 21 (street level). This zoom is specific to mobile devices.', 'so-widgets-bundle' ),
 						'min'         => 0,
 						'max'         => 21,
 						'integer'     => true,
-						'state_handler' => array(
-							'map_type[interactive]' => array('show'),
-							'_else[map_type]' => array('hide'),
-						),
 					),
 
 					'scroll_zoom' => array(
@@ -455,6 +450,13 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'<a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank" rel="noopener noreferrer">',
 					'</a>'
 				)
+			),
+
+			'responsive_breakpoint' => array(
+				'type'        => 'number',
+				'label'       => __( 'Responsive breakpoint', 'so-widgets-bundle' ),
+				'default'     => '780',
+				'description' => __( 'This setting controls when the map will use the mobile zoom. This breakpoint will only be used if a mobile zoom is set in the SiteOrigin Google Maps settings. The default value is 780px', 'so-widgets-bundle' )
 			)
 		);
 	}
@@ -505,8 +507,19 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		}
 
 		if ( $settings['map_type'] == 'static' ) {
+
+			// Only set mobile src when mobile zoom is set and not equal to base zoom
+			if ( ! empty( $settings['mobile_zoom'] ) && $settings['zoom'] != $settings['mobile_zoom'] ) {
+				$mobile_src = $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ( ! empty( $styles ) ? $styles['styles'] : array() ), $settings['mobile_zoom'] );
+			} else {
+				$mobile_src = '';
+			}
+
 			return array(
-				'src_url'             => $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array() ),
+				'src_url'             => array (
+					'desktop' => $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array(), $settings['zoom'] ),
+					'mobile'  =>  $mobile_src
+				),
 				'destination_url'     => $instance['settings']['destination_url'],
 				'new_window'          => $instance['settings']['new_window'],
 				'fallback_image_data' => array( 'img' => $fallback_image ),
@@ -532,7 +545,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			}
 
 			// Work out what we need to set gestureHandling to
-			if ( ( ! $settings['draggable'] && ! $settings['scroll_zoom'] ) || ! $settings['draggable'] ) {
+			if ( ! $settings['draggable'] ) {
 				$gestureHandling = 'none';
 			} elseif ( ! $settings['scroll_zoom'] ) {
 				$gestureHandling = 'cooperative';
@@ -569,6 +582,9 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	public function enqueue_widget_scripts( $instance ) {
+		$global_settings = $this->get_global_settings();
+		$breakpoint = ! empty( $global_settings['responsive_breakpoint'] ) ? $global_settings['responsive_breakpoint'] : '780';
+
 		if ( $instance['settings']['map_type'] == 'interactive' ) {
 			wp_enqueue_script( 'sow-google-map' );
 
@@ -586,6 +602,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'geocode' => array(
 						'noResults' => __( 'There were no results for the place you entered. Please try another.', 'so-widgets-bundle' ),
 					),
+					'breakpoint' => $breakpoint,
 				)
 			);
 		} else {
@@ -594,6 +611,12 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				plugin_dir_url( __FILE__ ) . 'js/static-map' . SOW_BUNDLE_JS_SUFFIX . '.js',
 				array( 'jquery' ),
 				SOW_BUNDLE_VERSION
+			);
+
+			wp_localize_script(
+				'sow-google-map-static',
+				'soWidgetsGoogleMapStatic',
+				array( 'breakpoint' => $breakpoint )
 			);
 		}
 	}
@@ -648,10 +671,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		}
 	}
 
-	private function get_static_image_src( $instance, $width, $height, $styles ) {
+	private function get_static_image_src( $instance, $width, $height, $styles, $zoom ) {
 		$src_url = "https://maps.googleapis.com/maps/api/staticmap?";
 		$src_url .= "center=" . $instance['map_center'];
-		$src_url .= "&zoom=" . $instance['settings']['zoom'];
+		$src_url .= "&zoom=" . $zoom;
 		$src_url .= "&size=" . $width . "x" . $height;
 
 		if ( ! empty( $instance['api_key_section']['api_key'] ) ) {

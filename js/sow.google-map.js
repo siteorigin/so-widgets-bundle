@@ -16,7 +16,8 @@ sowb.SiteOriginGoogleMap = function($) {
 			var zoom = Number(options.zoom);
 
 			if ( !zoom ) zoom = 14;
-			if( window.innerWidth < 768 ) {
+			
+			if( window.innerWidth < soWidgetsGoogleMap.breakpoint ) {
 				zoom = options.mobileZoom;
 			}
 
