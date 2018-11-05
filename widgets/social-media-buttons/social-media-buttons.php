@@ -30,7 +30,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			'responsive_breakpoint' => array(
 				'type'        => 'measurement',
 				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
-				'default'     => 780,
+				'default'     => 780px,
 				'description' => __( 'This setting controls when the Mobile Align setting will be used. The default value is 780px', 'so-widgets-bundle' ),
 			)
 		);
@@ -243,6 +243,12 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		$margin = $top . ' ' . $right . ' ' . $bottom . ' ' . $left;
 
 		$global_settings = $this->get_global_settings();
+		// Ensure responsive_breakpoint global setting has a unit of measurement
+		if ( ! empty( $global_settings['responsive_breakpoint'] ) && is_numeric( $global_settings['responsive_breakpoint'] ) ) {
+			$global_settings['responsive_breakpoint'] .= 'px';
+			$this->save_global_settings( $global_settings );
+		}
+
 		return array(
 			'icon_size'             => $design['icon_size'] . 'em',
 			'rounding'              => $design['rounding'] . 'em',
