@@ -7,8 +7,7 @@
 			return;
 		}
 		
-		var inGutenberg = $( 'body' ).is( '.gutenberg-editor-page' );
-		var wpEditor = inGutenberg ? wp.oldEditor : wp.editor;
+		var wpEditor = wp.oldEditor ? wp.oldEditor : wp.editor;
 		wp.editor.autop = wpEditor.autop;
 		wp.editor.removep = wpEditor.removep;
 		
