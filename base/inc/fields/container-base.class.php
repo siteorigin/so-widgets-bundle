@@ -69,7 +69,7 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 	protected function create_and_render_sub_fields( $values, $parent_container = null, $is_template = false ) {
 		$this->sub_fields = array();
 		if( isset( $parent_container )) {
-			if( ! in_array( $parent_container, $this->parent_container, true ) ){
+			if( ! in_array( $parent_container, $this->parent_container, true ) && empty( $is_template ) ){
 				$this->parent_container[] = $parent_container;
 			}
 		}
