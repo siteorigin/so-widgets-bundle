@@ -8,8 +8,11 @@
 		}
 		
 		var wpEditor = wp.oldEditor ? wp.oldEditor : wp.editor;
-		wp.editor.autop = wpEditor.autop;
-		wp.editor.removep = wpEditor.removep;
+		if ( wpEditor && wpEditor.hasOwnProperty( 'autop' ) ) {
+			wp.editor.autop = wpEditor.autop;
+			wp.editor.removep = wpEditor.removep;
+			wp.editor.initialize = wpEditor.initialize
+		}
 		
 		var $container = $field.find( '.siteorigin-widget-tinymce-container' );
 		var settings = $container.data( 'editorSettings' );
