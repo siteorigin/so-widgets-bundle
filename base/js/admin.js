@@ -530,7 +530,7 @@ var sowbForms = window.sowbForms || {};
 
 		return $(this).each(function (i, el) {
 			var $el = $(el);
-			var $items = $el.find('> .siteorigin-widget-field-repeater-items');
+			var $items = $el.find('.siteorigin-widget-field-repeater-items');
 			var name = $el.data('repeater-name');
 
 			$items.bind('updateFieldPositions', function () {
@@ -550,11 +550,8 @@ var sowbForms = window.sowbForms || {};
 					});
 				});
 				
-				// Skip child repeaters as they'll go through this setup process for themselves.
-				var $fieldsExclRepeaters = $$.find( '> .siteorigin-widget-field-repeater-item > .siteorigin-widget-field-repeater-item-form > .siteorigin-widget-field' )
-				.not( '.siteorigin-widget-field-type-repeater' );
 				// Update the field names for all the input items
-				$fieldsExclRepeaters.find('.siteorigin-widget-input').each( function ( i, input ) {
+				$$.find('.siteorigin-widget-input').each( function ( i, input ) {
 					var $in = $( input );
 					var pos = $in.data( 'repeater-positions' );
 					
@@ -581,7 +578,7 @@ var sowbForms = window.sowbForms || {};
 				if ( !$$.data( 'initialSetup' ) ) {
 					// Setup default checked values, now that we've updated input names.
 					// Without this radio inputs in repeaters will be rendered as if they all belong to the same group.
-					$fieldsExclRepeaters.find('input[type="radio"].siteorigin-widget-input').each(function (i, input) {
+					$$.find('.siteorigin-widget-input').each(function (i, input) {
 						var $in = $(input);
 						$in.prop('checked', $in.prop('defaultChecked'));
 					});
@@ -661,10 +658,16 @@ var sowbForms = window.sowbForms || {};
 			});
 			
 			// Replace repeater item id placeholders with the index of the repeater item.
-			var repeaterName = $el.data( 'repeater-name' );
-			var re = new RegExp( repeaterName + '-_id_', 'g' );
-			var repeaterItemId = repeaterName + '-' + $nextIndex;
-			var repeaterHtml = repeaterObject.html().replace( re, repeaterItemId );
+			var repeaterHtml = '';
+			repeaterObject.find( '> .siteorigin-widget-field' )
+			.each( function ( index, element ) {
+				var html = element.outerHTML;
+				// Skip child repeaters, so they can setup their own id's when necessary.
+				if ( ! $( element ).is( '.siteorigin-widget-field-type-repeater' ) ) {
+					html = html.replace( /_id_/g, $nextIndex );
+				}
+				repeaterHtml += html;
+			} );
 
 			var readonly = typeof $el.attr('readonly') !== 'undefined';
 			var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
