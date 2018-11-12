@@ -1237,7 +1237,7 @@ var sowbForms = window.sowbForms || {};
 		});
 	}
 	
-	if ( $body.hasClass('gutenberg-editor-page') ) {
+	if ( $body.hasClass('block-editor-page') ) {
 		// Setup new widgets when they're added in the customizer interface
 		$(document).on('panels_setup_preview', function () {
 			$( sowb ).trigger( 'setup_widgets' );

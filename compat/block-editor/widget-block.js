@@ -20,7 +20,7 @@
 			return el(
 				'span',
 				{
-					className: 'widget-icon so-widget-icon so-gutenberg-icon'
+					className: 'widget-icon so-widget-icon so-block-editor-icon'
 				}
 			)
 		},
@@ -53,9 +53,9 @@
 			
 			if ( props.loadingWidgets ) {
 				$.get( {
-					url: sowbGutenbergAdmin.restUrl + 'sowb/v1/widgets',
+					url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets',
 					beforeSend: function ( xhr ) {
-						xhr.setRequestHeader( 'X-WP-Nonce', sowbGutenbergAdmin.nonce );
+						xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
 					}
 				} )
 				.then( function( widgets ) {
@@ -69,7 +69,7 @@
 			
 			function onWidgetClassChange( newWidgetClass ) {
 				if ( newWidgetClass !== '' ) {
-					if ( props.widgetSettingsChanged && ! confirm( sowbGutenbergAdmin.confirmChangeWidget ) ) {
+					if ( props.widgetSettingsChanged && ! confirm( sowbBlockEditorAdmin.confirmChangeWidget ) ) {
 						return false;
 					}
 					props.setAttributes( { widgetClass: newWidgetClass, widgetData: null } );
@@ -147,9 +147,9 @@
 				var loadingWidgetForm = props.attributes.widgetClass && !props.widgetFormHtml;
 				if ( loadingWidgetForm ) {
 					$.get( {
-						url: sowbGutenbergAdmin.restUrl + 'sowb/v1/widgets/forms',
+						url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/forms',
 						beforeSend: function ( xhr ) {
-							xhr.setRequestHeader( 'X-WP-Nonce', sowbGutenbergAdmin.nonce );
+							xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
 						},
 						data: {
 							widgetClass: props.attributes.widgetClass
@@ -192,7 +192,7 @@
 							el( Spinner ) :
 							el(
 								'div',
-								{ className: 'so-widget-gutenberg-container' },
+								{ className: 'so-widget-block-container' },
 								el(
 									SelectControl,
 									{
@@ -202,7 +202,7 @@
 									}
 								),
 								el( 'div', {
-									className: 'so-widget-gutenberg-form-container',
+									className: 'so-widget-block-form-container',
 									dangerouslySetInnerHTML: { __html: widgetForm },
 									ref: setupWidgetForm,
 								} )
@@ -215,9 +215,9 @@
 				var loadingWidgetPreview = !props.editing && !props.widgetPreviewHtml;
 				if ( loadingWidgetPreview ) {
 					$.get( {
-						url: sowbGutenbergAdmin.restUrl + 'sowb/v1/widgets/previews',
+						url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/previews',
 						beforeSend: function ( xhr ) {
-							xhr.setRequestHeader( 'X-WP-Nonce', sowbGutenbergAdmin.nonce );
+							xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
 						},
 						data: {
 							widgetClass: props.attributes.widgetClass,
@@ -251,7 +251,7 @@
 						'div',
 						{
 							key: 'preview',
-							className: 'so-widget-gutenberg-preview-container'
+							className: 'so-widget-preview-container'
 						},
 						( loadingWidgetPreview ?
 							el( 'div', {
