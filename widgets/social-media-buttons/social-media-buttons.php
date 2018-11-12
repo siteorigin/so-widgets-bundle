@@ -246,7 +246,6 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		// Ensure responsive_breakpoint global setting has a unit of measurement
 		if ( ! empty( $global_settings['responsive_breakpoint'] ) && is_numeric( $global_settings['responsive_breakpoint'] ) ) {
 			$global_settings['responsive_breakpoint'] .= 'px';
-			$this->save_global_settings( $global_settings );
 		}
 
 		return array(
