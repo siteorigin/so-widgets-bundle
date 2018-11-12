@@ -393,8 +393,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				if( ! isset( $instance[$id] ) ) {
 					$instance[$id] = isset( $field['default'] ) ? $field['default'] : '';
 				}
-				if ( empty( $instance[ $id . '_unit' ] ) ) {
+				if ( is_numeric(  $instance[ $id ] ) ) {
 					$instance[$id] .= 'px';
+				}
+				if ( empty( $instance[ $id . '_unit' ] ) ) {
 					$instance[ $id . '_unit' ] = 'px';
 				}
 			}
