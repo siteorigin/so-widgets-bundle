@@ -48,7 +48,9 @@
 		$( document ).on( 'wp-before-tinymce-init', function ( event, init ) {
 			if ( init.selector === settings.tinymce.selector ) {
 				var mediaButtons = $container.data( 'mediaButtons' );
-				$field.find( '.wp-editor-tabs' ).before( mediaButtons.html );
+				if ( $field.find( '.wp-media-buttons' ).length === 0 ) {
+					$field.find( '.wp-editor-tabs' ).before( mediaButtons.html );
+				}
 			}
 		} );
 		$( document ).on( 'tinymce-editor-setup', function () {
