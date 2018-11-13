@@ -59,8 +59,9 @@ class SiteOrigin_Widget_Field_Multi_Measurement extends SiteOrigin_Widget_Field_
 			} else {
 				$label = $measurement_config;
 			}
+			$default_measurements = siteorigin_widgets_get_measurements_list();
 			$units = empty( $measurement_config['units'] ) ?
-				siteorigin_widgets_get_measurements_list() :
+				$default_measurements :
 				$measurement_config['units'];
 			$input_id = $this->element_id . '-' . $name;
 			?>
