@@ -1247,7 +1247,7 @@ var sowbForms = window.sowbForms || {};
 	$( document ).on( 'open_dialog', function ( e, dialog ) {
 		// When we open a Page Builder edit widget dialog
 		if ( dialog.$el.find( '.so-panels-dialog' ).is( '.so-panels-dialog-edit-widget' ) ) {
-			var $fields = $( e.target ).find( '.siteorigin-widget-form-main' ).find( '> .siteorigin-widget-field' );
+			var $fields = dialog.$el.find( '.siteorigin-widget-form-main' ).find( '> .siteorigin-widget-field' );
 			$fields.trigger( 'sowsetupformfield' );
 		}
 	});
