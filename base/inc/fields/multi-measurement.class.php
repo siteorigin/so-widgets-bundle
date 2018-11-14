@@ -63,13 +63,16 @@ class SiteOrigin_Widget_Field_Multi_Measurement extends SiteOrigin_Widget_Field_
 			$units = empty( $measurement_config['units'] ) ?
 				$default_measurements :
 				$measurement_config['units'];
+			if ( empty( $units ) ) {
+				$units = array( 'px' );
+			}
 			$input_id = $this->element_id . '-' . $name;
 			?>
 			<div class="sow-multi-measurement-input-container">
 				<label for="<?php echo esc_attr( $input_id ) ?>"><?php echo esc_html( $label ) ?></label>
 				<input id="<?php echo esc_attr( $input_id ) ?>" type="text" class="sow-multi-measurement-input">
 				<select class="sow-multi-measurement-select-unit">
-					<?php foreach ( $units as $unit ):?>
+					<?php foreach ( (array) $units as $unit ):?>
 						<option value="<?php echo esc_attr( $unit ) ?>"><?php echo esc_html( $unit ) ?></option>
 					<?php endforeach?>
 				</select>
