@@ -683,17 +683,18 @@
 	background-size: cover;
 	background-image: url("img/bundle-icon.png");
 
-	&.so-gutenberg-icon {
+	&.so-block-editor-icon {
 		width: 20px;
 		height: 20px;
 		display: inline-block;
 	}
 }
 
-// Gutenberg compatibility styles
-.gutenberg__editor {
+// WP 5 Block Editor compatibility styles
+.block-editor {
 	
 	.so-widget-placeholder {
+		text-align: left;
 		
 		// WB icon for placeholder.
 		& > .components-placeholder__label {
@@ -705,7 +706,7 @@
 		& > .components-placeholder__fieldset {
 			max-width: unset;
 			
-			.so-widget-gutenberg-container {
+			.so-widget-block-container {
 				width: 100%;
 				
 				.siteorigin-widget-form.siteorigin-widget-form-main {
@@ -741,7 +742,7 @@
 		}
 	}
 
-	.so-widget-gutenberg-preview-container {
+	.so-widget-preview-container {
 		.so-widgets-spinner-container {
 			text-align: center;
 			> span {

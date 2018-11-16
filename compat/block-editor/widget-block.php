@@ -1,10 +1,10 @@
 <?php
 
-class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
+class SiteOrigin_Widgets_Bundle_Widget_Block {
 	/**
 	 * Get the singleton instance
 	 *
-	 * @return SiteOrigin_Widgets_Bundle_Gutenberg_Block
+	 * @return SiteOrigin_Widgets_Bundle_Widget_Block
 	 */
 	public static function single() {
 		static $single;
@@ -32,7 +32,7 @@ class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
 		);
 		wp_localize_script(
 			'sowb-widget-block',
-			'sowbGutenbergAdmin',
+			'sowbBlockEditorAdmin',
 			array(
 				'restUrl' => esc_url_raw( rest_url() ),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
@@ -81,4 +81,4 @@ class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
 	}
 }
 
-SiteOrigin_Widgets_Bundle_Gutenberg_Block::single();
+SiteOrigin_Widgets_Bundle_Widget_Block::single();

@@ -246,11 +246,6 @@ function siteorigin_widgets_font_families( ){
 	return apply_filters('siteorigin_widgets_font_families', $font_families);
 }
 
-function siteorigin_widgets_tinymce_admin_print_styles() {
-	wp_enqueue_style( 'editor-buttons' );
-}
-add_action( 'admin_print_styles', 'siteorigin_widgets_tinymce_admin_print_styles' );
-
 /**
  * Get list of supported measurements
  *

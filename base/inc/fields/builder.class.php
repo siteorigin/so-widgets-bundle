@@ -11,7 +11,7 @@ class SiteOrigin_Widget_Field_Builder extends SiteOrigin_Widget_Field_Base {
 		if( defined('SITEORIGIN_PANELS_VERSION') ) {
 			// Normal rendering code
 			// In some contexts this is already encoded, e.g. accordion widget using a layout field for content,
-			// inside a PB block in Gutenberg.
+			// inside a PB block in the block editor.
 			$valid_string = is_string( $value ); // Required for PHP <5.4
 			if ( empty( $valid_string ) ) {
 				$value = json_encode( $value );
