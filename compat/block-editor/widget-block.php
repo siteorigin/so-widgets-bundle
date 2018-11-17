@@ -39,7 +39,9 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				'confirmChangeWidget' => __( 'Selecting a different widget will revert any changes. Continue?', 'so-widgets-bundle' ),
 			)
 		);
-		wp_set_script_translations( 'sowb-widget-block', 'so-widgets-bundle' );
+		if ( function_exists( 'wp_set_script_translations' ) ) {
+			wp_set_script_translations( 'sowb-widget-block', 'so-widgets-bundle' );
+		}
 		
 		$so_widgets_bundle = SiteOrigin_Widgets_Bundle::single();
 		// This is to ensure necessary scripts can be enqueued for previews.
