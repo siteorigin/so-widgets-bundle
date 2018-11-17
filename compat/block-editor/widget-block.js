@@ -12,9 +12,9 @@
 	var __ = i18n.__;
 	
 	registerBlockType( 'sowb/widget-block', {
-		title: __( 'SiteOrigin Widget' ),
+		title: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
 		
-		description: __( 'Select a SiteOrigin widget from the dropdown.' ),
+		description: __( 'Select a SiteOrigin widget from the dropdown.', 'so-widgets-bundle' ),
 		
 		icon: function() {
 			return el(
@@ -141,7 +141,7 @@
 					widgetsOptions = props.widgets.map( function ( widget ) {
 						return { value: widget.class, label: widget.name };
 					} );
-					widgetsOptions.unshift( { value: '', label: __( 'Select widget type' ) } );
+					widgetsOptions.unshift( { value: '', label: __( 'Select widget type', 'so-widgets-bundle' ) } );
 				}
 				
 				var loadingWidgetForm = props.attributes.widgetClass && !props.widgetFormHtml;
@@ -173,7 +173,7 @@
 								IconButton,
 								{
 									className: 'components-icon-button components-toolbar__control',
-									label: __( 'Preview widget.' ),
+									label: __( 'Preview widget.', 'so-widgets-bundle' ),
 									onClick: switchToPreview,
 									icon: 'visibility'
 								}
@@ -185,8 +185,8 @@
 						{
 							key: 'placeholder',
 							className: 'so-widget-placeholder',
-							label: __( 'SiteOrigin Widget' ),
-							instructions: __( 'Select the type of widget you want to use:' )
+							label: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
+							instructions: __( 'Select the type of widget you want to use:', 'so-widgets-bundle' )
 						},
 						( props.loadingWidgets || loadingWidgetForm ?
 							el( Spinner ) :
@@ -240,7 +240,7 @@
 								IconButton,
 								{
 									className: 'components-icon-button components-toolbar__control',
-									label: __( 'Edit widget.' ),
+									label: __( 'Edit widget.', 'so-widgets-bundle' ),
 									onClick: switchToEditing,
 									icon: 'edit'
 								}
