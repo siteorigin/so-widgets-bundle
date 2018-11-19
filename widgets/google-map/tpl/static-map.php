@@ -15,7 +15,10 @@
 	class="sowb-google-map-static"
 	border="0"
 	src="<?php echo sow_esc_url( $src_url['desktop'] ) ?>"
-	data-src="<?php echo ! empty( $src_url['mobile'] ) ? esc_attr( json_encode( $src_url ) ) : ''; ?>"
+	data-src="<?php echo ! empty( $src_url['mobile'] ) ? esc_attr( json_encode( array(
+		'desktop' => sow_esc_url( $src_url['desktop'] ),
+		'mobile' => sow_esc_url( $src_url['mobile'] ),
+	) ) ) : ''; ?>"
 	data-fallback-image="<?php echo esc_attr( json_encode( $fallback_image_data ) ); ?>"
 	onerror="this.sowbLoadError = true;">
 
