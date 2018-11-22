@@ -27,7 +27,7 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 		
 		$subresource = 'forms';
 		register_rest_route( $namespace, '/' . $resource . '/' . $subresource, array(
-			'methods' => WP_REST_Server::READABLE,
+			'methods' => WP_REST_Server::CREATABLE,
 			'callback' => array( $this, 'get_widget_form'),
 			'args' => array(
 				'widgetClass' => array(
@@ -39,7 +39,7 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 		
 		$subresource = 'previews';
 		register_rest_route( $namespace, '/' . $resource . '/' . $subresource, array(
-			'methods' => WP_REST_Server::READABLE,
+			'methods' => WP_REST_Server::CREATABLE,
 			'callback' => array( $this, 'get_widget_preview'),
 			'args' => array(
 				'widgetClass' => array(

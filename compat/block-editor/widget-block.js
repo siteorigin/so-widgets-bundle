@@ -146,7 +146,7 @@
 				
 				var loadingWidgetForm = props.attributes.widgetClass && !props.widgetFormHtml;
 				if ( loadingWidgetForm ) {
-					$.get( {
+					$.post( {
 						url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/forms',
 						beforeSend: function ( xhr ) {
 							xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
@@ -212,9 +212,9 @@
 				];
 			} else {
 				
-				var loadingWidgetPreview = !props.editing && !props.widgetPreviewHtml;
+				var loadingWidgetPreview = !props.loadingWidgets && !props.editing && !props.widgetPreviewHtml;
 				if ( loadingWidgetPreview ) {
-					$.get( {
+					$.post( {
 						url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/previews',
 						beforeSend: function ( xhr ) {
 							xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
