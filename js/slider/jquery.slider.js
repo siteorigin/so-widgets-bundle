@@ -171,7 +171,8 @@ jQuery( function($){
 						'speed' : settings.speed,
 						'timeout' : settings.timeout,
 						'swipe' : settings.swipe,
-						'swipe-fx' : 'scrollHorz'
+						'swipe-fx' : 'scrollHorz',
+						'log' : false,
 					} )	;
 
 				$$ .find('video.sow-background-element').on('loadeddata', function(){
