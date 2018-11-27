@@ -89,7 +89,8 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					),
 					'height'      => array(
 						'type'    => 'text',
-						'label'   => __( 'Height', 'so-widgets-bundle' )
+						'label'   => __( 'Height', 'so-widgets-bundle' ),
+						'default' => 480,
 					),
 					'destination_url' => array(
 						'type' => 'link',
@@ -128,6 +129,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						'description' => __( 'A value from 0 (the world) to 21 (street level). This zoom is specific to mobile devices.', 'so-widgets-bundle' ),
 						'min'         => 0,
 						'max'         => 21,
+						'default'     => 12,
 						'integer'     => true,
 					),
 
@@ -462,17 +464,19 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	function modify_instance( $instance ) {
-		if ( empty( $instance['settings']['mobile_zoom'] ) ) {
-			// Check if a zoom is set, and if it is, set the mobile zoom to that
-			if ( empty( $instance['settings']['zoom'] ) ) {
-				$instance['settings']['mobile_zoom'] = 12;
-			} else {
-				$instance['settings']['mobile_zoom'] = $instance['settings']['zoom'];
+		if ( ! empty( $instance ) ) {
+			if ( empty( $instance['settings']['mobile_zoom'] ) ) {
+				// Check if a zoom is set, and if it is, set the mobile zoom to that
+				if ( empty( $instance['settings']['zoom'] ) ) {
+					$instance['settings']['mobile_zoom'] = 12;
+				} else {
+					$instance['settings']['mobile_zoom'] = $instance['settings']['zoom'];
+				}
 			}
-		}
 
-		if ( empty( $instance['settings']['height'] ) ) {
-			$instance['settings']['height'] = 480;
+			if ( empty( $instance['settings']['height'] ) ) {
+				$instance['settings']['height'] = 480;
+			}
 		}
 
 		return $instance;
