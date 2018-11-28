@@ -65,11 +65,13 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$instance = $attributes['widgetData'];
 		
 		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
+			$GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] = true;
 			ob_start();
 			/* @var $widget SiteOrigin_Widget */
 			$instance = $widget->update( $instance, $instance );
 			$widget->widget( array(), $instance );
 			$rendered_widget = ob_get_clean();
+			unset( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
 		} else {
 			return '<div>'.
 				   sprintf(
