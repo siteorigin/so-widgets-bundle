@@ -473,13 +473,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 		$styles = $this->get_styles( $instance );
 
-		if ( empty( $instance['api_key_section']['api_key'] ) ) {
-			$global_settings = $this->get_global_settings();
-			if ( ! empty( $global_settings['api_key'] ) ) {
-				$instance['api_key_section']['api_key'] = $global_settings['api_key'];
-			}
-		}
-
 		$fallback_image = '';
 		if ( ! empty ( $instance['settings']['fallback_image'] ) ) {
 			$fallback_image = siteorigin_widgets_get_attachment_image(
@@ -710,8 +703,17 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 	
 	public function modify_instance( $instance ) {
-		if ( ! empty( $instance ) && ! empty( $instance['map_center'] ) && empty( $instance['map_center']['name'] ) ) {
-			$instance['map_center'] = array( 'address' => $instance['map_center'] );
+		if ( ! empty( $instance ) ) {
+			if ( ! empty( $instance['map_center'] ) && empty( $instance['map_center']['name'] ) ) {
+				$instance['map_center'] = array( 'address' => $instance['map_center'] );
+			}
+			
+			if ( ! empty( $instance['api_key_section'] ) && empty( $instance['api_key_section']['api_key'] ) ) {
+				$global_settings = $this->get_global_settings();
+				if ( ! empty( $global_settings['api_key'] ) ) {
+					$instance['api_key_section']['api_key'] = $global_settings['api_key'];
+				}
+			}
 		}
 		return $instance;
 	}
