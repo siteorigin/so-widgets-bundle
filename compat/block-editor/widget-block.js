@@ -225,7 +225,10 @@
 						}
 					} )
 					.then( function( widgetPreview ) {
-						props.setState( { widgetPreviewHtml: widgetPreview } );
+						props.setState( {
+							widgetPreviewHtml: widgetPreview,
+							previewInitialized: false,
+						} );
 					} );
 				}
 				var widgetPreview = props.widgetPreviewHtml ? props.widgetPreviewHtml : '';
