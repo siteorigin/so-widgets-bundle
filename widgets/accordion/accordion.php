@@ -176,7 +176,8 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 		if( empty( $instance ) ) return array();
 		
 		$panels = empty( $instance['panels'] ) ? array() : $instance['panels'];
-		
+
+		$anchor_list = array();
 		foreach ( $panels as $i => &$panel ) {
 			if ( empty( $panel['before_title'] ) ) {
 				$panel['before_title'] = '';
@@ -196,6 +197,12 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			} else {
 				$panel['anchor'] = $panel['title'];
 			}
+
+			if ( isset( $anchor_list[ $panel['anchor'] ] ) ) {
+				$panel['anchor'] .= '-' . $i;
+
+			}
+			$anchor_list[ $panel['anchor'] ] = true;
 		}
 		
 		
