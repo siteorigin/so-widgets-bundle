@@ -30,10 +30,23 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			array( 'wp-editor', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-compose' ),
 			SOW_BUNDLE_VERSION
 		);
+		
+		global $wp_widget_factory;
+		$so_widgets = array();
+		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
+			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
+				$so_widgets[] = array(
+					'name' => preg_replace( '/^SiteOrigin /', '', $widget_obj->name ),
+					'class' => $class,
+				);
+			}
+		}
+		
 		wp_localize_script(
 			'sowb-widget-block',
 			'sowbBlockEditorAdmin',
 			array(
+				'widgets' => $so_widgets,
 				'restUrl' => esc_url_raw( rest_url() ),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
 				'confirmChangeWidget' => __( 'Selecting a different widget will revert any changes. Continue?', 'so-widgets-bundle' ),

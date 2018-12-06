@@ -65,6 +65,13 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.13.4 - 6 December 2018 =
+* Widget block: Fix Layout Slider not being editable.
+* Widget block: Correct used of i18n for block editor.
+* Widget block: Fix previews.
+* Google map: Move global API key override to `modify_instance` to ensure key is available in form.
+* Widget block: Prevent multiple API requests.
+
 = 1.13.3 - 15 November 2018 =
 * Contact: Fix checkboxes and radio alignment on android.
 * FitText: Set minimum font size to ensure readability.
