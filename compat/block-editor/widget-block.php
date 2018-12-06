@@ -30,15 +30,31 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			array( 'wp-editor', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-compose' ),
 			SOW_BUNDLE_VERSION
 		);
+		
+		global $wp_widget_factory;
+		$so_widgets = array();
+		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
+			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
+				$so_widgets[] = array(
+					'name' => preg_replace( '/^SiteOrigin /', '', $widget_obj->name ),
+					'class' => $class,
+				);
+			}
+		}
+		
 		wp_localize_script(
 			'sowb-widget-block',
 			'sowbBlockEditorAdmin',
 			array(
+				'widgets' => $so_widgets,
 				'restUrl' => esc_url_raw( rest_url() ),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
 				'confirmChangeWidget' => __( 'Selecting a different widget will revert any changes. Continue?', 'so-widgets-bundle' ),
 			)
 		);
+		if ( function_exists( 'wp_set_script_translations' ) ) {
+			wp_set_script_translations( 'sowb-widget-block', 'so-widgets-bundle' );
+		}
 		
 		$so_widgets_bundle = SiteOrigin_Widgets_Bundle::single();
 		// This is to ensure necessary scripts can be enqueued for previews.
@@ -62,11 +78,13 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$instance = $attributes['widgetData'];
 		
 		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
+			$GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] = true;
 			ob_start();
 			/* @var $widget SiteOrigin_Widget */
 			$instance = $widget->update( $instance, $instance );
 			$widget->widget( array(), $instance );
 			$rendered_widget = ob_get_clean();
+			unset( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
 		} else {
 			return '<div>'.
 				   sprintf(

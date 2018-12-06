@@ -463,13 +463,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 		$styles = $this->get_styles( $instance );
 
-		if ( empty( $instance['api_key_section']['api_key'] ) ) {
-			$global_settings = $this->get_global_settings();
-			if ( ! empty( $global_settings['api_key'] ) ) {
-				$instance['api_key_section']['api_key'] = $global_settings['api_key'];
-			}
-		}
-
 		$fallback_image = '';
 		if ( ! empty ( $instance['settings']['fallback_image'] ) ) {
 			$fallback_image = siteorigin_widgets_get_attachment_image(
@@ -688,6 +681,20 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		}
 
 		return $src_url;
+	}
+	
+	public function modify_instance( $instance ) {
+		
+		if ( empty( $instance['api_key_section'] ) ) {
+			$instance['api_key_section'] = array();
+		}
+		if ( empty( $instance['api_key_section']['api_key'] ) ) {
+			$global_settings = $this->get_global_settings();
+			if ( ! empty( $global_settings['api_key'] ) ) {
+				$instance['api_key_section']['api_key'] = $global_settings['api_key'];
+			}
+		}
+		return $instance;
 	}
 }
 

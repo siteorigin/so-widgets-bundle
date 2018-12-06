@@ -19,15 +19,9 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 		$namespace = 'sowb/v' . $version;
 		$resource = 'widgets';
 		
-		register_rest_route( $namespace, '/' . $resource, array(
-			'methods' => WP_REST_Server::READABLE,
-			'callback' => array( $this, 'get_widgets'),
-			'permission_callback' => array( $this, 'permissions_check' ),
-		) );
-		
 		$subresource = 'forms';
 		register_rest_route( $namespace, '/' . $resource . '/' . $subresource, array(
-			'methods' => WP_REST_Server::READABLE,
+			'methods' => WP_REST_Server::CREATABLE,
 			'callback' => array( $this, 'get_widget_form'),
 			'args' => array(
 				'widgetClass' => array(
@@ -39,7 +33,7 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 		
 		$subresource = 'previews';
 		register_rest_route( $namespace, '/' . $resource . '/' . $subresource, array(
-			'methods' => WP_REST_Server::READABLE,
+			'methods' => WP_REST_Server::CREATABLE,
 			'callback' => array( $this, 'get_widget_preview'),
 			'args' => array(
 				'widgetClass' => array(
@@ -51,28 +45,6 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 			),
 			'permission_callback' => array( $this, 'permissions_check' ),
 		) );
-	}
-	
-	/**
-	 * Get the collection of widgets.
-	 *
-	 * @param WP_REST_Request $request
-	 *
-	 * @return WP_Error|WP_REST_Response
-	 */
-	public function get_widgets( $request ) {
-		global $wp_widget_factory;
-		$so_widgets = array();
-		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
-			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
-				$so_widgets[] = array(
-					'name' => preg_replace( '/^SiteOrigin /', '', $widget_obj->name ),
-					'class' => $class,
-				);
-			}
-		}
-		
-		return rest_ensure_response( $so_widgets );
 	}
 	
 	/**
