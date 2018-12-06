@@ -684,13 +684,14 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 	
 	public function modify_instance( $instance ) {
-		if ( ! empty( $instance ) ) {
-			
-			if ( ! empty( $instance['api_key_section'] ) && empty( $instance['api_key_section']['api_key'] ) ) {
-				$global_settings = $this->get_global_settings();
-				if ( ! empty( $global_settings['api_key'] ) ) {
-					$instance['api_key_section']['api_key'] = $global_settings['api_key'];
-				}
+		
+		if ( empty( $instance['api_key_section'] ) ) {
+			$instance['api_key_section'] = array();
+		}
+		if ( empty( $instance['api_key_section']['api_key'] ) ) {
+			$global_settings = $this->get_global_settings();
+			if ( ! empty( $global_settings['api_key'] ) ) {
+				$instance['api_key_section']['api_key'] = $global_settings['api_key'];
 			}
 		}
 		return $instance;
