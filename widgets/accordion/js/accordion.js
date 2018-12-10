@@ -98,7 +98,7 @@ jQuery( function ( $ ) {
 					
 					if ( anchors && anchors.length ) {
 						window.location.hash = anchors.join( ',' );
-					} else {
+					} else if ( window.location.hash ) { // This prevents adding a history event if no was present on load
 						window.history.pushState( '', document.title, window.location.pathname + window.location.search );
 					}
 				};
