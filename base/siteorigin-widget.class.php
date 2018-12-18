@@ -746,6 +746,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						$upload_dir['basedir'] . '/siteorigin-widgets/' . $name,
 						$css
 					);
+					
+					// Alert other plugins that we've added a new CSS file
+					do_action( 'siteorigin_widgets_stylesheet_added', $name, $instance );
 				}
 			}
 
@@ -781,6 +784,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				//Reindex array
 				$this->generated_css = array_values( $this->generated_css );
 			}
+			
+			// Alert other plugins that we've deleted a CSS file
+			do_action( 'siteorigin_widgets_stylesheet_deleted', $name, $instance );
 		}
 	}
 
