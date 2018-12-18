@@ -850,7 +850,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$less = preg_replace_callback( '/\.widget-function\((.*)\);/', array( $this, 'less_widget_inject' ), $less );
 
 		//handle less @import statements
-		$less = preg_replace_callback( '/^@import\s+".*?\/?([\w-\.]+)";/m', array( $this, 'get_less_import_contents' ), $less );
+		$less = preg_replace_callback( '/^@import\s+".*?\/?([\w\-\.]+)";/m', array( $this, 'get_less_import_contents' ), $less );
 
 		$vars = apply_filters( 'siteorigin_widgets_less_variables_' . $this->id_base, $this->get_less_variables( $instance ), $instance, $this );
 		if( !empty( $vars ) ){
