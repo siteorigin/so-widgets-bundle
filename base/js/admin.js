@@ -1238,9 +1238,9 @@ var sowbForms = window.sowbForms || {};
 	}
 	
 	if ( $body.hasClass('block-editor-page') ) {
-		// Setup new widgets when they're added in the customizer interface
+		// Setup new widgets when they're previewed in the block editor.
 		$(document).on('panels_setup_preview', function () {
-			$( sowb ).trigger( 'setup_widgets' );
+			$( sowb ).trigger( 'setup_widgets', { preview: true } );
 		});
 	}
 

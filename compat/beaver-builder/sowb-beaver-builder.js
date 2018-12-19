@@ -125,7 +125,7 @@ var sowb = window.sowb || {};
 	// To ensure necessary scripts are executed again when settings are changed
 	$( document ).on( 'fl-builder.preview-rendered fl-builder.layout-rendered', '.fl-builder-content', function() {
 		// Trigger Widgets Bundle widgets to setup
-		$( sowb ).trigger( 'setup_widgets' );
+		$( sowb ).trigger( 'setup_widgets', { preview: true } );
 	} );
 
 })(jQuery);

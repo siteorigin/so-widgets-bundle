@@ -67,7 +67,7 @@ sowbForms.setupVcWidgetForm = function () {
 			var sowb = vc.frame_window.sowb;
 
 			// Trigger Widgets Bundle widgets to setup
-			$( sowb ).trigger( 'setup_widgets' );
+			$( sowb ).trigger( 'setup_widgets', { preview: true } );
 		}
 	} );
 

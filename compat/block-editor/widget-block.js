@@ -105,7 +105,7 @@
 			
 			function setupWidgetPreview() {
 				if ( ! props.previewInitialized ) {
-					$( window.sowb ).trigger( 'setup_widgets' );
+					$( window.sowb ).trigger( 'setup_widgets', { preview: true } );
 					props.setState( { previewInitialized: true } );
 				}
 			}
