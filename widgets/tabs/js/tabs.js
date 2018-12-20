@@ -113,13 +113,15 @@ jQuery( function ( $ ) {
 			if ( useAnchorTags ) {
 				var updateSelectedTab = function () {
 					if ( window.location.hash ) {
-						var anchors = window.location.hash.replace( '#', '' ).split( ',' );
-						anchors.forEach( function ( anchor ) {
-							var tab = $tabs.filter( '[data-anchor="' + anchor + '"]' );
-							if ( tab ) {
-								selectTab( tab, true );
+						var tabs = $tabs.toArray();
+						for ( var i = 0; i < tabs.length; i++ ) {
+							var panel = tabs[ i ];
+							var anchor = $( panel ).data( 'anchor' );
+							var anchorHash = decodeURI( window.location.hash.replace( '#', '' ) ).split( ',' );
+							if ( anchor && $.inArray( decodeURI( anchor ), anchorHash ) > -1 ) {
+								selectTab( panel, true );
 							}
-						} );
+						}
 					}
 				};
 				$( window ).on( 'hashchange', updateSelectedTab );
