@@ -10,8 +10,6 @@ jQuery( function ( $ ) {
 			if ( $widget.data( 'initialized' ) ) {
 				return $( this );
 			}
-			var useAnchorTags = $widget.data( 'useAnchorTags' );
-			var initialScrollPanel = $widget.data( 'initialScrollPanel' );
 
 			var $accordionPanels = $( element ).find( '> .sow-accordion-panel' );
 			$accordionPanels.not( '.sow-accordion-panel-open' ).find( '.sow-accordion-panel-content' ).hide();
@@ -82,25 +80,32 @@ jQuery( function ( $ ) {
 				}
 			} );
 			
-			if ( useAnchorTags ) {
+			if ( $widget.data( 'useAnchorTags' ) ) {
+				var timeoutId;
 				updateHash = function () {
-					var anchors = [];
-					var allOpenPanels = $( '.sow-accordion-panel-open' ).toArray();
-					for ( var i = 0; i < allOpenPanels.length; i++ ) {
-						var anchor = $( allOpenPanels[ i ] ).data( 'anchor' );
-						if ( anchor ) {
-							var $parentPanel = $( allOpenPanels[ i ] ).parents( '.sow-accordion-panel' );
-							if ( ! $parentPanel.length || ( $parentPanel.length && $parentPanel.hasClass( 'sow-accordion-panel-open' ) ) ) {
-								anchors[ i ] = anchor;
+					if ( timeoutId ) {
+						clearTimeout( timeoutId );
+					}
+					timeoutId = setTimeout( function () {
+						
+						var anchors = [];
+						var allOpenPanels = $( '.sow-accordion-panel-open' ).toArray();
+						for ( var i = 0; i < allOpenPanels.length; i++ ) {
+							var anchor = $( allOpenPanels[ i ] ).data( 'anchor' );
+							if ( anchor ) {
+								var $parentPanel = $( allOpenPanels[ i ] ).parents( '.sow-accordion-panel' );
+								if ( ! $parentPanel.length || ( $parentPanel.length && $parentPanel.hasClass( 'sow-accordion-panel-open' ) ) ) {
+									anchors[ i ] = anchor;
+								}
 							}
 						}
-					}
-					
-					if ( anchors && anchors.length ) {
-						window.location.hash = anchors.join( ',' );
-					} else if ( window.location.hash ) { // This prevents adding a history event if no was present on load
-						window.history.pushState( '', document.title, window.location.pathname + window.location.search );
-					}
+						
+						if ( anchors && anchors.length ) {
+							window.location.hash = anchors.join( ',' );
+						} else if ( window.location.hash ) { // This prevents adding a history event if no was present on load
+							window.history.pushState( '', document.title, window.location.pathname + window.location.search );
+						}
+					}, 100 );
 				};
 				
 				var updatePanelStates = function () {
@@ -121,6 +126,7 @@ jQuery( function ( $ ) {
 				} else {
 					updateHash();
 				}
+				var initialScrollPanel = $widget.data( 'initialScrollPanel' );
 				if ( initialScrollPanel > 0 ) {
 					var $initialScrollPanel = initialScrollPanel > $accordionPanels.length ?
 						$accordionPanels.last() :
