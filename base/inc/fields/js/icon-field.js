@@ -61,7 +61,7 @@
 			if(typeof iconWidgetCache[family] === 'undefined') {
 				return;
 			}
-
+			
 			container.empty();
 
 			if( $('#'+'siteorigin-widget-font-'+family).length === 0) {
@@ -148,6 +148,9 @@
 			}
 
 			if(typeof iconWidgetCache[family] === 'undefined') {
+				var $container = $is.find('.siteorigin-widget-icon-icons');
+				$container.addClass( 'loading' );
+				
 				$.getJSON(
 					soWidgets.ajaxurl,
 					{
@@ -156,6 +159,7 @@
 					},
 					function(data) {
 						iconWidgetCache[family] = data;
+						$container.removeClass( 'loading' );
 						rerenderIcons();
 					}
 				);

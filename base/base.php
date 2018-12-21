@@ -47,14 +47,17 @@ add_action('wp_footer', 'siteorigin_widget_print_styles');
  * The ajax handler for getting a list of available icons.
  */
 function siteorigin_widget_get_icon_list(){
-	if(empty($_GET['family'])) exit();
-	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
-
-	$widget_icon_families = apply_filters('siteorigin_widgets_icon_families', array() );
-
-	header('content-type: application/json');
-	echo json_encode( !empty($widget_icon_families[$_GET['family']]) ? $widget_icon_families[$_GET['family']] : array() );
-	exit();
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
+	}
+	
+	if ( empty( $_GET['family'] ) ) {
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );
+	}
+	
+	$widget_icon_families = apply_filters( 'siteorigin_widgets_icon_families', array() );
+	$icons = ! empty( $widget_icon_families[ $_GET['family'] ] ) ? $widget_icon_families[ $_GET['family'] ] : array();
+	wp_send_json( $icons );
 }
 add_action('wp_ajax_siteorigin_widgets_get_icons', 'siteorigin_widget_get_icon_list');
 
