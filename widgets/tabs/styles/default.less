@@ -9,6 +9,8 @@
 @tabs_container_border_radius: default;
 @tabs_container_padding: 12px 10px 0px 10px;
 @tabs_container_tabs_align: default;
+@tabs_container_tabs_layout: default;
+@tabs_container_tabs_placement: default;
 
 @tabs_background_color: default;
 @tabs_background_hover_color: default;
@@ -110,6 +112,22 @@
 				font-family: @panels_font_family;
 				font-weight: @panels_font_weight;
 				font-size: @panels_font_size;
+			}
+		}
+	}
+
+	& when ( @tabs_container_tabs_layout = horizontal ) {
+		& {
+			display: flex;
+			& when ( @tabs_container_tabs_placement = right ) {
+				flex-direction: row-reverse;
+			}
+			.sow-tabs-panel-container {
+				flex: 1;
+			}
+
+			.sow-tabs-tab {
+				display: block !important;
 			}
 		}
 	}
