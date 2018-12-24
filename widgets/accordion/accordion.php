@@ -201,7 +201,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 				$panel['anchor'] = $panel['title'];
 			}
 
-			$anchor_list[ $panel['anchor'] ] = true;
+			$anchor_list[ strtolower( $panel['anchor'] ) ] = true;
 		}
 		
 		
