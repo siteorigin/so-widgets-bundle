@@ -4,6 +4,7 @@ Widget Name: Testimonials
 Description: Display some testimonials.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/testimonials-widget/
 */
 
 class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {

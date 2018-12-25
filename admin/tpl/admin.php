@@ -65,33 +65,40 @@
 								</strong>
 							</div>
 						<?php endif; ?>
+						<div class="so-action-links">
+							<div class="so-widget-toggle-active">
+								<button class="button-secondary so-widget-activate" data-status="1"><?php esc_html_e( 'Activate', 'so-widgets-bundle' ) ?></button>
+								<button class="button-secondary so-widget-deactivate" data-status="0"><?php esc_html_e( 'Deactivate', 'so-widgets-bundle' ) ?></button>
+							</div>
 
-						<div class="so-widget-toggle-active">
-							<button class="button-secondary so-widget-activate" data-status="1"><?php esc_html_e( 'Activate', 'so-widgets-bundle' ) ?></button>
-							<button class="button-secondary so-widget-deactivate" data-status="0"><?php esc_html_e( 'Deactivate', 'so-widgets-bundle' ) ?></button>
-						</div>
-
-						<?php
-						/** @var SiteOrigin_Widget $widget_object */
-						$widget_object = !empty( $widget_objects[ $file ] ) ? $widget_objects[ $file ] : false;
-						if( !empty( $widget_object ) && $widget_object->has_form( 'settings' ) ) {
-							$rel_path = str_replace( wp_normalize_path( WP_CONTENT_DIR ), '', $file );
-							
-							$form_url = add_query_arg( array(
-									'id' => $rel_path,
-									'action' => 'so_widgets_setting_form',
-								),
-								admin_url( 'admin-ajax.php' )
-							);
-							$form_url = wp_nonce_url( $form_url, 'display-widget-form' );
-
-							?>
-							<button class="button-secondary so-widget-settings" data-form-url="<?php echo esc_url( $form_url ) ?>">
-								<?php esc_html_e( 'Settings', 'so-widgets-bundle' ) ?>
-							</button>
 							<?php
-						}
-						?>
+							/** @var SiteOrigin_Widget $widget_object */
+							$widget_object = !empty( $widget_objects[ $file ] ) ? $widget_objects[ $file ] : false;
+							if( !empty( $widget_object ) && $widget_object->has_form( 'settings' ) ) {
+								$rel_path = str_replace( wp_normalize_path( WP_CONTENT_DIR ), '', $file );
+								
+								$form_url = add_query_arg( array(
+										'id' => $rel_path,
+										'action' => 'so_widgets_setting_form',
+									),
+									admin_url( 'admin-ajax.php' )
+								);
+								$form_url = wp_nonce_url( $form_url, 'display-widget-form' );
+
+								?>
+								<button class="button-secondary so-widget-settings" data-form-url="<?php echo esc_url( $form_url ) ?>">
+									<?php esc_html_e( 'Settings', 'so-widgets-bundle' ) ?>
+								</button>
+								<?php
+							}
+							?>
+
+							<?php if( ! empty( $widget['Documentation'] ) ) : ?>
+								<a href="<?php echo esc_url( $widget['Documentation'] ) ?>" target="_blank" rel="noopener noreferrer" class="so-widget-documentation">
+									<?php _e( 'Documentation', 'so-widgets-bundle' ) ?>
+								</a>
+							<?php endif; ?>
+						</div>
 					</div>
 
 				</div>

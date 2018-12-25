@@ -4,6 +4,7 @@ Widget Name: Accordion
 Description: An accordion to squeeze a lot of content into a small space.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/accordion-widget/
 */
 
 class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {

@@ -4,6 +4,7 @@ Widget Name: Post Carousel
 Description: Gives you a widget to display your posts as a carousel.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/post-carousel-widget/
 */
 
 /**

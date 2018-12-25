@@ -246,13 +246,27 @@
 					}
 				}
 			}
-
-			.so-widget-toggle-active {
+			.so-action-links {
 				margin-top: 15px;
-				display: inline-block;
 
-				button:focus {
+				&:after {
+					content: "";
+					display: table;
+					clear: both;
+				}
+
+				.so-widget-toggle-active, .so-widget-settings, .so-widget-documentation {
+					display: inline-block;
+					float: left;
+					margin-right: 1em;
+				}
+				
+				.so-widget-toggle-active button:focus {
 					outline: none;
+				}
+
+				.so-widget-documentation {
+					margin-top: 5px;
 				}
 			}
 
@@ -283,11 +297,6 @@
 					-webkit-filter: grayscale(1);
 					opacity: 0.7;
 				}
-			}
-
-			.so-widget-settings {
-				margin-top: 15px;
-				display: inline-block;
 			}
 
 		}

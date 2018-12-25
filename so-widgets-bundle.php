@@ -617,6 +617,7 @@ class SiteOrigin_Widgets_Bundle {
 			'AuthorURI' => 'Author URI',
 			'WidgetURI' => 'Widget URI',
 			'VideoURI' => 'Video URI',
+			'Documentation' => 'Documentation',
 		);
 
 		$widgets = array();
