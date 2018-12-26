@@ -17,8 +17,12 @@ function siteorigin_widgets_icon_families_filter( $families ){
 		$families[$font] = array(
 			'name' => $name,
 			'style_uri' => plugin_dir_url(__FILE__) . $font . '/style.css',
-			'icons' => apply_filters('siteorigin_widgets_icons_' . $font, array() ),
+			'icons' => apply_filters( 'siteorigin_widgets_icons_' . $font, array() ),
 		);
+		$styles = apply_filters( 'siteorigin_widgets_icon_styles_' . $font, array() );
+		if ( ! empty( $styles ) ) {
+			$families[ $font ]['styles'] = $styles;
+		}
 	}
 
 	return $families;
