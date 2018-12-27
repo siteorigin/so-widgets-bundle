@@ -17,7 +17,7 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 
 	protected function render_field( $value, $instance ) {
 		$widget_icon_families = $this->get_widget_icon_families();
-		$value_parts = $this->get_value_parts( $value );
+		$value_parts = self::get_value_parts( $value );
 		$value_family = ! empty( $value ) ? $value_parts['family'] : 'fontawesome';
 		?>
 
@@ -75,7 +75,7 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 			$sanitized_value = '';
 		}
 		
-		$value_parts = $this->get_value_parts( $sanitized_value );
+		$value_parts = self::get_value_parts( $sanitized_value );
 		$widget_icon_families = $this->get_widget_icon_families();
 		if( ! ( isset( $widget_icon_families[$value_parts['family']] ) && isset( $widget_icon_families[$value_parts['family']]['icons'][$value_parts['icon']] ) ) ) {
 			$sanitized_value = isset( $this->default ) ? $this->default : '';
@@ -105,6 +105,8 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 			$value_icon = str_replace( $style_matches[0], '', $value_icon );
 			$value_style = $style_matches[1];
 		}
+		
+		include_once plugin_dir_path(SOW_BUNDLE_BASE_FILE) . 'icons/' . $value_family . '/filter.php';
 		
 		return apply_filters( 'siteorigin_widgets_icon_migrate_' . $value_family, array(
 			'family' => $value_family,
