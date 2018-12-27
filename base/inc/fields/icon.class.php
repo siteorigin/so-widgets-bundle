@@ -105,11 +105,12 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 			$value_icon = str_replace( $style_matches[0], '', $value_icon );
 			$value_style = $style_matches[1];
 		}
-		return array(
+		
+		return apply_filters( 'siteorigin_widgets_icon_migrate_' . $value_family, array(
 			'family' => $value_family,
 			'style' => ! empty( $value_style ) ? $value_style : null,
 			'icon' => $value_icon,
-		);
+		) );
 	}
 
 	public function enqueue_scripts(){

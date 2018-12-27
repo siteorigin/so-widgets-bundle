@@ -7,7 +7,7 @@ function siteorigin_widgets_icons_fontawesome_filter( $icons ){
 		'accusoft' => array( 'unicode' => '&#xf369;', 'styles' => array( 'sow-fab' ), ),
 		'acquisitions-incorporated' => array( 'unicode' => '&#xf6af;', 'styles' => array( 'sow-fab' ), ),
 		'ad' => array( 'unicode' => '&#xf641;', 'styles' => array( 'sow-fas' ), ),
-		'address-book' => array( 'unicode' => '&#xf2b9;', 'styles' => array( 'sow-farsow-fas' ), ),
+		'address-book' => array( 'unicode' => '&#xf2b9;', 'styles' => array( 'sow-far', 'sow-fas' ), ),
 		'address-card' => array( 'unicode' => '&#xf2bb;', 'styles' => array( 'sow-far', 'sow-fas' ), ),
 		'adjust' => array( 'unicode' => '&#xf042;', 'styles' => array( 'sow-fas' ), ),
 		'adn' => array( 'unicode' => '&#xf170;', 'styles' => array( 'sow-fab' ), ),
@@ -1345,3 +1345,29 @@ function siteorigin_widgets_icon_styles_fontawesome_filter( $styles ) {
 }
 
 add_filter('siteorigin_widgets_icon_styles_fontawesome', 'siteorigin_widgets_icon_styles_fontawesome_filter');
+
+function siteorigin_widgets_icon_migrate_fontawesome( $icon_data ) {
+	
+	// Previous versions of FontAwesome didn't use 'style'.
+	if ( empty( $icon_data['style'] ) ) {
+		// TODO: Add all the name change mappings.
+		$name_map = array(
+			'address-book-o' => 'address-book',
+			'address-card-o' => 'address-card',
+		);
+		
+		if ( ! empty( $name_map[ $icon_data['icon'] ] ) ) {
+			$icon_data['icon'] = $name_map[ $icon_data['icon'] ];
+		}
+		$icons = apply_filters( 'siteorigin_widgets_icons_fontawesome', array() );
+		if ( ! empty( $icons[ $icon_data['icon'] ] ) && ! empty( $icons[ $icon_data['icon'] ]['styles'] ) ) {
+			$icon_data['style'] = $icons[ $icon_data['icon'] ]['styles'][0];
+		} else {
+			
+			$icon_data['style'] = 'sow-fa';
+		}
+	}
+	return $icon_data;
+}
+
+add_filter( 'siteorigin_widgets_icon_migrate_fontawesome', 'siteorigin_widgets_icon_migrate_fontawesome' );
