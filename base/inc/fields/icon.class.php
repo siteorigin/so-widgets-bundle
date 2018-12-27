@@ -99,6 +99,7 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 	}
 	
 	static function get_value_parts( $value ) {
+		
 		list( $value_family, $value_icon ) = ( ! empty( $value ) && strpos( $value, '-' ) !== false ) ? explode( '-', $value, 2 ) : array('', '');
 		
 		if ( ! empty( preg_match( '/(sow\-fa\w?)\-/', $value_icon, $style_matches ) ) ) {
@@ -106,7 +107,9 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 			$value_style = $style_matches[1];
 		}
 		
-		include_once plugin_dir_path(SOW_BUNDLE_BASE_FILE) . 'icons/' . $value_family . '/filter.php';
+		if ( ! empty( $value_family ) ) {
+			include_once plugin_dir_path(SOW_BUNDLE_BASE_FILE) . 'icons/' . $value_family . '/filter.php';
+		}
 		
 		return apply_filters( 'siteorigin_widgets_icon_migrate_' . $value_family, array(
 			'family' => $value_family,

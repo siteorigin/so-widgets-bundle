@@ -1349,7 +1349,7 @@ add_filter('siteorigin_widgets_icon_styles_fontawesome', 'siteorigin_widgets_ico
 function siteorigin_widgets_icon_migrate_fontawesome( $icon_data ) {
 	
 	// Previous versions of FontAwesome didn't use 'style'.
-	if ( !isset( $icon_data['style'] ) ) {
+	if ( ! empty( $icon_data ) && ! isset( $icon_data['style'] ) ) {
 		
 		if ( preg_match( '/([\w\-]+)\-o\b/', $icon_data['icon'], $matches ) ) {
 			$icon_data['icon'] = $matches[1];
