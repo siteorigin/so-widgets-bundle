@@ -617,6 +617,7 @@ class SiteOrigin_Widgets_Bundle {
 			'AuthorURI' => 'Author URI',
 			'WidgetURI' => 'Widget URI',
 			'VideoURI' => 'Video URI',
+			'Documentation' => 'Documentation',
 		);
 
 		$widgets = array();
@@ -629,6 +630,11 @@ class SiteOrigin_Widgets_Bundle {
 				if ( empty( $widget['Name'] ) ) {
 					continue;
 				}
+
+				foreach ( array( 'Name', 'Description' ) as $field ) {
+					$widget[ $field ] = translate( $widget[ $field ], 'so-widgets-bundle' );
+				}
+
 				$f = pathinfo($file);
 				$id = $f['filename'];
 

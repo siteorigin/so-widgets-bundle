@@ -5,6 +5,7 @@ Widget Name: Editor
 Description: A widget which allows editing of content using the TinyMCE editor.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/editor-widget/
 */
 
 class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {

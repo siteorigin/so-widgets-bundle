@@ -4,6 +4,7 @@ Widget Name: Image
 Description: A very simple image widget.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/image-widget-documentation/
 */
 
 class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
