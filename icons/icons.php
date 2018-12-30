@@ -14,9 +14,11 @@ function siteorigin_widgets_icon_families_filter( $families ){
 
 	foreach ( $bundled as $font => $name) {
 		include_once plugin_dir_path(__FILE__) . $font . '/filter.php';
+		$style_uri = plugin_dir_url( __FILE__ ) . $font . '/style.css';
+		$style_uri .= '?ver=' . filemtime( plugin_dir_path(__FILE__) . $font . '/style.css' ); // cache busting.
 		$families[$font] = array(
 			'name' => $name,
-			'style_uri' => plugin_dir_url(__FILE__) . $font . '/style.css',
+			'style_uri' => $style_uri,
 			'icons' => apply_filters( 'siteorigin_widgets_icons_' . $font, array() ),
 		);
 		$styles = apply_filters( 'siteorigin_widgets_icon_styles_' . $font, array() );
