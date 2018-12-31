@@ -132,6 +132,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						'max'         => 21,
 						'default'     => 12,
 						'integer'     => true,
+						'state_handler' => array(	
+ 							'map_type[interactive]' => array('show'),	
+ 							'_else[map_type]' => array('hide'),	
+ 						),
 					),
 
 					'scroll_zoom' => array(
