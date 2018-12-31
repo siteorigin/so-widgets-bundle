@@ -12,7 +12,7 @@
 	var __ = i18n.__;
 	
 	registerBlockType( 'sowb/widget-block', {
-		title: __( 'SiteOrigin Widget (in beta)', 'so-widgets-bundle' ),
+		title: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
 		
 		description: __( 'Select a SiteOrigin widget from the dropdown.', 'so-widgets-bundle' ),
 		
