@@ -19,6 +19,7 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 		$widget_icon_families = $this->get_widget_icon_families();
 		$value_parts = self::get_value_parts( $value );
 		$value_family = ! empty( $value ) ? $value_parts['family'] : 'fontawesome';
+		$value = $value_parts['family'] . '-' . ( empty( $value_parts['style'] ) ? '' : $value_parts['style'] ) . '-' . $value_parts['icon'];
 		?>
 
 		<div class="siteorigin-widget-icon-selector-current">
