@@ -69,20 +69,37 @@ add_action('wp_ajax_siteorigin_widgets_get_icons', 'siteorigin_widget_get_icon_l
  */
 function siteorigin_widget_get_icon($icon_value, $icon_styles = false) {
 	if( empty( $icon_value ) ) return false;
-	list( $family, $icon ) = explode('-', $icon_value, 2);
+	$value_parts = SiteOrigin_Widget_Field_Icon::get_value_parts( $icon_value );
+	$family = $value_parts['family'];
+	$style = empty( $value_parts['style'] ) ? null : $value_parts['style'];
+	$icon = $value_parts['icon'];
 	if( empty( $family ) || empty( $icon ) ) return false;
 
 	static $widget_icon_families;
 	static $widget_icons_enqueued = array();
-
-	if( empty($widget_icon_families) ) $widget_icon_families = apply_filters('siteorigin_widgets_icon_families', array() );
-	if( empty($widget_icon_families[$family]) || empty($widget_icon_families[$family]['icons'][$icon]) ) return false;
-
-	if(empty($widget_icons_enqueued[$family]) && !empty($widget_icon_families[$family]['style_uri'])) {
-		if( !wp_style_is( 'siteorigin-widget-icon-font-'.$family ) ) {
-			wp_enqueue_style('siteorigin-widget-icon-font-'.$family, $widget_icon_families[$family]['style_uri'] );
+	
+	if ( empty( $widget_icon_families ) ) {
+		$widget_icon_families = apply_filters('siteorigin_widgets_icon_families', array() );
+	}
+	if ( empty( $widget_icon_families[ $family ] ) ||
+		 empty( $widget_icon_families[ $family ]['icons'][ $icon ] ) ) {
+		return false;
+	}
+	
+	if ( empty( $widget_icons_enqueued[ $family ] ) &&
+		 ! empty( $widget_icon_families[ $family ]['style_uri'] ) ) {
+		if( ! wp_style_is( 'siteorigin-widget-icon-font-'.$family ) ) {
+			wp_enqueue_style( 'siteorigin-widget-icon-font-' . $family, $widget_icon_families[ $family ]['style_uri'] );
 		}
-		return '<span class="sow-icon-' . esc_attr($family) . '" data-sow-icon="' . $widget_icon_families[$family]['icons'][$icon] . '" ' . ( !empty($icon_styles) ? 'style="'.implode('; ', $icon_styles).'"' : '' ) . '></span>';
+		$family_style = 'sow-icon-' . $family . ( empty( $style ) ? '' : ' ' . $style );
+		$icon_data = $widget_icon_families[ $family ]['icons'][ $icon ];
+		$unicode = '';
+		if ( ! empty( $icon_data['unicode'] ) ) {
+			$unicode = $icon_data['unicode'];
+		} else if ( is_string( $icon_data ) ) {
+			$unicode = $icon_data;
+		}
+		return '<span class="' . esc_attr( $family_style ) . '" data-sow-icon="' . $unicode . '" ' . ( ! empty( $icon_styles ) ? 'style="' . implode( '; ', $icon_styles ) . '"' : '' ) . '></span>';
 	}
 	else {
 		return false;
