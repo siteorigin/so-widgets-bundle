@@ -112,6 +112,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							'_else[map_type]' => array('hide'),
 						),
 					),
+					
 					'zoom'        => array(
 						'type'        => 'slider',
 						'label'       => __( 'Zoom level', 'so-widgets-bundle' ),
@@ -517,18 +518,8 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 		if ( $settings['map_type'] == 'static' ) {
 
-			// Only set mobile src when mobile zoom is set and not equal to base zoom
-			if ( ! empty( $settings['mobile_zoom'] ) && $settings['zoom'] != $settings['mobile_zoom'] ) {
-				$mobile_src = $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ( ! empty( $styles ) ? $styles['styles'] : array() ), $settings['mobile_zoom'] );
-			} else {
-				$mobile_src = '';
-			}
-
 			return array(
-				'src_url'             => array (
-					'desktop' => $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array(), $settings['zoom'] ),
-					'mobile'  =>  $mobile_src
-				),
+				'src_url'             => $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array() ),
 				'destination_url'     => $instance['settings']['destination_url'],
 				'new_window'          => $instance['settings']['new_window'],
 				'fallback_image_data' => array( 'img' => $fallback_image ),
@@ -680,10 +671,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		}
 	}
 
-	private function get_static_image_src( $instance, $width, $height, $styles, $zoom ) {
+	private function get_static_image_src( $instance, $width, $height, $styles ) {
 		$src_url = "https://maps.googleapis.com/maps/api/staticmap?";
 		$src_url .= "center=" . $instance['map_center'];
-		$src_url .= "&zoom=" . $zoom;
+		$src_url .= "&zoom=" . $instance['settings']['zoom'];
 		$src_url .= "&size=" . $width . "x" . $height;
 
 		if ( ! empty( $instance['api_key_section']['api_key'] ) ) {

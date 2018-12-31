@@ -29,20 +29,17 @@ jQuery( function ( $ ) {
 	$( window ).on('load resize', function() {
 		$( '.sowb-google-map-static' ).each( function () {
 			var $this = $( this );
-			var $src = $this.data( 'src' );
+			var src = $this.prop( 'src' );
 
-			// If no mobile zoom is set, skip this static map
-			if ( $src.length == 0) {
-				return;
-			}
-
-			if ( window.innerWidth > soWidgetsGoogleMapStatic.breakpoint ) {
-				 if ( $src.desktop != $this.attr( 'src' ) ) {
-					$this.attr( 'src', $src.desktop );
-				}
+			var breakpointCheck = window.matchMedia( '(max-width: ' + soWidgetsGoogleMapStatic.breakpoint + 'px)' )
+			// Check if the user is viewing the map on mobile
+			if ( breakpointCheck.matches ) {
+				// Scale the map for mobile
+				 $this.attr( 'src', src + '&mobile=true&scale=2' );
 			} else {
-				if ( $src.mobile != $this.attr( 'src' ) ) {
-					$this.attr( 'src', $src.mobile );
+				// Ensure the static map enabled for mobile and if it is, restore it back to normal
+				if ( src.indexOf( '&mobile=true' ) >= 0 ) {
+					$this.attr( 'src', src.split('&mobile=true')[0] );
 				}
 			}
 			
