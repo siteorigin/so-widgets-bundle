@@ -469,7 +469,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	function modify_instance( $instance ) {
-		if ( ! empty( $instance ) ) {
+		if ( ! empty( $instance['settings'] )
 			if ( empty( $instance['settings']['mobile_zoom'] ) ) {
 				// Check if a zoom is set, and if it is, set the mobile zoom to that
 				if ( empty( $instance['settings']['zoom'] ) ) {
