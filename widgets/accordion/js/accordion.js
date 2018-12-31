@@ -18,12 +18,20 @@ jQuery( function ( $ ) {
 			var updateHash = function () {
 				// noop
 			};
+			
+			var scrollToPanel = function ( $panel ) {
+				var navOffset = 90;// Add some magic number offset to make space for possible nav menus etc.
+				window.scrollTo( 0, $panel.offset().top - navOffset );
+			};
 
-			var openPanel = function ( panel, preventHashChange ) {
+			var openPanel = function ( panel, preventHashChange, keepVisible ) {
 				var $panel = $( panel );
 				if ( ! $panel.is( '.sow-accordion-panel-open' ) ) {
 					$panel.find( '> .sow-accordion-panel-content' ).slideDown(
 						function() {
+							if ( keepVisible && $panel.offset().top < window.scrollY ) {
+								scrollToPanel( $panel );
+							}
 							$( this ).trigger( 'show' );
 							$( sowb ).trigger( 'setup_widgets' );
 						}
@@ -65,13 +73,13 @@ jQuery( function ( $ ) {
 				if ( $panel.is( '.sow-accordion-panel-open' ) ) {
 					closePanel( $panel.get( 0 ) );
 				} else {
-					openPanel( $panel.get( 0 ) );
+					openPanel( $panel.get( 0 ), false, true );
 				}
 
 				if ( ! isNaN( maxOpenPanels ) && maxOpenPanels > 0 && openPanels.length > maxOpenPanels ) {
 					var skippedPanels = 0;
 					$.each( openPanels.reverse(), function( index, el ) {
-						if ( skippedPanels !== maxOpenPanels) {
+						if ( skippedPanels !== maxOpenPanels ) {
 							skippedPanels++;
 						} else {
 							closePanel( openPanels[ index ] );
@@ -132,8 +140,7 @@ jQuery( function ( $ ) {
 					var $initialScrollPanel = initialScrollPanel > $accordionPanels.length ?
 						$accordionPanels.last() :
 						$accordionPanels.eq( initialScrollPanel - 1 );
-					var navOffset = 90;// Add some magic number offset to make space for possible nav menus etc.
-					window.scrollTo( 0, $initialScrollPanel.offset().top - navOffset );
+					scrollToPanel( $initialScrollPanel );
 				}
 			}
 			
