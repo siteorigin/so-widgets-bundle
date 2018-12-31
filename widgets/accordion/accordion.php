@@ -196,7 +196,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 				$panel['anchor'] = $id . '-' . $i;
 			} else if ( isset( $anchor_list[ strtolower( $panel['title'] ) ] ) ) {
 				// Ensure this anchor is unique, if it's not, append the array key to the anchor.
-				$panel['anchor'] = $panel['title'] . '-' . $i;
+				$panel['anchor'] = $panel['title'] . "-$i-" . uniqid();
 			} else {
 				$panel['anchor'] = $panel['title'];
 			}
