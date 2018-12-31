@@ -5,6 +5,7 @@ Widget Name: Contact Form
 Description: A light weight contact form builder.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/contact-form-widget/
 */
 
 class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {

@@ -113,7 +113,8 @@ jQuery( function ( $ ) {
 					for ( var i = 0; i < panels.length; i++ ) {
 						var panel = panels[ i ];
 						var anchor = $( panel ).data( 'anchor' );
-						if ( anchor && window.location.hash.indexOf( anchor ) > -1 ) {
+						var anchors = window.location.hash.substring(1).split( ',' ); 
+						if ( anchor && $.inArray( anchor, anchors ) > -1 ) {
 							openPanel( panel, true );
 						} else {
 							closePanel( panel, true );
