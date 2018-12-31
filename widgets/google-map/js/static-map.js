@@ -26,7 +26,7 @@ jQuery( function ( $ ) {
 	};
 	setupStaticMapErrorHandler();
 
-	$( window ).on('load resize', function() {
+	$( window ).on('load resize setup_widgets', function() {
 		$( '.sowb-google-map-static' ).each( function () {
 			var $this = $( this );
 			var src = $this.prop( 'src' );
