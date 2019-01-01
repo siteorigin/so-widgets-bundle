@@ -35,11 +35,11 @@ jQuery( function ( $ ) {
 			// Check if the user is viewing the map on mobile
 			if ( breakpointCheck.matches ) {
 				// Scale the map for mobile
-				 $this.attr( 'src', src + '&mobile=true&scale=2' );
+				 $this.attr( 'src', src + '&scale=2' );
 			} else {
-				// Ensure the static map enabled for mobile and if it is, restore it back to normal
-				if ( src.indexOf( '&mobile=true' ) >= 0 ) {
-					$this.attr( 'src', src.split('&mobile=true')[0] );
+				// Check if the static map enabled for mobile and if it is, restore it back to normal
+				if ( src.indexOf( '&scale=2' ) >= 0 ) {
+					$this.attr( 'src', src.split('&scale=2')[0] );
 				}
 			}
 			
