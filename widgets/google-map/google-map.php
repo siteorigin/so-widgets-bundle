@@ -505,12 +505,13 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 		$styles = $this->get_styles( $instance );
 
+		$global_settings = $this->get_global_settings();
 		if ( empty( $instance['api_key_section']['api_key'] ) ) {
-			$global_settings = $this->get_global_settings();
 			if ( ! empty( $global_settings['api_key'] ) ) {
 				$instance['api_key_section']['api_key'] = $global_settings['api_key'];
 			}
 		}
+		$breakpoint = ! empty( $global_settings['responsive_breakpoint'] ) ? $global_settings['responsive_breakpoint'] : '780';
 
 		$fallback_image = '';
 		if ( ! empty ( $instance['settings']['fallback_image'] ) ) {
@@ -527,6 +528,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'destination_url'     => $instance['settings']['destination_url'],
 				'new_window'          => $instance['settings']['new_window'],
 				'fallback_image_data' => array( 'img' => $fallback_image ),
+				'breakpoint'        => $breakpoint,
 			);
 		} else {
 			$markers         = $instance['markers'];
@@ -574,6 +576,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'map_styles'        => ! empty( $styles ) ? $styles['styles'] : '',
 				'directions'        => $directions,
 				'api_key'           => $instance['api_key_section']['api_key'],
+				'breakpoint'        => $breakpoint,
 			));
 
 			return array(
@@ -586,9 +589,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	public function enqueue_widget_scripts( $instance ) {
-		$global_settings = $this->get_global_settings();
-		$breakpoint = ! empty( $global_settings['responsive_breakpoint'] ) ? $global_settings['responsive_breakpoint'] : '780';
-
 		if ( $instance['settings']['map_type'] == 'interactive' ) {
 			wp_enqueue_script( 'sow-google-map' );
 
@@ -606,7 +606,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'geocode' => array(
 						'noResults' => __( 'There were no results for the place you entered. Please try another.', 'so-widgets-bundle' ),
 					),
-					'breakpoint' => $breakpoint,
 				)
 			);
 		} else {
@@ -615,12 +614,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				plugin_dir_url( __FILE__ ) . 'js/static-map' . SOW_BUNDLE_JS_SUFFIX . '.js',
 				array( 'jquery' ),
 				SOW_BUNDLE_VERSION
-			);
-
-			wp_localize_script(
-				'sow-google-map-static',
-				'soWidgetsGoogleMapStatic',
-				array( 'breakpoint' => $breakpoint )
 			);
 		}
 	}

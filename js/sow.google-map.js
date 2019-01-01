@@ -17,7 +17,7 @@ sowb.SiteOriginGoogleMap = function($) {
 
 			if ( !zoom ) zoom = 14;
 			
-			var breakpointCheck = window.matchMedia( '(max-width: ' + soWidgetsGoogleMap.breakpoint + 'px)' )
+			var breakpointCheck = window.matchMedia( '(max-width: ' + options.breakpoint + 'px)' )
 			// Check if the user is viewing the map on mobile
 			if ( breakpointCheck.matches ) {
 				zoom = options.mobileZoom;

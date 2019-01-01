@@ -30,8 +30,7 @@ jQuery( function ( $ ) {
 		$( '.sowb-google-map-static' ).each( function () {
 			var $this = $( this );
 			var src = $this.prop( 'src' );
-
-			var breakpointCheck = window.matchMedia( '(max-width: ' + soWidgetsGoogleMapStatic.breakpoint + 'px)' )
+			var breakpointCheck = window.matchMedia( '(max-width: ' + $this.data( 'breakpoint' ) + 'px)' )
 			// Check if the user is viewing the map on mobile
 			if ( breakpointCheck.matches ) {
 				// Scale the map for mobile
