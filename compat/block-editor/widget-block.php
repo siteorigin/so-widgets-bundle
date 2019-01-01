@@ -15,7 +15,6 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_widget_block' ) );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_widget_block_editor_assets' ) );
-		add_filter( 'block_categories', array( $this, 'add_siteorigin_blocks_category' ), 10, 2 );
 	}
 	
 	public function register_widget_block() {
@@ -97,28 +96,6 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				   '</div>';
 		}
 		return $rendered_widget;
-	}
-	
-	public function add_siteorigin_blocks_category( $categories, $post ) {
-		// We attempt to add this category in PB and WB.
-		$found = false;
-		foreach ( $categories as $category ) {
-			if ( $category['slug'] == 'siteorigin-blocks' ) {
-				$found = true;
-				break;
-			}
-		}
-		if ( ! $found ) {
-			array_unshift(
-				$categories,
-				array(
-					'slug' => 'siteorigin-blocks',
-					'title' => __( 'SiteOrigin Blocks', 'so-widgets-bundle' ),
-				)
-			);
-		}
-		
-		return $categories;
 	}
 }
 
