@@ -62,7 +62,9 @@
 		} );
 
 		wpEditor.remove( id );
-		window.tinymce.EditorManager.overrideDefaults( { base_url: settings.baseURL, suffix: settings.suffix } );
+		if ( window.tinymce ) {
+			window.tinymce.EditorManager.overrideDefaults( { base_url: settings.baseURL, suffix: settings.suffix } );
+		}
 		// Wait for textarea to be visible before initialization.
 		if ( $textarea.is( ':visible' ) ) {
 			wpEditor.initialize( id, settings );
