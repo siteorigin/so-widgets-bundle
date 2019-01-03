@@ -103,7 +103,8 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 		
 		list( $value_family, $value_icon ) = ( ! empty( $value ) && strpos( $value, '-' ) !== false ) ? explode( '-', $value, 2 ) : array('', '');
 		
-		if ( ! empty( preg_match( '/(sow\-fa\w?)\-/', $value_icon, $style_matches ) ) ) {
+		$matched = preg_match( '/(sow\-fa\w?)\-/', $value_icon, $style_matches );
+		if ( ! empty( $matched ) ) {
 			$value_icon = str_replace( $style_matches[0], '', $value_icon );
 			$value_style = $style_matches[1];
 		}
