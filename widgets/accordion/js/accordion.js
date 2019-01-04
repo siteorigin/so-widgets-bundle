@@ -147,7 +147,9 @@ jQuery( function ( $ ) {
 					var $initialScrollPanel = initialScrollPanel > $accordionPanels.length ?
 						$accordionPanels.last() :
 						$accordionPanels.eq( initialScrollPanel - 1 );
-					scrollToPanel( $initialScrollPanel );
+					setTimeout( function () {
+						scrollToPanel( $initialScrollPanel );
+					}, 500 );
 				}
 			}
 			
