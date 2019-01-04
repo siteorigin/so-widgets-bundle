@@ -5,6 +5,7 @@ Widget Name: Headline
 Description: A headline to headline all headlines.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/headline-widget/
 */
 
 class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {

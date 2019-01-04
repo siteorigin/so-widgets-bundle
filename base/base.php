@@ -47,14 +47,17 @@ add_action('wp_footer', 'siteorigin_widget_print_styles');
  * The ajax handler for getting a list of available icons.
  */
 function siteorigin_widget_get_icon_list(){
-	if(empty($_GET['family'])) exit();
-	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
-
-	$widget_icon_families = apply_filters('siteorigin_widgets_icon_families', array() );
-
-	header('content-type: application/json');
-	echo json_encode( !empty($widget_icon_families[$_GET['family']]) ? $widget_icon_families[$_GET['family']] : array() );
-	exit();
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
+	}
+	
+	if ( empty( $_GET['family'] ) ) {
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );
+	}
+	
+	$widget_icon_families = apply_filters( 'siteorigin_widgets_icon_families', array() );
+	$icons = ! empty( $widget_icon_families[ $_GET['family'] ] ) ? $widget_icon_families[ $_GET['family'] ] : array();
+	wp_send_json( $icons );
 }
 add_action('wp_ajax_siteorigin_widgets_get_icons', 'siteorigin_widget_get_icon_list');
 
@@ -66,20 +69,37 @@ add_action('wp_ajax_siteorigin_widgets_get_icons', 'siteorigin_widget_get_icon_l
  */
 function siteorigin_widget_get_icon($icon_value, $icon_styles = false) {
 	if( empty( $icon_value ) ) return false;
-	list( $family, $icon ) = explode('-', $icon_value, 2);
+	$value_parts = SiteOrigin_Widget_Field_Icon::get_value_parts( $icon_value );
+	$family = $value_parts['family'];
+	$style = empty( $value_parts['style'] ) ? null : $value_parts['style'];
+	$icon = $value_parts['icon'];
 	if( empty( $family ) || empty( $icon ) ) return false;
 
 	static $widget_icon_families;
 	static $widget_icons_enqueued = array();
-
-	if( empty($widget_icon_families) ) $widget_icon_families = apply_filters('siteorigin_widgets_icon_families', array() );
-	if( empty($widget_icon_families[$family]) || empty($widget_icon_families[$family]['icons'][$icon]) ) return false;
-
-	if(empty($widget_icons_enqueued[$family]) && !empty($widget_icon_families[$family]['style_uri'])) {
-		if( !wp_style_is( 'siteorigin-widget-icon-font-'.$family ) ) {
-			wp_enqueue_style('siteorigin-widget-icon-font-'.$family, $widget_icon_families[$family]['style_uri'] );
+	
+	if ( empty( $widget_icon_families ) ) {
+		$widget_icon_families = apply_filters('siteorigin_widgets_icon_families', array() );
+	}
+	if ( empty( $widget_icon_families[ $family ] ) ||
+		 empty( $widget_icon_families[ $family ]['icons'][ $icon ] ) ) {
+		return false;
+	}
+	
+	if ( empty( $widget_icons_enqueued[ $family ] ) &&
+		 ! empty( $widget_icon_families[ $family ]['style_uri'] ) ) {
+		if( ! wp_style_is( 'siteorigin-widget-icon-font-'.$family ) ) {
+			wp_enqueue_style( 'siteorigin-widget-icon-font-' . $family, $widget_icon_families[ $family ]['style_uri'] );
 		}
-		return '<span class="sow-icon-' . esc_attr($family) . '" data-sow-icon="' . $widget_icon_families[$family]['icons'][$icon] . '" ' . ( !empty($icon_styles) ? 'style="'.implode('; ', $icon_styles).'"' : '' ) . '></span>';
+		$family_style = 'sow-icon-' . $family . ( empty( $style ) ? '' : ' ' . $style );
+		$icon_data = $widget_icon_families[ $family ]['icons'][ $icon ];
+		$unicode = '';
+		if ( ! empty( $icon_data['unicode'] ) ) {
+			$unicode = $icon_data['unicode'];
+		} else if ( is_string( $icon_data ) ) {
+			$unicode = $icon_data;
+		}
+		return '<span class="' . esc_attr( $family_style ) . '" data-sow-icon="' . $unicode . '" ' . ( ! empty( $icon_styles ) ? 'style="' . implode( '; ', $icon_styles ) . '"' : '' ) . '></span>';
 	}
 	else {
 		return false;

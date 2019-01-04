@@ -746,6 +746,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						$upload_dir['basedir'] . '/siteorigin-widgets/' . $name,
 						$css
 					);
+					
+					// Alert other plugins that we've added a new CSS file
+					do_action( 'siteorigin_widgets_stylesheet_added', $name, $instance );
 				}
 			}
 
@@ -781,6 +784,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				//Reindex array
 				$this->generated_css = array_values( $this->generated_css );
 			}
+			
+			// Alert other plugins that we've deleted a CSS file
+			do_action( 'siteorigin_widgets_stylesheet_deleted', $name, $instance );
 		}
 	}
 
@@ -850,7 +856,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$less = preg_replace_callback( '/\.widget-function\((.*)\);/', array( $this, 'less_widget_inject' ), $less );
 
 		//handle less @import statements
-		$less = preg_replace_callback( '/^@import\s+".*?\/?([\w-\.]+)";/m', array( $this, 'get_less_import_contents' ), $less );
+		$less = preg_replace_callback( '/^@import\s+".*?\/?([\w\-\.]+)";/m', array( $this, 'get_less_import_contents' ), $less );
 
 		$vars = apply_filters( 'siteorigin_widgets_less_variables_' . $this->id_base, $this->get_less_variables( $instance ), $instance, $this );
 		if( !empty( $vars ) ){

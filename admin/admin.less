@@ -246,13 +246,26 @@
 					}
 				}
 			}
+			.so-action-links {
+				&:after {
+					content: "";
+					display: table;
+					clear: both;
+				}
 
-			.so-widget-toggle-active {
-				margin-top: 15px;
-				display: inline-block;
-
-				button:focus {
+				.so-widget-toggle-active, .so-widget-settings, .so-widget-documentation {
+					display: inline-block;
+					float: left;
+					margin-right: 1em;
+					margin-top: .5em;
+				}
+				
+				.so-widget-toggle-active button:focus {
 					outline: none;
+				}
+
+				.so-widget-documentation {
+					margin-top: 1em;
 				}
 			}
 
@@ -283,11 +296,6 @@
 					-webkit-filter: grayscale(1);
 					opacity: 0.7;
 				}
-			}
-
-			.so-widget-settings {
-				margin-top: 15px;
-				display: inline-block;
 			}
 
 		}

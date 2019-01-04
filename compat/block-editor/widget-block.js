@@ -27,6 +27,13 @@
 		
 		category: 'widgets',
 		
+		keywords: [_.reduce( sowbBlockEditorAdmin.widgets, function ( keywords, widgetObj ) {
+			if ( !_.isEmpty( keywords ) ) {
+				keywords += ',';
+			}
+			return keywords + widgetObj.name;
+		}, '' )],
+		
 		supports: {
 			html: false,
 		},
@@ -105,7 +112,7 @@
 			
 			function setupWidgetPreview() {
 				if ( ! props.previewInitialized ) {
-					$( window.sowb ).trigger( 'setup_widgets' );
+					$( window.sowb ).trigger( 'setup_widgets', { preview: true } );
 					props.setState( { previewInitialized: true } );
 				}
 			}

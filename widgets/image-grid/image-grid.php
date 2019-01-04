@@ -4,6 +4,7 @@ Widget Name: Image Grid
 Description: Display a grid of images. Also useful for displaying client logos.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/image-grid/
 */
 
 class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {

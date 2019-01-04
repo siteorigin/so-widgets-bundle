@@ -5,6 +5,7 @@ Widget Name: Google Maps
 Description: A highly customisable Google Maps widget. Help your site find its place and give it some direction.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/google-maps-widget/
 */
 
 class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
@@ -25,8 +26,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	function initialize() {
-
-		add_action( 'siteorigin_widgets_before_widget_sow-google-map', array( $this, 'enqueue_widget_scripts' ) );
+		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-google-map', array( $this, 'enqueue_widget_scripts' ) );
 	}
 
 	function get_widget_form(){
@@ -527,7 +527,8 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	public function enqueue_widget_scripts( $instance ) {
-		if ( $instance['settings']['map_type'] == 'interactive' ) {
+		if ( ! empty( $instance['settings']['map_type'] ) && $instance['settings']['map_type'] == 'interactive' ||
+			 $this->is_preview( $instance ) ) {
 			wp_enqueue_script( 'sow-google-map' );
 
 			wp_enqueue_style(
@@ -546,7 +547,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					),
 				)
 			);
-		} else {
+		}
+		
+		if ( ! empty( $instance['settings']['map_type'] ) && $instance['settings']['map_type'] == 'static' ||
+			 $this->is_preview( $instance ) ) {
 			wp_enqueue_script(
 				'sow-google-map-static',
 				plugin_dir_url( __FILE__ ) . 'js/static-map' . SOW_BUNDLE_JS_SUFFIX . '.js',

@@ -617,6 +617,7 @@ class SiteOrigin_Widgets_Bundle {
 			'AuthorURI' => 'Author URI',
 			'WidgetURI' => 'Widget URI',
 			'VideoURI' => 'Video URI',
+			'Documentation' => 'Documentation',
 		);
 
 		$widgets = array();
@@ -629,6 +630,11 @@ class SiteOrigin_Widgets_Bundle {
 				if ( empty( $widget['Name'] ) ) {
 					continue;
 				}
+
+				foreach ( array( 'Name', 'Description' ) as $field ) {
+					$widget[ $field ] = translate( $widget[ $field ], 'so-widgets-bundle' );
+				}
+
 				$f = pathinfo($file);
 				$id = $f['filename'];
 
@@ -839,11 +845,11 @@ class SiteOrigin_Widgets_Bundle {
 				/* @var $widget_obj SiteOrigin_Widget */
 				ob_start();
 				if ( $admin ) {
-					$widget_obj->form( array() );
+					$widget_obj->enqueue_scripts( 'widget' );
 				}
 				if ( $front_end ) {
 					// Enqueue scripts for previews.
-					$widget_obj->widget( array(), array() );
+					$widget_obj->enqueue_frontend_scripts( array() );
 				}
 				ob_clean();
 			}

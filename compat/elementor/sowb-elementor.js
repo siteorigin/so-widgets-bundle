@@ -15,7 +15,7 @@ var sowb = window.sowb || {};
 				}
 				timeoutId = setTimeout( function () {
 					// Trigger Widgets Bundle widgets to setup
-					$sowb.trigger( 'setup_widgets' );
+					$sowb.trigger( 'setup_widgets', { preview: true } );
 					timeoutId = null;
 				}, 300 );
 			} );

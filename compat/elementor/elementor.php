@@ -18,8 +18,8 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 	function __construct() {
 		add_action( 'admin_action_elementor', array( $this, 'init_editor' ) );
 		add_action( 'template_redirect', array( $this, 'init_preview' ) );
-
-		add_action( 'wp_ajax_elementor_render_widget', array( $this, 'ajax_render_widget_preview' ) );
+		
+		add_filter( 'siteorigin_widgets_is_preview', array( $this, 'is_elementor_preview' ) );
 		add_action( 'wp_ajax_elementor_editor_get_wp_widget_form', array( $this, 'ajax_render_widget_form' ) );
 	}
 
@@ -31,51 +31,23 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 		$this->plugin = Elementor\Plugin::instance();
 		if ( !empty( $this->plugin->preview ) && method_exists( $this->plugin->preview, 'is_preview_mode' ) && $this->plugin->preview->is_preview_mode() ) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ) );
-			add_action( 'elementor/preview/enqueue_styles', array( $this, 'enqueue_preview_scripts' ) );
+			add_action( 'elementor/preview/enqueue_styles', array( $this, 'enqueue_frontend_scripts' ) );
 		}
 	}
 
 	function enqueue_frontend_scripts() {
-
-		$post_id = get_the_ID();
-
-		if( defined( 'Elementor\\DB::STATUS_DRAFT' ) && ! empty( $this->plugin->db ) && method_exists( $this->plugin->db, 'get_builder' ) ) {
-			// This is necessary to ensure styles and scripts are enqueued. Not sure why this is enough, but I assume
-			// Elementor is calling widgets' `widget` method with instance data in the process of retrieving editor data.
-			$this->plugin->db->get_builder( $post_id, Elementor\DB::STATUS_DRAFT );
-		}
-	}
-	
-	function enqueue_preview_scripts() {
-		
-		global $wp_widget_factory;
-		
-		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
-			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
-				/* @var $widget_obj SiteOrigin_Widget */
-				ob_start();
-				$widget_obj->widget( array(), array() );
-				ob_clean();
-			}
-		}
-	
+		$so_widgets_bundle = SiteOrigin_Widgets_Bundle::single();
+		$so_widgets_bundle->register_general_scripts();
+		$so_widgets_bundle->enqueue_registered_widgets_scripts( true, false );
 	}
 
 	function enqueue_active_widgets_scripts() {
 
 		add_action( 'wp_print_footer_scripts', array( $this, 'print_footer_templates' ) );
-
-		global $wp_widget_factory;
-
-		// Elementor does it's editing in it's own front end so enqueue required form scripts for active widgets.
-		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
-			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
-				/* @var $widget_obj SiteOrigin_Widget */
-				ob_start();
-				$widget_obj->form( array() );
-				ob_clean();
-			}
-		}
+		
+		$so_widgets_bundle = SiteOrigin_Widgets_Bundle::single();
+		$so_widgets_bundle->register_general_scripts();
+		$so_widgets_bundle->enqueue_registered_widgets_scripts( false, true );
 
 		wp_enqueue_style( 'sowb-styles-for-elementor', plugin_dir_url( __FILE__ ) . 'styles.css' );
 		
@@ -99,8 +71,12 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 		}
 	}
 
-	function ajax_render_widget_preview() {
-		add_filter( 'siteorigin_widgets_is_preview', '__return_true' );
+	function is_elementor_preview( $is_preview ) {
+		$this->plugin = Elementor\Plugin::instance();
+		$is_elementor_preview = ! empty( $this->plugin->preview ) && method_exists( $this->plugin->preview, 'is_preview_mode' ) && $this->plugin->preview->is_preview_mode();
+		$is_elementor_edit_mode = $this->plugin->editor->is_edit_mode();
+		return $is_preview || $is_elementor_preview || $is_elementor_edit_mode ||
+			   ( !empty( $_REQUEST['action'] ) && $_REQUEST['action'] == 'elementor_ajax' );
 	}
 
 	function ajax_render_widget_form() {

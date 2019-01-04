@@ -5,6 +5,7 @@ Widget Name: Price Table
 Description: A powerful yet simple price table widget for your sidebars or Page Builder pages.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/price-table-widget/
 */
 
 class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {

@@ -4,6 +4,7 @@ Widget Name: Call-To-Action
 Description: A simple call-to-action widget. You can do what ever you want with a call-to-action widget.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/call-action-widget/
 */
 
 class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
