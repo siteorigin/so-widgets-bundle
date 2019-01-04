@@ -96,6 +96,9 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
+		if ( ! is_array( $value ) ) {
+			return array();
+		}
 		/* @var $field_factory SiteOrigin_Widget_Field_Factory */
 		$field_factory = SiteOrigin_Widget_Field_Factory::single();
 		foreach( $this->fields as $sub_field_name => $sub_field_options ) {
