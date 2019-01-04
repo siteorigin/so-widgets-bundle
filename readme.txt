@@ -65,6 +65,22 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.14.0 - 4 January 2019 =
+* Accordion: allow multiple panels with the same title.
+* Actions when widgets' CSS files are created/deleted.
+* Compat fixes for PHP 7.3
+* Indicate when 'setup_widgets' is triggered for previews.
+* Accordion: Debounce window.location.hash updates to prevent incorrect states.
+* Don't remove FitText window listener to ensure previously set up FitText elements still work.
+* Icon field: Show loading indicator while icons are loading.
+* Widget documentation links.
+* Icons: Update to use latest FontAwesome icon sets.
+* Sliders: Resize slides when widgets are set up.
+* Elementor compat: Directly enqueue necessary scripts and styles for previews.
+* Allow widget headers to be translated.
+* Accordion: Keep the clicked panel in the viewport, if it moves out.
+* TinyMCE field: Check if tinymce is available before using.
+
 = 1.13.4 - 6 December 2018 =
 * Widget block: Fix Layout Slider not being editable.
 * Widget block: Correct used of i18n for block editor.

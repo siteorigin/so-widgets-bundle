@@ -25,7 +25,7 @@
 			)
 		},
 		
-		category: 'siteorigin-blocks',
+		category: 'widgets',
 		
 		keywords: [_.reduce( sowbBlockEditorAdmin.widgets, function ( keywords, widgetObj ) {
 			if ( !_.isEmpty( keywords ) ) {
