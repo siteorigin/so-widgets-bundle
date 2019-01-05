@@ -58,7 +58,7 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 			$status_code = rest_authorization_required_code();
 			return new WP_Error(
 				$status_code,
-				__( '', 'so-widgets-bundle' ),
+				__( 'Insufficient permissions.', 'so-widgets-bundle' ),
 				array(
 					'status' => $status_code,
 				)
