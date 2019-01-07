@@ -77,6 +77,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'description' => __('Replaces the icon with your own image icon.', 'so-widgets-bundle'),
 					),
 
+					'icon_title' => array(
+						'type'  => 'text',
+						'label' => __( 'Icon Title', 'so-widgets-bundle' ),
+						'description' => __( 'The icon title is used to tell users the meaning behind the use of this icon.', 'so-widgets-bundle' ),
+					),
+
 					'icon_placement' => array(
 						'type' => 'select',
 						'label' => __( 'Icon Placement', 'so-widgets-bundle' ),
@@ -294,6 +300,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'align' => $instance['design']['align'],
 			'icon_image_url' => $icon_image_url,
 			'icon' => $instance['button_icon']['icon_selected'],
+			'icon_title' => ! empty( $instance['button_icon']['icon_title'] ) ? $instance['button_icon']['icon_title'] : '',
 			'icon_color' => $instance['button_icon']['icon_color'],
 			'text' => $instance['text'],
 		);

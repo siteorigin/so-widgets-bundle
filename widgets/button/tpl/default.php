@@ -8,6 +8,7 @@
  * @var string $icon
  * @var string $icon_color
  * @var string $text
+ * @var string $icon_title
  */
 
 ?>
@@ -22,7 +23,7 @@
 				else {
 					$icon_styles = array();
 					if ( ! empty( $icon_color ) ) $icon_styles[] = 'color: ' . $icon_color;
-					echo siteorigin_widget_get_icon( $icon, $icon_styles );
+					echo siteorigin_widget_get_icon( $icon, $icon_styles, $icon_title );
 				}
 			?>
 
