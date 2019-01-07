@@ -5,15 +5,6 @@
 
 class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 	
-	/**
-	 * @var SiteOrigin_Widgets_Widget_Manager
-	 */
-	private $widgets_manager;
-	
-	public function __construct() {
-		$this->widgets_manager = SiteOrigin_Widgets_Widget_Manager::single();
-	}
-	
 	public function register_routes() {
 		$version = '1';
 		$namespace = 'sowb/v' . $version;
@@ -91,9 +82,7 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 	public function get_widget_form( $request ) {
 		$widget_class = $request['widgetClass'];
 		
-		global $wp_widget_factory;
-		
-		$widget = ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ? $wp_widget_factory->widgets[ $widget_class ] : false;
+		$widget = SiteOrigin_Widgets_Widget_Manager::get_widget_instance( $widget_class );
 		
 		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
 			ob_start();
@@ -132,9 +121,7 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 		$widget_class = $request['widgetClass'];
 		$widget_data = $request['widgetData'];
 		
-		global $wp_widget_factory;
-		
-		$widget = ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ? $wp_widget_factory->widgets[ $widget_class ] : false;
+		$widget = SiteOrigin_Widgets_Widget_Manager::get_widget_instance( $widget_class );
 		// This ensures styles are added inline.
 		add_filter( 'siteorigin_widgets_is_preview', '__return_true' );
 		
