@@ -67,7 +67,7 @@ add_action('wp_ajax_siteorigin_widgets_get_icons', 'siteorigin_widget_get_icon_l
  *
  * @return bool|string
  */
-function siteorigin_widget_get_icon($icon_value, $icon_styles = false) {
+function siteorigin_widget_get_icon($icon_value, $icon_styles = false, $icon_title = false) {
 	if( empty( $icon_value ) ) return false;
 	$value_parts = SiteOrigin_Widget_Field_Icon::get_value_parts( $icon_value );
 	$family = $value_parts['family'];
@@ -99,7 +99,8 @@ function siteorigin_widget_get_icon($icon_value, $icon_styles = false) {
 		} else if ( is_string( $icon_data ) ) {
 			$unicode = $icon_data;
 		}
-		return '<span class="' . esc_attr( $family_style ) . '" data-sow-icon="' . $unicode . '" ' . ( ! empty( $icon_styles ) ? 'style="' . implode( '; ', $icon_styles ) . '"' : '' ) . '></span>';
+
+		return '<span class="' . esc_attr( $family_style ) . '" data-sow-icon="' . $unicode . '" ' . ( ! empty( $icon_styles ) ? 'style="' . implode( '; ', $icon_styles ) . '"' : '' ) . ' aria-hidden '. ( ( ! $icon_title ) ? '' : 'title="'. esc_attr( $icon_title ) .'"' ) .'></span>'. ( ( ! $icon_title ) ? '' : '<span class="sr-only">'. esc_attr( $icon_title ) .'</span>' );
 	}
 	else {
 		return false;
