@@ -41,6 +41,8 @@
 				<?php if( !empty( $network['is_custom'] ) ) echo '<!-- premium-' . $network['name'] . ' -->'; ?>
 				<?php echo siteorigin_widget_get_icon( $network['icon_name'] ); ?>
 				<?php if( !empty( $network['is_custom'] ) ) echo '<!-- endpremium -->'; ?>
+
+				<span class="sr-only"><?php esc_attr( $title ) ?></span>
 			</span>
 		</a>
 	<?php endforeach; ?>
