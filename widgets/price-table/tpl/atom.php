@@ -48,7 +48,7 @@
 								if ( ! empty( $feature['icon_color'] ) ) {
 									$icon_styles[] = 'color: ' . $feature['icon_color'];
 								}
-								echo siteorigin_widget_get_icon( $feature['icon_new'], $icon_styles );
+								echo siteorigin_widget_get_icon( $feature['icon_new'], $icon_styles, $feature['icon_title'] );
 								?>
                             </div>
 						<?php endif; ?>

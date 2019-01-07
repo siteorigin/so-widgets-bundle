@@ -118,6 +118,11 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 								'type'  => 'icon',
 								'label' => __( 'Icon', 'so-widgets-bundle' ),
 							),
+							'icon_title' => array(
+								'type'  => 'text',
+								'label' => __( 'Icon Title', 'so-widgets-bundle' ),
+								'description' => __( 'The icon title is used to tell users the meaning behind the use of this icon.', 'so-widgets-bundle' ),
+							),
 							'icon_color' => array(
 								'type'  => 'color',
 								'label' => __( 'Icon color', 'so-widgets-bundle' ),
@@ -230,6 +235,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 				if ( ! empty( $column['features'] ) ) {
 					foreach ( $column['features'] as &$feature ) {
 						$feature['text'] = do_shortcode( $feature['text'] );
+						$feature['icon_title'] = ! empty( $feature['icon_title'] ) ? $feature['icon_title'] : '';
 					}
 				}
 				$columns[] = $column;
