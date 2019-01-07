@@ -12,8 +12,7 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 				<?php if( !empty( $feature['more_url'] ) && $instance['icon_link'] ) echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : '' ) . '>'; ?>
 				<div
 					class="sow-icon-container <?php echo !empty($instance['container_shape']) ? 'sow-container-' . esc_attr($instance['container_shape']) : 'sow-container-none'?>"
-                    style="color: <?php echo esc_attr($feature['container_color']) ?>; "
-					<?php  echo ( ! empty( $feature['icon_title'] ) ? 'title="' . esc_attr( $feature['icon_title'] ) . '"' : '' ); ?>>
+                    style="color: <?php echo esc_attr( $feature['container_color'] ) ?>; ">
 					<?php
 					$icon_styles = array();
 					if( !empty($feature['icon_image']) ) {
@@ -23,14 +22,16 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 							$icon_styles[] = 'background-image: url(' . sow_esc_url($attachment[0]) . ')';
 							if(!empty($instance['icon_size'])) $icon_styles[] = 'font-size: '.intval($instance['icon_size']) . esc_attr( $instance['icon_size_unit'] );
 
-							?><div class="sow-icon-image" style="<?php echo implode('; ', $icon_styles) ?>"></div><?php
+							?><div class="sow-icon-image" style="<?php echo implode( '; ', $icon_styles ) ?>" 
+								<?php  echo ( ! empty( $feature['icon_title'] ) ? 'title="' . esc_attr( $feature['icon_title'] ) . '"' : '' ); ?>>
+								</div><?php
 						}
 					}
 					else {
 						if(!empty($instance['icon_size'])) $icon_styles[] = 'font-size: '.intval($instance['icon_size']) . esc_attr( $instance['icon_size_unit'] );
 						if(!empty($feature['icon_color'])) $icon_styles[] = 'color: '.$feature['icon_color'];
 
-						echo siteorigin_widget_get_icon($feature['icon'], $icon_styles);
+						echo siteorigin_widget_get_icon( $feature['icon'], $icon_styles, $feature['icon_title'] );
 					}
 					?>
 				</div>
