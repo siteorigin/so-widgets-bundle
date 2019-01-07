@@ -31,6 +31,12 @@ class SiteOrigin_Widget_Icon_Widget extends SiteOrigin_Widget {
 				'label' => __( 'Icon', 'so-widgets-bundle' ),
 			),
 
+			'icon_title' => array(
+				'type'  => 'text',
+				'label' => __( 'Icon Title', 'so-widgets-bundle' ),
+				'description' => __( 'The icon title is used to tell users the meaning behind the use of this icon.', 'so-widgets-bundle' ),
+			),
+
 			'color' => array(
 				'type'  => 'color',
 				'label' => __( 'Color', 'so-widgets-bundle' ),
@@ -84,6 +90,7 @@ class SiteOrigin_Widget_Icon_Widget extends SiteOrigin_Widget {
 	function get_template_variables( $instance, $args ) {
 		return array(
 			'icon' => $instance['icon'],
+			'icon_title' =>  ! empty( $instance['icon_title'] ) ? $instance['icon_title'] : '',
 			'url' => $instance['url'],
 			'new_window' => $instance['new_window'],
 		);
