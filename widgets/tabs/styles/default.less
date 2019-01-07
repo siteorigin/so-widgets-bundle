@@ -9,7 +9,6 @@
 @tabs_container_border_radius: default;
 @tabs_container_padding: 12px 10px 0px 10px;
 @tabs_container_tabs_align: default;
-@tabs_container_tabs_layout: default;
 @tabs_container_tabs_placement: default;
 
 @tabs_background_color: default;
@@ -116,19 +115,35 @@
 		}
 	}
 
-	& when ( @tabs_container_tabs_layout = vertical ) {
+	& when ( @tabs_container_tabs_placement = bottom ) {
 		& {
 			display: flex;
-			& when ( @tabs_container_tabs_placement = right ) {
-				flex-direction: row-reverse;
-			}
-			.sow-tabs-panel-container {
-				flex: 1;
-			}
+		    flex-direction: column-reverse;
+		}
+	}
 
-			.sow-tabs-tab {
-				display: block !important;
-			}
+	& when ( @tabs_container_tabs_placement = left ) {
+		display: flex;
+		
+		.sow-tabs-panel-container {
+			flex: 1;
+		}
+
+		.sow-tabs-tab {
+			display: block !important;
+		}
+	}
+
+	& when ( @tabs_container_tabs_placement = right ) {
+		display: flex;
+		flex-direction: row-reverse;
+
+		.sow-tabs-panel-container {
+			flex: 1;
+		}
+
+		.sow-tabs-tab {
+			display: block !important;
 		}
 	}
 }
