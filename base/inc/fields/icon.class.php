@@ -115,7 +115,7 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 			$value_style = $style_matches[1];
 		}
 		
-		if ( ! empty( $value_family ) ) {
+		if ( ! empty( $value_family ) && file_exists( plugin_dir_path(SOW_BUNDLE_BASE_FILE) . 'icons/' . $value_family . '/filter.php' ) ) {
 			include_once plugin_dir_path(SOW_BUNDLE_BASE_FILE) . 'icons/' . $value_family . '/filter.php';
 		}
 		
