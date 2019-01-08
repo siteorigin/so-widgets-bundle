@@ -27,8 +27,8 @@
 		
 		category: 'widgets',
 		
-		keywords: [_.reduce( sowbBlockEditorAdmin.widgets, function ( keywords, widgetObj ) {
-			if ( !_.isEmpty( keywords ) ) {
+		keywords: [sowbBlockEditorAdmin.widgets.reduce( function ( keywords, widgetObj ) {
+			if ( keywords.length > 0 ) {
 				keywords += ',';
 			}
 			return keywords + widgetObj.name;
