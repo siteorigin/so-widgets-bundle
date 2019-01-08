@@ -18,8 +18,14 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 	protected function render_field( $value, $instance ) {
 		$widget_icon_families = $this->get_widget_icon_families();
 		$value_parts = self::get_value_parts( $value );
-		$value_family = ! empty( $value ) ? $value_parts['family'] : 'fontawesome';
-		$value = $value_parts['family'] . '-' . ( empty( $value_parts['style'] ) ? '' : $value_parts['style'] ) . '-' . $value_parts['icon'];
+		if ( ! empty( $value ) ) {
+			$value_family = $value_parts['family'];
+			$value_style = empty( $value_parts['style'] ) ? '' : ( '-' . $value_parts['style'] );
+			$value = $value_parts['family'] . $value_style . '-' . $value_parts['icon'];
+			
+		} else {
+			$value_family = 'fontawesome';
+		}
 		?>
 
 		<div class="siteorigin-widget-icon-selector-current">
