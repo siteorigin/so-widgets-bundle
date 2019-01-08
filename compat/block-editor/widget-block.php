@@ -27,7 +27,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		wp_enqueue_script(
 			'sowb-widget-block',
 			plugins_url( 'widget-block' . SOW_BUNDLE_JS_SUFFIX . '.js', __FILE__ ),
-			array( 'wp-editor', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-compose' ),
+			array( 'wp-editor', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-compose', 'underscore ),
 			SOW_BUNDLE_VERSION
 		);
 		
