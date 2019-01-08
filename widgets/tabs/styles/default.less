@@ -9,7 +9,7 @@
 @tabs_container_border_radius: default;
 @tabs_container_padding: 12px 10px 0px 10px;
 @tabs_container_tabs_align: default;
-@tabs_container_tabs_placement: default;
+@tabs_container_tabs_position: default;
 
 @tabs_background_color: default;
 @tabs_background_hover_color: default;
@@ -115,28 +115,18 @@
 		}
 	}
 
-	& when ( @tabs_container_tabs_placement = bottom ) {
+	& when ( @tabs_container_tabs_position = bottom ) {
 		& {
 			display: flex;
 		    flex-direction: column-reverse;
 		}
 	}
 
-	& when ( @tabs_container_tabs_placement = left ) {
+	& when ( @tabs_container_tabs_position = left ), ( @tabs_container_tabs_position = right ) {
 		display: flex;
-		
-		.sow-tabs-panel-container {
-			flex: 1;
+		& when ( @tabs_container_tabs_position = right ) {
+			flex-direction: row-reverse;
 		}
-
-		.sow-tabs-tab {
-			display: block !important;
-		}
-	}
-
-	& when ( @tabs_container_tabs_placement = right ) {
-		display: flex;
-		flex-direction: row-reverse;
 
 		.sow-tabs-panel-container {
 			flex: 1;
