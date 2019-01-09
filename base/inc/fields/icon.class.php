@@ -18,8 +18,14 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 	protected function render_field( $value, $instance ) {
 		$widget_icon_families = $this->get_widget_icon_families();
 		$value_parts = self::get_value_parts( $value );
-		$value_family = ! empty( $value ) ? $value_parts['family'] : 'fontawesome';
-		$value = $value_parts['family'] . '-' . ( empty( $value_parts['style'] ) ? '' : $value_parts['style'] ) . '-' . $value_parts['icon'];
+		if ( ! empty( $value ) ) {
+			$value_family = $value_parts['family'];
+			$value_style = empty( $value_parts['style'] ) ? '' : ( '-' . $value_parts['style'] );
+			$value = $value_parts['family'] . $value_style . '-' . $value_parts['icon'];
+			
+		} else {
+			$value_family = 'fontawesome';
+		}
 		?>
 
 		<div class="siteorigin-widget-icon-selector-current">
@@ -92,10 +98,18 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 		}
 		else {
 			// We'll get icons from the main filter
-			static $widget_icon_families;
-			if( empty( $widget_icon_families ) ) $widget_icon_families = apply_filters('siteorigin_widgets_icon_families', array() );
+			$widget_icon_families = self::get_icon_families();
 		}
 
+		return $widget_icon_families;
+	}
+	
+	static function get_icon_families() {
+		static $widget_icon_families;
+		if( empty( $widget_icon_families ) ) {
+			$widget_icon_families = apply_filters( 'siteorigin_widgets_icon_families', array() );
+		}
+		
 		return $widget_icon_families;
 	}
 	
@@ -109,9 +123,9 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 			$value_style = $style_matches[1];
 		}
 		
-		if ( ! empty( $value_family ) ) {
-			include_once plugin_dir_path(SOW_BUNDLE_BASE_FILE) . 'icons/' . $value_family . '/filter.php';
-		}
+		// Trigger loading of the icon families and their filters. This isn't ideal, but necessary to ensure possible
+		// migrations are available.
+		self::get_icon_families();
 		
 		return apply_filters( 'siteorigin_widgets_icon_migrate_' . $value_family, array(
 			'family' => $value_family,

@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 4.2
-Tested up to: 4.9.1
+Tested up to: 5.0
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
@@ -64,6 +64,16 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.14.1 - 9 January 2019 =
+* Icon field: Set correct value of currently selected icon for non-FA icons.
+* Icon field: Avoid requiring that third party icon families include a `filter.php` file.
+* Widget block: Use JS array reduce function instead of lodash.
+* Allow widgets registered by instance.
+* Multi-measurement field: Fix layout.
+* Block editor: Send widgetData when fetching widget forms.
+* Tinymce field: Prevent JS console errors for hidden fields.
+* Order field: Additional sanitization before rendering.
 
 = 1.14.0 - 4 January 2019 =
 * Accordion: allow multiple panels with the same title.
