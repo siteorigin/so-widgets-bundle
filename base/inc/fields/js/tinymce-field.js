@@ -54,7 +54,8 @@
 			}
 		} );
 		$( document ).on( 'tinymce-editor-setup', function () {
-			if ( ! $field.find( '.wp-editor-wrap' ).hasClass( settings.selectedEditor + '-active' ) ) {
+			var $wpEditorWrap = $field.find( '.wp-editor-wrap' );
+			if ( $wpEditorWrap.length > 0 && ! $wpEditorWrap.hasClass( settings.selectedEditor + '-active' ) ) {
 				setTimeout( function () {
 					window.switchEditors.go( id );
 				}, 10 );
