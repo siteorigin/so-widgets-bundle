@@ -65,6 +65,16 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.14.1 - 9 January 2019 =
+* Icon field: Set correct value of currently selected icon for non-FA icons.
+* Icon field: Avoid requiring that third party icon families include a `filter.php` file.
+* Widget block: Use JS array reduce function instead of lodash.
+* Allow widgets registered by instance.
+* Multi-measurement field: Fix layout.
+* Block editor: Send widgetData when fetching widget forms.
+* Tinymce field: Prevent JS console errors for hidden fields.
+* Order field: Additional sanitization before rendering.
+
 = 1.14.0 - 4 January 2019 =
 * Accordion: allow multiple panels with the same title.
 * Actions when widgets' CSS files are created/deleted.

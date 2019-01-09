@@ -91,11 +91,7 @@
 					} );
 					$mainForm.data( 'backupDisabled', true );
 					$mainForm.sowSetupForm();
-					if ( props.attributes.widgetData ) {
-						// If we call `setWidgetFormValues` with the last parameter ( `triggerChange` ) set to false,
-						// it won't show the correct values for some fields e.g. color and media fields.
-						sowbForms.setWidgetFormValues( $mainForm, props.attributes.widgetData );
-					} else {
+					if ( ! props.attributes.widgetData ) {
 						props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
 					}
 					$mainForm.on( 'change', function () {
@@ -142,7 +138,8 @@
 							xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
 						},
 						data: {
-							widgetClass: props.attributes.widgetClass
+							widgetClass: props.attributes.widgetClass,
+							widgetData: props.attributes.widgetData,
 						}
 					} )
 					.then( function( widgetForm ) {

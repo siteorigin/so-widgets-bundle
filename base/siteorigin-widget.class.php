@@ -335,6 +335,19 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		global $wp_customize;
 		return is_a( $wp_customize, 'WP_Customize_Manager' ) && $wp_customize->is_preview();
 	}
+	
+	private function is_block_editor_page() {
+		// This is for the Gutenberg plugin.
+		$is_gutenberg_page = function_exists( 'is_gutenberg_page' ) && is_gutenberg_page();
+		// This is for WP 5 with the integrated block editor.
+		$is_block_editor = false;
+		$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		if ( ! empty( $current_screen ) && method_exists( $current_screen, 'is_block_editor' ) ) {
+			$is_block_editor = $current_screen->is_block_editor();
+		}
+		
+		return $is_block_editor || $is_gutenberg_page;
+	}
 
 	/**
 	 * Get an array of variables to make available to templates. By default, just return an array. Should be overwritten by child widgets.
@@ -1329,11 +1342,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	function is_preview( $instance = array() ) {
 		// Check if the instance is a preview
 		if( !empty( $instance[ 'is_preview' ] ) ) return true;
-
+		
 		// Check if the general request is a preview
 		$is_preview =
 			is_preview() || // Is this a standard preview
 			$this->is_customize_preview() || // Is this a customizer preview
+			$this->is_block_editor_page() || // Is this a block editor page
 			!empty( $_GET['siteorigin_panels_live_editor'] ) || // Is this a Page Builder live editor request
 			( !empty( $_REQUEST['action'] ) && $_REQUEST['action'] == 'so_panels_builder_content' ) || // Is this a Page Builder content ajax request
 			! empty( $GLOBALS[ 'SITEORIGIN_PANELS_PREVIEW_RENDER' ] ); // Is this a Page Builder preview render.
