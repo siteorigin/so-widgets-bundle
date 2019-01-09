@@ -18,6 +18,9 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 				'widgetClass' => array(
 					'validate_callback' => array( $this, 'validate_widget_class'),
 				),
+				'widgetData' => array(
+					'validate_callback' => array( $this, 'validate_widget_data'),
+				),
 			),
 			'permission_callback' => array( $this, 'permissions_check' ),
 		) );
@@ -81,13 +84,15 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 	 */
 	public function get_widget_form( $request ) {
 		$widget_class = $request['widgetClass'];
+		$widget_data = empty( $request['widgetData'] ) ? array() : $request['widgetData'];
 		
+		/* @var $widget SiteOrigin_Widget */
 		$widget = SiteOrigin_Widgets_Widget_Manager::get_widget_instance( $widget_class );
 		
 		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
+			$widget_data = $widget->update( $widget_data, $widget_data );
 			ob_start();
-			/* @var $widget SiteOrigin_Widget */
-			$widget->form( array() );
+			$widget->form( $widget_data );
 			$widget_form = ob_get_clean();
 		} else {
 			$widget_form = new WP_Error( '', 'Invalid widget class.' );
