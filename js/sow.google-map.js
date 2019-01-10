@@ -476,7 +476,10 @@ jQuery(function ($) {
 				var errLog = window.console.error;
 
 				sowb.onLoadMapsApiError = function ( error ) {
-					var matchError = error.match( /^Google Maps API (error|warning): ([^\s]*)\s([^\s]*)(?:\s(.*))?/ );
+					var matchError;
+					if ( typeof error === 'string' ) {
+						matchError = error.match( /^Google Maps API (error|warning): ([^\s]*)\s([^\s]*)(?:\s(.*))?/ );
+					}
 					if ( matchError && matchError.length && matchError[0] ) {
 						$( '.sow-google-map-canvas' ).each( function ( index, element ) {
 							var $this = $( element );
