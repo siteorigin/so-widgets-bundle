@@ -371,7 +371,7 @@ sowb.SiteOriginGoogleMap = function($) {
 			
 			if ( inputLocation && inputLocation.indexOf( ',' ) > -1 ) {
 				// A latlng value should be of the format 'lat,lng' or '(lat,lng)'
-				var vals = inputLocation.replace(/[()]/g, '').split( ',' );
+				var vals = inputLocation.replace(/[\(\)]/g, '').split( ',' );
 				if ( vals && vals.length === 2 ) {
 					latLng = new google.maps.LatLng( vals[ 0 ], vals[ 1 ] );
 					// Let the API decide if we have a valid latlng
