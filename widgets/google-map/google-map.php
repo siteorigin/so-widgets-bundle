@@ -23,6 +23,16 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			false,
 			plugin_dir_path(__FILE__)
 		);
+		
+		add_filter( 'siteorigin_widgets_field_class_paths', array( $this, 'add_location_field_path' ) );
+	}
+	
+	// Tell the autoloader where to look for the location field class.
+	function add_location_field_path( $class_paths ) {
+		
+		$class_paths[] = plugin_dir_path( __FILE__ ) . 'fields/';
+		
+		return $class_paths;
 	}
 
 	function initialize() {
@@ -32,7 +42,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	function get_widget_form(){
 		return array(
 			'map_center'      => array(
-				'type'        => 'textarea',
+				'type'        => 'location',
 				'rows'        => 2,
 				'label'       => __( 'Map center', 'so-widgets-bundle' ),
 				'description' => sprintf(
@@ -497,9 +507,17 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					}
 				}
 			}
-
+			$location = '';
+			if ( ! empty( $instance['map_center']['location'] ) ) {
+				$location = $instance['map_center']['location'];
+			} else if ( ! empty( $instance['map_center']['address'] ) ) {
+				$location = $instance['map_center']['address'];
+			} else if ( ! empty( $instance['map_center']['name'] ) ) {
+				$location = $instance['map_center']['name'];
+			}
+			
 			$map_data = siteorigin_widgets_underscores_to_camel_case( array(
-				'address'           => $instance['map_center'],
+				'address'           => $location,
 				'zoom'              => $settings['zoom'],
 				'scroll_zoom'       => $settings['scroll_zoom'],
 				'draggable'         => $settings['draggable'],
@@ -518,7 +536,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			));
 
 			return array(
-				'map_id'   => md5( $instance['map_center'] ),
+				'map_id'   => md5( $location ),
 				'height'   => $settings['height'],
 				'map_data' => $map_data,
 				'fallback_image_data' => array( 'img' => $fallback_image ),
@@ -611,8 +629,9 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	private function get_static_image_src( $instance, $width, $height, $styles ) {
+		$location = empty( $instance['map_center']['location'] ) ? $instance['map_center']['address'] : $instance['map_center']['location'];
 		$src_url = "https://maps.googleapis.com/maps/api/staticmap?";
-		$src_url .= "center=" . $instance['map_center'];
+		$src_url .= "center=" . location;
 		$src_url .= "&zoom=" . $instance['settings']['zoom'];
 		$src_url .= "&size=" . $width . "x" . $height;
 
@@ -669,7 +688,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				if ( ! empty( $markers_st ) ) {
 					$markers_st .= "|";
 				}
-				$markers_st .= $instance['map_center'];
+				$markers_st .= $location;
 			}
 
 			if ( ! empty( $markers['marker_positions'] ) ) {
@@ -689,6 +708,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	
 	public function modify_instance( $instance ) {
 		
+		if ( ! empty( $instance['map_center'] ) && empty( $instance['map_center']['name'] ) ) {
+			$instance['map_center'] = array( 'address' => $instance['map_center'] );
+		}
+		
 		if ( empty( $instance['api_key_section'] ) ) {
 			$instance['api_key_section'] = array();
 		}
@@ -703,3 +726,4 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 }
 
 siteorigin_widget_register( 'sow-google-map', __FILE__, 'SiteOrigin_Widget_GoogleMap_Widget' );
+

@@ -1,6 +1,6 @@
 /* globals jQuery, google, sowb */
 
-var sowb = window.sowb || {};
+window.sowb = window.sowb || {};
 
 sowb.SiteOriginGoogleMap = function($) {
 	return {
@@ -301,7 +301,6 @@ sowb.SiteOriginGoogleMap = function($) {
 
 					var autocomplete = new google.maps.places.Autocomplete(
 						element,
-						{types: ['address']}
 					);
 
 					var $mapField = $(element).siblings('.sow-google-map-canvas');
@@ -371,8 +370,8 @@ sowb.SiteOriginGoogleMap = function($) {
 			var latLng;
 			
 			if ( inputLocation && inputLocation.indexOf( ',' ) > -1 ) {
-				var vals = inputLocation.split( ',' );
-				// A latlng value should be of the format 'lat,lng'
+				// A latlng value should be of the format 'lat,lng' or '(lat,lng)'
+				var vals = inputLocation.replace(/[\(\)]/g, '').split( ',' );
 				if ( vals && vals.length === 2 ) {
 					latLng = new google.maps.LatLng( vals[ 0 ], vals[ 1 ] );
 					// Let the API decide if we have a valid latlng
@@ -477,7 +476,10 @@ jQuery(function ($) {
 				var errLog = window.console.error;
 
 				sowb.onLoadMapsApiError = function ( error ) {
-					var matchError = error.match( /^Google Maps API (error|warning): ([^\s]*)\s([^\s]*)(?:\s(.*))?/ );
+					var matchError;
+					if ( typeof error === 'string' ) {
+						matchError = error.match( /^Google Maps API (error|warning): ([^\s]*)\s([^\s]*)(?:\s(.*))?/ );
+					}
 					if ( matchError && matchError.length && matchError[0] ) {
 						$( '.sow-google-map-canvas' ).each( function ( index, element ) {
 							var $this = $( element );
@@ -504,5 +506,3 @@ jQuery(function ($) {
 	$( sowb ).on( 'setup_widgets', sowb.setupGoogleMaps );
 
 });
-
-window.sowb = sowb;
