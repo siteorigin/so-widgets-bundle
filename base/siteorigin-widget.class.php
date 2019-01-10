@@ -335,6 +335,19 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		global $wp_customize;
 		return is_a( $wp_customize, 'WP_Customize_Manager' ) && $wp_customize->is_preview();
 	}
+	
+	private function is_block_editor_page() {
+		// This is for the Gutenberg plugin.
+		$is_gutenberg_page = function_exists( 'is_gutenberg_page' ) && is_gutenberg_page();
+		// This is for WP 5 with the integrated block editor.
+		$is_block_editor = false;
+		$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		if ( ! empty( $current_screen ) && method_exists( $current_screen, 'is_block_editor' ) ) {
+			$is_block_editor = $current_screen->is_block_editor();
+		}
+		
+		return $is_block_editor || $is_gutenberg_page;
+	}
 
 	/**
 	 * Get an array of variables to make available to templates. By default, just return an array. Should be overwritten by child widgets.
@@ -746,6 +759,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						$upload_dir['basedir'] . '/siteorigin-widgets/' . $name,
 						$css
 					);
+					
+					// Alert other plugins that we've added a new CSS file
+					do_action( 'siteorigin_widgets_stylesheet_added', $name, $instance );
 				}
 			}
 
@@ -781,6 +797,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				//Reindex array
 				$this->generated_css = array_values( $this->generated_css );
 			}
+			
+			// Alert other plugins that we've deleted a CSS file
+			do_action( 'siteorigin_widgets_stylesheet_deleted', $name, $instance );
 		}
 	}
 
@@ -850,7 +869,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$less = preg_replace_callback( '/\.widget-function\((.*)\);/', array( $this, 'less_widget_inject' ), $less );
 
 		//handle less @import statements
-		$less = preg_replace_callback( '/^@import\s+".*?\/?([\w-\.]+)";/m', array( $this, 'get_less_import_contents' ), $less );
+		$less = preg_replace_callback( '/^@import\s+".*?\/?([\w\-\.]+)";/m', array( $this, 'get_less_import_contents' ), $less );
 
 		$vars = apply_filters( 'siteorigin_widgets_less_variables_' . $this->id_base, $this->get_less_variables( $instance ), $instance, $this );
 		if( !empty( $vars ) ){
@@ -1068,12 +1087,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		else {
 			$name = array();
 			foreach ( $container as $container_item ) {
-				$name[] = $container_item['name'] . ( ! empty( $container_item['is_template'] ) ? '-_id_' : '' );
+				$name[] = $container_item['name'];
 			}
 			$name[] = $field_name;
-			$field_id_base = $this->get_field_id( implode( '-', $name ) );
+			$field_id_base = $this->get_field_id(implode('-', $name));
 			if ( $is_template ) {
-				return $field_id_base;
+				return $field_id_base . '-_id_';
 			}
 			if ( ! isset( $this->field_ids[ $field_id_base ] ) ) {
 				$this->field_ids[ $field_id_base ] = 1;
@@ -1323,11 +1342,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	function is_preview( $instance = array() ) {
 		// Check if the instance is a preview
 		if( !empty( $instance[ 'is_preview' ] ) ) return true;
-
+		
 		// Check if the general request is a preview
 		$is_preview =
 			is_preview() || // Is this a standard preview
 			$this->is_customize_preview() || // Is this a customizer preview
+			$this->is_block_editor_page() || // Is this a block editor page
 			!empty( $_GET['siteorigin_panels_live_editor'] ) || // Is this a Page Builder live editor request
 			( !empty( $_REQUEST['action'] ) && $_REQUEST['action'] == 'so_panels_builder_content' ) || // Is this a Page Builder content ajax request
 			! empty( $GLOBALS[ 'SITEORIGIN_PANELS_PREVIEW_RENDER' ] ); // Is this a Page Builder preview render.

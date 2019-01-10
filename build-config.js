@@ -54,5 +54,12 @@ module.exports = {
             '!readme.md',                       // Ignore the readme.md file. It is for the github repo.
             '!.editorconfig',                   // Ignore .editorconfig file. Only for development.
         ]
-    }
+    },
+    i18n: {
+        src: [
+            '**/*.php',                         // All the PHP files.
+            '!tmp/**/*.php',                    // Ignore tmp/ and contents
+            '!dist/**/*.php'                    // Ignore dist/ and contents
+        ],
+    },
 };

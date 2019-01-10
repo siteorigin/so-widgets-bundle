@@ -53,16 +53,52 @@
 		};
 
 		$search.keyup( searchIcons ).change( searchIcons );
+		
+		var renderStylesSelect = function ( init ) {
+			var $familySelect = $is.find( 'select.siteorigin-widget-icon-family' );
+			var family = $familySelect.val();
+			
+			if(typeof iconWidgetCache[family] === 'undefined') {
+				return;
+			}
+			
+			var $stylesSelect = $is.find( '.siteorigin-widget-icon-family-styles' );
+			if ( !init ) {
+				$stylesSelect.off( 'change', rerenderIcons );
+				$stylesSelect.remove();
+				var iconFamily = iconWidgetCache[ family ];
+				if ( iconFamily.hasOwnProperty( 'styles' ) && iconFamily.styles ) {
+					var options = '';
+					for ( var styleClass in iconFamily.styles ) {
+						options += '<option value="' + styleClass + '">' + iconFamily.styles[styleClass] + '</option>';
+					}
+					if ( options ) {
+						$stylesSelect = $( '<select class="siteorigin-widget-icon-family-styles"></select>' ).append( options );
+						$familySelect.after( $stylesSelect );
+						
+					}
+				}
+			}
+			$stylesSelect.on( 'change', rerenderIcons );
+		};
 
 		var rerenderIcons = function() {
-			var family = $is.find('select.siteorigin-widget-icon-family').val();
+			var $familySelect = $is.find( 'select.siteorigin-widget-icon-family' );
+			var family = $familySelect.val();
 			var container = $is.find('.siteorigin-widget-icon-icons');
-
+			
 			if(typeof iconWidgetCache[family] === 'undefined') {
 				return;
 			}
 
 			container.empty();
+			
+			var iconFamily = iconWidgetCache[ family ];
+			var icons = iconFamily.icons;
+			var style;
+			if ( iconFamily.hasOwnProperty( 'styles' ) && iconFamily.styles ) {
+				style = $is.find( '.siteorigin-widget-icon-family-styles' ).val();
+			}
 
 			if( $('#'+'siteorigin-widget-font-'+family).length === 0) {
 
@@ -72,11 +108,17 @@
 					.appendTo('head');
 			}
 
-			for ( var i in iconWidgetCache[family].icons ) {
-
-				var icon = $('<div data-sow-icon="' + iconWidgetCache[family].icons[i] +  '"/>')
-					.attr('data-value', family + '-' + i)
-					.addClass( 'sow-icon-' + family )
+			for ( var i in icons ) {
+				var iconData = icons[ i ];
+				var unicode = iconData.hasOwnProperty('unicode' ) ? iconData.unicode : iconData;
+				if ( iconData.hasOwnProperty( 'styles' ) && iconData.styles.indexOf( style ) === -1 ) {
+					continue;
+				}
+				var familyStyle = 'sow-icon-' + family + ( style ? ' ' + style : '' );
+				var familyValue = family + ( style ? '-' + style : '' ) + '-' + i;
+				var $icon = $('<div data-sow-icon="' + unicode + '"/>')
+					.attr('data-value', familyValue )
+					.addClass( familyStyle )
 					.addClass( 'siteorigin-widget-icon-icons-icon' )
 					.click(function(){
 						var $$ = $(this);
@@ -95,14 +137,14 @@
 							// This is being selected
 							container.find('.siteorigin-widget-icon-icons-icon').removeClass('siteorigin-widget-active');
 							$$.addClass('siteorigin-widget-active');
-							$v.val( $$.data('value') );
+							$v.val( $$.data( 'value' ) );
 
 							// Also add this to the button
 							$b.find('span')
 								.show()
 								.attr( 'data-sow-icon', $$.attr('data-sow-icon') )
 								.attr( 'class', '' )
-								.addClass( 'sow-icon-' + family );
+								.addClass( familyStyle );
 
 							$remove.show();
 						}
@@ -112,17 +154,17 @@
 						// Hide the icon selector
 						$is.slideUp();
 					});
+				
+				container.append( $icon );
 
-				container.append(icon);
-
-				if( $v.val() === family + '-' + i ) {
+				if( $v.val() === familyValue ) {
 					// Add selected icon to the button.
-					$b.find('span')
-						.show()
-						.attr( 'data-sow-icon', icon.attr('data-sow-icon') )
-						.attr( 'class', '' )
-						.addClass( 'sow-icon-' + family );
-					icon.addClass('siteorigin-widget-active');
+					$b.find( 'span' )
+					.show()
+					.attr( 'data-sow-icon', $icon.attr( 'data-sow-icon' ) )
+					.attr( 'class', '' )
+					.addClass( familyStyle );
+					$icon.addClass( 'siteorigin-widget-active' );
 				}
 			}
 
@@ -133,7 +175,7 @@
 		};
 
 		// Create the function for changing the icon family and call it once
-		var changeIconFamily = function(){
+		var changeIconFamily = function( init ){
 			// Fetch the family icons from the server
 			var family = $is.find('select.siteorigin-widget-icon-family').val();
 
@@ -142,12 +184,14 @@
 				iconWidgetCache[family] = dataIcons;
 			}
 
-
 			if(typeof family === 'undefined' || family === '') {
 				return;
 			}
 
 			if(typeof iconWidgetCache[family] === 'undefined') {
+				var $container = $is.find('.siteorigin-widget-icon-icons');
+				$container.addClass( 'loading' );
+				
 				$.getJSON(
 					soWidgets.ajaxurl,
 					{
@@ -156,6 +200,8 @@
 					},
 					function(data) {
 						iconWidgetCache[family] = data;
+						renderStylesSelect( init );
+						$container.removeClass( 'loading' );
 						rerenderIcons();
 					}
 				);
@@ -164,7 +210,7 @@
 				rerenderIcons();
 			}
 		};
-		changeIconFamily();
+		changeIconFamily( true );
 
 		$is.find('select.siteorigin-widget-icon-family').change(function(){
 			$is.find('.siteorigin-widget-icon-icons').empty();

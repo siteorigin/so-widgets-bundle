@@ -10,8 +10,6 @@ jQuery( function ( $ ) {
 			if ( $widget.data( 'initialized' ) ) {
 				return $( this );
 			}
-			var useAnchorTags = $widget.data( 'useAnchorTags' );
-			var initialScrollPanel = $widget.data( 'initialScrollPanel' );
 
 			var $accordionPanels = $( element ).find( '> .sow-accordion-panel' );
 			$accordionPanels.not( '.sow-accordion-panel-open' ).find( '.sow-accordion-panel-content' ).hide();
@@ -20,12 +18,27 @@ jQuery( function ( $ ) {
 			var updateHash = function () {
 				// noop
 			};
+			
+			var scrollToPanel = function ( $panel, smooth ) {
+				var navOffset = 90;// Add some magic number offset to make space for possible nav menus etc.
+				var scrollTop = $panel.offset().top - navOffset;
+				if ( smooth ) {
+					$( 'body,html' ).animate( {
+						scrollTop: scrollTop,
+					}, 200 );
+				} else {
+					window.scrollTo( 0, scrollTop );
+				}
+			};
 
-			var openPanel = function ( panel, preventHashChange ) {
+			var openPanel = function ( panel, preventHashChange, keepVisible ) {
 				var $panel = $( panel );
 				if ( ! $panel.is( '.sow-accordion-panel-open' ) ) {
 					$panel.find( '> .sow-accordion-panel-content' ).slideDown(
 						function() {
+							if ( keepVisible && $panel.offset().top < window.scrollY ) {
+								scrollToPanel( $panel, true );
+							}
 							$( this ).trigger( 'show' );
 							$( sowb ).trigger( 'setup_widgets' );
 						}
@@ -67,13 +80,13 @@ jQuery( function ( $ ) {
 				if ( $panel.is( '.sow-accordion-panel-open' ) ) {
 					closePanel( $panel.get( 0 ) );
 				} else {
-					openPanel( $panel.get( 0 ) );
+					openPanel( $panel.get( 0 ), false, true );
 				}
 
 				if ( ! isNaN( maxOpenPanels ) && maxOpenPanels > 0 && openPanels.length > maxOpenPanels ) {
 					var skippedPanels = 0;
 					$.each( openPanels.reverse(), function( index, el ) {
-						if ( skippedPanels !== maxOpenPanels) {
+						if ( skippedPanels !== maxOpenPanels ) {
 							skippedPanels++;
 						} else {
 							closePanel( openPanels[ index ] );
@@ -82,25 +95,32 @@ jQuery( function ( $ ) {
 				}
 			} );
 			
-			if ( useAnchorTags ) {
+			if ( $widget.data( 'useAnchorTags' ) ) {
+				var timeoutId;
 				updateHash = function () {
-					var anchors = [];
-					var allOpenPanels = $( '.sow-accordion-panel-open' ).toArray();
-					for ( var i = 0; i < allOpenPanels.length; i++ ) {
-						var anchor = $( allOpenPanels[ i ] ).data( 'anchor' );
-						if ( anchor ) {
-							var $parentPanel = $( allOpenPanels[ i ] ).parents( '.sow-accordion-panel' );
-							if ( ! $parentPanel.length || ( $parentPanel.length && $parentPanel.hasClass( 'sow-accordion-panel-open' ) ) ) {
-								anchors[ i ] = anchor;
+					if ( timeoutId ) {
+						clearTimeout( timeoutId );
+					}
+					timeoutId = setTimeout( function () {
+						
+						var anchors = [];
+						var allOpenPanels = $( '.sow-accordion-panel-open' ).toArray();
+						for ( var i = 0; i < allOpenPanels.length; i++ ) {
+							var anchor = $( allOpenPanels[ i ] ).data( 'anchor' );
+							if ( anchor ) {
+								var $parentPanel = $( allOpenPanels[ i ] ).parents( '.sow-accordion-panel' );
+								if ( ! $parentPanel.length || ( $parentPanel.length && $parentPanel.hasClass( 'sow-accordion-panel-open' ) ) ) {
+									anchors[ i ] = anchor;
+								}
 							}
 						}
-					}
-					
-					if ( anchors && anchors.length ) {
-						window.location.hash = anchors.join( ',' );
-					} else {
-						window.history.pushState( '', document.title, window.location.pathname + window.location.search );
-					}
+						
+						if ( anchors && anchors.length ) {
+							window.location.hash = anchors.join( ',' );
+						} else if ( window.location.hash ) { // This prevents adding a history event if no was present on load
+							window.history.pushState( '', document.title, window.location.pathname + window.location.search );
+						}
+					}, 100 );
 				};
 				
 				var updatePanelStates = function () {
@@ -108,7 +128,8 @@ jQuery( function ( $ ) {
 					for ( var i = 0; i < panels.length; i++ ) {
 						var panel = panels[ i ];
 						var anchor = $( panel ).data( 'anchor' );
-						if ( anchor && window.location.hash.indexOf( anchor ) > -1 ) {
+						var anchors = window.location.hash.substring(1).split( ',' ); 
+						if ( anchor && $.inArray( anchor, anchors ) > -1 ) {
 							openPanel( panel, true );
 						} else {
 							closePanel( panel, true );
@@ -121,12 +142,14 @@ jQuery( function ( $ ) {
 				} else {
 					updateHash();
 				}
+				var initialScrollPanel = $widget.data( 'initialScrollPanel' );
 				if ( initialScrollPanel > 0 ) {
 					var $initialScrollPanel = initialScrollPanel > $accordionPanels.length ?
 						$accordionPanels.last() :
 						$accordionPanels.eq( initialScrollPanel - 1 );
-					var navOffset = 90;// Add some magic number offset to make space for possible nav menus etc.
-					window.scrollTo( 0, $initialScrollPanel.offset().top - navOffset );
+					setTimeout( function () {
+						scrollToPanel( $initialScrollPanel );
+					}, 500 );
 				}
 			}
 			

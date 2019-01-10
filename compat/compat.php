@@ -23,7 +23,7 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 		}
 		
 		if ( function_exists( 'register_block_type' ) ) {
-			require_once plugin_dir_path( __FILE__ ) . 'gutenberg/gutenberg.php';
+			require_once plugin_dir_path( __FILE__ ) . 'block-editor/widget-block.php';
 		}
 	}
 

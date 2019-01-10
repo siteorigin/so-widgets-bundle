@@ -97,11 +97,11 @@
 				width: 58px;
 				height: 48px;
 				margin: 3px;
-				padding: 4px 0;
+				padding: 5px 0;
 				border:1px solid #D0D0D0;
 				background: #FFFFFF;
 
-				font-size: 40px;
+				font-size: 35px;
 				overflow: hidden;
 
 				cursor: pointer;
@@ -114,7 +114,18 @@
 					.box-shadow(~"0 1px 2px rgba(0,0,0,0.25)");
 				}
 			}
-
+			
+			&.loading {
+				min-height: 40px;
+				background: #FFFFFF url("../../../css/img/wpspin_light.gif") center center no-repeat;
+				
+				@media  (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+					& {
+						background-image: url("../../../css/img/wpspin_light-2x.gif");
+						background-size: 16px 16px;
+					}
+				}
+			}
 		}
 	}
 }

@@ -4,6 +4,7 @@ Widget Name: Layout Slider
 Description: A slider that allows you to create responsive columnized content for each slide.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/layout-slider-widget/
 */
 
 if( !class_exists( 'SiteOrigin_Widget_Base_Slider' ) ) include_once plugin_dir_path(SOW_BUNDLE_BASE_FILE) . '/base/inc/widgets/base-slider.class.php';
@@ -192,7 +193,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 	}
 
 	function form( $instance, $form_type = 'widget' ) {
-		if( is_admin() && defined('SITEORIGIN_PANELS_VERSION') ) {
+		if ( ( is_admin() || ( defined('REST_REQUEST' ) && function_exists( 'register_block_type' ) ) ) && defined('SITEORIGIN_PANELS_VERSION') ) {
 			parent::form( $instance, $form_type );
 		} else {
 			?>

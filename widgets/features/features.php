@@ -4,6 +4,7 @@ Widget Name: Features
 Description: Displays a block of features with icons.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/features-widget-documentation/
 */
 
 class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {

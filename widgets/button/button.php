@@ -4,6 +4,7 @@ Widget Name: Button
 Description: A powerful yet simple button widget for your sidebars or Page Builder pages.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/button-widget-documentation/
 */
 
 class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {

@@ -5,6 +5,7 @@ Widget Name: Icon
 Description: An iconic icon.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/icon-widget/
 */
 
 class SiteOrigin_Widget_Icon_Widget extends SiteOrigin_Widget {

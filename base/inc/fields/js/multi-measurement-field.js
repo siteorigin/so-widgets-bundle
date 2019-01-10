@@ -38,7 +38,7 @@
 			if ( autoFillEnabled ) {
 				$valInputs.each( function ( index, element ) {
 					// Only want to autofill if it has been enabled and no other inputs have values.
-					if ( element !== $valInput.eq( 0 ) ) {
+					if ( $( element ).attr( 'id' ) !== $valInput.eq( 0 ).attr( 'id' ) ) {
 						doAutofill = doAutofill && !( $( element ).val() );
 					}
 				} );
