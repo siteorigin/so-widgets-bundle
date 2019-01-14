@@ -91,6 +91,11 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'default' => '25',
 			),
 
+			'nav_always_show_mobile' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Always Show navigation on mobile', 'so-widgets-bundle' ),
+			),
+			
 			'swipe' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Swipe Control', 'so-widgets-bundle' ),
