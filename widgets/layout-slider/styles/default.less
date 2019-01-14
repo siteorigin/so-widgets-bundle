@@ -2,6 +2,7 @@
 
 @nav_color_hex: #FFFFFF;
 @nav_size: 25;
+@nav_always_show_mobile: default;
 
 @slide_padding: 50px;
 @slide_padding_extra_top: 0px;
@@ -51,6 +52,14 @@
 				text-shadow: 0 1px 2px rgba(0,0,0,0.25);
 				margin: 1em 0;
 				font-size: @text_size;
+			}
+		}
+	}
+
+	& when ( @nav_always_show_mobile = true ) {
+		@media (max-width: @responsive_breakpoint) {
+			.sow-slider-pagination, .sow-slide-nav {
+				display: block !important;
 			}
 		}
 	}
