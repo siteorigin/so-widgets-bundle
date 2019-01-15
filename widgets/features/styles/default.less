@@ -160,16 +160,14 @@
 
         .textwidget {
             margin: auto;
+            .font(@text_font, @text_font_weight);
+            font-size: @text_size;
+            color: @text_color;
+            
             > h5 {
                 .font(@title_font, @title_font_weight);
                 font-size: @title_size;
                 color: @title_color;
-            }
-
-            > p {
-                .font(@text_font, @text_font_weight);
-                font-size: @text_size;
-                color: @text_color;
             }
 
             > p.sow-more-text {
