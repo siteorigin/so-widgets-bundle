@@ -274,6 +274,12 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#00605E'
 	),
+	'yandex-zen'    => array(
+		'label'    => __( 'Yandex.Zen', 'so-widgets-bundle' ),
+		'base_url' => 'https://zen.yandex.ru/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#ff0000'
+	),
 	'yahoo'   => array(
 		'label'    => __( 'Yahoo', 'so-widgets-bundle' ),
 		'base_url' => 'https://yahoo.com/',
