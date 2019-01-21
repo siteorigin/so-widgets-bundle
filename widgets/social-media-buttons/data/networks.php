@@ -100,6 +100,12 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#2A2929'
 	),
+	'bandcamp'   => array(
+		'label'    => __( 'Bandcamp', 'so-widgets-bundle' ),
+		'base_url' => 'https://bandcamp.com/',
+		'icon_color' => '#1da0c3',
+		'button_color' => '#FFFFFF'
+	),
 	'behance'   => array(
 		'label'    => __( 'Behance', 'so-widgets-bundle' ),
 		'base_url' => 'https://www.behance.net/',
@@ -159,6 +165,12 @@ return array(
 		'base_url' => 'https://gratipay.com/',
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#653614'
+	),
+	'goodreads'   => array(
+		'label'    => __( 'Goodreads', 'so-widgets-bundle' ),
+		'base_url' => 'https://goodreads.com/',
+		'icon_color' => '#372213',
+		'button_color' => '#e2e0d1'
 	),
 	'hacker-news'   => array(
 		'label'    => __( 'Hacker News', 'so-widgets-bundle' ),
@@ -231,6 +243,12 @@ return array(
 		'base_url' => 'https://www.stumbleupon.com/',
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#EB4924'
+	),
+	'telegram'   => array(
+		'label'    => __( 'Telegram', 'so-widgets-bundle' ),
+		'base_url' => 'https://t.me/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#27a7e5'
 	),
 	'trello'   => array(
 		'label'    => __( 'Trello', 'so-widgets-bundle' ),
