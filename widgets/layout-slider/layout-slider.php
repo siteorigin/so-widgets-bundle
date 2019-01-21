@@ -281,7 +281,6 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		// Slider navigation controls
 		$less['nav_color_hex'] = $instance['controls']['nav_color_hex'];
 		$less['nav_size'] = $instance['controls']['nav_size'];
-		$less['nav_always_show_mobile'] = ! empty( $instance['controls']['nav_always_show_mobile'] ) ? 'true' : '';
 
 		// Hero specific design
 		//Measurement field type options
@@ -335,6 +334,18 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 			}
 		}
 		return $val;
+	}
+
+	function modify_instance( $instance ) {
+		if ( !empty( $instance['controls']['nav_always_show_mobile'] ) && $instance['controls']['nav_always_show_mobile'] ) {
+			$global_settings = $this->get_global_settings();
+
+			if ( ! empty( $global_settings['responsive_breakpoint'] ) ) {
+				$instance['controls']['breakpoint'] = $global_settings['responsive_breakpoint'];
+			}
+		}
+
+		return $instance;
 	}
 }
 
