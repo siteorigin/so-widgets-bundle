@@ -166,7 +166,7 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#653614'
 	),
-	'goodreads'   => array(
+	'goodreads-g'   => array(
 		'label'    => __( 'Goodreads', 'so-widgets-bundle' ),
 		'base_url' => 'https://goodreads.com/',
 		'icon_color' => '#372213',
@@ -244,7 +244,7 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#EB4924'
 	),
-	'telegram'   => array(
+	'telegram-plane'   => array(
 		'label'    => __( 'Telegram', 'so-widgets-bundle' ),
 		'base_url' => 'https://t.me/',
 		'icon_color' => '#FFFFFF',
