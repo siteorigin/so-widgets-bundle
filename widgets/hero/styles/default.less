@@ -4,7 +4,6 @@
 
 @nav_color_hex: #FFFFFF;
 @nav_size: 25;
-@nav_always_show_mobile: default;
 
 @slide_padding: 50px;
 @slide_padding_extra_top: 0px;
@@ -109,14 +108,6 @@
 					margin: 3px 6px 0;
 				}
 
-			}
-		}
-	}
-
-	& when ( @nav_always_show_mobile = true ) {
-		@media (max-width: @responsive_breakpoint) {
-			& .sow-slider-pagination, & .sow-slide-nav {
-				display: block !important;
 			}
 		}
 	}
