@@ -182,9 +182,8 @@ jQuery( function($){
 
 				// Set up showing and hiding navs
 				$p.add($n).hide();
-				if ( $slides.length > 1 ) {
-
-					if( !$base.hasClass('sow-slider-is-mobile') && $slides.length > 1 ) {
+				if( $slides.length > 1 ) {
+					if( !$base.hasClass('sow-slider-is-mobile') ) {
 
 						var toHide = false;
 						$base
@@ -202,10 +201,8 @@ jQuery( function($){
 								}, 750);
 							});
 					} else if ( settings.nav_always_show_mobile && window.matchMedia('(max-width: ' + settings.breakpoint + ')').matches) {
-							$p.show();
-							$n.show();
-							console.log('visible');
-						}
+						$p.show();
+						$n.show();
 					}
 				}
 
