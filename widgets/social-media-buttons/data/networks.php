@@ -238,7 +238,7 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#171A21'
 	),
-	'Strava'   => array(
+	'strava'   => array(
 		'label'    => __( 'Strava', 'so-widgets-bundle' ),
 		'base_url' => 'https://www.strava.com/athletes/',
 		'icon_color' => '#FFFFFF',
