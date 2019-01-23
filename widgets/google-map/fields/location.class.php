@@ -45,10 +45,22 @@ class SiteOrigin_Widget_Field_Location extends SiteOrigin_Widget_Field_Base {
 	}
 	
 	protected function sanitize_field_input( $value, $instance ) {
-		$location = json_decode( $value, true );
-		
-		if ( empty( $location['name'] ) && empty( $location['address'] ) && empty( $location['location'] ) ) {
+		if ( empty( $value ) ) {
 			return array();
+		}
+		if ( is_string( $value ) ) {
+			$value = json_decode( $value, true );
+		}
+		$location = array();
+		
+		if ( ! empty( $value['name'] ) ) {
+			$location['name'] = $value['name'];
+		}
+		if ( ! empty( $value['address'] ) ) {
+			$location['address'] = $value['address'];
+		}
+		if ( ! empty( $value['location'] ) ) {
+			$location['location'] = $value['location'];
 		}
 		
 		return $location;
