@@ -118,6 +118,12 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#205081'
 	),
+	'blogger-b'   => array(
+		'label'    => __( 'Blogger', 'so-widgets-bundle' ),
+		'base_url' => 'https://www.blogger.com/',
+		'icon_color' => '#f1f1f1',
+		'button_color' => '#ff5722'
+	),
 	'codepen'   => array(
 		'label'    => __( 'Codepen', 'so-widgets-bundle' ),
 		'base_url' => 'https://codepen.io/',
