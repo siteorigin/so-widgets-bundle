@@ -43,7 +43,23 @@
 	.sow-tabs-tab-container {
 		background-color: @tabs_container_background_color;
 		padding: @tabs_container_padding;
-		text-align: @tabs_container_tabs_align;
+
+		& when ( @tabs_container_tabs_position = left ), ( @tabs_container_tabs_position = right ) {
+			& when ( @tabs_container_tabs_align = middle ) {
+				display: flex;
+				justify-content: center;
+			    flex-direction: column;
+			}
+			& when ( @tabs_container_tabs_align = bottom ) {
+				display: flex;
+			    flex-direction: column-reverse;
+			}
+		}
+
+		& when ( @tabs_container_tabs_position = top ), ( @tabs_container_tabs_position = bottom ) {
+			text-align: @tabs_container_tabs_align;
+		}
+
 
 		//noinspection CssOptimizeSimilarProperties
 		& when ( @has_tabs_container_border_width = true ) {
