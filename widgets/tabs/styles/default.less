@@ -45,15 +45,15 @@
 		padding: @tabs_container_padding;
 
 		& when ( @tabs_container_tabs_position = left ), ( @tabs_container_tabs_position = right ) {
-			& when ( @tabs_container_tabs_align = middle ) {
+			& when not ( @tabs_container_tabs_align = top ) {
 				display: flex;
-				justify-content: center;
-			    flex-direction: column;
-			}
-			& when ( @tabs_container_tabs_align = bottom ) {
-				display: flex;
-			    flex-direction: column;
-				justify-content: flex-end;
+				flex-direction: column;
+				& when ( @tabs_container_tabs_align = middle ) {
+					justify-content: center;
+				}
+				& when ( @tabs_container_tabs_align = bottom ) {
+					justify-content: flex-end;
+				}
 			}
 		}
 
@@ -132,15 +132,16 @@
 		}
 	}
 
-	& when ( @tabs_container_tabs_position = bottom ) {
-		& {
-			display: flex;
-		    flex-direction: column-reverse;
-		}
+	& when not ( @tabs_container_tabs_position = top ) {
+		display: flex;
 	}
 
+	& when ( @tabs_container_tabs_position = bottom ) {
+	    flex-direction: column-reverse;
+	}
+
+	
 	& when ( @tabs_container_tabs_position = left ), ( @tabs_container_tabs_position = right ) {
-		display: flex;
 		& when ( @tabs_container_tabs_position = right ) {
 			flex-direction: row-reverse;
 		}
