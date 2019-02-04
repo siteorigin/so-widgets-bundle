@@ -23,12 +23,20 @@ jQuery( function ( $ ) {
 				complete = numItems === totalPosts,
 				itemWidth = ( $firstItem.width() + parseInt( $firstItem.css( 'margin-right' ) ) ),
 				isRTL = $postsContainer.hasClass( 'js-rtl' ),
-				updateProp = isRTL ? 'margin-right' : 'margin-left';
+				updateProp = isRTL ? 'margin-right' : 'margin-left',
+				possibleVisibleItems = Math.ceil( $$.outerWidth() / itemWidth );
+
+				// Work out when to load new items based on number of posts on load and max number of visible items
+				// If numItems is less than 1, default to 1 to prevent issues with post loading
+				if ( numItems - possibleVisibleItems < 0 ) {
+					loadMoreTrigger = numItems - possibleVisibleItems;
+				} else {
+					loadMoreTrigger = 1;
+				}
 	
 			var updatePosition = function () {
 				if ( position < 0 ) position = 0;
-				if ( position >= $$.find( '.sow-carousel-item' ).length - 1 ) {
-					position = $$.find( '.sow-carousel-item' ).length - 1;
+				if ( position >= loadMoreTrigger ) {
 					// Fetch the next batch
 					if ( !fetching && !complete ) {
 						fetching = true;
