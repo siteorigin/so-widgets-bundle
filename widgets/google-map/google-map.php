@@ -631,7 +631,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	private function get_static_image_src( $instance, $width, $height, $styles ) {
 		$location = empty( $instance['map_center']['location'] ) ? $instance['map_center']['address'] : $instance['map_center']['location'];
 		$src_url = "https://maps.googleapis.com/maps/api/staticmap?";
-		$src_url .= "center=" . location;
+		$src_url .= "center=" . $location;
 		$src_url .= "&zoom=" . $instance['settings']['zoom'];
 		$src_url .= "&size=" . $width . "x" . $height;
 
