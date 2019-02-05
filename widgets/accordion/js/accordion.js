@@ -43,6 +43,7 @@ jQuery( function ( $ ) {
 							$( sowb ).trigger( 'setup_widgets' );
 						}
 					);
+					$panel.find(  '> .sow-accordion-panel-header-container > .sow-accordion-panel-header' ).attr( 'aria-expanded', true );
 					$panel.addClass( 'sow-accordion-panel-open' );
 					openPanels.push( panel );
 
@@ -65,6 +66,7 @@ jQuery( function ( $ ) {
 							$( this ).trigger( 'hide' );
 						}
 					);
+					$panel.find(  '> .sow-accordion-panel-header-container > .sow-accordion-panel-header' ).attr( 'aria-expanded', false );
 					$panel.removeClass( 'sow-accordion-panel-open' );
 					openPanels.splice( openPanels.indexOf( panel ), 1 );
 					if ( ! preventHashChange ) {
@@ -73,7 +75,13 @@ jQuery( function ( $ ) {
 				}
 			};
 			
-			$accordionPanels.find( '> .sow-accordion-panel-header' ).click( function () {
+			$accordionPanels.find( '> .sow-accordion-panel-header-container > .sow-accordion-panel-header' ).on( 'click keydown', function( e ) {
+				if ( e.type == 'keydown' ) {
+					if ( e.keyCode !== 13 && e.keyCode !== 32 ){
+						return;
+					}
+					e.preventDefault();
+				}
 				var $this = $( this );
 				var maxOpenPanels = $widget.data( 'maxOpenPanels' );
 				var $panel = $this.closest( '.sow-accordion-panel' );
