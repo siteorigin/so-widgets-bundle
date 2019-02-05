@@ -27,8 +27,9 @@ jQuery( function ( $ ) {
 	
 			var updatePosition = function () {
 				if ( position < 0 ) position = 0;
-				if ( position >= $$.find( '.sow-carousel-item' ).length - 1 ) {
-					position = $$.find( '.sow-carousel-item' ).length - 1;
+				var numVisibleItems = Math.ceil( $$.outerWidth() / itemWidth );
+				// Offset position by numVisibleItems to trigger the next fetch before the view is empty.
+				if ( position + numVisibleItems >= $$.find( '.sow-carousel-item' ).length - 1 ) {
 					// Fetch the next batch
 					if ( !fetching && !complete ) {
 						fetching = true;
