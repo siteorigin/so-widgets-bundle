@@ -299,9 +299,7 @@ sowb.SiteOriginGoogleMap = function($) {
 						return;
 					}
 
-					var autocomplete = new google.maps.places.Autocomplete(
-						element,
-					);
+					var autocomplete = new google.maps.places.Autocomplete( element );
 
 					var $mapField = $(element).siblings('.sow-google-map-canvas');
 
