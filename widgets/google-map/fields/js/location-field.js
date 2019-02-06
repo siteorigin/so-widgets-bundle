@@ -50,6 +50,10 @@ sowbForms.LocationField = function () {
 			};
 
 			autocomplete.addListener( 'place_changed', onPlaceChanged );
+			
+			$inputField.on( 'change', function () {
+				$valueField.val( JSON.stringify( { name: $inputField.val() } ) );
+			} );
 		}
 	};
 };
