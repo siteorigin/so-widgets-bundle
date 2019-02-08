@@ -222,7 +222,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						),
 						'fields'     => array(
 							'place' => array(
-								'type'  => 'textarea',
+								'type'  => 'location',
 								'rows'  => 2,
 								'label' => __( 'Place', 'so-widgets-bundle' )
 							),
@@ -536,7 +536,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			));
 
 			return array(
-				'map_id'   => md5( $location ),
+				'map_id'   => md5( $instance ),
 				'height'   => $settings['height'],
 				'map_data' => $map_data,
 				'fallback_image_data' => array( 'img' => $fallback_image ),
@@ -710,6 +710,15 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		
 		if ( ! empty( $instance['map_center'] ) && empty( $instance['map_center']['name'] ) ) {
 			$instance['map_center'] = array( 'address' => $instance['map_center'] );
+		}
+		
+		if ( ! empty( $instance['markers'] ) && ! empty( $instance['markers']['marker_positions'] ) ) {
+			
+			foreach ( $instance['markers']['marker_positions'] as &$marker_position ) {
+				if ( ! empty( $marker_position['place'] ) && empty( $marker_position['place']['name'] ) ) {
+					$marker_position['place'] = array( 'address' => $marker_position['place'] );
+				}
+			}
 		}
 		
 		if ( empty( $instance['api_key_section'] ) ) {

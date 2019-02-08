@@ -54,6 +54,53 @@ sowbForms.LocationField = function () {
 			$inputField.on( 'change', function () {
 				$valueField.val( JSON.stringify( { name: $inputField.val() } ) );
 			} );
+			
+			if ( $valueField.val() ) {
+				// Attempt automatic migration
+				var place = {};
+				try {
+					var parsed = JSON.parse( $valueField.val() );
+					if ( ! parsed.hasOwnProperty( 'location' ) ) {
+						if ( parsed.hasOwnProperty( 'address' ) ) {
+							place.name = parsed.address;
+						}
+					}
+				} catch ( error ) {
+					// Let's just try use the value directly.
+					place.name = $valueField.val();
+				}
+				if ( place.hasOwnProperty( 'name' ) && place.name !== 'null') {
+					if ( ! sowbForms.mapsMigrationLogged ) {
+						console.info( 'SiteOrigin Google Maps Widget: Starting automatic migration of location.' );
+						sowbForms.mapsMigrationLogged = true;
+					}
+					var delay = 500;
+					function callGetSimplePlace( place, field ) {
+						getSimplePlace( place )
+						.done( function ( simplePlace ) {
+							field.val( JSON.stringify( simplePlace ) );
+							sowbForms._geocodeQueue.shift();
+							if ( sowbForms._geocodeQueue.length > 0 ) {
+								var next = sowbForms._geocodeQueue[ 0 ];
+								setTimeout( function () {
+									callGetSimplePlace( next.place, next.field );
+								}, delay );
+							} else {
+								console.info( 'SiteOrigin Google Maps Widget: Automatic migration of locations complete.' );
+							}
+						} )
+						.fail( function ( status ) {
+							console.warn( 'Automatic migration of old address failed with status: ' + status );
+						} );
+					}
+					sowbForms._geocodeQueue.push( { place: place, field: $valueField } );
+					if ( sowbForms._geocodeQueue.length === 1 ) {
+						setTimeout( function () {
+							callGetSimplePlace( place, $valueField );
+						}, delay );
+					}
+				}
+			}
 		}
 	};
 };
@@ -71,12 +118,20 @@ sowbForms.setupLocationFields = function () {
 
 // Called by Google Maps API when it has loaded.
 function sowbAdminGoogleMapInit() {
+	sowbForms.mapsInitializing = false;
+	sowbForms.mapsInitialized = true;
 	sowbForms.setupLocationFields();
 }
 
 ( function ( $ ) {
 	
 	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-location', function () {
+		
+		sowbForms._geocodeQueue = sowbForms._geocodeQueue || [];
+		
+		if ( sowbForms.mapsInitializing ) {
+			return;
+		}
 		
 		if ( sowbForms.mapsInitialized ) {
 			sowbForms.setupLocationFields();
@@ -93,7 +148,7 @@ function sowbAdminGoogleMapInit() {
 		
 		$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );
 		
-		sowbForms.mapsInitialized = true;
+		sowbForms.mapsInitializing = true;
 	} );
 
 } )( jQuery );
