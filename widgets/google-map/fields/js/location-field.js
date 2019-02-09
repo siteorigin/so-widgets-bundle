@@ -7,7 +7,7 @@ sowbForms.LocationField = function () {
 		init: function ( element ) {
 			
 			if ( typeof google.maps.places === 'undefined' ) {
-				console.error( 'Failed to load the places library.' );
+				console.error( 'SiteOrigin Google Maps Widget: Failed to load the places library.' );
 				return;
 			}
 			
@@ -45,7 +45,7 @@ sowbForms.LocationField = function () {
 					$valueField.val( JSON.stringify( simplePlace ) )
 				} )
 				.fail( function ( status ) {
-					console.warn( 'Geocoding failed for "' + place.name + '" with status: ' + status );
+					console.warn( 'SiteOrigin Google Maps Widget: Geocoding failed for "' + place.name + '" with status: ' + status );
 				} );
 			};
 
@@ -71,10 +71,10 @@ sowbForms.LocationField = function () {
 				}
 				if ( place.hasOwnProperty( 'name' ) && place.name !== 'null') {
 					if ( ! sowbForms.mapsMigrationLogged ) {
-						console.info( 'SiteOrigin Google Maps Widget: Starting automatic migration of location.' );
+						console.info( 'SiteOrigin Google Maps Widget: Starting automatic migration of location. Please wait a moment...' );
 						sowbForms.mapsMigrationLogged = true;
 					}
-					var delay = 500;
+					var delay = 100;
 					function callGetSimplePlace( place, field ) {
 						getSimplePlace( place )
 						.done( function ( simplePlace ) {
@@ -86,11 +86,31 @@ sowbForms.LocationField = function () {
 									callGetSimplePlace( next.place, next.field );
 								}, delay );
 							} else {
-								console.info( 'SiteOrigin Google Maps Widget: Automatic migration of locations complete.' );
+								console.info( 'SiteOrigin Google Maps Widget: Location fields updated. Please save the post to complete the migration.' );
 							}
 						} )
 						.fail( function ( status ) {
-							console.warn( 'Automatic migration of old address failed with status: ' + status );
+							if ( status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT ) {
+								if ( ! sowbForms.hasOwnProperty( 'overQueryLimitCount' ) ) {
+									sowbForms.overQueryLimitCount = 1;
+								} else {
+									sowbForms.overQueryLimitCount++;
+								}
+
+								if ( sowbForms.overQueryLimitCount < 3 ) {
+									// The Google Maps Geocoding API docs say rate limits are 50 requests per second,
+									// but in practice it seems the limit is much lower.
+									var next = sowbForms._geocodeQueue[ 0 ];
+									// Progressively increase the delay to try avoid hitting the rate limit.
+									delay = delay * 10;
+									setTimeout( function () {
+										callGetSimplePlace( next.place, next.field );
+									}, delay );
+								} else {
+									console.warn( 'SiteOrigin Google Maps Widget: Automatic migration of old address failed with status: ' + status );
+									console.info( 'SiteOrigin Google Maps Widget: Please save this post and open the form to try again.' );
+								}
+							}
 						} );
 					}
 					sowbForms._geocodeQueue.push( { place: place, field: $valueField } );
@@ -141,7 +161,7 @@ function sowbAdminGoogleMapInit() {
 		var $apiKeyField = $( this ).closest( '.siteorigin-widget-form' ).find( 'input[type="text"][name*="api_key"]' ).first();
 		var apiKey = $apiKeyField.val();
 		if ( ! apiKey ) {
-			console.warn( 'Could not find API key. Google Maps API key is required.' );
+			console.warn( 'SiteOrigin Google Maps Widget: Could not find API key. Google Maps API key is required.' );
 		}
 		
 		var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&libraries=places&callback=sowbAdminGoogleMapInit';

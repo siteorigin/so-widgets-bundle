@@ -213,10 +213,9 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'marker_positions'  => array(
 						'type'       => 'repeater',
 						'label'      => __( 'Marker positions', 'so-widgets-bundle' ),
-						'description' => __( 'Please be aware that adding more than 10 markers may cause a slight delay before they appear, due to Google Geocoding API rate limits.', 'so-widgets-bundle' ),
 						'item_name'  => __( 'Marker', 'so-widgets-bundle' ),
 						'item_label' => array(
-							'selector'     => "[id*='marker_positions-place']",
+							'selector'     => ".siteorigin-widget-location-input",
 							'update_event' => 'change',
 							'value_method' => 'val'
 						),
@@ -500,21 +499,17 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 			$markerpos = isset( $markers['marker_positions'] ) ? $markers['marker_positions'] : '';
 			if( ! empty($markerpos)) {
-				foreach ($markerpos as $key => $pos) {
-					if(! empty($pos['custom_marker_icon'])) {
+				foreach ($markerpos as &$pos) {
+					if ( ! empty( $pos['custom_marker_icon'] ) ) {
 						$icon_src = wp_get_attachment_image_src( $pos['custom_marker_icon'] );
-						$markerpos[$key]['custom_marker_icon'] = $icon_src[0];
+						$pos['custom_marker_icon'] = $icon_src[0];
+					}
+					if ( ! empty( $pos['place'] ) ) {
+						$pos['place'] = $this->get_location_string( $pos['place'] );
 					}
 				}
 			}
-			$location = '';
-			if ( ! empty( $instance['map_center']['location'] ) ) {
-				$location = $instance['map_center']['location'];
-			} else if ( ! empty( $instance['map_center']['address'] ) ) {
-				$location = $instance['map_center']['address'];
-			} else if ( ! empty( $instance['map_center']['name'] ) ) {
-				$location = $instance['map_center']['name'];
-			}
+			$location = $this->get_location_string( $instance['map_center'] );
 			
 			$map_data = siteorigin_widgets_underscores_to_camel_case( array(
 				'address'           => $location,
@@ -536,12 +531,25 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			));
 
 			return array(
-				'map_id'   => md5( $instance ),
+				'map_id'   => md5( json_encode( $instance ) ),
 				'height'   => $settings['height'],
 				'map_data' => $map_data,
 				'fallback_image_data' => array( 'img' => $fallback_image ),
 			);
 		}
+	}
+	
+	private function get_location_string( $location_data ) {
+		$location = '';
+		if ( ! empty( $location_data['location'] ) ) {
+			$location = $location_data['location'];
+		} else if ( ! empty( $location_data['address'] ) ) {
+			$location = $location_data['address'];
+		} else if ( ! empty( $location_data['name'] ) ) {
+			$location = $location_data['name'];
+		}
+		
+		return $location;
 	}
 
 	public function enqueue_widget_scripts( $instance ) {
@@ -709,14 +717,13 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	public function modify_instance( $instance ) {
 		
 		if ( ! empty( $instance['map_center'] ) && empty( $instance['map_center']['name'] ) ) {
-			$instance['map_center'] = array( 'address' => $instance['map_center'] );
+			$instance['map_center'] = $this->migrate_location( $instance['map_center'] );
 		}
 		
 		if ( ! empty( $instance['markers'] ) && ! empty( $instance['markers']['marker_positions'] ) ) {
-			
 			foreach ( $instance['markers']['marker_positions'] as &$marker_position ) {
 				if ( ! empty( $marker_position['place'] ) && empty( $marker_position['place']['name'] ) ) {
-					$marker_position['place'] = array( 'address' => $marker_position['place'] );
+					$marker_position['place'] = $this->migrate_location( $marker_position['place'] );
 				}
 			}
 		}
@@ -731,6 +738,27 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			}
 		}
 		return $instance;
+	}
+	
+	private function migrate_location( $location_data ) {
+		
+		if ( is_string( $location_data ) ) {
+			$location = array( 'address' => $location_data );
+		} else if ( is_array( $location_data ) ) {
+			$location = array();
+			
+			if ( ! empty( $location_data['name'] ) ) {
+				$location['name'] = $location_data['name'];
+			}
+			if ( ! empty( $location_data['address'] ) ) {
+				$location['address'] = $location_data['address'];
+			}
+			if ( ! empty( $location_data['location'] ) ) {
+				$location['location'] = $location_data['location'];
+			}
+		}
+		
+		return $location;
 	}
 }
 
