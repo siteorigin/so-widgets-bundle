@@ -1,11 +1,18 @@
-@spacing: 20px;
+@spacing: default;
 
 .sow-image-grid-wrapper {
 	padding-top: @spacing;
-	margin: 0 -@spacing;
+	line-height: 0;
+	text-align:center;
 
 	.sow-image-grid-image {
 		padding: 0 @spacing @spacing @spacing;
-	}
+		display: inline-block;
 
+		img {
+			display:none;
+			max-width:100%;
+			height:auto;
+		}
+	}
 }
