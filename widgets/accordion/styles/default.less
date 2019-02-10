@@ -57,6 +57,10 @@
 				color: @title_hover_color;
 				border-color: @heading_border_hover_color;
 			}
+			
+			&:focus {
+				outline: 1pox solid @heading_border_hover_color;
+			}
 
 			.sow-accordion-title {
 				display: inline-block;
@@ -98,6 +102,9 @@
 				font-family: @panels_font_family;
 				font-size: @panels_font_size;
 				overflow: auto;
+				&:focus {
+					outline: 1px solid @panels_border_color;
+				}
 			}
 		}
 		margin-bottom: @panels_margin_bottom;
