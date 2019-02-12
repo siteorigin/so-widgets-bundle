@@ -156,7 +156,7 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 
 					'border_radius' => array(
 						'type' => 'slider',
-						'label' => __( 'Radius', 'so-widgets-bundle' ),
+						'label' => __( 'Text background radius', 'so-widgets-bundle' ),
 						'integer' => true,
 						'default' => 4,
 						'max' => 100,
