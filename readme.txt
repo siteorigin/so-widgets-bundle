@@ -6,7 +6,7 @@ Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
 Contributors: gpriday, braam-genis
-Donate link: https://siteorigin.com/downloads/contribution/
+Donate link: https://siteorigin.com/downloads/premium/
 
 The SiteOrigin widget bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colours and 1500+ icons.
 
