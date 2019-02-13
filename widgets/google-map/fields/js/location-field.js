@@ -43,6 +43,7 @@ sowbForms.LocationField = function () {
 				getSimplePlace( place )
 				.done( function ( simplePlace ) {
 					$valueField.val( JSON.stringify( simplePlace ) )
+					$valueField.trigger( 'change' );
 				} )
 				.fail( function ( status ) {
 					console.warn( 'SiteOrigin Google Maps Widget: Geocoding failed for "' + place.name + '" with status: ' + status );
@@ -53,6 +54,7 @@ sowbForms.LocationField = function () {
 			
 			$inputField.on( 'change', function () {
 				$valueField.val( JSON.stringify( { name: $inputField.val() } ) );
+				$valueField.trigger( 'change' );
 			} );
 			
 			if ( $valueField.val() ) {
@@ -79,6 +81,7 @@ sowbForms.LocationField = function () {
 						getSimplePlace( place )
 						.done( function ( simplePlace ) {
 							field.val( JSON.stringify( simplePlace ) );
+							field.trigger( 'change' );
 							sowbForms._geocodeQueue.shift();
 							if ( sowbForms._geocodeQueue.length > 0 ) {
 								var next = sowbForms._geocodeQueue[ 0 ];
