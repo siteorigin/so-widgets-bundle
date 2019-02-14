@@ -94,7 +94,7 @@ function siteorigin_widget_get_icon($icon_value, $icon_styles = false) {
 		$family_style = 'sow-icon-' . $family . ( empty( $style ) ? '' : ' ' . $style );
 		$icon_data = $widget_icon_families[ $family ]['icons'][ $icon ];
 		$unicode = '';
-		if ( ! empty( $icon_data['unicode'] ) ) {
+		if ( is_array($icon_data) && ! empty( $icon_data['unicode'] ) ) {
 			$unicode = $icon_data['unicode'];
 		} else if ( is_string( $icon_data ) ) {
 			$unicode = $icon_data;
