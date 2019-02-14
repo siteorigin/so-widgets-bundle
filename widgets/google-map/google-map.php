@@ -743,18 +743,26 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	private function migrate_location( $location_data ) {
 		
 		if ( is_string( $location_data ) ) {
+			$raw_location = json_decode( $location_data, true );
+		} else {
+			$raw_location = $location_data;
+		}
+		
+		$location = array();
+		// If it's not valid JSON
+		if ( $raw_location == null ) {
 			$location = array( 'address' => $location_data );
-		} else if ( is_array( $location_data ) ) {
+		} else if ( is_array( $raw_location ) ) {
 			$location = array();
 			
-			if ( ! empty( $location_data['name'] ) ) {
-				$location['name'] = $location_data['name'];
+			if ( ! empty( $raw_location['name'] ) ) {
+				$location['name'] = $raw_location['name'];
 			}
-			if ( ! empty( $location_data['address'] ) ) {
-				$location['address'] = $location_data['address'];
+			if ( ! empty( $raw_location['address'] ) ) {
+				$location['address'] = $raw_location['address'];
 			}
-			if ( ! empty( $location_data['location'] ) ) {
-				$location['location'] = $location_data['location'];
+			if ( ! empty( $raw_location['location'] ) ) {
+				$location['location'] = $raw_location['location'];
 			}
 		}
 		
