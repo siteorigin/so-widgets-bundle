@@ -100,6 +100,12 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#2A2929'
 	),
+	'bandcamp'   => array(
+		'label'    => __( 'Bandcamp', 'so-widgets-bundle' ),
+		'base_url' => 'https://bandcamp.com/',
+		'icon_color' => '#1da0c3',
+		'button_color' => '#FFFFFF'
+	),
 	'behance'   => array(
 		'label'    => __( 'Behance', 'so-widgets-bundle' ),
 		'base_url' => 'https://www.behance.net/',
@@ -111,6 +117,12 @@ return array(
 		'base_url' => 'https://bitbucket.org/',
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#205081'
+	),
+	'blogger-b'   => array(
+		'label'    => __( 'Blogger', 'so-widgets-bundle' ),
+		'base_url' => 'https://www.blogger.com/',
+		'icon_color' => '#f1f1f1',
+		'button_color' => '#ff5722'
 	),
 	'codepen'   => array(
 		'label'    => __( 'Codepen', 'so-widgets-bundle' ),
@@ -159,6 +171,12 @@ return array(
 		'base_url' => 'https://gratipay.com/',
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#653614'
+	),
+	'goodreads-g'   => array(
+		'label'    => __( 'Goodreads', 'so-widgets-bundle' ),
+		'base_url' => 'https://goodreads.com/',
+		'icon_color' => '#372213',
+		'button_color' => '#e2e0d1'
 	),
 	'hacker-news'   => array(
 		'label'    => __( 'Hacker News', 'so-widgets-bundle' ),
@@ -226,11 +244,23 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#171A21'
 	),
+	'strava'   => array(
+		'label'    => __( 'Strava', 'so-widgets-bundle' ),
+		'base_url' => 'https://www.strava.com/athletes/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#fc4c02'
+	),
 	'stumbleupon'   => array(
 		'label'    => __( 'StumbleUpon', 'so-widgets-bundle' ),
 		'base_url' => 'https://www.stumbleupon.com/',
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#EB4924'
+	),
+	'telegram-plane'   => array(
+		'label'    => __( 'Telegram', 'so-widgets-bundle' ),
+		'base_url' => 'https://t.me/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#27a7e5'
 	),
 	'trello'   => array(
 		'label'    => __( 'Trello', 'so-widgets-bundle' ),

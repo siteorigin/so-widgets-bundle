@@ -33,7 +33,9 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		if( !class_exists('SiteOrigin_Widget_Button_Widget') ) {
 			SiteOrigin_Widgets_Bundle::single()->include_widget( 'button' );
 		}
-
+		
+		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_' . $this->id_base, array( $this, 'enqueue_widget_scripts' ) );
+		
 		add_filter( 'siteorigin_widgets_wrapper_classes_' . $this->id_base, array( $this, 'wrapper_class_filter' ), 10, 2 );
 		add_filter( 'siteorigin_widgets_wrapper_data_' . $this->id_base, array( $this, 'wrapper_data_filter' ), 10, 2 );
 
@@ -230,7 +232,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 					'fittext_compressor' => array(
 						'type' => 'number',
 						'label' => __( 'FitText Compressor Strength', 'so-widgets-bundle' ),
-						'description' => __( 'The lower the value, the more your headings will be scaled down. Values above 1 are allowed.', 'so-widgets-bundle' ),
+						'description' => __( 'The higher the value, the more your headings will be scaled down. Values above 1 are allowed.', 'so-widgets-bundle' ),
 						'default' => 0.85,
 						'state_handler' => array(
 							'use_fittext[show]' => array( 'show' ),
@@ -465,7 +467,6 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	function wrapper_class_filter( $classes, $instance ){
 		if( ! empty( $instance['design']['fittext'] ) ) {
 			$classes[] = 'so-widget-fittext-wrapper';
-			wp_enqueue_script( 'sowb-fittext' );
 		}
 		return $classes;
 	}
@@ -476,7 +477,12 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		}
 		return $data;
 	}
-
+	
+	function enqueue_widget_scripts( $instance ) {
+		if( ! empty( $instance['design']['fittext'] ) || $this->is_preview( $instance ) ) {
+			wp_enqueue_script( 'sowb-fittext' );
+		}
+	}
 }
 
 siteorigin_widget_register('sow-hero', __FILE__, 'SiteOrigin_Widget_Hero_Widget');

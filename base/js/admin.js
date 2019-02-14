@@ -960,6 +960,10 @@ var sowbForms = window.sowbForms || {};
 			callback(window.sowVars[widget][key]);
 		}
 	};
+	
+	sowbForms.getWidgetIdBase = function ( formContainer ) {
+		return formContainer.data( 'id-base' );
+	};
 
 	sowbForms.getWidgetFormValues = function ( formContainer ) {
 
