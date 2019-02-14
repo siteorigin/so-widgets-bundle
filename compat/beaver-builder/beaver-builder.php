@@ -32,13 +32,14 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 		global $wp_widget_factory;
 
 		// Beaver Builder does it's editing in the front end so enqueue required form scripts for active widgets.
+		$so_widgets_bundle = SiteOrigin_Widgets_Bundle::single();
+		$so_widgets_bundle->enqueue_registered_widgets_scripts( false, true );
+		
 		$any_widgets_active = false;
 		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
 			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
 				$any_widgets_active = true;
-				ob_start();
-				$widget_obj->form( array() );
-				ob_clean();
+				break;
 			}
 		}
 

@@ -153,6 +153,10 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 	}
 	
 	public function get_less_variables( $instance ) {
+		if ( empty( $instance['design'] ) ) {
+			return array();
+		}
+		
 		$design = $instance['design'];
 		
 		return array(
