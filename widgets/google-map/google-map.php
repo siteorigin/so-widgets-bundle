@@ -543,6 +543,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		$location = '';
 		if ( ! empty( $location_data['location'] ) ) {
 			$location = $location_data['location'];
+			$location = preg_replace( '/[\(\)]/', '', $location );
 		} else if ( ! empty( $location_data['address'] ) ) {
 			$location = $location_data['address'];
 		} else if ( ! empty( $location_data['name'] ) ) {
@@ -637,7 +638,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	private function get_static_image_src( $instance, $width, $height, $styles ) {
-		$location = empty( $instance['map_center']['location'] ) ? $instance['map_center']['address'] : $instance['map_center']['location'];
+		$location = $this->get_location_string( $instance['map_center'] );
 		$src_url = "https://maps.googleapis.com/maps/api/staticmap?";
 		$src_url .= "center=" . $location;
 		$src_url .= "&zoom=" . $instance['settings']['zoom'];
@@ -704,7 +705,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					if ( ! empty( $markers_st ) ) {
 						$markers_st .= "|";
 					}
-					$markers_st .= urlencode( $marker['place'] );
+					$markers_st .= urlencode( $this->get_location_string( $marker['place'] ) );
 				}
 			}
 			$markers_st = '&markers=' . $markers_st;
