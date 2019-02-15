@@ -48,6 +48,16 @@ class SiteOrigin_Widget_Field_Location extends SiteOrigin_Widget_Field_Base {
 			array(),
 			SOW_BUNDLE_VERSION
 		);
+		
+		wp_localize_script(
+			'so-location-field',
+			'soLocationField',
+			array(
+				'missingApiKey' => __( 'This widget requires a Google Maps API key. Please ensure you have set yours in the Google Maps Widget settings.', 'so-widgets-bundle' ),
+				'globalSettingsButtonLabel' => __( 'Go to Google Maps Widget settings', 'so-widgets-bundle' ),
+				'globalSettingsButtonUrl' => admin_url( 'plugins.php?page=so-widgets-plugins' ),
+			)
+		);
 	}
 	
 	protected function sanitize_field_input( $value, $instance ) {

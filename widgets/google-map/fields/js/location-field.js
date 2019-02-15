@@ -165,6 +165,17 @@ function sowbAdminGoogleMapInit() {
 		var apiKey = $( this ).find( '.location-field-data' ).data( 'apiKey' );
 		
 		if ( ! apiKey ) {
+			sowbForms.displayNotice(
+				$( this ).closest( '.siteorigin-widget-form' ),
+				soLocationField.missingApiKey,
+				'',
+				[
+					{
+						label: soLocationField.globalSettingsButtonLabel,
+						url: soLocationField.globalSettingsButtonUrl,
+					}
+				]
+			);
 			console.warn( 'SiteOrigin Google Maps Widget: Could not find API key. Google Maps API key is required.' );
 			apiKey = '';
 		}
