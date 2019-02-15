@@ -51,23 +51,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'</a>'
 				),
 			),
-			'api_key_section' => array(
-				'type'   => 'section',
-				'label'  => __( 'API key', 'so-widgets-bundle' ),
-				'hide'   => false,
-				'fields' => array(
-					'api_key' => array(
-						'type'        => 'text',
-						'label'       => __( 'API key', 'so-widgets-bundle' ),
-						'required'    => true,
-						'description' => sprintf(
-							__( 'Enter your %sAPI key%s. Your map may not function correctly without one.', 'so-widgets-bundle' ),
-							'<a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank" rel="noopener noreferrer">',
-							'</a>'
-						)
-					)
-				)
-			),
 			'settings'        => array(
 				'type'        => 'section',
 				'label'       => __( 'Settings', 'so-widgets-bundle' ),
@@ -527,7 +510,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'map_name'          => ! empty( $styles ) ? $styles['map_name'] : '',
 				'map_styles'        => ! empty( $styles ) ? $styles['styles'] : '',
 				'directions'        => $directions,
-				'api_key'           => $instance['api_key_section']['api_key'],
+				'api_key'           => self::get_api_key( $instance ),
 			));
 
 			return array(
@@ -643,9 +626,11 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		$src_url .= "center=" . $location;
 		$src_url .= "&zoom=" . $instance['settings']['zoom'];
 		$src_url .= "&size=" . $width . "x" . $height;
-
-		if ( ! empty( $instance['api_key_section']['api_key'] ) ) {
-			$src_url .= "&key=" . $instance['api_key_section']['api_key'];
+		
+		$api_key = self::get_api_key( $instance );
+		
+		if ( ! empty( $api_key ) ) {
+			$src_url .= "&key=" . $api_key;
 		}
 
 		if ( ! empty( $styles ) ) {
@@ -729,14 +714,15 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			}
 		}
 		
-		if ( empty( $instance['api_key_section'] ) ) {
-			$instance['api_key_section'] = array();
-		}
-		if ( empty( $instance['api_key_section']['api_key'] ) ) {
+		// The API key form field has been removed. Migrate any previously set API keys to the global settings.
+		if ( ! empty( $instance['api_key_section'] ) && ! empty( $instance['api_key_section']['api_key'] ) ) {
 			$global_settings = $this->get_global_settings();
-			if ( ! empty( $global_settings['api_key'] ) ) {
-				$instance['api_key_section']['api_key'] = $global_settings['api_key'];
+			
+			if ( empty( $global_settings['api_key'] ) ) {
+				$global_settings['api_key'] = $instance['api_key_section']['api_key'];
+				$this->save_global_settings( $global_settings );
 			}
+			unset( $instance['api_key_section'] );
 		}
 		return $instance;
 	}
@@ -768,6 +754,20 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		}
 		
 		return $location;
+	}
+	
+	static function get_api_key( $instance ) {
+		$widget = new self();
+		$global_settings = $widget->get_global_settings();
+		if ( ! empty( $global_settings['api_key'] ) ) {
+			return $global_settings['api_key'];
+		}
+		
+		if ( ! empty( $instance['api_key_section'] ) && ! empty( $instance['api_key_section']['api_key'] ) ) {
+			return $instance['api_key_section']['api_key'];
+		}
+		
+		return '';
 	}
 }
 

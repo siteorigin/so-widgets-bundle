@@ -458,15 +458,19 @@ jQuery(function ($) {
 				}
 			}, 100 );
 		} else {
-			var apiUrl = 'https://maps.googleapis.com/maps/api/js?callback=soGoogleMapInitialize';
+			
+			if ( ! apiKey ) {
+				console.warn( 'SiteOrigin Google Maps: Could not find API key. Google Maps API key is required.' );
+				apiKey = '';
+			}
+			
+			// Try to load even if API key is missing to allow Google Maps API to provide it's own warnings/errors about missing API key.
+			var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&callback=soGoogleMapInitialize';
 
 			if ( libraries && libraries.length ) {
 				apiUrl += '&libraries=' + libraries.join(',');
 			}
 
-			if ( apiKey ) {
-				apiUrl += '&key=' + apiKey;
-			}
 
 			// This allows us to "catch" Google Maps JavaScript API errors and do a bit of custom handling. In this case,
 			// we display a user-specified fallback image if there is one.

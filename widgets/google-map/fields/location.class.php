@@ -18,14 +18,20 @@ class SiteOrigin_Widget_Field_Location extends SiteOrigin_Widget_Field_Base {
 		} else if ( ! empty( $value['name'] ) ) {
 			$address = $value['name'];
 		}
+		
+		$api_key = SiteOrigin_Widget_GoogleMap_Widget::get_api_key( $instance );
+		
 		?>
 		<input type="text" value="<?php echo esc_attr( $address ) ?>"
 			class="widefat siteorigin-widget-location-input"/>
-		<input type="hidden"
-				 class="siteorigin-widget-input location-field-data"
-				 value="<?php echo esc_attr( json_encode( $value ) ); ?>"
-				 name="<?php echo esc_attr( $this->element_name ) ?>"
-				 id="<?php echo esc_attr( $this->element_id ) ?>"/>
+		<input
+			type="hidden"
+			class="siteorigin-widget-input location-field-data"
+			data-api-key="<?php echo esc_attr( $api_key ); ?>"
+			value="<?php echo esc_attr( json_encode( $value ) ); ?>"
+			name="<?php echo esc_attr( $this->element_name ) ?>"
+			id="<?php echo esc_attr( $this->element_id ) ?>"
+		/>
 		<?php
 	}
 	
