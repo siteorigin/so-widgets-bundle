@@ -417,7 +417,12 @@ var sowbForms = window.sowbForms || {};
 						if ( widgetFieldId !== false && ! emitter.hasOwnProperty( 'widgetFieldId' ) ) {
 							emitter.widgetFieldId = widgetFieldId;
 							emitter.args = emitter.args.map(function (arg) {
-								return arg + '_' + widgetFieldId;
+								if ( emitter.callback === 'conditional' ) {
+									arg = arg.replace( /(.*)(\[.*)/, '$1_' + widgetFieldId + '$2' );
+								} else {
+									arg = arg + '_' + widgetFieldId;
+								}
+								return arg;
 							});
 						}
 
