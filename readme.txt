@@ -65,6 +65,9 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.15.2 - 18 February 2019 =
+* Tabs: Set default tab position to top.
+
 = 1.15.1 - 15 February 2019 =
 * Google maps: Use correct locations for static maps.
 
