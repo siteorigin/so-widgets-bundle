@@ -5,6 +5,7 @@ Widget Name: Social Media Buttons
 Description: Customizable buttons which link to all your social media profiles.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/social-media-buttons-widget/
 */
 
 
@@ -303,6 +304,16 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		return array(
 			'less' => $this->get_less_variables($instance),
 			'networks' => $networks
+		);
+	}
+
+	function get_form_teaser(){
+		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
+
+		return sprintf(
+			__( 'Add custom social networks with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/social-widgets" target="_blank" rel="noopener noreferrer">',
+			'</a>'
 		);
 	}
 }

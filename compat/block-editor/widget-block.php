@@ -1,10 +1,10 @@
 <?php
 
-class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
+class SiteOrigin_Widgets_Bundle_Widget_Block {
 	/**
 	 * Get the singleton instance
 	 *
-	 * @return SiteOrigin_Widgets_Bundle_Gutenberg_Block
+	 * @return SiteOrigin_Widgets_Bundle_Widget_Block
 	 */
 	public static function single() {
 		static $single;
@@ -30,32 +30,36 @@ class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
 			array( 'wp-editor', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-compose' ),
 			SOW_BUNDLE_VERSION
 		);
+		
+		global $wp_widget_factory;
+		$so_widgets = array();
+		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
+			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
+				$so_widgets[] = array(
+					'name' => preg_replace( '/^SiteOrigin /', '', $widget_obj->name ),
+					'class' => $class,
+				);
+			}
+		}
+		
 		wp_localize_script(
 			'sowb-widget-block',
-			'sowbGutenbergAdmin',
+			'sowbBlockEditorAdmin',
 			array(
+				'widgets' => $so_widgets,
 				'restUrl' => esc_url_raw( rest_url() ),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
 				'confirmChangeWidget' => __( 'Selecting a different widget will revert any changes. Continue?', 'so-widgets-bundle' ),
 			)
 		);
+		if ( function_exists( 'wp_set_script_translations' ) ) {
+			wp_set_script_translations( 'sowb-widget-block', 'so-widgets-bundle' );
+		}
 		
 		$so_widgets_bundle = SiteOrigin_Widgets_Bundle::single();
 		// This is to ensure necessary scripts can be enqueued for previews.
 		$so_widgets_bundle->register_general_scripts();
-		
-		global $wp_widget_factory;
-		
-		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
-			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
-				/* @var $widget_obj SiteOrigin_Widget */
-				ob_start();
-				$widget_obj->form( array() );
-				// Enqueue scripts for previews.
-				$widget_obj->widget( array(), array() );
-				ob_clean();
-			}
-		}
+		$so_widgets_bundle->enqueue_registered_widgets_scripts();
 	}
 	
 	public function render_widget_block( $attributes ) {
@@ -74,16 +78,25 @@ class SiteOrigin_Widgets_Bundle_Gutenberg_Block {
 		$instance = $attributes['widgetData'];
 		
 		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
+			$GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] = true;
 			ob_start();
 			/* @var $widget SiteOrigin_Widget */
 			$instance = $widget->update( $instance, $instance );
 			$widget->widget( array(), $instance );
 			$rendered_widget = ob_get_clean();
+			unset( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
 		} else {
-			$rendered_widget = new WP_Error( '', 'Invalid widget class.' );
+			return '<div>'.
+				   sprintf(
+			   			__( 'Invalid widget class %s. Please make sure the widget has been activated in %sSiteOrigin Widgets%s.', 'so-widgets-bundle' ),
+					   $widget_class,
+					   '<a href="' . admin_url( 'plugins.php?page=so-widgets-plugins' ) . '">',
+					   '</a>'
+				   ) .
+				   '</div>';
 		}
 		return $rendered_widget;
 	}
 }
 
-SiteOrigin_Widgets_Bundle_Gutenberg_Block::single();
+SiteOrigin_Widgets_Bundle_Widget_Block::single();

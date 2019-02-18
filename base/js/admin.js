@@ -417,7 +417,12 @@ var sowbForms = window.sowbForms || {};
 						if ( widgetFieldId !== false && ! emitter.hasOwnProperty( 'widgetFieldId' ) ) {
 							emitter.widgetFieldId = widgetFieldId;
 							emitter.args = emitter.args.map(function (arg) {
-								return arg + '_' + widgetFieldId;
+								if ( emitter.callback === 'conditional' ) {
+									arg = arg.replace( /(.*)(\[.*)/, '$1_' + widgetFieldId + '$2' );
+								} else {
+									arg = arg + '_' + widgetFieldId;
+								}
+								return arg;
 							});
 						}
 
@@ -549,33 +554,33 @@ var sowbForms = window.sowbForms || {};
 						$(input).data('repeater-positions', pos);
 					});
 				});
-
+				
 				// Update the field names for all the input items
-				$$.find('.siteorigin-widget-input').each(function (i, input) {
-					var $in = $(input);
-					var pos = $in.data('repeater-positions');
-
-					if (typeof pos !== 'undefined') {
-						var newName = $in.attr('data-original-name');
-
-						if (!newName) {
-							$in.attr('data-original-name', $in.attr('name'));
-							newName = $in.attr('name');
+				$$.find('.siteorigin-widget-input').each( function ( i, input ) {
+					var $in = $( input );
+					var pos = $in.data( 'repeater-positions' );
+					
+					if ( typeof pos !== 'undefined' ) {
+						var newName = $in.attr( 'data-original-name' );
+						
+						if ( !newName ) {
+							$in.attr( 'data-original-name', $in.attr( 'name' ) );
+							newName = $in.attr( 'name' );
 						}
-						if (!newName) {
+						if ( !newName ) {
 							return;
 						}
-
-						if (pos) {
-							for (var k in pos) {
-								newName = newName.replace('#' + k + '#', pos[k]);
+						
+						if ( pos ) {
+							for ( var k in pos ) {
+								newName = newName.replace( '#' + k + '#', pos[ k ] );
 							}
 						}
-						$in.attr('name', newName);
+						$in.attr( 'name', newName );
 					}
-				});
-
-				if (!$$.data('initialSetup')) {
+				} );
+				
+				if ( !$$.data( 'initialSetup' ) ) {
 					// Setup default checked values, now that we've updated input names.
 					// Without this radio inputs in repeaters will be rendered as if they all belong to the same group.
 					$$.find('.siteorigin-widget-input').each(function (i, input) {
@@ -656,7 +661,18 @@ var sowbForms = window.sowbForms || {};
 					$$.attr('name', $(this).data('name'));
 				}
 			});
-			var repeaterHtml = repeaterObject.html().replace(/_id_/g, $nextIndex);
+			
+			// Replace repeater item id placeholders with the index of the repeater item.
+			var repeaterHtml = '';
+			repeaterObject.find( '> .siteorigin-widget-field' )
+			.each( function ( index, element ) {
+				var html = element.outerHTML;
+				// Skip child repeaters, so they can setup their own id's when necessary.
+				if ( ! $( element ).is( '.siteorigin-widget-field-type-repeater' ) ) {
+					html = html.replace( /_id_/g, $nextIndex );
+				}
+				repeaterHtml += html;
+			} );
 
 			var readonly = typeof $el.attr('readonly') !== 'undefined';
 			var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
@@ -949,6 +965,10 @@ var sowbForms = window.sowbForms || {};
 			callback(window.sowVars[widget][key]);
 		}
 	};
+	
+	sowbForms.getWidgetIdBase = function ( formContainer ) {
+		return formContainer.data( 'id-base' );
+	};
 
 	sowbForms.getWidgetFormValues = function ( formContainer ) {
 
@@ -1195,8 +1215,13 @@ var sowbForms = window.sowbForms || {};
 				else {
 					$$.val( value );
 				}
-			}
-			else {
+			} else if ( $$.is( '.panels-data' ) ) {
+				$$.val( value );
+				var builder = $$.data( 'builder' );
+				if ( builder ) {
+					builder.setDataField( $$ );
+				}
+			} else {
 				$$.val( value );
 			}
 			
@@ -1221,17 +1246,17 @@ var sowbForms = window.sowbForms || {};
 		});
 	}
 	
-	if ( $body.hasClass('gutenberg-editor-page') ) {
-		// Setup new widgets when they're added in the customizer interface
+	if ( $body.hasClass('block-editor-page') ) {
+		// Setup new widgets when they're previewed in the block editor.
 		$(document).on('panels_setup_preview', function () {
-			$( sowb ).trigger( 'setup_widgets' );
+			$( sowb ).trigger( 'setup_widgets', { preview: true } );
 		});
 	}
 
 	$( document ).on( 'open_dialog', function ( e, dialog ) {
 		// When we open a Page Builder edit widget dialog
 		if ( dialog.$el.find( '.so-panels-dialog' ).is( '.so-panels-dialog-edit-widget' ) ) {
-			var $fields = $( e.target ).find( '.siteorigin-widget-form-main' ).find( '> .siteorigin-widget-field' );
+			var $fields = dialog.$el.find( '.siteorigin-widget-form-main' ).find( '> .siteorigin-widget-field' );
 			$fields.trigger( 'sowsetupformfield' );
 		}
 	});

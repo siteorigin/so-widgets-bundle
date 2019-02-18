@@ -9,19 +9,20 @@
 
 ?>
 
-<?php if($posts->have_posts()) : ?>
+<?php if(! empty( $posts ) && $posts->have_posts() ) : ?>
 	<div class="sow-carousel-title">
 		<?php if( ! empty( $title ) ) echo $args['before_title'] . esc_html( $title ) . $args['after_title'] ?>
 
-		<a href="#" class="sow-carousel-next" title="<?php esc_attr_e('Next', 'so-widgets-bundle') ?>"></a>
-		<a href="#" class="sow-carousel-previous" title="<?php esc_attr_e('Previous', 'so-widgets-bundle') ?>"></a>
+		<a href="#" class="sow-carousel-next" title="<?php esc_attr_e('Next', 'so-widgets-bundle') ?>" aria-label="<?php esc_attr_e( 'Next Posts', 'so-widgets-bundle') ?>" role="button"></a>
+		<a href="#" class="sow-carousel-previous" title="<?php esc_attr_e('Previous', 'so-widgets-bundle') ?>" aria-label="<?php esc_attr_e( 'Previous Posts', 'so-widgets-bundle') ?>" role="button"></a>
+
 	</div>
 
 	<div class="sow-carousel-container<?php if( is_rtl() ) echo ' js-rtl' ?>">
 
-		<a href="#" class="sow-carousel-previous" title="<?php esc_attr_e('Previous', 'so-widgets-bundle') ?>"></a>
+		<a href="#" class="sow-carousel-previous" title="<?php esc_attr_e('Previous', 'so-widgets-bundle') ?>" aria-label="<?php esc_attr_e( 'Previous Posts', 'so-widgets-bundle') ?>" role="button"></a>
 
-		<a href="#" class="sow-carousel-next" title="<?php esc_attr_e('Next', 'so-widgets-bundle') ?>"></a>
+		<a href="#" class="sow-carousel-next" title="<?php esc_attr_e('Next', 'so-widgets-bundle') ?>" aria-label="<?php esc_attr_e( 'Next Posts', 'so-widgets-bundle') ?>" role="button"></a>
 
 		<div class="sow-carousel-wrapper"
 		     data-found-posts="<?php echo esc_attr($posts->found_posts) ?>"

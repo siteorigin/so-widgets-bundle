@@ -5,6 +5,7 @@ Widget Name: Contact Form
 Description: A light weight contact form builder.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/contact-form-widget/
 */
 
 class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
@@ -753,6 +754,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_less_variables( $instance ) {
+		if ( empty( $instance['design'] ) ) {
+			return;
+		}
 		if ( empty( $instance['design']['labels']['font'] ) ) {
 			$instance['design']['labels'] = array( 'font' => '' );
 		}
@@ -965,11 +969,10 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 * Ajax action handler to send the form
 	 */
 	function contact_form_action( $instance, $storage_hash ) {
-		if ( ! wp_verify_nonce( $_POST['_wpnonce'], '_contact_form_submit' ) ) {
+		if ( empty( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], '_contact_form_submit' ) ) {
 			// Using `return false;` instead of `wp_die` because this function may sometimes be called as a side effect
-			// of trying to enqueue scripts required for the front end. In those cases `$_POST['_wpnonce']` doesn't exist
-			// and calling `wp_die` will halt script execution and break things. Ideally it should be possible to enqueue
-			// front end scripts without calling widgets' render functions, but that will mean a fairly large refactor.
+			// of trying to enqueue scripts required for the front end or when previewing widgets e.g. in the block editor.
+			// In those cases `$_POST['_wpnonce']` doesn't exist and calling `wp_die` will halt script execution and break things.
 			return false;
 		}
 		if ( empty( $_POST['instance_hash'] ) || $_POST['instance_hash'] != $storage_hash ) {

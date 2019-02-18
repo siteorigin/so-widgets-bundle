@@ -83,6 +83,7 @@ jQuery( function ( $ ) {
 					return;
 				}
 
+				var $newTab;
 				// did the user press left arrow?
 				if ( e.keyCode === 37 ) {
 					// Check if there are any additional tabs to the left
@@ -102,11 +103,11 @@ jQuery( function ( $ ) {
 						$newTab = $currentTab.next();
 					}
 				}
-				if ( $currentTab == $newTab ){
+				if ( $currentTab === $newTab ){
 					return;
 				}
 				$newTab.focus();
-				selectTab( $newTab.get(0) );				
+				selectTab( $newTab.get(0) );
 			} );
 			
 			if ( useAnchorTags ) {

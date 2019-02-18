@@ -1,12 +1,12 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 4.2
-Tested up to: 4.9.1
+Tested up to: 5.0
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
 Contributors: gpriday, braam-genis
-Donate link: https://siteorigin.com/downloads/contribution/
+Donate link: https://siteorigin.com/downloads/premium/
 
 The SiteOrigin widget bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colours and 1500+ icons.
 
@@ -64,6 +64,90 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.15.0 - 14 February 2019 =
+* Location field: New specialized admin form field which autocompletes addresses using the Google Maps places library.
+* Google maps: Moved global API key override to `modify_instance` to make key available in admin form too.
+* Google maps: Auto-migration of locations to new location field format.
+* Update LESS PHP library with fixes for PHP 7.3 compatibility.
+* Features: Apply text styles to all features content, not just `<p>` tags.
+* Social Media: New networks: Bandcamp, Goodreads, Telegram, Strava, Blogger.
+* Accordion: Fix issue preventing use of numbers in panel titles.
+* Block editor: Preview fixes.
+* Beaver Builder compat: Fix widgets failing to update and CSS for FontAwesome icons.
+
+= 1.14.1 - 9 January 2019 =
+* Icon field: Set correct value of currently selected icon for non-FA icons.
+* Icon field: Avoid requiring that third party icon families include a `filter.php` file.
+* Widget block: Use JS array reduce function instead of lodash.
+* Allow widgets registered by instance.
+* Multi-measurement field: Fix layout.
+* Block editor: Send widgetData when fetching widget forms.
+* Tinymce field: Prevent JS console errors for hidden fields.
+* Order field: Additional sanitization before rendering.
+
+= 1.14.0 - 4 January 2019 =
+* Accordion: allow multiple panels with the same title.
+* Actions when widgets' CSS files are created/deleted.
+* Compat fixes for PHP 7.3
+* Indicate when 'setup_widgets' is triggered for previews.
+* Accordion: Debounce window.location.hash updates to prevent incorrect states.
+* Don't remove FitText window listener to ensure previously set up FitText elements still work.
+* Icon field: Show loading indicator while icons are loading.
+* Widget documentation links.
+* Icons: Update to use latest FontAwesome icon sets.
+* Sliders: Resize slides when widgets are set up.
+* Elementor compat: Directly enqueue necessary scripts and styles for previews.
+* Allow widget headers to be translated.
+* Accordion: Keep the clicked panel in the viewport, if it moves out.
+* TinyMCE field: Check if tinymce is available before using.
+
+= 1.13.4 - 6 December 2018 =
+* Widget block: Fix Layout Slider not being editable.
+* Widget block: Correct used of i18n for block editor.
+* Widget block: Fix previews.
+* Google map: Move global API key override to `modify_instance` to ensure key is available in form.
+* Widget block: Prevent multiple API requests.
+
+= 1.13.3 - 15 November 2018 =
+* Contact: Fix checkboxes and radio alignment on android.
+* FitText: Set minimum font size to ensure readability.
+* TinyMCE field: Use correct editor when block editor is present.
+* Google maps: Use correct info window text for markers.
+* TinyMCE: Remove 'editor-buttons' style enqueue causing conflicts.
+* TinyMCE field: Prevent adding multiple copies of media buttons.
+* Image widget: if no alt text is supplied add an empty alt attribute.
+* Repeaters: Reverted some commits causing multiple issues.
+* WP 5: Fixed some styles in the block editor.
+* Only setup form fields in the dialog when a PB edit widget dialog is opened.
+* Multi-measurement field: Fix autoFill in block editor and attempt to fix in PHP <= 5.3.
+
+= 1.13.2 - 31 October 2018 =
+* Builder field: Prevent error in PHP <= 5.4
+* Avoid replacing repeater item id placeholders for child repeaters.
+* Repeaters: In repeater setup, don't setup child repeaters.
+
+= 1.13.1 - 29 October 2018 =
+* Gutenberg: Alert user that changes will be lost when changing the widget type.
+* Tabs: Keyboard navigation and more accessibility improvements.
+* Google maps: Better geocoding request management.
+* TinyMCE field: Use correct selector for checking whether click target is editor switching tab.
+* Slider: Option to prevent hiding video on mobile.
+* Accordion: Deep-linking for child accordions.
+* Use inline CSS fallback if writing to file failed.
+* Better FitText compressor description.
+* Delete old widget styles when updating widgets.
+* Layout Slider: Resoonsive height.
+* Accordion: Expand when user is printing.
+* Features: Text case adjustments and formatting.
+* Beaver Builder: Dark styling.
+* Builder field: Allow double-encoding to allow already encoded text in editors.
+* Contact form: Prevent adding the anchor again if it's already been added.
+* Contact form: Attempt to scroll to contact form after submitting, so result is visible.
+* Builder field: Set data correctly from JS.
+* Builder field: Don't encode already JSON encoded values.
+* Gutenberg: Allow editing page containing deactivated widget.
+* Gutenberg: Reset global `$post` after enqueueing widgets' scripts and styles, which might run secondary queries.
 
 = 1.13.0 - 13 September 2018 =
 * SiteOrigin Widgets Gutenberg block!

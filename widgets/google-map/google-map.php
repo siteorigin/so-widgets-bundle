@@ -5,6 +5,7 @@ Widget Name: Google Maps
 Description: A highly customisable Google Maps widget. Help your site find its place and give it some direction.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/google-maps-widget/
 */
 
 class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
@@ -22,17 +23,26 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			false,
 			plugin_dir_path(__FILE__)
 		);
+		
+		add_filter( 'siteorigin_widgets_field_class_paths', array( $this, 'add_location_field_path' ) );
+	}
+	
+	// Tell the autoloader where to look for the location field class.
+	function add_location_field_path( $class_paths ) {
+		
+		$class_paths[] = plugin_dir_path( __FILE__ ) . 'fields/';
+		
+		return $class_paths;
 	}
 
 	function initialize() {
-
-		add_action( 'siteorigin_widgets_before_widget_sow-google-map', array( $this, 'enqueue_widget_scripts' ) );
+		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-google-map', array( $this, 'enqueue_widget_scripts' ) );
 	}
 
 	function get_widget_form(){
 		return array(
 			'map_center'      => array(
-				'type'        => 'textarea',
+				'type'        => 'location',
 				'rows'        => 2,
 				'label'       => __( 'Map center', 'so-widgets-bundle' ),
 				'description' => sprintf(
@@ -219,16 +229,15 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'marker_positions'  => array(
 						'type'       => 'repeater',
 						'label'      => __( 'Marker positions', 'so-widgets-bundle' ),
-						'description' => __( 'Please be aware that adding more than 10 markers may cause a slight delay before they appear, due to Google Geocoding API rate limits.', 'so-widgets-bundle' ),
 						'item_name'  => __( 'Marker', 'so-widgets-bundle' ),
 						'item_label' => array(
-							'selector'     => "[id*='marker_positions-place']",
+							'selector'     => ".siteorigin-widget-location-input",
 							'update_event' => 'change',
 							'value_method' => 'val'
 						),
 						'fields'     => array(
 							'place' => array(
-								'type'  => 'textarea',
+								'type'  => 'location',
 								'rows'  => 2,
 								'label' => __( 'Place', 'so-widgets-bundle' )
 							),
@@ -512,7 +521,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			}
 		}
 		$breakpoint = ! empty( $global_settings['responsive_breakpoint'] ) ? $global_settings['responsive_breakpoint'] : '780';
-
+    
 		$fallback_image = '';
 		if ( ! empty ( $instance['settings']['fallback_image'] ) ) {
 			$fallback_image = siteorigin_widgets_get_attachment_image(
@@ -542,15 +551,20 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 			$markerpos = isset( $markers['marker_positions'] ) ? $markers['marker_positions'] : '';
 			if( ! empty($markerpos)) {
-				foreach ($markerpos as $key => $pos) {
-					if(! empty($pos['custom_marker_icon'])) {
+				foreach ($markerpos as &$pos) {
+					if ( ! empty( $pos['custom_marker_icon'] ) ) {
 						$icon_src = wp_get_attachment_image_src( $pos['custom_marker_icon'] );
-						$markerpos[$key]['custom_marker_icon'] = $icon_src[0];
+						$pos['custom_marker_icon'] = $icon_src[0];
+					}
+					if ( ! empty( $pos['place'] ) ) {
+						$pos['place'] = $this->get_location_string( $pos['place'] );
 					}
 				}
 			}
-
-			// Work out what we need to set gestureHandling to
+      
+			$location = $this->get_location_string( $instance['map_center'] );
+      
+      // Work out what we need to set gestureHandling to
 			if ( ! $settings['draggable'] ) {
 				$gestureHandling = 'none';
 			} elseif ( ! $settings['scroll_zoom'] ) {
@@ -558,9 +572,9 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			} else {
 				$gestureHandling = 'greedy';
 			}
-
+      
 			$map_data = siteorigin_widgets_underscores_to_camel_case( array(
-				'address'           => $instance['map_center'],
+				'address'           => $location,
 				'zoom'              => $settings['zoom'],
 				'mobileZoom'        => $settings['mobile_zoom'],
 				'gestureHandling'   => $gestureHandling,
@@ -580,16 +594,31 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			));
 
 			return array(
-				'map_id'   => md5( $instance['map_center'] ),
+				'map_id'   => md5( json_encode( $instance ) ),
 				'height'   => $settings['height'],
 				'map_data' => $map_data,
 				'fallback_image_data' => array( 'img' => $fallback_image ),
 			);
 		}
 	}
+	
+	private function get_location_string( $location_data ) {
+		$location = '';
+		if ( ! empty( $location_data['location'] ) ) {
+			$location = $location_data['location'];
+			$location = preg_replace( '/[\(\)]/', '', $location );
+		} else if ( ! empty( $location_data['address'] ) ) {
+			$location = $location_data['address'];
+		} else if ( ! empty( $location_data['name'] ) ) {
+			$location = $location_data['name'];
+		}
+		
+		return $location;
+	}
 
 	public function enqueue_widget_scripts( $instance ) {
-		if ( $instance['settings']['map_type'] == 'interactive' ) {
+		if ( ! empty( $instance['settings']['map_type'] ) && $instance['settings']['map_type'] == 'interactive' ||
+			 $this->is_preview( $instance ) ) {
 			wp_enqueue_script( 'sow-google-map' );
 
 			wp_enqueue_style(
@@ -608,7 +637,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					),
 				)
 			);
-		} else {
+		}
+		
+		if ( ! empty( $instance['settings']['map_type'] ) && $instance['settings']['map_type'] == 'static' ||
+			 $this->is_preview( $instance ) ) {
 			wp_enqueue_script(
 				'sow-google-map-static',
 				plugin_dir_url( __FILE__ ) . 'js/static-map' . SOW_BUNDLE_JS_SUFFIX . '.js',
@@ -669,8 +701,9 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	private function get_static_image_src( $instance, $width, $height, $styles ) {
+		$location = $this->get_location_string( $instance['map_center'] );
 		$src_url = "https://maps.googleapis.com/maps/api/staticmap?";
-		$src_url .= "center=" . $instance['map_center'];
+		$src_url .= "center=" . $location;
 		$src_url .= "&zoom=" . $instance['settings']['zoom'];
 		$src_url .= "&size=" . $width . "x" . $height;
 
@@ -727,7 +760,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				if ( ! empty( $markers_st ) ) {
 					$markers_st .= "|";
 				}
-				$markers_st .= $instance['map_center'];
+				$markers_st .= $location;
 			}
 
 			if ( ! empty( $markers['marker_positions'] ) ) {
@@ -735,7 +768,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					if ( ! empty( $markers_st ) ) {
 						$markers_st .= "|";
 					}
-					$markers_st .= urlencode( $marker['place'] );
+					$markers_st .= urlencode( $this->get_location_string( $marker['place'] ) );
 				}
 			}
 			$markers_st = '&markers=' . $markers_st;
@@ -744,6 +777,62 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 		return $src_url;
 	}
+	
+	public function modify_instance( $instance ) {
+		
+		if ( ! empty( $instance['map_center'] ) && empty( $instance['map_center']['name'] ) ) {
+			$instance['map_center'] = $this->migrate_location( $instance['map_center'] );
+		}
+		
+		if ( ! empty( $instance['markers'] ) && ! empty( $instance['markers']['marker_positions'] ) ) {
+			foreach ( $instance['markers']['marker_positions'] as &$marker_position ) {
+				if ( ! empty( $marker_position['place'] ) && empty( $marker_position['place']['name'] ) ) {
+					$marker_position['place'] = $this->migrate_location( $marker_position['place'] );
+				}
+			}
+		}
+		
+		if ( empty( $instance['api_key_section'] ) ) {
+			$instance['api_key_section'] = array();
+		}
+		if ( empty( $instance['api_key_section']['api_key'] ) ) {
+			$global_settings = $this->get_global_settings();
+			if ( ! empty( $global_settings['api_key'] ) ) {
+				$instance['api_key_section']['api_key'] = $global_settings['api_key'];
+			}
+		}
+		return $instance;
+	}
+	
+	private function migrate_location( $location_data ) {
+		
+		if ( is_string( $location_data ) ) {
+			$raw_location = json_decode( $location_data, true );
+		} else {
+			$raw_location = $location_data;
+		}
+		
+		$location = array();
+		// If it's not valid JSON
+		if ( $raw_location == null ) {
+			$location = array( 'address' => $location_data );
+		} else if ( is_array( $raw_location ) ) {
+			$location = array();
+			
+			if ( ! empty( $raw_location['name'] ) ) {
+				$location['name'] = $raw_location['name'];
+			}
+			if ( ! empty( $raw_location['address'] ) ) {
+				$location['address'] = $raw_location['address'];
+			}
+			if ( ! empty( $raw_location['location'] ) ) {
+				$location['location'] = $raw_location['location'];
+			}
+		}
+		
+		return $location;
+	}
 }
 
 siteorigin_widget_register( 'sow-google-map', __FILE__, 'SiteOrigin_Widget_GoogleMap_Widget' );
+

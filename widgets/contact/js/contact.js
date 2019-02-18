@@ -25,9 +25,7 @@ sowb.SiteOriginContactForm = {
 						$container.siblings( '.sow-tabs-tab-container' ).find( '> .sow-tabs-tab' ).eq( tabIndex ).click();
 					}
 				}
-				$( 'html, body' ).animate( {
-					scrollTop: formPosition
-				}, 1000 );
+				$( 'html, body' ).scrollTop( formPosition );
 				
 				if ( formSubmitSuccess ) {
 					// The form was submitted successfully, so we don't need to do anything else.

@@ -31,7 +31,7 @@ var sowb = window.sowb || {};
 			// Loop through the form data.
 			for ( i = 0; i < data.length; i++ ) {
 				
-				value = data[ i ].value.replace( /\r/gm, '' );
+				value = data[ i ].value.replace( /\r/gm, '' ).replace( /&#39;/g, "'" );
 				
 				// Don't save text editor textareas.
 				if ( data[ i ].name.indexOf( 'flrich' ) > -1 ) {
@@ -52,7 +52,7 @@ var sowb = window.sowb || {};
 							continue;
 						}
 						
-						keys.push( matches[ k ].replace( /\[|\]/g, '' ) );
+						keys.push( matches[ k ].replace( /[\[\]]/g, '' ) );
 					}
 
 
@@ -108,6 +108,14 @@ var sowb = window.sowb || {};
 				}
 			}
 			
+			// In the case of multi-select or checkboxes we need to put the blank setting back in.
+			$.each( form.find( '[name]' ), function( key, input ) {
+				var name = $( input ).attr( 'name' ).replace( /\[(.*)\]/, '' );
+				if ( ! ( name in settings ) ) {
+					settings[ name ] = '';
+				}
+			});
+			
 			if ( typeof FLBuilder._getOriginalSettings === 'function' ) {
 				// Merge in the original settings in case legacy fields haven't rendered yet.
 				settings = $.extend( {}, FLBuilder._getOriginalSettings( form ), settings );
@@ -115,7 +123,8 @@ var sowb = window.sowb || {};
 			
 			var widgetForm = form.find( '.siteorigin-widget-form' );
 			if ( widgetForm.length ) {
-				settings[ name ] = sowbForms.getWidgetFormValues( widgetForm );
+				var widgetSettingKey = 'widget-' + sowbForms.getWidgetIdBase( widgetForm );
+				settings[ widgetSettingKey ] = sowbForms.getWidgetFormValues( widgetForm );
 			}
 			// Return the settings.
 			return settings;
@@ -125,7 +134,7 @@ var sowb = window.sowb || {};
 	// To ensure necessary scripts are executed again when settings are changed
 	$( document ).on( 'fl-builder.preview-rendered fl-builder.layout-rendered', '.fl-builder-content', function() {
 		// Trigger Widgets Bundle widgets to setup
-		$( sowb ).trigger( 'setup_widgets' );
+		$( sowb ).trigger( 'setup_widgets', { preview: true } );
 	} );
 
 })(jQuery);

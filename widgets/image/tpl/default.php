@@ -19,7 +19,7 @@
 ?>
 <div class="sow-image-container">
 <?php if ( ! empty( $url ) ) : ?><a href="<?php echo sow_esc_url( $url ) ?>" <?php foreach( $link_attributes as $att => $val ) if ( ! empty( $val ) ) : echo $att.'="' . esc_attr( $val ) . '" '; endif; ?>><?php endif; ?>
-	<img <?php foreach( $attributes as $n => $v ) if ( ! empty( $v ) ) : echo $n.'="' . esc_attr( $v ) . '" '; endif; ?>
+	<img <?php foreach( $attributes as $n => $v ) if ( $n === 'alt' || ! empty( $v ) ) : echo $n.'="' . esc_attr( $v ) . '" '; endif; ?>
 		class="<?php echo esc_attr( implode(' ', $classes ) ) ?>"/>
 <?php if ( ! empty( $url ) ) : ?></a><?php endif; ?>
 </div>

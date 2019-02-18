@@ -27,7 +27,7 @@ sowb.SiteOriginSlider = function($) {
 				active = $(newActive),
 				video = active.find('video.sow-background-element');
 
-			if( speed == undefined ) {
+			if( speed === undefined ) {
 				sentinel.css( 'height', active.outerHeight() );
 			}
 			else {
@@ -124,6 +124,7 @@ jQuery( function($){
 				};
 				// Setup each of the slider frames
 				$(window).on('resize panelsStretchRows', resizeFrames ).resize();
+				$(sowb).on('setup_widgets', resizeFrames );
 
 				// Set up the Cycle with videos
 				$$
@@ -171,7 +172,8 @@ jQuery( function($){
 						'speed' : settings.speed,
 						'timeout' : settings.timeout,
 						'swipe' : settings.swipe,
-						'swipe-fx' : 'scrollHorz'
+						'swipe-fx' : 'scrollHorz',
+						'log' : false,
 					} )	;
 
 				$$ .find('video.sow-background-element').on('loadeddata', function(){
@@ -199,10 +201,12 @@ jQuery( function($){
 						});
 				}
 
-				// Resize the sentinel when ever the window is resized
-				$( window ).resize( function(){
+				// Resize the sentinel when ever the window is resized, or when widgets are being set up.
+				var setupActiveSlide = function () {
 					siteoriginSlider.setupActiveSlide( $$, $$.find( '.cycle-slide-active' ) );
-				} );
+				};
+				$( window ).on( 'resize', setupActiveSlide );
+				$( sowb ).on( 'setup_widgets', setupActiveSlide );
 
 				// Setup clicks on the pagination
 				$p.find( '> li > a' ).click( function(e){

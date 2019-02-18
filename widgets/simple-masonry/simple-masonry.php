@@ -4,6 +4,7 @@ Widget Name: Simple Masonry Layout
 Description: A masonry layout for images. Images can link to your posts.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/simple-masonry-widget/
 */
 
 class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {

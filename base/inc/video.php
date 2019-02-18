@@ -46,6 +46,9 @@ class SiteOrigin_Video {
 			'autoplay' => $autoplay,
 		) ) );
 		
+		// Convert embed format to standard format to be compatible with wp_oembed_get
+		$src = preg_replace('/https?:\/\/www.youtube.com\/embed\/([^\/]+)/', 'https://www.youtube.com/watch?v=$1', $src);
+
 		$html = get_transient( 'sow-vid-embed[' . $hash . ']' );
 		if ( empty( $html ) ) {
 			$html = wp_oembed_get( $src, array( 'width' => $video_width ) );

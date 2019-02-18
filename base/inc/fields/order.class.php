@@ -8,7 +8,9 @@ class SiteOrigin_Widget_Field_Order extends SiteOrigin_Widget_Field_Base {
     protected $options;
 
     protected function render_field( $value, $instance ) {
-
+    
+		$value = $this->sanitize_field_input( $value, $instance );
+		
         if( ! empty( $this->options ) && ! empty( $value ) ) {
             ?><div class="siteorigin-widget-order-items"><?php
             foreach( $value as $key ) {
@@ -33,10 +35,14 @@ class SiteOrigin_Widget_Field_Order extends SiteOrigin_Widget_Field_Base {
     }
 
     protected function sanitize_field_input( $value, $instance ) {
-        if( ! is_array( $value ) ) {
-            $value = explode(',', $value);
-            $value = array_map( 'trim', $value );
-        }
+		if( is_string( $value ) ) {
+			$value = explode(',', $value);
+			$value = array_map( 'trim', $value );
+		}
+		
+		if ( ! is_array( $value ) ) {
+			$value = array();
+		}
 
         foreach( $value as $i => $k ) {
             if( empty( $this->options[$k] ) ) {

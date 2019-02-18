@@ -4,6 +4,7 @@ Widget Name: Accordion
 Description: An accordion to squeeze a lot of content into a small space.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
+Documentation: https://siteorigin.com/widgets-bundle/accordion-widget/
 */
 
 class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
@@ -152,6 +153,10 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 	}
 	
 	public function get_less_variables( $instance ) {
+		if ( empty( $instance['design'] ) ) {
+			return array();
+		}
+		
 		$design = $instance['design'];
 		
 		return array(
@@ -176,7 +181,8 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 		if( empty( $instance ) ) return array();
 		
 		$panels = empty( $instance['panels'] ) ? array() : $instance['panels'];
-		
+
+		$anchor_list = array();
 		foreach ( $panels as $i => &$panel ) {
 			if ( empty( $panel['before_title'] ) ) {
 				$panel['before_title'] = '';
@@ -193,9 +199,14 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 					$id .= '-' . $args['widget_id'];
 				}
 				$panel['anchor'] = $id . '-' . $i;
+			} else if ( isset( $anchor_list[ strtolower( $panel['title'] ) ] ) ) {
+				// Ensure this anchor is unique, if it's not, append the array key to the anchor.
+				$panel['anchor'] = $panel['title'] . "-$i-" . uniqid();
 			} else {
 				$panel['anchor'] = $panel['title'];
 			}
+
+			$anchor_list[ strtolower( $panel['anchor'] ) ] = true;
 		}
 		
 		
