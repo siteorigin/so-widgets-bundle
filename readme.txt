@@ -6,7 +6,7 @@ Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
 Contributors: gpriday, braam-genis
-Donate link: https://siteorigin.com/downloads/contribution/
+Donate link: https://siteorigin.com/downloads/premium/
 
 The SiteOrigin widget bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colours and 1500+ icons.
 
@@ -64,6 +64,17 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.15.0 - 14 February 2019 =
+* Location field: New specialized admin form field which autocompletes addresses using the Google Maps places library.
+* Google maps: Moved global API key override to `modify_instance` to make key available in admin form too.
+* Google maps: Auto-migration of locations to new location field format.
+* Update LESS PHP library with fixes for PHP 7.3 compatibility.
+* Features: Apply text styles to all features content, not just `<p>` tags.
+* Social Media: New networks: Bandcamp, Goodreads, Telegram, Strava, Blogger.
+* Accordion: Fix issue preventing use of numbers in panel titles.
+* Block editor: Preview fixes.
+* Beaver Builder compat: Fix widgets failing to update and CSS for FontAwesome icons.
 
 = 1.14.1 - 9 January 2019 =
 * Icon field: Set correct value of currently selected icon for non-FA icons.

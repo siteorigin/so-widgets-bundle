@@ -45,10 +45,26 @@ class SiteOrigin_Widget_Field_Location extends SiteOrigin_Widget_Field_Base {
 	}
 	
 	protected function sanitize_field_input( $value, $instance ) {
-		$location = json_decode( $value, true );
-		
-		if ( empty( $location['name'] ) && empty( $location['address'] ) && empty( $location['location'] ) ) {
+		if ( empty( $value ) ) {
 			return array();
+		}
+		if ( is_string( $value ) ) {
+			$decoded_value = json_decode( $value, true );
+			// If it's not valid JSON
+			if ( $decoded_value == null ) {
+				$decoded_value = array( 'address' => $value );
+			}
+		}
+		$location = array();
+		
+		if ( ! empty( $decoded_value['name'] ) ) {
+			$location['name'] = wp_kses_post( $decoded_value['name'] );
+		}
+		if ( ! empty( $decoded_value['address'] ) ) {
+			$location['address'] = wp_kses_post( $decoded_value['address'] );
+		}
+		if ( ! empty( $decoded_value['location'] ) ) {
+			$location['location'] = wp_kses_post( $decoded_value['location'] );
 		}
 		
 		return $location;

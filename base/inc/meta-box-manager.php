@@ -77,7 +77,12 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 				__( 'Widgets Bundle Post Meta Data', 'so-widgets-bundle' ),
 				array( $this, 'render_widgets_meta_box' ),
 				$post_type,
-				'advanced'
+				'advanced',
+				'default',
+				array(
+					'__back_compat_meta_box' => true,
+					'__block_editor_compatible_meta_box' => false,
+				)
 			);
 
 		}

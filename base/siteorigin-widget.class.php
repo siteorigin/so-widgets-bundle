@@ -337,11 +337,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 	
 	private function is_block_editor_page() {
+		$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		
 		// This is for the Gutenberg plugin.
-		$is_gutenberg_page = function_exists( 'is_gutenberg_page' ) && is_gutenberg_page();
+		$is_gutenberg_page = $current_screen != null &&
+							 function_exists( 'is_gutenberg_page' ) &&
+							 is_gutenberg_page();
 		// This is for WP 5 with the integrated block editor.
 		$is_block_editor = false;
-		$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
 		if ( ! empty( $current_screen ) && method_exists( $current_screen, 'is_block_editor' ) ) {
 			$is_block_editor = $current_screen->is_block_editor();
 		}
@@ -469,7 +472,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$instance['_sow_form_id'] = $id;
 		}
 		?>
-		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>" id="<?php echo $form_id ?>" data-class="<?php echo esc_attr( $this->widget_class ) ?>" style="display: none">
+		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr($class_name) ?>"
+			 id="<?php echo $form_id ?>" data-class="<?php echo esc_attr( $this->widget_class ) ?>"
+			 data-id-base="<?php echo esc_attr( $this->id_base ) ?>" style="display: none">
 			<?php
 			$this->display_teaser_message();
 			/* @var $field_factory SiteOrigin_Widget_Field_Factory */
