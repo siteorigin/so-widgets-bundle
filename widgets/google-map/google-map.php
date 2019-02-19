@@ -460,25 +460,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function modify_instance( $instance ) {
-		if ( ! empty( $instance['settings'] ) ) {
-			if ( empty( $instance['settings']['mobile_zoom'] ) ) {
-				// Check if a zoom is set, and if it is, set the mobile zoom to that
-				if ( empty( $instance['settings']['zoom'] ) ) {
-					$instance['settings']['mobile_zoom'] = 12;
-				} else {
-					$instance['settings']['mobile_zoom'] = $instance['settings']['zoom'];
-				}
-			}
-
-			if ( empty( $instance['settings']['height'] ) ) {
-				$instance['settings']['height'] = 480;
-			}
-		}
-
-		return $instance;
-	}
-
 	function get_template_name( $instance ) {
 		return $instance['settings']['map_type'] == 'static' ? 'static-map' : 'js-map';
 	}
@@ -764,6 +745,20 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 	
 	public function modify_instance( $instance ) {
+		if ( ! empty( $instance['settings'] ) ) {
+			if ( empty( $instance['settings']['mobile_zoom'] ) ) {
+				// Check if a zoom is set, and if it is, set the mobile zoom to that
+				if ( empty( $instance['settings']['zoom'] ) ) {
+					$instance['settings']['mobile_zoom'] = 12;
+				} else {
+					$instance['settings']['mobile_zoom'] = $instance['settings']['zoom'];
+				}
+			}
+
+			if ( empty( $instance['settings']['height'] ) ) {
+				$instance['settings']['height'] = 480;
+			}
+		}
 		
 		if ( ! empty( $instance['map_center'] ) && empty( $instance['map_center']['name'] ) ) {
 			$instance['map_center'] = $this->migrate_location( $instance['map_center'] );
