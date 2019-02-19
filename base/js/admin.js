@@ -175,26 +175,31 @@ var sowbForms = window.sowbForms || {};
 					var data = JSON.parse( sessionStorage.getItem( _sow_form_id ) );
 					if ( data ) {
 						if ( data['_sow_form_timestamp'] > _sow_form_timestamp ) {
-							var $newerNotification = $( '<div class="siteorigin-widget-form-notification">' +
-								'<span>' + soWidgets.backup.newerVersion + '</span>' +
-								'<a class="button button-small so-backup-restore">' + soWidgets.backup.restore + '</a>' +
-								'<a class="button button-small so-backup-dismiss">' + soWidgets.backup.dismiss + '</a>' +
-								'<div><small>' + soWidgets.backup.replaceWarning + '</small></div>' +
-								'</div>' );
-							$el.prepend( $newerNotification );
-	
-							$newerNotification.find( '.so-backup-restore' ).click( function () {
-								sowbForms.setWidgetFormValues( $mainForm, data );
-								$newerNotification.slideUp( 'fast', function () {
-									$newerNotification.remove();
-								} );
-							} );
-							$newerNotification.find( '.so-backup-dismiss' ).click( function () {
-								$newerNotification.slideUp( 'fast', function () {
-									sessionStorage.removeItem( _sow_form_id );
-									$newerNotification.remove();
-								} );
-							} );
+							var $newerNotification = sowbForms.displayNotice(
+								$el,
+								soWidgets.backup.newerVersion,
+								soWidgets.backup.replaceWarning,
+								[
+									{
+										label: soWidgets.backup.restore,
+										callback: function () {
+											sowbForms.setWidgetFormValues( $mainForm, data );
+											$newerNotification.slideUp( 'fast', function () {
+												$newerNotification.remove();
+											} );
+										},
+									},
+									{
+										label: soWidgets.backup.dismiss,
+										callback: function () {
+											$newerNotification.slideUp( 'fast', function () {
+												sessionStorage.removeItem( _sow_form_id );
+												$newerNotification.remove();
+											} );
+										},
+									},
+								]
+							);
 						} else {
 							sessionStorage.removeItem( _sow_form_id );
 						}
@@ -1229,6 +1234,38 @@ var sowbForms = window.sowbForms || {};
 				$$.trigger( 'change' );
 			}
 		});
+	};
+	
+	sowbForms.displayNotice = function ( $container, title, message, buttons ) {
+		
+		var $notice = $( '<div class="siteorigin-widget-form-notification"></div>' );
+		if ( title ) {
+			$notice.append( '<span>' + title + '</span>' );
+		}
+		
+		if ( buttons && buttons.length ) {
+			buttons.forEach( function ( button ) {
+				var buttonClasses = '';
+				if ( button.classes && button.classes.length ) {
+					buttonClasses = ' ' + button.classes.join( ' ' );
+				}
+				var $button = $( '<a class="button button-small' + buttonClasses + '">' + button.label + '</a>' );
+				
+				if ( button.url ) {
+					$button.attr( 'href', button.url );
+				}
+				if ( button.callback ) {
+					$button.on( 'click', callback );
+				}
+				
+				$notice.append( $button );
+			} );
+		}
+		if ( message ) {
+			$notice.append( '<div><small>' + message + '</small></div>' );
+		}
+		
+		$container.prepend( $notice );
 	};
 
 	// When we click on a widget top

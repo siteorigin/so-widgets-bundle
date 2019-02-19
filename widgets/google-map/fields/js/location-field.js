@@ -160,18 +160,28 @@ function sowbAdminGoogleMapInit() {
 			sowbForms.setupLocationFields();
 			return;
 		}
-		
-		var $apiKeyField = $( this ).closest( '.siteorigin-widget-form' ).find( 'input[type="text"][name*="api_key"]' ).first();
-		var apiKey = $apiKeyField.val();
-		if ( ! apiKey ) {
-			console.warn( 'SiteOrigin Google Maps Widget: Could not find API key. Google Maps API key is required.' );
-		}
-		
-		var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&libraries=places&callback=sowbAdminGoogleMapInit';
-		
-		$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );
-		
 		sowbForms.mapsInitializing = true;
+		
+		var apiKey = $( this ).find( '.location-field-data' ).data( 'apiKey' );
+		
+		if ( ! apiKey ) {
+			sowbForms.displayNotice(
+				$( this ).closest( '.siteorigin-widget-form' ),
+				soLocationField.missingApiKey,
+				'',
+				[
+					{
+						label: soLocationField.globalSettingsButtonLabel,
+						url: soLocationField.globalSettingsButtonUrl,
+					}
+				]
+			);
+			console.warn( 'SiteOrigin Google Maps Widget: Could not find API key. Google Maps API key is required.' );
+			apiKey = '';
+		}
+		// Try to load even if API key is missing to allow Google Maps API to provide it's own warnings/errors about missing API key.
+		var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&libraries=places&callback=sowbAdminGoogleMapInit';
+		$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );
 	} );
 
 } )( jQuery );
