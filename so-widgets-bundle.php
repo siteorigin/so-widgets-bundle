@@ -540,7 +540,8 @@ class SiteOrigin_Widgets_Bundle {
 	 */
 	function activate_widget( $widget_id, $include = true ){
 		$exists = false;
-		foreach( $this->widget_folders as $folder ) {
+		$widget_folders = $this->get_widget_folders();
+		foreach( $widget_folders as $folder ) {
 			if( !file_exists($folder . $widget_id . '/' . $widget_id . '.php') ) continue;
 			$exists = true;
 		}
@@ -560,7 +561,7 @@ class SiteOrigin_Widgets_Bundle {
 		// Now, lets actually include the files
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
-		foreach( $this->widget_folders as $folder ) {
+		foreach( $widget_folders as $folder ) {
 			if( !file_exists($folder . $widget_id . '/' . $widget_id . '.php') ) continue;
 			include_once $folder . $widget_id . '/' . $widget_id . '.php';
 
