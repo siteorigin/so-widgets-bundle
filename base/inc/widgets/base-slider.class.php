@@ -152,6 +152,17 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		);
 	}
 
+	function get_settings_form() {
+		return array(
+			'responsive_breakpoint' => array(
+				'type'        => 'measurement',
+				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
+				'default'     => '780px',
+				'description' => __( "This setting controls when the Slider will switch to the responsive mode. This breakpoint will only be used if always show navigation on mobile is enabled. The default value is 780px.", 'so-widgets-bundle' )
+			)
+		);
+	}
+
 	function slider_settings( $controls ){
 		return array(
 			'pagination'               => true,
