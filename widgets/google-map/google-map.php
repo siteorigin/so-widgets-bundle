@@ -478,13 +478,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 		$styles = $this->get_styles( $instance );
 
-		$global_settings = $this->get_global_settings();
-		if ( empty( $instance['api_key_section']['api_key'] ) ) {
-			if ( ! empty( $global_settings['api_key'] ) ) {
-				$instance['api_key_section']['api_key'] = $global_settings['api_key'];
-			}
-		}
-		$breakpoint = ! empty( $global_settings['responsive_breakpoint'] ) ? $global_settings['responsive_breakpoint'] : '780';
     
 		$fallback_image = '';
 		if ( ! empty ( $instance['settings']['fallback_image'] ) ) {
@@ -493,6 +486,8 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				$instance['settings']['fallback_image_size'],
 				false );
 		}
+		$global_settings = $this->get_global_settings();
+		$breakpoint = ! empty( $global_settings['responsive_breakpoint'] ) ? $global_settings['responsive_breakpoint'] : '780';
 
 		if ( $settings['map_type'] == 'static' ) {
 
