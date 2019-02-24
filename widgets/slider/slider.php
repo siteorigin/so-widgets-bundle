@@ -226,17 +226,6 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 		return $less;
 	}
 
-	function get_settings_form() {
-		return array(
-			'responsive_breakpoint' => array(
-				'type'        => 'measurement',
-				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
-				'default'     => '780px',
-				'description' => __( "This setting controls when the Slider will switch to the responsive mode. This breakpoint will only be used if always show navigation on mobile is enabled. The default value is 780px.", 'so-widgets-bundle' )
-			)
-		);
-	}
-
 	/**
 	 * Change the instance to the new one we're using for sliders
 	 *
@@ -268,14 +257,6 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			}
 
 		}
-		
-	if ( !empty( $instance['controls']['nav_always_show_mobile'] ) && $instance['controls']['nav_always_show_mobile'] ) {
-		$global_settings = $this->get_global_settings();
-
-		if ( ! empty( $global_settings['responsive_breakpoint'] ) ) {
-			$instance['controls']['breakpoint'] = $global_settings['responsive_breakpoint'];
-		}
-	}
 
 		return $instance;
 	}
