@@ -266,7 +266,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'styled_map_name'     => array(
 						'type'       => 'text',
 						'state_handler' => array(
-							'style_method[default]' => array('hide'),
+							'style_method[normal]' => array('hide'),
 							'_else[style_method]' => array('show'),
 						),
 						'label'      => __( 'Styled map name', 'so-widgets-bundle' )
