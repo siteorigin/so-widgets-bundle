@@ -29,7 +29,7 @@
 			'title' => $title,
 			'aria-label' => $title,
 		);
-		if( !empty( $instance['design']['new_window'] ) ) {
+		if ( !empty( $instance['design']['new_window'] ) && $network['name'] != 'phone' ) {
 			$button_attributes['target'] = '_blank';
 			$button_attributes['rel'] = 'noopener noreferrer';
 		}
