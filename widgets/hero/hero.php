@@ -423,21 +423,10 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		$global_settings = $this->get_global_settings();
 
 		if ( ! empty( $global_settings['responsive_breakpoint'] ) ) {
-			$less_vars['responsive_breakpoint'] = $global_settings['responsive_breakpoint'];
+			$less['responsive_breakpoint'] = $global_settings['responsive_breakpoint'];
 		}
 
 		return $less;
-	}
-
-	function get_settings_form() {
-		return array(
-			'responsive_breakpoint' => array(
-				'type'        => 'measurement',
-				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
-				'default'     => '780px',
-				'description' => __( 'This setting controls when the Hero widget will switch to the responsive height for slides. This breakpoint will only be used if a responsive height is set in the hero settings. The default value is 780px', 'so-widgets-bundle' )
-			)
-		);
 	}
 
 	function add_default_measurement_unit($val) {
