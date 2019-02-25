@@ -573,14 +573,14 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 	private function get_styles( $instance ) {
 		$style_config = $instance['styles'];
+		$styles = array();
+		$styles['map_name'] = ! empty( $style_config['styled_map_name'] ) ? $style_config['styled_map_name'] : __( 'Custom Map', 'so-widgets-bundle' );
+		
 		switch ( $style_config['style_method'] ) {
 			case 'custom':
-				if ( empty( $style_config['custom_map_styles'] ) ) {
-					return array();
-				} else {
-					$map_name   = ! empty( $style_config['styled_map_name'] ) ? $style_config['styled_map_name'] : 'Custom Map';
+				if ( ! empty( $style_config['custom_map_styles'] ) ) {
 					$map_styles = $style_config['custom_map_styles'];
-					$styles     = array();
+					$style_values = array();
 					foreach ( $map_styles as $style_item ) {
 						$map_feature = $style_item['map_feature'];
 						unset( $style_item['map_feature'] );
@@ -596,28 +596,30 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						}
 						$map_feature = str_replace( '_', '.', $map_feature );
 						$map_feature = str_replace( '-', '_', $map_feature );
-						array_push( $styles, array(
+						array_push( $style_values, array(
 							'featureType' => $map_feature,
 							'elementType' => $element_type,
 							'stylers'     => $stylers
 						) );
 					}
 
-					return array( 'map_name' => $map_name, 'styles' => $styles );
+					$styles['styles'] = $style_values;
 				}
+				break;
 			case 'raw_json':
-				if ( empty( $style_config['raw_json_map_styles'] ) ) {
-					return array();
-				} else {
-					$map_name      = ! empty( $style_config['styled_map_name'] ) ? $style_config['styled_map_name'] : __( 'Custom Map', 'so-widgets-bundle' );
+				if ( ! empty( $style_config['raw_json_map_styles'] ) ) {
+					
 					$styles_string = $style_config['raw_json_map_styles'];
 
-					return array( 'map_name' => $map_name, 'styles' => json_decode( $styles_string, true ) );
+					$styles['styles'] = json_decode( $styles_string, true );
 				}
+				break;
 			case 'normal':
 			default:
-				return array();
+				break;
 		}
+		
+		return apply_filters( 'siteorigin_widgets_google_maps_widget_styles', $styles, $instance );
 	}
 
 	private function get_static_image_src( $instance, $width, $height, $styles ) {
