@@ -518,16 +518,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			}
       
 			$location = $this->get_location_string( $instance['map_center'] );
-      
-      // Work out what we need to set gestureHandling to
-			if ( ! $settings['draggable'] ) {
-				$gestureHandling = 'none';
-			} elseif ( ! $settings['scroll_zoom'] ) {
-				$gestureHandling = 'cooperative';
-			} else {
-				$gestureHandling = 'greedy';
-			}
-      
+
 			$map_data = siteorigin_widgets_underscores_to_camel_case( array(
 				'address'           => $location,
 				'zoom'              => $settings['zoom'],
