@@ -131,25 +131,21 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
  						),
 					),
 
-					'scroll_zoom' => array(
-						'type'        => 'checkbox',
-						'default'     => true,
+					'gesture_handling'   => array(
+						'type'        => 'radio',
+						'label'       => __( 'Gesture Handling', 'so-widgets-bundle' ),
+						'default'     => 'greedy',
 						'state_handler' => array(
 							'map_type[interactive]' => array('show'),
 							'_else[map_type]' => array('hide'),
 						),
-						'label'       => __( 'Scroll to zoom', 'so-widgets-bundle' ),
-						'description' => __( 'Allow scrolling over the map to zoom in or out.', 'so-widgets-bundle' )
-					),
-					'draggable'   => array(
-						'type'        => 'checkbox',
-						'default'     => true,
-						'state_handler' => array(
-							'map_type[interactive]' => array('show'),
-							'_else[map_type]' => array('hide'),
+						'options' => array(
+							'greedy'      => __( 'Greedy', 'so-widgets-bundle' ),
+							'cooperative' => __( 'Cooperative', 'so-widgets-bundle' ),
+							'none'        => __( 'None', 'so-widgets-bundle' ),
+							'auto'        => __( 'Auto', 'so-widgets-bundle' ),
 						),
-						'label'       => __( 'Draggable', 'so-widgets-bundle' ),
-						'description' => __( 'Allow dragging the map to move it around.', 'so-widgets-bundle' )
+						'description' => __( 'For information on what these settings do, <a href="https://siteorigin.com/widgets-bundle/google-maps-widget/" target="_blank" rel="noopener noreferrer">click here</a>.', 'so-widgets-bundle' )
 					),
 					'disable_default_ui' => array(
 						'type' => 'checkbox',
@@ -536,7 +532,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'address'           => $location,
 				'zoom'              => $settings['zoom'],
 				'mobileZoom'        => $settings['mobile_zoom'],
-				'gestureHandling'   => $gestureHandling,
+				'gestureHandling'   => isset( $settings['gesture_handling'] ) ? $settings['gesture_handling'] : 'greedy',
 				'disable_ui'        => $settings['disable_default_ui'],
 				'keep_centered'     => $settings['keep_centered'],
 				'marker_icon'       => ! empty( $mrkr_src ) ? $mrkr_src[0] : '',
@@ -748,6 +744,15 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				} else {
 					$instance['settings']['mobile_zoom'] = $instance['settings']['zoom'];
 				}
+			}
+
+			// Migrate draggable and scroll_zoom to gesture_handling
+			if ( isset( $instance['settings']['draggable'] ) && ! $instance['settings']['draggable'] ) {
+				$instance['settings']['gesture_handling'] = 'none';
+			} elseif ( isset( $instance['settings']['scroll_zoom'] ) && ! $instance['settings']['scroll_zoom'] ) {
+				$instance['settings']['gesture_handling'] = 'cooperative';
+			} else {
+				$instance['settings']['gesture_handling'] = 'greedy';
 			}
 
 			if ( empty( $instance['settings']['height'] ) ) {
