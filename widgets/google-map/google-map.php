@@ -745,6 +745,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			} else {
 				$instance['settings']['gesture_handling'] = 'greedy';
 			}
+			
+			// Remove draggable and scroll_zoom settings due to being deprecated
+			unset( $instance['settings']['draggable'] );
+			unset( $instance['settings']['scroll_zoom'] );
 
 			if ( empty( $instance['settings']['height'] ) ) {
 				$instance['settings']['height'] = 480;
