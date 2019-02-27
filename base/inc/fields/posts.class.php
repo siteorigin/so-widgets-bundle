@@ -4,15 +4,29 @@
  * Class SiteOrigin_Widget_Field_Posts
  */
 class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Base {
+	
+	/**
+	 * An array of post types to use in the query for posts when the 'Select Content' button is clicked.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $post_types;
 
 	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_container = array() ) {
 		parent::__construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_container );
 
 		$types        = get_post_types( array( 'public' => true ), 'objects' );
-		$type_options = array( '_all' => __( 'All', 'so-widgets-bundle' ) );
+		$type_options = array();
+		
+		if ( empty( $this->post_types ) || in_array( '_all', $this->post_types ) ) {
+			$type_options['_all'] = __( 'All', 'so-widgets-bundle' );
+		}
 
 		foreach ( $types as $id => $type ) {
-			$type_options[ $id ] = $type->labels->name;
+			if ( empty( $this->post_types ) || in_array( $id, $this->post_types ) ) {
+				$type_options[ $id ] = $type->labels->name;
+			}
 		}
 
 		$this->fields = array(
