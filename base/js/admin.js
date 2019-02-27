@@ -175,26 +175,26 @@ var sowbForms = window.sowbForms || {};
 					var data = JSON.parse( sessionStorage.getItem( _sow_form_id ) );
 					if ( data ) {
 						if ( data['_sow_form_timestamp'] > _sow_form_timestamp ) {
-							var $newerNotification = sowbForms.displayNotice(
+							sowbForms.displayNotice(
 								$el,
 								soWidgets.backup.newerVersion,
 								soWidgets.backup.replaceWarning,
 								[
 									{
 										label: soWidgets.backup.restore,
-										callback: function () {
+										callback: function ( $notice ) {
 											sowbForms.setWidgetFormValues( $mainForm, data );
-											$newerNotification.slideUp( 'fast', function () {
-												$newerNotification.remove();
+											$notice.slideUp( 'fast', function () {
+												$notice.remove();
 											} );
 										},
 									},
 									{
 										label: soWidgets.backup.dismiss,
-										callback: function () {
-											$newerNotification.slideUp( 'fast', function () {
+										callback: function ( $notice ) {
+											$notice.slideUp( 'fast', function () {
 												sessionStorage.removeItem( _sow_form_id );
-												$newerNotification.remove();
+												$notice.remove();
 											} );
 										},
 									},
@@ -1255,7 +1255,9 @@ var sowbForms = window.sowbForms || {};
 					$button.attr( 'href', button.url );
 				}
 				if ( button.callback ) {
-					$button.on( 'click', callback );
+					$button.on( 'click', function () {
+						button.callback( $notice );
+					});
 				}
 				
 				$notice.append( $button );

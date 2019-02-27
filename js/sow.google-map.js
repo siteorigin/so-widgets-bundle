@@ -16,13 +16,18 @@ sowb.SiteOriginGoogleMap = function($) {
 			var zoom = Number(options.zoom);
 
 			if ( !zoom ) zoom = 14;
+			
+			var breakpointCheck = window.matchMedia( '(max-width: ' + options.breakpoint + 'px)' )
+			// Check if the user is viewing the map on mobile
+			if ( breakpointCheck.matches ) {
+				zoom = options.mobileZoom;
+			}
 
 			var userMapTypeId = 'user_map_style';
 
 			var mapOptions = {
 				zoom: zoom,
-				scrollwheel: options.scrollZoom,
-				draggable: options.draggable,
+				gestureHandling: options.gestureHandling,
 				disableDefaultUI: options.disableUi,
 				zoomControl: options.zoomControl,
 				panControl: options.panControl,

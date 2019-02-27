@@ -182,23 +182,28 @@ jQuery( function($){
 
 				// Set up showing and hiding navs
 				$p.add($n).hide();
-				if( !$base.hasClass('sow-slider-is-mobile') && $slides.length > 1 ) {
+				if( $slides.length > 1 ) {
+					if( !$base.hasClass('sow-slider-is-mobile') ) {
 
-					var toHide = false;
-					$base
-						.mouseenter(function(){
-							$p.add($n).clearQueue().fadeIn(150);
-							toHide = false;
-						})
-						.mouseleave(function(){
-							toHide = true;
-							setTimeout(function(){
-								if( toHide ) {
-									$p.add($n).clearQueue().fadeOut(150);
-								}
+						var toHide = false;
+						$base
+							.mouseenter(function(){
+								$p.add($n).clearQueue().fadeIn(150);
 								toHide = false;
-							}, 750);
-						});
+							})
+							.mouseleave(function(){
+								toHide = true;
+								setTimeout(function(){
+									if( toHide ) {
+										$p.add($n).clearQueue().fadeOut(150);
+									}
+									toHide = false;
+								}, 750);
+							});
+					} else if ( settings.nav_always_show_mobile && window.matchMedia('(max-width: ' + settings.breakpoint + ')').matches) {
+						$p.show();
+						$n.show();
+					}
 				}
 
 				// Resize the sentinel when ever the window is resized, or when widgets are being set up.

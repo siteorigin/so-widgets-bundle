@@ -316,17 +316,6 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		return $less;
 	}
 
-	function get_settings_form() {
-		return array(
-			'responsive_breakpoint' => array(
-				'type'        => 'measurement',
-				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
-				'default'     => '780px',
-				'description' => __( "This setting controls when the Layout Slider widget will switch to the responsive height for slides. This breakpoint will only be used if a responsive height is set in the Layout Slider's settings. The default value is 780px.", 'so-widgets-bundle' )
-			)
-		);
-	}
-
 	function add_default_measurement_unit($val) {
 		if (!empty($val)) {
 			if (!preg_match('/\d+([a-zA-Z%]+)/', $val)) {

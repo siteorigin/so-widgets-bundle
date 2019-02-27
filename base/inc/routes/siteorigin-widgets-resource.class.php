@@ -95,7 +95,13 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 			$widget->form( $widget_data );
 			$widget_form = ob_get_clean();
 		} else {
-			$widget_form = new WP_Error( '', 'Invalid widget class.' );
+			$widget_form = new WP_Error(
+				400,
+				'Invalid or missing widget class: ' . $widget_class,
+				array(
+					'status' => 400,
+				)
+			);
 		}
 		
 		return rest_ensure_response( $widget_form );
@@ -137,7 +143,13 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 			$widget->widget( array(), $instance );
 			$rendered_widget = ob_get_clean();
 		} else {
-			$rendered_widget = new WP_Error( '', 'Invalid widget class.' );
+			$rendered_widget = new WP_Error(
+				400,
+				'Invalid or missing widget class: ' . $widget_class,
+				array(
+					'status' => 400,
+				)
+			);
 		}
 		
 		return rest_ensure_response( $rendered_widget );
