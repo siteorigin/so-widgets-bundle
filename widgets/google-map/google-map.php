@@ -474,7 +474,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 		$styles = $this->get_styles( $instance );
 
-    
 		$fallback_image = '';
 		if ( ! empty ( $instance['settings']['fallback_image'] ) ) {
 			$fallback_image = siteorigin_widgets_get_attachment_image(
@@ -488,7 +487,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		if ( $settings['map_type'] == 'static' ) {
 
 			return array(
-				'src_url'             => $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array() ),
+				'src_url'             => $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles['styles'] ) ? $styles['styles'] : array() ),
 				'destination_url'     => $instance['settings']['destination_url'],
 				'new_window'          => $instance['settings']['new_window'],
 				'fallback_image_data' => array( 'img' => $fallback_image ),
@@ -532,8 +531,8 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'marker_info_display' => $markers['info_display'],
 				'marker_info_multiple' => $markers['info_multiple'],
 				'marker_positions'  => ! empty( $markerpos ) ? $markerpos : '',
-				'map_name'          => ! empty( $styles ) ? $styles['map_name'] : '',
-				'map_styles'        => ! empty( $styles ) ? $styles['styles'] : '',
+				'map_name'          => ! empty( $styles['styles'] ) ? $styles['map_name'] : '',
+				'map_styles'        => ! empty( $styles['styles'] ) ? $styles['styles'] : '',
 				'directions'        => $directions,
 				'api_key'           => self::get_api_key( $instance ),
 				'breakpoint'        => $breakpoint,
