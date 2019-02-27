@@ -28,7 +28,7 @@ class SiteOrigin_Widget_Field_Location extends SiteOrigin_Widget_Field_Base {
 			type="hidden"
 			class="siteorigin-widget-input location-field-data"
 			data-api-key="<?php echo esc_attr( $api_key ); ?>"
-			value="<?php echo esc_attr( json_encode( $value ) ); ?>"
+			value="<?php if ( ! empty( $value ) ) echo esc_attr( json_encode( $value ) ); ?>"
 			name="<?php echo esc_attr( $this->element_name ) ?>"
 			id="<?php echo esc_attr( $this->element_id ) ?>"
 		/>
