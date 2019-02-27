@@ -4,6 +4,7 @@
  * @var $new_window
  * @var $src_url
  * @var $fallback_image_data
+ * @var $breakpoint
  */
 ?>
 
@@ -16,6 +17,7 @@
 	border="0"
 	src="<?php echo sow_esc_url( $src_url ) ?>"
 	data-fallback-image="<?php echo esc_attr( json_encode( $fallback_image_data ) ); ?>"
+	data-breakpoint="<?php echo esc_attr( $breakpoint ); ?>"
 	onerror="this.sowbLoadError = true;">
 
 <?php

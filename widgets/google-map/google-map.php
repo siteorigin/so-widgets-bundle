@@ -82,8 +82,8 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					),
 					'height'      => array(
 						'type'    => 'text',
+						'label'   => __( 'Height', 'so-widgets-bundle' ),
 						'default' => 480,
-						'label'   => __( 'Height', 'so-widgets-bundle' )
 					),
 					'destination_url' => array(
 						'type' => 'link',
@@ -105,6 +105,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							'_else[map_type]' => array('hide'),
 						),
 					),
+					
 					'zoom'        => array(
 						'type'        => 'slider',
 						'label'       => __( 'Zoom level', 'so-widgets-bundle' ),
@@ -115,25 +116,36 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						'integer'     => true,
 
 					),
-					'scroll_zoom' => array(
-						'type'        => 'checkbox',
-						'default'     => true,
-						'state_handler' => array(
-							'map_type[interactive]' => array('show'),
-							'_else[map_type]' => array('hide'),
-						),
-						'label'       => __( 'Scroll to zoom', 'so-widgets-bundle' ),
-						'description' => __( 'Allow scrolling over the map to zoom in or out.', 'so-widgets-bundle' )
+
+					'mobile_zoom'        => array(
+						'type'        => 'slider',
+						'label'       => __( 'Mobile zoom level', 'so-widgets-bundle' ),
+						'description' => __( 'A value from 0 (the world) to 21 (street level). This zoom is specific to mobile devices.', 'so-widgets-bundle' ),
+						'min'         => 0,
+						'max'         => 21,
+						'default'     => 12,
+						'integer'     => true,
+						'state_handler' => array(	
+ 							'map_type[interactive]' => array('show'),	
+ 							'_else[map_type]' => array('hide'),	
+ 						),
 					),
-					'draggable'   => array(
-						'type'        => 'checkbox',
-						'default'     => true,
+
+					'gesture_handling'   => array(
+						'type'        => 'radio',
+						'label'       => __( 'Gesture Handling', 'so-widgets-bundle' ),
+						'default'     => 'greedy',
 						'state_handler' => array(
 							'map_type[interactive]' => array('show'),
 							'_else[map_type]' => array('hide'),
 						),
-						'label'       => __( 'Draggable', 'so-widgets-bundle' ),
-						'description' => __( 'Allow dragging the map to move it around.', 'so-widgets-bundle' )
+						'options' => array(
+							'greedy'      => __( 'Greedy', 'so-widgets-bundle' ),
+							'cooperative' => __( 'Cooperative', 'so-widgets-bundle' ),
+							'none'        => __( 'None', 'so-widgets-bundle' ),
+							'auto'        => __( 'Auto', 'so-widgets-bundle' ),
+						),
+						'description' => __( 'For information on what these settings do, <a href="https://siteorigin.com/widgets-bundle/google-maps-widget/" target="_blank" rel="noopener noreferrer">click here</a>.', 'so-widgets-bundle' )
 					),
 					'disable_default_ui' => array(
 						'type' => 'checkbox',
@@ -433,6 +445,13 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'<a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank" rel="noopener noreferrer">',
 					'</a>'
 				)
+			),
+
+			'responsive_breakpoint' => array(
+				'type'        => 'number',
+				'label'       => __( 'Responsive breakpoint', 'so-widgets-bundle' ),
+				'default'     => '780',
+				'description' => __( 'This setting controls when the map will use the mobile zoom. This breakpoint will only be used if a mobile zoom is set in the SiteOrigin Google Maps settings. The default value is 780px', 'so-widgets-bundle' )
 			)
 		);
 	}
@@ -455,6 +474,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 		$styles = $this->get_styles( $instance );
 
+    
 		$fallback_image = '';
 		if ( ! empty ( $instance['settings']['fallback_image'] ) ) {
 			$fallback_image = siteorigin_widgets_get_attachment_image(
@@ -462,13 +482,17 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				$instance['settings']['fallback_image_size'],
 				false );
 		}
+		$global_settings = $this->get_global_settings();
+		$breakpoint = ! empty( $global_settings['responsive_breakpoint'] ) ? $global_settings['responsive_breakpoint'] : '780';
 
 		if ( $settings['map_type'] == 'static' ) {
+
 			return array(
 				'src_url'             => $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array() ),
 				'destination_url'     => $instance['settings']['destination_url'],
 				'new_window'          => $instance['settings']['new_window'],
 				'fallback_image_data' => array( 'img' => $fallback_image ),
+				'breakpoint'        => $breakpoint,
 			);
 		} else {
 			$markers         = $instance['markers'];
@@ -492,13 +516,14 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					}
 				}
 			}
+      
 			$location = $this->get_location_string( $instance['map_center'] );
-			
+
 			$map_data = siteorigin_widgets_underscores_to_camel_case( array(
 				'address'           => $location,
 				'zoom'              => $settings['zoom'],
-				'scroll_zoom'       => $settings['scroll_zoom'],
-				'draggable'         => $settings['draggable'],
+				'mobileZoom'        => $settings['mobile_zoom'],
+				'gestureHandling'   => isset( $settings['gesture_handling'] ) ? $settings['gesture_handling'] : 'greedy',
 				'disable_ui'        => $settings['disable_default_ui'],
 				'keep_centered'     => $settings['keep_centered'],
 				'marker_icon'       => ! empty( $mrkr_src ) ? $mrkr_src[0] : '',
@@ -511,6 +536,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'map_styles'        => ! empty( $styles ) ? $styles['styles'] : '',
 				'directions'        => $directions,
 				'api_key'           => self::get_api_key( $instance ),
+				'breakpoint'        => $breakpoint,
 			));
 
 			return array(
@@ -703,6 +729,33 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 	
 	public function modify_instance( $instance ) {
+		if ( ! empty( $instance['settings'] ) ) {
+			if ( empty( $instance['settings']['mobile_zoom'] ) ) {
+				// Check if a zoom is set, and if it is, set the mobile zoom to that
+				if ( empty( $instance['settings']['zoom'] ) ) {
+					$instance['settings']['mobile_zoom'] = 12;
+				} else {
+					$instance['settings']['mobile_zoom'] = $instance['settings']['zoom'];
+				}
+			}
+
+			// Migrate draggable and scroll_zoom to gesture_handling
+			if ( isset( $instance['settings']['draggable'] ) && ! $instance['settings']['draggable'] ) {
+				$instance['settings']['gesture_handling'] = 'none';
+			} elseif ( isset( $instance['settings']['scroll_zoom'] ) && ! $instance['settings']['scroll_zoom'] ) {
+				$instance['settings']['gesture_handling'] = 'cooperative';
+			} else {
+				$instance['settings']['gesture_handling'] = 'greedy';
+			}
+			
+			// Remove draggable and scroll_zoom settings due to being deprecated
+			unset( $instance['settings']['draggable'] );
+			unset( $instance['settings']['scroll_zoom'] );
+
+			if ( empty( $instance['settings']['height'] ) ) {
+				$instance['settings']['height'] = 480;
+			}
+		}
 		
 		if ( ! empty( $instance['map_center'] ) && empty( $instance['map_center']['name'] ) ) {
 			$instance['map_center'] = $this->migrate_location( $instance['map_center'] );
