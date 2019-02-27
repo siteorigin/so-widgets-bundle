@@ -1366,7 +1366,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return bool
 	 */
 	function show_preview_button(){
-		$show_preview = $this->widget_options['has_preview'] && ! $this->is_customize_preview();
+		$show_preview = ! empty( $this->widget_options['has_preview'] ) && ! $this->is_customize_preview();
 		$show_preview = apply_filters( 'siteorigin_widgets_form_show_preview_button', $show_preview, $this );
 		return $show_preview;
 	}
