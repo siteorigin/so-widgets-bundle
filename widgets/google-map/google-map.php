@@ -813,15 +813,16 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	static function get_api_key( $instance ) {
 		$widget = new self();
 		$global_settings = $widget->get_global_settings();
+		$api_key = '';
 		if ( ! empty( $global_settings['api_key'] ) ) {
-			return $global_settings['api_key'];
+			$api_key = $global_settings['api_key'];
 		}
 		
 		if ( ! empty( $instance['api_key_section'] ) && ! empty( $instance['api_key_section']['api_key'] ) ) {
-			return $instance['api_key_section']['api_key'];
+			$api_key = $instance['api_key_section']['api_key'];
 		}
 		
-		return '';
+		return trim( $api_key );
 	}
 }
 
