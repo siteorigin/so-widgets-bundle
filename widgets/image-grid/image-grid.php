@@ -8,6 +8,11 @@ Documentation: https://siteorigin.com/widgets-bundle/image-grid/
 */
 
 class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
+	
+	/**
+	 * @var int This is used to indicate that the widget's LESS styles have changed and the CSS needs to be recompiled.
+	 */
+	protected $version = 2;
 
 	function __construct() {
 
