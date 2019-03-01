@@ -145,7 +145,11 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							'none'        => __( 'None', 'so-widgets-bundle' ),
 							'auto'        => __( 'Auto', 'so-widgets-bundle' ),
 						),
-						'description' => __( 'For information on what these settings do, <a href="https://siteorigin.com/widgets-bundle/google-maps-widget/" target="_blank" rel="noopener noreferrer">click here</a>.', 'so-widgets-bundle' )
+						'description' => sprintf(
+							__( 'For information on what these settings do, %sclick here%s.', 'so-widgets-bundle' ),
+							'<a href="https://developers.google.com/maps/documentation/javascript/interaction#gestureHandling" target="_blank" rel="noopener noreferrer">',
+							'</a>'
+						),
 					),
 					'disable_default_ui' => array(
 						'type' => 'checkbox',
