@@ -2,18 +2,14 @@
 .siteorigin-widget-form .siteorigin-widget-field-type-image-radio {
 	
 	.siteorigin-widget-image-radio-layout-horizontal {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-between;
-		
-		label:not(:first-child) {
-			margin-left: 10px;
-		}
+		display: grid;
+		// h/t: https://glitch.com/edit/#!/grid-cats
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		grid-gap: 15px;
 	}
 	label {
 		display: flex;
 		align-items: center;
-		margin-bottom: 10px;
 		
 		
 		img {
