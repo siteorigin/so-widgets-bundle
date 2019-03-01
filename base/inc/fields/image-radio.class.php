@@ -30,11 +30,11 @@ class SiteOrigin_Widget_Field_Image_Radio extends SiteOrigin_Widget_Field_Base {
 		if ( ! isset( $this->options ) || empty( $this->options ) ) return;
 		$i = 0;
 		?>
-		<div class="siteorigin-widget-image-radio-layout-<?php echo esc_attr( $this->layout )?>">
+		<div class="siteorigin-widget-image-radio-items siteorigin-widget-image-radio-layout-<?php echo esc_attr( $this->layout )?>">
 		<?php
 		foreach( $this->options as $option_name => $option ) {
 			?>
-			<label for="<?php echo esc_attr( $this->element_id . '-' . $i ) ?>">
+			<label class="so-image-radio" for="<?php echo esc_attr( $this->element_id . '-' . $i ) ?>">
 				<img src="<?php echo esc_attr( $option['image'] ) ?>"/>
 				<input
 					type="radio" name="<?php echo esc_attr( $this->element_name ) ?>"
@@ -61,6 +61,13 @@ class SiteOrigin_Widget_Field_Image_Radio extends SiteOrigin_Widget_Field_Base {
 			'so-image-radio-field',
 			plugin_dir_url( __FILE__ ) . 'css/image-radio-field.css',
 			array(),
+			SOW_BUNDLE_VERSION
+		);
+		
+		wp_enqueue_script(
+			'so-image-radio-field',
+			plugin_dir_url(__FILE__) . 'js/image-radio-field' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery'),
 			SOW_BUNDLE_VERSION
 		);
 	}
