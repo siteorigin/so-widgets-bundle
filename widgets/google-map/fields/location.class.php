@@ -18,14 +18,20 @@ class SiteOrigin_Widget_Field_Location extends SiteOrigin_Widget_Field_Base {
 		} else if ( ! empty( $value['name'] ) ) {
 			$address = $value['name'];
 		}
+		
+		$api_key = SiteOrigin_Widget_GoogleMap_Widget::get_api_key( $instance );
+		
 		?>
 		<input type="text" value="<?php echo esc_attr( $address ) ?>"
 			class="widefat siteorigin-widget-location-input"/>
-		<input type="hidden"
-				 class="siteorigin-widget-input location-field-data"
-				 value="<?php echo esc_attr( json_encode( $value ) ); ?>"
-				 name="<?php echo esc_attr( $this->element_name ) ?>"
-				 id="<?php echo esc_attr( $this->element_id ) ?>"/>
+		<input
+			type="hidden"
+			class="siteorigin-widget-input location-field-data"
+			data-api-key="<?php echo esc_attr( $api_key ); ?>"
+			value="<?php if ( ! empty( $value ) ) echo esc_attr( json_encode( $value ) ); ?>"
+			name="<?php echo esc_attr( $this->element_name ) ?>"
+			id="<?php echo esc_attr( $this->element_id ) ?>"
+		/>
 		<?php
 	}
 	
@@ -41,6 +47,16 @@ class SiteOrigin_Widget_Field_Location extends SiteOrigin_Widget_Field_Base {
 			plugin_dir_url( __FILE__ ) . 'css/location-field.css',
 			array(),
 			SOW_BUNDLE_VERSION
+		);
+		
+		wp_localize_script(
+			'so-location-field',
+			'soLocationField',
+			array(
+				'missingApiKey' => __( 'This widget requires a Google Maps API key. Please ensure you have set yours in the Google Maps Widget settings.', 'so-widgets-bundle' ),
+				'globalSettingsButtonLabel' => __( 'Go to Google Maps Widget settings', 'so-widgets-bundle' ),
+				'globalSettingsButtonUrl' => admin_url( 'plugins.php?page=so-widgets-plugins' ),
+			)
 		);
 	}
 	

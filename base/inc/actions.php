@@ -4,17 +4,20 @@
  * Action for displaying the widget preview.
  */
 function siteorigin_widget_preview_widget_action() {
-	if ( empty( $_REQUEST['_widgets_nonce'] ) ||
-		! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
-		
+	if (
+		empty( $_REQUEST['_widgets_nonce'] ) ||
+		! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' )
+	) {
 		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
 	} else if ( empty( $_POST['class'] ) ) {
-		wp_die( __( 'Invalid post.', 'so-widgets-bundle' ), 400 );
+		wp_die( __( 'Invalid widget.', 'so-widgets-bundle' ), 400 );
 	}
 
 	// Get the widget from the widget factory
 	global $wp_widget_factory;
-	$widget = ! empty( $wp_widget_factory->widgets[ $_POST['class'] ] ) ? $wp_widget_factory->widgets[ $_POST['class'] ] : false;
+	$widget_class = str_replace('\\\\', '\\', $_POST['class']);
+	
+	$widget = ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ? $wp_widget_factory->widgets[ $widget_class ] : false;
 
 	if( ! is_a( $widget, 'SiteOrigin_Widget' ) ) {
 		wp_die( __( 'Invalid post.', 'so-widgets-bundle' ), 400 );

@@ -1,0 +1,42 @@
+
+.siteorigin-widget-form .siteorigin-widget-field-type-image-radio {
+	
+	.siteorigin-widget-image-radio-layout-horizontal {
+		display: grid;
+		// h/t: https://glitch.com/edit/#!/grid-cats
+		grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+		grid-gap: 12px;
+	}
+	
+	.siteorigin-widget-image-radio-items {
+		margin-bottom: 10px;
+	}
+	
+
+	label.so-image-radio {
+		display: flex;
+		align-items: center;
+		
+		padding: 10px;
+		background-color: #f6f6f6;
+
+		border: 1px solid #e6e6e6;
+
+		img {
+			max-width: 100px;
+		}
+		
+		input {
+			margin: 0 4px 0 10px;
+		}
+
+		&.so-selected{
+			background: #eaf2f6;
+			border-color: #c9d0d4;
+
+			img {
+				box-shadow: 0 0 3px rgba(0,0,0,0.15);
+			}
+		}
+	}
+}

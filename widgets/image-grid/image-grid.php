@@ -8,8 +8,13 @@ Documentation: https://siteorigin.com/widgets-bundle/image-grid/
 */
 
 class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
+	
+	/**
+	 * @var int This is used to indicate that the widget's LESS styles have changed and the CSS needs to be recompiled.
+	 */
+	protected $version = 2;
 
-	function __construct(){
+	function __construct() {
 
 		parent::__construct(
 			'sow-image-grid',
@@ -26,14 +31,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	/**
 	 * Initialize the image grid, mainly to add scripts and styles.
 	 */
-	function initialize(){
-		$this->register_frontend_styles( array(
-			array(
-				'sow-image-grid',
-				plugin_dir_url( __FILE__ ) . 'css/image-grid.css',
-			)
-		) );
-
+	function initialize() {
 		$this->register_frontend_scripts( array(
 			array(
 				'sow-image-grid',
@@ -45,13 +43,13 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 		) );
 	}
 
-	function get_widget_form(){
+	function get_widget_form() {
 
 		return array(
 
 			'images' => array(
 				'type' => 'repeater',
-				'label' => __('Images', 'so-widgets-bundle'),
+				'label' => __( 'Images', 'so-widgets-bundle' ),
 				'item_name'  => __( 'Image', 'so-widgets-bundle' ),
 				'item_label' => array(
 					'selector'     => "[name*='title']",
@@ -61,15 +59,21 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				'fields' => array(
 					'image' => array(
 						'type' => 'media',
-						'label' => __('Image', 'so-widgets-bundle')
+						'label' => __( 'Image', 'so-widgets-bundle' ),
+						'library' => 'image',
+						'fallback' => true,
 					),
 					'title' => array(
 						'type' => 'text',
-						'label' => __('Image title', 'so-widgets-bundle')
+						'label' => __( 'Image title', 'so-widgets-bundle' )
+					),
+					'alt' => array(
+						'type' => 'text',
+						'label' => __( 'Alt text', 'so-widgets-bundle' ),
 					),
 					'url' => array(
 						'type' => 'link',
-						'label' => __('URL', 'so-widgets-bundle')
+						'label' => __( 'URL', 'so-widgets-bundle' )
 					),
 					'new_window' => array(
 						'type' => 'checkbox',
@@ -81,29 +85,29 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 
 			'display' => array(
 				'type' => 'section',
-				'label' => __('Display', 'so-widgets-bundle'),
+				'label' => __( 'Display', 'so-widgets-bundle' ),
 				'fields' => array(
 					'attachment_size' => array(
-						'label' => __('Image size', 'so-widgets-bundle'),
+						'label' => __( 'Image size', 'so-widgets-bundle' ),
 						'type' => 'image-size',
 						'default' => 'full',
 					),
 
 					'max_height' => array(
-						'label' => __('Maximum image height', 'so-widgets-bundle'),
-						'type' => 'number',
+						'label' => __( 'Maximum image height', 'so-widgets-bundle' ),
+						'type' => 'measurement',
 					),
 
 					'max_width' => array(
-						'label' => __('Maximum image width', 'so-widgets-bundle'),
-						'type' => 'number',
+						'label' => __( 'Maximum image width', 'so-widgets-bundle' ),
+						'type' => 'measurement',
 					),
 
 					'spacing' => array(
-						'label' => __('Spacing', 'so-widgets-bundle'),
-						'description' => __('Amount of spacing between images.', 'so-widgets-bundle'),
-						'type' => 'number',
-						'default' => 10,
+						'label' => __( 'Spacing', 'so-widgets-bundle' ),
+						'description' => __( 'Amount of spacing between images.', 'so-widgets-bundle' ),
+						'type' => 'measurement',
+						'default' => '10px',
 					),
 				)
 			)
@@ -113,23 +117,56 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	function get_template_variables( $instance, $args ) {
 		$images = isset( $instance['images'] ) ? $instance['images'] : array();
 		
-		foreach ( $images as &$image ) {
+		foreach ( $images as $id => &$image ) {
+			if ( empty( $image['image'] ) && empty( $image['image_fallback'] ) ) {
+				unset( $images[$id] );
+				continue;
+			}
+
 			$link_atts = empty( $image['link_attributes'] ) ? array() : $image['link_attributes'];
 			if ( ! empty( $image['new_window'] ) ) {
 				$link_atts['target'] = '_blank';
 				$link_atts['rel'] = 'noopener noreferrer';
 			}
 			$image['link_attributes'] = $link_atts;
+
+			if ( empty( $image['image'] ) && ! empty( $image['image_fallback'] ) ) {
+				$alt = ! empty ( $image['alt'] ) ? $image['alt'] .'"' : '';
+				$image['image_html'] = '<img src="'. esc_url( $image['image_fallback'] ) .'" alt="'. esc_attr( $alt ) .'" title="'. esc_attr( $image['title'] ) .'">';
+			} else {
+				$image['image_html'] = wp_get_attachment_image( $image['image'], $instance['display']['attachment_size'], false, array(
+					'title' => $image['title'],
+					'alt'   => $image['alt'],
+				) );
+			}
 		}
 		
 		return array(
 			'images' => $images,
 			'max_height' => $instance['display']['max_height'],
 			'max_width' => $instance['display']['max_width'],
-			'attachment_size' => $instance['display']['attachment_size'],
 		);
 	}
 	
+	function modify_instance( $instance ) {
+		// Account for number to measurement form field type changes
+		if ( ! empty( $instance['display'] ) ) {
+			if ( is_numeric( $instance['display']['max_height'] ) ) {
+				$instance['display']['max_height'] = $instance['display']['max_height'] .'px';
+			}
+			
+			if ( is_numeric( $instance['display']['max_width'] ) ) {
+				$instance['display']['max_width'] = $instance['display']['max_width'] .'px';
+			}
+	
+			if ( is_numeric( $instance['display']['spacing'] ) ) {
+				$instance['display']['spacing'] = $instance['display']['spacing'] .'px';
+			}
+		}
+		
+		return $instance;
+	}
+
 	/**
 	 * Get the less variables for the image grid
 	 *
@@ -139,15 +176,17 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	 */
 	function get_less_variables( $instance ) {
 		$less = array();
-		if( isset( $instance['display']['spacing'] ) ) {
-			$less['spacing'] = intval($instance['display']['spacing']) . 'px';
+		if ( ! empty( $instance['display']['spacing'] ) ) {
+			$less['spacing'] = $instance['display']['spacing'];
 		}
 
 		return $less;
 	}
 
-	function get_form_teaser(){
-		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
+	function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
 
 		return sprintf(
 			__( 'Add a Lightbox to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),

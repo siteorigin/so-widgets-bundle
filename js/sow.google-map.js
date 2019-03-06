@@ -16,13 +16,18 @@ sowb.SiteOriginGoogleMap = function($) {
 			var zoom = Number(options.zoom);
 
 			if ( !zoom ) zoom = 14;
+			
+			var breakpointCheck = window.matchMedia( '(max-width: ' + options.breakpoint + 'px)' )
+			// Check if the user is viewing the map on mobile
+			if ( breakpointCheck.matches ) {
+				zoom = options.mobileZoom;
+			}
 
 			var userMapTypeId = 'user_map_style';
 
 			var mapOptions = {
 				zoom: zoom,
-				scrollwheel: options.scrollZoom,
-				draggable: options.draggable,
+				gestureHandling: options.gestureHandling,
 				disableDefaultUI: options.disableUi,
 				zoomControl: options.zoomControl,
 				panControl: options.panControl,
@@ -458,15 +463,19 @@ jQuery(function ($) {
 				}
 			}, 100 );
 		} else {
-			var apiUrl = 'https://maps.googleapis.com/maps/api/js?callback=soGoogleMapInitialize';
+			
+			if ( ! apiKey ) {
+				console.warn( 'SiteOrigin Google Maps: Could not find API key. Google Maps API key is required.' );
+				apiKey = '';
+			}
+			
+			// Try to load even if API key is missing to allow Google Maps API to provide it's own warnings/errors about missing API key.
+			var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&callback=soGoogleMapInitialize';
 
 			if ( libraries && libraries.length ) {
 				apiUrl += '&libraries=' + libraries.join(',');
 			}
 
-			if ( apiKey ) {
-				apiUrl += '&key=' + apiKey;
-			}
 
 			// This allows us to "catch" Google Maps JavaScript API errors and do a bit of custom handling. In this case,
 			// we display a user-specified fallback image if there is one.

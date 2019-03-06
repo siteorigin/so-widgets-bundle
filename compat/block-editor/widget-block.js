@@ -142,9 +142,14 @@
 							widgetData: props.attributes.widgetData,
 						}
 					} )
-					.then( function( widgetForm ) {
+					.done( function( widgetForm ) {
 						props.setState( { widgetFormHtml: widgetForm } );
-					} );
+					} )
+					.fail( function ( response ) {
+						var error = response.responseJSON;
+						
+						props.setState( { widgetFormHtml: '<div>' + error.message + '</div>', } );
+					});
 				}
 				
 				var widgetForm = props.widgetFormHtml ? props.widgetFormHtml : '';
@@ -211,12 +216,19 @@
 							widgetData: props.attributes.widgetData || {}
 						}
 					} )
-					.then( function( widgetPreview ) {
+					.done( function( widgetPreview ) {
 						props.setState( {
 							widgetPreviewHtml: widgetPreview,
 							previewInitialized: false,
 						} );
-					} );
+					} )
+					.fail( function ( response ) {
+						var error = response.responseJSON;
+						
+						props.setState( {
+							widgetPreviewHtml: '<div>' + error.message + '</div>',
+						} );
+					});
 				}
 				var widgetPreview = props.widgetPreviewHtml ? props.widgetPreviewHtml : '';
 				return [

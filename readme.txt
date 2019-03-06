@@ -1,12 +1,12 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 4.2
-Tested up to: 5.0
+Tested up to: 5.1
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
 Contributors: gpriday, braam-genis
-Donate link: https://siteorigin.com/downloads/contribution/
+Donate link: https://siteorigin.com/downloads/premium/
 
 The SiteOrigin widget bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colours and 1500+ icons.
 
@@ -64,6 +64,31 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.15.3 - 6 March 2019 =
+* Image grid: Fallback support, alt text, use measurement fields.
+* Features: Fix responsive layout.
+* Google Maps: Update to use gesture handling and separate zoom level for mobile.
+* Google Maps: Default height when height field is empty.
+* Sliders: Option to always show navigation on mobile devices.
+* Accordion: Keyboard navigation.
+* Beaver Builder: Fix icons and widgets not saving.
+* Video: Allow using YouTube embed URLs.
+* Post Carousel: Accessibility improvements.
+* Escape namespaced widgets in previews.
+* Flag additional metaboxes as incompatible with the block editor.
+* Fix state emitters for sub-widget fields.
+* Google Maps: Remove API key field from widget form, in favor of global API key field.
+* Google Maps: Display notice when API key missing.
+* Contact form: Prevent double nonce.
+* TinyMCE field: Prevent twemoji from replacing emoji in the textarea.
+* Widget block: Show appropriate message when widget is missing or deactivated.
+* Accordion: Fix open/close icon layout when set to left position.
+* Social Media Buttons: Prevent the phone network from opening in a new window.
+* Google Maps: Add map styles filter.
+* Image radio field: New field created.
+* Posts field: Option to specify allowed post types.
+* Contact form: Add description to reCAPTCHA field specifying reCAPTCHA v2.
 
 = 1.15.2 - 18 February 2019 =
 * Tabs: Set default tab position to top.

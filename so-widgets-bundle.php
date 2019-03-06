@@ -540,7 +540,8 @@ class SiteOrigin_Widgets_Bundle {
 	 */
 	function activate_widget( $widget_id, $include = true ){
 		$exists = false;
-		foreach( $this->widget_folders as $folder ) {
+		$widget_folders = $this->get_widget_folders();
+		foreach( $widget_folders as $folder ) {
 			if( !file_exists($folder . $widget_id . '/' . $widget_id . '.php') ) continue;
 			$exists = true;
 		}
@@ -560,7 +561,7 @@ class SiteOrigin_Widgets_Bundle {
 		// Now, lets actually include the files
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
-		foreach( $this->widget_folders as $folder ) {
+		foreach( $widget_folders as $folder ) {
 			if( !file_exists($folder . $widget_id . '/' . $widget_id . '.php') ) continue;
 			include_once $folder . $widget_id . '/' . $widget_id . '.php';
 
@@ -820,6 +821,7 @@ class SiteOrigin_Widgets_Bundle {
 							preg_match( '/-([0-9]+$)/', $id, $num_match );
 							$widget_instance = $opt_wid[ $num_match[1] ];
 							$widget->enqueue_frontend_scripts( $widget_instance);
+							// TODO: Should be calling modify_instance here before generating the CSS.
 							$widget->generate_and_enqueue_instance_styles( $widget_instance );
 						}
 					}

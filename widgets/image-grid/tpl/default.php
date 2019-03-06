@@ -3,7 +3,6 @@
  * @var $images array
  * @var $max_height int
  * @var $max_width int
- * @var $attachment_size string
  */
 ?>
 <?php if( ! empty( $images ) ) : ?>
@@ -20,9 +19,7 @@
 						<?php endif; ?>
 					<?php endforeach; ?>>
 				<?php endif; ?>
-				<?php echo wp_get_attachment_image( $image['image'], $attachment_size, false, array(
-					'title' => $image['title']
-				) );?>
+				<?php echo $image['image_html']; ?>
 				<?php if ( ! empty( $image['url'] ) ) : ?>
 					</a>
 				<?php endif; ?>
