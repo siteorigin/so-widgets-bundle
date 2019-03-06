@@ -8,6 +8,11 @@ Documentation: https://siteorigin.com/widgets-bundle/image-grid/
 */
 
 class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
+	
+	/**
+	 * @var int This is used to indicate that the widget's LESS styles have changed and the CSS needs to be recompiled.
+	 */
+	protected $version = 2;
 
 	function __construct() {
 
@@ -143,18 +148,20 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 		);
 	}
 	
-	// Account for number to measurement form field type changes
 	function modify_instance( $instance ) {
-		if ( is_numeric( $instance['display']['max_height'] ) ) {
-			$instance['display']['max_height'] = $instance['display']['max_height'] .'px';
-		}
-		
-		if ( is_numeric( $instance['display']['max_width'] ) ) {
-			$instance['display']['max_width'] = $instance['display']['max_width'] .'px';
-		}
-
-		if ( is_numeric( $instance['display']['spacing'] ) ) {
-			$instance['display']['spacing'] = $instance['display']['spacing'] .'px';
+		// Account for number to measurement form field type changes
+		if ( ! empty( $instance['display'] ) ) {
+			if ( is_numeric( $instance['display']['max_height'] ) ) {
+				$instance['display']['max_height'] = $instance['display']['max_height'] .'px';
+			}
+			
+			if ( is_numeric( $instance['display']['max_width'] ) ) {
+				$instance['display']['max_width'] = $instance['display']['max_width'] .'px';
+			}
+	
+			if ( is_numeric( $instance['display']['spacing'] ) ) {
+				$instance['display']['spacing'] = $instance['display']['spacing'] .'px';
+			}
 		}
 		
 		return $instance;

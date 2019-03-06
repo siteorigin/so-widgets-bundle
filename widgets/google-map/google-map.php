@@ -145,7 +145,11 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							'none'        => __( 'None', 'so-widgets-bundle' ),
 							'auto'        => __( 'Auto', 'so-widgets-bundle' ),
 						),
-						'description' => __( 'For information on what these settings do, <a href="https://siteorigin.com/widgets-bundle/google-maps-widget/" target="_blank" rel="noopener noreferrer">click here</a>.', 'so-widgets-bundle' )
+						'description' => sprintf(
+							__( 'For information on what these settings do, %sclick here%s.', 'so-widgets-bundle' ),
+							'<a href="https://developers.google.com/maps/documentation/javascript/interaction#gestureHandling" target="_blank" rel="noopener noreferrer">',
+							'</a>'
+						),
 					),
 					'disable_default_ui' => array(
 						'type' => 'checkbox',
@@ -474,7 +478,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 		$styles = $this->get_styles( $instance );
 
-    
 		$fallback_image = '';
 		if ( ! empty ( $instance['settings']['fallback_image'] ) ) {
 			$fallback_image = siteorigin_widgets_get_attachment_image(
@@ -488,7 +491,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		if ( $settings['map_type'] == 'static' ) {
 
 			return array(
-				'src_url'             => $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles ) ? $styles['styles'] : array() ),
+				'src_url'             => $this->get_static_image_src( $instance, $settings['width'], $settings['height'], ! empty( $styles['styles'] ) ? $styles['styles'] : array() ),
 				'destination_url'     => $instance['settings']['destination_url'],
 				'new_window'          => $instance['settings']['new_window'],
 				'fallback_image_data' => array( 'img' => $fallback_image ),
@@ -532,8 +535,8 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'marker_info_display' => $markers['info_display'],
 				'marker_info_multiple' => $markers['info_multiple'],
 				'marker_positions'  => ! empty( $markerpos ) ? $markerpos : '',
-				'map_name'          => ! empty( $styles ) ? $styles['map_name'] : '',
-				'map_styles'        => ! empty( $styles ) ? $styles['styles'] : '',
+				'map_name'          => ! empty( $styles['styles'] ) ? $styles['map_name'] : '',
+				'map_styles'        => ! empty( $styles['styles'] ) ? $styles['styles'] : '',
 				'directions'        => $directions,
 				'api_key'           => self::get_api_key( $instance ),
 				'breakpoint'        => $breakpoint,
@@ -814,15 +817,16 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	static function get_api_key( $instance ) {
 		$widget = new self();
 		$global_settings = $widget->get_global_settings();
+		$api_key = '';
 		if ( ! empty( $global_settings['api_key'] ) ) {
-			return $global_settings['api_key'];
+			$api_key = $global_settings['api_key'];
 		}
 		
 		if ( ! empty( $instance['api_key_section'] ) && ! empty( $instance['api_key_section']['api_key'] ) ) {
-			return $instance['api_key_section']['api_key'];
+			$api_key = $instance['api_key_section']['api_key'];
 		}
 		
-		return '';
+		return trim( $api_key );
 	}
 }
 

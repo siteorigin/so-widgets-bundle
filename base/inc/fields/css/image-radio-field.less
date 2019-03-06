@@ -2,19 +2,21 @@
 .siteorigin-widget-form .siteorigin-widget-field-type-image-radio {
 	
 	.siteorigin-widget-image-radio-layout-horizontal {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: flex-start;
+		display: grid;
+		// h/t: https://glitch.com/edit/#!/grid-cats
+		grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+		grid-gap: 12px;
 	}
-
+	
 	.siteorigin-widget-image-radio-items {
-		margin: 4px -10px;
+		margin-bottom: 10px;
 	}
+	
 
 	label.so-image-radio {
 		display: flex;
 		align-items: center;
-		margin: 6px 7px;
+		
 		padding: 10px;
 		background-color: #f6f6f6;
 
