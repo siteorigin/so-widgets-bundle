@@ -291,8 +291,6 @@ var sowbForms = window.sowbForms || {};
 					slide: function (event, ui) {
 						$input.val( parseFloat( ui.value ) );
 						$input.trigger( 'change' );
-					},
-					change: function( event, ui ) {
 						$$.find('.siteorigin-widget-slider-value').html(ui.value);
 					},
 				});
