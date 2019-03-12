@@ -46,7 +46,11 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'rows'        => 2,
 				'label'       => __( 'Map center', 'so-widgets-bundle' ),
 				'description' => sprintf(
-					__( 'The name of a place, town, city, or even a country. Can be an exact address too. Please ensure you have enabled the <strong>Geocoding API</strong> in the %sGoogle APIs Dashboard%s.', 'so-widgets-bundle' ),
+					__( 'The name of a place, town, city, or even a country. Can be an exact address too. Please ensure you have enabled the %sPlaces API%s and the %sGeocoding API%s in the %sGoogle APIs Dashboard%s.', 'so-widgets-bundle' ),
+					'<a href="https://developers.google.com/places/web-service/" target="_blank" rel="noopener noreferrer">',
+					'</a>',
+					'<a href="https://developers.google.com/maps/documentation/geocoding/" target="_blank" rel="noopener noreferrer">',
+					'</a>',
 					'<a href="https://console.developers.google.com/apis/dashboard?project=_" target="_blank" rel="noopener noreferrer">',
 					'</a>'
 				),
@@ -68,7 +72,16 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						'options' => array(
 							'interactive' => __( 'Interactive', 'so-widgets-bundle' ),
 							'static'      => __( 'Static image', 'so-widgets-bundle' ),
-						)
+						),
+						'description' => sprintf(
+							__( 'Please ensure you have enabled the %sJavaScript API%s for Interactive maps or %sStatic API%s for Static maps in the %sGoogle APIs Dashboard%s.', 'so-widgets-bundle' ),
+							'<a href="https://developers.google.com/maps/documentation/javascript/" target="_blank" rel="noopener noreferrer">',
+							'</a>',
+							'<a href="https://developers.google.com/maps/documentation/maps-static/" target="_blank" rel="noopener noreferrer">',
+							'</a>',
+							'<a href="https://console.developers.google.com/apis/dashboard?project=_" target="_blank" rel="noopener noreferrer">',
+							'</a>'
+						),
 					),
 					'width'       => array(
 						'type'       => 'text',
@@ -367,7 +380,9 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				),
 				'hide'        => true,
 				'description' => sprintf(
-					__( 'Display a route on your map, with waypoints between your starting point and destination. Please ensure you have enabled the <strong>Directions API</strong> in the %sGoogle APIs Dashboard%s.', 'so-widgets-bundle' ),
+					__( 'Display a route on your map, with waypoints between your starting point and destination. Please ensure you have enabled the %sDirections API%s in the %sGoogle APIs Dashboard%s.', 'so-widgets-bundle' ),
+					'<a href="https://developers.google.com/maps/documentation/directions/" target="_blank" rel="noopener noreferrer">',
+					'</a>',
 					'<a href="https://console.developers.google.com/apis/dashboard?project=_" target="_blank" rel="noopener noreferrer">',
 					'</a>'
 					),
