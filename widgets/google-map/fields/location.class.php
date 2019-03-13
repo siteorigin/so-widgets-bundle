@@ -53,7 +53,8 @@ class SiteOrigin_Widget_Field_Location extends SiteOrigin_Widget_Field_Base {
 			'so-location-field',
 			'soLocationField',
 			array(
-				'missingApiKey' => __( 'This widget requires a Google Maps API key. Please ensure you have set yours in the Google Maps Widget settings.', 'so-widgets-bundle' ),
+				'missingApiKey' => __( 'This widget requires a Google Maps API key. Please ensure you have set yours in Google Maps Widget settings.', 'so-widgets-bundle' ),
+				'invalidApiKey' => __( 'The Google Maps API key appears to be invalid. Please ensure you have set the correct key in Google Maps Widget settings.', 'so-widgets-bundle' ),
 				'globalSettingsButtonLabel' => __( 'Go to Google Maps Widget settings', 'so-widgets-bundle' ),
 				'globalSettingsButtonUrl' => admin_url( 'plugins.php?page=so-widgets-plugins' ),
 			)
