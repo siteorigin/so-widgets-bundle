@@ -11,8 +11,8 @@ jQuery( function ( $ ) {
 				
 				if ( maxWidth !== undefined || maxHeight !== undefined ) {
 					$$.find( 'img' ).each( function () {
-						var $img = $( this ).css( 'display', 'block' ),
-							ratio = $img.width() / $img.height();
+						var $img = $( this ).css( 'opacity', 1 );
+						var ratio = $img.width() / $img.height();
 						
 						var width = [];
 						
@@ -33,7 +33,7 @@ jQuery( function ( $ ) {
 					} );
 				}
 				else {
-					$$.find( 'img' ).css( 'display', 'block' );
+					$$.find( 'img' ).css( 'opacity', 1 );
 				}
 				
 				var alignImages = function () {
