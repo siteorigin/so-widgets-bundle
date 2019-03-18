@@ -843,6 +843,16 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		
 		return trim( $api_key );
 	}
+	
+	function get_form_teaser(){
+		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
+		
+		return sprintf(
+			__( 'Get a curated list of predefined map styles with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/web-font-selector" target="_blank" rel="noopener noreferrer">',
+			'</a>'
+		);
+	}
 }
 
 siteorigin_widget_register( 'sow-google-map', __FILE__, 'SiteOrigin_Widget_GoogleMap_Widget' );
