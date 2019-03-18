@@ -758,17 +758,19 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			}
 
 			// Migrate draggable and scroll_zoom to gesture_handling
-			if ( isset( $instance['settings']['draggable'] ) && ! $instance['settings']['draggable'] ) {
-				$instance['settings']['gesture_handling'] = 'none';
-			} elseif ( isset( $instance['settings']['scroll_zoom'] ) && ! $instance['settings']['scroll_zoom'] ) {
-				$instance['settings']['gesture_handling'] = 'cooperative';
-			} else {
-				$instance['settings']['gesture_handling'] = 'greedy';
+			if ( isset( $instance['settings']['draggable'] ) || isset( $instance['settings']['scroll_zoom'] ) ) {
+				if ( isset( $instance['settings']['draggable'] ) && ! $instance['settings']['draggable'] ) {
+					$instance['settings']['gesture_handling'] = 'none';
+				} elseif ( isset( $instance['settings']['scroll_zoom'] ) && ! $instance['settings']['scroll_zoom'] ) {
+					$instance['settings']['gesture_handling'] = 'cooperative';
+				} else {
+					$instance['settings']['gesture_handling'] = 'greedy';
+				}
+				
+				// Remove draggable and scroll_zoom settings due to being deprecated
+				unset( $instance['settings']['draggable'] );
+				unset( $instance['settings']['scroll_zoom'] );
 			}
-			
-			// Remove draggable and scroll_zoom settings due to being deprecated
-			unset( $instance['settings']['draggable'] );
-			unset( $instance['settings']['scroll_zoom'] );
 
 			if ( empty( $instance['settings']['height'] ) ) {
 				$instance['settings']['height'] = 480;
