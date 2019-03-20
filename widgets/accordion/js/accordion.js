@@ -34,15 +34,20 @@ jQuery( function ( $ ) {
 			var openPanel = function ( panel, preventHashChange, keepVisible ) {
 				var $panel = $( panel );
 				if ( ! $panel.is( '.sow-accordion-panel-open' ) ) {
-					$panel.find( '> .sow-accordion-panel-content' ).slideDown(
-						function() {
+					$panel.find( '> .sow-accordion-panel-content' ).slideDown( {
+						start: function () {
+							// Sometimes the content of the panel relies on a window resize to setup correctly.
+							// Trigger it here so it's hopefully done before the animation.
+							$( window ).trigger( 'resize' );
+							$( sowb ).trigger( 'setup_widgets' );
+						},
+						complete: function() {
 							if ( keepVisible && $panel.offset().top < window.scrollY ) {
 								scrollToPanel( $panel, true );
 							}
 							$( this ).trigger( 'show' );
-							$( sowb ).trigger( 'setup_widgets' );
 						}
-					);
+					});
 					$panel.find(  '> .sow-accordion-panel-header-container > .sow-accordion-panel-header' ).attr( 'aria-expanded', true );
 					$panel.addClass( 'sow-accordion-panel-open' );
 					openPanels.push( panel );
