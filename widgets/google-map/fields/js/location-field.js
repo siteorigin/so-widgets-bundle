@@ -152,6 +152,11 @@ function sowbAdminGoogleMapInit() {
 		
 		sowbForms._geocodeQueue = sowbForms._geocodeQueue || [];
 		
+		var $locationField = $( this );
+		if ( $locationField.is( ':not(:visible)' ) ) {
+			return;
+		}
+		
 		if ( sowbForms.mapsInitializing ) {
 			return;
 		}
@@ -162,7 +167,7 @@ function sowbAdminGoogleMapInit() {
 		}
 		sowbForms.mapsInitializing = true;
 		
-		var apiKey = $( this ).find( '.location-field-data' ).data( 'apiKey' );
+		var apiKey = $locationField.find( '.location-field-data' ).data( 'apiKey' );
 		
 		if ( ! apiKey ) {
 			sowbForms.displayNotice(
