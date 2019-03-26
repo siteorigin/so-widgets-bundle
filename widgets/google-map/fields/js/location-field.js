@@ -179,7 +179,8 @@ function sowbAdminGoogleMapInit() {
 						label: soLocationField.globalSettingsButtonLabel,
 						url: soLocationField.globalSettingsButtonUrl,
 					}
-				]
+				],
+				$locationField
 			);
 			console.warn( 'SiteOrigin Google Maps Widget: Could not find API key. Google Maps API key is required.' );
 			apiKey = '';
@@ -194,22 +195,37 @@ function sowbAdminGoogleMapInit() {
 				var matchError;
 				if ( typeof error === 'string' ) {
 					matchError = error.match( /^Google Maps.*API (error|warning): (.*)/ );
+					if ( matchError === null ) {
+						matchError = error.match( /^This API project is not authorized to use this API/ );
+					}
 				}
-				if ( matchError && matchError.length === 3 ) {
-					switch ( matchError[ 2 ] ) {
-						case 'InvalidKeyMapError':
-							sowbForms.displayNotice(
-								$( this ).closest( '.siteorigin-widget-form' ),
-								soLocationField.invalidApiKey,
-								'',
-								[
-									{
-										label: soLocationField.globalSettingsButtonLabel,
-										url: soLocationField.globalSettingsButtonUrl,
-									}
-								]
-							);
-							break;
+				if ( matchError ) {
+					if ( matchError.length === 3 ) {
+						switch ( matchError[ 2 ] ) {
+							case 'InvalidKeyMapError':
+								sowbForms.displayNotice(
+									$( this ).closest( '.siteorigin-widget-form' ),
+									soLocationField.invalidApiKey,
+									'',
+									[
+										{
+											label: soLocationField.globalSettingsButtonLabel,
+											url: soLocationField.globalSettingsButtonUrl,
+										}
+									],
+									$locationField
+								);
+								break;
+						}
+					} else if ( matchError.length === 1 ) {
+						
+						sowbForms.displayNotice(
+							$( this ).closest( '.siteorigin-widget-form' ),
+							soLocationField.apiNotEnabled,
+							'',
+							[],
+							$locationField
+						);
 					}
 				}
 				errLog.apply( window.console, arguments );
