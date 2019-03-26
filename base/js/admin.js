@@ -142,7 +142,16 @@ var sowbForms = window.sowbForms || {};
 
 									// Call the function on the wrapper we've selected
 									$$f[thisHandler[i][0]].apply($$f, typeof thisHandler[i][2] !== 'undefined' ? thisHandler[i][2] : []);
-
+									
+									if ( $$f.is( '.siteorigin-widget-field:visible' ) ) {
+										if ( $$f.is( '.siteorigin-widget-field-type-section' ) ) {
+											var $fields = $$f.find( '> .siteorigin-widget-section > .siteorigin-widget-field' );
+											$fields.trigger( 'sowsetupformfield' );
+										} else {
+											$$f.trigger( 'sowsetupformfield' );
+										}
+									}
+									
 								}
 
 								// Store that we've run a handler
