@@ -142,7 +142,16 @@ var sowbForms = window.sowbForms || {};
 
 									// Call the function on the wrapper we've selected
 									$$f[thisHandler[i][0]].apply($$f, typeof thisHandler[i][2] !== 'undefined' ? thisHandler[i][2] : []);
-
+									
+									if ( $$f.is( '.siteorigin-widget-field:visible' ) ) {
+										if ( $$f.is( '.siteorigin-widget-field-type-section' ) ) {
+											var $fields = $$f.find( '> .siteorigin-widget-section > .siteorigin-widget-field' );
+											$fields.trigger( 'sowsetupformfield' );
+										} else {
+											$$f.trigger( 'sowsetupformfield' );
+										}
+									}
+									
 								}
 
 								// Store that we've run a handler
@@ -291,8 +300,6 @@ var sowbForms = window.sowbForms || {};
 					slide: function (event, ui) {
 						$input.val( parseFloat( ui.value ) );
 						$input.trigger( 'change' );
-					},
-					change: function( event, ui ) {
 						$$.find('.siteorigin-widget-slider-value').html(ui.value);
 					},
 				});
@@ -751,9 +758,15 @@ var sowbForms = window.sowbForms || {};
 						$(window).resize();
 						if ($(this).is(':visible')) {
 							$(this).trigger('slideToggleOpenComplete');
-
-							var $fields = $( this ).find( '> .siteorigin-widget-field' );
-							$fields.trigger( 'sowsetupformfield' );
+							
+							$( this ).find( '.siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field,> .siteorigin-widget-field' )
+							.each( function (index, element) {
+								var $field = $( element );
+								if ( $field.is( ':visible' ) ) {
+									$field.trigger( 'sowsetupformfield' );
+								}
+								
+							} );
 						}
 						else {
 							$(this).trigger('slideToggleCloseComplete');
@@ -1236,7 +1249,20 @@ var sowbForms = window.sowbForms || {};
 		});
 	};
 	
-	sowbForms.displayNotice = function ( $container, title, message, buttons ) {
+	
+	/**
+	 * Displays an informational notice either at the top of the supplied container, or above the optionally supplied
+	 * element.
+	 *
+	 * @param $container	The jQuery container in which the notice will be prepended.
+	 * @param title			The string title for the notice.
+	 * @param message		The string detail message for the notice.
+	 * @param buttons		An array of buttons which will be display along with the notice.
+	 * @param $element		The optional jQuery element before which the notice will be inserted. If this is supplied it
+	 * 						will take precedence over the $container argument.
+	 *
+	 */
+	sowbForms.displayNotice = function ( $container, title, message, buttons, $element ) {
 		
 		var $notice = $( '<div class="siteorigin-widget-form-notification"></div>' );
 		if ( title ) {
@@ -1267,7 +1293,11 @@ var sowbForms = window.sowbForms || {};
 			$notice.append( '<div><small>' + message + '</small></div>' );
 		}
 		
-		$container.prepend( $notice );
+		if ( $element ) {
+			$element.before( $notice );
+		} else {
+			$container.prepend( $notice );
+		}
 	};
 
 	// When we click on a widget top

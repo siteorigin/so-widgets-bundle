@@ -136,20 +136,35 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 		// This ensures styles are added inline.
 		add_filter( 'siteorigin_widgets_is_preview', '__return_true' );
 		
-		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
+		$valid_widget_class = ! empty( $widget ) &&
+							  is_object( $widget ) &&
+							  is_subclass_of( $widget, 'SiteOrigin_Widget' );
+		
+		if ( $valid_widget_class && ! empty( $widget_data ) ) {
 			ob_start();
 			/* @var $widget SiteOrigin_Widget */
 			$instance = $widget->update( $widget_data, $widget_data );
 			$widget->widget( array(), $instance );
 			$rendered_widget = ob_get_clean();
 		} else {
-			$rendered_widget = new WP_Error(
-				400,
-				'Invalid or missing widget class: ' . $widget_class,
-				array(
-					'status' => 400,
-				)
-			);
+			if ( empty( $valid_widget_class ) ) {
+				$rendered_widget = new WP_Error(
+					400,
+					'Invalid or missing widget class: ' . $widget_class,
+					array(
+						'status' => 400,
+					)
+				);
+			} else if ( empty( $widget_data ) ) {
+				$rendered_widget = new WP_Error(
+					400,
+					'Unable to render preview. Invalid or missing widget data.',
+					array(
+						'status' => 400,
+					)
+				);
+				
+			}
 		}
 		
 		return rest_ensure_response( $rendered_widget );

@@ -1,4 +1,4 @@
-/* global jQuery, sowbForms */
+/* global jQuery, sowbForms, soLocationField */
 
 window.sowbForms = window.sowbForms || {};
 
@@ -152,6 +152,11 @@ function sowbAdminGoogleMapInit() {
 		
 		sowbForms._geocodeQueue = sowbForms._geocodeQueue || [];
 		
+		var $locationField = $( this );
+		if ( $locationField.is( ':not(:visible)' ) ) {
+			return;
+		}
+		
 		if ( sowbForms.mapsInitializing ) {
 			return;
 		}
@@ -162,7 +167,7 @@ function sowbAdminGoogleMapInit() {
 		}
 		sowbForms.mapsInitializing = true;
 		
-		var apiKey = $( this ).find( '.location-field-data' ).data( 'apiKey' );
+		var apiKey = $locationField.find( '.location-field-data' ).data( 'apiKey' );
 		
 		if ( ! apiKey ) {
 			sowbForms.displayNotice(
@@ -174,11 +179,65 @@ function sowbAdminGoogleMapInit() {
 						label: soLocationField.globalSettingsButtonLabel,
 						url: soLocationField.globalSettingsButtonUrl,
 					}
-				]
+				],
+				$locationField
 			);
 			console.warn( 'SiteOrigin Google Maps Widget: Could not find API key. Google Maps API key is required.' );
 			apiKey = '';
 		}
+		
+		// This allows us to "catch" Google Maps API errors and do a bit of custom handling. Currently this is just
+		// checking for invalid API key errors.
+		if ( window.console && window.console.error ) {
+			var errLog = window.console.error;
+			
+			sowbForms.checkMapsApiInvalidKeyError = function ( error ) {
+				var matchError;
+				if ( typeof error === 'string' ) {
+					matchError = error.match( /^Google Maps.*API (error|warning): (.*)/ );
+					if ( matchError === null ) {
+						// This occurs when the API key has been restricted to prevent use of certain APIs.
+						matchError = error.match( /^This API project is not authorized to use this API/ );
+					}
+					if ( matchError.length === 3 ) {
+						matchError = matchError[ 2 ];
+					} else if ( matchError.length === 1 ) {
+						matchError = 'ApiNotActivatedMapError';
+					}
+				}
+				if ( matchError ) {
+					switch ( matchError ) {
+						case 'InvalidKeyMapError':
+							sowbForms.displayNotice(
+								$( this ).closest( '.siteorigin-widget-form' ),
+								soLocationField.invalidApiKey,
+								'',
+								[
+									{
+										label: soLocationField.globalSettingsButtonLabel,
+										url: soLocationField.globalSettingsButtonUrl,
+									}
+								],
+								$locationField
+							);
+							break;
+						case 'ApiNotActivatedMapError':
+							sowbForms.displayNotice(
+								$( this ).closest( '.siteorigin-widget-form' ),
+								soLocationField.apiNotEnabled,
+								'',
+								[],
+								$locationField
+							);
+							break;
+					}
+				}
+				errLog.apply( window.console, arguments );
+			}.bind( this );
+			
+			window.console.error = sowbForms.checkMapsApiInvalidKeyError;
+		}
+		
 		// Try to load even if API key is missing to allow Google Maps API to provide it's own warnings/errors about missing API key.
 		var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&libraries=places&callback=sowbAdminGoogleMapInit';
 		$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );

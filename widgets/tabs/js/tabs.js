@@ -56,12 +56,18 @@ jQuery( function ( $ ) {
 						function () {
 							$( this ).trigger( 'hide' );
 							selectedTabContent.removeAttr( 'aria-hidden' );
-							$tabPanels.eq( selectedIndex ).fadeIn( 'fast',
-								function () {
-									$( this ).trigger( 'show' );
+							$tabPanels.eq( selectedIndex ).fadeIn( {
+								duration: 'fast',
+								start: function () {
+									// Sometimes the content of the panel relies on a window resize to setup correctly.
+									// Trigger it here so it's hopefully done before the animation.
+									$( window ).trigger( 'resize' );
 									$( sowb ).trigger( 'setup_widgets' );
+								},
+								complete: function() {
+									$( this ).trigger( 'show' );
 								}
-							);
+							});
 						}
 					);
 					$tab.addClass( 'sow-tabs-tab-selected' );

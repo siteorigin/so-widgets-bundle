@@ -36,6 +36,7 @@ var sowb = window.sowb || {};
 
             // Call on resize. Opera debounces their resize by default.
             $(window).on('resize.fittext orientationchange.fittext', resizer);
+			$( sowb ).on( 'setup_widgets', resizer );
 
         });
     };

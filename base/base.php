@@ -135,6 +135,7 @@ function siteorigin_widget_get_font($font_value) {
 			$font['weight'] = $font_parts[1];
 			$font_url_param .= ':' . $font_parts[1];
 		}
+		$font['url'] = 'https://fonts.googleapis.com/css?family=' . $font_url_param;
 		$font['css_import'] = '@import url(https://fonts.googleapis.com/css?family=' . $font_url_param . ');';
 	}
 	else {
