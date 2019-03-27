@@ -66,6 +66,9 @@ class SiteOrigin_Widget_Icon_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_less_variables( $instance ) {
+		if ( empty( $instance ) ) {
+			return array();
+		}
 		return array(
 			'color'    => $instance['color'],
 			'alignment'    => $instance['alignment'],

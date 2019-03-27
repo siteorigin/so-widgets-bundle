@@ -152,6 +152,11 @@ function sowbAdminGoogleMapInit() {
 		
 		sowbForms._geocodeQueue = sowbForms._geocodeQueue || [];
 		
+		var $locationField = $( this );
+		if ( $locationField.is( ':not(:visible)' ) ) {
+			return;
+		}
+		
 		if ( sowbForms.mapsInitializing ) {
 			return;
 		}
@@ -162,7 +167,7 @@ function sowbAdminGoogleMapInit() {
 		}
 		sowbForms.mapsInitializing = true;
 		
-		var apiKey = $( this ).find( '.location-field-data' ).data( 'apiKey' );
+		var apiKey = $locationField.find( '.location-field-data' ).data( 'apiKey' );
 		
 		if ( ! apiKey ) {
 			sowbForms.displayNotice(
@@ -174,7 +179,8 @@ function sowbAdminGoogleMapInit() {
 						label: soLocationField.globalSettingsButtonLabel,
 						url: soLocationField.globalSettingsButtonUrl,
 					}
-				]
+				],
+				$locationField
 			);
 			console.warn( 'SiteOrigin Google Maps Widget: Could not find API key. Google Maps API key is required.' );
 			apiKey = '';
@@ -189,9 +195,18 @@ function sowbAdminGoogleMapInit() {
 				var matchError;
 				if ( typeof error === 'string' ) {
 					matchError = error.match( /^Google Maps.*API (error|warning): (.*)/ );
+					if ( matchError === null ) {
+						// This occurs when the API key has been restricted to prevent use of certain APIs.
+						matchError = error.match( /^This API project is not authorized to use this API/ );
+					}
+					if ( matchError.length === 3 ) {
+						matchError = matchError[ 2 ];
+					} else if ( matchError.length === 1 ) {
+						matchError = 'ApiNotActivatedMapError';
+					}
 				}
-				if ( matchError && matchError.length === 3 ) {
-					switch ( matchError[ 2 ] ) {
+				if ( matchError ) {
+					switch ( matchError ) {
 						case 'InvalidKeyMapError':
 							sowbForms.displayNotice(
 								$( this ).closest( '.siteorigin-widget-form' ),
@@ -202,7 +217,17 @@ function sowbAdminGoogleMapInit() {
 										label: soLocationField.globalSettingsButtonLabel,
 										url: soLocationField.globalSettingsButtonUrl,
 									}
-								]
+								],
+								$locationField
+							);
+							break;
+						case 'ApiNotActivatedMapError':
+							sowbForms.displayNotice(
+								$( this ).closest( '.siteorigin-widget-form' ),
+								soLocationField.apiNotEnabled,
+								'',
+								[],
+								$locationField
 							);
 							break;
 					}
