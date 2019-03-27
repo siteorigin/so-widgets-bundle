@@ -56,8 +56,8 @@ class SiteOrigin_Widget_Field_Location extends SiteOrigin_Widget_Field_Base {
 				'missingApiKey' => __( 'This widget requires a Google Maps API key. Please ensure you have set yours in Google Maps Widget settings.', 'so-widgets-bundle' ),
 				'invalidApiKey' => __( 'The Google Maps API key appears to be invalid. Please ensure you have set the correct key in Google Maps Widget settings.', 'so-widgets-bundle' ),
 				'apiNotEnabled' => sprintf(
-					__( 'The Google Maps API key appears to be valid, but does not have the required APIs enabled. Please %senable the required APIs%s.', 'so-widgets-bundle' ),
-					'<a href="https://cloud.google.com/maps-platform/#get-started" target="_blank" rel="noopener noreferrer">',
+					__( 'The Google Maps API key appears to be valid, but the required APIs are either disabled or restricted. Please %scheck the API key configuration%s.', 'so-widgets-bundle' ),
+					'<a href="https://console.developers.google.com/apis/dashboard?project=_" target="_blank" rel="noopener noreferrer">',
 					'</a>'
 				),
 				'globalSettingsButtonLabel' => __( 'Go to Google Maps Widget settings', 'so-widgets-bundle' ),

@@ -196,36 +196,40 @@ function sowbAdminGoogleMapInit() {
 				if ( typeof error === 'string' ) {
 					matchError = error.match( /^Google Maps.*API (error|warning): (.*)/ );
 					if ( matchError === null ) {
+						// This occurs when the API key has been restricted to prevent use of certain APIs.
 						matchError = error.match( /^This API project is not authorized to use this API/ );
+					}
+					if ( matchError.length === 3 ) {
+						matchError = matchError[ 2 ];
+					} else if ( matchError.length === 1 ) {
+						matchError = 'ApiNotActivatedMapError';
 					}
 				}
 				if ( matchError ) {
-					if ( matchError.length === 3 ) {
-						switch ( matchError[ 2 ] ) {
-							case 'InvalidKeyMapError':
-								sowbForms.displayNotice(
-									$( this ).closest( '.siteorigin-widget-form' ),
-									soLocationField.invalidApiKey,
-									'',
-									[
-										{
-											label: soLocationField.globalSettingsButtonLabel,
-											url: soLocationField.globalSettingsButtonUrl,
-										}
-									],
-									$locationField
-								);
-								break;
-						}
-					} else if ( matchError.length === 1 ) {
-						
-						sowbForms.displayNotice(
-							$( this ).closest( '.siteorigin-widget-form' ),
-							soLocationField.apiNotEnabled,
-							'',
-							[],
-							$locationField
-						);
+					switch ( matchError ) {
+						case 'InvalidKeyMapError':
+							sowbForms.displayNotice(
+								$( this ).closest( '.siteorigin-widget-form' ),
+								soLocationField.invalidApiKey,
+								'',
+								[
+									{
+										label: soLocationField.globalSettingsButtonLabel,
+										url: soLocationField.globalSettingsButtonUrl,
+									}
+								],
+								$locationField
+							);
+							break;
+						case 'ApiNotActivatedMapError':
+							sowbForms.displayNotice(
+								$( this ).closest( '.siteorigin-widget-form' ),
+								soLocationField.apiNotEnabled,
+								'',
+								[],
+								$locationField
+							);
+							break;
 					}
 				}
 				errLog.apply( window.console, arguments );
