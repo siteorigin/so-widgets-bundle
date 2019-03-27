@@ -65,6 +65,18 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.15.4 - 27 March 2019 =
+* Slider field: Live updates for display value.
+* Widget block: Show error if missing or invalid widget data.
+* Google Maps: Add more links to relevant docs for enabling required APIs.
+* Google Maps Location field: Catch API key errors and display notice.
+* Run FitText resizer on `setup_widgets` too.
+* Add font url as property of font info object.
+* Image grid: Use opacity for initial hide of images so that size may still be detected.
+* Google Maps: Detect draggable or scroll_zoom before running setting migration.
+* Accordion and Tabs: Trigger window resize on start of animation.
+* Icon: Prevent undefined index notices.
+
 = 1.15.3 - 6 March 2019 =
 * Image grid: Fallback support, alt text, use measurement fields.
 * Features: Fix responsive layout.
