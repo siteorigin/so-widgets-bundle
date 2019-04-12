@@ -70,12 +70,15 @@ class SiteOrigin_Widget_Field_Location extends SiteOrigin_Widget_Field_Base {
 		if ( empty( $value ) ) {
 			return array();
 		}
+
 		if ( is_string( $value ) ) {
 			$decoded_value = json_decode( $value, true );
 			// If it's not valid JSON
 			if ( $decoded_value == null ) {
 				$decoded_value = array( 'address' => $value );
 			}
+		} else if ( is_array( $value ) ) {
+			$decoded_value = $value;
 		}
 		$location = array();
 		
