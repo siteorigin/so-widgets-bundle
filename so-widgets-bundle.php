@@ -83,6 +83,13 @@ class SiteOrigin_Widgets_Bundle {
 		
 		// This is a temporary filter to disable the new Jetpack Grunion contact form editor.
 		add_filter( 'tmp_grunion_allow_editor_view', '__return_false' );
+
+		// Add compatibility for Autoptimize.
+		if ( class_exists('autoptimizeMain', false) ) {
+			add_filter( 'autoptimize_filter_css_exclude', array( $this, 'include_widgets_css_in_autoptimize'), 10, 2 );
+			add_action( 'siteorigin_widgets_stylesheet_added', array( $this, 'clear_autoptimize_cache' ) );
+			add_action( 'siteorigin_widgets_stylesheet_deleted', array( $this, 'clear_autoptimize_cache' ) );
+		}
 	}
 
 	/**
@@ -824,6 +831,44 @@ class SiteOrigin_Widgets_Bundle {
 		
 		// Reset the $post global back to what it was before any secondary queries.
 		$post = $global_post;
+	}
+
+	/**
+	 * This removes the 'uploads/siteorigin-widgets' folder from exclusion for CSS aggregation in Autoptimize.
+	 *
+	 * @param $excluded
+	 * @param $content
+	 *
+	 * @return string
+	 */
+	public function include_widgets_css_in_autoptimize( $excluded, $content ) {
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+
+		$excl = array_map( 'trim', explode( ',', $excluded ) );
+		$add = array();
+		$uploads_dir = wp_upload_dir();
+		foreach ( $excl as $index => $path ) {
+			if (strpos( $uploads_dir['basedir'], untrailingslashit( $path ) ) ) {
+				// Iterate over items in uploads and add to excluded, except for the 'siteorigin-widgets' folder.
+				$excl[ $index ] = '';
+				$uploads_items  = list_files( $uploads_dir['basedir'], 1, array( 'siteorigin-widgets' ) );
+				foreach ( $uploads_items as $item ) {
+					$add[] = str_replace( ABSPATH, '', $item );
+				}
+			}
+		}
+		$excluded = implode( ',', array_filter( array_merge( $excl, $add ) ) );
+
+		return $excluded;
+	}
+
+	/**
+	 * Clears the Autoptimize cache when widgets CSS files are regenerated or deleted.
+	 */
+	public function clear_autoptimize_cache() {
+		if ( class_exists( 'autoptimizeCache' ) ) {
+			autoptimizeCache::clearall();
+		}
 	}
 }
 
