@@ -10,9 +10,19 @@
 }
 
 .sow-image-container {
-	text-align: @image_alignment;
+	display: flex;
+	& when( @image_alignment = 'left' ) {
+		justify-content: flex-start;
+	}
+	& when( @image_alignment = 'right' ) {
+		justify-content: flex-end;
+	}
+	& when( @image_alignment = 'center' ) {
+		justify-content: center;
+	}
+
 	.so-widget-image {
-		display: @image_display;
+		display: block;
 		max-width: @image_max_width;
 		width: @image_width;
 		height: @image_height;

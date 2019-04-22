@@ -188,7 +188,6 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		return array(
 			'title_alignment' => ! empty( $instance['title_align'] ) ? $instance['title_align'] : '',
 			'image_alignment' => $instance['align'],
-			'image_display' => $instance['align'] == 'default' ? 'block' : 'inline-block',
 			'image_max_width' => ! empty( $instance['bound'] ) ? '100%' : '',
 			'image_height' => ! empty( $instance['bound'] ) ? 'auto' : '',
 			'image_width' => ! empty( $instance['full_width'] ) ? '100%' : ( ! empty( $instance['bound'] ) ? 'inherit' : '' ),
