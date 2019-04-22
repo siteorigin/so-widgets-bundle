@@ -25,7 +25,7 @@ jQuery( function ( $ ) {
 				var numColumns = layout.numColumns;
 				$gridEl.css( 'width', 'auto' );
 				var horizontalGutterSpace = layout.gutter * ( numColumns - 1 );
-				var columnWidth = Math.floor( ( $gridEl.width() - ( horizontalGutterSpace ) ) / numColumns );
+				var columnWidth = ( $gridEl.width() - ( horizontalGutterSpace ) ) / numColumns;
 				$gridEl.width( ( columnWidth * numColumns ) + horizontalGutterSpace );
 				
 				$gridEl.imagesLoaded( function () {
