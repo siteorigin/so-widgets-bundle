@@ -848,7 +848,7 @@ class SiteOrigin_Widgets_Bundle {
 		$add = array();
 		$uploads_dir = wp_upload_dir();
 		foreach ( $excl as $index => $path ) {
-			if (strpos( $uploads_dir['basedir'], untrailingslashit( $path ) ) ) {
+			if (strpos( $uploads_dir['basedir'], untrailingslashit( $path ) ) !== false ) {
 				// Iterate over items in uploads and add to excluded, except for the 'siteorigin-widgets' folder.
 				$excl[ $index ] = '';
 				$uploads_items  = list_files( $uploads_dir['basedir'], 1, array( 'siteorigin-widgets' ) );
