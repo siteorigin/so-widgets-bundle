@@ -11,13 +11,13 @@
 
 .sow-image-container {
 	display: flex;
-	& when( @image_alignment = 'left' ) {
+	& when( @image_alignment = left ) {
 		justify-content: flex-start;
 	}
-	& when( @image_alignment = 'right' ) {
+	& when( @image_alignment = right ) {
 		justify-content: flex-end;
 	}
-	& when( @image_alignment = 'center' ) {
+	& when( @image_alignment = center ) {
 		justify-content: center;
 	}
 
