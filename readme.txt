@@ -65,6 +65,15 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.15.5 - 25 April 2019 =
+* Removed admin notice for new widgets.
+* Slider Base Widget: Removed unused background videos height setting.
+* Price Table: Recalc equalized heights when window size or orientation changes.
+* Google Maps location field: Use value in sanitization if already an array.
+* Add compatibility for Autoptimize.
+* Simple Masonry: Ensure all available width is used for layout.
+* Image: Change alignment to use `display:flex` instead of `text-align`.
+
 = 1.15.4 - 27 March 2019 =
 * Slider field: Live updates for display value.
 * Widget block: Show error if missing or invalid widget data.
