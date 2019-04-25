@@ -67,7 +67,6 @@ class SiteOrigin_Widgets_Bundle {
 
 		add_action( 'admin_init', array($this, 'plugin_version_check') );
 		add_action( 'siteorigin_widgets_version_update', array( $this, 'handle_update' ), 10, 2 );
-		add_action( 'admin_notices', array( $this, 'display_admin_notices') );
 
 		// Actions for clearing widget cache
 		add_action( 'switch_theme', array($this, 'clear_widget_cache') );
@@ -84,6 +83,13 @@ class SiteOrigin_Widgets_Bundle {
 		
 		// This is a temporary filter to disable the new Jetpack Grunion contact form editor.
 		add_filter( 'tmp_grunion_allow_editor_view', '__return_false' );
+
+		// Add compatibility for Autoptimize.
+		if ( class_exists('autoptimizeMain', false) ) {
+			add_filter( 'autoptimize_filter_css_exclude', array( $this, 'include_widgets_css_in_autoptimize'), 10, 2 );
+			add_action( 'siteorigin_widgets_stylesheet_added', array( $this, 'clear_autoptimize_cache' ) );
+			add_action( 'siteorigin_widgets_stylesheet_deleted', array( $this, 'clear_autoptimize_cache' ) );
+		}
 	}
 
 	/**
@@ -188,40 +194,6 @@ class SiteOrigin_Widgets_Bundle {
 			update_option( 'siteorigin_widgets_new_widgets', $new_widgets );
 			update_option( 'siteorigin_widgets_old_widgets', implode( ',', $widgets ) );
 		}
-	}
-
-	function display_admin_notices() {
-		$new_widgets = get_option( 'siteorigin_widgets_new_widgets' );
-		if ( empty( $new_widgets ) ) {
-			return;
-		}
-		?>
-		<div class="updated">
-			<p><?php echo __( 'New widgets available in the ') . '<a href="' . admin_url('plugins.php?page=so-widgets-plugins') . '">' . __('SiteOrigin Widgets Bundle', 'so-widgets-bundle' ) . '</a>!'; ?></p>
-			<?php
-
-			$default_headers = array(
-				'Name' => 'Widget Name',
-				'Description' => 'Description',
-				'Author' => 'Author',
-				'AuthorURI' => 'Author URI',
-				'WidgetURI' => 'Widget URI',
-				'VideoURI' => 'Video URI',
-			);
-
-			foreach ( $new_widgets as $widget_file_path ) {
-				preg_match( '/.*[\/\\\\](.*).php/', $widget_file_path, $match );
-				$widget = get_file_data( $widget_file_path, $default_headers, 'siteorigin-widget' );
-				$name = empty( $widget['Name'] ) ? $match[1] : $widget['Name'];
-				$description = empty( $widget['Description'] ) ? __( 'A new widget!', 'so-widgets-bundle' ) : $widget['Description'];
-				?>
-				<p><b><?php echo esc_html( $name . ' - ' . $description) ?></b></p>
-				<?php
-			}
-			?>
-		</div>
-		<?php
-		update_option( 'siteorigin_widgets_new_widgets', array() );
 	}
 
 	/**
@@ -859,6 +831,44 @@ class SiteOrigin_Widgets_Bundle {
 		
 		// Reset the $post global back to what it was before any secondary queries.
 		$post = $global_post;
+	}
+
+	/**
+	 * This removes the 'uploads/siteorigin-widgets' folder from exclusion for CSS aggregation in Autoptimize.
+	 *
+	 * @param $excluded
+	 * @param $content
+	 *
+	 * @return string
+	 */
+	public function include_widgets_css_in_autoptimize( $excluded, $content ) {
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+
+		$excl = array_map( 'trim', explode( ',', $excluded ) );
+		$add = array();
+		$uploads_dir = wp_upload_dir();
+		foreach ( $excl as $index => $path ) {
+			if (strpos( $uploads_dir['basedir'], untrailingslashit( $path ) ) !== false ) {
+				// Iterate over items in uploads and add to excluded, except for the 'siteorigin-widgets' folder.
+				$excl[ $index ] = '';
+				$uploads_items  = list_files( $uploads_dir['basedir'], 1, array( 'siteorigin-widgets' ) );
+				foreach ( $uploads_items as $item ) {
+					$add[] = str_replace( ABSPATH, '', $item );
+				}
+			}
+		}
+		$excluded = implode( ',', array_filter( array_merge( $excl, $add ) ) );
+
+		return $excluded;
+	}
+
+	/**
+	 * Clears the Autoptimize cache when widgets CSS files are regenerated or deleted.
+	 */
+	public function clear_autoptimize_cache() {
+		if ( class_exists( 'autoptimizeCache' ) ) {
+			autoptimizeCache::clearall();
+		}
 	}
 }
 

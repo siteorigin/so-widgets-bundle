@@ -143,12 +143,6 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					'video/ogg' => 'Ogg',
 				),
 			),
-
-			'height' => array(
-				'type' => 'number',
-				'label' => __( 'Maximum height', 'so-widgets-bundle' )
-			),
-
 		);
 	}
 
@@ -349,10 +343,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			if( empty( $video['file'] ) && empty ( $video['url'] ) ) continue;
 			// If video is an external file, try and display it using oEmbed
 			if( !empty( $video['url'] ) ) {
-				$args = array();
-				if ( ! empty( $video['height'] ) ) {
-					$args['height'] = $video['height'];
-				}
+
 				$can_oembed = $so_video->can_oembed( $video['url'] );
 
 				// Check if we can oEmbed the video or not
