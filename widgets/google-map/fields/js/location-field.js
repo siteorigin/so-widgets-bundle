@@ -200,10 +200,12 @@ window.addEventListener('DOMContentLoaded', function () {
 						// This occurs when the API key has been restricted to prevent use of certain APIs.
 						matchError = error.match( /^This API project is not authorized to use this API/ );
 					}
-					if ( matchError.length === 3 ) {
-						matchError = matchError[ 2 ];
-					} else if ( matchError.length === 1 ) {
-						matchError = 'ApiNotActivatedMapError';
+					if ( matchError ) {
+						if ( matchError.length === 3 ) {
+							matchError = matchError[ 2 ];
+						} else if ( matchError.length === 1 ) {
+							matchError = 'ApiNotActivatedMapError';
+						}
 					}
 				}
 				if ( matchError ) {
