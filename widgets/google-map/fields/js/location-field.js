@@ -11,57 +11,58 @@ sowbForms.LocationField = function () {
 				return;
 			}
 			
-			var $inputField = $( element ).find( '.siteorigin-widget-location-input' );
-			var $valueField = $( element ).find( '.siteorigin-widget-input' );
-			var autocomplete = new google.maps.places.Autocomplete( $inputField.get( 0 ) );
+			var inputField = element.querySelector( '.siteorigin-widget-location-input' );
+			var valueField = element.querySelector( '.siteorigin-widget-input' );
+			var autocomplete = new google.maps.places.Autocomplete( inputField );
 			
 			var getSimplePlace = function ( place ) {
-				var promise = new $.Deferred();
-				var simplePlace = { name: place.name };
-				simplePlace.address = place.hasOwnProperty( 'formatted_address' ) ? place.formatted_address : '';
-				if ( place.hasOwnProperty( 'geometry' ) ) {
-					simplePlace.location = place.geometry.location.toString();
-					promise.resolve( simplePlace );
-				} else {
-					var addr = { address: place.hasOwnProperty( 'formatted_address' ) ? place.formatted_address : place.name };
-					new google.maps.Geocoder().geocode( addr,
-						function ( results, status ) {
-							if ( status === google.maps.GeocoderStatus.OK ) {
-								simplePlace.location = results[ 0 ].geometry.location.toString();
-								promise.resolve( simplePlace );
-							} else {
-								promise.reject( status );
-							}
-						} );
-				}
-				return promise;
+				return new Promise(function (resolve, reject) {
+					var simplePlace = {name: place.name};
+					simplePlace.address = place.hasOwnProperty('formatted_address') ? place.formatted_address : '';
+					if (place.hasOwnProperty('geometry')) {
+						simplePlace.location = place.geometry.location.toString();
+						resolve(simplePlace);
+					} else {
+						var addr = {address: place.hasOwnProperty('formatted_address') ? place.formatted_address : place.name};
+						new google.maps.Geocoder().geocode(addr,
+							function (results, status) {
+								if (status === google.maps.GeocoderStatus.OK) {
+									simplePlace.location = results[0].geometry.location.toString();
+									resolve(simplePlace);
+								} else {
+									reject(status);
+								}
+							});
+					}
+				});
 			};
 			
 			var onPlaceChanged = function () {
 				var place = autocomplete.getPlace();
 				
 				getSimplePlace( place )
-				.done( function ( simplePlace ) {
-					$valueField.val( JSON.stringify( simplePlace ) )
-					$valueField.trigger( 'change' );
+				.then( function ( simplePlace ) {
+					valueField.value = JSON.stringify(simplePlace);
+					valueField.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
 				} )
-				.fail( function ( status ) {
+				.catch( function ( status ) {
 					console.warn( 'SiteOrigin Google Maps Widget: Geocoding failed for "' + place.name + '" with status: ' + status );
 				} );
 			};
 
 			autocomplete.addListener( 'place_changed', onPlaceChanged );
 			
-			$inputField.on( 'change', function () {
-				$valueField.val( JSON.stringify( { name: $inputField.val() } ) );
-				$valueField.trigger( 'change' );
+			inputField.addEventListener( 'change', function () {
+
+				valueField.value = JSON.stringify({name: inputField.value});
+				valueField.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
 			} );
 			
-			if ( $valueField.val() ) {
+			if ( valueField.value ) {
 				// Attempt automatic migration
 				var place = {};
 				try {
-					var parsed = JSON.parse( $valueField.val() );
+					var parsed = JSON.parse( valueField.value );
 					if ( ! parsed.hasOwnProperty( 'location' ) ) {
 						if ( parsed.hasOwnProperty( 'address' ) ) {
 							place.name = parsed.address;
@@ -69,7 +70,7 @@ sowbForms.LocationField = function () {
 					}
 				} catch ( error ) {
 					// Let's just try use the value directly.
-					place.name = $valueField.val();
+					place.name = valueField.value;
 				}
 				if ( place.hasOwnProperty( 'name' ) && place.name !== 'null') {
 					if ( ! sowbForms.mapsMigrationLogged ) {
@@ -79,9 +80,9 @@ sowbForms.LocationField = function () {
 					var delay = 100;
 					function callGetSimplePlace( place, field ) {
 						getSimplePlace( place )
-						.done( function ( simplePlace ) {
-							field.val( JSON.stringify( simplePlace ) );
-							field.trigger( 'change' );
+						.then( function ( simplePlace ) {
+							field.value = JSON.stringify( simplePlace );
+							valueField.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
 							sowbForms._geocodeQueue.shift();
 							if ( sowbForms._geocodeQueue.length > 0 ) {
 								var next = sowbForms._geocodeQueue[ 0 ];
@@ -92,7 +93,7 @@ sowbForms.LocationField = function () {
 								console.info( 'SiteOrigin Google Maps Widget: Location fields updated. Please save the post to complete the migration.' );
 							}
 						} )
-						.fail( function ( status ) {
+						.catch( function ( status ) {
 							if ( status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT ) {
 								if ( ! sowbForms.hasOwnProperty( 'overQueryLimitCount' ) ) {
 									sowbForms.overQueryLimitCount = 1;
@@ -116,10 +117,10 @@ sowbForms.LocationField = function () {
 							}
 						} );
 					}
-					sowbForms._geocodeQueue.push( { place: place, field: $valueField } );
+					sowbForms._geocodeQueue.push( { place: place, field: valueField } );
 					if ( sowbForms._geocodeQueue.length === 1 ) {
 						setTimeout( function () {
-							callGetSimplePlace( place, $valueField );
+							callGetSimplePlace( place, valueField );
 						}, delay );
 					}
 				}
@@ -130,10 +131,10 @@ sowbForms.LocationField = function () {
 
 sowbForms.setupLocationFields = function () {
 	if ( google && google.maps && google.maps.places ) {
-		$( '.siteorigin-widget-field-type-location' ).each( function ( index, element ) {
-			if ( ! $( element ).data( 'initialized' ) ) {
+		document.querySelectorAll( '.siteorigin-widget-field-type-location' ).forEach( function ( element ) {
+			if ( element.getAttribute( 'data-initialized' ) !== 'true' ) {
 				new sowbForms.LocationField().init( element );
-				$( element ).data( 'initialized', true );
+				element.setAttribute('data-initialized', 'true');
 			}
 		} );
 	}
@@ -146,7 +147,7 @@ function sowbAdminGoogleMapInit() {
 	sowbForms.setupLocationFields();
 }
 
-( function ( $ ) {
+window.addEventListener('DOMContentLoaded', function () {
 	
 	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-location', function () {
 		
@@ -199,10 +200,12 @@ function sowbAdminGoogleMapInit() {
 						// This occurs when the API key has been restricted to prevent use of certain APIs.
 						matchError = error.match( /^This API project is not authorized to use this API/ );
 					}
-					if ( matchError.length === 3 ) {
-						matchError = matchError[ 2 ];
-					} else if ( matchError.length === 1 ) {
-						matchError = 'ApiNotActivatedMapError';
+					if ( matchError ) {
+						if ( matchError.length === 3 ) {
+							matchError = matchError[ 2 ];
+						} else if ( matchError.length === 1 ) {
+							matchError = 'ApiNotActivatedMapError';
+						}
 					}
 				}
 				if ( matchError ) {
@@ -243,4 +246,4 @@ function sowbAdminGoogleMapInit() {
 		$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );
 	} );
 
-} )( jQuery );
+});

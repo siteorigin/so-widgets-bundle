@@ -11,6 +11,7 @@
 
 .sow-image-container {
 	display: flex;
+	align-items: flex-start;
 	& when( @image_alignment = left ) {
 		justify-content: flex-start;
 	}
@@ -19,6 +20,10 @@
 	}
 	& when( @image_alignment = center ) {
 		justify-content: center;
+	}
+
+	> a {
+		width: @image_width;
 	}
 
 	.so-widget-image {
