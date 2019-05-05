@@ -145,10 +145,8 @@ jQuery( function ( $ ) {
 								return decodeURI( anchor ) === decodeURI( $( $panels[ element ] ).data( 'anchor' ) );
 							} );
 
-							if ( anchor ) {
+							if ( panel ) {
 								openPanel( panel, true );
-							} else {
-								closePanel( panel, true );
 							}
 						} );
 					}
