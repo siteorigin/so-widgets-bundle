@@ -12,6 +12,7 @@
 .sow-image-container {
 	display: flex;
 	align-items: flex-start;
+
 	& when( @image_alignment = left ) {
 		justify-content: flex-start;
 	}
@@ -23,7 +24,9 @@
 	}
 
 	> a {
+		display: inline-block;
 		width: @image_width;
+		max-width: @image_max_width;
 	}
 
 	.so-widget-image {
