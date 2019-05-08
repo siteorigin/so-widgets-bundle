@@ -130,12 +130,14 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 			}
 			$image['link_attributes'] = $link_atts;
 
+			$title = $this->get_image_title($image);
+
 			if ( empty( $image['image'] ) && ! empty( $image['image_fallback'] ) ) {
 				$alt = ! empty ( $image['alt'] ) ? $image['alt'] .'"' : '';
-				$image['image_html'] = '<img src="'. esc_url( $image['image_fallback'] ) .'" alt="'. esc_attr( $alt ) .'" title="'. esc_attr( $image['title'] ) .'">';
+				$image['image_html'] = '<img src="'. esc_url( $image['image_fallback'] ) .'" alt="'. esc_attr( $alt ) .'" title="'. esc_attr( $title ) .'">';
 			} else {
 				$image['image_html'] = wp_get_attachment_image( $image['image'], $instance['display']['attachment_size'], false, array(
-					'title' => $image['title'],
+					'title' => $title,
 					'alt'   => $image['alt'],
 				) );
 			}
@@ -146,6 +148,28 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 			'max_height' => $instance['display']['max_height'],
 			'max_width' => $instance['display']['max_width'],
 		);
+	}
+
+	/**
+	 * Try to figure out an image's title for display.
+	 *
+	 * @param $image
+	 *
+	 * @return string The title of the image.
+	 */
+	private function get_image_title($image) {
+		if ( ! empty( $image['title'] ) ) {
+			$title = $image['title'];
+		} else {
+			// We do not want to use the default image titles as they're based on the file name without the extension
+			$file_name = pathinfo( get_post_meta( $image['image'], '_wp_attached_file', true ), PATHINFO_FILENAME );
+			$title = get_the_title( $image['image'] );
+			if ( $title == $file_name ) {
+				$title = '';
+			}
+		}
+
+		return $title;
 	}
 	
 	function modify_instance( $instance ) {
