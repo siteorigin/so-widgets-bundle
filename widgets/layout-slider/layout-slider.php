@@ -29,7 +29,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 	}
 
 	function get_widget_form(){
-		$show_heading_fields = apply_filters( 'siteorigin_widgets_show_heading_fields', false );
+		$show_heading_fields = apply_filters( 'sow_layout_slider_show_heading_fields', false );
 		return array(
 			'frames' => array(
 				'type' => 'repeater',
