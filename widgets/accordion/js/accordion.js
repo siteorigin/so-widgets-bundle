@@ -137,18 +137,21 @@ jQuery( function ( $ ) {
 				};
 				
 				var updatePanelStates = function () {
-					if ( window.location.hash ) {
-						var anchors = window.location.hash.replace( '#', '' ).split( ',' );
-						anchors.forEach( function ( anchor ) {
-							var $panels = $accordionPanels.toArray();
-							var panel = $panels.filter( function ( index, element ) {
-								return decodeURI( anchor ) === decodeURI( $( $panels[ element ] ).data( 'anchor' ) );
-							} );
-
-							if ( panel ) {
-								openPanel( panel, true );
-							}
+					var panels = $accordionPanels.toArray();
+					for ( var i = 0; i < panels.length; i++ ) {
+						var panel = panels[ i ];
+						var anchor = $( panel ).data( 'anchor' );
+						var anchors = window.location.hash.substring(1).split( ',' ); 
+						
+						var anchor = anchors.filter( function ( index, element ) {
+							return decodeURI( anchor.toString() ) === decodeURI( index );
 						} );
+
+						if ( anchor.length ) {
+							openPanel( panel, true );
+						} else {
+							closePanel( panel, true );
+						}
 					}
 				};
 				$( window ).on( 'hashchange', updatePanelStates );
