@@ -87,8 +87,6 @@ class SiteOrigin_Widgets_Bundle {
 		// Add compatibility for Autoptimize.
 		if ( class_exists('autoptimizeMain', false) ) {
 			add_filter( 'autoptimize_filter_css_exclude', array( $this, 'include_widgets_css_in_autoptimize'), 10, 2 );
-			add_action( 'siteorigin_widgets_stylesheet_added', array( $this, 'clear_autoptimize_cache' ) );
-			add_action( 'siteorigin_widgets_stylesheet_deleted', array( $this, 'clear_autoptimize_cache' ) );
 		}
 	}
 
@@ -862,14 +860,6 @@ class SiteOrigin_Widgets_Bundle {
 		return $excluded;
 	}
 
-	/**
-	 * Clears the Autoptimize cache when widgets CSS files are regenerated or deleted.
-	 */
-	public function clear_autoptimize_cache() {
-		if ( class_exists( 'autoptimizeCache' ) ) {
-			autoptimizeCache::clearall();
-		}
-	}
 }
 
 // create the initial single
