@@ -122,6 +122,10 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_less_variables( $instance ) {
+		if ( empty( $instance ) ) {
+			return array();
+		}
+
 		$size = siteorigin_widgets_get_image_size( $instance['image_size'] );
 
 		$thumb_width = '';
