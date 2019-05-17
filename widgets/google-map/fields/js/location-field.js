@@ -148,7 +148,12 @@ function sowbAdminGoogleMapInit() {
 }
 
 window.addEventListener('DOMContentLoaded', function () {
-	
+
+	// Some plugins cause `$` to not have been defined, but somehow `jQuery` is.
+	var $ = $ || jQuery;
+	if (!$) {
+		return;
+	}
 	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-location', function () {
 		
 		sowbForms._geocodeQueue = sowbForms._geocodeQueue || [];
