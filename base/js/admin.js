@@ -1245,6 +1245,7 @@ var sowbForms = window.sowbForms || {};
 			
 			if ( triggerChange ) {
 				$$.trigger( 'change' );
+				this.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
 			}
 		});
 	};

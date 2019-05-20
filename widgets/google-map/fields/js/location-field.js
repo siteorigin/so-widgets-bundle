@@ -36,14 +36,26 @@ sowbForms.LocationField = function () {
 					}
 				});
 			};
+
+			var onValueFieldChange = function () {
+				var parsedVal = JSON.parse(valueField.value);
+				inputField.value = parsedVal.name;
+			};
+
+			valueField.addEventListener('change', onValueFieldChange);
+
+			var setValueField = function (value) {
+				valueField.value = JSON.stringify(value);
+				valueField.removeEventListener('change', onValueFieldChange);
+				valueField.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
+			};
 			
 			var onPlaceChanged = function () {
 				var place = autocomplete.getPlace();
 				
 				getSimplePlace( place )
 				.then( function ( simplePlace ) {
-					valueField.value = JSON.stringify(simplePlace);
-					valueField.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
+					setValueField(simplePlace);
 				} )
 				.catch( function ( status ) {
 					console.warn( 'SiteOrigin Google Maps Widget: Geocoding failed for "' + place.name + '" with status: ' + status );
@@ -53,9 +65,7 @@ sowbForms.LocationField = function () {
 			autocomplete.addListener( 'place_changed', onPlaceChanged );
 			
 			inputField.addEventListener( 'change', function () {
-
-				valueField.value = JSON.stringify({name: inputField.value});
-				valueField.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
+				setValueField({name: inputField.value});
 			} );
 			
 			if ( valueField.value ) {
