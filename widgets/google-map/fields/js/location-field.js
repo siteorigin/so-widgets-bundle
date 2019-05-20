@@ -39,7 +39,16 @@ sowbForms.LocationField = function () {
 
 			var onValueFieldChange = function () {
 				var parsedVal = JSON.parse(valueField.value);
-				inputField.value = parsedVal.name;
+				var address = '';
+				if (parsedVal.hasOwnProperty('address')) {
+					address = parsedVal.address;
+				}
+
+				if (parsedVal.hasOwnProperty('name') && address.indexOf(parsedVal.name) !== 0) {
+					address = parsedVal.name + ', ' + address;
+				}
+
+				inputField.value = address;
 			};
 
 			valueField.addEventListener('change', onValueFieldChange);
