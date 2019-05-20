@@ -48,6 +48,7 @@ sowbForms.LocationField = function () {
 				valueField.value = JSON.stringify(value);
 				valueField.removeEventListener('change', onValueFieldChange);
 				valueField.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
+				valueField.addEventListener('change', onValueFieldChange);
 			};
 			
 			var onPlaceChanged = function () {
