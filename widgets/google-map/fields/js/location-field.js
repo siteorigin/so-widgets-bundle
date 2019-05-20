@@ -152,7 +152,8 @@ sowbForms.LocationField = function () {
 sowbForms.setupLocationFields = function () {
 	if ( google && google.maps && google.maps.places ) {
 		document.querySelectorAll( '.siteorigin-widget-field-type-location' ).forEach( function ( element ) {
-			if ( element.getAttribute( 'data-initialized' ) !== 'true' ) {
+			var elementVisible = !!( element.offsetWidth !== 0 && element.offsetHeight !== 0 );
+			if ( elementVisible && element.getAttribute( 'data-initialized' ) !== 'true' ) {
 				new sowbForms.LocationField().init( element );
 				element.setAttribute('data-initialized', 'true');
 			}
