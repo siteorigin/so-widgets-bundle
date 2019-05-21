@@ -37,7 +37,7 @@ sowbForms.LocationField = function () {
 				});
 			};
 
-			var onValueFieldChange = function () {
+			var setInputField = function () {
 				var parsedVal = JSON.parse(valueField.value);
 				var address = '';
 				if (parsedVal.hasOwnProperty('address')) {
@@ -51,13 +51,13 @@ sowbForms.LocationField = function () {
 				inputField.value = address;
 			};
 
-			valueField.addEventListener('change', onValueFieldChange);
+			valueField.addEventListener('change', setInputField);
 
 			var setValueField = function (value) {
 				valueField.value = JSON.stringify(value);
-				valueField.removeEventListener('change', onValueFieldChange);
+				valueField.removeEventListener('change', setInputField);
 				valueField.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
-				valueField.addEventListener('change', onValueFieldChange);
+				valueField.addEventListener('change', setInputField);
 			};
 			
 			var onPlaceChanged = function () {
@@ -143,6 +143,8 @@ sowbForms.LocationField = function () {
 							callGetSimplePlace( place, valueField );
 						}, delay );
 					}
+				} else {
+					setInputField();
 				}
 			}
 		}
