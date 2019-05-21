@@ -47,8 +47,10 @@ sowbForms.LocationField = function () {
 				if (parsedVal.hasOwnProperty('name') && address.indexOf(parsedVal.name) !== 0) {
 					address = parsedVal.name + ', ' + address;
 				}
-
+				inputField.removeEventListener('change', onInputFieldChange);
 				inputField.value = address;
+				inputField.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
+				inputField.addEventListener('change', onInputFieldChange);
 			};
 
 			valueField.addEventListener('change', setInputField);
@@ -73,10 +75,11 @@ sowbForms.LocationField = function () {
 			};
 
 			autocomplete.addListener( 'place_changed', onPlaceChanged );
-			
-			inputField.addEventListener( 'change', function () {
+
+			var onInputFieldChange = function () {
 				setValueField({name: inputField.value});
-			} );
+			};
+			inputField.addEventListener('change', onInputFieldChange);
 			
 			if ( valueField.value ) {
 				// Attempt automatic migration
