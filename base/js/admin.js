@@ -782,13 +782,13 @@ var sowbForms = window.sowbForms || {};
 						$item.remove();
 						$s.sortable( "refresh" ).trigger( 'updateFieldPositions' );
 						$( window ).resize();
+						$parentRepeater.trigger( 'change' );
 					};
 					if ( params && params.silent ) {
 						removeItem();
 					} else if ( confirm( soWidgets.sure ) ) {
 						$item.slideUp('fast', removeItem );
 					}
-					$el.trigger( 'change' );
 				});
 				itemTop.find('.siteorigin-widget-field-copy').click(function (e) {
 					e.preventDefault();
