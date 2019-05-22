@@ -254,6 +254,10 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 	function get_less_variables( $instance ) {
 		$less_vars = array();
 
+		if ( empty( $instance ) ) {
+			return $less_vars;
+		}
+
 		$fonts = $instance['fonts'];
 		$styleable_text_fields = array( 'title', 'text', 'more_text' );
 

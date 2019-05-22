@@ -374,6 +374,10 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	function get_less_variables($instance) {
 		$less = array();
 
+		if ( empty( $instance ) ) {
+			return $less;
+		}
+
 		// Slider navigation controls
 		$less['nav_color_hex'] = $instance['controls']['nav_color_hex'];
 		$less['nav_size'] = $instance['controls']['nav_size'];

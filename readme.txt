@@ -65,6 +65,18 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.15.7 - 22 May 2019 =
+* Widget Block: Ensure changed data is retained after previewing.
+* Image widget: Prevent overflow of image container when wrapped in link.
+* Image Grid: Dispatch event to notify listeners that layout is complete.
+* Image Grid: Fix layout for images wrapped in links.
+* Image grid: Use image media title for display if title isn't set in the widget form.
+* Layout Slider: Remove header and text style fields.
+* Remove Autoptimize cache clearing as it detects changes automatically.
+* Update FontAwesome icons.
+* Google Maps location field: Ensure value is retained after preview in the block editor.
+* Prevent issue in SiteOrigin Layout Block when `sowb` hasn't been defined.
+
 = 1.15.6 - 29 April 2019 =
 * Image: Fix images vertical stretching.
 * Image: Fix widths for images wrapped in links.

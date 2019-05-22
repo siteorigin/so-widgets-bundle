@@ -41,6 +41,10 @@ jQuery( function ( $ ) {
 				alignImages();
 				
 				$( window ).resize( alignImages );
+
+				var event = document.createEvent('Event');
+				event.initEvent('layoutComplete', true, true);
+				$$.get(0).dispatchEvent(event);
 			} );
 		} );
 	};
