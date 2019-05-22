@@ -782,13 +782,13 @@ var sowbForms = window.sowbForms || {};
 						$item.remove();
 						$s.sortable( "refresh" ).trigger( 'updateFieldPositions' );
 						$( window ).resize();
+						$parentRepeater.trigger( 'change' );
 					};
 					if ( params && params.silent ) {
 						removeItem();
 					} else if ( confirm( soWidgets.sure ) ) {
 						$item.slideUp('fast', removeItem );
 					}
-					$el.trigger( 'change' );
 				});
 				itemTop.find('.siteorigin-widget-field-copy').click(function (e) {
 					e.preventDefault();
@@ -1245,6 +1245,7 @@ var sowbForms = window.sowbForms || {};
 			
 			if ( triggerChange ) {
 				$$.trigger( 'change' );
+				this.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
 			}
 		});
 	};
@@ -1318,7 +1319,9 @@ var sowbForms = window.sowbForms || {};
 	if ( $body.hasClass('block-editor-page') ) {
 		// Setup new widgets when they're previewed in the block editor.
 		$(document).on('panels_setup_preview', function () {
-			$( sowb ).trigger( 'setup_widgets', { preview: true } );
+			if (window.hasOwnProperty('sowb')) {
+				$( sowb ).trigger( 'setup_widgets', { preview: true } );
+			}
 		});
 	}
 

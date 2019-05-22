@@ -185,6 +185,9 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 
 
 	function get_less_variables($instance){
+		if ( empty( $instance ) ) {
+			return array();
+		}
 		return array(
 			'title_alignment' => ! empty( $instance['title_align'] ) ? $instance['title_align'] : '',
 			'image_alignment' => $instance['align'],

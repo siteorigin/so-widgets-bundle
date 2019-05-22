@@ -36,14 +36,38 @@ sowbForms.LocationField = function () {
 					}
 				});
 			};
+
+			var setInputField = function () {
+				var parsedVal = JSON.parse(valueField.value);
+				var address = '';
+				if (parsedVal.hasOwnProperty('address')) {
+					address = parsedVal.address;
+				}
+
+				if (parsedVal.hasOwnProperty('name') && address.indexOf(parsedVal.name) !== 0) {
+					address = parsedVal.name + ', ' + address;
+				}
+				inputField.removeEventListener('change', onInputFieldChange);
+				inputField.value = address;
+				inputField.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
+				inputField.addEventListener('change', onInputFieldChange);
+			};
+
+			valueField.addEventListener('change', setInputField);
+
+			var setValueField = function (value) {
+				valueField.value = JSON.stringify(value);
+				valueField.removeEventListener('change', setInputField);
+				valueField.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
+				valueField.addEventListener('change', setInputField);
+			};
 			
 			var onPlaceChanged = function () {
 				var place = autocomplete.getPlace();
 				
 				getSimplePlace( place )
 				.then( function ( simplePlace ) {
-					valueField.value = JSON.stringify(simplePlace);
-					valueField.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
+					setValueField(simplePlace);
 				} )
 				.catch( function ( status ) {
 					console.warn( 'SiteOrigin Google Maps Widget: Geocoding failed for "' + place.name + '" with status: ' + status );
@@ -51,12 +75,11 @@ sowbForms.LocationField = function () {
 			};
 
 			autocomplete.addListener( 'place_changed', onPlaceChanged );
-			
-			inputField.addEventListener( 'change', function () {
 
-				valueField.value = JSON.stringify({name: inputField.value});
-				valueField.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
-			} );
+			var onInputFieldChange = function () {
+				setValueField({name: inputField.value});
+			};
+			inputField.addEventListener('change', onInputFieldChange);
 			
 			if ( valueField.value ) {
 				// Attempt automatic migration
@@ -123,6 +146,8 @@ sowbForms.LocationField = function () {
 							callGetSimplePlace( place, valueField );
 						}, delay );
 					}
+				} else {
+					setInputField();
 				}
 			}
 		}
@@ -132,7 +157,8 @@ sowbForms.LocationField = function () {
 sowbForms.setupLocationFields = function () {
 	if ( google && google.maps && google.maps.places ) {
 		document.querySelectorAll( '.siteorigin-widget-field-type-location' ).forEach( function ( element ) {
-			if ( element.getAttribute( 'data-initialized' ) !== 'true' ) {
+			var elementVisible = !!( element.offsetWidth !== 0 && element.offsetHeight !== 0 );
+			if ( elementVisible && element.getAttribute( 'data-initialized' ) !== 'true' ) {
 				new sowbForms.LocationField().init( element );
 				element.setAttribute('data-initialized', 'true');
 			}
@@ -148,7 +174,12 @@ function sowbAdminGoogleMapInit() {
 }
 
 window.addEventListener('DOMContentLoaded', function () {
-	
+
+	// Some plugins cause `$` to not have been defined, but somehow `jQuery` is.
+	var $ = $ || jQuery;
+	if (!$) {
+		return;
+	}
 	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-location', function () {
 		
 		sowbForms._geocodeQueue = sowbForms._geocodeQueue || [];

@@ -68,6 +68,10 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_less_variables( $instance ) {
+		if ( empty( $instance ) ) {
+			return array();
+		}
+
 		return array(
 			'color' => $instance['color'],
 			'has_color' => empty($instance['color']) ? 'false' : 'true',

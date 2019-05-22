@@ -303,6 +303,9 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_less_variables( $instance ){
+		if ( empty( $instance ) ) {
+			return array();
+		}
 		return array (
 			'image_size' => intval($instance['design']['image']['image_size']) . 'px',
 			'testimonial_size' => round(100/$instance['settings']['per_line'], 4) . '%',
