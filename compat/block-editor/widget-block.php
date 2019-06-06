@@ -82,7 +82,12 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			ob_start();
 			/* @var $widget SiteOrigin_Widget */
 			$instance = $widget->update( $instance, $instance );
-			$widget->widget( array(), $instance );
+			$widget->widget( array(
+				'before_widget' => '',
+				'after_widget' => '',
+				'before_title' => '<h3 class="widget-title">',
+				'after_title' => '</h3>',
+			), $instance );
 			$rendered_widget = ob_get_clean();
 			unset( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
 		} else {
