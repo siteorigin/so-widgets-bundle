@@ -95,12 +95,12 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 
 					'max_height' => array(
 						'label' => __( 'Maximum image height', 'so-widgets-bundle' ),
-						'type' => 'measurement',
+						'type' => 'number',
 					),
 
 					'max_width' => array(
 						'label' => __( 'Maximum image width', 'so-widgets-bundle' ),
-						'type' => 'measurement',
+						'type' => 'number',
 					),
 
 					'spacing' => array(
@@ -173,16 +173,17 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	}
 	
 	function modify_instance( $instance ) {
-		// Account for number to measurement form field type changes
 		if ( ! empty( $instance['display'] ) ) {
-			if ( is_numeric( $instance['display']['max_height'] ) ) {
-				$instance['display']['max_height'] = $instance['display']['max_height'] .'px';
+			// Revert changes to `max_width` and `max_height` back to `number` fields.
+			if ( ! empty( $instance['display']['max_height'] ) ) {
+				$instance['display']['max_height'] = intval( $instance['display']['max_height'] );
 			}
-			
-			if ( is_numeric( $instance['display']['max_width'] ) ) {
-				$instance['display']['max_width'] = $instance['display']['max_width'] .'px';
+
+			if ( ! empty( $instance['display']['max_width'] ) ) {
+				$instance['display']['max_width'] = intval( $instance['display']['max_width'] );
 			}
-	
+
+			// Input for `spacing` changed from `number` to `measurement` field.
 			if ( is_numeric( $instance['display']['spacing'] ) ) {
 				$instance['display']['spacing'] = $instance['display']['spacing'] .'px';
 			}
