@@ -51,7 +51,7 @@ jQuery( function( $ ){
 			if ( ! fitTextWrapper.is( ':visible' ) || fitTextWrapper.data( 'fitTextDone' ) ) {
 				return fitTextWrapper;
 			}
-			
+
 			var compressor = fitTextWrapper.data( 'fitTextCompressor' ) || 0.85;
 			fitTextWrapper.find( 'h1,h2,h3,h4,h5,h6' ).each( function () {
 				var $$ = $( this );
@@ -65,6 +65,7 @@ jQuery( function( $ ){
 		});
 	};
 
+	$( window ).on( 'resize', sowb.runFitText );
 	$( sowb ).on( 'setup_widgets', sowb.runFitText );
 
 	sowb.runFitText();
