@@ -157,7 +157,7 @@ jQuery( function ( $ ) {
 				}
 				var initialScrollPanel = $widget.data( 'initialScrollPanel' );
 				if ( window.location.hash && openPanels.length ) {
-					setTimeout( function () {
+					setTimeout( function() {
 						scrollToPanel( $( openPanels[0] ) );
 					}, 500 );
 				} else if ( initialScrollPanel > 0 ) {
