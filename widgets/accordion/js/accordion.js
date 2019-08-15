@@ -156,7 +156,11 @@ jQuery( function ( $ ) {
 					updateHash();
 				}
 				var initialScrollPanel = $widget.data( 'initialScrollPanel' );
-				if ( initialScrollPanel > 0 ) {
+				if ( window.location.hash && openPanels.length ) {
+					setTimeout( function() {
+						scrollToPanel( $( openPanels[0] ) );
+					}, 500 );
+				} else if ( initialScrollPanel > 0 ) {
 					var $initialScrollPanel = initialScrollPanel > $accordionPanels.length ?
 						$accordionPanels.last() :
 						$accordionPanels.eq( initialScrollPanel - 1 );
