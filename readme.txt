@@ -65,6 +65,16 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.15.8 - 15 August 2019 =
+* Run FitText setup on window resize events.
+* TinyMCE field: Copy any missing content CSS urls from main editor.
+* Post Carousel: Prevent scrolling past the last item.
+* Contact Form: Prevent sending to testing/dev emails.
+* Widget block: Add `h3` wrapper for widget titles.
+* Image widget: Remove `width:inherit;` IE8 fix for bound setting which breaks in IE11.
+* Sliders: Added padding to slider navigation arrows.
+* Various form description and styling fixes.
+
 = 1.15.7 - 22 May 2019 =
 * Widget Block: Ensure changed data is retained after previewing.
 * Image widget: Prevent overflow of image container when wrapped in link.
