@@ -73,6 +73,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Widget block: Add `h3` wrapper for widget titles.
 * Image widget: Remove `width:inherit;` IE8 fix for bound setting which breaks in IE11.
 * Sliders: Added padding to slider navigation arrows.
+* Accordion: Check if if anchor is present in URL and scroll to Accordion item.
 * Various form description and styling fixes.
 
 = 1.15.7 - 22 May 2019 =
