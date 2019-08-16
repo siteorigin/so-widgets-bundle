@@ -125,6 +125,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					'log_ip_address' => array(
 						'type' => 'checkbox',
 						'label' => __( 'Log IP addresses', 'so-widgets-bundle' ),
+						'description' => __( 'List in contact emails, the IP address of the form sender.', 'so-widgets-bundle' ),
 						'default' => false,
 					),
 				),
