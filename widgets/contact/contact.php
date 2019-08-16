@@ -68,7 +68,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					'from'                               => array(
 						'type'        => 'text',
 						'label'       => __( 'From email address', 'so-widgets-bundle' ),
-						'description' => __( 'It will appear as if emails are sent from this address. Ideally this should be in the same domain as this server to avoid spam filters.', 'so-widgets-bundle' ),
+						'description' => __( 'It will appear as if emails are sent from this address. Ideally, this should be in the same domain as this server to avoid spam filters.', 'so-widgets-bundle' ),
 						'sanitize'    => 'email',
 					),
 					'default_subject'                  => array(
@@ -124,7 +124,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					),
 					'log_ip_address' => array(
 						'type' => 'checkbox',
-						'label' => __( 'Log IP addresses.', 'so-widgets-bundle' ),
+						'label' => __( 'Log IP addresses', 'so-widgets-bundle' ),
 						'default' => false,
 					),
 				),
