@@ -40,11 +40,11 @@ module.exports = {
     },
     copy: {
         src: [
-            '**/!(*.js|*.less)',                // Everything except .js and .less files
+            '**/!(*.js|*.less|*.css)',          // Everything except .js, .css and .less files
+            'icons/**/*css',                    // Copy CSS for icon packs.
+            'js/lib/**/*css',                   // Copy CSS for JS libs.
             'base/less/*.less',                 // LESS libraries used in runtime styles
             'widgets/**/styles/*.less',         // All the widgets' runtime .less files
-            '!widgets/**/styles/*.css',         // Don't copy any .css files compiled from runtime .less files
-            '!{widgets/**/css/*.css,css/**/*.css}',            // Don't copy any .css files compiled from .less files.
             '!{build,build/**}',                // Ignore build/ and contents
             '!{tests,tests/**}',                // Ignore tests/ and contents
             '!{tmp,tmp/**}',                    // Ignore tmp/ and contents
