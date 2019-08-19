@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 4.2
-Tested up to: 5.1
+Tested up to: 5.2.2
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
@@ -65,7 +65,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
-= 1.15.8 - 15 August 2019 =
+= 1.15.8 - 20 August 2019 =
 * Run FitText setup on window resize events.
 * TinyMCE field: Copy any missing content CSS urls from main editor.
 * Post Carousel: Prevent scrolling past the last item.
