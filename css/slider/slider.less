@@ -148,18 +148,18 @@
 		z-index: 1001;
 		position: absolute;
 		top: 50%;
+		transform: translateY(-50%);
 		opacity: 0.75;
 
 		font-size: 25px;
-		margin-top: -0.5em;
 
 		.user-select(none);
 
 		a{
 			display: block;
-
-			height: 1em;
-
+			
+			padding: 15px;
+	
 			text-align: center;
 			text-decoration: none;
 			color: #FFFFFF;
@@ -170,7 +170,8 @@
 		}
 
 		&.sow-slide-nav-next {
-			right: 20px;
+			right: 5px;
+			
 
 			a {
 				background-position: top right;
@@ -178,7 +179,7 @@
 		}
 
 		&.sow-slide-nav-prev {
-			left: 20px;
+			left: 5px;
 
 			a {
 				background-position: top left;

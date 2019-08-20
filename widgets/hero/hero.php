@@ -212,6 +212,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 					'heading_size' => array(
 						'type' => 'measurement',
 						'label' => __('Heading size', 'so-widgets-bundle'),
+						'description' => __( 'Enter the h1 font size. h2 - h6 will be proportionally sized based on this value.', 'so-widgets-bundle' ),
 						'default' => '38px',
 					),
 

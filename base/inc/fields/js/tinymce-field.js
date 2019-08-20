@@ -16,6 +16,22 @@
 		
 		var $container = $field.find( '.siteorigin-widget-tinymce-container' );
 		var settings = $container.data( 'editorSettings' );
+		if (tinyMCEPreInit.mceInit && tinyMCEPreInit.mceInit.hasOwnProperty('content')) {
+			var mainContentSettings = tinyMCEPreInit.mceInit['content'];
+			if (mainContentSettings.hasOwnProperty('content_css') && mainContentSettings.content_css ) {
+				var mainContentCss = mainContentSettings.content_css.split(',');
+				if (settings.tinymce.hasOwnProperty('content_css') && settings.tinymce.content_css) {
+					for (var i = 0; i < mainContentCss.length; i++) {
+						var cssUrl = mainContentCss[i];
+						if (settings.tinymce.content_css.indexOf(cssUrl) === -1) {
+							settings.tinymce.content_css += ',' + cssUrl;
+						}
+					}
+				} else {
+					settings.tinymce.content_css = mainContentCss;
+				}
+			}
+		}
 		var $wpautopToggleField;
 		if ( settings.wpautopToggleField ) {
 			var $widgetForm = $container.closest( '.siteorigin-widget-form' );

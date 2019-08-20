@@ -68,7 +68,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					'from'                               => array(
 						'type'        => 'text',
 						'label'       => __( 'From email address', 'so-widgets-bundle' ),
-						'description' => __( 'It will appear as if emails are sent from this address. Ideally this should be in the same domain as this server to avoid spam filters.', 'so-widgets-bundle' ),
+						'description' => __( 'It will appear as if emails are sent from this address. Ideally, this should be in the same domain as this server to avoid spam filters.', 'so-widgets-bundle' ),
 						'sanitize'    => 'email',
 					),
 					'default_subject'                  => array(
@@ -124,7 +124,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					),
 					'log_ip_address' => array(
 						'type' => 'checkbox',
-						'label' => __( 'Log IP addresses.', 'so-widgets-bundle' ),
+						'label' => __( 'Log IP addresses', 'so-widgets-bundle' ),
+						'description' => __( 'List in contact emails, the IP address of the form sender.', 'so-widgets-bundle' ),
 						'default' => false,
 					),
 				),
@@ -1252,9 +1253,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 		$body = wpautop( trim( $body ) );
 
-		if ( $instance['settings']['to'] == 'ibrossiter@gmail.com' || $instance['settings']['to'] == 'test@example.com' || empty( $instance['settings']['to'] ) ) {
+		if ( $instance['settings']['to'] == 'ibrossiter@gmail.com' || $instance['settings']['to'] == 'test@example.com' || $instance['settings']['to'] == 'support@siteorigin.com' || empty( $instance['settings']['to'] ) ) {
 			// Replace default and empty email address.
-			// Also replaces the email address that comes from the prebuilt layout directory
+			// Also replaces the email address that comes from the prebuilt layout directory and SiteOrigin Support Email
 			$instance['settings']['to'] = get_option( 'admin_email' );
 		}
 		

@@ -118,6 +118,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 					'break_point' => array(
 						'type' => 'number',
 						'lanel' => __( 'Break point', 'so-widgets-bundle' ),
+						'description' => __( 'Device width, in pixels, at which to collapse into a tablet view.', 'so-widgets-bundle' ),
 						'default' => 768
 					),
 					'columns' => array(
@@ -149,6 +150,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 					'break_point' => array(
 						'type' => 'number',
 						'lanel' => __( 'Break point', 'so-widgets-bundle' ),
+						'description' => __( 'Device width, in pixels, at which to collapse into a mobile view.', 'so-widgets-bundle' ),
 						'default' => 480
 					),
 					'columns' => array(
