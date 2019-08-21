@@ -722,13 +722,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$instance['settings']['to'] = $current_user->user_email;
 		}
 		if ( empty( $instance['settings']['from'] ) ) {
-			// Get the site domain and get rid of www.
-			$sitename = strtolower( $_SERVER['SERVER_NAME'] );
-			if ( substr( $sitename, 0, 4 ) == 'www.' ) {
-				$sitename = substr( $sitename, 4 );
-			}
-			
-			$instance['settings']['from'] = apply_filters( 'siteorigin_widgets_contact_default_email', 'wordpress@' . $sitename );
+			$instance['settings']['from'] = $this->default_from_address();
 		}
 		
 		if ( empty( $instance['fields'] ) ) {
@@ -1266,8 +1260,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$instance['settings']['to'] = get_option( 'admin_email' );
 		}
 		
-		if ( $instance['settings']['from'] == 'test@example.com' || empty( $instance['settings']['from'] ) ) {
-			$instance['settings']['from'] = get_option( 'admin_email' );
+		if (
+			$this->is_dev_email($instance['settings']['from']) ||
+			empty( $instance['settings']['from'] ) ||
+			$instance['settings']['from'] == $instance['settings']['to']
+		) {
+			$instance['settings']['from'] = $this->default_from_address();
 		}
 
 		$headers = array(
@@ -1325,6 +1323,16 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		return $email == 'ibrossiter@gmail.com' ||
 		       $email == 'test@example.com' ||
 		       $email == 'support@siteorigin.com';
+	}
+	
+	private function default_from_address(){
+		// Get the site domain and get rid of www.
+		$sitename = strtolower( $_SERVER['SERVER_NAME'] );
+		if ( substr( $sitename, 0, 4 ) == 'www.' ) {
+			$sitename = substr( $sitename, 4 );
+		}
+		
+		return apply_filters( 'siteorigin_widgets_contact_default_email', 'wordpress@' . $sitename );
 	}
 
 }
