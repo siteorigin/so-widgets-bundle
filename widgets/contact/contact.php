@@ -722,7 +722,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$instance['settings']['to'] = $current_user->user_email;
 		}
 		if ( empty( $instance['settings']['from'] ) ) {
-			$instance['settings']['from'] = get_option( 'admin_email' );
+			// Get the site domain and get rid of www.
+			$sitename = strtolower( $_SERVER['SERVER_NAME'] );
+			if ( substr( $sitename, 0, 4 ) == 'www.' ) {
+				$sitename = substr( $sitename, 4 );
+			}
+			
+			$instance['settings']['from'] = apply_filters( 'siteorigin_widgets_contact_default_email', 'wordpress@' . $sitename );
 		}
 		
 		if ( empty( $instance['fields'] ) ) {
