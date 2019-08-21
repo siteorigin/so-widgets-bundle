@@ -717,13 +717,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 	function modify_instance( $instance ) {
 		// Use this to set up an initial version of the
-		if ( empty( $instance['settings']['to'] ) ) {
+		if ( empty( $instance['settings']['to'] ) || $this->is_dev_email( $instance['settings']['to'] ) ) {
 			$current_user               = wp_get_current_user();
 			$instance['settings']['to'] = $current_user->user_email;
 		}
 		if ( empty( $instance['settings']['from'] ) ) {
 			$instance['settings']['from'] = get_option( 'admin_email' );
 		}
+		
 		if ( empty( $instance['fields'] ) ) {
 			$instance['fields'] = array(
 				array(
@@ -1253,7 +1254,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 		$body = wpautop( trim( $body ) );
 
-		if ( $instance['settings']['to'] == 'ibrossiter@gmail.com' || $instance['settings']['to'] == 'test@example.com' || $instance['settings']['to'] == 'support@siteorigin.com' || empty( $instance['settings']['to'] ) ) {
+		if ( $this->is_dev_email($instance['settings']['to']) || empty( $instance['settings']['to'] ) ) {
 			// Replace default and empty email address.
 			// Also replaces the email address that comes from the prebuilt layout directory and SiteOrigin Support Email
 			$instance['settings']['to'] = get_option( 'admin_email' );
@@ -1312,6 +1313,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 */
 	static function sanitize_header( $value ) {
 		return preg_replace( '=((<CR>|<LF>|0x0A/%0A|0x0D/%0D|\\n|\\r)\S).*=i', null, $value );
+	}
+	
+	private function is_dev_email($email) {
+		return $email == 'ibrossiter@gmail.com' ||
+		       $email == 'test@example.com' ||
+		       $email == 'support@siteorigin.com';
 	}
 
 }
