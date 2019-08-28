@@ -74,7 +74,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					'default_subject'                  => array(
 						'type'        => 'text',
 						'label'       => __( 'Default subject', 'so-widgets-bundle' ),
-						'description' => __( "Subject to use when there isn't one available.", 'so-widgets-bundle' ),
+						'description' => __( "Subject to use when there isn't one supplied by the user. If you make use of this option it won't be possible to set the Subject field as required because the default subject will be used as a fallback.", 'so-widgets-bundle' ),
 					),
 					'subject_prefix'                   => array(
 						'type'        => 'text',
