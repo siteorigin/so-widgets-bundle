@@ -165,7 +165,7 @@ jQuery( function( $ ){
         $( '#widgets-list .so-widget-settings' ).prop('disabled', false);
     } );
 
-    // Automatically open settings model based on hash
+    // Automatically open settings modal based on hash
     if( window.location.hash && window.location.hash.substring(0, 10) === '#settings-' ) {
         var openSettingsId = window.location.hash.substring(10);
         $('div[data-id="' + openSettingsId +  '"] button.so-widget-settings').click();
