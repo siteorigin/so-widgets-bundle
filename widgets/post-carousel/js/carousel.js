@@ -27,13 +27,12 @@ jQuery( function ( $ ) {
 	
 			var updatePosition = function () {
 				if (position < 0) {
-					position = 0;
-					return;
+					position = numItems ? numItems - 1 : 0;
 				}
 				if (position === numItems) {
-					position--;
-					return;
+					position = 0;
 				}
+
 				var numVisibleItems = Math.ceil( $$.outerWidth() / itemWidth );
 				// Offset position by numVisibleItems to trigger the next fetch before the view is empty.
 				if ( position + numVisibleItems >= $$.find( '.sow-carousel-item' ).length - 1 ) {
