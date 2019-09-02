@@ -642,11 +642,19 @@ var sowbForms = window.sowbForms || {};
 
 			$el.find('> .siteorigin-widget-field-repeater-add').disableSelection().click(function (e) {
 				e.preventDefault();
-				$el.closest('.siteorigin-widget-field-repeater')
-					.sowAddRepeaterItem()
-					.find('> .siteorigin-widget-field-repeater-items').slideDown('fast', function () {
-					$(window).resize();
-				});
+				var $maxItemsRepeater = $('.siteorigin-widget-field-repeater').attr('data-max-items');
+				var $nbOfItems = $el.find('.siteorigin-widget-field-repeater-item').length + 1;
+
+                $el.closest('.siteorigin-widget-field-repeater')
+                    .sowAddRepeaterItem()
+                    .find('> .siteorigin-widget-field-repeater-items').slideDown('fast', function () {
+                    	if(parseInt($nbOfItems) === parseInt($maxItemsRepeater)) {
+                            $el.find('.siteorigin-widget-field-repeater-add').hide();
+                            $el.find('.siteorigin-widget-field-repeater-add').addClass('is-hidden');
+                            $el.find('.siteorigin-widget-field-copy').hide();
+                        }
+                    	$(window).resize();
+                });
 			});
 
 			$el.find('> .siteorigin-widget-field-repeater-top > .siteorigin-widget-field-repeater-expand').click(function (e) {
@@ -788,12 +796,18 @@ var sowbForms = window.sowbForms || {};
 						removeItem();
 					} else if ( confirm( soWidgets.sure ) ) {
 						$item.slideUp('fast', removeItem );
+						if($('.siteorigin-widget-field-repeater-add').hasClass('is-hidden')) {
+                            $('.siteorigin-widget-field-repeater-add').show();
+                            $('.siteorigin-widget-field-repeater-add').removeClass('is-hidden');
+                            $('.siteorigin-widget-field-copy').show();
+						}
 					}
 				});
 				itemTop.find('.siteorigin-widget-field-copy').click(function (e) {
 					e.preventDefault();
 					var $form = $(this).closest('.siteorigin-widget-form-main');
 					var $item = $(this).closest('.siteorigin-widget-field-repeater-item');
+                    var $maxItemsRepeater = $('.siteorigin-widget-field-repeater').attr('data-max-items');
 					var $copyItem = $item.clone();
 					var $items = $item.closest('.siteorigin-widget-field-repeater-items');
 					//var $nextIndex = $item.index()+1;
@@ -905,6 +919,11 @@ var sowbForms = window.sowbForms || {};
 						$(window).resize();
 					});
 					$el.trigger( 'change' );
+                    if($nextIndex + 1 === parseInt($maxItemsRepeater)) {
+                        $('.siteorigin-widget-field-repeater-add').hide();
+                        $('.siteorigin-widget-field-repeater-add').addClass('is-hidden');
+                        $('.siteorigin-widget-field-copy').hide();
+                    }
 				});
 
 				$el.find('> .siteorigin-widget-field-repeater-item-form').sowSetupForm();

@@ -30,6 +30,13 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 	 * @var int
 	 */
 	protected $scroll_count;
+    /**
+     * The maximum number of repeated items
+     *
+     * @access protected
+     * @var int
+     */
+    protected $max_items;
 	/**
 	 * Whether or not items may be added to or removed from this repeater by user interaction.
 	 *
@@ -42,6 +49,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 		if( !isset( $this->fields ) || empty( $this->fields ) ) return;
 		$container = array( 'name' => $this->base_name, 'type' => 'repeater' );
 		$item_label = isset( $this->item_label ) ? $this->item_label : null;
+        $max_items = isset( $this->max_items ) ? $this->max_items : null;
 		if ( ! empty( $item_label ) ) {
 			// convert underscore naming convention to camelCase for javascript and encode as json string
 			$item_label = wp_parse_args( $item_label, array(
@@ -56,13 +64,14 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 		<div class="siteorigin-widget-field-repeater"
 		     data-item-name="<?php echo esc_attr( $this->item_name ) ?>"
 		     data-repeater-name="<?php echo esc_attr( $this->base_name ) ?>"
+             data-max-items="<?php echo esc_attr( $this->max_items ) ?>"
 		     data-element-name="<?php echo esc_attr( $this->element_name ) ?>"
 			<?php echo ! empty( $item_label ) ? 'data-item-label="' . esc_attr( $item_label ) . '"' : '' ?>
 			<?php echo ! empty( $this->scroll_count ) ? 'data-scroll-count="' . esc_attr( $this->scroll_count ) . '"' : '' ?>
 			<?php if( ! empty( $this->readonly ) ) echo 'readonly' ?>>
 			<div class="siteorigin-widget-field-repeater-top">
 				<div class="siteorigin-widget-field-repeater-expand"></div>
-				<h3><?php echo esc_html( $this->label ) ?></h3>
+				<h3><?php echo esc_html( $this->label ) ?> <?php if($max_items !== null) : echo '(Maximum : '.$max_items.')'; endif; ?></h3>
 			</div>
 			<div class="siteorigin-widget-field-repeater-items">
 				<?php
@@ -73,7 +82,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 							<div class="siteorigin-widget-field-repeater-item-top">
 								<div class="siteorigin-widget-field-expand"></div>
 								<?php if( empty( $this->readonly ) ) : ?>
-									<div class="siteorigin-widget-field-copy"></div>
+									<div class="siteorigin-widget-field-copy" <?php if(count($value) === $max_items) : ?>style="display: none;"<?php endif; ?>></div>
 									<div class="siteorigin-widget-field-remove"></div>
 								<?php endif; ?>
 								<h4><?php echo esc_html( $this->item_name ) ?></h4>
@@ -90,7 +99,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 				?>
 			</div>
 			<?php if( empty( $this->readonly ) ) : ?>
-				<div class="siteorigin-widget-field-repeater-add"><?php esc_html_e( 'Add', 'so-widgets-bundle' ) ?></div>
+				<div class="siteorigin-widget-field-repeater-add <?php if(count($value) === $max_items) : ?>is-hidden<?php endif; ?>" <?php if(count($value) === $max_items) : ?>style="display: none;"<?php endif; ?>><?php esc_html_e( 'Add', 'so-widgets-bundle' ) ?></div>
 			<?php endif; ?>
 			<?php
 			ob_start();
