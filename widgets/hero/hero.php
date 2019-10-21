@@ -232,7 +232,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 					'fittext_compressor' => array(
 						'type' => 'number',
-						'label' => __( 'FitText Compressor Strength', 'so-widgets-bundle' ),
+						'label' => __( 'FitText compressor strength', 'so-widgets-bundle' ),
 						'description' => __( 'The higher the value, the more your headings will be scaled down. Values above 1 are allowed.', 'so-widgets-bundle' ),
 						'default' => 0.85,
 						'state_handler' => array(
@@ -280,7 +280,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 					'link_color_hover' => array(
 						'type' => 'color',
-						'label' => __( 'Link Hover Color', 'so-widgets-bundle' )
+						'label' => __( 'Link hover color', 'so-widgets-bundle' )
 					),
 
 				)
