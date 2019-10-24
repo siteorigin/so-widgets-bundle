@@ -62,9 +62,9 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
                         'label' => __( 'Icon container position', 'so-widgets-bundle' ),
                         'options' => array(
                             'top'    => __( 'Top', 'so-widgets-bundle' ),
-                            'right'  => __( 'Right', 'so-widgets-bundle' ),
+                            'left'  => __( 'Right', 'so-widgets-bundle' ),
                             'bottom' => __( 'Bottom', 'so-widgets-bundle' ),
-                            'left'   => __( 'Left', 'so-widgets-bundle' ),
+                            'right'   => __( 'Left', 'so-widgets-bundle' ),
                         ),
                         'default' => 'top',
                     ),
