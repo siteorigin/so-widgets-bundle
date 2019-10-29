@@ -185,9 +185,6 @@ window.addEventListener('DOMContentLoaded', function () {
 		sowbForms._geocodeQueue = sowbForms._geocodeQueue || [];
 		
 		var $locationField = $( this );
-		if ( $locationField.is( ':not(:visible)' ) ) {
-			return;
-		}
 		
 		if ( sowbForms.mapsInitializing ) {
 			return;
