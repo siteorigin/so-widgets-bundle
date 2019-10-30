@@ -67,7 +67,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 = 1.15.9 - 1 November 2019 =
 * Contact Form: Improved default email address handling.
-* Contact Form: Improved subject field labelling.
+* Contact Form: Improved subject field labeling.
 * Post Carousel: Loop the carousel when reaching the end.
 * Social Media Buttons: Fixed issue with responsive breakpoint unit of measurement.
 * Google Maps: Ensured settings modal window opens when directed to insert API key.
