@@ -57,6 +57,8 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 						'default' => '#404040',
 					),
 
+					// Left and right array keys are swapped due to a mistake that couldn't be corrected without disturbing existing users.
+
                     'container_position' => array(
                         'type' => 'select',
                         'label' => __( 'Icon container position', 'so-widgets-bundle' ),
