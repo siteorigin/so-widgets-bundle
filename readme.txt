@@ -65,7 +65,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
-= 1.15.9 - 1 November 2019 =
+= 1.15.9 - 05 November 2019 =
 * Contact Form: Improved default email address handling.
 * Contact Form: Improved subject field labeling.
 * Post Carousel: Loop the carousel when reaching the end.
