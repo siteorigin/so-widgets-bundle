@@ -82,7 +82,7 @@
 			}
 			
 			function setupWidgetForm( formContainer ) {
-				var $mainForm = $( formContainer ).find( '.siteorigin-widget-form-main' );
+				var $mainForm = jQuery( formContainer ).find( '.siteorigin-widget-form-main' );
 				if ( $mainForm.length > 0 && ! props.formInitialized ) {
 					var $previewContainer = $mainForm.siblings('.siteorigin-widget-preview');
 					$previewContainer.find( '> a' ).on( 'click', function ( event ) {
@@ -112,7 +112,7 @@
 			
 			function setupWidgetPreview() {
 				if ( ! props.previewInitialized ) {
-					$( window.sowb ).trigger( 'setup_widgets', { preview: true } );
+					jQuery( window.sowb ).trigger( 'setup_widgets', { preview: true } );
 					props.setState( { previewInitialized: true } );
 				}
 			}
@@ -136,7 +136,7 @@
 				
 				var loadWidgetForm = props.attributes.widgetClass && ! props.widgetFormHtml;
 				if ( loadWidgetForm ) {
-					$.post( {
+					jQuery.post( {
 						url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/forms',
 						beforeSend: function ( xhr ) {
 							xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
@@ -220,7 +220,7 @@
 					props.attributes.widgetClass &&
 					props.attributes.widgetData;
 				if ( loadWidgetPreview ) {
-					$.post( {
+					jQuery.post( {
 						url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/previews',
 						beforeSend: function ( xhr ) {
 							xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );

@@ -63,7 +63,7 @@ class SiteOrigin_Widget_Field_Location extends SiteOrigin_Widget_Field_Base {
 					'</a>'
 				),
 				'globalSettingsButtonLabel' => __( 'Go to Google Maps Widget settings', 'so-widgets-bundle' ),
-				'globalSettingsButtonUrl' => admin_url( 'plugins.php?page=so-widgets-plugins' ),
+				'globalSettingsButtonUrl' => admin_url( 'plugins.php?page=so-widgets-plugins#settings-google-map' ),
 			)
 		);
 	}

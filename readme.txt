@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 4.2
-Tested up to: 5.2.2
+Tested up to: 5.3
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
@@ -30,7 +30,7 @@ The collection is growing, but here’s what we have so far.
 * Features Widget that lets you display a set of site or service features.
 * Video Widget to get your videos out there.
 * Headline Widget to get you noticed.
-* Social Links Widget to show you're active.
+* Social Media Buttons which link to all your social media profiles.
 * Accordion Widget to compress your content.
 * Contact Form Widget to let people know you care.
 * Editor Widget let's you richly edit text anywhere.
@@ -40,7 +40,7 @@ The collection is growing, but here’s what we have so far.
 * Layout Slider Widget lets you build layouts on slides using SiteOrigin Page Builder.
 * Masonry Widget to add images in a masonry layout.
 * Tabs Widget that'll let you group content into tabbed sections.
-* Taxonomy Widget to display a post's taxonomies.
+* Taxonomy Widget to display the selected taxonomy for the current post.
 * Testimonials Widget to show people what your users/customers think of you.
 
 Once you enable a widget, you'll be able to use it anywhere standard widgets are used. You can manage your widgets by going to Plugins > SiteOrigin Widgets in your WordPress admin.
@@ -64,6 +64,16 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.15.9 - 11 November 2019 =
+* Contact Form: Improved default email address handling.
+* Contact Form: Improved subject field labeling.
+* Post Carousel: Loop the carousel when reaching the end.
+* Social Media Buttons: Fixed issue with responsive breakpoint unit of measurement.
+* Google Maps: Ensured settings modal window opens when directed to insert API key.
+* Google Maps: Fixed map center field when used in the Customizer.
+* Fixed compatibility with WordPress 5.3.
+* Minor code style and widget label improvements.
 
 = 1.15.8 - 20 August 2019 =
 * Run FitText setup on window resize events.

@@ -1370,21 +1370,23 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$show_preview = apply_filters( 'siteorigin_widgets_form_show_preview_button', $show_preview, $this );
 		return $show_preview;
 	}
-
+	
 	/**
 	 * Get the global settings from the options table.
 	 *
+	 * @param string|null $key
+	 *
 	 * @return mixed
 	 */
-	function get_global_settings( ){
+	function get_global_settings( $key = null ){
 		$values = get_option( 'so_widget_settings[' . $this->widget_class . ']', array() );
 
 		// Add in the defaults
 		if( $this->has_form( 'settings' ) ) {
 			$values = $this->add_defaults( $this->get_settings_form(), $values );
 		}
-
-		return $values;
+		
+		return !empty( $key ) ? $values[$key] : $values;
 	}
 
 	/**
