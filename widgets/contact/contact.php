@@ -721,7 +721,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$current_user               = wp_get_current_user();
 			$instance['settings']['to'] = $current_user->user_email;
 		}
-		if ( empty( $instance['settings']['from'] )  || $this->is_dev_email( $instance['settings']['to'] ) ) {
+		if ( empty( $instance['settings']['from'] )  || $this->is_dev_email( $instance['settings']['from'] ) ) {
 			$instance['settings']['from'] = $this->default_from_address();
 		}
 		
