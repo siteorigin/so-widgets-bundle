@@ -221,8 +221,8 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			),
 
 			'title_tag' => array(
-				'type'    => 'select',
-				'label'   => __( 'Title Text HTML Tag', 'so-widgets-bundle' ),
+				'type' => 'select',
+				'label' => __( 'Title Text HTML Tag', 'so-widgets-bundle' ),
 				'default' => 'h5',
 				'options' => array(
 					'h1' => __( 'H1', 'so-widgets-bundle' ),
