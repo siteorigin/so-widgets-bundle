@@ -1321,6 +1321,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	
 	private function is_dev_email( $email ) {
 		return $email == 'ibrossiter@gmail.com' ||
+		       $email == 'amisplon@gmail.com' ||
 		       $email == 'test@example.com' ||
 		       $email == 'support@siteorigin.com';
 	}
