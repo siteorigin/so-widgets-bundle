@@ -1319,13 +1319,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		return preg_replace( '=((<CR>|<LF>|0x0A/%0A|0x0D/%0D|\\n|\\r)\S).*=i', null, $value );
 	}
 	
-	private function is_dev_email($email) {
+	private function is_dev_email( $email ) {
 		return $email == 'ibrossiter@gmail.com' ||
 		       $email == 'test@example.com' ||
 		       $email == 'support@siteorigin.com';
 	}
 	
-	private function default_from_address(){
+	private function default_from_address() {
 		// Get the site domain and get rid of www.
 		$sitename = strtolower( $_SERVER['SERVER_NAME'] );
 		if ( substr( $sitename, 0, 4 ) == 'www.' ) {
