@@ -28,6 +28,14 @@
 @responsive_breakpoint: 780px;
 @slide_height_responsive: default;
 
+& when ( isnumber( @slide_height ) ) {
+	@media (min-width: @responsive_breakpoint) {
+		& {
+			min-height: @slide_height;
+		}
+	}
+}
+
 .sow-slider-base {
 
 	ul.sow-slider-images {
