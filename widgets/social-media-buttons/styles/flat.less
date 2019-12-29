@@ -9,7 +9,7 @@
 
 .create_social_media_button_style(@name, @icon_color:'', @button_color:'') {
 
-    .sow-social-media-button-@{name} {
+	.sow-social-media-button-@{name} {
 
 		& when( iscolor( @icon_color ) ) {
 			color: @icon_color !important;
@@ -34,6 +34,5 @@
 				border-bottom-color: lighten(@button_color, 4%);
 			}
 		}
-
-    }
+	}
 }
