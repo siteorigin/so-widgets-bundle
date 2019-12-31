@@ -38,11 +38,11 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 
 				<div class="textwidget">
 					<?php if(!empty($feature['title'])) : ?>
-						<<?php echo esc_attr( $instance['title_tag'] ); ?>>
+						<<?php echo esc_html( $instance['title_tag'] ); ?>>
 							<?php if( !empty( $feature['more_url'] ) && $instance['title_link'] ) echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : '' ) . '>'; ?>
 							<?php echo wp_kses_post( $feature['title'] ) ?>
 							<?php if( !empty( $feature['more_url'] ) && $instance['title_link'] ) echo '</a>'; ?>
-						</<?php echo esc_attr( $instance['title_tag'] ); ?>>
+						</<?php echo esc_html( $instance['title_tag'] ); ?>>
 					<?php endif; ?>
 
 					<?php if(!empty($feature['text'])) : ?>
