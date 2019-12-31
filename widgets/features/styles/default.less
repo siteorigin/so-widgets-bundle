@@ -6,6 +6,7 @@
 @title_font_weight: 400;
 @title_size: default;
 @title_color: default;
+@title_tag: h5;
 
 @text_font: default;
 @text_font_weight: 400;
@@ -123,7 +124,7 @@
             }
         }
 
-        h5 {
+        @{title_tag} {
             margin: 1em 0;
 
             a{
@@ -164,7 +165,7 @@
             font-size: @text_size;
             color: @text_color;
             
-            > h5 {
+            > @{title_tag} {
                 .font(@title_font, @title_font_weight);
                 font-size: @title_size;
                 color: @title_color;
