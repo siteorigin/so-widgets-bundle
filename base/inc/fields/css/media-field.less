@@ -133,10 +133,13 @@
 		width: 100%;
 		position: relative;
 
-		padding-right: 48px + 320px;
 		margin-bottom: 2px;
 
 		box-sizing: border-box;
+
+		@media (min-width: 783px) {
+			padding-right: 48px + 320px;
+		}
 
 		.so-widgets-search-input {
 			padding: 9px 12px;
@@ -158,6 +161,10 @@
 			right: 320px;
 			border-width: 1px;
 			box-shadow: none;
+
+			@media (max-width: 783px) {
+				right: 0;
+			}
 
 			.dashicons-search {
 				vertical-align: middle;
