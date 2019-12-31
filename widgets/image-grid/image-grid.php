@@ -139,6 +139,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				$image['image_html'] = wp_get_attachment_image( $image['image'], $instance['display']['attachment_size'], false, array(
 					'title' => $title,
 					'alt'   => $image['alt'],
+					'class' => 'sow-image-grid-image_html',
 				) );
 			}
 		}
