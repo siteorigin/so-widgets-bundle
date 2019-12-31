@@ -16,6 +16,23 @@
 @heading_shadow: default;
 @heading_color: default;
 
+// "Pre-fill" Layout Slider widget area if height is set
+& when ( isnumber( @slide_height ) ) {
+	@media (min-width: @responsive_breakpoint) {
+		& {
+			min-height: @slide_height;
+		}
+	}
+}
+
+& when ( isnumber( @slide_height_responsive ) ) {
+	@media (max-width: @responsive_breakpoint) {
+		& {
+			min-height: @slide_height_responsive;
+		}
+	}
+}
+
 .sow-slider-base {
 
 	ul.sow-slider-images {
