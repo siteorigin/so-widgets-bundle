@@ -8,11 +8,11 @@ License: GPLv3 or later
 Contributors: gpriday, braam-genis
 Donate link: https://siteorigin.com/downloads/premium/
 
-The SiteOrigin widget bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colours and 1500+ icons.
+The SiteOrigin Widgets Bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colours and 1500+ icons.
 
 == Description ==
 
-The SiteOrigin widget bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colours and 1500+ icons.
+The SiteOrigin Widgets Bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colours and 1500+ icons.
 
 Widgets are great. No matter where you’re using them. In a [Page Builder](http://siteorigin.com/page-builder/) page or on your widgetized areas. It's even compatible with other popular page building plugins.
 
