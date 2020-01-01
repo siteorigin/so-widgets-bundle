@@ -65,6 +65,18 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.15.10 - 02 January 2020 =
+* Block Editor: Fixed widget select field width and alignment.
+* Removed unused template files.
+* Contact Form: Improved checking for SiteOrigin development email addresses.
+* Form Fields: Minor styling improvements.
+* Features: Added a new setting to select the H tag to be used for the title field.
+* Hero: If a height value is assigned, added prefilling to avoid a page jump.
+* Hero: Added `font-display: swap` for Google font imports.
+* Layout Slider: If a height value is assigned, added prefilling to avoid a page jump.
+* Image Grid: Added a class of `sow-image-grid-image_html` to each image. Can be used to exclude images from Lazy Loading plugins.
+* Simple Masonry: Added a class of `sow-masonry-grid-image` to each image. Can be used to exclude images from Lazy Loading plugins.
+
 = 1.15.9 - 11 November 2019 =
 * Contact Form: Improved default email address handling.
 * Contact Form: Improved subject field labeling.
