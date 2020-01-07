@@ -70,7 +70,6 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 					'image' => array(
 						'type' => 'media',
 						'label' => __('Image', 'so-widgets-bundle'),
-						'fallback' => true,
 					),
 
 					'link_image' => array(
@@ -336,11 +335,11 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function testimonial_user_image( $testimonial, $design ){
+	function testimonial_user_image( $image_id, $design, $image_fallback = false ){
 		$src = siteorigin_widgets_get_attachment_image_src(
-			$testimonial['image'],
+			$image_id,
 			$design['image']['image_size'],
-			! empty( $testimonial['image_fallback'] ) ? $testimonial['image_fallback'] : false
+			! empty( $image_fallback ) ? $image_fallback : false
 		);
 
 		if ( ! empty( $src ) ) {
