@@ -20,14 +20,15 @@ jQuery( function ( $ ) {
 				fetching = false,
 				numItems = $items.length,
 				totalPosts = $$.data( 'found-posts' ),
+				loopPostsEnabled = $$.data( 'loop-posts-enabled' ),
 				complete = numItems === totalPosts,
 				itemWidth = ( $firstItem.width() + parseInt( $firstItem.css( 'margin-right' ) ) ),
 				isRTL = $postsContainer.hasClass( 'js-rtl' ),
 				updateProp = isRTL ? 'margin-right' : 'margin-left';
 
 			var updatePosition = function () {
-				let shouldLoop = !fetching && complete;
-				let hasPosts = numItems !== null && !isNaN(numItems);
+				const shouldLoop = !fetching && complete && loopPostsEnabled;
+				const hasPosts = numItems !== null && !isNaN(numItems);
 				if (position < 0) {
 					position = (shouldLoop && hasPosts) ? numItems - 1 : 0;
 				} else if (position === numItems) {
