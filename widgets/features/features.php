@@ -94,6 +94,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 						'library' => 'image',
 						'label' => __( 'Icon image', 'so-widgets-bundle' ),
 						'description' => __( 'Use your own icon image.', 'so-widgets-bundle' ),
+						'fallback' => true,
 					),
 
 					'icon_image_size' => array(
