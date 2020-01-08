@@ -28,12 +28,12 @@ jQuery( function ( $ ) {
 
 			var updatePosition = function () {
 				const numVisibleItems = Math.ceil( $$.outerWidth() / itemWidth );
-				const lastPosition = totalPosts - numVisibleItems + 1;
+				const lastPosition = totalPosts - numVisibleItems;
 				const shouldLoop = loopPostsEnabled && !fetching && complete;
 				const hasPosts = numItems !== null && !isNaN(numItems);
 				if (position < 0) {
 					position = (shouldLoop && hasPosts) ? lastPosition : 0;
-				} else if (position >= Math.min(numItems, lastPosition) ) {
+				} else if (position > Math.min(numItems, lastPosition) ) {
 					position = shouldLoop ? 0 : Math.min(numItems, lastPosition);
 				}
 
