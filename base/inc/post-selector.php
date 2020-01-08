@@ -87,11 +87,6 @@ function siteorigin_widget_post_selector_process_query( $query ){
 		unset( $query['sticky'] );
 	}
 
-	// Exclude the current post (if applicable) to avoid any issues associated with showing the same post again
-	if( is_singular() && get_the_id() != false ){
-		$query['post__not_in'][] = get_the_id();
-	}
-
 	if ( ! empty( $query['additional'] ) ) {
 		$query = wp_parse_args( $query['additional'], $query );
 		unset( $query['additional'] );
