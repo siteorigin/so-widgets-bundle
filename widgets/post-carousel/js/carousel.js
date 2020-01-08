@@ -27,17 +27,18 @@ jQuery( function ( $ ) {
 				updateProp = isRTL ? 'margin-right' : 'margin-left';
 
 			var updatePosition = function () {
-				const shouldLoop = !fetching && complete && loopPostsEnabled;
+				const numVisibleItems = Math.ceil( $$.outerWidth() / itemWidth );
+				const lastPosition = totalPosts - numVisibleItems + 1;
+				const shouldLoop = loopPostsEnabled && !fetching && complete;
 				const hasPosts = numItems !== null && !isNaN(numItems);
 				if (position < 0) {
-					position = (shouldLoop && hasPosts) ? numItems - 1 : 0;
-				} else if (position === numItems) {
-					position = shouldLoop ? 0 : numItems - 1;
+					position = (shouldLoop && hasPosts) ? lastPosition : 0;
+				} else if (position >= Math.min(numItems, lastPosition) ) {
+					position = shouldLoop ? 0 : Math.min(numItems, lastPosition);
 				}
 
-				var numVisibleItems = Math.ceil( $$.outerWidth() / itemWidth );
 				// Offset position by numVisibleItems to trigger the next fetch before the view is empty.
-				if ( position + numVisibleItems >= $$.find( '.sow-carousel-item' ).length - 1 ) {
+				if ( position + numVisibleItems >= numItems - 1 ) {
 					// Fetch the next batch
 					if ( !fetching && !complete ) {
 						fetching = true;
