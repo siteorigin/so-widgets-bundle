@@ -854,20 +854,20 @@ var sowbForms = window.sowbForms || {};
 								if (!newIds[idBase]) {
 									var radioNames = {};
 									newIds[idBase] = $form
-									// find all inputs containing idBase in their id attribute
-										.find('.siteorigin-widget-input[id^=' + idBase + ']')
-										// exclude inputs from templates
-										.not('[id*=_id_]')
-										// reduce to one element per radio input group.
-										.filter(function (index, element) {
-											var eltName = $(element).attr('name');
-											if (radioNames[eltName]) {
-												return false;
-											} else {
-												radioNames[eltName] = true;
-												return true;
-											}
-										}).length + 1;
+										// find all inputs containing idBase in their id attribute
+											.find('.siteorigin-widget-input[id^=' + idBase + ']')
+											// exclude inputs from templates
+											.not('[id*=_id_]')
+											// reduce to one element per radio input group.
+											.filter(function (index, element) {
+												var eltName = $(element).attr('name');
+												if (radioNames[eltName]) {
+													return false;
+												} else {
+													radioNames[eltName] = true;
+													return true;
+												}
+											}).length + 1;
 								}
 								var newRadioIdBase = idBase + '-' + newIds[idBase];
 								newId = newRadioIdBase + id.match(/-\d+$/)[0];
@@ -1111,7 +1111,7 @@ var sowbForms = window.sowbForms || {};
 		});
 		return data;
 	};
-
+	
 
 	/**
 	 * Sets all the widget form fields in the given container with the given data values.
@@ -1261,7 +1261,7 @@ var sowbForms = window.sowbForms || {};
 			} else {
 				$$.val( value );
 			}
-
+			
 			if ( triggerChange ) {
 				$$.trigger( 'change' );
 				this.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
@@ -1334,7 +1334,7 @@ var sowbForms = window.sowbForms || {};
 			widget.find('.siteorigin-widget-form').sowSetupForm();
 		});
 	}
-
+	
 	if ( $body.hasClass('block-editor-page') ) {
 		// Setup new widgets when they're previewed in the block editor.
 		$(document).on('panels_setup_preview', function () {
@@ -1466,8 +1466,8 @@ var sowEmitters = {
 	'in': function (val, args) {
 		return sowEmitters._checker(val, args, '[^;{}]*', function (val, args, match) {
 			return match.split(',').map(function (s) {
-				return s.trim();
-			}).indexOf(val) !== -1;
+					return s.trim();
+				}).indexOf(val) !== -1;
 		});
 	}
 };
