@@ -242,7 +242,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 				break;
 		}
 		$margin = $top . ' ' . $right . ' ' . $bottom . ' ' . $left;
-		
+
 		// Get responsive breakpoint and make sure it's properly formatted
 		$breakpoint = $this->get_global_settings( 'responsive_breakpoint' );
 		return array(
@@ -261,7 +261,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		$calls    = array();
 		foreach ( $networks as $network ) {
 			if ( ! empty( $network['name'] ) ) {
-				$call = $args[0] . '( @name:' . $network['name'];
+				$call = $args[0] . '( @name:' . $network['css_class_name'];
 				$call .= ! empty( $network['icon_color'] ) ? ', @icon_color:' . $network['icon_color'] : '';
 				$call .= ! empty( $network['button_color'] ) ? ', @button_color:' . $network['button_color'] : '';
 				$call .= ');';
@@ -281,6 +281,17 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 	private function get_instance_networks( $instance ) {
 		if ( isset( $instance['networks'] ) && ! empty( $instance['networks'] ) ) {
 			$networks = $instance['networks'];
+			$network_classes = array();
+			foreach ( $networks as &$network ) {
+				$name = $network['name'];
+				if ( !isset($network_classes[ $name ] ) ) {
+					$network_classes[$name] = 0;
+				} else {
+					$network_classes[$name] += 1;
+				}
+				$name .= '-' . $network_classes[$name];
+				$network['css_class_name'] = $name;
+			}
 		} else {
 			$networks = array();
 		}
