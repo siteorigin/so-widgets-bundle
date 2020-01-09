@@ -56,7 +56,7 @@ var sowbForms = window.sowbForms || {};
 							}
 							handler = repeaterHandler;
 						}
-
+						
 						var widgetFieldId = sowbForms.getContainerFieldId( $$, 'widget', '.siteorigin-widget-widget' );
 						if ( widgetFieldId !== false ) {
 							var widgetFieldHandler = {};
@@ -68,7 +68,7 @@ var sowbForms = window.sowbForms || {};
 								} else {
 									st = '_else[' + stMatches[ 1 ] + '_' + widgetFieldId + ']';
 								}
-
+								
 								widgetFieldHandler[st] = handler[wdgFldState];
 							}
 							handler = widgetFieldHandler;
@@ -142,7 +142,7 @@ var sowbForms = window.sowbForms || {};
 
 									// Call the function on the wrapper we've selected
 									$$f[thisHandler[i][0]].apply($$f, typeof thisHandler[i][2] !== 'undefined' ? thisHandler[i][2] : []);
-
+									
 									if ( $$f.is( '.siteorigin-widget-field:visible' ) ) {
 										if ( $$f.is( '.siteorigin-widget-field-type-section' ) ) {
 											var $fields = $$f.find( '> .siteorigin-widget-section > .siteorigin-widget-field' );
@@ -151,7 +151,7 @@ var sowbForms = window.sowbForms || {};
 											$$f.trigger( 'sowsetupformfield' );
 										}
 									}
-
+									
 								}
 
 								// Store that we've run a handler
@@ -175,8 +175,8 @@ var sowbForms = window.sowbForms || {};
 						$teaser.remove();
 					});
 				});
-
-
+				
+				
 				if ( ! $el.data( 'backupDisabled' ) ) {
 					var _sow_form_id = $el.find( '> .siteorigin-widgets-form-id' ).val();
 					var $timestampField = $el.find( '> .siteorigin-widgets-form-timestamp' );
@@ -230,7 +230,7 @@ var sowbForms = window.sowbForms || {};
 
 			// Process any sub sections
 			$fields.find('> .siteorigin-widget-section').sowSetupForm();
-
+			
 			var $subwidgetFields = $fields.find('> .siteorigin-widget-widget');
 			$subwidgetFields.find('> .siteorigin-widget-section').sowSetupForm();
 
@@ -411,7 +411,7 @@ var sowbForms = window.sowbForms || {};
 							// Skip if the function doesn't exist, or it starts with an underscore (internal functions).
 							return currentStates;
 						}
-
+						
 						// Skip if this is an unselected radio input.
 						if ( $$.is( '[type="radio"]' ) && !$$.is( ':checked' ) ) {
 							return currentStates;
@@ -424,7 +424,7 @@ var sowbForms = window.sowbForms || {};
 								return a.replace('{$repeater}', repeaterIndex);
 							});
 						}
-
+						
 						var widgetFieldId = sowbForms.getContainerFieldId( $$, 'widget', '.siteorigin-widget-widget' );
 						if ( widgetFieldId !== false && ! emitter.hasOwnProperty( 'widgetFieldId' ) ) {
 							emitter.widgetFieldId = widgetFieldId;
@@ -474,9 +474,9 @@ var sowbForms = window.sowbForms || {};
 			};
 
 			$fields.filter('[data-state-emitter]').each(function () {
-
+				
 				var $input = $( this ).find( '.siteorigin-widget-input' );
-
+				
 				// Listen for any change events on an emitter field
 				$input.on('keyup change', stateEmitterChangeHandler);
 
@@ -566,15 +566,15 @@ var sowbForms = window.sowbForms || {};
 						$(input).data('repeater-positions', pos);
 					});
 				});
-
+				
 				// Update the field names for all the input items
 				$$.find('.siteorigin-widget-input').each( function ( i, input ) {
 					var $in = $( input );
 					var pos = $in.data( 'repeater-positions' );
-
+					
 					if ( typeof pos !== 'undefined' ) {
 						var newName = $in.attr( 'data-original-name' );
-
+						
 						if ( !newName ) {
 							$in.attr( 'data-original-name', $in.attr( 'name' ) );
 							newName = $in.attr( 'name' );
@@ -582,7 +582,7 @@ var sowbForms = window.sowbForms || {};
 						if ( !newName ) {
 							return;
 						}
-
+						
 						if ( pos ) {
 							for ( var k in pos ) {
 								newName = newName.replace( '#' + k + '#', pos[ k ] );
@@ -591,7 +591,7 @@ var sowbForms = window.sowbForms || {};
 						$in.attr( 'name', newName );
 					}
 				} );
-
+				
 				if ( !$$.data( 'initialSetup' ) ) {
 					// Setup default checked values, now that we've updated input names.
 					// Without this radio inputs in repeaters will be rendered as if they all belong to the same group.
@@ -642,9 +642,9 @@ var sowbForms = window.sowbForms || {};
 
 			$el.find('> .siteorigin-widget-field-repeater-add').disableSelection().click(function (e) {
 				e.preventDefault();
-				var maxItemsRepeater = parseInt($('.siteorigin-widget-field-repeater').data('max-items'));
-				var nbOfItems = parseInt($el.find('.siteorigin-widget-field-repeater-item').length + 1);
-
+                var maxItemsRepeater = parseInt($('.siteorigin-widget-field-repeater').data('max-items'));
+                var nbOfItems = parseInt($el.find('.siteorigin-widget-field-repeater-item').length + 1);
+                
 				$el.closest('.siteorigin-widget-field-repeater')
 					.sowAddRepeaterItem()
 					.find('> .siteorigin-widget-field-repeater-items').slideDown('fast', function () {
@@ -681,18 +681,18 @@ var sowbForms = window.sowbForms || {};
 					$$.attr('name', $(this).data('name'));
 				}
 			});
-
+			
 			// Replace repeater item id placeholders with the index of the repeater item.
 			var repeaterHtml = '';
 			repeaterObject.find( '> .siteorigin-widget-field' )
-				.each( function ( index, element ) {
-					var html = element.outerHTML;
-					// Skip child repeaters, so they can setup their own id's when necessary.
-					if ( ! $( element ).is( '.siteorigin-widget-field-type-repeater' ) ) {
-						html = html.replace( /_id_/g, $nextIndex );
-					}
-					repeaterHtml += html;
-				} );
+			.each( function ( index, element ) {
+				var html = element.outerHTML;
+				// Skip child repeaters, so they can setup their own id's when necessary.
+				if ( ! $( element ).is( '.siteorigin-widget-field-type-repeater' ) ) {
+					html = html.replace( /_id_/g, $nextIndex );
+				}
+				repeaterHtml += html;
+			} );
 
 			var readonly = typeof $el.attr('readonly') !== 'undefined';
 			var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
@@ -766,15 +766,15 @@ var sowbForms = window.sowbForms || {};
 						$(window).resize();
 						if ($(this).is(':visible')) {
 							$(this).trigger('slideToggleOpenComplete');
-
+							
 							$( this ).find( '.siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field,> .siteorigin-widget-field' )
-								.each( function (index, element) {
-									var $field = $( element );
-									if ( $field.is( ':visible' ) ) {
-										$field.trigger( 'sowsetupformfield' );
-									}
-
-								} );
+							.each( function (index, element) {
+								var $field = $( element );
+								if ( $field.is( ':visible' ) ) {
+									$field.trigger( 'sowsetupformfield' );
+								}
+								
+							} );
 						}
 						else {
 							$(this).trigger('slideToggleCloseComplete');
@@ -796,7 +796,7 @@ var sowbForms = window.sowbForms || {};
 						removeItem();
 					} else if ( confirm( soWidgets.sure ) ) {
 						$item.slideUp('fast', removeItem );
-						if($('.siteorigin-widget-field-repeater-add').hasClass('is-hidden')) {
+                        if($('.siteorigin-widget-field-repeater-add').hasClass('is-hidden')) {
 							$('.siteorigin-widget-field-repeater-add').show();
 							$('.siteorigin-widget-field-repeater-add').removeClass('is-hidden');
 							$('.siteorigin-widget-field-copy').show();
@@ -807,7 +807,7 @@ var sowbForms = window.sowbForms || {};
 					e.preventDefault();
 					var $form = $(this).closest('.siteorigin-widget-form-main');
 					var $item = $(this).closest('.siteorigin-widget-field-repeater-item');
-					var maxItemsRepeater = parseInt($('.siteorigin-widget-field-repeater').data('max-items'));
+                    var maxItemsRepeater = parseInt($('.siteorigin-widget-field-repeater').data('max-items'));
 					var $copyItem = $item.clone();
 					var $items = $item.closest('.siteorigin-widget-field-repeater-items');
 					//var $nextIndex = $item.index()+1;
@@ -919,7 +919,7 @@ var sowbForms = window.sowbForms || {};
 						$(window).resize();
 					});
 					$el.trigger( 'change' );
-					if($nextIndex + 1 === maxItemsRepeater) {
+                    if($nextIndex + 1 === maxItemsRepeater) {
 						$('.siteorigin-widget-field-repeater-add').hide();
 						$('.siteorigin-widget-field-repeater-add').addClass('is-hidden');
 						$('.siteorigin-widget-field-copy').hide();
@@ -948,7 +948,7 @@ var sowbForms = window.sowbForms || {};
 		if ( ! this.hasOwnProperty( fieldIdPropName ) ) {
 			this[ fieldIdPropName ] = 1;
 		}
-
+		
 		var $field = $el.closest( containerClass );
 		if ( $field.length ) {
 			var fieldId = $field.data( 'field-id' );
@@ -956,7 +956,7 @@ var sowbForms = window.sowbForms || {};
 				fieldId = this[ fieldIdPropName ]++;
 			}
 			$field.data( 'field-id', fieldId );
-
+			
 			return fieldId;
 		}
 		else {
@@ -1002,7 +1002,7 @@ var sowbForms = window.sowbForms || {};
 			callback(window.sowVars[widget][key]);
 		}
 	};
-
+	
 	sowbForms.getWidgetIdBase = function ( formContainer ) {
 		return formContainer.data( 'id-base' );
 	};
@@ -1062,7 +1062,7 @@ var sowbForms = window.sowbForms || {};
 					if ( typeof tinyMCE !== 'undefined' ) {
 						editor = tinyMCE.get( $$.attr( 'id' ) );
 					}
-
+					
 					if ( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
 						fieldValue = editor.getContent();
 					}
@@ -1112,7 +1112,7 @@ var sowbForms = window.sowbForms || {};
 		return data;
 	};
 	
-
+	
 	/**
 	 * Sets all the widget form fields in the given container with the given data values.
 	 *
@@ -1134,57 +1134,57 @@ var sowbForms = window.sowbForms || {};
 			}
 			// Only direct child fields which are repeaters.
 			formParent.find( '> .siteorigin-widget-field-type-repeater,> .siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field-type-repeater' )
-				.each( function ( index, element ) {
-					var $this = $( this );
-					var $repeater = $this.find( '> .siteorigin-widget-field-repeater' );
-					var repeaterName = $repeater.data( 'repeaterName' );
-					var repeaterData = formData.hasOwnProperty( repeaterName ) ? formData[ repeaterName ] : null;
-					var isInSection = $this.parent().is( '.siteorigin-widget-section' );
-					if ( isInSection ) {
-						var elementName = $repeater.data( 'element-name' );
-						// Get rid of any index placeholders
-						elementName = elementName.replace(/\[#.*?#\]/g, '');
-						var variablePath = /[a-zA-Z0-9\-]+(?:\[c?[0-9]+\])?\[(.*)\]/.exec(elementName)[1];
-						var variablePathParts = variablePath.split('][');
-						var elementVars = variablePathParts.length ? formData : null;
-						while (variablePathParts.length) {
-							var key = variablePathParts.shift();
-							elementVars = elementVars.hasOwnProperty( key ) ? elementVars[ key ] : elementVars;
-						}
-						repeaterData = elementVars;
+			.each( function ( index, element ) {
+				var $this = $( this );
+				var $repeater = $this.find( '> .siteorigin-widget-field-repeater' );
+				var repeaterName = $repeater.data( 'repeaterName' );
+				var repeaterData = formData.hasOwnProperty( repeaterName ) ? formData[ repeaterName ] : null;
+				var isInSection = $this.parent().is( '.siteorigin-widget-section' );
+				if ( isInSection ) {
+					var elementName = $repeater.data( 'element-name' );
+					// Get rid of any index placeholders
+					elementName = elementName.replace(/\[#.*?#\]/g, '');
+					var variablePath = /[a-zA-Z0-9\-]+(?:\[c?[0-9]+\])?\[(.*)\]/.exec(elementName)[1];
+					var variablePathParts = variablePath.split('][');
+					var elementVars = variablePathParts.length ? formData : null;
+					while (variablePathParts.length) {
+						var key = variablePathParts.shift();
+						elementVars = elementVars.hasOwnProperty( key ) ? elementVars[ key ] : elementVars;
+					}
+					repeaterData = elementVars;
+				}
+				
+				if ( ! repeaterData || ! Array.isArray( repeaterData ) ) {
+					return;
+				}
+				// Check that the number of child items matches the number of data items.
+				var repeaterChildren = $repeater.find( '> .siteorigin-widget-field-repeater-items > .siteorigin-widget-field-repeater-item' );
+				var numItems = repeaterData.length;
+				var numChildren = repeaterChildren.length;
+				if ( numItems > numChildren ) {
+					// If data items > child items, create extra child items.
+					for ( var i = 0; i < numItems - numChildren; i++) {
+						$repeater.find( '> .siteorigin-widget-field-repeater-add' ).click();
 					}
 
-					if ( ! repeaterData || ! Array.isArray( repeaterData ) ) {
-						return;
+				} else if ( ! skipMissingValues && numItems < numChildren ) {
+					// If child items > data items, remove extra child items.
+					for ( var j = numItems; j < numChildren; j++) {
+						var $child = $( repeaterChildren.eq( j ) );
+						$child.find( '> .siteorigin-widget-field-repeater-item-top' )
+							.find( '.siteorigin-widget-field-remove' )
+							.trigger( 'click', { silent: true } );
 					}
-					// Check that the number of child items matches the number of data items.
-					var repeaterChildren = $repeater.find( '> .siteorigin-widget-field-repeater-items > .siteorigin-widget-field-repeater-item' );
-					var numItems = repeaterData.length;
-					var numChildren = repeaterChildren.length;
-					if ( numItems > numChildren ) {
-						// If data items > child items, create extra child items.
-						for ( var i = 0; i < numItems - numChildren; i++) {
-							$repeater.find( '> .siteorigin-widget-field-repeater-add' ).click();
-						}
-
-					} else if ( ! skipMissingValues && numItems < numChildren ) {
-						// If child items > data items, remove extra child items.
-						for ( var j = numItems; j < numChildren; j++) {
-							var $child = $( repeaterChildren.eq( j ) );
-							$child.find( '> .siteorigin-widget-field-repeater-item-top' )
-								.find( '.siteorigin-widget-field-remove' )
-								.trigger( 'click', { silent: true } );
-						}
-					}
-					repeaterChildren = $repeater.find( '> .siteorigin-widget-field-repeater-items > .siteorigin-widget-field-repeater-item' );
-					for ( var k = 0; k < repeaterChildren.length; k++ ) {
-						repeaterChildren.eq( k ).find( '> .siteorigin-widget-field-repeater-item-form' );
-						updateRepeaterChildren(
-							repeaterChildren.eq( k ).find( '> .siteorigin-widget-field-repeater-item-form' ),
-							repeaterData[ k ]
-						);
-					}
-				} );
+				}
+				repeaterChildren = $repeater.find( '> .siteorigin-widget-field-repeater-items > .siteorigin-widget-field-repeater-item' );
+				for ( var k = 0; k < repeaterChildren.length; k++ ) {
+					repeaterChildren.eq( k ).find( '> .siteorigin-widget-field-repeater-item-form' );
+					updateRepeaterChildren(
+						repeaterChildren.eq( k ).find( '> .siteorigin-widget-field-repeater-item-form' ),
+						repeaterData[ k ]
+					);
+				}
+			} );
 			--depth;
 		};
 
@@ -1268,8 +1268,8 @@ var sowbForms = window.sowbForms || {};
 			}
 		});
 	};
-
-
+	
+	
 	/**
 	 * Displays an informational notice either at the top of the supplied container, or above the optionally supplied
 	 * element.
@@ -1283,12 +1283,12 @@ var sowbForms = window.sowbForms || {};
 	 *
 	 */
 	sowbForms.displayNotice = function ( $container, title, message, buttons, $element ) {
-
+		
 		var $notice = $( '<div class="siteorigin-widget-form-notification"></div>' );
 		if ( title ) {
 			$notice.append( '<span>' + title + '</span>' );
 		}
-
+		
 		if ( buttons && buttons.length ) {
 			buttons.forEach( function ( button ) {
 				var buttonClasses = '';
@@ -1296,7 +1296,7 @@ var sowbForms = window.sowbForms || {};
 					buttonClasses = ' ' + button.classes.join( ' ' );
 				}
 				var $button = $( '<a class="button button-small' + buttonClasses + '">' + button.label + '</a>' );
-
+				
 				if ( button.url ) {
 					$button.attr( 'href', button.url );
 				}
@@ -1305,14 +1305,14 @@ var sowbForms = window.sowbForms || {};
 						button.callback( $notice );
 					});
 				}
-
+				
 				$notice.append( $button );
 			} );
 		}
 		if ( message ) {
 			$notice.append( '<div><small>' + message + '</small></div>' );
 		}
-
+		
 		if ( $element ) {
 			$element.before( $notice );
 		} else {
