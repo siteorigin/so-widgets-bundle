@@ -1471,5 +1471,3 @@ var sowEmitters = {
 		});
 	}
 };
-
-window.sowbForms = sowbForms;
