@@ -90,7 +90,9 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 		$widget = SiteOrigin_Widgets_Widget_Manager::get_widget_instance( $widget_class );
 		
 		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
-			$widget_data = $widget->update( $widget_data, $widget_data );
+			if ( ! empty( $widget_data ) ) {
+				$widget_data = $widget->update( $widget_data, $widget_data );
+			}
 			ob_start();
 			$widget->form( $widget_data );
 			$widget_form = ob_get_clean();

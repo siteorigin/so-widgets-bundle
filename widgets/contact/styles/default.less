@@ -7,7 +7,7 @@
 	margin-bottom: 1em;
 	.clearfix();
 
-	 label {
+	label {
 		display: block;
 		margin-bottom: 5px;
 
@@ -79,7 +79,7 @@
 	textarea {
 		height: @field_height_textarea;
 	}
-	
+
 	textarea,
 	.sow-text-field {
 		display: block;
@@ -183,7 +183,6 @@
 		.sow-submit:disabled {
 
 		}
-
 	}
 
 	.sow-submit-styled {
@@ -235,11 +234,10 @@
 
 		.sow-submit:disabled {
 			color: lighten(@submit_text_color, 20%);
+			cursor: not-allowed;
 			background: lighten(@submit_background_color, 20%);
 			border: @submit_border_width @submit_border_style lighten(@submit_border_color, 20%);
 
 		}
-
-
 	}
 }
