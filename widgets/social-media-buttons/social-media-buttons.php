@@ -281,21 +281,24 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 	private function get_instance_networks( $instance ) {
 		if ( isset( $instance['networks'] ) && ! empty( $instance['networks'] ) ) {
 			$networks = $instance['networks'];
-			$network_classes = array();
-			foreach ( $networks as &$network ) {
-				$name = $network['name'];
-				if ( !isset($network_classes[ $name ] ) ) {
-					$network_classes[$name] = 0;
-				} else {
-					$network_classes[$name] += 1;
-				}
-				$name .= '-' . $network_classes[$name];
-				$network['css_class_name'] = $name;
-			}
 		} else {
 			$networks = array();
 		}
-		return apply_filters( 'sow_social_media_buttons_networks', $networks, $instance );
+		$networks = apply_filters( 'sow_social_media_buttons_networks', $networks, $instance );
+
+		$network_classes = array();
+		foreach ( $networks as &$network ) {
+			$name = $network['name'];
+			if ( !isset($network_classes[ $name ] ) ) {
+				$network_classes[$name] = 0;
+			} else {
+				$network_classes[$name] += 1;
+			}
+			$name .= '-' . $network_classes[$name];
+			$network['css_class_name'] = $name;
+		}
+
+		return $networks;
 	}
 
 	/**
