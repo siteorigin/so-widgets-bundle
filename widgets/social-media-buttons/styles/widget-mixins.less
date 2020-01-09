@@ -25,18 +25,18 @@
 }
 
 .social-media-button-base() {
+	@background_size: @icon_size + (@padding * 0.5);
 	display: inline-block;
 	font-size: @icon_size;
 	line-height: 1em;
 	margin: @margin;
-	padding: @padding @padding;
 	text-align: center;
-	vertical-align: middle;
+	width: @background_size;
+	height: @background_size;
 
 	.sow-icon-fontawesome {
 		display: inline-block;
-		height: 1em;
-		width: 1em;
+		margin-top: (@background_size - 1em) * 0.5;
 	}
 
 	.rounded(@rounding);
