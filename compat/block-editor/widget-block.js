@@ -1,5 +1,5 @@
 ( function ( editor, blocks, i18n, element, components, compose ) {
-	
+
 	var el = element.createElement;
 	var registerBlockType = blocks.registerBlockType;
 	var BlockControls = editor.BlockControls;
@@ -10,12 +10,12 @@
 	var Placeholder = components.Placeholder;
 	var Spinner  = components.Spinner;
 	var __ = i18n.__;
-	
+
 	registerBlockType( 'sowb/widget-block', {
 		title: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
-		
+
 		description: __( 'Select a SiteOrigin widget from the dropdown.', 'so-widgets-bundle' ),
-		
+
 		icon: function() {
 			return el(
 				'span',
@@ -24,20 +24,20 @@
 				}
 			)
 		},
-		
+
 		category: 'widgets',
-		
+
 		keywords: [sowbBlockEditorAdmin.widgets.reduce( function ( keywords, widgetObj ) {
 			if ( keywords.length > 0 ) {
 				keywords += ',';
 			}
 			return keywords + widgetObj.name;
 		}, '' )],
-		
+
 		supports: {
 			html: false,
 		},
-		
+
 		attributes: {
 			widgetClass: {
 				type: 'string',
@@ -46,7 +46,7 @@
 				type: 'object',
 			}
 		},
-		
+
 		edit: withState( {
 			editing: false,
 			formInitialized: false,
@@ -55,7 +55,7 @@
 			widgetSettingsChanged: false,
 			widgetPreviewHtml: '',
 		} )( function ( props ) {
-			
+
 			function onWidgetClassChange( newWidgetClass ) {
 				if ( newWidgetClass !== '' ) {
 					if ( props.widgetSettingsChanged && ! confirm( sowbBlockEditorAdmin.confirmChangeWidget ) ) {
@@ -72,15 +72,15 @@
 					} );
 				}
 			}
-			
+
 			function switchToEditing() {
 				props.setState( { editing: true, formInitialized: false } );
 			}
-			
+
 			function switchToPreview() {
 				props.setState( { editing: false, previewInitialized: false } );
 			}
-			
+
 			function setupWidgetForm( formContainer ) {
 				var $mainForm = jQuery( formContainer ).find( '.siteorigin-widget-form-main' );
 				if ( $mainForm.length > 0 && ! props.formInitialized ) {
@@ -109,31 +109,23 @@
 					props.setState( { formInitialized: true } );
 				}
 			}
-			
+
 			function setupWidgetPreview() {
 				if ( ! props.previewInitialized ) {
 					jQuery( window.sowb ).trigger( 'setup_widgets', { preview: true } );
 					props.setState( { previewInitialized: true } );
 				}
 			}
-			
+
 			if ( props.editing || ! props.attributes.widgetClass || ! props.attributes.widgetData ) {
 				var widgetsOptions = [];
 				if ( sowbBlockEditorAdmin.widgets ) {
-					sowbBlockEditorAdmin.widgets.sort( function ( a, b ) {
-						if ( a.name < b.name ) {
-							return -1;
-						} else if ( a.name > b.name ) {
-							return 1;
-						}
-						return 0;
-					} );
 					widgetsOptions = sowbBlockEditorAdmin.widgets.map( function ( widget ) {
 						return { value: widget.class, label: widget.name };
 					} );
 					widgetsOptions.unshift( { value: '', label: __( 'Select widget type', 'so-widgets-bundle' ) } );
 				}
-				
+
 				var loadWidgetForm = props.attributes.widgetClass && ! props.widgetFormHtml;
 				if ( loadWidgetForm ) {
 					jQuery.post( {
@@ -150,20 +142,20 @@
 						props.setState( { widgetFormHtml: widgetForm } );
 					} )
 					.fail( function ( response ) {
-						
+
 						var errorMessage = '';
 						if ( response.hasOwnProperty( 'responseJSON' ) ) {
 							errorMessage = response.responseJSON.message;
 						} else if ( response.hasOwnProperty( 'responseText' ) ) {
 							errorMessage = response.responseText;
 						}
-						
+
 						props.setState( { widgetFormHtml: '<div>' + errorMessage + '</div>', } );
 					});
 				}
-				
+
 				var widgetForm = props.widgetFormHtml ? props.widgetFormHtml : '';
-				
+
 				return [
 					!! widgetForm && el(
 						BlockControls,
@@ -213,7 +205,7 @@
 					)
 				];
 			} else {
-				
+
 				var loadWidgetPreview = ! props.loadingWidgets &&
 					! props.editing &&
 					! props.widgetPreviewHtml &&
@@ -237,14 +229,14 @@
 						} );
 					} )
 					.fail( function ( response ) {
-						
+
 						var errorMessage = '';
 						if ( response.hasOwnProperty( 'responseJSON' ) ) {
 							errorMessage = response.responseJSON.message;
 						} else if ( response.hasOwnProperty( 'responseText' ) ) {
 							errorMessage = response.responseText;
 						}
-						
+
 						props.setState( {
 							widgetPreviewHtml: '<div>' + errorMessage + '</div>',
 						} );
@@ -294,7 +286,7 @@
 				];
 			}
 		} ),
-		
+
 		save: function () {
 			// Render in PHP
 			return null;
