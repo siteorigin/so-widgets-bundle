@@ -1081,7 +1081,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					// https://github.com/siteorigin/so-widgets-bundle/issues/958#issuecomment-573139753
 					$digits = preg_replace( '/\D/', '', $value );
 					if ( strlen($digits) < 3 ) {
-						$errors[ $field_name ] = __( 'Invalid phone number. It should contain at least four digits.', 'so-widgets-bundle' );
+						$errors[ $field_name ] = __( 'Invalid phone number. It should contain at least three digits.', 'so-widgets-bundle' );
 					} else {
 						$email_fields['message'][] = array(
 							'label' => $field['label'],
