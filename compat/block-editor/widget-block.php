@@ -41,12 +41,16 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
 				/** @var SiteOrigin_Widget $widget_obj */
 				$author = '';
+				// Try to find a widget's author from it's file metadata, by matching the filename to the ID (which is derived from the filename).
 				foreach ( $widgets_metadata_list as $widget_metadata ) {
 					$filename = $widgets_manager->get_widget_filename( $widget_obj->id_base );
 					if ( $widget_metadata['ID'] == $filename ) {
 						$author = $widget_metadata['Author'];
+						break;
 					}
 				}
+				// For SiteOrigin widgets, just display the widget's name. For third party widgets, display the Author
+				// to try avoid confusion when the widgets have the same name.
 				if ( preg_match( '/^SiteOrigin /', $widget_obj->name ) == 1 && $author == 'SiteOrigin' ) {
 					$name = preg_replace( '/^SiteOrigin /', '', $widget_obj->name );
 
@@ -63,6 +67,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				}
 			}
 		}
+		// Sort the list of widgets so SiteOrigin widgets are at the top and then third party widgets.
 		sort($so_widgets);
 		sort( $third_party_widgets );
 		$so_widgets = array_merge( $so_widgets, $third_party_widgets );
