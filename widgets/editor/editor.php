@@ -60,7 +60,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			$instance,
 			array(  'text' => '' )
 	);
-		
+
 		if (
 			// Only run these parts if we're rendering for the frontend
 			empty( $GLOBALS[ 'SITEORIGIN_PANELS_CACHE_RENDER' ] ) &&
@@ -69,7 +69,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			if (function_exists('wp_make_content_images_responsive')) {
 				$instance['text'] = wp_make_content_images_responsive( $instance['text'] );
 			}
-			
+
 			// Manual support for Jetpack Markdown module.
 			if ( class_exists( 'WPCom_Markdown' ) &&
 			     Jetpack::is_module_active( 'markdown' ) &&
@@ -84,25 +84,27 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 				$instance['text'] = $GLOBALS['wp_embed']->run_shortcode( $instance['text'] );
 				$instance['text'] = $GLOBALS['wp_embed']->autoembed( $instance['text'] );
 			}
-			
+
 			// As in the Text Widget, we need to prevent plugins and themes from running `do_shortcode` in the `widget_text`
 			// filter to avoid running it twice and to prevent `wpautop` from interfering with shortcodes' output.
 			$widget_text_do_shortcode_priority = has_filter( 'widget_text', 'do_shortcode' );
 			if ( $widget_text_do_shortcode_priority !== false ) {
 				remove_filter( 'widget_text', 'do_shortcode', $widget_text_do_shortcode_priority );
 			}
-			
+
 			$instance['text'] = apply_filters( 'widget_text', $instance['text'] );
-			
+
 			if ( $widget_text_do_shortcode_priority !== false ) {
 				add_filter( 'widget_text', 'do_shortcode', $widget_text_do_shortcode_priority );
 			}
-			
+
 			if( $instance['autop'] ) {
 				$instance['text'] = wpautop( $instance['text'] );
 			}
-			
+
 			$instance['text'] = do_shortcode( shortcode_unautop( $instance['text'] ) );
+
+			$instance['text'] = $this->process_more_quicktag( $instance['text'] );
 		}
 
 
@@ -111,15 +113,37 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	private function process_more_quicktag( $content ) {
+		$post = get_post();
+		$panels_content = get_post_meta( $post->ID, 'panels_data', true );
+		// We only want to do this processing if on archive pages for posts with non-PB layouts.
+		if ( ! is_singular() && empty( $panels_content ) && ! $this->is_block_editor_page() && empty( $GLOBALS['SO_WIDGETS_BUNDLE_PREVIEW_RENDER'] ) ) {
+			if ( preg_match( '/<!--more(.*?)?-->/', $content, $matches ) ) {
+				$content = explode( $matches[0], $content, 2 );
+				$content = $content[0];
+				$content = force_balance_tags( $content );
+				if ( ! empty( $matches[1] ) ) {
+					$more_link_text = strip_tags( wp_kses_no_null( trim( $matches[1] ) ) );
+				} else {
+					$more_link_text = __( 'Read More', 'siteorigin-panels' );
+				}
+				$more_link = apply_filters( 'the_content_more_link', ' <a href="' . get_permalink() . "#more-{$post->ID}\" class=\"more-link\">$more_link_text</a>", $more_link_text );
+				$content .= '<p>' . $more_link . '</p>';
+			}
+		}
+
+		return $content;
+	}
+
 
 	function get_style_name($instance) {
 		// We're not using a style
 		return false;
 	}
-	
+
 	function get_form_teaser(){
 		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
-		
+
 		return sprintf(
 			__( 'Use Google Fonts right inside the Editor Widget using %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/web-font-selector" target="_blank" rel="noopener noreferrer">',
