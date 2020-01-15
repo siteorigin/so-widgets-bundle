@@ -41,6 +41,8 @@
 
 .sow-tabs {
 	.sow-tabs-tab-container {
+		display: flex;
+		flex-wrap: wrap;
 		background-color: @tabs_container_background_color;
 		padding: @tabs_container_padding;
 
@@ -105,6 +107,14 @@
 
 			.sow-tabs-title {
 				line-height: 1;
+				display: flex;
+				align-items: center;
+			}
+
+			.sow-tab-icon-image {
+				margin-right: 2px;
+				width: auto;
+				height: @tabs_font_size;
 			}
 		}
 	}
