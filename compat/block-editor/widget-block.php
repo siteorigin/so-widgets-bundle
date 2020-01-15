@@ -68,7 +68,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			}
 		}
 		// Sort the list of widgets so SiteOrigin widgets are at the top and then third party widgets.
-		sort($so_widgets);
+		sort( $so_widgets );
 		sort( $third_party_widgets );
 		$so_widgets = array_merge( $so_widgets, $third_party_widgets );
 
