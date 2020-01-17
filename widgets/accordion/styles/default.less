@@ -69,13 +69,6 @@
 				outline: auto 5px -webkit-focus-ring-color;
 			}
 
-			.sow-accordion-icon-image {
-				margin: 0 2px;
-				width: auto;
-				height: @heading_title_font_size;
-				max-height: 1em; // Account for @heading_title_font_size not being set
-			}
-			
 			.sow-accordion-title {
 				display: flex;
 				align-items: center;
@@ -97,6 +90,20 @@
 				.sow-accordion-open-close-button {
 						display: none;
 				}
+			}
+
+			.sow-accordion-icon-image {
+				width: auto;
+				height: @heading_title_font_size;
+				max-height: 1em; // Account for @heading_title_font_size not being set
+			}
+
+			.sow-accordion-title-icon-left > .sow-accordion-icon-image {
+				margin-right: 5px;
+			}
+
+			.sow-accordion-title-icon-right > .sow-accordion-icon-image {
+				margin-left: 5px;
 			}
 		}
 		&:not(.sow-accordion-panel-open) > .sow-accordion-panel-header-container > .sow-accordion-panel-header {
