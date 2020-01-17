@@ -57,7 +57,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 
 			),
 			false ,
-			plugin_dir_path(__FILE__).'../'
+			plugin_dir_path(__FILE__)
 		);
 	}
 
