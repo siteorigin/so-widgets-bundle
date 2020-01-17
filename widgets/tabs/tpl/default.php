@@ -16,7 +16,7 @@ if( ! empty( $instance['title'] ) ) {
 		<div class="sow-tabs-tab<?php if ( $i == $initial_tab_index ) echo ' sow-tabs-tab-selected'; ?>"
 			 role="tab" data-anchor="<?php echo sanitize_title_with_dashes( $tab['anchor'] ); ?>"
 			 <?php echo $i == $initial_tab_index ? 'aria-selected="true" tabindex="0"' : 'aria-selected="false" tabindex="-1"'; ?>>
-			<div class="sow-tabs-title">
+			<div class="sow-tabs-title <?php echo empty( $tab['after_title'] ) ? 'sow-tabs-title-icon-left' : 'sow-tabs-title-icon-right'; ?>">
 				<?php echo $tab['before_title']; ?>
 				<?php echo wp_kses_post( $tab['title'] ); ?>
 				<?php echo $tab['after_title']; ?>
