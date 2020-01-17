@@ -41,7 +41,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
 				/** @var SiteOrigin_Widget $widget_obj */
 				$author = '';
-				// Try to find a widget's author from it's file metadata, by matching the filename to the ID (which is derived from the filename).
+				// Try to find a widget's author from its file metadata, by matching the filename to the ID (which is derived from the filename).
 				foreach ( $widgets_metadata_list as $widget_metadata ) {
 					$filename = $widgets_manager->get_widget_filename( $widget_obj->id_base );
 					if ( $widget_metadata['ID'] == $filename ) {
