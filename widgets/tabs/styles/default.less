@@ -41,10 +41,13 @@
 
 .sow-tabs {
 	.sow-tabs-tab-container {
-		display: flex;
-		flex-wrap: wrap;
 		background-color: @tabs_container_background_color;
 		padding: @tabs_container_padding;
+
+		& when ( @tabs_container_tabs_position = top ), ( @tabs_container_tabs_position = bottom ) {
+			display: flex;
+			flex-wrap: wrap;
+		}
 
 		& when ( @tabs_container_tabs_position = left ), ( @tabs_container_tabs_position = right ) {
 			& when not ( @tabs_container_tabs_align = top ) {
