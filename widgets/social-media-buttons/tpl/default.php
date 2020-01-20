@@ -1,12 +1,18 @@
+<?php
+/**
+ * @var $networks array
+ */
+?>
+
 <?php if ( !empty( $instance['title'] ) ) echo $args['before_title'] . esc_html( $instance['title'] ) . $args['after_title']; ?>
 
 <div class="social-media-button-container">
 	<?php foreach( $networks as $network ) :
 		$classes = array();
 		if( !empty($instance['design']['hover']) ) $classes[] = 'ow-button-hover';
-		$classes[] = "sow-social-media-button-" . sanitize_html_class( $network['name'] );
+		$classes[] = "sow-social-media-button-" . sanitize_html_class( $network['css_class_name'] );
 		$classes[] = "sow-social-media-button";
-		
+
 		if ( empty( $network['icon_title'] ) ) {
 			if ( $network['name'] == 'email' || $network['name'] == 'phone' ) {
 				$title = sprintf(

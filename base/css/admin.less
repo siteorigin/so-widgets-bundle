@@ -59,6 +59,8 @@
 
 		> label {
 			display: block;
+			font-size: 13px;
+			font-weight: 400;
 			margin-bottom: 3px;
 
 			&.siteorigin-widget-field-label {
@@ -428,6 +430,7 @@
 		> label {
 			background: #F0F0F0;
 			border: 1px solid #D0D0D0;
+			line-height: 1.4;
 			padding: 10px;
 			display: block;
 			margin-bottom: 0;
@@ -699,23 +702,23 @@
 
 // WP 5 Block Editor compatibility styles
 .block-editor {
-	
+
 	.so-widget-placeholder {
 		text-align: left;
-		
+
 		// WB icon for placeholder.
 		& > .components-placeholder__label {
 			background: url("img/bundle-icon.png") no-repeat left;
 			background-size: 20px;
 			padding-left: 25px;
 		}
-		
+
 		& > .components-placeholder__fieldset {
 			max-width: unset;
-			
+
 			.so-widget-block-container {
 				width: 100%;
-				
+
 				.components-base-control__field select {
 					max-width: unset;
 				}
@@ -733,6 +736,10 @@
 
 			input {
 				padding: 3px 5px;
+
+				&[type=checkbox] {
+					background-color: #ffffff;
+				}
 			}
 
 			&.siteorigin-widget-field-type-autocomplete, &.siteorigin-widget-field-type-link {

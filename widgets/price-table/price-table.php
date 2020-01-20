@@ -19,7 +19,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			),
 			array(),
 			false,
-			plugin_dir_path( __FILE__ ) . '../'
+			plugin_dir_path( __FILE__ )
 		);
 	}
 

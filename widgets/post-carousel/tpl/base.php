@@ -4,6 +4,7 @@
  * @var string $title
  * @var WP_Query $posts
  * @var string $default_thumbnail
+ * @var boolean $loop_posts
  * @var string $storage_hash
  */
 
@@ -26,6 +27,7 @@
 
 		<div class="sow-carousel-wrapper"
 		     data-found-posts="<?php echo esc_attr($posts->found_posts) ?>"
+		     data-loop-posts-enabled="<?php echo esc_attr( $loop_posts ) ?>"
 		     data-ajax-url="<?php echo sow_esc_url( wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ) ) ?>"
 			>
 			<ul class="sow-carousel-items">
