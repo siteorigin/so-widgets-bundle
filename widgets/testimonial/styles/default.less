@@ -82,7 +82,7 @@
 		.rounded(@text_border_radius);
 	}
 
-	.sow-round-image-frame {
+	.sow-round-image-frame, .sow-image-shape-square {
 		border-radius: @image_size;
 		width: @image_size;
 		height: @image_size;
@@ -115,16 +115,6 @@
 					img {
 						margin: 0 auto;
 						max-width: 100%;
-						height: auto;
-
-						@media screen and (max-width: @tablet_width) {
-							width: @tablet_image_size;
-						}
-
-						@media screen and (max-width: @mobile_width) {
-							width: @mobile_image_size;
-						}
-
 					}
 				}
 
