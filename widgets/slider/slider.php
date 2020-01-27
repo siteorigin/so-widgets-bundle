@@ -154,7 +154,8 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 					echo siteorigin_widgets_get_attachment_image(
 						$frame['foreground_image'],
 						'full',
-						!empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : ''
+						!empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : '',
+						'sow-slider-forground-image'
 					);
 					?>
 					<?php if ( ! empty( $frame['url'] ) ) : ?>
@@ -180,7 +181,8 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			echo siteorigin_widgets_get_attachment_image(
 				$frame['background_image'],
 				'full',
-				!empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : ''
+				!empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : '',
+				'sow-slider-background-image'
 			);
 
 			?>
