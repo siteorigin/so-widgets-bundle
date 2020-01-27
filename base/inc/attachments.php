@@ -32,9 +32,13 @@ function siteorigin_widgets_get_attachment_image_src( $attachment, $size, $fallb
 	return false;
 }
 
-function siteorigin_widgets_get_attachment_image( $attachment, $size, $fallback ){
+function siteorigin_widgets_get_attachment_image( $attachment, $size, $fallback, $class = false ){
 	if( !empty( $attachment ) ) {
-		return wp_get_attachment_image( $attachment, $size );
+		if ( ! empty( $class ) ) {
+			$class = array( 'class' => $class );
+		}
+
+		return wp_get_attachment_image( $attachment, $size, false, $class );
 	}
 	else {
 		$src = siteorigin_widgets_get_attachment_image_src( $attachment, $size, $fallback );
@@ -49,6 +53,10 @@ function siteorigin_widgets_get_attachment_image( $attachment, $size, $fallback 
 		}
 		if ( function_exists( 'wp_get_attachment_image_sizes' ) ) {
 			$atts['sizes'] = wp_get_attachment_image_sizes( $attachment, $size );
+		}
+
+		if ( ! empty( $class ) ) {
+			$atts['class'] = $class;
 		}
 
 		if( !empty($src[1]) ) $atts['width'] = $src[1];
