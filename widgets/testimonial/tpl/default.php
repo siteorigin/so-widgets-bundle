@@ -30,7 +30,7 @@
 
 				<div class="sow-testimonial-user">
 					<?php if( $has_image ) : ?>
-					<div class="sow-image-wrapper">
+					<div class="sow-image-wrapper sow-image-wrapper-shape-<?php echo $design['image']['image_shape']; ?>">
 						<?php if( $link_image ) : ?>
 						<a href="<?php echo sow_esc_url( $url ) ?>" <?php if( ! empty( $new_window ) ) { echo 'target="_blank" rel="noopener noreferrer"'; } ?>>
 						<?php endif; ?>
