@@ -32,21 +32,18 @@ function siteorigin_widgets_get_attachment_image_src( $attachment, $size, $fallb
 	return false;
 }
 
-function siteorigin_widgets_get_attachment_image( $attachment, $size, $fallback, $class = false ){
+function siteorigin_widgets_get_attachment_image( $attachment, $size, $fallback, $atts = array() ){
 	if( !empty( $attachment ) ) {
-		if ( ! empty( $class ) ) {
-			$class = array( 'class' => $class );
-		}
-
-		return wp_get_attachment_image( $attachment, $size, false, $class );
+		return wp_get_attachment_image( $attachment, $size, false, $atts );
 	}
 	else {
 		$src = siteorigin_widgets_get_attachment_image_src( $attachment, $size, $fallback );
 		if( empty($src[0]) ) return '';
 
-		$atts = array(
-			'src' => $src[0],
-		);
+		if ( ! empty( $atts ) ) {
+			$atts['class'] = $class;
+		}
+
 
 		if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
 			$atts['srcset'] = wp_get_attachment_image_srcset( $attachment, $size );
@@ -55,9 +52,7 @@ function siteorigin_widgets_get_attachment_image( $attachment, $size, $fallback,
 			$atts['sizes'] = wp_get_attachment_image_sizes( $attachment, $size );
 		}
 
-		if ( ! empty( $class ) ) {
-			$atts['class'] = $class;
-		}
+		$atts['src'] = $src[0];
 
 		if( !empty($src[1]) ) $atts['width'] = $src[1];
 		if( !empty($src[2]) ) $atts['height'] = $src[2];
