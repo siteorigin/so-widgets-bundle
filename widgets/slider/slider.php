@@ -155,7 +155,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 						$frame['foreground_image'],
 						'full',
 						!empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : '',
-						array( 'class' => 'sow-slider-forground-image' )
+						array( 'class' => 'sow-slider-foreground-image' )
 					);
 					?>
 					<?php if ( ! empty( $frame['url'] ) ) : ?>
