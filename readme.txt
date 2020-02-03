@@ -89,6 +89,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Contact Form: Added lightweight validation for phone numbers.
 * Block Editor: Display author for third party widgets.
 * Block Editor: Added processing for the more quicktag in the Editor widget.
+* Tabs and Accordion: Added icon spacing.
 * Testimonials: Improved image sizing behavior for square images.
 
 = 1.15.9 - 11 November 2019 =
