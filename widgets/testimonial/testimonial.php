@@ -70,6 +70,7 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 					'image' => array(
 						'type' => 'media',
 						'label' => __('Image', 'so-widgets-bundle'),
+						'fallback' => true,
 					),
 
 					'link_image' => array(
