@@ -65,17 +65,31 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
-= 1.15.10 - 7 January 2020 =
+= 1.15.10 - 03 February 2020 =
 * Block Editor: Fixed widget select field width and alignment.
 * Removed unused template files.
 * Contact Form: Improved checking for SiteOrigin development email addresses.
-* Form Fields: Minor styling improvements.
+* Minor styling improvements to the Classic and Block Editor admin interfaces.
 * Features: Added a new setting to select the H tag to be used for the title field.
 * Hero: If a height value is assigned, added prefilling to avoid a page jump.
 * Hero: Added `font-display: swap` for Google font imports.
 * Layout Slider: If a height value is assigned, added prefilling to avoid a page jump.
 * Image Grid: Added a class of `sow-image-grid-image_html` to each image. Can be used to exclude images from Lazy Loading plugins.
 * Simple Masonry: Added a class of `sow-masonry-grid-image` to each image. Can be used to exclude images from Lazy Loading plugins.
+* Features: Added fallback support for the Icon image field.
+* Testimonials: Add fallback support for the Image field.
+* Post Carousel: Prevented looping until all posts are loaded.
+* Post Carousel: Added a new setting to disable looping.
+* Post Carousel: Prevented scrolling past loading items and loop as soon as last item is completely visible.
+* Contact Form: Added disabled cursor to submit button when disabled.
+* Block Editor: Resolved Features widget default settings.
+* Tabs and Accordion: Account for accented characters.
+* Social Media Buttons: Allowed for multiple instances of the same network without duplicating colors.
+* Social Media Buttons: Ensured all icons are correctly centered.
+* Contact Form: Added lightweight validation for phone numbers.
+* Block Editor: Display author for third party widgets.
+* Block Editor: Added processing for the more quicktag in the Editor widget.
+* Testimonials: Improved image sizing behavior for square images.
 
 = 1.15.9 - 11 November 2019 =
 * Contact Form: Improved default email address handling.
