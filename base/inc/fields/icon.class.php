@@ -24,7 +24,7 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 			$value = $value_parts['family'] . $value_style . '-' . $value_parts['icon'];
 			
 		} else {
-			$value_family = key($widget_icon_families);//return the first element in the font families array, instead of raw string value.
+			$value_family = key($widget_icon_families);
 		}
 		?>
 
