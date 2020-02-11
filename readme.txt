@@ -65,7 +65,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
-= 1.15.10 - 04 February 2020 =
+= 1.6.0 - 11 February 2020 =
 * Block Editor: Fixed widget select field width and alignment.
 * Removed unused template files.
 * Contact Form: Improved checking for SiteOrigin development email addresses.
