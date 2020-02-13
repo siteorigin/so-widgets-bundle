@@ -11,7 +11,7 @@ jQuery( function ( $ ) {
 				return $( this );
 			}
 
-			var $accordionPanels = $( element ).children( '> .sow-accordion-panel' );
+			var $accordionPanels = $( element ).find( '> .sow-accordion-panel' );
 			$accordionPanels.not( '.sow-accordion-panel-open' ).find( '.sow-accordion-panel-content' ).hide();
 			var openPanels = $accordionPanels.filter( '.sow-accordion-panel-open' ).toArray();
 
