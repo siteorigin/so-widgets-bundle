@@ -19,7 +19,7 @@ jQuery( function ( $ ) {
 				page = 1,
 				fetching = false,
 				numItems = $items.length,
-				totalPosts = $$.data( 'found-posts' ),
+				totalPosts = $$.data( 'post-count' ),
 				loopPostsEnabled = $$.data( 'loop-posts-enabled' ),
 				complete = numItems === totalPosts,
 				itemWidth = ( $firstItem.width() + parseInt( $firstItem.css( 'margin-right' ) ) ),
@@ -28,9 +28,10 @@ jQuery( function ( $ ) {
 
 			var updatePosition = function () {
 				const numVisibleItems = Math.ceil( $$.outerWidth() / itemWidth );
-				const lastPosition = totalPosts - numVisibleItems;
+				const lastPosition = totalPosts - numVisibleItems + 1;
 				const shouldLoop = loopPostsEnabled && !fetching && complete;
 				const hasPosts = numItems !== null && !isNaN(numItems);
+
 				if (position < 0) {
 					position = (shouldLoop && hasPosts) ? lastPosition : 0;
 				} else if (position > Math.min(numItems, lastPosition) ) {

@@ -26,7 +26,7 @@
 		<a href="#" class="sow-carousel-next" title="<?php esc_attr_e('Next', 'so-widgets-bundle') ?>" aria-label="<?php esc_attr_e( 'Next Posts', 'so-widgets-bundle') ?>" role="button"></a>
 
 		<div class="sow-carousel-wrapper"
-		     data-found-posts="<?php echo esc_attr($posts->found_posts) ?>"
+		     data-post-count="<?php echo esc_attr($posts->post_count) ?>"
 		     data-loop-posts-enabled="<?php echo esc_attr( $loop_posts ) ?>"
 		     data-ajax-url="<?php echo sow_esc_url( wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ) ) ?>"
 			>
