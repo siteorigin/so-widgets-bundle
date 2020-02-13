@@ -134,11 +134,12 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 
 			if ( empty( $image['image'] ) && ! empty( $image['image_fallback'] ) ) {
 				$alt = ! empty ( $image['alt'] ) ? $image['alt'] .'"' : '';
-				$image['image_html'] = '<img src="'. esc_url( $image['image_fallback'] ) .'" alt="'. esc_attr( $alt ) .'" title="'. esc_attr( $title ) .'">';
+				$image['image_html'] = '<img src="'. esc_url( $image['image_fallback'] ) .'" alt="'. esc_attr( $alt ) .'" title="'. esc_attr( $title ) .'" class="sow-image-grid-image_html">';
 			} else {
 				$image['image_html'] = wp_get_attachment_image( $image['image'], $instance['display']['attachment_size'], false, array(
 					'title' => $title,
 					'alt'   => $image['alt'],
+					'class' => 'sow-image-grid-image_html',
 				) );
 			}
 		}

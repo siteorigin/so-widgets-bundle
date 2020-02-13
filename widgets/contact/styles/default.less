@@ -7,7 +7,7 @@
 	margin-bottom: 1em;
 	.clearfix();
 
-	> label {
+	label {
 		display: block;
 		margin-bottom: 5px;
 
@@ -15,6 +15,8 @@
 		@label_align: default;
 		width: @label_width;
 		text-align: @label_align;
+		@label_font_color: default;
+		color: @label_font_color;
 
 		strong {
 			@label_font_family: default;
@@ -22,9 +24,7 @@
 			.font(@label_font_family, @label_font_weight);
 
 			@label_font_size: default;
-			@label_font_color: default;
 			font-size: @label_font_size;
-			color: @label_font_color;
 		}
 
 		&.sow-form-field-label-left {
@@ -79,7 +79,7 @@
 	textarea {
 		height: @field_height_textarea;
 	}
-	
+
 	textarea,
 	.sow-text-field {
 		display: block;
@@ -183,7 +183,6 @@
 		.sow-submit:disabled {
 
 		}
-
 	}
 
 	.sow-submit-styled {
@@ -235,11 +234,10 @@
 
 		.sow-submit:disabled {
 			color: lighten(@submit_text_color, 20%);
+			cursor: not-allowed;
 			background: lighten(@submit_background_color, 20%);
 			border: @submit_border_width @submit_border_style lighten(@submit_border_color, 20%);
 
 		}
-
-
 	}
 }

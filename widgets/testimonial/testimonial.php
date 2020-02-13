@@ -70,6 +70,7 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 					'image' => array(
 						'type' => 'media',
 						'label' => __('Image', 'so-widgets-bundle'),
+						'fallback' => true,
 					),
 
 					'link_image' => array(
@@ -335,15 +336,17 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function testimonial_user_image( $image_id, $design ){
-		if ( ! empty( $image_id ) ) {
-			if( $design['image']['image_shape'] == 'square') {
-				return wp_get_attachment_image( $image_id, array( $design['image']['image_size'], $design['image']['image_size'] ), false, array(
-					'class' => 'sow-image-shape-' . $design['image']['image_shape'],
-				) );
-			}
-			else {
-				$src = wp_get_attachment_image_src( $image_id, array( $design['image']['image_size'], $design['image']['image_size'] ) );
+	function testimonial_user_image( $image_id, $design, $image_fallback = false ){
+		$src = siteorigin_widgets_get_attachment_image_src(
+			$image_id,
+			$design['image']['image_size'],
+			! empty( $image_fallback ) ? $image_fallback : false
+		);
+
+		if ( ! empty( $src ) ) {
+			if ( $design['image']['image_shape'] == 'square' ) {
+				return '<img src="' . esc_url( $src[0] ) . '" class="sow-image-shape-' . $design['image']['image_shape'] . '">';
+			} else {
 				return '<div class="sow-round-image-frame" style="background-image: url(' . esc_url( $src[0] ) . ');"></div>';
 			}
 		}

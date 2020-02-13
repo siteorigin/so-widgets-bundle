@@ -877,8 +877,8 @@ class Less_Parser{
 
 		if( preg_match($tok, $this->input, $match, 0, $this->pos) ){
 			$this->skipWhitespace(strlen($match[0]));
-			return $match;
 		}
+		return $match;
 	}
 
 

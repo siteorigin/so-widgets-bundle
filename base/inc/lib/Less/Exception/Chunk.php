@@ -68,6 +68,7 @@ class Less_Exception_Chunk extends Less_Exception_Parser{
 					$parenLevel++;
 					$lastParen = $this->parserCurrentIndex;
 					break;
+
 				// )
 				case 41:
 					$parenLevel--;
@@ -75,15 +76,18 @@ class Less_Exception_Chunk extends Less_Exception_Parser{
 						return $this->fail("missing opening `(`");
 					}
 					break;
+
 				// ;
 				case 59:
 					//if (!$parenLevel) { $this->emitChunk();	}
 					break;
+
 				// {
 				case 123:
 					$level++;
 					$lastOpening = $this->parserCurrentIndex;
 					break;
+
 				// }
 				case 125:
 					$level--;
@@ -142,6 +146,7 @@ class Less_Exception_Chunk extends Less_Exception_Parser{
 						}
 					}
 					break;
+
 				// *, check for unmatched */
 				case 42:
 					if (($this->parserCurrentIndex < $this->input_len - 1) && ($this->CharCode($this->parserCurrentIndex+1) == 47)) {

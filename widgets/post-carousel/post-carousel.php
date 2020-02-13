@@ -17,7 +17,7 @@ add_action('init', 'sow_carousel_register_image_sizes');
 
 function sow_carousel_get_next_posts_page() {
 	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
-	
+
 	$template_vars = array();
 	if ( ! empty( $_GET['instance_hash'] ) ) {
 		$instance_hash = $_GET['instance_hash'];
@@ -57,7 +57,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 
 			),
 			false ,
-			plugin_dir_path(__FILE__).'../'
+			plugin_dir_path(__FILE__)
 		);
 	}
 
@@ -113,6 +113,13 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 				'default' => 'sow-carousel-default',
 			),
 
+			'loop_posts' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Loop posts', 'so-widgets-bundle' ),
+				'description' => __( 'Automatically return to the first post after the last post.', 'so-widgets-bundle' ),
+				'default' => true,
+			),
+
 			'posts' => array(
 				'type' => 'posts',
 				'label' => __('Posts query', 'so-widgets-bundle'),
@@ -151,7 +158,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 		if ( ! empty( $instance['default_thumbnail'] ) ) {
 			$default_thumbnail = wp_get_attachment_image_src( $instance['default_thumbnail'], 'sow-carousel-default' );
 		}
-		
+
 		$query = wp_parse_args(
 			siteorigin_widget_post_selector_process_query( $instance['posts'] ),
 			array(
@@ -159,11 +166,12 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			)
 		);
 		$posts = new WP_Query( $query );
-		
+
 		return array(
 			'title' => $instance['title'],
 			'posts' => $posts,
 			'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : '',
+			'loop_posts' => ! empty( $instance['loop_posts'] ),
 		);
 	}
 

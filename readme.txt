@@ -8,11 +8,11 @@ License: GPLv3 or later
 Contributors: gpriday, braam-genis
 Donate link: https://siteorigin.com/downloads/premium/
 
-The SiteOrigin widget bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colours and 1500+ icons.
+The SiteOrigin Widgets Bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colours and 1500+ icons.
 
 == Description ==
 
-The SiteOrigin widget bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colours and 1500+ icons.
+The SiteOrigin Widgets Bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colours and 1500+ icons.
 
 Widgets are great. No matter where you’re using them. In a [Page Builder](http://siteorigin.com/page-builder/) page or on your widgetized areas. It's even compatible with other popular page building plugins.
 
@@ -64,6 +64,33 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+= 1.6.0 - 11 February 2020 =
+* Block Editor: Fixed widget select field width and alignment.
+* Removed unused template files.
+* Contact Form: Improved checking for SiteOrigin development email addresses.
+* Minor styling improvements to the Classic and Block Editor admin interfaces.
+* Features: Added a new setting to select the H tag to be used for the title field.
+* Hero: If a height value is assigned, added prefilling to avoid a page jump.
+* Hero: Added `font-display: swap` for Google font imports.
+* Layout Slider: If a height value is assigned, added prefilling to avoid a page jump.
+* Image Grid: Added a class of `sow-image-grid-image_html` to each image. Can be used to exclude images from Lazy Loading plugins.
+* Simple Masonry: Added a class of `sow-masonry-grid-image` to each image. Can be used to exclude images from Lazy Loading plugins.
+* Features: Added fallback support for the Icon image field.
+* Testimonials: Add fallback support for the Image field.
+* Post Carousel: Prevented looping until all posts are loaded.
+* Post Carousel: Added a new setting to disable looping.
+* Post Carousel: Prevented scrolling past loading items and loop as soon as last item is completely visible.
+* Contact Form: Added disabled cursor to submit button when disabled.
+* Block Editor: Resolved Features widget default settings.
+* Tabs and Accordion: Account for accented characters.
+* Social Media Buttons: Allowed for multiple instances of the same network without duplicating colors.
+* Social Media Buttons: Ensured all icons are correctly centered.
+* Contact Form: Added lightweight validation for phone numbers.
+* Block Editor: Display author for third party widgets.
+* Block Editor: Added processing for the more quicktag in the Editor widget.
+* Tabs and Accordion: Added icon spacing.
+* Testimonials: Improved image sizing behavior for square images.
 
 = 1.15.9 - 11 November 2019 =
 * Contact Form: Improved default email address handling.

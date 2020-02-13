@@ -44,6 +44,11 @@
 		background-color: @tabs_container_background_color;
 		padding: @tabs_container_padding;
 
+		& when ( @tabs_container_tabs_position = top ), ( @tabs_container_tabs_position = bottom ) {
+			display: flex;
+			flex-wrap: wrap;
+		}
+
 		& when ( @tabs_container_tabs_position = left ), ( @tabs_container_tabs_position = right ) {
 			& when not ( @tabs_container_tabs_align = top ) {
 				display: flex;
@@ -105,6 +110,23 @@
 
 			.sow-tabs-title {
 				line-height: 1;
+				display: flex;
+				align-items: center;
+			}
+
+			.sow-tab-icon-image {
+				width: auto;
+				height: @tabs_font_size;
+			}
+
+			.sow-tabs-title-icon-left > .sow-tab-icon-image,
+			.sow-tabs-title-icon-left > span[data-sow-icon] {
+				margin-right: 5px;
+			}
+
+			.sow-tabs-title-icon-right > .sow-tab-icon-image,
+			.sow-tabs-title-icon-right > span[data-sow-icon] {
+				margin-left: 5px;
 			}
 		}
 	}

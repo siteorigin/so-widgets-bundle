@@ -39,11 +39,17 @@
 			padding: @heading_padding;
 			background-color: @heading_background_color;
 			color: @title_color;
-			text-align: @heading_title_align;
 			font-family: @heading_title_font_family;
 			font-weight: @heading_title_font_weight;
 			font-size: @heading_title_font_size;
 			text-transform: @heading_title_text_transform;
+			display: flex;
+			& when ( @open_close_location = right ) {
+				flex-direction: row;
+			}
+			& when ( @open_close_location = left ) {
+				flex-direction: row-reverse;
+			}
 
 			& when( @has_heading_border_width = true ) {
 				border-style: solid;
@@ -64,19 +70,42 @@
 			}
 
 			.sow-accordion-title {
-				display: inline-block;
-				width: ~"calc(100% - 25px)";
+				display: flex;
+				align-items: center;
+				& when ( @heading_title_align = center ) {
+					justify-content: center;
+				}
+				
+				& when ( @heading_title_align = right ) {
+					justify-content: flex-end;
+				}
+
+				width: 100%;
 				& when ( @show_open_close_icon = true ) and ( @heading_title_align = @open_close_location ) {
 					margin-@{open_close_location}: 5px;
 				}
 			}
 
-			.sow-accordion-open-close-button {
-				float: @open_close_location;
-
-				& when ( @show_open_close_icon = false ) {
-					display: none;
+			& when ( @show_open_close_icon = false ) {
+				.sow-accordion-open-close-button {
+						display: none;
 				}
+			}
+
+			.sow-accordion-icon-image {
+				width: auto;
+				height: @heading_title_font_size;
+				max-height: 1em; // Account for @heading_title_font_size not being set
+			}
+
+			.sow-accordion-title-icon-left > .sow-accordion-icon-image,
+			.sow-accordion-title-icon-left > span[data-sow-icon] {
+				margin-right: 5px;
+			}
+
+			.sow-accordion-title-icon-right > .sow-accordion-icon-image,
+			.sow-accordion-title-icon-right > span[data-sow-icon] {
+				margin-left: 5px;
 			}
 		}
 		&:not(.sow-accordion-panel-open) > .sow-accordion-panel-header-container > .sow-accordion-panel-header {

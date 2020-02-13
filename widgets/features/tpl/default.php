@@ -16,9 +16,13 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 					<?php  echo ( ! empty( $feature['icon_title'] ) ? 'title="' . esc_attr( $feature['icon_title'] ) . '"' : '' ); ?>>
 					<?php
 					$icon_styles = array();
-					if( !empty($feature['icon_image']) ) {
+					if( !empty($feature['icon_image']) || !empty($feature['icon_image_fallback']) ) {
 						$size = empty( $feature['icon_image_size'] ) ? 'thumbnail' : $feature['icon_image_size'];
-						$attachment = wp_get_attachment_image_src( $feature['icon_image'], $size );
+						$attachment = siteorigin_widgets_get_attachment_image_src(
+							$feature['icon_image'],
+							$size,
+							! empty( $feature['icon_image_fallback'] ) ? $feature['icon_image_fallback'] : false
+						);
 						if(!empty($attachment)) {
 							$icon_styles[] = 'background-image: url(' . sow_esc_url($attachment[0]) . ')';
 							if(!empty($instance['icon_size'])) $icon_styles[] = 'font-size: '.intval($instance['icon_size']) . esc_attr( $instance['icon_size_unit'] );
@@ -38,11 +42,11 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 
 				<div class="textwidget">
 					<?php if(!empty($feature['title'])) : ?>
-						<h5>
+						<<?php echo esc_html( $instance['title_tag'] ); ?>>
 							<?php if( !empty( $feature['more_url'] ) && $instance['title_link'] ) echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : '' ) . '>'; ?>
 							<?php echo wp_kses_post( $feature['title'] ) ?>
 							<?php if( !empty( $feature['more_url'] ) && $instance['title_link'] ) echo '</a>'; ?>
-						</h5>
+						</<?php echo esc_html( $instance['title_tag'] ); ?>>
 					<?php endif; ?>
 
 					<?php if(!empty($feature['text'])) : ?>

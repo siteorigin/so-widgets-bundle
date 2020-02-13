@@ -14,9 +14,11 @@
 		$new_window = $testimonial['new_window'];
 		$location = $testimonial['location'];
 		$image_id = $testimonial['image'];
+		$fallback_image_id = ! empty( $testimonial['image_fallback'] ) ? $testimonial['image_fallback'] : false;
+		$has_image =  ! empty( $image_id ) || ! empty( $fallback_image_id );
 		$link_location = ! empty( $url );
-		$link_name = ! empty( $testimonial['link_name'] ) && ! empty( $url );
-		$link_image = ! empty( $testimonial['link_image'] ) && ! empty( $url );
+		$link_name = $has_image && ! empty( $url );
+		$link_image = $has_image && ! empty( $url );
 		?>
 		<div class="sow-testimonial-wrapper <?php echo $this->testimonial_wrapper_class($design) ?>">
 			<div class="sow-testimonial">
@@ -27,12 +29,12 @@
 				<?php endif; ?>
 
 				<div class="sow-testimonial-user">
-					<?php if( ! empty( $image_id ) ) : ?>
-					<div class="sow-image-wrapper">
+					<?php if( $has_image ) : ?>
+					<div class="sow-image-wrapper sow-image-wrapper-shape-<?php echo $design['image']['image_shape']; ?>">
 						<?php if( $link_image ) : ?>
 						<a href="<?php echo sow_esc_url( $url ) ?>" <?php if( ! empty( $new_window ) ) { echo 'target="_blank" rel="noopener noreferrer"'; } ?>>
 						<?php endif; ?>
-						<?php echo $this->testimonial_user_image( $image_id, $design ); ?>
+						<?php echo $this->testimonial_user_image( $image_id, $design, $fallback_image_id ); ?>
 						<?php if( $link_image ) : ?>
 						</a>
 						<?php endif; ?>
