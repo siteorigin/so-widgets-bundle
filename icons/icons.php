@@ -4,8 +4,8 @@ define( 'SITEORIGIN_WIDGETS_ICONS', true );
 
 function siteorigin_widgets_icon_families_filter( $families ){
 	$bundled = array(
-		'elegantline' => __( 'Elegant Themes Line Icons', 'so-widgets-bundle' ),
 		'fontawesome' => __( 'Font Awesome', 'so-widgets-bundle' ),
+		'elegantline' => __( 'Elegant Themes Line Icons', 'so-widgets-bundle' ),
 		'genericons' => __( 'Genericons', 'so-widgets-bundle' ),
 		'icomoon' => __( 'Icomoon Free', 'so-widgets-bundle' ),
 		'typicons' => __( 'Typicons', 'so-widgets-bundle' ),
