@@ -16,12 +16,12 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 	protected $icons_callback;
 
 	protected function render_field( $value, $instance ) {
-    $widget_icon_families = $this->get_widget_icon_families();
+		$widget_icon_families = $this->get_widget_icon_families();
 
-    // Get an array of available icon families styles to pass to self::get_value_parts()
-    $icon_families_styles = self::get_icon_families_styles( $widget_icon_families );
+		// Get an array of available icon families styles to pass to self::get_value_parts()
+		$icon_families_styles = self::get_icon_families_styles( $widget_icon_families );
 
-    $value_parts = self::get_value_parts( $value, $icon_families_styles );
+		$value_parts = self::get_value_parts( $value, $icon_families_styles );
 
 		if ( ! empty( $value ) ) {
 			$value_family = $value_parts['family'];
@@ -87,11 +87,11 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 			$sanitized_value = '';
 		}
 		
-    $widget_icon_families = $this->get_widget_icon_families();
+		$widget_icon_families = $this->get_widget_icon_families();
 
-    $icon_families_styles = self::get_icon_families_styles( $widget_icon_families );
+		$icon_families_styles = self::get_icon_families_styles( $widget_icon_families );
 
-    $value_parts = self::get_value_parts( $sanitized_value, $icon_families_styles );
+		$value_parts = self::get_value_parts( $sanitized_value, $icon_families_styles );
 
 		if( ! ( isset( $widget_icon_families[$value_parts['family']] ) && isset( $widget_icon_families[$value_parts['family']]['icons'][$value_parts['icon']] ) ) ) {
 			$sanitized_value = isset( $this->default ) ? $this->default : '';
@@ -126,24 +126,24 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 		
 		list( $value_family, $value_icon ) = ( ! empty( $value ) && strpos( $value, '-' ) !== false ) ? explode( '-', $value, 2 ) : array('', '');
 		
-    // Check if icon families have styles
-    // See $this->sanitize_field_input()
-    if ( $icon_families_styles !== null ) {
-      // Loop over all the available styles
-      foreach ( $icon_families_styles as $icon_family => $icon_family_styles ) {
-        foreach ( $icon_family_styles as $icon_family_style => $icon_family_style_name ) {
-          // Check the icon value for matching styles
-          if ( substr( $value_icon, 0, strlen( $icon_family_style ) ) === $icon_family_style ) {
-            // Store the icon name and icon style name
-            $value_icon = substr( $value_icon, strlen( $icon_family_style . '-' ) );
-            $value_style = $icon_family_style;
+		// Check if icon families have styles
+		// See $this->sanitize_field_input()
+		if ( $icon_families_styles !== null ) {
+			// Loop over all the available styles
+			foreach ( $icon_families_styles as $icon_family => $icon_family_styles ) {
+				foreach ( $icon_family_styles as $icon_family_style => $icon_family_style_name ) {
+					// Check the icon value for matching styles
+					if ( substr( $value_icon, 0, strlen( $icon_family_style ) ) === $icon_family_style ) {
+						// Store the icon name and icon style name
+						$value_icon = substr( $value_icon, strlen( $icon_family_style . '-' ) );
+						$value_style = $icon_family_style;
 
-            // Exit both foreach loops
-            break 2;
-          }
-        }
-      }
-    }
+						// Exit both foreach loops
+						break 2;
+					}
+				}
+			}
+		}
 		
 		// Trigger loading of the icon families and their filters. This isn't ideal, but necessary to ensure possible
 		// migrations are available.
@@ -156,21 +156,21 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 		) );
 	}
 
-  public static function get_icon_families_styles( $widget_icon_families ) {
-    // Store an array of icon family styles to pass to self::get_value_parts()
-    $icon_families_styles = [];
+	public static function get_icon_families_styles( $widget_icon_families ) {
+		// Store an array of icon family styles to pass to self::get_value_parts()
+		$icon_families_styles = [];
 
-    // Loop through the icon families
-    foreach ( $widget_icon_families as $key => $val ) {
-      // Check if the family has available styles
-      if ( array_key_exists( 'styles', $val ) ) {
-        // Add the family and styles to the $styles array
-        $icon_families_styles[ $key ] = $val[ 'styles' ];
-      }
-    }
+		// Loop through the icon families
+		foreach ( $widget_icon_families as $key => $val ) {
+			// Check if the family has available styles
+			if ( array_key_exists( 'styles', $val ) ) {
+				// Add the family and styles to the $styles array
+				$icon_families_styles[ $key ] = $val[ 'styles' ];
+			}
+		}
 
-    return $icon_families_styles;
-  }
+		return $icon_families_styles;
+	}
 
 	public function enqueue_scripts(){
 		wp_enqueue_script( 'so-icon-field', plugin_dir_url( __FILE__ ) . 'js/icon-field' . SOW_BUNDLE_JS_SUFFIX .  '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
