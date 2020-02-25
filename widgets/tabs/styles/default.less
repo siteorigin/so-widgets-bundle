@@ -50,13 +50,17 @@
 		}
 
 		& when ( @tabs_container_tabs_position = left ), ( @tabs_container_tabs_position = right ) {
-			& when not ( @tabs_container_tabs_align = top ) {
-				flex-direction: column;
-			}
+			flex-direction: column;
 		}
+
 		& when ( @tabs_container_tabs_align = middle ), ( @tabs_container_tabs_align = center )  {
 			justify-content: center;
 		}
+
+		& when ( @tabs_container_tabs_align = top ), ( @tabs_container_tabs_align = left ) {
+			align-items: flex-start;
+		}
+
 		& when ( @tabs_container_tabs_align = bottom ), ( @tabs_container_tabs_align = right ) {
 			justify-content: flex-end;
 		}
