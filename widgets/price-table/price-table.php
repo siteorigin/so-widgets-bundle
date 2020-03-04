@@ -14,7 +14,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			'sow-price-table',
 			__( 'SiteOrigin Price Table', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A simple Price Table.', 'so-widgets-bundle' ),
+				'description' => __( 'A powerful yet simple price table widget for your sidebars or Page Builder pages.', 'so-widgets-bundle' ),
 				'help'        => 'https://siteorigin.com/widgets-bundle/price-table-widget/'
 			),
 			array(),
