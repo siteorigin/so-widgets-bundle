@@ -16,7 +16,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			'sow-editor',
 			__('SiteOrigin Editor', 'so-widgets-bundle'),
 			array(
-				'description' => __('A rich-text, text editor.', 'so-widgets-bundle'),
+				'description' => __('A widget which allows editing of content using the TinyMCE editor.', 'so-widgets-bundle'),
 				'help' => 'https://siteorigin.com/widgets-bundle/editor-widget/'
 			),
 			array(),

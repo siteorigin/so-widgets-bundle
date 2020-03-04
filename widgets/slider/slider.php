@@ -15,7 +15,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			'sow-slider',
 			__('SiteOrigin Slider', 'so-widgets-bundle'),
 			array(
-				'description' => __('A responsive slider widget that supports images and video.', 'so-widgets-bundle'),
+				'description' => __('A very simple slider widget.', 'so-widgets-bundle'),
 				'help' => 'https://siteorigin.com/widgets-bundle/slider-widget-documentation/',
 				'panels_title' => false,
 			),
