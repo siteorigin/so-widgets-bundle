@@ -2,7 +2,7 @@
 
 /*
 Widget Name: Contact Form
-Description: A light weight contact form builder.
+Description: A lightweight contact form builder.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/contact-form-widget/
@@ -16,7 +16,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'sow-contact-form',
 			__( 'SiteOrigin Contact Form', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A light weight contact form builder.', 'so-widgets-bundle' ),
+				'description' => __( 'A lightweight contact form builder.', 'so-widgets-bundle' ),
 			),
 			array(),
 			false,

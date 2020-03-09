@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Image Slider
-Description: A very simple slider widget.
+Description: A responsive slider widget that supports images and video.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/slider-widget-documentation/
@@ -15,7 +15,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			'sow-slider',
 			__('SiteOrigin Slider', 'so-widgets-bundle'),
 			array(
-				'description' => __('A very simple slider widget.', 'so-widgets-bundle'),
+				'description' => __('A responsive slider widget that supports images and video.', 'so-widgets-bundle'),
 				'help' => 'https://siteorigin.com/widgets-bundle/slider-widget-documentation/',
 				'panels_title' => false,
 			),
