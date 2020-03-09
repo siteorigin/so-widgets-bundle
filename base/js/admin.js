@@ -735,8 +735,22 @@ var sowbForms = window.sowbForms || {};
 				var itemLabel = $parentRepeater.data('item-label');
 				if (itemLabel && itemLabel.selector) {
 					var updateLabel = function () {
-						var functionName = ( itemLabel.hasOwnProperty('valueMethod') && itemLabel.valueMethod ) ? itemLabel.valueMethod : 'val';
-						var txt = $el.find(itemLabel.selector)[functionName]();
+						var functionName;
+						var txt;
+						if ( itemLabel.hasOwnProperty('selectorArray') ) {
+							var selectorRow;
+							for ( var i = 0 ; i < itemLabel.selectorArray.length ; i++ ) {
+								selectorRow = itemLabel.selectorArray[i];
+								functionName = ( selectorRow.hasOwnProperty('valueMethod') && selectorRow.valueMethod ) ? selectorRow.valueMethod : 'val';
+								txt = $el.find(selectorRow.selector)[functionName]();
+								if ( txt ) {
+									break;
+								}
+							}
+						} else {
+							functionName = ( itemLabel.hasOwnProperty('valueMethod') && itemLabel.valueMethod ) ? itemLabel.valueMethod : 'val';
+							txt = $el.find(itemLabel.selector)[functionName]();
+						}
 						if (txt) {
 							if (txt.length > 80) {
 								txt = txt.substr(0, 79) + '...';
