@@ -733,23 +733,21 @@ var sowbForms = window.sowbForms || {};
 				var $parentRepeater = $el.closest('.siteorigin-widget-field-repeater');
 				var itemTop = $el.find('> .siteorigin-widget-field-repeater-item-top');
 				var itemLabel = $parentRepeater.data('item-label');
-				if (itemLabel && itemLabel.selector) {
+				if ( itemLabel && ( itemLabel.hasOwnProperty( 'selector' ) || itemLabel.hasOwnProperty( 'selectorArray' ) ) ) {
 					var updateLabel = function () {
-						var functionName;
-						var txt;
-						if ( itemLabel.hasOwnProperty('selectorArray') ) {
-							var selectorRow;
+						var functionName, txt, selectorRow;
+						if ( itemLabel.hasOwnProperty( 'selectorArray' ) ) {
 							for ( var i = 0 ; i < itemLabel.selectorArray.length ; i++ ) {
-								selectorRow = itemLabel.selectorArray[i];
-								functionName = ( selectorRow.hasOwnProperty('valueMethod') && selectorRow.valueMethod ) ? selectorRow.valueMethod : 'val';
-								txt = $el.find(selectorRow.selector)[functionName]();
+								selectorRow = itemLabel.selectorArray[ i ];
+								functionName = ( selectorRow.hasOwnProperty( 'valueMethod' ) && selectorRow.valueMethod ) ? selectorRow.valueMethod : 'val';
+								txt = $el.find( selectorRow.selector )[ functionName ]();
 								if ( txt ) {
 									break;
 								}
 							}
 						} else {
-							functionName = ( itemLabel.hasOwnProperty('valueMethod') && itemLabel.valueMethod ) ? itemLabel.valueMethod : 'val';
-							txt = $el.find(itemLabel.selector)[functionName]();
+							functionName = ( itemLabel.hasOwnProperty( 'valueMethod' ) && itemLabel.valueMethod ) ? itemLabel.valueMethod : 'val';
+							txt = $el.find( itemLabel.selector )[ functionName ]();
 						}
 						if (txt) {
 							if (txt.length > 80) {
