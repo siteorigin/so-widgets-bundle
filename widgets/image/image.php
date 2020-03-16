@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Image
-Description: A very simple image widget.
+Description: A simple image widget with massive power.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/image-widget-documentation/

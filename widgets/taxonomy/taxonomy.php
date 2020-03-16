@@ -16,7 +16,7 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 			'sow-taxonomy',
 			__( 'SiteOrigin Taxonomy', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A taxonomy widget.', 'so-widgets-bundle' )
+				'description' => __( 'Displays the selected taxonomy for the current post.', 'so-widgets-bundle' )
 			),
 			array(),
 			false,

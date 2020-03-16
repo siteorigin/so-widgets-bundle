@@ -17,7 +17,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'sow-video',
 			__( 'SiteOrigin Video Player', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A video player widget.', 'so-widgets-bundle' ),
+				'description' => __( 'Play all your self or externally hosted videos in a customizable video player.', 'so-widgets-bundle' ),
 				'help'        => 'http://siteorigin.com/widgets-bundle/video-widget-documentation/'
 			),
 			array(),
