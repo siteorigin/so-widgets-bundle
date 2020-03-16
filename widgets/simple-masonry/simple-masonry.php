@@ -47,7 +47,16 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 				'type' => 'repeater',
 				'label' => __( 'Images', 'so-widgets-bundle' ),
 				'item_label' => array(
-					'selector'     => "[id*='title']"
+					'selectorArray' => array(
+						array(
+							'selector' => "[id*='title']",
+							'valueMethod' => 'val',
+						),
+						array(
+							'selector' => '.media-field-wrapper .current .title',
+							'valueMethod' => 'html'
+						),
+					),
 				),
 				'fields' => array(
 					'image' => array(
