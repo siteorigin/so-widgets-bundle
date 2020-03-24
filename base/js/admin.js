@@ -733,7 +733,6 @@ var sowbForms = window.sowbForms || {};
 				var $parentRepeater = $el.closest('.siteorigin-widget-field-repeater');
 				var itemTop = $el.find('> .siteorigin-widget-field-repeater-item-top');
 				var itemLabel = $parentRepeater.data('item-label');
-				var defaultLabel = $el.parents('.siteorigin-widget-field-repeater').data('item-name');
 				if ( itemLabel && ( itemLabel.hasOwnProperty( 'selector' ) || itemLabel.hasOwnProperty( 'selectorArray' ) ) ) {
 					var updateLabel = function () {
 						var functionName, txt, selectorRow;
@@ -755,8 +754,6 @@ var sowbForms = window.sowbForms || {};
 								txt = txt.substr(0, 79) + '...';
 							}
 							itemTop.find('h4').text(txt);
-						} else {
-							itemTop.find('h4').text(defaultLabel);
 						}
 					};
 					updateLabel();
