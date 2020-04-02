@@ -5,7 +5,14 @@ class SiteOrigin_Widget_ContactForm_Field_Select extends SiteOrigin_Widget_Conta
 	public function render_field( $options ) {
 		?><select  name="<?php echo esc_attr( $options['field_name'] ) ?>"
 		           id="<?php echo esc_attr( $options['field_id'] ) ?>">
-		<?php if ( ! empty( $options['field']['options'] ) ) {
+		<?php
+		if ( $options['show_placeholder'] ) {
+			?>
+			<option disabled selected><?php esc_html_e( $options['field']['label'] ); ?></option>
+			<?php
+		}
+
+		if ( ! empty( $options['field']['options'] ) ) {
 			foreach ( $options['field']['options'] as $option ) { ?>
 				<option
 					value="<?php echo esc_attr( $option['value'] ) ?>"<?php echo selected( $option['value'], $options['value'], false ) ?>>
