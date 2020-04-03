@@ -8,7 +8,7 @@ class SiteOrigin_Widget_ContactForm_Field_Select extends SiteOrigin_Widget_Conta
 		<?php
 		if ( $options['show_placeholder'] ) {
 			?>
-			<option selected value=""><?php esc_html_e( $options['field']['label'] ); ?></option>
+			<option selected hidden disabled><?php esc_html_e( $options['field']['label'] ); ?></option>
 			<?php
 		}
 
