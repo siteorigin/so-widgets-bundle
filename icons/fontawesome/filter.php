@@ -1373,9 +1373,9 @@ add_filter('siteorigin_widgets_icons_fontawesome', 'siteorigin_widgets_icons_fon
 
 function siteorigin_widgets_icon_styles_fontawesome_filter( $styles ) {
     return array_merge( $styles, array(
-        'sow-fab' => __( 'Brands', 'so-widgets-bundle' ),
         'sow-far' => __( 'Regular', 'so-widgets-bundle' ),
         'sow-fas' => __( 'Solid', 'so-widgets-bundle' ),
+        'sow-fab' => __( 'Brands', 'so-widgets-bundle' ),
     ) );
 }
 
