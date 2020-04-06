@@ -10,6 +10,7 @@
 @slide_height: default;
 @responsive_breakpoint: 780px;
 @slide_height_responsive: default;
+@vertically_align: false;
 
 @text_size: default;
 @text_color: default;
@@ -42,6 +43,12 @@
 
 			max-width: @slide_width;
 			height: @slide_height;
+			
+			& when (@vertically_align = true) {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
 
 			@media (max-width: @responsive_breakpoint) {
 				// If no responsive height is set, remove slider height
