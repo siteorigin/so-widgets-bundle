@@ -175,7 +175,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 					'vertically_align' => array(
 						'type' => 'checkbox',
 						'label' => __( 'Vertically align slide contents', 'so-widgets-bundle' ),
-						'description' => __( 'For perfect centering, consider setting the Extra top padding setting to 0 when enabling this setting.', 'so-widgets-bundle' ),
+						'description' => 'For perfect centering, consider setting the Extra top padding setting to 0 when enabling this setting.',
 					),
 
 					'padding' => array(
