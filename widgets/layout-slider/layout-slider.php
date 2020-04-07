@@ -140,8 +140,8 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 
 					'vertically_align' => array(
 						'type' => 'checkbox',
-						'description' => 'For perfect centering, consider setting the Extra top padding setting to 0 when enabling this setting.',
 						'label' => __( 'Vertically center align slide contents', 'so-widgets-bundle' ),
+						'description' => __( 'For perfect centering, consider setting the Extra top padding setting to 0 when enabling this setting.', 'so-widgets-bundle' ),
 					),
 
 					'padding' => array(
