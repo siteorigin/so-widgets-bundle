@@ -138,6 +138,12 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 						'label' => __( 'Responsive Height', 'so-widgets-bundle' ),
 					),
 
+					'vertically_align' => array(
+						'type' => 'checkbox',
+						'label' => __( 'Vertically center align slide contents', 'so-widgets-bundle' ),
+						'description' => __( 'For perfect centering, consider setting the Extra top padding setting to 0 when enabling this setting.', 'so-widgets-bundle' ),
+					),
+
 					'padding' => array(
 						'type' => 'measurement',
 						'label' => __('Top and bottom padding', 'so-widgets-bundle'),
@@ -321,6 +327,8 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		foreach ( $meas_options as $key => $val ) {
 			$less[ $key ] = $this->add_default_measurement_unit( $val );
 		}
+
+		$less['vertically_align'] = empty( $instance['design']['vertically_align'] ) ? 'false' : 'true';
 
 		if ( ! empty( $instance['design']['heading_shadow'] ) ) {
 			$less['heading_shadow'] = intval( $instance['design']['heading_shadow'] );
