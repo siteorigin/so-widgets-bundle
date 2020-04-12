@@ -65,15 +65,15 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 		$this->register_frontend_scripts(
 			array(
 				array(
-					'touch-swipe',
-					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/jquery.touchSwipe' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					'slick',
+					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/slick' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' ),
-					'1.6.6'
+					'1.8.1'
 				),
 				array(
 					'sow-carousel-basic',
 					plugin_dir_url(__FILE__) . 'js/carousel' . SOW_BUNDLE_JS_SUFFIX . '.js',
-					array( 'jquery', 'touch-swipe' ),
+					array( 'jquery', 'slick' ),
 					SOW_BUNDLE_VERSION,
 					true
 				)
@@ -83,9 +83,15 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			array(
 				array(
 					'sow-carousel-basic',
-					plugin_dir_url(__FILE__) . 'css/style.css',
+					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'css/style.css',
 					array(),
 					SOW_BUNDLE_VERSION
+				),
+				array(
+					'slick',
+					plugin_dir_url(__FILE__) . 'css/lib/slick.css',
+					array(),
+					'1.8.1'
 				)
 			)
 		);
