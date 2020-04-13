@@ -30,9 +30,9 @@
 		     data-loop-posts-enabled="<?php echo esc_attr( $loop_posts ) ?>"
 		     data-ajax-url="<?php echo sow_esc_url( wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ) ) ?>"
 			>
-			<ul class="sow-carousel-items">
+			<div class="sow-carousel-items">
 				<?php include plugin_dir_path( __FILE__ ) . 'carousel-post-loop.php' ?>
-			</ul>
+			</div>
 		</div>
 	</div>
 	<input type="hidden" name="instance_hash" value="<?php echo esc_attr( $storage_hash ) ?>"/>

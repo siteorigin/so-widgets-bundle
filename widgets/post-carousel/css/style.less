@@ -111,29 +111,16 @@
 	left: 0;
 	right: 0;
 
-	ul.sow-carousel-items {
-		list-style: none;
+	.sow-carousel-items {
 		.transition(0.45s);
 		height: 200px;
 		margin: 0;
 		padding: 0;
 		.clearfix();
-		width: 99999px;
 
-		li.sow-carousel-item {
-			list-style: none;
-			margin-top: 0;
-			margin-left: 0;
-			padding: 0;
+		.sow-carousel-item {
 			display: block;
-			float: left;
 			margin-right: 15px;
-			overflow-x: hidden;
-			overflow-y: hidden;
-
-			&:last-child {
-				margin-right: 0;
-			}
 
 			&.rtl {
 				float: right;
@@ -190,7 +177,7 @@
 			}
 		}
 
-		li.sow-carousel-loading {
+		.sow-carousel-loading {
 			display: block;
 			float: left;
 			background: url(images/carousel-loader.gif) #F6F6F6 center center no-repeat;
