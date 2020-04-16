@@ -83,13 +83,13 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			array(
 				array(
 					'sow-carousel-basic',
-					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'css/style.css',
+					plugin_dir_url(__FILE__) . 'css/style.css',
 					array(),
 					SOW_BUNDLE_VERSION
 				),
 				array(
 					'slick',
-					plugin_dir_url(__FILE__) . 'css/lib/slick.css',
+					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'css/lib/slick.css',
 					array(),
 					'1.8.1'
 				)
