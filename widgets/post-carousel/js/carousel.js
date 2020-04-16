@@ -7,83 +7,72 @@ jQuery( function ( $ ) {
 	sowb.setupCarousel = function () {
 		// The carousel widget
 		$( '.sow-carousel-wrapper' ).each( function () {
+			var $$ = $( this ).children( '.sow-carousel-items' ), // = $itemsContainer
+			$wrapper = $( '.sow-carousel-wrapper' ),
+			instanceHash = $( this ).parent().parent().find( 'input[name="instance_hash"]' ).val(),
+			numItems = $$.find( '.sow-carousel-item' ).length,
+			totalPosts = $wrapper.data( 'post-count' ),
+			complete = numItems === totalPosts,
+			fetching = false,
+			page = 1,
+			itemWidth = $$.find( '.sow-carousel-item' ).outerWidth( true );
 
-				$postsContainer = $$.closest( '.sow-carousel-container' ),
-				$container = $$.closest( '.sow-carousel-container' ).parent(),
-				$itemsContainer = $$.find( '.sow-carousel-items' ),
-				$items = $$.find( '.sow-carousel-item' ),
-				$firstItem = $items.eq( 0 );
+			$$.not('.slick-initialized').slick( {
+				infinite: false,
+				variableWidth: true,
+				slidesToScroll: 1,
+				slidesToShow: 1,
+				rows: 0,
+				prevArrow: $( 'a.sow-carousel-previous' ),
+				nextArrow: $( 'a.sow-carousel-next' ),
+			} );
 
-			var position = 0,
-				page = 1,
-				fetching = false,
-				numItems = $items.length,
-				totalPosts = $$.data( 'post-count' ),
-				loopPostsEnabled = $$.data( 'loop-posts-enabled' ),
-				complete = numItems === totalPosts,
-				itemWidth = ( $firstItem.width() + parseInt( $firstItem.css( 'margin-right' ) ) ),
-				isRTL = $postsContainer.hasClass( 'js-rtl' ),
-				updateProp = isRTL ? 'margin-right' : 'margin-left';
-
-			var updatePosition = function () {
+			// click is used rather than Slick's beforeChange or afterChange 
+			// due to the inability to stop a slide from changing from those events
+			$( this ).parents( '.so-widget-sow-post-carousel' ).find( '.slick-arrow' ).on( 'click', function( e ){
 				const numVisibleItems = Math.ceil( $$.outerWidth() / itemWidth );
-				const lastPosition = totalPosts - numVisibleItems + 1;
-				const shouldLoop = loopPostsEnabled && !fetching && complete;
-				const hasPosts = numItems !== null && !isNaN(numItems);
+				const lastPosition = numItems - numVisibleItems + 1
 
-				if (position < 0) {
-					position = (shouldLoop && hasPosts) ? lastPosition : 0;
-				} else if (position > Math.min(numItems, lastPosition) ) {
-					position = shouldLoop ? 0 : Math.min(numItems, lastPosition);
-				}
+				// Check if all posts are displayed
+				if ( ! complete ) {
+					// Check if we need to fetch the next batch of posts
+					if ( $$.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ) {
 
-				// Offset position by numVisibleItems to trigger the next fetch before the view is empty.
-				if ( position + numVisibleItems >= numItems - 1 ) {
-					// Fetch the next batch
-					if ( !fetching && !complete ) {
-						fetching = true;
-						page++;
-						$itemsContainer.append( '<li class="sow-carousel-item sow-carousel-loading"></li>' );
-						var instanceHash = $container.find( 'input[name="instance_hash"]' ).val();
+						if ( ! fetching ) {
+							// Fetch the next batch
+							fetching = true;
+							page++;
 
-						$.get(
-							$$.data( 'ajax-url' ),
-							{
-								query: $$.data( 'query' ),
-								action: 'sow_carousel_load',
-								paged: page,
-								instance_hash: instanceHash
-							},
-							function ( data, status ) {
-								var $items = $( data.html );
-								$items.appendTo( $itemsContainer ).hide().fadeIn();
-								$$.find( '.sow-carousel-loading' ).remove();
-								numItems = $$.find( '.sow-carousel-item' ).length;
-								complete = numItems === totalPosts;
-								fetching = false;
+							$$.slick( 'slickAdd', '<div class="sow-carousel-item sow-carousel-loading"></div>' );
+
+							$.get(
+								$wrapper.data( 'ajax-url' ),
+								{
+									query: $wrapper.data( 'query' ),
+									action: 'sow_carousel_load',
+									paged: page,
+									instance_hash: instanceHash
+								},
+								function ( data, status ) {
+									var $items = $( data.html );
+									$$.find( '.sow-carousel-loading' ).remove();
+									$$.slick( 'slickAdd', data.html );
+									numItems = $wrapper.find( '.sow-carousel-item' ).length;
+
+									complete = numItems === totalPosts;
+									fetching = false;
+								}
+							);
+						} else if ( $(this).hasClass( 'sow-carousel-next' ) ) {
+							// Don't allow the user to navigate after loading item
+							if ( $$.slick( 'slickCurrentSlide' ) >= lastPosition ) {
+								e.stopImmediatePropagation();
 							}
-						);
+						}
 					}
 				}
-				$itemsContainer.css( 'transition-duration', "0.45s" );
-				$itemsContainer.css( updateProp, -( itemWidth * position) + 'px' );
-			};
 
-			$container.on( 'click', 'a.sow-carousel-previous',
-				function ( e ) {
-					e.preventDefault();
-					position -= isRTL ? -1 : 1;
-					updatePosition();
-				}
-			);
-
-			$container.on( 'click', 'a.sow-carousel-next',
-				function ( e ) {
-					e.preventDefault();
-					position += isRTL ? -1 : 1;
-					updatePosition();
-				}
-			);
+			} );
 
 		} );
 	};
