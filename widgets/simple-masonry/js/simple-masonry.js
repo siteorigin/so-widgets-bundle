@@ -74,6 +74,10 @@ jQuery( function ( $ ) {
 		// Ensure that the masonry has resized correctly on load.
 		setTimeout( function () {
 			resizeMasonry();
+
+			// Hide preloader and show masonry
+			$grid.prev().remove()
+			$grid.show();
 		}, 100 );
 		
 		$grid.data( 'initialized', true );
