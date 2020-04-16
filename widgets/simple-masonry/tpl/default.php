@@ -8,8 +8,10 @@
 
 <?php if( !empty( $instance['widget_title'] ) ) echo $args['before_title'] . esc_html( $instance['widget_title'] ) . $args['after_title'] ?>
 
+<div class="sow-masonry-grid-preloader"><div></div><div></div><div></div><div></div></div>
+
 <div class="sow-masonry-grid"
-	 data-layouts="<?php echo esc_attr( json_encode( $layouts ) ) ?>">
+	 data-layouts="<?php echo esc_attr( json_encode( $layouts ) ) ?>" style="display: none;">
 	<?php
 	if( ! empty( $items ) ) {
 		foreach ( $items as $item ) {
