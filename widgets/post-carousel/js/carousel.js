@@ -72,6 +72,17 @@ jQuery( function ( $ ) {
 					}
 				}
 
+				// The Slick Infinite setting has a positioning bug that can result in the first item being hidden.
+				// https://github.com/kenwheeler/slick/issues/3567
+				if ( $wrapper.data( 'loop-posts-enabled' ) ) {
+					if ( $(this).hasClass( 'sow-carousel-next' )  && $$.slick( 'slickCurrentSlide' ) >= lastPosition ) {
+						$$.slick( 'slickGoTo', 0 )
+					} else if ( $(this).hasClass( 'sow-carousel-previous' ) && $$.slick( 'slickCurrentSlide' ) == 0 ) {
+						// We need to navigate to a different slide to prevent blank spacing
+						$$.slick( 'slickGoTo', lastPosition - ( complete ? 0 : 1) );
+					}
+				}
+
 			} );
 
 		} );
