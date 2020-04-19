@@ -10,7 +10,6 @@ jQuery( function ( $ ) {
 			var $$ = $( this );
 			$items = $$.children( '.sow-carousel-items' ), // = $itemsContainer
 			$widget = $$.parent().parent();
-			$$ = $$,
 			instanceHash = $widget.find( 'input[name="instance_hash"]' ).val(),
 			numItems = $items.find( '.sow-carousel-item' ).length,
 			totalPosts = $$.data( 'post-count' ),
