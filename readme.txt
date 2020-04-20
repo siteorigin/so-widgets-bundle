@@ -65,7 +65,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
-== 1.16.1 - 09 April 2020 ==
+== 1.16.1 - 20 April 2020 ==
 * Accordion: When hiding panels, only search the current accordion and not nested accordions.
 * Slider Widgets: Removed slide navigation numbers from excerpt output.
 * Added support for custom icon styles.
