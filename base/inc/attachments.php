@@ -40,11 +40,6 @@ function siteorigin_widgets_get_attachment_image( $attachment, $size, $fallback,
 		$src = siteorigin_widgets_get_attachment_image_src( $attachment, $size, $fallback );
 		if( empty($src[0]) ) return '';
 
-		if ( ! empty( $atts ) ) {
-			$atts['class'] = $class;
-		}
-
-
 		if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
 			$atts['srcset'] = wp_get_attachment_image_srcset( $attachment, $size );
 		}
