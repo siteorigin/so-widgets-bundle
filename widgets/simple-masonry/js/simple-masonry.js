@@ -6,7 +6,7 @@ jQuery( function ( $ ) {
 	sowb.setupSimpleMasonries = function () {
 		var $grid = $( '.sow-masonry-grid' );
 		
-		if ( !$grid.is( ':visible' ) || $grid.data( 'initialized' ) ) {
+		if ( $grid.data( 'initialized' ) ) {
 			return $grid;
 		}
 		
@@ -60,6 +60,13 @@ jQuery( function ( $ ) {
 							$img.css( 'margin-top', marginTop + 'px' );
 						}
 					} );
+
+					// If preloader is visble, hide and show masonry
+					if ( ! $grid.is( ':visible' ) ) {
+						$grid.prev().remove()
+						$grid.show();
+					}
+
 					$gridEl.packery( {
 						itemSelector: '.sow-masonry-grid-item',
 						columnWidth: columnWidth,
@@ -74,10 +81,6 @@ jQuery( function ( $ ) {
 		// Ensure that the masonry has resized correctly on load.
 		setTimeout( function () {
 			resizeMasonry();
-
-			// Hide preloader and show masonry
-			$grid.prev().remove()
-			$grid.show();
 		}, 100 );
 		
 		$grid.data( 'initialized', true );
