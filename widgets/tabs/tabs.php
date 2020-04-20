@@ -14,7 +14,7 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 			'sow-tabs',
 			__( 'SiteOrigin Tabs', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A tabs widget.', 'so-widgets-bundle' ),
+				'description' => __( 'A tabby widget to switch between tabbed content panels.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/tabs-widget/',
 			),
 			array(),

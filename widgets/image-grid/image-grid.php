@@ -20,7 +20,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 			'sow-image-grid',
 			__('SiteOrigin Image Grid', 'so-widgets-bundle'),
 			array(
-				'description' => __('Display a grid of images.', 'so-widgets-bundle'),
+				'description' => __('Display a grid of images. Also useful for displaying client logos.', 'so-widgets-bundle'),
 			),
 			array(),
 			false,

@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Testimonials
-Description: Display some testimonials.
+Description: Share your product or service testimonials in a variety of different ways.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/testimonials-widget/
@@ -14,7 +14,7 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 			'sow-testimonials',
 			__('SiteOrigin Testimonials', 'so-widgets-bundle'),
 			array(
-				'description' => __('Share your product/service testimonials in a variety of different ways.', 'so-widgets-bundle'),
+				'description' => __('Share your product or service testimonials in a variety of different ways.', 'so-widgets-bundle'),
 				'help' => 'https://siteorigin.com/widgets-bundle/testimonial-widget-documentation/'
 			),
 			array(

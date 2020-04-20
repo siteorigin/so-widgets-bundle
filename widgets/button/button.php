@@ -14,7 +14,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'sow-button',
 			__('SiteOrigin Button', 'so-widgets-bundle'),
 			array(
-				'description' => __('A customizable button widget.', 'so-widgets-bundle'),
+				'description' => __('A powerful yet simple button widget for your sidebars or Page Builder pages.', 'so-widgets-bundle'),
 				'help' => 'https://siteorigin.com/widgets-bundle/button-widget-documentation/'
 			),
 			array(

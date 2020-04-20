@@ -107,34 +107,38 @@
 	}
 
 	.sow-slider-pagination {
-		list-style: none;
-		margin: 0;
-		text-align: right;
-
-		position: absolute;
 		bottom: 20px;
+		.box-sizing(border-box);
+		font-size: 0;
+		list-style: none;
 		left: 0;
+		line-height: 11px;
+		margin: 0;
+		padding-right: 30px;
+		position: absolute;
+		text-align: right;
+		.user-select(none);
 		width: 100%;
 		z-index: 1001;
-		.box-sizing(border-box);
-		padding-right: 30px;
-		line-height: 11px;
-
-		.user-select(none);
 
 		li {
-			text-align: left;
-			margin: 0;
 			display: inline-block;
+			font-size: 1em;
+			text-align: left;
+			margin: 0 4px 0 0;
+
+			&:last-of-type {
+				margin-right: 0;
+			}
 
 			a {
+				background: #fff;
+				.rounded(6px);
 				display: block;
+				height: 11px;
+				opacity: 0.45;
 				text-indent: -9999px;
 				width: 11px;
-				height: 11px;
-				background: #FFFFFF;
-				.rounded(6px);
-				opacity: 0.45;
 			}
 
 			&.sow-active a {

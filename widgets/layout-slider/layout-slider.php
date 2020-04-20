@@ -36,9 +36,16 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 				'label' => __('Slider frames', 'so-widgets-bundle'),
 				'item_name' => __('Frame', 'so-widgets-bundle'),
 				'item_label' => array(
-					'selector' => "[id*='frames-title']",
-					'update_event' => 'change',
-					'value_method' => 'val'
+					'selectorArray' => array(
+						array(
+							'selector' => '.siteorigin-widget-field-image .media-field-wrapper .current .title',
+							'valueMethod' => 'html'
+						),
+						array(
+							'selector' => '.siteorigin-widget-field-videos .siteorigin-widget-field-repeater-items  .media-field-wrapper .current .title',
+							'valueMethod' => 'html'
+						),
+					),
 				),
 
 				'fields' => array(
@@ -129,6 +136,12 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 					'height_responsive' => array(
 						'type' => 'measurement',
 						'label' => __( 'Responsive Height', 'so-widgets-bundle' ),
+					),
+
+					'vertically_align' => array(
+						'type' => 'checkbox',
+						'label' => __( 'Vertically center align slide contents', 'so-widgets-bundle' ),
+						'description' => __( 'For perfect centering, consider setting the Extra top padding setting to 0 when enabling this setting.', 'so-widgets-bundle' ),
 					),
 
 					'padding' => array(
@@ -314,6 +327,8 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		foreach ( $meas_options as $key => $val ) {
 			$less[ $key ] = $this->add_default_measurement_unit( $val );
 		}
+
+		$less['vertically_align'] = empty( $instance['design']['vertically_align'] ) ? 'false' : 'true';
 
 		if ( ! empty( $instance['design']['heading_shadow'] ) ) {
 			$less['heading_shadow'] = intval( $instance['design']['heading_shadow'] );

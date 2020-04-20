@@ -16,7 +16,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			'sow-editor',
 			__('SiteOrigin Editor', 'so-widgets-bundle'),
 			array(
-				'description' => __('A rich-text, text editor.', 'so-widgets-bundle'),
+				'description' => __('A widget which allows editing of content using the TinyMCE editor.', 'so-widgets-bundle'),
 				'help' => 'https://siteorigin.com/widgets-bundle/editor-widget/'
 			),
 			array(),
@@ -115,7 +115,9 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 
 	private function process_more_quicktag( $content ) {
 		$post = get_post();
-		$panels_content = get_post_meta( $post->ID, 'panels_data', true );
+		if ( ! empty( $post ) ) {
+			$panels_content = get_post_meta( $post->ID, 'panels_data', true );
+		}
 		// We only want to do this processing if on archive pages for posts with non-PB layouts.
 		if ( ! is_singular() && empty( $panels_content ) && ! $this->is_block_editor_page() && empty( $GLOBALS['SO_WIDGETS_BUNDLE_PREVIEW_RENDER'] ) ) {
 			if ( preg_match( '/<!--more(.*?)?-->/', $content, $matches ) ) {

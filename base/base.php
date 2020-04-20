@@ -69,11 +69,6 @@ add_action('wp_ajax_siteorigin_widgets_get_icons', 'siteorigin_widget_get_icon_l
  */
 function siteorigin_widget_get_icon($icon_value, $icon_styles = false) {
 	if( empty( $icon_value ) ) return false;
-	$value_parts = SiteOrigin_Widget_Field_Icon::get_value_parts( $icon_value );
-	$family = $value_parts['family'];
-	$style = empty( $value_parts['style'] ) ? null : $value_parts['style'];
-	$icon = $value_parts['icon'];
-	if( empty( $family ) || empty( $icon ) ) return false;
 
 	static $widget_icon_families;
 	static $widget_icons_enqueued = array();
@@ -81,6 +76,16 @@ function siteorigin_widget_get_icon($icon_value, $icon_styles = false) {
 	if ( empty( $widget_icon_families ) ) {
 		$widget_icon_families = apply_filters('siteorigin_widgets_icon_families', array() );
 	}
+  
+	// Get an array of available icon families styles to pass to SiteOrigin_Widget_Field_Icon::get_value_parts()
+	$icon_families_styles = SiteOrigin_Widget_Field_Icon::get_icon_families_styles( $widget_icon_families );
+  
+	$value_parts = SiteOrigin_Widget_Field_Icon::get_value_parts( $icon_value, $icon_families_styles );
+	$family = $value_parts['family'];
+	$style = empty( $value_parts['style'] ) ? null : $value_parts['style'];
+	$icon = $value_parts['icon'];
+	if( empty( $family ) || empty( $icon ) ) return false;
+  
 	if ( empty( $widget_icon_families[ $family ] ) ||
 		 empty( $widget_icon_families[ $family ]['icons'][ $icon ] ) ) {
 		return false;

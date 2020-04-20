@@ -18,7 +18,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			'sow-social-media-buttons',
 			__( 'SiteOrigin Social Media Buttons', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A social media buttons widget.', 'so-widgets-bundle' )
+				'description' => __( 'Customizable buttons which link to all your social media profiles.', 'so-widgets-bundle' )
 			),
 			array(),
 			false,

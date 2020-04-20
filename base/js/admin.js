@@ -733,15 +733,30 @@ var sowbForms = window.sowbForms || {};
 				var $parentRepeater = $el.closest('.siteorigin-widget-field-repeater');
 				var itemTop = $el.find('> .siteorigin-widget-field-repeater-item-top');
 				var itemLabel = $parentRepeater.data('item-label');
-				if (itemLabel && itemLabel.selector) {
+				var defaultLabel = $el.parents('.siteorigin-widget-field-repeater').data('item-name');
+				if ( itemLabel && ( itemLabel.hasOwnProperty( 'selector' ) || itemLabel.hasOwnProperty( 'selectorArray' ) ) ) {
 					var updateLabel = function () {
-						var functionName = ( itemLabel.hasOwnProperty('valueMethod') && itemLabel.valueMethod ) ? itemLabel.valueMethod : 'val';
-						var txt = $el.find(itemLabel.selector)[functionName]();
+						var functionName, txt, selectorRow;
+						if ( itemLabel.hasOwnProperty( 'selectorArray' ) ) {
+							for ( var i = 0 ; i < itemLabel.selectorArray.length ; i++ ) {
+								selectorRow = itemLabel.selectorArray[ i ];
+								functionName = ( selectorRow.hasOwnProperty( 'valueMethod' ) && selectorRow.valueMethod ) ? selectorRow.valueMethod : 'val';
+								txt = $el.find( selectorRow.selector )[ functionName ]();
+								if ( txt ) {
+									break;
+								}
+							}
+						} else {
+							functionName = ( itemLabel.hasOwnProperty( 'valueMethod' ) && itemLabel.valueMethod ) ? itemLabel.valueMethod : 'val';
+							txt = $el.find( itemLabel.selector )[ functionName ]();
+						}
 						if (txt) {
 							if (txt.length > 80) {
 								txt = txt.substr(0, 79) + '...';
 							}
 							itemTop.find('h4').text(txt);
+						} else {
+							itemTop.find('h4').text(defaultLabel);
 						}
 					};
 					updateLabel();

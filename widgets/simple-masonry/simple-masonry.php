@@ -14,7 +14,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 			'sow-simple-masonry',
 			__('SiteOrigin Simple Masonry', 'so-widgets-bundle'),
 			array(
-				'description' => __('A simple masonry layout widget.', 'so-widgets-bundle'),
+				'description' => __('A masonry layout for images. Images can link to your posts.', 'so-widgets-bundle'),
 //				'help' => 'https://siteorigin.com/widgets-bundle/simple-masonry-widget-documentation/'
 			),
 			array(),
@@ -47,7 +47,16 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 				'type' => 'repeater',
 				'label' => __( 'Images', 'so-widgets-bundle' ),
 				'item_label' => array(
-					'selector'     => "[id*='title']"
+					'selectorArray' => array(
+						array(
+							'selector' => "[id*='title']",
+							'valueMethod' => 'val',
+						),
+						array(
+							'selector' => '.media-field-wrapper .current .title',
+							'valueMethod' => 'html'
+						),
+					),
 				),
 				'fields' => array(
 					'image' => array(

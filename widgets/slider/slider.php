@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Image Slider
-Description: A very simple slider widget.
+Description: A responsive slider widget that supports images and video.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/slider-widget-documentation/
@@ -34,9 +34,20 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				'label' => __('Slider frames', 'so-widgets-bundle'),
 				'item_name' => __('Frame', 'so-widgets-bundle'),
 				'item_label' => array(
-					'selector' => "[id*='frames-url']",
-					'update_event' => 'change',
-					'value_method' => 'val'
+					'selectorArray' => array(
+						array(
+							'selector' => '.siteorigin-widget-field-background_image .media-field-wrapper .current .title',
+							'valueMethod' => 'html'
+						),
+						array(
+							'selector' => '.siteorigin-widget-field-background_videos .siteorigin-widget-field-repeater-items  .media-field-wrapper .current .title',
+							'valueMethod' => 'html'
+						),
+						array(
+							'selector' => '.siteorigin-widget-field-foreground_image .media-field-wrapper .current .title',
+							'valueMethod' => 'html'
+						),
+					),
 				),
 				'fields' => array(
 					'background_videos' => array(
@@ -154,7 +165,8 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 					echo siteorigin_widgets_get_attachment_image(
 						$frame['foreground_image'],
 						'full',
-						!empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : ''
+						!empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : '',
+						array( 'class' => 'sow-slider-foreground-image' )
 					);
 					?>
 					<?php if ( ! empty( $frame['url'] ) ) : ?>
@@ -180,7 +192,8 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			echo siteorigin_widgets_get_attachment_image(
 				$frame['background_image'],
 				'full',
-				!empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : ''
+				!empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : '',
+				array( 'class' => 'sow-slider-background-image' )
 			);
 
 			?>

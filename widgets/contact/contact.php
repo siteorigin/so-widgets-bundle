@@ -2,7 +2,7 @@
 
 /*
 Widget Name: Contact Form
-Description: A light weight contact form builder.
+Description: A lightweight contact form builder.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/contact-form-widget/
@@ -16,7 +16,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'sow-contact-form',
 			__( 'SiteOrigin Contact Form', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Create a simple contact form for your users to get hold of you.', 'so-widgets-bundle' ),
+				'description' => __( 'A lightweight contact form builder.', 'so-widgets-bundle' ),
 			),
 			array(),
 			false,
@@ -932,9 +932,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			if ( $indicate_required_fields && ! empty( $field['required']['required'] ) ) {
 				$label .= '*';
 			}
-			$is_text_input_field = ( $field['type'] != 'select' && $field['type'] != 'radio' && $field['type'] != 'checkboxes' );
+			$no_placeholder_support = ( $field['type'] != 'radio' && $field['type'] != 'checkboxes' );
 			// label should be rendered before the field, then CSS will do the exact positioning.
-			$render_label_before_field = ( $label_position != 'below' && $label_position != 'inside' ) || ( $label_position == 'inside' && ! $is_text_input_field );
+			$render_label_before_field = ( $label_position != 'below' && $label_position != 'inside' ) || ( $label_position == 'inside' && ! $no_placeholder_support );
 			if ( empty( $label_position ) || $render_label_before_field ) {
 				$this->render_form_label( $field_id, $label, $label_position );
 			}

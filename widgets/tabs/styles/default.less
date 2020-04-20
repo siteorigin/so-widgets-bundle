@@ -43,29 +43,27 @@
 	.sow-tabs-tab-container {
 		background-color: @tabs_container_background_color;
 		padding: @tabs_container_padding;
+		display: flex;
 
 		& when ( @tabs_container_tabs_position = top ), ( @tabs_container_tabs_position = bottom ) {
-			display: flex;
 			flex-wrap: wrap;
 		}
 
 		& when ( @tabs_container_tabs_position = left ), ( @tabs_container_tabs_position = right ) {
-			& when not ( @tabs_container_tabs_align = top ) {
-				display: flex;
-				flex-direction: column;
-				& when ( @tabs_container_tabs_align = middle ) {
-					justify-content: center;
-				}
-				& when ( @tabs_container_tabs_align = bottom ) {
-					justify-content: flex-end;
-				}
-			}
+			flex-direction: column;
 		}
 
-		& when ( @tabs_container_tabs_position = top ), ( @tabs_container_tabs_position = bottom ) {
-			text-align: @tabs_container_tabs_align;
+		& when ( @tabs_container_tabs_align = middle ), ( @tabs_container_tabs_align = center )  {
+			justify-content: center;
 		}
 
+		& when ( @tabs_container_tabs_align = top ), ( @tabs_container_tabs_align = left ) {
+			align-items: flex-start;
+		}
+
+		& when ( @tabs_container_tabs_align = bottom ), ( @tabs_container_tabs_align = right ) {
+			justify-content: flex-end;
+		}
 
 		//noinspection CssOptimizeSimilarProperties
 		& when ( @has_tabs_container_border_width = true ) {
