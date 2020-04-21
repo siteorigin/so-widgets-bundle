@@ -8,7 +8,7 @@ jQuery( function ( $ ) {
 		// The carousel widget
 		$( '.sow-carousel-wrapper' ).each( function () {
 			var $$ = $( this );
-			$items = $$.children( '.sow-carousel-items' ),
+			$items = $$.find( '.sow-carousel-items' ),
 			$widget = $$.parent().parent();
 			instanceHash = $widget.find( 'input[name="instance_hash"]' ).val(),
 			numItems = $items.find( '.sow-carousel-item' ).length,
@@ -30,6 +30,7 @@ jQuery( function ( $ ) {
 			// click is used rather than Slick's beforeChange or afterChange 
 			// due to the inability to stop a slide from changing from those events
 			$widget.find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click', function() {
+				$items = $$.find( '.sow-carousel-items' );
 				const numVisibleItems = Math.ceil( $items.outerWidth() / itemWidth );
 				const lastPosition = numItems - numVisibleItems + 1
 
