@@ -8,7 +8,7 @@
 
 <?php if( !empty( $instance['widget_title'] ) ) echo $args['before_title'] . esc_html( $instance['widget_title'] ) . $args['after_title'] ?>
 
-<?php if ( $preloader_enabled ): ?>
+<?php if ( $preloader_enabled ) : ?>
 	<div class="sow-masonry-grid-preloader"><div></div><div></div><div></div><div></div></div>
 <?php endif; ?>
 <div class="sow-masonry-grid"
