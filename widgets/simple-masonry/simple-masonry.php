@@ -194,8 +194,8 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 					),
 					'color' => array(
 						'type' => 'color',
-						'default' => '#000'
 						'label' => __( 'Preloader icon color', 'so-widgets-bundle'),
+						'default' => '#232323'
 					),
 					'height' => array(
 						'type' => 'measurement',
