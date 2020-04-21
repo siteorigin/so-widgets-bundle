@@ -61,17 +61,17 @@ jQuery( function ( $ ) {
 						}
 					} );
 
-					// If preloader is visble, hide and show masonry
-					if ( ! $grid.is( ':visible' ) ) {
-						$grid.prev().remove()
-						$grid.show();
-					}
-
 					$gridEl.packery( {
 						itemSelector: '.sow-masonry-grid-item',
 						columnWidth: columnWidth,
 						gutter: layout.gutter
 					} );
+
+					// If preloader is present, remove and show masonry
+					if ( $grid.prev( '.sow-masonry-grid-preloader' ).length ) {
+						$grid.prev().remove()
+						$grid.css( 'opacity', 1 );
+					}
 				} );
 			} );
 		};

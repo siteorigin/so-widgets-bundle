@@ -12,7 +12,7 @@
 	<div class="sow-masonry-grid-preloader"><div></div><div></div><div></div><div></div></div>
 <?php endif; ?>
 <div class="sow-masonry-grid"
-	 data-layouts="<?php echo esc_attr( json_encode( $layouts ) ) ?>" <?php echo ! empty( $preloader_enabled ) ? 'style="display: none;">' : ''; ?>
+	 data-layouts="<?php echo esc_attr( json_encode( $layouts ) ) ?>" <?php echo ! empty( $preloader_enabled ) ? 'style="opacity: 0;"' : ''; ?>>
 	<?php
 	if( ! empty( $items ) ) {
 		foreach ( $items as $item ) {
