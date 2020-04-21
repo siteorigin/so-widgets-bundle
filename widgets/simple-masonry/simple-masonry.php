@@ -190,18 +190,18 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 				'fields' => array(
 					'enabled' => array(
 						'type' => 'checkbox',
-						'label' => __( 'Show preloader ', 'so-widgets-bundle')
+						'label' => __( 'Enable preloader', 'so-widgets-bundle')
 					),
 					'color' => array(
 						'type' => 'color',
-						'label' => __( 'Preloader color', 'so-widgets-bundle'),
 						'default' => '#000'
+						'label' => __( 'Preloader icon color', 'so-widgets-bundle'),
 					),
 					'height' => array(
 						'type' => 'measurement',
 						'label' => __( 'Preloader height', 'so-widgets-bundle'),
 						'default' => '250px',
-						'description' => __( 'The size of the preloader prior to your Masonry Images showing', 'so-widgets-bundle')
+						'description' => __( 'The size of the preloader prior to the Masonry images showing.', 'so-widgets-bundle')
 					)
 				)
 			)
