@@ -8,7 +8,7 @@ jQuery( function ( $ ) {
 		// The carousel widget
 		$( '.sow-carousel-wrapper' ).each( function () {
 			var $$ = $( this );
-			$items = $$.children( '.sow-carousel-items' ), // = $itemsContainer
+			$items = $$.children( '.sow-carousel-items' ),
 			$widget = $$.parent().parent();
 			instanceHash = $widget.find( 'input[name="instance_hash"]' ).val(),
 			numItems = $items.find( '.sow-carousel-item' ).length,
@@ -24,13 +24,12 @@ jQuery( function ( $ ) {
 				slidesToScroll: 1,
 				slidesToShow: 1,
 				rows: 0,
-				prevArrow: $widget.find( '.sow-carousel-previous' ),
-				nextArrow: $widget.find( '.sow-carousel-next' ),
+				arrows: false,
 			} );
 
 			// click is used rather than Slick's beforeChange or afterChange 
 			// due to the inability to stop a slide from changing from those events
-			$( this ).parents( '.so-widget-sow-post-carousel' ).find( '.slick-arrow' ).on( 'click', function( e ){
+			$widget.find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click', function() {
 				const numVisibleItems = Math.ceil( $items.outerWidth() / itemWidth );
 				const lastPosition = numItems - numVisibleItems + 1
 
@@ -55,7 +54,6 @@ jQuery( function ( $ ) {
 									instance_hash: instanceHash
 								},
 								function ( data, status ) {
-									var $items = $( data.html );
 									$items.find( '.sow-carousel-loading' ).remove();
 									$items.slick( 'slickAdd', data.html );
 									numItems = $$.find( '.sow-carousel-item' ).length;
@@ -64,23 +62,31 @@ jQuery( function ( $ ) {
 									fetching = false;
 								}
 							);
-						} else if ( $(this).hasClass( 'sow-carousel-next' ) ) {
-							// Don't allow the user to navigate after loading item
-							if ( $items.slick( 'slickCurrentSlide' ) >= lastPosition ) {
-								e.stopImmediatePropagation();
-							}
 						}
 					}
 				}
 
-				// The Slick Infinite setting has a positioning bug that can result in the first item being hidden.
+				// A custom navigation is used due to a Slick limitation that prevents the slide from stopping
+				// the slide from changing and wanting to remain consistent with the previous carousel.
+				// https://github.com/kenwheeler/slick/pull/2104
+				//
+				// The Slick Infinite setting has a positioning bug that can result in the first item
+				// being hidden so we need to manually handle that
 				// https://github.com/kenwheeler/slick/issues/3567
-				if ( $$.data( 'loop-posts-enabled' ) ) {
-					if ( $(this).hasClass( 'sow-carousel-next' )  && $items.slick( 'slickCurrentSlide' ) >= lastPosition ) {
-						$items.slick( 'slickGoTo', 0 )
-					} else if ( $(this).hasClass( 'sow-carousel-previous' ) && $items.slick( 'slickCurrentSlide' ) == 0 ) {
-						// We need to navigate to a different slide to prevent blank spacing
+				if ( $( this ).hasClass( 'sow-carousel-next' ) ) {
+					if ( $items.slick( 'slickCurrentSlide' ) >= lastPosition ) {
+						if ( $$.data( 'loop-posts-enabled' ) && ! fetching ) {
+							$items.slick( 'slickGoTo', 0 );
+						}
+					} else {
+						$items.slick( 'slickNext' );
+					}
+				} else if ( $( this ).hasClass( 'sow-carousel-previous' ) ) {
+					if ( $$.data( 'loop-posts-enabled' ) && $items.slick( 'slickCurrentSlide' ) == 0 ) {
+						// Navigate to the second last slide to prevent blank spacing
 						$items.slick( 'slickGoTo', lastPosition - ( complete ? 0 : 1) );
+					} else {
+						$items.slick( 'slickPrev' );
 					}
 				}
 
