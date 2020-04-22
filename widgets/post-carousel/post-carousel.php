@@ -165,12 +165,13 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			$default_thumbnail = wp_get_attachment_image_src( $instance['default_thumbnail'], 'sow-carousel-default' );
 		}
 
-		$query = wp_parse_args(
-			siteorigin_widget_post_selector_process_query( $instance['posts'] ),
+		$query = siteorigin_widget_post_selector_process_query( wp_parse_args(
+			$instance['posts'],
 			array(
-				'paged' => empty( $instance['paged'] ) ? 1 : $instance['paged']
+				'paged' => empty( $instance['paged'] ) ? 1 : $instance['paged'],
+				'posts_per_page' => -1,
 			)
-		);
+		) );
 		$posts = new WP_Query( $query );
 
 		return array(
