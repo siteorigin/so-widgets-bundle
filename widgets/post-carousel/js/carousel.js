@@ -25,6 +25,7 @@ jQuery( function ( $ ) {
 				slidesToShow: 1,
 				rows: 0,
 				arrows: false,
+				touchThreshold: 10,
 			} );
 
 			// click is used rather than Slick's beforeChange or afterChange 
