@@ -8,6 +8,7 @@ jQuery( function ( $ ) {
 		// The carousel widget
 		$( '.sow-carousel-wrapper' ).each( function () {
 			var $$ = $( this );
+			direction = $$.attr( 'dir' );
 			$items = $$.find( '.sow-carousel-items' ),
 			$widget = $$.parent().parent();
 			instanceHash = $widget.find( 'input[name="instance_hash"]' ).val(),
@@ -26,7 +27,8 @@ jQuery( function ( $ ) {
 				rows: 0,
 				arrows: false,
 				touchThreshold: 12,
-				swipeToSlide: true
+				swipeToSlide: true,
+				rtl: direction == 'rtl',
 			} );
 
 			// click is used rather than Slick's beforeChange or afterChange 
@@ -93,7 +95,6 @@ jQuery( function ( $ ) {
 						$items.slick( 'slickPrev' );
 					}
 				}
-
 			} );
 
 		} );

@@ -29,6 +29,7 @@
 		     data-post-count="<?php echo esc_attr($posts->found_posts) ?>"
 		     data-loop-posts-enabled="<?php echo esc_attr( $loop_posts ) ?>"
 		     data-ajax-url="<?php echo sow_esc_url( wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ) ) ?>"
+		     dir="<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>"
 			>
 			<div class="sow-carousel-items">
 				<?php include plugin_dir_path( __FILE__ ) . 'carousel-post-loop.php' ?>
