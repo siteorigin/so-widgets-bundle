@@ -19,21 +19,37 @@ jQuery( function ( $ ) {
 			page = 1,
 			itemWidth = $items.find( '.sow-carousel-item' ).outerWidth( true );
 
-			$items.not('.slick-initialized').slick( {
-				infinite: false,
-				variableWidth: true,
-				slidesToScroll: 1,
-				slidesToShow: 1,
-				rows: 0,
+			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
-				touchThreshold: 12,
-				swipeToSlide: true,
+				infinite: false,
+				rows: 0,
 				rtl: direction == 'rtl',
+				slidesToScroll: 4,
+				slidesToShow: 4,
+				swipeToSlide: true,
+				touchThreshold: 12,
+				variableWidth: true,
+				responsive: [
+					{
+						breakpoint: 1024,
+						settings: {
+							slidesToScroll: 3,
+							slidesToShow: 3,
+						}
+					},
+					{
+						breakpoint: 780,
+						settings: {
+							slidesToScroll: 2,
+							slidesToShow: 2,
+						}
+					},
+				],
 			} );
 
 			// click is used rather than Slick's beforeChange or afterChange 
 			// due to the inability to stop a slide from changing from those events
-			$widget.find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click', function(e) {
+			$widget.find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click', function( e ) {
 				e.preventDefault();
 				$items = $$.find( '.sow-carousel-items' );
 				const numVisibleItems = Math.ceil( $items.outerWidth() / itemWidth );
