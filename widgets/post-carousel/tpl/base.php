@@ -14,14 +14,14 @@
 	<div class="sow-carousel-title">
 		<?php if( ! empty( $title ) ) echo $args['before_title'] . esc_html( $title ) . $args['after_title'] ?>
 
-		<div class="sow-carousel-navigation <?php if( is_rtl() ) echo ' js-rtl' ?>">
+		<div class="sow-carousel-navigation">
 			<a href="#" class="sow-carousel-next" title="<?php esc_attr_e('Next', 'so-widgets-bundle') ?>" aria-label="<?php esc_attr_e( 'Next Posts', 'so-widgets-bundle') ?>" role="button"></a>
 			<a href="#" class="sow-carousel-previous" title="<?php esc_attr_e('Previous', 'so-widgets-bundle') ?>" aria-label="<?php esc_attr_e( 'Previous Posts', 'so-widgets-bundle') ?>" role="button"></a>
 		</div>
 
 	</div>
 
-	<div class="sow-carousel-container<?php if( is_rtl() ) echo ' js-rtl' ?>">
+	<div class="sow-carousel-container">
 
 		<a href="#" class="sow-carousel-previous" title="<?php esc_attr_e('Previous', 'so-widgets-bundle') ?>" aria-label="<?php esc_attr_e( 'Previous Posts', 'so-widgets-bundle') ?>" role="button"></a>
 
