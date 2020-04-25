@@ -135,8 +135,23 @@
 					display: block;
 					background-position: center center;
 
-					& {
+					&, span.overlay {
 						.transition(0.35s);
+					}
+
+					span.overlay {
+						display: block;
+						width: 100%;
+						height: 100%;
+						background: #3279BB;
+						opacity: 0;
+						position: static;
+					}
+
+					&:hover {
+						span {
+							opacity: 0.5;
+						}
 					}
 				}
 			}
