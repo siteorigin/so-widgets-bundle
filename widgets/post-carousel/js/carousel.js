@@ -26,9 +26,9 @@ jQuery( function ( $ ) {
 				rtl: direction == 'rtl',
 				slidesToScroll: 4,
 				slidesToShow: 4,
-				swipeToSlide: true,
 				touchThreshold: 12,
 				variableWidth: true,
+				waitForAnimate: false,
 				responsive: [
 					{
 						breakpoint: 1024,
