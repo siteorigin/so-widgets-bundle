@@ -24,24 +24,22 @@ jQuery( function ( $ ) {
 				infinite: false,
 				rows: 0,
 				rtl: direction == 'rtl',
-				slidesToScroll: 4,
-				slidesToShow: 4,
-				touchThreshold: 12,
-				variableWidth: true,
 				waitForAnimate: false,
+				touchThreshold: 20,
+				variableWidth: true,
 				responsive: [
 					{
 						breakpoint: carouselBreakpoints.tablet_portrait,
 						settings: {
-							slidesToScroll: 3,
-							slidesToShow: 3,
+							slidesToScroll: 2,
+							slidesToShow: 2,
 						}
 					},
 					{
 						breakpoint: carouselBreakpoints.mobile,
 						settings: {
-							slidesToScroll: 2,
-							slidesToShow: 2,
+							slidesToScroll: 1,
+							slidesToShow: 1,
 						}
 					},
 				],
