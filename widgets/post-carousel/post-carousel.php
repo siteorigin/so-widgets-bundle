@@ -62,6 +62,8 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 	}
 
 	function initialize() {
+		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-post-carousel', array( $this, 'enqueue_widget_scripts' ) );
+
 		$this->register_frontend_scripts(
 			array(
 				array(
@@ -79,6 +81,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 				)
 			)
 		);
+
 		$this->register_frontend_styles(
 			array(
 				array(
@@ -92,6 +95,19 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'css/lib/slick.css',
 					array(),
 					'1.8.1'
+				)
+			)
+		);
+	}
+
+	function enqueue_widget_scripts() {
+		wp_localize_script( 'sow-carousel-basic', 'carouselBreakpoints',
+			apply_filters(
+				'siteorigin_widgets_post_carousel_breakpoints',
+				array(
+					'tablet_landscape' => 1366,
+					'tablet_portrait'  => 1025,
+					'mobile'           => 480,
 				)
 			)
 		);

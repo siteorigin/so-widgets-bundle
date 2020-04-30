@@ -31,14 +31,14 @@ jQuery( function ( $ ) {
 				waitForAnimate: false,
 				responsive: [
 					{
-						breakpoint: 1024,
+						breakpoint: carouselBreakpoints.tablet_portrait,
 						settings: {
 							slidesToScroll: 3,
 							slidesToShow: 3,
 						}
 					},
 					{
-						breakpoint: 780,
+						breakpoint: carouselBreakpoints.mobile,
 						settings: {
 							slidesToScroll: 2,
 							slidesToShow: 2,
