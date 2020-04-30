@@ -114,6 +114,14 @@ jQuery( function ( $ ) {
 			} );
 
 		} );
+
+		// Change Slick Settings on iPad Pro while Landscape
+		$( window ).resize( function() {
+			if ( window.matchMedia( '(min-width: ' + carouselBreakpoints.tablet_portrait + 'px) and (max-width: ' + carouselBreakpoints.tablet_landscape + 'px) and (orientation: landscape)' ).matches ) {				
+				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToShow', 3 );
+				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToScroll', 3 );
+			}
+		} );
 	};
 
 	sowb.setupCarousel();
