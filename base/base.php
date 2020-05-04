@@ -64,10 +64,11 @@ add_action('wp_ajax_siteorigin_widgets_get_icons', 'siteorigin_widget_get_icon_l
 /**
  * @param $icon_value
  * @param bool $icon_styles
+ * @param string $title
  *
  * @return bool|string
  */
-function siteorigin_widget_get_icon($icon_value, $icon_styles = false) {
+function siteorigin_widget_get_icon($icon_value, $icon_styles = false, $title = null) {
 	if( empty( $icon_value ) ) return false;
 
 	static $widget_icon_families;
@@ -104,7 +105,9 @@ function siteorigin_widget_get_icon($icon_value, $icon_styles = false) {
 		} else if ( is_string( $icon_data ) ) {
 			$unicode = $icon_data;
 		}
-		return '<span class="' . esc_attr( $family_style ) . '" data-sow-icon="' . $unicode . '" ' . ( ! empty( $icon_styles ) ? 'style="' . implode( '; ', $icon_styles ) . '"' : '' ) . '></span>';
+		return '<span class="' . esc_attr( $family_style ) . '" data-sow-icon="' . $unicode . '"
+		' . ( ! empty( $icon_styles ) ? 'style="' . implode( '; ', $icon_styles ) . '"' : '' ) . ' '. 
+		( ! empty( $title ) ? 'title="' . esc_attr( $title ) .'"' : '' ) .'></span>';
 	}
 	else {
 		return false;
