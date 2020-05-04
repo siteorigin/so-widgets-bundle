@@ -6,7 +6,7 @@ jQuery( function ( $ ) {
 	sowb.setupSimpleMasonries = function () {
 		var $grid = $( '.sow-masonry-grid' );
 		
-		if ( !$grid.is( ':visible' ) || $grid.data( 'initialized' ) ) {
+		if ( $grid.data( 'initialized' ) ) {
 			return $grid;
 		}
 		
@@ -60,11 +60,18 @@ jQuery( function ( $ ) {
 							$img.css( 'margin-top', marginTop + 'px' );
 						}
 					} );
+
 					$gridEl.packery( {
 						itemSelector: '.sow-masonry-grid-item',
 						columnWidth: columnWidth,
 						gutter: layout.gutter
 					} );
+
+					// If preloader is present, remove and show masonry
+					if ( $grid.prev( '.sow-masonry-grid-preloader' ).length ) {
+						$grid.prev().remove()
+						$grid.css( 'opacity', 1 );
+					}
 				} );
 			} );
 		};
