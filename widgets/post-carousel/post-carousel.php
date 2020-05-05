@@ -62,23 +62,26 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 	}
 
 	function initialize() {
+		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-post-carousel', array( $this, 'enqueue_widget_scripts' ) );
+
 		$this->register_frontend_scripts(
 			array(
 				array(
-					'touch-swipe',
-					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/jquery.touchSwipe' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					'slick',
+					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/slick' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' ),
-					'1.6.6'
+					'1.8.1'
 				),
 				array(
 					'sow-carousel-basic',
 					plugin_dir_url(__FILE__) . 'js/carousel' . SOW_BUNDLE_JS_SUFFIX . '.js',
-					array( 'jquery', 'touch-swipe' ),
+					array( 'jquery', 'slick' ),
 					SOW_BUNDLE_VERSION,
 					true
 				)
 			)
 		);
+
 		$this->register_frontend_styles(
 			array(
 				array(
@@ -86,6 +89,25 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 					plugin_dir_url(__FILE__) . 'css/style.css',
 					array(),
 					SOW_BUNDLE_VERSION
+				),
+				array(
+					'slick',
+					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'css/lib/slick.css',
+					array(),
+					'1.8.1'
+				)
+			)
+		);
+	}
+
+	function enqueue_widget_scripts() {
+		wp_localize_script( 'sow-carousel-basic', 'carouselBreakpoints',
+			apply_filters(
+				'siteorigin_widgets_post_carousel_breakpoints',
+				array(
+					'tablet_landscape' => 1366,
+					'tablet_portrait'  => 1025,
+					'mobile'           => 480,
 				)
 			)
 		);
@@ -159,12 +181,13 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			$default_thumbnail = wp_get_attachment_image_src( $instance['default_thumbnail'], 'sow-carousel-default' );
 		}
 
-		$query = wp_parse_args(
-			siteorigin_widget_post_selector_process_query( $instance['posts'] ),
+		$query = siteorigin_widget_post_selector_process_query( wp_parse_args(
+			$instance['posts'],
 			array(
-				'paged' => empty( $instance['paged'] ) ? 1 : $instance['paged']
+				'paged' => empty( $instance['paged'] ) ? 1 : $instance['paged'],
+				'posts_per_page' => -1,
 			)
-		);
+		) );
 		$posts = new WP_Query( $query );
 
 		return array(

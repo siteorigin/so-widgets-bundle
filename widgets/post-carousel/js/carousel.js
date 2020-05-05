@@ -7,178 +7,117 @@ jQuery( function ( $ ) {
 	sowb.setupCarousel = function () {
 		// The carousel widget
 		$( '.sow-carousel-wrapper' ).each( function () {
+			var $$ = $( this );
+			direction = $$.attr( 'dir' );
+			$items = $$.find( '.sow-carousel-items' ),
+			$widget = $$.parent().parent();
+			instanceHash = $widget.find( 'input[name="instance_hash"]' ).val(),
+			numItems = $items.find( '.sow-carousel-item' ).length,
+			totalPosts = $$.data( 'post-count' ),
+			complete = numItems === totalPosts,
+			fetching = false,
+			page = 1,
+			itemWidth = $items.find( '.sow-carousel-item' ).outerWidth( true );
 
-			var $$ = $( this ),
-				$postsContainer = $$.closest( '.sow-carousel-container' ),
-				$container = $$.closest( '.sow-carousel-container' ).parent(),
-				$itemsContainer = $$.find( '.sow-carousel-items' ),
-				$items = $$.find( '.sow-carousel-item' ),
-				$firstItem = $items.eq( 0 );
+			$items.not( '.slick-initialized' ).slick( {
+				arrows: false,
+				infinite: false,
+				rows: 0,
+				rtl: direction == 'rtl',
+				waitForAnimate: false,
+				touchThreshold: 20,
+				variableWidth: true,
+				responsive: [
+					{
+						breakpoint: carouselBreakpoints.tablet_portrait,
+						settings: {
+							slidesToScroll: 2,
+							slidesToShow: 2,
+						}
+					},
+					{
+						breakpoint: carouselBreakpoints.mobile,
+						settings: {
+							slidesToScroll: 1,
+							slidesToShow: 1,
+						}
+					},
+				],
+			} );
 
-			var position = 0,
-				page = 1,
-				fetching = false,
-				numItems = $items.length,
-				totalPosts = $$.data( 'post-count' ),
-				loopPostsEnabled = $$.data( 'loop-posts-enabled' ),
-				complete = numItems === totalPosts,
-				itemWidth = ( $firstItem.width() + parseInt( $firstItem.css( 'margin-right' ) ) ),
-				isRTL = $postsContainer.hasClass( 'js-rtl' ),
-				updateProp = isRTL ? 'margin-right' : 'margin-left';
+			// click is used rather than Slick's beforeChange or afterChange 
+			// due to the inability to stop a slide from changing from those events
+			$widget.find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click', function( e ) {
+				e.preventDefault();
+				$items = $$.find( '.sow-carousel-items' );
+				const numVisibleItems = Math.ceil( $items.outerWidth() / itemWidth );
+				const lastPosition = numItems - numVisibleItems + 1
 
-			var updatePosition = function () {
-				const numVisibleItems = Math.ceil( $$.outerWidth() / itemWidth );
-				const lastPosition = totalPosts - numVisibleItems + 1;
-				const shouldLoop = loopPostsEnabled && !fetching && complete;
-				const hasPosts = numItems !== null && !isNaN(numItems);
+				// Check if all posts are displayed
+				if ( ! complete ) {
+					// Check if we need to fetch the next batch of posts
+					if ( $items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ) {
 
-				if (position < 0) {
-					position = (shouldLoop && hasPosts) ? lastPosition : 0;
-				} else if (position > Math.min(numItems, lastPosition) ) {
-					position = shouldLoop ? 0 : Math.min(numItems, lastPosition);
-				}
+						if ( ! fetching ) {
+							// Fetch the next batch
+							fetching = true;
+							page++;
 
-				// Offset position by numVisibleItems to trigger the next fetch before the view is empty.
-				if ( position + numVisibleItems >= numItems - 1 ) {
-					// Fetch the next batch
-					if ( !fetching && !complete ) {
-						fetching = true;
-						page++;
-						$itemsContainer.append( '<li class="sow-carousel-item sow-carousel-loading"></li>' );
-						var instanceHash = $container.find( 'input[name="instance_hash"]' ).val();
+							$items.slick( 'slickAdd', '<div class="sow-carousel-item sow-carousel-loading"></div>' );
 
-						$.get(
-							$$.data( 'ajax-url' ),
-							{
-								query: $$.data( 'query' ),
-								action: 'sow_carousel_load',
-								paged: page,
-								instance_hash: instanceHash
-							},
-							function ( data, status ) {
-								var $items = $( data.html );
-								$items.appendTo( $itemsContainer ).hide().fadeIn();
-								$$.find( '.sow-carousel-loading' ).remove();
-								numItems = $$.find( '.sow-carousel-item' ).length;
-								complete = numItems === totalPosts;
-								fetching = false;
-							}
-						);
-					}
-				}
-				$itemsContainer.css( 'transition-duration', "0.45s" );
-				$itemsContainer.css( updateProp, -( itemWidth * position) + 'px' );
-			};
+							$.get(
+								$$.data( 'ajax-url' ),
+								{
+									query: $$.data( 'query' ),
+									action: 'sow_carousel_load',
+									paged: page,
+									instance_hash: instanceHash
+								},
+								function ( data, status ) {
+									$items.find( '.sow-carousel-loading' ).remove();
+									$items.slick( 'slickAdd', data.html );
+									numItems = $$.find( '.sow-carousel-item' ).length;
 
-			$container.on( 'click', 'a.sow-carousel-previous',
-				function ( e ) {
-					e.preventDefault();
-					position -= isRTL ? -1 : 1;
-					updatePosition();
-				}
-			);
-
-			$container.on( 'click', 'a.sow-carousel-next',
-				function ( e ) {
-					e.preventDefault();
-					position += isRTL ? -1 : 1;
-					updatePosition();
-				}
-			);
-
-			// Verify "swipe" method exists prior to invoking it.
-			if ( 'function' === typeof $$.swipe ) {
-				var validSwipe = false;
-				var prevDistance = 0;
-				var startPosition = 0;
-				var velocity = 0;
-				var prevTime = 0;
-				var posInterval;
-				var negativeDirection = isRTL ? 'right' : 'left';
-
-				var setNewPosition = function ( newPosition ) {
-					if ( newPosition < 50 && newPosition > -( itemWidth * numItems ) ) {
-						$itemsContainer.css( 'transition-duration', "0s" );
-						$itemsContainer.css( updateProp, newPosition + 'px' );
-						return true;
-					}
-					return false;
-				};
-
-				var setFinalPosition = function () {
-					var finalPosition = parseInt( $itemsContainer.css( updateProp ) );
-					position = Math.abs( Math.round( finalPosition / itemWidth ) );
-					updatePosition();
-				};
-
-				$$.on( 'click', '.sow-carousel-item a',
-					function ( event ) {
-						if ( validSwipe ) {
-							event.preventDefault();
-							validSwipe = false;
+									complete = numItems === totalPosts;
+									fetching = false;
+								}
+							);
 						}
 					}
-				);
+				}
 
-				$$.swipe( {
-					excludedElements: "",
-					triggerOnTouchEnd: true,
-					threshold: 75,
-					swipeStatus: function ( event, phase, direction, distance, duration, fingerCount, fingerData ) {
-						if ( direction === 'up' || direction === 'down' ) {
-							return false;
+				// A custom navigation is used due to a Slick limitation that prevents the slide from stopping
+				// the slide from changing and wanting to remain consistent with the previous carousel.
+				// https://github.com/kenwheeler/slick/pull/2104
+				//
+				// The Slick Infinite setting has a positioning bug that can result in the first item
+				// being hidden so we need to manually handle that
+				// https://github.com/kenwheeler/slick/issues/3567
+				if ( $( this ).hasClass( 'sow-carousel-next' ) ) {
+					if ( $items.slick( 'slickCurrentSlide' ) >= lastPosition ) {
+						if ( $$.data( 'loop-posts-enabled' ) && ! fetching ) {
+							$items.slick( 'slickGoTo', 0 );
 						}
-
-						if ( phase === "start" ) {
-							startPosition = -( itemWidth * position);
-							prevTime = new Date().getTime();
-							clearInterval( posInterval );
-						}
-						else if ( phase === "move" ) {
-							if ( direction === negativeDirection ) {
-								distance *= -1;
-							}
-							setNewPosition( startPosition + distance );
-							var newTime = new Date().getTime();
-							var timeDelta = (newTime - prevTime) / 1000;
-							velocity = (distance - prevDistance) / timeDelta;
-							prevTime = newTime;
-							prevDistance = distance;
-						}
-						else if ( phase === "end" ) {
-							validSwipe = true;
-							if ( direction === negativeDirection ) {
-								distance *= -1;
-							}
-							if ( Math.abs( velocity ) > 400 ) {
-								velocity *= 0.1;
-								var startTime = new Date().getTime();
-								var cumulativeDistance = 0;
-								posInterval = setInterval( function () {
-									var time = (new Date().getTime() - startTime) / 1000;
-									cumulativeDistance += velocity * time;
-									var newPos = startPosition + distance + cumulativeDistance;
-									var decel = 30;
-									var end = (Math.abs( velocity ) - decel) < 0;
-									if ( direction === negativeDirection ) {
-										velocity += decel;
-									} else {
-										velocity -= decel;
-									}
-									if ( end || !setNewPosition( newPos ) ) {
-										clearInterval( posInterval );
-										setFinalPosition();
-									}
-								}, 20 );
-							} else {
-								setFinalPosition();
-							}
-						}
-						else if ( phase === "cancel" ) {
-							updatePosition();
-						}
+					} else {
+						$items.slick( 'slickNext' );
 					}
-				} );
+				} else if ( $( this ).hasClass( 'sow-carousel-previous' ) ) {
+					if ( $$.data( 'loop-posts-enabled' ) && $items.slick( 'slickCurrentSlide' ) == 0 ) {
+						// Navigate to the second last slide to prevent blank spacing
+						$items.slick( 'slickGoTo', lastPosition - ( complete ? 0 : 1) );
+					} else {
+						$items.slick( 'slickPrev' );
+					}
+				}
+			} );
+
+		} );
+
+		// Change Slick Settings on iPad Pro while Landscape
+		$( window ).resize( function() {
+			if ( window.matchMedia( '(min-width: ' + carouselBreakpoints.tablet_portrait + 'px) and (max-width: ' + carouselBreakpoints.tablet_landscape + 'px) and (orientation: landscape)' ).matches ) {				
+				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToShow', 3 );
+				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToScroll', 3 );
 			}
 		} );
 	};
