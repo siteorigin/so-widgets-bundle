@@ -1,16 +1,23 @@
 @import "../../../base/less/mixins";
 
 .sow-testimonials {
-	margin: -10px;
-	.clearfix();
+	align-self: stretch;
+	display: flex;
+	flex-wrap: wrap;
 
 	* {
 		box-sizing: border-box;
 	}
 
 	.sow-testimonial-wrapper {
-		float: left;
+		display: flex;
 		padding: 10px;
+
+		&.sow-layout-side {
+			.sow-testimonial, .sow-testimonial-text {
+				display: flex;
+			}
+		}
 	}
 
 	.sow-testimonial-user {
@@ -61,6 +68,10 @@
 	.sow-user-right {
 		.sow-testimonial-user {
 			text-align: right;
+		}
+
+		.sow-testimonial {
+			flex-direction: row-reverse;
 		}
 	}
 
