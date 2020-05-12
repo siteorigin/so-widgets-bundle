@@ -912,7 +912,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			try {
 				if( method_exists( $compiler, 'compile' ) ) {
-					$css = $compiler->compile( $less );
+					$css = @ $compiler->compile( $less );
 				}
 			}
 			catch ( Exception $e ) {
