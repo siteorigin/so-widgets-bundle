@@ -317,7 +317,7 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 			'testimonial_size' => round(100/$instance['settings']['per_line'], 4) . '%',
 			'testimonial_padding' => intval($instance['design']['padding']) . 'px',
 			'testimonial_background' => $instance['design']['colors']['testimonial_background'],
-			'equalize_testimonial_height' => $instance['design']['equalize_testimonial_height'],
+			'equalize_testimonial_height' => ! empty( $instance['design']['equalize_testimonial_height'] ) ? 'true' : 'false',
 
 			// The text block
 			'text_border_radius' => intval($instance['design']['border_radius']) . 'px',
