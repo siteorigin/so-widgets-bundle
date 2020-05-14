@@ -113,15 +113,13 @@
 			  display: flex;
 
 			}
-			&.sow-layout-text-above .sow-testimonial {
-			  flex-direction: column;
+			&.sow-layout-text-above,
+			&.sow-layout-text-below {
+				.sow-testimonial {
+
+					flex-direction: column;
+				}
 			}
-
-
-			&.sow-layout-text-below .sow-testimonial {
-			  flex-direction: column-reverse;
-			}
-
 			
 			.sow-testimonial-text {
 				display: flex;
@@ -130,7 +128,6 @@
 		}
 
 		&.sow-layout-side {
-
 			&.sow-user-left,
 			&.sow-user-middle {
 				.sow-testimonial-user {
