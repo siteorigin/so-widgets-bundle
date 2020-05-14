@@ -108,7 +108,25 @@
 	.sow-testimonial-wrapper {
 		& when (@equalize_testimonial_height = true) {
 			display: flex;
-			display: @equalize_testimonial_height;
+
+			.sow-testimonial {
+			  display: flex;
+
+			}
+			&.sow-layout-text-above .sow-testimonial {
+			  flex-direction: column;
+			}
+
+
+			&.sow-layout-text-below .sow-testimonial {
+			  flex-direction: column-reverse;
+			}
+
+			
+			.sow-testimonial-text {
+				display: flex;
+				height: 100%;
+			}
 		}
 
 		&.sow-layout-side {
