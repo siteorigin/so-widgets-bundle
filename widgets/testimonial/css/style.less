@@ -1,16 +1,19 @@
 @import "../../../base/less/mixins";
 
 .sow-testimonials {
-	margin: -10px;
-	.clearfix();
+	display: flex;
+	flex-wrap: wrap;
 
 	* {
 		box-sizing: border-box;
 	}
 
 	.sow-testimonial-wrapper {
-		float: left;
 		padding: 10px;
+
+		&.sow-layout-side .sow-testimonial {
+			display: flex;
+		}
 	}
 
 	.sow-testimonial-user {
@@ -59,12 +62,28 @@
 	}
 
 	.sow-user-right {
+		.sow-image-wrapper {
+			float: right;
+		}
+
+		.sow-text {
+			clear: both;
+		}
+
 		.sow-testimonial-user {
 			text-align: right;
+		}
+
+		.sow-testimonial {
+			flex-direction: row-reverse;
 		}
 	}
 
 	.sow-user-middle {
+		.sow-image-wrapper {
+			margin: 0 auto;
+		}
+
 		.sow-testimonial-user {
 			text-align: center;
 		}

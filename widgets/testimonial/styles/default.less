@@ -8,6 +8,7 @@
 @text_background: #f0f0f0;
 @text_color: #666;
 @text_border_radius: 4px;
+@equalize_testimonial_height: default;
 
 @title_font_family: default;
 @title_font_weight: default;
@@ -105,10 +106,28 @@
 	// All the specific layouts
 
 	.sow-testimonial-wrapper {
-		.clearfix();
+		& when (@equalize_testimonial_height = true) {
+			display: flex;
+
+			.sow-testimonial {
+			  display: flex;
+
+			}
+			&.sow-layout-text-above,
+			&.sow-layout-text-below {
+				.sow-testimonial {
+
+					flex-direction: column;
+				}
+			}
+			
+			.sow-testimonial-text {
+				display: flex;
+				height: 100%;
+			}
+		}
 
 		&.sow-layout-side {
-
 			&.sow-user-left,
 			&.sow-user-middle {
 				.sow-testimonial-user {
@@ -122,9 +141,6 @@
 					}
 				}
 
-				.sow-testimonial-text {
-					margin-left: 33%;
-				}
 			}
 
 			&.sow-user-right {
@@ -139,10 +155,6 @@
 						max-width: 100%;
 						height: auto;
 					}
-				}
-
-				.sow-testimonial-text {
-					margin-right: 33%;
 				}
 
 			}
