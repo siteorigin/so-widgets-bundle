@@ -65,6 +65,18 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+== 1.17.0 - 18 May 2020 ==
+* Simple Masonry: Added a preloader and related settings.
+* Post Carousel: Migrated to Slick Carousel.
+* Post Carousel: Added RTL support.
+* Icon: Added Title field.
+* Minor admin interface styling fixes.
+* Price Table: Added title for the feature hover text.
+* Testimonials: Added `Equalize testimonial height` setting.
+* Testimonials: Fixed user image alignment.
+* Switched to Wikimedia's fork of less.php.
+* Added error suppression for external Less library.
+
 == 1.16.1 - 20 April 2020 ==
 * Accordion: When hiding panels, only search the current accordion and not nested accordions.
 * Slider Widgets: Removed slide navigation numbers from excerpt output.
