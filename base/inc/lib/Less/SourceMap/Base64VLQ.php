@@ -153,12 +153,7 @@ class Less_SourceMap_Base64VLQ {
 	 * @return integer
 	 */
 	public function zeroFill($a, $b){
-		if ( $b <= 0) {
-			throw new Exception( sprintf( '$b must be a positive integer. "%s" given.', $b ) );
-		}
-		$shift_max_int = $b - 1;
-		
-		return ($a >= 0) ? ($a >> $b) : ($a >> $b) & (PHP_INT_MAX >> $shift_max_int);
+		return ($a >= 0) ? ($a >> $b) : ($a >> $b) & (PHP_INT_MAX >> ($b - 1));
 	}
 
 	/**
