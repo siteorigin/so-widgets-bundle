@@ -65,7 +65,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
-== 1.17.0 - 18 May 2020 ==
+== 1.17.0 - 22 May 2020 ==
 * Simple Masonry: Added a preloader and related settings.
 * Post Carousel: Migrated to Slick Carousel.
 * Post Carousel: Added RTL support.
