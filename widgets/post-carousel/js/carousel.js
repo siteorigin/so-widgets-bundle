@@ -24,7 +24,6 @@ jQuery( function ( $ ) {
 				infinite: false,
 				rows: 0,
 				rtl: direction == 'rtl',
-				waitForAnimate: false,
 				touchThreshold: 20,
 				variableWidth: true,
 				responsive: [
