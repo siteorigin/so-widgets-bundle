@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 4.2
-Tested up to: 5.4
+Tested up to: 5.5
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
@@ -64,6 +64,18 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+== 1.17.0 - 22 May 2020 ==
+* Simple Masonry: Added a preloader and related settings.
+* Post Carousel: Migrated to Slick Carousel.
+* Post Carousel: Added RTL support.
+* Icon: Added Title field.
+* Minor admin interface styling fixes.
+* Price Table: Added title for the feature hover text.
+* Testimonials: Added `Equalize testimonial height` setting.
+* Testimonials: Fixed user image alignment.
+* Switched to Wikimedia's fork of less.php.
+* Added error suppression for external Less library.
 
 == 1.16.1 - 20 April 2020 ==
 * Accordion: When hiding panels, only search the current accordion and not nested accordions.
