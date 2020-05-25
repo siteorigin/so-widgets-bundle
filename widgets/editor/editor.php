@@ -66,7 +66,9 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			empty( $GLOBALS[ 'SITEORIGIN_PANELS_CACHE_RENDER' ] ) &&
 			empty( $GLOBALS[ 'SITEORIGIN_PANELS_POST_CONTENT_RENDER' ] )
 		) {
-			if (function_exists('wp_make_content_images_responsive')) {
+			if ( function_exists( 'wp_filter_content_tags' ) ) {
+				$instance['text'] = wp_filter_content_tags( $instance['text'] );
+			} else if ( function_exists( 'wp_make_content_images_responsive' ) ) {
 				$instance['text'] = wp_make_content_images_responsive( $instance['text'] );
 			}
 
