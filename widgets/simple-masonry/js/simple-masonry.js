@@ -64,7 +64,8 @@ jQuery( function ( $ ) {
 					$gridEl.packery( {
 						itemSelector: '.sow-masonry-grid-item',
 						columnWidth: columnWidth,
-						gutter: layout.gutter
+						gutter: layout.gutter,
+						originLeft: $gridEl.data( 'layout-origin-left' ),
 					} );
 
 					// If preloader is present, remove and show masonry
