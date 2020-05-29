@@ -746,7 +746,7 @@ class SiteOrigin_Widgets_Bundle {
 			'dessandro-packery',
 			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/packery.pkgd' . SOW_BUNDLE_JS_SUFFIX . '.js',
 			array( 'jquery' ),
-			'1.4.3',
+			'2.1.2',
 			true
 		);
 		wp_register_script(
