@@ -185,7 +185,6 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			$instance['posts'],
 			array(
 				'paged' => empty( $instance['paged'] ) ? 1 : $instance['paged'],
-				'posts_per_page' => -1,
 			)
 		) );
 		$posts = new WP_Query( $query );
