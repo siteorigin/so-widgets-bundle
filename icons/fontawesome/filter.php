@@ -1616,6 +1616,7 @@ function siteorigin_widgets_icon_migrate_fontawesome_name_map() {
 		'hand-stop-o' => 'hand-paper',
 		'handshake-o' => 'handshake',
 		'hard-of-hearing' => 'deaf',
+		'haykal' => 'bahai',
 		'hdd-o' => 'hdd',
 		'header' => 'heading',
 		'heart-o' => 'heart',
