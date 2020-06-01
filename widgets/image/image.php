@@ -172,13 +172,15 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			$link_atts['rel'] = 'noopener noreferrer';
 		}
 
+		$all_attrs = apply_filters( 'siteorigin_widgets_image_all_attrs', array( 'attr' => $attr, 'link_atts' => $link_atts ), $instance, $this );
+
 		return array(
 			'title' => $title,
 			'title_position' => $instance['title_position'],
 			'url' => $instance['url'],
 			'new_window' => $instance['new_window'],
-			'link_attributes' => $link_atts,
-			'attributes' => $attr,
+			'link_attributes' => $all_attrs['link_atts'],
+			'attributes' => $all_attrs['attr'],
 			'classes' => array( 'so-widget-image' ),
 		);
 	}
