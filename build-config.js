@@ -64,5 +64,8 @@ module.exports = {
     },
     googleFonts: {
         dest: 'base/inc/fonts.php',
+    },
+    fontAwesome: {
+        base: 'icons/fontawesome/',
     }
 };
