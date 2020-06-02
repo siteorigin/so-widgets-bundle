@@ -58,7 +58,6 @@ jQuery( function ( $ ) {
 							$img.css( 'margin-left', '' );
 
 							// Apply top margin if image is local
-							console.log( $img.prop( 'srcset' ) && $img.prop( 'sizes' ) );
 							if ( $img.prop( 'srcset' ) && $img.prop( 'sizes' ) ) {
 								var marginTop = ( $img.height() - $$.height() ) * -0.5;
 								$img.css( 'margin-top', marginTop + 'px' );
