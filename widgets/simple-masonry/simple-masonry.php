@@ -61,7 +61,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 				'fields' => array(
 					'image' => array(
 						'type' => 'media',
-						'label' => __( 'Image', 'so-widgets-bundle')
+						'label' => __( 'Image', 'so-widgets-bundle'),
 						'fallback' => true,
 					),
 					'column_span' => array(
