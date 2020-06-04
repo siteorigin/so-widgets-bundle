@@ -36,7 +36,7 @@
 				echo siteorigin_widgets_get_attachment_image(
 					$item['image'],
 					'full',
-					!empty( $item['image_fallback'] ) ? $item['image_fallback'] : '',
+					! empty( $item['image_fallback'] ) ? $item['image_fallback'] : '',
 					array(
 						'title' => esc_attr( $title ),
 						'class' => 'sow-masonry-grid-image',
