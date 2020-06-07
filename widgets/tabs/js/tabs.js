@@ -23,6 +23,18 @@ jQuery( function ( $ ) {
 			var $tabPanels = $tabPanelsContainer.find( '> .sow-tabs-panel' );
 			$tabPanels.not( ':eq(' + selectedIndex + ')' ).hide();
 			var tabAnimation;
+
+			var scrollToTab = function ( smooth ) {
+				var navOffset = 90;// Add some magic number offset to make space for possible nav menus etc.
+				var scrollTop = $widget.offset().top - navOffset;
+				if ( smooth ) {
+					$( 'body,html' ).animate( {
+						scrollTop: scrollTop,
+					}, 200 );
+				} else {
+					window.scrollTo( 0, scrollTop );
+				}
+			};
 			
 			var selectTab = function ( tab, preventHashChange ) {
 				var $tab = $( tab );
@@ -66,6 +78,9 @@ jQuery( function ( $ ) {
 								},
 								complete: function() {
 									$( this ).trigger( 'show' );
+									if ( $tab.offset().top < window.scrollY || $tab.offset().top + $tab.height() > window.scrollY ) {
+										scrollToTab( true );
+									}
 								}
 							});
 						}
