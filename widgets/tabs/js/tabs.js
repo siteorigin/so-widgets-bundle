@@ -39,6 +39,7 @@ jQuery( function ( $ ) {
 			var selectTab = function ( tab, preventHashChange ) {
 				var $tab = $( tab );
 				if ( $tab.is( '.sow-tabs-tab-selected' ) ) {
+					scrollToTab( true );
 					return true;
 				}
 				var selectedIndex = $tab.index();
