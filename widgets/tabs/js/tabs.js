@@ -148,8 +148,6 @@ jQuery( function ( $ ) {
 				$( window ).on( 'hashchange', updateSelectedTab );
 				if ( window.location.hash ) {
 					updateSelectedTab();
-				} else {
-					window.location.hash = $selectedTab.data( 'anchor' );
 				}
 			}
 			
