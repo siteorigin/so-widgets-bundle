@@ -25,7 +25,7 @@ jQuery( function ( $ ) {
 			var tabAnimation;
 
 			var scrollToTab = function ( smooth ) {
-				var navOffset = 90;// Add some magic number offset to make space for possible nav menus etc.
+				var navOffset = 90; // Add some magic number offset to make space for possible nav menus etc.
 				var scrollTop = $widget.offset().top - navOffset;
 				if ( smooth ) {
 					$( 'body,html' ).animate( {
