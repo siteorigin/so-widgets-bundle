@@ -6,6 +6,7 @@
 	url('font/genericons.ttf?map0iz') format('truetype');
 	font-weight: normal;
 	font-style: normal;
+	font-display: swap;
 }
 
 .sow-icon-genericons {
