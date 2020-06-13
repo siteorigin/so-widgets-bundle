@@ -8,6 +8,9 @@
 @border_color: darken(@button_color, 15%);
 @text_color: #FFFFFF;
 
+@hover_text_color: #fff;
+@hover_background_color: #41a9d5;
+
 @button_font: default;
 @button_font_weight: default;
 
@@ -57,9 +60,10 @@
 		}
 
 		&.ow-button-hover:hover {
-			.gradient(lighten(@button_color, 2%), lighten(darken(@button_color, 10%), 2%), lighten(@button_color, 2%));
+			.gradient(lighten(@hover_background_color, 2%), lighten(darken(@hover_background_color, 10%), 2%), lighten(@hover_background_color, 2%));
 			border-color: lighten(lighten(@border_color, 2%), 2%) lighten(@border_color, 2%) darken(lighten(@border_color, 2%), 3%) lighten(@border_color, 2%);
 			color: lighten(@text_color, 2%);
+			color: @hover_text_color !important;
 		}
 	}
 }

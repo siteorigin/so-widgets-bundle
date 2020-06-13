@@ -128,7 +128,33 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'type' => 'checkbox',
 						'default' => true,
 						'label' => __('Use hover effects', 'so-widgets-bundle'),
+						'state_emitter' => array(
+							'callback' => 'conditional',
+							'args'     => array(
+								'hover[show]: val',
+								'hover[hide]: ! val'
+							),
+						)
 					),
+
+					'hover_background_color' => array(
+						'type' => 'color',
+						'label' => __('Hover Background color', 'so-widgets-bundle'),
+						'state_handler' => array(
+							'hover[show]' => array( 'show' ),
+							'hover[hide]' => array( 'hide' ),
+						)
+					),
+
+					'hover_text_color' => array(
+						'type' => 'color',
+						'label' => __('Hover Text color', 'so-widgets-bundle'),
+						'state_handler' => array(
+							'hover[show]' => array( 'show' ),
+							'hover[hide]' => array( 'hide' ),
+						)
+					),
+
 
 					'font' => array(
 						'type' => 'font',
@@ -230,12 +256,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		$button_attributes = array();
 
 		$attributes = $instance['attributes'];
-		
+
 		$classes = ! empty( $attributes['classes'] ) ? $attributes['classes'] : '';
 		if( !empty($instance['design']['hover']) ) {
 			$classes .= ' ow-button-hover';
 		}
-		
+
 		if( ! empty( $classes ) ) {
 			$button_attributes['class'] = $classes;
 		}
@@ -292,6 +318,8 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'has_button_width' => empty( $instance['design']['width'] ) ? 'false' : 'true',
 			'button_color' => $instance['design']['button_color'],
 			'text_color' => $instance['design']['text_color'],
+			'hover_text_color' => isset($instance['design']['hover_text_color']) ? $instance['design']['hover_text_color'] : '',
+			'hover_background_color' => isset($instance['design']['hover_background_color']) ? $instance['design']['hover_background_color'] : '',
 
 			'font_size' => $instance['design']['font_size'] . 'em',
 			'rounding' => $instance['design']['rounding'] . 'em',
@@ -343,6 +371,8 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			if(isset($instance['button_color'])) $instance['design']['button_color'] = $instance['button_color'];
 			if(isset($instance['text_color'])) $instance['design']['text_color'] = $instance['text_color'];
 			if(isset($instance['hover'])) $instance['design']['hover'] = $instance['hover'];
+			if(isset($instance['hover_text_color'])) $instance['design']['hover_text_color'] = $instance['hover_text_color'];
+			if(isset($instance['hover_background_color'])) $instance['design']['hover_background_color'] = $instance['hover_background_color'];
 			if(isset($instance['font_size'])) $instance['design']['font_size'] = $instance['font_size'];
 			if(isset($instance['rounding'])) $instance['design']['rounding'] = $instance['rounding'];
 			if(isset($instance['padding'])) $instance['design']['padding'] = $instance['padding'];
@@ -352,6 +382,8 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			unset($instance['button_color']);
 			unset($instance['text_color']);
 			unset($instance['hover']);
+			unset($instance['hover_text_color']);
+			unset($instance['hover_background_color']);
 			unset($instance['font_size']);
 			unset($instance['rounding']);
 			unset($instance['padding']);
