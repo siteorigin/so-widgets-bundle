@@ -135,59 +135,49 @@
 
 @-webkit-keyframes fa-spin {
     0% {
-        -webkit-transform: rotate(0deg);
         transform: rotate(0deg);
     }
     100% {
-        -webkit-transform: rotate(360deg);
         transform: rotate(360deg);
     }
 }
 
 @keyframes fa-spin {
     0% {
-        -webkit-transform: rotate(0deg);
         transform: rotate(0deg);
     }
     100% {
-        -webkit-transform: rotate(360deg);
         transform: rotate(360deg);
     }
 }
 
 .fa-rotate-90 {
     -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)";
-    -webkit-transform: rotate(90deg);
     transform: rotate(90deg);
 }
 
 .fa-rotate-180 {
     -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
-    -webkit-transform: rotate(180deg);
     transform: rotate(180deg);
 }
 
 .fa-rotate-270 {
     -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=3)";
-    -webkit-transform: rotate(270deg);
     transform: rotate(270deg);
 }
 
 .fa-flip-horizontal {
     -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)";
-    -webkit-transform: scale(-1, 1);
     transform: scale(-1, 1);
 }
 
 .fa-flip-vertical {
     -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)";
-    -webkit-transform: scale(1, -1);
     transform: scale(1, -1);
 }
 
 .fa-flip-horizontal.fa-flip-vertical {
     -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)";
-    -webkit-transform: scale(-1, -1);
     transform: scale(-1, -1);
 }
 
@@ -253,6 +243,7 @@
     font-family: 'sow-fontawesome-brands';
     font-style: normal;
     font-weight: normal;
+    font-display: block;
     src: url("webfonts/fa-brands-400.eot");
     src: url("webfonts/fa-brands-400.eot?#iefix") format("embedded-opentype"),
     url("webfonts/fa-brands-400.woff2") format("woff2"),
@@ -271,6 +262,7 @@
     font-family: 'sow-fontawesome-free';
     font-style: normal;
     font-weight: 400;
+    font-display: block;
     src: url("webfonts/fa-regular-400.eot");
     src: url("webfonts/fa-regular-400.eot?#iefix") format("embedded-opentype"),
     url("webfonts/fa-regular-400.woff2") format("woff2"),
@@ -289,6 +281,7 @@
     font-family: 'sow-fontawesome-free';
     font-style: normal;
     font-weight: 900;
+    font-display: block;
     src: url("webfonts/fa-solid-900.eot");
     src: url("webfonts/fa-solid-900.eot?#iefix") format("embedded-opentype"),
     url("webfonts/fa-solid-900.woff2") format("woff2"),
