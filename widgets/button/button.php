@@ -141,7 +141,33 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'type' => 'checkbox',
 						'default' => true,
 						'label' => __('Use hover effects', 'so-widgets-bundle'),
+						'state_emitter' => array(
+							'callback' => 'conditional',
+							'args'     => array(
+								'hover[show]: val',
+								'hover[hide]: ! val'
+							),
+						)
 					),
+
+					'hover_background_color' => array(
+						'type' => 'color',
+						'label' => __('Hover Background color', 'so-widgets-bundle'),
+						'state_handler' => array(
+							'hover[show]' => array( 'show' ),
+							'hover[hide]' => array( 'hide' ),
+						)
+					),
+
+					'hover_text_color' => array(
+						'type' => 'color',
+						'label' => __('Hover Text color', 'so-widgets-bundle'),
+						'state_handler' => array(
+							'hover[show]' => array( 'show' ),
+							'hover[hide]' => array( 'hide' ),
+						)
+					),
+
 
 					'font' => array(
 						'type' => 'font',
@@ -313,6 +339,9 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'button_width' => isset( $instance['design']['width'] ) ? $instance['design']['width'] : '',
 			'button_color' => isset($instance['design']['button_color']) ? $instance['design']['button_color'] : '',
 			'text_color' =>   isset($instance['design']['text_color']) ? $instance['design']['text_color'] : '',
+			'hover_text_color' => isset($instance['design']['hover_text_color']) ? $instance['design']['hover_text_color'] : '',
+			'hover_background_color' => isset($instance['design']['hover_background_color']) ? $instance['design']['hover_background_color'] : '',
+
 
 			'font_size' => isset($instance['design']['font_size']) ? $instance['design']['font_size'] . 'em' : '',
 			'rounding' => isset($instance['design']['rounding']) ? $instance['design']['rounding'] . 'em' : '',
@@ -355,6 +384,8 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 				'button_color',
 				'text_color',
 				'hover',
+				'hover_text_color',
+				'hover_background_color',
 				'font_size',
 				'rounding',
 				'padding',
