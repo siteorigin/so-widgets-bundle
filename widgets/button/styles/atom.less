@@ -3,9 +3,13 @@
 .widget-function('import_google_font');
 
 @button_width: '';
+@has_button_width: false;
 @button_color: #41a9d5;
 @border_color: darken(@button_color, 15%);
 @text_color: #FFFFFF;
+
+@hover_text_color: #fff;
+@hover_background_color: #41a9d5;
 
 @button_font: default;
 @button_font_weight: default;
@@ -19,10 +23,10 @@
 
 	a {
 		.box-sizing(border-box);
-		& when( isnumber( @button_width ) ) {
+		.btn_width() when( @has_button_width = true) {
 			width: @button_width;
-			max-width: 100%;
 		}
+		.btn_width();
 		.font(@button_font, @button_font_weight);
 
 		font-size: @font_size;
@@ -38,12 +42,16 @@
 		.box-shadow(~"inset 0 1px 0 rgba(255,255,255,0.2), 0 1px 2px rgba(0,0,0,0.065)");
 		text-shadow: 0 1px 0 rgba(0,0,0,0.05);
 
-		& when not ( @has_text = true ) {
-			.sow-icon-image,
-			[class^="sow-icon-"] {
-					margin: 0;
-			}
-		}
+        .sow-icon-image,
+        [class^="sow-icon-"] {
+            .icon-margins() when (@has_text = true) {
+                margin: -0.1em 0.75em -0.2em -0.75em;
+            }
+            .icon-margins() when not (@has_text = true) {
+                margin: 0;
+            }
+            .icon-margins();
+        }
 
 		&:visited,
 		&:active,
@@ -52,9 +60,10 @@
 		}
 
 		&.ow-button-hover:hover {
-			.gradient(lighten(@button_color, 2%), lighten(darken(@button_color, 10%), 2%), lighten(@button_color, 2%));
+			.gradient(lighten(@hover_background_color, 2%), lighten(darken(@hover_background_color, 10%), 2%), lighten(@hover_background_color, 2%));
 			border-color: lighten(lighten(@border_color, 2%), 2%) lighten(@border_color, 2%) darken(lighten(@border_color, 2%), 3%) lighten(@border_color, 2%);
 			color: lighten(@text_color, 2%);
+			color: @hover_text_color !important;
 		}
 	}
 }
