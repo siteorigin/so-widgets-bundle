@@ -107,7 +107,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		$instance = $attributes['widgetData'];
 
-		// Support for custom CSS classes.
+		// Support for Additional CSS classes.
 		$add_custom_class_name = function( $class_names ) use ($attributes) {
 			if ( ! empty( $attributes['className'] ) ) {
 				$class_names = array_merge( $class_names, explode( ' ', $attributes['className'] ) );
