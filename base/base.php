@@ -37,8 +37,6 @@ function siteorigin_widget_print_styles(){
             <style type="text/css"><?php echo($widget_css) ?></style><?php
         }
     }
-
-	$siteorigin_widgets_inline_styles = array();
 }
 add_action('wp_head', 'siteorigin_widget_print_styles');
 add_action('wp_footer', 'siteorigin_widget_print_styles');
