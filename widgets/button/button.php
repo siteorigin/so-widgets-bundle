@@ -145,14 +145,14 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 							'callback' => 'conditional',
 							'args'     => array(
 								'hover[show]: val',
-								'hover[hide]: ! val'
+								'hover[hide]: ! val',
 							),
 						)
 					),
 
 					'hover_background_color' => array(
 						'type' => 'color',
-						'label' => __('Hover Background color', 'so-widgets-bundle'),
+						'label' => __('Hover background color', 'so-widgets-bundle'),
 						'state_handler' => array(
 							'hover[show]' => array( 'show' ),
 							'hover[hide]' => array( 'hide' ),
@@ -161,7 +161,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 					'hover_text_color' => array(
 						'type' => 'color',
-						'label' => __('Hover Text color', 'so-widgets-bundle'),
+						'label' => __('Hover text color', 'so-widgets-bundle'),
 						'state_handler' => array(
 							'hover[show]' => array( 'show' ),
 							'hover[hide]' => array( 'hide' ),
