@@ -7,8 +7,8 @@
 @border_color: darken(@button_color, 5%);
 @text_color: #FFFFFF;
 
-@hover_text_color: #fff;
-@hover_background_color: #41a9d5;
+@hover_text_color: default;
+@hover_background_color: default;
 
 @button_font: default;
 @button_font_weight: default;
@@ -58,9 +58,12 @@
 			background: lighten(@button_color, 4%);
 			border-bottom-color: lighten(@border_color, 4%);
 			color: lighten(@text_color, 4%);
-			border-color: @hover_background_color;
-			background: @hover_background_color;
-			color: @hover_text_color !important;
+			
+			& when ( @hover_background_color != default ) or ( @hover_text_color != default ) {
+				border-color: @hover_background_color;
+				background: @hover_background_color;
+				color: @hover_text_color;
+			}
 		}
 	}
 }
