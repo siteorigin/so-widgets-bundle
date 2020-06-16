@@ -59,7 +59,7 @@
 			border-color: lighten(lighten(@border_color, 2%), 2%) lighten(@border_color, 2%) darken(lighten(@border_color, 2%), 3%) lighten(@border_color, 2%);
 			color: lighten(@text_color, 2%);
 			
-			& when ( @hover_background_color != default ) or ( @hover_text_color != default ) {
+			& when not( @hover_background_color = default ), not( @hover_text_color = default ) {
 				.gradient(lighten(@hover_background_color, 2%), lighten(darken(@hover_background_color, 10%), 2%), lighten(@hover_background_color, 2%));
 				border-color: lighten(lighten(@border_color, 2%), 2%) lighten(@border_color, 2%) darken(lighten(@border_color, 2%), 3%) lighten(@border_color, 2%);
 				color: @hover_text_color;
