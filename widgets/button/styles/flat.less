@@ -59,7 +59,7 @@
 			border-bottom-color: lighten(@border_color, 4%);
 			color: lighten(@text_color, 4%);
 			
-			& when ( @hover_background_color != default ) or ( @hover_text_color != default ) {
+			& when not( @hover_background_color = default ), not( @hover_text_color = default ) {
 				border-color: @hover_background_color;
 				background: @hover_background_color;
 				color: @hover_text_color;
