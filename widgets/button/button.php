@@ -140,7 +140,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 					'hover' => array(
 						'type' => 'checkbox',
 						'default' => true,
-						'label' => __('Use hover effects', 'so-widgets-bundle'),
+						'label' => __( 'Use hover effects', 'so-widgets-bundle' ),
 						'state_emitter' => array(
 							'callback' => 'conditional',
 							'args'     => array(
@@ -152,7 +152,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 					'hover_background_color' => array(
 						'type' => 'color',
-						'label' => __('Hover background color', 'so-widgets-bundle'),
+						'label' => __( 'Hover background color', 'so-widgets-bundle' ),
 						'state_handler' => array(
 							'hover[show]' => array( 'show' ),
 							'hover[hide]' => array( 'hide' ),
@@ -161,7 +161,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 					'hover_text_color' => array(
 						'type' => 'color',
-						'label' => __('Hover text color', 'so-widgets-bundle'),
+						'label' => __( 'Hover text color', 'so-widgets-bundle' ),
 						'state_handler' => array(
 							'hover[show]' => array( 'show' ),
 							'hover[hide]' => array( 'hide' ),
@@ -339,8 +339,8 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'button_width' => isset( $instance['design']['width'] ) ? $instance['design']['width'] : '',
 			'button_color' => isset($instance['design']['button_color']) ? $instance['design']['button_color'] : '',
 			'text_color' =>   isset($instance['design']['text_color']) ? $instance['design']['text_color'] : '',
-			'hover_text_color' => isset($instance['design']['hover_text_color']) ? $instance['design']['hover_text_color'] : '',
-			'hover_background_color' => isset($instance['design']['hover_background_color']) ? $instance['design']['hover_background_color'] : '',
+			'hover_text_color' => isset( $instance['design']['hover_text_color'] ) ? $instance['design']['hover_text_color'] : '',
+			'hover_background_color' => isset( $instance['design']['hover_background_color'] ) ? $instance['design']['hover_background_color'] : '',
 
 
 			'font_size' => isset($instance['design']['font_size']) ? $instance['design']['font_size'] . 'em' : '',
