@@ -49,20 +49,12 @@
 		&:visited,
 		&:active,
 		&:hover{
-			color: @button_color !important;
+			color: @hover_text_color !important;
 		}
 
 		&.ow-button-hover:hover {
-			background: @button_color;
-			color: @text_color !important;
-			
-			& when not( @hover_background_color = default ), not( @hover_text_color = default ) {
-				border-color: @hover_background_color;
-				background: @hover_background_color;
-				color: @hover_text_color !important;
-			}
-
-
+			background: @hover_background_color;
+			border-color: @hover_background_color;
 		}
 	}
 }
