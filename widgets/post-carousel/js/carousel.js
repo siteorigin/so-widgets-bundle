@@ -49,8 +49,8 @@ jQuery( function ( $ ) {
 			$widget.find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click', function( e ) {
 				e.preventDefault();
 				$items = $$.find( '.sow-carousel-items' );
-				const numVisibleItems = Math.ceil( $items.outerWidth() / itemWidth );
-				const lastPosition = numItems - numVisibleItems + 1
+				var numVisibleItems = Math.ceil( $items.outerWidth() / itemWidth );
+				var lastPosition = numItems - numVisibleItems + 1
 
 				// Check if all posts are displayed
 				if ( ! complete ) {
