@@ -33,4 +33,8 @@ class SiteOrigin_Widget_Field_Code extends SiteOrigin_Widget_Field_Text_Input_Ba
 	function enqueue_scripts(){
 		wp_enqueue_script( 'so-code-field', plugin_dir_url( __FILE__ ) . 'js/code-field' . SOW_BUNDLE_JS_SUFFIX .  '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
 	}
+
+	public function sanitize( $value, $instance = array(), $old_value = null ) {
+		return $value;
+	}
 }
