@@ -107,8 +107,17 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		$instance = $attributes['widgetData'];
 
+		// Support for Additional CSS classes.
+		$add_custom_class_name = function( $class_names ) use ( $attributes ) {
+			if ( ! empty( $attributes['className'] ) ) {
+				$class_names = array_merge( $class_names, explode( ' ', $attributes['className'] ) );
+			}
+			return $class_names;
+		};
+
 		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
 			$GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] = true;
+			add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 			ob_start();
 			/* @var $widget SiteOrigin_Widget */
 			$instance = $widget->update( $instance, $instance );
@@ -119,6 +128,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				'after_title' => '</h3>',
 			), $instance );
 			$rendered_widget = ob_get_clean();
+			remove_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 			unset( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
 		} else {
 			return '<div>'.
