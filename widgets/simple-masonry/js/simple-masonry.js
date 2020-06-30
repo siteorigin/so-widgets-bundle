@@ -41,7 +41,7 @@ jQuery( function ( $ ) {
 						$$.css( 'height', ( rowHeight * rowSpan ) + ( layout.gutter * ( rowSpan - 1 ) ) );
 						
 						var $img = $$.find( '> img,> a > img' );
-						var imgAR = $img.attr( 'height' ) > 0 ? $img.attr( 'width' ) / $img.attr( 'height' ) : 1;
+						var imgAR = $img.height() > 0 ? $img.width() / $img.height() : 1;
 						var itemAR = $$.height() > 0 ? $$.width() / $$.height() : 1;
 						imgAR = parseFloat( imgAR.toFixed( 3 ) );
 						itemAR = parseFloat( itemAR.toFixed( 3 ) );
@@ -51,8 +51,7 @@ jQuery( function ( $ ) {
 							$img.css( 'margin-top', '' );
 							var marginLeft = ( $img.width() - $$.width() ) * -0.5;
 							$img.css( 'margin-left', marginLeft + 'px' );
-						}
-						else {
+						} else {
 							$img.css( 'height', 'auto' );
 							$img.css( 'width', '100%' );
 							$img.css( 'margin-left', '' );
