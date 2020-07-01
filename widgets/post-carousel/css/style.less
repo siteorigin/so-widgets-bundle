@@ -39,6 +39,21 @@
 }
 
 .sow-carousel-title {
+
+	&.has-title {
+		align-items: baseline;
+		display: flex;
+
+		.sow-carousel-navigation {
+			margin-left: auto;
+		}
+
+		body.rtl & .sow-carousel-navigation {
+			margin-right: auto;
+			margin-left: initial;
+		}
+	}
+
 	.widget-title {
 		display: inline-block;
 		padding-right: 15px;
