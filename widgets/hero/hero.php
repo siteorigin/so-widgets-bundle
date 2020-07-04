@@ -355,15 +355,18 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	 * @return string
 	 */
 	function process_content( $content, $frame ) {
-		ob_start();
-		foreach( $frame['buttons'] as $button ) {
-			$this->sub_widget('SiteOrigin_Widget_Button_Widget', array(), $button['button']);
-		}
-		$button_code = ob_get_clean();
 
-		// Add in the button code
-		$san_content = wp_kses_post($content);
-		$content = preg_replace('/(?:<(?:p|h\d|em|strong|li|blockquote) *([^>]*)> *)?\[ *buttons *\](:? *<\/(?:p|h\d|em|strong|li|blockquote)>)?/i', '<div class="sow-hero-buttons" $1>' . $button_code . '</div>', $san_content );
+		$content = wp_kses_post($content);
+		if ( strpos( $content, '[buttons]' ) !== false ) {
+			ob_start();
+			foreach( $frame['buttons'] as $button ) {
+				$this->sub_widget('SiteOrigin_Widget_Button_Widget', array(), $button['button']);
+			}
+			$button_code = ob_get_clean();
+
+			// Add in the button code
+			$content = preg_replace('/(?:<(?:p|h\d|em|strong|li|blockquote) *([^>]*)> *)?\[ *buttons *\](:? *<\/(?:p|h\d|em|strong|li|blockquote)>)?/i', '<div class="sow-hero-buttons" $1>' . $button_code . '</div>', $content );
+		}
 		
 		// Process normal shortcodes
 		$content = do_shortcode( shortcode_unautop( $content ) );
