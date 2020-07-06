@@ -12,6 +12,7 @@ while($posts->have_posts()) : $posts->the_post(); ?>
 				</a>
 			<?php else : ?>
 				<a href="<?php the_permalink() ?>" class="sow-carousel-default-thumbnail"
+				<?php echo $link_target == 'new' ? 'target="_blank" rel="noopener noreferrer"': ''; ?>
 				<?php echo ! empty( $default_thumbnail ) ?
 				'style="background-image: url('. sow_esc_url( $default_thumbnail ) .')"' : '' ?> aria-labelledby="sow-carousel-id-<?php echo the_ID(); ?>"><span class="overlay"></span></a>
 			<?php endif; ?>
