@@ -110,6 +110,23 @@ jQuery( function ( $ ) {
 				}
 			} );
 
+			// Hide/disable scroll if number of visible items is less than total posts.
+			$( window ).on( 'resize load', function() {
+				$items = $$.find( '.sow-carousel-items' );
+				var numVisibleItems = Math.ceil( $items.outerWidth() / itemWidth );
+				var navigation = $$.parent().parent().find( '.sow-carousel-navigation' );
+				if ( numVisibleItems >= $items.find( '.sow-carousel-item' ).length ) {
+					navigation.hide();
+					'touchMove'
+					$items.slick( 'slickSetOption', 'touchMove', false );
+					$items.slick( 'slickSetOption', 'draggable', false );
+				} else if ( navigation.not( ':visible' ) ) {
+					navigation.show();
+					$items.slick( 'slickSetOption', 'touchMove', true );
+					$items.slick( 'slickSetOption', 'draggable', true );
+				}
+			} );
+
 		} );
 
 		// Change Slick Settings on iPad Pro while Landscape
