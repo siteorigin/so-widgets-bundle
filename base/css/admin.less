@@ -128,6 +128,11 @@
 		select {
 			min-width: 150px;
 
+			@media (max-width: 680px) {
+				max-width: none;
+				width: 100%;
+			}
+
 			&[multiple] {
 				max-height: 83px;
 			}
