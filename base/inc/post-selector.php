@@ -4,7 +4,7 @@
  * Filter a query created from the post selector field into an array that will work properly with get_posts
  *
  * @param $query
- * @param bool $exclude_current whether to excldue the current post or not.
+ * @param bool $exclude_current whether to exclude the current post or not.
  *
  * @return mixed
  */
