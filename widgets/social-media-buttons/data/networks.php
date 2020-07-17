@@ -13,6 +13,12 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#78BDF1'
 	),
+	'tiktok'      => array(
+		'label'    => __( 'TikTok', 'so-widgets-bundle' ),
+		'base_url' => 'https://www.tiktok.com/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#000',
+	),
 	'google-plus' => array(
 		'label'    => __( 'Google+', 'so-widgets-bundle' ),
 		'base_url' => 'https://plus.google.com/',
