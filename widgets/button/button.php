@@ -341,7 +341,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		$less_vars = array(
 			'button_width' => isset( $instance['design']['width'] ) ? $instance['design']['width'] : '',
 			'button_color' => $button_color,
-			'text_color' =>   $text_color,
+			'text_color' => $text_color,
 			'hover_text_color' => ! empty( $instance['design']['hover_text_color'] ) ? $instance['design']['hover_text_color'] : $text_color,
 			'hover_background_color' => ! empty( $instance['design']['hover_background_color'] ) ? $instance['design']['hover_background_color'] : $button_color,
 			'font_size' => isset($instance['design']['font_size']) ? $instance['design']['font_size'] . 'em' : '',
