@@ -50,8 +50,10 @@
 	display: block !important;
 	margin: 15px 0;
 
-	&.siteorigin-widget-form-main {
-		min-width: 600px;
+	@media (min-width: 680px) {
+		&.siteorigin-widget-form-main {
+			min-width: 600px;
+		}
 	}
 
 	.siteorigin-widget-field {
@@ -127,6 +129,11 @@
 
 		select {
 			min-width: 150px;
+
+			@media (max-width: 680px) {
+				max-width: none;
+				width: 100%;
+			}
 
 			&[multiple] {
 				max-height: 83px;

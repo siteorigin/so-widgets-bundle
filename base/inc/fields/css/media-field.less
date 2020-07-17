@@ -111,9 +111,17 @@
 	}
 
 	.media-fallback-external {
-		float: left;
-		margin-top: 2px !important;
-		max-width: 320px;
+		width: 100%;
+
+		@media (max-width: 680px) {
+			margin-top: 1em !important;
+		}
+
+		@media (min-width: 680px) {
+			float: left;
+			margin-top: 2px !important;
+			max-width: 320px;
+		}
 	}
 }
 
