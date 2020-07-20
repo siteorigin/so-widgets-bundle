@@ -7,6 +7,7 @@
 	url('fonts/carousel-arrows.svg?-95vnmw#carousel-arrows') format('svg');
 	font-weight: normal;
 	font-style: normal;
+	font-display: block;
 }
 
 .clearfix() {
@@ -38,9 +39,28 @@
 }
 
 .sow-carousel-title {
+
+	&.has-title {
+		align-items: baseline;
+		display: flex;
+
+		.sow-carousel-navigation {
+			margin-left: auto;
+		}
+
+		body.rtl & .sow-carousel-navigation {
+			margin-right: auto;
+			margin-left: initial;
+		}
+	}
+
 	.widget-title {
 		display: inline-block;
 		padding-right: 15px;
+	}
+
+	.sow-carousel-navigation {
+		float: right;
 	}
 
 	body.rtl & .sow-carousel-navigation {

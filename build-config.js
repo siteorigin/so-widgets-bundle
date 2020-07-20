@@ -62,4 +62,10 @@ module.exports = {
             '!dist/**/*.php'                    // Ignore dist/ and contents
         ],
     },
+    googleFonts: {
+        dest: 'base/inc/fonts.php',
+    },
+    fontAwesome: {
+        base: 'icons/fontawesome/',
+    }
 };

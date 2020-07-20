@@ -61,7 +61,8 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 				'fields' => array(
 					'image' => array(
 						'type' => 'media',
-						'label' => __( 'Image', 'so-widgets-bundle')
+						'label' => __( 'Image', 'so-widgets-bundle'),
+						'fallback' => true,
 					),
 					'column_span' => array(
 						'type' => 'slider',
@@ -204,7 +205,17 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 						'description' => __( 'The size of the preloader prior to the Masonry images showing.', 'so-widgets-bundle' )
 					)
 				)
-			)
+			),
+			'layout_origin_left' => array(
+				'type' => 'select',
+				'label' => __( 'Layout origin', 'so-widgets-bundle' ),
+				'description' => __( 'Controls the horizontal flow of the layout. Items can either start positioned on the left or right.', 'so-widgets-bundle' ),
+				'default' => 'true',
+				'options' => array(
+					'true' => __( 'Left', 'so-widgets-bundle' ),
+					'false' => __( 'Right', 'so-widgets-bundle' ),
+				),
+			),
 		);
 	}
 
@@ -219,11 +230,11 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 			}
 			$item['link_attributes'] = $link_atts;
 		}
-		
 		return array(
 			'args' => $args,
 			'items' => $items,
 			'preloader_enabled' => ! empty( $instance['preloader']['enabled'] ) ? true : false,
+			'layout_origin_left' => ! empty( $instance['layout_origin_left'] ) ? $instance['layout_origin_left'] : 'true',
 			'layouts' => array(
 				'desktop' => siteorigin_widgets_underscores_to_camel_case(
 					array(

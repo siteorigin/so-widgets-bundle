@@ -135,6 +135,15 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 				'default' => 'sow-carousel-default',
 			),
 
+			'link_target' => array(
+				'type' => 'select',
+				'label' => __( 'Link target', 'so-widgets-bundle' ),
+				'description' => __( 'Choose where to open each carousel item.', 'so-widgets-bundle' ),
+				'options' => array(
+					'same'    => __( 'Same window ', 'so-widgets-bundle' ),
+					'new'    => __( 'New window ', 'so-widgets-bundle' ),
+				),
+			),
 			'loop_posts' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Loop posts', 'so-widgets-bundle' ),
@@ -185,7 +194,6 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			$instance['posts'],
 			array(
 				'paged' => empty( $instance['paged'] ) ? 1 : $instance['paged'],
-				'posts_per_page' => -1,
 			)
 		) );
 		$posts = new WP_Query( $query );
@@ -195,6 +203,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			'posts' => $posts,
 			'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : '',
 			'loop_posts' => ! empty( $instance['loop_posts'] ),
+			'link_target' => ! empty( $instance['link_target'] ) ? $instance['link_target'] : 'same',
 		);
 	}
 

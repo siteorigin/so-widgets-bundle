@@ -1,11 +1,25 @@
 .siteorigin-widget-form .siteorigin-widget-field-type-date-range {
 	> div {
 		display: inline-block;
-		margin-right: 5px;
+
+		&:first-of-type {
+			margin-right: 5px;
+		}
+
+		@media (max-width: 680px) {
+			width: calc(50% - 10px);
+		}
 
 		span {
 			display: inline-block;
-			min-width: 35px;
+	
+			@media (max-width: 680px) {
+				text-transform: capitalize;
+			}
+
+			&:last-of-type {
+				margin-right: 5px;
+			}
 
 			&:last-child {
 				margin-left: 10px;
@@ -14,6 +28,10 @@
 
 		input[type="text"].datepicker {
 			width: 258px;
+
+			@media (max-width: 680px) {
+				width: 100%;
+			}
 		}
 	}
 
@@ -24,6 +42,7 @@
 
 		> select {
 			min-width: inherit;
+			width: auto;
 		}
 	}
 }

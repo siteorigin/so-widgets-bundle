@@ -6,6 +6,9 @@
 @button_color: #41a9d5;
 @text_color: #FFFFFF;
 
+@hover_background_color: default;
+@hover_text_color: default;
+
 @button_font: default;
 @button_font_weight: default;
 
@@ -46,12 +49,12 @@
 		&:visited,
 		&:active,
 		&:hover{
-			color: @button_color !important;
+			color: @hover_text_color !important;
 		}
 
 		&.ow-button-hover:hover {
-			background: @button_color;
-			color: @text_color !important;
+			background: @hover_background_color;
+			border-color: @hover_background_color;
 		}
 	}
 }
