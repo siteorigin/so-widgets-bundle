@@ -336,14 +336,14 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		if( empty( $instance ) || empty( $instance['design'] ) ) return array();
 
 		$text_color = isset( $instance['design']['text_color'] ) ? $instance['design']['text_color'] : '';
-		$button_color = isset ($instance['design']['hover_background_color'] ) ? $instance['design']['hover_background_color'] : '';
+		$button_color = isset( $instance['design']['button_color'] ) ? $instance['design']['button_color'] : '';
 
 		$less_vars = array(
 			'button_width' => isset( $instance['design']['width'] ) ? $instance['design']['width'] : '',
 			'button_color' => $button_color,
-			'text_color' =>   $text_color,
-			'hover_text_color' => isset( $instance['design']['hover_text_color'] ) ? $instance['design']['hover_text_color'] : $text_color,
-			'hover_background_color' => isset( $instance['design']['hover_background_color'] ) ? $instance['design']['hover_background_color'] : $button_color,
+			'text_color' => $text_color,
+			'hover_text_color' => ! empty( $instance['design']['hover_text_color'] ) ? $instance['design']['hover_text_color'] : $text_color,
+			'hover_background_color' => ! empty( $instance['design']['hover_background_color'] ) ? $instance['design']['hover_background_color'] : $button_color,
 			'font_size' => isset($instance['design']['font_size']) ? $instance['design']['font_size'] . 'em' : '',
 			'rounding' => isset($instance['design']['rounding']) ? $instance['design']['rounding'] . 'em' : '',
 			'padding' => isset($instance['design']['padding']) ? $instance['design']['padding'] . 'em' : '',
