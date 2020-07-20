@@ -65,7 +65,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
-== 1.17.1 - 09 July 2020 ==
+== 1.17.1 - 20 July 2020 ==
 * Post Carousel: Prevented all posts from outputting. `10` will be output at a time if `Posts per page` isn't set.
 * Post Carousel: Inlined navigation buttons if a title is set.
 * Updated the Google Fonts array.
@@ -87,6 +87,9 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Editor: Added `noreferrer` to any target links preventing Layout block failing validation when `target=_blank` link added.
 * Hero: Prevented buttons from loading when buttons shortcode isn't added.
 * Post Carousel: Added a `Link target` setting.
+* Post Carousel: Disable button navigation if number of visible posts is more than total posts.
+* Mobile: Improved admin form field responsive behavior.
+* Updated Font Awesome from `5.13.0` to `5.14.0`.
 
 == 1.17.0 - 22 May 2020 ==
 * Simple Masonry: Added a preloader and related settings.
