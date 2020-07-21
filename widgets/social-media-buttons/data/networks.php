@@ -1,6 +1,103 @@
 <?php
 
 return array(
+	'facebook'    => array(
+		'label'    => __( 'Facebook', 'so-widgets-bundle' ),
+		'base_url' => 'https://www.facebook.com/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#3A5795'
+	),
+	'twitter'     => array(
+		'label'    => __( 'Twitter', 'so-widgets-bundle' ),
+		'base_url' => 'https://twitter.com/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#78BDF1'
+	),
+	'tiktok'      => array(
+		'label'    => __( 'TikTok', 'so-widgets-bundle' ),
+		'base_url' => 'https://www.tiktok.com/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#000',
+	),
+	'google-plus' => array(
+		'label'    => __( 'Google+', 'so-widgets-bundle' ),
+		'base_url' => 'https://plus.google.com/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#DD4B39'
+	),
+	'rss'         => array(
+		'label'    => __( 'RSS', 'so-widgets-bundle' ),
+		'base_url' => get_bloginfo('rss_url'),
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#FAA21B'
+	),
+	'email'   => array(
+		'label'    => __( 'Email', 'so-widgets-bundle' ),
+		'base_url' => 'mailto:',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#99C4E6'
+	),
+	'phone'   => array(
+		'label'    => __( 'Phone', 'so-widgets-bundle' ),
+		'base_url' => 'tel:',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#99E5AA'
+	),
+	'snapchat'    => array(
+		'label'    => __( 'Snapchat', 'so-widgets-bundle' ),
+		'base_url' => 'https://www.snapchat.com/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#FFFC00'
+	),
+	'skype'    => array(
+		'label'    => __( 'Skype', 'so-widgets-bundle' ),
+		'base_url' => 'https://skype.com/',
+		'icon_color' => '#0078d7',
+		'button_color' => '#FFFFFF'
+	),
+	'linkedin'    => array(
+		'label'    => __( 'LinkedIn', 'so-widgets-bundle' ),
+		'base_url' => 'https://www.linkedin.com/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#0177B4'
+	),
+	'pinterest'   => array(
+		'label'    => __( 'Pinterest', 'so-widgets-bundle' ),
+		'base_url' => 'https://www.pinterest.com/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#DB7C83'
+	),
+	'tumblr'   => array(
+		'label'    => __( 'Tumblr', 'so-widgets-bundle' ),
+		'base_url' => 'https://www.tumblr.com/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#36465D'
+	),
+	'instagram'   => array(
+		'label'    => __( 'Instagram', 'so-widgets-bundle' ),
+		'base_url' => 'https://instagram.com/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#3D739C'
+	),
+	'vk'   => array(
+		'label'    => __( 'VK', 'so-widgets-bundle' ),
+		'base_url' => 'https://vk.com/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#537599'
+	),
+	'flickr'   => array(
+		'label'    => __( 'Flickr', 'so-widgets-bundle' ),
+		'base_url' => 'https://www.flickr.com/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#D40057'
+	),
+	'vine'   => array(
+		'label'    => __( 'Vine', 'so-widgets-bundle' ),
+		'base_url' => 'https://vine.co/',
+		'icon_color' => '#FFFFFF',
+		'button_color' => '#17B48A'
+	),
+
 	// The rest of the networks, alphabetically
 
 	'500px'   => array(
@@ -69,24 +166,6 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#1388E6'
 	),
-	'email'   => array(
-		'label'    => __( 'Email', 'so-widgets-bundle' ),
-		'base_url' => 'mailto:',
-		'icon_color' => '#FFFFFF',
-		'button_color' => '#99C4E6'
-	),
-	'facebook'    => array(
-		'label'    => __( 'Facebook', 'so-widgets-bundle' ),
-		'base_url' => 'https://www.facebook.com/',
-		'icon_color' => '#FFFFFF',
-		'button_color' => '#3A5795'
-	),
-	'flickr'   => array(
-		'label'    => __( 'Flickr', 'so-widgets-bundle' ),
-		'base_url' => 'https://www.flickr.com/',
-		'icon_color' => '#FFFFFF',
-		'button_color' => '#D40057'
-	),
 	'foursquare'   => array(
 		'label'    => __( 'Foursquare', 'so-widgets-bundle' ),
 		'base_url' => 'https://foursquare.com/',
@@ -111,12 +190,6 @@ return array(
 		'icon_color' => '#372213',
 		'button_color' => '#e2e0d1'
 	),
-	'google-plus' => array(
-		'label'    => __( 'Google+', 'so-widgets-bundle' ),
-		'base_url' => 'https://plus.google.com/',
-		'icon_color' => '#FFFFFF',
-		'button_color' => '#DD4B39'
-	),
 	'hacker-news'   => array(
 		'label'    => __( 'Hacker News', 'so-widgets-bundle' ),
 		'base_url' => 'https://news.ycombinator.com/',
@@ -135,41 +208,11 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#C02C0C'
 	),
-	'linkedin'    => array(
-		'label'    => __( 'LinkedIn', 'so-widgets-bundle' ),
-		'base_url' => 'https://www.linkedin.com/',
-		'icon_color' => '#FFFFFF',
-		'button_color' => '#0177B4'
-	),
-	'phone'   => array(
-		'label'    => __( 'Phone', 'so-widgets-bundle' ),
-		'base_url' => 'tel:',
-		'icon_color' => '#FFFFFF',
-		'button_color' => '#99E5AA'
-	),
-	'pinterest'   => array(
-		'label'    => __( 'Pinterest', 'so-widgets-bundle' ),
-		'base_url' => 'https://www.pinterest.com/',
-		'icon_color' => '#FFFFFF',
-		'button_color' => '#DB7C83'
-	),
 	'reddit'   => array(
 		'label'    => __( 'Reddit', 'so-widgets-bundle' ),
 		'base_url' => 'https://www.reddit.com/',
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#CEE3F8'
-	),
-	'rss'         => array(
-		'label'    => __( 'RSS', 'so-widgets-bundle' ),
-		'base_url' => get_bloginfo('rss_url'),
-		'icon_color' => '#FFFFFF',
-		'button_color' => '#FAA21B'
-	),
-	'skype'    => array(
-		'label'    => __( 'Skype', 'so-widgets-bundle' ),
-		'base_url' => 'https://skype.com/',
-		'icon_color' => '#0078d7',
-		'button_color' => '#FFFFFF'
 	),
 	'slack'   => array(
 		'label'    => __( 'Slack', 'so-widgets-bundle' ),
@@ -182,12 +225,6 @@ return array(
 		'base_url' => 'https://www.slideshare.net/',
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#00A8AA'
-	),
-	'snapchat'    => array(
-		'label'    => __( 'Snapchat', 'so-widgets-bundle' ),
-		'base_url' => 'https://www.snapchat.com/',
-		'icon_color' => '#FFFFFF',
-		'button_color' => '#FFFC00'
 	),
 	'soundcloud'   => array(
 		'label'    => __( 'Soundcloud', 'so-widgets-bundle' ),
@@ -237,12 +274,6 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#27a7e5'
 	),
-	'tiktok'      => array(
-		'label'    => __( 'TikTok', 'so-widgets-bundle' ),
-		'base_url' => 'https://www.tiktok.com/',
-		'icon_color' => '#FFFFFF',
-		'button_color' => '#000',
-	),
 	'trello'   => array(
 		'label'    => __( 'Trello', 'so-widgets-bundle' ),
 		'base_url' => 'https://trello.com/',
@@ -255,41 +286,17 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#589442'
 	),
-	'tumblr'   => array(
-		'label'    => __( 'Tumblr', 'so-widgets-bundle' ),
-		'base_url' => 'https://www.tumblr.com/',
-		'icon_color' => '#FFFFFF',
-		'button_color' => '#36465D'
-	),
 	'twitch'   => array(
 		'label'    => __( 'Twitch', 'so-widgets-bundle' ),
 		'base_url' => 'https://www.twitch.tv/',
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#6542A6'
 	),
-	'twitter'     => array(
-		'label'    => __( 'Twitter', 'so-widgets-bundle' ),
-		'base_url' => 'https://twitter.com/',
-		'icon_color' => '#FFFFFF',
-		'button_color' => '#78BDF1'
-	),
 	'vimeo-square'   => array(
 		'label'    => __( 'Vimeo', 'so-widgets-bundle' ),
 		'base_url' => 'https://vimeo.com/',
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#5BC8FF'
-	),
-	'vine'   => array(
-		'label'    => __( 'Vine', 'so-widgets-bundle' ),
-		'base_url' => 'https://vine.co/',
-		'icon_color' => '#FFFFFF',
-		'button_color' => '#17B48A'
-	),
-	'vk'   => array(
-		'label'    => __( 'VK', 'so-widgets-bundle' ),
-		'base_url' => 'https://vk.com/',
-		'icon_color' => '#FFFFFF',
-		'button_color' => '#537599'
 	),
 	'whatsapp'   => array(
 		'label'    => __( 'WhatsApp', 'so-widgets-bundle' ),
