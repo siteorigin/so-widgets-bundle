@@ -65,6 +65,9 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+== 1.17.2 - 21 July 2020 ==
+* Resolved button Less CSS bug.
+
 == 1.17.1 - 20 July 2020 ==
 * Post Carousel: Prevented all posts from outputting. `10` will be output at a time if `Posts per page` isn't set.
 * Post Carousel: Inlined navigation buttons if a title is set.
