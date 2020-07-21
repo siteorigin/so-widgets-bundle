@@ -38,9 +38,14 @@ jQuery( function ( $ ) {
 				],
 			} );
 
+			// Trigger navigation click on swipe
+			$items.on( 'swipe', function( e, slick, direction ) {
+				$$.parent().parent().find( '.sow-carousel-' + ( direction == 'left' ? 'next' : 'prev' ) ).trigger( 'touchend' );
+			} );
+
 			// click is used rather than Slick's beforeChange or afterChange 
 			// due to the inability to stop a slide from changing from those events
-			$$.parent().parent().find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click', function( e ) {
+			$$.parent().parent().find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click touchend', function( e ) {
 				e.preventDefault();
 				$items = $$.find( '.sow-carousel-items' );
 				var numItems = $items.find( '.sow-carousel-item' ).length,
