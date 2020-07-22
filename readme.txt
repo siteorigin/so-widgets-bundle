@@ -65,6 +65,14 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+== 1.17.3 - 22 July 2020 ==
+* Reverted: Features: Prevented icon overlapping text in edge cases.
+* Social Media Buttons: Added TikTok.
+* Button: Removed `:visited` color targeting.
+* Button: Set hover background color defaults.
+* Carousel: Improved multi-carousel support.
+* Carousel: Triggered click on swipe for mobile devices.
+
 == 1.17.2 - 21 July 2020 ==
 * Resolved button Less CSS bug.
 
