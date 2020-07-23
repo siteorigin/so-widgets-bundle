@@ -17,7 +17,7 @@ jQuery( function ( $ ) {
 				arrows: false,
 				infinite: false,
 				rows: 0,
-				rtl: $$.attr( 'dir' ) == 'rtl',
+				rtl: $$.data( 'dir' ) == 'rtl',
 				touchThreshold: 20,
 				variableWidth: true,
 				responsive: [
