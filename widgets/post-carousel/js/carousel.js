@@ -8,7 +8,6 @@ jQuery( function ( $ ) {
 		// The carousel widget
 		$( '.sow-carousel-wrapper' ).each( function () {
 			var $$ = $( this );
-			itemWidth = $items.find( '.sow-carousel-item' ).outerWidth( true );
 			$items = $$.find( '.sow-carousel-items' );
 
 			$items.not( '.slick-initialized' ).slick( {
@@ -49,6 +48,7 @@ jQuery( function ( $ ) {
 				var numItems = $items.find( '.sow-carousel-item' ).length,
 				totalPosts = $$.data( 'post-count' );
 				complete = numItems === totalPosts,
+				numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 				lastPosition = numItems - numVisibleItems + 1;
 
 				// Check if all posts are displayed
@@ -109,7 +109,7 @@ jQuery( function ( $ ) {
 			// Hide/disable scroll if number of visible items is less than total posts.
 			$( window ).on( 'resize load', function() {
 				$items = $$.find( '.sow-carousel-items' );
-				var numVisibleItems = Math.ceil( $items.outerWidth() / itemWidth );
+				var numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) );
 				var navigation = $$.parent().parent().find( '.sow-carousel-navigation' );
 				if ( numVisibleItems >= $items.find( '.sow-carousel-item' ).length ) {
 					navigation.hide();
