@@ -8,10 +8,8 @@ jQuery( function ( $ ) {
 		// The carousel widget
 		$( '.sow-carousel-wrapper' ).each( function () {
 			var $$ = $( this );
-			$items = $$.find( '.sow-carousel-items' ),
-			fetching = false,
-			page = 1,
 			itemWidth = $items.find( '.sow-carousel-item' ).outerWidth( true );
+			$items = $$.find( '.sow-carousel-items' );
 
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
@@ -51,7 +49,6 @@ jQuery( function ( $ ) {
 				var numItems = $items.find( '.sow-carousel-item' ).length,
 				totalPosts = $$.data( 'post-count' );
 				complete = numItems === totalPosts,
-				numVisibleItems = Math.ceil( $items.outerWidth() / itemWidth ),
 				lastPosition = numItems - numVisibleItems + 1;
 
 				// Check if all posts are displayed
@@ -59,10 +56,10 @@ jQuery( function ( $ ) {
 					// Check if we need to fetch the next batch of posts
 					if ( $items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ) {
 
-						if ( ! fetching ) {
+						if ( ! $$.data( 'fetching' ) ) {
 							// Fetch the next batch
-							fetching = true;
-							page++;
+							$$.data( 'fetching', true );
+							var page = $$.data( 'page' ) + 1;
 
 							$items.slick( 'slickAdd', '<div class="sow-carousel-item sow-carousel-loading"></div>' );
 							$.get(
@@ -76,7 +73,8 @@ jQuery( function ( $ ) {
 									$items.find( '.sow-carousel-loading' ).remove();
 									$items.slick( 'slickAdd', data.html );
 									numItems = $$.find( '.sow-carousel-item' ).length;
-									fetching = false;
+									$$.data( 'fetching', false );
+									$$.data( 'page', page );
 								}
 							);
 						}
