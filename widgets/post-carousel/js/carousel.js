@@ -90,7 +90,7 @@ jQuery( function ( $ ) {
 				// https://github.com/kenwheeler/slick/issues/3567
 				if ( $( this ).hasClass( 'sow-carousel-next' ) ) {
 					if ( $items.slick( 'slickCurrentSlide' ) >= lastPosition ) {
-						if ( $$.data( 'loop-posts-enabled' ) && ! fetching ) {
+						if ( $$.data( 'loop-posts-enabled' ) && ! $$.data( 'fetching' ) ) {
 							$items.slick( 'slickGoTo', 0 );
 						}
 					} else {
