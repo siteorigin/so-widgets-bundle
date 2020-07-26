@@ -50,7 +50,7 @@ $last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] )
 					<?php endif; ?>
 
 					<?php if(!empty($feature['text'])) : ?>
-						<?php echo $feature['text']; ?>
+						<?php echo do_shortcode( $feature['text'] ); ?>
 					<?php endif; ?>
 
 					<?php if(!empty($feature['more_text'])) : ?>
