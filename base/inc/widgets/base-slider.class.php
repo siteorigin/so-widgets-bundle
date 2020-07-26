@@ -67,10 +67,6 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'label' => __('Animation speed', 'so-widgets-bundle'),
 				'description' => __('Animation speed in milliseconds.', 'so-widgets-bundle'),
 				'default' => 800,
-				'state_handler' => array(
-					'autoplay[autoplay]' => array( 'show' ),
-					'autoplay[static]' => array( 'hide' ),
-				),
 			),
 
 			'timeout' => array(
