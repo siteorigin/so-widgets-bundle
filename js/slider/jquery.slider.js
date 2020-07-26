@@ -172,6 +172,7 @@ jQuery( function($){
 						'speed' : settings.speed,
 						'timeout' : settings.timeout,
 						'swipe' : settings.swipe,
+						'paused' : settings.paused,
 						'swipe-fx' : 'scrollHorz',
 						'log' : false,
 					} )	;
