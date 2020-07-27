@@ -179,7 +179,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'pagination'               => true,
 			'speed'                    => empty( $controls['speed'] ) ? 1 : $controls['speed'],
 			'timeout'                  => $controls['timeout'],
-			'paused'                 => empty( $controls['autoplay'] ) ?: false,
+			'paused'                   => empty( $controls['autoplay'] ) ?: false,
 			'swipe'                    => $controls['swipe'],
 			'nav_always_show_mobile'   => ! empty( $controls['nav_always_show_mobile'] ) ? true : '',
 			'breakpoint'               => ! empty( $controls['breakpoint'] ) ? $controls['breakpoint'] : '780px',
