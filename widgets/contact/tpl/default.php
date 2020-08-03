@@ -10,7 +10,7 @@ if( $result['status'] == 'success' ) {
 	// Display the success message
 	?>
 	<div class="sow-contact-form-success" id="contact-form-<?php echo esc_attr( $short_hash ) ?>">
-		<?php echo wp_kses_post( wpautop( $instance['settings']['success_message'] ) ) ?>
+		<?php echo $instance['settings']['success_message']; ?>
 	</div>
 	<?php
 }
