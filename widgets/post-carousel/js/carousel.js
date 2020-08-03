@@ -17,7 +17,6 @@ jQuery( function ( $ ) {
 				rtl: $$.data( 'dir' ) == 'rtl',
 				touchThreshold: 20,
 				variableWidth: true,
-				accessibility: false,
 				responsive: [
 					{
 						breakpoint: carouselBreakpoints.tablet_portrait,
@@ -47,7 +46,8 @@ jQuery( function ( $ ) {
 				e.preventDefault();
 				$items = $$.find( '.sow-carousel-items' );
 				var numItems = $items.find( '.sow-carousel-item' ).length,
-				complete = numItems === $$.data( 'post-count' ),
+				totalPosts = $$.data( 'post-count' );
+				complete = numItems === totalPosts,
 				numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 				lastPosition = numItems - numVisibleItems + 1;
 
@@ -75,8 +75,6 @@ jQuery( function ( $ ) {
 									numItems = $$.find( '.sow-carousel-item' ).length;
 									$$.data( 'fetching', false );
 									$$.data( 'page', page );
-
-									$items.find( '.sow-carousel-item[tabindex="0"]' ).trigger( 'focus' );
 								}
 							);
 						}
@@ -123,41 +121,8 @@ jQuery( function ( $ ) {
 					$items.slick( 'slickSetOption', 'touchMove', true );
 					$items.slick( 'slickSetOption', 'draggable', true );
 				}
-
-				$items.find( '.sow-carousel-item' ).first().prop( 'tabindex', 0 );
 			} );
 
-			$$.find( '.sow-carousel-item' ).on( 'keyup', function( e ) {
-				// Ensure left/right key was pressed
-				if ( e.keyCode != 37 && e.keyCode != 39 ) {
-					return;
-				}
-
-				var $items = $$.find( '.sow-carousel-items' ),
-				numItems = $items.find( '.sow-carousel-item' ).length,
-				numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
-				itemIndex = $( this ).data( 'slick-index' ),
-				lastPosition = numItems - ( numItems === $$.data( 'post-count' ) ? 0 : 1 );
-
-				if ( e.keyCode == 37 ) {
-					itemIndex--;
-					if ( itemIndex < 0 ) {
-						itemIndex = lastPosition;
-					}
-				} else if ( e.keyCode == 39 ) {
-					if ( itemIndex >= lastPosition ) {
-						$( '.sow-carousel-next' ).trigger( 'click' );
-					} else {
-						itemIndex++;
-					}
-				}
-
-				$items.slick( 'slickGoTo', itemIndex, true );
-				$$.find( '.sow-carousel-item' ).prop( 'tabindex', -1 );
-				$$.find( '.sow-carousel-item[data-slick-index="' + itemIndex + '"]' )
-					.trigger( 'focus' )
-					.prop( 'tabindex', 0 );
-			} );
 		} );
 
 		// Change Slick Settings on iPad Pro while Landscape
