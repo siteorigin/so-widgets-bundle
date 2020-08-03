@@ -100,6 +100,9 @@ function siteorigin_widget_post_selector_process_query( $query, $exclude_current
 	}
 
 	if ( $exclude_current && get_the_ID() ) {
+		if ( ! isset( $query['post__not_in'] ) ) {
+			$query['post__not_in'] = array();
+		}
 		$query['post__not_in'][] = get_the_ID();
 	}
 
