@@ -66,6 +66,13 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+== 1.17.4 - 05 August 2020 ==
+* Post Carousel: Improved support for multiple carousel widgets on the same page.
+* Post Carousel: Improved mobile support.
+* Sliders: Added `Autoplay` and `Autoplay Pause on Hover` settings to the Slider, Layout Slider and Hero widgets.
+* Features: Allowed shortcodes to be used in the Text field.
+* Contact Form: Fix to ensure the correct fields are passed to Akismet.
+
 == 1.17.3 - 23 July 2020 ==
 * Reverted: Features: Prevented icon overlapping text in edge cases.
 * Social Media Buttons: Added TikTok.
