@@ -111,7 +111,8 @@ jQuery( function ( $ ) {
 				$items = $$.find( '.sow-carousel-items' );
 				var numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) );
 				var navigation = $$.parent().parent().find( '.sow-carousel-navigation' );
-				if ( numVisibleItems >= $items.find( '.sow-carousel-item' ).length ) {
+
+				if ( numVisibleItems >= $.data( 'post-count' ) ) {
 					navigation.hide();
 					'touchMove'
 					$items.slick( 'slickSetOption', 'touchMove', false );
