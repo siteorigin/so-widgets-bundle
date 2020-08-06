@@ -66,7 +66,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
-== 1.17.4 - 05 August 2020 ==
+== 1.17.4 - 06 August 2020 ==
 * Post Carousel: Improved support for multiple carousel widgets on the same page.
 * Post Carousel: Improved mobile support.
 * Sliders: Added `Autoplay` and `Autoplay Pause on Hover` settings to the Slider, Layout Slider and Hero widgets.
@@ -101,7 +101,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Tabs: Added smooth scroll to tab when linked to.
 * Added `font-display: block` to all font icons.
 * Widget Block: Added `Additional CSS Classes` output.
-* Button: Added Button hover style settings. 
+* Button: Added Button hover style settings.
 * Features: Prevented icon overlapping text in edge cases.
 * Post Carousel: Resolved IE 11 JavaScript error.
 * Post Carousel: Vertically align navigation icons and title when title present.
