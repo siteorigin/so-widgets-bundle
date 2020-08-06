@@ -140,10 +140,8 @@ var sowbForms = window.sowbForms || {};
 										$$f = $$;
 									}
 
-									if ( thisHandler[i][0] == 'show' ) {
-										$$f.slideDown( 'fast' );
-									} else if( thisHandler[i][0] == 'hide' ) {
-										$$f.slideUp( 'fast' );
+									if ( thisHandler[i][0] == 'show' || thisHandler[i][0] == 'hide' ) {
+										$$f.fadeToggle( 'slow' );
 									} else {
 										// Call the function on the wrapper we've selected
 										$$f[ thisHandler[i][0] ].apply( $$f, typeof thisHandler[i][2] !== 'undefined' ? thisHandler[i][2] : [] );
