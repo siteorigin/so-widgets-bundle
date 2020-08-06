@@ -108,37 +108,41 @@ jQuery( function ( $ ) {
 				}
 			} );
 
-			$$.find( '.sow-carousel-item' ).on( 'keyup', function( e ) {
-				// Ensure left/right key was pressed
-				if ( e.keyCode != 37 && e.keyCode != 39 ) {
-					return;
+		} );
+
+		// Keyboard Navigation of carousel items.
+		$( document ).on( 'keyup', '.sow-carousel-item', function( e ) {
+			// Ensure left/right key was pressed
+			if ( e.keyCode != 37 && e.keyCode != 39 ) {
+				return;
+			}
+
+			var $wrapper =  $( this ).parents( '.sow-carousel-wrapper' ),
+			$items = $wrapper.find( '.sow-carousel-items' ),
+			numItems = $items.find( '.sow-carousel-item' ).length,
+			itemIndex = $( this ).data( 'slick-index' ),
+			lastPosition = numItems - ( numItems === $wrapper.data( 'post-count' ) ? 0 : 1 );
+
+			if ( e.keyCode == 37 ) {
+				itemIndex--;
+				if ( itemIndex < 0 ) {
+					itemIndex = lastPosition;
 				}
-
-				var $items = $$.find( '.sow-carousel-items' ),
-				numItems = $items.find( '.sow-carousel-item' ).length,
-				numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
-				itemIndex = $( this ).data( 'slick-index' ),
-				lastPosition = numItems - ( numItems === $$.data( 'post-count' ) ? 0 : 1 );
-
-				if ( e.keyCode == 37 ) {
-					itemIndex--;
-					if ( itemIndex < 0 ) {
-						itemIndex = lastPosition;
+			} else if ( e.keyCode == 39 ) {
+				itemIndex++;
+				if ( itemIndex >= lastPosition ) {
+					if ( $wrapper.data( 'fetching' ) ) {
+						return; // Currently loading new post
 					}
-				} else if ( e.keyCode == 39 ) {
-					if ( itemIndex >= lastPosition ) {
-						$( '.sow-carousel-next' ).trigger( 'click' );
-					} else {
-						itemIndex++;
-					}
+					$wrapper.parent().find( '.sow-carousel-next' ).trigger( 'click' );
 				}
+			}
 
-				$items.slick( 'slickGoTo', itemIndex, true );
-				$$.find( '.sow-carousel-item' ).prop( 'tabindex', -1 );
-				$$.find( '.sow-carousel-item[data-slick-index="' + itemIndex + '"]' )
-					.trigger( 'focus' )
-					.prop( 'tabindex', 0 );
-			} );
+			$items.slick( 'slickGoTo', itemIndex, true );
+			$wrapper.find( '.sow-carousel-item' ).prop( 'tabindex', -1 );
+			$wrapper.find( '.sow-carousel-item[data-slick-index="' + itemIndex + '"]' )
+				.trigger( 'focus' )
+				.prop( 'tabindex', 0 );
 		} );
 
 		$( window ).on( 'resize load', function() {
@@ -163,6 +167,8 @@ jQuery( function ( $ ) {
 				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToShow', 3 );
 				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToScroll', 3 );
 			}
+
+			$( '.sow-carousel-item:first-of-type' ).prop( 'tabindex', 0 );
 		} );
 	};
 
