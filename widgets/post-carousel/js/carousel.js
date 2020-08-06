@@ -41,7 +41,7 @@ jQuery( function ( $ ) {
 				$$.parent().parent().find( '.sow-carousel-' + ( direction == 'left' ? 'next' : 'prev' ) ).trigger( 'touchend' );
 			} );
 
-			// click is used rather than Slick's beforeChange or afterChange 
+			// click is used rather than Slick's beforeChange or afterChange
 			// due to the inability to stop a slide from changing from those events
 			$$.parent().parent().find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click touchend', function( e ) {
 				e.preventDefault();
@@ -108,25 +108,6 @@ jQuery( function ( $ ) {
 				}
 			} );
 
-			// Hide/disable scroll if number of visible items is less than total posts.
-			$( window ).on( 'resize load', function() {
-				$items = $$.find( '.sow-carousel-items' );
-				var numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) );
-				var navigation = $$.parent().parent().find( '.sow-carousel-navigation' );
-				if ( numVisibleItems >= $items.find( '.sow-carousel-item' ).length ) {
-					navigation.hide();
-					'touchMove'
-					$items.slick( 'slickSetOption', 'touchMove', false );
-					$items.slick( 'slickSetOption', 'draggable', false );
-				} else if ( navigation.not( ':visible' ) ) {
-					navigation.show();
-					$items.slick( 'slickSetOption', 'touchMove', true );
-					$items.slick( 'slickSetOption', 'draggable', true );
-				}
-
-				$items.find( '.sow-carousel-item' ).first().prop( 'tabindex', 0 );
-			} );
-
 			$$.find( '.sow-carousel-item' ).on( 'keyup', function( e ) {
 				// Ensure left/right key was pressed
 				if ( e.keyCode != 37 && e.keyCode != 39 ) {
@@ -160,9 +141,25 @@ jQuery( function ( $ ) {
 			} );
 		} );
 
-		// Change Slick Settings on iPad Pro while Landscape
-		$( window ).resize( function() {
-			if ( window.matchMedia( '(min-width: ' + carouselBreakpoints.tablet_portrait + 'px) and (max-width: ' + carouselBreakpoints.tablet_landscape + 'px) and (orientation: landscape)' ).matches ) {				
+		$( window ).on( 'resize load', function() {
+			// Hide/disable scroll if number of visible items is less than total posts.
+			var $carousels = $( '.sow-carousel-wrapper' ),
+			$items = $carousels.find( '.sow-carousel-items' ),
+			numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
+			navigation = $carousels.parent().parent().find( '.sow-carousel-navigation' );
+
+			if ( numVisibleItems >= $carousels.data( 'post-count' ) ) {
+				navigation.hide();
+				$items.slick( 'slickSetOption', 'touchMove', false );
+				$items.slick( 'slickSetOption', 'draggable', false );
+			} else if ( navigation.not( ':visible' ) ) {
+				navigation.show();
+				$items.slick( 'slickSetOption', 'touchMove', true );
+				$items.slick( 'slickSetOption', 'draggable', true );
+			}
+
+			// Change Slick Settings on iPad Pro while Landscape
+			if ( window.matchMedia( '(min-width: ' + carouselBreakpoints.tablet_portrait + 'px) and (max-width: ' + carouselBreakpoints.tablet_landscape + 'px) and (orientation: landscape)' ).matches ) {
 				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToShow', 3 );
 				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToScroll', 3 );
 			}

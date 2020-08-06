@@ -2,6 +2,7 @@
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 4.2
 Tested up to: 5.5
+Requires PHP: 5.6.20
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
