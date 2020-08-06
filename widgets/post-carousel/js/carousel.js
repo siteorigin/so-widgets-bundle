@@ -110,6 +110,15 @@ jQuery( function ( $ ) {
 
 		} );
 
+		// Keyboard Navigation of carousel navigation.
+		$( document ).on( 'keydown', '.sow-carousel-navigation a', function( e ) {
+			if ( e.keyCode != 13 && e.keyCode != 32 ) {
+				return;
+			}
+			e.preventDefault();
+			$( this ).click();
+		} );
+
 		// Keyboard Navigation of carousel items.
 		$( document ).on( 'keyup', '.sow-carousel-item', function( e ) {
 			// Ensure left/right key was pressed
