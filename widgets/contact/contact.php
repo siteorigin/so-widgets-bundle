@@ -1229,7 +1229,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				$message_text[] = $m['value'];
 			}
 
-			$comment['comment_text']         = $email_fields['subject'] . "\n\n" . implode( "\n\n", $message_text );
+			$comment['comment_content']      = $email_fields['subject'] . "\n\n" . implode( "\n\n", $message_text );
 			$comment['comment_author']       = ! empty( $email_fields['name'] ) ? $email_fields['name'] : '';
 			$comment['comment_author_email'] = $email_fields['email'];
 			$comment['comment_post_ID']      = get_the_ID();

@@ -106,27 +106,27 @@ jQuery( function ( $ ) {
 				}
 			} );
 
-			// Hide/disable scroll if number of visible items is less than total posts.
-			$( window ).on( 'resize load', function() {
-				$items = $$.find( '.sow-carousel-items' );
-				var numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) );
-				var navigation = $$.parent().parent().find( '.sow-carousel-navigation' );
-				if ( numVisibleItems >= $items.find( '.sow-carousel-item' ).length ) {
-					navigation.hide();
-					'touchMove'
-					$items.slick( 'slickSetOption', 'touchMove', false );
-					$items.slick( 'slickSetOption', 'draggable', false );
-				} else if ( navigation.not( ':visible' ) ) {
-					navigation.show();
-					$items.slick( 'slickSetOption', 'touchMove', true );
-					$items.slick( 'slickSetOption', 'draggable', true );
-				}
-			} );
 
 		} );
 
-		// Change Slick Settings on iPad Pro while Landscape
-		$( window ).resize( function() {
+		$( window ).on( 'resize load', function() {
+			// Hide/disable scroll if number of visible items is less than total posts.
+			var $carousels = $( '.sow-carousel-wrapper' ),
+			$items = $carousels.find( '.sow-carousel-items' ),
+			numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
+			navigation = $carousels.parent().parent().find( '.sow-carousel-navigation' );
+
+			if ( numVisibleItems >= $carousels.data( 'post-count' ) ) {
+				navigation.hide();
+				$items.slick( 'slickSetOption', 'touchMove', false );
+				$items.slick( 'slickSetOption', 'draggable', false );
+			} else if ( navigation.not( ':visible' ) ) {
+				navigation.show();
+				$items.slick( 'slickSetOption', 'touchMove', true );
+				$items.slick( 'slickSetOption', 'draggable', true );
+			}
+
+			// Change Slick Settings on iPad Pro while Landscape
 			if ( window.matchMedia( '(min-width: ' + carouselBreakpoints.tablet_portrait + 'px) and (max-width: ' + carouselBreakpoints.tablet_landscape + 'px) and (orientation: landscape)' ).matches ) {				
 				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToShow', 3 );
 				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToScroll', 3 );

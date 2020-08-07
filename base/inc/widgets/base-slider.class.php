@@ -49,6 +49,29 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	 */
 	function control_form_fields(){
 		return array(
+			'autoplay' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Autoplay', 'so-widgets-bundle' ),
+				'description' => __( 'Change slides automatically without user interaction.', 'so-widgets-bundle' ),
+				'default' => true,
+				'state_emitter' => array(
+					'callback' => 'conditional',
+					'args'     => array(
+						'autoplay[autoplay]: val',
+						'autoplay[static]: ! val',
+					),
+				),
+			),
+
+			'autoplay_hover' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Autoplay pause on hover', 'so-widgets-bundle' ),
+				'default' => false,
+				'state_handler' => array(
+					'autoplay[autoplay]' => array( 'show' ),
+					'autoplay[static]' => array( 'hide' ),
+				),
+			),
 			'speed' => array(
 				'type' => 'number',
 				'label' => __('Animation speed', 'so-widgets-bundle'),
@@ -61,6 +84,10 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'label' => __('Timeout', 'so-widgets-bundle'),
 				'description' => __('How long each frame is displayed for in milliseconds.', 'so-widgets-bundle'),
 				'default' => 8000,
+				'state_handler' => array(
+					'autoplay[autoplay]' => array( 'show' ),
+					'autoplay[static]' => array( 'hide' ),
+				),
 			),
 
 			'nav_color_hex' => array(
@@ -162,6 +189,8 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'pagination'               => true,
 			'speed'                    => empty( $controls['speed'] ) ? 1 : $controls['speed'],
 			'timeout'                  => $controls['timeout'],
+			'paused'                   => empty( $controls['autoplay'] ) ?: false,
+			'pause_on_hover'           => ! empty( $controls['autoplay_hover'] ) ?: false,
 			'swipe'                    => $controls['swipe'],
 			'nav_always_show_mobile'   => ! empty( $controls['nav_always_show_mobile'] ) ? true : '',
 			'breakpoint'               => ! empty( $controls['breakpoint'] ) ? $controls['breakpoint'] : '780px',

@@ -4,10 +4,11 @@
  * Filter a query created from the post selector field into an array that will work properly with get_posts
  *
  * @param $query
+ * @param bool $exclude_current whether to exclude the current post or not.
  *
  * @return mixed
  */
-function siteorigin_widget_post_selector_process_query( $query ){
+function siteorigin_widget_post_selector_process_query( $query, $exclude_current = true ){
 	$query = wp_parse_args($query,
 		array(
 			'post_status' => 'publish',
@@ -96,6 +97,13 @@ function siteorigin_widget_post_selector_process_query( $query ){
 			$query['post__not_in'] = explode( ',', $query['post__not_in'] );
 			$query['post__not_in'] = array_map( 'intval', $query['post__not_in'] );
 		}
+	}
+
+	if ( $exclude_current && get_the_ID() ) {
+		if ( ! isset( $query['post__not_in'] ) ) {
+			$query['post__not_in'] = array();
+		}
+		$query['post__not_in'][] = get_the_ID();
 	}
 
 	return apply_filters( 'siteorigin_widgets_posts_selector_query', $query );
