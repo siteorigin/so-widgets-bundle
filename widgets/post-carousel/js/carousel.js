@@ -43,7 +43,7 @@ jQuery( function ( $ ) {
 
 			// click is used rather than Slick's beforeChange or afterChange
 			// due to the inability to stop a slide from changing from those events
-			$$.parent().parent().find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click touchend', function( e ) {
+			$$.parent().parent().find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click touchend', function( e, refocus ) {
 				e.preventDefault();
 				$items = $$.find( '.sow-carousel-items' );
 				var numItems = $items.find( '.sow-carousel-item' ).length,
@@ -76,7 +76,9 @@ jQuery( function ( $ ) {
 									$$.data( 'fetching', false );
 									$$.data( 'page', page );
 
-									$items.find( '.sow-carousel-item[tabindex="0"]' ).trigger( 'focus' );
+									if ( refocus ) {
+										$items.find( '.sow-carousel-item[tabindex="0"]' ).trigger( 'focus' );
+									}
 								}
 							);
 						}
@@ -143,7 +145,8 @@ jQuery( function ( $ ) {
 					if ( $wrapper.data( 'fetching' ) ) {
 						return; // Currently loading new post
 					}
-					$wrapper.parent().find( '.sow-carousel-next' ).trigger( 'click' );
+
+					$wrapper.parent().find( '.sow-carousel-next' ).trigger( 'click', true );
 				}
 			}
 
