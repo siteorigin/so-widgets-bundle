@@ -66,6 +66,9 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+== 1.17.5 - 12 August 2020 ==
+* Slider: Disable WordPress 5.5 Lazy Loading.
+
 == 1.17.4 - 06 August 2020 ==
 * Post Carousel: Improved support for multiple carousel widgets on the same page.
 * Post Carousel: Improved mobile support.
