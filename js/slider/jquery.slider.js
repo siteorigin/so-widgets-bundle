@@ -245,7 +245,7 @@ jQuery( function($){
 			var imagesLoaded = 0;
 			var sliderLoaded = false;
 
-			// Preload all of the slide image, when they're loaded, then display the slider
+			// Preload all of the slide images, when they're loaded, then display the slider.
 			images.each( function(){
 				var $i = $(this);
 				if( this.complete ) {
