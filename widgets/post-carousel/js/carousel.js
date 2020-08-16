@@ -5,7 +5,7 @@ var sowb = window.sowb || {};
 jQuery( function ( $ ) {
 
 	sowb.setupCarousel = function () {
-		$.fn.setSlideTo = function ( slide ) {
+		$.fn.setSlideTo = function( slide ) {
 			$item = $( this );
 			// We need to reset the Slick slide settings to avoid https://github.com/kenwheeler/slick/issues/1006.
 			var slidesToShow = $item.slick( 'slickGetOption', 'slidesToShow' );
