@@ -69,14 +69,17 @@
 	@field_border_color: default;
 	@field_border_width: default;
 	@field_border_style: default;
+	@field_max_width: default;
 	@field_height: default;
 	@field_height_textarea: default;
 
 	.sow-text-field {
+		max-width: @field_max_width;
 		height: @field_height;
 	}
 
 	textarea {
+		max-width: @field_max_width;
 		height: @field_height_textarea;
 	}
 
