@@ -132,7 +132,7 @@ jQuery( function( $ ){
         var $$ = $(this);
         e.preventDefault();
 
-        $content = dialog.find('.so-content');
+        $content = dialog.find( '.so-content' );
         $content
             .empty()
             .addClass('so-loading')
