@@ -132,12 +132,16 @@ jQuery( function( $ ){
         var $$ = $(this);
         e.preventDefault();
 
-        dialog.find('.so-content')
+        $content = dialog.find('.so-content');
+        $content
             .empty()
             .addClass('so-loading')
-            .load( $$.data('form-url'), function(){
-                $(this).removeClass('so-loading');
-            } );
+
+        $.get( $$.data( 'form-url' ), function( form ) {
+            $content
+                .html( form )
+                .removeClass( 'so-loading' );
+        } );
 
         dialog.show();
     } );
