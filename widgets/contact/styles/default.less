@@ -78,6 +78,16 @@
 		height: @field_height;
 	}
 
+	& when not ( @field_max_width = false ) {
+		&.sow-form-field-datepicker .sow-field-container {
+			max-width: @field_max_width;
+		}
+
+		&.sow-form-field-datepicker .sow-text-field {
+			max-width: none;
+		}
+	}
+
 	textarea {
 		max-width: @field_max_width;
 		height: @field_height_textarea;
