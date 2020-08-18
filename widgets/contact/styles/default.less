@@ -72,24 +72,33 @@
 	@field_max_width: default;
 	@field_height: default;
 	@field_height_textarea: default;
+	@responsive_breakpoint: 780px;
 
 	.sow-text-field {
-		max-width: @field_max_width;
 		height: @field_height;
 	}
 
 	& when not ( @field_max_width = false ) {
-		&.sow-form-field-datepicker .sow-field-container {
-			max-width: @field_max_width;
-		}
+		@media (min-width: @responsive_breakpoint) {
+			.sow-text-field {
+				max-width: @field_max_width;
+			}
 
-		&.sow-form-field-datepicker .sow-text-field {
-			max-width: none;
+			&.sow-form-field-datepicker .sow-field-container {
+				max-width: @field_max_width;
+			}
+
+			&.sow-form-field-datepicker .sow-text-field {
+				max-width: none;
+			}
+
+			textarea {
+				max-width: @field_max_width;
+			}
 		}
 	}
 
 	textarea {
-		max-width: @field_max_width;
 		height: @field_height_textarea;
 	}
 
