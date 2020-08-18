@@ -7,8 +7,8 @@ jQuery( function ( $ ) {
 	sowb.setupCarousel = function () {
 		// The carousel widget
 		$( '.sow-carousel-wrapper' ).each( function () {
-			var $$ = $( this );
-			$items = $$.find( '.sow-carousel-items' );
+			var $$ = $( this ),
+				$items = $$.find( '.sow-carousel-items' );
 
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
@@ -45,11 +45,11 @@ jQuery( function ( $ ) {
 			// due to the inability to stop a slide from changing from those events
 			$$.parent().parent().find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click touchend', function( e, refocus ) {
 				e.preventDefault();
-				$items = $$.find( '.sow-carousel-items' );
-				var numItems = $items.find( '.sow-carousel-item' ).length,
-				complete = numItems === $$.data( 'post-count' ),
-				numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
-				lastPosition = numItems - numVisibleItems + 1;
+				var $items = $$.find( '.sow-carousel-items' ),
+					numItems = $items.find( '.sow-carousel-item' ).length,
+					complete = numItems === $$.data( 'post-count' ),
+					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
+					lastPosition = numItems - numVisibleItems + 1;
 
 				// Check if all posts are displayed
 				if ( ! complete ) {
@@ -129,10 +129,10 @@ jQuery( function ( $ ) {
 			}
 
 			var $wrapper =  $( this ).parents( '.sow-carousel-wrapper' ),
-			$items = $wrapper.find( '.sow-carousel-items' ),
-			numItems = $items.find( '.sow-carousel-item' ).length,
-			itemIndex = $( this ).data( 'slick-index' ),
-			lastPosition = numItems - ( numItems === $wrapper.data( 'post-count' ) ? 0 : 1 );
+				$items = $wrapper.find( '.sow-carousel-items' ),
+				numItems = $items.find( '.sow-carousel-item' ).length,
+				itemIndex = $( this ).data( 'slick-index' ),
+				lastPosition = numItems - ( numItems === $wrapper.data( 'post-count' ) ? 0 : 1 );
 
 			if ( e.keyCode == 37 ) {
 				itemIndex--;
@@ -160,9 +160,9 @@ jQuery( function ( $ ) {
 		$( window ).on( 'resize load', function() {
 			// Hide/disable scroll if number of visible items is less than total posts.
 			var $carousels = $( '.sow-carousel-wrapper' ),
-			$items = $carousels.find( '.sow-carousel-items' ),
-			numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
-			navigation = $carousels.parent().parent().find( '.sow-carousel-navigation' );
+				$items = $carousels.find( '.sow-carousel-items' ),
+				numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
+				navigation = $carousels.parent().parent().find( '.sow-carousel-navigation' );
 
 			if ( numVisibleItems >= $carousels.data( 'post-count' ) ) {
 				navigation.hide();
