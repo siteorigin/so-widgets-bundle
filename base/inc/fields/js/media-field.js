@@ -47,6 +47,15 @@
 				}
 			} );
 
+			// If there's a selected image, highlight it. 
+			frame.on( 'open', function() {
+				var selection = frame.state().get( 'selection' );
+				var selectedImage = $field.find( '.siteorigin-widget-input[type="hidden"]' ).val();
+				if ( selectedImage ) {
+				    selection.add( wp.media.attachment( selectedImage ) );
+				}
+			} );
+
 			// Store the frame
 			$$.data('frame', frame);
 
