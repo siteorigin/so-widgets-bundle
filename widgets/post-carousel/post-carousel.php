@@ -156,6 +156,33 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 				'label' => __('Posts query', 'so-widgets-bundle'),
 				'hide' => true,
 			),
+
+			'design' => array(
+				'type' => 'section',
+				'label' => __( 'Design', 'so-widgets-bundle' ),
+				'hide' => true,
+				'fields' => array(
+					'navigation_color' => array(
+						'type' => 'color',
+						'label' => __( 'Navigation arrow color', 'so-widgets-bundle' ),
+						'default' => '#fff',
+					),
+					'navigation_color_hover' => array(
+						'type' => 'color',
+						'label' => __( 'Navigation arrow color hover', 'so-widgets-bundle' ),
+					),
+					'navigation_background' => array(
+						'type' => 'color',
+						'label' => __( 'Navigation background', 'so-widgets-bundle' ),
+						'default' => '#333',
+					),
+					'navigation_background_hover' => array(
+						'type' => 'color',
+						'label' => __( 'Navigation background hover', 'so-widgets-bundle' ),
+						'default' => '#444',
+					),
+				),
+			),
 		);
 	}
 
@@ -182,6 +209,10 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			'thumbnail_height'=> $thumb_height . 'px',
 			'thumbnail_hover_width' => $thumb_hover_width . 'px',
 			'thumbnail_hover_height'=> $thumb_hover_height . 'px',
+			'navigation_color' => ! empty ( $instance['design']['navigation_color'] ) ? $instance['design']['navigation_color'] : '',
+			'navigation_color_hover' => ! empty ( $instance['design']['navigation_color_hover'] ) ? $instance['design']['navigation_color_hover'] : '',
+			'navigation_background' => ! empty ( $instance['design']['navigation_background'] ) ? $instance['design']['navigation_background'] : '',
+			'navigation_background_hover' => ! empty ( $instance['design']['navigation_background_hover'] ) ? $instance['design']['navigation_background_hover'] : '',
 		);
 	}
 

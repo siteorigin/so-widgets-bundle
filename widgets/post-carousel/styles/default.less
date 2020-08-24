@@ -4,6 +4,27 @@
 @thumbnail_hover_width: default;
 @thumbnail_hover_height: default;
 
+@navigation_color: #fff;
+@navigation_color_hover: default;
+@navigation_background: #333;
+@navigation_background_hover: #444;
+
+.sow-carousel-title {
+
+  a.sow-carousel-next,
+  a.sow-carousel-previous {
+    background: @navigation_background;
+    color: @navigation_color;
+
+    &:focus,
+    &:hover {
+      background: @navigation_background_hover;
+      color: @navigation_color_hover;
+    }
+  }
+
+}
+
 .sow-carousel-wrapper {
 
   .sow-carousel-items {
