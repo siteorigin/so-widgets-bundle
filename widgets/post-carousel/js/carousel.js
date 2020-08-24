@@ -5,6 +5,19 @@ var sowb = window.sowb || {};
 jQuery( function ( $ ) {
 
 	sowb.setupCarousel = function () {
+		$.fn.setSlideTo = function( slide ) {
+			$item = $( this );
+			// We need to reset the Slick slide settings to avoid https://github.com/kenwheeler/slick/issues/1006.
+			var slidesToShow = $item.slick( 'slickGetOption', 'slidesToShow' );
+			var slidesToScroll = $item.slick( 'slickGetOption', 'slidesToScroll' );
+
+			$item.slick( 'slickSetOption', 'slidesToShow', 1 );
+			$item.slick( 'slickSetOption', 'slidesToScroll', 1 );
+			$item.slick( 'slickGoTo', slide );
+			$item.slick( 'slickSetOption', 'slidesToShow', slidesToShow );
+			$item.slick( 'slickSetOption', 'slidesToScroll', slidesToScroll );
+		};
+
 		// The carousel widget
 		$( '.sow-carousel-wrapper' ).each( function () {
 			var $$ = $( this ),
@@ -93,17 +106,26 @@ jQuery( function ( $ ) {
 				// being hidden so we need to manually handle that
 				// https://github.com/kenwheeler/slick/issues/3567
 				if ( $( this ).hasClass( 'sow-carousel-next' ) ) {
-					if ( $items.slick( 'slickCurrentSlide' ) >= lastPosition ) {
-						if ( $$.data( 'loop-posts-enabled' ) && ! $$.data( 'fetching' ) ) {
+					// Check if this is the last slide, and we need to loop
+					if (
+						complete &&
+						$items.slick( 'slickCurrentSlide' ) >= lastPosition
+					) {
+						if ( $$.data( 'loop-posts-enabled' ) ) {
 							$items.slick( 'slickGoTo', 0 );
 						}
+					// Check if the next slide is the last slide and prevent blank spacing.
+					} else if (
+						complete &&
+						$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= lastPosition
+					) {
+						$items.setSlideTo( lastPosition );
 					} else {
 						$items.slick( 'slickNext' );
 					}
 				} else if ( $( this ).hasClass( 'sow-carousel-previous' ) ) {
 					if ( $$.data( 'loop-posts-enabled' ) && $items.slick( 'slickCurrentSlide' ) == 0 ) {
-						// Navigate to the second last slide to prevent blank spacing
-						$items.slick( 'slickGoTo', lastPosition - ( complete ? 0 : 1) );
+						$items.slick( 'slickGoTo', lastPosition );
 					} else {
 						$items.slick( 'slickPrev' );
 					}

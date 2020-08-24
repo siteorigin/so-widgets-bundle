@@ -47,6 +47,15 @@
 				}
 			} );
 
+			// If there's a selected image, highlight it. 
+			frame.on( 'open', function() {
+				var selection = frame.state().get( 'selection' );
+				var selectedImage = $field.find( '.siteorigin-widget-input[type="hidden"]' ).val();
+				if ( selectedImage ) {
+				    selection.add( wp.media.attachment( selectedImage ) );
+				}
+			} );
+
 			// Store the frame
 			$$.data('frame', frame);
 
@@ -55,7 +64,7 @@
 				// Grab the selected attachment.
 				var attachment = frame.state().get('selection').first().attributes;
 
-				$field.find('.current .title' ).html(attachment.title);
+				$field.find('.current .thumbnail' ).attr( 'title', attachment.title );
 				$inputField.val(attachment.id);
 				$inputField.trigger( 'change', { silent: true } );
 
@@ -82,21 +91,9 @@
 			frame.open();
 		});
 
-		$media.find('.current' )
-			.mouseenter(function(){
-				var t = $(this ).find('.title' );
-				if( t.html() !== ''){
-					t.fadeIn('fast');
-				}
-			})
-			.mouseleave(function(){
-				$(this ).find('.title' ).clearQueue().fadeOut('fast');
-			});
-
 		$field.find('a.media-remove-button' )
 			.click( function( e ){
 				e.preventDefault();
-				$field.find('.current .title' ).html('');
 				$inputField.val('');
 				$inputField.trigger( 'change', { silent: true } );
 				$field.find('.current .thumbnail' ).fadeOut('fast');
