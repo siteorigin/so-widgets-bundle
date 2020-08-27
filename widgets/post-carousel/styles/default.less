@@ -4,6 +4,7 @@
 @thumbnail_hover_width: default;
 @thumbnail_hover_height: default;
 
+@overlay_hover_color: #3279BB;
 @navigation_color: #fff;
 @navigation_hover_color: default;
 @navigation_background: #333;
@@ -39,6 +40,10 @@
         &, span.overlay {
           width: @thumbnail_width;
           height: @thumbnail_height;
+        }
+
+        span.overlay {
+          background: @overlay_hover_color;
         }
 
         &:hover {
