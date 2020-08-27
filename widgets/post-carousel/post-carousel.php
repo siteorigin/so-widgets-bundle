@@ -172,7 +172,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 						'label' => __( 'Navigation arrow color', 'so-widgets-bundle' ),
 						'default' => '#fff',
 					),
-					'navigation_hover_color' => array(
+					'navigation_color_hover' => array(
 						'type' => 'color',
 						'label' => __( 'Navigation arrow hover color', 'so-widgets-bundle' ),
 					),
@@ -181,7 +181,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 						'label' => __( 'Navigation background', 'so-widgets-bundle' ),
 						'default' => '#333',
 					),
-					'navigation_background_hover' => array(
+					'navigation_hover_background' => array(
 						'type' => 'color',
 						'label' => __( 'Navigation hover background', 'so-widgets-bundle' ),
 						'default' => '#444',
@@ -218,7 +218,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			'navigation_color' => ! empty ( $instance['design']['navigation_color'] ) ? $instance['design']['navigation_color'] : '',
 			'navigation_color_hover' => ! empty ( $instance['design']['navigation_color_hover'] ) ? $instance['design']['navigation_color_hover'] : '',
 			'navigation_background' => ! empty ( $instance['design']['navigation_background'] ) ? $instance['design']['navigation_background'] : '',
-			'navigation_background_hover' => ! empty ( $instance['design']['navigation_background_hover'] ) ? $instance['design']['navigation_background_hover'] : '',
+			'navigation_hover_background' => ! empty ( $instance['design']['navigation_hover_background'] ) ? $instance['design']['navigation_hover_background'] : '',
 		);
 	}
 
