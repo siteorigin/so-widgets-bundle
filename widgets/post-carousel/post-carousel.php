@@ -167,9 +167,9 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 						'label' => __( 'Navigation arrow color', 'so-widgets-bundle' ),
 						'default' => '#fff',
 					),
-					'navigation_color_hover' => array(
+					'navigation_hover_color' => array(
 						'type' => 'color',
-						'label' => __( 'Navigation arrow color hover', 'so-widgets-bundle' ),
+						'label' => __( 'Navigation arrow hover color', 'so-widgets-bundle' ),
 					),
 					'navigation_background' => array(
 						'type' => 'color',
@@ -178,7 +178,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 					),
 					'navigation_background_hover' => array(
 						'type' => 'color',
-						'label' => __( 'Navigation background hover', 'so-widgets-bundle' ),
+						'label' => __( 'Navigation hover background', 'so-widgets-bundle' ),
 						'default' => '#444',
 					),
 				),
