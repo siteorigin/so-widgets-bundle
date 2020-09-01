@@ -466,6 +466,28 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				)
 			),
 
+			'map_consent' => array(
+				'type' => 'checkbox',
+				'label'       => __( 'Require consent before loading Maps API', 'so-widgets-bundle' ),
+				'description' => __( 'Consent is required for the Google Maps widget to comply with regulations like DSGVO, or GDPR.', 'so-widgets-bundle' ),
+				'default' => false,
+			),
+
+			'map_consent_btn_text' => array(
+				'type' => 'text',
+				'label'       => __( 'Consent button text', 'so-widgets-bundle' ),
+				'default' => __( 'I Consent', 'so-widgets-bundle' ),
+			),
+
+			'map_consent_notice' => array(
+				'type' => 'tinymce',
+				'label'       => __( 'Consent prompt text', 'so-widgets-bundle' ),
+				'description' => __( 'This is text is shown when a user is prompted to consent to load the Google Maps API.', 'so-widgets-bundle' ),
+				'default' => __( 'I agree for my personal data to be processed by ' . esc_html( get_bloginfo( 'name' ) ) .' for the purpose of displaying a map. We make use of the third party Google Maps API to display our map. This is required for calculating, and displaying our locations using an interactive map. For this to occur, your personal data, specifically your IP address and location, will be transmitted to Googles. 
+
+					Please refer to our privacy policy for more information on how we collect, and handle your personal data.', 'so-widgets-bundle' ),
+			),
+
 			'responsive_breakpoint' => array(
 				'type'        => 'number',
 				'label'       => __( 'Responsive breakpoint', 'so-widgets-bundle' ),
@@ -562,6 +584,9 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'height'   => $settings['height'],
 				'map_data' => $map_data,
 				'fallback_image_data' => array( 'img' => $fallback_image ),
+				'map_consent' => ! empty( $global_settings['map_consent'] ),
+				'map_consent_notice' => ! empty( $global_settings['map_consent_notice'] ) ? $global_settings['map_consent_notice'] : '',
+				'map_consent_btn_text' => ! empty( $global_settings['map_consent_btn_text'] ) ? $global_settings['map_consent_btn_text'] : '',
 			);
 		}
 	}
@@ -591,11 +616,14 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				array(),
 				SOW_BUNDLE_VERSION
 			);
+
+			$global_settings = $this->get_global_settings();
 			
 			wp_localize_script(
 				'sow-google-map',
 				'soWidgetsGoogleMap',
 				array(
+					'map_consent'  => ! empty( $global_settings['map_consent'] ),
 					'geocode' => array(
 						'noResults' => __( 'There were no results for the place you entered. Please try another.', 'so-widgets-bundle' ),
 					),

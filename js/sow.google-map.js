@@ -504,8 +504,17 @@ jQuery(function ($) {
 				window.console.error = sowb.onLoadMapsApiError;
 			}
 
-			$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );
-			sowb.mapsApiInitialized = true;
+			if ( soWidgetsGoogleMap.map_consent ) {
+				$( '.sow-google-map-consent' ).click( function() {
+					$( '.sow-google-map-consent' ).remove();
+					$( '.sow-google-map-canvas' ).show();
+					$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );
+					sowb.mapsApiInitialized = true;
+				} );
+			} else {
+				$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );
+				sowb.mapsApiInitialized = true;
+			}
 		}
 	};
 	sowb.setupGoogleMaps();
