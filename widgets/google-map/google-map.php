@@ -468,20 +468,20 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 			'map_consent' => array(
 				'type' => 'checkbox',
-				'label'       => __( 'Require consent before loading Maps API', 'so-widgets-bundle' ),
+				'label' => __( 'Require consent before loading Maps API', 'so-widgets-bundle' ),
 				'description' => __( 'Consent is required for the Google Maps widget to comply with regulations like DSGVO, or GDPR.', 'so-widgets-bundle' ),
 				'default' => false,
 			),
 
 			'map_consent_btn_text' => array(
 				'type' => 'text',
-				'label'       => __( 'Consent button text', 'so-widgets-bundle' ),
+				'label' => __( 'Consent button text', 'so-widgets-bundle' ),
 				'default' => __( 'I Consent', 'so-widgets-bundle' ),
 			),
 
 			'map_consent_notice' => array(
 				'type' => 'tinymce',
-				'label'       => __( 'Consent prompt text', 'so-widgets-bundle' ),
+				'label' => __( 'Consent prompt text', 'so-widgets-bundle' ),
 				'description' => __( 'This is text is shown when a user is prompted to consent to load the Google Maps API.', 'so-widgets-bundle' ),
 				'default' => __( 'I agree for my personal data to be processed by ' . esc_html( get_bloginfo( 'name' ) ) .' for the purpose of displaying a map. We make use of the third party Google Maps API to display our map. This is required for calculating, and displaying our locations using an interactive map. For this to occur, your personal data, specifically your IP address and location, will be transmitted to Googles. 
 

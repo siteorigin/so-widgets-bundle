@@ -6,7 +6,7 @@
  * @var $fallback_image_data
  */
 ?>
-<?php if ( $map_consent ): ?>
+<?php if ( $map_consent ) : ?>
 	<div class="sow-google-map-consent">
 		<?php echo wp_kses_post( $map_consent_notice ); ?>
 
