@@ -418,7 +418,7 @@ class SiteOrigin_Widgets_Bundle {
 			wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );
 		}
 
-		$form_values = array_shift( array_shift( array_values( $_POST ) ) );
+		$form_values = stripslashes_deep( array_shift( array_shift( array_values( $_POST ) ) ) );
 		$widget_object->save_global_settings( $form_values );
 		
 		wp_send_json_success();
