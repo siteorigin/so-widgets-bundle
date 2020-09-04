@@ -1,0 +1,38 @@
+@import "../../../base/less/mixins";
+
+@height: 480px;
+@map_consent: default;
+// @consent_background: #000;
+
+.sow-google-map-canvas {
+    height: @height;
+
+    img {
+        border-radius: 0;
+        box-shadow: none;
+        line-height: normal;
+        max-width: none;
+        zoom: normal;
+    }
+}
+
+& when ( @map_consent = 1 ) {
+    .sow-google-map-consent {
+        height: @height;
+        display: flex;
+        align-items: center;
+
+        .sow-google-map-consent-prompt {
+            padding: 25px 0;
+            width: 100%;
+            text-align: center;
+            background: rgba( 0, 0, 0, 0.9 );
+            // background: fade( @consent_background, 90% );
+
+            button {
+                display: block;
+                margin: 10px auto 0;
+            }
+        }
+    }
+}

@@ -503,8 +503,11 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_style_name( $instance ) {
-		// We aren't using a LESS style for this widget.
-		return false;
+		if ( $instance['settings']['map_type'] == 'static' ) {
+			return false;
+		}
+
+		return 'default';
 	}
 
 	function get_template_variables( $instance, $args ) {
@@ -582,7 +585,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 			return array(
 				'map_id'   => md5( json_encode( $instance ) ),
-				'height'   => $settings['height'],
 				'map_data' => $map_data,
 				'fallback_image_data' => array( 'img' => $fallback_image ),
 				'map_consent' => ! empty( $global_settings['map_consent'] ),
@@ -590,6 +592,15 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'map_consent_btn_text' => ! empty( $global_settings['map_consent_btn_text'] ) ? $global_settings['map_consent_btn_text'] : '',
 			);
 		}
+	}
+
+	function get_less_variables( $instance ) {
+		$global_settings = $this->get_global_settings();
+
+		return array(
+			'height' => $instance['settings']['height'] . 'px',
+			'map_consent' => ! empty( $global_settings['map_consent'] ),
+		);
 	}
 	
 	private function get_location_string( $location_data ) {
@@ -610,13 +621,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		if ( ! empty( $instance['settings']['map_type'] ) && $instance['settings']['map_type'] == 'interactive' ||
 			 $this->is_preview( $instance ) ) {
 			wp_enqueue_script( 'sow-google-map' );
-
-			wp_enqueue_style(
-				'sow-google-map',
-				plugin_dir_url(__FILE__) . 'css/style.css',
-				array(),
-				SOW_BUNDLE_VERSION
-			);
 
 			$global_settings = $this->get_global_settings();
 			
