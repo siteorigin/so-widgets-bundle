@@ -439,7 +439,7 @@ jQuery(function ($) {
 		}
 		$mapCanvas.each(function(index, element) {
 			var $this = $(element);
-			if ( ! $this.is( ':visible' ) || $this.data( 'apiInitialized' ) ) {
+			if ( ! $this.parent().is( ':visible' ) || $this.data( 'apiInitialized' ) ) {
 				return $this;
 			}
 			var mapOptions = $this.data( 'options' );
