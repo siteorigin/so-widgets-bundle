@@ -72,8 +72,11 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Sliders: Disabled lazy loading for slider widgets added to the Block Editor.
 * Resolved a preview issue with widgets that attempt to render sub widgets but don't output them.
 * Contact Form: Added a field max-width setting.
-* Resolved a jQuery migrate notice on the global widget settings page at `Plugins > SiteOrigin Widgets`.
+* Resolved a jQuery Migrate notice on the global widget settings page at `Plugins > SiteOrigin Widgets`.
 * Media field: Enhancements to improve usability.
+* Disabled Settings buttons while saving global widget settings at `Plugins > SiteOrigin Widgets`.
+* State Emitters: Added an animation to conditional settings.
+* Posts Carousel: Prevented blank slides loading after all posts are loaded.
 * Posts Carousel: Added a new Design settings section and settings.
 * Posts Carousel: Ensured the correct navigation buttons are hidden when multiple carousels are in use.
 
