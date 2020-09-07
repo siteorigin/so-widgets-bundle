@@ -238,8 +238,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		echo $args['after_widget'];
 		do_action( 'siteorigin_widgets_after_widget_' . $this->id_base, $instance, $this );
 
-		if ( $this->is_preview( $instance ) ) {
-			// print inline styles if we're preview the widget.
+		// If this is a widget preview, we need to print the styling inline
+		if ( $this->is_preview( $instance ) && isset( $_POST['action'] ) &&  $_POST['action']== 'so_widgets_preview' ) {
 			siteorigin_widget_print_styles();
 		}
 	}
