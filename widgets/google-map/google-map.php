@@ -487,7 +487,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 				<a href='https://policies.google.com/privacy?hl=en&amp;gl=en' target='_blank' rel='noopener noreferrer'>Read more</a>", 'so-widgets-bundle' ),
 			),
-			),
 
 			'responsive_breakpoint' => array(
 				'type'        => 'number',
