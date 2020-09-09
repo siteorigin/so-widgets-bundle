@@ -120,7 +120,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return array The form array, or an empty array if the form doesn't exist.
 	 */
 	function get_form( $form_type ) {
-		return $this->has_form( $form_type ) ? call_user_func( array( $this, 'get_' . $form_type . '_form'  ) ) : array();
+		$form_options = $this->has_form( $form_type ) ? call_user_func( array( $this, 'get_' . $form_type . '_form'  ) ) : array();
+
+		if ( $form_type == 'settings' ) {
+			// Allow plugins to filter global widgets form.
+			$form_options = apply_filters( 'siteorigin_widgets_settings_form', $form_options, $this );
+			$form_options = apply_filters( 'siteorigin_widgets_settings_form_' . $this->id_base, $form_options, $this );
+		}
+
+		return $form_options;
 	}
 
 	/**
