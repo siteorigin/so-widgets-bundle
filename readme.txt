@@ -79,6 +79,8 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Posts Carousel: Prevented blank slides loading after all posts are loaded.
 * Posts Carousel: Added a new Design settings section and settings.
 * Posts Carousel: Ensured the correct navigation buttons are hidden when multiple carousels are in use.
+* IE 11: Prevented images from exceeding the widget container.
+* Removed wpColorPickerL10n if WP >= 5.5.
 
 == 1.17.6 - 17 August 2020 ==
 * Hero and Layout Sliders: Disabled lazy loading for images added to the slide content area.
