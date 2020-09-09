@@ -66,7 +66,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
-== 1.17.7 - 03 September 2020 ==
+== 1.17.7 - 09 September 2020 ==
 * Hero and Layout Sliders: Disabled lazy loading for images added to the slide content area.
 * Hero and Layout Sliders: Changed to only preload slide images.
 * Sliders: Disabled lazy loading for slider widgets added to the Block Editor.
