@@ -2,6 +2,8 @@
 
 @height: 480px;
 @map_consent: default;
+@map_consent_notice_text_color: #fff;
+@map_consent_notice_text_background: #000;
 
 .sow-google-map-canvas {
     height: @height;
@@ -25,8 +27,8 @@
             padding: 25px 0;
             width: 100%;
             text-align: center;
-            color: #fff;
-            background: rgba( 0, 0, 0, 0.9 );
+            color: @map_consent_notice_text_color;
+            background: fade( @map_consent_notice_text_background, 90% );
 
             button {
                 display: block;
