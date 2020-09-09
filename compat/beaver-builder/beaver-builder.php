@@ -60,13 +60,16 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 
 			wp_enqueue_style( 'wp-color-picker' );
 
-			// Localization args for when wp-color-picker script hasn't been registered.
-			wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', array(
-				'clear'         => __( 'Clear', 'so-widgets-bundle' ),
-				'defaultString' => __( 'Default', 'so-widgets-bundle' ),
-				'pick'          => __( 'Select Color', 'so-widgets-bundle' ),
-				'current'       => __( 'Current Color', 'so-widgets-bundle' ),
-			) );
+			global $wp_version;
+			if ( version_compare( $wp_version, '5.5', '<' ) ) {
+				// Localization args for when wp-color-picker script hasn't been registered.
+				wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', array(
+					'clear'         => __( 'Clear', 'so-widgets-bundle' ),
+					'defaultString' => __( 'Default', 'so-widgets-bundle' ),
+					'pick'          => __( 'Select Color', 'so-widgets-bundle' ),
+					'current'       => __( 'Current Color', 'so-widgets-bundle' ),
+				) );
+			}
 		}
 
 		wp_enqueue_style( 'sowb-styles-for-beaver', plugin_dir_url( __FILE__ ) . 'styles.css' );
