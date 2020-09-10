@@ -98,14 +98,8 @@
 		-moz-osx-font-smoothing: grayscale;
 
 		text-decoration: none;
-		color: #FFFFFF;
 
-		background: #333333;
 		border-radius: 2px;
-
-		&:hover {
-			background: #444444;
-		}
 	}
 
 	a.sow-carousel-next:before {
@@ -169,7 +163,6 @@
 						display: block;
 						width: 100%;
 						height: 100%;
-						background: #3279BB;
 						opacity: 0;
 						position: static;
 					}
@@ -198,6 +191,10 @@
 					text-decoration: none;
 					color: inherit;
 				}
+			}
+
+			&:focus .sow-carousel-thumbnail a span {
+				opacity: 0.5;
 			}
 		}
 

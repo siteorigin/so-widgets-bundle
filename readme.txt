@@ -66,6 +66,20 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+== 1.17.7 - 10 September 2020 ==
+* Hero and Layout Sliders: Disable image preload for images added to frames.
+* Resolved a preview issue with widgets that attempt to render sub widgets but don't output them.
+* Contact Form: Added a field max-width setting.
+* Resolved a jQuery Migrate notice on the global widget settings page at `Plugins > SiteOrigin Widgets`.
+* Media field: Enhancements to improve usability.
+* Disabled Settings buttons while saving global widget settings at `Plugins > SiteOrigin Widgets`.
+* State Emitters: Added an animation to conditional settings.
+* Posts Carousel: Prevented blank slides loading after all posts are loaded.
+* Posts Carousel: Added a new Design settings section and settings.
+* Posts Carousel: Ensured the correct navigation buttons are hidden when multiple carousels are in use.
+* IE 11: Prevented images from exceeding the widget container.
+* Removed wpColorPickerL10n if WP >= 5.5.
+
 == 1.17.6 - 17 August 2020 ==
 * Hero and Layout Sliders: Disabled lazy loading for images added to the slide content area.
 * Slider: Disabled lazy loading in the Block Editor.

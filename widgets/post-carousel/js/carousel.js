@@ -5,10 +5,23 @@ var sowb = window.sowb || {};
 jQuery( function ( $ ) {
 
 	sowb.setupCarousel = function () {
+		$.fn.setSlideTo = function( slide ) {
+			$item = $( this );
+			// We need to reset the Slick slide settings to avoid https://github.com/kenwheeler/slick/issues/1006.
+			var slidesToShow = $item.slick( 'slickGetOption', 'slidesToShow' );
+			var slidesToScroll = $item.slick( 'slickGetOption', 'slidesToScroll' );
+
+			$item.slick( 'slickSetOption', 'slidesToShow', 1 );
+			$item.slick( 'slickSetOption', 'slidesToScroll', 1 );
+			$item.slick( 'slickGoTo', slide );
+			$item.slick( 'slickSetOption', 'slidesToShow', slidesToShow );
+			$item.slick( 'slickSetOption', 'slidesToScroll', slidesToScroll );
+		};
+
 		// The carousel widget
 		$( '.sow-carousel-wrapper' ).each( function () {
-			var $$ = $( this );
-			$items = $$.find( '.sow-carousel-items' );
+			var $$ = $( this ),
+				$items = $$.find( '.sow-carousel-items' );
 
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
@@ -17,6 +30,7 @@ jQuery( function ( $ ) {
 				rtl: $$.data( 'dir' ) == 'rtl',
 				touchThreshold: 20,
 				variableWidth: true,
+				accessibility: false,
 				responsive: [
 					{
 						breakpoint: carouselBreakpoints.tablet_portrait,
@@ -40,16 +54,15 @@ jQuery( function ( $ ) {
 				$$.parent().parent().find( '.sow-carousel-' + ( direction == 'left' ? 'next' : 'prev' ) ).trigger( 'touchend' );
 			} );
 
-			// click is used rather than Slick's beforeChange or afterChange 
+			// click is used rather than Slick's beforeChange or afterChange
 			// due to the inability to stop a slide from changing from those events
-			$$.parent().parent().find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click touchend', function( e ) {
+			$$.parent().parent().find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click touchend', function( e, refocus ) {
 				e.preventDefault();
-				$items = $$.find( '.sow-carousel-items' );
-				var numItems = $items.find( '.sow-carousel-item' ).length,
-				totalPosts = $$.data( 'post-count' );
-				complete = numItems === totalPosts,
-				numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
-				lastPosition = numItems - numVisibleItems + 1;
+				var $items = $$.find( '.sow-carousel-items' ),
+					numItems = $items.find( '.sow-carousel-item' ).length,
+					complete = numItems === $$.data( 'post-count' ),
+					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
+					lastPosition = numItems - numVisibleItems + 1;
 
 				// Check if all posts are displayed
 				if ( ! complete ) {
@@ -75,6 +88,10 @@ jQuery( function ( $ ) {
 									numItems = $$.find( '.sow-carousel-item' ).length;
 									$$.data( 'fetching', false );
 									$$.data( 'page', page );
+
+									if ( refocus ) {
+										$items.find( '.sow-carousel-item[tabindex="0"]' ).trigger( 'focus' );
+									}
 								}
 							);
 						}
@@ -89,48 +106,106 @@ jQuery( function ( $ ) {
 				// being hidden so we need to manually handle that
 				// https://github.com/kenwheeler/slick/issues/3567
 				if ( $( this ).hasClass( 'sow-carousel-next' ) ) {
-					if ( $items.slick( 'slickCurrentSlide' ) >= lastPosition ) {
-						if ( $$.data( 'loop-posts-enabled' ) && ! $$.data( 'fetching' ) ) {
+					// Check if this is the last slide, and we need to loop
+					if (
+						complete &&
+						$items.slick( 'slickCurrentSlide' ) >= lastPosition
+					) {
+						if ( $$.data( 'loop-posts-enabled' ) ) {
 							$items.slick( 'slickGoTo', 0 );
 						}
+					// Check if the next slide is the last slide and prevent blank spacing.
+					} else if (
+						complete &&
+						$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= lastPosition
+					) {
+						$items.setSlideTo( lastPosition );
 					} else {
 						$items.slick( 'slickNext' );
 					}
 				} else if ( $( this ).hasClass( 'sow-carousel-previous' ) ) {
 					if ( $$.data( 'loop-posts-enabled' ) && $items.slick( 'slickCurrentSlide' ) == 0 ) {
-						// Navigate to the second last slide to prevent blank spacing
-						$items.slick( 'slickGoTo', lastPosition - ( complete ? 0 : 1) );
+						$items.slick( 'slickGoTo', lastPosition );
 					} else {
 						$items.slick( 'slickPrev' );
 					}
 				}
 			} );
 
+		} );
 
+		// Keyboard Navigation of carousel navigation.
+		$( document ).on( 'keydown', '.sow-carousel-navigation a', function( e ) {
+			if ( e.keyCode != 13 && e.keyCode != 32 ) {
+				return;
+			}
+			e.preventDefault();
+			$( this ).click();
+		} );
+
+		// Keyboard Navigation of carousel items.
+		$( document ).on( 'keyup', '.sow-carousel-item', function( e ) {
+			// Ensure left/right key was pressed
+			if ( e.keyCode != 37 && e.keyCode != 39 ) {
+				return;
+			}
+
+			var $wrapper =  $( this ).parents( '.sow-carousel-wrapper' ),
+				$items = $wrapper.find( '.sow-carousel-items' ),
+				numItems = $items.find( '.sow-carousel-item' ).length,
+				itemIndex = $( this ).data( 'slick-index' ),
+				lastPosition = numItems - ( numItems === $wrapper.data( 'post-count' ) ? 0 : 1 );
+
+			if ( e.keyCode == 37 ) {
+				itemIndex--;
+				if ( itemIndex < 0 ) {
+					itemIndex = lastPosition;
+				}
+			} else if ( e.keyCode == 39 ) {
+				itemIndex++;
+				if ( itemIndex >= lastPosition ) {
+					if ( $wrapper.data( 'fetching' ) ) {
+						return; // Currently loading new post
+					}
+
+					$wrapper.parent().find( '.sow-carousel-next' ).trigger( 'click', true );
+				}
+			}
+
+			$items.slick( 'slickGoTo', itemIndex, true );
+			$wrapper.find( '.sow-carousel-item' ).prop( 'tabindex', -1 );
+			$wrapper.find( '.sow-carousel-item[data-slick-index="' + itemIndex + '"]' )
+				.trigger( 'focus' )
+				.prop( 'tabindex', 0 );
 		} );
 
 		$( window ).on( 'resize load', function() {
 			// Hide/disable scroll if number of visible items is less than total posts.
-			var $carousels = $( '.sow-carousel-wrapper' ),
-			$items = $carousels.find( '.sow-carousel-items' ),
-			numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
-			navigation = $carousels.parent().parent().find( '.sow-carousel-navigation' );
 
-			if ( numVisibleItems >= $carousels.data( 'post-count' ) ) {
-				navigation.hide();
-				$items.slick( 'slickSetOption', 'touchMove', false );
-				$items.slick( 'slickSetOption', 'draggable', false );
-			} else if ( navigation.not( ':visible' ) ) {
-				navigation.show();
-				$items.slick( 'slickSetOption', 'touchMove', true );
-				$items.slick( 'slickSetOption', 'draggable', true );
-			}
+			$( '.sow-carousel-wrapper' ).each( function() {
+				var currentCarousel = $( this ),
+					$items = currentCarousel.find( '.sow-carousel-items' ),
+					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
+					navigation = currentCarousel.parent().parent().find( '.sow-carousel-navigation' );
+
+				if ( numVisibleItems >= currentCarousel.data( 'post-count' ) ) {
+					navigation.hide();
+					$items.slick( 'slickSetOption', 'touchMove', false );
+					$items.slick( 'slickSetOption', 'draggable', false );
+				} else if ( navigation.not( ':visible' ) ) {
+					navigation.show();
+					$items.slick( 'slickSetOption', 'touchMove', true );
+					$items.slick( 'slickSetOption', 'draggable', true );
+				}
+			} );
 
 			// Change Slick Settings on iPad Pro while Landscape
-			if ( window.matchMedia( '(min-width: ' + carouselBreakpoints.tablet_portrait + 'px) and (max-width: ' + carouselBreakpoints.tablet_landscape + 'px) and (orientation: landscape)' ).matches ) {				
+			if ( window.matchMedia( '(min-width: ' + carouselBreakpoints.tablet_portrait + 'px) and (max-width: ' + carouselBreakpoints.tablet_landscape + 'px) and (orientation: landscape)' ).matches ) {
 				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToShow', 3 );
 				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToScroll', 3 );
 			}
+
+			$( '.sow-carousel-item:first-of-type' ).prop( 'tabindex', 0 );
 		} );
 	};
 

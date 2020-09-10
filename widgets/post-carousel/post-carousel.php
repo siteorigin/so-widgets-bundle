@@ -156,6 +156,38 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 				'label' => __('Posts query', 'so-widgets-bundle'),
 				'hide' => true,
 			),
+
+			'design' => array(
+				'type' => 'section',
+				'label' => __( 'Design', 'so-widgets-bundle' ),
+				'hide' => true,
+				'fields' => array(
+					'thumbnail_overlay_hover_color' => array(
+						'type' => 'color',
+						'label' => __( 'Thumbnail overlay hover color', 'so-widgets-bundle' ),
+						'default' => '#3279BB',
+					),
+					'navigation_color' => array(
+						'type' => 'color',
+						'label' => __( 'Navigation arrow color', 'so-widgets-bundle' ),
+						'default' => '#fff',
+					),
+					'navigation_color_hover' => array(
+						'type' => 'color',
+						'label' => __( 'Navigation arrow hover color', 'so-widgets-bundle' ),
+					),
+					'navigation_background' => array(
+						'type' => 'color',
+						'label' => __( 'Navigation background', 'so-widgets-bundle' ),
+						'default' => '#333',
+					),
+					'navigation_hover_background' => array(
+						'type' => 'color',
+						'label' => __( 'Navigation hover background', 'so-widgets-bundle' ),
+						'default' => '#444',
+					),
+				),
+			),
 		);
 	}
 
@@ -182,6 +214,11 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			'thumbnail_height'=> $thumb_height . 'px',
 			'thumbnail_hover_width' => $thumb_hover_width . 'px',
 			'thumbnail_hover_height'=> $thumb_hover_height . 'px',
+			'thumbnail_overlay_hover_color' => ! empty ( $instance['design']['thumbnail_overlay_hover_color'] ) ? $instance['design']['thumbnail_overlay_hover_color'] : '',
+			'navigation_color' => ! empty ( $instance['design']['navigation_color'] ) ? $instance['design']['navigation_color'] : '',
+			'navigation_color_hover' => ! empty ( $instance['design']['navigation_color_hover'] ) ? $instance['design']['navigation_color_hover'] : '',
+			'navigation_background' => ! empty ( $instance['design']['navigation_background'] ) ? $instance['design']['navigation_background'] : '',
+			'navigation_hover_background' => ! empty ( $instance['design']['navigation_hover_background'] ) ? $instance['design']['navigation_hover_background'] : '',
 		);
 	}
 
