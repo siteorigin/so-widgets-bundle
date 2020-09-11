@@ -196,6 +196,11 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 				$instance['networks'][$name] = $network;
 			}
 		}
+
+		if ( ! empty( $instance['design'] ) && $instance['design']['rounding'] == '1.5' ) {
+			$instance['design']['rounding'] = '2.5';
+		}
+
 		return $instance;
 	}
 
