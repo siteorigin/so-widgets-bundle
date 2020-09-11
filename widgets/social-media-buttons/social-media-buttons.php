@@ -130,7 +130,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 							'0'    => __( 'None', 'so-widgets-bundle' ),
 							'0.25' => __( 'Slightly rounded', 'so-widgets-bundle' ),
 							'0.5'  => __( 'Very rounded', 'so-widgets-bundle' ),
-							'1.5'  => __( 'Completely rounded', 'so-widgets-bundle' ),
+							'2.5'  => __( 'Completely rounded', 'so-widgets-bundle' ),
 						),
 					),
 					'padding'    => array(
