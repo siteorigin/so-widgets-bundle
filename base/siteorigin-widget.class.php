@@ -239,7 +239,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		do_action( 'siteorigin_widgets_after_widget_' . $this->id_base, $instance, $this );
 
 		// If this is a widget preview, we need to print the styling inline
-		if ( $this->is_preview( $instance ) && isset( $_POST['action'] ) &&  $_POST['action']== 'so_widgets_preview' ) {
+		if ( $this->is_preview( $instance ) ) {
 			siteorigin_widget_print_styles();
 		}
 	}
@@ -291,7 +291,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$css_name = $this->id_base.'-'.$style.'-'.$hash;
 
 			//Ensure styles aren't generated and enqueued more than once.
-			$in_preview = $this->is_preview( $instance );
+			$in_preview = $this->is_preview( $instance ) || ( isset( $_POST['action'] ) &&  $_POST['action'] == 'so_widgets_preview' );
 			if ( ! in_array( $css_name, $this->generated_css ) || $in_preview ) {
 				if( $in_preview ) {
 					siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
