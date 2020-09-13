@@ -20,7 +20,14 @@
 
 			.wp-picker-input-wrap {
 				padding: 0;
-				float: none;
+				display: flex;
+				flex-direction: row;
+				float: right;
+
+				.siteorigin-widget-input-color,
+				.button.wp-picker-default {
+					height: 34.1px;
+				}
 			}
 
 			.iris-picker.iris-border {
@@ -48,6 +55,10 @@
 		& .siteorigin-widget-input-color {
 			width: 120px;
 			margin: 0 3px;
+		}
+
+		.ui-draggable-handle {
+			transition: none;
 		}
 
 		&.siteorigin-widget-field-type-icon {
@@ -140,6 +151,11 @@
 		&.hidden {
 			display: none;
 		}
+	}
+
+	.button.wp-color-result {
+		padding: 0 0 0 30px;
+		height: 34.1px;
 	}
 
 	.button.button-small {
