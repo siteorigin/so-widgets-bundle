@@ -487,7 +487,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 				<a href='https://policies.google.com/privacy?hl=en&amp;gl=en' target='_blank' rel='noopener noreferrer'>Read more</a>", 'so-widgets-bundle' ),
 			),
-			),
 
 			'responsive_breakpoint' => array(
 				'type'        => 'number',
@@ -590,6 +589,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'map_consent' => ! empty( $global_settings['map_consent'] ),
 				'map_consent_notice' => ! empty( $global_settings['map_consent_notice'] ) ? $global_settings['map_consent_notice'] : '',
 				'map_consent_btn_text' => ! empty( $global_settings['map_consent_btn_text'] ) ? $global_settings['map_consent_btn_text'] : '',
+				'consent_background_image' => plugin_dir_url( __FILE__ ) . 'assets/map-consent-background.jpg',
 			);
 		}
 	}
