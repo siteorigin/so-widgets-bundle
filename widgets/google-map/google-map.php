@@ -482,7 +482,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			'map_consent_notice' => array(
 				'type' => 'tinymce',
 				'label' => __( 'Consent prompt text', 'so-widgets-bundle' ),
-				'description' => __( 'This is text is shown when a user is prompted to consent to load the Google Maps API.', 'so-widgets-bundle' ),
+				'description' => __( 'This is text is displayed when a user is prompted to consent to load the Google Maps API.', 'so-widgets-bundle' ),
 				'default' => __( "By loading, you agree to Google's privacy policy.
 
 				<a href='https://policies.google.com/privacy?hl=en&amp;gl=en' target='_blank' rel='noopener noreferrer'>Read more</a>", 'so-widgets-bundle' ),
