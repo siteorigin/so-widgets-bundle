@@ -24,11 +24,21 @@
 		height: @height;
 
 		.sow-google-map-consent-prompt {
-			background: fade( @map_consent_notice_text_background, 90% );
+			background: fade( @map_consent_notice_text_background, 85% );
 			color: @map_consent_notice_text_color;
-			padding: 25px 0;
-			text-align: center;
 			width: 100%;
+		}
+
+		.sow-google-map-consent-prompt-inner {
+			margin: 0 auto;
+			max-width: 780px;
+			padding: 50px;
+			text-align: center;
+
+			@media (max-width: @responsive_breakpoint) {
+				max-width: none;
+				padding: 25px;
+			}
 
 			button {
 				display: block;

@@ -9,9 +9,11 @@
 <?php if ( $map_consent ) : ?>
 	<div class="sow-google-map-consent" style="<?php echo 'background-image: url(' . sow_esc_url( $consent_background_image ) . ')'; ?>">
 		<div class="sow-google-map-consent-prompt">
-			<?php echo wp_kses_post( $map_consent_notice ); ?>
+			<div class="sow-google-map-consent-prompt-inner">
+				<?php echo wp_kses_post( $map_consent_notice ); ?>
 
-			<button class="btn button"><?php echo esc_html( $map_consent_btn_text ); ?></button>
+				<button class="btn button"><?php echo esc_html( $map_consent_btn_text ); ?></button>
+			</div>
 		</div>
 	</div>
 <?php endif; ?>
