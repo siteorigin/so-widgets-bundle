@@ -14,20 +14,27 @@
 			background: none;
 
 			.wp-color-result {
-				float: none;
+				float: left;
 				margin: 0;
 			}
 
 			.wp-picker-input-wrap {
 				padding: 0;
-				display: flex;
-				flex-direction: row;
-				float: right;
+				float: left;
 
 				.siteorigin-widget-input-color,
 				.button.wp-picker-default {
 					height: 34.1px;
 				}
+
+				.button.wp-picker-default {
+					float: right;
+					width: auto;
+				}
+			}
+
+			.wp-picker-holder {
+				clear: both;
 			}
 
 			.iris-picker.iris-border {
