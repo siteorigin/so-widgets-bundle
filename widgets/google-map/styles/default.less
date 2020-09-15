@@ -6,34 +6,34 @@
 @map_consent_notice_text_background: #000;
 
 .sow-google-map-canvas {
-    height: @height;
+	height: @height;
 
-    img {
-        border-radius: 0;
-        box-shadow: none;
-        line-height: normal;
-        max-width: none;
-        zoom: normal;
-    }
+	img {
+		border-radius: 0;
+		box-shadow: none;
+		line-height: normal;
+		max-width: none;
+		zoom: normal;
+	}
 }
 
 & when ( @map_consent = 1 ) {
-    .sow-google-map-consent {
-        height: @height;
-        display: flex;
-        align-items: center;
+	.sow-google-map-consent {
+		align-items: center;
+		display: flex;
+		height: @height;
 
-        .sow-google-map-consent-prompt {
-            padding: 25px 0;
-            width: 100%;
-            text-align: center;
-            color: @map_consent_notice_text_color;
-            background: fade( @map_consent_notice_text_background, 90% );
+		.sow-google-map-consent-prompt {
+			background: fade( @map_consent_notice_text_background, 90% );
+			color: @map_consent_notice_text_color;
+			padding: 25px 0;
+			text-align: center;
+			width: 100%;
 
-            button {
-                display: block;
-                margin: 10px auto 0;
-            }
-        }
-    }
+			button {
+				display: block;
+				margin: 10px auto 0;
+			}
+		}
+	}
 }
