@@ -158,9 +158,14 @@ jQuery( function( $ ){
         $$.prop( 'disabled', true );
 
         dialog.find( 'form' ).submit( function() {
-            $.prop( 'disabled', false );
+            $$.prop( 'disabled', false );
             dialog.hide();
         } ).submit();
+    } );
+
+    // Enable all widget settings button after the save iframe has loaded.
+    $('#so-widget-settings-save').on( 'load', function() {
+    	$( '#widgets-list .so-widget-settings' ).prop( 'disabled', false ); 
     } );
 
     // Automatically open settings modal based on hash
