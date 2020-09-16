@@ -1,4 +1,5 @@
 .elementor-panel #elementor-panel-page-editor .elementor-control-content .siteorigin-widget-form {
+	color: #000;
 	min-width: inherit;
 
 	.wp-picker-container {
@@ -13,13 +14,30 @@
 			background: none;
 
 			.wp-color-result {
-				float: none;
+				float: left;
 				margin: 0;
 			}
 
 			.wp-picker-input-wrap {
 				padding: 0;
-				float: none;
+				float: left;
+
+				.siteorigin-widget-input-color,
+				.button.wp-picker-default {
+					font-size: 12px;
+					height: 32px;
+				}
+
+				.button.wp-picker-default {
+					float: right;
+					width: auto;
+				}
+			}
+
+			.wp-picker-holder:before {
+				clear: both;
+				content: "";
+				display: table;
 			}
 
 			.iris-picker.iris-border {
@@ -49,6 +67,10 @@
 			margin: 0 3px;
 		}
 
+		.ui-draggable-handle {
+			transition: none;
+		}
+
 		&.siteorigin-widget-field-type-icon {
 			.siteorigin-widget-icon-selector {
 				.siteorigin-widget-icon-search {
@@ -65,7 +87,8 @@
 			}
 
 			.siteorigin-widget-input-measurement {
-				width: 66%;
+				width: 100%;
+				max-width: 58px;
 				margin-right: 1px;
 			}
 
@@ -73,6 +96,7 @@
 				min-width: inherit;
 				width: 32%;
 				margin-left: 1px;
+				max-width: 73px;
 			}
 		}
 
@@ -139,6 +163,12 @@
 		&.hidden {
 			display: none;
 		}
+	}
+
+	.button.wp-color-result {
+		font-size: 12px;
+		height: 32px;
+		padding: 0 0 0 30px;
 	}
 
 	.button.button-small {
