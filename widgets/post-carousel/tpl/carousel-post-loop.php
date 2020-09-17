@@ -7,7 +7,7 @@ while($posts->have_posts()) : $posts->the_post(); ?>
 	<div class="sow-carousel-item" tabindex="-1">
 		<div class="sow-carousel-thumbnail">
 			<?php if( has_post_thumbnail() ) : $img = wp_get_attachment_image_src(get_post_thumbnail_id(), $instance['image_size']); ?>
-				<a href="<?php the_permalink() ?>" style="background-image: url(<?php echo sow_esc_url($img[0]) ?>)" aria-labelledby="sow-carousel-id-<?php echo the_ID(); ?>" tabindex="-1">
+				<a href="<?php the_permalink() ?>" <?php echo $link_target == 'new' ? 'target="_blank" rel="noopener noreferrer"' : '' ?> style="background-image: url(<?php echo sow_esc_url($img[0]) ?>)" aria-labelledby="sow-carousel-id-<?php echo the_ID(); ?>" tabindex="-1">
 					<span class="overlay"></span>
 				</a>
 			<?php else : ?>
