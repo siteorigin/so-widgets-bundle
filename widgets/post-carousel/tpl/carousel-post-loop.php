@@ -26,6 +26,6 @@ while($posts->have_posts()) : $posts->the_post(); ?>
 				</a>
 			<?php endif; ?>
 		</div>
-		<h3><a href="<?php the_permalink() ?>" id="sow-carousel-id-<?php echo the_ID(); ?>" tabindex="-1"><?php the_title() ?></a></h3>
+		<h3><a href="<?php the_permalink() ?>" id="sow-carousel-id-<?php echo the_ID(); ?>" <?php echo $link_target == 'new' ? 'target="_blank" rel="noopener noreferrer"': ''; ?> tabindex="-1"><?php the_title() ?></a></h3>
 	</div>
 <?php endwhile; wp_reset_postdata(); ?>
