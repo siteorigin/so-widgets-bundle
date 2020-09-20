@@ -150,18 +150,31 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 							'justify' => __( 'Justify', 'so-widgets-bundle' ),
 						),
 					),
-					'margin'     => array(
-						'type'    => 'select',
-						'label'   => __( 'Margin', 'so-widgets-bundle' ),
-						'default' => '0.1',
-						'options' => array(
-							'0.1' => __( 'Low', 'so-widgets-bundle' ),
-							'0.2' => __( 'Medium', 'so-widgets-bundle' ),
-							'0.3' => __( 'High', 'so-widgets-bundle' ),
-							'0.4' => __( 'Very high', 'so-widgets-bundle' ),
+					'margin' => array(
+						'type'         => 'multi-measurement',
+						'autofill'     => true,
+						'label'        => __( 'Margin', 'so-widgets-bundle' ),
+						'default'      => '0.1em 0.1em 0.1em 0em',
+						'measurements' => array(
+							'top' => array(
+								'label' => __( 'Margin Top', 'so-widgets-bundle' ),
+								'units' => $useable_multi_units,
+							),
+							'right' => array(
+								'label' => __( 'Margin Right', 'so-widgets-bundle' ),
+								'units' => $useable_multi_units,
+							),
+							'bottom' => array(
+								'label' => __( 'Margin Bottom', 'so-widgets-bundle' ),
+								'units' => $useable_multi_units,
+							),
+							'left' => array(
+								'label' => __( 'Margin Left', 'so-widgets-bundle' ),
+								'units' => $useable_multi_units,
+							),
 						),
 					),
-				)
+				),
 			),
 		);
 	}
@@ -185,6 +198,21 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			$instance['design']['icon_size_unit'] = 'em';
 			$instance['design']['rounding_unit']  = 'em';
 			$instance['design']['padding_unit']   = 'em';
+
+			// The margin value was previously changed based on the align setting.
+			$top = $right = $bottom = $left = $instance['design']['margin']. 'em';
+			switch ( $instance['design']['align'] ) {
+				case 'left':
+					$left = '0';
+					break;
+				case 'right':
+					$right = '0';
+					break;
+				case 'center':
+					$left = $right = ( $instance['design']['margin'] * 0.5 ) . 'em';
+					break;
+			}
+			$instance['design']['margin'] = $top . ' ' . $right . ' ' . $bottom . ' ' . $left;
 		}
 
 		return $instance;
@@ -218,24 +246,10 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 	function get_less_variables( $instance ) {
 		if( empty( $instance ) ) return;
 
-		$design = $instance['design'];
-		$m      = $design['margin'];
-		$top = $right = $bottom = $left = $m . 'em';
-		switch ( $design['align'] ) {
-			case 'left':
-				$left = '0';
-				break;
-			case 'right':
-				$right = '0';
-				break;
-			case 'center':
-				$left = $right = ( $m * 0.5 ) . 'em';
-				break;
-		}
-		$margin = $top . ' ' . $right . ' ' . $bottom . ' ' . $left;
-
 		// Get responsive breakpoint and make sure it's properly formatted
 		$breakpoint = $this->get_global_settings( 'responsive_breakpoint' );
+
+		$design = $instance['design'];
 		return array(
 			'icon_size'             => $design['icon_size'],
 			'rounding'              => $design['rounding'],
@@ -243,7 +257,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			'align'                 => $design['align'],
 			'mobile_align'          => ! empty( $design['mobile_align'] ) ? $design['mobile_align'] : '',
 			'responsive_breakpoint' => ! empty( $breakpoint ) ? $breakpoint : '',
-			'margin'                => $margin
+			'margin'                => $design['margin'],
 		);
 	}
 
