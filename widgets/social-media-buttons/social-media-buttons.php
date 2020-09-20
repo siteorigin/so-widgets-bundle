@@ -48,6 +48,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			$network_names[ $key ] = $value['label'];
 		}
 
+		$useable_multi_units = array( 'px', '%', 'em' );
 		return array(
 			'title' => array(
 				'type' => 'text',
@@ -113,36 +114,19 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 						'default' => true
 					),
 					'icon_size'  => array(
-						'type'    => 'select',
+						'type'    => 'measurement',
 						'label'   => __( 'Icon size', 'so-widgets-bundle' ),
-						'options' => array(
-							'1'    => __( 'Normal', 'so-widgets-bundle' ),
-							'1.33' => __( 'Medium', 'so-widgets-bundle' ),
-							'1.66' => __( 'Large', 'so-widgets-bundle' ),
-							'2'    => __( 'Extra large', 'so-widgets-bundle' )
-						)
+						'default' => '1em',
 					),
 					'rounding'   => array(
-						'type'    => 'select',
+						'type'    => 'measurement',
 						'label'   => __( 'Rounding', 'so-widgets-bundle' ),
-						'default' => '0.25',
-						'options' => array(
-							'0'    => __( 'None', 'so-widgets-bundle' ),
-							'0.25' => __( 'Slightly rounded', 'so-widgets-bundle' ),
-							'0.5'  => __( 'Very rounded', 'so-widgets-bundle' ),
-							'1.5'  => __( 'Completely rounded', 'so-widgets-bundle' ),
-						),
+						'default' => '0.25em',
 					),
 					'padding'    => array(
-						'type'    => 'select',
+						'type'    => 'measurement',
 						'label'   => __( 'Padding', 'so-widgets-bundle' ),
-						'default' => '1',
-						'options' => array(
-							'0.5' => __( 'Low', 'so-widgets-bundle' ),
-							'1'   => __( 'Medium', 'so-widgets-bundle' ),
-							'1.4' => __( 'High', 'so-widgets-bundle' ),
-							'1.8' => __( 'Very high', 'so-widgets-bundle' ),
-						),
+						'default' => '1em',
 					),
 					'align'      => array(
 						'type'    => 'select',
@@ -176,7 +160,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 							'0.3' => __( 'High', 'so-widgets-bundle' ),
 							'0.4' => __( 'Very high', 'so-widgets-bundle' ),
 						),
-					)
+					),
 				)
 			),
 		);
@@ -196,6 +180,13 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 				$instance['networks'][$name] = $network;
 			}
 		}
+
+		if ( ! empty( $instance['design'] ) && ! isset( $instance['design']['icon_size_unit']) ) {
+			$instance['design']['icon_size_unit'] = 'em';
+			$instance['design']['rounding_unit']  = 'em';
+			$instance['design']['padding_unit']   = 'em';
+		}
+
 		return $instance;
 	}
 
@@ -246,9 +237,9 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		// Get responsive breakpoint and make sure it's properly formatted
 		$breakpoint = $this->get_global_settings( 'responsive_breakpoint' );
 		return array(
-			'icon_size'             => $design['icon_size'] . 'em',
-			'rounding'              => $design['rounding'] . 'em',
-			'padding'               => $design['padding'] . 'em',
+			'icon_size'             => $design['icon_size'],
+			'rounding'              => $design['rounding'],
+			'padding'               => $design['padding'],
 			'align'                 => $design['align'],
 			'mobile_align'          => ! empty( $design['mobile_align'] ) ? $design['mobile_align'] : '',
 			'responsive_breakpoint' => ! empty( $breakpoint ) ? $breakpoint : '',
