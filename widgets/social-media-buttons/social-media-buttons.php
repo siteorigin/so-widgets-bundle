@@ -206,10 +206,10 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			$top = $right = $bottom = $left = $instance['design']['margin']. 'em';
 			switch ( $instance['design']['align'] ) {
 				case 'left':
-					$left = '0';
+					$left = '0em';
 					break;
 				case 'right':
-					$right = '0';
+					$right = '0em';
 					break;
 				case 'center':
 					$left = $right = ( $instance['design']['margin'] * 0.5 ) . 'em';
