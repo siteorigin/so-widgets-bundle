@@ -195,8 +195,11 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		}
 
 		if ( ! empty( $instance['design'] ) && ! isset( $instance['design']['icon_size_unit']) ) {
+			$instance['design']['icon_size']      = $instance['design']['icon_size'] . 'em';
 			$instance['design']['icon_size_unit'] = 'em';
+			$instance['design']['rounding']       = $instance['design']['rounding'] . 'em';
 			$instance['design']['rounding_unit']  = 'em';
+			$instance['design']['padding']        = $instance['design']['padding'] . 'em';
 			$instance['design']['padding_unit']   = 'em';
 
 			// The margin value was previously changed based on the align setting.
