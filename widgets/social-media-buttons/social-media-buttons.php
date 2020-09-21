@@ -194,7 +194,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		if ( ! empty( $instance['design'] ) && ! isset( $instance['design']['icon_size_unit']) ) {
+		if ( ! empty( $instance['design'] ) && ! isset( $instance['design']['icon_size_unit'] ) ) {
 			$instance['design']['icon_size']      = $instance['design']['icon_size'] . 'em';
 			$instance['design']['icon_size_unit'] = 'em';
 			$instance['design']['rounding']       = $instance['design']['rounding'] . 'em';
@@ -203,7 +203,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			$instance['design']['padding_unit']   = 'em';
 
 			// The margin value was previously changed based on the align setting.
-			$top = $right = $bottom = $left = $instance['design']['margin']. 'em';
+			$top = $right = $bottom = $left = $instance['design']['margin'] . 'em';
 			switch ( $instance['design']['align'] ) {
 				case 'left':
 					$left = '0em';
@@ -215,7 +215,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 					$left = $right = ( $instance['design']['margin'] * 0.5 ) . 'em';
 					break;
 			}
-			$instance['design']['margin'] = $top . ' ' . $right . ' ' . $bottom . ' ' . $left;
+			$instance['design']['margin'] = "$top $right $bottom $left";
 		}
 
 		return $instance;
