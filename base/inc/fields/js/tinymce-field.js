@@ -123,12 +123,12 @@
 	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-tinymce', function () {
 		var $field = $( this );
 		var $parentRepeaterItem = $field.closest( '.siteorigin-widget-field-repeater-item-form' );
-		
-		// Prevent potential id overlap by appending the textarea field a random id.
-		var $textarea = $field.find( 'textarea' );
-		$textarea.attr( 'id', $textarea.attr( 'id' ) + Math.floor( Math.random() * 1000 ) );
-		
+
 		if ( $parentRepeaterItem.length > 0 ) {
+			// Prevent potential id overlap by appending the textarea field a random id.
+			var $textarea = $field.find( 'textarea' );
+			$textarea.attr( 'id', $textarea.attr( 'id' ) + Math.floor( Math.random() * 1000 ) );
+
 			if ( $parentRepeaterItem.is( ':visible' ) ) {
 				setup( $field );
 			}
