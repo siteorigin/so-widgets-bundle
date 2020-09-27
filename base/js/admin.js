@@ -830,7 +830,12 @@ var sowbForms = window.sowbForms || {};
 						var nm = $inputElement.attr('name');
 						// TinyMCE field :/
 						if ($inputElement.is('textarea') && $inputElement.parent().is('.wp-editor-container') && typeof tinymce != 'undefined') {
-							$inputElement.parent().empty().append($inputElement);
+							// Update the field ID to prevent duplicates.
+							id = id.replace( /\d+$/, Math.floor( Math.random() * 1000 ) );
+							$inputElement.attr( 'id', id );
+							// Set the field to be reinitialized.
+							$inputElement.find( 'siteorigin-widget-field-type-tinymce' ).data( 'initialized', false );
+							$inputElement.parent().parent().empty().append( $inputElement );
 							$inputElement.css('display', '');
 							var curEd = tinymce.get(id);
 							if (curEd) {
