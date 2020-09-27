@@ -37,8 +37,30 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 				)
 			)
 		);
+
+		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-tabs', array( $this, 'enqueue_widget_scripts' ) );
 	}
-	
+
+	function get_settings_form() {
+		return array(
+			'scrollto_after_change' => array(
+				'type'        => 'checkbox',
+				'label'       => __( 'Scroll user to top of the tab when switching tab', 'so-widgets-bundle' ),
+				'default'     => true,
+				'description' => __( 'This setting will scroll the user to the top of the tab after switching tab. This is done to potentially prevent the need for the user to do this ', 'so-widgets-bundle' ),
+			)
+		);
+	}
+
+	function enqueue_widget_scripts() {
+		$global_settings = $this->get_global_settings();
+		wp_localize_script( 'sow-tabs', 'sowTabs',
+			array(
+				'scrollto_after_change' => ! empty( $global_settings['scrollto_after_change'] ),
+			),
+		);
+	}
+
 	function get_widget_form() {
 		
 		return array(
