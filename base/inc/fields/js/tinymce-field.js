@@ -39,7 +39,10 @@
 			settings.tinymce.wpautop = $wpautopToggleField.is( ':checked' );
 		}
 		var $textarea = $container.find( 'textarea' );
-		var id = $textarea.attr( 'id' );
+		// Prevent potential id overlap by appending the textarea field with a random id.
+		var id = $textarea.attr( 'id' ) + Math.floor( Math.random() * 1000 );
+		$textarea.attr( 'id', id );
+
 		var setupEditor = function ( editor ) {
 			editor.on( 'change',
 				function () {
@@ -125,10 +128,6 @@
 		var $parentRepeaterItem = $field.closest( '.siteorigin-widget-field-repeater-item-form' );
 
 		if ( $parentRepeaterItem.length > 0 ) {
-			// Prevent potential id overlap by appending the textarea field a random id.
-			var $textarea = $field.find( 'textarea' );
-			$textarea.attr( 'id', $textarea.attr( 'id' ) + Math.floor( Math.random() * 1000 ) );
-
 			if ( $parentRepeaterItem.is( ':visible' ) ) {
 				setup( $field );
 			}
