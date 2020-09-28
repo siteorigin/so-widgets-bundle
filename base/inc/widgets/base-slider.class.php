@@ -316,7 +316,9 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		?>
 		<li <?php foreach( $wrapper_attributes as $attr => $val ) echo $attr . '="' . esc_attr( $val ) . '" '; ?>>
 			<?php
+			do_action( 'siteorigin_widgets_slider_before_contents', $frame );
 			$this->render_frame_contents( $i, $frame );
+			do_action( 'siteorigin_widgets_slider_after_contents', $frame );
 			if( !empty( $background['videos'] ) ) {
 
 				$classes = array( 'sow-' . $background['video-sizing'] . '-element' );
