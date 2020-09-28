@@ -66,6 +66,9 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+== 1.17.8 - 28 September 2020 ==
+* Image: Prevent image stretching while using Safari
+
 == 1.17.7 - 10 September 2020 ==
 * Hero and Layout Sliders: Disable image preload for images added to frames.
 * Resolved a preview issue with widgets that attempt to render sub widgets but don't output them.
