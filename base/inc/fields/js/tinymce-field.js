@@ -40,8 +40,12 @@
 		}
 		var $textarea = $container.find( 'textarea' );
 		// Prevent potential id overlap by appending the textarea field with a random id.
-		var id = $textarea.attr( 'id' ) + Math.floor( Math.random() * 1000 );
-		$textarea.attr( 'id', id );
+		var id = $textarea.data( 'tinymce-id' );
+		if ( ! id ) {
+			var id = $textarea.attr( 'id' ) + Math.floor( Math.random() * 1000 );
+			$textarea.data( 'tinymce-id', id );
+			$textarea.attr( 'id', id );
+		}
 
 		var setupEditor = function ( editor ) {
 			editor.on( 'change',

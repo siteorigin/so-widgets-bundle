@@ -830,11 +830,7 @@ var sowbForms = window.sowbForms || {};
 						var nm = $inputElement.attr('name');
 						// TinyMCE field :/
 						if ($inputElement.is('textarea') && $inputElement.parent().is('.wp-editor-container') && typeof tinymce != 'undefined') {
-							// Update the field ID to prevent duplicates.
-							id = id.replace( /\d+$/, Math.floor( Math.random() * 1000 ) );
-							// Set the field to be reinitialized.
-							$inputElement.find( 'siteorigin-widget-field-type-tinymce' ).data( 'initialized', false );
-							$inputElement.parent().parent().empty().append( $inputElement );
+							$inputElement.parent().empty().append($inputElement);
 							$inputElement.css('display', '');
 							var curEd = tinymce.get(id);
 							if (curEd) {
@@ -886,18 +882,23 @@ var sowbForms = window.sowbForms || {};
 								var newRadioIdBase = idBase + '-' + newIds[idBase];
 								newId = newRadioIdBase + id.match(/-\d+$/)[0];
 								$copyItem.find('label[for=' + radioIdBase + ']').attr('for', newRadioIdBase);
-							} else if ( ! $inputElement.is( '.wp-editor-area' ) || typeof tinymce == 'undefined' ) {
+							} else {
 								idRegExp = new RegExp('-\\d+$');
 								idBase = id.replace(idRegExp, '');
 								if (!newIds[idBase]) {
 									newIds[idBase] = $form.find('.siteorigin-widget-input[id^=' + idBase + ']').not('[id*=_id_]').length + 1;
 								}
 								newId = idBase + '-' + newIds[idBase]++;
-							} else {
-								newId = id;
+							}
+
+							if ( $inputElement.is( '.wp-editor-area' ) ) {
+								// Prevent potential id overlap by appending the textarea field with a random id.
+								newId += Math.floor( Math.random() * 1000 );
+								$inputElement.data( 'tinymce-id', newId );
 							}
 
 							$inputElement.attr('id', newId);
+
 							if ( $inputElement.is( '.wp-editor-area' ) ) {
 								var tmceContainer = $inputElement.closest( '.siteorigin-widget-tinymce-container' );
 								var mediaButtons = tmceContainer.data( 'media-buttons' );
