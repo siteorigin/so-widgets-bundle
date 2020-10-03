@@ -45,9 +45,9 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 		return array(
 			'scrollto_after_change' => array(
 				'type'        => 'checkbox',
-				'label'       => __( 'Scroll user to top of the panel when opening panel', 'so-widgets-bundle' ),
+				'label'       => __( 'Scroll top', 'so-widgets-bundle' ),
 				'default'     => true,
-				'description' => __( 'This setting will scroll the user to the top of any opened panels. This is done to potentially prevent the need for the user to do this ', 'so-widgets-bundle' ),
+				'description' => __( 'When opening the panel, scroll the user to the top of the panel', 'so-widgets-bundle' ),
 			)
 		);
 	}

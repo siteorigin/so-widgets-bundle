@@ -45,9 +45,9 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 		return array(
 			'scrollto_after_change' => array(
 				'type'        => 'checkbox',
-				'label'       => __( 'Scroll user to top of the tab when switching tab', 'so-widgets-bundle' ),
+				'label'       => __( 'Scroll top', 'so-widgets-bundle' ),
 				'default'     => true,
-				'description' => __( 'This setting will scroll the user to the top of the tab after switching tab. This is done to potentially prevent the need for the user to do this ', 'so-widgets-bundle' ),
+				'description' => __( 'When opening a tab, scroll the user to the top of the tab', 'so-widgets-bundle' ),
 			)
 		);
 	}
