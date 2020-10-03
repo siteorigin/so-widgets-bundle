@@ -54,10 +54,12 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 
 	function enqueue_widget_scripts() {
 		$global_settings = $this->get_global_settings();
-		wp_localize_script( 'sow-accordion', 'sowAccordion',
+		wp_localize_script(
+			'sow-accordion',
+			'sowAccordion',
 			array(
 				'scrollto_after_change' => ! empty( $global_settings['scrollto_after_change'] ),
-			),
+			)
 		);
 	}
 
