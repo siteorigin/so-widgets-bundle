@@ -31,19 +31,21 @@ jQuery( function ( $ ) {
 				touchThreshold: 20,
 				variableWidth: true,
 				accessibility: false,
+				slidesToScroll: parseInt( carouselSettings.desktop_slides ),
+				slidesToShow: parseInt( carouselSettings.desktop_slides ),
 				responsive: [
 					{
-						breakpoint: carouselBreakpoints.tablet_portrait,
+						breakpoint: carouselSettings.tablet_portrait,
 						settings: {
-							slidesToScroll: 2,
-							slidesToShow: 2,
+							slidesToScroll: parseInt( carouselSettings.tablet_slides ),
+							slidesToShow: parseInt( carouselSettings.tablet_slides ),
 						}
 					},
 					{
-						breakpoint: carouselBreakpoints.mobile,
+						breakpoint: carouselSettings.mobile,
 						settings: {
-							slidesToScroll: 1,
-							slidesToShow: 1,
+							slidesToScroll: parseInt( carouselSettings.mobile_slides ),
+							slidesToShow: parseInt( carouselSettings.mobile_slides ),
 						}
 					},
 				],
@@ -62,12 +64,16 @@ jQuery( function ( $ ) {
 					numItems = $items.find( '.sow-carousel-item' ).length,
 					complete = numItems === $$.data( 'post-count' ),
 					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
-					lastPosition = numItems - numVisibleItems + 1;
+					lastPosition = numItems - numVisibleItems + 1,
+					slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' );
 
 				// Check if all posts are displayed
 				if ( ! complete ) {
 					// Check if we need to fetch the next batch of posts
-					if ( $items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ) {
+					if ( 
+						$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ||
+						$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition - 1
+					) {
 
 						if ( ! $$.data( 'fetching' ) ) {
 							// Fetch the next batch
@@ -115,10 +121,11 @@ jQuery( function ( $ ) {
 							$items.slick( 'slickGoTo', 0 );
 						}
 					// Check if the next slide is the last slide and prevent blank spacing.
-					} else if (
-						complete &&
-						$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= lastPosition
-					) {
+					} else if ( complete && $items.slick( 'slickCurrentSlide' ) + numVisibleItems >= lastPosition ) {
+						$items.setSlideTo( lastPosition );
+
+					// Check if the number of slides to scroll exceeds lastPosition, go to the last slide.
+					} else if ( $items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition - 1 ) {
 						$items.setSlideTo( lastPosition );
 					} else {
 						$items.slick( 'slickNext' );
@@ -200,9 +207,9 @@ jQuery( function ( $ ) {
 			} );
 
 			// Change Slick Settings on iPad Pro while Landscape
-			if ( window.matchMedia( '(min-width: ' + carouselBreakpoints.tablet_portrait + 'px) and (max-width: ' + carouselBreakpoints.tablet_landscape + 'px) and (orientation: landscape)' ).matches ) {
-				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToShow', 3 );
-				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToScroll', 3 );
+			if ( window.matchMedia( '(min-width: ' + carouselSettings.tablet_portrait + 'px) and (max-width: ' + carouselSettings.tablet_landscape + 'px) and (orientation: landscape)' ).matches ) {
+				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToShow', parseInt( carouselSettings.tablet_slides ) );
+				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToScroll', parseInt( carouselSettings.tablet_slides ) );
 			}
 
 			$( '.sow-carousel-item:first-of-type' ).prop( 'tabindex', 0 );

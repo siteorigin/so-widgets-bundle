@@ -100,14 +100,19 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function enqueue_widget_scripts() {
-		wp_localize_script( 'sow-carousel-basic', 'carouselBreakpoints',
+	function enqueue_widget_scripts( $instance ) {
+		wp_localize_script(
+			'sow-carousel-basic',
+			'carouselSettings',
 			apply_filters(
 				'siteorigin_widgets_post_carousel_breakpoints',
 				array(
-					'tablet_landscape' => 1366,
-					'tablet_portrait'  => 1025,
-					'mobile'           => 480,
+					'desktop_slides' => ! empty ( $instance['responsive']['desktop']['slides_to_scroll'] ) ? $instance['responsive']['desktop']['slides_to_scroll'] : 1,
+					'tablet_breakpoint_landscape' => 1366,
+					'tablet_breakpoint_portrait' => 1025,
+					'tablet_slides' => ! empty ( $instance['responsive']['tablet']['slides_to_scroll'] ) ? $instance['responsive']['tablet']['slides_to_scroll'] : 2,
+					'mobile_breakpoint' => 480,
+					'mobile_slides' => ! empty ( $instance['responsive']['mobile']['slides_to_scroll'] ) ? $instance['responsive']['mobile']['slides_to_scroll'] : 1,
 				)
 			)
 		);
@@ -185,6 +190,52 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 						'type' => 'color',
 						'label' => __( 'Navigation hover background', 'so-widgets-bundle' ),
 						'default' => '#444',
+					),
+				),
+			),
+			'responsive ' => array(
+				'type' => 'section',
+				'label' => __( 'Responsive', 'so-widgets-bundle' ),
+				'hide' => true,
+				'fields' => array(
+					'desktop ' => array(
+						'type' => 'section',
+						'label' => __( 'Desktop', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'slides_to_scroll' => array(
+								'type' => 'number',
+								'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
+								'description' => __( 'Set the number of slides to scroll per navigation click or swipe on desktop.', 'so-widgets-bundle' ),
+								'default' => 1,
+							),
+						),
+					),
+					'tablet ' => array(
+						'type' => 'section',
+						'label' => __( 'Tablet', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'slides_to_scroll' => array(
+								'type' => 'number',
+								'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
+								'description' => __( 'Set the number of slides to scroll per navigation click or swipe on tablet devices.', 'so-widgets-bundle' ),
+								'default' => 2,
+							),
+						),
+					),
+					'mobile ' => array(
+						'type' => 'section',
+						'label' => __( 'Mobile', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'slides_to_scroll' => array(
+								'type' => 'number',
+								'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
+								'description' => __( ' Set the number of slides to scroll per navigation click or swipe on mobile devices.', 'so-widgets-bundle' ),
+								'default' => 1,
+							),
+						),
 					),
 				),
 			),
