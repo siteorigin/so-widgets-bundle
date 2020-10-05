@@ -57,6 +57,13 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 				'label' => __('Open in a new window', 'so-widgets-bundle'),
 			),
 
+			'download' => array(
+				'type' => 'checkbox',
+				'default' => false,
+				'label' => __( 'Download', 'so-widgets-bundle' ),
+				'description' => __( 'The button destination URL will be downloaded when a user clicks on the button.', 'so-widgets-bundle' ),
+			),
+
 			'button_icon' => array(
 				'type' => 'section',
 				'label' => __('Icon', 'so-widgets-bundle'),
@@ -288,6 +295,10 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		if ( ! empty( $instance['new_window'] ) ) {
 			$button_attributes['target'] = '_blank';
 			$button_attributes['rel'] = 'noopener noreferrer';
+		}
+
+		if ( ! empty( $instance['download'] ) ) {
+			$button_attributes['download'] = null;
 		}
 
 		if ( ! empty( $attributes['id'] ) ) {
