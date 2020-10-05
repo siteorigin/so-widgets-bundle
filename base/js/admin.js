@@ -142,9 +142,14 @@ var sowbForms = window.sowbForms || {};
 
 									var animated = false;
 									// Prevent animations from happening on load.
-									if ( $$f.prop( 'style' ).length && ( thisHandler[i][0] == 'show'|| thisHandler[i][0] == 'hide' ) ) {
-										$$f.fadeToggle( 'fast' );
-										animated = true;
+									if ( $$f.prop( 'style' ).length ) {
+										if ( thisHandler[i][0] == 'show' ) {
+											$$f.fadeIn( 'fast' );
+											animated = true;
+										} else if ( thisHandler[i][0] == 'hide' ) {
+											$$f.fadeOut( 'fast' );
+											animated = true;
+										}
 									}
 
 									if ( ! animated ) {
