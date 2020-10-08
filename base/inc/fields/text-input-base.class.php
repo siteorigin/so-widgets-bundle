@@ -46,6 +46,13 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 		return array();
 	}
 
+	/**
+	 * The attributes to be added to the input element.
+	 */
+	protected function get_input_attributes() {
+		return array();
+	}
+
 	protected function get_default_options() {
 		return array(
 			'input_type' => 'text',
@@ -60,6 +67,15 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 		echo $attr_string;
 	}
 
+
+	protected function render_attributes( $attributes ) {
+		$attr_string = '';
+		foreach ( $attributes as $name => $value ) {
+			$attr_string = esc_html( $name ) . '="' . esc_attr( $value ) . '"';
+		}
+		echo $attr_string;
+	}
+
 	protected function render_field( $value, $instance ) {
 		?>
 		<input type="<?php echo esc_attr( $this->input_type ) ?>"
@@ -67,6 +83,7 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 			   id="<?php echo esc_attr( $this->element_id ) ?>"
 		         value="<?php echo esc_attr( $value ) ?>"
 		         <?php $this->render_data_attributes( $this->get_input_data_attributes() ) ?>
+				 <?php $this->render_attributes( $this->get_input_attributes() ) ?>
 		         <?php $this->render_CSS_classes( $this->get_input_classes() ) ?>
 			<?php if ( ! empty( $this->placeholder ) ) echo 'placeholder="' . esc_attr( $this->placeholder ) . '"' ?>
 			<?php if( ! empty( $this->readonly ) ) echo 'readonly' ?> />
