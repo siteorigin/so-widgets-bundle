@@ -47,7 +47,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 				'type'        => 'checkbox',
 				'label'       => __( 'Scroll top', 'so-widgets-bundle' ),
 				'default'     => true,
-				'description' => __( 'When opening the panel, scroll the user to the top of the panel', 'so-widgets-bundle' ),
+				'description' => __( 'When opening the panel, scroll the user to the top of the panel.', 'so-widgets-bundle' ),
 			)
 		);
 	}
