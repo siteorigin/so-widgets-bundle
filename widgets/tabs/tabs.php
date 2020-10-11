@@ -47,7 +47,7 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 				'type'        => 'checkbox',
 				'label'       => __( 'Scroll top', 'so-widgets-bundle' ),
 				'default'     => true,
-				'description' => __( 'When opening a tab, scroll the user to the top of the tab', 'so-widgets-bundle' ),
+				'description' => __( 'When opening a tab, scroll the user to the top of the tab.', 'so-widgets-bundle' ),
 			)
 		);
 	}
