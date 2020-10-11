@@ -108,11 +108,11 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 				'siteorigin_widgets_post_carousel_breakpoints',
 				array(
 					'desktop_slides' => ! empty ( $instance['responsive']['desktop']['slides_to_scroll'] ) ? $instance['responsive']['desktop']['slides_to_scroll'] : 1,
-					'tablet_breakpoint_landscape' => 1366,
-					'tablet_breakpoint_portrait' => 1025,
-					'mobile_breakpoint' => 480,
 					'tablet_portrait_slides' => ! empty ( $instance['responsive']['tablet']['portrait']['slides_to_scroll'] ) ? $instance['responsive']['tablet']['portrait']['slides_to_scroll'] : 2,
+					'tablet_portrait_breakpoint' => ! empty ( $instance['responsive']['tablet']['portrait']['breakpoint'] ) ? $instance['responsive']['tablet']['portrait']['breakpoint'] : 1025,
 					'tablet_landscape_slides' => ! empty ( $instance['responsive']['tablet']['landscape']['slides_to_scroll'] ) ? $instance['responsive']['tablet']['landscape']['slides_to_scroll'] : 2,
+					'tablet_landscape_breakpoint' => ! empty ( $instance['responsive']['tablet']['landscape']['breakpoint'] ) ? $instance['responsive']['landscape']['breakpoint'] : 1366,
+					'mobile_breakpoint' => ! empty ( $instance['responsive']['mobile']['breakpoint'] ) ? $instance['responsive']['mobile']['breakpoint'] : 480,
 					'mobile_slides' => ! empty ( $instance['responsive']['mobile']['slides_to_scroll'] ) ? $instance['responsive']['mobile']['slides_to_scroll'] : 1,
 				)
 			)
@@ -222,6 +222,11 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 								'label' => __( 'Landscape', 'so-widgets-bundle' ),
 								'hide' => true,
 								'fields' => array(
+									'breakpoint' => array(
+										'type' => 'number',
+										'label' => __( 'Breakpoint', 'so-widgets-bundle' ),
+										'default' => 1366,
+									),
 									'slides_to_scroll' => array(
 										'type' => 'number',
 										'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
@@ -235,6 +240,11 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 								'label' => __( 'Portrait', 'so-widgets-bundle' ),
 								'hide' => true,
 								'fields' => array(
+									'breakpoint' => array(
+										'type' => 'number',
+										'label' => __( 'Breakpoint', 'so-widgets-bundle' ),
+										'default' => 1025,
+									),
 									'slides_to_scroll' => array(
 										'type' => 'number',
 										'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
@@ -250,6 +260,11 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 						'label' => __( 'Mobile', 'so-widgets-bundle' ),
 						'hide' => true,
 						'fields' => array(
+							'breakpoint' => array(
+								'type' => 'number',
+								'label' => __( 'Breakpoint', 'so-widgets-bundle' ),
+								'default' => 480,
+							),
 							'slides_to_scroll' => array(
 								'type' => 'number',
 								'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
