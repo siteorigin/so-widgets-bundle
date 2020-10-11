@@ -79,7 +79,7 @@ jQuery( function ( $ ) {
 								},
 								complete: function() {
 									$( this ).trigger( 'show' );
-									if ( sowTabs.scrollto_after_change ) {
+									if ( ! sowTabs.scrollto_after_change ) {
 										return;
 									}
 
