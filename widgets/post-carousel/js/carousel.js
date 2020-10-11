@@ -21,7 +21,8 @@ jQuery( function ( $ ) {
 		// The carousel widget
 		$( '.sow-carousel-wrapper' ).each( function () {
 			var $$ = $( this ),
-				$items = $$.find( '.sow-carousel-items' );
+				$items = $$.find( '.sow-carousel-items' ),
+				responsiveSettings = $$.data( 'responsive' );
 
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
@@ -31,21 +32,21 @@ jQuery( function ( $ ) {
 				touchThreshold: 20,
 				variableWidth: true,
 				accessibility: false,
-				slidesToScroll: parseInt( carouselSettings.desktop_slides ),
-				slidesToShow: parseInt( carouselSettings.desktop_slides ),
+				slidesToScroll: responsiveSettings.desktop_slides,
+				slidesToShow: responsiveSettings.desktop_slides,
 				responsive: [
 					{
-						breakpoint: carouselSettings.tablet_portrait_breakpoint,
+						breakpoint: responsiveSettings.tablet_portrait_breakpoint,
 						settings: {
-							slidesToScroll: parseInt( carouselSettings.tablet_portrait_slides ),
-							slidesToShow: parseInt( carouselSettings.tablet_portrait_slides ),
+							slidesToScroll: responsiveSettings.tablet_portrait_slides,
+							slidesToShow: responsiveSettings.tablet_portrait_slides,
 						}
 					},
 					{
-						breakpoint: carouselSettings.mobile,
+						breakpoint: responsiveSettings.mobile,
 						settings: {
-							slidesToScroll: parseInt( carouselSettings.mobile_slides ),
-							slidesToShow: parseInt( carouselSettings.mobile_slides ),
+							slidesToScroll: responsiveSettings.mobile_slides,
+							slidesToShow: responsiveSettings.mobile_slides,
 						}
 					},
 				],
@@ -204,13 +205,15 @@ jQuery( function ( $ ) {
 					$items.slick( 'slickSetOption', 'touchMove', true );
 					$items.slick( 'slickSetOption', 'draggable', true );
 				}
+
+				// Change Slick Settings on iPad Pro while Landscape
+				var responsiveSettings = currentCarousel.data( 'responsive' );
+				if ( window.matchMedia( '(min-width: ' + responsiveSettings.tablet_portrait_breakpoint + 'px) and (max-width: ' + responsiveSettings.tablet_landscape_breakpoint + 'px) and (orientation: landscape)' ).matches ) {
+					$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToShow', responsiveSettings.tablet_landscape_slides );
+					$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToScroll', responsiveSettings.tablet_landscape_slides );
+				}
 			} );
 
-			// Change Slick Settings on iPad Pro while Landscape
-			if ( window.matchMedia( '(min-width: ' + carouselSettings.tablet_portrait_breakpoint + 'px) and (max-width: ' + carouselSettings.tablet_landscape_breakpoint + 'px) and (orientation: landscape)' ).matches ) {
-				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToShow', parseInt( carouselSettings.tablet_landscape_slides ) );
-				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToScroll', parseInt( carouselSettings.tablet_landscape_slides ) );
-			}
 
 			$( '.sow-carousel-item:first-of-type' ).prop( 'tabindex', 0 );
 		} );

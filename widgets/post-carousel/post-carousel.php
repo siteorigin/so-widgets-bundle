@@ -62,8 +62,6 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 	}
 
 	function initialize() {
-		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-post-carousel', array( $this, 'enqueue_widget_scripts' ) );
-
 		$this->register_frontend_scripts(
 			array(
 				array(
@@ -95,25 +93,6 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'css/lib/slick.css',
 					array(),
 					'1.8.1'
-				)
-			)
-		);
-	}
-
-	function enqueue_widget_scripts( $instance ) {
-		wp_localize_script(
-			'sow-carousel-basic',
-			'carouselSettings',
-			apply_filters(
-				'siteorigin_widgets_post_carousel_breakpoints',
-				array(
-					'desktop_slides' => ! empty ( $instance['responsive']['desktop']['slides_to_scroll'] ) ? $instance['responsive']['desktop']['slides_to_scroll'] : 1,
-					'tablet_portrait_slides' => ! empty ( $instance['responsive']['tablet']['portrait']['slides_to_scroll'] ) ? $instance['responsive']['tablet']['portrait']['slides_to_scroll'] : 2,
-					'tablet_portrait_breakpoint' => ! empty ( $instance['responsive']['tablet']['portrait']['breakpoint'] ) ? $instance['responsive']['tablet']['portrait']['breakpoint'] : 1025,
-					'tablet_landscape_slides' => ! empty ( $instance['responsive']['tablet']['landscape']['slides_to_scroll'] ) ? $instance['responsive']['tablet']['landscape']['slides_to_scroll'] : 2,
-					'tablet_landscape_breakpoint' => ! empty ( $instance['responsive']['tablet']['landscape']['breakpoint'] ) ? $instance['responsive']['landscape']['breakpoint'] : 1366,
-					'mobile_breakpoint' => ! empty ( $instance['responsive']['mobile']['breakpoint'] ) ? $instance['responsive']['mobile']['breakpoint'] : 480,
-					'mobile_slides' => ! empty ( $instance['responsive']['mobile']['slides_to_scroll'] ) ? $instance['responsive']['mobile']['slides_to_scroll'] : 1,
 				)
 			)
 		);
@@ -322,12 +301,23 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 		) );
 		$posts = new WP_Query( $query );
 
+		$responsive_settings = array(
+			'desktop_slides' => ! empty ( $instance['responsive']['desktop']['slides_to_scroll'] ) ? $instance['responsive']['desktop']['slides_to_scroll'] : 1,
+			'tablet_portrait_slides' => ! empty ( $instance['responsive']['tablet']['portrait']['slides_to_scroll'] ) ? $instance['responsive']['tablet']['portrait']['slides_to_scroll'] : 2,
+			'tablet_portrait_breakpoint' => ! empty ( $instance['responsive']['tablet']['portrait']['breakpoint'] ) ? $instance['responsive']['tablet']['portrait']['breakpoint'] : 1025,
+			'tablet_landscape_slides' => ! empty ( $instance['responsive']['tablet']['landscape']['slides_to_scroll'] ) ? $instance['responsive']['tablet']['landscape']['slides_to_scroll'] : 2,
+			'tablet_landscape_breakpoint' => ! empty ( $instance['responsive']['tablet']['landscape']['breakpoint'] ) ? $instance['responsive']['landscape']['breakpoint'] : 1366,
+			'mobile_breakpoint' => ! empty ( $instance['responsive']['mobile']['breakpoint'] ) ? $instance['responsive']['mobile']['breakpoint'] : 480,
+			'mobile_slides' => ! empty ( $instance['responsive']['mobile']['slides_to_scroll'] ) ? $instance['responsive']['mobile']['slides_to_scroll'] : 1,
+		);
+
 		return array(
 			'title' => $instance['title'],
 			'posts' => $posts,
 			'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : '',
 			'loop_posts' => ! empty( $instance['loop_posts'] ),
 			'link_target' => ! empty( $instance['link_target'] ) ? $instance['link_target'] : 'same',
+			'responsive_settings' => $responsive_settings,
 		);
 	}
 
