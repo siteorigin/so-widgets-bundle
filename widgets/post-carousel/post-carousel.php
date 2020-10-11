@@ -194,12 +194,12 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 					),
 				),
 			),
-			'responsive ' => array(
+			'responsive' => array(
 				'type' => 'section',
 				'label' => __( 'Responsive', 'so-widgets-bundle' ),
 				'hide' => true,
 				'fields' => array(
-					'desktop ' => array(
+					'desktop' => array(
 						'type' => 'section',
 						'label' => __( 'Desktop', 'so-widgets-bundle' ),
 						'hide' => true,
@@ -212,7 +212,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 							),
 						),
 					),
-					'tablet ' => array(
+					'tablet' => array(
 						'type' => 'section',
 						'label' => __( 'Tablet', 'so-widgets-bundle' ),
 						'hide' => true,
@@ -255,7 +255,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 							),
 						),
 					),
-					'mobile ' => array(
+					'mobile' => array(
 						'type' => 'section',
 						'label' => __( 'Mobile', 'so-widgets-bundle' ),
 						'hide' => true,
