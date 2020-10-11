@@ -110,8 +110,9 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 					'desktop_slides' => ! empty ( $instance['responsive']['desktop']['slides_to_scroll'] ) ? $instance['responsive']['desktop']['slides_to_scroll'] : 1,
 					'tablet_breakpoint_landscape' => 1366,
 					'tablet_breakpoint_portrait' => 1025,
-					'tablet_slides' => ! empty ( $instance['responsive']['tablet']['slides_to_scroll'] ) ? $instance['responsive']['tablet']['slides_to_scroll'] : 2,
 					'mobile_breakpoint' => 480,
+					'tablet_portrait_slides' => ! empty ( $instance['responsive']['tablet']['portrait']['slides_to_scroll'] ) ? $instance['responsive']['tablet']['portrait']['slides_to_scroll'] : 2,
+					'tablet_landscape_slides' => ! empty ( $instance['responsive']['tablet']['landscape']['slides_to_scroll'] ) ? $instance['responsive']['tablet']['landscape']['slides_to_scroll'] : 2,
 					'mobile_slides' => ! empty ( $instance['responsive']['mobile']['slides_to_scroll'] ) ? $instance['responsive']['mobile']['slides_to_scroll'] : 1,
 				)
 			)
@@ -216,11 +217,31 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 						'label' => __( 'Tablet', 'so-widgets-bundle' ),
 						'hide' => true,
 						'fields' => array(
-							'slides_to_scroll' => array(
-								'type' => 'number',
-								'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
-								'description' => __( 'Set the number of slides to scroll per navigation click or swipe on tablet devices.', 'so-widgets-bundle' ),
-								'default' => 2,
+							'tablet_landscape' => array(
+								'type' => 'section',
+								'label' => __( 'Landscape', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'slides_to_scroll' => array(
+										'type' => 'number',
+										'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
+										'description' => __( 'Set the number of slides to scroll per navigation click or swipe on tablet devices.', 'so-widgets-bundle' ),
+										'default' => 2,
+									),
+								),
+							),
+							'tablet_portrait' => array(
+								'type' => 'section',
+								'label' => __( 'Portrait', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'slides_to_scroll' => array(
+										'type' => 'number',
+										'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
+										'description' => __( 'Set the number of slides to scroll per navigation click or swipe on tablet devices.', 'so-widgets-bundle' ),
+										'default' => 2,
+									),
+								),
 							),
 						),
 					),

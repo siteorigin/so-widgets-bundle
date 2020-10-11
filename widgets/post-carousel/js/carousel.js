@@ -37,8 +37,8 @@ jQuery( function ( $ ) {
 					{
 						breakpoint: carouselSettings.tablet_portrait,
 						settings: {
-							slidesToScroll: parseInt( carouselSettings.tablet_slides ),
-							slidesToShow: parseInt( carouselSettings.tablet_slides ),
+							slidesToScroll: parseInt( carouselSettings.tablet_portrait_slides ),
+							slidesToShow: parseInt( carouselSettings.tablet_portrait_slides ),
 						}
 					},
 					{
@@ -208,8 +208,8 @@ jQuery( function ( $ ) {
 
 			// Change Slick Settings on iPad Pro while Landscape
 			if ( window.matchMedia( '(min-width: ' + carouselSettings.tablet_portrait + 'px) and (max-width: ' + carouselSettings.tablet_landscape + 'px) and (orientation: landscape)' ).matches ) {
-				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToShow', parseInt( carouselSettings.tablet_slides ) );
-				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToScroll', parseInt( carouselSettings.tablet_slides ) );
+				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToShow', parseInt( carouselSettings.tablet_landscape_slides ) );
+				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToScroll', parseInt( carouselSettings.tablet_landscape_slides ) );
 			}
 
 			$( '.sow-carousel-item:first-of-type' ).prop( 'tabindex', 0 );
