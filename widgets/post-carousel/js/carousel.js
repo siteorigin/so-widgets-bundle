@@ -43,7 +43,7 @@ jQuery( function ( $ ) {
 						}
 					},
 					{
-						breakpoint: responsiveSettings.mobile,
+						breakpoint: responsiveSettings.mobile_breakpoint,
 						settings: {
 							slidesToScroll: responsiveSettings.mobile_slides,
 							slidesToShow: responsiveSettings.mobile_slides,
