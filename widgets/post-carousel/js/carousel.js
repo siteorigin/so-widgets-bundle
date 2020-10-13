@@ -209,8 +209,8 @@ jQuery( function ( $ ) {
 				// Change Slick Settings on iPad Pro while Landscape
 				var responsiveSettings = currentCarousel.data( 'responsive' );
 				if ( window.matchMedia( '(min-width: ' + responsiveSettings.tablet_portrait_breakpoint + 'px) and (max-width: ' + responsiveSettings.tablet_landscape_breakpoint + 'px) and (orientation: landscape)' ).matches ) {
-					$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToShow', responsiveSettings.tablet_landscape_slides );
-					$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToScroll', responsiveSettings.tablet_landscape_slides );
+					$items.slick( 'slickSetOption', 'slidesToShow', responsiveSettings.tablet_landscape_slides );
+					$items.slick( 'slickSetOption', 'slidesToScroll', responsiveSettings.tablet_landscape_slides );
 				}
 			} );
 
