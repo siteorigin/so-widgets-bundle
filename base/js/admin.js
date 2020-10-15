@@ -896,7 +896,14 @@ var sowbForms = window.sowbForms || {};
 								newId = idBase + '-' + newIds[idBase]++;
 							}
 
+							if ( $inputElement.is( '.wp-editor-area' ) ) {
+								// Prevent potential id overlap by appending the textarea field with a random id.
+								newId += Math.floor( Math.random() * 1000 );
+								$inputElement.data( 'tinymce-id', newId );
+							}
+
 							$inputElement.attr('id', newId);
+
 							if ( $inputElement.is( '.wp-editor-area' ) ) {
 								var tmceContainer = $inputElement.closest( '.siteorigin-widget-tinymce-container' );
 								var mediaButtons = tmceContainer.data( 'media-buttons' );
