@@ -192,10 +192,18 @@ jQuery( function ( $ ) {
 					navigation.hide();
 					$items.slick( 'slickSetOption', 'touchMove', false );
 					$items.slick( 'slickSetOption', 'draggable', false );
+
+					if ( currentCarousel.data( 'center-items' ) ) {
+						currentCarousel.addClass( 'center-carousel' );
+					}
 				} else if ( navigation.not( ':visible' ) ) {
 					navigation.show();
 					$items.slick( 'slickSetOption', 'touchMove', true );
 					$items.slick( 'slickSetOption', 'draggable', true );
+
+					if ( currentCarousel.data( 'center-items' ) ) {
+						currentCarousel.removeClass( 'center-carousel' );
+					}
 				}
 			} );
 
