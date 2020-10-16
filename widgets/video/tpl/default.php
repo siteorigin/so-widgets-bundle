@@ -13,7 +13,7 @@
  */
 
 if ( ! empty( $instance['title'] ) ) {
-	echo $args['before_title'] . esc_html( $instance['title'] ) . $args['after_title'];
+	echo $args['before_title'] . $instance['title'] . $args['after_title'];
 }
 
 $video_args = array(
