@@ -150,10 +150,10 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 				'description' => __( 'Automatically return to the first post after the last post.', 'so-widgets-bundle' ),
 				'default' => true,
 			),
-			'center_items' => array(
+			'center_posts' => array(
 				'type' => 'checkbox',
-				'label' => __( 'Center items', 'so-widgets-bundle' ),
-				'description' => __( 'Center items if the total number of posts is fewer than the length of the page.', 'so-widgets-bundle' ),
+				'label' => __( 'Center posts', 'so-widgets-bundle' ),
+				'description' => __( 'Applies if the combined width of the visible posts is less than the carousel container width.', 'so-widgets-bundle' ),
 				'default' => false,
 			),
 
@@ -246,7 +246,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			'posts' => $posts,
 			'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : '',
 			'loop_posts' => ! empty( $instance['loop_posts'] ),
-			'center_items' => ! empty( $instance['center_items'] ),
+			'center_posts' => ! empty( $instance['center_posts'] ),
 			'link_target' => ! empty( $instance['link_target'] ) ? $instance['link_target'] : 'same',
 		);
 	}

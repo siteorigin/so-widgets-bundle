@@ -34,7 +34,7 @@
 		     data-page="1"
 		     data-fetching="false"
 		     data-dir="<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>"
-		     data-center-items="<?php echo esc_attr( $center_items ); ?>"
+		     data-center-posts="<?php echo esc_attr( $center_posts ); ?>"
 		>
 			<div class="sow-carousel-items">
 				<?php include plugin_dir_path( __FILE__ ) . 'carousel-post-loop.php' ?>

@@ -193,7 +193,7 @@ jQuery( function ( $ ) {
 					$items.slick( 'slickSetOption', 'touchMove', false );
 					$items.slick( 'slickSetOption', 'draggable', false );
 
-					if ( currentCarousel.data( 'center-items' ) ) {
+					if ( currentCarousel.data( 'center-posts' ) ) {
 						currentCarousel.addClass( 'center-carousel' );
 					}
 				} else if ( navigation.not( ':visible' ) ) {
@@ -201,7 +201,7 @@ jQuery( function ( $ ) {
 					$items.slick( 'slickSetOption', 'touchMove', true );
 					$items.slick( 'slickSetOption', 'draggable', true );
 
-					if ( currentCarousel.data( 'center-items' ) ) {
+					if ( currentCarousel.data( 'center-posts' ) ) {
 						currentCarousel.removeClass( 'center-carousel' );
 					}
 				}
