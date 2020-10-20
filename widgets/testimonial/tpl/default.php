@@ -5,7 +5,7 @@
  * @var $testimonials
  */
 ?>
-<?php if( !empty( $instance['title'] ) ) echo $args['before_title'] . esc_html($instance['title']) . $args['after_title'] ?>
+<?php if( !empty( $instance['title'] ) ) echo $args['before_title'] . $instance['title'] . $args['after_title'] ?>
 <?php $this->caret_svg() ?>
 <div class="sow-testimonials">
 	<?php foreach( $testimonials as $testimonial ) : ?>
