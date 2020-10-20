@@ -74,6 +74,8 @@ jQuery( function ( $ ) {
 							$$.data( 'fetching', true );
 							var page = $$.data( 'page' ) + 1;
 
+							$items.parent().removeClass( 'center-carousel' );
+
 							$items.slick( 'slickAdd', '<div class="sow-carousel-item sow-carousel-loading"></div>' );
 							$.get(
 								$$.data( 'ajax-url' ),
@@ -180,14 +182,13 @@ jQuery( function ( $ ) {
 		} );
 
 		$( window ).on( 'resize load', function() {
-			// Hide/disable scroll if number of visible items is less than total posts.
-
 			$( '.sow-carousel-wrapper' ).each( function() {
 				var currentCarousel = $( this ),
 					$items = currentCarousel.find( '.sow-carousel-items' ),
 					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					navigation = currentCarousel.parent().parent().find( '.sow-carousel-navigation' );
 
+				// Hide/disable scroll if number of visible items is less than total posts.
 				if ( numVisibleItems >= currentCarousel.data( 'post-count' ) ) {
 					navigation.hide();
 					$items.slick( 'slickSetOption', 'touchMove', false );
@@ -196,6 +197,14 @@ jQuery( function ( $ ) {
 					navigation.show();
 					$items.slick( 'slickSetOption', 'touchMove', true );
 					$items.slick( 'slickSetOption', 'draggable', true );
+				}
+
+				if ( currentCarousel.data( 'center-posts' ) ) {
+					if ( $items.slick( 'slickCurrentSlide' ) + numVisibleItems >= currentCarousel.find( '.sow-carousel-item' ).length - 1 ) {
+						currentCarousel.addClass( 'center-carousel' );
+					} else {
+						currentCarousel.removeClass( 'center-carousel' );
+					}
 				}
 			} );
 
