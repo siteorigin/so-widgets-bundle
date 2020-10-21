@@ -181,10 +181,10 @@ jQuery( function ( $ ) {
 				.prop( 'tabindex', 0 );
 		} );
 
-		$( window ).on( 'resize load', function() {
+		$( window ).on( 'resize setup_widgets', function() {
 			$( '.sow-carousel-wrapper' ).each( function() {
 				var currentCarousel = $( this ),
-					$items = currentCarousel.find( '.sow-carousel-items' ),
+					$items = currentCarousel.find( '.sow-carousel-items.slick-initialized' ),
 					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					navigation = currentCarousel.parent().parent().find( '.sow-carousel-navigation' );
 
@@ -210,8 +210,8 @@ jQuery( function ( $ ) {
 
 			// Change Slick Settings on iPad Pro while Landscape
 			if ( window.matchMedia( '(min-width: ' + carouselBreakpoints.tablet_portrait + 'px) and (max-width: ' + carouselBreakpoints.tablet_landscape + 'px) and (orientation: landscape)' ).matches ) {
-				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToShow', 3 );
-				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToScroll', 3 );
+				$( '.sow-carousel-items.slick-initialized' ).slick( 'slickSetOption', 'slidesToShow', 3 );
+				$( '.sow-carousel-items.slick-initialized' ).slick( 'slickSetOption', 'slidesToScroll', 3 );
 			}
 
 			$( '.sow-carousel-item:first-of-type' ).prop( 'tabindex', 0 );
