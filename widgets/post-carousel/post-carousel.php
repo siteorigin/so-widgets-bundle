@@ -161,6 +161,11 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 				'type' => 'posts',
 				'label' => __('Posts query', 'so-widgets-bundle'),
 				'hide' => true,
+				'fields' => array(
+					'posts_per_page' => array(
+						'label' => __( 'Posts per load', 'so-widgets-bundle' ),
+					),
+				),
 			),
 
 			'design' => array(
