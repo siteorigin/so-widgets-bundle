@@ -42,7 +42,7 @@ jQuery( function ( $ ) {
 							$( sowb ).trigger( 'setup_widgets' );
 						},
 						complete: function() {
-							if ( keepVisible && $panel.offset().top < window.scrollY ) {
+							if ( keepVisible && sowAccordion.scrollto_after_change && $panel.offset().top < window.scrollY ) {
 								scrollToPanel( $panel, true );
 							}
 							$( this ).trigger( 'show' );

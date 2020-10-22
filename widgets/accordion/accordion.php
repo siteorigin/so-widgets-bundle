@@ -37,8 +37,32 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 				)
 			)
 		);
+
+		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-accordion', array( $this, 'enqueue_widget_scripts' ) );
 	}
-	
+
+	function get_settings_form() {
+		return array(
+			'scrollto_after_change' => array(
+				'type'        => 'checkbox',
+				'label'       => __( 'Scroll top', 'so-widgets-bundle' ),
+				'default'     => true,
+				'description' => __( 'When opening the panel, scroll the user to the top of the panel.', 'so-widgets-bundle' ),
+			)
+		);
+	}
+
+	function enqueue_widget_scripts() {
+		$global_settings = $this->get_global_settings();
+		wp_localize_script(
+			'sow-accordion',
+			'sowAccordion',
+			array(
+				'scrollto_after_change' => ! empty( $global_settings['scrollto_after_change'] ),
+			)
+		);
+	}
+
 	function get_widget_form() {
 		
 		return array(

@@ -37,8 +37,32 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 				)
 			)
 		);
+
+		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-tabs', array( $this, 'enqueue_widget_scripts' ) );
 	}
-	
+
+	function get_settings_form() {
+		return array(
+			'scrollto_after_change' => array(
+				'type'        => 'checkbox',
+				'label'       => __( 'Scroll top', 'so-widgets-bundle' ),
+				'default'     => true,
+				'description' => __( 'When opening a tab, scroll the user to the top of the tab.', 'so-widgets-bundle' ),
+			)
+		);
+	}
+
+	function enqueue_widget_scripts() {
+		$global_settings = $this->get_global_settings();
+		wp_localize_script(
+			'sow-tabs',
+			'sowTabs',
+			array(
+				'scrollto_after_change' => ! empty( $global_settings['scrollto_after_change'] ),
+			)
+		);
+	}
+
 	function get_widget_form() {
 		
 		return array(

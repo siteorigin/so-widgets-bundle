@@ -11,7 +11,7 @@
 ?>
 
 <?php if ( ! empty( $title ) ) {
-	echo $before_title . esc_html( $title ) . $after_title;
+	echo $before_title . $title . $after_title;
 } ?>
 
 <div class="ow-pt-columns-atom<?php echo( $equalize_row_heights ? ' sow-equalize-row-heights' : '' ) ?>">

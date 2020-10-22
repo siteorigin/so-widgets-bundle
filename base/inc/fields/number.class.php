@@ -5,9 +5,27 @@
  */
 class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_Base {
 
+	/**
+	 * The minimum value of the allowed range.
+	 *
+	 * @access protected
+	 * @var float
+	 */
+	protected $step;
+
 	protected function get_default_options() {
 		return array(
 			'input_type' => 'number',
+		);
+	}
+
+	protected function get_input_attributes() {
+		if ( empty( $this->step ) ) {
+			return array();
+		}
+	
+		return array(
+			'step' => $this->step,
 		);
 	}
 

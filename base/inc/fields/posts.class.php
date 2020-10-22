@@ -164,10 +164,25 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 			} ?>"><?php
 		}
 
+		if ( isset( $this->field_options['fields'] ) ) {
+			$this->override_fields();
+		}
+
 		$this->create_and_render_sub_fields( $value, array( 'name' => $this->base_name, 'type' => 'composite' ) );
 
 		if ( $this->collapsible ) {
 			?></div><?php
+		}
+	}
+
+	private function override_fields() {
+		foreach ( $this->field_options['fields'] as $field => $options ) {
+			// Are we removing, or updating this field?
+			if ( ! empty( $options['remove'] ) ) {
+				unset( $this->fields[ $field ] );
+			} else {
+				$this->fields[ $field ] = wp_parse_args( $this->field_options['fields'][ $field ], $this->fields[ $field ] );
+			}
 		}
 	}
 

@@ -81,6 +81,8 @@ jQuery( function ( $ ) {
 							$$.data( 'fetching', true );
 							var page = $$.data( 'page' ) + 1;
 
+							$items.parent().removeClass( 'center-carousel' );
+
 							$items.slick( 'slickAdd', '<div class="sow-carousel-item sow-carousel-loading"></div>' );
 							$.get(
 								$$.data( 'ajax-url' ),
@@ -187,15 +189,14 @@ jQuery( function ( $ ) {
 				.prop( 'tabindex', 0 );
 		} );
 
-		$( window ).on( 'resize load', function() {
-			// Hide/disable scroll if number of visible items is less than total posts.
-
+		$( window ).on( 'resize setup_widgets', function() {
 			$( '.sow-carousel-wrapper' ).each( function() {
 				var currentCarousel = $( this ),
-					$items = currentCarousel.find( '.sow-carousel-items' ),
+					$items = currentCarousel.find( '.sow-carousel-items.slick-initialized' ),
 					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					navigation = currentCarousel.parent().parent().find( '.sow-carousel-navigation' );
 
+				// Hide/disable scroll if number of visible items is less than total posts.
 				if ( numVisibleItems >= currentCarousel.data( 'post-count' ) ) {
 					navigation.hide();
 					$items.slick( 'slickSetOption', 'touchMove', false );
@@ -212,8 +213,15 @@ jQuery( function ( $ ) {
 					$items.slick( 'slickSetOption', 'slidesToShow', responsiveSettings.tablet_landscape_slides );
 					$items.slick( 'slickSetOption', 'slidesToScroll', responsiveSettings.tablet_landscape_slides );
 				}
-			} );
 
+				if ( currentCarousel.data( 'center-posts' ) ) {
+					if ( $items.slick( 'slickCurrentSlide' ) + numVisibleItems >= currentCarousel.find( '.sow-carousel-item' ).length - 1 ) {
+						currentCarousel.addClass( 'center-carousel' );
+					} else {
+						currentCarousel.removeClass( 'center-carousel' );
+					}
+				}
+			} );
 
 			$( '.sow-carousel-item:first-of-type' ).prop( 'tabindex', 0 );
 		} );
