@@ -189,7 +189,7 @@ jQuery( function ( $ ) {
 				.prop( 'tabindex', 0 );
 		} );
 
-		$( window ).on( 'resize setup_widgets', function() {
+		$( window ).on( 'resize load', function() {
 			$( '.sow-carousel-wrapper' ).each( function() {
 				var currentCarousel = $( this ),
 					$items = currentCarousel.find( '.sow-carousel-items.slick-initialized' ),
