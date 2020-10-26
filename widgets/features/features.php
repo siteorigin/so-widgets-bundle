@@ -323,17 +323,6 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			)
 		);
 	}
-
-	function get_google_font_fields( $instance ) {
-
-		$fonts = $instance['fonts'];
-
-		return array(
-			$fonts['title_options']['font'],
-			$fonts['text_options']['font'],
-			$fonts['more_text_options']['font'],
-		);
-	}
 }
 
 siteorigin_widget_register('sow-features', __FILE__, 'SiteOrigin_Widget_Features_Widget');

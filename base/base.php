@@ -144,7 +144,12 @@ function siteorigin_widget_get_font($font_value) {
 			$font_url_param .= ':' . $font_parts[1];
 		}
 		$font['url'] = 'https://fonts.googleapis.com/css?family=' . $font_url_param;
-		$font['css_import'] = '@import url(https://fonts.googleapis.com/css?family=' . $font_url_param . '&display=swap);';
+		$style_name = 'sow-google-font-' . strtolower( $font['family'] );
+
+		// Check if WB (or something else has) has already enqueued the font.
+		if ( ! wp_style_is( $style_name ) ) {
+			wp_enqueue_style( $style_name,  $font['url'] . '&display=swap' );
+		}
 	}
 	else {
 		$font['family'] = $font_value;

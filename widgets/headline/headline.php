@@ -319,13 +319,6 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 		return $less_vars;
 	}
 
-	function get_google_font_fields( $instance ) {
-		return array(
-			$instance['headline']['font'],
-			$instance['sub_headline']['font'],
-		);
-	}
-
 	/**
 	 * Get the template variables for the headline
 	 *

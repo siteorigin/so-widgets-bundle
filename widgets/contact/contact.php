@@ -892,13 +892,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		return $vars;
 	}
 
-	function get_google_font_fields( $instance ) {
-		return array(
-			$instance['design']['labels']['font'],
-			$instance['design']['fields']['font'],
-		);
-	}
-
 	static function name_from_label( $label, & $ids ) {
 		$it = 0;
 

@@ -1014,49 +1014,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Less function for importing Google web fonts.
-	 *
-	 * @param $instance
-	 * @param $args
-	 *
-	 * @return string
-	 */
-	function less_import_google_font($instance, $args) {
-		if( empty( $instance ) ) return;
-
-		$fonts = $this->get_google_font_fields($instance);
-		if( empty( $fonts ) || ! is_array( $fonts ) ) return '';
-
-		$font_imports = array();
-
-		foreach ( $fonts as $font ) {
-			$font_imports[] = siteorigin_widget_get_font( $font );
-		}
-
-		$import_strings = array();
-		foreach( $font_imports as $import ) {
-			$import_strings[] = !empty($import['css_import']) ? $import['css_import'] : '';
-		}
-
-		// Remove empty and duplicate items from the array
-		$import_strings = array_filter( $import_strings );
-		$import_strings = array_unique( $import_strings );
-
-		return implode( "\n", $import_strings );
-	}
-
-	/**
-	 * Get any font fields which may be used by this widget.
-	 *
-	 * @param $instance
-	 *
-	 * @return array
-	 */
-	function get_google_font_fields( $instance ) {
-		return apply_filters( 'siteorigin_widgets_google_font_fields_' . $this->id_base, array(), $instance, $this );
-	}
-
-	/**
 	 * Utility function to get a field name for a widget field.
 	 *
 	 * @param $field_name
