@@ -62,8 +62,6 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 	}
 
 	function initialize() {
-		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-post-carousel', array( $this, 'enqueue_widget_scripts' ) );
-
 		$this->register_frontend_scripts(
 			array(
 				array(
@@ -100,20 +98,20 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function enqueue_widget_scripts() {
-		wp_localize_script( 'sow-carousel-basic', 'carouselBreakpoints',
-			apply_filters(
-				'siteorigin_widgets_post_carousel_breakpoints',
-				array(
-					'tablet_landscape' => 1366,
-					'tablet_portrait'  => 1025,
-					'mobile'           => 480,
-				)
+	private function get_breakpoints() {
+		return apply_filters(
+			'siteorigin_widgets_post_carousel_breakpoints',
+			array(
+				'tablet_landscape' => 1366,
+				'tablet_portrait'  => 1025,
+				'mobile'           => 480,
 			)
 		);
 	}
 
 	function get_widget_form(){
+		$breakpoints = $this->get_breakpoints();
+
 		return array(
 			'title' => array(
 				'type' => 'text',
@@ -199,6 +197,87 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 					),
 				),
 			),
+			'responsive' => array(
+				'type' => 'section',
+				'label' => __( 'Responsive', 'so-widgets-bundle' ),
+				'hide' => true,
+				'fields' => array(
+					'desktop' => array(
+						'type' => 'section',
+						'label' => __( 'Desktop', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'slides_to_scroll' => array(
+								'type' => 'number',
+								'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
+								'description' => __( 'Set the number of slides to scroll per navigation click or swipe on desktop.', 'so-widgets-bundle' ),
+								'default' => 1,
+							),
+						),
+					),
+					'tablet' => array(
+						'type' => 'section',
+						'label' => __( 'Tablet', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'landscape' => array(
+								'type' => 'section',
+								'label' => __( 'Landscape', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'breakpoint' => array(
+										'type' => 'number',
+										'label' => __( 'Breakpoint', 'so-widgets-bundle' ),
+										'default' => $breakpoints['tablet_landscape'],
+									),
+									'slides_to_scroll' => array(
+										'type' => 'number',
+										'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
+										'description' => __( 'Set the number of slides to scroll per navigation click or swipe on tablet devices.', 'so-widgets-bundle' ),
+										'default' => 2,
+									),
+								),
+							),
+							'portrait' => array(
+								'type' => 'section',
+								'label' => __( 'Portrait', 'so-widgets-bundle' ),
+								'hide' => true,
+								'fields' => array(
+									'breakpoint' => array(
+										'type' => 'number',
+										'label' => __( 'Breakpoint', 'so-widgets-bundle' ),
+										'default' => $breakpoints['tablet_portrait'],
+									),
+									'slides_to_scroll' => array(
+										'type' => 'number',
+										'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
+										'description' => __( 'Set the number of slides to scroll per navigation click or swipe on tablet devices.', 'so-widgets-bundle' ),
+										'default' => 2,
+									),
+								),
+							),
+						),
+					),
+					'mobile' => array(
+						'type' => 'section',
+						'label' => __( 'Mobile', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'breakpoint' => array(
+								'type' => 'number',
+								'label' => __( 'Breakpoint', 'so-widgets-bundle' ),
+								'default' => $breakpoints['mobile'],
+							),
+							'slides_to_scroll' => array(
+								'type' => 'number',
+								'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
+								'description' => __( ' Set the number of slides to scroll per navigation click or swipe on mobile devices.', 'so-widgets-bundle' ),
+								'default' => 1,
+							),
+						),
+					),
+				),
+			),
 		);
 	}
 
@@ -246,6 +325,17 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 		) );
 		$posts = new WP_Query( $query );
 
+		$breakpoints = $this->get_breakpoints();
+		$responsive_settings = array(
+			'desktop_slides' => ! empty ( $instance['responsive']['desktop']['slides_to_scroll'] ) ? $instance['responsive']['desktop']['slides_to_scroll'] : 1,
+			'tablet_portrait_slides' => ! empty ( $instance['responsive']['tablet']['portrait']['slides_to_scroll'] ) ? $instance['responsive']['tablet']['portrait']['slides_to_scroll'] : 2,
+			'tablet_portrait_breakpoint' => ! empty ( $instance['responsive']['tablet']['portrait']['breakpoint'] ) ? $instance['responsive']['tablet']['portrait']['breakpoint'] : $breakpoints['tablet_portrait'],
+			'tablet_landscape_slides' => ! empty ( $instance['responsive']['tablet']['landscape']['slides_to_scroll'] ) ? $instance['responsive']['tablet']['landscape']['slides_to_scroll'] : 2,
+			'tablet_landscape_breakpoint' => ! empty ( $instance['responsive']['tablet']['landscape']['breakpoint'] ) ? $instance['responsive']['tablet']['landscape']['breakpoint'] : $breakpoints['tablet_landscape'],
+			'mobile_breakpoint' => ! empty ( $instance['responsive']['mobile']['breakpoint'] ) ? $instance['responsive']['mobile']['breakpoint'] : $breakpoints['mobile'],
+			'mobile_slides' => ! empty ( $instance['responsive']['mobile']['slides_to_scroll'] ) ? $instance['responsive']['mobile']['slides_to_scroll'] : 1,
+		);
+
 		return array(
 			'title' => $instance['title'],
 			'posts' => $posts,
@@ -253,6 +343,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			'loop_posts' => ! empty( $instance['loop_posts'] ),
 			'center_posts' => ! empty( $instance['center_posts'] ),
 			'link_target' => ! empty( $instance['link_target'] ) ? $instance['link_target'] : 'same',
+			'responsive_settings' => $responsive_settings,
 		);
 	}
 

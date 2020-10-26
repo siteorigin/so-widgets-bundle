@@ -34,6 +34,7 @@
 		     data-page="1"
 		     data-fetching="false"
 		     data-dir="<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>"
+		     data-responsive="<?php echo esc_attr( json_encode( $responsive_settings ) ); ?>"
 		     data-center-posts="<?php echo esc_attr( $center_posts ); ?>"
 		>
 			<div class="sow-carousel-items">
