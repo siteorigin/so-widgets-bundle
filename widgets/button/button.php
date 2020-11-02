@@ -371,11 +371,6 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		return $less_vars;
 	}
 
-	function get_google_font_fields( $instance ) {
-		return array(
-			$instance['design']['font'],
-		);
-	}
 	/**
 	 * Make sure the instance is the most up to date version.
 	 *

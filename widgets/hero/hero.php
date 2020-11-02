@@ -455,21 +455,6 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		return $val;
 	}
 
-	/**
-	 * Less function for importing Google web fonts.
-	 *
-	 * @param $instance
-	 * @param $args
-	 *
-	 * @return string
-	 */
-	function get_google_font_fields( $instance ) {
-		return array(
-			$instance['design']['heading_font'],
-			! empty( $instance['design']['text_font'] ) ? $instance['design']['text_font'] : '',
-		);
-	}
-
 	function wrapper_class_filter( $classes, $instance ){
 		if( ! empty( $instance['design']['fittext'] ) ) {
 			$classes[] = 'so-widget-fittext-wrapper';
