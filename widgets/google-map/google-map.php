@@ -882,9 +882,14 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	
 	function get_form_teaser(){
 		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
-		
+
+		if ( isset( $_GET['action'] ) && $_GET['action'] == 'so_widgets_setting_form' ) {
+			$teaser_text = __( 'Get additional map content design options with %sSiteOrigin Premium%s', 'so-widgets-bundle' );
+		} else {
+			$teaser_text = __( 'Get a curated list of predefined map styles with %sSiteOrigin Premium%s', 'so-widgets-bundle' );
+		}
 		return sprintf(
-			__( 'Get a curated list of predefined map styles with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+			$teaser_text,
 			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/map-styles" target="_blank" rel="noopener noreferrer">',
 			'</a>'
 		);
