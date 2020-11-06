@@ -34,6 +34,7 @@
 		     data-page="1"
 		     data-fetching="false"
 		     data-dir="<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>"
+		     data-responsive="<?php echo esc_attr( json_encode( $responsive_settings ) ); ?>"
 		>
 			<div class="sow-carousel-items">
 				<?php include plugin_dir_path( __FILE__ ) . 'carousel-post-loop.php' ?>
