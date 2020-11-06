@@ -884,7 +884,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
 
 		if ( isset( $_GET['action'] ) && $_GET['action'] == 'so_widgets_setting_form' ) {
-			$teaser_text = __( 'Get additional map consent design options with %sSiteOrigin Premium%s', 'so-widgets-bundle' );
+			$teaser_text = __( 'Get additional map consent design settings with %sSiteOrigin Premium%s', 'so-widgets-bundle' );
 		} else {
 			$teaser_text = __( 'Get a curated list of predefined map styles with %sSiteOrigin Premium%s', 'so-widgets-bundle' );
 		}
