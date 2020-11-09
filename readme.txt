@@ -66,6 +66,19 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+== 1.17.9 - 10 November 2020 ==
+* Block Editor: Resolved widget preview issue.
+* Elementor: Minor admin styling improvements.
+* Google Maps: Added a new global consent setting `Require consent before loading Maps API` at `Plugins > SiteOrigin Widgets > Google Maps`.
+* Posts Carousel: Added a `Link target` setting.
+* Video Player: Mute self hosted videos set to autoplay.
+* Tabs: Added a new global setting `Scroll top` at `Plugins > SiteOrigin Widgets > Tabs` to disable scrolling when changing tabs.
+* Accordion: Added a new global setting `Scroll top` at `Plugins > SiteOrigin Widgets > Accordion` to disable scrolling when changing accordions.
+* Posts Carousel: Added a new `Slides to scroll` setting for desktop, tablet, and mobile.
+* Safari: Ensured the Hero can save when used at `Appearance > Widgets`.
+* Updated the widget title field to allow HTML in all SiteOrigin widgets.
+* Changed to `enqueue` Google Fonts rather than `@import`.
+
 == 1.17.8 - 28 September 2020 ==
 * Image: Prevent image stretching while using Safari
 
