@@ -21,7 +21,8 @@ jQuery( function ( $ ) {
 		// The carousel widget
 		$( '.sow-carousel-wrapper' ).each( function () {
 			var $$ = $( this ),
-				$items = $$.find( '.sow-carousel-items' );
+				$items = $$.find( '.sow-carousel-items' ),
+				responsiveSettings = $$.data( 'responsive' );
 
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
@@ -31,19 +32,21 @@ jQuery( function ( $ ) {
 				touchThreshold: 20,
 				variableWidth: true,
 				accessibility: false,
+				slidesToScroll: responsiveSettings.desktop_slides,
+				slidesToShow: responsiveSettings.desktop_slides,
 				responsive: [
 					{
-						breakpoint: carouselBreakpoints.tablet_portrait,
+						breakpoint: responsiveSettings.tablet_portrait_breakpoint,
 						settings: {
-							slidesToScroll: 2,
-							slidesToShow: 2,
+							slidesToScroll: responsiveSettings.tablet_portrait_slides,
+							slidesToShow: responsiveSettings.tablet_portrait_slides,
 						}
 					},
 					{
-						breakpoint: carouselBreakpoints.mobile,
+						breakpoint: responsiveSettings.mobile_breakpoint,
 						settings: {
-							slidesToScroll: 1,
-							slidesToShow: 1,
+							slidesToScroll: responsiveSettings.mobile_slides,
+							slidesToShow: responsiveSettings.mobile_slides,
 						}
 					},
 				],
@@ -62,12 +65,16 @@ jQuery( function ( $ ) {
 					numItems = $items.find( '.sow-carousel-item' ).length,
 					complete = numItems === $$.data( 'post-count' ),
 					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
-					lastPosition = numItems - numVisibleItems + 1;
+					lastPosition = numItems - numVisibleItems + 1,
+					slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' );
 
 				// Check if all posts are displayed
 				if ( ! complete ) {
 					// Check if we need to fetch the next batch of posts
-					if ( $items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ) {
+					if ( 
+						$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ||
+						$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition - 1
+					) {
 
 						if ( ! $$.data( 'fetching' ) ) {
 							// Fetch the next batch
@@ -115,10 +122,11 @@ jQuery( function ( $ ) {
 							$items.slick( 'slickGoTo', 0 );
 						}
 					// Check if the next slide is the last slide and prevent blank spacing.
-					} else if (
-						complete &&
-						$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= lastPosition
-					) {
+					} else if ( complete && $items.slick( 'slickCurrentSlide' ) + numVisibleItems >= lastPosition ) {
+						$items.setSlideTo( lastPosition );
+
+					// Check if the number of slides to scroll exceeds lastPosition, go to the last slide.
+					} else if ( $items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition - 1 ) {
 						$items.setSlideTo( lastPosition );
 					} else {
 						$items.slick( 'slickNext' );
@@ -180,11 +188,9 @@ jQuery( function ( $ ) {
 		} );
 
 		$( window ).on( 'resize load', function() {
-			// Hide/disable scroll if number of visible items is less than total posts.
-
 			$( '.sow-carousel-wrapper' ).each( function() {
 				var currentCarousel = $( this ),
-					$items = currentCarousel.find( '.sow-carousel-items' ),
+					$items = currentCarousel.find( '.sow-carousel-items.slick-initialized' ),
 					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					navigation = currentCarousel.parent().parent().find( '.sow-carousel-navigation' );
 
@@ -197,13 +203,14 @@ jQuery( function ( $ ) {
 					$items.slick( 'slickSetOption', 'touchMove', true );
 					$items.slick( 'slickSetOption', 'draggable', true );
 				}
-			} );
+				// Change Slick Settings on iPad Pro while Landscape
+				var responsiveSettings = currentCarousel.data( 'responsive' );
+				if ( window.matchMedia( '(min-width: ' + responsiveSettings.tablet_portrait_breakpoint + 'px) and (max-width: ' + responsiveSettings.tablet_landscape_breakpoint + 'px) and (orientation: landscape)' ).matches ) {
+					$items.slick( 'slickSetOption', 'slidesToShow', responsiveSettings.tablet_landscape_slides );
+					$items.slick( 'slickSetOption', 'slidesToScroll', responsiveSettings.tablet_landscape_slides );
+				}
 
-			// Change Slick Settings on iPad Pro while Landscape
-			if ( window.matchMedia( '(min-width: ' + carouselBreakpoints.tablet_portrait + 'px) and (max-width: ' + carouselBreakpoints.tablet_landscape + 'px) and (orientation: landscape)' ).matches ) {
-				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToShow', 3 );
-				$( '.sow-carousel-items' ).slick( 'slickSetOption', 'slidesToScroll', 3 );
-			}
+			} );
 
 			$( '.sow-carousel-item:first-of-type' ).prop( 'tabindex', 0 );
 		} );

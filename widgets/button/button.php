@@ -57,6 +57,13 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 				'label' => __('Open in a new window', 'so-widgets-bundle'),
 			),
 
+			'download' => array(
+				'type' => 'checkbox',
+				'default' => false,
+				'label' => __( 'Download', 'so-widgets-bundle' ),
+				'description' => __( 'The button destination URL will be downloaded when a user clicks on the button.', 'so-widgets-bundle' ),
+			),
+
 			'button_icon' => array(
 				'type' => 'section',
 				'label' => __('Icon', 'so-widgets-bundle'),
@@ -290,6 +297,10 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			$button_attributes['rel'] = 'noopener noreferrer';
 		}
 
+		if ( ! empty( $instance['download'] ) ) {
+			$button_attributes['download'] = null;
+		}
+
 		if ( ! empty( $attributes['id'] ) ) {
 			$button_attributes['id'] = $attributes['id'];
 		}
@@ -360,11 +371,6 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		return $less_vars;
 	}
 
-	function get_google_font_fields( $instance ) {
-		return array(
-			$instance['design']['font'],
-		);
-	}
 	/**
 	 * Make sure the instance is the most up to date version.
 	 *

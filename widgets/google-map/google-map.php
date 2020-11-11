@@ -466,6 +466,28 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				)
 			),
 
+			'map_consent' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Require consent before loading Maps API', 'so-widgets-bundle' ),
+				'description' => __( 'Consent is required for the Google Maps widget to comply with regulations like DSGVO, or GDPR.', 'so-widgets-bundle' ),
+				'default' => false,
+			),
+
+			'map_consent_btn_text' => array(
+				'type' => 'text',
+				'label' => __( 'Consent button text', 'so-widgets-bundle' ),
+				'default' => __( 'Load map', 'so-widgets-bundle' ),
+			),
+
+			'map_consent_notice' => array(
+				'type' => 'tinymce',
+				'label' => __( 'Consent prompt text', 'so-widgets-bundle' ),
+				'description' => __( 'This is text is displayed when a user is prompted to consent to load the Google Maps API.', 'so-widgets-bundle' ),
+				'default' => __( "By loading, you agree to Google's privacy policy.
+
+				<a href='https://policies.google.com/privacy?hl=en&amp;gl=en' target='_blank' rel='noopener noreferrer'>Read more</a>", 'so-widgets-bundle' ),
+			),
+
 			'responsive_breakpoint' => array(
 				'type'        => 'number',
 				'label'       => __( 'Responsive breakpoint', 'so-widgets-bundle' ),
@@ -480,8 +502,11 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_style_name( $instance ) {
-		// We aren't using a LESS style for this widget.
-		return false;
+		if ( $instance['settings']['map_type'] == 'static' ) {
+			return false;
+		}
+
+		return 'default';
 	}
 
 	function get_template_variables( $instance, $args ) {
@@ -559,11 +584,24 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 			return array(
 				'map_id'   => md5( json_encode( $instance ) ),
-				'height'   => $settings['height'],
 				'map_data' => $map_data,
 				'fallback_image_data' => array( 'img' => $fallback_image ),
+				'map_consent' => ! empty( $global_settings['map_consent'] ),
+				'map_consent_notice' => ! empty( $global_settings['map_consent_notice'] ) ? $global_settings['map_consent_notice'] : '',
+				'map_consent_btn_text' => ! empty( $global_settings['map_consent_btn_text'] ) ? $global_settings['map_consent_btn_text'] : '',
+				'consent_background_image' => plugin_dir_url( __FILE__ ) . 'assets/map-consent-background.jpg',
 			);
 		}
+	}
+
+	function get_less_variables( $instance ) {
+		$global_settings = $this->get_global_settings();
+
+		return array(
+			'height' => $instance['settings']['height'] . 'px',
+			'map_consent' => ! empty( $global_settings['map_consent'] ),
+			'responsive_breakpoint' => ! empty( $global_settings['responsive_breakpoint'] ) ? $global_settings['responsive_breakpoint'] : '780',
+		);
 	}
 	
 	private function get_location_string( $location_data ) {
@@ -585,17 +623,13 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			 $this->is_preview( $instance ) ) {
 			wp_enqueue_script( 'sow-google-map' );
 
-			wp_enqueue_style(
-				'sow-google-map',
-				plugin_dir_url(__FILE__) . 'css/style.css',
-				array(),
-				SOW_BUNDLE_VERSION
-			);
+			$global_settings = $this->get_global_settings();
 			
 			wp_localize_script(
 				'sow-google-map',
 				'soWidgetsGoogleMap',
 				array(
+					'map_consent'  => ! empty( $global_settings['map_consent'] ),
 					'geocode' => array(
 						'noResults' => __( 'There were no results for the place you entered. Please try another.', 'so-widgets-bundle' ),
 					),

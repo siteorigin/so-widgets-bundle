@@ -432,11 +432,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'font_size'     => array(
 								'type'  => 'measurement',
-								'label' => __( 'Font Size', 'so-widgets-bundle' )
+								'label' => __( 'Font size', 'so-widgets-bundle' )
 							),
 							'color'         => array(
 								'type'  => 'color',
-								'label' => __( 'Text Color', 'so-widgets-bundle' ),
+								'label' => __( 'Text color', 'so-widgets-bundle' ),
 							),
 							'margin'        => array(
 								'type'  => 'measurement',
@@ -457,7 +457,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'height_textarea' => array(
 								'type'  => 'measurement',
-								'label' => __( 'Text Area Height', 'so-widgets-bundle' )
+								'label' => __( 'Text area height', 'so-widgets-bundle' )
 							),
 							'background'    => array(
 								'type'  => 'color',
@@ -890,13 +890,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 
 		return $vars;
-	}
-
-	function get_google_font_fields( $instance ) {
-		return array(
-			$instance['design']['labels']['font'],
-			$instance['design']['fields']['font'],
-		);
 	}
 
 	static function name_from_label( $label, & $ids ) {

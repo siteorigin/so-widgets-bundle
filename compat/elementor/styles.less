@@ -1,6 +1,10 @@
 .elementor-panel #elementor-panel-page-editor .elementor-control-content .siteorigin-widget-form {
 	min-width: inherit;
 
+	a {
+		border-bottom: none;
+	}
+
 	.wp-picker-container {
 		float: none;
 
@@ -13,13 +17,30 @@
 			background: none;
 
 			.wp-color-result {
-				float: none;
+				float: left;
 				margin: 0;
 			}
 
 			.wp-picker-input-wrap {
 				padding: 0;
-				float: none;
+				float: left;
+
+				.siteorigin-widget-input-color,
+				.button.wp-picker-default {
+					font-size: 12px;
+					height: 32px;
+				}
+
+				.button.wp-picker-default {
+					float: right;
+					width: auto;
+				}
+			}
+
+			.wp-picker-holder:before {
+				clear: both;
+				content: "";
+				display: table;
 			}
 
 			.iris-picker.iris-border {
@@ -49,11 +70,27 @@
 			margin: 0 3px;
 		}
 
+		.ui-draggable-handle {
+			transition: none;
+		}
+
 		&.siteorigin-widget-field-type-icon {
 			.siteorigin-widget-icon-selector {
 				.siteorigin-widget-icon-search {
+					box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
+					background-color: #fff;
+					color: #32373c;
 					width: 100%;
+
+					&::placeholder,
+					&::-webkit-input-placeholder {
+						color: #32373c;
+					}
 				}
+			}
+
+			.siteorigin-widget-icon-icons-icon {
+				color: #444;
 			}
 		}
 
@@ -65,7 +102,8 @@
 			}
 
 			.siteorigin-widget-input-measurement {
-				width: 66%;
+				width: 100%;
+				max-width: 58px;
 				margin-right: 1px;
 			}
 
@@ -73,6 +111,7 @@
 				min-width: inherit;
 				width: 32%;
 				margin-left: 1px;
+				max-width: 73px;
 			}
 		}
 
@@ -102,48 +141,34 @@
 				max-width: 220px;
 			}
 		}
+
+		.siteorigin-widget-input[type="text"] {
+			height: 30px;
+		}
+
+		.siteorigin-widget-input[type="checkbox"] {
+			display: inline-block;
+			vertical-align: middle;
+		}
+
+		.siteorigin-widget-description {
+			color: inherit;
+		}
 	}
-	/* Button styles copied from wp-core for default UI look. */
-	.button, .button-secondary {
-		display: inline-block;
-		text-decoration: none;
-		font-size: 13px;
-		line-height: 26px;
-		height: 28px;
-		margin: 0;
-		padding: 0 10px 1px;
-		cursor: pointer;
-		border: 1px solid #cccccc;
-		border-radius: 3px;
-		white-space: nowrap;
-		box-sizing: border-box;
 
-		font-family: inherit;
-		font-weight: normal;
-		text-transform: capitalize;
-		color: #555;
-		background: #f7f7f7;
+	.siteorigin-widget-field-type-section {
+		color: #000;
+	}
 
-		&:hover,
-		&:focus {
-			background: #fafafa;
-			border-color: #999;
-			color: #23282d;
-		}
-
-		&:active,
-		&:focus {
-			outline: none;
-		}
-
-		&.hidden {
-			display: none;
-		}
+	.button.wp-color-result {
+		font-size: 12px;
+		height: 32px;
+		padding: 0 0 0 30px;
 	}
 
 	.button.button-small {
 		height: 25px;
-		line-height: 23px;
+		line-height: 30px;
 		padding: 0 8px;
 		font-size: 11px;
 	}
@@ -203,4 +228,91 @@
 		margin-top: 5px;
 	}
 
+}
+
+.elementor-panel #elementor-panel-page-editor .elementor-control-content .siteorigin-widget-form,
+#so-widgets-image-search-frame {
+	/* Button styles copied from wp-core for default UI look. */
+	.button, .button-secondary {
+		display: inline-block;
+		text-decoration: none;
+		font-size: 13px;
+		line-height: 28px;
+		height: 28px;
+		margin: 0;
+		padding: 0 10px 1px;
+		cursor: pointer;
+		border: 1px solid #cccccc;
+		border-radius: 3px;
+		white-space: nowrap;
+		box-sizing: border-box;
+
+		font-family: inherit;
+		font-weight: normal;
+		text-transform: capitalize;
+		color: #555;
+		background: #f7f7f7;
+
+		&:hover,
+		&:focus {
+			background: #fafafa;
+			border-color: #999;
+			color: #23282d;
+		}
+
+		&:active,
+		&:focus {
+			outline: none;
+		}
+
+		&.hidden {
+			display: none;
+		}
+	}
+
+	.button-primary {
+		background: #007cba;
+		border-color: #007cba;
+		color: #fff;
+		text-decoration: none;
+		text-shadow: none;
+	}
+
+}
+
+#so-widgets-image-search-frame {
+	.so-widgets-search-input {
+		background: #fff;
+		color: #32373c;
+		border: 1px solid #7e8993;
+		line-height: 1;
+		min-height: 47px;
+		font-size: 14px;
+	}
+
+	.so-widgets-image-search-powered {
+		font-size: 11px;
+	}
+
+	a {
+		color: #0073aa;
+		text-decoration: underline;
+
+		&:active,
+		&:hover {
+			color: #006799;
+		}
+	}
+
+	.so-widgets-results-loading {
+		color: #444;
+	}
+}
+
+.so-widgets-dialog .so-widgets-toolbar h3 {
+	color: #23282d;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	font-size: 16.9px;
+	font-weight: 600;
+	margin: 15px 0 15px 20px;
 }

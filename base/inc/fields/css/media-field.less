@@ -5,6 +5,7 @@
 	.media-field-wrapper {
 		border: 1px solid #bbb;
 		.box-shadow(~"0 1px 2px rgba(0, 0, 0, 0.1)");
+		box-sizing: content-box;
 		display: block;
 		float: left;
 		font-size: 13px;
@@ -17,6 +18,10 @@
 
 		&:hover {
 			.box-shadow(~"0 1px 2px rgba(0, 0, 0, 0.15)");
+		}
+
+		* {
+			box-sizing: content-box;
 		}
 
 		.current {
@@ -62,6 +67,7 @@
 		.media-upload-button,
 		.find-image-button {
 			display: block;
+			border-bottom: none;
 			cursor: pointer;
 			float: left;
 			font-size: 11px;
@@ -69,7 +75,8 @@
 			color: #666;
 			outline: none;
 			.rounded(2px);
-			padding: 7px 8px;
+			line-height: 32px;
+			padding: 0 8px;
 			text-decoration: none;
 			text-shadow: 0 1px 0 #fff;
 
@@ -89,6 +96,7 @@
 
 	.media-remove-button {
 		display: block;
+		border-bottom: none;
 		color: #aaa;
 		float: left;
 		font-size: 11px;

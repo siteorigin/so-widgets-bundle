@@ -261,6 +261,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 				'label' => __( 'FitText Compressor Strength', 'so-widgets-bundle' ),
 				'description' => __( 'The higher the value, the more your headings will be scaled down. Values above 1 are allowed.', 'so-widgets-bundle' ),
 				'default' => 0.85,
+				'step' => 0.01,
 				'state_handler' => array(
 					'use_fittext[show]' => array( 'show' ),
 					'use_fittext[hide]' => array( 'hide' ),
@@ -316,13 +317,6 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 		$less_vars['divider_margin'] = isset( $instance['divider']['margin'] ) ? $instance['divider']['margin'] : false;
 
 		return $less_vars;
-	}
-
-	function get_google_font_fields( $instance ) {
-		return array(
-			$instance['headline']['font'],
-			$instance['sub_headline']['font'],
-		);
 	}
 
 	/**

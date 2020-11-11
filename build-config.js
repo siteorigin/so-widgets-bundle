@@ -32,7 +32,8 @@ module.exports = {
             'widgets/**/*.js',
             '!{node_modules,node_modules/**}',  // Ignore node_modules/ and contents
             '!{tests,tests/**}',                // Ignore tests/ and contents
-            '!{tmp,tmp/**}'                     // Ignore dist/ and contents
+            '!{tmp,tmp/**}',                    // Ignore dist/ and contents
+            '!**/**/*.min.js'                   // Ignore already minified files.
         ]
     },
     bust : {

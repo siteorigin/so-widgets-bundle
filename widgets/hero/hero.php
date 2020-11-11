@@ -241,6 +241,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 						'label' => __( 'FitText compressor strength', 'so-widgets-bundle' ),
 						'description' => __( 'The higher the value, the more your headings will be scaled down. Values above 1 are allowed.', 'so-widgets-bundle' ),
 						'default' => 0.85,
+						'step' => 0.01,
 						'state_handler' => array(
 							'use_fittext[show]' => array( 'show' ),
 							'use_fittext[hide]' => array( 'hide' ),
@@ -452,21 +453,6 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			}
 		}
 		return $val;
-	}
-
-	/**
-	 * Less function for importing Google web fonts.
-	 *
-	 * @param $instance
-	 * @param $args
-	 *
-	 * @return string
-	 */
-	function get_google_font_fields( $instance ) {
-		return array(
-			$instance['design']['heading_font'],
-			! empty( $instance['design']['text_font'] ) ? $instance['design']['text_font'] : '',
-		);
 	}
 
 	function wrapper_class_filter( $classes, $instance ){

@@ -120,7 +120,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return array The form array, or an empty array if the form doesn't exist.
 	 */
 	function get_form( $form_type ) {
-		return $this->has_form( $form_type ) ? call_user_func( array( $this, 'get_' . $form_type . '_form'  ) ) : array();
+		$form_options = $this->has_form( $form_type ) ? call_user_func( array( $this, 'get_' . $form_type . '_form'  ) ) : array();
+
+		if ( $form_type == 'settings' ) {
+			// Allow plugins to filter global widgets form.
+			$form_options = apply_filters( 'siteorigin_widgets_settings_form', $form_options, $this );
+			$form_options = apply_filters( 'siteorigin_widgets_settings_form_' . $this->id_base, $form_options, $this );
+		}
+
+		return $form_options;
 	}
 
 	/**
@@ -239,7 +247,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		do_action( 'siteorigin_widgets_after_widget_' . $this->id_base, $instance, $this );
 
 		// If this is a widget preview, we need to print the styling inline
-		if ( $this->is_preview( $instance ) && isset( $_POST['action'] ) &&  $_POST['action']== 'so_widgets_preview' ) {
+		if ( $this->is_preview( $instance ) ) {
 			siteorigin_widget_print_styles();
 		}
 	}
@@ -291,7 +299,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$css_name = $this->id_base.'-'.$style.'-'.$hash;
 
 			//Ensure styles aren't generated and enqueued more than once.
-			$in_preview = $this->is_preview( $instance );
+			$in_preview = $this->is_preview( $instance ) || ( isset( $_POST['action'] ) &&  $_POST['action'] == 'so_widgets_preview' );
 			if ( ! in_array( $css_name, $this->generated_css ) || $in_preview ) {
 				if( $in_preview ) {
 					siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
@@ -877,6 +885,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$less = preg_replace_callback( '/^@import\s+".*?\/?([\w\-\.]+)";/m', array( $this, 'get_less_import_contents' ), $less );
 
 		$vars = apply_filters( 'siteorigin_widgets_less_variables_' . $this->id_base, $this->get_less_variables( $instance ), $instance, $this );
+
+		$less = apply_filters( 'siteorigin_widgets_styles_vars', $less, $vars, $this->widget_class, $instance );
+		$less = apply_filters( 'siteorigin_widgets_less_vars_' . $this->id_base, $less, $vars, $instance, $this );
+
 		if( !empty( $vars ) ){
 			foreach($vars as $name => $value) {
 				// Ignore empty string, false and null values (but keep '0')
@@ -999,49 +1011,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// Finally call the function and include the
 		$args = array_map('trim', $args);
 		return call_user_func( array($this, $func), $this->current_instance, $args );
-	}
-
-	/**
-	 * Less function for importing Google web fonts.
-	 *
-	 * @param $instance
-	 * @param $args
-	 *
-	 * @return string
-	 */
-	function less_import_google_font($instance, $args) {
-		if( empty( $instance ) ) return;
-
-		$fonts = $this->get_google_font_fields($instance);
-		if( empty( $fonts ) || ! is_array( $fonts ) ) return '';
-
-		$font_imports = array();
-
-		foreach ( $fonts as $font ) {
-			$font_imports[] = siteorigin_widget_get_font( $font );
-		}
-
-		$import_strings = array();
-		foreach( $font_imports as $import ) {
-			$import_strings[] = !empty($import['css_import']) ? $import['css_import'] : '';
-		}
-
-		// Remove empty and duplicate items from the array
-		$import_strings = array_filter( $import_strings );
-		$import_strings = array_unique( $import_strings );
-
-		return implode( "\n", $import_strings );
-	}
-
-	/**
-	 * Get any font fields which may be used by this widget.
-	 *
-	 * @param $instance
-	 *
-	 * @return array
-	 */
-	function get_google_font_fields( $instance ) {
-		return apply_filters( 'siteorigin_widgets_google_font_fields_' . $this->id_base, array(), $instance, $this );
 	}
 
 	/**

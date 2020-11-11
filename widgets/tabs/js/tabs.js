@@ -79,6 +79,10 @@ jQuery( function ( $ ) {
 								},
 								complete: function() {
 									$( this ).trigger( 'show' );
+									if ( ! sowTabs.scrollto_after_change ) {
+										return;
+									}
+
 									if ( $tab.offset().top < window.scrollY || $tab.offset().top + $tab.height() > window.scrollY ) {
 										scrollToTab( true );
 									}
