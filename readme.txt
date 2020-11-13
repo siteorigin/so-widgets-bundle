@@ -66,7 +66,10 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
-== 1.17.9 - 10 November 2020 ==
+== 1.17.10 - 13 November 2020 ==
+* TinyMCE: Resolved issue with the Add Media button.
+
+== 1.17.9 - 12 November 2020 ==
 * Block Editor: Resolved widget preview issue.
 * Elementor: Minor admin styling improvements.
 * Google Maps: Added a new global consent setting `Require consent before loading Maps API` at `Plugins > SiteOrigin Widgets > Google Maps`.
