@@ -74,6 +74,10 @@
 				if ( $field.find( '.wp-media-buttons' ).length === 0 ) {
 					$field.find( '.wp-editor-tabs' ).before( mediaButtons.html );
 				}
+
+				// Account for randomized id.
+				var $textarea = $container.find( 'textarea' );
+				$field.find( '.add_media' ).attr( 'data-editor', $textarea.data( 'tinymce-id' ) );
 			}
 		} );
 		$( document ).on( 'tinymce-editor-setup', function () {
