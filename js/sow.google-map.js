@@ -358,7 +358,10 @@ sowb.SiteOriginGoogleMap = function($) {
 			}.bind(this))
 			.fail(function(error){
 				console.log(error);
-			});
+			} )
+			.done( function() {
+				$( sowb ).trigger( 'maps_loaded' );
+			} );
 		},
 		getGeocoder: function () {
 			if ( !this._geocoder ) {
