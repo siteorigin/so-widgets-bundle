@@ -1,10 +1,18 @@
 @import "../../../base/less/mixins";
 
 @height: 480px;
-@map_consent: default;
-@map_consent_notice_text_color: #fff;
-@map_consent_notice_text_background: #000;
 @responsive_breakpoint: 780px;
+@map_consent: default;
+
+@map_consent_notice_text_background: #000;
+@map_consent_notice_text_color: #fff;
+@map_consent_notice_text_link: #fff;
+@map_consent_notice_text_link_hover: #aaa;
+
+@map_consent_notice_button_color: #fff;
+@map_consent_notice_button_color_hover: #eee;
+@map_consent_notice_button_background: #41a9d5;
+@map_consent_notice_button_background_hover: #298fba;
 
 .sow-google-map-canvas {
 	height: @height;
@@ -28,22 +36,40 @@
 			background: fade( @map_consent_notice_text_background, 85% );
 			color: @map_consent_notice_text_color;
 			width: 100%;
-		}
 
-		.sow-google-map-consent-prompt-inner {
-			margin: 0 auto;
-			max-width: 780px;
-			padding: 50px;
-			text-align: center;
+			.sow-google-map-consent-prompt-inner {
+				margin: 0 auto;
+				max-width: 780px;
+				padding: 50px;
+				text-align: center;
 
-			@media (max-width: @responsive_breakpoint) {
-				max-width: none;
-				padding: 25px;
-			}
+				@media (max-width: @responsive_breakpoint) {
+					max-width: none;
+					padding: 25px;
+				}
 
-			button {
-				display: block;
-				margin: 10px auto 0;
+				a {
+					color: @map_consent_notice_text_link;
+					&:focus,
+					&:hover {
+						color: @map_consent_notice_text_link_hover;
+
+					}
+				}
+
+				button {
+					background: @map_consent_notice_button_background;
+					border: none;
+					color: @map_consent_notice_button_color;
+					display: block;
+					margin: 10px auto 0;
+
+					&:focus,
+					&:hover {
+						background: @map_consent_notice_button_background_hover;
+						color: @map_consent_notice_button_color_hover;
+					}
+				}
 			}
 		}
 	}
