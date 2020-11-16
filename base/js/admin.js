@@ -561,7 +561,10 @@ var sowbForms = window.sowbForms || {};
 			});
 			modal.find('form').submit();
 
-			modal.find('.close').click(function () {
+			modal.find('.close').on( 'click keyup', function (e) {
+				if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
+					return;
+				}
 				modal.remove();
 			});
 		});
