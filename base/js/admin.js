@@ -282,7 +282,10 @@ var sowbForms = window.sowbForms || {};
 
 			///////////////////////////////////////
 			// Handle the sections
-			var expandContainer = function () {
+			var expandContainer = function ( e ) {
+				if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
+					return;
+				}
 				$(this).toggleClass('siteorigin-widget-section-visible');
 				$(this).parent().find('> .siteorigin-widget-section, > .siteorigin-widget-widget > .siteorigin-widget-section')
 					.slideToggle('fast', function () {
@@ -295,8 +298,10 @@ var sowbForms = window.sowbForms || {};
 						}
 					} );
 			};
-			$fields.filter('.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section').find('> label').click(expandContainer);
-			$fields.filter('.siteorigin-widget-field-type-posts').find('.posts-container-label-wrapper').click(expandContainer);
+			$fields.filter('.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section').find('> label')
+			.on( 'click keyup', expandContainer)
+			.attr( 'tabinex', 0 );
+			$fields.filter('.siteorigin-widget-field-type-posts').find('.posts-container-label-wrapper').on( 'click keyup', expandContainer);
 
 			///////////////////////////////////////
 			// Handle the slider fields
