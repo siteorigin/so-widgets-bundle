@@ -1157,6 +1157,7 @@ var sowbForms = window.sowbForms || {};
 				return true;
 			}
 		}
+	};
 	
 	/**
 	 * Sets all the widget form fields in the given container with the given data values.
@@ -1340,13 +1341,17 @@ var sowbForms = window.sowbForms || {};
 				if ( button.classes && button.classes.length ) {
 					buttonClasses = ' ' + button.classes.join( ' ' );
 				}
-				var $button = $( '<a class="button button-small' + buttonClasses + '">' + button.label + '</a>' );
+				var $button = $( '<a class="button button-small' + buttonClasses + '" tabindex="0">' + button.label + '</a>' );
 				
 				if ( button.url ) {
 					$button.attr( 'href', button.url );
 				}
 				if ( button.callback ) {
-					$button.on( 'click', function () {
+					$button.on( 'click keyup', function ( e ) {
+						if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
+							return;
+						}
+
 						button.callback( $notice );
 					});
 				}
