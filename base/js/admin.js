@@ -369,7 +369,6 @@ var sowbForms = window.sowbForms || {};
 				$$.find('.select-content-button, .button-close').click(function (e) {
 					e.preventDefault();
 
-					$(this).blur();
 					var $s = $$.find('.existing-content-selector');
 					$s.toggle();
 
@@ -380,8 +379,13 @@ var sowbForms = window.sowbForms || {};
 				});
 
 				// Clicking on one of the url items
-				$$.on('click', '.posts li', function (e) {
+				$$.on('click keyup', '.posts li', function (e) {
 					e.preventDefault();
+
+					if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
+						return;
+					}
+
 					var $li = $(this);
 					$$.find('input.siteorigin-widget-input').val('post: ' + $li.data('value'));
 					$$.change();
