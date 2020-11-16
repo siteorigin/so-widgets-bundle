@@ -654,8 +654,13 @@ var sowbForms = window.sowbForms || {};
 			});
 			$items.trigger('updateFieldPositions');
 
-			$el.find('> .siteorigin-widget-field-repeater-add').disableSelection().click(function (e) {
+			$el.find('> .siteorigin-widget-field-repeater-add').disableSelection().on( 'click keyup', function (e) {
 				e.preventDefault();
+
+				if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
+					return;
+				}
+
 				$el.closest('.siteorigin-widget-field-repeater')
 					.sowAddRepeaterItem()
 					.find('> .siteorigin-widget-field-repeater-items').slideDown('fast', function () {
@@ -703,15 +708,15 @@ var sowbForms = window.sowbForms || {};
 			var readonly = typeof $el.attr('readonly') !== 'undefined';
 			var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
 				.append(
-					$('<div class="siteorigin-widget-field-repeater-item-top" />')
+					$('<div class="siteorigin-widget-field-repeater-item-top" tabindex="0" />')
 						.append(
-							$('<div class="siteorigin-widget-field-expand" />')
+							$('<div class="siteorigin-widget-field-expand" tabindex="0" />')
 						)
 						.append(
-							readonly ? '' : $('<div class="siteorigin-widget-field-copy" />')
+							readonly ? '' : $('<div class="siteorigin-widget-field-copy" tabindex="0" />')
 						)
 						.append(
-							readonly ? '' : $('<div class="siteorigin-widget-field-remove" />')
+							readonly ? '' : $('<div class="siteorigin-widget-field-remove" tabindex="0" />')
 						)
 						.append($('<h4 />').html($el.data('item-name')))
 				)
@@ -778,10 +783,15 @@ var sowbForms = window.sowbForms || {};
 					$el.bind(eventName, updateLabel);
 				}
 
-				itemTop.click(function (e) {
+				itemTop.on( 'click keyup', function (e) {
 					if (e.target.className === "siteorigin-widget-field-remove" || e.target.className === "siteorigin-widget-field-copy") {
 						return;
 					}
+
+					if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
+						return;
+					}
+
 					e.preventDefault();
 					$(this).closest('.siteorigin-widget-field-repeater-item').find('.siteorigin-widget-field-repeater-item-form').eq(0).slideToggle('fast', function () {
 						$(window).resize();
@@ -803,8 +813,13 @@ var sowbForms = window.sowbForms || {};
 					});
 				});
 
-				itemTop.find('.siteorigin-widget-field-remove').click(function (e, params) {
+				itemTop.find('.siteorigin-widget-field-remove').on( 'click keyup', function (e, params) {
 					e.preventDefault();
+
+					if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
+						return;
+					}
+
 					var $s = $( this ).closest( '.siteorigin-widget-field-repeater-items' );
 					var $item = $( this ).closest( '.siteorigin-widget-field-repeater-item' );
 					var removeItem = function () {
@@ -819,8 +834,13 @@ var sowbForms = window.sowbForms || {};
 						$item.slideUp('fast', removeItem );
 					}
 				});
-				itemTop.find('.siteorigin-widget-field-copy').click(function (e) {
+				itemTop.find('.siteorigin-widget-field-copy').on( 'click keyup', function (e) {
 					e.preventDefault();
+
+					if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
+						return;
+					}
+
 					var $form = $(this).closest('.siteorigin-widget-form-main');
 					var $item = $(this).closest('.siteorigin-widget-field-repeater-item');
 					var $copyItem = $item.clone();
@@ -1129,6 +1149,14 @@ var sowbForms = window.sowbForms || {};
 		return data;
 	};
 	
+	sowbForms.isEnter = function( e, triggerClick = false ) {
+		if ( e.which == 13 ) {
+			if ( triggerClick ) {
+				$( e.target ).trigger( 'click' );
+			} else {
+				return true;
+			}
+		}
 	
 	/**
 	 * Sets all the widget form fields in the given container with the given data values.
