@@ -357,6 +357,7 @@ var sowbForms = window.sowbForms || {};
 										.addClass('post')
 										.html(data[i].label + '<span>(' + data[i].type + ')</span>')
 										.data(data[i])
+										.attr( 'tabindex', 0 )
 								);
 							}
 							$ul.removeClass('loading');
