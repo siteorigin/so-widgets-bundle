@@ -168,7 +168,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 						!empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : '',
 						array(
 							'class' => 'sow-slider-foreground-image',
-							'loading' => true,
+							'loading' => 'eager',
 						)
 					);
 					?>
@@ -198,7 +198,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				!empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : '',
 				array(
 					'class' => 'sow-slider-background-image',
-					'loading' => true,
+					'loading' => 'eager',
 				)
 			);
 
