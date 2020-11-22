@@ -148,7 +148,7 @@ jQuery( function ( $ ) {
 				return;
 			}
 			e.preventDefault();
-			$( this ).click();
+			$( this ).trigger( 'click' );
 		} );
 
 		// Keyboard Navigation of carousel items.

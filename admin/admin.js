@@ -2,7 +2,7 @@
 
 jQuery( function( $ ){
 
-	$('.so-widget-toggle-active button').click( function(){
+	$( '.so-widget-toggle-active button' ).on( 'click', function() {
 		var $$ = $(this),
 			s = $$.data('status'),
 			$w = $$.closest('.so-widget');
@@ -78,7 +78,7 @@ jQuery( function( $ ){
 		search: widgetSearch
 	});
 
-	$(window).resize(function() {
+	$( window ).on( 'resize', function() {
 		var $descriptions = $('.so-widget-text').css('height', 'auto');
 		var largestHeight = 0;
 
@@ -90,10 +90,10 @@ jQuery( function( $ ){
 			$(this).css('height', largestHeight);
 		});
 
-	}).resize();
+	} ).trigger( 'resize' );
 
 	// Handle the tabs
-	$('#sow-widgets-page .page-nav a').click(function(e){
+	$( '#sow-widgets-page .page-nav a' ).on( 'click', function( e ) {
 		e.preventDefault();
 		var $$ = $(this);
 		var href = $$.attr('href');
@@ -119,7 +119,7 @@ jQuery( function( $ ){
 				break;
 		}
 
-		$(window).resize();
+		$( window ).trigger( 'resize' );
 	});
 
 	// Enable css3 animations on the widgets list
@@ -128,7 +128,7 @@ jQuery( function( $ ){
 	// Handle the dialog
 	var dialog = $('#sow-settings-dialog');
 
-	$( '#widgets-list .so-widget-settings' ).click( function( e ){
+	$( '#widgets-list .so-widget-settings' ).on( 'click', function( e ) {
 		var $$ = $(this);
 		e.preventDefault();
 
@@ -146,21 +146,21 @@ jQuery( function( $ ){
 		dialog.show();
 	} );
 
-	dialog.find('.so-close').click( function( e ){
+	dialog.find( '.so-close' ).on( 'click', function( e ) {
 		e.preventDefault();
 		dialog.hide();
 	} );
 
-	dialog.find('.so-save').click( function( e ){
+	dialog.find( '.so-save' ).on( 'click', function( e ) {
 		e.preventDefault();
 
 		var $$ = $( this );
 		$$.prop( 'disabled', true );
 
-		dialog.find( 'form' ).submit( function() {
+		dialog.find( 'form' ).on( 'submit', function() {
 			$$.prop( 'disabled', false );
 			dialog.hide();
-		} ).submit();
+		} ).trigger( 'submit' );
 	} );
 
 	// Enable all widget settings button after the save iframe has loaded.
@@ -171,7 +171,7 @@ jQuery( function( $ ){
 	// Automatically open settings modal based on hash
 	if( window.location.hash && window.location.hash.substring(0, 10) === '#settings-' ) {
 		var openSettingsId = window.location.hash.substring(10);
-		$('div[data-id="' + openSettingsId +  '"] button.so-widget-settings').click();
+		$('div[data-id="' + openSettingsId +  '"] button.so-widget-settings').trigger( 'click' );
 	}
 
 } );

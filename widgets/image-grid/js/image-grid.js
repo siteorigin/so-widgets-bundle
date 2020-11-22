@@ -40,7 +40,7 @@ jQuery( function ( $ ) {
 				};
 				alignImages();
 				
-				$( window ).resize( alignImages );
+				$( window ).on( 'resize', alignImages );
 
 				var event = document.createEvent('Event');
 				event.initEvent('layoutComplete', true, true);

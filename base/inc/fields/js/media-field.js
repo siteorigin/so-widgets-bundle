@@ -12,7 +12,7 @@
 		}
 
 		// Handle the media uploader
-		$media.find( '.media-upload-button' ).click(function(e){
+		$media.find( '.media-upload-button' ).on( 'click', function( e ) {
 			e.preventDefault();
 			if( typeof wp.media === 'undefined' ) {
 				return;
@@ -91,8 +91,8 @@
 			frame.open();
 		});
 
-		$field.find('a.media-remove-button' )
-			.click( function( e ){
+		$field.find( 'a.media-remove-button' )
+			.on( 'click', function( e ) {
 				e.preventDefault();
 				$inputField.val('');
 				$inputField.trigger( 'change', { silent: true } );
@@ -119,13 +119,13 @@
 				'height' : resultWidth / 1.4
 			} );
 		};
-		$(window).resize( reflowDialog );
+		$( window ).on( 'resize', reflowDialog );
 
 		var setupDialog = function(){
 			if( ! dialog ) {
 				// Create the dialog
 				dialog = $( $('#so-widgets-bundle-tpl-image-search-dialog').html().trim() ).appendTo( 'body' );
-				dialog.find( '.close' ).click( function(){
+				dialog.find( '.close' ).on( 'click', function() {
 					dialog.hide();
 				} );
 
@@ -206,7 +206,7 @@
 				};
 
 				// Setup the search
-				dialog.find('#so-widgets-image-search-form').submit( function( e ){
+				dialog.find( '#so-widgets-image-search-form' ).on( 'submit', function( e ) {
 					e.preventDefault();
 
 					// Perform the search
@@ -220,15 +220,15 @@
 				} );
 
 				// Clicking on the related search buttons
-				dialog.on( 'click', '.so-keywords-list a', function( e ){
+				dialog.on( 'click', '.so-keywords-list a', function( e ) {
 					e.preventDefault();
-					var $$ = $(this).blur();
+					var $$ = $( this ).trigger( 'blur' );
 					dialog.find('.so-widgets-search-input').val( $$.data( 'keyword' ) );
-					dialog.find('#so-widgets-image-search-form').submit();
+					dialog.find( '#so-widgets-image-search-form' ).trigger( 'submit' );
 				} );
 
 				// Clicking on the more button
-				dialog.find('.so-widgets-results-more button').click( function(){
+				dialog.find( '.so-widgets-results-more button' ).on( 'click', function() {
 					var $$ = $(this);
 					fetchImages( $$.data( 'query' ), $$.data( 'page' ) );
 				} );
@@ -364,16 +364,16 @@
 			}
 
 			dialog.show();
-			dialog.find( '.so-widgets-search-input' ).focus();
+			dialog.find( '.so-widgets-search-input' ).trigger( 'focus' );
 		};
 
 		// Handle displaying the image search dialog
-		$media.find( '.find-image-button' ).click( function(e){
+		$media.find( '.find-image-button' ).on( 'click', function( e ) {
 			e.preventDefault();
 			setupDialog();
 		} );
 
-		$inputField.change( function ( event, data ) {
+		$inputField.on( 'change', function( event, data ) {
 			if ( ! ( data && data.silent ) ) {
 				var newVal = $inputField.val();
 				if ( newVal) {
@@ -395,7 +395,7 @@
 						$field.find('.media-remove-button').removeClass('remove-hide');
 					} );
 				} else {
-					$field.find( 'a.media-remove-button' ).click();
+					$field.find( 'a.media-remove-button' ).trigger( 'click' );
 				}
 			}
 		} );

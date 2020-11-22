@@ -120,7 +120,7 @@ sowb.SiteOriginGoogleMap = function($) {
 					}
 				} );
 
-				$autocompleteElement.focusin( function () {
+				$autocompleteElement.on( 'focusin', function () {
 					if ( !this.resultsObserver ) {
 						var autocompleteResultsContainer = document.querySelector( '.pac-container' );
 						this.resultsObserver = new MutationObserver( function () {
@@ -505,7 +505,7 @@ jQuery(function ($) {
 			}
 
 			if ( soWidgetsGoogleMap.map_consent ) {
-				$( '.sow-google-map-consent button' ).click( function() {
+				$( '.sow-google-map-consent button' ).on( 'click', function() {
 					$( '.sow-google-map-consent' ).remove();
 					$( '.sow-google-map-canvas' ).show();
 					$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );
