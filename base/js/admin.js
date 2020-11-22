@@ -701,22 +701,22 @@ var sowbForms = window.sowbForms || {};
 			} );
 
 			var readonly = typeof $el.attr('readonly') !== 'undefined';
-			var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
+			var item = $( '<div class="siteorigin-widget-field-repeater-item ui-draggable"></div>' )
 				.append(
-					$('<div class="siteorigin-widget-field-repeater-item-top" />')
+					$( '<div class="siteorigin-widget-field-repeater-item-top"></div>' )
 						.append(
-							$('<div class="siteorigin-widget-field-expand" />')
+							$( '<div class="siteorigin-widget-field-expand"></div>' )
 						)
 						.append(
-							readonly ? '' : $('<div class="siteorigin-widget-field-copy" />')
+							readonly ? '' : $( '<div class="siteorigin-widget-field-copy"></div>')
 						)
 						.append(
-							readonly ? '' : $('<div class="siteorigin-widget-field-remove" />')
+							readonly ? '' : $( '<div class="siteorigin-widget-field-remove"></div>' )
 						)
-						.append($('<h4 />').html($el.data('item-name')))
+						.append( $( '<h4></h4>' ).html( $el.data( 'item-name' ) ) )
 				)
 				.append(
-					$('<div class="siteorigin-widget-field-repeater-item-form" />')
+					$( '<div class="siteorigin-widget-field-repeater-item-form"></div>' )
 						.html(repeaterHtml)
 				);
 

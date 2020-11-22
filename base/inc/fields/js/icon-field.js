@@ -116,7 +116,7 @@
 				}
 				var familyStyle = 'sow-icon-' + family + ( style ? ' ' + style : '' );
 				var familyValue = family + ( style ? '-' + style : '' ) + '-' + i;
-				var $icon = $('<div data-sow-icon="' + unicode + '"/>')
+				var $icon = $( '<div data-sow-icon="' + unicode + '"></div>' )
 					.attr('data-value', familyValue )
 					.addClass( familyStyle )
 					.addClass( 'siteorigin-widget-icon-icons-icon' )
