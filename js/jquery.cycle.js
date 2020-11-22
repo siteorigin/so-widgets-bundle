@@ -206,7 +206,7 @@
             var len;
 
             if ( $.type(slides) == 'string')
-                slides = $.trim( slides );
+                slides = slides.trim();
 
             $( slides ).each(function(i) {
                 var slideOpts;
@@ -1124,7 +1124,7 @@
         function add( slides, prepend ) {
             var slideArr = [];
             if ( $.type( slides ) == 'string' )
-                slides = $.trim( slides );
+                slides = slides.trim();
             else if ( $.type( slides) === 'array' ) {
                 for (var i=0; i < slides.length; i++ )
                     slides[i] = $(slides[i])[0];
@@ -1400,7 +1400,7 @@
         }
         else if ( type == 'string' ) {
             scriptEl = $( opts.progressive );
-            slides = $.trim( scriptEl.html() );
+            slides = scriptEl.html().trim();
             if ( !slides )
                 return;
             // is it json array?
