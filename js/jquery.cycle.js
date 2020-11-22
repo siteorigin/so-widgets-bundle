@@ -134,10 +134,13 @@
                 if ( opts.pauseOnHover !== true )
                     pauseObj = $( opts.pauseOnHover );
 
-                pauseObj.hover(
-                    function(){ opts.API.pause( true ); },
-                    function(){ opts.API.resume( true ); }
-                );
+                pauseObj.on( 'mouseenter', function() {
+                    opts.API.pause( true );
+                } );
+
+                pauseObj.on( 'mouseleave', function() {
+                    opts.API.resume( true );
+                } );
             }
 
             // stage initial transition
