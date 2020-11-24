@@ -100,7 +100,7 @@
             var opts = this.opts();
             opts.API.trigger('cycle-pre-initialize', [ opts ]);
             var tx = $.fn.cycle.transitions[opts.fx];
-            if (tx && $.isFunction(tx.preInit))
+            if (tx && typeof tx.preInit === 'function' )
                 tx.preInit( opts );
             opts._preInitialized = true;
         },
@@ -109,7 +109,7 @@
             var opts = this.opts();
             opts.API.trigger('cycle-post-initialize', [ opts ]);
             var tx = $.fn.cycle.transitions[opts.fx];
-            if (tx && $.isFunction(tx.postInit))
+            if (tx && typeof tx.postInit === 'function')
                 tx.postInit( opts );
         },
 
@@ -417,7 +417,7 @@
             }
             if ( opts.continueAuto !== undefined ) {
                 if ( opts.continueAuto === false ||
-                    ($.isFunction(opts.continueAuto) && opts.continueAuto() === false )) {
+                    ( typeof opts.continueAuto === 'function' && opts.continueAuto() === false )) {
                     opts.API.log('terminating automatic transitions');
                     opts.timeout = 0;
                     if ( opts.timeoutId )
@@ -703,7 +703,7 @@
 
     $(document).on( 'cycle-initialized', function( e, opts ) {
         var autoHeight = opts.autoHeight;
-        var t = $.type( autoHeight );
+        var t = typeof autoHeight;
         var resizeThrottle = null;
         var ratio;
 
@@ -754,7 +754,7 @@
         else if ( opts._autoHeightRatio ) {
             opts.container.height( opts.container.width() / opts._autoHeightRatio );
         }
-        else if ( autoHeight === 'calc' || ( $.type( autoHeight ) == 'number' && autoHeight >= 0 ) ) {
+        else if ( autoHeight === 'calc' || ( typeof autoHeight === 'number' && autoHeight >= 0 ) ) {
             if ( autoHeight === 'calc' )
                 sentinelIndex = calcSentinelIndex( e, opts );
             else if ( autoHeight >= opts.slides.length )
@@ -876,11 +876,11 @@
         var cmd, cmdFn, opts;
         var args = $.makeArray( arguments );
 
-        if ( $.type( options ) == 'number' ) {
+        if ( typeof options === 'number' ) {
             return this.cycle( 'goto', options );
         }
 
-        if ( $.type( options ) == 'string' ) {
+        if ( typeof options === 'string' ) {
             return this.each(function() {
                 var cmdArgs;
                 cmd = options;
@@ -893,7 +893,7 @@
                 else {
                     cmd = cmd == 'goto' ? 'jump' : cmd; // issue #3; change 'goto' to 'jump' internally
                     cmdFn = opts.API[ cmd ];
-                    if ( $.isFunction( cmdFn )) {
+                    if ( typeof cmdFn === 'function' ) {
                         cmdArgs = $.makeArray( args );
                         cmdArgs.shift();
                         return cmdFn.apply( opts.API, cmdArgs );
@@ -942,7 +942,7 @@
             this.stop(); //#204
 
             var opts = this.opts();
-            var clean = $.isFunction( $._data ) ? $._data : $.noop;  // hack for #184 and #201
+            var clean = typeof $._data === 'function' ? $._data : $.noop;  // hack for #184 and #201
             clearTimeout(opts.timeoutId);
             opts.timeoutId = 0;
             opts.API.stop();
@@ -1126,9 +1126,9 @@
 
         function add( slides, prepend ) {
             var slideArr = [];
-            if ( $.type( slides ) == 'string' )
+            if ( typeof slides == 'string' )
                 slides = slides.trim();
-            else if ( $.type( slides) === 'array' ) {
+            else if ( typeof slides === 'array' ) {
                 for (var i=0; i < slides.length; i++ )
                     slides[i] = $(slides[i])[0];
             }
@@ -1392,7 +1392,7 @@
         var nextFn = API.next;
         var prevFn = API.prev;
         var prepareTxFn = API.prepareTx;
-        var type = $.type( opts.progressive );
+        var type = typeof opts.progressive;
         var slides, scriptEl;
 
         if ( type == 'array' ) {
@@ -1537,7 +1537,7 @@
                         prop = obj[str];
                     }
 
-                    if ($.isFunction(prop))
+                    if ( typeof prop === 'function' )
                         return prop.apply(obj, args);
                     if (prop !== undefined && prop !== null && prop != str)
                         return prop;
