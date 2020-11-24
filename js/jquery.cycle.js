@@ -208,7 +208,7 @@
             var startSlideshow = false;
             var len;
 
-            if ( $.type(slides) == 'string')
+            if ( typeof slides === 'string' )
                 slides = slides.trim();
 
             $( slides ).each(function(i) {
@@ -1398,7 +1398,7 @@
         if ( type == 'array' ) {
             slides = opts.progressive;
         }
-        else if ($.isFunction( opts.progressive ) ) {
+        else if ( typeof opts.progressive === 'function' ) {
             slides = opts.progressive( opts );
         }
         else if ( type == 'string' ) {
