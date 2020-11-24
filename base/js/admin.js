@@ -620,7 +620,8 @@ var sowbForms = window.sowbForms || {};
 				var scrollCount = $el.data('scroll-count') ? parseInt($el.data('scroll-count')) : 0;
 				if (scrollCount > 0 && $rptrItems.length > scrollCount) {
 					var itemHeight = $rptrItems.first().outerHeight();
-					$$.css('max-height', itemHeight * scrollCount).css('overflow', 'auto');
+					$$.css( 'max-height', itemHeight * scrollCount + 'px' );
+					$$.css( 'overflow', 'auto' );
 				}
 				else {
 					//TODO: Check whether there was a value before overriding and set it back to that.

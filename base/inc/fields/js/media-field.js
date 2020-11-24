@@ -115,8 +115,8 @@
 				resultWidth = spare / perRow + 260;
 
 			results.find( '.so-widgets-result-image' ).css( {
-				'width' : resultWidth,
-				'height' : resultWidth / 1.4
+				'width' : resultWidth + 'px',
+				'height' : resultWidth / 1.4 + 'px',
 			} );
 		};
 		$( window ).on( 'resize', reflowDialog );
@@ -319,8 +319,8 @@
 								.find('.so-widgets-preview-window-inside')
 								.css( {
 									'background-image' : 'url(' + $$.data('thumbnail') + ')',
-									'width' : preview[1] * scalePreview,
-									'height' : preview[2] * scalePreview
+									'width' : preview[1] * scalePreview + 'px',
+									'height' : preview[2] * scalePreview + 'px',
 								} )
 								.append( $( '<img />' ).attr( 'src', preview[0] ) );
 
@@ -355,8 +355,8 @@
 
 						// Figure out where the preview needs to go
 						previewWindow.css({
-							'top': top,
-							'left': left
+							'top': top + 'px',
+							'left': left + 'px',
 						});
 
 					}

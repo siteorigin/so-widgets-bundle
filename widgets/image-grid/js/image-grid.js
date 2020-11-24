@@ -27,7 +27,7 @@ jQuery( function ( $ ) {
 						
 						if ( width.length ) {
 							width = Math.min.apply( Math, width );
-							$img.css( 'max-width', width );
+							$img.css( 'max-width', width + 'px' );
 						}
 						
 					} );

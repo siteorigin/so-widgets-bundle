@@ -48,7 +48,7 @@ jQuery( function( $ ){
 		else {
 			if( $img.width() > 128 ) {
 				// Deal with wide banner images
-				$img.css('margin-left', -($img.width()-128)/2 );
+				$img.css( 'margin-left', - ( $img.width() - 128 ) / 2 + 'px' );
 			}
 		}
 	} );
@@ -87,7 +87,7 @@ jQuery( function( $ ){
 		});
 
 		$descriptions.each(function () {
-			$(this).css('height', largestHeight);
+			$( this ).css( 'height', largestHeight + "px" );
 		});
 
 	} ).trigger( 'resize' );

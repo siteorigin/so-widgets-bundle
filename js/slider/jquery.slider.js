@@ -28,7 +28,7 @@ sowb.SiteOriginSlider = function($) {
 				video = active.find('video.sow-background-element');
 
 			if( speed === undefined ) {
-				sentinel.css( 'height', active.outerHeight() );
+				sentinel.css( 'height', active.outerHeight() + 'px' );
 			}
 			else {
 				sentinel.animate( {height: active.outerHeight()}, speed );
@@ -119,7 +119,7 @@ jQuery( function($){
 				var resizeFrames = function () {
 					$$.find( '.sow-slider-image' ).each( function () {
 						var $i = $( this );
-						$i.css( 'height', $i.find( '.sow-slider-image-wrapper' ).outerHeight() );
+						$i.css( 'height', $i.find( '.sow-slider-image-wrapper' ).outerHeight() + 'px' );
 					} );
 				};
 				// Setup each of the slider frames
