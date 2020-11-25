@@ -97,7 +97,7 @@
 				$inputField.val('');
 				$inputField.trigger( 'change', { silent: true } );
 				$field.find('.current .thumbnail' ).fadeOut('fast');
-				$(this).addClass('remove-hide').attr( 'tabindex', -1 );
+				$(this).addClass( 'remove-hide' ).attr( 'tabindex', -1 );
 			} );
 
 		// Everything for the dialog
@@ -276,7 +276,7 @@
 									$inputField.val( response.attachment_id ).trigger('change', { silent: true } );
 									$field.find('.current .thumbnail' ).attr('src', response.thumb ).fadeIn();
 
-									$field.find('.media-remove-button').removeClass('remove-hide').attr( 'tabindex', 0 );
+									$field.find( '.media-remove-button' ).removeClass( 'remove-hide' ).attr( 'tabindex', 0 );
 								}
 								else {
 									alert( response.message );
@@ -396,7 +396,7 @@
 						else {
 							$thumbnail.attr( 'src', attachment.get('icon') ).fadeIn();
 						}
-						$field.find('.media-remove-button').removeClass('remove-hide').attr( 'tabindex', 0 );
+						$field.find( '.media-remove-button' ).removeClass( 'remove-hide' ).attr( 'tabindex', 0 );
 					} );
 				} else {
 					$field.find( 'a.media-remove-button' ).click();

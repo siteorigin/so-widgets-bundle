@@ -298,10 +298,10 @@ var sowbForms = window.sowbForms || {};
 						}
 					} );
 			};
-			$fields.filter('.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section').find('> label')
-			.on( 'click keyup', expandContainer)
+			$fields.filter( '.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section' ).find( '> label' )
+			.on( 'click keyup', expandContainer )
 			.attr( 'tabinex', 0 );
-			$fields.filter('.siteorigin-widget-field-type-posts').find('.posts-container-label-wrapper').on( 'click keyup', expandContainer);
+			$fields.filter( '.siteorigin-widget-field-type-posts' ).find( '.posts-container-label-wrapper' ).on( 'click keyup', expandContainer );
 
 			///////////////////////////////////////
 			// Handle the slider fields
@@ -384,7 +384,7 @@ var sowbForms = window.sowbForms || {};
 				});
 
 				// Clicking on one of the url items
-				$$.on('click keyup', '.posts li', function (e) {
+				$$.on( 'click keyup', '.posts li', function( e ) {
 					e.preventDefault();
 
 					if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
@@ -667,7 +667,7 @@ var sowbForms = window.sowbForms || {};
 			});
 			$items.trigger('updateFieldPositions');
 
-			$el.find('> .siteorigin-widget-field-repeater-add').disableSelection().on( 'click keyup', function (e) {
+			$el.find( '> .siteorigin-widget-field-repeater-add' ).disableSelection().on( 'click keyup', function(e) {
 				e.preventDefault();
 
 				if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
@@ -721,15 +721,15 @@ var sowbForms = window.sowbForms || {};
 			var readonly = typeof $el.attr('readonly') !== 'undefined';
 			var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
 				.append(
-					$('<div class="siteorigin-widget-field-repeater-item-top" tabindex="0" />')
+					$( '<div class="siteorigin-widget-field-repeater-item-top" tabindex="0" />' )
 						.append(
-							$('<div class="siteorigin-widget-field-expand" tabindex="0" />')
+							$( '<div class="siteorigin-widget-field-expand" tabindex="0" />' )
 						)
 						.append(
-							readonly ? '' : $('<div class="siteorigin-widget-field-copy" tabindex="0" />')
+							readonly ? '' : $( '<div class="siteorigin-widget-field-copy" tabindex="0" />' )
 						)
 						.append(
-							readonly ? '' : $('<div class="siteorigin-widget-field-remove" tabindex="0" />')
+							readonly ? '' : $( '<div class="siteorigin-widget-field-remove" tabindex="0" />' )
 						)
 						.append($('<h4 />').html($el.data('item-name')))
 				)
@@ -796,7 +796,7 @@ var sowbForms = window.sowbForms || {};
 					$el.bind(eventName, updateLabel);
 				}
 
-				itemTop.on( 'click keyup', function (e) {
+				itemTop.on( 'click keyup', function( e ) {
 					if (e.target.className === "siteorigin-widget-field-remove" || e.target.className === "siteorigin-widget-field-copy") {
 						return;
 					}
@@ -826,7 +826,7 @@ var sowbForms = window.sowbForms || {};
 					});
 				});
 
-				itemTop.find('.siteorigin-widget-field-remove').on( 'click keyup', function (e, params) {
+				itemTop.find( '.siteorigin-widget-field-remove' ).on( 'click keyup', function( e, params ) {
 					e.preventDefault();
 
 					if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
@@ -847,7 +847,7 @@ var sowbForms = window.sowbForms || {};
 						$item.slideUp('fast', removeItem );
 					}
 				});
-				itemTop.find('.siteorigin-widget-field-copy').on( 'click keyup', function (e) {
+				itemTop.find( '.siteorigin-widget-field-copy' ).on( 'click keyup', function( e ) {
 					e.preventDefault();
 
 					if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
