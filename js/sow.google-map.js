@@ -1,6 +1,7 @@
 /* globals jQuery, google, sowb */
 
 window.sowb = window.sowb || {};
+sowb.SiteOriginGoogleMapInstances = [];
 
 sowb.SiteOriginGoogleMap = function($) {
 	return {
@@ -64,6 +65,8 @@ sowb.SiteOriginGoogleMap = function($) {
 					icon: options.markerIcon,
 					title: ''
 				});
+
+				map.centerMarker = this.centerMarker;
 			}
 
 			if(options.keepCentered) {
@@ -80,6 +83,8 @@ sowb.SiteOriginGoogleMap = function($) {
 			this.showMarkers(options.markerPositions, map, options);
 			this.showDirections(options.directions, map, options);
 
+			// Expose maps instance.
+			sowb.SiteOriginGoogleMapInstances.push( map );
 		},
 
 		linkAutocompleteField: function (autocomplete, autocompleteElement, map, options) {
