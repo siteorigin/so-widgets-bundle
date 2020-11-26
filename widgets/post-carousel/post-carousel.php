@@ -156,6 +156,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 				'fields' => array(
 					'posts_per_page' => array(
 						'label' => __( 'Posts per load', 'so-widgets-bundle' ),
+						'description' => __( 'Set the number of posts preloaded in the background when clicking next. The default is 10.', 'so-widgets-bundle' ),
 					),
 				),
 			),
