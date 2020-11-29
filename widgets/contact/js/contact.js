@@ -19,7 +19,7 @@ sowb.SiteOriginContactForm = {
 					formPosition = $container.offset().top;
 					// If the closest visible ancestor is either SOWB Accordion or Tabs widget, try to open the panel.
 					if ( $container.is( '.sow-accordion-panel' ) ) {
-						$container.find( '> .sow-accordion-panel-header' ).click();
+						$container.find( '> .sow-accordion-panel-header-container > .sow-accordion-panel-header' ).trigger( 'click' );
 					} else if ( $container.is( '.sow-tabs-panel-container' ) ) {
 						var tabIndex = $el.closest( '.sow-tabs-panel' ).index();
 						$container.siblings( '.sow-tabs-tab-container' ).find( '> .sow-tabs-tab' ).eq( tabIndex ).click();
