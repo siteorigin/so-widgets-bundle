@@ -165,16 +165,21 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	 *
 	 * @return string The title of the image.
 	 */
-	private function get_image_title($image) {
+	private function get_image_title( $image ) {
 		if ( ! empty( $image['title'] ) ) {
 			$title = $image['title'];
-		} else {
-			// We do not want to use the default image titles as they're based on the file name without the extension
-			$file_name = pathinfo( get_post_meta( $image['image'], '_wp_attached_file', true ), PATHINFO_FILENAME );
-			$title = get_the_title( $image['image'] );
-			if ( $title == $file_name ) {
-				$title = '';
+		} else if ( apply_filters( 'siteorigin_widgets_auto_title', true, 'sow-image-grid' ) ) {
+			$title = wp_get_attachment_caption( $image['image'] );
+			if ( empty( $title ) ) {
+				// We do not want to use the default image titles as they're based on the file name without the extension
+				$file_name = pathinfo( get_post_meta( $image['image'], '_wp_attached_file', true ), PATHINFO_FILENAME );
+				$title = get_the_title( $image['image'] );
+				if ( $title == $file_name ) {
+					$title = '';
+				}
 			}
+		} else {
+			$title = '';
 		}
 
 		return $title;
