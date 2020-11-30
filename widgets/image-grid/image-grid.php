@@ -52,9 +52,16 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				'label' => __( 'Images', 'so-widgets-bundle' ),
 				'item_name'  => __( 'Image', 'so-widgets-bundle' ),
 				'item_label' => array(
-					'selector'     => "[name*='title']",
-					'update_event' => 'change',
-					'value_method' => 'val'
+					'selectorArray' => array(
+						array(
+							'selector' => "[id*='title']",
+							'valueMethod' => 'val',
+						),
+						array(
+							'selector' => '.media-field-wrapper .current .title',
+							'valueMethod' => 'html'
+						),
+					),
 				),
 				'fields' => array(
 					'image' => array(
