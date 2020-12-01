@@ -510,12 +510,12 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 							'background' => array(
 								'type' => 'color',
 								'label' => __( 'Consent prompt button background color', 'so-widgets-bundle' ),
-								'default' => '#41a9d5;',
+								'default' => '#41a9d5',
 							),
 							'background_hover' => array(
 								'type' => 'color',
 								'label' => __( 'Consent prompt button background hover color', 'so-widgets-bundle' ),
-								'default' => '#298fba;',
+								'default' => '#298fba',
 							),
 						),
 					),
