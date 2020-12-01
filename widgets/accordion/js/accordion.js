@@ -153,7 +153,7 @@ jQuery( function ( $ ) {
 							return decodeURI( panelAnchor ) === decodeURI( anchor );
 						});
 						if ( panelOpen ) {
-							openPanel( panel, true );
+							openPanel( panel, true, true );
 						} else {
 							closePanel( panel, true );
 						}
