@@ -637,20 +637,12 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		);
 
 		// Map Content Button styling.
-		if ( ! empty( $global_settings['map_consent_design']['button']['color'] ) ) {
-			$less_variables['map_consent_notice_button_color'] = $global_settings['map_consent_design']['button']['color'];
-		}
-
-		if ( ! empty( $global_settings['map_consent_design']['button']['color_hover'] ) ) {
-			$less_variables['map_consent_notice_button_color_hover'] = $global_settings['map_consent_design']['button']['color_hover'];
-		}
-
-		if ( ! empty( $global_settings['map_consent_design']['button']['background'] ) ) {
-			$less_variables['map_consent_notice_button_background'] = $global_settings['map_consent_design']['button']['background'];
-		}
-
-		if ( ! empty( $global_settings['map_consent_design']['button']['background_hover'] ) ) {
-			$less_variables['map_consent_notice_button_background_hover'] = $global_settings['map_consent_design']['button']['background_hover'];
+		if ( $less_variables['map_consent'] ) {
+			foreach( $global_settings['map_consent_design']['button'] as $style => $value ) {
+				if ( ! empty( $value ) ) {
+					$less_variables[ 'map_consent_notice_button_' . $style ] = $value;
+				}
+			}
 		}
 
 		return $less_variables;
