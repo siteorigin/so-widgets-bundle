@@ -65,6 +65,7 @@
 				var attachment = frame.state().get('selection').first().attributes;
 
 				$field.find('.current .thumbnail' ).attr( 'title', attachment.title );
+				$field.find('.current .title' ).html( attachment.title );
 				$inputField.val(attachment.id);
 				$inputField.trigger( 'change', { silent: true } );
 
@@ -95,6 +96,7 @@
 			.on( 'click', function( e ) {
 				e.preventDefault();
 				$inputField.val('');
+				$field.find('.current .title' ).empty();
 				$inputField.trigger( 'change', { silent: true } );
 				$field.find('.current .thumbnail' ).fadeOut('fast');
 				$(this).addClass('remove-hide');
