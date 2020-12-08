@@ -66,7 +66,7 @@
 			);
 		};
 
-		$$.find('.siteorigin-widget-autocomplete-input').click(function () {
+		$$.find( '.siteorigin-widget-autocomplete-input' ).on( 'click', function () {
 			var $s = $$.find('.existing-content-selector');
 			$s.show();
 
@@ -84,14 +84,14 @@
 			$$.find('.existing-content-selector').hide();
 		};
 
-		$(window).mousedown(function (event) {
+		$( window ).on( 'mousedown', function( event ) {
 			var mouseDownOutside = $$.find(event.target).length === 0;
 			if ( mouseDownOutside ) {
 				closeContent();
 			}
 		});
 
-		$$.find('.button-close').click( closeContent );
+		$$.find('.button-close').on( 'click', closeContent );
 
 		// Clicking on one of the url items
 		$$.on( 'click', '.items li', function(e) {
@@ -111,11 +111,11 @@
 			}
 			var $input = $$.find('input.siteorigin-widget-input');
 			$input.val( selectedItems.join(',') );
-			$input.change();
+			$input.trigger( 'change' );
 		} );
 
 		var interval = null;
-		$$.find('.content-text-search').keyup( function(){
+		$$.find('.content-text-search').on( 'keyup', function() {
 			if( interval !== null ) {
 				clearTimeout(interval);
 			}

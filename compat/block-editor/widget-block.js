@@ -1,12 +1,12 @@
-( function ( editor, blocks, i18n, element, components, compose ) {
+( function ( editor, blocks, i18n, element, components, compose, blockEditor ) {
 
 	var el = element.createElement;
 	var registerBlockType = blocks.registerBlockType;
-	var BlockControls = editor.BlockControls;
+	var BlockControls = blockEditor.BlockControls;
 	var SelectControl = components.SelectControl;
 	var withState = compose.withState;
 	var Toolbar = components.Toolbar;
-	var IconButton = components.IconButton;
+	var ToolbarButton = components.ToolbarButton;
 	var Placeholder = components.Placeholder;
 	var Spinner  = components.Spinner;
 	var __ = i18n.__;
@@ -159,12 +159,17 @@
 				return [
 					!! widgetForm && el(
 						BlockControls,
-						{ key: 'controls' },
+						{
+							key: 'controls',
+
+						},
 						el(
 							Toolbar,
-							null,
+							{
+								label: __( 'Preview widget.', 'so-widgets-bundle' ),
+							},
 							el(
-								IconButton,
+								ToolbarButton,
 								{
 									className: 'components-icon-button components-toolbar__control',
 									label: __( 'Preview widget.', 'so-widgets-bundle' ),
@@ -249,9 +254,11 @@
 						{ key: 'controls' },
 						el(
 							Toolbar,
-							null,
+							{
+								label: __( 'Preview widget.', 'so-widgets-bundle' ),
+							},
 							el(
-								IconButton,
+								ToolbarButton,
 								{
 									className: 'components-icon-button components-toolbar__control',
 									label: __( 'Edit widget.', 'so-widgets-bundle' ),
@@ -292,4 +299,4 @@
 			return null;
 		}
 	} );
-} )( window.wp.editor, window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.compose );
+} )( window.wp.editor, window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.compose, window.wp.blockEditor );

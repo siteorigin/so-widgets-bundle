@@ -17,7 +17,7 @@
 				}
 			} );
 
-			$$.change( function ( event, params ) {
+			$$.on( 'change', function ( event, params ) {
 				if ( ! ( params && params.silent ) ) {
 					var values = $valField.val() === '' ? [] : $valField.val().split(',');
 					if ( values.length ) {

@@ -105,11 +105,11 @@ jQuery( function ( $ ) {
 				}
 			};
 			
-			$tabs.click( function() {
+			$tabs.on( 'click', function() {
 				selectTab( this );
 			} );
 
-			$tabs.keyup( function( e ) {
+			$tabs.on( 'keyup', function( e ) {
 				var $currentTab = $( this );
 
 				if ( e.keyCode !== 37 && e.keyCode !== 39 ){
@@ -139,7 +139,7 @@ jQuery( function ( $ ) {
 				if ( $currentTab === $newTab ){
 					return;
 				}
-				$newTab.focus();
+				$newTab.trigger( 'focus' );
 				selectTab( $newTab.get(0) );
 			} );
 			

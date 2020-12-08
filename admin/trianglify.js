@@ -226,7 +226,7 @@
          */
 
 // conditionally load jsdom if we don't have a browser environment available.
-        var doc = (typeof document !== "undefined") ? document : require('jsdom').jsdom('<html/>');
+        var doc = (typeof document !== "undefined") ? document : require('jsdom').jsdom('<html></html>');
 
         function Pattern(polys, opts) {
 

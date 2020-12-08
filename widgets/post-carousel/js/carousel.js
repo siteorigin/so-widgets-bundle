@@ -148,11 +148,16 @@ jQuery( function ( $ ) {
 				return;
 			}
 			e.preventDefault();
-			$( this ).click();
+			$( this ).trigger( 'click' );
 		} );
 
 		// Keyboard Navigation of carousel items.
 		$( document ).on( 'keyup', '.sow-carousel-item', function( e ) {
+			// Was enter pressed?
+			if ( e.keyCode == 13 ) {
+				$( this ).find( 'h3 a' )[0].click();
+			}
+
 			// Ensure left/right key was pressed
 			if ( e.keyCode != 37 && e.keyCode != 39 ) {
 				return;

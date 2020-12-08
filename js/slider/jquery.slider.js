@@ -28,7 +28,7 @@ sowb.SiteOriginSlider = function($) {
 				video = active.find('video.sow-background-element');
 
 			if( speed === undefined ) {
-				sentinel.css( 'height', active.outerHeight() );
+				sentinel.css( 'height', active.outerHeight() + 'px' );
 			}
 			else {
 				sentinel.animate( {height: active.outerHeight()}, speed );
@@ -87,7 +87,7 @@ jQuery( function($){
 				var urlData = $slide.data('url');
 
 				if( urlData !== undefined && urlData.hasOwnProperty( 'url' ) ) {
-					$slide.click(function(event) {
+					$slide.on( 'click', function(event) {
 
 						event.preventDefault();
 						var sliderWindow = window.open(
@@ -96,7 +96,7 @@ jQuery( function($){
 						);
 						sliderWindow.opener = null;
 					} );
-					$slide.find( 'a' ).click( function ( event ) {
+					$slide.find( 'a' ).on( 'click', function ( event ) {
 						event.stopPropagation();
 					} );
 				}
@@ -119,11 +119,11 @@ jQuery( function($){
 				var resizeFrames = function () {
 					$$.find( '.sow-slider-image' ).each( function () {
 						var $i = $( this );
-						$i.css( 'height', $i.find( '.sow-slider-image-wrapper' ).outerHeight() );
+						$i.css( 'height', $i.find( '.sow-slider-image-wrapper' ).outerHeight() + 'px' );
 					} );
 				};
 				// Setup each of the slider frames
-				$(window).on('resize panelsStretchRows', resizeFrames ).resize();
+				$( window ).on('resize panelsStretchRows', resizeFrames ).trigger( 'resize' );
 				$(sowb).on('setup_widgets', resizeFrames );
 
 				// Set up the Cycle with videos
@@ -157,7 +157,7 @@ jQuery( function($){
 								$n.hide();
 							}
 
-							$(window).resize();
+							$( window ).trigger( 'resize' );
 
 							setTimeout(function() {
 								resizeFrames();
@@ -189,11 +189,11 @@ jQuery( function($){
 
 						var toHide = false;
 						$base
-							.mouseenter(function(){
+							.on( 'mouseenter', function() {
 								$p.add($n).clearQueue().fadeIn(150);
 								toHide = false;
 							})
-							.mouseleave(function(){
+							.on( 'mouseleave', function() {
 								toHide = true;
 								setTimeout(function(){
 									if( toHide ) {
@@ -216,18 +216,18 @@ jQuery( function($){
 				$( sowb ).on( 'setup_widgets', setupActiveSlide );
 
 				// Setup clicks on the pagination
-				$p.find( '> li > a' ).click( function(e){
+				$p.find( '> li > a' ).on( 'click', function(e){
 					e.preventDefault();
 					$$.cycle( 'goto', $(this).data('goto') );
 				} );
 
 				// Clicking on the next and previous navigation buttons
-				$n.find( '> a' ).click( function(e){
+				$n.find( '> a' ).on( 'click', function(e){
 					e.preventDefault();
 					$$.cycle( $(this).data('action') );
 				} );
 
-				$base.keydown(
+				$base.on( 'keydown',
 					function(event) {
 						if(event.which === 37) {
 							//left

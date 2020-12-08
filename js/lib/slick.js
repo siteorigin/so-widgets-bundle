@@ -52,7 +52,7 @@
                 centerPadding: '50px',
                 cssEase: 'ease',
                 customPaging: function(slider, i) {
-                    return $('<button type="button" />').text(i + 1);
+                    return $( '<button type="button"></button>' ).text(i + 1);
                 },
                 dots: false,
                 dotsClass: 'slick-dots',
@@ -488,10 +488,10 @@
 
             _.$slider.addClass('slick-dotted');
 
-            dot = $('<ul />').addClass(_.options.dotsClass);
+            dot = $( '<ul></ul>' ).addClass( _.options.dotsClass );
 
             for (i = 0; i <= _.getDotCount(); i += 1) {
-                dot.append($('<li />').append(_.options.customPaging.call(this, _, i)));
+                dot.append( $( '<li></li>' ).append( _.options.customPaging.call( this, _, i ) ) );
             }
 
             _.$dots = dot.appendTo(_.options.appendDots);
@@ -522,11 +522,11 @@
         _.$slider.addClass('slick-slider');
 
         _.$slideTrack = (_.slideCount === 0) ?
-            $('<div class="slick-track"/>').appendTo(_.$slider) :
-            _.$slides.wrapAll('<div class="slick-track"/>').parent();
+            $( '<div class="slick-track"></div>' ).appendTo( _.$slider ) :
+            _.$slides.wrapAll( '<div class="slick-track"></div>' ).parent();
 
         _.$list = _.$slideTrack.wrap(
-            '<div class="slick-list"/>').parent();
+            '<div class="slick-list"></div>' ).parent();
         _.$slideTrack.css('opacity', 0);
 
         if (_.options.centerMode === true || _.options.swipeToSlide === true) {
@@ -1861,7 +1861,7 @@
         var _ = this, breakpoint, currentBreakpoint, l,
             responsiveSettings = _.options.responsive || null;
 
-        if ( $.type(responsiveSettings) === 'array' && responsiveSettings.length ) {
+        if ( typeof responsiveSettings === 'array' && responsiveSettings.length ) {
 
             _.respondTo = _.options.respondTo || 'window';
 
@@ -2125,19 +2125,19 @@
 
         var _ = this, l, item, option, value, refresh = false, type;
 
-        if( $.type( arguments[0] ) === 'object' ) {
+        if( typeof arguments[0] === 'object' ) {
 
             option =  arguments[0];
             refresh = arguments[1];
             type = 'multiple';
 
-        } else if ( $.type( arguments[0] ) === 'string' ) {
+        } else if ( typeof arguments[0] === 'string' ) {
 
             option =  arguments[0];
             value = arguments[1];
             refresh = arguments[2];
 
-            if ( arguments[0] === 'responsive' && $.type( arguments[1] ) === 'array' ) {
+            if ( arguments[0] === 'responsive' && typeof arguments[1] === 'array' ) {
 
                 type = 'responsive';
 
@@ -2167,7 +2167,7 @@
 
             for ( item in value ) {
 
-                if( $.type( _.options.responsive ) !== 'array' ) {
+                if( typeof _.options.responsive !== 'array' ) {
 
                     _.options.responsive = [ value[item] ];
 
