@@ -638,7 +638,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 		// Map Content Button styling.
 		if ( $less_variables['map_consent'] ) {
-			foreach( $global_settings['map_consent_design']['button'] as $style => $value ) {
+			foreach ( $global_settings['map_consent_design']['button'] as $style => $value ) {
 				if ( ! empty( $value ) ) {
 					$less_variables[ 'map_consent_notice_button_' . $style ] = $value;
 				}
