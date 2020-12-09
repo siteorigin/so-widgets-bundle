@@ -66,6 +66,16 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+== 1.17.11 - 09 December 2020 ==
+* Google Maps: Added Map Style button styling.
+* Accordion: Submitted contact forms added to Accordion will now open the panel on load.
+* Tabs: Prevented the Scroll To setting from affecting the currently selected tab.
+* Image Grid: Use image title as item label if set.
+* Developer: jQuery updates for WordPress 5.6.
+* Developer: Set Slider background image loading to Eager.
+* Developer: Exposed Google Maps instances. Once set up, maps can be accessed via `sowb.SiteOriginGoogleMapInstances`.
+* Developer: Add a Google Maps `maps_loaded` event that triggers after all of the Google Maps have finished being set up.
+
 == 1.17.10 - 13 November 2020 ==
 * TinyMCE: Resolved issue with the Add Media button.
 
