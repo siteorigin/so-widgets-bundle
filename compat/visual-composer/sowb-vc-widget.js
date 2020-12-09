@@ -17,7 +17,7 @@ sowbForms.setupVcWidgetForm = function () {
 	} );
 
 	var prevWidget;
-	$widgetDropdown.mousedown( function () {
+	$widgetDropdown.on( 'mousedown', function() {
 		prevWidget = $widgetDropdown.find( 'option:selected' );
 	} );
 

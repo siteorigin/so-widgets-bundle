@@ -93,6 +93,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 			<div class="current">
 				<div class="thumbnail-wrapper">
 					<img src="<?php echo sow_esc_url( $src[0] ) ?>" class="thumbnail" <?php if( empty( $src[0] ) ) echo "style='display:none'" ?> <?php if( !empty( $post ) ) echo 'title="' . esc_attr( $post->post_title ) . '"' ?>/>
+					<div class="title"><?php if( !empty( $post ) ) echo esc_attr( $post->post_title ); ?></div>
 				</div>
 			</div>
 			<a href="#" class="media-upload-button" data-choose="<?php echo esc_attr( $this->choose ) ?>"

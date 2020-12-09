@@ -35,11 +35,21 @@ jQuery( function ( $ ) {
 					window.scrollTo( 0, scrollTop );
 				}
 			};
-			
+
+			var shouldScroll = function( $tab ) {
+				return sowTabs.scrollto_after_change &&
+				(
+					$tab.offset().top < window.scrollY ||
+					$tab.offset().top + $tab.height() > window.scrollY
+				);
+			}
+
 			var selectTab = function ( tab, preventHashChange ) {
 				var $tab = $( tab );
 				if ( $tab.is( '.sow-tabs-tab-selected' ) ) {
-					scrollToTab( true );
+					if ( shouldScroll( $tab ) ) {
+						scrollToTab( true );
+					}
 					return true;
 				}
 				var selectedIndex = $tab.index();
@@ -79,11 +89,8 @@ jQuery( function ( $ ) {
 								},
 								complete: function() {
 									$( this ).trigger( 'show' );
-									if ( ! sowTabs.scrollto_after_change ) {
-										return;
-									}
 
-									if ( $tab.offset().top < window.scrollY || $tab.offset().top + $tab.height() > window.scrollY ) {
+									if ( shouldScroll( $tab ) ) {
 										scrollToTab( true );
 									}
 								}
@@ -98,11 +105,11 @@ jQuery( function ( $ ) {
 				}
 			};
 			
-			$tabs.click( function() {
+			$tabs.on( 'click', function() {
 				selectTab( this );
 			} );
 
-			$tabs.keyup( function( e ) {
+			$tabs.on( 'keyup', function( e ) {
 				var $currentTab = $( this );
 
 				if ( e.keyCode !== 37 && e.keyCode !== 39 ){
@@ -132,7 +139,7 @@ jQuery( function ( $ ) {
 				if ( $currentTab === $newTab ){
 					return;
 				}
-				$newTab.focus();
+				$newTab.trigger( 'focus' );
 				selectTab( $newTab.get(0) );
 			} );
 			

@@ -32,7 +32,7 @@
 			}
 		} );
 		
-		$inputContainers.change( function ( event ) {
+		$inputContainers.on( 'change', function( event ) {
 			var $valInput = $( event.currentTarget ).find( '> .sow-multi-measurement-input' );
 			var doAutofill = autoFillEnabled;
 			if ( autoFillEnabled ) {
