@@ -148,6 +148,12 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#B2C01C'
 	),
+	'discord'   => array(
+		'label'    => __( 'Discord', 'so-widgets-bundle' ),
+		'base_url' => 'https://discord.gg/',
+		'icon_color' => '#ffffff',
+		'button_color' => '#7289da',
+	),
 	'dribbble'   => array(
 		'label'    => __( 'Dribbble', 'so-widgets-bundle' ),
 		'base_url' => 'https://dribbble.com/',
