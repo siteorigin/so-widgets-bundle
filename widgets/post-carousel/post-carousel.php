@@ -36,6 +36,8 @@ function sow_carousel_handle_post_limit( $posts, $paged = 0 ) {
 				$posts->posts = array_slice( $posts->posts, $current % $posts_per_page, $posts->post_count );
 			}
 		}
+	} else {
+		set_query_var( 'sow-total_posts', $posts->found_posts );
 	}
 
 	return $posts;
