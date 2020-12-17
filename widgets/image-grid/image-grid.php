@@ -189,11 +189,11 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 		if ( ! empty( $instance['display'] ) ) {
 			// Revert changes to `max_width` and `max_height` back to `number` fields.
 			if ( ! empty( $instance['display']['max_height'] ) ) {
-				$instance['display']['max_height'] = intval( $instance['display']['max_height'] );
+				$instance['display']['max_height'] = (int) $instance['display']['max_height'];
 			}
 
 			if ( ! empty( $instance['display']['max_width'] ) ) {
-				$instance['display']['max_width'] = intval( $instance['display']['max_width'] );
+				$instance['display']['max_width'] = (int) $instance['display']['max_width'];
 			}
 
 			// Input for `spacing` changed from `number` to `measurement` field.

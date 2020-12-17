@@ -240,24 +240,24 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 				'desktop' => siteorigin_widgets_underscores_to_camel_case(
 					array(
 						'num_columns' => $instance['desktop_layout']['columns'],
-						'row_height' => empty( $instance['desktop_layout']['row_height'] ) ? 0 : intval( $instance['desktop_layout']['row_height'] ),
-						'gutter' => empty( $instance['desktop_layout']['gutter'] ) ? 0 : intval( $instance['desktop_layout']['gutter'] ),
+						'row_height' => empty( $instance['desktop_layout']['row_height'] ) ? 0 : (int) $instance['desktop_layout']['row_height'],
+						'gutter' => empty( $instance['desktop_layout']['gutter'] ) ? 0 : (int) $instance['desktop_layout']['gutter'],
 					)
 				),
 				'tablet' => siteorigin_widgets_underscores_to_camel_case(
 					array(
 						'break_point' => $instance['tablet_layout']['break_point'],
 						'num_columns' => $instance['tablet_layout']['columns'],
-						'row_height' => empty( $instance['tablet_layout']['row_height'] ) ? 0 : intval( $instance['tablet_layout']['row_height'] ),
-						'gutter' => empty( $instance['tablet_layout']['gutter'] ) ? 0 : intval( $instance['tablet_layout']['gutter'] ),
+						'row_height' => empty( $instance['tablet_layout']['row_height'] ) ? 0 : (int) $instance['tablet_layout']['row_height'],
+						'gutter' => empty( $instance['tablet_layout']['gutter'] ) ? 0 : (int) $instance['tablet_layout']['gutter'],
 					)
 				),
 				'mobile' => siteorigin_widgets_underscores_to_camel_case(
 					array(
 						'break_point' => $instance['mobile_layout']['break_point'],
 						'num_columns' => $instance['mobile_layout']['columns'],
-						'row_height' => empty( $instance['mobile_layout']['row_height'] ) ? 0 : intval( $instance['mobile_layout']['row_height'] ),
-						'gutter' => empty( $instance['mobile_layout']['gutter'] ) ? 0 : intval( $instance['mobile_layout']['gutter'] ),
+						'row_height' => empty( $instance['mobile_layout']['row_height'] ) ? 0 : (int) $instance['mobile_layout']['row_height'],
+						'gutter' => empty( $instance['mobile_layout']['gutter'] ) ? 0 : (int) $instance['mobile_layout']['gutter'],
 					)
 				),
 			)

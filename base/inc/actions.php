@@ -177,7 +177,7 @@ function siteorigin_widget_remote_image_search(){
 	// Send the query to stock search server
 	$url = add_query_arg( array(
 		'q' => $_GET[ 'q' ],
-		'page' => !empty( $_GET[ 'page' ] ) ? intval( $_GET[ 'page' ] ) : 1,
+		'page' => ! empty( $_GET[ 'page' ] ) ? (int) $_GET[ 'page' ] : 1,
 	), 'http://stock.siteorigin.com/wp-admin/admin-ajax.php?action=image_search' );
 
 	$result = wp_remote_get( $url, array(

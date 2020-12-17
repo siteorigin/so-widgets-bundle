@@ -327,7 +327,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			'new_window' => !empty( $frame['background']['new_window'] ),
 			'videos' => $frame['background']['videos'],
 			'video-sizing' => 'background',
-			'opacity' => intval($frame['background']['opacity'])/100,
+			'opacity' => (int) $frame['background']['opacity'] / 100,
 		);
 	}
 
@@ -413,9 +413,9 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		$less['vertically_align'] = empty( $instance['design']['vertically_align'] ) ? 'false' : 'true';
 
-		$less['heading_shadow'] = intval( $instance['design']['heading_shadow'] );
+		$less['heading_shadow'] = (int) $instance['design']['heading_shadow'];
 		$less['heading_color'] = $instance['design']['heading_color'];
-		$less['text_shadow'] = isset( $instance['design']['text_shadow'] ) ? floatval( $instance['design']['text_shadow'] ) : 0.25;
+		$less['text_shadow'] = isset( $instance['design']['text_shadow'] ) ? (float) $instance['design']['text_shadow'] : 0.25;
 		$less['text_color'] = $instance['design']['text_color'];
 
 

@@ -429,7 +429,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		<textarea id="<?php echo esc_attr( $this->element_id ) ?>"
 		          name="<?php echo esc_attr( $this->element_name ) ?>"
 			<?php if ( isset( $this->editor_height ) ) : ?>
-				style="height: <?php echo intval( $this->editor_height ) ?>px"
+				style="height: <?php echo (int) $this->editor_height; ?>px"
 			<?php else : ?>
 				rows="<?php echo esc_attr( $this->rows ) ?>"
 			<?php endif; ?>

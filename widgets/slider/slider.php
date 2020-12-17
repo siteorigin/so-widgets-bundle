@@ -152,7 +152,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 		if( !empty($foreground_src) ) {
 			?>
 			<div class="sow-slider-image-container">
-				<div class="sow-slider-image-wrapper" style="<?php if(!empty($foreground_src[1])) echo 'max-width: ' . intval($foreground_src[1]) . 'px' ?>">
+				<div class="sow-slider-image-wrapper" style="<?php if( ! empty( $foreground_src[1] ) ) echo 'max-width: ' . (int) $foreground_src[1] . 'px'; ?>">
 					<?php if ( ! empty( $frame['url'] ) ) : ?>
 						<a href="<?php echo sow_esc_url( $frame['url'] ) ?>"
 						<?php foreach( $frame['link_attributes'] as $att => $val ) : ?>
