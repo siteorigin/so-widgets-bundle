@@ -115,17 +115,8 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_template_variables( $instance, $args ) {
-		// Workout the image title
-		if ( ! empty( $instance['title'] ) ) {
-			$title = $instance['title'];
-		} else {
-			// We do not want to use the default image titles as they're based on the file name without the extension
-			$file_name = pathinfo( get_post_meta( $instance['image'], '_wp_attached_file', true ), PATHINFO_FILENAME );
-			$title = get_the_title( $instance['image'] );
-			if ( $title == $file_name ) {
-				$title = '';
-			}
-		}
+		$title = $this->get_image_title( $instance );
+
 		$src = siteorigin_widgets_get_attachment_image_src(
 			$instance['image'],
 			$instance['size'],
@@ -187,6 +178,32 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	/**
+	 * Try to figure out an image's title for display.
+	 *
+	 * @param $image
+	 *
+	 * @return string The title of the image.
+	 */
+	private function get_image_title( $image ) {
+		if ( ! empty( $image['title'] ) ) {
+			$title = $image['title'];
+		} else if ( apply_filters( 'siteorigin_widgets_auto_title', true, 'sow-image' ) ) {
+			$title = wp_get_attachment_caption( $image['image'] );
+			if ( empty( $title ) ) {
+				// We do not want to use the default image titles as they're based on the file name without the extension
+				$file_name = pathinfo( get_post_meta( $image['image'], '_wp_attached_file', true ), PATHINFO_FILENAME );
+				$title = get_the_title( $image['image'] );
+				if ( $title == $file_name ) {
+					$title = '';
+				}
+			}
+		} else {
+			$title = '';
+		}
+
+		return $title;
+	}
 
 	function get_less_variables($instance){
 		if ( empty( $instance ) ) {

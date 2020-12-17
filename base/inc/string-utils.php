@@ -10,6 +10,10 @@ function siteorigin_widgets_underscores_to_camel_case( $array ) {
 	$transformed = array();
 	if ( !empty( $array ) ) {
 		foreach ( $array as $key => $val ) {
+			if ( is_array( $val ) ) {
+				$val = siteorigin_widgets_underscores_to_camel_case( $val );
+			}
+
 			$jsKey = preg_replace_callback( '/_(.?)/', 'siteorigin_widgets_match_to_upper', $key );
 			$transformed[ $jsKey ] = $val;
 		}

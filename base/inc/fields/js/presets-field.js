@@ -12,7 +12,7 @@
 		$undoLink.hide();
 		
 		var presets = $presetSelect.data( 'presets' );
-		$presetSelect.change( function () {
+		$presetSelect.on( 'change', function() {
 			
 			var selectedPreset = $presetSelect.val();
 			if ( selectedPreset && presets.hasOwnProperty( selectedPreset ) ) {
@@ -48,7 +48,7 @@
 				}
 				if ( $undoLink.not( ':visible' ) ) {
 					$undoLink.show();
-					$undoLink.click( function ( event ) {
+					$undoLink.on( 'click', function ( event ) {
 						event.preventDefault();
 						$undoLink.hide();
 						sowbForms.setWidgetFormValues( $formContainer, previousValues, true );

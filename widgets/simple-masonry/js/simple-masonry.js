@@ -38,7 +38,7 @@ jQuery( function ( $ ) {
 						rowSpan = Math.max( Math.min( rowSpan, layout.numColumns ), 1 );
 						//Use rowHeight if non-zero else fall back to matching columnWidth.
 						var rowHeight = layout.rowHeight || columnWidth;
-						$$.css( 'height', ( rowHeight * rowSpan ) + ( layout.gutter * ( rowSpan - 1 ) ) );
+						$$.css( 'height', ( rowHeight * rowSpan ) + ( layout.gutter * ( rowSpan - 1 ) ) + 'px' );
 						
 						var $img = $$.find( '> img,> a > img' );
 						var imgAR = $img.height() > 0 ? $img.width() / $img.height() : 1;

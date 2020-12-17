@@ -1,12 +1,12 @@
 === SiteOrigin Widgets Bundle ===
 Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
 Requires at least: 4.2
-Tested up to: 5.5
+Tested up to: 5.6
 Requires PHP: 5.6.20
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
-Contributors: gpriday, braam-genis
+Contributors: gpriday, braam-genis, alexgso
 Donate link: https://siteorigin.com/downloads/premium/
 
 The SiteOrigin Widgets Bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colours and 1500+ icons.
@@ -65,6 +65,16 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 3. An example of the button widget.
 
 == Changelog ==
+
+== 1.17.11 - 09 December 2020 ==
+* Google Maps: Added Map Style button styling.
+* Accordion: Submitted contact forms added to Accordion will now open the panel on load.
+* Tabs: Prevented the Scroll To setting from affecting the currently selected tab.
+* Image Grid: Use image title as item label if set.
+* Developer: jQuery updates for WordPress 5.6.
+* Developer: Set Slider background image loading to Eager.
+* Developer: Exposed Google Maps instances. Once set up, maps can be accessed via `sowb.SiteOriginGoogleMapInstances`.
+* Developer: Add a Google Maps `maps_loaded` event that triggers after all of the Google Maps have finished being set up.
 
 == 1.17.10 - 13 November 2020 ==
 * TinyMCE: Resolved issue with the Add Media button.
