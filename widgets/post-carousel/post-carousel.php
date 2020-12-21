@@ -23,12 +23,16 @@ function sow_carousel_handle_post_limit( $posts, $paged = 0 ) {
 
 	if ( is_numeric( $post_limit ) && $posts->found_posts > $post_limit ) {
 		$posts_per_page = $posts->query['posts_per_page'];
-		$current = $posts_per_page * $paged;
+		$current = $posts_per_page * ( $paged - 1 );
+
+		if ( $current < 0 ) {
+			$current = $posts_per_page;
+		}
 
 		set_query_var( 'sow-total_posts', $post_limit - 1 );
-		if ( $current > $post_limit ) {
+		if ( $current >= $post_limit ) {
 			// Check if we've exceeded the expected pagination.
-			if ( $posts_per_page * $paged + 1 > $post_limit + $posts_per_page ) {
+			if ( $current + 1 > $post_limit + $posts_per_page ) {
 				$posts->posts = null;
 			} else {
 				// Work out how many posts we need to return
