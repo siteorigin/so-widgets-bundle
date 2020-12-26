@@ -100,6 +100,15 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 						'default' => false,
 						'label'   => __( 'Autoplay', 'so-widgets-bundle' )
 					),
+					'loop' => array(
+						'type'    => 'checkbox',
+						'default' => false,
+						'label'   => __( 'Loop', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'video_type[self]'     => array( 'show' ),
+							'video_type[external]' => array( 'hide' ),
+						)
+					),
 					'oembed'   => array(
 						'type'          => 'checkbox',
 						'default'       => true,
@@ -206,6 +215,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'is_skinnable_video_host' => $this->is_skinnable_video_host( $video_host ),
 			'poster'                  => $poster,
 			'autoplay'                => ! empty( $instance['playback']['autoplay'] ),
+			'loop'                    => $video_host == 'self' && ! empty( $instance['playback']['loop'] ),
 			'related_videos'          => ! empty( $instance['playback']['related_videos'] ),
 			'skin_class'              => 'default'
 		);
