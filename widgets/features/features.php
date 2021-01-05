@@ -300,7 +300,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 
 		$less_vars['container_size'] = $instance['container_size'];
 		$less_vars['icon_size'] = $instance['icon_size'];
-		$less_vars['title_tag'] = $instance['title_tag'];
+		$less_vars['title_tag'] = ! empty( $instance['title_tag'] ) ? $instance['title_tag'] : 'h5';
 		$less_vars['per_row'] = $instance['per_row'];
 		$less_vars['use_icon_size'] = empty( $instance['icon_size_custom'] ) ? 'false' : 'true';
 
