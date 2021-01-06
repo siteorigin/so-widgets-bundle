@@ -186,6 +186,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'type'        => 'text',
 								'label'       => __( 'Missing message', 'so-widgets-bundle' ),
 								'description' => __( 'Error message to display if this field is missing.', 'so-widgets-bundle' ),
+								'default'     => __( 'Required field', 'so-widgets-bundle' ),
 							)
 						)
 					),
