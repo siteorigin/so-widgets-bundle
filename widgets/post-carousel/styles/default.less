@@ -4,6 +4,7 @@
 @thumbnail_hover_width: default;
 @thumbnail_hover_height: default;
 
+@thumbnail_overlay_hover_opacity: 0.5;
 @thumbnail_overlay_hover_color: #3279BB;
 @navigation_color: #fff;
 @navigation_color_hover: default;
@@ -45,14 +46,17 @@
         span.overlay {
           background: @thumbnail_overlay_hover_color;
         }
-
-        &:hover {
-          background-size: @thumbnail_hover_width @thumbnail_hover_height;
-        }
       }
 
-      &:focus .sow-carousel-thumbnail a {
-          background-size: @thumbnail_hover_width @thumbnail_hover_height;
+      &:focus,
+      &:hover {
+        .sow-carousel-thumbnail a {
+            background-size: @thumbnail_hover_width @thumbnail_hover_height;
+
+            span.overlay {
+              opacity: @thumbnail_overlay_hover_opacity;
+            }
+        }
       }
 
       .sow-carousel-default-thumbnail {
