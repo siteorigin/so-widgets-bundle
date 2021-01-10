@@ -119,14 +119,22 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			$GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] = true;
 			add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 			ob_start();
-			/* @var $widget SiteOrigin_Widget */
-			$instance = $widget->update( $instance, $instance );
-			$widget->widget( array(
-				'before_widget' => '',
-				'after_widget' => '',
-				'before_title' => '<h3 class="widget-title">',
-				'after_title' => '</h3>',
-			), $instance );
+
+			if ( empty( $attributes['widgetHtml'] ) ) {
+				/* @var $widget SiteOrigin_Widget */
+				$instance = $widget->update( $instance, $instance );
+				$widget->widget( array(
+					'before_widget' => '',
+					'after_widget' => '',
+					'before_title' => '<h3 class="widget-title">',
+					'after_title' => '</h3>',
+				), $instance );
+			} else {
+				$widget->generate_and_enqueue_instance_styles( $instance );
+				$widget->enqueue_frontend_scripts( $instance );
+				echo $attributes['widgetHtml'];
+			}
+
 			$rendered_widget = ob_get_clean();
 			remove_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 			unset( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
