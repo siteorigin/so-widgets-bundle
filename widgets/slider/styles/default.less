@@ -32,7 +32,7 @@
 
 			// Vertically align foreground image if there's a height set.
 			& when ( isnumber( @slide_height ) ), ( isnumber( @responsive_breakpoint ) ) {
-				&{
+				& {
 					display: flex;
 					justify-content: center;
 					align-content: center;
@@ -41,7 +41,7 @@
 
 			& when ( isnumber( @slide_height_responsive ) ) {
 				@media (max-width: @responsive_breakpoint) {
-					&{
+					& {
 						height: @slide_height_responsive;
 					}
 				}
