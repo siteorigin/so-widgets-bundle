@@ -191,17 +191,19 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 							<?php endif; ?>
 						<?php endforeach; ?>>
 					<?php endif; ?>
-					<?php
-					echo siteorigin_widgets_get_attachment_image(
-						$frame['foreground_image'],
-						'full',
-						!empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : '',
-						array(
-							'class' => 'sow-slider-foreground-image',
-							'loading' => 'eager',
-						)
-					);
-					?>
+					<div class="sow-slider-image-foreground-wrapper" style="<?php if ( ! empty( $foreground_src[2] ) ) echo 'height: ' . intval( $foreground_src[2] ) . 'px;'; ?>">
+						<?php
+						echo siteorigin_widgets_get_attachment_image(
+							$frame['foreground_image'],
+							'full',
+							! empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : '',
+							array(
+								'class' => 'sow-slider-foreground-image',
+								'loading' => 'eager',
+							)
+						);
+						?>
+					</div>
 					<?php if ( ! empty( $frame['url'] ) ) : ?>
 						</a>
 					<?php endif; ?>
