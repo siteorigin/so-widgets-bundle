@@ -313,24 +313,24 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 			return array();
 		}
 		return array (
-			'image_size' => intval($instance['design']['image']['image_size']) . 'px',
+			'image_size' => (int) $instance['design']['image']['image_size'] . 'px',
 			'testimonial_size' => round(100/$instance['settings']['per_line'], 4) . '%',
-			'testimonial_padding' => intval($instance['design']['padding']) . 'px',
+			'testimonial_padding' => (int) $instance['design']['padding'] . 'px',
 			'testimonial_background' => $instance['design']['colors']['testimonial_background'],
 			'equalize_testimonial_height' => ! empty( $instance['design']['equalize_testimonial_height'] ) ? 'true' : 'false',
 
 			// The text block
-			'text_border_radius' => intval($instance['design']['border_radius']) . 'px',
+			'text_border_radius' => (int) $instance['design']['border_radius'] . 'px',
 			'text_background' => $instance['design']['colors']['text_background'],
 			'text_color' => $instance['design']['colors']['text_color'],
 
 			// All the responsive sizes
 			'tablet_testimonial_size' => round(100/$instance['settings']['responsive']['tablet']['per_line'], 4) . '%',
-			'tablet_image_size' => intval( $instance['settings']['responsive']['tablet']['image_size'] ) . 'px',
-			'tablet_width' => intval($instance['settings']['responsive']['tablet']['width']) . 'px',
+			'tablet_image_size' => (int) $instance['settings']['responsive']['tablet']['image_size'] . 'px',
+			'tablet_width' => (int) $instance['settings']['responsive']['tablet']['width'] . 'px',
 			'mobile_testimonial_size' => round(100/$instance['settings']['responsive']['mobile']['per_line'], 4) . '%',
-			'mobile_image_size' => intval( $instance['settings']['responsive']['mobile']['image_size'] ) . 'px',
-			'mobile_width' => intval($instance['settings']['responsive']['mobile']['width']) . 'px',
+			'mobile_image_size' => (int) $instance['settings']['responsive']['mobile']['image_size'] . 'px',
+			'mobile_width' => (int) $instance['settings']['responsive']['mobile']['width'] . 'px',
 		);
 	}
 

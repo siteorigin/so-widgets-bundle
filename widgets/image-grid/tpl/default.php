@@ -7,8 +7,8 @@
 ?>
 <?php if( ! empty( $images ) ) : ?>
 	<div class="sow-image-grid-wrapper"
-		<?php if( !empty( $max_width ) ) echo 'data-max-width="' . intval( $max_width ) . '"' ?>
-		<?php if( !empty( $max_height ) ) echo 'data-max-height="' . intval( $max_height ) . '"' ?>>
+		<?php if ( !empty( $max_width ) ) echo 'data-max-width="' . (int) $max_width . '"' ?>
+		<?php if ( !empty( $max_height ) ) echo 'data-max-height="' . (int) $max_height . '"' ?>>
 		<?php foreach( $images as $image ) : ?>
 			<div class="sow-image-grid-image">
 				<?php if ( ! empty( $image['url'] ) ) : ?>

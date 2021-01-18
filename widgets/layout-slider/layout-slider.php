@@ -252,7 +252,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 			'new_window' => !empty( $frame['background']['new_window'] ),
 			'videos' => $frame['background']['videos'],
 			'video-sizing' => 'background',
-			'opacity' => intval($frame['background']['opacity'])/100,
+			'opacity' => (int) $frame['background']['opacity'] / 100,
 		);
 	}
 
@@ -331,7 +331,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		$less['vertically_align'] = empty( $instance['design']['vertically_align'] ) ? 'false' : 'true';
 
 		if ( ! empty( $instance['design']['heading_shadow'] ) ) {
-			$less['heading_shadow'] = intval( $instance['design']['heading_shadow'] );
+			$less['heading_shadow'] = (int) $instance['design']['heading_shadow'];
 		}
 
 		if ( ! empty( $instance['design']['heading_color'] ) ) {
