@@ -105,7 +105,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	 * @access protected
 	 * @var bool
 	 */
-	protected $media_button = true;
+	protected $media_buttons = true;
 	
 	protected function get_default_options() {
 		return array(
