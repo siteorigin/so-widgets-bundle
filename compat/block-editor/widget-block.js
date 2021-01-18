@@ -301,7 +301,6 @@
 		} ),
 
 		save: function ( context ) {
-			console.log( context.attributes );
 			if ( context.attributes == 'object' && context.attributes.hasOwnProperty( 'widgetHtml' ) ) {
    				return React.createElement( wp.element.RawHTML, null, attributes.widgetHtml );
 			} else {
