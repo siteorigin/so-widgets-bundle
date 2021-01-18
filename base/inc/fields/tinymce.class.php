@@ -343,7 +343,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		
 		$settings = array(
 			'selectedEditor' => $selected_editor,
-			'media_buttons' => $this->media_button,
+			'media_buttons' => $this->media_buttons,
 		);
 		
 		if ( $user_can_richedit ) {
@@ -402,8 +402,8 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 				}
 			}
 			
-			if ( $this->media_button ) {
-				$media_buttons = $this->render_media_buttons( $this->element_id );
+			if ( $this->media_buttons ) {
+				$media_buttons_html = $this->render_media_buttons( $this->element_id );
 			}
 		}
 		
@@ -426,16 +426,17 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			$value = preg_replace( '%</textarea%i', '&lt;/textarea', $value );
 		}
 
-		if ( $this->media_button ) {
-			$media_buttons = $this->render_media_buttons( $this->element_id );
+		if ( $this->media_buttons ) {
+			$media_buttons_html = $this->render_media_buttons( $this->element_id );
 		}
 
 		$settings['baseURL'] = includes_url( 'js/tinymce' );
 		$settings['suffix'] = SCRIPT_DEBUG ? '' : '.min';
 		
 		?><div class="siteorigin-widget-tinymce-container"
-			<?php if ( $this->media_button && ! empty( $media_buttons ) ) : ?>
-			   data-media-buttons="<?php echo esc_attr( json_encode( array( 'html' => $media_buttons ) ) ) ?>"
+			<?php if ( $this->media_buttons && ! empty( $media_buttons_html ) ) : ?>
+		test="123"
+			   data-media-buttons="<?php echo esc_attr( json_encode( array( 'html' => $media_buttons_html ) ) ) ?>"
 			<?php endif; ?>
 			   data-editor-settings="<?php echo esc_attr( json_encode( $settings ) ) ?>">
 		<textarea id="<?php echo esc_attr( $this->element_id ) ?>"
@@ -465,7 +466,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			'default_editor' => $this->selected_editor,
 			'textarea_rows' => $this->rows,
 			'editor_class' => 'siteorigin-widget-input',
-			'media_buttons' => $this->media_button,
+			'media_buttons' => $this->media_buttons,
 			'tinymce' => array(
 				'wp_skip_init' => strpos( $this->element_id, '__i__' ) != false || strpos( $this->element_id, '_id_' ) != false
 			)
