@@ -453,21 +453,6 @@ var sowbForms = window.sowbForms || {};
 						}
 
 						var val = $$.is('[type="checkbox"]') ? $$.is(':checked') : $$.val();
-
-						// Media form fields can have an external field set so we need to check that field slightly differently.
-						if ( $$.parent().hasClass( 'siteorigin-widget-field-type-media' ) && emitter.callback == 'conditional' ) {
-							// If we're checking for a value,and the main field is empty,
-							// fallback to the external field value. This also works in reverse.
-							if ( ! val ) {
-								val = $$.hasClass( 'media-fallback-external' ) ? $$.prev().val() : fallbackField = $$.next().val();
-							}
-
-							// Override value if media value is set to 0 to prevent unintentional conditional passing.
-							if ( val == 0 ) {
-								val = '';
-							}
-						}
-
 						// Return an array that has the new states added to the array
 						return $.extend(currentStates, sowEmitters[emitter.callback](val, emitter.args));
 					};
