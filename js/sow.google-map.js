@@ -184,15 +184,15 @@ sowb.SiteOriginGoogleMap = function($) {
 				}
 				var geocodeMarker = function ( mrkr ) {
 					
-					var customIcon = mrkr.custom_marker_icon;
+					var customIcon = mrkr.customMarkerIcon;
 					var markerInfo = mrkr.hasOwnProperty( 'info' ) ? mrkr.info : null;
-					var infoMaxWidth = mrkr.hasOwnProperty( 'info_max_width' ) ? mrkr.info_max_width : null;
+					var infoMaxWidth = mrkr.hasOwnProperty( 'infoMaxWidth' ) ? mrkr.infoMaxWidth : null;
 					return this.getLocation( mrkr.place ).done( function ( location ) {
 						var mrkerIcon = options.markerIcon;
 						if ( customIcon ) {
 							mrkerIcon = customIcon;
 						}
-						
+
 						var marker = new google.maps.Marker( {
 							position: location,
 							map: map,
