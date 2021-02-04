@@ -5,6 +5,21 @@
  */
 class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_Input_Base {
 
+	/* The 'units' property is optional and defaults to the list returned by `siteorigin_widgets_get_measurements_list`.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $units;
+
+	/**
+	 * The default unit of measurement if the unit of measurement isn't able to be detected. Default to px.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $default_unit;
+
 	protected function get_input_classes() {
 		$input_classes = parent::get_input_classes();
 		$input_classes[] = 'siteorigin-widget-input-measurement';
@@ -34,23 +49,27 @@ class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_I
 
 	protected function render_after_field( $value, $instance ) {
 		$value_parts = $this->get_render_values($value);
-		$unit = $value_parts['unit'];
-		if ( is_null( $unit ) ) {
+		$selected_unit = $value_parts['unit'];
+		if ( is_null( $selected_unit ) ) {
 			$unit_name = $this->get_unit_field_name( $this->base_name );
 
 			if( !empty( $instance[ $unit_name ] ) ) {
-				$unit = $instance[ $unit_name ];
+				$selected_unit = $instance[ $unit_name ];
 			}
 			else if ( isset( $this->default ) ) {
 				$default_parts = $this->get_render_values($this->default);
-				$unit = $default_parts['unit'];
+				$selected_unit = $default_parts['unit'];
 			}
 		}
+
+		$units = ! empty( $this->units ) && is_array( $this->units ) ? $this->units : siteorigin_widgets_get_measurements_list();
 		?>
 		<select class="sow-measurement-select-unit siteorigin-widget-input"
 				name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_unit', $this->parent_container ) ) ?>">
-			<?php foreach ( siteorigin_widgets_get_measurements_list() as $measurement ):?>
-				<option value="<?php echo esc_attr( $measurement ) ?>" <?php selected( $measurement, $unit, true ); ?>><?php echo esc_html( $measurement ) ?></option>
+			<?php foreach ( $units as $unit ):?>
+				<option value="<?php echo esc_attr( $unit ); ?>" <?php selected( $unit, $selected_unit, true ); ?>>
+					<?php echo esc_html( $unit ); ?>
+				</option>
 			<?php endforeach?>
 		</select>
 		<div class="clear"></div>
@@ -73,7 +92,7 @@ class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_I
 		$default_parts = $this->get_render_values($this->default);
 		$unit = $default_parts['unit'];
 		if( isset( $instance[ $unit_name ] ) ) {
-			$units = siteorigin_widgets_get_measurements_list();
+			$units = ! empty( $this->units ) && is_array( $this->units ) ? $this->units : siteorigin_widgets_get_measurements_list();
 			if ( in_array( $instance[ $unit_name ], $units ) ) {
 				$unit = $instance[ $unit_name ];
 			}
@@ -82,7 +101,7 @@ class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_I
 
 		// Sensible default, if we somehow end up without a unit.
 		if ( empty( $unit ) ) {
-			$unit = 'px';
+			$unit = empty( $this->default_unit ) ? 'px' : $this->default_unit;
 		}
 
 		// `strlen( $value ) == 0` should prevent 0, 0.0, or '0' from being seen as empty.
