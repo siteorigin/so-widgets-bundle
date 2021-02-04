@@ -1,5 +1,7 @@
 <?php
-$last_row = floor( ( count($instance['features']) - 1 ) / $instance['per_row'] );
+if ( ! empty( $instance['features'] ) ) {
+	$last_row = floor( ( count( $instance['features'] ) - 1 ) / $instance['per_row'] );
+}
 ?>
 
 <div class="sow-features-list <?php if( $instance['responsive'] ) echo 'sow-features-responsive'; ?>">

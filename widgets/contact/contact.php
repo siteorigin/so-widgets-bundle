@@ -914,7 +914,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 * @param array $errors
 	 * @param $instance
 	 */
-	function render_form_fields( $fields, $errors = array(), $instance ) {
+	function render_form_fields( $fields, $errors, $instance ) {
 
 		$field_ids      = array();
 		$label_position = $instance['design']['labels']['position'];
@@ -957,7 +957,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 			$show_placeholder = $label_position == 'inside';
 
-			if ( ! empty( $errors[ $field_name ] ) ) {
+			if ( is_array( $errors ) && ! empty( $errors[ $field_name ] ) ) {
 				?>
                 <div class="sow-error">
 					<?php echo wp_kses_post( $errors[ $field_name ] ) ?>
