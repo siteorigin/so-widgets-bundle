@@ -90,7 +90,7 @@ jQuery( function ( $ ) {
 								complete: function() {
 									$( this ).trigger( 'show' );
 
-									if ( shouldScroll( $tab ) ) {
+									if ( preventHashChange || shouldScroll( $tab ) ) {
 										scrollToTab( true );
 									}
 								}
