@@ -488,6 +488,40 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				<a href='https://policies.google.com/privacy?hl=en&amp;gl=en' target='_blank' rel='noopener noreferrer'>Read more</a>", 'so-widgets-bundle' ),
 			),
 
+			'map_consent_design' => array(
+				'type' => 'section',
+				'label' => __( 'Consent prompt design', 'so-widgets-bundle' ),
+				'hide' => true,
+				'fields' => array(
+					'button' => array(
+						'type' => 'section',
+						'label' => __( 'Button', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'color' => array(
+								'type' => 'color',
+								'label' => __( 'Consent prompt button text color', 'so-widgets-bundle' ),
+								'default' => '#fff',
+							),
+							'color_hover' => array(
+								'type' => 'color',
+								'label' => __( 'Consent prompt button text hover color', 'so-widgets-bundle' ),
+							),
+							'background' => array(
+								'type' => 'color',
+								'label' => __( 'Consent prompt button background color', 'so-widgets-bundle' ),
+								'default' => '#41a9d5',
+							),
+							'background_hover' => array(
+								'type' => 'color',
+								'label' => __( 'Consent prompt button background hover color', 'so-widgets-bundle' ),
+								'default' => '#298fba',
+							),
+						),
+					),
+				),
+			),
+
 			'responsive_breakpoint' => array(
 				'type'        => 'number',
 				'label'       => __( 'Responsive breakpoint', 'so-widgets-bundle' ),
@@ -596,12 +630,22 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 	function get_less_variables( $instance ) {
 		$global_settings = $this->get_global_settings();
-
-		return array(
+		$less_variables = array(
 			'height' => $instance['settings']['height'] . 'px',
 			'map_consent' => ! empty( $global_settings['map_consent'] ),
 			'responsive_breakpoint' => ! empty( $global_settings['responsive_breakpoint'] ) ? $global_settings['responsive_breakpoint'] : '780',
 		);
+
+		// Map Content Button styling.
+		if ( $less_variables['map_consent'] ) {
+			foreach ( $global_settings['map_consent_design']['button'] as $style => $value ) {
+				if ( ! empty( $value ) ) {
+					$less_variables[ 'map_consent_notice_button_' . $style ] = $value;
+				}
+			}
+		}
+
+		return $less_variables;
 	}
 	
 	private function get_location_string( $location_data ) {
