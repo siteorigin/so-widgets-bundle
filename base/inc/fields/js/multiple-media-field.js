@@ -2,7 +2,7 @@
 
 ( function( $ ) {
 
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-multiple-media', function( e ) {
+	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-multiple_media', function( e ) {
 		var $field = $( this ),
 			$data = $field.find( '.siteorigin-widget-input' ),
 			selectedMedia = $data.val().split( ',' );
