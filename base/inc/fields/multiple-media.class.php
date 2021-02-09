@@ -51,7 +51,7 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 		}
 		?>
 		<div class="multiple-media-field-wrapper">
-			<a href="#" class="media-upload-button" data-choose="<?php echo esc_attr( $this->choose ); ?>"
+			<a href="#" class="button" data-choose="<?php echo esc_attr( $this->choose ); ?>"
 			   data-update="<?php echo esc_attr( $this->update ); ?>"
 			   data-library="<?php echo esc_attr( $this->library ); ?>">
 				<?php echo esc_html( $this->choose ); ?>

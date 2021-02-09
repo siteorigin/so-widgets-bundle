@@ -12,7 +12,7 @@
 		}
 
 		// Handle the media uploader
-		$field.find( '.media-upload-button' ).on( 'click', function( e ) {
+		$field.find( '.button' ).on( 'click', function( e ) {
 			e.preventDefault();
 			if( typeof wp.media === 'undefined' ) {
 				return;
