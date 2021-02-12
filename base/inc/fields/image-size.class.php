@@ -65,7 +65,7 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 					<?php _e( 'Height', 'so-widgets-bundle' ); ?>
 					<input type="number" value="<?php echo esc_attr( $height ); ?>"
 						placeholder="<?php esc_attr_e( 'Height', 'so-widgets-bundle' ); ?>"
-						name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_height', $this->parent_container ); ) ?>"
+						name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_height', $this->parent_container ) ); ?>"
 						class="custom-size-height siteorigin-widget-input" />
 				</label>
 			</div>
