@@ -56,7 +56,6 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 				<label>
 					<?php _e( 'Width', 'so-widgets-bundle' ); ?>
 					<input type="number" value="<?php echo esc_attr( $width ); ?>"
-						placeholder="<?php esc_attr_e( 'Width', 'so-widgets-bundle' ); ?>"
 						name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_width', $this->parent_container ) ); ?>"
 						class="custom-size-width siteorigin-widget-input" />
 				</label>
@@ -64,7 +63,6 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 				<label>
 					<?php _e( 'Height', 'so-widgets-bundle' ); ?>
 					<input type="number" value="<?php echo esc_attr( $height ); ?>"
-						placeholder="<?php esc_attr_e( 'Height', 'so-widgets-bundle' ); ?>"
 						name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_height', $this->parent_container ) ); ?>"
 						class="custom-size-height siteorigin-widget-input" />
 				</label>
