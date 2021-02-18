@@ -3,7 +3,7 @@
 	var el = element.createElement;
 	var registerBlockType = blocks.registerBlockType;
 	var BlockControls = blockEditor.BlockControls;
-	var SelectControl = components.SelectControl;
+	var ComboboxControl = components.ComboboxControl;
 	var withState = compose.withState;
 	var Toolbar = components.Toolbar;
 	var ToolbarButton = components.ToolbarButton;
@@ -126,7 +126,6 @@
 					widgetsOptions = sowbBlockEditorAdmin.widgets.map( function ( widget ) {
 						return { value: widget.class, label: widget.name };
 					} );
-					widgetsOptions.unshift( { value: '', label: __( 'Select widget type', 'so-widgets-bundle' ) } );
 				}
 
 				var loadWidgetForm = props.attributes.widgetClass && ! props.widgetFormHtml;
@@ -196,11 +195,14 @@
 								'div',
 								{ className: 'so-widget-block-container' },
 								el(
-									SelectControl,
+									ComboboxControl,
 									{
-										options: widgetsOptions,
+										className: 'so-widget-autocomplete-field',
+										label: __( 'Widget type', 'so-widgets-bundle' ),
 										value: props.attributes.widgetClass,
+										onFilterValueChange: function ( value ) {}, // Avoid React notice and onChange potentially not triggering.
 										onChange: onWidgetClassChange,
+										options: widgetsOptions,
 									}
 								),
 								el( 'div', {
