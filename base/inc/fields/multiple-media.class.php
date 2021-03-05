@@ -88,7 +88,7 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 			
 			<div class="multiple-media-field-template" style="display:none">
 				<div class="multiple-media-field-item">
-					<img class="thumbnail"/>
+					<img class="thumbnail" />
 					<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
 					<div class="title"></div>
 				</div>
