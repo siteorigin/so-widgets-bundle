@@ -46,7 +46,7 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 		}
 
 		// If library is set to all, convert it to a wildcard as all isn't valid
-		if( $this->library == 'all' ){
+		if ( $this->library == 'all' ) {
 			$this->library = '*';
 		}
 		?>
@@ -89,7 +89,7 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 			<div class="multiple-media-field-template" style="display:none">
 				<div class="multiple-media-field-item">
 					<img class="thumbnail"/>
-					<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ) ?></a>
+					<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
 					<div class="title"></div>
 				</div>
 
@@ -115,7 +115,7 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 		return $media;
 	}
 
-	function enqueue_scripts(){
+	function enqueue_scripts() {
 		wp_enqueue_script( 'so-multiple-media-field', plugin_dir_url( __FILE__ ) . 'js/multiple-media-field' . SOW_BUNDLE_JS_SUFFIX .  '.js', array( 'jquery' ), SOW_BUNDLE_VERSION );
 		wp_enqueue_style( 'so-multiple-media-field', plugin_dir_url( __FILE__ ) . 'css/multiple-media-field.css', array( ), SOW_BUNDLE_VERSION );
 	}

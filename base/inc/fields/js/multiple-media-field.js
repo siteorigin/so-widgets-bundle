@@ -14,7 +14,7 @@
 		// Handle the media uploader
 		$field.find( '.button' ).on( 'click', function( e ) {
 			e.preventDefault();
-			if( typeof wp.media === 'undefined' ) {
+			if ( typeof wp.media === 'undefined' ) {
 				return;
 			}
 
@@ -31,11 +31,11 @@
 			frame = wp.media( {
 				title: $$.data( 'choose' ),
 				library: {
-					type: $$.data( 'library' ).split( ',' ).map( function( v ){ return v.trim(); })
+					type: $$.data( 'library' ).split( ',' ).map( function( v ) { return v.trim(); } )
 				},
 				multiple: true,
 				button: {
-					text: $$.data('update'),
+					text: $$.data( 'update' ),
 					close: false
 				}
 			} );
@@ -124,6 +124,6 @@
 		} );
 
 		$field.data( 'initialized', true );
-	});
+	} );
 
 } )( jQuery );
