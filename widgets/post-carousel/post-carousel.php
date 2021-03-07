@@ -156,6 +156,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 				'fields' => array(
 					'posts_per_page' => array(
 						'label' => __( 'Posts per load', 'so-widgets-bundle' ),
+						'description' => __( 'Set the number of posts preloaded in the background when clicking next. The default is 10.', 'so-widgets-bundle' ),
 					),
 				),
 			),
@@ -169,6 +170,14 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 						'type' => 'color',
 						'label' => __( 'Thumbnail overlay hover color', 'so-widgets-bundle' ),
 						'default' => '#3279BB',
+					),
+					'thumbnail_overlay_hover_opacity' => array(
+						'type' => 'slider',
+						'label' => __( 'Thumbnail overlay hover opacity', 'so-widgets-bundle' ),
+						'default' => '0.5',
+						'min' => 0,
+						'max' => 1,
+						'step' => 0.1,
 					),
 					'navigation_color' => array(
 						'type' => 'color',
@@ -299,6 +308,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			'thumbnail_hover_width' => $thumb_hover_width . 'px',
 			'thumbnail_hover_height'=> $thumb_hover_height . 'px',
 			'thumbnail_overlay_hover_color' => ! empty ( $instance['design']['thumbnail_overlay_hover_color'] ) ? $instance['design']['thumbnail_overlay_hover_color'] : '',
+			'thumbnail_overlay_hover_opacity' => ! empty ( $instance['design']['thumbnail_overlay_hover_opacity'] ) ? $instance['design']['thumbnail_overlay_hover_opacity'] : 0.5,
 			'navigation_color' => ! empty ( $instance['design']['navigation_color'] ) ? $instance['design']['navigation_color'] : '',
 			'navigation_color_hover' => ! empty ( $instance['design']['navigation_color_hover'] ) ? $instance['design']['navigation_color_hover'] : '',
 			'navigation_background' => ! empty ( $instance['design']['navigation_background'] ) ? $instance['design']['navigation_background'] : '',

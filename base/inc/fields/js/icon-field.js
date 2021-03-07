@@ -36,7 +36,7 @@
 			}
 
 			// Trigger a click on the existing icon to remove it.
-			$$.find('.siteorigin-widget-active').click();
+			$$.find('.siteorigin-widget-active').trigger( 'click' );
 		} );
 
 		var searchIcons = function(){
@@ -60,7 +60,7 @@
 			}
 		};
 
-		$search.keyup( searchIcons ).change( searchIcons );
+		$search.keyup( searchIcons ).on( 'change', searchIcons );
 		
 		var renderStylesSelect = function ( init ) {
 			var $familySelect = $is.find( 'select.siteorigin-widget-icon-family' );
@@ -124,7 +124,8 @@
 				}
 				var familyStyle = 'sow-icon-' + family + ( style ? ' ' + style : '' );
 				var familyValue = family + ( style ? '-' + style : '' ) + '-' + i;
-				var $icon = $( '<div data-sow-icon="' + unicode + '" tabindex="0"/>' )
+
+				var $icon = $( '<div data-sow-icon="' + unicode + '"></div>' )
 					.attr('data-value', familyValue )
 					.addClass( familyStyle )
 					.addClass( 'siteorigin-widget-icon-icons-icon' )
@@ -224,12 +225,12 @@
 		};
 		changeIconFamily( true );
 
-		$is.find('select.siteorigin-widget-icon-family').change(function(){
+		$is.find( 'select.siteorigin-widget-icon-family' ).on( 'change', function() {
 			$is.find('.siteorigin-widget-icon-icons').empty();
 			changeIconFamily();
 		});
 
-		$v.change( function ( event, data ) {
+		$v.on( 'change', function ( event, data ) {
 			if ( ! ( data && data.isRendering ) ) {
 				rerenderIcons();
 			}

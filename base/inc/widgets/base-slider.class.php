@@ -334,7 +334,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					'class' => array( 'sow-slider-image-overlay', 'sow-slider-image-' . $background['image-sizing'] ),
 					'style' => array(
 						'background-image: url(' . $background['image'] . ')',
-						'opacity: ' . floatval( $background['opacity'] ),
+						'opacity: ' . (float) $background['opacity'],
 					)
 				);
 				$overlay_attributes = apply_filters( 'siteorigin_widgets_slider_overlay_attributes', $overlay_attributes, $frame, $background );

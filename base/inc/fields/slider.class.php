@@ -37,9 +37,9 @@ class SiteOrigin_Widget_Field_Slider extends SiteOrigin_Widget_Field_Base {
 		</div>
 		<input type="number" class="siteorigin-widget-input" name="<?php echo esc_attr(  $this->element_name ) ?>" id="<?php echo esc_attr( $this->element_id ) ?>"
 			value="<?php echo !empty( $value ) ? esc_attr( $value ) : 0 ?>"
-			min="<?php echo isset( $this->min ) ? floatval( $this->min ) : 0 ?>"
-			max="<?php echo isset( $this->max ) ? floatval( $this->max ) : 100 ?>"
-			step="<?php echo isset( $this->step ) ? floatval( $this->step ) : 1 ?>"/>
+			min="<?php echo isset( $this->min ) ? (float) $this->min : 0 ?>"
+			max="<?php echo isset( $this->max ) ? (float) $this->max : 100 ?>"
+			step="<?php echo isset( $this->step ) ? (float) $this->step : 1 ?>"/>
 		<?php
 	}
 

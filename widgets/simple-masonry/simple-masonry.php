@@ -229,6 +229,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 				$link_atts['rel'] = 'noopener noreferrer';
 			}
 			$item['link_attributes'] = $link_atts;
+			$item['title'] = $this->get_image_title( $item );
 		}
 		return array(
 			'args' => $args,
@@ -239,28 +240,55 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 				'desktop' => siteorigin_widgets_underscores_to_camel_case(
 					array(
 						'num_columns' => $instance['desktop_layout']['columns'],
-						'row_height' => empty( $instance['desktop_layout']['row_height'] ) ? 0 : intval( $instance['desktop_layout']['row_height'] ),
-						'gutter' => empty( $instance['desktop_layout']['gutter'] ) ? 0 : intval( $instance['desktop_layout']['gutter'] ),
+						'row_height' => empty( $instance['desktop_layout']['row_height'] ) ? 0 : (int) $instance['desktop_layout']['row_height'],
+						'gutter' => empty( $instance['desktop_layout']['gutter'] ) ? 0 : (int) $instance['desktop_layout']['gutter'],
 					)
 				),
 				'tablet' => siteorigin_widgets_underscores_to_camel_case(
 					array(
 						'break_point' => $instance['tablet_layout']['break_point'],
 						'num_columns' => $instance['tablet_layout']['columns'],
-						'row_height' => empty( $instance['tablet_layout']['row_height'] ) ? 0 : intval( $instance['tablet_layout']['row_height'] ),
-						'gutter' => empty( $instance['tablet_layout']['gutter'] ) ? 0 : intval( $instance['tablet_layout']['gutter'] ),
+						'row_height' => empty( $instance['tablet_layout']['row_height'] ) ? 0 : (int) $instance['tablet_layout']['row_height'],
+						'gutter' => empty( $instance['tablet_layout']['gutter'] ) ? 0 : (int) $instance['tablet_layout']['gutter'],
 					)
 				),
 				'mobile' => siteorigin_widgets_underscores_to_camel_case(
 					array(
 						'break_point' => $instance['mobile_layout']['break_point'],
 						'num_columns' => $instance['mobile_layout']['columns'],
-						'row_height' => empty( $instance['mobile_layout']['row_height'] ) ? 0 : intval( $instance['mobile_layout']['row_height'] ),
-						'gutter' => empty( $instance['mobile_layout']['gutter'] ) ? 0 : intval( $instance['mobile_layout']['gutter'] ),
+						'row_height' => empty( $instance['mobile_layout']['row_height'] ) ? 0 : (int) $instance['mobile_layout']['row_height'],
+						'gutter' => empty( $instance['mobile_layout']['gutter'] ) ? 0 : (int) $instance['mobile_layout']['gutter'],
 					)
 				),
 			)
 		);
+	}
+
+	/**
+	 * Try to figure out an image's title for display.
+	 *
+	 * @param $image
+	 *
+	 * @return string The title of the image.
+	 */
+	private function get_image_title( $image ) {
+		if ( ! empty( $image['title'] ) ) {
+			$title = $image['title'];
+		} else if ( apply_filters( 'siteorigin_widgets_auto_title', true, 'sow-simple-masonry' ) ) {
+			$title = wp_get_attachment_caption( $image['image'] );
+			if ( empty( $title ) ) {
+				// We do not want to use the default image titles as they're based on the file name without the extension
+				$file_name = pathinfo( get_post_meta( $image['image'], '_wp_attached_file', true ), PATHINFO_FILENAME );
+				$title = get_the_title( $image['image'] );
+				if ( $title == $file_name ) {
+					return;
+				}
+			}
+		} else {
+			$title = '';
+		}
+
+		return $title;
 	}
 
 	public function get_less_variables( $instance ) {

@@ -1,12 +1,12 @@
-( function ( editor, blocks, i18n, element, components, compose ) {
+( function ( editor, blocks, i18n, element, components, compose, blockEditor ) {
 
 	var el = element.createElement;
 	var registerBlockType = blocks.registerBlockType;
-	var BlockControls = editor.BlockControls;
+	var BlockControls = blockEditor.BlockControls;
 	var SelectControl = components.SelectControl;
 	var withState = compose.withState;
 	var Toolbar = components.Toolbar;
-	var IconButton = components.IconButton;
+	var ToolbarButton = components.ToolbarButton;
 	var Placeholder = components.Placeholder;
 	var Spinner  = components.Spinner;
 	var __ = i18n.__;
@@ -44,7 +44,10 @@
 			},
 			widgetData: {
 				type: 'object',
-			}
+			},
+			widgetHtml: {
+				type: 'string',
+			},
 		},
 
 		edit: withState( {
@@ -159,12 +162,17 @@
 				return [
 					!! widgetForm && el(
 						BlockControls,
-						{ key: 'controls' },
+						{
+							key: 'controls',
+
+						},
 						el(
 							Toolbar,
-							null,
+							{
+								label: __( 'Preview widget.', 'so-widgets-bundle' ),
+							},
 							el(
-								IconButton,
+								ToolbarButton,
 								{
 									className: 'components-icon-button components-toolbar__control',
 									label: __( 'Preview widget.', 'so-widgets-bundle' ),
@@ -212,6 +220,7 @@
 					props.attributes.widgetClass &&
 					props.attributes.widgetData;
 				if ( loadWidgetPreview ) {
+					props.setAttributes( { widgetHtml: null } );
 					jQuery.post( {
 						url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/previews',
 						beforeSend: function ( xhr ) {
@@ -227,6 +236,8 @@
 							widgetPreviewHtml: widgetPreview,
 							previewInitialized: false,
 						} );
+
+						props.setAttributes( { widgetHtml: widgetPreview } );
 					} )
 					.fail( function ( response ) {
 
@@ -249,9 +260,11 @@
 						{ key: 'controls' },
 						el(
 							Toolbar,
-							null,
+							{
+								label: __( 'Preview widget.', 'so-widgets-bundle' ),
+							},
 							el(
-								IconButton,
+								ToolbarButton,
 								{
 									className: 'components-icon-button components-toolbar__control',
 									label: __( 'Edit widget.', 'so-widgets-bundle' ),
@@ -287,9 +300,13 @@
 			}
 		} ),
 
-		save: function () {
-			// Render in PHP
-			return null;
+		save: function ( context ) {
+			if ( context.attributes == 'object' && context.attributes.hasOwnProperty( 'widgetHtml' ) ) {
+   				return React.createElement( wp.element.RawHTML, null, attributes.widgetHtml );
+			} else {
+				// Fallback to PHP Render.
+				return null;
+			}
 		}
 	} );
-} )( window.wp.editor, window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.compose );
+} )( window.wp.editor, window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.compose, window.wp.blockEditor );

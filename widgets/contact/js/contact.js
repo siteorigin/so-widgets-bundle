@@ -19,10 +19,10 @@ sowb.SiteOriginContactForm = {
 					formPosition = $container.offset().top;
 					// If the closest visible ancestor is either SOWB Accordion or Tabs widget, try to open the panel.
 					if ( $container.is( '.sow-accordion-panel' ) ) {
-						$container.find( '> .sow-accordion-panel-header' ).click();
+						$container.find( '> .sow-accordion-panel-header-container > .sow-accordion-panel-header' ).trigger( 'click' );
 					} else if ( $container.is( '.sow-tabs-panel-container' ) ) {
 						var tabIndex = $el.closest( '.sow-tabs-panel' ).index();
-						$container.siblings( '.sow-tabs-tab-container' ).find( '> .sow-tabs-tab' ).eq( tabIndex ).click();
+						$container.siblings( '.sow-tabs-tab-container' ).find( '> .sow-tabs-tab' ).eq( tabIndex ).trigger( 'click' );
 					}
 				}
 				$( 'html, body' ).scrollTop( formPosition );
@@ -55,7 +55,7 @@ sowb.SiteOriginContactForm = {
 			}
 
 			// Disable the submit button on click to avoid multiple submits.
-			$contactForms.submit( function () {
+			$contactForms.on( 'submit', function() {
 				$submitButton.prop( 'disabled', true );
 				// Preserve existing anchors, if any.
 				var locationHash = window.location.hash;

@@ -181,7 +181,7 @@ var sowbForms = window.sowbForms || {};
 				$mainForm = $el;
 
 				var $teaser = $el.find('.siteorigin-widget-teaser');
-				$teaser.find('.dashicons-dismiss').click(function () {
+				$teaser.find( '.dashicons-dismiss' ).on( 'click', function() {
 					var $$ = $(this);
 					$.get($$.data('dismiss-url'));
 
@@ -227,7 +227,7 @@ var sowbForms = window.sowbForms || {};
 							sessionStorage.removeItem( _sow_form_id );
 						}
 					}
-					$el.change( function () {
+					$el.on( 'change', function() {
 						$timestampField.val( new Date().getTime() );
 						var data = sowbForms.getWidgetFormValues( $el );
 						sessionStorage.setItem( _sow_form_id, JSON.stringify( data ) );
@@ -289,7 +289,7 @@ var sowbForms = window.sowbForms || {};
 				$(this).toggleClass('siteorigin-widget-section-visible');
 				$(this).parent().find('> .siteorigin-widget-section, > .siteorigin-widget-widget > .siteorigin-widget-section')
 					.slideToggle('fast', function () {
-						$(window).resize();
+						$( window ).trigger( 'resize' );
 						$(this).find('> .siteorigin-widget-field-container-state').val($(this).is(':visible') ? 'open' : 'closed');
 
 						if ( $( this ).is( ':visible' ) ) {
@@ -322,7 +322,7 @@ var sowbForms = window.sowbForms || {};
 						$$.find('.siteorigin-widget-slider-value').html(ui.value);
 					},
 				});
-				$input.change(function(event, data) {
+				$input.on( 'change', function( event, data ) {
 					if ( ! ( data && data.silent ) ) {
 						$c.slider( 'value', parseFloat( $input.val() ) );
 					}
@@ -371,9 +371,9 @@ var sowbForms = window.sowbForms || {};
 				};
 
 				// Toggle display of the existing content
-				$$.find('.select-content-button, .button-close').click(function (e) {
+				$$.find( '.select-content-button, .button-close' ).on( 'click', function( e ) {
 					e.preventDefault();
-
+					$(this).trigger( 'blur' );
 					var $s = $$.find('.existing-content-selector');
 					$s.toggle();
 
@@ -393,12 +393,12 @@ var sowbForms = window.sowbForms || {};
 
 					var $li = $(this);
 					$$.find('input.siteorigin-widget-input').val('post: ' + $li.data('value'));
-					$$.change();
+					$$.trigger( 'change' );
 					$$.find('.existing-content-selector').toggle();
 				});
 
 				var interval = null;
-				$$.find('.content-text-search').keyup(function () {
+				$$.find( '.content-text-search' ).on( 'keyup', function() {
 					if (interval !== null) {
 						clearTimeout(interval);
 					}
@@ -463,6 +463,21 @@ var sowbForms = window.sowbForms || {};
 						}
 
 						var val = $$.is('[type="checkbox"]') ? $$.is(':checked') : $$.val();
+
+						// Media form fields can have an external field set so we need to check that field slightly differently.
+						if ( $$.parent().hasClass( 'siteorigin-widget-field-type-media' ) && emitter.callback == 'conditional' ) {
+							// If we're checking for a value,and the main field is empty,
+							// fallback to the external field value. This also works in reverse.
+							if ( ! val ) {
+								val = $$.hasClass( 'media-fallback-external' ) ? $$.prev().val() : fallbackField = $$.next().val();
+							}
+
+							// Override value if media value is set to 0 to prevent unintentional conditional passing.
+							if ( val == 0 ) {
+								val = '';
+							}
+						}
+
 						// Return an array that has the new states added to the array
 						return $.extend(currentStates, sowEmitters[emitter.callback](val, emitter.args));
 					};
@@ -547,7 +562,7 @@ var sowbForms = window.sowbForms || {};
 		var $el = $(this);
 		var previewButton = $el.siblings('.siteorigin-widget-preview');
 
-		previewButton.find('> a').click(function (e) {
+		previewButton.find( '> a' ).on( 'click', function( e ) {
 			e.preventDefault();
 
 			var data = sowbForms.getWidgetFormValues($el);
@@ -559,8 +574,7 @@ var sowbForms = window.sowbForms || {};
 			modal.find('iframe').on('load', function () {
 				$(this).css('visibility', 'visible');
 			});
-			modal.find('form').submit();
-
+			modal.find( 'form' ).trigger( 'submit' );
 			modal.find('.close').on( 'click keyup', function (e) {
 				if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
 					return;
@@ -633,7 +647,8 @@ var sowbForms = window.sowbForms || {};
 				var scrollCount = $el.data('scroll-count') ? parseInt($el.data('scroll-count')) : 0;
 				if (scrollCount > 0 && $rptrItems.length > scrollCount) {
 					var itemHeight = $rptrItems.first().outerHeight();
-					$$.css('max-height', itemHeight * scrollCount).css('overflow', 'auto');
+					$$.css( 'max-height', itemHeight * scrollCount + 'px' );
+					$$.css( 'overflow', 'auto' );
 				}
 				else {
 					//TODO: Check whether there was a value before overriding and set it back to that.
@@ -677,14 +692,14 @@ var sowbForms = window.sowbForms || {};
 				$el.closest('.siteorigin-widget-field-repeater')
 					.sowAddRepeaterItem()
 					.find('> .siteorigin-widget-field-repeater-items').slideDown('fast', function () {
-					$(window).resize();
+					$( window ).trigger( 'resize' );
 				});
 			});
 
-			$el.find('> .siteorigin-widget-field-repeater-top > .siteorigin-widget-field-repeater-expand').click(function (e) {
+			$el.find( '> .siteorigin-widget-field-repeater-top > .siteorigin-widget-field-repeater-expand' ).on( 'click', function( e ) {
 				e.preventDefault();
 				$el.closest('.siteorigin-widget-field-repeater').find('> .siteorigin-widget-field-repeateritems-').slideToggle('fast', function () {
-					$(window).resize();
+					$( window ).trigger( 'resize' );
 				});
 			});
 		});
@@ -719,7 +734,7 @@ var sowbForms = window.sowbForms || {};
 			} );
 
 			var readonly = typeof $el.attr('readonly') !== 'undefined';
-			var item = $('<div class="siteorigin-widget-field-repeater-item ui-draggable" />')
+			var item = $( '<div class="siteorigin-widget-field-repeater-item ui-draggable"></div>' )
 				.append(
 					$( '<div class="siteorigin-widget-field-repeater-item-top" tabindex="0" />' )
 						.append(
@@ -731,10 +746,10 @@ var sowbForms = window.sowbForms || {};
 						.append(
 							readonly ? '' : $( '<div class="siteorigin-widget-field-remove" tabindex="0" />' )
 						)
-						.append($('<h4 />').html($el.data('item-name')))
+						.append( $( '<h4></h4>' ).html( $el.data( 'item-name' ) ) )
 				)
 				.append(
-					$('<div class="siteorigin-widget-field-repeater-item-form" />')
+					$( '<div class="siteorigin-widget-field-repeater-item-form"></div>' )
 						.html(repeaterHtml)
 				);
 
@@ -742,7 +757,7 @@ var sowbForms = window.sowbForms || {};
 			$el.find('> .siteorigin-widget-field-repeater-items').append(item).sortable("refresh").trigger('updateFieldPositions');
 			item.sowSetupRepeaterItems();
 			item.hide().slideDown('fast', function () {
-				$(window).resize();
+				$( window ).trigger( 'resize' );
 			});
 			$el.trigger( 'change' );
 		});
@@ -807,7 +822,7 @@ var sowbForms = window.sowbForms || {};
 
 					e.preventDefault();
 					$(this).closest('.siteorigin-widget-field-repeater-item').find('.siteorigin-widget-field-repeater-item-form').eq(0).slideToggle('fast', function () {
-						$(window).resize();
+						$( window ).trigger( 'resize' );
 						if ($(this).is(':visible')) {
 							$(this).trigger('slideToggleOpenComplete');
 							
@@ -825,7 +840,6 @@ var sowbForms = window.sowbForms || {};
 						}
 					});
 				});
-
 				itemTop.find( '.siteorigin-widget-field-remove' ).on( 'click keyup', function( e, params ) {
 					e.preventDefault();
 
@@ -838,7 +852,7 @@ var sowbForms = window.sowbForms || {};
 					var removeItem = function () {
 						$item.remove();
 						$s.sortable( "refresh" ).trigger( 'updateFieldPositions' );
-						$( window ).resize();
+						$( window ).trigger( 'resize' );
 						$parentRepeater.trigger( 'change' );
 					};
 					if ( params && params.silent ) {
@@ -971,7 +985,7 @@ var sowbForms = window.sowbForms || {};
 					$items.append($copyItem).sortable("refresh").trigger('updateFieldPositions');
 					$copyItem.sowSetupRepeaterItems();
 					$copyItem.hide().slideDown('fast', function () {
-						$(window).resize();
+						$( window ).trigger( 'resize' );
 					});
 					$el.trigger( 'change' );
 				});
@@ -1223,7 +1237,7 @@ var sowbForms = window.sowbForms || {};
 				if ( numItems > numChildren ) {
 					// If data items > child items, create extra child items.
 					for ( var i = 0; i < numItems - numChildren; i++) {
-						$repeater.find( '> .siteorigin-widget-field-repeater-add' ).click();
+						$repeater.find( '> .siteorigin-widget-field-repeater-add' ).trigger( 'click' );
 					}
 
 				} else if ( ! skipMissingValues && numItems < numChildren ) {

@@ -255,6 +255,13 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Andika New Basic' =>
+		array(
+			0 => 'regular',
+			1 => 'italic',
+			2 => '700',
+			3 => '700italic',
+		),
 	'Angkor' =>
 		array(
 			0 => 'regular',
@@ -348,9 +355,13 @@ return array(
 	'Arimo' =>
 		array(
 			0 => 'regular',
-			1 => 'italic',
-			2 => '700',
-			3 => '700italic',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => 'italic',
+			5 => '500italic',
+			6 => '600italic',
+			7 => '700italic',
 		),
 	'Arizonia' =>
 		array(
@@ -418,9 +429,10 @@ return array(
 			0 => '200',
 			1 => '300',
 			2 => 'regular',
-			3 => '600',
-			4 => '700',
-			5 => '800',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
 		),
 	'Astloch' =>
 		array(
@@ -809,6 +821,50 @@ return array(
 			6 => '800',
 			7 => '900',
 		),
+	'Big Shoulders Inline Display' =>
+		array(
+			0 => '100',
+			1 => '300',
+			2 => 'regular',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
+			7 => '900',
+		),
+	'Big Shoulders Inline Text' =>
+		array(
+			0 => '100',
+			1 => '300',
+			2 => 'regular',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
+			7 => '900',
+		),
+	'Big Shoulders Stencil Display' =>
+		array(
+			0 => '100',
+			1 => '300',
+			2 => 'regular',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
+			7 => '900',
+		),
+	'Big Shoulders Stencil Text' =>
+		array(
+			0 => '100',
+			1 => '300',
+			2 => 'regular',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
+			7 => '900',
+		),
 	'Big Shoulders Text' =>
 		array(
 			0 => '100',
@@ -864,9 +920,24 @@ return array(
 		),
 	'Bitter' =>
 		array(
-			0 => 'regular',
-			1 => 'italic',
-			2 => '700',
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
 		),
 	'Black And White Picture' =>
 		array(
@@ -967,12 +1038,12 @@ return array(
 	'Cabin' =>
 		array(
 			0 => 'regular',
-			1 => 'italic',
-			2 => '500',
-			3 => '500italic',
-			4 => '600',
-			5 => '600italic',
-			6 => '700',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => 'italic',
+			5 => '500italic',
+			6 => '600italic',
 			7 => '700italic',
 		),
 	'Cabin Condensed' =>
@@ -1075,6 +1146,11 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Castoro' =>
+		array(
+			0 => 'regular',
+			1 => 'italic',
+		),
 	'Catamaran' =>
 		array(
 			0 => '100',
@@ -1097,7 +1173,9 @@ return array(
 	'Caveat' =>
 		array(
 			0 => 'regular',
-			1 => '700',
+			1 => '500',
+			2 => '600',
+			3 => '700',
 		),
 	'Caveat Brush' =>
 		array(
@@ -1217,8 +1295,11 @@ return array(
 	'Cinzel' =>
 		array(
 			0 => 'regular',
-			1 => '700',
-			2 => '900',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => '800',
+			5 => '900',
 		),
 	'Cinzel Decorative' =>
 		array(
@@ -1272,6 +1353,18 @@ return array(
 	'Coming Soon' =>
 		array(
 			0 => 'regular',
+		),
+	'Commissioner' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
 		),
 	'Concert One' =>
 		array(
@@ -1449,9 +1542,13 @@ return array(
 	'Cuprum' =>
 		array(
 			0 => 'regular',
-			1 => 'italic',
-			2 => '700',
-			3 => '700italic',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => 'italic',
+			5 => '500italic',
+			6 => '600italic',
+			7 => '700italic',
 		),
 	'Cute Font' =>
 		array(
@@ -1588,7 +1685,9 @@ return array(
 	'Domine' =>
 		array(
 			0 => 'regular',
-			1 => '700',
+			1 => '500',
+			2 => '600',
+			3 => '700',
 		),
 	'Donegal One' =>
 		array(
@@ -1767,6 +1866,27 @@ return array(
 			1 => '500',
 			2 => '600',
 			3 => '700',
+		),
+	'Epilogue' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
 		),
 	'Erica One' =>
 		array(
@@ -2196,6 +2316,11 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Goldman' =>
+		array(
+			0 => 'regular',
+			1 => '700',
+		),
 	'Gorditas' =>
 		array(
 			0 => 'regular',
@@ -2229,6 +2354,27 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Grandstander' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
+		),
 	'Gravitas One' =>
 		array(
 			0 => 'regular',
@@ -2257,6 +2403,18 @@ return array(
 			15 => '800italic',
 			16 => '900',
 			17 => '900italic',
+		),
+	'Grenze Gotisch' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
 		),
 	'Griffy' =>
 		array(
@@ -2326,6 +2484,7 @@ return array(
 	'Harmattan' =>
 		array(
 			0 => 'regular',
+			1 => '700',
 		),
 	'Headland One' =>
 		array(
@@ -2334,12 +2493,14 @@ return array(
 	'Heebo' =>
 		array(
 			0 => '100',
-			1 => '300',
-			2 => 'regular',
-			3 => '500',
-			4 => '700',
-			5 => '800',
-			6 => '900',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
 		),
 	'Henny Penny' =>
 		array(
@@ -2533,11 +2694,13 @@ return array(
 	'Ibarra Real Nova' =>
 		array(
 			0 => 'regular',
-			1 => 'italic',
+			1 => '500',
 			2 => '600',
-			3 => '600italic',
-			4 => '700',
-			5 => '700italic',
+			3 => '700',
+			4 => 'italic',
+			5 => '500italic',
+			6 => '600italic',
+			7 => '700italic',
 		),
 	'Iceberg' =>
 		array(
@@ -2651,6 +2814,25 @@ return array(
 			0 => 'regular',
 			1 => '700',
 		),
+	'JetBrains Mono' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '100italic',
+			9 => '200italic',
+			10 => '300italic',
+			11 => 'italic',
+			12 => '500italic',
+			13 => '600italic',
+			14 => '700italic',
+			15 => '800italic',
+		),
 	'Jim Nightshade' =>
 		array(
 			0 => 'regular',
@@ -2691,15 +2873,19 @@ return array(
 	'Josefin Slab' =>
 		array(
 			0 => '100',
-			1 => '100italic',
+			1 => '200',
 			2 => '300',
-			3 => '300italic',
-			4 => 'regular',
-			5 => 'italic',
-			6 => '600',
-			7 => '600italic',
-			8 => '700',
-			9 => '700italic',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '100italic',
+			8 => '200italic',
+			9 => '300italic',
+			10 => 'italic',
+			11 => '500italic',
+			12 => '600italic',
+			13 => '700italic',
 		),
 	'Jost' =>
 		array(
@@ -2828,10 +3014,20 @@ return array(
 		),
 	'Karla' =>
 		array(
-			0 => 'regular',
-			1 => 'italic',
-			2 => '700',
-			3 => '700italic',
+			0 => '200',
+			1 => '300',
+			2 => 'regular',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
+			7 => '200italic',
+			8 => '300italic',
+			9 => 'italic',
+			10 => '500italic',
+			11 => '600italic',
+			12 => '700italic',
+			13 => '800italic',
 		),
 	'Karma' =>
 		array(
@@ -2986,6 +3182,21 @@ return array(
 			10 => '700',
 			11 => '700italic',
 		),
+	'Kufam' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => '800',
+			5 => '900',
+			6 => 'italic',
+			7 => '500italic',
+			8 => '600italic',
+			9 => '700italic',
+			10 => '800italic',
+			11 => '900italic',
+		),
 	'Kulim Park' =>
 		array(
 			0 => '200',
@@ -3006,6 +3217,12 @@ return array(
 	'Kumar One Outline' =>
 		array(
 			0 => 'regular',
+		),
+	'Kumbh Sans' =>
+		array(
+			0 => '300',
+			1 => 'regular',
+			2 => '700',
 		),
 	'Kurale' =>
 		array(
@@ -3036,6 +3253,10 @@ return array(
 			0 => 'regular',
 		),
 	'Lancelot' =>
+		array(
+			0 => 'regular',
+		),
+	'Langar' =>
 		array(
 			0 => 'regular',
 		),
@@ -3138,6 +3359,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Libre Barcode EAN13 Text' =>
+		array(
+			0 => 'regular',
+		),
 	'Libre Baskerville' =>
 		array(
 			0 => 'regular',
@@ -3157,22 +3382,22 @@ return array(
 	'Libre Franklin' =>
 		array(
 			0 => '100',
-			1 => '100italic',
-			2 => '200',
-			3 => '200italic',
-			4 => '300',
-			5 => '300italic',
-			6 => 'regular',
-			7 => 'italic',
-			8 => '500',
-			9 => '500italic',
-			10 => '600',
-			11 => '600italic',
-			12 => '700',
-			13 => '700italic',
-			14 => '800',
-			15 => '800italic',
-			16 => '900',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
 			17 => '900italic',
 		),
 	'Life Savers' =>
@@ -3200,14 +3425,22 @@ return array(
 		),
 	'Literata' =>
 		array(
-			0 => 'regular',
-			1 => '500',
-			2 => '600',
-			3 => '700',
-			4 => 'italic',
-			5 => '500italic',
-			6 => '600italic',
-			7 => '700italic',
+			0 => '200',
+			1 => '300',
+			2 => 'regular',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
+			7 => '900',
+			8 => '200italic',
+			9 => '300italic',
+			10 => 'italic',
+			11 => '500italic',
+			12 => '600italic',
+			13 => '700italic',
+			14 => '800italic',
+			15 => '900italic',
 		),
 	'Liu Jian Mao Cao' =>
 		array(
@@ -3551,13 +3784,17 @@ return array(
 	'Merriweather Sans' =>
 		array(
 			0 => '300',
-			1 => '300italic',
-			2 => 'regular',
-			3 => 'italic',
+			1 => 'regular',
+			2 => '500',
+			3 => '600',
 			4 => '700',
-			5 => '700italic',
-			6 => '800',
-			7 => '800italic',
+			5 => '800',
+			6 => '300italic',
+			7 => 'italic',
+			8 => '500italic',
+			9 => '600italic',
+			10 => '700italic',
+			11 => '800italic',
 		),
 	'Metal' =>
 		array(
@@ -3794,7 +4031,7 @@ return array(
 			5 => '700',
 			6 => '800',
 		),
-	'Muli' =>
+	'Mulish' =>
 		array(
 			0 => '200',
 			1 => '300',
@@ -3812,6 +4049,18 @@ return array(
 			13 => '700italic',
 			14 => '800italic',
 			15 => '900italic',
+		),
+	'MuseoModerno' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
 		),
 	'Mystery Quest' =>
 		array(
@@ -3843,6 +4092,10 @@ return array(
 			2 => '800',
 		),
 	'Nanum Pen Script' =>
+		array(
+			0 => 'regular',
+		),
+	'Nerko One' =>
 		array(
 			0 => 'regular',
 		),
@@ -4377,7 +4630,24 @@ return array(
 		),
 	'Petrona' =>
 		array(
-			0 => 'regular',
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
 		),
 	'Philosopher' =>
 		array(
@@ -4385,6 +4655,27 @@ return array(
 			1 => 'italic',
 			2 => '700',
 			3 => '700italic',
+		),
+	'Piazzolla' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
 		),
 	'Piedra' =>
 		array(
@@ -4668,22 +4959,22 @@ return array(
 	'Raleway' =>
 		array(
 			0 => '100',
-			1 => '100italic',
-			2 => '200',
-			3 => '200italic',
-			4 => '300',
-			5 => '300italic',
-			6 => 'regular',
-			7 => 'italic',
-			8 => '500',
-			9 => '500italic',
-			10 => '600',
-			11 => '600italic',
-			12 => '700',
-			13 => '700italic',
-			14 => '800',
-			15 => '800italic',
-			16 => '900',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
 			17 => '900italic',
 		),
 	'Raleway Dots' =>
@@ -4738,6 +5029,16 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Recursive' =>
+		array(
+			0 => '300',
+			1 => 'regular',
+			2 => '500',
+			3 => '600',
+			4 => '700',
+			5 => '800',
+			6 => '900',
+		),
 	'Red Hat Display' =>
 		array(
 			0 => 'regular',
@@ -4757,6 +5058,14 @@ return array(
 			3 => '500italic',
 			4 => '700',
 			5 => '700italic',
+		),
+	'Red Rose' =>
+		array(
+			0 => '300',
+			1 => 'regular',
+			2 => '500',
+			3 => '600',
+			4 => '700',
 		),
 	'Redressed' =>
 		array(
@@ -4821,15 +5130,19 @@ return array(
 	'Roboto Mono' =>
 		array(
 			0 => '100',
-			1 => '100italic',
+			1 => '200',
 			2 => '300',
-			3 => '300italic',
-			4 => 'regular',
-			5 => 'italic',
-			6 => '500',
-			7 => '500italic',
-			8 => '700',
-			9 => '700italic',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '100italic',
+			8 => '200italic',
+			9 => '300italic',
+			10 => 'italic',
+			11 => '500italic',
+			12 => '600italic',
+			13 => '700italic',
 		),
 	'Roboto Slab' =>
 		array(
@@ -4894,6 +5207,12 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Rowdies' =>
+		array(
+			0 => '300',
+			1 => 'regular',
+			2 => '700',
+		),
 	'Rozha One' =>
 		array(
 			0 => 'regular',
@@ -4901,15 +5220,19 @@ return array(
 	'Rubik' =>
 		array(
 			0 => '300',
-			1 => '300italic',
-			2 => 'regular',
-			3 => 'italic',
-			4 => '500',
-			5 => '500italic',
-			6 => '700',
-			7 => '700italic',
-			8 => '900',
-			9 => '900italic',
+			1 => 'regular',
+			2 => '500',
+			3 => '600',
+			4 => '700',
+			5 => '800',
+			6 => '900',
+			7 => '300italic',
+			8 => 'italic',
+			9 => '500italic',
+			10 => '600italic',
+			11 => '700italic',
+			12 => '800italic',
+			13 => '900italic',
 		),
 	'Rubik Mono One' =>
 		array(
@@ -5045,6 +5368,16 @@ return array(
 			5 => '800italic',
 			6 => '900',
 			7 => '900italic',
+		),
+	'Sansita Swashed' =>
+		array(
+			0 => '300',
+			1 => 'regular',
+			2 => '500',
+			3 => '600',
+			4 => '700',
+			5 => '800',
+			6 => '900',
 		),
 	'Sarabun' =>
 		array(
@@ -5196,8 +5529,9 @@ return array(
 		array(
 			0 => '300',
 			1 => 'regular',
-			2 => '600',
-			3 => '700',
+			2 => '500',
+			3 => '600',
+			4 => '700',
 		),
 	'Signika Negative' =>
 		array(
@@ -5292,6 +5626,17 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Sora' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+		),
 	'Sorts Mill Goudy' =>
 		array(
 			0 => 'regular',
@@ -5331,9 +5676,26 @@ return array(
 		),
 	'Source Serif Pro' =>
 		array(
-			0 => 'regular',
-			1 => '600',
-			2 => '700',
+			0 => '200',
+			1 => '200italic',
+			2 => '300',
+			3 => '300italic',
+			4 => 'regular',
+			5 => 'italic',
+			6 => '600',
+			7 => '600italic',
+			8 => '700',
+			9 => '700italic',
+			10 => '900',
+			11 => '900italic',
+		),
+	'Space Grotesk' =>
+		array(
+			0 => '300',
+			1 => 'regular',
+			2 => '500',
+			3 => '600',
+			4 => '700',
 		),
 	'Space Mono' =>
 		array(
@@ -5518,6 +5880,22 @@ return array(
 			0 => 'regular',
 			1 => '700',
 		),
+	'Syne' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => '800',
+		),
+	'Syne Mono' =>
+		array(
+			0 => 'regular',
+		),
+	'Syne Tactile' =>
+		array(
+			0 => 'regular',
+		),
 	'Tajawal' =>
 		array(
 			0 => '200',
@@ -5585,6 +5963,27 @@ return array(
 	'Text Me One' =>
 		array(
 			0 => 'regular',
+		),
+	'Texturina' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
 		),
 	'Thasadith' =>
 		array(
@@ -5685,6 +6084,17 @@ return array(
 			15 => '800italic',
 			16 => '900',
 			17 => '900italic',
+		),
+	'Trispace' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
 		),
 	'Trocchi' =>
 		array(
@@ -5790,6 +6200,14 @@ return array(
 	'Varela Round' =>
 		array(
 			0 => 'regular',
+		),
+	'Varta' =>
+		array(
+			0 => '300',
+			1 => 'regular',
+			2 => '500',
+			3 => '600',
+			4 => '700',
 		),
 	'Vast Shadow' =>
 		array(
@@ -5907,6 +6325,11 @@ return array(
 			15 => '700italic',
 			16 => '800italic',
 			17 => '900italic',
+		),
+	'Xanh Mono' =>
+		array(
+			0 => 'regular',
+			1 => 'italic',
 		),
 	'Yanone Kaffeesatz' =>
 		array(
