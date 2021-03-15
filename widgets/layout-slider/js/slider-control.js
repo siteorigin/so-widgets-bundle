@@ -1,10 +1,12 @@
 /* globals jQuery */
 
 jQuery( function ( $ ) {
-	$( '.sow-slider-control' ).on( 'click', function() {
+	$( '.sow-slider-control' ).on( 'click', function(e) {
 		var $$ = $( this ),
 			cycleContainer = $$.parents( '.sow-slider-images' );
-			slideValue = $$.data( 'slide' );
+			slideValue = $$.attr( 'href' ).substr(1);
+
+		e.preventDefault();
 
 		if ( ! isNaN( slideValue ) ) {
 			cycleContainer.cycle( 'goto', slideValue );

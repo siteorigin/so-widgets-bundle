@@ -316,7 +316,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 			// Handle label overriding.
 			$label = empty( $atts['label'] ) ? $label : $atts['label'];
 
-			echo '<span class="sow-slider-control" data-slide="' . esc_attr( $atts['slide'] ) . '">' . esc_attr( $label ) . '</span>';
+			echo '<a class="sow-slider-control" href="#' . esc_attr( $atts['slide'] ) . '" role="button">' . esc_attr( $label ) . '</a>';
 		}
 
 		return ob_get_clean();
