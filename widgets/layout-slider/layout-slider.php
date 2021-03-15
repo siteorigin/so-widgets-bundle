@@ -276,8 +276,8 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 
 	function register_shortcode_script() {
 		wp_register_script(
-			'sow-layout-slider-control',
-			plugin_dir_url( __FILE__ ) . 'js/slider-control' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			'sow-layout-slide-control',
+			plugin_dir_url( __FILE__ ) . 'js/slide-control' . SOW_BUNDLE_JS_SUFFIX . '.js',
 			array( 'jquery', 'sow-slider-slider' ),
 			SOW_BUNDLE_VERSION,
 			true
@@ -291,7 +291,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 			'label' => '',
 		), $atts );
 
-		wp_enqueue_script( 'sow-layout-slider-control' );
+		wp_enqueue_script( 'sow-layout-slide-control' );
 
 		if ( is_numeric( $atts['slide'] ) ) {
 			$label = sprintf( __( 'Show slide %d', 'so-widgets-bundle' ), $atts['slide'] );
@@ -309,14 +309,14 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 
 			$label = sprintf( __( '%s slide', 'so-widgets-bundle' ), ucfirst( $atts['slide'] ) );
 		} else {
-			_e( 'Slider control shortcode error: invalid slide value.', 'so-widgets-bundle' );
+			_e( 'Slide control shortcode error: invalid slide value.', 'so-widgets-bundle' );
 		}
 
 		if ( isset( $label ) ) {
 			// Handle label overriding.
 			$label = empty( $atts['label'] ) ? $label : $atts['label'];
 
-			echo '<a class="sow-slider-control" href="#' . esc_attr( $atts['slide'] ) . '" role="button">' . esc_attr( $label ) . '</a>';
+			echo '<a class="sow-slide-control" href="#' . esc_attr( $atts['slide'] ) . '" role="button">' . esc_attr( $label ) . '</a>';
 		}
 
 		return ob_get_clean();
@@ -332,10 +332,10 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 	 */
 	function process_content( $content, $frame ) {
 		if( function_exists( 'siteorigin_panels_render' ) ) {
-			add_shortcode( 'slider_control', array( $this, 'add_shortcode' ) );
+			add_shortcode( 'slide_control', array( $this, 'add_shortcode' ) );
 			$content_builder_id = substr( md5( json_encode( $content ) ), 0, 8 );
 			echo siteorigin_panels_render( 'w'.$content_builder_id, true, $content );
-			remove_shortcode( 'slider_control' );
+			remove_shortcode( 'slide_control' );
 		}
 		else {
 			echo __( 'This widget requires Page Builder.', 'so-widgets-bundle' );
