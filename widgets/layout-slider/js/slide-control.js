@@ -9,7 +9,7 @@ jQuery( function ( $ ) {
 		e.preventDefault();
 
 		if ( ! isNaN( slideValue ) ) {
-			cycleContainer.cycle( 'goto', slideValue );
+			cycleContainer.cycle( 'goto', Math.abs( slideValue - 1 ) );
 		} else {
 			switch ( slideValue ) {
 				case 'first':
