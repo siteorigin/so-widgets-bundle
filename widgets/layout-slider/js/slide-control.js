@@ -1,10 +1,10 @@
 /* globals jQuery */
 
 jQuery( function ( $ ) {
-	$( '.sow-slide-control' ).on( 'click', function(e) {
+	$( '.sow-slide-control' ).on( 'click', function( e ) {
 		var $$ = $( this ),
 			cycleContainer = $$.parents( '.sow-slider-images' );
-			slideValue = $$.attr( 'href' ).substr(1);
+			slideValue = $$.attr( 'href' ).substr( 1 );
 
 		e.preventDefault();
 
