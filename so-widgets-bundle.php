@@ -170,6 +170,9 @@ class SiteOrigin_Widgets_Bundle {
 					$wp_filesystem->delete( $upload_dir['basedir'] . '/siteorigin-widgets/' . $file['name'] );
 				}
 			}
+
+			// Alert other plugins that we've deleted all CSS files.
+			do_action( 'siteorigin_widgets_stylesheet_cleared' );
 		}
 	}
 
