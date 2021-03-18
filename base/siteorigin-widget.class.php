@@ -666,7 +666,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 				<div class="so-widgets-toolbar">
 					<h3><?php _e( 'Widget Preview', 'so-widgets-bundle' ) ?></h3>
-					<div class="close"><span class="dashicons dashicons-arrow-left-alt2"></span></div>
+					<div class="close" tabindex="0"><span class="dashicons dashicons-arrow-left-alt2"></span></div>
 				</div>
 
 				<div class="so-widgets-dialog-frame">

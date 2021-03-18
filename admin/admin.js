@@ -144,9 +144,20 @@ jQuery( function( $ ){
 		} );
 
 		dialog.show();
+		$( '#sow-settings-dialog .so-close' ).trigger( 'focus' );
+
+		// Close dialog when escape is pressed.
+		$( window ).one( 'keyup', function( e ) {
+			if ( e.which === 27 ) {
+				dialog.hide();
+			}
+		} );
 	} );
 
-	dialog.find( '.so-close' ).on( 'click', function( e ) {
+	dialog.find( '.so-close' ).on( 'click keyup', function( e ){
+		if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
+			return;
+		}
 		e.preventDefault();
 		dialog.hide();
 	} );
