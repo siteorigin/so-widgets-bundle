@@ -734,7 +734,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		// Remove the old CSS, it'll be regenerated on page load.
-		$this->delete_css( $this->modify_instance( $old_instance ) );
+		if ( $form_type == 'widget' ) {
+			$this->delete_css( $this->modify_instance( $old_instance ) );
+		}
+
 		return $new_instance;
 	}
 
