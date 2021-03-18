@@ -842,6 +842,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						if( $file['lastmodunix'] < time() - self::$css_expire || $force_delete ) {
 							// Delete the file
 							$wp_filesystem->delete( $upload_dir['basedir'] . '/siteorigin-widgets/' . $file['name'] );
+
+							// Alert other plugins that we've deleted a CSS file
+							do_action( 'siteorigin_widgets_stylesheet_deleted', $file['name'] );
 						}
 					}
 				}
