@@ -885,8 +885,13 @@ var sowbForms = window.sowbForms || {};
 							$inputElement.parent().empty().append($inputElement);
 							$inputElement.css('display', '');
 							var curEd = tinymce.get(id);
-							if (curEd) {
-								$inputElement.val(curEd.getContent());
+							if ( curEd ) {
+								var contentVal = curEd.getContent();
+								if ( ! _.isEmpty( contentVal ) ) {
+									$inputElement.val( contentVal );
+								} else if ( contentVal.search( '<' ) !== -1 && contentVal.search( '>' ) === -1) {
+									$textarea.val( contentVal.replace( /</g, '' ) );
+								}
 							}
 						}
 						// Color field :/
