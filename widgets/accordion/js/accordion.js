@@ -145,15 +145,15 @@ jQuery( function ( $ ) {
 				
 				var updatePanelStates = function () {
 					var panels = $accordionPanels.toArray();
+					var anchors = window.location.hash.substring( 1 ).split( ',' );
 					for ( var i = 0; i < panels.length; i++ ) {
 						var panel = panels[ i ];
 						var panelAnchor = $( panel ).data( 'anchor' );
-						var anchors = window.location.hash.substring(1).split( ',' );
 						var panelOpen = anchors.some(function (anchor) {
 							return decodeURI( panelAnchor ) === decodeURI( anchor );
 						});
 						if ( panelOpen ) {
-							openPanel( panel, true );
+							openPanel( panel, true, true );
 						} else {
 							closePanel( panel, true );
 						}
