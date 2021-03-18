@@ -296,7 +296,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		if( !empty($style) ) {
 			$hash = $this->get_style_hash( $instance );
-			$css_name = $this->id_base.'-'.$style.'-'.$hash;
+			$css_name = $this->id_base . '-' . $style . '-' . $hash . '-' . get_the_id(); // Tested.
 
 			//Ensure styles aren't generated and enqueued more than once.
 			$in_preview = $this->is_preview( $instance ) || ( isset( $_POST['action'] ) &&  $_POST['action'] == 'so_widgets_preview' );
@@ -749,7 +749,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		$style = $this->get_style_name($instance);
 		$hash = $this->get_style_hash( $instance );
-		$name = $this->id_base.'-'.$style.'-'.$hash.'.css';
+		$name = $this->id_base . '-' . $style . '-' . $hash . '-' . get_the_id() . '.css'; //
 
 		$css = $this->get_instance_css($instance);
 
@@ -801,7 +801,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			$style = $this->get_style_name($instance);
 			$hash = $this->get_style_hash( $instance );
-			$name = $this->id_base.'-'.$style.'-'.$hash;
+			$name = $this->id_base . '-' . $style . '-' . $hash . '-' . get_the_id();
 
 			$wp_filesystem->delete($upload_dir['basedir'] . '/siteorigin-widgets/' . $name . '.css');
 			if ( in_array( $name, $this->generated_css ) ) {
@@ -906,7 +906,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		if( ! empty( $less ) ) {
 			$style = $this->get_style_name( $instance );
 			$hash = $this->get_style_hash( $instance );
-			$css_name = $this->id_base . '-' . $style . '-' . $hash;
+			$css_name = $this->id_base . '-' . $style . '-' . $hash . '-' . get_the_id();
 
 			//we assume that any remaining @imports are plain css imports and should be kept outside selectors
 			$css_imports = '';
