@@ -158,6 +158,8 @@ class SiteOrigin_Widgets_Bundle {
 	 */
 	function clear_widget_cache() {
 		// Remove all cached CSS for SiteOrigin Widgets
+
+		require_once ABSPATH . 'wp-admin/includes/file.php';
 		if( function_exists('WP_Filesystem') && WP_Filesystem() ) {
 			global $wp_filesystem;
 			$upload_dir = wp_upload_dir();
