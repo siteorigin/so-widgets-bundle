@@ -47,6 +47,7 @@ class SiteOrigin_Widgets_Bundle {
 	function __construct(){
 		add_action('admin_init', array($this, 'admin_activate_widget') );
 		add_action('admin_menu', array($this, 'admin_menu_init') );
+		add_action('admin_init', array( $this, 'clear_file_cache' ) );
 		add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_scripts') );
 		add_action('admin_enqueue_scripts', array($this, 'admin_register_scripts') );
 
@@ -323,7 +324,47 @@ class SiteOrigin_Widgets_Bundle {
 
 		}
 	}
-	
+
+	/**
+	 * Clear all old CSS files
+	 *
+	 * @var bool $force Must we force a cache refresh.
+	 */
+	public static function clear_file_cache( $force_delete = false, $css_expire = 604800 ) {
+		// Use this variable to ensure this only runs once per request
+		static $done = false;
+
+		if ( $done && ! $force_delete ) {
+			return;
+		}
+
+		if ( ! get_transient( 'sow:cleared' ) || $force_delete ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			if ( WP_Filesystem() ) {
+				global $wp_filesystem;
+				$upload_dir = wp_upload_dir();
+
+				$list = $wp_filesystem->dirlist( $upload_dir['basedir'] . '/siteorigin-widgets/' );
+				if ( ! empty( $list ) ) {
+					foreach( $list as $file ) {
+						if ( $file['lastmodunix'] < time() - $css_expire || $force_delete ) {
+							// Delete the file
+							$wp_filesystem->delete( $upload_dir['basedir'] . '/siteorigin-widgets/' . $file['name'] );
+
+							// Alert other plugins that we've deleted a CSS file
+							do_action( 'siteorigin_widgets_stylesheet_deleted', $file['name'] );
+						}
+					}
+				}
+			}
+
+			// Set this transient so we know when to clear all the generated CSS.
+			set_transient( 'sow:cleared', true, $css_expire );
+		}
+
+		$done = true;
+	}
+
 	/**
 	 * Register some common scripts used in forms.
 	 */
