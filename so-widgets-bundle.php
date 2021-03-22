@@ -922,6 +922,10 @@ class SiteOrigin_Widgets_Bundle {
 		$id = end( explode( '-', $name ) );
 
 		if ( is_numeric( $id ) ) {
+			if ( function_exists( 'w3tc_flush_post' ) ) {
+				w3tc_flush_post( $id );
+			}
+
 			if ( class_exists( 'Swift_Performance_Cache' ) ) {
 				Swift_Performance_Cache::clear_post_cache( $id );
 			}
@@ -934,6 +938,11 @@ class SiteOrigin_Widgets_Bundle {
 	 * @return string
 	 */
 	public function clear_all_cache() {
+		if ( function_exists( 'w3tc_flush_all' ) ) {
+			w3tc_flush_all();
+		}
+
+
 		if ( class_exists( 'Swift_Performance_Cache' ) ) {
 			Swift_Performance_Cache::clear_all_cache();
 		}
