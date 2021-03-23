@@ -89,11 +89,6 @@ class SiteOrigin_Widgets_Bundle {
 		if ( class_exists('autoptimizeMain', false) ) {
 			add_filter( 'autoptimize_filter_css_exclude', array( $this, 'include_widgets_css_in_autoptimize'), 10, 2 );
 		}
-
-		// These actions handle telling cache plugins that they need to regenerate a page cache.
-		add_action( 'siteorigin_widgets_stylesheet_deleted', array( $this, 'clear_page_cache' ) );
-		add_action( 'siteorigin_widgets_stylesheet_added', array( $this, 'clear_page_cache' ) );
-		add_action( 'siteorigin_widgets_stylesheet_cleared', array( $this, 'clear_all_cache' ) );
 	}
 
 	/**
@@ -910,42 +905,6 @@ class SiteOrigin_Widgets_Bundle {
 		$excluded = implode( ',', array_filter( array_merge( $excl, $add ) ) );
 
 		return $excluded;
-	}
-
-	/**
-	 * Tell cache plugins that they need to regenerate a specific page's cache.
-	 *
-	 * @param $name
-	 * @param $instance
-	 */
-	public function clear_page_cache( $name, $instance = array() ) {
-		$id = end( explode( '-', $name ) );
-
-		if ( is_numeric( $id ) ) {
-			if ( function_exists( 'w3tc_flush_post' ) ) {
-				w3tc_flush_post( $id );
-			}
-
-			if ( class_exists( 'Swift_Performance_Cache' ) ) {
-				Swift_Performance_Cache::clear_post_cache( $id );
-			}
-		}
-	}
-
-	/**
-	 * Tell cache plugins that they need to regenerate their entire page cache.
-	 *
-	 * @return string
-	 */
-	public function clear_all_cache() {
-		if ( function_exists( 'w3tc_flush_all' ) ) {
-			w3tc_flush_all();
-		}
-
-
-		if ( class_exists( 'Swift_Performance_Cache' ) ) {
-			Swift_Performance_Cache::clear_all_cache();
-		}
 	}
 
 }
