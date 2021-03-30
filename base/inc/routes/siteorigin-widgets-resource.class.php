@@ -90,7 +90,6 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 		$widget = SiteOrigin_Widgets_Widget_Manager::get_widget_instance( $widget_class );
 		// Attempt to activate the widget if it's not already active.
 		if ( ! empty( $widget_class ) && empty( $widget ) ) {
-			global $wp_widget_factory;
 			$widget = SiteOrigin_Widgets_Bundle::single()->load_missing_widget( false, $widget_class );
 		}
 
@@ -142,7 +141,6 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 		$widget = SiteOrigin_Widgets_Widget_Manager::get_widget_instance( $widget_class );
 		// Attempt to activate the widget if it's not already active.
 		if ( ! empty( $widget_class ) && empty( $widget ) ) {
-			global $wp_widget_factory;
 			$widget = SiteOrigin_Widgets_Bundle::single()->load_missing_widget( false, $widget_class );
 		}
 
