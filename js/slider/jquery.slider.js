@@ -187,8 +187,8 @@ jQuery( function($){
 				if( $slides.length > 1 ) {
 					if( !$base.hasClass('sow-slider-is-mobile') ) {
 						if ( settings.nav_always_show_desktop && window.matchMedia( '(min-width: ' + settings.breakpoint + ')' ).matches ) {
-						$p.show();
-						$n.show();
+							$p.show();
+							$n.show();
 						} else {
 							var toHide = false;
 							$base
