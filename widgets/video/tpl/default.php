@@ -29,6 +29,9 @@ if ( $autoplay ) {
 		$video_args['muted'] = true;
 	}
 }
+if ( $loop ) {
+	$video_args['loop'] = "true";
+}
 if ( ! empty( $poster ) ) {
 	$video_args['poster'] = esc_url( $poster );
 }
