@@ -945,17 +945,18 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
             <div class="sow-form-field sow-form-field-<?php echo sanitize_html_class( $field['type'] ) ?>"><?php
 
 			$label = $field['label'];
-			if ( $indicate_required_fields && ! empty( $field['required']['required'] ) ) {
-				$label .= '*';
-			}
+			$indicate_as_required = $indicate_required_fields && ! empty( $field['required']['required'] );
 			$no_placeholder_support = ( $field['type'] != 'radio' && $field['type'] != 'checkboxes' );
 			// label should be rendered before the field, then CSS will do the exact positioning.
 			$render_label_before_field = ( $label_position != 'below' && $label_position != 'inside' ) || ( $label_position == 'inside' && ! $no_placeholder_support );
 			if ( empty( $label_position ) || $render_label_before_field ) {
-				$this->render_form_label( $field_id, $label, $label_position );
+				$this->render_form_label( $field_id, $label, $label_position, $indicate_as_required );
 			}
 
 			$show_placeholder = $label_position == 'inside';
+			if ( $show_placeholder && $indicate_as_required ) {
+				$label .= '*';
+			}
 
 			if ( is_array( $errors ) && ! empty( $errors[ $field_name ] ) ) {
 				?>
@@ -987,7 +988,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			?></span><?php
 
 			if ( ! empty( $label_position ) && $label_position == 'below' ) {
-				$this->render_form_label( $field_id, $label, $instance );
+				$this->render_form_label( $field_id, $label, $instance, $indicate_as_required );
 			}
 
 			if ( ! empty( $field['description'] ) ) {
@@ -1002,7 +1003,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 	}
 
-	function render_form_label( $field_id, $label, $position ) {
+	function render_form_label( $field_id, $label, $position, $indicate_as_required = false ) {
 		if ( ! empty( $label ) ) {
 			$label_class = '';
 			if ( ! empty( $position ) ) {
@@ -1010,7 +1011,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 			?><label<?php if ( ! empty( $label_class ) ) {
 				echo $label_class;
-			} ?> for="<?php echo esc_attr( $field_id ) ?>"><strong><?php echo esc_html( $label ) ?></strong></label>
+			} ?> for="<?php echo esc_attr( $field_id ) ?>">
+				<strong>
+					<?php echo esc_html( $label ) ?>
+					<?php if ( $indicate_as_required ) : ?>
+						<span class="sow-form-field-required">*</span>
+					<?php endif; ?>
+				</strong>
+			</label>
 			<?php
 		}
 	}
