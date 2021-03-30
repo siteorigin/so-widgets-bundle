@@ -435,7 +435,6 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		
 		?><div class="siteorigin-widget-tinymce-container"
 			<?php if ( $this->media_buttons && ! empty( $media_buttons_html ) ) : ?>
-		test="123"
 			   data-media-buttons="<?php echo esc_attr( json_encode( array( 'html' => $media_buttons_html ) ) ) ?>"
 			<?php endif; ?>
 			   data-editor-settings="<?php echo esc_attr( json_encode( $settings ) ) ?>">
