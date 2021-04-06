@@ -63,10 +63,9 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 	/**
 	 * Tell cache plugins that they need to regenerate a page cache.
 	 *
-	 * @param $excluded
-	 * @param $content
+	 * @param $name The name of the file that's been deleted.
+	 * @param $instance The current instance of the related widget.
 	 *
-	 * @return string
 	 */
 	public function clear_page_cache( $name, $instance = array() ) {
 		$id = end( explode( '-', $name ) );
@@ -85,11 +84,6 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 
 	/**
 	 * Tell cache plugins that they need to regenerate their all page cache.
-	 *
-	 * @param $excluded
-	 * @param $content
-	 *
-	 * @return string
 	 */
 	public function clear_all_cache() {
 		if ( function_exists( 'w3tc_flush_all' ) ) {

@@ -819,9 +819,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Clear all old CSS files
+	 * Clear all old CSS files.
 	 *
-	 * @var bool $force Must we force a cache refresh.
+	 * @var bool $force_delete Whether to forcefully clear the file cache.
 	 */
 	public static function clear_file_cache( $force_delete = false ){
 		SiteOrigin_Widgets_Bundle::single()->clear_file_cache( $force_delete, self::$css_expire );

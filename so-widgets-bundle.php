@@ -321,12 +321,13 @@ class SiteOrigin_Widgets_Bundle {
 	}
 
 	/**
-	 * Clear all old CSS files
+	 * Clear all old CSS files.
 	 *
-	 * @var bool $force Must we force a cache refresh.
+	 * @var bool $force_delete Whether to forcefully clear the file cache.
+	 * @var int $css_expire The maximum age of a file before it's removed.
 	 */
 	public static function clear_file_cache( $force_delete = false, $css_expire = 604800 ) {
-		// Use this variable to ensure this only runs once per request
+		// Use this variable to ensure this only runs once per request.
 		static $done = false;
 
 		if ( $done && ! $force_delete ) {
@@ -343,10 +344,10 @@ class SiteOrigin_Widgets_Bundle {
 				if ( ! empty( $list ) ) {
 					foreach( $list as $file ) {
 						if ( $file['lastmodunix'] < time() - $css_expire || $force_delete ) {
-							// Delete the file
+							// Delete the file.
 							$wp_filesystem->delete( $upload_dir['basedir'] . '/siteorigin-widgets/' . $file['name'] );
 
-							// Alert other plugins that we've deleted a CSS file
+							// Alert other plugins that we've deleted a CSS file.
 							do_action( 'siteorigin_widgets_stylesheet_deleted', $file['name'] );
 						}
 					}
