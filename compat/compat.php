@@ -90,7 +90,6 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 			w3tc_flush_all();
 		}
 
-
 		if ( class_exists( 'Swift_Performance_Cache' ) ) {
 			Swift_Performance_Cache::clear_all_cache();
 		}
