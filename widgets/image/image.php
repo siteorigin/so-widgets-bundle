@@ -37,6 +37,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			'size' => array(
 				'type' => 'image-size',
 				'label' => __('Image size', 'so-widgets-bundle'),
+				'custom_size' => true,
 			),
 
 			'align' => array(
@@ -116,6 +117,18 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 
 	public function get_template_variables( $instance, $args ) {
 		$title = $this->get_image_title( $instance );
+
+		// Add support for custom sizes.
+		if (
+			$instance['size'] == 'custom_size' &&
+			! empty( $instance['size_width'] ) &&
+			! empty( $instance['size_height'] )
+		) {
+			$instance['size'] = array(
+				(int) $instance['size_width'],
+				(int) $instance['size_width'],
+			);
+		}
 
 		$src = siteorigin_widgets_get_attachment_image_src(
 			$instance['image'],
