@@ -123,6 +123,15 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				),
 			)
 		);
+
+		$this->register_frontend_styles(
+			array(
+				array(
+					'sow-carousel-basic',
+					plugin_dir_url( __FILE__ ) . 'css/style.css',
+				),
+			)
+		);
 	}
 
 	function get_breakpoints() {
