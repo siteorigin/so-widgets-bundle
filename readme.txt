@@ -66,6 +66,31 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+== 1.18.0 - 12 April 2021 ==
+* Updated the Google fonts list.
+* Updated Font Awesome from `5.14.0` to `5.15.1`.
+* Block Editor: Styling fixes including specific fixes for the Twenty Twenty-One theme.
+* Contact Form: Set missing message default value.
+* Contact Form: Nested the required indicator to make styling easier.
+* Editor: Stopped processing the `<!--more-->` quicktag in previews.
+* Features: Ensured the title tag exists before outputting.
+* Image: Added ability to set custom image sizes.
+* Image Grid: Changed to use Flexbox to avoid unintended spacing.
+* Post Carousel: Added an overlay hover opacity setting.
+* Slider: Added a `Height` setting if the `Foreground image` is set.
+* Social Media Buttons: Added Discord.
+* Video: Added a `Loop` setting for self-hosted videos.
+* Video: If `autoplay` is enabled, `playsinline` will be added.
+* Developer: Post Carousel: Added `siteorigin_widgets_post_carousel_post_limit` filter
+* Developer: Google Maps: Corrected marker JavaScript property names.
+* Developer: Block Editor: Store and serve rendered widget.
+* Developer: Image form field: Added an an optional parameter `custom_size` to enable custom sizes.
+* Developer: State Emitters: Improved media field external support.
+* Developer: Sanitized italic fonts rather than clearing them.
+* Developer: Replaced older-style PHP type conversion functions with type casts.
+* Developer: Add `units` and `default_unit` parameters for the measurement field.
+* Developer: Changes for PHP 8.
+
 == 1.17.11 - 09 December 2020 ==
 * Google Maps: Added Map Style button styling.
 * Accordion: Submitted contact forms added to Accordion will now open the panel on load.
