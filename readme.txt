@@ -84,7 +84,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Developer: Post Carousel: Added `siteorigin_widgets_post_carousel_post_limit` filter
 * Developer: Google Maps: Corrected marker JavaScript property names.
 * Developer: Block Editor: Store and serve rendered widget.
-* Developer: Image form field: Added an an optional parameter `custom_size` to enable custom sizes.
+* Developer: Image form field: Added an optional parameter `custom_size` to enable custom sizes.
 * Developer: State Emitters: Improved media field external support.
 * Developer: Sanitized italic fonts rather than clearing them.
 * Developer: Replaced older-style PHP type conversion functions with type casts.
