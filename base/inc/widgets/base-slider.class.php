@@ -134,7 +134,13 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'type' => 'checkbox',
 				'label' => __( 'Show slide background videos on mobile', 'so-widgets-bundle' ),
 				'description' => __( 'Allow slide background videos to appear on mobile devices that support autoplay.', 'so-widgets-bundle' ),
-			)
+			),
+
+			'loop_background_videos' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Loop slide background videos', 'so-widgets-bundle' ),
+				'default' => true,
+			),
 		);
 	}
 
@@ -367,8 +373,8 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	 */
 	function video_code( $videos, $classes = array() ){
 		if( empty( $videos ) ) return;
-		$video_element = '<video class="' . esc_attr( implode( ' ', $classes ) ) . '" autoplay loop muted playsinline>';
-
+		$loop = ! empty( $controls['loop_background_videos'] ) && $controls['loop_background_videos'] ? 'loop' : '';
+		$video_element = '<video class="' . esc_attr( implode( ' ', $classes ) ) . '" autoplay ' . $loop . ' muted playsinline>';
 		$so_video = new SiteOrigin_Video();
 		foreach( $videos as $video ) {
 			if( empty( $video['file'] ) && empty ( $video['url'] ) ) continue;
