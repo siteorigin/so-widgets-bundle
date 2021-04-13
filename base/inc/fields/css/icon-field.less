@@ -13,6 +13,7 @@
 		border: 1px solid #bbbbbb;
 		height: 35px;
 
+		&:focus,
 		&:hover {
 			.gradient( #ffffff, #f7f7f7, #ffffff );
 			.box-shadow(~"0 1px 2px rgba(0,0,0,0.15)");
@@ -58,6 +59,12 @@
 		font-size: 11px;
 		line-height: 1em;
 		padding: 11px 0 11px 6px;
+		.transition(0.25s);
+
+		&:focus,
+		&:hover {
+			color: #bc0b0b;
+		}
 	}
 
 	&.siteorigin-widget-active {
@@ -107,6 +114,11 @@
 
 				cursor: pointer;
 				text-align: center;
+
+				&:focus {
+					background: #fcf8f8;
+					border: 1px solid #43aaec;
+				}
 
 				&.siteorigin-widget-active {
 					background: #f6fafc;

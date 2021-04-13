@@ -30,7 +30,8 @@ class SiteOrigin_Widget_Field_Link extends SiteOrigin_Widget_Field_Text_Input_Ba
 
 			<input type="text" class="content-text-search"
 			       data-post-types="<?php echo esc_attr( $post_types ) ?>"
-			       placeholder="<?php esc_attr_e( 'Search Content', 'so-widgets-bundle' ) ?>"/>
+			       placeholder="<?php esc_attr_e( 'Search Content', 'so-widgets-bundle' ) ?>"
+			       tabindex="0"/>
 
 			<ul class="posts"></ul>
 

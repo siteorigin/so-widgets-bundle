@@ -24,10 +24,14 @@ $video_args = array(
 );
 if ( $autoplay ) {
 	$video_args['autoplay'] = 1;
+	$video_args['playsinline'] = '';
 	// In most brwosers, Videos need to be muted to autoplay.
 	if ( apply_filters( 'sow_video_autoplay_mute_self_hosted', true ) ) {
 		$video_args['muted'] = true;
 	}
+}
+if ( $loop ) {
+	$video_args['loop'] = "true";
 }
 if ( ! empty( $poster ) ) {
 	$video_args['poster'] = esc_url( $poster );

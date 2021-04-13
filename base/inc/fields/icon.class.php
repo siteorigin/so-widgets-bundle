@@ -33,12 +33,12 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 		}
 		?>
 
-		<div class="siteorigin-widget-icon-selector-current">
+		<div class="siteorigin-widget-icon-selector-current" tabindex="0">
 			<div class="siteorigin-widget-icon"><span></span></div>
 			<label><?php _e('Choose Icon', 'so-widgets-bundle') ?></label>
 		</div>
 
-		<a class="so-icon-remove" style="display: <?php echo !empty( $value ) ? 'inline-block' : 'none' ?>;"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ) ?></a>
+		<a class="so-icon-remove" style="display: <?php echo !empty( $value ) ? 'inline-block' : 'none' ?>;" tabindex="0"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ) ?></a>
 
 		<div class="clear"></div>
 

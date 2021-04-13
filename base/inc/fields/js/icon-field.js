@@ -17,15 +17,23 @@
 		}
 
 		// Clicking on the button should display the icon selector
-		$b.on( 'click', function() {
+		$b.on( 'click keyup', function( e ) {
+			if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
+				return;
+			}
+
 			$is.slideToggle();
 			$search.val( '' );
 			searchIcons();
 		} );
 
 		// Clicking on the remove button
-		$remove.on( 'click', function( e ) {
+		$remove.on( 'click keyup', function( e ){
 			e.preventDefault();
+
+			if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
+				return;
+			}
 
 			// Trigger a click on the existing icon to remove it.
 			$$.find('.siteorigin-widget-active').trigger( 'click' );
@@ -116,11 +124,16 @@
 				}
 				var familyStyle = 'sow-icon-' + family + ( style ? ' ' + style : '' );
 				var familyValue = family + ( style ? '-' + style : '' ) + '-' + i;
+
 				var $icon = $( '<div data-sow-icon="' + unicode + '"></div>' )
 					.attr('data-value', familyValue )
 					.addClass( familyStyle )
 					.addClass( 'siteorigin-widget-icon-icons-icon' )
-					.on( 'click', function() {
+					.on( 'click keyup', function( e ) {
+						if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
+							return;
+						}
+
 						var $$ = $(this);
 
 						if( $$.hasClass('siteorigin-widget-active') ) {

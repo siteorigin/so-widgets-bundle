@@ -666,7 +666,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 				<div class="so-widgets-toolbar">
 					<h3><?php _e( 'Widget Preview', 'so-widgets-bundle' ) ?></h3>
-					<div class="close"><span class="dashicons dashicons-arrow-left-alt2"></span></div>
+					<div class="close" tabindex="0"><span class="dashicons dashicons-arrow-left-alt2"></span></div>
 				</div>
 
 				<div class="so-widgets-dialog-frame">
@@ -861,8 +861,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		if( !class_exists( 'SiteOrigin_LessC' ) ) require plugin_dir_path( __FILE__ ) . 'inc/lessc.inc.php';
 		if( !class_exists('SiteOrigin_Widgets_Less_Functions') ) require plugin_dir_path( __FILE__ ).'inc/less-functions.php';
 
-echo 123;
-die();
 		if( !method_exists( $this, 'get_less_content' ) ) {
 			$style_name = $this->get_style_name($instance);
 			if( empty($style_name) ) return '';

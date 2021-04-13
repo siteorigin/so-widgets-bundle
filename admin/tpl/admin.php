@@ -117,7 +117,7 @@
 
 		<div class="so-title-bar">
 			<h3 class="so-title"><?php _e( 'Widget Settings', 'so-widgets-bundle' ) ?></h3>
-			<a class="so-close">
+			<a class="so-close" tabindex="0">
 				<span class="so-dialog-icon"></span>
 			</a>
 		</div>
@@ -127,7 +127,7 @@
 
 		<div class="so-toolbar">
 			<div class="so-buttons">
-				<button class="button-primary so-save"><?php _e( 'Save', 'so-widgets-bundle' ) ?></button>
+				<button class="button-primary so-save" tabindex="0"><?php _e( 'Save', 'so-widgets-bundle' ) ?></button>
 			</div>
 		</div>
 	</div>

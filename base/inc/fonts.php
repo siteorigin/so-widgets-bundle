@@ -52,6 +52,14 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Akaya Kanadaka' =>
+		array(
+			0 => 'regular',
+		),
+	'Akaya Telivigala' =>
+		array(
+			0 => 'regular',
+		),
 	'Akronim' =>
 		array(
 			0 => 'regular',
@@ -80,15 +88,17 @@ return array(
 	'Alegreya' =>
 		array(
 			0 => 'regular',
-			1 => 'italic',
-			2 => '500',
-			3 => '500italic',
-			4 => '700',
-			5 => '700italic',
-			6 => '800',
-			7 => '800italic',
-			8 => '900',
-			9 => '900italic',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => '800',
+			5 => '900',
+			6 => 'italic',
+			7 => '500italic',
+			8 => '600italic',
+			9 => '700italic',
+			10 => '800italic',
+			11 => '900italic',
 		),
 	'Alegreya SC' =>
 		array(
@@ -312,14 +322,24 @@ return array(
 		),
 	'Archivo' =>
 		array(
-			0 => 'regular',
-			1 => 'italic',
-			2 => '500',
-			3 => '500italic',
-			4 => '600',
-			5 => '600italic',
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
 			6 => '700',
-			7 => '700italic',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
 		),
 	'Archivo Black' =>
 		array(
@@ -397,12 +417,12 @@ return array(
 	'Asap' =>
 		array(
 			0 => 'regular',
-			1 => 'italic',
-			2 => '500',
-			3 => '500italic',
-			4 => '600',
-			5 => '600italic',
-			6 => '700',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => 'italic',
+			5 => '500italic',
+			6 => '600italic',
 			7 => '700italic',
 		),
 	'Asap Condensed' =>
@@ -556,6 +576,10 @@ return array(
 			9 => '600italic',
 			10 => '700',
 			11 => '700italic',
+		),
+	'Ballet' =>
+		array(
+			0 => 'regular',
 		),
 	'Baloo 2' =>
 		array(
@@ -794,6 +818,10 @@ return array(
 			1 => 'regular',
 			2 => '700',
 		),
+	'Benne' =>
+		array(
+			0 => 'regular',
+		),
 	'Bentham' =>
 		array(
 			0 => 'regular',
@@ -962,6 +990,21 @@ return array(
 			6 => '800',
 			7 => '900',
 		),
+	'Bodoni Moda' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => '800',
+			5 => '900',
+			6 => 'italic',
+			7 => '500italic',
+			8 => '600italic',
+			9 => '700italic',
+			10 => '800italic',
+			11 => '900italic',
+		),
 	'Bokor' =>
 		array(
 			0 => 'regular',
@@ -989,6 +1032,17 @@ return array(
 	'Bree Serif' =>
 		array(
 			0 => 'regular',
+		),
+	'Brygada 1918' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => 'italic',
+			5 => '500italic',
+			6 => '600italic',
+			7 => '700italic',
 		),
 	'Bubblegum Sans' =>
 		array(
@@ -1633,6 +1687,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Dela Gothic One' =>
+		array(
+			0 => 'regular',
+		),
 	'Delius' =>
 		array(
 			0 => 'regular',
@@ -1710,6 +1768,10 @@ return array(
 			4 => '600',
 			5 => '700',
 			6 => '800',
+		),
+	'DotGothic16' =>
+		array(
+			0 => 'regular',
 		),
 	'Dr Sugiyama' =>
 		array(
@@ -2158,6 +2220,27 @@ return array(
 			3 => '700',
 			4 => '900',
 		),
+	'Fraunces' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
+		),
 	'Freckle Face' =>
 		array(
 			0 => 'regular',
@@ -2448,6 +2531,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Hachi Maru Pop' =>
+		array(
+			0 => 'regular',
+		),
 	'Halant' =>
 		array(
 			0 => '300',
@@ -2709,6 +2796,18 @@ return array(
 	'Iceland' =>
 		array(
 			0 => 'regular',
+		),
+	'Imbue' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
 		),
 	'Imprima' =>
 		array(
@@ -3097,6 +3196,12 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Kiwi Maru' =>
+		array(
+			0 => '300',
+			1 => 'regular',
+			2 => '500',
+		),
 	'Knewave' =>
 		array(
 			0 => 'regular',
@@ -3306,6 +3411,16 @@ return array(
 			2 => '500',
 			3 => '600',
 			4 => '700',
+		),
+	'Lexend' =>
+		array(
+			0 => '100',
+			1 => '300',
+			2 => 'regular',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
 		),
 	'Lexend Deca' =>
 		array(
@@ -4116,10 +4231,31 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'New Tegomin' =>
+		array(
+			0 => 'regular',
+		),
 	'News Cycle' =>
 		array(
 			0 => 'regular',
 			1 => '700',
+		),
+	'Newsreader' =>
+		array(
+			0 => '200',
+			1 => '300',
+			2 => 'regular',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
+			7 => '200italic',
+			8 => '300italic',
+			9 => 'italic',
+			10 => '500italic',
+			11 => '600italic',
+			12 => '700italic',
+			13 => '800italic',
 		),
 	'Niconne' =>
 		array(
@@ -4359,6 +4495,10 @@ return array(
 			0 => 'regular',
 		),
 	'Offside' =>
+		array(
+			0 => 'regular',
+		),
+	'Oi' =>
 		array(
 			0 => 'regular',
 		),
@@ -4788,6 +4928,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Potta One' =>
+		array(
+			0 => 'regular',
+		),
 	'Pragati Narrow' =>
 		array(
 			0 => 'regular',
@@ -5079,6 +5223,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Reggae One' =>
+		array(
+			0 => 'regular',
+		),
 	'Revalia' =>
 		array(
 			0 => 'regular',
@@ -5161,6 +5309,10 @@ return array(
 			0 => 'regular',
 		),
 	'Rock Salt' =>
+		array(
+			0 => 'regular',
+		),
+	'RocknRoll One' =>
 		array(
 			0 => 'regular',
 		),
@@ -5304,6 +5456,15 @@ return array(
 			6 => '700',
 			7 => '800',
 			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
 		),
 	'Saira Condensed' =>
 		array(
@@ -5504,6 +5665,22 @@ return array(
 	'Share Tech Mono' =>
 		array(
 			0 => 'regular',
+		),
+	'Shippori Mincho' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => '800',
+		),
+	'Shippori Mincho B1' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => '800',
 		),
 	'Shojumaru' =>
 		array(
@@ -5800,6 +5977,10 @@ return array(
 			0 => 'regular',
 			1 => '700',
 		),
+	'Stick' =>
+		array(
+			0 => 'regular',
+		),
 	'Stint Ultra Condensed' =>
 		array(
 			0 => 'regular',
@@ -6064,6 +6245,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Train One' =>
+		array(
+			0 => 'regular',
+		),
 	'Trirong' =>
 		array(
 			0 => '100',
@@ -6105,6 +6290,18 @@ return array(
 			0 => 'regular',
 			1 => 'italic',
 			2 => '700',
+		),
+	'Truculenta' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
 		),
 	'Trykker' =>
 		array(
@@ -6376,6 +6573,10 @@ return array(
 			2 => '500',
 			3 => '600',
 			4 => '700',
+		),
+	'Yusei Magic' =>
+		array(
+			0 => 'regular',
 		),
 	'ZCOOL KuaiLe' =>
 		array(
