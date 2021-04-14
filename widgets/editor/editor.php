@@ -113,7 +113,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 				! $this->is_preview() &&
 				empty( $GLOBALS[ 'SITEORIGIN_PANELS_PREVIEW_RENDER' ] ) &&
 				(
-					empty( $_POST['action'] ) &&
+					isset( $_POST['action'] ) &&
 					$_POST['action'] != 'so_widgets_preview'
 				)
 			) {
