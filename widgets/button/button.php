@@ -49,6 +49,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'url' => array(
 				'type' => 'link',
 				'label' => __('Destination URL', 'so-widgets-bundle'),
+				'allow_shortcode' => true,
 			),
 
 			'new_window' => array(
