@@ -41,24 +41,25 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 
 	}
 
+	// Allow widgets to override the breakpoint default values.
 	function get_breakpoints() {
-		return apply_filters(
-			'siteorigin_widgets_carousel_breakpoints',
-			array(
-				'tablet_landscape' => 1366,
-				'tablet_portrait'  => 1025,
-				'mobile'           => 480,
-			)
+		return array(
+			'tablet_landscape' => 1366,
+			'tablet_portrait' => 1025,
+			'mobile' => 480,
 		);
 	}
 
-	function responsive_form_fields() {
+	function responsive_form_fields( $context = 'widget' ) {
 		$breakpoints = $this->get_breakpoints();
+		// If the context is a widget, the global values are displayed using a
+		// placeholder to prevent the values from being stored.
+		$field = $context == 'widget' ? 'placeholder' : 'default';
 
 		return array(
 			'type' => 'section',
 			'label' => __( 'Responsive', 'so-widgets-bundle' ),
-			'hide' => true,
+			'hide' => $context == 'widget',
 			'fields' => array(
 				'desktop' => array(
 					'type' => 'section',
@@ -69,7 +70,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 							'type' => 'number',
 							'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
 							'description' => __( 'Set the number of slides to scroll per navigation click or swipe on desktop.', 'so-widgets-bundle' ),
-							'default' => 1,
+							$field => 1,
 						),
 					),
 				),
@@ -86,13 +87,13 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 								'breakpoint' => array(
 									'type' => 'number',
 									'label' => __( 'Breakpoint', 'so-widgets-bundle' ),
-									'default' => $breakpoints['tablet_landscape'],
+									$field => $breakpoints['tablet_landscape'],
 								),
 								'slides_to_scroll' => array(
 									'type' => 'number',
 									'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
 									'description' => __( 'Set the number of slides to scroll per navigation click or swipe on tablet devices.', 'so-widgets-bundle' ),
-									'default' => 2,
+									$field => 2,
 								),
 							),
 						),
@@ -104,13 +105,13 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 								'breakpoint' => array(
 									'type' => 'number',
 									'label' => __( 'Breakpoint', 'so-widgets-bundle' ),
-									'default' => $breakpoints['tablet_portrait'],
+									$field => $breakpoints['tablet_portrait'],
 								),
 								'slides_to_scroll' => array(
 									'type' => 'number',
 									'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
 									'description' => __( 'Set the number of slides to scroll per navigation click or swipe on tablet devices.', 'so-widgets-bundle' ),
-									'default' => 2,
+									$field => 2,
 								),
 							),
 						),
@@ -124,13 +125,13 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 						'breakpoint' => array(
 							'type' => 'number',
 							'label' => __( 'Breakpoint', 'so-widgets-bundle' ),
-							'default' => $breakpoints['mobile'],
+							$field => $breakpoints['mobile'],
 						),
 						'slides_to_scroll' => array(
 							'type' => 'number',
 							'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
-							'description' => __( ' Set the number of slides to scroll per navigation click or swipe on mobile devices.', 'so-widgets-bundle' ),
-							'default' => 1,
+							'description' => __( 'Set the number of slides to scroll per navigation click or swipe on mobile devices.', 'so-widgets-bundle' ),
+							$field => 1,
 						),
 					),
 				),
@@ -138,18 +139,26 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		);
 	}
 
+	function get_settings_form() {
+		return array(
+			'responsive' => $this->responsive_form_fields( 'global' ),
+		);
+	}
+
 	function responsive_template_variables( $responsive, $encode = true ) {
-		$responsive = array(
-			'desktop_slides' => ! empty ( $responsive['desktop']['slides_to_scroll'] ) ? $responsive['desktop']['slides_to_scroll'] : 1,
-			'tablet_portrait_slides' => ! empty ( $responsive['tablet']['portrait']['slides_to_scroll'] ) ? $responsive['tablet']['portrait']['slides_to_scroll'] : 2,
-			'tablet_portrait_breakpoint' => ! empty ( $responsive['tablet']['portrait']['breakpoint'] ) ? $responsive['tablet']['portrait']['breakpoint'] : $breakpoints['tablet_portrait'],
-			'tablet_landscape_slides' => ! empty ( $responsive['tablet']['landscape']['slides_to_scroll'] ) ? $responsive['tablet']['landscape']['slides_to_scroll'] : 2,
-			'tablet_landscape_breakpoint' => ! empty ( $responsive['tablet']['landscape']['breakpoint'] ) ? $responsive['tablet']['landscape']['breakpoint'] : $breakpoints['tablet_landscape'],
-			'mobile_breakpoint' => ! empty ( $responsive['mobile']['breakpoint'] ) ? $responsive['mobile']['breakpoint'] : $breakpoints['mobile'],
-			'mobile_slides' => ! empty ( $responsive['mobile']['slides_to_scroll'] ) ? $responsive['mobile']['slides_to_scroll'] : 1,
+		$breakpoints = $this->get_breakpoints();
+
+		$variables = array(
+			'desktop_slides' => ! empty( $responsive['desktop']['slides_to_scroll'] ) ? $responsive['desktop']['slides_to_scroll'] : 1,
+			'tablet_portrait_slides' => ! empty( $responsive['tablet']['portrait']['slides_to_scroll'] ) ? $responsive['tablet']['portrait']['slides_to_scroll'] : 2,
+			'tablet_portrait_breakpoint' => ! empty( $responsive['tablet']['portrait']['breakpoint'] ) ? $responsive['tablet']['portrait']['breakpoint'] : $breakpoints['tablet_portrait'],
+			'tablet_landscape_slides' => ! empty( $responsive['tablet']['landscape']['slides_to_scroll'] ) ? $responsive['tablet']['landscape']['slides_to_scroll'] : 2,
+			'tablet_landscape_breakpoint' => ! empty( $responsive['tablet']['landscape']['breakpoint'] ) ? $responsive['tablet']['landscape']['breakpoint'] : $breakpoints['tablet_landscape'],
+			'mobile_breakpoint' => ! empty( $responsive['mobile']['breakpoint'] ) ? $responsive['mobile']['breakpoint'] : $breakpoints['mobile'],
+			'mobile_slides' => ! empty( $responsive['mobile']['slides_to_scroll'] ) ? $responsive['mobile']['slides_to_scroll'] : 1,
 		);
 
-		return $encode ? json_encode( $responsive ) : $responsive;
+		return $encode ? json_encode( $variables ) : $variables;
 	}
 
 	function render_template( $settings ) {
