@@ -4,6 +4,7 @@
 @headline_font: default;
 @headline_font_weight: 400;
 @headline_font_size: default;
+@headline_font_style: default;
 @headline_line_height: 1.4em;
 @headline_margin: default;
 @headline_align: center;
@@ -14,6 +15,7 @@
 @sub_headline_font: default;
 @sub_headline_font_weight: 400;
 @sub_headline_font_size: default;
+@sub_headline_font_style: default;
 @sub_headline_line_height: 1.4em;
 @sub_headline_margin: default;
 @sub_headline_align: center;
@@ -31,6 +33,7 @@
 
     @{headline_tag}.sow-headline {
         .font(@headline_font, @headline_font_weight);
+        font-style: @headline_font_style;
         text-align: @headline_align;
         color: @headline_color;
         line-height: @headline_line_height;
@@ -49,6 +52,7 @@
 
     @{sub_headline_tag}.sow-sub-headline {
         .font(@sub_headline_font, @sub_headline_font_weight);
+        font-style: @sub_headline_font_style;
         text-align: @sub_headline_align;
         color: @sub_headline_color;
         line-height: @sub_headline_line_height;

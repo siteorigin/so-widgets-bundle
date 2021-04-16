@@ -287,6 +287,10 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			$font = siteorigin_widget_get_font( $instance['headline']['font'] );
 			$less_vars['headline_font'] = $font['family'];
 			if ( ! empty( $font['weight'] ) ) {
+				if ( ! is_numeric( $font['weight'] ) || $font['weight'] == 'italic' ) {
+					$font['weight'] = filter_var( $font['weight'], FILTER_SANITIZE_NUMBER_INT );
+					$less_vars['headline_font_style'] = 'italic';
+				}
 				$less_vars['headline_font_weight'] = $font['weight'];
 			}
 		}
@@ -305,6 +309,10 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			$font = siteorigin_widget_get_font( $instance['sub_headline']['font'] );
 			$less_vars['sub_headline_font'] = $font['family'];
 			if ( ! empty( $font['weight'] ) ) {
+				if ( ! is_numeric( $font['weight'] ) || $font['weight'] == 'italic' ) {
+					$font['weight'] = filter_var( $font['weight'], FILTER_SANITIZE_NUMBER_INT );
+					$less_vars['sub_headline_font_style'] = 'italic';
+				}
 				$less_vars['sub_headline_font_weight'] = $font['weight'];
 			}
 		}
