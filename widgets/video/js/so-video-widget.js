@@ -12,6 +12,10 @@ jQuery( function ( $ ) {
 		}
 		
 		$video.mediaelementplayer();
+
+		if ( typeof $.fn.fitVids == 'function' ) {
+			$( '.sow-video-wrapper.use-fitvid' ).fitVids();
+		}
 		
 		$video.data( 'initialized', true );
 	};
