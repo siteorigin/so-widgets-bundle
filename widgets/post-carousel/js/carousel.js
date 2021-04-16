@@ -63,7 +63,7 @@ jQuery( function ( $ ) {
 				e.preventDefault();
 				var $items = $$.find( '.sow-carousel-items' ),
 					numItems = $items.find( '.sow-carousel-item' ).length,
-					complete = numItems === $$.data( 'post-count' ),
+					complete = numItems >= $$.data( 'post-count' ),
 					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					lastPosition = numItems - numVisibleItems + 1,
 					slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' );
