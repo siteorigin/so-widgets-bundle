@@ -150,13 +150,15 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 					'label' => __( 'Loop Items', 'so-widgets-bundle' ),
 					'description' => __( 'Automatically return to the first item after the last item.', 'so-widgets-bundle' ),
 				),
-
+				'dots' => array(
+					'type' => 'checkbox',
+					'label' => __( 'Navigation dots', 'so-widgets-bundle' ),
+				),
 				'animation_speed' => array(
 					'type' => 'number',
 					'label' => __( 'Animation speed', 'so-widgets-bundle' ),
 					'default' => 800,
 				),
-
 				'autoplay' => array(
 					'type' => 'checkbox',
 					'label' => __( 'Autoplay', 'so-widgets-bundle' ),
@@ -168,7 +170,6 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 						),
 					)
 				),
-
 				'autoplay_pause_hover' => array(
 					'type' => 'checkbox',
 					'label' => __( 'Autoplay pause on hover', 'so-widgets-bundle' ),
@@ -216,6 +217,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 	function carousel_settings_template_variables( $settings, $encode = true ) {
 		$variables = array(
 			'loop' => ! empty( $settings['loop'] ) ? $settings['loop'] : true,
+			'dots' => ! empty( $settings['dots'] ) ? $settings['dots'] : true,
 			'animation_speed' => ! empty( $settings['animation_speed'] ) ? $settings['animation_speed'] : 800,
 			'autoplay' => ! empty( $settings['autoplay'] ) ? $settings['autoplay'] : false,
 			'pauseOnHover' => ! empty( $settings['autoplay_pause_hover'] ) ? $settings['autoplay_pause_hover'] : false,
