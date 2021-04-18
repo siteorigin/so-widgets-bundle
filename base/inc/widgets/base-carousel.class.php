@@ -130,9 +130,61 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 						'slides_to_scroll' => array(
 							'type' => 'number',
 							'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
-							'description' => __( 'Set the number of slides to scroll per navigation click or swipe on mobile devices.', 'so-widgets-bundle' ),
+							'description' => __( ' Set the number of slides to scroll per navigation click or swipe on mobile devices.', 'so-widgets-bundle' ),
 							$field => 1,
 						),
+					),
+				),
+			),
+		);
+	}
+
+	function carousel_settings_form_fields() {
+		return array(
+			'type' => 'section',
+			'label' => __( 'Carousel Settings', 'so-widgets-bundle' ),
+			'hide' => true,
+			'fields' => array(
+				'loop' => array(
+					'type' => 'checkbox',
+					'label' => __( 'Loop Items', 'so-widgets-bundle' ),
+					'description' => __( 'Automatically return to the first item after the last item.', 'so-widgets-bundle' ),
+				),
+
+				'animation_speed' => array(
+					'type' => 'number',
+					'label' => __( 'Animation speed', 'so-widgets-bundle' ),
+					'default' => 800,
+				),
+
+				'autoplay' => array(
+					'type' => 'checkbox',
+					'label' => __( 'Autoplay', 'so-widgets-bundle' ),
+					'state_emitter' => array(
+						'callback' => 'conditional',
+						'args'     => array(
+							'autoplay[show]: val',
+							'autoplay[hide]: ! val',
+						),
+					)
+				),
+
+				'autoplay_pause_hover' => array(
+					'type' => 'checkbox',
+					'label' => __( 'Autoplay pause on hover', 'so-widgets-bundle' ),
+					'state_handler' => array(
+						'autoplay[show]' => array( 'show' ),
+						'autoplay[hide]' => array( 'hide' ),
+					),
+				),
+
+				'timeout' => array(
+					'type' => 'number',
+					'label' => __( 'Timeout', 'so-widgets-bundle' ),
+					'default' => 8000,
+					'state_handler' => array(
+						'autoplay[show]' => array( 'show' ),
+						'autoplay[hide]' => array( 'hide' ),
 					),
 				),
 			),
@@ -156,6 +208,18 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			'tablet_landscape_breakpoint' => ! empty( $responsive['tablet']['landscape']['breakpoint'] ) ? $responsive['tablet']['landscape']['breakpoint'] : $breakpoints['tablet_landscape'],
 			'mobile_breakpoint' => ! empty( $responsive['mobile']['breakpoint'] ) ? $responsive['mobile']['breakpoint'] : $breakpoints['mobile'],
 			'mobile_slides' => ! empty( $responsive['mobile']['slides_to_scroll'] ) ? $responsive['mobile']['slides_to_scroll'] : 1,
+		);
+
+		return $encode ? json_encode( $variables ) : $variables;
+	}
+
+	function carousel_settings_template_variables( $settings, $encode = true ) {
+		$variables = array(
+			'loop' => ! empty( $settings['loop'] ) ? $settings['loop'] : true,
+			'animation_speed' => ! empty( $settings['animation_speed'] ) ? $settings['animation_speed'] : 800,
+			'autoplay' => ! empty( $settings['autoplay'] ) ? $settings['autoplay'] : false,
+			'pauseOnHover' => ! empty( $settings['autoplay_pause_hover'] ) ? $settings['autoplay_pause_hover'] : false,
+			'autoplaySpeed' => ! empty( $settings['timeout'] ) ? $settings['timeout'] : 8000,
 		);
 
 		return $encode ? json_encode( $variables ) : $variables;

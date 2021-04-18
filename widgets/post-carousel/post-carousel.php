@@ -302,7 +302,11 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 					// Base carousel specific settings.
 					'item-count' => get_query_var( 'sow-total_posts' ),
-					'loop' => ! empty( $instance['loop_posts'] ),
+					'carousel_settings' => json_encode(
+						array(
+							'loop' => ! empty( $instance['loop_posts'] ),
+						)
+					),
 					'responsive' => $this->responsive_template_variables( $instance['responsive'] ),
 				),
 			),

@@ -22,7 +22,8 @@ jQuery( function ( $ ) {
 		$( '.sow-carousel-wrapper' ).each( function () {
 			var $$ = $( this ),
 				$items = $$.find( '.sow-carousel-items' ),
-				responsiveSettings = $$.data( 'responsive' );
+				responsiveSettings = $$.data( 'responsive' ),
+				carouselSettings = $$.data( 'carousel_settings' );
 
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
@@ -32,6 +33,10 @@ jQuery( function ( $ ) {
 				touchThreshold: 20,
 				variableWidth: true,
 				accessibility: false,
+				speed: carouselSettings.animation_speed,
+				autoplay: carouselSettings.autoplay,
+				autoplaySpeed: carouselSettings.autoplaySpeed,
+				pauseOnHover: carouselSettings.pauseOnHover,
 				slidesToScroll: responsiveSettings.desktop_slides,
 				slidesToShow: responsiveSettings.desktop_slides,
 				responsive: [
@@ -61,6 +66,7 @@ jQuery( function ( $ ) {
 			// due to the inability to stop a slide from changing from those events
 			$$.parent().parent().find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click touchend', function( e, refocus ) {
 				e.preventDefault();
+
 				var $items = $$.find( '.sow-carousel-items' ),
 					numItems = $items.find( '.sow-carousel-item' ).length,
 					complete = numItems >= $$.data( 'item-count' ),
@@ -92,7 +98,7 @@ jQuery( function ( $ ) {
 						complete &&
 						$items.slick( 'slickCurrentSlide' ) >= lastPosition
 					) {
-						if ( $$.data( 'loop' ) ) {
+						if ( $$.data( 'carousel_settings' ).loop ) {
 							$items.slick( 'slickGoTo', 0 );
 						}
 					// Check if the number of slides to scroll exceeds lastPosition, go to the last slide.
@@ -102,7 +108,7 @@ jQuery( function ( $ ) {
 						$items.slick( 'slickNext' );
 					}
 				} else if ( $( this ).hasClass( 'sow-carousel-previous' ) ) {
-					if ( $$.data( 'loop' ) && $items.slick( 'slickCurrentSlide' ) == 0 ) {
+					if ( $$.data( 'carousel_settings' ).loop && $items.slick( 'slickCurrentSlide' ) == 0 ) {
 						$items.slick( 'slickGoTo', lastPosition );
 					} else {
 						$items.slick( 'slickPrev' );
