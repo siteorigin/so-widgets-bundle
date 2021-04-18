@@ -69,7 +69,7 @@ jQuery( function ( $ ) {
 
 				var $items = $$.find( '.sow-carousel-items' ),
 					numItems = $items.find( '.sow-carousel-item' ).length,
-					complete = numItems >= $$.data( 'item-count' ),
+					complete = numItems >= $$.data( 'item_count' ),
 					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					lastPosition = numItems - numVisibleItems + 1,
 					slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' );
@@ -143,7 +143,7 @@ jQuery( function ( $ ) {
 				$items = $wrapper.find( '.sow-carousel-items' ),
 				numItems = $items.find( '.sow-carousel-item' ).length,
 				itemIndex = $( this ).data( 'slick-index' ),
-				lastPosition = numItems - ( numItems === $wrapper.data( 'item-count' ) ? 0 : 1 );
+				lastPosition = numItems - ( numItems === $wrapper.data( 'item_count' ) ? 0 : 1 );
 
 			if ( e.keyCode == 37 ) {
 				itemIndex--;
@@ -175,7 +175,7 @@ jQuery( function ( $ ) {
 					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					navigation = currentCarousel.parent().parent().find( '.sow-carousel-navigation' );
 
-				if ( numVisibleItems >= currentCarousel.data( 'item-count' ) ) {
+				if ( numVisibleItems >= currentCarousel.data( 'item_count' ) ) {
 					navigation.hide();
 					$items.slick( 'slickSetOption', 'touchMove', false );
 					$items.slick( 'slickSetOption', 'draggable', false );

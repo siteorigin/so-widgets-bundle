@@ -301,7 +301,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 					'ajax-url' => sow_esc_url( wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ) ),
 
 					// Base carousel specific settings.
-					'item-count' => get_query_var( 'sow-total_posts' ),
+					'item_count' => get_query_var( 'sow-total_posts' ),
 					'carousel_settings' => json_encode(
 						array(
 							'loop' => ! empty( $instance['loop_posts'] ),
