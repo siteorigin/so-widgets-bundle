@@ -169,9 +169,9 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				);
 			}
 
-			if ( ! empty( $instance['playback']['fitvids'] ) && ! wp_script_is( 'fitvids' ) ) {
+			if ( ! empty( $instance['playback']['fitvids'] ) && ! wp_script_is( 'jquery-fitvids' ) ) {
 				wp_enqueue_script(
-					'fitvids',
+					'jquery-fitvids',
 					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/jquery.fitvids' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' ),
 					1.1
