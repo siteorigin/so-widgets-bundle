@@ -46,7 +46,7 @@ $so_video = new SiteOrigin_Video();
 do_action( 'siteorigin_widgets_sow-video_before_video', $instance );
 ?>
 
-<div class="sow-video-wrapper<?php if ( $fitvids ) echo ' use-fitvid'; ?>">
+<div class="sow-video-wrapper<?php if ( $fitvids ) echo ' use-fitvids'; ?>">
 	<?php if ( $is_skinnable_video_host ) : ?>
 	<video
 		<?php foreach ( $video_args as $k => $v ) : ?>
