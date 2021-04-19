@@ -50,92 +50,94 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		);
 	}
 
+	// Allow widgets to override the slides_to_scroll text.
+	function get_slides_to_scroll_text() {
+		return array(
+			'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
+			'description' => __( 'Set the number of slides to scroll per navigation click or swipe on %s', 'so-widgets-bundle' ),
+		);
+	}
+
+	private function add_section_group( $field, $value_type ) {
+		$section = array(
+			'type' => 'section',
+			'label' => $field['label'],
+			'hide' => true,
+			'fields' => array(),
+		);
+
+		if ( isset( $field['fields'] ) ) {
+			foreach ( $field['fields'] as $sub_field_key => $sub_field ) {
+				$section['fields'][ $sub_field_key ] = $this->add_section_group( $sub_field, $value_type );
+			}
+		} else {
+			$slides_to_scroll = $this->get_slides_to_scroll_text();
+			$section['fields']['slides_to_scroll'] =  array(
+				'type' => 'number',
+				'label' => $slides_to_scroll['label'],
+				'description' => sprintf(
+					$slides_to_scroll['description'],
+					strtolower( $field['label'] )
+				),
+				$value_type => 1,
+			);
+
+			if ( isset( $field['breakpoint'] ) ) {
+				$section['fields']['breakpoint'] = array(
+					'type' => 'number',
+					'label' => __( 'Breakpoint', 'so-widgets-bundle' ),
+					$value_type => $field['breakpoint'],
+				);
+			}
+		}
+
+		return $section;
+
+	}
+
 	function responsive_form_fields( $context = 'widget' ) {
 		$breakpoints = $this->get_breakpoints();
+
 		// If the context is a widget, the global values are displayed using a
 		// placeholder to prevent the values from being stored.
-		$field = $context == 'widget' ? 'placeholder' : 'default';
+		$value_type = $context == 'widget' ? 'placeholder' : 'default';
+		$fields = array(
+			'desktop' => array(
+				'label' => __( 'Desktop', 'so-widgets-bundle' ),
+				'value' => 1
+			),
+			'tablet' => array(
+				'label' => __( 'Tablet', 'so-widgets-bundle' ),
+				'fields' => array(
+					'landscape' => array(
+						'label' => __( 'Landscape', 'so-widgets-bundle' ),
+						'breakpoint' => $breakpoints['tablet_landscape'],
+						'value' => 2
+					),
+					'portrait' => array(
+						'label' => __( 'Portrait', 'so-widgets-bundle' ),
+						'breakpoint' => $breakpoints['tablet_portrait'],
+						'value' => 2
+					),
+				),
+			),
+			'mobile' => array(
+				'label' => __( 'Mobile', 'so-widgets-bundle' ),
+				'breakpoint' => $breakpoints['mobile'],
+				'value' => 1
+			),
+		);
+
+		$generated_fields = array();
+		foreach ( $fields as $field_key => $field ) {
+			$generated_fields[ $field_key ] = $this->add_section_group( $field, $value_type );
+		}
 
 		return array(
 			'type' => 'section',
 			'label' => __( 'Responsive', 'so-widgets-bundle' ),
 			'hide' => $context == 'widget',
-			'fields' => array(
-				'desktop' => array(
-					'type' => 'section',
-					'label' => __( 'Desktop', 'so-widgets-bundle' ),
-					'hide' => true,
-					'fields' => array(
-						'slides_to_scroll' => array(
-							'type' => 'number',
-							'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
-							'description' => __( 'Set the number of slides to scroll per navigation click or swipe on desktop.', 'so-widgets-bundle' ),
-							$field => 1,
-						),
-					),
-				),
-				'tablet' => array(
-					'type' => 'section',
-					'label' => __( 'Tablet', 'so-widgets-bundle' ),
-					'hide' => true,
-					'fields' => array(
-						'landscape' => array(
-							'type' => 'section',
-							'label' => __( 'Landscape', 'so-widgets-bundle' ),
-							'hide' => true,
-							'fields' => array(
-								'breakpoint' => array(
-									'type' => 'number',
-									'label' => __( 'Breakpoint', 'so-widgets-bundle' ),
-									$field => $breakpoints['tablet_landscape'],
-								),
-								'slides_to_scroll' => array(
-									'type' => 'number',
-									'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
-									'description' => __( 'Set the number of slides to scroll per navigation click or swipe on tablet devices.', 'so-widgets-bundle' ),
-									$field => 2,
-								),
-							),
-						),
-						'portrait' => array(
-							'type' => 'section',
-							'label' => __( 'Portrait', 'so-widgets-bundle' ),
-							'hide' => true,
-							'fields' => array(
-								'breakpoint' => array(
-									'type' => 'number',
-									'label' => __( 'Breakpoint', 'so-widgets-bundle' ),
-									$field => $breakpoints['tablet_portrait'],
-								),
-								'slides_to_scroll' => array(
-									'type' => 'number',
-									'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
-									'description' => __( 'Set the number of slides to scroll per navigation click or swipe on tablet devices.', 'so-widgets-bundle' ),
-									$field => 2,
-								),
-							),
-						),
-					),
-				),
-				'mobile' => array(
-					'type' => 'section',
-					'label' => __( 'Mobile', 'so-widgets-bundle' ),
-					'hide' => true,
-					'fields' => array(
-						'breakpoint' => array(
-							'type' => 'number',
-							'label' => __( 'Breakpoint', 'so-widgets-bundle' ),
-							$field => $breakpoints['mobile'],
-						),
-						'slides_to_scroll' => array(
-							'type' => 'number',
-							'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
-							'description' => __( ' Set the number of slides to scroll per navigation click or swipe on mobile devices.', 'so-widgets-bundle' ),
-							$field => 1,
-						),
-					),
-				),
-			),
+			'fields' => $generated_fields,
 		);
 	}
 
