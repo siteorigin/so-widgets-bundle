@@ -32,7 +32,7 @@ jQuery( function ( $ ) {
 				rows: 0,
 				rtl: $$.data( 'dir' ) == 'rtl',
 				touchThreshold: 20,
-				variableWidth: true,
+				variableWidth: $$.data( 'variable_width' ),
 				accessibility: false,
 				speed: carouselSettings.animation_speed,
 				autoplay: carouselSettings.autoplay,

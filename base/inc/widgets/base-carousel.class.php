@@ -51,7 +51,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 	}
 
 	// Allow widgets to override the slides_to_scroll text.
-	function get_slides_to_scroll_text() {
+	function get_slides_to_scroll_text () {
 		return array(
 			'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
 			'description' => __( 'Set the number of slides to scroll per navigation click or swipe on %s', 'so-widgets-bundle' ),

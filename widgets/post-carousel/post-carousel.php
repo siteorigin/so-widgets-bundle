@@ -308,6 +308,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 						)
 					),
 					'responsive' => $this->responsive_template_variables( $instance['responsive'] ),
+					'variable_width' => 'true',
 				),
 			),
 		);
