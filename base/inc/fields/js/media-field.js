@@ -83,7 +83,7 @@
 					$thumbnail.attr('src', attachment.icon).fadeIn();
 				}
 
-				$field.find('.media-remove-button').removeClass('remove-hide');
+				$field.find('.media-remove-button').removeClass('remove-hide').attr( 'tabindex', 0 );
 
 				frame.close();
 			} );
@@ -99,7 +99,7 @@
 				$field.find('.current .title' ).empty();
 				$inputField.trigger( 'change', { silent: true } );
 				$field.find('.current .thumbnail' ).fadeOut('fast');
-				$(this).addClass('remove-hide');
+				$(this).addClass( 'remove-hide' ).attr( 'tabindex', -1 );
 			} );
 
 		// Everything for the dialog
@@ -127,7 +127,10 @@
 			if( ! dialog ) {
 				// Create the dialog
 				dialog = $( $('#so-widgets-bundle-tpl-image-search-dialog').html().trim() ).appendTo( 'body' );
-				dialog.find( '.close' ).on( 'click', function() {
+				dialog.find( '.close' ).on( 'click keyup', function( e ) {
+					if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
+						return;
+					}
 					dialog.hide();
 				} );
 
@@ -274,7 +277,7 @@
 									$inputField.val( response.attachment_id ).trigger('change', { silent: true } );
 									$field.find('.current .thumbnail' ).attr('src', response.thumb ).fadeIn();
 
-									$field.find('.media-remove-button').removeClass('remove-hide');
+									$field.find( '.media-remove-button' ).removeClass( 'remove-hide' ).attr( 'tabindex', 0 );
 								}
 								else {
 									alert( response.message );
@@ -394,7 +397,7 @@
 						else {
 							$thumbnail.attr( 'src', attachment.get('icon') ).fadeIn();
 						}
-						$field.find('.media-remove-button').removeClass('remove-hide');
+						$field.find( '.media-remove-button' ).removeClass( 'remove-hide' ).attr( 'tabindex', 0 );
 					} );
 				} else {
 					$field.find( 'a.media-remove-button' ).trigger( 'click' );

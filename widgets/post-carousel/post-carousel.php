@@ -15,6 +15,38 @@ function sow_carousel_register_image_sizes(){
 }
 add_action('init', 'sow_carousel_register_image_sizes');
 
+/**
+ * This function allows for users to limit the total number of posts.
+ */
+function sow_carousel_handle_post_limit( $posts, $paged = 0 ) {
+	$post_limit = apply_filters( 'siteorigin_widgets_post_carousel_post_limit', false );
+
+	if ( is_numeric( $post_limit ) && $posts->found_posts > $post_limit ) {
+		$posts_per_page = $posts->query['posts_per_page'];
+		$current = $posts_per_page * ( $paged - 1 );
+
+		if ( $current < 0 ) {
+			$current = $posts_per_page;
+		}
+
+		set_query_var( 'sow-total_posts', $post_limit - 1 );
+		if ( $current >= $post_limit ) {
+			// Check if we've exceeded the expected pagination.
+			if ( $current + 1 > $post_limit + $posts_per_page ) {
+				$posts->posts = null;
+			} else {
+				// Work out how many posts we need to return
+				$posts->post_count = $post_limit % $posts_per_page;
+				$posts->posts = array_slice( $posts->posts, $current % $posts_per_page, $posts->post_count );
+			}
+		}
+	} else {
+		set_query_var( 'sow-total_posts', $posts->found_posts );
+	}
+
+	return $posts;
+}
+
 function sow_carousel_get_next_posts_page() {
 	if ( empty( $_REQUEST['_widgets_nonce'] ) || !wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) return;
 
@@ -26,17 +58,26 @@ function sow_carousel_get_next_posts_page() {
 		$widget = ! empty ( $wp_widget_factory->widgets['SiteOrigin_Widget_PostCarousel_Widget'] ) ?
             $wp_widget_factory->widgets['SiteOrigin_Widget_PostCarousel_Widget'] : null;
 		if ( ! empty( $widget ) ) {
-            $instance = $widget->get_stored_instance($instance_hash);
-            $instance['paged'] = $_GET['paged'];
-            $template_vars = $widget->get_template_variables($instance, array());
-        }
+			$instance = $widget->get_stored_instance( $instance_hash );
+			$instance['paged'] = (int) $_GET['paged'];
+			$template_vars = $widget->get_template_variables( $instance, array() );
+
+			$template_vars['posts'] = sow_carousel_handle_post_limit(
+				$template_vars['posts'],
+				$instance['paged']
+			);
+		}
 	}
-	ob_start();
-	extract( $template_vars );
-	include 'tpl/carousel-post-loop.php';
-	$result = array( 'html' => ob_get_clean() );
-	header('content-type: application/json');
-	echo json_encode( $result );
+
+	// Don't output anything if there are no posts to return;
+	if ( ! empty( $template_vars['posts']->posts ) ) {
+		ob_start();
+		extract( $template_vars );
+		include 'tpl/carousel-post-loop.php';
+		$result = array( 'html' => ob_get_clean() );
+		header( 'content-type: application/json' );
+		echo json_encode( $result );
+	}
 
 	exit();
 }
@@ -171,6 +212,14 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 						'label' => __( 'Thumbnail overlay hover color', 'so-widgets-bundle' ),
 						'default' => '#3279BB',
 					),
+					'thumbnail_overlay_hover_opacity' => array(
+						'type' => 'slider',
+						'label' => __( 'Thumbnail overlay hover opacity', 'so-widgets-bundle' ),
+						'default' => '0.5',
+						'min' => 0,
+						'max' => 1,
+						'step' => 0.1,
+					),
 					'navigation_color' => array(
 						'type' => 'color',
 						'label' => __( 'Navigation arrow color', 'so-widgets-bundle' ),
@@ -300,6 +349,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 			'thumbnail_hover_width' => $thumb_hover_width . 'px',
 			'thumbnail_hover_height'=> $thumb_hover_height . 'px',
 			'thumbnail_overlay_hover_color' => ! empty ( $instance['design']['thumbnail_overlay_hover_color'] ) ? $instance['design']['thumbnail_overlay_hover_color'] : '',
+			'thumbnail_overlay_hover_opacity' => ! empty ( $instance['design']['thumbnail_overlay_hover_opacity'] ) ? $instance['design']['thumbnail_overlay_hover_opacity'] : 0.5,
 			'navigation_color' => ! empty ( $instance['design']['navigation_color'] ) ? $instance['design']['navigation_color'] : '',
 			'navigation_color_hover' => ! empty ( $instance['design']['navigation_color_hover'] ) ? $instance['design']['navigation_color_hover'] : '',
 			'navigation_background' => ! empty ( $instance['design']['navigation_background'] ) ? $instance['design']['navigation_background'] : '',
@@ -333,7 +383,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget {
 
 		return array(
 			'title' => $instance['title'],
-			'posts' => $posts,
+			'posts' => sow_carousel_handle_post_limit( $posts ),
 			'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : '',
 			'loop_posts' => ! empty( $instance['loop_posts'] ),
 			'link_target' => ! empty( $instance['link_target'] ) ? $instance['link_target'] : 'same',

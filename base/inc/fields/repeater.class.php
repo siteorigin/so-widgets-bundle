@@ -70,11 +70,11 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 					foreach( $value as $v ) {
 						?>
 						<div class="siteorigin-widget-field-repeater-item ui-draggable">
-							<div class="siteorigin-widget-field-repeater-item-top">
-								<div class="siteorigin-widget-field-expand"></div>
+							<div class="siteorigin-widget-field-repeater-item-top" tabindex="0">
+								<div class="siteorigin-widget-field-expand" tabindex="0"></div>
 								<?php if( empty( $this->readonly ) ) : ?>
-									<div class="siteorigin-widget-field-copy"></div>
-									<div class="siteorigin-widget-field-remove"></div>
+									<div class="siteorigin-widget-field-copy" tabindex="0"></div>
+									<div class="siteorigin-widget-field-remove" tabindex="0"></div>
 								<?php endif; ?>
 								<h4><?php echo esc_html( $this->item_name ) ?></h4>
 							</div>
@@ -90,7 +90,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 				?>
 			</div>
 			<?php if( empty( $this->readonly ) ) : ?>
-				<div class="siteorigin-widget-field-repeater-add"><?php esc_html_e( 'Add', 'so-widgets-bundle' ) ?></div>
+				<div class="siteorigin-widget-field-repeater-add" tabindex="0"><?php esc_html_e( 'Add', 'so-widgets-bundle' ) ?></div>
 			<?php endif; ?>
 			<?php
 			ob_start();

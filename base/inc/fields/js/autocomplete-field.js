@@ -94,8 +94,13 @@
 		$$.find('.button-close').on( 'click', closeContent );
 
 		// Clicking on one of the url items
-		$$.on( 'click', '.items li', function(e) {
+		$$.on( 'click keypress', '.items li', function( e ) {
 			e.preventDefault();
+
+			if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
+				return;
+			}
+
 			var $li = $(this);
 			var selectedItems = getSelectedItems();
 			var clickedItem = $li.data( 'value' );

@@ -63,7 +63,7 @@ jQuery( function ( $ ) {
 				e.preventDefault();
 				var $items = $$.find( '.sow-carousel-items' ),
 					numItems = $items.find( '.sow-carousel-item' ).length,
-					complete = numItems === $$.data( 'post-count' ),
+					complete = numItems >= $$.data( 'post-count' ),
 					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					lastPosition = numItems - numVisibleItems + 1,
 					slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' );
@@ -121,10 +121,6 @@ jQuery( function ( $ ) {
 						if ( $$.data( 'loop-posts-enabled' ) ) {
 							$items.slick( 'slickGoTo', 0 );
 						}
-					// Check if the next slide is the last slide and prevent blank spacing.
-					} else if ( complete && $items.slick( 'slickCurrentSlide' ) + numVisibleItems >= lastPosition ) {
-						$items.setSlideTo( lastPosition );
-
 					// Check if the number of slides to scroll exceeds lastPosition, go to the last slide.
 					} else if ( $items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition - 1 ) {
 						$items.setSlideTo( lastPosition );

@@ -13,6 +13,14 @@ class SiteOrigin_Widget_Field_Link extends SiteOrigin_Widget_Field_Text_Input_Ba
 	 */
 	protected $post_types;
 
+	/**
+	 * Prevents protocol from automatically being added to better support shortcodes.
+	 *
+	 * @access protected
+	 * @var boolean
+	 */
+	protected $allow_shortcode;
+
 	protected function render_before_field( $value, $instance ) {
 		parent::render_before_field( $value, $instance );
 		$post_types = ! empty( $this->post_types ) && is_array( $this->post_types ) ? implode( ',', $this->post_types ) : '';
@@ -22,7 +30,8 @@ class SiteOrigin_Widget_Field_Link extends SiteOrigin_Widget_Field_Text_Input_Ba
 
 			<input type="text" class="content-text-search"
 			       data-post-types="<?php echo esc_attr( $post_types ) ?>"
-			       placeholder="<?php esc_attr_e( 'Search Content', 'so-widgets-bundle' ) ?>"/>
+			       placeholder="<?php esc_attr_e( 'Search Content', 'so-widgets-bundle' ) ?>"
+			       tabindex="0"/>
 
 			<ul class="posts"></ul>
 
@@ -45,6 +54,8 @@ class SiteOrigin_Widget_Field_Link extends SiteOrigin_Widget_Field_Text_Input_Ba
 		$sanitized_value = trim( $value );
 		if ( preg_match( '/^post\: *([0-9]+)/', $sanitized_value, $matches ) ) {
 			$sanitized_value = 'post: ' . $matches[1];
+		} elseif ( $this->allow_shortcode && strpos( $sanitized_value, '[' ) !== false ) {
+			$sanitized_value = esc_attr( $sanitized_value );
 		} else {
 			$sanitized_value = sow_esc_url_raw( $sanitized_value );
 		}

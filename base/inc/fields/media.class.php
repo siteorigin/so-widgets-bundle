@@ -137,7 +137,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 
 	protected function sanitize_field_input( $value, $instance ) {
 		// Media values should be integer
-		return intval( $value );
+		return (int) $value;
 	}
 
 	public function sanitize_instance( $instance ) {
@@ -170,7 +170,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 
 				<div class="so-widgets-toolbar">
 					<h3><?php _e( 'Search For Images', 'so-widgets-bundle' ) ?></h3>
-					<div class="close"><span class="dashicons dashicons-no-alt"></span></div>
+					<div class="close" tabindex="0"><span class="dashicons dashicons-no-alt"></span></div>
 				</div>
 
 				<div class="so-widgets-dialog-frame">

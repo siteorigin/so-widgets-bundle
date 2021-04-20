@@ -188,7 +188,7 @@ add_filter('siteorigin_panels_widgets', 'siteorigin_widget_add_bundle_groups', 1
 function sow_esc_url( $url ) {
 	if( preg_match('/^post: *([0-9]+)/', $url, $matches) ) {
 		// Convert the special post URL into a permalink
-		$url = get_the_permalink( intval($matches[1]) );
+		$url = get_the_permalink( (int) $matches[1] );
 		if( empty($url) ) return '';
 	}
 
@@ -207,7 +207,7 @@ function sow_esc_url( $url ) {
 function sow_esc_url_raw( $url ) {
 	if( preg_match('/^post: *([0-9]+)/', $url, $matches) ) {
 		// Convert the special post URL into a permalink
-		$url = get_the_permalink( intval($matches[1]) );
+		$url = get_the_permalink( (int) $matches[1] );
 	}
 
 	$protocols = wp_allowed_protocols();

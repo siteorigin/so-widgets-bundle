@@ -16,6 +16,7 @@
 		position: relative;
 		.rounded(3px);
 
+		&:focus,
 		&:hover {
 			.box-shadow(~"0 1px 2px rgba(0, 0, 0, 0.15)");
 		}
@@ -80,6 +81,7 @@
 			text-decoration: none;
 			text-shadow: 0 1px 0 #fff;
 
+			&:focus,
 			&:hover {
 				background: rgba(255, 255, 255, 0.75);
 			}
@@ -89,8 +91,11 @@
 			border-left: 1px solid #bbb;
 		}
 
-		&:hover .media-upload-button{
-			color: #707070;
+		&:focus,
+		&:hover {
+			.media-upload-button{
+				color: #707070;
+			}
 		}
 	}
 
@@ -113,6 +118,7 @@
 			pointer-events: none;
 		}
 
+		&:focus,
 		&:hover {
 			color: #bc0b0b;
 		}

@@ -14,8 +14,8 @@ function siteorigin_widgets_get_attachment_image_src( $attachment, $size, $fallb
 		$url = parse_url( $fallback );
 
 		if( !empty($url['fragment']) && preg_match('/^([0-9]+)x([0-9]+)$/', $url['fragment'], $matches) ) {
-			$width = intval($matches[1]);
-			$height = intval($matches[2]);
+			$width = (int) $matches[1];
+			$height = (int) $matches[2];
 		}
 		else {
 			$width = 0;

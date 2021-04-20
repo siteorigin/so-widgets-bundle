@@ -118,7 +118,7 @@ class SiteOrigin_Widget_Field_Date_Range extends SiteOrigin_Widget_Field_Base {
 						$value[$key] = array();
 					}
 					$item = $value[$key];
-					$val = empty( $item['value'] ) ? 0 : intval( $item['value'] );
+					$val = empty( $item['value'] ) ? 0 : (int) $item['value'];
 					$unit = ( ! empty( $item['unit'] ) && in_array( $item['unit'], $unit_keys ) ) ? $item['unit'] : $unit_keys[0];
 					$value[$key] = array( 'value' => $val, 'unit' => $unit );
 				}

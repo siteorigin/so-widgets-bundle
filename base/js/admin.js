@@ -282,7 +282,10 @@ var sowbForms = window.sowbForms || {};
 
 			///////////////////////////////////////
 			// Handle the sections
-			var expandContainer = function () {
+			var expandContainer = function ( e ) {
+				if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
+					return;
+				}
 				$(this).toggleClass('siteorigin-widget-section-visible');
 				$(this).parent().find('> .siteorigin-widget-section, > .siteorigin-widget-widget > .siteorigin-widget-section')
 					.slideToggle('fast', function () {
@@ -295,8 +298,10 @@ var sowbForms = window.sowbForms || {};
 						}
 					} );
 			};
-			$fields.filter( '.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section' ).find( '> label' ).on( 'click', expandContainer );
-			$fields.filter( '.siteorigin-widget-field-type-posts' ).find( '.posts-container-label-wrapper' ).on( 'click', expandContainer );
+			$fields.filter( '.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section' ).find( '> label' )
+			.on( 'click keyup', expandContainer )
+			.attr( 'tabinex', 0 );
+			$fields.filter( '.siteorigin-widget-field-type-posts' ).find( '.posts-container-label-wrapper' ).on( 'click keyup', expandContainer );
 
 			///////////////////////////////////////
 			// Handle the slider fields
@@ -357,6 +362,7 @@ var sowbForms = window.sowbForms || {};
 										.addClass('post')
 										.html(data[i].label + '<span>(' + data[i].type + ')</span>')
 										.data(data[i])
+										.attr( 'tabindex', 0 )
 								);
 							}
 							$ul.removeClass('loading');
@@ -367,7 +373,6 @@ var sowbForms = window.sowbForms || {};
 				// Toggle display of the existing content
 				$$.find( '.select-content-button, .button-close' ).on( 'click', function( e ) {
 					e.preventDefault();
-
 					$(this).trigger( 'blur' );
 					var $s = $$.find('.existing-content-selector');
 					$s.toggle();
@@ -379,8 +384,13 @@ var sowbForms = window.sowbForms || {};
 				});
 
 				// Clicking on one of the url items
-				$$.on('click', '.posts li', function (e) {
+				$$.on( 'click keyup', '.posts li', function( e ) {
 					e.preventDefault();
+
+					if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
+						return;
+					}
+
 					var $li = $(this);
 					$$.find('input.siteorigin-widget-input').val('post: ' + $li.data('value'));
 					$$.trigger( 'change' );
@@ -453,6 +463,21 @@ var sowbForms = window.sowbForms || {};
 						}
 
 						var val = $$.is('[type="checkbox"]') ? $$.is(':checked') : $$.val();
+
+						// Media form fields can have an external field set so we need to check that field slightly differently.
+						if ( $$.parent().hasClass( 'siteorigin-widget-field-type-media' ) && emitter.callback == 'conditional' ) {
+							// If we're checking for a value,and the main field is empty,
+							// fallback to the external field value. This also works in reverse.
+							if ( ! val ) {
+								val = $$.hasClass( 'media-fallback-external' ) ? $$.prev().val() : fallbackField = $$.next().val();
+							}
+
+							// Override value if media value is set to 0 to prevent unintentional conditional passing.
+							if ( val == 0 ) {
+								val = '';
+							}
+						}
+
 						// Return an array that has the new states added to the array
 						return $.extend(currentStates, sowEmitters[emitter.callback](val, emitter.args));
 					};
@@ -550,8 +575,10 @@ var sowbForms = window.sowbForms || {};
 				$(this).css('visibility', 'visible');
 			});
 			modal.find( 'form' ).trigger( 'submit' );
-
-			modal.find( '.close' ).on( 'click', function() {
+			modal.find('.close').on( 'click keyup', function (e) {
+				if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
+					return;
+				}
 				modal.remove();
 			});
 		});
@@ -655,8 +682,13 @@ var sowbForms = window.sowbForms || {};
 			});
 			$items.trigger('updateFieldPositions');
 
-			$el.find( '> .siteorigin-widget-field-repeater-add' ).disableSelection().on( 'click', function( e ) {
+			$el.find( '> .siteorigin-widget-field-repeater-add' ).disableSelection().on( 'click keyup', function(e) {
 				e.preventDefault();
+
+				if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
+					return;
+				}
+
 				$el.closest('.siteorigin-widget-field-repeater')
 					.sowAddRepeaterItem()
 					.find('> .siteorigin-widget-field-repeater-items').slideDown('fast', function () {
@@ -704,15 +736,15 @@ var sowbForms = window.sowbForms || {};
 			var readonly = typeof $el.attr('readonly') !== 'undefined';
 			var item = $( '<div class="siteorigin-widget-field-repeater-item ui-draggable"></div>' )
 				.append(
-					$( '<div class="siteorigin-widget-field-repeater-item-top"></div>' )
+					$( '<div class="siteorigin-widget-field-repeater-item-top" tabindex="0" />' )
 						.append(
-							$( '<div class="siteorigin-widget-field-expand"></div>' )
+							$( '<div class="siteorigin-widget-field-expand" tabindex="0" />' )
 						)
 						.append(
-							readonly ? '' : $( '<div class="siteorigin-widget-field-copy"></div>')
+							readonly ? '' : $( '<div class="siteorigin-widget-field-copy" tabindex="0" />' )
 						)
 						.append(
-							readonly ? '' : $( '<div class="siteorigin-widget-field-remove"></div>' )
+							readonly ? '' : $( '<div class="siteorigin-widget-field-remove" tabindex="0" />' )
 						)
 						.append( $( '<h4></h4>' ).html( $el.data( 'item-name' ) ) )
 				)
@@ -779,10 +811,15 @@ var sowbForms = window.sowbForms || {};
 					$el.bind(eventName, updateLabel);
 				}
 
-				itemTop.on( 'click', function( e ) {
+				itemTop.on( 'click keyup', function( e ) {
 					if (e.target.className === "siteorigin-widget-field-remove" || e.target.className === "siteorigin-widget-field-copy") {
 						return;
 					}
+
+					if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
+						return;
+					}
+
 					e.preventDefault();
 					$(this).closest('.siteorigin-widget-field-repeater-item').find('.siteorigin-widget-field-repeater-item-form').eq(0).slideToggle('fast', function () {
 						$( window ).trigger( 'resize' );
@@ -803,9 +840,13 @@ var sowbForms = window.sowbForms || {};
 						}
 					});
 				});
-
-				itemTop.find( '.siteorigin-widget-field-remove' ).on( 'click', function( e, params ) {
+				itemTop.find( '.siteorigin-widget-field-remove' ).on( 'click keyup', function( e, params ) {
 					e.preventDefault();
+
+					if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
+						return;
+					}
+
 					var $s = $( this ).closest( '.siteorigin-widget-field-repeater-items' );
 					var $item = $( this ).closest( '.siteorigin-widget-field-repeater-item' );
 					var removeItem = function () {
@@ -820,8 +861,13 @@ var sowbForms = window.sowbForms || {};
 						$item.slideUp('fast', removeItem );
 					}
 				});
-				itemTop.find( '.siteorigin-widget-field-copy' ).on( 'click', function( e ) {
+				itemTop.find( '.siteorigin-widget-field-copy' ).on( 'click keyup', function( e ) {
 					e.preventDefault();
+
+					if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
+						return;
+					}
+
 					var $form = $(this).closest('.siteorigin-widget-form-main');
 					var $item = $(this).closest('.siteorigin-widget-field-repeater-item');
 					var $copyItem = $item.clone();
@@ -839,8 +885,13 @@ var sowbForms = window.sowbForms || {};
 							$inputElement.parent().empty().append($inputElement);
 							$inputElement.css('display', '');
 							var curEd = tinymce.get(id);
-							if (curEd) {
-								$inputElement.val(curEd.getContent());
+							if ( curEd ) {
+								var contentVal = curEd.getContent();
+								if ( ! _.isEmpty( contentVal ) ) {
+									$inputElement.val( contentVal );
+								} else if ( contentVal.search( '<' ) !== -1 && contentVal.search( '>' ) === -1) {
+									$textarea.val( contentVal.replace( /</g, '' ) );
+								}
 							}
 						}
 						// Color field :/
@@ -1130,6 +1181,15 @@ var sowbForms = window.sowbForms || {};
 		return data;
 	};
 	
+	sowbForms.isEnter = function( e, triggerClick = false ) {
+		if ( e.which == 13 ) {
+			if ( triggerClick ) {
+				$( e.target ).trigger( 'click' );
+			} else {
+				return true;
+			}
+		}
+	};
 	
 	/**
 	 * Sets all the widget form fields in the given container with the given data values.
@@ -1313,13 +1373,17 @@ var sowbForms = window.sowbForms || {};
 				if ( button.classes && button.classes.length ) {
 					buttonClasses = ' ' + button.classes.join( ' ' );
 				}
-				var $button = $( '<a class="button button-small' + buttonClasses + '">' + button.label + '</a>' );
+				var $button = $( '<a class="button button-small' + buttonClasses + '" tabindex="0">' + button.label + '</a>' );
 				
 				if ( button.url ) {
 					$button.attr( 'href', button.url );
 				}
 				if ( button.callback ) {
-					$button.on( 'click', function () {
+					$button.on( 'click keyup', function ( e ) {
+						if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
+							return;
+						}
+
 						button.callback( $notice );
 					});
 				}
