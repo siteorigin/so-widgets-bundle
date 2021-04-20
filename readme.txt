@@ -66,7 +66,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
-== 1.18.0 - 12 April 2021 ==
+== 1.18.0 - 20 April 2021 ==
 * Updated the Google fonts list.
 * Updated Font Awesome from `5.14.0` to `5.15.1`.
 * Block Editor: Styling fixes including specific fixes for the Twenty Twenty-One theme.
