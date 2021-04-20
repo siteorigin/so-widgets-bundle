@@ -23,8 +23,7 @@ class SiteOrigin_LessC {
 	private $formatterName;
 	private $options = array();
 
-	public function __construct( $lessc = null, $sourceName = null ) {
-	}
+	public function __construct( $lessc=null, $sourceName=null ) {}
 
 	public function setImportDir( $dirs ) {
 		$this->importDir = (array)$dirs;
@@ -39,8 +38,7 @@ class SiteOrigin_LessC {
 		$this->formatterName = $name;
 	}
 
-	public function setPreserveComments( $preserve ) {
-	}
+	public function setPreserveComments( $preserve ) {}
 
 	public function registerFunction( $name, $func ) {
 		$this->libFunctions[$name] = $func;
@@ -50,7 +48,7 @@ class SiteOrigin_LessC {
 		unset( $this->libFunctions[$name] );
 	}
 
-	public function setVariables( $variables ) {
+	public function setVariables( $variables ){
 		foreach ( $variables as $name => $value ) {
 			$this->setVariable( $name, $value );
 		}
@@ -66,7 +64,7 @@ class SiteOrigin_LessC {
 
 	public function setOptions( $options ) {
 		foreach ( $options as $name => $value ) {
-			$this->setOption( $name, $value );
+			$this->setOption( $name, $value);
 		}
 	}
 
@@ -75,6 +73,7 @@ class SiteOrigin_LessC {
 	}
 
 	public function parse( $buffer, $presets = array() ) {
+
 		$this->setVariables( $presets );
 
 		$parser = new Less_Parser( $this->getOptions() );
@@ -82,7 +81,7 @@ class SiteOrigin_LessC {
 		foreach ( $this->libFunctions as $name => $func ) {
 			$parser->registerFunction( $name, $func );
 		}
-		$parser->parse( $buffer );
+		$parser->parse($buffer);
 		if ( count( $this->registeredVars ) ) {
 			$parser->ModifyVars( $this->registeredVars );
 		}
@@ -91,14 +90,15 @@ class SiteOrigin_LessC {
 	}
 
 	protected function getOptions() {
-		$options = array( 'relativeUrls' => false );
-		switch ( $this->formatterName ) {
+		$options = array( 'relativeUrls'=>false );
+		switch( $this->formatterName ) {
 			case 'compressed':
 				$options['compress'] = true;
 				break;
 		}
-		if ( is_array( $this->options ) ) {
-			$options = array_merge( $options, $this->options );
+		if (is_array($this->options))
+		{
+			$options = array_merge($options, $this->options);
 		}
 		return $options;
 	}
@@ -113,6 +113,7 @@ class SiteOrigin_LessC {
 	}
 
 	public function compile( $string, $name = null ) {
+
 		$oldImport = $this->importDir;
 		$this->importDir = (array)$this->importDir;
 
@@ -181,11 +182,12 @@ class SiteOrigin_LessC {
 
 	public function checkedCompile( $in, $out ) {
 		if ( !is_file( $out ) || filemtime( $in ) > filemtime( $out ) ) {
-			$this->compileFile( $in, $out );
+			$this->compileFile($in, $out);
 			return true;
 		}
 		return false;
 	}
+
 
 	/**
 	 * Execute lessphp on a .less file or a lessphp cache structure
@@ -214,7 +216,7 @@ class SiteOrigin_LessC {
 		if ( is_string( $in ) ) {
 			$root = $in;
 		} elseif ( is_array( $in ) and isset( $in['root'] ) ) {
-			if ( $force or !isset( $in['files'] ) ) {
+			if ( $force or ! isset( $in['files'] ) ) {
 				// If we are forcing a recompile or if for some reason the
 				// structure does not contain any file information we should
 				// specify the root to trigger a rebuild.
@@ -239,7 +241,7 @@ class SiteOrigin_LessC {
 			// If we have a root value which means we should rebuild.
 			$out = array();
 			$out['root'] = $root;
-			$out['compiled'] = $this->compileFile( $root );
+			$out['compiled'] = $this->compileFile($root);
 			$out['files'] = $this->allParsedFiles();
 			$out['updated'] = time();
 			return $out;
@@ -261,7 +263,7 @@ class SiteOrigin_LessC {
 		if ( $less === null ) {
 			$less = new self;
 		}
-		return $less->cachedCompile( $in, $force );
+		return $less->cachedCompile($in, $force);
 	}
 
 	public function allParsedFiles() {
