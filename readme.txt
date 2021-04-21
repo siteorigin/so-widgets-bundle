@@ -1,5 +1,5 @@
 === SiteOrigin Widgets Bundle ===
-Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
+Tags: widget, button, slider, hero, google maps, image, carousel, features, icons, price table, tinymce, social icons
 Requires at least: 4.2
 Tested up to: 5.7
 Requires PHP: 5.6.20
