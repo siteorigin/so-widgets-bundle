@@ -2,18 +2,22 @@
 	<?php
 	if ( ! empty( $settings['title'] ) ) {
 		echo $settings['args']['before_title'] . esc_html( $settings['title'] ) . $settings['args']['after_title'];
-
 	}
-	?>
 
-	<div class="sow-carousel-navigation">
-		<a href="#" class="sow-carousel-next" title="<?php esc_attr_e( 'Next', 'so-widgets-bundle' ); ?>" aria-label="<?php esc_attr_e( 'Next Posts', 'so-widgets-bundle' ); ?>" role="button"></a>
-		<a href="#" class="sow-carousel-previous" title="<?php esc_attr_e( 'Previous', 'so-widgets-bundle' ); ?>" aria-label="<?php esc_attr_e( 'Previous Posts', 'so-widgets-bundle' ); ?>" role="button"></a>
-	</div>
-
+	if ( $settings['navigation'] == 'title' ) {
+		?>
+		<div class="sow-carousel-navigation">
+			<?php $this->render_navigation( 'both' ); ?>
+		</div>
+	<?php } ?>
 </div>
 
 <div class="sow-carousel-container">
+	<?php
+	if ( $settings['navigation'] == 'side' ) {
+		$this->render_navigation( 'prev' );
+	}
+	?>
 	<div class="sow-carousel-wrapper"
 	     data-dir="<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>"
 	     <?php
@@ -28,4 +32,10 @@
 			<?php include $settings['item_template']; ?>
 		</div>
 	</div>
+
+	<?php
+	if ( $settings['navigation'] == 'side' ) {
+		$this->render_navigation( 'next' );
+	}
+	?>
 </div>

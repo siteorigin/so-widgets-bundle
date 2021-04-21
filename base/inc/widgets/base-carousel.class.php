@@ -233,4 +233,18 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		include plugin_dir_path( __FILE__ ) . 'tpl/carousel.php';
 	}
 
+	function render_navigation( $nav ) {
+		if ( $nav == 'next' || $nav == 'both' ) {
+			?>
+			<a href="#" class="sow-carousel-next" title="<?php esc_attr_e( 'Next', 'so-widgets-bundle' ); ?>" aria-label="<?php esc_attr_e( 'Next Posts', 'so-widgets-bundle' ); ?>" role="button"></a>
+			<?php
+		}
+
+		if ( $nav == 'prev' || $nav == 'both' ) {
+			?>
+			<a href="#" class="sow-carousel-previous" title="<?php esc_attr_e( 'Previous', 'so-widgets-bundle' ); ?>" aria-label="<?php esc_attr_e( 'Previous Posts', 'so-widgets-bundle' ); ?>" role="button"></a>
+			<?php
+		}
+	}
+
 }

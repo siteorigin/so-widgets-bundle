@@ -294,6 +294,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				'image_size' => $instance['image_size'],
 				'link_target' => ! empty( $instance['link_target'] ) ? $instance['link_target'] : 'same',
 				'item_template' => plugin_dir_path( __FILE__ ) . 'tpl/item.php',
+				'navigation' => 'title',
 				'attributes' => array(
 					'widget' => 'post',
 					'fetching' => 'false',
