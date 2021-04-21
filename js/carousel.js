@@ -31,6 +31,7 @@ jQuery( function ( $ ) {
 				rows: 0,
 				rtl: $$.data( 'dir' ) == 'rtl',
 				touchThreshold: 20,
+				infinite: ! $$.data( 'ajax-url' )&&  $$.data( 'carousel_settings' ).loop,
 				variableWidth: $$.data( 'variable_width' ),
 				accessibility: false,
 				speed: carouselSettings.animation_speed,
