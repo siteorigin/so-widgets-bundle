@@ -218,11 +218,11 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 
 	function carousel_settings_template_variables( $settings, $encode = true ) {
 		$variables = array(
-			'loop' => ! empty( $settings['loop'] ) ? $settings['loop'] : true,
-			'dots' => ! empty( $settings['dots'] ) ? $settings['dots'] : true,
+			'loop' => isset( $settings['loop'] ) ? $settings['loop'] : true,
+			'dots' => isset( $settings['dots'] ) ? $settings['dots'] : true,
 			'animation_speed' => ! empty( $settings['animation_speed'] ) ? $settings['animation_speed'] : 800,
-			'autoplay' => ! empty( $settings['autoplay'] ) ? $settings['autoplay'] : false,
-			'pauseOnHover' => ! empty( $settings['autoplay_pause_hover'] ) ? $settings['autoplay_pause_hover'] : false,
+			'autoplay' => isset( $settings['autoplay'] ) ? $settings['autoplay'] : false,
+			'pauseOnHover' => isset( $settings['autoplay_pause_hover'] ) ? $settings['autoplay_pause_hover'] : false,
 			'autoplaySpeed' => ! empty( $settings['timeout'] ) ? $settings['timeout'] : 8000,
 		);
 
