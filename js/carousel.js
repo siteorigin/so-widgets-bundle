@@ -28,7 +28,6 @@ jQuery( function ( $ ) {
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
 				dots: carouselSettings.dots,
-				infinite: false,
 				rows: 0,
 				rtl: $$.data( 'dir' ) == 'rtl',
 				touchThreshold: 20,
@@ -117,28 +116,27 @@ jQuery( function ( $ ) {
 				}
 			} );
 
-		} );
+			if ( carouselSettings.dots && $$.data( 'variable_width' ) ) {
+				// Unbind base Slick Dot Navigation as we use a custom event to prevent blank spaces.
+				$$.find( '.slick-dots li' ).off( 'click.slick' );
+				$$.find( '.slick-dots li' ).on( 'click touchend', function() {
+					var targetItem = $( this ).index(),
+						numItems = $items.find( '.sow-carousel-item' ).length,
+						numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
+						lastPosition = numItems - numVisibleItems;
 
-		// Unbind base Slick Dot Navigation as we use a custom event to prevent blank spaces.
-		$( '.slick-dots li' ).off( 'click.slick' );
-		$( '.slick-dots li' ).on( 'click touchend', function() {
-			var $$ = $( this ),
-				targetItem = $$.index(),
-				$items = $$.parents( '.sow-carousel-wrapper' ).find( '.sow-carousel-items' ),
-				numItems = $items.find( '.sow-carousel-item' ).length,
-				numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
-				lastPosition = numItems - numVisibleItems;
-
-			// Check if navigating to the selected item would result in a blank space.
-			if ( targetItem + numVisibleItems >= numItems ) {
-				// Blank spacing would occur, let's go to the last possible item
-				// make it appear as though we navigated to the selected item.
-				$items.slick( 'slickGoTo', lastPosition );
-				$dots = $$.parent();
-				$dots.find( '.slick-active' ).removeClass( 'slick-active' );
-				$dots.children().eq( targetItem ).addClass( 'slick-active' );
-			} else {
-				$items.slick( 'slickGoTo', targetItem );
+					// Check if navigating to the selected item would result in a blank space.
+					if ( targetItem + numVisibleItems >= numItems ) {
+						// Blank spacing would occur, let's go to the last possible item
+						// make it appear as though we navigated to the selected item.
+						$items.slick( 'slickGoTo', lastPosition );
+						$dots = $( this ).parent();
+						$dots.find( '.slick-active' ).removeClass( 'slick-active' );
+						$dots.children().eq( targetItem ).addClass( 'slick-active' );
+					} else {
+						$items.slick( 'slickGoTo', targetItem );
+					}
+				} );
 			}
 		} );
 
