@@ -15,7 +15,7 @@ The SiteOrigin Widgets Bundle gives you a collection of widgets that you can use
 
 The SiteOrigin Widgets Bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colors, and 1500+ icons.
 
-Widgets are great, no matter where you're using them. In [Page Builder](https://siteorigin.com/page-builder/), in the Block Editor using the SiteOrigin Layout or Widget Block or in your theme's widget areas. The Widgets Bundle is even compatible with other popular page-building plugins.
+Widgets are great, no matter where you're using them. In [Page Builder](https://siteorigin.com/page-builder/), in the Block Editor using the SiteOrigin Layout Block or SiteOrigin Widget Block or in your theme's widget areas. The Widgets Bundle is even compatible with other popular page-building plugins.
 
 [vimeo https://vimeo.com/102103379]
 
@@ -44,7 +44,7 @@ The collection is growing, but here's what we have so far:
 - **Testimonials:** Share your product or service testimonials in a variety of different layouts.
 - **Video:** Play your self or externally hosted videos in a customizable player.
 
-Once you enable a widget, you'll be able to use it in Page Builder, the Block Editor using the SiteOrigin Layout or Widget Block, or in any theme widget area. You can manage your widgets by going to Plugins > SiteOrigin Widgets in WordPress.
+Once you enable a widget, you'll be able to use it in Page Builder, the Block Editor using the SiteOrigin Layout Block or SiteOrigin Widget Block, or in any theme widget area. You can manage your widgets by going to Plugins > SiteOrigin Widgets in WordPress.
 
 == Documentation ==
 
