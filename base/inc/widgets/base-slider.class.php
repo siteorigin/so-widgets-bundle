@@ -118,6 +118,11 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'default' => '25',
 			),
 
+			'nav_always_show_desktop' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Always show navigation on desktop', 'so-widgets-bundle' ),
+			),
+
 			'nav_always_show_mobile' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Always show navigation on mobile', 'so-widgets-bundle' ),
@@ -192,6 +197,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'paused'                   => empty( $controls['autoplay'] ) ?: false,
 			'pause_on_hover'           => ! empty( $controls['autoplay_hover'] ) ?: false,
 			'swipe'                    => $controls['swipe'],
+			'nav_always_show_desktop'  => ! empty( $controls['nav_always_show_desktop'] ) ? true : '',
 			'nav_always_show_mobile'   => ! empty( $controls['nav_always_show_mobile'] ) ? true : '',
 			'breakpoint'               => ! empty( $controls['breakpoint'] ) ? $controls['breakpoint'] : '780px',
 		);
