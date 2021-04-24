@@ -39,8 +39,22 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$widgets_metadata_list = SiteOrigin_Widgets_Bundle::single()->get_widgets_list();
 		$widgets_manager = SiteOrigin_Widgets_Widget_Manager::single();
 
-		global $wp_widget_factory;
 		$so_widgets = array();
+		// Add data for any inactive widgets.
+		foreach ( $widgets_metadata_list as $widget ) {
+			if ( ! $widget['Active'] ) {
+				include_once wp_normalize_path( $widget['File'] );
+				// The last class will always be from the widget file we just loaded.
+				$widget_class = end( get_declared_classes() );
+
+				$so_widgets[] = array(
+					'name' => $widget['Name'],
+					'class' => $widget_class,
+				);
+			}
+		}
+
+		global $wp_widget_factory;
 		$third_party_widgets = array();
 		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
 			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
@@ -109,6 +123,10 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		global $wp_widget_factory;
 
 		$widget = ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ? $wp_widget_factory->widgets[ $widget_class ] : false;
+		// Attempt to activate the widget if it's not already active.
+		if ( ! empty( $widget_class ) && empty( $widget ) ) {
+			$widget = SiteOrigin_Widgets_Bundle::single()->load_missing_widget( false, $widget_class );
+		}
 
 		$instance = $attributes['widgetData'];
 
