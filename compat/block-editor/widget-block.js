@@ -48,6 +48,9 @@
 			widgetHtml: {
 				type: 'string',
 			},
+			widgetIcons: {
+				type: 'array',
+			},
 		},
 
 		edit: withState( {
@@ -220,7 +223,10 @@
 					props.attributes.widgetClass &&
 					props.attributes.widgetData;
 				if ( loadWidgetPreview ) {
-					props.setAttributes( { widgetHtml: null } );
+					props.setAttributes( {
+						widgetHtml: null,
+						widgetIcons: null
+					} );
 					jQuery.post( {
 						url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/previews',
 						beforeSend: function ( xhr ) {
@@ -233,11 +239,14 @@
 					} )
 					.done( function( widgetPreview ) {
 						props.setState( {
-							widgetPreviewHtml: widgetPreview,
+							widgetPreviewHtml: widgetPreview.html,
 							previewInitialized: false,
 						} );
 
-						props.setAttributes( { widgetHtml: widgetPreview } );
+						props.setAttributes( {
+							widgetHtml: widgetPreview.html,
+							widgetIcons: widgetPreview.icons
+						} );
 					} )
 					.fail( function ( response ) {
 
