@@ -33,7 +33,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		wp_enqueue_style(
 			'sowb-widget-block',
-			plugins_url( 'widget-block' . SOW_BUNDLE_JS_SUFFIX . '.css', __FILE__ ),
+			plugins_url( 'widget-block' . SOW_BUNDLE_JS_SUFFIX . '.css', __FILE__ )
 		);
 
 		$widgets_metadata_list = SiteOrigin_Widgets_Bundle::single()->get_widgets_list();
@@ -155,6 +155,17 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			} else {
 				$widget->generate_and_enqueue_instance_styles( $instance );
 				$widget->enqueue_frontend_scripts( $instance );
+
+				// Check if this widget uses any icons that need to be enqueued.
+				if ( ! empty( $attributes['widgetIcons'] ) ) {
+					$widget_icon_families = apply_filters( 'siteorigin_widgets_icon_families', array() );
+					foreach ( $attributes['widgetIcons'] as $icon_font ) {
+						if ( ! wp_style_is( $icon_font ) ) {
+							$font_family = explode( 'siteorigin-widget-icon-font-', $icon_font )[1];
+							wp_enqueue_style( $icon_font, $widget_icon_families[ $font_family ]['style_uri'] );
+						}
+					}
+				}
 				echo $attributes['widgetHtml'];
 			}
 
