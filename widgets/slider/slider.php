@@ -191,7 +191,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 							<?php endif; ?>
 						<?php endforeach; ?>>
 					<?php endif; ?>
-					<div class="sow-slider-image-foreground-wrapper" style="<?php if ( ! empty( $frame['background_image'] ) && ! empty( $foreground_src[2] ) ) echo 'height: ' . intval( $foreground_src[2] ) . 'px;'; ?>">
+					<div class="sow-slider-image-foreground-wrapper" style="<?php if ( ! empty( $frame['custom_height'] ) && ! empty( $foreground_src[2] ) ) echo 'height: ' . intval( $foreground_src[2] ) . 'px;'; ?>">
 						<?php
 						echo siteorigin_widgets_get_attachment_image(
 							$frame['foreground_image'],
@@ -253,6 +253,8 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 					$link_atts['rel'] = 'noopener noreferrer';
 				}
 				$frame['link_attributes'] = $link_atts;
+
+				$frame['custom_height'] = ! empty( $instance['design']['height'] );
 			}
 		}
 		return array(
