@@ -72,6 +72,10 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.18.2 - 27 April 2021 =
+* SiteOrigin Widget Block: Ensured icons are enqueued.
+* Slider: Only apply foreground height if a background image is set.
+
 = 1.18.1 - 20 April 2021 =
 * Reverted Less `3.1.0` update to restore compatibility for PHP versions below `7.1`.
 
