@@ -1,5 +1,5 @@
 === SiteOrigin Widgets Bundle ===
-Tags: bundle, widget, button, slider, image, carousel, price table, google maps, tinymce, social links
+Tags: widget, button, slider, hero, google maps, image, carousel, features, icons, price table, tinymce, social icons
 Requires at least: 4.2
 Tested up to: 5.7
 Requires PHP: 5.6.20
@@ -9,42 +9,42 @@ License: GPLv3 or later
 Contributors: gpriday, braam-genis, alexgso
 Donate link: https://siteorigin.com/downloads/premium/
 
-The SiteOrigin Widgets Bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colours and 1500+ icons.
+The SiteOrigin Widgets Bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colors, and 1500+ icons.
 
 == Description ==
 
-The SiteOrigin Widgets Bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colours and 1500+ icons.
+The SiteOrigin Widgets Bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colors, and 1500+ icons.
 
-Widgets are great. No matter where you’re using them. In a [Page Builder](http://siteorigin.com/page-builder/) page or on your widgetized areas. It's even compatible with other popular page building plugins.
+Widgets are great, no matter where you're using them. In [Page Builder](https://siteorigin.com/page-builder/), in the Block Editor using the SiteOrigin Layout Block or SiteOrigin Widget Block or in your theme's widget areas. The Widgets Bundle is even compatible with other popular page-building plugins.
 
 [vimeo https://vimeo.com/102103379]
 
-The collection is growing, but here’s what we have so far.
+The collection is growing, but here's what we have so far:
 
-* Google Maps Widget that's going places.
-* Button Widget that you’ll love to click.
-* Image Widget that’ll let you add images everywhere.
-* Call To Action Widget that’ll get your users performing the actions you want.
-* Slider Widget that slides images and HTML5 videos.
-* Price Table Widget that’ll help you sell more.
-* Post Carousel Widget that displays your posts as a carousel.
-* Features Widget that lets you display a set of site or service features.
-* Video Widget to get your videos out there.
-* Headline Widget to get you noticed.
-* Social Media Buttons which link to all your social media profiles.
-* Accordion Widget to compress your content.
-* Contact Form Widget to let people know you care.
-* Editor Widget let's you richly edit text anywhere.
-* Hero Widget that'll save your site design.
-* Icon Widget for when only icons will do.
-* Image Grid Widget that'll let you add images everywhere... in a grid.
-* Layout Slider Widget lets you build layouts on slides using SiteOrigin Page Builder.
-* Masonry Widget to add images in a masonry layout.
-* Tabs Widget that'll let you group content into tabbed sections.
-* Taxonomy Widget to display the selected taxonomy for the current post.
-* Testimonials Widget to show people what your users/customers think of you.
+- **Accordion:** Squeeze a lot of content into a small space.
+- **Button:** A simple button widget with a variety of styling options.
+- **Call To Action:** Get users moving in the right direction.
+- **Contact Form:** A lightweight contact form builder.
+- **Editor:** Rich text editing anywhere.
+- **Features:** Displays a block of features with icons.
+- **Google Maps:** Help your site find its place and give it some direction.
+- **Headline:** A widget to get you noticed.
+- **Hero Image:** More than just a large image. Support for headings, text, buttons, slides, and background videos.
+- **Icon:** For when only icons will do.
+- **Image:** A simple image widget with massive power.
+- **Image Grid:** Display a grid of images. Also useful for displaying client logos.
+- **Image Slider:** A simple, easy-to-use slider with support for image layering and HTML5 videos.
+- **Layout Slider:** Build layouts on slides using SiteOrigin Page Builder.
+- **Post Carousel:** Display your posts as a carousel.
+- **Price Table:** A simple yet powerful interface for building a price table.
+- **Simple Masonry:** A masonry layout for images. Images can link to your posts.
+- **Social Media Buttons:** Customizable buttons which link to your social media profiles.
+- **Tabs:** Group content into tabbed sections.
+- **Taxonomy:** Display the selected taxonomy for the current post.
+- **Testimonials:** Share your product or service testimonials in a variety of different layouts.
+- **Video:** Play your self or externally hosted videos in a customizable player.
 
-Once you enable a widget, you'll be able to use it anywhere standard widgets are used. You can manage your widgets by going to Plugins > SiteOrigin Widgets in your WordPress admin.
+Once you enable a widget, you'll be able to use it in Page Builder, the Block Editor using the SiteOrigin Layout Block or SiteOrigin Widget Block, or in any theme widget area. You can manage your widgets by going to Plugins > SiteOrigin Widgets in WordPress.
 
 == Documentation ==
 
@@ -54,9 +54,15 @@ Once you enable a widget, you'll be able to use it anywhere standard widgets are
 
 We offer free support on the [SiteOrigin support forums](https://siteorigin.com/thread/).
 
+== SiteOrigin Premium ==
+
+[SiteOrigin Premium](https://siteorigin.com/downloads/premium/) enhances the Widgets Bundle with a vast array of additional features and settings. Take your layouts to the next level.
+
+SiteOrigin Premium also includes access to our next-level email support service, perfect for those times when you need fast and effective technical support.
+
 = Create Custom Widgets =
 
-The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your theme or plugin. Read more on our [developer docs](https://siteorigin.com/docs/widgets-bundle/).
+The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your theme or plugin. Read more in our [developer docs](https://siteorigin.com/docs/widgets-bundle/).
 
 == Screenshots ==
 
@@ -66,10 +72,14 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
-== 1.18.1 - 20 April 2021 ==
+= 1.18.2 - 27 April 2021 =
+* SiteOrigin Widget Block: Ensured icons are enqueued.
+* Slider: Only apply foreground height if a background image is set.
+
+= 1.18.1 - 20 April 2021 =
 * Reverted Less `3.1.0` update to restore compatibility for PHP versions below `7.1`.
 
-== 1.18.0 - 20 April 2021 ==
+= 1.18.0 - 20 April 2021 =
 * Updated the Google fonts list.
 * Updated Font Awesome from `5.14.0` to `5.15.1`.
 * Block Editor: Styling fixes including specific fixes for the Twenty Twenty-One theme.
@@ -94,7 +104,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Developer: Add `units` and `default_unit` parameters for the measurement field.
 * Developer: Changes for PHP 8.
 
-== 1.17.11 - 09 December 2020 ==
+= 1.17.11 - 09 December 2020 =
 * Google Maps: Added Map Style button styling.
 * Accordion: Submitted contact forms added to Accordion will now open the panel on load.
 * Tabs: Prevented the Scroll To setting from affecting the currently selected tab.
@@ -104,10 +114,10 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Developer: Exposed Google Maps instances. Once set up, maps can be accessed via `sowb.SiteOriginGoogleMapInstances`.
 * Developer: Add a Google Maps `maps_loaded` event that triggers after all of the Google Maps have finished being set up.
 
-== 1.17.10 - 13 November 2020 ==
+= 1.17.10 - 13 November 2020 =
 * TinyMCE: Resolved issue with the Add Media button.
 
-== 1.17.9 - 12 November 2020 ==
+= 1.17.9 - 12 November 2020 =
 * Block Editor: Resolved widget preview issue.
 * Elementor: Minor admin styling improvements.
 * Google Maps: Added a new global consent setting `Require consent before loading Maps API` at `Plugins > SiteOrigin Widgets > Google Maps`.
@@ -120,10 +130,10 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Updated the widget title field to allow HTML in all SiteOrigin widgets.
 * Changed to `enqueue` Google Fonts rather than `@import`.
 
-== 1.17.8 - 28 September 2020 ==
+= 1.17.8 - 28 September 2020 =
 * Image: Prevent image stretching while using Safari
 
-== 1.17.7 - 10 September 2020 ==
+= 1.17.7 - 10 September 2020 =
 * Hero and Layout Sliders: Disable image preload for images added to frames.
 * Resolved a preview issue with widgets that attempt to render sub widgets but don't output them.
 * Contact Form: Added a field max-width setting.
@@ -137,21 +147,21 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * IE 11: Prevented images from exceeding the widget container.
 * Removed wpColorPickerL10n if WP >= 5.5.
 
-== 1.17.6 - 17 August 2020 ==
+= 1.17.6 - 17 August 2020 =
 * Hero and Layout Sliders: Disabled lazy loading for images added to the slide content area.
 * Slider: Disabled lazy loading in the Block Editor.
 
-== 1.17.5 - 12 August 2020 ==
+= 1.17.5 - 12 August 2020 =
 * Slider: Disable WordPress 5.5 Lazy Loading.
 
-== 1.17.4 - 06 August 2020 ==
+= 1.17.4 - 06 August 2020 =
 * Post Carousel: Improved support for multiple carousel widgets on the same page.
 * Post Carousel: Improved mobile support.
 * Sliders: Added `Autoplay` and `Autoplay Pause on Hover` settings to the Slider, Layout Slider and Hero widgets.
 * Features: Allowed shortcodes to be used in the Text field.
 * Contact Form: Fix to ensure the correct fields are passed to Akismet.
 
-== 1.17.3 - 23 July 2020 ==
+= 1.17.3 - 23 July 2020 =
 * Reverted: Features: Prevented icon overlapping text in edge cases.
 * Social Media Buttons: Added TikTok.
 * Button: Removed `:visited` color targeting.
@@ -161,10 +171,10 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Carousel: Contextualized variables as needed.
 * Carousel: Find the `ItemWidth` as needed rather than predefining it.
 
-== 1.17.2 - 21 July 2020 ==
+= 1.17.2 - 21 July 2020 =
 * Resolved button Less CSS bug.
 
-== 1.17.1 - 20 July 2020 ==
+= 1.17.1 - 20 July 2020 =
 * Post Carousel: Prevented all posts from outputting. `10` will be output at a time if `Posts per page` isn't set.
 * Post Carousel: Inlined navigation buttons if a title is set.
 * Updated the Google Fonts array.
@@ -190,7 +200,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Mobile: Improved admin form field responsive behavior.
 * Updated Font Awesome from `5.13.0` to `5.14.0`.
 
-== 1.17.0 - 22 May 2020 ==
+= 1.17.0 - 22 May 2020 =
 * Simple Masonry: Added a preloader and related settings.
 * Post Carousel: Migrated to Slick Carousel.
 * Post Carousel: Added RTL support.
@@ -202,7 +212,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Switched to Wikimedia's fork of less.php.
 * Added error suppression for external Less library.
 
-== 1.16.1 - 20 April 2020 ==
+= 1.16.1 - 20 April 2020 =
 * Accordion: When hiding panels, only search the current accordion and not nested accordions.
 * Slider Widgets: Removed slide navigation numbers from excerpt output.
 * Added support for custom icon styles.

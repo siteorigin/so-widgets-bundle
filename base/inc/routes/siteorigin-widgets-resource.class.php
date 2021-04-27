@@ -148,7 +148,19 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 			/* @var $widget SiteOrigin_Widget */
 			$instance = $widget->update( $widget_data, $widget_data );
 			$widget->widget( array(), $instance );
-			$rendered_widget = ob_get_clean();
+			$rendered_widget = array();
+			$rendered_widget['html'] = ob_get_clean();
+
+			// Check if this widget loaded any icons, and if it has, store them.
+			$styles = wp_styles();
+			if ( ! empty( $styles->queue ) ) {
+				$rendered_widget['icons'] = array();
+				foreach ( $styles->queue as $style ) {
+					if ( strpos( $style, 'siteorigin-widget-icon-font' ) !== false ) {
+						$rendered_widget['icons'][] = $style;
+					}
+				}
+			}
 		} else {
 			if ( empty( $valid_widget_class ) ) {
 				$rendered_widget = new WP_Error(
