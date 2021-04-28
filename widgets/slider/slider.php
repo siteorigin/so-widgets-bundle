@@ -127,13 +127,11 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 					'height' => array(
 						'type' => 'measurement',
 						'label' => __( 'Height', 'so-widgets-bundle' ),
-						'default' => 'default',
 					),
 
 					'height_responsive' => array(
 						'type' => 'measurement',
 						'label' => __( 'Responsive Height', 'so-widgets-bundle' ),
-						'default' => 'default',
 					),
 				),
 			),
