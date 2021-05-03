@@ -312,12 +312,7 @@
 		} ),
 
 		save: function ( context ) {
-			if ( context.attributes == 'object' && context.attributes.hasOwnProperty( 'widgetHtml' ) ) {
-   				return React.createElement( wp.element.RawHTML, null, attributes.widgetHtml );
-			} else {
-				// Fallback to PHP Render.
-				return null;
-			}
+			return null;
 		}
 	} );
 } )( window.wp.editor, window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.compose, window.wp.blockEditor );
