@@ -27,6 +27,74 @@
             </key>
           </key>
         </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
         <key name="headline">
           <key name="text" />
           <key name="destination_url" />
@@ -53,6 +121,20 @@
             <key name="icon_title" />
             <key name="more_text" />
             <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+            <key name="*">
+              <key name="title" />
+              <key name="sub_title" />
+              <key name="button>text" />
+              <key name="button>destination_url" />
+              <key name="attributes>title" />
+            </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
           </key>
         </key>
       </key>
@@ -85,6 +167,74 @@
                 </key>
               </key>
             </key>
+            <key name="panels">
+              <key name="*">
+                <key name="title" />
+                <key name="content_text" />
+                <key name="content_layout" />
+              </key>
+            </key>
+            <key name="items">
+              <key name="*">
+                <key name="title" />
+                <key name="content_text" />
+                <key name="content_layout" />
+                <key name="url" />
+              </key>
+            </key>
+            <key name="tabs">
+              <key name="*">
+                <key name="title" />
+                <key name="content_text" />
+                <key name="content_layout" />
+                <key name="url" />
+              </key>
+            </key>
+            <key name="features">
+              <key name="*">
+                <key name="title" />
+                <key name="text" />
+                <key name="icon_title" />
+                <key name="more_text" />
+                <key name="more_url" />
+              </key>
+            </key>
+            <key name="frames">
+              <key name="*">
+                <key name="content" />
+                <key name="url" />
+              </key>
+            </key>
+            <key name="images">
+              <key name="*">
+                <key name="title" />
+                <key name="alt" />
+                <key name="url" />
+              </key>
+            </key>
+            <key name="columns">
+              <key name="*">
+                <key name="title" />
+                <key name="subtitle" />
+                <key name="image_title" />
+                <key name="image_alt" />
+                <key name="per" />
+                <key name="button_text" />
+                <key name="url" />
+              </key>
+            </key>
+            <key name="networks">
+              <key name="*">
+                <key name="url" />
+                <key name="icon_title" />
+              </key>
+            </key>
+            <key name="testimonials">
+              <key name="*">
+                <key name="title" />
+                <key name="url" />
+              </key>
+            </key>
             <key name="headline">
               <key name="text" />
               <key name="destination_url" />
@@ -111,6 +261,20 @@
                 <key name="icon_title" />
                 <key name="more_text" />
                 <key name="more_url" />
+              </key>
+            </key>
+            <key name="cta">
+              <key name="*">
+                <key name="title" />
+                <key name="sub_title" />
+                <key name="button>text" />
+                <key name="button>destination_url" />
+                <key name="attributes>title" />
+              </key>
+            </key>
+            <key name="taxonomy">
+              <key name="*">
+                <key name="label" />
               </key>
             </key>
           </key>
