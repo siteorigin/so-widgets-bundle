@@ -32,7 +32,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 				'type'        => 'measurement',
 				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
 				'default'     => '780px',
-				'description' => __( 'This setting controls when the Mobile Align setting will be used. The default value is 780px.', 'so-widgets-bundle' ),
+				'description' => __( 'This setting controls when the Mobile align setting will be used. The default value is 780px.', 'so-widgets-bundle' ),
 			)
 		);
 	}
@@ -134,7 +134,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 					),
 					'mobile_align' => array(
 						'type' => 'select',
-						'label' => __( 'Mobile Align', 'so-widgets-bundle' ),
+						'label' => __( 'Mobile align', 'so-widgets-bundle' ),
 						'default' => 'center',
 						'options' => array(
 							'left' => __( 'Left', 'so-widgets-bundle' ),
