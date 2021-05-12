@@ -1,6 +1,7 @@
 @import "../../../base/less/mixins";
 
 @responsive_breakpoint: 780px;
+@align: center;
 @mobile_align: center;
 
 @button_width: '';
@@ -23,19 +24,20 @@
 	.clearfix();
 
 	@media (max-width: @responsive_breakpoint) {
-		text-align: @mobile_align;
+		&.ow-button-align-@{align} {
+			text-align: @mobile_align;
 
-		& when not ( @mobile_align = justify ) {
-			&.ow-button-align-justify a {
-				display: inline-block;
-			}
-		}
-
-		& when ( @mobile_align = justify ) {
-			a {
-				display: block;
+			& when not ( @mobile_align = justify ) {
+				&.ow-button-align-justify a {
+					display: inline-block;
+				}
 			}
 
+			& when ( @mobile_align = justify ) {
+				a {
+					display: block;
+				}
+			}
 		}
 	}
 
