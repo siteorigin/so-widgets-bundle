@@ -169,6 +169,10 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		} else {
 			$attr['alt'] = get_post_meta( $instance['image'], '_wp_attachment_image_alt', true );
 		}
+
+		if ( function_exists( 'wp_lazy_loading_enabled' ) && wp_lazy_loading_enabled( 'img', 'sow-image' ) ) {
+			$attr['loading'] = 'lazy';
+		}
 		
 		$link_atts = array();
 		if ( ! empty( $instance['new_window'] ) ) {
