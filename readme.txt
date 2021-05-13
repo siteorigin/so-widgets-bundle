@@ -87,7 +87,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Responsive improvements to the `Plugins > SiteOrigin Widgets` page.
 * Developer: Added a multi-upload field for media.
 * Developer: Added an option to disable the TinyMCE form field Add Media button.
-* Developer: Added form field class prefix and path filering using `siteorigin_widgets_field_registered_class_prefixes` and `siteorigin_widgets_field_registered_class_paths`.
+* Developer: Added form field class prefix and path filtering using `siteorigin_widgets_field_registered_class_prefixes` and `siteorigin_widgets_field_registered_class_paths`.
 
 = 1.18.2 - 27 April 2021 =
 * SiteOrigin Widget Block: Ensured icons are enqueued.
