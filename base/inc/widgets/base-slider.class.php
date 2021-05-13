@@ -14,14 +14,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			array( 'jquery' ),
 			SOW_BUNDLE_VERSION
 		);
-		if( function_exists('wp_is_mobile') && wp_is_mobile() ) {
-			$frontend_scripts[] = array(
-				'sow-slider-slider-cycle2-swipe',
-				plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/jquery.cycle.swipe' . SOW_BUNDLE_JS_SUFFIX . '.js',
-				array( 'jquery' ),
-				SOW_BUNDLE_VERSION
-			);
-		}
+
 		$frontend_scripts[] = array(
 			'sow-slider-slider',
 			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/slider/jquery.slider' . SOW_BUNDLE_JS_SUFFIX . '.js',
@@ -39,6 +32,16 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					SOW_BUNDLE_VERSION
 				)
 			)
+		);
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_cycle_swipe' ) );
+	}
+
+	function register_cycle_swipe() {
+		wp_register_script(
+			'sow-slider-slider-cycle2-swipe',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/jquery.cycle.swipe' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			SOW_BUNDLE_VERSION
 		);
 	}
 
@@ -219,10 +222,13 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	function render_template_part( $part, $controls, $frames ) {
 		switch( $part ) {
 			case 'before_slider':
-				?><div class="sow-slider-base <?php if( wp_is_mobile() ) echo 'sow-slider-is-mobile' ?>" style="display: none"><?php
+				?><div class="sow-slider-base" style="display: none"><?php
 				break;
 			case 'before_slides':
 				$settings = $this->slider_settings( $controls );
+				if ( $settings['swipe'] ) {
+					wp_enqueue_script( 'sow-slider-slider-cycle2-swipe' );
+				}
 				?><ul class="sow-slider-images" data-settings="<?php echo esc_attr( json_encode($settings) ) ?>"><?php
 				break;
 			case 'after_slides':
