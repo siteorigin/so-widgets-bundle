@@ -374,6 +374,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	function video_code( $videos, $classes = array(), $controls = array() ){
 		if( empty( $videos ) ) return;
 		$loop = ! empty( $controls['loop_background_videos'] ) && $controls['loop_background_videos'] ? 'loop' : '';
+
 		$video_element = '<video class="' . esc_attr( implode( ' ', $classes ) ) . '" autoplay ' . $loop . ' muted playsinline>';
 		$so_video = new SiteOrigin_Video();
 		foreach( $videos as $video ) {
@@ -387,7 +388,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				if( ! $can_oembed ) {
 					$video_file = sow_esc_url( $video['url'] );
 				} else {
-					echo $so_video->get_video_oembed( $video['url'], ! empty( $video['autoplay'] ) );
+					echo $so_video->get_video_oembed( $video['url'], ! empty( $video['autoplay'] ), false, $loop );
 					continue;
 				}
 			}
