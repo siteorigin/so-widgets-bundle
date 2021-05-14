@@ -332,7 +332,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					$classes[] = 'sow-mobile-video_enabled';
 				}
 
-				$this->video_code( $background['videos'], $classes );
+				$this->video_code( $background['videos'], $classes, $controls );
 			}
 
 			if( $background['opacity'] < 1 && !empty($background['image']) ) {
@@ -371,7 +371,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	 * @param $videos
 	 * @param array $classes
 	 */
-	function video_code( $videos, $classes = array() ){
+	function video_code( $videos, $classes = array(), $controls = array() ){
 		if( empty( $videos ) ) return;
 		$loop = ! empty( $controls['loop_background_videos'] ) && $controls['loop_background_videos'] ? 'loop' : '';
 		$video_element = '<video class="' . esc_attr( implode( ' ', $classes ) ) . '" autoplay ' . $loop . ' muted playsinline>';
