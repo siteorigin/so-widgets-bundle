@@ -300,6 +300,11 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			$instance['video']['self_sources'][] = $video_src;
 		}
 
+		// Prevent FitVids from being enabled for widgets created before FitVids was added.
+		if ( ! isset( $instance['playback']['fitvids'] ) ) {
+			$instance['playback']['fitvids'] = false;
+		}
+
 		return $instance;
 	}
 }
