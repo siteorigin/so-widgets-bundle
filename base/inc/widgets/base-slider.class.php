@@ -139,7 +139,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'loop_background_videos' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Loop slide background videos', 'so-widgets-bundle' ),
-				'default' => true,
+				'default' => false,
 			),
 		);
 	}
