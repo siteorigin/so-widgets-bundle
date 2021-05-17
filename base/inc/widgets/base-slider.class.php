@@ -142,7 +142,13 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'type' => 'checkbox',
 				'label' => __( 'Show slide background videos on mobile', 'so-widgets-bundle' ),
 				'description' => __( 'Allow slide background videos to appear on mobile devices that support autoplay.', 'so-widgets-bundle' ),
-			)
+			),
+
+			'loop_background_videos' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Loop slide background videos', 'so-widgets-bundle' ),
+				'default' => false,
+			),
 		);
 	}
 
@@ -338,7 +344,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					$classes[] = 'sow-mobile-video_enabled';
 				}
 
-				$this->video_code( $background['videos'], $classes );
+				$this->video_code( $background['videos'], $classes, $controls );
 			}
 
 			if( $background['opacity'] < 1 && !empty($background['image']) ) {
@@ -377,10 +383,11 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	 * @param $videos
 	 * @param array $classes
 	 */
-	function video_code( $videos, $classes = array() ){
+	function video_code( $videos, $classes = array(), $controls = array() ){
 		if( empty( $videos ) ) return;
-		$video_element = '<video class="' . esc_attr( implode( ' ', $classes ) ) . '" autoplay loop muted playsinline>';
+		$loop = ! empty( $controls['loop_background_videos'] ) && $controls['loop_background_videos'] ? 'loop' : '';
 
+		$video_element = '<video class="' . esc_attr( implode( ' ', $classes ) ) . '" autoplay ' . $loop . ' muted playsinline>';
 		$so_video = new SiteOrigin_Video();
 		foreach( $videos as $video ) {
 			if( empty( $video['file'] ) && empty ( $video['url'] ) ) continue;
@@ -393,7 +400,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				if( ! $can_oembed ) {
 					$video_file = sow_esc_url( $video['url'] );
 				} else {
-					echo $so_video->get_video_oembed( $video['url'], ! empty( $video['autoplay'] ) );
+					echo $so_video->get_video_oembed( $video['url'], ! empty( $video['autoplay'] ), false, $loop );
 					continue;
 				}
 			}
