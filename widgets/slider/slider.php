@@ -178,7 +178,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 		);
 
 		if( !empty($foreground_src) ) {
-			// If a Custom Height is set, build the foreground style attribute.
+			// If a custom height is set, build the foreground style attribute.
 			if ( ! empty( $frame['custom_height'] ) ) {
 				$foreground_style_attr = 'height: ' . intval( $frame['custom_height'] ) . 'px; width: auto;';
 
