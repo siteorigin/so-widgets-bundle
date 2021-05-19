@@ -72,7 +72,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
-= 1.19.0 - 14 May 2021 =
+= 1.19.0 - 19 May 2021 =
 * Contact Form: Added a new `Number` field type.
 * Image Grid: Changed vertical align to baseline.
 * Layout Slider: Added a `slider_control` shortcode.
