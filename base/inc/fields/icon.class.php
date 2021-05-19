@@ -23,7 +23,7 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 
 		$value_parts = self::get_value_parts( $value, $icon_families_styles );
 
-		if ( ! empty( $value ) ) {
+		if ( ! empty( $value ) && array_key_exists( $value_parts['family'], $icon_families_styles ) ) {
 			$value_family = $value_parts['family'];
 			$value_style = empty( $value_parts['style'] ) ? '' : ( '-' . $value_parts['style'] );
 			$value = $value_parts['family'] . $value_style . '-' . $value_parts['icon'];
