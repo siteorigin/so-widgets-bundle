@@ -196,6 +196,12 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#FF6600'
 	),
+	'imdb'   => array(
+		'label'    => __( 'IMDb', 'so-widgets-bundle' ),
+		'base_url' => 'https://www.imdb.com/',
+		'icon_color' => '#F3CE13',
+		'button_color' => '#000'
+	),
 	'jsfiddle'   => array(
 		'label'    => __( 'JSFiddle', 'so-widgets-bundle' ),
 		'base_url' => 'http://jsfiddle.net/',

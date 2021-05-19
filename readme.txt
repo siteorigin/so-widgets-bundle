@@ -72,6 +72,23 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.19.0 - 19 May 2021 =
+* Contact Form: Added a new `Number` field type.
+* Image Grid: Changed vertical align to baseline.
+* Layout Slider: Added a `slider_control` shortcode.
+* Slider: Ensured the foreground image height is only set if a background image is present.
+* Sliders: Added `Always show navigation on desktop` setting.
+* Social Media Buttons: Added IMDb.
+* Video Player: Added FitVids support for fluid width video embeds.
+* Widget Block: Added a widget type search field.
+* Widget Block: Minor media field responsive improvements.
+* Widget Block: Automatically activate inactive widgets as needed.
+* Styling improvements to the icon filter fields.
+* Responsive improvements to the `Plugins > SiteOrigin Widgets` page.
+* Developer: Added a multi-upload field for media.
+* Developer: Added an option to disable the TinyMCE form field Add Media button.
+* Developer: Added form field class prefix and path filtering using `siteorigin_widgets_field_registered_class_prefixes` and `siteorigin_widgets_field_registered_class_paths`.
+
 = 1.18.2 - 27 April 2021 =
 * SiteOrigin Widget Block: Ensured icons are enqueued.
 * Slider: Only apply foreground height if a background image is set.

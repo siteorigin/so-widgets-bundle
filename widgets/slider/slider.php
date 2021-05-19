@@ -127,13 +127,11 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 					'height' => array(
 						'type' => 'measurement',
 						'label' => __( 'Height', 'so-widgets-bundle' ),
-						'default' => 'default',
 					),
 
 					'height_responsive' => array(
 						'type' => 'measurement',
 						'label' => __( 'Responsive Height', 'so-widgets-bundle' ),
-						'default' => 'default',
 					),
 				),
 			),
@@ -180,6 +178,14 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 		);
 
 		if( !empty($foreground_src) ) {
+			// If a custom height is set, build the foreground style attribute.
+			if ( ! empty( $frame['custom_height'] ) ) {
+				$foreground_style_attr = 'height: ' . intval( $frame['custom_height'] ) . 'px; width: auto;';
+
+				if ( ! empty( $foreground_src[2] ) ) {
+					$foreground_style_attr .= 'max-height: ' . intval( $foreground_src[2] ) .'px';
+				}
+			}
 			?>
 			<div class="sow-slider-image-container">
 				<div class="sow-slider-image-wrapper" style="<?php if( ! empty( $foreground_src[1] ) ) echo 'max-width: ' . (int) $foreground_src[1] . 'px'; ?>">
@@ -200,7 +206,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 							array(
 								'class' => 'sow-slider-foreground-image',
 								'loading' => 'eager',
-								'style' => ! empty( $frame['custom_height'] ) && ! empty( $foreground_src[2] ) ? 'height: ' . intval( $foreground_src[2] ) . 'px' : '',
+								'style' => ! empty( $foreground_style_attr ) ? $foreground_style_attr : '',
 							)
 						);
 						?>
@@ -255,7 +261,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				}
 				$frame['link_attributes'] = $link_atts;
 
-				$frame['custom_height'] = ! empty( $instance['design']['height'] );
+				$frame['custom_height'] = ! empty( $instance['design']['height'] ) ? $instance['design']['height'] : 0;
 			}
 		}
 		return array(

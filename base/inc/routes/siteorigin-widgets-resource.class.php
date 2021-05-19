@@ -88,6 +88,10 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 
 		/* @var $widget SiteOrigin_Widget */
 		$widget = SiteOrigin_Widgets_Widget_Manager::get_widget_instance( $widget_class );
+		// Attempt to activate the widget if it's not already active.
+		if ( ! empty( $widget_class ) && empty( $widget ) ) {
+			$widget = SiteOrigin_Widgets_Bundle::single()->load_missing_widget( false, $widget_class );
+		}
 
 		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
 			if ( ! empty( $widget_data ) ) {
@@ -135,6 +139,11 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 		$widget_data = $request['widgetData'];
 
 		$widget = SiteOrigin_Widgets_Widget_Manager::get_widget_instance( $widget_class );
+		// Attempt to activate the widget if it's not already active.
+		if ( ! empty( $widget_class ) && empty( $widget ) ) {
+			$widget = SiteOrigin_Widgets_Bundle::single()->load_missing_widget( false, $widget_class );
+		}
+
 		// This ensures styles are added inline.
 		add_filter( 'siteorigin_widgets_is_preview', '__return_true' );
 		$GLOBALS[ 'SO_WIDGETS_BUNDLE_PREVIEW_RENDER' ] = true;

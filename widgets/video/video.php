@@ -109,6 +109,12 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 							'video_type[external]' => array( 'hide' ),
 						)
 					),
+					'fitvids' => array(
+						'type'    => 'checkbox',
+						'default' => true,
+						'label'   => __( 'Use FitVids', 'so-widgets-bundle' ),
+						'description'   => __( 'FitVids will scale the video to fill the width of the widget area while maintaining aspect ratio.', 'so-widgets-bundle' ),
+					),
 					'oembed'   => array(
 						'type'          => 'checkbox',
 						'default'       => true,
@@ -160,6 +166,15 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 					plugin_dir_url( __FILE__ ) . 'js/so-video-widget' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery', 'mediaelement' ),
 					SOW_BUNDLE_VERSION
+				);
+			}
+
+			if ( ! empty( $instance['playback']['fitvids'] ) && ! wp_script_is( 'jquery-fitvids' ) ) {
+				wp_enqueue_script(
+					'jquery-fitvids',
+					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/jquery.fitvids' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					array( 'jquery' ),
+					1.1
 				);
 			}
 		}
@@ -217,7 +232,8 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'autoplay'                => ! empty( $instance['playback']['autoplay'] ),
 			'loop'                    => $video_host == 'self' && ! empty( $instance['playback']['loop'] ),
 			'related_videos'          => ! empty( $instance['playback']['related_videos'] ),
-			'skin_class'              => 'default'
+			'skin_class'              => 'default',
+			'fitvids'                 => ! empty( $instance['playback']['fitvids'] ),
 		);
 
 		// Force oEmbed for this video
@@ -282,6 +298,11 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				$instance['video']['self_sources'] = array();
 			}
 			$instance['video']['self_sources'][] = $video_src;
+		}
+
+		// Prevent FitVids from being enabled for widgets created before FitVids was added.
+		if ( ! isset( $instance['playback']['fitvids'] ) ) {
+			$instance['playback']['fitvids'] = false;
 		}
 
 		return $instance;

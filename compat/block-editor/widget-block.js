@@ -3,7 +3,7 @@
 	var el = element.createElement;
 	var registerBlockType = blocks.registerBlockType;
 	var BlockControls = blockEditor.BlockControls;
-	var SelectControl = components.SelectControl;
+	var ComboboxControl = components.ComboboxControl;
 	var withState = compose.withState;
 	var Toolbar = components.Toolbar;
 	var ToolbarButton = components.ToolbarButton;
@@ -129,7 +129,6 @@
 					widgetsOptions = sowbBlockEditorAdmin.widgets.map( function ( widget ) {
 						return { value: widget.class, label: widget.name };
 					} );
-					widgetsOptions.unshift( { value: '', label: __( 'Select widget type', 'so-widgets-bundle' ) } );
 				}
 
 				var loadWidgetForm = props.attributes.widgetClass && ! props.widgetFormHtml;
@@ -199,11 +198,14 @@
 								'div',
 								{ className: 'so-widget-block-container' },
 								el(
-									SelectControl,
+									ComboboxControl,
 									{
-										options: widgetsOptions,
+										className: 'so-widget-autocomplete-field',
+										label: __( 'Widget type', 'so-widgets-bundle' ),
 										value: props.attributes.widgetClass,
+										onFilterValueChange: function ( value ) {}, // Avoid React notice and onChange potentially not triggering.
 										onChange: onWidgetClassChange,
+										options: widgetsOptions,
 									}
 								),
 								el( 'div', {
@@ -310,12 +312,7 @@
 		} ),
 
 		save: function ( context ) {
-			if ( context.attributes == 'object' && context.attributes.hasOwnProperty( 'widgetHtml' ) ) {
-   				return React.createElement( wp.element.RawHTML, null, attributes.widgetHtml );
-			} else {
-				// Fallback to PHP Render.
-				return null;
-			}
+			return null;
 		}
 	} );
 } )( window.wp.editor, window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.compose, window.wp.blockEditor );
