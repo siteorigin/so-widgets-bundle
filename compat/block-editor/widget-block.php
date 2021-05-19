@@ -45,7 +45,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			if ( ! $widget['Active'] ) {
 				include_once wp_normalize_path( $widget['File'] );
 				// The last class will always be from the widget file we just loaded.
-				$widget_class = end( get_declared_classes() );
+				$classes = get_declared_classes();
+				$widget_class = end( $classes );
 
 				$so_widgets[] = array(
 					'name' => $widget['Name'],
