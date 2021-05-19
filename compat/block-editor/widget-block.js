@@ -91,6 +91,7 @@
 			}
 
 			function generateWidgetPreview( widgetData = false) {
+				wp.data.dispatch( 'core/editor' ).lockPostSaving();
 				jQuery.post( {
 					url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/previews',
 					beforeSend: function ( xhr ) {
@@ -111,6 +112,7 @@
 						widgetHtml: widgetPreview.html,
 						widgetIcons: widgetPreview.icons
 					} );
+					wp.data.dispatch( 'core/editor' ).unlockPostSaving();
 				} )
 				.fail( ajaxErrorHandler );
 			}
