@@ -94,7 +94,7 @@
 				wp.data.dispatch( 'core/editor' ).lockPostSaving();
 				jQuery.post( {
 					url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/previews',
-					beforeSend: function ( xhr ) {
+					beforeSend: function( xhr ) {
 						xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
 					},
 					data: {
