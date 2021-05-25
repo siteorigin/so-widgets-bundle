@@ -110,8 +110,8 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 						'type' => 'number',
 					),
 
-					'spacing' => array(
-						'label' => __( 'Image spacing', 'so-widgets-bundle' ),
+					'padding' => array(
+						'label' => __( 'Image padding', 'so-widgets-bundle' ),
 						'type' => 'multi-measurement',
 						'autofill' => true,
 						'default' => '5px 5px 5px 5px',
@@ -212,16 +212,19 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				$instance['display']['max_width'] = (int) $instance['display']['max_width'];
 			}
 
-			// Image spacing changed from `number` field to `multi-measurement` field.
-			if ( is_numeric( $instance['display']['spacing'] ) ) {
-				$spacing = $instance['display']['spacing'] . 'px';
-			} else if ( isset( $instance['display']['spacing_unit'] ) ) {
-				// Image spacing changed from `measurement` field to `multi-measurement` field.
-				$spacing = $instance['display']['spacing'];
-				unset( $instance['display']['spacing_unit'] );
-			}
-			if ( isset( $spacing ) ) {
-				$instance['display']['spacing'] = "0 $spacing $spacing $spacing";
+			// Migrate the Spacing setting to the Padding setting.
+			if ( isset( $instance['display']['spacing'] ) ) {
+				// The Spacing setting was initially a `number` field.
+				if ( is_numeric( $instance['display']['spacing'] ) ) {
+					$spacing = $instance['display']['spacing'] . 'px';
+				} else if ( isset( $instance['display']['spacing_unit'] ) ) {
+					// Prior to the rename, it was a `measurement` field.
+					$spacing = $instance['display']['spacing'];
+				}
+
+				if ( isset( $spacing ) ) {
+					$instance['display']['padding'] = "0 $spacing $spacing $spacing";
+				}
 			}
 		}
 		
@@ -237,9 +240,9 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	 */
 	function get_less_variables( $instance ) {
 		$less = array();
-		if ( ! empty( $instance['display']['spacing'] ) ) {
-			$less['spacing'] = $instance['display']['spacing']
-;		}
+		if ( ! empty( $instance['display']['padding'] ) ) {
+			$less['padding'] = $instance['display']['padding'];
+		}
 
 		return $less;
 	}
