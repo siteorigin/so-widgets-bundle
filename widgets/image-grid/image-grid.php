@@ -111,10 +111,24 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 					),
 
 					'spacing' => array(
-						'label' => __( 'Spacing', 'so-widgets-bundle' ),
-						'description' => __( 'Amount of spacing between images.', 'so-widgets-bundle' ),
-						'type' => 'measurement',
-						'default' => '10px',
+						'label' => __( 'Image spacing', 'so-widgets-bundle' ),
+						'type' => 'multi-measurement',
+						'autofill' => true,
+						'default' => '5px 5px 5px 5px',
+						'measurements' => array(
+							'top' => array(
+							'label' => __( 'Top', 'so-widgets-bundle' ),
+							),
+							'right' => array(
+								'label' => __( 'Right', 'so-widgets-bundle' ),
+							),
+							'bottom' => array(
+								'label' => __( 'Bottom', 'so-widgets-bundle' ),
+							),
+							'left' => array(
+								'label' => __( 'Left', 'so-widgets-bundle' ),
+							),
+						),
 					),
 				)
 			)
@@ -198,9 +212,16 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				$instance['display']['max_width'] = (int) $instance['display']['max_width'];
 			}
 
-			// Input for `spacing` changed from `number` to `measurement` field.
+			// Image spacing changed from `number` field to `multi-measurement` field.
 			if ( is_numeric( $instance['display']['spacing'] ) ) {
-				$instance['display']['spacing'] = $instance['display']['spacing'] .'px';
+				$spacing = $instance['display']['spacing'] . 'px';
+			} else if ( isset( $instance['display']['spacing_unit'] ) ) {
+				// Image spacing changed from `measurement` field to `multi-measurement` field.
+				$spacing = $instance['display']['spacing'];
+				unset( $instance['display']['spacing_unit'] );
+			}
+			if ( isset( $spacing ) ) {
+				$instance['display']['spacing'] = "0 $spacing $spacing $spacing";
 			}
 		}
 		
@@ -217,8 +238,8 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	function get_less_variables( $instance ) {
 		$less = array();
 		if ( ! empty( $instance['display']['spacing'] ) ) {
-			$less['spacing'] = $instance['display']['spacing'];
-		}
+			$less['spacing'] = $instance['display']['spacing']
+;		}
 
 		return $less;
 	}
