@@ -255,7 +255,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 					'classes' => array(
 						'type' => 'text',
-						'label' => __('Button Classes', 'so-widgets-bundle'),
+						'label' => __('Button classes', 'so-widgets-bundle'),
 						'description' => __('Additional CSS classes added to the button link.', 'so-widgets-bundle'),
 					),
 
