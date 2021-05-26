@@ -52,7 +52,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 				'label' => __( 'Items', 'so-widgets-bundle' ),
 				'item_name' => __( 'Item', 'so-widgets-bundle' ),
 				'item_label' => array(
-					'selector' => "[id*='frames-title']",
+					'selector' => "[id*='title']",
 					'update_event' => 'change',
 					'value_method' => 'val'
 				),
