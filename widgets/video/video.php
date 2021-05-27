@@ -104,10 +104,6 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 						'type'    => 'checkbox',
 						'default' => false,
 						'label'   => __( 'Loop', 'so-widgets-bundle' ),
-						'state_handler' => array(
-							'video_type[self]'     => array( 'show' ),
-							'video_type[external]' => array( 'hide' ),
-						)
 					),
 					'fitvids' => array(
 						'type'    => 'checkbox',
@@ -230,7 +226,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'is_skinnable_video_host' => $this->is_skinnable_video_host( $video_host ),
 			'poster'                  => $poster,
 			'autoplay'                => ! empty( $instance['playback']['autoplay'] ),
-			'loop'                    => $video_host == 'self' && ! empty( $instance['playback']['loop'] ),
+			'loop'                    => ! empty( $instance['playback']['loop'] ),
 			'related_videos'          => ! empty( $instance['playback']['related_videos'] ),
 			'skin_class'              => 'default',
 			'fitvids'                 => ! empty( $instance['playback']['fitvids'] ),
