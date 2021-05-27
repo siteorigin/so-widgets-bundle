@@ -110,11 +110,25 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 						'type' => 'number',
 					),
 
-					'spacing' => array(
-						'label' => __( 'Spacing', 'so-widgets-bundle' ),
-						'description' => __( 'Amount of spacing between images.', 'so-widgets-bundle' ),
-						'type' => 'measurement',
-						'default' => '10px',
+					'padding' => array(
+						'label' => __( 'Image padding', 'so-widgets-bundle' ),
+						'type' => 'multi-measurement',
+						'autofill' => true,
+						'default' => '5px 5px 5px 5px',
+						'measurements' => array(
+							'top' => array(
+							'label' => __( 'Top', 'so-widgets-bundle' ),
+							),
+							'right' => array(
+								'label' => __( 'Right', 'so-widgets-bundle' ),
+							),
+							'bottom' => array(
+								'label' => __( 'Bottom', 'so-widgets-bundle' ),
+							),
+							'left' => array(
+								'label' => __( 'Left', 'so-widgets-bundle' ),
+							),
+						),
 					),
 				)
 			)
@@ -198,9 +212,19 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				$instance['display']['max_width'] = (int) $instance['display']['max_width'];
 			}
 
-			// Input for `spacing` changed from `number` to `measurement` field.
-			if ( is_numeric( $instance['display']['spacing'] ) ) {
-				$instance['display']['spacing'] = $instance['display']['spacing'] .'px';
+			// Migrate the Spacing setting to the Padding setting.
+			if ( isset( $instance['display']['spacing'] ) ) {
+				// The Spacing setting was initially a `number` field.
+				if ( is_numeric( $instance['display']['spacing'] ) ) {
+					$spacing = $instance['display']['spacing'] . 'px';
+				} else if ( isset( $instance['display']['spacing_unit'] ) ) {
+					// Prior to the rename, it was a `measurement` field.
+					$spacing = $instance['display']['spacing'];
+				}
+
+				if ( isset( $spacing ) ) {
+					$instance['display']['padding'] = "0 $spacing $spacing $spacing";
+				}
 			}
 		}
 		
@@ -216,8 +240,8 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	 */
 	function get_less_variables( $instance ) {
 		$less = array();
-		if ( ! empty( $instance['display']['spacing'] ) ) {
-			$less['spacing'] = $instance['display']['spacing'];
+		if ( ! empty( $instance['display']['padding'] ) ) {
+			$less['padding'] = $instance['display']['padding'];
 		}
 
 		return $less;
