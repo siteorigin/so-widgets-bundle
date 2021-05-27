@@ -111,6 +111,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Social Media Buttons: Added Discord.
 * Video: Added a `Loop` setting for self-hosted videos.
 * Video: If `autoplay` is enabled, `playsinline` will be added.
+* Accessibility: Implemented keyboard navigation for the Widgets Bundle admin interface. You can now tab through all fields and settings, and make changes without a mouse.
 * Developer: Post Carousel: Added `siteorigin_widgets_post_carousel_post_limit` filter
 * Developer: Google Maps: Corrected marker JavaScript property names.
 * Developer: Block Editor: Store and serve rendered widget.
