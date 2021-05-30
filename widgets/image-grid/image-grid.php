@@ -223,7 +223,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				}
 
 				if ( isset( $spacing ) ) {
-					$instance['display']['padding'] = "0 $spacing $spacing $spacing";
+					$instance['display']['padding'] = "0px $spacing $spacing $spacing";
 				}
 			}
 		}
