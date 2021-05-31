@@ -34,7 +34,7 @@ function siteorigin_widget_post_selector_process_query( $query, $exclude_current
 		$tax_queries = explode(',', $query['tax_query']);
 
 		$query['tax_query'] = array();
-		$query['tax_query']['relation'] = 'OR';
+		$query['tax_query']['relation'] = isset( $query['tax_query_relation'] ) ? $query['tax_query_relation'] : 'OR';
 		foreach($tax_queries as $tq) {
 			list($tax, $term) = explode(':', $tq);
 
