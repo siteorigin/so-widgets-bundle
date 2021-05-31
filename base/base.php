@@ -272,9 +272,9 @@ function siteorigin_widgets_font_families( ){
 		foreach ( $variants as $variant ) {
 			if ( $variant == 'regular' || $variant == 400 ) {
 				$font_families[ $font ] = $font;
-			}
-			else {
-				$font_families[ $font . ':' . $variant ] = $font . ' (' . $variant . ')';
+			} else {
+				$label_variant = is_numeric( $variant ) && $variant != 'italic'? $variant : filter_var( $variant, FILTER_SANITIZE_NUMBER_INT ) . ' italic';
+				$font_families[ $font . ':' . $variant ] = $font . ' (' . $label_variant . ')';
 			}
 		}
 	}
