@@ -52,7 +52,11 @@ Once you enable a widget, you'll be able to use it in Page Builder, the Block Ed
 
 == Support ==
 
-We offer free support on the [SiteOrigin support forums](https://siteorigin.com/thread/).
+Free support is available on the [SiteOrigin support forums](https://siteorigin.com/thread/). Email support is available for [SiteOrigin Premium](https://siteorigin.com/downloads/premium/) users.
+
+== Accessibility Ready ==
+
+The Widgets Bundle is accessibility ready. Tab through all form fields and settings, make changes without using a mouse.
 
 == SiteOrigin Premium ==
 
