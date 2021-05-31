@@ -87,7 +87,7 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 * Sliders: Added `Loop slide background videos` setting.
 * Sliders: Improved background video autoplay setting description.
 * Sliders: Removed `wp_is_mobile` dependency to improve caching.
-* Video Player: Added `Loop` setting for external videos.
+* Video Player: Added `Loop` setting for YouTube videos.
 * Widget Block: Resolved Contact Form nonce error.
 * Widget Block: Resolved `Only variables should be passed by reference` notice.
 * Developer: Cleared the Icon Widget default icon if the icon font family doesn't exist.
