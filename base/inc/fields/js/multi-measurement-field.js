@@ -23,7 +23,7 @@
 				var valueResult = values[ index ].match( /(\d+\.?\d*)([a-z%]+)*/ );
 				if ( valueResult && valueResult.length ) {
 					var amount = valueResult[ 1 ];
-					var unit = valueResult[ 2 ];
+					var unit = typeof valueResult[ 2 ] != 'undefined' ? valueResult[ 2 ] : 'px';
 					$( element ).val( amount );
 					$( element ).find( '+ .sow-multi-measurement-select-unit' ).val( unit );
 				}
