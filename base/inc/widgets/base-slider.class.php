@@ -14,14 +14,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			array( 'jquery' ),
 			SOW_BUNDLE_VERSION
 		);
-		if( function_exists('wp_is_mobile') && wp_is_mobile() ) {
-			$frontend_scripts[] = array(
-				'sow-slider-slider-cycle2-swipe',
-				plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/jquery.cycle.swipe' . SOW_BUNDLE_JS_SUFFIX . '.js',
-				array( 'jquery' ),
-				SOW_BUNDLE_VERSION
-			);
-		}
+
 		$frontend_scripts[] = array(
 			'sow-slider-slider',
 			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/slider/jquery.slider' . SOW_BUNDLE_JS_SUFFIX . '.js',
@@ -39,6 +32,16 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					SOW_BUNDLE_VERSION
 				)
 			)
+		);
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_cycle_swipe' ) );
+	}
+
+	function register_cycle_swipe() {
+		wp_register_script(
+			'sow-slider-slider-cycle2-swipe',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/jquery.cycle.swipe' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			SOW_BUNDLE_VERSION
 		);
 	}
 
@@ -139,7 +142,13 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'type' => 'checkbox',
 				'label' => __( 'Show slide background videos on mobile', 'so-widgets-bundle' ),
 				'description' => __( 'Allow slide background videos to appear on mobile devices that support autoplay.', 'so-widgets-bundle' ),
-			)
+			),
+
+			'loop_background_videos' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Loop slide background videos', 'so-widgets-bundle' ),
+				'default' => false,
+			),
 		);
 	}
 
@@ -163,7 +172,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'type' => 'checkbox',
 				'label' => __( 'Autoplay', 'so-widgets-bundle' ),
 				'default' => false,
-				'description' => __( 'Currently only for YouTube videos.', 'so-widgets-bundle' ),
+				'description' => __( 'Autoplay can only be disabled for YouTube videos.', 'so-widgets-bundle' ),
 			),
 
 			'format' => array(
@@ -219,10 +228,13 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	function render_template_part( $part, $controls, $frames ) {
 		switch( $part ) {
 			case 'before_slider':
-				?><div class="sow-slider-base <?php if( wp_is_mobile() ) echo 'sow-slider-is-mobile' ?>" style="display: none"><?php
+				?><div class="sow-slider-base" style="display: none"><?php
 				break;
 			case 'before_slides':
 				$settings = $this->slider_settings( $controls );
+				if ( $settings['swipe'] ) {
+					wp_enqueue_script( 'sow-slider-slider-cycle2-swipe' );
+				}
 				?><ul class="sow-slider-images" data-settings="<?php echo esc_attr( json_encode($settings) ) ?>"><?php
 				break;
 			case 'after_slides':
@@ -332,7 +344,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					$classes[] = 'sow-mobile-video_enabled';
 				}
 
-				$this->video_code( $background['videos'], $classes );
+				$this->video_code( $background['videos'], $classes, $controls );
 			}
 
 			if( $background['opacity'] < 1 && !empty($background['image']) ) {
@@ -371,10 +383,11 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	 * @param $videos
 	 * @param array $classes
 	 */
-	function video_code( $videos, $classes = array() ){
+	function video_code( $videos, $classes = array(), $controls = array() ){
 		if( empty( $videos ) ) return;
-		$video_element = '<video class="' . esc_attr( implode( ' ', $classes ) ) . '" autoplay loop muted playsinline>';
+		$loop = ! empty( $controls['loop_background_videos'] ) && $controls['loop_background_videos'] ? 'loop' : '';
 
+		$video_element = '<video class="' . esc_attr( implode( ' ', $classes ) ) . '" autoplay ' . $loop . ' muted playsinline>';
 		$so_video = new SiteOrigin_Video();
 		foreach( $videos as $video ) {
 			if( empty( $video['file'] ) && empty ( $video['url'] ) ) continue;
@@ -387,7 +400,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				if( ! $can_oembed ) {
 					$video_file = sow_esc_url( $video['url'] );
 				} else {
-					echo $so_video->get_video_oembed( $video['url'], ! empty( $video['autoplay'] ) );
+					echo $so_video->get_video_oembed( $video['url'], ! empty( $video['autoplay'] ), false, $loop );
 					continue;
 				}
 			}

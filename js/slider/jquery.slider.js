@@ -82,6 +82,17 @@ jQuery( function($){
 			var $slides = $$.find('.sow-slider-image');
 			var settings = $$.data('settings');
 
+			// Add mobile identifer to slider.
+			if ( settings.breakpoint ) {
+				$( window ).on( 'load resize', function() {
+					if ( window.matchMedia( '(max-width: ' + settings.breakpoint + ')' ).matches ) {
+						$base.addClass( 'sow-slider-is-mobile' );
+					} else {
+						$base.removeClass( 'sow-slider-is-mobile' );
+					}
+				} );
+			}
+
 			$slides.each(function( index, el) {
 				var $slide = $(el);
 				var urlData = $slide.data('url');

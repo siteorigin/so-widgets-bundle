@@ -15,6 +15,30 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 
 	protected $icons_callback;
 
+
+	protected function initialize() {
+		if ( ! empty( $this->default ) ) {
+			$widget_icon_families = $this->get_widget_icon_families();
+			// If there are no icon families, don't proceed.
+			if ( empty( $widget_icon_families ) ) {
+				return;
+			}
+
+			$icon_families_styles = self::get_icon_families_styles( $widget_icon_families );
+			$value_parts = self::get_value_parts( $this->default, $icon_families_styles );
+
+			// Check if the font family of the default icon, and the icon exists.
+			// The last check accounts for the Font Awesome Migration code that adds a default style.
+			if (
+				! isset( $widget_icon_families[ $value_parts['family'] ] ) ||
+				! isset( $widget_icon_families[ $value_parts['family'] ]['icons'] ) ||
+				empty( $widget_icon_families[ $value_parts['family'] ]['icons'][ $value_parts['icon'] ] )
+			) {
+				$this->default = null;
+			}
+		}
+	}
+
 	protected function render_field( $value, $instance ) {
 		$widget_icon_families = $this->get_widget_icon_families();
 

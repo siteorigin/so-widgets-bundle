@@ -11,6 +11,17 @@
 	var Spinner  = components.Spinner;
 	var __ = i18n.__;
 
+	var ajaxErrorHandler = function( response ) {
+		var errorMessage = '';
+		if ( response.hasOwnProperty( 'responseJSON' ) ) {
+			errorMessage = response.responseJSON.message;
+		} else if ( response.hasOwnProperty( 'responseText' ) ) {
+			errorMessage = response.responseText;
+		}
+
+		props.setState( { widgetFormHtml: '<div>' + errorMessage + '</div>', } );
+	}
+
 	registerBlockType( 'sowb/widget-block', {
 		title: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
 
@@ -79,6 +90,33 @@
 				}
 			}
 
+			function generateWidgetPreview( widgetData = false) {
+				wp.data.dispatch( 'core/editor' ).lockPostSaving();
+				jQuery.post( {
+					url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/previews',
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
+					},
+					data: {
+						widgetClass: props.attributes.widgetClass,
+						widgetData: widgetData ? widgetData : props.attributes.widgetData || {}
+					}
+				} )
+				.done( function( widgetPreview ) {
+					props.setState( {
+						widgetPreviewHtml: widgetPreview.html,
+						previewInitialized: false,
+					} );
+
+					props.setAttributes( {
+						widgetHtml: widgetPreview.html,
+						widgetIcons: widgetPreview.icons
+					} );
+					wp.data.dispatch( 'core/editor' ).unlockPostSaving();
+				} )
+				.fail( ajaxErrorHandler );
+			}
+
 			function switchToEditing() {
 				props.setState( { editing: true, formInitialized: false } );
 			}
@@ -105,12 +143,16 @@
 						props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
 					}
 					$mainForm.on( 'change', function () {
-						props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
 						props.setState( {
 							widgetSettingsChanged: true,
 							widgetPreviewHtml: null,
 							previewInitialized: false
 						} );
+						
+						// As setAttributes doesn't support callbacks, we have to manully pass the widgetData to the preview.
+						var widgetData = sowbForms.getWidgetFormValues( $mainForm );
+						props.setAttributes( { widgetData: widgetData } );
+						generateWidgetPreview( widgetData );
 					} );
 					props.setState( { formInitialized: true } );
 				}
@@ -146,17 +188,7 @@
 					.done( function( widgetForm ) {
 						props.setState( { widgetFormHtml: widgetForm } );
 					} )
-					.fail( function ( response ) {
-
-						var errorMessage = '';
-						if ( response.hasOwnProperty( 'responseJSON' ) ) {
-							errorMessage = response.responseJSON.message;
-						} else if ( response.hasOwnProperty( 'responseText' ) ) {
-							errorMessage = response.responseText;
-						}
-
-						props.setState( { widgetFormHtml: '<div>' + errorMessage + '</div>', } );
-					});
+					.fail( ajaxErrorHandler );
 				}
 
 				var widgetForm = props.widgetFormHtml ? props.widgetFormHtml : '';
@@ -229,40 +261,7 @@
 						widgetHtml: null,
 						widgetIcons: null
 					} );
-					jQuery.post( {
-						url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/previews',
-						beforeSend: function ( xhr ) {
-							xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
-						},
-						data: {
-							widgetClass: props.attributes.widgetClass,
-							widgetData: props.attributes.widgetData || {}
-						}
-					} )
-					.done( function( widgetPreview ) {
-						props.setState( {
-							widgetPreviewHtml: widgetPreview.html,
-							previewInitialized: false,
-						} );
-
-						props.setAttributes( {
-							widgetHtml: widgetPreview.html,
-							widgetIcons: widgetPreview.icons
-						} );
-					} )
-					.fail( function ( response ) {
-
-						var errorMessage = '';
-						if ( response.hasOwnProperty( 'responseJSON' ) ) {
-							errorMessage = response.responseJSON.message;
-						} else if ( response.hasOwnProperty( 'responseText' ) ) {
-							errorMessage = response.responseText;
-						}
-
-						props.setState( {
-							widgetPreviewHtml: '<div>' + errorMessage + '</div>',
-						} );
-					});
+					generateWidgetPreview();
 				}
 				var widgetPreview = props.widgetPreviewHtml ? props.widgetPreviewHtml : '';
 				return [

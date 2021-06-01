@@ -113,7 +113,7 @@
 			frame.open();
 		});
 
-		$field.find( 'a.media-remove-button' ).on( 'click', function( e ) {
+		$( document ).on( 'click','.siteorigin-widget-field-type-multiple_media a.media-remove-button', function( e ) {
 			e.preventDefault();
 			var $currentItem = $( this ).parent();
 
