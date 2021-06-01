@@ -52,7 +52,11 @@ Once you enable a widget, you'll be able to use it in Page Builder, the Block Ed
 
 == Support ==
 
-We offer free support on the [SiteOrigin support forums](https://siteorigin.com/thread/).
+Free support is available on the [SiteOrigin support forums](https://siteorigin.com/thread/). Email support is available for [SiteOrigin Premium](https://siteorigin.com/downloads/premium/) users.
+
+== Accessibility Ready ==
+
+The Widgets Bundle is accessibility ready. Tab through all form fields and settings, make changes without using a mouse.
 
 == SiteOrigin Premium ==
 
@@ -72,7 +76,25 @@ The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your 
 
 == Changelog ==
 
+= 1.20.0 - 01 June 2021 =
+* Added integration for WP Super Cache and Swift Performance plugins.
+* Button: Added a `Mobile align` setting and global Button `Responsive Breakpoint` setting at `Plugins > SiteOrigin Widgets > Button: Settings`.
+* Contact Form: Allowed whitelisted HTML in checkbox option fields.
+* Headline: Fixed invalid font property when multiple font variants in use.
+* Image: Added native lazy `loading` attribute.
+* Image Grid: Added native lazy `loading` attribute for external images.
+* Image Grid: Changed `Spacing` setting to a multi-measurement field and renamed it to `Image padding`.
+* Sliders: Added `Loop slide background videos` setting.
+* Sliders: Improved background video autoplay setting description.
+* Sliders: Removed `wp_is_mobile` dependency to improve caching.
+* Video Player: Added `Loop` setting for YouTube videos.
+* Widget Block: Resolved Contact Form nonce error.
+* Widget Block: Resolved `Only variables should be passed by reference` notice.
+* Developer: Cleared the Icon Widget default icon if the icon font family doesn't exist.
+* Developer: Fixed multiple media remove link detection.
+
 = 1.19.0 - 19 May 2021 =
+* Button: Allow shortcodes in `Destination URL` field. Only shortcodes that return a URL are suitable.
 * Contact Form: Added a new `Number` field type.
 * Image Grid: Changed vertical align to baseline.
 * Layout Slider: Added a `slider_control` shortcode.
