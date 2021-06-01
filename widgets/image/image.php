@@ -126,7 +126,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		) {
 			$instance['size'] = array(
 				(int) $instance['size_width'],
-				(int) $instance['size_width'],
+				(int) $instance['size_height'],
 			);
 		}
 
