@@ -71,7 +71,7 @@
 		$( document ).on( 'wp-before-tinymce-init', function ( event, init ) {
 			if ( init.selector === settings.tinymce.selector ) {
 				var mediaButtons = $container.data( 'mediaButtons' );
-				if ( $field.find( '.wp-media-buttons' ).length === 0 ) {
+				if ( typeof mediaButtons != 'undefined' && $field.find( '.wp-media-buttons' ).length === 0 ) {
 					$field.find( '.wp-editor-tabs' ).before( mediaButtons.html );
 				}
 

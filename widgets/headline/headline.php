@@ -287,7 +287,8 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			$font = siteorigin_widget_get_font( $instance['headline']['font'] );
 			$less_vars['headline_font'] = $font['family'];
 			if ( ! empty( $font['weight'] ) ) {
-				$less_vars['headline_font_weight'] = $font['weight'];
+				$less_vars['headline_font_style'] = $font['style'];
+				$less_vars['headline_font_weight'] = $font['weight_raw'];
 			}
 		}
 
@@ -305,7 +306,8 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			$font = siteorigin_widget_get_font( $instance['sub_headline']['font'] );
 			$less_vars['sub_headline_font'] = $font['family'];
 			if ( ! empty( $font['weight'] ) ) {
-				$less_vars['sub_headline_font_weight'] = $font['weight'];
+				$less_vars['sub_headline_font_style'] = $font['style'];
+				$less_vars['sub_headline_font_weight'] = $font['weight_raw'];
 			}
 		}
 

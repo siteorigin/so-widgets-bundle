@@ -81,15 +81,21 @@ jQuery( function( $ ){
 	$( window ).on( 'resize', function() {
 		var $descriptions = $('.so-widget-text').css('height', 'auto');
 		var largestHeight = 0;
+		var largestHeight = [];
+		var column = 0;
 
-		$descriptions.each(function () {
-			largestHeight = Math.max(largestHeight, $(this).height()  );
-		});
+		$descriptions.each( function( index ) {
+			column = index / 3;
+			// Turnicate column number - IE 11 friendly.
+			column = column < 0 ? Math.ceil( column ) : Math.floor( column );
+			$( this ).data( 'column', column )
 
-		$descriptions.each(function () {
-			$( this ).css( 'height', largestHeight + "px" );
-		});
+			largestHeight[ column ] = Math.max( typeof largestHeight[ column ] == 'undefined' ? 0 : largestHeight[ column ], $( this ).height() );
+		} );
 
+		$descriptions.each( function() {
+			$( this ).css( 'height', largestHeight[ $( this ).data( 'column' ) ] + 'px' );
+		} );
 	} ).trigger( 'resize' );
 
 	// Handle the tabs

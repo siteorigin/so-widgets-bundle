@@ -26,6 +26,17 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 	}
 
+	function get_settings_form() {
+		return array(
+			'responsive_breakpoint' => array(
+				'type'        => 'measurement',
+				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
+				'default'     => '780px',
+				'description' => __( 'This setting controls when the Mobile align setting will be used. The default value is 780px.', 'so-widgets-bundle' ),
+			)
+		);
+	}
+
 	function initialize() {
 		$this->register_frontend_styles(
 			array(
@@ -122,7 +133,17 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 							'justify' => __('Justify', 'so-widgets-bundle'),
 						),
 					),
-
+					'mobile_align' => array(
+						'type' => 'select',
+						'label' => __( 'Mobile align', 'so-widgets-bundle' ),
+						'default' => 'center',
+						'options' => array(
+							'left' => __( 'Left', 'so-widgets-bundle' ),
+							'right' => __( 'Right', 'so-widgets-bundle' ),
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'justify' => __( 'Justify', 'so-widgets-bundle' ),
+						),
+					),
 					'theme' => array(
 						'type' => 'select',
 						'label' => __('Button theme', 'so-widgets-bundle'),
@@ -234,7 +255,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 					'classes' => array(
 						'type' => 'text',
-						'label' => __('Button Classes', 'so-widgets-bundle'),
+						'label' => __('Button classes', 'so-widgets-bundle'),
 						'description' => __('Additional CSS classes added to the button link.', 'so-widgets-bundle'),
 					),
 
@@ -360,6 +381,9 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'rounding' => isset($instance['design']['rounding']) ? $instance['design']['rounding'] . 'em' : '',
 			'padding' => isset($instance['design']['padding']) ? $instance['design']['padding'] . 'em' : '',
 			'has_text' => empty( $instance['text'] ) ? 'false' : 'true',
+			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
+			'align' => $instance['design']['align'],
+			'mobile_align' => $instance['design']['mobile_align'],
 		);
 
 		if ( ! empty( $instance['design']['font'] ) ) {
@@ -413,6 +437,15 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 					}
 				}
 			}
+		}
+
+		// If the mobile_align setting isn't set, set it to the same value as the align value.
+		if (
+			! empty( $instance['design'] ) &&
+			! empty( $instance['design']['align'] ) &&
+			empty( $instance['design']['mobile_align'] )
+		) {
+			$instance['design']['mobile_align'] = $instance['design']['align'];
 		}
 
 		return $instance;
