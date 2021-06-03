@@ -164,6 +164,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 					'type' => 'checkbox',
 					'label' => __( 'Loop Items', 'so-widgets-bundle' ),
 					'description' => __( 'Automatically return to the first item after the last item.', 'so-widgets-bundle' ),
+					'default' => true,
 				),
 				'dots' => array(
 					'type' => 'checkbox',
