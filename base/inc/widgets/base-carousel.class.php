@@ -41,24 +41,38 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 
 	}
 
-	// Allow widgets to override the breakpoint default values.
-	function get_breakpoints() {
-		return array(
-			'tablet_landscape' => 1366,
-			'tablet_portrait' => 1025,
-			'mobile' => 480,
+	// Allow widgets to override settings.
+	function override_carousel_settings() {
+		// Intentionally left blank.
+	}
+
+	// Handle carousel specific settings and defaults.
+	private function get_carousel_settings() {
+		return wp_parse_args(
+			$this->override_carousel_settings(),
+			array(
+				'breakpoints' => array(
+					'tablet_landscape' => 1366,
+					'tablet_portrait' => 1025,
+					'mobile' => 480,
+				),
+				'slides_to_scroll' => array(
+					'desktop' => 3,
+					'tablet_landscape' => 3,
+					'tablet_portrait' => 2,
+					'mobile' => 1,
+				),
+				'slides_to_scroll_text' => array(
+					'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
+					'description' => __( 'Set the number of slides to scroll per navigation click or swipe on %s', 'so-widgets-bundle' ),
+				),
+			)
 		);
 	}
 
-	// Allow widgets to override the slides_to_scroll text.
-	function get_slides_to_scroll_text () {
-		return array(
-			'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
-			'description' => __( 'Set the number of slides to scroll per navigation click or swipe on %s', 'so-widgets-bundle' ),
-		);
-	}
+	private function add_section_group( $field, $value_type ) {		
+		$carousel_settings = $this->get_carousel_settings();
 
-	private function add_section_group( $field, $value_type ) {
 		$section = array(
 			'type' => 'section',
 			'label' => $field['label'],
@@ -71,15 +85,14 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 				$section['fields'][ $sub_field_key ] = $this->add_section_group( $sub_field, $value_type );
 			}
 		} else {
-			$slides_to_scroll = $this->get_slides_to_scroll_text();
 			$section['fields']['slides_to_scroll'] =  array(
 				'type' => 'number',
-				'label' => $slides_to_scroll['label'],
+				'label' => $carousel_settings['slides_to_scroll_text']['label'],
 				'description' => sprintf(
-					$slides_to_scroll['description'],
+					$carousel_settings['slides_to_scroll_text']['description'],
 					strtolower( $field['label'] )
 				),
-				$value_type => 1,
+				$value_type =>  $field['value'],
 			);
 
 			if ( isset( $field['breakpoint'] ) ) {
@@ -96,7 +109,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 	}
 
 	function responsive_form_fields( $context = 'widget' ) {
-		$breakpoints = $this->get_breakpoints();
+		$carousel_settings = $this->get_carousel_settings();
 
 		// If the context is a widget, the global values are displayed using a
 		// placeholder to prevent the values from being stored.
@@ -104,27 +117,27 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		$fields = array(
 			'desktop' => array(
 				'label' => __( 'Desktop', 'so-widgets-bundle' ),
-				'value' => 1
+				'value' => $carousel_settings['slides_to_scroll']['desktop'],
 			),
 			'tablet' => array(
 				'label' => __( 'Tablet', 'so-widgets-bundle' ),
 				'fields' => array(
 					'landscape' => array(
 						'label' => __( 'Landscape', 'so-widgets-bundle' ),
-						'breakpoint' => $breakpoints['tablet_landscape'],
-						'value' => 2
+						'breakpoint' => $carousel_settings['breakpoints']['tablet_landscape'],
+						'value' => $carousel_settings['slides_to_scroll']['tablet_landscape'],
 					),
 					'portrait' => array(
 						'label' => __( 'Portrait', 'so-widgets-bundle' ),
-						'breakpoint' => $breakpoints['tablet_portrait'],
-						'value' => 2
+						'breakpoint' => $carousel_settings['breakpoints']['tablet_portrait'],
+						'value' => $carousel_settings['slides_to_scroll']['tablet_portrait'],
 					),
 				),
 			),
 			'mobile' => array(
 				'label' => __( 'Mobile', 'so-widgets-bundle' ),
-				'breakpoint' => $breakpoints['mobile'],
-				'value' => 1
+				'breakpoint' => $carousel_settings['breakpoints']['mobile'],
+				'value' => $carousel_settings['slides_to_scroll']['mobile'],
 			),
 		);
 
@@ -201,15 +214,15 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 	}
 
 	function responsive_template_variables( $responsive, $encode = true ) {
-		$breakpoints = $this->get_breakpoints();
+		$carousel_settings = $this->get_carousel_settings();
 
 		$variables = array(
 			'desktop_slides' => ! empty( $responsive['desktop']['slides_to_scroll'] ) ? $responsive['desktop']['slides_to_scroll'] : 1,
 			'tablet_portrait_slides' => ! empty( $responsive['tablet']['portrait']['slides_to_scroll'] ) ? $responsive['tablet']['portrait']['slides_to_scroll'] : 2,
-			'tablet_portrait_breakpoint' => ! empty( $responsive['tablet']['portrait']['breakpoint'] ) ? $responsive['tablet']['portrait']['breakpoint'] : $breakpoints['tablet_portrait'],
+			'tablet_portrait_breakpoint' => ! empty( $responsive['tablet']['portrait']['breakpoint'] ) ? $responsive['tablet']['portrait']['breakpoint'] : $carousel_settings['breakpoints']['tablet_portrait'],
 			'tablet_landscape_slides' => ! empty( $responsive['tablet']['landscape']['slides_to_scroll'] ) ? $responsive['tablet']['landscape']['slides_to_scroll'] : 2,
-			'tablet_landscape_breakpoint' => ! empty( $responsive['tablet']['landscape']['breakpoint'] ) ? $responsive['tablet']['landscape']['breakpoint'] : $breakpoints['tablet_landscape'],
-			'mobile_breakpoint' => ! empty( $responsive['mobile']['breakpoint'] ) ? $responsive['mobile']['breakpoint'] : $breakpoints['mobile'],
+			'tablet_landscape_breakpoint' => ! empty( $responsive['tablet']['landscape']['breakpoint'] ) ? $responsive['tablet']['landscape']['breakpoint'] : $carousel_settings['breakpoints']['tablet_landscape'],
+			'mobile_breakpoint' => ! empty( $responsive['mobile']['breakpoint'] ) ? $responsive['mobile']['breakpoint'] : $carousel_settings['breakpoints']['mobile'],
 			'mobile_slides' => ! empty( $responsive['mobile']['slides_to_scroll'] ) ? $responsive['mobile']['slides_to_scroll'] : 1,
 		);
 
