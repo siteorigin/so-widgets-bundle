@@ -218,13 +218,13 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		$carousel_settings = $this->get_carousel_settings();
 
 		$variables = array(
-			'desktop_slides' => ! empty( $responsive['desktop']['slides_to_scroll'] ) ? $responsive['desktop']['slides_to_scroll'] : 1,
-			'tablet_portrait_slides' => ! empty( $responsive['tablet']['portrait']['slides_to_scroll'] ) ? $responsive['tablet']['portrait']['slides_to_scroll'] : 2,
-			'tablet_portrait_breakpoint' => ! empty( $responsive['tablet']['portrait']['breakpoint'] ) ? $responsive['tablet']['portrait']['breakpoint'] : $carousel_settings['breakpoints']['tablet_portrait'],
-			'tablet_landscape_slides' => ! empty( $responsive['tablet']['landscape']['slides_to_scroll'] ) ? $responsive['tablet']['landscape']['slides_to_scroll'] : 2,
+			'desktop_slides' => ! empty( $responsive['desktop']['slides_to_scroll'] ) ? $responsive['desktop']['slides_to_scroll'] : $carousel_settings['slides_to_scroll']['desktop'],
 			'tablet_landscape_breakpoint' => ! empty( $responsive['tablet']['landscape']['breakpoint'] ) ? $responsive['tablet']['landscape']['breakpoint'] : $carousel_settings['breakpoints']['tablet_landscape'],
+			'tablet_landscape_slides' => ! empty( $responsive['tablet']['landscape']['slides_to_scroll'] ) ? $responsive['tablet']['landscape']['slides_to_scroll'] : $carousel_settings['slides_to_scroll']['tablet_landscape'],
+			'tablet_portrait_breakpoint' => ! empty( $responsive['tablet']['portrait']['breakpoint'] ) ? $responsive['tablet']['portrait']['breakpoint'] : $carousel_settings['breakpoints']['tablet_portrait'],
+			'tablet_portrait_slides' => ! empty( $responsive['tablet']['portrait']['slides_to_scroll'] ) ? $responsive['tablet']['portrait']['slides_to_scroll'] : $carousel_settings['slides_to_scroll']['tablet_portrait'],
 			'mobile_breakpoint' => ! empty( $responsive['mobile']['breakpoint'] ) ? $responsive['mobile']['breakpoint'] : $carousel_settings['breakpoints']['mobile'],
-			'mobile_slides' => ! empty( $responsive['mobile']['slides_to_scroll'] ) ? $responsive['mobile']['slides_to_scroll'] : 1,
+			'mobile_slides' => ! empty( $responsive['mobile']['slides_to_scroll'] ) ? $responsive['mobile']['slides_to_scroll'] : $carousel_settings['slides_to_scroll']['mobile'],
 		);
 
 		return $encode ? json_encode( $variables ) : $variables;
