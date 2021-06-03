@@ -142,6 +142,8 @@ function siteorigin_widget_get_font($font_value) {
 		if ( count( $font_parts ) > 1 ) {
 			$font['weight'] = $font_parts[1];
 			$font_url_param .= ':' . $font_parts[1];
+			$font['weight_raw'] = filter_var( $font['weight'], FILTER_SANITIZE_NUMBER_INT );
+			$font['style'] = ! is_numeric( $font['weight'] ) || $font['weight'] == 'italic' ? 'italic' : '';
 		}
 		$font['url'] = 'https://fonts.googleapis.com/css?family=' . $font_url_param;
 		$style_name = 'sow-google-font-' . strtolower( $font['family'] );
@@ -270,9 +272,9 @@ function siteorigin_widgets_font_families( ){
 		foreach ( $variants as $variant ) {
 			if ( $variant == 'regular' || $variant == 400 ) {
 				$font_families[ $font ] = $font;
-			}
-			else {
-				$font_families[ $font . ':' . $variant ] = $font . ' (' . $variant . ')';
+			} else {
+				$label_variant = is_numeric( $variant ) && $variant != 'italic'? $variant : filter_var( $variant, FILTER_SANITIZE_NUMBER_INT ) . ' italic';
+				$font_families[ $font . ':' . $variant ] = $font . ' (' . $label_variant . ')';
 			}
 		}
 	}

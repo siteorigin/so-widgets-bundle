@@ -120,7 +120,7 @@
 		.font(@field_font_family, @field_font_weight);
 	}
 
-	&.sow-form-field-checkboxes, &.sow-form-field-radio {
+	&.sow-form-field-radio {
 		ul {
 			list-style: none;
 			margin: 0;
@@ -140,6 +140,29 @@
 				float: left;
 				margin-right: 0.5em;
 				height: auto;
+			}
+		}
+	}
+
+	&.sow-form-field-checkboxes {
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+
+			li {
+				align-items: center;
+				display: flex;
+				margin: 0;
+			}
+
+			label {
+				margin-bottom: 0;
+			}
+
+			input {
+				height: auto;
+				margin-right: 0.5em;
 			}
 		}
 	}
