@@ -134,20 +134,26 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		);
 	}
 
-	function get_breakpoints() {
-		return apply_filters(
-			'siteorigin_widgets_post_carousel_breakpoints',
-			array(
-				'tablet_landscape' => 1366,
-				'tablet_portrait'  => 1025,
-				'mobile'           => 480,
-			)
+	function override_carousel_settings() {
+		return array(
+			'breakpoints' => apply_filters(
+				'siteorigin_widgets_post_carousel_breakpoints',
+				array(
+					'tablet_landscape' => 1366,
+					'tablet_portrait'  => 1025,
+					'mobile'           => 480,
+				)
+			),
+			'slides_to_scroll' => array(
+				'desktop' => 1,
+				'tablet_landscape' => 2,
+				'tablet_portrait' => 2,
+				'mobile' => 1,
+			),
 		);
 	}
 
-	function get_widget_form(){
-		$breakpoints = $this->get_breakpoints();
-
+	function get_widget_form() {
 		return array(
 			'title' => array(
 				'type' => 'text',
