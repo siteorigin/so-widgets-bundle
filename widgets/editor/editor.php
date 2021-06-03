@@ -108,7 +108,17 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 
 			$instance['text'] = do_shortcode( shortcode_unautop( $instance['text'] ) );
 
-			$instance['text'] = $this->process_more_quicktag( $instance['text'] );
+			// Don't process more more quicktag if this is a preview.
+			if (
+				! $this->is_preview() &&
+				empty( $GLOBALS[ 'SITEORIGIN_PANELS_PREVIEW_RENDER' ] ) &&
+				(
+					isset( $_POST['action'] ) &&
+					$_POST['action'] != 'so_widgets_preview'
+				)
+			) {
+				$instance['text'] = $this->process_more_quicktag( $instance['text'] );
+			}
 		}
 
 

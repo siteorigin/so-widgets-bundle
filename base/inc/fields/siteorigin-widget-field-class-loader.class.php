@@ -88,7 +88,7 @@ class SiteOrigin_Widget_Field_Class_Loader {
 			$filepath = $class_path . $filename . '.class.php';
 			if ( file_exists( $filepath ) ) {
 				require_once $filepath;
-				continue;
+				break;
 			}
 		}
 	}
@@ -106,6 +106,9 @@ class SiteOrigin_Widget_Field_Class_Loader {
 			apply_filters( 'siteorigin_widgets_field_class_paths', array() ),
 			'base'
 		);
+
+		$this->class_prefixes = apply_filters( 'siteorigin_widgets_field_registered_class_prefixes', $this->class_prefixes );
+		$this->class_paths = apply_filters( 'siteorigin_widgets_field_registered_class_paths', $this->class_paths );
 	}
 }
 

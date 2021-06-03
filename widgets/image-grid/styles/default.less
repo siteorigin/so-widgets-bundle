@@ -1,17 +1,16 @@
-@spacing: default;
+@padding: default;
 
 .sow-image-grid-wrapper {
-	padding-top: @spacing;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: baseline;
 	line-height: 0;
-	text-align:center;
+	text-align: center;
 
 	.sow-image-grid-image {
-		padding: 0 @spacing @spacing @spacing;
+		padding: @padding;
 		display: inline-block;
-
-		> a {
-			display: inline-block;
-		}
 
 		img {
 			opacity: 0;

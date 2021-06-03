@@ -3,13 +3,24 @@
 	var el = element.createElement;
 	var registerBlockType = blocks.registerBlockType;
 	var BlockControls = blockEditor.BlockControls;
-	var SelectControl = components.SelectControl;
+	var ComboboxControl = components.ComboboxControl;
 	var withState = compose.withState;
 	var Toolbar = components.Toolbar;
 	var ToolbarButton = components.ToolbarButton;
 	var Placeholder = components.Placeholder;
 	var Spinner  = components.Spinner;
 	var __ = i18n.__;
+
+	var ajaxErrorHandler = function( response ) {
+		var errorMessage = '';
+		if ( response.hasOwnProperty( 'responseJSON' ) ) {
+			errorMessage = response.responseJSON.message;
+		} else if ( response.hasOwnProperty( 'responseText' ) ) {
+			errorMessage = response.responseText;
+		}
+
+		props.setState( { widgetFormHtml: '<div>' + errorMessage + '</div>', } );
+	}
 
 	registerBlockType( 'sowb/widget-block', {
 		title: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
@@ -48,6 +59,9 @@
 			widgetHtml: {
 				type: 'string',
 			},
+			widgetIcons: {
+				type: 'array',
+			},
 		},
 
 		edit: withState( {
@@ -76,6 +90,33 @@
 				}
 			}
 
+			function generateWidgetPreview( widgetData = false) {
+				wp.data.dispatch( 'core/editor' ).lockPostSaving();
+				jQuery.post( {
+					url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/previews',
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
+					},
+					data: {
+						widgetClass: props.attributes.widgetClass,
+						widgetData: widgetData ? widgetData : props.attributes.widgetData || {}
+					}
+				} )
+				.done( function( widgetPreview ) {
+					props.setState( {
+						widgetPreviewHtml: widgetPreview.html,
+						previewInitialized: false,
+					} );
+
+					props.setAttributes( {
+						widgetHtml: widgetPreview.html,
+						widgetIcons: widgetPreview.icons
+					} );
+					wp.data.dispatch( 'core/editor' ).unlockPostSaving();
+				} )
+				.fail( ajaxErrorHandler );
+			}
+
 			function switchToEditing() {
 				props.setState( { editing: true, formInitialized: false } );
 			}
@@ -102,12 +143,16 @@
 						props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
 					}
 					$mainForm.on( 'change', function () {
-						props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
 						props.setState( {
 							widgetSettingsChanged: true,
 							widgetPreviewHtml: null,
 							previewInitialized: false
 						} );
+						
+						// As setAttributes doesn't support callbacks, we have to manully pass the widgetData to the preview.
+						var widgetData = sowbForms.getWidgetFormValues( $mainForm );
+						props.setAttributes( { widgetData: widgetData } );
+						generateWidgetPreview( widgetData );
 					} );
 					props.setState( { formInitialized: true } );
 				}
@@ -126,7 +171,6 @@
 					widgetsOptions = sowbBlockEditorAdmin.widgets.map( function ( widget ) {
 						return { value: widget.class, label: widget.name };
 					} );
-					widgetsOptions.unshift( { value: '', label: __( 'Select widget type', 'so-widgets-bundle' ) } );
 				}
 
 				var loadWidgetForm = props.attributes.widgetClass && ! props.widgetFormHtml;
@@ -144,17 +188,7 @@
 					.done( function( widgetForm ) {
 						props.setState( { widgetFormHtml: widgetForm } );
 					} )
-					.fail( function ( response ) {
-
-						var errorMessage = '';
-						if ( response.hasOwnProperty( 'responseJSON' ) ) {
-							errorMessage = response.responseJSON.message;
-						} else if ( response.hasOwnProperty( 'responseText' ) ) {
-							errorMessage = response.responseText;
-						}
-
-						props.setState( { widgetFormHtml: '<div>' + errorMessage + '</div>', } );
-					});
+					.fail( ajaxErrorHandler );
 				}
 
 				var widgetForm = props.widgetFormHtml ? props.widgetFormHtml : '';
@@ -196,11 +230,14 @@
 								'div',
 								{ className: 'so-widget-block-container' },
 								el(
-									SelectControl,
+									ComboboxControl,
 									{
-										options: widgetsOptions,
+										className: 'so-widget-autocomplete-field',
+										label: __( 'Widget type', 'so-widgets-bundle' ),
 										value: props.attributes.widgetClass,
+										onFilterValueChange: function ( value ) {}, // Avoid React notice and onChange potentially not triggering.
 										onChange: onWidgetClassChange,
+										options: widgetsOptions,
 									}
 								),
 								el( 'div', {
@@ -220,38 +257,11 @@
 					props.attributes.widgetClass &&
 					props.attributes.widgetData;
 				if ( loadWidgetPreview ) {
-					props.setAttributes( { widgetHtml: null } );
-					jQuery.post( {
-						url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/previews',
-						beforeSend: function ( xhr ) {
-							xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
-						},
-						data: {
-							widgetClass: props.attributes.widgetClass,
-							widgetData: props.attributes.widgetData || {}
-						}
-					} )
-					.done( function( widgetPreview ) {
-						props.setState( {
-							widgetPreviewHtml: widgetPreview,
-							previewInitialized: false,
-						} );
-
-						props.setAttributes( { widgetHtml: widgetPreview } );
-					} )
-					.fail( function ( response ) {
-
-						var errorMessage = '';
-						if ( response.hasOwnProperty( 'responseJSON' ) ) {
-							errorMessage = response.responseJSON.message;
-						} else if ( response.hasOwnProperty( 'responseText' ) ) {
-							errorMessage = response.responseText;
-						}
-
-						props.setState( {
-							widgetPreviewHtml: '<div>' + errorMessage + '</div>',
-						} );
-					});
+					props.setAttributes( {
+						widgetHtml: null,
+						widgetIcons: null
+					} );
+					generateWidgetPreview();
 				}
 				var widgetPreview = props.widgetPreviewHtml ? props.widgetPreviewHtml : '';
 				return [
@@ -301,12 +311,7 @@
 		} ),
 
 		save: function ( context ) {
-			if ( context.attributes == 'object' && context.attributes.hasOwnProperty( 'widgetHtml' ) ) {
-   				return React.createElement( wp.element.RawHTML, null, attributes.widgetHtml );
-			} else {
-				// Fallback to PHP Render.
-				return null;
-			}
+			return null;
 		}
 	} );
 } )( window.wp.editor, window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.compose, window.wp.blockEditor );

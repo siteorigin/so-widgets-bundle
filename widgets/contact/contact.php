@@ -149,6 +149,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'name'       => __( 'Name', 'so-widgets-bundle' ),
 							'email'      => __( 'Email', 'so-widgets-bundle' ),
 							'tel'        => __( 'Phone Number', 'so-widgets-bundle' ),
+							'number'     => __( 'Number', 'so-widgets-bundle' ),
 							'subject'    => __( 'Subject', 'so-widgets-bundle' ),
 							'text'       => __( 'Text', 'so-widgets-bundle' ),
 							'textarea'   => __( 'Text Area', 'so-widgets-bundle' ),
@@ -1111,6 +1112,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'label' => $field['label'],
 							'value' => $value,
 						);
+					}
+					break;
+
+				case 'number':
+					if ( ! is_numeric( $value ) ) {
+						$errors[ $field_name ] = __( 'Invalid number.', 'so-widgets-bundle' );
+					} else {
+						$email_fields[ $field['type'] ] = $value;
 					}
 					break;
 

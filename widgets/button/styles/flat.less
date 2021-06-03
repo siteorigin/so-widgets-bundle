@@ -1,5 +1,9 @@
 @import "../../../base/less/mixins";
 
+@responsive_breakpoint: 780px;
+@align: center;
+@mobile_align: center;
+
 @button_width: '';
 @button_color: #41a9d5;
 @border_color: darken(@button_color, 5%);
@@ -18,6 +22,24 @@
 
 .ow-button-base {
 	.clearfix();
+
+	@media (max-width: @responsive_breakpoint) {
+		&.ow-button-align-@{align} {
+			text-align: @mobile_align;
+
+			& when not ( @mobile_align = justify ) {
+				&.ow-button-align-justify a {
+					display: inline-block;
+				}
+			}
+
+			& when ( @mobile_align = justify ) {
+				a {
+					display: block;
+				}
+			}
+		}
+	}
 
 	a {
 		.box-sizing(border-box);
