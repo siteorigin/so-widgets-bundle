@@ -79,13 +79,15 @@ jQuery( function( $ ){
 	});
 
 	$( window ).on( 'resize', function() {
-		var $descriptions = $('.so-widget-text').css('height', 'auto');
+		var $descriptions = $( '.so-widget-text:visible' );
 		var largestHeight = 0;
 		var largestHeight = [];
 		var column = 0;
 
+		$descriptions.css( 'height', 'auto' );
+
 		$descriptions.each( function( index ) {
-			column = index / 3;
+			column = index / ( window.matchMedia( '(min-width: 1800px)' ).matches ? 4 : 3 );
 			// Turnicate column number - IE 11 friendly.
 			column = column < 0 ? Math.ceil( column ) : Math.floor( column );
 			$( this ).data( 'column', column )
