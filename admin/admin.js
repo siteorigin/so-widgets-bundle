@@ -79,10 +79,12 @@ jQuery( function( $ ){
 	});
 
 	$( window ).on( 'resize', function() {
-		var $descriptions = $('.so-widget-text').css('height', 'auto');
+		var $descriptions = $( '.so-widget-text:visible' );
 		var largestHeight = 0;
 		var largestHeight = [];
 		var column = 0;
+
+		$descriptions.css( 'height', 'auto' );
 
 		$descriptions.each( function( index ) {
 			column = index / ( window.matchMedia( '(min-width: 1800px)' ).matches ? 4 : 3 );
