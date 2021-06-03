@@ -26,16 +26,16 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		);
 	}
 
-	function get_slides_to_scroll_text() {
+	function override_carousel_settings() {
 		return array(
-			'label' => __( 'Slides to show ', 'so-widgets-bundle' ),
-			'description' => __( 'The number of slides to show on %s', 'so-widgets-bundle' ),
+			'slides_to_scroll_text' => array(
+				'label' => __( 'Slides to show ', 'so-widgets-bundle' ),
+				'description' => __( 'The number of slides to show on %s', 'so-widgets-bundle' ),
+			),
 		);
 	}
 
 	function get_widget_form() {
-		$breakpoints = $this->get_breakpoints();
-
 		$useable_units = array(
 			'px',
 			'%',
