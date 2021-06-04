@@ -86,8 +86,22 @@ jQuery( function( $ ){
 
 		$descriptions.css( 'height', 'auto' );
 
+		// Don't size text descriptions on tablet portrait and mobile devices.
+		if ( window.matchMedia( '(max-width: 960px)' ).matches ) {
+			return;
+		}
+
+		// Work out how many columns are visible per row.
+		if ( window.matchMedia( '(min-width: 1800px)' ).matches ) {
+			columnCount = 4;
+		} else if ( window.matchMedia( '(max-width: 1280px)' ).matches ) {
+			columnCount = 2;
+		} else {
+			columnCount = 3;
+		}
+
 		$descriptions.each( function( index ) {
-			column = index / ( window.matchMedia( '(min-width: 1800px)' ).matches ? 4 : 3 );
+			column = index / columnCount;
 			// Turnicate column number - IE 11 friendly.
 			column = column < 0 ? Math.ceil( column ) : Math.floor( column );
 			$( this ).data( 'column', column )
