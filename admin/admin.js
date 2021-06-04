@@ -72,6 +72,8 @@ jQuery( function( $ ){
 				}
 			} );
 		}
+
+		$( window ).trigger( 'resize' );
 	};
 	$('#sow-widget-search input').on( {
 		keyup: widgetSearch,
