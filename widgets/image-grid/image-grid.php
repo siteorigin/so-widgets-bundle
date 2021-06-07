@@ -131,25 +131,25 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 						),
 					),
 
+					'alignment_vertical' => array(
+						'type' => 'select',
+						'label' => __( 'Image vertical alignment', 'so-widgets-bundle' ),
+						'default' => 'end',
+						'options' => array(
+							'start' => __( 'Top', 'so-widgets-bundle' ),
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'end' => __( 'Bottom', 'so-widgets-bundle' ),
+						),
+					),
+
 					'alignment_horizontal' => array(
 						'type' => 'select',
 						'label' => __( 'Grid horizontal alignment', 'so-widgets-bundle' ),
 						'default' => 'center',
 						'options' => array(
 							'left' => __( 'Left', 'so-widgets-bundle' ),
-							'center' => __( 'Center', 'so-widgets-bundle' ),
 							'right' => __( 'Right', 'so-widgets-bundle' ),
-						),
-					),
-
-					'alignment_vertical' => array(
-						'type' => 'select',
-						'label' => __( 'Grid vertical alignment', 'so-widgets-bundle' ),
-						'default' => 'end',
-						'options' => array(
-							'start' => __( 'Top', 'so-widgets-bundle' ),
 							'center' => __( 'Center', 'so-widgets-bundle' ),
-							'end' => __( 'Bottom', 'so-widgets-bundle' ),
 						),
 					),
 				)
