@@ -31,11 +31,23 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 	 */
 	protected $library;
 
+	/**
+	 * The dimensions of each thumbnail item. Only used when editing widgets. The default is 75x75.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $thumbnail_dimensions;
+
 	protected function get_default_options() {
 		return array(
 			'choose' => __( 'Add Media', 'so-widgets-bundle' ),
 			'update' => __( 'Set Media', 'so-widgets-bundle' ),
-			'library' => 'image'
+			'library' => 'image',
+			'thumbnail_dimensions' => array(
+				64,
+				64
+			),
 		);
 	}
 
@@ -43,6 +55,17 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 		if ( version_compare( get_bloginfo('version'), '3.5', '<' ) ){
 			printf( __( 'You need to <a href="%s">upgrade</a> to WordPress 3.5 to use media fields', 'so-widgets-bundle'), admin_url('update-core.php' ) );
 			return;
+		}
+
+		// Ensure thumbnail_dimensions are valid. 
+		if (
+			empty( $this->thumbnail_dimensions ) ||
+			empty( $this->thumbnail_dimensions[0] ) ||
+			empty( $this->thumbnail_dimensions[1] ) ||
+			! is_numeric( $this->thumbnail_dimensions[0] ) ||
+			! is_numeric( $this->thumbnail_dimensions[1] )
+		) {
+			$this->thumbnail_dimensions = array( 64, 64 );
 		}
 
 		// If library is set to all, convert it to a wildcard as all isn't valid
@@ -74,7 +97,7 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 						?>
 						<div class="multiple-media-field-item" data-id="<?php echo esc_attr( $attachment ); ?>">
 							<?php if ( ! empty( $src ) ) : ?>
-								<img src="<?php echo sow_esc_url( $src ); ?>" class="thumbnail" title="<?php echo esc_attr( $title ); ?>"/>
+								<img src="<?php echo sow_esc_url( $src ); ?>" class="thumbnail" title="<?php echo esc_attr( $title ); ?>" width="<?php echo $this->thumbnail_dimensions[0]; ?>" height="<?php echo $this->thumbnail_dimensions[1]; ?>"/>
 							<?php endif; ?>
 							<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
 							<div class="title">
