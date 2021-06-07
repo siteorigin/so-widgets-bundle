@@ -62,7 +62,7 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 				<?php
 				if ( is_array( $attachments ) ) {
 					foreach ( $attachments as $attachment ) {
-						$post = get_post( $attachment );
+						$title = get_the_title( $attachment );
 						$src = wp_get_attachment_image_src( $attachment, 'thumbnail' );
 
 						if ( empty( $src ) ) {
@@ -74,13 +74,13 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 						?>
 						<div class="multiple-media-field-item" data-id="<?php echo esc_attr( $attachment ); ?>">
 							<?php if ( ! empty( $src ) ) : ?>
-								<img src="<?php echo sow_esc_url( $src ); ?>" class="thumbnail" title="<?php echo esc_attr( $post->post_title ); ?>"/>
+								<img src="<?php echo sow_esc_url( $src ); ?>" class="thumbnail" title="<?php echo esc_attr( $title ); ?>"/>
 							<?php endif; ?>
 							<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
 							<div class="title">
 								<?php
-								if ( ! empty( $post ) ) {
-									echo esc_attr( $post->post_title );
+								if ( ! empty( $title ) ) {
+									echo esc_attr( $title );
 								}
 								?>		
 							</div>
