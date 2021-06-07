@@ -136,9 +136,9 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 						'label' => __( 'Image vertical alignment', 'so-widgets-bundle' ),
 						'default' => 'end',
 						'options' => array(
-							'start' => __( 'Top', 'so-widgets-bundle' ),
+							'flex-start' => __( 'Top', 'so-widgets-bundle' ),
 							'center' => __( 'Center', 'so-widgets-bundle' ),
-							'end' => __( 'Bottom', 'so-widgets-bundle' ),
+							'flex-end' => __( 'Bottom', 'so-widgets-bundle' ),
 						),
 					),
 
@@ -147,7 +147,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 						'label' => __( 'Grid horizontal alignment', 'so-widgets-bundle' ),
 						'default' => 'center',
 						'options' => array(
-							'left' => __( 'Left', 'so-widgets-bundle' ),
+							'flex-start' => __( 'Left', 'so-widgets-bundle' ),
 							'center' => __( 'Center', 'so-widgets-bundle' ),
 							'flex-end' => __( 'Right', 'so-widgets-bundle' ),
 						),
