@@ -66,11 +66,16 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 						$src = wp_get_attachment_image_src( $attachment, 'thumbnail' );
 
 						if ( empty( $src ) ) {
-							continue;
+							// If item doesn't have an image src, use the WP icon for its media type.
+							$src = wp_mime_type_icon( $attachment );
+						} else {
+							$src = $src[0];
 						}
 						?>
 						<div class="multiple-media-field-item" data-id="<?php echo esc_attr( $attachment ); ?>">
-							<img src="<?php echo sow_esc_url( $src[0] ); ?>" class="thumbnail" title="<?php echo esc_attr( $post->post_title ); ?>"/>
+							<?php if ( ! empty( $src ) ) : ?>
+								<img src="<?php echo sow_esc_url( $src ); ?>" class="thumbnail" title="<?php echo esc_attr( $post->post_title ); ?>"/>
+							<?php endif; ?>
 							<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
 							<div class="title">
 								<?php
