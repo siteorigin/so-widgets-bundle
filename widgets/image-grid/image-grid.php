@@ -148,7 +148,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 						'default' => 'center',
 						'options' => array(
 							'left' => __( 'Left', 'so-widgets-bundle' ),
-							'right' => __( 'Right', 'so-widgets-bundle' ),
+							'flex-end' => __( 'Right', 'so-widgets-bundle' ),
 							'center' => __( 'Center', 'so-widgets-bundle' ),
 						),
 					),
