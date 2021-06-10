@@ -249,7 +249,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			<?php
 			foreach ( $link_attributes as $attr => $val ) {
 				if ( ! empty( $val ) ) {
-					echo $attr . '="' . esc_attr( $val ); . '" ';
+					echo $attr . '="' . esc_attr( $val ) . '" ';
 				}
 			}
 			?>
