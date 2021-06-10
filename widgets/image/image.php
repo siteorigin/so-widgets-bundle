@@ -104,7 +104,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			'full_width' => array(
 				'type' => 'checkbox',
 				'default' => false,
-				'label' => __( 'Full Width', 'so-widgets-bundle' ),
+				'label' => __( 'Full width', 'so-widgets-bundle' ),
 				'description' => __( "Resize image to fit its container.", 'so-widgets-bundle' ),
 			),
 
