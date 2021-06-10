@@ -89,6 +89,13 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 				'type' => 'link',
 				'label' => __( 'Destination URL', 'so-widgets-bundle' ),
 			),
+
+			'link_title' => array(
+				'type' => 'checkbox',
+				'default' => false,
+				'label' => __( 'Link title to URL', 'so-widgets-bundle' ),
+			),
+
 			'new_window' => array(
 				'type' => 'checkbox',
 				'default' => false,
@@ -233,6 +240,21 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			'image_height' => ! empty( $instance['bound'] ) ? 'auto' : '',
 			'image_width' => ! empty( $instance['full_width'] ) ? '100%' : '',
 		);
+	}
+
+	function generate_anchor_open( $url, $link_attributes ) {
+		?>
+		<a
+			href="<?php echo sow_esc_url( $url ); ?>"
+			<?php
+			foreach ( $link_attributes as $attr => $val ) {
+				if ( ! empty( $val ) ) {
+					echo $attr . '="' . esc_attr( $val ); . '" ';
+				}
+			}
+			?>
+		>
+		<?php
 	}
 
 	function get_form_teaser() {
