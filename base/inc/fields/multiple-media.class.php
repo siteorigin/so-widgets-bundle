@@ -39,15 +39,14 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 	 */
 	protected $thumbnail_dimensions;
 
+	static $default_thumbnail_dimensions = array( 64, 64 ); 
+
 	protected function get_default_options() {
 		return array(
 			'choose' => __( 'Add Media', 'so-widgets-bundle' ),
 			'update' => __( 'Set Media', 'so-widgets-bundle' ),
 			'library' => 'image',
-			'thumbnail_dimensions' => array(
-				64,
-				64
-			),
+			'thumbnail_dimensions' => self::$default_thumbnail_dimensions,
 		);
 	}
 
@@ -65,7 +64,7 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 			! is_numeric( $this->thumbnail_dimensions[0] ) ||
 			! is_numeric( $this->thumbnail_dimensions[1] )
 		) {
-			$this->thumbnail_dimensions = array( 64, 64 );
+			$this->thumbnail_dimensions = self::$default_thumbnail_dimensions;
 		}
 
 		// If library is set to all, convert it to a wildcard as all isn't valid
