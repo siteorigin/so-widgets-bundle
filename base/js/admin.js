@@ -1410,12 +1410,11 @@ var sowbForms = window.sowbForms || {};
 		}, 200);
 	});
 	var $body = $( 'body' );
-	if ( $body.hasClass('wp-customizer') ) {
-		// Setup new widgets when they're added in the customizer interface
-		$(document).on('widget-added', function (e, widget) {
-			widget.find('.siteorigin-widget-form').sowSetupForm();
-		});
-	}
+	// Setup new widgets when they're added in the customizer or new Widgets interface
+	$( document ).on( 'widget-added', function( e, widget ) {
+		console.log(widget.find( '.siteorigin-widget-form' ));
+		widget.find( '.siteorigin-widget-form' ).sowSetupForm();
+	} );
 	
 	if ( $body.hasClass('block-editor-page') ) {
 		// Setup new widgets when they're previewed in the block editor.
