@@ -73,7 +73,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 				'type' => 'checkbox',
 				'default' => false,
 				'label' => __( 'Download', 'so-widgets-bundle' ),
-				'description' => __( 'The button destination URL will be downloaded when a user clicks on the button.', 'so-widgets-bundle' ),
+				'description' => __( 'The Destination URL will be downloaded when a user clicks on the button.', 'so-widgets-bundle' ),
 			),
 
 			'button_icon' => array(
