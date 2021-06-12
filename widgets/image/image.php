@@ -192,6 +192,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 				'title' => $title,
 				'title_position' => $instance['title_position'],
 				'url' => $instance['url'],
+				'link_title' => ! empty( $instance['link_title'] ) ? $instance['link_title'] : false,
 				'new_window' => $instance['new_window'],
 				'link_attributes' => $link_atts,
 				'attributes' => $attr,
