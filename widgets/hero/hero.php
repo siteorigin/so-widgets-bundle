@@ -298,6 +298,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	function filter_button_widget_form( $form_fields ) {
 		
 		unset( $form_fields['design']['fields']['align'] );
+		unset( $form_fields['design']['fields']['mobile_align'] );
 		
 		return $form_fields;
 	}
