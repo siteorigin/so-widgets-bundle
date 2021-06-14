@@ -830,7 +830,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 			// Field labels
 			'label_font_family'          => $label_font['family'],
-			'label_font_weight'          => ! empty( $label_font['weight'] ) ? $label_font['weight'] : '',
 			'label_font_size'            => $instance['design']['labels']['size'],
 			'label_font_color'           => $instance['design']['labels']['color'],
 			'label_position'             => $label_position,
@@ -839,7 +838,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 			// Fields
 			'field_font_family'          => $field_font['family'],
-			'field_font_weight'          => ! empty( $field_font['weight'] ) ? $field_font['weight'] : '',
 			'field_font_size'            => $instance['design']['fields']['font_size'],
 			'field_font_color'           => $instance['design']['fields']['color'],
 			'field_margin'               => $instance['design']['fields']['margin'],
@@ -885,6 +883,16 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'outline_color'              => $instance['design']['focus']['color'],
 			'outline_width'              => $instance['design']['focus']['width'],
 		);
+
+		if ( ! empty( $label_font['weight'] ) ) {
+			$vars['label_font_weight'] = $label_font['weight_raw'];
+			$lessvars_vars['label_font_style'] = $label_font['style'];
+		}
+
+		if ( ! empty( $field_font['weight'] ) ) {
+			$vars['field_font_weight'] = $field_font['weight_raw'];
+			$lessvars_vars['field_font_style'] = $field_font['style'];
+		}
 
 		$global_settings = $this->get_global_settings();
 		if ( ! empty( $global_settings['responsive_breakpoint'] ) ) {

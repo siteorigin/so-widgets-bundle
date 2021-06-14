@@ -19,7 +19,9 @@
 		strong {
 			@label_font_family: default;
 			@label_font_weight: default;
+			@label_font_style: default;
 			.font(@label_font_family, @label_font_weight);
+			font-style: @label_font_style;
 
 			@label_font_size: default;
 			font-size: @label_font_size;
@@ -56,6 +58,7 @@
 
 	@field_font_family: default;
 	@field_font_weight: default;
+	@field_font_style: default;
 	@field_font_size: default;
 	@field_font_color: default;
 
@@ -118,6 +121,7 @@
 
 		font-size: @field_font_size;
 		.font(@field_font_family, @field_font_weight);
+		font-style: @field_font_style;
 	}
 
 	&.sow-form-field-radio {
