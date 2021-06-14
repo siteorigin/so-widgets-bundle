@@ -427,14 +427,16 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		$heading_font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
 		$less['heading_font'] = $heading_font['family'];
 		if ( ! empty( $heading_font['weight'] ) ) {
-			$less['heading_font_weight'] = $heading_font['weight'];
+			$less['heading_font_weight'] = $heading_font['weight_raw'];
+			$less['heading_font_style'] = $heading_font['style'];
 		}
 		
 		if ( ! empty( $instance['design']['text_font'] ) ) {
 			$text_font = siteorigin_widget_get_font( $instance['design']['text_font'] );
 			$less['text_font'] = $text_font['family'];
 			if ( ! empty( $text_font['weight'] ) ) {
-				$less['text_font_weight'] = $text_font['weight'];
+				$less['text_font_weight'] = $text_font['weight_raw'];
+				$less['text_font_style'] = $text_font['style'];
 			}
 		}
 
