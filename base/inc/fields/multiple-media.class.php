@@ -126,7 +126,7 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 				<div class="multiple-media-field-item">
 					<img class="thumbnail"  width="<?php echo $this->thumbnail_dimensions[0]; ?>" height="<?php echo $this->thumbnail_dimensions[1]; ?>"/>
 					<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
-					<div class="title"></div>
+					<div class="title <?php echo (bool) $this->title ? 'title-enabled" style="width: ' . $this->thumbnail_dimensions[0] . 'px' : ''; ?>"></div>
 				</div>
 
 			</div>
