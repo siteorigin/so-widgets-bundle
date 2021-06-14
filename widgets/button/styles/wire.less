@@ -13,6 +13,7 @@
 
 @button_font: default;
 @button_font_weight: default;
+@button_font_style: default;
 
 @font_size: 1em;
 @rounding: 0.25em;
@@ -47,6 +48,7 @@
 			max-width: 100%;
 		}
 		.font(@button_font, @button_font_weight);
+		font-style: @button_font_style;
 
 		font-size: @font_size;
 		padding: @padding @padding*2;
