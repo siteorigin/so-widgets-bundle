@@ -215,7 +215,11 @@ sowb.SiteOriginGoogleMap = function($) {
 							var openEvent = infoDisplay;
 							if ( infoDisplay === 'always' ) {
 								openEvent = 'click';
-								infoWindow.open( map, marker );
+								infoWindow.open( {
+									map: map,
+									anchor: marker,
+									shouldFocus: false // Avoid jump on load
+								} );
 							}
 							marker.addListener( openEvent, function () {
 								infoWindow.open( map, marker );
