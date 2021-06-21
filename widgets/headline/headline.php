@@ -54,7 +54,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 					'tag' => array(
 						'type' => 'select',
 						'label' => __( 'HTML Tag', 'so-widgets-bundle' ),
-						'default' => 'h1',
+						'default' => 'h2',
 						'options' => array(
 							'h1' => __( 'H1', 'so-widgets-bundle' ),
 							'h2' => __( 'H2', 'so-widgets-bundle' ),
