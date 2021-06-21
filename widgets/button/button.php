@@ -390,7 +390,8 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			$font = siteorigin_widget_get_font( $instance['design']['font'] );
 			$less_vars['button_font'] = $font['family'];
 			if ( ! empty( $font['weight'] ) ) {
-				$less_vars['button_font_weight'] = $font['weight'];
+				$less_vars['button_font_weight'] = $font['weight_raw'];
+				$less_vars['button_font_style'] = $font['style'];
 			}
 		}
 		return $less_vars;
