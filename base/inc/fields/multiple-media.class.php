@@ -32,6 +32,14 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 	protected $library;
 
 	/**
+	 * Whether to display the item title or not. Default is `true`.
+	 *
+	 * @access protected
+	 * @var boolean
+	 */
+	protected $title;
+
+	/**
 	 * The dimensions of each thumbnail item. Only used when editing widgets. The default is 75x75.
 	 *
 	 * @access protected
@@ -46,6 +54,7 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 			'choose' => __( 'Add Media', 'so-widgets-bundle' ),
 			'update' => __( 'Set Media', 'so-widgets-bundle' ),
 			'library' => 'image',
+			'title' => true,
 			'thumbnail_dimensions' => self::$default_thumbnail_dimensions,
 		);
 	}
@@ -84,7 +93,7 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 				<?php
 				if ( is_array( $attachments ) ) {
 					foreach ( $attachments as $attachment ) {
-						$title = get_the_title( $attachment );
+						$item_title = get_the_title( $attachment );
 						$src = wp_get_attachment_image_src( $attachment, 'thumbnail' );
 
 						if ( empty( $src ) ) {
@@ -96,13 +105,13 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 						?>
 						<div class="multiple-media-field-item" data-id="<?php echo esc_attr( $attachment ); ?>">
 							<?php if ( ! empty( $src ) ) : ?>
-								<img src="<?php echo sow_esc_url( $src ); ?>" class="thumbnail" title="<?php echo esc_attr( $title ); ?>" width="<?php echo $this->thumbnail_dimensions[0]; ?>" height="<?php echo $this->thumbnail_dimensions[1]; ?>"/>
+								<img src="<?php echo sow_esc_url( $src ); ?>" class="thumbnail" title="<?php echo esc_attr( $item_title ); ?>" width="<?php echo $this->thumbnail_dimensions[0]; ?>" height="<?php echo $this->thumbnail_dimensions[1]; ?>"/>
 							<?php endif; ?>
 							<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
-							<div class="title">
+							<div class="title <?php echo (bool) $this->title ? 'title-enabled" style="width: ' . $this->thumbnail_dimensions[0] . 'px' : ''; ?>">
 								<?php
-								if ( ! empty( $title ) ) {
-									echo esc_attr( $title );
+								if ( ! empty( $item_title ) ) {
+									echo esc_attr( $item_title );
 								}
 								?>		
 							</div>
@@ -117,7 +126,7 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 				<div class="multiple-media-field-item">
 					<img class="thumbnail"  width="<?php echo $this->thumbnail_dimensions[0]; ?>" height="<?php echo $this->thumbnail_dimensions[1]; ?>"/>
 					<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
-					<div class="title"></div>
+					<div class="title <?php echo (bool) $this->title ? 'title-enabled" style="width: ' . $this->thumbnail_dimensions[0] . 'px' : ''; ?>"></div>
 				</div>
 
 			</div>
