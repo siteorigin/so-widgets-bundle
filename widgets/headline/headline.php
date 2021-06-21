@@ -37,7 +37,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 				'type' => 'measurement',
 				'label' => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
 				'default' => '780px',
-				'description' => __( 'This setting controls when the Mobile alignment settings will be used. The default value is 780px.', 'so-widgets-bundle' ),
+				'description' => __( 'The pixel resolution when the mobile alignment settings will be applied.', 'so-widgets-bundle' ),
 			),
 		);
 	}
