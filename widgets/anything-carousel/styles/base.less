@@ -1,0 +1,74 @@
+// Design
+@navigation_color: #000;
+@item_margin: 144px 32px 144px 32px;
+@navigation_arrow_color: #626262;
+@navigation_arrow_color_hover: #000;
+@navigation_dots_color: #bebebe;
+@navigation_dots_color_hover: #f14e4e;
+
+.sow-carousel-container {
+	a.sow-carousel-next {
+		margin-left: 25px;
+		&:after {
+			content: "\e601";
+		}
+	}
+
+	a.sow-carousel-previous {
+		margin-right: 25px;
+		&:before {
+			content: "\e600";
+		}
+	}
+
+	a.sow-carousel-previous,
+	a.sow-carousel-next {
+		align-items: center;
+		background: #feffff;
+		border-radius: 32px;
+		border: 1px solid @navigation_arrow_color;
+		color: @navigation_arrow_color;
+		display: flex;
+		font-size: 28px;
+		height: 64px;
+		justify-content: center;
+		min-width: 64px; // FF may ignore width due to the parent being a flexbox. It won't ignore min-width.
+		width: 64px;
+
+		&:focus,
+		&:hover {
+			color: @navigation_arrow_color_hover;
+			border-color: @navigation_arrow_color_hover;
+		}
+	}
+
+	.sow-carousel-wrapper {
+		.sow-carousel-items {
+			.sow-carousel-item {
+				margin: @item_margin;
+			}
+		}
+
+		.slick-dots li {
+			&.slick-active button::before {
+				color: @navigation_dots_color_hover;
+			}
+
+			button {
+				width: 24px;
+				height: 24px;
+
+				&::before {
+			 		color: @navigation_dots_color;
+			 		font-size: 52px;
+					height: 24px;
+					width: 24px;
+			 	}
+
+				&:hover::before {
+					color: @navigation_dots_color_hover;
+				}
+			}
+		}
+	}
+}

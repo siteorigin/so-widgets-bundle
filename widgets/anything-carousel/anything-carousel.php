@@ -33,7 +33,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		$this->register_frontend_styles(
 			array(
 				array(
-					'sow-anything-carousel-base',
+					'sow-anything-carousel',
 					plugin_dir_url( __FILE__ ) . 'css/style.css',
 				),
 			)
@@ -88,17 +88,31 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 				'label' => __( 'Design', 'so-widgets-bundle' ),
 				'hide' => true,
 				'fields' => array(
-					'navigation_color' => array(
+					'navigation_arrow_color' => array(
 						'type' => 'color',
-						'label' => __( 'Navigation color', 'so-widgets-bundle' ),
+						'label' => __( 'Navigation arrows Color', 'so-widgets-bundle' ),
+						'default' => '#626262',
+					),
+					'navigation_arrow_color_hover' => array(
+						'type' => 'color',
+						'label' => __( 'Navigation arrows color hover', 'so-widgets-bundle' ),
 						'default' => '#000',
 					),
-
+					'navigation_dots_color' => array(
+						'type' => 'color',
+						'label' => __( 'Navigation dots color', 'so-widgets-bundle' ),
+						'default' => '#bebebe',
+					),
+					'navigation_dots_color_hover' => array(
+						'type' => 'color',
+						'label' => __( 'Navigation dots selected and hover color', 'so-widgets-bundle' ),
+						'default' => '#f14e4e',
+					),
 					'item_margin' => array(
 						'type' => 'multi-measurement',
 						'label' => __( 'Item margin', 'so-widgets-bundle' ),
 						'autofill' => true,
-						'default' => '0px 10px 0px 10px',
+						'default' => '144px 32px 144px 32px',
 						'measurements' => array(
 							'top' => array(
 								'label' => __( 'Top', 'so-widgets-bundle' ),
@@ -118,36 +132,14 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 							),
 						),
 					),
-
-					'item_padding' => array(
-						'type' => 'multi-measurement',
-						'label' => __( 'Item padding', 'so-widgets-bundle' ),
-						'default' => '10px 5px 10px 5px',
-						'autofill' => true,
-						'measurements' => array(
-							'top' => array(
-								'label' => __( 'Top', 'so-widgets-bundle' ),
-								'units' => $useable_units,
-							),
-							'right' => array(
-								'label' => __( 'Right', 'so-widgets-bundle' ),
-								'units' => $useable_units,
-							),
-							'bottom' => array(
-								'label' => __( 'Bottom', 'so-widgets-bundle' ),
-								'units' => $useable_units,
-							),
-							'left' => array(
-								'label' => __( 'Left', 'so-widgets-bundle' ),
-								'units' => $useable_units,
-							),
-						),
-					),
-
-				)
+				),
 			),
 			'responsive' => $this->responsive_form_fields(),
 		);
+	}
+
+	function get_style_name( $instance ) {
+		return empty( $instance['design']['theme'] ) ? 'base' : $instance['design']['theme'];
 	}
 
 	function get_less_variables( $instance ) {
@@ -156,9 +148,11 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		}
 
 		return array(
-			'navigation_color' => $instance['design']['navigation_color'],
+			'navigation_arrow_color' => $instance['design']['navigation_arrow_color'],
+			'navigation_arrow_color_hover' => $instance['design']['navigation_arrow_color_hover'],
+			'navigation_dots_color' => $instance['design']['navigation_dots_color'],
+			'navigation_dots_color_hover' => $instance['design']['navigation_dots_color_hover'],
 			'item_margin' => $instance['design']['item_margin'],
-			'item_padding' => $instance['design']['item_padding'],
 		);
 	}
 
