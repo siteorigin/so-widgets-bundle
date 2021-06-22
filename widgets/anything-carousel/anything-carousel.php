@@ -26,6 +26,20 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		);
 	}
 
+	function initialize() {
+		// Let the carousel base class do its initialization.
+		parent::initialize();
+
+		$this->register_frontend_styles(
+			array(
+				array(
+					'sow-anything-carousel-base',
+					plugin_dir_url( __FILE__ ) . 'css/style.css',
+				),
+			)
+		);
+	}
+
 	function override_carousel_settings() {
 		return array(
 			'slides_to_scroll_text' => array(
