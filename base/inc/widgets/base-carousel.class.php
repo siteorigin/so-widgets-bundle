@@ -32,10 +32,6 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 					array(),
 					'1.8.1'
 				),
-				array(
-					'sow-carousel',
-					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'css/carousel/style.css',
-				),
 			)
 		);
 
