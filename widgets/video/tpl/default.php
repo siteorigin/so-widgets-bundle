@@ -5,6 +5,7 @@
  * @var $player_id
  * @var $autoplay
  * @var $related_videos
+ * @var $controls
  * @var $skin_class
  * @var $is_skinnable_video_host
  * @var $sources
@@ -52,6 +53,9 @@ do_action( 'siteorigin_widgets_sow-video_before_video', $instance );
 		<?php foreach ( $video_args as $k => $v ) : ?>
 		<?php echo $k . '="' . $v . '" '; ?>
 		<?php endforeach; ?>
+		<?php if ( ! empty( $controls ) ): ?>
+		<?php echo 'controls'; ?>
+		<?php endif; ?>
 	>
 		<?php foreach ( $sources as $source ) : ?>
 		<source type="<?php echo esc_attr( $source['video_type'] ) ?>" src="<?php echo esc_url( $source['src'] ) ?>"/>
