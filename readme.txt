@@ -99,6 +99,20 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.21.0 - 24 June 2021 =
+* Google Maps: Prevented a jump on load when Info Windows is set to always display.
+* Google Fonts: Ensured all weights and styles are imported.
+* Headline: Changed default heading to `h2`.
+* Hero: Removed the button alignment setting, alignment is handled directly within each slide frame.
+* Image: Added a `Link title to URL` setting.
+* Image Grid: Added `Image vertical alignment` and `Grid horizontal alignment` settings.
+* Post Selector: Added an option to adjust the taxonomy relationship.
+* Sliders: Prevented potential PHP 8 error with overlay attribute filter.
+* Developer: Added an optional title to the multiple media form field.
+* Developer: Improved multiple media non-image support.
+* Developer: Added an optional `image_dimensions` parameter for the multiple media field.
+* Developer: Added a repeater increment label option.
+
 = 1.20.0 - 01 June 2021 =
 * Added integration for WP Super Cache and Swift Performance plugins.
 * Button: Added a `Mobile align` setting and global Button `Responsive Breakpoint` setting at `Plugins > SiteOrigin Widgets > Button: Settings`.
