@@ -134,7 +134,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 					'controls' => array(
 						'type'          => 'checkbox',
 						'default'       => false,
-						'label'         => __( 'Video controls', 'so-widgets-bundle' ),
+						'label'         => __( 'Controls', 'so-widgets-bundle' ),
 						'description'   => __( 'Enable browser video controls.', 'so-widgets-bundle' ),
 						'state_handler' => array(
 							'video_type[self]'     => array( 'show' ),
