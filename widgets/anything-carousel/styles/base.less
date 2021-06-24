@@ -9,6 +9,7 @@
 .sow-carousel-container {
 	a.sow-carousel-next {
 		margin-left: 25px;
+
 		&:after {
 			content: "\e601";
 		}
@@ -16,6 +17,7 @@
 
 	a.sow-carousel-previous {
 		margin-right: 25px;
+
 		&:before {
 			content: "\e600";
 		}
@@ -55,15 +57,15 @@
 			}
 
 			button {
-				width: 24px;
 				height: 24px;
+				width: 24px;
 
 				&::before {
-			 		color: @navigation_dots_color;
-			 		font-size: 52px;
+					color: @navigation_dots_color;
+					font-size: 52px;
 					height: 24px;
 					width: 24px;
-			 	}
+				}
 
 				&:hover::before {
 					color: @navigation_dots_color_hover;
