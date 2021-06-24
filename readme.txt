@@ -99,9 +99,10 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
-= 1.21.0 - 22 June 2021 =
+= 1.21.0 - 24 June 2021 =
 * Google Maps: Prevented a jump on load when Info Windows is set to always display.
 * Google Fonts: Ensured all weights and styles are imported.
+* Headline: Changed default heading to `h2`.
 * Hero: Removed the button alignment setting, alignment is handled directly within each slide frame.
 * Image: Added a `Link title to URL` setting.
 * Image Grid: Added `Image vertical alignment` and `Grid horizontal alignment` settings.
