@@ -292,7 +292,8 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					$font = siteorigin_widget_get_font( $styles['font'] );
 					$less_vars[$field_name.'_font'] = $font['family'];
 					if ( ! empty( $font['weight'] ) ) {
-						$less_vars[$field_name.'_font_weight'] = $font['weight'];
+						$less_vars[ $field_name . '_font_weight' ] = $font['weight_raw'];
+						$less_vars[ $field_name . '_font_style' ] = $font['style'];
 					}
 				}
 			}
