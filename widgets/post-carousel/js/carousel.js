@@ -22,22 +22,16 @@ jQuery( function ( $ ) {
 		$( '.sow-carousel-wrapper' ).each( function () {
 			var $$ = $( this ),
 				$items = $$.find( '.sow-carousel-items' ),
-				responsiveSettings = $$.data( 'responsive' ),
-				carouselSettings = $$.data( 'carousel_settings' );
+				responsiveSettings = $$.data( 'responsive' );
 
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
-				dots: carouselSettings.dots,
+				infinite: false,
 				rows: 0,
 				rtl: $$.data( 'dir' ) == 'rtl',
 				touchThreshold: 20,
-				infinite: ! $$.data( 'ajax-url' )&&  $$.data( 'carousel_settings' ).loop,
-				variableWidth: $$.data( 'variable_width' ),
+				variableWidth: true,
 				accessibility: false,
-				speed: carouselSettings.animation_speed,
-				autoplay: carouselSettings.autoplay,
-				autoplaySpeed: carouselSettings.autoplaySpeed,
-				pauseOnHover: carouselSettings.pauseOnHover,
 				slidesToScroll: responsiveSettings.desktop_slides,
 				slidesToShow: responsiveSettings.desktop_slides,
 				responsive: [
@@ -67,22 +61,47 @@ jQuery( function ( $ ) {
 			// due to the inability to stop a slide from changing from those events
 			$$.parent().parent().find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click touchend', function( e, refocus ) {
 				e.preventDefault();
-
 				var $items = $$.find( '.sow-carousel-items' ),
 					numItems = $items.find( '.sow-carousel-item' ).length,
-					complete = numItems >= $$.data( 'item_count' ),
+					complete = numItems >= $$.data( 'post-count' ),
 					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					lastPosition = numItems - numVisibleItems + 1,
 					slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' );
 
-				// Check if all items are displayed
+				// Check if all posts are displayed
 				if ( ! complete ) {
-					// For Ajax Carousels, check if we need to fetch the next batch of items.
+					// Check if we need to fetch the next batch of posts
 					if ( 
 						$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ||
 						$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition - 1
 					) {
-						$( sowb ).trigger( 'carousel_load_new_items', [ $$, $items, refocus ] );
+
+						if ( ! $$.data( 'fetching' ) ) {
+							// Fetch the next batch
+							$$.data( 'fetching', true );
+							var page = $$.data( 'page' ) + 1;
+
+							$items.slick( 'slickAdd', '<div class="sow-carousel-item sow-carousel-loading"></div>' );
+							$.get(
+								$$.data( 'ajax-url' ),
+								{
+									action: 'sow_carousel_load',
+									paged: page,
+									instance_hash: $$.parent().parent().find( 'input[name="instance_hash"]' ).val()
+								},
+								function ( data, status ) {
+									$items.find( '.sow-carousel-loading' ).remove();
+									$items.slick( 'slickAdd', data.html );
+									numItems = $$.find( '.sow-carousel-item' ).length;
+									$$.data( 'fetching', false );
+									$$.data( 'page', page );
+
+									if ( refocus ) {
+										$items.find( '.sow-carousel-item[tabindex="0"]' ).trigger( 'focus' );
+									}
+								}
+							);
+						}
 					}
 				}
 
@@ -99,7 +118,7 @@ jQuery( function ( $ ) {
 						complete &&
 						$items.slick( 'slickCurrentSlide' ) >= lastPosition
 					) {
-						if ( $$.data( 'carousel_settings' ).loop ) {
+						if ( $$.data( 'loop-posts-enabled' ) ) {
 							$items.slick( 'slickGoTo', 0 );
 						}
 					// Check if the number of slides to scroll exceeds lastPosition, go to the last slide.
@@ -109,7 +128,7 @@ jQuery( function ( $ ) {
 						$items.slick( 'slickNext' );
 					}
 				} else if ( $( this ).hasClass( 'sow-carousel-previous' ) ) {
-					if ( $$.data( 'carousel_settings' ).loop && $items.slick( 'slickCurrentSlide' ) == 0 ) {
+					if ( $$.data( 'loop-posts-enabled' ) && $items.slick( 'slickCurrentSlide' ) == 0 ) {
 						$items.slick( 'slickGoTo', lastPosition );
 					} else {
 						$items.slick( 'slickPrev' );
@@ -117,28 +136,6 @@ jQuery( function ( $ ) {
 				}
 			} );
 
-			if ( carouselSettings.dots && $$.data( 'variable_width' ) ) {
-				// Unbind base Slick Dot Navigation as we use a custom event to prevent blank spaces.
-				$$.find( '.slick-dots li' ).off( 'click.slick' );
-				$$.find( '.slick-dots li' ).on( 'click touchend', function() {
-					var targetItem = $( this ).index(),
-						numItems = $items.find( '.sow-carousel-item' ).length,
-						numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
-						lastPosition = numItems - numVisibleItems;
-
-					// Check if navigating to the selected item would result in a blank space.
-					if ( targetItem + numVisibleItems >= numItems ) {
-						// Blank spacing would occur, let's go to the last possible item
-						// make it appear as though we navigated to the selected item.
-						$items.slick( 'slickGoTo', lastPosition );
-						$dots = $( this ).parent();
-						$dots.find( '.slick-active' ).removeClass( 'slick-active' );
-						$dots.children().eq( targetItem ).addClass( 'slick-active' );
-					} else {
-						$items.slick( 'slickGoTo', targetItem );
-					}
-				} );
-			}
 		} );
 
 		// Keyboard Navigation of carousel navigation.
@@ -166,7 +163,7 @@ jQuery( function ( $ ) {
 				$items = $wrapper.find( '.sow-carousel-items' ),
 				numItems = $items.find( '.sow-carousel-item' ).length,
 				itemIndex = $( this ).data( 'slick-index' ),
-				lastPosition = numItems - ( numItems === $wrapper.data( 'item_count' ) ? 0 : 1 );
+				lastPosition = numItems - ( numItems === $wrapper.data( 'post-count' ) ? 0 : 1 );
 
 			if ( e.keyCode == 37 ) {
 				itemIndex--;
@@ -177,7 +174,7 @@ jQuery( function ( $ ) {
 				itemIndex++;
 				if ( itemIndex >= lastPosition ) {
 					if ( $wrapper.data( 'fetching' ) ) {
-						return; // Currently loading new items.
+						return; // Currently loading new post
 					}
 
 					$wrapper.parent().find( '.sow-carousel-next' ).trigger( 'click', true );
@@ -198,7 +195,7 @@ jQuery( function ( $ ) {
 					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					navigation = currentCarousel.parent().parent().find( '.sow-carousel-navigation' );
 
-				if ( numVisibleItems >= currentCarousel.data( 'item_count' ) ) {
+				if ( numVisibleItems >= currentCarousel.data( 'post-count' ) ) {
 					navigation.hide();
 					$items.slick( 'slickSetOption', 'touchMove', false );
 					$items.slick( 'slickSetOption', 'draggable', false );
