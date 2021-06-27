@@ -1350,4 +1350,35 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		return $values;
 	}
+
+	// Add state_handler for fields based on how they're adjusted by preset data.
+	protected function dynamic_preset_state_handler( $state_name, $preset_data, $fields ) {
+		$adjusted_fields = array();
+		// Build an array of all the adjusted fields by the preset data, and note which presets adjust them.
+		foreach ( $preset_data as $preset_id => $preset ) {
+			$extracted_fields = array_keys( $preset['values'] );
+			foreach ( $extracted_fields as $field ) {
+				$adjusted_fields[ $field ][] = $preset_id;
+			}
+		}
+
+		// Add state handlers for any of the $adjusted_fields. 
+		foreach ( $adjusted_fields as $field => $used_by ) {
+			// Skip field if it's not adjusted by of the presets, or if the field has a state_handler already.
+			if (
+				! isset( $fields[ $field ] ) ||
+				isset( $fields[ $field ]['state_handler'] )
+			) {
+				continue;
+			}
+
+			$used_by = implode( ',', $used_by ); 
+			$fields[ $field ]['state_handler'] = array(
+				$state_name . '[' . $used_by . ']' => array( 'show' ),
+				'_else[' . $state_name . ']' => array( 'hide' ),
+			);
+		}
+
+		return $fields;
+	}
 }
