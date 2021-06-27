@@ -46,7 +46,6 @@
 		a.sow-carousel-previous {
 			-moz-osx-font-smoothing: grayscale;
 			-webkit-font-smoothing: antialiased;
-			display: block;
 			font-family: 'anything-carousel-arrows';
 			font-style: normal;
 			font-variant: normal;
@@ -75,10 +74,10 @@
 
 			.slick-dots {
 				display: block;
+				line-height: 0;
 				list-style: none;
 				margin: 0;
 				padding: 0;
-				position: relative;
 				text-align: center;
 				width: 100%;
 
@@ -95,9 +94,10 @@
 						color: transparent;
 						cursor: pointer;
 						display: block;
-						font-size: 0px;
+						font-size: 0;
 						font-style: normal;
-						line-height: 0px;
+						letter-spacing: normal;
+						line-height: 0;
 						margin: 0;
 						outline: none;
 						padding: 0;
@@ -115,10 +115,8 @@
 							font-family: initial;
 							-webkit-font-smoothing: antialiased;
 							-moz-osx-font-smoothing: grayscale;
-							left: 0;
-							position: absolute;
+							position: relative;
 							text-align: center;
-							top: 0;
 						}
 					}
 

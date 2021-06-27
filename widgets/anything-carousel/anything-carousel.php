@@ -112,7 +112,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 						'type' => 'multi-measurement',
 						'label' => __( 'Item margin', 'so-widgets-bundle' ),
 						'autofill' => true,
-						'default' => '144px 32px 144px 32px',
+						'default' => '0 12px 64px 12px',
 						'measurements' => array(
 							'top' => array(
 								'label' => __( 'Top', 'so-widgets-bundle' ),

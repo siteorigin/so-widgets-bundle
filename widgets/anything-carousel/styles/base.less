@@ -1,6 +1,5 @@
 // Design
-@navigation_color: #000;
-@item_margin: 144px 32px 144px 32px;
+@item_margin: 0 12px 64px 12px;
 @navigation_arrow_color: #626262;
 @navigation_arrow_color_hover: #000;
 @navigation_dots_color: #bebebe;
@@ -8,7 +7,6 @@
 
 .sow-carousel-container {
 	a.sow-carousel-next {
-		margin-left: 25px;
 
 		&:after {
 			content: "\e601";
@@ -16,7 +14,6 @@
 	}
 
 	a.sow-carousel-previous {
-		margin-right: 25px;
 
 		&:before {
 			content: "\e600";
@@ -26,16 +23,15 @@
 	a.sow-carousel-previous,
 	a.sow-carousel-next {
 		align-items: center;
-		background: #feffff;
-		border-radius: 32px;
+		border-radius: 16px;
 		border: 1px solid @navigation_arrow_color;
 		color: @navigation_arrow_color;
 		display: flex;
-		font-size: 28px;
-		height: 64px;
+		font-size: 14px;
+		height: 32px;
 		justify-content: center;
-		min-width: 64px; // FF may ignore width due to the parent being a flexbox. It won't ignore min-width.
-		width: 64px;
+		min-width: 32px; // FF may ignore width due to the parent being a flexbox. It won't ignore min-width.
+		width: 32px;
 
 		&:focus,
 		&:hover {
@@ -51,24 +47,29 @@
 			}
 		}
 
-		.slick-dots li {
-			&.slick-active button::before {
-				color: @navigation_dots_color_hover;
-			}
+		.slick-dots {
+			li { 
 
-			button {
-				height: 24px;
-				width: 24px;
-
-				&::before {
-					color: @navigation_dots_color;
-					font-size: 52px;
-					height: 24px;
-					width: 24px;
+				&.slick-active button:before {
+					color: @navigation_dots_color_hover;
 				}
 
-				&:hover::before {
-					color: @navigation_dots_color_hover;
+				button {
+					height: 12px;
+
+					&:before {
+						color: @navigation_dots_color;
+						font-size: 41px;
+						margin-right: 5px;
+					}
+
+					&:hover:before {
+						color: @navigation_dots_color_hover;
+					}
+				}
+
+				&:last-of-type button:before {
+					margin-right: 0;
 				}
 			}
 		}
