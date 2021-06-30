@@ -171,12 +171,12 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 						'fields' => array(
 							'arrow_color' => array(
 								'type' => 'color',
-								'label' => __( 'Arrows Color', 'so-widgets-bundle' ),
+								'label' => __( 'Arrows color', 'so-widgets-bundle' ),
 								'default' => '#626262',
 							),
 							'arrow_color_hover' => array(
 								'type' => 'color',
-								'label' => __( 'Arrows color hover', 'so-widgets-bundle' ),
+								'label' => __( 'Arrows hover color', 'so-widgets-bundle' ),
 								'default' => '#000',
 							),
 							'dots_color' => array(
