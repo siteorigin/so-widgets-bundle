@@ -209,6 +209,8 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'nav_always_show_desktop'  => ! empty( $controls['nav_always_show_desktop'] ) ? true : '',
 			'nav_always_show_mobile'   => ! empty( $controls['nav_always_show_mobile'] ) ? true : '',
 			'breakpoint'               => ! empty( $controls['breakpoint'] ) ? $controls['breakpoint'] : '780px',
+			'unmute'                   => ! empty( $controls['unmute'] ),
+			'unmute_position'          => ! empty( $controls['unmute_position'] ) ? $controls['unmute_position'] : false,
 		);
 	}
 
@@ -229,6 +231,11 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		switch( $part ) {
 			case 'before_slider':
 				?><div class="sow-slider-base" style="display: none"><?php
+				if ( isset( $controls['unmute'] ) && $controls['unmute'] ) {
+					?>
+					<span class="sow-player-controls-sound">&nbsp;</span>
+					<?php
+				}
 				break;
 			case 'before_slides':
 				$settings = $this->slider_settings( $controls );
