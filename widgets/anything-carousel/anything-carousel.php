@@ -179,6 +179,11 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 								'label' => __( 'Arrows hover color', 'so-widgets-bundle' ),
 								'default' => '#000',
 							),
+							'arrow_margin' => array(
+								'type' => 'measurement',
+								'label' => __( 'Arrows margin', 'so-widgets-bundle' ),
+								'description' => __( 'The space between the navigation arrows and items.', 'so-widgets-bundle' ),
+							),
 							'dots_color' => array(
 								'type' => 'color',
 								'label' => __( 'Dots color', 'so-widgets-bundle' ),
@@ -218,6 +223,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 
 			'navigation_arrow_color' => $instance['design']['navigation']['arrow_color'],
 			'navigation_arrow_color_hover' => $instance['design']['navigation']['arrow_color_hover'],
+			'navigation_arrow_margin' => $instance['design']['navigation']['arrow_margin'],
 			'navigation_dots_color' => $instance['design']['navigation']['dots_color'],
 			'navigation_dots_color_hover' => $instance['design']['navigation']['dots_color_hover'],
 		);

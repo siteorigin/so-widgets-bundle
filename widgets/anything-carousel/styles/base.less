@@ -16,11 +16,13 @@
 
 @navigation_arrow_color: #626262;
 @navigation_arrow_color_hover: #000;
+@navigation_arrow_margin: default;
 @navigation_dots_color: #bebebe;
 @navigation_dots_color_hover: #f14e4e;
 
 .sow-carousel-container {
 	a.sow-carousel-next {
+		margin-left: @navigation_arrow_margin;
 
 		&:after {
 			content: "\e601";
@@ -28,6 +30,7 @@
 	}
 
 	a.sow-carousel-previous {
+		margin-right: @navigation_arrow_margin;
 
 		&:before {
 			content: "\e600";
