@@ -240,6 +240,8 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 	}
 
 	function render_template( $settings ) {
+		$settings['title_tag'] = ! empty( $settings['title_tag'] ) ? $settings['title_tag'] : 'h3';
+
 		include plugin_dir_path( __FILE__ ) . 'tpl/carousel.php';
 	}
 
@@ -256,5 +258,4 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			<?php
 		}
 	}
-
 }
