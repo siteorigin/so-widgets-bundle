@@ -1,9 +1,30 @@
-// Design
+@import "../../../base/less/mixins";
+
+@title_tag: h3;
+@title_font: default;
+@title_font_weight: default;
+@title_font_size: default;
+@title_font_style: default;
+@title_color: default;
+
+@item_font: default;
+@item_font_weight: default;
+@item_font_size: default;
+@item_font_style: default;
+@item_color: default;
 @item_margin: 0 12px 64px 12px;
+
 @navigation_arrow_color: #626262;
 @navigation_arrow_color_hover: #000;
 @navigation_dots_color: #bebebe;
 @navigation_dots_color_hover: #f14e4e;
+
+.sow-carousel-title  @{title_tag} {
+	color: @title_color;
+	.font(@title_font, @title_font_weight);
+	font-size: @title_font_size;
+	font-style: @title_font_style;
+}
 
 .sow-carousel-container {
 	a.sow-carousel-next {
@@ -44,6 +65,15 @@
 		.sow-carousel-items {
 			.sow-carousel-item {
 				margin: @item_margin;
+
+				&,
+				& h4.sow-carousel-item-title,
+				& p {
+					color: @item_color;
+					.font(@item_font, @item_font_weight);
+					font-size: @item_font_size;
+					font-style: @item_font_style;
+				}
 			}
 		}
 
