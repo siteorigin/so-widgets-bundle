@@ -1,7 +1,7 @@
 <div class="sow-carousel-title<?php if ( ! empty( $settings['title'] ) ) echo ' has-title'; ?>">
 	<?php
 	if ( ! empty( $settings['title'] ) ) {
-		echo '<' . esc_attr( $settings['title_tag'] ) . '>' . esc_html( $settings['title'] ) . '</' . esc_attr( $settings['title_tag'] ) . '>';
+		echo $settings['args']['before_title'] . esc_html( $settings['title'] ) . $settings['args']['after_title'];
 	}
 
 	if ( $settings['navigation'] == 'title' ) {
