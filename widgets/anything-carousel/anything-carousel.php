@@ -88,9 +88,9 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 				'label' => __( 'Design', 'so-widgets-bundle' ),
 				'hide' => true,
 				'fields' => array(
-					'title' => array(
+					'item_title' => array(
 						'type' => 'section',
-						'label' => __( 'Title', 'so-widgets-bundle' ),
+						'label' => __( 'Item title', 'so-widgets-bundle' ),
 						'hide' => true,
 						'fields' => array(
 							'tag' => array(
@@ -208,9 +208,9 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		}
 
 		$less_vars = array(
-			'title_tag' => $instance['design']['title']['tag'],
-			'title_font_size' => $instance['design']['title']['size'],
-			'title_color' => $instance['design']['title']['color'],
+			'item_title_tag' => $instance['design']['item_title']['tag'],
+			'item_title_font_size' => $instance['design']['item_title']['size'],
+			'item_title_color' => $instance['design']['item_title']['color'],
 
 			'item_size' => $instance['design']['item']['size'],
 			'item_color' => $instance['design']['item']['color'],
@@ -222,16 +222,16 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 			'navigation_dots_color_hover' => $instance['design']['navigation']['dots_color_hover'],
 		);
 
-		$title_font = siteorigin_widget_get_font( $instance['design']['title']['font'] );
-		$less_vars['title_font'] = $title_font['family'];
-		if ( ! empty( $title_font['weight'] ) ) {
-			$less_vars['title_font_style'] = $title_font['style'];
-			$less_vars['title_font_weight'] = $title_font['weight_raw'];
+		$item_title_font = siteorigin_widget_get_font( $instance['design']['item_title']['font'] );
+		$less_vars['item_title_font'] = $item_title_font['family'];
+		if ( ! empty( $item_title_font['weight'] ) ) {
+			$less_vars['item_title_font_style'] = $item_title_font['style'];
+			$less_vars['item_title_font_weight'] = $item_title_font['weight_raw'];
 		}
 
 		$item_font = siteorigin_widget_get_font( $instance['design']['item']['font'] );
-		$less_vars['item_font'] = $title_font['family'];
-		if ( ! empty( $title_font['weight'] ) ) {
+		$less_vars['item_font'] = $item_font['family'];
+		if ( ! empty( $item_font['weight'] ) ) {
 			$less_vars['item_font_style'] = $item_font['style'];
 			$less_vars['item_font_weight'] = $item_font['weight_raw'];
 		}
@@ -245,7 +245,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 				'title' => $instance['title'],
 				'item_template' => plugin_dir_path( __FILE__ ) . 'tpl/item.php',
 				'navigation' => 'side',
-				'title_tag' => $instance['design']['title']['tag'],
+				'item_title_tag' => $instance['design']['item_title']['tag'],
 				'items' => ! empty( $instance['items'] ) ? $instance['items'] : array(),
 				'attributes' => array(
 					'widget' => 'anything',
