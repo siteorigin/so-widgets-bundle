@@ -119,6 +119,11 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 								'type' => 'color',
 								'label' => __( 'Text color', 'so-widgets-bundle' ),
 							),
+							'bottom_margin' => array(
+								'type' => 'measurement',
+								'label' => __( 'Bottom margin', 'so-widgets-bundle' ),
+								'default' => '24px',
+							),
 						),
 					),
 					'item' => array(
@@ -216,6 +221,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 			'item_title_tag' => $instance['design']['item_title']['tag'],
 			'item_title_font_size' => $instance['design']['item_title']['size'],
 			'item_title_color' => $instance['design']['item_title']['color'],
+			'bottom_margin' => $instance['design']['item_title']['bottom_margin'],
 
 			'item_size' => $instance['design']['item']['size'],
 			'item_color' => $instance['design']['item']['color'],

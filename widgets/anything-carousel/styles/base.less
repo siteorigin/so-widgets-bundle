@@ -6,6 +6,7 @@
 @item_title_font_size: default;
 @item_title_font_style: default;
 @item_title_color: default;
+@bottom_margin: default;
 
 @item_font: default;
 @item_font_weight: default;
@@ -75,6 +76,8 @@
 					.font(@item_title_font, @item_title_font_weight);
 					font-size: @item_title_font_size;
 					font-style: @item_title_font_style;
+					margin: 0;
+					margin-bottom: @bottom_margin;
 				}
 			}
 		}
