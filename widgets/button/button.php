@@ -12,9 +12,9 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 		parent::__construct(
 			'sow-button',
-			__('SiteOrigin Button', 'so-widgets-bundle'),
+			__( 'SiteOrigin Button', 'so-widgets-bundle' ),
 			array(
-				'description' => __('A powerful yet simple button widget for your sidebars or Page Builder pages.', 'so-widgets-bundle'),
+				'description' => __( 'A powerful yet simple button widget for your sidebars or Page Builder pages.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/button-widget-documentation/'
 			),
 			array(
@@ -54,12 +54,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		return array(
 			'text' => array(
 				'type' => 'text',
-				'label' => __('Button text', 'so-widgets-bundle'),
+				'label' => __( 'Button text', 'so-widgets-bundle' ),
 			),
 
 			'url' => array(
 				'type' => 'link',
-				'label' => __('Destination URL', 'so-widgets-bundle'),
+				'label' => __( 'Destination URL', 'so-widgets-bundle' ),
 				'allow_shortcode' => true,
 			),
 
@@ -73,27 +73,27 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 				'type' => 'checkbox',
 				'default' => false,
 				'label' => __( 'Download', 'so-widgets-bundle' ),
-				'description' => __( 'The button destination URL will be downloaded when a user clicks on the button.', 'so-widgets-bundle' ),
+				'description' => __( 'The Destination URL will be downloaded when a user clicks on the button.', 'so-widgets-bundle' ),
 			),
 
 			'button_icon' => array(
 				'type' => 'section',
-				'label' => __('Icon', 'so-widgets-bundle'),
+				'label' => __( 'Icon', 'so-widgets-bundle' ),
 				'fields' => array(
 					'icon_selected' => array(
 						'type' => 'icon',
-						'label' => __('Icon', 'so-widgets-bundle'),
+						'label' => __( 'Icon', 'so-widgets-bundle' ),
 					),
 
 					'icon_color' => array(
 						'type' => 'color',
-						'label' => __('Icon color', 'so-widgets-bundle'),
+						'label' => __( 'Icon color', 'so-widgets-bundle' ),
 					),
 
 					'icon' => array(
 						'type' => 'media',
-						'label' => __('Image icon', 'so-widgets-bundle'),
-						'description' => __('Replaces the icon with your own image icon.', 'so-widgets-bundle'),
+						'label' => __( 'Image icon', 'so-widgets-bundle' ),
+						'description' => __( 'Replaces the icon with your own image icon.', 'so-widgets-bundle' ),
 					),
 
 					'icon_placement' => array(
@@ -146,24 +146,24 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 					),
 					'theme' => array(
 						'type' => 'select',
-						'label' => __('Button theme', 'so-widgets-bundle'),
+						'label' => __( 'Button theme', 'so-widgets-bundle' ),
 						'default' => 'atom',
 						'options' => array(
-							'atom' => __('Atom', 'so-widgets-bundle'),
-							'flat' => __('Flat', 'so-widgets-bundle'),
-							'wire' => __('Wire', 'so-widgets-bundle'),
+							'atom' => __( 'Atom', 'so-widgets-bundle' ),
+							'flat' => __( 'Flat', 'so-widgets-bundle' ),
+							'wire' => __( 'Wire', 'so-widgets-bundle' ),
 						),
 					),
 
 
 					'button_color' => array(
 						'type' => 'color',
-						'label' => __('Button color', 'so-widgets-bundle'),
+						'label' => __( 'Button color', 'so-widgets-bundle' ),
 					),
 
 					'text_color' => array(
 						'type' => 'color',
-						'label' => __('Text color', 'so-widgets-bundle'),
+						'label' => __( 'Text color', 'so-widgets-bundle' ),
 					),
 
 					'hover' => array(
@@ -206,36 +206,36 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 					'font_size' => array(
 						'type' => 'select',
-						'label' => __('Font size', 'so-widgets-bundle'),
+						'label' => __( 'Font size', 'so-widgets-bundle' ),
 						'options' => array(
-							'1' => __('Normal', 'so-widgets-bundle'),
-							'1.15' => __('Medium', 'so-widgets-bundle'),
-							'1.3' => __('Large', 'so-widgets-bundle'),
-							'1.45' => __('Extra large', 'so-widgets-bundle'),
+							'1' => __( 'Normal', 'so-widgets-bundle' ),
+							'1.15' => __( 'Medium', 'so-widgets-bundle' ),
+							'1.3' => __( 'Large', 'so-widgets-bundle' ),
+							'1.45' => __( 'Extra large', 'so-widgets-bundle' ),
 						),
 					),
 
 					'rounding' => array(
 						'type' => 'select',
-						'label' => __('Rounding', 'so-widgets-bundle'),
+						'label' => __( 'Rounding', 'so-widgets-bundle' ),
 						'default' => '0.25',
 						'options' => array(
-							'0' => __('None', 'so-widgets-bundle'),
-							'0.25' => __('Slightly rounded', 'so-widgets-bundle'),
-							'0.5' => __('Very rounded', 'so-widgets-bundle'),
-							'1.5' => __('Completely rounded', 'so-widgets-bundle'),
+							'0' => __( 'None', 'so-widgets-bundle' ),
+							'0.25' => __( 'Slightly rounded', 'so-widgets-bundle' ),
+							'0.5' => __( 'Very rounded', 'so-widgets-bundle' ),
+							'1.5' => __( 'Completely rounded', 'so-widgets-bundle' ),
 						),
 					),
 
 					'padding' => array(
 						'type' => 'select',
-						'label' => __('Padding', 'so-widgets-bundle'),
+						'label' => __( 'Padding', 'so-widgets-bundle' ),
 						'default' => '1',
 						'options' => array(
-							'0.5' => __('Low', 'so-widgets-bundle'),
-							'1' => __('Medium', 'so-widgets-bundle'),
-							'1.4' => __('High', 'so-widgets-bundle'),
-							'1.8' => __('Very high', 'so-widgets-bundle'),
+							'0.5' => __( 'Low', 'so-widgets-bundle' ),
+							'1' => __( 'Medium', 'so-widgets-bundle' ),
+							'1.4' => __( 'High', 'so-widgets-bundle' ),
+							'1.8' => __( 'Very high', 'so-widgets-bundle' ),
 						),
 					),
 
@@ -244,44 +244,44 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 			'attributes' => array(
 				'type' => 'section',
-				'label' => __('Other attributes and SEO', 'so-widgets-bundle'),
+				'label' => __( 'Other attributes and SEO', 'so-widgets-bundle' ),
 				'hide' => true,
 				'fields' => array(
 					'id' => array(
 						'type' => 'text',
-						'label' => __('Button ID', 'so-widgets-bundle'),
-						'description' => __('An ID attribute allows you to target this button in Javascript.', 'so-widgets-bundle'),
+						'label' => __( 'Button ID', 'so-widgets-bundle' ),
+						'description' => __( 'An ID attribute allows you to target this button in Javascript.', 'so-widgets-bundle' ),
 					),
 
 					'classes' => array(
 						'type' => 'text',
-						'label' => __('Button classes', 'so-widgets-bundle'),
-						'description' => __('Additional CSS classes added to the button link.', 'so-widgets-bundle'),
+						'label' => __( 'Button classes', 'so-widgets-bundle' ),
+						'description' => __( 'Additional CSS classes added to the button link.', 'so-widgets-bundle' ),
 					),
 
 					'title' => array(
 						'type' => 'text',
-						'label' => __('Title attribute', 'so-widgets-bundle'),
-						'description' => __('Adds a title attribute to the button link.', 'so-widgets-bundle'),
+						'label' => __( 'Title attribute', 'so-widgets-bundle' ),
+						'description' => __( 'Adds a title attribute to the button link.', 'so-widgets-bundle' ),
 					),
 
 					'onclick' => array(
 						'type' => 'text',
-						'label' => __('Onclick', 'so-widgets-bundle'),
-						'description' => __('Run this Javascript when the button is clicked. Ideal for tracking.', 'so-widgets-bundle'),
+						'label' => __( 'Onclick', 'so-widgets-bundle' ),
+						'description' => __( 'Run this Javascript when the button is clicked. Ideal for tracking.', 'so-widgets-bundle' ),
 					),
 
 					'rel' => array(
 						'type' => 'text',
-						'label' => __('Rel attribute', 'so-widgets-bundle'),
-						'description' => __('Adds a rel attribute to the button link.', 'so-widgets-bundle'),
+						'label' => __( 'Rel attribute', 'so-widgets-bundle' ),
+						'description' => __( 'Adds a rel attribute to the button link.', 'so-widgets-bundle' ),
 					),
 				)
 			),
 		);
 	}
 
-	function get_style_name($instance) {
+	function get_style_name( $instance ) {
 		if(empty($instance['design']['theme'])) return 'atom';
 		return $instance['design']['theme'];
 	}
@@ -338,7 +338,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		}
 
 		$icon_image_url = '';
-		if( ! empty( $instance['button_icon']['icon'] ) ) {
+		if ( ! empty( $instance['button_icon']['icon'] ) ) {
 			$attachment = wp_get_attachment_image_src( $instance['button_icon']['icon'] );
 
 			if ( ! empty( $attachment ) ) {
@@ -348,7 +348,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 		return array(
 			'button_attributes' => $button_attributes,
-			'href' => !empty( $instance['url'] ) ? $instance['url'] : '#',
+			'href' => ! empty( $instance['url'] ) ? $instance['url'] : '#',
 			'onclick' => ! empty( $attributes['onclick'] ) ? $attributes['onclick'] : '',
 			'align' => $instance['design']['align'],
 			'icon_image_url' => $icon_image_url,
@@ -365,8 +365,8 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	 *
 	 * @return array
 	 */
-	function get_less_variables($instance){
-		if( empty( $instance ) || empty( $instance['design'] ) ) return array();
+	function get_less_variables( $instance ) {
+		if ( empty( $instance ) || empty( $instance['design'] ) ) return array();
 
 		$text_color = isset( $instance['design']['text_color'] ) ? $instance['design']['text_color'] : '';
 		$button_color = isset( $instance['design']['button_color'] ) ? $instance['design']['button_color'] : '';
@@ -390,7 +390,8 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			$font = siteorigin_widget_get_font( $instance['design']['font'] );
 			$less_vars['button_font'] = $font['family'];
 			if ( ! empty( $font['weight'] ) ) {
-				$less_vars['button_font_weight'] = $font['weight'];
+				$less_vars['button_font_weight'] = $font['weight_raw'];
+				$less_vars['button_font_style'] = $font['style'];
 			}
 		}
 		return $less_vars;

@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: SiteOrigin Widgets Bundle
-Description: A collection of all widgets, neatly bundled into a single plugin. It's also a framework to code your own widgets on top of.
+Description: A highly customizable collection of widgets, ready to be used anywhere, neatly bundled into a single plugin.
 Version: dev
 Text Domain: so-widgets-bundle
 Domain Path: /lang

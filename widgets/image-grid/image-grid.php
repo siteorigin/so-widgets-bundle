@@ -134,6 +134,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 					'alignment_vertical' => array(
 						'type' => 'select',
 						'label' => __( 'Image vertical alignment', 'so-widgets-bundle' ),
+						'description' => __( 'Applied if image heights differ.', 'so-widgets-bundle' ),
 						'default' => 'end',
 						'options' => array(
 							'flex-start' => __( 'Top', 'so-widgets-bundle' ),

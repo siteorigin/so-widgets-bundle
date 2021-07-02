@@ -9,17 +9,17 @@ License: GPLv3 or later
 Contributors: gpriday, braam-genis, alexgso
 Donate link: https://siteorigin.com/downloads/premium/
 
-The SiteOrigin Widgets Bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colors, and 1500+ icons.
+The SiteOrigin Widgets Bundle gives you all the elements you need to build modern, responsive, and engaging website pages. Using the Widgets Bundle, you can quickly and effortlessly add buttons, sliders, heroes, maps, images, carousels, features, icons, and so much more.
 
 == Description ==
 
-The SiteOrigin Widgets Bundle gives you a collection of widgets that you can use and customize. All the widgets are built on our powerful framework, giving you advanced forms, unlimited colors, and 1500+ icons.
+The SiteOrigin Widgets Bundle gives you all the elements you need to build modern, responsive, and engaging website pages. Using the Widgets Bundle, you can quickly and effortlessly add buttons, sliders, heroes, maps, images, carousels, features, icons, and so much more.
 
-Widgets are great, no matter where you're using them. In [Page Builder](https://siteorigin.com/page-builder/), in the Block Editor using the SiteOrigin Layout Block or SiteOrigin Widget Block or in your theme's widget areas. The Widgets Bundle is even compatible with other popular page-building plugins.
+SiteOrigin Widgets are ready to be used **anywhere**, in [Page Builder by SiteOrigin](https://siteorigin.com/page-builder/), in the Block Editor or your theme's widget areas. The Widgets Bundle is even compatible with other popular page-building plugins.
 
 [vimeo https://vimeo.com/102103379]
 
-The collection is growing, but here's what we have so far:
+Our collection is growing; here's what we have so far:
 
 - **Accordion:** Squeeze a lot of content into a small space.
 - **Button:** A simple button widget with a variety of styling options.
@@ -44,7 +44,32 @@ The collection is growing, but here's what we have so far:
 - **Testimonials:** Share your product or service testimonials in a variety of different layouts.
 - **Video:** Play your self or externally hosted videos in a customizable player.
 
-Once you enable a widget, you'll be able to use it in Page Builder, the Block Editor using the SiteOrigin Layout Block or SiteOrigin Widget Block, or in any theme widget area. You can manage your widgets by going to Plugins > SiteOrigin Widgets in WordPress.
+= Ready to Be Used Anywhere =
+
+- **Page Builder by SiteOrigin:** Insert widgets in Page Builder by SiteOrigin in either the Classic Editor or Page Builder Layout Block in the Block Editor.
+- **Block Editor:** The Widgets Bundle is 100% Block Editor compatible. Insert widgets using the SiteOrigin Widgets Block featuring a live widget search form.
+- **Theme and Plugin Widget Areas:** Insert widgets in any theme or plugin widget area.
+- **In Other Popular Page Builder Plugins:** Insert widgets in Elementor or Beaver Builder.
+
+= Built for Speed =
+
+We carefully built each widget for the best possible page size and load time. The Widgets Bundle is perfectly compatible with [Autoptimize](https://wordpress.org/plugins/autoptimize/) and all other major performance plugins.
+
+= SEO Optimized =
+
+The Widgets Bundle uses modern SEO best practices and seamlessly integrates with all major SEO plugins.
+
+= Accessibility Ready =
+
+The Widgets Bundle is accessibility-ready. Tab through all form fields and settings, make changes without using a mouse.
+
+= Actively Developed =
+
+SiteOrigin has been creating magical tools for your WordPress website since 2011. We actively develop the Widgets Bundle with updates released several times a month, including new features and fixes as required. View our Widgets Bundle work on [GitHub](https://github.com/siteorigin/so-widgets-bundle).
+
+= Create Custom Widgets =
+
+Access a huge array of features and save time by developing custom widgets for your theme or plugin on the Widgets Bundle Framework. Read more in our extensive [developer documentation](https://siteorigin.com/docs/widgets-bundle/).
 
 == Documentation ==
 
@@ -52,29 +77,41 @@ Once you enable a widget, you'll be able to use it in Page Builder, the Block Ed
 
 == Support ==
 
-Free support is available on the [SiteOrigin support forums](https://siteorigin.com/thread/). Email support is available for [SiteOrigin Premium](https://siteorigin.com/downloads/premium/) users.
-
-== Accessibility Ready ==
-
-The Widgets Bundle is accessibility ready. Tab through all form fields and settings, make changes without using a mouse.
+Free support is available on the [SiteOrigin support forums](https://siteorigin.com/thread/).
 
 == SiteOrigin Premium ==
 
-[SiteOrigin Premium](https://siteorigin.com/downloads/premium/) enhances the Widgets Bundle with a vast array of additional features and settings. Take your layouts to the next level.
+[SiteOrigin Premium](https://siteorigin.com/downloads/premium/) enhances the Widgets Bundle with a vast array of additional features and settings. Take your layouts to the next level with SiteOrigin Premium addons.
 
-SiteOrigin Premium also includes access to our next-level email support service, perfect for those times when you need fast and effective technical support.
-
-= Create Custom Widgets =
-
-The SiteOrigin Widgets Bundle is the perfect platform to build widgets for your theme or plugin. Read more in our [developer docs](https://siteorigin.com/docs/widgets-bundle/).
+SiteOrigin Premium includes access to our professional email support service, perfect for those times when you need fast and effective technical support. We're standing by to assist you in any way we can.
 
 == Screenshots ==
 
-1. Manage which widgets you want enabled or disabled.
-2. The button widget shows the clean, standard interface all the widgets use.
-3. An example of the button widget.
+1. Manage which widgets you want to be enabled or disabled.
+2. The Button Widget shows the clean, standard interface all the widgets use.
+3. An example of the Button Widget.
+
+== Frequently Asked Questions ==
+
+= The widget I'd like to add isn't available; where can I enable it? =
+
+The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets. Widgets can be enabled or disabled as needed. If a widget offers global settings, you can access those via the Settings button next to each applicable widget.
 
 == Changelog ==
+
+= 1.21.0 - 24 June 2021 =
+* Google Maps: Prevented a jump on load when Info Windows is set to always display.
+* Google Fonts: Ensured all weights and styles are imported.
+* Headline: Changed default heading to `h2`.
+* Hero: Removed the button alignment setting, alignment is handled directly within each slide frame.
+* Image: Added a `Link title to URL` setting.
+* Image Grid: Added `Image vertical alignment` and `Grid horizontal alignment` settings.
+* Post Selector: Added an option to adjust the taxonomy relationship.
+* Sliders: Prevented potential PHP 8 error with overlay attribute filter.
+* Developer: Added an optional title to the multiple media form field.
+* Developer: Improved multiple media non-image support.
+* Developer: Added an optional `image_dimensions` parameter for the multiple media field.
+* Developer: Added a repeater increment label option.
 
 = 1.20.0 - 01 June 2021 =
 * Added integration for WP Super Cache and Swift Performance plugins.
