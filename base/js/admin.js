@@ -1410,7 +1410,7 @@ var sowbForms = window.sowbForms || {};
 		}, 200);
 	});
 	var $body = $( 'body' );
-	// Setup new widgets when they're added in the customizer or new Widgets interface
+	// Setup new widgets when they're added in the Customizer or new widgets interface.
 	$( document ).on( 'widget-added', function( e, widget ) {
 		console.log(widget.find( '.siteorigin-widget-form' ));
 		widget.find( '.siteorigin-widget-form' ).sowSetupForm();
