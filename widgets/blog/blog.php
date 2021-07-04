@@ -99,9 +99,18 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_template_variables( $instance, $args ) {
+		$posts = new WP_Query(
+			wp_parse_args(
+				array(
+					'paged' => (int) get_query_var( 'paged' )
+				),
+				siteorigin_widget_post_selector_process_query( $instance['posts'] )
+			)
+		);
+
 		return array(
 			'settings' => $instance['settings'],
-			'posts' => new WP_Query( siteorigin_widget_post_selector_process_query( $instance['posts'] ) ),
+			'posts' => $posts,
 		);
 	}
 
@@ -196,6 +205,15 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			</footer>
 			<?php
 		}
+	}
+
+	function paginate_links( $settings, $posts ) {
+		echo paginate_links( array(
+		    'base' => str_replace( PHP_INT_MAX, '%#%', esc_url( get_pagenum_link( PHP_INT_MAX ) ) ),
+		    'format' => '?paged=%#%',
+		    'current' => max( 1, get_query_var( 'paged' ) ),
+		    'total' => $posts->max_num_pages,
+		) );
 	}
 }
 

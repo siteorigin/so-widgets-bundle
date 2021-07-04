@@ -29,6 +29,7 @@
 				<?php $this->post_footer( $settings ); ?>
 			</article>
 		<?php endwhile; ?>
+		<?php $this->paginate_links( $settings, $posts ); ?>
 	</div>
-	<?php endif; ?>
+<?php endif; ?>
 <?php wp_reset_postdata(); ?>
