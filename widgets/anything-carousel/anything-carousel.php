@@ -273,6 +273,18 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 	function render_item_content( $item, $instance ) {
 		echo apply_filters( 'siteorigin_widgets_anything_carousel_render_item_content', $item['content_text'], $item, $instance );
 	}
+
+	function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
+
+		return sprintf(
+			__( 'Gain the ability to use widgets and layouts in your carousel items with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/anything-carousel" target="_blank" rel="noopener noreferrer">',
+			'</a>'
+		);
+	}
 }
 
 siteorigin_widget_register( 'sow-anything-carousel', __FILE__, 'SiteOrigin_Widget_Anything_Carousel_Widget' );
