@@ -67,10 +67,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 						'type' => 'checkbox',
 						'label' => __( 'Post categories', 'so-widgets-bundle' ),
 					),
-					'tags' => array(
-						'type' => 'checkbox',
-						'label' => __( 'Post tags', 'so-widgets-bundle' ),
-					),
 					'comment_count' => array(
 						'type' => 'checkbox',
 						'label' => __( 'Post comment count', 'so-widgets-bundle' ),
@@ -196,19 +192,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		}
 
 		echo '<p>' . wp_kses_post( $excerpt ) . '</p>';
-	}
-
-	// Generates the post footer.
-	function post_footer( $settings ) {
-		if ( $settings['tags'] && has_tag() ) {
-			?>
-			<footer class="entry-footer">
-				<span class="tags-links">
-					<?php the_tags(); ?>
-				</span>
-			</footer>
-			<?php
-		}
 	}
 
 	function paginate_links( $settings, $posts ) {

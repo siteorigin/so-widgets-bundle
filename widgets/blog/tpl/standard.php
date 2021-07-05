@@ -27,7 +27,6 @@
 						}
 					?>
 				</div>
-				<?php $this->post_footer( $settings ); ?>
 			</article>
 		<?php endwhile; ?>
 		<?php $this->paginate_links( $settings, $posts ); ?>
