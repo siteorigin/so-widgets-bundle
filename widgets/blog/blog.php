@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			'sow-blog',
 			__( 'SiteOrigin Blog', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Placeholder', 'so-widgets-bundle' ),
+				'description' => __( 'Display blog posts in a list or grid. Choose a design that suits your content.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/blog-widget/',
 				'panels_title' => false,
 			),
