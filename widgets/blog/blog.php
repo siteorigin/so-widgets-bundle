@@ -25,6 +25,9 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 	function get_widget_form() {
 		return array(
+				'type' => 'text',
+				'label' => __( 'Title', 'so-widgets-bundle' ),
+			),
 			'settings' => array(
 				'type' => 'section',
 				'label' => __( 'Settings', 'so-widgets-bundle' ),
@@ -109,6 +112,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		);
 
 		return array(
+			'title' => $instance['title'],
 			'settings' => $instance['settings'],
 			'posts' => $posts,
 		);

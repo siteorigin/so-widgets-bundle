@@ -1,4 +1,5 @@
 <?php if ( ! empty( $posts ) && $posts->have_posts() ) : ?>
+	<?php if ( ! empty( $instance['title'] ) ) echo $args['before_title'] . $instance['title'] . $args['after_title'] ?>
 	<div class="sow-blog sow-blog-layout-standard sow-blog-columns-<?php echo esc_attr( $settings['column-count'] ); ?>">
 		<?php while( $posts->have_posts() ) : $posts->the_post(); ?>
 			<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
