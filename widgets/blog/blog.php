@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Blog
-Description: Placeholder
+Description: Display blog posts in a list or grid. Choose a design that suits your content.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/blog-widget/
