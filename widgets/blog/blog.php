@@ -32,7 +32,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				'fields' => array(
 					'columns' => array(
 						'type' => 'number',
-						'label' => __( 'Columns count', 'so-widgets-bundle' ),
+						'label' => __( 'Column count', 'so-widgets-bundle' ),
 					),
 					'featured_image' => array(
 						'type' => 'checkbox',
