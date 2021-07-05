@@ -209,10 +209,10 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 	function paginate_links( $settings, $posts ) {
 		echo paginate_links( array(
-		    'base' => str_replace( PHP_INT_MAX, '%#%', esc_url( get_pagenum_link( PHP_INT_MAX ) ) ),
-		    'format' => '?paged=%#%',
-		    'current' => max( 1, get_query_var( 'paged' ) ),
-		    'total' => $posts->max_num_pages,
+			'base' => str_replace( PHP_INT_MAX, '%#%', esc_url( get_pagenum_link( PHP_INT_MAX ) ) ),
+			'format' => '?paged=%#%',
+			'current' => max( 1, get_query_var( 'paged' ) ),
+			'total' => $posts->max_num_pages,
 		) );
 	}
 }
