@@ -1350,4 +1350,71 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		return $values;
 	}
+
+	// Add state_handler for fields based on how they're adjusted by preset data.
+	protected function dynamic_preset_state_handler( $state_name, $preset_data, $fields ) {
+		// Build an array of all the adjusted fields by the preset data, and note which presets adjust them.
+		$adjusted_fields = array();
+		foreach ( $preset_data as $preset_id => $preset ) {
+			$adjusted_fields = array_merge_recursive(
+				$this->dynamic_preset_extract_fields(
+					$preset['values'],
+					$preset_id
+				),
+				$adjusted_fields
+			);
+		}
+
+		// Apply state handlers to fields.
+		return $this->dynamic_preset_state_handler_section(
+			$state_name,
+			$adjusted_fields,
+			$fields
+		);
+	}
+
+	// Build an array of all the adjusted fields by the preset data, and note which presets adjust them.
+	private function dynamic_preset_extract_fields( $fields, $preset_id ) {
+		$extracted_fields = array();
+		foreach ( $fields as $field_key => $field ) {
+			// Does this field have sub fields?
+			if ( is_array( $field ) ) {
+				$extracted_fields[ $field_key ] = $this->dynamic_preset_extract_fields( $field, $preset_id );
+			} else {
+				$extracted_fields[ $field_key ][] = $preset_id;
+			}
+		}
+
+		return $extracted_fields;
+	}
+
+	// Apply state handlers to fields.
+	private function dynamic_preset_state_handler_section( $state_name, $adjusted_fields, $fields ) {
+		foreach ( $adjusted_fields as $field => $field_value ) {
+			// Skip field if it's not adjusted by of the presets, or if the field has a state_handler already.
+			if (
+				! isset( $fields[ $field ] ) ||
+				isset( $fields[ $field ]['state_handler'] )
+			) {
+				continue;
+			}
+
+			// If this is a section field, we need to apply the state handlers for sub fields.
+			if ( $fields[ $field ]['type'] == 'section' ) {
+				$fields[ $field ]['fields'] = $this->dynamic_preset_state_handler_section(
+					$state_name,
+					$field_value,
+					$fields[ $field ]['fields']
+				);
+			} else {
+				$used_by = implode( ',', $field_value ); 
+				$fields[ $field ]['state_handler'] = array(
+					$state_name . '[' . $used_by . ']' => array( 'show' ),
+						'_else[' . $state_name . ']' => array( 'hide' ),
+				);
+			}
+		}
+
+		return $fields;
+	}
 }
