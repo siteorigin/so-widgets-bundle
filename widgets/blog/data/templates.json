@@ -1,0 +1,34 @@
+{
+	"standard": {
+		"label": "Standard",
+		"values": {}
+	},
+	"grid": {
+		"label": "Grid",
+		"values": {
+			"settings": {
+				"columns": 2
+			}
+		}
+	},
+	"offset": {
+		"label": "Offset",
+		"values": {}
+	},
+	"alternate": {
+		"label": "Alternate",
+		"values": {}
+	},
+	"masonry": {
+		"label": "Masonry",
+		"values": {}
+	},
+	"portfolio": {
+		"label": "portfolio",
+		"values": {
+			"settings": {
+				"columns": 3
+			}
+		}
+	}
+}

@@ -24,61 +24,78 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_widget_form() {
-		return array(
-				'type' => 'text',
-				'label' => __( 'Title', 'so-widgets-bundle' ),
-			),
-			'settings' => array(
-				'type' => 'section',
-				'label' => __( 'Settings', 'so-widgets-bundle' ),
-				'hide' => true,
-				'fields' => array(
-					'columns' => array(
-						'type' => 'number',
-						'label' => __( 'Column count', 'so-widgets-bundle' ),
-					),
-					'featured_image' => array(
-						'type' => 'checkbox',
-						'label' => __( 'Featured image', 'so-widgets-bundle' ),
-					),
-					'content' => array(
-						'type' => 'select',
-						'label' => __( 'Post content ', 'so-widgets-bundle' ),
-						'description' => __( 'Choose how to display your post content. Select Full Post Content if using the "more" quicktag.', 'so-widgets-bundle' ),
-						'options' => array(
-							'excerpt' => __( 'Post Excerpt', 'so-widgets-bundle' ),
-							'full' => __( 'Full Post Content', 'so-widgets-bundle' ),
-						),
-					),
-					'read_more' => array(
-						'type' => 'checkbox',
-						'label' => __( 'Post excerpt read more link', 'so-widgets-bundle' ),
-						'description' => __( 'Display the Read More link below the post excerpt.', 'so-widgets-bundle' ),
-					),
-					'date' => array(
-						'type' => 'checkbox',
-						'label' => __( 'Post date', 'so-widgets-bundle' ),
-					),
-					'author' => array(
-						'type' => 'checkbox',
-						'label' => __( 'Post author', 'so-widgets-bundle' ),
-					),
-					'categories' => array(
-						'type' => 'checkbox',
-						'label' => __( 'Post categories', 'so-widgets-bundle' ),
-					),
-					'comment_count' => array(
-						'type' => 'checkbox',
-						'label' => __( 'Post comment count', 'so-widgets-bundle' ),
+		$templates = apply_filters( 'siteorigin_widgets_blog_templates', json_decode( file_get_contents( plugin_dir_path( __FILE__ ) . 'data/templates.json' ), true ) );
+
+		return $this->dynamic_preset_state_handler(
+			'active_template',
+			$templates,
+			array(
+				'title' => array(
+					'type' => 'text',
+					'label' => __( 'Title', 'so-widgets-bundle' ),
+				),
+				'preset' => array(
+					'type' => 'presets',
+					'label' => __( 'Template', 'so-widgets-bundle'),
+					'default_preset' => 'standard',
+					'options' => $templates,
+					'state_emitter' => array(
+						'callback' => 'select',
+						'args' => array( 'active_template' ),
 					),
 				),
-			),
+				'settings' => array(
+					'type' => 'section',
+					'label' => __( 'Settings', 'so-widgets-bundle' ),
+					'hide' => true,
+					'fields' => array(
+						'columns' => array(
+							'type' => 'number',
+							'label' => __( 'Column count', 'so-widgets-bundle' ),
+						),
+						'featured_image' => array(
+							'type' => 'checkbox',
+							'label' => __( 'Featured image', 'so-widgets-bundle' ),
+						),
+						'content' => array(
+							'type' => 'select',
+							'label' => __( 'Post content ', 'so-widgets-bundle' ),
+							'description' => __( 'Choose how to display your post content. Select Full Post Content if using the "more" quicktag.', 'so-widgets-bundle' ),
+							'options' => array(
+								'excerpt' => __( 'Post Excerpt', 'so-widgets-bundle' ),
+								'full' => __( 'Full Post Content', 'so-widgets-bundle' ),
+							),
+						),
+						'read_more' => array(
+							'type' => 'checkbox',
+							'label' => __( 'Post excerpt read more link', 'so-widgets-bundle' ),
+							'description' => __( 'Display the Read More link below the post excerpt.', 'so-widgets-bundle' ),
+						),
+						'date' => array(
+							'type' => 'checkbox',
+							'label' => __( 'Post date', 'so-widgets-bundle' ),
+						),
+						'author' => array(
+							'type' => 'checkbox',
+							'label' => __( 'Post author', 'so-widgets-bundle' ),
+						),
+						'categories' => array(
+							'type' => 'checkbox',
+							'label' => __( 'Post categories', 'so-widgets-bundle' ),
+						),
+						'comment_count' => array(
+							'type' => 'checkbox',
+							'label' => __( 'Post comment count', 'so-widgets-bundle' ),
+						),
+					),
+				),
 
-			'posts' => array(
-				'type' => 'posts',
-				'label' => __( 'Posts query', 'so-widgets-bundle' ),
-				'hide' => true,
-			),
+				'posts' => array(
+					'type' => 'posts',
+					'label' => __( 'Posts query', 'so-widgets-bundle' ),
+					'hide' => true,
+				),
+			)
 		);
 	}
 
