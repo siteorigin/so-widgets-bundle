@@ -239,12 +239,23 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	function paginate_links( $settings, $posts ) {
-		echo paginate_links( array(
+		$pagination = paginate_links( array(
 			'base' => str_replace( PHP_INT_MAX, '%#%', esc_url( get_pagenum_link( PHP_INT_MAX ) ) ),
 			'format' => '?paged=%#%',
 			'current' => max( 1, get_query_var( 'paged' ) ),
 			'total' => $posts->max_num_pages,
 		) );
+
+		if ( ! empty( $pagination ) ) {
+			?>
+			<nav class="sow-post-navigation">
+				<h2 class="screen-reader-text"><?php esc_html_e( 'Post navigation', 'so-widgets-bundle' ); ?></h2>
+				<div class="nav-links">
+					<?php echo $pagination; ?>
+				</div>
+			</nav>
+			<?php
+		}
 	}
 }
 
