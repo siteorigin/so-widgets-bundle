@@ -23,6 +23,17 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	function initialize() {
+		$this->register_frontend_styles(
+			array(
+				array(
+					'sow-blog',
+					plugin_dir_url( __FILE__ ) . 'css/style.css',
+				),
+			)
+		);
+	}
+
 	function get_widget_form() {
 		$templates = apply_filters( 'siteorigin_widgets_blog_templates', json_decode( file_get_contents( plugin_dir_path( __FILE__ ) . 'data/templates.json' ), true ) );
 
