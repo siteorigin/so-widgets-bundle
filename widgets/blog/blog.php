@@ -99,6 +99,17 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	function get_settings_form() {
+		return array(
+			'responsive_breakpoint' => array(
+				'type'        => 'measurement',
+				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
+				'default'     => '480px',
+				'description' => __( 'This setting controls when the columns will collapse.', 'so-widgets-bundle' )
+			)
+		);
+	}
+
 	function get_template_name( $instance ) {
 		return $this->get_style_name( $instance );
 	}
@@ -111,7 +122,11 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		if ( empty( $instance ) ) {
 			return array();
 		}
-		return array();
+
+		$columns = (int) $instance['settings']['columns'] > 0 ? (int) $instance['settings']['columns'] : 1;
+		return array(
+			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
+		);
 	}
 
 	public function get_template_variables( $instance, $args ) {
