@@ -1,0 +1,28 @@
+@column_width: 50%;
+@responsive_breakpoint: 480px;
+
+.sow-blog-layout-grid article {
+	background: #fff;
+	border: 1px solid #e6e6e6;
+	width: @column_width;
+	width: calc(@column_width - 2%);
+
+	@media (max-width: @responsive_breakpoint) {
+		width: 100%;
+	}
+
+	.entry-header .entry-title {
+		font-size: 16px;
+		a {
+			color: #2d2d2d;
+			&:hover,
+			&:focus {
+				color: #626262;
+			}
+		}
+	}
+
+	.entry-content {
+		font-size: 14px;
+	}
+}

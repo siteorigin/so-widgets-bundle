@@ -45,7 +45,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 					'type' => 'text',
 					'label' => __( 'Title', 'so-widgets-bundle' ),
 				),
-				'preset' => array(
+				'template' => array(
 					'type' => 'presets',
 					'label' => __( 'Template', 'so-widgets-bundle'),
 					'default_preset' => 'standard',
@@ -137,6 +137,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		$columns = (int) $instance['settings']['columns'] > 0 ? (int) $instance['settings']['columns'] : 1;
 		return array(
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
+			'column_width' => 100 / $columns . '%',
 		);
 	}
 
