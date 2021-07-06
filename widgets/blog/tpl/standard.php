@@ -1,10 +1,10 @@
 <?php if ( ! empty( $posts ) && $posts->have_posts() ) : ?>
 	<?php if ( ! empty( $instance['title'] ) ) echo $args['before_title'] . $instance['title'] . $args['after_title'] ?>
-	<div class="sow-blog sow-blog-layout-standard sow-blog-columns-<?php echo esc_attr( $settings['column-count'] ); ?>">
+	<div class="sow-blog sow-blog-layout-standard">
 		<?php while( $posts->have_posts() ) : $posts->the_post(); ?>
 			<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-				<div class="sow-blog-header-container">
-					<?php $this->post_featured_image( $settings ); ?>
+				<?php $this->post_featured_image( $settings ); ?>
+				<div class="sow-blog-content-wrapper">
 					<header class="entry-header">
 						<?php
 						the_title(
@@ -16,20 +16,20 @@
 							<?php $this->post_meta( $settings ); ?>
 						</div>
 					</header>
-				</div>
 
-				<div class="entry-content">
-					<?php
-						if ( $settings['content'] == 'full' ) {
-							the_content();
-						} else {
-							$this->generate_excerpt( $settings );
-						}
-					?>
+					<div class="entry-content">
+						<?php
+							if ( $settings['content'] == 'full' ) {
+								the_content();
+							} else {
+								$this->generate_excerpt( $settings );
+							}
+						?>
+					</div>
 				</div>
 			</article>
 		<?php endwhile; ?>
-		<?php $this->paginate_links( $settings, $posts ); ?>
 	</div>
+	<?php $this->paginate_links( $settings, $posts ); ?>
 <?php endif; ?>
 <?php wp_reset_postdata(); ?>

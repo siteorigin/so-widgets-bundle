@@ -185,7 +185,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 		<?php if ( $settings['categories'] ) : ?>
 			<span class="entry-categories">
-				<span class="meta-text"><?php esc_html_e( 'Posted in', 'so-widgets-bundle' ); ?></span>
 				<?php
 				/* translators: used between list items, there is a space after the comma */
 				the_category( esc_html__( ', ', 'so-widgets-bundle' ) );
