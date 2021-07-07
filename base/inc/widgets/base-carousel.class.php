@@ -37,12 +37,20 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 
 	}
 
-	// Allow widgets to override settings.
+	/**
+	 * Allow widgets to override settings.
+	 *
+	 * @return array If overridden, an array is expected.
+	 */
 	function override_carousel_settings() {
 		// Intentionally left blank.
 	}
 
-	// Handle carousel specific settings and defaults.
+	/**
+	 * Handle carousel specific settings and defaults.
+	 *
+	 * @return array
+	 */
 	private function get_carousel_settings() {
 		return wp_parse_args(
 			$this->override_carousel_settings(),
@@ -66,6 +74,14 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		);
 	}
 
+	/**
+	 * Utility method for adding section groups.
+	 *
+	 * @param array Field data
+	 * @param string Whether the field is a placeholder or standard field. This controls whether the field data is stored by default.
+	 *
+	 * @return array The structured section group.
+	 */
 	private function add_section_group( $field, $value_type ) {		
 		$carousel_settings = $this->get_carousel_settings();
 
@@ -88,7 +104,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 					$carousel_settings['slides_to_scroll_text']['description'],
 					strtolower( $field['label'] )
 				),
-				$value_type =>  $field['value'],
+				$value_type => $field['value'],
 			);
 
 			if ( isset( $field['breakpoint'] ) ) {
