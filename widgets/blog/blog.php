@@ -123,6 +123,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	function register_template_styles() {
+		wp_register_style( 'sow-blog-template-offset', plugin_dir_url( __FILE__ ) . 'css/offset.css' );
 		do_action( 'siteorigin_widgets_blog_template_stylesheets' );
 	}
 
@@ -150,6 +151,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		return array(
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 			'column_width' => 100 / $columns . '%',
+			'author' => $instance['settings']['author'],
 		);
 	}
 
@@ -165,6 +167,27 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 		// Add template specific settings.
 		$template_settings = array();
+		if ( $instance['template'] == 'offset' ) {
+			if ( $instance['settings']['date'] ) {
+				if ( get_the_time( 'U' ) !== get_the_modified_time( 'U' ) ) {
+					$time_string = '<time class="entry-date published" datetime="%1$s">%2$s</time><time class="updated" datetime="%3$s">%4$s</time>';
+				} else {
+					$time_string = '<time class="entry-date published updated" datetime="%1$s">%2$s</time>';
+				}
+				$time_string = sprintf( $time_string,
+					esc_attr( get_the_date( DATE_W3C ) ),
+					esc_html( get_the_date() ),
+					esc_attr( get_the_modified_date( DATE_W3C ) ),
+					esc_html( get_the_modified_date() )
+				);
+				$template_settings['posted_on'] = sprintf(
+					/* translators: %s: post date. */
+					esc_html_x( 'Posted on %s', 'post date', 'so-widgets-bundle' ),
+					'<a href="' . esc_url( get_permalink() ) . '" rel="bookmark">' . $time_string . '</a>'
+				);
+			}
+		}
+
 		return array(
 			'title' => $instance['title'],
 			'settings' => $instance['settings'],
