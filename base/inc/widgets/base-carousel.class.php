@@ -77,8 +77,8 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 	/**
 	 * Utility method for adding section groups.
 	 *
-	 * @param array Field data
-	 * @param string Whether the field is a placeholder or standard field. This controls whether the field data is stored by default.
+	 * @param array $field Field data
+	 * @param string $value_type Whether the field is a placeholder or standard field. This controls whether the field data is stored by default.
 	 *
 	 * @return array The structured section group.
 	 */
