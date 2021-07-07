@@ -1351,7 +1351,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		return $values;
 	}
 
-	// Add state_handler for fields based on how they're adjusted by preset data.
+	/**
+	 * Add state_handler for fields based on how they're adjusted by preset data.
+	 *
+	 * @param string $state_name
+	 * @param array $preset_data
+	 * @param array $fields The fields to apply state handlers too.
+	 *
+	 * @return array $fields with any state_handler's applied.
+	 */
 	protected function dynamic_preset_state_handler( $state_name, $preset_data, $fields ) {
 		// Build an array of all the adjusted fields by the preset data, and note which presets adjust them.
 		$adjusted_fields = array();
@@ -1366,14 +1374,21 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		// Apply state handlers to fields.
-		return $this->dynamic_preset_state_handler_section(
+		return $this->dynamic_preset_add_state_handler(
 			$state_name,
 			$adjusted_fields,
 			$fields
 		);
 	}
 
-	// Build an array of all the adjusted fields by the preset data, and note which presets adjust them.
+	/**
+	 * Build an array of all of fields adjusted by the preset data, and note which presets adjust them.
+	 *
+	 * @param array $fields The fields to extract preset usage from.
+	 * @param array $preset_id
+	 *
+	 * @return array An array containing extracted fields.
+	 */
 	private function dynamic_preset_extract_fields( $fields, $preset_id ) {
 		$extracted_fields = array();
 		foreach ( $fields as $field_key => $field ) {
@@ -1388,8 +1403,17 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		return $extracted_fields;
 	}
 
-	// Apply state handlers to fields.
-	private function dynamic_preset_state_handler_section( $state_name, $adjusted_fields, $fields ) {
+
+	/**
+	 * Add state_handler to fields based on preset adjusted fields.
+	 *
+	 * @param string $state_name
+	 * @param array $preset_adjusted_fields
+	 * @param array $fields The fields to apply state handlers too.
+	 *
+	 * @return array $fields with any state_handler's applied.
+	 */
+	private function dynamic_preset_add_state_handler( $state_name, $adjusted_fields, $fields ) {
 		foreach ( $adjusted_fields as $field => $field_value ) {
 			// Skip field if it's not adjusted by of the presets, or if the field has a state_handler already.
 			if (
@@ -1401,7 +1425,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			// If this is a section field, we need to apply the state handlers for sub fields.
 			if ( $fields[ $field ]['type'] == 'section' ) {
-				$fields[ $field ]['fields'] = $this->dynamic_preset_state_handler_section(
+				$fields[ $field ]['fields'] = $this->dynamic_preset_add_state_handler(
 					$state_name,
 					$field_value,
 					$fields[ $field ]['fields']
