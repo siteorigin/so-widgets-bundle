@@ -163,9 +163,12 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			)
 		);
 
+		// Add template specific settings.
+		$template_settings = array();
 		return array(
 			'title' => $instance['title'],
 			'settings' => $instance['settings'],
+			'template_settings' => apply_filters( 'siteorigin_widgets_blog_template_settings', $template_settings, $instance ),
 			'posts' => $posts,
 		);
 	}
