@@ -116,7 +116,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			'responsive_breakpoint' => array(
 				'type'        => 'measurement',
 				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
-				'default'     => '480px',
+				'default'     => '780px',
 				'description' => __( 'This setting controls when the columns will collapse.', 'so-widgets-bundle' )
 			)
 		);
