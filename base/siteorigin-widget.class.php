@@ -300,11 +300,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			//Ensure styles aren't generated and enqueued more than once.
 			$in_preview = $this->is_preview( $instance ) || ( isset( $_POST['action'] ) &&  $_POST['action'] == 'so_widgets_preview' );
 			if ( ! in_array( $css_name, $this->generated_css ) || $in_preview ) {
-				if( $in_preview ) {
+				if ( $in_preview || ( defined( 'SITEORIGIN_WIDGETS_DEBUG' ) && SITEORIGIN_WIDGETS_DEBUG ) ) {
 					siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
-				}
-				else {
-					if( !file_exists( $upload_dir['basedir'] . '/siteorigin-widgets/' . $css_name .'.css' ) || ( defined('SITEORIGIN_WIDGETS_DEBUG') && SITEORIGIN_WIDGETS_DEBUG ) ) {
+				} else {
+					if ( ! file_exists( $upload_dir['basedir'] . '/siteorigin-widgets/' . $css_name .'.css' ) ) {
 						// Attempt to recreate the CSS
 						$this->save_css( $instance );
 					}
@@ -316,8 +315,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 								set_url_scheme($upload_dir['baseurl'] . '/siteorigin-widgets/' . $css_name .'.css')
 							);
 						}
-					}
-					else {
+					} else {
 						// Fall back to using inline CSS if we can't find the cached CSS file.
 						// Try get the cached value.
 						$css = wp_cache_get( $css_name, 'siteorigin_widgets' );
@@ -904,7 +902,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				}
 			}
 			catch ( Exception $e ) {
-				if( defined( 'SITEORIGIN_WIDGETS_DEBUG' ) && SITEORIGIN_WIDGETS_DEBUG ) {
+				if ( defined( 'SITEORIGIN_WIDGETS_DEBUG' ) && SITEORIGIN_WIDGETS_DEBUG ) {
 					throw $e;
 				}
 			}
