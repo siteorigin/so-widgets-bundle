@@ -32,6 +32,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				),
 			)
 		);
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_template_styles' ) );
 	}
 
 	function get_widget_form() {
@@ -121,12 +122,23 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	function register_template_styles() {
+		do_action( 'siteorigin_widgets_blog_template_stylesheets' );
+	}
+
 	function get_template_name( $instance ) {
 		return $this->get_style_name( $instance );
 	}
 
 	function get_style_name( $instance ) {
-		return empty( $instance['template'] ) ? 'standard' : $instance['template'];
+		$template = empty( $instance['template'] ) ? 'standard' : $instance['template'];
+
+		// If this template has a stylesheet, load it.
+		if ( wp_style_is( 'sow-blog-template-' . $template, 'registered' ) ) {
+			wp_enqueue_style( 'sow-blog-template-' . $template );
+		}
+
+		return $template;
 	}
 
 	function get_less_variables( $instance ) {
