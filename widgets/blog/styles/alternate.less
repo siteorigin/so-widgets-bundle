@@ -1,0 +1,41 @@
+@responsive_breakpoint: 780px;
+
+.sow-blog-layout-alternate article {
+	background: #fff;
+	border: 1px solid #e6e6e6;
+
+	.entry-thumbnail {
+		margin: -1px;
+		text-align: left;
+		width: 41.5006%;
+	}
+
+	.sow-blog-content-wrapper {
+		width: 58.4994%;
+		entry-header {
+			margin-bottom: 18px;
+			.entry-title {
+				font-size: 16px;
+				a {
+					color: #2d2d2d;
+					&:hover,
+					&:focus {
+						color: #626262;
+					}
+				}
+			}
+		}
+
+		.entry-content {
+			font-size: 15px;
+		}
+	}
+
+	@media (max-width: @responsive_breakpoint) {
+		.entry-thumbnail,
+		.sow-blog-content-wrapper {
+			width: 100%
+
+		}
+	}
+}

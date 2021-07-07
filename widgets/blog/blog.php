@@ -32,6 +32,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				),
 			)
 		);
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_template_styles' ) );
 	}
 
 	function get_widget_form() {
@@ -115,10 +116,15 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			'responsive_breakpoint' => array(
 				'type'        => 'measurement',
 				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
-				'default'     => '480px',
+				'default'     => '780px',
 				'description' => __( 'This setting controls when the columns will collapse.', 'so-widgets-bundle' )
 			)
 		);
+	}
+
+	function register_template_styles() {
+		wp_register_style( 'sow-blog-template-offset', plugin_dir_url( __FILE__ ) . 'css/offset.css' );
+		do_action( 'siteorigin_widgets_blog_template_stylesheets' );
 	}
 
 	function get_template_name( $instance ) {
@@ -126,7 +132,14 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_style_name( $instance ) {
-		return empty( $instance['template'] ) ? 'standard' : $instance['template'];
+		$template = empty( $instance['template'] ) ? 'standard' : $instance['template'];
+
+		// If this template has a stylesheet, load it.
+		if ( wp_style_is( 'sow-blog-template-' . $template, 'registered' ) ) {
+			wp_enqueue_style( 'sow-blog-template-' . $template );
+		}
+
+		return $template;
 	}
 
 	function get_less_variables( $instance ) {
@@ -138,6 +151,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		return array(
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 			'column_width' => 100 / $columns . '%',
+			'author' => $instance['settings']['author'],
 		);
 	}
 
@@ -151,9 +165,33 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			)
 		);
 
+		// Add template specific settings.
+		$template_settings = array();
+		if ( $instance['template'] == 'offset' ) {
+			if ( $instance['settings']['date'] ) {
+				if ( get_the_time( 'U' ) !== get_the_modified_time( 'U' ) ) {
+					$time_string = '<time class="entry-date published" datetime="%1$s">%2$s</time><time class="updated" datetime="%3$s">%4$s</time>';
+				} else {
+					$time_string = '<time class="entry-date published updated" datetime="%1$s">%2$s</time>';
+				}
+				$time_string = sprintf( $time_string,
+					esc_attr( get_the_date( DATE_W3C ) ),
+					esc_html( get_the_date() ),
+					esc_attr( get_the_modified_date( DATE_W3C ) ),
+					esc_html( get_the_modified_date() )
+				);
+				$template_settings['posted_on'] = sprintf(
+					/* translators: %s: post date. */
+					esc_html_x( 'Posted on %s', 'post date', 'so-widgets-bundle' ),
+					'<a href="' . esc_url( get_permalink() ) . '" rel="bookmark">' . $time_string . '</a>'
+				);
+			}
+		}
+
 		return array(
 			'title' => $instance['title'],
 			'settings' => $instance['settings'],
+			'template_settings' => apply_filters( 'siteorigin_widgets_blog_template_settings', $template_settings, $instance ),
 			'posts' => $posts,
 		);
 	}
