@@ -66,6 +66,13 @@ class SiteOrigin_Widget_Field_Builder extends SiteOrigin_Widget_Field_Base {
 			$value['widgets'] = siteorigin_panels_process_raw_widgets( $value['widgets'] );
 		}
 
+		// Add record of widget being inside of a builder field.
+		if ( ! empty( $value['widgets'] ) ) {
+			foreach( $value['widgets'] as $widget_id => $widget ) {
+				$value['widgets'][ $widget_id ]['panels_info']['builder'] = true;
+			}
+		}
+
 		return $value;
 	}
 
