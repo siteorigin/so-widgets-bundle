@@ -1,33 +1,82 @@
 {
 	"standard": {
 		"label": "Standard",
-		"values": {}
+		"values": {
+			"settings": {
+				"featured_image": true,
+				"content": true,
+				"read_more": true,
+				"date": true,
+				"author": true,
+				"categories": true,
+				"comment_count": true
+			}
+		}
 	},
 	"grid": {
 		"label": "Grid",
 		"values": {
 			"settings": {
-				"columns": 2
+				"columns": 2,
+				"featured_image": true,
+				"content": true,
+				"read_more": true,
+				"date": true,
+				"author": true,
+				"categories": true,
+				"comment_count": true
 			}
 		}
 	},
 	"offset": {
 		"label": "Offset",
-		"values": {}
+		"values": {
+			"settings": {
+				"featured_image": true,
+				"content": true,
+				"read_more": true,
+				"date": true,
+				"author": true,
+				"categories": true,
+				"comment_count": true
+			}
+		}
 	},
 	"alternate": {
 		"label": "Alternate",
-		"values": {}
+		"values": {
+			"settings": {
+				"featured_image": true,
+				"content": true,
+				"read_more": true,
+				"date": true,
+				"author": true,
+				"categories": true,
+				"comment_count": true
+			}
+		}
 	},
 	"masonry": {
 		"label": "Masonry",
-		"values": {}
+		"values": {
+			"settings": {
+				"columns": 2,
+				"featured_image": true,
+				"content": true,
+				"read_more": true,
+				"date": true,
+				"author": true,
+				"categories": true,
+				"comment_count": true
+			}
+		}
 	},
 	"portfolio": {
 		"label": "Portfolio",
 		"values": {
 			"settings": {
-				"columns": 3
+				"columns": 3,
+				"categories": true
 			}
 		}
 	}
