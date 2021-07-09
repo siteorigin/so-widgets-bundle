@@ -801,14 +801,31 @@ var sowbForms = window.sowbForms || {};
 							if (txt.length > 80) {
 								txt = txt.substr(0, 79) + '...';
 							}
-							itemTop.find('h4').text(txt);
 						} else {
-							itemTop.find('h4').text(defaultLabel);
+							txt = defaultLabel;
+
+							// Add item index to label if needed.
+							if ( itemLabel.increment ) {
+								var index = $el.index();
+								// var index = itemTop.parents( '.siteorigin-widget-field-repeater-item' ).index();
+								// Increment for zero-index.
+								index++;
+
+								if ( ! isNaN( index ) ) {
+									if ( itemLabel.increment == 'before' ) {
+										txt = index + ' ' + txt;
+									} else {
+										txt += ' ' + index;
+									}
+								}
+							}
 						}
+
+						itemTop.find( 'h4' ).text( txt );
 					};
 					updateLabel();
 					var eventName = ( itemLabel.hasOwnProperty('updateEvent') && itemLabel.updateEvent ) ? itemLabel.updateEvent : 'change';
-					$el.bind(eventName, updateLabel);
+					$el.on( eventName, updateLabel );
 				}
 
 				itemTop.on( 'click keyup', function( e ) {
@@ -859,6 +876,12 @@ var sowbForms = window.sowbForms || {};
 						removeItem();
 					} else if ( confirm( soWidgets.sure ) ) {
 						$item.slideUp('fast', removeItem );
+					}
+
+					// If increment is enabled for this item, trigger label updates.
+					var itemLabel = $el.closest( '.siteorigin-widget-field-repeater' ).data( 'item-label' );
+					if ( typeof itemLabel.increment == 'string' ) {
+						$el.parent().find( '.siteorigin-widget-field-repeater-item' ).trigger( 'change' )
 					}
 				});
 				itemTop.find( '.siteorigin-widget-field-copy' ).on( 'click keyup', function( e ) {
@@ -992,7 +1015,13 @@ var sowbForms = window.sowbForms || {};
 					$copyItem.hide().slideDown('fast', function () {
 						$( window ).trigger( 'resize' );
 					});
-					$el.trigger( 'change' );
+					// If increment is enabled for this item, trigger label updates.
+					var itemLabel = $el.closest( '.siteorigin-widget-field-repeater' ).data( 'item-label' );
+					if ( typeof itemLabel.increment == 'string' ) {
+						$el.parent().find( '.siteorigin-widget-field-repeater-item' ).trigger( 'change' )
+					} else {
+						$el.trigger( 'change' );
+					}
 				});
 
 				$el.find('> .siteorigin-widget-field-repeater-item-form').sowSetupForm();

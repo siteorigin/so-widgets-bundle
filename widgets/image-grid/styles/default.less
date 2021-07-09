@@ -1,10 +1,12 @@
 @padding: default;
+@alignment_horizontal: center;
+@alignment_vertical: end;
 
 .sow-image-grid-wrapper {
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: center;
-	align-items: baseline;
+	justify-content: @alignment_horizontal;
+	align-items: @alignment_vertical;
 	line-height: 0;
 	text-align: center;
 

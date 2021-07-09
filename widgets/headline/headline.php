@@ -31,6 +31,17 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 		add_filter( 'siteorigin_widgets_wrapper_data_' . $this->id_base, array( $this, 'wrapper_data_filter' ), 10, 2 );
 	}
 
+	function get_settings_form() {
+		return array(
+			'responsive_breakpoint' => array(
+				'type' => 'measurement',
+				'label' => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
+				'default' => '780px',
+				'description' => __( 'The pixel resolution when the mobile alignment settings will be applied.', 'so-widgets-bundle' ),
+			),
+		);
+	}
+
 	function get_widget_form(){
 		return array(
 			'headline' => array(
@@ -54,7 +65,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 					'tag' => array(
 						'type' => 'select',
 						'label' => __( 'HTML Tag', 'so-widgets-bundle' ),
-						'default' => 'h1',
+						'default' => 'h2',
 						'options' => array(
 							'h1' => __( 'H1', 'so-widgets-bundle' ),
 							'h2' => __( 'H2', 'so-widgets-bundle' ),
@@ -92,6 +103,16 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 							'right' => __( 'Right', 'so-widgets-bundle' ),
 							'justify' => __( 'Justify', 'so-widgets-bundle' )
 						)
+					),
+					'mobile_align' => array(
+						'type' => 'select',
+						'label' => __( 'Mobile alignment', 'so-widgets-bundle' ),
+						'options' => array(
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'left' => __( 'Left', 'so-widgets-bundle' ),
+							'right' => __( 'Right', 'so-widgets-bundle' ),
+							'justify' => __( 'Justify', 'so-widgets-bundle' ),
+						),
 					),
 					'line_height' => array(
 						'type' => 'measurement',
@@ -164,6 +185,16 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 							'justify' => __( 'Justify', 'so-widgets-bundle' )
 						)
 					),
+					'mobile_align' => array(
+						'type' => 'select',
+						'label' => __( 'Mobile alignment', 'so-widgets-bundle' ),
+						'options' => array(
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'left' => __( 'Left', 'so-widgets-bundle' ),
+							'right' => __( 'Right', 'so-widgets-bundle' ),
+							'justify' => __( 'Justify', 'so-widgets-bundle' ),
+						),
+					),
 					'line_height' => array(
 						'type' => 'measurement',
 						'label' => __('Line Height', 'so-widgets-bundle')
@@ -212,6 +243,15 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 						'type' => 'select',
 						'label' => __('Alignment', 'so-widgets-bundle'),
 						'default' => 'center',
+						'options' => array(
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'left' => __( 'Left', 'so-widgets-bundle' ),
+							'right' => __( 'Right', 'so-widgets-bundle' ),
+						),
+					),
+					'mobile_align' => array(
+						'type' => 'select',
+						'label' => __( 'Mobile alignment', 'so-widgets-bundle' ),
 						'options' => array(
 							'center' => __( 'Center', 'so-widgets-bundle' ),
 							'left' => __( 'Left', 'so-widgets-bundle' ),
@@ -271,12 +311,15 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_less_variables( $instance ) {
-		$less_vars = array();
+		$less_vars = array(
+			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
+		);
 
 		// All the headline attributes
 		$less_vars['headline_tag'] = isset( $instance['headline']['tag'] ) ? $instance['headline']['tag'] : false;
 		$less_vars['headline_hover_color'] = isset( $instance['headline']['hover_color'] ) ? $instance['headline']['hover_color'] : false;
 		$less_vars['headline_align'] = isset( $instance['headline']['align'] ) ? $instance['headline']['align'] : false;
+		$less_vars['headline_mobile_align'] = isset( $instance['headline']['mobile_align'] ) ? $instance['headline']['mobile_align'] : false;
 		$less_vars['headline_color'] = isset( $instance['headline']['color'] ) ? $instance['headline']['color'] : false;
 		$less_vars['headline_font_size'] = isset( $instance['headline']['font_size'] ) ? $instance['headline']['font_size'] : false;
 		$less_vars['headline_line_height'] = isset( $instance['headline']['line_height'] ) ? $instance['headline']['line_height'] : false;
@@ -294,6 +337,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 
 		// Set the sub headline attributes
 		$less_vars['sub_headline_align'] = isset( $instance['sub_headline']['align'] ) ? $instance['sub_headline']['align'] : false;
+		$less_vars['sub_headline_mobile_align'] = isset( $instance['sub_headline']['mobile_align'] ) ? $instance['sub_headline']['mobile_align'] : false;
 		$less_vars['sub_headline_hover_color'] = isset( $instance['sub_headline']['hover_color'] ) ? $instance['sub_headline']['hover_color'] : false;
 		$less_vars['sub_headline_tag'] = isset( $instance['sub_headline']['tag'] ) ? $instance['sub_headline']['tag'] : false;
 		$less_vars['sub_headline_color'] = isset( $instance['sub_headline']['color'] ) ? $instance['sub_headline']['color'] : false;
@@ -315,6 +359,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 		$less_vars['divider_width'] = isset( $instance['divider']['width'] ) ? $instance['divider']['width'] : false;
 		$less_vars['divider_thickness'] = isset( $instance['divider']['thickness'] ) ? (int) $instance['divider']['thickness'] . 'px' : false;
 		$less_vars['divider_align'] = isset( $instance['divider']['align'] ) ? $instance['divider']['align'] : false;
+		$less_vars['divider_mobile_align'] = isset( $instance['divider']['mobile_align'] ) ? $instance['divider']['mobile_align'] : false;
 		$less_vars['divider_color'] = isset( $instance['divider']['color'] ) ? $instance['divider']['color'] : false;
 		$less_vars['divider_margin'] = isset( $instance['divider']['margin'] ) ? $instance['divider']['margin'] : false;
 
@@ -414,6 +459,12 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 		if( isset( $instance['divider']['top_margin'] ) && ! isset( $instance['divider']['bottom_margin'] ) ) {
 			$instance['divider']['bottom_margin'] = $instance['divider']['top_margin'];
 			$instance['divider']['bottom_margin_unit'] = $instance['divider']['top_margin_unit'];
+		}
+		// Set Mobile alignment settings to same value as the Alignment for existing widgets
+		if ( ! empty( $instance['headline']['align'] ) && empty( $instance['headline']['mobile_align'] ) ) {
+			$instance['headline']['mobile_align'] = $instance['headline']['align'];
+			$instance['sub_headline']['mobile_align'] = $instance['sub_headline']['align'];
+			$instance['divider']['mobile_align'] = $instance['divider']['align'];
 		}
 
 		return $instance;

@@ -357,8 +357,8 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				);
 				$overlay_attributes = apply_filters( 'siteorigin_widgets_slider_overlay_attributes', $overlay_attributes, $frame, $background );
 
-				$overlay_attributes['class'] = implode( ' ', $overlay_attributes['class'] );
-				$overlay_attributes['style'] = implode( ';', $overlay_attributes['style'] );
+				$overlay_attributes['class'] = empty( $overlay_attributes['class'] ) ? '' : implode( ' ', $overlay_attributes['class'] );
+				$overlay_attributes['style'] = empty( $overlay_attributes['style'] ) ? '' : implode( ';', $overlay_attributes['style'] );
 
 				?><div <?php foreach( $overlay_attributes as $attr => $val ) echo $attr . '="' . esc_attr( $val ) . '" '; ?> ></div><?php
 			}

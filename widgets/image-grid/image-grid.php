@@ -130,6 +130,29 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 							),
 						),
 					),
+
+					'alignment_vertical' => array(
+						'type' => 'select',
+						'label' => __( 'Image vertical alignment', 'so-widgets-bundle' ),
+						'description' => __( 'Applied if image heights differ.', 'so-widgets-bundle' ),
+						'default' => 'end',
+						'options' => array(
+							'flex-start' => __( 'Top', 'so-widgets-bundle' ),
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'flex-end' => __( 'Bottom', 'so-widgets-bundle' ),
+						),
+					),
+
+					'alignment_horizontal' => array(
+						'type' => 'select',
+						'label' => __( 'Grid horizontal alignment', 'so-widgets-bundle' ),
+						'default' => 'center',
+						'options' => array(
+							'flex-start' => __( 'Left', 'so-widgets-bundle' ),
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'flex-end' => __( 'Right', 'so-widgets-bundle' ),
+						),
+					),
 				)
 			)
 		);
@@ -239,12 +262,12 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	 * @return mixed
 	 */
 	function get_less_variables( $instance ) {
-		$less = array();
-		if ( ! empty( $instance['display']['padding'] ) ) {
-			$less['padding'] = $instance['display']['padding'];
-		}
+		return array(
+			'padding' => ! empty( $instance['display']['padding'] ) ? $instance['display']['padding'] : '5px 5px 5px 5px',
+			'alignment_horizontal' => ! empty( $instance['display']['alignment_horizontal'] ) ? $instance['display']['alignment_horizontal'] : 'center',
+			'alignment_vertical' => ! empty( $instance['display']['alignment_vertical'] ) ? $instance['display']['alignment_vertical'] : 'baseline',
 
-		return $less;
+		);
 	}
 
 	function get_form_teaser() {

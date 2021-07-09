@@ -2,17 +2,20 @@
 
 @title_font: default;
 @title_font_weight: 400;
+@title_font_style: default;
 @title_size: default;
 @title_color: default;
 @title_tag: h5;
 
 @text_font: default;
 @text_font_weight: 400;
+@text_font_style: default;
 @text_size: default;
 @text_color: default;
 
 @more_text_font: default;
 @more_text_font_weight: 400;
+@more_text_font_style: default;
 @more_text_size: default;
 @more_text_color: default;
 @per_row: 3;
@@ -160,17 +163,20 @@
         .textwidget {
             margin: auto;
             .font(@text_font, @text_font_weight);
+            font-style: @text_font_style;
             font-size: @text_size;
             color: @text_color;
             
             > @{title_tag} {
                 .font(@title_font, @title_font_weight);
+                font-style: @title_font_style;
                 font-size: @title_size;
                 color: @title_color;
             }
 
             > p.sow-more-text {
                 .font(@more_text_font, @more_text_font_weight);
+                font-style: @more_text_font_style;
                 font-size: @more_text_size;
                 color: @more_text_color;
             }

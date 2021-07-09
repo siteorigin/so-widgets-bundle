@@ -31,11 +31,31 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 	 */
 	protected $library;
 
+	/**
+	 * Whether to display the item title or not. Default is `true`.
+	 *
+	 * @access protected
+	 * @var boolean
+	 */
+	protected $title;
+
+	/**
+	 * The dimensions of each thumbnail item. Only used when editing widgets. The default is 75x75.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $thumbnail_dimensions;
+
+	static $default_thumbnail_dimensions = array( 64, 64 ); 
+
 	protected function get_default_options() {
 		return array(
 			'choose' => __( 'Add Media', 'so-widgets-bundle' ),
 			'update' => __( 'Set Media', 'so-widgets-bundle' ),
-			'library' => 'image'
+			'library' => 'image',
+			'title' => true,
+			'thumbnail_dimensions' => self::$default_thumbnail_dimensions,
 		);
 	}
 
@@ -43,6 +63,17 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 		if ( version_compare( get_bloginfo('version'), '3.5', '<' ) ){
 			printf( __( 'You need to <a href="%s">upgrade</a> to WordPress 3.5 to use media fields', 'so-widgets-bundle'), admin_url('update-core.php' ) );
 			return;
+		}
+
+		// Ensure thumbnail_dimensions are valid. 
+		if (
+			empty( $this->thumbnail_dimensions ) ||
+			empty( $this->thumbnail_dimensions[0] ) ||
+			empty( $this->thumbnail_dimensions[1] ) ||
+			! is_numeric( $this->thumbnail_dimensions[0] ) ||
+			! is_numeric( $this->thumbnail_dimensions[1] )
+		) {
+			$this->thumbnail_dimensions = self::$default_thumbnail_dimensions;
 		}
 
 		// If library is set to all, convert it to a wildcard as all isn't valid
@@ -62,20 +93,25 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 				<?php
 				if ( is_array( $attachments ) ) {
 					foreach ( $attachments as $attachment ) {
-						$post = get_post( $attachment );
+						$item_title = get_the_title( $attachment );
 						$src = wp_get_attachment_image_src( $attachment, 'thumbnail' );
 
 						if ( empty( $src ) ) {
-							continue;
+							// If item doesn't have an image src, use the WP icon for its media type.
+							$src = wp_mime_type_icon( $attachment );
+						} else {
+							$src = $src[0];
 						}
 						?>
 						<div class="multiple-media-field-item" data-id="<?php echo esc_attr( $attachment ); ?>">
-							<img src="<?php echo sow_esc_url( $src[0] ); ?>" class="thumbnail" title="<?php echo esc_attr( $post->post_title ); ?>"/>
+							<?php if ( ! empty( $src ) ) : ?>
+								<img src="<?php echo sow_esc_url( $src ); ?>" class="thumbnail" title="<?php echo esc_attr( $item_title ); ?>" width="<?php echo $this->thumbnail_dimensions[0]; ?>" height="<?php echo $this->thumbnail_dimensions[1]; ?>"/>
+							<?php endif; ?>
 							<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
-							<div class="title">
+							<div class="title <?php echo (bool) $this->title ? 'title-enabled" style="width: ' . $this->thumbnail_dimensions[0] . 'px' : ''; ?>">
 								<?php
-								if ( ! empty( $post ) ) {
-									echo esc_attr( $post->post_title );
+								if ( ! empty( $item_title ) ) {
+									echo esc_attr( $item_title );
 								}
 								?>		
 							</div>
@@ -88,9 +124,9 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 			
 			<div class="multiple-media-field-template" style="display:none">
 				<div class="multiple-media-field-item">
-					<img class="thumbnail" />
+					<img class="thumbnail"  width="<?php echo $this->thumbnail_dimensions[0]; ?>" height="<?php echo $this->thumbnail_dimensions[1]; ?>"/>
 					<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
-					<div class="title"></div>
+					<div class="title <?php echo (bool) $this->title ? 'title-enabled" style="width: ' . $this->thumbnail_dimensions[0] . 'px' : ''; ?>"></div>
 				</div>
 
 			</div>

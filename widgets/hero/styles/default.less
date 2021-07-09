@@ -14,12 +14,14 @@
 @text_shadow: 0.25;
 @text_font: default;
 @text_font_weight: 500;
+@text_font_style: default;
 
 @link_color: default;
 @link_color_hover: default;
 
 @heading_font: default;
 @heading_font_weight: 400;
+@heading_font_style: default;
 @heading_color: #FFFFFF;
 @heading_shadow: 50;
 
@@ -77,6 +79,7 @@
 				margin: 0.1em 0;
 
 				.font(@heading_font, @heading_font_weight);
+				font-style: @heading_font_style;
 			}
 
 			h1 {
@@ -119,6 +122,7 @@
 				font-size: @text_size;
 
 				.font(@text_font, @text_font_weight);
+				font-style: @text_font_style;
 			}
 
 			.sow-hero-buttons {

@@ -12,6 +12,14 @@ class SiteOrigin_Widget_Field_Presets extends SiteOrigin_Widget_Field_Base {
 	 * @var array
 	 */
 	protected $options;
+
+	/**
+	 * The default preset. If empty, a blank field will be used.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $default_preset;
 	
 	protected function get_default_options() {
 		return array(
@@ -21,16 +29,22 @@ class SiteOrigin_Widget_Field_Presets extends SiteOrigin_Widget_Field_Base {
 	
 	
 	protected function render_field( $value, $instance ) {
-		
 		$preset_options = array();
 		foreach ( $this->options as $name => $preset ) {
 			$preset_options[ $name ] = $preset['label'];
 		}
-		
+
 		?>
-		<select id="<?php echo esc_attr( $this->element_id ) ?>"
-				class="siteorigin-widget-input"
-				data-presets="<?php echo esc_attr( json_encode( $this->options ) ) ?>">
+		<select
+			name="<?php echo esc_attr( $this->element_name ); ?>"
+			id="<?php echo esc_attr( $this->element_id ); ?>"
+			class="siteorigin-widget-input"
+			data-presets="<?php echo esc_attr( json_encode( $this->options ) ); ?>"
+			<?php if ( ! empty( $this->default_preset ) ) : ?>
+				data-default-preset="<?php echo esc_attr( $this->default_preset ); ?>"
+			<?php endif; ?>
+		>
+
 			<option value="default"></option>
 			<?php if( ! empty( $preset_options ) ) : ?>
 				<?php foreach( $preset_options as $key => $val ) : ?>

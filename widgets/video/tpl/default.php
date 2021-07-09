@@ -5,6 +5,7 @@
  * @var $player_id
  * @var $autoplay
  * @var $related_videos
+ * @var $controls
  * @var $skin_class
  * @var $is_skinnable_video_host
  * @var $sources
@@ -48,17 +49,20 @@ do_action( 'siteorigin_widgets_sow-video_before_video', $instance );
 
 <div class="sow-video-wrapper<?php if ( $fitvids ) echo ' use-fitvids'; ?>">
 	<?php if ( $is_skinnable_video_host ) : ?>
-	<video
-		<?php foreach ( $video_args as $k => $v ) : ?>
-		<?php echo $k . '="' . $v . '" '; ?>
-		<?php endforeach; ?>
-	>
-		<?php foreach ( $sources as $source ) : ?>
-		<source type="<?php echo esc_attr( $source['video_type'] ) ?>" src="<?php echo esc_url( $source['src'] ) ?>"/>
-		<?php endforeach; ?>
-	</video>
+		<video
+			<?php foreach ( $video_args as $k => $v ) : ?>
+				<?php echo $k . '="' . $v . '" '; ?>
+			<?php endforeach; ?>
+			<?php if ( ! empty( $controls ) ): ?>
+				<?php echo 'controls'; ?>
+			<?php endif; ?>
+		>
+			<?php foreach ( $sources as $source ) : ?>
+				<source type="<?php echo esc_attr( $source['video_type'] ) ?>" src="<?php echo esc_url( $source['src'] ) ?>"/>
+			<?php endforeach; ?>
+		</video>
 	<?php else : ?>
-	<?php echo $so_video->get_video_oembed( $src, $autoplay, $related_videos, $loop ); ?>
+		<?php echo $so_video->get_video_oembed( $src, $autoplay, $related_videos, $loop ); ?>
 	<?php endif; ?>
 </div>
 <?php do_action( 'siteorigin_widgets_sow-video_after_video', $instance ); ?>

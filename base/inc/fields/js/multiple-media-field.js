@@ -62,7 +62,7 @@
 					$currentItem,
 					$thumbnail;
 
-				$.each( frame.state().get('selection').models, function() {
+				$.each( frame.state().get( 'selection' ).models, function() {
 					attachment = this.attributes;
 
 					// Don't process images that already exist.
@@ -72,6 +72,7 @@
 
 						$thumbnail = $currentItem.find( '.thumbnail' );
 						$thumbnail.attr( 'title', attachment.title );
+						$currentItem.find( '.title' ).text( attachment.title );
 
 						$currentItem.attr( 'data-id', attachment.id );
 

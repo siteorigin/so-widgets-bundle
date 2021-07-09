@@ -300,11 +300,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			//Ensure styles aren't generated and enqueued more than once.
 			$in_preview = $this->is_preview( $instance ) || ( isset( $_POST['action'] ) &&  $_POST['action'] == 'so_widgets_preview' );
 			if ( ! in_array( $css_name, $this->generated_css ) || $in_preview ) {
-				if( $in_preview ) {
+				if ( $in_preview || ( defined( 'SITEORIGIN_WIDGETS_DEBUG' ) && SITEORIGIN_WIDGETS_DEBUG ) ) {
 					siteorigin_widget_add_inline_css( $this->get_instance_css( $instance ) );
-				}
-				else {
-					if( !file_exists( $upload_dir['basedir'] . '/siteorigin-widgets/' . $css_name .'.css' ) || ( defined('SITEORIGIN_WIDGETS_DEBUG') && SITEORIGIN_WIDGETS_DEBUG ) ) {
+				} else {
+					if ( ! file_exists( $upload_dir['basedir'] . '/siteorigin-widgets/' . $css_name .'.css' ) ) {
 						// Attempt to recreate the CSS
 						$this->save_css( $instance );
 					}
@@ -316,8 +315,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 								set_url_scheme($upload_dir['baseurl'] . '/siteorigin-widgets/' . $css_name .'.css')
 							);
 						}
-					}
-					else {
+					} else {
 						// Fall back to using inline CSS if we can't find the cached CSS file.
 						// Try get the cached value.
 						$css = wp_cache_get( $css_name, 'siteorigin_widgets' );
@@ -904,7 +902,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				}
 			}
 			catch ( Exception $e ) {
-				if( defined( 'SITEORIGIN_WIDGETS_DEBUG' ) && SITEORIGIN_WIDGETS_DEBUG ) {
+				if ( defined( 'SITEORIGIN_WIDGETS_DEBUG' ) && SITEORIGIN_WIDGETS_DEBUG ) {
 					throw $e;
 				}
 			}
@@ -1349,5 +1347,96 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		update_option( 'so_widget_settings[' . $this->widget_class . ']', $values );
 
 		return $values;
+	}
+
+	/**
+	 * Add state_handler for fields based on how they're adjusted by preset data.
+	 *
+	 * @param string $state_name
+	 * @param array $preset_data
+	 * @param array $fields The fields to apply state handlers too.
+	 *
+	 * @return array $fields with any state_handler's applied.
+	 */
+	protected function dynamic_preset_state_handler( $state_name, $preset_data, $fields ) {
+		// Build an array of all the adjusted fields by the preset data, and note which presets adjust them.
+		$adjusted_fields = array();
+		foreach ( $preset_data as $preset_id => $preset ) {
+			$adjusted_fields = array_merge_recursive(
+				$this->dynamic_preset_extract_fields(
+					$preset['values'],
+					$preset_id
+				),
+				$adjusted_fields
+			);
+		}
+
+		// Apply state handlers to fields.
+		return $this->dynamic_preset_add_state_handler(
+			$state_name,
+			$adjusted_fields,
+			$fields
+		);
+	}
+
+	/**
+	 * Build an array of all of fields adjusted by the preset data, and note which presets adjust them.
+	 *
+	 * @param array $fields The fields to extract preset usage from.
+	 * @param array $preset_id
+	 *
+	 * @return array An array containing extracted fields.
+	 */
+	private function dynamic_preset_extract_fields( $fields, $preset_id ) {
+		$extracted_fields = array();
+		foreach ( $fields as $field_key => $field ) {
+			// Does this field have sub fields?
+			if ( is_array( $field ) ) {
+				$extracted_fields[ $field_key ] = $this->dynamic_preset_extract_fields( $field, $preset_id );
+			} else {
+				$extracted_fields[ $field_key ][] = $preset_id;
+			}
+		}
+
+		return $extracted_fields;
+	}
+
+
+	/**
+	 * Add state_handler to fields based on preset adjusted fields.
+	 *
+	 * @param string $state_name
+	 * @param array $preset_adjusted_fields
+	 * @param array $fields The fields to apply state handlers too.
+	 *
+	 * @return array $fields with any state_handler's applied.
+	 */
+	private function dynamic_preset_add_state_handler( $state_name, $adjusted_fields, $fields ) {
+		foreach ( $adjusted_fields as $field => $field_value ) {
+			// Skip field if it's not adjusted by of the presets, or if the field has a state_handler already.
+			if (
+				! isset( $fields[ $field ] ) ||
+				isset( $fields[ $field ]['state_handler'] )
+			) {
+				continue;
+			}
+
+			// If this is a section field, we need to apply the state handlers for sub fields.
+			if ( $fields[ $field ]['type'] == 'section' ) {
+				$fields[ $field ]['fields'] = $this->dynamic_preset_add_state_handler(
+					$state_name,
+					$field_value,
+					$fields[ $field ]['fields']
+				);
+			} else {
+				$used_by = implode( ',', $field_value ); 
+				$fields[ $field ]['state_handler'] = array(
+					$state_name . '[' . $used_by . ']' => array( 'show' ),
+						'_else[' . $state_name . ']' => array( 'hide' ),
+				);
+			}
+		}
+
+		return $fields;
 	}
 }
