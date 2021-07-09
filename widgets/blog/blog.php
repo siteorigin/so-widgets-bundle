@@ -124,6 +124,11 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 	function register_template_assets() {
 		wp_register_style( 'sow-blog-template-offset', plugin_dir_url( __FILE__ ) . 'css/offset.css' );
+
+		wp_register_script( 'sow-blog-template-masonry', plugin_dir_url( __FILE__ ) . 'js/masonry' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-isotope' ) );
+
+		wp_register_script( 'jquery-isotope', plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/isotope.pkgd' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery' ), '3.0.4', true );
+
 		do_action( 'siteorigin_widgets_blog_template_stylesheets' );
 	}
 
@@ -155,6 +160,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		return array(
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 			'column_width' => 100 / $columns - ( $columns * 1.25 )  . '%',
+			'categories' => $instance['settings']['categories'],
 			'author' => $instance['settings']['author'],
 		);
 	}
@@ -248,9 +254,16 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	// Used for outputting the post featured image.
-	function post_featured_image( $settings, $size = 'post-thumbnail' ) {
+	function post_featured_image( $settings, $categories = false, $size = 'post-thumbnail' ) {
 		if ( $settings['featured_image'] && has_post_thumbnail() ) : ?>
 			<div class="entry-thumbnail">
+				<?php if ( $categories && $settings['categories'] && has_category() ) : ?>
+					<div class="thumbnail-meta">
+						<?php
+						echo get_the_category_list();
+						?>
+					</div>
+				<?php endif; ?>
 				<a href="<?php the_permalink(); ?>">
 					<?php the_post_thumbnail( $size ); ?>
 				</a>
