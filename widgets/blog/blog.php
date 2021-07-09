@@ -126,6 +126,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		wp_register_style( 'sow-blog-template-offset', plugin_dir_url( __FILE__ ) . 'css/offset.css' );
 
 		wp_register_script( 'sow-blog-template-masonry', plugin_dir_url( __FILE__ ) . 'js/masonry' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-isotope' ) );
+		wp_register_script( 'sow-blog-template-portfolio', plugin_dir_url( __FILE__ ) . 'js/portfolio' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-isotope' ) );
 
 		wp_register_script( 'jquery-isotope', plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/isotope.pkgd' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery' ), '3.0.4', true );
 
@@ -165,15 +166,47 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	function portfolio_get_terms( $instance, $post_id = 0 ) {
+		$terms = array();
+		if ( post_type_exists( 'jetpack-portfolio' ) ) {
+			if ( $post_id ) {
+				$terms = get_the_terms( (int) $post_id, 'jetpack-portfolio-type' );
+			} else {
+				$terms = get_terms( 'jetpack-portfolio-type' );
+			}
+		}
+
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			$fallback = apply_filters( 'siteorigin_widgets_blog_portfolio_fallback_term', 'category', $instance );
+			// Unable to find posts with portfolio type. Try using fallback term..
+			if ( $post_id ) {
+				return get_the_terms( (int) $post_id, $fallback );
+			} else {
+				return get_terms( $fallback );
+			}
+		} else {
+			return $terms;
+		}
+
+	}
+
 	public function get_template_variables( $instance, $args ) {
-		$posts = new WP_Query(
-			wp_parse_args(
-				array(
-					'paged' => (int) get_query_var( 'paged' )
-				),
-				siteorigin_widget_post_selector_process_query( $instance['posts'] )
-			)
+		$query = wp_parse_args(
+			array(
+				'paged' => (int) get_query_var( 'paged' )
+			),
+			siteorigin_widget_post_selector_process_query( $instance['posts'] )
 		);
+
+		if ( $instance['template'] == 'portfolio' ) {
+			// This post type relies on each post having an image so exclude any posts that don't.
+			$query['meta_query'] = array(
+				array(
+					'key' => '_thumbnail_id',
+					'compare' => 'EXISTS'
+				),
+			);
+		}
 
 		// Add template specific settings.
 		$template_settings = array();
@@ -198,11 +231,16 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			}
 		}
 
+
+		if ( $instance['template'] == 'portfolio' ) {
+			$template_settings['terms'] = $this->portfolio_get_terms( $instance );
+		}
+
 		return array(
 			'title' => $instance['title'],
 			'settings' => $instance['settings'],
 			'template_settings' => apply_filters( 'siteorigin_widgets_blog_template_settings', $template_settings, $instance ),
-			'posts' => $posts,
+			'posts' => new WP_Query( apply_filters( 'siteorigin_widgets_blog_query', $query, $instance ) ),
 		);
 	}
 
@@ -231,7 +269,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			</span>
 		<?php endif; ?>
 
-		<?php if ( $settings['categories'] ) : ?>
+		<?php if ( $settings['categories'] && has_category() ) : ?>
 			<span class="entry-categories">
 				<?php
 				/* translators: used between list items, there is a space after the comma */

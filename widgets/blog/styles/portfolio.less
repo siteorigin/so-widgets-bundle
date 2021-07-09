@@ -1,0 +1,136 @@
+@categories: default;
+@column_width: 31.83%;
+@responsive_breakpoint: 780px;
+
+.sow-blog-layout-portfolio {
+	& when( @categories = 1 ) {
+		.sow-portfolio-filter-terms {
+			margin-bottom: 25px;
+
+			button {
+				background: 0 0;
+				border: none;
+				border-bottom: 2px solid transparent;
+				color: #929292;
+				font-size: 11.256px;
+				font-weight: 600;
+				line-height: normal;
+				letter-spacing: 1px;
+				margin-right: 34px;
+				padding: 0 0 6px;
+				text-transform: uppercase;
+				transition: 300ms ease-in-out;
+
+				&.active {
+					background: 0 0;
+					border-bottom: 2px solid #2d2d2d;
+					color: #2d2d2d;
+				}
+
+				&:hover,
+				&:focus {
+				    background: transparent;
+				    color: #2d2d2d;
+				}
+			}
+		}
+	}
+
+	.sow-blog-columns {
+		margin: 0 -1.5%;
+	}
+
+	article {
+		padding: 0;
+		margin: 0 0 30px;
+		padding: 0 1.5%;
+		width: @column_width;
+
+		@media (max-width: @responsive_breakpoint) {
+			width: 100%;
+		}
+
+		.entry-thumbnail {
+			line-height: 0;
+			position: relative;
+			text-align: center;
+
+			&:hover {
+				.entry-overlay {
+					background-color: hsla(0,0%,100%,.9);
+					border: 2px solid #929292;
+				}
+
+				.entry-content {
+				    opacity: 1;
+				    visibility: visible;
+				}
+			}
+
+			a {
+				display: block;
+				position: relative;
+			}
+
+			.entry-overlay {
+				height: 100%;
+				left: 0;
+				position: absolute;
+				top: 0;
+				transition: .3s;
+				width: 100%;
+				z-index: 0;
+			}
+
+			.entry-content {
+				opacity: 0;
+				transition: .3s;
+				visibility: hidden;
+
+				.entry-title {
+					bottom: 60%;
+					color: #2d2d2d;
+					font-size: 1rem;
+					font-weight: 700;
+					margin: 0;
+					position: absolute;
+					text-align: center;
+					width: 100%;
+				}
+
+				& when( @categories = 1 ) {
+					.entry-divider {
+					    border: 1px solid #2d2d2d;
+					    bottom: 55.5%;
+					    left: 50%;
+					    position: absolute;
+					    transform: translateX(-50%);
+					    width: 30px;
+					}
+
+					.entry-project-type {
+					    color: #929292;
+					    display: block;
+					    font-size: .75rem;
+					    font-weight: 600;
+					    letter-spacing: 1px;
+					    line-height: 1.7333;
+					    position: absolute;
+					    text-align: center;
+					    text-transform: uppercase;
+					    top: 50.5%;
+					    width: 100%;
+					}
+				}
+			}
+
+			.wp-post-image {
+				border: 0;
+				box-shadow: none;
+				height: auto;
+				max-width: 100%;
+				width: 100%;
+			}
+		}
+	}
+}
