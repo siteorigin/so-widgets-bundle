@@ -2,7 +2,8 @@
 	<?php if ( ! empty( $instance['title'] ) ) echo $args['before_title'] . $instance['title'] . $args['after_title'] ?>
 	<div class="sow-blog sow-blog-layout-alternate">
 		<?php while( $posts->have_posts() ) : $posts->the_post(); ?>
-			<article id="post-<?php the_ID(); ?>" <?php post_class( 'sow-blog-columns' ); ?>>
+			<?php $thumbnail_class = ! $settings['featured_image'] || ! has_post_thumbnail() ? 'sow-no-thumbnail' : ''; ?>
+			<article id="post-<?php the_ID(); ?>" <?php post_class( "sow-blog-columns $thumbnail_class" ); ?>>
 				<?php $this->post_featured_image( $settings ); ?>
 				<div class="sow-blog-content-wrapper">
 					<header class="entry-header">
