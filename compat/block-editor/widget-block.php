@@ -33,7 +33,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		wp_enqueue_style(
 			'sowb-widget-block',
-			plugins_url( 'widget-block' . SOW_BUNDLE_JS_SUFFIX . '.css', __FILE__ )
+			plugins_url( 'widget-block.css', __FILE__ )
 		);
 
 		$widgets_metadata_list = SiteOrigin_Widgets_Bundle::single()->get_widgets_list();
