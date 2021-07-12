@@ -50,9 +50,9 @@
 							if ( ! empty( $template_settings['time_string'] ) ) {
 								$time_string = sprintf( $template_settings['time_string'],
 									esc_attr( get_the_date( DATE_W3C ) ),
-									esc_html( get_the_date() ),
+									esc_html( get_the_date( $template_settings['date_format'] ) ),
 									esc_attr( get_the_modified_date( DATE_W3C ) ),
-									esc_html( get_the_modified_date() )
+									esc_html( get_the_modified_date( $template_settings['date_format'] ) )
 								);
 								$template_settings['time_string'] = sprintf(
 									/* translators: %s: post date. */

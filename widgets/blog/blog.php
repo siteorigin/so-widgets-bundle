@@ -218,7 +218,9 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		}
 
 		// Add template specific settings.
-		$template_settings = array();
+		$template_settings = array(
+			'date_format' => isset( $instance['settings']['date_format'] ) ? $instance['settings']['date_format'] : null,
+		);
 		if ( $instance['template'] == 'offset' ) {
 			if ( $instance['settings']['date'] ) {
 				if ( get_the_time( 'U' ) !== get_the_modified_time( 'U' ) ) {
@@ -243,11 +245,13 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 	// Used for generating the post entry meta.
 	function post_meta( $settings ) {
-		if ( $settings['date'] ) : ?>
+		if ( $settings['date'] ) :	
+			$date_format = isset( $settings['date_format'] ) ? $settings['date_format'] : null;
+			?>
 			<span class="entry-date">
 				<a href="<?php echo esc_url( get_permalink() ); ?>" rel="bookmark">
 					<time class="published" datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
-						<?php echo esc_html( get_the_date() ); ?>
+						<?php echo esc_html( get_the_date( $date_format ) ); ?>
 					</time>
 					<time class="updated" datetime="<?php echo esc_attr( get_the_modified_date( 'c' ) ); ?>">
 						<?php echo esc_html( get_the_modified_date() ); ?>
