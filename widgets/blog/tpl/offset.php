@@ -47,14 +47,31 @@
 								'<h2 class="entry-title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">',
 								'</a></h2>'
 							);
-							if ( ! empty( $template_settings['posted_on'] ) ) :
+							if ( ! empty( $template_settings['time_string'] ) ) {
+								$time_string = sprintf( $template_settings['time_string'],
+									esc_attr( get_the_date( DATE_W3C ) ),
+									esc_html( get_the_date() ),
+									esc_attr( get_the_modified_date( DATE_W3C ) ),
+									esc_html( get_the_modified_date() )
+								);
+								$template_settings['time_string'] = sprintf(
+									/* translators: %s: post date. */
+									esc_html_x( 'Posted on %s', 'post date', 'so-widgets-bundle' ),
+									'<a href="' . esc_url( get_permalink() ) . '" rel="bookmark">' . $time_string . '</a>'
+								);
 								?>
 								<div class="entry-meta">
 									<?php
-									echo '<span class="posted-on">' . $template_settings['posted_on'] . '</span>'; // WPCS: XSS OK.
+									echo '<span class="posted-on">';
+									printf(
+										/* translators: %s: post date. */
+										esc_html_x( 'Posted on %s', 'post date', 'so-widgets-bundle' ),
+										'<a href="' . esc_url( get_permalink() ) . '" rel="bookmark">' . $time_string . '</a>'
+									);
+									echo '</span>';
 									?>
 								</div>
-							<?php endif; ?>
+							<?php } ?>
 						</header>
 
 						<div class="entry-content">

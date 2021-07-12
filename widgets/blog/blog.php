@@ -222,24 +222,12 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		if ( $instance['template'] == 'offset' ) {
 			if ( $instance['settings']['date'] ) {
 				if ( get_the_time( 'U' ) !== get_the_modified_time( 'U' ) ) {
-					$time_string = '<time class="entry-date published" datetime="%1$s">%2$s</time><time class="updated" datetime="%3$s">%4$s</time>';
+					$template_settings['time_string']  = '<time class="entry-date published" datetime="%1$s">%2$s</time><time class="updated" datetime="%3$s">%4$s</time>';
 				} else {
-					$time_string = '<time class="entry-date published updated" datetime="%1$s">%2$s</time>';
+					$template_settings['time_string']  = '<time class="entry-date published updated" datetime="%1$s">%2$s</time>';
 				}
-				$time_string = sprintf( $time_string,
-					esc_attr( get_the_date( DATE_W3C ) ),
-					esc_html( get_the_date() ),
-					esc_attr( get_the_modified_date( DATE_W3C ) ),
-					esc_html( get_the_modified_date() )
-				);
-				$template_settings['posted_on'] = sprintf(
-					/* translators: %s: post date. */
-					esc_html_x( 'Posted on %s', 'post date', 'so-widgets-bundle' ),
-					'<a href="' . esc_url( get_permalink() ) . '" rel="bookmark">' . $time_string . '</a>'
-				);
 			}
 		}
-
 
 		if ( $instance['template'] == 'portfolio' ) {
 			$template_settings['terms'] = $this->portfolio_get_terms( $instance );
