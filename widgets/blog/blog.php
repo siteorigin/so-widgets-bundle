@@ -322,7 +322,9 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	// Used for generating a custom excerpt with optional read more.
 	function generate_excerpt( $settings ) {
 		if ( $settings['read_more'] ) {
-			$read_more_text = '<a class="more-link excerpt" href="' . esc_url( get_permalink() ) . '">' . esc_html__( 'Continue reading', 'so-widgets-bundle' ) . '</a>';
+			$read_more_text = ! empty( $settings['read_more_text'] ) ?  $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' );
+			$read_more_text = '<a class="more-link excerpt" href="' . esc_url( get_permalink() ) . '">
+			' . esc_html( $read_more_text ) . '</a>';
 		}
 		$length = apply_filters( 'siteorigin_widgets_blog_excerpt_length', 55 );
 		$excerpt = get_the_excerpt();
