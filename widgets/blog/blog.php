@@ -340,18 +340,22 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	function paginate_links( $settings, $posts, $instance ) {
-		$pagination = paginate_links( array(
-			'format' => '?sow-' . $instance['paged_id'] . '=%#%',
-			'current' => max( 1, $posts->query['paged'] ),
-			'total' => $posts->max_num_pages
-		) );
+		$pagination_markup = defined( 'SITEORIGIN_PREMIUM_VERSION' ) ? apply_filters( 'siteorigin_widgets_blog_pagination_markup', false, $settings, $posts, $instance ) : false;
 
-		if ( ! empty( $pagination ) ) {
+		if ( empty( $pagination_markup ) ) {
+			$pagination_markup = paginate_links( array(
+				'format' => '?sow-' . $instance['paged_id'] . '=%#%',
+				'current' => max( 1, $posts->query['paged'] ),
+				'total' => $posts->max_num_pages
+			) );
+		}
+
+		if ( ! empty( $pagination_markup ) ) {
 			?>
 			<nav class="sow-post-navigation">
 				<h2 class="screen-reader-text"><?php esc_html_e( 'Post navigation', 'so-widgets-bundle' ); ?></h2>
 				<div class="nav-links">
-					<?php echo $pagination; ?>
+					<?php echo $pagination_markup; ?>
 				</div>
 			</nav>
 			<?php
