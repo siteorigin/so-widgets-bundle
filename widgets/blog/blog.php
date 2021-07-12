@@ -190,10 +190,19 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 	}
 
+	function modify_instance( $instance ) {
+		if ( empty( $instance ) ) {
+			return array();
+		}
+		$instance['paged_id'] = ! empty( $instance['_sow_form_id'] ) ? (int) substr( $instance['_sow_form_id'], 0, 5 ) : null;
+
+		return $instance;
+	}
+
 	public function get_template_variables( $instance, $args ) {
 		$query = wp_parse_args(
 			array(
-				'paged' => (int) get_query_var( 'paged' )
+				'paged' => ! empty( $_GET['sow-' . $instance['paged_id'] ] ) ? (int) $_GET['sow-' . $instance['paged_id'] ] : 1,
 			),
 			siteorigin_widget_post_selector_process_query( $instance['posts'] )
 		);
@@ -330,12 +339,11 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		echo '<p>' . wp_kses_post( $excerpt ) . '</p>';
 	}
 
-	function paginate_links( $settings, $posts ) {
+	function paginate_links( $settings, $posts, $instance ) {
 		$pagination = paginate_links( array(
-			'base' => str_replace( PHP_INT_MAX, '%#%', esc_url( get_pagenum_link( PHP_INT_MAX ) ) ),
-			'format' => '?paged=%#%',
-			'current' => max( 1, get_query_var( 'paged' ) ),
-			'total' => $posts->max_num_pages,
+			'format' => '?sow-' . $instance['paged_id'] . '=%#%',
+			'current' => max( 1, $posts->query['paged'] ),
+			'total' => $posts->max_num_pages
 		) );
 
 		if ( ! empty( $pagination ) ) {

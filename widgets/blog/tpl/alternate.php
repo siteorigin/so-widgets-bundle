@@ -31,6 +31,6 @@
 			</article>
 		<?php endwhile; ?>
 	</div>
-	<?php $this->paginate_links( $settings, $posts ); ?>
+	<?php $this->paginate_links( $settings, $posts, $instance ); ?>
 <?php endif; ?>
 <?php wp_reset_postdata(); ?>
