@@ -2,84 +2,80 @@
 @column_width: 48.5%;
 @responsive_breakpoint: 780px;
 
-.sow-blog-layout-masonry {
-	margin: 0 -1.5%;
+.sow-blog-layout-masonry article {
+	background: #fff;
+	border: 1px solid #e6e6e6;
+	padding: 0;
+	padding: 0;
+	margin: 0 1.5% 30px;
+	width: @column_width;
 
-	article {
-		background: #fff;
-		border: 1px solid #e6e6e6;
-		padding: 0;
-		padding: 0;
-		margin: 0 1.5% 30px;
-		width: @column_width;
+	@media (max-width: @responsive_breakpoint) {
+		width: 100%;
+	}
 
-		@media (max-width: @responsive_breakpoint) {
-			width: 100%;
-		}
+	& when( @categories = 1 ) {
+		.entry-thumbnail {
+			line-height: 0;
+			margin-bottom: -1px;
+			position: relative;
+			text-align: center;
 
-		& when( @categories = 1 ) {
-			.entry-thumbnail {
-				line-height: 0;
-				margin-bottom: -1px;
-				position: relative;
-				text-align: center;
+			.thumbnail-meta {
+				display: block;
+				left: 10px;
+				position: absolute;
+				top: 10px;
+				z-index: 1;
 
-				.thumbnail-meta {
-					display: block;
-					left: 10px;
-					position: absolute;
-					top: 10px;
-					z-index: 1;
+				ul {
+					display: inline-block;
+					list-style: none;
+					padding: 0;
+					margin: 0 5px 0 0;
 
-					ul {
+					li {
+						background: rgba(0,0,0,.8);
+						color: #fff;
 						display: inline-block;
-						list-style: none;
-						padding: 0;
-						margin: 0 5px 0 0;
+						font-size: 11px;
+						letter-spacing: 1px;
+						padding: 5px 12px 6px;
+						margin: 0;
+						text-transform: uppercase;
+						transition: 300ms opacity ease-in-out;
 
-						li {
-							background: rgba(0,0,0,.8);
-							color: #fff;
-							display: inline-block;
-							font-size: 11px;
-							letter-spacing: 1px;
-							padding: 5px 12px 6px;
-							margin: 0;
-							text-transform: uppercase;
-							transition: 300ms opacity ease-in-out;
-
-							&:hover,
-							&:focus {
-								opacity: 0.75;
-							}
+						&:hover,
+						&:focus {
+							opacity: 0.75;
 						}
+					}
 
-						a {
-							color: #fff;
-							display: block;
-							line-height: normal;
-							text-decoration: none;
-						}
+					a {
+						color: #fff;
+						display: block;
+						line-height: normal;
+						text-decoration: none;
 					}
 				}
 			}
 		}
+	}
 
-		.entry-header .entry-title {
-			font-size: 16px;
+	.entry-header .entry-title {
+		font-size: 16px;
 
-			a {
-				color: #2d2d2d;
+		a {
+			color: #2d2d2d;
 
-				&:hover,
-				&:focus {
-					color: #626262;
-				}
+			&:hover,
+			&:focus {
+				color: #626262;
 			}
 		}
+	}
 
-		.entry-content {
-			font-size: 14px;
-		}
+	.entry-content {
+		font-size: 14px;
 	}
 }

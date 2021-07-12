@@ -41,9 +41,8 @@
 	}
 
 	article {
-		padding: 0;
-		margin: 0 0 30px;
 		padding: 0 1.5%;
+		margin: 0 0 30px;
 		width: @column_width;
 
 		@media (max-width: @responsive_breakpoint) {
@@ -51,85 +50,40 @@
 		}
 
 		.entry-thumbnail {
-			line-height: 0;
-			position: relative;
-			text-align: center;
-
-			&:hover {
-				.entry-overlay {
-					background-color: hsla(0,0%,100%,.9);
-					border: 2px solid #929292;
-				}
-
-				.entry-content {
-				    opacity: 1;
-				    visibility: visible;
-				}
+			&:hover .entry-overlay {
+				background-color: hsla(0,0%,100%,.9);
+				border: 2px solid #929292;
 			}
 
-			a {
-				display: block;
-				position: relative;
+			.entry-title {
+				color: #2d2d2d;
+				font-size: 1rem;
+				font-weight: 700;
 			}
 
-			.entry-overlay {
-				height: 100%;
-				left: 0;
-				position: absolute;
-				top: 0;
-				transition: .3s;
-				width: 100%;
-				z-index: 0;
-			}
-
-			.entry-content {
-				opacity: 0;
-				transition: .3s;
-				visibility: hidden;
-
-				.entry-title {
-					bottom: 60%;
-					color: #2d2d2d;
-					font-size: 1rem;
-					font-weight: 700;
-					margin: 0;
-					position: absolute;
-					text-align: center;
-					width: 100%;
+			& when( @categories = 1 ) {
+				.entry-divider {
+				    border: 1px solid #2d2d2d;
+				    bottom: 55.5%;
+				    left: 50%;
+				    position: absolute;
+				    transform: translateX(-50%);
+				    width: 30px;
 				}
 
-				& when( @categories = 1 ) {
-					.entry-divider {
-					    border: 1px solid #2d2d2d;
-					    bottom: 55.5%;
-					    left: 50%;
-					    position: absolute;
-					    transform: translateX(-50%);
-					    width: 30px;
-					}
-
-					.entry-project-type {
-					    color: #929292;
-					    display: block;
-					    font-size: .75rem;
-					    font-weight: 600;
-					    letter-spacing: 1px;
-					    line-height: 1.7333;
-					    position: absolute;
-					    text-align: center;
-					    text-transform: uppercase;
-					    top: 50.5%;
-					    width: 100%;
-					}
+				.entry-project-type {
+				    color: #929292;
+				    display: block;
+				    font-size: .75rem;
+				    font-weight: 600;
+				    letter-spacing: 1px;
+				    line-height: 1.7333;
+				    position: absolute;
+				    text-align: center;
+				    text-transform: uppercase;
+				    top: 50.5%;
+				    width: 100%;
 				}
-			}
-
-			.wp-post-image {
-				border: 0;
-				box-shadow: none;
-				height: auto;
-				max-width: 100%;
-				width: 100%;
 			}
 		}
 	}

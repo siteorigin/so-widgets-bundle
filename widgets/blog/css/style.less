@@ -1,71 +1,208 @@
-.so-widget-sow-blog .sow-blog-columns {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-between;
+.so-widget-sow-blog {
 }
 
-.sow-blog article {
-	margin: 0 0 30px;
-	.entry-header {
-		margin-bottom: 25px;
+.sow-blog {
+	&.sow-blog-layout-grid .sow-blog-posts,
+	&.sow-blog-layout-masonry .sow-blog-posts,
+	&.sow-blog-layout-portfolio .sow-blog-posts,
+	.sow-blog-columns {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
 
-		.entry-title {
-			font-weight: 600;
+	article {
+		margin: 0 0 30px;
+		.entry-header {
+			margin-bottom: 25px;
+
+			.entry-title {
+				font-weight: 600;
+				line-height: normal;
+				margin: 0 0 3px;
+				a {
+					text-decoration: none;
+				}
+			}
+		}
+
+		.entry-meta {
+			color: #929292;
+			font-size: 13px;
 			line-height: normal;
-			margin: 0 0 3px;
-			a {
-				text-decoration: none;
+			span:not(:last-child)::after {
+				content: "\007c";
+				font-size: 12px;
+				padding: 0 5px;
+				vertical-align: top;
+			}
+		}
+
+		.sow-blog-content-wrapper {
+			padding: 25px 30px 33px;
+		}
+
+		.more-link .more-text span {
+			display: inline-block;
+			padding-left: 3px;
+			vertical-align: middle;
+		}
+	}
+
+	&.sow-blog-layout-alternate article {
+		background: #fff;
+		border: 1px solid #e6e6e6;
+
+		&:nth-of-type(2n) {
+			flex-direction: row-reverse;
+		}
+
+		.entry-thumbnail {
+			margin: -1px;
+			text-align: left;
+			width: 41.5006%;
+			width: calc(41.5006% - 8%);
+		}
+
+		&.sow-no-thumbnail .sow-blog-content-wrapper {
+			width: 100%;
+		}
+
+		.sow-blog-content-wrapper {
+			width: 58.4994%;
+
+			entry-header {
+				margin-bottom: 18px;
+			}
+
+			.entry-content {
+				font-size: 15px;
 			}
 		}
 	}
 
-	.entry-meta {
-		color: #929292;
-		font-size: 13px;
-		line-height: normal;
-		span:not(:last-child)::after {
-			content: "\007c";
-			font-size: 12px;
-			padding: 0 5px;
-			vertical-align: top;
+
+	&.sow-blog-layout-grid article {
+		padding: 0;
+		margin: 0 1.5% 30px;
+	}
+
+	&.sow-blog-layout-masonry {
+		margin: 0 -1.5%;
+
+		article {
+			padding: 0;
+			padding: 0;
+			margin: 0 1.5% 30px;
 		}
 	}
 
-	.sow-blog-content-wrapper {
-		padding: 25px 30px 33px;
+	&.sow-blog-layout-offset article {
+		.sow-blog-entry-offset {
+			padding-right: 30px;
+			width: 22%;
+
+			div {
+				margin-bottom: 12px;
+			}
+
+			span {
+			    display: block;
+			    font-size: 13px;
+				line-height: normal;
+				margin-bottom: 2px;
+			}
+
+			a {
+				font-size: 14px;
+			}
+		}
+
+		.sow-blog-entry {
+			width: 78%;
+		}
 	}
 
-	.more-link .more-text span {
-		display: inline-block;
-		padding-left: 3px;
-		vertical-align: middle;
+
+	&.sow-blog-layout-portfolio {
+		.sow-blog-columns {
+			margin: 0 -1.5%;
+		}
+
+		article .entry-thumbnail {
+			line-height: 0;
+			position: relative;
+			text-align: center;
+
+			&:hover .entry-content {
+			    opacity: 1;
+			    visibility: visible;
+			}
+
+			a {
+				display: block;
+				position: relative;
+			}
+
+			.entry-overlay {
+				height: 100%;
+				left: 0;
+				position: absolute;
+				top: 0;
+				transition: .3s;
+				width: 100%;
+				z-index: 0;
+			}
+
+			.entry-content {
+				opacity: 0;
+				transition: .3s;
+				visibility: hidden;
+
+				.entry-title {
+					bottom: 60%;
+					margin: 0;
+					position: absolute;
+					text-align: center;
+					width: 100%;
+				}
+			}
+
+			.wp-post-image {
+				border: 0;
+				box-shadow: none;
+				height: auto;
+				max-width: 100%;
+				width: 100%;
+			}
+		}
 	}
-}
 
-.sow-post-navigation {
-	clear: both;
-	padding-top: 30px;
-	text-align: center;
-	width: 100%;
+	.sow-post-navigation {
+		clear: both;
+		padding-top: 30px;
+		text-align: center;
+		width: 100%;
 
-	.page-numbers,
-	span.current {
-		border: 1px solid;
-		display: inline-block;
-		font-size: .9333em;
-		line-height: normal;
-		margin-right: 4px;
-		margin-bottom: 4px;
-		padding: 11px 17px;
-		transition: .3s;
-		vertical-align: top;
-	}
+		.page-numbers,
+		span.current {
+			border: 1px solid;
+			display: inline-block;
+			font-size: .9333em;
+			line-height: normal;
+			margin-right: 4px;
+			margin-bottom: 4px;
+			padding: 11px 17px;
+			transition: .3s;
+			vertical-align: top;
+		}
 
-	span.dots {
-		border: none;
-		font-family: Gill Sans,Gill Sans MT,Calibri,sans-serif;
-		font-size: 13px;
-		padding: 0;
-		vertical-align: middle;
+		span.dots {
+			border: none;
+			font-family: Gill Sans,Gill Sans MT,Calibri,sans-serif;
+			font-size: 13px;
+			padding: 0;
+			vertical-align: middle;
+		}
 	}
 }

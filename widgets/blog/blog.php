@@ -123,8 +123,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	function register_template_assets() {
-		wp_register_style( 'sow-blog-template-offset', plugin_dir_url( __FILE__ ) . 'css/offset.css' );
-
 		wp_register_script( 'sow-blog-template-masonry', plugin_dir_url( __FILE__ ) . 'js/masonry' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-isotope' ) );
 		wp_register_script( 'sow-blog-template-portfolio', plugin_dir_url( __FILE__ ) . 'js/portfolio' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-isotope' ) );
 
@@ -134,13 +132,13 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_template_name( $instance ) {
-		return $this->get_style_name( $instance );
+		return 'base';
 	}
 
 	function get_style_name( $instance ) {
 		$template = empty( $instance['template'] ) ? 'standard' : $instance['template'];
 
-		// If this template has any special assets, load them.
+		// If this template has any assets, load them.
 		if ( wp_style_is( 'sow-blog-template-' . $template, 'registered' ) ) {
 			wp_enqueue_style( 'sow-blog-template-' . $template );
 		}
@@ -194,6 +192,21 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		if ( empty( $instance ) ) {
 			return array();
 		}
+
+		// Ensure selected template is valid.
+		switch ( $instance['template'] ) {
+			case 'alternate':
+			case 'grid':
+			case 'masonry':
+			case 'offset':
+			case 'portfolio':
+			case 'standard':
+				break;
+			default:
+				$instance['template'] = 'standard';
+				break;
+		}
+
 		$instance['paged_id'] = ! empty( $instance['_sow_form_id'] ) ? (int) substr( $instance['_sow_form_id'], 0, 5 ) : null;
 
 		return $instance;
