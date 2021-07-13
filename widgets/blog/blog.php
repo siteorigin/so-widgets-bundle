@@ -15,6 +15,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			array(
 				'description' => __( 'Display blog posts in a list or grid. Choose a design that suits your content.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/blog-widget/',
+				'instance_storage' => true,
 				'panels_title' => false,
 			),
 			array(),
@@ -164,7 +165,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function portfolio_get_terms( $instance, $post_id = 0 ) {
+	static public function portfolio_get_terms( $instance, $post_id = 0 ) {
 		$terms = array();
 		if ( post_type_exists( 'jetpack-portfolio' ) ) {
 			if ( $post_id ) {
@@ -213,9 +214,12 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_template_variables( $instance, $args ) {
+		if ( ! isset( $instance['paged'] ) ) {
+			$instance['paged'] = ! empty( $_GET['sow-' . $instance['paged_id'] ] ) ? (int) $_GET['sow-' . $instance['paged_id'] ] : 1;
+		}
 		$query = wp_parse_args(
 			array(
-				'paged' => ! empty( $_GET['sow-' . $instance['paged_id'] ] ) ? (int) $_GET['sow-' . $instance['paged_id'] ] : 1,
+				'paged' => $instance['paged'],
 			),
 			siteorigin_widget_post_selector_process_query( $instance['posts'] )
 		);
@@ -251,13 +255,13 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		return array(
 			'title' => $instance['title'],
 			'settings' => $instance['settings'],
-			'template_settings' => apply_filters( 'siteorigin_widgets_blog_template_settings', $template_settings, $instance ),
+			'template_settings' => $template_settings,
 			'posts' => new WP_Query( apply_filters( 'siteorigin_widgets_blog_query', $query, $instance ) ),
 		);
 	}
 
 	// Used for generating the post entry meta.
-	function post_meta( $settings ) {
+	static public function post_meta( $settings ) {
 		if ( $settings['date'] ) :	
 			$date_format = isset( $settings['date_format'] ) ? $settings['date_format'] : null;
 			?>
@@ -306,7 +310,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	// Used for outputting the post featured image.
-	function post_featured_image( $settings, $categories = false, $size = 'post-thumbnail' ) {
+	static public function post_featured_image( $settings, $categories = false, $size = 'post-thumbnail' ) {
 		if ( $settings['featured_image'] && has_post_thumbnail() ) : ?>
 			<div class="entry-thumbnail">
 				<?php if ( $categories && $settings['categories'] && has_category() ) : ?>
@@ -325,7 +329,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	// Used for generating a custom excerpt with optional read more.
-	function generate_excerpt( $settings ) {
+	static public function generate_excerpt( $settings ) {
 		if ( $settings['read_more'] ) {
 			$read_more_text = ! empty( $settings['read_more_text'] ) ?  $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' );
 			$read_more_text = '<a class="more-link excerpt" href="' . esc_url( get_permalink() ) . '">

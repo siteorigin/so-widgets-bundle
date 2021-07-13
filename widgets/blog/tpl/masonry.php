@@ -1,5 +1,5 @@
 <article id="post-<?php the_ID(); ?>" <?php post_class( 'sow-masonry-item' ); ?>>
-	<?php $this->post_featured_image( $settings, true ); ?>
+	<?php SiteOrigin_Widget_Blog_Widget::post_featured_image( $settings, true ); ?>
 	<div class="sow-blog-content-wrapper">
 		<header class="entry-header">
 			<?php
@@ -9,7 +9,7 @@
 			);
 			?>
 			<div class="entry-meta">
-				<?php $this->post_meta( $settings ); ?>
+				<?php SiteOrigin_Widget_Blog_Widget::post_meta( $settings ); ?>
 			</div>
 		</header>
 
@@ -18,7 +18,7 @@
 				if ( $settings['content'] == 'full' ) {
 					the_content();
 				} else {
-					$this->generate_excerpt( $settings );
+					SiteOrigin_Widget_Blog_Widget::generate_excerpt( $settings );
 				}
 			?>
 		</div>

@@ -1,6 +1,6 @@
 <?php $thumbnail_class = ! $settings['featured_image'] || ! has_post_thumbnail() ? 'sow-no-thumbnail' : ''; ?>
 <article id="post-<?php the_ID(); ?>" <?php post_class( "sow-blog-columns $thumbnail_class" ); ?>>
-	<?php $this->post_featured_image( $settings ); ?>
+	<?php SiteOrigin_Widget_Blog_Widget::post_featured_image( $settings ); ?>
 	<div class="sow-blog-content-wrapper">
 		<header class="entry-header">
 			<?php
@@ -10,7 +10,7 @@
 			);
 			?>
 			<div class="entry-meta">
-				<?php $this->post_meta( $settings ); ?>
+				<?php SiteOrigin_Widget_Blog_Widget::post_meta( $settings ); ?>
 			</div>
 		</header>
 
@@ -19,7 +19,7 @@
 				if ( $settings['content'] == 'full' ) {
 					the_content();
 				} else {
-					$this->generate_excerpt( $settings );
+					SiteOrigin_Widget_Blog_Widget::generate_excerpt( $settings );
 				}
 			?>
 		</div>

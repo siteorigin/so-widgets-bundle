@@ -1,7 +1,7 @@
 <?php
 $types = null;
 if ( $settings['categories'] ) {
-	$terms = $this->portfolio_get_terms( $instance, get_the_ID() );
+	$terms = SiteOrigin_Widget_Blog_Widget::portfolio_get_terms( $instance, get_the_ID() );
 	if ( ! is_wp_error( $terms ) ) {
 		$filtering_links = array();
 

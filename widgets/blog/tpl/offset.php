@@ -35,7 +35,7 @@
 		<?php endif; ?>
 	</div>
 	<div class="sow-blog-entry">
-		<?php $this->post_featured_image( $settings ); ?>
+		<?php SiteOrigin_Widget_Blog_Widget::post_featured_image( $settings ); ?>
 		<div class="sow-blog-content-wrapper">
 			<header class="entry-header">
 				<?php
@@ -75,7 +75,7 @@
 					if ( $settings['content'] == 'full' ) {
 						the_content();
 					} else {
-						$this->generate_excerpt( $settings );
+						SiteOrigin_Widget_Blog_Widget::generate_excerpt( $settings );
 					}
 				?>
 			</div>
