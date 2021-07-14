@@ -99,6 +99,15 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.22.0 - 15 July 2021 =
+* New Widget! Anything Carousel: Display images, text, or any other content in a carousel.
+* Headline: Added a global Responsive Breakpoint setting at Plugins > SiteOrigin Widgets > Headline: Settings.
+* Headline: Added Mobile Alignment settings for the Headline, Sub Headline, and Divider.
+* Layout Builder: Widget Areas: Prevented the creation of a CSS file for every page.
+* Slider: Disallowed Jetpack Lazy Loading.
+* Developer: Added a preset form field. Store a selected preset. [Docs](https://siteorigin.com/docs/widgets-bundle/form-building/presets/).
+* Developer: Fixed `SITEORIGIN_WIDGETS_DEBUG` constant. Useful for debugging, bypasses widget CSS cache. [Docs](https://siteorigin.com/docs/widgets-bundle/templating/less-stylesheets/).
+
 = 1.21.0 - 24 June 2021 =
 * Google Maps: Prevented a jump on load when Info Windows is set to always display.
 * Google Fonts: Ensured all weights and styles are imported.
