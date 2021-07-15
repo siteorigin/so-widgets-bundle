@@ -354,10 +354,20 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		$pagination_markup = defined( 'SITEORIGIN_PREMIUM_VERSION' ) ? apply_filters( 'siteorigin_widgets_blog_pagination_markup', false, $settings, $posts, $instance ) : false;
 
 		if ( empty( $pagination_markup ) ) {
+			if ( isset( $settings['pagination_reload'] ) && $settings['pagination_reload'] == 'ajax' ) {
+				$current = 99999;
+				$show_all_prev_next = true;
+			} else {
+				$current = max( 1, $posts->query['paged'] );
+				$show_all_prev_next = false;
+			}
+
 			$pagination_markup = paginate_links( array(
 				'format' => '?sow-' . $instance['paged_id'] . '=%#%',
-				'current' => max( 1, $posts->query['paged'] ),
-				'total' => $posts->max_num_pages
+				'total' => $posts->max_num_pages,
+				'current' => $current,
+				'show_all' => $show_all_prev_next,
+				'prev_next' => ! $show_all_prev_next,
 			) );
 		}
 
