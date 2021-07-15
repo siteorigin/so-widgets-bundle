@@ -5,7 +5,7 @@
 		data-template="<?php echo esc_attr( $instance['template'] ); ?>"
 		data-settings="<?php echo esc_attr( json_encode( $settings ) ); ?>"
 		data-paged="<?php echo esc_attr( $posts->query['paged'] ); ?>"
-		data-total-pages="<?php echo esc_attr( $posts->query['max_num_pages'] ); ?>"
+		data-total-pages="<?php echo esc_attr( $posts->max_num_pages ); ?>"
 		data-hash="<?php echo esc_attr( $storage_hash ); ?>"
 	>
 		<?php
