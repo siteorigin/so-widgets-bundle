@@ -44,7 +44,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		return array(
 			'slides_to_scroll_text' => array(
 				'label' => __( 'Slides to show ', 'so-widgets-bundle' ),
-				'description' => __( 'The number of slides to show on %s', 'so-widgets-bundle' ),
+				'description' => __( 'The number of slides to show on %s.', 'so-widgets-bundle' ),
 			),
 		);
 	}
@@ -280,8 +280,8 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		}
 
 		return sprintf(
-			__( 'Gain the ability to use widgets and layouts in your carousel items with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/anything-carousel" target="_blank" rel="noopener noreferrer">',
+			__( 'Add widgets and layouts to your carousel items with %sSiteOrigin Premium%s.', 'so-widgets-bundle' ),
+			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/carousel" target="_blank" rel="noopener noreferrer">',
 			'</a>'
 		);
 	}
