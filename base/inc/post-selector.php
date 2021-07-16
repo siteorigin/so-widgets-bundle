@@ -36,7 +36,13 @@ function siteorigin_widget_post_selector_process_query( $query, $exclude_current
 		$query['tax_query'] = array();
 		$query['tax_query']['relation'] = isset( $query['tax_query_relation'] ) ? $query['tax_query_relation'] : 'OR';
 		foreach($tax_queries as $tq) {
-			list($tax, $term) = explode(':', $tq);
+			if ( strpos( $tq, ':' ) !== false ) {
+				list( $tax, $term ) = explode( ':', $tq );
+			} else {
+				// There's no separator, try using the previous $tax.
+				$tax = empty( $tax ) ? 'category' : $tax;
+				$term = $tq;
+			}
 
 			if( empty($tax) || empty($term) ) continue;
 			$query['tax_query'][] = array(

@@ -1,5 +1,7 @@
 @import "../../../base/less/mixins";
 
+@responsive_breakpoint: 780px;
+
 @headline_tag: h1;
 @headline_font: default;
 @headline_font_weight: 400;
@@ -8,6 +10,7 @@
 @headline_line_height: 1.4em;
 @headline_margin: default;
 @headline_align: center;
+@headline_mobile_align: center;
 @headline_color: default;
 @headline_hover_color: default;
 
@@ -19,6 +22,7 @@
 @sub_headline_line_height: 1.4em;
 @sub_headline_margin: default;
 @sub_headline_align: center;
+@sub_headline_mobile_align: center;
 @sub_headline_color: default;
 @sub_headline_hover_color: default;
 
@@ -28,6 +32,7 @@
 @divider_color: #EEEEEE;
 @divider_margin: 20px;
 @divider_align: center;
+@divider_mobile_align: center;
 
 .sow-headline-container {
 
@@ -41,6 +46,10 @@
 
         margin-top: @headline_margin;
         margin-bottom: @headline_margin;
+
+        @media (max-width: @responsive_breakpoint) {
+            text-align: @headline_mobile_align;
+        }
 
         & a {
             color: @headline_color;
@@ -61,6 +70,10 @@
         margin-top: @sub_headline_margin;
         margin-bottom: @sub_headline_margin;
 
+        @media (max-width: @responsive_breakpoint) {
+            text-align: @sub_headline_mobile_align;
+        }
+
         & a {
             color: @sub_headline_color;
             &:hover {
@@ -75,6 +88,10 @@
 
         margin-top: @divider_margin;
         margin-bottom: @divider_margin;
+
+        @media (max-width: @responsive_breakpoint) {
+            text-align: @divider_mobile_align;
+        }
 
         .decoration-inside {
             height: 1px;

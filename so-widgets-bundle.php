@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: SiteOrigin Widgets Bundle
-Description: A collection of all widgets, neatly bundled into a single plugin. It's also a framework to code your own widgets on top of.
+Description: A highly customizable collection of widgets, ready to be used anywhere, neatly bundled into a single plugin.
 Version: dev
 Text Domain: so-widgets-bundle
 Domain Path: /lang
@@ -772,6 +772,9 @@ class SiteOrigin_Widgets_Bundle {
 		}
 		$links['manage'] = '<a href="' . admin_url('plugins.php?page=so-widgets-plugins') . '">'.__('Manage Widgets', 'so-widgets-bundle').'</a>';
 		$links['support'] = '<a href="https://siteorigin.com/thread/" target="_blank" rel="noopener noreferrer">'.__('Support', 'so-widgets-bundle').'</a>';
+		if ( apply_filters( 'siteorigin_premium_upgrade_teaser', true ) && ! defined( 'SITEORIGIN_PREMIUM_VERSION' ) ) {
+			$links['addons'] = '<a href="https://siteorigin.com/downloads/premium/?featured_plugin=so-widgets-bundle" style="color: #3db634" target="_blank" rel="noopener noreferrer">' . __( 'Addons', 'so-widgets-bundle' ) . '</a>';
+		}
 		return $links;
 	}
 
