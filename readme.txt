@@ -105,6 +105,7 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 * Headline: Added Mobile Alignment settings for the Headline, Sub Headline, and Divider.
 * Layout Builder: Widget Areas: Prevented the creation of a CSS file for every page.
 * Slider: Disallowed Jetpack Lazy Loading.
+* Video Player: Added `Enable browser video controls` setting.
 * Developer: Added a preset form field. Store a selected preset. [Docs](https://siteorigin.com/docs/widgets-bundle/form-building/presets/).
 * Developer: Fixed `SITEORIGIN_WIDGETS_DEBUG` constant. Useful for debugging, bypasses widget CSS cache. [Docs](https://siteorigin.com/docs/widgets-bundle/templating/less-stylesheets/).
 
