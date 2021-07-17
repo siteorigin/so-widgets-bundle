@@ -117,7 +117,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 							),
 							'color' => array(
 								'type' => 'color',
-								'label' => __( 'Text color', 'so-widgets-bundle' ),
+								'label' => __( 'Color', 'so-widgets-bundle' ),
 							),
 							'bottom_margin' => array(
 								'type' => 'measurement',
