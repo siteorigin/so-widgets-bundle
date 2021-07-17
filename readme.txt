@@ -22,6 +22,7 @@ SiteOrigin Widgets are ready to be used **anywhere**, in [Page Builder by SiteOr
 Our collection is growing; here's what we have so far:
 
 - **Accordion:** Squeeze a lot of content into a small space.
+- **Anything Carousel:** Display images, text, or any other content in a carousel.
 - **Button:** A simple button widget with a variety of styling options.
 - **Call To Action:** Get users moving in the right direction.
 - **Contact Form:** A lightweight contact form builder.
