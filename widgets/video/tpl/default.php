@@ -52,7 +52,7 @@ do_action( 'siteorigin_widgets_sow-video_before_video', $instance );
 			<?php foreach ( $video_args as $k => $v ) : ?>
 				<?php echo $k . '="' . $v . '" '; ?>
 			<?php endforeach; ?>
-			<?php if ( apply_filters( 'sow_video_add_contorls', false ) ): ?>
+			<?php if ( apply_filters( 'sow_video_add_controls', false ) ): ?>
 				<?php echo 'controls'; ?>
 			<?php endif; ?>
 		>
