@@ -88,18 +88,22 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 						'date' => array(
 							'type' => 'checkbox',
 							'label' => __( 'Post date', 'so-widgets-bundle' ),
+							'default' => true,
 						),
 						'author' => array(
 							'type' => 'checkbox',
 							'label' => __( 'Post author', 'so-widgets-bundle' ),
+							'default' => true,
 						),
 						'categories' => array(
 							'type' => 'checkbox',
 							'label' => __( 'Post categories', 'so-widgets-bundle' ),
+							'default' => true,
 						),
 						'comment_count' => array(
 							'type' => 'checkbox',
 							'label' => __( 'Post comment count', 'so-widgets-bundle' ),
+							'default' => true,
 						),
 					),
 				),
@@ -195,18 +199,22 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			return array();
 		}
 
-		// Ensure selected template is valid.
-		switch ( $instance['template'] ) {
-			case 'alternate':
-			case 'grid':
-			case 'masonry':
-			case 'offset':
-			case 'portfolio':
-			case 'standard':
-				break;
-			default:
-				$instance['template'] = 'standard';
-				break;
+		if ( empty( $instance['template'] ) ) {
+			$instance['template'] = 'standard';
+		} else {
+			// Ensure selected template is valid.
+			switch ( $instance['template'] ) {
+				case 'alternate':
+				case 'grid':
+				case 'masonry':
+				case 'offset':
+				case 'portfolio':
+				case 'standard':
+					break;
+				default:
+					$instance['template'] = 'standard';
+					break;
+			}
 		}
 
 		$instance['paged_id'] = ! empty( $instance['_sow_form_id'] ) ? (int) substr( $instance['_sow_form_id'], 0, 5 ) : null;
