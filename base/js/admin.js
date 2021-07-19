@@ -24,9 +24,9 @@ var sowbForms = window.sowbForms || {};
 				if ($el.data('sow-form-setup') === true) {
 					return true;
 				}
-				// If we're in the main widgets interface and the form isn't visible and it isn't contained in a
+				// If we're in the legacy main widgets interface and the form isn't visible and it isn't contained in a
 				// panels dialog (when using the Layout Builder widget), don't worry about setting it up.
-				if ($body.hasClass('widgets-php') && !$el.is(':visible') && $el.closest('.panel-dialog').length === 0) {
+				if ( $body.hasClass( 'widgets-php' ) && ! $body.hasClass( 'block-editor-page' ) && ! $el.is( ':visible' ) && $el.closest( '.panel-dialog' ).length === 0 ) {
 					return true;
 				}
 
@@ -1439,12 +1439,11 @@ var sowbForms = window.sowbForms || {};
 		}, 200);
 	});
 	var $body = $( 'body' );
-	if ( $body.hasClass('wp-customizer') ) {
-		// Setup new widgets when they're added in the customizer interface
-		$(document).on('widget-added', function (e, widget) {
-			widget.find('.siteorigin-widget-form').sowSetupForm();
-		});
-	}
+	// Setup new widgets when they're added in the Customizer or new widgets interface.
+	$( document ).on( 'widget-added', function( e, widget ) {
+		console.log(widget.find( '.siteorigin-widget-form' ));
+		widget.find( '.siteorigin-widget-form' ).sowSetupForm();
+	} );
 	
 	if ( $body.hasClass('block-editor-page') ) {
 		// Setup new widgets when they're previewed in the block editor.
