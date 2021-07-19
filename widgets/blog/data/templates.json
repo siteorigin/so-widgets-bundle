@@ -4,7 +4,7 @@
 		"values": {
 			"settings": {
 				"featured_image": true,
-				"content": true,
+				"content": "full",
 				"read_more": true,
 				"date": true,
 				"author": true,
@@ -19,7 +19,7 @@
 			"settings": {
 				"columns": 2,
 				"featured_image": true,
-				"content": true,
+				"content": "full",
 				"read_more": true,
 				"date": true,
 				"author": true,
@@ -33,7 +33,7 @@
 		"values": {
 			"settings": {
 				"featured_image": true,
-				"content": true,
+				"content": "full",
 				"read_more": true,
 				"date": true,
 				"author": true,
@@ -47,7 +47,7 @@
 		"values": {
 			"settings": {
 				"featured_image": true,
-				"content": true,
+				"content": "full",
 				"read_more": true,
 				"date": true,
 				"author": true,
@@ -62,7 +62,7 @@
 			"settings": {
 				"columns": 2,
 				"featured_image": true,
-				"content": true,
+				"content": "full",
 				"read_more": true,
 				"date": true,
 				"author": true,
