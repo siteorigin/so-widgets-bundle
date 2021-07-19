@@ -1,17 +1,34 @@
 <article id="post-<?php the_ID(); ?>" <?php post_class( 'sow-blog-columns' ); ?>>
 	<div class="sow-blog-entry-offset">
 		<?php if ( $settings['author'] ) : ?>
-			<div class="entry-author-avatar">
-				<a href="<?php echo get_author_posts_url( get_the_author_meta( 'ID' ) ); ?>">
-					<?php echo get_avatar( get_the_author_meta( 'ID' ), 70 ); ?>
-				</a>
-			</div>
-			<div class="entry-author-link">
-				<span class="meta-text"><?php esc_html_e( 'Written by', 'so-widgets-bundle' ); ?></span>
-				<a href="<?php echo get_author_posts_url( get_the_author_meta( 'ID' ) ); ?>">
-					<?php echo get_the_author(); ?>
-				</a>
-			</div>
+			<?php if ( function_exists( 'coauthors_posts_links' ) ) : ?>
+				<?php $coauthors = get_coauthors(); ?>
+				<span class="meta-text">
+					<?php echo esc_html( _n( 'Author', 'Authors', count( $coauthors ), 'so-widgets-bundle' ) ); ?>	
+				</span>
+				<?php foreach ( $coauthors as $author ) : ?>
+					<div class="entry-author-avatar">
+						<a href="<?php echo get_author_posts_url( $author->ID ); ?>">
+							<?php echo get_avatar( $author->ID, 70 ); ?>
+						</a>
+					</div>
+					<div class="entry-author-link">
+						<?php echo coauthors_posts_links_single( $author ); ?>
+					</div>
+				<?php endforeach; ?>
+			<?php else: ?>
+				<div class="entry-author-avatar">
+					<a href="<?php echo get_author_posts_url( get_the_author_meta( 'ID' ) ); ?>">
+						<?php echo get_avatar( get_the_author_meta( 'ID' ), 70 ); ?>
+					</a>
+				</div>
+				<div class="entry-author-link">
+					<span class="meta-text"><?php esc_html_e( 'Written by', 'so-widgets-bundle' ); ?></span>
+					<a href="<?php echo get_author_posts_url( get_the_author_meta( 'ID' ) ); ?>">
+						<?php echo get_the_author(); ?>
+					</a>
+				</div>
+			<?php endif; ?>
 		<?php endif; ?>
 
 		<?php if ( $settings['categories'] ) : ?>
