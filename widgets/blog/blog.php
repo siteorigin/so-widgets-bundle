@@ -74,6 +74,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'type' => 'select',
 							'label' => __( 'Post content ', 'so-widgets-bundle' ),
 							'description' => __( 'Choose how to display your post content. Select Full Post Content if using the "more" quicktag.', 'so-widgets-bundle' ),
+							'default' => 'full',
 							'options' => array(
 								'excerpt' => __( 'Post Excerpt', 'so-widgets-bundle' ),
 								'full' => __( 'Full Post Content', 'so-widgets-bundle' ),
