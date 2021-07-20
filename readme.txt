@@ -100,6 +100,10 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.23.0 - 20 July 2021 =
+* Compatibility enhancements for WordPress 5.8.
+* Anything Carousel: Resolved responsive behaviour issue.
+
 = 1.22.0 - 15 July 2021 =
 * New Widget! Anything Carousel: Display images, text, or any other content in a carousel.
 * Headline: Added a global Responsive Breakpoint setting at Plugins > SiteOrigin Widgets > Headline: Settings.
