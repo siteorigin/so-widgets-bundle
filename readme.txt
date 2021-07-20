@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: widget, button, slider, hero, google maps, image, carousel, features, icons, price table, tinymce, social icons
 Requires at least: 4.2
-Tested up to: 5.7
+Tested up to: 5.8
 Requires PHP: 5.6.20
 Stable tag: trunk
 Build time: unbuilt
@@ -22,6 +22,7 @@ SiteOrigin Widgets are ready to be used **anywhere**, in [Page Builder by SiteOr
 Our collection is growing; here's what we have so far:
 
 - **Accordion:** Squeeze a lot of content into a small space.
+- **Anything Carousel:** Display images, text, or any other content in a carousel.
 - **Button:** A simple button widget with a variety of styling options.
 - **Call To Action:** Get users moving in the right direction.
 - **Contact Form:** A lightweight contact form builder.
@@ -98,6 +99,10 @@ SiteOrigin Premium includes access to our professional email support service, pe
 The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets. Widgets can be enabled or disabled as needed. If a widget offers global settings, you can access those via the Settings button next to each applicable widget.
 
 == Changelog ==
+
+= 1.23.0 - 20 July 2021 =
+* Compatibility enhancements for WordPress 5.8.
+* Anything Carousel: Resolved responsive behaviour issue.
 
 = 1.22.0 - 15 July 2021 =
 * New Widget! Anything Carousel: Display images, text, or any other content in a carousel.
