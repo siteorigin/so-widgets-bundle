@@ -188,3 +188,33 @@
 	}
 
 }
+
+@media (max-width: @mobile_width) {
+	&.so-widget-sow-testimonials > .sow-testimonials > .sow-testimonial-wrapper {
+		&.sow-layout-text-above .sow-testimonial-text {
+			margin-bottom: 10px;
+		}
+		.sow-testimonial {
+			align-items: center;
+			flex-direction: column;
+
+			.sow-testimonial-user {
+				float: none;
+				padding: 0 0 15px;
+				text-align: center;
+				width: 100%;
+
+				.sow-image-wrapper {
+					height: auto;
+					width: 100%;
+
+					img {
+						width: @image_size;
+						height: @image_size;
+						max-width: 100%;
+					}
+				}
+			}
+		}
+	}
+}
