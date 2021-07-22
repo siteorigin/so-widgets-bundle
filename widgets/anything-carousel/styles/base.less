@@ -21,6 +21,14 @@
 @navigation_dots_color: #bebebe;
 @navigation_dots_color_hover: #f14e4e;
 
+@breakpoint_tablet_landscape: default;
+@breakpoint_tablet_portrait: default;
+@breakpoint_mobile: default;
+@navigation_desktop: default;
+@navigation_tablet_landscape: default;
+@navigation_tablet_portrait: default;
+@navigation_mobile: default;
+
 .sow-carousel-container {
 	a.sow-carousel-next {
 		margin-left: @navigation_arrow_margin;
@@ -55,6 +63,31 @@
 		&:hover {
 			color: @navigation_arrow_color_hover;
 			border-color: @navigation_arrow_color_hover;
+		}
+
+
+		& when not ( isnumber( @navigation_desktop ) ) {
+			@media (min-width: @breakpoint_tablet_landscape) {
+				display: none;
+			}
+		}
+
+		& when not ( isnumber( @navigation_tablet_landscape ) ) {
+			@media (min-width: @breakpoint_tablet_portrait) and (max-width: @breakpoint_tablet_landscape) {
+				display: none;
+			}
+		}
+
+		& when not ( isnumber( @navigation_tablet_portrait ) ) {
+			@media (min-width: @breakpoint_mobile) and (max-width: @breakpoint_tablet_portrait) {
+				display: none;
+			}
+		}
+
+		& when not ( isnumber(  @navigation_mobile ) ) {
+			@media (max-width: @breakpoint_mobile) {
+				display: none;
+			}
 		}
 	}
 
