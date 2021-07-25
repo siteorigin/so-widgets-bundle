@@ -269,7 +269,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	// Used for generating the post entry meta.
 	static public function post_meta( $settings ) {
 		if ( $settings['date'] ) :	
 			$date_format = isset( $settings['date_format'] ) ? $settings['date_format'] : null;
@@ -322,7 +321,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		<?php endif;
 	}
 
-	// Used for outputting the post featured image.
 	static public function post_featured_image( $settings, $categories = false, $size = 'post-thumbnail' ) {
 		if ( $settings['featured_image'] && has_post_thumbnail() ) : ?>
 			<div class="entry-thumbnail">
@@ -341,7 +339,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		endif;
 	}
 
-	// Used for generating a custom excerpt with optional read more.
 	static public function generate_excerpt( $settings ) {
 		if ( $settings['read_more'] ) {
 			$read_more_text = ! empty( $settings['read_more_text'] ) ?  $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' );
