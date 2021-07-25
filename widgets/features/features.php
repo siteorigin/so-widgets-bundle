@@ -13,8 +13,9 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			'sow-features',
 			__( 'SiteOrigin Features', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Displays a block of features with icons.', 'so-widgets-bundle' ),
-				'help'        => 'https://siteorigin.com/widgets-bundle/features-widget-documentation/'
+				'description'  => __( 'Displays a block of features with icons.', 'so-widgets-bundle' ),
+				'help'         => 'https://siteorigin.com/widgets-bundle/features-widget-documentation/',
+				'panels_title' => false,
 			),
 			array(),
 			false,

@@ -131,6 +131,16 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 							'video_type[self]'     => array( 'hide' ),
 						)
 					),
+					'controls' => array(
+						'type'          => 'checkbox',
+						'default'       => false,
+						'label'         => __( 'Controls', 'so-widgets-bundle' ),
+						'description'   => __( 'Enable browser video controls.', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'video_type[self]'     => array( 'show' ),
+							'video_type[external]' => array( 'hide' ),
+						)
+					),
 				),
 			),
 		);
@@ -228,6 +238,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'autoplay'                => ! empty( $instance['playback']['autoplay'] ),
 			'loop'                    => ! empty( $instance['playback']['loop'] ),
 			'related_videos'          => ! empty( $instance['playback']['related_videos'] ),
+			'controls'                => ! empty( $instance['playback']['controls'] ),
 			'skin_class'              => 'default',
 			'fitvids'                 => ! empty( $instance['playback']['fitvids'] ),
 		);
