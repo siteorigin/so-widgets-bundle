@@ -273,7 +273,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		if ( $settings['date'] ) :	
 			$date_format = isset( $settings['date_format'] ) ? $settings['date_format'] : null;
 			?>
-			<span class="entry-date">
+			<span class="sow-entry-date">
 				<a href="<?php echo esc_url( get_permalink() ); ?>" rel="bookmark">
 					<time class="published" datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
 						<?php echo esc_html( get_the_date( $date_format ) ); ?>
@@ -286,11 +286,11 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		<?php endif; ?>
 
 		<?php if ( $settings['author'] ) : ?>
-			<span class="entry-author-link byline">
+			<span class="sow-entry-author-link byline">
 				<?php if ( function_exists( 'coauthors_posts_links' ) ) : ?>
 					<?php coauthors_posts_links(); ?>
 				<?php else: ?>
-					<span class="author vcard">
+					<span class="sow-author author vcard">
 						<a class="url fn n" href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>" rel="author">
 							<?php echo esc_html( get_the_author() ); ?>
 						</a>
@@ -300,7 +300,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		<?php endif; ?>
 
 		<?php if ( $settings['categories'] && has_category() ) : ?>
-			<span class="entry-categories">
+			<span class="sow-entry-categories">
 				<?php
 				/* translators: used between list items, there is a space after the comma */
 				the_category( esc_html__( ', ', 'so-widgets-bundle' ) );
@@ -309,7 +309,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		<?php endif; ?>
 
 		<?php if ( comments_open() && $settings['comment_count'] ) : ?>
-			<span class="entry-comments">
+			<span class="sow-entry-comments">
 				<?php
 				comments_popup_link(
 					esc_html__( 'Leave a comment', 'so-widgets-bundle' ),
@@ -323,9 +323,9 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 	static public function post_featured_image( $settings, $categories = false, $size = 'post-thumbnail' ) {
 		if ( $settings['featured_image'] && has_post_thumbnail() ) : ?>
-			<div class="entry-thumbnail">
+			<div class="sow-entry-thumbnail">
 				<?php if ( $categories && $settings['categories'] && has_category() ) : ?>
-					<div class="thumbnail-meta">
+					<div class="sow-thumbnail-meta">
 						<?php
 						echo get_the_category_list();
 						?>
@@ -342,7 +342,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	static public function generate_excerpt( $settings ) {
 		if ( $settings['read_more'] ) {
 			$read_more_text = ! empty( $settings['read_more_text'] ) ?  $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' );
-			$read_more_text = '<a class="more-link excerpt" href="' . esc_url( get_permalink() ) . '">
+			$read_more_text = '<a class="sow-more-link more-link excerpt" href="' . esc_url( get_permalink() ) . '">
 			' . esc_html( $read_more_text ) . '</a>';
 		}
 		$length = apply_filters( 'siteorigin_widgets_blog_excerpt_length', 55 );
@@ -385,7 +385,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			?>
 			<nav class="sow-post-navigation">
 				<h2 class="screen-reader-text"><?php esc_html_e( 'Post navigation', 'so-widgets-bundle' ); ?></h2>
-				<div class="nav-links">
+				<div class="sow-nav-links">
 					<?php echo $pagination_markup; ?>
 				</div>
 			</nav>

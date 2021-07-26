@@ -17,14 +17,14 @@ if ( $settings['categories'] ) {
 }
 ?>
 <article id="post-<?php the_ID(); ?> <?php echo $types; ?>" <?php post_class( 'sow-portfolio-item ' . $types ); ?>>
-	<div class="entry-thumbnail">
+	<div class="sow-entry-thumbnail">
 		<a href="<?php the_permalink(); ?>">
-			<div class="entry-overlay"></div>
-			<div class="entry-content">
-				<?php the_title( '<h2 class="entry-title">', '</h2>' ); ?>
+			<div class="sow-entry-overlay"></div>
+			<div class="sow-entry-content">
+				<?php the_title( '<h2 class="sow-entry-title">', '</h2>' ); ?>
 				<?php if ( $settings['categories'] ) : ?>
-					<div class="entry-divider"></div>
-					<span class="entry-project-type"><?php echo $filtering; ?></span>
+					<div class="sow-entry-divider"></div>
+					<span class="sow-entry-project-type"><?php echo $filtering; ?></span>
 				<?php endif; ?>
 			</div>
 			<?php the_post_thumbnail(); ?>
