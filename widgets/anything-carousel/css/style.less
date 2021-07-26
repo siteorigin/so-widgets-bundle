@@ -121,8 +121,14 @@
 						}
 					}
 
-					&.slick-active button:before {
-						opacity: 1;
+					&.slick-active button {
+						&:before {
+							opacity: 1;
+						}
+						
+						&:hover {
+							cursor: default;
+						}
 					}
 				}
 			}
