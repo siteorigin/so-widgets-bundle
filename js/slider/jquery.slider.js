@@ -25,13 +25,35 @@ sowb.SiteOriginSlider = function($) {
 			var
 				sentinel = $(slider).find('.cycle-sentinel'),
 				active = $(newActive),
-				video = active.find('video.sow-background-element');
+				video = active.find('video.sow-background-element'),
+				$unmuteButton = $( slider ).prev();
 
 			if( speed === undefined ) {
 				sentinel.css( 'height', active.outerHeight() + 'px' );
 			}
 			else {
 				sentinel.animate( {height: active.outerHeight()}, speed );
+			}
+
+			// Hide the unmute button as needed.
+			if ( $unmuteButton.length ) {
+				// Mute all slide video.
+				$( slider ).find( 'video.sow-full-element' ).prop( 'muted', true );
+
+				var $activeSlideVideo = $( newActive ).find( 'video.sow-full-element' );
+				if ( $activeSlideVideo.length ) {
+					$unmuteButton.clearQueue().fadeIn( speed );
+
+					// Unmute video if previously unmuted.
+					if ( $activeSlideVideo.hasClass( 'sow-player-unmuted' ) ) {
+						$unmuteButton.addClass( 'sow-player-unmuted' );
+						$activeSlideVideo.prop( 'muted', false );
+					} else {
+						$unmuteButton.removeClass( 'sow-player-unmuted' );
+					}
+				} else {
+					$unmuteButton.clearQueue().fadeOut( speed );
+				}
 			}
 
 			if( video.length ) {
@@ -254,6 +276,27 @@ jQuery( function($){
 						}
 					}
 				);
+
+				if ( settings.unmute ) {
+					$( '.sow-player-controls-sound' ).on( 'click', function() {
+						var $sc = $( this ),
+							$activeSlideVideo = $sc.next().find( '.cycle-slide-active video.sow-full-element' );
+
+						$activeSlideVideo.prop( 'muted',
+							! $activeSlideVideo.prop( 'muted' )
+						);
+
+						if ( ! $activeSlideVideo.prop( 'muted' ) ) {
+							// Used for changing the text/icon of mute button.
+							$sc.addClass( 'sow-player-unmuted' );
+							// State tracking.
+							$activeSlideVideo.addClass( 'sow-player-unmuted' );
+						} else {
+							$sc.removeClass( 'sow-player-unmuted' );
+							$activeSlideVideo.removeClass( 'sow-player-muted' );
+						}
+					} );
+				}
 			};
 
 			var images = $$.find( 'img.sow-slider-background-image, img.sow-slider-foreground-image' );

@@ -1,0 +1,32 @@
+@unmute_position: top_right;
+.sow-player-controls-sound {
+	background: rgba(0,0,0,0.5);
+	color: #fff;
+	cursor: pointer;
+	padding: 5px;
+	position: absolute;
+	z-index: 101;
+	unmute_position: @unmute_position;
+
+	& when ( @unmute_position = top_right ) {
+		top: 0;
+		right: 0;
+	}
+	& when ( @unmute_position = bottom_right ) {
+		right: 0;
+		bottom: 0;
+	}
+	& when ( @unmute_position = bottom_left ) {
+		bottom: 0;
+		left: 0;
+	}
+
+	& when ( @unmute_position = top_left ) {
+		top: 0;
+		left: 0;
+	}
+
+	&.sow-player-unmuted {
+		border: 1px solid #0f0; /* Placeholder */
+	}
+}

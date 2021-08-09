@@ -34,6 +34,10 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			)
 		);
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_cycle_swipe' ) );
+
+		// Add unmute button LESS.
+		add_filter( 'siteorigin_widgets_less_variables_' . $this->id_base, array( $this, 'add_less_variables' ), 10, 2 );
+		add_filter( 'siteorigin_widgets_less_vars_' . $this->id_base, array( $this, 'add_unmute_less' ), 10, 4 );
 	}
 
 	function register_cycle_swipe() {
@@ -240,7 +244,6 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'nav_always_show_mobile'   => ! empty( $controls['nav_always_show_mobile'] ) ? true : '',
 			'breakpoint'               => ! empty( $controls['breakpoint'] ) ? $controls['breakpoint'] : '780px',
 			'unmute'                   => ! empty( $controls['unmute'] ),
-			'unmute_position'          => ! empty( $controls['unmute_position'] ) ? $controls['unmute_position'] : 'top_right',
 		);
 	}
 
@@ -263,7 +266,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				?><div class="sow-slider-base" style="display: none"><?php
 				if ( isset( $controls['unmute'] ) && $controls['unmute'] ) {
 					?>
-					<span class="sow-player-controls-sound">&nbsp;</span>
+					<span class="sow-player-controls-sound" style="display: none;">(Unmute Placeholder)</span>
 					<?php
 				}
 				break;
@@ -452,6 +455,39 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			$video_element .= '</video>';
 			echo $video_element;
 		}
+	}
+
+	/**
+	 * If the unmute button is enabled, inject unmute LESS.
+	 *
+	 * @param string $less The LESS content.
+	 * @param array $vars The widget LESS variables.
+	 * @param array $instance The widget instance.
+	 * @param SiteOrigin_Widget $widget The widget object.
+	 */
+	function add_unmute_less( $less, $vars, $instance, $widget) {
+		if ( empty( $less ) || empty( $instance['controls']['unmute'] )  ) {
+			return $less;
+		}
+
+		$less .= file_get_contents( plugin_dir_path( __FILE__ ) . 'less/unmute.less' );
+		return $less;
+	}
+
+	/**
+	 * If the unmute button is enabled, add unmute_position LESS variable.
+	 *
+	 * @param array $less An array containing all LESS variables.
+	 * @param array $instance The widget instance.
+	 */
+	function add_less_variables( $less_variables, $instance  ) {
+		if ( empty( $less_variables ) || empty( $instance['controls']['unmute'] )  ) {
+			return $less_variables;
+		}
+
+		$less_variables['unmute_position'] = ! empty( $instance['controls']['unmute_position'] ) ? $instance['controls']['unmute_position'] : 'top_right';
+
+		return $less_variables;
 	}
 
 }
