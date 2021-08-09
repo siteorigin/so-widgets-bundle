@@ -28,41 +28,6 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 
 	function get_widget_form() {
-		$controls = $this->control_form_fields();
-		siteorigin_widgets_array_insert(
-			$controls,
-			'nav_always_show_mobile',
-			array(
-				'unmute' => array(
-					'type' => 'checkbox',
-					'label' => __( 'Unmute button', 'so-widgets-bundle' ),
-					'description' => __( 'To allow for slide backgrounds to autoplay, videos must be muted by default. This button will allow users to unmute videos.', 'so-widgets-bundle' ),
-					'default' => false,
-					'state_emitter' => array(
-						'callback' => 'conditional',
-						'args' => array(
-							'unmute[show]: val',
-							'unmute[hide]: ! val'
-						),
-					),
-				),
-				'unmute_position' => array(
-					'type' => 'select',
-					'label' => __( 'Unmute button position', 'so-widgets-bundle' ),
-					'options' => array(
-						'top_right' => __( 'Top right', 'so-widgets-bundle' ),
-						'bottom_right' => __( 'Bottom right', 'so-widgets-bundle' ),
-						'bottom_left' => __( 'Bottom left', 'so-widgets-bundle' ),
-						'top_left' => __( 'Top left', 'so-widgets-bundle' ),
-					),
-					'state_handler' => array(
-						'unmute[show]' => array( 'show' ),
-						'unmute[hide]' => array( 'hide' ),
-					),
-				),
-			)
-		);
-
 		return array(
 			'frames' => array(
 				'type' => 'repeater',

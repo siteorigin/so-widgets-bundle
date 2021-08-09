@@ -130,6 +130,36 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'type' => 'checkbox',
 				'label' => __( 'Always show navigation on mobile', 'so-widgets-bundle' ),
 			),
+
+			'unmute' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Unmute button', 'so-widgets-bundle' ),
+				'description' => __( 'To allow for slide backgrounds to autoplay, videos must be muted by default. This button will allow users to unmute videos.', 'so-widgets-bundle' ),
+				'default' => false,
+				'state_emitter' => array(
+					'callback' => 'conditional',
+					'args' => array(
+						'unmute_slider[show]: val',
+						'unmute_slider[hide]: ! val'
+					),
+				),
+			),
+
+			'unmute_position' => array(
+				'type' => 'select',
+				'label' => __( 'Unmute button position', 'so-widgets-bundle' ),
+				'default' => 'top_right',
+				'options' => array(
+					'top_right' => __( 'Top right', 'so-widgets-bundle' ),
+					'bottom_right' => __( 'Bottom right', 'so-widgets-bundle' ),
+					'bottom_left' => __( 'Bottom left', 'so-widgets-bundle' ),
+					'top_left' => __( 'Top left', 'so-widgets-bundle' ),
+				),
+				'state_handler' => array(
+					'unmute_slider[show]' => array( 'show' ),
+					'unmute_slider[hide]' => array( 'hide' ),
+				),
+			),
 			
 			'swipe' => array(
 				'type' => 'checkbox',
@@ -210,7 +240,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'nav_always_show_mobile'   => ! empty( $controls['nav_always_show_mobile'] ) ? true : '',
 			'breakpoint'               => ! empty( $controls['breakpoint'] ) ? $controls['breakpoint'] : '780px',
 			'unmute'                   => ! empty( $controls['unmute'] ),
-			'unmute_position'          => ! empty( $controls['unmute_position'] ) ? $controls['unmute_position'] : false,
+			'unmute_position'          => ! empty( $controls['unmute_position'] ) ? $controls['unmute_position'] : 'top_right',
 		);
 	}
 
