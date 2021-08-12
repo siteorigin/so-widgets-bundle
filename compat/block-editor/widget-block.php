@@ -24,10 +24,19 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	}
 
 	public function enqueue_widget_block_editor_assets() {
+		$current_screen = get_current_screen();
 		wp_enqueue_script(
 			'sowb-widget-block',
 			plugins_url( 'widget-block' . SOW_BUNDLE_JS_SUFFIX . '.js', __FILE__ ),
-			array( 'wp-editor', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-compose' ),
+			array(
+				// The WP 5.8 Widget Area requires a specific editor script to be used.
+				$current_screen->base == 'widgets' ? 'wp-edit-widgets' : 'wp-editor',
+				'wp-blocks',
+				'wp-i18n',
+				'wp-element',
+				'wp-components',
+				'wp-compose'
+			),
 			SOW_BUNDLE_VERSION
 		);
 
