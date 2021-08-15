@@ -6,24 +6,23 @@
 	padding: 5px;
 	position: absolute;
 	z-index: 101;
-	unmute_position: @unmute_position;
 
 	& when ( @unmute_position = top_right ) {
-		top: 0;
 		right: 0;
+		top: 0;
 	}
 	& when ( @unmute_position = bottom_right ) {
-		right: 0;
 		bottom: 0;
+		right: 0;
 	}
 	& when ( @unmute_position = bottom_left ) {
-		bottom: 0;
 		left: 0;
+		bottom: 0;
 	}
 
 	& when ( @unmute_position = top_left ) {
-		top: 0;
 		left: 0;
+		top: 0;
 	}
 
 	&.sow-player-unmuted {
