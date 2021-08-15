@@ -134,11 +134,18 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'type' => 'checkbox',
 				'label' => __( 'Always show navigation on mobile', 'so-widgets-bundle' ),
 			),
-
+	
+			'swipe' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Swipe control', 'so-widgets-bundle' ),
+				'description' => __( 'Allow users to swipe through frames on mobile devices.', 'so-widgets-bundle' ),
+				'default' => true,
+			),
+			
 			'unmute' => array(
 				'type' => 'checkbox',
-				'label' => __( 'Unmute button', 'so-widgets-bundle' ),
-				'description' => __( 'To allow for slide backgrounds to autoplay, videos must be muted by default. This button will allow users to unmute videos.', 'so-widgets-bundle' ),
+				'label' => __( 'Unmute icon', 'so-widgets-bundle' ),
+				'description' => __( 'Slide background videos are muted. Enable to display an unmute/mute icon. Only applies to self-hosted videos.', 'so-widgets-bundle' ),
 				'default' => false,
 				'state_emitter' => array(
 					'callback' => 'conditional',
@@ -163,13 +170,6 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					'unmute_slider[show]' => array( 'show' ),
 					'unmute_slider[hide]' => array( 'hide' ),
 				),
-			),
-			
-			'swipe' => array(
-				'type' => 'checkbox',
-				'label' => __( 'Swipe control', 'so-widgets-bundle' ),
-				'description' => __( 'Allow users to swipe through frames on mobile devices.', 'so-widgets-bundle' ),
-				'default' => true,
 			),
 
 			'background_video_mobile' => array(
