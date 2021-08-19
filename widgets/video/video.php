@@ -225,14 +225,6 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			$video_host          = $this->get_host_from_url( $instance['video']['external_video'] );
 			$external_video_type = 'video/' . $video_host;
 			$external_src        = ! empty( $instance['video']['external_video'] ) ? $instance['video']['external_video'] : '';
-
-			if ( ! $instance['playback']['oembed'] ) {
-				// Add video as self_source to allow MediaElements to pick up on it.
-				$self_sources[] = array(
-					'src' => $external_src,
-					'type' => 'mp4',
-				);
-			}
 		}
 
 		$return = array(
@@ -251,8 +243,8 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'fitvids'                 => ! empty( $instance['playback']['fitvids'] ),
 		);
 
+		// Force oEmbed for this video
 		if ( $instance['host_type'] == 'external' && $instance['playback']['oembed'] ) {
-			// Force oEmbed for this video if oEmbed is enabled.
 			$return['is_skinnable_video_host'] = false;
 		}
 
