@@ -37,10 +37,10 @@ sowb.SiteOriginSlider = function($) {
 
 			// Hide the unmute button as needed.
 			if ( $unmuteButton.length ) {
-				// Mute all slide video.
-				$( slider ).find( 'video.sow-full-element' ).prop( 'muted', true );
+				// Mute all slide videos.
+				$( slider ).find( '.sow-slider-image > video' ).prop( 'muted', true );
 
-				var $activeSlideVideo = $( newActive ).find( 'video.sow-full-element' );
+				var $activeSlideVideo = active.find( '> video' );
 				if ( $activeSlideVideo.length ) {
 					$unmuteButton.clearQueue().fadeIn( speed );
 
@@ -278,9 +278,9 @@ jQuery( function($){
 				);
 
 				if ( settings.unmute ) {
-					$( '.sow-player-controls-sound' ).on( 'click', function() {
+					$base.find( '.sow-player-controls-sound' ).on( 'click', function() {
 						var $sc = $( this ),
-							$activeSlideVideo = $sc.next().find( '.cycle-slide-active video.sow-full-element' );
+							$activeSlideVideo = $sc.next().find( '.cycle-slide-active > video' );
 
 						$activeSlideVideo.prop( 'muted',
 							! $activeSlideVideo.prop( 'muted' )
