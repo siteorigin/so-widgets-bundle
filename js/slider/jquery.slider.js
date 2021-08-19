@@ -44,12 +44,16 @@ sowb.SiteOriginSlider = function($) {
 				if ( $activeSlideVideo.length ) {
 					$unmuteButton.clearQueue().fadeIn( speed );
 
+					var settings = $unmuteButton.siblings( '.sow-slider-images').data( 'settings' );
 					// Unmute video if previously unmuted.
 					if ( $activeSlideVideo.hasClass( 'sow-player-unmuted' ) ) {
-						$unmuteButton.addClass( 'sow-player-unmuted' );
 						$activeSlideVideo.prop( 'muted', false );
+						$unmuteButton.addClass( 'sow-player-unmuted' );
+						// Let screen readers know how to handle this button.
+						$unmuteButton.attr( 'aria-label', settings.muteLoc );
 					} else {
 						$unmuteButton.removeClass( 'sow-player-unmuted' );
+						$unmuteButton.attr( 'aria-label', settings.unmuteLoc );
 					}
 				} else {
 					$unmuteButton.clearQueue().fadeOut( speed );
@@ -291,9 +295,12 @@ jQuery( function($){
 							$sc.addClass( 'sow-player-unmuted' );
 							// State tracking.
 							$activeSlideVideo.addClass( 'sow-player-unmuted' );
+							// Let screen readers know how to handle this button.
+							$sc.attr( 'aria-label', settings.muteLoc );
 						} else {
 							$sc.removeClass( 'sow-player-unmuted' );
 							$activeSlideVideo.removeClass( 'sow-player-muted' );
+							$sc.attr( 'aria-label', settings.unmuteLoc );
 						}
 					} );
 				}

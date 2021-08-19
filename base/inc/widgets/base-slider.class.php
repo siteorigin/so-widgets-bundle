@@ -233,7 +233,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	}
 
 	function slider_settings( $controls ){
-		return array(
+		$slider_settings = array(
 			'pagination'               => true,
 			'speed'                    => empty( $controls['speed'] ) ? 1 : $controls['speed'],
 			'timeout'                  => $controls['timeout'],
@@ -245,6 +245,16 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'breakpoint'               => ! empty( $controls['breakpoint'] ) ? $controls['breakpoint'] : '780px',
 			'unmute'                   => ! empty( $controls['unmute'] ),
 		);
+
+		// Add the unmute translations.
+		// We're not able to reliably localize the script using `wp_localize_script` as 
+		// it's too late to do that at this point.
+		if ( $slider_settings['unmute'] ) {
+			$slider_settings['unmuteLoc'] = __( 'Unmute slide', 'so-widgets-bundle' );
+			$slider_settings['muteLoc'] = __( 'Mute slide', 'so-widgets-bundle' );
+		}
+
+		return $slider_settings;
 	}
 
 	function render_template( $controls, $frames ){
