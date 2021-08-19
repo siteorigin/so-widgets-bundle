@@ -266,7 +266,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				?><div class="sow-slider-base" style="display: none"><?php
 				if ( isset( $controls['unmute'] ) && $controls['unmute'] ) {
 					?>
-					<span class="sow-player-controls-sound" style="display: none;">(Unmute Placeholder)</span>
+					<span class="sow-player-controls-sound" style="display: none;">&nbsp;</span>
 					<?php
 				}
 				break;
@@ -486,6 +486,10 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		}
 
 		$less_variables['unmute_position'] = ! empty( $instance['controls']['unmute_position'] ) ? $instance['controls']['unmute_position'] : 'top_right';
+
+		// Pass the Widgets Bundle directory path to allow us to include the volume controls font.
+		$sow_plugin_dir_url = str_replace( site_url(), '', plugin_dir_url( SOW_BUNDLE_BASE_FILE ) );
+		$less_variables['volume_controls_font'] = "'${sow_plugin_dir_url}css/slider/fonts/volume-controls'";
 
 		return $less_variables;
 	}

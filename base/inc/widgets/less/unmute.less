@@ -1,11 +1,43 @@
 @unmute_position: top_right;
+@volume_controls_font: default;
+
+@font-face {
+	font-family: 'so-slider-volume-controls';
+	src:  url( '@{volume_controls_font}.eot?aieqpp' );
+	src:  url( '@{volume_controls_font}.eot?aieqpp#iefix' ) format( 'embedded-opentype' ),
+		url( '@{volume_controls_font}.ttf?aieqpp') format( 'truetype' ),
+		url( '@{volume_controls_font}.woff?aieqpp') format( 'woff' ),
+		url( '@{volume_controls_font}.svg?aieqpp#so') format( 'svg' );
+	font-weight: normal;
+	font-style: normal;
+	font-display: block;
+}
+
 .sow-player-controls-sound {
-	background: rgba(0,0,0,0.5);
-	color: #fff;
-	cursor: pointer;
-	padding: 5px;
 	position: absolute;
 	z-index: 101;
+	&::before {
+		background: rgba(0,0,0,0.5);
+		color: #fff;
+		content: "\e900";
+		cursor: pointer;
+		font-family: 'so-slider-volume-controls';
+		padding: 5px;
+	}
+
+	&:hover::before,
+	&:focus::before {
+		content: "\e901";
+	}
+
+	&.sow-player-unmuted {
+		&:hover,
+		&:focus {
+			&::before {
+				content: "\e901";
+			}
+		}
+	}
 
 	& when ( @unmute_position = top_right ) {
 		right: 0;
@@ -26,6 +58,12 @@
 	}
 
 	&.sow-player-unmuted {
-		border: 1px solid #0f0; /* Placeholder */
+		&::before {
+			content: "\e901";
+		}
+		&:hover::before,
+		&:focus::before {
+			content: "\e900";
+		}
 	}
 }
