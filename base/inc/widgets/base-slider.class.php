@@ -36,7 +36,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_cycle_swipe' ) );
 
 		// Add unmute button LESS.
-		add_filter( 'siteorigin_widgets_less_variables_' . $this->id_base, array( $this, 'add_less_variables' ), 10, 2 );
+		add_filter( 'siteorigin_widgets_less_variables_' . $this->id_base, array( $this, 'add_less_variables' ), 10, 3 );
 		add_filter( 'siteorigin_widgets_less_vars_' . $this->id_base, array( $this, 'add_unmute_less' ), 10, 4 );
 	}
 
@@ -475,8 +475,12 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	 * @param array $instance The widget instance.
 	 * @param SiteOrigin_Widget $widget The widget object.
 	 */
-	function add_unmute_less( $less, $vars, $instance, $widget) {
-		if ( empty( $less ) || empty( $instance['controls']['unmute'] )  ) {
+	function add_unmute_less( $less, $vars, $instance, $widget ) {
+		if (
+			empty( $less ) ||
+			$widget->id_base != $this->id_base ||
+			empty( $instance['controls']['unmute'] )
+		) {
 			return $less;
 		}
 
@@ -490,8 +494,12 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	 * @param array $less An array containing all LESS variables.
 	 * @param array $instance The widget instance.
 	 */
-	function add_less_variables( $less_variables, $instance  ) {
-		if ( empty( $less_variables ) || empty( $instance['controls']['unmute'] )  ) {
+	function add_less_variables( $less_variables, $instance, $widget ) {
+		if (
+			empty( $less_variables ) ||
+			$widget->id_base != $this->id_base ||
+			empty( $instance['controls']['unmute'] )
+		) {
 			return $less_variables;
 		}
 
