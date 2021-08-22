@@ -441,94 +441,122 @@ function soGoogleMapInitialize() {
 }
 
 jQuery(function ($) {
-
-	sowb.setupGoogleMaps = function() {
-		var libraries = [];
-		var apiKey;
-		var $mapCanvas = $('.sow-google-map-canvas');
+	sowb.googleMapsData = [];
+	sowb.googleMapsData.libraries = [];
+	sowb.setupGoogleMaps = function( e, forceLoad = false  ) {
+		var $mapCanvas = $( '.sow-google-map-canvas' );
 		if ( ! $mapCanvas.length ) {
 			return;
 		}
 		$mapCanvas.each(function(index, element) {
 			var $this = $(element);
-			if ( ! $this.parent().is( ':visible' ) || $this.data( 'apiInitialized' ) ) {
+			if ( $this.data( 'apiInitialized' ) ) {
 				return $this;
 			}
 			var mapOptions = $this.data( 'options' );
 			if ( mapOptions) {
-				if( typeof mapOptions.libraries !== 'undefined' && mapOptions.libraries !== null ) {
-					libraries = libraries.concat(mapOptions.libraries);
+				if ( typeof mapOptions.libraries !== 'undefined' && mapOptions.libraries !== null ) {
+					sowb.googleMapsData.libraries = sowb.googleMapsData.libraries.concat( mapOptions.libraries );
 				}
-				if( !apiKey && mapOptions.apiKey ) {
-					apiKey = mapOptions.apiKey;
+				if ( ! sowb.googleMapsData.apiKey && mapOptions.apiKey ) {
+					sowb.googleMapsData.apiKey = mapOptions.apiKey;
 				}
 			}
 			$this.data( 'apiInitialized', true );
 		});
-		
-		var mapsApiLoaded = typeof window.google !== 'undefined' && typeof window.google.maps !== 'undefined';
-		if ( sowb.mapsApiInitialized ) {
-			var timeoutId = setTimeout( function () {
-				if ( mapsApiLoaded ) {
-					clearTimeout( timeoutId );
+		if ( typeof window.google === 'undefined' ) {
+			window.google = {};
+		}
+
+		if (
+			forceLoad ||
+			typeof window.google === 'undefined' ||
+			typeof window.google.maps === 'undefined'
+		) {
+			sowb.loadGoogleMapsAPI( forceLoad );
+			// Ensure Google Maps is loaded before using it.
+			sowb.googleMapsData.timer = setInterval( function () {
+				if ( typeof window.google !== 'undefined' && typeof window.google.maps !== 'undefined' ) {
+					clearInterval( sowb.googleMapsData.timer );
 					soGoogleMapInitialize();
 				}
-			}, 100 );
-		} else {
-			
-			if ( ! apiKey ) {
-				console.warn( 'SiteOrigin Google Maps: Could not find API key. Google Maps API key is required.' );
-				apiKey = '';
-			}
-			
-			// Try to load even if API key is missing to allow Google Maps API to provide it's own warnings/errors about missing API key.
-			var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&callback=soGoogleMapInitialize';
-
-			if ( libraries && libraries.length ) {
-				apiUrl += '&libraries=' + libraries.join(',');
-			}
-
-
-			// This allows us to "catch" Google Maps JavaScript API errors and do a bit of custom handling. In this case,
-			// we display a user-specified fallback image if there is one.
-			if ( window.console && window.console.error ) {
-				var errLog = window.console.error;
-
-				sowb.onLoadMapsApiError = function ( error ) {
-					var matchError;
-					if ( typeof error === 'string' ) {
-						matchError = error.match( /^Google Maps API (error|warning): ([^\s]*)\s([^\s]*)(?:\s(.*))?/ );
-					}
-					if ( matchError && matchError.length && matchError[0] ) {
-						$( '.sow-google-map-canvas' ).each( function ( index, element ) {
-							var $this = $( element );
-							if ( $this.data( 'fallbackImage' ) ) {
-								var imgData = $this.data( 'fallbackImage' );
-								if ( imgData.hasOwnProperty( 'img' ) ) {
-									$this.append( imgData.img );
-								}
-							}
-						} );
-					}
-					errLog.apply( window.console, arguments );
-				};
-
-				window.console.error = sowb.onLoadMapsApiError;
-			}
-
-			if ( soWidgetsGoogleMap.map_consent ) {
-				$( '.sow-google-map-consent button' ).on( 'click', function() {
-					$( '.sow-google-map-consent' ).remove();
-					$( '.sow-google-map-canvas' ).show();
-					$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );
-					sowb.mapsApiInitialized = true;
-				} );
-			} else {
-				$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );
-				sowb.mapsApiInitialized = true;
-			}
+			}, 250 );
 		}
 	};
+
+	// Generate Google Maps API URL and add load it.
+	sowb.loadGoogleMapsAPI = function( forceLoad = false ) {
+		// If there was an error (or this is being forced), remove any previous
+		// attempts to load the API.
+		if (
+			$( '#sow-google-maps-js' ).length &&
+			(
+				forceLoad 
+				(
+					typeof sowb.googleMapsData.ApiError !== 'undefined' &&
+					sowb.googleMapsData.ApiError
+				)
+			)
+		) {
+			$( '#sow-google-maps-js' ).remove();
+		}
+			
+		if ( ! sowb.googleMapsData.apiKey ) {
+			console.warn( 'SiteOrigin Google Maps: Could not find API key. Google Maps API key is required.' );
+		}
+		
+		// Try to load even if API key is missing to allow Google Maps API to provide it's own warnings/errors about missing API key.
+		// var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + sowb.googleMapsData.apiKey;
+		var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + sowb.googleMapsData.apiKey + '&callback=soGoogleMapInitialize';
+
+		if ( sowb.googleMapsData.libraries && sowb.googleMapsData.libraries.length ) {
+			apiUrl += '&libraries=' + sowb.googleMapsData.libraries.join( ',' );
+		}
+
+		// This allows us to "catch" Google Maps JavaScript API errors and do a bit of custom handling. In this case,
+		// we display a user-specified fallback image if there is one.
+		if ( window.console && window.console.error ) {
+			var errLog = window.console.error;
+			sowb.googleMapsData.ApiError = false;
+
+			sowb.onLoadMapsApiError = function( error ) {
+				var matchError;
+				if ( typeof error === 'string' ) {
+					matchError = error.match( /^Google Maps API (error|warning): ([^\s]*)\s([^\s]*)(?:\s(.*))?/ );
+				}
+				if ( matchError && matchError.length && matchError[0] ) {
+					$( '.sow-google-map-canvas' ).each( function( index, element ) {
+						var $this = $( element );
+						if ( $this.data( 'fallbackImage' ) ) {
+							var imgData = $this.data( 'fallbackImage' );
+							if ( imgData.hasOwnProperty( 'img' ) ) {
+								$this.append( imgData.img );
+							}
+						}
+					} );
+					sowb.googleMapsData.ApiError = true;
+				}
+				errLog.apply( window.console, arguments );
+			};
+
+			window.console.error = sowb.onLoadMapsApiError;
+		}
+		if ( soWidgetsGoogleMap.map_consent ) {
+			// Remove previous map consent setup.
+			if ( forceLoad ) {
+				$( '.sow-google-map-consent button' ).off( 'click' );
+			}
+			$( '.sow-google-map-consent button' ).on( 'click', function() {
+				$( '.sow-google-map-consent' ).remove();
+				$( '.sow-google-map-canvas' ).show();
+				$( 'body' ).append( '<script async type="text/javascript" id="sow-google-maps-js" src="' + apiUrl + '">' );
+				sowb.mapsApiInitialized = true;
+			} );
+		} else {
+			$( 'body' ).append( '<script async type="text/javascript" id="sow-google-maps-js" src="' + apiUrl + '">' );
+			sowb.mapsApiInitialized = true;
+		}
+	}
 	sowb.setupGoogleMaps();
 
 	$( sowb ).on( 'setup_widgets', sowb.setupGoogleMaps );
