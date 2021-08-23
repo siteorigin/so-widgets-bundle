@@ -476,9 +476,26 @@ jQuery(function ($) {
 			sowb.loadGoogleMapsAPI( forceLoad );
 			// Ensure Google Maps is loaded before using it.
 			sowb.googleMapsData.timer = setInterval( function () {
-				if ( typeof window.google !== 'undefined' && typeof window.google.maps !== 'undefined' ) {
-					clearInterval( sowb.googleMapsData.timer );
+				var clearTimer = false;
+				// Check if there been an error.
+				sowb.googleMapsData.ApiError = true;
+				if (
+					typeof sowb.googleMapsData.ApiError !== 'undefined' &&
+					sowb.googleMapsData.ApiError
+				) {
+					clearTimer = true;
+				}
+				if (
+					! clearTimer &&
+					typeof window.google !== 'undefined' &&
+					typeof window.google.maps !== 'undefined'
+				) {
+					clearTimer = true;
 					soGoogleMapInitialize();
+				}
+
+				if ( clearTimer ) {
+					clearInterval( sowb.googleMapsData.timer );
 				}
 			}, 250 );
 		}
