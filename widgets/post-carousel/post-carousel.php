@@ -201,7 +201,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 		// Alter Item Title Tag default.
 		$design_settings['fields']['item_title']['fields']['tag']['default'] = 'h3';
-var_dump( $design_settings['fields']['item_title']['fields']['tag']['default'] );
+
 		return array(
 			'title' => array(
 				'type' => 'text',
