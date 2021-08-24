@@ -83,42 +83,10 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 				),
 			),
 			'carousel_settings' => $this->carousel_settings_form_fields(),
-			'design' => array(
-				'type' => 'section',
-				'label' => __( 'Design', 'so-widgets-bundle' ),
-				'hide' => true,
-				'fields' => array(
+			'design' => $this->design_settings_form_fields(
+				array(
 					'item_title' => array(
-						'type' => 'section',
-						'label' => __( 'Item title', 'so-widgets-bundle' ),
-						'hide' => true,
 						'fields' => array(
-							'tag' => array(
-								'type' => 'select',
-								'label' => __( 'HTML Tag', 'so-widgets-bundle' ),
-								'default' => 'h4',
-								'options' => array(
-									'h1' => __( 'H1', 'so-widgets-bundle' ),
-									'h2' => __( 'H2', 'so-widgets-bundle' ),
-									'h3' => __( 'H3', 'so-widgets-bundle' ),
-									'h4' => __( 'H4', 'so-widgets-bundle' ),
-									'h5' => __( 'H5', 'so-widgets-bundle' ),
-									'h6' => __( 'H6', 'so-widgets-bundle' ),
-									'p' => __( 'Paragraph', 'so-widgets-bundle' ),
-								),
-							),
-							'font' => array(
-								'type' => 'font',
-								'label' => __( 'Font', 'so-widgets-bundle' ),
-							),
-							'size' => array(
-								'type' => 'measurement',
-								'label' => __( 'Size', 'so-widgets-bundle' ),
-							),
-							'color' => array(
-								'type' => 'color',
-								'label' => __( 'Color', 'so-widgets-bundle' ),
-							),
 							'bottom_margin' => array(
 								'type' => 'measurement',
 								'label' => __( 'Bottom margin', 'so-widgets-bundle' ),
@@ -127,9 +95,6 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 						),
 					),
 					'item' => array(
-						'type' => 'section',
-						'label' => __( 'Item', 'so-widgets-bundle' ),
-						'hide' => true,
 						'fields' => array(
 							'font' => array(
 								'type' => 'font',
@@ -170,9 +135,6 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 						),
 					),
 					'navigation' => array(
-						'type' => 'section',
-						'label' => __( 'Navigation', 'so-widgets-bundle' ),
-						'hide' => true,
 						'fields' => array(
 							'arrow_color' => array(
 								'type' => 'color',
@@ -199,10 +161,9 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 								'label' => __( 'Dots selected and hover color', 'so-widgets-bundle' ),
 								'default' => '#f14e4e',
 							),
-
 						),
 					),
-				),
+				)
 			),
 			'responsive' => $this->responsive_form_fields(),
 		);
