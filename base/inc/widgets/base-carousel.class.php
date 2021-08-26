@@ -260,18 +260,6 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 						),
 					),
 				),
-				'item' => array(
-					'type' => 'section',
-					'label' => __( 'Item', 'so-widgets-bundle' ),
-					'hide' => true,
-					'fields' => array(),
-				),
-				'navigation' => array(
-					'type' => 'section',
-					'label' => __( 'Navigation', 'so-widgets-bundle' ),
-					'hide' => true,
-					'fields' => array(),
-				),
 			),
 		);
 

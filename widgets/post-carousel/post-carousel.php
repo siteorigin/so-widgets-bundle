@@ -156,24 +156,10 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 	function get_widget_form() {
 		$design_settings = $this->design_settings_form_fields(
 			array(
-				'item' => array(
-					'fields' => array(
-						'thumbnail_overlay_hover_color' => array(
-							'type' => 'color',
-							'label' => __( 'Thumbnail overlay hover color', 'so-widgets-bundle' ),
-							'default' => '#3279BB',
-						),
-						'thumbnail_overlay_hover_opacity' => array(
-							'type' => 'slider',
-							'label' => __( 'Thumbnail overlay hover opacity', 'so-widgets-bundle' ),
-							'default' => '0.5',
-							'min' => 0,
-							'max' => 1,
-							'step' => 0.1,
-						),
-					),
-				),
 				'navigation' => array(
+					'type' => 'section',
+					'label' => __( 'Navigation', 'so-widgets-bundle' ),
+					'hide' => true,
 					'fields' => array(
 						'navigation_color' => array(
 							'type' => 'color',
@@ -199,8 +185,36 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			),
 		);
 
-		// Alter Item Title Tag default.
+		// Overide defaults.
+		$design_settings['fields']['item_title']['label'] = __( 'Post title', 'so-widgets-bundle' );
 		$design_settings['fields']['item_title']['fields']['tag']['default'] = 'h3';
+
+		// Reposition thumbnail settings.
+		$design_settings['fields'] = array_merge(
+			array(
+				'thumbnail' => array(
+					'type' => 'section',
+					'label' => __( 'Post thumbnail', 'so-widgets-bundle' ),
+					'hide' => true,
+					'fields' => array(
+						'thumbnail_overlay_hover_color' => array(
+							'type' => 'color',
+							'label' => __( 'Thumbnail overlay hover color', 'so-widgets-bundle' ),
+							'default' => '#3279BB',
+						),
+						'thumbnail_overlay_hover_opacity' => array(
+							'type' => 'slider',
+							'label' => __( 'Thumbnail overlay hover opacity', 'so-widgets-bundle' ),
+							'default' => '0.5',
+							'min' => 0,
+							'max' => 1,
+							'step' => 0.1,
+						),
+					),
+				),
+			),
+			$design_settings['fields']
+		);
 
 		return array(
 			'title' => array(

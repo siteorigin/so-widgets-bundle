@@ -95,6 +95,9 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 						),
 					),
 					'item' => array(
+						'type' => 'section',
+						'label' => __( 'Item', 'so-widgets-bundle' ),
+						'hide' => true,
 						'fields' => array(
 							'font' => array(
 								'type' => 'font',
@@ -135,6 +138,9 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 						),
 					),
 					'navigation' => array(
+						'type' => 'section',
+						'label' => __( 'Navigation', 'so-widgets-bundle' ),
+						'hide' => true,
 						'fields' => array(
 							'arrow_color' => array(
 								'type' => 'color',
