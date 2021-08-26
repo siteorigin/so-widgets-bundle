@@ -276,7 +276,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				?><div class="sow-slider-base" style="display: none"><?php
 				if ( isset( $controls['unmute'] ) && $controls['unmute'] ) {
 					?>
-					<span class="sow-player-controls-sound" style="display: none;">&nbsp;</span>
+					<span class="sow-player-controls-sound" style="display: none;"></span>
 					<?php
 				}
 				break;
