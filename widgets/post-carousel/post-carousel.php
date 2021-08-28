@@ -276,7 +276,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			isset( $instance['design'] ) &&
 			isset( $instance['design']['thumbnail_overlay_hover_color'] )
 		) {
-			$instance['design']['item'] = array(
+			$instance['design']['thumbnail'] = array(
 				'thumbnail_overlay_hover_color' => $instance['design']['thumbnail_overlay_hover_color'],
 				'thumbnail_overlay_hover_opacity' => $instance['design']['thumbnail_overlay_hover_opacity'],
 			);
