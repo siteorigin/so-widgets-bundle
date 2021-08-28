@@ -182,7 +182,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 						),
 					),
 				),
-			),
+			)
 		);
 
 		// Overide defaults.
