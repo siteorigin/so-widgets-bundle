@@ -12,8 +12,8 @@
 @navigation_hover_background: #444;
 
 @item_title_tag: default;
-@item_title_font_size: default;
-@item_title_color: default;
+@item_title_font_size: 15px;
+@item_title_color: #474747;
 
 .sow-carousel-title {
 
@@ -52,14 +52,12 @@
         }
       }
 
-      @{item_title_tag}.sow-carousel-item-title a {
-        font-size: @item_title_font_size;
+      @{item_title_tag}.sow-carousel-item-title {
         color: @item_title_color;
-        font-size: 15px;
-        text-align: center;
+        font-size: @item_title_font_size;
         font-weight: 500;
-        color: #474747;
         margin: 10px 0 0 0;
+        text-align: center;
 
         a {
           text-decoration: none;
