@@ -17,12 +17,14 @@
 	position: absolute;
 	z-index: 101;
 	&::before {
-		background: rgba(0,0,0,0.5);
+		background: rgba(0,0,0,0.8);
+		border-radius: 4px;
 		color: #fff;
 		content: "\e900";
 		cursor: pointer;
 		font-family: 'so-slider-volume-controls';
-		padding: 5px;
+		font-size: 20px;
+		padding: 10px;
 	}
 
 	&:hover::before,
@@ -40,21 +42,21 @@
 	}
 
 	& when ( @unmute_position = top_right ) {
-		right: 0;
-		top: 0;
+		right: 8px;
+		top: 8px;
 	}
 	& when ( @unmute_position = bottom_right ) {
-		bottom: 0;
-		right: 0;
+		bottom: 8px;
+		right: 8px;
 	}
 	& when ( @unmute_position = bottom_left ) {
-		left: 0;
-		bottom: 0;
+		left: 8px;
+		bottom: 8px;
 	}
 
 	& when ( @unmute_position = top_left ) {
-		left: 0;
-		top: 0;
+		left: 8px;
+		top: 8px;
 	}
 
 	&.sow-player-unmuted {
