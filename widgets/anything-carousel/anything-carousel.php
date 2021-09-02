@@ -265,7 +265,6 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 					'loop' => ! empty( $instance['loop_posts'] ),
 					'carousel_settings' => $this->carousel_settings_template_variables( $instance['carousel_settings'] ),
 					'responsive' => $this->responsive_template_variables( $instance['responsive'] ),
-					'anchor' => ! empty( $instance['carousel_settings']['use_anchor_tags'] ) && ! empty( $instance['title'] ) ? sanitize_title_with_dashes( $instance['title'] ) : '',
 				),
 			),
 		);
