@@ -46,6 +46,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				include_once wp_normalize_path( $widget['File'] );
 				// The last class will always be from the widget file we just loaded.
 				$widget_class = end( get_declared_classes() );
+				$classes = get_declared_classes();
+				$widget_class = end( $classes );
 
 				$so_widgets[] = array(
 					'name' => $widget['Name'],
@@ -143,7 +145,24 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 			ob_start();
 
-			if ( empty( $attributes['widgetHtml'] ) ) {
+			$current_page_id = get_the_ID();
+			if (
+				empty( $attributes['widgetHtml'] ) ||
+				! empty( $_POST ) ||
+				// Is WPML active? If so, is there a translation for this page?
+				(
+					defined( 'ICL_LANGUAGE_CODE' ) &&
+					is_numeric(
+						apply_filters(
+							'wpml_object_id',
+							$current_page_id,
+							get_post_type( $current_page_id ),
+							false,
+							ICL_LANGUAGE_CODE
+						)
+					)
+				)
+			) {
 				/* @var $widget SiteOrigin_Widget */
 				$instance = $widget->update( $instance, $instance );
 				$widget->widget( array(
