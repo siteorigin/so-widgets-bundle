@@ -62,7 +62,7 @@
 					$currentItem,
 					$thumbnail;
 
-				$.each( frame.state().get('selection').models, function() {
+				$.each( frame.state().get( 'selection' ).models, function() {
 					attachment = this.attributes;
 
 					// Don't process images that already exist.
@@ -72,6 +72,7 @@
 
 						$thumbnail = $currentItem.find( '.thumbnail' );
 						$thumbnail.attr( 'title', attachment.title );
+						$currentItem.find( '.title' ).text( attachment.title );
 
 						$currentItem.attr( 'data-id', attachment.id );
 
@@ -113,7 +114,7 @@
 			frame.open();
 		});
 
-		$field.find( 'a.media-remove-button' ).on( 'click', function( e ) {
+		$( document ).on( 'click','.siteorigin-widget-field-type-multiple_media a.media-remove-button', function( e ) {
 			e.preventDefault();
 			var $currentItem = $( this ).parent();
 

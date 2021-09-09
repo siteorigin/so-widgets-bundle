@@ -50,11 +50,22 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 				'label' => __('Hero frames', 'so-widgets-bundle'),
 				'item_name' => __('Frame', 'so-widgets-bundle'),
 				'item_label' => array(
-					'selector' => "[id*='frames-title']",
-					'update_event' => 'change',
-					'value_method' => 'val'
+					'selectorArray' => array(
+						array(
+							'selector' => '.siteorigin-widget-field-background .media-field-wrapper .current .title',
+							'valueMethod' => 'html',
+						),
+						array(
+							'selector' => '.siteorigin-widget-field-videos .siteorigin-widget-field-repeater-items  .media-field-wrapper .current .title',
+							'valueMethod' => 'html',
+						),
+						array(
+							'selector' => ".siteorigin-widget-field-videos [id*='url']",
+							'update_event' => 'change',
+							'value_method' => 'val',
+						),
+					),
 				),
-
 				'fields' => array(
 
 					'content' => array(
@@ -138,9 +149,17 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'item_name' => __('Video', 'so-widgets-bundle'),
 								'label' => __('Background videos', 'so-widgets-bundle'),
 								'item_label' => array(
-									'selector' => "[id*='frames-background_videos-url']",
-									'update_event' => 'change',
-									'value_method' => 'val'
+									'selectorArray' => array(
+										array(
+											'selector' => "[id*='url']",
+											'update_event' => 'change',
+											'value_method' => 'val',
+										),
+										array(
+											'selector' => '.siteorigin-widget-field-file .media-field-wrapper .current .title',
+											'valueMethod' => 'html',
+										),
+									),
 								),
 								'fields' => $this->video_form_fields(),
 							),
@@ -298,6 +317,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	function filter_button_widget_form( $form_fields ) {
 		
 		unset( $form_fields['design']['fields']['align'] );
+		unset( $form_fields['design']['fields']['mobile_align'] );
 		
 		return $form_fields;
 	}
@@ -426,14 +446,16 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		$heading_font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
 		$less['heading_font'] = $heading_font['family'];
 		if ( ! empty( $heading_font['weight'] ) ) {
-			$less['heading_font_weight'] = $heading_font['weight'];
+			$less['heading_font_weight'] = $heading_font['weight_raw'];
+			$less['heading_font_style'] = $heading_font['style'];
 		}
 		
 		if ( ! empty( $instance['design']['text_font'] ) ) {
 			$text_font = siteorigin_widget_get_font( $instance['design']['text_font'] );
 			$less['text_font'] = $text_font['family'];
 			if ( ! empty( $text_font['weight'] ) ) {
-				$less['text_font_weight'] = $text_font['weight'];
+				$less['text_font_weight'] = $text_font['weight_raw'];
+				$less['text_font_style'] = $text_font['style'];
 			}
 		}
 

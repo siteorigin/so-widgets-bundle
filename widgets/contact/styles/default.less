@@ -19,7 +19,9 @@
 		strong {
 			@label_font_family: default;
 			@label_font_weight: default;
+			@label_font_style: default;
 			.font(@label_font_family, @label_font_weight);
+			font-style: @label_font_style;
 
 			@label_font_size: default;
 			font-size: @label_font_size;
@@ -56,6 +58,7 @@
 
 	@field_font_family: default;
 	@field_font_weight: default;
+	@field_font_style: default;
 	@field_font_size: default;
 	@field_font_color: default;
 
@@ -118,9 +121,10 @@
 
 		font-size: @field_font_size;
 		.font(@field_font_family, @field_font_weight);
+		font-style: @field_font_style;
 	}
 
-	&.sow-form-field-checkboxes, &.sow-form-field-radio {
+	&.sow-form-field-radio {
 		ul {
 			list-style: none;
 			margin: 0;
@@ -140,6 +144,29 @@
 				float: left;
 				margin-right: 0.5em;
 				height: auto;
+			}
+		}
+	}
+
+	&.sow-form-field-checkboxes {
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+
+			li {
+				align-items: center;
+				display: flex;
+				margin: 0;
+			}
+
+			label {
+				margin-bottom: 0;
+			}
+
+			input {
+				height: auto;
+				margin-right: 0.5em;
 			}
 		}
 	}

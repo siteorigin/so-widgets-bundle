@@ -72,6 +72,8 @@ jQuery( function( $ ){
 				}
 			} );
 		}
+
+		$( window ).trigger( 'resize' );
 	};
 	$('#sow-widget-search input').on( {
 		keyup: widgetSearch,
@@ -79,13 +81,29 @@ jQuery( function( $ ){
 	});
 
 	$( window ).on( 'resize', function() {
-		var $descriptions = $('.so-widget-text').css('height', 'auto');
+		var $descriptions = $( '.so-widget-text:visible' );
 		var largestHeight = 0;
 		var largestHeight = [];
 		var column = 0;
 
+		$descriptions.css( 'height', 'auto' );
+
+		// Don't size text descriptions on tablet portrait and mobile devices.
+		if ( window.matchMedia( '(max-width: 960px)' ).matches ) {
+			return;
+		}
+
+		// Work out how many columns are visible per row.
+		if ( window.matchMedia( '(min-width: 1800px)' ).matches ) {
+			columnCount = 4;
+		} else if ( window.matchMedia( '(max-width: 1280px)' ).matches ) {
+			columnCount = 2;
+		} else {
+			columnCount = 3;
+		}
+
 		$descriptions.each( function( index ) {
-			column = index / 3;
+			column = index / columnCount;
 			// Turnicate column number - IE 11 friendly.
 			column = column < 0 ? Math.ceil( column ) : Math.floor( column );
 			$( this ).data( 'column', column )

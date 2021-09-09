@@ -52,6 +52,17 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 				'description' => __( 'Taxonomies are groups such as categories, tags, posts and products.', 'so-widgets-bundle' ),
 			),
 
+			'tax_query_relation' => array(
+				'type' => 'radio',
+				'label' => __( 'Taxonomies relationship', 'so-widgets-bundle' ),
+				'options' => array(
+					'OR' => __( 'OR', 'so-widgets-bundle' ),
+					'AND' => __( 'AND', 'so-widgets-bundle' ),
+				),
+				'description' => __( 'The relationship between taxonomies. OR requires posts to have at least one of the specified taxonomies. AND requires posts to have all of the specified taxonomies.', 'so-widgets-bundle' ),
+				'default' => 'OR',
+			),
+
 			'date_type' => array(
 				'type' => 'radio',
 				'label' => __( 'Date selection type', 'so-widgets-bundle' ),

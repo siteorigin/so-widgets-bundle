@@ -24,16 +24,25 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	}
 
 	public function enqueue_widget_block_editor_assets() {
+		$current_screen = get_current_screen();
 		wp_enqueue_script(
 			'sowb-widget-block',
 			plugins_url( 'widget-block' . SOW_BUNDLE_JS_SUFFIX . '.js', __FILE__ ),
-			array( 'wp-editor', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-compose' ),
+			array(
+				// The WP 5.8 Widget Area requires a specific editor script to be used.
+				$current_screen->base == 'widgets' ? 'wp-edit-widgets' : 'wp-editor',
+				'wp-blocks',
+				'wp-i18n',
+				'wp-element',
+				'wp-components',
+				'wp-compose'
+			),
 			SOW_BUNDLE_VERSION
 		);
 
 		wp_enqueue_style(
 			'sowb-widget-block',
-			plugins_url( 'widget-block' . SOW_BUNDLE_JS_SUFFIX . '.css', __FILE__ )
+			plugins_url( 'widget-block.css', __FILE__ )
 		);
 
 		$widgets_metadata_list = SiteOrigin_Widgets_Bundle::single()->get_widgets_list();
@@ -45,7 +54,6 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			if ( ! $widget['Active'] ) {
 				include_once wp_normalize_path( $widget['File'] );
 				// The last class will always be from the widget file we just loaded.
-				$widget_class = end( get_declared_classes() );
 				$classes = get_declared_classes();
 				$widget_class = end( $classes );
 
@@ -145,6 +153,10 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 			ob_start();
 
+			// If we have pre-generated widgetHTML or there's a valid $_POST, generate the widget.
+			// We don't show the pre-generated widget when there's a valid $_POST
+			// as widgets will likely change when that happens.
+      // Pages with an active WPML translation will bypass cache.
 			$current_page_id = get_the_ID();
 			if (
 				empty( $attributes['widgetHtml'] ) ||

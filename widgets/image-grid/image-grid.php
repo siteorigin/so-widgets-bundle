@@ -110,11 +110,48 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 						'type' => 'number',
 					),
 
-					'spacing' => array(
-						'label' => __( 'Spacing', 'so-widgets-bundle' ),
-						'description' => __( 'Amount of spacing between images.', 'so-widgets-bundle' ),
-						'type' => 'measurement',
-						'default' => '10px',
+					'padding' => array(
+						'label' => __( 'Image padding', 'so-widgets-bundle' ),
+						'type' => 'multi-measurement',
+						'autofill' => true,
+						'default' => '5px 5px 5px 5px',
+						'measurements' => array(
+							'top' => array(
+							'label' => __( 'Top', 'so-widgets-bundle' ),
+							),
+							'right' => array(
+								'label' => __( 'Right', 'so-widgets-bundle' ),
+							),
+							'bottom' => array(
+								'label' => __( 'Bottom', 'so-widgets-bundle' ),
+							),
+							'left' => array(
+								'label' => __( 'Left', 'so-widgets-bundle' ),
+							),
+						),
+					),
+
+					'alignment_vertical' => array(
+						'type' => 'select',
+						'label' => __( 'Image vertical alignment', 'so-widgets-bundle' ),
+						'description' => __( 'Applied if image heights differ.', 'so-widgets-bundle' ),
+						'default' => 'end',
+						'options' => array(
+							'flex-start' => __( 'Top', 'so-widgets-bundle' ),
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'flex-end' => __( 'Bottom', 'so-widgets-bundle' ),
+						),
+					),
+
+					'alignment_horizontal' => array(
+						'type' => 'select',
+						'label' => __( 'Grid horizontal alignment', 'so-widgets-bundle' ),
+						'default' => 'center',
+						'options' => array(
+							'flex-start' => __( 'Left', 'so-widgets-bundle' ),
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'flex-end' => __( 'Right', 'so-widgets-bundle' ),
+						),
 					),
 				)
 			)
@@ -123,7 +160,8 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	
 	function get_template_variables( $instance, $args ) {
 		$images = isset( $instance['images'] ) ? $instance['images'] : array();
-		
+		$lazy = function_exists( 'wp_lazy_loading_enabled' ) && wp_lazy_loading_enabled( 'img', 'sow-image-grid' );
+
 		foreach ( $images as $id => &$image ) {
 			if ( empty( $image['image'] ) && empty( $image['image_fallback'] ) ) {
 				unset( $images[$id] );
@@ -141,12 +179,13 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 
 			if ( empty( $image['image'] ) && ! empty( $image['image_fallback'] ) ) {
 				$alt = ! empty ( $image['alt'] ) ? $image['alt'] .'"' : '';
-				$image['image_html'] = '<img src="'. esc_url( $image['image_fallback'] ) .'" alt="'. esc_attr( $alt ) .'" title="'. esc_attr( $title ) .'" class="sow-image-grid-image_html">';
+				$image['image_html'] = '<img src="' . esc_url( $image['image_fallback'] ) . '" alt="' . esc_attr( $alt ) . '" title="' . esc_attr( $title ) . '" class="sow-image-grid-image_html" ' . ( $lazy ? 'loading="lazy"' : '' ) . '>';
 			} else {
 				$image['image_html'] = wp_get_attachment_image( $image['image'], $instance['display']['attachment_size'], false, array(
 					'title' => $title,
 					'alt'   => $image['alt'],
 					'class' => 'sow-image-grid-image_html',
+					'loading' => $lazy ? 'lazy' : '',
 				) );
 			}
 		}
@@ -196,9 +235,19 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				$instance['display']['max_width'] = (int) $instance['display']['max_width'];
 			}
 
-			// Input for `spacing` changed from `number` to `measurement` field.
-			if ( is_numeric( $instance['display']['spacing'] ) ) {
-				$instance['display']['spacing'] = $instance['display']['spacing'] .'px';
+			// Migrate the Spacing setting to the Padding setting.
+			if ( isset( $instance['display']['spacing'] ) ) {
+				// The Spacing setting was initially a `number` field.
+				if ( is_numeric( $instance['display']['spacing'] ) ) {
+					$spacing = $instance['display']['spacing'] . 'px';
+				} else if ( isset( $instance['display']['spacing_unit'] ) ) {
+					// Prior to the rename, it was a `measurement` field.
+					$spacing = $instance['display']['spacing'];
+				}
+
+				if ( isset( $spacing ) ) {
+					$instance['display']['padding'] = "0px $spacing $spacing $spacing";
+				}
 			}
 		}
 		
@@ -213,12 +262,12 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	 * @return mixed
 	 */
 	function get_less_variables( $instance ) {
-		$less = array();
-		if ( ! empty( $instance['display']['spacing'] ) ) {
-			$less['spacing'] = $instance['display']['spacing'];
-		}
+		return array(
+			'padding' => ! empty( $instance['display']['padding'] ) ? $instance['display']['padding'] : '5px 5px 5px 5px',
+			'alignment_horizontal' => ! empty( $instance['display']['alignment_horizontal'] ) ? $instance['display']['alignment_horizontal'] : 'center',
+			'alignment_vertical' => ! empty( $instance['display']['alignment_vertical'] ) ? $instance['display']['alignment_vertical'] : 'baseline',
 
-		return $less;
+		);
 	}
 
 	function get_form_teaser() {

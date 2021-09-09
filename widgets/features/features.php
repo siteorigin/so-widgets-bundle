@@ -13,8 +13,9 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			'sow-features',
 			__( 'SiteOrigin Features', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Displays a block of features with icons.', 'so-widgets-bundle' ),
-				'help'        => 'https://siteorigin.com/widgets-bundle/features-widget-documentation/'
+				'description'  => __( 'Displays a block of features with icons.', 'so-widgets-bundle' ),
+				'help'         => 'https://siteorigin.com/widgets-bundle/features-widget-documentation/',
+				'panels_title' => false,
 			),
 			array(),
 			false,
@@ -292,7 +293,8 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					$font = siteorigin_widget_get_font( $styles['font'] );
 					$less_vars[$field_name.'_font'] = $font['family'];
 					if ( ! empty( $font['weight'] ) ) {
-						$less_vars[$field_name.'_font_weight'] = $font['weight'];
+						$less_vars[ $field_name . '_font_weight' ] = $font['weight_raw'];
+						$less_vars[ $field_name . '_font_style' ] = $font['style'];
 					}
 				}
 			}

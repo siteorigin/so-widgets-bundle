@@ -57,14 +57,14 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 					<?php _e( 'Width', 'so-widgets-bundle' ); ?>
 					<input type="number" value="<?php echo esc_attr( $width ); ?>"
 						name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_width', $this->parent_container ) ); ?>"
-						class="custom-size-width siteorigin-widget-input" />
+						class="custom-image-size custom-image-size-width siteorigin-widget-input" />
 				</label>
 
 				<label>
 					<?php _e( 'Height', 'so-widgets-bundle' ); ?>
 					<input type="number" value="<?php echo esc_attr( $height ); ?>"
 						name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_height', $this->parent_container ) ); ?>"
-						class="custom-size-height siteorigin-widget-input" />
+						class="custom-image-size custom-image-size-height siteorigin-widget-input" />
 				</label>
 			</div>
 			<?php
