@@ -156,7 +156,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			// If we have pre-generated widgetHTML or there's a valid $_POST, generate the widget.
 			// We don't show the pre-generated widget when there's a valid $_POST
 			// as widgets will likely change when that happens.
-      // Pages with an active WPML translation will bypass cache.
+			// Pages with an active WPML translation will bypass cache.
 			$current_page_id = get_the_ID();
 			if (
 				empty( $attributes['widgetHtml'] ) ||
