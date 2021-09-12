@@ -32,7 +32,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 
 	function get_widget_form(){
 		$show_heading_fields = apply_filters( 'sow_layout_slider_show_heading_fields', false );
-		return array(
+		return parent::widget_form( array(
 			'frames' => array(
 				'type' => 'repeater',
 				'label' => __('Slider frames', 'so-widgets-bundle'),
@@ -230,7 +230,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 
 				)
 			),
-		);
+		) );
 	}
 
 	function form( $instance, $form_type = 'widget' ) {
