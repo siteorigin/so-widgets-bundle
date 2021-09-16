@@ -11,7 +11,12 @@ if ( ! empty( $instance['features'] ) ) {
 
 			<div class="sow-features-feature sow-icon-container-position-<?php echo esc_attr( $feature['container_position'] ) ?> <?php if(  floor( $i / $instance['per_row'] ) == $last_row ) echo 'sow-features-feature-last-row' ?>" style="width: <?php echo round( 100 / $instance['per_row'], 3 ) ?>%">
 
-				<?php if( !empty( $feature['more_url'] ) && $instance['icon_link'] ) echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : '' ) . '>'; ?>
+				<?php if ( ! empty( $feature['more_url'] ) && $instance['icon_link'] && empty( $instance['link_feature'] ) ) : ?>
+					<a
+						href="<?php echo sow_esc_url( $feature['more_url'] ); ?>"
+						<?php echo $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
+					>
+				<?php endif; ?>
 				<div
 					class="sow-icon-container <?php echo !empty($instance['container_shape']) ? 'sow-container-' . esc_attr($instance['container_shape']) : 'sow-container-none'?>"
                     style="color: <?php echo esc_attr($feature['container_color']) ?>; "
@@ -45,14 +50,24 @@ if ( ! empty( $instance['features'] ) ) {
 					}
 					?>
 				</div>
-				<?php if( !empty( $feature['more_url'] ) && $instance['icon_link'] ) echo '</a>'; ?>
+				<?php if ( !empty( $feature['more_url'] ) && $instance['icon_link'] && empty( $instance['link_feature'] ) ) : ?>
+					</a>
+				<?php endif; ?>
 
 				<div class="textwidget">
 					<?php if(!empty($feature['title'])) : ?>
 						<<?php echo esc_html( $instance['title_tag'] ); ?>>
-							<?php if( !empty( $feature['more_url'] ) && $instance['title_link'] ) echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : '' ) . '>'; ?>
+							<?php if ( ! empty( $feature['more_url'] ) && $instance['title_link'] && empty( $instance['link_feature'] ) ) : ?>
+								<a
+									href="<?php echo sow_esc_url( $feature['more_url'] ); ?>"
+									<?php echo $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
+								>
+							<?php endif; ?>
+
 							<?php echo wp_kses_post( $feature['title'] ) ?>
-							<?php if( !empty( $feature['more_url'] ) && $instance['title_link'] ) echo '</a>'; ?>
+							<?php if ( !empty( $feature['more_url'] ) && $instance['title_link'] && empty( $instance['link_feature'] ) ) : ?>
+								</a>
+							<?php endif; ?>
 						</<?php echo esc_html( $instance['title_tag'] ); ?>>
 					<?php endif; ?>
 
@@ -68,6 +83,15 @@ if ( ! empty( $instance['features'] ) ) {
 						</p>
 					<?php endif; ?>
 				</div>
+				<?php if ( ! empty( $instance['link_feature'] ) && ! empty( $feature['more_url'] ) ) : ?>
+					<a
+						href="<?php echo sow_esc_url( $feature['more_url'] ); ?>"
+						<?php echo $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
+						class="sow-features-feature-linked-column"
+					>
+						&nbsp;
+					</a>
+				<?php endif; ?>
 			</div>
 
 		<?php endforeach; ?>
