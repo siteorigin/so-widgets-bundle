@@ -252,7 +252,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 						),
 						'size' => array(
 							'type' => 'measurement',
-							'label' => __( 'Size', 'so-widgets-bundle' ),
+							'label' => __( 'Font size', 'so-widgets-bundle' ),
 						),
 						'color' => array(
 							'type' => 'color',
