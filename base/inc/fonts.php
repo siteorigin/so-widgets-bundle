@@ -261,6 +261,19 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Andada Pro' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => '800',
+			5 => 'italic',
+			6 => '500italic',
+			7 => '600italic',
+			8 => '700italic',
+			9 => '800italic',
+		),
 	'Andika' =>
 		array(
 			0 => 'regular',
@@ -302,6 +315,16 @@ return array(
 	'Anton' =>
 		array(
 			0 => 'regular',
+		),
+	'Antonio' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
 		),
 	'Arapey' =>
 		array(
@@ -472,6 +495,13 @@ return array(
 			3 => '500',
 			4 => '600',
 			5 => '700',
+		),
+	'Atkinson Hyperlegible' =>
+		array(
+			0 => 'regular',
+			1 => 'italic',
+			2 => '700',
+			3 => '700italic',
 		),
 	'Atma' =>
 		array(
@@ -1008,6 +1038,12 @@ return array(
 	'Bokor' =>
 		array(
 			0 => 'regular',
+		),
+	'Bona Nova' =>
+		array(
+			0 => 'regular',
+			1 => 'italic',
+			2 => '700',
 		),
 	'Bonbon' =>
 		array(
@@ -1890,6 +1926,18 @@ return array(
 			7 => '800',
 			8 => '900',
 		),
+	'Encode Sans SC' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+		),
 	'Encode Sans Semi Condensed' =>
 		array(
 			0 => '100',
@@ -2097,6 +2145,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Festive' =>
+		array(
+			0 => 'regular',
+		),
 	'Finger Paint' =>
 		array(
 			0 => 'regular',
@@ -2273,6 +2325,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Fuggles' =>
+		array(
+			0 => 'regular',
+		),
 	'GFS Didot' =>
 		array(
 			0 => 'regular',
@@ -2350,6 +2406,27 @@ return array(
 			0 => 'regular',
 			1 => 'italic',
 		),
+	'Georama' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
+		),
 	'Geostar' =>
 		array(
 			0 => 'regular',
@@ -2426,6 +2503,15 @@ return array(
 			0 => 'regular',
 		),
 	'Goudy Bookletter 1911' =>
+		array(
+			0 => 'regular',
+		),
+	'Gowun Batang' =>
+		array(
+			0 => 'regular',
+			1 => '700',
+		),
+	'Gowun Dodum' =>
 		array(
 			0 => 'regular',
 		),
@@ -2534,6 +2620,18 @@ return array(
 	'Hachi Maru Pop' =>
 		array(
 			0 => 'regular',
+		),
+	'Hahmlet' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
 		),
 	'Halant' =>
 		array(
@@ -3106,6 +3204,12 @@ return array(
 			17 => '900italic',
 		),
 	'Kantumruy' =>
+		array(
+			0 => '300',
+			1 => 'regular',
+			2 => '700',
+		),
+	'Karantina' =>
 		array(
 			0 => '300',
 			1 => 'regular',
@@ -4018,6 +4122,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'MonteCarlo' =>
+		array(
+			0 => 'regular',
+		),
 	'Montez' =>
 		array(
 			0 => 'regular',
@@ -4559,6 +4667,10 @@ return array(
 			0 => 'regular',
 			1 => 'italic',
 		),
+	'Orelega One' =>
+		array(
+			0 => 'regular',
+		),
 	'Orienta' =>
 		array(
 			0 => 'regular',
@@ -4575,6 +4687,10 @@ return array(
 			3 => '500',
 			4 => '600',
 			5 => '700',
+		),
+	'Otomanopee One' =>
+		array(
+			0 => 'regular',
 		),
 	'Over the Rainbow' =>
 		array(
@@ -4701,6 +4817,10 @@ return array(
 			1 => '500',
 			2 => '600',
 			3 => '700',
+		),
+	'Palette Mosaic' =>
+		array(
+			0 => 'regular',
 		),
 	'Pangolin' =>
 		array(
@@ -5036,6 +5156,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Qahiri' =>
+		array(
+			0 => 'regular',
+		),
 	'Quando' =>
 		array(
 			0 => 'regular',
@@ -5164,6 +5288,11 @@ return array(
 			2 => '500',
 			3 => '600',
 			4 => '700',
+			5 => '300italic',
+			6 => 'italic',
+			7 => '500italic',
+			8 => '600italic',
+			9 => '700italic',
 		),
 	'Rationale' =>
 		array(
@@ -5218,6 +5347,9 @@ return array(
 	'Reem Kufi' =>
 		array(
 			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
 		),
 	'Reenie Beanie' =>
 		array(
@@ -5431,6 +5563,21 @@ return array(
 	'Rye' =>
 		array(
 			0 => 'regular',
+		),
+	'STIX Two Math' =>
+		array(
+			0 => 'regular',
+		),
+	'STIX Two Text' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => 'italic',
+			5 => '500italic',
+			6 => '600italic',
+			7 => '700italic',
 		),
 	'Sacramento' =>
 		array(
@@ -5998,6 +6145,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Style Script' =>
+		array(
+			0 => 'regular',
+		),
 	'Stylish' =>
 		array(
 			0 => 'regular',
@@ -6241,6 +6392,27 @@ return array(
 			16 => '900',
 			17 => '900italic',
 		),
+	'Tourney' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
+		),
 	'Trade Winds' =>
 		array(
 			0 => 'regular',
@@ -6341,6 +6513,10 @@ return array(
 			1 => 'italic',
 			2 => '700',
 			3 => '700italic',
+		),
+	'Uchen' =>
+		array(
+			0 => 'regular',
 		),
 	'Ultra' =>
 		array(
@@ -6498,6 +6674,11 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'WindSong' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+		),
 	'Wire One' =>
 		array(
 			0 => 'regular',
@@ -6566,6 +6747,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Yomogi' =>
+		array(
+			0 => 'regular',
+		),
 	'Yrsa' =>
 		array(
 			0 => '300',
@@ -6573,6 +6758,11 @@ return array(
 			2 => '500',
 			3 => '600',
 			4 => '700',
+			5 => '300italic',
+			6 => 'italic',
+			7 => '500italic',
+			8 => '600italic',
+			9 => '700italic',
 		),
 	'Yusei Magic' =>
 		array(
@@ -6587,6 +6777,19 @@ return array(
 			0 => 'regular',
 		),
 	'ZCOOL XiaoWei' =>
+		array(
+			0 => 'regular',
+		),
+	'Zen Dots' =>
+		array(
+			0 => 'regular',
+		),
+	'Zen Loop' =>
+		array(
+			0 => 'regular',
+			1 => 'italic',
+		),
+	'Zen Tokyo Zoo' =>
 		array(
 			0 => 'regular',
 		),

@@ -238,6 +238,56 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		);
 	}
 
+
+	function design_settings_form_fields( $settings = array() ) {
+		$fields = array(
+			'type' => 'section',
+			'label' => __( 'Design', 'so-widgets-bundle' ),
+			'hide' => true,
+			'fields' => array(
+				'item_title' => array(
+					'type' => 'section',
+					'label' => __( 'Item title', 'so-widgets-bundle' ),
+					'hide' => true,
+					'fields' => array(
+						'tag' => array(
+							'type' => 'select',
+							'label' => __( 'HTML Tag', 'so-widgets-bundle' ),
+							'default' => 'h4',
+							'options' => array(
+								'h1' => __( 'H1', 'so-widgets-bundle' ),
+								'h2' => __( 'H2', 'so-widgets-bundle' ),
+								'h3' => __( 'H3', 'so-widgets-bundle' ),
+								'h4' => __( 'H4', 'so-widgets-bundle' ),
+								'h5' => __( 'H5', 'so-widgets-bundle' ),
+								'h6' => __( 'H6', 'so-widgets-bundle' ),
+								'p' => __( 'Paragraph', 'so-widgets-bundle' ),
+							),
+						),
+						'font' => array(
+							'type' => 'font',
+							'label' => __( 'Font', 'so-widgets-bundle' ),
+						),
+						'size' => array(
+							'type' => 'measurement',
+							'label' => __( 'Font size', 'so-widgets-bundle' ),
+						),
+						'color' => array(
+							'type' => 'color',
+							'label' => __( 'Color', 'so-widgets-bundle' ),
+						),
+					),
+				),
+			),
+		);
+
+		if ( ! empty( $settings ) ) {
+			$fields = array_merge_recursive( $fields, array( 'fields' => $settings ) );
+		}
+
+		return $fields;
+	}
+
 	function get_settings_form() {
 		return array(
 			'responsive' => $this->responsive_form_fields( 'global' ),
