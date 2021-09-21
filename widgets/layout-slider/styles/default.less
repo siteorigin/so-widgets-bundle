@@ -3,15 +3,23 @@
 @nav_color_hex: #FFFFFF;
 @nav_size: 25;
 
+// Layout.
+@vertically_align: false;
+// Layout Desktop.
+@slide_height: default;
 @slide_padding: 50px;
 @slide_padding_extra_top: 0px;
 @slide_padding_sides: 10px;
 @slide_width: 1280px;
-@slide_height: default;
+
+// Layout Mobile.
 @responsive_breakpoint: 780px;
 @slide_height_responsive: default;
-@vertically_align: false;
+@slide_padding_responsive: default;
+@slide_padding_top_responsive: default;
+@slide_padding_sides_responsive: default;
 
+// Design.
 @text_size: default;
 @text_color: default;
 @heading_shadow: default;
@@ -20,17 +28,13 @@
 // "Pre-fill" Layout Slider widget area if height is set
 & when ( isnumber( @slide_height ) ) {
 	@media (min-width: @responsive_breakpoint) {
-		& {
-			min-height: @slide_height;
-		}
+		min-height: @slide_height;
 	}
 }
 
 & when ( isnumber( @slide_height_responsive ) ) {
 	@media (max-width: @responsive_breakpoint) {
-		& {
-			min-height: @slide_height_responsive;
-		}
+		min-height: @slide_height_responsive;
 	}
 }
 
@@ -40,7 +44,6 @@
 
 		.sow-slider-image-wrapper {
 			padding: @slide_padding+@slide_padding_extra_top @slide_padding_sides @slide_padding @slide_padding_sides;
-
 			max-width: @slide_width;
 			height: @slide_height;
 			
@@ -56,9 +59,20 @@
 					height: auto;
 				}
 				
-				// If responsive height is set, use it
 				& when ( isnumber( @slide_height_responsive ) ) {
 					height: @slide_height_responsive;
+				}
+
+				& when ( isnumber( @slide_padding_top_responsive ) ) {
+					padding-top: @slide_padding_top_responsive;
+				}
+
+				& when ( isnumber( @slide_padding_sides_responsive ) ) {
+					padding-right: @slide_padding_sides_responsive;
+					padding-left: @slide_padding_sides_responsive;
+				}
+				& when ( isnumber( @slide_padding_responsive ) ) {
+					padding-bottom: @slide_padding_responsive;
 				}
 			}
 

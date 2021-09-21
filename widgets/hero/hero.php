@@ -231,6 +231,23 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 										'type' => 'measurement',
 										'label' => __( 'Height', 'so-widgets-bundle' ),
 									),
+
+									'padding' => array(
+										'type' => 'measurement',
+										'label' => __( 'Top and bottom padding', 'so-widgets-bundle' ),
+									),
+
+									'extra_top_padding' => array(
+										'type' => 'measurement',
+										'label' => __( 'Extra top padding', 'so-widgets-bundle' ),
+										'description' => __( 'Additional padding added to the top of the slider', 'so-widgets-bundle' ),
+									),
+
+									'padding_sides' => array(
+										'type' => 'measurement',
+										'label' => __( 'Side padding', 'so-widgets-bundle' ),
+									),
+
 								),
 							),
 						),
@@ -452,6 +469,13 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 				$mobile_settings = $instance['layout']['responsive']['mobile'];
 
 				$meas_options['slide_height_responsive'] = ! empty( $mobile_settings['height_responsive'] ) ? $mobile_settings['height_responsive'] : '';
+				$meas_options['slide_padding_responsive'] = ! empty( $mobile_settings['padding'] ) ? $mobile_settings['padding'] : '';
+				$meas_options['slide_padding_sides_responsive'] = ! empty( $mobile_settings['padding_sides'] ) ? $mobile_settings['padding_sides'] : '';
+
+				if ( ! empty( $mobile_settings['extra_top_padding'] ) ) {
+					// Add extra padding to top padidng.
+					$meas_options['slide_padding_top_responsive'] = (int) $meas_options['slide_padding_responsive'] + (int) $mobile_settings['extra_top_padding'];
+				}
 			}
 		}
 
