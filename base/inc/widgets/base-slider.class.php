@@ -250,7 +250,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				foreach ( $instance['frames'] as $k => $frame ) {
 					if ( $is_slider_widget ) {
 						$instance['frames'][ $k ]['loop_background_videos'] = 'on';
-					} else{
+					} else {
 						$instance['frames'][ $k ]['background']['loop_background_videos'] = 'on';
 					}
 				}
