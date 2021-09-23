@@ -146,81 +146,74 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 				'type' => 'section',
 				'label' => __( 'Layout', 'so-widgets-bundle' ),
 				'fields' => array(
+					'desktop' => array(
+						'type' => 'section',
+						'label' => __( 'Desktop', 'so-widgets-bundle' ),
+						'fields' => array(
+							'height' => array(
+								'type' => 'measurement',
+								'label' => __( 'Height', 'so-widgets-bundle' ),
+							),
+
+							'padding' => array(
+								'type' => 'measurement',
+								'label' => __( 'Top and bottom padding', 'so-widgets-bundle' ),
+								'default' => '50px',
+							),
+
+							'extra_top_padding' => array(
+								'type' => 'measurement',
+								'label' => __( 'Extra top padding', 'so-widgets-bundle' ),
+								'description' => __( 'Additional padding added to the top of the slider', 'so-widgets-bundle' ),
+								'default' => '0px',
+							),
+
+							'padding_sides' => array(
+								'type' => 'measurement',
+								'label' => __( 'Side padding', 'so-widgets-bundle' ),
+								'default' => '20px',
+							),
+
+							'width' => array(
+								'type' => 'measurement',
+								'label' => __( 'Maximum container width', 'so-widgets-bundle' ),
+								'default' => '1280px',
+							),
+
+						),
+					),
+					'mobile' => array(
+						'type' => 'section',
+						'label' => __( 'Mobile', 'so-widgets-bundle' ),
+						'fields' => array(
+							'height_responsive' => array(
+								'type' => 'measurement',
+								'label' => __( 'Height', 'so-widgets-bundle' ),
+							),
+
+							'padding' => array(
+								'type' => 'measurement',
+								'label' => __( 'Top and bottom padding', 'so-widgets-bundle' ),
+							),
+
+							'extra_top_padding' => array(
+								'type' => 'measurement',
+								'label' => __( 'Extra top padding', 'so-widgets-bundle' ),
+								'description' => __( 'Additional padding added to the top of the slider', 'so-widgets-bundle' ),
+							),
+
+							'padding_sides' => array(
+								'type' => 'measurement',
+								'label' => __( 'Side padding', 'so-widgets-bundle' ),
+							),
+
+						),
+					),
 					'vertically_align' => array(
 						'type' => 'checkbox',
 						'label' => __( 'Vertically center align slide contents', 'so-widgets-bundle' ),
 						'description' => __( 'For perfect centering, consider setting the Extra top padding setting to 0 when enabling this setting.', 'so-widgets-bundle' ),
 					),
-					'responsive' => array(
-						'type' => 'section',
-						'label' => __( 'Responsive', 'so-widgets-bundle' ),
-						'fields' => array(
-							'desktop' => array(
-								'type' => 'section',
-								'label' => __( 'Layout', 'so-widgets-bundle' ),
-								'fields' => array(
-									'height' => array(
-										'type' => 'measurement',
-										'label' => __( 'Height', 'so-widgets-bundle' ),
-									),
-
-									'padding' => array(
-										'type' => 'measurement',
-										'label' => __( 'Top and bottom padding', 'so-widgets-bundle' ),
-										'default' => '50px',
-									),
-
-									'extra_top_padding' => array(
-										'type' => 'measurement',
-										'label' => __( 'Extra top padding', 'so-widgets-bundle' ),
-										'description' => __( 'Additional padding added to the top of the slider', 'so-widgets-bundle' ),
-										'default' => '0px',
-									),
-
-									'padding_sides' => array(
-										'type' => 'measurement',
-										'label' => __( 'Side padding', 'so-widgets-bundle' ),
-										'default' => '20px',
-									),
-
-									'width' => array(
-										'type' => 'measurement',
-										'label' => __( 'Maximum container width', 'so-widgets-bundle' ),
-										'default' => '1280px',
-									),
-
-								),
-							),
-							'mobile' => array(
-								'type' => 'section',
-								'label' => __( 'Mobile', 'so-widgets-bundle' ),
-								'fields' => array(
-									'height_responsive' => array(
-										'type' => 'measurement',
-										'label' => __( 'Height', 'so-widgets-bundle' ),
-									),
-
-									'padding' => array(
-										'type' => 'measurement',
-										'label' => __( 'Top and bottom padding', 'so-widgets-bundle' ),
-									),
-
-									'extra_top_padding' => array(
-										'type' => 'measurement',
-										'label' => __( 'Extra top padding', 'so-widgets-bundle' ),
-										'description' => __( 'Additional padding added to the top of the slider', 'so-widgets-bundle' ),
-									),
-
-									'padding_sides' => array(
-										'type' => 'measurement',
-										'label' => __( 'Side padding', 'so-widgets-bundle' ),
-									),
-
-								),
-							),
-						),
-					),
-
 				),
 			),
 
@@ -412,26 +405,26 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		$meas_options = array();
 
 		// Layouts settings.
-		if ( ! empty( $instance['layout'] ) && ! empty( $instance['layout']['responsive'] ) ) {
-			if ( ! empty( $instance['layout']['responsive']['desktop'] ) ) {
-				$desktop_settings = $instance['layout']['responsive']['desktop'];
-				$meas_options['slide_height'] = ! empty( $desktop_settings['height'] ) ? $desktop_settings['height'] : '';
-				$meas_options['slide_padding'] = ! empty( $desktop_settings['slide_padding'] ) ? $desktop_settings['slide_padding'] : '';
-				$meas_options['slide_padding_extra_top'] = ! empty( $desktop_settings['extra_top_padding'] ) ? $desktop_settings['extra_top_padding'] : '';
-				$meas_options['slide_padding_sides'] = ! empty( $desktop_settings['slide_padding_sides'] ) ? $desktop_settings['slide_padding_sides'] : '';
-				$meas_options['slide_width'] = ! empty( $desktop_settings['slide_width'] ) ? $desktop_settings['slide_width'] : '';
+		if ( ! empty( $instance['layout'] ) ) {
+			if ( ! empty( $instance['layout']['desktop'] ) ) {
+				$settings = $instance['layout']['desktop'];
+				$meas_options['slide_height'] = ! empty( $settings['height'] ) ? $settings['height'] : '';
+				$meas_options['slide_padding'] = ! empty( $settings['slide_padding'] ) ? $settings['slide_padding'] : '';
+				$meas_options['slide_padding_extra_top'] = ! empty( $settings['extra_top_padding'] ) ? $settings['extra_top_padding'] : '';
+				$meas_options['slide_padding_sides'] = ! empty( $settings['slide_padding_sides'] ) ? $settings['slide_padding_sides'] : '';
+				$meas_options['slide_width'] = ! empty( $settings['slide_width'] ) ? $settings['slide_width'] : '';
 			}
 
-			if ( ! empty( $instance['layout']['responsive']['mobile'] ) ) {
-				$mobile_settings = $instance['layout']['responsive']['mobile'];
+			if ( ! empty( $instance['layout']['mobile'] ) ) {
+				$settings = $instance['layout']['mobile'];
 
-				$meas_options['slide_height_responsive'] = ! empty( $mobile_settings['height_responsive'] ) ? $mobile_settings['height_responsive'] : '';
-				$meas_options['slide_padding_responsive'] = ! empty( $mobile_settings['padding'] ) ? $mobile_settings['padding'] : '';
-				$meas_options['slide_padding_sides_responsive'] = ! empty( $mobile_settings['padding_sides'] ) ? $mobile_settings['padding_sides'] : '';
+				$meas_options['slide_height_responsive'] = ! empty( $settings['height_responsive'] ) ? $settings['height_responsive'] : '';
+				$meas_options['slide_padding_responsive'] = ! empty( $settings['padding'] ) ? $settings['padding'] : '';
+				$meas_options['slide_padding_sides_responsive'] = ! empty( $settings['padding_sides'] ) ? $settings['padding_sides'] : '';
 
-				if ( ! empty( $mobile_settings['extra_top_padding'] ) ) {
+				if ( ! empty( $settings['extra_top_padding'] ) ) {
 					// Add extra padding to top padidng.
-					$meas_options['slide_padding_top_responsive'] = (int) $meas_options['slide_padding_responsive'] + (int) $mobile_settings['extra_top_padding'];
+					$meas_options['slide_padding_top_responsive'] = (int) $meas_options['slide_padding_responsive'] + (int) $settings['extra_top_padding'];
 				}
 			}
 		}
