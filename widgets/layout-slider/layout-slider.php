@@ -437,7 +437,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 			$less[ $key ] = $this->add_default_measurement_unit( $val );
 		}
 
-		$less['vertically_align'] = empty( $instance['design']['vertically_align'] ) ? 'false' : 'true';
+		$less['vertically_align'] = empty( $instance['layout']['vertically_align'] ) ? 'false' : 'true';
 
 		if ( ! empty( $instance['design']['heading_shadow'] ) ) {
 			$less['heading_shadow'] = (int) $instance['design']['heading_shadow'];

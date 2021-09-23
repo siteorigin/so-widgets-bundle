@@ -478,7 +478,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			$less[ $key ] = $this->add_default_measurement_unit( $val );
 		}
 
-		$less['vertically_align'] = empty( $instance['design']['vertically_align'] ) ? 'false' : 'true';
+		$less['vertically_align'] = empty( $instance['layout']['vertically_align'] ) ? 'false' : 'true';
 
 		$less['heading_shadow'] = (int) $instance['design']['heading_shadow'];
 		$less['heading_color'] = $instance['design']['heading_color'];
