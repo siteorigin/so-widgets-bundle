@@ -230,6 +230,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				$this->widget_class == 'SiteOrigin_Widget_Hero_Widget' ||
 				$this->widget_class == 'SiteOrigin_Widget_LayoutSlider_Widget'
 			) &&
+			! empty( $instance['design'] ) &&
 			empty( $instance['layout'] )
 		) {
 			$migrate_layout_settings = array(
