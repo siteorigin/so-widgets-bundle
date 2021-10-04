@@ -13,12 +13,6 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#78BDF1'
 	),
-	'google-plus' => array(
-		'label'    => __( 'Google+', 'so-widgets-bundle' ),
-		'base_url' => 'https://plus.google.com/',
-		'icon_color' => '#FFFFFF',
-		'button_color' => '#DD4B39'
-	),
 	'rss'         => array(
 		'label'    => __( 'RSS', 'so-widgets-bundle' ),
 		'base_url' => get_bloginfo('rss_url'),
