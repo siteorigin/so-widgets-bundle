@@ -150,6 +150,12 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				'tablet_portrait' => 2,
 				'mobile' => 1,
 			),
+			'navigation' => array(
+				'desktop' => true,
+				'tablet_landscape' => true,
+				'tablet_portrait' => true,
+				'mobile' => false,
+			),
 		);
 	}
 
@@ -315,8 +321,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			$thumb_hover_width = $size['width'];
 			$thumb_hover_height = $size['height'];
 		}
-
-		return array(
+		$less_vars = array(
 			'thumbnail_width' => $thumb_width . 'px',
 			'thumbnail_height'=> $thumb_height . 'px',
 			'thumbnail_hover_width' => $thumb_hover_width . 'px',
@@ -331,6 +336,9 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			'item_title_font_size' => ! empty( $instance['design']['item_title']['size'] ) ? $instance['design']['item_title']['size'] : '',
 			'item_title_color' => ! empty( $instance['design']['item_title']['color'] ) ? $instance['design']['item_title']['color'] : '',
 		);
+		$less_vars = $this->responsive_less_variables( $less_vars, $instance );
+
+		return $less_vars;
 	}
 
 	public function get_template_variables( $instance, $args ) {

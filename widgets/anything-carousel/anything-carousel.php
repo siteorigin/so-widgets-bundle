@@ -215,6 +215,8 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 			$less_vars['item_font_weight'] = $item_font['weight_raw'];
 		}
 
+		$less_vars = $this->responsive_less_variables( $less_vars, $instance );
+
 		return $less_vars;
 	}
 
