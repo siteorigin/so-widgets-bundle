@@ -28,7 +28,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 
 	function get_widget_form(){
-		return array(
+		return parent::widget_form( array(
 			'frames' => array(
 				'type' => 'repeater',
 				'label' => __('Slider frames', 'so-widgets-bundle'),
@@ -149,7 +149,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				),
 			),
 
-		);
+		) );
 	}
 
 	function get_frame_background( $i, $frame ){
@@ -339,7 +339,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		}
 
-		return $instance;
+		return parent::modify_instance( $instance );
 	}
 
 	function get_form_teaser(){

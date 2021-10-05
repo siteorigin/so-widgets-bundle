@@ -143,12 +143,6 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'label' => __( 'Show slide background videos on mobile', 'so-widgets-bundle' ),
 				'description' => __( 'Allow slide background videos to appear on mobile devices that support autoplay.', 'so-widgets-bundle' ),
 			),
-
-			'loop_background_videos' => array(
-				'type' => 'checkbox',
-				'label' => __( 'Loop slide background videos', 'so-widgets-bundle' ),
-				'default' => false,
-			),
 		);
 	}
 
@@ -210,6 +204,60 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'nav_always_show_mobile'   => ! empty( $controls['nav_always_show_mobile'] ) ? true : '',
 			'breakpoint'               => ! empty( $controls['breakpoint'] ) ? $controls['breakpoint'] : '780px',
 		);
+	}
+
+	function widget_form( $form_options ) {
+		if ( isset( $form_options ) && isset( $form_options['frames'] ) ) {
+			$loop_setting = array(
+				'type' => 'checkbox',
+				'label' => __( 'Loop slide background videos', 'so-widgets-bundle' ),
+				'default' => false,
+			);
+			if ( isset( $form_options['frames']['fields']['background_videos'] ) ) {
+				// Add setting to SiteOrigin Slider widget.
+				siteorigin_widgets_array_insert(
+					$form_options['frames']['fields'],
+					'background_image',
+					array(
+						'loop_background_videos' => $loop_setting,
+					)
+				);
+			} elseif ( isset( $form_options['frames']['fields']['background'] ) ) {
+				// Add setting to all other slider widgets.
+				$form_options['frames']['fields']['background']['fields']['loop_background_videos'] = $loop_setting;
+			}
+		}
+		return $form_options;
+	}
+
+	/**
+	 * Migrate Slider settings.
+	 *
+	 * @param $instance
+	 *
+	 * @return mixed
+	 */
+	function modify_instance( $instance ){
+		if ( empty( $instance ) ) {
+			return array();
+		}
+
+		// Migrate global slider loop_background_videos setting to frame specific setting.
+		if ( ! empty( $instance['controls']['loop_background_videos'] ) ) {
+			unset( $instance['controls']['loop_background_videos'] );
+			if ( ! empty( $instance['frames'] ) ) {
+				$is_slider_widget = $this->widget_class == 'SiteOrigin_Widget_Slider_Widget';
+				foreach ( $instance['frames'] as $k => $frame ) {
+					if ( $is_slider_widget ) {
+						$instance['frames'][ $k ]['loop_background_videos'] = 'on';
+					} else {
+						$instance['frames'][ $k ]['background']['loop_background_videos'] = 'on';
+					}
+				}
+			}
+		}
+
+		return $instance;
 	}
 
 	function render_template( $controls, $frames ){
@@ -344,6 +392,14 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					$classes[] = 'sow-mobile-video_enabled';
 				}
 
+				// If loop_background_videos is enabled, pass it to the video embed as a control.
+				if ( ! empty( $frame['loop_background_videos'] ) ) {
+					// SiteOrigin Slider Widget.
+					$controls['loop_background_videos'] = $frame['loop_background_videos'];
+				} elseif ( ! empty( $frame['background']['loop_background_videos'] ) ) {
+					// All other slider widgets.
+					$controls['loop_background_videos'] = $frame['background']['loop_background_videos'];
+				}
 				$this->video_code( $background['videos'], $classes, $controls );
 			}
 
