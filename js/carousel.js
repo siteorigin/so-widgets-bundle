@@ -146,6 +146,8 @@ jQuery( function ( $ ) {
 			}
 		} );
 
+		$( sowb ).trigger( 'carousel_setup' );
+
 		// Keyboard Navigation of carousel navigation.
 		$( document ).on( 'keydown', '.sow-carousel-navigation a', function( e ) {
 			if ( e.keyCode != 13 && e.keyCode != 32 ) {
