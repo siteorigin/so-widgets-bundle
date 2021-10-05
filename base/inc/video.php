@@ -75,7 +75,7 @@ class SiteOrigin_Video {
 					'remove_related_videos'
 				), $html );
 			}
-			
+
 			if ( ! empty( $html ) ) {
 				set_transient( 'sow-vid-embed[' . $hash . ']', $html, 30 * 86400 );
 			}
@@ -92,7 +92,17 @@ class SiteOrigin_Video {
 	 * @return mixed
 	 */
 	function autoplay_callback( $match ) {
-		return str_replace( $match[1], add_query_arg( 'autoplay', 1, $match[1] ), $match[0] );
+		return str_replace(
+			$match[1],
+			add_query_arg(
+				array(
+					'autoplay' => 1,
+					'mute' => 1,
+				),
+				$match[1]
+			),
+			$match[0]
+		);
 	}
 
 	/**
