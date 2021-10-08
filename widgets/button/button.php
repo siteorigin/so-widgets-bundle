@@ -405,6 +405,10 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	 * @return mixed
 	 */
 	function modify_instance( $instance ) {
+		if ( empty( $instance ) ) {
+			return array();
+		}
+
 		$migrate_props = array(
 			'button_icon' => array(
 				'icon_selected',

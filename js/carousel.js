@@ -72,15 +72,20 @@ jQuery( function ( $ ) {
 					numItems = $items.find( '.sow-carousel-item' ).length,
 					complete = numItems >= $$.data( 'item_count' ),
 					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
-					lastPosition = numItems - numVisibleItems + 1,
-					slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' );
+					slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' ),
+					lastPosition = numItems - numVisibleItems;
+
+				// Post Carousel has a loading indicator so we need to pad the lastPosition.
+				if ( $$.data( 'widget' ) == 'post' ) {
+					lastPosition++;
+				}
 
 				// Check if all items are displayed
 				if ( ! complete ) {
 					// For Ajax Carousels, check if we need to fetch the next batch of items.
 					if ( 
 						$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ||
-						$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition - 1
+						$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition
 					) {
 						$( sowb ).trigger( 'carousel_load_new_items', [ $$, $items, refocus ] );
 					}
@@ -103,7 +108,7 @@ jQuery( function ( $ ) {
 							$items.slick( 'slickGoTo', 0 );
 						}
 					// Check if the number of slides to scroll exceeds lastPosition, go to the last slide.
-					} else if ( $items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition - 1 ) {
+					} else if ( $items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition ) {
 						$items.setSlideTo( lastPosition );
 					} else {
 						$items.slick( 'slickNext' );
@@ -140,6 +145,8 @@ jQuery( function ( $ ) {
 				} );
 			}
 		} );
+
+		$( sowb ).trigger( 'carousel_setup' );
 
 		// Keyboard Navigation of carousel navigation.
 		$( document ).on( 'keydown', '.sow-carousel-navigation a', function( e ) {

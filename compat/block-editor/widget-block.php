@@ -156,7 +156,25 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			// If we have pre-generated widgetHTML or there's a valid $_POST, generate the widget.
 			// We don't show the pre-generated widget when there's a valid $_POST
 			// as widgets will likely change when that happens.
-			if ( empty( $attributes['widgetHtml'] ) || ! empty( $_POST ) ) {
+			// Pages with an active WPML translation will bypass cache.
+			$current_page_id = get_the_ID();
+			if (
+				empty( $attributes['widgetHtml'] ) ||
+				! empty( $_POST ) ||
+				// Is WPML active? If so, is there a translation for this page?
+				(
+					defined( 'ICL_LANGUAGE_CODE' ) &&
+					is_numeric(
+						apply_filters(
+							'wpml_object_id',
+							$current_page_id,
+							get_post_type( $current_page_id ),
+							false,
+							ICL_LANGUAGE_CODE
+						)
+					)
+				)
+			) {
 				/* @var $widget SiteOrigin_Widget */
 				$instance = $widget->update( $instance, $instance );
 				$widget->widget( array(

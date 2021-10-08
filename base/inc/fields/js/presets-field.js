@@ -63,12 +63,15 @@
 			}
 		} );
 
-		// If no value is selected, and there's a default preset, load it.
-		if ( $presetSelect.val() == 'default' && $presetSelect.data( 'default-preset' ) != '' ) {
+		if ( $presetSelect.data( 'default-preset' ) != '' ) {
+			// There's a default preset set, remove the empty default.
 			$( this ).find( 'select[class="siteorigin-widget-input"] option[value="default"]' ).remove();
-			addingDefault = true;
-			$presetSelect.val( $presetSelect.data( 'default-preset' ) );
-			$presetSelect.trigger( 'change' );
+			// If no value is selected, and there's a default preset, load it.
+			if ( $presetSelect.val() == 'default' ) {
+				addingDefault = true;
+				$presetSelect.val( $presetSelect.data( 'default-preset' ) );
+				$presetSelect.trigger( 'change' );
+			}
 		}
 
 		$presetSelect.data( 'initialized', true );

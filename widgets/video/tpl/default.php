@@ -5,7 +5,6 @@
  * @var $player_id
  * @var $autoplay
  * @var $related_videos
- * @var $controls
  * @var $skin_class
  * @var $is_skinnable_video_host
  * @var $sources
@@ -27,7 +26,7 @@ $video_args = array(
 if ( $autoplay ) {
 	$video_args['autoplay'] = 1;
 	$video_args['playsinline'] = '';
-	// In most brwosers, Videos need to be muted to autoplay.
+	// In most browsers, Videos need to be muted to autoplay.
 	if ( apply_filters( 'sow_video_autoplay_mute_self_hosted', true ) ) {
 		$video_args['muted'] = true;
 	}
@@ -53,7 +52,7 @@ do_action( 'siteorigin_widgets_sow-video_before_video', $instance );
 			<?php foreach ( $video_args as $k => $v ) : ?>
 				<?php echo $k . '="' . $v . '" '; ?>
 			<?php endforeach; ?>
-			<?php if ( ! empty( $controls ) ): ?>
+			<?php if ( apply_filters( 'sow_video_add_controls', false ) ): ?>
 				<?php echo 'controls'; ?>
 			<?php endif; ?>
 		>
