@@ -100,6 +100,22 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.24.0 - 08 October 2021 =
+* Anything Carousel: Set wrapper to full-width to avoid a potential sizing issue.
+* Anything Carousel: Prevented the Widget Styles - Link Color setting from overriding `Arrows color`.
+* Anything Carousel: Prevented active navigation dot from displaying a cursor on hover.
+* Anything Carousel: Ensured navigation dot activation correct when viewing the last item.
+* Button: Prevented potential error by ensuring `$instance` is not empty before modifying it.
+* Google Maps: Changed map setup to allow for greater flexibility.
+* Post and Anything Carousel: Added a Responsive section `Show navigation` setting.
+* Post and Anything Carousel: Migrated design settings to a `Design` section.
+* Slider Widgets: Moved the `Loop slide background videos` to within the frame `Background video` section.
+* Social Media Buttons: Removed the Google+ network.
+* Video Player Widget: Enabled oEmbed for external videos.
+* Slider Background Videos: Mute when autoplay is enabled. Required for video autoplay in Chrome.
+* WPML: Added a translation compatibility XML file. Requires WPML 4.5.
+* Developer: Added a new event for the carousel `carousel_setup`.
+
 = 1.23.1 - 16 August 2021 =
 * Anything Carousel: Set wrapper to full-width to avoid potential sizing issue.
 * Anything Carousel: Prevented Page Builder widget Links Color setting from overriding navigation arrow color.
