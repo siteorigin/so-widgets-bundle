@@ -76,7 +76,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 					'tablet_portrait' => true,
 					'mobile' => true,
 				),
-				'navigation_label' => __( 'Show navigation', 'so-widgets-bundle' ),
+				'navigation_label' => __( 'Display navigation arrows', 'so-widgets-bundle' ),
 			)
 		);
 	}

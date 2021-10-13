@@ -46,7 +46,6 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 				'label' => __( 'Slides to show ', 'so-widgets-bundle' ),
 				'description' => __( 'The number of slides to show on %s.', 'so-widgets-bundle' ),
 			),
-			'navigation_label' =>__( 'Display navigation arrows', 'so-widgets-bundle' ),
 		);
 	}
 
