@@ -334,6 +334,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			'autoplay' => isset( $settings['autoplay'] ) ? $settings['autoplay'] : false,
 			'pauseOnHover' => isset( $settings['autoplay_pause_hover'] ) ? $settings['autoplay_pause_hover'] : false,
 			'autoplaySpeed' => ! empty( $settings['timeout'] ) ? $settings['timeout'] : 8000,
+			'item_overflow' => isset( $settings['item_overflow'] ) ? $settings['item_overflow'] : false,
 		);
 
 		return $encode ? json_encode( $variables ) : $variables;

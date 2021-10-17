@@ -28,7 +28,7 @@
 	     }
 	     ?>
 	>
-		<div class="sow-carousel-items">
+		<div class="sow-carousel-items" style="overflow: hidden; width: 200vw;">
 			<?php include $settings['item_template']; ?>
 		</div>
 	</div>
