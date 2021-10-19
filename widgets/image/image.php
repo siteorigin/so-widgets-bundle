@@ -115,6 +115,11 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 				'description' => __( "Resize image to fit its container.", 'so-widgets-bundle' ),
 			),
 
+			'rel' => array(
+				'type' => 'text',
+				'label' => __( 'Rel', 'so-widgets-bundle' ),
+			),
+
 		);
 	}
 
@@ -176,6 +181,8 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		} else {
 			$attr['alt'] = get_post_meta( $instance['image'], '_wp_attachment_image_alt', true );
 		}
+
+		$attr['rel'] = ! empty( $instance['rel'] ) ? $instance['rel'] : '';
 
 		if ( function_exists( 'wp_lazy_loading_enabled' ) && wp_lazy_loading_enabled( 'img', 'sow-image' ) ) {
 			$attr['loading'] = 'lazy';
