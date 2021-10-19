@@ -1,0 +1,145 @@
+@import "../../../base/less/mixins";
+
+@item_title_tag: h3;
+@item_title_font: default;
+@item_title_font_weight: default;
+@item_title_font_size: default;
+@item_title_font_style: default;
+@item_title_color: default;
+@bottom_margin: default;
+
+@item_font: default;
+@item_font_weight: default;
+@item_font_size: default;
+@item_font_style: default;
+@item_color: default;
+@item_margin: 0 12px 64px 12px;
+
+@navigation_arrow_color: #626262;
+@navigation_arrow_color_hover: #000;
+@navigation_arrow_margin: default;
+@navigation_dots_color: #bebebe;
+@navigation_dots_color_hover: #f14e4e;
+
+@breakpoint_tablet_landscape: default;
+@breakpoint_tablet_portrait: default;
+@breakpoint_mobile: default;
+@navigation_desktop: default;
+@navigation_tablet_landscape: default;
+@navigation_tablet_portrait: default;
+@navigation_mobile: default;
+
+.sow-carousel-container {
+	a.sow-carousel-next {
+		margin-left: @navigation_arrow_margin;
+
+		&:after {
+			content: "\e601";
+		}
+	}
+
+	a.sow-carousel-previous {
+		margin-right: @navigation_arrow_margin;
+
+		&:before {
+			content: "\e600";
+		}
+	}
+
+	a.sow-carousel-previous,
+	a.sow-carousel-next {
+		align-items: center;
+		border-radius: 16px;
+		border: 1px solid @navigation_arrow_color;
+		color: @navigation_arrow_color !important;
+		display: flex;
+		font-size: 14px;
+		height: 32px;
+		justify-content: center;
+		min-width: 32px; // FF may ignore width due to the parent being a flexbox. It won't ignore min-width.
+		width: 32px;
+
+		&:focus,
+		&:hover {
+			color: @navigation_arrow_color_hover !important;
+			border-color: @navigation_arrow_color_hover;
+		}
+
+
+		& when not ( isnumber( @navigation_desktop ) ) {
+			@media (min-width: @breakpoint_tablet_landscape) {
+				display: none;
+			}
+		}
+
+		& when not ( isnumber( @navigation_tablet_landscape ) ) {
+			@media (min-width: @breakpoint_tablet_portrait) and (max-width: @breakpoint_tablet_landscape) {
+				display: none;
+			}
+		}
+
+		& when not ( isnumber( @navigation_tablet_portrait ) ) {
+			@media (min-width: @breakpoint_mobile) and (max-width: @breakpoint_tablet_portrait) {
+				display: none;
+			}
+		}
+
+		& when not ( isnumber(  @navigation_mobile ) ) {
+			@media (max-width: @breakpoint_mobile) {
+				display: none;
+			}
+		}
+	}
+
+	.sow-carousel-wrapper {
+		.sow-carousel-items {
+			.sow-carousel-item {
+				margin: @item_margin;
+
+				&,
+				& p {
+					color: @item_color;
+					.font(@item_font, @item_font_weight);
+					font-size: @item_font_size;
+					font-style: @item_font_style;
+				}
+
+				@{item_title_tag}.sow-carousel-item-title {
+					color: @item_title_color;
+					.font(@item_title_font, @item_title_font_weight);
+					font-size: @item_title_font_size;
+					font-style: @item_title_font_style;
+					margin: 0;
+					margin-bottom: @bottom_margin;
+				}
+			}
+		}
+
+		.slick-dots {
+			li { 
+
+				&.slick-active button:before {
+					color: @navigation_dots_color_hover;
+				}
+
+				button {
+					height: 12px;
+
+					&:before {
+						color: @navigation_dots_color;
+						font-size: 41px;
+						margin-right: 5px;
+					}
+
+					&:hover:before {
+						color: @navigation_dots_color_hover;
+					}
+				}
+
+				&:last-of-type button:before {
+					margin-right: 0;
+				}
+			}
+		}
+	}
+}

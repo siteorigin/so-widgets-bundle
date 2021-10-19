@@ -44,17 +44,28 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 
 	function get_widget_form(){
-		return array(
+		return parent::widget_form( array(
 			'frames' => array(
 				'type' => 'repeater',
 				'label' => __('Hero frames', 'so-widgets-bundle'),
 				'item_name' => __('Frame', 'so-widgets-bundle'),
 				'item_label' => array(
-					'selector' => "[id*='frames-title']",
-					'update_event' => 'change',
-					'value_method' => 'val'
+					'selectorArray' => array(
+						array(
+							'selector' => '.siteorigin-widget-field-background .media-field-wrapper .current .title',
+							'valueMethod' => 'html',
+						),
+						array(
+							'selector' => '.siteorigin-widget-field-videos .siteorigin-widget-field-repeater-items  .media-field-wrapper .current .title',
+							'valueMethod' => 'html',
+						),
+						array(
+							'selector' => ".siteorigin-widget-field-videos [id*='url']",
+							'update_event' => 'change',
+							'value_method' => 'val',
+						),
+					),
 				),
-
 				'fields' => array(
 
 					'content' => array(
@@ -138,9 +149,17 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'item_name' => __('Video', 'so-widgets-bundle'),
 								'label' => __('Background videos', 'so-widgets-bundle'),
 								'item_label' => array(
-									'selector' => "[id*='frames-background_videos-url']",
-									'update_event' => 'change',
-									'value_method' => 'val'
+									'selectorArray' => array(
+										array(
+											'selector' => "[id*='url']",
+											'update_event' => 'change',
+											'value_method' => 'val',
+										),
+										array(
+											'selector' => '.siteorigin-widget-field-file .media-field-wrapper .current .title',
+											'valueMethod' => 'html',
+										),
+									),
 								),
 								'fields' => $this->video_form_fields(),
 							),
@@ -292,7 +311,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 				)
 			),
-		);
+		) );
 	}
 	
 	function filter_button_widget_form( $form_fields ) {

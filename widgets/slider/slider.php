@@ -27,8 +27,8 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 		);
 	}
 
-	function get_widget_form() {
-		return array(
+	function get_widget_form(){
+		return parent::widget_form( array(
 			'frames' => array(
 				'type' => 'repeater',
 				'label' => __('Slider frames', 'so-widgets-bundle'),
@@ -37,15 +37,20 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 					'selectorArray' => array(
 						array(
 							'selector' => '.siteorigin-widget-field-background_image .media-field-wrapper .current .title',
-							'valueMethod' => 'html'
+							'valueMethod' => 'html',
 						),
 						array(
 							'selector' => '.siteorigin-widget-field-background_videos .siteorigin-widget-field-repeater-items  .media-field-wrapper .current .title',
-							'valueMethod' => 'html'
+							'valueMethod' => 'html',
+						),
+						array(
+							'selector' => ".siteorigin-widget-field-background_videos [id*='url']",
+							'update_event' => 'change',
+							'value_method' => 'val',
 						),
 						array(
 							'selector' => '.siteorigin-widget-field-foreground_image .media-field-wrapper .current .title',
-							'valueMethod' => 'html'
+							'valueMethod' => 'html',
 						),
 					),
 				),
@@ -55,9 +60,17 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 						'item_name' => __('Video', 'so-widgets-bundle'),
 						'label' => __('Background videos', 'so-widgets-bundle'),
 						'item_label' => array(
-							'selector' => "[id*='frames-background_videos-url']",
-							'update_event' => 'change',
-							'value_method' => 'val'
+							'selectorArray' => array(
+								array(
+									'selector' => '.siteorigin-widget-field-file .media-field-wrapper .current .title',
+									'valueMethod' => 'html',
+								),
+								array(
+									'selector' => "[id*='url']",
+									'update_event' => 'change',
+									'value_method' => 'val',
+								),
+							),
 						),
 						'fields' => $this->video_form_fields(),
 					),
@@ -136,7 +149,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				),
 			),
 
-		);
+		) );
 	}
 
 	function get_frame_background( $i, $frame ){
@@ -204,7 +217,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 							'full',
 							! empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : '',
 							array(
-								'class' => 'sow-slider-foreground-image',
+								'class' => 'sow-slider-foreground-image skip-lazy',
 								'loading' => 'eager',
 								'style' => ! empty( $foreground_style_attr ) ? $foreground_style_attr : '',
 							)
@@ -236,7 +249,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				'full',
 				!empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : '',
 				array(
-					'class' => 'sow-slider-background-image',
+					'class' => 'sow-slider-background-image skip-lazy',
 					'loading' => 'eager',
 				)
 			);
@@ -326,7 +339,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		}
 
-		return $instance;
+		return parent::modify_instance( $instance );
 	}
 
 	function get_form_teaser(){

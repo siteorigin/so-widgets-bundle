@@ -1861,7 +1861,7 @@
         var _ = this, breakpoint, currentBreakpoint, l,
             responsiveSettings = _.options.responsive || null;
 
-        if ( typeof responsiveSettings === 'array' && responsiveSettings.length ) {
+        if ( responsiveSettings.length ) {
 
             _.respondTo = _.options.respondTo || 'window';
 

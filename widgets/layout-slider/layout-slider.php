@@ -32,7 +32,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 
 	function get_widget_form(){
 		$show_heading_fields = apply_filters( 'sow_layout_slider_show_heading_fields', false );
-		return array(
+		return parent::widget_form( array(
 			'frames' => array(
 				'type' => 'repeater',
 				'label' => __('Slider frames', 'so-widgets-bundle'),
@@ -41,11 +41,20 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 					'selectorArray' => array(
 						array(
 							'selector' => '.siteorigin-widget-field-image .media-field-wrapper .current .title',
-							'valueMethod' => 'html'
+							'valueMethod' => 'html',
 						),
 						array(
 							'selector' => '.siteorigin-widget-field-videos .siteorigin-widget-field-repeater-items  .media-field-wrapper .current .title',
-							'valueMethod' => 'html'
+							'valueMethod' => 'html',
+						),
+						array(
+							'selector' => '.siteorigin-widget-field-videos .siteorigin-widget-field-repeater-items  .media-field-wrapper .current .title',
+							'valueMethod' => 'html',
+						),
+						array(
+							'selector' => ".siteorigin-widget-field-videos [id*='url']",
+							'update_event' => 'change',
+							'value_method' => 'val',
 						),
 					),
 				),
@@ -108,9 +117,17 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 								'item_name' => __('Video', 'so-widgets-bundle'),
 								'label' => __('Background videos', 'so-widgets-bundle'),
 								'item_label' => array(
-									'selector' => "[id*='frames-background_videos-url']",
-									'update_event' => 'change',
-									'value_method' => 'val'
+									'selectorArray' => array(
+										array(
+											'selector' => '.siteorigin-widget-field-file .media-field-wrapper .current .title',
+											'valueMethod' => 'html',
+										),
+										array(
+											'selector' => "[id*='url']",
+											'update_event' => 'change',
+											'value_method' => 'val',
+										),
+									),
 								),
 								'fields' => $this->video_form_fields(),
 							),
@@ -213,7 +230,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 
 				)
 			),
-		);
+		) );
 	}
 
 	function form( $instance, $form_type = 'widget' ) {
