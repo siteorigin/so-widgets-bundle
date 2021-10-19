@@ -59,7 +59,7 @@ jQuery( function ( $ ) {
 			} );
 
 			// Clear the pre-fill width if one is set.
-			if (carouselSettings.item_overflow ) {
+			if ( carouselSettings.item_overflow ) {
 				$items.css( 'width', '' );
 				$items.css( 'opacity', '' );
 			}
