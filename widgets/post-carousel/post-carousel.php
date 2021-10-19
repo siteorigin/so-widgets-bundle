@@ -377,6 +377,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 					'carousel_settings' => json_encode(
 						array(
 							'loop' => ! empty( $instance['loop_posts'] ),
+							'item_overflow' => true,
 						)
 					),
 					'responsive' => $this->responsive_template_variables( $instance['responsive'] ),
