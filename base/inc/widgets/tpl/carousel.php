@@ -28,7 +28,10 @@
 	     }
 	     ?>
 	>
-		<div class="sow-carousel-items">
+		<div
+			class="sow-carousel-items"
+			<?php if ( $settings['item_overflow'] ) echo 'style="width: 200vw; opacity: 0;"'; ?>
+		>
 			<?php include $settings['item_template']; ?>
 		</div>
 	</div>

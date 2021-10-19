@@ -365,6 +365,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				'item_template' => plugin_dir_path( __FILE__ ) . 'tpl/item.php',
 				'navigation' => 'title',
 				'item_title_tag' => ! empty( $instance['design']['item_title']['tag'] ) ? $instance['design']['item_title']['tag'] : 'h3',
+				'item_overflow' => true,
 				'attributes' => array(
 					'widget' => 'post',
 					'fetching' => 'false',
@@ -376,6 +377,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 					'carousel_settings' => json_encode(
 						array(
 							'loop' => ! empty( $instance['loop_posts'] ),
+							'item_overflow' => true,
 						)
 					),
 					'responsive' => $this->responsive_template_variables( $instance['responsive'] ),
