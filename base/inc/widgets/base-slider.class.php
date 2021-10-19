@@ -305,6 +305,63 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		return $instance;
 	}
 
+	/**
+	 * Migrate Slider settings.
+	 *
+	 * @param $instance
+	 *
+	 * @return mixed
+	 */
+	function modify_instance( $instance ){
+		if ( empty( $instance ) ) {
+			return array();
+		}
+
+		// Migrate Hero and Layout Slider Layouts and Design settings to separate section.
+		if (
+			(
+				$this->widget_class == 'SiteOrigin_Widget_Hero_Widget' ||
+				$this->widget_class == 'SiteOrigin_Widget_LayoutSlider_Widget'
+			) &&
+			! empty( $instance['design'] ) &&
+			empty( $instance['layout'] )
+		) {
+			$migrate_layout_settings = array(
+				'vertically_align' => true,
+				'desktop' => array(
+					'height',
+					'height_unit',
+					'padding',
+					'padding_unit',
+					'extra_top_padding',
+					'extra_top_padding_unit',
+					'padding_sides',
+					'padding_sides_unit',
+					'width',
+					'width_unit',
+				),
+				'mobile' => array(
+					'height_responsive',
+					'height_responsive_unit',
+				),
+			);
+
+			foreach ( $migrate_layout_settings as $setting => $sub_section ) {
+				if ( is_array( $sub_section ) ) {
+					foreach ( $sub_section as $responsive_setting ) {
+						$instance['layout'][ $setting ][ $responsive_setting ] = $instance['design'][ $responsive_setting ];
+					}
+				} elseif ( ! empty( $instance['design'][ $setting ] ) ) {
+					$instance['layout'][ $setting ] = $instance['design'][ $setting ];
+
+					unset( $instance['design'][ $setting ] );
+				}
+			}
+		}
+
+		return $instance;
+	}
+
 	function render_template( $controls, $frames ){
 		$this->render_template_part('before_slider', $controls, $frames);
 		$this->render_template_part('before_slides', $controls, $frames);

@@ -3,11 +3,23 @@
 @nav_color_hex: #FFFFFF;
 @nav_size: 25;
 
+// Layout.
+@vertically_align: false;
+// Layout Desktop.
+@slide_height: default;
 @slide_padding: 50px;
 @slide_padding_extra_top: 0px;
 @slide_padding_sides: 10px;
 @slide_width: 1280px;
-@slide_height: default;
+
+// Layout Mobile.
+@responsive_breakpoint: 780px;
+@slide_height_responsive: default;
+@slide_padding_responsive: default;
+@slide_padding_top_responsive: default;
+@slide_padding_sides_responsive: default;
+
+// Design.
 @heading_size: 38px;
 @text_size: 16px;
 @text_color: #F6F6F6;
@@ -15,34 +27,24 @@
 @text_font: default;
 @text_font_weight: 500;
 @text_font_style: default;
-
 @link_color: default;
 @link_color_hover: default;
-
 @heading_font: default;
 @heading_font_weight: 400;
 @heading_font_style: default;
 @heading_color: #FFFFFF;
 @heading_shadow: 50;
 
-@responsive_breakpoint: 780px;
-@slide_height_responsive: default;
-@vertically_align: false;
-
 // "Pre-fill" hero widget area if height is set
 & when ( isnumber( @slide_height ) ) {
 	@media (min-width: @responsive_breakpoint) {
-		& {
-			min-height: @slide_height;
-		}
+		min-height: @slide_height;
 	}
 }
 
 & when ( isnumber( @slide_height_responsive ) ) {
 	@media (max-width: @responsive_breakpoint) {
-		& {
-			min-height: @slide_height_responsive;
-		}
+		min-height: @slide_height_responsive;
 	}
 }
 
@@ -63,9 +65,21 @@
 			}
 
 			& when ( isnumber( @slide_height_responsive ) ) {
-				@media (max-width: @responsive_breakpoint) {
-					&{
+				@media (max-width: @responsive_breakpoint) {			
+					& when ( isnumber( @slide_height_responsive ) ) {
 						height: @slide_height_responsive;
+					}
+
+					& when ( isnumber( @slide_padding_top_responsive ) ) {
+						padding-top: @slide_padding_top_responsive;
+					}
+
+					& when ( isnumber( @slide_padding_sides_responsive ) ) {
+						padding-right: @slide_padding_sides_responsive;
+						padding-left: @slide_padding_sides_responsive;
+					}
+					& when ( isnumber( @slide_padding_responsive ) ) {
+						padding-bottom: @slide_padding_responsive;
 					}
 				}
 			}
