@@ -23,6 +23,7 @@
 @container_size: 84px;
 @icon_size: 24px;
 @use_icon_size: false;
+@link_feature: default;
 
 @responsive_breakpoint: 520px;
 
@@ -179,6 +180,17 @@
                 font-style: @more_text_font_style;
                 font-size: @more_text_size;
                 color: @more_text_color;
+            }
+        }
+
+        & when ( @link_feature = 1 ) {
+            .sow-features-feature-linked-column {
+                bottom: 0;
+                position: absolute;
+                right: 0;
+                left: 0;
+                top: 0;
+                z-index: 101;
             }
         }
     }
