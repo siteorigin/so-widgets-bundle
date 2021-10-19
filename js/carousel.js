@@ -61,6 +61,7 @@ jQuery( function ( $ ) {
 			// Clear the pre-fill width if one is set.
 			if (carouselSettings.item_overflow ) {
 				$items.css( 'width', '' );
+				$items.css( 'opacity', '' );
 			}
 
 			// Trigger navigation click on swipe
