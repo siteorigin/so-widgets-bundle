@@ -158,7 +158,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 
 			'unmute_position' => array(
 				'type' => 'select',
-				'label' => __( 'Unmute button position', 'so-widgets-bundle' ),
+				'label' => __( 'Unmute icon position', 'so-widgets-bundle' ),
 				'default' => 'top_right',
 				'options' => array(
 					'top_right' => __( 'Top right', 'so-widgets-bundle' ),
