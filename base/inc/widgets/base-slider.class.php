@@ -302,21 +302,6 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			}
 		}
 
-		return $instance;
-	}
-
-	/**
-	 * Migrate Slider settings.
-	 *
-	 * @param $instance
-	 *
-	 * @return mixed
-	 */
-	function modify_instance( $instance ){
-		if ( empty( $instance ) ) {
-			return array();
-		}
-
 		// Migrate Hero and Layout Slider Layouts and Design settings to separate section.
 		if (
 			(
