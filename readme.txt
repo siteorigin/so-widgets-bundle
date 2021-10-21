@@ -100,6 +100,17 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.25.0 - 21 October 2021 =
+* Features: Added a `Link feature column to more URL` setting.
+* Hero and Layout Slider: Moved Layout settings to dedicated section.
+* Hero and Layout Slider: Added padding responsive settings.
+* Image: Added a `Rel` field. The rel attribute specifies the relationship between the current document and the linked document.
+* Image Grid: Added a `Custom Size` option to the `Image size` setting.
+* Post Carousel: Prevented potential overflow on load.
+* Post and Anything Carousel: Changed `Display navigation` label to `Display navigation arrows`.
+* Sliders: Added an `Unmute icon` and `Unmute icon position` for background videos.
+* Developer: Added multiple media repeater support.
+
 = 1.24.0 - 08 October 2021 =
 * Anything Carousel: Set wrapper to full-width to avoid a potential sizing issue.
 * Anything Carousel: Prevented the Widget Styles - Link Color setting from overriding `Arrows color`.
