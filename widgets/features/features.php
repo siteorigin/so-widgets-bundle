@@ -252,12 +252,32 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				'type' => 'checkbox',
 				'label' => __( 'Link feature title to more URL', 'so-widgets-bundle' ),
 				'default' => false,
+				'state_handler' => array(
+					'link_feature[hide]' => array( 'hide' ),
+					'link_feature[show]' => array( 'show' ),
+				)
 			),
 
 			'icon_link' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Link icon to more URL', 'so-widgets-bundle' ),
 				'default' => false,
+				'state_handler' => array(
+					'link_feature[hide]' => array( 'hide' ),
+					'link_feature[show]' => array( 'show' ),
+				)
+			),
+
+			'link_feature' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Link feature column to more URL', 'so-widgets-bundle' ),
+				'state_emitter' => array(
+					'callback' => 'conditional',
+					'args' => array(
+						'link_feature[show]: ! val',
+						'link_feature[hide]: val'
+					),
+				)
 			),
 
 			'new_window' => array(
@@ -305,6 +325,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		$less_vars['title_tag'] = ! empty( $instance['title_tag'] ) ? $instance['title_tag'] : 'h5';
 		$less_vars['per_row'] = $instance['per_row'];
 		$less_vars['use_icon_size'] = empty( $instance['icon_size_custom'] ) ? 'false' : 'true';
+		$less_vars['link_feature'] = ! empty( $instance['link_feature'] );
 
 		$global_settings = $this->get_global_settings();
 

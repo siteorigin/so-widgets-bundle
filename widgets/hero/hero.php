@@ -174,54 +174,85 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 				'fields' => $this->control_form_fields()
 			),
 
-			'design' => array(
+			'layout' => array(
 				'type' => 'section',
-				'label' => __('Design and Layout', 'so-widgets-bundle'),
+				'label' => __( 'Layout', 'so-widgets-bundle' ),
 				'fields' => array(
+					'desktop' => array(
+						'type' => 'section',
+						'label' => __( 'Desktop', 'so-widgets-bundle' ),
+						'fields' => array(
+							'height' => array(
+								'type' => 'measurement',
+								'label' => __( 'Height', 'so-widgets-bundle' ),
+							),
 
-					'height' => array(
-						'type' => 'measurement',
-						'label' => __( 'Height', 'so-widgets-bundle' ),
-						'default' => 'default',
+							'padding' => array(
+								'type' => 'measurement',
+								'label' => __( 'Top and bottom padding', 'so-widgets-bundle' ),
+								'default' => '50px',
+							),
+
+							'extra_top_padding' => array(
+								'type' => 'measurement',
+								'label' => __( 'Extra top padding', 'so-widgets-bundle' ),
+								'description' => __( 'Additional padding added to the top of the slider', 'so-widgets-bundle' ),
+								'default' => '0px',
+							),
+
+							'padding_sides' => array(
+								'type' => 'measurement',
+								'label' => __( 'Side padding', 'so-widgets-bundle' ),
+								'default' => '20px',
+							),
+
+							'width' => array(
+								'type' => 'measurement',
+								'label' => __( 'Maximum container width', 'so-widgets-bundle' ),
+								'default' => '1280px',
+							),
+
+						),
 					),
+					'mobile' => array(
+						'type' => 'section',
+						'label' => __( 'Mobile', 'so-widgets-bundle' ),
+						'fields' => array(
+							'height_responsive' => array(
+								'type' => 'measurement',
+								'label' => __( 'Height', 'so-widgets-bundle' ),
+							),
 
-					'height_responsive' => array(
-						'type' => 'measurement',
-						'label' => __( 'Responsive Height', 'so-widgets-bundle' ),
-						'default' => 'default',
+							'padding' => array(
+								'type' => 'measurement',
+								'label' => __( 'Top and bottom padding', 'so-widgets-bundle' ),
+							),
+
+							'extra_top_padding' => array(
+								'type' => 'measurement',
+								'label' => __( 'Extra top padding', 'so-widgets-bundle' ),
+								'description' => __( 'Additional padding added to the top of the slider', 'so-widgets-bundle' ),
+							),
+
+							'padding_sides' => array(
+								'type' => 'measurement',
+								'label' => __( 'Side padding', 'so-widgets-bundle' ),
+							),
+
+						),
 					),
-
 					'vertically_align' => array(
 						'type' => 'checkbox',
 						'label' => __( 'Vertically center align slide contents', 'so-widgets-bundle' ),
 						'description' => __( 'For perfect centering, consider setting the Extra top padding setting to 0 when enabling this setting.', 'so-widgets-bundle' ),
 					),
+				),
+			),
 
-					'padding' => array(
-						'type' => 'measurement',
-						'label' => __('Top and bottom padding', 'so-widgets-bundle'),
-						'default' => '50px',
-					),
-
-					'extra_top_padding' => array(
-						'type' => 'measurement',
-						'label' => __('Extra top padding', 'so-widgets-bundle'),
-						'description' => __('Additional padding added to the top of the slider', 'so-widgets-bundle'),
-						'default' => '0px',
-					),
-
-					'padding_sides' => array(
-						'type' => 'measurement',
-						'label' => __('Side padding', 'so-widgets-bundle'),
-						'default' => '20px',
-					),
-
-					'width' => array(
-						'type' => 'measurement',
-						'label' => __('Maximum container width', 'so-widgets-bundle'),
-						'default' => '1280px',
-					),
-
+			'design' => array(
+				'type' => 'section',
+				'label' => __( 'Design', 'so-widgets-bundle' ),
+				'fields' => array(
 					'heading_font' => array(
 						'type' => 'font',
 						'label' => __('Heading font', 'so-widgets-bundle'),
@@ -413,25 +444,42 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		$less['nav_color_hex'] = $instance['controls']['nav_color_hex'];
 		$less['nav_size'] = $instance['controls']['nav_size'];
 
-		// Hero specific design
 		// Measurement field type options
 		$meas_options = array();
-		$meas_options['slide_padding'] = $instance['design']['padding'];
-		$meas_options['slide_padding_extra_top'] = $instance['design']['extra_top_padding'];
-		$meas_options['slide_padding_sides'] = $instance['design']['padding_sides'];
-		$meas_options['slide_width'] = $instance['design']['width'];
-		$meas_options['slide_height'] = $instance['design']['height'];
-		if ( ! empty( $instance['design']['height_responsive'] ) ) {
-			$meas_options['slide_height_responsive'] = $instance['design']['height_responsive'];
+
+		// Layouts settings.
+		if ( ! empty( $instance['layout'] ) ) {
+			if ( ! empty( $instance['layout']['desktop'] ) ) {
+				$settings = $instance['layout']['desktop'];
+
+				$meas_options['slide_height'] = ! empty( $settings['height'] ) ? $settings['height'] : '';
+				$meas_options['slide_padding'] = ! empty( $settings['padding'] ) ? $settings['padding'] : '';
+				$meas_options['slide_padding_extra_top'] = ! empty( $settings['extra_top_padding'] ) ? $settings['extra_top_padding'] : '';
+				$meas_options['slide_padding_sides'] = ! empty( $settings['padding_sides'] ) ? $settings['padding_sides'] : '';
+				$meas_options['slide_width'] = ! empty( $settings['width'] ) ? $settings['width'] : '';
+			}
+
+			if ( ! empty( $instance['layout']['mobile'] ) ) {
+				$settings = $instance['layout']['mobile'];
+
+				$meas_options['slide_height_responsive'] = ! empty( $settings['height_responsive'] ) ? $settings['height_responsive'] : '';
+				$meas_options['slide_padding_responsive'] = ! empty( $settings['padding'] ) ? $settings['padding'] : '';
+				$meas_options['slide_padding_sides_responsive'] = ! empty( $settings['padding_sides'] ) ? $settings['padding_sides'] : '';
+
+				if ( ! empty( $settings['extra_top_padding'] ) ) {
+					// Add extra padding to top padidng.
+					$meas_options['slide_padding_top_responsive'] = (int) $meas_options['slide_padding_responsive'] + (int) $settings['extra_top_padding'];
+				}
+			}
 		}
+
 		$meas_options['heading_size'] = $instance['design']['heading_size'];
 		$meas_options['text_size'] = $instance['design']['text_size'];
-
 		foreach ( $meas_options as $key => $val ) {
 			$less[ $key ] = $this->add_default_measurement_unit( $val );
 		}
 
-		$less['vertically_align'] = empty( $instance['design']['vertically_align'] ) ? 'false' : 'true';
+		$less['vertically_align'] = empty( $instance['layout']['vertically_align'] ) ? 'false' : 'true';
 
 		$less['heading_shadow'] = (int) $instance['design']['heading_shadow'];
 		$less['heading_color'] = $instance['design']['heading_color'];

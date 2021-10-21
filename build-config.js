@@ -15,6 +15,7 @@ module.exports = {
             'widgets/**/*.less',
             'compat/**/*.less',
             '!base/less/*.less',
+            '!base/inc/widgets/less/*.less',
             '!widgets/**/styles/*.less'
         ],
         include:[]
@@ -44,6 +45,7 @@ module.exports = {
             'icons/**/*css',                    // Copy CSS for icon packs.
             'js/lib/**/*css',                   // Copy CSS for JS libs.
             'base/less/*.less',                 // LESS libraries used in runtime styles
+            'base/inc/widgets/less/*.less',
             'widgets/**/styles/*.less',         // All the widgets' runtime .less files
             '!{build,build/**}',                // Ignore build/ and contents
             '!{tmp,tmp/**}',                    // Ignore tmp/ and contents
