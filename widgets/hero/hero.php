@@ -324,10 +324,9 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 					'text_shadow' => array(
 						'type' => 'slider',
 						'label' => __( 'Text shadow intensity', 'so-widgets-bundle' ),
-						'max' => 1,
+						'max' => 100,
 						'min' => 0,
-						'step' => 0.01,
-						'default' => 0.25,
+						'default' => 25,
 					),
 
 					'link_color' => array(
@@ -427,6 +426,30 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 
 	/**
+	 * Migrate Slider settings.
+	 *
+	 * @param $instance
+	 *
+	 * @return mixed
+	 */
+	function modify_instance( $instance ) {
+		if ( empty( $instance ) ) {
+			return array();
+		}
+
+		// Migrate Text Shadow to the 0 - 100 range.
+		if (
+			! empty( $instance['design'] ) ||
+			! empty( $instance['design']['text_shadow'] ) ||
+			(int) $instance['design']['text_shadow'] == $instance['design']['text_shadow']
+		) {
+			$instance['design']['text_shadow'] *= 100;
+		}
+
+		return parent::modify_instance( $instance );
+	}
+
+	/**
 	 * The less variables to control the design of the slider
 	 *
 	 * @param $instance
@@ -483,7 +506,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		$less['heading_shadow'] = (int) $instance['design']['heading_shadow'];
 		$less['heading_color'] = $instance['design']['heading_color'];
-		$less['text_shadow'] = isset( $instance['design']['text_shadow'] ) ? (float) $instance['design']['text_shadow'] : 0.25;
+		$less['text_shadow'] = isset( $instance['design']['text_shadow'] ) ? (float) $instance['design']['text_shadow'] : 25;
 		$less['text_color'] = $instance['design']['text_color'];
 
 
