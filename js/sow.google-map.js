@@ -508,7 +508,7 @@ jQuery(function ($) {
 		if (
 			$( '#sow-google-maps-js' ).length &&
 			(
-				forceLoad 
+				forceLoad ||
 				(
 					typeof sowb.googleMapsData.ApiError !== 'undefined' &&
 					sowb.googleMapsData.ApiError
