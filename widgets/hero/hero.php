@@ -437,7 +437,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			return array();
 		}
 
-		// Migrate Text Shadow to the 0 - 100 range.
+		// Migrate Text shadow intensity setting to the 0 - 100 range.
 		if (
 			! empty( $instance['design'] ) ||
 			! empty( $instance['design']['text_shadow'] ) ||
