@@ -569,7 +569,9 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				if( ! $can_oembed ) {
 					$video_file = sow_esc_url( $video['url'] );
 				} else {
-					echo $so_video->get_video_oembed( $video['url'], ! empty( $video['autoplay'] ), false, $loop );
+					echo '<div class="sow-slide-video-oembed" ' . $opacity . '>';
+					echo $so_video->get_video_oembed( $video['url'], ! empty( $video['autoplay'] ), false, $loop, $opacity );
+					echo '</div>';
 					continue;
 				}
 			}
