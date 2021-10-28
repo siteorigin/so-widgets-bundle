@@ -251,7 +251,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		return $slider_settings;
 	}
 
-	function widget_form( $form_options ) {
+	function modify_form( $form_options ) {
 		if ( isset( $form_options ) && isset( $form_options['frames'] ) ) {
 			$loop_setting = array(
 				'type' => 'checkbox',
