@@ -331,6 +331,10 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				),
 			);
 
+			$instance['layout'] = array();
+			$instance['layout']['desktop'] = array();
+			$instance['layout']['mobile'] = array();
+
 			foreach ( $migrate_layout_settings as $setting => $sub_section ) {
 				if ( is_array( $sub_section ) ) {
 					foreach ( $sub_section as $responsive_setting ) {
