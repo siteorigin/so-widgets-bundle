@@ -100,6 +100,12 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.25.1 - 30 October 2021 =
+* Google Maps: Resolved an unexpected content error when previewing in the Block Editor.
+* Hero: Migrated Text Shadow setting from a 0-1 to a 0-100 range.
+* Sliders: Added a Background video opacity setting for self-hosted and external videos.
+* Video Player: Removed Related Videos setting.
+
 = 1.25.0 - 21 October 2021 =
 * Features: Added a `Link feature column to more URL` setting.
 * Hero and Layout Slider: Moved Layout settings to dedicated section.
