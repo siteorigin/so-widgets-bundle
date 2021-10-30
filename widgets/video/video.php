@@ -121,16 +121,6 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 							'video_type[self]'     => array( 'hide' ),
 						)
 					),
-					'related_videos' => array(
-						'type'          => 'checkbox',
-						'default'       => true,
-						'label'         => __( 'Show related videos.', 'so-widgets-bundle' ),
-						'description'   => __( 'If the external host supports it.', 'so-widgets-bundle' ),
-						'state_handler' => array(
-							'video_type[external]' => array( 'show' ),
-							'video_type[self]'     => array( 'hide' ),
-						)
-					),
 				),
 			),
 		);
@@ -235,7 +225,6 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'poster'                  => $poster,
 			'autoplay'                => ! empty( $instance['playback']['autoplay'] ),
 			'loop'                    => ! empty( $instance['playback']['loop'] ),
-			'related_videos'          => ! empty( $instance['playback']['related_videos'] ),
 			'skin_class'              => 'default',
 			'fitvids'                 => ! empty( $instance['playback']['fitvids'] ),
 		);

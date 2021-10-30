@@ -258,6 +258,14 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'label' => __( 'Loop slide background videos', 'so-widgets-bundle' ),
 				'default' => false,
 			);
+			$video_opacity = array(
+				'label' => __( 'Background video opacity', 'so-widgets-bundle' ),
+				'type' => 'slider',
+				'min' => 0,
+				'max' => 100,
+				'default' => 100,
+			);
+
 			if ( isset( $form_options['frames']['fields']['background_videos'] ) ) {
 				// Add setting to SiteOrigin Slider widget.
 				siteorigin_widgets_array_insert(
@@ -265,11 +273,13 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					'background_image',
 					array(
 						'loop_background_videos' => $loop_setting,
+						'background_video_opacity' => $video_opacity,
 					)
 				);
 			} elseif ( isset( $form_options['frames']['fields']['background'] ) ) {
 				// Add setting to all other slider widgets.
 				$form_options['frames']['fields']['background']['fields']['loop_background_videos'] = $loop_setting;
+				$form_options['frames']['fields']['background']['fields']['background_video_opacity'] = $video_opacity;
 			}
 		}
 		return $form_options;
@@ -330,6 +340,10 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					'height_responsive_unit',
 				),
 			);
+
+			$instance['layout'] = array();
+			$instance['layout']['desktop'] = array();
+			$instance['layout']['mobile'] = array();
 
 			foreach ( $migrate_layout_settings as $setting => $sub_section ) {
 				if ( is_array( $sub_section ) ) {
@@ -492,6 +506,16 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					// All other slider widgets.
 					$controls['loop_background_videos'] = $frame['background']['loop_background_videos'];
 				}
+
+				// If loop_background_videos is present, pass it to the video embed as a control.
+				if ( isset( $frame['background_video_opacity'] ) ) {
+					// SiteOrigin Slider Widget.
+					$controls['opacity'] = $frame['background_video_opacity'];
+				} elseif ( isset( $frame['background']['loop_background_videos'] ) ) {
+					// All other slider widgets.
+					$controls['opacity'] = $frame['background']['background_video_opacity'];
+				}
+
 				$this->video_code( $background['videos'], $classes, $controls );
 			}
 
@@ -534,8 +558,9 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	function video_code( $videos, $classes = array(), $controls = array() ){
 		if( empty( $videos ) ) return;
 		$loop = ! empty( $controls['loop_background_videos'] ) && $controls['loop_background_videos'] ? 'loop' : '';
+		$opacity = isset( $controls['opacity'] ) ? 'style="opacity: ' . ( $controls['opacity'] / 100 ) . '"' : '';
 
-		$video_element = '<video class="' . esc_attr( implode( ' ', $classes ) ) . '" autoplay ' . $loop . ' muted playsinline>';
+		$video_element = '<video class="' . esc_attr( implode( ' ', $classes ) ) . '" autoplay ' . $loop . ' ' . $opacity . ' muted playsinline>';
 		$so_video = new SiteOrigin_Video();
 		foreach( $videos as $video ) {
 			if( empty( $video['file'] ) && empty ( $video['url'] ) ) continue;
@@ -548,7 +573,9 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				if( ! $can_oembed ) {
 					$video_file = sow_esc_url( $video['url'] );
 				} else {
-					echo $so_video->get_video_oembed( $video['url'], ! empty( $video['autoplay'] ), false, $loop );
+					echo '<div class="sow-slide-video-oembed" ' . $opacity . '>';
+					echo $so_video->get_video_oembed( $video['url'], ! empty( $video['autoplay'] ), false, $loop, $opacity );
+					echo '</div>';
 					continue;
 				}
 			}
