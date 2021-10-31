@@ -175,6 +175,27 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		);
 	}
 
+	function modify_instance( $instance ) {
+		if ( empty( $instance ) ) {
+			return array();
+		}
+
+		// If slides_to_scroll existed (regardless of value) prior to the introduction 
+		// of slides_to_show, set slides_to_scroll to slides_to_show to prevent unintended change.
+		if (
+			! empty( $instance['responsive'] ) &&
+			! empty( $instance['responsive']['desktop'] ) &&
+			! isset( $instance['responsive']['desktop']['slides_to_show'] )
+		) {
+			$instance['responsive']['desktop']['slides_to_show'] = $instance['responsive']['desktop']['slides_to_scroll'];
+			$instance['responsive']['tablet']['landscape']['slides_to_show'] = $instance['responsive']['tablet']['landscape']['slides_to_scroll'];
+			$instance['responsive']['tablet']['portrait']['slides_to_show'] = $instance['responsive']['tablet']['portrait']['slides_to_scroll'];
+			$instance['responsive']['mobile']['slides_to_show'] = $instance['responsive']['mobile']['slides_to_scroll'];	
+		}
+
+		return $instance;
+	}
+
 	function get_style_name( $instance ) {
 		return empty( $instance['design']['theme'] ) ? 'base' : $instance['design']['theme'];
 	}
