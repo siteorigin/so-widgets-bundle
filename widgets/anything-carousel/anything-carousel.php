@@ -40,15 +40,6 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		);
 	}
 
-	function override_carousel_settings() {
-		return array(
-			'slides_to_scroll_text' => array(
-				'label' => __( 'Slides to show ', 'so-widgets-bundle' ),
-				'description' => __( 'The number of slides to show on %s.', 'so-widgets-bundle' ),
-			),
-		);
-	}
-
 	function get_widget_form() {
 		$useable_units = array(
 			'px',
