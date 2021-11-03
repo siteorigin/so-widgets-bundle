@@ -448,6 +448,12 @@ jQuery(function ($) {
 		if ( ! $mapCanvas.length ) {
 			return;
 		}
+
+		// Account for situation where widget preview is loaded before the location field.
+		if ( $( 'body.wp-admin' ).length ) {
+			sowb.googleMapsData.libraries.push( 'places' );
+		}
+
 		$mapCanvas.each(function(index, element) {
 			var $this = $(element);
 			if ( $this.data( 'apiInitialized' ) ) {

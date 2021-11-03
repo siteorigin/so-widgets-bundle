@@ -268,10 +268,14 @@ window.addEventListener('DOMContentLoaded', function () {
 			
 			window.console.error = sowbForms.checkMapsApiInvalidKeyError;
 		}
-		
-		// Try to load even if API key is missing to allow Google Maps API to provide it's own warnings/errors about missing API key.
-		var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&libraries=places&callback=sowbAdminGoogleMapInit';
-		$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );
+
+		if ( $( '#sow-google-maps-js' ).length ) {
+			// Try to load even if API key is missing to allow Google Maps API to provide it's own warnings/errors about missing API key.
+			var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&libraries=places&callback=sowbAdminGoogleMapInit';
+			$( 'body' ).append( '<script async type="text/javascript" id="sow-google-maps-js" src="' + apiUrl + '">' );
+		} else {
+			sowbAdminGoogleMapInit();
+		}
 	} );
 
 });
