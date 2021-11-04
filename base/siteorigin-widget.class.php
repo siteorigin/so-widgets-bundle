@@ -376,14 +376,21 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param $args
 	 * @param $instance
 	 */
-	public function sub_widget($class, $args, $instance){
+	public function sub_widget( $class, $args, $instance, $return = false ){
 		if(!class_exists($class)) return;
 		$widget = new $class;
 
 		$args['before_widget'] = '';
 		$args['after_widget'] = '';
+		if ( $return ) {
+			ob_start();
+		}
 
 		$widget->widget( $args, $instance );
+		
+		if ( $return ) {
+			return ob_get_clean();
+		}
 	}
 
 	/**
