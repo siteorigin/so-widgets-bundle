@@ -409,14 +409,16 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		$content = wp_kses_post($content);
 		if ( strpos( $content, '[buttons]' ) !== false ) {
-			ob_start();
-			foreach( $frame['buttons'] as $button ) {
-				$this->sub_widget('SiteOrigin_Widget_Button_Widget', array(), $button['button']);
-			}
-			$button_code = ob_get_clean();
+			// Replace [buttons] with button wrapper.
+			$content = preg_replace('/(?:<(?:p|h\d|em|strong|li|blockquote) *([^>]*)> *)?\[ *buttons *\](:? *<\/(?:p|h\d|em|strong|li|blockquote)>)?/i', '<div class="sow-hero-buttons" $1>[SiteOriginHeroButton]</div>', $content );
 
-			// Add in the button code
-			$content = preg_replace('/(?:<(?:p|h\d|em|strong|li|blockquote) *([^>]*)> *)?\[ *buttons *\](:? *<\/(?:p|h\d|em|strong|li|blockquote)>)?/i', '<div class="sow-hero-buttons" $1>' . $button_code . '</div>', $content );
+			// Generate buttons.
+			foreach( $frame['buttons'] as $button ) {
+				$button_code .= $this->sub_widget('SiteOrigin_Widget_Button_Widget', array(), $button['button'], true);
+			}
+
+			// Add buttons to wrapper.
+			$content = str_replace( '[SiteOriginHeroButton]', $button_code, $content );
 		}
 		
 		// Process normal shortcodes
