@@ -448,6 +448,12 @@ jQuery(function ($) {
 		if ( ! $mapCanvas.length ) {
 			return;
 		}
+
+		// Account for situation where widget preview is loaded before the location field.
+		if ( $( 'body.wp-admin' ).length ) {
+			sowb.googleMapsData.libraries.push( 'places' );
+		}
+
 		$mapCanvas.each(function(index, element) {
 			var $this = $(element);
 			if ( $this.data( 'apiInitialized' ) ) {
@@ -464,40 +470,45 @@ jQuery(function ($) {
 			}
 			$this.data( 'apiInitialized', true );
 		});
+
 		if ( typeof window.google === 'undefined' ) {
 			window.google = {};
 		}
 
 		if (
 			forceLoad ||
-			typeof window.google === 'undefined' ||
 			typeof window.google.maps === 'undefined'
 		) {
-			sowb.loadGoogleMapsAPI( forceLoad );
-			// Ensure Google Maps is loaded before using it.
-			sowb.googleMapsData.timer = setInterval( function () {
-				var clearTimer = false;
-				// Check if there been an error.
-				sowb.googleMapsData.ApiError = true;
-				if (
-					typeof sowb.googleMapsData.ApiError !== 'undefined' &&
-					sowb.googleMapsData.ApiError
-				) {
-					clearTimer = true;
-				}
-				if (
-					! clearTimer &&
-					typeof window.google !== 'undefined' &&
-					typeof window.google.maps !== 'undefined'
-				) {
-					clearTimer = true;
-					soGoogleMapInitialize();
-				}
+			// If this is an admin preview, and the API has already been setup,
+			// skip any further API checks to confirm it's working and set it up.
+			if ( $( 'body.wp-admin' ).length && $( '#sow-google-maps-js' ).length ) {
+				soGoogleMapInitialize();
+			} else {
+				sowb.loadGoogleMapsAPI( forceLoad );
+				// Ensure Google Maps is loaded before using it.
+				sowb.googleMapsData.timer = setInterval( function () {
+					var clearTimer = false;
+					// Check if there been an error.
+					sowb.googleMapsData.ApiError = true;
+					if (
+						typeof sowb.googleMapsData.ApiError !== 'undefined' &&
+						sowb.googleMapsData.ApiError
+					) {
+						clearTimer = true;
+					}
+					if (
+						! clearTimer &&
+						typeof window.google.maps !== 'undefined'
+					) {
+						clearTimer = true;
+						soGoogleMapInitialize();
+					}
 
-				if ( clearTimer ) {
-					clearInterval( sowb.googleMapsData.timer );
-				}
-			}, 250 );
+					if ( clearTimer ) {
+						clearInterval( sowb.googleMapsData.timer );
+					}
+				}, 250 );
+			}
 		}
 	};
 
