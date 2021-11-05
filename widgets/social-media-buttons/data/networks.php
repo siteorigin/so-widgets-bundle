@@ -184,6 +184,12 @@ return array(
 		'icon_color' => '#372213',
 		'button_color' => '#e2e0d1'
 	),
+	'google' => array(
+		'label'    => __( 'Google', 'so-widgets-bundle' ),
+		'base_url' => 'https://google.com/',
+		'icon_color' => '#4285F4',
+		'button_color' => '#FFFFFF'
+	),
 	'hacker-news'   => array(
 		'label'    => __( 'Hacker News', 'so-widgets-bundle' ),
 		'base_url' => 'https://news.ycombinator.com/',
