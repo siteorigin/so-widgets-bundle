@@ -555,9 +555,13 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				), admin_url( 'admin-ajax.php' ) );
 				$dismiss_url = wp_nonce_url( $dismiss_url, 'dismiss-widget-teaser' );
 
+				if ( is_array( $teaser ) ) {
+					$teaser = $teaser[ array_rand( $teaser ) ];
+				}
+
 				?>
 				<div class="siteorigin-widget-teaser">
-					<?php echo wp_kses_post( $teaser ) ?>
+					<?php echo wp_kses_post( $teaser ); ?>.
 					<span class="dashicons dashicons-dismiss" data-dismiss-url="<?php echo esc_url( $dismiss_url ) ?>"></span>
 				</div>
 				<?php
