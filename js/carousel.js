@@ -38,21 +38,27 @@ jQuery( function ( $ ) {
 				autoplay: carouselSettings.autoplay,
 				autoplaySpeed: carouselSettings.autoplaySpeed,
 				pauseOnHover: carouselSettings.pauseOnHover,
-				slidesToScroll: responsiveSettings.desktop_slides,
-				slidesToShow: responsiveSettings.desktop_slides,
+				slidesToScroll: responsiveSettings.desktop_slides_to_scroll,
+				slidesToShow: typeof responsiveSettings.desktop_slides_to_show == 'undefined'
+					? responsiveSettings.desktop_slides_to_scroll
+					: responsiveSettings.desktop_slides_to_show,
 				responsive: [
 					{
 						breakpoint: responsiveSettings.tablet_portrait_breakpoint,
 						settings: {
-							slidesToScroll: responsiveSettings.tablet_portrait_slides,
-							slidesToShow: responsiveSettings.tablet_portrait_slides,
+							slidesToScroll: responsiveSettings.tablet_portrait_slides_to_scroll,
+							slidesToShow: typeof responsiveSettings.tablet_portrait_slides_to_show == 'undefined'
+								? responsiveSettings.tablet_portrait_slides_to_scroll
+								: responsiveSettings.tablet_portrait_slides_to_show,
 						}
 					},
 					{
 						breakpoint: responsiveSettings.mobile_breakpoint,
 						settings: {
-							slidesToScroll: responsiveSettings.mobile_slides,
-							slidesToShow: responsiveSettings.mobile_slides,
+							slidesToScroll: responsiveSettings.mobile_slides_to_scroll,
+							slidesToShow: typeof responsiveSettings.mobile_slides_to_show == 'undefined'
+								? responsiveSettings.mobile_slides_to_scroll
+								: responsiveSettings.mobile_slides_to_show,
 						}
 					},
 				],

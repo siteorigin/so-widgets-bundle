@@ -156,6 +156,8 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				'tablet_portrait' => true,
 				'mobile' => false,
 			),
+			// Remove slides_to_show.
+			'slides_to_show' => array(),
 		);
 	}
 
