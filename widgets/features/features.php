@@ -353,6 +353,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			sprintf(
 				__( 'Add an feature icon title tooltip with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tooltip" target="_blank">',
+				'</a>'
 			),
 			sprintf(
 				__( 'Use Google Fonts right inside the Features Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),

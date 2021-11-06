@@ -276,6 +276,7 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 			sprintf(
 				__( 'Get more customization options and the ability to use widgets and layouts as your tabs content with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tabs" target="_blank">',
+				'</a>'
 			),
 			sprintf(
 				__( 'Use Google Fonts right inside the Tabs Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
