@@ -479,7 +479,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 				'</a>'
 			),
 			sprintf(
-				__( 'Add parallax and fixed background image options with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				__( 'Add parallax and fixed background images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/parallax-sliders" target="_blank" rel="noopener noreferrer">',
 				'</a>'
 			),
