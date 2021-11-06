@@ -98,6 +98,16 @@ class SiteOrigin_Widget_Icon_Widget extends SiteOrigin_Widget {
 			'title' => ! empty( $instance['title'] ) ? $instance['title'] : '',
 		);
 	}
+
+	function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+		return array(
+			sprintf(
+				__( 'Add an icon title tooltip with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tooltip" target="_blank">',
+			),
+		);
+	}
 }
 
 siteorigin_widget_register( 'sow-icon', __FILE__, 'SiteOrigin_Widget_Icon_Widget' );
