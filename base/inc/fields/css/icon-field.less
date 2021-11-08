@@ -85,19 +85,28 @@ div.siteorigin-widget-form div.siteorigin-widget-field.siteorigin-widget-field-t
 			min-width: unset;
 		}
 
-		select.siteorigin-widget-icon-family,
-		select.siteorigin-widget-icon-family-styles,
-		.siteorigin-widget-icon-search {
-			display: inline-block;
-			height: 30px;
-			vertical-align: top;
-		}
-
 		.siteorigin-widget-icon-search {
 			font-size: 14px;
 			line-height: 30px;
 			padding: 6px 8px;
 			width: 260px;
+		}
+
+		select.siteorigin-widget-icon-family,
+		select.siteorigin-widget-icon-family-styles,
+		.siteorigin-widget-icon-search {
+			display: inline-block;
+			height: 30px;
+			min-height: 0;
+			vertical-align: top;
+
+			@media (max-width: 665px) {
+				margin-bottom: 4px;
+			}
+
+			@media (max-width: 399px) {
+				width: 100%;
+			}
 		}
 
 		.siteorigin-widget-icon-icons {
