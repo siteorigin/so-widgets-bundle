@@ -70,9 +70,9 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 	public function clear_page_cache( $name, $instance = array() ) {
 		$id = explode( '-', $name );
 		$id = end( $id );
+		$id = explode( '.', $id )[0];
 
 		if ( is_numeric( $id ) ) {
-
 			if ( function_exists( 'w3tc_flush_post' ) ) {
 				w3tc_flush_post( $id );
 			}
