@@ -80,6 +80,10 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 			if ( class_exists( 'Swift_Performance_Cache' ) ) {
 				Swift_Performance_Cache::clear_post_cache( $id );
 			}
+
+			if ( class_exists( '\Hummingbird\\WP_Hummingbird' ) ) {
+				do_action( 'wphb_clear_page_cache', $id );
+			}
 		}
 	}
 
@@ -93,6 +97,10 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 
 		if ( class_exists( 'Swift_Performance_Cache' ) ) {
 			Swift_Performance_Cache::clear_all_cache();
+		}
+
+		if ( class_exists( '\Hummingbird\\WP_Hummingbird' ) ) {
+			do_action( 'wphb_clear_page_cache' );
 		}
 	}
 
