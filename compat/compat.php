@@ -84,6 +84,10 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 			if ( class_exists( '\Hummingbird\\WP_Hummingbird' ) ) {
 				do_action( 'wphb_clear_page_cache', $id );
 			}
+
+			if ( function_exists( 'breeze_varnish_purge_cache' ) ) {
+				breeze_varnish_purge_cache( get_the_permalink( $id ) );
+			}
 		}
 	}
 
@@ -101,6 +105,10 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 
 		if ( class_exists( '\Hummingbird\\WP_Hummingbird' ) ) {
 			do_action( 'wphb_clear_page_cache' );
+		}
+
+		if ( class_exists( 'Breeze_PurgeCache' ) ) {
+			Breeze_PurgeCache::breeze_cache_flush();
 		}
 	}
 
