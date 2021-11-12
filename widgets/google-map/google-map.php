@@ -923,19 +923,25 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		
 		return trim( $api_key );
 	}
-	
-	function get_form_teaser(){
-		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
 
-		if ( isset( $_GET['action'] ) && $_GET['action'] == 'so_widgets_setting_form' ) {
-			$teaser_text = __( 'Get additional map consent design settings with %sSiteOrigin Premium%s', 'so-widgets-bundle' );
-		} else {
-			$teaser_text = __( 'Get a curated list of predefined map styles with %sSiteOrigin Premium%s', 'so-widgets-bundle' );
-		}
-		return sprintf(
-			$teaser_text,
-			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/map-styles" target="_blank" rel="noopener noreferrer">',
-			'</a>'
+	function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+		return array(
+			sprintf(
+				__( 'Get additional map consent design settings with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/map-styles" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
+			sprintf(
+				__( 'Get a curated list of predefined map styles with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/map-styles" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
+			sprintf(
+				__( 'Use Google Fonts right inside the Google Maps Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/web-font-selector" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
 		);
 	}
 }
