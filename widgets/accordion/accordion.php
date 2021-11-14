@@ -263,10 +263,17 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 
 	function get_form_teaser() {
 		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
-		return sprintf(
-			__( 'Get more customization options and the ability to use widgets and layouts as your accordion content with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/accordion" target="_blank" rel="noopener noreferrer">',
-			'</a>'
+		return array(
+			sprintf(
+				__( 'Get more customization options and the ability to use widgets and layouts as your accordion content with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/accordion" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
+			sprintf(
+				__( 'Use Google Fonts right inside the Accordion Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/accordion" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
 		);
 	}
 }
