@@ -35,14 +35,14 @@ sowb.SiteOriginGoogleMap = function($) {
 				center: location,
 				mapTypeControlOptions: {
 					mapTypeIds: [
-						google.maps.MapTypeId.ROADMAP,
-						google.maps.MapTypeId.SATELLITE,
+						window.google.maps.MapTypeId.ROADMAP,
+						window.google.maps.MapTypeId.SATELLITE,
 						userMapTypeId
 					]
 				}
 			};
 
-			var map = new google.maps.Map(element, mapOptions);
+			var map = new window.google.maps.Map( element, mapOptions );
 
 			var userMapOptions = {
 				name: options.mapName
@@ -51,14 +51,14 @@ sowb.SiteOriginGoogleMap = function($) {
 			var userMapStyles = options.mapStyles;
 
 			if ( userMapStyles ) {
-				var userMapType = new google.maps.StyledMapType(userMapStyles, userMapOptions);
+				var userMapType = new window.google.maps.StyledMapType( userMapStyles, userMapOptions );
 
 				map.mapTypes.set(userMapTypeId, userMapType);
 				map.setMapTypeId(userMapTypeId);
 			}
 
 			if (options.markerAtCenter) {
-				this.centerMarker = new google.maps.Marker({
+				this.centerMarker = new window.google.maps.Marker( {
 					position: location,
 					map: map,
 					draggable: options.markersDraggable,
@@ -71,10 +71,10 @@ sowb.SiteOriginGoogleMap = function($) {
 
 			if(options.keepCentered) {
 				var center;
-				google.maps.event.addDomListener(map, 'idle', function () {
+				window.google.maps.event.addDomListener( map, 'idle', function() {
 					center = map.getCenter();
 				});
-				google.maps.event.addDomListener(window, 'resize', function () {
+				window.google.maps.event.addDomListener( window, 'resize', function() {
 					map.setCenter(center);
 				});
 			}
@@ -118,7 +118,7 @@ sowb.SiteOriginGoogleMap = function($) {
 					}
 				}.bind( this ) );
 
-				google.maps.event.addDomListener( autocompleteElement, 'keypress', function ( event ) {
+				window.google.maps.event.addDomListener( autocompleteElement, 'keypress', function ( event ) {
 					var key = event.keyCode || event.which;
 					if ( key === '13' ) {
 						event.preventDefault();
@@ -146,7 +146,7 @@ sowb.SiteOriginGoogleMap = function($) {
 
 				var revGeocode = function ( latLng ) {
 					this.getGeocoder().geocode( { location: latLng }, function ( results, status ) {
-						if ( status === google.maps.GeocoderStatus.OK ) {
+						if ( status === window.google.maps.GeocoderStatus.OK ) {
 							if ( results.length > 0 ) {
 								var addr = results[ 0 ].formatted_address;
 								$autocompleteElement.val( addr );
@@ -193,7 +193,7 @@ sowb.SiteOriginGoogleMap = function($) {
 							mrkerIcon = customIcon;
 						}
 
-						var marker = new google.maps.Marker( {
+						var marker = new window.google.maps.Marker( {
 							position: location,
 							map: map,
 							draggable: options.markersDraggable,
@@ -210,7 +210,7 @@ sowb.SiteOriginGoogleMap = function($) {
 							
 							var infoDisplay = options.markerInfoDisplay;
 							infoWindowOptions.disableAutoPan = infoDisplay === 'always';
-							var infoWindow = new google.maps.InfoWindow( infoWindowOptions );
+							var infoWindow = new window.google.maps.InfoWindow( infoWindowOptions );
 							this.infoWindows.push( infoWindow );
 							var openEvent = infoDisplay;
 							if ( infoDisplay === 'always' ) {
@@ -241,7 +241,7 @@ sowb.SiteOriginGoogleMap = function($) {
 						}
 					}.bind( this ) )
 					.fail( function ( errorStatus ) {
-						overQuota = errorStatus === google.maps.GeocoderStatus.OVER_QUERY_LIMIT;
+						overQuota = errorStatus === window.google.maps.GeocoderStatus.OVER_QUERY_LIMIT;
 						console.log( errorStatus );
 					} );
 				}.bind( this );
@@ -278,10 +278,10 @@ sowb.SiteOriginGoogleMap = function($) {
 					);
 				}
 
-				var directionsRenderer = new google.maps.DirectionsRenderer();
+				var directionsRenderer = new window.google.maps.DirectionsRenderer();
 				directionsRenderer.setMap(map);
 
-				var directionsService = new google.maps.DirectionsService();
+				var directionsService = new window.google.maps.DirectionsService();
 				directionsService.route({
 						origin: directions.origin,
 						destination: directions.destination,
@@ -292,7 +292,7 @@ sowb.SiteOriginGoogleMap = function($) {
 						optimizeWaypoints: directions.optimizeWaypoints,
 					},
 					function(result, status) {
-						if (status === google.maps.DirectionsStatus.OK) {
+						if (status === window.google.maps.DirectionsStatus.OK) {
 							directionsRenderer.setOptions( { preserveViewport: directions.preserveViewport } );
 							directionsRenderer.setDirections(result);
 						}
@@ -308,12 +308,12 @@ sowb.SiteOriginGoogleMap = function($) {
 			} else {
 				$autoCompleteFields.each(function (index, element) {
 
-					if ( typeof google.maps.places === 'undefined' ) {
+					if ( typeof window.google.maps.places === 'undefined' ) {
 						autoCompleteInit.reject('Sorry, we couldn\'t load the "places" library due to another plugin, so the autocomplete feature is not available.');
 						return;
 					}
 
-					var autocomplete = new google.maps.places.Autocomplete( element );
+					var autocomplete = new window.google.maps.places.Autocomplete( element );
 
 					var $mapField = $(element).siblings('.sow-google-map-canvas');
 
@@ -374,7 +374,7 @@ sowb.SiteOriginGoogleMap = function($) {
 		},
 		getGeocoder: function () {
 			if ( !this._geocoder ) {
-				this._geocoder = new google.maps.Geocoder();
+				this._geocoder = new window.google.maps.Geocoder();
 			}
 			return this._geocoder;
 		},
@@ -388,7 +388,7 @@ sowb.SiteOriginGoogleMap = function($) {
 				// A latlng value should be of the format 'lat,lng' or '(lat,lng)'
 				var vals = inputLocation.replace(/[\(\)]/g, '').split( ',' );
 				if ( vals && vals.length === 2 ) {
-					latLng = new google.maps.LatLng( vals[ 0 ], vals[ 1 ] );
+					latLng = new window.google.maps.LatLng( vals[0], vals[1] );
 					// Let the API decide if we have a valid latlng
 					// This should fail if the input is an address containing a comma
 					// e.g. 123 Sesame Street, Middleburg, FL, United States
@@ -410,9 +410,9 @@ sowb.SiteOriginGoogleMap = function($) {
 				}
 				var gecodeIteration = 0;
 				var onGeocodeResults = function ( results, status ) {
-					if ( status === google.maps.GeocoderStatus.OK ) {
+					if ( status === window.google.maps.GeocoderStatus.OK ) {
 						locationPromise.resolve( results[ 0 ].geometry.location );
-					} else if ( status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT ) {
+					} else if ( status === window.google.maps.GeocoderStatus.OVER_QUERY_LIMIT ) {
 						//We make 3 attempts, otherwise we assume we've reached the quota limit and stop trying.
 						if ( ++gecodeIteration < 3 ) {
 							setTimeout( function () {
@@ -422,8 +422,8 @@ sowb.SiteOriginGoogleMap = function($) {
 							locationPromise.reject( status );
 						}
 					} else if (
-						status === google.maps.GeocoderStatus.ZERO_RESULTS ||
-						status === google.maps.GeocoderStatus.OVER_DAILY_LIMIT
+						status === window.google.maps.GeocoderStatus.ZERO_RESULTS ||
+						status === window.google.maps.GeocoderStatus.OVER_DAILY_LIMIT
 					) {
 						locationPromise.reject( status );
 					}
