@@ -269,13 +269,20 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 		
 		echo apply_filters( 'siteorigin_widgets_tabs_render_panel_content', $content, $panel, $instance );
 	}
-	
-	function get_form_teaser(){
-		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
-		return sprintf(
-			__( 'Get more customization options and the ability to use widgets and layouts as your tabs content with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tabs" target="_blank">',
-			'</a>'
+
+	function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+		return array(
+			sprintf(
+				__( 'Get more customization options and the ability to use widgets and layouts as your tabs content with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tabs" target="_blank">',
+				'</a>'
+			),
+			sprintf(
+				__( 'Use Google Fonts right inside the Tabs Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/web-font-selector" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
 		);
 	}
 }

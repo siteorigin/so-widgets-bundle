@@ -321,6 +321,17 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 
 		return $instance;
 	}
+
+	function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+		return array(
+			sprintf(
+				__( 'Add a Price Table feature tooltip with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tooltip" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
+		);
+	}
 }
 
 siteorigin_widget_register( 'sow-price-table', __FILE__, 'SiteOrigin_Widget_PriceTable_Widget' );

@@ -409,14 +409,16 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		$content = wp_kses_post($content);
 		if ( strpos( $content, '[buttons]' ) !== false ) {
-			ob_start();
-			foreach( $frame['buttons'] as $button ) {
-				$this->sub_widget('SiteOrigin_Widget_Button_Widget', array(), $button['button']);
-			}
-			$button_code = ob_get_clean();
+			// Replace [buttons] with button wrapper.
+			$content = preg_replace('/(?:<(?:p|h\d|em|strong|li|blockquote) *([^>]*)> *)?\[ *buttons *\](:? *<\/(?:p|h\d|em|strong|li|blockquote)>)?/i', '<div class="sow-hero-buttons" $1>[SiteOriginHeroButton]</div>', $content );
 
-			// Add in the button code
-			$content = preg_replace('/(?:<(?:p|h\d|em|strong|li|blockquote) *([^>]*)> *)?\[ *buttons *\](:? *<\/(?:p|h\d|em|strong|li|blockquote)>)?/i', '<div class="sow-hero-buttons" $1>' . $button_code . '</div>', $content );
+			// Generate buttons.
+			foreach( $frame['buttons'] as $button ) {
+				$button_code .= $this->sub_widget('SiteOrigin_Widget_Button_Widget', array(), $button['button'], true);
+			}
+
+			// Add buttons to wrapper.
+			$content = str_replace( '[SiteOriginHeroButton]', $button_code, $content );
 		}
 		
 		// Process normal shortcodes
@@ -566,6 +568,32 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		if( ! empty( $instance['design']['fittext'] ) || $this->is_preview( $instance ) ) {
 			wp_enqueue_script( 'sowb-fittext' );
 		}
+	}
+
+	function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+		return array(
+			sprintf(
+				__( 'Add multiple Hero frames in one go with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/multiple-media" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
+			sprintf(
+				__( 'Add Hero frame content animation effects with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/hero" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
+			sprintf(
+				__( 'Add parallax and fixed background images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/parallax-sliders" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
+			sprintf(
+				__( 'Use Google Fonts right inside the Hero Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/web-font-selector" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
+		);
 	}
 }
 

@@ -192,6 +192,12 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 				if ( $network['name'] == 'envelope' ) {
 					$network['name'] = 'email';
 				}
+
+				// If user has a legacy Google Plus network selected, convert it to a standard Google icon.
+				if ( $network['name'] == 'google-plus' ) {
+					 $network['name'] = 'google';
+				}
+
 				$network['icon_name'] = 'fontawesome-' . ( $network['name'] == 'email' ? 'envelope' : $network['name'] );
 				$instance['networks'][$name] = $network;
 			}

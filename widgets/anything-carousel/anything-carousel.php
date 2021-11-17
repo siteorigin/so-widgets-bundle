@@ -40,15 +40,6 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		);
 	}
 
-	function override_carousel_settings() {
-		return array(
-			'slides_to_scroll_text' => array(
-				'label' => __( 'Slides to show ', 'so-widgets-bundle' ),
-				'description' => __( 'The number of slides to show on %s.', 'so-widgets-bundle' ),
-			),
-		);
-	}
-
 	function get_widget_form() {
 		$useable_units = array(
 			'px',
@@ -173,6 +164,27 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 			),
 			'responsive' => $this->responsive_form_fields(),
 		);
+	}
+
+	function modify_instance( $instance ) {
+		if ( empty( $instance ) ) {
+			return array();
+		}
+
+		// If slides_to_scroll existed (regardless of value) prior to the introduction 
+		// of slides_to_show, set slides_to_scroll to slides_to_show to prevent unintended change.
+		if (
+			! empty( $instance['responsive'] ) &&
+			! empty( $instance['responsive']['desktop'] ) &&
+			! isset( $instance['responsive']['desktop']['slides_to_show'] )
+		) {
+			$instance['responsive']['desktop']['slides_to_show'] = $instance['responsive']['desktop']['slides_to_scroll'];
+			$instance['responsive']['tablet']['landscape']['slides_to_show'] = $instance['responsive']['tablet']['landscape']['slides_to_scroll'];
+			$instance['responsive']['tablet']['portrait']['slides_to_show'] = $instance['responsive']['tablet']['portrait']['slides_to_scroll'];
+			$instance['responsive']['mobile']['slides_to_show'] = $instance['responsive']['mobile']['slides_to_scroll'];	
+		}
+
+		return $instance;
 	}
 
 	function get_style_name( $instance ) {
