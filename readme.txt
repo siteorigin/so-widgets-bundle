@@ -100,6 +100,15 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.26.0 - 17 November 2021 =
+* CSS Cache Compatibility: Added support for Breeze and Hummingbird.
+* Anything Carousel: Added a ` Slides to show` setting.
+* Button: Allowed for apostrophes to be used in the `Onclick` field.
+* Hero: Updated buttons to allow the dollar sign to be used.
+* Social Media Buttons: Added the Google network.
+* Widget Block: Resolved potential edge case Google Maps console errors.
+* Widget Block: Minor Icon Widget form styling improvements.
+
 = 1.25.1 - 30 October 2021 =
 * Google Maps: Resolved an unexpected content error when previewing in the Block Editor.
 * Hero: Migrated Text Shadow setting from a 0-1 to a 0-100 range.
