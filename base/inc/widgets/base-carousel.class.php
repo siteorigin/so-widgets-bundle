@@ -210,7 +210,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 	function carousel_settings_form_fields() {
 		return array(
 			'type' => 'section',
-			'label' => __( 'Carousel Settings', 'so-widgets-bundle' ),
+			'label' => __( 'Settings', 'so-widgets-bundle' ),
 			'hide' => true,
 			'fields' => array(
 				'loop' => array(
