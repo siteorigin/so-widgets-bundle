@@ -45,6 +45,12 @@
 			} else if ( source === 'terms' ) {
 				ajaxData.term = query;
 			}
+
+			// WPML.
+			if ( typeof icl_this_lang == 'string' ) {
+				ajaxData.language = icl_this_lang;
+			}
+
 			var $ul = $$.find('ul.items').empty().addClass('loading');
 			return $.get(
 				soWidgets.ajaxurl,
