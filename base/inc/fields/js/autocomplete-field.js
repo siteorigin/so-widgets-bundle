@@ -46,7 +46,7 @@
 				ajaxData.term = query;
 			}
 
-			// WPML.
+			// If WPML Is enabled for this page, include page language for filtering.
 			if ( typeof icl_this_lang == 'string' ) {
 				ajaxData.language = icl_this_lang;
 			}
