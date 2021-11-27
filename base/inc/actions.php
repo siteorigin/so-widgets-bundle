@@ -77,6 +77,10 @@ function siteorigin_widget_action_search_posts() {
 		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
 	}
 
+	global $wpdb;
+	$query = null;
+	$wpml_query = null;
+
 	// Get all public post types, besides attachments
 	$post_types = (array) get_post_types( array(
 		'public' => true,
@@ -88,27 +92,30 @@ function siteorigin_widget_action_search_posts() {
 		unset( $post_types['attachment'] );
 	}
 
+	// If WPML is installed, only include posts from the currently active language.
+	if ( defined( 'ICL_LANGUAGE_CODE' ) && ! empty( $_REQUEST['language'] ) ) {
+
+		$query .= " AND {$wpdb->prefix}icl_translations.language_code = '" . esc_sql( $_REQUEST['language'] ) . "' ";
+		$wpml_query .= " INNER JOIN {$wpdb->prefix}icl_translations ON ($wpdb->posts.ID = {$wpdb->prefix}icl_translations.element_id) ";
+	}
+
+	if ( ! empty( $_GET['query'] ) ) {
+		$query .= "AND post_title LIKE '%" . esc_sql( $_GET['query'] ) . "%'";
+	}
+
 	$post_types = apply_filters( 'siteorigin_widgets_search_posts_post_types', $post_types );
-
-	global $wpdb;
-	if( !empty($_GET['query']) ) {
-		$query = "AND post_title LIKE '%" . esc_sql( $_GET['query'] ) . "%'";
-	}
-	else {
-		$query = '';
-	}
-
 	$post_types = "'" . implode("', '", array_map( 'esc_sql', $post_types ) ) . "'";
 
 	$results = $wpdb->get_results( "
 		SELECT ID AS 'value', post_title AS label, post_type AS 'type'
 		FROM {$wpdb->posts}
+		{$wpml_query}
 		WHERE
 			post_type IN ( {$post_types} ) AND post_status = 'publish' {$query}
 		ORDER BY post_modified DESC
 		LIMIT 20
 	", ARRAY_A );
-	
+
 	wp_send_json( apply_filters( 'siteorigin_widgets_search_posts_results', $results ) );
 }
 add_action('wp_ajax_so_widgets_search_posts', 'siteorigin_widget_action_search_posts');
