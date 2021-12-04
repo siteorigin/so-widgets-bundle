@@ -100,6 +100,10 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.26.1 - 04 December 2021 =
+* Carousels: Renamed `Carousel Settings` to Settings.
+* WPML: Filter posts listed in widget search fields to current page language.
+
 = 1.26.0 - 17 November 2021 =
 * CSS Cache Compatibility: Added support for Breeze and Hummingbird.
 * Anything Carousel: Added a ` Slides to show` setting.

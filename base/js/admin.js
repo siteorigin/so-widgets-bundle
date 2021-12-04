@@ -346,10 +346,21 @@ var sowbForms = window.sowbForms || {};
 					var query = $contentSearchInput.val();
 					var postTypes = $contentSearchInput.data('postTypes');
 
+					var ajaxData = {
+						action: 'so_widgets_search_posts',
+						query: query,
+						postTypes: postTypes
+					};
+
+					// If WPML is enabled for this page, include page language for filtering.
+					if ( typeof icl_this_lang == 'string' ) {
+						ajaxData.language = icl_this_lang;
+					}
+
 					var $ul = $$.find('ul.posts').empty().addClass('loading');
 					$.get(
 						soWidgets.ajaxurl,
-						{action: 'so_widgets_search_posts', query: query, postTypes: postTypes},
+						ajaxData,
 						function (data) {
 							for (var i = 0; i < data.length; i++) {
 								if (data[i].label === '') {
