@@ -7,6 +7,7 @@ sowbForms.LocationField = function () {
 	return {
 		init: function ( element ) {
 			
+			if ( typeof window.google.maps.places === 'undefined' ) {
 				console.error( 'SiteOrigin Google Maps Widget: Failed to load the places library.' );
 				return;
 			}
@@ -168,10 +169,15 @@ sowbForms.setupLocationFields = function () {
 
 // Called by Google Maps API when it has loaded.
 function sowbAdminGoogleMapInit() {
+	jQuery( window.sowb ).trigger( 'sow-google-map-loaded' );
+}
+
+jQuery( window.sowb ).on( 'sow-google-map-loaded', function() {
 	sowbForms.mapsInitializing = false;
 	sowbForms.mapsInitialized = true;
 	sowbForms.setupLocationFields();
-}
+} );
+
 
 window.addEventListener('DOMContentLoaded', function () {
 
@@ -274,7 +280,7 @@ window.addEventListener('DOMContentLoaded', function () {
 			var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&libraries=places&callback=sowbAdminGoogleMapInit';
 			$( 'body' ).append( '<script async type="text/javascript" id="sow-google-maps-js" src="' + apiUrl + '">' );
 		} else {
-			sowbAdminGoogleMapInit();
+			jQuery( window.sowb ).trigger( 'sow-google-map-loaded' );
 		}
 	} );
 

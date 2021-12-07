@@ -440,6 +440,11 @@ function soGoogleMapInitialize() {
 	jQuery( window.sowb ).trigger( 'sow-google-map-loaded' );
 }
 
+jQuery( window.sowb ).on( 'sow-google-map-loaded', function() {
+	new sowb.SiteOriginGoogleMap(jQuery).initMaps();
+} );
+
+
 jQuery(function ($) {
 	sowb.googleMapsData = [];
 	sowb.googleMapsData.libraries = [];
@@ -482,7 +487,9 @@ jQuery(function ($) {
 			// If this is an admin preview, and the API has already been setup,
 			// skip any further API checks to confirm it's working and set it up.
 			if ( $( 'body.wp-admin' ).length && $( '#sow-google-maps-js' ).length ) {
-				soGoogleMapInitialize();
+				setTimeout( function() {
+					soGoogleMapInitialize();
+				}, 250 );
 			} else {
 				sowb.loadGoogleMapsAPI( forceLoad );
 				// Ensure Google Maps is loaded before using it.
