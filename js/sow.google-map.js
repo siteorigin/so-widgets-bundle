@@ -118,7 +118,7 @@ sowb.SiteOriginGoogleMap = function($) {
 					}
 				}.bind( this ) );
 
-				window.google.maps.event.addDomListener( autocompleteElement, 'keypress', function ( event ) {
+				window.google.maps.event.addDomListener( autocompleteElement, 'keypress', function( event ) {
 					var key = event.keyCode || event.which;
 					if ( key === '13' ) {
 						event.preventDefault();
@@ -292,7 +292,7 @@ sowb.SiteOriginGoogleMap = function($) {
 						optimizeWaypoints: directions.optimizeWaypoints,
 					},
 					function(result, status) {
-						if (status === window.google.maps.DirectionsStatus.OK) {
+						if ( status === window.google.maps.DirectionsStatus.OK ) {
 							directionsRenderer.setOptions( { preserveViewport: directions.preserveViewport } );
 							directionsRenderer.setDirections(result);
 						}
@@ -437,7 +437,7 @@ sowb.SiteOriginGoogleMap = function($) {
 
 // Called by Google Maps API when it has loaded.
 function soGoogleMapInitialize() {
-	new sowb.SiteOriginGoogleMap(jQuery).initMaps();
+	jQuery( window.sowb ).trigger( 'sow-google-map-loaded' );
 }
 
 jQuery(function ($) {

@@ -1,19 +1,19 @@
 /* global jQuery, sowbForms, soLocationField */
 
 window.sowbForms = window.sowbForms || {};
+window.sowb = window.sowb || {};
 
 sowbForms.LocationField = function () {
 	return {
 		init: function ( element ) {
 			
-			if ( typeof google.maps.places === 'undefined' ) {
 				console.error( 'SiteOrigin Google Maps Widget: Failed to load the places library.' );
 				return;
 			}
 			
 			var inputField = element.querySelector( '.siteorigin-widget-location-input' );
 			var valueField = element.querySelector( '.siteorigin-widget-input' );
-			var autocomplete = new google.maps.places.Autocomplete( inputField );
+			var autocomplete = new window.google.maps.places.Autocomplete( inputField );
 			
 			var getSimplePlace = function ( place ) {
 				return new Promise(function (resolve, reject) {
@@ -24,9 +24,9 @@ sowbForms.LocationField = function () {
 						resolve(simplePlace);
 					} else {
 						var addr = {address: place.hasOwnProperty('formatted_address') ? place.formatted_address : place.name};
-						new google.maps.Geocoder().geocode(addr,
+						new window.google.maps.Geocoder().geocode(addr,
 							function (results, status) {
-								if (status === google.maps.GeocoderStatus.OK) {
+								if (status === window.google.maps.GeocoderStatus.OK) {
 									simplePlace.location = results[0].geometry.location.toString();
 									resolve(simplePlace);
 								} else {
@@ -117,7 +117,7 @@ sowbForms.LocationField = function () {
 							}
 						} )
 						.catch( function ( status ) {
-							if ( status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT ) {
+							if ( status === window.google.maps.GeocoderStatus.OVER_QUERY_LIMIT ) {
 								if ( ! sowbForms.hasOwnProperty( 'overQueryLimitCount' ) ) {
 									sowbForms.overQueryLimitCount = 1;
 								} else {
