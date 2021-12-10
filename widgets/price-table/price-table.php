@@ -137,12 +137,12 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 
 			'header_color' => array(
 				'type'  => 'color',
-				'label' => __( 'Header color', 'so-widgets-bundle' ),
+				'label' => __( 'Header background color', 'so-widgets-bundle' ),
 			),
 
 			'featured_header_color' => array(
 				'type'  => 'color',
-				'label' => __( 'Featured header color', 'so-widgets-bundle' ),
+				'label' => __( 'Featured header background color', 'so-widgets-bundle' ),
 			),
 
 			'button_color' => array(
