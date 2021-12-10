@@ -348,7 +348,9 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			foreach ( $migrate_layout_settings as $setting => $sub_section ) {
 				if ( is_array( $sub_section ) ) {
 					foreach ( $sub_section as $responsive_setting ) {
-						$instance['layout'][ $setting ][ $responsive_setting ] = $instance['design'][ $responsive_setting ];
+						if ( ! empty( $instance['design'][ $responsive_setting ] ) ) {
+							$instance['layout'][ $setting ][ $responsive_setting ] = $instance['design'][ $responsive_setting ];
+						}
 					}
 				} elseif ( ! empty( $instance['design'][ $setting ] ) ) {
 					$instance['layout'][ $setting ] = $instance['design'][ $setting ];
