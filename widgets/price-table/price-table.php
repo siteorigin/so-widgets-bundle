@@ -137,12 +137,29 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 
 			'header_color' => array(
 				'type'  => 'color',
-				'label' => __( 'Header color', 'so-widgets-bundle' ),
+				'label' => __( 'Header background color', 'so-widgets-bundle' ),
+			),
+
+			'header_text_color' => array(
+				'type'  => 'color',
+				'label' => __( 'Header text color', 'so-widgets-bundle' ),
 			),
 
 			'featured_header_color' => array(
 				'type'  => 'color',
-				'label' => __( 'Featured header color', 'so-widgets-bundle' ),
+				'label' => __( 'Featured header background color', 'so-widgets-bundle' ),
+			),
+
+			'featured_header_text_color' => array(
+				'type' => 'color',
+				'label' => __( 'Featured header text color', 'so-widgets-bundle' ),
+				'default' => '#fff',
+			),
+
+			'feature_text_color' => array(
+				'type' => 'color',
+				'label' => __( 'Feature text color', 'so-widgets-bundle' ),
+				'default' => '#5f6062',
 			),
 
 			'button_color' => array(
@@ -266,16 +283,22 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 	function get_less_variables( $instance ) {
 		$instance = wp_parse_args( $instance, array(
 			'header_color'          => '',
+			'header_text_color'          => '',
 			'featured_header_color' => '',
+			'featured_header_text_color' => '',
+			'feature_text_color' => '',
 			'button_color'          => '',
 			'featured_button_color' => '',
 		) );
 
 		$colors = array(
-			'header_color'          => $instance['header_color'],
-			'featured_header_color' => $instance['featured_header_color'],
-			'button_color'          => $instance['button_color'],
-			'featured_button_color' => $instance['featured_button_color'],
+			'header_color'               => $instance['header_color'],
+			'header_text_color'          => $instance['header_text_color'],
+			'featured_header_color'      => $instance['featured_header_color'],
+			'featured_header_text_color' => $instance['featured_header_text_color'],
+			'feature_text_color'         => $instance['feature_text_color'],
+			'button_color'               => $instance['button_color'],
+			'featured_button_color'      => $instance['featured_button_color'],
 		);
 
 		if ( ! class_exists( 'SiteOrigin_Widgets_Color_Object' ) ) {
