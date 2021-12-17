@@ -100,6 +100,11 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.27.0 - 17 December 2021 =
+* Price Table: Added new Header, Featured and Feature text color settings.
+* Slider Widgets: Prevented potential settings migration error.
+* Widget Block: Prevented potential Google Maps error.
+
 = 1.26.1 - 04 December 2021 =
 * Carousels: Renamed `Carousel Settings` to Settings.
 * WPML: Filter posts listed in widget search fields to current page language.
