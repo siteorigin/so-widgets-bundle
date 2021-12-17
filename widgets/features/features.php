@@ -36,7 +36,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_widget_form(){
+	function get_widget_form() {
 
 		return array(
 			'features' => array(
@@ -51,7 +51,6 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				'fields' => array(
 
 					// The container shape
-
 					'container_color' => array(
 						'type' => 'color',
 						'label' => __( 'Icon container color', 'so-widgets-bundle' ),
@@ -59,21 +58,19 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					),
 
 					// Left and right array keys are swapped due to a mistake that couldn't be corrected without disturbing existing users.
+					'container_position' => array(
+						'type' => 'select',
+						'label' => __( 'Icon container position', 'so-widgets-bundle' ),
+						'options' => array(
+							'top'    => __( 'Top', 'so-widgets-bundle' ),
+							'left'  => __( 'Right', 'so-widgets-bundle' ),
+							'bottom' => __( 'Bottom', 'so-widgets-bundle' ),
+							'right'   => __( 'Left', 'so-widgets-bundle' ),
+						),
+						'default' => 'top',
+					),
 
-                    'container_position' => array(
-                        'type' => 'select',
-                        'label' => __( 'Icon container position', 'so-widgets-bundle' ),
-                        'options' => array(
-                            'top'    => __( 'Top', 'so-widgets-bundle' ),
-                            'left'  => __( 'Right', 'so-widgets-bundle' ),
-                            'bottom' => __( 'Bottom', 'so-widgets-bundle' ),
-                            'right'   => __( 'Left', 'so-widgets-bundle' ),
-                        ),
-                        'default' => 'top',
-                    ),
-
-					// The Icon
-
+					// The icon.
 					'icon' => array(
 						'type' => 'icon',
 						'label' => __( 'Icon', 'so-widgets-bundle' ),
@@ -103,8 +100,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 						'label' => __( 'Icon image size', 'so-widgets-bundle' ),
 					),
 
-					// The text under the icon
-
+					// The text under the icon.
 					'title' => array(
 						'type' => 'text',
 						'label' => __( 'Title text', 'so-widgets-bundle' ),
@@ -364,4 +360,4 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register('sow-features', __FILE__, 'SiteOrigin_Widget_Features_Widget');
+siteorigin_widget_register( 'sow-features', __FILE__, 'SiteOrigin_Widget_Features_Widget' );
