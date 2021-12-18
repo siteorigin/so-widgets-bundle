@@ -33,7 +33,13 @@ if( !empty( $instance['title'] ) ) {
 					</div>
 				</div>
 
-			<div class="sow-accordion-panel-content" role="region" aria-labelledby="accordion-label-<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>" id="accordion-content-<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>">
+			<div
+				class="sow-accordion-panel-content"
+				role="region"
+				aria-labelledby="accordion-label-<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>"
+				id="accordion-content-<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>"
+				<?php if ( $panel['initial_state'] == 'closed' ) echo 'style="display: none;"'; ?>
+			>
 				<div class="sow-accordion-panel-border" tabindex="0">
 					<?php $this->render_panel_content( $panel, $instance ); ?>
 				</div>

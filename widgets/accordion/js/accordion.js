@@ -12,7 +12,6 @@ jQuery( function ( $ ) {
 			}
 
 			var $accordionPanels = $( element ).find( '> .sow-accordion-panel' );
-			$accordionPanels.not( '.sow-accordion-panel-open' ).children( '.sow-accordion-panel-content' ).hide();
 			var openPanels = $accordionPanels.filter( '.sow-accordion-panel-open' ).toArray();
 
 			var updateHash = function () {
