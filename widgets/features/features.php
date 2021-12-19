@@ -44,9 +44,16 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				'label' => __( 'Features', 'so-widgets-bundle' ),
 				'item_name' => __( 'Feature', 'so-widgets-bundle' ),
 				'item_label' => array(
-					'selector'     => "[id*='features-title']",
-					'update_event' => 'change',
-					'value_method' => 'val'
+					'selectorArray' => array(
+						array(
+							'selector' => '[id*="features-title"]',
+							'valueMethod' => 'val'
+						),
+						array(
+							'selector' => '[id*="features-icon"]',
+							'valueMethod' => 'val'
+						),
+					),
 				),
 				'fields' => array(
 
