@@ -34,6 +34,7 @@ jQuery( function ( $ ) {
 				infinite: ! $$.data( 'ajax-url' )&&  $$.data( 'carousel_settings' ).loop,
 				variableWidth: $$.data( 'variable_width' ),
 				accessibility: false,
+				cssEase: carouselSettings.animation,
 				speed: carouselSettings.animation_speed,
 				autoplay: carouselSettings.autoplay,
 				autoplaySpeed: carouselSettings.autoplaySpeed,

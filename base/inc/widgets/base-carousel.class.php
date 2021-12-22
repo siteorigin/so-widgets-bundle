@@ -223,6 +223,15 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 					'type' => 'checkbox',
 					'label' => __( 'Navigation dots', 'so-widgets-bundle' ),
 				),
+				'animation' => array(
+					'type' => 'select',
+					'label' => __( 'Animation', 'so-widgets-bundle' ),
+					'default' => 'Ease',
+					'options' => array(
+						'ease' => __( 'Ease', 'so-widgets-bundle' ),
+						'linear' => __( 'Linear', 'so-widgets-bundle' ),
+					),
+				),
 				'animation_speed' => array(
 					'type' => 'number',
 					'label' => __( 'Animation speed', 'so-widgets-bundle' ),
@@ -360,6 +369,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		$variables = array(
 			'loop' => isset( $settings['loop'] ) ? $settings['loop'] : true,
 			'dots' => isset( $settings['dots'] ) ? $settings['dots'] : true,
+			'animation' => isset( $settings['animation'] ) ? $settings['animation'] : 'ease',
 			'animation_speed' => ! empty( $settings['animation_speed'] ) ? $settings['animation_speed'] : 800,
 			'autoplay' => isset( $settings['autoplay'] ) ? $settings['autoplay'] : false,
 			'pauseOnHover' => isset( $settings['autoplay_pause_hover'] ) ? $settings['autoplay_pause_hover'] : false,
