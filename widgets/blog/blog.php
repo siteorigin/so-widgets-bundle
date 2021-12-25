@@ -64,15 +64,15 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 					'fields' => array(
 						'columns' => array(
 							'type' => 'number',
-							'label' => __( 'Column count', 'so-widgets-bundle' ),
+							'label' => __( 'Column Count', 'so-widgets-bundle' ),
 						),
 						'featured_image' => array(
 							'type' => 'checkbox',
-							'label' => __( 'Featured image', 'so-widgets-bundle' ),
+							'label' => __( 'Featured Image', 'so-widgets-bundle' ),
 						),
 						'content' => array(
 							'type' => 'select',
-							'label' => __( 'Post content ', 'so-widgets-bundle' ),
+							'label' => __( 'Post Content ', 'so-widgets-bundle' ),
 							'description' => __( 'Choose how to display your post content. Select Full Post Content if using the "more" quicktag.', 'so-widgets-bundle' ),
 							'default' => 'full',
 							'options' => array(
@@ -82,27 +82,27 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 						),
 						'read_more' => array(
 							'type' => 'checkbox',
-							'label' => __( 'Post excerpt read more link', 'so-widgets-bundle' ),
+							'label' => __( 'Post Excerpt Read More Link', 'so-widgets-bundle' ),
 							'description' => __( 'Display the Read More link below the post excerpt.', 'so-widgets-bundle' ),
 						),
 						'date' => array(
 							'type' => 'checkbox',
-							'label' => __( 'Post date', 'so-widgets-bundle' ),
+							'label' => __( 'Post Date', 'so-widgets-bundle' ),
 							'default' => true,
 						),
 						'author' => array(
 							'type' => 'checkbox',
-							'label' => __( 'Post author', 'so-widgets-bundle' ),
+							'label' => __( 'Post Author', 'so-widgets-bundle' ),
 							'default' => true,
 						),
 						'categories' => array(
 							'type' => 'checkbox',
-							'label' => __( 'Post categories', 'so-widgets-bundle' ),
+							'label' => __( 'Post Categories', 'so-widgets-bundle' ),
 							'default' => true,
 						),
 						'comment_count' => array(
 							'type' => 'checkbox',
-							'label' => __( 'Post comment count', 'so-widgets-bundle' ),
+							'label' => __( 'Post Comment Count', 'so-widgets-bundle' ),
 							'default' => true,
 						),
 					),
@@ -110,7 +110,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 				'posts' => array(
 					'type' => 'posts',
-					'label' => __( 'Posts query', 'so-widgets-bundle' ),
+					'label' => __( 'Posts Query', 'so-widgets-bundle' ),
 					'hide' => true,
 				),
 			)
