@@ -3,7 +3,9 @@
 @responsive_breakpoint: 780px;
 
 .sow-blog-layout-portfolio {
+
 	& when( @categories = 1 ) {
+
 		.sow-portfolio-filter-terms {
 			margin-bottom: 25px;
 
@@ -29,8 +31,8 @@
 
 				&:hover,
 				&:focus {
-				    background: transparent;
-				    color: #2d2d2d;
+					background: transparent;
+					color: #2d2d2d;
 				}
 			}
 		}
@@ -50,6 +52,7 @@
 		}
 
 		.sow-entry-thumbnail {
+
 			&:hover .sow-entry-overlay {
 				background-color: hsla(0,0%,100%,.9);
 				border: 2px solid #929292;
@@ -68,27 +71,28 @@
 			}
 
 			& when( @categories = 1 ) {
+
 				.sow-entry-divider {
-				    border: 1px solid #2d2d2d;
-				    bottom: 55.5%;
-				    left: 50%;
-				    position: absolute;
-				    transform: translateX(-50%);
-				    width: 30px;
+					border: 1px solid #2d2d2d;
+					bottom: 55.5%;
+					left: 50%;
+					position: absolute;
+					transform: translateX(-50%);
+					width: 30px;
 				}
 
 				.sow-entry-project-type {
-				    color: #929292;
-				    display: block;
-				    font-size: .75rem;
-				    font-weight: 600;
-				    letter-spacing: 1px;
-				    line-height: 1.7333;
-				    position: absolute;
-				    text-align: center;
-				    text-transform: uppercase;
-				    top: 50.5%;
-				    width: 100%;
+					color: #929292;
+					display: block;
+					font-size: .75rem;
+					font-weight: 600;
+					letter-spacing: 1px;
+					line-height: 1.7333;
+					position: absolute;
+					text-align: center;
+					text-transform: uppercase;
+					top: 50.5%;
+					width: 100%;
 				}
 			}
 		}
