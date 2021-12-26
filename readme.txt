@@ -100,6 +100,11 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.28.0 - 26 December 2021 =
+* Accordion: Set closed panels to hidden prior to loading.
+* Anything Carousel: Added a new Animation setting. Choose between Ease or Linear.
+* Features: Set Feature admin label to Icon title or Title text if available.
+
 = 1.27.0 - 17 December 2021 =
 * Price Table: Added new Header, Featured and Feature text color settings.
 * Slider Widgets: Prevented potential settings migration error.
