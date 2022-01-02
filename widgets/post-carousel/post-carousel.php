@@ -193,7 +193,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			)
 		);
 
-		// Overide defaults.
+		// Override defaults.
 		$design_settings['fields']['item_title']['label'] = __( 'Post title', 'so-widgets-bundle' );
 		$design_settings['fields']['item_title']['fields']['tag']['default'] = 'h3';
 
@@ -356,6 +356,11 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		) );
 		$posts = new WP_Query( $query );
 
+		$carousel_settings = $this->carousel_settings_template_variables( $instance['carousel_settings'], false );
+		$carousel_settings['loop'] = ! empty( $instance['loop_posts'] );
+		$carousel_settings['item_overflow'] = true;
+		$carousel_settings = apply_filters( 'siteorigin_widgets_post_carousel_carousel_settings', $carousel_settings, $instance );
+
 		return array(
 			'settings' => array(
 				'args' => $args,
@@ -367,7 +372,6 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				'item_template' => plugin_dir_path( __FILE__ ) . 'tpl/item.php',
 				'navigation' => 'title',
 				'item_title_tag' => ! empty( $instance['design']['item_title']['tag'] ) ? $instance['design']['item_title']['tag'] : 'h3',
-				'item_overflow' => true,
 				'attributes' => array(
 					'widget' => 'post',
 					'fetching' => 'false',
@@ -376,12 +380,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 					// Base carousel specific settings.
 					'item_count' => get_query_var( 'sow-total_posts' ),
-					'carousel_settings' => json_encode(
-						array(
-							'loop' => ! empty( $instance['loop_posts'] ),
-							'item_overflow' => true,
-						)
-					),
+					'carousel_settings' => json_encode( $carousel_settings ),
 					'responsive' => $this->responsive_template_variables( $instance['responsive'] ),
 					'variable_width' => 'true',
 				),
