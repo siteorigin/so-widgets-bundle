@@ -70,9 +70,9 @@
 			if ( $presetSelect.val() == 'default' ) {
 				addingDefault = true;
 				$presetSelect.val( $presetSelect.data( 'default-preset' ) );
-				$presetSelect.trigger( 'change' );
 			}
 		}
+		$presetSelect.trigger( 'change' );
 
 		$presetSelect.data( 'initialized', true );
 	} );
