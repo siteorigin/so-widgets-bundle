@@ -84,7 +84,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 
 					'background_color' => array(
 						'type' => 'color',
-						'label' => __( 'Background Color', 'so-widgets-bundle' ),
+						'label' => __( 'Background color', 'so-widgets-bundle' ),
 					),
 
 					'background_image_type' => array(
