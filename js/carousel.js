@@ -28,6 +28,7 @@ jQuery( function ( $ ) {
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
 				dots: carouselSettings.dots,
+				appendDots: carouselSettings.appendDots ? $$.find( '.sow-carousel-nav' ) : '',
 				rows: 0,
 				rtl: $$.data( 'dir' ) == 'rtl',
 				touchThreshold: 20,

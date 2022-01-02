@@ -34,6 +34,13 @@
 		>
 			<?php include $settings['item_template']; ?>
 		</div>
+		<?php
+		if ( $settings['navigation'] == 'container' ) {
+			echo '<div class="sow-carousel-nav">';
+			$this->render_navigation( 'both' );
+			echo '</div>';
+		}
+		?>
 	</div>
 
 	<?php
