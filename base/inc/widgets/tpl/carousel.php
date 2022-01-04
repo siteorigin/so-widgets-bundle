@@ -34,13 +34,13 @@
 		>
 			<?php include $settings['item_template']; ?>
 		</div>
-		<?php
-		if ( $settings['navigation'] == 'container' ) {
-			echo '<div class="sow-carousel-nav">';
-			$this->render_navigation( 'both' );
-			echo '</div>';
-		}
-		?>
+		<?php if ( $settings['navigation'] == 'container' ) : ?>
+			<div class="sow-carousel-nav">
+				<div class="sow-carousel-nav-arrows">
+					<?php $this->render_navigation( 'both' ); ?>
+				</div>
+			</div>
+		<?php endif; ?>
 	</div>
 
 	<?php
