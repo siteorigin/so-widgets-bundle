@@ -366,6 +366,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			'settings' => array(
 				'args' => $args,
 				'title' => $instance['title'],
+				'theme' => ! empty( $instance['theme'] ) ? $instance['theme'] : 'default',
 				'posts' => sow_carousel_handle_post_limit( $posts ),
 				'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : '',
 				'image_size' => $instance['image_size'],
