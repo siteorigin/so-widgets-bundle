@@ -226,6 +226,10 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			$design_settings['fields']
 		);
 
+		$carousel_settings = $this->carousel_settings_form_fields();
+		$carousel_settings['fields']['loop']['description'] = __( 'Automatically return to the first post after the last post.', 'so-widgets-bundle' );
+		unset( $carousel_settings['fields']['animation'] );
+
 		return array(
 			'title' => array(
 				'type' => 'text',
@@ -256,12 +260,8 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 					'new'    => __( 'New window ', 'so-widgets-bundle' ),
 				),
 			),
-			'loop_posts' => array(
-				'type' => 'checkbox',
-				'label' => __( 'Loop posts', 'so-widgets-bundle' ),
-				'description' => __( 'Automatically return to the first post after the last post.', 'so-widgets-bundle' ),
-				'default' => true,
-			),
+
+			'carousel_settings' => $carousel_settings,
 
 			'posts' => array(
 				'type' => 'posts',
@@ -297,12 +297,10 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				'navigation_hover_background' => $instance['design']['navigation_hover_background'],
 			);
 
-			unset( $instance['design']['thumbnail_overlay_hover_color'] );
-			unset( $instance['design']['thumbnail_overlay_hover_opacity'] );
-			unset( $instance['design']['navigation_color'] );
-			unset( $instance['design']['navigation_color_hover'] );
-			unset( $instance['design']['navigation_background'] );
-			unset( $instance['design']['navigation_hover_background'] );
+		// Migrate settings to the Settings section.
+		if ( isset( $instance['loop_posts'] ) ) {
+			$instance['carousel_settings']['loop'] = $instance['loop_posts'];
+			unset( $instance['loop_posts'] );
 		}
 
 		return $instance;
@@ -325,6 +323,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			$thumb_hover_width = $size['width'];
 			$thumb_hover_height = $size['height'];
 		}
+
 		$less_vars = array(
 			'thumbnail_width' => $thumb_width . 'px',
 			'thumbnail_height'=> $thumb_height . 'px',
