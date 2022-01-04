@@ -35,6 +35,14 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			)
 		);
 
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_assets' ) );
+	}
+
+	/**
+	 * Allow widgets and other plugins to register assets for this slider.
+	 */
+	function register_assets() {
+		do_action( 'siteorigin_widgets_carousel_register_assets', $this );
 	}
 
 	/**
