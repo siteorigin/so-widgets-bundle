@@ -135,29 +135,31 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 	}
 
 	function override_carousel_settings() {
-		return array(
-			'breakpoints' => apply_filters(
-				'siteorigin_widgets_post_carousel_breakpoints',
-				array(
-					'tablet_landscape' => 1366,
-					'tablet_portrait'  => 1025,
-					'mobile'           => 480,
-				)
-			),
-			'slides_to_scroll' => array(
-				'desktop' => 1,
-				'tablet_landscape' => 2,
-				'tablet_portrait' => 2,
-				'mobile' => 1,
-			),
-			'navigation' => array(
-				'desktop' => true,
-				'tablet_landscape' => true,
-				'tablet_portrait' => true,
-				'mobile' => false,
-			),
-			// Remove slides_to_show.
-			'slides_to_show' => array(),
+		return apply_filters(
+			'siteorigin_widgets_post_carousel_settings_form', 
+			array(
+				'breakpoints' => apply_filters(
+					'siteorigin_widgets_post_carousel_breakpoints',
+					array(
+						'tablet_landscape' => 1366,
+						'tablet_portrait'  => 1025,
+						'mobile'           => 480,
+					)
+				),
+				'slides_to_scroll' => array(
+					'desktop' => 1,
+					'tablet_landscape' => 2,
+					'tablet_portrait' => 2,
+					'mobile' => 1,
+				),
+				'navigation' => array(
+					'desktop' => true,
+					'tablet_landscape' => true,
+					'tablet_portrait' => true,
+					'mobile' => false,
+				),
+				'slides_to_show' => array(),
+			)
 		);
 	}
 
@@ -359,7 +361,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		$carousel_settings = $this->carousel_settings_template_variables( $instance['carousel_settings'], false );
 		$carousel_settings['loop'] = ! empty( $instance['loop_posts'] );
 		$carousel_settings['item_overflow'] = true;
-		$carousel_settings = apply_filters( 'siteorigin_widgets_post_carousel_carousel_settings', $carousel_settings, $instance );
+		$carousel_settings = apply_filters( 'siteorigin_widgets_post_carousel_settings_frontend', $carousel_settings, $instance );
 
 		return array(
 			'settings' => array(
