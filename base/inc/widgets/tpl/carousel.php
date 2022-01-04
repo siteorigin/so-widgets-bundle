@@ -19,14 +19,14 @@
 	}
 	?>
 	<div class="sow-carousel-wrapper"
-	     data-dir="<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>"
-	     <?php
-	     foreach ( $settings['attributes'] as $n => $v ) {
-	     	if ( ! empty( $n ) ) {
-	     		echo 'data-' . $n . '="' . esc_attr( $v ) . '" ';
-	     	}
-	     }
-	     ?>
+		 data-dir="<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>"
+		 <?php
+		 foreach ( $settings['attributes'] as $n => $v ) {
+		 	if ( ! empty( $n ) ) {
+		 		echo 'data-' . $n . '="' . esc_attr( $v ) . '" ';
+		 	}
+		 }
+		 ?>
 	>
 		<div
 			class="sow-carousel-items"
