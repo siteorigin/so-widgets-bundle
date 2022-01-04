@@ -296,6 +296,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				'navigation_background' => $instance['design']['navigation_background'],
 				'navigation_hover_background' => $instance['design']['navigation_hover_background'],
 			);
+		}
 
 		// Migrate settings to the Settings section.
 		if ( isset( $instance['loop_posts'] ) ) {
