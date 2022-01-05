@@ -50,11 +50,11 @@
 			}
 
 			& when( @has_heading_border_width = true ) {
-				border-style: solid;
 				border-color: @heading_border_color;
+				border-style: solid;
 				border-width: @heading_border_width;
-				border-radius: @heading_border_radius;
 			}
+			border-radius: @heading_border_radius;
 
 			&:hover {
 				background-color: @heading_background_hover_color;
@@ -120,11 +120,11 @@
 			.sow-accordion-panel-border {
 				background-color: @panels_background_color;
 				& when ( @has_panels_border_width = true ) {
-					border-style: solid;
 					border-color: @panels_border_color;
+					border-style: solid;
 					border-width: @panels_border_width;
-					border-radius: @panels_border_radius;
 				}
+				border-radius: @panels_border_radius;
 				padding: @panels_padding;
 				color: @panels_font_color;
 				font-family: @panels_font_family;
