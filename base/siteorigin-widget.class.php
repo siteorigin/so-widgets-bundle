@@ -1369,7 +1369,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @return array $fields with any state_handler's applied.
 	 */
-	protected function dynamic_preset_state_handler( $state_name, $preset_data, $fields ) {
+	public function dynamic_preset_state_handler( $state_name, $preset_data, $fields ) {
 		// Build an array of all the adjusted fields by the preset data, and note which presets adjust them.
 		$adjusted_fields = array();
 		foreach ( $preset_data as $preset_id => $preset ) {
