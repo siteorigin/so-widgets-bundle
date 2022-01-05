@@ -35,7 +35,7 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 			function_exists( 'amp_is_enabled' ) &&
 			amp_is_enabled()
 		) {
-			// AMP plugin is installed and enabled. Remove Slider Lazy Loading.ss
+			// AMP plugin is installed and enabled. Remove Slider Lazy Loading.
 			add_filter( 'siteorigin_widgets_slider_attr', function( $attr ) {
 				if ( ! empty( $attr['class'] ) ) {
 					$attr['class'] = str_replace( ' skip-lazy', '', $attr['class'] );
