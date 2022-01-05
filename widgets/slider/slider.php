@@ -216,10 +216,12 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 							$frame['foreground_image'],
 							'full',
 							! empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : '',
-							array(
-								'class' => 'sow-slider-foreground-image skip-lazy',
-								'loading' => 'eager',
-								'style' => ! empty( $foreground_style_attr ) ? $foreground_style_attr : '',
+							apply_filters( 'siteorigin_widgets_slider_attr',
+								array(
+									'class' => 'sow-slider-foreground-image skip-lazy',
+									'loading' => apply_filters( 'siteorigin_widgets_slider_loading_attr', 'eager' ),
+									'style' => ! empty( $foreground_style_attr ) ? $foreground_style_attr : '',
+								)
 							)
 						);
 						?>
@@ -248,9 +250,11 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				$frame['background_image'],
 				'full',
 				! empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : '',
-				array(
-					'class' => 'sow-slider-background-image skip-lazy',
-					'loading' => 'eager',
+				apply_filters( 'siteorigin_widgets_slider_attr',
+					array(
+						'class' => 'sow-slider-background-image skip-lazy',
+						'loading' => 'eager',
+					)
 				)
 			);
 
