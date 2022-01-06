@@ -24,7 +24,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 	}
 
 	/**
-	 * Initialize the accordion widget.
+	 * Initialize the Accordion Widget.
 	 */
 	function initialize() {
 		$this->register_frontend_scripts(
@@ -64,7 +64,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_widget_form() {
-		
+
 		return array(
 			'title' => array(
 				'type' => 'text',
@@ -181,7 +181,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			),
 		);
 	}
-	
+
 	public function get_less_variables( $instance ) {
 		if ( empty( $instance['design'] ) ) {
 			return array();
@@ -225,11 +225,11 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 				$id = $this->id_base;
 				if ( ! empty( $instance['_sow_form_id'] ) ) {
 					$id .= '-' . $instance['_sow_form_id'];
-				} else if ( ! empty( $args['widget_id'] ) ) {
+				} elseif ( ! empty( $args['widget_id'] ) ) {
 					$id .= '-' . $args['widget_id'];
 				}
 				$panel['anchor'] = $id . '-' . $i;
-			} else if ( isset( $anchor_list[ strtolower( $panel['title'] ) ] ) ) {
+			} elseif ( isset( $anchor_list[ strtolower( $panel['title'] ) ] ) ) {
 				// Ensure this anchor is unique, if it's not, append the array key to the anchor.
 				$panel['anchor'] = $panel['title'] . "-$i-" . uniqid();
 			} else {
@@ -254,7 +254,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			'icon_close' => $instance['design']['heading']['icon_close'],
 		);
 	}
-	
+
 	public function render_panel_content( $panel, $instance ) {
 		$content = $panel['autop'] ? wpautop( $panel['content_text'] ) : $panel['content_text'];
 

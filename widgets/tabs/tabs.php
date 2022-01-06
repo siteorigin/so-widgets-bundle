@@ -9,7 +9,7 @@ Documentation: https://siteorigin.com/widgets-bundle/tabs-widget/
 
 class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 	function __construct() {
-		
+
 		parent::__construct(
 			'sow-tabs',
 			__( 'SiteOrigin Tabs', 'so-widgets-bundle' ),
@@ -22,9 +22,9 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 			plugin_dir_path( __FILE__ )
 		);
 	}
-	
+
 	/**
-	 * Initialize the tabs widget.
+	 * Initialize the Tabs Widget.
 	 */
 	function initialize() {
 		$this->register_frontend_scripts(
@@ -64,7 +64,7 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_widget_form() {
-		
+
 		return array(
 			'title' => array(
 				'type' => 'text',
@@ -224,8 +224,8 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 	}
 	
 	public function get_template_variables( $instance, $args ) {
-		if( empty( $instance ) ) return array();
-		
+		if ( empty( $instance ) ) return array();
+
 		$tabs = empty( $instance['tabs'] ) ? array() : $instance['tabs'];
 		
 		foreach ( $tabs as $i => &$tab ) {
@@ -235,12 +235,12 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 			if ( empty( $tab['after_title'] ) ) {
 				$tab['after_title'] = '';
 			}
-			
+
 			if ( empty( $tab['title'] ) ) {
 				$id = $this->id_base;
 				if ( ! empty( $instance['_sow_form_id'] ) ) {
 					$id .= '-' . $instance['_sow_form_id'];
-				} else if ( ! empty( $args['widget_id'] ) ) {
+				} elseif ( ! empty( $args['widget_id'] ) ) {
 					$id .= '-' . $args['widget_id'];
 				}
 				$tab['anchor'] = $id . '-' . $i;
@@ -248,7 +248,7 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 				$tab['anchor'] = $tab['title'];
 			}
 		}
-		
+
 		if ( empty( $instance['initial_tab_position'] ) ||
 			 $instance['initial_tab_position'] < 1 ||
 			 $instance['initial_tab_position'] > count( $tabs ) ) {
@@ -257,7 +257,7 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 		} else {
 			$init_tab_index = $instance['initial_tab_position'] - 1;
 		}
-		
+
 		return array(
 			'tabs' => $tabs,
 			'initial_tab_index' => $init_tab_index,

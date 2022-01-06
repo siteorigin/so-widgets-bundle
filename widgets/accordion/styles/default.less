@@ -30,7 +30,9 @@
 @panels_margin_bottom: 10px;
 
 .sow-accordion {
+
 	.sow-accordion-panel {
+
 		.sow-accordion-panel-header {
 			background-color: @heading_background_color;
 			border-radius: @heading_border_radius;
@@ -43,9 +45,11 @@
 			padding: @heading_padding;
 			position: relative;
 			text-transform: @heading_title_text_transform;
+
 			& when ( @open_close_location = right ) {
 				flex-direction: row;
 			}
+
 			& when ( @open_close_location = left ) {
 				flex-direction: row-reverse;
 			}
@@ -61,7 +65,7 @@
 				color: @title_hover_color;
 				border-color: @heading_border_hover_color;
 			}
-			
+
 			&:focus {
 				outline: 1px dotted #666;
 				outline: auto 5px -webkit-focus-ring-color;
@@ -73,7 +77,7 @@
 				& when ( @heading_title_align = center ) {
 					justify-content: center;
 				}
-				
+
 				& when ( @heading_title_align = right ) {
 					justify-content: flex-end;
 				}
@@ -106,17 +110,21 @@
 				margin-left: 5px;
 			}
 		}
+
 		&:not(.sow-accordion-panel-open) > .sow-accordion-panel-header-container > .sow-accordion-panel-header {
 			.sow-accordion-close-button {
 				display: none;
 			}
 		}
+
 		&.sow-accordion-panel-open > .sow-accordion-panel-header-container > .sow-accordion-panel-header {
 			.sow-accordion-open-button {
 				display: none;
 			}
 		}
+
 		.sow-accordion-panel-content {
+
 			.sow-accordion-panel-border {
 				background-color: @panels_background_color;
 				border-radius: @panels_border_radius;
