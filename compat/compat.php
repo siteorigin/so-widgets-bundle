@@ -40,7 +40,7 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 				if ( ! empty( $attr['class'] ) ) {
 					$attr['class'] = str_replace( ' skip-lazy', '', $attr['class'] );
 				}
-				unset( $attr['loading'] );
+				$attr['loading'] = false;
 				return $attr;
 			} );
 		}
