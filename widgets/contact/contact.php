@@ -205,7 +205,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'default' => array(
 								'type'  => 'checkbox',
-								'label' => __( 'Ticked by default', 'so-widgets-bundle' ),
+								'label' => __( 'Enabled', 'so-widgets-bundle' ),
 								'state_handler' => array(
 									'field_type_{$repeater}[checkboxes]' => array( 'show' ),
 									'_else[field_type_{$repeater}]'      => array( 'hide' ),
