@@ -69,6 +69,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 						'featured_image' => array(
 							'type' => 'checkbox',
 							'label' => __( 'Featured Image', 'so-widgets-bundle' ),
+							'default' => true,
 						),
 						'content' => array(
 							'type' => 'select',
