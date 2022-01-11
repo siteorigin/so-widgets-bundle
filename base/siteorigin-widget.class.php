@@ -1436,6 +1436,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				continue;
 			}
 
+			$used_by = null;
+
 			// If this is a section field, we need to apply the state handlers for sub fields.
 			if ( $fields[ $field ]['type'] == 'section' ) {
 				$fields[ $field ]['fields'] = $this->dynamic_preset_add_state_handler(
@@ -1444,12 +1446,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$fields[ $field ]['fields']
 				);
 
-				$used_by = implode( ',', $field_value['key'] );
+				if ( isset( $field_value['key'] ) ) {
+					$used_by = implode( ',', $field_value['key'] );
+				}
 			} else {
 				$used_by = implode( ',', $field_value ); 
 			}
 
-			if ( ! $exclude_section ) {
+			if ( ! $exclude_section && ! empty( $used_by ) ) {
 				$fields[ $field ]['state_handler'] = array(
 					$state_name . '[' . $used_by . ']' => array( 'show' ),
 						'_else[' . $state_name . ']' => array( 'hide' ),
