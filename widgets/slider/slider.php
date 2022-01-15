@@ -7,7 +7,7 @@ Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/slider-widget-documentation/
 */
 
-if( !class_exists( 'SiteOrigin_Widget_Base_Slider' ) ) include_once plugin_dir_path(SOW_BUNDLE_BASE_FILE) . '/base/inc/widgets/base-slider.class.php';
+if ( ! class_exists( 'SiteOrigin_Widget_Base_Slider' ) ) include_once plugin_dir_path(SOW_BUNDLE_BASE_FILE) . '/base/inc/widgets/base-slider.class.php';
 
 class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 	function __construct() {
@@ -27,7 +27,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 		);
 	}
 
-	function get_widget_form(){
+	function get_widget_form() {
 		return parent::widget_form( array(
 			'frames' => array(
 				'type' => 'repeater',
@@ -57,8 +57,8 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				'fields' => array(
 					'background_videos' => array(
 						'type' => 'repeater',
-						'item_name' => __('Video', 'so-widgets-bundle'),
-						'label' => __('Background videos', 'so-widgets-bundle'),
+						'item_name' => __( 'Video', 'so-widgets-bundle' ),
+						'label' => __( 'Background videos', 'so-widgets-bundle' ),
 						'item_label' => array(
 							'selectorArray' => array(
 								array(
@@ -78,21 +78,21 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 					'background_image' => array(
 						'type' => 'media',
 						'library' => 'image',
-						'label' => __('Background image', 'so-widgets-bundle'),
+						'label' => __( 'Background image', 'so-widgets-bundle' ),
 						'fallback' => true,
 					),
 
 					'background_color' => array(
 						'type' => 'color',
-						'label' => __('Background Color', 'so-widgets-bundle'),
+						'label' => __( 'Background color', 'so-widgets-bundle' ),
 					),
 
 					'background_image_type' => array(
 						'type' => 'select',
-						'label' => __('Background image type', 'so-widgets-bundle'),
+						'label' => __( 'Background image type', 'so-widgets-bundle' ),
 						'options' => array(
-							'cover' => __('Cover', 'so-widgets-bundle'),
-							'tile' => __('Tile', 'so-widgets-bundle'),
+							'cover' => __( 'Cover', 'so-widgets-bundle' ),
+							'tile' => __( 'Tile', 'so-widgets-bundle' ),
 						),
 						'default' => 'cover',
 					),
@@ -100,7 +100,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 					'foreground_image' => array(
 						'type' => 'media',
 						'library' => 'image',
-						'label' => __('Foreground image', 'so-widgets-bundle'),
+						'label' => __( 'Foreground image', 'so-widgets-bundle' ),
 						'fallback' => true,
 						'state_emitter' => array(
 							'callback' => 'conditional',
@@ -113,25 +113,25 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 
 					'url' => array(
 						'type' => 'link',
-						'label' => __('Destination URL', 'so-widgets-bundle'),
+						'label' => __( 'Destination URL', 'so-widgets-bundle' ),
 					),
 
 					'new_window' => array(
 						'type' => 'checkbox',
-						'label' => __('Open in new window', 'so-widgets-bundle'),
+						'label' => __( 'Open in new window', 'so-widgets-bundle' ),
 						'default' => false,
 					),
 				),
 			),
 			'controls' => array(
 				'type' => 'section',
-				'label' => __('Controls', 'so-widgets-bundle'),
+				'label' => __( 'Controls', 'so-widgets-bundle' ),
 				'fields' => $this->control_form_fields()
 			),
 
 			'design' => array(
 				'type' => 'section',
-				'label' => __('Design', 'so-widgets-bundle'),
+				'label' => __( 'Design', 'so-widgets-bundle' ),
 				'state_handler' => array(
 					'show_height[show]' => array( 'show' ),
 					'show_height[hide]' => array( 'hide' ),
@@ -152,16 +152,16 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 		) );
 	}
 
-	function get_frame_background( $i, $frame ){
+	function get_frame_background( $i, $frame ) {
 		$background_image = siteorigin_widgets_get_attachment_image_src(
 			$frame['background_image'],
 			'full',
-			!empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : ''
+			! empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : ''
 		);
 
 		return array(
-			'color' => !empty( $frame['background_color'] ) ? $frame['background_color'] : false,
-			'image' => !empty( $background_image ) ? $background_image[0] : false,
+			'color' => ! empty( $frame['background_color'] ) ? $frame['background_color'] : false,
+			'image' => ! empty( $background_image ) ? $background_image[0] : false,
 			'image-width' => !empty( $background_image[1] ) ? $background_image[1] : 0,
 			'image-height' => !empty( $background_image[2] ) ? $background_image[2] : 0,
 			'image-sizing' => $frame['background_image_type'],
@@ -175,10 +175,10 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 
 	function render_frame_contents($i, $frame) {
 
-		// Clear out any empty background videos
-		if( !empty($frame['background_videos']) && is_array($frame['background_videos']) ){
-			for( $i = 0; $i < count($frame['background_videos']); $i++ ){
-				if( empty( $frame['background_videos'][$i]['file'] ) && empty($frame['background_videos'][$i]['url']) ) {
+		// Clear out any empty background videos.
+		if ( ! empty($frame['background_videos']) && is_array( $frame['background_videos'] ) ) {
+			for( $i = 0; $i < count($frame['background_videos']); $i++ ) {
+				if ( empty( $frame['background_videos'][$i]['file'] ) && empty($frame['background_videos'][$i]['url']) ) {
 					unset($frame['background_videos'][$i]);
 				}
 			}
@@ -187,10 +187,10 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 		$foreground_src = siteorigin_widgets_get_attachment_image_src(
 			$frame['foreground_image'],
 			'full',
-			!empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : ''
+			! empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : ''
 		);
 
-		if( !empty($foreground_src) ) {
+		if ( ! empty( $foreground_src ) ) {
 			// If a custom height is set, build the foreground style attribute.
 			if ( ! empty( $frame['custom_height'] ) ) {
 				$foreground_style_attr = 'height: ' . intval( $frame['custom_height'] ) . 'px; width: auto;';
@@ -201,7 +201,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			}
 			?>
 			<div class="sow-slider-image-container">
-				<div class="sow-slider-image-wrapper" style="<?php if( ! empty( $foreground_src[1] ) ) echo 'max-width: ' . (int) $foreground_src[1] . 'px'; ?>">
+				<div class="sow-slider-image-wrapper" style="<?php if ( ! empty( $foreground_src[1] ) ) echo 'max-width: ' . (int) $foreground_src[1] . 'px'; ?>">
 					<?php if ( ! empty( $frame['url'] ) ) : ?>
 						<a href="<?php echo sow_esc_url( $frame['url'] ) ?>"
 						<?php foreach( $frame['link_attributes'] as $att => $val ) : ?>
@@ -216,10 +216,12 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 							$frame['foreground_image'],
 							'full',
 							! empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : '',
-							array(
-								'class' => 'sow-slider-foreground-image skip-lazy',
-								'loading' => 'eager',
-								'style' => ! empty( $foreground_style_attr ) ? $foreground_style_attr : '',
+							apply_filters( 'siteorigin_widgets_slider_attr',
+								array(
+									'class' => 'sow-slider-foreground-image skip-lazy',
+									'loading' => apply_filters( 'siteorigin_widgets_slider_loading_attr', 'eager' ),
+									'style' => ! empty( $foreground_style_attr ) ? $foreground_style_attr : '',
+								)
 							)
 						);
 						?>
@@ -231,11 +233,11 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			</div>
 			<?php
 		}
-		else if( empty($frame['background_videos']) ) {
+		elseif ( empty($frame['background_videos']) ) {
 			?>
 			<?php if ( ! empty( $frame['url'] ) ) : ?>
 				<a href="<?php echo sow_esc_url( $frame['url'] ) ?>"
-				<?php foreach( $frame['link_attributes'] as $att => $val ) : ?>
+				<?php foreach ( $frame['link_attributes'] as $att => $val ) : ?>
 					<?php if ( ! empty( $val ) ) : ?>
 						<?php echo $att . '="' . esc_attr( $val ) . '" '; ?>
 					<?php endif; ?>
@@ -243,14 +245,16 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			<?php endif; ?>
 			<?php
 
-			// Lets use the background image
+			// Lets use the background image.
 			echo siteorigin_widgets_get_attachment_image(
 				$frame['background_image'],
 				'full',
-				!empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : '',
-				array(
-					'class' => 'sow-slider-background-image skip-lazy',
-					'loading' => 'eager',
+				! empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : '',
+				apply_filters( 'siteorigin_widgets_slider_attr',
+					array(
+						'class' => 'sow-slider-background-image skip-lazy',
+						'loading' => 'eager',
+					)
 				)
 			);
 
@@ -284,17 +288,17 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 	
 	/**
-	 * The less variables to control the design of the slider
+	 * The less variables to control the design of the slider.
 	 *
 	 * @param $instance
 	 *
 	 * @return array
 	 */
-	function get_less_variables($instance) {
+	function get_less_variables( $instance ) {
 		$less = array();
 
-		if( !empty($instance['controls']['nav_color_hex']) ) $less['nav_color_hex'] = $instance['controls']['nav_color_hex'];
-		if( !empty($instance['controls']['nav_size']) ) $less['nav_size'] = $instance['controls']['nav_size'];
+		if ( !empty($instance['controls']['nav_color_hex']) ) $less['nav_color_hex'] = $instance['controls']['nav_color_hex'];
+		if ( !empty($instance['controls']['nav_size']) ) $less['nav_size'] = $instance['controls']['nav_size'];
 
 		$less['slide_height'] = ! empty( $instance['design']['height'] ) ? $instance['design']['height'] : false;
 		$less['slide_height_responsive'] = ! empty( $instance['design']['height_responsive'] ) ? $instance['design']['height_responsive'] : false;
@@ -314,8 +318,8 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 	 *
 	 * @return mixed
 	 */
-	function modify_instance( $instance ){
-		if( empty($instance['controls']) ) {
+	function modify_instance( $instance ) {
+		if ( empty($instance['controls']) ) {
 			if ( ! empty( $instance['speed'] ) ) {
 				$instance['controls']['speed'] = $instance['speed'];
 				unset($instance['speed']);

@@ -30,6 +30,20 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 		add_action( 'siteorigin_widgets_stylesheet_deleted', array( $this, 'clear_page_cache' ) );
 		add_action( 'siteorigin_widgets_stylesheet_added', array( $this, 'clear_page_cache' ) );
 		add_action( 'siteorigin_widgets_stylesheet_cleared', array( $this, 'clear_all_cache' ) );
+
+		if (
+			function_exists( 'amp_is_enabled' ) &&
+			amp_is_enabled()
+		) {
+			// AMP plugin is installed and enabled. Remove Slider Lazy Loading.
+			add_filter( 'siteorigin_widgets_slider_attr', function( $attr ) {
+				if ( ! empty( $attr['class'] ) ) {
+					$attr['class'] = str_replace( ' skip-lazy', '', $attr['class'] );
+				}
+				$attr['loading'] = false;
+				return $attr;
+			} );
+		}
 	}
 
 	function get_active_builder() {

@@ -30,30 +30,34 @@
 @panels_margin_bottom: 10px;
 
 .sow-accordion {
+
 	.sow-accordion-panel {
+
 		.sow-accordion-panel-header {
-			position: relative;
-			cursor: pointer;
-			padding: @heading_padding;
 			background-color: @heading_background_color;
+			border-radius: @heading_border_radius;
 			color: @title_color;
-			font-family: @heading_title_font_family;
-			font-weight: @heading_title_font_weight;
-			font-size: @heading_title_font_size;
-			text-transform: @heading_title_text_transform;
+			cursor: pointer;
 			display: flex;
+			font-family: @heading_title_font_family;
+			font-size: @heading_title_font_size;
+			font-weight: @heading_title_font_weight;
+			padding: @heading_padding;
+			position: relative;
+			text-transform: @heading_title_text_transform;
+
 			& when ( @open_close_location = right ) {
 				flex-direction: row;
 			}
+
 			& when ( @open_close_location = left ) {
 				flex-direction: row-reverse;
 			}
 
 			& when( @has_heading_border_width = true ) {
-				border-style: solid;
 				border-color: @heading_border_color;
+				border-style: solid;
 				border-width: @heading_border_width;
-				border-radius: @heading_border_radius;
 			}
 
 			&:hover {
@@ -61,7 +65,7 @@
 				color: @title_hover_color;
 				border-color: @heading_border_hover_color;
 			}
-			
+
 			&:focus {
 				outline: 1px dotted #666;
 				outline: auto 5px -webkit-focus-ring-color;
@@ -73,7 +77,7 @@
 				& when ( @heading_title_align = center ) {
 					justify-content: center;
 				}
-				
+
 				& when ( @heading_title_align = right ) {
 					justify-content: flex-end;
 				}
@@ -106,30 +110,35 @@
 				margin-left: 5px;
 			}
 		}
+
 		&:not(.sow-accordion-panel-open) > .sow-accordion-panel-header-container > .sow-accordion-panel-header {
 			.sow-accordion-close-button {
 				display: none;
 			}
 		}
+
 		&.sow-accordion-panel-open > .sow-accordion-panel-header-container > .sow-accordion-panel-header {
 			.sow-accordion-open-button {
 				display: none;
 			}
 		}
+
 		.sow-accordion-panel-content {
+
 			.sow-accordion-panel-border {
 				background-color: @panels_background_color;
+				border-radius: @panels_border_radius;
 				& when ( @has_panels_border_width = true ) {
-					border-style: solid;
 					border-color: @panels_border_color;
+					border-style: solid;
 					border-width: @panels_border_width;
-					border-radius: @panels_border_radius;
 				}
-				padding: @panels_padding;
 				color: @panels_font_color;
 				font-family: @panels_font_family;
 				font-size: @panels_font_size;
 				overflow: auto;
+				padding: @panels_padding;
+
 				&:focus {
 					outline: 1px dotted #666;
 					outline: auto 5px -webkit-focus-ring-color;

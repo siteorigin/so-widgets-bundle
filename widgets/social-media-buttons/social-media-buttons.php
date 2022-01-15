@@ -37,9 +37,9 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_widget_form(){
+	function get_widget_form() {
 
-		if( empty( $this->networks ) ) {
+		if ( empty( $this->networks ) ) {
 			$this->networks = include plugin_dir_path( __FILE__ ) . 'data/networks.php';
 		}
 
@@ -89,7 +89,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			),
 			'design'   => array(
 				'type'   => 'section',
-				'label'  => __( 'Design and layout', 'so-widgets-bundle' ),
+				'label'  => __( 'Design and Layout', 'so-widgets-bundle' ),
 				'hide'   => true,
 				'fields' => array(
 					'new_window' => array(
@@ -206,7 +206,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_javascript_variables() {
-		if( empty( $this->networks ) ) {
+		if ( empty( $this->networks ) ) {
 			$this->networks = include plugin_dir_path( __FILE__ ) . 'data/networks.php';
 		}
 
@@ -231,7 +231,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_less_variables( $instance ) {
-		if( empty( $instance ) ) return;
+		if ( empty( $instance ) ) return;
 
 		$design = $instance['design'];
 		$m      = $design['margin'];
@@ -314,11 +314,11 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 	 *
 	 * @return array
 	 */
-	protected function get_style_hash_variables( $instance ){
-		$networks = $this->get_instance_networks($instance);
+	protected function get_style_hash_variables( $instance ) {
+		$networks = $this->get_instance_networks( $instance );
 
-		foreach($networks as $i => $network) {
-			// URL is not important for the styling
+		foreach ( $networks as $i => $network ) {
+			// URL is not important for the styling.
 			unset($networks[$i]['url']);
 		}
 
@@ -328,8 +328,8 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_form_teaser(){
-		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
+	function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
 
 		return sprintf(
 			__( 'Add custom social networks with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),

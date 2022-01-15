@@ -38,10 +38,12 @@
 @panels_padding: 30px 30px 30px 35px;
 
 .sow-tabs {
+
 	.sow-tabs-tab-container {
 		background-color: @tabs_container_background_color;
-		padding: @tabs_container_padding;
+		border-radius: @tabs_container_border_radius;
 		display: flex;
+		padding: @tabs_container_padding;
 
 		& when ( @tabs_container_tabs_position = top ), ( @tabs_container_tabs_position = bottom ) {
 			flex-wrap: wrap;
@@ -65,42 +67,41 @@
 
 		//noinspection CssOptimizeSimilarProperties
 		& when ( @has_tabs_container_border_width = true ) {
-			border-style: solid;
 			border-color: @tabs_container_border_color;
+			border-style: solid;
 			border-width: @tabs_container_border_width;
-			border-radius: @tabs_container_border_radius;
 		}
 
 		.sow-tabs-tab {
-			display: inline-block;
-			cursor: pointer;
 			background-color: @tabs_background_color;
-			padding: @tabs_padding;
-			margin: @tabs_margin;
+			border-radius: @tabs_border_radius;
 			color: @tabs_title_color;
+			cursor: pointer;
+			display: inline-block;
 			font-family: @tabs_font_family;
-			font-weight: @tabs_font_weight;
 			font-size: @tabs_font_size;
+			font-weight: @tabs_font_weight;
+			margin: @tabs_margin;
+			padding: @tabs_padding;
 			transition: all 0.3s;
 
 			//noinspection CssOptimizeSimilarProperties
 			& when ( @has_tabs_border_width = true ) {
-				border-style: solid;
 				border-color: @tabs_border_color;
+				border-style: solid;
 				border-width: @tabs_border_width;
-				border-radius: @tabs_border_radius;
 			}
 
 			&.sow-tabs-tab-selected, &:hover {
 				background-color: @tabs_background_hover_color;
+				border-radius: @tabs_border_radius;
 				color: @tabs_title_hover_color;
 
 				//noinspection CssOptimizeSimilarProperties
 				& when ( @has_tabs_border_hover_width = true ) {
-					border-style: solid;
 					border-color: @tabs_border_hover_color;
+					border-style: solid;
 					border-width: @tabs_border_hover_width;
-					border-radius: @tabs_border_radius;
 				}
 			}
 
@@ -128,20 +129,21 @@
 	}
 
 	.sow-tabs-panel-container {
-		position: relative;
+		border-radius: @panels_border_radius;
 		background-color: @panels_background_color;
 		color: @panels_font_color;
+		position: relative;
 
 		//noinspection CssOptimizeSimilarProperties
 		& when( @has_panels_border_width = true ) {
+			border-color: @panels_border_color;
 			border-style: solid;
 			border-width: @panels_border_width;
-			border-color: @panels_border_color;
-			border-radius: @panels_border_radius;
 		}
 
 		.sow-tabs-panel {
 			padding: @panels_padding;
+
 			.sow-tabs-panel-content {
 				font-family: @panels_font_family;
 				font-weight: @panels_font_weight;
@@ -155,7 +157,7 @@
 	}
 
 	& when ( @tabs_container_tabs_position = bottom ) {
-	    flex-direction: column-reverse;
+		flex-direction: column-reverse;
 	}
 
 	
