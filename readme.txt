@@ -100,6 +100,12 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.29.0 - 15 January 2022 =
+* Accordion/Tabs: Removed the Border Radius setting dependency on Border Width.
+* Contact Form: Added a new `Enabled` setting to checkbox options.
+* Sliders: Disabled `loading` override when the AMP plugin is active.
+* Widget Block: Excluded Post Carousel from caching.
+
 = 1.28.0 - 26 December 2021 =
 * Accordion: Set closed panels to hidden prior to loading.
 * Anything Carousel: Added a new Animation setting. Choose between Ease or Linear.
