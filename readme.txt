@@ -100,6 +100,10 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.29.1 - 27 January 2022 =
+* Updated `Tested up to` tag to `5.9`.
+* Widgets Block: Prevented a potential `Undefined Error` outside of the WP admin.
+
 = 1.29.0 - 15 January 2022 =
 * Accordion/Tabs: Removed the Border Radius setting dependency on Border Width.
 * Contact Form: Added a new `Enabled` setting to checkbox options.
