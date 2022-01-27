@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: widget, button, slider, hero, google maps, image, carousel, features, icons, price table, tinymce, social icons
 Requires at least: 4.2
-Tested up to: 5.8
+Tested up to: 5.9
 Requires PHP: 5.6.20
 Stable tag: trunk
 Build time: unbuilt
@@ -99,6 +99,10 @@ SiteOrigin Premium includes access to our professional email support service, pe
 The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets. Widgets can be enabled or disabled as needed. If a widget offers global settings, you can access those via the Settings button next to each applicable widget.
 
 == Changelog ==
+
+= 1.29.1 - 27 January 2022 =
+* Updated `Tested up to` tag to `5.9`.
+* Widgets Block: Prevented a potential `Undefined Error` outside of the WP admin.
 
 = 1.29.0 - 15 January 2022 =
 * Accordion/Tabs: Removed the Border Radius setting dependency on Border Width.

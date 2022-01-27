@@ -83,7 +83,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 				$instance['text'] = $markdown_parser->transform( $instance['text'] );
 			}
 
-			// Run some known stuff
+			// Run some known stuff.
 			if( ! empty( $GLOBALS['wp_embed'] ) ) {
 				$instance['text'] = $GLOBALS['wp_embed']->run_shortcode( $instance['text'] );
 				$instance['text'] = $GLOBALS['wp_embed']->autoembed( $instance['text'] );
