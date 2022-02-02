@@ -90,7 +90,7 @@ jQuery( function ( $ ) {
 					lastPosition = numItems - numVisibleItems;
 
 				// Post Carousel has a loading indicator so we need to pad the lastPosition.
-				if ( $$.data( 'widget' ) == 'post' ) {
+				if ( $$.data( 'widget' ) == 'post' && ! $$.data( 'carousel_settings' ).theme ) {
 					lastPosition++;
 				}
 
