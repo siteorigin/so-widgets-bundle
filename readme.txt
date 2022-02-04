@@ -100,6 +100,9 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.29.2 - 04 February 2022 =
+* Widgets Block: Excluded the Contact Form from caching. Resolves error on first submission.
+
 = 1.29.1 - 27 January 2022 =
 * Updated `Tested up to` tag to `5.9`.
 * Widgets Block: Prevented a potential `Undefined Error` outside of the WP admin.
