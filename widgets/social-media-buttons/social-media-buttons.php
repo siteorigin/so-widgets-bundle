@@ -87,7 +87,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 					),
 					'icon_color_hover' => array(
 						'type'  => 'color',
-						'label' => __( 'Icon color hover', 'so-widgets-bundle' ),
+						'label' => __( 'Icon hover color', 'so-widgets-bundle' ),
 						'state_handler' => array(
 							'hover_effects[enabled]' => array( 'show' ),
 							'hover_effects[disabled]' => array( 'hide' ),
@@ -95,7 +95,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 					),
 					'button_color_hover' => array(
 						'type'  => 'color',
-						'label' => __( 'Background color hover', 'so-widgets-bundle' ),
+						'label' => __( 'Background hover color', 'so-widgets-bundle' ),
 						'state_handler' => array(
 							'hover_effects[enabled]' => array( 'show' ),
 							'hover_effects[disabled]' => array( 'hide' ),
