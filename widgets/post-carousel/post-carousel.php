@@ -359,7 +359,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		$posts = new WP_Query( $query );
 
 		$carousel_settings = $this->carousel_settings_template_variables( $instance['carousel_settings'], false );
-		$carousel_settings['loop'] = ! empty( $instance['loop_posts'] );
+		$carousel_settings['loop'] = ! empty( $instance['carousel_settings']['loop'] );
 		$carousel_settings['item_overflow'] = true;
 		$carousel_settings = apply_filters( 'siteorigin_widgets_post_carousel_settings_frontend', $carousel_settings, $instance );
 
