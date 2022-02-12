@@ -123,15 +123,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				),
 			)
 		);
-
-		$this->register_frontend_styles(
-			array(
-				array(
-					'sow-carousel-basic',
-					plugin_dir_url( __FILE__ ) . 'css/style.css',
-				),
-			)
-		);
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_theme_assets' ) );
 	}
 
 	function override_carousel_settings() {
@@ -161,6 +153,21 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				'slides_to_show' => array(),
 			)
 		);
+	}
+
+	function register_theme_assets() {
+		wp_register_style( 'sow-post-carousel-base', plugin_dir_url( __FILE__ ) . 'css/base.css' );
+		do_action( 'siteorigin_widgets_post_carousel_theme_assets' );
+	}
+
+	function get_style_name( $instance ) {
+		$template = empty( $instance['design'] ) || empty( $instance['design']['theme'] )  ? 'base' : $instance['design']['theme'];
+		// If this theme has a dedicated stylesheet load it.
+		if ( wp_style_is( 'sow-post-carousel-' . $template, 'registered' ) ) {
+			wp_enqueue_style( 'sow-post-carousel-' . $template );
+		}
+
+		return $template;
 	}
 
 	function get_widget_form() {
@@ -359,15 +366,17 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		$posts = new WP_Query( $query );
 
 		$carousel_settings = $this->carousel_settings_template_variables( $instance['carousel_settings'], false );
-		$carousel_settings['loop'] = ! empty( $instance['carousel_settings']['loop'] );
+			$carousel_settings['loop'] = ! empty( $instance['carousel_settings']['loop'] );
 		$carousel_settings['item_overflow'] = true;
 		$carousel_settings = apply_filters( 'siteorigin_widgets_post_carousel_settings_frontend', $carousel_settings, $instance );
+
+		$size = siteorigin_widgets_get_image_size( $instance['image_size'] );
 
 		return array(
 			'settings' => array(
 				'args' => $args,
 				'title' => $instance['title'],
-				'theme' => ! empty( $instance['theme'] ) ? $instance['theme'] : 'default',
+				'theme' => empty( $instance['design'] ) || empty( $instance['design']['theme'] )  ? 'base' : $instance['design']['theme'],
 				'posts' => sow_carousel_handle_post_limit( $posts ),
 				'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : '',
 				'image_size' => $instance['image_size'],
