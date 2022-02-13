@@ -13,7 +13,7 @@
 ?>
 <div class="ow-button-base ow-button-align-<?php echo esc_attr( $align ) ?>">
 	<a href="<?php echo sow_esc_url( do_shortcode( $href ) ) ?>" <?php foreach( $button_attributes as $name => $val ) echo $name . '="' . esc_attr( $val ) . '" ' ?>
-		<?php if ( ! empty( $onclick ) ) echo 'onclick="' . wp_unslash( esc_js( $onclick ) ) . '"'; ?>>
+		<?php if ( ! empty( $on_click ) ) echo 'onclick="' . wp_unslash( esc_js( $on_click ) ) . '"'; ?>>
 		<span>
 			<?php
 				if( ! empty( $icon_image_url ) ) {

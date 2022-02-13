@@ -265,7 +265,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'description' => __( 'Adds a title attribute to the button link.', 'so-widgets-bundle' ),
 					),
 
-					'onclick' => array(
+					'on_click' => array(
 						'type' => 'text',
 						'label' => __( 'Onclick', 'so-widgets-bundle' ),
 						'description' => __( 'Run this Javascript when the button is clicked. Ideal for tracking.', 'so-widgets-bundle' ),
@@ -349,7 +349,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		return array(
 			'button_attributes' => $button_attributes,
 			'href' => ! empty( $instance['url'] ) ? $instance['url'] : '#',
-			'onclick' => ! empty( $attributes['onclick'] ) ? $attributes['onclick'] : '',
+			'on_click' => ! empty( $attributes['on_click'] ) ? $attributes['on_click'] : '',
 			'align' => $instance['design']['align'],
 			'icon_image_url' => $icon_image_url,
 			'icon' => $instance['button_icon']['icon_selected'],
@@ -442,6 +442,14 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 					}
 				}
 			}
+		}
+
+		// Migrate onclick setting to prevent Wordfence flag.
+		if (
+			! empty( $instance['attributes'] ) &&
+			! empty( $instance['attributes']['onclick'] )
+		) {
+			$instance['attributes']['on_click'] = $instance['attributes']['onclick'];
 		}
 
 		// If the mobile_align setting isn't set, set it to the same value as the align value.

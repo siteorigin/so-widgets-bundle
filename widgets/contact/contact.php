@@ -97,7 +97,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'label' => __( 'Button ID', 'so-widgets-bundle' ),
 						'description' => __( 'An ID attribute allows you to target this button in JavaScript.', 'so-widgets-bundle' ),
 					),
-					'onclick' => array(
+					'on_click' => array(
 						'type'        => 'text',
 						'label'       => __( 'Onclick', 'so-widgets-bundle' ),
 						'description' => __( 'Run this JavaScript when the button is clicked. Ideal for tracking.', 'so-widgets-bundle' ),
@@ -761,6 +761,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			);
 		}
 
+		// Migrate onclick setting to prevent Wordfence flag.
+		if (
+			! empty( $instance['settings'] ) &&
+			! empty( $instance['settings']['onclick'] )
+		) {
+			$instance['settings']['on_click'] = $instance['settings']['onclick'];
+		}
+
 		return $instance;
 	}
 
@@ -782,7 +790,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		return array(
 			'instance_hash' => $instance_hash,
 			'submit_attributes' => $submit_attributes,
-			'onclick' => ! empty( $instance['settings']['onclick'] ) ? $instance['settings']['onclick'] : '',
+			'onclick' => ! empty( $instance['settings']['on_click'] ) ? $instance['settings']['on_click'] : '',
 		);
 	}
 
