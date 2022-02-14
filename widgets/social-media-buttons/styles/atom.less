@@ -34,13 +34,17 @@
 				color: @icon_color !important;
 			}
 
-			&.ow-button-hover:hover {
-				& when not( iscolor( @icon_color_hover ) ) {
-					color: lighten( @icon_color, 2% );
-				}
+			&.ow-button-hover {
+				&:visited,
+				&:active,
+				&:hover {
+					& when not( iscolor( @icon_color_hover ) ) {
+						color: lighten( @icon_color, 2% ) !important;
+					}
 
-				& when( iscolor( @icon_color_hover ) ) {
-					color: @icon_color_hover;
+					& when( iscolor( @icon_color_hover ) ) {
+						color: @icon_color_hover !important;
+					}
 				}
 			}
 		}
