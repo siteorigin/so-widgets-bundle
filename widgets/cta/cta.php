@@ -22,14 +22,14 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 
 			),
 			false ,
-			plugin_dir_path(__FILE__)
+			plugin_dir_path( __FILE__ )
 		);
 	}
 
 	/**
 	 * Initialize the CTA Widget.
 	 */
-	function initialize(){
+	function initialize() {
 		// This widget requires the Button Widget.
 		if ( ! class_exists( 'SiteOrigin_Widget_Button_Widget' ) ) {
 			SiteOrigin_Widgets_Bundle::single()->include_widget( 'button' );
