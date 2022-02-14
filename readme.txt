@@ -100,6 +100,11 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.30.0 - 14 February 2022 =
+* Button and Contact Form: Migrated `onclick` to `on_click` to avoid a Worfence flag.
+* Call To Action: Remove `Use default background colors` setting.
+* Social Media Buttons: Added new settings: `Icon color hover` and `Background color hover`.
+
 = 1.29.2 - 04 February 2022 =
 * Widgets Block: Excluded the Contact Form from caching. Resolves error on first submission.
 

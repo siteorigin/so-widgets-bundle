@@ -84,7 +84,23 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 					'button_color' => array(
 						'type'  => 'color',
 						'label' => __( 'Background color', 'so-widgets-bundle' )
-					)
+					),
+					'icon_color_hover' => array(
+						'type'  => 'color',
+						'label' => __( 'Icon hover color', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'hover_effects[enabled]' => array( 'show' ),
+							'hover_effects[disabled]' => array( 'hide' ),
+						),
+					),
+					'button_color_hover' => array(
+						'type'  => 'color',
+						'label' => __( 'Background hover color', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'hover_effects[enabled]' => array( 'show' ),
+							'hover_effects[disabled]' => array( 'hide' ),
+						),
+					),
 				)
 			),
 			'design'   => array(
@@ -110,7 +126,14 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 					'hover'      => array(
 						'type'    => 'checkbox',
 						'label'   => __( 'Use hover effects', 'so-widgets-bundle' ),
-						'default' => true
+						'default' => true,
+						'state_emitter' => array(
+							'callback' => 'conditional',
+							'args'     => array(
+								'hover_effects[enabled]: val',
+								'hover_effects[disabled]: ! val',
+							),
+						),
 					),
 					'icon_size'  => array(
 						'type'    => 'select',
@@ -267,9 +290,13 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		$calls    = array();
 		foreach ( $networks as $network ) {
 			if ( ! empty( $network['name'] ) ) {
+				$icon_color_hover_fallback = ! empty( $network['icon_color'] ) ? ', @icon_color_hover:' . $network['icon_color'] : '';
+				$button_color_hover_fallback = ! empty( $network['button_color'] ) ? ', @button_color_hover:' . $network['button_color'] : '';
 				$call = $args[0] . '( @name:' . $network['css_class_name'];
 				$call .= ! empty( $network['icon_color'] ) ? ', @icon_color:' . $network['icon_color'] : '';
 				$call .= ! empty( $network['button_color'] ) ? ', @button_color:' . $network['button_color'] : '';
+				$call .= ! empty( $network['icon_color_hover'] ) ? ', @icon_color_hover:' . $network['icon_color_hover'] : $icon_color_hover_fallback;
+				$call .= ! empty( $network['button_color_hover'] ) ? ', @button_color_hover:' . $network['button_color_hover'] : $button_color_hover_fallback;
 				$call .= ');';
 				$calls[] = $call;
 			}

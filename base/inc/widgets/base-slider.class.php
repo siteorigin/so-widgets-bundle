@@ -238,6 +238,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'nav_always_show_mobile'   => ! empty( $controls['nav_always_show_mobile'] ) ? true : '',
 			'breakpoint'               => ! empty( $controls['breakpoint'] ) ? $controls['breakpoint'] : '780px',
 			'unmute'                   => ! empty( $controls['unmute'] ),
+			'anchor'                   => ! empty( $controls['anchor'] ) ? $controls['anchor'] : null,
 		);
 
 		// Add the unmute translations.
