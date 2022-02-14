@@ -1,7 +1,7 @@
 <?php
 /*
-Widget Name: Call-To-Action
-Description: A simple call-to-action widget. You can do what ever you want with a call-to-action widget.
+Widget Name: Call To Action
+Description: Insert a title, subtitle, and button. Get visitors moving in the right direction.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/call-action-widget/
@@ -13,9 +13,9 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 
 		parent::__construct(
 			'sow-cta',
-			__( 'SiteOrigin Call-to-action', 'so-widgets-bundle' ),
+			__( 'SiteOrigin Call To Action', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A simple call-to-action widget. You can do what ever you want with a call-to-action widget.', 'so-widgets-bundle' ),
+				'description' => __( 'Insert a title, subtitle, and button. Get visitors moving in the right direction.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/call-action-widget/'
 			),
 			array(
