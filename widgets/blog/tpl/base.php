@@ -28,7 +28,7 @@
 		<?php endif; ?>
 
 		<div class="sow-blog-posts">
-			<?php while( $posts->have_posts() ) : $posts->the_post(); ?>
+			<?php while ( $posts->have_posts() ) : $posts->the_post(); ?>
 				<?php include plugin_dir_path( __FILE__ ) . $instance['template'] . '.php'; ?>
 			<?php endwhile; ?>
 		</div>
