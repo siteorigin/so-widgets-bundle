@@ -136,10 +136,11 @@ jQuery( function ( $ ) {
 				}
 			} );
 
-			if ( carouselSettings.dots && $$.data( 'variable_width' ) ) {
+			if ( carouselSettings.dots && ( $$.data( 'variable_width' ) || $$.data( 'carousel_settings' ).theme ) ) {
 				// Unbind base Slick Dot Navigation as we use a custom event to prevent blank spaces.
 				$$.find( '.slick-dots li' ).off( 'click.slick' );
-				$$.find( '.slick-dots li' ).on( 'click touchend', function() {
+				var carouselDotNavigation = function() {
+					$items = $$.find( '.sow-carousel-items' );
 					var targetItem = $( this ).index(),
 						numItems = $items.find( '.sow-carousel-item' ).length,
 						numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
@@ -153,9 +154,30 @@ jQuery( function ( $ ) {
 						$dots = $( this ).parent();
 						$dots.find( '.slick-active' ).removeClass( 'slick-active' );
 						$dots.children().eq( targetItem ).addClass( 'slick-active' );
+
+						// Is this a Post Carousel? If so, let's check if we need to load more posts.
+						if ( $$.data( 'widget' ) == 'post' ) {
+							var complete = numItems >= $$.data( 'item_count' ),
+								slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' );
+
+							// Check if all items are displayed
+							if ( ! complete ) {
+								if ( 
+									$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ||
+									$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition
+								) {
+									$( sowb ).trigger( 'carousel_load_new_items', [ $$, $items, false ] );
+								}
+							}
+						}
 					} else {
 						$items.slick( 'slickGoTo', targetItem );
 					}
+				};
+				$$.find( '.slick-dots li' ).on( 'click touchend', carouselDotNavigation );
+				// Setup Slick Dot Navigation again when new posts are added.
+				$( sowb ).on( 'carousel_posts_added', function() {
+					$$.find( '.slick-dots li' ).on( 'click touchend', carouselDotNavigation );
 				} );
 			}
 		} );
