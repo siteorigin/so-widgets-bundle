@@ -142,6 +142,7 @@ jQuery( function ( $ ) {
 				var carouselDotNavigation = function() {
 					$items = $$.find( '.sow-carousel-items' );
 					var targetItem = $( this ).index(),
+						slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' ),
 						numItems = $items.find( '.sow-carousel-item' ).length,
 						numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 						lastPosition = numItems - numVisibleItems;
@@ -155,23 +156,27 @@ jQuery( function ( $ ) {
 						$dots.find( '.slick-active' ).removeClass( 'slick-active' );
 						$dots.children().eq( targetItem ).addClass( 'slick-active' );
 
-						// Is this a Post Carousel? If so, let's check if we need to load more posts.
+					} else {
 						if ( $$.data( 'widget' ) == 'post' ) {
-							var complete = numItems >= $$.data( 'item_count' ),
-								slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' );
+							// We need to account for an empty item.
+							targetItem = Math.ceil( $( this ).index() * slidesToScroll );
+						}
+						$items.slick( 'slickGoTo', targetItem );
+					}
 
-							// Check if all items are displayed
-							if ( ! complete ) {
-								if ( 
-									$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ||
-									$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition
-								) {
-									$( sowb ).trigger( 'carousel_load_new_items', [ $$, $items, false ] );
-								}
+					// Is this a Post Carousel? If so, let's check if we need to load more posts.
+					if ( $$.data( 'widget' ) == 'post' ) {
+						var complete = numItems >= $$.data( 'item_count' );
+
+						// Check if all items are displayed
+						if ( ! complete ) {
+							if ( 
+								$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ||
+								$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition
+							) {
+								$( sowb ).trigger( 'carousel_load_new_items', [ $$, $items, false ] );
 							}
 						}
-					} else {
-						$items.slick( 'slickGoTo', targetItem );
 					}
 				};
 				$$.find( '.slick-dots li' ).on( 'click touchend', carouselDotNavigation );
