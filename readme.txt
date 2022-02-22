@@ -100,6 +100,9 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.30.1 - 22 February 2022 =
+* Widgets Block: Prevented a potential notice within the WP admin.
+
 = 1.30.0 - 14 February 2022 =
 * Button and Contact Form: Migrated `onclick` to `on_click` to avoid a Worfence flag.
 * Call To Action: Remove `Use default background colors` setting.
