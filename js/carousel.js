@@ -87,7 +87,8 @@ jQuery( function ( $ ) {
 					complete = numItems >= $$.data( 'item_count' ),
 					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' ),
-					lastPosition = numItems - numVisibleItems;
+					lastPosition = numItems - numVisibleItems,
+					loading = false;
 
 				// Post Carousel has a loading indicator so we need to pad the lastPosition.
 				if ( $$.data( 'widget' ) == 'post' ) {
@@ -102,6 +103,7 @@ jQuery( function ( $ ) {
 						$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition
 					) {
 						$( sowb ).trigger( 'carousel_load_new_items', [ $$, $items, refocus ] );
+						loading = true;
 					}
 				}
 
@@ -112,7 +114,7 @@ jQuery( function ( $ ) {
 				// The Slick Infinite setting has a positioning bug that can result in the first item
 				// being hidden so we need to manually handle that
 				// https://github.com/kenwheeler/slick/issues/3567
-				if ( $( this ).hasClass( 'sow-carousel-next' ) ) {
+				if ( $( this ).hasClass( 'sow-carousel-next' ) && ! loading ) {
 					// Check if this is the last slide, and we need to loop
 					if (
 						complete &&
