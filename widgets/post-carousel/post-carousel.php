@@ -75,7 +75,7 @@ function sow_carousel_get_next_posts_page() {
 	// Don't output anything if there are no posts to return;
 	if ( ! empty( $settings['posts']->posts ) ) {
 		ob_start();
-		include 'tpl/item.php';
+		include apply_filters( 'siteorigin_post_carousel_ajax_item_template', 'tpl/item.php', $instance );
 		$result = array( 'html' => ob_get_clean() );
 		header( 'content-type: application/json' );
 		echo json_encode( $result );
