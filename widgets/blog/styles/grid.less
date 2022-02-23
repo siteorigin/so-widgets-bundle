@@ -4,26 +4,82 @@
 .sow-blog-layout-grid article {
 	background: #fff;
 	border: 1px solid #e6e6e6;
+	margin: 0 0 30px;
 	width: @column_width;
+	width: calc(@column_width - 2%);
+	width: 31%;
 
 	@media (max-width: @responsive_breakpoint) {
 		width: 100%;
 	}
 
-	.sow-entry-header .sow-entry-title {
-		font-size: 16px;
+	.sow-blog-content-wrapper {
+		padding: 25px 30px 33px;
+	}
 
-		a {
-			color: #2d2d2d;
+	.sow-entry-header {
 
-			&:hover,
-			&:focus {
-				color: #626262;
+		.sow-entry-title {
+			font-size: 16px;
+
+			a {
+				color: #2d2d2d;
+
+				&:hover,
+				&:focus {
+					color: #626262;
+				}
+			}
+		}
+
+		.sow-entry-meta {
+			font-size: 13px;
+
+			span {
+				color: #929292;
+
+				a {
+					color: #929292;
+
+					&:hover,
+					&:focus {
+						color: #626262;
+					}
+				}
+
+				&:not(:last-child)::after {
+					content: "\007c";
+					font-size: 12px;
+					padding: 0 2px;
+				}
 			}
 		}
 	}
 
 	.sow-entry-content {
 		font-size: 14px;
+	}
+}
+
+.sow-post-navigation {
+
+	.page-numbers {
+		border: 1px solid #626262;
+		color: #626262;
+
+		&:hover {
+			background: #2d2d2d;
+			border-color: #2d2d2d;
+			color: #fff;
+		}
+	}
+
+	.current {
+		border-color: #626262;
+		color: #626262;
+	}
+
+	.dots {
+		color: #626262;
 	}
 }

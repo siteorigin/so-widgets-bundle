@@ -1,4 +1,5 @@
 .sow-blog {
+
 	&.sow-blog-layout-grid .sow-blog-posts,
 	&.sow-blog-layout-masonry .sow-blog-posts,
 	&.sow-blog-layout-portfolio .sow-blog-posts,
@@ -8,7 +9,7 @@
 		justify-content: space-between;
 	}
 
-	// Global styles.
+	// Global Styles.
 	article {
 
 		.sow-entry-thumbnail {
@@ -102,15 +103,23 @@
 		}
 	}
 
-	// Standard template.
-	.sow-blog-layout-standard article {
+	// Standard Template.
+	&.sow-blog-layout-standard article {
 
 		.sow-entry-thumbnail {
 			margin-bottom: -1px;
 		}
 	}
 
-	// Alternate template.
+	// Grid Template.
+	&.sow-blog-layout-grid article {
+
+		.sow-entry-thumbnail {
+			margin: -1px;
+		}
+	}
+
+	// Alternate Template.
 	&.sow-blog-layout-alternate article {
 		background: #fff;
 		border: 1px solid #e6e6e6;
@@ -142,7 +151,7 @@
 		}
 	}
 
-	// Offset template.
+	// Offset Template.
 	&.sow-blog-layout-offset article {
 
 		.sow-blog-entry-offset {
@@ -170,7 +179,7 @@
 		}
 	}
 
-	// Portfolio template.
+	// Portfolio Template.
 	&.sow-blog-layout-portfolio {
 
 		.sow-blog-columns {
