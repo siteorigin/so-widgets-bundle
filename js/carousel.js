@@ -136,6 +136,12 @@ jQuery( function ( $ ) {
 						$items.slick( 'slickPrev' );
 					}
 				}
+
+				// Post Carousel update dot navigation active item.
+				if ( carouselSettings.dots && $$.data( 'widget' ) == 'post' ) {
+					$$.find( 'li.slick-active' ).removeClass( 'slick-active' );
+					$$.find( '.slick-dots li' ).eq( Math.ceil( $( '.sow-carousel-items' ).slick( 'slickCurrentSlide' ) / slidesToScroll ) ).addClass( 'slick-active' );
+				}
 			} );
 
 			if ( carouselSettings.dots && ( $$.data( 'variable_width' ) || $$.data( 'carousel_settings' ).theme ) ) {
