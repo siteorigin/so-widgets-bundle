@@ -91,7 +91,13 @@ jQuery( function ( $ ) {
 					loading = false;
 
 				// Post Carousel has a loading indicator so we need to pad the lastPosition.
-				if ( $$.data( 'widget' ) == 'post' ) {
+				if (
+					$$.data( 'widget' ) == 'post' &&
+					( 
+						$$.data( 'carousel_settings' ).theme != 'undefined' && 
+						complete
+					)
+				) {
 					lastPosition++;
 				}
 
