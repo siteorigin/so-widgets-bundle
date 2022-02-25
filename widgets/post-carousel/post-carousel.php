@@ -151,6 +151,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 					'mobile' => false,
 				),
 				'slides_to_show' => array(),
+				'navigation_dots_label' => '',
 			)
 		);
 	}
