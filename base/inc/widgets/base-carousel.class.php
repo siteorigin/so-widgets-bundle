@@ -86,7 +86,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 					'tablet_portrait' => true,
 					'mobile' => true,
 				),
-				'navigation_label' => __( 'Display navigation arrows', 'so-widgets-bundle' ),
+				'navigation_label' => __( 'Navigation arrows', 'so-widgets-bundle' ),
 				'navigation_dots' => array(
 					'desktop' => true,
 					'tablet_landscape' => true,
@@ -151,11 +151,17 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 				);
 			}
 
-			if ( isset( $field['navigation'] ) ) {
+			if ( isset( $field['navigation'] ) && ! empty( $carousel_settings['navigation_label'] ) ) {
 				$section['fields']['navigation'] = array(
 					'type' => 'checkbox',
 					'label' => $carousel_settings['navigation_label'],
 					'default' => $field['navigation'],
+					'state_handler' => array(
+						'nav_arrows[show]' => array( 'show' ),
+						'nav_arrows[hide]' => array( 'hide' ),
+					),
+				);
+			}
 
 			if ( isset( $field['navigation_dots'] )  && ! empty( $carousel_settings['navigation_dots_label'] ) ) {
 				$section['fields']['navigation_dots'] = array(
@@ -260,6 +266,17 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 						),
 					)
 				),
+				'arrows' => array(
+					'type' => 'checkbox',
+					'label' => __( 'Navigation arrows', 'so-widgets-bundle' ),
+					'default' => true,
+					'state_emitter' => array(
+						'callback' => 'conditional',
+						'args' => array(
+							'nav_arrows[show]: val',
+							'nav_arrows[hide]: ! val',
+						),
+					)
 				),
 				'animation' => array(
 					'type' => 'select',

@@ -4,7 +4,7 @@
 		echo $args['before_title'] . esc_html( $settings['title'] ) . $args['after_title'];
 	}
 
-	if ( $settings['navigation'] == 'title' ) {
+	if ( $settings['navigation'] == 'title' && $settings['navigation_arrows'] ) {
 		?>
 		<div class="sow-carousel-navigation">
 			<?php $this->render_navigation( 'both' ); ?>
@@ -14,7 +14,7 @@
 
 <div class="sow-carousel-container <?php echo ! empty( $container_classes ) ? esc_attr( $container_classes ) : ''; ?>">
 	<?php
-	if ( $settings['navigation'] == 'side' ) {
+	if ( $settings['navigation'] == 'side' && $settings['navigation_arrows'] ) {
 		$this->render_navigation( 'prev' );
 	}
 	?>
@@ -36,15 +36,17 @@
 		</div>
 		<?php if ( $settings['navigation'] == 'container' ) : ?>
 			<div class="sow-carousel-nav">
-				<div class="sow-carousel-nav-arrows">
-					<?php $this->render_navigation( 'both' ); ?>
-				</div>
+				<?php if ( $settings['navigation_arrows'] ) : ?>
+					<div class="sow-carousel-nav-arrows">
+						<?php $this->render_navigation( 'both' ); ?>
+					</div>
+				<?php endif; ?>
 			</div>
 		<?php endif; ?>
 	</div>
 
 	<?php
-	if ( $settings['navigation'] == 'side' ) {
+	if ( $settings['navigation'] == 'side' && $settings['navigation_arrows'] ) {
 		$this->render_navigation( 'next' );
 	}
 	?>
