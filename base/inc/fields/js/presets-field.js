@@ -11,6 +11,7 @@
 		var $undoLink = $presetSelect.find( '+ .sowb-presets-field-undo' );
 		$undoLink.hide();
 
+		var onLoadTrigger = false;
 		var addingDefault = false;
 		var presets = $presetSelect.data( 'presets' );
 		$presetSelect.on( 'change', function() {
@@ -18,9 +19,9 @@
 			if ( selectedPreset && presets.hasOwnProperty( selectedPreset ) ) {
 				var presetValues = presets[ selectedPreset ].values;
 				var $formContainer = $presetSelect.closest( '.siteorigin-widget-form-main' );
-				
+
 				// If we're adding defaults, don't show undo.
-				if ( ! addingDefault) {
+				if ( ! addingDefault && ! onLoadTrigger) {
 					var previousValues = $presetSelect.data( 'previousValues' );
 					if ( ! previousValues ) {
 						var presetClone = JSON.parse( JSON.stringify( presetValues ) );
@@ -57,9 +58,9 @@
 							$presetSelect.val( '' );
 						} );
 					}
+					sowbForms.setWidgetFormValues( $formContainer, presetValues, true );
 				}
-			
-				sowbForms.setWidgetFormValues( $formContainer, presetValues, true );
+				onLoadTrigger = false;
 			}
 		} );
 
@@ -72,6 +73,7 @@
 				$presetSelect.val( $presetSelect.data( 'default-preset' ) );
 			}
 		}
+		onLoadTrigger = true;
 		$presetSelect.trigger( 'change' );
 
 		$presetSelect.data( 'initialized', true );
