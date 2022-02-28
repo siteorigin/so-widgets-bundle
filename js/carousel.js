@@ -253,7 +253,7 @@ jQuery( function ( $ ) {
 				.prop( 'tabindex', 0 );
 		} );
 
-		$( window ).on( 'resize load', function() {
+		var carousel_resizer = function() {
 			$( '.sow-carousel-wrapper' ).each( function() {
 				var currentCarousel = $( this ),
 					$items = currentCarousel.find( '.sow-carousel-items.slick-initialized' ),
@@ -269,17 +269,21 @@ jQuery( function ( $ ) {
 					$items.slick( 'slickSetOption', 'touchMove', true );
 					$items.slick( 'slickSetOption', 'draggable', true );
 				}
+
 				// Change Slick Settings on iPad Pro while Landscape
 				var responsiveSettings = currentCarousel.data( 'responsive' );
 				if ( window.matchMedia( '(min-width: ' + responsiveSettings.tablet_portrait_breakpoint + 'px) and (max-width: ' + responsiveSettings.tablet_landscape_breakpoint + 'px) and (orientation: landscape)' ).matches ) {
-					$items.slick( 'slickSetOption', 'slidesToShow', responsiveSettings.tablet_landscape_slides );
-					$items.slick( 'slickSetOption', 'slidesToScroll', responsiveSettings.tablet_landscape_slides );
+					$items.slick( 'slickSetOption', 'slidesToShow', responsiveSettings.tablet_landscape_slides_to_show );
+					$items.slick( 'slickSetOption', 'slidesToScroll', responsiveSettings.tablet_landscape_slides_to_scroll );
 				}
 
 			} );
 
 			$( '.sow-carousel-item:first-of-type' ).prop( 'tabindex', 0 );
-		} );
+		};
+
+		carousel_resizer();
+		$( window ).on( 'resize load', carousel_resizer );
 	};
 
 	sowb.setupCarousel();
