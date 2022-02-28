@@ -75,7 +75,7 @@ function sow_carousel_get_next_posts_page() {
 	// Don't output anything if there are no posts to return;
 	if ( ! empty( $settings['posts']->posts ) ) {
 		ob_start();
-		include 'tpl/item.php';
+		include apply_filters( 'siteorigin_post_carousel_ajax_item_template', 'tpl/item.php', $instance );
 		$result = array( 'html' => ob_get_clean() );
 		header( 'content-type: application/json' );
 		echo json_encode( $result );
@@ -98,7 +98,8 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			array(
 				'description' => __('Gives you a widget to display your posts as a carousel.', 'so-widgets-bundle'),
 				'instance_storage' => true,
-				'help' => 'https://siteorigin.com/widgets-bundle/post-carousel-widget/'
+				'help' => 'https://siteorigin.com/widgets-bundle/post-carousel-widget/',
+				'has_preview' => false,
 			),
 			array(
 
@@ -123,42 +124,52 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				),
 			)
 		);
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_theme_assets' ) );
+	}
 
-		$this->register_frontend_styles(
+	function override_carousel_settings() {
+		return apply_filters(
+			'siteorigin_widgets_post_carousel_settings_form', 
 			array(
-				array(
-					'sow-carousel-basic',
-					plugin_dir_url( __FILE__ ) . 'css/style.css',
+				'breakpoints' => apply_filters(
+					'siteorigin_widgets_post_carousel_breakpoints',
+					array(
+						'tablet_landscape' => 1366,
+						'tablet_portrait'  => 1025,
+						'mobile'           => 480,
+					)
 				),
+				'slides_to_scroll' => array(
+					'desktop' => 1,
+					'tablet_landscape' => 2,
+					'tablet_portrait' => 2,
+					'mobile' => 1,
+				),
+				'navigation' => array(
+					'desktop' => true,
+					'tablet_landscape' => true,
+					'tablet_portrait' => true,
+					'mobile' => false,
+				),
+				'slides_to_show' => array(),
+				'navigation_dots_label' => '',
 			)
 		);
 	}
 
-	function override_carousel_settings() {
-		return array(
-			'breakpoints' => apply_filters(
-				'siteorigin_widgets_post_carousel_breakpoints',
-				array(
-					'tablet_landscape' => 1366,
-					'tablet_portrait'  => 1025,
-					'mobile'           => 480,
-				)
-			),
-			'slides_to_scroll' => array(
-				'desktop' => 1,
-				'tablet_landscape' => 2,
-				'tablet_portrait' => 2,
-				'mobile' => 1,
-			),
-			'navigation' => array(
-				'desktop' => true,
-				'tablet_landscape' => true,
-				'tablet_portrait' => true,
-				'mobile' => false,
-			),
-			// Remove slides_to_show.
-			'slides_to_show' => array(),
-		);
+	function register_theme_assets() {
+		wp_register_style( 'sow-post-carousel-base', plugin_dir_url( __FILE__ ) . 'css/base.css' );
+		do_action( 'siteorigin_widgets_post_carousel_theme_assets' );
+	}
+
+	function get_style_name( $instance ) {
+		$template = empty( $instance['design'] ) || empty( $instance['design']['theme'] )  ? 'base' : $instance['design']['theme'];
+		// If this theme has a dedicated stylesheet load it.
+		if ( wp_style_is( 'sow-post-carousel-' . $template, 'registered' ) ) {
+			wp_enqueue_style( 'sow-post-carousel-' . $template );
+		}
+
+		return $template;
 	}
 
 	function get_widget_form() {
@@ -193,7 +204,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			)
 		);
 
-		// Overide defaults.
+		// Override defaults.
 		$design_settings['fields']['item_title']['label'] = __( 'Post title', 'so-widgets-bundle' );
 		$design_settings['fields']['item_title']['fields']['tag']['default'] = 'h3';
 
@@ -223,6 +234,10 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			),
 			$design_settings['fields']
 		);
+
+		$carousel_settings = $this->carousel_settings_form_fields();
+		$carousel_settings['fields']['loop']['description'] = __( 'Automatically return to the first post after the last post.', 'so-widgets-bundle' );
+		unset( $carousel_settings['fields']['animation'] );
 
 		return array(
 			'title' => array(
@@ -254,12 +269,8 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 					'new'    => __( 'New window ', 'so-widgets-bundle' ),
 				),
 			),
-			'loop_posts' => array(
-				'type' => 'checkbox',
-				'label' => __( 'Loop posts', 'so-widgets-bundle' ),
-				'description' => __( 'Automatically return to the first post after the last post.', 'so-widgets-bundle' ),
-				'default' => true,
-			),
+
+			'carousel_settings' => $carousel_settings,
 
 			'posts' => array(
 				'type' => 'posts',
@@ -294,13 +305,12 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				'navigation_background' => $instance['design']['navigation_background'],
 				'navigation_hover_background' => $instance['design']['navigation_hover_background'],
 			);
+		}
 
-			unset( $instance['design']['thumbnail_overlay_hover_color'] );
-			unset( $instance['design']['thumbnail_overlay_hover_opacity'] );
-			unset( $instance['design']['navigation_color'] );
-			unset( $instance['design']['navigation_color_hover'] );
-			unset( $instance['design']['navigation_background'] );
-			unset( $instance['design']['navigation_hover_background'] );
+		// Migrate settings to the Settings section.
+		if ( isset( $instance['loop_posts'] ) ) {
+			$instance['carousel_settings']['loop'] = $instance['loop_posts'];
+			unset( $instance['loop_posts'] );
 		}
 
 		return $instance;
@@ -323,6 +333,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			$thumb_hover_width = $size['width'];
 			$thumb_hover_height = $size['height'];
 		}
+
 		$less_vars = array(
 			'thumbnail_width' => $thumb_width . 'px',
 			'thumbnail_height'=> $thumb_height . 'px',
@@ -356,18 +367,27 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		) );
 		$posts = new WP_Query( $query );
 
+		$carousel_settings = $this->carousel_settings_template_variables( $instance['carousel_settings'], false );
+			$carousel_settings['loop'] = ! empty( $instance['carousel_settings']['loop'] );
+		$carousel_settings['item_overflow'] = true;
+		$carousel_settings = apply_filters( 'siteorigin_widgets_post_carousel_settings_frontend', $carousel_settings, $instance );
+
+		$size = siteorigin_widgets_get_image_size( $instance['image_size'] );
+
 		return array(
 			'settings' => array(
 				'args' => $args,
 				'title' => $instance['title'],
+				'theme' => empty( $instance['design'] ) || empty( $instance['design']['theme'] )  ? 'base' : $instance['design']['theme'],
 				'posts' => sow_carousel_handle_post_limit( $posts ),
 				'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : '',
 				'image_size' => $instance['image_size'],
 				'link_target' => ! empty( $instance['link_target'] ) ? $instance['link_target'] : 'same',
 				'item_template' => plugin_dir_path( __FILE__ ) . 'tpl/item.php',
 				'navigation' => 'title',
+				'navigation_arrows' => isset( $instance['carousel_settings']['arrows'] ) ? $instance['carousel_settings']['arrows'] : true,
+				'height' => ! empty( $size['height'] ) ? 'min-height: ' . $size['height'] . 'px' : '',
 				'item_title_tag' => ! empty( $instance['design']['item_title']['tag'] ) ? $instance['design']['item_title']['tag'] : 'h3',
-				'item_overflow' => true,
 				'attributes' => array(
 					'widget' => 'post',
 					'fetching' => 'false',
@@ -376,12 +396,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 					// Base carousel specific settings.
 					'item_count' => get_query_var( 'sow-total_posts' ),
-					'carousel_settings' => json_encode(
-						array(
-							'loop' => ! empty( $instance['loop_posts'] ),
-							'item_overflow' => true,
-						)
-					),
+					'carousel_settings' => json_encode( $carousel_settings ),
 					'responsive' => $this->responsive_template_variables( $instance['responsive'] ),
 					'variable_width' => 'true',
 				),

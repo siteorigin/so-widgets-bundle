@@ -35,6 +35,14 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			)
 		);
 
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_assets' ) );
+	}
+
+	/**
+	 * Allow widgets and other plugins to register assets for this slider.
+	 */
+	function register_assets() {
+		do_action( 'siteorigin_widgets_carousel_register_assets', $this );
 	}
 
 	/**
@@ -78,7 +86,14 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 					'tablet_portrait' => true,
 					'mobile' => true,
 				),
-				'navigation_label' => __( 'Display navigation arrows', 'so-widgets-bundle' ),
+				'navigation_label' => __( 'Navigation arrows', 'so-widgets-bundle' ),
+				'navigation_dots' => array(
+					'desktop' => true,
+					'tablet_landscape' => true,
+					'tablet_portrait' => true,
+					'mobile' => true,
+				),
+				'navigation_dots_label' => __( 'Navigation dots', 'so-widgets-bundle' ),
 			)
 		);
 	}
@@ -136,11 +151,27 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 				);
 			}
 
-			if ( isset( $field['navigation'] ) ) {
+			if ( isset( $field['navigation'] ) && ! empty( $carousel_settings['navigation_label'] ) ) {
 				$section['fields']['navigation'] = array(
 					'type' => 'checkbox',
 					'label' => $carousel_settings['navigation_label'],
 					'default' => $field['navigation'],
+					'state_handler' => array(
+						'nav_arrows[show]' => array( 'show' ),
+						'nav_arrows[hide]' => array( 'hide' ),
+					),
+				);
+			}
+
+			if ( isset( $field['navigation_dots'] )  && ! empty( $carousel_settings['navigation_dots_label'] ) ) {
+				$section['fields']['navigation_dots'] = array(
+					'type' => 'checkbox',
+					'label' => $carousel_settings['navigation_dots_label'],
+					'default' => $field['navigation'],
+					'state_handler' => array(
+						'nav_dots[show]' => array( 'show' ),
+						'nav_dots[hide]' => array( 'hide' ),
+					),
 				);
 			}
 		}
@@ -160,6 +191,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 				'label' => __( 'Desktop', 'so-widgets-bundle' ),
 				'slides_to_scroll' => $carousel_settings['slides_to_scroll']['desktop'],
 				'navigation' => $carousel_settings['navigation']['desktop'],
+				'navigation_dots' => $carousel_settings['navigation_dots']['desktop'],
 			),
 			'tablet' => array(
 				'label' => __( 'Tablet', 'so-widgets-bundle' ),
@@ -169,12 +201,14 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 						'breakpoint' => $carousel_settings['breakpoints']['tablet_landscape'],
 						'slides_to_scroll' => $carousel_settings['slides_to_scroll']['tablet_landscape'],
 						'navigation' => $carousel_settings['navigation']['tablet_landscape'],
+						'navigation_dots' => $carousel_settings['navigation_dots']['tablet_landscape'],
 					),
 					'portrait' => array(
 						'label' => __( 'Portrait', 'so-widgets-bundle' ),
 						'breakpoint' => $carousel_settings['breakpoints']['tablet_portrait'],
 						'slides_to_scroll' => $carousel_settings['slides_to_scroll']['tablet_portrait'],
 						'navigation' => $carousel_settings['navigation']['tablet_portrait'],
+						'navigation_dots' => $carousel_settings['navigation_dots']['tablet_portrait'],
 					),
 				),
 			),
@@ -183,6 +217,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 				'breakpoint' => $carousel_settings['breakpoints']['mobile'],
 				'slides_to_scroll' => $carousel_settings['slides_to_scroll']['mobile'],
 				'navigation' => $carousel_settings['navigation']['mobile'],
+				'navigation_dots' => $carousel_settings['navigation_dots']['mobile'],
 			),
 		);
 
@@ -222,6 +257,26 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 				'dots' => array(
 					'type' => 'checkbox',
 					'label' => __( 'Navigation dots', 'so-widgets-bundle' ),
+					'default' => true,
+					'state_emitter' => array(
+						'callback' => 'conditional',
+						'args' => array(
+							'nav_dots[show]: val',
+							'nav_dots[hide]: ! val',
+						),
+					)
+				),
+				'arrows' => array(
+					'type' => 'checkbox',
+					'label' => __( 'Navigation arrows', 'so-widgets-bundle' ),
+					'default' => true,
+					'state_emitter' => array(
+						'callback' => 'conditional',
+						'args' => array(
+							'nav_arrows[show]: val',
+							'nav_arrows[hide]: ! val',
+						),
+					)
 				),
 				'animation' => array(
 					'type' => 'select',
@@ -351,16 +406,23 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 
 	function responsive_less_variables( $less_vars, $instance ) {
 		$carousel_settings = $this->get_carousel_settings();
-		// Breakpoint
+
+		// Breakpoint.
 		$less_vars['breakpoint_tablet_landscape'] = ( ! empty( $instance['responsive']['tablet_landscape']['breakpoint'] ) ? $instance['responsive']['tablet_landscape']['breakpoint'] : $carousel_settings['breakpoints']['tablet_landscape'] ) .'px';
 		$less_vars['breakpoint_tablet_portrait'] = ( ! empty( $instance['responsive']['tablet_portrait']['breakpoint'] ) ? $instance['responsive']['tablet_portrait']['breakpoint'] : $carousel_settings['breakpoints']['tablet_portrait'] ) .'px';
 		$less_vars['breakpoint_mobile'] = ( ! empty( $instance['responsive']['mobile']['breakpoint'] ) ? $instance['responsive']['mobile']['breakpoint'] : $carousel_settings['breakpoints']['mobile'] ) .'px';
 
-		// Navigation
+		// Navigation.
 		$less_vars['navigation_desktop'] = isset( $instance['responsive']['desktop']['navigation'] ) ? ! empty( $instance['responsive']['desktop']['navigation'] ) : $carousel_settings['navigation']['desktop'];
 		$less_vars['navigation_tablet_landscape'] = isset( $instance['responsive']['tablet']['landscape']['navigation'] ) ? ! empty( $instance['responsive']['tablet']['landscape']['navigation'] ) : $carousel_settings['navigation']['tablet_landscape'];
 		$less_vars['navigation_tablet_portrait'] = isset( $instance['responsive']['tablet']['portrait']['navigation'] ) ? ! empty( $instance['responsive']['tablet']['portrait']['navigation'] ) : $carousel_settings['navigation']['tablet_portrait'];
 		$less_vars['navigation_mobile'] = isset( $instance['responsive']['mobile']['navigation'] ) ? ! empty( $instance['responsive']['mobile']['navigation'] ) : $carousel_settings['navigation']['mobile'];
+
+		// Navigation dots.
+		$less_vars['navigation_dots_desktop'] = isset( $instance['responsive']['desktop']['navigation_dots'] ) ? ! empty( $instance['responsive']['desktop']['navigation_dots'] ) : $carousel_settings['navigation_dots']['desktop'];
+		$less_vars['navigation_dots_tablet_landscape'] = isset( $instance['responsive']['tablet']['landscape']['navigation_dots'] ) ? ! empty( $instance['responsive']['tablet']['landscape']['navigation_dots'] ) : $carousel_settings['navigation_dots']['tablet_landscape'];
+		$less_vars['navigation_dots_tablet_portrait'] = isset( $instance['responsive']['tablet']['portrait']['navigation_dots'] ) ? ! empty( $instance['responsive']['tablet']['portrait']['navigation_dots'] ) : $carousel_settings['navigation_dots']['tablet_portrait'];
+		$less_vars['navigation_dots_mobile'] = isset( $instance['responsive']['mobile']['navigation_dots'] ) ? ! empty( $instance['responsive']['mobile']['navigation_dots'] ) : $carousel_settings['navigation_dots']['mobile'];
 
 		return $less_vars;
 	}

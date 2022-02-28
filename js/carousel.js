@@ -28,6 +28,7 @@ jQuery( function ( $ ) {
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
 				dots: carouselSettings.dots,
+				appendDots: carouselSettings.appendDots ? $$.find( '.sow-carousel-nav' ) : $$,
 				rows: 0,
 				rtl: $$.data( 'dir' ) == 'rtl',
 				touchThreshold: 20,
@@ -86,10 +87,17 @@ jQuery( function ( $ ) {
 					complete = numItems >= $$.data( 'item_count' ),
 					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' ),
-					lastPosition = numItems - numVisibleItems;
+					lastPosition = numItems - numVisibleItems,
+					loading = false;
 
 				// Post Carousel has a loading indicator so we need to pad the lastPosition.
-				if ( $$.data( 'widget' ) == 'post' ) {
+				if (
+					$$.data( 'widget' ) == 'post' &&
+					( 
+						$$.data( 'carousel_settings' ).theme != 'undefined' && 
+						complete
+					)
+				) {
 					lastPosition++;
 				}
 
@@ -101,6 +109,7 @@ jQuery( function ( $ ) {
 						$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition
 					) {
 						$( sowb ).trigger( 'carousel_load_new_items', [ $$, $items, refocus ] );
+						loading = true;
 					}
 				}
 
@@ -111,7 +120,7 @@ jQuery( function ( $ ) {
 				// The Slick Infinite setting has a positioning bug that can result in the first item
 				// being hidden so we need to manually handle that
 				// https://github.com/kenwheeler/slick/issues/3567
-				if ( $( this ).hasClass( 'sow-carousel-next' ) ) {
+				if ( $( this ).hasClass( 'sow-carousel-next' ) && ! loading ) {
 					// Check if this is the last slide, and we need to loop
 					if (
 						complete &&
@@ -133,13 +142,21 @@ jQuery( function ( $ ) {
 						$items.slick( 'slickPrev' );
 					}
 				}
+
+				// Post Carousel update dot navigation active item.
+				if ( carouselSettings.dots && $$.data( 'widget' ) == 'post' ) {
+					$$.find( 'li.slick-active' ).removeClass( 'slick-active' );
+					$$.find( '.slick-dots li' ).eq( Math.ceil( $( '.sow-carousel-items' ).slick( 'slickCurrentSlide' ) / slidesToScroll ) ).addClass( 'slick-active' );
+				}
 			} );
 
-			if ( carouselSettings.dots && $$.data( 'variable_width' ) ) {
+			if ( carouselSettings.dots && ( $$.data( 'variable_width' ) || $$.data( 'carousel_settings' ).theme ) ) {
 				// Unbind base Slick Dot Navigation as we use a custom event to prevent blank spaces.
 				$$.find( '.slick-dots li' ).off( 'click.slick' );
-				$$.find( '.slick-dots li' ).on( 'click touchend', function() {
+				var carouselDotNavigation = function() {
+					$items = $$.find( '.sow-carousel-items' );
 					var targetItem = $( this ).index(),
+						slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' ),
 						numItems = $items.find( '.sow-carousel-item' ).length,
 						numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 						lastPosition = numItems - numVisibleItems;
@@ -152,9 +169,34 @@ jQuery( function ( $ ) {
 						$dots = $( this ).parent();
 						$dots.find( '.slick-active' ).removeClass( 'slick-active' );
 						$dots.children().eq( targetItem ).addClass( 'slick-active' );
+
 					} else {
+						if ( $$.data( 'widget' ) == 'post' ) {
+							// We need to account for an empty item.
+							targetItem = Math.ceil( $( this ).index() * slidesToScroll );
+						}
 						$items.slick( 'slickGoTo', targetItem );
 					}
+
+					// Is this a Post Carousel? If so, let's check if we need to load more posts.
+					if ( $$.data( 'widget' ) == 'post' ) {
+						var complete = numItems >= $$.data( 'item_count' );
+
+						// Check if all items are displayed
+						if ( ! complete ) {
+							if ( 
+								$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ||
+								$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition
+							) {
+								$( sowb ).trigger( 'carousel_load_new_items', [ $$, $items, false ] );
+							}
+						}
+					}
+				};
+				$$.find( '.slick-dots li' ).on( 'click touchend', carouselDotNavigation );
+				// Setup Slick Dot Navigation again when new posts are added.
+				$( sowb ).on( 'carousel_posts_added', function() {
+					$$.find( '.slick-dots li' ).on( 'click touchend', carouselDotNavigation );
 				} );
 			}
 		} );
@@ -211,7 +253,7 @@ jQuery( function ( $ ) {
 				.prop( 'tabindex', 0 );
 		} );
 
-		$( window ).on( 'resize load', function() {
+		var carousel_resizer = function() {
 			$( '.sow-carousel-wrapper' ).each( function() {
 				var currentCarousel = $( this ),
 					$items = currentCarousel.find( '.sow-carousel-items.slick-initialized' ),
@@ -227,17 +269,21 @@ jQuery( function ( $ ) {
 					$items.slick( 'slickSetOption', 'touchMove', true );
 					$items.slick( 'slickSetOption', 'draggable', true );
 				}
+
 				// Change Slick Settings on iPad Pro while Landscape
 				var responsiveSettings = currentCarousel.data( 'responsive' );
 				if ( window.matchMedia( '(min-width: ' + responsiveSettings.tablet_portrait_breakpoint + 'px) and (max-width: ' + responsiveSettings.tablet_landscape_breakpoint + 'px) and (orientation: landscape)' ).matches ) {
-					$items.slick( 'slickSetOption', 'slidesToShow', responsiveSettings.tablet_landscape_slides );
-					$items.slick( 'slickSetOption', 'slidesToScroll', responsiveSettings.tablet_landscape_slides );
+					$items.slick( 'slickSetOption', 'slidesToShow', responsiveSettings.tablet_landscape_slides_to_show );
+					$items.slick( 'slickSetOption', 'slidesToScroll', responsiveSettings.tablet_landscape_slides_to_scroll );
 				}
 
 			} );
 
 			$( '.sow-carousel-item:first-of-type' ).prop( 'tabindex', 0 );
-		} );
+		};
+
+		carousel_resizer();
+		$( window ).on( 'resize load', carousel_resizer );
 	};
 
 	sowb.setupCarousel();
