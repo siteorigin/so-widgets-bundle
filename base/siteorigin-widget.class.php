@@ -1369,7 +1369,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @return array $fields with any state_handler's applied.
 	 */
-	protected function dynamic_preset_state_handler( $state_name, $preset_data, $fields ) {
+	public function dynamic_preset_state_handler( $state_name, $preset_data, $fields ) {
 		// Build an array of all the adjusted fields by the preset data, and note which presets adjust them.
 		$adjusted_fields = array();
 		foreach ( $preset_data as $preset_id => $preset ) {
@@ -1386,7 +1386,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		return $this->dynamic_preset_add_state_handler(
 			$state_name,
 			$adjusted_fields,
-			$fields
+			$fields,
+			true
 		);
 	}
 
@@ -1406,6 +1407,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				$extracted_fields[ $field_key ] = $this->dynamic_preset_extract_fields( $field, $preset_id );
 			} else {
 				$extracted_fields[ $field_key ][] = $preset_id;
+				// Add a key that contains all of the presets that adjust this section.
+				$extracted_fields['key'][ $preset_id ] = $preset_id;
 			}
 		}
 
@@ -1419,10 +1422,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @param string $state_name
 	 * @param array $preset_adjusted_fields
 	 * @param array $fields The fields to apply state handlers too.
+	 * @param array false $exclude_section Whether to add state emitter to the current section.
 	 *
 	 * @return array $fields with any state_handler's applied.
 	 */
-	private function dynamic_preset_add_state_handler( $state_name, $adjusted_fields, $fields ) {
+	private function dynamic_preset_add_state_handler( $state_name, $adjusted_fields, $fields, $exclude_section = false ) {
 		foreach ( $adjusted_fields as $field => $field_value ) {
 			// Skip field if it's not adjusted by of the presets, or if the field has a state_handler already.
 			if (
@@ -1432,6 +1436,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				continue;
 			}
 
+			$used_by = null;
+
 			// If this is a section field, we need to apply the state handlers for sub fields.
 			if ( $fields[ $field ]['type'] == 'section' ) {
 				$fields[ $field ]['fields'] = $this->dynamic_preset_add_state_handler(
@@ -1439,8 +1445,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$field_value,
 					$fields[ $field ]['fields']
 				);
+
+				if ( isset( $field_value['key'] ) ) {
+					$used_by = implode( ',', $field_value['key'] );
+				}
 			} else {
 				$used_by = implode( ',', $field_value ); 
+			}
+
+			if ( ! $exclude_section && ! empty( $used_by ) ) {
 				$fields[ $field ]['state_handler'] = array(
 					$state_name . '[' . $used_by . ']' => array( 'show' ),
 						'_else[' . $state_name . ']' => array( 'hide' ),
