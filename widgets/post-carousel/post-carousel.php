@@ -163,13 +163,13 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 	}
 
 	function get_style_name( $instance ) {
-		$template = empty( $instance['design'] ) || empty( $instance['design']['theme'] )  ? 'base' : $instance['design']['theme'];
+		$theme = self::get_theme( $instance );
 		// If this theme has a dedicated stylesheet load it.
-		if ( wp_style_is( 'sow-post-carousel-' . $template, 'registered' ) ) {
-			wp_enqueue_style( 'sow-post-carousel-' . $template );
+		if ( wp_style_is( 'sow-post-carousel-' . $theme, 'registered' ) ) {
+			wp_enqueue_style( 'sow-post-carousel-' . $theme );
 		}
 
-		return $template;
+		return $theme;
 	}
 
 	function get_widget_form() {
@@ -354,7 +354,13 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		return $less_vars;
 	}
 
+	static public function get_theme( $instance ) {
+		return empty( $instance['design']['theme'] ) || ! class_exists( 'SiteOrigin_Premium_Plugin_Carousel' )  ? 'base' : $instance['design']['theme'];
+	}
+
 	public function get_template_variables( $instance, $args ) {
+		$theme = self::get_theme( $instance );
+
 		if ( ! empty( $instance['default_thumbnail'] ) ) {
 			$default_thumbnail = wp_get_attachment_image_src( $instance['default_thumbnail'], 'sow-carousel-default' );
 		}
@@ -368,7 +374,12 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		$posts = new WP_Query( $query );
 
 		$carousel_settings = $this->carousel_settings_template_variables( $instance['carousel_settings'], false );
-			$carousel_settings['loop'] = ! empty( $instance['carousel_settings']['loop'] );
+		// The base theme doesn't support dot noviation so let's remove it.
+		if ( $theme == 'base' ) {
+			unset( $carousel_settings['dots'] );
+		}
+
+		$carousel_settings['loop'] = ! empty( $instance['carousel_settings']['loop'] );
 		$carousel_settings['item_overflow'] = true;
 		$carousel_settings = apply_filters( 'siteorigin_widgets_post_carousel_settings_frontend', $carousel_settings, $instance );
 
@@ -378,7 +389,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			'settings' => array(
 				'args' => $args,
 				'title' => $instance['title'],
-				'theme' => empty( $instance['design'] ) || empty( $instance['design']['theme'] )  ? 'base' : $instance['design']['theme'],
+				'theme' => $theme,
 				'posts' => sow_carousel_handle_post_limit( $posts ),
 				'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : '',
 				'image_size' => $instance['image_size'],
