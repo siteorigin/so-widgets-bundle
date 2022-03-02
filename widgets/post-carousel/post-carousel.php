@@ -359,7 +359,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			! empty( $instance['default_thumbnail'] ) ||
 			! empty( $instance['default_thumbnail_fallback'] )
 		) {
-			$default_thumbnail = siteorigin_widgets_get_attachment_image_src( $instance['default_thumbnail'], 'sow-carousel-default', $instance['default_thumbnail_fallback'] );
+			$default_thumbnail = siteorigin_widgets_get_attachment_image_src( $instance['default_thumbnail'], $instance['image_size'], $instance['default_thumbnail_fallback'] );
 		}
 
 		$query = siteorigin_widget_post_selector_process_query( wp_parse_args(
