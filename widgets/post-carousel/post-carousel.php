@@ -355,8 +355,11 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 	}
 
 	public function get_template_variables( $instance, $args ) {
-		if ( ! empty( $instance['default_thumbnail'] ) ) {
-			$default_thumbnail = wp_get_attachment_image_src( $instance['default_thumbnail'], 'sow-carousel-default' );
+		if (
+			! empty( $instance['default_thumbnail'] ) ||
+			! empty( $instance['default_thumbnail_fallback'] )
+		) {
+			$default_thumbnail = siteorigin_widgets_get_attachment_image_src( $instance['default_thumbnail'], 'sow-carousel-default', $instance['default_thumbnail_fallback'] );
 		}
 
 		$query = siteorigin_widget_post_selector_process_query( wp_parse_args(
@@ -380,7 +383,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				'title' => $instance['title'],
 				'theme' => empty( $instance['design'] ) || empty( $instance['design']['theme'] )  ? 'base' : $instance['design']['theme'],
 				'posts' => sow_carousel_handle_post_limit( $posts ),
-				'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : '',
+				'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : false,
 				'image_size' => $instance['image_size'],
 				'link_target' => ! empty( $instance['link_target'] ) ? $instance['link_target'] : 'same',
 				'item_template' => plugin_dir_path( __FILE__ ) . 'tpl/item.php',

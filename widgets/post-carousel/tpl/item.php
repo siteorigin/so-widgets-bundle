@@ -6,7 +6,7 @@ while( $settings['posts']->have_posts() ) :
 		<div class="sow-carousel-thumbnail">
 			<?php
 			if ( has_post_thumbnail() ) :
-				$img = wp_get_attachment_image_src( get_post_thumbnail_id(), $settings['image_size'] );
+				$img = siteorigin_widgets_get_attachment_image_src( get_post_thumbnail_id(), $settings['image_size'], $settings['default_thumbnail'] );
 				?>
 				<a
 				href="<?php the_permalink() ?>"
