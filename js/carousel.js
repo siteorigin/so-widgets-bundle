@@ -18,6 +18,10 @@ jQuery( function ( $ ) {
 			$item.slick( 'slickSetOption', 'slidesToScroll', slidesToScroll );
 		};
 
+		$( '.sow-carousel-wrapper' ).on( 'init', function( e, slick ) {
+			$( this ).css( 'opacity', 1 );
+		} );
+
 		// The carousel widget
 		$( '.sow-carousel-wrapper' ).each( function () {
 			var $$ = $( this ),
