@@ -243,7 +243,8 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 	}
 
 	function carousel_settings_form_fields() {
-		return array(
+		$carousel_settings = $this->get_carousel_settings();
+		$fields = array(
 			'type' => 'section',
 			'label' => __( 'Settings', 'so-widgets-bundle' ),
 			'hide' => true,
@@ -323,6 +324,16 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 				),
 			),
 		);
+
+		if ( ! isset( $carousel_settings['navigation'] ) || empty( $carousel_settings['navigation_label'] ) ) {
+			unset( $fields['fields']['arrows'] );
+		}
+
+		if ( ! isset( $carousel_settings['navigation_dots'] )  || empty( $carousel_settings['navigation_dots_label'] ) ) {
+			unset( $fields['fields']['dots'] );
+		}
+
+		return $fields;
 	}
 
 
