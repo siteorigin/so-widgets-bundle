@@ -100,6 +100,13 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.31.0 - 05 March 2022 =
+* Post Carousel: Updates to allow for themes to be added.
+* Post Carousel: Fixed `Responsive > Tablet > Landscape` settings.
+* Post Carousel: Added support for the  Default Thumbnail: External URL field.
+* Developer: Added preset field support for state emitters when reopening widgets.
+* Developer: Added `siteorigin_widgets_accordion_scrollto_offset` filter.
+
 = 1.30.1 - 22 February 2022 =
 * Widgets Block: Prevented a potential notice within the WP admin.
 

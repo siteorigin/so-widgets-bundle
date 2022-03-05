@@ -28,6 +28,10 @@
 @navigation_tablet_landscape: default;
 @navigation_tablet_portrait: default;
 @navigation_mobile: default;
+@navigation_dots_desktop: default;
+@navigation_dots_tablet_landscape: default;
+@navigation_dots_tablet_portrait: default;
+@navigation_dots_mobile: default;
 
 .sow-carousel-container {
 	a.sow-carousel-next {
@@ -84,7 +88,7 @@
 			}
 		}
 
-		& when not ( isnumber(  @navigation_mobile ) ) {
+		& when not ( isnumber( @navigation_mobile ) ) {
 			@media (max-width: @breakpoint_mobile) {
 				display: none;
 			}
@@ -116,6 +120,29 @@
 		}
 
 		.slick-dots {
+			& when not ( isnumber( @navigation_dots_desktop ) ) {
+				@media (min-width: @breakpoint_tablet_landscape) {
+					display: none !important;
+				}
+			}
+
+			& when not ( isnumber( @navigation_dots_tablet_landscape ) ) {
+				@media (min-width: @breakpoint_tablet_portrait) and (max-width: @breakpoint_tablet_landscape) {
+					display: none !important;
+				}
+			}
+
+			& when not ( isnumber( @navigation_dots_tablet_portrait ) ) {
+				@media (min-width: @breakpoint_mobile) and (max-width: @breakpoint_tablet_portrait) {
+					display: none !important;
+				}
+			}
+
+			& when not ( isnumber( @navigation_dots_mobile ) ) {
+				@media (max-width: @breakpoint_mobile) {
+					display: none !important;
+				}
+			}
 			li { 
 
 				&.slick-active button:before {

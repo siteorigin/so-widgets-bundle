@@ -19,7 +19,8 @@ jQuery( function ( $ ) {
 			};
 			
 			var scrollToPanel = function ( $panel, smooth ) {
-				var navOffset = 90;// Add some magic number offset to make space for possible nav menus etc.
+				// Add some magic number offset to make space for possible nav menus etc.
+				var navOffset = sowAccordion.scrollto_offset ? sowAccordion.scrollto_offset : 80;
 				var scrollTop = $panel.offset().top - navOffset;
 				if ( smooth ) {
 					$( 'body,html' ).animate( {
