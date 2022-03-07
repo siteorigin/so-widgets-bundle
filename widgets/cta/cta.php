@@ -76,12 +76,12 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 					'background_color' => array(
 						'type' => 'color',
 						'label' => __( 'Background color', 'so-widgets-bundle' ),
-						'default' => '#F8F8F8'
+						'default' => '#f8f8f8'
 					),
 					'border_color' => array(
 						'type' => 'color',
 						'label' => __( 'Border color', 'so-widgets-bundle' ),
-						'default' => '#E3E3E3',
+						'default' => '#e3e3e3',
 					),
 					'title_color' => array(
 						'type' => 'color',

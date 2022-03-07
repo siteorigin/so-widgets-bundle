@@ -219,7 +219,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 						'thumbnail_overlay_hover_color' => array(
 							'type' => 'color',
 							'label' => __( 'Thumbnail overlay hover color', 'so-widgets-bundle' ),
-							'default' => '#3279BB',
+							'default' => '#3279bb',
 						),
 						'thumbnail_overlay_hover_opacity' => array(
 							'type' => 'slider',

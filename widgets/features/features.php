@@ -91,7 +91,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					'icon_color' => array(
 						'type' => 'color',
 						'label' => __( 'Icon color', 'so-widgets-bundle' ),
-						'default' => '#FFFFFF',
+						'default' => '#fff',
 					),
 
 					'icon_image' => array(
