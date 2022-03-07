@@ -182,21 +182,21 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 					'fields' => array(
 						'navigation_color' => array(
 							'type' => 'color',
-							'label' => __( 'Navigation arrow color', 'so-widgets-bundle' ),
+							'label' => __( 'Arrow color', 'so-widgets-bundle' ),
 							'default' => '#fff',
 						),
 						'navigation_color_hover' => array(
 							'type' => 'color',
-							'label' => __( 'Navigation arrow hover color', 'so-widgets-bundle' ),
+							'label' => __( 'Arrow hover color', 'so-widgets-bundle' ),
 						),
 						'navigation_background' => array(
 							'type' => 'color',
-							'label' => __( 'Navigation background', 'so-widgets-bundle' ),
+							'label' => __( 'Background', 'so-widgets-bundle' ),
 							'default' => '#333',
 						),
 						'navigation_hover_background' => array(
 							'type' => 'color',
-							'label' => __( 'Navigation hover background', 'so-widgets-bundle' ),
+							'label' => __( 'Hover background', 'so-widgets-bundle' ),
 							'default' => '#444',
 						),
 					),
@@ -360,6 +360,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 	public function get_template_variables( $instance, $args ) {
 		$theme = self::get_theme( $instance );
+
 		if (
 			! empty( $instance['default_thumbnail'] ) ||
 			! empty( $instance['default_thumbnail_fallback'] )
