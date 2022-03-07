@@ -229,7 +229,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 					'color' => array(
 						'type' => 'color',
 						'label' => __('Color', 'so-widgets-bundle'),
-						'default' => '#EEEEEE'
+						'default' => '#eee'
 					),
 					'thickness' => array(
 						'type' => 'slider',
