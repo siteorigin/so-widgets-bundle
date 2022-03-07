@@ -191,7 +191,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 						),
 						'navigation_background' => array(
 							'type' => 'color',
-							'label' => __( 'Nackground', 'so-widgets-bundle' ),
+							'label' => __( 'Background', 'so-widgets-bundle' ),
 							'default' => '#333',
 						),
 						'navigation_hover_background' => array(
