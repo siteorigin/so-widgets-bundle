@@ -12,6 +12,7 @@ if ( empty( $file ) ) {
 >
 <?php endif; ?>
 	<lottie-player
+		class="sow-lottie-player"
 		<?php
 		foreach ( $attributes as $name => $value) {
 			if ( ! empty( $value ) ) {
