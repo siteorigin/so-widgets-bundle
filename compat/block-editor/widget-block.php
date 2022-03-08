@@ -72,8 +72,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				$author = '';
 				// Try to find a widget's author from its file metadata, by matching the filename to the ID (which is derived from the filename).
 				foreach ( $widgets_metadata_list as $widget_metadata ) {
-					$filename = $widgets_manager->get_widget_filename( $widget_obj->id_base );
-					if ( $widget_metadata['ID'] == $filename ) {
+					if ( $widgets_manager->get_class_from_path( wp_normalize_path( $widget_metadata['File'] ) ) == $class ) {
 						$author = $widget_metadata['Author'];
 						break;
 					}
