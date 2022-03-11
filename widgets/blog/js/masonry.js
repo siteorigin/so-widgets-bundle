@@ -5,10 +5,10 @@ var sowb = window.sowb || {};
 jQuery( function ( $ ) {
 
 	sowb.setupBlogMasonry = function () {
-		$( '.sow-blog-layout-masonry' ).each( function () {
+		$( '.sow-blog-layout-masonry .sow-blog-posts' ).each( function () {
 			$( this ).masonry( {
 				itemSelector: '.sow-masonry-item',
-				columnWidth: '.sow-masonry-item'
+				columnWidth: '.sow-masonry-item',
 			} );
 		} );
 	};

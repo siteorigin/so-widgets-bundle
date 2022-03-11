@@ -16,7 +16,7 @@
 						<?php echo coauthors_posts_links_single( $author ); ?>
 					</div>
 				<?php endforeach; ?>
-			<?php else: ?>
+			<?php else : ?>
 				<div class="sow-entry-author-avatar">
 					<a href="<?php echo get_author_posts_url( get_the_author_meta( 'ID' ) ); ?>">
 						<?php echo get_avatar( get_the_author_meta( 'ID' ), 70 ); ?>
@@ -68,7 +68,7 @@
 						esc_html( get_the_modified_date( $template_settings['date_format'] ) )
 					);
 					?>
-					<div class="entry-meta">
+					<div class="sow-entry-meta">
 						<?php
 						echo '<span class="sow-posted-on">';
 						printf(
