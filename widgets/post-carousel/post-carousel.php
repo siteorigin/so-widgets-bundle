@@ -345,7 +345,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			'navigation_color_hover' => ! empty ( $instance['design']['navigation']['navigation_color_hover'] ) ? $instance['design']['navigation']['navigation_color_hover'] : '',
 			'navigation_background' => ! empty ( $instance['design']['navigation']['navigation_background'] ) ? $instance['design']['navigation']['navigation_background'] : '',
 			'navigation_hover_background' => ! empty ( $instance['design']['navigation']['navigation_hover_background'] ) ? $instance['design']['navigation']['navigation_hover_background'] : '',
-			'item_title_tag' => $instance['design']['item_title']['tag'],
+			'item_title_tag' => ! empty( $instance['design']['item_title']['tag'] ) ? $instance['design']['item_title']['tag'] : '',
 			'item_title_font_size' => ! empty( $instance['design']['item_title']['size'] ) ? $instance['design']['item_title']['size'] : '',
 			'item_title_color' => ! empty( $instance['design']['item_title']['color'] ) ? $instance['design']['item_title']['color'] : '',
 		);
