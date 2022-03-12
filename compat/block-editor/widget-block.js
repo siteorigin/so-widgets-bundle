@@ -11,15 +11,14 @@
 	var Spinner  = components.Spinner;
 	var __ = i18n.__;
 
-	var ajaxErrorHandler = function( response ) {
+	var getAjaxErrorMsg = function( response ) {
 		var errorMessage = '';
 		if ( response.hasOwnProperty( 'responseJSON' ) ) {
 			errorMessage = response.responseJSON.message;
 		} else if ( response.hasOwnProperty( 'responseText' ) ) {
 			errorMessage = response.responseText;
 		}
-
-		props.setState( { widgetFormHtml: '<div>' + errorMessage + '</div>', } );
+		return errorMessage;
 	}
 
 	registerBlockType( 'sowb/widget-block', {
@@ -114,7 +113,9 @@
 					} );
 					wp.data.dispatch( 'core/editor' ).unlockPostSaving();
 				} )
-				.fail( ajaxErrorHandler );
+				.fail( function( response ) {
+					props.setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>', } );
+				} );
 			}
 
 			function switchToEditing() {
@@ -188,7 +189,9 @@
 					.done( function( widgetForm ) {
 						props.setState( { widgetFormHtml: widgetForm } );
 					} )
-					.fail( ajaxErrorHandler );
+					.fail( function( response ) {
+						props.setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>', } );
+					} );
 				}
 
 				var widgetForm = props.widgetFormHtml ? props.widgetFormHtml : '';
