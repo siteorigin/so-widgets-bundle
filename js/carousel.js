@@ -41,9 +41,6 @@ jQuery( function ( $ ) {
 				accessibility: false,
 				cssEase: carouselSettings.animation,
 				speed: carouselSettings.animation_speed,
-				autoplay: carouselSettings.autoplay,
-				autoplaySpeed: carouselSettings.autoplaySpeed,
-				pauseOnHover: carouselSettings.pauseOnHover,
 				slidesToScroll: responsiveSettings.desktop_slides_to_scroll,
 				slidesToShow: typeof responsiveSettings.desktop_slides_to_show == 'undefined'
 					? responsiveSettings.desktop_slides_to_scroll
@@ -80,6 +77,28 @@ jQuery( function ( $ ) {
 			$items.on( 'swipe', function( e, slick, direction ) {
 				$$.parent().parent().find( '.sow-carousel-' + ( direction == 'left' ? 'next' : 'prev' ) ).trigger( 'touchend' );
 			} );
+
+			// Set up Autoplay. We use a custom autoplay rather than the SLick
+			// autoplay to account for the (sometimes) non-standard nature of our
+			// navigation that Slick has trouble accounting for.
+			if ( carouselSettings.autoplay ) {
+				var interrupted = false;
+				var autoplayNav = $$.parent().parent().find( '.sow-carousel-' + ( $$.data( 'dir' ) == 'ltr' ? 'next' : 'prev' ) );
+				setInterval( function() {
+					if ( ! interrupted ) {
+						autoplayNav.trigger( 'click' );
+					}
+				}, carouselSettings.autoplaySpeed );
+
+				if ( carouselSettings.pauseOnHover ) {
+					$items.on('mouseenter.slick', function() {
+						 interrupted = true;
+					} );
+					$items.on( 'mouseleave.slick', function() {
+						 interrupted = false;
+					} );
+				}
+			}
 
 			// click is used rather than Slick's beforeChange or afterChange
 			// due to the inability to stop a slide from changing from those events
