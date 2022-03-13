@@ -144,8 +144,6 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			$widget = SiteOrigin_Widgets_Bundle::single()->load_missing_widget( false, $widget_class );
 		}
 
-		$instance = $attributes['widgetData'];
-
 		// Support for Additional CSS classes.
 		$add_custom_class_name = function( $class_names ) use ( $attributes ) {
 			if ( ! empty( $attributes['className'] ) ) {
@@ -156,6 +154,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
 			$GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] = true;
+			$instance = $attributes['widgetData'];
 			add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 			ob_start();
 
