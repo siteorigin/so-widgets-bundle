@@ -86,7 +86,7 @@ jQuery( function ( $ ) {
 				$$.parent().parent().find( '.sow-carousel-' + ( direction == 'left' ? 'next' : 'prev' ) ).trigger( 'touchend' );
 			} );
 
-			// Set up Autoplay. We use a custom autoplay rather than the SLick
+			// Set up Autoplay. We use a custom autoplay rather than the Slick
 			// autoplay to account for the (sometimes) non-standard nature of our
 			// navigation that Slick has trouble accounting for.
 			if ( carouselSettings.autoplay ) {
