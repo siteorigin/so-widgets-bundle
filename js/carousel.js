@@ -42,6 +42,7 @@ jQuery( function ( $ ) {
 						! $$.data( 'ajax-url' ) ||
 						(
 							$$.data( 'ajax-url' ) &&
+							carouselSettings.autoplay_continuous_scroll &&
 							carouselSettings.autoplay
 						)
 					),
