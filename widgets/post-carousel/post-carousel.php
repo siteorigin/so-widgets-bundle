@@ -35,7 +35,7 @@ function sow_carousel_handle_post_limit( $posts, $paged = 0 ) {
 			if ( $current + 1 > $post_limit + $posts_per_page ) {
 				$posts->posts = null;
 			} else {
-				// Work out how many posts we need to return
+				// Work out how many posts we need to return.
 				$posts->post_count = $post_limit % $posts_per_page;
 				$posts->posts = array_slice( $posts->posts, $current % $posts_per_page, $posts->post_count );
 			}
@@ -72,7 +72,7 @@ function sow_carousel_get_next_posts_page() {
 		}
 	}
 
-	// Don't output anything if there are no posts to return;
+	// Don't output anything if there are no posts to return.
 	if ( ! empty( $settings['posts']->posts ) ) {
 		ob_start();
 		include apply_filters( 'siteorigin_post_carousel_ajax_item_template', 'tpl/item.php', $instance );
