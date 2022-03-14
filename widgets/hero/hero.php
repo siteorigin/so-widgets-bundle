@@ -262,7 +262,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 					'heading_color' => array(
 						'type' => 'color',
 						'label' => __('Heading color', 'so-widgets-bundle'),
-						'default' => '#FFFFFF',
+						'default' => '#fff',
 					),
 
 					'heading_size' => array(
@@ -309,7 +309,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 					'text_color' => array(
 						'type' => 'color',
 						'label' => __( 'Text color', 'so-widgets-bundle' ),
-						'default' => '#F6F6F6',
+						'default' => '#f6f6f6',
 					),
 					'text_size' => array(
 						'type' => 'measurement',

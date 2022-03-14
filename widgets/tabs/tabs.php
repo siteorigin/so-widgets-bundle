@@ -132,17 +132,17 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 							'background_hover_color' => array(
 								'type' => 'color',
 								'label' => __( 'Background hover color', 'so-widgets-bundle' ),
-								'default' => '#F9F9F9',
+								'default' => '#f9f9f9',
 							),
 							'title_color' => array(
 								'type' => 'color',
 								'label' => __( 'Title color',  'so-widgets-bundle' ),
-								'default' => '#FFFFFF',
+								'default' => '#fff',
 							),
 							'title_hover_color' => array(
 								'type' => 'color',
 								'label' => __( 'Title hover color', 'so-widgets-bundle' ),
-								'default' => '#2D2D2D',
+								'default' => '#2d2d2d',
 							),
 							'border_color' => array(
 								'type' => 'color',
@@ -152,7 +152,7 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 							'border_hover_color' => array(
 								'type' => 'color',
 								'label' => __( 'Border hover color', 'so-widgets-bundle' ),
-								'default' => '#F9F9F9',
+								'default' => '#f9f9f9',
 							),
 							'border_width' => array(
 								'type' => 'measurement',
@@ -172,7 +172,7 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 							'background_color' => array(
 								'type' => 'color',
 								'label' => __( 'Background color',  'so-widgets-bundle' ),
-								'default' => '#F9F9F9',
+								'default' => '#f9f9f9',
 							),
 							'font_color' => array(
 								'type' => 'color',

@@ -262,7 +262,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		}
 
 		return sprintf(
-			__( 'Add widgets and layouts to your carousel items with %sSiteOrigin Premium%s.', 'so-widgets-bundle' ),
+			__( 'Add widgets and layouts to your carousel items with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/carousel" target="_blank" rel="noopener noreferrer">',
 			'</a>'
 		);

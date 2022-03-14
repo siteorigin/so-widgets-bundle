@@ -124,12 +124,12 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 							'background_hover_color' => array(
 								'type' => 'color',
 								'label' => __( 'Background hover color', 'so-widgets-bundle' ),
-								'default' => '#8C8C8C',
+								'default' => '#8c8c8c',
 							),
 							'title_color' => array(
 								'type' => 'color',
 								'label' => __( 'Title color', 'so-widgets-bundle' ),
-								'default' => '#FFFFFF',
+								'default' => '#fff',
 							),
 							'title_hover_color' => array(
 								'type' => 'color',
@@ -157,7 +157,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 							'background_color' => array(
 								'type' => 'color',
 								'label' => __( 'Background color',  'so-widgets-bundle' ),
-								'default' => '#F9F9F9',
+								'default' => '#f9f9f9',
 							),
 							'font_color' => array(
 								'type' => 'color',

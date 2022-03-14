@@ -56,9 +56,16 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				// The last class will always be from the widget file we just loaded.
 				$classes = get_declared_classes();
 				$widget_class = end( $classes );
+				// For SiteOrigin widgets, just display the widget's name. For third party widgets, display the Author
+				// to try avoid confusion when the widgets have the same name.
+				if ( $widget['Author'] != 'SiteOrigin' && strpos( $widget['Name'], $widget['Author'] ) === false ) {
+					$widget_name = sprintf( __( '%s by %s', 'so-widgets-bundle' ), $widget['Name'], $widget['Author'] );
+				} else {
+					$widget_name = $widget['Name'];
+				}
 
 				$so_widgets[] = array(
-					'name' => $widget['Name'],
+					'name' => $widget_name,
 					'class' => $widget_class,
 				);
 			}
@@ -72,8 +79,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				$author = '';
 				// Try to find a widget's author from its file metadata, by matching the filename to the ID (which is derived from the filename).
 				foreach ( $widgets_metadata_list as $widget_metadata ) {
-					$filename = $widgets_manager->get_widget_filename( $widget_obj->id_base );
-					if ( $widget_metadata['ID'] == $filename ) {
+					if ( $widgets_manager->get_class_from_path( wp_normalize_path( $widget_metadata['File'] ) ) == $class ) {
 						$author = $widget_metadata['Author'];
 						break;
 					}
@@ -138,8 +144,6 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			$widget = SiteOrigin_Widgets_Bundle::single()->load_missing_widget( false, $widget_class );
 		}
 
-		$instance = $attributes['widgetData'];
-
 		// Support for Additional CSS classes.
 		$add_custom_class_name = function( $class_names ) use ( $attributes ) {
 			if ( ! empty( $attributes['className'] ) ) {
@@ -150,6 +154,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
 			$GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] = true;
+			$instance = $attributes['widgetData'];
 			add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 			ob_start();
 
