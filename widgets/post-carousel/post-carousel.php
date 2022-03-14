@@ -239,6 +239,21 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		$carousel_settings['fields']['loop']['description'] = __( 'Automatically return to the first post after the last post.', 'so-widgets-bundle' );
 		unset( $carousel_settings['fields']['animation'] );
 
+		siteorigin_widgets_array_insert(
+			$carousel_settings['fields'],
+			'autoplay_pause_hover',
+			array(
+				'autoplay_continuous_scroll' => array(
+					'type' => 'checkbox',
+					'label' => __( 'Autoplay continuous scroll', 'so-widgets-bundle' ),
+					'state_handler' => array(
+						'loop_posts[show]' => array( 'show' ),
+						'loop_posts[hide]' => array( 'hide' ),
+					),
+				),
+			)
+		);
+
 		return array(
 			'title' => array(
 				'type' => 'text',
@@ -377,6 +392,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		$posts = new WP_Query( $query );
 
 		$carousel_settings = $this->carousel_settings_template_variables( $instance['carousel_settings'], false );
+		$carousel_settings['autoplay_continuous_scroll'] = ! empty( $instance['carousel_settings']['autoplay_continuous_scroll'] ) ? $instance['carousel_settings']['autoplay_continuous_scroll'] : false;
 		// The base theme doesn't support dot noviation so let's remove it.
 		if ( $theme == 'base' ) {
 			unset( $carousel_settings['dots'] );
