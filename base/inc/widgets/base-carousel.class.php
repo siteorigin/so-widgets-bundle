@@ -254,6 +254,13 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 					'label' => __( 'Loop Items', 'so-widgets-bundle' ),
 					'description' => __( 'Automatically return to the first item after the last item.', 'so-widgets-bundle' ),
 					'default' => true,
+					'state_emitter' => array(
+						'callback' => 'conditional',
+						'args' => array(
+							'loop_posts[show]: val',
+							'loop_posts[hide]: ! val',
+						),
+					),
 				),
 				'dots' => array(
 					'type' => 'checkbox',
@@ -265,7 +272,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 							'nav_dots[show]: val',
 							'nav_dots[hide]: ! val',
 						),
-					)
+					),
 				),
 				'arrows' => array(
 					'type' => 'checkbox',
@@ -277,7 +284,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 							'nav_arrows[show]: val',
 							'nav_arrows[hide]: ! val',
 						),
-					)
+					),
 				),
 				'animation' => array(
 					'type' => 'select',

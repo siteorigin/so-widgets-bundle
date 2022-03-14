@@ -37,7 +37,7 @@ jQuery( function ( $ ) {
 				rtl: $$.data( 'dir' ) == 'rtl',
 				touchThreshold: 20,
 				infinite:
-					$$.data( 'carousel_settings' ).loop &&
+					carouselSettings.loop &&
 					(
 						! $$.data( 'ajax-url' ) ||
 						(
