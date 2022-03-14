@@ -100,6 +100,14 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.32.0 - 14 March 2022 =
+* Post Carousel: Added a new `Autoplay Continuous Scroll` setting.
+* Post Carousel: Resolved a potential item tag notice.
+* Widgets Block: Resolve error when trying to use disabled third-party widget.
+* Widgets Block: Accounted for a potential third-party widgets filename conflict.
+* Widgets Block: Added non-SiteOrigin widget author names.
+* Widgets Block: Resolved a potential `Undefined index` notice if a widget isn't selected.
+
 = 1.31.0 - 05 March 2022 =
 * Post Carousel: Updates to allow for themes to be added.
 * Post Carousel: Fixed `Responsive > Tablet > Landscape` settings.
