@@ -80,11 +80,19 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'excerpt' => __( 'Post Excerpt', 'so-widgets-bundle' ),
 								'full' => __( 'Full Post Content', 'so-widgets-bundle' ),
 							),
+							'state_emitter' => array(
+								'callback' => 'select',
+								'args'     => array( 'content_type' ),
+							),
 						),
 						'read_more' => array(
 							'type' => 'checkbox',
 							'label' => __( 'Post Excerpt Read More Link', 'so-widgets-bundle' ),
 							'description' => __( 'Display the Read More link below the post excerpt.', 'so-widgets-bundle' ),
+							'state_handler' => array(
+								'content_type[excerpt]' => array( 'show' ),
+								'_else[content_type]' => array( 'hide' ),
+							),
 						),
 						'date' => array(
 							'type' => 'checkbox',
