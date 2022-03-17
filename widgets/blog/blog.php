@@ -166,8 +166,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		return array(
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 			'column_width' => 100 / $columns - ( $columns * 0.5 )  . '%',
-			'categories' => $instance['settings']['categories'],
-			'author' => $instance['settings']['author'],
+			'categories' => ! empty( $instance['settings']['categories'] ) ? $instance['settings']['categories'] : false,
+			'author' => ! empty( $instance['settings']['author'] ) ? $instance['settings']['author'] : false,
 		);
 	}
 
