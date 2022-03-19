@@ -4,7 +4,7 @@
 		echo $args['before_title'] . esc_html( $settings['title'] ) . $args['after_title'];
 	}
 
-	if ( $settings['navigation'] == 'title' && $settings['navigation_arrows'] ) {
+	if ( $settings['navigation'] == 'title' && ( $settings['navigation_arrows'] || $settings['attributes']['widget'] ) ) {
 		?>
 		<div class="sow-carousel-navigation">
 			<?php $this->render_navigation( 'both' ); ?>
