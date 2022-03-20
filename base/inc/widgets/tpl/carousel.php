@@ -4,9 +4,9 @@
 		echo $args['before_title'] . esc_html( $settings['title'] ) . $args['after_title'];
 	}
 
-	if ( $settings['navigation'] == 'title' && $settings['navigation_arrows'] ) {
+	if ( $settings['navigation'] == 'title' && ( $settings['navigation_arrows'] || $settings['attributes']['widget'] == 'post' ) ) {
 		?>
-		<div class="sow-carousel-navigation">
+		<div class="sow-carousel-navigation <?php echo ! $settings['navigation_arrows'] && $settings['attributes']['widget'] == 'post' ? 'sow-carousel-navigation-hidden' : ''; ?>">
 			<?php $this->render_navigation( 'both' ); ?>
 		</div>
 	<?php } ?>
