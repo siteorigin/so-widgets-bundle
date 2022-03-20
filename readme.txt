@@ -100,6 +100,9 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.32.1 - 20 March 2022 =
+* Post Carousel: Resolved Autoplay not functioning when Navigation arrows disabled.
+
 = 1.32.0 - 14 March 2022 =
 * Post Carousel: Added a new `Autoplay Continuous Scroll` setting.
 * Post Carousel: Resolved a potential item tag notice.
