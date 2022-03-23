@@ -100,6 +100,9 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.32.2 - 23 March 2022 =
+* Anything Carousel: Restored arrow functionality. Resolved `Less_Exception_Compiler` notice.
+
 = 1.32.1 - 20 March 2022 =
 * Post Carousel: Resolved Autoplay not functioning when Navigation arrows disabled.
 
