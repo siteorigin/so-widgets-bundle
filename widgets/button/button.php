@@ -469,7 +469,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		return array(
 			sprintf(
 				__( 'Add a beautiful tooltip to the Button Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/accordion" target="_blank" rel="noopener noreferrer">',
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tooltip" target="_blank" rel="noopener noreferrer">',
 				'</a>'
 			),
 		);
