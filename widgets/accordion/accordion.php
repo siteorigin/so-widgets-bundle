@@ -9,7 +9,7 @@ Documentation: https://siteorigin.com/widgets-bundle/accordion-widget/
 
 class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 	function __construct() {
-		
+
 		parent::__construct(
 			'sow-accordion',
 			__( 'SiteOrigin Accordion', 'so-widgets-bundle' ),
@@ -22,9 +22,9 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			plugin_dir_path( __FILE__ )
 		);
 	}
-	
+
 	/**
-	 * Initialize the accordion widget.
+	 * Initialize the Accordion Widget.
 	 */
 	function initialize() {
 		$this->register_frontend_scripts(
@@ -59,12 +59,13 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			'sowAccordion',
 			array(
 				'scrollto_after_change' => ! empty( $global_settings['scrollto_after_change'] ),
+				'scrollto_offset' => (int) apply_filters( 'siteorigin_widgets_accordion_scrollto_offset', 80 ),
 			)
 		);
 	}
 
 	function get_widget_form() {
-		
+
 		return array(
 			'title' => array(
 				'type' => 'text',
@@ -123,12 +124,12 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 							'background_hover_color' => array(
 								'type' => 'color',
 								'label' => __( 'Background hover color', 'so-widgets-bundle' ),
-								'default' => '#8C8C8C',
+								'default' => '#8c8c8c',
 							),
 							'title_color' => array(
 								'type' => 'color',
 								'label' => __( 'Title color', 'so-widgets-bundle' ),
-								'default' => '#FFFFFF',
+								'default' => '#fff',
 							),
 							'title_hover_color' => array(
 								'type' => 'color',
@@ -156,7 +157,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 							'background_color' => array(
 								'type' => 'color',
 								'label' => __( 'Background color',  'so-widgets-bundle' ),
-								'default' => '#F9F9F9',
+								'default' => '#f9f9f9',
 							),
 							'font_color' => array(
 								'type' => 'color',
@@ -181,14 +182,14 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			),
 		);
 	}
-	
+
 	public function get_less_variables( $instance ) {
 		if ( empty( $instance['design'] ) ) {
 			return array();
 		}
-		
+
 		$design = $instance['design'];
-		
+
 		return array(
 			'heading_background_color' => $design['heading']['background_color'],
 			'heading_background_hover_color' => $design['heading']['background_hover_color'],
@@ -206,10 +207,10 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			'panels_margin_bottom' => $design['panels']['margin_bottom'],
 		);
 	}
-	
+
 	public function get_template_variables( $instance, $args ) {
-		if( empty( $instance ) ) return array();
-		
+		if ( empty( $instance ) ) return array();
+
 		$panels = empty( $instance['panels'] ) ? array() : $instance['panels'];
 
 		$anchor_list = array();
@@ -220,16 +221,16 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			if ( empty( $panel['after_title'] ) ) {
 				$panel['after_title'] = '';
 			}
-			
+
 			if ( empty( $panel['title'] ) ) {
 				$id = $this->id_base;
 				if ( ! empty( $instance['_sow_form_id'] ) ) {
 					$id .= '-' . $instance['_sow_form_id'];
-				} else if ( ! empty( $args['widget_id'] ) ) {
+				} elseif ( ! empty( $args['widget_id'] ) ) {
 					$id .= '-' . $args['widget_id'];
 				}
 				$panel['anchor'] = $id . '-' . $i;
-			} else if ( isset( $anchor_list[ strtolower( $panel['title'] ) ] ) ) {
+			} elseif ( isset( $anchor_list[ strtolower( $panel['title'] ) ] ) ) {
 				// Ensure this anchor is unique, if it's not, append the array key to the anchor.
 				$panel['anchor'] = $panel['title'] . "-$i-" . uniqid();
 			} else {
@@ -238,37 +239,44 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 
 			$anchor_list[ strtolower( $panel['anchor'] ) ] = true;
 		}
-		
-		
+
+
 		if ( empty( $instance['design']['heading']['icon_open'] ) ) {
 			$instance['design']['heading']['icon_open'] = 'ionicons-plus';
 		}
-		
+
 		if ( empty( $instance['design']['heading']['icon_close'] ) ) {
 			$instance['design']['heading']['icon_close'] = 'ionicons-minus';
 		}
-		
+
 		return array(
 			'panels' => $panels,
 			'icon_open' => $instance['design']['heading']['icon_open'],
 			'icon_close' => $instance['design']['heading']['icon_close'],
 		);
 	}
-	
+
 	public function render_panel_content( $panel, $instance ) {
 		$content = $panel['autop'] ? wpautop( $panel['content_text'] ) : $panel['content_text'];
-		
+
 		echo apply_filters( 'siteorigin_widgets_accordion_render_panel_content', $content, $panel, $instance );
 	}
 
-	function get_form_teaser(){
-		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
-		return sprintf(
-			__( 'Get more customization options and the ability to use widgets and layouts as your accordion content with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/accordion" target="_blank" rel="noopener noreferrer">',
-			'</a>'
+	function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+		return array(
+			sprintf(
+				__( 'Get more customization options and the ability to use widgets and layouts as your accordion content with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/accordion" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
+			sprintf(
+				__( 'Use Google Fonts right inside the Accordion Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/accordion" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
 		);
 	}
 }
 
-siteorigin_widget_register('sow-accordion', __FILE__, 'SiteOrigin_Widget_Accordion_Widget');
+siteorigin_widget_register( 'sow-accordion', __FILE__, 'SiteOrigin_Widget_Accordion_Widget' );

@@ -98,16 +98,29 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 						'label' => __( 'Image size', 'so-widgets-bundle' ),
 						'type' => 'image-size',
 						'default' => 'full',
+						'custom_size' => true,
+						'state_emitter' => array(
+							'callback' => 'select',
+							'args' => array( 'size' )
+						),
 					),
 
 					'max_height' => array(
 						'label' => __( 'Maximum image height', 'so-widgets-bundle' ),
 						'type' => 'number',
+						'state_handler' => array(
+							'size[custom_size]' => array( 'hide' ),
+							'_else[size]' => array( 'show' ),
+						),
 					),
 
 					'max_width' => array(
 						'label' => __( 'Maximum image width', 'so-widgets-bundle' ),
 						'type' => 'number',
+						'state_handler' => array(
+							'size[custom_size]' => array( 'hide' ),
+							'_else[size]' => array( 'show' ),
+						),
 					),
 
 					'padding' => array(
@@ -181,6 +194,21 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				$alt = ! empty ( $image['alt'] ) ? $image['alt'] .'"' : '';
 				$image['image_html'] = '<img src="' . esc_url( $image['image_fallback'] ) . '" alt="' . esc_attr( $alt ) . '" title="' . esc_attr( $title ) . '" class="sow-image-grid-image_html" ' . ( $lazy ? 'loading="lazy"' : '' ) . '>';
 			} else {
+				if (
+					$instance['display']['attachment_size'] == 'custom_size' &&
+					! empty( $instance['display']['attachment_size_width'] ) &&
+					! empty( $instance['display']['attachment_size_height'] )
+				) {
+					$instance['display']['attachment_size'] = array(
+						(int) $instance['display']['attachment_size_width'],
+						(int) $instance['display']['attachment_size_height'],
+					);
+
+					// To prevent potential sizing issues, override the max width and height with the custom size.
+					$instance['display']['max_height'] = $instance['display']['attachment_size'][0];
+					$instance['display']['max_width'] = $instance['display']['attachment_size'][1];
+				}
+
 				$image['image_html'] = wp_get_attachment_image( $image['image'], $instance['display']['attachment_size'], false, array(
 					'title' => $title,
 					'alt'   => $image['alt'],
@@ -271,14 +299,28 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_form_teaser() {
-		if ( class_exists( 'SiteOrigin_Premium' ) ) {
-			return false;
-		}
-
-		return sprintf(
-			__( 'Add a Lightbox to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lightbox" target="_blank" rel="noopener noreferrer">',
-			'</a>'
+		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+		return array(
+			sprintf(
+				__( 'Add a Lightbox to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lightbox" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
+			sprintf(
+				__( 'Add a beautiful and customizable text overlay with animations to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/image-overlay" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
+			sprintf(
+				__( 'Add an image title tooltip with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tooltip" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
+			sprintf(
+				__( 'Add multiple Image Grid frames in one go with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/multiple-media" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
 		);
 	}
 }

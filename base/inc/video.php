@@ -28,11 +28,11 @@ class SiteOrigin_Video {
 	 *
 	 * @param string $src The URL of the video.
 	 * @param bool $autoplay Whether to start playing the video automatically once loaded. ( YouTube only )
-	 * @param bool $related_videos Whether to show related videos after the video has finished playing. ( YouTube only )
+	 * @param bool $related_videos Deprecated.
 	 *
 	 * @return false|mixed|null|string|string[]
 	 */
-	function get_video_oembed( $src, $autoplay = false, $related_videos = true, $loop = false ) {
+	function get_video_oembed( $src, $autoplay = false, $related_videos = false, $loop = false ) {
 		if ( empty( $src ) ) {
 			return '';
 		}
@@ -69,13 +69,6 @@ class SiteOrigin_Video {
 				), $html );
 			}
 
-			if ( empty( $related_videos ) ) {
-				$html = preg_replace_callback( '/src=["\'](http[^"\']*)["\']/', array(
-					$this,
-					'remove_related_videos'
-				), $html );
-			}
-			
 			if ( ! empty( $html ) ) {
 				set_transient( 'sow-vid-embed[' . $hash . ']', $html, 30 * 86400 );
 			}
@@ -92,7 +85,17 @@ class SiteOrigin_Video {
 	 * @return mixed
 	 */
 	function autoplay_callback( $match ) {
-		return str_replace( $match[1], add_query_arg( 'autoplay', 1, $match[1] ), $match[0] );
+		return str_replace(
+			$match[1],
+			add_query_arg(
+				array(
+					'autoplay' => 1,
+					'mute' => 1,
+				),
+				$match[1]
+			),
+			$match[0]
+		);
 	}
 
 	/**
@@ -115,16 +118,5 @@ class SiteOrigin_Video {
 			$match[1]
 		);						
 		return str_replace( $match[1], $new_url, $match[0] );
-	}
-
-	/**
-	 * The preg_replace callback that adds the rel param for YouTube videos.
-	 *
-	 * @param $match
-	 *
-	 * @return mixed
-	 */
-	function remove_related_videos( $match ) {
-		return str_replace( $match[1], add_query_arg( 'rel', 0, $match[1] ), $match[0] );
 	}
 }

@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: widget, button, slider, hero, google maps, image, carousel, features, icons, price table, tinymce, social icons
 Requires at least: 4.2
-Tested up to: 5.8
+Tested up to: 5.9
 Requires PHP: 5.6.20
 Stable tag: trunk
 Build time: unbuilt
@@ -99,6 +99,104 @@ SiteOrigin Premium includes access to our professional email support service, pe
 The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets. Widgets can be enabled or disabled as needed. If a widget offers global settings, you can access those via the Settings button next to each applicable widget.
 
 == Changelog ==
+
+= 1.32.2 - 23 March 2022 =
+* Anything Carousel: Restored arrow functionality. Resolved `Less_Exception_Compiler` notice.
+
+= 1.32.1 - 20 March 2022 =
+* Post Carousel: Resolved Autoplay not functioning when Navigation arrows disabled.
+
+= 1.32.0 - 14 March 2022 =
+* Post Carousel: Added a new `Autoplay Continuous Scroll` setting.
+* Post Carousel: Resolved a potential item tag notice.
+* Widgets Block: Resolve error when trying to use disabled third-party widget.
+* Widgets Block: Accounted for a potential third-party widgets filename conflict.
+* Widgets Block: Added non-SiteOrigin widget author names.
+* Widgets Block: Resolved a potential `Undefined index` notice if a widget isn't selected.
+
+= 1.31.0 - 05 March 2022 =
+* Post Carousel: Updates to allow for themes to be added.
+* Post Carousel: Fixed `Responsive > Tablet > Landscape` settings.
+* Post Carousel: Added support for the  Default Thumbnail: External URL field.
+* Developer: Added preset field support for state emitters when reopening widgets.
+* Developer: Added `siteorigin_widgets_accordion_scrollto_offset` filter.
+
+= 1.30.1 - 22 February 2022 =
+* Widgets Block: Prevented a potential notice within the WP admin.
+
+= 1.30.0 - 14 February 2022 =
+* Button and Contact Form: Migrated `onclick` to `on_click` to avoid a Worfence flag.
+* Call To Action: Remove `Use default background colors` setting.
+* Social Media Buttons: Added new settings: `Icon color hover` and `Background color hover`.
+
+= 1.29.2 - 04 February 2022 =
+* Widgets Block: Excluded the Contact Form from caching. Resolves error on first submission.
+
+= 1.29.1 - 27 January 2022 =
+* Updated `Tested up to` tag to `5.9`.
+* Widgets Block: Prevented a potential `Undefined Error` outside of the WP admin.
+
+= 1.29.0 - 15 January 2022 =
+* Accordion/Tabs: Removed the Border Radius setting dependency on Border Width.
+* Contact Form: Added a new `Enabled` setting to checkbox options.
+* Sliders: Disabled `loading` override when the AMP plugin is active.
+* Widget Block: Excluded Post Carousel from caching.
+
+= 1.28.0 - 26 December 2021 =
+* Accordion: Set closed panels to hidden prior to loading.
+* Anything Carousel: Added a new Animation setting. Choose between Ease or Linear.
+* Features: Set Feature admin label to Icon title or Title text if available.
+
+= 1.27.0 - 17 December 2021 =
+* Price Table: Added new Header, Featured and Feature text color settings.
+* Slider Widgets: Prevented potential settings migration error.
+* Widget Block: Prevented potential Google Maps error.
+
+= 1.26.1 - 04 December 2021 =
+* Carousels: Renamed `Carousel Settings` to Settings.
+* WPML: Filter posts listed in widget search fields to current page language.
+
+= 1.26.0 - 17 November 2021 =
+* CSS Cache Compatibility: Added support for Breeze and Hummingbird.
+* Anything Carousel: Added a ` Slides to show` setting.
+* Button: Allowed for apostrophes to be used in the `Onclick` field.
+* Hero: Updated buttons to allow the dollar sign to be used.
+* Social Media Buttons: Added the Google network.
+* Widget Block: Resolved potential edge case Google Maps console errors.
+* Widget Block: Minor Icon Widget form styling improvements.
+
+= 1.25.1 - 30 October 2021 =
+* Google Maps: Resolved an unexpected content error when previewing in the Block Editor.
+* Hero: Migrated Text Shadow setting from a 0-1 to a 0-100 range.
+* Sliders: Added a Background video opacity setting for self-hosted and external videos.
+* Video Player: Removed Related Videos setting.
+
+= 1.25.0 - 21 October 2021 =
+* Features: Added a `Link feature column to more URL` setting.
+* Hero and Layout Slider: Moved Layout settings to dedicated section.
+* Hero and Layout Slider: Added padding responsive settings.
+* Image: Added a `Rel` field. The rel attribute specifies the relationship between the current document and the linked document.
+* Image Grid: Added a `Custom Size` option to the `Image size` setting.
+* Post Carousel: Prevented potential overflow on load.
+* Post and Anything Carousel: Changed `Display navigation` label to `Display navigation arrows`.
+* Sliders: Added an `Unmute icon` and `Unmute icon position` for background videos.
+* Developer: Added multiple media repeater support.
+
+= 1.24.0 - 08 October 2021 =
+* Anything Carousel: Set wrapper to full-width to avoid a potential sizing issue.
+* Anything Carousel: Prevented the Widget Styles - Link Color setting from overriding `Arrows color`.
+* Anything Carousel: Prevented active navigation dot from displaying a cursor on hover.
+* Anything Carousel: Ensured navigation dot activation correct when viewing the last item.
+* Button: Prevented potential error by ensuring `$instance` is not empty before modifying it.
+* Google Maps: Changed map setup to allow for greater flexibility.
+* Post and Anything Carousel: Added a Responsive section `Show navigation` setting.
+* Post and Anything Carousel: Migrated design settings to a `Design` section.
+* Slider Widgets: Moved the `Loop slide background videos` to within the frame `Background video` section.
+* Social Media Buttons: Removed the Google+ network.
+* Video Player Widget: Enabled oEmbed for external videos.
+* Slider Background Videos: Mute when autoplay is enabled. Required for video autoplay in Chrome.
+* WPML: Added a translation compatibility XML file. Requires WPML 4.5.
+* Developer: Added a new event for the carousel `carousel_setup`.
 
 = 1.23.1 - 16 August 2021 =
 * Anything Carousel: Set wrapper to full-width to avoid potential sizing issue.

@@ -97,7 +97,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'label' => __( 'Button ID', 'so-widgets-bundle' ),
 						'description' => __( 'An ID attribute allows you to target this button in JavaScript.', 'so-widgets-bundle' ),
 					),
-					'onclick' => array(
+					'on_click' => array(
 						'type'        => 'text',
 						'label'       => __( 'Onclick', 'so-widgets-bundle' ),
 						'description' => __( 'Run this JavaScript when the button is clicked. Ideal for tracking.', 'so-widgets-bundle' ),
@@ -202,6 +202,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'value' => array(
 								'type'  => 'text',
 								'label' => __( 'Value', 'so-widgets-bundle' ),
+							),
+							'default' => array(
+								'type'  => 'checkbox',
+								'label' => __( 'Enabled', 'so-widgets-bundle' ),
+								'state_handler' => array(
+									'field_type_{$repeater}[checkboxes]' => array( 'show' ),
+									'_else[field_type_{$repeater}]'      => array( 'hide' ),
+								),
 							),
 						),
 
@@ -697,22 +705,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_form_teaser() {
-		if ( ! $this->display_siteorigin_premium_teaser() ) {
-			return false;
-		}
-
-		$url = add_query_arg( array(
-			'featured_addon'  => 'plugin/contact-form-fields',
-			'featured_plugin' => 'widgets-bundle'
-		), 'https://siteorigin.com/downloads/premium/' );
-
-		return sprintf(
-			__( 'Get more form fields for the Contact Form Widget in %s', 'so-widgets-bundle' ),
-			'<a href="' . esc_url( $url ) . '" target="_blank" rel="noopener noreferrer">' . __( 'SiteOrigin Premium', 'so-widgets-bundle' ) . '</a>'
-		);
-	}
-
 	function sanitize_multiple_emails( $value ) {
 		$values = explode( ',', $value );
 		foreach ( $values as $i => $email ) {
@@ -769,6 +761,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			);
 		}
 
+		// Migrate onclick setting to prevent Wordfence flag.
+		if (
+			! empty( $instance['settings'] ) &&
+			! empty( $instance['settings']['onclick'] )
+		) {
+			$instance['settings']['on_click'] = $instance['settings']['onclick'];
+		}
+
 		return $instance;
 	}
 
@@ -790,7 +790,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		return array(
 			'instance_hash' => $instance_hash,
 			'submit_attributes' => $submit_attributes,
-			'onclick' => ! empty( $instance['settings']['onclick'] ) ? $instance['settings']['onclick'] : '',
+			'onclick' => ! empty( $instance['settings']['on_click'] ) ? $instance['settings']['on_click'] : '',
 		);
 	}
 
@@ -1391,6 +1391,22 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 
 		return apply_filters( 'siteorigin_widgets_contact_default_email', 'wordpress@' . $sitename );
+	}
+
+	function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+		return array(
+			sprintf(
+				__( 'Add a form autoresponder and additional fields, including a date and time picker with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/contact-form-fields" target="_blank">',
+				'</a>'
+			),
+			sprintf(
+				__( 'Use Google Fonts right inside the Contact Form Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/contact-form-fields" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
+		);
 	}
 
 }

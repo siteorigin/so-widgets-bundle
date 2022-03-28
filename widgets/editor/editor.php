@@ -83,7 +83,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 				$instance['text'] = $markdown_parser->transform( $instance['text'] );
 			}
 
-			// Run some known stuff
+			// Run some known stuff.
 			if( ! empty( $GLOBALS['wp_embed'] ) ) {
 				$instance['text'] = $GLOBALS['wp_embed']->run_shortcode( $instance['text'] );
 				$instance['text'] = $GLOBALS['wp_embed']->autoembed( $instance['text'] );
@@ -164,13 +164,14 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 		return false;
 	}
 
-	function get_form_teaser(){
-		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
-
-		return sprintf(
-			__( 'Use Google Fonts right inside the Editor Widget using %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/web-font-selector" target="_blank" rel="noopener noreferrer">',
-			'</a>'
+	function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+		return array(
+			sprintf(
+				__( 'Use Google Fonts right inside the Editor Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/web-font-selector" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
 		);
 	}
 }

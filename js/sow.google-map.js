@@ -35,14 +35,14 @@ sowb.SiteOriginGoogleMap = function($) {
 				center: location,
 				mapTypeControlOptions: {
 					mapTypeIds: [
-						google.maps.MapTypeId.ROADMAP,
-						google.maps.MapTypeId.SATELLITE,
+						window.google.maps.MapTypeId.ROADMAP,
+						window.google.maps.MapTypeId.SATELLITE,
 						userMapTypeId
 					]
 				}
 			};
 
-			var map = new google.maps.Map(element, mapOptions);
+			var map = new window.google.maps.Map( element, mapOptions );
 
 			var userMapOptions = {
 				name: options.mapName
@@ -51,14 +51,14 @@ sowb.SiteOriginGoogleMap = function($) {
 			var userMapStyles = options.mapStyles;
 
 			if ( userMapStyles ) {
-				var userMapType = new google.maps.StyledMapType(userMapStyles, userMapOptions);
+				var userMapType = new window.google.maps.StyledMapType( userMapStyles, userMapOptions );
 
 				map.mapTypes.set(userMapTypeId, userMapType);
 				map.setMapTypeId(userMapTypeId);
 			}
 
 			if (options.markerAtCenter) {
-				this.centerMarker = new google.maps.Marker({
+				this.centerMarker = new window.google.maps.Marker( {
 					position: location,
 					map: map,
 					draggable: options.markersDraggable,
@@ -71,10 +71,10 @@ sowb.SiteOriginGoogleMap = function($) {
 
 			if(options.keepCentered) {
 				var center;
-				google.maps.event.addDomListener(map, 'idle', function () {
+				window.google.maps.event.addDomListener( map, 'idle', function() {
 					center = map.getCenter();
 				});
-				google.maps.event.addDomListener(window, 'resize', function () {
+				window.google.maps.event.addDomListener( window, 'resize', function() {
 					map.setCenter(center);
 				});
 			}
@@ -118,7 +118,7 @@ sowb.SiteOriginGoogleMap = function($) {
 					}
 				}.bind( this ) );
 
-				google.maps.event.addDomListener( autocompleteElement, 'keypress', function ( event ) {
+				window.google.maps.event.addDomListener( autocompleteElement, 'keypress', function( event ) {
 					var key = event.keyCode || event.which;
 					if ( key === '13' ) {
 						event.preventDefault();
@@ -146,7 +146,7 @@ sowb.SiteOriginGoogleMap = function($) {
 
 				var revGeocode = function ( latLng ) {
 					this.getGeocoder().geocode( { location: latLng }, function ( results, status ) {
-						if ( status === google.maps.GeocoderStatus.OK ) {
+						if ( status === window.google.maps.GeocoderStatus.OK ) {
 							if ( results.length > 0 ) {
 								var addr = results[ 0 ].formatted_address;
 								$autocompleteElement.val( addr );
@@ -193,7 +193,7 @@ sowb.SiteOriginGoogleMap = function($) {
 							mrkerIcon = customIcon;
 						}
 
-						var marker = new google.maps.Marker( {
+						var marker = new window.google.maps.Marker( {
 							position: location,
 							map: map,
 							draggable: options.markersDraggable,
@@ -210,7 +210,7 @@ sowb.SiteOriginGoogleMap = function($) {
 							
 							var infoDisplay = options.markerInfoDisplay;
 							infoWindowOptions.disableAutoPan = infoDisplay === 'always';
-							var infoWindow = new google.maps.InfoWindow( infoWindowOptions );
+							var infoWindow = new window.google.maps.InfoWindow( infoWindowOptions );
 							this.infoWindows.push( infoWindow );
 							var openEvent = infoDisplay;
 							if ( infoDisplay === 'always' ) {
@@ -241,7 +241,7 @@ sowb.SiteOriginGoogleMap = function($) {
 						}
 					}.bind( this ) )
 					.fail( function ( errorStatus ) {
-						overQuota = errorStatus === google.maps.GeocoderStatus.OVER_QUERY_LIMIT;
+						overQuota = errorStatus === window.google.maps.GeocoderStatus.OVER_QUERY_LIMIT;
 						console.log( errorStatus );
 					} );
 				}.bind( this );
@@ -278,10 +278,10 @@ sowb.SiteOriginGoogleMap = function($) {
 					);
 				}
 
-				var directionsRenderer = new google.maps.DirectionsRenderer();
+				var directionsRenderer = new window.google.maps.DirectionsRenderer();
 				directionsRenderer.setMap(map);
 
-				var directionsService = new google.maps.DirectionsService();
+				var directionsService = new window.google.maps.DirectionsService();
 				directionsService.route({
 						origin: directions.origin,
 						destination: directions.destination,
@@ -292,7 +292,7 @@ sowb.SiteOriginGoogleMap = function($) {
 						optimizeWaypoints: directions.optimizeWaypoints,
 					},
 					function(result, status) {
-						if (status === google.maps.DirectionsStatus.OK) {
+						if ( status === window.google.maps.DirectionsStatus.OK ) {
 							directionsRenderer.setOptions( { preserveViewport: directions.preserveViewport } );
 							directionsRenderer.setDirections(result);
 						}
@@ -308,12 +308,12 @@ sowb.SiteOriginGoogleMap = function($) {
 			} else {
 				$autoCompleteFields.each(function (index, element) {
 
-					if ( typeof google.maps.places === 'undefined' ) {
+					if ( typeof window.google.maps.places === 'undefined' ) {
 						autoCompleteInit.reject('Sorry, we couldn\'t load the "places" library due to another plugin, so the autocomplete feature is not available.');
 						return;
 					}
 
-					var autocomplete = new google.maps.places.Autocomplete( element );
+					var autocomplete = new window.google.maps.places.Autocomplete( element );
 
 					var $mapField = $(element).siblings('.sow-google-map-canvas');
 
@@ -374,7 +374,7 @@ sowb.SiteOriginGoogleMap = function($) {
 		},
 		getGeocoder: function () {
 			if ( !this._geocoder ) {
-				this._geocoder = new google.maps.Geocoder();
+				this._geocoder = new window.google.maps.Geocoder();
 			}
 			return this._geocoder;
 		},
@@ -388,7 +388,7 @@ sowb.SiteOriginGoogleMap = function($) {
 				// A latlng value should be of the format 'lat,lng' or '(lat,lng)'
 				var vals = inputLocation.replace(/[\(\)]/g, '').split( ',' );
 				if ( vals && vals.length === 2 ) {
-					latLng = new google.maps.LatLng( vals[ 0 ], vals[ 1 ] );
+					latLng = new window.google.maps.LatLng( vals[0], vals[1] );
 					// Let the API decide if we have a valid latlng
 					// This should fail if the input is an address containing a comma
 					// e.g. 123 Sesame Street, Middleburg, FL, United States
@@ -410,9 +410,9 @@ sowb.SiteOriginGoogleMap = function($) {
 				}
 				var gecodeIteration = 0;
 				var onGeocodeResults = function ( results, status ) {
-					if ( status === google.maps.GeocoderStatus.OK ) {
+					if ( status === window.google.maps.GeocoderStatus.OK ) {
 						locationPromise.resolve( results[ 0 ].geometry.location );
-					} else if ( status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT ) {
+					} else if ( status === window.google.maps.GeocoderStatus.OVER_QUERY_LIMIT ) {
 						//We make 3 attempts, otherwise we assume we've reached the quota limit and stop trying.
 						if ( ++gecodeIteration < 3 ) {
 							setTimeout( function () {
@@ -422,8 +422,8 @@ sowb.SiteOriginGoogleMap = function($) {
 							locationPromise.reject( status );
 						}
 					} else if (
-						status === google.maps.GeocoderStatus.ZERO_RESULTS ||
-						status === google.maps.GeocoderStatus.OVER_DAILY_LIMIT
+						status === window.google.maps.GeocoderStatus.ZERO_RESULTS ||
+						status === window.google.maps.GeocoderStatus.OVER_DAILY_LIMIT
 					) {
 						locationPromise.reject( status );
 					}
@@ -437,98 +437,161 @@ sowb.SiteOriginGoogleMap = function($) {
 
 // Called by Google Maps API when it has loaded.
 function soGoogleMapInitialize() {
-	new sowb.SiteOriginGoogleMap(jQuery).initMaps();
+	jQuery( window.sowb ).trigger( 'sow-google-map-loaded' );
 }
 
-jQuery(function ($) {
+jQuery( window.sowb ).on( 'sow-google-map-loaded', function() {
+	new sowb.SiteOriginGoogleMap(jQuery).initMaps();
+} );
 
-	sowb.setupGoogleMaps = function() {
-		var libraries = [];
-		var apiKey;
-		var $mapCanvas = $('.sow-google-map-canvas');
+
+jQuery(function ($) {
+	sowb.googleMapsData = [];
+	sowb.googleMapsData.libraries = [];
+	sowb.setupGoogleMaps = function( e, forceLoad = false  ) {
+		var $mapCanvas = $( '.sow-google-map-canvas' );
 		if ( ! $mapCanvas.length ) {
 			return;
 		}
+
+		// Account for situation where widget preview is loaded before the location field.
+		if ( $( 'body.wp-admin' ).length ) {
+			sowb.googleMapsData.libraries.push( 'places' );
+		}
+
 		$mapCanvas.each(function(index, element) {
 			var $this = $(element);
-			if ( ! $this.parent().is( ':visible' ) || $this.data( 'apiInitialized' ) ) {
+			if ( $this.data( 'apiInitialized' ) ) {
 				return $this;
 			}
 			var mapOptions = $this.data( 'options' );
 			if ( mapOptions) {
-				if( typeof mapOptions.libraries !== 'undefined' && mapOptions.libraries !== null ) {
-					libraries = libraries.concat(mapOptions.libraries);
+				if ( typeof mapOptions.libraries !== 'undefined' && mapOptions.libraries !== null ) {
+					sowb.googleMapsData.libraries = sowb.googleMapsData.libraries.concat( mapOptions.libraries );
 				}
-				if( !apiKey && mapOptions.apiKey ) {
-					apiKey = mapOptions.apiKey;
+				if ( ! sowb.googleMapsData.apiKey && mapOptions.apiKey ) {
+					sowb.googleMapsData.apiKey = mapOptions.apiKey;
 				}
 			}
 			$this.data( 'apiInitialized', true );
 		});
-		
-		var mapsApiLoaded = typeof window.google !== 'undefined' && typeof window.google.maps !== 'undefined';
-		if ( sowb.mapsApiInitialized ) {
-			var timeoutId = setTimeout( function () {
-				if ( mapsApiLoaded ) {
-					clearTimeout( timeoutId );
+
+		if ( typeof window.google === 'undefined' ) {
+			window.google = {};
+		}
+
+		if (
+			forceLoad ||
+			typeof window.google.maps === 'undefined'
+		) {
+			// If this is an admin preview, and the API has already been setup,
+			// skip any further API checks to confirm it's working and set it up.
+			if ( $( 'body.wp-admin' ).length && $( '#sow-google-maps-js' ).length ) {
+				setTimeout( function() {
 					soGoogleMapInitialize();
-				}
-			}, 100 );
-		} else {
-			
-			if ( ! apiKey ) {
-				console.warn( 'SiteOrigin Google Maps: Could not find API key. Google Maps API key is required.' );
-				apiKey = '';
-			}
-			
-			// Try to load even if API key is missing to allow Google Maps API to provide it's own warnings/errors about missing API key.
-			var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&callback=soGoogleMapInitialize';
-
-			if ( libraries && libraries.length ) {
-				apiUrl += '&libraries=' + libraries.join(',');
-			}
-
-
-			// This allows us to "catch" Google Maps JavaScript API errors and do a bit of custom handling. In this case,
-			// we display a user-specified fallback image if there is one.
-			if ( window.console && window.console.error ) {
-				var errLog = window.console.error;
-
-				sowb.onLoadMapsApiError = function ( error ) {
-					var matchError;
-					if ( typeof error === 'string' ) {
-						matchError = error.match( /^Google Maps API (error|warning): ([^\s]*)\s([^\s]*)(?:\s(.*))?/ );
-					}
-					if ( matchError && matchError.length && matchError[0] ) {
-						$( '.sow-google-map-canvas' ).each( function ( index, element ) {
-							var $this = $( element );
-							if ( $this.data( 'fallbackImage' ) ) {
-								var imgData = $this.data( 'fallbackImage' );
-								if ( imgData.hasOwnProperty( 'img' ) ) {
-									$this.append( imgData.img );
-								}
-							}
-						} );
-					}
-					errLog.apply( window.console, arguments );
-				};
-
-				window.console.error = sowb.onLoadMapsApiError;
-			}
-
-			if ( soWidgetsGoogleMap.map_consent ) {
-				$( '.sow-google-map-consent button' ).on( 'click', function() {
-					$( '.sow-google-map-consent' ).remove();
-					$( '.sow-google-map-canvas' ).show();
-					$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );
-					sowb.mapsApiInitialized = true;
-				} );
+				}, 250 );
 			} else {
-				$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );
-				sowb.mapsApiInitialized = true;
+				sowb.loadGoogleMapsAPI( forceLoad );
+				// Ensure Google Maps is loaded before using it.
+				sowb.googleMapsData.timer = setInterval( function () {
+					var clearTimer = false;
+					// Check if there been an error.
+					sowb.googleMapsData.ApiError = true;
+					if (
+						typeof sowb.googleMapsData.ApiError !== 'undefined' &&
+						sowb.googleMapsData.ApiError
+					) {
+						clearTimer = true;
+					}
+					if (
+						! clearTimer &&
+						typeof window.google.maps !== 'undefined'
+					) {
+						clearTimer = true;
+						soGoogleMapInitialize();
+					}
+
+					if ( clearTimer ) {
+						clearInterval( sowb.googleMapsData.timer );
+					}
+				}, 250 );
 			}
 		}
 	};
+
+	// Generate Google Maps API URL and add load it.
+	sowb.loadGoogleMapsAPI = function( forceLoad = false ) {
+		// If there was an error (or this is being forced), remove any previous
+		// attempts to load the API.
+		if (
+			$( '#sow-google-maps-js' ).length &&
+			(
+				forceLoad ||
+				(
+					typeof sowb.googleMapsData.ApiError !== 'undefined' &&
+					sowb.googleMapsData.ApiError
+				)
+			)
+		) {
+			$( '#sow-google-maps-js' ).remove();
+		}
+			
+		if ( ! sowb.googleMapsData.apiKey ) {
+			console.warn( 'SiteOrigin Google Maps: Could not find API key. Google Maps API key is required.' );
+		}
+		
+		// Try to load even if API key is missing to allow Google Maps API to provide it's own warnings/errors about missing API key.
+		// var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + sowb.googleMapsData.apiKey;
+		var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + sowb.googleMapsData.apiKey + '&callback=soGoogleMapInitialize';
+
+		if ( sowb.googleMapsData.libraries && sowb.googleMapsData.libraries.length ) {
+			apiUrl += '&libraries=' + sowb.googleMapsData.libraries.join( ',' );
+		}
+
+		// This allows us to "catch" Google Maps JavaScript API errors and do a bit of custom handling. In this case,
+		// we display a user-specified fallback image if there is one.
+		if ( window.console && window.console.error ) {
+			var errLog = window.console.error;
+			sowb.googleMapsData.ApiError = false;
+
+			sowb.onLoadMapsApiError = function( error ) {
+				var matchError;
+				if ( typeof error === 'string' ) {
+					matchError = error.match( /^Google Maps API (error|warning): ([^\s]*)\s([^\s]*)(?:\s(.*))?/ );
+				}
+				if ( matchError && matchError.length && matchError[0] ) {
+					$( '.sow-google-map-canvas' ).each( function( index, element ) {
+						var $this = $( element );
+						if ( $this.data( 'fallbackImage' ) ) {
+							var imgData = $this.data( 'fallbackImage' );
+							if ( imgData.hasOwnProperty( 'img' ) ) {
+								$this.append( imgData.img );
+							}
+						}
+					} );
+					sowb.googleMapsData.ApiError = true;
+				}
+				errLog.apply( window.console, arguments );
+			};
+
+			window.console.error = sowb.onLoadMapsApiError;
+		}
+		if ( soWidgetsGoogleMap.map_consent ) {
+			// Remove previous map consent setup.
+			if ( forceLoad ) {
+				$( '.sow-google-map-consent button' ).off( 'click' );
+			}
+			$( '.sow-google-map-consent button' ).on( 'click', function() {
+				$( '.sow-google-map-consent' ).remove();
+				$( '.sow-google-map-canvas' ).show();
+				$( 'body' ).append( '<script async type="text/javascript" id="sow-google-maps-js" src="' + apiUrl + '">' );
+				sowb.mapsApiInitialized = true;
+			} );
+		} else {
+			$( 'body' ).append( '<script async type="text/javascript" id="sow-google-maps-js" src="' + apiUrl + '">' );
+			sowb.mapsApiInitialized = true;
+		}
+	}
 	sowb.setupGoogleMaps();
 
 	$( sowb ).on( 'setup_widgets', sowb.setupGoogleMaps );

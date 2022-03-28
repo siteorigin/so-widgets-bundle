@@ -40,15 +40,6 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		);
 	}
 
-	function override_carousel_settings() {
-		return array(
-			'slides_to_scroll_text' => array(
-				'label' => __( 'Slides to show ', 'so-widgets-bundle' ),
-				'description' => __( 'The number of slides to show on %s.', 'so-widgets-bundle' ),
-			),
-		);
-	}
-
 	function get_widget_form() {
 		$useable_units = array(
 			'px',
@@ -175,6 +166,27 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		);
 	}
 
+	function modify_instance( $instance ) {
+		if ( empty( $instance ) ) {
+			return array();
+		}
+
+		// If slides_to_scroll existed (regardless of value) prior to the introduction 
+		// of slides_to_show, set slides_to_scroll to slides_to_show to prevent unintended change.
+		if (
+			! empty( $instance['responsive'] ) &&
+			! empty( $instance['responsive']['desktop'] ) &&
+			! isset( $instance['responsive']['desktop']['slides_to_show'] )
+		) {
+			$instance['responsive']['desktop']['slides_to_show'] = $instance['responsive']['desktop']['slides_to_scroll'];
+			$instance['responsive']['tablet']['landscape']['slides_to_show'] = $instance['responsive']['tablet']['landscape']['slides_to_scroll'];
+			$instance['responsive']['tablet']['portrait']['slides_to_show'] = $instance['responsive']['tablet']['portrait']['slides_to_scroll'];
+			$instance['responsive']['mobile']['slides_to_show'] = $instance['responsive']['mobile']['slides_to_scroll'];	
+		}
+
+		return $instance;
+	}
+
 	function get_style_name( $instance ) {
 		return empty( $instance['design']['theme'] ) ? 'base' : $instance['design']['theme'];
 	}
@@ -215,6 +227,8 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 			$less_vars['item_font_weight'] = $item_font['weight_raw'];
 		}
 
+		$less_vars = $this->responsive_less_variables( $less_vars, $instance );
+
 		return $less_vars;
 	}
 
@@ -224,6 +238,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 				'title' => $instance['title'],
 				'item_template' => plugin_dir_path( __FILE__ ) . 'tpl/item.php',
 				'navigation' => 'side',
+				'navigation_arrows' => isset( $instance['carousel_settings']['arrows'] ) ? $instance['carousel_settings']['arrows'] : true,
 				'item_title_tag' => $instance['design']['item_title']['tag'],
 				'items' => ! empty( $instance['items'] ) ? $instance['items'] : array(),
 				'attributes' => array(
@@ -247,7 +262,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		}
 
 		return sprintf(
-			__( 'Add widgets and layouts to your carousel items with %sSiteOrigin Premium%s.', 'so-widgets-bundle' ),
+			__( 'Add widgets and layouts to your carousel items with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/carousel" target="_blank" rel="noopener noreferrer">',
 			'</a>'
 		);

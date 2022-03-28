@@ -25,13 +25,39 @@ sowb.SiteOriginSlider = function($) {
 			var
 				sentinel = $(slider).find('.cycle-sentinel'),
 				active = $(newActive),
-				video = active.find('video.sow-background-element');
+				video = active.find('video.sow-background-element'),
+				$unmuteButton = $( slider ).prev();
 
 			if( speed === undefined ) {
 				sentinel.css( 'height', active.outerHeight() + 'px' );
 			}
 			else {
 				sentinel.animate( {height: active.outerHeight()}, speed );
+			}
+
+			// Hide the unmute button as needed.
+			if ( $unmuteButton.length ) {
+				// Mute all slide videos.
+				$( slider ).find( '.sow-slider-image > video' ).prop( 'muted', true );
+
+				var $activeSlideVideo = active.find( '> video' );
+				if ( $activeSlideVideo.length ) {
+					$unmuteButton.clearQueue().fadeIn( speed );
+
+					var settings = $unmuteButton.siblings( '.sow-slider-images').data( 'settings' );
+					// Unmute video if previously unmuted.
+					if ( $activeSlideVideo.hasClass( 'sow-player-unmuted' ) ) {
+						$activeSlideVideo.prop( 'muted', false );
+						$unmuteButton.addClass( 'sow-player-unmuted' );
+						// Let screen readers know how to handle this button.
+						$unmuteButton.attr( 'aria-label', settings.muteLoc );
+					} else {
+						$unmuteButton.removeClass( 'sow-player-unmuted' );
+						$unmuteButton.attr( 'aria-label', settings.unmuteLoc );
+					}
+				} else {
+					$unmuteButton.clearQueue().fadeOut( speed );
+				}
 			}
 
 			if( video.length ) {
@@ -254,6 +280,30 @@ jQuery( function($){
 						}
 					}
 				);
+
+				if ( settings.unmute ) {
+					$base.find( '.sow-player-controls-sound' ).on( 'click', function() {
+						var $sc = $( this ),
+							$activeSlideVideo = $sc.next().find( '.cycle-slide-active > video' );
+
+						$activeSlideVideo.prop( 'muted',
+							! $activeSlideVideo.prop( 'muted' )
+						);
+
+						if ( ! $activeSlideVideo.prop( 'muted' ) ) {
+							// Used for changing the text/icon of mute button.
+							$sc.addClass( 'sow-player-unmuted' );
+							// State tracking.
+							$activeSlideVideo.addClass( 'sow-player-unmuted' );
+							// Let screen readers know how to handle this button.
+							$sc.attr( 'aria-label', settings.muteLoc );
+						} else {
+							$sc.removeClass( 'sow-player-unmuted' );
+							$activeSlideVideo.removeClass( 'sow-player-muted' );
+							$sc.attr( 'aria-label', settings.unmuteLoc );
+						}
+					} );
+				}
 			};
 
 			var images = $$.find( 'img.sow-slider-background-image, img.sow-slider-foreground-image' );

@@ -11,6 +11,7 @@
 		var $undoLink = $presetSelect.find( '+ .sowb-presets-field-undo' );
 		$undoLink.hide();
 
+		var onLoadTrigger = false;
 		var addingDefault = false;
 		var presets = $presetSelect.data( 'presets' );
 		$presetSelect.on( 'change', function() {
@@ -18,9 +19,9 @@
 			if ( selectedPreset && presets.hasOwnProperty( selectedPreset ) ) {
 				var presetValues = presets[ selectedPreset ].values;
 				var $formContainer = $presetSelect.closest( '.siteorigin-widget-form-main' );
-				
+
 				// If we're adding defaults, don't show undo.
-				if ( ! addingDefault) {
+				if ( ! addingDefault && ! onLoadTrigger) {
 					var previousValues = $presetSelect.data( 'previousValues' );
 					if ( ! previousValues ) {
 						var presetClone = JSON.parse( JSON.stringify( presetValues ) );
@@ -57,19 +58,23 @@
 							$presetSelect.val( '' );
 						} );
 					}
+					sowbForms.setWidgetFormValues( $formContainer, presetValues, true );
 				}
-			
-				sowbForms.setWidgetFormValues( $formContainer, presetValues, true );
+				onLoadTrigger = false;
 			}
 		} );
 
-		// If no value is selected, and there's a default preset, load it.
-		if ( $presetSelect.val() == 'default' && $presetSelect.data( 'default-preset' ) != '' ) {
+		if ( $presetSelect.data( 'default-preset' ) != '' ) {
+			// There's a default preset set, remove the empty default.
 			$( this ).find( 'select[class="siteorigin-widget-input"] option[value="default"]' ).remove();
-			addingDefault = true;
-			$presetSelect.val( $presetSelect.data( 'default-preset' ) );
-			$presetSelect.trigger( 'change' );
+			// If no value is selected, and there's a default preset, load it.
+			if ( $presetSelect.val() == 'default' ) {
+				addingDefault = true;
+				$presetSelect.val( $presetSelect.data( 'default-preset' ) );
+			}
 		}
+		onLoadTrigger = true;
+		$presetSelect.trigger( 'change' );
 
 		$presetSelect.data( 'initialized', true );
 	} );

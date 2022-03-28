@@ -35,6 +35,14 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			)
 		);
 
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_assets' ) );
+	}
+
+	/**
+	 * Allow widgets and other plugins to register assets for this slider.
+	 */
+	function register_assets() {
+		do_action( 'siteorigin_widgets_carousel_register_assets', $this );
 	}
 
 	/**
@@ -66,10 +74,26 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 					'tablet_portrait' => 2,
 					'mobile' => 1,
 				),
-				'slides_to_scroll_text' => array(
-					'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
-					'description' => __( 'Set the number of slides to scroll per navigation click or swipe on %s', 'so-widgets-bundle' ),
+				'slides_to_show' => array(
+					'desktop' => 3,
+					'tablet_landscape' => 3,
+					'tablet_portrait' => 2,
+					'mobile' => 1,
 				),
+				'navigation' => array(
+					'desktop' => true,
+					'tablet_landscape' => true,
+					'tablet_portrait' => true,
+					'mobile' => true,
+				),
+				'navigation_label' => __( 'Navigation arrows', 'so-widgets-bundle' ),
+				'navigation_dots' => array(
+					'desktop' => true,
+					'tablet_landscape' => true,
+					'tablet_portrait' => true,
+					'mobile' => true,
+				),
+				'navigation_dots_label' => __( 'Navigation dots', 'so-widgets-bundle' ),
 			)
 		);
 	}
@@ -97,21 +121,57 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 				$section['fields'][ $sub_field_key ] = $this->add_section_group( $sub_field, $value_type );
 			}
 		} else {
-			$section['fields']['slides_to_scroll'] =  array(
-				'type' => 'number',
-				'label' => $carousel_settings['slides_to_scroll_text']['label'],
-				'description' => sprintf(
-					$carousel_settings['slides_to_scroll_text']['description'],
-					strtolower( $field['label'] )
-				),
-				$value_type => $field['value'],
-			);
-
 			if ( isset( $field['breakpoint'] ) ) {
 				$section['fields']['breakpoint'] = array(
 					'type' => 'number',
 					'label' => __( 'Breakpoint', 'so-widgets-bundle' ),
 					$value_type => $field['breakpoint'],
+				);
+			}
+
+			$section['fields']['slides_to_scroll'] = array(
+				'type' => 'number',
+				'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
+				'description' => sprintf(
+					__( 'Set the number of slides to scroll per navigation click or swipe on %s', 'so-widgets-bundle' ),
+					strtolower( $field['label'] )
+				),
+				$value_type => $field['slides_to_scroll'],
+			);
+
+			if ( ! empty( $carousel_settings['slides_to_show'] ) ) {
+				$section['fields']['slides_to_show'] = array(
+					'type' => 'number',
+					'label' => __( 'Slides to show ', 'so-widgets-bundle' ),
+					'description' => sprintf(
+						__( 'The number of slides to show on %s.', 'so-widgets-bundle' ),
+						strtolower( $field['label'] )
+					),
+					$value_type => $field['slides_to_show'],
+				);
+			}
+
+			if ( isset( $field['navigation'] ) && ! empty( $carousel_settings['navigation_label'] ) ) {
+				$section['fields']['navigation'] = array(
+					'type' => 'checkbox',
+					'label' => $carousel_settings['navigation_label'],
+					'default' => $field['navigation'],
+					'state_handler' => array(
+						'nav_arrows[show]' => array( 'show' ),
+						'nav_arrows[hide]' => array( 'hide' ),
+					),
+				);
+			}
+
+			if ( isset( $field['navigation_dots'] )  && ! empty( $carousel_settings['navigation_dots_label'] ) ) {
+				$section['fields']['navigation_dots'] = array(
+					'type' => 'checkbox',
+					'label' => $carousel_settings['navigation_dots_label'],
+					'default' => $field['navigation'],
+					'state_handler' => array(
+						'nav_dots[show]' => array( 'show' ),
+						'nav_dots[hide]' => array( 'hide' ),
+					),
 				);
 			}
 		}
@@ -129,7 +189,9 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		$fields = array(
 			'desktop' => array(
 				'label' => __( 'Desktop', 'so-widgets-bundle' ),
-				'value' => $carousel_settings['slides_to_scroll']['desktop'],
+				'slides_to_scroll' => $carousel_settings['slides_to_scroll']['desktop'],
+				'navigation' => $carousel_settings['navigation']['desktop'],
+				'navigation_dots' => $carousel_settings['navigation_dots']['desktop'],
 			),
 			'tablet' => array(
 				'label' => __( 'Tablet', 'so-widgets-bundle' ),
@@ -137,21 +199,35 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 					'landscape' => array(
 						'label' => __( 'Landscape', 'so-widgets-bundle' ),
 						'breakpoint' => $carousel_settings['breakpoints']['tablet_landscape'],
-						'value' => $carousel_settings['slides_to_scroll']['tablet_landscape'],
+						'slides_to_scroll' => $carousel_settings['slides_to_scroll']['tablet_landscape'],
+						'navigation' => $carousel_settings['navigation']['tablet_landscape'],
+						'navigation_dots' => $carousel_settings['navigation_dots']['tablet_landscape'],
 					),
 					'portrait' => array(
 						'label' => __( 'Portrait', 'so-widgets-bundle' ),
 						'breakpoint' => $carousel_settings['breakpoints']['tablet_portrait'],
-						'value' => $carousel_settings['slides_to_scroll']['tablet_portrait'],
+						'slides_to_scroll' => $carousel_settings['slides_to_scroll']['tablet_portrait'],
+						'navigation' => $carousel_settings['navigation']['tablet_portrait'],
+						'navigation_dots' => $carousel_settings['navigation_dots']['tablet_portrait'],
 					),
 				),
 			),
 			'mobile' => array(
 				'label' => __( 'Mobile', 'so-widgets-bundle' ),
 				'breakpoint' => $carousel_settings['breakpoints']['mobile'],
-				'value' => $carousel_settings['slides_to_scroll']['mobile'],
+				'slides_to_scroll' => $carousel_settings['slides_to_scroll']['mobile'],
+				'navigation' => $carousel_settings['navigation']['mobile'],
+				'navigation_dots' => $carousel_settings['navigation_dots']['mobile'],
 			),
 		);
+
+		// Add slides to show settings if this widget uses them.
+		if ( ! empty( $carousel_settings['slides_to_show'] ) ) {
+			$fields['desktop']['slides_to_show'] = $carousel_settings['slides_to_show']['desktop'];
+			$fields['tablet']['fields']['landscape']['slides_to_show'] = $carousel_settings['slides_to_show']['tablet_landscape'];
+			$fields['tablet']['fields']['portrait']['slides_to_show'] = $carousel_settings['slides_to_show']['tablet_portrait'];
+			$fields['mobile']['slides_to_show'] = $carousel_settings['slides_to_show']['mobile'];
+		}
 
 		$generated_fields = array();
 		foreach ( $fields as $field_key => $field ) {
@@ -167,9 +243,10 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 	}
 
 	function carousel_settings_form_fields() {
-		return array(
+		$carousel_settings = $this->get_carousel_settings();
+		$fields = array(
 			'type' => 'section',
-			'label' => __( 'Carousel Settings', 'so-widgets-bundle' ),
+			'label' => __( 'Settings', 'so-widgets-bundle' ),
 			'hide' => true,
 			'fields' => array(
 				'loop' => array(
@@ -177,10 +254,46 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 					'label' => __( 'Loop Items', 'so-widgets-bundle' ),
 					'description' => __( 'Automatically return to the first item after the last item.', 'so-widgets-bundle' ),
 					'default' => true,
+					'state_emitter' => array(
+						'callback' => 'conditional',
+						'args' => array(
+							'loop_posts[show]: val',
+							'loop_posts[hide]: ! val',
+						),
+					),
 				),
 				'dots' => array(
 					'type' => 'checkbox',
 					'label' => __( 'Navigation dots', 'so-widgets-bundle' ),
+					'default' => true,
+					'state_emitter' => array(
+						'callback' => 'conditional',
+						'args' => array(
+							'nav_dots[show]: val',
+							'nav_dots[hide]: ! val',
+						),
+					),
+				),
+				'arrows' => array(
+					'type' => 'checkbox',
+					'label' => __( 'Navigation arrows', 'so-widgets-bundle' ),
+					'default' => true,
+					'state_emitter' => array(
+						'callback' => 'conditional',
+						'args' => array(
+							'nav_arrows[show]: val',
+							'nav_arrows[hide]: ! val',
+						),
+					),
+				),
+				'animation' => array(
+					'type' => 'select',
+					'label' => __( 'Animation', 'so-widgets-bundle' ),
+					'default' => 'Ease',
+					'options' => array(
+						'ease' => __( 'Ease', 'so-widgets-bundle' ),
+						'linear' => __( 'Linear', 'so-widgets-bundle' ),
+					),
 				),
 				'animation_speed' => array(
 					'type' => 'number',
@@ -192,7 +305,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 					'label' => __( 'Autoplay', 'so-widgets-bundle' ),
 					'state_emitter' => array(
 						'callback' => 'conditional',
-						'args'     => array(
+						'args' => array(
 							'autoplay[show]: val',
 							'autoplay[hide]: ! val',
 						),
@@ -218,6 +331,16 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 				),
 			),
 		);
+
+		if ( ! isset( $carousel_settings['navigation'] ) || empty( $carousel_settings['navigation_label'] ) ) {
+			unset( $fields['fields']['arrows'] );
+		}
+
+		if ( ! isset( $carousel_settings['navigation_dots'] )  || empty( $carousel_settings['navigation_dots_label'] ) ) {
+			unset( $fields['fields']['dots'] );
+		}
+
+		return $fields;
 	}
 
 
@@ -280,26 +403,59 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		$carousel_settings = $this->get_carousel_settings();
 
 		$variables = array(
-			'desktop_slides' => ! empty( $responsive['desktop']['slides_to_scroll'] ) ? $responsive['desktop']['slides_to_scroll'] : $carousel_settings['slides_to_scroll']['desktop'],
+			'desktop_slides_to_scroll' => ! empty( $responsive['desktop']['slides_to_scroll'] ) ? $responsive['desktop']['slides_to_scroll'] : $carousel_settings['slides_to_scroll']['desktop'],
 			'tablet_landscape_breakpoint' => ! empty( $responsive['tablet']['landscape']['breakpoint'] ) ? $responsive['tablet']['landscape']['breakpoint'] : $carousel_settings['breakpoints']['tablet_landscape'],
-			'tablet_landscape_slides' => ! empty( $responsive['tablet']['landscape']['slides_to_scroll'] ) ? $responsive['tablet']['landscape']['slides_to_scroll'] : $carousel_settings['slides_to_scroll']['tablet_landscape'],
+			'tablet_landscape_slides_to_scroll' => ! empty( $responsive['tablet']['landscape']['slides_to_scroll'] ) ? $responsive['tablet']['landscape']['slides_to_scroll'] : $carousel_settings['slides_to_scroll']['tablet_landscape'],
 			'tablet_portrait_breakpoint' => ! empty( $responsive['tablet']['portrait']['breakpoint'] ) ? $responsive['tablet']['portrait']['breakpoint'] : $carousel_settings['breakpoints']['tablet_portrait'],
-			'tablet_portrait_slides' => ! empty( $responsive['tablet']['portrait']['slides_to_scroll'] ) ? $responsive['tablet']['portrait']['slides_to_scroll'] : $carousel_settings['slides_to_scroll']['tablet_portrait'],
+			'tablet_portrait_slides_to_scroll' => ! empty( $responsive['tablet']['portrait']['slides_to_scroll'] ) ? $responsive['tablet']['portrait']['slides_to_scroll'] : $carousel_settings['slides_to_scroll']['tablet_portrait'],
 			'mobile_breakpoint' => ! empty( $responsive['mobile']['breakpoint'] ) ? $responsive['mobile']['breakpoint'] : $carousel_settings['breakpoints']['mobile'],
-			'mobile_slides' => ! empty( $responsive['mobile']['slides_to_scroll'] ) ? $responsive['mobile']['slides_to_scroll'] : $carousel_settings['slides_to_scroll']['mobile'],
+			'mobile_slides_to_scroll' => ! empty( $responsive['mobile']['slides_to_scroll'] ) ? $responsive['mobile']['slides_to_scroll'] : $carousel_settings['slides_to_scroll']['mobile'],
 		);
 
+		if ( ! empty( $carousel_settings['slides_to_show'] ) ) {
+			$variables['desktop_slides_to_show'] = ! empty( $responsive['desktop']['slides_to_show'] ) ? $responsive['desktop']['slides_to_show'] : $carousel_settings['slides_to_show']['desktop'];
+			$variables['tablet_landscape_slides_to_show'] = ! empty( $responsive['tablet']['landscape']['slides_to_show'] ) ? $responsive['tablet']['landscape']['slides_to_show'] : $carousel_settings['slides_to_show']['tablet_landscape'];
+			$variables['tablet_portrait_slides_to_show'] = ! empty( $responsive['tablet']['portrait']['slides_to_show'] ) ? $responsive['tablet']['portrait']['slides_to_show'] : $carousel_settings['slides_to_show']['tablet_portrait'];
+			$variables['mobile_slides_to_show'] = ! empty( $responsive['mobile']['slides_to_show'] ) ? $responsive['mobile']['slides_to_show'] : $carousel_settings['slides_to_show']['mobile'];
+		}
+
 		return $encode ? json_encode( $variables ) : $variables;
+	}
+
+	function responsive_less_variables( $less_vars, $instance ) {
+		$carousel_settings = $this->get_carousel_settings();
+
+		// Breakpoint.
+		$less_vars['breakpoint_tablet_landscape'] = ( ! empty( $instance['responsive']['tablet_landscape']['breakpoint'] ) ? $instance['responsive']['tablet_landscape']['breakpoint'] : $carousel_settings['breakpoints']['tablet_landscape'] ) .'px';
+		$less_vars['breakpoint_tablet_portrait'] = ( ! empty( $instance['responsive']['tablet_portrait']['breakpoint'] ) ? $instance['responsive']['tablet_portrait']['breakpoint'] : $carousel_settings['breakpoints']['tablet_portrait'] ) .'px';
+		$less_vars['breakpoint_mobile'] = ( ! empty( $instance['responsive']['mobile']['breakpoint'] ) ? $instance['responsive']['mobile']['breakpoint'] : $carousel_settings['breakpoints']['mobile'] ) .'px';
+
+		// Navigation.
+		$less_vars['navigation_arrows'] = isset( $instance['carousel_settings']['arrows'] ) ? ! empty( $instance['carousel_settings']['arrows'] ) : $carousel_settings['carousel_settings']['arrows'];
+		$less_vars['navigation_desktop'] = isset( $instance['responsive']['desktop']['navigation'] ) ? ! empty( $instance['responsive']['desktop']['navigation'] ) : $carousel_settings['navigation']['desktop'];
+		$less_vars['navigation_tablet_landscape'] = isset( $instance['responsive']['tablet']['landscape']['navigation'] ) ? ! empty( $instance['responsive']['tablet']['landscape']['navigation'] ) : $carousel_settings['navigation']['tablet_landscape'];
+		$less_vars['navigation_tablet_portrait'] = isset( $instance['responsive']['tablet']['portrait']['navigation'] ) ? ! empty( $instance['responsive']['tablet']['portrait']['navigation'] ) : $carousel_settings['navigation']['tablet_portrait'];
+		$less_vars['navigation_mobile'] = isset( $instance['responsive']['mobile']['navigation'] ) ? ! empty( $instance['responsive']['mobile']['navigation'] ) : $carousel_settings['navigation']['mobile'];
+
+		// Navigation dots.
+		$less_vars['navigation_dots_desktop'] = isset( $instance['responsive']['desktop']['navigation_dots'] ) ? ! empty( $instance['responsive']['desktop']['navigation_dots'] ) : $carousel_settings['navigation_dots']['desktop'];
+		$less_vars['navigation_dots_tablet_landscape'] = isset( $instance['responsive']['tablet']['landscape']['navigation_dots'] ) ? ! empty( $instance['responsive']['tablet']['landscape']['navigation_dots'] ) : $carousel_settings['navigation_dots']['tablet_landscape'];
+		$less_vars['navigation_dots_tablet_portrait'] = isset( $instance['responsive']['tablet']['portrait']['navigation_dots'] ) ? ! empty( $instance['responsive']['tablet']['portrait']['navigation_dots'] ) : $carousel_settings['navigation_dots']['tablet_portrait'];
+		$less_vars['navigation_dots_mobile'] = isset( $instance['responsive']['mobile']['navigation_dots'] ) ? ! empty( $instance['responsive']['mobile']['navigation_dots'] ) : $carousel_settings['navigation_dots']['mobile'];
+
+		return $less_vars;
 	}
 
 	function carousel_settings_template_variables( $settings, $encode = true ) {
 		$variables = array(
 			'loop' => isset( $settings['loop'] ) ? $settings['loop'] : true,
 			'dots' => isset( $settings['dots'] ) ? $settings['dots'] : true,
+			'animation' => isset( $settings['animation'] ) ? $settings['animation'] : 'ease',
 			'animation_speed' => ! empty( $settings['animation_speed'] ) ? $settings['animation_speed'] : 800,
 			'autoplay' => isset( $settings['autoplay'] ) ? $settings['autoplay'] : false,
 			'pauseOnHover' => isset( $settings['autoplay_pause_hover'] ) ? $settings['autoplay_pause_hover'] : false,
 			'autoplaySpeed' => ! empty( $settings['timeout'] ) ? $settings['timeout'] : 8000,
+			'item_overflow' => isset( $settings['item_overflow'] ) ? $settings['item_overflow'] : false,
 		);
 
 		return $encode ? json_encode( $variables ) : $variables;

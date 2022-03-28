@@ -35,7 +35,7 @@ function sow_carousel_handle_post_limit( $posts, $paged = 0 ) {
 			if ( $current + 1 > $post_limit + $posts_per_page ) {
 				$posts->posts = null;
 			} else {
-				// Work out how many posts we need to return
+				// Work out how many posts we need to return.
 				$posts->post_count = $post_limit % $posts_per_page;
 				$posts->posts = array_slice( $posts->posts, $current % $posts_per_page, $posts->post_count );
 			}
@@ -72,10 +72,10 @@ function sow_carousel_get_next_posts_page() {
 		}
 	}
 
-	// Don't output anything if there are no posts to return;
+	// Don't output anything if there are no posts to return.
 	if ( ! empty( $settings['posts']->posts ) ) {
 		ob_start();
-		include 'tpl/item.php';
+		include apply_filters( 'siteorigin_post_carousel_ajax_item_template', 'tpl/item.php', $instance );
 		$result = array( 'html' => ob_get_clean() );
 		header( 'content-type: application/json' );
 		echo json_encode( $result );
@@ -98,7 +98,8 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			array(
 				'description' => __('Gives you a widget to display your posts as a carousel.', 'so-widgets-bundle'),
 				'instance_storage' => true,
-				'help' => 'https://siteorigin.com/widgets-bundle/post-carousel-widget/'
+				'help' => 'https://siteorigin.com/widgets-bundle/post-carousel-widget/',
+				'has_preview' => false,
 			),
 			array(
 
@@ -123,34 +124,52 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				),
 			)
 		);
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_theme_assets' ) );
+	}
 
-		$this->register_frontend_styles(
+	function override_carousel_settings() {
+		return apply_filters(
+			'siteorigin_widgets_post_carousel_settings_form', 
 			array(
-				array(
-					'sow-carousel-basic',
-					plugin_dir_url( __FILE__ ) . 'css/style.css',
+				'breakpoints' => apply_filters(
+					'siteorigin_widgets_post_carousel_breakpoints',
+					array(
+						'tablet_landscape' => 1366,
+						'tablet_portrait'  => 1025,
+						'mobile'           => 480,
+					)
 				),
+				'slides_to_scroll' => array(
+					'desktop' => 1,
+					'tablet_landscape' => 2,
+					'tablet_portrait' => 2,
+					'mobile' => 1,
+				),
+				'navigation' => array(
+					'desktop' => true,
+					'tablet_landscape' => true,
+					'tablet_portrait' => true,
+					'mobile' => false,
+				),
+				'slides_to_show' => array(),
+				'navigation_dots_label' => '',
 			)
 		);
 	}
 
-	function override_carousel_settings() {
-		return array(
-			'breakpoints' => apply_filters(
-				'siteorigin_widgets_post_carousel_breakpoints',
-				array(
-					'tablet_landscape' => 1366,
-					'tablet_portrait'  => 1025,
-					'mobile'           => 480,
-				)
-			),
-			'slides_to_scroll' => array(
-				'desktop' => 1,
-				'tablet_landscape' => 2,
-				'tablet_portrait' => 2,
-				'mobile' => 1,
-			),
-		);
+	function register_theme_assets() {
+		wp_register_style( 'sow-post-carousel-base', plugin_dir_url( __FILE__ ) . 'css/base.css' );
+		do_action( 'siteorigin_widgets_post_carousel_theme_assets' );
+	}
+
+	function get_style_name( $instance ) {
+		$theme = self::get_theme( $instance );
+		// If this theme has a dedicated stylesheet load it.
+		if ( wp_style_is( 'sow-post-carousel-' . $theme, 'registered' ) ) {
+			wp_enqueue_style( 'sow-post-carousel-' . $theme );
+		}
+
+		return $theme;
 	}
 
 	function get_widget_form() {
@@ -163,21 +182,21 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 					'fields' => array(
 						'navigation_color' => array(
 							'type' => 'color',
-							'label' => __( 'Navigation arrow color', 'so-widgets-bundle' ),
+							'label' => __( 'Arrow color', 'so-widgets-bundle' ),
 							'default' => '#fff',
 						),
 						'navigation_color_hover' => array(
 							'type' => 'color',
-							'label' => __( 'Navigation arrow hover color', 'so-widgets-bundle' ),
+							'label' => __( 'Arrow hover color', 'so-widgets-bundle' ),
 						),
 						'navigation_background' => array(
 							'type' => 'color',
-							'label' => __( 'Navigation background', 'so-widgets-bundle' ),
+							'label' => __( 'Background', 'so-widgets-bundle' ),
 							'default' => '#333',
 						),
 						'navigation_hover_background' => array(
 							'type' => 'color',
-							'label' => __( 'Navigation hover background', 'so-widgets-bundle' ),
+							'label' => __( 'Hover background', 'so-widgets-bundle' ),
 							'default' => '#444',
 						),
 					),
@@ -185,7 +204,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			)
 		);
 
-		// Overide defaults.
+		// Override defaults.
 		$design_settings['fields']['item_title']['label'] = __( 'Post title', 'so-widgets-bundle' );
 		$design_settings['fields']['item_title']['fields']['tag']['default'] = 'h3';
 
@@ -200,7 +219,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 						'thumbnail_overlay_hover_color' => array(
 							'type' => 'color',
 							'label' => __( 'Thumbnail overlay hover color', 'so-widgets-bundle' ),
-							'default' => '#3279BB',
+							'default' => '#3279bb',
 						),
 						'thumbnail_overlay_hover_opacity' => array(
 							'type' => 'slider',
@@ -214,6 +233,25 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				),
 			),
 			$design_settings['fields']
+		);
+
+		$carousel_settings = $this->carousel_settings_form_fields();
+		$carousel_settings['fields']['loop']['description'] = __( 'Automatically return to the first post after the last post.', 'so-widgets-bundle' );
+		unset( $carousel_settings['fields']['animation'] );
+
+		siteorigin_widgets_array_insert(
+			$carousel_settings['fields'],
+			'autoplay_pause_hover',
+			array(
+				'autoplay_continuous_scroll' => array(
+					'type' => 'checkbox',
+					'label' => __( 'Autoplay continuous scroll', 'so-widgets-bundle' ),
+					'state_handler' => array(
+						'loop_posts[show]' => array( 'show' ),
+						'loop_posts[hide]' => array( 'hide' ),
+					),
+				),
+			)
 		);
 
 		return array(
@@ -246,12 +284,8 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 					'new'    => __( 'New window ', 'so-widgets-bundle' ),
 				),
 			),
-			'loop_posts' => array(
-				'type' => 'checkbox',
-				'label' => __( 'Loop posts', 'so-widgets-bundle' ),
-				'description' => __( 'Automatically return to the first post after the last post.', 'so-widgets-bundle' ),
-				'default' => true,
-			),
+
+			'carousel_settings' => $carousel_settings,
 
 			'posts' => array(
 				'type' => 'posts',
@@ -286,13 +320,12 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				'navigation_background' => $instance['design']['navigation_background'],
 				'navigation_hover_background' => $instance['design']['navigation_hover_background'],
 			);
+		}
 
-			unset( $instance['design']['thumbnail_overlay_hover_color'] );
-			unset( $instance['design']['thumbnail_overlay_hover_opacity'] );
-			unset( $instance['design']['navigation_color'] );
-			unset( $instance['design']['navigation_color_hover'] );
-			unset( $instance['design']['navigation_background'] );
-			unset( $instance['design']['navigation_hover_background'] );
+		// Migrate settings to the Settings section.
+		if ( isset( $instance['loop_posts'] ) ) {
+			$instance['carousel_settings']['loop'] = $instance['loop_posts'];
+			unset( $instance['loop_posts'] );
 		}
 
 		return $instance;
@@ -316,26 +349,38 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			$thumb_hover_height = $size['height'];
 		}
 
-		return array(
+		$less_vars = array(
 			'thumbnail_width' => $thumb_width . 'px',
 			'thumbnail_height'=> $thumb_height . 'px',
 			'thumbnail_hover_width' => $thumb_hover_width . 'px',
 			'thumbnail_hover_height'=> $thumb_hover_height . 'px',
-			'thumbnail_overlay_hover_color' => ! empty ( $instance['design']['item']['thumbnail_overlay_hover_color'] ) ? $instance['design']['item']['thumbnail_overlay_hover_color'] : '',
-			'thumbnail_overlay_hover_opacity' => ! empty ( $instance['design']['item']['thumbnail_overlay_hover_opacity'] ) ? $instance['design']['item']['thumbnail_overlay_hover_opacity'] : 0.5,
+			'thumbnail_overlay_hover_color' => ! empty ( $instance['design']['thumbnail']['thumbnail_overlay_hover_color'] ) ? $instance['design']['thumbnail']['thumbnail_overlay_hover_color'] : '',
+			'thumbnail_overlay_hover_opacity' => ! empty ( $instance['design']['thumbnail']['thumbnail_overlay_hover_opacity'] ) ? $instance['design']['thumbnail']['thumbnail_overlay_hover_opacity'] : 0.5,
 			'navigation_color' => ! empty ( $instance['design']['navigation']['navigation_color'] ) ? $instance['design']['navigation']['navigation_color'] : '',
 			'navigation_color_hover' => ! empty ( $instance['design']['navigation']['navigation_color_hover'] ) ? $instance['design']['navigation']['navigation_color_hover'] : '',
 			'navigation_background' => ! empty ( $instance['design']['navigation']['navigation_background'] ) ? $instance['design']['navigation']['navigation_background'] : '',
 			'navigation_hover_background' => ! empty ( $instance['design']['navigation']['navigation_hover_background'] ) ? $instance['design']['navigation']['navigation_hover_background'] : '',
-			'item_title_tag' => $instance['design']['item_title']['tag'],
+			'item_title_tag' => ! empty( $instance['design']['item_title']['tag'] ) ? $instance['design']['item_title']['tag'] : '',
 			'item_title_font_size' => ! empty( $instance['design']['item_title']['size'] ) ? $instance['design']['item_title']['size'] : '',
 			'item_title_color' => ! empty( $instance['design']['item_title']['color'] ) ? $instance['design']['item_title']['color'] : '',
 		);
+		$less_vars = $this->responsive_less_variables( $less_vars, $instance );
+
+		return $less_vars;
+	}
+
+	static public function get_theme( $instance ) {
+		return empty( $instance['design']['theme'] ) || ! class_exists( 'SiteOrigin_Premium_Plugin_Carousel' )  ? 'base' : $instance['design']['theme'];
 	}
 
 	public function get_template_variables( $instance, $args ) {
-		if ( ! empty( $instance['default_thumbnail'] ) ) {
-			$default_thumbnail = wp_get_attachment_image_src( $instance['default_thumbnail'], 'sow-carousel-default' );
+		$theme = self::get_theme( $instance );
+
+		if (
+			! empty( $instance['default_thumbnail'] ) ||
+			! empty( $instance['default_thumbnail_fallback'] )
+		) {
+			$default_thumbnail = siteorigin_widgets_get_attachment_image_src( $instance['default_thumbnail'], $instance['image_size'], $instance['default_thumbnail_fallback'] );
 		}
 
 		$query = siteorigin_widget_post_selector_process_query( wp_parse_args(
@@ -346,16 +391,32 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		) );
 		$posts = new WP_Query( $query );
 
+		$carousel_settings = $this->carousel_settings_template_variables( $instance['carousel_settings'], false );
+		$carousel_settings['autoplay_continuous_scroll'] = ! empty( $instance['carousel_settings']['autoplay_continuous_scroll'] ) ? $instance['carousel_settings']['autoplay_continuous_scroll'] : false;
+		// The base theme doesn't support dot noviation so let's remove it.
+		if ( $theme == 'base' ) {
+			unset( $carousel_settings['dots'] );
+		}
+
+		$carousel_settings['loop'] = ! empty( $instance['carousel_settings']['loop'] );
+		$carousel_settings['item_overflow'] = true;
+		$carousel_settings = apply_filters( 'siteorigin_widgets_post_carousel_settings_frontend', $carousel_settings, $instance );
+
+		$size = siteorigin_widgets_get_image_size( $instance['image_size'] );
+
 		return array(
 			'settings' => array(
 				'args' => $args,
 				'title' => $instance['title'],
+				'theme' => $theme,
 				'posts' => sow_carousel_handle_post_limit( $posts ),
-				'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : '',
+				'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : false,
 				'image_size' => $instance['image_size'],
 				'link_target' => ! empty( $instance['link_target'] ) ? $instance['link_target'] : 'same',
 				'item_template' => plugin_dir_path( __FILE__ ) . 'tpl/item.php',
 				'navigation' => 'title',
+				'navigation_arrows' => isset( $instance['carousel_settings']['arrows'] ) ? $instance['carousel_settings']['arrows'] : true,
+				'height' => ! empty( $size['height'] ) ? 'min-height: ' . $size['height'] . 'px' : '',
 				'item_title_tag' => ! empty( $instance['design']['item_title']['tag'] ) ? $instance['design']['item_title']['tag'] : 'h3',
 				'attributes' => array(
 					'widget' => 'post',
@@ -365,11 +426,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 					// Base carousel specific settings.
 					'item_count' => get_query_var( 'sow-total_posts' ),
-					'carousel_settings' => json_encode(
-						array(
-							'loop' => ! empty( $instance['loop_posts'] ),
-						)
-					),
+					'carousel_settings' => json_encode( $carousel_settings ),
 					'responsive' => $this->responsive_template_variables( $instance['responsive'] ),
 					'variable_width' => 'true',
 				),
@@ -380,6 +437,18 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 	function get_template_name($instance){
 		return 'base';
 	}
+
+	function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
+
+		return sprintf(
+			__( 'Get access to additional carousel themes with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/carousel" target="_blank" rel="noopener noreferrer">',
+			'</a>'
+		);
+	}	
 }
 
 siteorigin_widget_register('sow-post-carousel', __FILE__, 'SiteOrigin_Widget_PostCarousel_Widget');

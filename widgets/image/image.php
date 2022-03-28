@@ -115,6 +115,11 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 				'description' => __( "Resize image to fit its container.", 'so-widgets-bundle' ),
 			),
 
+			'rel' => array(
+				'type' => 'text',
+				'label' => __( 'Rel', 'so-widgets-bundle' ),
+			),
+
 		);
 	}
 
@@ -176,6 +181,8 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		} else {
 			$attr['alt'] = get_post_meta( $instance['image'], '_wp_attachment_image_alt', true );
 		}
+
+		$attr['rel'] = ! empty( $instance['rel'] ) ? $instance['rel'] : '';
 
 		if ( function_exists( 'wp_lazy_loading_enabled' ) && wp_lazy_loading_enabled( 'img', 'sow-image' ) ) {
 			$attr['loading'] = 'lazy';
@@ -260,11 +267,22 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 
 	function get_form_teaser() {
 		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
-
-		return sprintf(
-			__( 'Add a Lightbox to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lightbox" target="_blank" rel="noopener noreferrer">',
-			'</a>'
+		return array(
+			sprintf(
+				__( 'Add a Lightbox to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lightbox" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
+			sprintf(
+				__( 'Add a beautiful and customizable text overlay with animations to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/image-overlay" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
+			sprintf(
+				__( 'Add an image title tooltip with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tooltip" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
 		);
 	}
 }

@@ -47,6 +47,15 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 	 */
 	protected $thumbnail_dimensions;
 
+	/**
+	 * An optional array containing information about a repeater field. This will
+	 * allow for the multiple media field to add items to the repeater.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $repeater;
+
 	static $default_thumbnail_dimensions = array( 64, 64 ); 
 
 	protected function get_default_options() {
@@ -88,50 +97,60 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 				<?php echo esc_html( $this->choose ); ?>
 			</a>
 
-
-			<div class="multiple-media-field-items">
-				<?php
-				if ( is_array( $attachments ) ) {
-					foreach ( $attachments as $attachment ) {
-						$item_title = get_the_title( $attachment );
-						$src = wp_get_attachment_image_src( $attachment, 'thumbnail' );
-
-						if ( empty( $src ) ) {
-							// If item doesn't have an image src, use the WP icon for its media type.
-							$src = wp_mime_type_icon( $attachment );
-						} else {
-							$src = $src[0];
-						}
-						?>
-						<div class="multiple-media-field-item" data-id="<?php echo esc_attr( $attachment ); ?>">
-							<?php if ( ! empty( $src ) ) : ?>
-								<img src="<?php echo sow_esc_url( $src ); ?>" class="thumbnail" title="<?php echo esc_attr( $item_title ); ?>" width="<?php echo $this->thumbnail_dimensions[0]; ?>" height="<?php echo $this->thumbnail_dimensions[1]; ?>"/>
-							<?php endif; ?>
-							<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
-							<div class="title <?php echo (bool) $this->title ? 'title-enabled" style="width: ' . $this->thumbnail_dimensions[0] . 'px' : ''; ?>">
-								<?php
-								if ( ! empty( $item_title ) ) {
-									echo esc_attr( $item_title );
-								}
-								?>		
-							</div>
-						</div>
+			<?php if ( empty( $this->repeater ) ) : ?>
+				<div class="multiple-media-field-items">
 					<?php
+					if ( is_array( $attachments ) ) {
+						foreach ( $attachments as $attachment ) {
+							$item_title = get_the_title( $attachment );
+							$src = wp_get_attachment_image_src( $attachment, 'thumbnail' );
+
+							if ( empty( $src ) ) {
+								// If item doesn't have an image src, use the WP icon for its media type.
+								$src = wp_mime_type_icon( $attachment );
+							} else {
+								$src = $src[0];
+							}
+							?>
+							<div class="multiple-media-field-item current" data-id="<?php echo esc_attr( $attachment ); ?>">
+								<?php if ( ! empty( $src ) ) : ?>
+									<img src="<?php echo sow_esc_url( $src ); ?>" class="thumbnail" title="<?php echo esc_attr( $item_title ); ?>" width="<?php echo $this->thumbnail_dimensions[0]; ?>" height="<?php echo $this->thumbnail_dimensions[1]; ?>"/>
+								<?php endif; ?>
+								<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
+								<div class="title <?php echo (bool) $this->title ? 'title-enabled" style="width: ' . $this->thumbnail_dimensions[0] . 'px' : ''; ?>">
+									<?php
+									if ( ! empty( $item_title ) ) {
+										echo esc_attr( $item_title );
+									}
+									?>		
+								</div>
+							</div>
+						<?php
+						}
 					}
-				}
-				?>
-			</div>
-			
-			<div class="multiple-media-field-template" style="display:none">
-				<div class="multiple-media-field-item">
-					<img class="thumbnail"  width="<?php echo $this->thumbnail_dimensions[0]; ?>" height="<?php echo $this->thumbnail_dimensions[1]; ?>"/>
-					<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
-					<div class="title <?php echo (bool) $this->title ? 'title-enabled" style="width: ' . $this->thumbnail_dimensions[0] . 'px' : ''; ?>"></div>
+					?>
 				</div>
+				
+				<div class="multiple-media-field-template" style="display:none">
+					<div class="multiple-media-field-item current">
+						<img class="thumbnail"  width="<?php echo $this->thumbnail_dimensions[0]; ?>" height="<?php echo $this->thumbnail_dimensions[1]; ?>"/>
+						<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
+						<div class="title <?php echo (bool) $this->title ? 'title-enabled" style="width: ' . $this->thumbnail_dimensions[0] . 'px' : ''; ?>"></div>
+					</div>
 
-			</div>
+				</div>
+			<?php endif; ?>
 
-			<input type="hidden" value="<?php echo is_array( $attachments ) ? esc_attr( implode( ',', $attachments ) ) : ''; ?>" data-element="<?php echo esc_attr( $this->element_name ); ?>" name="<?php echo esc_attr( $this->element_name ); ?>" class="siteorigin-widget-input" />
+			<input
+				type="hidden"
+				value="<?php echo is_array( $attachments ) ? esc_attr( implode( ',', $attachments ) ) : ''; ?>"
+				data-element="<?php echo esc_attr( $this->element_name ); ?>"
+				name="<?php echo esc_attr( $this->element_name ); ?>"
+				<?php if ( ! empty( $this->repeater ) ) : ?>
+					data-repeater="<?php echo esc_attr( json_encode( $this->repeater ) ); ?>"
+				<?php endif; ?>
+				class="siteorigin-widget-input"
+			/>
 		</div>
 
 		<?php

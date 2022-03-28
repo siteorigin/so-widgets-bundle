@@ -13,12 +13,6 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#78BDF1'
 	),
-	'google-plus' => array(
-		'label'    => __( 'Google+', 'so-widgets-bundle' ),
-		'base_url' => 'https://plus.google.com/',
-		'icon_color' => '#FFFFFF',
-		'button_color' => '#DD4B39'
-	),
 	'rss'         => array(
 		'label'    => __( 'RSS', 'so-widgets-bundle' ),
 		'base_url' => get_bloginfo('rss_url'),
@@ -189,6 +183,12 @@ return array(
 		'base_url' => 'https://goodreads.com/',
 		'icon_color' => '#372213',
 		'button_color' => '#e2e0d1'
+	),
+	'google' => array(
+		'label'    => __( 'Google', 'so-widgets-bundle' ),
+		'base_url' => 'https://google.com/',
+		'icon_color' => '#4285F4',
+		'button_color' => '#FFFFFF'
 	),
 	'hacker-news'   => array(
 		'label'    => __( 'Hacker News', 'so-widgets-bundle' ),

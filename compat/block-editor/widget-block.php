@@ -24,13 +24,13 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	}
 
 	public function enqueue_widget_block_editor_assets() {
-		$current_screen = get_current_screen();
+		$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : false;
 		wp_enqueue_script(
 			'sowb-widget-block',
 			plugins_url( 'widget-block' . SOW_BUNDLE_JS_SUFFIX . '.js', __FILE__ ),
 			array(
 				// The WP 5.8 Widget Area requires a specific editor script to be used.
-				$current_screen->base == 'widgets' ? 'wp-edit-widgets' : 'wp-editor',
+				is_object( $current_screen ) && $current_screen->base == 'widgets' ? 'wp-edit-widgets' : 'wp-editor',
 				'wp-blocks',
 				'wp-i18n',
 				'wp-element',
@@ -56,9 +56,16 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				// The last class will always be from the widget file we just loaded.
 				$classes = get_declared_classes();
 				$widget_class = end( $classes );
+				// For SiteOrigin widgets, just display the widget's name. For third party widgets, display the Author
+				// to try avoid confusion when the widgets have the same name.
+				if ( $widget['Author'] != 'SiteOrigin' && strpos( $widget['Name'], $widget['Author'] ) === false ) {
+					$widget_name = sprintf( __( '%s by %s', 'so-widgets-bundle' ), $widget['Name'], $widget['Author'] );
+				} else {
+					$widget_name = $widget['Name'];
+				}
 
 				$so_widgets[] = array(
-					'name' => $widget['Name'],
+					'name' => $widget_name,
 					'class' => $widget_class,
 				);
 			}
@@ -72,8 +79,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				$author = '';
 				// Try to find a widget's author from its file metadata, by matching the filename to the ID (which is derived from the filename).
 				foreach ( $widgets_metadata_list as $widget_metadata ) {
-					$filename = $widgets_manager->get_widget_filename( $widget_obj->id_base );
-					if ( $widget_metadata['ID'] == $filename ) {
+					if ( $widgets_manager->get_class_from_path( wp_normalize_path( $widget_metadata['File'] ) ) == $class ) {
 						$author = $widget_metadata['Author'];
 						break;
 					}
@@ -138,8 +144,6 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			$widget = SiteOrigin_Widgets_Bundle::single()->load_missing_widget( false, $widget_class );
 		}
 
-		$instance = $attributes['widgetData'];
-
 		// Support for Additional CSS classes.
 		$add_custom_class_name = function( $class_names ) use ( $attributes ) {
 			if ( ! empty( $attributes['className'] ) ) {
@@ -150,13 +154,34 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
 			$GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] = true;
+			$instance = $attributes['widgetData'];
 			add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 			ob_start();
 
 			// If we have pre-generated widgetHTML or there's a valid $_POST, generate the widget.
 			// We don't show the pre-generated widget when there's a valid $_POST
 			// as widgets will likely change when that happens.
-			if ( empty( $attributes['widgetHtml'] ) || ! empty( $_POST ) ) {
+			// Pages with an active WPML translation will bypass cache.
+			$current_page_id = get_the_ID();
+			if (
+				empty( $attributes['widgetHtml'] ) ||
+				! empty( $_POST ) ||
+				$attributes['widgetClass'] == 'SiteOrigin_Widget_PostCarousel_Widget' ||
+				$attributes['widgetClass'] == 'SiteOrigin_Widgets_ContactForm_Widget' ||
+				// Is WPML active? If so, is there a translation for this page?
+				(
+					defined( 'ICL_LANGUAGE_CODE' ) &&
+					is_numeric(
+						apply_filters(
+							'wpml_object_id',
+							$current_page_id,
+							get_post_type( $current_page_id ),
+							false,
+							ICL_LANGUAGE_CODE
+						)
+					)
+				)
+			) {
 				/* @var $widget SiteOrigin_Widget */
 				$instance = $widget->update( $instance, $instance );
 				$widget->widget( array(

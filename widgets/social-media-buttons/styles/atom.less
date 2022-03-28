@@ -7,7 +7,7 @@
 	.social-media-button-base();
 }
 
-.create_social_media_button_style(@name, @icon_color:'', @button_color:'') {
+.create_social_media_button_style( @name, @icon_color:'', @button_color:'', @icon_color_hover: '', @button_color_hover: '' ) {
 
 	.sow-social-media-button-@{name} {
 		border: 1px solid;
@@ -20,8 +20,9 @@
 			.gradient(@button_color, darken(@button_color, 10%), @button_color);
 
 			&.ow-button-hover:hover {
-				border-color: lighten(lighten(@border_color, 2%), 2%) lighten(@border_color, 2%) darken(lighten(@border_color, 2%), 3%) lighten(@border_color, 2%);
-				.gradient(lighten(@button_color, 2%), lighten(darken(@button_color, 10%), 2%), lighten(@button_color, 2%));
+				@border_color_hover: darken( @button_color_hover, 15% );
+				.gradient( lighten( @button_color_hover, 2% ), lighten( darken( @button_color_hover, 10% ), 2% ), lighten( @button_color_hover, 2% ) );
+				border-color: lighten( lighten( @border_color_hover, 2%), 2%) lighten( @border_color_hover, 2% ) darken( lighten( @border_color_hover, 2% ), 3% ) lighten( @border_color_hover, 2% );
 			}
 		}
 
@@ -33,8 +34,18 @@
 				color: @icon_color !important;
 			}
 
-			&.ow-button-hover:hover {
-				color: lighten(@icon_color, 2%);
+			&.ow-button-hover {
+				&:visited,
+				&:active,
+				&:hover {
+					& when not( iscolor( @icon_color_hover ) ) {
+						color: lighten( @icon_color, 2% ) !important;
+					}
+
+					& when( iscolor( @icon_color_hover ) ) {
+						color: @icon_color_hover !important;
+					}
+				}
 			}
 		}
 	}

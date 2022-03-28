@@ -121,26 +121,6 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 							'video_type[self]'     => array( 'hide' ),
 						)
 					),
-					'related_videos' => array(
-						'type'          => 'checkbox',
-						'default'       => true,
-						'label'         => __( 'Show related videos.', 'so-widgets-bundle' ),
-						'description'   => __( 'If the external host supports it.', 'so-widgets-bundle' ),
-						'state_handler' => array(
-							'video_type[external]' => array( 'show' ),
-							'video_type[self]'     => array( 'hide' ),
-						)
-					),
-					'controls' => array(
-						'type'          => 'checkbox',
-						'default'       => false,
-						'label'         => __( 'Controls', 'so-widgets-bundle' ),
-						'description'   => __( 'Enable browser video controls.', 'so-widgets-bundle' ),
-						'state_handler' => array(
-							'video_type[self]'     => array( 'show' ),
-							'video_type[external]' => array( 'hide' ),
-						)
-					),
 				),
 			),
 		);
@@ -225,6 +205,14 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			$video_host          = $this->get_host_from_url( $instance['video']['external_video'] );
 			$external_video_type = 'video/' . $video_host;
 			$external_src        = ! empty( $instance['video']['external_video'] ) ? $instance['video']['external_video'] : '';
+
+			if ( ! $instance['playback']['oembed'] ) {
+				// Add video as self_source to allow MediaElements to pick up on it.
+				$self_sources[] = array(
+					'src' => $external_src,
+					'type' => 'mp4',
+				);
+			}
 		}
 
 		$return = array(
@@ -237,14 +225,12 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'poster'                  => $poster,
 			'autoplay'                => ! empty( $instance['playback']['autoplay'] ),
 			'loop'                    => ! empty( $instance['playback']['loop'] ),
-			'related_videos'          => ! empty( $instance['playback']['related_videos'] ),
-			'controls'                => ! empty( $instance['playback']['controls'] ),
 			'skin_class'              => 'default',
 			'fitvids'                 => ! empty( $instance['playback']['fitvids'] ),
 		);
 
-		// Force oEmbed for this video
 		if ( $instance['host_type'] == 'external' && $instance['playback']['oembed'] ) {
+			// Force oEmbed for this video if oEmbed is enabled.
 			$return['is_skinnable_video_host'] = false;
 		}
 

@@ -30,6 +30,20 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 		add_action( 'siteorigin_widgets_stylesheet_deleted', array( $this, 'clear_page_cache' ) );
 		add_action( 'siteorigin_widgets_stylesheet_added', array( $this, 'clear_page_cache' ) );
 		add_action( 'siteorigin_widgets_stylesheet_cleared', array( $this, 'clear_all_cache' ) );
+
+		if (
+			function_exists( 'amp_is_enabled' ) &&
+			amp_is_enabled()
+		) {
+			// AMP plugin is installed and enabled. Remove Slider Lazy Loading.
+			add_filter( 'siteorigin_widgets_slider_attr', function( $attr ) {
+				if ( ! empty( $attr['class'] ) ) {
+					$attr['class'] = str_replace( ' skip-lazy', '', $attr['class'] );
+				}
+				$attr['loading'] = false;
+				return $attr;
+			} );
+		}
 	}
 
 	function get_active_builder() {
@@ -70,15 +84,23 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 	public function clear_page_cache( $name, $instance = array() ) {
 		$id = explode( '-', $name );
 		$id = end( $id );
+		$id = explode( '.', $id )[0];
 
 		if ( is_numeric( $id ) ) {
-
 			if ( function_exists( 'w3tc_flush_post' ) ) {
 				w3tc_flush_post( $id );
 			}
 
 			if ( class_exists( 'Swift_Performance_Cache' ) ) {
 				Swift_Performance_Cache::clear_post_cache( $id );
+			}
+
+			if ( class_exists( '\Hummingbird\\WP_Hummingbird' ) ) {
+				do_action( 'wphb_clear_page_cache', $id );
+			}
+
+			if ( function_exists( 'breeze_varnish_purge_cache' ) ) {
+				breeze_varnish_purge_cache( get_the_permalink( $id ) );
 			}
 		}
 	}
@@ -93,6 +115,14 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 
 		if ( class_exists( 'Swift_Performance_Cache' ) ) {
 			Swift_Performance_Cache::clear_all_cache();
+		}
+
+		if ( class_exists( '\Hummingbird\\WP_Hummingbird' ) ) {
+			do_action( 'wphb_clear_page_cache' );
+		}
+
+		if ( class_exists( 'Breeze_PurgeCache' ) ) {
+			Breeze_PurgeCache::breeze_cache_flush();
 		}
 	}
 
