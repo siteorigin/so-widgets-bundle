@@ -88,9 +88,13 @@ SiteOrigin Premium includes access to our professional email support service, pe
 
 == Screenshots ==
 
-1. Manage which widgets you want to be enabled or disabled.
-2. The Button Widget shows the clean, standard interface all the widgets use.
-3. An example of the Button Widget.
+1. Manage which widgets you want to be enabled or disabled at Plugins > SiteOrigin Widgets.
+2. SiteOrigin Widgets inserted in SiteOrigin Page Builder.
+3. Editing a Hero in SiteOrigin Page Builder.
+4. Inserting Tabs in the SiteOrigin Widget Block.
+5. SiteOrigin Widgets inserted in a SiteOrigin Layout Block.
+6. Inserting a Contact Form into a theme widget area at Appearance > Widgets.
+7. Inserting an Accordion into a theme widget area via the block-based widget screen.
 
 == Frequently Asked Questions ==
 
