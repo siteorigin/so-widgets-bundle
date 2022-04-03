@@ -32,7 +32,6 @@
 
 	.sow-features-feature {
 		.box-sizing(border-box);
-		display: flex;
 		float: left;
 		padding: 0 25px;
 		position: relative;
@@ -49,7 +48,6 @@
 		}
 
 		&.sow-icon-container-position-top {
-			flex-direction: column;
 			text-align: center;
 
 			.sow-icon-container {
@@ -58,7 +56,6 @@
 		}
 
 		&.sow-icon-container-position-right {
-			flex-direction: row;
 			text-align: left;
 
 			.sow-icon-container {
@@ -67,7 +64,6 @@
 		}
 
 		&.sow-icon-container-position-left {
-			flex-direction: row-reverse;
 			text-align: left;
 
 			.sow-icon-container {
@@ -76,7 +72,6 @@
 		}
 
 		&.sow-icon-container-position-bottom {
-			flex-direction: column-reverse;
 			text-align: center;
 
 			.sow-icon-container {
@@ -204,7 +199,7 @@
 			margin: 0;
 
 			.sow-features-feature {
-				display: block;
+				display: block !important;
 				float: none;
 				margin-bottom: 40px;
 				width: 100% !important;
