@@ -364,9 +364,9 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		return $instance;
 	}
 
-	function render_template( $controls, $frames ){
+	function render_template( $controls, $frames, $layout = array() ){
 		$this->render_template_part('before_slider', $controls, $frames);
-		$this->render_template_part('before_slides', $controls, $frames);
+		$this->render_template_part( 'before_slides', $controls, $frames, $layout );
 
 		foreach( $frames as $i => $frame ) {
 			$this->render_frame( $i, $frame, $controls );
@@ -377,7 +377,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		$this->render_template_part('after_slider', $controls, $frames);
 	}
 
-	function render_template_part( $part, $controls, $frames ) {
+	function render_template_part( $part, $controls, $frames, $layout = array() ) {
 		switch( $part ) {
 			case 'before_slider':
 				?><div class="sow-slider-base" style="display: none"><?php
@@ -392,7 +392,17 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				if ( $settings['swipe'] ) {
 					wp_enqueue_script( 'sow-slider-slider-cycle2-swipe' );
 				}
-				?><ul class="sow-slider-images" data-settings="<?php echo esc_attr( json_encode($settings) ) ?>"><?php
+
+				if ( ! empty( $layout['desktop'] ) && ! empty( $layout['desktop']['height'] ) ) {
+					$height = $instance['layout']['desktop']['height'];
+				}
+
+				$instance['layout']['desktop']['height']
+				?><ul
+					class="sow-slider-images"
+					data-settings="<?php echo esc_attr( json_encode($settings) ) ?>"
+					<?php echo ! empty( $layout['desktop'] ) && ! empty( $layout['desktop']['height'] ) ? 'style="min-height: ' . esc_attr( $layout['desktop']['height'] ) . '"' : ''; ?>
+				><?php
 				break;
 			case 'after_slides':
 				?></ul><?php
