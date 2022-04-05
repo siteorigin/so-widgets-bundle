@@ -36,7 +36,7 @@
 			<?php include $settings['item_template']; ?>
 		</div>
 		<?php if ( $settings['navigation'] == 'container' ) : ?>
-			<div class="sow-carousel-nav <?php echo ! $settings['navigation_arrows'] ? 'sow-carousel-navigation-hidden' : ''; ?>">
+			<div class="sow-carousel-nav" <?php echo ! $settings['navigation_arrows'] ? 'style="display: none;"' : ''; ?>>
 				<div class="sow-carousel-nav-arrows">
 					<?php $this->render_navigation( 'both' ); ?>
 				</div>
