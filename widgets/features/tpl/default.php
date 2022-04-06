@@ -13,6 +13,7 @@ if ( ! empty( $instance['features'] ) ) {
 				style="
 					width: <?php echo round( 100 / $instance['per_row'], 3 ); ?>%;
 					display: flex;
+					float: left;
 					flex-direction: <?php echo $this->get_feature_flex_direction( $feature['container_position'] ); ?>;
 				"
 			>
