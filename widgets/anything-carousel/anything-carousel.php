@@ -238,7 +238,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 				'title' => $instance['title'],
 				'item_template' => plugin_dir_path( __FILE__ ) . 'tpl/item.php',
 				'navigation' => 'side',
-				'navigation_arrows' => isset( $instance['carousel_settings']['arrows'] ) ? $instance['carousel_settings']['arrows'] : true,
+				'navigation_arrows' => isset( $instance['carousel_settings']['arrows'] ) ? ! empty( $instance['carousel_settings']['arrows'] ) : true,
 				'item_title_tag' => $instance['design']['item_title']['tag'],
 				'items' => ! empty( $instance['items'] ) ? $instance['items'] : array(),
 				'attributes' => array(
