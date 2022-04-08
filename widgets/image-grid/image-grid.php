@@ -92,7 +92,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 
 			'display' => array(
 				'type' => 'section',
-				'label' => __( 'Display', 'so-widgets-bundle' ),
+				'label' => __( 'Settings', 'so-widgets-bundle' ),
 				'fields' => array(
 					'attachment_size' => array(
 						'label' => __( 'Image size', 'so-widgets-bundle' ),

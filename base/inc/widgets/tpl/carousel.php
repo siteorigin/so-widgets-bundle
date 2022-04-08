@@ -4,20 +4,20 @@
 		echo $args['before_title'] . esc_html( $settings['title'] ) . $args['after_title'];
 	}
 
-	if ( $settings['navigation'] == 'title' && ( $settings['navigation_arrows'] || $settings['attributes']['widget'] == 'post' ) ) {
+	if ( $settings['navigation'] == 'title' ) :
 		?>
-		<div class="sow-carousel-navigation <?php echo ! $settings['navigation_arrows'] && $settings['attributes']['widget'] == 'post' ? 'sow-carousel-navigation-hidden' : ''; ?>">
+		<div class="sow-carousel-navigation <?php echo ! $settings['navigation_arrows'] ? 'sow-carousel-navigation-hidden' : ''; ?>">
 			<?php $this->render_navigation( 'both' ); ?>
 		</div>
-	<?php } ?>
+	<?php endif; ?>
 </div>
 
 <div class="sow-carousel-container <?php echo ! empty( $container_classes ) ? esc_attr( $container_classes ) : ''; ?>">
-	<?php
-	if ( $settings['navigation'] == 'side' && $settings['navigation_arrows'] ) {
-		$this->render_navigation( 'prev' );
-	}
-	?>
+	<?php if ( $settings['navigation'] == 'side' ) : ?>
+		<div class="sow-carousel-navigation sow-carousel-navigation-prev <?php echo ! $settings['navigation_arrows'] ? 'sow-carousel-navigation-hidden' : ''; ?>">
+			<?php $this->render_navigation( 'prev' ); ?>
+		</div>
+	<?php endif; ?>
 	<div class="sow-carousel-wrapper"
 		data-dir="<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>"
 		style="opacity: 0;"
@@ -36,19 +36,17 @@
 			<?php include $settings['item_template']; ?>
 		</div>
 		<?php if ( $settings['navigation'] == 'container' ) : ?>
-			<div class="sow-carousel-nav">
-				<?php if ( $settings['navigation_arrows'] ) : ?>
-					<div class="sow-carousel-nav-arrows">
-						<?php $this->render_navigation( 'both' ); ?>
-					</div>
-				<?php endif; ?>
+			<div class="sow-carousel-nav" <?php echo ! $settings['navigation_arrows'] ? 'style="display: none;"' : ''; ?>>
+				<div class="sow-carousel-nav-arrows">
+					<?php $this->render_navigation( 'both' ); ?>
+				</div>
 			</div>
 		<?php endif; ?>
 	</div>
 
-	<?php
-	if ( $settings['navigation'] == 'side' && $settings['navigation_arrows'] ) {
-		$this->render_navigation( 'next' );
-	}
-	?>
+	<?php if ( $settings['navigation'] == 'side' ) : ?>
+		<div class="sow-carousel-navigation sow-carousel-navigation-next <?php echo ! $settings['navigation_arrows'] ? 'sow-carousel-navigation-hidden' : ''; ?>">
+			<?php $this->render_navigation( 'next' ); ?>
+		</div>
+	<?php endif; ?>
 </div>

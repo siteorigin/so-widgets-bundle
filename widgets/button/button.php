@@ -463,6 +463,17 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 		return $instance;
 	}
+
+	function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+		return array(
+			sprintf(
+				__( 'Add a beautiful tooltip to the Button Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tooltip" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
+		);
+	}	
 }
 
 siteorigin_widget_register('sow-button', __FILE__, 'SiteOrigin_Widget_Button_Widget');
