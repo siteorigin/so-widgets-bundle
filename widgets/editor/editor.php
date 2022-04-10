@@ -1,5 +1,4 @@
 <?php
-
 /*
 Widget Name: Editor
 Description: A widget which allows editing of content using the TinyMCE editor.
@@ -64,7 +63,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 	);
 
 		if (
-			// Only run these parts if we're rendering for the frontend
+			// Only run these parts if we're rendering for the frontend.
 			empty( $GLOBALS[ 'SITEORIGIN_PANELS_CACHE_RENDER' ] ) &&
 			empty( $GLOBALS[ 'SITEORIGIN_PANELS_POST_CONTENT_RENDER' ] )
 		) {
@@ -84,7 +83,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			}
 
 			// Run some known stuff.
-			if( ! empty( $GLOBALS['wp_embed'] ) ) {
+			if ( ! empty( $GLOBALS['wp_embed'] ) ) {
 				$instance['text'] = $GLOBALS['wp_embed']->run_shortcode( $instance['text'] );
 				$instance['text'] = $GLOBALS['wp_embed']->autoembed( $instance['text'] );
 			}
@@ -102,7 +101,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 				add_filter( 'widget_text', 'do_shortcode', $widget_text_do_shortcode_priority );
 			}
 
-			if( $instance['autop'] ) {
+			if ( $instance['autop'] ) {
 				$instance['text'] = wpautop( $instance['text'] );
 			}
 
@@ -120,7 +119,6 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 				$instance['text'] = $this->process_more_quicktag( $instance['text'] );
 			}
 		}
-
 
 		return array(
 			'text' => $instance['text'],
@@ -158,9 +156,8 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 		return $instance;
 	}
 
-
-	function get_style_name($instance) {
-		// We're not using a style
+	function get_style_name( $instance ) {
+		// We're not using a style.
 		return false;
 	}
 

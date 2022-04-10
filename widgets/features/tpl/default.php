@@ -8,8 +8,10 @@ if ( ! empty( $instance['features'] ) ) {
 
 	<?php if( isset( $instance['features'] ) ) : ?>
 		<?php foreach( $instance['features'] as $i => $feature ) : ?>
-
-			<div class="sow-features-feature sow-icon-container-position-<?php echo esc_attr( $feature['container_position'] ) ?> <?php if(  floor( $i / $instance['per_row'] ) == $last_row ) echo 'sow-features-feature-last-row' ?>" style="width: <?php echo round( 100 / $instance['per_row'], 3 ) ?>%">
+			<div
+				class="sow-features-feature sow-icon-container-position-<?php echo esc_attr( $feature['container_position'] ) ?> <?php if (  floor( $i / $instance['per_row'] ) == $last_row ) echo 'sow-features-feature-last-row'; ?>"
+				style="display: flex; flex-direction: <?php echo $this->get_feature_flex_direction( $feature['container_position'] ); ?>; float: left; width: <?php echo round( 100 / $instance['per_row'], 3 ); ?>%;"
+			>
 
 				<?php if ( ! empty( $feature['more_url'] ) && $instance['icon_link'] && empty( $instance['link_feature'] ) ) : ?>
 					<a

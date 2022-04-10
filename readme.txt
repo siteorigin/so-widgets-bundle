@@ -104,6 +104,13 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.32.3 - 08 April 2022 =
+* Anything Carousel: Restored Autoplay functionality if Navigation Arrows are disabled.
+* Features: Improved CLS by inlining column alignment.
+* Hero and Layout Slider: Improved CLS by inlining height value on load.
+* Image Grid: Renamed `Display` settings group to `Settings`.
+* Updated Google Fonts list.
+
 = 1.32.2 - 23 March 2022 =
 * Anything Carousel: Restored arrow functionality. Resolved `Less_Exception_Compiler` notice.
 
