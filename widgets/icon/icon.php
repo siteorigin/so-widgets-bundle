@@ -15,7 +15,8 @@ class SiteOrigin_Widget_Icon_Widget extends SiteOrigin_Widget {
 			'sow-icon',
 			__( 'SiteOrigin Icon', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'An iconic icon.', 'so-widgets-bundle' )
+				'description' => __( 'An iconic icon.', 'so-widgets-bundle' ),
+				'help' => 'https://siteorigin.com/widgets-bundle/icon-widget/',
 			),
 			array(),
 			false,

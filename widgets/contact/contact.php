@@ -16,6 +16,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			__( 'SiteOrigin Contact Form', 'so-widgets-bundle' ),
 			array(
 				'description' => __( 'A lightweight contact form builder.', 'so-widgets-bundle' ),
+				'help' => 'https://siteorigin.com/widgets-bundle/contact-form-widget/',
 			),
 			array(),
 			false,

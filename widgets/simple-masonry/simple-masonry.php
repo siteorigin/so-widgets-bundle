@@ -15,7 +15,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 			__('SiteOrigin Simple Masonry', 'so-widgets-bundle'),
 			array(
 				'description' => __('A masonry layout for images. Images can link to your posts.', 'so-widgets-bundle'),
-//				'help' => 'https://siteorigin.com/widgets-bundle/simple-masonry-widget-documentation/'
+				'help' => 'https://siteorigin.com/widgets-bundle/simple-masonry-widget/',
 			),
 			array(),
 			false,
