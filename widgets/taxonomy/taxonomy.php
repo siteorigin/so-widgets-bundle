@@ -1,5 +1,4 @@
 <?php
-
 /*
 Widget Name: Taxonomy
 Description: Displays the selected taxonomy for the current post.

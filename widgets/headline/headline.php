@@ -1,5 +1,4 @@
 <?php
-
 /*
 Widget Name: Headline
 Description: A headline to headline all headlines.

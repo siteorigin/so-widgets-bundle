@@ -1,5 +1,4 @@
 <?php
-
 /*
 Widget Name: Contact Form
 Description: A lightweight contact form builder.

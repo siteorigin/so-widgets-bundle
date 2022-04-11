@@ -1,5 +1,4 @@
 <?php
-
 /*
 Widget Name: Icon
 Description: An iconic icon.
