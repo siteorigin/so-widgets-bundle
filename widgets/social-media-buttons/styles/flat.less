@@ -14,9 +14,8 @@
 		& when( iscolor( @icon_color ) ) {
 			color: @icon_color !important;
 
-			&:visited,
-			&:active,
-			&:hover {
+			&.ow-button-hover:focus,
+			&.ow-button-hover:hover {
 				& when not( iscolor( @icon_color_hover ) ) {
 					color: @icon_color !important;
 				}
@@ -24,10 +23,6 @@
 				& when( iscolor( @icon_color_hover ) ) {
 					color: @icon_color_hover !important;
 				}
-			}
-
-			&.ow-button-hover:hover {
-				color: lighten(@icon_color, 4%);
 			}
 		}
 
