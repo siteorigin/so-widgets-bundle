@@ -59,6 +59,7 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 			'sowTabs',
 			array(
 				'scrollto_after_change' => ! empty( $global_settings['scrollto_after_change'] ),
+				'scrollto_offset' => (int) apply_filters( 'siteorigin_widgets_tabs_scrollto_offset', 90 ),
 			)
 		);
 	}
