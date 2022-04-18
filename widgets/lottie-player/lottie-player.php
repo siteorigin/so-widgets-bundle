@@ -98,7 +98,7 @@ class SiteOrigin_Widget_Lottie_Player_Widget extends SiteOrigin_Widget {
 		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
 		return array(
 			sprintf(
-				__( 'Lottie player addon placeholder %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				__( 'Customize and enhance your Lottie Player with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lottie-player" target="_blank" rel="noopener noreferrer">',
 				'</a>'
 			),
