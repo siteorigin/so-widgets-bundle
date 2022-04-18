@@ -1,5 +1,4 @@
 <?php
-
 /*
 Widget Name: Lottie Player
 Description: Placeholder
@@ -95,7 +94,6 @@ class SiteOrigin_Widget_Lottie_Player_Widget extends SiteOrigin_Widget {
 			'new_window' => ! empty( $instance['new_window'] ) ? $instance['new_window'] : false,
 		);
 	}
-
 
 	function get_form_teaser() {
 		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
