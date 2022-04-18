@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Lottie Player
-Description: Placeholder
+Description: Bring your pages to life with Lottie animations.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/lottie-player-widget/
