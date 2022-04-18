@@ -185,7 +185,8 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		$attr['rel'] = ! empty( $instance['rel'] ) ? $instance['rel'] : '';
 
 		if ( function_exists( 'wp_lazy_loading_enabled' ) && wp_lazy_loading_enabled( 'img', 'sow-image' ) ) {
-			$attr['loading'] = 'lazy';
+			// If WordPress 5.9 or higher is being used, let WordPress control if Lazy Load is enabled.
+			$attr['loading'] = function_exists( 'wp_get_loading_attr_default' ) ? wp_get_loading_attr_default( 'the_content' ) : 'lazy';
 		}
 		
 		$link_atts = array();
