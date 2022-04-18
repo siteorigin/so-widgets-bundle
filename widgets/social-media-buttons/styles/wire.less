@@ -18,20 +18,15 @@
 			border: 2px solid @button_color;
 			color: @button_color !important;
 
-			&:visited,
-			&:active,
-			&:hover{
+			&.ow-button-hover:focus,
+			&.ow-button-hover:hover {
 				& when not( iscolor( @button_color_hover ) ) {
 					color: @button_color !important;
 				}
 
 				& when( iscolor( @button_color_hover ) ) {
-					color: @button_color !important;
+					background: @button_color_hover;
 				}
-			}
-
-			&.ow-button-hover:hover {
-				background: @button_color;
 			}
 		}
 
