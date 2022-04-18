@@ -35,6 +35,11 @@
 			background-color: @button_color;
 			border: 1px solid @button_color;
 
+			// Account for Twenty Fifteen link border-bottom override.
+			&:hover {
+				border-bottom: 1px solid @button_color;
+			}
+
 			&.ow-button-hover:hover {
 				& when not( iscolor( @button_color_hover ) ) {
 					background-color: lighten( @button_color, 4% );
