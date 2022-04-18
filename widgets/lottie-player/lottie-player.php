@@ -42,7 +42,6 @@ class SiteOrigin_Widget_Lottie_Player_Widget extends SiteOrigin_Widget {
 		return $types;
 	}
 
-
 	function get_widget_form() {
 		$global_settings = $this->get_global_settings();
 		return array(
