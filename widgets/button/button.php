@@ -155,7 +155,6 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						),
 					),
 
-
 					'button_color' => array(
 						'type' => 'color',
 						'label' => __( 'Button color', 'so-widgets-bundle' ),
@@ -196,7 +195,6 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 							'hover[hide]' => array( 'hide' ),
 						)
 					),
-
 
 					'font' => array(
 						'type' => 'font',
@@ -287,7 +285,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	}
 
 	/**
-	 * Get the variables for the button widget.
+	 * Get the variables for the Button Widget.
 	 *
 	 * @param $instance
 	 * @param $args
@@ -431,7 +429,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 				'id'
 			),
 		);
-		
+
 		foreach ( $migrate_props as $prop => $sub_props ) {
 			if ( empty( $instance[ $prop ] ) ) {
 				$instance[ $prop ] = array();
