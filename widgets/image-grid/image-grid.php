@@ -21,7 +21,6 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 			__('SiteOrigin Image Grid', 'so-widgets-bundle'),
 			array(
 				'description' => __('Display a grid of images. Also useful for displaying client logos.', 'so-widgets-bundle'),
-				'help' => 'https://siteorigin.com/widgets-bundle/image-grid/',
 			),
 			array(),
 			false,
@@ -174,6 +173,8 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	
 	function get_template_variables( $instance, $args ) {
 		$images = isset( $instance['images'] ) ? $instance['images'] : array();
+
+		// If WordPress 5.9 or higher is being used, let WordPress control if Lazy Load is enabled.
 		$lazy = function_exists( 'wp_lazy_loading_enabled' ) && wp_lazy_loading_enabled( 'img', 'sow-image-grid' );
 
 		foreach ( $images as $id => &$image ) {
@@ -182,6 +183,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				continue;
 			}
 
+			$loading_val = function_exists( 'wp_get_loading_attr_default' ) ? wp_get_loading_attr_default( 'the_content' ) : 'lazy';
 			$link_atts = empty( $image['link_attributes'] ) ? array() : $image['link_attributes'];
 			if ( ! empty( $image['new_window'] ) ) {
 				$link_atts['target'] = '_blank';
@@ -193,7 +195,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 
 			if ( empty( $image['image'] ) && ! empty( $image['image_fallback'] ) ) {
 				$alt = ! empty ( $image['alt'] ) ? $image['alt'] .'"' : '';
-				$image['image_html'] = '<img src="' . esc_url( $image['image_fallback'] ) . '" alt="' . esc_attr( $alt ) . '" title="' . esc_attr( $title ) . '" class="sow-image-grid-image_html" ' . ( $lazy ? 'loading="lazy"' : '' ) . '>';
+				$image['image_html'] = '<img src="' . esc_url( $image['image_fallback'] ) . '" alt="' . esc_attr( $alt ) . '" title="' . esc_attr( $title ) . '" class="sow-image-grid-image_html" ' . ( $lazy && $loading_val == 'lazy' ? 'loading="lazy"' : '' ) . '>';
 			} else {
 				if (
 					$instance['display']['attachment_size'] == 'custom_size' &&
@@ -214,7 +216,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 					'title' => $title,
 					'alt'   => $image['alt'],
 					'class' => 'sow-image-grid-image_html',
-					'loading' => $lazy ? 'lazy' : '',
+					'loading' => $lazy && $loading_val == 'lazy' ? 'lazy' : '',
 				) );
 			}
 		}
