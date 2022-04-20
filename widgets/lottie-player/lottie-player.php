@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Lottie_Player_Widget extends SiteOrigin_Widget {
 			'sow-lottie-player',
 			__( 'SiteOrigin Lottie Player', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Placeholder.', 'so-widgets-bundle' ),
+				'description' => __( 'Bring your pages to life with Lottie animations.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/lottie-player-widget/'
 			),
 			array(),
