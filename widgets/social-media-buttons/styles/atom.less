@@ -23,7 +23,10 @@
 			&.ow-button-hover:hover {
 				@border_color_hover: darken( @button_color_hover, 15% );
 				.gradient( lighten( @button_color_hover, 2% ), lighten( darken( @button_color_hover, 10% ), 2% ), lighten( @button_color_hover, 2% ) );
-				border-color: lighten( lighten( @border_color_hover, 2%), 2%) lighten( @border_color_hover, 2% ) darken( lighten( @border_color_hover, 2% ), 3% ) lighten( @border_color_hover, 2% );
+				border-top: 1px solid lighten( lighten( @border_color_hover, 2%), 2%);
+				border-right: 1px solid lighten( @border_color_hover, 2% );
+				border-bottom: 1px solid  darken( lighten( @border_color_hover, 2% ), 3% );
+				border-left: 1px solid lighten( @border_color_hover, 2% );
 			}
 		}
 
