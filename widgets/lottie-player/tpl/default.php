@@ -5,12 +5,17 @@ if ( empty( $file ) ) {
 }
 ?>
 
-<?php if ( ! empty( $url ) ) : ?>
-<a
-	href="<?php echo sow_esc_url( $url ); ?>"
-	<?php echo $new_window ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
->
-<?php endif; ?>
+<div class="sow-lottie-player" <?php if ( ! empty( $url ) ) : ?>style="position: relative;"<?php endif; ?>>
+	<?php if ( ! empty( $url ) ) : ?>
+		<?php $bottom = ! empty( $attributes['controls'] ) ? '35px' : 0; ?>
+		<a
+			href="<?php echo sow_esc_url( $url ); ?>"
+			style="position: absolute; top: 0; right: 0; left: 0; bottom: <?php echo $bottom; ?>; z-index: 1;"
+			<?php echo $new_window ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
+		>
+			&nbsp;
+		</a>
+	<?php endif; ?>
 	<lottie-player
 		class="sow-lottie-player"
 		<?php
@@ -27,7 +32,4 @@ if ( empty( $file ) ) {
 		src="<?php echo sow_esc_url( $file ); ?>"
 	>
 	</lottie-player>
-
-<?php if ( ! empty( $url ) ) : ?>
-	</a>
-<?php endif; ?>
+<div>
