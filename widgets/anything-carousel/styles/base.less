@@ -51,6 +51,11 @@
 		}
 	}
 
+	.sow-carousel-navigation {
+		min-width: 34px; // FF may ignore width due to the parent being a flexbox. It won't ignore min-width.
+		width: 34px;
+	}
+
 	a.sow-carousel-previous,
 	a.sow-carousel-next {
 		align-items: center;
@@ -61,7 +66,6 @@
 		font-size: 14px;
 		height: 32px;
 		justify-content: center;
-		min-width: 32px; // FF may ignore width due to the parent being a flexbox. It won't ignore min-width.
 		width: 32px;
 
 		&:focus,
