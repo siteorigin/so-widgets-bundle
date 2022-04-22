@@ -36,6 +36,7 @@ Our collection is growing; here's what we have so far:
 - **Image Grid:** Display a grid of images. Also useful for displaying client logos.
 - **Image Slider:** A simple, easy-to-use slider with support for image layering and HTML5 videos.
 - **Layout Slider:** Build layouts on slides using SiteOrigin Page Builder.
+- **Lottie Player:** Bring your pages to life with Lottie animations.
 - **Post Carousel:** Display your posts as a carousel.
 - **Price Table:** A simple yet powerful interface for building a price table.
 - **Simple Masonry:** A masonry layout for images. Images can link to your posts.
