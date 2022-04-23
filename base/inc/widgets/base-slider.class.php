@@ -396,8 +396,6 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				if ( ! empty( $layout['desktop'] ) && ! empty( $layout['desktop']['height'] ) ) {
 					$height = $instance['layout']['desktop']['height'];
 				}
-
-				$instance['layout']['desktop']['height']
 				?><ul
 					class="sow-slider-images"
 					data-settings="<?php echo esc_attr( json_encode($settings) ) ?>"

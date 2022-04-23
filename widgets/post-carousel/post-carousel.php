@@ -8,12 +8,12 @@ Documentation: https://siteorigin.com/widgets-bundle/post-carousel-widget/
 */
 
 /**
- * Add the carousel image sizes
+ * Add the carousel image sizes.
  */
-function sow_carousel_register_image_sizes(){
-	add_image_size('sow-carousel-default', 272, 182, true);
+function sow_carousel_register_image_sizes() {
+	add_image_size( 'sow-carousel-default', 272, 182, true );
 }
-add_action('init', 'sow_carousel_register_image_sizes');
+add_action( 'init', 'sow_carousel_register_image_sizes' );
 
 /**
  * This function allows for users to limit the total number of posts.
@@ -94,9 +94,9 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 	function __construct() {
 		parent::__construct(
 			'sow-post-carousel',
-			__('SiteOrigin Post Carousel', 'so-widgets-bundle'),
+			__( 'SiteOrigin Post Carousel', 'so-widgets-bundle' ),
 			array(
-				'description' => __('Gives you a widget to display your posts as a carousel.', 'so-widgets-bundle'),
+				'description' => __( 'Gives you a widget to display your posts as a carousel.', 'so-widgets-bundle' ),
 				'instance_storage' => true,
 				'help' => 'https://siteorigin.com/widgets-bundle/post-carousel-widget/',
 				'has_preview' => false,
@@ -257,7 +257,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		return array(
 			'title' => array(
 				'type' => 'text',
-				'label' => __('Title', 'so-widgets-bundle'),
+				'label' => __( 'Title', 'so-widgets-bundle' ),
 			),
 
 			'default_thumbnail' => array(
@@ -271,7 +271,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 			'image_size' => array(
 				'type' => 'image-size',
-				'label' => __('Featured Image size', 'so-widgets-bundle'),
+				'label' => __( 'Featured Image size', 'so-widgets-bundle' ),
 				'default' => 'sow-carousel-default',
 			),
 
@@ -289,7 +289,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 			'posts' => array(
 				'type' => 'posts',
-				'label' => __('Posts query', 'so-widgets-bundle'),
+				'label' => __( 'Posts query', 'so-widgets-bundle' ),
 				'hide' => true,
 				'fields' => array(
 					'posts_per_page' => array(
@@ -422,7 +422,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 					'widget' => 'post',
 					'fetching' => 'false',
 					'page' => 1,
-					'ajax-url' => sow_esc_url( wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ) ),
+					'ajax-url' => sow_esc_url( wp_nonce_url( admin_url( 'admin-ajax.php' ), 'widgets_action', '_widgets_nonce' ) ),
 
 					// Base carousel specific settings.
 					'item_count' => get_query_var( 'sow-total_posts' ),
@@ -434,7 +434,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		);
 	}
 
-	function get_template_name($instance){
+	function get_template_name( $instance ) {
 		return 'base';
 	}
 
@@ -451,4 +451,4 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 	}	
 }
 
-siteorigin_widget_register('sow-post-carousel', __FILE__, 'SiteOrigin_Widget_PostCarousel_Widget');
+siteorigin_widget_register( 'sow-post-carousel', __FILE__, 'SiteOrigin_Widget_PostCarousel_Widget' );

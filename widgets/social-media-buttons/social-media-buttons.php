@@ -1,5 +1,4 @@
 <?php
-
 /*
 Widget Name: Social Media Buttons
 Description: Customizable buttons which link to all your social media profiles.
@@ -7,7 +6,6 @@ Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/social-media-buttons-widget/
 */
-
 
 class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 
@@ -18,7 +16,8 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			'sow-social-media-buttons',
 			__( 'SiteOrigin Social Media Buttons', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Customizable buttons which link to all your social media profiles.', 'so-widgets-bundle' )
+				'description' => __( 'Customizable buttons which link to all your social media profiles.', 'so-widgets-bundle' ),
+				'help' => 'https://siteorigin.com/widgets-bundle/social-media-buttons-widget/',
 			),
 			array(),
 			false,

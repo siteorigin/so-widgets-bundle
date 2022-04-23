@@ -178,7 +178,7 @@ jQuery( function ( $ ) {
 				// Post Carousel update dot navigation active item.
 				if ( carouselSettings.dots && $$.data( 'widget' ) == 'post' ) {
 					$$.find( 'li.slick-active' ).removeClass( 'slick-active' );
-					$$.find( '.slick-dots li' ).eq( Math.ceil( $( '.sow-carousel-items' ).slick( 'slickCurrentSlide' ) / slidesToScroll ) ).addClass( 'slick-active' );
+					$$.find( '.slick-dots li' ).eq( Math.ceil( $$.find( '.sow-carousel-items' ).slick( 'slickCurrentSlide' ) / slidesToScroll ) ).addClass( 'slick-active' );
 				}
 			} );
 

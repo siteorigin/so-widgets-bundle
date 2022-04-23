@@ -1,5 +1,4 @@
 <?php
-
 /*
 Widget Name: Contact Form
 Description: A lightweight contact form builder.
@@ -17,6 +16,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			__( 'SiteOrigin Contact Form', 'so-widgets-bundle' ),
 			array(
 				'description' => __( 'A lightweight contact form builder.', 'so-widgets-bundle' ),
+				'help' => 'https://siteorigin.com/widgets-bundle/contact-form-widget/',
 			),
 			array(),
 			false,
@@ -1353,7 +1353,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			return true;
 		}
 
-		$mail_success = wp_mail( $instance['settings']['to'], $email_fields['subject'], $body, $headers );
+		$mail_success = wp_mail(
+			$instance['settings']['to'],
+			$email_fields['subject'],
+			$body,
+			apply_filters( 'siteorigin_widgets_contact_email_headers', $headers )
+		);
 		if ( $mail_success ) {
 			$hash_check[ $hash ] = time();
 			update_option( 'so_contact_hashes', $hash_check, true );
