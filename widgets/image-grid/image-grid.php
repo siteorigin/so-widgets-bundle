@@ -227,7 +227,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 					'title' => $title,
 					'alt'   => $image['alt'],
 					'class' => 'sow-image-grid-image_html',
-					'loading' => $lazy_load_current,
+					'loading' => $lazy_load_current ? 'lazy' : '',
 				) );
 			}
 		}
