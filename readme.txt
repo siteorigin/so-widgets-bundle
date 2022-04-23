@@ -105,6 +105,18 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.33.0 - 23 April 2022 =
+* New Widget! Introducing the SiteOrigin Lottie Player Widget.
+* Carousel Widgets: Resolved a dot navigation miscalculation when multiple carousels present.
+* Features: Improved mobile alignment.
+* Image and Image Grid: Added `wp_get_loading_attr_default` to prevent lazy loading above the fold.
+* Social Media Buttons: Improved hover behavior and styling.
+* Widget Block: Resolved a missing widget author notice.
+* Resolved PHP 8 notices.
+* Developer: Added `siteorigin_widgets_WIDGET_NAME_lazy_load` filter to manually exclude Image and Image Grid Widgets from lazy loading.
+* Developer: Added `siteorigin_widgets_contact_email_headers` to add additional headers to the Contact Form.
+* Developer: Added `siteorigin_widgets_tabs_scrollto_offset` to adjust the Tabs `Scroll To` offset.
+
 = 1.32.3 - 08 April 2022 =
 * Anything Carousel: Restored Autoplay functionality if Navigation Arrows are disabled.
 * Features: Improved CLS by inlining column alignment.
