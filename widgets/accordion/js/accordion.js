@@ -115,7 +115,7 @@ jQuery( function ( $ ) {
 				}
 			} );
 			
-			if ( $widget.data( 'useAnchorTags' ) ) {
+			if ( $widget.data( 'anchor-id' ) ) {
 				var timeoutId;
 				updateHash = function () {
 					if ( timeoutId ) {
@@ -127,6 +127,9 @@ jQuery( function ( $ ) {
 						var allOpenPanels = $( '.sow-accordion-panel-open' ).toArray();
 						for ( var i = 0; i < allOpenPanels.length; i++ ) {
 							var anchor = $( allOpenPanels[ i ] ).data( 'anchor' );
+							if ( $widget.data( 'anchor-id' ) != 1 ) {
+								anchor = $widget.data( 'anchor-id' ) + '-' + anchor;
+							}
 							if ( anchor ) {
 								var $parentPanel = $( allOpenPanels[ i ] ).parents( '.sow-accordion-panel' );
 								if ( ! $parentPanel.length || ( $parentPanel.length && $parentPanel.hasClass( 'sow-accordion-panel-open' ) ) ) {
@@ -149,6 +152,9 @@ jQuery( function ( $ ) {
 					for ( var i = 0; i < panels.length; i++ ) {
 						var panel = panels[ i ];
 						var panelAnchor = $( panel ).data( 'anchor' );
+							if ( $widget.data( 'anchor-id' ) != 1 ) {
+							panelAnchor = $widget.data( 'anchor-id' ) + '-' + panelAnchor;
+						}
 						var panelOpen = anchors.some(function (anchor) {
 							return decodeURI( panelAnchor ) === decodeURI( anchor );
 						});

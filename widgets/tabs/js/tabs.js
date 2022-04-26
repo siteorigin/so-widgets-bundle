@@ -11,8 +11,7 @@ jQuery( function ( $ ) {
 			if ( $widget.data( 'initialized' ) ) {
 				return $( this );
 			}
-			var useAnchorTags = $widget.data( 'useAnchorTags' );
-			
+			var useAnchorTags = $widget.data( 'anchor-id' );
 			var $tabPanelsContainer = $this.find( '> .sow-tabs-panel-container' );
 			
 			var $tabs = $this.find( '> .sow-tabs-tab-container > .sow-tabs-tab' );
@@ -101,7 +100,11 @@ jQuery( function ( $ ) {
 					$tab.addClass( 'sow-tabs-tab-selected' );
 					
 					if ( useAnchorTags && !preventHashChange ) {
-						window.location.hash = $tab.data( 'anchor' );
+						var anchor = $tab.data( 'anchor' );
+						if ( $widget.data( 'anchor-id' ) != 1 ) {
+							anchor = $widget.data( 'anchor-id' ) + '-' + anchor;
+						}
+						window.location.hash = anchor;
 					}
 				}
 			};
@@ -150,7 +153,11 @@ jQuery( function ( $ ) {
 						var anchors = window.location.hash.substring(1).split( ',' );
 						anchors.forEach( function ( anchor ) {
 							var tab = $tabs.filter( function ( index, element ) {
-								return decodeURI( anchor ) === decodeURI( $( element ).data( 'anchor' ) );
+								var tabAnchor = $( element ).data( 'anchor' );
+								if ( $widget.data( 'anchor-id' ) != 1 ) {
+									tabAnchor = $widget.data( 'anchor-id' ) + '-' + tabAnchor;
+								}
+								return decodeURI( anchor ) === decodeURI( tabAnchor );
 							} );
 							if ( tab.length > 0 ) {
 								selectTab( tab, true );
