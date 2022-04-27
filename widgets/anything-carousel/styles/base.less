@@ -35,20 +35,20 @@
 @navigation_dots_mobile: default;
 
 .sow-carousel-container {
-	a.sow-carousel-next {
+	.sow-carousel-navigation-next  {
 		margin-left: @navigation_arrow_margin;
-
-		&:after {
-			content: "\e601";
-		}
 	}
 
-	a.sow-carousel-previous {
-		margin-right: @navigation_arrow_margin;
+	a.sow-carousel-next:after {
+		content: "\e601";
+	}
 
-		&:before {
-			content: "\e600";
-		}
+	.sow-carousel-navigation-prev   {
+		margin-right: @navigation_arrow_margin;
+	}
+
+	a.sow-carousel-previous:before {
+		content: "\e600";
 	}
 
 	.sow-carousel-navigation {
