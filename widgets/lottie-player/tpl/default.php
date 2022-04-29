@@ -32,4 +32,4 @@ if ( empty( $file ) ) {
 		src="<?php echo sow_esc_url( $file ); ?>"
 	>
 	</lottie-player>
-<div>
+</div>
