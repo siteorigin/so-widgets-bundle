@@ -10,6 +10,44 @@
 				"author": true,
 				"categories": true,
 				"comment_count": true
+			},
+			"design": {
+				"post":{
+					"background": "#fff",
+					"border": "#e6e6e6"
+				},
+				"title": {
+					"color": "#2d2d2d",
+					"color_hover": "#626262",
+					"font": "",
+					"font_size": "25"
+				},
+				"meta":{
+					"font": "",
+					"font_size": "13",
+					"color": "#929292",
+					"color_hover": "#626262"
+				},
+				"content":{
+					"font": "",
+					"font_size": "15",
+					"color": "",
+					"color_hover": "",
+					"link_color": "",
+					"link_color_hover": ""
+				},
+				"pagination":{
+					"color": "",
+					"background": "",
+					"background_hover": "",
+					"border_color": "",
+					"border_radius": "",
+					"color_hover": "",
+					"font": "",
+					"font_size": "",
+					"link_margin": "",
+					"top_margin": ""
+				}
 			}
 		}
 	},
@@ -25,6 +63,44 @@
 				"author": true,
 				"categories": true,
 				"comment_count": true
+			},
+			"design": {
+				"post":{
+					"background": "#fff",
+					"border": "#e6e6e6"
+				},
+				"title": {
+					"color": "#2d2d2d",
+					"color_hover": "#626262",
+					"font": "",
+					"font_size": "16"
+				},
+				"meta":{
+					"color": "#929292",
+					"color_hover": "#626262",
+					"font": "",
+					"font_size": "13"
+				},
+				"content":{
+					"color": "",
+					"color_hover": "",
+					"font": "",
+					"font_size": "14",
+					"link_color": "",
+					"link_color_hover": ""
+				},
+				"pagination":{
+					"background": "",
+					"background_hover": "",
+					"border_color": "",
+					"border_radius": "",
+					"color": "",
+					"color_hover": "",
+					"font": "",
+					"font_size": "",
+					"top_margin": "",
+					"link_margin": ""
+				}
 			}
 		}
 	},
@@ -39,6 +115,52 @@
 				"author": true,
 				"categories": true,
 				"comment_count": true
+			},
+			"design": {
+				"post":{
+					"border": "#fff",
+					"background": "#e6e6e6"
+				},
+				"title": {
+					"color": "#2d2d2d",
+					"color_hover": "#626262",
+					"font": "",
+					"font_size": "24"
+				},
+				"meta":{
+					"font": "",
+					"font_size": "13",
+					"color": "#929292",
+					"color_hover": "#626262"
+				},
+				"content":{
+					"font": "",
+					"font_size": "15",
+					"color": "",
+					"color_hover": "",
+					"link_color": "",
+					"link_color_hover": ""
+				},
+				"pagination":{
+					"border_color": "",
+					"background": "",
+					"background_hover": "",
+					"border_radius": "",
+					"color": "",
+					"color_hover": "",
+					"font": "",
+					"font_size": "",
+					"top_margin": "",
+					"link_margin": ""
+				},
+				"offset_post_meta":{
+					"color": "#929292",
+					"font": "",
+					"font_size": "",
+					"link_color": "#2d2d2d",
+					"link_color_hover": "#626262",
+					"link_font_size": ""
+				}
 			}
 		}
 	},
@@ -53,6 +175,44 @@
 				"author": true,
 				"categories": true,
 				"comment_count": true
+			},
+			"design": {
+				"post":{
+					"border": "#e6e6e6",
+					"background": "#fff"
+				},
+				"title": {
+					"font": "",
+					"font_size": "16",
+					"color": "#2d2d2d",
+					"color_hover": "#626262"
+				},
+				"meta":{
+					"font": "",
+					"font_size": "13",
+					"color": "#929292",
+					"color_hover": "#626262"
+				},
+				"content":{
+					"font": "",
+					"font_size": "15",
+					"color": "",
+					"color_hover": "",
+					"link_color": "",
+					"link_color_hover": ""
+				},
+				"pagination":{
+					"color": "",
+					"color_hover": "",
+					"background": "",
+					"background_hover": "",
+					"border_color": "",
+					"border_radius": "",
+					"font": "",
+					"font_size": "",
+					"top_margin": "",
+					"link_margin": ""
+				}
 			}
 		}
 	},
@@ -68,6 +228,52 @@
 				"author": true,
 				"categories": true,
 				"comment_count": true
+			},
+			"design": {
+				"post":{
+					"border": "#e6e6e6",
+					"background": "#fff"
+				},
+				"title": {
+					"color": "#2d2d2d",
+					"color_hover": "#626262",
+					"font": "",
+					"font_size": "16"
+				},
+				"meta":{
+					"font": "",
+					"font_size": "13",
+					"color": "#929292",
+					"color_hover": "#626262"
+				},
+				"content":{
+					"font": "",
+					"font_size": "14",
+					"color": "",
+					"color_hover": "",
+					"link_color": "",
+					"link_color_hover": ""
+				},
+				"pagination":{
+					"color": "",
+					"color_hover": "",
+					"background": "",
+					"background_hover": "",
+					"border_color": "",
+					"border_radius": "",
+					"font": "",
+					"font_size": "",
+					"top_margin": "",
+					"link_margin": ""
+				},
+				"overlay_post_category":{
+					"background": "#000",
+					"background_hover": "",
+					"color": "#fff",
+					"color_hover": "",
+					"font": "",
+					"font_size": ""
+				}
 			}
 		}
 	},
@@ -77,6 +283,45 @@
 			"settings": {
 				"columns": 3,
 				"categories": true
+			},
+			"design": {
+				"pagination":{
+					"border_color": "",
+					"background": "",
+					"background_hover": "",
+					"border_radius": "",
+					"color": "",
+					"color_hover": "",
+					"font": "",
+					"font_size": "",
+					"link_margin": "",
+					"top_margin": ""
+				},
+				"filter_categories":{
+					"background": "",
+					"background_hover": "",
+					"color": "#929292",
+					"color_hover": "#2d2d2d",
+					"font": "",
+					"font_size": "11",
+					"selected_border_color": "#2d2d2d",
+					"selected_border_thickness": "2",
+					"text_transform": "true"
+				},
+				"featured_image":{
+					"border_color": "#929292",
+					"divider_border_color": "#2d2d2d",
+					"divider_border_thickness": "2",
+					"divider_border_margin": "13",
+					"hover_overlay_color": "#ffffff",
+					"hover_overlay_opacity": "0.9",
+					"post_meta_font": "",
+					"post_meta_font_size": "11",
+					"post_meta_color": "#929292",
+					"post_title_color": "#2d2d2d",
+					"post_title_font": "",
+					"post_title_font_size": "15"
+				}
 			}
 		}
 	}
