@@ -114,9 +114,11 @@ jQuery( function ( $ ) {
 					} );
 				}
 			} );
-			
-			if ( $widget.data( 'useAnchorTags' ) ) {
+
+			if ( $widget.data( 'anchor-id' ) || $widget.data( 'use-anchor-tags' ) ) {
+				var anchorId = $widget.data( 'anchor-id' ) ? $widget.data( 'anchor-id' ) : false;
 				var timeoutId;
+
 				updateHash = function () {
 					if ( timeoutId ) {
 						clearTimeout( timeoutId );
@@ -127,6 +129,10 @@ jQuery( function ( $ ) {
 						var allOpenPanels = $( '.sow-accordion-panel-open' ).toArray();
 						for ( var i = 0; i < allOpenPanels.length; i++ ) {
 							var anchor = $( allOpenPanels[ i ] ).data( 'anchor' );
+							if ( anchorId && anchorId != 1 ) {
+								anchor = anchorId + anchor;
+							}
+
 							if ( anchor ) {
 								var $parentPanel = $( allOpenPanels[ i ] ).parents( '.sow-accordion-panel' );
 								if ( ! $parentPanel.length || ( $parentPanel.length && $parentPanel.hasClass( 'sow-accordion-panel-open' ) ) ) {
@@ -149,9 +155,15 @@ jQuery( function ( $ ) {
 					for ( var i = 0; i < panels.length; i++ ) {
 						var panel = panels[ i ];
 						var panelAnchor = $( panel ).data( 'anchor' );
-						var panelOpen = anchors.some(function (anchor) {
+						var anchorId = $widget.data( 'anchor-id' ) ? $widget.data( 'anchor-id' ) : false;
+
+						if ( anchorId && anchorId != 1 ) {
+							panelAnchor = $widget.data( 'anchor-id' ) + panelAnchor;
+						}
+						var panelOpen = anchors.some( function ( anchor ) {
 							return decodeURI( panelAnchor ) === decodeURI( anchor );
 						});
+
 						if ( panelOpen ) {
 							openPanel( panel, true, true );
 						} else {

@@ -1,5 +1,5 @@
 === SiteOrigin Widgets Bundle ===
-Tags: widget, button, slider, hero, google maps, image, carousel, features, icons, price table, tinymce, social icons
+Tags: widget, button, slider, hero, google maps, image, carousel, lottie, features, icons, price table, tinymce, social icons
 Requires at least: 4.2
 Tested up to: 5.9
 Requires PHP: 5.6.20
@@ -104,6 +104,12 @@ SiteOrigin Premium includes access to our professional email support service, pe
 The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets. Widgets can be enabled or disabled as needed. If a widget offers global settings, you can access those via the Settings button next to each applicable widget.
 
 == Changelog ==
+
+= 1.33.1 - 30 April 2022 =
+* Accordion and Tabs: Added support for the SiteOrigin Premium Anchor ID Addon.
+* Anything Carousel: Resolved a `Previous Nav Arrow` error.
+* Anything Carousel: Improved theme compatibility by preventing nav arrow container overflow hidden.
+* Lottie Player: Fixed an error in the closing `</div>` tag.
 
 = 1.33.0 - 23 April 2022 =
 * New Widget! Introducing the SiteOrigin Lottie Player Widget.

@@ -35,20 +35,27 @@
 @navigation_dots_mobile: default;
 
 .sow-carousel-container {
-	a.sow-carousel-next {
+	.sow-carousel-navigation-next  {
 		margin-left: @navigation_arrow_margin;
-
-		&:after {
-			content: "\e601";
-		}
 	}
 
-	a.sow-carousel-previous {
-		margin-right: @navigation_arrow_margin;
+	a.sow-carousel-next:after {
+		content: "\e601";
+	}
 
-		&:before {
-			content: "\e600";
-		}
+	.sow-carousel-navigation-prev   {
+		margin-right: @navigation_arrow_margin;
+	}
+
+	a.sow-carousel-previous:before {
+		content: "\e600";
+	}
+
+	.sow-carousel-navigation {
+		margin-top: 0;
+		margin-bottom: 0;
+		min-width: 34px; // FF may ignore width due to the parent being a flexbox. It won't ignore min-width.
+		width: 34px;
 	}
 
 	a.sow-carousel-previous,
@@ -61,7 +68,6 @@
 		font-size: 14px;
 		height: 32px;
 		justify-content: center;
-		min-width: 32px; // FF may ignore width due to the parent being a flexbox. It won't ignore min-width.
 		width: 32px;
 
 		&:focus,
