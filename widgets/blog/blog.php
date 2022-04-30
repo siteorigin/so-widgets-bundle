@@ -387,6 +387,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				'current' => $current,
 				'show_all' => $show_all_prev_next,
 				'prev_next' => ! $show_all_prev_next,
+				'prev_text' => is_rtl() ? '&rarr;' : '&larr;',
+				'next_text' => is_rtl() ? '&larr;' : '&rarr;',
 			) );
 		}
 
