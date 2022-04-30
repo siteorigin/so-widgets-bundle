@@ -25,6 +25,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	function initialize() {
+		add_action( 'wp_loaded', array( $this, 'register_image_sizes' ) );
 		$this->register_frontend_styles(
 			array(
 				array(
@@ -34,6 +35,10 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			)
 		);
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_template_assets' ) );
+	}
+
+	function register_image_sizes() {
+		add_image_size( 'sow-blog-portfolio', 375, 375, true );
 	}
 
 	function get_widget_form() {

@@ -27,7 +27,7 @@ if ( $settings['categories'] ) {
 					<span class="sow-entry-project-type"><?php echo $filtering; ?></span>
 				<?php endif; ?>
 			</div>
-			<?php the_post_thumbnail(); ?>
+			<?php the_post_thumbnail( 'sow-blog-portfolio' ); ?>
 		</a>
 	</div>
 </article>
