@@ -11,7 +11,7 @@ jQuery( function ( $ ) {
 			if ( $widget.data( 'initialized' ) ) {
 				return $( this );
 			}
-			var useAnchorTags = $widget.data( 'anchor-id' );
+			var anchorId = $widget.data( 'anchor-id' ) ? $widget.data( 'anchor-id' ) : false;
 			var $tabPanelsContainer = $this.find( '> .sow-tabs-panel-container' );
 			
 			var $tabs = $this.find( '> .sow-tabs-tab-container > .sow-tabs-tab' );
@@ -98,13 +98,17 @@ jQuery( function ( $ ) {
 						}
 					);
 					$tab.addClass( 'sow-tabs-tab-selected' );
-					
-					if ( useAnchorTags && !preventHashChange ) {
-						var anchor = $tab.data( 'anchor' );
-						if ( $widget.data( 'anchor-id' ) != 1 ) {
-							anchor = $widget.data( 'anchor-id' ) + '-' + anchor;
+
+					if ( ! preventHashChange ) {
+						if ( ! anchorId ) {
+							window.location.hash = $tab.data( 'anchor' );
+						} else {
+							var anchor = $tab.data( 'anchor' );
+							if ( $widget.data( 'anchor-id' ) != 1 ) {
+								anchor = $widget.data( 'anchor-id' ) + '-' + anchor;
+							}
+							window.location.hash = anchor;
 						}
-						window.location.hash = anchor;
 					}
 				}
 			};
@@ -147,14 +151,14 @@ jQuery( function ( $ ) {
 				selectTab( $newTab.get(0) );
 			} );
 			
-			if ( useAnchorTags ) {
+			if ( $widget.data( 'anchor-id' ) || $widget.data( 'use-anchor-tags' ) ) {
 				var updateSelectedTab = function () {
 					if ( window.location.hash ) {
 						var anchors = window.location.hash.substring(1).split( ',' );
 						anchors.forEach( function ( anchor ) {
 							var tab = $tabs.filter( function ( index, element ) {
 								var tabAnchor = $( element ).data( 'anchor' );
-								if ( $widget.data( 'anchor-id' ) != 1 ) {
+								if ( $widget.data( 'anchor-id' ) && $widget.data( 'anchor-id' ) != 1 ) {
 									tabAnchor = $widget.data( 'anchor-id' ) + '-' + tabAnchor;
 								}
 								return decodeURI( anchor ) === decodeURI( tabAnchor );
