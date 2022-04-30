@@ -105,6 +105,12 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.33.1 - 30 April 2022 =
+* Accordion and Tabs: Added support for the SiteOrigin Premium Anchor ID Addon.
+* Anything Carousel: Resolved a `Previous Nav Arrow` error.
+* Anything Carousel: Improved theme compatibility by preventing nav arrow container overflow hidden.
+* Lottie Player: Fixed an error in the closing `</div>` tag.
+
 = 1.33.0 - 23 April 2022 =
 * New Widget! Introducing the SiteOrigin Lottie Player Widget.
 * Carousel Widgets: Resolved a dot navigation miscalculation when multiple carousels present.
