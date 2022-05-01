@@ -38,7 +38,7 @@
 @pagination_font_weight: default;
 @pagination_link_color: default;
 @pagination_link_margin: default;
-@pagination_text_color_hover: default;
+@pagination_link_color_hover: default;
 @pagination_top_margin: default;
 
 
@@ -91,7 +91,6 @@
 			font-style: @content_font_style;
 			font-weight: @content_font_weight;
 
-
 			a {
 				color: @content_link;
 
@@ -107,41 +106,37 @@
 		.sow-nav-links {
 			margin-top: @pagination_top_margin;
 		}
+
 		.page-numbers {
+			background: @pagination_background;
 			border-color: @pagination_border_color;
 			border-radius: @pagination_border_radius;
+			color: @pagination_link_color;
 			font-family: @pagination_font;
 			font-size: @pagination_font_size;
 			font-style: @pagination_font_style;
 			font-weight: @pagination_font_weight;
+			margin-right: @pagination_link_margin;
 
-			a {
-				color: @pagination_link_color;
-				&:hover,
-				&:focus {
-					color: @pagination_text_color_hover;
-				}
-			}
-
-			&.prev,
-			&.next {
-				color: @pagination_text_color_hover;
-				&:hover,
-				&:focus {
-					color: @pagination_text_color_hover;
-				}
+			&:last-child {
+				margin-right: 0;
 			}
 
 			&.current,
 			&:hover,
 			&:focus {
-				background: @pagination_background;
-
-				&:hover,
-				&:focus {
-					color: @pagination_background_hover;
-				}
+				background: @pagination_background_hover;
+				color: @pagination_link_color_hover;
 			}
+		}
+
+		.dots {
+			color: @pagination_link_color;
+			font-family: @pagination_font;
+			font-size: @pagination_font_size;
+			font-style: @pagination_font_style;
+			font-weight: @pagination_font_weight;
+			margin-right: @pagination_link_margin;
 		}
 	}
 }

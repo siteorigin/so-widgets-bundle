@@ -566,7 +566,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		}
 		$less_vars['pagination_font_size'] = ! empty( $instance['design']['pagination']['font_size'] ) ? $instance['design']['pagination']['font_size'] : '';
 		$less_vars['pagination_link_color'] = ! empty( $instance['design']['pagination']['link_color'] ) ? $instance['design']['pagination']['link_color'] : '';
-		$less_vars['pagination_text_color_hover'] = ! empty( $instance['design']['pagination']['text_color_hover'] ) ? $instance['design']['pagination']['text_color_hover'] : '';
+		$less_vars['pagination_link_color_hover'] = ! empty( $instance['design']['pagination']['text_color_hover'] ) ? $instance['design']['pagination']['text_color_hover'] : '';
 
 		if ( $instance['template'] == 'offset' ) {
 			// Offset Post Meta.
