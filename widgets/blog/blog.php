@@ -530,9 +530,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				}
 			}
 			$less_vars['meta_font_size'] = ! empty( $instance['design']['meta']['font_size'] ) ? $instance['design']['meta']['font_size'] : '';
-			$less_vars['meta_color'] = ! empty( $instance['design']['meta']['color'] ) ? $instance['design']['meta']['color'] : '';
-			$less_vars['meta_link_hover'] = ! empty( $instance['design']['meta']['link_color'] ) ? $instance['design']['meta']['link_color'] : '';
-			$less_vars['meta_link_hover'] = ! empty( $instance['design']['meta']['link_color_hover'] ) ? $instance['design']['meta']['link_color_hover'] : '';
+			$less_vars['meta_color'] = ! empty( $instance['design']['meta']['link_color'] ) ? $instance['design']['meta']['color'] : '';
+			$less_vars['meta_color_hover'] = ! empty( $instance['design']['meta']['color_hover'] ) ? $instance['design']['meta']['color_hover'] : '';
 
 			// Content.
 			if ( ! empty( $instance['design']['content']['font'] ) ) {
@@ -656,7 +655,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$less_vars['featured_image_divider_border_color'] = ! empty( $instance['design']['featured_image']['divider_border_color'] ) ? $instance['design']['featured_image']['divider_border_color'] : '';
 			$less_vars['featured_image_divider_border_thickness'] = ! empty( $instance['design']['featured_image']['divider_border_thickness'] ) ? $instance['design']['featured_image']['divider_border_thickness'] : '';
 			$less_vars['featured_image_divider_border_margin'] = ! empty( $instance['design']['featured_image']['divider_border_margin'] ) ? $instance['design']['featured_image']['divider_border_margin'] : '';
-			if ( ! empty( $instance['post_meta_font']['font'] ) ) {
+			if ( ! empty( $instance['design']['featured_image']['post_meta_font'] ) ) {
 				$font = siteorigin_widget_get_font( $instance['design']['featured_image']['post_meta_font'] );
 				$less_vars['featured_image_post_meta_font'] = $font['family'];
 				if ( ! empty( $font['weight'] ) ) {
@@ -664,8 +663,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 					$less_vars['featured_image_post_meta_font_weight'] = $font['weight_raw'];
 				}
 			}
-			$less_vars['featured_image_'] = ! empty( $instance['design']['featured_image']['post_meta_font_size'] ) ? $instance['design']['featured_image']['post_meta_font_size'] : '';
-			$less_vars['featured_image_'] = ! empty( $instance['design']['featured_image']['post_meta_color'] ) ? $instance['design']['featured_image']['post_meta_color'] : '';
+			$less_vars['featured_image_post_meta_font_size'] = ! empty( $instance['design']['featured_image']['post_meta_font_size'] ) ? $instance['design']['featured_image']['post_meta_font_size'] : '';
+			$less_vars['featured_image_post_meta_color'] = ! empty( $instance['design']['featured_image']['post_meta_color'] ) ? $instance['design']['featured_image']['post_meta_color'] : '';
 		}
 
 		return $less_vars;
