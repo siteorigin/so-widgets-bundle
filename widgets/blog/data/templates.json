@@ -156,10 +156,10 @@
 				"offset_post_meta":{
 					"color": "#929292",
 					"font": "",
-					"font_size": "",
+					"font_size": "13",
 					"link_color": "#2d2d2d",
 					"link_color_hover": "#626262",
-					"link_font_size": ""
+					"link_font_size": "14"
 				}
 			}
 		}
