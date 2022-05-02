@@ -261,7 +261,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								
 								'link_color' => array(
 									'type' => 'color',
-									'label' => __( 'Link color', 'so-widgets-bundle' ),
+									'label' => __( 'Link Color', 'so-widgets-bundle' ),
 								),
 								'text_color_hover' => array(
 									'type' => 'color',
