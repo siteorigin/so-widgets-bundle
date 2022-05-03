@@ -46,10 +46,14 @@
 
 		supports: {
 			html: false,
+			anchor: true,
 		},
 
 		attributes: {
 			widgetClass: {
+				type: 'string',
+			},
+			anchor: {
 				type: 'string',
 			},
 			widgetData: {
@@ -97,6 +101,7 @@
 						xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
 					},
 					data: {
+						anchor: props.attributes.anchor,
 						widgetClass: props.attributes.widgetClass,
 						widgetData: widgetData ? widgetData : props.attributes.widgetData || {}
 					}
