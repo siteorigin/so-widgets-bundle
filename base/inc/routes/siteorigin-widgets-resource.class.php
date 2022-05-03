@@ -4,6 +4,7 @@
  */
 
 class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
+	var $widgetAnchor;
 
 	public function register_routes() {
 		$version = '1';
@@ -127,6 +128,10 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 		return true;
 	}
 
+	function add_widget_id( $id, $instance, $widget ) {
+		return $this->widgetAnchor;
+	}
+
 	/**
 	 * Get the collection of widgets.
 	 *
@@ -154,11 +159,20 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 
 		if ( $valid_widget_class && ! empty( $widget_data ) ) {
 			ob_start();
+			// Add anchor to widget wrapper.
+			if ( ! empty( $request['anchor'] ) ) {
+				$this->widgetAnchor = $request['anchor'];
+				add_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10, 3 );
+			}
 			/* @var $widget SiteOrigin_Widget */
 			$instance = $widget->update( $widget_data, $widget_data );
 			$widget->widget( array(), $instance );
 			$rendered_widget = array();
 			$rendered_widget['html'] = ob_get_clean();
+
+			if ( ! empty( $request['anchor'] ) ) {
+				remove_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10 );
+			}
 
 			// Check if this widget loaded any icons, and if it has, store them.
 			$styles = wp_styles();
