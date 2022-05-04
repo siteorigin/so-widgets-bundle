@@ -23,10 +23,10 @@
 					"font_size": "25"
 				},
 				"meta":{
+					"color": "#626262",
+					"color_hover": "#929292",
 					"font": "",
-					"font_size": "13",
-					"color": "#929292",
-					"color_hover": "#626262"
+					"font_size": "13"
 				},
 				"content":{
 					"font": "",
@@ -76,8 +76,8 @@
 					"font_size": "16"
 				},
 				"meta":{
-					"color": "#929292",
-					"color_hover": "#626262",
+					"color": "#626262",
+					"color_hover": "#929292",
 					"font": "",
 					"font_size": "13"
 				},
@@ -128,10 +128,10 @@
 					"font_size": "24"
 				},
 				"meta":{
+					"color": "#626262",
+					"color_hover": "#929292",
 					"font": "",
-					"font_size": "13",
-					"color": "#929292",
-					"color_hover": "#626262"
+					"font_size": "13"
 				},
 				"content":{
 					"font": "",
@@ -188,10 +188,10 @@
 					"color_hover": "#626262"
 				},
 				"meta":{
+					"color": "#626262",
+					"color_hover": "#929292",
 					"font": "",
-					"font_size": "13",
-					"color": "#929292",
-					"color_hover": "#626262"
+					"font_size": "13"
 				},
 				"content":{
 					"font": "",
@@ -241,10 +241,10 @@
 					"font_size": "16"
 				},
 				"meta":{
+					"color": "#626262",
+					"color_hover": "#929292",
 					"font": "",
-					"font_size": "13",
-					"color": "#929292",
-					"color_hover": "#626262"
+					"font_size": "13"
 				},
 				"content":{
 					"font": "",
