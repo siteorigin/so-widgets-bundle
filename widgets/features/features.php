@@ -339,6 +339,28 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		return $less_vars;
 	}
 
+	function get_feature_flex_direction( $position ) {
+		switch ( $position ) {
+			case 'top':
+				$style = 'column';
+				break;
+			
+			case 'right':
+				$style = 'row';
+				break;
+			
+			case 'bottom':
+				$style = 'column-reverse';
+				break;
+			
+			case 'left':			
+			default:
+				$style = 'row-reverse';
+				break;
+		}
+		return $style;
+	}
+
 	function get_settings_form() {
 		return array(
 			'responsive_breakpoint' => array(

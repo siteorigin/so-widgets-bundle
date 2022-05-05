@@ -155,7 +155,6 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						),
 					),
 
-
 					'button_color' => array(
 						'type' => 'color',
 						'label' => __( 'Button color', 'so-widgets-bundle' ),
@@ -196,7 +195,6 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 							'hover[hide]' => array( 'hide' ),
 						)
 					),
-
 
 					'font' => array(
 						'type' => 'font',
@@ -287,7 +285,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	}
 
 	/**
-	 * Get the variables for the button widget.
+	 * Get the variables for the Button Widget.
 	 *
 	 * @param $instance
 	 * @param $args
@@ -431,7 +429,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 				'id'
 			),
 		);
-		
+
 		foreach ( $migrate_props as $prop => $sub_props ) {
 			if ( empty( $instance[ $prop ] ) ) {
 				$instance[ $prop ] = array();
@@ -463,6 +461,17 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 		return $instance;
 	}
+
+	function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+		return array(
+			sprintf(
+				__( 'Add a beautiful tooltip to the Button Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tooltip" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
+		);
+	}	
 }
 
 siteorigin_widget_register('sow-button', __FILE__, 'SiteOrigin_Widget_Button_Widget');

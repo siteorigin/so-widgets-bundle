@@ -1,5 +1,4 @@
 <?php
-
 /*
 Widget Name: Taxonomy
 Description: Displays the selected taxonomy for the current post.
@@ -16,7 +15,8 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 			'sow-taxonomy',
 			__( 'SiteOrigin Taxonomy', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Displays the selected taxonomy for the current post.', 'so-widgets-bundle' )
+				'description' => __( 'Displays the selected taxonomy for the current post.', 'so-widgets-bundle' ),
+				'help' => 'https://siteorigin.com/widgets-bundle/taxonomy-widget/',
 			),
 			array(),
 			false,

@@ -1,6 +1,7 @@
 <?php
 
 class SiteOrigin_Widgets_Bundle_Widget_Block {
+	var $widgetAnchor;
 	/**
 	 * Get the singleton instance
 	 *
@@ -127,6 +128,10 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$so_widgets_bundle->enqueue_registered_widgets_scripts();
 	}
 
+	function add_widget_id( $id, $instance, $widget ) {
+		return $this->widgetAnchor;
+	}
+
 	public function render_widget_block( $attributes ) {
 		if ( empty( $attributes['widgetClass'] ) ) {
 			return '<div>'.
@@ -134,8 +139,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				   '</div>';
 		}
 
-		$widget_class = $attributes['widgetClass'];
 
+		$widget_class = $attributes['widgetClass'];
 		global $wp_widget_factory;
 
 		$widget = ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ? $wp_widget_factory->widgets[ $widget_class ] : false;
@@ -156,8 +161,9 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			$GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] = true;
 			$instance = $attributes['widgetData'];
 			add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
-			ob_start();
 
+
+			ob_start();
 			// If we have pre-generated widgetHTML or there's a valid $_POST, generate the widget.
 			// We don't show the pre-generated widget when there's a valid $_POST
 			// as widgets will likely change when that happens.
@@ -182,6 +188,11 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					)
 				)
 			) {
+				// Add anchor to widget wrapper.
+				if ( ! empty( $attributes['anchor'] ) ) {
+					$this->widgetAnchor = $attributes['anchor'];
+					add_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10, 3 );
+				}
 				/* @var $widget SiteOrigin_Widget */
 				$instance = $widget->update( $instance, $instance );
 				$widget->widget( array(
@@ -190,6 +201,10 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					'before_title' => '<h3 class="widget-title">',
 					'after_title' => '</h3>',
 				), $instance );
+
+				if ( ! empty( $attributes['anchor'] ) ) {
+					remove_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10 );
+				}
 			} else {
 				$widget->generate_and_enqueue_instance_styles( $instance );
 				$widget->enqueue_frontend_scripts( $instance );
