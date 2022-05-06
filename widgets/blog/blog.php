@@ -530,7 +530,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				}
 			}
 			$less_vars['meta_font_size'] = ! empty( $instance['design']['meta']['font_size'] ) ? $instance['design']['meta']['font_size'] : '';
-			$less_vars['meta_color'] = ! empty( $instance['design']['meta']['link_color'] ) ? $instance['design']['meta']['color'] : '';
+			$less_vars['meta_color'] = ! empty( $instance['design']['meta']['color'] ) ? $instance['design']['meta']['color'] : '';
 			$less_vars['meta_color_hover'] = ! empty( $instance['design']['meta']['color_hover'] ) ? $instance['design']['meta']['color_hover'] : '';
 
 			// Content.
