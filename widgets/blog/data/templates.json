@@ -29,24 +29,24 @@
 					"font_size": "13"
 				},
 				"content":{
+					"color": "#2d2d2d",
+					"color_hover": "",
 					"font": "",
 					"font_size": "15",
-					"color": "",
-					"color_hover": "",
-					"link_color": "",
-					"link_color_hover": ""
+					"link_color": "#f14e4e",
+					"link_color_hover": "#2d2d2d"
 				},
 				"pagination":{
 					"background": "",
-					"background_hover": "#2d2d2d",
+					"background_hover": "#626262",
 					"border_color": "#2d2d2d",
 					"border_radius": "",
-					"color": "",
-					"color_hover": "#fff",
+					"color": "#2d2d2d",
+					"color_hover": "#626262",
 					"font": "",
 					"font_size": "14",
 					"link_margin": "4",
-					"top_margin": ""
+					"top_margin": "30"
 				}
 			}
 		}
@@ -82,24 +82,24 @@
 					"font_size": "13"
 				},
 				"content":{
-					"color": "",
+					"color": "#2d2d2d",
 					"color_hover": "",
 					"font": "",
 					"font_size": "14",
-					"link_color": "",
-					"link_color_hover": ""
+					"link_color": "#f14e4e",
+					"link_color_hover": "#2d2d2d"
 				},
 				"pagination":{
 					"background": "",
-					"background_hover": "#2d2d2d",
+					"background_hover": "#626262",
 					"border_color": "#2d2d2d",
 					"border_radius": "",
-					"color": "",
-					"color_hover": "#fff",
+					"color": "#2d2d2d",
+					"color_hover": "#626262",
 					"font": "",
 					"font_size": "14",
 					"link_margin": "4",
-					"top_margin": ""
+					"top_margin": "30"
 				}
 			}
 		}
@@ -134,24 +134,24 @@
 					"font_size": "13"
 				},
 				"content":{
+					"color": "#2d2d2d",
+					"color_hover": "",
 					"font": "",
 					"font_size": "15",
-					"color": "",
-					"color_hover": "",
-					"link_color": "",
-					"link_color_hover": ""
+					"link_color": "#f14e4e",
+					"link_color_hover": "#2d2d2d"
 				},
 				"pagination":{
 					"background": "",
-					"background_hover": "#2d2d2d",
+					"background_hover": "#626262",
 					"border_color": "#2d2d2d",
 					"border_radius": "",
-					"color": "",
-					"color_hover": "#fff",
+					"color": "#2d2d2d",
+					"color_hover": "#626262",
 					"font": "",
 					"font_size": "14",
 					"link_margin": "4",
-					"top_margin": ""
+					"top_margin": "30"
 				},
 				"offset_post_meta":{
 					"color": "#929292",
@@ -194,24 +194,24 @@
 					"font_size": "13"
 				},
 				"content":{
+					"color": "#2d2d2d",
+					"color_hover": "",
 					"font": "",
 					"font_size": "15",
-					"color": "",
-					"color_hover": "",
-					"link_color": "",
-					"link_color_hover": ""
+					"link_color": "#f14e4e",
+					"link_color_hover": "#2d2d2d"
 				},
 				"pagination":{
 					"background": "",
-					"background_hover": "#2d2d2d",
+					"background_hover": "#626262",
 					"border_color": "#2d2d2d",
 					"border_radius": "",
-					"color": "",
-					"color_hover": "#fff",
+					"color": "#2d2d2d",
+					"color_hover": "#626262",
 					"font": "",
 					"font_size": "14",
 					"link_margin": "4",
-					"top_margin": ""
+					"top_margin": "30"
 				}
 			}
 		}
@@ -247,24 +247,24 @@
 					"font_size": "13"
 				},
 				"content":{
+					"color": "#2d2d2d",
+					"color_hover": "",
 					"font": "",
 					"font_size": "14",
-					"color": "",
-					"color_hover": "",
-					"link_color": "",
-					"link_color_hover": ""
+					"link_color": "#f14e4e",
+					"link_color_hover": "#2d2d2d"
 				},
 				"pagination":{
 					"background": "",
-					"background_hover": "#2d2d2d",
+					"background_hover": "#626262",
 					"border_color": "#2d2d2d",
 					"border_radius": "",
-					"color": "",
-					"color_hover": "#fff",
+					"color": "#2d2d2d",
+					"color_hover": "#626262",
 					"font": "",
 					"font_size": "14",
 					"link_margin": "4",
-					"top_margin": ""
+					"top_margin": "30"
 				},
 				"overlay_post_category":{
 					"background": "#000",
@@ -287,15 +287,15 @@
 			"design": {
 				"pagination":{
 					"background": "",
-					"background_hover": "#2d2d2d",
+					"background_hover": "#626262",
 					"border_color": "#2d2d2d",
 					"border_radius": "",
-					"color": "",
-					"color_hover": "#fff",
+					"color": "#2d2d2d",
+					"color_hover": "#626262",
 					"font": "",
 					"font_size": "14",
 					"link_margin": "4",
-					"top_margin": ""
+					"top_margin": "30"
 				},
 				"filter_categories":{
 					"background": "",
