@@ -213,6 +213,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						'label'       => __( 'Marker icon', 'so-widgets-bundle' ),
 						'description' => __( 'Replaces the default map marker with your own image.', 'so-widgets-bundle' )
 					),
+					'marker_icon_size' => array(
+						'type' => 'image-size',
+						'label' => __( 'Marker icon size', 'so-widgets-bundle' ),
+					),
 					'markers_draggable' => array(
 						'type'       => 'checkbox',
 						'default'    => false,
@@ -251,6 +255,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 								'default'     => '',
 								'label'       => __( 'Custom Marker icon', 'so-widgets-bundle' ),
 								'description' => __( 'Replace the default map marker with your own image for each marker.', 'so-widgets-bundle' )
+							),
+							'custom_marker_icon_size' => array(
+								'type' => 'image-size',
+								'label' => __( 'Custom marker icon size', 'so-widgets-bundle' ),
 							),
 						)
 					),
@@ -548,7 +556,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 		$settings = $instance['settings'];
 
-		$mrkr_src = wp_get_attachment_image_src( $instance['markers']['marker_icon'] );
+		$mrkr_src = wp_get_attachment_image_src(
+			$instance['markers']['marker_icon'],
+			! empty( $instance['markers']['marker_icon_size'] ) ? $instance['markers']['marker_icon_size'] : 'thumbnail'
+		);
 
 		$styles = $this->get_styles( $instance );
 
@@ -585,7 +596,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			if( ! empty($markerpos)) {
 				foreach ($markerpos as &$pos) {
 					if ( ! empty( $pos['custom_marker_icon'] ) ) {
-						$icon_src = wp_get_attachment_image_src( $pos['custom_marker_icon'] );
+						$icon_src = wp_get_attachment_image_src(
+							$pos['custom_marker_icon'],
+							! empty( $pos['custom_marker_icon_size'] ) ? $pos['custom_marker_icon_size'] : 'thumbnail'
+						);
 						$pos['custom_marker_icon'] = $icon_src[0];
 					}
 					if ( ! empty( $pos['place'] ) ) {
@@ -796,7 +810,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			$markers_st = '';
 
 			if ( ! empty( $markers['marker_icon'] ) ) {
-				$mrkr_src = wp_get_attachment_image_src( $markers['marker_icon'] );
+				$mrkr_src = wp_get_attachment_image_src(
+					$markers['marker_icon'],
+					! empty( $markers['marker_icon_size'] ) ? $markers['marker_icon_size'] : 'thumbnail'
+				);
 				if ( ! empty( $mrkr_src ) ) {
 					$markers_st .= 'icon:' . $mrkr_src[0];
 				}
