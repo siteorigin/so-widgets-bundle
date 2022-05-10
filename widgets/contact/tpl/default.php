@@ -15,11 +15,7 @@ if( $result['status'] == 'success' ) {
 	<?php
 }
 else {
-	$recaptcha_config = $instance['spam']['recaptcha'];
-	$use_recaptcha = $recaptcha_config['use_captcha'] && ! empty( $recaptcha_config['site_key'] ) && ! empty( $recaptcha_config['secret_key'] );
-
-	$settings = null;
-	if( $use_recaptcha ) {
+	if ( $recaptcha && ! empty( $recaptcha_v2 ) ) {
 		$settings = array(
 			'sitekey' => $recaptcha_config['site_key'],
 			'theme'   => $recaptcha_config['theme'],
@@ -43,15 +39,23 @@ else {
 		<input type="hidden" name="instance_hash" value="<?php echo esc_attr( $instance_hash ) ?>" />
 		<?php wp_nonce_field( '_contact_form_submit' ) ?>
 
-		<?php if( $use_recaptcha ) : ?>
+		<?php if ( $recaptcha ) : ?>
 			<div class="sow-recaptcha"
-				 data-config="<?php echo esc_attr( json_encode( $settings ) ) ?>"></div>
+				<?php if ( ! empty( $recaptcha_v2 ) ) : ?>
+					data-config="<?php echo esc_attr( json_encode( $recaptcha_v2 ) ) ?>"
+				<?php endif; ?>
+			></div>
 		<?php endif; ?>
+		<div class="sow-submit-wrapper <?php if( $instance['design']['submit']['styled'] ) echo 'sow-submit-styled'; ?>">
 
-		<div class="sow-submit-wrapper <?php if( $instance['design']['submit']['styled'] ) echo 'sow-submit-styled' ?>">
-			<input type="submit" value="<?php echo esc_attr( $instance['settings']['submit_text'] ) ?>" class="sow-submit"
-				   <?php foreach( $submit_attributes as $name => $val ) echo $name . '="' . esc_attr( $val ) . '" ' ?>
-			<?php if ( ! empty( $onclick ) ) echo 'onclick="' . esc_js( $onclick ) . '"'; ?>>
+		<button class="sow-submit<?php if ( $recaptcha && empty( $recaptcha_v2 ) ) echo ' g-recaptcha'; ?>"
+			<?php foreach( $submit_attributes as $name => $val ) echo $name . '="' . esc_attr( $val ) . '" ' ?>
+			<?php if ( ! empty( $onclick ) ) echo 'onclick="' . esc_js( $onclick ) . '"'; ?>
+		>
+			<?php echo esc_attr( $instance['settings']['submit_text'] ) ?>
+		</button>
+
+
 		</div>
 	</form>
 	<?php
