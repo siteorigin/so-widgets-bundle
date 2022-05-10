@@ -54,7 +54,7 @@
 							$undoLink.on( 'click', function ( event ) {
 								event.preventDefault();
 								$undoLink.hide();
-								sowbForms.setWidgetFormValues( $formContainer, previousValues, true );
+								sowbForms.setWidgetFormValues( $formContainer, previousValues, true, false );
 								$presetSelect.removeData( 'previousValues' );
 								$presetSelect.val( '' );
 							} );
@@ -62,7 +62,7 @@
 					} else {
 						addingDefault = false;
 					}
-					sowbForms.setWidgetFormValues( $formContainer, presetValues, true );
+					sowbForms.setWidgetFormValues( $formContainer, presetValues, true, false );
 				}
 				onLoadTrigger = false;
 			}
