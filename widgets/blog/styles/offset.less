@@ -34,6 +34,7 @@
 @pagination_background: default;
 @pagination_background_hover: default;
 @pagination_border_color: default;
+@pagination_border_color_hover: default;
 @pagination_border_radius: default;
 @pagination_font: default;
 @pagination_font_size: default;
@@ -163,7 +164,7 @@
 			margin-top: @pagination_top_margin;
 		}
 
-		.page-numbers {
+		.page-numbers:not(.dots) {
 			background: @pagination_background;
 			border: 1px solid @pagination_border_color;
 			border-radius: @pagination_border_radius;
@@ -183,6 +184,7 @@
 			&:focus {
 				background: @pagination_background_hover;
 				color: @pagination_link_color_hover;
+				border-color: @pagination_border_color_hover;
 			}
 		}
 

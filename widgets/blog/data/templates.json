@@ -38,13 +38,14 @@
 				},
 				"pagination":{
 					"background": "",
-					"background_hover": "#626262",
+					"background_hover": "",
 					"border_color": "#2d2d2d",
+					"border_color_hover": "#f14e4e",
 					"border_radius": "",
-					"color": "#2d2d2d",
-					"color_hover": "#626262",
 					"font": "",
 					"font_size": "14",
+					"link_color": "#2d2d2d",
+					"link_color_hover": "#f14e4e",
 					"link_margin": "4",
 					"top_margin": "30"
 				}
@@ -91,13 +92,14 @@
 				},
 				"pagination":{
 					"background": "",
-					"background_hover": "#626262",
+					"background_hover": "",
 					"border_color": "#2d2d2d",
+					"border_color_hover": "#f14e4e",
 					"border_radius": "",
-					"color": "#2d2d2d",
-					"color_hover": "#626262",
 					"font": "",
 					"font_size": "14",
+					"link_color": "#2d2d2d",
+					"link_color_hover": "#f14e4e",
 					"link_margin": "4",
 					"top_margin": "30"
 				}
@@ -143,13 +145,14 @@
 				},
 				"pagination":{
 					"background": "",
-					"background_hover": "#626262",
+					"background_hover": "",
 					"border_color": "#2d2d2d",
+					"border_color_hover": "#f14e4e",
 					"border_radius": "",
-					"color": "#2d2d2d",
-					"color_hover": "#626262",
 					"font": "",
 					"font_size": "14",
+					"link_color": "#2d2d2d",
+					"link_color_hover": "#f14e4e",
 					"link_margin": "4",
 					"top_margin": "30"
 				},
@@ -203,13 +206,14 @@
 				},
 				"pagination":{
 					"background": "",
-					"background_hover": "#626262",
+					"background_hover": "",
 					"border_color": "#2d2d2d",
+					"border_color_hover": "#f14e4e",
 					"border_radius": "",
-					"color": "#2d2d2d",
-					"color_hover": "#626262",
 					"font": "",
 					"font_size": "14",
+					"link_color": "#2d2d2d",
+					"link_color_hover": "#f14e4e",
 					"link_margin": "4",
 					"top_margin": "30"
 				}
@@ -256,13 +260,14 @@
 				},
 				"pagination":{
 					"background": "",
-					"background_hover": "#626262",
+					"background_hover": "",
 					"border_color": "#2d2d2d",
+					"border_color_hover": "#f14e4e",
 					"border_radius": "",
-					"color": "#2d2d2d",
-					"color_hover": "#626262",
 					"font": "",
 					"font_size": "14",
+					"link_color": "#2d2d2d",
+					"link_color_hover": "#f14e4e",
 					"link_margin": "4",
 					"top_margin": "30"
 				},
@@ -287,13 +292,14 @@
 			"design": {
 				"pagination":{
 					"background": "",
-					"background_hover": "#626262",
+					"background_hover": "",
 					"border_color": "#2d2d2d",
+					"border_color_hover": "#f14e4e",
 					"border_radius": "",
-					"color": "#2d2d2d",
-					"color_hover": "#626262",
 					"font": "",
 					"font_size": "14",
+					"link_color": "#2d2d2d",
+					"link_color_hover": "#f14e4e",
 					"link_margin": "4",
 					"top_margin": "30"
 				},

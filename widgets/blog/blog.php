@@ -235,6 +235,10 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 									'type' => 'color',
 									'label' => __( 'Border Color', 'so-widgets-bundle' ),
 								),
+								'border_color_hover' => array(
+									'type' => 'color',
+									'label' => __( 'Border Color Hover', 'so-widgets-bundle' ),
+								),
 								'background' => array(
 									'type' => 'color',
 									'label' => __( 'Background', 'so-widgets-bundle' ),
@@ -263,7 +267,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 									'type' => 'color',
 									'label' => __( 'Link Color', 'so-widgets-bundle' ),
 								),
-								'text_color_hover' => array(
+								'link_color_hover' => array(
 									'type' => 'color',
 									'label' => __( 'Link Hover Color', 'so-widgets-bundle' ),
 								),
@@ -552,6 +556,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		$less_vars['pagination_top_margin'] = ! empty( $instance['design']['pagination']['top_margin'] ) ? $instance['design']['pagination']['top_margin'] : '';
 		$less_vars['pagination_link_margin'] = ! empty( $instance['design']['pagination']['link_margin'] ) ? $instance['design']['pagination']['link_margin'] : '';
 		$less_vars['pagination_border_color'] = ! empty( $instance['design']['pagination']['border_color'] ) ? $instance['design']['pagination']['border_color'] : '';
+		$less_vars['pagination_border_color_hover'] = ! empty( $instance['design']['pagination']['border_color_hover'] ) ? $instance['design']['pagination']['border_color_hover'] : '';
 		$less_vars['pagination_background'] = ! empty( $instance['design']['pagination']['background'] ) ? $instance['design']['pagination']['background'] : '';
 		$less_vars['pagination_background_hover'] = ! empty( $instance['design']['pagination']['background_hover'] ) ? $instance['design']['pagination']['background_hover'] : '';
 		$less_vars['pagination_border_radius'] = ! empty( $instance['design']['pagination']['border_radius'] ) ? $instance['design']['pagination']['border_radius'] . 'px' : '';
@@ -565,7 +570,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		}
 		$less_vars['pagination_font_size'] = ! empty( $instance['design']['pagination']['font_size'] ) ? $instance['design']['pagination']['font_size'] : '';
 		$less_vars['pagination_link_color'] = ! empty( $instance['design']['pagination']['link_color'] ) ? $instance['design']['pagination']['link_color'] : '';
-		$less_vars['pagination_link_color_hover'] = ! empty( $instance['design']['pagination']['text_color_hover'] ) ? $instance['design']['pagination']['text_color_hover'] : '';
+		$less_vars['pagination_link_color_hover'] = ! empty( $instance['design']['pagination']['link_color_hover'] ) ? $instance['design']['pagination']['link_color_hover'] : '';
 
 		if ( $instance['template'] == 'offset' ) {
 			// Offset Post Meta.
