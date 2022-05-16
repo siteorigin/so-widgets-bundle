@@ -107,7 +107,8 @@ function siteorigin_widget_get_icon($icon_value, $icon_styles = false, $title = 
 		}
 		return '<span class="' . esc_attr( $family_style ) . '" data-sow-icon="' . $unicode . '"
 		' . ( ! empty( $icon_styles ) ? 'style="' . implode( '; ', $icon_styles ) . '"' : '' ) . ' '. 
-		( ! empty( $title ) ? 'title="' . esc_attr( $title ) .'"' : '' ) .'></span>';
+		( ! empty( $title ) ? 'title="' . esc_attr( $title ) .'"' : '' ) .'
+		aria-hidden="true"></span>';
 	}
 	else {
 		return false;

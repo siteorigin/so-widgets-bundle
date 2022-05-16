@@ -73,7 +73,6 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 		}
 	}
 
-
 	/**
 	 * Tell cache plugins that they need to regenerate a page cache.
 	 *
@@ -102,6 +101,13 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 			if ( function_exists( 'breeze_varnish_purge_cache' ) ) {
 				breeze_varnish_purge_cache( get_the_permalink( $id ) );
 			}
+
+			if ( function_exists( 'run_litespeed_cache' ) ) {
+				$url = parse_url( get_the_permalink( $id ) );
+				if ( ! empty( $url ) ) {
+					header( 'x-litespeed-purge: ' . $url['path'] );
+				}
+			}
 		}
 	}
 
@@ -123,6 +129,10 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 
 		if ( class_exists( 'Breeze_PurgeCache' ) ) {
 			Breeze_PurgeCache::breeze_cache_flush();
+		}
+
+		if ( function_exists( 'run_litespeed_cache' ) ) {
+			header( 'x-litespeed-purge: *' );
 		}
 	}
 

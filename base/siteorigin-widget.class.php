@@ -235,12 +235,17 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$this
 		);
 		$wrapper_classes = array_map( 'sanitize_html_class', $wrapper_classes );
+		$wrapper_id = apply_filters( 'siteorigin_widgets_wrapper_id_' . $this->id_base, '', $instance, $this );
 
 		$wrapper_data_string = $this->get_wrapper_data( $instance );
 
 		do_action( 'siteorigin_widgets_before_widget_' . $this->id_base, $instance, $this );
 		echo $args['before_widget'];
-		echo '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"' . $wrapper_data_string . '>';
+		echo '<div
+			' . ( ! empty( $wrapper_id ) ? 'id="' . esc_attr( $wrapper_id ) . '"' : '' ) . '
+			class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"
+			' . $wrapper_data_string . '
+		>';
 		echo $template_html;
 		echo '</div>';
 		echo $args['after_widget'];
