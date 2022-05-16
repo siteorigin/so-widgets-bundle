@@ -32,7 +32,7 @@ class SiteOrigin_Video {
 	 *
 	 * @return false|mixed|null|string|string[]
 	 */
-	function get_video_oembed( $src, $autoplay = false, $related_videos = false, $loop = false ) {
+	function get_video_oembed( $src, $autoplay = false, $related_videos = false, $loop = false, $js_api = false ) {
 		if ( empty( $src ) ) {
 			return '';
 		}
@@ -66,6 +66,13 @@ class SiteOrigin_Video {
 				$html = preg_replace_callback( '/src=["\'](http[^"\']*)["\']/', array(
 					$this,
 					'loop_callback'
+				), $html );
+			}
+
+			if ( $js_api ) {
+				$html = preg_replace_callback( '/src=["\'](http[^"\']*)["\']/', array(
+					$this,
+					'js_api_callback'
 				), $html );
 			}
 
@@ -119,4 +126,34 @@ class SiteOrigin_Video {
 		);						
 		return str_replace( $match[1], $new_url, $match[0] );
 	}
+
+	/**
+	 * The preg_replace callback that oEmbed JS API support.
+	 *
+	 * @param $match
+	 *
+	 * @return mixed
+	 */
+	function js_api_callback( $match ) {
+		if ( strpos( $match[0], 'vimeo' ) ) {
+			$js_arg = array(
+				'api' => 'true',
+			);
+		} else {
+			$js_arg = array(
+				'enablejsapi' => 1,
+			);
+		}
+		return str_replace(
+			$match[1],
+			add_query_arg(
+				array(
+					$js_arg
+				),
+				$match[1]
+			),
+			$match[0]
+		);
+	}
+
 }
