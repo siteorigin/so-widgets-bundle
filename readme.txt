@@ -105,6 +105,13 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.34.0 - 16 May 2022 =
+* Icon: Hide icons from screen readers.
+* Google Maps: Added Custom Marker Icon image size settings.
+* Sliders: Ensured autoplaying YouTube and Vimeo background videos will pause on slide change.
+* Widgets Block: Added HTML anchor support located at Block > Advanced.
+* CSS Cache Compatibility: Added support for LiteSpeed Cache plugin.
+
 = 1.33.1 - 30 April 2022 =
 * Accordion and Tabs: Added support for the SiteOrigin Premium Anchor ID Addon.
 * Anything Carousel: Resolved a `Previous Nav Arrow` error.
