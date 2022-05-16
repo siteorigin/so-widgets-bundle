@@ -234,7 +234,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'fields' => array(
 							'use_captcha' => array(
 								'type'    => 'radio',
-								'label'   => __( 'reCAPTCHA version', 'so-widgets-bundle' ),
+								'label'   => __( 'reCAPTCHA', 'so-widgets-bundle' ),
 								'default' => false,
 								'options' => array(
 									''   => __( 'Disabled', 'so-widgets' ),
