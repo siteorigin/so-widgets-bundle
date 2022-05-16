@@ -83,10 +83,10 @@ function soContactFormSubmit( token, e ) {
 	sowb.SiteOriginContactFormV3.parent().parent().trigger( 'submit' );
 }
 
-jQuery( function ($) {
+jQuery( function ( $ ) {
 	var recaptcha = $( 'form.sow-contact-form .sow-recaptcha' );
 	// Check if reCAPTCHA is being used.
-	if ( recaptcha ) {
+	if ( recaptcha.length ) {
 		if (window.recaptcha) {
 			sowb.SiteOriginContactForm.init( $, recaptcha );
 		} else {
