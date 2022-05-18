@@ -32,8 +32,9 @@ sowb.SiteOriginContactForm = {
 					return;
 				}
 			}
-			var $submitButton = $(this).find('.sow-submit-wrapper > input.sow-submit');
-			if (useRecaptcha) {
+			var $submitButton = $( this ).find( '.sow-submit-wrapper > .sow-submit' );
+
+			if ( useRecaptcha && sowb.SiteOriginContactFormV2 ) {
 				// Render recaptcha
 				var $recaptchaDiv = $el.find('.sow-recaptcha');
 				if ($recaptchaDiv.length) {
@@ -77,24 +78,34 @@ function soContactFormInitialize() {
 	sowb.SiteOriginContactForm.init(window.jQuery, true);
 }
 
-jQuery(function ($) {
+// reCAPTCHA v3 form submission.
+function soContactFormSubmit( token, e ) {
+	sowb.SiteOriginContactFormV3.parent().parent().trigger( 'submit' );
+}
 
-	var $contactForms = $('form.sow-contact-form');
-	// Check if there are any recaptcha placeholders.
-	var useRecaptcha = $contactForms.toArray().some(function (form) {
-		return $(form).find('div').hasClass('sow-recaptcha');
-	});
-
-	if (useRecaptcha) {
+jQuery( function ( $ ) {
+	var recaptcha = $( 'form.sow-contact-form .sow-recaptcha' );
+	// Check if reCAPTCHA is being used.
+	if ( recaptcha.length ) {
 		if (window.recaptcha) {
-			sowb.SiteOriginContactForm.init($, useRecaptcha);
+			sowb.SiteOriginContactForm.init( $, recaptcha );
 		} else {
-			// Load the recaptcha API
-			var apiUrl = 'https://www.google.com/recaptcha/api.js?onload=soContactFormInitialize&render=explicit';
-			var script = $('<script type="text/javascript" src="' + apiUrl + '" async defer>');
-			$('body').append(script);
+			var apiUrl = 'https://www.google.com/recaptcha/api.js?onload=soContactFormInitialize';
+			// v2 requires a specific render type.
+			if ( recaptcha.first().data( 'config' ) != undefined ) {
+				sowb.SiteOriginContactFormV2 = true;
+				apiUrl += '&render=explicit';
+			} else {
+				// v3 requires a click event for submission.
+				$( 'button.sow-submit ' ).on( 'click', function( e ) {
+					e.preventDefault();
+					sowb.SiteOriginContactFormV3 = $( this );
+				} );
+			}
+			var script = $( '<script type="text/javascript" src="' + apiUrl + '" async defer>' );
+			$( 'body' ).append( script );
 		}
 	} else {
-		sowb.SiteOriginContactForm.init($, useRecaptcha);
+		sowb.SiteOriginContactForm.init( $, recaptcha );
 	}
-});
+} );
