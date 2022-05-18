@@ -253,18 +253,34 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'site_key'    => array(
 								'type'  => 'text',
-								'label' => __( 'reCAPTCHA Site Key', 'so-widgets-bundle' ),
+								'label' => __( 'reCAPTCHA v2 Site Key', 'so-widgets-bundle' ),
 								'state_handler' => array(
-									'recaptcha_version[v2,v3]' => array( 'slideDown' ),
-									'_else[recaptcha_version]' => array( 'slideUp' ),
+									'recaptcha_version[v2]' => array( 'show' ),
+									'_else[recaptcha_version]' => array( 'hide' ),
 								),
 							),
 							'secret_key'  => array(
 								'type'  => 'text',
-								'label' => __( 'reCAPTCHA Secret Key', 'so-widgets-bundle' ),
+								'label' => __( 'reCAPTCHA v2 Secret Key', 'so-widgets-bundle' ),
 								'state_handler' => array(
-									'recaptcha_version[v2,v3]' => array( 'slideDown' ),
-									'_else[recaptcha_version]' => array( 'slideUp' ),
+									'recaptcha_version[v2]' => array( 'show' ),
+									'_else[recaptcha_version]' => array( 'hide' ),
+								),
+							),
+							'site_key_v3'    => array(
+								'type'  => 'text',
+								'label' => __( 'reCAPTCHA v3 Site Key', 'so-widgets-bundle' ),
+								'state_handler' => array(
+									'recaptcha_version[v3]' => array( 'show' ),
+									'_else[recaptcha_version]' => array( 'hide' ),
+								),
+							),
+							'secret_key_v3'  => array(
+								'type'  => 'text',
+								'label' => __( 'reCAPTCHA v3 Secret Key', 'so-widgets-bundle' ),
+								'state_handler' => array(
+									'recaptcha_version[v3]' => array( 'show' ),
+									'_else[recaptcha_version]' => array( 'hide' ),
 								),
 							),
 							'theme'       => array(
@@ -789,8 +805,19 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				! $use_v3 ||
 				$settings['use_captcha'] == 'v3'
 			) &&
-			! empty( $settings['site_key'] ) &&
-			! empty( $settings['secret_key'] );
+			(
+				// Check for v2
+				(
+					! $use_v3 &&
+					! empty( $settings['site_key'] ) &&
+					! empty( $settings['secret_key'] )
+				) ||
+				// Check for v3
+				(
+					! empty( $settings['site_key_v3'] ) &&
+					! empty( $settings['secret_key_v3'] )
+				)
+			);
 	}
 
 	function get_template_variables( $instance, $args ) {
@@ -814,12 +841,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		$template_vars['recaptcha'] = self::is_recaptcha_enabled( $instance['spam']['recaptcha'] );
 		if ( $template_vars['recaptcha'] ) {
-			// reCAPTCHA v2
+			// reCAPTCHA v3
 			if ( self::is_recaptcha_enabled( $instance['spam']['recaptcha'], true ) ) {
-				$submit_attributes['data-sitekey'] = $instance['spam']['recaptcha']['site_key'];
+				$submit_attributes['data-sitekey'] = $instance['spam']['recaptcha']['site_key_v3'];
 				$submit_attributes['data-callback'] = 'soContactFormSubmit';
 				$submit_attributes['data-action'] = 'submit';
-			} else { // reCAPTCHA v3
+			} else { // reCAPTCHA v2
 				$template_vars['recaptcha_v2'] = array(
 					'sitekey' => $instance['spam']['recaptcha']['site_key'],
 					'theme'   => $instance['spam']['recaptcha']['theme'],
@@ -1282,7 +1309,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				'https://www.google.com/recaptcha/api/siteverify',
 				array(
 					'body' => array(
-						'secret'   => $instance['spam']['recaptcha']['secret_key'],
+						'secret'   => $instance['spam']['recaptcha']['use_captcha'] == 'v2' ? $instance['spam']['recaptcha']['secret_key'] : $instance['spam']['recaptcha']['secret_key_v3'],
 						'response' => $post_vars['g-recaptcha-response'],
 						'remoteip' => isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : null,
 					)
