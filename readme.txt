@@ -105,6 +105,9 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.35.0 - 21 May 2022 =
+* Contact Form: Added reCAPTCHA V3 support.
+
 = 1.34.0 - 16 May 2022 =
 * Icon: Hide icons from screen readers.
 * Google Maps: Added Custom Marker Icon image size settings.
