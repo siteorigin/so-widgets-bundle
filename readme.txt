@@ -105,6 +105,10 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.35.1 - 25 May 2022 =
+* Updated WordPress `Tested up to` tag.
+* Accordion: Added a hyphen prior to the panel URL anchor.
+
 = 1.35.0 - 21 May 2022 =
 * Contact Form: Added reCAPTCHA V3 support.
 
