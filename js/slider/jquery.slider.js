@@ -164,6 +164,16 @@ jQuery( function($){
 					return;
 				}
 
+				var slidesWithModernParallax = $$.find( '.sow-slider-image-parallax:not([data-siteorigin-parallax]) ' );
+				if ( slidesWithModernParallax.length ) {
+					// Wait for the parallax to finish setting up before
+					// setting up the slider itself.
+					if ( ! slidesWithParallax.find( '.simpleParallax' ).length ) {
+						setTimeout( setupSlider, 100 );
+						return;
+					}
+				}
+
 				// Show everything for this slider
 				$base.show();
 				
