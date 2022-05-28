@@ -168,7 +168,7 @@ jQuery( function($){
 				if ( slidesWithModernParallax.length ) {
 					// Wait for the parallax to finish setting up before
 					// setting up the slider itself.
-					if ( ! slidesWithParallax.find( '.simpleParallax' ).length ) {
+					if ( ! slidesWithModernParallax.find( '.simpleParallax' ).length ) {
 						setTimeout( setupSlider, 100 );
 						return;
 					}
