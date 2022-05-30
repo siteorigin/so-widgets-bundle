@@ -125,11 +125,11 @@ $sow_registered_fonts = array();
 function siteorigin_widget_get_font($font_value) {
 
 	$web_safe = array(
-		'Arial' => 'Arial, "Helvetica Neue", Helvetica, sans-serif',
-		'Helvetica Neue' => '"Helvetica Neue", Helvetica, Arial, sans-serif',
-		'Lucida Grande' => 'Lucida, Verdana, sans-serif',
-		'Georgia' => '"Times New Roman", Times, serif',
-		'Courier New' => 'Courier, mono',
+		'Arial' => 'Arial, Helvetica Neue, Helvetica, sans-serif',
+		'Courier New' => 'Courier New, Courier, Lucida Sans Typewriter, Lucida Typewriter, monospace',
+		'Georgia' => 'Georgia, Times, Times New Roman, serif',
+		'Helvetica Neue' => 'Helvetica Neue, Helvetica, Arial, sans-serif',
+		'Lucida Grande' => 'Lucida Grande, Lucida Sans Unicode, Lucida Sans, Geneva, Verdana, sans-serif',
 		'Times New Roman' => 'Times New Roman, Times, Baskerville, Georgia, serif',
 		'default' => 'default',
 	);
@@ -280,10 +280,10 @@ function siteorigin_widgets_font_families( ){
 	// Add the default fonts
 	$font_families = array(
 		'Arial' => 'Arial',
+		'Courier New' => 'Courier New',
+		'Georgia' => 'Georgia',
 		'Helvetica Neue' => 'Helvetica Neue',
 		'Lucida Grande' => 'Lucida Grande',
-		'Georgia' => 'Georgia',
-		'Courier New' => 'Courier New',
 		'Times New Roman' => 'Times New Roman',
 	);
 
