@@ -488,13 +488,12 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 				$settings = $instance['layout']['mobile'];
 
 				$meas_options['slide_height_responsive'] = ! empty( $settings['height_responsive'] ) ? $settings['height_responsive'] : '';
-				$meas_options['slide_padding_responsive'] = ! empty( $settings['padding'] ) ? $settings['padding'] : '';
-				$meas_options['slide_padding_sides_responsive'] = ! empty( $settings['padding_sides'] ) ? $settings['padding_sides'] : '';
+				if ( ! empty( $settings['padding'] ) || ! empty( $settings['extra_top_padding'] ) ) {
+					$meas_options['slide_padding_responsive'] = ! empty( $settings['padding'] ) ? $settings['padding'] : 0;
 
-				if ( ! empty( $settings['extra_top_padding'] ) ) {
-					// Add extra padding to top padidng.
-					$meas_options['slide_padding_top_responsive'] = (int) $meas_options['slide_padding_responsive'] + (int) $settings['extra_top_padding'];
+					$meas_options['slide_padding_extra_top_responsive'] = ! empty( $settings['extra_top_padding'] ) ? $settings['extra_top_padding'] : 0;
 				}
+				$meas_options['slide_padding_sides_responsive'] = ! empty( $settings['padding_sides'] ) ? $settings['padding_sides'] : '';
 			}
 		}
 
