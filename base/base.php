@@ -130,6 +130,7 @@ function siteorigin_widget_get_font($font_value) {
 		'Lucida Grande' => 'Lucida, Verdana, sans-serif',
 		'Georgia' => '"Times New Roman", Times, serif',
 		'Courier New' => 'Courier, mono',
+		'Times New Roman' => 'Times New Roman, Times, Baskerville, Georgia, serif',
 		'default' => 'default',
 	);
 
@@ -283,6 +284,7 @@ function siteorigin_widgets_font_families( ){
 		'Lucida Grande' => 'Lucida Grande',
 		'Georgia' => 'Georgia',
 		'Courier New' => 'Courier New',
+		'Times New Roman' => 'Times New Roman',
 	);
 
 	// Add in all the Google font families
