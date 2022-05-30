@@ -48,8 +48,18 @@ class SiteOrigin_Video {
 			'loop'     => $loop,
 		) ) );
 		
-		// Convert embed format to standard format to be compatible with wp_oembed_get
-		$this->src = preg_replace( '/https?:\/\/www.youtube.com\/embed\/([^\/]+)/', 'https://www.youtube.com/watch?v=$1', $src );
+		// Standardize YouTube video URL.
+		if ( strpos(  $src, 'youtube.com/watch' ) !== false ) {
+			$src_parse = parse_url( $src, PHP_URL_QUERY );
+			// Check if the URL was encoded.
+			if ( strpos( $src_parse, '&amp;' ) !== false ) {
+				$src_parse = str_replace( '&amp;', '&', $src_parse );
+			}
+			parse_str( $src_parse, $src_parse );
+			$this->src = ! empty( $src_parse['v'] ) ? 'https://www.youtube.com/watch?v='. $src_parse['v'] : $src;
+		} else {
+			$this->src = $src;
+		}
 
 		$html = get_transient( 'sow-vid-embed[' . $hash . ']' );
 		if ( empty( $html ) ) {
