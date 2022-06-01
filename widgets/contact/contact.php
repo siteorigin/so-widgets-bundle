@@ -346,6 +346,23 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 						)
 					),
+
+					'simple' => array(
+						'type'   => 'section',
+						'label'  => __( 'Really Simple CAPTCHA', 'so-widgets-bundle' ),
+						'fields' => array(
+							'enabled' => array(
+								'type'    => 'checkbox',
+								'label'   => __( 'Add Really Simple CAPTCHA', 'so-widgets-bundle' ),
+								'description' => sprintf(
+									__( 'This setting will intergrate the %sReally Simple CAPTCHA%s plugin and add a DSGVO complaint captcha.', 'so-widgets-bundle' ),
+									'<a href="https://wordpress.org/plugins/really-simple-captcha/" target="_blank">',
+									'</a>'
+								),
+								'default' => false,
+							),
+						)
+					),
 				),
 			),
 
@@ -855,6 +872,22 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				);
 			}
 		}
+
+		if ( ! empty( $instance['spam']['simple'] ) && ! empty( $instance['spam']['simple']['enabled'] ) ) {
+			if ( ! class_exists( 'ReallySimpleCaptcha' ) ) {
+				$template_vars['really_simple_spam'] = 'missing';
+			} else {
+				$template_vars['really_simple_spam'] = new ReallySimpleCaptcha();
+				// Allow other plugins to adjust Really Simple Captcha settings.
+				$template_vars['really_simple_spam'] = apply_filters( 'siteorigin_widgets_contact_really_simple_captcha', $template_vars['really_simple_spam'] );
+				$template_vars['really_simple_spam_prefix'] = mt_rand() . $template_vars['instance_hash'];
+				$template_vars['really_simple_spam_image'] = $template_vars['really_simple_spam']->generate_image(
+					$template_vars['really_simple_spam_prefix'],
+					$template_vars['really_simple_spam']->generate_random_word()
+				);
+			}
+		}
+
 		$template_vars['submit_attributes'] = $submit_attributes;
 		return $template_vars;
 	}
@@ -1323,7 +1356,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				}
 			}
 		}
-
 		if ( $instance['spam']['akismet']['use_akismet'] && class_exists( 'Akismet' ) ) {
 			$comment = array();
 
@@ -1352,6 +1384,23 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 			if ( $is_spam ) {
 				$errors['akismet'] = __( 'Unfortunately our system identified your message as spam.', 'so-widgets-bundle' );
+			}
+		}
+
+		if ( ! empty( $instance['spam']['simple'] ) && ! empty( $instance['spam']['simple']['enabled'] ) ) {
+			if ( ! class_exists( 'ReallySimpleCaptcha' ) ) {
+				$template_vars['really_simple_spam'] = 'missing';
+				$errors['recaptcha'] = __( 'Error validating your Captcha response. Really Simple CAPTCHA missing.', 'so-widgets-bundle' );
+			} else {
+				$captcha = new ReallySimpleCaptcha();
+				$prefix = $post_vars['really-simple-captcha-prefix-' . $post_vars['instance_hash'] ];
+				if ( ! $captcha->check(
+					$prefix, 
+					$post_vars['really-simple-captcha-' . $post_vars['instance_hash'] ]
+				) ) {
+					$errors['recaptcha'] = __( 'Error validating your Captcha response. Please try again.', 'so-widgets-bundle' );
+				}
+				$captcha->remove( $prefix );
 			}
 		}
 
