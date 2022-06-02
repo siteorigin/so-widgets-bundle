@@ -355,7 +355,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'type'    => 'checkbox',
 								'label'   => __( 'Add Really Simple CAPTCHA', 'so-widgets-bundle' ),
 								'description' => sprintf(
-									__( 'This setting will intergrate the %sReally Simple CAPTCHA%s plugin which is a DSGVO complaint captcha.', 'so-widgets-bundle' ),
+									__( 'The %sReally Simple CAPTCHA%s plugin is DSGVO compliant.', 'so-widgets-bundle' ),
 									'<a href="https://wordpress.org/plugins/really-simple-captcha/" target="_blank">',
 									'</a>'
 								),
