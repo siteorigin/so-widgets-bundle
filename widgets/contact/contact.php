@@ -355,11 +355,36 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'type'    => 'checkbox',
 								'label'   => __( 'Add Really Simple CAPTCHA', 'so-widgets-bundle' ),
 								'description' => sprintf(
-									__( 'This setting will intergrate the %sReally Simple CAPTCHA%s plugin and add a DSGVO complaint captcha.', 'so-widgets-bundle' ),
+									__( 'This setting will intergrate the %sReally Simple CAPTCHA%s plugin which is a DSGVO complaint captcha.', 'so-widgets-bundle' ),
 									'<a href="https://wordpress.org/plugins/really-simple-captcha/" target="_blank">',
 									'</a>'
 								),
 								'default' => false,
+								'state_emitter' => array(
+									'callback' => 'conditional',
+									'args'     => array(
+										'really_simple[show]: val',
+										'really_simple[hide]: ! val'
+									),
+								)
+							),
+							'background'   => array(
+								'type'    => 'color',
+								'label'   => __( 'Background color', 'so-widgets-bundle' ),
+								'default' => '#ffffff',
+								'state_handler' => array(
+									'really_simple[show]' => array( 'slideDown' ),
+									'really_simple[hide]' => array( 'slideUp' ),
+								),
+							),
+							'color'   => array(
+								'type'    => 'color',
+								'label'   => __( 'Text color', 'so-widgets-bundle' ),
+								'default' => '#000000',
+								'state_handler' => array(
+									'really_simple[show]' => array( 'slideDown' ),
+									'really_simple[hide]' => array( 'slideUp' ),
+								),
 							),
 						)
 					),
@@ -878,6 +903,22 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				$template_vars['really_simple_spam'] = 'missing';
 			} else {
 				$template_vars['really_simple_spam'] = new ReallySimpleCaptcha();
+
+				// Apply the RSC colors.
+				if ( ! class_exists( 'SiteOrigin_Widgets_Color_Object' ) ) {
+					require plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . 'base/inc/color.php';
+				}
+
+				if ( ! empty( $instance['spam']['simple']['background'] ) ) {
+					$color = new SiteOrigin_Widgets_Color_Object( $instance['spam']['simple']['background'], 'hex' );
+					$template_vars['really_simple_spam']->bg = $color->__get( 'rgb' );
+				}
+
+				if ( ! empty( $instance['spam']['simple']['color'] ) ) {
+					$color = new SiteOrigin_Widgets_Color_Object( $instance['spam']['simple']['color'], 'hex' );
+					$template_vars['really_simple_spam']->fg = $color->__get( 'rgb' );
+				}
+
 				// Allow other plugins to adjust Really Simple Captcha settings.
 				$template_vars['really_simple_spam'] = apply_filters( 'siteorigin_widgets_contact_really_simple_captcha', $template_vars['really_simple_spam'] );
 				$template_vars['really_simple_spam_prefix'] = mt_rand() . $template_vars['instance_hash'];
