@@ -164,6 +164,12 @@ jQuery( function($){
 					return;
 				}
 
+				var slidesWithModernParallax = $$.find( '.sow-slider-image-parallax:not([data-siteorigin-parallax]) ' );
+				if ( slidesWithModernParallax.length ) {
+					// Allow slider to be size itself while preventing visual "jump" in modern parallax.
+					$base.css( 'opacity', 0 );
+				}
+
 				// Show everything for this slider
 				$base.show();
 				
@@ -176,6 +182,21 @@ jQuery( function($){
 				// Setup each of the slider frames
 				$( window ).on('resize panelsStretchRows', resizeFrames ).trigger( 'resize' );
 				$(sowb).on('setup_widgets', resizeFrames );
+
+				if ( slidesWithModernParallax.length ) {
+					// Wait for the parallax to finish setting up before
+					// setting up the rest of the slider.
+					if ( ! slidesWithModernParallax.find( '.simpleParallax' ).length ) {
+						setTimeout( setupSlider, 50 );
+						return;
+					} else {
+						// Trigger resize to allow for parallax to work after showing Slider.
+						window.dispatchEvent( new Event( 'resize' ) );
+						setTimeout( function() {
+							$base.css( 'opacity', 1 );
+						}, 200 );
+					}
+				}
 
 				// Set up the Cycle with videos
 				$$
