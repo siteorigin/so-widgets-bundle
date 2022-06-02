@@ -51,9 +51,9 @@ else {
 			if ( $really_simple_spam == 'missing' ) :
 				echo __( 'Unable to detect Really Simple CAPTCHA plugin', 'so-widgets-bundle' );
 			else: ?>
-				<div class="sow-form-field sow-form-field-subject">
-					<label class="sow-form-field-label-above" for="sow-contact-form-field-subject-1039044186296274de5a8b577595978">
-						<strong>Subject</strong>
+				<div class="sow-form-field sow-form-field-captcha">
+					<label class="sow-form-field-label-above" for="really-simple-captcha-<?php echo esc_attr( $instance_hash ); ?>">
+						<strong>Captcha</strong>
 					</label>
 					<img
 						src="<?php echo esc_url( plugins_url() . '/really-simple-captcha/tmp/' . $really_simple_spam_image ); ?>"
