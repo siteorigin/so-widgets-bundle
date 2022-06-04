@@ -791,11 +791,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						if ( ! empty( $st_string ) ) {
 							$st_string .= "|";
 						}
-						if ( $prop_val[0] == "#" ) {
-							$prop_val = "0x" . substr( $prop_val, 1 );
-						}
 						if ( is_bool( $prop_val ) ) {
 							$prop_val = $prop_val ? 'true' : 'false';
+						} elseif ( $prop_val[0] == "#" ) {
+							$prop_val = "0x" . substr( $prop_val, 1 );
 						}
 						$st_string .= $prop_name . ":" . $prop_val;
 					}
