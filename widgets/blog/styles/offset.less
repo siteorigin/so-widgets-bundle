@@ -171,27 +171,34 @@
 			margin-top: @pagination_top_margin;
 		}
 
-		.page-numbers:not(.dots) {
-			background: @pagination_background;
-			border: 1px solid @pagination_border_color;
-			border-radius: @pagination_border_radius;
-			color: @pagination_link_color;
-			font-family: @pagination_font;
-			font-size: @pagination_font_size;
-			font-style: @pagination_font_style;
-			font-weight: @pagination_font_weight;
-			margin-right: @pagination_link_margin;
+		.page-numbers {
+			align-items: center;
+			display: flex;
+			height: @pagination_height;
+			justify-content: center;
+			width: @pagination_width;
+			&:not(.dots) {
+				background: @pagination_background;
+				border: 1px solid @pagination_border_color;
+				border-radius: @pagination_border_radius;
+				color: @pagination_link_color;
+				font-family: @pagination_font;
+				font-size: @pagination_font_size;
+				font-style: @pagination_font_style;
+				font-weight: @pagination_font_weight;
+				margin-right: @pagination_link_margin;
 
-			&:last-child {
-				margin-right: 0;
-			}
+				&:last-child {
+					margin-right: 0;
+				}
 
-			&.current,
-			&:hover,
-			&:focus {
-				background: @pagination_background_hover;
-				color: @pagination_link_color_hover;
-				border-color: @pagination_border_color_hover;
+				&.current,
+				&:hover,
+				&:focus {
+					background: @pagination_background_hover;
+					color: @pagination_link_color_hover;
+					border-color: @pagination_border_color_hover;
+				}
 			}
 		}
 
