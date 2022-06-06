@@ -1,3 +1,8 @@
+<?php if ( ! empty( $template_vars['really_simple_spam_error'] ) ) : ?>
+	<div class="sow-error">
+		<?php echo esc_html( $template_vars['really_simple_spam_error'] ) ?>
+	</div>
+<?php endif; ?>
 <div class="sow-form-field sow-form-field-captcha">
 	<label class="sow-form-field-label-above" for="really-simple-captcha-<?php echo esc_attr( $instance_hash ); ?>">
 		<strong>Captcha</strong>

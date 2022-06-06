@@ -1,6 +1,4 @@
 <?php
-$result = $this->contact_form_action( $instance, $instance_hash );
-
 // Display the title
 if( $instance['display_title'] && !empty( $instance['title'] ) ) {
 	echo $args['before_title'] . $instance['title'] . $args['after_title'];
@@ -27,7 +25,7 @@ else {
 	<form action="#contact-form-<?php echo esc_attr( $short_hash ); ?>"
           method="POST" class="sow-contact-form" id="contact-form-<?php echo esc_attr( $short_hash ) ?>">
 
-		<?php if( !empty($result['errors']['_general']) ) : ?>
+		<?php if ( ! empty( $result['errors']['_general'] ) ) : ?>
 			<ul class="sow-error">
 				<?php foreach( $result['errors']['_general'] as $type => $message ) : ?>
 					<li><?php echo esc_html( $message ) ?></li>

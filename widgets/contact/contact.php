@@ -874,6 +874,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		// Include '_sow_form_id' in generation of 'instance_hash' to allow multiple instances of the same form on a page.
 		$template_vars['instance_hash'] = md5( serialize( $instance ) );
+		$template_vars['result'] = $this->contact_form_action( $instance, $template_vars['instance_hash'] );
 		unset( $instance['_sow_form_id'] );
 
 		$submit_attributes = array();
@@ -926,10 +927,22 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					$template_vars['really_simple_spam_prefix'],
 					$template_vars['really_simple_spam']->generate_random_word()
 				);
+
+				if (
+					! empty( $template_vars['result'] ) &&
+					! empty( $template_vars['result'] ) &&
+					! empty( $template_vars['result']['errors'] ) &&
+					! empty( $template_vars['result']['errors']['_general'] ) &&
+					! empty( $template_vars['result']['errors']['_general']['simple'] )
+				) {
+					$template_vars['really_simple_spam_error'] = $template_vars['result']['errors']['_general']['simple'];
+					unset( $template_vars['result']['errors'] );
+				}
 			}
 		}
 
 		$template_vars['submit_attributes'] = $submit_attributes;
+
 		return $template_vars;
 	}
 
@@ -1431,7 +1444,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		if ( ! empty( $instance['spam']['simple'] ) && ! empty( $instance['spam']['simple']['enabled'] ) ) {
 			if ( ! class_exists( 'ReallySimpleCaptcha' ) ) {
 				$template_vars['really_simple_spam'] = 'missing';
-				$errors['recaptcha'] = __( 'Error validating your Captcha response. Really Simple CAPTCHA missing.', 'so-widgets-bundle' );
+				$errors['simple'] = __( 'Error validating your Captcha response. Really Simple CAPTCHA missing.', 'so-widgets-bundle' );
 			} else {
 				$captcha = new ReallySimpleCaptcha();
 				$prefix = $post_vars['really-simple-captcha-prefix-' . $post_vars['instance_hash'] ];
@@ -1439,7 +1452,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					$prefix, 
 					$post_vars['really-simple-captcha-' . $post_vars['instance_hash'] ]
 				) ) {
-					$errors['recaptcha'] = __( 'Error validating your Captcha response. Please try again.', 'so-widgets-bundle' );
+					$errors['simple'] = __( 'Error validating your Captcha response. Please try again.', 'so-widgets-bundle' );
 				}
 				$captcha->remove( $prefix );
 			}
