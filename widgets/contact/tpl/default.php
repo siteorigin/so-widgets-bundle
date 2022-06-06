@@ -47,26 +47,15 @@ else {
 			></div>
 		<?php endif; ?>
 
-		<?php if ( ! empty( $really_simple_spam ) ) :
-			if ( $really_simple_spam == 'missing' ) :
+		<?php
+		if ( ! empty( $really_simple_spam ) ) {
+			if ( $really_simple_spam == 'missing' ) {
 				echo __( 'Unable to detect Really Simple CAPTCHA plugin', 'so-widgets-bundle' );
-			else: ?>
-				<div class="sow-form-field sow-form-field-captcha">
-					<label class="sow-form-field-label-above" for="really-simple-captcha-<?php echo esc_attr( $instance_hash ); ?>">
-						<strong>Captcha</strong>
-					</label>
-					<img
-						src="<?php echo esc_url( plugins_url() . '/really-simple-captcha/tmp/' . $really_simple_spam_image ); ?>"
-						width="<?php echo esc_attr( $really_simple_spam->img_size[0] ); ?>"
-						height="<?php echo esc_attr( $really_simple_spam->img_size[1] ); ?>"
-					>
-					<span class="sow-field-container">
-						<input type="text" name="really-simple-captcha-<?php echo esc_attr( $instance_hash ); ?>" id="really-simple-captcha-<?php echo esc_attr( $instance_hash ); ?>" value="" class="sow-text-field">
-					</span>
-					<input type="hidden" name="really-simple-captcha-prefix-<?php echo esc_attr( $instance_hash ); ?>" value="<?php echo esc_attr( $really_simple_spam_prefix ) ?>" />
-				</div>
-			<?php endif; ?>
-		<?php endif; ?>
+			} else {
+				require( 'simple.php' );
+			}
+		}
+		?>
 		<div class="sow-submit-wrapper <?php if( $instance['design']['submit']['styled'] ) echo 'sow-submit-styled'; ?>">
 
 		<button class="sow-submit<?php if ( $recaptcha && empty( $recaptcha_v2 ) ) echo ' g-recaptcha'; ?>"
