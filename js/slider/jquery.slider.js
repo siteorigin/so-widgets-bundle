@@ -197,6 +197,8 @@ jQuery( function($){
 						}, 200 );
 					}
 				}
+				
+				$$.trigger( 'slider_setup_before' );
 
 				// Set up the Cycle with videos
 				$$
@@ -340,6 +342,8 @@ jQuery( function($){
 					} );
 				}
 			};
+			
+			$$.trigger( 'slider_setup_after' );
 
 			var images = $$.find( 'img.sow-slider-background-image, img.sow-slider-foreground-image' );
 			var imagesLoaded = 0;
