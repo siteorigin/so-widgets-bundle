@@ -346,6 +346,48 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 						)
 					),
+
+					'simple' => array(
+						'type'   => 'section',
+						'label'  => __( 'Really Simple CAPTCHA', 'so-widgets-bundle' ),
+						'fields' => array(
+							'enabled' => array(
+								'type'    => 'checkbox',
+								'label'   => __( 'Add Really Simple CAPTCHA', 'so-widgets-bundle' ),
+								'description' => sprintf(
+									__( 'The %sReally Simple CAPTCHA%s plugin is DSGVO compliant.', 'so-widgets-bundle' ),
+									'<a href="https://wordpress.org/plugins/really-simple-captcha/" target="_blank">',
+									'</a>'
+								),
+								'default' => false,
+								'state_emitter' => array(
+									'callback' => 'conditional',
+									'args'     => array(
+										'really_simple[show]: val',
+										'really_simple[hide]: ! val'
+									),
+								)
+							),
+							'background'   => array(
+								'type'    => 'color',
+								'label'   => __( 'Background color', 'so-widgets-bundle' ),
+								'default' => '#ffffff',
+								'state_handler' => array(
+									'really_simple[show]' => array( 'slideDown' ),
+									'really_simple[hide]' => array( 'slideUp' ),
+								),
+							),
+							'color'   => array(
+								'type'    => 'color',
+								'label'   => __( 'Text color', 'so-widgets-bundle' ),
+								'default' => '#000000',
+								'state_handler' => array(
+									'really_simple[show]' => array( 'slideDown' ),
+									'really_simple[hide]' => array( 'slideUp' ),
+								),
+							),
+						)
+					),
 				),
 			),
 
@@ -832,6 +874,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		// Include '_sow_form_id' in generation of 'instance_hash' to allow multiple instances of the same form on a page.
 		$template_vars['instance_hash'] = md5( serialize( $instance ) );
+		$template_vars['result'] = $this->contact_form_action( $instance, $template_vars['instance_hash'] );
 		unset( $instance['_sow_form_id'] );
 
 		$submit_attributes = array();
@@ -855,7 +898,51 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				);
 			}
 		}
+
+		if ( ! empty( $instance['spam']['simple'] ) && ! empty( $instance['spam']['simple']['enabled'] ) ) {
+			if ( ! class_exists( 'ReallySimpleCaptcha' ) ) {
+				$template_vars['really_simple_spam'] = 'missing';
+			} else {
+				$template_vars['really_simple_spam'] = new ReallySimpleCaptcha();
+
+				// Apply the RSC colors.
+				if ( ! class_exists( 'SiteOrigin_Widgets_Color_Object' ) ) {
+					require plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . 'base/inc/color.php';
+				}
+
+				if ( ! empty( $instance['spam']['simple']['background'] ) ) {
+					$color = new SiteOrigin_Widgets_Color_Object( $instance['spam']['simple']['background'], 'hex' );
+					$template_vars['really_simple_spam']->bg = $color->__get( 'rgb' );
+				}
+
+				if ( ! empty( $instance['spam']['simple']['color'] ) ) {
+					$color = new SiteOrigin_Widgets_Color_Object( $instance['spam']['simple']['color'], 'hex' );
+					$template_vars['really_simple_spam']->fg = $color->__get( 'rgb' );
+				}
+
+				// Allow other plugins to adjust Really Simple Captcha settings.
+				$template_vars['really_simple_spam'] = apply_filters( 'siteorigin_widgets_contact_really_simple_captcha', $template_vars['really_simple_spam'] );
+				$template_vars['really_simple_spam_prefix'] = mt_rand() . $template_vars['instance_hash'];
+				$template_vars['really_simple_spam_image'] = $template_vars['really_simple_spam']->generate_image(
+					$template_vars['really_simple_spam_prefix'],
+					$template_vars['really_simple_spam']->generate_random_word()
+				);
+
+				if (
+					! empty( $template_vars['result'] ) &&
+					! empty( $template_vars['result'] ) &&
+					! empty( $template_vars['result']['errors'] ) &&
+					! empty( $template_vars['result']['errors']['_general'] ) &&
+					! empty( $template_vars['result']['errors']['_general']['simple'] )
+				) {
+					$template_vars['really_simple_spam_error'] = $template_vars['result']['errors']['_general']['simple'];
+					unset( $template_vars['result']['errors'] );
+				}
+			}
+		}
+
 		$template_vars['submit_attributes'] = $submit_attributes;
+
 		return $template_vars;
 	}
 
@@ -1323,7 +1410,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				}
 			}
 		}
-
 		if ( $instance['spam']['akismet']['use_akismet'] && class_exists( 'Akismet' ) ) {
 			$comment = array();
 
@@ -1352,6 +1438,23 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 			if ( $is_spam ) {
 				$errors['akismet'] = __( 'Unfortunately our system identified your message as spam.', 'so-widgets-bundle' );
+			}
+		}
+
+		if ( ! empty( $instance['spam']['simple'] ) && ! empty( $instance['spam']['simple']['enabled'] ) ) {
+			if ( ! class_exists( 'ReallySimpleCaptcha' ) ) {
+				$template_vars['really_simple_spam'] = 'missing';
+				$errors['simple'] = __( 'Error validating your Captcha response. Really Simple CAPTCHA missing.', 'so-widgets-bundle' );
+			} else {
+				$captcha = new ReallySimpleCaptcha();
+				$prefix = $post_vars['really-simple-captcha-prefix-' . $post_vars['instance_hash'] ];
+				if ( ! $captcha->check(
+					$prefix, 
+					$post_vars['really-simple-captcha-' . $post_vars['instance_hash'] ]
+				) ) {
+					$errors['simple'] = __( 'Error validating your Captcha response. Please try again.', 'so-widgets-bundle' );
+				}
+				$captcha->remove( $prefix );
 			}
 		}
 
