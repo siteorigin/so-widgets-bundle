@@ -58,7 +58,7 @@ if ( ! empty( $instance['features'] ) ) {
 
 				<div class="textwidget">
 					<?php if(!empty($feature['title'])) : ?>
-						<<?php echo esc_html( $instance['title_tag'] ); ?>>
+						<<?php echo esc_html( $instance['fonts']['title_options']['tag'] ); ?>>
 							<?php if ( ! empty( $feature['more_url'] ) && $instance['title_link'] && empty( $instance['link_feature'] ) ) : ?>
 								<a
 									href="<?php echo sow_esc_url( $feature['more_url'] ); ?>"
@@ -70,7 +70,7 @@ if ( ! empty( $instance['features'] ) ) {
 							<?php if ( !empty( $feature['more_url'] ) && $instance['title_link'] && empty( $instance['link_feature'] ) ) : ?>
 								</a>
 							<?php endif; ?>
-						</<?php echo esc_html( $instance['title_tag'] ); ?>>
+						</<?php echo esc_html( $instance['fonts']['title_options']['tag'] ); ?>>
 					<?php endif; ?>
 
 					<?php if(!empty($feature['text'])) : ?>
