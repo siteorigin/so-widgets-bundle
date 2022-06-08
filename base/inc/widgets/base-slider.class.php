@@ -389,6 +389,9 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				break;
 			case 'before_slides':
 				$settings = $this->slider_settings( $controls );
+				if ( ! empty( $controls['anchor'] ) ) {
+					$anchorId = $controls['anchor'];
+				}
 				if ( $settings['swipe'] ) {
 					wp_enqueue_script( 'sow-slider-slider-cycle2-swipe' );
 				}
@@ -400,6 +403,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					class="sow-slider-images"
 					data-settings="<?php echo esc_attr( json_encode($settings) ) ?>"
 					<?php echo ! empty( $layout['desktop'] ) && ! empty( $layout['desktop']['height'] ) ? 'style="min-height: ' . esc_attr( $layout['desktop']['height'] ) . '"' : ''; ?>
+					data-anchor-id="<?php echo ! empty( $controls['anchor'] ) ? esc_attr( $controls['anchor'] ) : ''; ?>"
 				><?php
 				break;
 			case 'after_slides':
