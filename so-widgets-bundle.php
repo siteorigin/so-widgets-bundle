@@ -847,7 +847,6 @@ class SiteOrigin_Widgets_Bundle {
 								$widget->generate_and_enqueue_instance_styles( $widget_instance );
 							}
 						}
-						}
 					}
 				}
 			}
