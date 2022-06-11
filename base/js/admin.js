@@ -1311,6 +1311,7 @@ var sowbForms = window.sowbForms || {};
 		formContainer.find('*[name]').each(function () {
 			var $$ = $(this);
 			var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec($$.attr('name'));
+			var updated = false;
 
 			if ( name === undefined || name === null ) {
 				return true;
@@ -1366,9 +1367,9 @@ var sowbForms = window.sowbForms || {};
 							editor.setContent( value );
 						});
 					}
-				}
-				else {
+				} else {
 					$$.val( value );
+					updated = true;
 				}
 			} else if ( $$.is( '.panels-data' ) ) {
 				$$.val( value );
@@ -1376,11 +1377,16 @@ var sowbForms = window.sowbForms || {};
 				if ( builder ) {
 					builder.setDataField( $$ );
 				}
+				updated = true;
 			} else {
 				$$.val( value );
+				updated = true;
 			}
 			
-			if ( triggerChange ) {
+			if ( triggerChange && updated ) {
+				if ( triggerChange == 'color' && ! $$.hasClass( 'siteorigin-widget-input-color ' ) ) {
+					return;
+				}
 				$$.trigger( 'change' );
 				this.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
 			}
