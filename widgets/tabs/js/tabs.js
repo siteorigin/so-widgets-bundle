@@ -99,7 +99,7 @@ jQuery( function ( $ ) {
 					);
 					$tab.addClass( 'sow-tabs-tab-selected' );
 
-					if ( ! preventHashChange ) {
+					if ( ! preventHashChange && ( anchorId || $widget.data( 'use-anchor-tags' ) )) {
 						if ( ! anchorId ) {
 							window.location.hash = $tab.data( 'anchor' );
 						} else {
