@@ -439,11 +439,12 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	 * @return $instance
 	 */
 	private static function migrate_padding( $instance, $context ) {
-		// If both padding and extra top padding exist, we need to override
-		// the extra top padding and unit of measurement to prevent unexpected changes.
+		// If padding and extra top padding unit of measurement is different,
+		// we need to reset the extra top padding unit to be the same as the
+		// base padding to prevent unexpected changes.
 		if (
-			 ! empty( $instance['layout'][ $context ]['padding'] ) &&
-			 $instance['layout'][ $context ]['padding'] != '50px'
+			! empty( $instance['layout'][ $context ]['padding'] ) &&
+			$instance['layout'][ $context ]['padding_unit'] != $instance['layout'][ $context ]['extra_top_padding_unit']
 		) {
 			$instance['layout'][ $context ]['padding_extra_top'] = str_replace(
 				$instance['layout'][ $context ]['extra_top_padding_unit'],
@@ -452,6 +453,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			);
 			$instance['layout'][ $context ]['padding_extra_top_unit'] = $instance['layout'][ $context ]['padding_unit'];
 		} else {
+			// No adjustments needed, copy extra padding setting to new setting structure.
 			$instance['layout'][ $context ]['padding_extra_top_unit'] = $instance['layout'][ $context ]['extra_top_padding_unit'];
 			$instance['layout'][ $context ]['padding_extra_top'] = $instance['layout'][ $context ]['extra_top_padding'];
 		}
