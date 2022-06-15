@@ -602,7 +602,7 @@ var sowbForms = window.sowbForms || {};
 			var $items = $el.find('.siteorigin-widget-field-repeater-items');
 			var name = $el.data('repeater-name');
 
-			$items.bind('updateFieldPositions', function () {
+			$items.on( 'updateFieldPositions', function() {
 				var $$ = $(this);
 				var $rptrItems = $$.find('> .siteorigin-widget-field-repeater-item');
 
