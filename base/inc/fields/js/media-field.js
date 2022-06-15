@@ -6,6 +6,7 @@
 		var $field = $( this );
 		var $media = $field.find('> .media-field-wrapper');
 		var $inputField = $field.find( '.siteorigin-widget-input' ).not('.media-fallback-external');
+		var $externalField = $field.find( '.media-fallback-external' );
 
 		if ( $media.data( 'initialized' ) ) {
 			return;
@@ -402,7 +403,15 @@
 				} else {
 					$field.find( 'a.media-remove-button' ).trigger( 'click' );
 				}
+
 			}
+			$externalField.trigger( 'change' );
+		} );
+
+		// Ensure both state both the media field and external field are kept up to date.
+		$externalField.on( 'change', function() {
+			$inputField.trigger( 'change' );
+
 		} );
 
 		$media.data( 'initialized', true );
