@@ -21,7 +21,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 			),
 			false,
-			plugin_dir_path(__FILE__)
+			plugin_dir_path( __FILE__ )
 		);
 
 	}
@@ -66,7 +66,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'new_window' => array(
 				'type' => 'checkbox',
 				'default' => false,
-				'label' => __('Open in a new window', 'so-widgets-bundle'),
+				'label' => __( 'Open in a new window', 'so-widgets-bundle' ),
 			),
 
 			'download' => array(
@@ -112,7 +112,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 			'design' => array(
 				'type' => 'section',
-				'label' => __('Design and Layout', 'so-widgets-bundle'),
+				'label' => __( 'Design and Layout', 'so-widgets-bundle' ),
 				'hide' => true,
 				'fields' => array(
 
@@ -124,13 +124,13 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 					'align' => array(
 						'type' => 'select',
-						'label' => __('Align', 'so-widgets-bundle'),
+						'label' => __( 'Align', 'so-widgets-bundle' ),
 						'default' => 'center',
 						'options' => array(
-							'left' => __('Left', 'so-widgets-bundle'),
-							'right' => __('Right', 'so-widgets-bundle'),
-							'center' => __('Center', 'so-widgets-bundle'),
-							'justify' => __('Justify', 'so-widgets-bundle'),
+							'left' => __( 'Left', 'so-widgets-bundle' ),
+							'right' => __( 'Right', 'so-widgets-bundle' ),
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'justify' => __( 'Justify', 'so-widgets-bundle' ),
 						),
 					),
 					'mobile_align' => array(
@@ -280,7 +280,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	}
 
 	function get_style_name( $instance ) {
-		if(empty($instance['design']['theme'])) return 'atom';
+		if ( empty( $instance['design']['theme'] ) ) return 'atom';
 		return $instance['design']['theme'];
 	}
 
@@ -474,4 +474,4 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	}	
 }
 
-siteorigin_widget_register('sow-button', __FILE__, 'SiteOrigin_Widget_Button_Widget');
+siteorigin_widget_register( 'sow-button', __FILE__, 'SiteOrigin_Widget_Button_Widget' );
