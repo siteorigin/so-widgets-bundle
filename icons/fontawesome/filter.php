@@ -1863,35 +1863,54 @@ function siteorigin_widgets_icon_styles_fontawesome_filter( $styles ) {
 
 add_filter('siteorigin_widgets_icon_styles_fontawesome', 'siteorigin_widgets_icon_styles_fontawesome_filter');
 
+$siteorigin_font_awesome = apply_filters( 'siteorigin_widgets_icons_fontawesome', array() );
 function siteorigin_widgets_icon_migrate_fontawesome( $icon_data ) {
-	
-	// Previous versions of FontAwesome didn't use 'style'.
-	if ( ! empty( $icon_data ) && ! isset( $icon_data['style'] ) ) {
-		
-		$name_map = siteorigin_widgets_icon_migrate_fontawesome_name_map();
-		
-		if ( isset( $name_map[ $icon_data['icon'] ] ) ) {
-			if ( preg_match( '/\-o\b/', $icon_data['icon'] ) ) {
-				$icon_data['style'] = 'sow-far';
-			}
-			$icon_data['icon'] = $name_map[ $icon_data['icon'] ];
-		}
+	global $siteorigin_font_awesome;
+
+	// FontAwesome regularly updates icon names so we should always check if we
+	// we need to migrate the current icon.
+	if ( ! empty( $icon_data ) ) {
 		if ( empty( $icon_data['style'] ) ) {
-			$icons = apply_filters( 'siteorigin_widgets_icons_fontawesome', array() );
-			if ( ! empty( $icons[ $icon_data['icon'] ] ) && ! empty( $icons[ $icon_data['icon'] ]['styles'] ) ) {
-				$icon_data['style'] = $icons[ $icon_data['icon'] ]['styles'][0];
-			} else {
-				$icon_data['style'] = 'sow-fas';
+			// Pre-WB 1.14.0 icon.
+			$name_map = siteorigin_widgets_icon_migrate_fontawesome_name_map();
+			
+			if ( isset( $name_map[ $icon_data['icon'] ] ) ) {
+				if ( preg_match( '/\-o\b/', $icon_data['icon'] ) ) {
+					$icon_data['style'] = 'sow-far';
+				}
+				$icon_data['icon'] = $name_map[ $icon_data['icon'] ];
+			}
+			if ( empty( $icon_data['style'] ) ) {
+				if (
+					! empty( $siteorigin_font_awesome[ $icon_data['icon'] ] ) &&
+					! empty( $siteorigin_font_awesome[ $icon_data['icon'] ]['styles'] )
+				) {
+					$icon_data['style'] = $siteorigin_font_awesome[ $icon_data['icon'] ]['styles'][0];
+				} else {
+					$icon_data['style'] = 'sow-fas';
+				}
+			}
+		} elseif ( empty( $siteorigin_font_awesome[ $icon_data['icon'] ] ) ) {
+			$name_map = siteorigin_widgets_icon_migrate_fontawesome_name_map();
+			if ( ! empty( $name_map[ $icon_data['icon'] ] ) ) {
+				$icon_data['icon'] = $name_map[ $icon_data['icon'] ];
 			}
 		}
 	}
+
 	return $icon_data;
 }
 
 add_filter( 'siteorigin_widgets_icon_migrate_fontawesome', 'siteorigin_widgets_icon_migrate_fontawesome' );
 
+$siteorigin_font_awesome_migration_data = array();
 function siteorigin_widgets_icon_migrate_fontawesome_name_map() {
-	return array(
+	global $siteorigin_font_awesome_migration_data;
+	if ( ! empty( $siteorigin_font_awesome_migration_data ) ) {
+		return $siteorigin_font_awesome_migration_data;
+	}
+
+	$siteorigin_font_awesome_migration_data = array(
 		'address-book-o' => 'address-book',
 		'address-card-o' => 'address-card',
 		'area-chart' => 'chart-area',
@@ -2848,4 +2867,6 @@ function siteorigin_widgets_icon_migrate_fontawesome_name_map() {
 		'window-close' => 'rectangle-xmark',
 		'wine-glass-alt' => 'wine-glass-empty',
 	);
+
+	return $siteorigin_font_awesome_migration_data;
 }
