@@ -215,6 +215,7 @@ function sow_esc_url( $url ) {
 
 	$protocols = apply_filters( 'siteorigin_esc_url_protocols', wp_allowed_protocols() );
 	$protocols[] = 'skype';
+	$protocols[] = 'steam';
 	return esc_url( $url, $protocols );
 }
 
@@ -233,6 +234,7 @@ function sow_esc_url_raw( $url ) {
 
 	$protocols = apply_filters( 'siteorigin_esc_url_raw_protocols', wp_allowed_protocols() );
 	$protocols[] = 'skype';
+	$protocols[] = 'steam';
 	return esc_url_raw( $url, $protocols );
 }
 
