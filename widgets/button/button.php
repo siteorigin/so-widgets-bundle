@@ -248,7 +248,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 					'id' => array(
 						'type' => 'text',
 						'label' => __( 'Button ID', 'so-widgets-bundle' ),
-						'description' => __( 'An ID attribute allows you to target this button in Javascript.', 'so-widgets-bundle' ),
+						'description' => __( 'An ID attribute allows you to target this button in JavaScript.', 'so-widgets-bundle' ),
 					),
 
 					'classes' => array(
@@ -266,7 +266,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 					'on_click' => array(
 						'type' => 'text',
 						'label' => __( 'Onclick', 'so-widgets-bundle' ),
-						'description' => __( 'Run this Javascript when the button is clicked. Ideal for tracking.', 'so-widgets-bundle' ),
+						'description' => __( 'Run this JavaScript when the button is clicked. Ideal for tracking.', 'so-widgets-bundle' ),
 					),
 
 					'rel' => array(
