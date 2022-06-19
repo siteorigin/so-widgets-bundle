@@ -48,7 +48,7 @@ else {
 		<?php
 		if ( ! empty( $really_simple_spam ) ) {
 			if ( $really_simple_spam == 'missing' ) {
-				echo __( 'Unable to detect Really Simple CAPTCHA plugin', 'so-widgets-bundle' );
+				echo __( 'Unable to detect Really Simple CAPTCHA plugin.', 'so-widgets-bundle' );
 			} else {
 				require( 'simple.php' );
 			}
