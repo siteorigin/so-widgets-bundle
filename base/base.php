@@ -213,7 +213,7 @@ function sow_esc_url( $url ) {
 		if( empty($url) ) return '';
 	}
 
-	$protocols = wp_allowed_protocols();
+	$protocols = apply_filters( 'siteorigin_esc_url_protocols', wp_allowed_protocols() );
 	$protocols[] = 'skype';
 	return esc_url( $url, $protocols );
 }
@@ -231,7 +231,7 @@ function sow_esc_url_raw( $url ) {
 		$url = get_the_permalink( (int) $matches[1] );
 	}
 
-	$protocols = wp_allowed_protocols();
+	$protocols = apply_filters( 'siteorigin_esc_url_raw_protocols', wp_allowed_protocols() );
 	$protocols[] = 'skype';
 	return esc_url_raw( $url, $protocols );
 }
