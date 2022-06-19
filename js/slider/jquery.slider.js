@@ -194,7 +194,7 @@ jQuery( function($){
 						window.dispatchEvent( new Event( 'resize' ) );
 						setTimeout( function() {
 							$base.css( 'opacity', 1 );
-						}, 200 );
+						}, 425 );
 					}
 				}
 				

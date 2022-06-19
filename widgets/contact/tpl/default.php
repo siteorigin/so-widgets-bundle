@@ -1,10 +1,10 @@
 <?php
-// Display the title
-if( $instance['display_title'] && !empty( $instance['title'] ) ) {
+// Display the title.
+if ( $instance['display_title'] && !empty( $instance['title'] ) ) {
 	echo $args['before_title'] . $instance['title'] . $args['after_title'];
 }
 $short_hash = substr( $instance_hash, 0, 4 );
-if( $result['status'] == 'success' ) {
+if ( $result['status'] == 'success' ) {
 	// Display the success message
 	?>
 	<div class="sow-contact-form-success" id="contact-form-<?php echo esc_attr( $short_hash ) ?>">
@@ -23,11 +23,11 @@ else {
 	}
 	?>
 	<form action="#contact-form-<?php echo esc_attr( $short_hash ); ?>"
-          method="POST" class="sow-contact-form" id="contact-form-<?php echo esc_attr( $short_hash ) ?>">
+		method="POST" class="sow-contact-form" id="contact-form-<?php echo esc_attr( $short_hash ) ?>">
 
 		<?php if ( ! empty( $result['errors']['_general'] ) ) : ?>
 			<ul class="sow-error">
-				<?php foreach( $result['errors']['_general'] as $type => $message ) : ?>
+				<?php foreach ( $result['errors']['_general'] as $type => $message ) : ?>
 					<li><?php echo esc_html( $message ) ?></li>
 				<?php endforeach ?>
 			</ul>
@@ -48,21 +48,20 @@ else {
 		<?php
 		if ( ! empty( $really_simple_spam ) ) {
 			if ( $really_simple_spam == 'missing' ) {
-				echo __( 'Unable to detect Really Simple CAPTCHA plugin', 'so-widgets-bundle' );
+				echo __( 'Unable to detect Really Simple CAPTCHA plugin.', 'so-widgets-bundle' );
 			} else {
 				require( 'simple.php' );
 			}
 		}
 		?>
-		<div class="sow-submit-wrapper <?php if( $instance['design']['submit']['styled'] ) echo 'sow-submit-styled'; ?>">
+		<div class="sow-submit-wrapper <?php if ( $instance['design']['submit']['styled'] ) echo 'sow-submit-styled'; ?>">
 
 		<button class="sow-submit<?php if ( $recaptcha && empty( $recaptcha_v2 ) ) echo ' g-recaptcha'; ?>"
-			<?php foreach( $submit_attributes as $name => $val ) echo $name . '="' . esc_attr( $val ) . '" ' ?>
+			<?php foreach ( $submit_attributes as $name => $val ) echo $name . '="' . esc_attr( $val ) . '" ' ?>
 			<?php if ( ! empty( $onclick ) ) echo 'onclick="' . esc_js( $onclick ) . '"'; ?>
 		>
 			<?php echo esc_attr( $instance['settings']['submit_text'] ) ?>
 		</button>
-
 
 		</div>
 	</form>

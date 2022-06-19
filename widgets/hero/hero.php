@@ -439,11 +439,12 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	 * @return $instance
 	 */
 	private static function migrate_padding( $instance, $context ) {
-		// If both padding and extra top padding exist, we need to override
-		// the extra top padding and unit of measurement to prevent unexpected changes.
+		// If padding and extra top padding unit of measurement is different,
+		// we need to reset the extra top padding unit to be the same as the
+		// base padding to prevent unexpected changes.
 		if (
-			 ! empty( $instance['layout'][ $context ]['padding'] ) &&
-			 $instance['layout'][ $context ]['padding'] != '50px'
+			! empty( $instance['layout'][ $context ]['padding'] ) &&
+			$instance['layout'][ $context ]['padding_unit'] != $instance['layout'][ $context ]['extra_top_padding_unit']
 		) {
 			$instance['layout'][ $context ]['padding_extra_top'] = str_replace(
 				$instance['layout'][ $context ]['extra_top_padding_unit'],
@@ -452,6 +453,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			);
 			$instance['layout'][ $context ]['padding_extra_top_unit'] = $instance['layout'][ $context ]['padding_unit'];
 		} else {
+			// No adjustments needed, copy extra padding setting to new setting structure.
 			$instance['layout'][ $context ]['padding_extra_top_unit'] = $instance['layout'][ $context ]['extra_top_padding_unit'];
 			$instance['layout'][ $context ]['padding_extra_top'] = $instance['layout'][ $context ]['extra_top_padding'];
 		}
@@ -487,11 +489,11 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		$instance = parent::modify_instance( $instance );
 
 		// Migrate `extra_top_padding` to `padding_extra_top`.
-		if ( ! empty( $instance['layout']['desktop']['extra_top_padding'] ) && $instance['layout']['desktop']['extra_top_padding'] != '0px' ) {
+		if ( ! empty( $instance['layout']['desktop']['extra_top_padding'] ) ) {
 			$instance = self::migrate_padding( $instance, 'desktop' );
 		}
 
-		if ( ! empty( $instance['layout']['mobile']['extra_top_padding'] ) && $instance['layout']['mobile']['extra_top_padding'] != '0px' ) {
+		if ( ! empty( $instance['layout']['mobile']['extra_top_padding'] ) ) {
 			$instance = self::migrate_padding( $instance, 'mobile' );
 		}
 
@@ -535,10 +537,10 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 				$settings = $instance['layout']['mobile'];
 
 				$meas_options['slide_height_responsive'] = ! empty( $settings['height_responsive'] ) ? $settings['height_responsive'] : '';
-				if ( ! empty( $settings['padding'] ) || ! empty( $settings['padding_extra_top'] ) ) {
-					$meas_options['slide_padding_responsive'] = ! empty( $settings['padding'] ) ? $settings['padding'] : 0;
+				if ( $settings['padding'] != '' || $settings['padding_extra_top'] != '' ) {
+					$meas_options['slide_padding_responsive'] = ! empty( $settings['padding'] ) ? $settings['padding'] : '0px';
 
-					$meas_options['slide_padding_extra_top_responsive'] = ! empty( $settings['padding_extra_top'] ) ? $settings['padding_extra_top'] : 0;
+					$meas_options['slide_padding_extra_top_responsive'] = ! empty( $settings['padding_extra_top'] ) ? $settings['padding_extra_top'] : '0px';
 				}
 				$meas_options['slide_padding_sides_responsive'] = ! empty( $settings['padding_sides'] ) ? $settings['padding_sides'] : '';
 			}
