@@ -489,11 +489,11 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		$instance = parent::modify_instance( $instance );
 
 		// Migrate `extra_top_padding` to `padding_extra_top`.
-		if ( ! empty( $instance['layout']['desktop']['extra_top_padding'] ) && $instance['layout']['desktop']['extra_top_padding'] != '0px' ) {
+		if ( ! empty( $instance['layout']['desktop']['extra_top_padding'] ) ) {
 			$instance = self::migrate_padding( $instance, 'desktop' );
 		}
 
-		if ( ! empty( $instance['layout']['mobile']['extra_top_padding'] ) && $instance['layout']['mobile']['extra_top_padding'] != '0px' ) {
+		if ( ! empty( $instance['layout']['mobile']['extra_top_padding'] ) ) {
 			$instance = self::migrate_padding( $instance, 'mobile' );
 		}
 
