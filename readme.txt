@@ -105,6 +105,21 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.36.0 - 19 June 2022 =
+* Contact Form: Added support for [Really Simple CAPTCHA](Really Simple CAPTCHA) plugin. A DSGVO complaint captcha.
+* Features: Moved the title `HTML tag` setting to the `Font Design > Title` settings section.
+* Features: Restored feature column width when `Icon container shape` set to `None`.
+* Google Maps: Fixed static maps custom style notice.
+* Hero: Fixed Top Padding unit of measurement.
+* Sliders: Resolved Modern Parallax jump on load.
+* Sliders: Added `anchor-id` attribute.
+* Tabs: Removed Anchor ID functionality when disabled.
+* Video Player: Standardized YouTube URLs.
+* Web Safe Fonts: Added Times New Roman. Alphabetized and updated the CSS font stacks.
+* jQuery Migrate: Replaced error shorthand and bind usage. 
+* Developer: Sliders - Added `slider_setup_before` and `slider_setup_after` events.
+* Developer: Added `siteorigin_widgets_search_posts_order_by` filter. Change post search order results as required.
+
 = 1.35.1 - 25 May 2022 =
 * Updated WordPress `Tested up to` tag.
 * Accordion: Added a hyphen prior to the panel URL anchor.
