@@ -105,8 +105,8 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 						'state_emitter' => array(
 							'callback' => 'conditional',
 							'args' => array(
-								'show_height[show]: val',
-								'show_height[hide]: ! val'
+								'show_height[show]: val && ! isNaN( val )',
+								'show_height[hide]: ! val || isNaN( val )'
 							),
 						),
 					),
