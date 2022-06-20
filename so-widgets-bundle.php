@@ -51,7 +51,7 @@ class SiteOrigin_Widgets_Bundle {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_register_scripts' ) );
 
-		// All the ajax actions.
+		// All the Ajax actions.
 		add_action( 'wp_ajax_so_widgets_bundle_manage', array( $this, 'admin_ajax_manage_handler' ) );
 		add_action( 'wp_ajax_sow_get_javascript_variables', array( $this, 'admin_ajax_get_javascript_variables' ) );
 
@@ -81,7 +81,7 @@ class SiteOrigin_Widgets_Bundle {
 
 		add_filter( 'wp_enqueue_scripts', array( $this, 'register_general_scripts' ) );
 		add_filter( 'wp_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
-		
+
 		// This is a temporary filter to disable the new Jetpack Grunion contact form editor.
 		add_filter( 'tmp_grunion_allow_editor_view', '__return_false' );
 
@@ -221,7 +221,7 @@ class SiteOrigin_Widgets_Bundle {
 	 */
 	function load_widget_plugins() {
 
-		// Load all the widget we currently have active and filter them
+		// Load all the widget we currently have active and filter them.
 		$active_widgets = $this->get_active_widgets();
 		$widget_folders = $this->get_widget_folders();
 
@@ -246,14 +246,14 @@ class SiteOrigin_Widgets_Bundle {
 	 * @return mixed|void
 	 */
 	function get_active_widgets( $filter = true ) {
-		// Basic caching of the current active widgets
+		// Basic caching of the current active widgets.
 		$active_widgets = wp_cache_get( 'active_widgets', 'siteorigin_widgets' );
 
 		if ( empty($active_widgets) ) {
 			$active_widgets = get_option( 'siteorigin_widgets_active', array() );
 			$active_widgets = wp_parse_args( $active_widgets, apply_filters( 'siteorigin_widgets_default_active', self::$default_active_widgets ) );
 
-			// Migrate any old names
+			// Migrate any old names.
 			foreach ( $active_widgets as $widget_name => $is_active ) {
 				if ( substr( $widget_name, 0, 3 ) !== 'so-' ) {
 					continue;
@@ -277,7 +277,7 @@ class SiteOrigin_Widgets_Bundle {
 	/**
 	 * Enqueue the admin page stuff.
 	 */
-	function admin_enqueue_scripts($prefix) {
+	function admin_enqueue_scripts( $prefix ) {
 		if ( $prefix != 'plugins_page_so-widgets-plugins' ) return;
 		wp_enqueue_style( 'siteorigin-widgets-manage-admin', plugin_dir_url( __FILE__ ) . 'admin/admin.css', array(), SOW_BUNDLE_VERSION );
 		wp_enqueue_script( 'siteorigin-widgets-trianglify', plugin_dir_url( __FILE__ ) . 'admin/trianglify' . SOW_BUNDLE_JS_SUFFIX . '.js', array(), SOW_BUNDLE_VERSION );
@@ -287,7 +287,7 @@ class SiteOrigin_Widgets_Bundle {
 			'toggleUrl' => wp_nonce_url( admin_url('admin-ajax.php?action=so_widgets_bundle_manage' ), 'manage_so_widget' )
 		) );
 	}
-	
+
 	/**
 	 * The fallback (from ajax) URL handler for activating or deactivating a widget.
 	 */
@@ -386,7 +386,7 @@ class SiteOrigin_Widgets_Bundle {
 		if ( ! wp_verify_nonce( $_GET['_wpnonce'], 'manage_so_widget' ) ) {
 			wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
 		}
-		
+
 		if ( ! current_user_can( apply_filters( 'siteorigin_widgets_admin_menu_capability', 'manage_options' ) ) ) {
 			wp_die( __( 'Insufficient permissions.', 'so-widgets-bundle' ), 403 );
 		}
@@ -460,7 +460,7 @@ class SiteOrigin_Widgets_Bundle {
 		$widget_objects = $this->get_widget_objects();
 		$widget_path = empty( $_GET['id'] ) ? false : wp_normalize_path( WP_CONTENT_DIR ) . $_GET['id'];
 		$widget_object = empty( $widget_objects[ $widget_path ] ) ? false : $widget_objects[ $widget_path ];
-		
+
 		if ( empty( $widget_object ) || ! $widget_object->has_form( 'settings' ) ) {
 			wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );
 		}
@@ -528,23 +528,23 @@ class SiteOrigin_Widgets_Bundle {
 	 */
 	function admin_ajax_get_javascript_variables() {
 		if ( empty( $_REQUEST['_widgets_nonce'] ) ||
-		     ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
+			! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
 			wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
 		}
-		
+
 		$widget_class = $_POST['widget'];
 		global $wp_widget_factory;
 		if ( empty( $wp_widget_factory->widgets[ $widget_class ] ) ) {
 			wp_die( __( 'Invalid post.', 'so-widgets-bundle' ), 400 );
 		}
-		
+
 		$widget = $wp_widget_factory->widgets[ $widget_class ];
 		if ( ! method_exists( $widget, 'get_javascript_variables' ) ) {
 			wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );
 		}
-		
+
 		$result = $widget->get_javascript_variables();
-		
+
 		wp_send_json( $result );
 	}
 
@@ -850,7 +850,7 @@ class SiteOrigin_Widgets_Bundle {
 			}
 		}
 	}
-	
+
 	/**
 	 * Enqueue scripts for registered widgets, by calling their form and/or widget functions.
 	 *
@@ -877,7 +877,7 @@ class SiteOrigin_Widgets_Bundle {
 				ob_clean();
 			}
 		}
-		
+
 		// Reset the $post global back to what it was before any secondary queries.
 		$post = $global_post;
 	}
