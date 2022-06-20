@@ -17,7 +17,6 @@
 @slide_height_responsive: default;
 @slide_padding_responsive: default;
 @slide_padding_extra_top_responsive: default;
-@slide_padding_top_responsive: default;
 @slide_padding_sides_responsive: default;
 
 // Design.
@@ -69,7 +68,9 @@
 			& when ( isnumber( @responsive_breakpoint ) ) {
 				@media (max-width: @responsive_breakpoint) {			
 					height: @slide_height_responsive;
-					padding-top: ~"calc( @{slide_padding_responsive} + @{slide_padding_extra_top_responsive} )";
+					& when not ( @slide_padding_responsive = default ) and not ( @slide_padding_extra_top_responsive = default ) {
+						padding-top: ~"calc( @{slide_padding_responsive} + @{slide_padding_extra_top_responsive} )";
+					}
 					padding-right: @slide_padding_sides_responsive;
 					padding-left: @slide_padding_sides_responsive;
 					& when not ( @slide_padding_responsive = 0 ) {
