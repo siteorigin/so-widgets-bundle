@@ -3,6 +3,7 @@
 class SiteOrigin_Widget_ContactForm_Field_Text extends SiteOrigin_Widget_ContactForm_Field_Base {
 	public function __construct( $options ) {
 		$this->type = 'text';
+		parent::__construct( $options );
 	}
 
 	public function render_field( $options ) {
