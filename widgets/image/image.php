@@ -287,8 +287,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 
 	function generate_anchor_open( $url, $link_attributes ) {
 		?>
-		<a
-			href="<?php echo sow_esc_url( $url ); ?>"
+		<a href="<?php echo sow_esc_url( $url ); ?>"
 			<?php
 			foreach ( $link_attributes as $attr => $val ) {
 				if ( ! empty( $val ) ) {
