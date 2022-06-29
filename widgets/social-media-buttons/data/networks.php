@@ -214,6 +214,12 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#C02C0C'
 	),
+	'patreon'   => array(
+		'label'    => __( 'Patreon', 'so-widgets-bundle' ),
+		'base_url' => 'https://www.patreon.com/',
+		'icon_color' => '#E26058',
+		'button_color' => '#FFFFFF'
+	),
 	'reddit'   => array(
 		'label'    => __( 'Reddit', 'so-widgets-bundle' ),
 		'base_url' => 'https://www.reddit.com/',
@@ -292,7 +298,7 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#0E74AF'
 	),
-	'tripadvisor'   => array(
+	'suitcase'   => array(
 		'label'    => __( 'TripAdvisor', 'so-widgets-bundle' ),
 		'base_url' => 'https://www.tripadvisor.com/',
 		'icon_color' => '#FFFFFF',

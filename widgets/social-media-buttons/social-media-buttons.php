@@ -220,7 +220,19 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 					 $network['name'] = 'google';
 				}
 
-				$network['icon_name'] = 'fontawesome-' . ( $network['name'] == 'email' ? 'envelope' : $network['name'] );
+				if ( $network['name'] == 'email' ) {
+					 $network['name'] = 'envelope';
+				}
+
+				if ( $network['name'] == 'tripadvisor' ) {
+					 $network['name'] = 'suitcase';
+				}
+
+				if ( $network['name'] != 'envelope' && $network['name'] != 'suitcase' ) {
+					$network['icon_name'] = 'fontawesome-sow-fab-' . $network['name'];
+				} else {
+					$network['icon_name'] = 'fontawesome-sow-fas-' . $network['name'];
+				}
 				$instance['networks'][$name] = $network;
 			}
 		}
