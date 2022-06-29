@@ -298,7 +298,7 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#0E74AF'
 	),
-	'tripadvisor'   => array(
+	'suitcase'   => array(
 		'label'    => __( 'TripAdvisor', 'so-widgets-bundle' ),
 		'base_url' => 'https://www.tripadvisor.com/',
 		'icon_color' => '#FFFFFF',
