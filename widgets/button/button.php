@@ -147,7 +147,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 					'theme' => array(
 						'type' => 'select',
 						'label' => __( 'Button Theme', 'so-widgets-bundle' ),
-						'default' => 'atom',
+						'default' => 'flat',
 						'options' => array(
 							'atom' => __( 'Atom', 'so-widgets-bundle' ),
 							'flat' => __( 'Flat', 'so-widgets-bundle' ),
