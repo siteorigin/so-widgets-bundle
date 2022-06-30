@@ -12,6 +12,14 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 	 */
 	protected $custom_size;
 
+	/**
+	 * An optional array containing the sizes to allow.
+	 *
+	 * @access protected
+	 * @var bool
+	 */
+	protected $sizes;
+
 	protected function get_default_options() {
 		$image_size_configs = siteorigin_widgets_get_image_sizes();
 		// Hardcoded 'full' and 'thumb' because they're not registered image sizes.
@@ -33,6 +41,10 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 	// get_default_options() is triggered prior to $this->custom_size being
 	// available so we have to set up custom sizes at field initialization.
 	protected function initialize() {
+		if ( ! empty( $this->sizes ) && is_array( $this->sizes ) ) {
+			$this->options = $this->sizes;
+		}
+
 		if ( ! empty( $this->custom_size ) && ! empty( $this->options ) ) {
 			$this->options['custom_size'] = __( 'Custom Size', 'so-widgets-bundle' );
 		}

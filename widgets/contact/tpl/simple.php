@@ -1,8 +1,3 @@
-<?php if ( ! empty( $template_vars['really_simple_spam_error'] ) ) : ?>
-	<div class="sow-error">
-		<?php echo esc_html( $template_vars['really_simple_spam_error'] ) ?>
-	</div>
-<?php endif; ?>
 <div class="sow-form-field sow-form-field-captcha">
 	<?php if ( $instance['design']['labels']['position'] != 'below' ) : ?>
 		<label
@@ -11,6 +6,13 @@
 			<strong><?php _e( 'Captcha', 'so-widgets-bundle' ); ?></strong>
 		</label>
 	<?php endif; ?>
+
+	<?php if ( ! empty( $template_vars['really_simple_spam_error'] ) ) : ?>
+		<div class="sow-error">
+			<?php echo esc_html( $template_vars['really_simple_spam_error'] ) ?>
+		</div>
+	<?php endif; ?>
+
 	<img
 		src="<?php echo esc_url( plugins_url() . '/really-simple-captcha/tmp/' . $really_simple_spam_image ); ?>"
 		width="<?php echo esc_attr( $really_simple_spam->img_size[0] ); ?>"

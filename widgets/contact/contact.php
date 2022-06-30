@@ -325,28 +325,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						)
 					),
 
-					'akismet' => array(
-						'type'   => 'section',
-						'label'  => __( 'Akismet', 'so-widgets-bundle' ),
-						'fields' => array(
-							'use_akismet' => array(
-								'type'    => 'checkbox',
-								'label'   => __( 'Use Akismet filtering', 'so-widgets-bundle' ),
-								'default' => true,
-							),
-							'spam_action' => array(
-								'type'        => 'select',
-								'label'       => __( 'Spam action', 'so-widgets-bundle' ),
-								'options'     => array(
-									'error' => __( 'Show error message', 'so-widgets-bundle' ),
-									'tag'   => __( 'Tag as spam in subject', 'so-widgets-bundle' ),
-								),
-								'description' => __( 'How to handle submissions that are identified as spam.', 'so-widgets-bundle' ),
-								'default'     => 'error',
-							),
-						)
-					),
-
 					'simple' => array(
 						'type'   => 'section',
 						'label'  => __( 'Really Simple CAPTCHA', 'so-widgets-bundle' ),
@@ -385,6 +363,28 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'really_simple[show]' => array( 'slideDown' ),
 									'really_simple[hide]' => array( 'slideUp' ),
 								),
+							),
+						)
+					),
+
+					'akismet' => array(
+						'type'   => 'section',
+						'label'  => __( 'Akismet', 'so-widgets-bundle' ),
+						'fields' => array(
+							'use_akismet' => array(
+								'type'    => 'checkbox',
+								'label'   => __( 'Use Akismet filtering', 'so-widgets-bundle' ),
+								'default' => true,
+							),
+							'spam_action' => array(
+								'type'        => 'select',
+								'label'       => __( 'Spam action', 'so-widgets-bundle' ),
+								'options'     => array(
+									'error' => __( 'Show error message', 'so-widgets-bundle' ),
+									'tag'   => __( 'Tag as spam in subject', 'so-widgets-bundle' ),
+								),
+								'description' => __( 'How to handle submissions that are identified as spam.', 'so-widgets-bundle' ),
+								'default'     => 'error',
 							),
 						)
 					),

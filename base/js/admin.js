@@ -525,7 +525,7 @@ var sowbForms = window.sowbForms || {};
 
 			$fields.filter('[data-state-emitter]').each(function () {
 				
-				var $input = $( this ).find( '.siteorigin-widget-input:not(.custom-image-size)' );
+				var $input = $( this ).find( '.siteorigin-widget-input' );
 				
 				// Listen for any change events on an emitter field
 				$input.on('keyup change', stateEmitterChangeHandler);

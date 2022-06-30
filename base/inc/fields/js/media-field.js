@@ -6,6 +6,7 @@
 		var $field = $( this );
 		var $media = $field.find('> .media-field-wrapper');
 		var $inputField = $field.find( '.siteorigin-widget-input' ).not('.media-fallback-external');
+		var $externalField = $field.find( '.media-fallback-external' );
 
 		if ( $media.data( 'initialized' ) ) {
 			return;
@@ -402,10 +403,28 @@
 				} else {
 					$field.find( 'a.media-remove-button' ).trigger( 'click' );
 				}
+
 			}
+
+			if ( typeof data == 'undefined' || ! data.external ) {
+				$externalField.trigger( 'change', { internal: true } );
+			}
+		} );
+
+		// Ensure both state both the media field and external field are kept up to date.
+		$externalField.on( 'change', function( event, data ) {
+			if (
+				// Prevent direct input on external triggering the internal field.
+				! $( event.currentTarget ).hasClass( 'media-fallback-external' ) &&
+				(
+					typeof data == 'undefined' || ! data.internal
+				)
+			) {
+				$inputField.trigger( 'change', { external: true } );
+			}
+
 		} );
 
 		$media.data( 'initialized', true );
 	});
-
 } )( jQuery );
