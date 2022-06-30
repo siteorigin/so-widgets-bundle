@@ -105,6 +105,20 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.37.0 - 30 June 2022 =
+* Buttons: Changed the design default from Atom to Flat.
+* Contact Form: Minor placement adjustment for Really Simple CAPTCHA error messages.
+* Hero: Ensured valid mobile padding values are output after settings migration.
+* Image: Added an `External Image Size` setting.
+* Image: Restored Simple Lightbox plugin compatibility.
+* Social Media Buttons: Added Font Awesome 6 support.
+* Social Media Buttons: Added Patreon.
+* Social Media Buttons: Updated removed Tripadvisor icon to the suitcase icon.
+* Font Awesome: Upgraded from version `5.15.1` to `6.1.1`.
+* Added Stream protocol support `steam://connect/IP:Port/`.
+* Added a check to ensure widgets exist before enqueuing related scripts.
+* Developer: Added `siteorigin_widgets_contact_field_attr` filter to the Contact Form Widget.
+
 = 1.36.0 - 19 June 2022 =
 * Contact Form: Added support for [Really Simple CAPTCHA](Really Simple CAPTCHA) plugin. A DSGVO complaint captcha.
 * Features: Moved the title `HTML tag` setting to the `Font Design > Title` settings section.
