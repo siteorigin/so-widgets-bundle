@@ -291,7 +291,7 @@ jQuery( function ( $ ) {
 			$( '.sow-carousel-wrapper' ).each( function() {
 				var currentCarousel = $( this ),
 					$items = currentCarousel.find( '.sow-carousel-items.slick-initialized' ),
-					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
+					numVisibleItems = Math.floor( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					navigation = currentCarousel.parent().parent().find( '.sow-carousel-navigation' );
 
 				if ( numVisibleItems >= currentCarousel.data( 'item_count' ) ) {
