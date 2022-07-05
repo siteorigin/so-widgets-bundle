@@ -46,6 +46,19 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 			'%',
 		);
 
+		$carousel_settings = $this->carousel_settings_form_fields();
+		siteorigin_widgets_array_insert(
+			$carousel_settings['fields'],
+			'autoplay_pause_hover',
+			array(
+				'adaptive_height' => array(
+					'type' => 'checkbox',
+					'label' => __( 'Adaptive height', 'so-widgets-bundle' ),
+					'default' => true,
+				),
+			)
+		);
+
 		return array(
 			'title' => array(
 				'type' => 'text',
@@ -73,7 +86,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 					),
 				),
 			),
-			'carousel_settings' => $this->carousel_settings_form_fields(),
+			'carousel_settings' => $carousel_settings,
 			'design' => $this->design_settings_form_fields(
 				array(
 					'item_title' => array(
@@ -184,6 +197,11 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 			$instance['responsive']['mobile']['slides_to_show'] = $instance['responsive']['mobile']['slides_to_scroll'];	
 		}
 
+		// 	If carousel was created before Adaptive Height was introduced, disable it.
+		if ( ! empty( $instance['carousel_settings'] ) && ! isset( $instance['carousel_settings']['adaptive_height'] ) ) {
+			$instance['carousel_settings']['adaptive_height'] = false;
+		}
+
 		return $instance;
 	}
 
@@ -233,6 +251,9 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 	}
 
 	public function get_template_variables( $instance, $args ) {
+		$carousel_settings = $this->carousel_settings_template_variables( $instance['carousel_settings'], false );
+		$carousel_settings['adaptive_height'] = ! empty( $instance['carousel_settings']['adaptive_height'] ) ? $instance['carousel_settings']['adaptive_height'] : true;
+
 		return array(
 			'settings' => array(
 				'title' => $instance['title'],
@@ -245,7 +266,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 					'widget' => 'anything',
 					'item_count' => ! empty( $instance['items'] ) ? count( $instance['items'] ) : 0,
 					'loop' => ! empty( $instance['loop_posts'] ),
-					'carousel_settings' => $this->carousel_settings_template_variables( $instance['carousel_settings'] ),
+					'carousel_settings' => json_encode( $carousel_settings ),
 					'responsive' => $this->responsive_template_variables( $instance['responsive'] ),
 				),
 			),
