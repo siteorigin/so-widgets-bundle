@@ -105,6 +105,11 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.37.1 - 08 July 2022 =
+* Contact Form: Maintain radio and checkbox input size on iOS.
+* Hero: Resolved Extra Top Padding related notice.
+* Social Media Buttons: Restored the Phone and RSS icons.
+
 = 1.37.0 - 30 June 2022 =
 * Buttons: Changed the design default from Atom to Flat.
 * Contact Form: Minor placement adjustment for Really Simple CAPTCHA error messages.
