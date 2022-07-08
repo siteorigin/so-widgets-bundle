@@ -228,7 +228,12 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 					 $network['name'] = 'suitcase';
 				}
 
-				if ( $network['name'] != 'envelope' && $network['name'] != 'suitcase' ) {
+				if (
+					$network['name'] != 'envelope' &&
+					$network['name'] != 'suitcase' &&
+					$network['name'] != 'rss' &&
+					$network['name'] != 'phone'
+				) {
 					$network['icon_name'] = 'fontawesome-sow-fab-' . $network['name'];
 				} else {
 					$network['icon_name'] = 'fontawesome-sow-fas-' . $network['name'];
