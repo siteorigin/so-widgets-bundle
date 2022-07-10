@@ -54,7 +54,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 				'adaptive_height' => array(
 					'type' => 'checkbox',
 					'label' => __( 'Adaptive height', 'so-widgets-bundle' ),
-					'default' => true,
+					'default' => false,
 				),
 			)
 		);
