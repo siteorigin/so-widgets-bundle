@@ -252,7 +252,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 
 	public function get_template_variables( $instance, $args ) {
 		$carousel_settings = $this->carousel_settings_template_variables( $instance['carousel_settings'], false );
-		$carousel_settings['adaptive_height'] = ! empty( $instance['carousel_settings']['adaptive_height'] ) ? $instance['carousel_settings']['adaptive_height'] : true;
+		$carousel_settings['adaptive_height'] = $instance['carousel_settings']['adaptive_height'];
 
 		return array(
 			'settings' => array(
