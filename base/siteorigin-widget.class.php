@@ -1342,7 +1342,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		// Add in the defaults
 		if( $this->has_form( 'settings' ) ) {
-			$values = $this->add_defaults( $this->get_settings_form(), $values );
+			// Allow plugins to filter global widgets form.
+			$form_options = apply_filters( 'siteorigin_widgets_settings_form', $this->get_settings_form(), $this );
+			$form_options = apply_filters( 'siteorigin_widgets_settings_form_' . $this->id_base, $form_options, $this );
+			$values = $this->add_defaults( $form_options, $values );
 		}
 
 		return !empty( $key ) ? $values[$key] : $values;
