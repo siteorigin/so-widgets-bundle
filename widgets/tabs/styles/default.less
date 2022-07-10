@@ -37,6 +37,9 @@
 @panels_border_radius: default;
 @panels_padding: 30px 30px 30px 35px;
 
+@responsive_breakpoint: default;
+@tabs_position_mobile: default;
+
 .sow-tabs {
 
 	.sow-tabs-tab-container {
@@ -172,6 +175,28 @@
 
 		.sow-tabs-tab {
 			display: block !important;
+		}
+	}
+
+	& when not ( @tabs_position_mobile = default ) {
+		@media (max-width: @responsive_breakpoint) {
+			& when ( @tabs_position_mobile = left ) {
+				flex-direction: column;
+			}
+
+			& when ( @tabs_position_mobile = right ) {
+				flex-direction: column-reverse;
+			}
+
+			.sow-tabs-tab-container {
+				padding-bottom: 12px;
+
+				.sow-tabs-tab {
+					box-sizing: border-box;
+					margin: 0;
+					width: 100%;
+				}
+			}
 		}
 	}
 }
