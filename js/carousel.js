@@ -48,6 +48,7 @@ jQuery( function ( $ ) {
 					),
 				variableWidth: $$.data( 'variable_width' ),
 				accessibility: false,
+				adaptiveHeight: carouselSettings.adaptive_height,
 				cssEase: carouselSettings.animation,
 				speed: carouselSettings.animation_speed,
 				slidesToScroll: responsiveSettings.desktop_slides_to_scroll,

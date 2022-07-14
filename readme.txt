@@ -105,6 +105,11 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.38.0 - 14 July 2022 =
+* Anything Carousel: Added `Adaptive Height` setting.
+* Hero: Prevented padding reset on mobile if mobile values are empty.
+* Developer: Allow plugins to filter global settings defaults via `siteorigin_widgets_settings_form`.
+
 = 1.37.1 - 08 July 2022 =
 * Contact Form: Maintain radio and checkbox input size on iOS.
 * Hero: Resolved Extra Top Padding related notice.
