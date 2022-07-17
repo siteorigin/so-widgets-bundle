@@ -190,6 +190,38 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							),
 						),
 
+						'offset_post_meta' => array(
+							'type' => 'section',
+							'label' => __( 'Offset Post Meta', 'so-widgets-bundle' ),
+							'hide' => true,
+							'fields' => array(
+								'font' => array(
+									'type' => 'font',
+									'label' => __( 'Font', 'so-widgets-bundle' ),
+								),
+								'font_size' => array(
+									'type' => 'measurement',
+									'label' => __( 'Font Size', 'so-widgets-bundle' ),
+								),
+								'color' => array(
+									'type' => 'color',
+									'label' => __( 'Color', 'so-widgets-bundle' ),
+								),
+								'link_color' => array(
+									'type' => 'color',
+									'label' => __( 'Link Color', 'so-widgets-bundle' ),
+								),
+								'link_color_hover' => array(
+									'type' => 'color',
+									'label' => __( 'Link Color Hover', 'so-widgets-bundle' ),
+								),
+								'link_font_size' => array(
+									'type' => 'measurement',
+									'label' => __( 'Link Font Size', 'so-widgets-bundle' ),
+								),
+							),
+						),
+
 						'content' => array(
 							'type' => 'section',
 							'label' => __( 'Post Content', 'so-widgets-bundle' ),
@@ -280,38 +312,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 									'type' => 'measurement',
 									'label' => __( 'Height', 'so-widgets-bundle' ),
 									'units' => array( 'px', 'vh', 'vw', 'vmin', 'vmax' ),
-								),
-							),
-						),
-
-						'offset_post_meta' => array(
-							'type' => 'section',
-							'label' => __( 'Offset Post Meta', 'so-widgets-bundle' ),
-							'hide' => true,
-							'fields' => array(
-								'font' => array(
-									'type' => 'font',
-									'label' => __( 'Font', 'so-widgets-bundle' ),
-								),
-								'font_size' => array(
-									'type' => 'measurement',
-									'label' => __( 'Font Size', 'so-widgets-bundle' ),
-								),
-								'color' => array(
-									'type' => 'color',
-									'label' => __( 'Color', 'so-widgets-bundle' ),
-								),
-								'link_color' => array(
-									'type' => 'color',
-									'label' => __( 'Link Color', 'so-widgets-bundle' ),
-								),
-								'link_color_hover' => array(
-									'type' => 'color',
-									'label' => __( 'Link Color Hover', 'so-widgets-bundle' ),
-								),
-								'link_font_size' => array(
-									'type' => 'measurement',
-									'label' => __( 'Link Font Size', 'so-widgets-bundle' ),
 								),
 							),
 						),
