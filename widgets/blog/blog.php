@@ -547,6 +547,23 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$less_vars['meta_color'] = ! empty( $instance['design']['meta']['color'] ) ? $instance['design']['meta']['color'] : '';
 			$less_vars['meta_color_hover'] = ! empty( $instance['design']['meta']['color_hover'] ) ? $instance['design']['meta']['color_hover'] : '';
 
+			if ( $instance['template'] == 'offset' ) {
+				// Offset Post Meta.
+				if ( ! empty( $instance['design']['offset_post_meta']['font'] ) ) {
+					$font = siteorigin_widget_get_font( $instance['design']['offset_post_meta']['font'] );
+					$less_vars['offset_post_meta_font'] = $font['family'];
+					if ( ! empty( $font['weight'] ) ) {
+						$less_vars['offset_post_meta_font_style'] = $font['style'];
+						$less_vars['offset_post_meta_font_weight'] = $font['weight_raw'];
+					}
+				}
+				$less_vars['offset_post_meta_font_size'] = ! empty( $instance['design']['offset_post_meta']['font_size'] ) ? $instance['design']['offset_post_meta']['font_size'] : '';
+				$less_vars['offset_post_meta_color'] = ! empty( $instance['design']['offset_post_meta']['color'] ) ? $instance['design']['offset_post_meta']['color'] : '';
+				$less_vars['offset_post_meta_link_color'] = ! empty( $instance['design']['offset_post_meta']['link_color'] ) ? $instance['design']['offset_post_meta']['link_color'] : '';
+				$less_vars['offset_post_meta_link_color_hover'] = ! empty( $instance['design']['offset_post_meta']['link_color_hover'] ) ? $instance['design']['offset_post_meta']['link_color_hover'] : '';
+				$less_vars['offset_post_meta_link_font_size'] = ! empty( $instance['design']['offset_post_meta']['link_font_size'] ) ? $instance['design']['offset_post_meta']['link_font_size'] : '';
+			}
+
 			// Content.
 			if ( ! empty( $instance['design']['content']['font'] ) ) {
 				$font = siteorigin_widget_get_font( $instance['design']['content']['font'] );
@@ -583,23 +600,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		$less_vars['pagination_link_color_hover'] = ! empty( $instance['design']['pagination']['link_color_hover'] ) ? $instance['design']['pagination']['link_color_hover'] : '';
 		$less_vars['pagination_width'] = ! empty( $instance['design']['pagination']['width'] ) ? $instance['design']['pagination']['width'] : '';
 		$less_vars['pagination_height'] = ! empty( $instance['design']['pagination']['height'] ) ? $instance['design']['pagination']['height'] : '';
-
-		if ( $instance['template'] == 'offset' ) {
-			// Offset Post Meta.
-			if ( ! empty( $instance['design']['offset_post_meta']['font'] ) ) {
-				$font = siteorigin_widget_get_font( $instance['design']['offset_post_meta']['font'] );
-				$less_vars['offset_post_meta_font'] = $font['family'];
-				if ( ! empty( $font['weight'] ) ) {
-					$less_vars['offset_post_meta_font_style'] = $font['style'];
-					$less_vars['offset_post_meta_font_weight'] = $font['weight_raw'];
-				}
-			}
-			$less_vars['offset_post_meta_font_size'] = ! empty( $instance['design']['offset_post_meta']['font_size'] ) ? $instance['design']['offset_post_meta']['font_size'] : '';
-			$less_vars['offset_post_meta_color'] = ! empty( $instance['design']['offset_post_meta']['color'] ) ? $instance['design']['offset_post_meta']['color'] : '';
-			$less_vars['offset_post_meta_link_hover'] = ! empty( $instance['design']['offset_post_meta']['link_color'] ) ? $instance['design']['offset_post_meta']['link_color'] : '';
-			$less_vars['offset_post_meta_link_hover'] = ! empty( $instance['design']['offset_post_meta']['link_color_hover'] ) ? $instance['design']['offset_post_meta']['link_color_hover'] : '';
-			$less_vars['offset_post_meta_link_font_size'] = ! empty( $instance['design']['offset_post_meta']['link_font_size'] ) ? $instance['design']['offset_post_meta']['link_font_size'] : '';
-		}
 
 		if ( $instance['template'] == 'masonry' ) {
 			// Overlay Post Category

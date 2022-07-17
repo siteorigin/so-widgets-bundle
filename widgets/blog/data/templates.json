@@ -124,8 +124,8 @@
 			},
 			"design": {
 				"post":{
-					"border": "#fff",
-					"background": "#e6e6e6"
+					"border": "#e6e6e6",
+					"background": "#fff"
 				},
 				"title": {
 					"color": "#2d2d2d",
@@ -139,6 +139,14 @@
 					"font": "",
 					"font_size": "13"
 				},
+				"offset_post_meta":{
+					"color": "#929292",
+					"font": "",
+					"font_size": "13",
+					"link_color": "#2d2d2d",
+					"link_color_hover": "#f14e4e",
+					"link_font_size": "14"
+				},				
 				"content":{
 					"color": "#626262",
 					"color_hover": "",
@@ -161,14 +169,6 @@
 					"link_margin": "8",
 					"top_margin": "30",
 					"width": "44"
-				},
-				"offset_post_meta":{
-					"color": "#929292",
-					"font": "",
-					"font_size": "13",
-					"link_color": "#2d2d2d",
-					"link_color_hover": "#626262",
-					"link_font_size": "14"
 				}
 			}
 		}
