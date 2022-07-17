@@ -60,7 +60,7 @@
 			"settings": {
 				"columns": 2,
 				"featured_image": true,
-				"content": "full",
+				"content": "excerpt",
 				"read_more": true,
 				"date": true,
 				"author": true,
@@ -178,7 +178,7 @@
 		"values": {
 			"settings": {
 				"featured_image": true,
-				"content": "full",
+				"content": "excerpt",
 				"read_more": true,
 				"date": true,
 				"author": true,
@@ -234,7 +234,7 @@
 			"settings": {
 				"columns": 2,
 				"featured_image": true,
-				"content": "full",
+				"content": "excerpt",
 				"read_more": true,
 				"date": true,
 				"author": true,
@@ -258,6 +258,14 @@
 					"font": "",
 					"font_size": "13"
 				},
+				"overlay_post_category":{
+					"background": "#000",
+					"background_hover": "#000",
+					"color": "#fff",
+					"color_hover": "#fff",
+					"font": "",
+					"font_size": "11"
+				},
 				"content":{
 					"color": "#626262",
 					"color_hover": "",
@@ -280,14 +288,6 @@
 					"link_margin": "8",
 					"top_margin": "30",
 					"width": "44"
-				},
-				"overlay_post_category":{
-					"background": "#000",
-					"background_hover": "",
-					"color": "#fff",
-					"color_hover": "",
-					"font": "",
-					"font_size": ""
 				}
 			}
 		}
@@ -300,24 +300,7 @@
 				"categories": true
 			},
 			"design": {
-				"pagination":{
-					"background": "",
-					"background_hover": "",
-					"border_color": "#626262",
-					"border_color_hover": "#f14e4e",
-					"border_radius": "",
-					"font": "",
-					"font_size": "14",
-					"height":"43",
-					"link_color": "#626262",
-					"link_color_hover": "#f14e4e",
-					"link_margin": "8",
-					"top_margin": "30",
-					"width": "44"
-				},
 				"filter_categories":{
-					"background": "",
-					"background_hover": "",
 					"color": "#929292",
 					"color_hover": "#2d2d2d",
 					"font": "",
@@ -339,6 +322,21 @@
 					"post_title_color": "#2d2d2d",
 					"post_title_font": "",
 					"post_title_font_size": "15"
+				},				
+				"pagination":{
+					"background": "",
+					"background_hover": "",
+					"border_color": "#626262",
+					"border_color_hover": "#f14e4e",
+					"border_radius": "",
+					"font": "",
+					"font_size": "14",
+					"height":"43",
+					"link_color": "#626262",
+					"link_color_hover": "#f14e4e",
+					"link_margin": "8",
+					"top_margin": "30",
+					"width": "44"
 				}
 			}
 		}

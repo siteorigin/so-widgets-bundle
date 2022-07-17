@@ -26,8 +26,6 @@
 @filter_categories_font_weight: 600;
 @filter_categories_color: default;
 @filter_categories_color_hover: default;
-@filter_categories_background: default;
-@filter_categories_background_hover: default;
 @filter_categories_text_transform: default;
 @filter_categories_selected_border_color: default;
 @filter_categories_selected_border_thickness: default;
@@ -57,7 +55,6 @@
 			margin-bottom: 25px;
 
 			button {
-				background: @filter_categories_background;
 				border: none;
 				border-bottom: @filter_categories_selected_border_thickness solid transparent;
 				color: @filter_categories_color;
@@ -66,20 +63,23 @@
 				font-style: @filter_categories_font_style;
 				font-weight: @filter_categories_font_weight;
 				letter-spacing: 1px;
+				line-height: normal;
 				margin-right: 34px;
-				padding: 3px 10px;
+				padding: 0 0 6px;
 				text-transform: @filter_categories_text_transform;
 
 				@media (max-width: @responsive_breakpoint) {
 					margin: 0 10px 5px 0;
 				}
 
-				&.active,
 				&:hover,
 				&:focus {
-					background: @filter_categories_background_hover;
-					border-bottom-color: @filter_categories_selected_border_color;
+					
 					color: @filter_categories_color_hover;
+				}
+
+				&.active {
+					border-bottom-color: @filter_categories_selected_border_color;
 				}
 			}
 		}

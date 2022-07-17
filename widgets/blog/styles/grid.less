@@ -81,6 +81,7 @@
 
 				span {
 					color: @meta_color;
+
 					a {
 						color: @meta_color;
 
@@ -89,6 +90,10 @@
 							color: @meta_color_hover;
 						}
 					}
+				}
+
+				&:not(:last-child)::after {
+					font-size: @meta_font_size;
 				}
 			}
 		}

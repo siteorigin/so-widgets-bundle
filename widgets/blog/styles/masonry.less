@@ -94,7 +94,6 @@
 							background: @overlay_post_category_background;
 							display: inline-block;
 							margin: 0;
-							padding: 5px 12px 6px;
 							text-transform: uppercase;
 							transition: 300ms opacity ease-in-out;
 
@@ -109,13 +108,14 @@
 							color: @overlay_post_category_color;
 							display: block;
 							font-family: @overlay_post_category_font;
-							font-size: 11px;
 							font-size: @overlay_post_category_font_size;
 							font-style: @overlay_post_category_font_style;
 							font-weight: @overlay_post_category_font_weight;
 							letter-spacing: 1px;
 							line-height: normal;
+							padding: 5px 12px 6px;
 							text-decoration: none;
+
 							&:hover,
 							&:focus {
 								color: @overlay_post_category_color_hover;
@@ -157,6 +157,10 @@
 						&:focus {
 							color: @meta_color_hover;
 						}
+					}
+
+					&:not(:last-child)::after {
+						font-size: @meta_font_size;
 					}
 				}
 			}
