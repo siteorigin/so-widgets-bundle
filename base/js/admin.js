@@ -1367,6 +1367,7 @@ var sowbForms = window.sowbForms || {};
 							editor.setContent( value );
 						});
 					}
+					updated = true;
 				} else {
 					$$.val( value );
 					updated = true;
@@ -1384,7 +1385,7 @@ var sowbForms = window.sowbForms || {};
 			}
 			
 			if ( triggerChange && updated ) {
-				if ( triggerChange == 'color' && ! $$.hasClass( 'siteorigin-widget-input-color ' ) ) {
+				if ( triggerChange == 'color' && ! $$.hasClass( 'siteorigin-widget-input-color' ) ) {
 					return;
 				}
 				$$.trigger( 'change' );
