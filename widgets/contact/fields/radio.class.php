@@ -8,7 +8,14 @@ class SiteOrigin_Widget_ContactForm_Field_Radio extends SiteOrigin_Widget_Contac
 				<?php foreach ( $options['field']['options'] as $i => $option ): ?>
 					<li>
 						<label>
-							<input type="radio" value="<?php echo esc_attr( $option['value'] ) ?>" name="<?php echo esc_attr( $options['field_name'] ) ?>" id="<?php echo esc_attr( $options['field_id'] ) . '-' . $i ?>"<?php echo checked( $option['value'], $options['value'], false ) ?>/>
+							<input
+								type="radio"
+								value="<?php echo esc_attr( $option['value'] ); ?>"
+								name="<?php echo esc_attr( $options['field_name'] ); ?>"
+								id="<?php echo esc_attr( $options['field_id'] ) . '-' . $i; ?>"
+								<?php echo checked( $option['value'], $options['value'], false ); ?>
+								<?php self::add_custom_attrs( 'radio' ); ?>
+							/>
 							<?php echo esc_html( $option['value'] ); ?>
 						</label>
 					</li>

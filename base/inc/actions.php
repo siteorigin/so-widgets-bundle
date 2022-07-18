@@ -106,13 +106,16 @@ function siteorigin_widget_action_search_posts() {
 	$post_types = apply_filters( 'siteorigin_widgets_search_posts_post_types', $post_types );
 	$post_types = "'" . implode("', '", array_map( 'esc_sql', $post_types ) ) . "'";
 
+
+	$ordered_by = esc_sql( apply_filters( 'siteorigin_widgets_search_posts_order_by', 'post_modified DESC' ) );
+
 	$results = $wpdb->get_results( "
 		SELECT ID AS 'value', post_title AS label, post_type AS 'type'
 		FROM {$wpdb->posts}
 		{$wpml_query}
 		WHERE
 			post_type IN ( {$post_types} ) AND post_status = 'publish' {$query}
-		ORDER BY post_modified DESC
+		ORDER BY {$ordered_by}
 		LIMIT 20
 	", ARRAY_A );
 

@@ -91,15 +91,16 @@
 			height: @container_size;
 			text-decoration: none;
 			width: @container_size;
+			flex: 0 0 @container_size;
 
 			& when not ( @per_row = 1 ) {
 				margin: auto;
 			}
 
-			[class^="sow-icon-"],
+			&:not(.sow-container-none) [class^="sow-icon-"],
 			.sow-icon-image {
 				align-items: center;
-				color: #FFFFFF;
+				color: #fff;
 				display: flex;
 				height: @container_size;
 				justify-content: center;
@@ -123,7 +124,7 @@
 		@{title_tag} {
 			margin: 1em 0;
 
-			a{
+			a {
 				color: inherit;
 				text-decoration: none;
 
@@ -134,6 +135,7 @@
 		}
 
 		p.sow-more-text {
+
 			a {
 				color: inherit;
 				font-weight: 500;
@@ -219,6 +221,5 @@
 				width: 100%;
 			}
 		}
-
 	}
 }

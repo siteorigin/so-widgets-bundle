@@ -111,20 +111,18 @@
 		width: 100%;
 		.box-sizing(border-box);
 		border-radius: @field_border_radius;
-
 		margin: @field_margin;
 		border: @field_border_width @field_border_style @field_border_color;
 		padding: @field_padding;
-
 		background: @field_background;
 		color: @field_font_color;
-
 		font-size: @field_font_size;
 		.font(@field_font_family, @field_font_weight);
 		font-style: @field_font_style;
 	}
 
 	&.sow-form-field-radio {
+
 		ul {
 			list-style: none;
 			margin: 0;
@@ -144,11 +142,13 @@
 				float: left;
 				margin-right: 0.5em;
 				height: auto;
+				flex: none;
 			}
 		}
 	}
 
 	&.sow-form-field-checkboxes {
+
 		ul {
 			list-style: none;
 			margin: 0;
@@ -167,12 +167,13 @@
 			input {
 				height: auto;
 				margin-right: 0.5em;
+				flex: none;
 			}
 		}
 	}
 
 	@description_font_size: 0.9em;
-	@description_font_color: #999999;
+	@description_font_color: #999;
 	@description_font_style: italic;
 
 	.sow-form-field-description {
@@ -189,11 +190,11 @@
 }
 
 .sow-contact-form {
-	// Container Background
+	// Container Background.
 	@container_background: default;
 	@container_padding: 10px;
 
-	// Container border
+	// Container Border.
 	@container_border_color: #c0c0c0;
 	@container_border_width: 1px;
 	@container_border_style: solid;
@@ -226,17 +227,14 @@
 	.sow-submit-wrapper {
 
 		.sow-submit {
-
 		}
 
 		.sow-submit:disabled {
-
 		}
 	}
 
 	.sow-submit-styled {
-
-		@submit_background_color: #eeeeee;
+		@submit_background_color: #eee;
 		@submit_background_gradient: 10%;
 		@submit_border_color: #989a9c;
 		@submit_border_style: solid;
@@ -248,12 +246,12 @@
 		@submit_padding: 10px;
 		@submit_width: default;
 		@submit_align: left;
-
 		@submit_inset_highlight: 50%;
-
 		text-align: @submit_align;
+
 		.sow-submit {
 			color: @submit_text_color;
+
 			& when( @submit_background_gradient > 0% ) {
 				.gradient(
 					lighten(@submit_background_color, @submit_background_gradient),
@@ -261,7 +259,7 @@
 					lighten(@submit_background_color, @submit_background_gradient)
 				);
 			}
-			
+
 			& when( @submit_background_gradient = 0% ) {
 				background: @submit_background_color;
 			}
@@ -275,7 +273,7 @@
 			width: @submit_width;
 
 			.sow-submit-box-shadow ( @percent ) when ( @percent > 0% ) {
-				box-shadow: inset 0 -1px 0 fade( #ffffff, @percent );
+				box-shadow: inset 0 -1px 0 fade( #fff, @percent );
 			}
 
 			.sow-submit-box-shadow( @submit_inset_highlight );
@@ -286,7 +284,6 @@
 			cursor: not-allowed;
 			background: lighten(@submit_background_color, 20%);
 			border: @submit_border_width @submit_border_style lighten(@submit_border_color, 20%);
-
 		}
 	}
 }

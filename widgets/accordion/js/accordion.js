@@ -130,7 +130,7 @@ jQuery( function ( $ ) {
 						for ( var i = 0; i < allOpenPanels.length; i++ ) {
 							var anchor = $( allOpenPanels[ i ] ).data( 'anchor' );
 							if ( anchorId && anchorId != 1 ) {
-								anchor = anchorId + anchor;
+								anchor = anchorId  + '-' + anchor;
 							}
 
 							if ( anchor ) {
@@ -158,7 +158,7 @@ jQuery( function ( $ ) {
 						var anchorId = $widget.data( 'anchor-id' ) ? $widget.data( 'anchor-id' ) : false;
 
 						if ( anchorId && anchorId != 1 ) {
-							panelAnchor = $widget.data( 'anchor-id' ) + panelAnchor;
+							panelAnchor = $widget.data( 'anchor-id' ) + '-' + panelAnchor;
 						}
 						var panelOpen = anchors.some( function ( anchor ) {
 							return decodeURI( panelAnchor ) === decodeURI( anchor );

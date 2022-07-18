@@ -9,17 +9,22 @@
  *
  * @return array|bool|false
  */
-function siteorigin_widgets_get_attachment_image_src( $attachment, $size, $fallback = false ){
+function siteorigin_widgets_get_attachment_image_src( $attachment, $size, $fallback = false, $fallback_size = array() ){
 	if( empty( $attachment ) && !empty($fallback) ) {
-		$url = parse_url( $fallback );
-
-		if( !empty($url['fragment']) && preg_match('/^([0-9]+)x([0-9]+)$/', $url['fragment'], $matches) ) {
-			$width = (int) $matches[1];
-			$height = (int) $matches[2];
-		}
-		else {
-			$width = 0;
-			$height = 0;
+		if ( ! empty( $fallback_size ) ) {
+			extract( $fallback_size );
+		} else {
+			$url = parse_url( $fallback );
+			if (
+				!empty( $url['fragment'] ) &&
+				preg_match( '/^([0-9]+)x([0-9]+)$/', $url['fragment'], $matches
+			) ) {
+				$width = (int) $matches[1];
+				$height = (int) $matches[2];
+			} else {
+				$width = 0;
+				$height = 0;
+			}
 		}
 
 		// TODO, try get better values than 0 for width and height

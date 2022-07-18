@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: widget, button, slider, hero, google maps, image, carousel, lottie, features, icons, price table, tinymce, social icons
 Requires at least: 4.2
-Tested up to: 5.9
+Tested up to: 6.0
 Requires PHP: 5.6.20
 Stable tag: trunk
 Build time: unbuilt
@@ -104,6 +104,59 @@ SiteOrigin Premium includes access to our professional email support service, pe
 The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets. Widgets can be enabled or disabled as needed. If a widget offers global settings, you can access those via the Settings button next to each applicable widget.
 
 == Changelog ==
+
+= 1.38.0 - 14 July 2022 =
+* Anything Carousel: Added `Adaptive Height` setting.
+* Hero: Prevented padding reset on mobile if mobile values are empty.
+* Developer: Allow plugins to filter global settings defaults via `siteorigin_widgets_settings_form`.
+
+= 1.37.1 - 08 July 2022 =
+* Contact Form: Maintain radio and checkbox input size on iOS.
+* Hero: Resolved Extra Top Padding related notice.
+* Social Media Buttons: Restored the Phone and RSS icons.
+
+= 1.37.0 - 30 June 2022 =
+* Buttons: Changed the design default from Atom to Flat.
+* Contact Form: Minor placement adjustment for Really Simple CAPTCHA error messages.
+* Hero: Ensured valid mobile padding values are output after settings migration.
+* Image: Added an `External Image Size` setting.
+* Image: Restored Simple Lightbox plugin compatibility.
+* Social Media Buttons: Added Font Awesome 6 support.
+* Social Media Buttons: Added Patreon.
+* Social Media Buttons: Updated removed Tripadvisor icon to the suitcase icon.
+* Font Awesome: Upgraded from version `5.15.1` to `6.1.1`.
+* Added Stream protocol support `steam://connect/IP:Port/`.
+* Added a check to ensure widgets exist before enqueuing related scripts.
+* Developer: Added `siteorigin_widgets_contact_field_attr` filter to the Contact Form Widget.
+
+= 1.36.0 - 19 June 2022 =
+* Contact Form: Added support for [Really Simple CAPTCHA](Really Simple CAPTCHA) plugin. A DSGVO complaint captcha.
+* Features: Moved the title `HTML tag` setting to the `Font Design > Title` settings section.
+* Features: Restored feature column width when `Icon container shape` set to `None`.
+* Google Maps: Fixed static maps custom style notice.
+* Hero: Fixed Top Padding unit of measurement.
+* Sliders: Resolved Modern Parallax jump on load.
+* Sliders: Added `anchor-id` attribute.
+* Tabs: Removed Anchor ID functionality when disabled.
+* Video Player: Standardized YouTube URLs.
+* Web Safe Fonts: Added Times New Roman. Alphabetized and updated the CSS font stacks.
+* jQuery Migrate: Replaced error shorthand and bind usage. 
+* Developer: Sliders - Added `slider_setup_before` and `slider_setup_after` events.
+* Developer: Added `siteorigin_widgets_search_posts_order_by` filter. Change post search order results as required.
+
+= 1.35.1 - 25 May 2022 =
+* Updated WordPress `Tested up to` tag.
+* Accordion: Added a hyphen prior to the panel URL anchor.
+
+= 1.35.0 - 21 May 2022 =
+* Contact Form: Added reCAPTCHA V3 support.
+
+= 1.34.0 - 16 May 2022 =
+* Icon: Hide icons from screen readers.
+* Google Maps: Added Custom Marker Icon image size settings.
+* Sliders: Ensured autoplaying YouTube and Vimeo background videos will pause on slide change.
+* Widgets Block: Added HTML anchor support located at Block > Advanced.
+* CSS Cache Compatibility: Added support for LiteSpeed Cache plugin.
 
 = 1.33.1 - 30 April 2022 =
 * Accordion and Tabs: Added support for the SiteOrigin Premium Anchor ID Addon.
