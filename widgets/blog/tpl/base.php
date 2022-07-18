@@ -15,12 +15,12 @@
 			! is_wp_error( $template_settings['terms'] )
 		) :
 		?>
-			<div class="sow-portfolio-filter-terms">
-				<button data-filter="*" class="active">
+			<div class="sow-portfolio-filter-terms" style="margin-bottom: 25px;">
+				<button data-filter="*" class="active" style="margin-right: 34px; padding: 0 0 6px;">
 					<?php echo esc_html__( 'All', 'so-widgets-bundle' ); ?>		
 				</button>
 				<?php foreach ( $template_settings['terms'] as $tax_term ) : ?>
-					<button data-filter=".<?php echo $tax_term->slug; ?>">
+					<button data-filter=".<?php echo $tax_term->slug; ?>" style="margin-right: 34px; padding: 0 0 6px; border: 2px solid transparent;">
 						<?php echo $tax_term->slug; ?>	
 					</button>
 				<?php endforeach; ?>
