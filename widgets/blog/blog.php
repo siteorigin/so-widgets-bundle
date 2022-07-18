@@ -856,7 +856,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		if ( $settings['read_more'] ) {
 			$read_more_text = ! empty( $settings['read_more_text'] ) ?  $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' );
 			$read_more_text = '<a class="sow-more-link more-link excerpt" href="' . esc_url( get_permalink() ) . '">
-			' . esc_html( $read_more_text ) . '</a>';
+			' . esc_html( $read_more_text ) . '<span class="sow-more-link-arrow">&rarr;</span></a>';
 		}
 		$length = apply_filters( 'siteorigin_widgets_blog_excerpt_length', 55 );
 		$excerpt = get_the_excerpt();
