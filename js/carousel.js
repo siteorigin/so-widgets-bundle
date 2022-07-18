@@ -119,6 +119,7 @@ jQuery( function ( $ ) {
 					numItems = $items.find( '.sow-carousel-item' ).length,
 					complete = numItems >= $$.data( 'item_count' ),
 					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
+					numVisibleItemsFloor = Math.floor( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' ),
 					lastPosition = numItems - numVisibleItems,
 					loading = false;
@@ -162,12 +163,19 @@ jQuery( function ( $ ) {
 						if ( $$.data( 'carousel_settings' ).loop ) {
 							$items.slick( 'slickGoTo', 0 );
 						}
-					// Check if the number of slides to scroll exceeds lastPosition, go to the last slide.
+					// If the total number of slides is higher than the number of visible items, go to the last item.
+					} else if ( slidesToScroll >= numVisibleItemsFloor ) {
+						// There's more slides than items, update Slick settings to allow for scrolling of partially visible items.
+						$items.slick( 'slickSetOption', 'slidesToShow', numVisibleItemsFloor );
+						$items.slick( 'slickSetOption', 'slidesToScroll', numVisibleItemsFloor );
+						$items.slick( 'slickNext' );
+					// Check if the number of slides to scroll exceeds lastPosition, go to the last slide, or
 					} else if ( $items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition ) {
 						$items.setSlideTo( lastPosition );
 					} else {
 						$items.slick( 'slickNext' );
 					}
+
 				} else if ( $( this ).hasClass( 'sow-carousel-previous' ) ) {
 					if ( $$.data( 'carousel_settings' ).loop && $items.slick( 'slickCurrentSlide' ) == 0 ) {
 						$items.slick( 'slickGoTo', lastPosition );
@@ -292,7 +300,7 @@ jQuery( function ( $ ) {
 			$( '.sow-carousel-wrapper' ).each( function() {
 				var currentCarousel = $( this ),
 					$items = currentCarousel.find( '.sow-carousel-items.slick-initialized' ),
-					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
+					numVisibleItems = Math.floor( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					navigation = currentCarousel.parent().parent().find( '.sow-carousel-navigation' );
 
 				if ( numVisibleItems >= currentCarousel.data( 'item_count' ) ) {
