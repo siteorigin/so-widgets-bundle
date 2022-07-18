@@ -1,5 +1,5 @@
-<article id="post-<?php the_ID(); ?>" <?php post_class( 'sow-blog-columns' ); ?>>
-	<div class="sow-blog-entry-offset">
+<article id="post-<?php the_ID(); ?>" <?php post_class( 'sow-blog-columns' ); ?> style="margin: 0 0 40px;">
+	<div class="sow-blog-entry-offset" style="padding-right: 30px;">
 		<?php if ( $settings['author'] ) : ?>
 			<?php if ( function_exists( 'coauthors_posts_links' ) ) : ?>
 				<?php $coauthors = get_coauthors(); ?>
@@ -53,13 +53,10 @@
 	</div>
 	<div class="sow-blog-entry">
 		<?php SiteOrigin_Widget_Blog_Widget::post_featured_image( $settings ); ?>
-		<div class="sow-blog-content-wrapper">
-			<header class="sow-entry-header">
+		<div class="sow-blog-content-wrapper" style="padding: 25px 30px 33px;">
+			<header class="sow-entry-header" style="margin-bottom: 20px;">
 				<?php
-				the_title(
-					'<h2 class="sow-entry-title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">',
-					'</a></h2>'
-				);
+				SiteOrigin_Widget_Blog_Widget::generate_post_title();
 				if ( ! empty( $template_settings['time_string'] ) ) {
 					$time_string = sprintf( $template_settings['time_string'],
 						esc_attr( get_the_date( DATE_W3C ) ),

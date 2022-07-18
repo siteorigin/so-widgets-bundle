@@ -1,14 +1,9 @@
 <?php $thumbnail_class = ! $settings['featured_image'] || ! has_post_thumbnail() ? 'sow-no-thumbnail' : ''; ?>
-<article id="post-<?php the_ID(); ?>" <?php post_class( "sow-blog-columns $thumbnail_class" ); ?>>
+<article id="post-<?php the_ID(); ?>" <?php post_class( "sow-blog-columns $thumbnail_class" ); ?> style="margin: 0 0 30px;">
 	<?php SiteOrigin_Widget_Blog_Widget::post_featured_image( $settings ); ?>
 	<div class="sow-blog-content-wrapper">
-		<header class="sow-entry-header">
-			<?php
-			the_title(
-				'<h2 class="sow-entry-title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">',
-				'</a></h2>'
-			);
-			?>
+		<header class="sow-entry-header" style="margin-bottom: 18px;">
+			<?php SiteOrigin_Widget_Blog_Widget::generate_post_title(); ?>
 			<div class="sow-entry-meta">
 				<?php SiteOrigin_Widget_Blog_Widget::post_meta( $settings ); ?>
 			</div>

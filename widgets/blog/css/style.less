@@ -25,17 +25,12 @@
 			}
 		}
 
-		.sow-entry-header {
-			margin-bottom: 20px;
+		.sow-entry-header .sow-entry-title {
+			font-weight: 600;
+			line-height: normal;
 
-			.sow-entry-title {
-				font-weight: 600;
-				line-height: normal;
-				margin: 0 0 5px;
-
-				a {
-					text-decoration: none;
-				}
+			a {
+				text-decoration: none;
 			}
 		}
 
@@ -133,39 +128,15 @@
 		}
 	}
 
-	// Standard Template.
-	&.sow-blog-layout-standard article {
-		margin: 0 0 40px;
-
-		.sow-entry-thumbnail {
-			margin-bottom: -1px;
-		}
-
-		.sow-blog-content-wrapper {
-			padding: 25px 30px 38px;
-		}
-	}
-
-	// Grid Template.
-	&.sow-blog-layout-grid article {
-		margin: 0 0 30px;
-
-		.sow-entry-thumbnail {
-			margin: -1px;
-		}
-
-		.sow-blog-content-wrapper {
-			padding: 25px 30px 33px;
-		}
+	// Standard & Grid Templates.
+	&.sow-blog-layout-grid article,
+	&.sow-blog-layout-standard article .sow-entry-thumbnail {
+		margin-bottom: -1px;
 	}
 
 	// Offset Template.
 	&.sow-blog-layout-offset article {
-		margin: 0 0 40px;
-
 		.sow-blog-entry-offset {
-			padding-right: 30px;
-
 			div {
 				margin-bottom: 12px;
 			}
@@ -180,39 +151,20 @@
 		.sow-entry-thumbnail {
 			margin-bottom: -1px;
 		}
-
-		.sow-blog-content-wrapper {
-			padding: 25px 30px 33px;
-		}
 	}
 
 	// Alternate Template.
 	&.sow-blog-layout-alternate article {
-		margin: 0 0 30px;
-
 		.sow-entry-thumbnail a {
 			margin: -1px;
 		}
-
-		.sow-blog-content-wrapper {
-			padding: 25px 30px 33px;
-		}
-
-		.sow-blog-content-wrapper {
-
-			.sow-entry-header {
-				margin-bottom: 18px;
+		.sow-blog-content-wrapper .sow-entry-content p {
+			&:last-of-type {
+				margin: 0;
 			}
 
-			.sow-entry-content p {
-
-				&:last-of-type {
-					margin: 0;
-				}
-
-				&:only-of-type {
-					margin: 0;
-				}
+			&:only-of-type {
+				margin: 0;
 			}
 		}
 

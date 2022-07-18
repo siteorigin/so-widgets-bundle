@@ -845,6 +845,13 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		endif;
 	}
 
+	static public function generate_post_title() {
+		the_title(
+			'<h2 class="sow-entry-title" style="margin: 0 0 5px;"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">',
+			'</a></h2>'
+		);
+	}
+
 	static public function generate_excerpt( $settings ) {
 		if ( $settings['read_more'] ) {
 			$read_more_text = ! empty( $settings['read_more_text'] ) ?  $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' );

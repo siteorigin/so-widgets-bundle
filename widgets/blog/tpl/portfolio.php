@@ -21,7 +21,7 @@ if ( $settings['categories'] ) {
 		<a href="<?php the_permalink(); ?>">
 			<div class="sow-entry-overlay"></div>
 			<div class="sow-entry-content">
-				<?php the_title( '<h2 class="sow-entry-title">', '</h2>' ); ?>
+				<?php SiteOrigin_Widget_Blog_Widget::generate_post_title(); ?>
 				<?php if ( $settings['categories'] ) : ?>
 					<div class="sow-entry-divider"></div>
 					<span class="sow-entry-project-type"><?php echo $filtering; ?></span>
