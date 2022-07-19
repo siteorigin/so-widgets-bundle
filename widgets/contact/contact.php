@@ -1462,16 +1462,35 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	function send_mail( $email_fields, $instance ) {
-		$body = '<strong>' . _x( 'From', 'The name of who sent this email', 'so-widgets-bundle' ) . ':</strong> ' .
-				'<a href="mailto:' . sanitize_email( $email_fields['email'] ) . '">' . esc_html( $email_fields['name'] ) . '</a> ' .
-				'&#60;' . sanitize_email( $email_fields['email'] ) . '&#62; ' .
-				( ! empty( $instance['settings']['log_ip_address'] ) ? '( ' . $_SERVER['REMOTE_ADDR'] . ' )' : '' ) .
-				"\n\n";
-		foreach ( $email_fields['message'] as $m ) {
-			$body .= '<strong>' . $m['label'] . ':</strong>';
-			$body .= "\n";
-			$body .= htmlspecialchars( $m['value'] );
+		if ( ! empty( $email_fields['name'] ) || ! empty( $email_fields['email'] ) ) {
+
+			$body = '<strong>' . _x( 'From', 'The name of who sent this email', 'so-widgets-bundle' ) . ':</strong> ';
+
+			if ( ! empty( $email_fields['email'] ) ) {
+				$body .= '<a href="mailto:' . sanitize_email( $email_fields['email'] ) . '">';
+			}
+
+			if ( ! empty( $email_fields['name'] ) ) {
+				$body .= esc_html( $email_fields['name'] ) . ' ';
+			}
+
+			if ( ! empty( $email_fields['email'] ) ) {
+				$body .= '&#60;' . sanitize_email( $email_fields['email'] ) . '&#62; </a> ';
+			}
+
+			if ( ! empty( $instance['settings']['log_ip_address'] ) ) {
+				$body .= '( ' . $_SERVER['REMOTE_ADDR'] . ' )';
+			}
 			$body .= "\n\n";
+		}
+
+		if ( ! empty( $email_fields['message'] ) ) {
+			foreach ( $email_fields['message'] as $m ) {
+				$body .= '<strong>' . $m['label'] . ':</strong>';
+				$body .= "\n";
+				$body .= htmlspecialchars( $m['value'] );
+				$body .= "\n\n";
+			}
 		}
 		$body = wpautop( trim( $body ) );
 
@@ -1491,8 +1510,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
-			'From: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . sanitize_email( $instance['settings']['from'] ) . '>',
-			'Reply-To: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . sanitize_email( $email_fields['email'] ) . '>',
+			'From: ' . ( ! empty( $email_fields['name'] ) ? $this->sanitize_header( $email_fields['name'] ) : '' ) . ' <' . sanitize_email( $instance['settings']['from'] ) . '>',
+			'Reply-To: ' . ( ! empty( $email_fields['name'] ) ? $this->sanitize_header( $email_fields['name'] ) : '' ) . ' <' . sanitize_email( $email_fields['email'] ) . '>',
 		);
 
 		// Check if this is a duplicated send
