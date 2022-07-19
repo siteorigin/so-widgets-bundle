@@ -573,6 +573,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		// Pagination.
 		$less_vars['pagination_top_margin'] = ! empty( $instance['design']['pagination']['top_margin'] ) ? $instance['design']['pagination']['top_margin'] : '';
 		$less_vars['pagination_link_margin'] = ! empty( $instance['design']['pagination']['link_margin'] ) ? $instance['design']['pagination']['link_margin'] : '';
+		$less_vars['pagination_link_margin_offset'] = ! empty( $instance['design']['pagination']['link_margin'] ) ? '-' . $instance['design']['pagination']['link_margin'] : '';
 		$less_vars['pagination_border_color'] = ! empty( $instance['design']['pagination']['border_color'] ) ? $instance['design']['pagination']['border_color'] : '';
 		$less_vars['pagination_border_color_hover'] = ! empty( $instance['design']['pagination']['border_color_hover'] ) ? $instance['design']['pagination']['border_color_hover'] : '';
 		$less_vars['pagination_background'] = ! empty( $instance['design']['pagination']['background'] ) ? $instance['design']['pagination']['background'] : '';

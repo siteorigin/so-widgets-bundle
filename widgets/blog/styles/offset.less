@@ -43,6 +43,7 @@
 @pagination_height: default;
 @pagination_link_color: default;
 @pagination_link_margin: default;
+@pagination_link_margin_offset: default;
 @pagination_link_color_hover: default;
 @pagination_top_margin: default;
 @pagination_width: default;
@@ -215,7 +216,7 @@
 
 		.dots {
 			color: @pagination_link_color;
-			margin-left: -@pagination_link_margin;
+			margin-left: @pagination_link_margin_offset;
 		}
 	}
 }
