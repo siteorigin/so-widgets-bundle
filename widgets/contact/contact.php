@@ -1510,8 +1510,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
-			'From: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . sanitize_email( $instance['settings']['from'] ) . '>',
-			'Reply-To: ' . $this->sanitize_header( $email_fields['name'] ) . ' <' . sanitize_email( $email_fields['email'] ) . '>',
+			'From: ' . ( ! empty( $email_fields['name'] ) ? $this->sanitize_header( $email_fields['name'] ) : '' ) . ' <' . sanitize_email( $instance['settings']['from'] ) . '>',
+			'Reply-To: ' . ( ! empty( $email_fields['name'] ) ? $this->sanitize_header( $email_fields['name'] ) : '' ) . ' <' . sanitize_email( $email_fields['email'] ) . '>',
 		);
 
 		// Check if this is a duplicated send
