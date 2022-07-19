@@ -1313,6 +1313,11 @@ var sowbForms = window.sowbForms || {};
 			var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec($$.attr('name'));
 			var updated = false;
 
+			// If the triggerChange is set to color, we're only triggering changes for color fields.
+			if ( triggerChange == 'color' && ! $$.hasClass( 'siteorigin-widget-input-color' ) ) {
+				return;
+			}
+
 			if ( name === undefined || name === null ) {
 				return true;
 			}
@@ -1367,10 +1372,8 @@ var sowbForms = window.sowbForms || {};
 							editor.setContent( value );
 						});
 					}
-					updated = true;
 				} else {
 					$$.val( value );
-					updated = true;
 				}
 			} else if ( $$.is( '.panels-data' ) ) {
 				$$.val( value );
@@ -1378,16 +1381,11 @@ var sowbForms = window.sowbForms || {};
 				if ( builder ) {
 					builder.setDataField( $$ );
 				}
-				updated = true;
 			} else {
 				$$.val( value );
-				updated = true;
 			}
-			
-			if ( triggerChange && updated ) {
-				if ( triggerChange == 'color' && ! $$.hasClass( 'siteorigin-widget-input-color' ) ) {
-					return;
-				}
+
+			if ( triggerChange ) {
 				$$.trigger( 'change' );
 				this.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
 			}
