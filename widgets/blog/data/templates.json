@@ -312,7 +312,7 @@
 				"featured_image":{
 					"border_color": "#929292",
 					"divider_border_color": "#2d2d2d",
-					"divider_border_thickness": "2",
+					"divider_border_thickness": "1",
 					"divider_border_margin": "13",
 					"hover_overlay_color": "#ffffff",
 					"hover_overlay_opacity": "0.9",
