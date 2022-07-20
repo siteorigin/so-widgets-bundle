@@ -18,16 +18,15 @@ if ( $settings['categories'] ) {
 ?>
 <article id="post-<?php the_ID(); ?> <?php echo $types; ?>" <?php post_class( 'sow-portfolio-item ' . $types ); ?>>
 	<div class="sow-entry-thumbnail">
-		<a href="<?php the_permalink(); ?>">
-			<div class="sow-entry-overlay"></div>
-			<div class="sow-entry-content">
-				<?php SiteOrigin_Widget_Blog_Widget::generate_post_title(); ?>
-				<?php if ( $settings['categories'] ) : ?>
-					<div class="sow-entry-divider"></div>
-					<span class="sow-entry-project-type"><?php echo $filtering; ?></span>
-				<?php endif; ?>
-			</div>
-			<?php the_post_thumbnail( 'sow-blog-portfolio' ); ?>
-		</a>
+		<a href="<?php the_permalink(); ?>" class="sow-entry-link-overlay">&nbsp;</a>
+		<span class="sow-entry-overlay">&nbsp;</span>
+		<div class="sow-entry-content">
+			<?php SiteOrigin_Widget_Blog_Widget::generate_post_title(); ?>
+			<?php if ( $settings['categories'] ) : ?>
+				<div class="sow-entry-divider"></div>
+				<span class="sow-entry-project-type"><?php echo $filtering; ?></span>
+			<?php endif; ?>
+		</div>
+		<?php the_post_thumbnail( 'sow-blog-portfolio' ); ?>
 	</div>
 </article>
