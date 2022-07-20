@@ -16,11 +16,11 @@
 		) :
 		?>
 			<div class="sow-portfolio-filter-terms" style="margin-bottom: 25px;">
-				<button data-filter="*" class="active" style="margin-right: 34px; padding: 0 0 6px;">
+				<button data-filter="*" class="active" style="background: none; margin-right: 34px; padding: 0 0 6px;">
 					<?php echo esc_html__( 'All', 'so-widgets-bundle' ); ?>		
 				</button>
 				<?php foreach ( $template_settings['terms'] as $tax_term ) : ?>
-					<button data-filter=".<?php echo $tax_term->slug; ?>" style="margin-right: 34px; padding: 0 0 6px; border: 2px solid transparent;">
+					<button data-filter=".<?php echo $tax_term->slug; ?>" style="background: none; box-shadow: none; margin-right: 34px; padding: 0 0 6px;">
 						<?php echo $tax_term->slug; ?>	
 					</button>
 				<?php endforeach; ?>
