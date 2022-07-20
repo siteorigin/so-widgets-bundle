@@ -19,7 +19,7 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#FAA21B'
 	),
-	'email'   => array(
+	'envelope'   => array(
 		'label'    => __( 'Email', 'so-widgets-bundle' ),
 		'base_url' => 'mailto:',
 		'icon_color' => '#FFFFFF',

@@ -105,6 +105,11 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.38.1 - 20 July 2022 =
+* Contact Form: Resolved a notice if Name and Message fields aren't included.
+* Post Carousel: Improved partially visible posts navigation.
+* Social Media Buttons: Resolved Email network dissociation on edit and save.
+
 = 1.38.0 - 14 July 2022 =
 * Anything Carousel: Added `Adaptive Height` setting.
 * Hero: Prevented padding reset on mobile if mobile values are empty.
