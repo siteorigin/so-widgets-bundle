@@ -1308,34 +1308,26 @@ var sowbForms = window.sowbForms || {};
 
 		updateRepeaterChildren(formContainer, data);
 
-		formContainer.find('*[name]').each(function () {
-			var $$ = $(this);
-			var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec($$.attr('name'));
-			var updated = false;
-
-			if ( name === undefined || name === null ) {
-				return true;
-			}
-
-			name = name[1];
-			var parts = name.split('][');
-
-			// Make sure we either have numbers or strings
-			parts = parts.map( function ( e ) {
-				if ( !isNaN( parseFloat( e ) ) && isFinite( e ) ) {
+		$fields = formContainer.find( '*[name]' );
+		var index = 0;
+		var validateParts = function( parts ) {
+			parts.map( function ( e ) {
+				if ( ! isNaN( parseFloat( e ) ) && isFinite( e ) ) {
 					return parseInt( e );
 				} else {
 					return e;
 				}
 			} );
-
+			return parts;
+		};
+		var getValues = function( data, parts ) {
 			var sub = data;
 			var value;
-			for (var i = 0; i < parts.length; i++) {
+			for ( var i = 0; i < parts.length; i++ ) {
 				// If the field is missing from the data, just leave `value` as `undefined`.
 				if ( ! sub.hasOwnProperty( parts[ i ] ) ) {
 					if ( skipMissingValues ) {
-						return true;
+						continue;
 					} else {
 						break;
 					}
@@ -1347,51 +1339,94 @@ var sowbForms = window.sowbForms || {};
 				}
 			}
 
-			// This is the end, so we need to set the value on the field here.
-			if ( $$.attr( 'type' ) === 'checkbox' ) {
-				$$.prop( 'checked', value );
-			} else if ( $$.attr( 'type' ) === 'radio' ) {
-				$$.prop( 'checked', value === $$.val() );
-			} else if ( $$.prop( 'tagName' ) === 'TEXTAREA' && $$.hasClass( 'wp-editor-area' ) ) {
-				// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
-				var editor = null;
-				if ( typeof tinyMCE !== 'undefined' ) {
-					editor = tinyMCE.get( $$.attr( 'id' ) );
+			return {
+				sub: sub,
+				value: value
+			};
+		}
+
+		var processFields = function( index, $fields ) {
+			for ( ; index < $fields.length; index++ ) {
+				if (
+					index != 0 &&
+					index + 1 < $fields.length &&
+					index % 25 == 0
+				) {
+			        setTimeout( processFields, 100, index + 1, $fields );
+			        return;
+			    }
+				var $$ = $( $fields[ index ] );
+				var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr( 'name' ) );
+				var updated = false;
+
+				if ( name === undefined || name === null ) {
+					return true;
 				}
 
-				if ( editor !== null && typeof( editor.setContent ) === "function" && ! editor.isHidden() && $$.parent().is( ':visible' ) ) {
-					if ( editor.initialized ) {
-						editor.setContent( value );
-					} else {
-						editor.on('init', function () {
-							editor.setContent( value );
-						});
+				name = name[1];
+				var parts = name.split( '][' );
+				// Make sure we either have numbers or strings
+				parts = validateParts( parts );
+				var values = getValues( data, parts )
+				if ( skipMissingValues && values.value == '' ) {
+					continue;
+				}
+				var sub = values.sub;
+
+				// This is the end, so we need to set the value on the field here.
+				if ( $$.attr( 'type' ) === 'checkbox' ) {
+					$$.prop( 'checked', values.value );
+					updated = true;
+				} else if ( $$.attr( 'type' ) === 'radio' ) {
+					$$.prop( 'checked', values.value === $$.val() );
+					updated = true;
+				} else if ( $$.prop( 'tagName' ) === 'TEXTAREA' && $$.hasClass( 'wp-editor-area' ) ) {
+					// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
+					var editor = null;
+					if ( typeof tinyMCE !== 'undefined' ) {
+						editor = tinyMCE.get( $$.attr( 'id' ) );
 					}
-					updated = true;
+
+					if (
+						editor !== null &&
+						typeof( editor.setContent ) === "function" &&
+						! editor.isHidden() &&
+						$$.parent().is( ':visible' )
+					) {
+						if ( editor.initialized ) {
+							editor.setContent( values.value );
+							updated = true;
+						} else {
+							editor.on( 'init', function() {
+								editor.setContent( values.value );
+							} );
+							updated = true;
+						}
+					} else {
+						$$.val( values.value );
+						updated = true;
+					}
+				} else if ( $$.is( '.panels-data' ) ) {
+					$$.val( values.value );
+					var builder = $$.data( 'builder' );
+					if ( builder ) {
+						builder.setDataField( $$ );
+						updated = true;
+					}
 				} else {
-					$$.val( value );
+					$$.val( values.value );
 					updated = true;
 				}
-			} else if ( $$.is( '.panels-data' ) ) {
-				$$.val( value );
-				var builder = $$.data( 'builder' );
-				if ( builder ) {
-					builder.setDataField( $$ );
+
+				if ( triggerChange && updated ) {
+					if ( triggerChange == 'color' && ! $$.hasClass( 'siteorigin-widget-input-color' ) ) {
+						continue;
+					}
+					this.dispatchEvent( new Event( 'change', { bubbles: true, cancelable: true } ) );
 				}
-				updated = true;
-			} else {
-				$$.val( value );
-				updated = true;
 			}
-			
-			if ( triggerChange && updated ) {
-				if ( triggerChange == 'color' && ! $$.hasClass( 'siteorigin-widget-input-color' ) ) {
-					return;
-				}
-				$$.trigger( 'change' );
-				this.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
-			}
-		});
+		};
+		processFields( index, $fields );
 	};
 	
 	
