@@ -258,9 +258,11 @@
 					"font": "",
 					"font_size": "13"
 				},
-				"overlay_post_category":{
+				"overlay_post_category": {
 					"background": "#000",
 					"background_hover": "#000",
+					"background_opacity": "0.7",
+					"background_opacity_hover": "0.75",
 					"color": "#fff",
 					"color_hover": "#fff",
 					"font": "",

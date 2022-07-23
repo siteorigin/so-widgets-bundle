@@ -251,6 +251,20 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 									'type' => 'color',
 									'label' => __( 'Hover Background', 'so-widgets-bundle' ),
 								),
+								'background_opacity' => array(
+									'type' => 'slider',
+									'label' => __( 'Background Opacity', 'so-widgets-bundle' ),
+									'min' => 0,
+									'max' => 1,
+									'step' => 0.01,
+								),
+								'background_opacity_hover' => array(
+									'type' => 'slider',
+									'label' => __( 'Background Opacity Hover', 'so-widgets-bundle' ),
+									'min' => 0,
+									'max' => 1,
+									'step' => 0.01,
+								),
 							),
 						),
 
@@ -607,19 +621,17 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$less_vars['overlay_post_category_color'] = ! empty( $instance['design']['overlay_post_category']['color'] ) ? $instance['design']['overlay_post_category']['color'] : '';
 			$less_vars['overlay_post_category_color_hover'] = ! empty( $instance['design']['overlay_post_category']['color_hover'] ) ? $instance['design']['overlay_post_category']['color_hover'] : '';
 
-
-		if ( ! empty( $instance['design']['overlay_post_category']['background'] ) ) {
-			$rgb = ltrim( $instance['design']['overlay_post_category']['background'], '#' );
+			$color = ! empty( $instance['design']['overlay_post_category']['background'] ) ? $instance['design']['overlay_post_category']['background'] : '#000';
+			$rgb = ltrim( $color, '#' );
 			$rgb = array_map( 'hexdec', str_split( $rgb , strlen( $rgb ) == 6 ? 2 : 1 ) );
-			$less_vars['overlay_post_category_background'] = "rgba( $rgb[0], $rgb[1], $rgb[2], 0.8 )";
-		}
+			$opacity = ! empty( $instance['design']['overlay_post_category']['background_opacity'] ) ? $instance['design']['overlay_post_category']['background_opacity'] : 0.8;
+			$less_vars['overlay_post_category_background'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
 
-		if ( ! empty( $instance['design']['overlay_post_category']['background_hover'] ) ) {
-			$rgb = ltrim( $instance['design']['overlay_post_category']['background_hover'], '#' );
+			$color = ! empty( $instance['design']['overlay_post_category']['background_hover'] ) ? $instance['design']['overlay_post_category']['background_hover'] : '#000';
+			$rgb = ltrim( $color, '#' );
 			$rgb = array_map( 'hexdec', str_split( $rgb , strlen( $rgb ) == 6 ? 2 : 1 ) );
-			$less_vars['overlay_post_category_background_hover'] = "rgba( $rgb[0], $rgb[1], $rgb[2], 0.8 )";
-		}
-			$less_vars['overlay_post_category_background_hover'] = ! empty( $instance['design']['overlay_post_category']['background_hover'] ) ? $instance['design']['overlay_post_category']['background_hover'] : '';
+			$opacity = ! empty( $instance['design']['overlay_post_category']['background_opacity_hover'] ) ? $instance['design']['overlay_post_category']['background_opacity_hover'] : 0.75;
+			$less_vars['overlay_post_category_background_hover'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
 		}
 
 		if ( $instance['template'] == 'portfolio' ) {
