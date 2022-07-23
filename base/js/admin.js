@@ -1359,6 +1359,11 @@ var sowbForms = window.sowbForms || {};
 				var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr( 'name' ) );
 				var updated = false;
 
+				// Don't process presets field. It could result in additional presets being unintentionally processed.
+				if ( $$.attr( 'data-default-preset' ) ) {
+					continue;
+				}
+
 				if ( name === undefined || name === null ) {
 					return true;
 				}
