@@ -1427,6 +1427,7 @@ var sowbForms = window.sowbForms || {};
 					if ( triggerChange == 'color' && ! $$.hasClass( 'siteorigin-widget-input-color' ) ) {
 						continue;
 					}
+					$$.trigger( 'change' );
 					this.dispatchEvent( new Event( 'change', { bubbles: true, cancelable: true } ) );
 				}
 			}
