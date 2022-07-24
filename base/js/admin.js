@@ -1351,9 +1351,9 @@ var sowbForms = window.sowbForms || {};
 				if (
 					index != 0 &&
 					index + 1 < $fields.length &&
-					index % 25 == 0
+					index % 20 == 0
 				) {
-			        setTimeout( processFields, 100, index + 1, $fields );
+			        setTimeout( processFields, 150, index + 1, $fields );
 			        return;
 			    }
 				var $$ = $( $fields[ index ] );
