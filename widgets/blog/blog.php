@@ -435,7 +435,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 									'type' => 'measurement',
 									'label' => __( 'Font Size', 'so-widgets-bundle' ),
 								),
-								
 								'link_color' => array(
 									'type' => 'color',
 									'label' => __( 'Link Color', 'so-widgets-bundle' ),
@@ -443,6 +442,10 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'link_color_hover' => array(
 									'type' => 'color',
 									'label' => __( 'Link Hover Color', 'so-widgets-bundle' ),
+								),
+								'dots_color' => array(
+									'type' => 'color',
+									'label' => __( 'Dots Color', 'so-widgets-bundle' ),
 								),
 								'width' => array(
 									'type' => 'measurement',
@@ -604,6 +607,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		$less_vars['pagination_font_size'] = ! empty( $instance['design']['pagination']['font_size'] ) ? $instance['design']['pagination']['font_size'] : '';
 		$less_vars['pagination_link_color'] = ! empty( $instance['design']['pagination']['link_color'] ) ? $instance['design']['pagination']['link_color'] : '';
 		$less_vars['pagination_link_color_hover'] = ! empty( $instance['design']['pagination']['link_color_hover'] ) ? $instance['design']['pagination']['link_color_hover'] : '';
+		$less_vars['pagination_dots_color'] = ! empty( $instance['design']['pagination']['dots_color'] ) ? $instance['design']['pagination']['dots_color'] : '';
 		$less_vars['pagination_width'] = ! empty( $instance['design']['pagination']['width'] ) ? $instance['design']['pagination']['width'] : '';
 		$less_vars['pagination_height'] = ! empty( $instance['design']['pagination']['height'] ) ? $instance['design']['pagination']['height'] : '';
 
