@@ -325,6 +325,7 @@ var sowbForms = window.sowbForms || {};
 				$input.on( 'change', function( event, data ) {
 					if ( ! ( data && data.silent ) ) {
 						$c.slider( 'value', parseFloat( $input.val() ) );
+						$$.find('.siteorigin-widget-slider-value').html( $input.val() );
 					}
 				});
 			});
@@ -1424,7 +1425,13 @@ var sowbForms = window.sowbForms || {};
 				}
 
 				if ( triggerChange && updated ) {
-					if ( triggerChange == 'color' && ! $$.hasClass( 'siteorigin-widget-input-color' ) ) {
+					if (
+						triggerChange == 'color' &&
+						(
+							! $$.hasClass( 'siteorigin-widget-input-color' ) &&
+							! $$.hasClass( 'siteorigin-widget-input-slider' )
+						)
+					) {
 						continue;
 					}
 					$$.trigger( 'change' );
