@@ -1426,7 +1426,7 @@ var sowbForms = window.sowbForms || {};
 
 				if ( triggerChange && updated ) {
 					if (
-						triggerChange == 'color' &&
+						triggerChange == 'preset' &&
 						(
 							! $$.hasClass( 'siteorigin-widget-input-color' ) &&
 							! $$.hasClass( 'siteorigin-widget-input-slider' )
