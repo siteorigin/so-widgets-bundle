@@ -1,6 +1,7 @@
 <?php
+$per_row = ! empty( $instance['per_row'] ) ? $instance['per_row'] : 3;
 if ( ! empty( $instance['features'] ) ) {
-	$last_row = floor( ( count( $instance['features'] ) - 1 ) / $instance['per_row'] );
+	$last_row = floor( ( count( $instance['features'] ) - 1 ) / $per_row );
 }
 ?>
 
@@ -9,8 +10,8 @@ if ( ! empty( $instance['features'] ) ) {
 	<?php if( isset( $instance['features'] ) ) : ?>
 		<?php foreach( $instance['features'] as $i => $feature ) : ?>
 			<div
-				class="sow-features-feature sow-icon-container-position-<?php echo esc_attr( $feature['container_position'] ) ?> <?php if (  floor( $i / $instance['per_row'] ) == $last_row ) echo 'sow-features-feature-last-row'; ?>"
-				style="display: flex; flex-direction: <?php echo $this->get_feature_flex_direction( $feature['container_position'] ); ?>; float: left; width: <?php echo round( 100 / $instance['per_row'], 3 ); ?>%;"
+				class="sow-features-feature sow-icon-container-position-<?php echo esc_attr( $feature['container_position'] ) ?> <?php if (  floor( $i / $per_row ) == $last_row ) echo 'sow-features-feature-last-row'; ?>"
+				style="display: flex; flex-direction: <?php echo $this->get_feature_flex_direction( $feature['container_position'] ); ?>; float: left; width: <?php echo round( 100 / $per_row, 3 ); ?>%;"
 			>
 
 				<?php if ( ! empty( $feature['more_url'] ) && $instance['icon_link'] && empty( $instance['link_feature'] ) ) : ?>
