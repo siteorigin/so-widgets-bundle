@@ -105,6 +105,9 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.38.2 - 27 July 2022 =
+* Features: Resolved PHP 8 error when Features Per Row is empty.
+
 = 1.38.1 - 20 July 2022 =
 * Contact Form: Resolved a notice if Name and Message fields aren't included.
 * Post Carousel: Improved partially visible posts navigation.
