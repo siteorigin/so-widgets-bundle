@@ -175,12 +175,11 @@ jQuery( function ( $ ) {
 					} else {
 						$items.slick( 'slickNext' );
 					}
-
 				} else if ( $( this ).hasClass( 'sow-carousel-previous' ) ) {
 					if ( $$.data( 'carousel_settings' ).loop && $items.slick( 'slickCurrentSlide' ) == 0 ) {
 						$items.slick( 'slickGoTo', lastPosition );
-					} else if ( ! $$.data( 'carousel_settings' ).loop && $items.slick( 'slickCurrentSlide' ) <= slidesToScroll ) {
-						$items.slick( 'slickGoTo', 1 );
+					} else if ( $items.slick( 'slickCurrentSlide' ) <= slidesToScroll ) {
+						$items.slick( 'slickGoTo', 0 );
 					} else {
 						$items.slick( 'slickPrev' );
 					}
