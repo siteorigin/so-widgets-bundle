@@ -39,6 +39,10 @@
 
 			span {
 
+				a {
+					text-decoration: none;
+				}
+
 				&:not(:last-child)::after {
 					content: "\007c";
 					padding: 0 2px;
@@ -64,9 +68,15 @@
 		}
 
 		.sow-more-link {
+			padding: 0;
 
 			&.excerpt {
+				background: none;
+				border: none;
+				box-shadow: none;
 				display: block;
+				float: none;
+				font-weight: normal;
 				margin-top: 26px;
 			}
 
@@ -82,14 +92,10 @@
 
 			.sow-more-link-arrow {
 				display: inline-block;
-				font-size: 1.5em;
-				font-style: normal;
-				font-weight: 400;
-				font-variant: normal;
-				line-height: 1;
-				padding-left: 3px;
-				text-transform: none;
-				vertical-align: sub;
+				font-size: 1.1em;
+				padding-bottom: 2px;
+				padding-left: 4px;
+				vertical-align: middle;
 			}
 		}
 	}
