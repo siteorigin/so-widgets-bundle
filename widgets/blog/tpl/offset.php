@@ -1,5 +1,5 @@
-<article id="post-<?php the_ID(); ?>" <?php post_class( 'sow-blog-columns' ); ?> style="margin: 0 0 40px;">
-	<div class="sow-blog-entry-offset" style="padding-right: 30px;">
+<article id="post-<?php the_ID(); ?>" <?php post_class( 'sow-blog-columns' ); ?> style="display: flex; flex-wrap: wrap; justify-content: space-between; margin: 0 0 40px;">
+	<div class="sow-blog-entry-offset" style="box-sizing: border-box; padding-right: 30px; width: 22%;">
 		<?php if ( $settings['author'] ) : ?>
 			<?php if ( function_exists( 'coauthors_posts_links' ) ) : ?>
 				<?php $coauthors = get_coauthors(); ?>
@@ -51,7 +51,7 @@
 			</div>
 		<?php endif; ?>
 	</div>
-	<div class="sow-blog-entry">
+	<div class="sow-blog-entry" style="width: 78%;">
 		<?php SiteOrigin_Widget_Blog_Widget::post_featured_image( $settings ); ?>
 		<div class="sow-blog-content-wrapper" style="padding: 25px 30px 33px;">
 			<header class="sow-entry-header" style="margin-bottom: 20px;">
