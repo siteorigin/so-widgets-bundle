@@ -55,7 +55,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				'template' => array(
 					'type' => 'presets',
 					'label' => __( 'Template', 'so-widgets-bundle'),
-					'default_preset' => 'standard',
+					'default' => 'standard',
 					'options' => $templates,
 					'state_emitter' => array(
 						'callback' => 'select',
@@ -135,10 +135,12 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'border' => array(
 									'type' => 'color',
 									'label' => __( 'Border Color', 'so-widgets-bundle' ),
+									'default' => '#e6e6e6',
 								),
 								'background' => array(
 									'type' => 'color',
 									'label' => __( 'Background Color', 'so-widgets-bundle' ),
+									'default' => '#fff',
 								),
 							),
 						),
@@ -154,14 +156,17 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'font_size' => array(
 									'type' => 'measurement',
 									'label' => __( 'Font Size', 'so-widgets-bundle' ),
+									'default' => '24px',
 								),
 								'color' => array(
 									'type' => 'color',
 									'label' => __( 'Color', 'so-widgets-bundle' ),
+									'default' => '#2d2d2d',
 								),
 								'color_hover' => array(
 									'type' => 'color',
 									'label' => __( 'Hover Color', 'so-widgets-bundle' ),
+									'default' => '#626262',
 								),
 							),
 						),
@@ -178,14 +183,17 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'font_size' => array(
 									'type' => 'measurement',
 									'label' => __( 'Font Size', 'so-widgets-bundle' ),
+									'default' => '13px',
 								),
 								'color' => array(
 									'type' => 'color',
 									'label' => __( 'Color', 'so-widgets-bundle' ),
+									'default' => '#929292',
 								),
 								'color_hover' => array(
 									'type' => 'color',
 									'label' => __( 'Hover Color', 'so-widgets-bundle' ),
+									'default' => '#f14e4e',
 								),
 							),
 						),
@@ -280,18 +288,22 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'font_size' => array(
 									'type' => 'measurement',
 									'label' => __( 'Font Size', 'so-widgets-bundle' ),
+									'default' => '15',
 								),
 								'color' => array(
 									'type' => 'color',
 									'label' => __( 'Color', 'so-widgets-bundle' ),
+									'default' => '#626262',
 								),
 								'link_color' => array(
 									'type' => 'color',
 									'label' => __( 'Link Color', 'so-widgets-bundle' ),
+									'default' => '#f14e4e',
 								),
 								'link_color_hover' => array(
 									'type' => 'color',
 									'label' => __( 'Link Hover Color', 'so-widgets-bundle' ),
+									'default' => '#626262',
 								),
 							),
 						),
@@ -399,18 +411,22 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'top_margin' => array(
 									'type' => 'measurement',
 									'label' => __( 'Top Margin', 'so-widgets-bundle' ),
+									'default' => '30px',
 								),
 								'link_margin' => array(
 									'type' => 'measurement',
 									'label' => __( 'Link Margin', 'so-widgets-bundle' ),
+									'default' => '8px',
 								),
 								'border_color' => array(
 									'type' => 'color',
 									'label' => __( 'Border Color', 'so-widgets-bundle' ),
+									'default' => '#626262',
 								),
 								'border_color_hover' => array(
 									'type' => 'color',
 									'label' => __( 'Border Color Hover', 'so-widgets-bundle' ),
+									'default' => '#f14e4e',
 								),
 								'background' => array(
 									'type' => 'color',
@@ -434,14 +450,17 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'font_size' => array(
 									'type' => 'measurement',
 									'label' => __( 'Font Size', 'so-widgets-bundle' ),
+									'default' => '14px',
 								),
 								'link_color' => array(
 									'type' => 'color',
 									'label' => __( 'Link Color', 'so-widgets-bundle' ),
+									'default' => '#626262',
 								),
 								'link_color_hover' => array(
 									'type' => 'color',
 									'label' => __( 'Link Hover Color', 'so-widgets-bundle' ),
+									'default' => '#f14e4e',
 								),
 								'dots_color' => array(
 									'type' => 'color',
@@ -451,11 +470,13 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 									'type' => 'measurement',
 									'label' => __( 'Width', 'so-widgets-bundle' ),
 									'units' => array( 'px', 'vh', 'vw', 'vmin', 'vmax' ),
+									'default' => '40px',
 								),
 								'height' => array(
 									'type' => 'measurement',
 									'label' => __( 'Height', 'so-widgets-bundle' ),
 									'units' => array( 'px', 'vh', 'vw', 'vmin', 'vmax' ),
+									'default' => '43px',
 								),
 							),
 						),
