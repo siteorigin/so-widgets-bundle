@@ -1369,15 +1369,19 @@ var sowbForms = window.sowbForms || {};
 			    }
 				var $$ = $( $fields[ index ] );
 				var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr( 'name' ) );
-				var updated = false;
-
-				// Don't process presets field. It could result in additional presets being unintentionally processed.
-				if ( $$.attr( 'data-preset' ) ) {
-					continue;
-				}
-
 				if ( name === undefined || name === null ) {
 					return true;
+				}
+
+				// There's certain fields we shouldn't process as it can result
+				// in invalid data, or unintentionally having things processed multiple times.
+				if (
+					$$.hasClass( 'sow-measurement-select-unit' ) ||
+					$$.attr( 'data-presets' ) ||
+					$$.parent().hasClass( 'siteorigin-widget-field-type-posts' ) ||
+					$$.attr( 'type' ) == 'hidden'
+				) {
+					continue;
 				}
 
 				name = name[1];
@@ -1390,6 +1394,7 @@ var sowbForms = window.sowbForms || {};
 				}
 				var sub = values.sub;
 
+				var updated = false;
 				// This is the end, so we need to set the value on the field here.
 				if ( $$.attr( 'type' ) === 'checkbox' && $$.is( ':checked' ) != values.value ) {
 					$$.prop( 'checked', values.value );
