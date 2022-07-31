@@ -1346,6 +1346,17 @@ var sowbForms = window.sowbForms || {};
 			};
 		}
 
+		var compareValues = function ( currentValue, newValue ) {
+			if ( ! newValue ) {
+				if ( currentValue ) {
+					return true;
+				}
+			} else if ( currentValue !== newValue ) {
+				return true;
+			}
+			return false;
+		};
+
 		var processFields = function( index, $fields ) {
 			for ( ; index < $fields.length; index++ ) {
 				if (
@@ -1380,7 +1391,7 @@ var sowbForms = window.sowbForms || {};
 				var sub = values.sub;
 
 				// This is the end, so we need to set the value on the field here.
-				if ( $$.attr( 'type' ) === 'checkbox' ) {
+				if ( $$.attr( 'type' ) === 'checkbox' && $$.is( ':checked' ) != values.value ) {
 					$$.prop( 'checked', values.value );
 					updated = true;
 				} else if ( $$.attr( 'type' ) === 'radio' ) {
@@ -1393,33 +1404,32 @@ var sowbForms = window.sowbForms || {};
 						editor = tinyMCE.get( $$.attr( 'id' ) );
 					}
 
-					if (
-						editor !== null &&
-						typeof( editor.setContent ) === "function" &&
-						! editor.isHidden() &&
-						$$.parent().is( ':visible' )
-					) {
-						if ( editor.initialized ) {
-							editor.setContent( values.value );
-							updated = true;
-						} else {
-							editor.on( 'init', function() {
+					if ( editor !== null && typeof( editor.setContent ) === "function" && ! editor.isHidden() && $$.parent().is( ':visible' ) ) {
+						if ( compareValues( editor.getContent(), values.value ) ) {
+							if ( editor.initialized ) {
 								editor.setContent( values.value );
-							} );
-							updated = true;
+								updated = true;
+							} else {
+								editor.on('init', function () {
+									editor.setContent( values.value );
+								});
+								updated = true;
+							}
 						}
-					} else {
+					} else if( compareValues( $$.val(), values.value ) ) {
 						$$.val( values.value );
 						updated = true;
 					}
 				} else if ( $$.is( '.panels-data' ) ) {
-					$$.val( values.value );
-					var builder = $$.data( 'builder' );
-					if ( builder ) {
-						builder.setDataField( $$ );
-						updated = true;
+					if ( compareValues( $$.val(), values.value ) ) {
+						$$.val( values.value );
+						var builder = $$.data( 'builder' );
+						if ( builder ) {
+							builder.setDataField( $$ );
+							updated = true;
+						}
 					}
-				} else {
+				} else if ( compareValues( $$.val(), values.value ) ) {
 					$$.val( values.value );
 					updated = true;
 				}
@@ -1507,7 +1517,6 @@ var sowbForms = window.sowbForms || {};
 	var $body = $( 'body' );
 	// Setup new widgets when they're added in the Customizer or new widgets interface.
 	$( document ).on( 'widget-added', function( e, widget ) {
-		console.log(widget.find( '.siteorigin-widget-form' ));
 		widget.find( '.siteorigin-widget-form' ).sowSetupForm();
 	} );
 	
