@@ -53,10 +53,13 @@
 	article {
 		background: @post_background;
 		border: 1px solid @post_border_color;
+		margin-left: 0;
+		margin-right: 0;
+		margin-top: 0;
 		width: 100%;
 
 		// Alternating featured image alignment.
-		@media (min-width: 1024px) {
+		@media (min-width: @responsive_breakpoint) {
 
 			&:nth-of-type(2n) {
 				flex-direction: row-reverse;
@@ -70,37 +73,16 @@
 			}
 		}
 
-		// Two column blog layout below 768px.
-		@media (max-width: 1024px) {
-			width: 48.25%;
-		}
-
-		// One column blog layout below 480px.
-		@media (max-width: 480px) {
+		@media (max-width: @responsive_breakpoint) {
 			width: 100%;
-		}
-
-		@media (max-width: 1024px) {
-
-			// 1, 3, 5, 7, 9
-			&:nth-of-type(2n+1) {
-				margin-right: 3.5%;
-
-				@media (max-width: 480px) {
-					margin-right: 0;
-				}
-			}
 		}
 
 		.sow-entry-thumbnail {
 			width: 41.5006%;
 
-			@media (max-width: 1024px) {
+			@media (max-width: @responsive_breakpoint) {
 				width: 100%;
-			}
-
-			@media (min-width: 1024px) {
-
+				
 				a {
 					text-align: left;
 				}
@@ -110,22 +92,25 @@
 		.sow-blog-content-wrapper {
 			width: 58.4994%;
 
-			@media (max-width: 1024px) {
+			@media (max-width: @responsive_breakpoint) {
 				width: auto;
 			}
 
 			.sow-entry-header {
-				font-family: @title_font;
-				font-size: @title_font_size;
-				font-style: @title_font_style;
-				font-weight: @title_font_weight;
 
-				.sow-entry-title a {
-					color: @title_color;
+				.sow-entry-title {
+					font-family: @title_font;
+					font-size: @title_font_size;
+					font-style: @title_font_style;
+					font-weight: @title_font_weight;
 
-					&:hover,
-					&:focus {
-						color: @title_color_hover;
+					a {
+						color: @title_color;
+
+						&:hover,
+						&:focus {
+							color: @title_color_hover;
+						}
 					}
 				}
 

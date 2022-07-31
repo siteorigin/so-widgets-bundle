@@ -129,16 +129,19 @@
 
 		.sow-entry-header {
 
-			.sow-entry-title a {
-				color: @title_color;
+			.sow-entry-title {
 				font-family: @title_font;
 				font-size: @title_font_size;
 				font-style: @title_font_style;
 				font-weight: @title_font_weight;
 
-				&:hover,
-				&:focus {
-					color: @title_color_hover;
+				a {
+					color: @title_color;
+
+					&:hover,
+					&:focus {
+						color: @title_color_hover;
+					}
 				}
 			}
 

@@ -2,8 +2,7 @@
 
 	&.sow-blog-layout-grid .sow-blog-posts,
 	&.sow-blog-layout-alternate .sow-blog-posts,
-	&.sow-blog-layout-masonry .sow-blog-posts,
-	&.sow-blog-layout-portfolio .sow-blog-posts {
+	&.sow-blog-layout-masonry .sow-blog-posts {
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: space-between;
@@ -12,6 +11,7 @@
 	// Global Styles.
 	article {
 		border: none;
+		box-sizing: border-box;
 		margin: 0;
 		padding: 0;
 
@@ -75,6 +75,7 @@
 				box-shadow: none;
 				display: block;
 				float: none;
+				font-size: 1em;
 				font-weight: normal;
 				margin-top: 26px;
 			}
@@ -177,6 +178,7 @@
 		}
 
 		.sow-blog-content-wrapper {
+			box-sizing: border-box;
 			padding: 25px 30px 33px;
 
 			.sow-entry-content p {
@@ -219,7 +221,7 @@
 	// Portfolio Template.
 	&.sow-blog-layout-portfolio {
 
-		.sow-blog-columns {
+		.sow-blog-posts {
 			margin-left: -1.1667%;
 			margin-right: -1.1667%;
 		}
@@ -251,15 +253,14 @@
 					left: 0;
 					position: absolute;
 					right: 0;
+					text-decoration: none;
 					top: 0;
 					z-index: 1;
 				}
 
 				.sow-entry-overlay {
 					height: 100%;
-					left: 0;
 					position: absolute;
-					top: 0;
 					transition: .3s;
 					width: 100%;
 					z-index: 0;

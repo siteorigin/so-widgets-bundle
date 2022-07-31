@@ -8,7 +8,7 @@ jQuery( function ( $ ) {
 		$( '.sow-blog-layout-portfolio' ).each( function () {
 			var $$ = $( this ),
 				$buttons = $$.find( '.sow-portfolio-filter-terms button' ),
-				$container = $$.find( '.sow-blog-columns' );
+				$container = $$.find( '.sow-blog-posts' );
 
 			if ( $buttons.length ) {
 				$container.isotope( {
