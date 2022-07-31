@@ -1361,7 +1361,7 @@ var sowbForms = window.sowbForms || {};
 				var updated = false;
 
 				// Don't process presets field. It could result in additional presets being unintentionally processed.
-				if ( $$.attr( 'data-default-preset' ) ) {
+				if ( $$.attr( 'data-preset' ) ) {
 					continue;
 				}
 
