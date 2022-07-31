@@ -1421,7 +1421,7 @@ var sowbForms = window.sowbForms || {};
 								updated = true;
 							}
 						}
-					} else if( compareValues( $$.val(), values.value ) ) {
+					} else if ( compareValues( $$.val(), values.value ) ) {
 						$$.val( values.value );
 						updated = true;
 					}
