@@ -1364,9 +1364,9 @@ var sowbForms = window.sowbForms || {};
 					index + 1 < $fields.length &&
 					index % 20 == 0
 				) {
-			        setTimeout( processFields, 150, index + 1, $fields );
-			        return;
-			    }
+					setTimeout( processFields, 150, index + 1, $fields );
+					return;
+				}
 				var $$ = $( $fields[ index ] );
 				var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr( 'name' ) );
 				if ( name === undefined || name === null ) {
