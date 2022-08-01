@@ -94,10 +94,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'type' => 'checkbox',
 							'label' => __( 'Post Excerpt Read More Link', 'so-widgets-bundle' ),
 							'description' => __( 'Display the Read More link below the post excerpt.', 'so-widgets-bundle' ),
-							'state_handler' => array(
-								'content_type[excerpt]' => array( 'show' ),
-								'_else[content_type]' => array( 'hide' ),
-							),
 						),
 						'date' => array(
 							'type' => 'checkbox',
@@ -888,6 +884,11 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			'<h2 class="sow-entry-title" style="margin: 0 0 5px;"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">',
 			'</a></h2>'
 		);
+	}
+
+	function alter_read_more_link( $link ) {
+		return '<a class="sow-more-link more-link excerpt" href="' . esc_url( get_permalink() ) . '">
+			' . esc_html( get_query_var( 'siteorigin_blog_read_more' ) ) . '<span class="sow-more-link-arrow">&rarr;</span></a>';
 	}
 
 	static public function generate_excerpt( $settings ) {
