@@ -461,6 +461,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'dots_color' => array(
 									'type' => 'color',
 									'label' => __( 'Dots Color', 'so-widgets-bundle' ),
+									'default' => '#626262',
 								),
 								'width' => array(
 									'type' => 'measurement',
