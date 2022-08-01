@@ -87,17 +87,13 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							),
 							'state_emitter' => array(
 								'callback' => 'select',
-								'args'     => array( 'content_type' ),
+								'args' => array( 'content_type' ),
 							),
 						),
 						'read_more' => array(
 							'type' => 'checkbox',
 							'label' => __( 'Post Excerpt Read More Link', 'so-widgets-bundle' ),
 							'description' => __( 'Display the Read More link below the post excerpt.', 'so-widgets-bundle' ),
-							'state_handler' => array(
-								'content_type[excerpt]' => array( 'show' ),
-								'_else[content_type]' => array( 'hide' ),
-							),
 						),
 						'date' => array(
 							'type' => 'checkbox',
@@ -539,13 +535,14 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		$columns = (int) $instance['settings']['columns'] > 0 ? (int) $instance['settings']['columns'] : 1;
 		$less_vars = array(
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
-			'column_width' => 100 / $columns - ( $columns * 0.5 )  . '%',
 			'categories' => ! empty( $instance['settings']['categories'] ) ? $instance['settings']['categories'] : false,
 			'author' => ! empty( $instance['settings']['author'] ) ? $instance['settings']['author'] : false,
 		);
 
 
 		if ( $instance['template'] != 'portfolio' ) {
+			$less_vars['column_width'] = 100 / $columns - ( $columns * 0.5 ) . '%';
+
 			// Post.
 			$less_vars['post_border_color'] = ! empty( $instance['design']['post']['border'] ) ? $instance['design']['post']['border'] : '';
 			$less_vars['post_background'] = ! empty( $instance['design']['post']['background'] ) ? $instance['design']['post']['background'] : '';
@@ -606,6 +603,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$less_vars['content_color'] = ! empty( $instance['design']['content']['color'] ) ? $instance['design']['content']['color'] : '';
 			$less_vars['content_link'] = ! empty( $instance['design']['content']['link_color'] ) ? $instance['design']['content']['link_color'] : '';
 			$less_vars['content_link_hover'] = ! empty( $instance['design']['content']['link_color_hover'] ) ? $instance['design']['content']['link_color_hover'] : '';
+		} else {
+			$less_vars['column_width'] = 100 / $columns . '%';
 		}
 
 		// Pagination.
@@ -794,9 +793,9 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		if ( $instance['template'] == 'offset' ) {
 			if ( $instance['settings']['date'] ) {
 				if ( get_the_time( 'U' ) !== get_the_modified_time( 'U' ) ) {
-					$template_settings['time_string']  = '<time class="entry-date published" datetime="%1$s">%2$s</time><time class="updated" datetime="%3$s">%4$s</time>';
+					$template_settings['time_string'] = '<time class="entry-date published" datetime="%1$s">%2$s</time><time class="updated" datetime="%3$s">%4$s</time>';
 				} else {
-					$template_settings['time_string']  = '<time class="entry-date published updated" datetime="%1$s">%2$s</time>';
+					$template_settings['time_string'] = '<time class="entry-date published updated" datetime="%1$s">%2$s</time>';
 				}
 			}
 		}
@@ -890,9 +889,14 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	function alter_read_more_link( $link ) {
+		return '<a class="sow-more-link more-link excerpt" href="' . esc_url( get_permalink() ) . '">
+			' . esc_html( get_query_var( 'siteorigin_blog_read_more' ) ) . '<span class="sow-more-link-arrow">&rarr;</span></a>';
+	}
+
 	static public function generate_excerpt( $settings ) {
 		if ( $settings['read_more'] ) {
-			$read_more_text = ! empty( $settings['read_more_text'] ) ?  $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' );
+			$read_more_text = ! empty( $settings['read_more_text'] ) ? $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' );
 			$read_more_text = '<a class="sow-more-link more-link excerpt" href="' . esc_url( get_permalink() ) . '">
 			' . esc_html( $read_more_text ) . '<span class="sow-more-link-arrow">&rarr;</span></a>';
 		}
