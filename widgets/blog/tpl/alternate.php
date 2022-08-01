@@ -11,11 +11,11 @@
 
 		<div class="sow-entry-content">
 			<?php
-				if ( $settings['content'] == 'full' ) {
-					the_content();
-				} else {
-					SiteOrigin_Widget_Blog_Widget::generate_excerpt( $settings );
-				}
+			if ( $settings['content'] == 'full' ) {
+				the_content();
+			} else {
+				SiteOrigin_Widget_Blog_Widget::generate_excerpt( $settings );
+			}
 			?>
 		</div>
 	</div>

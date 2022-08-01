@@ -6,7 +6,7 @@
 
 	// Set up moretag override when the full content is set to output.
 	if ( $settings['content'] == 'full' && $settings['read_more'] ) :
-		set_query_var( 'siteorigin_blog_read_more', ! empty( $settings['read_more_text'] ) ?  $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' ) );
+		set_query_var( 'siteorigin_blog_read_more', ! empty( $settings['read_more_text'] ) ? $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' ) );
 
 		add_filter( 'the_content_more_link', 'SiteOrigin_Widget_Blog_Widget::alter_read_more_link' );
 	endif;
