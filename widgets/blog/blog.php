@@ -87,7 +87,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							),
 							'state_emitter' => array(
 								'callback' => 'select',
-								'args'     => array( 'content_type' ),
+								'args' => array( 'content_type' ),
 							),
 						),
 						'read_more' => array(
@@ -793,9 +793,9 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		if ( $instance['template'] == 'offset' ) {
 			if ( $instance['settings']['date'] ) {
 				if ( get_the_time( 'U' ) !== get_the_modified_time( 'U' ) ) {
-					$template_settings['time_string']  = '<time class="entry-date published" datetime="%1$s">%2$s</time><time class="updated" datetime="%3$s">%4$s</time>';
+					$template_settings['time_string'] = '<time class="entry-date published" datetime="%1$s">%2$s</time><time class="updated" datetime="%3$s">%4$s</time>';
 				} else {
-					$template_settings['time_string']  = '<time class="entry-date published updated" datetime="%1$s">%2$s</time>';
+					$template_settings['time_string'] = '<time class="entry-date published updated" datetime="%1$s">%2$s</time>';
 				}
 			}
 		}
@@ -896,7 +896,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 	static public function generate_excerpt( $settings ) {
 		if ( $settings['read_more'] ) {
-			$read_more_text = ! empty( $settings['read_more_text'] ) ?  $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' );
+			$read_more_text = ! empty( $settings['read_more_text'] ) ? $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' );
 			$read_more_text = '<a class="sow-more-link more-link excerpt" href="' . esc_url( get_permalink() ) . '">
 			' . esc_html( $read_more_text ) . '<span class="sow-more-link-arrow">&rarr;</span></a>';
 		}
