@@ -535,13 +535,14 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		$columns = (int) $instance['settings']['columns'] > 0 ? (int) $instance['settings']['columns'] : 1;
 		$less_vars = array(
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
-			'column_width' => 100 / $columns - ( $columns * 0.5 )  . '%',
 			'categories' => ! empty( $instance['settings']['categories'] ) ? $instance['settings']['categories'] : false,
 			'author' => ! empty( $instance['settings']['author'] ) ? $instance['settings']['author'] : false,
 		);
 
 
 		if ( $instance['template'] != 'portfolio' ) {
+			$less_vars['column_width'] = 100 / $columns - ( $columns * 0.5 ) . '%';
+
 			// Post.
 			$less_vars['post_border_color'] = ! empty( $instance['design']['post']['border'] ) ? $instance['design']['post']['border'] : '';
 			$less_vars['post_background'] = ! empty( $instance['design']['post']['background'] ) ? $instance['design']['post']['background'] : '';
@@ -602,6 +603,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$less_vars['content_color'] = ! empty( $instance['design']['content']['color'] ) ? $instance['design']['content']['color'] : '';
 			$less_vars['content_link'] = ! empty( $instance['design']['content']['link_color'] ) ? $instance['design']['content']['link_color'] : '';
 			$less_vars['content_link_hover'] = ! empty( $instance['design']['content']['link_color_hover'] ) ? $instance['design']['content']['link_color_hover'] : '';
+		} else {
+			$less_vars['column_width'] = 100 / $columns . '%';
 		}
 
 		// Pagination.
