@@ -5,7 +5,10 @@
 	endif;
 
 	// Set up moretag override when the full content is set to output.
-	if ( $settings['content'] == 'full' && $settings['read_more'] ) :
+	if (
+		$settings['content'] == 'full' &&
+		apply_filters( 'siteorigin_widgets_blog_full_content_read_more', true )
+	) :
 		set_query_var( 'siteorigin_blog_read_more', ! empty( $settings['read_more_text'] ) ? $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' ) );
 
 		add_filter( 'the_content_more_link', array( $this, 'alter_read_more_link' ) );
@@ -46,7 +49,10 @@
 		<?php $this->paginate_links( $settings, $posts, $instance ); ?>
 	</div>
 	<?php
-	if ( $settings['read_more'] ) :
+	if (
+		$settings['content'] == 'full' &&
+		apply_filters( 'siteorigin_widgets_blog_full_content_read_more', true )
+	) :
 		remove_filter( 'the_content_more_link', array( $this, 'alter_read_more_link' ) );
 	endif;
 	?>
