@@ -298,19 +298,7 @@ jQuery( function ( $ ) {
 		var carousel_resizer = function() {
 			$( '.sow-carousel-wrapper' ).each( function() {
 				var currentCarousel = $( this ),
-					$items = currentCarousel.find( '.sow-carousel-items.slick-initialized' ),
-					numVisibleItems = Math.floor( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
-					navigation = currentCarousel.parent().parent().find( '.sow-carousel-navigation' );
-
-				if ( numVisibleItems >= currentCarousel.data( 'item_count' ) ) {
-					navigation.hide();
-					$items.slick( 'slickSetOption', 'touchMove', false );
-					$items.slick( 'slickSetOption', 'draggable', false );
-				} else if ( navigation.not( ':visible' ) ) {
-					navigation.show();
-					$items.slick( 'slickSetOption', 'touchMove', true );
-					$items.slick( 'slickSetOption', 'draggable', true );
-				}
+					$items = currentCarousel.find( '.sow-carousel-items.slick-initialized' );
 
 				// Change Slick Settings on iPad Pro while Landscape
 				var responsiveSettings = currentCarousel.data( 'responsive' );
