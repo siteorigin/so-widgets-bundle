@@ -8,7 +8,7 @@
 	if ( $settings['content'] == 'full' && $settings['read_more'] ) :
 		set_query_var( 'siteorigin_blog_read_more', ! empty( $settings['read_more_text'] ) ? $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' ) );
 
-		add_filter( 'the_content_more_link', 'SiteOrigin_Widget_Blog_Widget::alter_read_more_link' );
+		add_filter( 'the_content_more_link', array( $this, 'alter_read_more_link' ) );
 	endif;
 	?>
 	<div
@@ -47,7 +47,7 @@
 	</div>
 	<?php
 	if ( $settings['read_more'] ) :
-		remove_filter( 'the_content_more_link', 'SiteOrigin_Widget_Blog_Widget::alter_read_more_link' );
+		remove_filter( 'the_content_more_link', array( $this, 'alter_read_more_link' ) );
 	endif;
 	?>
 <?php endif; ?>
