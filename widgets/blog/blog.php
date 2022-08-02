@@ -895,8 +895,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	function alter_read_more_link( $link ) {
-		return '<a class="sow-more-link more-link excerpt" href="' . esc_url( get_permalink() ) . '">
-			' . esc_html( get_query_var( 'siteorigin_blog_read_more' ) ) . '<span class="sow-more-link-arrow">&rarr;</span></a>';
+		return '<a class="sow-more-link more-link excerpt" href="' . esc_url( get_permalink() ) . '"> ' . esc_html( get_query_var( 'siteorigin_blog_read_more' ) ) . '<span class="sow-more-link-arrow">&rarr;</span></a>';
 	}
 
 	static public function generate_excerpt( $settings ) {
