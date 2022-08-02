@@ -163,8 +163,8 @@ jQuery( function ( $ ) {
 						if ( $$.data( 'carousel_settings' ).loop ) {
 							$items.slick( 'slickGoTo', 0 );
 						}
-					// If the total number of slides is higher than the number of visible items, go to the last item.
-					} else if ( slidesToScroll >= numVisibleItemsFloor ) {
+					// If slidesToScroll is higher than the the number of visible items, go to the last item.
+					} else if ( $$.data( 'widget' ) == 'post' && slidesToScroll >= numVisibleItemsFloor ) {
 						// There's more slides than items, update Slick settings to allow for scrolling of partially visible items.
 						$items.slick( 'slickSetOption', 'slidesToShow', numVisibleItemsFloor );
 						$items.slick( 'slickSetOption', 'slidesToScroll', numVisibleItemsFloor );
@@ -178,7 +178,7 @@ jQuery( function ( $ ) {
 				} else if ( $( this ).hasClass( 'sow-carousel-previous' ) ) {
 					if ( $$.data( 'carousel_settings' ).loop && $items.slick( 'slickCurrentSlide' ) == 0 ) {
 						$items.slick( 'slickGoTo', lastPosition );
-					} else if ( $items.slick( 'slickCurrentSlide' ) <= slidesToScroll ) {
+					} else if ( $$.data( 'widget' ) == 'post' && $items.slick( 'slickCurrentSlide' ) <= slidesToScroll ) {
 						$items.slick( 'slickGoTo', 0 );
 					} else {
 						$items.slick( 'slickPrev' );
@@ -298,19 +298,7 @@ jQuery( function ( $ ) {
 		var carousel_resizer = function() {
 			$( '.sow-carousel-wrapper' ).each( function() {
 				var currentCarousel = $( this ),
-					$items = currentCarousel.find( '.sow-carousel-items.slick-initialized' ),
-					numVisibleItems = Math.floor( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
-					navigation = currentCarousel.parent().parent().find( '.sow-carousel-navigation' );
-
-				if ( numVisibleItems >= currentCarousel.data( 'item_count' ) ) {
-					navigation.hide();
-					$items.slick( 'slickSetOption', 'touchMove', false );
-					$items.slick( 'slickSetOption', 'draggable', false );
-				} else if ( navigation.not( ':visible' ) ) {
-					navigation.show();
-					$items.slick( 'slickSetOption', 'touchMove', true );
-					$items.slick( 'slickSetOption', 'draggable', true );
-				}
+					$items = currentCarousel.find( '.sow-carousel-items.slick-initialized' );
 
 				// Change Slick Settings on iPad Pro while Landscape
 				var responsiveSettings = currentCarousel.data( 'responsive' );
