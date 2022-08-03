@@ -1444,7 +1444,8 @@ var sowbForms = window.sowbForms || {};
 						triggerChange == 'preset' &&
 						(
 							! $$.hasClass( 'siteorigin-widget-input-color' ) &&
-							! $$.hasClass( 'siteorigin-widget-input-slider' )
+							! $$.hasClass( 'siteorigin-widget-input-slider' ) &&
+							! $$.attr( 'type' ) == 'checkbox'
 						)
 					) {
 						continue;

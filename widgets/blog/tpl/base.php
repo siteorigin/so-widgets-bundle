@@ -24,8 +24,8 @@
 	>
 		<?php
 		if (
-			$settings['categories'] &&
 			$instance['template'] == 'portfolio' &&
+			$template_settings['filter_categories'] &&
 			! is_wp_error( $template_settings['terms'] )
 		) :
 		?>
