@@ -305,7 +305,31 @@
 				"columns": 3,
 				"categories": true
 			},
-			"design": {	
+			"design": {
+				"filter_categories":{
+					"color": "#929292",
+					"color_hover": "#2d2d2d",
+					"enable": "true",
+					"font": "",
+					"font_size": "11",
+					"selected_border_color": "#2d2d2d",
+					"selected_border_thickness": "2",
+					"text_transform": "true"
+				},
+				"featured_image":{
+					"border_color": "#929292",
+					"divider_border_color": "#2d2d2d",
+					"divider_border_thickness": "1",
+					"divider_border_margin": "13",
+					"hover_overlay_color": "#ffffff",
+					"hover_overlay_opacity": "0.9",
+					"post_meta_font": "",
+					"post_meta_font_size": "11",
+					"post_meta_color": "#929292",
+					"post_title_color": "#2d2d2d",
+					"post_title_font": "",
+					"post_title_font_size": "15"
+				},
 				"pagination":{
 					"background": "",
 					"background_hover": "",
