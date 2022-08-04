@@ -210,22 +210,27 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'font_size' => array(
 									'type' => 'measurement',
 									'label' => __( 'Font Size', 'so-widgets-bundle' ),
+									'default' => '13px',
 								),
 								'color' => array(
 									'type' => 'color',
 									'label' => __( 'Color', 'so-widgets-bundle' ),
+									'default' => '#929292',
 								),
 								'link_color' => array(
 									'type' => 'color',
 									'label' => __( 'Link Color', 'so-widgets-bundle' ),
+									'default' => '#2d2d2d',
 								),
 								'link_color_hover' => array(
 									'type' => 'color',
 									'label' => __( 'Link Color Hover', 'so-widgets-bundle' ),
+									'default' => '#f14e4e',
 								),
 								'link_font_size' => array(
 									'type' => 'measurement',
 									'label' => __( 'Link Font Size', 'so-widgets-bundle' ),
+									'default' => '14px',
 								),
 							),
 						),
@@ -242,22 +247,27 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'font_size' => array(
 									'type' => 'measurement',
 									'label' => __( 'Font Size', 'so-widgets-bundle' ),
+									'default' => '11px',
 								),
 								'color' => array(
 									'type' => 'color',
 									'label' => __( 'Color', 'so-widgets-bundle' ),
+									'default' => '#fff',
 								),
 								'color_hover' => array(
 									'type' => 'color',
 									'label' => __( 'Hover Color', 'so-widgets-bundle' ),
+									'default' => '#fff',
 								),
 								'background' => array(
 									'type' => 'color',
 									'label' => __( 'Background', 'so-widgets-bundle' ),
+									'default' => '#000',
 								),
 								'background_hover' => array(
 									'type' => 'color',
 									'label' => __( 'Hover Background', 'so-widgets-bundle' ),
+									'default' => '#000',
 								),
 								'background_opacity' => array(
 									'type' => 'slider',
@@ -265,6 +275,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 									'min' => 0,
 									'max' => 1,
 									'step' => 0.01,
+									'default' => '0.7',
 								),
 								'background_opacity_hover' => array(
 									'type' => 'slider',
@@ -272,6 +283,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 									'min' => 0,
 									'max' => 1,
 									'step' => 0.01,
+									'default' => '0.75',
 								),
 							),
 						),
