@@ -29,19 +29,22 @@ function siteorigin_widget_add_inline_css($css){
 /**
  * Print any inline styles that have been added with siteorigin_widget_add_inline_css
  */
-function siteorigin_widget_print_styles(){
+function siteorigin_widget_print_styles() {
 	global $siteorigin_widgets_inline_styles;
 	if ( ! empty( $siteorigin_widgets_inline_styles ) ) {
-        foreach ($siteorigin_widgets_inline_styles as $widget_css) {
-            ?>
-            <style type="text/css"><?php echo($widget_css) ?></style><?php
-        }
-    }
+		foreach ( $siteorigin_widgets_inline_styles as $widget_css ) {
+			if ( ! empty( $widget_css ) ) {
+				?>
+				<style<?php echo current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"'; ?>><?php echo( $widget_css ); ?></style>
+				<?php
+			}
+		}
+	}
 
 	$siteorigin_widgets_inline_styles = array();
 }
-add_action('wp_head', 'siteorigin_widget_print_styles');
-add_action('wp_footer', 'siteorigin_widget_print_styles');
+add_action( 'wp_head', 'siteorigin_widget_print_styles' );
+add_action( 'wp_footer', 'siteorigin_widget_print_styles' );
 
 /**
  * The ajax handler for getting a list of available icons.
