@@ -1392,7 +1392,9 @@ var sowbForms = window.sowbForms || {};
 				if ( skipMissingValues && values.value == '' ) {
 					continue;
 				}
-				var sub = values.sub;
+				if ( typeof values.value == 'undefined' ) {
+					continue;
+				}
 
 				var updated = false;
 				// This is the end, so we need to set the value on the field here.
