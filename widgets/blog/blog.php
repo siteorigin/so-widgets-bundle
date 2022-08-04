@@ -316,30 +316,37 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'font' => array(
 									'type' => 'font',
 									'label' => __( 'Font', 'so-widgets-bundle' ),
+									'default' => true,
 								),
 								'font_size' => array(
 									'type' => 'measurement',
 									'label' => __( 'Font Size', 'so-widgets-bundle' ),
+									'default' => '11px',
 								),
 								'color' => array(
 									'type' => 'color',
 									'label' => __( 'Color', 'so-widgets-bundle' ),
+									'default' => '#929292',
 								),
 								'color_hover' => array(
 									'type' => 'color',
 									'label' => __( 'Hover Color', 'so-widgets-bundle' ),
+									'default' => '#2d2d2d',
 								),
 								'text_transform' => array(
 									'type' => 'checkbox',
 									'label' => __( 'Capitalize Categories', 'so-widgets-bundle' ),
+									'default' => true,
 								),
 								'selected_border_color' => array(
 									'type' => 'color',
 									'label' => __( 'Selected Border Color', 'so-widgets-bundle' ),
+									'default' => '#2d2d2d',
 								),
 								'selected_border_thickness' => array(
 									'type' => 'measurement',
 									'label' => __( 'Selected Border Thickness', 'so-widgets-bundle' ),
+									'default' => '2px',
 								),
 							),
 						),
@@ -352,10 +359,12 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'border_color' => array(
 									'type' => 'color',
 									'label' => __( 'Border Color', 'so-widgets-bundle' ),
+									'default' => '#929292',
 								),
 								'hover_overlay_color' => array(
 									'type' => 'color',
 									'label' => __( 'Hover Overlay Color', 'so-widgets-bundle' ),
+									'default' => '#ffffff',
 								),
 								'hover_overlay_opacity' => array(
 									'label' => __( 'Hover Overlay Opacity', 'so-widgets-bundle' ),
@@ -363,6 +372,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 									'min' => 0,
 									'max' => 1,
 									'step' => 0.01,
+									'default' => '0.9',
 								),
 								'post_title_font' => array(
 									'type' => 'font',
@@ -371,22 +381,27 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'post_title_font_size' => array(
 									'type' => 'measurement',
 									'label' => __( 'Post Title Font Size', 'so-widgets-bundle' ),
+									'default' => '15px',
 								),
 								'post_title_color' => array(
 									'type' => 'color',
 									'label' => __( 'Post Title Color', 'so-widgets-bundle' ),
+									'default' => '#2d2d2d',
 								),
 								'divider_border_color' => array(
 									'type' => 'color',
 									'label' => __( 'Divider Border Color', 'so-widgets-bundle' ),
+									'default' => '#2d2d2d',
 								),
 								'divider_border_thickness' => array(
 									'type' => 'measurement',
 									'label' => __( 'Divider Border Thickness', 'so-widgets-bundle' ),
+									'default' => '1px',
 								),
 								'divider_border_margin' => array(
 									'type' => 'measurement',
 									'label' => __( 'Divider Border Margin', 'so-widgets-bundle' ),
+									'default' => '13px',
 								),
 								'post_meta_font' => array(
 									'type' => 'font',
@@ -395,10 +410,12 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'post_meta_font_size' => array(
 									'type' => 'measurement',
 									'label' => __( 'Post Meta Font Size', 'so-widgets-bundle' ),
+									'default' => '11px',
 								),
 								'post_meta_color' => array(
 									'type' => 'color',
 									'label' => __( 'Post Meta Color', 'so-widgets-bundle' ),
+									'default' => '#929292',
 								),
 							),
 						),
