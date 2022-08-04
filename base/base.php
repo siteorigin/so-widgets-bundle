@@ -33,8 +33,11 @@ function siteorigin_widget_print_styles(){
 	global $siteorigin_widgets_inline_styles;
 	if ( ! empty( $siteorigin_widgets_inline_styles ) ) {
         foreach ($siteorigin_widgets_inline_styles as $widget_css) {
+            if (!empty($widget_css)) {
+				$type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
             ?>
-            <style type="text/css"><?php echo($widget_css) ?></style><?php
+            <style<?php echo $type_attr ?>><?php echo($widget_css) ?></style><?php
+			}
         }
     }
 
