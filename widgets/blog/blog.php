@@ -673,7 +673,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$less_vars['content_link'] = ! empty( $instance['design']['content']['link_color'] ) ? $instance['design']['content']['link_color'] : '';
 			$less_vars['content_link_hover'] = ! empty( $instance['design']['content']['link_color_hover'] ) ? $instance['design']['content']['link_color_hover'] : '';
 		} else {
-			$less_vars['column_width'] = 100 / $columns . '%';
+			$less_vars['column_width'] = number_format( 100 / $columns, 2 ) . '%';
 		}
 
 		// Pagination.
