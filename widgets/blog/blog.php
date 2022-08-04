@@ -109,6 +109,18 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'label' => __( 'Post Author', 'so-widgets-bundle' ),
 							'default' => true,
 						),
+						'filter_categories' => array(
+							'type' => 'checkbox',
+							'label' => __( 'Filter Categories ', 'so-widgets-bundle' ),
+							'default' => true,
+							'state_emitter' => array(
+								'callback' => 'conditional',
+								'args' => array(
+									'filter_categories[show]: val',
+									'filter_categories[hide]: ! val',
+								),
+							),
+						),
 						'categories' => array(
 							'type' => 'checkbox',
 							'label' => __( 'Post Categories', 'so-widgets-bundle' ),
@@ -325,18 +337,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'label' => __( 'Filter Categories', 'so-widgets-bundle' ),
 							'hide' => true,
 							'fields' => array(
-								'enable' => array(
-									'type' => 'checkbox',
-									'label' => __( 'Filter Categories ', 'so-widgets-bundle' ),
-									'default' => true,
-									'state_emitter' => array(
-										'callback' => 'conditional',
-										'args' => array(
-											'filter_categories[show]: val',
-											'filter_categories[hide]: ! val',
-										),
-									),
-								),
 								'font' => array(
 									'type' => 'font',
 									'label' => __( 'Font', 'so-widgets-bundle' ),
@@ -875,7 +875,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 		if ( $instance['template'] == 'portfolio' ) {
 			$template_settings['terms'] = $this->portfolio_get_terms( $instance );
-			$template_settings['filter_categories'] = ! empty( $instance['design']['filter_categories']['enable'] );
+			$template_settings['filter_categories'] = ! empty( $instance['settings']['filter_categories']['enable'] );
 		}
 
 		return array(

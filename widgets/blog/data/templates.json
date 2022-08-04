@@ -303,13 +303,13 @@
 		"values": {
 			"settings": {
 				"columns": 3,
+				"filter_categories": "true",
 				"categories": true
 			},
 			"design": {
 				"filter_categories":{
 					"color": "#929292",
 					"color_hover": "#2d2d2d",
-					"enable": "true",
 					"font": "",
 					"font_size": "11",
 					"selected_border_color": "#2d2d2d",
