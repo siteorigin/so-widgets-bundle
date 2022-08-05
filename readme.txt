@@ -105,6 +105,11 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.38.3 - 05 August 2022 =
+* Anything Carousel: Resolved potential navigation malfunction.
+* Post Carousel: Improved partially visible post navigation.
+* Improved `style` tag HTML validation.
+
 = 1.38.2 - 27 July 2022 =
 * Features: Resolved PHP 8 error when Features Per Row is empty.
 
