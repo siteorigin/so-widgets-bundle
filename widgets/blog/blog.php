@@ -678,6 +678,9 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$less_vars['content_link_hover'] = ! empty( $instance['design']['content']['link_color_hover'] ) ? $instance['design']['content']['link_color_hover'] : '';
 		} else {
 			$less_vars['column_width'] = number_format( 100 / $columns, 2 ) . '%';
+			if ( empty( $less_vars['categories'] ) && ! empty( $instance['settings']['filter_categories'] ) ) {
+				$less_vars['categories'] = 1;
+			}
 		}
 
 		// Pagination.
@@ -875,7 +878,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 		if ( $instance['template'] == 'portfolio' ) {
 			$template_settings['terms'] = $this->portfolio_get_terms( $instance );
-			$template_settings['filter_categories'] = ! empty( $instance['settings']['filter_categories']['enable'] );
+			$template_settings['filter_categories'] = ! empty( $instance['settings']['filter_categories'] );
 		}
 
 		return array(

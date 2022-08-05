@@ -1,6 +1,6 @@
 <?php
 $types = null;
-if ( $settings['categories'] ) {
+if ( $settings['categories'] || $template_settings['filter_categories'] ) {
 	$terms = SiteOrigin_Widget_Blog_Widget::portfolio_get_terms( $instance, get_the_ID() );
 	if ( ! is_wp_error( $terms ) ) {
 		$filtering_links = array();
