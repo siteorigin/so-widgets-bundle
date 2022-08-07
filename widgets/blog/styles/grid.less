@@ -1,4 +1,5 @@
-@column_width: 48.5%;
+@columns: 2;
+@column_spacing: 2%;
 @responsive_breakpoint: 780px;
 
 // Post.
@@ -50,11 +51,15 @@
 @pagination_width: default;
 
 .sow-blog-layout-grid {
+	.sow-blog-posts {
+		display: grid;
+		grid-template-columns: repeat( @columns, 1fr );
+		column-gap: @column_spacing;
+	}
 
 	article {
 		background: @post_background;
 		border: 1px solid @post_border_color;
-		width: @column_width;
 
 		@media (max-width: @responsive_breakpoint) {
 			width: 100%;
