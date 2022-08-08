@@ -1,5 +1,5 @@
 @categories: default;
-@column_width: 31%;
+@columns: 3;
 @responsive_breakpoint: 780px;
 
 // Pagination.
@@ -51,6 +51,12 @@
 
 .sow-blog-layout-portfolio {
 
+	.sow-blog-posts {
+		column-gap: 1.1667%;
+		display: grid;
+		grid-template-columns: repeat( @columns, 1fr );
+	}
+
 	& when( @categories = 1 ) {
 
 		.sow-portfolio-filter-terms {
@@ -87,7 +93,6 @@
 	article {
 		margin-bottom: 30px;
 		padding: 0 1.1667%;
-		width: @column_width;
 
 		@media (max-width: @responsive_breakpoint) {
 			width: 100%;

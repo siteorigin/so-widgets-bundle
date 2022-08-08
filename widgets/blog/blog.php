@@ -605,16 +605,20 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			return array();
 		}
 
-		$columns = (int) $instance['settings']['columns'] > 0 ? (int) $instance['settings']['columns'] : 1;
 		$less_vars = array(
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 			'categories' => ! empty( $instance['settings']['categories'] ) ? $instance['settings']['categories'] : false,
 			'author' => ! empty( $instance['settings']['author'] ) ? $instance['settings']['author'] : false,
+			'columns' => (int) $instance['settings']['columns'] > 0 ? (int) $instance['settings']['columns'] : 1,
 		);
 
+		if ( $instance['template'] == 'masonry' ) {
+			$less_vars['column_width'] = 100 / $less_vars['columns'] - $less_vars['columns'] * 0.5 . '%';
+		} elseif ( $instance['template'] == 'grid' && $less_vars['columns'] > 2 ) {
+			$less_vars['column_spacing'] = $less_vars['columns'] * 0.5 . '%';
+		}
 
 		if ( $instance['template'] != 'portfolio' ) {
-			$less_vars['column_width'] = 100 / $columns - ( $columns * 0.5 ) . '%';
 
 			// Post.
 			$less_vars['post_border_color'] = ! empty( $instance['design']['post']['border'] ) ? $instance['design']['post']['border'] : '';
@@ -677,7 +681,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$less_vars['content_link'] = ! empty( $instance['design']['content']['link_color'] ) ? $instance['design']['content']['link_color'] : '';
 			$less_vars['content_link_hover'] = ! empty( $instance['design']['content']['link_color_hover'] ) ? $instance['design']['content']['link_color_hover'] : '';
 		} else {
-			$less_vars['column_width'] = number_format( 100 / $columns, 2 ) . '%';
+			$less_vars['column_width'] = number_format( 100 / $less_vars['columns'], 2 ) . '%';
 			if ( empty( $less_vars['categories'] ) && ! empty( $instance['settings']['filter_categories'] ) ) {
 				$less_vars['categories'] = 1;
 			}
@@ -853,7 +857,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		);
 
 		if ( $instance['template'] == 'portfolio' ) {
-			// This post type relies on each post having an image so exclude any posts that don't.
+			// The portfolio template relies on each post having an image so exclude any posts that don't.
 			$query['meta_query'] = array(
 				array(
 					'key' => '_thumbnail_id',
