@@ -614,7 +614,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 		if ( $instance['template'] == 'masonry' ) {
 			$less_vars['column_width'] = 100 / $less_vars['columns'] - $less_vars['columns'] * 0.5 . '%';
-		} elseif ( $instance['template'] == 'grid' ) {
+		} elseif ( $instance['template'] == 'grid' && $less_vars['columns'] > 2 ) {
 			$less_vars['column_spacing'] = $less_vars['columns'] * 0.5 . '%';
 		}
 
