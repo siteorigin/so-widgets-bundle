@@ -50,10 +50,11 @@
 @featured_image_post_meta_color: default;
 
 .sow-blog-layout-portfolio {
+
 	.sow-blog-posts {
+		column-gap: 1.1667%;
 		display: grid;
 		grid-template-columns: repeat( @columns, 1fr );
-		column-gap: 1.1667%;
 	}
 
 	& when( @categories = 1 ) {
