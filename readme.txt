@@ -106,6 +106,9 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.39.0 - 08 August 2022 =
+* New Widget! Introducing the SiteOrigin Blog Widget.
+
 = 1.38.3 - 05 August 2022 =
 * Anything Carousel: Resolved potential navigation malfunction.
 * Post Carousel: Improved partially visible post navigation.
