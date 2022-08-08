@@ -35,7 +35,11 @@ class SiteOrigin_Widget_Field_Slider extends SiteOrigin_Widget_Field_Base {
 		<div class="siteorigin-widget-slider-wrapper">
 			<div class="siteorigin-widget-value-slider"></div>
 		</div>
-		<input type="number" class="siteorigin-widget-input" name="<?php echo esc_attr(  $this->element_name ) ?>" id="<?php echo esc_attr( $this->element_id ) ?>"
+		<input
+			type="number"
+			class="siteorigin-widget-input siteorigin-widget-input-slider"
+			name="<?php echo esc_attr(  $this->element_name ) ?>"
+			id="<?php echo esc_attr( $this->element_id ) ?>"
 			value="<?php echo !empty( $value ) ? esc_attr( $value ) : 0 ?>"
 			min="<?php echo isset( $this->min ) ? (float) $this->min : 0 ?>"
 			max="<?php echo isset( $this->max ) ? (float) $this->max : 100 ?>"

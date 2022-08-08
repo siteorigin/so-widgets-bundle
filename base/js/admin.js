@@ -325,6 +325,7 @@ var sowbForms = window.sowbForms || {};
 				$input.on( 'change', function( event, data ) {
 					if ( ! ( data && data.silent ) ) {
 						$c.slider( 'value', parseFloat( $input.val() ) );
+						$$.find('.siteorigin-widget-slider-value').html( $input.val() );
 					}
 				});
 			});
@@ -1308,33 +1309,26 @@ var sowbForms = window.sowbForms || {};
 
 		updateRepeaterChildren(formContainer, data);
 
-		formContainer.find('*[name]').each(function () {
-			var $$ = $(this);
-			var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec($$.attr('name'));
-
-			if ( name === undefined || name === null ) {
-				return true;
-			}
-
-			name = name[1];
-			var parts = name.split('][');
-
-			// Make sure we either have numbers or strings
-			parts = parts.map( function ( e ) {
-				if ( !isNaN( parseFloat( e ) ) && isFinite( e ) ) {
+		$fields = formContainer.find( '*[name]' );
+		var index = 0;
+		var validateParts = function( parts ) {
+			parts.map( function ( e ) {
+				if ( ! isNaN( parseFloat( e ) ) && isFinite( e ) ) {
 					return parseInt( e );
 				} else {
 					return e;
 				}
 			} );
-
+			return parts;
+		};
+		var getValues = function( data, parts ) {
 			var sub = data;
 			var value;
-			for (var i = 0; i < parts.length; i++) {
+			for ( var i = 0; i < parts.length; i++ ) {
 				// If the field is missing from the data, just leave `value` as `undefined`.
 				if ( ! sub.hasOwnProperty( parts[ i ] ) ) {
 					if ( skipMissingValues ) {
-						return true;
+						continue;
 					} else {
 						break;
 					}
@@ -1346,45 +1340,124 @@ var sowbForms = window.sowbForms || {};
 				}
 			}
 
-			// This is the end, so we need to set the value on the field here.
-			if ( $$.attr( 'type' ) === 'checkbox' ) {
-				$$.prop( 'checked', value );
-			} else if ( $$.attr( 'type' ) === 'radio' ) {
-				$$.prop( 'checked', value === $$.val() );
-			} else if ( $$.prop( 'tagName' ) === 'TEXTAREA' && $$.hasClass( 'wp-editor-area' ) ) {
-				// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
-				var editor = null;
-				if ( typeof tinyMCE !== 'undefined' ) {
-					editor = tinyMCE.get( $$.attr( 'id' ) );
+			return {
+				sub: sub,
+				value: value
+			};
+		}
+
+		var compareValues = function ( currentValue, newValue ) {
+			if ( ! newValue ) {
+				if ( currentValue ) {
+					return true;
+				}
+			} else if ( currentValue !== newValue ) {
+				return true;
+			}
+			return false;
+		};
+
+		var processFields = function( index, $fields ) {
+			for ( ; index < $fields.length; index++ ) {
+				if (
+					index != 0 &&
+					index + 1 < $fields.length &&
+					index % 20 == 0
+				) {
+					setTimeout( processFields, 150, index + 1, $fields );
+					return;
+				}
+				var $$ = $( $fields[ index ] );
+				var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr( 'name' ) );
+				if ( name === undefined || name === null ) {
+					return true;
 				}
 
-				if ( editor !== null && typeof( editor.setContent ) === "function" && ! editor.isHidden() && $$.parent().is( ':visible' ) ) {
-					if ( editor.initialized ) {
-						editor.setContent( value );
-					} else {
-						editor.on('init', function () {
-							editor.setContent( value );
-						});
+				// There's certain fields we shouldn't process as it can result
+				// in invalid data, or unintentionally having things processed multiple times.
+				if (
+					$$.hasClass( 'sow-measurement-select-unit' ) ||
+					$$.attr( 'data-presets' ) ||
+					$$.parent().hasClass( 'siteorigin-widget-field-type-posts' ) ||
+					$$.attr( 'type' ) == 'hidden'
+				) {
+					continue;
+				}
+
+				name = name[1];
+				var parts = name.split( '][' );
+				// Make sure we either have numbers or strings
+				parts = validateParts( parts );
+				var values = getValues( data, parts )
+				if ( skipMissingValues && values.value == '' ) {
+					continue;
+				}
+				if ( typeof values.value == 'undefined' ) {
+					continue;
+				}
+
+				var updated = false;
+				// This is the end, so we need to set the value on the field here.
+				if ( $$.attr( 'type' ) === 'checkbox' && $$.is( ':checked' ) != values.value ) {
+					$$.prop( 'checked', values.value );
+					updated = true;
+				} else if ( $$.attr( 'type' ) === 'radio' ) {
+					$$.prop( 'checked', values.value === $$.val() );
+					updated = true;
+				} else if ( $$.prop( 'tagName' ) === 'TEXTAREA' && $$.hasClass( 'wp-editor-area' ) ) {
+					// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
+					var editor = null;
+					if ( typeof tinyMCE !== 'undefined' ) {
+						editor = tinyMCE.get( $$.attr( 'id' ) );
 					}
+
+					if ( editor !== null && typeof( editor.setContent ) === "function" && ! editor.isHidden() && $$.parent().is( ':visible' ) ) {
+						if ( compareValues( editor.getContent(), values.value ) ) {
+							if ( editor.initialized ) {
+								editor.setContent( values.value );
+								updated = true;
+							} else {
+								editor.on('init', function () {
+									editor.setContent( values.value );
+								});
+								updated = true;
+							}
+						}
+					} else if ( compareValues( $$.val(), values.value ) ) {
+						$$.val( values.value );
+						updated = true;
+					}
+				} else if ( $$.is( '.panels-data' ) ) {
+					if ( compareValues( $$.val(), values.value ) ) {
+						$$.val( values.value );
+						var builder = $$.data( 'builder' );
+						if ( builder ) {
+							builder.setDataField( $$ );
+							updated = true;
+						}
+					}
+				} else if ( compareValues( $$.val(), values.value ) ) {
+					$$.val( values.value );
+					updated = true;
 				}
-				else {
-					$$.val( value );
+
+				if ( triggerChange && updated ) {
+					if (
+						triggerChange == 'preset' &&
+						(
+							! $$.hasClass( 'siteorigin-widget-input-color' ) &&
+							! $$.hasClass( 'siteorigin-widget-input-slider' ) &&
+							! $$.attr( 'type' ) == 'checkbox'
+						)
+					) {
+						continue;
+					}
+					$$.trigger( 'change' );
+					this.dispatchEvent( new Event( 'change', { bubbles: true, cancelable: true } ) );
 				}
-			} else if ( $$.is( '.panels-data' ) ) {
-				$$.val( value );
-				var builder = $$.data( 'builder' );
-				if ( builder ) {
-					builder.setDataField( $$ );
-				}
-			} else {
-				$$.val( value );
 			}
-			
-			if ( triggerChange ) {
-				$$.trigger( 'change' );
-				this.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
-			}
-		});
+		};
+		processFields( index, $fields );
 	};
 	
 	
@@ -1452,7 +1525,6 @@ var sowbForms = window.sowbForms || {};
 	var $body = $( 'body' );
 	// Setup new widgets when they're added in the Customizer or new widgets interface.
 	$( document ).on( 'widget-added', function( e, widget ) {
-		console.log(widget.find( '.siteorigin-widget-form' ));
 		widget.find( '.siteorigin-widget-form' ).sowSetupForm();
 	} );
 	
