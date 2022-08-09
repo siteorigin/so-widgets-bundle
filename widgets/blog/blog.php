@@ -493,7 +493,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								),
 								'border_color_hover' => array(
 									'type' => 'color',
-									'label' => __( 'Border Color Hover', 'so-widgets-bundle' ),
+									'label' => __( 'Border Hover Color', 'so-widgets-bundle' ),
 									'default' => '#f14e4e',
 								),
 								'background' => array(
