@@ -291,7 +291,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								),
 								'background_opacity_hover' => array(
 									'type' => 'slider',
-									'label' => __( 'Background Opacity Hover', 'so-widgets-bundle' ),
+									'label' => __( 'Background Hover Opacity', 'so-widgets-bundle' ),
 									'min' => 0,
 									'max' => 1,
 									'step' => 0.01,
