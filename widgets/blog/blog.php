@@ -354,6 +354,15 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 										'filter_categories[hide]' => array( 'hide' ),
 									),
 								),
+								'text_transform' => array(
+									'type' => 'checkbox',
+									'label' => __( 'Capitalize Categories', 'so-widgets-bundle' ),
+									'default' => true,
+									'state_handler' => array(
+										'filter_categories[show]' => array( 'show' ),
+										'filter_categories[hide]' => array( 'hide' ),
+									),
+								),
 								'color' => array(
 									'type' => 'color',
 									'label' => __( 'Color', 'so-widgets-bundle' ),
@@ -367,15 +376,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 									'type' => 'color',
 									'label' => __( 'Hover Color', 'so-widgets-bundle' ),
 									'default' => '#2d2d2d',
-									'state_handler' => array(
-										'filter_categories[show]' => array( 'show' ),
-										'filter_categories[hide]' => array( 'hide' ),
-									),
-								),
-								'text_transform' => array(
-									'type' => 'checkbox',
-									'label' => __( 'Capitalize Categories', 'so-widgets-bundle' ),
-									'default' => true,
 									'state_handler' => array(
 										'filter_categories[show]' => array( 'show' ),
 										'filter_categories[hide]' => array( 'hide' ),

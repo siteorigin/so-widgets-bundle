@@ -312,9 +312,9 @@
 					"color_hover": "#2d2d2d",
 					"font": "default",
 					"font_size": "11",
+					"text_transform": "true",
 					"selected_border_color": "#2d2d2d",
 					"selected_border_thickness": "2",
-					"text_transform": "true"
 				},
 				"featured_image":{
 					"border_color": "#929292",
