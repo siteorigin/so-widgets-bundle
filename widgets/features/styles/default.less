@@ -24,16 +24,28 @@
 @icon_size: 24px;
 @use_icon_size: false;
 @link_feature: default;
+@more_text_bottom_align: default;
 
 @responsive_breakpoint: 520px;
 
 .sow-features-list {
 	.clearfix();
+	& when ( @more_text_bottom_align = true ) {
+		align-items: stretch;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
 
 	.sow-features-feature {
 		.box-sizing(border-box);
 		padding: 0 25px;
 		position: relative;
+		& when ( @more_text_bottom_align = true ) {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+		}
 
 		@media (min-width: @responsive_breakpoint) {
 			&:nth-of-type(@{per_row}n+1) {
@@ -81,7 +93,12 @@
 		& when ( @per_row = 1 ) {
 			&.sow-icon-container-position-top, &.sow-icon-container-position-bottom {
 				.sow-icon-container {
-					margin: auto;
+					& when ( @more_text_bottom_align = true ) {
+						margin: 0 auto;
+					}
+					& when not ( @more_text_bottom_align = true ) {
+						margin: auto;
+					}
 				}
 			}
 		}
@@ -94,7 +111,12 @@
 			flex: 0 0 @container_size;
 
 			& when not ( @per_row = 1 ) {
-				margin: auto;
+				& when ( @more_text_bottom_align = true ) {
+					margin: 0 auto;
+				}
+				& when not ( @more_text_bottom_align = true ) {
+					margin: auto;
+				}
 			}
 
 			&:not(.sow-container-none) [class^="sow-icon-"],
@@ -162,7 +184,13 @@
 			color: @text_color;
 			font-size: @text_size;
 			font-style: @text_font_style;
-			margin: auto;
+			& when ( @more_text_bottom_align = true ) {
+				height: 100%;
+			}
+
+			& when not ( @more_text_bottom_align = true ) {
+				margin: auto;
+			}
 
 			> @{title_tag} {
 				.font(@title_font, @title_font_weight);
@@ -170,12 +198,31 @@
 				font-size: @title_size;
 				font-style: @title_font_style;
 			}
+		}
 
-			> p.sow-more-text {
-				.font(@more_text_font, @more_text_font_weight);
-				color: @more_text_color;
-				font-size: @more_text_size;
-				font-style: @more_text_font_style;
+		& when ( @more_text_bottom_align = true ) {
+			&.sow-icon-container-position-right .textwidget,
+			&.sow-icon-container-position-left .textwidget {
+				display: flex;
+				justify-content: space-between;
+				flex-direction: column;
+			}
+		}
+
+		p.sow-more-text {
+			.font(@more_text_font, @more_text_font_weight);
+			color: @more_text_color;
+			font-size: @more_text_size;
+			font-style: @more_text_font_style;
+
+			a {
+				color: inherit;
+				font-weight: 500;
+				text-decoration: none;
+
+				&:hover {
+					text-decoration: underline;
+				}
 			}
 		}
 

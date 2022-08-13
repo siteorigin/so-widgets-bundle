@@ -250,6 +250,12 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				'default' => true,
 			),
 
+			'more_text_bottom_align' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Bottom align More link text', 'so-widgets-bundle' ),
+				'default' => true,
+			),
+
 			'title_link' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Link feature title to more URL', 'so-widgets-bundle' ),
@@ -342,6 +348,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		$less_vars['per_row'] = $instance['per_row'];
 		$less_vars['use_icon_size'] = empty( $instance['icon_size_custom'] ) ? 'false' : 'true';
 		$less_vars['link_feature'] = ! empty( $instance['link_feature'] );
+		$less_vars['more_text_bottom_align'] = ! empty( $instance['more_text_bottom_align'] ) ? 'true' : 'false';
 
 		$global_settings = $this->get_global_settings();
 
