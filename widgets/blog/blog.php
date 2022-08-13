@@ -94,9 +94,25 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'type' => 'checkbox',
 							'label' => __( 'Post Excerpt Read More Link', 'so-widgets-bundle' ),
 							'description' => __( 'Display the Read More link below the post excerpt.', 'so-widgets-bundle' ),
+							'state_emitter' => array(
+								'callback' => 'conditional',
+								'args' => array(
+									'content_excerpt_link[show]: val',
+									'content_excerpt_link[hide]: ! val',
+								),
+							),
 							'state_handler' => array(
 								'content_type[excerpt]' => array( 'show' ),
 								'_else[content_type]' => array( 'hide' ),
+							),
+						),
+						'excerpt_length' => array(
+							'type' => 'number',
+							'label' => __( 'Excerpt Length', 'so-widgets-bundle' ),
+							'default' => 55,
+							'state_handler' => array(
+								'content_excerpt_link[show]' => array( 'show' ),
+								'content_excerpt_link[hide]' => array( 'hide' ),
 							),
 						),
 						'date' => array(
@@ -980,7 +996,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$read_more_text = '<a class="sow-more-link more-link excerpt" href="' . esc_url( get_permalink() ) . '">
 			' . esc_html( $read_more_text ) . '<span class="sow-more-link-arrow">&rarr;</span></a>';
 		}
-		$length = apply_filters( 'siteorigin_widgets_blog_excerpt_length', 55 );
+
+		$length = apply_filters( 'siteorigin_widgets_blog_excerpt_length', ! empty( $settings['excerpt_length'] ) ? $settings['excerpt_length'] : 55 );
 		$excerpt = get_the_excerpt();
 		$excerpt_add_read_more = str_word_count( $excerpt ) >= $length;
 
