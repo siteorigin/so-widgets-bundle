@@ -1022,7 +1022,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			?>
 			<nav class="sow-post-navigation">
 				<h2 class="screen-reader-text"><?php esc_html_e( 'Post navigation', 'so-widgets-bundle' ); ?></h2>
-				<div class="sow-nav-links">
+				<div class="sow-nav-links<?php if ( ! empty( $settings['pagination'] ) ) echo ' sow-post-pagination-' . esc_attr( $settings['pagination'] ); ?>">
 					<?php echo $pagination_markup; ?>
 				</div>
 			</nav>
