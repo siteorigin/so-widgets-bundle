@@ -980,6 +980,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	function override_read_more( $settings, $setup = true ) {
+		add_filter( 'excerpt_more', array( $this, 'alter_excerpt_more_indicator' ) );
 		if ( $settings['content'] == 'full' && apply_filters( 'siteorigin_widgets_blog_full_content_read_more', true ) ) {
 			if ( $setup ) {
 				set_query_var( 'siteorigin_blog_read_more', ! empty( $settings['read_more_text'] ) ? $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' ) );
@@ -988,6 +989,13 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				remove_filter( 'the_content_more_link', array( $this, 'alter_read_more_link' ) );
 			}
 		}
+		if ( ! $setup ) {
+			remove_filter( 'the_content_more_link', array( $this, 'alter_excerpt_more_indicator' ) );
+		}
+	}
+
+	function alter_excerpt_more_indicator( $indicator ) {
+		return '...';
 	}
 
 	function alter_read_more_link( $link ) {
