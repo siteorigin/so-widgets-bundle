@@ -94,13 +94,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'type' => 'checkbox',
 							'label' => __( 'Post Excerpt Read More Link', 'so-widgets-bundle' ),
 							'description' => __( 'Display the Read More link below the post excerpt.', 'so-widgets-bundle' ),
-							'state_emitter' => array(
-								'callback' => 'conditional',
-								'args' => array(
-									'content_excerpt_link[show]: val',
-									'content_excerpt_link[hide]: ! val',
-								),
-							),
 							'state_handler' => array(
 								'content_type[excerpt]' => array( 'show' ),
 								'_else[content_type]' => array( 'hide' ),
@@ -111,8 +104,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'label' => __( 'Excerpt Length', 'so-widgets-bundle' ),
 							'default' => 55,
 							'state_handler' => array(
-								'content_excerpt_link[show]' => array( 'show' ),
-								'content_excerpt_link[hide]' => array( 'hide' ),
+								'content_type[excerpt]' => array( 'show' ),
+								'_else[content_type]' => array( 'hide' ),
 							),
 						),
 						'date' => array(
