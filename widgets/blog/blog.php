@@ -991,6 +991,11 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		}
 
 		if ( $setup ) {
+			set_query_var(
+				'siteorigin_blog_excerpt_length',
+				apply_filters( 'siteorigin_widgets_blog_excerpt_length', ! empty( $settings['excerpt_length'] ) ? $settings['excerpt_length'] : 55 )
+			);
+			add_filter( 'excerpt_length', array( $this, 'alter_excerpt_length' ), 1000 );
 			add_filter( 'excerpt_more', array( $this, 'alter_excerpt_more_indicator' ) );
 		} else {
 			remove_filter( 'excerpt_length', array( $this, 'alter_excerpt_length' ), 1000 );
@@ -1006,6 +1011,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		return '...';
 	}
 
+	function alter_excerpt_length( $length = 55 ) {
+		return get_query_var( 'siteorigin_blog_excerpt_length' );
 	}
 
 	static public function generate_excerpt( $settings ) {
@@ -1015,10 +1022,9 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			' . esc_html( $read_more_text ) . '<span class="sow-more-link-arrow">&rarr;</span></a>';
 		}
 
-		$length = apply_filters( 'siteorigin_widgets_blog_excerpt_length', ! empty( $settings['excerpt_length'] ) ? $settings['excerpt_length'] : 55 );
+		$length = get_query_var( 'siteorigin_blog_excerpt_length' );
 		$excerpt = get_the_excerpt();
 		$excerpt_add_read_more = str_word_count( $excerpt ) >= $length;
-
 		if ( ! has_excerpt() ) {
 			$excerpt = wp_trim_words( $excerpt, $length, '...' );
 		}
