@@ -15,6 +15,7 @@
 		data-hash="<?php echo esc_attr( $storage_hash ); ?>"
 	>
 		<?php
+		do_action( 'siteorigin_widgets_blog_output_before', $settings );
 		if (
 			$instance['template'] == 'portfolio' &&
 			$template_settings['filter_categories'] &&
@@ -39,6 +40,7 @@
 			<?php endwhile; ?>
 		</div>
 		<?php $this->paginate_links( $settings, $posts, $instance ); ?>
+		<?php do_action( 'siteorigin_widgets_blog_output_after', $settings ); ?>
 	</div>
 	<?php $this->override_read_more( $settings ); ?>
 <?php endif; ?>
