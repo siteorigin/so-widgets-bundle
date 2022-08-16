@@ -6,6 +6,7 @@
 				"featured_image": true,
 				"content": "full",
 				"read_more": true,
+				"excerpt_length": "55",
 				"date": true,
 				"author": true,
 				"categories": true,
@@ -63,6 +64,7 @@
 				"featured_image": true,
 				"content": "excerpt",
 				"read_more": true,
+				"excerpt_length": "55",
 				"date": true,
 				"author": true,
 				"categories": true,
@@ -119,6 +121,7 @@
 				"featured_image": true,
 				"content": "full",
 				"read_more": true,
+				"excerpt_length": "55",
 				"date": true,
 				"author": true,
 				"categories": true,
@@ -183,6 +186,7 @@
 				"featured_image": true,
 				"content": "excerpt",
 				"read_more": true,
+				"excerpt_length": "55",
 				"date": true,
 				"author": true,
 				"categories": true,
@@ -240,6 +244,7 @@
 				"featured_image": true,
 				"content": "excerpt",
 				"read_more": true,
+				"excerpt_length": "55",
 				"date": true,
 				"author": true,
 				"categories": true,
@@ -302,6 +307,7 @@
 		"label": "Portfolio",
 		"values": {
 			"settings": {
+				"content": "full",
 				"columns": 3,
 				"filter_categories": "true",
 				"categories": true

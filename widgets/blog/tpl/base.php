@@ -4,15 +4,7 @@
 		echo $args['before_title'] . $instance['title'] . $args['after_title'];
 	endif;
 
-	// Set up moretag override when the full content is set to output.
-	if (
-		$settings['content'] == 'full' &&
-		apply_filters( 'siteorigin_widgets_blog_full_content_read_more', true )
-	) :
-		set_query_var( 'siteorigin_blog_read_more', ! empty( $settings['read_more_text'] ) ? $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' ) );
-
-		add_filter( 'the_content_more_link', array( $this, 'alter_read_more_link' ) );
-	endif;
+	$this->override_read_more( $settings );
 	?>
 	<div
 		class="sow-blog sow-blog-layout-<?php echo esc_attr( $instance['template'] ); ?>"
@@ -50,14 +42,6 @@
 		<?php $this->paginate_links( $settings, $posts, $instance ); ?>
 		<?php do_action( 'siteorigin_widgets_blog_output_after', $settings ); ?>
 	</div>
-	<?php
-	if (
-		$settings['content'] == 'full' &&
-		apply_filters( 'siteorigin_widgets_blog_full_content_read_more', true )
-	) {
-		remove_filter( 'the_content_more_link', array( $this, 'alter_read_more_link' ) );
-	}
-
-	?>
+	<?php $this->override_read_more( $settings ); ?>
 <?php endif; ?>
 <?php wp_reset_postdata(); ?>
