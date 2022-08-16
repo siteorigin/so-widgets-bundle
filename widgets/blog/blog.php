@@ -996,10 +996,13 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	function paginate_links( $settings, $posts, $instance ) {
-		$pagination_markup = defined( 'SITEORIGIN_PREMIUM_VERSION' ) ? apply_filters( 'siteorigin_widgets_blog_pagination_markup', false, $settings, $posts, $instance ) : false;
+		$addon_active = class_exists( 'SiteOrigin_Premium' ) && ! empty( SiteOrigin_Premium::single()->get_active_addons()['plugin/blog'] );
+		if ( $addon_active ) {
+			$pagination_markup = apply_filters( 'siteorigin_widgets_blog_pagination_markup', false, $settings, $posts, $instance );
+		}
 
 		if ( empty( $pagination_markup ) ) {
-			if ( isset( $settings['pagination_reload'] ) && $settings['pagination_reload'] == 'ajax' ) {
+			if ( $addon_active && isset( $settings['pagination_reload'] ) && $settings['pagination_reload'] == 'ajax' ) {
 				$current = 99999;
 				$show_all_prev_next = true;
 			} else {
@@ -1016,9 +1019,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				'prev_text' => is_rtl() ? '&rarr;' : '&larr;',
 				'next_text' => is_rtl() ? '&larr;' : '&rarr;',
 			) );
-		}
-
-		if ( ! empty( $pagination_markup ) ) {
+		} else {
 			?>
 			<nav class="sow-post-navigation">
 				<h2 class="screen-reader-text"><?php esc_html_e( 'Post navigation', 'so-widgets-bundle' ); ?></h2>
