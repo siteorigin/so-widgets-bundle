@@ -89,6 +89,10 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'callback' => 'select',
 								'args' => array( 'content_type' ),
 							),
+							'state_handler' => array(
+								'active_template[standard,masonry,grid,offset,alternate]' => array( 'slideDown' ),
+								'_else[active_template]' => array( 'slideUp' ),
+							),
 						),
 						'read_more' => array(
 							'type' => 'checkbox',

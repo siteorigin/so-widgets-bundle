@@ -307,6 +307,7 @@
 		"label": "Portfolio",
 		"values": {
 			"settings": {
+				"content": "full",
 				"columns": 3,
 				"filter_categories": "true",
 				"categories": true
