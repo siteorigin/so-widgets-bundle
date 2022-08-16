@@ -4,8 +4,7 @@
 		echo $args['before_title'] . $instance['title'] . $args['after_title'];
 	endif;
 
-	$this->alter_read_more( $settings );
-	endif;
+	$this->override_read_more( $settings );
 	?>
 	<div
 		class="sow-blog sow-blog-layout-<?php echo esc_attr( $instance['template'] ); ?>"
@@ -41,6 +40,6 @@
 		</div>
 		<?php $this->paginate_links( $settings, $posts, $instance ); ?>
 	</div>
-	<?php $this->alter_read_more( $settings ); ?>
+	<?php $this->override_read_more( $settings ); ?>
 <?php endif; ?>
 <?php wp_reset_postdata(); ?>
