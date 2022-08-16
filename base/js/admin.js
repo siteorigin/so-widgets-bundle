@@ -1447,6 +1447,7 @@ var sowbForms = window.sowbForms || {};
 						(
 							! $$.hasClass( 'siteorigin-widget-input-color' ) &&
 							! $$.hasClass( 'siteorigin-widget-input-slider' ) &&
+							! $$.is( 'siteorigin-widget-input-select' ) &&
 							! $$.attr( 'type' ) == 'checkbox'
 						)
 					) {
