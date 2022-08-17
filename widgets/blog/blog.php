@@ -1019,7 +1019,9 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				'prev_text' => is_rtl() ? '&rarr;' : '&larr;',
 				'next_text' => is_rtl() ? '&larr;' : '&rarr;',
 			) );
-		} else {
+		}
+
+		if ( ! empty( $pagination_markup ) ) {
 			?>
 			<nav class="sow-post-navigation">
 				<h2 class="screen-reader-text"><?php esc_html_e( 'Post navigation', 'so-widgets-bundle' ); ?></h2>
