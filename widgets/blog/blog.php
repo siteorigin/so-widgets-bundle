@@ -89,11 +89,24 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'callback' => 'select',
 								'args' => array( 'content_type' ),
 							),
+							'state_handler' => array(
+								'active_template[standard,masonry,grid,offset,alternate]' => array( 'slideDown' ),
+								'_else[active_template]' => array( 'slideUp' ),
+							),
 						),
 						'read_more' => array(
 							'type' => 'checkbox',
 							'label' => __( 'Post Excerpt Read More Link', 'so-widgets-bundle' ),
 							'description' => __( 'Display the Read More link below the post excerpt.', 'so-widgets-bundle' ),
+							'state_handler' => array(
+								'content_type[excerpt]' => array( 'show' ),
+								'_else[content_type]' => array( 'hide' ),
+							),
+						),
+						'excerpt_length' => array(
+							'type' => 'number',
+							'label' => __( 'Excerpt Length', 'so-widgets-bundle' ),
+							'default' => 55,
 							'state_handler' => array(
 								'content_type[excerpt]' => array( 'show' ),
 								'_else[content_type]' => array( 'hide' ),
@@ -291,7 +304,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								),
 								'background_opacity_hover' => array(
 									'type' => 'slider',
-									'label' => __( 'Background Opacity Hover', 'so-widgets-bundle' ),
+									'label' => __( 'Background Hover Opacity', 'so-widgets-bundle' ),
 									'min' => 0,
 									'max' => 1,
 									'step' => 0.01,
@@ -354,6 +367,15 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 										'filter_categories[hide]' => array( 'hide' ),
 									),
 								),
+								'text_transform' => array(
+									'type' => 'checkbox',
+									'label' => __( 'Capitalize Categories', 'so-widgets-bundle' ),
+									'default' => true,
+									'state_handler' => array(
+										'filter_categories[show]' => array( 'show' ),
+										'filter_categories[hide]' => array( 'hide' ),
+									),
+								),
 								'color' => array(
 									'type' => 'color',
 									'label' => __( 'Color', 'so-widgets-bundle' ),
@@ -367,15 +389,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 									'type' => 'color',
 									'label' => __( 'Hover Color', 'so-widgets-bundle' ),
 									'default' => '#2d2d2d',
-									'state_handler' => array(
-										'filter_categories[show]' => array( 'show' ),
-										'filter_categories[hide]' => array( 'hide' ),
-									),
-								),
-								'text_transform' => array(
-									'type' => 'checkbox',
-									'label' => __( 'Capitalize Categories', 'so-widgets-bundle' ),
-									'default' => true,
 									'state_handler' => array(
 										'filter_categories[show]' => array( 'show' ),
 										'filter_categories[hide]' => array( 'hide' ),
@@ -493,7 +506,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								),
 								'border_color_hover' => array(
 									'type' => 'color',
-									'label' => __( 'Border Color Hover', 'so-widgets-bundle' ),
+									'label' => __( 'Border Hover Color', 'so-widgets-bundle' ),
 									'default' => '#f14e4e',
 								),
 								'background' => array(
@@ -970,8 +983,40 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	function override_read_more( $settings, $setup = true ) {
+		// Read More Override.
+		if ( $settings['content'] == 'full' && apply_filters( 'siteorigin_widgets_blog_full_content_read_more', true ) ) {
+			if ( $setup ) {
+				set_query_var( 'siteorigin_blog_read_more', ! empty( $settings['read_more_text'] ) ? $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' ) );
+				add_filter( 'the_content_more_link', array( $this, 'alter_read_more_link' ) );
+			} else {
+				remove_filter( 'the_content_more_link', array( $this, 'alter_read_more_link' ) );
+			}
+		}
+
+		if ( $setup ) {
+			set_query_var(
+				'siteorigin_blog_excerpt_length',
+				apply_filters( 'siteorigin_widgets_blog_excerpt_length', ! empty( $settings['excerpt_length'] ) ? $settings['excerpt_length'] : 55 )
+			);
+			add_filter( 'excerpt_length', array( $this, 'alter_excerpt_length' ), 1000 );
+			add_filter( 'excerpt_more', array( $this, 'alter_excerpt_more_indicator' ) );
+		} else {
+			remove_filter( 'excerpt_length', array( $this, 'alter_excerpt_length' ), 1000 );
+			remove_filter( 'the_content_more_link', array( $this, 'alter_excerpt_more_indicator' ) );
+		}
+	}
+
 	function alter_read_more_link( $link ) {
 		return '<a class="sow-more-link more-link excerpt" href="' . esc_url( get_permalink() ) . '"> ' . esc_html( get_query_var( 'siteorigin_blog_read_more' ) ) . '<span class="sow-more-link-arrow">&rarr;</span></a>';
+	}
+
+	function alter_excerpt_more_indicator( $indicator ) {
+		return '...';
+	}
+
+	function alter_excerpt_length( $length = 55 ) {
+		return get_query_var( 'siteorigin_blog_excerpt_length' );
 	}
 
 	static public function generate_excerpt( $settings ) {
@@ -980,10 +1025,10 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$read_more_text = '<a class="sow-more-link more-link excerpt" href="' . esc_url( get_permalink() ) . '">
 			' . esc_html( $read_more_text ) . '<span class="sow-more-link-arrow">&rarr;</span></a>';
 		}
-		$length = apply_filters( 'siteorigin_widgets_blog_excerpt_length', 55 );
+
+		$length = get_query_var( 'siteorigin_blog_excerpt_length' );
 		$excerpt = get_the_excerpt();
 		$excerpt_add_read_more = str_word_count( $excerpt ) >= $length;
-
 		if ( ! has_excerpt() ) {
 			$excerpt = wp_trim_words( $excerpt, $length, '...' );
 		}
@@ -996,10 +1041,13 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	function paginate_links( $settings, $posts, $instance ) {
-		$pagination_markup = defined( 'SITEORIGIN_PREMIUM_VERSION' ) ? apply_filters( 'siteorigin_widgets_blog_pagination_markup', false, $settings, $posts, $instance ) : false;
+		$addon_active = class_exists( 'SiteOrigin_Premium' ) && ! empty( SiteOrigin_Premium::single()->get_active_addons()['plugin/blog'] );
+		if ( $addon_active ) {
+			$pagination_markup = apply_filters( 'siteorigin_widgets_blog_pagination_markup', false, $settings, $posts, $instance );
+		}
 
 		if ( empty( $pagination_markup ) ) {
-			if ( isset( $settings['pagination_reload'] ) && $settings['pagination_reload'] == 'ajax' ) {
+			if ( $addon_active && isset( $settings['pagination_reload'] ) && $settings['pagination_reload'] == 'ajax' ) {
 				$current = 99999;
 				$show_all_prev_next = true;
 			} else {
@@ -1022,7 +1070,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			?>
 			<nav class="sow-post-navigation">
 				<h2 class="screen-reader-text"><?php esc_html_e( 'Post navigation', 'so-widgets-bundle' ); ?></h2>
-				<div class="sow-nav-links">
+				<div class="sow-nav-links<?php if ( ! empty( $settings['pagination'] ) ) echo ' sow-post-pagination-' . esc_attr( $settings['pagination'] ); ?>">
 					<?php echo $pagination_markup; ?>
 				</div>
 			</nav>

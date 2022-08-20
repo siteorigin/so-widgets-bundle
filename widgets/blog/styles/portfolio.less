@@ -1,5 +1,6 @@
 @categories: default;
 @columns: 3;
+@column_width: 50%;
 @responsive_breakpoint: 780px;
 
 // Pagination.
@@ -93,6 +94,7 @@
 	article {
 		margin-bottom: 30px;
 		padding: 0 1.1667%;
+		width: @column_width;
 
 		@media (max-width: @responsive_breakpoint) {
 			width: 100%;

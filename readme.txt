@@ -106,6 +106,10 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.40.0 - 20 August 2022 =
+* Blog: Added `Excerpt Length` setting. The excerpt length can also be set using `siteorigin_widgets_blog_excerpt_length`.
+* Blog: Resolved a Portfolio template column sizing issue.
+
 = 1.39.0 - 08 August 2022 =
 * New Widget! Introducing the SiteOrigin Blog Widget.
 
