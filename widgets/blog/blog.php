@@ -907,6 +907,12 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	static public function post_meta( $settings ) {
+		if ( is_sticky() ) {
+			?>
+			<span class="sow-featured-post"><?php echo esc_html__( 'Sticky', 'so-widgets-bundle' ); ?></span>
+			<?php
+		}
+
 		if ( $settings['date'] ) :	
 			$date_format = isset( $settings['date_format'] ) ? $settings['date_format'] : null;
 			?>
