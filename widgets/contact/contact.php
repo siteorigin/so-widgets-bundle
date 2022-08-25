@@ -1300,7 +1300,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'label' => $field['label'],
 						'value' => $value,
 					);
-
+					break;
 				default:
 					$email_fields['message'][] = array(
 						'label' => $field['label'],
