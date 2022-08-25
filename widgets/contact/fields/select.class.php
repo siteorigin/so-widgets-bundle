@@ -5,10 +5,10 @@ class SiteOrigin_Widget_ContactForm_Field_Select extends SiteOrigin_Widget_Conta
 	public function render_field( $options ) {
 		?>
 		<select
-			name="<?php echo esc_attr( $options['field_name'] ); ?><?php echo $options['field']['multiple_select'] ? '[]' : ''; ?>"
+			name="<?php echo esc_attr( $options['field_name'] ); ?><?php echo ! empty( $options['field']['multiple_select'] ) ? '[]' : ''; ?>"
 			id="<?php echo esc_attr( $options['field_id'] ); ?>"
 			<?php self::add_custom_attrs( 'select' ); ?>
-			<?php echo $options['field']['multiple_select'] ? 'multiple' : ''; ?>
+			<?php echo ! empty( $options['field']['multiple_select'] ) ? 'multiple' : ''; ?>
 		>
 			<?php
 			if ( $options['show_placeholder'] ) {
