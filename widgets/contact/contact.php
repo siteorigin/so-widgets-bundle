@@ -193,11 +193,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					),
 
 					'multiple_select' => array(
-						'type'        => 'checkbox',
-						'label'       => __( 'Allow multiple selections', 'so-widgets-bundle' ),
+						'type'  => 'checkbox',
+						'label' => __( 'Allow multiple selections', 'so-widgets-bundle' ),
 						'state_handler' => array(
 							'field_type_{$repeater}[select]' => array( 'show' ),
-							'_else[field_type_{$repeater}]'      => array( 'hide' ),
+							'_else[field_type_{$repeater}]' => array( 'hide' ),
 						),
 					),
 
