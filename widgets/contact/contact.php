@@ -1501,6 +1501,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 			$body .= "\n\n";
 		}
+		foreach ( $email_fields['message'] as $m ) {
+			$body .= '<strong>' . $m['label'] . ':</strong>';
+			$body .= "\n";
+			$body .= htmlspecialchars( $m['value'] );
+			$body .= "\n\n";
+		}
 		$body = wpautop( trim( $body ) );
 
 		if ( $this->is_dev_email($instance['settings']['to']) || empty( $instance['settings']['to'] ) ) {
