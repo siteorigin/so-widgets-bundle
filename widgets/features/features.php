@@ -253,7 +253,6 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			'more_text_bottom_align' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Bottom align More link text', 'so-widgets-bundle' ),
-				'default' => true,
 			),
 
 			'title_link' => array(
