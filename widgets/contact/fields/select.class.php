@@ -5,9 +5,10 @@ class SiteOrigin_Widget_ContactForm_Field_Select extends SiteOrigin_Widget_Conta
 	public function render_field( $options ) {
 		?>
 		<select
-			name="<?php echo esc_attr( $options['field_name'] ); ?>"
+			name="<?php echo esc_attr( $options['field_name'] ); ?><?php echo ! empty( $options['field']['multiple_select'] ) ? '[]' : ''; ?>"
 			id="<?php echo esc_attr( $options['field_id'] ); ?>"
 			<?php self::add_custom_attrs( 'select' ); ?>
+			<?php echo ! empty( $options['field']['multiple_select'] ) ? 'multiple' : ''; ?>
 		>
 			<?php
 			if ( $options['show_placeholder'] ) {
@@ -23,10 +24,11 @@ class SiteOrigin_Widget_ContactForm_Field_Select extends SiteOrigin_Widget_Conta
 					<?php
 				}
 
-				foreach ( $options['field']['options'] as $option ) {
+				foreach ( $options['field']['options'] as $i => $option ) {
+					$value = ! empty( $options['field']['multiple_select'] ) && is_array( $options['value'] ) ? $options['value'][ $i ] : $options['value']; 
 					?>
 					<option
-						value="<?php echo esc_attr( $option['value'] ) ?>"<?php echo selected( $option['value'], $options['value'], false ); ?>>
+						value="<?php echo esc_attr( $option['value'] ) ?>"<?php echo selected( $option['value'], $value, false ); ?>>
 						<?php echo esc_html( $option['value'] ); ?>
 					</option>
 				<?php

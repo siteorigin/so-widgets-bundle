@@ -907,6 +907,12 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	static public function post_meta( $settings ) {
+		if ( is_sticky() ) {
+			?>
+			<span class="sow-featured-post"><?php echo esc_html__( 'Sticky', 'so-widgets-bundle' ); ?></span>
+			<?php
+		}
+
 		if ( $settings['date'] ) :	
 			$date_format = isset( $settings['date_format'] ) ? $settings['date_format'] : null;
 			?>
@@ -1028,7 +1034,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 		$length = get_query_var( 'siteorigin_blog_excerpt_length' );
 		$excerpt = get_the_excerpt();
-		$excerpt_add_read_more = str_word_count( $excerpt ) >= $length;
+		$excerpt_add_read_more = str_word_count( $excerpt, 0, '0..9' ) >= $length;
 		if ( ! has_excerpt() ) {
 			$excerpt = wp_trim_words( $excerpt, $length, '...' );
 		}

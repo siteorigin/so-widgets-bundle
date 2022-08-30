@@ -192,6 +192,15 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						)
 					),
 
+					'multiple_select' => array(
+						'type'  => 'checkbox',
+						'label' => __( 'Allow multiple selections', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'field_type_{$repeater}[select]' => array( 'show' ),
+							'_else[field_type_{$repeater}]' => array( 'hide' ),
+						),
+					),
+
 					// This are for select, radio, and checkboxes
 					'options'  => array(
 						'type'          => 'repeater',
@@ -1282,7 +1291,16 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						$email_fields[ $field['type'] ] = $value;
 					}
 					break;
+				case 'select':
+					if ( ! empty( $field['multiple_select'] ) && is_array( $value ) ) {
+						$value = implode( ', ', $value );
+					} 
 
+					$email_fields['message'][] = array(
+						'label' => $field['label'],
+						'value' => $value,
+					);
+					break;
 				default:
 					$email_fields['message'][] = array(
 						'label' => $field['label'],
@@ -1483,14 +1501,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 			$body .= "\n\n";
 		}
-
-		if ( ! empty( $email_fields['message'] ) ) {
-			foreach ( $email_fields['message'] as $m ) {
-				$body .= '<strong>' . $m['label'] . ':</strong>';
-				$body .= "\n";
-				$body .= htmlspecialchars( $m['value'] );
-				$body .= "\n\n";
-			}
+		foreach ( $email_fields['message'] as $m ) {
+			$body .= '<strong>' . $m['label'] . ':</strong>';
+			$body .= "\n";
+			$body .= htmlspecialchars( $m['value'] );
+			$body .= "\n\n";
 		}
 		$body = wpautop( trim( $body ) );
 
