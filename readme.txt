@@ -106,6 +106,11 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.40.1 - 30 August 2022 =
+* Contact Form: Added a new Dropdown Select setting `Allow multiple selections`.
+* Blog: Added a `Sticky` indicator to post meta.
+* Blog: Factored numbers into the Excerpt Length count.
+
 = 1.40.0 - 20 August 2022 =
 * Blog: Added `Excerpt Length` setting. The excerpt length can also be set using `siteorigin_widgets_blog_excerpt_length`.
 * Blog: Resolved a Portfolio template column sizing issue.
