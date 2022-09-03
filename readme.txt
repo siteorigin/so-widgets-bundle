@@ -106,6 +106,9 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.40.2 - 03 September 2022 =
+* Blog: Added SiteOrigin Premium Blog Addon CTA.
+
 = 1.40.1 - 30 August 2022 =
 * Contact Form: Added a new Dropdown Select setting `Allow multiple selections`.
 * Blog: Added a `Sticky` indicator to post meta.
