@@ -448,7 +448,7 @@ jQuery( window.sowb ).on( 'sow-google-map-loaded', function() {
 jQuery(function ($) {
 	sowb.googleMapsData = [];
 	sowb.googleMapsData.libraries = [];
-	sowb.setupGoogleMaps = function( e, forceLoad = false  ) {
+	sowb.setupGoogleMaps = function( e, forceLoad = false ) {
 		var $mapCanvas = $( '.sow-google-map-canvas' );
 		if ( ! $mapCanvas.length ) {
 			return;
@@ -584,8 +584,10 @@ jQuery(function ($) {
 			$( '.sow-google-map-consent button' ).on( 'click', function() {
 				$( '.sow-google-map-consent' ).remove();
 				$( '.sow-google-map-canvas' ).show();
-				$( 'body' ).append( '<script async type="text/javascript" id="sow-google-maps-js" src="' + apiUrl + '">' );
-				sowb.mapsApiInitialized = true;
+				if ( ! sowb.mapsApiInitialized ) {
+					$( 'body' ).append( '<script async type="text/javascript" id="sow-google-maps-js" src="' + apiUrl + '">' );
+					sowb.mapsApiInitialized = true;
+				}
 			} );
 		} else {
 			$( 'body' ).append( '<script async type="text/javascript" id="sow-google-maps-js" src="' + apiUrl + '">' );
