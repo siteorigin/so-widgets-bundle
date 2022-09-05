@@ -200,11 +200,23 @@
 		}
 
 		& when ( @more_text_bottom_align = true ) {
-			&.sow-icon-container-position-right .textwidget,
-			&.sow-icon-container-position-left .textwidget {
+			.sow-features-feature-right-left-container {
 				display: flex;
-				justify-content: space-between;
-				flex-direction: column;
+				flex-direction: inherit;
+			}
+
+			&.sow-icon-container-position-right,
+			&.sow-icon-container-position-left {
+				align-items: baseline;
+				.textwidget {
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+				}
+			}
+
+			&.sow-icon-container-position-bottom .sow-icon-container {
+				order: 3;
 			}
 		}
 

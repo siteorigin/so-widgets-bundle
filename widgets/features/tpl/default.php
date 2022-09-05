@@ -9,7 +9,7 @@ if ( ! empty( $instance['features'] ) ) {
 	<?php if ( isset( $instance['features'] ) ) : ?>
 		<?php foreach( $instance['features'] as $i => $feature ) : ?>
 			<?php
-			$top_right_read_more = ! empty( $feature['more_text'] ) && 
+			$right_left_read_more = ! empty( $feature['more_text'] ) && 
 			(
 				empty( $instance['more_text_bottom_align'] ) ||
 				(
@@ -22,6 +22,9 @@ if ( ! empty( $instance['features'] ) ) {
 				class="sow-features-feature sow-icon-container-position-<?php echo esc_attr( $feature['container_position'] ); ?> <?php if ( floor( $i / $instance['per_row'] ) == $last_row ) echo 'sow-features-feature-last-row'; ?>"
 				style="display: flex; flex-direction: <?php echo $this->get_feature_flex_direction( $feature['container_position'], ! empty( $instance['more_text_bottom_align'] ) ); ?>; float: left; width: <?php echo round( 100 / $instance['per_row'], 3 ); ?>%;"
 			>
+			<?php if ( $right_left_read_more ) : ?>
+				<div class="sow-features-feature-right-left-container" style="display: flex; flex-direction: inherit;">
+			<?php endif; ?>
 
 				<?php if ( ! empty( $feature['more_url'] ) && $instance['icon_link'] && empty( $instance['link_feature'] ) ) : ?>
 					<a
@@ -67,7 +70,7 @@ if ( ! empty( $instance['features'] ) ) {
 				<?php endif; ?>
 
 				<div class="textwidget">
-					<?php if ( $top_right_read_more ) : ?>
+					<?php if ( $right_left_read_more ) : ?>
 						<div class="sow-features-feature-content">
 					<?php endif; ?>
 
@@ -91,7 +94,7 @@ if ( ! empty( $instance['features'] ) ) {
 						<?php echo do_shortcode( $feature['text'] ); ?>
 					<?php endif; ?>
 
-					<?php if ( $top_right_read_more ) : ?>
+					<?php if ( $right_left_read_more ) : ?>
 						</div>
 						<p class="sow-more-text">
 							<?php if( ! empty( $feature['more_url'] ) ) echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : '' ) . '>'; ?>
@@ -100,6 +103,9 @@ if ( ! empty( $instance['features'] ) ) {
 						</p>
 					<?php endif; ?>
 				</div>
+				<?php if ( $right_left_read_more ) : ?>
+					</div>
+				<?php endif; ?>
 				<?php if (
 					! empty( $feature['more_text'] ) &&
 					! empty( $instance['more_text_bottom_align'] ) &&
