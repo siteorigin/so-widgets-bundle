@@ -358,7 +358,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		return $less_vars;
 	}
 
-	function get_feature_flex_direction( $position ) {
+	function get_feature_flex_direction( $position, $more_text_bottom_align = false ) {
 		switch ( $position ) {
 			case 'top':
 				$style = 'column';
@@ -369,7 +369,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				break;
 			
 			case 'bottom':
-				$style = 'column-reverse';
+				$style = $more_text_bottom_align ? 'column' : 'column-reverse';
 				break;
 			
 			case 'left':			
