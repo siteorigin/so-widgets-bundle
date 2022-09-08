@@ -1036,7 +1036,11 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		$excerpt = get_the_excerpt();
 		$excerpt_add_read_more = str_word_count( $excerpt, 0, '0..9' ) >= $length;
 		if ( ! has_excerpt() ) {
-			$excerpt = wp_trim_words( $excerpt, $length, '...' );
+			$excerpt = wp_trim_words(
+				$excerpt,
+				$length,
+				apply_filters( 'siteorigin_widgets_blog_excerpt_trim', '...' )
+			);
 		}
 
 		if ( $settings['read_more'] && ( has_excerpt() || $excerpt_add_read_more ) ) {
