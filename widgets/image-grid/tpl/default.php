@@ -3,6 +3,7 @@
  * @var $images array
  * @var $max_height int
  * @var $max_width int
+ * @var $title_position string
  */
 ?>
 <?php if( ! empty( $images ) ) : ?>
@@ -11,6 +12,9 @@
 		<?php if ( !empty( $max_height ) ) echo 'data-max-height="' . (int) $max_height . '"' ?>>
 		<?php foreach( $images as $image ) : ?>
 			<div class="sow-image-grid-image">
+				<?php if ( ! empty( $title_position ) && ! empty( $image['title'] ) && $title_position == 'above' ) : ?>
+					<?php echo $args['before_title'] . wp_kses_post( $image['title'] ) . $args['after_title']; ?>
+				<?php endif; ?>
 				<?php if ( ! empty( $image['url'] ) ) : ?>
 					<a href="<?php echo sow_esc_url( $image['url'] ) ?>"
 					<?php foreach( $image['link_attributes'] as $att => $val ) : ?>
@@ -22,6 +26,9 @@
 				<?php echo $image['image_html']; ?>
 				<?php if ( ! empty( $image['url'] ) ) : ?>
 					</a>
+				<?php endif; ?>
+				<?php if ( ! empty( $title_position ) && ! empty( $image['title'] ) && $title_position == 'below' ) : ?>
+					<?php echo $args['before_title'] . wp_kses_post( $image['title'] ) . $args['after_title']; ?>
 				<?php endif; ?>
 			</div>
 		<?php endforeach; ?>
