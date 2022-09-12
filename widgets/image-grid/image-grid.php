@@ -419,7 +419,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 			$less['title_alignment'] = ! empty( $instance['display']['title_display'] ) ? $instance['display']['title_alignment'] : '';
 			$title_font = siteorigin_widget_get_font( $instance['display']['title_font'] );
 			$less['title_font'] = $title_font['family'];
-			if ( ! empty( $title_font['family'] ) ) {
+			if ( ! empty( $title_font['weight'] ) ) {
 				$less['title_font_weight'] = $title_font['weight_raw'];
 				$less['title_font_style'] = $title_font['style'];
 			}
