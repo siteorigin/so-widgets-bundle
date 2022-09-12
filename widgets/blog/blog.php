@@ -8,8 +8,6 @@ Documentation: https://siteorigin.com/widgets-bundle/blog-widget/
 */
 
 class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
-	private $image_sizes;
-
 	function __construct() {
 		parent::__construct(
 			'sow-blog',
@@ -27,6 +25,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	function initialize() {
+		add_action( 'wp_loaded', array( $this, 'register_image_sizes' ) );
 		$this->register_frontend_styles(
 			array(
 				array(
@@ -37,11 +36,26 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		);
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_template_assets' ) );
 
-		$this->image_sizes = apply_filters( 'siteorigin_widgets_blog_image_sizes', array(
-			'portfolio' => array( 375, 375 ),
-			'grid' => array( 420, 275 ),
-			'alternate' => array( 475, 315 ),
+	}
+
+	function register_image_sizes() {
+		$image_sizes = apply_filters( 'siteorigin_widgets_blog_image_sizes', array(
+			'portfolio' => array(
+				375,
+				375
+			),
+			'grid' => array(
+				720,
+				480
+			),
+			'alternate' => array(
+				475,
+				315
+			)
 		) );
+		foreach ( $image_sizes as $k => $size ) {
+			add_image_size( 'sow-blog-' . $k, (int) $size[0], (int) $size[1], true );
+		}
 	}
 
 	function get_widget_form() {
@@ -981,11 +995,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				<a href="<?php the_permalink(); ?>">
 					<?php
 					// Check if this template has a different default image size.
-					if (
-						$size == 'post-thumbnail' &&
-						! empty( $this->image_sizes[ $settings['template'] ] )
-					) {
-						$size = $this->image_sizes[ $settings['template'] ];
+					if ( $size == 'post-thumbnail' && has_image_size( 'sow-blog-' . $settings['template'] ) ) {
+						$size = 'sow-blog-' . $settings['template'];
 					}
 					the_post_thumbnail( $size );
 					?>
