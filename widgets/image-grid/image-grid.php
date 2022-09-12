@@ -184,7 +184,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 					'title_position' => array(
 						'type' => 'select',
 						'label' => __( 'Title Position', 'so-widgets-bundle' ),
-						'default' => 'after',
+						'default' => 'below',
 						'options' => array(
 							'above' => __( 'Above Image', 'so-widgets-bundle' ),
 							'below' => __( 'Below Image', 'so-widgets-bundle' ),
