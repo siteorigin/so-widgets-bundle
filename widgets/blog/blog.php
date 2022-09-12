@@ -1018,7 +1018,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	function alter_excerpt_more_indicator( $indicator ) {
-		return '...';
+		return apply_filters( 'siteorigin_widgets_blog_excerpt_trim', '...' );
 	}
 
 	function alter_excerpt_length( $length = 55 ) {
