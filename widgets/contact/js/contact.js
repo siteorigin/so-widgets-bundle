@@ -5,8 +5,6 @@ window.sowb = window.sowb || {};
 sowb.SiteOriginContactForm = {
 	init: function ($, useRecaptcha) {
 		var $contactForms = $('form.sow-contact-form,.sow-contact-form-success');
-		$( '.sow-js-hp' ).hide();
-
 		$contactForms.each( function() {
 			var $el = $( this );
 			var formId = $el.attr( 'id' );
