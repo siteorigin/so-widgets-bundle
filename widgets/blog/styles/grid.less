@@ -56,15 +56,18 @@
 		column-gap: @column_spacing;
 		display: grid;
 		grid-template-columns: repeat( @columns, 1fr );
+
+		article {
+			background: @post_background;
+			border: 1px solid @post_border_color;
+
+			@media (max-width: @responsive_breakpoint) {
+				width: 100%;
+			}
+		}
 	}
 
 	article {
-		background: @post_background;
-		border: 1px solid @post_border_color;
-
-		@media (max-width: @responsive_breakpoint) {
-			width: 100%;
-		}
 
 		.sow-entry-header {
 
