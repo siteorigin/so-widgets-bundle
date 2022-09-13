@@ -95,7 +95,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 				remove_filter( 'widget_text', 'do_shortcode', $widget_text_do_shortcode_priority );
 			}
 
-			$instance['text'] = apply_filters( 'widget_text', $instance['text'] );
+			$instance['text'] = apply_filters( 'widget_text', $instance['text'], $instance, $this );
 
 			if ( $widget_text_do_shortcode_priority !== false ) {
 				add_filter( 'widget_text', 'do_shortcode', $widget_text_do_shortcode_priority );
