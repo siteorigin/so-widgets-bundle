@@ -131,7 +131,7 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 			Breeze_PurgeCache::breeze_cache_flush();
 		}
 
-		if ( function_exists( 'run_litespeed_cache' ) ) {
+		if ( function_exists( 'run_litespeed_cache' ) && ! headers_sent() ) {
 			header( 'x-litespeed-purge: *' );
 		}
 	}
