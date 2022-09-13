@@ -171,7 +171,6 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 					'title_display' => array(
 						'type' => 'checkbox',
 						'label' => __( 'Display Image Title', 'so-widgets-bundle' ),
-						'default' => true,
 						'state_emitter' => array(
 							'callback' => 'conditional',
 							'args' => array(
@@ -222,6 +221,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 					'title_font_size' => array(
 						'type' => 'measurement',
 						'label' => __( 'Title Font Size', 'so-widgets-bundle' ),
+						'default' => '0.9rem',
 						'state_handler' => array(
 							'title_display[show]' => array( 'show' ),
 							'title_display[hide]' => array( 'hide' ),
