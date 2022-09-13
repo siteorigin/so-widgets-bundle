@@ -50,6 +50,11 @@
 
 .sow-blog-layout-alternate {
 
+	.sow-blog-posts article {
+		background: @post_background;
+		border: 1px solid @post_border_color;
+	}
+
 	article {
 		background: @post_background;
 		border: 1px solid @post_border_color;
@@ -58,34 +63,26 @@
 		margin-top: 0;
 		width: 100%;
 
+		.sow-entry-thumbnail {
+			width: 100%;
+		}
+
 		// Alternating featured image alignment.
 		@media (min-width: @responsive_breakpoint) {
+			.sow-entry-thumbnail {
+				width: 41.5006%;
+
+				a {
+					text-align: left;
+				}
+			}
 
 			&:nth-of-type(2n) {
 				flex-direction: row-reverse;
 			}
 
-			&:nth-of-type(2n) {
-
-				.sow-entry-thumbnail a {
-					text-align: right;
-				}
-			}
-		}
-
-		@media (max-width: @responsive_breakpoint) {
-			width: 100%;
-		}
-
-		.sow-entry-thumbnail {
-			width: 41.5006%;
-
-			@media (max-width: @responsive_breakpoint) {
-				width: 100%;
-
-				a {
-					text-align: left;
-				}
+			&:nth-of-type(2n) .sow-entry-thumbnail a {
+				text-align: right;
 			}
 		}
 

@@ -35,7 +35,8 @@
 @navigation_dots_mobile: default;
 
 .sow-carousel-container {
-	.sow-carousel-navigation-next  {
+
+	.sow-carousel-navigation-next {
 		margin-left: @navigation_arrow_margin;
 	}
 
@@ -43,7 +44,7 @@
 		content: "\e601";
 	}
 
-	.sow-carousel-navigation-prev   {
+	.sow-carousel-navigation-prev {
 		margin-right: @navigation_arrow_margin;
 	}
 
@@ -108,7 +109,9 @@
 	}
 
 	.sow-carousel-wrapper {
+
 		.sow-carousel-items {
+
 			.sow-carousel-item {
 				margin: @item_margin;
 
@@ -132,6 +135,7 @@
 		}
 
 		.slick-dots {
+
 			& when not ( isnumber( @navigation_dots_desktop ) ) {
 				@media (min-width: @breakpoint_tablet_landscape) {
 					display: none !important;
@@ -155,7 +159,8 @@
 					display: none !important;
 				}
 			}
-			li { 
+
+			li {
 
 				&.slick-active button:before {
 					color: @navigation_dots_color_hover;

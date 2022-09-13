@@ -1,6 +1,6 @@
 <?php $thumbnail_class = ! $settings['featured_image'] || ! has_post_thumbnail() ? 'sow-no-thumbnail' : ''; ?>
 <article id="post-<?php the_ID(); ?>" <?php post_class( "sow-blog-columns $thumbnail_class" ); ?> style="display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 30px;">
-	<?php SiteOrigin_Widget_Blog_Widget::post_featured_image( $settings ); ?>
+	<?php $this->post_featured_image( $settings ); ?>
 	<div class="sow-blog-content-wrapper">
 		<header class="sow-entry-header" style="margin-bottom: 18px;">
 			<?php SiteOrigin_Widget_Blog_Widget::generate_post_title(); ?>
