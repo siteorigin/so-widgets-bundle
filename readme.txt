@@ -109,7 +109,7 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 = 1.41.0 - 13 September 2022 =
 * Blog: Adjusted `article` tag CSS to ensure priority over theme styling.
 * Blog: Removed featured image center alignment for the Alternate template.
-* Blog: Added featured image image sizes for the Grid, Alternate, and Portfolio templates.
+* Blog: Added featured image sizes for the Grid, Alternate, and Portfolio templates.
 * Features: Added a new setting `Bottom align More link text.`
 * Google Maps: Only setup consent if Google Maps not already setup.
 * LiteSpeed Cache: Ensured purge header isn't set if headers already sent.
