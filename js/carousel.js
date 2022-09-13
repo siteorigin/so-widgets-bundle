@@ -164,7 +164,7 @@ jQuery( function ( $ ) {
 							$items.slick( 'slickGoTo', 0 );
 						}
 					// If slidesToScroll is higher than the the number of visible items, go to the last item.
-					} else if ( $$.data( 'widget' ) == 'post' && slidesToScroll >= numVisibleItemsFloor ) {
+					} else if ( $$.data( 'widget' ) == 'post' && $$.data( 'carousel_settings' ).theme == 'undefined' && slidesToScroll >= numVisibleItemsFloor ) {
 						// There's more slides than items, update Slick settings to allow for scrolling of partially visible items.
 						$items.slick( 'slickSetOption', 'slidesToShow', numVisibleItemsFloor );
 						$items.slick( 'slickSetOption', 'slidesToScroll', numVisibleItemsFloor );
