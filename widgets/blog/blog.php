@@ -35,10 +35,27 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			)
 		);
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_template_assets' ) );
+
 	}
 
 	function register_image_sizes() {
-		add_image_size( 'sow-blog-portfolio', 375, 375, true );
+		$image_sizes = apply_filters( 'siteorigin_widgets_blog_image_sizes', array(
+			'portfolio' => array(
+				375,
+				375
+			),
+			'grid' => array(
+				720,
+				480
+			),
+			'alternate' => array(
+				475,
+				315
+			)
+		) );
+		foreach ( $image_sizes as $k => $size ) {
+			add_image_size( 'sow-blog-' . $k, (int) $size[0], (int) $size[1], true );
+		}
 	}
 
 	function get_widget_form() {
@@ -898,6 +915,9 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$template_settings['filter_categories'] = ! empty( $instance['settings']['filter_categories'] );
 		}
 
+		// Add the current template to the settings array to allow for easier referencing.
+		$instance['settings']['template'] = $instance['template'];
+
 		return array(
 			'title' => $instance['title'],
 			'settings' => $instance['settings'],
@@ -964,18 +984,22 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		<?php endif;
 	}
 
-	static public function post_featured_image( $settings, $categories = false, $size = 'post-thumbnail' ) {
+	public function post_featured_image( $settings, $categories = false, $size = 'post-thumbnail' ) {
 		if ( $settings['featured_image'] && has_post_thumbnail() ) : ?>
 			<div class="sow-entry-thumbnail">
 				<?php if ( $categories && $settings['categories'] && has_category() ) : ?>
 					<div class="sow-thumbnail-meta">
-						<?php
-						echo get_the_category_list();
-						?>
+						<?php echo get_the_category_list(); ?>
 					</div>
 				<?php endif; ?>
 				<a href="<?php the_permalink(); ?>">
-					<?php the_post_thumbnail( $size ); ?>
+					<?php
+					// Check if this template has a different default image size.
+					if ( $size == 'post-thumbnail' && has_image_size( 'sow-blog-' . $settings['template'] ) ) {
+						$size = 'sow-blog-' . $settings['template'];
+					}
+					the_post_thumbnail( $size );
+					?>
 				</a>
 			</div>
 			<?php
