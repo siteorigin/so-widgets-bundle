@@ -51,7 +51,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 			'images' => array(
 				'type' => 'repeater',
 				'label' => __( 'Images', 'so-widgets-bundle' ),
-				'item_name'  => __( 'Image', 'so-widgets-bundle' ),
+				'item_name' => __( 'Image', 'so-widgets-bundle' ),
 				'item_label' => array(
 					'selectorArray' => array(
 						array(
@@ -167,6 +167,100 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 							'flex-end' => __( 'Right', 'so-widgets-bundle' ),
 						),
 					),
+
+					'title_display' => array(
+						'type' => 'checkbox',
+						'label' => __( 'Display Image Title', 'so-widgets-bundle' ),
+						'state_emitter' => array(
+							'callback' => 'conditional',
+							'args' => array(
+								'title_display[show]: val',
+								'title_display[hide]: ! val',
+							),
+						),
+					),
+
+					'title_position' => array(
+						'type' => 'select',
+						'label' => __( 'Title Position', 'so-widgets-bundle' ),
+						'default' => 'below',
+						'options' => array(
+							'above' => __( 'Above Image', 'so-widgets-bundle' ),
+							'below' => __( 'Below Image', 'so-widgets-bundle' ),
+						),
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						)
+					),
+
+					'title_alignment' => array(
+						'type' => 'select',
+						'label' => __( 'Title Alignment', 'so-widgets-bundle' ),
+						'default' => 'center',
+						'options' => array(
+							'left' => __( 'Left', 'so-widgets-bundle' ),
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'right' => __( 'Right', 'so-widgets-bundle' ),
+						),
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						),
+					),
+
+					'title_font' => array(
+						'type' => 'font',
+						'label' => __( 'Title Font', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						),
+					),
+
+					'title_font_size' => array(
+						'type' => 'measurement',
+						'label' => __( 'Title Font Size', 'so-widgets-bundle' ),
+						'default' => '0.9rem',
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						),
+					),
+
+					'title_color' => array(
+						'type' => 'color',
+						'label' => __( 'Title Color', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						),
+					),
+					'title_padding' => array(
+						'type' => 'color',
+						'label' => __( 'Title Padding', 'so-widgets-bundle' ),
+						'type' => 'multi-measurement',
+						'autofill' => true,
+						'default' => '5px 0px 10px 0px',
+						'measurements' => array(
+							'top' => array(
+							'label' => __( 'Top', 'so-widgets-bundle' ),
+							),
+							'right' => array(
+								'label' => __( 'Right', 'so-widgets-bundle' ),
+							),
+							'bottom' => array(
+								'label' => __( 'Bottom', 'so-widgets-bundle' ),
+							),
+							'left' => array(
+								'label' => __( 'Left', 'so-widgets-bundle' ),
+							),
+						),
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						),
+					),
 				)
 			)
 		);
@@ -225,7 +319,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 
 				$image['image_html'] = wp_get_attachment_image( $image['image'], $instance['display']['attachment_size'], false, array(
 					'title' => $title,
-					'alt'   => $image['alt'],
+					'alt' => $image['alt'],
 					'class' => 'sow-image-grid-image_html',
 					'loading' => $lazy_load_current ? 'lazy' : '',
 				) );
@@ -236,6 +330,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 			'images' => $images,
 			'max_height' => $instance['display']['max_height'],
 			'max_width' => $instance['display']['max_width'],
+			'title_position' => ! empty( $instance['display']['title_display'] ) ? $instance['display']['title_position'] : false,
 		);
 	}
 
@@ -267,6 +362,10 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	}
 	
 	function modify_instance( $instance ) {
+		if ( empty( $instance ) ) {
+			return array();
+		}
+
 		if ( ! empty( $instance['display'] ) ) {
 			// Revert changes to `max_width` and `max_height` back to `number` fields.
 			if ( ! empty( $instance['display']['max_height'] ) ) {
@@ -291,8 +390,14 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 					$instance['display']['padding'] = "0px $spacing $spacing $spacing";
 				}
 			}
+
+			// If this Image Grid was created before the image title setting was added, disable it by default.
+			if ( ! isset( $instance['display']['title_display'] ) ) {
+				$instance['display']['title_display'] = false;
+			}
 		}
 		
+
 		return $instance;
 	}
 
@@ -304,12 +409,26 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	 * @return mixed
 	 */
 	function get_less_variables( $instance ) {
-		return array(
+		$less = array(
 			'padding' => ! empty( $instance['display']['padding'] ) ? $instance['display']['padding'] : '5px 5px 5px 5px',
 			'alignment_horizontal' => ! empty( $instance['display']['alignment_horizontal'] ) ? $instance['display']['alignment_horizontal'] : 'center',
 			'alignment_vertical' => ! empty( $instance['display']['alignment_vertical'] ) ? $instance['display']['alignment_vertical'] : 'baseline',
-
 		);
+
+		if ( ! empty( $instance['display']['title_display'] ) ) {
+			$less['title_alignment'] = ! empty( $instance['display']['title_display'] ) ? $instance['display']['title_alignment'] : '';
+			$title_font = siteorigin_widget_get_font( $instance['display']['title_font'] );
+			$less['title_font'] = $title_font['family'];
+			if ( ! empty( $title_font['weight'] ) ) {
+				$less['title_font_weight'] = $title_font['weight_raw'];
+				$less['title_font_style'] = $title_font['style'];
+			}
+			$less['title_font_size'] = ! empty( $instance['display']['title_font_size'] ) ? $instance['display']['title_font_size'] : '';
+			$less['title_color'] = ! empty( $instance['display']['title_color'] ) ? $instance['display']['title_color'] : '';
+			$less['title_padding'] = ! empty( $instance['display']['title_padding'] ) ? $instance['display']['title_padding'] : '';
+		}
+
+		return $less;
 	}
 
 	function get_form_teaser() {
