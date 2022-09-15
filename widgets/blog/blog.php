@@ -994,9 +994,16 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				<?php endif; ?>
 				<a href="<?php the_permalink(); ?>">
 					<?php
-					// Check if this template has a different default image size.
-					if ( $size == 'post-thumbnail' && has_image_size( 'sow-blog-' . $settings['template'] ) ) {
-						$size = 'sow-blog-' . $settings['template'];
+					if ( ! empty( $settings['featured_image_size'] ) ) {
+						$size = $settings['featured_image_size'];
+					} else {
+						// Check if this template has a different default image size.
+						if (
+							$size == 'post-thumbnail' &&
+							has_image_size( 'sow-blog-' . $settings['template'] )
+						) {
+							$size = 'sow-blog-' . $settings['template'];
+						}
 					}
 					the_post_thumbnail( $size );
 					?>
