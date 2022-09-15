@@ -419,6 +419,9 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			$variables['mobile_slides_to_show'] = ! empty( $responsive['mobile']['slides_to_show'] ) ? $responsive['mobile']['slides_to_show'] : $carousel_settings['slides_to_show']['mobile'];
 		}
 
+		// Negative values can be problematic so let's avoid them by ensuring everything is positive.
+		$variables = array_map( 'abs', $variables );
+
 		return $encode ? json_encode( $variables ) : $variables;
 	}
 
