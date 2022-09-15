@@ -134,6 +134,11 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'label' => __( 'Post Date', 'so-widgets-bundle' ),
 							'default' => true,
 						),
+						'featured_image_size' => array(
+							'type' => 'image-size',
+							'label' => __( 'Featured Image Size', 'siteorigin-premium' ),
+							'custom_size' => true,
+						),
 						'author' => array(
 							'type' => 'checkbox',
 							'label' => __( 'Post Author', 'so-widgets-bundle' ),
@@ -868,6 +873,17 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 					$instance['template'] = 'standard';
 					break;
 			}
+		}
+
+		// Add featured image default for instances of the Blog widget created prior to the Featured Image Size setting.
+		if ( ! isset( $instance['settings']['featured_image_size'] ) ) {
+			if ( $instance['template'] == 'grid' || $instance['template'] == 'alternate' || $instance['template'] == 'portfolio' ) {
+				$instance['settings']['featured_image_size'] = 'sow-blog-' . $instance['template'];
+			} else {
+				$instance['settings']['featured_image_size'] = 'full';
+			}
+			$instance['settings']['featured_image_size_width'] = 0;
+			$instance['settings']['featured_image_size_height'] = 0;
 		}
 
 		$instance['paged_id'] = ! empty( $instance['_sow_form_id'] ) ? (int) substr( $instance['_sow_form_id'], 0, 5 ) : null;
