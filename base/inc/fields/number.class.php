@@ -14,7 +14,7 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 	protected $step;
 
 	 /**
-	 * Whether to apply abs() when saving to ensure only positive numbers are possible..
+	 * Whether to apply abs() when saving to ensure only positive numbers are possible.
 	 *
 	 * @access protected
 	 * @var boolean
