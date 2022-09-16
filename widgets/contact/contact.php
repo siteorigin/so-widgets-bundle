@@ -1493,7 +1493,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 
 		if ( ! empty( $instance['spam']['honeypot'] ) && ! empty( $_POST[ 'sow-' . $instance['_sow_form_id'] ] ) ) {
-			$errors['spam-js'] = __( 'Unfortunately our system identified your message as spam.', 'so-widgets-bundle' );
+			$errors['spam-js'] = __( 'Unfortunately, our system identified your message as spam.', 'so-widgets-bundle' );
 		}
 
 		if ( ! empty( $instance['spam']['browser_check'] ) ) {
@@ -1501,7 +1501,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				empty( $_POST[ 'sow-js-' . $instance['_sow_form_id'] ] ) ||
 				$_POST[ 'sow-js-' . $instance['_sow_form_id'] ] != $instance['_sow_form_id']
 			) {
-				$errors['spam-honeypot'] = __( 'Unfortunately our system identified your message as spam.', 'so-widgets-bundle' );
+				$errors['spam-honeypot'] = __( 'Unfortunately, our system identified your message as spam.', 'so-widgets-bundle' );
 			}
 		}
 
