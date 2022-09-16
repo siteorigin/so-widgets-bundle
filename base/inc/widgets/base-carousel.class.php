@@ -132,6 +132,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			$section['fields']['slides_to_scroll'] = array(
 				'type' => 'number',
 				'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
+				'abs' => true,
 				'description' => sprintf(
 					__( 'Set the number of slides to scroll per navigation click or swipe on %s', 'so-widgets-bundle' ),
 					strtolower( $field['label'] )
@@ -142,6 +143,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			if ( ! empty( $carousel_settings['slides_to_show'] ) ) {
 				$section['fields']['slides_to_show'] = array(
 					'type' => 'number',
+					'abs' => true,
 					'label' => __( 'Slides to show ', 'so-widgets-bundle' ),
 					'description' => sprintf(
 						__( 'The number of slides to show on %s.', 'so-widgets-bundle' ),
