@@ -93,6 +93,11 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'label' => __( 'Featured Image', 'so-widgets-bundle' ),
 							'default' => true,
 						),
+						'featured_image_size' => array(
+							'type' => 'image-size',
+							'label' => __( 'Featured Image Size', 'siteorigin-premium' ),
+							'custom_size' => true,
+						),
 						'content' => array(
 							'type' => 'select',
 							'label' => __( 'Post Content ', 'so-widgets-bundle' ),
@@ -133,11 +138,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'type' => 'checkbox',
 							'label' => __( 'Post Date', 'so-widgets-bundle' ),
 							'default' => true,
-						),
-						'featured_image_size' => array(
-							'type' => 'image-size',
-							'label' => __( 'Featured Image Size', 'siteorigin-premium' ),
-							'custom_size' => true,
 						),
 						'author' => array(
 							'type' => 'checkbox',
