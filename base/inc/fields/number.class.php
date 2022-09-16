@@ -13,6 +13,14 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 	 */
 	protected $step;
 
+	 /**
+	 * Whether to apply abs() when saving to ensure only positive numbers are possible.
+	 *
+	 * @access protected
+	 * @var boolean
+	 */
+	protected $abs;
+
 	protected function get_default_options() {
 		return array(
 			'input_type' => 'number',
@@ -36,6 +44,10 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
-		return ( $value === '' ) ? false : (float) $value;
+		if ( ! empty( $value ) ) {
+			return ( float ) ( ! empty( $this->abs ) ? abs( $value ) : $value );
+		} else {
+			return false;
+		}
 	}
 }
