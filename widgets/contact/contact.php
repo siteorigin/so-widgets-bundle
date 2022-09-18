@@ -239,7 +239,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					'honeypot' => array(
 						'type'        => 'checkbox',
 						'label'       => __( 'Honeypot', 'so-widgets-bundle' ),
-						'description' => __( 'Add an invisible field to your form that if filled out, the form will be rejected.', 'so-widgets-bundle' ),
+						'description' => __( 'Adds a hidden form field that only bots can see. The form will reject the submission if the hidden field is populated.', 'so-widgets-bundle' ),
 					),
 					'browser_check' => array(
 						'type'        => 'checkbox',
