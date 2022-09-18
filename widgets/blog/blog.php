@@ -1000,7 +1000,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		<?php endif;
 	}
 
-	public function post_featured_image( $settings, $categories = false, $size = 'post-thumbnail' ) {
+	public function post_featured_image( $settings, $categories = false, $size = 'full' ) {
 		if ( $settings['featured_image'] && has_post_thumbnail() ) : ?>
 			<div class="sow-entry-thumbnail">
 				<?php if ( $categories && $settings['categories'] && has_category() ) : ?>
@@ -1015,7 +1015,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 					} else {
 						// Check if this template has a different default image size.
 						if (
-							$size == 'post-thumbnail' &&
+							$size == 'full' &&
 							has_image_size( 'sow-blog-' . $settings['template'] )
 						) {
 							$size = 'sow-blog-' . $settings['template'];

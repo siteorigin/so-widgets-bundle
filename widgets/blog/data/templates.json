@@ -11,7 +11,7 @@
 				"author": true,
 				"categories": true,
 				"comment_count": true,
-				"featured_image_size": "post-thumbnail"
+				"featured_image_size": "full"
 			},
 			"design": {
 				"post":{
@@ -128,7 +128,7 @@
 				"author": true,
 				"categories": true,
 				"comment_count": true,
-				"featured_image_size": "post-thumbnail"
+				"featured_image_size": "full"
 			},
 			"design": {
 				"post":{
@@ -253,7 +253,7 @@
 				"author": true,
 				"categories": true,
 				"comment_count": true,
-				"featured_image_size": "post-thumbnail"
+				"featured_image_size": "full"
 			},
 			"design": {
 				"post":{
