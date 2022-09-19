@@ -63,8 +63,12 @@
 		margin-top: 0;
 		width: 100%;
 
-		.sow-entry-thumbnail {
-			width: 100%;
+		@media (max-width: @responsive_breakpoint) {
+			.sow-entry-thumbnail,
+			.sow-entry-thumbnail .wp-post-image {
+				height: auto;
+				width: 100%;
+			}
 		}
 
 		// Alternating featured image alignment.
