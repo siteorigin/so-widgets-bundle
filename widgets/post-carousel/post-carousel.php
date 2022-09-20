@@ -99,7 +99,6 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				'description' => __( 'Gives you a widget to display your posts as a carousel.', 'so-widgets-bundle' ),
 				'instance_storage' => true,
 				'help' => 'https://siteorigin.com/widgets-bundle/post-carousel-widget/',
-				'has_preview' => false,
 			),
 			array(
 
@@ -124,7 +123,17 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				),
 			)
 		);
-		add_action( 'wp_enqueue_scripts', array( $this, 'register_theme_assets' ) );
+
+		// Is this a widget preview?
+		if (
+			! empty( $_POST ) &&
+			! empty( $_POST['action'] ) &&
+			$_POST['action'] == 'so_widgets_preview'
+		) {
+			$this->register_theme_assets();
+		} else {
+			add_action( 'wp_enqueue_scripts', array( $this, 'register_theme_assets' ) );
+		}
 	}
 
 	function override_carousel_settings() {
