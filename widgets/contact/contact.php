@@ -239,11 +239,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					'honeypot' => array(
 						'type'        => 'checkbox',
 						'label'       => __( 'Honeypot', 'so-widgets-bundle' ),
+						'default'     => true,
 						'description' => __( 'Adds a hidden form field that only bots can see. The form will reject the submission if the hidden field is populated.', 'so-widgets-bundle' ),
 					),
 					'browser_check' => array(
 						'type'        => 'checkbox',
 						'label'       => __( 'Browser Check', 'so-widgets-bundle' ),
+						'default'     => true,
 						'description' => __( 'Runs a check on submission that confirms the submission came from a browser. Requires the user to have JavaScript enabled.', 'so-widgets-bundle' ),
 					),
 					'recaptcha' => array(
@@ -854,6 +856,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$instance['spam']['recaptcha']['use_captcha'] === true
 		) {
 			$instance['spam']['recaptcha']['use_captcha'] = 'v2';
+		}
+
+		if ( ! isset( $instance['spam']['honeypot'] ) ) {
+			$instance['spam']['honeypot'] = false;
+			$instance['spam']['browser_check'] = false;
 		}
 
 		return $instance;
