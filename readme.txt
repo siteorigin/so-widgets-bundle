@@ -106,6 +106,15 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.42.0 - 21 September 2022 =
+* Blog: Added a `Featured Image Size` setting.
+* Blog: Increased Alternate template featured image to full-width on mobile.
+* Carousels: Update to only allow positive values in the `Slides to Scroll` and `Slides to Show` settings.
+* Contact Form: Added `Honeypot` and `Browser Check` spam prevention settings.
+* Editor: Prevented potential error by passing all expected `widget_text` arguments.
+* Image Grid: Added `Display Image Title` setting and related options.
+* Post Carousel: Added widget preview support.
+
 = 1.41.0 - 13 September 2022 =
 * Blog: Adjusted `article` tag CSS to ensure priority over theme styling.
 * Blog: Removed featured image center alignment for the Alternate template.
