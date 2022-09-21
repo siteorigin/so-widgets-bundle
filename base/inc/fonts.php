@@ -18,6 +18,10 @@ return array(
 			3 => '700',
 			4 => '800',
 		),
+	'Aboreto' =>
+		array(
+			0 => 'regular',
+		),
 	'Abril Fatface' =>
 		array(
 			0 => 'regular',
@@ -83,6 +87,27 @@ return array(
 	'Alatsi' =>
 		array(
 			0 => 'regular',
+		),
+	'Albert Sans' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
 		),
 	'Aldrich' =>
 		array(
@@ -248,7 +273,17 @@ return array(
 			16 => '800italic',
 			17 => '900italic',
 		),
+	'Alumni Sans Collegiate One' =>
+		array(
+			0 => 'regular',
+			1 => 'italic',
+		),
 	'Alumni Sans Inline One' =>
+		array(
+			0 => 'regular',
+			1 => 'italic',
+		),
+	'Alumni Sans Pinstripe' =>
 		array(
 			0 => 'regular',
 			1 => 'italic',
@@ -286,6 +321,10 @@ return array(
 			2 => '700',
 			3 => '700italic',
 		),
+	'Amiri Quran' =>
+		array(
+			0 => 'regular',
+		),
 	'Amita' =>
 		array(
 			0 => 'regular',
@@ -309,13 +348,6 @@ return array(
 			9 => '800italic',
 		),
 	'Andika' =>
-		array(
-			0 => 'regular',
-			1 => 'italic',
-			2 => '700',
-			3 => '700italic',
-		),
-	'Andika New Basic' =>
 		array(
 			0 => 'regular',
 			1 => 'italic',
@@ -555,6 +587,21 @@ return array(
 		array(
 			0 => 'regular',
 			1 => '700',
+		),
+	'Aref Ruqaa Ink' =>
+		array(
+			0 => 'regular',
+			1 => '700',
+		),
+	'Arima' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
 		),
 	'Arima Madurai' =>
 		array(
@@ -1290,6 +1337,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Blaka Ink' =>
+		array(
+			0 => 'regular',
+		),
 	'Blinker' =>
 		array(
 			0 => '100',
@@ -1403,6 +1454,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Bungee Spice' =>
+		array(
+			0 => 'regular',
+		),
 	'Butcherman' =>
 		array(
 			0 => 'regular',
@@ -1443,6 +1498,17 @@ return array(
 			0 => 'regular',
 		),
 	'Cairo' =>
+		array(
+			0 => '200',
+			1 => '300',
+			2 => 'regular',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
+			7 => '900',
+		),
+	'Cairo Play' =>
 		array(
 			0 => '200',
 			1 => '300',
@@ -1813,14 +1879,14 @@ return array(
 	'Cormorant' =>
 		array(
 			0 => '300',
-			1 => '300italic',
-			2 => 'regular',
-			3 => 'italic',
-			4 => '500',
-			5 => '500italic',
-			6 => '600',
-			7 => '600italic',
-			8 => '700',
+			1 => 'regular',
+			2 => '500',
+			3 => '600',
+			4 => '700',
+			5 => '300italic',
+			6 => 'italic',
+			7 => '500italic',
+			8 => '600italic',
 			9 => '700italic',
 		),
 	'Cormorant Garamond' =>
@@ -2143,6 +2209,13 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'DynaPuff' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+		),
 	'Dynalight' =>
 		array(
 			0 => 'regular',
@@ -2186,6 +2259,41 @@ return array(
 			2 => '600',
 			3 => '700',
 			4 => '800',
+		),
+	'Edu NSW ACT Foundation' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+		),
+	'Edu QLD Beginner' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+		),
+	'Edu SA Beginner' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+		),
+	'Edu TAS Beginner' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+		),
+	'Edu VIC WA NT Beginner' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
 		),
 	'El Messiri' =>
 		array(
@@ -2502,9 +2610,30 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Figtree' =>
+		array(
+			0 => '300',
+			1 => 'regular',
+			2 => '500',
+			3 => '600',
+			4 => '700',
+			5 => '800',
+			6 => '900',
+		),
 	'Finger Paint' =>
 		array(
 			0 => 'regular',
+		),
+	'Finlandica' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => 'italic',
+			5 => '500italic',
+			6 => '600italic',
+			7 => '700italic',
 		),
 	'Fira Code' =>
 		array(
@@ -2697,6 +2826,7 @@ return array(
 	'Fruktur' =>
 		array(
 			0 => 'regular',
+			1 => 'italic',
 		),
 	'Fugaz One' =>
 		array(
@@ -2752,6 +2882,27 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Gantari' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
+		),
 	'Gayathri' =>
 		array(
 			0 => '100',
@@ -2800,14 +2951,14 @@ return array(
 			16 => '800italic',
 			17 => '900italic',
 		),
-	'Gentium Basic' =>
+	'Gentium Book Basic' =>
 		array(
 			0 => 'regular',
 			1 => 'italic',
 			2 => '700',
 			3 => '700italic',
 		),
-	'Gentium Book Basic' =>
+	'Gentium Book Plus' =>
 		array(
 			0 => 'regular',
 			1 => 'italic',
@@ -3067,6 +3218,10 @@ return array(
 			2 => '700',
 		),
 	'Gugi' =>
+		array(
+			0 => 'regular',
+		),
+	'Gulzar' =>
 		array(
 			0 => 'regular',
 		),
@@ -3801,6 +3956,23 @@ return array(
 			1 => 'regular',
 			2 => '700',
 		),
+	'Kantumruy Pro' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '100italic',
+			8 => '200italic',
+			9 => '300italic',
+			10 => 'italic',
+			11 => '500italic',
+			12 => '600italic',
+			13 => '700italic',
+		),
 	'Karantina' =>
 		array(
 			0 => '300',
@@ -3845,10 +4017,6 @@ return array(
 			0 => 'regular',
 		),
 	'Kavoon' =>
-		array(
-			0 => 'regular',
-		),
-	'Kdam Thmor' =>
 		array(
 			0 => 'regular',
 		),
@@ -4836,6 +5004,10 @@ return array(
 			0 => 'regular',
 			1 => '700',
 		),
+	'Mingzat' =>
+		array(
+			0 => 'regular',
+		),
 	'Miniver' =>
 		array(
 			0 => 'regular',
@@ -5123,6 +5295,15 @@ return array(
 			6 => '700',
 			7 => '800',
 			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
 		),
 	'My Soul' =>
 		array(
@@ -5133,6 +5314,10 @@ return array(
 			0 => 'regular',
 		),
 	'NTR' =>
+		array(
+			0 => 'regular',
+		),
+	'Nabla' =>
 		array(
 			0 => 'regular',
 		),
@@ -5274,6 +5459,10 @@ return array(
 			1 => 'italic',
 			2 => '700',
 			3 => '700italic',
+		),
+	'Noto Color Emoji' =>
+		array(
+			0 => 'regular',
 		),
 	'Noto Emoji' =>
 		array(
@@ -6336,6 +6525,17 @@ return array(
 			7 => '800',
 			8 => '900',
 		),
+	'Noto Serif HK' =>
+		array(
+			0 => '200',
+			1 => '300',
+			2 => 'regular',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
+			7 => '900',
+		),
 	'Noto Serif Hebrew' =>
 		array(
 			0 => '100',
@@ -6713,10 +6913,6 @@ return array(
 			4 => '600',
 			5 => '700',
 		),
-	'Otomanopee One' =>
-		array(
-			0 => 'regular',
-		),
 	'Outfit' =>
 		array(
 			0 => '100',
@@ -6857,10 +7053,6 @@ return array(
 			1 => '500',
 			2 => '600',
 			3 => '700',
-		),
-	'Palette Mosaic' =>
-		array(
-			0 => 'regular',
 		),
 	'Pangolin' =>
 		array(
@@ -7488,6 +7680,17 @@ return array(
 			2 => '600',
 			3 => '700',
 		),
+	'Reem Kufi Fun' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+		),
+	'Reem Kufi Ink' =>
+		array(
+			0 => 'regular',
+		),
 	'Reenie Beanie' =>
 		array(
 			0 => 'regular',
@@ -7606,10 +7809,6 @@ return array(
 		array(
 			0 => 'regular',
 		),
-	'Rock 3D' =>
-		array(
-			0 => 'regular',
-		),
 	'Rock Salt' =>
 		array(
 			0 => 'regular',
@@ -7696,7 +7895,31 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Rubik Burned' =>
+		array(
+			0 => 'regular',
+		),
+	'Rubik Dirt' =>
+		array(
+			0 => 'regular',
+		),
+	'Rubik Distressed' =>
+		array(
+			0 => 'regular',
+		),
 	'Rubik Glitch' =>
+		array(
+			0 => 'regular',
+		),
+	'Rubik Iso' =>
+		array(
+			0 => 'regular',
+		),
+	'Rubik Marker Hatch' =>
+		array(
+			0 => 'regular',
+		),
+	'Rubik Maze' =>
 		array(
 			0 => 'regular',
 		),
@@ -8043,10 +8266,6 @@ return array(
 			3 => '700',
 			4 => '800',
 		),
-	'Shizuru' =>
-		array(
-			0 => 'regular',
-		),
 	'Shojumaru' =>
 		array(
 			0 => 'regular',
@@ -8082,6 +8301,11 @@ return array(
 			2 => '500',
 			3 => '600',
 			4 => '700',
+		),
+	'Silkscreen' =>
+		array(
+			0 => 'regular',
+			1 => '700',
 		),
 	'Simonetta' =>
 		array(
@@ -8353,6 +8577,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Splash' =>
+		array(
+			0 => 'regular',
+		),
 	'Spline Sans' =>
 		array(
 			0 => '300',
@@ -8368,6 +8596,11 @@ return array(
 			2 => '500',
 			3 => '600',
 			4 => '700',
+			5 => '300italic',
+			6 => 'italic',
+			7 => '500italic',
+			8 => '600italic',
+			9 => '700italic',
 		),
 	'Squada One' =>
 		array(
@@ -9182,14 +9415,6 @@ return array(
 			9 => '700italic',
 		),
 	'Yuji Boku' =>
-		array(
-			0 => 'regular',
-		),
-	'Yuji Hentaigana Akari' =>
-		array(
-			0 => 'regular',
-		),
-	'Yuji Hentaigana Akebono' =>
 		array(
 			0 => 'regular',
 		),
