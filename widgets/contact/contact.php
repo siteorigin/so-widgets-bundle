@@ -236,7 +236,18 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				'label'  => __( 'Spam Protection', 'so-widgets-bundle' ),
 				'hide'   => true,
 				'fields' => array(
-
+					'honeypot' => array(
+						'type'        => 'checkbox',
+						'label'       => __( 'Honeypot', 'so-widgets-bundle' ),
+						'default'     => true,
+						'description' => __( 'Adds a hidden form field that only bots can see. The form will reject the submission if the hidden field is populated.', 'so-widgets-bundle' ),
+					),
+					'browser_check' => array(
+						'type'        => 'checkbox',
+						'label'       => __( 'Browser Check', 'so-widgets-bundle' ),
+						'default'     => true,
+						'description' => __( 'Runs a check on submission that confirms the submission came from a browser. Requires the user to have JavaScript enabled.', 'so-widgets-bundle' ),
+					),
 					'recaptcha' => array(
 						'type'   => 'section',
 						'label'  => __( 'reCAPTCHA', 'so-widgets-bundle' ),
@@ -847,6 +858,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$instance['spam']['recaptcha']['use_captcha'] = 'v2';
 		}
 
+		if ( ! isset( $instance['spam']['honeypot'] ) ) {
+			$instance['spam']['honeypot'] = false;
+			$instance['spam']['browser_check'] = false;
+		}
+
 		return $instance;
 	}
 
@@ -881,12 +897,16 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'onclick' => ! empty( $instance['settings']['on_click'] ) ? $instance['settings']['on_click'] : '',
 		);
 
+		$submit_attributes = array();
+		if ( ! empty( $instance['spam']['browser_check'] ) ) {
+			$submit_attributes['data-js-key'] = $instance['_sow_form_id'];
+		}
+
 		// Include '_sow_form_id' in generation of 'instance_hash' to allow multiple instances of the same form on a page.
 		$template_vars['instance_hash'] = md5( serialize( $instance ) );
 		$template_vars['result'] = $this->contact_form_action( $instance, $template_vars['instance_hash'] );
 		unset( $instance['_sow_form_id'] );
 
-		$submit_attributes = array();
 		if ( ! empty( $instance['settings']['submit_id'] ) ) {
 			$submit_attributes['id'] = $instance['settings']['submit_id'];
 		}
@@ -907,6 +927,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				);
 			}
 		}
+		$template_vars['submit_attributes'] = $submit_attributes;
 
 		if ( ! empty( $instance['spam']['simple'] ) && ! empty( $instance['spam']['simple']['enabled'] ) ) {
 			if ( ! class_exists( 'ReallySimpleCaptcha' ) ) {
@@ -950,7 +971,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		$template_vars['submit_attributes'] = $submit_attributes;
+		$template_vars['honeypot'] = ! empty( $instance['spam']['honeypot'] );
 
 		return $template_vars;
 	}
@@ -1203,9 +1224,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			// In those cases `$_POST['_wpnonce']` doesn't exist and calling `wp_die` will halt script execution and break things.
 			return false;
 		}
+
 		if ( empty( $_POST['instance_hash'] ) || $_POST['instance_hash'] != $storage_hash ) {
 			return false;
 		}
+
 		if ( empty( $instance['fields'] ) ) {
 			array(
 				'status' => null,
@@ -1473,6 +1496,19 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					$errors['simple'] = __( 'Error validating your Captcha response. Please try again.', 'so-widgets-bundle' );
 				}
 				$captcha->remove( $prefix );
+			}
+		}
+
+		if ( ! empty( $instance['spam']['honeypot'] ) && ! empty( $_POST[ 'sow-' . $instance['_sow_form_id'] ] ) ) {
+			$errors['spam-js'] = __( 'Unfortunately, our system identified your message as spam.', 'so-widgets-bundle' );
+		}
+
+		if ( ! empty( $instance['spam']['browser_check'] ) ) {
+			if (
+				empty( $_POST[ 'sow-js-' . $instance['_sow_form_id'] ] ) ||
+				$_POST[ 'sow-js-' . $instance['_sow_form_id'] ] != $instance['_sow_form_id']
+			) {
+				$errors['spam-honeypot'] = __( 'Unfortunately, our system identified your message as spam.', 'so-widgets-bundle' );
 			}
 		}
 

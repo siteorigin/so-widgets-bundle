@@ -5,7 +5,7 @@ window.sowb = window.sowb || {};
 sowb.SiteOriginContactForm = {
 	init: function ($, useRecaptcha) {
 		var $contactForms = $('form.sow-contact-form,.sow-contact-form-success');
-		$contactForms.each(function () {
+		$contactForms.each( function() {
 			var $el = $( this );
 			var formId = $el.attr( 'id' );
 			var formSubmitted = window.location.hash.indexOf( formId ) > -1;
@@ -68,6 +68,11 @@ sowb.SiteOriginContactForm = {
 						locationHash = locationHash.replace( re, '' );
 					}
 					$( this ).attr( 'action', formAction + ',' + locationHash.replace( /^#/, '' ) );
+				}
+
+				if ( $submitButton.data( 'js-key' ) ) {
+					var js_key = $submitButton.data( 'js-key' );
+					$( this ).append( `<input type="hidden" name="sow-js-${js_key}" value="${js_key}">` );
 				}
 			} );
 		} );

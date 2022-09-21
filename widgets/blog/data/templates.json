@@ -10,7 +10,8 @@
 				"date": true,
 				"author": true,
 				"categories": true,
-				"comment_count": true
+				"comment_count": true,
+				"featured_image_size": "full"
 			},
 			"design": {
 				"post":{
@@ -68,7 +69,8 @@
 				"date": true,
 				"author": true,
 				"categories": true,
-				"comment_count": true
+				"comment_count": true,
+				"featured_image_size": "sow-blog-grid"
 			},
 			"design": {
 				"post":{
@@ -125,7 +127,8 @@
 				"date": true,
 				"author": true,
 				"categories": true,
-				"comment_count": true
+				"comment_count": true,
+				"featured_image_size": "full"
 			},
 			"design": {
 				"post":{
@@ -190,7 +193,8 @@
 				"date": true,
 				"author": true,
 				"categories": true,
-				"comment_count": true
+				"comment_count": true,
+				"featured_image_size": "sow-blog-alternate"
 			},
 			"design": {
 				"post":{
@@ -248,7 +252,8 @@
 				"date": true,
 				"author": true,
 				"categories": true,
-				"comment_count": true
+				"comment_count": true,
+				"featured_image_size": "full"
 			},
 			"design": {
 				"post":{
@@ -310,7 +315,8 @@
 				"content": "full",
 				"columns": 3,
 				"filter_categories": "true",
-				"categories": true
+				"categories": true,
+				"featured_image_size": "sow-blog-portfolio"
 			},
 			"design": {
 				"filter_categories":{

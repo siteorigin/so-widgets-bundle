@@ -132,6 +132,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			$section['fields']['slides_to_scroll'] = array(
 				'type' => 'number',
 				'label' => __( 'Slides to scroll', 'so-widgets-bundle' ),
+				'abs' => true,
 				'description' => sprintf(
 					__( 'Set the number of slides to scroll per navigation click or swipe on %s', 'so-widgets-bundle' ),
 					strtolower( $field['label'] )
@@ -142,6 +143,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			if ( ! empty( $carousel_settings['slides_to_show'] ) ) {
 				$section['fields']['slides_to_show'] = array(
 					'type' => 'number',
+					'abs' => true,
 					'label' => __( 'Slides to show ', 'so-widgets-bundle' ),
 					'description' => sprintf(
 						__( 'The number of slides to show on %s.', 'so-widgets-bundle' ),
@@ -163,7 +165,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 				);
 			}
 
-			if ( isset( $field['navigation_dots'] )  && ! empty( $carousel_settings['navigation_dots_label'] ) ) {
+			if ( isset( $field['navigation_dots'] ) && ! empty( $carousel_settings['navigation_dots_label'] ) ) {
 				$section['fields']['navigation_dots'] = array(
 					'type' => 'checkbox',
 					'label' => $carousel_settings['navigation_dots_label'],
@@ -336,7 +338,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			unset( $fields['fields']['arrows'] );
 		}
 
-		if ( ! isset( $carousel_settings['navigation_dots'] )  || empty( $carousel_settings['navigation_dots_label'] ) ) {
+		if ( ! isset( $carousel_settings['navigation_dots'] ) || empty( $carousel_settings['navigation_dots_label'] ) ) {
 			unset( $fields['fields']['dots'] );
 		}
 
@@ -418,6 +420,9 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			$variables['tablet_portrait_slides_to_show'] = ! empty( $responsive['tablet']['portrait']['slides_to_show'] ) ? $responsive['tablet']['portrait']['slides_to_show'] : $carousel_settings['slides_to_show']['tablet_portrait'];
 			$variables['mobile_slides_to_show'] = ! empty( $responsive['mobile']['slides_to_show'] ) ? $responsive['mobile']['slides_to_show'] : $carousel_settings['slides_to_show']['mobile'];
 		}
+
+		// Negative values can be problematic so let's avoid them by ensuring everything is positive.
+		$variables = array_map( 'abs', $variables );
 
 		return $encode ? json_encode( $variables ) : $variables;
 	}
