@@ -36,8 +36,8 @@
 			<?php include $settings['item_template']; ?>
 		</div>
 		<?php if ( $settings['navigation'] == 'container' ) : ?>
-			<div class="sow-carousel-nav" <?php echo ! $settings['navigation_arrows'] ? 'style="display: none;"' : ''; ?>>
-				<div class="sow-carousel-nav-arrows">
+			<div class="sow-carousel-nav" <?php echo ! $settings['navigation_arrows'] && empty( $settings['navigation_dots'] ) ? 'style="display: none;"' : ''; ?>>
+				<div class="sow-carousel-nav-arrows" <?php echo ! $settings['navigation_arrows'] ? 'style="display: none;"' : ''; ?>>
 					<?php $this->render_navigation( 'both' ); ?>
 				</div>
 			</div>

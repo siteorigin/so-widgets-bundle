@@ -165,7 +165,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 				);
 			}
 
-			if ( isset( $field['navigation_dots'] ) && ! empty( $carousel_settings['navigation_dots_label'] ) ) {
+			if ( isset( $field['navigation_dots'] )  && ! empty( $carousel_settings['navigation_dots_label'] ) ) {
 				$section['fields']['navigation_dots'] = array(
 					'type' => 'checkbox',
 					'label' => $carousel_settings['navigation_dots_label'],
@@ -338,7 +338,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			unset( $fields['fields']['arrows'] );
 		}
 
-		if ( ! isset( $carousel_settings['navigation_dots'] ) || empty( $carousel_settings['navigation_dots_label'] ) ) {
+		if ( ! isset( $carousel_settings['navigation_dots'] )  || empty( $carousel_settings['navigation_dots_label'] ) ) {
 			unset( $fields['fields']['dots'] );
 		}
 
