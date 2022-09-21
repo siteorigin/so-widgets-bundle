@@ -49,8 +49,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				480
 			),
 			'alternate' => array(
-				475,
-				315
+				950,
+				630
 			)
 		) );
 		foreach ( $image_sizes as $k => $size ) {
