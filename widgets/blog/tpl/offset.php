@@ -52,7 +52,7 @@
 		<?php endif; ?>
 	</div>
 	<div class="sow-blog-entry" style="width: 78%;">
-		<?php SiteOrigin_Widget_Blog_Widget::post_featured_image( $settings ); ?>
+		<?php $this->post_featured_image( $settings ); ?>
 		<div class="sow-blog-content-wrapper" style="padding: 25px 30px 33px;">
 			<header class="sow-entry-header" style="margin-bottom: 20px;">
 				<?php

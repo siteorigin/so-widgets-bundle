@@ -1000,7 +1000,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		<?php endif;
 	}
 
-	static public function post_featured_image( $settings, $categories = false, $size = 'full' ) {
+	public function post_featured_image( $settings, $categories = false, $size = 'full' ) {
 		if ( $settings['featured_image'] && has_post_thumbnail() ) : ?>
 			<div class="sow-entry-thumbnail">
 				<?php if ( $categories && $settings['categories'] && has_category() ) : ?>
