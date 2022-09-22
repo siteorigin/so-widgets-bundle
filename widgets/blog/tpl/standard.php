@@ -1,5 +1,5 @@
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> style="margin: 0 0 40px">
-	<?php $this->post_featured_image( $settings ); ?>
+	<?php SiteOrigin_Widget_Blog_Widget::post_featured_image( $settings ); ?>
 	<div class="sow-blog-content-wrapper" style="padding: 25px 30px 38px;">
 		<header class="sow-entry-header" style="margin-bottom: 20px;">
 			<?php SiteOrigin_Widget_Blog_Widget::generate_post_title(); ?>
