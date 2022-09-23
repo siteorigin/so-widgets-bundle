@@ -106,6 +106,11 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.42.1 - 23 September 2022 =
+* Blog: Updated settings CSS specificity.
+* Blog: Resolved error when loading posts using Ajax.
+* Google Maps: Prevented Google logo from being hidden by theme styles.
+
 = 1.42.0 - 21 September 2022 =
 * Blog: Added a `Featured Image Size` setting.
 * Blog: Increased Alternate template featured image to full-width on mobile.
