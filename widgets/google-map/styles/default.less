@@ -24,6 +24,11 @@
 		max-width: none;
 		zoom: normal;
 	}
+
+	// Reset the position of all divs to prevent a potential situation where the Google Maps logo could be hidden by unrelated CSS.
+	div {
+		position: initial;
+	}
 }
 
 & when ( @map_consent = 1 ) {
