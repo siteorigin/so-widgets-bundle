@@ -50,8 +50,7 @@
 @pagination_top_margin: default;
 @pagination_width: default;
 
-.sow-blog-layout-grid .sow-blog-posts {
-
+.sow-blog-layout-grid {
 	.sow-blog-posts {
 		column-gap: @column_spacing;
 		display: grid;
@@ -64,81 +63,79 @@
 			@media (max-width: @responsive_breakpoint) {
 				width: 100%;
 			}
-		}
-	}
 
-	article {
 
-		.sow-entry-header {
 
-			.sow-entry-title {
-				font-family: @title_font;
-				font-size: @title_font_size;
-				font-style: @title_font_style;
-				font-weight: @title_font_weight;
+			.sow-entry-header {
 
-				a {
-					color: @title_color;
-
-					&:hover,
-					&:focus {
-						color: @title_color_hover;
-					}
-				}
-			}
-
-			.sow-entry-meta {
-				font-family: @meta_font;
-				font-size: @meta_font_size;
-				font-style: @meta_font_style;
-				font-weight: @meta_font_weight;
-
-				span {
-					color: @meta_color;
+				.sow-entry-title {
+					font-family: @title_font;
+					font-size: @title_font_size;
+					font-style: @title_font_style;
+					font-weight: @title_font_weight;
 
 					a {
-						color: @meta_color;
+						color: @title_color;
 
 						&:hover,
 						&:focus {
-							color: @meta_color_hover;
+							color: @title_color_hover;
 						}
 					}
 				}
 
-				&:not(:last-child)::after {
+				.sow-entry-meta {
+					font-family: @meta_font;
 					font-size: @meta_font_size;
+					font-style: @meta_font_style;
+					font-weight: @meta_font_weight;
+
+					span {
+						color: @meta_color;
+
+						a {
+							color: @meta_color;
+
+							&:hover,
+							&:focus {
+								color: @meta_color_hover;
+							}
+						}
+					}
+
+					&:not(:last-child)::after {
+						font-size: @meta_font_size;
+					}
 				}
 			}
-		}
 
-		.sow-entry-content {
-			color: @content_color;
-			font-family: @content_font;
-			font-size: @content_font_size;
-			font-style: @content_font_style;
-			font-weight: @content_font_weight;
+			.sow-entry-content {
+				color: @content_color;
+				font-family: @content_font;
+				font-size: @content_font_size;
+				font-style: @content_font_style;
+				font-weight: @content_font_weight;
 
-			a {
-				color: @content_link;
+				a {
+					color: @content_link;
 
-				&:hover,
-				&:focus {
-					color: @content_link_hover;
+					&:hover,
+					&:focus {
+						color: @content_link_hover;
+					}
 				}
 			}
-		}
 
-		.sow-more-link {
-			font-family: @content_font;
-			font-size: @content_font_size;
-			font-style: @content_font_style;
-			font-weight: @content_font_weight;
+			.sow-more-link {
+				font-family: @content_font;
+				font-size: @content_font_size;
+				font-style: @content_font_style;
+				font-weight: @content_font_weight;
+			}
 		}
 	}
 
 	.sow-post-navigation {
-
 		.sow-nav-links {
 			margin-top: @pagination_top_margin;
 		}
