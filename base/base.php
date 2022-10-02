@@ -152,7 +152,7 @@ function siteorigin_widget_get_font($font_value) {
 			$font['weight_raw'] = filter_var( $font['weight'], FILTER_SANITIZE_NUMBER_INT );
 			$font['style'] = ! is_numeric( $font['weight'] ) || $font['weight'] == 'italic' ? 'italic' : '';
 		}
-		$font['url'] = 'https://fonts.googleapis.com/css?family=' . $font_url_param;
+		$font['url'] = esc_url( apply_filters( 'siteorigin_web_font_url', 'https://fonts.googleapis.com/css' ) . "?family=$font_url_param" );
 		$style_name = 'sow-google-font-' . strtolower( $font['family'] );
 
 
@@ -173,7 +173,7 @@ function siteorigin_widget_get_font($font_value) {
 			global $sow_registered_fonts;
 
 			$font_weight_styles = array_keys( $sow_registered_fonts[ $font['family'] ]  );
-			$wp_styles->registered[ $style_name ]->src = 'https://fonts.googleapis.com/css?family=' . urlencode( $font['family'] . ':' . implode( ',', $font_weight_styles ) );
+			$wp_styles->registered[ $style_name ]->src = esc_url( apply_filters( 'siteorigin_web_font_url', 'https://fonts.googleapis.com/css' ) . '?family=' . urlencode( $font['family'] . ':' . implode( ',', $font_weight_styles ) ) );
 		}
 	} else {
 		$font['family'] = $font_value;
