@@ -1124,6 +1124,18 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		}
 
 		if ( ! empty( $pagination_markup ) ) {
+			// To resolve a potential issue with the Block Editor, we need to override REST URLs with the actual permalink.
+			if (
+				defined( 'REST_REQUEST' ) &&
+				strpos( $pagination_markup, 'sowb/v1/widgets/previews' ) !== false
+			) {
+				$pagination_markup = str_replace(
+					// All non-standard pagination won't have the full URL present so what we replace changes.
+					strpos( $pagination_markup, rest_url() ) !== false ? esc_url_raw( rest_url() ) . 'sowb/v1/widgets/previews/' : '/wp-json/sowb/v1/widgets/previews',
+					get_the_permalink(),
+					$pagination_markup
+				);
+			}
 			?>
 			<nav class="sow-post-navigation">
 				<h2 class="screen-reader-text"><?php esc_html_e( 'Post navigation', 'so-widgets-bundle' ); ?></h2>

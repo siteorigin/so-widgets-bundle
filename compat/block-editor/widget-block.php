@@ -164,16 +164,24 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 
 			ob_start();
-			// If we have pre-generated widgetHTML or there's a valid $_POST, generate the widget.
-			// We don't show the pre-generated widget when there's a valid $_POST
-			// as widgets will likely change when that happens.
-			// Pages with an active WPML translation will bypass cache.
+			/*
+			 * If we have pre-generated widgetHtml or there's a valid $_POST, generate the widget.
+			 * There are certain sitautions where we bypass the cache:
+			 * 
+			 * - We don't show the pre-generated widget when there's a valid $_POST
+			 * as widgets will likely change when that happens.
+			 * 
+			 * - Pages with an active WPML translation will bypass cache.
+			 * 
+			 * - We also exclude certain widgets from the cache.
+			 */
 			$current_page_id = get_the_ID();
 			if (
 				empty( $attributes['widgetHtml'] ) ||
 				! empty( $_POST ) ||
 				$attributes['widgetClass'] == 'SiteOrigin_Widget_PostCarousel_Widget' ||
 				$attributes['widgetClass'] == 'SiteOrigin_Widgets_ContactForm_Widget' ||
+				$attributes['widgetClass'] == 'SiteOrigin_Widget_Blog_Widget' ||
 				// Is WPML active? If so, is there a translation for this page?
 				(
 					defined( 'ICL_LANGUAGE_CODE' ) &&
