@@ -216,6 +216,108 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 					'false' => __( 'Right', 'so-widgets-bundle' ),
 				),
 			),
+
+			'title' => array(
+				'type' => 'section',
+				'label' => __( 'Title', 'so-widgets-bundle' ),
+				'hide' => true,
+				'fields' => array(
+					'display' => array(
+						'type' => 'checkbox',
+						'label' => __( 'Display Image Title', 'so-widgets-bundle' ),
+						'state_emitter' => array(
+							'callback' => 'conditional',
+							'args' => array(
+								'title_display[show]: val',
+								'title_display[hide]: ! val',
+							),
+						),
+					),
+
+					'position' => array(
+						'type' => 'select',
+						'label' => __( 'Title Position', 'so-widgets-bundle' ),
+						'default' => 'below',
+						'options' => array(
+							'above' => __( 'Above Image', 'so-widgets-bundle' ),
+							'below' => __( 'Below Image', 'so-widgets-bundle' ),
+						),
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						)
+					),
+
+					'alignment' => array(
+						'type' => 'select',
+						'label' => __( 'Title Alignment', 'so-widgets-bundle' ),
+						'default' => 'center',
+						'options' => array(
+							'left' => __( 'Left', 'so-widgets-bundle' ),
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'right' => __( 'Right', 'so-widgets-bundle' ),
+						),
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						),
+					),
+
+					'font' => array(
+						'type' => 'font',
+						'label' => __( 'Title Font', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						),
+					),
+
+					'font_size' => array(
+						'type' => 'measurement',
+						'label' => __( 'Title Font Size', 'so-widgets-bundle' ),
+						'default' => '0.9rem',
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						),
+					),
+
+					'color' => array(
+						'type' => 'color',
+						'label' => __( 'Title Color', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						),
+					),
+
+					'padding' => array(
+						'type' => 'color',
+						'label' => __( 'Title Padding', 'so-widgets-bundle' ),
+						'type' => 'multi-measurement',
+						'autofill' => true,
+						'default' => '5px 0px 10px 0px',
+						'measurements' => array(
+							'top' => array(
+							'label' => __( 'Top', 'so-widgets-bundle' ),
+							),
+							'right' => array(
+								'label' => __( 'Right', 'so-widgets-bundle' ),
+							),
+							'bottom' => array(
+								'label' => __( 'Bottom', 'so-widgets-bundle' ),
+							),
+							'left' => array(
+								'label' => __( 'Left', 'so-widgets-bundle' ),
+							),
+						),
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						),
+					),
+				),
+			),
 		);
 	}
 
@@ -292,15 +394,27 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_less_variables( $instance ) {
-		if ( empty( $instance['preloader'] ) || ! $instance['preloader']['enabled'] ) {
-			return array();
+		$less = array();
+		if ( ! empty( $instance['preloader'] ) && ! empty( $instance['preloader']['enabled'] ) ) {
+			$less['preloader_enabled'] = 'true';
+			$less['preloader_height'] = $instance['preloader']['height'];
+			$less['preloader_color'] = $instance['preloader']['color'];
+		}
+
+		if ( ! empty( $instance['title'] ) && ! empty( $instance['title']['display'] ) ) {
+			$less['title_alignment'] = ! empty( $instance['title']['display'] ) ? $instance['title']['alignment'] : '';
+			$title_font = siteorigin_widget_get_font( $instance['title']['font'] );
+			$less['title_font'] = $title_font['family'];
+			if ( ! empty( $title_font['weight'] ) ) {
+				$less['title_font_weight'] = $title_font['weight_raw'];
+				$less['title_font_style'] = $title_font['style'];
+			}
+			$less['title_font_size'] = ! empty( $instance['title']['font_size'] ) ? $instance['title']['font_size'] : '';
+			$less['title_color'] = ! empty( $instance['title']['color'] ) ? $instance['title']['color'] : '';
+			$less['title_padding'] = ! empty( $instance['title']['padding'] ) ? $instance['title']['padding'] : '';
 		}
 		
-		return array(
-			'preloader_enabled' => 'true',
-			'preloader_height' => $instance['preloader']['height'],
-			'preloader_color' => $instance['preloader']['color']
-		);
+		return $less;
 	}
 
 	function get_form_teaser() {

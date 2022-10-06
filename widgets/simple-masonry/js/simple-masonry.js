@@ -41,13 +41,27 @@ jQuery( function ( $ ) {
 						$$.css( 'height', ( rowHeight * rowSpan ) + ( layout.gutter * ( rowSpan - 1 ) ) + 'px' );
 						
 						var $img = $$.find( '> img,> a > img' );
+
+						// If this image has a title present, increase row height for it.
+						var heightSet = false;
+						if ( $$.find( '.image-title' ) ) {
+							var title_height = parseInt( $$.find( '.image-title' ).outerHeight() );
+							if ( ! isNaN( title_height ) ) {
+								rowHeight += title_height;
+								 $$.find( '.sow-masonry-grid-image' ).css( 'height', 'calc( 100% - ' + title_height + 'px)' );
+								heightSet = true;
+							}
+						}
+
 						var imgAR = $img.height() > 0 ? $img.width() / $img.height() : 1;
 						var itemAR = $$.height() > 0 ? $$.width() / $$.height() : 1;
 						imgAR = parseFloat( imgAR.toFixed( 3 ) );
 						itemAR = parseFloat( itemAR.toFixed( 3 ) );
 						if ( imgAR > itemAR ) {
 							$img.css( 'width', 'auto' );
-							$img.css( 'height', '100%' );
+							if ( ! heightSet ) {
+								$img.css( 'height', '100%' );
+							}
 							$img.css( 'margin-top', '' );
 							var marginLeft = ( $img.width() - $$.width() ) * -0.5;
 							$img.css( 'margin-left', marginLeft + 'px' );

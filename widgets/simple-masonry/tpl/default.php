@@ -33,6 +33,19 @@
 				<?php endif; ?>
 
 				<?php
+				if (
+					! empty( $instance['title'] ) &&
+					! empty( $item['title'] ) &&
+					! empty( $instance['title']['display'] ) &&
+					$instance['title']['position'] == 'above'
+				) :
+				?>
+					<span class="image-title">
+						<?php echo wp_kses_post( $item['title'] ) ?>
+					</span>
+				<?php endif; ?>
+
+				<?php
 				echo siteorigin_widgets_get_attachment_image(
 					$item['image'],
 					'full',
@@ -43,6 +56,19 @@
 					)
 				);
 				?>
+
+				<?php
+				if (
+					! empty( $instance['title'] ) &&
+					! empty( $item['title'] ) &&
+					! empty( $instance['title']['display'] ) &&
+					$instance['title']['position'] == 'below'
+				) :
+				?>
+					<span class="image-title">
+						<?php echo wp_kses_post( $item['title'] ) ?>
+					</span>
+				<?php endif; ?>
 
 				<?php if ( ! empty( $url ) ) : ?>
 					</a>
