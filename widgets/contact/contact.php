@@ -49,6 +49,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'sowContact',
 			array(
 				'scrollto' => ! empty( $global_settings['scrollto'] ),
+				'scrollto_offset' => (int) apply_filters( 'siteorigin_widgets_contact_scrollto_offset', 0 ),
 			)
 		);
 	}
