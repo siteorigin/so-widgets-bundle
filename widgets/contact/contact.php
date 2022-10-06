@@ -39,6 +39,18 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			)
 		);
 		add_filter( 'siteorigin_widgets_sanitize_field_multiple_emails', array( $this, 'sanitize_multiple_emails' ) );
+		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-contact-form', array( $this, 'enqueue_widget_scripts' ) );
+	}
+
+	function enqueue_widget_scripts() {
+		$global_settings = $this->get_global_settings();
+		wp_localize_script(
+			'sow-contact',
+			'sowContact',
+			array(
+				'scrollto' => ! empty( $global_settings['scrollto'] ),
+			)
+		);
 	}
 
 	function get_widget_form() {
@@ -983,6 +995,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
 				'default'     => '780px',
 				'description' => __( 'This setting controls when the field max width will be disabled. The default value is 780px', 'so-widgets-bundle' ),
+			),
+			'scrollto' => array(
+				'type'        => 'checkbox',
+				'label'       => __( 'Scroll top', 'so-widgets-bundle' ),
+				'default'     => true,
+				'description' => __( 'After submission, scroll the user to the top of the contact form.', 'so-widgets-bundle' ),
 			)
 		);
 	}
