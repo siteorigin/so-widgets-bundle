@@ -106,6 +106,12 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.42.2 - 06 October 2022 =
+* Blog: Resolved potential incorrect Widgets Block pagination URL.
+* Blog: Removed the Blog Widget from the Widgets Block cache.
+* Updated Google Fonts list.
+* Updated Font Awesome 6.1.1 to 6.2.0.
+
 = 1.42.1 - 23 September 2022 =
 * Blog: Updated settings CSS specificity.
 * Blog: Resolved error when loading posts using Ajax.
