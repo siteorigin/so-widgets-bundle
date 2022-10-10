@@ -1251,7 +1251,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			if ( empty( $field['type'] ) ) {
 				continue;
 			}
-			$field_name = $this->name_from_label( ! empty( $field['label'] ) ? $field['label'] : $i, $field_ids ) . '-' . $instance['_sow_form_id'];
+
+			$field_name = $this->name_from_label( ! empty( $field['label'] ) ? $field['label'] : $i, $field_ids ) . '-' . ( ! empty( $instance['_sow_form_id'] ) ? $instance['_sow_form_id'] : '' );
 			$value      = isset( $post_vars[ $field_name ] ) ? $post_vars[ $field_name ] : '';
 
 			// Can't just use `strlen` here as $value could be an array. E.g. for checkboxes field.
