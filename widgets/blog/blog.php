@@ -161,6 +161,11 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'label' => __( 'Post Categories', 'so-widgets-bundle' ),
 							'default' => true,
 						),
+						'tags' => array(
+							'type' => 'checkbox',
+							'label' => __( 'Post Tags', 'so-widgets-bundle' ),
+							'default' => false,
+						),
 						'comment_count' => array(
 							'type' => 'checkbox',
 							'label' => __( 'Post Comment Count', 'so-widgets-bundle' ),
@@ -984,6 +989,12 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				/* translators: used between list items, there is a space after the comma */
 				the_category( esc_html__( ', ', 'so-widgets-bundle' ) );
 				?>
+			</span>
+		<?php endif; ?>
+
+		<?php if ( ! empty( $settings['tags'] ) && has_tag() ) : ?>
+			<span class="sow-entry-tags">
+				<?php the_tags( '' ); ?>
 			</span>
 		<?php endif; ?>
 
