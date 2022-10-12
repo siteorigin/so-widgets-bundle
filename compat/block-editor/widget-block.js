@@ -70,6 +70,7 @@
 		edit: withState( {
 			editing: false,
 			formInitialized: false,
+			validationSetup: false,
 			previewInitialized: false,
 			widgetFormHtml: '',
 			widgetSettingsChanged: false,
@@ -133,6 +134,15 @@
 
 			function setupWidgetForm( formContainer ) {
 				var $mainForm = jQuery( formContainer ).find( '.siteorigin-widget-form-main' );
+
+				if ( props.formInitialized && ! validationSetup ) {
+					props.setState( { validationSetup: true } );
+					sowbForms.validateFields( jQuery( formContainer ) )
+					$mainForm.find( '.siteorigin-widget-field-is-required input' ).on( 'change', function() {
+						sowbForms.validateFields( jQuery( formContainer ) )
+					} );
+				}
+
 				if ( $mainForm.length > 0 && ! props.formInitialized ) {
 					var $previewContainer = $mainForm.siblings('.siteorigin-widget-preview');
 					$previewContainer.find( '> a' ).on( 'click', function ( event ) {
