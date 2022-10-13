@@ -110,13 +110,11 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 						'type' => 'number',
 						'label' => __( 'Row height', 'so-widgets-bundle' ),
 						'description' => __( 'Leave blank to match calculated column width.', 'so-widgets-bundle' ),
-						'default' => 0
 					),
 					'gutter' => array(
 						'type' => 'number',
 						'label' => __( 'Gutter', 'so-widgets-bundle'),
 						'description' => __( 'Space between masonry items.', 'so-widgets-bundle' ),
-						'default' => 0
 					)
 				)
 			),
@@ -142,13 +140,11 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 						'type' => 'number',
 						'label' => __( 'Row height', 'so-widgets-bundle' ),
 						'description' => __( 'Leave blank to match calculated column width.', 'so-widgets-bundle' ),
-						'default' => 0
 					),
 					'gutter' => array(
 						'type' => 'number',
 						'label' => __( 'Gutter', 'so-widgets-bundle'),
 						'description' => __( 'Space between masonry items.', 'so-widgets-bundle' ),
-						'default' => 0
 					)
 				)
 			),
@@ -174,13 +170,11 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 						'type' => 'number',
 						'label' => __( 'Row height', 'so-widgets-bundle' ),
 						'description' => __( 'Leave blank to match calculated column width.', 'so-widgets-bundle' ),
-						'default' => 0
 					),
 					'gutter' => array(
 						'type' => 'number',
 						'label' => __( 'Gutter', 'so-widgets-bundle'),
 						'description' => __( 'Space between masonry items.', 'so-widgets-bundle' ),
-						'default' => 0
 					)
 				)
 			),
