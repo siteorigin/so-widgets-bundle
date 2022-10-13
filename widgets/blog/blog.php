@@ -161,6 +161,11 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'label' => __( 'Post Categories', 'so-widgets-bundle' ),
 							'default' => true,
 						),
+						'tags' => array(
+							'type' => 'checkbox',
+							'label' => __( 'Post Tags', 'so-widgets-bundle' ),
+							'default' => false,
+						),
 						'comment_count' => array(
 							'type' => 'checkbox',
 							'label' => __( 'Post Comment Count', 'so-widgets-bundle' ),
@@ -987,6 +992,12 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			</span>
 		<?php endif; ?>
 
+		<?php if ( ! empty( $settings['tags'] ) && has_tag() ) : ?>
+			<span class="sow-entry-tags">
+				<?php the_tags( '' ); ?>
+			</span>
+		<?php endif; ?>
+
 		<?php if ( comments_open() && $settings['comment_count'] ) : ?>
 			<span class="sow-entry-comments">
 				<?php
@@ -1081,7 +1092,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 		$length = get_query_var( 'siteorigin_blog_excerpt_length' );
 		$excerpt = get_the_excerpt();
-		$excerpt_add_read_more = str_word_count( $excerpt, 0, '0..9' ) >= $length;
+		$excerpt_add_read_more = count( preg_split( '~[^\p{L}\p{N}\']+~u', $excerpt ) ) >= $length;
 		if ( ! has_excerpt() ) {
 			$excerpt = wp_trim_words(
 				$excerpt,

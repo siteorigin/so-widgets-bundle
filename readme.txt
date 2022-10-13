@@ -106,8 +106,17 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.43.0 - 13 October 2022 =
+* Blog: Improved `Continue reading` output when non-Latin characters are present.
+* Blog: Fixed the Grid template responsive collapse behavior.
+* Blog: Added a new Post Tags setting.
+* Contact Form: Prevented a potential notice when inserting a new form.
+* Post Carousel: Ensured navigation dots can appear when arrows are disabled.
+* Post Carousel: Increased `Post Title > Color` specificity to avoid potential theme conflicts.
+* Widget Block: Removed the Widget Type field label.
+
 = 1.42.2 - 06 October 2022 =
-* Blog: Resolved potential incorrect Widgets Block pagination URL.
+* Blog: Resolved potential incorrect Widget Block pagination URL.
 * Blog: Removed the Blog Widget from the Widgets Block cache.
 * Updated Google Fonts list.
 * Updated Font Awesome 6.1.1 to 6.2.0.
