@@ -190,7 +190,7 @@ jQuery( function( $ ){
 		e.preventDefault();
 		var $form = dialog.find( 'form' );
 
-		validSave = sowbForms.setupRequiredFields( $form )
+		validSave = sowbForms.validateFields( $form )
 		if ( typeof validSave == 'boolean' && ! validSave ) {
 			return false;
 		}
