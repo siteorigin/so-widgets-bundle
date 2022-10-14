@@ -347,20 +347,23 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		);
 		
 		if ( $user_can_richedit ) {
+			$tiny_mce_plugins = apply_filters( 'tiny_mce_plugins', $this->mce_plugins );
 			
 			$tmce_settings = array(
 				'toolbar1' => apply_filters( 'mce_buttons', $this->mce_buttons, $this->element_id ),
 				'toolbar2' => apply_filters( 'mce_buttons_2', $this->mce_buttons_2, $this->element_id  ),
 				'toolbar3' => apply_filters( 'mce_buttons_3',$this->mce_buttons_3, $this->element_id  ),
 				'toolbar4' => apply_filters( 'mce_buttons_4',$this->mce_buttons_4, $this->element_id  ),
-				'plugins' => array_unique( apply_filters( 'tiny_mce_plugins', $this->mce_plugins ) ),
+				'plugins' => ! empty( $tiny_mce_plugins ) && is_array( $tiny_mce_plugins ) ? array_unique( $tiny_mce_plugins ) : array(),
 			);
 			
 			foreach ( $tmce_settings as $name => $setting ) {
 				$tmce_settings[ $name ] = is_array( $setting ) ? implode( ',', $setting ) : '';
 			}
 			
-			$tmce_settings['external_plugins'] = array_unique( apply_filters( 'mce_external_plugins', $this->mce_external_plugins ) );
+
+			$mce_external_plugins = apply_filters( 'mce_external_plugins', $this->mce_external_plugins );
+			$tmce_settings['external_plugins'] = ! empty( $mce_external_plugins ) && is_array( $mce_external_plugins ) ? array_unique( $mce_external_plugins ) : array();
 			
 			$suffix = SCRIPT_DEBUG ? '' : '.min';
 			$version = 'ver=' . get_bloginfo( 'version' );
