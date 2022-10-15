@@ -38,6 +38,13 @@
 			</div>
 		<?php endif; ?>
 
+		<?php if ( ! empty( $settings['tags'] ) && has_tag() ) : ?>
+			<div class="sow-entry-tags">
+				<span class="sow-meta-text"><?php esc_html_e( 'Tags', 'so-widgets-bundle' ); ?></span>
+				<?php the_tags( '' ); ?>
+			</div>
+		<?php endif; ?>
+
 		<?php if ( comments_open() && $settings['comment_count'] ) : ?>
 			<div class="sow-entry-comments">
 				<span class="sow-meta-text"><?php esc_html_e( 'Comments', 'so-widgets-bundle' ); ?></span>

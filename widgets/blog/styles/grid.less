@@ -51,18 +51,19 @@
 @pagination_width: default;
 
 .sow-blog-layout-grid {
+
 	.sow-blog-posts {
 		column-gap: @column_spacing;
 		display: grid;
 		grid-template-columns: repeat( @columns, 1fr );
 
+		@media (max-width: @responsive_breakpoint) {
+			display: block;
+		}
+
 		article {
 			background: @post_background;
 			border: 1px solid @post_border_color;
-
-			@media (max-width: @responsive_breakpoint) {
-				width: 100%;
-			}
 
 			.sow-entry-header {
 
