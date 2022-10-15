@@ -122,7 +122,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 
 			'title' => array(
 				'type' => 'section',
-				'label' => __( 'Title', 'so-widgets-bundle' ),
+				'label' => __( 'Image Title', 'so-widgets-bundle' ),
 				'hide' => true,
 				'fields' => array(
 					'display' => array(
