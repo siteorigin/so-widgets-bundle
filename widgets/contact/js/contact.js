@@ -12,20 +12,22 @@ sowb.SiteOriginContactForm = {
 			var formSubmitSuccess = $el.is( '.sow-contact-form-success' );
 			if ( formSubmitted ) {
 				// The form was submitted. Let's try to scroll to it so the user can see the result.
-				var formPosition = $el.offset().top;
-				if ( $el.is( ':hidden' ) ) {
-					// The form is hidden, so scroll to it's closest visible ancestor.
-					var $container = $el.closest( ':visible' );
-					formPosition = $container.offset().top;
-					// If the closest visible ancestor is either SOWB Accordion or Tabs widget, try to open the panel.
-					if ( $container.is( '.sow-accordion-panel' ) ) {
-						$container.find( '> .sow-accordion-panel-header-container > .sow-accordion-panel-header' ).trigger( 'click' );
-					} else if ( $container.is( '.sow-tabs-panel-container' ) ) {
-						var tabIndex = $el.closest( '.sow-tabs-panel' ).index();
-						$container.siblings( '.sow-tabs-tab-container' ).find( '> .sow-tabs-tab' ).eq( tabIndex ).trigger( 'click' );
+				if ( sowContact.scrollto ) {
+					var formPosition = $el.offset().top;
+					if ( $el.is( ':hidden' ) ) {
+						// The form is hidden, so scroll to it's closest visible ancestor.
+						var $container = $el.closest( ':visible' );
+						formPosition = $container.offset().top + parseInt( scrollto_offset );
+						// If the closest visible ancestor is either SOWB Accordion or Tabs widget, try to open the panel.
+						if ( $container.is( '.sow-accordion-panel' ) ) {
+							$container.find( '> .sow-accordion-panel-header-container > .sow-accordion-panel-header' ).trigger( 'click' );
+						} else if ( $container.is( '.sow-tabs-panel-container' ) ) {
+							var tabIndex = $el.closest( '.sow-tabs-panel' ).index();
+							$container.siblings( '.sow-tabs-tab-container' ).find( '> .sow-tabs-tab' ).eq( tabIndex ).trigger( 'click' );
+						}
 					}
+					$( 'html, body' ).scrollTop( formPosition );
 				}
-				$( 'html, body' ).scrollTop( formPosition );
 				
 				if ( formSubmitSuccess ) {
 					// The form was submitted successfully, so we don't need to do anything else.

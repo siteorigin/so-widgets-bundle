@@ -22,7 +22,10 @@ else {
 		);
 	}
 	?>
-	<form action="#contact-form-<?php echo esc_attr( $short_hash ); ?>"
+	<form
+		<?php if ( ! empty( $global_settings['scrollto'] ) ) : ?>
+			action="#contact-form-<?php echo esc_attr( $short_hash ); ?>"
+		<?php endif; ?>
 		method="POST" class="sow-contact-form" id="contact-form-<?php echo esc_attr( $short_hash ) ?>">
 
 		<?php if ( ! empty( $result['errors']['_general'] ) ) : ?>
