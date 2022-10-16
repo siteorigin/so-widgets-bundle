@@ -328,7 +328,8 @@ abstract class SiteOrigin_Widget_Field_Base {
 				echo '<span class="field-optional">(' . __('Optional', 'so-widgets-bundle') . ')</span>';
 			}
 			if( !empty( $this->required ) ) {
-				echo '<span class="field-required">(' . __('Required', 'so-widgets-bundle') . ')</span>';
+				/* translators: Used to indicate field as required. */
+				echo '<span class="field-required">' . __( '*', 'so-widgets-bundle' ) . '</span>';
 			}
 			?>
 		</label>
