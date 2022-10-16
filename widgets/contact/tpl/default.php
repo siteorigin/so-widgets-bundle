@@ -21,6 +21,7 @@ else {
 			'size'    => $recaptcha_config['size']
 		);
 	}
+	$global_settings = $this->get_global_settings();
 	?>
 	<form
 		<?php if ( ! empty( $global_settings['scrollto'] ) ) : ?>
