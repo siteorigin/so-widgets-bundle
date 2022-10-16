@@ -1545,10 +1545,9 @@ var sowbForms = window.sowbForms || {};
 					valid = false;
 					$field.addClass( 'sow-required-error' );
 				}
-
-				$( 'sow-required-error' ).one( 'change', function() {
-					$field.removeClass( 'sow-required-error' );
-				} )
+					$field.on( 'change', function(e) {
+						$field.removeClass( 'sow-required-error' );
+					} )
 			} );
 		}
 
