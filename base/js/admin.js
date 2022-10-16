@@ -1520,7 +1520,8 @@ var sowbForms = window.sowbForms || {};
 	 * Look for and valid any fields that are required.
 	 */
 	sowbForms.validateFields = function( form ) {
-		var valid = $( document ).triggerHandler(
+		var valid = true;
+		var devValidation = $( document ).triggerHandler(
 			'sow_validate_widget_data',
 			[
 				valid,
@@ -1530,7 +1531,11 @@ var sowbForms = window.sowbForms || {};
 			]
 		);
 
-		if ( typeof valid != 'boolean' || valid ) {
+		if ( typeof devValidation == 'boolean' && ! devValidation ) {
+			valid = false;
+		}
+
+		if ( valid ) {
 			form.find( '.siteorigin-widget-field-is-required' ).each( function() {
 				var $$ = $( this );
 				var $field = $$.find( '.siteorigin-widget-input' );
