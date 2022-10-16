@@ -26,7 +26,7 @@ sowb.SiteOriginContactForm = {
 							$container.siblings( '.sow-tabs-tab-container' ).find( '> .sow-tabs-tab' ).eq( tabIndex ).trigger( 'click' );
 						}
 					}
-					$( 'html, body' ).scrollTop( formPosition );
+					window.scrollTo( 0, formPosition );
 				}
 				
 				if ( formSubmitSuccess ) {
