@@ -17,7 +17,7 @@ sowb.SiteOriginContactForm = {
 					if ( $el.is( ':hidden' ) ) {
 						// The form is hidden, so scroll to it's closest visible ancestor.
 						var $container = $el.closest( ':visible' );
-						formPosition = $container.offset().top + parseInt( scrollto_offset );
+						formPosition = $container.offset().top;
 						// If the closest visible ancestor is either SOWB Accordion or Tabs widget, try to open the panel.
 						if ( $container.is( '.sow-accordion-panel' ) ) {
 							$container.find( '> .sow-accordion-panel-header-container > .sow-accordion-panel-header' ).trigger( 'click' );
@@ -26,6 +26,7 @@ sowb.SiteOriginContactForm = {
 							$container.siblings( '.sow-tabs-tab-container' ).find( '> .sow-tabs-tab' ).eq( tabIndex ).trigger( 'click' );
 						}
 					}
+					formPosition += parseInt( sowContact.scrollto_offset );
 					window.scrollTo( 0, formPosition );
 				}
 				
