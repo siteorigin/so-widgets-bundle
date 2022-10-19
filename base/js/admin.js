@@ -1536,6 +1536,7 @@ var sowbForms = window.sowbForms || {};
 		}
 
 		if ( valid ) {
+			var missingRequired = false;
 			form.find( '.siteorigin-widget-field-is-required' ).each( function() {
 				var $$ = $( this );
 				var $field = $$.find( '.siteorigin-widget-input' );
@@ -1547,13 +1548,17 @@ var sowbForms = window.sowbForms || {};
 						! $field.prop( 'checked' )
 					)
 				) {
-					valid = false;
+					missingRequired = true;
 					$field.addClass( 'sow-required-error' );
 				}
 					$field.on( 'change', function(e) {
 						$field.removeClass( 'sow-required-error' );
 					} )
 			} );
+
+			if ( missingRequired && ! confirm( soWidgets.missing_required ) ) {
+				valid = false;
+			}
 		}
 
 		return valid;

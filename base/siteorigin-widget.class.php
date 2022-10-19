@@ -622,6 +622,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			wp_localize_script( 'siteorigin-widget-admin', 'soWidgets', array(
 				'ajaxurl' => wp_nonce_url( admin_url('admin-ajax.php'), 'widgets_action', '_widgets_nonce' ),
 				'sure' => __('Are you sure?', 'so-widgets-bundle'),
+				'missing_required' => __( 'You have empty required widgets. Are you sure you wish to continue?', 'so-widgets-bundle' ),
 				'backup' => array(
 					'newerVersion' => __( "There is a newer version of this widget's content available.", 'so-widgets-bundle' ),
 					'restore' => __( 'Restore', 'so-widgets-bundle' ),
