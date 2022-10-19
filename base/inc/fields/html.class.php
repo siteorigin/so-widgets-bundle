@@ -23,5 +23,5 @@ class SiteOrigin_Widget_Field_Html extends SiteOrigin_Widget_Field_Base {
 
 	protected function sanitize_field_input( $value, $instance ) {
 		return;
-	}	
+	}
 }
