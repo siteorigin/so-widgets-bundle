@@ -1541,6 +1541,11 @@ var sowbForms = window.sowbForms || {};
 				var $$ = $( this );
 				var $field = $$.find( '.siteorigin-widget-input' );
 
+				// Check if this field is inside of a Repeater's HTML clone field.
+				if ( $field.parents( '.siteorigin-widget-field-repeater-item-html' ).length ) {
+					return;
+				}
+
 				if (
 					! $field.val() ||
 					(
