@@ -96,7 +96,9 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 						'label' => __( 'Button align', 'so-widgets-bundle' ),
 						'default' => 'right',
 						'options' => array(
+							'top' => __( 'Center Top', 'so-widgets-bundle' ),
 							'left' => __( 'Left', 'so-widgets-bundle' ),
+							'bottom' => __( 'Center Bottom', 'so-widgets-bundle' ),
 							'right' => __( 'Right', 'so-widgets-bundle' ),
 						)
 					)

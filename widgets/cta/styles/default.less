@@ -65,4 +65,22 @@
 			margin-right: 1em;
 		}
 	}
+
+	& when ( @button_align = top ) {
+		.sow-cta-wrapper {
+			display: flex;
+			flex-direction: column-reverse;
+			justify-content: center;
+		}
+
+		.so-widget-sow-button {
+			margin-bottom: 1.5em;
+		}
+	}
+
+	& when ( @button_align = bottom ) {
+		.so-widget-sow-button {
+			margin-top: 1.5em;
+		}
+	}
 }
