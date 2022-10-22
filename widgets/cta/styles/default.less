@@ -40,32 +40,6 @@
 @button_align: right;
 
 .sow-cta-base {
-	& when ( @button_align = right ) {
-		.sow-cta-text {
-			float: left;
-		}
-	}
-
-	& when ( @button_align = left ) {
-		.sow-cta-text {
-			float: right;
-		}
-	}
-
-	& when ( @button_align = right ) {
-		.so-widget-sow-button {
-			float: right;
-			margin-left: 1em;
-		}
-	}
-
-	& when ( @button_align = left ) {
-		.so-widget-sow-button {
-			float: left;
-			margin-right: 1em;
-		}
-	}
-
 	& when ( @button_align = top ) {
 		.sow-cta-wrapper {
 			display: flex;
@@ -78,9 +52,31 @@
 		}
 	}
 
+	& when ( @button_align = left ) {
+		.sow-cta-text {
+			float: right;
+		}
+
+		.so-widget-sow-button {
+			float: left;
+			margin-right: 1em;
+		}
+	}
+
 	& when ( @button_align = bottom ) {
 		.so-widget-sow-button {
 			margin-top: 1.5em;
+		}
+	}
+
+	& when ( @button_align = right ) {
+		.sow-cta-text {
+			float: left;
+		}
+
+		.so-widget-sow-button {
+			float: right;
+			margin-left: 1em;
 		}
 	}
 }
