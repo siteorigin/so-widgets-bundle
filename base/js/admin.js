@@ -1556,7 +1556,7 @@ var sowbForms = window.sowbForms || {};
 					missingRequired = true;
 					$field.addClass( 'sow-required-error' );
 				}
-					$field.on( 'change', function(e) {
+					$field.on( 'change', function( e ) {
 						$field.removeClass( 'sow-required-error' );
 					} )
 			} );
