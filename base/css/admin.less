@@ -102,10 +102,31 @@ div.siteorigin-widget-form {
 				font-weight: normal;
 			}
 
-			.siteorigin-widget-input {
+			.siteorigin-widget-input,
+			.field-required-message {
 				transition: 300ms ease-in-out border-color;
+			}
 
-				&.sow-required-error {
+			.field-required-message {
+				background: #fce4e5;
+				border-radius: 2px;
+				border: 1px solid #ec666a;
+				color: #ec666a;
+				display: none;
+				font-size: 0.8em;
+				list-style: none;
+				margin-top: 1px;
+				margin-bottom: 10px;
+				padding: 5px;
+			}
+
+			&.sow-required-error {
+
+				.field-required-message {
+					display: block;
+				}
+
+				.siteorigin-widget-input {
 					border-color: #F02311;
 				}
 			}
