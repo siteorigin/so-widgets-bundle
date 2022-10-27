@@ -27,7 +27,7 @@ sowb.SiteOriginContactForm = {
 						}
 					}
 					formPosition += parseInt( sowContact.scrollto_offset );
-					window.scrollTo( 0, formPosition );
+					$( 'html, body' ).scrollTop( formPosition );
 				}
 				
 				if ( formSubmitSuccess ) {
