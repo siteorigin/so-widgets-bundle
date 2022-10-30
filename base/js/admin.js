@@ -277,6 +277,11 @@ var sowbForms = window.sowbForms || {};
 				if (colorField.data('defaultColor')) {
 					colorFieldOptions.defaultColor = colorField.data('defaultColor');
 				}
+
+				if ( colorField.data( 'palettes' ) ) {
+					colorFieldOptions.palettes = colorField.data( 'palettes' );
+				}
+
 				colorField.wpColorPicker(colorFieldOptions);
 			});
 
