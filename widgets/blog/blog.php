@@ -1076,7 +1076,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	function alter_excerpt_more_indicator( $indicator ) {
-		return apply_filters( 'siteorigin_widgets_blog_excerpt_trim', '...' );
+		return apply_filters( 'siteorigin_widgets_blog_excerpt_trim', get_query_var( 'siteorigin_blog_excerpt_length' ) == 0 ? '' : '...' );
 	}
 
 	function alter_excerpt_length( $length = 55 ) {
