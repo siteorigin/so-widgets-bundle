@@ -1061,7 +1061,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		if ( $setup ) {
 			set_query_var(
 				'siteorigin_blog_excerpt_length',
-				apply_filters( 'siteorigin_widgets_blog_excerpt_length', ! empty( $settings['excerpt_length'] ) ? $settings['excerpt_length'] : 55 )
+				apply_filters( 'siteorigin_widgets_blog_excerpt_length', isset( $settings['excerpt_length'] ) ? $settings['excerpt_length'] : 55 )
 			);
 			add_filter( 'excerpt_length', array( $this, 'alter_excerpt_length' ), 1000 );
 			add_filter( 'excerpt_more', array( $this, 'alter_excerpt_more_indicator' ) );
@@ -1076,7 +1076,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	function alter_excerpt_more_indicator( $indicator ) {
-		return apply_filters( 'siteorigin_widgets_blog_excerpt_trim', '...' );
+		return apply_filters( 'siteorigin_widgets_blog_excerpt_trim', get_query_var( 'siteorigin_blog_excerpt_length' ) == 0 ? '' : '...' );
 	}
 
 	function alter_excerpt_length( $length = 55 ) {
