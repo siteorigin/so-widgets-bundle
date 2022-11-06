@@ -130,6 +130,8 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 
 	function modify_child_widget_form( $child_widget_form, $child_widget ) {
 		unset( $child_widget_form['design']['fields']['align'] );
+		unset( $child_widget_form['design']['fields']['mobile_align'] );
+
 		return $child_widget_form;
 	}
 
