@@ -11,6 +11,8 @@
 @subtitle_font_weight: default;
 @subtitle_font_size: default;
 @button_align: right;
+@mobile_button_align: default;
+@responsive_breakpoint: default;
 
 .sow-cta-base {
 	& when ( iscolor( @border_color ) ) {
@@ -85,6 +87,42 @@
 		.so-widget-sow-button {
 			float: right;
 			margin-left: 1em;
+		}
+	}
+
+
+	& when not ( isstring( @mobile_button_align ) ) {
+		@media (max-width: @responsive_breakpoint) {
+			.sow-cta-wrapper {
+				test: @mobile_button_align;
+				display: flex;
+
+				.so-widget-sow-button {
+					float: none;
+					margin-right: 0;
+					margin-left: 0;
+				}
+
+				.sow-cta-text {
+					text-align: center;
+				}
+
+				& when ( @mobile_button_align = above ) {
+					flex-direction: column-reverse;
+					justify-content: center;
+
+					.so-widget-sow-button {
+						margin-bottom: 2em;
+					}
+				}
+
+				& when ( @mobile_button_align = below ) {
+					flex-direction: column;
+					.so-widget-sow-button {
+						margin-bottom: 2em;
+					}
+				}
+			}
 		}
 	}
 }

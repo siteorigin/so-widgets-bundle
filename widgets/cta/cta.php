@@ -56,6 +56,17 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	function get_settings_form() {
+		return array(
+			'responsive_breakpoint' => array(
+				'type'        => 'measurement',
+				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
+				'default'     => '780px',
+				'description' => __( "This setting controls when the mobile alignment will be used. The default value is 780px.", 'so-widgets-bundle' )
+			),
+		);
+	}
+
 	function get_widget_form() {
 		return array(
 
@@ -100,8 +111,18 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 							'left' => __( 'Left', 'so-widgets-bundle' ),
 							'bottom' => __( 'Center Bottom', 'so-widgets-bundle' ),
 							'right' => __( 'Right', 'so-widgets-bundle' ),
-						)
-					)
+						),
+					),
+					'mobile_button_align' => array(
+						'type' => 'select',
+						'label' => __( 'Mobile button align', 'so-widgets-bundle' ),
+						'default' => 'right',
+						'options' => array(
+							'' => __( 'Desktop', 'so-widgets-bundle' ),
+							'above' => __( 'Above text', 'so-widgets-bundle' ),
+							'below' => __( 'Below Text', 'so-widgets-bundle' ),
+						),
+					),
 				)
 			),
 
@@ -119,13 +140,26 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 			return array();
 		}
 
-		return array(
+
+		$less_vars = array(
 			'border_color' => $instance['design']['border_color'],
 			'background_color' => $instance['design']['background_color'],
-			'title_color'      => $instance['design']['title_color'],
-			'subtitle_color'   => $instance['design']['subtitle_color'],
+			'title_color' => $instance['design']['title_color'],
+			'subtitle_color' => $instance['design']['subtitle_color'],
 			'button_align' => $instance['design']['button_align'],
 		);
+
+		if ( ! empty( $instance['design']['mobile_button_align'] ) ) {
+			$global_settings = $this->get_global_settings();
+			if ( ! empty( $global_settings['responsive_breakpoint'] ) ) {
+				$less['responsive_breakpoint'] = $global_settings['responsive_breakpoint'];
+			}
+
+			$less_vars['mobile_button_align'] = $instance['design']['mobile_button_align'];
+			$less_vars['responsive_breakpoint'] = ! empty( $global_settings['responsive_breakpoint'] ) ? $global_settings['responsive_breakpoint'] : '780px';
+		}
+
+		return $less_vars;
 	}
 
 	function modify_child_widget_form( $child_widget_form, $child_widget ) {
