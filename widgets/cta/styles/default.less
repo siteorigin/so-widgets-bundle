@@ -10,6 +10,7 @@
 @subtitle_font_family: default;
 @subtitle_font_weight: default;
 @subtitle_font_size: default;
+@button_align: right;
 
 .sow-cta-base {
 	& when ( iscolor( @border_color ) ) {
@@ -37,7 +38,6 @@
 		}
 	}
 }
-@button_align: right;
 
 .sow-cta-base {
 	& when ( @button_align = top ) {
@@ -45,6 +45,10 @@
 			display: flex;
 			flex-direction: column-reverse;
 			justify-content: center;
+
+			.sow-cta-text {
+				text-align: center;
+			}
 		}
 
 		.so-widget-sow-button {
@@ -64,6 +68,10 @@
 	}
 
 	& when ( @button_align = bottom ) {
+		.sow-cta-text {
+			text-align: center;
+		}
+
 		.so-widget-sow-button {
 			margin-top: 1.5em;
 		}
