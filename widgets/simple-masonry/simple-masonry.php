@@ -43,6 +43,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 				'type' => 'text',
 				'label' => __('Title', 'so-widgets-bundle'),
 			),
+
 			'items' => array(
 				'type' => 'repeater',
 				'label' => __( 'Images', 'so-widgets-bundle' ),
@@ -95,95 +96,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 					),
 				)
 			),
-			'desktop_layout' => array(
-				'type' => 'section',
-				'label' => __( 'Desktop Layout', 'so-widgets-bundle' ),
-				'fields' => array(
-					'columns' => array(
-						'type' => 'slider',
-						'label' => __( 'Number of columns', 'so-widgets-bundle' ),
-						'min' => 1,
-						'max' => 10,
-						'default' => 4
-					),
-					'row_height' => array(
-						'type' => 'number',
-						'label' => __( 'Row height', 'so-widgets-bundle' ),
-						'description' => __( 'Leave blank to match calculated column width.', 'so-widgets-bundle' ),
-						'default' => 0
-					),
-					'gutter' => array(
-						'type' => 'number',
-						'label' => __( 'Gutter', 'so-widgets-bundle'),
-						'description' => __( 'Space between masonry items.', 'so-widgets-bundle' ),
-						'default' => 0
-					)
-				)
-			),
-			'tablet_layout' => array(
-				'type' => 'section',
-				'label' => __( 'Tablet Layout', 'so-widgets-bundle' ),
-				'hide' => true,
-				'fields' => array(
-					'break_point' => array(
-						'type' => 'number',
-						'lanel' => __( 'Break point', 'so-widgets-bundle' ),
-						'description' => __( 'Device width, in pixels, at which to collapse into a tablet view.', 'so-widgets-bundle' ),
-						'default' => 768
-					),
-					'columns' => array(
-						'type' => 'slider',
-						'label' => __( 'Number of columns', 'so-widgets-bundle' ),
-						'min' => 1,
-						'max' => 10,
-						'default' => 2
-					),
-					'row_height' => array(
-						'type' => 'number',
-						'label' => __( 'Row height', 'so-widgets-bundle' ),
-						'description' => __( 'Leave blank to match calculated column width.', 'so-widgets-bundle' ),
-						'default' => 0
-					),
-					'gutter' => array(
-						'type' => 'number',
-						'label' => __( 'Gutter', 'so-widgets-bundle'),
-						'description' => __( 'Space between masonry items.', 'so-widgets-bundle' ),
-						'default' => 0
-					)
-				)
-			),
-			'mobile_layout' => array(
-				'type' => 'section',
-				'label' => __( 'Mobile Layout', 'so-widgets-bundle' ),
-				'hide' => true,
-				'fields' => array(
-					'break_point' => array(
-						'type' => 'number',
-						'lanel' => __( 'Break point', 'so-widgets-bundle' ),
-						'description' => __( 'Device width, in pixels, at which to collapse into a mobile view.', 'so-widgets-bundle' ),
-						'default' => 480
-					),
-					'columns' => array(
-						'type' => 'slider',
-						'label' => __( 'Number of columns', 'so-widgets-bundle' ),
-						'min' => 1,
-						'max' => 10,
-						'default' => 1
-					),
-					'row_height' => array(
-						'type' => 'number',
-						'label' => __( 'Row height', 'so-widgets-bundle' ),
-						'description' => __( 'Leave blank to match calculated column width.', 'so-widgets-bundle' ),
-						'default' => 0
-					),
-					'gutter' => array(
-						'type' => 'number',
-						'label' => __( 'Gutter', 'so-widgets-bundle'),
-						'description' => __( 'Space between masonry items.', 'so-widgets-bundle' ),
-						'default' => 0
-					)
-				)
-			),
+
 			'preloader' => array(
 				'type' => 'section',
 				'label' => __( 'Preloader', 'so-widgets-bundle' ),
@@ -206,14 +119,209 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 					)
 				)
 			),
-			'layout_origin_left' => array(
-				'type' => 'select',
-				'label' => __( 'Layout origin', 'so-widgets-bundle' ),
-				'description' => __( 'Controls the horizontal flow of the layout. Items can either start positioned on the left or right.', 'so-widgets-bundle' ),
-				'default' => 'true',
-				'options' => array(
-					'true' => __( 'Left', 'so-widgets-bundle' ),
-					'false' => __( 'Right', 'so-widgets-bundle' ),
+
+			'title' => array(
+				'type' => 'section',
+				'label' => __( 'Image Title', 'so-widgets-bundle' ),
+				'hide' => true,
+				'fields' => array(
+					'display' => array(
+						'type' => 'checkbox',
+						'label' => __( 'Display Image Title', 'so-widgets-bundle' ),
+						'state_emitter' => array(
+							'callback' => 'conditional',
+							'args' => array(
+								'title_display[show]: val',
+								'title_display[hide]: ! val',
+							),
+						),
+					),
+
+					'position' => array(
+						'type' => 'select',
+						'label' => __( 'Title Position', 'so-widgets-bundle' ),
+						'default' => 'below',
+						'options' => array(
+							'above' => __( 'Above Image', 'so-widgets-bundle' ),
+							'below' => __( 'Below Image', 'so-widgets-bundle' ),
+						),
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						)
+					),
+
+					'alignment' => array(
+						'type' => 'select',
+						'label' => __( 'Title Alignment', 'so-widgets-bundle' ),
+						'default' => 'center',
+						'options' => array(
+							'left' => __( 'Left', 'so-widgets-bundle' ),
+							'center' => __( 'Center', 'so-widgets-bundle' ),
+							'right' => __( 'Right', 'so-widgets-bundle' ),
+						),
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						),
+					),
+
+					'font' => array(
+						'type' => 'font',
+						'label' => __( 'Title Font', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						),
+					),
+
+					'font_size' => array(
+						'type' => 'measurement',
+						'label' => __( 'Title Font Size', 'so-widgets-bundle' ),
+						'default' => '0.9rem',
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						),
+					),
+
+					'color' => array(
+						'type' => 'color',
+						'label' => __( 'Title Color', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						),
+					),
+
+					'padding' => array(
+						'type' => 'color',
+						'label' => __( 'Title Padding', 'so-widgets-bundle' ),
+						'type' => 'multi-measurement',
+						'autofill' => true,
+						'default' => '5px 0px 10px 0px',
+						'measurements' => array(
+							'top' => array(
+							'label' => __( 'Top', 'so-widgets-bundle' ),
+							),
+							'right' => array(
+								'label' => __( 'Right', 'so-widgets-bundle' ),
+							),
+							'bottom' => array(
+								'label' => __( 'Bottom', 'so-widgets-bundle' ),
+							),
+							'left' => array(
+								'label' => __( 'Left', 'so-widgets-bundle' ),
+							),
+						),
+						'state_handler' => array(
+							'title_display[show]' => array( 'show' ),
+							'title_display[hide]' => array( 'hide' ),
+						),
+					),
+				),
+			),
+
+			'layout' => array(
+				'type' => 'section',
+				'label' => __( 'Layout', 'so-widgets-bundle' ),
+				'fields' => array(
+					'origin_left' => array(
+						'type' => 'select',
+						'label' => __( 'Origin', 'so-widgets-bundle' ),
+						'description' => __( 'Controls the horizontal flow of the layout. Items can either start positioned on the left or right.', 'so-widgets-bundle' ),
+						'default' => 'true',
+						'options' => array(
+							'true' => __( 'Left', 'so-widgets-bundle' ),
+							'false' => __( 'Right', 'so-widgets-bundle' ),
+						),
+					),
+
+					'desktop' => array(
+						'type' => 'section',
+						'label' => __( 'Desktop', 'so-widgets-bundle' ),
+						'fields' => array(
+							'columns' => array(
+								'type' => 'slider',
+								'label' => __( 'Number of columns', 'so-widgets-bundle' ),
+								'min' => 1,
+								'max' => 10,
+								'default' => 4,
+							),
+							'row_height' => array(
+								'type' => 'number',
+								'label' => __( 'Row height', 'so-widgets-bundle' ),
+								'description' => __( 'Leave blank to match calculated column width.', 'so-widgets-bundle' ),
+							),
+							'gutter' => array(
+								'type' => 'number',
+								'label' => __( 'Gutter', 'so-widgets-bundle'),
+								'description' => __( 'Space between masonry items.', 'so-widgets-bundle' ),
+							),
+						),
+					),
+
+					'tablet' => array(
+						'type' => 'section',
+						'label' => __( 'Tablet', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'break_point' => array(
+								'type' => 'number',
+								'lanel' => __( 'Breakpoint', 'so-widgets-bundle' ),
+								'description' => __( 'Device width, in pixels, at which to collapse into a tablet view.', 'so-widgets-bundle' ),
+								'default' => 768,
+							),
+							'columns' => array(
+								'type' => 'slider',
+								'label' => __( 'Number of columns', 'so-widgets-bundle' ),
+								'min' => 1,
+								'max' => 10,
+								'default' => 2,
+							),
+							'row_height' => array(
+								'type' => 'number',
+								'label' => __( 'Row height', 'so-widgets-bundle' ),
+								'description' => __( 'Leave blank to match calculated column width.', 'so-widgets-bundle' ),
+							),
+							'gutter' => array(
+								'type' => 'number',
+								'label' => __( 'Gutter', 'so-widgets-bundle'),
+								'description' => __( 'Space between masonry items.', 'so-widgets-bundle' ),
+							),
+						),
+					),
+
+					'mobile' => array(
+						'type' => 'section',
+						'label' => __( 'Mobile', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'break_point' => array(
+								'type' => 'number',
+								'lanel' => __( 'Breakpoint', 'so-widgets-bundle' ),
+								'description' => __( 'Device width, in pixels, at which to collapse into a mobile view.', 'so-widgets-bundle' ),
+								'default' => 480,
+							),
+							'columns' => array(
+								'type' => 'slider',
+								'label' => __( 'Number of columns', 'so-widgets-bundle' ),
+								'min' => 1,
+								'max' => 10,
+								'default' => 1,
+							),
+							'row_height' => array(
+								'type' => 'number',
+								'label' => __( 'Row height', 'so-widgets-bundle' ),
+								'description' => __( 'Leave blank to match calculated column width.', 'so-widgets-bundle' ),
+							),
+							'gutter' => array(
+								'type' => 'number',
+								'label' => __( 'Gutter', 'so-widgets-bundle'),
+								'description' => __( 'Space between masonry items.', 'so-widgets-bundle' ),
+							),
+						),
+					),
 				),
 			),
 		);
@@ -235,29 +343,29 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 			'args' => $args,
 			'items' => $items,
 			'preloader_enabled' => ! empty( $instance['preloader']['enabled'] ) ? true : false,
-			'layout_origin_left' => ! empty( $instance['layout_origin_left'] ) ? $instance['layout_origin_left'] : 'true',
+			'layout_origin_left' => ! empty( $instance['layout']['origin_left'] ) ? $instance['layout']['origin_left'] : 'true',
 			'layouts' => array(
 				'desktop' => siteorigin_widgets_underscores_to_camel_case(
 					array(
-						'num_columns' => $instance['desktop_layout']['columns'],
-						'row_height' => empty( $instance['desktop_layout']['row_height'] ) ? 0 : (int) $instance['desktop_layout']['row_height'],
-						'gutter' => empty( $instance['desktop_layout']['gutter'] ) ? 0 : (int) $instance['desktop_layout']['gutter'],
+						'num_columns' => empty( $instance['layout']['desktop']['columns'] ) ? 3 : $instance['layout']['desktop']['columns'],
+						'row_height' => empty( $instance['layout']['desktop']['row_height'] ) ? 0 : (int) $instance['layout']['desktop']['row_height'],
+						'gutter' => empty( $instance['layout']['desktop']['gutter'] ) ? 0 : (int) $instance['layout']['desktop']['gutter'],
 					)
 				),
 				'tablet' => siteorigin_widgets_underscores_to_camel_case(
 					array(
-						'break_point' => $instance['tablet_layout']['break_point'],
-						'num_columns' => $instance['tablet_layout']['columns'],
-						'row_height' => empty( $instance['tablet_layout']['row_height'] ) ? 0 : (int) $instance['tablet_layout']['row_height'],
-						'gutter' => empty( $instance['tablet_layout']['gutter'] ) ? 0 : (int) $instance['tablet_layout']['gutter'],
+						'break_point' => empty( $instance['layout']['tablet']['columns'] ) ? '768px' : $instance['layout']['tablet']['break_point'],
+						'num_columns' => empty( $instance['layout']['tablet']['columns'] ) ? 2 : $instance['layout']['tablet']['columns'],
+						'row_height' => empty( $instance['layout']['tablet']['row_height'] ) ? 0 : (int) $instance['layout']['tablet']['row_height'],
+						'gutter' => empty( $instance['layout']['tablet']['gutter'] ) ? 0 : (int) $instance['layout']['tablet']['gutter'],
 					)
 				),
 				'mobile' => siteorigin_widgets_underscores_to_camel_case(
 					array(
-						'break_point' => $instance['mobile_layout']['break_point'],
-						'num_columns' => $instance['mobile_layout']['columns'],
-						'row_height' => empty( $instance['mobile_layout']['row_height'] ) ? 0 : (int) $instance['mobile_layout']['row_height'],
-						'gutter' => empty( $instance['mobile_layout']['gutter'] ) ? 0 : (int) $instance['mobile_layout']['gutter'],
+						'break_point' => empty( $instance['layout']['mobile']['columns'] ) ? '480px' : $instance['layout']['mobile']['break_point'],
+						'num_columns' => empty( $instance['layout']['mobile']['columns'] ) ? 1 : $instance['layout']['mobile']['columns'],
+						'row_height' => empty( $instance['layout']['mobile']['row_height'] ) ? 0 : (int) $instance['layout']['mobile']['row_height'],
+						'gutter' => empty( $instance['layout']['mobile']['gutter'] ) ? 0 : (int) $instance['layout']['mobile']['gutter'],
 					)
 				),
 			)
@@ -292,15 +400,79 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_less_variables( $instance ) {
-		if ( empty( $instance['preloader'] ) || ! $instance['preloader']['enabled'] ) {
-			return array();
+		$less = array();
+		if ( ! empty( $instance['preloader'] ) && ! empty( $instance['preloader']['enabled'] ) ) {
+			$less['preloader_enabled'] = 'true';
+			$less['preloader_height'] = $instance['preloader']['height'];
+			$less['preloader_color'] = $instance['preloader']['color'];
+		}
+
+		if ( ! empty( $instance['title'] ) && ! empty( $instance['title']['display'] ) ) {
+			$less['title_alignment'] = ! empty( $instance['title']['display'] ) ? $instance['title']['alignment'] : '';
+			$title_font = siteorigin_widget_get_font( $instance['title']['font'] );
+			$less['title_font'] = $title_font['family'];
+			if ( ! empty( $title_font['weight'] ) ) {
+				$less['title_font_weight'] = $title_font['weight_raw'];
+				$less['title_font_style'] = $title_font['style'];
+			}
+			$less['title_font_size'] = ! empty( $instance['title']['font_size'] ) ? $instance['title']['font_size'] : '';
+			$less['title_color'] = ! empty( $instance['title']['color'] ) ? $instance['title']['color'] : '';
+			$less['title_padding'] = ! empty( $instance['title']['padding'] ) ? $instance['title']['padding'] : '';
 		}
 		
-		return array(
-			'preloader_enabled' => 'true',
-			'preloader_height' => $instance['preloader']['height'],
-			'preloader_color' => $instance['preloader']['color']
-		);
+		return $less;
+	}
+
+	function modify_instance( $instance ) {
+		if ( empty( $instance ) ) {
+			return array();
+		}
+
+		// If this Simple Masonry was created before the title settings were added, disable it by default.
+		if ( ! empty( $instance['display'] ) || ! isset( $instance['title']['display'] ) ) {
+			$instance['title']['title_display'] = false;
+		}
+
+
+		// Migrate Legacy device layout settings to layout seciton.
+		if ( ! empty( $instance['desktop_layout'] ) ) {
+			$instance['layout'] = array();
+			$instance['layout']['desktop'] = array();
+			$instance['layout']['tablet'] = array();
+			$instance['layout']['mobile'] = array();
+			$instance['layout']['origin_left'] = $instance['layout_origin_left'];
+
+			$migrate_layout_sections = array(
+				'desktop' => array(
+					'columns',
+					'row_height',
+					'gutter',
+				),
+				'tablet' => array(
+					'break_point',
+					'columns',
+					'row_height',
+					'gutter',
+				),
+				'mobile' => array(
+					'break_point',
+					'columns',
+					'row_height',
+					'gutter',
+				),
+			);
+
+			foreach ( $migrate_layout_sections as $setting => $sub_section ) {
+				foreach ( $sub_section as $layout_setting ) {
+					if ( isset( $instance[ $setting . '_layout' ][ $layout_setting ] ) ) {
+						$instance['layout'][ $setting ][ $layout_setting ] = $instance[ $setting . '_layout' ][ $layout_setting ];
+					}
+				}
+				unset( $instance[ $setting . '_layout' ] );
+			}
+		}		
+
+		return $instance;
 	}
 
 	function get_form_teaser() {

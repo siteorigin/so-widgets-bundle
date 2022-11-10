@@ -26,7 +26,7 @@
 	}
 
 	// Reset the position of all divs to prevent a potential situation where the Google Maps logo could be hidden by unrelated CSS.
-	div {
+	div:not(.gm-style-iw-t):not(.gm-style-iw) {
 		position: initial;
 	}
 }

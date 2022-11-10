@@ -2025,8 +2025,6 @@ function siteorigin_widgets_icon_migrate_fontawesome_name_map() {
 		'futbol-o' => 'futbol',
 		'gbp' => 'pound-sign',
 		'ge' => 'empire',
-		'gear' => 'cog',
-		'gears' => 'cogs',
 		'gittip' => 'gratipay',
 		'glass' => 'glass-martini',
 		'google-plus' => 'google-plus-g',
