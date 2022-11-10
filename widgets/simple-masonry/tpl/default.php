@@ -53,6 +53,7 @@
 					array(
 						'title' => esc_attr( $title ),
 						'class' => 'sow-masonry-grid-image',
+						'loading' => $preloader_enabled ? false : wp_get_loading_attr_default( 'the_content' )
 					)
 				);
 				?>
