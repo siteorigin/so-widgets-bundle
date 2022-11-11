@@ -53,25 +53,7 @@ jQuery( function ( $ ) {
 							}
 						}
 
-						var imgAR = $img.height() > 0 ? $img.width() / $img.height() : 1;
-						var itemAR = $$.height() > 0 ? $$.width() / $$.height() : 1;
-						imgAR = parseFloat( imgAR.toFixed( 3 ) );
-						itemAR = parseFloat( itemAR.toFixed( 3 ) );
-						if ( imgAR > itemAR ) {
-							$img.css( 'width', 'auto' );
-							if ( ! heightSet ) {
-								$img.css( 'height', '100%' );
-							}
-							$img.css( 'margin-top', '' );
-							var marginLeft = ( $img.width() - $$.width() ) * -0.5;
-							$img.css( 'margin-left', marginLeft + 'px' );
-						} else {
-							$img.css( 'height', 'auto' );
-							$img.css( 'width', '100%' );
-							$img.css( 'margin-left', '' );
-							var marginTop = ( $img.height() - $$.height() ) * -0.5;
-							$img.css( 'margin-top', marginTop + 'px' );
-						}
+						$img.css( 'height', heightSet ? $$.height() - title_height : $$.height() + 'px' );
 					} );
 
 					$gridEl.packery( {
