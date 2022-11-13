@@ -491,7 +491,14 @@ var sowbForms = window.sowbForms || {};
 						}
 
 						// Return an array that has the new states added to the array
-						return $.extend(currentStates, sowEmitters[emitter.callback](val, emitter.args));
+						return $.extend(
+							currentStates,
+							sowEmitters[ emitter.callback ] (
+								val,
+								emitter.args,
+								$$
+							)
+						);
 					};
 
 					// Run the states through the state emitters
