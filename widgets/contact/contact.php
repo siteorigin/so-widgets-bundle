@@ -1475,8 +1475,10 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$comment = array();
 
 			$message_text = array();
-			foreach ( $email_fields['message'] as $m ) {
-				$message_text[] = $m['value'];
+			if ( ! empty( $email_fields['message'] ) ) {
+				foreach ( $email_fields['message'] as $m ) {
+					$message_text[] = $m['value'];
+				}
 			}
 
 			$comment['comment_content']      = $email_fields['subject'] . "\n\n" . implode( "\n\n", $message_text );
@@ -1557,11 +1559,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 			$body .= "\n\n";
 		}
-		foreach ( $email_fields['message'] as $m ) {
-			$body .= '<strong>' . $m['label'] . ':</strong>';
-			$body .= "\n";
-			$body .= htmlspecialchars( $m['value'] );
-			$body .= "\n\n";
+
+		if ( ! empty( $email_fields['message'] ) ) {
+			foreach ( $email_fields['message'] as $m ) {
+				$body .= '<strong>' . $m['label'] . ':</strong>';
+				$body .= "\n";
+				$body .= htmlspecialchars( $m['value'] );
+				$body .= "\n\n";
+			}
 		}
 		$body = wpautop( trim( $body ) );
 
