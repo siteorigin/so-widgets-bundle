@@ -135,7 +135,7 @@
 			function setupWidgetForm( formContainer ) {
 				var $mainForm = jQuery( formContainer ).find( '.siteorigin-widget-form-main' );
 
-				if ( props.formInitialized && ! validationSetup ) {
+				if ( props.formInitialized && ! props.validationSetup ) {
 					props.setState( { validationSetup: true } );
 					sowbForms.validateFields( jQuery( formContainer ) )
 					$mainForm.find( '.siteorigin-widget-field-is-required input' ).on( 'change', function() {
