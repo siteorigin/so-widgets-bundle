@@ -70,7 +70,6 @@
 		edit: withState( {
 			editing: false,
 			formInitialized: false,
-			validationSetup: false,
 			previewInitialized: false,
 			widgetFormHtml: '',
 			widgetSettingsChanged: false,
@@ -134,14 +133,6 @@
 
 			function setupWidgetForm( formContainer ) {
 				var $mainForm = jQuery( formContainer ).find( '.siteorigin-widget-form-main' );
-
-				if ( props.formInitialized && ! props.validationSetup ) {
-					props.setState( { validationSetup: true } );
-					sowbForms.validateFields( jQuery( formContainer ) )
-					$mainForm.find( '.siteorigin-widget-field-is-required input' ).on( 'change', function() {
-						sowbForms.validateFields( jQuery( formContainer ) )
-					} );
-				}
 
 				if ( $mainForm.length > 0 && ! props.formInitialized ) {
 					var $previewContainer = $mainForm.siblings('.siteorigin-widget-preview');
@@ -333,3 +324,50 @@
 		}
 	} );
 } )( window.wp.editor, window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.compose, window.wp.blockEditor );
+
+// Setup SiteOrigin Widgets Block Validation.
+if ( typeof wp.data.select == 'function' ) {
+	wp.data.subscribe( function () {
+		var setupTimer = false;
+
+		if ( typeof wp.data.select( 'core/editor' ) == 'object' ) {
+			// Block Editor.
+			if ( wp.data.select( 'core/editor' ).isSavingPost() ) {
+				setupTimer = true;
+			}
+		} else if (
+			typeof wp.data.select( 'core/edit-widgets' ) == 'object' &&
+			wp.data.select( 'core/edit-widgets' ).isSavingWidgetAreas()
+		) {
+			// New Widget Area.
+			setupTimer = true;
+		}
+
+		if ( setupTimer ) {
+			var saveCheck = setTimeout( function() {
+				if (
+					typeof wp.data.select( 'core/editor' ) != 'object' ||
+					(
+						! wp.data.select( 'core/editor' ).isSavingPost() &&
+						! wp.data.select( 'core/editor' ).isAutosavingPost()
+					)
+				) {
+					clearTimeout( saveCheck );
+					sowbTimeoutSetup = false;
+					if ( wp.data.select( 'core/editor' ).didPostSaveRequestSucceed() ) {
+						var currentBlocks = wp.data.select( 'core/editor' ).getBlocks();
+						for ( var i = 0; i < currentBlocks.length; i++ ) {
+							if ( currentBlocks[ i ].name == 'sowb/widget-block' && currentBlocks[ i ].isValid ) {
+								$form = jQuery( '#block-' + currentBlocks[ i ].clientId ).find( '.so-widget-placeholder ');
+								sowbForms.validateFields( $form );
+								$form.find( '.siteorigin-widget-field-is-required input' ).on( 'change', function() {
+									sowbForms.validateFields( $form );
+								} );
+							}
+						}
+					}
+				}
+			}, 250 );
+		}
+	} );
+}
