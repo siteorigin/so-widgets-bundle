@@ -94,7 +94,10 @@
 			}
 
 			function generateWidgetPreview( widgetData = false) {
-				wp.data.dispatch( 'core/editor' ).lockPostSaving();
+				if ( typeof wp.data.dispatch( 'core/editor' ) == 'object' ) {
+					wp.data.dispatch( 'core/editor' ).lockPostSaving();
+				}
+
 				jQuery.post( {
 					url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/previews',
 					beforeSend: function( xhr ) {
@@ -116,7 +119,9 @@
 						widgetHtml: widgetPreview.html,
 						widgetIcons: widgetPreview.icons
 					} );
-					wp.data.dispatch( 'core/editor' ).unlockPostSaving();
+					if ( typeof wp.data.dispatch( 'core/editor' ) == 'object' ) {
+						wp.data.dispatch( 'core/editor' ).unlockPostSaving();
+					}
 				} )
 				.fail( function( response ) {
 					props.setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>', } );
@@ -345,26 +350,40 @@ if ( typeof wp.data.select == 'function' ) {
 
 		if ( setupTimer ) {
 			var saveCheck = setTimeout( function() {
-				if (
-					typeof wp.data.select( 'core/editor' ) != 'object' ||
-					(
+				var checkPass = false;
+				if ( typeof wp.data.select( 'core/editor' ) == 'object' ) {
+					if (
 						! wp.data.select( 'core/editor' ).isSavingPost() &&
-						! wp.data.select( 'core/editor' ).isAutosavingPost()
-					)
-				) {
+						! wp.data.select( 'core/editor' ).isAutosavingPost() &&
+						wp.data.select( 'core/editor' ).didPostSaveRequestSucceed()
+					) {
+						checkPass = true;
+					}
+				} else if ( ! wp.data.select( 'core/edit-widgets' ).isSavingWidgetAreas() ) {
+					checkPass = true;
+				}
+
+				if ( checkPass ) {
 					clearTimeout( saveCheck );
 					sowbTimeoutSetup = false;
-					if ( wp.data.select( 'core/editor' ).didPostSaveRequestSucceed() ) {
-						var currentBlocks = wp.data.select( 'core/editor' ).getBlocks();
-						for ( var i = 0; i < currentBlocks.length; i++ ) {
-							if ( currentBlocks[ i ].name == 'sowb/widget-block' && currentBlocks[ i ].isValid ) {
-								$form = jQuery( '#block-' + currentBlocks[ i ].clientId ).find( '.so-widget-placeholder ');
-								sowbForms.validateFields( $form );
+					
+					if ( typeof wp.data.select( 'core/editor' ) == 'object' ) {
+						// Block Editor.
+						var sowbCurrentBlocks = wp.data.select( 'core/block-editor' ).getBlocks();
+						for ( var i = 0; i < sowbCurrentBlocks.length; i++ ) {
+							if ( sowbCurrentBlocks[ i ].name == 'sowb/widget-block' && sowbCurrentBlocks[ i ].isValid ) {
+								$form = jQuery( '#block-' + sowbCurrentBlocks[ i ].clientId ).find( '.so-widget-placeholder ');
 								$form.find( '.siteorigin-widget-field-is-required input' ).on( 'change', function() {
 									sowbForms.validateFields( $form );
 								} );
 							}
 						}
+					} else {
+						// New Widget Area.
+						var $widgets = jQuery( '.wp-block-widget-area .components-panel__body.is-opened .siteorigin-widget-form-main-siteorigin-widget-button-widget' );
+						jQuery.each( $widgets , function() {
+							 sowbForms.validateFields( jQuery( this ).parent() );
+						} );
 					}
 				}
 			}, 250 );
