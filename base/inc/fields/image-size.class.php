@@ -82,7 +82,7 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 			<?php
 		}
 		
-		parent::render_after_field( $value, $instance )
+		parent::render_after_field( $value, $instance );
 	}
 
 	public function get_custom_size_setting_prefix( $base_name ) {
