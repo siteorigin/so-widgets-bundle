@@ -335,16 +335,16 @@ if ( typeof wp.data.select == 'function' ) {
 	wp.data.subscribe( function () {
 		var setupTimer = false;
 
-		if ( typeof wp.data.select( 'core/editor' ) == 'object' ) {
-			// Block Editor.
-			if ( wp.data.select( 'core/editor' ).isSavingPost() ) {
+		if ( typeof wp.data.select( 'core/edit-widgets' ) == 'object' ) {
+			// New Widget Area.
+			if ( wp.data.select( 'core/edit-widgets' ).isSavingWidgetAreas() ) {
 				setupTimer = true;
 			}
 		} else if (
-			typeof wp.data.select( 'core/edit-widgets' ) == 'object' &&
-			wp.data.select( 'core/edit-widgets' ).isSavingWidgetAreas()
+			typeof wp.data.select( 'core/editor' ) == 'object' &&
+			wp.data.select( 'core/editor' ).isSavingPost()
 		) {
-			// New Widget Area.
+			// Block Editor.
 			setupTimer = true;
 		}
 
@@ -352,22 +352,29 @@ if ( typeof wp.data.select == 'function' ) {
 			var saveCheck = setTimeout( function() {
 				var checkPass = false;
 				if ( typeof wp.data.select( 'core/editor' ) == 'object' ) {
-					if (
-						! wp.data.select( 'core/editor' ).isSavingPost() &&
-						! wp.data.select( 'core/editor' ).isAutosavingPost() &&
-						wp.data.select( 'core/editor' ).didPostSaveRequestSucceed()
-					) {
+					if ( ! wp.data.select( 'core/edit-widgets' ).isSavingWidgetAreas() ) {
 						checkPass = true;
 					}
-				} else if ( ! wp.data.select( 'core/edit-widgets' ).isSavingWidgetAreas() ) {
-					checkPass = true;
+				} else if (
+					typeof wp.data.select( 'core/editor' ) == 'object' &&
+					! wp.data.select( 'core/editor' ).isSavingPost() &&
+					! wp.data.select( 'core/editor' ).isAutosavingPost() &&
+					wp.data.select( 'core/editor' ).didPostSaveRequestSucceed()
+				) {
+						checkPass = true;
 				}
 
 				if ( checkPass ) {
 					clearTimeout( saveCheck );
 					sowbTimeoutSetup = false;
 					
-					if ( typeof wp.data.select( 'core/editor' ) == 'object' ) {
+					if ( typeof wp.data.select( 'core/edit-widgets' ) == 'object' ) {
+						// New Widget Area.
+						var $widgets = jQuery( '.wp-block-widget-area .components-panel__body.is-opened .siteorigin-widget-form-main-siteorigin-widget-button-widget' );
+						jQuery.each( $widgets , function() {
+							 sowbForms.validateFields( jQuery( this ).parent() );
+						} );
+					} else if ( typeof wp.data.select( 'core/editor' ) == 'object' ) {
 						// Block Editor.
 						var sowbCurrentBlocks = wp.data.select( 'core/block-editor' ).getBlocks();
 						for ( var i = 0; i < sowbCurrentBlocks.length; i++ ) {
@@ -378,12 +385,6 @@ if ( typeof wp.data.select == 'function' ) {
 								} );
 							}
 						}
-					} else {
-						// New Widget Area.
-						var $widgets = jQuery( '.wp-block-widget-area .components-panel__body.is-opened .siteorigin-widget-form-main-siteorigin-widget-button-widget' );
-						jQuery.each( $widgets , function() {
-							 sowbForms.validateFields( jQuery( this ).parent() );
-						} );
 					}
 				}
 			}, 250 );
