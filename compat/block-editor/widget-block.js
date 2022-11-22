@@ -331,63 +331,73 @@
 } )( window.wp.editor, window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.compose, window.wp.blockEditor );
 
 // Setup SiteOrigin Widgets Block Validation.
+var sowbTimeoutSetup = false;
 if ( typeof wp.data.select == 'function' ) {
 	wp.data.subscribe( function () {
-		var setupTimer = false;
+		if ( ! sowbTimeoutSetup ) {
+			var setupTimer = false;
 
-		if ( typeof wp.data.select( 'core/edit-widgets' ) == 'object' ) {
-			// New Widget Area.
-			if ( wp.data.select( 'core/edit-widgets' ).isSavingWidgetAreas() ) {
+			if ( typeof wp.data.select( 'core/edit-widgets' ) == 'object' ) {
+				// New Widget Area.
+				if ( wp.data.select( 'core/edit-widgets' ).isSavingWidgetAreas() ) {
+					setupTimer = true;
+				}
+			} else if (
+				typeof wp.data.select( 'core/editor' ) == 'object' &&
+				wp.data.select( 'core/editor' ).isSavingPost()
+			) {
+				// Block Editor.
 				setupTimer = true;
 			}
-		} else if (
-			typeof wp.data.select( 'core/editor' ) == 'object' &&
-			wp.data.select( 'core/editor' ).isSavingPost()
-		) {
-			// Block Editor.
-			setupTimer = true;
-		}
 
-		if ( setupTimer ) {
-			var saveCheck = setTimeout( function() {
-				var checkPass = false;
-				if ( typeof wp.data.select( 'core/edit-widgets' ) == 'object' ) {
-					if ( ! wp.data.select( 'core/edit-widgets' ).isSavingWidgetAreas() ) {
-						checkPass = true;
-					}
-				} else if (
-					typeof wp.data.select( 'core/editor' ) == 'object' &&
-					! wp.data.select( 'core/editor' ).isSavingPost() &&
-					! wp.data.select( 'core/editor' ).isAutosavingPost() &&
-					wp.data.select( 'core/editor' ).didPostSaveRequestSucceed()
-				) {
-						checkPass = true;
-				}
-
-				if ( checkPass ) {
-					clearTimeout( saveCheck );
-					sowbTimeoutSetup = false;
-					
+			if ( setupTimer ) {
+				sowbTimeoutSetup = true;
+				var saveCheck = setInterval( function() {
+					var checkPass = false;
 					if ( typeof wp.data.select( 'core/edit-widgets' ) == 'object' ) {
-						// New Widget Area.
-						var $widgets = jQuery( '.wp-block-widget-area .components-panel__body.is-opened .siteorigin-widget-form-main-siteorigin-widget-button-widget' );
-						jQuery.each( $widgets , function() {
-							 sowbForms.validateFields( jQuery( this ).parent() );
-						} );
-					} else if ( typeof wp.data.select( 'core/editor' ) == 'object' ) {
-						// Block Editor.
-						var sowbCurrentBlocks = wp.data.select( 'core/block-editor' ).getBlocks();
-						for ( var i = 0; i < sowbCurrentBlocks.length; i++ ) {
-							if ( sowbCurrentBlocks[ i ].name == 'sowb/widget-block' && sowbCurrentBlocks[ i ].isValid ) {
-								$form = jQuery( '#block-' + sowbCurrentBlocks[ i ].clientId ).find( '.so-widget-placeholder ');
-								$form.find( '.siteorigin-widget-field-is-required input' ).on( 'change', function() {
-									sowbForms.validateFields( $form );
-								} );
+						if ( ! wp.data.select( 'core/edit-widgets' ).isSavingWidgetAreas() ) {
+							checkPass = true;
+						}
+					} else if (
+						typeof wp.data.select( 'core/editor' ) == 'object' &&
+						! wp.data.select( 'core/editor' ).isSavingPost() &&
+						! wp.data.select( 'core/editor' ).isAutosavingPost() &&
+						wp.data.select( 'core/editor' ).didPostSaveRequestSucceed()
+					) {
+							checkPass = true;
+					}
+
+					if ( checkPass ) {
+						clearInterval( saveCheck );
+
+						var showPrompt = true;
+						if ( typeof wp.data.select( 'core/edit-widgets' ) == 'object' ) {
+							// New Widget Area.
+							var $widgets = jQuery( '.wp-block-widget-area .components-panel__body.is-opened .siteorigin-widget-form-main-siteorigin-widget-button-widget' );
+							jQuery.each( $widgets , function() {
+								 if ( ! sowbForms.validateFields( jQuery( this ).parent(), showPrompt) ) {
+								 	showPrompt = false;
+								}
+							} );
+						} else if ( typeof wp.data.select( 'core/editor' ) == 'object' ) {
+							// Block Editor.
+							var sowbCurrentBlocks = wp.data.select( 'core/block-editor' ).getBlocks();
+							for ( var i = 0; i < sowbCurrentBlocks.length; i++ ) {
+								if ( sowbCurrentBlocks[ i ].name == 'sowb/widget-block' && sowbCurrentBlocks[ i ].isValid ) {
+									$form = jQuery( '#block-' + sowbCurrentBlocks[ i ].clientId ).find( '.so-widget-placeholder ');
+									if ( ! sowbForms.validateFields( $form, showPrompt) ) {
+									 	showPrompt = false;
+									}
+									$form.find( '.siteorigin-widget-field-is-required input' ).on( 'change', function() {
+										sowbForms.validateFields( $form );
+									} );
+								}
 							}
 						}
+						sowbTimeoutSetup = false;
 					}
-				}
-			}, 250 );
+				}, 250 );
+			}
 		}
 	} );
 }

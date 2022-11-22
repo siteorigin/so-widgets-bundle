@@ -1519,7 +1519,7 @@ var sowbForms = window.sowbForms || {};
 	/**
 	 * Look for and valid any fields that are required.
 	 */
-	sowbForms.validateFields = function( form ) {
+	sowbForms.validateFields = function( form, showPrompt = true ) {
 		var valid = true;
 		var devValidation = $( document ).triggerHandler(
 			'sow_validate_widget_data',
@@ -1561,8 +1561,14 @@ var sowbForms = window.sowbForms || {};
 					} )
 			} );
 
-			if ( missingRequired && ! confirm( soWidgets.missing_required ) ) {
-				valid = false;
+			if (
+				missingRequired &&
+				(
+					! showPrompt ||
+					! confirm( soWidgets.missing_required )
+				)
+			) {
+					valid = false;
 			}
 		}
 
