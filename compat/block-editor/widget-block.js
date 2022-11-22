@@ -351,7 +351,7 @@ if ( typeof wp.data.select == 'function' ) {
 		if ( setupTimer ) {
 			var saveCheck = setTimeout( function() {
 				var checkPass = false;
-				if ( typeof wp.data.select( 'core/editor' ) == 'object' ) {
+				if ( typeof wp.data.select( 'core/edit-widgets' ) == 'object' ) {
 					if ( ! wp.data.select( 'core/edit-widgets' ).isSavingWidgetAreas() ) {
 						checkPass = true;
 					}
