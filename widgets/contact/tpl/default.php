@@ -24,10 +24,11 @@ else {
 	$global_settings = $this->get_global_settings();
 	?>
 	<form
-		<?php if ( ! empty( $global_settings['scrollto'] ) ) : ?>
-			action="#contact-form-<?php echo esc_attr( $short_hash ); ?>"
-		<?php endif; ?>
-		method="POST" class="sow-contact-form" id="contact-form-<?php echo esc_attr( $short_hash ) ?>">
+		action="<?php echo add_query_arg( null, null ); ?>"
+		method="POST"
+		class="sow-contact-form<?php echo ! empty( $global_settings['scrollto'] ) && ! empty( $result ) ? ' sow-contact-submitted' : ''; ?>"
+		id="contact-form-<?php echo esc_attr( $short_hash ) ?>"
+	>
 
 		<?php if ( ! empty( $result['errors']['_general'] ) ) : ?>
 			<ul class="sow-error">

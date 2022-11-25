@@ -8,8 +8,8 @@ sowb.SiteOriginContactForm = {
 		$contactForms.each( function() {
 			var $el = $( this );
 			var formId = $el.attr( 'id' );
-			var formSubmitted = window.location.hash.indexOf( formId ) > -1;
 			var formSubmitSuccess = $el.is( '.sow-contact-form-success' );
+			var formSubmitted = $el.is( '.sow-contact-submitted' );
 			if ( formSubmitted ) {
 				// The form was submitted. Let's try to scroll to it so the user can see the result.
 				if ( sowContact.scrollto ) {
