@@ -1,6 +1,7 @@
 <?php
+$per_row = ! empty( $instance['per_row'] ) ? $instance['per_row'] : 3;
 if ( ! empty( $instance['features'] ) ) {
-	$last_row = floor( ( count( $instance['features'] ) - 1 ) / $instance['per_row'] );
+	$last_row = floor( ( count( $instance['features'] ) - 1 ) / $per_row );
 }
 ?>
 
@@ -19,8 +20,8 @@ if ( ! empty( $instance['features'] ) ) {
 			);
 			?>
 			<div
-				class="sow-features-feature sow-icon-container-position-<?php echo esc_attr( $feature['container_position'] ); ?> <?php if ( floor( $i / $instance['per_row'] ) == $last_row ) echo 'sow-features-feature-last-row'; ?>"
-				style="display: flex; flex-direction: <?php echo $this->get_feature_flex_direction( $feature['container_position'], ! empty( $instance['more_text_bottom_align'] ) ); ?>; float: left; width: <?php echo round( 100 / $instance['per_row'], 3 ); ?>%;"
+				class="sow-features-feature sow-icon-container-position-<?php echo esc_attr( $feature['container_position'] ); ?> <?php if ( floor( $i / $per_row ) == $last_row ) echo 'sow-features-feature-last-row'; ?>"
+				style="display: flex; flex-direction: <?php echo $this->get_feature_flex_direction( $feature['container_position'], ! empty( $instance['more_text_bottom_align'] ) ); ?>; float: left; width: <?php echo round( 100 / $per_row, 3 ); ?>%;"
 			>
 			<?php if ( $right_left_read_more ) : ?>
 				<div class="sow-features-feature-right-left-container" style="display: flex; flex-direction: inherit;">
