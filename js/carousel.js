@@ -94,19 +94,22 @@ jQuery( function ( $ ) {
 			if ( carouselSettings.autoplay ) {
 				var interrupted = false;
 				var autoplayNav = $$.parent().parent().find( '.sow-carousel-' + ( $$.data( 'dir' ) == 'ltr' ? 'next' : 'prev' ) );
-				setInterval( function() {
-					if ( ! interrupted ) {
-						autoplayNav.trigger( 'click' );
-					}
-				}, carouselSettings.autoplaySpeed );
+				// Check if this is a Block Editor preview, and if it is, don't autoplay.
+				if ( ! $( 'body' ).hasClass( 'block-editor-page' ) ) {
+					setInterval( function() {
+						if ( ! interrupted ) {
+							autoplayNav.trigger( 'click' );
+						}
+					}, carouselSettings.autoplaySpeed );
 
-				if ( carouselSettings.pauseOnHover ) {
-					$items.on('mouseenter.slick', function() {
-						 interrupted = true;
-					} );
-					$items.on( 'mouseleave.slick', function() {
-						 interrupted = false;
-					} );
+					if ( carouselSettings.pauseOnHover ) {
+						$items.on('mouseenter.slick', function() {
+							 interrupted = true;
+						} );
+						$items.on( 'mouseleave.slick', function() {
+							 interrupted = false;
+						} );
+					}
 				}
 			}
 

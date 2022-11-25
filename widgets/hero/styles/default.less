@@ -51,7 +51,9 @@
 .sow-slider-base {
 
 	ul.sow-slider-images {
-		min-height: 0 !important;
+		@media ( max-width: @responsive_breakpoint ) {
+			min-height: 0 !important;
+		}
 
 		.sow-slider-image-wrapper {
 			padding: ~"calc( @{slide_padding} + @{slide_padding_extra_top} )" @slide_padding_sides @slide_padding @slide_padding_sides;

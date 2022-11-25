@@ -1,14 +1,36 @@
 @preloader_enabled: false;
 @preloader_height: 250px;
 @preloader_color: #000;
+@title_alignment: default;
+@title_color: default;
+@title_font: default;
+@title_font_size: default;
+@title_font_style: default;
+@title_font_weight: default;
+@title_padding: default;
 
 .sow-masonry-grid-item {
-    overflow: hidden;
+	overflow: hidden;
 
-    img {
-        display: block;
-        max-width: inherit;
-    }
+	img {
+		display: block;
+		max-width: inherit;
+		object-fit: cover;
+		width: 100%;
+	}
+
+	.image-title {
+		color: @title_color;
+		display: block;
+		font-family: @title_font;
+		font-size: @title_font_size;
+		font-style: @title_font_style;
+		font-weight: @title_font_weight;
+		line-height: 1.25;
+		padding: @title_padding;
+		text-align: @title_alignment;
+	}
+
 }
 
 & when ( @preloader_enabled = true ) {

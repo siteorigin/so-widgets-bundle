@@ -471,7 +471,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 				'</a>'
 			),
 		);
-	}	
+	}
 }
 
 siteorigin_widget_register( 'sow-button', __FILE__, 'SiteOrigin_Widget_Button_Widget' );

@@ -33,6 +33,19 @@
 				<?php endif; ?>
 
 				<?php
+				if (
+					! empty( $instance['title'] ) &&
+					! empty( $item['title'] ) &&
+					! empty( $instance['title']['display'] ) &&
+					$instance['title']['position'] == 'above'
+				) :
+				?>
+					<span class="image-title">
+						<?php echo wp_kses_post( $item['title'] ) ?>
+					</span>
+				<?php endif; ?>
+
+				<?php
 				echo siteorigin_widgets_get_attachment_image(
 					$item['image'],
 					'full',
@@ -40,9 +53,23 @@
 					array(
 						'title' => esc_attr( $title ),
 						'class' => 'sow-masonry-grid-image',
+						'loading' => $preloader_enabled ? false : wp_get_loading_attr_default( 'the_content' )
 					)
 				);
 				?>
+
+				<?php
+				if (
+					! empty( $instance['title'] ) &&
+					! empty( $item['title'] ) &&
+					! empty( $instance['title']['display'] ) &&
+					$instance['title']['position'] == 'below'
+				) :
+				?>
+					<span class="image-title">
+						<?php echo wp_kses_post( $item['title'] ) ?>
+					</span>
+				<?php endif; ?>
 
 				<?php if ( ! empty( $url ) ) : ?>
 					</a>

@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: widget, button, slider, hero, google maps, image, carousel, lottie, features, icons, price table, tinymce, social icons
 Requires at least: 4.2
-Tested up to: 6.0
+Tested up to: 6.1
 Requires PHP: 5.6.20
 Stable tag: trunk
 Build time: unbuilt
@@ -105,6 +105,24 @@ SiteOrigin Premium includes access to our professional email support service, pe
 The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets. Widgets can be enabled or disabled as needed. If a widget offers global settings, you can access those via the Settings button next to each applicable widget.
 
 == Changelog ==
+
+= 1.44.1 - 25 November 2022 =
+* Icon Field: Resolved jQuery Migrate flag.
+* Contact Form: Resolved notice when Message field not used.
+* Features: Resolved  PHP 8 `Division by 0 Error` if `Features per row` not set.
+* Simple Masonry: Changed to use pure CSS (`object-fit`) for sizing images.
+
+= 1.44.0 - 10 November 2022 =
+* Anything Carousel: Prevented potential loss of styling when looping items.
+* Google Maps: Prevented position reset from affecting the info window.
+* Simple Masonry: Added a Layout settings section.
+* Simple Masonry: Added Image Title settings.
+* Simple Masonry: Removed defaults set to 0.
+* Simple Masonry: Removed the `loading` attribute if the preloader is enabled.
+* Font Awesome: Resolved Gear icon migration issue.
+* TinyMCE Field: Prevented PHP 8 `Uncaught TypeError: TinyMCE plugins filtered incorrectly`.
+* Updated `Tested up to` tag to `6.1`.
+* Developer: Added an `html` form field.
 
 = 1.43.0 - 13 October 2022 =
 * Blog: Improved `Continue reading` output when non-Latin characters are present.
