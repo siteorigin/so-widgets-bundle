@@ -60,7 +60,7 @@
 			}
 		};
 
-		$search.keyup( searchIcons ).on( 'change', searchIcons );
+		$search.on( 'keyup change', searchIcons );
 		
 		var renderStylesSelect = function ( init ) {
 			var $familySelect = $is.find( 'select.siteorigin-widget-icon-family' );
