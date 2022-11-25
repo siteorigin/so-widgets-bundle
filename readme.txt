@@ -106,6 +106,12 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.44.1 - 25 November 2022 =
+* Icon Field: Resolved jQuery Migrate flag.
+* Contact Form: Resolved notice when Message field not used.
+* Features: Resolved  PHP 8 `Division by 0 Error` if `Features per row` not set.
+* Simple Masonry: Changed to use pure CSS (`object-fit`) for sizing images.
+
 = 1.44.0 - 10 November 2022 =
 * Anything Carousel: Prevented potential loss of styling when looping items.
 * Google Maps: Prevented position reset from affecting the info window.
