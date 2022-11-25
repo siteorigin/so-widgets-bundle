@@ -440,7 +440,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 			$instance['layout']['desktop'] = array();
 			$instance['layout']['tablet'] = array();
 			$instance['layout']['mobile'] = array();
-			$instance['layout']['origin_left'] = $instance['layout_origin_left'];
+			$instance['layout']['origin_left'] = ! empty( $instance['layout_origin_left'] ) ? $instance['layout_origin_left'] : 'true';
 
 			$migrate_layout_sections = array(
 				'desktop' => array(
@@ -470,7 +470,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 				}
 				unset( $instance[ $setting . '_layout' ] );
 			}
-		}		
+		}
 
 		return $instance;
 	}
@@ -502,4 +502,4 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 	}
 }
 
-siteorigin_widget_register('sow-simple-masonry', __FILE__, 'SiteOrigin_Widget_Simple_Masonry_Widget');
+siteorigin_widget_register( 'sow-simple-masonry', __FILE__, 'SiteOrigin_Widget_Simple_Masonry_Widget' );
