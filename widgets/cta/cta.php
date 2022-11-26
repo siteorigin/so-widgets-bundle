@@ -86,25 +86,25 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 				'fields' => array(
 					'background_color' => array(
 						'type' => 'color',
-						'label' => __( 'Background color', 'so-widgets-bundle' ),
+						'label' => __( 'Background Color', 'so-widgets-bundle' ),
 						'default' => '#f8f8f8'
 					),
 					'border_color' => array(
 						'type' => 'color',
-						'label' => __( 'Border color', 'so-widgets-bundle' ),
+						'label' => __( 'Border Color', 'so-widgets-bundle' ),
 						'default' => '#e3e3e3',
 					),
 					'title_color' => array(
 						'type' => 'color',
-						'label' => __( 'Title color', 'so-widgets-bundle' ),
+						'label' => __( 'Title Color', 'so-widgets-bundle' ),
 					),
 					'subtitle_color' => array(
 						'type' => 'color',
-						'label' => __( 'Subtitle color', 'so-widgets-bundle' ),
+						'label' => __( 'Subtitle Color', 'so-widgets-bundle' ),
 					),
 					'button_align' => array(
 						'type' => 'select',
-						'label' => __( 'Button align', 'so-widgets-bundle' ),
+						'label' => __( 'Button Align', 'so-widgets-bundle' ),
 						'default' => 'right',
 						'options' => array(
 							'top' => __( 'Center Top', 'so-widgets-bundle' ),
@@ -115,7 +115,7 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 					),
 					'mobile_button_align' => array(
 						'type' => 'select',
-						'label' => __( 'Mobile button align', 'so-widgets-bundle' ),
+						'label' => __( 'Mobile Button Align', 'so-widgets-bundle' ),
 						'default' => 'right',
 						'options' => array(
 							'' => __( 'Desktop', 'so-widgets-bundle' ),
