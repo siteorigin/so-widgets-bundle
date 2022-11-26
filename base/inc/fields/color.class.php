@@ -5,6 +5,15 @@
  */
 class SiteOrigin_Widget_Field_Color extends SiteOrigin_Widget_Field_Text_Input_Base {
 
+	/**
+	 * An optional array containing the color hexes to be used as the palette. 
+	 * If set to false, no color palettes will be output.
+	 *
+	 * @access protected
+	 * @var array|bool
+	 */
+	protected $palettes;
+
 	protected function get_input_classes() {
 		$input_classes = parent::get_input_classes();
 		$input_classes[] = 'siteorigin-widget-input-color';
@@ -16,6 +25,19 @@ class SiteOrigin_Widget_Field_Color extends SiteOrigin_Widget_Field_Text_Input_B
 		if ( ! empty( $this->default ) ) {
 			$data_attributes['default-color'] = $this->default;
 		}
+
+		if ( isset( $this->palettes ) ) {
+			if ( ! empty( $this->palettes ) && is_array( $this->palettes ) ) {
+				$valid_palette = array();
+				$valid_palette = array_filter( $this->palettes, 'sanitize_hex_color' );
+				if ( ! empty( $valid_palette ) ) {
+					$data_attributes['palettes'] = wp_json_encode( $valid_palette );
+				}
+			} else {
+				$data_attributes['palettes'] = $this->palettes;
+			}
+		}
+
 		return $data_attributes;
 	}
 
