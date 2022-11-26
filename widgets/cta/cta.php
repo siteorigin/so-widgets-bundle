@@ -119,8 +119,8 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 						'default' => 'right',
 						'options' => array(
 							'' => __( 'Desktop', 'so-widgets-bundle' ),
-							'above' => __( 'Above text', 'so-widgets-bundle' ),
-							'below' => __( 'Below Text', 'so-widgets-bundle' ),
+							'above' => __( 'Center Top', 'so-widgets-bundle' ),
+							'below' => __( 'Center Bottom', 'so-widgets-bundle' ),
 						),
 					),
 				)
