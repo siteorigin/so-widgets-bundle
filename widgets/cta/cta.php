@@ -84,46 +84,58 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 				'type' => 'section',
 				'label' => __( 'Design', 'so-widgets-bundle' ),
 				'fields' => array(
-					'background_color' => array(
-						'type' => 'color',
-						'label' => __( 'Background Color', 'so-widgets-bundle' ),
-						'default' => '#f8f8f8'
-					),
-					'border_color' => array(
-						'type' => 'color',
-						'label' => __( 'Border Color', 'so-widgets-bundle' ),
-						'default' => '#e3e3e3',
-					),
-					'title_color' => array(
-						'type' => 'color',
-						'label' => __( 'Title Color', 'so-widgets-bundle' ),
-					),
-					'subtitle_color' => array(
-						'type' => 'color',
-						'label' => __( 'Subtitle Color', 'so-widgets-bundle' ),
-					),
-					'button_align' => array(
-						'type' => 'select',
-						'label' => __( 'Button Align', 'so-widgets-bundle' ),
-						'default' => 'right',
-						'options' => array(
-							'top' => __( 'Center Top', 'so-widgets-bundle' ),
-							'left' => __( 'Left', 'so-widgets-bundle' ),
-							'bottom' => __( 'Center Bottom', 'so-widgets-bundle' ),
-							'right' => __( 'Right', 'so-widgets-bundle' ),
+					'colors' => array(
+						'type' => 'section',
+						'label' => __( 'Colors', 'so-widgets-bundle' ),
+						'fields' => array(
+							'background_color' => array(
+								'type' => 'color',
+								'label' => __( 'Background Color', 'so-widgets-bundle' ),
+								'default' => '#f8f8f8'
+							),
+							'border_color' => array(
+								'type' => 'color',
+								'label' => __( 'Border Color', 'so-widgets-bundle' ),
+								'default' => '#e3e3e3',
+							),
+							'title_color' => array(
+								'type' => 'color',
+								'label' => __( 'Title Color', 'so-widgets-bundle' ),
+							),
+							'subtitle_color' => array(
+								'type' => 'color',
+								'label' => __( 'Subtitle Color', 'so-widgets-bundle' ),
+							),
 						),
 					),
-					'mobile_button_align' => array(
-						'type' => 'select',
-						'label' => __( 'Mobile Button Align', 'so-widgets-bundle' ),
-						'default' => 'right',
-						'options' => array(
-							'' => __( 'Desktop', 'so-widgets-bundle' ),
-							'above' => __( 'Center Top', 'so-widgets-bundle' ),
-							'below' => __( 'Center Bottom', 'so-widgets-bundle' ),
+					'layout' => array(
+						'type' => 'section',
+						'label' => __( 'Layout', 'so-widgets-bundle' ),
+						'fields' => array(
+							'desktop' => array(
+								'type' => 'select',
+								'label' => __( 'Desktop Button Align', 'so-widgets-bundle' ),
+								'default' => 'right',
+								'options' => array(
+									'top' => __( 'Center Top', 'so-widgets-bundle' ),
+									'left' => __( 'Left', 'so-widgets-bundle' ),
+									'bottom' => __( 'Center Bottom', 'so-widgets-bundle' ),
+									'right' => __( 'Right', 'so-widgets-bundle' ),
+								),
+							),
+							'mobile' => array(
+								'type' => 'select',
+								'label' => __( 'Mobile Button Align', 'so-widgets-bundle' ),
+								'default' => 'right',
+								'options' => array(
+									'' => __( 'Desktop', 'so-widgets-bundle' ),
+									'above' => __( 'Center Top', 'so-widgets-bundle' ),
+									'below' => __( 'Center Bottom', 'so-widgets-bundle' ),
+								),
+							),
 						),
 					),
-				)
+				),
 			),
 
 			'button' => array(
@@ -131,8 +143,24 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 				'class' => 'SiteOrigin_Widget_Button_Widget',
 				'label' => __( 'Button', 'so-widgets-bundle' ),
 			),
-
 		);
+	}
+
+	function modify_instance( $instance ) {
+		if ( empty( $instance ) || empty( $instance['design'] ) ) {
+			return array();
+		}
+
+		if ( isset( $instance['design']['background_color'] ) ) {
+			$instance['design']['colors'] = array();
+			$instance['design']['colors']['background_color'] = $instance['design']['background_color'] ;
+			$instance['design']['colors']['title_color'] = $instance['design']['title_color'];
+			$instance['design']['colors']['subtitle_color'] = $instance['design']['subtitle_color'];
+			$instance['design']['layout'] = array();
+			$instance['design']['layout']['desktop'] = $instance['design']['button_align'] ;
+		}
+
+		return $instance;
 	}
 
 	function get_less_variables( $instance ) {
@@ -140,13 +168,12 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 			return array();
 		}
 
-
 		$less_vars = array(
-			'border_color' => $instance['design']['border_color'],
-			'background_color' => $instance['design']['background_color'],
-			'title_color' => $instance['design']['title_color'],
-			'subtitle_color' => $instance['design']['subtitle_color'],
-			'button_align' => $instance['design']['button_align'],
+			'border_color' => $instance['design']['colors']['border_color'],
+			'background_color' => $instance['design']['colors']['background_color'],
+			'title_color' => $instance['design']['colors']['title_color'],
+			'subtitle_color' => $instance['design']['colors']['subtitle_color'],
+			'button_align' => $instance['design']['layout']['desktop'],
 		);
 
 		if ( ! empty( $instance['design']['mobile_button_align'] ) ) {
@@ -155,7 +182,7 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 				$less['responsive_breakpoint'] = $global_settings['responsive_breakpoint'];
 			}
 
-			$less_vars['mobile_button_align'] = $instance['design']['mobile_button_align'];
+			$less_vars['mobile_button_align'] = $instance['design']['layout']['mobile'];
 			$less_vars['responsive_breakpoint'] = ! empty( $global_settings['responsive_breakpoint'] ) ? $global_settings['responsive_breakpoint'] : '780px';
 		}
 
