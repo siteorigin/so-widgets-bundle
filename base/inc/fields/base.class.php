@@ -93,7 +93,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected $optional;
 	/**
-	 * @var bool Is this field required.
+	 * @var bool|string Is this field required.
 	 */
 	protected $required;
 	/**
@@ -327,8 +327,9 @@ abstract class SiteOrigin_Widget_Field_Base {
 			if( !empty( $this->optional ) ) {
 				echo '<span class="field-optional">(' . __('Optional', 'so-widgets-bundle') . ')</span>';
 			}
-			if( !empty( $this->required ) ) {
-				echo '<span class="field-required">(' . __('Required', 'so-widgets-bundle') . ')</span>';
+			if ( ! empty( $this->required ) ) {
+				/* translators: Used to indicate field as required. */
+				echo '<span class="field-required">' . __( '*', 'so-widgets-bundle' ) . '</span>';
 			}
 			?>
 		</label>
@@ -402,6 +403,10 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected function render_after_field( $value, $instance ) {
 		$this->render_field_description();
+		if ( ! empty( $this->required ) && is_string( $this->required ) ) {
+			/* translators: Used to indicate field as required. */
+			echo '<span class="field-required-message">' . esc_html( $this->required ) . '</span>';
+		}
 	}
 
 	/**
