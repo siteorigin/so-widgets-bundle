@@ -277,11 +277,6 @@ var sowbForms = window.sowbForms || {};
 				if (colorField.data('defaultColor')) {
 					colorFieldOptions.defaultColor = colorField.data('defaultColor');
 				}
-
-				if ( colorField.data( 'palettes' ) ) {
-					colorFieldOptions.palettes = colorField.data( 'palettes' );
-				}
-
 				colorField.wpColorPicker(colorFieldOptions);
 			});
 
@@ -496,14 +491,7 @@ var sowbForms = window.sowbForms || {};
 						}
 
 						// Return an array that has the new states added to the array
-						return $.extend(
-							currentStates,
-							sowEmitters[ emitter.callback ] (
-								val,
-								emitter.args,
-								$$
-							)
-						);
+						return $.extend(currentStates, sowEmitters[emitter.callback](val, emitter.args));
 					};
 
 					// Run the states through the state emitters
@@ -614,6 +602,7 @@ var sowbForms = window.sowbForms || {};
 			var $el = $(el);
 			var $items = $el.find('.siteorigin-widget-field-repeater-items');
 			var name = $el.data('repeater-name');
+			var maxItems = $el.data( 'max-items' );
 
 			$items.on( 'updateFieldPositions', function() {
 				var $$ = $(this);
@@ -706,18 +695,33 @@ var sowbForms = window.sowbForms || {};
 			});
 			$items.trigger('updateFieldPositions');
 
-			$el.find( '> .siteorigin-widget-field-repeater-add' ).disableSelection().on( 'click keyup', function(e) {
+			var preventNewItems = function() {
+				$el.find( '.siteorigin-widget-field-repeater-add' ).hide();
+				$el.find( '.siteorigin-widget-field-copy' ).hide();
+				$el.addClass( 'sow-max-reached' );
+			}
+
+			$el.find( '> .siteorigin-widget-field-repeater-add' ).disableSelection().on( 'click keyup', function( e ) {
 				e.preventDefault();
 
 				if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
 					return;
 				}
 
-				$el.closest('.siteorigin-widget-field-repeater')
-					.sowAddRepeaterItem()
-					.find('> .siteorigin-widget-field-repeater-items').slideDown('fast', function () {
-					$( window ).trigger( 'resize' );
-				});
+				if ( isNaN( maxItems ) || $el.find( '.siteorigin-widget-field-repeater-item' ).length + 1 <= maxItems ) {
+					$el.closest( '.siteorigin-widget-field-repeater' )
+						.sowAddRepeaterItem()
+						.find( '> .siteorigin-widget-field-repeater-items' ).slideDown( 'fast', function () {
+						$( window ).trigger( 'resize' );
+					} );
+					if ( isFinite( maxItems ) ) {
+						if ( $items.find( '.siteorigin-widget-field-repeater-item' ).length == maxItems ) {
+							preventNewItems();
+						}
+					}
+				} else {
+					preventNewItems();
+				}
 			});
 
 			$el.find( '> .siteorigin-widget-field-repeater-top > .siteorigin-widget-field-repeater-expand' ).on( 'click', function( e ) {
@@ -778,9 +782,9 @@ var sowbForms = window.sowbForms || {};
 				);
 
 			// Add the item and refresh
-			$el.find('> .siteorigin-widget-field-repeater-items').append(item).sortable("refresh").trigger('updateFieldPositions');
+			$el.find( '> .siteorigin-widget-field-repeater-items' ).append( item ).sortable( 'refresh' ).trigger( 'updateFieldPositions' );
 			item.sowSetupRepeaterItems();
-			item.hide().slideDown('fast', function () {
+			item.hide().slideDown( 'fast', function () {
 				$( window ).trigger( 'resize' );
 			});
 			$el.trigger( 'change' );
@@ -907,6 +911,13 @@ var sowbForms = window.sowbForms || {};
 					if ( typeof itemLabel.increment == 'string' ) {
 						$el.parent().find( '.siteorigin-widget-field-repeater-item' ).trigger( 'change' )
 					}
+
+					var $repeater = $( this ).parents('.siteorigin-widget-field-repeater');
+					if ( $repeater.hasClass( 'sow-max-reached' ) ) {
+						$repeater.find( '.siteorigin-widget-field-repeater-add' ).show();
+						$repeater.find( '.siteorigin-widget-field-copy' ).show();
+						$repeater.addClass( 'sow-max-reached' );
+					}
 				});
 				itemTop.find( '.siteorigin-widget-field-copy' ).on( 'click keyup', function( e ) {
 					e.preventDefault();
@@ -915,142 +926,150 @@ var sowbForms = window.sowbForms || {};
 						return;
 					}
 
-					var $form = $(this).closest('.siteorigin-widget-form-main');
-					var $item = $(this).closest('.siteorigin-widget-field-repeater-item');
-					var $copyItem = $item.clone();
-					var $items = $item.closest('.siteorigin-widget-field-repeater-items');
-					//var $nextIndex = $item.index()+1;
-					var $nextIndex = $items.children().length;
-					var newIds = {};
 
-					$copyItem.find('*[name]').each(function () {
-						var $inputElement = $(this);
-						var id = $inputElement.attr('id');
-						var nm = $inputElement.attr('name');
-						// TinyMCE field :/
-						if ($inputElement.is('textarea') && $inputElement.parent().is('.wp-editor-container') && typeof tinymce != 'undefined') {
-							$inputElement.parent().empty().append($inputElement);
-							$inputElement.css('display', '');
-							var curEd = tinymce.get(id);
-							if ( curEd ) {
-								var contentVal = curEd.getContent();
-								if ( ! _.isEmpty( contentVal ) ) {
-									$inputElement.val( contentVal );
-								} else if ( contentVal.search( '<' ) !== -1 && contentVal.search( '>' ) === -1) {
-									$textarea.val( contentVal.replace( /</g, '' ) );
+					var $items = $( this ).closest('.siteorigin-widget-field-repeater-items');
+					var $mainRepeater = $( this ).parents('.siteorigin-widget-field-repeater');
+					var maxItems = $mainRepeater.data( 'max-items' );
+					if ( isNaN( maxItems ) || $items.find( '.siteorigin-widget-field-repeater-item' ).length + 1 <= maxItems ) {
+						var $form = $( this ).closest( '.siteorigin-widget-form-main' );
+						var $item = $( this ).closest( '.siteorigin-widget-field-repeater-item' );
+						var $copyItem = $item.clone();
+						var $nextIndex = $items.children().length;
+						var newIds = {};
+
+						$copyItem.find( '*[name]' ).each(function () {
+							var $inputElement = $( this );
+							var id = $inputElement.attr( 'id' );
+							var nm = $inputElement.attr( 'name' );
+							// TinyMCE field :/
+							if ($inputElement.is( 'textarea' ) && $inputElement.parent().is( '.wp-editor-container' ) && typeof tinymce != 'undefined' ) {
+								$inputElement.parent().empty().append( $inputElement );
+								$inputElement.css( 'display', '' );
+								var curEd = tinymce.get( id );
+								if ( curEd ) {
+									var contentVal = curEd.getContent();
+									if ( ! _.isEmpty( contentVal ) ) {
+										$inputElement.val( contentVal );
+									} else if ( contentVal.search( '<' ) !== -1 && contentVal.search( '>' ) === -1) {
+										$textarea.val( contentVal.replace( /</g, '' ) );
+									}
 								}
 							}
-						}
-						// Color field :/
-						else if ($inputElement.is('.wp-color-picker')) {
-							var $wpPickerContainer = $inputElement.closest('.wp-picker-container');
-							var $soWidgetField = $inputElement.closest('.siteorigin-widget-field');
-							$wpPickerContainer.remove();
-							$soWidgetField.append($inputElement.remove());
-						}
-						else {
-							var $originalInput = id ? $item.find( '#' + id ) : $item.find('[name="' + nm + '"]');
-							if ($originalInput.length && $originalInput.val() != null) {
-								$inputElement.val($originalInput.val());
+							// Color field :/
+							else if ($inputElement.is( '.wp-color-picker' ) ) {
+								var $wpPickerContainer = $inputElement.closest( '.wp-picker-container' );
+								var $soWidgetField = $inputElement.closest( '.siteorigin-widget-field' );
+								$wpPickerContainer.remove();
+								$soWidgetField.append( $inputElement.remove() );
 							}
-						}
-						if (id) {
-							var idRegExp;
-							var idBase;
-							var newId;
-
-							// Radio inputs are slightly different because there are multiple `input` elements for
-							// a single field, i.e. multiple `inputs` for selecting a single value.
-							if ($inputElement.is('[type="radio"]')) {
-								// Radio inputs have their position appended to the id.
-								idBase = id.replace(/-\d+-\d+$/, '');
-								var radioIdBase = id.replace(/-\d+$/, '');
-								if (!newIds[idBase]) {
-									var radioNames = {};
-									newIds[idBase] = $form
-										// find all inputs containing idBase in their id attribute
-											.find('.siteorigin-widget-input[id^=' + idBase + ']')
-											// exclude inputs from templates
-											.not('[id*=_id_]')
-											// reduce to one element per radio input group.
-											.filter(function (index, element) {
-												var eltName = $(element).attr('name');
-												if (radioNames[eltName]) {
-													return false;
-												} else {
-													radioNames[eltName] = true;
-													return true;
-												}
-											}).length + 1;
-								}
-								var newRadioIdBase = idBase + '-' + newIds[idBase];
-								newId = newRadioIdBase + id.match(/-\d+$/)[0];
-								$copyItem.find('label[for=' + radioIdBase + ']').attr('for', newRadioIdBase);
-							} else {
-								idRegExp = new RegExp('-\\d+$');
-								idBase = id.replace(idRegExp, '');
-								if (!newIds[idBase]) {
-									newIds[idBase] = $form.find('.siteorigin-widget-input[id^=' + idBase + ']').not('[id*=_id_]').length + 1;
-								}
-								newId = idBase + '-' + newIds[idBase]++;
-							}
-
-							if ( $inputElement.is( '.wp-editor-area' ) ) {
-								// Prevent potential id overlap by appending the textarea field with a random id.
-								newId += Math.floor( Math.random() * 1000 );
-								$inputElement.data( 'tinymce-id', newId );
-							}
-
-							$inputElement.attr('id', newId);
-
-							if ( $inputElement.is( '.wp-editor-area' ) ) {
-								var tmceContainer = $inputElement.closest( '.siteorigin-widget-tinymce-container' );
-								var mediaButtons = tmceContainer.data( 'media-buttons' );
-								if ( mediaButtons && mediaButtons.html ) {
-									var idRegExp = new RegExp( id, 'g');
-									mediaButtons.html = mediaButtons.html.replace( idRegExp, newId );
-									tmceContainer.data( 'media-buttons', mediaButtons );
+							else {
+								var $originalInput = id ? $item.find( '#' + id ) : $item.find( '[name="' + nm + '"]' );
+								if ( $originalInput.length && $originalInput.val() != null ) {
+									$inputElement.val( $originalInput.val() );
 								}
 							}
-							$copyItem.find('label[for=' + id + ']').attr('for', newId);
-							$copyItem.find('[id*=' + id + ']').each(function () {
-								var oldIdAttr = $(this).attr('id');
-								var newIdAttr = oldIdAttr.replace(id, newId);
-								$(this).attr('id', newIdAttr);
-							});
-							if (typeof tinymce !== 'undefined' && tinymce.get(newId)) {
-								tinymce.get(newId).remove();
-							}
-						}
-						var nestLevel = $item.parents('.siteorigin-widget-field-repeater').length;
-						var $body = $('body');
-						if (($body.hasClass('wp-customizer') || $body.hasClass('widgets-php')) && $el.closest('.panel-dialog').length === 0) {
-							nestLevel += 1;
-						}
-						var newName = nm.replace(new RegExp('((?:.*?\\[\\d+\\]){' + (nestLevel - 1).toString() + '})?(.*?\\[)\\d+(\\])'), '$1$2' + $nextIndex.toString() + '$3');
-						$inputElement.attr('name', newName);
-						$inputElement.data('original-name', newName);
-					});
+							if ( id ) {
+								var idRegExp;
+								var idBase;
+								var newId;
 
-					//$item.after($copyItem);
-					//$items.sortable( "refresh").trigger('updateFieldPositions');
-					$items.append($copyItem).sortable("refresh").trigger('updateFieldPositions');
-					$copyItem.sowSetupRepeaterItems();
-					$copyItem.hide().slideDown('fast', function () {
-						$( window ).trigger( 'resize' );
-					});
-					// If increment is enabled for this item, trigger label updates.
-					var itemLabel = $el.closest( '.siteorigin-widget-field-repeater' ).data( 'item-label' );
-					if ( typeof itemLabel.increment == 'string' ) {
-						$el.parent().find( '.siteorigin-widget-field-repeater-item' ).trigger( 'change' )
-					} else {
-						$el.trigger( 'change' );
+								// Radio inputs are slightly different because there are multiple `input` elements for
+								// a single field, i.e. multiple `inputs` for selecting a single value.
+								if ( $inputElement.is( '[type="radio"]' ) ) {
+									// Radio inputs have their position appended to the id.
+									idBase = id.replace( /-\d+-\d+$/, '' );
+									var radioIdBase = id.replace( /-\d+$/, '' );
+									if ( !newIds[ idBase ] ) {
+										var radioNames = {};
+										newIds[ idBase ] = $form
+											// find all inputs containing idBase in their id attribute
+												.find( '.siteorigin-widget-input[id^=' + idBase + ']' )
+												// exclude inputs from templates
+												.not( '[id*=_id_]' )
+												// reduce to one element per radio input group.
+												.filter( function( index, element ) {
+													var eltName = $( element ).attr( 'name' );
+													if ( radioNames[ eltName] ) {
+														return false;
+													} else {
+														radioNames[ eltName ] = true;
+														return true;
+													}
+												}).length + 1;
+									}
+									var newRadioIdBase = idBase + '-' + newIds[ idBase ];
+									newId = newRadioIdBase + id.match( /-\d+$/ )[0];
+									$copyItem.find( 'label[for=' + radioIdBase + ']' ).attr( 'for', newRadioIdBase );
+								} else {
+									idRegExp = new RegExp( '-\\d+$' );
+									idBase = id.replace( idRegExp, '' );
+									if ( ! newIds[ idBase] ) {
+										newIds[ idBase ] = $form.find( '.siteorigin-widget-input[id^=' + idBase + ']' ).not( '[id*=_id_]' ).length + 1;
+									}
+									newId = idBase + '-' + newIds[ idBase ]++;
+								}
+
+								if ( $inputElement.is( '.wp-editor-area' ) ) {
+									// Prevent potential id overlap by appending the textarea field with a random id.
+									newId += Math.floor( Math.random() * 1000 );
+									$inputElement.data( 'tinymce-id', newId );
+								}
+
+								$inputElement.attr( 'id', newId );
+
+								if ( $inputElement.is( '.wp-editor-area' ) ) {
+									var tmceContainer = $inputElement.closest( '.siteorigin-widget-tinymce-container' );
+									var mediaButtons = tmceContainer.data( 'media-buttons' );
+									if ( mediaButtons && mediaButtons.html ) {
+										var idRegExp = new RegExp( id, 'g' );
+										mediaButtons.html = mediaButtons.html.replace( idRegExp, newId );
+										tmceContainer.data( 'media-buttons', mediaButtons );
+									}
+								}
+								$copyItem.find( 'label[for=' + id + ']' ).attr( 'for', newId );
+								$copyItem.find( '[id*=' + id + ']' ).each( function () {
+									var oldIdAttr = $( this ).attr( 'id' );
+									var newIdAttr = oldIdAttr.replace( id, newId );
+									$(this).attr( 'id', newIdAttr );
+								} );
+								if (typeof tinymce !== 'undefined' && tinymce.get( newId )) {
+									tinymce.get( newId ).remove();
+								}
+							}
+							var nestLevel = $item.parents( '.siteorigin-widget-field-repeater' ).length;
+							var $body = $( 'body' );
+							if ( ( $body.hasClass( 'wp-customizer' ) || $body.hasClass( 'widgets-php' ) ) && $el.closest( '.panel-dialog' ).length === 0 ) {
+								nestLevel += 1;
+							}
+							var newName = nm.replace( new RegExp( '((?:.*?\\[\\d+\\]){' + ( nestLevel - 1 ).toString() + '})?(.*?\\[)\\d+(\\])' ), '$1$2' + $nextIndex.toString() + '$3' );
+							$inputElement.attr( 'name', newName );
+							$inputElement.data( 'original-name', newName );
+						});
+
+						$items.append( $copyItem ).sortable( 'refresh' ).trigger( 'updateFieldPositions' );
+						$copyItem.sowSetupRepeaterItems();
+						$copyItem.hide().slideDown( 'fast', function () {
+							$( window ).trigger( 'resize' );
+						});
+						// If increment is enabled for this item, trigger label updates.
+						var itemLabel = $el.closest( '.siteorigin-widget-field-repeater' ).data( 'item-label' );
+						if ( typeof itemLabel.increment == 'string' ) {
+							$el.parent().find( '.siteorigin-widget-field-repeater-item' ).trigger( 'change' )
+						} else {
+							$el.trigger( 'change' );
+						}
+
+						if ( isFinite( maxItems ) && $items.find( '.siteorigin-widget-field-repeater-item' ).length == maxItems ) {
+							$mainRepeater.find( '.siteorigin-widget-field-repeater-add' ).hide();
+							$mainRepeater.find( '.siteorigin-widget-field-copy' ).hide();
+							$mainRepeater.addClass( 'sow-max-reached' );
+						}
 					}
 				});
 
-				$el.find('> .siteorigin-widget-field-repeater-item-form').sowSetupForm();
+				$el.find( '> .siteorigin-widget-field-repeater-item-form' ).sowSetupForm();
 
-				$el.data('sowrepeater-actions-setup', true);
+				$el.data( 'sowrepeater-actions-setup', true );
 			}
 		});
 	};
