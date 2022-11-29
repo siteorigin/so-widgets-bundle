@@ -67,19 +67,19 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 		if( empty( $this->item_name ) ) $this->item_name = __( 'Item', 'so-widgets-bundle' );
 		?>
 		<div class="siteorigin-widget-field-repeater"
-			data-item-name="<?php echo esc_attr( $this->item_name ) ?>"
-			data-repeater-name="<?php echo esc_attr( $this->base_name ) ?>"
-			data-element-name="<?php echo esc_attr( $this->element_name ) ?>"
+			data-item-name="<?php echo esc_attr( $this->item_name ); ?>"
+			data-repeater-name="<?php echo esc_attr( $this->base_name ); ?>"
+			data-element-name="<?php echo esc_attr( $this->element_name ); ?>"
 			<?php if ( ! empty( $this->max_items ) ) : ?>
 				data-max-items="<?php echo esc_attr( $this->max_items ); ?>"
 			<?php endif; ?>
-			<?php echo ! empty( $item_label ) ? 'data-item-label="' . esc_attr( $item_label ) . '"' : '' ?>
-			<?php echo ! empty( $this->scroll_count ) ? 'data-scroll-count="' . esc_attr( $this->scroll_count ) . '"' : '' ?>
-			<?php echo ! empty( $item_label ) ? 'data-item-label="' . esc_attr( $item_label ) . '"' : '' ?>
-			<?php if( ! empty( $this->readonly ) ) echo 'readonly' ?>>
+			<?php echo ! empty( $item_label ) ? 'data-item-label="' . esc_attr( $item_label ) . '"' : ''; ?>
+			<?php echo ! empty( $this->scroll_count ) ? 'data-scroll-count="' . esc_attr( $this->scroll_count ) . '"' : ''; ?>
+			<?php echo ! empty( $item_label ) ? 'data-item-label="' . esc_attr( $item_label ) . '"' : ''; ?>
+			<?php if( ! empty( $this->readonly ) ) echo 'readonly'; ?>>
 			<div class="siteorigin-widget-field-repeater-top">
 				<div class="siteorigin-widget-field-repeater-expand"></div>
-				<h3><?php echo esc_html( $this->label ) ?></h3>
+				<h3><?php echo esc_html( $this->label ); ?></h3>
 			</div>
 			<div class="siteorigin-widget-field-repeater-items">
 				<?php
@@ -93,7 +93,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 									<div class="siteorigin-widget-field-copy" tabindex="0"></div>
 									<div class="siteorigin-widget-field-remove" tabindex="0"></div>
 								<?php endif; ?>
-								<h4><?php echo esc_html( $this->item_name ) ?></h4>
+								<h4><?php echo esc_html( $this->item_name ); ?></h4>
 							</div>
 							<div class="siteorigin-widget-field-repeater-item-form">
 								<?php
@@ -107,7 +107,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 				?>
 			</div>
 			<?php if( empty( $this->readonly ) ) : ?>
-				<div class="siteorigin-widget-field-repeater-add" tabindex="0"><?php esc_html_e( 'Add', 'so-widgets-bundle' ) ?></div>
+				<div class="siteorigin-widget-field-repeater-add" tabindex="0"><?php esc_html_e( 'Add', 'so-widgets-bundle' ); ?></div>
 			<?php endif; ?>
 			<?php
 			ob_start();
