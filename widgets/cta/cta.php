@@ -176,7 +176,7 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 			'button_align' => $instance['design']['layout']['desktop'],
 		);
 
-		if ( ! empty( $instance['design']['mobile_button_align'] ) ) {
+		if ( ! empty( $instance['design']['layout']['mobile'] ) ) {
 			$global_settings = $this->get_global_settings();
 			if ( ! empty( $global_settings['responsive_breakpoint'] ) ) {
 				$less['responsive_breakpoint'] = $global_settings['responsive_breakpoint'];
