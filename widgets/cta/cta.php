@@ -128,7 +128,7 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 								'label' => __( 'Mobile Button Align', 'so-widgets-bundle' ),
 								'default' => 'right',
 								'options' => array(
-									'' => __( 'Desktop', 'so-widgets-bundle' ),
+									'' => __( 'Desktop Button Align', 'so-widgets-bundle' ),
 									'above' => __( 'Center Top', 'so-widgets-bundle' ),
 									'below' => __( 'Center Bottom', 'so-widgets-bundle' ),
 								),
