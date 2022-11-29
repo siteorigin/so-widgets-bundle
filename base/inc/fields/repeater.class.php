@@ -70,7 +70,9 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 			data-item-name="<?php echo esc_attr( $this->item_name ) ?>"
 			data-repeater-name="<?php echo esc_attr( $this->base_name ) ?>"
 			data-element-name="<?php echo esc_attr( $this->element_name ) ?>"
-			data-max-items="<?php echo esc_attr( $this->max_items ) ?>"
+			<?php if ( ! empty( $this->max_items ) ) : ?>
+				data-max-items="<?php echo esc_attr( $this->max_items ); ?>"
+			<?php endif; ?>
 			<?php echo ! empty( $item_label ) ? 'data-item-label="' . esc_attr( $item_label ) . '"' : '' ?>
 			<?php echo ! empty( $this->scroll_count ) ? 'data-scroll-count="' . esc_attr( $this->scroll_count ) . '"' : '' ?>
 			<?php echo ! empty( $item_label ) ? 'data-item-label="' . esc_attr( $item_label ) . '"' : '' ?>
