@@ -62,7 +62,7 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 	protected function render_data_attributes( $data_attributes ) {
 		$attr_string = '';
 		foreach ( $data_attributes as $name => $value ) {
-			$attr_string = ' data-' . esc_html( $name ) . '="' . esc_attr( $value ) . '"';
+			$attr_string .= ' data-' . esc_html( $name ) . '="' . esc_attr( $value ) . '"';
 		}
 		echo $attr_string;
 	}
@@ -71,7 +71,7 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 	protected function render_attributes( $attributes ) {
 		$attr_string = '';
 		foreach ( $attributes as $name => $value ) {
-			$attr_string = esc_html( $name ) . '="' . esc_attr( $value ) . '"';
+			$attr_string .= ' ' . esc_html( $name ) . '="' . esc_attr( $value ) . '"';
 		}
 		echo $attr_string;
 	}
