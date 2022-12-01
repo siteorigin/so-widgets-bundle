@@ -21,7 +21,7 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 		if ( ! empty( $builder ) ) {
 			require_once $builder['file_path'];
 		}
-		
+
 		if ( function_exists( 'register_block_type' ) ) {
 			require_once plugin_dir_path( __FILE__ ) . 'block-editor/widget-block.php';
 		}
@@ -108,6 +108,10 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 					header( 'x-litespeed-purge: ' . $url['path'] );
 				}
 			}
+
+			if ( function_exists( 'rocket_clean_post' ) ) {
+				rocket_clean_post( $id );
+			}
 		}
 	}
 
@@ -133,6 +137,11 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 
 		if ( function_exists( 'run_litespeed_cache' ) && ! headers_sent() ) {
 			header( 'x-litespeed-purge: *' );
+		}
+
+		if ( function_exists( 'rocket_clean_domain' ) && function_exists( 'rocket_clean_minify' ) ) {
+			rocket_clean_domain();
+			rocket_clean_minify( 'css' );
 		}
 	}
 
