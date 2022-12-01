@@ -45,11 +45,11 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 	}
 
 	protected function get_input_attributes() {
-		$input_attributes = [
+		$input_attributes = array(
 			'step' => $this->step,
 			'min'  => $this->min,
 			'max'  => $this->max,
-		];
+		);
 		return array_filter( $input_attributes );
 	}
 
