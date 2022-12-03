@@ -106,6 +106,16 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.44.2 - 03 December 2022 =
+* Added WP Rocket compatibility.
+* Button: Expanded Font Size, Padding, and Rounding to be more customizable.
+* Headline: Prevented a potential notice when adding `mobile_align` defaults to pre-existing instances.
+* Image Size Field: Update to display the setting description if available.
+* Simple Masonry: Resolved a potential `Undefined array key` warning.
+* Developer: Introduced widget validation via `sowbForms.validateFields` and `sow_validate_widget_data`.
+* Developer: Update to allow custom color palettes or for palettes to be completely removed on a field by field basis.
+* Developer: Pass state emitter field to custom callbacks. Allows developers to detect the field that triggered the emitter.
+
 = 1.44.1 - 25 November 2022 =
 * Icon Field: Resolved jQuery Migrate flag.
 * Contact Form: Resolved notice when Message field not used.
