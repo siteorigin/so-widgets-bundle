@@ -277,6 +277,11 @@ var sowbForms = window.sowbForms || {};
 				if (colorField.data('defaultColor')) {
 					colorFieldOptions.defaultColor = colorField.data('defaultColor');
 				}
+
+				if ( colorField.data( 'palettes' ) ) {
+					colorFieldOptions.palettes = colorField.data( 'palettes' );
+				}
+
 				colorField.wpColorPicker(colorFieldOptions);
 			});
 
@@ -491,7 +496,14 @@ var sowbForms = window.sowbForms || {};
 						}
 
 						// Return an array that has the new states added to the array
-						return $.extend(currentStates, sowEmitters[emitter.callback](val, emitter.args));
+						return $.extend(
+							currentStates,
+							sowEmitters[ emitter.callback ] (
+								val,
+								emitter.args,
+								$$
+							)
+						);
 					};
 
 					// Run the states through the state emitters
@@ -1516,6 +1528,92 @@ var sowbForms = window.sowbForms || {};
 		}
 	};
 
+	/**
+	 * Look for and valid any fields that are required.
+	 */
+	sowbForms.validateFields = function( form, showPrompt = true ) {
+		var valid = true;
+		var devValidation = $( document ).triggerHandler(
+			'sow_validate_widget_data',
+			[
+				valid,
+				form,
+				// Widget ID.
+				form.find( '.siteorigin-widget-form' ).data( 'id-base' )
+			]
+		);
+
+		if ( typeof devValidation == 'boolean' && ! devValidation ) {
+			valid = false;
+		}
+
+		if ( valid ) {
+			var missingRequired = false;
+			form.find( '.siteorigin-widget-field-is-required' ).each( function() {
+				var $$ = $( this );
+				var $field = $$.find( '.siteorigin-widget-input' );
+
+				// Check if this field is inside of a Repeater's HTML clone field.
+				if ( $field.parents( '.siteorigin-widget-field-repeater-item-html' ).length ) {
+					return;
+				}
+
+				if (
+					! $field.val() ||
+					(
+						$$.hasClass( 'siteorigin-widget-field-type-checkboxes' ) &&
+						! $field.prop( 'checked' )
+					)
+				) {
+					missingRequired = true;
+					$$.addClass( 'sow-required-error' );
+				}
+					$field.on( 'change', function( e ) {
+						$$.removeClass( 'sow-required-error' );
+					} )
+			} );
+
+			if (
+				missingRequired &&
+				(
+					! showPrompt ||
+					! confirm( soWidgets.missing_required )
+				)
+			) {
+					valid = false;
+			}
+		}
+
+		return valid;
+	}
+
+	// Validate widget added using Page Builder.
+	if ( typeof panelsOptions == 'object' ) {
+		$( document ).on( 'close_dialog_validation', function( e, values, widget, id, instance ) {
+			return sowbForms.validateFields( $( instance.el ) );
+		} );
+	}
+
+	// Validate widget added using Classic Widgets & Customizer
+	$( 'body' ).on( 'click', '.widget-control-save', function( e ) {
+		var $form = $( this ).parents( '.widget.open' ).find( '.widget-content' );
+		if ( $form.length ) {
+			if ( ! sowbForms.validateFields( $form ) ) {
+				e.preventDefault();
+				e.stopPropagation();
+			}
+		}
+	} );
+
+	// Further widget validation code for Customizer.
+	if ( typeof wp.customize != 'undefined' ) {
+		jQuery( document ).on( 'widget-added widget-updated widget-synced', function( e, widget, form = false ) {
+			if ( form.length ) {
+				sowbForms.validateFields( form )
+			}
+		} );
+	}
+
 	// When we click on a widget top
 	$('.widgets-holder-wrap').on('click', '.widget:has(.siteorigin-widget-form-main) .widget-top', function () {
 		var $$ = $(this).closest('.widget').find('.siteorigin-widget-form-main');
@@ -1545,6 +1643,7 @@ var sowbForms = window.sowbForms || {};
 			$fields.trigger( 'sowsetupformfield' );
 		}
 	});
+
 
 	$(function () {
 		$(document).trigger('sowadminloaded');

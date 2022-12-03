@@ -203,37 +203,34 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 					),
 
 					'font_size' => array(
-						'type' => 'select',
+						'type' => 'measurement',
 						'label' => __( 'Font Size', 'so-widgets-bundle' ),
-						'options' => array(
-							'1' => __( 'Normal', 'so-widgets-bundle' ),
-							'1.15' => __( 'Medium', 'so-widgets-bundle' ),
-							'1.3' => __( 'Large', 'so-widgets-bundle' ),
-							'1.45' => __( 'Extra large', 'so-widgets-bundle' ),
-						),
-					),
-
-					'rounding' => array(
-						'type' => 'select',
-						'label' => __( 'Rounding', 'so-widgets-bundle' ),
-						'default' => '0.25',
-						'options' => array(
-							'0' => __( 'None', 'so-widgets-bundle' ),
-							'0.25' => __( 'Slightly Rounded', 'so-widgets-bundle' ),
-							'0.5' => __( 'Very Rounded', 'so-widgets-bundle' ),
-							'1.5' => __( 'Completely Rounded', 'so-widgets-bundle' ),
-						),
+						'default' => '1em',
 					),
 
 					'padding' => array(
-						'type' => 'select',
+						'type' => 'measurement',
 						'label' => __( 'Padding', 'so-widgets-bundle' ),
-						'default' => '1',
-						'options' => array(
-							'0.5' => __( 'Low', 'so-widgets-bundle' ),
-							'1' => __( 'Medium', 'so-widgets-bundle' ),
-							'1.4' => __( 'High', 'so-widgets-bundle' ),
-							'1.8' => __( 'Very High', 'so-widgets-bundle' ),
+						'default' => '1em',
+					),
+
+					'rounding' => array(
+						'type' => 'multi-measurement',
+						'label' => __( 'Rounding', 'so-widgets-bundle' ),
+						'default' => '0.25em 0.25em 0.25em 0.25em',
+						'measurements' => array(
+							'top' => array(
+								'label' => __( 'Top', 'so-widgets-bundle' ),
+							),
+							'right' => array(
+								'label' => __( 'Right', 'so-widgets-bundle' ),
+							),
+							'bottom' => array(
+								'label' => __( 'Bottom', 'so-widgets-bundle' ),
+							),
+							'left' => array(
+								'label' => __( 'Left', 'so-widgets-bundle' ),
+							),
 						),
 					),
 
@@ -375,9 +372,9 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'text_color' => $text_color,
 			'hover_text_color' => ! empty( $instance['design']['hover_text_color'] ) ? $instance['design']['hover_text_color'] : $text_color,
 			'hover_background_color' => ! empty( $instance['design']['hover_background_color'] ) ? $instance['design']['hover_background_color'] : $button_color,
-			'font_size' => isset($instance['design']['font_size']) ? $instance['design']['font_size'] . 'em' : '',
-			'rounding' => isset($instance['design']['rounding']) ? $instance['design']['rounding'] . 'em' : '',
-			'padding' => isset($instance['design']['padding']) ? $instance['design']['padding'] . 'em' : '',
+			'font_size' => isset( $instance['design']['font_size'] ) ? $instance['design']['font_size'] : '',
+			'rounding' => isset( $instance['design']['rounding'] ) ? $instance['design']['rounding'] : '',
+			'padding' => isset( $instance['design']['padding'] ) ? $instance['design']['padding'] : '',
 			'has_text' => empty( $instance['text'] ) ? 'false' : 'true',
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 			'align' => $instance['design']['align'],
@@ -457,6 +454,19 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			empty( $instance['design']['mobile_align'] )
 		) {
 			$instance['design']['mobile_align'] = $instance['design']['align'];
+		}
+
+		// Migrate predefined settings to more customizable settings.
+		if ( ! empty( $instance['design']['font_size'] ) && is_numeric( $instance['design']['font_size'] ) ) {
+			$instance['design']['font_size'] .= 'em';
+		}
+
+		if ( ! empty( $instance['design']['padding'] ) && is_numeric( $instance['design']['padding'] ) ) {
+			$instance['design']['padding'] .= 'em';
+		}
+
+		if ( ! empty( $instance['design']['rounding'] ) && is_numeric( $instance['design']['rounding'] ) ) {
+			$instance['design']['rounding'] = $instance['design']['rounding'] . 'em ' . $instance['design']['rounding'] . 'em ' . $instance['design']['rounding'] . 'em ' . $instance['design']['rounding'] . 'em';
 		}
 
 		return $instance;

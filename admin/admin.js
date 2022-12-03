@@ -188,11 +188,17 @@ jQuery( function( $ ){
 
 	dialog.find( '.so-save' ).on( 'click', function( e ) {
 		e.preventDefault();
+		var $form = dialog.find( 'form' );
+
+		validSave = sowbForms.validateFields( $form )
+		if ( typeof validSave == 'boolean' && ! validSave ) {
+			return false;
+		}
 
 		var $$ = $( this );
 		$$.prop( 'disabled', true );
 
-		dialog.find( 'form' ).on( 'submit', function() {
+		$form.on( 'submit', function() {
 			$$.prop( 'disabled', false );
 			dialog.hide();
 		} ).trigger( 'submit' );

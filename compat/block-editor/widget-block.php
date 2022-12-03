@@ -36,7 +36,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				'wp-i18n',
 				'wp-element',
 				'wp-components',
-				'wp-compose'
+				'wp-compose',
+				'wp-data',
 			),
 			SOW_BUNDLE_VERSION
 		);

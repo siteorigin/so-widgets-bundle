@@ -459,11 +459,12 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			$instance['divider']['bottom_margin'] = $instance['divider']['top_margin'];
 			$instance['divider']['bottom_margin_unit'] = $instance['divider']['top_margin_unit'];
 		}
+
 		// Set Mobile alignment settings to same value as the Alignment for existing widgets.
 		if ( ! empty( $instance['headline']['align'] ) && empty( $instance['headline']['mobile_align'] ) ) {
-			$instance['headline']['mobile_align'] = $instance['headline']['align'];
-			$instance['sub_headline']['mobile_align'] = $instance['sub_headline']['align'];
-			$instance['divider']['mobile_align'] = $instance['divider']['align'];
+			$instance['headline']['mobile_align'] = ! empty( $instance['headline']['align'] ) ? $instance['headline']['align'] : 'center';
+			$instance['sub_headline']['mobile_align'] = ! empty( $instance['sub_headline']['align'] ) ? $instance['sub_headline']['align'] : 'center';
+			$instance['divider']['mobile_align'] = ! empty( $instance['divider']['align'] ) ? $instance['divider']['align'] : 'center';
 		}
 
 		return $instance;
