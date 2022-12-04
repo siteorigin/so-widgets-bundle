@@ -91,15 +91,18 @@
 	}
 
 
-	& when not ( isstring( @mobile_button_align ) ) {
-		@media (max-width: @responsive_breakpoint) {
-			.sow-cta-wrapper {
+	@media (max-width: @responsive_breakpoint) {
+		.sow-cta-wrapper {
+			.so-widget-sow-button {
+				margin-right: 0;
+				margin-left: 0;
+			}
+
+			& when ( @mobile_button_align = above ), ( @mobile_button_align = below ) {
 				display: flex;
 
 				.so-widget-sow-button {
 					float: none;
-					margin-right: 0;
-					margin-left: 0;
 				}
 
 				.sow-cta-text {
@@ -111,14 +114,16 @@
 					justify-content: center;
 
 					.so-widget-sow-button {
-						margin-bottom: 2em;
+						margin-top: 0 !important;
+						margin-bottom: 1em;
 					}
 				}
 
 				& when ( @mobile_button_align = below ) {
 					flex-direction: column;
 					.so-widget-sow-button {
-						margin-bottom: 2em;
+						margin-top: 1em !important;
+						margin-bottom: 0;
 					}
 				}
 			}

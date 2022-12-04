@@ -176,15 +176,11 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 			'button_align' => $instance['design']['layout']['desktop'],
 		);
 
-		if ( ! empty( $instance['design']['layout']['mobile'] ) ) {
-			$global_settings = $this->get_global_settings();
-			if ( ! empty( $global_settings['responsive_breakpoint'] ) ) {
-				$less['responsive_breakpoint'] = $global_settings['responsive_breakpoint'];
-			}
-
-			$less_vars['mobile_button_align'] = $instance['design']['layout']['mobile'];
+		$global_settings = $this->get_global_settings();
+		if ( ! empty( $global_settings['responsive_breakpoint'] ) ) {
 			$less_vars['responsive_breakpoint'] = ! empty( $global_settings['responsive_breakpoint'] ) ? $global_settings['responsive_breakpoint'] : '780px';
 		}
+		$less_vars['mobile_button_align'] = ! empty( $instance['design']['layout']['mobile'] ) ? $instance['design']['layout']['mobile'] : '';
 
 		return $less_vars;
 	}
