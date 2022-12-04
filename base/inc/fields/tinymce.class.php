@@ -425,7 +425,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		
 		$value = apply_filters( 'the_editor_content', $value, $this->selected_editor );
 		
-		if ( false !== stripos( $value, 'textarea' ) ) {
+		if ( ! empty( $value ) && stripos( $value, 'textarea' ) !== false ) {
 			$value = preg_replace( '%</textarea%i', '&lt;/textarea', $value );
 		}
 
@@ -451,7 +451,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			<?php $this->render_data_attributes( $this->get_input_data_attributes() ) ?>
 			<?php $this->render_CSS_classes( $this->get_input_classes() ) ?>
 			<?php if ( ! empty( $this->placeholder ) ) echo 'placeholder="' . esc_attr( $this->placeholder ) . '"' ?>
-			<?php if( ! empty( $this->readonly ) ) echo 'readonly' ?>><?php echo htmlentities( $value, ENT_QUOTES, 'UTF-8' ) ?></textarea>
+			<?php if( ! empty( $this->readonly ) ) echo 'readonly' ?>><?php echo ! empty( $value ) ? htmlentities( $value, ENT_QUOTES, 'UTF-8' ) : ''; ?></textarea>
 		</div>
 		<input type="hidden"
 		       name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_selected_editor', $this->parent_container) ) ?>"
