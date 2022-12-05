@@ -5,8 +5,25 @@
  */
 class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_Base {
 
+
 	/**
 	 * The minimum value of the allowed range.
+	 *
+	 * @access protected
+	 * @var float
+	 */
+	protected $min;
+
+	/**
+	 * The maximum value of the allowed range.
+	 *
+	 * @access protected
+	 * @var float
+	 */
+	protected $max;
+
+	/**
+	 * The step size when moving in the range.
 	 *
 	 * @access protected
 	 * @var float
@@ -28,13 +45,12 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 	}
 
 	protected function get_input_attributes() {
-		if ( empty( $this->step ) ) {
-			return array();
-		}
-	
-		return array(
+		$input_attributes = array(
 			'step' => $this->step,
+			'min'  => $this->min,
+			'max'  => $this->max,
 		);
+		return array_filter( $input_attributes );
 	}
 
 	protected function get_input_classes() {
@@ -44,10 +60,22 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
-		if ( ! empty( $value ) ) {
-			return ( float ) ( ! empty( $this->abs ) ? abs( $value ) : $value );
-		} else {
+
+		if ( empty( $value ) ) {
 			return false;
 		}
+
+		if ( ! empty( $this->min ) ) {
+			$value = max( $value, $this->min );
+		}
+
+		if ( ! empty( $this->max ) ) {
+			$value = min( $value, $this->max );
+		}
+
+		if ( ! empty( $this->abs ) ) {
+			$value = abs( $value );
+		}
+		return (float) $value;
 	}
 }
