@@ -8,7 +8,7 @@
 	var Toolbar = components.Toolbar;
 	var ToolbarButton = components.ToolbarButton;
 	var Placeholder = components.Placeholder;
-	var Spinner  = components.Spinner;
+	var Spinner = components.Spinner;
 	var __ = i18n.__;
 
 	var getAjaxErrorMsg = function( response ) {
@@ -333,11 +333,11 @@
 // Setup SiteOrigin Widgets Block Validation.
 var sowbTimeoutSetup = false;
 if ( typeof wp.data.select == 'function' ) {
-	wp.data.subscribe( function () {
+	wp.data.subscribe( function() {
 		if ( ! sowbTimeoutSetup ) {
 			var setupTimer = false;
 
-			if ( typeof wp.data.select( 'core/edit-widgets' ) == 'object' ) {
+			if ( adminpage == 'widgets-php' && typeof wp.data.select( 'core/edit-widgets' ) == 'object' ) {
 				// New Widget Area.
 				if ( wp.data.select( 'core/edit-widgets' ).isSavingWidgetAreas() ) {
 					setupTimer = true;
@@ -354,7 +354,9 @@ if ( typeof wp.data.select == 'function' ) {
 				sowbTimeoutSetup = true;
 				var saveCheck = setInterval( function() {
 					var checkPass = false;
-					if ( typeof wp.data.select( 'core/edit-widgets' ) == 'object' ) {
+					if (
+						adminpage == 'widgets-php' && 
+						typeof wp.data.select( 'core/edit-widgets' ) == 'object' ) {
 						if ( ! wp.data.select( 'core/edit-widgets' ).isSavingWidgetAreas() ) {
 							checkPass = true;
 						}
@@ -371,7 +373,10 @@ if ( typeof wp.data.select == 'function' ) {
 						clearInterval( saveCheck );
 
 						var showPrompt = true;
-						if ( typeof wp.data.select( 'core/edit-widgets' ) == 'object' ) {
+						if (
+							adminpage == 'widgets-php' && 
+							typeof wp.data.select( 'core/edit-widgets' ) == 'object'
+						) {
 							// New Widget Area.
 							var $widgets = jQuery( '.wp-block-widget-area .components-panel__body.is-opened .siteorigin-widget-form-main-siteorigin-widget-button-widget' );
 							jQuery.each( $widgets , function() {
