@@ -333,7 +333,7 @@
 // Setup SiteOrigin Widgets Block Validation.
 var sowbTimeoutSetup = false;
 if ( typeof wp.data.select == 'function' ) {
-	wp.data.subscribe( function () {
+	wp.data.subscribe( function() {
 		if ( ! sowbTimeoutSetup ) {
 			var setupTimer = false;
 
@@ -360,7 +360,7 @@ if ( typeof wp.data.select == 'function' ) {
 						if ( ! wp.data.select( 'core/edit-widgets' ).isSavingWidgetAreas() ) {
 							checkPass = true;
 						}
-					} else if ( 
+					} else if (
 						typeof wp.data.select( 'core/editor' ) == 'object' &&
 						! wp.data.select( 'core/editor' ).isSavingPost() &&
 						! wp.data.select( 'core/editor' ).isAutosavingPost() &&
