@@ -106,6 +106,12 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.45.0 - 07 December 2022 =
+* Call To Action: Added `Mobile Button Align` setting.
+* PHP 8.1: Resolved form field deprecated notices.
+* Developer: Removed `edit-widgets` validation support.
+* Developer: Added min/max for number form field.
+
 = 1.44.2 - 03 December 2022 =
 * Added WP Rocket compatibility.
 * Button: Expanded Font Size, Padding, and Rounding to be more customizable.
