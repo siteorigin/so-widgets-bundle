@@ -34,7 +34,7 @@ class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_I
 	 * @return array
 	 */
 	protected function get_render_values( $value ) {
-		if ( ! empty( $vlaue ) ) {
+		if ( ! empty( $value ) ) {
 			preg_match('/(\d+\.?\d*)([a-z%]+)*/', $value, $matches);
 			$num_matches = count( $matches );
 		}
