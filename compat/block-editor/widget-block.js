@@ -335,7 +335,7 @@ var sowbTimeoutSetup = false;
 if ( adminpage != 'widgets-php' && typeof wp.data.select == 'function' ) {
 	wp.data.subscribe( function() {
 		if (
-			! sowbTimeoutSetup 
+			! sowbTimeoutSetup &&
 			typeof wp.data.select( 'core/editor' ) == 'object' &&
 			wp.data.select( 'core/editor' ).isSavingPost()
 		) {
