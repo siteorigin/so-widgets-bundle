@@ -56,6 +56,17 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	function get_settings_form() {
+		return array(
+			'responsive_breakpoint' => array(
+				'type'        => 'measurement',
+				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
+				'default'     => '780px',
+				'description' => __( "This setting controls when the mobile alignment will be used. The default value is 780px.", 'so-widgets-bundle' )
+			),
+		);
+	}
+
 	function get_widget_form() {
 		return array(
 
@@ -73,34 +84,58 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 				'type' => 'section',
 				'label' => __( 'Design', 'so-widgets-bundle' ),
 				'fields' => array(
-					'background_color' => array(
-						'type' => 'color',
-						'label' => __( 'Background color', 'so-widgets-bundle' ),
-						'default' => '#f8f8f8'
+					'colors' => array(
+						'type' => 'section',
+						'label' => __( 'Colors', 'so-widgets-bundle' ),
+						'fields' => array(
+							'background_color' => array(
+								'type' => 'color',
+								'label' => __( 'Background Color', 'so-widgets-bundle' ),
+								'default' => '#f8f8f8'
+							),
+							'border_color' => array(
+								'type' => 'color',
+								'label' => __( 'Border Color', 'so-widgets-bundle' ),
+								'default' => '#e3e3e3',
+							),
+							'title_color' => array(
+								'type' => 'color',
+								'label' => __( 'Title Color', 'so-widgets-bundle' ),
+							),
+							'subtitle_color' => array(
+								'type' => 'color',
+								'label' => __( 'Subtitle Color', 'so-widgets-bundle' ),
+							),
+						),
 					),
-					'border_color' => array(
-						'type' => 'color',
-						'label' => __( 'Border color', 'so-widgets-bundle' ),
-						'default' => '#e3e3e3',
+					'layout' => array(
+						'type' => 'section',
+						'label' => __( 'Layout', 'so-widgets-bundle' ),
+						'fields' => array(
+							'desktop' => array(
+								'type' => 'select',
+								'label' => __( 'Desktop Button Align', 'so-widgets-bundle' ),
+								'default' => 'right',
+								'options' => array(
+									'top' => __( 'Center Top', 'so-widgets-bundle' ),
+									'left' => __( 'Left', 'so-widgets-bundle' ),
+									'bottom' => __( 'Center Bottom', 'so-widgets-bundle' ),
+									'right' => __( 'Right', 'so-widgets-bundle' ),
+								),
+							),
+							'mobile' => array(
+								'type' => 'select',
+								'label' => __( 'Mobile Button Align', 'so-widgets-bundle' ),
+								'default' => 'right',
+								'options' => array(
+									'' => __( 'Desktop Button Align', 'so-widgets-bundle' ),
+									'above' => __( 'Center Top', 'so-widgets-bundle' ),
+									'below' => __( 'Center Bottom', 'so-widgets-bundle' ),
+								),
+							),
+						),
 					),
-					'title_color' => array(
-						'type' => 'color',
-						'label' => __( 'Title color', 'so-widgets-bundle' ),
-					),
-					'subtitle_color' => array(
-						'type' => 'color',
-						'label' => __( 'Subtitle color', 'so-widgets-bundle' ),
-					),
-					'button_align' => array(
-						'type' => 'select',
-						'label' => __( 'Button align', 'so-widgets-bundle' ),
-						'default' => 'right',
-						'options' => array(
-							'left' => __( 'Left', 'so-widgets-bundle' ),
-							'right' => __( 'Right', 'so-widgets-bundle' ),
-						)
-					)
-				)
+				),
 			),
 
 			'button' => array(
@@ -108,8 +143,24 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 				'class' => 'SiteOrigin_Widget_Button_Widget',
 				'label' => __( 'Button', 'so-widgets-bundle' ),
 			),
-
 		);
+	}
+
+	function modify_instance( $instance ) {
+		if ( empty( $instance ) || empty( $instance['design'] ) ) {
+			return array();
+		}
+
+		if ( isset( $instance['design']['background_color'] ) ) {
+			$instance['design']['colors'] = array();
+			$instance['design']['colors']['background_color'] = $instance['design']['background_color'] ;
+			$instance['design']['colors']['title_color'] = $instance['design']['title_color'];
+			$instance['design']['colors']['subtitle_color'] = $instance['design']['subtitle_color'];
+			$instance['design']['layout'] = array();
+			$instance['design']['layout']['desktop'] = $instance['design']['button_align'] ;
+		}
+
+		return $instance;
 	}
 
 	function get_less_variables( $instance ) {
@@ -117,17 +168,27 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 			return array();
 		}
 
-		return array(
-			'border_color' => $instance['design']['border_color'],
-			'background_color' => $instance['design']['background_color'],
-			'title_color'      => $instance['design']['title_color'],
-			'subtitle_color'   => $instance['design']['subtitle_color'],
-			'button_align' => $instance['design']['button_align'],
+		$less_vars = array(
+			'border_color' => $instance['design']['colors']['border_color'],
+			'background_color' => $instance['design']['colors']['background_color'],
+			'title_color' => $instance['design']['colors']['title_color'],
+			'subtitle_color' => $instance['design']['colors']['subtitle_color'],
+			'button_align' => $instance['design']['layout']['desktop'],
 		);
+
+		$global_settings = $this->get_global_settings();
+		if ( ! empty( $global_settings['responsive_breakpoint'] ) ) {
+			$less_vars['responsive_breakpoint'] = ! empty( $global_settings['responsive_breakpoint'] ) ? $global_settings['responsive_breakpoint'] : '780px';
+		}
+		$less_vars['mobile_button_align'] = ! empty( $instance['design']['layout']['mobile'] ) ? $instance['design']['layout']['mobile'] : '';
+
+		return $less_vars;
 	}
 
 	function modify_child_widget_form( $child_widget_form, $child_widget ) {
 		unset( $child_widget_form['design']['fields']['align'] );
+		unset( $child_widget_form['design']['fields']['mobile_align'] );
+
 		return $child_widget_form;
 	}
 

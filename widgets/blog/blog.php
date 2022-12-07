@@ -1013,6 +1013,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 	static public function post_featured_image( $settings, $categories = false, $size = 'full' ) {
 		if ( $settings['featured_image'] && has_post_thumbnail() ) : ?>
+			<?php ob_start(); ?>
 			<div class="sow-entry-thumbnail">
 				<?php if ( $categories && $settings['categories'] && has_category() ) : ?>
 					<div class="sow-thumbnail-meta">
@@ -1037,6 +1038,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				</a>
 			</div>
 			<?php
+			echo apply_filters( 'siteorigin_widgets_blog_featured_image_markup', ob_get_clean(), $settings, $categories = false, $size = 'full' );
 		endif;
 	}
 

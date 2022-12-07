@@ -34,11 +34,13 @@ class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_I
 	 * @return array
 	 */
 	protected function get_render_values( $value ) {
-		preg_match('/(\d+\.?\d*)([a-z%]+)*/', $value, $matches);
-		$num_matches = count( $matches );
+		if ( ! empty( $value ) ) {
+			preg_match('/(\d+\.?\d*)([a-z%]+)*/', $value, $matches);
+			$num_matches = count( $matches );
+		}
 		$val = array();
-		$val['value'] = $num_matches > 1 ? $matches[1] : null;
-		$val['unit'] = $num_matches > 2 ? $matches[2] : null;
+		$val['value'] = ! empty( $num_matches ) && $num_matches > 1 ? $matches[1] : null;
+		$val['unit'] = ! empty( $num_matches ) && $num_matches > 2 ? $matches[2] : null;
 		return $val;
 	}
 

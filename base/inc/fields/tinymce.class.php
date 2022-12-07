@@ -250,14 +250,14 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	
 	function add_wpc_shortcodes_plugin( $plugins ) {
 		if( ! isset( $plugins['wpc_shortcodes'] ) ) {
-			$shortcodes_path     = 'wc-shortcodes/includes/mce/js/shortcodes-tinymce-4.js';
+			$shortcodes_path = 'wc-shortcodes/includes/mce/js/shortcodes-tinymce-4.js';
 			if ( file_exists( WP_PLUGIN_DIR . '/' . $shortcodes_path ) ) {
 				$plugins['wpc_shortcodes'] = plugins_url( $shortcodes_path . '?ver=' . WC_SHORTCODES_VERSION );
 			}
 		}
 		
 		if( ! isset( $plugins['wpc_font_awesome'] ) ) {
-			$fontawesome_path     = 'wc-shortcodes/includes/mce/js/font-awesome-tinymce-4.js';
+			$fontawesome_path = 'wc-shortcodes/includes/mce/js/font-awesome-tinymce-4.js';
 			if ( file_exists( WP_PLUGIN_DIR . '/' . $fontawesome_path ) ) {
 				$plugins['wpc_font_awesome'] = plugins_url( $fontawesome_path . '?ver=' . WC_SHORTCODES_VERSION );
 			}
@@ -351,9 +351,9 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			
 			$tmce_settings = array(
 				'toolbar1' => apply_filters( 'mce_buttons', $this->mce_buttons, $this->element_id ),
-				'toolbar2' => apply_filters( 'mce_buttons_2', $this->mce_buttons_2, $this->element_id  ),
-				'toolbar3' => apply_filters( 'mce_buttons_3',$this->mce_buttons_3, $this->element_id  ),
-				'toolbar4' => apply_filters( 'mce_buttons_4',$this->mce_buttons_4, $this->element_id  ),
+				'toolbar2' => apply_filters( 'mce_buttons_2', $this->mce_buttons_2, $this->element_id ),
+				'toolbar3' => apply_filters( 'mce_buttons_3', $this->mce_buttons_3, $this->element_id ),
+				'toolbar4' => apply_filters( 'mce_buttons_4', $this->mce_buttons_4, $this->element_id ),
 				'plugins' => ! empty( $tiny_mce_plugins ) && is_array( $tiny_mce_plugins ) ? array_unique( $tiny_mce_plugins ) : array(),
 			);
 			
@@ -398,7 +398,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 				unset( $jdec );
 				if ( ! empty( $tmce_settings[ $name ] ) ) {
 					// Attempt to decode setting as JSON. For back compat with filters used by WP editor.
-					if ( is_string( $setting )  ) {
+					if ( is_string( $setting ) ) {
 						$jdec = json_decode( $setting, true );
 					}
 					$settings['tinymce'][ $name ] = empty( $jdec ) ? $setting : $jdec;
@@ -425,7 +425,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		
 		$value = apply_filters( 'the_editor_content', $value, $this->selected_editor );
 		
-		if ( false !== stripos( $value, 'textarea' ) ) {
+		if ( ! empty( $value ) && stripos( $value, 'textarea' ) !== false ) {
 			$value = preg_replace( '%</textarea%i', '&lt;/textarea', $value );
 		}
 
@@ -436,27 +436,33 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		$settings['baseURL'] = includes_url( 'js/tinymce' );
 		$settings['suffix'] = SCRIPT_DEBUG ? '' : '.min';
 		
-		?><div class="siteorigin-widget-tinymce-container"
+		?>
+		<div
+			class="siteorigin-widget-tinymce-container"
 			<?php if ( $this->media_buttons && ! empty( $media_buttons_html ) ) : ?>
-			   data-media-buttons="<?php echo esc_attr( json_encode( array( 'html' => $media_buttons_html ) ) ) ?>"
+				data-media-buttons="<?php echo esc_attr( json_encode( array( 'html' => $media_buttons_html ) ) ); ?>"
 			<?php endif; ?>
-			   data-editor-settings="<?php echo esc_attr( json_encode( $settings ) ) ?>">
-		<textarea id="<?php echo esc_attr( $this->element_id ) ?>"
-		          name="<?php echo esc_attr( $this->element_name ) ?>"
+			data-editor-settings="<?php echo esc_attr( json_encode( $settings ) ); ?>"
+		>
+		<textarea
+			id="<?php echo esc_attr( $this->element_id ); ?>"
+			name="<?php echo esc_attr( $this->element_name ); ?>"
 			<?php if ( isset( $this->editor_height ) ) : ?>
 				style="height: <?php echo (int) $this->editor_height; ?>px"
 			<?php else : ?>
-				rows="<?php echo esc_attr( $this->rows ) ?>"
+				rows="<?php echo esc_attr( $this->rows ); ?>"
 			<?php endif; ?>
-			<?php $this->render_data_attributes( $this->get_input_data_attributes() ) ?>
-			<?php $this->render_CSS_classes( $this->get_input_classes() ) ?>
-			<?php if ( ! empty( $this->placeholder ) ) echo 'placeholder="' . esc_attr( $this->placeholder ) . '"' ?>
-			<?php if( ! empty( $this->readonly ) ) echo 'readonly' ?>><?php echo htmlentities( $value, ENT_QUOTES, 'UTF-8' ) ?></textarea>
+			<?php $this->render_data_attributes( $this->get_input_data_attributes() ); ?>
+			<?php $this->render_CSS_classes( $this->get_input_classes() ); ?>
+			<?php if ( ! empty( $this->placeholder ) ) echo 'placeholder="' . esc_attr( $this->placeholder ) . '"'; ?>
+			<?php if( ! empty( $this->readonly ) ) echo 'readonly' ?>><?php echo ! empty( $value ) ? htmlentities( $value, ENT_QUOTES, 'UTF-8' ) : ''; ?></textarea>
 		</div>
-		<input type="hidden"
-		       name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_selected_editor', $this->parent_container) ) ?>"
-		       class="siteorigin-widget-input siteorigin-widget-tinymce-selected-editor"
-		       value="<?php echo esc_attr( $this->selected_editor ) ?>"/>
+		<input
+			type="hidden"
+			name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_selected_editor', $this->parent_container ) ); ?>"
+			class="siteorigin-widget-input siteorigin-widget-tinymce-selected-editor"
+			value="<?php echo esc_attr( $this->selected_editor ); ?>"
+		/>
 		<?php
 		
 	}
@@ -477,19 +483,22 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		preg_match( '/widget-(.+?)\[/', $this->element_name, $id_base_matches );
 		$widget_id_base = empty($id_base_matches) || count($id_base_matches) < 2 ? '' : $id_base_matches[1];
 		?>
-		<div class="siteorigin-widget-tinymce-container"
-		     data-mce-settings="<?php echo esc_attr( json_encode( $settings['tinymce'] ) ) ?>"
-		     data-qt-settings="<?php echo esc_attr( json_encode( array() ) ) ?>"
-		     data-widget-id-base="<?php echo esc_attr( $widget_id_base ) ?>"
+		<div
+			class="siteorigin-widget-tinymce-container"
+			data-mce-settings="<?php echo esc_attr( json_encode( $settings['tinymce'] ) ); ?>"
+			data-qt-settings="<?php echo esc_attr( json_encode( array() ) ); ?>"
+			data-widget-id-base="<?php echo esc_attr( $widget_id_base ); ?>"
 		>
 			<?php
-			wp_editor( $value, esc_attr( $this->element_id ), $settings )
+			wp_editor( $value, esc_attr( $this->element_id ), $settings );
 			?>
 		</div>
-		<input type="hidden"
-		       name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_selected_editor', $this->parent_container) ) ?>"
-		       class="siteorigin-widget-input siteorigin-widget-tinymce-selected-editor"
-		       value="<?php echo esc_attr( $this->selected_editor ) ?>"/>
+		<input
+			type="hidden"
+			name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_selected_editor', $this->parent_container ) ); ?>"
+			class="siteorigin-widget-input siteorigin-widget-tinymce-selected-editor"
+			value="<?php echo esc_attr( $this->selected_editor ) ?>"
+		/>
 		<?php
 		
 		if( $this->selected_editor == 'html' ) {

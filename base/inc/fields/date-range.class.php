@@ -36,10 +36,12 @@ class SiteOrigin_Widget_Field_Date_Range extends SiteOrigin_Widget_Field_Base {
 	}
 
 	private function render_relative_date_selector( $value ) {
-		$value = json_decode(
-			$value,
-			true
-		);
+		if ( ! empty( $value ) ) {
+			$value = json_decode(
+				$value,
+				true
+			);
+		}
 
 		$from = ! empty( $value['from'] ) ? $value['from'] : array();
 		$this->render_relative_date_selector_part( 'from', __( 'From', 'so-widgets-bundle' ), $from );

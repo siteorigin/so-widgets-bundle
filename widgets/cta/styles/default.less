@@ -10,6 +10,9 @@
 @subtitle_font_family: default;
 @subtitle_font_weight: default;
 @subtitle_font_size: default;
+@button_align: right;
+@mobile_button_align: default;
+@responsive_breakpoint: default;
 
 .sow-cta-base {
 	& when ( iscolor( @border_color ) ) {
@@ -37,12 +40,21 @@
 		}
 	}
 }
-@button_align: right;
 
 .sow-cta-base {
-	& when ( @button_align = right ) {
-		.sow-cta-text {
-			float: left;
+	& when ( @button_align = top ) {
+		.sow-cta-wrapper {
+			display: flex;
+			flex-direction: column-reverse;
+			justify-content: center;
+
+			.sow-cta-text {
+				text-align: center;
+			}
+		}
+
+		.so-widget-sow-button {
+			margin-bottom: 1.5em;
 		}
 	}
 
@@ -50,19 +62,71 @@
 		.sow-cta-text {
 			float: right;
 		}
+
+		.so-widget-sow-button {
+			float: left;
+			margin-right: 1em;
+		}
+	}
+
+	& when ( @button_align = bottom ) {
+		.sow-cta-text {
+			text-align: center;
+		}
+
+		.so-widget-sow-button {
+			margin-top: 1.5em;
+		}
 	}
 
 	& when ( @button_align = right ) {
+		.sow-cta-text {
+			float: left;
+		}
+
 		.so-widget-sow-button {
 			float: right;
 			margin-left: 1em;
 		}
 	}
 
-	& when ( @button_align = left ) {
-		.so-widget-sow-button {
-			float: left;
-			margin-right: 1em;
+
+	@media (max-width: @responsive_breakpoint) {
+		.sow-cta-wrapper {
+			.so-widget-sow-button {
+				margin-right: 0;
+				margin-left: 0;
+			}
+
+			& when ( @mobile_button_align = above ), ( @mobile_button_align = below ) {
+				display: flex;
+
+				.so-widget-sow-button {
+					float: none;
+				}
+
+				.sow-cta-text {
+					text-align: center;
+				}
+
+				& when ( @mobile_button_align = above ) {
+					flex-direction: column-reverse;
+					justify-content: center;
+
+					.so-widget-sow-button {
+						margin-top: 0 !important;
+						margin-bottom: 1em;
+					}
+				}
+
+				& when ( @mobile_button_align = below ) {
+					flex-direction: column;
+					.so-widget-sow-button {
+						margin-top: 1em !important;
+						margin-bottom: 0;
+					}
+				}
+			}
 		}
 	}
 }
