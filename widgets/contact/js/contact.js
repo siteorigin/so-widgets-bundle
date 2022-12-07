@@ -10,7 +10,7 @@ sowb.SiteOriginContactForm = {
 			var formId = $el.attr( 'id' );
 			var formSubmitSuccess = $el.is( '.sow-contact-form-success' );
 			var formSubmitted = $el.is( '.sow-contact-submitted' );
-			if ( formSubmitted ) {
+			if ( formSubmitted || formSubmitSuccess ) {
 				// The form was submitted. Let's try to scroll to it so the user can see the result.
 				if ( sowContact.scrollto ) {
 					var formPosition = $el.offset().top;
