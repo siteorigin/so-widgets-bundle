@@ -1,9 +1,9 @@
 @font-face {
 	font-family: 'sow-genericons';
-	src:url('font/genericons.eot?map0iz');
-	src:url('font/genericons.eot?#iefixmap0iz') format('embedded-opentype'),
-	url('font/genericons.woff?map0iz') format('woff'),
-	url('font/genericons.ttf?map0iz') format('truetype');
+	src:url('font/genericons.eot');
+	src:url('font/genericons.eot') format('embedded-opentype'),
+		url('font/genericons.woff') format('woff'),
+		url('font/genericons.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 	font-display: block;
