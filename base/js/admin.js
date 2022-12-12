@@ -277,6 +277,11 @@ var sowbForms = window.sowbForms || {};
 				if (colorField.data('defaultColor')) {
 					colorFieldOptions.defaultColor = colorField.data('defaultColor');
 				}
+
+				if ( colorField.data( 'palettes' ) ) {
+					colorFieldOptions.palettes = colorField.data( 'palettes' );
+				}
+
 				colorField.wpColorPicker(colorFieldOptions);
 			});
 
@@ -491,7 +496,14 @@ var sowbForms = window.sowbForms || {};
 						}
 
 						// Return an array that has the new states added to the array
-						return $.extend(currentStates, sowEmitters[emitter.callback](val, emitter.args));
+						return $.extend(
+							currentStates,
+							sowEmitters[ emitter.callback ] (
+								val,
+								emitter.args,
+								$$
+							)
+						);
 					};
 
 					// Run the states through the state emitters
@@ -696,8 +708,6 @@ var sowbForms = window.sowbForms || {};
 			$items.trigger('updateFieldPositions');
 
 			var preventNewItems = function() {
-				$el.find( '.siteorigin-widget-field-repeater-add' ).hide();
-				$el.find( '.siteorigin-widget-field-copy' ).hide();
 				$el.addClass( 'sow-max-reached' );
 			}
 
@@ -904,21 +914,20 @@ var sowbForms = window.sowbForms || {};
 						removeItem();
 					} else if ( confirm( soWidgets.sure ) ) {
 						$item.slideUp('fast', removeItem );
-					}
 
-					// If increment is enabled for this item, trigger label updates.
-					var itemLabel = $el.closest( '.siteorigin-widget-field-repeater' ).data( 'item-label' );
-					if ( typeof itemLabel.increment == 'string' ) {
-						$el.parent().find( '.siteorigin-widget-field-repeater-item' ).trigger( 'change' )
-					}
+						// If increment is enabled for this item, trigger label updates.
+						var itemLabel = $el.closest( '.siteorigin-widget-field-repeater' ).data( 'item-label' );
+						if ( typeof itemLabel.increment == 'string' ) {
+							$el.parent().find( '.siteorigin-widget-field-repeater-item' ).trigger( 'change' )
+						}
 
-					var $repeater = $( this ).parents('.siteorigin-widget-field-repeater');
-					if ( $repeater.hasClass( 'sow-max-reached' ) ) {
-						$repeater.find( '.siteorigin-widget-field-repeater-add' ).show();
-						$repeater.find( '.siteorigin-widget-field-copy' ).show();
-						$repeater.addClass( 'sow-max-reached' );
+						// Check if we need to re-enable actions due to no longer being at the maximum number of items.
+						var $repeater = $( this ).parents('.siteorigin-widget-field-repeater');
+						if ( $repeater.hasClass( 'sow-max-reached' ) ) {
+							$repeater.removeClass( 'sow-max-reached' );
+						}
 					}
-				});
+				} );
 				itemTop.find( '.siteorigin-widget-field-copy' ).on( 'click keyup', function( e ) {
 					e.preventDefault();
 
@@ -1060,8 +1069,6 @@ var sowbForms = window.sowbForms || {};
 						}
 
 						if ( isFinite( maxItems ) && $items.find( '.siteorigin-widget-field-repeater-item' ).length == maxItems ) {
-							$mainRepeater.find( '.siteorigin-widget-field-repeater-add' ).hide();
-							$mainRepeater.find( '.siteorigin-widget-field-copy' ).hide();
 							$mainRepeater.addClass( 'sow-max-reached' );
 						}
 					}
