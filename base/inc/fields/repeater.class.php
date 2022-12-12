@@ -54,6 +54,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 		$container = array( 'name' => $this->base_name, 'type' => 'repeater' );
 		$item_label = isset( $this->item_label ) ? $this->item_label : null;
 		$max_items = isset( $this->max_items ) ? $this->max_items : null;
+		$max_items_class = ! empty( $max_items ) && is_array( $value ) && count( $value ) >= $this->max_items ? 'sow-max-reached' : '';
 
 		if ( ! empty( $item_label ) ) {
 			// convert underscore naming convention to camelCase for javascript and encode as json string
@@ -66,7 +67,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 		}
 		if( empty( $this->item_name ) ) $this->item_name = __( 'Item', 'so-widgets-bundle' );
 		?>
-		<div class="siteorigin-widget-field-repeater"
+		<div class="siteorigin-widget-field-repeater <?php echo $max_items_class; ?>"
 			data-item-name="<?php echo esc_attr( $this->item_name ); ?>"
 			data-repeater-name="<?php echo esc_attr( $this->base_name ); ?>"
 			data-element-name="<?php echo esc_attr( $this->element_name ); ?>"
