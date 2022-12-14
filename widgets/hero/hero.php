@@ -407,14 +407,15 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	 */
 	function process_content( $content, $frame ) {
 
-		$content = wp_kses_post($content);
+		$content = wp_kses_post( $content );
 		if ( strpos( $content, '[buttons]' ) !== false ) {
 			// Replace [buttons] with button wrapper.
 			$content = preg_replace('/(?:<(?:p|h\d|em|strong|li|blockquote) *([^>]*)> *)?\[ *buttons *\](:? *<\/(?:p|h\d|em|strong|li|blockquote)>)?/i', '<div class="sow-hero-buttons" $1>[SiteOriginHeroButton]</div>', $content );
 
+			$button_code = '';
 			// Generate buttons.
 			foreach( $frame['buttons'] as $button ) {
-				$button_code .= $this->sub_widget('SiteOrigin_Widget_Button_Widget', array(), $button['button'], true);
+				$button_code .= $this->sub_widget( 'SiteOrigin_Widget_Button_Widget', array(), $button['button'], true );
 			}
 
 			// Add buttons to wrapper.
