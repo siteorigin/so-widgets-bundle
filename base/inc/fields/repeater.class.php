@@ -12,6 +12,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 	 * @var string
 	 */
 	protected $item_name;
+
 	/**
 	 * This associative array describes how the repeater may retrieve the item labels from HTML elements as they are
 	 * updated. The options are:
@@ -23,6 +24,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 	 * @var array
 	 */
 	protected $item_label;
+
 	/**
 	 * The maximum number of repeated items to display before adding a scrollbar to the repeater.
 	 *
@@ -30,6 +32,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 	 * @var int
 	 */
 	protected $scroll_count;
+
 	/**
 	 * Whether or not items may be added to or removed from this repeater by user interaction.
 	 *
@@ -38,10 +41,21 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 	 */
 	protected $readonly;
 
+	 /**
+     * The maximum number of items.
+     *
+     * @access protected
+     * @var int
+     */
+    protected $max_items;
+
 	protected function render_field( $value, $instance ) {
 		if( !isset( $this->fields ) || empty( $this->fields ) ) return;
 		$container = array( 'name' => $this->base_name, 'type' => 'repeater' );
 		$item_label = isset( $this->item_label ) ? $this->item_label : null;
+		$max_items = isset( $this->max_items ) ? $this->max_items : null;
+		$max_items_class = ! empty( $max_items ) && is_array( $value ) && count( $value ) >= $this->max_items ? 'sow-max-reached' : '';
+
 		if ( ! empty( $item_label ) ) {
 			// convert underscore naming convention to camelCase for javascript and encode as json string
 			$item_label = wp_parse_args( $item_label, array(
@@ -53,16 +67,20 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 		}
 		if( empty( $this->item_name ) ) $this->item_name = __( 'Item', 'so-widgets-bundle' );
 		?>
-		<div class="siteorigin-widget-field-repeater"
-		     data-item-name="<?php echo esc_attr( $this->item_name ) ?>"
-		     data-repeater-name="<?php echo esc_attr( $this->base_name ) ?>"
-		     data-element-name="<?php echo esc_attr( $this->element_name ) ?>"
-			<?php echo ! empty( $item_label ) ? 'data-item-label="' . esc_attr( $item_label ) . '"' : '' ?>
-			<?php echo ! empty( $this->scroll_count ) ? 'data-scroll-count="' . esc_attr( $this->scroll_count ) . '"' : '' ?>
-			<?php if( ! empty( $this->readonly ) ) echo 'readonly' ?>>
+		<div class="siteorigin-widget-field-repeater <?php echo $max_items_class; ?>"
+			data-item-name="<?php echo esc_attr( $this->item_name ); ?>"
+			data-repeater-name="<?php echo esc_attr( $this->base_name ); ?>"
+			data-element-name="<?php echo esc_attr( $this->element_name ); ?>"
+			<?php if ( ! empty( $this->max_items ) ) : ?>
+				data-max-items="<?php echo esc_attr( $this->max_items ); ?>"
+			<?php endif; ?>
+			<?php echo ! empty( $item_label ) ? 'data-item-label="' . esc_attr( $item_label ) . '"' : ''; ?>
+			<?php echo ! empty( $this->scroll_count ) ? 'data-scroll-count="' . esc_attr( $this->scroll_count ) . '"' : ''; ?>
+			<?php echo ! empty( $item_label ) ? 'data-item-label="' . esc_attr( $item_label ) . '"' : ''; ?>
+			<?php if( ! empty( $this->readonly ) ) echo 'readonly'; ?>>
 			<div class="siteorigin-widget-field-repeater-top">
 				<div class="siteorigin-widget-field-repeater-expand"></div>
-				<h3><?php echo esc_html( $this->label ) ?></h3>
+				<h3><?php echo esc_html( $this->label ); ?></h3>
 			</div>
 			<div class="siteorigin-widget-field-repeater-items">
 				<?php
@@ -76,7 +94,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 									<div class="siteorigin-widget-field-copy" tabindex="0"></div>
 									<div class="siteorigin-widget-field-remove" tabindex="0"></div>
 								<?php endif; ?>
-								<h4><?php echo esc_html( $this->item_name ) ?></h4>
+								<h4><?php echo esc_html( $this->item_name ); ?></h4>
 							</div>
 							<div class="siteorigin-widget-field-repeater-item-form">
 								<?php
@@ -90,7 +108,7 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 				?>
 			</div>
 			<?php if( empty( $this->readonly ) ) : ?>
-				<div class="siteorigin-widget-field-repeater-add" tabindex="0"><?php esc_html_e( 'Add', 'so-widgets-bundle' ) ?></div>
+				<div class="siteorigin-widget-field-repeater-add" tabindex="0"><?php esc_html_e( 'Add', 'so-widgets-bundle' ); ?></div>
 			<?php endif; ?>
 			<?php
 			ob_start();
