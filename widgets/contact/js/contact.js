@@ -61,17 +61,6 @@ sowb.SiteOriginContactForm = {
 			// Disable the submit button on click to avoid multiple submits.
 			$contactForms.on( 'submit', function() {
 				$submitButton.prop( 'disabled', true );
-				// Preserve existing anchors, if any.
-				var locationHash = window.location.hash;
-				if ( locationHash ) {
-					var formAction = $( this ).attr( 'action' );
-					
-					if ( locationHash.indexOf( formId ) > -1 ) {
-						var re = new RegExp( formId + ',?', 'g' );
-						locationHash = locationHash.replace( re, '' );
-					}
-					$( this ).attr( 'action', formAction + ',' + locationHash.replace( /^#/, '' ) );
-				}
 
 				if ( $submitButton.data( 'js-key' ) ) {
 					var js_key = $submitButton.data( 'js-key' );
