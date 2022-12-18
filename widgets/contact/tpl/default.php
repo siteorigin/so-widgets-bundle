@@ -23,7 +23,7 @@ if ( $result['status'] == 'success' ) {
 	$global_settings = $this->get_global_settings();
 	?>
 	<form
-		action="<?php echo esc_urL( add_query_arg( null, null ) ); ?>"
+		action="<?php echo esc_url( add_query_arg( null, null ) ); ?>"
 		method="POST"
 		class="sow-contact-form<?php echo ! empty( $global_settings['scrollto'] ) && ! empty( $result ) ? ' sow-contact-submitted' : ''; ?>"
 		id="contact-form-<?php echo esc_attr( $short_hash ); ?>"
