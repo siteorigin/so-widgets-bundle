@@ -1622,11 +1622,14 @@ var sowbForms = window.sowbForms || {};
 
 	// Validate widget added using Classic Widgets & Customizer
 	$( 'body' ).on( 'click', '.widget-control-save', function( e ) {
-		var $form = $( this ).parents( '.widget.open' ).find( '.widget-content' );
+		var $form = $( this ).parents( '.widget.open' );
 		if ( $form.length ) {
-			if ( ! sowbForms.validateFields( $form ) ) {
-				e.preventDefault();
-				e.stopPropagation();
+			$form = $form.find( '.widget-content' );
+			if ( $form.length ) {
+				if ( ! sowbForms.validateFields( $form ) ) {
+					e.preventDefault();
+					e.stopPropagation();
+				}
 			}
 		}
 	} );
