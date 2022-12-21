@@ -1565,7 +1565,7 @@ var sowbForms = window.sowbForms || {};
 				valid,
 				form,
 				// Widget ID.
-				form.find( '.siteorigin-widget-form' ).data( 'id-base' )
+				typeof jQuery( '.widget-content' ).data( 'test' ) !== 'undefined' ? form.find( '.siteorigin-widget-form' ).data( 'id-base' ) : ''
 			]
 		);
 
