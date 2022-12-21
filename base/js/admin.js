@@ -1638,7 +1638,7 @@ var sowbForms = window.sowbForms || {};
 	if ( typeof wp.customize != 'undefined' ) {
 		jQuery( document ).on( 'widget-added widget-updated widget-synced', function( e, widget, form = false ) {
 			if ( form.length ) {
-				sowbForms.validateFields( form )
+				sowbForms.validateFields( $( form ) )
 			}
 		} );
 	}
