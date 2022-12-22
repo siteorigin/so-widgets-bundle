@@ -1565,7 +1565,7 @@ var sowbForms = window.sowbForms || {};
 				valid,
 				form,
 				// Widget ID.
-				form.find( '.siteorigin-widget-form' ).data( 'id-base' )
+				typeof jQuery( '.widget-content' ).data( 'id-base' ) !== 'undefined' ? form.find( '.siteorigin-widget-form' ).data( 'id-base' ) : ''
 			]
 		);
 
@@ -1575,38 +1575,41 @@ var sowbForms = window.sowbForms || {};
 
 		if ( valid ) {
 			var missingRequired = false;
-			form.find( '.siteorigin-widget-field-is-required' ).each( function() {
-				var $$ = $( this );
-				var $field = $$.find( '.siteorigin-widget-input' );
+			var $so_widgets = form.find( '.siteorigin-widget-field-is-required' );
+			if ( $so_widgets.length ) {
+				form.find( '.siteorigin-widget-field-is-required' ).each( function() {
+					var $$ = $( this );
+					var $field = $$.find( '.siteorigin-widget-input' );
 
-				// Check if this field is inside of a Repeater's HTML clone field.
-				if ( $field.parents( '.siteorigin-widget-field-repeater-item-html' ).length ) {
-					return;
-				}
+					// Check if this field is inside of a Repeater's HTML clone field.
+					if ( $field.parents( '.siteorigin-widget-field-repeater-item-html' ).length ) {
+						return;
+					}
+
+					if (
+						! $field.val() ||
+						(
+							$$.hasClass( 'siteorigin-widget-field-type-checkboxes' ) &&
+							! $field.prop( 'checked' )
+						)
+					) {
+						missingRequired = true;
+						$$.addClass( 'sow-required-error' );
+					}
+						$field.on( 'change', function( e ) {
+							$$.removeClass( 'sow-required-error' );
+						} )
+				} );
 
 				if (
-					! $field.val() ||
+					missingRequired &&
 					(
-						$$.hasClass( 'siteorigin-widget-field-type-checkboxes' ) &&
-						! $field.prop( 'checked' )
+						! showPrompt ||
+						! confirm( soWidgets.missing_required )
 					)
 				) {
-					missingRequired = true;
-					$$.addClass( 'sow-required-error' );
+						valid = false;
 				}
-					$field.on( 'change', function( e ) {
-						$$.removeClass( 'sow-required-error' );
-					} )
-			} );
-
-			if (
-				missingRequired &&
-				(
-					! showPrompt ||
-					! confirm( soWidgets.missing_required )
-				)
-			) {
-					valid = false;
 			}
 		}
 
@@ -1622,11 +1625,14 @@ var sowbForms = window.sowbForms || {};
 
 	// Validate widget added using Classic Widgets & Customizer
 	$( 'body' ).on( 'click', '.widget-control-save', function( e ) {
-		var $form = $( this ).parents( '.widget.open' ).find( '.widget-content' );
+		var $form = $( this ).parents( '.widget.open' );
 		if ( $form.length ) {
-			if ( ! sowbForms.validateFields( $form ) ) {
-				e.preventDefault();
-				e.stopPropagation();
+			$form = $form.find( '.widget-content' );
+			if ( $form.length ) {
+				if ( ! sowbForms.validateFields( $form ) ) {
+					e.preventDefault();
+					e.stopPropagation();
+				}
 			}
 		}
 	} );
@@ -1635,7 +1641,7 @@ var sowbForms = window.sowbForms || {};
 	if ( typeof wp.customize != 'undefined' ) {
 		jQuery( document ).on( 'widget-added widget-updated widget-synced', function( e, widget, form = false ) {
 			if ( form.length ) {
-				sowbForms.validateFields( form )
+				sowbForms.validateFields( $( form ) )
 			}
 		} );
 	}
