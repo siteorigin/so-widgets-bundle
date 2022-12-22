@@ -169,18 +169,18 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 		}
 
 		$less_vars = array(
-			'border_color' => $instance['design']['colors']['border_color'],
-			'background_color' => $instance['design']['colors']['background_color'],
-			'title_color' => $instance['design']['colors']['title_color'],
-			'subtitle_color' => $instance['design']['colors']['subtitle_color'],
-			'button_align' => $instance['design']['layout']['desktop'],
+			'border_color' => ! empty( $instance['design']['colors']['border_color'] ) ? $instance['design']['colors']['border_color'] : '',
+			'background_color' => ! empty( $instance['design']['colors']['background_color'] ) ? $instance['design']['colors']['background_color'] : '',
+			'title_color' => ! empty( $instance['design']['colors']['title_color'] ) ? $instance['design']['colors']['title_color'] : '',
+			'subtitle_color' => ! empty( $instance['design']['colors']['subtitle_color'] ) ? $instance['design']['colors']['subtitle_color'] : '',
+			'button_align' => ! empty( $instance['design']['layout']['desktop'] ) ? $instance['design']['layout']['desktop'] : '',
+			'mobile_button_align' => ! empty( $instance['design']['layout']['mobile'] ) ? $instance['design']['layout']['mobile'] : '',
 		);
 
 		$global_settings = $this->get_global_settings();
 		if ( ! empty( $global_settings['responsive_breakpoint'] ) ) {
 			$less_vars['responsive_breakpoint'] = ! empty( $global_settings['responsive_breakpoint'] ) ? $global_settings['responsive_breakpoint'] : '780px';
 		}
-		$less_vars['mobile_button_align'] = ! empty( $instance['design']['layout']['mobile'] ) ? $instance['design']['layout']['mobile'] : '';
 
 		return $less_vars;
 	}
