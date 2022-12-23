@@ -106,6 +106,16 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.46.0 - 23 December 2022 =
+* Call To Action: Resolved potential notice.
+* Contact Form: Added `Plugins > SiteOrigin Widgets > Contact Form: Scroll Top` setting and `siteorigin_widgets_contact_scrollto_offset` filter.
+* Contact Form: Resolved potential Google reCAPTCHA notice.
+* Hero: Added Content `Automatically add paragraphs` setting.
+* PHP 8 notice fixes.
+* Customizer: New widget area `TypeError` fix.
+* Removed `@font-face` query strings.
+* Developer: Optionally allow repeater maximum number of items to be set.
+
 = 1.45.0 - 07 December 2022 =
 * Call To Action: Added `Mobile Button Align` setting.
 * PHP 8.1: Resolved form field deprecated notices.
