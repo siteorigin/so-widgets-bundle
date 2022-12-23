@@ -367,6 +367,20 @@ div.siteorigin-widget-form {
 				}
 			}
 
+			/* Max items */
+			.siteorigin-widget-field-copy,
+			.siteorigin-widget-field-repeater-add {
+				transition: opacity 300ms ease-in-out;
+			}
+
+			.sow-max-reached {
+				.siteorigin-widget-field-copy,
+				.siteorigin-widget-field-repeater-add {
+					opacity: 0.25;
+					cursor: not-allowed;
+				}
+			}
+
 			/* This is for sub level forms */
 
 			.siteorigin-widget-field-repeater {

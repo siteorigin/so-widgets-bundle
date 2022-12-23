@@ -1458,7 +1458,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				array(
 					'body' => array(
 						'secret'   => $instance['spam']['recaptcha']['use_captcha'] == 'v2' ? $instance['spam']['recaptcha']['secret_key'] : $instance['spam']['recaptcha']['secret_key_v3'],
-						'response' => $post_vars['g-recaptcha-response'],
+						'response' => isset( $post_vars['g-recaptcha-response'] ) ? $post_vars['g-recaptcha-response'] : '',
 						'remoteip' => isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : null,
 					)
 				)

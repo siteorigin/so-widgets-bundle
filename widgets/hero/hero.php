@@ -73,6 +73,12 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 						'label' => __( 'Content', 'so-widgets-bundle' ),
 					),
 
+					'autop' => array(
+						'type' => 'checkbox',
+						'default' => false,
+						'label' => __( 'Automatically add paragraphs', 'so-widgets-bundle' ),
+					),
+
 					'buttons' => array(
 						'type' => 'repeater',
 						'label' => __('Buttons', 'so-widgets-bundle'),
@@ -387,7 +393,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	 * @param $i
 	 * @param $frame
 	 */
-	function render_frame_contents($i, $frame) {
+	function render_frame_contents( $i, $frame ) {
 		?>
 		<div class="sow-slider-image-container">
 			<div class="sow-slider-image-wrapper">
@@ -407,14 +413,20 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	 */
 	function process_content( $content, $frame ) {
 
-		$content = wp_kses_post($content);
+		$content = wp_kses_post( $content );
+
+		if ( ! empty( $frame['autop'] ) ) {
+			$content = wpautop( $content );
+		}
+
 		if ( strpos( $content, '[buttons]' ) !== false ) {
 			// Replace [buttons] with button wrapper.
-			$content = preg_replace('/(?:<(?:p|h\d|em|strong|li|blockquote) *([^>]*)> *)?\[ *buttons *\](:? *<\/(?:p|h\d|em|strong|li|blockquote)>)?/i', '<div class="sow-hero-buttons" $1>[SiteOriginHeroButton]</div>', $content );
+			$content = preg_replace( '/(?:<(?:p|h\d|em|strong|li|blockquote) *([^>]*)> *)?\[ *buttons *\](:? *<\/(?:p|h\d|em|strong|li|blockquote)>)?/i', '<div class="sow-hero-buttons" $1>[SiteOriginHeroButton]</div>', $content );
 
+			$button_code = '';
 			// Generate buttons.
 			foreach( $frame['buttons'] as $button ) {
-				$button_code .= $this->sub_widget('SiteOrigin_Widget_Button_Widget', array(), $button['button'], true);
+				$button_code .= $this->sub_widget( 'SiteOrigin_Widget_Button_Widget', array(), $button['button'], true );
 			}
 
 			// Add buttons to wrapper.
