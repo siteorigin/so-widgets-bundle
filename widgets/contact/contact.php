@@ -1397,6 +1397,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 		}
 
+		$errors = apply_filters( 'siteorigin_widgets_contact_validation', $errors, $post_vars, $email_fields, $instance );
+
 		if ( empty( $errors ) ) {
 			// We can send the email
 			$success = $this->send_mail( $email_fields, $instance );
