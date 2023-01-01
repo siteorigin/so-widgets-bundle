@@ -94,7 +94,10 @@
 			}
 
 			function generateWidgetPreview( widgetData = false) {
-				if ( typeof wp.data.dispatch( 'core/editor' ) == 'object' ) {
+				if (
+					typeof wp.data.select( 'core/editor' ) == 'object' &&
+					typeof wp.data.dispatch( 'core/editor' ) == 'object'
+				) {
 					wp.data.dispatch( 'core/editor' ).lockPostSaving();
 				}
 
@@ -119,7 +122,11 @@
 						widgetHtml: widgetPreview.html,
 						widgetIcons: widgetPreview.icons
 					} );
-					if ( typeof wp.data.dispatch( 'core/editor' ) == 'object' ) {
+
+					if (
+						typeof wp.data.select( 'core/editor' ) == 'object' &&
+						typeof wp.data.dispatch( 'core/editor' ) == 'object'
+					) {
 						wp.data.dispatch( 'core/editor' ).unlockPostSaving();
 					}
 				} )
