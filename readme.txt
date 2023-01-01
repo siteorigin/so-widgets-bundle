@@ -106,6 +106,10 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.46.1 - 01 January 2023 =
+* Contact Form: Added `siteorigin_widgets_contact_validation` filter.
+* Widgets Block Editor: Resolve potential TinyMCE related errors.
+
 = 1.46.0 - 23 December 2022 =
 * Call To Action: Resolved potential notice.
 * Contact Form: Added `Plugins > SiteOrigin Widgets > Contact Form: Scroll Top` setting and `siteorigin_widgets_contact_scrollto_offset` filter.
