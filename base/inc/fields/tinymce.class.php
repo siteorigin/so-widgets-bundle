@@ -518,8 +518,12 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			wp_enqueue_editor();
 			$src = plugin_dir_url( __FILE__ ) . 'js/tinymce-field' . SOW_BUNDLE_JS_SUFFIX . '.js';
 			$deps = array( 'jquery' );
+
+			// Ensure the editor buttons CSS has loaded.
+			// This is required for the new widget area, but in general, we want to ensure it's loaded.
+			wp_enqueue_style( 'editor-buttons' );
 		}
-		
+
 		wp_enqueue_script( 'so-tinymce-field', $src, $deps, SOW_BUNDLE_VERSION );
 		wp_enqueue_style(
 			'so-tinymce-field', plugin_dir_url( __FILE__ ) . 'css/tinymce-field.css', array(), SOW_BUNDLE_VERSION
