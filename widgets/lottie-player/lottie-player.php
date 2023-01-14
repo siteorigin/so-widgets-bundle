@@ -48,6 +48,7 @@ class SiteOrigin_Widget_Lottie_Player_Widget extends SiteOrigin_Widget {
 			'file' => array(
 				'type' => 'media',
 				'label' => __( 'Lottie File', 'so-widgets-bundle' ),
+				'library' => 'application',
 			),
 
 			'autoplay' => array(
