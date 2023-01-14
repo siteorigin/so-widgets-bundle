@@ -26,7 +26,13 @@ class SiteOrigin_Widget_Field_Color extends SiteOrigin_Widget_Field_Text_Input_B
 			$data_attributes['default-color'] = $this->default;
 		}
 
-		if ( isset( $this->palettes ) ) {
+		// Allow developers to add custom colors using a filter, and field options.
+		$this->palettes = array_merge(
+			apply_filters( 'siteorigin_widget_color_palette', array() ),
+			! empty( $this->palettes ) ? $this->palettes : array()
+		);
+
+		if ( ! empty( $this->palettes ) ) {
 			if ( ! empty( $this->palettes ) && is_array( $this->palettes ) ) {
 				$valid_palette = array();
 				$valid_palette = array_filter( $this->palettes, 'sanitize_hex_color' );
