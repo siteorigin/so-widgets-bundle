@@ -106,6 +106,10 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.46.2 - 14 January 2023 =
+* Color Form Field: Added `siteorigin_widget_color_palette` filter.
+* Lottie Player: Filtered new media uploads for application files.
+
 = 1.46.1 - 01 January 2023 =
 * Contact Form: Added `siteorigin_widgets_contact_validation` filter.
 * Widgets Block Editor: Resolve potential TinyMCE related errors.
