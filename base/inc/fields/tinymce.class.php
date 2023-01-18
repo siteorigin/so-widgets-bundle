@@ -362,7 +362,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			}
 			
 
-			$mce_external_plugins = apply_filters( 'mce_external_plugins', $this->mce_external_plugins );
+			$mce_external_plugins = apply_filters( 'mce_external_plugins', $this->mce_external_plugins, $this->element_id );
 			$tmce_settings['external_plugins'] = ! empty( $mce_external_plugins ) && is_array( $mce_external_plugins ) ? array_unique( $mce_external_plugins ) : array();
 			
 			$suffix = SCRIPT_DEBUG ? '' : '.min';
