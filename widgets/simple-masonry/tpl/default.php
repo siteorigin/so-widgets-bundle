@@ -46,6 +46,7 @@
 				<?php endif; ?>
 
 				<?php
+				$loading_val = function_exists( 'wp_get_loading_attr_default' ) ? wp_get_loading_attr_default( 'the_content' ) : 'lazy';
 				echo siteorigin_widgets_get_attachment_image(
 					$item['image'],
 					'full',
@@ -53,7 +54,7 @@
 					array(
 						'title' => esc_attr( $title ),
 						'class' => 'sow-masonry-grid-image',
-						'loading' => $preloader_enabled ? false : wp_get_loading_attr_default( 'the_content' )
+						'loading' => $preloader_enabled ? false : $loading_val,
 					)
 				);
 				?>
