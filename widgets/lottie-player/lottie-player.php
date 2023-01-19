@@ -29,7 +29,7 @@ class SiteOrigin_Widget_Lottie_Player_Widget extends SiteOrigin_Widget {
 					'sow-lottie-player',
 					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/lottie-player' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery', 'dessandro-imagesLoaded', 'dessandro-packery' ),
-					'1.3.1'
+					'1.6.1'
 				),
 			)
 		);
