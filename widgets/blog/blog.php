@@ -92,11 +92,22 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'type' => 'checkbox',
 							'label' => __( 'Featured Image', 'so-widgets-bundle' ),
 							'default' => true,
+							'state_emitter' => array(
+								'callback' => 'conditional',
+								'args' => array(
+									'featured_image[show]: val',
+									'featured_image[hide]: ! val',
+								),
+							),
 						),
 						'featured_image_size' => array(
 							'type' => 'image-size',
 							'label' => __( 'Featured Image Size', 'siteorigin-premium' ),
 							'custom_size' => true,
+							'state_handler' => array(
+								'featured_image[show]' => array( 'show' ),
+								'featured_image[hide]' => array( 'hide' ),
+							),
 						),
 						'content' => array(
 							'type' => 'select',
