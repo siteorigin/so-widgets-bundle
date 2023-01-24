@@ -106,6 +106,10 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.46.3 - 23 January 2023 =
+* Simple Masonry: Resolved pre-WordPress 5.9 error.
+* Resolved potential `mce_external_plugins` missing `editor_id` error.
+
 = 1.46.2 - 14 January 2023 =
 * Color Form Field: Added `siteorigin_widget_color_palette` filter.
 * Lottie Player: Filtered new media uploads for application files.
