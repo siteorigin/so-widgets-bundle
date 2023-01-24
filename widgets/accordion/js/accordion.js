@@ -38,7 +38,10 @@ jQuery( function ( $ ) {
 						start: function () {
 							// Sometimes the content of the panel relies on a window resize to setup correctly.
 							// Trigger it here so it's hopefully done before the animation.
-							$( window ).trigger( 'resize' );
+							if ( sowAccordion.scrollto_after_change ) {
+								// It's possible a resize may result in a scroll so we put it behind a check.
+								$( window ).trigger( 'resize' );
+							}
 							$( sowb ).trigger( 'setup_widgets' );
 						},
 						complete: function() {
