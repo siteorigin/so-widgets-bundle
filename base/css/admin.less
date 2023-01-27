@@ -234,75 +234,75 @@ div.siteorigin-widget-form {
 					margin: 0;
 					padding: 0 !important;
 				}
-			}
 
-			.siteorigin-widget-field-expand,
-			.siteorigin-widget-field-copy,
-			.siteorigin-widget-field-remove {
-				width: 14px;
-				height: 14px;
-				position: absolute;
-				top: 50%;
-				margin-top: -7px;
-				cursor: pointer;
-				font-size: 14px;
-				line-height: 14px;
-				text-align: center;
-
-				&:before {
-					font-family: dashicons;
-					color: #999999;
-				}
-
-			}
-
-			.siteorigin-widget-field-expand {
-				right: 48px;
-
-				&:before {
-					content: "\f140";
-				}
-
-				&:focus,
-				&:hover {
-					//background: #989fa5;
+				.siteorigin-widget-field-expand,
+				.siteorigin-widget-field-copy,
+				.siteorigin-widget-field-remove {
+					width: 14px;
+					height: 14px;
+					position: absolute;
+					top: 50%;
+					margin-top: -7px;
+					cursor: pointer;
+					font-size: 14px;
+					line-height: 14px;
+					text-align: center;
 
 					&:before {
-						color: #50575D;
+						font-family: dashicons;
+						color: #999999;
+					}
+
+				}
+
+				.siteorigin-widget-field-expand {
+					right: 48px;
+
+					&:before {
+						content: "\f140";
+					}
+
+					&:focus,
+					&:hover {
+						//background: #989fa5;
+
+						&:before {
+							color: #50575D;
+						}
 					}
 				}
-			}
 
-			.siteorigin-widget-field-copy {
-				right: 28px;
-
-				&:before {
-					content: "\f105";
-				}
-
-				&:focus,
-				&:hover {
-					//background: #989fa5;
+				.siteorigin-widget-field-copy {
+					right: 28px;
 
 					&:before {
-						color: #50575D;
+						content: "\f105";
+					}
+
+					&:focus,
+					&:hover {
+						//background: #989fa5;
+
+						&:before {
+							color: #50575D;
+						}
 					}
 				}
-			}
 
-			.siteorigin-widget-field-remove {
-				right: 12px;
-
-				&:before {
-					content: '\f158';
-				}
-
-				&:focus,
-				&:hover {
-					background: #ff0000;
+				.siteorigin-widget-field-remove {
+					right: 12px;
 
 					&:before {
-						color: #FFFFFF;
+						content: '\f158';
+					}
+
+					&:focus,
+					&:hover {
+						background: #ff0000;
+
+						&:before {
+							color: #FFFFFF;
+						}
 					}
 				}
 			}
@@ -368,12 +368,14 @@ div.siteorigin-widget-form {
 			}
 
 			/* Max items */
-			.siteorigin-widget-field-copy,
-			.siteorigin-widget-field-repeater-add {
-				transition: opacity 300ms ease-in-out;
+			.siteorigin-widget-field-repeater-item-top  {
+				.siteorigin-widget-field-copy,
+				.siteorigin-widget-field-repeater-add {
+					transition: opacity 300ms ease-in-out;
+				}
 			}
 
-			.sow-max-reached {
+			.sow-max-reached .siteorigin-widget-field-repeater-item-top {
 				.siteorigin-widget-field-copy,
 				.siteorigin-widget-field-repeater-add {
 					opacity: 0.25;
