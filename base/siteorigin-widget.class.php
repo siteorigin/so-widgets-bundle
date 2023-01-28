@@ -185,8 +185,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// Add any missing default values to the instance
 		$instance = $this->add_defaults( $form_options, $instance );
 
-		$css_name = $this->generate_and_enqueue_instance_styles( $instance );
-		$this->enqueue_frontend_scripts( $instance );
+		if ( empty( $GLOBALS[ 'SITEORIGIN_PANELS_PREVIEW_RENDER' ] ) ) {
+			$css_name = $this->generate_and_enqueue_instance_styles( $instance );
+			$this->enqueue_frontend_scripts( $instance );
+		} else {
+			$css_name = 'panels-preview';
+		}
 
 		$template_vars = $this->get_template_variables($instance, $args);
 		$template_vars = apply_filters( 'siteorigin_widgets_template_variables_' . $this->id_base, $template_vars, $instance, $args, $this );
