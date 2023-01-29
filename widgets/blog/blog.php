@@ -918,7 +918,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			siteorigin_widget_post_selector_process_query( $instance['posts'] )
 		);
 
-		if ( $instance['template'] == 'portfolio' ) {
+		if ( $instance['template'] == 'portfolio' && ! empty( $instance['featured_image_fallback'] ) ) {
 			// The portfolio template relies on each post having an image so exclude any posts that don't.
 			$query['meta_query'] = array(
 				array(
