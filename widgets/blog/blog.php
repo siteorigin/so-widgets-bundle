@@ -1024,7 +1024,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 	static public function post_featured_image( $settings, $categories = false, $size = 'full' ) {
 		if ( $settings['featured_image'] ) {
-			if ( ! has_post_thumbnail() ) {
+			if ( ! has_post_thumbnail() && ! empty( $settings['featured_image_fallback'] ) ) {
 				$featured_image = apply_filters( 'siteorigin_widgets_blog_featured_image_fallback', false, $settings );
 			}
 			if ( has_post_thumbnail() || ! empty( $featured_image ) ) :
