@@ -10,14 +10,12 @@ jQuery( function ( $ ) {
 				$buttons = $$.find( '.sow-portfolio-filter-terms button' ),
 				$container = $$.find( '.sow-blog-posts' );
 
-			if ( $buttons.length ) {
-				$container.isotope( {
-					itemSelector: '.sow-portfolio-item',
-					filter: '*',
-					layoutMode: 'fitRows',
-					resizable: true,
-				} );
-			}
+			$container.isotope( {
+				itemSelector: '.sow-portfolio-item',
+				filter: '*',
+				layoutMode: 'fitRows',
+				resizable: true,
+			} );
 
 			$buttons.on( 'click', function() {
 				var selector = $( this ).attr( 'data-filter' );
