@@ -1,4 +1,4 @@
-@container_background: default;
+@box_background: default;
 
 // bio.
 @name_font: default;
@@ -18,13 +18,13 @@
 @bio_link_hover: default;
 
 .sow-author-box {
-	background: @container_background;
+	background: @box_background;
 	display: flex;
 	gap: 30px;
 	margin: 20px 0;
 	padding: 20px;
 
-	.sow-author-title {
+	&-title {
 		font-family: @name_font;
 		font-size: @name_font_size;
 		font-style: @name_font_style;
@@ -41,7 +41,7 @@
 			}	
 		}
 
-		.sow-author-info a {
+		.sow-author-box-info a:last-of-type {
 			font-size: 12px;
 			text-decoration: none;
 			padding: 0 5px;
@@ -50,7 +50,7 @@
 
 	}
 
-	.sow-author-bio {
+	^-bio {
 		color: @bio_color;
 		font-family: @bio_font;
 		font-size: @bio_font_size;

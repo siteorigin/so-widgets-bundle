@@ -1,20 +1,20 @@
 <?php
 /*
-Widget Name: Avatar
+Widget Name: Author Box
 Description: Placeholder.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
-Documentation: https://siteorigin.com/widgets-bundle/avatar-widget/
+Documentation: https://siteorigin.com/widgets-bundle/author-box-widget/
 */
 
-class SiteOrigin_Widget_Avatar_Widget extends SiteOrigin_Widget {
+class SiteOrigin_Widget_Author_Box_Widget extends SiteOrigin_Widget {
 public function __construct() {
 		parent::__construct(
-			'sow-avatar',
-			__( 'SiteOrigin Avatar', 'so-widgets-bundle' ),
+			'sow-author-box',
+			__( 'SiteOrigin Author Box', 'so-widgets-bundle' ),
 			array(
 				'description' => __( 'Placeholder', 'so-widgets-bundle' ),
-				'help' => 'https://siteorigin.com/widgets-bundle/avatar-widget/',
+				'help' => 'https://siteorigin.com/widgets-bundle/author-box-widget/',
 			),
 			array(),
 			false,
@@ -54,9 +54,9 @@ public function __construct() {
 				'label' => __( 'Design', 'so-widgets-bundle' ),
 				'hide' => true,
 				'fields' => array(
-					'container' => array(
+					'box' => array(
 						'type' => 'section',
-						'label' => __( 'Container', 'so-widgets-bundle' ),
+						'label' => __( 'Box Background', 'so-widgets-bundle' ),
 						'hide' => true,
 						'fields' => array(
 							'background_color' => array(
@@ -147,11 +147,11 @@ public function __construct() {
 
 		$less_vars = array();
 
-		$color = ! empty( $instance['design']['container']['background_color'] ) ? $instance['design']['container']['background_color'] : '#000';
+		$color = ! empty( $instance['design']['box']['background_color'] ) ? $instance['design']['box']['background_color'] : '#000';
 		$rgb = ltrim( $color, '#' );
 		$rgb = array_map( 'hexdec', str_split( $rgb, strlen( $rgb ) == 6 ? 2 : 1 ) );
-		$opacity = ! empty( $instance['design']['container']['background_opacity'] ) ? $instance['design']['container']['background_opacity'] : 0.05;
-		$less_vars['container_background'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
+		$opacity = ! empty( $instance['design']['box']['background_opacity'] ) ? $instance['design']['box']['background_opacity'] : 0.05;
+		$less_vars['box_background'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
 
 		if ( ! empty( $instance['design']['name']['font'] ) ) {
 			$font = siteorigin_widget_get_font( $instance['design']['name']['font'] );
@@ -198,4 +198,4 @@ public function __construct() {
 	}
 }
 
-siteorigin_widget_register( 'sow-avatar', __FILE__, 'SiteOrigin_Widget_Avatar_Widget' );
+siteorigin_widget_register( 'sow-author-box', __FILE__, 'SiteOrigin_Widget_Author_Box_Widget' );
