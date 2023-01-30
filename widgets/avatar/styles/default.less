@@ -1,0 +1,68 @@
+@container_background: default;
+
+// bio.
+@name_font: default;
+@name_font_size: default;
+@name_font_style: default;
+@name_font_weight: default;
+@name_color: default;
+@name_color_hover: default;
+
+// bio.
+@bio_color: default;
+@bio_font: default;
+@bio_font_style: default;
+@bio_font_size: default;
+@bio_font_weight: default;
+@bio_link: default;
+@bio_link_hover: default;
+
+.sow-author-box {
+	background: @container_background;
+	display: flex;
+	gap: 30px;
+	margin: 20px 0;
+	padding: 20px;
+
+	.sow-author-title {
+		font-family: @name_font;
+		font-size: @name_font_size;
+		font-style: @name_font_style;
+		font-weight: @name_font_weight;
+		margin-top: 0;
+		line-height: 1;
+
+		&,
+		a {
+			color: @name_color;
+			&:hover,
+			&:focus {
+				color: @name_color_hover;
+			}	
+		}
+
+		.sow-author-info a {
+			font-size: 12px;
+			text-decoration: none;
+			padding: 0 5px;
+			font-weight: 700;
+		}
+
+	}
+
+	.sow-author-bio {
+		color: @bio_color;
+		font-family: @bio_font;
+		font-size: @bio_font_size;
+		font-style: @bio_font_style;
+		font-weight: @bio_font_weight;
+
+		a {
+			color: @bio_link;
+			&:hover,
+			&:focus {
+				color: @bio_link_hover;
+			}
+		}
+	}
+}
