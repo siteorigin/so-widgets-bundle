@@ -27,7 +27,7 @@ public function __construct() {
 			'avatar' => array(
 				'type' => 'checkbox',
 				'default' => true,
-				'label' => __( 'Show Author Avatar', 'so-widgets-bundle' ),
+				'label' => __( 'Author Avatar', 'so-widgets-bundle' ),
 			),
 			'link_avatar' => array(
 				'type' => 'checkbox',
