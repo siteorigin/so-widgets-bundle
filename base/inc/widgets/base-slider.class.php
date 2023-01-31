@@ -469,7 +469,8 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 
 		$wrapper_attributes = array(
 			'class' => array( 'sow-slider-image' ),
-			'style' => array(),
+			// Prevent potentially showing all slides on load if the slide is transparent, and an animation is set.
+			'style' => array( 'visibility: ' . ( $i === 0 ? 'visible': 'hidden' ) . ';' ),
 		);
 
 		if( !empty($background['color']) ) {
