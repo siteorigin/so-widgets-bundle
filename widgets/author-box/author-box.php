@@ -54,9 +54,9 @@ public function __construct() {
 				'label' => __( 'Design', 'so-widgets-bundle' ),
 				'hide' => true,
 				'fields' => array(
-					'box' => array(
+					'container' => array(
 						'type' => 'section',
-						'label' => __( 'Box Background', 'so-widgets-bundle' ),
+						'label' => __( 'Container', 'so-widgets-bundle' ),
 						'hide' => true,
 						'fields' => array(
 							'background_color' => array(
@@ -147,10 +147,10 @@ public function __construct() {
 
 		$less_vars = array();
 
-		$color = ! empty( $instance['design']['box']['background_color'] ) ? $instance['design']['box']['background_color'] : '#000';
+		$color = ! empty( $instance['design']['container']['background_color'] ) ? $instance['design']['container']['background_color'] : '#000';
 		$rgb = ltrim( $color, '#' );
 		$rgb = array_map( 'hexdec', str_split( $rgb, strlen( $rgb ) == 6 ? 2 : 1 ) );
-		$opacity = ! empty( $instance['design']['box']['background_opacity'] ) ? $instance['design']['box']['background_opacity'] : 0.05;
+		$opacity = ! empty( $instance['design']['container']['background_opacity'] ) ? $instance['design']['container']['background_opacity'] : 0.05;
 		$less_vars['box_background'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
 
 		if ( ! empty( $instance['design']['name']['font'] ) ) {
