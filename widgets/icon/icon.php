@@ -66,7 +66,7 @@ class SiteOrigin_Widget_Icon_Widget extends SiteOrigin_Widget {
 			'title' => array(
 				'type'  => 'text',
 				'label' => __( 'Title', 'so-widgets-bundle' ),
-				'description' => __( ' Tooltip text to be shown when hovering over the icon.', 'so-widgets-bundle' ),
+				'description' => __( 'Tooltip text to be shown when hovering over the icon.', 'so-widgets-bundle' ),
 			),
 		);
 	}
