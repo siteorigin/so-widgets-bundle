@@ -114,7 +114,7 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 * Removed unintentional widget asset enqueue in the Classic Editor.
 * Widget Block: Resolved Customizer `ReferenceError`.
 * Autoptimize: Avoided using strpos with empty string in `include_widgets_css_in_autoptimize`.
-* Developer: Update to prevent naming conflicts with repeater actions. 
+* Developer: Updated repeater actions to prevent naming conflicts. 
 
 = 1.46.3 - 23 January 2023 =
 * Simple Masonry: Resolved pre-WordPress 5.9 error.
