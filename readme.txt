@@ -106,6 +106,9 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.46.5 - 03 February 2023 =
+* Repeaters: Restored action icons.
+
 = 1.46.4 - 02 February 2023 =
 * Accordion and Tabs: Prevented unexpected scroll.
 * Blog: Removed Portfolio `Filter Category` setting requirement.
