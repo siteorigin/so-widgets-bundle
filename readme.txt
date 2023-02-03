@@ -106,6 +106,9 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.46.5 - 03 February 2023 =
+* Repeaters: Restored action icons.
+
 = 1.46.4 - 02 February 2023 =
 * Accordion and Tabs: Prevented unexpected scroll.
 * Blog: Removed Portfolio `Filter Category` setting requirement.
@@ -114,7 +117,7 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 * Removed unintentional widget asset enqueue in the Classic Editor.
 * Widget Block: Resolved Customizer `ReferenceError`.
 * Autoptimize: Avoided using strpos with empty string in `include_widgets_css_in_autoptimize`.
-* Developer: Update to prevent naming conflicts with repeater actions. 
+* Developer: Updated repeater actions to prevent naming conflicts. 
 
 = 1.46.3 - 23 January 2023 =
 * Simple Masonry: Resolved pre-WordPress 5.9 error.
