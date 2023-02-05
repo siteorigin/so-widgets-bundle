@@ -1,3 +1,4 @@
+@responsive_breakpoint: 780px;
 @box_background: default;
 
 // bio.
@@ -19,10 +20,21 @@
 
 .sow-author-box {
 	background: @box_background;
-	display: flex;
-	gap: 30px;
 	margin: 20px 0;
 	padding: 20px;
+
+	@media (min-width: @responsive_breakpoint) {
+		display: flex;
+		gap: 30px;
+
+		.sow-author-box-avatar {
+			text-align: center;
+		}
+	}
+
+	@media (max-width: @responsive_breakpoint) {
+		text-align: center;
+	}
 
 	&-title {
 		font-family: @name_font;
@@ -46,6 +58,11 @@
 			text-decoration: none;
 			padding: 0 5px;
 			font-weight: 700;
+
+			@media (max-width: @responsive_breakpoint) {
+				display: block;
+				margin-top: 1em;
+			}
 		}
 
 	}

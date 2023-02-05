@@ -22,6 +22,17 @@ public function __construct() {
 		);
 	}
 
+	function get_settings_form() {
+		return array(
+			'responsive_breakpoint' => array(
+				'type'        => 'measurement',
+				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
+				'default'     => '780px',
+				'description' => __( 'Device width, in pixels, to collapse into a mobile view.', 'so-widgets-bundle' )
+			)
+		);
+	}
+
 	public function get_widget_form() {
 		return array(
 			'avatar' => array(
@@ -132,6 +143,7 @@ public function __construct() {
 
 	public function get_template_variables( $instance, $args ) {
 		return array(
+			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 			'show_avatar' => ! empty( $instance['avatar'] ),
 			'link_avatar' => ! empty( $instance['link_avatar'] ),
 			'link_name' => ! empty( $instance['link_name'] ),
