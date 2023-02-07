@@ -24,7 +24,7 @@
 .siteorigin-widget-form-notification {
 	padding: 8px 12px;
 	border: 1px solid #a4cadd;
-	background-color: #CDE2EC;
+	background-color: #cde2ec;
 	margin-bottom: 20px;
 
 	> span {
@@ -96,7 +96,7 @@ div.siteorigin-widget-form {
 
 		&.siteorigin-widget-field-is-required {
 			.field-required {
-				color: #F02311;
+				color: #f02311;
 				font-size: 1.2em;
 				font-style: italic;
 				font-weight: normal;
@@ -127,7 +127,7 @@ div.siteorigin-widget-form {
 				}
 
 				.siteorigin-widget-input {
-					border-color: #F02311;
+					border-color: #f02311;
 				}
 			}
 		}
@@ -168,9 +168,9 @@ div.siteorigin-widget-form {
 
 			.siteorigin-widget-slider-wrapper {
 				margin: 10px 0;
-				border: 1px solid #E0E0E0;
+				border: 1px solid #e0e0e0;
 				padding: 12px 15px;
-				background: #F4F4F4;
+				background: #f4f4f4;
 				.rounded(4px);
 				max-width: 500px;
 				display: block;
@@ -181,9 +181,9 @@ div.siteorigin-widget-form {
 				display: block;
 				float: left;
 				margin-top: 0;
-				border: 1px solid #E0E0E0;
+				border: 1px solid #e0e0e0;
 				padding: 11px 0;
-				background: #F4F4F4;
+				background: #f4f4f4;
 				font-weight: bold;
 				color: #666;
 				width: 45px;
@@ -193,7 +193,7 @@ div.siteorigin-widget-form {
 			.siteorigin-widget-value-slider {
 				position: relative;
 				height: 5px;
-				background: #A0A0A0;
+				background: #a0a0a0;
 				.box-shadow(~"inset 0 1px 2px rgba(0,0,0,0.25)");
 				.rounded(4px);
 			}
@@ -208,11 +208,11 @@ div.siteorigin-widget-form {
 				height: 18px;
 				margin-top: -7px;
 				margin-left: -9px;
-				background: #F9F9F9;
+				background: #f9f9f9;
 				.rounded(10px);
 				top: 0;
 				left: 0;
-				.box-shadow(~"inset 0 1px 0 #FFFFFF, 0 1px 1px rgba(0,0,0,0.1)");
+				.box-shadow(~"inset 0 1px 0 #ffffff, 0 1px 1px rgba(0,0,0,0.1)");
 			}
 
 			input[type="number"] {
@@ -224,8 +224,8 @@ div.siteorigin-widget-form {
 		&.siteorigin-widget-field-type-repeater {
 
 			.siteorigin-widget-field-repeater-top {
-				background: #F0F0F0;
-				border: 1px solid #D0D0D0;
+				background: #f0f0f0;
+				border: 1px solid #d0d0d0;
 				padding: 10px;
 				position: relative;
 
@@ -236,96 +236,97 @@ div.siteorigin-widget-form {
 				}
 			}
 
-			.siteorigin-widget-field-expand,
-			.siteorigin-widget-field-copy,
-			.siteorigin-widget-field-remove {
-				width: 14px;
-				height: 14px;
-				position: absolute;
-				top: 50%;
-				margin-top: -7px;
-				cursor: pointer;
-				font-size: 14px;
-				line-height: 14px;
-				text-align: center;
+			.siteorigin-widget-field-repeater-item-top {
 
-				&:before {
-					font-family: dashicons;
-					color: #999999;
-				}
-
-			}
-
-			.siteorigin-widget-field-expand {
-				right: 48px;
-
-				&:before {
-					content: "\f140";
-				}
-
-				&:focus,
-				&:hover {
-					//background: #989fa5;
+				.siteorigin-widget-field-expand,
+				.siteorigin-widget-field-copy,
+				.siteorigin-widget-field-remove {
+					width: 14px;
+					height: 14px;
+					position: absolute;
+					top: 50%;
+					margin-top: -7px;
+					cursor: pointer;
+					font-size: 14px;
+					line-height: 14px;
+					text-align: center;
 
 					&:before {
-						color: #50575D;
+						font-family: dashicons;
+						color: #999999;
+					}
+
+				}
+
+				.siteorigin-widget-field-expand {
+					right: 48px;
+
+					&:before {
+						content: "\f140";
+					}
+
+					&:focus,
+					&:hover {
+
+						&:before {
+							color: #50575d;
+						}
 					}
 				}
-			}
 
-			.siteorigin-widget-field-copy {
-				right: 28px;
-
-				&:before {
-					content: "\f105";
-				}
-
-				&:focus,
-				&:hover {
-					//background: #989fa5;
+				.siteorigin-widget-field-copy {
+					right: 28px;
 
 					&:before {
-						color: #50575D;
+						content: "\f105";
+					}
+
+					&:focus,
+					&:hover {
+
+						&:before {
+							color: #50575d;
+						}
 					}
 				}
-			}
 
-			.siteorigin-widget-field-remove {
-				right: 12px;
-
-				&:before {
-					content: '\f158';
-				}
-
-				&:focus,
-				&:hover {
-					background: #ff0000;
+				.siteorigin-widget-field-remove {
+					right: 12px;
 
 					&:before {
-						color: #FFFFFF;
+						content: '\f158';
+					}
+
+					&:focus,
+					&:hover {
+						background: #ff0000;
+
+						&:before {
+							color: #ffffff;
+						}
 					}
 				}
 			}
 
 			.siteorigin-widget-field-repeater-items {
-				background: #FCFCFC;
-				border: 1px solid #EEEEEE;
+				background: #fcfcfc;
+				border: 1px solid #eeeeee;
 				border-top: 0;
 				border-bottom: 0;
 
 				.siteorigin-widget-field-repeater-item {
-					background: #FCFCFC;
-					border-bottom: 1px solid #EEEEEE;
+					background: #fcfcfc;
+					border-bottom: 1px solid #eeeeee;
 
 					.siteorigin-widget-field-repeater-item-top {
 						padding: 10px;
 						cursor: move;
 						position: relative;
-						background: #F6F6F6;
+						background: #f6f6f6;
 
 						&:focus,
 						&:focus-within {
-							background: #FAFAFA;
+							background: #fafafa;
 						}
 
 						h4 {
@@ -345,7 +346,7 @@ div.siteorigin-widget-form {
 					}
 
 					.siteorigin-widget-field-repeater-item-form {
-						border-top: 1px solid #EEEEEE;
+						border-top: 1px solid #eeeeee;
 						display: none;
 						padding: 1px 10px;
 					}
@@ -354,8 +355,8 @@ div.siteorigin-widget-form {
 
 			.siteorigin-widget-field-repeater-add {
 				padding: 7px 10px;
-				background: #F0F0F0;
-				border: 1px dashed #D0D0D0;
+				background: #f0f0f0;
+				border: 1px dashed #d0d0d0;
 				font-size: 12px;
 				line-height: 1em;
 				text-align: center;
@@ -363,17 +364,19 @@ div.siteorigin-widget-form {
 
 				&:focus,
 				&:hover {
-					background: #F4F4F4;
+					background: #f4f4f4;
 				}
 			}
 
 			/* Max items */
-			.siteorigin-widget-field-copy,
-			.siteorigin-widget-field-repeater-add {
-				transition: opacity 300ms ease-in-out;
+			.siteorigin-widget-field-repeater-item-top  {
+				.siteorigin-widget-field-copy,
+				.siteorigin-widget-field-repeater-add {
+					transition: opacity 300ms ease-in-out;
+				}
 			}
 
-			.sow-max-reached {
+			.sow-max-reached .siteorigin-widget-field-repeater-item-top {
 				.siteorigin-widget-field-copy,
 				.siteorigin-widget-field-repeater-add {
 					opacity: 0.25;
@@ -433,8 +436,8 @@ div.siteorigin-widget-form {
 
 		&.siteorigin-widget-field-type-posts {
 			.posts-container-label-wrapper {
-				background: #F0F0F0;
-				border: 1px solid #D0D0D0;
+				background: #f0f0f0;
+				border: 1px solid #d0d0d0;
 				padding: 10px;
 				display: block;
 				margin-bottom: 0;
@@ -474,7 +477,7 @@ div.siteorigin-widget-form {
 					text-align: center;
 					vertical-align: middle;
 					font-weight: bold;
-					color: #FFFFFF;
+					color: #ffffff;
 					box-sizing: border-box;
 					margin: 1px 5px;
 				}
@@ -486,15 +489,15 @@ div.siteorigin-widget-form {
 		&.siteorigin-widget-field-type-section {
 
 			> label {
-				background: #F0F0F0;
-				border: 1px solid #D0D0D0;
+				background: #f0f0f0;
+				border: 1px solid #d0d0d0;
 				line-height: 1.4;
 				padding: 10px;
 				display: block;
 				margin-bottom: 0;
 
 				&:focus {
-					background: #F5F5F5;
+					background: #f5f5f5;
 				}
 
 				&:before {
@@ -522,8 +525,8 @@ div.siteorigin-widget-form {
 		&.siteorigin-widget-field-type-section {
 			.siteorigin-widget-section {
 				padding: 1px 10px;
-				background: #FCFCFC;
-				border: 1px solid #EEEEEE;
+				background: #fcfcfc;
+				border: 1px solid #eeeeee;
 				border-top: 0;
 
 				&.siteorigin-widget-section-hide {
@@ -545,7 +548,7 @@ div.siteorigin-widget-form {
 				width: 360px;
 				z-index: 10;
 				border: 1px solid #c0c0c0;
-				background: #F6F6F6;
+				background: #f6f6f6;
 				.box-shadow(~"0 2px 4px rgba(0,0,0,0.2)");
 				.rounded(3px);
 
@@ -594,7 +597,7 @@ div.siteorigin-widget-form {
 
 					&.loading {
 						min-height: 40px;
-						background: #FFFFFF url("img/wpspin_light.gif") center center no-repeat;
+						background: #ffffff url("img/wpspin_light.gif") center center no-repeat;
 
 						@media  (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
 							& {
@@ -662,7 +665,7 @@ div.siteorigin-widget-form {
 .so-widgets-dialog {
 
 	@edge_spacing: 30px;
-	@border_color: #D8D8D8;
+	@border_color: #d8d8d8;
 
 	.so-widgets-dialog-overlay {
 		position: fixed;
@@ -739,7 +742,7 @@ div.siteorigin-widget-form {
 		left: @edge_spacing;
 		right: @edge_spacing;
 		bottom: @edge_spacing;
-		background: #FFFFFF url("img/wpspin_light.gif") center center no-repeat;
+		background: #ffffff url("img/wpspin_light.gif") center center no-repeat;
 
 		@media  (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
 			& {

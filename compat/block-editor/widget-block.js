@@ -339,7 +339,11 @@
 
 // Setup SiteOrigin Widgets Block Validation.
 var sowbTimeoutSetup = false;
-if ( adminpage != 'widgets-php' && typeof wp.data.select == 'function' ) {
+if (
+	typeof adminpage != 'undefined' &&
+	adminpage != 'widgets-php' &&
+	typeof wp.data.select == 'function'
+) {
 	wp.data.subscribe( function() {
 		if (
 			! sowbTimeoutSetup &&
