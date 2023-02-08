@@ -4,11 +4,9 @@
  * Class SiteOrigin_Widget_Field_Posts
  */
 class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Base {
-	
 	/**
 	 * An array of post types to use in the query for posts when the 'Select Content' button is clicked.
 	 *
-	 * @access protected
 	 * @var array
 	 */
 	protected $post_types;
@@ -16,9 +14,9 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_container = array() ) {
 		parent::__construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_container );
 
-		$types        = get_post_types( array( 'public' => true ), 'objects' );
+		$types = get_post_types( array( 'public' => true ), 'objects' );
 		$type_options = array();
-		
+
 		if ( empty( $this->post_types ) || in_array( '_all', $this->post_types ) ) {
 			$type_options['_all'] = __( 'All', 'so-widgets-bundle' );
 		}
@@ -30,13 +28,12 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 		}
 
 		$this->fields = array(
-
 			'post_type' => array(
 				'type'     => 'select',
 				'label'    => __( 'Post type', 'so-widgets-bundle' ),
 				'multiple' => true,
 				'options'  => $type_options,
-				'default'  => 'post'
+				'default'  => 'post',
 			),
 
 			'post__in' => array(
@@ -74,7 +71,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 				'default' => 'specific',
 				'state_emitter' => array(
 					'callback' => 'select',
-					'args' => array( 'date_type' )
+					'args' => array( 'date_type' ),
 				),
 			),
 
@@ -83,8 +80,8 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 				'label' => __( 'Dates', 'so-widgets-bundle' ),
 				'date_type' => 'specific',
 				'state_handler' => array(
-					'date_type[specific]' => array('show'),
-					'_else[date_type]' => array('hide'),
+					'date_type[specific]' => array( 'show' ),
+					'_else[date_type]' => array( 'hide' ),
 				),
 			),
 
@@ -93,8 +90,8 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 				'label' => __( 'Dates', 'so-widgets-bundle' ),
 				'date_type' => 'relative',
 				'state_handler' => array(
-					'date_type[relative]' => array('show'),
-					'_else[date_type]' => array('hide'),
+					'date_type[relative]' => array( 'show' ),
+					'_else[date_type]' => array( 'hide' ),
 				),
 			),
 
@@ -154,21 +151,23 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 	}
 
 	protected function render_field_label( $value, $instance ) {
-		?><div class="posts-container-label-wrapper<?php if ( $this->state == 'open' ) {
+		?>
+		<div class="posts-container-label-wrapper<?php if ( $this->state == 'open' ) {
 			echo ' siteorigin-widget-section-visible';
-		} ?>"><?php
-		parent::render_field_label( $value, $instance );
-		?><span class="sow-current-count"><?php echo esc_html( siteorigin_widget_post_selector_count_posts( $value ) )?></span>
-		</div><?php
+		} ?>">
+			<?php parent::render_field_label( $value, $instance ); ?>
+			<span class="sow-current-count"><?php echo esc_html( siteorigin_widget_post_selector_count_posts( $value ) ); ?></span>
+		</div>
+		<?php
 	}
 
 	protected function render_field( $value, $instance ) {
 		$value = wp_parse_args( $value );
-		
-		if( !empty( $value['post_type'] ) ) {
+
+		if ( ! empty( $value['post_type'] ) ) {
 			$value['post_type'] = strpos( $value['post_type'], ',' ) !== false ? explode( ',', $value['post_type'] ) : $value['post_type'];
 		}
-		
+
 		if ( $this->collapsible ) {
 			?><div class="siteorigin-widget-section <?php if ( $this->state == 'closed' ) {
 				echo 'siteorigin-widget-section-hide';
@@ -179,7 +178,13 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 			$this->override_fields();
 		}
 
-		$this->create_and_render_sub_fields( $value, array( 'name' => $this->base_name, 'type' => 'composite' ) );
+		$this->create_and_render_sub_fields(
+			$value,
+			array(
+				'name' => $this->base_name,
+				'type' => 'composite'
+			)
+		);
 
 		if ( $this->collapsible ) {
 			?></div><?php
@@ -214,6 +219,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 		}
 		$value = parent::sanitize_field_input( $value, $instance );
 		$result = '';
+
 		foreach ( $value as $key => $item ) {
 			if ( ! empty( $item ) ) {
 				if ( is_array( $item ) ) {
@@ -225,5 +231,4 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 
 		return $result;
 	}
-
 }

@@ -8,24 +8,22 @@ Documentation: https://siteorigin.com/widgets-bundle/image-widget-documentation/
 */
 
 class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
-	function __construct() {
+	public function __construct() {
 		parent::__construct(
 			'sow-image',
 			__( 'SiteOrigin Image', 'so-widgets-bundle' ),
 			array(
 				'description' => __( 'A simple image widget with massive power.', 'so-widgets-bundle' ),
-				'help' => 'https://siteorigin.com/widgets-bundle/image-widget-documentation/'
+				'help' => 'https://siteorigin.com/widgets-bundle/image-widget-documentation/',
 			),
 			array(
-
 			),
 			false,
-			plugin_dir_path(__FILE__)
+			plugin_dir_path( __FILE__ )
 		);
 	}
 
-	function get_widget_form() {
-
+	public function get_widget_form() {
 		return array(
 			'image' => array(
 				'type' => 'media',
@@ -36,9 +34,9 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 					'callback' => 'conditional',
 					'args'     => array(
 						'has_external_image[show]: isNaN( val )',
-						'has_external_image[hide]: ! isNaN( val )'
+						'has_external_image[hide]: ! isNaN( val )',
 					),
-				)
+				),
 			),
 
 			'size' => array(
@@ -132,18 +130,17 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 				'type' => 'checkbox',
 				'default' => false,
 				'label' => __( 'Full width', 'so-widgets-bundle' ),
-				'description' => __( "Resize image to fit its container.", 'so-widgets-bundle' ),
+				'description' => __( 'Resize image to fit its container.', 'so-widgets-bundle' ),
 			),
 
 			'rel' => array(
 				'type' => 'text',
 				'label' => __( 'Rel', 'so-widgets-bundle' ),
 			),
-
 		);
 	}
 
-	function get_style_hash( $instance ) {
+	public function get_style_hash( $instance ) {
 		return substr( md5( serialize( $this->get_less_variables( $instance ) ) ), 0, 12 );
 	}
 
@@ -177,7 +174,8 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		);
 
 		$attr = array();
-		if( !empty($src) ) {
+
+		if ( ! empty( $src ) ) {
 			$attr = array( 'src' => $src[0] );
 
 			if ( ! empty( $src[1] ) ) {
@@ -222,14 +220,16 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 				$this
 			);
 		}
-		
+
 		$link_atts = array();
+
 		if ( ! empty( $instance['new_window'] ) ) {
 			$link_atts['target'] = '_blank';
 			$link_atts['rel'] = 'noopener noreferrer';
 		}
 
-		return apply_filters( 'siteorigin_widgets_image_args',
+		return apply_filters(
+			'siteorigin_widgets_image_args',
 			array(
 				'title' => $title,
 				'title_position' => $instance['title_position'],
@@ -248,19 +248,19 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 	/**
 	 * Try to figure out an image's title for display.
 	 *
-	 * @param $image
-	 *
 	 * @return string The title of the image.
 	 */
 	private function get_image_title( $image ) {
 		if ( ! empty( $image['title'] ) ) {
 			$title = $image['title'];
-		} else if ( apply_filters( 'siteorigin_widgets_auto_title', true, 'sow-image' ) ) {
+		} elseif ( apply_filters( 'siteorigin_widgets_auto_title', true, 'sow-image' ) ) {
 			$title = wp_get_attachment_caption( $image['image'] );
+
 			if ( empty( $title ) ) {
 				// We do not want to use the default image titles as they're based on the file name without the extension
 				$file_name = pathinfo( get_post_meta( $image['image'], '_wp_attached_file', true ), PATHINFO_FILENAME );
 				$title = get_the_title( $image['image'] );
+
 				if ( $title == $file_name ) {
 					$title = '';
 				}
@@ -272,10 +272,11 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		return $title;
 	}
 
-	function get_less_variables( $instance ) {
+	public function get_less_variables( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
 		}
+
 		return array(
 			'title_alignment' => ! empty( $instance['title_align'] ) ? $instance['title_align'] : '',
 			'image_alignment' => $instance['align'],
@@ -285,7 +286,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function generate_anchor_open( $url, $link_attributes ) {
+	public function generate_anchor_open( $url, $link_attributes ) {
 		?>
 		<a href="<?php echo sow_esc_url( $url ); ?>"
 			<?php
@@ -294,13 +295,16 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 					echo $attr . '="' . esc_attr( $val ) . '" ';
 				}
 			}
-			?>
+		?>
 		>
 		<?php
 	}
 
-	function get_form_teaser() {
-		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+	public function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
+
 		return array(
 			sprintf(
 				__( 'Add a Lightbox to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),

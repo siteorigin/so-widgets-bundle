@@ -15,7 +15,7 @@
 			} else {
 				SiteOrigin_Widget_Blog_Widget::generate_excerpt( $settings );
 			}
-			?>
+?>
 		</div>
 	</div>
 </article>

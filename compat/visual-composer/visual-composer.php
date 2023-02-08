@@ -1,7 +1,6 @@
 <?php
 
 class SiteOrigin_Widgets_Bundle_Visual_Composer {
-
 	/**
 	 * Get the singleton instance
 	 *
@@ -13,7 +12,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 		return empty( $single ) ? $single = new self() : $single;
 	}
 
-	function __construct() {
+	public function __construct() {
 		add_action( 'vc_after_init', array( $this, 'init' ) );
 
 		add_action( 'admin_print_scripts-post-new.php', array( $this, 'enqueue_active_widgets_scripts' ) );
@@ -26,8 +25,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 		add_filter( 'content_save_pre', array( $this, 'update_widget_data' ) );
 	}
 
-	function init() {
-
+	public function init() {
 		vc_add_shortcode_param(
 			'sowb_json_escaped',
 			array( $this, 'siteorigin_widget_form' ),
@@ -44,7 +42,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 			'show_settings_on_create' => true,
 			'weight'                  => - 5,
 			// Depends on ordering in list, Higher weight first
-			'html_template'           => dirname( __FILE__ ) . '/siteorigin_widget_vc_template.php',
+			'html_template'           => __DIR__ . '/siteorigin_widget_vc_template.php',
 			'admin_enqueue_css'       => preg_replace( '/\s/', '%20', plugins_url( 'styles.css', __FILE__ ) ),
 			'front_enqueue_css'       => preg_replace( '/\s/', '%20', plugins_url( 'styles.css', __FILE__ ) ),
 			'front_enqueue_js'        => preg_replace( '/\s/', '%20', plugins_url( 'front_enqueue_js.js', __FILE__ ) ),
@@ -54,13 +52,12 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 					'heading'    => __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
 					'param_name' => 'so_widget_data',
 				),
-			)
+			),
 		);
 		vc_map( $settings );
 	}
 
-	function enqueue_active_widgets_scripts() {
-
+	public function enqueue_active_widgets_scripts() {
 		global $wp_widget_factory;
 
 		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
@@ -78,10 +75,11 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 		) );
 	}
 
-	function siteorigin_widget_form( $settings, $value ) {
+	public function siteorigin_widget_form( $settings, $value ) {
 		$so_widget_names = array();
 
 		global $wp_widget_factory;
+
 		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
 			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
 				$so_widget_names[ $class ] = preg_replace( '/^SiteOrigin /', '', $widget_obj->name );
@@ -103,6 +101,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 		global $wp_widget_factory;
 
 		$parsed_value = json_decode( html_entity_decode( stripslashes( $value ) ), true );
+
 		if ( empty( $parsed_value ) ) {
 			//Get the first value as the default.
 			reset( $so_widget_names );
@@ -128,15 +127,16 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 		return ob_get_clean();
 	}
 
-	function sowb_vc_widget_render_form() {
+	public function sowb_vc_widget_render_form() {
 		if ( empty( $_REQUEST['widget'] ) ) {
 			wp_die();
 		}
+
 		if ( empty( $_REQUEST['_sowbnonce'] ) || ! wp_verify_nonce( $_REQUEST['_sowbnonce'], 'sowb_vc_widget_render_form' ) ) {
 			wp_die();
 		}
 
-		$request      = array_map( 'stripslashes_deep', $_REQUEST );
+		$request = array_map( 'stripslashes_deep', $_REQUEST );
 		$widget_class = $request['widget'];
 
 		global $wp_widget_factory;
@@ -151,8 +151,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 		wp_die();
 	}
 
-	function update_widget_data( $content ) {
-
+	public function update_widget_data( $content ) {
 		$content = preg_replace_callback(
 			'/\[siteorigin_widget_vc [^\]]*\]/',
 			array( $this, 'update_shortcode' ),
@@ -162,8 +161,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 		return $content;
 	}
 
-	function update_shortcode( $shortcode ) {
-
+	public function update_shortcode( $shortcode ) {
 		preg_match(
 			'/so_widget_data="([^"]*)"/',
 			stripslashes( stripslashes( $shortcode[0] ) ),
@@ -207,7 +205,7 @@ SiteOrigin_Widgets_Bundle_Visual_Composer::single();
 
 if ( class_exists( 'WPBakeryShortCode' ) ) {
 	class WPBakeryShortCode_SiteOrigin_Widget_VC extends WPBakeryShortCode {
-		public function __construct( $settings ) {
+	public function __construct( $settings ) {
 			parent::__construct( $settings );
 		}
 
@@ -228,6 +226,7 @@ if ( class_exists( 'WPBakeryShortCode' ) ) {
 				return array();
 			}
 			$unesc = $atts['so_widget_data'];
+
 			return json_decode( $unesc, true );
 		}
 
@@ -245,7 +244,6 @@ if ( class_exists( 'WPBakeryShortCode' ) ) {
 		}
 
 		public function render_widget( $widget_class, $widget_instance ) {
-
 			if ( empty( $widget_instance ) ) {
 				return;
 			}
@@ -259,7 +257,6 @@ if ( class_exists( 'WPBakeryShortCode' ) ) {
 		}
 
 		public function update_widget( $widget_class, $widget_instance ) {
-
 			if ( empty( $widget_instance ) ) {
 				return;
 			}
@@ -275,12 +272,11 @@ if ( class_exists( 'WPBakeryShortCode' ) ) {
 		}
 
 		/**
-		 * @param $atts
-		 *
 		 * @return array
 		 */
 		protected function prepareAtts( $atts ) {
 			$return = array();
+
 			if ( is_array( $atts ) ) {
 				foreach ( $atts as $key => $val ) {
 					// We double encode in the front end to prevent accidental decoding when the content is set on the
@@ -292,5 +288,4 @@ if ( class_exists( 'WPBakeryShortCode' ) ) {
 			return $return;
 		}
 	}
-} // End Class
-
+}
