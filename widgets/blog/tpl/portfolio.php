@@ -30,6 +30,12 @@ if ( $settings['categories'] || $template_settings['filter_categories'] ) {
 				<span class="sow-entry-project-type"><?php echo $filtering; ?></span>
 			<?php endif; ?>
 		</div>
-		<?php the_post_thumbnail( 'sow-blog-portfolio' ); ?>
+		<?php
+		if ( ! has_post_thumbnail() ) {
+			echo apply_filters( 'siteorigin_widgets_blog_featured_image_fallback', false, $settings );
+		} else {
+			the_post_thumbnail( 'sow-blog-portfolio' );
+		}
+		?>
 	</div>
 </article>
