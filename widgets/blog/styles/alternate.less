@@ -59,8 +59,6 @@
 		width: 100%;
 
 		@media (max-width: @responsive_breakpoint) {
-			display: block !important;
-
 			& > img,
 			.sow-entry-thumbnail,
 			.sow-entry-thumbnail .wp-post-image {
@@ -78,6 +76,10 @@
 				width: 41.5006%;
 
 				a {
+					align-items: center;
+					display: flex;
+					height: 100%;
+					margin: 0;
 					text-align: left;
 				}
 			}
@@ -87,6 +89,7 @@
 			}
 
 			&:nth-of-type(2n) .sow-entry-thumbnail a {
+				justify-content: end;
 				text-align: right;
 			}
 		}
