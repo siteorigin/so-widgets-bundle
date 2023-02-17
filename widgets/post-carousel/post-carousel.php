@@ -422,7 +422,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				'default_thumbnail' => ! empty( $default_thumbnail ) ? $default_thumbnail[0] : false,
 				'image_size' => $instance['image_size'],
 				'link_target' => ! empty( $instance['link_target'] ) ? $instance['link_target'] : 'same',
-				'item_template' => plugin_dir_path( __FILE__ ) . 'tpl/item.php',
+				'item_template' => apply_filters( 'siteorigin_post_carousel_item_template', plugin_dir_path( __FILE__ ) . 'tpl/item.php' ),
 				'navigation' => 'title',
 				'navigation_arrows' => isset( $instance['carousel_settings']['arrows'] ) ? ! empty( $instance['carousel_settings']['arrows'] ) : true,
 				'navigation_dots' => isset( $instance['carousel_settings']['dots'] ) ? ! empty( $instance['carousel_settings']['dots'] ) : false,
