@@ -7,7 +7,7 @@
 	.social-media-button-base();
 }
 
-.create_social_media_button_style( @name, @icon_color:'', @button_color:'', @icon_color_hover: '', @button_color_hover: '' ) {
+.create_social_media_button_style( @name, @icon_color:'', @button_color:'', @icon_color_hover: '', @button_color_hover: '', @border_color: '', @border_color_hover: '' ) {
 
 	.sow-social-media-button-@{name} {
 		background: transparent;
@@ -26,6 +26,20 @@
 
 				& when( iscolor( @button_color_hover ) ) {
 					background: @button_color_hover;
+				}
+
+				& when ( iscolor( @border_color_hover ) ) {
+					border-color: @border_color_hover !important;
+				}
+
+				& when not( iscolor( @border_color_hover ) ) {
+					& when not( iscolor( @border_color ) ) {
+						border-color: @border_color !important;
+					}
+
+					& when not( iscolor( @border_color ) ) and ( iscolor( @button_color ) ) {
+						border-color: darken( @button_color, 15% ) !important;
+					}
 				}
 			}
 		}
