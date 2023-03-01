@@ -92,11 +92,22 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'type' => 'checkbox',
 							'label' => __( 'Featured Image', 'so-widgets-bundle' ),
 							'default' => true,
+							'state_emitter' => array(
+								'callback' => 'conditional',
+								'args' => array(
+									'featured_image[show]: val',
+									'featured_image[hide]: ! val',
+								),
+							),
 						),
 						'featured_image_size' => array(
 							'type' => 'image-size',
 							'label' => __( 'Featured Image Size', 'siteorigin-premium' ),
 							'custom_size' => true,
+							'state_handler' => array(
+								'featured_image[show]' => array( 'show' ),
+								'featured_image[hide]' => array( 'hide' ),
+							),
 						),
 						'content' => array(
 							'type' => 'select',
@@ -907,7 +918,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			siteorigin_widget_post_selector_process_query( $instance['posts'] )
 		);
 
-		if ( $instance['template'] == 'portfolio' ) {
+		if ( $instance['template'] == 'portfolio' && ! empty( $instance['featured_image_fallback'] ) ) {
 			// The portfolio template relies on each post having an image so exclude any posts that don't.
 			$query['meta_query'] = array(
 				array(
@@ -1012,34 +1023,44 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	static public function post_featured_image( $settings, $categories = false, $size = 'full' ) {
-		if ( $settings['featured_image'] && has_post_thumbnail() ) : ?>
-			<?php ob_start(); ?>
-			<div class="sow-entry-thumbnail">
-				<?php if ( $categories && $settings['categories'] && has_category() ) : ?>
-					<div class="sow-thumbnail-meta">
-						<?php echo get_the_category_list(); ?>
-					</div>
-				<?php endif; ?>
-				<a href="<?php the_permalink(); ?>">
-					<?php
-					if ( ! empty( $settings['featured_image_size'] ) ) {
-						$size = $settings['featured_image_size'] == 'custom_size' ? array( $settings['featured_image_size_width'], $settings['featured_image_size_height'] ) : $settings['featured_image_size'];
-					} else {
-						// Check if this template has a different default image size.
-						if (
-							$size == 'full' &&
-							has_image_size( 'sow-blog-' . $settings['template'] )
-						) {
-							$size = 'sow-blog-' . $settings['template'];
+		if ( $settings['featured_image'] ) {
+			if ( ! has_post_thumbnail() && ! empty( $settings['featured_image_fallback'] ) ) {
+				$featured_image = apply_filters( 'siteorigin_widgets_blog_featured_image_fallback', false, $settings );
+			}
+			if ( has_post_thumbnail() || ! empty( $featured_image ) ) :
+			?>
+				<?php ob_start(); ?>
+				<div class="sow-entry-thumbnail">
+					<?php if ( $categories && $settings['categories'] && has_category() ) : ?>
+						<div class="sow-thumbnail-meta">
+							<?php echo get_the_category_list(); ?>
+						</div>
+					<?php endif; ?>
+					<a href="<?php the_permalink(); ?>">
+						<?php
+						if ( has_post_thumbnail() ) {
+							if ( ! empty( $settings['featured_image_size'] ) ) {
+								$size = $settings['featured_image_size'] == 'custom_size' ? array( $settings['featured_image_size_width'], $settings['featured_image_size_height'] ) : $settings['featured_image_size'];
+							} else {
+								// Check if this template has a different default image size.
+								if (
+									$size == 'full' &&
+									has_image_size( 'sow-blog-' . $settings['template'] )
+								) {
+									$size = 'sow-blog-' . $settings['template'];
+								}
+							}
+							the_post_thumbnail( $size );
+						} elseif( ! empty( $featured_image ) ) {
+							echo $featured_image;
 						}
-					}
-					the_post_thumbnail( $size );
-					?>
-				</a>
-			</div>
-			<?php
-			echo apply_filters( 'siteorigin_widgets_blog_featured_image_markup', ob_get_clean(), $settings, $categories = false, $size = 'full' );
-		endif;
+						?>
+					</a>
+				</div>
+				<?php
+				echo apply_filters( 'siteorigin_widgets_blog_featured_image_markup', ob_get_clean(), $settings, $categories = false, $size = 'full' );
+			endif;
+		}
 	}
 
 	static public function generate_post_title() {
