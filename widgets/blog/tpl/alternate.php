@@ -2,7 +2,7 @@
 	<?php SiteOrigin_Widget_Blog_Widget::post_featured_image( $settings ); ?>
 	<div class="sow-blog-content-wrapper">
 		<header class="sow-entry-header" style="margin-bottom: 18px;">
-			<?php SiteOrigin_Widget_Blog_Widget::generate_post_title(); ?>
+			<?php SiteOrigin_Widget_Blog_Widget::generate_post_title( $settings ); ?>
 			<div class="sow-entry-meta">
 				<?php SiteOrigin_Widget_Blog_Widget::post_meta( $settings ); ?>
 			</div>

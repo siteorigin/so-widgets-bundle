@@ -63,7 +63,7 @@
 		<div class="sow-blog-content-wrapper" style="padding: 25px 30px 33px;">
 			<header class="sow-entry-header" style="margin-bottom: 20px;">
 				<?php
-				SiteOrigin_Widget_Blog_Widget::generate_post_title();
+				SiteOrigin_Widget_Blog_Widget::generate_post_title( $settings );
 				if ( ! empty( $template_settings['time_string'] ) ) {
 					$time_string = sprintf( $template_settings['time_string'],
 						esc_attr( get_the_date( DATE_W3C ) ),
