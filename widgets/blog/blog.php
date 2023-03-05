@@ -111,7 +111,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 						),
 						'tag' => array(
 							'type' => 'select',
-							'label' => __( 'Title HTML Tag', 'so-widgets-bundle' ),
+							'label' => __( 'Post Title HTML Tag', 'so-widgets-bundle' ),
 							'default' => 'h2',
 							'options' => array(
 								'h1' => __( 'H1', 'so-widgets-bundle' ),
