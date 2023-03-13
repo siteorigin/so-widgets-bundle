@@ -517,6 +517,38 @@ div.siteorigin-widget-form {
 						content:"\f460";
 					}
 				}
+
+				&.siteorigin-widget-section-tab {
+					display: none;
+				}
+			}
+
+		}
+
+		&.siteorigin-widget-field-type-tabs .siteorigin-widget-tabs {
+			border-bottom: 1px solid #eee;
+			margin: 0;
+			margin-bottom: -12px;
+			padding: 5px 0 0 11px;
+
+			li {
+				background: #f6f6f6;
+				border: 1px solid #eee;
+				color: #555;
+				display: inline-block;
+				font-size: 12px;
+				font-weight: bold;
+				line-height: 1em;
+				margin: 0 0 -1px 0;
+				padding: 12px 25px;
+				position: relative;
+				transition: all 0.2s;
+
+				&:hover,
+				&.sow-active-tab {
+					background: #fcfcfc;
+					border-bottom: 1px solid #fcfcfc;
+				}
 			}
 		}
 
@@ -533,6 +565,10 @@ div.siteorigin-widget-form {
 					display: none;
 				}
 			}
+		}
+
+		&.siteorigin-widget-field-type-section .siteorigin-widget-section.sow-active-tab {
+			display: block;
 		}
 
 		&.siteorigin-widget-field-type-autocomplete,
