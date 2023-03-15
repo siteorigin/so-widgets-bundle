@@ -106,6 +106,9 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.46.7 - 15 March 2023 =
+* Developer: Updated Google Maps location `getSimplePlace` a method.
+
 = 1.46.6 - 01 March 2023 =
 * Blog: Fixed a potential Alternate Template featured image fallback misalignment and improved responsiveness.
 * Blog: Vertically center aligned the Alternate Template featured image fallback image.

@@ -16,27 +16,6 @@ sowbForms.LocationField = function () {
 			var valueField = element.querySelector( '.siteorigin-widget-input' );
 			var autocomplete = new window.google.maps.places.Autocomplete( inputField );
 			
-			var getSimplePlace = function ( place ) {
-				return new Promise(function (resolve, reject) {
-					var simplePlace = {name: place.name};
-					simplePlace.address = place.hasOwnProperty('formatted_address') ? place.formatted_address : '';
-					if (place.hasOwnProperty('geometry')) {
-						simplePlace.location = place.geometry.location.toString();
-						resolve(simplePlace);
-					} else {
-						var addr = {address: place.hasOwnProperty('formatted_address') ? place.formatted_address : place.name};
-						new window.google.maps.Geocoder().geocode(addr,
-							function (results, status) {
-								if (status === window.google.maps.GeocoderStatus.OK) {
-									simplePlace.location = results[0].geometry.location.toString();
-									resolve(simplePlace);
-								} else {
-									reject(status);
-								}
-							});
-					}
-				});
-			};
 
 			var setInputField = function () {
 				var parsedVal = JSON.parse(valueField.value);
@@ -66,7 +45,7 @@ sowbForms.LocationField = function () {
 			var onPlaceChanged = function () {
 				var place = autocomplete.getPlace();
 				
-				getSimplePlace( place )
+				sowbForms.LocationField().getSimplePlace( place )
 				.then( function ( simplePlace ) {
 					setValueField(simplePlace);
 				} )
@@ -103,7 +82,7 @@ sowbForms.LocationField = function () {
 					}
 					var delay = 100;
 					function callGetSimplePlace( place, field ) {
-						getSimplePlace( place )
+						sowbForms.LocationField().getSimplePlace( place )
 						.then( function ( simplePlace ) {
 							field.value = JSON.stringify( simplePlace );
 							valueField.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
@@ -151,6 +130,29 @@ sowbForms.LocationField = function () {
 					setInputField();
 				}
 			}
+		},
+		getSimplePlace: function ( place ) {
+			return new Promise( function( resolve, reject ) {
+				var simplePlace = { name: place.name };
+				simplePlace.address = place.hasOwnProperty( 'formatted_address') ? place.formatted_address : '';
+				if ( place.hasOwnProperty( 'geometry' ) ) {
+					simplePlace.location = place.geometry.location.toString();
+					resolve( simplePlace );
+				} else {
+					var addr = { address: place.hasOwnProperty( 'formatted_address' ) ? place.formatted_address : place.name };
+					new window.google.maps.Geocoder().geocode(
+						addr,
+						function( results, status ) {
+							if ( status === window.google.maps.GeocoderStatus.OK ) {
+								simplePlace.location = results[0].geometry.location.toString();
+								resolve( simplePlace );
+							} else {
+								reject( status );
+							}
+						}
+					);
+				}
+			} );
 		}
 	};
 };
