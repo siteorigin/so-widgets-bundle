@@ -22,8 +22,8 @@ if ( $settings['categories'] || $template_settings['filter_categories'] ) {
 		<span class="sow-entry-overlay">&nbsp;</span>
 		<div class="sow-entry-content">
 			<?php the_title(
-				'<h2 class="sow-entry-title" style="margin: 0 0 5px;">',
-				'</h2>'
+				'<' . $settings['tag'] . ' class="sow-entry-title" style="margin: 0 0 5px;">',
+				'</' . $settings['tag'] . '>'
 			); ?>
 			<?php if ( $settings['categories'] ) : ?>
 				<div class="sow-entry-divider"></div>
