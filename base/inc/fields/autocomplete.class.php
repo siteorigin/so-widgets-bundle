@@ -23,6 +23,14 @@ class SiteOrigin_Widget_Field_Autocomplete extends SiteOrigin_Widget_Field_Text_
 	protected $source;
 
 	/**
+	 * Whether to allow multiple items to be selected.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $multiple;
+
+	/**
 	 * The CSS classes to be applied to the rendered text input.
 	 */
 	protected function get_input_classes() {
@@ -32,19 +40,23 @@ class SiteOrigin_Widget_Field_Autocomplete extends SiteOrigin_Widget_Field_Text_
 	protected function get_default_options() {
 		$defaults = parent::get_default_options();
 		$defaults['source'] = 'posts';
+		$defaults['multiple'] = true;
 		return $defaults;
 	}
 
 	protected function render_after_field( $value, $instance ) {
 		$post_types = ! empty( $this->post_types ) && is_array( $this->post_types ) ? implode( ',', $this->post_types ) : '';
 		?>
-		<div class="existing-content-selector">
+		<div class="existing-content-selector" data-multiple="<?php echo esc_attr( $this->multiple ); ?>">
 
-			<input type="text" class="content-text-search"
-			       data-post-types="<?php echo esc_attr( $post_types ) ?>"
-			       data-source="<?php echo esc_attr( $this->source ) ?>"
-			       placeholder="<?php esc_attr_e( 'Search', 'so-widgets-bundle' ) ?>"
-			       tabindex="0"/>
+			<input
+				type="text"
+				class="content-text-search"
+				data-post-types="<?php echo esc_attr( $post_types ) ?>"
+				data-source="<?php echo esc_attr( $this->source ) ?>"
+				placeholder="<?php esc_attr_e( 'Search', 'so-widgets-bundle' ) ?>"
+				tabindex="0"
+			/>
 
 			<ul class="items"></ul>
 
