@@ -746,8 +746,8 @@ class SiteOrigin_Widgets_Bundle {
 		// We only want to worry about missing widgets.
 		if ( ! empty( $the_widget ) ) return $the_widget;
 
-		if ( preg_match( '/SiteOrigin_Widgets?_( [A-Za-z]+ )_Widget/', $class, $matches ) ) {
-			$name = $matches[1];
+		if ( preg_match( '/^(SiteOrigin_Widgets|SiteOrigin_Widget)_(\w+)_Widget/', $class, $matches ) ) {
+			$name = $matches[2];
 			$id = strtolower( implode( '-', array_filter( preg_split( '/(?=[A-Z])/', $name ) ) ) );
 
 			if ( $id == 'contact-form' ) {
