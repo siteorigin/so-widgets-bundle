@@ -743,11 +743,8 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				}
 				break;
 			case 'raw_json':
-				if ( ! empty( $style_config['raw_json_map_styles'] ) ) {
-					
-					$styles_string = $style_config['raw_json_map_styles'];
-
-					$styles['styles'] = json_decode( $styles_string, true );
+				if ( ! empty( $style_config['raw_json_map_styles'] ) && is_string( $style_config['raw_json_map_styles'] ) ) {
+					$styles['styles'] = json_decode( $style_config['raw_json_map_styles'], true );
 				}
 				break;
 			case 'normal':
