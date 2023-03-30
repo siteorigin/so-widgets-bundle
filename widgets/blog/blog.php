@@ -109,6 +109,20 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'featured_image[hide]' => array( 'hide' ),
 							),
 						),
+						'tag' => array(
+							'type' => 'select',
+							'label' => __( 'Post Title HTML Tag', 'so-widgets-bundle' ),
+							'default' => 'h2',
+							'options' => array(
+								'h1' => __( 'H1', 'so-widgets-bundle' ),
+								'h2' => __( 'H2', 'so-widgets-bundle' ),
+								'h3' => __( 'H3', 'so-widgets-bundle' ),
+								'h4' => __( 'H4', 'so-widgets-bundle' ),
+								'h5' => __( 'H5', 'so-widgets-bundle' ),
+								'h6' => __( 'H6', 'so-widgets-bundle' ),
+								'p' => __( 'Paragraph', 'so-widgets-bundle' ),
+							)
+						),
 						'content' => array(
 							'type' => 'select',
 							'label' => __( 'Post Content ', 'so-widgets-bundle' ),
@@ -873,6 +887,10 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			return array();
 		}
 
+		if ( ! isset( $instance['settings']['tag'] ) ) {
+			$instance['settings']['tag'] = 'h2';
+		}
+
 		if ( empty( $instance['template'] ) ) {
 			$instance['template'] = 'standard';
 		} else {
@@ -1063,10 +1081,10 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		}
 	}
 
-	static public function generate_post_title() {
+	static public function generate_post_title( $settings ) {
 		the_title(
-			'<h2 class="sow-entry-title" style="margin: 0 0 5px;"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">',
-			'</a></h2>'
+			'<' . $settings['tag'] . ' class="sow-entry-title" style="margin: 0 0 5px;"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">',
+			'</a></' . $settings['tag'] . '>'
 		);
 	}
 
