@@ -106,6 +106,11 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.47.0 - 30 March 2023 =
+* Blog: Added a `Post Title HTML Tag` setting.
+* Google Maps: Fixed a potential `Map Style > Predefined Styles` PHP 8.x error.
+* Updated Tested up to tag.
+
 = 1.46.7 - 15 March 2023 =
 * Developer: Updated Google Maps location `getSimplePlace` a method.
 
