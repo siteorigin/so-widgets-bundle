@@ -580,10 +580,11 @@ class SiteOrigin_Widgets_Bundle {
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 		foreach ( $widget_folders as $folder ) {
-			if ( !file_exists($folder . $widget_id . '/' . $widget_id . '.php' ) ) continue;
+			if ( ! file_exists($folder . $widget_id . '/' . $widget_id . '.php' ) ) continue;
 			include_once $folder . $widget_id . '/' . $widget_id . '.php';
 
-			if ( has_action('widgets_init' ) ) {
+			global $wp_widget_factory;
+			if ( has_action('widgets_init' ) || ! empty( $wp_widget_factory ) ) {
 				SiteOrigin_Widgets_Widget_Manager::single()->widgets_init();
 			}
 		}
@@ -746,8 +747,8 @@ class SiteOrigin_Widgets_Bundle {
 		// We only want to worry about missing widgets.
 		if ( ! empty( $the_widget ) ) return $the_widget;
 
-		if ( preg_match( '/SiteOrigin_Widgets?_( [A-Za-z]+ )_Widget/', $class, $matches ) ) {
-			$name = $matches[1];
+		if ( preg_match( '/^(SiteOrigin_Widgets|SiteOrigin_Widget)_(\w+)_Widget/', $class, $matches ) ) {
+			$name = $matches[2];
 			$id = strtolower( implode( '-', array_filter( preg_split( '/(?=[A-Z])/', $name ) ) ) );
 
 			if ( $id == 'contact-form' ) {
