@@ -24,6 +24,10 @@ class SiteOrigin_Widget_Field_Font extends SiteOrigin_Widget_Field_Base {
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
+		if ( empty( $value ) ) {
+			return isset( $this->default ) ? $this->default : 'default';
+		}
+
 		$sanitized_value = trim( $value );
 		// Any alphanumeric character followed by alphanumeric or whitespace characters (except newline),
 		// with optional colon followed by optional variant.
