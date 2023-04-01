@@ -320,14 +320,14 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			isset( $instance['design']['thumbnail_overlay_hover_color'] )
 		) {
 			$instance['design']['thumbnail'] = array(
-				'thumbnail_overlay_hover_color' => $instance['design']['thumbnail_overlay_hover_color'],
-				'thumbnail_overlay_hover_opacity' => $instance['design']['thumbnail_overlay_hover_opacity'],
+				'thumbnail_overlay_hover_color' => ! empty( $instance['design']['thumbnail_overlay_hover_color'] ) ? $instance['design']['thumbnail_overlay_hover_color'] : '#3279bb',
+				'thumbnail_overlay_hover_opacity' => ! empty( $instance['design']['thumbnail_overlay_hover_opacity'] ) ? $instance['design']['thumbnail_overlay_hover_opacity'] : 0.5,
 			);
 			$instance['design']['navigation'] = array(
-				'navigation_color' => $instance['design']['navigation_color'],
-				'navigation_color_hover' => $instance['design']['navigation_color_hover'],
-				'navigation_background' => $instance['design']['navigation_background'],
-				'navigation_hover_background' => $instance['design']['navigation_hover_background'],
+				'navigation_color' => ! empty( $instance['design']['navigation_color'] ) ? $instance['design']['navigation_color'] : '#fff',
+				'navigation_color_hover' => ! empty( $instance['design']['navigation_color_hover'] ) ? $instance['design']['navigation_color_hover'] : '',
+				'navigation_background' => ! empty( $instance['design']['navigation_background'] ) ? $instance['design']['navigation_background'] : '#333',
+				'navigation_hover_background' => ! empty( $instance['design']['navigation_hover_background'] ) ? $instance['design']['navigation_hover_background'] : '#444',
 			);
 		}
 
