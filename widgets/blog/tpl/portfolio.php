@@ -28,8 +28,8 @@ if ( $settings['categories'] || $template_settings['filter_categories'] ) {
 				'<' . $settings['tag'] . ' class="sow-entry-title" style="margin: 0 0 5px;">',
 				'</' . $settings['tag'] . '>'
 			);
-			?>
-			if ( $settings['categories'] ) :
+			
+			if ( $settings['categories'] ) {
 				?>
 				<div class="sow-entry-divider"></div>
 				<span class="sow-entry-project-type"><?php echo $filtering; ?></span>
