@@ -58,7 +58,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 	public function get_template_variables( $instance, $args ) {
 		$instance = wp_parse_args(
 			$instance,
-			array(  'text' => '' )
+			array( 'text' => '' )
 		);
 
 		if (

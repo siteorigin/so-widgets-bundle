@@ -86,9 +86,13 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 		}
 		?>
 		<div class="multiple-media-field-wrapper">
-			<a href="#" class="button" data-choose="<?php echo esc_attr( $this->choose ); ?>"
-			   data-update="<?php echo esc_attr( $this->update ); ?>"
-			   data-library="<?php echo esc_attr( $this->library ); ?>">
+			<a
+				href="#"
+				class="button"
+				data-choose="<?php echo esc_attr( $this->choose ); ?>"
+				data-update="<?php echo esc_attr( $this->update ); ?>"
+				data-library="<?php echo esc_attr( $this->library ); ?>"
+			>
 				<?php echo esc_html( $this->choose ); ?>
 			</a>
 
@@ -128,7 +132,7 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 				
 				<div class="multiple-media-field-template" style="display:none">
 					<div class="multiple-media-field-item current">
-						<img class="thumbnail"  width="<?php echo $this->thumbnail_dimensions[0]; ?>" height="<?php echo $this->thumbnail_dimensions[1]; ?>"/>
+						<img class="thumbnail" width="<?php echo $this->thumbnail_dimensions[0]; ?>" height="<?php echo $this->thumbnail_dimensions[1]; ?>"/>
 						<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
 						<div class="title <?php echo (bool) $this->title ? 'title-enabled" style="width: ' . $this->thumbnail_dimensions[0] . 'px' : ''; ?>"></div>
 					</div>

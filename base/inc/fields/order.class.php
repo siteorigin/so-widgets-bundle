@@ -13,23 +13,23 @@ class SiteOrigin_Widget_Field_Order extends SiteOrigin_Widget_Field_Base {
 			?><div class="siteorigin-widget-order-items"><?php
 			foreach ( $value as $key ) {
 				?>
-                <div class="siteorigin-widget-order-item" data-value="<?php echo esc_attr( $key ); ?>">
-                    <?php echo esc_html( $this->options[ $key ] ); ?>
-                </div>
-                <?php
+				<div class="siteorigin-widget-order-item" data-value="<?php echo esc_attr( $key ); ?>">
+					<?php echo esc_html( $this->options[ $key ] ); ?>
+				</div>
+				<?php
 			}
 			?></div><?php
 		}
 
 		?>
-        <input
-            type="hidden"
-            name="<?php echo esc_attr( $this->element_name ); ?>"
-            id="<?php echo esc_attr( $this->element_id ); ?>"
-            class="siteorigin-widget-input"
-            value="<?php echo esc_attr( implode( ',', $value ) ); ?>">
-        <?php
-
+		<input
+			type="hidden"
+			name="<?php echo esc_attr( $this->element_name ); ?>"
+			id="<?php echo esc_attr( $this->element_id ); ?>"
+			class="siteorigin-widget-input"
+			value="<?php echo esc_attr( implode( ',', $value ) ); ?>"
+		>
+		<?php
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {

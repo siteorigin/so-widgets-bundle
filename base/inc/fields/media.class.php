@@ -99,9 +99,13 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 					} ?></div>
 				</div>
 			</div>
-			<a href="#" class="media-upload-button" data-choose="<?php echo esc_attr( $this->choose ); ?>"
-			   data-update="<?php echo esc_attr( $this->update ); ?>"
-			   data-library="<?php echo esc_attr( $this->library ); ?>">
+			<a
+				href="#"
+				class="media-upload-button"
+				data-choose="<?php echo esc_attr( $this->choose ); ?>"
+				data-update="<?php echo esc_attr( $this->update ); ?>"
+				data-library="<?php echo esc_attr( $this->library ); ?>"
+			>
 				<?php echo esc_html( $this->choose ); ?>
 			</a>
 			<?php if ( $this->library == 'image' ) { ?>
@@ -126,10 +130,13 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 			$fallback_name = $this->get_fallback_field_name( $this->base_name );
 			$fallback_url = ! empty( $instance[ $fallback_name ] ) ? $instance[ $fallback_name ] : '';
 			?>
-			<input type="text" value="<?php echo esc_url( $fallback_url ); ?>"
-			       placeholder="<?php esc_attr_e( 'External URL', 'so-widgets-bundle' ); ?>"
-			       name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_fallback', $this->parent_container ) ); ?>"
-			       class="media-fallback-external siteorigin-widget-input" />
+			<input
+				type="text"
+				value="<?php echo esc_url( $fallback_url ); ?>"
+				placeholder="<?php esc_attr_e( 'External URL', 'so-widgets-bundle' ); ?>"
+				name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_fallback', $this->parent_container ) ); ?>"
+				class="media-fallback-external siteorigin-widget-input"
+			/>
 			<div class="clear"></div>
 			<?php
 		} else {

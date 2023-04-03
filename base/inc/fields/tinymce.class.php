@@ -396,7 +396,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 
 			$settings['tinymce'] = array(
 				'wp_skip_init' => strpos( $this->element_id, '__i__' ) != false ||
-								  strpos( $this->element_id, '_id_' ) != false,
+					strpos( $this->element_id, '_id_' ) != false,
 				'wpautop' => ! empty( $this->wpautop ),
 			);
 

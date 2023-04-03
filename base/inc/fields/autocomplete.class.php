@@ -39,10 +39,11 @@ class SiteOrigin_Widget_Field_Autocomplete extends SiteOrigin_Widget_Field_Text_
 		<div class="existing-content-selector">
 
 			<input type="text" class="content-text-search"
-			       data-post-types="<?php echo esc_attr( $post_types ); ?>"
-			       data-source="<?php echo esc_attr( $this->source ); ?>"
-			       placeholder="<?php esc_attr_e( 'Search', 'so-widgets-bundle' ); ?>"
-			       tabindex="0"/>
+				data-post-types="<?php echo esc_attr( $post_types ); ?>"
+				data-source="<?php echo esc_attr( $this->source ); ?>"
+				placeholder="<?php esc_attr_e( 'Search', 'so-widgets-bundle' ); ?>"
+				tabindex="0"
+			/>
 
 			<ul class="items"></ul>
 

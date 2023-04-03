@@ -136,7 +136,7 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 		}
 
 		$this->widget_form_fields[ $widget_id ][] = array(
-			'post_types' =>  $post_types,
+			'post_types' => $post_types,
 			'fields' => $fields,
 		);
 	}

@@ -118,7 +118,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 * @return array The form array, or an empty array if the form doesn't exist.
 	 */
 	public function get_form( $form_type ) {
-		$form_options = $this->has_form( $form_type ) ? call_user_func( array( $this, 'get_' . $form_type . '_form'  ) ) : array();
+		$form_options = $this->has_form( $form_type ) ? call_user_func( array( $this, 'get_' . $form_type . '_form' ) ) : array();
 
 		if ( $form_type == 'settings' ) {
 			// Allow plugins to filter global widgets form.
@@ -592,7 +592,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function display_siteorigin_premium_teaser() {
 		return apply_filters( 'siteorigin_premium_upgrade_teaser', true ) &&
-			   ! defined( 'SITEORIGIN_PREMIUM_VERSION' );
+			! defined( 'SITEORIGIN_PREMIUM_VERSION' );
 	}
 
 	public function scripts_loading_message() {
@@ -1018,7 +1018,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// Finally call the function and include the
 		$args = array_map( 'trim', $args );
 
-		return call_user_func( array( $this, $func ), $this->current_instance, $args  );
+		return call_user_func( array( $this, $func ), $this->current_instance, $args );
 	}
 
 	/**

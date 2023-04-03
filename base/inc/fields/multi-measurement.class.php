@@ -79,11 +79,13 @@ class SiteOrigin_Widget_Field_Multi_Measurement extends SiteOrigin_Widget_Field_
 		?>
 		</div>
 		<input type="hidden"
-			   class="siteorigin-widget-input"
-			   value="<?php echo esc_attr( $value ); ?>"
-			   name="<?php echo esc_attr( $this->element_name ); ?>"
-			   data-autofill="<?php echo empty( $this->autofill ) ? 'false' : 'true'; ?>"
-			   data-separator="<?php echo esc_attr( $this->separator ); ?>"/><?php
+			class="siteorigin-widget-input"
+			value="<?php echo esc_attr( $value ); ?>"
+			name="<?php echo esc_attr( $this->element_name ); ?>"
+			data-autofill="<?php echo empty( $this->autofill ) ? 'false' : 'true'; ?>"
+			data-separator="<?php echo esc_attr( $this->separator ); ?>"
+		/>
+		<?php
 	}
 
 	public function enqueue_scripts() {

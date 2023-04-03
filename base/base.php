@@ -175,7 +175,7 @@ function siteorigin_widget_get_font( $font_value ) {
 			global $wp_styles;
 			global $sow_registered_fonts;
 
-			$font_weight_styles = array_keys( $sow_registered_fonts[ $font['family'] ]  );
+			$font_weight_styles = array_keys( $sow_registered_fonts[ $font['family'] ] );
 			$wp_styles->registered[ $style_name ]->src = esc_url( apply_filters( 'siteorigin_web_font_url', 'https://fonts.googleapis.com/css' ) . '?family=' . urlencode( $font['family'] . ':' . implode( ',', $font_weight_styles ) ) );
 		}
 	} else {

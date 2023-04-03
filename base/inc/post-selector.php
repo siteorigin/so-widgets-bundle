@@ -129,7 +129,7 @@ function siteorigin_widget_post_selector_process_query( $query, $exclude_current
 function siteorigin_widget_post_selector_all_post_types() {
 	$post_types = array();
 
-	foreach ( get_post_types( array( 'public' => true  ), 'objects' ) as $id => $type ) {
+	foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $id => $type ) {
 		$post_types[] = $id;
 	}
 

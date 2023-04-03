@@ -24,8 +24,8 @@ class SiteOrigin_Widget_Field_Code extends SiteOrigin_Widget_Field_Text_Input_Ba
 			<?php if ( ! empty( $this->placeholder ) ) {
 				echo 'placeholder="' . esc_attr( $this->placeholder ) . '"';
 			} ?>
-            <?php $this->render_CSS_classes( $this->get_input_classes() ); ?>
-                  rows="<?php echo ! empty( $this->rows ) ? (int) $this->rows : 4; ?>"
+			<?php $this->render_CSS_classes( $this->get_input_classes() ); ?>
+			rows="<?php echo ! empty( $this->rows ) ? (int) $this->rows : 4; ?>"
 			<?php if ( ! empty( $this->readonly ) ) {
 				echo 'readonly';
 			} ?>><?php echo esc_textarea( $value ); ?></textarea>

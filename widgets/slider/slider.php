@@ -41,7 +41,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 							'valueMethod' => 'html',
 						),
 						array(
-							'selector' => '.siteorigin-widget-field-background_videos .siteorigin-widget-field-repeater-items  .media-field-wrapper .current .title',
+							'selector' => '.siteorigin-widget-field-background_videos .siteorigin-widget-field-repeater-items .media-field-wrapper .current .title',
 							'valueMethod' => 'html',
 						),
 						array(

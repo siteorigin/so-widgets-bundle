@@ -41,7 +41,7 @@ if ( ! empty( $instance['features'] ) ) {
 				<div
 					class="sow-icon-container <?php echo ! empty( $instance['container_shape'] ) ? 'sow-container-' . esc_attr( $instance['container_shape'] ) : 'sow-container-none'; ?>"
 					style="color: <?php echo esc_attr( $feature['container_color'] ); ?>; "
-					<?php echo  ! empty( $feature['icon_title'] ) ? 'title="' . esc_attr( $feature['icon_title'] ) . '"' : ''; ?>>
+					<?php echo ! empty( $feature['icon_title'] ) ? 'title="' . esc_attr( $feature['icon_title'] ) . '"' : ''; ?>>
 					<?php
 					$icon_styles = array();
 

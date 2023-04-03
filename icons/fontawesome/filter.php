@@ -1860,11 +1860,11 @@ function siteorigin_widgets_icons_fontawesome_filter( $icons ){
 add_filter('siteorigin_widgets_icons_fontawesome', 'siteorigin_widgets_icons_fontawesome_filter');
 
 function siteorigin_widgets_icon_styles_fontawesome_filter( $styles ) {
-    return array_merge( $styles, array(
-        'sow-far' => __( 'Regular', 'so-widgets-bundle' ),
-        'sow-fas' => __( 'Solid', 'so-widgets-bundle' ),
-        'sow-fab' => __( 'Brands', 'so-widgets-bundle' ),
-    ) );
+	return array_merge( $styles, array(
+		'sow-far' => __( 'Regular', 'so-widgets-bundle' ),
+		'sow-fas' => __( 'Solid', 'so-widgets-bundle' ),
+		'sow-fab' => __( 'Brands', 'so-widgets-bundle' ),
+	) );
 }
 
 add_filter('siteorigin_widgets_icon_styles_fontawesome', 'siteorigin_widgets_icon_styles_fontawesome_filter');
