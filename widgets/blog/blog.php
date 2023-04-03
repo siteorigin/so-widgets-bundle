@@ -92,11 +92,36 @@ public function __construct() {
 							'type' => 'checkbox',
 							'label' => __( 'Featured Image', 'so-widgets-bundle' ),
 							'default' => true,
+							'state_emitter' => array(
+								'callback' => 'conditional',
+								'args' => array(
+									'featured_image[show]: val',
+									'featured_image[hide]: ! val',
+								),
+							),
 						),
 						'featured_image_size' => array(
 							'type' => 'image-size',
 							'label' => __( 'Featured Image Size', 'siteorigin-premium' ),
 							'custom_size' => true,
+							'state_handler' => array(
+								'featured_image[show]' => array( 'show' ),
+								'featured_image[hide]' => array( 'hide' ),
+							),
+						),
+						'tag' => array(
+							'type' => 'select',
+							'label' => __( 'Post Title HTML Tag', 'so-widgets-bundle' ),
+							'default' => 'h2',
+							'options' => array(
+								'h1' => __( 'H1', 'so-widgets-bundle' ),
+								'h2' => __( 'H2', 'so-widgets-bundle' ),
+								'h3' => __( 'H3', 'so-widgets-bundle' ),
+								'h4' => __( 'H4', 'so-widgets-bundle' ),
+								'h5' => __( 'H5', 'so-widgets-bundle' ),
+								'h6' => __( 'H6', 'so-widgets-bundle' ),
+								'p' => __( 'Paragraph', 'so-widgets-bundle' ),
+							)
 						),
 						'content' => array(
 							'type' => 'select',
@@ -873,6 +898,10 @@ public function __construct() {
 			return array();
 		}
 
+		if ( ! isset( $instance['settings']['tag'] ) ) {
+			$instance['settings']['tag'] = 'h2';
+		}
+
 		if ( empty( $instance['template'] ) ) {
 			$instance['template'] = 'standard';
 		} else {
@@ -918,7 +947,7 @@ public function __construct() {
 			siteorigin_widget_post_selector_process_query( $instance['posts'] )
 		);
 
-		if ( $instance['template'] == 'portfolio' ) {
+		if ( $instance['template'] == 'portfolio' && ! empty( $instance['featured_image_fallback'] ) ) {
 			// The portfolio template relies on each post having an image so exclude any posts that don't.
 			$query['meta_query'] = array(
 				array(
@@ -1023,41 +1052,51 @@ public function __construct() {
 		<?php }
 		}
 
-	public static function post_featured_image( $settings, $categories = false, $size = 'full' ) {
-		if ( $settings['featured_image'] && has_post_thumbnail() ) { ?>
-			<?php ob_start(); ?>
-			<div class="sow-entry-thumbnail">
-				<?php if ( $categories && $settings['categories'] && has_category() ) { ?>
-					<div class="sow-thumbnail-meta">
-						<?php echo get_the_category_list(); ?>
-					</div>
-				<?php } ?>
-				<a href="<?php the_permalink(); ?>">
-					<?php
-					if ( ! empty( $settings['featured_image_size'] ) ) {
-						$size = $settings['featured_image_size'] == 'custom_size' ? array( $settings['featured_image_size_width'], $settings['featured_image_size_height'] ) : $settings['featured_image_size'];
-					} else {
-						// Check if this template has a different default image size.
-						if (
-							$size == 'full' &&
-							has_image_size( 'sow-blog-' . $settings['template'] )
-						) {
-							$size = 'sow-blog-' . $settings['template'];
+	static public function post_featured_image( $settings, $categories = false, $size = 'full' ) {
+		if ( $settings['featured_image'] ) {
+			if ( ! has_post_thumbnail() && ! empty( $settings['featured_image_fallback'] ) ) {
+				$featured_image = apply_filters( 'siteorigin_widgets_blog_featured_image_fallback', false, $settings );
+			}
+			if ( has_post_thumbnail() || ! empty( $featured_image ) ) {
+				ob_start();
+				?>
+				<div class="sow-entry-thumbnail">
+					<?php if ( $categories && $settings['categories'] && has_category() ) { ?>
+						<div class="sow-thumbnail-meta">
+							<?php echo get_the_category_list(); ?>
+						</div>
+					<?php } ?>
+					<a href="<?php the_permalink(); ?>">
+						<?php
+						if ( has_post_thumbnail() ) {
+							if ( ! empty( $settings['featured_image_size'] ) ) {
+								$size = $settings['featured_image_size'] == 'custom_size' ? array( $settings['featured_image_size_width'], $settings['featured_image_size_height'] ) : $settings['featured_image_size'];
+							} else {
+								// Check if this template has a different default image size.
+								if (
+									$size == 'full' &&
+									has_image_size( 'sow-blog-' . $settings['template'] )
+								) {
+									$size = 'sow-blog-' . $settings['template'];
+								}
+							}
+							the_post_thumbnail( $size );
+						} elseif( ! empty( $featured_image ) ) {
+							echo $featured_image;
 						}
-					}
-					the_post_thumbnail( $size );
-			?>
-				</a>
-			</div>
-			<?php
-			echo apply_filters( 'siteorigin_widgets_blog_featured_image_markup', ob_get_clean(), $settings, $categories = false, $size = 'full' );
+						?>
+					</a>
+				</div>
+				<?php
+				echo apply_filters( 'siteorigin_widgets_blog_featured_image_markup', ob_get_clean(), $settings, $categories = false, $size = 'full' );
+			}
 		}
 	}
 
-	public static function generate_post_title() {
+	static public function generate_post_title( $settings ) {
 		the_title(
-			'<h2 class="sow-entry-title" style="margin: 0 0 5px;"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">',
-			'</a></h2>'
+			'<' . $settings['tag'] . ' class="sow-entry-title" style="margin: 0 0 5px;"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">',
+			'</a></' . $settings['tag'] . '>'
 		);
 	}
 

@@ -25,15 +25,22 @@ if ( $settings['categories'] || $template_settings['filter_categories'] ) {
 		<div class="sow-entry-content">
 			<?php
 			the_title(
-				'<h2 class="sow-entry-title" style="margin: 0 0 5px;">',
-				'</h2>'
-			)
-			 ?>
-			<?php if ( $settings['categories'] ) { ?>
+				'<' . $settings['tag'] . ' class="sow-entry-title" style="margin: 0 0 5px;">',
+				'</' . $settings['tag'] . '>'
+			);
+			?>
+			if ( $settings['categories'] ) :
+				?>
 				<div class="sow-entry-divider"></div>
 				<span class="sow-entry-project-type"><?php echo $filtering; ?></span>
 			<?php } ?>
 		</div>
-		<?php the_post_thumbnail( 'sow-blog-portfolio' ); ?>
+		<?php
+		if ( ! has_post_thumbnail() ) {
+			echo apply_filters( 'siteorigin_widgets_blog_featured_image_fallback', false, $settings );
+		} else {
+			the_post_thumbnail( 'sow-blog-portfolio' );
+		}
+		?>
 	</div>
 </article>
