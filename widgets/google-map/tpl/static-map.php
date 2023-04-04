@@ -8,17 +8,19 @@
  */
 ?>
 
-<?php if( !empty( $destination_url ) ): ?>
-<a href="<?php echo sow_esc_url( $destination_url ) ?>" <?php echo $new_window ? 'target="_blank" rel="noopener noreferrer"' : '' ?>>
-<?php endif; ?>
+<?php if ( ! empty( $destination_url ) ) { ?>
+	<a href="<?php echo sow_esc_url( $destination_url ); ?>" <?php echo $new_window ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
+<?php } ?>
 
 <img
 	class="sowb-google-map-static"
 	border="0"
-	src="<?php echo sow_esc_url( $src_url ) ?>"
+	src="<?php echo sow_esc_url( $src_url ); ?>"
 	data-fallback-image="<?php echo esc_attr( json_encode( $fallback_image_data ) ); ?>"
 	data-breakpoint="<?php echo esc_attr( $breakpoint ); ?>"
 	onerror="this.sowbLoadError = true;">
 
 <?php
-if( !empty( $destination_url ) ) echo '</a>';
+if ( ! empty( $destination_url ) ) {
+	echo '</a>';
+}
