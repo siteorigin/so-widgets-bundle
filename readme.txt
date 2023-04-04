@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: widget, button, slider, hero, google maps, image, carousel, lottie, features, icons, price table, tinymce, social icons
 Requires at least: 4.2
-Tested up to: 6.1
+Tested up to: 6.2
 Requires PHP: 5.6.20
 Stable tag: trunk
 Build time: unbuilt
@@ -105,6 +105,11 @@ SiteOrigin Premium includes access to our professional email support service, pe
 The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets. Widgets can be enabled or disabled as needed. If a widget offers global settings, you can access those via the Settings button next to each applicable widget.
 
 == Changelog ==
+
+= 1.47.0 - 30 March 2023 =
+* Blog: Added a `Post Title HTML Tag` setting.
+* Google Maps: Fixed a potential `Map Style > Predefined Styles` PHP 8.x error.
+* Updated Tested up to tag.
 
 = 1.46.7 - 15 March 2023 =
 * Developer: Updated Google Maps location `getSimplePlace` a method.

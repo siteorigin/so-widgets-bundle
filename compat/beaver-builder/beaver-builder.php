@@ -1,7 +1,6 @@
 <?php
 
 class SiteOrigin_Widgets_Bundle_Beaver_Builder {
-
 	/**
 	 * Get the singleton instance
 	 *
@@ -9,14 +8,15 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 	 */
 	public static function single() {
 		static $single;
+
 		return empty( $single ) ? $single = new self() : $single;
 	}
 
-	function __construct() {
-		add_action('wp', array( $this, 'init' ), 9 );
+	public function __construct() {
+		add_action( 'wp', array( $this, 'init' ), 9 );
 	}
 
-	function init() {
+	public function init() {
 		if ( ! FLBuilderModel::is_builder_active() ) {
 			return;
 		}
@@ -28,14 +28,15 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 		add_filter( 'siteorigin_widgets_form_show_preview_button', '__return_false' );
 	}
 
-	function enqueue_active_widgets_scripts() {
+	public function enqueue_active_widgets_scripts() {
 		global $wp_widget_factory;
 
 		// Beaver Builder does it's editing in the front end so enqueue required form scripts for active widgets.
 		$so_widgets_bundle = SiteOrigin_Widgets_Bundle::single();
 		$so_widgets_bundle->enqueue_registered_widgets_scripts( false, true );
-		
+
 		$any_widgets_active = false;
+
 		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
 			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
 				$any_widgets_active = true;
@@ -53,14 +54,21 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 			wp_enqueue_script( 'iris', '/wp-admin/js/iris.min.js', array(
 				'jquery-ui-draggable',
 				'jquery-ui-slider',
-				'jquery-touch-punch'
+				'jquery-touch-punch',
 			), '1.0.7', 1 );
 
-			wp_enqueue_script( 'wp-color-picker', '/wp-admin/js/color-picker' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'iris' ), false, 1 );
+			wp_enqueue_script(
+				'wp-color-picker',
+				'/wp-admin/js/color-picker' . SOW_BUNDLE_JS_SUFFIX . '.js',
+				array( 'iris' ),
+				false,
+				1
+			);
 
 			wp_enqueue_style( 'wp-color-picker' );
 
 			global $wp_version;
+
 			if ( version_compare( $wp_version, '5.5', '<' ) ) {
 				// Localization args for when wp-color-picker script hasn't been registered.
 				wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', array(
@@ -72,8 +80,11 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 			}
 		}
 
-		wp_enqueue_style( 'sowb-styles-for-beaver', plugin_dir_url( __FILE__ ) . 'styles.css' );
-		
+		wp_enqueue_style(
+			'sowb-styles-for-beaver',
+			plugin_dir_url( __FILE__ ) . 'styles.css'
+		);
+
 		$deps = ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? array( 'jquery', 'fl-builder' ) : array( 'fl-builder-min' );
 		wp_enqueue_script(
 			'sowb-js-for-beaver',
@@ -81,11 +92,15 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 			$deps
 		);
 
-		wp_enqueue_style( 'siteorigin-widget-admin', plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/css/admin.css', array( 'media-views' ), SOW_BUNDLE_VERSION );
-
+		wp_enqueue_style(
+			'siteorigin-widget-admin',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'base/css/admin.css',
+			array( 'media-views' ),
+			SOW_BUNDLE_VERSION
+		);
 	}
 
-	function print_footer_templates() {
+	public function print_footer_templates() {
 		global $wp_widget_factory;
 
 		// Beaver Builder does it's editing in the front end so print required footer templates for active widgets.
@@ -95,7 +110,6 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 			}
 		}
 	}
-	
 }
 
 SiteOrigin_Widgets_Bundle_Beaver_Builder::single();

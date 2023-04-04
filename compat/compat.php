@@ -1,11 +1,6 @@
 <?php
 
 class SiteOrigin_Widgets_Bundle_Compatibility {
-
-	const BEAVER_BUILDER = 'Beaver Builder';
-	const ELEMENTOR = 'Elementor';
-	const VISUAL_COMPOSER = 'Visual Composer';
-
 	/**
 	 * Get the singleton instance
 	 *
@@ -13,11 +8,13 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 	 */
 	public static function single() {
 		static $single;
+
 		return empty( $single ) ? $single = new self() : $single;
 	}
 
-	function __construct() {
+	public function __construct() {
 		$builder = $this->get_active_builder();
+
 		if ( ! empty( $builder ) ) {
 			require_once $builder['file_path'];
 		}
@@ -36,18 +33,18 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 			amp_is_enabled()
 		) {
 			// AMP plugin is installed and enabled. Remove Slider Lazy Loading.
-			add_filter( 'siteorigin_widgets_slider_attr', function( $attr ) {
+			add_filter( 'siteorigin_widgets_slider_attr', function ( $attr ) {
 				if ( ! empty( $attr['class'] ) ) {
 					$attr['class'] = str_replace( ' skip-lazy', '', $attr['class'] );
 				}
 				$attr['loading'] = false;
+
 				return $attr;
 			} );
 		}
 	}
 
-	function get_active_builder() {
-
+	public function get_active_builder() {
 		$builders = include_once 'builders.php';
 
 		foreach ( $builders as $builder ) {
@@ -59,17 +56,19 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 		return null;
 	}
 
-	function is_builder_active( $builder ) {
+	public function is_builder_active( $builder ) {
 		switch ( $builder[ 'name' ] ) {
-			case self::BEAVER_BUILDER:
+			case 'Beaver Builder':
 				return class_exists( 'FLBuilderModel', false );
-			break;
-			case self::ELEMENTOR:
+				break;
+
+			case 'Elementor':
 				return class_exists( 'Elementor\\Plugin', false );
-			break;
-			case self::VISUAL_COMPOSER:
+				break;
+
+			case 'Visual Composer':
 				return class_exists( 'Vc_Manager' );
-			break;
+				break;
 		}
 	}
 
@@ -78,7 +77,6 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 	 *
 	 * @param $name The name of the file that's been deleted.
 	 * @param $instance The current instance of the related widget.
-	 *
 	 */
 	public function clear_page_cache( $name, $instance = array() ) {
 		$id = explode( '-', $name );
@@ -104,6 +102,7 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 
 			if ( function_exists( 'run_litespeed_cache' ) ) {
 				$url = parse_url( get_the_permalink( $id ) );
+
 				if ( ! empty( $url ) ) {
 					header( 'x-litespeed-purge: ' . $url['path'] );
 				}
@@ -144,7 +143,6 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 			rocket_clean_minify( 'css' );
 		}
 	}
-
 }
 
 SiteOrigin_Widgets_Bundle_Compatibility::single();
