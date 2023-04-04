@@ -1,7 +1,7 @@
 <?php
 
 class SiteOrigin_Widgets_Bundle_Widget_Block {
-	var $widgetAnchor;
+	public $widgetAnchor;
 	/**
 	 * Get the singleton instance
 	 *
@@ -75,6 +75,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		global $wp_widget_factory;
 		$third_party_widgets = array();
+
 		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
 			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
 				/** @var SiteOrigin_Widget $widget_obj */
@@ -119,6 +120,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				'confirmChangeWidget' => __( 'Selecting a different widget will revert any changes. Continue?', 'so-widgets-bundle' ),
 			)
 		);
+
 		if ( function_exists( 'wp_set_script_translations' ) ) {
 			wp_set_script_translations( 'sowb-widget-block', 'so-widgets-bundle' );
 		}
@@ -129,17 +131,16 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$so_widgets_bundle->enqueue_registered_widgets_scripts();
 	}
 
-	function add_widget_id( $id, $instance, $widget ) {
+	public function add_widget_id( $id, $instance, $widget ) {
 		return $this->widgetAnchor;
 	}
 
 	public function render_widget_block( $attributes ) {
 		if ( empty( $attributes['widgetClass'] ) ) {
-			return '<div>'.
+			return '<div>' .
 				   __( 'You need to select a widget type before you\'ll see anything here. :)', 'so-widgets-bundle' ) .
 				   '</div>';
 		}
-
 
 		$widget_class = $attributes['widgetClass'];
 		global $wp_widget_factory;
@@ -151,10 +152,11 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		}
 
 		// Support for Additional CSS classes.
-		$add_custom_class_name = function( $class_names ) use ( $attributes ) {
+		$add_custom_class_name = function ( $class_names ) use ( $attributes ) {
 			if ( ! empty( $attributes['className'] ) ) {
 				$class_names = array_merge( $class_names, explode( ' ', $attributes['className'] ) );
 			}
+
 			return $class_names;
 		};
 
@@ -163,20 +165,20 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			$instance = $attributes['widgetData'];
 			add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 
-
 			ob_start();
 			/*
 			 * If we have pre-generated widgetHtml or there's a valid $_POST, generate the widget.
 			 * There are certain sitautions where we bypass the cache:
-			 * 
+			 *
 			 * - We don't show the pre-generated widget when there's a valid $_POST
 			 * as widgets will likely change when that happens.
-			 * 
+			 *
 			 * - Pages with an active WPML translation will bypass cache.
-			 * 
+			 *
 			 * - We also exclude certain widgets from the cache.
 			 */
 			$current_page_id = get_the_ID();
+
 			if (
 				empty( $attributes['widgetHtml'] ) ||
 				! empty( $_POST ) ||
@@ -221,6 +223,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				// Check if this widget uses any icons that need to be enqueued.
 				if ( ! empty( $attributes['widgetIcons'] ) ) {
 					$widget_icon_families = apply_filters( 'siteorigin_widgets_icon_families', array() );
+
 					foreach ( $attributes['widgetIcons'] as $icon_font ) {
 						if ( ! wp_style_is( $icon_font ) ) {
 							$font_family = explode( 'siteorigin-widget-icon-font-', $icon_font )[1];
@@ -235,15 +238,17 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			remove_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 			unset( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
 		} else {
-			return '<div>'.
+			return
+				'<div>' .
 				   sprintf(
-			   			__( 'Invalid widget class %s. Please make sure the widget has been activated in %sSiteOrigin Widgets%s.', 'so-widgets-bundle' ),
-					   $widget_class,
-					   '<a href="' . admin_url( 'plugins.php?page=so-widgets-plugins' ) . '">',
-					   '</a>'
+					   	__( 'Invalid widget class %s. Please make sure the widget has been activated in %sSiteOrigin Widgets%s.', 'so-widgets-bundle' ),
+					   	$widget_class,
+					   	'<a href="' . admin_url( 'plugins.php?page=so-widgets-plugins' ) . '">',
+					   	'</a>'
 				   ) .
-				   '</div>';
+			   '</div>';
 		}
+
 		return $rendered_widget;
 	}
 }

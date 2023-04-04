@@ -1,12 +1,13 @@
 <?php
 if ( empty( $file ) ) {
 	echo __( 'Unable to display Lottie Player.', 'so-widgets-bundle' );
+
 	return;
 }
 ?>
 
-<div class="sow-lottie-player" <?php if ( ! empty( $url ) ) : ?>style="position: relative;"<?php endif; ?>>
-	<?php if ( ! empty( $url ) ) : ?>
+<div class="sow-lottie-player" <?php if ( ! empty( $url ) ) { ?>style="position: relative;"<?php } ?>>
+	<?php if ( ! empty( $url ) ) { ?>
 		<?php $bottom = ! empty( $attributes['controls'] ) ? '35px' : 0; ?>
 		<a
 			href="<?php echo sow_esc_url( $url ); ?>"
@@ -15,11 +16,11 @@ if ( empty( $file ) ) {
 		>
 			&nbsp;
 		</a>
-	<?php endif; ?>
+	<?php } ?>
 	<lottie-player
 		class="sow-lottie-player"
 		<?php
-		foreach ( $attributes as $name => $value) {
+		foreach ( $attributes as $name => $value ) {
 			if ( ! empty( $value ) ) {
 				if ( $value === true ) {
 					echo "$name ";
