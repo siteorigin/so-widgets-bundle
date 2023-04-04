@@ -3,7 +3,8 @@
 (function( $ ) {
 
 	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-autocomplete', function ( e ) {
-		var $$ = $(this);
+		var $$ = $( this );
+		var $contentSelector = $$.find(' .existing-content-selector' );
 
 		if ( $$.data( 'initialized' ) ) {
 			return;
@@ -73,11 +74,10 @@
 		};
 
 		$$.find( '.siteorigin-widget-autocomplete-input' ).on( 'click', function () {
-			var $s = $$.find('.existing-content-selector');
-			$s.show();
+			$contentSelector.show();
 
 			var refreshPromise = new $.Deferred();
-			if( $s.is(':visible') && $s.find('ul.items li').length === 0 ) {
+			if( $contentSelector.is(':visible') && $contentSelector.find('ul.items li').length === 0 ) {
 				refreshPromise = refreshList();
 			} else {
 				refreshPromise.resolve();
@@ -87,7 +87,7 @@
 		});
 
 		var closeContent = function () {
-			$$.find('.existing-content-selector').hide();
+			$contentSelector.hide();
 		};
 
 		$( window ).on( 'mousedown', function( event ) {
@@ -106,22 +106,29 @@
 			if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
 				return;
 			}
-
-			var $li = $(this);
-			var selectedItems = getSelectedItems();
+			var $input = $$.find('input.siteorigin-widget-input');
+			var $li = $( this );
 			var clickedItem = $li.data( 'value' );
 
-			var curIndex = selectedItems.indexOf( clickedItem );
+			if ( $contentSelector.data( 'multiple' ) ) {
+				var selectedItems = getSelectedItems();
 
-			if ( curIndex > -1 ) {
-				selectedItems.splice( curIndex, 1 );
-				$li.removeClass( 'selected' );
+				var curIndex = selectedItems.indexOf( clickedItem );
+
+				if ( curIndex > -1 ) {
+					selectedItems.splice( curIndex, 1 );
+					$li.removeClass( 'selected' );
+				} else {
+					selectedItems.push( clickedItem );
+					$li.addClass( 'selected' );
+				}				
+				$input.val( selectedItems.join(',') );
 			} else {
-				selectedItems.push( clickedItem );
+				$li.parent().find( '.selected' ).removeClass( 'selected' );
 				$li.addClass( 'selected' );
+				$input.val( clickedItem );
+				closeContent();
 			}
-			var $input = $$.find('input.siteorigin-widget-input');
-			$input.val( selectedItems.join(',') );
 			$input.trigger( 'change' );
 		} );
 
