@@ -8,49 +8,46 @@ Documentation: https://siteorigin.com/widgets-bundle/button-widget-documentation
 */
 
 class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
-	function __construct() {
-
+	public function __construct() {
 		parent::__construct(
 			'sow-button',
 			__( 'SiteOrigin Button', 'so-widgets-bundle' ),
 			array(
 				'description' => __( 'A powerful yet simple button widget for your sidebars or Page Builder pages.', 'so-widgets-bundle' ),
-				'help' => 'https://siteorigin.com/widgets-bundle/button-widget-documentation/'
+				'help' => 'https://siteorigin.com/widgets-bundle/button-widget-documentation/',
 			),
 			array(
-
 			),
 			false,
 			plugin_dir_path( __FILE__ )
 		);
-
 	}
 
-	function get_settings_form() {
+	public function get_settings_form() {
 		return array(
 			'responsive_breakpoint' => array(
 				'type'        => 'measurement',
 				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
 				'default'     => '780px',
 				'description' => __( 'This setting controls when the Mobile Align setting will be used. The default value is 780px.', 'so-widgets-bundle' ),
-			)
+			),
 		);
 	}
 
-	function initialize() {
+	public function initialize() {
 		$this->register_frontend_styles(
 			array(
 				array(
 					'sow-button-base',
-					plugin_dir_url(__FILE__) . 'css/style.css',
+					plugin_dir_url( __FILE__ ) . 'css/style.css',
 					array(),
-					SOW_BUNDLE_VERSION
+					SOW_BUNDLE_VERSION,
 				),
 			)
 		);
 	}
 
-	function get_widget_form() {
+	public function get_widget_form() {
 		return array(
 			'text' => array(
 				'type' => 'text',
@@ -115,11 +112,10 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 				'label' => __( 'Design and Layout', 'so-widgets-bundle' ),
 				'hide' => true,
 				'fields' => array(
-
 					'width' => array(
 						'type' => 'measurement',
 						'label' => __( 'Width', 'so-widgets-bundle' ),
-						'description' => __( 'Leave blank to let the button resize according to content.', 'so-widgets-bundle' )
+						'description' => __( 'Leave blank to let the button resize according to content.', 'so-widgets-bundle' ),
 					),
 
 					'align' => array(
@@ -175,7 +171,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 								'hover[show]: val',
 								'hover[hide]: ! val',
 							),
-						)
+						),
 					),
 
 					'hover_background_color' => array(
@@ -184,7 +180,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'state_handler' => array(
 							'hover[show]' => array( 'show' ),
 							'hover[hide]' => array( 'hide' ),
-						)
+						),
 					),
 
 					'hover_text_color' => array(
@@ -193,13 +189,13 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'state_handler' => array(
 							'hover[show]' => array( 'show' ),
 							'hover[hide]' => array( 'hide' ),
-						)
+						),
 					),
 
 					'font' => array(
 						'type' => 'font',
 						'label' => __( 'Font', 'so-widgets-bundle' ),
-						'default' => 'default'
+						'default' => 'default',
 					),
 
 					'font_size' => array(
@@ -233,7 +229,6 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 							),
 						),
 					),
-
 				),
 			),
 
@@ -271,40 +266,44 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'label' => __( 'Rel Attribute', 'so-widgets-bundle' ),
 						'description' => __( 'Adds a rel attribute to the button link.', 'so-widgets-bundle' ),
 					),
-				)
+				),
 			),
 		);
 	}
 
-	function get_style_name( $instance ) {
-		if ( empty( $instance['design']['theme'] ) ) return 'atom';
+	public function get_style_name( $instance ) {
+		if ( empty( $instance['design']['theme'] ) ) {
+			return 'atom';
+		}
+
 		return $instance['design']['theme'];
 	}
 
 	/**
 	 * Get the variables for the Button Widget.
 	 *
-	 * @param $instance
-	 * @param $args
-	 *
 	 * @return array
 	 */
-	function get_template_variables( $instance, $args ) {
+	public function get_template_variables( $instance, $args ) {
 		$button_attributes = array();
 
 		$attributes = $instance['attributes'];
 
 		$classes = ! empty( $attributes['classes'] ) ? $attributes['classes'] : '';
+
 		if ( ! empty( $classes ) ) {
 			$classes .= ' ';
 		}
-		$classes .= 'ow-icon-placement-'. $instance['button_icon']['icon_placement'];
+		$classes .= 'ow-icon-placement-' . $instance['button_icon']['icon_placement'];
+
 		if ( ! empty( $instance['design']['hover'] ) ) {
 			$classes .= ' ow-button-hover';
 		}
 
-		$button_attributes['class'] = implode( ' ',
-			array_map( 'sanitize_html_class',
+		$button_attributes['class'] = implode(
+			' ',
+			array_map(
+				'sanitize_html_class',
 				explode( ' ', $classes )
 			)
 		);
@@ -321,11 +320,13 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		if ( ! empty( $attributes['id'] ) ) {
 			$button_attributes['id'] = $attributes['id'];
 		}
+
 		if ( ! empty( $attributes['title'] ) ) {
 			$button_attributes['title'] = $attributes['title'];
 		}
+
 		if ( ! empty( $attributes['rel'] ) ) {
-			if ( isset ( $button_attributes['rel'] ) ) {
+			if ( isset( $button_attributes['rel'] ) ) {
 				$button_attributes['rel'] .= " $attributes[rel]";
 			} else {
 				$button_attributes['rel'] = $attributes['rel'];
@@ -333,6 +334,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		}
 
 		$icon_image_url = '';
+
 		if ( ! empty( $instance['button_icon']['icon'] ) ) {
 			$attachment = wp_get_attachment_image_src( $instance['button_icon']['icon'] );
 
@@ -356,12 +358,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 	/**
 	 * Get the variables that we'll be injecting into the less stylesheet.
 	 *
-	 * @param $instance
-	 *
 	 * @return array
 	 */
-	function get_less_variables( $instance ) {
-		if ( empty( $instance ) || empty( $instance['design'] ) ) return array();
+	public function get_less_variables( $instance ) {
+		if ( empty( $instance ) || empty( $instance['design'] ) ) {
+			return array();
+		}
 
 		$text_color = isset( $instance['design']['text_color'] ) ? $instance['design']['text_color'] : '';
 		$button_color = isset( $instance['design']['button_color'] ) ? $instance['design']['button_color'] : '';
@@ -384,22 +386,22 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		if ( ! empty( $instance['design']['font'] ) ) {
 			$font = siteorigin_widget_get_font( $instance['design']['font'] );
 			$less_vars['button_font'] = $font['family'];
+
 			if ( ! empty( $font['weight'] ) ) {
 				$less_vars['button_font_weight'] = $font['weight_raw'];
 				$less_vars['button_font_style'] = $font['style'];
 			}
 		}
+
 		return $less_vars;
 	}
 
 	/**
 	 * Make sure the instance is the most up to date version.
 	 *
-	 * @param $instance
-	 *
 	 * @return mixed
 	 */
-	function modify_instance( $instance ) {
+	public function modify_instance( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
 		}
@@ -423,13 +425,14 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 				'padding',
 			),
 			'attributes' => array(
-				'id'
+				'id',
 			),
 		);
 
 		foreach ( $migrate_props as $prop => $sub_props ) {
 			if ( empty( $instance[ $prop ] ) ) {
 				$instance[ $prop ] = array();
+
 				foreach ( $sub_props as $sub_prop ) {
 					if ( isset( $instance[ $sub_prop ] ) ) {
 						$instance[ $prop ][ $sub_prop ] = $instance[ $sub_prop ];
@@ -472,8 +475,11 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		return $instance;
 	}
 
-	function get_form_teaser() {
-		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+	public function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
+
 		return array(
 			sprintf(
 				__( 'Add a beautiful tooltip to the Button Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),

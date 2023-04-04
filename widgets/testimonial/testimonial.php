@@ -8,33 +8,31 @@ Documentation: https://siteorigin.com/widgets-bundle/testimonials-widget/
 */
 
 class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
-
-	function __construct() {
+	public function __construct() {
 		parent::__construct(
 			'sow-testimonials',
 			__( 'SiteOrigin Testimonials', 'so-widgets-bundle' ),
 			array(
 				'description' => __( 'Share your product or service testimonials in a variety of different ways.', 'so-widgets-bundle' ),
-				'help' => 'https://siteorigin.com/widgets-bundle/testimonial-widget-documentation/'
+				'help' => 'https://siteorigin.com/widgets-bundle/testimonial-widget-documentation/',
 			),
 			array(
-
 			),
 			false,
 			plugin_dir_path( __FILE__ )
 		);
 	}
 
-	function initialize() {
+	public function initialize() {
 		$this->register_frontend_styles( array(
 			array(
 				'sow-testimonial',
-				plugin_dir_url(__FILE__) . 'css/style.css'
-			)
+				plugin_dir_url( __FILE__ ) . 'css/style.css',
+			),
 		) );
 	}
 
-	function get_widget_form() {
+	public function get_widget_form() {
 		return array(
 			'title' => array(
 				'type' => 'text',
@@ -47,7 +45,7 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 				'item_label' => array(
 					'selector'     => "[id*='testimonials-name']",
 					'update_event' => 'change',
-					'value_method' => 'val'
+					'value_method' => 'val',
 				),
 				'fields' => array(
 					'name' => array(
@@ -93,21 +91,20 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 						'type' => 'checkbox',
 						'label' => __( 'Open in a new window', 'so-widgets-bundle' ),
 					),
-				)
+				),
 			),
 
 			'settings' => array(
 				'type' => 'section',
 				'label' => __( 'Settings', 'so-widgets-bundle' ),
 				'fields' => array(
-
 					'per_line' => array(
 						'type' => 'slider',
 						'label' => __( 'Testimonials per row', 'so-widgets-bundle' ),
 						'min' => 1,
 						'max' => 5,
 						'integer' => true,
-						'default' => 3
+						'default' => 3,
 					),
 
 					'responsive' => array(
@@ -125,7 +122,7 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 										'min' => 1,
 										'max' => 5,
 										'integer' => true,
-										'default' => 2
+										'default' => 2,
 									),
 									'image_size' => array(
 										'type' => 'slider',
@@ -141,8 +138,8 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 										'description' => __( 'The resolution to treat as a tablet resolution.', 'so-widgets-bundle' ),
 										'default' => 800,
 										'sanitize' => 'intval',
-									)
-								)
+									),
+								),
 							),
 							'mobile' => array(
 								'type' => 'section',
@@ -154,7 +151,7 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 										'min' => 1,
 										'max' => 5,
 										'integer' => true,
-										'default' => 1
+										'default' => 1,
 									),
 									'image_size' => array(
 										'type' => 'slider',
@@ -170,20 +167,18 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 										'description' => __( 'The resolution to treat as a mobile resolution.', 'so-widgets-bundle' ),
 										'default' => 480,
 										'sanitize' => 'intval',
-									)
-								)
-							)
-
-						)
+									),
+								),
+							),
+						),
 					),
-				)
+				),
 			),
 
 			'design' => array(
 				'type' => 'section',
 				'label' => __( 'Design', 'so-widgets-bundle' ),
 				'fields' => array(
-
 					'image' => array(
 						'type' => 'section',
 						'label' => __( 'Image', 'so-widgets-bundle' ),
@@ -279,9 +274,12 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function caret_svg() {
+	public function caret_svg() {
 		static $done = false;
-		if ( $done ) return;
+
+		if ( $done ) {
+			return;
+		}
 
 		?>
 		<svg style="position: absolute; width: 0; height: 0;" width="0" height="0" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -308,13 +306,14 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 		$done = true;
 	}
 
-	function get_less_variables( $instance ) {
+	public function get_less_variables( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
 		}
-		return array (
+
+		return array(
 			'image_size' => (int) $instance['design']['image']['image_size'] . 'px',
-			'testimonial_size' => round(100/$instance['settings']['per_line'], 4) . '%',
+			'testimonial_size' => round( 100 / $instance['settings']['per_line'], 4 ) . '%',
 			'testimonial_padding' => (int) $instance['design']['padding'] . 'px',
 			'testimonial_background' => $instance['design']['colors']['testimonial_background'],
 			'equalize_testimonial_height' => ! empty( $instance['design']['equalize_testimonial_height'] ) ? 'true' : 'false',
@@ -325,24 +324,24 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 			'text_color' => $instance['design']['colors']['text_color'],
 
 			// All the responsive sizes.
-			'tablet_testimonial_size' => round(100/$instance['settings']['responsive']['tablet']['per_line'], 4) . '%',
+			'tablet_testimonial_size' => round( 100 / $instance['settings']['responsive']['tablet']['per_line'], 4 ) . '%',
 			'tablet_image_size' => (int) $instance['settings']['responsive']['tablet']['image_size'] . 'px',
 			'tablet_width' => (int) $instance['settings']['responsive']['tablet']['width'] . 'px',
-			'mobile_testimonial_size' => round(100/$instance['settings']['responsive']['mobile']['per_line'], 4) . '%',
+			'mobile_testimonial_size' => round( 100 / $instance['settings']['responsive']['mobile']['per_line'], 4 ) . '%',
 			'mobile_image_size' => (int) $instance['settings']['responsive']['mobile']['image_size'] . 'px',
 			'mobile_width' => (int) $instance['settings']['responsive']['mobile']['width'] . 'px',
 		);
 	}
 
-	function get_template_variables( $instance, $args ) {
+	public function get_template_variables( $instance, $args ) {
 		return array(
-			'testimonials' => !empty($instance['testimonials']) ? $instance['testimonials'] : array(),
+			'testimonials' => ! empty( $instance['testimonials'] ) ? $instance['testimonials'] : array(),
 			'settings' => $instance['settings'],
 			'design' => $instance['design'],
 		);
 	}
 
-	function testimonial_user_image( $image_id, $design, $image_fallback = false ) {
+	public function testimonial_user_image( $image_id, $design, $image_fallback = false ) {
 		$src = siteorigin_widgets_get_attachment_image_src(
 			$image_id,
 			$design['image']['image_size'],
@@ -358,19 +357,19 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 		}
 	}
 
-	function testimonial_pointer( $design ) {
-
-	}
-
-	function testimonial_wrapper_class( $design ) {
+	public function testimonial_wrapper_class( $design ) {
 		$classes = array();
 		$classes[] = 'sow-user-' . sanitize_html_class( $design['user_position'] );
 		$classes[] = 'sow-layout-' . sanitize_html_class( $design['layout'] );
+
 		return str_replace( '_', '-', implode( ' ', $classes ) );
 	}
 
-	function get_form_teaser() {
-		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+	public function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
+
 		return array(
 			sprintf(
 				__( 'Get more testimonial font customization options with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),

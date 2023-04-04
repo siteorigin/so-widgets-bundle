@@ -8,14 +8,12 @@ Documentation: https://siteorigin.com/widgets-bundle/image-grid/
 */
 
 class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
-	
 	/**
 	 * @var int This is used to indicate that the widget's LESS styles have changed and the CSS needs to be recompiled.
 	 */
 	protected $version = 2;
 
-	function __construct() {
-
+	public function __construct() {
 		parent::__construct(
 			'sow-image-grid',
 			__( 'SiteOrigin Image Grid', 'so-widgets-bundle' ),
@@ -32,7 +30,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	/**
 	 * Initialize the image grid, mainly to add scripts and styles.
 	 */
-	function initialize() {
+	public function initialize() {
 		$this->register_frontend_scripts( array(
 			array(
 				'sow-image-grid',
@@ -40,14 +38,12 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				array( 'jquery', 'dessandro-imagesLoaded' ),
 				SOW_BUNDLE_VERSION,
 				true,
-			)
+			),
 		) );
 	}
 
-	function get_widget_form() {
-
+	public function get_widget_form() {
 		return array(
-
 			'images' => array(
 				'type' => 'repeater',
 				'label' => __( 'Images', 'so-widgets-bundle' ),
@@ -60,7 +56,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 						),
 						array(
 							'selector' => '.media-field-wrapper .current .title',
-							'valueMethod' => 'html'
+							'valueMethod' => 'html',
 						),
 					),
 				),
@@ -73,7 +69,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 					),
 					'title' => array(
 						'type' => 'text',
-						'label' => __( 'Image title', 'so-widgets-bundle' )
+						'label' => __( 'Image title', 'so-widgets-bundle' ),
 					),
 					'alt' => array(
 						'type' => 'text',
@@ -81,14 +77,14 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 					),
 					'url' => array(
 						'type' => 'link',
-						'label' => __( 'URL', 'so-widgets-bundle' )
+						'label' => __( 'URL', 'so-widgets-bundle' ),
 					),
 					'new_window' => array(
 						'type' => 'checkbox',
 						'default' => false,
 						'label' => __( 'Open in new window', 'so-widgets-bundle' ),
 					),
-				)
+				),
 			),
 
 			'display' => array(
@@ -102,7 +98,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 						'custom_size' => true,
 						'state_emitter' => array(
 							'callback' => 'select',
-							'args' => array( 'size' )
+							'args' => array( 'size' ),
 						),
 					),
 
@@ -191,7 +187,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 						'state_handler' => array(
 							'title_display[show]' => array( 'show' ),
 							'title_display[hide]' => array( 'hide' ),
-						)
+						),
 					),
 
 					'title_alignment' => array(
@@ -261,12 +257,12 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 							'title_display[hide]' => array( 'hide' ),
 						),
 					),
-				)
-			)
+				),
+			),
 		);
 	}
-	
-	function get_template_variables( $instance, $args ) {
+
+	public function get_template_variables( $instance, $args ) {
 		$images = isset( $instance['images'] ) ? $instance['images'] : array();
 
 		// If WordPress 5.9 or higher is being used, let WordPress control if Lazy Load is enabled.
@@ -280,13 +276,14 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 
 			$loading_val = function_exists( 'wp_get_loading_attr_default' ) ? wp_get_loading_attr_default( 'the_content' ) : 'lazy';
 			$link_atts = empty( $image['link_attributes'] ) ? array() : $image['link_attributes'];
+
 			if ( ! empty( $image['new_window'] ) ) {
 				$link_atts['target'] = '_blank';
 				$link_atts['rel'] = 'noopener noreferrer';
 			}
 			$image['link_attributes'] = $link_atts;
 
-			$title = $this->get_image_title($image);
+			$title = $this->get_image_title( $image );
 
 			// Allow other plugins to override whether this image is lazy loaded or not.
 			$lazy_load_current = apply_filters(
@@ -296,8 +293,9 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				$instance,
 				$this
 			);
+
 			if ( empty( $image['image'] ) && ! empty( $image['image_fallback'] ) ) {
-				$alt = ! empty ( $image['alt'] ) ? $image['alt'] .'"' : '';
+				$alt = ! empty( $image['alt'] ) ? $image['alt'] . '"' : '';
 
 				// lazy_load_current
 				$image['image_html'] = '<img src="' . esc_url( $image['image_fallback'] ) . '" alt="' . esc_attr( $alt ) . '" title="' . esc_attr( $title ) . '" class="sow-image-grid-image_html" ' . ( $lazy_load_current ? 'loading="lazy"' : '' ) . '>';
@@ -337,19 +335,19 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	/**
 	 * Try to figure out an image's title for display.
 	 *
-	 * @param $image
-	 *
 	 * @return string The title of the image.
 	 */
 	private function get_image_title( $image ) {
 		if ( ! empty( $image['title'] ) ) {
 			$title = $image['title'];
-		} else if ( apply_filters( 'siteorigin_widgets_auto_title', true, 'sow-image-grid' ) ) {
+		} elseif ( apply_filters( 'siteorigin_widgets_auto_title', true, 'sow-image-grid' ) ) {
 			$title = wp_get_attachment_caption( $image['image'] );
+
 			if ( empty( $title ) ) {
 				// We do not want to use the default image titles as they're based on the file name without the extension.
 				$file_name = pathinfo( get_post_meta( $image['image'], '_wp_attached_file', true ), PATHINFO_FILENAME );
 				$title = get_the_title( $image['image'] );
+
 				if ( $title == $file_name ) {
 					$title = '';
 				}
@@ -360,8 +358,8 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 
 		return $title;
 	}
-	
-	function modify_instance( $instance ) {
+
+	public function modify_instance( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
 		}
@@ -381,7 +379,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				// The Spacing setting was initially a `number` field.
 				if ( is_numeric( $instance['display']['spacing'] ) ) {
 					$spacing = $instance['display']['spacing'] . 'px';
-				} else if ( isset( $instance['display']['spacing_unit'] ) ) {
+				} elseif ( isset( $instance['display']['spacing_unit'] ) ) {
 					// Prior to the rename, it was a `measurement` field.
 					$spacing = $instance['display']['spacing'];
 				}
@@ -396,7 +394,6 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				$instance['display']['title_display'] = false;
 			}
 		}
-		
 
 		return $instance;
 	}
@@ -404,11 +401,9 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	/**
 	 * Get the Less variables for the image grid.
 	 *
-	 * @param $instance
-	 *
 	 * @return mixed
 	 */
-	function get_less_variables( $instance ) {
+	public function get_less_variables( $instance ) {
 		$less = array(
 			'padding' => ! empty( $instance['display']['padding'] ) ? $instance['display']['padding'] : '5px 5px 5px 5px',
 			'alignment_horizontal' => ! empty( $instance['display']['alignment_horizontal'] ) ? $instance['display']['alignment_horizontal'] : 'center',
@@ -419,6 +414,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 			$less['title_alignment'] = ! empty( $instance['display']['title_display'] ) ? $instance['display']['title_alignment'] : '';
 			$title_font = siteorigin_widget_get_font( $instance['display']['title_font'] );
 			$less['title_font'] = $title_font['family'];
+
 			if ( ! empty( $title_font['weight'] ) ) {
 				$less['title_font_weight'] = $title_font['weight_raw'];
 				$less['title_font_style'] = $title_font['style'];
@@ -431,8 +427,11 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 		return $less;
 	}
 
-	function get_form_teaser() {
-		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+	public function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
+
 		return array(
 			sprintf(
 				__( 'Add a Lightbox to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),

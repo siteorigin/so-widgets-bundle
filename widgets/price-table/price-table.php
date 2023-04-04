@@ -9,13 +9,13 @@ Documentation: https://siteorigin.com/widgets-bundle/price-table-widget/
 */
 
 class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
-	function __construct() {
+	public function __construct() {
 		parent::__construct(
 			'sow-price-table',
 			__( 'SiteOrigin Price Table', 'so-widgets-bundle' ),
 			array(
 				'description' => __( 'A powerful yet simple price table widget for your sidebars or Page Builder pages.', 'so-widgets-bundle' ),
-				'help'        => 'https://siteorigin.com/widgets-bundle/price-table-widget/'
+				'help'        => 'https://siteorigin.com/widgets-bundle/price-table-widget/',
 			),
 			array(),
 			false,
@@ -23,19 +23,19 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function initialize() {
+	public function initialize() {
 		$this->register_frontend_scripts(
 			array(
 				array(
 					'siteorigin-pricetable',
 					plugin_dir_url( __FILE__ ) . 'js/pricetable' . SOW_BUNDLE_JS_SUFFIX . '.js',
-					array( 'jquery' )
-				)
+					array( 'jquery' ),
+				),
 			)
 		);
 	}
 
-	function get_widget_form() {
+	public function get_widget_form() {
 		return array(
 			'title' => array(
 				'type'  => 'text',
@@ -49,7 +49,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 				'item_label' => array(
 					'selector'     => "[id*='columns-title']",
 					'update_event' => 'change',
-					'value_method' => 'val'
+					'value_method' => 'val',
 				),
 				'fields'     => array(
 					'featured' => array(
@@ -103,7 +103,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 						'item_label' => array(
 							'selector'     => "[id*='columns-features-text']",
 							'update_event' => 'change',
-							'value_method' => 'val'
+							'value_method' => 'val',
 						),
 						'fields'     => array(
 							'text'       => array(
@@ -184,14 +184,17 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_column_classes( $column, $i, $columns ) {
+	public function get_column_classes( $column, $i, $columns ) {
 		$classes = array();
+
 		if ( $i == 0 ) {
 			$classes[] = 'ow-pt-first';
 		}
+
 		if ( $i == count( $columns ) - 1 ) {
 			$classes[] = 'ow-pt-last';
 		}
+
 		if ( ! empty( $column['featured'] ) ) {
 			$classes[] = 'ow-pt-featured';
 		}
@@ -205,17 +208,19 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 		return implode( ' ', $classes );
 	}
 
-	function column_image( $column ) {
+	public function column_image( $column ) {
 		$image = $column['image'];
 
 		if ( ! empty( $image ) ) {
 			$size = 'full';
-			$src  = wp_get_attachment_image_src( $image, $size );
+			$src = wp_get_attachment_image_src( $image, $size );
 
 			$img_attrs = array();
+
 			if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
 				$img_attrs['srcset'] = wp_get_attachment_image_srcset( $image, $size );
 			}
+
 			if ( function_exists( 'wp_get_attachment_image_sizes' ) ) {
 				$img_attrs['sizes'] = wp_get_attachment_image_sizes( $image, $size );
 			}
@@ -223,27 +228,31 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			if ( ! empty( $column['image_title'] ) ) {
 				$img_attrs['title'] = $column['image_title'];
 			}
+
 			if ( ! empty( $column['image_alt'] ) ) {
 				$img_attrs['alt'] = $column['image_alt'];
 			}
 			$attr_string = '';
+
 			foreach ( $img_attrs as $attr => $val ) {
 				$attr_string .= ' ' . $attr . '="' . esc_attr( $val ) . '"';
 			}
-			?><img src="<?php echo $src[0] ?>"<?php echo $attr_string ?>/> <?php
+			?><img src="<?php echo $src[0]; ?>"<?php echo $attr_string; ?>/> <?php
 		}
 	}
 
-	function get_template_name( $instance ) {
+	public function get_template_name( $instance ) {
 		return $this->get_style_name( $instance );
 	}
 
-	function get_template_variables( $instance, $args ) {
-		$columns              = array();
+	public function get_template_variables( $instance, $args ) {
+		$columns = array();
 		$any_column_has_image = false;
-		if( ! empty( $instance[ 'columns' ] ) ) {
+
+		if ( ! empty( $instance[ 'columns' ] ) ) {
 			foreach ( $instance['columns'] as $column ) {
 				$any_column_has_image = $any_column_has_image || ! empty( $column['image'] );
+
 				if ( ! empty( $column['features'] ) ) {
 					foreach ( $column['features'] as &$feature ) {
 						$feature['text'] = do_shortcode( $feature['text'] );
@@ -264,8 +273,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-
-	function get_style_name( $instance ) {
+	public function get_style_name( $instance ) {
 		if ( empty( $instance['theme'] ) ) {
 			return 'atom';
 		}
@@ -276,11 +284,9 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 	/**
 	 * Get the LESS variables for the price table widget.
 	 *
-	 * @param $instance
-	 *
 	 * @return array
 	 */
-	function get_less_variables( $instance ) {
+	public function get_less_variables( $instance ) {
 		$instance = wp_parse_args( $instance, array(
 			'header_color'          => '',
 			'header_text_color'          => '',
@@ -323,7 +329,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 	/**
 	 * Modify the instance to use the new icon.
 	 */
-	function modify_instance( $instance ) {
+	public function modify_instance( $instance ) {
 		if ( empty( $instance['columns'] ) || ! is_array( $instance['columns'] ) ) {
 			return $instance;
 		}
@@ -334,19 +340,20 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			}
 
 			foreach ( $column['features'] as &$feature ) {
-
 				if ( empty( $feature['icon_new'] ) && ! empty( $feature['icon'] ) ) {
 					$feature['icon_new'] = 'fontawesome-' . $feature['icon'];
 				}
-
 			}
 		}
 
 		return $instance;
 	}
 
-	function get_form_teaser() {
-		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+	public function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
+
 		return array(
 			sprintf(
 				__( 'Add a Price Table feature tooltip with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
