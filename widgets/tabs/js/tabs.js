@@ -84,7 +84,7 @@ jQuery( function ( $ ) {
 								start: function () {
 									// Sometimes the content of the panel relies on a window resize to setup correctly.
 									// Trigger it here so it's hopefully done before the animation.
-									if ( shouldScroll( $tab ) ) {
+									if ( shouldScroll( $tab ) || sowTabs.always_scroll ) {
 										// It's possible a resize may result in a scroll so we put it behind a check.
 										$( window ).trigger( 'resize' );
 									}

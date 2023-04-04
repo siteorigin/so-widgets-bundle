@@ -1,25 +1,24 @@
 <?php
 
 abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
-
 	/**
 	 * Register all the frontend scripts and styles for the base carousel.
 	 */
-	function initialize() {
+	public function initialize() {
 		$this->register_frontend_scripts(
 			array(
 				array(
 					'slick',
 					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/slick' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' ),
-					'1.8.1'
+					'1.8.1',
 				),
 				array(
 					'sow-carousel',
 					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/carousel' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery', 'slick' ),
 					SOW_BUNDLE_VERSION,
-					true
+					true,
 				),
 			)
 		);
@@ -30,7 +29,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 					'slick',
 					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'css/lib/slick.css',
 					array(),
-					'1.8.1'
+					'1.8.1',
 				),
 			)
 		);
@@ -41,7 +40,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 	/**
 	 * Allow widgets and other plugins to register assets for this slider.
 	 */
-	function register_assets() {
+	public function register_assets() {
 		do_action( 'siteorigin_widgets_carousel_register_assets', $this );
 	}
 
@@ -50,7 +49,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 	 *
 	 * @return array If overridden, an array is expected.
 	 */
-	function override_carousel_settings() {
+	public function override_carousel_settings() {
 		// Intentionally left blank.
 	}
 
@@ -101,12 +100,12 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 	/**
 	 * Utility method for adding section groups.
 	 *
-	 * @param array $field Field data
+	 * @param array  $field      Field data
 	 * @param string $value_type Whether the field is a placeholder or standard field. This controls whether the field data is stored by default.
 	 *
 	 * @return array The structured section group.
 	 */
-	private function add_section_group( $field, $value_type ) {		
+	private function add_section_group( $field, $value_type ) {
 		$carousel_settings = $this->get_carousel_settings();
 
 		$section = array(
@@ -165,7 +164,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 				);
 			}
 
-			if ( isset( $field['navigation_dots'] )  && ! empty( $carousel_settings['navigation_dots_label'] ) ) {
+			if ( isset( $field['navigation_dots'] ) && ! empty( $carousel_settings['navigation_dots_label'] ) ) {
 				$section['fields']['navigation_dots'] = array(
 					'type' => 'checkbox',
 					'label' => $carousel_settings['navigation_dots_label'],
@@ -179,10 +178,9 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		}
 
 		return $section;
-
 	}
 
-	function responsive_form_fields( $context = 'widget' ) {
+	public function responsive_form_fields( $context = 'widget' ) {
 		$carousel_settings = $this->get_carousel_settings();
 
 		// If the context is a widget, the global values are displayed using a
@@ -232,6 +230,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		}
 
 		$generated_fields = array();
+
 		foreach ( $fields as $field_key => $field ) {
 			$generated_fields[ $field_key ] = $this->add_section_group( $field, $value_type );
 		}
@@ -244,7 +243,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		);
 	}
 
-	function carousel_settings_form_fields() {
+	public function carousel_settings_form_fields() {
 		$carousel_settings = $this->get_carousel_settings();
 		$fields = array(
 			'type' => 'section',
@@ -311,7 +310,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 							'autoplay[show]: val',
 							'autoplay[hide]: ! val',
 						),
-					)
+					),
 				),
 				'autoplay_pause_hover' => array(
 					'type' => 'checkbox',
@@ -338,15 +337,14 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			unset( $fields['fields']['arrows'] );
 		}
 
-		if ( ! isset( $carousel_settings['navigation_dots'] )  || empty( $carousel_settings['navigation_dots_label'] ) ) {
+		if ( ! isset( $carousel_settings['navigation_dots'] ) || empty( $carousel_settings['navigation_dots_label'] ) ) {
 			unset( $fields['fields']['dots'] );
 		}
 
 		return $fields;
 	}
 
-
-	function design_settings_form_fields( $settings = array() ) {
+	public function design_settings_form_fields( $settings = array() ) {
 		$fields = array(
 			'type' => 'section',
 			'label' => __( 'Design', 'so-widgets-bundle' ),
@@ -395,13 +393,13 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		return $fields;
 	}
 
-	function get_settings_form() {
+	public function get_settings_form() {
 		return array(
 			'responsive' => $this->responsive_form_fields( 'global' ),
 		);
 	}
 
-	function responsive_template_variables( $responsive, $encode = true ) {
+	public function responsive_template_variables( $responsive, $encode = true ) {
 		$carousel_settings = $this->get_carousel_settings();
 
 		$variables = array(
@@ -427,13 +425,13 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		return $encode ? json_encode( $variables ) : $variables;
 	}
 
-	function responsive_less_variables( $less_vars, $instance ) {
+	public function responsive_less_variables( $less_vars, $instance ) {
 		$carousel_settings = $this->get_carousel_settings();
 
 		// Breakpoint.
-		$less_vars['breakpoint_tablet_landscape'] = ( ! empty( $instance['responsive']['tablet_landscape']['breakpoint'] ) ? $instance['responsive']['tablet_landscape']['breakpoint'] : $carousel_settings['breakpoints']['tablet_landscape'] ) .'px';
-		$less_vars['breakpoint_tablet_portrait'] = ( ! empty( $instance['responsive']['tablet_portrait']['breakpoint'] ) ? $instance['responsive']['tablet_portrait']['breakpoint'] : $carousel_settings['breakpoints']['tablet_portrait'] ) .'px';
-		$less_vars['breakpoint_mobile'] = ( ! empty( $instance['responsive']['mobile']['breakpoint'] ) ? $instance['responsive']['mobile']['breakpoint'] : $carousel_settings['breakpoints']['mobile'] ) .'px';
+		$less_vars['breakpoint_tablet_landscape'] = ( ! empty( $instance['responsive']['tablet_landscape']['breakpoint'] ) ? $instance['responsive']['tablet_landscape']['breakpoint'] : $carousel_settings['breakpoints']['tablet_landscape'] ) . 'px';
+		$less_vars['breakpoint_tablet_portrait'] = ( ! empty( $instance['responsive']['tablet_portrait']['breakpoint'] ) ? $instance['responsive']['tablet_portrait']['breakpoint'] : $carousel_settings['breakpoints']['tablet_portrait'] ) . 'px';
+		$less_vars['breakpoint_mobile'] = ( ! empty( $instance['responsive']['mobile']['breakpoint'] ) ? $instance['responsive']['mobile']['breakpoint'] : $carousel_settings['breakpoints']['mobile'] ) . 'px';
 
 		// Navigation.
 		$less_vars['navigation_arrows'] = isset( $instance['carousel_settings']['arrows'] ) ? ! empty( $instance['carousel_settings']['arrows'] ) : $carousel_settings['carousel_settings']['arrows'];
@@ -451,7 +449,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		return $less_vars;
 	}
 
-	function carousel_settings_template_variables( $settings, $encode = true ) {
+	public function carousel_settings_template_variables( $settings, $encode = true ) {
 		$variables = array(
 			'loop' => isset( $settings['loop'] ) ? $settings['loop'] : true,
 			'dots' => isset( $settings['dots'] ) ? $settings['dots'] : true,
@@ -466,11 +464,11 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		return $encode ? json_encode( $variables ) : $variables;
 	}
 
-	function render_template( $settings, $args ) {
+	public function render_template( $settings, $args ) {
 		include plugin_dir_path( __FILE__ ) . 'tpl/carousel.php';
 	}
 
-	function render_navigation( $nav ) {
+	public function render_navigation( $nav ) {
 		if ( $nav == 'next' || $nav == 'both' ) {
 			?>
 			<a href="#" class="sow-carousel-next" title="<?php esc_attr_e( 'Next', 'so-widgets-bundle' ); ?>" aria-label="<?php esc_attr_e( 'Next Posts', 'so-widgets-bundle' ); ?>" role="button"></a>
@@ -483,5 +481,4 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			<?php
 		}
 	}
-
 }

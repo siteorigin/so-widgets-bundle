@@ -8,10 +8,9 @@ Documentation: https://siteorigin.com/widgets-bundle/social-media-buttons-widget
 */
 
 class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
-
 	private $networks;
 
-	function __construct() {
+	public function __construct() {
 		parent::__construct(
 			'sow-social-media-buttons',
 			__( 'SiteOrigin Social Media Buttons', 'so-widgets-bundle' ),
@@ -25,24 +24,24 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_settings_form() {
+	public function get_settings_form() {
 		return array(
 			'responsive_breakpoint' => array(
 				'type'        => 'measurement',
 				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
 				'default'     => '780px',
 				'description' => __( 'This setting controls when the Mobile Align setting will be used. The default value is 780px', 'so-widgets-bundle' ),
-			)
+			),
 		);
 	}
 
-	function get_widget_form() {
-
+	public function get_widget_form() {
 		if ( empty( $this->networks ) ) {
 			$this->networks = include plugin_dir_path( __FILE__ ) . 'data/networks.php';
 		}
 
 		$network_names = array();
+
 		foreach ( $this->networks as $key => $value ) {
 			$network_names[ $key ] = $value['label'];
 		}
@@ -59,18 +58,18 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 				'item_label' => array(
 					'selector'     => "[id*='networks-name'] :selected",
 					'update_event' => 'change',
-					'value_method' => 'text'
+					'value_method' => 'text',
 				),
 				'fields'     => array(
 					'name'         => array(
 						'type'    => 'select',
 						'label'   => '',
 						'prompt'  => __( 'Select network', 'so-widgets-bundle' ),
-						'options' => $network_names
+						'options' => $network_names,
 					),
 					'url'          => array(
 						'type'  => 'text',
-						'label' => __( 'URL', 'so-widgets-bundle' )
+						'label' => __( 'URL', 'so-widgets-bundle' ),
 					),
 					'icon_title' => array(
 						'type' => 'text',
@@ -78,11 +77,11 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 					),
 					'icon_color'   => array(
 						'type'  => 'color',
-						'label' => __( 'Icon color', 'so-widgets-bundle' )
+						'label' => __( 'Icon color', 'so-widgets-bundle' ),
 					),
 					'button_color' => array(
 						'type'  => 'color',
-						'label' => __( 'Background color', 'so-widgets-bundle' )
+						'label' => __( 'Background color', 'so-widgets-bundle' ),
 					),
 					'icon_color_hover' => array(
 						'type'  => 'color',
@@ -100,7 +99,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 							'hover_effects[disabled]' => array( 'hide' ),
 						),
 					),
-				)
+				),
 			),
 			'design'   => array(
 				'type'   => 'section',
@@ -110,7 +109,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 					'new_window' => array(
 						'type'    => 'checkbox',
 						'label'   => __( 'Open in a new window', 'so-widgets-bundle' ),
-						'default' => true
+						'default' => true,
 					),
 					'theme'      => array(
 						'type'    => 'select',
@@ -141,8 +140,8 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 							'1'    => __( 'Normal', 'so-widgets-bundle' ),
 							'1.33' => __( 'Medium', 'so-widgets-bundle' ),
 							'1.66' => __( 'Large', 'so-widgets-bundle' ),
-							'2'    => __( 'Extra large', 'so-widgets-bundle' )
-						)
+							'2'    => __( 'Extra large', 'so-widgets-bundle' ),
+						),
 					),
 					'rounding'   => array(
 						'type'    => 'select',
@@ -198,17 +197,17 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 							'0.3' => __( 'High', 'so-widgets-bundle' ),
 							'0.4' => __( 'Very high', 'so-widgets-bundle' ),
 						),
-					)
-				)
+					),
+				),
 			),
 		);
 	}
 
-	function modify_form( $form ) {
+	public function modify_form( $form ) {
 		return apply_filters( 'sow_social_media_buttons_form_options', $form );
 	}
 
-	function modify_instance( $instance ) {
+	public function modify_instance( $instance ) {
 		if ( ! empty( $instance['networks'] ) ) {
 			foreach ( $instance['networks'] as $name => $network ) {
 				if ( $network['name'] == 'envelope' ) {
@@ -217,15 +216,15 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 
 				// If user has a legacy Google Plus network selected, convert it to a standard Google icon.
 				if ( $network['name'] == 'google-plus' ) {
-					 $network['name'] = 'google';
+					$network['name'] = 'google';
 				}
 
 				if ( $network['name'] == 'email' ) {
-					 $network['name'] = 'envelope';
+					$network['name'] = 'envelope';
 				}
 
 				if ( $network['name'] == 'tripadvisor' ) {
-					 $network['name'] = 'suitcase';
+					$network['name'] = 'suitcase';
 				}
 
 				if (
@@ -241,10 +240,11 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 				$instance['networks'][$name] = $network;
 			}
 		}
+
 		return $instance;
 	}
 
-	function get_javascript_variables() {
+	public function get_javascript_variables() {
 		if ( empty( $this->networks ) ) {
 			$this->networks = include plugin_dir_path( __FILE__ ) . 'data/networks.php';
 		}
@@ -252,7 +252,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		return array( 'networks' => $this->networks );
 	}
 
-	function enqueue_admin_scripts() {
+	public function enqueue_admin_scripts() {
 		wp_enqueue_script(
 			'sow-social-media-buttons',
 			plugin_dir_url( __FILE__ ) . 'js/social-media-buttons-admin' . SOW_BUNDLE_JS_SUFFIX . '.js',
@@ -261,7 +261,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_style_name( $instance ) {
+	public function get_style_name( $instance ) {
 		if ( empty( $instance['design']['theme'] ) ) {
 			return 'atom';
 		}
@@ -269,19 +269,23 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		return $instance['design']['theme'];
 	}
 
-	function get_less_variables( $instance ) {
-		if ( empty( $instance ) ) return;
+	public function get_less_variables( $instance ) {
+		if ( empty( $instance ) ) {
+			return;
+		}
 
 		$design = $instance['design'];
-		$m      = $design['margin'];
+		$m = $design['margin'];
 		$top = $right = $bottom = $left = $m . 'em';
 		switch ( $design['align'] ) {
 			case 'left':
 				$left = '0';
 				break;
+
 			case 'right':
 				$right = '0';
 				break;
+
 			case 'center':
 				$left = $right = ( $m * 0.5 ) . 'em';
 				break;
@@ -290,6 +294,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 
 		// Get responsive breakpoint and make sure it's properly formatted
 		$breakpoint = $this->get_global_settings( 'responsive_breakpoint' );
+
 		return array(
 			'icon_size'             => $design['icon_size'] . 'em',
 			'rounding'              => $design['rounding'] . 'em',
@@ -297,13 +302,14 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			'align'                 => $design['align'],
 			'mobile_align'          => ! empty( $design['mobile_align'] ) ? $design['mobile_align'] : '',
 			'responsive_breakpoint' => ! empty( $breakpoint ) ? $breakpoint : '',
-			'margin'                => $margin
+			'margin'                => $margin,
 		);
 	}
 
-	function less_generate_calls_to( $instance, $args ) {
+	public function less_generate_calls_to( $instance, $args ) {
 		$networks = $this->get_instance_networks( $instance );
-		$calls    = array();
+		$calls = array();
+
 		foreach ( $networks as $network ) {
 			if ( ! empty( $network['name'] ) ) {
 				$icon_color_hover_fallback = ! empty( $network['icon_color'] ) ? ', @icon_color_hover:' . $network['icon_color'] : '';
@@ -321,9 +327,9 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		return implode( "\n", $calls );
 	}
 
-	function get_template_variables( $instance, $args ) {
+	public function get_template_variables( $instance, $args ) {
 		return array(
-			'networks' => $this->get_instance_networks( $instance )
+			'networks' => $this->get_instance_networks( $instance ),
 		);
 	}
 
@@ -336,12 +342,14 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		$networks = apply_filters( 'sow_social_media_buttons_networks', $networks, $instance );
 
 		$network_classes = array();
+
 		foreach ( $networks as &$network ) {
 			$name = $network['name'];
-			if ( !isset($network_classes[ $name ] ) ) {
+
+			if ( ! isset( $network_classes[ $name ] ) ) {
 				$network_classes[$name] = 0;
 			} else {
-				$network_classes[$name] += 1;
+				++$network_classes[$name];
 			}
 			$name .= '-' . $network_classes[$name];
 			$network['css_class_name'] = $name;
@@ -353,8 +361,6 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 	/**
 	 * This is used to generate the hash of the instance.
 	 *
-	 * @param $instance
-	 *
 	 * @return array
 	 */
 	protected function get_style_hash_variables( $instance ) {
@@ -362,17 +368,19 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 
 		foreach ( $networks as $i => $network ) {
 			// URL is not important for the styling.
-			unset($networks[$i]['url']);
+			unset( $networks[$i]['url'] );
 		}
 
 		return array(
-			'less' => $this->get_less_variables($instance),
-			'networks' => $networks
+			'less' => $this->get_less_variables( $instance ),
+			'networks' => $networks,
 		);
 	}
 
-	function get_form_teaser() {
-		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+	public function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
 
 		return sprintf(
 			__( 'Add custom social networks with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),

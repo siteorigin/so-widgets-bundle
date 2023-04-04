@@ -106,6 +106,18 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.47.1 - 04 April 2023 =
+* Blog: Fixed Alternate Template featured image mobile collapse.
+* Post Carousel: Improved `Thumbnail Overlay` migration.
+* Post Carousel: Added `siteorigin_post_carousel_item_template` filter.
+* Sliders: Default enabled `Show slide background videos on mobile.`
+* Tabs: Addeded `siteorigin_widgets_tabs_always_scroll` filter.
+* Font Field: Resolved PHP 8 deprecated notice.
+* Textarea Form Field: Resolved PHP 8 deprecated notice.
+* Media Field: Minor styling improvement.
+* Improved missing widget detection.
+* PHP coding standards update.
+
 = 1.47.0 - 30 March 2023 =
 * Blog: Added a `Post Title HTML Tag` setting.
 * Google Maps: Fixed a potential `Map Style > Predefined Styles` PHP 8.x error.

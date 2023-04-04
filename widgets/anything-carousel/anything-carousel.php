@@ -12,13 +12,13 @@ if ( ! class_exists( 'SiteOrigin_Widget_Base_Carousel' ) ) {
 }
 
 class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_Carousel {
-	function __construct() {
+	public function __construct() {
 		parent::__construct(
 			'sow-anything-carousel',
 			__( 'SiteOrigin Anything Carousel', 'so-widgets-bundle' ),
 			array(
 				'description' => __( 'Display images, text, or any other content in a carousel.', 'so-widgets-bundle' ),
-				'help' => 'https://siteorigin.com/widgets-bundle/anything-carousel-widget/'
+				'help' => 'https://siteorigin.com/widgets-bundle/anything-carousel-widget/',
 			),
 			array(),
 			false,
@@ -26,7 +26,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		);
 	}
 
-	function initialize() {
+	public function initialize() {
 		// Let the carousel base class do its initialization.
 		parent::initialize();
 
@@ -40,7 +40,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		);
 	}
 
-	function get_widget_form() {
+	public function get_widget_form() {
 		$useable_units = array(
 			'px',
 			'%',
@@ -72,7 +72,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 				'item_label' => array(
 					'selector' => "[id*='title']",
 					'update_event' => 'change',
-					'value_method' => 'val'
+					'value_method' => 'val',
 				),
 
 				'fields' => array(
@@ -179,12 +179,12 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		);
 	}
 
-	function modify_instance( $instance ) {
+	public function modify_instance( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
 		}
 
-		// If slides_to_scroll existed (regardless of value) prior to the introduction 
+		// If slides_to_scroll existed (regardless of value) prior to the introduction
 		// of slides_to_show, set slides_to_scroll to slides_to_show to prevent unintended change.
 		if (
 			! empty( $instance['responsive'] ) &&
@@ -194,7 +194,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 			$instance['responsive']['desktop']['slides_to_show'] = $instance['responsive']['desktop']['slides_to_scroll'];
 			$instance['responsive']['tablet']['landscape']['slides_to_show'] = $instance['responsive']['tablet']['landscape']['slides_to_scroll'];
 			$instance['responsive']['tablet']['portrait']['slides_to_show'] = $instance['responsive']['tablet']['portrait']['slides_to_scroll'];
-			$instance['responsive']['mobile']['slides_to_show'] = $instance['responsive']['mobile']['slides_to_scroll'];	
+			$instance['responsive']['mobile']['slides_to_show'] = $instance['responsive']['mobile']['slides_to_scroll'];
 		}
 
 		// 	If carousel was created before Adaptive Height was introduced, disable it.
@@ -205,11 +205,11 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		return $instance;
 	}
 
-	function get_style_name( $instance ) {
+	public function get_style_name( $instance ) {
 		return empty( $instance['design']['theme'] ) ? 'base' : $instance['design']['theme'];
 	}
 
-	function get_less_variables( $instance ) {
+	public function get_less_variables( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
 		}
@@ -233,6 +233,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 
 		$item_title_font = siteorigin_widget_get_font( $instance['design']['item_title']['font'] );
 		$less_vars['item_title_font'] = $item_title_font['family'];
+
 		if ( ! empty( $item_title_font['weight'] ) ) {
 			$less_vars['item_title_font_style'] = $item_title_font['style'];
 			$less_vars['item_title_font_weight'] = $item_title_font['weight_raw'];
@@ -240,6 +241,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 
 		$item_font = siteorigin_widget_get_font( $instance['design']['item']['font'] );
 		$less_vars['item_font'] = $item_font['family'];
+
 		if ( ! empty( $item_font['weight'] ) ) {
 			$less_vars['item_font_style'] = $item_font['style'];
 			$less_vars['item_font_weight'] = $item_font['weight_raw'];
@@ -273,11 +275,11 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		);
 	}
 
-	function render_item_content( $item, $instance ) {
+	public function render_item_content( $item, $instance ) {
 		echo apply_filters( 'siteorigin_widgets_anything_carousel_render_item_content', $item['content_text'], $item, $instance );
 	}
 
-	function get_form_teaser() {
+	public function get_form_teaser() {
 		if ( class_exists( 'SiteOrigin_Premium' ) ) {
 			return false;
 		}

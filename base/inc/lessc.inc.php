@@ -7,14 +7,13 @@
  */
 
 // Register autoloader for non-composer installations
-if ( !class_exists( 'Less_Parser' ) ) {
-	require_once dirname( __FILE__ ) . '/lib/Less/Autoloader.php';
+if ( ! class_exists( 'Less_Parser' ) ) {
+	require_once __DIR__ . '/lib/Less/Autoloader.php';
 	Less_Autoloader::register();
 }
 
 class SiteOrigin_LessC {
-
-	static public $VERSION = Less_Version::less_version;
+	public static $VERSION = Less_Version::less_version;
 
 	public $importDir = '';
 	protected $allParsedFiles = array();
@@ -23,14 +22,15 @@ class SiteOrigin_LessC {
 	private $formatterName;
 	private $options = array();
 
-	public function __construct( $lessc=null, $sourceName=null ) {}
+	public function __construct( $lessc = null, $sourceName = null ) {
+	}
 
 	public function setImportDir( $dirs ) {
-		$this->importDir = (array)$dirs;
+		$this->importDir = (array) $dirs;
 	}
 
 	public function addImportDir( $dir ) {
-		$this->importDir = (array)$this->importDir;
+		$this->importDir = (array) $this->importDir;
 		$this->importDir[] = $dir;
 	}
 
@@ -38,50 +38,52 @@ class SiteOrigin_LessC {
 		$this->formatterName = $name;
 	}
 
-	public function setPreserveComments( $preserve ) {}
+	public function setPreserveComments( $preserve ) {
+	}
 
 	public function registerFunction( $name, $func ) {
-		$this->libFunctions[$name] = $func;
+		$this->libFunctions[ $name ] = $func;
 	}
 
 	public function unregisterFunction( $name ) {
-		unset( $this->libFunctions[$name] );
+		unset( $this->libFunctions[ $name ] );
 	}
 
-	public function setVariables( $variables ){
+	public function setVariables( $variables ) {
 		foreach ( $variables as $name => $value ) {
 			$this->setVariable( $name, $value );
 		}
 	}
 
 	public function setVariable( $name, $value ) {
-		$this->registeredVars[$name] = $value;
+		$this->registeredVars[ $name ] = $value;
 	}
 
 	public function unsetVariable( $name ) {
-		unset( $this->registeredVars[$name] );
+		unset( $this->registeredVars[ $name ] );
 	}
 
 	public function setOptions( $options ) {
 		foreach ( $options as $name => $value ) {
-			$this->setOption( $name, $value);
+			$this->setOption( $name, $value );
 		}
 	}
 
 	public function setOption( $name, $value ) {
-		$this->options[$name] = $value;
+		$this->options[ $name ] = $value;
 	}
 
 	public function parse( $buffer, $presets = array() ) {
-
 		$this->setVariables( $presets );
 
 		$parser = new Less_Parser( $this->getOptions() );
 		$parser->setImportDirs( $this->getImportDirs() );
+
 		foreach ( $this->libFunctions as $name => $func ) {
 			$parser->registerFunction( $name, $func );
 		}
-		$parser->parse($buffer);
+		$parser->parse( $buffer );
+
 		if ( count( $this->registeredVars ) ) {
 			$parser->ModifyVars( $this->registeredVars );
 		}
@@ -96,34 +98,38 @@ class SiteOrigin_LessC {
 				$options['compress'] = true;
 				break;
 		}
-		if (is_array($this->options))
-		{
-			$options = array_merge($options, $this->options);
+
+		if ( is_array( $this->options ) ) {
+			$options = array_merge( $options, $this->options );
 		}
+
 		return $options;
 	}
 
 	protected function getImportDirs() {
-		$dirs_ = (array)$this->importDir;
+		$dirs_ = (array) $this->importDir;
 		$dirs = array();
+
 		foreach ( $dirs_ as $dir ) {
-			$dirs[$dir] = '';
+			$dirs[ $dir ] = '';
 		}
+
 		return $dirs;
 	}
 
 	public function compile( $string, $name = null ) {
-
 		$oldImport = $this->importDir;
-		$this->importDir = (array)$this->importDir;
+		$this->importDir = (array) $this->importDir;
 
 		$this->allParsedFiles = array();
 
 		$parser = new Less_Parser( $this->getOptions() );
 		$parser->SetImportDirs( $this->getImportDirs() );
+
 		if ( count( $this->registeredVars ) ) {
 			$parser->ModifyVars( $this->registeredVars );
 		}
+
 		foreach ( $this->libFunctions as $name => $func ) {
 			$parser->registerFunction( $name, $func );
 		}
@@ -131,6 +137,7 @@ class SiteOrigin_LessC {
 		$out = $parser->getCss();
 
 		$parsed = Less_Parser::AllParsedFiles();
+
 		foreach ( $parsed as $file ) {
 			$this->addParsedFile( $file );
 		}
@@ -142,24 +149,26 @@ class SiteOrigin_LessC {
 
 	public function compileFile( $fname, $outFname = null ) {
 		if ( !is_readable( $fname ) ) {
-			throw new Exception( 'load error: failed to find '.$fname );
+			throw new Exception( 'load error: failed to find ' . $fname );
 		}
 
 		$pi = pathinfo( $fname );
 
 		$oldImport = $this->importDir;
 
-		$this->importDir = (array)$this->importDir;
-		$this->importDir[] = Less_Parser::AbsPath( $pi['dirname'] ).'/';
+		$this->importDir = (array) $this->importDir;
+		$this->importDir[] = Less_Parser::AbsPath( $pi['dirname'] ) . '/';
 
 		$this->allParsedFiles = array();
 		$this->addParsedFile( $fname );
 
 		$parser = new Less_Parser( $this->getOptions() );
 		$parser->SetImportDirs( $this->getImportDirs() );
+
 		if ( count( $this->registeredVars ) ) {
 			$parser->ModifyVars( $this->registeredVars );
 		}
+
 		foreach ( $this->libFunctions as $name => $func ) {
 			$parser->registerFunction( $name, $func );
 		}
@@ -167,6 +176,7 @@ class SiteOrigin_LessC {
 		$out = $parser->getCss();
 
 		$parsed = Less_Parser::AllParsedFiles();
+
 		foreach ( $parsed as $file ) {
 			$this->addParsedFile( $file );
 		}
@@ -182,12 +192,13 @@ class SiteOrigin_LessC {
 
 	public function checkedCompile( $in, $out ) {
 		if ( !is_file( $out ) || filemtime( $in ) > filemtime( $out ) ) {
-			$this->compileFile($in, $out);
+			$this->compileFile( $in, $out );
+
 			return true;
 		}
+
 		return false;
 	}
-
 
 	/**
 	 * Execute lessphp on a .less file or a lessphp cache structure
@@ -205,8 +216,9 @@ class SiteOrigin_LessC {
 	 * The cache structure is a plain-ol' PHP associative array and can
 	 * be serialized and unserialized without a hitch.
 	 *
-	 * @param mixed $in Input
-	 * @param bool $force Force rebuild?
+	 * @param mixed $in    Input
+	 * @param bool  $force Force rebuild?
+	 *
 	 * @return array lessphp cache structure
 	 */
 	public function cachedCompile( $in, $force = false ) {
@@ -241,9 +253,10 @@ class SiteOrigin_LessC {
 			// If we have a root value which means we should rebuild.
 			$out = array();
 			$out['root'] = $root;
-			$out['compiled'] = $this->compileFile($root);
+			$out['compiled'] = $this->compileFile( $root );
 			$out['files'] = $this->allParsedFiles();
 			$out['updated'] = time();
+
 			return $out;
 		} else {
 			// No changes, pass back the structure
@@ -254,16 +267,18 @@ class SiteOrigin_LessC {
 
 	public function ccompile( $in, $out, $less = null ) {
 		if ( $less === null ) {
-			$less = new self;
+			$less = new self();
 		}
+
 		return $less->checkedCompile( $in, $out );
 	}
 
 	public static function cexecute( $in, $force = false, $less = null ) {
 		if ( $less === null ) {
-			$less = new self;
+			$less = new self();
 		}
-		return $less->cachedCompile($in, $force);
+
+		return $less->cachedCompile( $in, $force );
 	}
 
 	public function allParsedFiles() {

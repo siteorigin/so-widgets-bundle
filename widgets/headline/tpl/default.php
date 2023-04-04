@@ -1,24 +1,29 @@
-<div class="sow-headline-container <?php if( $instance['fittext'] ) ?>">
+<div class="sow-headline-container <?php if ( $instance['fittext'] ) {
+	;
+} ?>">
 	<?php
-	foreach( $order as $item ) {
+	foreach ( $order as $item ) {
 		switch( $item ) {
-			case 'headline' :
-				if( !empty( $headline ) ) {
+			case 'headline':
+				if ( ! empty( $headline ) ) {
 					echo "<$headline_tag class='sow-headline'>";
 
-					if( !empty( $headline_destination_url ) ): ?>
-						<a href="<?php echo sow_esc_url( $headline_destination_url ) ?>" <?php echo $headline_new_window ? 'target="_blank" rel="noopener noreferrer"' : '' ?>>
+					if ( ! empty( $headline_destination_url ) ) { ?>
+						<a href="<?php echo sow_esc_url( $headline_destination_url ); ?>" <?php echo $headline_new_window ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
 					<?php
-					endif;
+					}
 
 					echo wp_kses_post( $headline );
-					if( !empty( $headline_destination_url ) ) echo '</a>';
+
+					if ( ! empty( $headline_destination_url ) ) {
+						echo '</a>';
+					}
 					echo "</$headline_tag>";
 				}
 				break;
 
-			case 'divider' :
-				if( $has_divider ) {
+			case 'divider':
+				if ( $has_divider ) {
 					?>
 					<div class="decoration">
 						<div class="decoration-inside"></div>
@@ -27,17 +32,20 @@
 				}
 				break;
 
-			case 'sub_headline' :
-				if( !empty( $sub_headline ) ) {
+			case 'sub_headline':
+				if ( ! empty( $sub_headline ) ) {
 					echo "<$sub_headline_tag class='sow-sub-headline'>";
 
-					if( !empty( $sub_headline_destination_url ) ): ?>
-						<a href="<?php echo sow_esc_url( $sub_headline_destination_url ) ?>" <?php echo $sub_headline_new_window ? 'target="_blank" rel="noopener noreferrer"' : '' ?>>
+					if ( ! empty( $sub_headline_destination_url ) ) { ?>
+						<a href="<?php echo sow_esc_url( $sub_headline_destination_url ); ?>" <?php echo $sub_headline_new_window ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
 					<?php
-					endif;
+					}
 
 					echo wp_kses_post( $sub_headline );
-					if( !empty( $sub_headline_destination_url ) ) echo '</a>';
+
+					if ( ! empty( $sub_headline_destination_url ) ) {
+						echo '</a>';
+					}
 					echo "</$sub_headline_tag>";
 				}
 				break;
