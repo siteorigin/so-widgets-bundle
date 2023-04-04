@@ -1,4 +1,5 @@
 <?php
+
 return array(
 	'beaver_builder' => array(
 		'name' => __( 'Beaver Builder', 'so-widgets-bundle' ),

@@ -1,25 +1,23 @@
 <?php
 
 abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
-
 	/**
 	 * Register all the frontend scripts and styles for the base slider.
 	 */
-	function initialize() {
-
+	public function initialize() {
 		$frontend_scripts = array();
 		$frontend_scripts[] = array(
 			'sow-slider-slider-cycle2',
 			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/jquery.cycle' . SOW_BUNDLE_JS_SUFFIX . '.js',
 			array( 'jquery' ),
-			SOW_BUNDLE_VERSION
+			SOW_BUNDLE_VERSION,
 		);
 
 		$frontend_scripts[] = array(
 			'sow-slider-slider',
 			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/slider/jquery.slider' . SOW_BUNDLE_JS_SUFFIX . '.js',
 			array( 'jquery' ),
-			SOW_BUNDLE_VERSION
+			SOW_BUNDLE_VERSION,
 		);
 
 		$this->register_frontend_scripts( $frontend_scripts );
@@ -29,8 +27,8 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					'sow-slider-slider',
 					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'css/slider/slider.css',
 					array(),
-					SOW_BUNDLE_VERSION
-				)
+					SOW_BUNDLE_VERSION,
+				),
 			)
 		);
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_cycle_swipe' ) );
@@ -40,7 +38,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		add_filter( 'siteorigin_widgets_less_vars_' . $this->id_base, array( $this, 'add_unmute_less' ), 10, 4 );
 	}
 
-	function register_cycle_swipe() {
+	public function register_cycle_swipe() {
 		wp_register_script(
 			'sow-slider-slider-cycle2-swipe',
 			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/jquery.cycle.swipe' . SOW_BUNDLE_JS_SUFFIX . '.js',
@@ -54,7 +52,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	 *
 	 * @return array
 	 */
-	function control_form_fields(){
+	public function control_form_fields() {
 		return array(
 			'autoplay' => array(
 				'type' => 'checkbox',
@@ -81,15 +79,15 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			),
 			'speed' => array(
 				'type' => 'number',
-				'label' => __('Animation speed', 'so-widgets-bundle'),
-				'description' => __('Animation speed in milliseconds.', 'so-widgets-bundle'),
+				'label' => __( 'Animation speed', 'so-widgets-bundle' ),
+				'description' => __( 'Animation speed in milliseconds.', 'so-widgets-bundle' ),
 				'default' => 800,
 			),
 
 			'timeout' => array(
 				'type' => 'number',
-				'label' => __('Timeout', 'so-widgets-bundle'),
-				'description' => __('How long each frame is displayed for in milliseconds.', 'so-widgets-bundle'),
+				'label' => __( 'Timeout', 'so-widgets-bundle' ),
+				'description' => __( 'How long each frame is displayed for in milliseconds.', 'so-widgets-bundle' ),
 				'default' => 8000,
 				'state_handler' => array(
 					'autoplay[autoplay]' => array( 'show' ),
@@ -99,29 +97,29 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 
 			'nav_color_hex' => array(
 				'type' => 'color',
-				'label' => __('Navigation color', 'so-widgets-bundle'),
+				'label' => __( 'Navigation color', 'so-widgets-bundle' ),
 				'default' => '#FFFFFF',
 			),
 
 			'nav_style' => array(
 				'type' => 'select',
-				'label' => __('Navigation style', 'so-widgets-bundle'),
+				'label' => __( 'Navigation style', 'so-widgets-bundle' ),
 				'default' => 'thin',
 				'options' => array(
-					'ultra-thin' => __('Ultra thin', 'so-widgets-bundle'),
-					'thin' => __('Thin', 'so-widgets-bundle'),
-					'medium' => __('Medium', 'so-widgets-bundle'),
-					'thick' => __('Thick', 'so-widgets-bundle'),
-					'ultra-thin-rounded' => __('Rounded ultra thin', 'so-widgets-bundle'),
-					'thin-rounded' => __('Rounded thin', 'so-widgets-bundle'),
-					'medium-rounded' => __('Rounded medium', 'so-widgets-bundle'),
-					'thick-rounded' => __('Rounded thick', 'so-widgets-bundle'),
-				)
+					'ultra-thin' => __( 'Ultra thin', 'so-widgets-bundle' ),
+					'thin' => __( 'Thin', 'so-widgets-bundle' ),
+					'medium' => __( 'Medium', 'so-widgets-bundle' ),
+					'thick' => __( 'Thick', 'so-widgets-bundle' ),
+					'ultra-thin-rounded' => __( 'Rounded ultra thin', 'so-widgets-bundle' ),
+					'thin-rounded' => __( 'Rounded thin', 'so-widgets-bundle' ),
+					'medium-rounded' => __( 'Rounded medium', 'so-widgets-bundle' ),
+					'thick-rounded' => __( 'Rounded thick', 'so-widgets-bundle' ),
+				),
 			),
 
 			'nav_size' => array(
 				'type' => 'number',
-				'label' => __('Navigation size', 'so-widgets-bundle'),
+				'label' => __( 'Navigation size', 'so-widgets-bundle' ),
 				'default' => '25',
 			),
 
@@ -134,14 +132,14 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'type' => 'checkbox',
 				'label' => __( 'Always show navigation on mobile', 'so-widgets-bundle' ),
 			),
-	
+
 			'swipe' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Swipe control', 'so-widgets-bundle' ),
 				'description' => __( 'Allow users to swipe through frames on mobile devices.', 'so-widgets-bundle' ),
 				'default' => true,
 			),
-			
+
 			'unmute' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Unmute icon', 'so-widgets-bundle' ),
@@ -151,7 +149,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					'callback' => 'conditional',
 					'args' => array(
 						'unmute_slider[show]: val',
-						'unmute_slider[hide]: ! val'
+						'unmute_slider[hide]: ! val',
 					),
 				),
 			),
@@ -181,22 +179,22 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		);
 	}
 
-	function video_form_fields(){
+	public function video_form_fields() {
 		return array(
 			'file' => array(
 				'type' => 'media',
 				'library' => 'video',
-				'label' => __('Video file', 'so-widgets-bundle'),
+				'label' => __( 'Video file', 'so-widgets-bundle' ),
 			),
 
 			'url' => array(
 				'type' => 'text',
 				'sanitize' => 'url',
-				'label' => __('Video URL', 'so-widgets-bundle'),
+				'label' => __( 'Video URL', 'so-widgets-bundle' ),
 				'optional' => 'true',
-				'description' => __('An external URL of the video. Overrides video file.', 'so-widgets-bundle')
+				'description' => __( 'An external URL of the video. Overrides video file.', 'so-widgets-bundle' ),
 			),
-			
+
 			'autoplay' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Autoplay', 'so-widgets-bundle' ),
@@ -206,7 +204,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 
 			'format' => array(
 				'type' => 'select',
-				'label' => __('Video format', 'so-widgets-bundle'),
+				'label' => __( 'Video format', 'so-widgets-bundle' ),
 				'options' => array(
 					'video/mp4' => 'MP4',
 					'video/webm' => 'WebM',
@@ -216,18 +214,18 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_settings_form() {
+	public function get_settings_form() {
 		return array(
 			'responsive_breakpoint' => array(
 				'type'        => 'measurement',
 				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
 				'default'     => '780px',
-				'description' => __( "This setting controls when the Slider will switch to the responsive mode. This breakpoint will only be used if always show navigation on mobile is enabled. The default value is 780px.", 'so-widgets-bundle' )
-			)
+				'description' => __( 'This setting controls when the Slider will switch to the responsive mode. This breakpoint will only be used if always show navigation on mobile is enabled. The default value is 780px.', 'so-widgets-bundle' ),
+			),
 		);
 	}
 
-	function slider_settings( $controls ){
+	public function slider_settings( $controls ) {
 		$slider_settings = array(
 			'pagination'               => true,
 			'speed'                    => empty( $controls['speed'] ) ? 1 : $controls['speed'],
@@ -243,7 +241,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		);
 
 		// Add the unmute translations.
-		// We're not able to reliably localize the script using `wp_localize_script` as 
+		// We're not able to reliably localize the script using `wp_localize_script` as
 		// it's too late to do that at this point.
 		if ( $slider_settings['unmute'] ) {
 			$slider_settings['unmuteLoc'] = __( 'Unmute slide', 'so-widgets-bundle' );
@@ -253,7 +251,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		return $slider_settings;
 	}
 
-	function widget_form( $form_options ) {
+	public function widget_form( $form_options ) {
 		if ( isset( $form_options ) && isset( $form_options['frames'] ) ) {
 			$loop_setting = array(
 				'type' => 'checkbox',
@@ -284,17 +282,16 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				$form_options['frames']['fields']['background']['fields']['background_video_opacity'] = $video_opacity;
 			}
 		}
+
 		return $form_options;
 	}
 
 	/**
 	 * Migrate Slider settings.
 	 *
-	 * @param $instance
-	 *
 	 * @return mixed
 	 */
-	function modify_instance( $instance ){
+	public function modify_instance( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
 		}
@@ -302,8 +299,10 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		// Migrate global slider loop_background_videos setting to frame specific setting.
 		if ( ! empty( $instance['controls']['loop_background_videos'] ) ) {
 			unset( $instance['controls']['loop_background_videos'] );
+
 			if ( ! empty( $instance['frames'] ) ) {
 				$is_slider_widget = $this->widget_class == 'SiteOrigin_Widget_Slider_Widget';
+
 				foreach ( $instance['frames'] as $k => $frame ) {
 					if ( $is_slider_widget ) {
 						$instance['frames'][ $k ]['loop_background_videos'] = 'on';
@@ -365,34 +364,39 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		return $instance;
 	}
 
-	function render_template( $controls, $frames, $layout = array() ){
-		$this->render_template_part('before_slider', $controls, $frames);
+	public function render_template( $controls, $frames, $layout = array() ) {
+		$this->render_template_part( 'before_slider', $controls, $frames );
 		$this->render_template_part( 'before_slides', $controls, $frames, $layout );
 
-		foreach( $frames as $i => $frame ) {
+		foreach ( $frames as $i => $frame ) {
 			$this->render_frame( $i, $frame, $controls );
 		}
 
-		$this->render_template_part('after_slides', $controls, $frames);
-		$this->render_template_part('navigation', $controls, $frames);
-		$this->render_template_part('after_slider', $controls, $frames);
+		$this->render_template_part( 'after_slides', $controls, $frames );
+		$this->render_template_part( 'navigation', $controls, $frames );
+		$this->render_template_part( 'after_slider', $controls, $frames );
 	}
 
-	function render_template_part( $part, $controls, $frames, $layout = array() ) {
+	public function render_template_part( $part, $controls, $frames, $layout = array() ) {
 		switch( $part ) {
 			case 'before_slider':
-				?><div class="sow-slider-base" style="display: none"><?php
-				if ( isset( $controls['unmute'] ) && $controls['unmute'] ) {
-					?>
-					<span class="sow-player-controls-sound" style="display: none;"></span>
+				?>
+				<div class="sow-slider-base" style="display: none">
 					<?php
-				}
+					if ( isset( $controls['unmute'] ) && $controls['unmute'] ) {
+						?>
+						<span class="sow-player-controls-sound" style="display: none;"></span>
+						<?php
+					}
 				break;
+
 			case 'before_slides':
 				$settings = $this->slider_settings( $controls );
+
 				if ( ! empty( $controls['anchor'] ) ) {
 					$anchorId = $controls['anchor'];
 				}
+
 				if ( $settings['swipe'] ) {
 					wp_enqueue_script( 'sow-slider-slider-cycle2-swipe' );
 				}
@@ -402,35 +406,38 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				}
 				?><ul
 					class="sow-slider-images"
-					data-settings="<?php echo esc_attr( json_encode($settings) ) ?>"
+					data-settings="<?php echo esc_attr( json_encode( $settings ) ); ?>"
 					<?php echo ! empty( $layout['desktop'] ) && ! empty( $layout['desktop']['height'] ) ? 'style="min-height: ' . esc_attr( $layout['desktop']['height'] ) . '"' : ''; ?>
 					data-anchor-id="<?php echo ! empty( $controls['anchor'] ) ? esc_attr( $controls['anchor'] ) : ''; ?>"
 				><?php
 				break;
+
 			case 'after_slides':
 				?></ul><?php
 				break;
+
 			case 'navigation':
 				?>
 				<ol class="sow-slider-pagination">
-					<?php foreach($frames as $i => $frame) : ?>
-						<li><a href="#" data-goto="<?php echo $i ?>" aria-label="<?php printf( __( 'display slide %s', 'so-widgets-bundle' ), $i+1 ) ?>"></a></li>
-					<?php endforeach; ?>
+					<?php foreach ( $frames as $i => $frame ) { ?>
+						<li><a href="#" data-goto="<?php echo $i; ?>" aria-label="<?php printf( __( 'display slide %s', 'so-widgets-bundle' ), $i + 1 ); ?>"></a></li>
+					<?php } ?>
 				</ol>
 
 				<div class="sow-slide-nav sow-slide-nav-next">
-					<a href="#" data-goto="next" aria-label="<?php _e( 'next slide', 'so-widgets-bundle' ) ?>" data-action="next">
-						<em class="sow-sld-icon-<?php echo sanitize_html_class( $controls['nav_style'] ) ?>-right"></em>
+					<a href="#" data-goto="next" aria-label="<?php _e( 'next slide', 'so-widgets-bundle' ); ?>" data-action="next">
+						<em class="sow-sld-icon-<?php echo sanitize_html_class( $controls['nav_style'] ); ?>-right"></em>
 					</a>
 				</div>
 
 				<div class="sow-slide-nav sow-slide-nav-prev">
-					<a href="#" data-goto="previous" aria-label="<?php _e( 'previous slide', 'so-widgets-bundle' ) ?>" data-action="prev">
-						<em class="sow-sld-icon-<?php echo sanitize_html_class( $controls['nav_style'] ) ?>-left"></em>
+					<a href="#" data-goto="previous" aria-label="<?php _e( 'previous slide', 'so-widgets-bundle' ); ?>" data-action="prev">
+						<em class="sow-sld-icon-<?php echo sanitize_html_class( $controls['nav_style'] ); ?>-left"></em>
 					</a>
 				</div>
 				<?php
 				break;
+
 			case 'after_slider':
 				?></div><?php
 				break;
@@ -440,21 +447,16 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	/**
 	 * Get the frame background information from the frame. This can be overwritten by child classes.
 	 *
-	 * @param $frame
-	 *
 	 * @return array
 	 */
-	function get_frame_background( $i, $frame ) {
+	public function get_frame_background( $i, $frame ) {
 		return array( );
 	}
 
 	/**
 	 * This is mainly for rendering the frame wrapper
-	 *
-	 * @param $i
-	 * @param $frame
 	 */
-	function render_frame( $i, $frame, $controls ){
+	public function render_frame( $i, $frame, $controls ) {
 		$background = wp_parse_args( $this->get_frame_background( $i, $frame ), array(
 			'color' => false,
 			'image' => false,
@@ -463,38 +465,39 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'opacity' => 1,
 			'url' => false,
 			'new_window' => false,
-			'image-sizing' => 'cover',              // options for image sizing are cover and contain
+			'image-sizing' => 'cover', // options for image sizing are cover and contain
 			'videos' => false,
-			'videos-sizing' => 'background',        // options for video sizing are background or full
+			'videos-sizing' => 'background', // options for video sizing are background or full
 		) );
 
 		$wrapper_attributes = array(
 			'class' => array( 'sow-slider-image' ),
 			// Prevent potentially showing all slides on load if the slide is transparent, and an animation is set.
-			'style' => array( 'visibility: ' . ( $i === 0 ? 'visible': 'hidden' ) . ';' ),
+			'style' => array( 'visibility: ' . ( $i === 0 ? 'visible' : 'hidden' ) . ';' ),
 		);
 
-		if( !empty($background['color']) ) {
-			$wrapper_attributes['style'][] = 'background-color: ' . esc_attr($background['color']);
+		if ( ! empty( $background['color'] ) ) {
+			$wrapper_attributes['style'][] = 'background-color: ' . esc_attr( $background['color'] );
 		}
 
-		if( $background['opacity'] >= 1 ) {
-			if( !empty($background['image']) ) {
-				$wrapper_attributes['style'][] = 'background-image: url(' . esc_url($background['image']) . ')';
+		if ( $background['opacity'] >= 1 ) {
+			if ( ! empty( $background['image'] ) ) {
+				$wrapper_attributes['style'][] = 'background-image: url(' . esc_url( $background['image'] ) . ')';
 			}
 		}
 
-		if( ! empty( $background['url'] ) ) {
+		if ( ! empty( $background['url'] ) ) {
 			$wrapper_attributes['style'][] = 'cursor: pointer;';
 		}
 
-		if( !empty($background['image']) && !empty($background['image-sizing']) ) {
+		if ( ! empty( $background['image'] ) && ! empty( $background['image-sizing'] ) ) {
 			$wrapper_attributes['class'][] = ' ' . 'sow-slider-image-' . $background['image-sizing'];
 		}
-		if( !empty( $background['url'] ) ) {
+
+		if ( ! empty( $background['url'] ) ) {
 			$wrapper_attributes['data-url'] = json_encode( array(
-				'url' => sow_esc_url($background['url']),
-				'new_window' => !empty( $background['new_window'] )
+				'url' => sow_esc_url( $background['url'] ),
+				'new_window' => ! empty( $background['new_window'] ),
 			) );
 		}
 		$wrapper_attributes = apply_filters( 'siteorigin_widgets_slider_wrapper_attributes', $wrapper_attributes, $frame, $background );
@@ -503,14 +506,17 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		$wrapper_attributes['style'] = implode( ';', $wrapper_attributes['style'] );
 
 		?>
-		<li <?php foreach( $wrapper_attributes as $attr => $val ) echo $attr . '="' . esc_attr( $val ) . '" '; ?>>
+		<li <?php foreach ( $wrapper_attributes as $attr => $val ) {
+			echo $attr . '="' . esc_attr( $val ) . '" ';
+		} ?>>
 			<?php
 			do_action( 'siteorigin_widgets_slider_before_contents', $frame );
 			$this->render_frame_contents( $i, $frame );
 			do_action( 'siteorigin_widgets_slider_after_contents', $frame );
-			if( !empty( $background['videos'] ) ) {
 
+			if ( ! empty( $background['videos'] ) ) {
 				$classes = array( 'sow-' . $background['video-sizing'] . '-element' );
+
 				if ( ! empty( $controls['background_video_mobile'] ) ) {
 					$classes[] = 'sow-mobile-video_enabled';
 				}
@@ -536,20 +542,22 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				$this->video_code( $background['videos'], $classes, $controls );
 			}
 
-			if( $background['opacity'] < 1 && !empty($background['image']) ) {
+			if ( $background['opacity'] < 1 && ! empty( $background['image'] ) ) {
 				$overlay_attributes = array(
 					'class' => array( 'sow-slider-image-overlay', 'sow-slider-image-' . $background['image-sizing'] ),
 					'style' => array(
 						'background-image: url(' . $background['image'] . ')',
 						'opacity: ' . (float) $background['opacity'],
-					)
+					),
 				);
 				$overlay_attributes = apply_filters( 'siteorigin_widgets_slider_overlay_attributes', $overlay_attributes, $frame, $background );
 
 				$overlay_attributes['class'] = empty( $overlay_attributes['class'] ) ? '' : implode( ' ', $overlay_attributes['class'] );
 				$overlay_attributes['style'] = empty( $overlay_attributes['style'] ) ? '' : implode( ';', $overlay_attributes['style'] );
 
-				?><div <?php foreach( $overlay_attributes as $attr => $val ) echo $attr . '="' . esc_attr( $val ) . '" '; ?> ></div><?php
+				?><div <?php foreach ( $overlay_attributes as $attr => $val ) {
+					echo $attr . '="' . esc_attr( $val ) . '" ';
+				} ?> ></div><?php
 			}
 
 			?>
@@ -560,34 +568,34 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 
 	/**
 	 * Render the actual content of the frame.
-	 *
-	 * @param $i
-	 * @param $frame
 	 */
-	abstract function render_frame_contents( $i, $frame );
+	abstract public function render_frame_contents( $i, $frame );
 
 	/**
 	 * Render the background videos
 	 *
-	 * @param $videos
 	 * @param array $classes
 	 */
-	function video_code( $videos, $classes = array(), $controls = array() ){
-		if( empty( $videos ) ) return;
+	public function video_code( $videos, $classes = array(), $controls = array() ) {
+		if ( empty( $videos ) ) {
+			return;
+		}
 		$loop = ! empty( $controls['loop_background_videos'] ) && $controls['loop_background_videos'] ? 'loop' : '';
 		$opacity = isset( $controls['opacity'] ) ? 'style="opacity: ' . ( $controls['opacity'] / 100 ) . '"' : '';
 
 		$video_element = '<video class="' . esc_attr( implode( ' ', $classes ) ) . '" autoplay ' . $loop . ' ' . $opacity . ' muted playsinline>';
 		$so_video = new SiteOrigin_Video();
-		foreach( $videos as $video ) {
-			if( empty( $video['file'] ) && empty ( $video['url'] ) ) continue;
-			// If video is an external file, try and display it using oEmbed
-			if( !empty( $video['url'] ) ) {
 
+		foreach ( $videos as $video ) {
+			if ( empty( $video['file'] ) && empty( $video['url'] ) ) {
+				continue;
+			}
+			// If video is an external file, try and display it using oEmbed
+			if ( ! empty( $video['url'] ) ) {
 				$can_oembed = $so_video->can_oembed( $video['url'] );
 
 				// Check if we can oEmbed the video or not
-				if( ! $can_oembed ) {
+				if ( ! $can_oembed ) {
 					$video_file = sow_esc_url( $video['url'] );
 				} else {
 					echo '<div class="sow-slide-video-oembed" ' . $opacity . '>';
@@ -598,11 +606,12 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			}
 
 			// If $video_file isn't set video is a local file
-			if( !isset( $video_file ) ) {
+			if ( ! isset( $video_file ) ) {
 				$video_file = wp_get_attachment_url( $video['file'] );
 			}
 			$video_element .= '<source src="' . sow_esc_url( $video_file ) . '" type="' . esc_attr( $video['format'] ) . '">';
 		}
+
 		if ( strpos( $video_element, 'source' ) !== false ) {
 			$video_element .= '</video>';
 			echo $video_element;
@@ -612,12 +621,12 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 	/**
 	 * If the Unmute icon is enabled, inject unmute LESS.
 	 *
-	 * @param string $less The LESS content.
-	 * @param array $vars The widget LESS variables.
-	 * @param array $instance The widget instance.
-	 * @param SiteOrigin_Widget $widget The widget object.
+	 * @param string            $less     The LESS content.
+	 * @param array             $vars     The widget LESS variables.
+	 * @param array             $instance The widget instance.
+	 * @param SiteOrigin_Widget $widget   The widget object.
 	 */
-	function add_unmute_less( $less, $vars, $instance, $widget ) {
+	public function add_unmute_less( $less, $vars, $instance, $widget ) {
 		if (
 			empty( $less ) ||
 			$widget->id_base != $this->id_base ||
@@ -627,16 +636,17 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		}
 
 		$less .= file_get_contents( plugin_dir_path( __FILE__ ) . 'less/unmute.less' );
+
 		return $less;
 	}
 
 	/**
 	 * If the Unmute icon is enabled, add unmute_position LESS variable.
 	 *
-	 * @param array $less An array containing all LESS variables.
+	 * @param array $less     An array containing all LESS variables.
 	 * @param array $instance The widget instance.
 	 */
-	function add_less_variables( $less_variables, $instance, $widget ) {
+	public function add_less_variables( $less_variables, $instance, $widget ) {
 		if (
 			empty( $less_variables ) ||
 			$widget->id_base != $this->id_base ||
@@ -653,5 +663,4 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 
 		return $less_variables;
 	}
-
 }
