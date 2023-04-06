@@ -107,9 +107,9 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 							'hover_effects[disabled]' => array( 'hide' ),
 						),
 					),
-					'border_color_hover' => array(
+					'border_hover_color' => array(
 						'type'  => 'color',
-						'label' => __( 'Border color hover', 'so-widgets-bundle' ),
+						'label' => __( 'Border hover color', 'so-widgets-bundle' ),
 						'state_handler' => array(
 							'theme[wire]' => array( 'show' ),
 							'_else[theme]' => array( 'hide' ),
@@ -343,7 +343,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 				if ( $instance['design']['theme'] == 'wire' ) {
 					$call .= ! empty( $network['border_color'] ) ? ', @border_color:' . $network['border_color'] : '';
 					$border_color_hover_fallback = ! empty( $network['border_color'] ) ? ', @button_color_hover:' . $network['border_color'] : '';
-					$call .= ! empty( $network['border_color_hover'] ) ? ', @border_color_hover:' . $network['border_color_hover'] : $border_color_hover_fallback;
+					$call .= ! empty( $network['border_hover_color'] ) ? ', @border_hover_color:' . $network['border_hover_color'] : $border_hover_color_fallback;
 					
 				}
 				$call .= ');';
