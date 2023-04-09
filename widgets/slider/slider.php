@@ -243,7 +243,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 					'siteorigin_widgets_slider_attr',
 					array(
 						'class' => 'sow-slider-background-image skip-lazy',
-						'style' => ! empty( $frame['custom_height'] ) ? 'height: ' . intval( $frame['custom_height'] ) . 'px;' : '',
+						'style' => ! empty( $frame['custom_height'] ) ? 'height: ' . intval( $frame['custom_height'] ) . 'px; width: auto; margin: 0 auto;' : '',
 						'loading' => 'eager',
 					)
 				)

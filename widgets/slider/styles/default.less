@@ -27,6 +27,13 @@
 
 	ul.sow-slider-images {
 
+
+		& when ( isnumber( @slide_height ) ) {
+			.sow-slider-image {
+				background: none !important;
+			}
+		}
+
 		.sow-slider-image-wrapper {
 			height: @slide_height;
 
