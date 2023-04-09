@@ -612,16 +612,22 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_style( 'siteorigin-widget-admin', plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'base/css/admin.css', array( 'media-views' ), SOW_BUNDLE_VERSION );
 
-			wp_enqueue_script( 'wp-color-picker' );
+			wp_register_script(
+				'wp-color-picker-alpha',
+				plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/wp-color-picker-alpha' . SOW_BUNDLE_JS_SUFFIX . '.js',
+				array( 'wp-color-picker' ),
+				'3.0.2',
+				true
+			);
+
 			wp_enqueue_media();
 			wp_enqueue_script(
 				'siteorigin-widget-admin',
 				plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'base/js/admin' . SOW_BUNDLE_JS_SUFFIX . '.js',
-				array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-slider', 'underscore' ),
+				array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-slider', 'underscore', 'wp-color-picker-alpha' ),
 				SOW_BUNDLE_VERSION,
 				true
 			);
-
 			wp_localize_script( 'siteorigin-widget-admin', 'soWidgets', array(
 				'ajaxurl' => wp_nonce_url( admin_url( 'admin-ajax.php' ), 'widgets_action', '_widgets_nonce' ),
 				'sure' => __( 'Are you sure?', 'so-widgets-bundle' ),
