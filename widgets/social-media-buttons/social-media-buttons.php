@@ -83,6 +83,14 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 						'type'  => 'color',
 						'label' => __( 'Background color', 'so-widgets-bundle' ),
 					),
+					'border_color' => array(
+						'type'  => 'color',
+						'label' => __( 'Border color', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'theme[wire]' => array( 'show' ),
+							'_else[theme]' => array( 'hide' ),
+						),
+					),
 					'icon_color_hover' => array(
 						'type'  => 'color',
 						'label' => __( 'Icon hover color', 'so-widgets-bundle' ),
@@ -97,6 +105,14 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 						'state_handler' => array(
 							'hover_effects[enabled]' => array( 'show' ),
 							'hover_effects[disabled]' => array( 'hide' ),
+						),
+					),
+					'border_hover_color' => array(
+						'type'  => 'color',
+						'label' => __( 'Border hover color', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'theme[wire]' => array( 'show' ),
+							'_else[theme]' => array( 'hide' ),
 						),
 					),
 				),
@@ -119,6 +135,10 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 							'atom' => __( 'Atom', 'so-widgets-bundle' ),
 							'flat' => __( 'Flat', 'so-widgets-bundle' ),
 							'wire' => __( 'Wire', 'so-widgets-bundle' ),
+						),
+						'state_emitter' => array(
+							'callback' => 'select',
+							'args' => array( 'theme' ),
 						),
 					),
 					'hover'      => array(
@@ -308,7 +328,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 
 	public function less_generate_calls_to( $instance, $args ) {
 		$networks = $this->get_instance_networks( $instance );
-		$calls = array();
+		$calls    = array();
 
 		foreach ( $networks as $network ) {
 			if ( ! empty( $network['name'] ) ) {
@@ -319,6 +339,13 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 				$call .= ! empty( $network['button_color'] ) ? ', @button_color:' . $network['button_color'] : '';
 				$call .= ! empty( $network['icon_color_hover'] ) ? ', @icon_color_hover:' . $network['icon_color_hover'] : $icon_color_hover_fallback;
 				$call .= ! empty( $network['button_color_hover'] ) ? ', @button_color_hover:' . $network['button_color_hover'] : $button_color_hover_fallback;
+
+				if ( $instance['design']['theme'] == 'wire' ) {
+					$call .= ! empty( $network['border_color'] ) ? ', @border_color:' . $network['border_color'] : '';
+					$border_color_hover_fallback = ! empty( $network['border_color'] ) ? ', @button_color_hover:' . $network['border_color'] : '';
+					$call .= ! empty( $network['border_hover_color'] ) ? ', @border_hover_color:' . $network['border_hover_color'] : $border_hover_color_fallback;
+					
+				}
 				$call .= ');';
 				$calls[] = $call;
 			}

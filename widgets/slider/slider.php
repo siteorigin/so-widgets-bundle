@@ -103,13 +103,6 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 						'library' => 'image',
 						'label' => __( 'Foreground image', 'so-widgets-bundle' ),
 						'fallback' => true,
-						'state_emitter' => array(
-							'callback' => 'conditional',
-							'args' => array(
-								'show_height[show]: val && ! isNaN( val )',
-								'show_height[hide]: ! val || isNaN( val )',
-							),
-						),
 					),
 
 					'url' => array(
@@ -133,10 +126,6 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			'design' => array(
 				'type' => 'section',
 				'label' => __( 'Design', 'so-widgets-bundle' ),
-				'state_handler' => array(
-					'show_height[show]' => array( 'show' ),
-					'show_height[hide]' => array( 'hide' ),
-				),
 				'fields' => array(
 					'height' => array(
 						'type' => 'measurement',
@@ -254,6 +243,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 					'siteorigin_widgets_slider_attr',
 					array(
 						'class' => 'sow-slider-background-image skip-lazy',
+						'style' => ! empty( $frame['custom_height'] ) ? 'height: ' . intval( $frame['custom_height'] ) . 'px; width: auto; margin: 0 auto;' : '',
 						'loading' => 'eager',
 					)
 				)
