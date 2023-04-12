@@ -27,6 +27,13 @@
 
 	ul.sow-slider-images {
 
+
+		& when ( isnumber( @slide_height ) ) {
+			.sow-slider-image {
+				background: none !important;
+			}
+		}
+
 		.sow-slider-image-wrapper {
 			height: @slide_height;
 
@@ -50,6 +57,15 @@
 				line-height: 0;
 				margin-left: auto;
 				margin-right: auto;
+			}
+		}
+
+		.sow-slider-image > video.sow-full-element {
+			height: @slide_height;
+			& when ( isnumber( @slide_height_responsive ) ) {
+				@media (max-width: @responsive_breakpoint) {
+					height: @slide_height_responsive;
+				}
 			}
 		}
 	}
