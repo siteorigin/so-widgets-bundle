@@ -106,6 +106,10 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.48.0 - 12 April 2023 =
+* Slider: Added Height and Responsive Height settings regardless of whether a Foreground Image is present.
+* Social Media Buttons: Added Wire Border Color settings.
+
 = 1.47.1 - 04 April 2023 =
 * Blog: Fixed Alternate Template featured image mobile collapse.
 * Post Carousel: Improved `Thumbnail Overlay` migration.
