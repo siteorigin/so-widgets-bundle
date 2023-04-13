@@ -1,0 +1,23 @@
+@responsive_breakpoint: 780px;
+@columns: 3;
+@alignment: space-between;
+@mobile_columns: 3;
+@mobile_alignment: center;
+
+.sow-buttons-grid {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: @alignment;
+	@media (max-width: @responsive_breakpoint) {
+		justify-content: @mobile_alignment;
+	}
+
+	.so-widget-sow-button  {
+		flex-basis: @columns;
+
+		@media (max-width: @responsive_breakpoint) {
+			flex-basis: @mobile_columns;
+		}
+	}
+}
