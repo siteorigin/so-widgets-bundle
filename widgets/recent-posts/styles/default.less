@@ -1,0 +1,56 @@
+@responsive_breakpoint: 780px;
+@date: default; // Unused.
+@list_style_type: disc;
+@list_style_color: default;
+@list_style_position: outside;
+@title_font: default;
+@title_font_style: default;
+@title_font_weight: default;
+@title_font_size: default;
+@title_color: default;
+@title_color_hover: default;
+@date_font: default;
+@date_font_style: default;
+@date_font_weight: default;
+@date_font_size: default;
+@date_color: default;
+
+.sow-recent-posts {
+	li {
+		list-style-type: @list_style_type;
+		list-style-position: @list_style_position;
+		color: @list_style_color;
+	}
+
+	&-title {
+		display: inline-block; // Required for inside list style position.
+		font-family: @title_font;
+		font-size: @title_font_size;
+		font-style: @title_font_style;
+		font-weight: @title_font_weight;
+		line-height: 1;
+		margin: 5px 0;
+
+		a {
+			color: @title_color;
+			&:hover,
+			&:focus {
+				color: @title_color_hover;
+			}
+		}
+	}
+
+	&-date {
+		display: inline-block;
+		font-family: @title_font;
+		font-size: @title_font_size;
+		font-style: @title_font_style;
+		font-weight: @title_font_weight;
+		line-height: 1;
+		margin: 5px 0;
+
+		.updated:not(.published){
+			display:none
+		}
+	}
+}
