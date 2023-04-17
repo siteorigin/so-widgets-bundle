@@ -269,6 +269,11 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				$frame['link_attributes'] = $link_atts;
 
 				$frame['custom_height'] = ! empty( $instance['design']['height'] ) ? $instance['design']['height'] : 0;
+
+				$frame['custom_height'] = ! empty( $instance['design']['height'] ) ? $instance['design']['height'] : 0;
+				if ( ! empty( $frame['custom_height'] ) && empty( $frame['foreground_image'] )) {
+					$frame['no_output'] = true;
+				}
 			}
 		}
 
