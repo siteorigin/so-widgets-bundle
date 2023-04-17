@@ -34,7 +34,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	public function get_widget_form() {
+	function get_widget_form() {
 		return array(
 			'title_tag' => array(
 				'type' => 'select',
@@ -150,7 +150,13 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							'type' => array(
 								'type' => 'select',
 								'label' => __( 'Type', 'so-widgets-bundle' ),
+								'default' => 'disc',
+								'state_emitter' => array(
+									'callback' => 'select',
+									'args' => array( 'list_type' ),
+								),
 								'options' => array(
+									'none' => __( 'None', 'so-widgets-bundle' ),
 									'disc' => __( 'disc', 'so-widgets-bundle' ),
 									'circle' => __( 'circle', 'so-widgets-bundle' ),
 									'square' => __( 'square', 'so-widgets-bundle' ),
@@ -221,11 +227,20 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							'color' => array(
 								'type' => 'color',
 								'label' => __( 'Color', 'so-widgets-bundle' ),
+
+								'state_handler' => array(
+									'list_type[none]' => array( 'hide' ),
+									'_else[list_type]' => array( 'show' ),
+								),
 							),
 							'position' => array(
 								'type' => 'radio',
 								'label' => __( 'Position', 'so-widgets-bundle' ),
 								'default' => 'outside',
+								'state_handler' => array(
+									'list_type[none]' => array( 'hide' ),
+									'_else[list_type]' => array( 'show' ),
+								),
 								'options' => array(
 									'outside' => __( 'Outside', 'so-widgets-bundle' ),
 									'inside' => __( 'Inside', 'so-widgets-bundle' ),
@@ -259,9 +274,9 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 		$less_vars = array(
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 			'date' => ! empty( $instance['date'] ) ? $instance['date'] : '',
-			'list_style_type' => ! empty( $instance['design']['list_style']['type'] ) ? $instance['design']['list_style']['type'] : '',
+			'list_style_type' => ! empty( $instance['design']['list_style']['type'] ) ? $instance['design']['list_style']['type'] : 'disc',
 			'list_style_color' => ! empty( $instance['design']['list_style']['color'] ) ? $instance['design']['list_style']['color'] : '',
-			'list_style_position' => ! empty( $instance['design']['list_style']['position'] ) ? $instance['design']['list_style']['position'] : '',
+			'list_style_position' => ! empty( $instance['design']['list_style']['position'] ) ? $instance['design']['list_style']['position'] : 'outside',
 			'title_font_size' => ! empty( $instance['design']['title']['font_size'] ) ? $instance['design']['title']['font_size'] : '',
 			'title_color' => ! empty( $instance['design']['title']['color'] ) ? $instance['design']['title']['color'] : '',
 			'title_color_hover' => ! empty( $instance['design']['title']['color_hover'] ) ? $instance['design']['title']['color_hover'] : '',
@@ -272,7 +287,6 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 		if ( ! empty( $instance['design']['title']['font'] ) ) {
 			$font = siteorigin_widget_get_font( $instance['design']['title']['font'] );
 			$less_vars['title_font'] = $font['family'];
-
 			if ( ! empty( $font['weight'] ) ) {
 				$less_vars['title_font_style'] = $font['style'];
 				$less_vars['title_font_weight'] = $font['weight_raw'];
@@ -282,7 +296,6 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 		if ( ! empty( $instance['design']['date']['font'] ) ) {
 			$font = siteorigin_widget_get_font( $instance['design']['date']['font'] );
 			$less_vars['date_font'] = $font['family'];
-
 			if ( ! empty( $font['weight'] ) ) {
 				$less_vars['date_font_style'] = $font['style'];
 				$less_vars['date_font_weight'] = $font['weight_raw'];

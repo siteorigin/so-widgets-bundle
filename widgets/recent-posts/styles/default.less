@@ -1,8 +1,8 @@
 @responsive_breakpoint: 780px;
-@date: default; // Unused.
-@list_style_type: disc;
+@date: default;
+@list_style_type: default;
 @list_style_color: default;
-@list_style_position: outside;
+@list_style_position: default;
 @title_font: default;
 @title_font_style: default;
 @title_font_weight: default;
@@ -23,7 +23,7 @@
 	}
 
 	&-title {
-		display: inline-block; // Required for inside list style position.
+		display: inline-block; // Required for inside list stlye position.
 		font-family: @title_font;
 		font-size: @title_font_size;
 		font-style: @title_font_style;
@@ -41,7 +41,7 @@
 	}
 
 	&-date {
-		display: inline-block;
+		display: inline-block; // Required for inside list stlye position.
 		font-family: @title_font;
 		font-size: @title_font_size;
 		font-style: @title_font_style;
