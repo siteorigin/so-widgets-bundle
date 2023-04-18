@@ -150,14 +150,17 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		// Add support for custom sizes.
 		if (
 			$instance['size'] == 'custom_size' &&
-			! empty( $instance['size_width'] ) &&
+			(
+			! empty( $instance['size_width'] ) ||
 			! empty( $instance['size_height'] )
+			)
 		) {
 			$instance['size'] = array(
-				(int) $instance['size_width'],
-				(int) $instance['size_height'],
+				! empty( $instance['size_width'] ) ? (int) $instance['size_width'] : '',
+				! empty( $instance['size_width'] ) ? (int) $instance['size_height'] : '',
 			);
 		}
+
 
 		if ( ! empty( $instance['size_external'] ) && $instance['size_external'] == 'custom_size' ) {
 			$external_size = array(
