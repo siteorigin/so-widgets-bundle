@@ -124,9 +124,9 @@ class SiteOrigin_Video {
 
 		$new_url = add_query_arg(
 			array(
-				'loop' => 1,
 				// Adding the current video in a playlist allows for YouTube to loop the video.
 				'playlist' => ! empty( $vars['v'] ) ? $vars['v'] : '',
+				'loop' => 1,
 			),
 			$match[1]
 		);
