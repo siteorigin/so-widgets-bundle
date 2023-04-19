@@ -480,7 +480,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			$wrapper_attributes['style'][] = 'background-color: ' . esc_attr( $background['color'] );
 		}
 
-		if ( ! empty( $background['image'] && $background['opacity'] >= 1 && empty( $frame['no_output'] ) ) {
+		if ( ! empty( $background['image'] ) && $background['opacity'] >= 1 && empty( $frame['no_output'] ) ) {
 			$wrapper_attributes['style'][] = 'background-image: url(' . esc_url( $background['image'] ) . ')';
 		}
 
