@@ -199,6 +199,10 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 					$attr['sizes'] = wp_get_attachment_image_sizes( $instance['image'], $instance['size'] );
 				}
 			}
+
+			if ( ! empty( $custom_size ) ) {
+				$attr['style'] = 'width: ' . $attr['width'] . 'px; height: '. $attr['height'] . 'px;';	
+			}
 		}
 		$attr = apply_filters( 'siteorigin_widgets_image_attr', $attr, $instance, $this );
 
