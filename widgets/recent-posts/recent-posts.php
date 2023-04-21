@@ -72,7 +72,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			),
 			'date' => array(
 				'type' => 'checkbox',
-				'label' => __( 'Show Post Date', 'so-widgets-bundle' ),
+				'label' => __( 'Display Post Date', 'so-widgets-bundle' ),
 				'default' => true,
 				'state_emitter' => array(
 					'callback' => 'conditional',
