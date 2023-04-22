@@ -19,6 +19,7 @@
 @more_text_size: default;
 @more_text_color: default;
 @per_row: 3;
+@feature_space: 25px;
 
 @container_size: 84px;
 @icon_size: 24px;
@@ -37,7 +38,7 @@
 
 	.sow-features-feature {
 		.box-sizing(border-box);
-		padding: 0 25px;
+		padding: 0 @feature_space;
 		position: relative;
 		& when ( @more_text_bottom_align = true ) {
 			display: flex;
