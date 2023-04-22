@@ -138,16 +138,19 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			'header_color' => array(
 				'type'  => 'color',
 				'label' => __( 'Header background color', 'so-widgets-bundle' ),
+				'default' => '#65707f',
 			),
 
 			'header_text_color' => array(
 				'type'  => 'color',
 				'label' => __( 'Header text color', 'so-widgets-bundle' ),
+				'default' => '#fff',
 			),
 
 			'featured_header_color' => array(
 				'type'  => 'color',
 				'label' => __( 'Featured header background color', 'so-widgets-bundle' ),
+				'default' => '#707d8d',
 			),
 
 			'featured_header_text_color' => array(
@@ -165,11 +168,13 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			'button_color' => array(
 				'type'  => 'color',
 				'label' => __( 'Button color', 'so-widgets-bundle' ),
+				'default' => '#41a9d5',
 			),
 
 			'featured_button_color' => array(
 				'type'  => 'color',
 				'label' => __( 'Featured button color', 'so-widgets-bundle' ),
+				'default' => '#2e9fcf',
 			),
 
 			'button_new_window' => array(
