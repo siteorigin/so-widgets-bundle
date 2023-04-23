@@ -397,8 +397,8 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			'responsive_breakpoint' => array(
 				'type'        => 'measurement',
 				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
-				'default'     => '520px',
-				'description' => __( 'This setting controls when the features widget will collapse for mobile devices. The default value is 520px', 'so-widgets-bundle' ),
+				'default'     => '780px',
+				'description' => __( 'This setting controls when the features widget will collapse for mobile devices. The default value is 780px', 'so-widgets-bundle' ),
 			),
 		);
 	}
