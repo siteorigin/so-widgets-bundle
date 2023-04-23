@@ -4,7 +4,7 @@
 		<div class="sow-author-box-avatar">
 			<?php do_action( 'siteorigin_widgets_author_box_avatar_above', $instance ); ?>
 			<?php if ( $link_avatar ) { ?>
-				<a href="<?php echo esc_urL( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>">
+				<a href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>">
 			<?php
 			}
 
@@ -26,7 +26,7 @@
 		<h4 class="sow-author-box-title">
 			<small class="sow-author-box-info">
 				<?php if ( $link_name ) { ?>
-					<a href="<?php echo esc_urL( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>">
+					<a href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>"  class="sow-author-box-author-all">
 				<?php
 				}
 				echo get_the_author();
@@ -37,7 +37,7 @@
 				<?php } ?>
 
 				<?php if ( $link_all_posts ) { ?>
-					<a href="<?php echo esc_urL( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>">
+					<a href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>" class="sow-author-box-author-all">
 						<?php echo __( sprintf( 'View posts by %s', get_the_author() ), 'so-widgets-bundle' ); ?> 
 					</a>
 				<?php } ?>

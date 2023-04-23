@@ -144,15 +144,17 @@ public function __construct() {
 							'font_size' => array(
 								'type' => 'measurement',
 								'label' => __( 'Font Size', 'so-widgets-bundle' ),
-								'default' => '18px',
+								'default' => '15px',
 							),
 							'color' => array(
 								'type' => 'color',
 								'label' => __( 'Color', 'so-widgets-bundle' ),
+								'default' => '#2d2d2d',
 							),
 							'color_hover' => array(
 								'type' => 'color',
 								'label' => __( 'Hover Color', 'so-widgets-bundle' ),
+								'default' => '#f14e4e',
 							),
 						),
 					),
@@ -168,18 +170,22 @@ public function __construct() {
 							'font_size' => array(
 								'type' => 'measurement',
 								'label' => __( 'Font Size', 'so-widgets-bundle' ),
+								'default' => '14px',
 							),
 							'color' => array(
 								'type' => 'color',
 								'label' => __( 'Color', 'so-widgets-bundle' ),
+								'default' => '#626262',
 							),
 							'link' => array(
 								'type' => 'color',
 								'label' => __( 'Link Color', 'so-widgets-bundle' ),
+								'default' => '#f14e4e',
 							),
 							'link_hover' => array(
 								'type' => 'color',
 								'label' => __( 'Link Hover Color', 'so-widgets-bundle' ),
+								'default' => '#626262',
 							),
 						),
 					),
@@ -207,11 +213,8 @@ public function __construct() {
 
 		$less_vars = array();
 
-		$color = ! empty( $instance['design']['container']['background_color'] ) ? $instance['design']['container']['background_color'] : '#000';
-		$rgb = ltrim( $color, '#' );
-		$rgb = array_map( 'hexdec', str_split( $rgb, strlen( $rgb ) == 6 ? 2 : 1 ) );
-		$opacity = ! empty( $instance['design']['container']['background_opacity'] ) ? $instance['design']['container']['background_opacity'] : 0.05;
-		$less_vars['box_background'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
+		$less_vars['box_background'] = ! empty( $instance['design']['container']['background_color'] ) ? $instance['design']['container']['background_color'] : '';
+		$less_vars['box_border_radius'] = ! empty( $instance['design']['container']['border_radius'] ) ? $instance['design']['container']['border_radius'] . 'px' : '';
 
 		if ( ! empty( $instance['design']['name']['font'] ) ) {
 			$font = siteorigin_widget_get_font( $instance['design']['name']['font'] );

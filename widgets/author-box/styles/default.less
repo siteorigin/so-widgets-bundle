@@ -4,7 +4,7 @@
 @name_font: default;
 @name_font_size: default;
 @name_font_style: default;
-@name_font_weight: default;
+@name_font_weight: 700;
 @name_color: default;
 @name_color_hover: default;
 @avatar_border_radius: default;
@@ -58,23 +58,21 @@
 			&:focus {
 				color: @name_color_hover;
 			}
-		}
 
-		.sow-author-box-info a:last-of-type {
-			font-size: 12px;
-			font-weight: 700;
-			padding: 0 5px;
-			text-decoration: none;
-
-			@media (max-width: @responsive_breakpoint) {
+			.sow-author-box-author-all {
 				display: block;
-				margin-top: 1em;
+				font-size: 0.867em;
+				margin-bottom: 10px;
+				text-decoration: none;
+				@media (max-width: @responsive_breakpoint) {
+					margin-top: 1em;
+				}
 			}
 		}
 
 	}
 
-	^-bio {
+	&-bio {
 		color: @bio_color;
 		font-family: @bio_font;
 		font-size: @bio_font_size;
