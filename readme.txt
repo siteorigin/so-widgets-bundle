@@ -106,6 +106,17 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.49.0 - 23 April 2023 =
+* Features: Updated CSS to Flexbox.
+* Features: Added `Space Between Each Feature` setting.
+* Features: Ensured all icon alignment states center align on mobile.
+* Features: Increased the responsive breakpoint` to 768px.
+* Price Table: Added color settings default values.
+* Slider: Improved slide background removal.
+* Social Media Buttons: Fixed potential `Undefined variable` error.
+* Video: Resolved an issue with YouTube video looping.
+* Widget Block: Added `siteorigin_widgets_block_exclude_widget`. Developers can exclude widgets from SiteOrigin Widgets Block cache.
+
 = 1.48.0 - 12 April 2023 =
 * Slider: Added Height and Responsive Height settings regardless of whether a Foreground Image is present.
 * Social Media Buttons: Added Wire Border Color settings.
