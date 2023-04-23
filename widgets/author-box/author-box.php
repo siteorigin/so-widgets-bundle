@@ -73,15 +73,47 @@ public function __construct() {
 							'background_color' => array(
 								'type' => 'color',
 								'label' => __( 'Background', 'so-widgets-bundle' ),
-								'default' => '#000',
+								'alpha' => true,
 							),
-							'background_opacity' => array(
+							'border_radius' => array(
 								'type' => 'slider',
-								'label' => __( 'Background Opacity', 'so-widgets-bundle' ),
+								'label' => __( 'Border Radius', 'so-widgets-bundle' ),
+								'max' => 50,
 								'min' => 0,
-								'max' => 1,
-								'step' => 0.01,
-								'default' => 0.05,
+								'step' => 1,
+							),
+						),
+					),
+					'avatar' => array(
+						'type' => 'section',
+						'label' => __( 'Author Avatar', 'so-widgets-bundle' ),
+						'hide' => true,
+						'state_handler' => array(
+							'avatar[show]' => array( 'show' ),
+							'avatar[hide]' => array( 'hide' ),
+						),
+						'fields' => array(
+							'border_radius' => array(
+								'type' => 'slider',
+								'label' => __( 'Border Radius', 'so-widgets-bundle' ),
+								'max' => 50,
+								'min' => 0,
+								'step' => 1,
+								'default' => 50,
+							),
+							'size' => array(
+								'type' => 'number',
+								'label' => __( 'Image size', 'so-widgets-bundle' ),
+								'default' => 100,
+							),
+							'position' => array(
+								'type' => 'radio',
+								'label' => __( 'Position', 'so-widgets-bundle' ),
+								'default' => 'left',
+								'options' => array(
+									'left' => __( 'Left', 'so-widgets-bundle' ),
+									'right' => __( 'Right', 'so-widgets-bundle' ),
+								),
 							),
 						),
 					),
@@ -177,6 +209,10 @@ public function __construct() {
 		$less_vars['name_font_size'] = ! empty( $instance['design']['name']['font_size'] ) ? $instance['design']['name']['font_size'] : '';
 		$less_vars['name_color'] = ! empty( $instance['design']['name']['color'] ) ? $instance['design']['name']['color'] : '';
 		$less_vars['name_color_hover'] = ! empty( $instance['design']['name']['color_hover'] ) ? $instance['design']['name']['color_hover'] : '';
+
+		$less_vars['avatar_border_radius'] = ! empty( $instance['design']['avatar']['border_radius'] ) ? $instance['design']['avatar']['border_radius'] . '%' : '';
+		$less_vars['avatar_border_position'] = ! empty( $instance['design']['avatar']['position'] ) ? $instance['design']['avatar']['position'] : '';
+
 
 		if ( ! empty( $instance['design']['bio']['font'] ) ) {
 			$font = siteorigin_widget_get_font( $instance['design']['bio']['font'] );

@@ -7,6 +7,8 @@
 @name_font_weight: default;
 @name_color: default;
 @name_color_hover: default;
+@avatar_border_radius: default;
+@avatar_border_position: left;
 @bio_color: default;
 @bio_font: default;
 @bio_font_style: default;
@@ -20,12 +22,20 @@
 	margin: 20px 0;
 	padding: 20px;
 
+	& when ( @avatar_border_position = right ) {
+		flex-direction: row-reverse;
+		text-align: right;
+	}
+
 	@media (min-width: @responsive_breakpoint) {
 		display: flex;
 		gap: 30px;
 
 		.sow-author-box-avatar {
 			text-align: center;
+			.avatar {
+				border-radius: @avatar_border_radius;
+			}
 		}
 	}
 

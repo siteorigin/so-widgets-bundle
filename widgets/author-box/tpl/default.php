@@ -10,7 +10,7 @@
 
 			echo get_avatar(
 				get_the_author_meta( 'ID' ),
-				apply_filters( 'siteorigin_widgets_avatar_size', 100 )
+				apply_filters( 'siteorigin_widgets_avatar_size', $avatar_image_size )
 			);
 
 			if ( $link_avatar ) {
