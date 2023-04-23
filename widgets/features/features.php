@@ -242,6 +242,12 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				'default' => 3,
 			),
 
+			'feature_space' => array(
+				'type' => 'measurement',
+				'label' => __( 'Space between each feature', 'so-widgets-bundle' ),
+				'default' => '25px',
+			),
+
 			'responsive' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Responsive layout', 'so-widgets-bundle' ),
@@ -304,6 +310,10 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			unset( $instance['title_tag'] );
 		}
 
+		if ( ! isset( $instance['feature_space'] ) ) {
+			$instance['feature_space'] = '25px';
+		}
+
 		return $instance;
 	}
 
@@ -345,6 +355,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		$less_vars['icon_size'] = $instance['icon_size'];
 		$less_vars['title_tag'] = ! empty( $instance['fonts']['title_options']['tag'] ) ? $instance['fonts']['title_options']['tag'] : 'h5';
 		$less_vars['per_row'] = $instance['per_row'];
+		$less_vars['feature_space'] = ! empty( $instance['feature_space'] ) ? $instance['feature_space'] : '25px';
 		$less_vars['use_icon_size'] = empty( $instance['icon_size_custom'] ) ? 'false' : 'true';
 		$less_vars['link_feature'] = ! empty( $instance['link_feature'] );
 		$less_vars['more_text_bottom_align'] = ! empty( $instance['more_text_bottom_align'] ) ? 'true' : 'false';
@@ -386,8 +397,8 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			'responsive_breakpoint' => array(
 				'type'        => 'measurement',
 				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
-				'default'     => '520px',
-				'description' => __( 'This setting controls when the features widget will collapse for mobile devices. The default value is 520px', 'so-widgets-bundle' ),
+				'default'     => '780px',
+				'description' => __( 'This setting controls when the features widget will collapse for mobile devices. The default value is 780px', 'so-widgets-bundle' ),
 			),
 		);
 	}

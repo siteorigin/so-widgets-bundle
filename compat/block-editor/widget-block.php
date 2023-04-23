@@ -185,6 +185,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				$attributes['widgetClass'] == 'SiteOrigin_Widget_PostCarousel_Widget' ||
 				$attributes['widgetClass'] == 'SiteOrigin_Widgets_ContactForm_Widget' ||
 				$attributes['widgetClass'] == 'SiteOrigin_Widget_Blog_Widget' ||
+				apply_filters( 'siteorigin_widgets_block_exclude_widget', false, $attributes['widgetClass'], $instance ) ||
 				// Is WPML active? If so, is there a translation for this page?
 				(
 					defined( 'ICL_LANGUAGE_CODE' ) &&

@@ -480,10 +480,8 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			$wrapper_attributes['style'][] = 'background-color: ' . esc_attr( $background['color'] );
 		}
 
-		if ( $background['opacity'] >= 1 ) {
-			if ( ! empty( $background['image'] ) ) {
-				$wrapper_attributes['style'][] = 'background-image: url(' . esc_url( $background['image'] ) . ')';
-			}
+		if ( ! empty( $background['image'] ) && $background['opacity'] >= 1 && empty( $frame['no_output'] ) ) {
+			$wrapper_attributes['style'][] = 'background-image: url(' . esc_url( $background['image'] ) . ')';
 		}
 
 		if ( ! empty( $background['url'] ) ) {
