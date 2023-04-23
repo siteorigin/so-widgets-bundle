@@ -265,25 +265,45 @@ var sowbForms = window.sowbForms || {};
 			$el.find('.siteorigin-widget-field-repeater-item').sowSetupRepeaterItems();
 
 			// Set up any color fields
-			$fields.find('> .siteorigin-widget-input-color').each(function () {
-				var colorField = $(this);
-				var colorFieldOptions = {
-					change: function (event, ui) {
-						setTimeout(function () {
-							$(event.target).trigger('change');
-						}, 100);
+			$fields.find( '> .siteorigin-widget-input-color' ).each( function() {
+				var $colorField = $( this );
+				var colorResult = ''
+				var alphaImage = '';
+
+				if ( $colorField.data( 'alpha-enabled' ) ) {
+					var handleAlphaDefault = function() {
+						if ( colorResult == '' ) {
+							$container = $colorField.parents( '.wp-picker-container' );
+							$colorResult = $container.find( '.wp-color-result' );
+							alphaImage = $colorResult.css( 'background-image' );
+						}
+						$colorResult.css( 'background-image', $colorField.val() == '' ? 'none' : alphaImage );
+					}
+				}
+				var $colorFieldOptions = {
+					change: function( event, ui ) {
+						setTimeout( function() {
+							if ( $colorField.data( 'alpha-enabled' ) ) {
+								handleAlphaDefault();
+							}
+							$( event.target ).trigger( 'change' );
+						}, 100 );
 					}
 				};
-				if (colorField.data('defaultColor')) {
-					colorFieldOptions.defaultColor = colorField.data('defaultColor');
+
+				if ( $colorField.data( 'defaultColor' ) ) {
+					$colorFieldOptions.defaultColor = $colorField.data( 'defaultColor' );
 				}
 
-				if ( colorField.data( 'palettes' ) ) {
-					colorFieldOptions.palettes = colorField.data( 'palettes' );
+				if ( $colorField.data( 'palettes' ) ) {
+					$colorFieldOptions.palettes = $colorField.data( 'palettes' );
 				}
 
-				colorField.wpColorPicker(colorFieldOptions);
-			});
+				$colorField.wpColorPicker( $colorFieldOptions );
+				if ( $colorField.data( 'alpha-enabled' ) ) {
+					$colorField.on( 'change', handleAlphaDefault ).trigger( 'change' );
+				}
+			} );
 
 			///////////////////////////////////////
 			// Handle the sections
