@@ -35,30 +35,44 @@ public function __construct() {
 
 	public function get_widget_form() {
 		return array(
-			'avatar' => array(
-				'type' => 'checkbox',
-				'default' => true,
-				'label' => __( 'Author Avatar', 'so-widgets-bundle' ),
-			),
-			'link_avatar' => array(
-				'type' => 'checkbox',
-				'default' => true,
-				'label' => __( 'Link Author Avatar', 'so-widgets-bundle' ),
-			),
-			'link_name' => array(
-				'type' => 'checkbox',
-				'default' => true,
-				'label' => __( 'Link Author Name', 'so-widgets-bundle' ),
-			),
-			'link_all_posts' => array(
-				'type' => 'checkbox',
-				'default' => true,
-				'label' => __( 'Add All Posts by Author Link', 'so-widgets-bundle' ),
-			),
-			'author_bio' => array(
-				'type' => 'checkbox',
-				'default' => true,
-				'label' => __( 'Show Author Bio', 'so-widgets-bundle' ),
+			'settings' => array(
+				'type' => 'section',
+				'label' => __( 'Settings', 'so-widgets-bundle' ),
+				'hide' => true,
+				'fields' => array(
+					'avatar' => array(
+						'type' => 'checkbox',
+						'default' => true,
+						'label' => __( 'Author Avatar', 'so-widgets-bundle' ),
+						'state_emitter' => array(
+							'callback' => 'conditional',
+							'args' => array(
+								'avatar[show]: val',
+								'avatar[hide]: ! val',
+							),
+						),
+					),
+					'link_avatar' => array(
+						'type' => 'checkbox',
+						'default' => true,
+						'label' => __( 'Link Author Avatar', 'so-widgets-bundle' ),
+					),
+					'link_name' => array(
+						'type' => 'checkbox',
+						'default' => true,
+						'label' => __( 'Link Author Name', 'so-widgets-bundle' ),
+					),
+					'link_all_posts' => array(
+						'type' => 'checkbox',
+						'default' => true,
+						'label' => __( 'Add All Posts by Author Link', 'so-widgets-bundle' ),
+					),
+					'author_bio' => array(
+						'type' => 'checkbox',
+						'default' => true,
+						'label' => __( 'Author Bio', 'so-widgets-bundle' ),
+					),
+				),
 			),
 			'design' => array(
 				'type' => 'section',
@@ -176,11 +190,12 @@ public function __construct() {
 	public function get_template_variables( $instance, $args ) {
 		return array(
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
-			'show_avatar' => ! empty( $instance['avatar'] ),
-			'link_avatar' => ! empty( $instance['link_avatar'] ),
-			'link_name' => ! empty( $instance['link_name'] ),
-			'author_bio' => ! empty( $instance['author_bio'] ),
-			'link_all_posts' => ! empty( $instance['link_all_posts'] ),
+			'show_avatar' => ! empty( $instance['settings']['avatar'] ),
+			'link_avatar' => ! empty( $instance['settings']['link_avatar'] ),
+			'link_name' => ! empty( $instance['settings']['link_name'] ),
+			'author_bio' => ! empty( $instance['settings']['author_bio'] ),
+			'link_all_posts' => ! empty( $instance['settings']['link_all_posts'] ),
+			'avatar_image_size' => ! empty( $instance['design']['avatar']['size'] ) ? $instance['design']['avatar']['size'] : 100,
 		);
 	}
 
