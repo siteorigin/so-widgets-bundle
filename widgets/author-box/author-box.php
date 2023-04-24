@@ -213,8 +213,8 @@ public function __construct() {
 
 		$less_vars = array();
 
-		$less_vars['box_background'] = ! empty( $instance['design']['container']['background_color'] ) ? $instance['design']['container']['background_color'] : '';
-		$less_vars['box_border_radius'] = ! empty( $instance['design']['container']['border_radius'] ) ? $instance['design']['container']['border_radius'] . 'px' : '';
+		$less_vars['container_background'] = ! empty( $instance['design']['container']['background_color'] ) ? $instance['design']['container']['background_color'] : '';
+		$less_vars['container_border_radius'] = ! empty( $instance['design']['container']['border_radius'] ) ? $instance['design']['container']['border_radius'] . 'px' : '';
 
 		if ( ! empty( $instance['design']['name']['font'] ) ) {
 			$font = siteorigin_widget_get_font( $instance['design']['name']['font'] );
