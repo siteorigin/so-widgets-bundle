@@ -16,6 +16,7 @@ public function __construct() {
 				'description' => __( 'Placeholder', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/author-box-widget/',
 				'has_preview' => false,
+				'panels_title' => false,
 			),
 			array(),
 			false,
