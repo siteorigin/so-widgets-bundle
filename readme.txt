@@ -106,6 +106,11 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.49.1 - 26 April 2023 =
+* Contact Form: Added a check to ensure PHP GD is enabled before allowing Really Simple CAPTCHA.
+* Removed duplicate widget text area.
+* Resolved a Parallax Sliders - Legacy Parallax display issue.
+
 = 1.49.0 - 23 April 2023 =
 * Features: Updated CSS to Flexbox.
 * Features: Added `Space Between Each Feature` setting.
