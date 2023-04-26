@@ -164,19 +164,22 @@ jQuery( function($){
 					return;
 				}
 
-				var slidesWithModernParallax = $$.find( '.sow-slider-image-parallax:not([data-siteorigin-parallax]) ' );
+				var isLegacyParallax = $$.find( '.sow-slider-image-parallax[data-siteorigin-parallax]' ).length;
 				var waitForParallax = false;
-				if (
-					slidesWithModernParallax.length &&
-					typeof parallaxStyles != 'undefined' &&
-					(
-						! parallaxStyles['disable-parallax-mobile'] ||
-						! window.matchMedia( '(max-width: ' + parallaxStyles['mobile-breakpoint'] + ')' ).matches
-					)
-				) {
-					waitForParallax = true;
-					// Allow slider to be size itself while preventing visual "jump" in modern parallax.
-					$base.css( 'opacity', 0 );
+				if ( ! isLegacyParallax ) {
+					var slidesWithModernParallax = $$.find( '.sow-slider-image-parallax:not([data-siteorigin-parallax])' );
+					if (
+						slidesWithModernParallax.length &&
+						typeof parallaxStyles != 'undefined' &&
+						(
+							! parallaxStyles['disable-parallax-mobile'] ||
+							! window.matchMedia( '(max-width: ' + parallaxStyles['mobile-breakpoint'] + ')' ).matches
+						)
+					) {
+						waitForParallax = true;
+						// Allow slider to be size itself while preventing visual "jump" in modern parallax.
+						$base.css( 'opacity', 0 );
+					}
 				}
 
 				// Show everything for this slider
@@ -190,9 +193,9 @@ jQuery( function($){
 				};
 				// Setup each of the slider frames
 				$( window ).on('resize panelsStretchRows', resizeFrames ).trigger( 'resize' );
-				$(sowb).on('setup_widgets', resizeFrames );
+				$( sowb ).on('setup_widgets', resizeFrames );
 
-				if ( waitForParallax ) {
+				if ( ! isLegacyParallax && waitForParallax ) {
 					// Wait for the parallax to finish setting up before
 					// setting up the rest of the slider.
 					if ( ! slidesWithModernParallax.find( '.simpleParallax' ).length ) {
