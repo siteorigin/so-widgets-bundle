@@ -55,12 +55,6 @@
 				padding-right: 0;
 			}
 		}
-
-		& when ( @more_text_bottom_align = true ) {
-			.sow-icon-container {
-				margin: 0 auto;
-			}
-		}
 		&.sow-icon-container-position-top {
 			text-align: center;
 
@@ -114,7 +108,11 @@
 			flex: 0 0 @container_size;
 
 			& when not ( @per_row = 1 ) {
-				margin: auto;
+				margin: 0 auto;
+			}
+
+			& when ( @more_text_bottom_align = true ) {
+					margin: auto;
 			}
 
 			&:not(.sow-container-none) [class^="sow-icon-"],
