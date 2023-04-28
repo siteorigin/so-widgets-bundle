@@ -48,6 +48,10 @@ class SiteOrigin_Video {
 		) ) );
 
 		// Standardize YouTube video URL.
+		if ( strpos(  $src, 'youtu.be' ) !== false ) {
+			$src = str_replace( 'youtu.be/', 'youtube.com/watch?v=', $src );
+		}
+
 		if ( strpos( $src, 'youtube.com/watch' ) !== false ) {
 			$src_parse = parse_url( $src, PHP_URL_QUERY );
 			// Check if the URL was encoded.
