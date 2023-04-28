@@ -60,6 +60,10 @@
 
 			.sow-icon-container {
 				margin-bottom: 10px;
+
+				& when not ( @per_row = 1 ) and not ( @more_text_bottom_align = true ) {
+					margin: 0 auto;
+				}
 			}
 		}
 
@@ -87,11 +91,11 @@
 			}
 		}
 
-		& when ( @per_row = 1 ) {
-			&.sow-icon-container-position-top, &.sow-icon-container-position-bottom {
-				.sow-icon-container {
+		&.sow-icon-container-position-top, &.sow-icon-container-position-bottom {
+			.sow-icon-container {
+				& when ( @per_row = 1 ) {
 					& when ( @more_text_bottom_align = true ) {
-						margin: 0 auto;
+						margin: auto;
 					}
 					& when not ( @more_text_bottom_align = true ) {
 						margin: auto;
@@ -108,7 +112,7 @@
 			flex: 0 0 @container_size;
 
 			& when not ( @per_row = 1 ) {
-				margin: 0 auto;
+				margin: auto;
 			}
 
 			& when ( @more_text_bottom_align = true ) {
