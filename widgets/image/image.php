@@ -156,8 +156,8 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			)
 		) {
 			$instance['size'] = array(
-				! empty( $instance['size_width'] ) ? (int) $instance['size_width'] : '',
-				! empty( $instance['size_height'] ) ? (int) $instance['size_height'] : '',
+				! empty( $instance['size_width'] ) ? (int) $instance['size_width'] : 0,
+				! empty( $instance['size_height'] ) ? (int) $instance['size_height'] : 0,
 			);
 			$custom_size = true;
 		}
