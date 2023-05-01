@@ -45,7 +45,16 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 		}
 
 		if ( ! empty( $this->custom_size ) && ! empty( $this->options ) ) {
-			$this->options['custom_size'] = __( 'Custom Size', 'so-widgets-bundle' );
+			$sizes = array_keys( $this->options );
+			$large_pos = array_search( 'large', $sizes );
+
+			siteorigin_widgets_array_insert(
+				$this->options,
+				$sizes[ ! empty( $sizes[ $large_pos + 1 ] ) ? $large_pos + 1 : $large_pos ],
+				array(
+					'custom_size' => __( 'Custom Size', 'so-widgets-bundle' ),
+				)
+			);
 		}
 	}
 
