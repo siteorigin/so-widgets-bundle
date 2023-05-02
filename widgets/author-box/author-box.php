@@ -119,7 +119,7 @@ public function __construct() {
 							),
 							'size' => array(
 								'type' => 'number',
-								'label' => __( 'Image size', 'so-widgets-bundle' ),
+								'label' => __( 'Image Size', 'so-widgets-bundle' ),
 								'default' => 100,
 							),
 							'position' => array(
@@ -155,7 +155,7 @@ public function __construct() {
 							'color_hover' => array(
 								'type' => 'color',
 								'label' => __( 'Hover Color', 'so-widgets-bundle' ),
-								'default' => '#f14e4e',
+								'default' => '#2d2d2d',
 							),
 						),
 					),
@@ -181,7 +181,7 @@ public function __construct() {
 							'link' => array(
 								'type' => 'color',
 								'label' => __( 'Link Color', 'so-widgets-bundle' ),
-								'default' => '#f14e4e',
+								'default' => '#2d2d2d',
 							),
 							'link_hover' => array(
 								'type' => 'color',

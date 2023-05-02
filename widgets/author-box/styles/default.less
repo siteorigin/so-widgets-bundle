@@ -8,6 +8,7 @@
 @name_font_weight: 700;
 @name_color: default;
 @name_color_hover: default;
+@name_link_all: default;
 @avatar_border_radius: default;
 @avatar_border_position: left;
 @bio_color: default;
@@ -45,30 +46,54 @@
 		text-align: center;
 	}
 
+	&-title-wrapper {
+		align-items: center;
+		display: flex;
+		gap: 10px;
+	}
+
 	&-title {
 		font-family: @name_font;
 		font-size: @name_font_size;
 		font-style: @name_font_style;
 		font-weight: @name_font_weight;
 		line-height: 1;
-		margin-top: 0;
+		margin: 0;
+
+		& when not ( @name_link_all = 1 ) {
+			margin-bottom: 10px;
+		}
 
 		&,
 		a {
 			color: @name_color;
+			text-decoration: none;
 			&:hover,
 			&:focus {
 				color: @name_color_hover;
 			}
 
-			.sow-author-box-author-all {
-				display: block;
-				font-size: 0.867em;
-				margin-bottom: 10px;
-				text-decoration: none;
-				@media (max-width: @responsive_breakpoint) {
-					margin-top: 1em;
-				}
+		}
+
+	}
+	
+	&-info {
+		font-size: @name_font_size;
+		text-decoration: none;
+
+		.sow-author-box-author-all {
+			color: #626262;
+			display: block;
+			font-size: 0.934em;
+			margin-bottom: 10px;
+			test: @name_link_all;
+			text-decoration: none;
+			@media (max-width: @responsive_breakpoint) {
+				margin-top: 1em;
+			}
+
+			&:hover {
+				color: @name_color;
 			}
 		}
 
