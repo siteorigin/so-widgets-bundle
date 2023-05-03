@@ -339,12 +339,14 @@ public function __construct() {
 								'background' => array(
 									'type' => 'color',
 									'label' => __( 'Background', 'so-widgets-bundle' ),
-									'default' => 'rgba(0,0,0,0.75)',
+									'default' => 'rgba(0,0,0,0.7)',
+									'alpha' => true,
 								),
 								'background_hover' => array(
 									'type' => 'color',
 									'label' => __( 'Hover Background', 'so-widgets-bundle' ),
-									'default' => 'rgba(0,0,0,0.8)',
+									'default' => 'rgba(0,0,0,0.75)',
+									'alpha' => true,
 								),
 							),
 						),
