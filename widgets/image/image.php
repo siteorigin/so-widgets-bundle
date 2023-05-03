@@ -150,13 +150,16 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		// Add support for custom sizes.
 		if (
 			$instance['size'] == 'custom_size' &&
-			! empty( $instance['size_width'] ) &&
-			! empty( $instance['size_height'] )
+			(
+				! empty( $instance['size_width'] ) ||
+				! empty( $instance['size_height'] )
+			)
 		) {
 			$instance['size'] = array(
-				(int) $instance['size_width'],
-				(int) $instance['size_height'],
+				! empty( $instance['size_width'] ) ? (int) $instance['size_width'] : 0,
+				! empty( $instance['size_height'] ) ? (int) $instance['size_height'] : 0,
 			);
+			$custom_size = true;
 		}
 
 		if ( ! empty( $instance['size_external'] ) && $instance['size_external'] == 'custom_size' ) {
@@ -174,16 +177,15 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		);
 
 		$attr = array();
-
 		if ( ! empty( $src ) ) {
 			$attr = array( 'src' => $src[0] );
 
 			if ( ! empty( $src[1] ) ) {
-				$attr['width'] = $src[1];
+				$attr['width'] = ! empty( $custom_size ) && ! empty( $instance['size_width'] ) ? $instance['size_width'] : $src[1];
 			}
 
 			if ( ! empty( $src[2] ) ) {
-				$attr['height'] = $src[2];
+				$attr['height'] = ! empty( $custom_size ) && ! empty( $instance['size_height'] ) ? $instance['size_height'] : $src[2];
 			}
 
 			if ( function_exists( 'wp_get_attachment_image_srcset' ) ) {
@@ -196,6 +198,10 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 				if ( function_exists( 'wp_get_attachment_image_sizes' ) ) {
 					$attr['sizes'] = wp_get_attachment_image_sizes( $instance['image'], $instance['size'] );
 				}
+			}
+
+			if ( ! empty( $custom_size ) ) {
+				$attr['style'] = 'width: ' . $attr['width'] . 'px; height: '. $attr['height'] . 'px;';	
 			}
 		}
 		$attr = apply_filters( 'siteorigin_widgets_image_attr', $attr, $instance, $this );

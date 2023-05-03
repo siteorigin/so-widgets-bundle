@@ -305,7 +305,7 @@ var sowbForms = window.sowbForms || {};
 			};
 			$fields.filter( '.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section' ).find( '> label' )
 			.on( 'click keyup', expandContainer )
-			.attr( 'tabinex', 0 );
+			.attr( 'tabindex', 0 );
 			$fields.filter( '.siteorigin-widget-field-type-posts' ).find( '.posts-container-label-wrapper' ).on( 'click keyup', expandContainer );
 
 			///////////////////////////////////////
