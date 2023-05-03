@@ -106,6 +106,12 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.49.2 - 03 May 2023 =
+* Features: Various adjustments to improve desktop and mobile alignment.
+* Image: Update to allow automatic resizing for Custom Size when one value is added.
+* Videos: Internally convert short YouTube URLs to full URLs.
+* Multiple Media: Resolved issues related to removing items when multiple instances are present.
+
 = 1.49.1 - 26 April 2023 =
 * Contact Form: Added a check to ensure PHP GD is enabled before allowing Really Simple CAPTCHA.
 * Removed duplicate widget text area.
