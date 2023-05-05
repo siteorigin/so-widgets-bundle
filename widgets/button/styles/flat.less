@@ -70,14 +70,11 @@
 			}
 		}
 
-		&:active,
-		&:hover{
-			color: @hover_text_color !important;
-		}
-
+		&.ow-button-hover:active,
 		&.ow-button-hover:hover {
 			background: lighten(@hover_background_color, 4%);
 			border-color: lighten(@hover_background_color, 4%);
+			color: @hover_text_color !important;
 		}
 	}
 }
