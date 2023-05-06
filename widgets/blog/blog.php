@@ -899,13 +899,13 @@ public function __construct() {
 
 
 		// Migrate old opacity fields.
-		if ( ! empty( $instance['design']['featured_image']['background_opacity'] ) ) {
+		if ( ! empty( $instance['design']['featured_image']['hover_overlay_opacity'] ) ) {
 			$color = ! empty( $instance['design']['featured_image']['hover_overlay_color'] ) ? $instance['design']['featured_image']['hover_overlay_color'] : '#fff';
 			$color = ltrim( $instance['design']['featured_image']['hover_overlay_color'], '#' );
 			$rgb = array_map( 'hexdec', str_split( $color , strlen( $color ) == 6 ? 2 : 1 ) );
 			$opacity = ! empty( $instance['design']['featured_image']['hover_overlay_opacity'] ) ? $instance['design']['featured_image']['hover_overlay_opacity'] : 0.9;
-			$instance['design']['overlay_post_category']['hover_overlay_color'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
-			unset( $instance['design']['overlay_post_category']['hover_overlay_opacity'] );
+			$instance['design']['featured_image']['hover_overlay_color'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
+			unset( $instance['design']['featured_image']['hover_overlay_opacity'] );
 		}
 
 		if ( ! empty( $instance['design']['overlay_post_category']['background_opacity'] ) ) {
