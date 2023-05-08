@@ -54,6 +54,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 				'type' => 'image-size',
 				'label' => __( 'Image size', 'so-widgets-bundle' ),
 				'custom_size' => true,
+				'custom_size_enforce' => true,
 			),
 
 			'size_external' => array(
