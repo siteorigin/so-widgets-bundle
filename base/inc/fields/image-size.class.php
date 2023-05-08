@@ -70,6 +70,7 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 			$field_prefix = $this->get_custom_size_setting_prefix( $this->base_name );
 			$width = ! empty( $instance[ $field_prefix . '_width' ] ) ? $instance[ $field_prefix . '_width' ] : '';
 			$height = ! empty( $instance[ $field_prefix . '_height' ] ) ? $instance[ $field_prefix . '_height' ] : '';
+			$enforce = ! empty( $instance[ $field_prefix . '_enforce' ] ) ? $instance[ $field_prefix . '_enforce' ] : '';
 			?>
 
 			<div class="custom-size-wrapper">
@@ -90,6 +91,16 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 						value="<?php echo esc_attr( $height ); ?>"
 						name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_height', $this->parent_container ) ); ?>"
 						class="custom-image-size custom-image-size-height siteorigin-widget-input"
+					/>
+				</label>
+
+				<label>
+					<?php _e( 'Enforce Dimensions', 'so-widgets-bundle' ); ?>
+					<input
+						type="checkbox"
+						value="<?php echo esc_attr( $enforce ); ?>"
+						name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_enforce', $this->parent_container ) ); ?>"
+						class="custom-image-size custom-image-size-enforce siteorigin-widget-input"
 					/>
 				</label>
 			</div>
