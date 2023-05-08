@@ -801,7 +801,7 @@ public function __construct() {
 
 			// Featured Images.
 			$less_vars['featured_image_border_color'] = ! empty( $instance['design']['featured_image']['border_color'] ) ? $instance['design']['featured_image']['border_color'] : '';
-			$less_vars['hover_overlay_color'] = ! empty( $instance['design']['featured_image']['hover_overlay_color'] ) ? $instance['design']['featured_image']['hover_overlay_color'] : '';
+			$less_vars['featured_image_hover_overlay_color'] = ! empty( $instance['design']['featured_image']['hover_overlay_color'] ) ? $instance['design']['featured_image']['hover_overlay_color'] : '';
 
 
 			if ( ! empty( $instance['design']['featured_image']['post_title_font'] ) ) {
