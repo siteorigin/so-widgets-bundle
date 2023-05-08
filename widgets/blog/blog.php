@@ -339,28 +339,14 @@ public function __construct() {
 								'background' => array(
 									'type' => 'color',
 									'label' => __( 'Background', 'so-widgets-bundle' ),
-									'default' => '#000',
+									'default' => 'rgba(0,0,0,0.7)',
+									'alpha' => true,
 								),
 								'background_hover' => array(
 									'type' => 'color',
 									'label' => __( 'Hover Background', 'so-widgets-bundle' ),
-									'default' => '#000',
-								),
-								'background_opacity' => array(
-									'type' => 'slider',
-									'label' => __( 'Background Opacity', 'so-widgets-bundle' ),
-									'min' => 0,
-									'max' => 1,
-									'step' => 0.01,
-									'default' => '0.7',
-								),
-								'background_opacity_hover' => array(
-									'type' => 'slider',
-									'label' => __( 'Background Hover Opacity', 'so-widgets-bundle' ),
-									'min' => 0,
-									'max' => 1,
-									'step' => 0.01,
-									'default' => '0.75',
+									'default' => 'rgba(0,0,0,0.75)',
+									'alpha' => true,
 								),
 							),
 						),
@@ -480,15 +466,8 @@ public function __construct() {
 								'hover_overlay_color' => array(
 									'type' => 'color',
 									'label' => __( 'Hover Overlay Color', 'so-widgets-bundle' ),
-									'default' => '#ffffff',
-								),
-								'hover_overlay_opacity' => array(
-									'label' => __( 'Hover Overlay Opacity', 'so-widgets-bundle' ),
-									'type' => 'slider',
-									'min' => 0,
-									'max' => 1,
-									'step' => 0.01,
-									'default' => '0.9',
+									'default' => 'rgba(255,255,255,0.9)',
+									'alpha' => true,
 								),
 								'post_title_font' => array(
 									'type' => 'font',
@@ -797,17 +776,9 @@ public function __construct() {
 			$less_vars['overlay_post_category_color'] = ! empty( $instance['design']['overlay_post_category']['color'] ) ? $instance['design']['overlay_post_category']['color'] : '';
 			$less_vars['overlay_post_category_color_hover'] = ! empty( $instance['design']['overlay_post_category']['color_hover'] ) ? $instance['design']['overlay_post_category']['color_hover'] : '';
 
-			$color = ! empty( $instance['design']['overlay_post_category']['background'] ) ? $instance['design']['overlay_post_category']['background'] : '#000';
-			$rgb = ltrim( $color, '#' );
-			$rgb = array_map( 'hexdec', str_split( $rgb, strlen( $rgb ) == 6 ? 2 : 1 ) );
-			$opacity = ! empty( $instance['design']['overlay_post_category']['background_opacity'] ) ? $instance['design']['overlay_post_category']['background_opacity'] : 0.8;
-			$less_vars['overlay_post_category_background'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
+			$less_vars['overlay_post_category_background'] = ! empty( $instance['design']['overlay_post_category']['background'] ) ? $instance['design']['overlay_post_category']['background'] : 'rgba(0,0,0,0.80)';
 
-			$color = ! empty( $instance['design']['overlay_post_category']['background_hover'] ) ? $instance['design']['overlay_post_category']['background_hover'] : '#000';
-			$rgb = ltrim( $color, '#' );
-			$rgb = array_map( 'hexdec', str_split( $rgb, strlen( $rgb ) == 6 ? 2 : 1 ) );
-			$opacity = ! empty( $instance['design']['overlay_post_category']['background_opacity_hover'] ) ? $instance['design']['overlay_post_category']['background_opacity_hover'] : 0.75;
-			$less_vars['overlay_post_category_background_hover'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
+			$less_vars['overlay_post_category_background_hover'] = ! empty( $instance['design']['overlay_post_category']['background_hover'] ) ? $instance['design']['overlay_post_category']['background_hover'] : 'rgba(0,0,0,0.75)';
 		}
 
 		if ( $instance['template'] == 'portfolio' ) {
@@ -830,13 +801,8 @@ public function __construct() {
 
 			// Featured Images.
 			$less_vars['featured_image_border_color'] = ! empty( $instance['design']['featured_image']['border_color'] ) ? $instance['design']['featured_image']['border_color'] : '';
+			$less_vars['featured_image_hover_overlay_color'] = ! empty( $instance['design']['featured_image']['hover_overlay_color'] ) ? $instance['design']['featured_image']['hover_overlay_color'] : '';
 
-			if ( ! empty( $instance['design']['featured_image']['hover_overlay_color'] ) ) {
-				$rgb = ltrim( $instance['design']['featured_image']['hover_overlay_color'], '#' );
-				$rgb = array_map( 'hexdec', str_split( $rgb, strlen( $rgb ) == 6 ? 2 : 1 ) );
-				$opacity = ! empty( $instance['design']['featured_image']['hover_overlay_opacity'] ) ? $instance['design']['featured_image']['hover_overlay_opacity'] : 0.9;
-				$less_vars['featured_image_hover_overlay_color'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
-			}
 
 			if ( ! empty( $instance['design']['featured_image']['post_title_font'] ) ) {
 				$font = siteorigin_widget_get_font( $instance['design']['featured_image']['post_title_font'] );
@@ -929,6 +895,35 @@ public function __construct() {
 			}
 			$instance['settings']['featured_image_size_width'] = 0;
 			$instance['settings']['featured_image_size_height'] = 0;
+		}
+
+
+		// Migrate old opacity fields.
+		if ( ! empty( $instance['design']['featured_image']['hover_overlay_opacity'] ) ) {
+			$color = ! empty( $instance['design']['featured_image']['hover_overlay_color'] ) ? $instance['design']['featured_image']['hover_overlay_color'] : '#fff';
+			$color = ltrim( $instance['design']['featured_image']['hover_overlay_color'], '#' );
+			$rgb = array_map( 'hexdec', str_split( $color , strlen( $color ) == 6 ? 2 : 1 ) );
+			$opacity = ! empty( $instance['design']['featured_image']['hover_overlay_opacity'] ) ? $instance['design']['featured_image']['hover_overlay_opacity'] : 0.9;
+			$instance['design']['featured_image']['hover_overlay_color'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
+			unset( $instance['design']['featured_image']['hover_overlay_opacity'] );
+		}
+
+		if ( ! empty( $instance['design']['overlay_post_category']['background_opacity'] ) ) {
+			$color = ! empty( $instance['design']['overlay_post_category']['background'] ) ? $instance['design']['overlay_post_category']['background'] : '#000';
+			$color = ltrim( $color, '#' );
+			$rgb = array_map( 'hexdec', str_split( $color , strlen( $color ) == 6 ? 2 : 1 ) );
+			$opacity = $instance['design']['overlay_post_category']['background_opacity'];
+			$instance['design']['overlay_post_category']['background'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
+			unset( $instance['design']['overlay_post_category']['background_opacity'] );
+		}
+
+		if ( ! empty( $instance['design']['overlay_post_category']['background_opacity_hover'] ) ) {
+			$color = ! empty( $instance['design']['overlay_post_category']['background_hover'] ) ? $instance['design']['overlay_post_category']['background_hover'] : '#000';
+			$color = ltrim( $color, '#' );
+			$rgb = array_map( 'hexdec', str_split( $color , strlen( $color ) == 6 ? 2 : 1 ) );
+			$opacity = $instance['design']['overlay_post_category']['background_opacity_hover'];
+			$instance['design']['overlay_post_category']['background_hover'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
+			unset( $instance['design']['overlay_post_category']['background_opacity_hover'] );
 		}
 
 		$instance['paged_id'] = ! empty( $instance['_sow_form_id'] ) ? (int) substr( $instance['_sow_form_id'], 0, 5 ) : null;
