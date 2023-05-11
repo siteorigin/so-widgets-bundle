@@ -1,10 +1,10 @@
 @font-face {
     font-family: "sow-ionicons";
-    src: url("font/ionicons.eot?v=2.0.0");
-    src: url("font/ionicons.eot?v=2.0.0#iefix") format("embedded-opentype"),
-    url("font/ionicons.ttf?v=2.0.0") format("truetype"),
-    url("font/ionicons.woff?v=2.0.0") format("woff"),
-    url("font/ionicons.svg?v=2.0.0#Ionicons") format("svg");
+    src: url("font/ionicons.eot");
+    src: url("font/ionicons.eot") format("embedded-opentype"),
+        url("font/ionicons.ttf") format("truetype"),
+        url("font/ionicons.woff") format("woff"),
+        url("font/ionicons.svg") format("svg");
     font-weight: normal;
     font-style: normal;
     font-display: block;

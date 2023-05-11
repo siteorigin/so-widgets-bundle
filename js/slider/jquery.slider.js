@@ -10,6 +10,13 @@ sowb.SiteOriginSlider = function($) {
 					this.play();
 				}
 			});
+			var embed = $( el ).find( '.sow-slide-video-oembed iframe' );
+			if ( embed.length ) {
+				// Vimeo
+				embed[0].contentWindow.postMessage( '{"method":"play"}', "*" );
+				// YouTube
+				embed[0].contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*')
+			}
 		},
 
 		pauseSlideVideo: function(el) {
@@ -18,6 +25,13 @@ sowb.SiteOriginSlider = function($) {
 					this.pause();
 				}
 			});
+			var embed = $( el ).find( '.sow-slide-video-oembed iframe' );
+			if ( embed.length ) {
+				// Vimeo
+				embed[0].contentWindow.postMessage( '{"method":"pause"}', "*" );
+				// YouTube
+				embed[0].contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*')
+			}	
 		},
 
 		setupActiveSlide: function(slider, newActive, speed){
@@ -25,13 +39,39 @@ sowb.SiteOriginSlider = function($) {
 			var
 				sentinel = $(slider).find('.cycle-sentinel'),
 				active = $(newActive),
-				video = active.find('video.sow-background-element');
+				video = active.find('video.sow-background-element'),
+				$unmuteButton = $( slider ).prev();
 
 			if( speed === undefined ) {
-				sentinel.css( 'height', active.outerHeight() );
+				sentinel.css( 'height', active.outerHeight() + 'px' );
 			}
 			else {
 				sentinel.animate( {height: active.outerHeight()}, speed );
+			}
+
+			// Hide the unmute button as needed.
+			if ( $unmuteButton.length ) {
+				// Mute all slide videos.
+				$( slider ).find( '.sow-slider-image > video' ).prop( 'muted', true );
+
+				var $activeSlideVideo = active.find( '> video' );
+				if ( $activeSlideVideo.length ) {
+					$unmuteButton.clearQueue().fadeIn( speed );
+
+					var settings = $unmuteButton.siblings( '.sow-slider-images').data( 'settings' );
+					// Unmute video if previously unmuted.
+					if ( $activeSlideVideo.hasClass( 'sow-player-unmuted' ) ) {
+						$activeSlideVideo.prop( 'muted', false );
+						$unmuteButton.addClass( 'sow-player-unmuted' );
+						// Let screen readers know how to handle this button.
+						$unmuteButton.attr( 'aria-label', settings.muteLoc );
+					} else {
+						$unmuteButton.removeClass( 'sow-player-unmuted' );
+						$unmuteButton.attr( 'aria-label', settings.unmuteLoc );
+					}
+				} else {
+					$unmuteButton.clearQueue().fadeOut( speed );
+				}
 			}
 
 			if( video.length ) {
@@ -82,12 +122,23 @@ jQuery( function($){
 			var $slides = $$.find('.sow-slider-image');
 			var settings = $$.data('settings');
 
+			// Add mobile identifer to slider.
+			if ( settings.breakpoint ) {
+				$( window ).on( 'load resize', function() {
+					if ( window.matchMedia( '(max-width: ' + settings.breakpoint + ')' ).matches ) {
+						$base.addClass( 'sow-slider-is-mobile' );
+					} else {
+						$base.removeClass( 'sow-slider-is-mobile' );
+					}
+				} );
+			}
+
 			$slides.each(function( index, el) {
 				var $slide = $(el);
 				var urlData = $slide.data('url');
 
 				if( urlData !== undefined && urlData.hasOwnProperty( 'url' ) ) {
-					$slide.click(function(event) {
+					$slide.on( 'click', function(event) {
 
 						event.preventDefault();
 						var sliderWindow = window.open(
@@ -96,7 +147,7 @@ jQuery( function($){
 						);
 						sliderWindow.opener = null;
 					} );
-					$slide.find( 'a' ).click( function ( event ) {
+					$slide.find( 'a' ).on( 'click', function ( event ) {
 						event.stopPropagation();
 					} );
 				}
@@ -113,18 +164,53 @@ jQuery( function($){
 					return;
 				}
 
+				var isLegacyParallax = $$.find( '.sow-slider-image-parallax[data-siteorigin-parallax]' ).length;
+				var waitForParallax = false;
+				if ( ! isLegacyParallax ) {
+					var slidesWithModernParallax = $$.find( '.sow-slider-image-parallax:not([data-siteorigin-parallax])' );
+					if (
+						slidesWithModernParallax.length &&
+						typeof parallaxStyles != 'undefined' &&
+						(
+							! parallaxStyles['disable-parallax-mobile'] ||
+							! window.matchMedia( '(max-width: ' + parallaxStyles['mobile-breakpoint'] + ')' ).matches
+						)
+					) {
+						waitForParallax = true;
+						// Allow slider to be size itself while preventing visual "jump" in modern parallax.
+						$base.css( 'opacity', 0 );
+					}
+				}
+
 				// Show everything for this slider
 				$base.show();
 				
 				var resizeFrames = function () {
 					$$.find( '.sow-slider-image' ).each( function () {
 						var $i = $( this );
-						$i.css( 'height', $i.find( '.sow-slider-image-wrapper' ).outerHeight() );
+						$i.css( 'height', $i.find( '.sow-slider-image-wrapper' ).outerHeight() + 'px' );
 					} );
 				};
 				// Setup each of the slider frames
-				$(window).on('resize panelsStretchRows', resizeFrames ).resize();
-				$(sowb).on('setup_widgets', resizeFrames );
+				$( window ).on('resize panelsStretchRows', resizeFrames ).trigger( 'resize' );
+				$( sowb ).on('setup_widgets', resizeFrames );
+
+				if ( ! isLegacyParallax && waitForParallax ) {
+					// Wait for the parallax to finish setting up before
+					// setting up the rest of the slider.
+					if ( ! slidesWithModernParallax.find( '.simpleParallax' ).length ) {
+						setTimeout( setupSlider, 50 );
+						return;
+					} else {
+						// Trigger resize to allow for parallax to work after showing Slider.
+						window.dispatchEvent( new Event( 'resize' ) );
+						setTimeout( function() {
+							$base.css( 'opacity', 1 );
+						}, 425 );
+					}
+				}
+				
+				$$.trigger( 'slider_setup_before' );
 
 				// Set up the Cycle with videos
 				$$
@@ -157,7 +243,7 @@ jQuery( function($){
 								$n.hide();
 							}
 
-							$(window).resize();
+							$( window ).trigger( 'resize' );
 
 							setTimeout(function() {
 								resizeFrames();
@@ -186,22 +272,26 @@ jQuery( function($){
 				$p.add($n).hide();
 				if( $slides.length > 1 ) {
 					if( !$base.hasClass('sow-slider-is-mobile') ) {
-
-						var toHide = false;
-						$base
-							.mouseenter(function(){
-								$p.add($n).clearQueue().fadeIn(150);
-								toHide = false;
-							})
-							.mouseleave(function(){
-								toHide = true;
-								setTimeout(function(){
-									if( toHide ) {
-										$p.add($n).clearQueue().fadeOut(150);
-									}
+						if ( settings.nav_always_show_desktop && window.matchMedia( '(min-width: ' + settings.breakpoint + ')' ).matches ) {
+							$p.show();
+							$n.show();
+						} else {
+							var toHide = false;
+							$base
+								.on( 'mouseenter', function() {
+									$p.add( $n ).clearQueue().fadeIn( 150 );
 									toHide = false;
-								}, 750);
-							});
+								} )
+								.on( 'mouseleave', function() {
+									toHide = true;
+									setTimeout( function() {
+										if( toHide ) {
+											$p.add( $n ).clearQueue().fadeOut( 150 );
+										}
+										toHide = false;
+									}, 750) ;
+								} );
+						}
 					} else if ( settings.nav_always_show_mobile && window.matchMedia('(max-width: ' + settings.breakpoint + ')').matches) {
 						$p.show();
 						$n.show();
@@ -216,18 +306,18 @@ jQuery( function($){
 				$( sowb ).on( 'setup_widgets', setupActiveSlide );
 
 				// Setup clicks on the pagination
-				$p.find( '> li > a' ).click( function(e){
+				$p.find( '> li > a' ).on( 'click', function(e){
 					e.preventDefault();
 					$$.cycle( 'goto', $(this).data('goto') );
 				} );
 
 				// Clicking on the next and previous navigation buttons
-				$n.find( '> a' ).click( function(e){
+				$n.find( '> a' ).on( 'click', function(e){
 					e.preventDefault();
 					$$.cycle( $(this).data('action') );
 				} );
 
-				$base.keydown(
+				$base.on( 'keydown',
 					function(event) {
 						if(event.which === 37) {
 							//left
@@ -239,7 +329,33 @@ jQuery( function($){
 						}
 					}
 				);
+
+				if ( settings.unmute ) {
+					$base.find( '.sow-player-controls-sound' ).on( 'click', function() {
+						var $sc = $( this ),
+							$activeSlideVideo = $sc.next().find( '.cycle-slide-active > video' );
+
+						$activeSlideVideo.prop( 'muted',
+							! $activeSlideVideo.prop( 'muted' )
+						);
+
+						if ( ! $activeSlideVideo.prop( 'muted' ) ) {
+							// Used for changing the text/icon of mute button.
+							$sc.addClass( 'sow-player-unmuted' );
+							// State tracking.
+							$activeSlideVideo.addClass( 'sow-player-unmuted' );
+							// Let screen readers know how to handle this button.
+							$sc.attr( 'aria-label', settings.muteLoc );
+						} else {
+							$sc.removeClass( 'sow-player-unmuted' );
+							$activeSlideVideo.removeClass( 'sow-player-muted' );
+							$sc.attr( 'aria-label', settings.unmuteLoc );
+						}
+					} );
+				}
 			};
+			
+			$$.trigger( 'slider_setup_after' );
 
 			var images = $$.find( 'img.sow-slider-background-image, img.sow-slider-foreground-image' );
 			var imagesLoaded = 0;

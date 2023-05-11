@@ -1,7 +1,7 @@
 <?php
 
-function siteorigin_widgets_icons_elegantline_filter($icons) {
-	return array_merge($icons, array(
+function siteorigin_widgets_icons_elegantline_filter( $icons ) {
+	return array_merge( $icons, array(
 		'mobile' => '&#xe000;',
 		'laptop' => '&#xe001;',
 		'desktop' => '&#xe002;',
@@ -102,6 +102,6 @@ function siteorigin_widgets_icons_elegantline_filter($icons) {
 		'tumblr' => '&#xe061;',
 		'linkedin' => '&#xe062;',
 		'dribbble' => '&#xe063;',
-	));
+	) );
 }
-add_filter('siteorigin_widgets_icons_elegantline', 'siteorigin_widgets_icons_elegantline_filter');
+add_filter( 'siteorigin_widgets_icons_elegantline', 'siteorigin_widgets_icons_elegantline_filter' );

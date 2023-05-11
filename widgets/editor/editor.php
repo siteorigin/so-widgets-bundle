@@ -1,5 +1,4 @@
 <?php
-
 /*
 Widget Name: Editor
 Description: A widget which allows editing of content using the TinyMCE editor.
@@ -9,30 +8,29 @@ Documentation: https://siteorigin.com/widgets-bundle/editor-widget/
 */
 
 class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
-
-	function __construct() {
-
+	public function __construct() {
 		parent::__construct(
 			'sow-editor',
-			__('SiteOrigin Editor', 'so-widgets-bundle'),
+			__( 'SiteOrigin Editor', 'so-widgets-bundle' ),
 			array(
-				'description' => __('A widget which allows editing of content using the TinyMCE editor.', 'so-widgets-bundle'),
-				'help' => 'https://siteorigin.com/widgets-bundle/editor-widget/'
+				'description' => __( 'A widget which allows editing of content using the TinyMCE editor.', 'so-widgets-bundle' ),
+				'help' => 'https://siteorigin.com/widgets-bundle/editor-widget/',
 			),
 			array(),
 			false,
-			plugin_dir_path(__FILE__)
+			plugin_dir_path( __FILE__ )
 		);
 
 		add_filter( 'siteorigin_widgets_sanitize_instance_sow-editor', array( $this, 'add_noreferrer_to_link_targets' ) );
 	}
 
-	function get_widget_form() {
+	public function get_widget_form() {
 		$global_settings = $this->get_global_settings();
+
 		return array(
 			'title' => array(
 				'type' => 'text',
-				'label' => __('Title', 'so-widgets-bundle'),
+				'label' => __( 'Title', 'so-widgets-bundle' ),
 			),
 			'text' => array(
 				'type' => 'tinymce',
@@ -47,7 +45,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_settings_form() {
+	public function get_settings_form() {
 		return array(
 			'autop_default' => array(
 				'type'    => 'checkbox',
@@ -60,31 +58,31 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 	public function get_template_variables( $instance, $args ) {
 		$instance = wp_parse_args(
 			$instance,
-			array(  'text' => '' )
-	);
+			array( 'text' => '' )
+		);
 
 		if (
-			// Only run these parts if we're rendering for the frontend
+			// Only run these parts if we're rendering for the frontend.
 			empty( $GLOBALS[ 'SITEORIGIN_PANELS_CACHE_RENDER' ] ) &&
 			empty( $GLOBALS[ 'SITEORIGIN_PANELS_POST_CONTENT_RENDER' ] )
 		) {
 			if ( function_exists( 'wp_filter_content_tags' ) ) {
 				$instance['text'] = wp_filter_content_tags( $instance['text'] );
-			} else if ( function_exists( 'wp_make_content_images_responsive' ) ) {
+			} elseif ( function_exists( 'wp_make_content_images_responsive' ) ) {
 				$instance['text'] = wp_make_content_images_responsive( $instance['text'] );
 			}
 
 			// Manual support for Jetpack Markdown module.
 			if ( class_exists( 'WPCom_Markdown' ) &&
-			     Jetpack::is_module_active( 'markdown' ) &&
-			     $instance['text_selected_editor'] == 'html'
+				 Jetpack::is_module_active( 'markdown' ) &&
+				 $instance['text_selected_editor'] == 'html'
 			) {
 				$markdown_parser = WPCom_Markdown::get_instance();
 				$instance['text'] = $markdown_parser->transform( $instance['text'] );
 			}
 
-			// Run some known stuff
-			if( ! empty( $GLOBALS['wp_embed'] ) ) {
+			// Run some known stuff.
+			if ( ! empty( $GLOBALS['wp_embed'] ) ) {
 				$instance['text'] = $GLOBALS['wp_embed']->run_shortcode( $instance['text'] );
 				$instance['text'] = $GLOBALS['wp_embed']->autoembed( $instance['text'] );
 			}
@@ -92,25 +90,35 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			// As in the Text Widget, we need to prevent plugins and themes from running `do_shortcode` in the `widget_text`
 			// filter to avoid running it twice and to prevent `wpautop` from interfering with shortcodes' output.
 			$widget_text_do_shortcode_priority = has_filter( 'widget_text', 'do_shortcode' );
+
 			if ( $widget_text_do_shortcode_priority !== false ) {
 				remove_filter( 'widget_text', 'do_shortcode', $widget_text_do_shortcode_priority );
 			}
 
-			$instance['text'] = apply_filters( 'widget_text', $instance['text'] );
+			$instance['text'] = apply_filters( 'widget_text', $instance['text'], $instance, $this );
 
 			if ( $widget_text_do_shortcode_priority !== false ) {
 				add_filter( 'widget_text', 'do_shortcode', $widget_text_do_shortcode_priority );
 			}
 
-			if( $instance['autop'] ) {
+			if ( $instance['autop'] ) {
 				$instance['text'] = wpautop( $instance['text'] );
 			}
 
 			$instance['text'] = do_shortcode( shortcode_unautop( $instance['text'] ) );
 
-			$instance['text'] = $this->process_more_quicktag( $instance['text'] );
+			// Don't process more more quicktag if this is a preview.
+			if (
+				! $this->is_preview() &&
+				empty( $GLOBALS[ 'SITEORIGIN_PANELS_PREVIEW_RENDER' ] ) &&
+				(
+					isset( $_POST['action'] ) &&
+					$_POST['action'] != 'so_widgets_preview'
+				)
+			) {
+				$instance['text'] = $this->process_more_quicktag( $instance['text'] );
+			}
 		}
-
 
 		return array(
 			'text' => $instance['text'],
@@ -119,6 +127,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 
 	private function process_more_quicktag( $content ) {
 		$post = get_post();
+
 		if ( ! empty( $post ) ) {
 			$panels_content = get_post_meta( $post->ID, 'panels_data', true );
 		}
@@ -128,6 +137,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 				$content = explode( $matches[0], $content, 2 );
 				$content = $content[0];
 				$content = force_balance_tags( $content );
+
 				if ( ! empty( $matches[1] ) ) {
 					$more_link_text = strip_tags( wp_kses_no_null( trim( $matches[1] ) ) );
 				} else {
@@ -141,26 +151,30 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 		return $content;
 	}
 
-	function add_noreferrer_to_link_targets( $instance ) {
+	public function add_noreferrer_to_link_targets( $instance ) {
 		if ( function_exists( 'wp_targeted_link_rel' ) ) {
 			$instance['text'] = wp_targeted_link_rel( $instance['text'] );
 		}
+
 		return $instance;
 	}
 
-
-	function get_style_name($instance) {
-		// We're not using a style
+	public function get_style_name( $instance ) {
+		// We're not using a style.
 		return false;
 	}
 
-	function get_form_teaser(){
-		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
+	public function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
 
-		return sprintf(
-			__( 'Use Google Fonts right inside the Editor Widget using %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/web-font-selector" target="_blank" rel="noopener noreferrer">',
-			'</a>'
+		return array(
+			sprintf(
+				__( 'Use Google Fonts right inside the Editor Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/web-font-selector" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
 		);
 	}
 }

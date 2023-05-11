@@ -11,7 +11,7 @@ jQuery( function ( $ ) {
 				$t = $$.find( '.sow-cta-text' );
 			
 			if ( $t.outerHeight() > $b.outerHeight() ) {
-				$b.css( 'margin-top', ( $t.outerHeight() - $b.outerHeight() ) / 2 );
+				$b.css( 'margin-top', ( $t.outerHeight() - $b.outerHeight() ) / 2 + 'px' );
 			}
 		} );
 	};

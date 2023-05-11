@@ -1,9 +1,9 @@
 @font-face {
 	font-family: 'sow-elegantline';
-	src:url('font/elegantline.eot?map0iz');
-	src:url('font/elegantline.eot?#iefixmap0iz') format('embedded-opentype'),
-	url('font/elegantline.woff?map0iz') format('woff'),
-	url('font/elegantline.ttf?map0iz') format('truetype');
+	src:url('font/elegantline.eot');
+	src:url('font/elegantline.eot') format('embedded-opentype'),
+		url('font/elegantline.woff') format('woff'),
+		url('font/elegantline.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 	font-display: block;

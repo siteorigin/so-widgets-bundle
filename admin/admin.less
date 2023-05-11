@@ -10,6 +10,10 @@
 		background: #f6f6f6;
 		position: relative;
 
+		@media (max-width: 505px) {
+			padding-right: 0;
+		}
+
 		.icon {
 			float: left;
 			display: inline-block;
@@ -50,6 +54,11 @@
 		h1 {
 			font: 300 2.3em/1.4em "proxima-nova", "Open Sans", Helvetica, Arial, sans-serif;
 			color: #666;
+
+			@media (max-width: 505px) {
+				font-size: 2em;
+				padding-top: 15px;
+			}
 		}
 
 
@@ -57,6 +66,11 @@
 			position: absolute;
 			bottom: -35px;
 			right: 19px;
+
+			@media (max-width: 505px) {
+				margin-top: 10px;
+				position: static;
+			}
 
 			input{
 				box-sizing: border-box;
@@ -178,7 +192,7 @@
 		}
 
 		.so-widget{
-			border: 1px solid #D9D9D9;
+			border: 1px solid #d9d9d9;
 			float: left;
 			.box-shadow(~"0 1px 2px rgba(0,0,0,0.05)");
 			padding: 0;
@@ -325,7 +339,7 @@
 		@sidebar_width: 290px;
 
 		@pane_padding: 15px;
-		@border_color: #D8D8D8;
+		@border_color: #d8d8d8;
 
 		.so-overlay, .so-content, .so-title-bar, .so-toolbar, .so-left-sidebar, .so-right-sidebar {
 			z-index: 100001;
@@ -492,7 +506,7 @@
 
 						&:hover {
 							background: #a00;
-							color: #FFFFFF;
+							color: #ffffff;
 						}
 					}
 

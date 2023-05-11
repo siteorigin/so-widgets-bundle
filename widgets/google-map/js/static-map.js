@@ -19,7 +19,7 @@ jQuery( function ( $ ) {
 			if ( this.sowbLoadError ) {
 				showFallbackImage();
 			} else if ( !this.complete ) {
-				$this.error( showFallbackImage );
+				$this.on( 'error', showFallbackImage );
 			}
 		} );
 		

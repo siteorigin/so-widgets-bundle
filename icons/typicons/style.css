@@ -1,9 +1,9 @@
 @font-face {
 	font-family: 'sow-typicons';
-	src:url('font/typicons.eot?map0iz');
-	src:url('font/typicons.eot?#iefixmap0iz') format('embedded-opentype'),
-	url('font/typicons.woff?map0iz') format('woff'),
-	url('font/typicons.ttf?map0iz') format('truetype');
+	src:url('font/typicons.eot');
+	src:url('font/typicons.eot') format('embedded-opentype'),
+		url('font/typicons.woff') format('woff'),
+		url('font/typicons.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 	font-display: block;

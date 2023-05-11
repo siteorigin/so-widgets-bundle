@@ -39,7 +39,14 @@
 			settings.tinymce.wpautop = $wpautopToggleField.is( ':checked' );
 		}
 		var $textarea = $container.find( 'textarea' );
-		var id = $textarea.attr( 'id' );
+		// Prevent potential id overlap by appending the textarea field with a random id.
+		var id = $textarea.data( 'tinymce-id' );
+		if ( ! id ) {
+			var id = $textarea.attr( 'id' ) + Math.floor( Math.random() * 1000 );
+			$textarea.data( 'tinymce-id', id );
+			$textarea.attr( 'id', id );
+		}
+
 		var setupEditor = function ( editor ) {
 			editor.on( 'change',
 				function () {
@@ -64,9 +71,13 @@
 		$( document ).on( 'wp-before-tinymce-init', function ( event, init ) {
 			if ( init.selector === settings.tinymce.selector ) {
 				var mediaButtons = $container.data( 'mediaButtons' );
-				if ( $field.find( '.wp-media-buttons' ).length === 0 ) {
+				if ( typeof mediaButtons != 'undefined' && $field.find( '.wp-media-buttons' ).length === 0 ) {
 					$field.find( '.wp-editor-tabs' ).before( mediaButtons.html );
 				}
+
+				// Account for randomized id.
+				var $textarea = $container.find( 'textarea' );
+				$field.find( '.add_media' ).attr( 'data-editor', $textarea.data( 'tinymce-id' ) );
 			}
 		} );
 		$( document ).on( 'tinymce-editor-setup', function () {
@@ -123,11 +134,7 @@
 	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-tinymce', function () {
 		var $field = $( this );
 		var $parentRepeaterItem = $field.closest( '.siteorigin-widget-field-repeater-item-form' );
-		
-		// Prevent potential id overlap by appending the textarea field a random id.
-		var $textarea = $field.find( 'textarea' );
-		$textarea.attr( 'id', $textarea.attr( 'id' ) + Math.floor( Math.random() * 1000 ) );
-		
+
 		if ( $parentRepeaterItem.length > 0 ) {
 			if ( $parentRepeaterItem.is( ':visible' ) ) {
 				setup( $field );

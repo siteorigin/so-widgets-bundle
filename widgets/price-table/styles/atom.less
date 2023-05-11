@@ -4,6 +4,11 @@
 @header_color: #65707f;
 @featured_header_color: lighten(#65707f, 5%);
 
+/* Text Colors */
+@header_text_color: #fff;
+@featured_header_text_color: #fff;
+@feature_text_color: #5f6062;
+
 /* Button colors */
 @button_color: #41a9d5;
 @button_text_color: #FFFFFF;
@@ -15,13 +20,13 @@
 	padding-top: 20px;
 
 	.ow-pt-column {
+		color: @header_text_color;
 		float: left;
 
 		.ow-pt-title {
 			.gradient(@header_color, darken(@header_color, 10%), @header_color);
 			padding: 20px 0;
 			text-align: center;
-			color: #FFFFFF;
 			text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
 			border: 1px solid darken(@header_color, 20%);
 			border-bottom: 0;
@@ -31,35 +36,26 @@
 
 			.ow-pt-subtitle {
 				font-size: 0.9em;
-				color: #F0F0F0;
 			}
 		}
 
 		.ow-pt-details {
-			.gradient(lighten(@header_color, 5%), lighten(@header_color, 1%), lighten(@header_color, 5%));
-			position: relative;
-			padding: 15px 25px;
-
-			border-width: 1px;
-			border-style: solid;
 			border-color: darken(@header_color, 2%);
-			border-top-color: darken(@header_color, 20%);
 			border-right-width: 0;
-
+			border-style: solid;
+			border-top-color: darken(@header_color, 20%);
+			border-width: 1px;
 			.box-shadow(~"inset 0px -15px 25px rgba(0,0,0,0.05)");
-
+			.gradient(lighten(@header_color, 5%), lighten(@header_color, 1%), lighten(@header_color, 5%));
+			padding: 15px 25px;
+			position: relative;
 			text-align: center;
 
 			.ow-pt-price {
-				color: #FFFFFF;
 				font-size: 2.5em;
 				line-height: 1.25em;
 				font-weight: 300;
 				text-shadow: 0 1px 1px rgba(0,0,0,0.25);
-			}
-
-			.ow-pt-per {
-				color: lighten(@header_color, 50%);
 			}
 		}
 
@@ -76,7 +72,7 @@
 
 		.ow-pt-features {
 			font-size: 0.925em;
-			color: #5f6062;
+			color: @feature_text_color;
 
 			.ow-pt-feature {
 				padding: 15px 20px;
@@ -177,11 +173,12 @@
 		}
 
 		&.ow-pt-featured {
+			color: @featured_header_text_color;
 			margin-top: -20px;
 			.ow-pt-title {
-				padding: 30px 0;
 				border-color: darken(@featured_header_color, 20%);
 				.gradient(@featured_header_color, darken(@featured_header_color, 10%), @featured_header_color);
+				padding: 30px 0;
 			}
 
 			.ow-pt-details {

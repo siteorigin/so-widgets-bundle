@@ -1,0 +1,140 @@
+.clearfix() {
+	zoom: 1;
+
+	&:before {
+		content: '';
+		display: block;
+	}
+
+	&:after {
+		clear: both;
+		content: '';
+		display: table;
+	}
+}
+
+@font-face {
+	font-family: 'anything-carousel-arrows';
+	src: url('fonts/carousel-arrows.eot');
+	src: url('fonts/carousel-arrows.eot') format('embedded-opentype'),
+		url('fonts/carousel-arrows.woff') format('woff'),
+		url('fonts/carousel-arrows.ttf') format('truetype'),
+		url('fonts/carousel-arrows.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+	font-display: block;
+}
+
+.transition(@duration:0.2s, @on: all, @ease:ease) {
+	-webkit-transition: @on @duration @ease;
+	-moz-transition: @on @duration @ease;
+	-o-transition: @on @duration @ease;
+	transition: @on @duration @ease;
+}
+
+.so-widget-sow-anything-carousel {
+
+	.sow-carousel-container {
+		align-items: center;
+		display: flex;
+		justify-content: center;
+
+		body.rtl & {
+			flex-direction: row-reverse;
+		}
+
+		a.sow-carousel-next,
+		a.sow-carousel-previous {
+			-moz-osx-font-smoothing: grayscale;
+			-webkit-font-smoothing: antialiased;
+			font-family: 'anything-carousel-arrows';
+			font-style: normal;
+			font-variant: normal;
+			font-weight: normal;
+			text-align: center;
+			text-decoration: none;
+			text-transform: none;
+		}
+
+		.sow-carousel-wrapper {
+			left: 0;
+			overflow: hidden;
+			position: relative;
+			right: 0;
+			width: 100%;
+
+			.sow-carousel-items {
+				.clearfix();
+				margin: 0;
+				padding: 0;
+				transition: all 0.45s ease;
+
+				.sow-carousel-item {
+					display: block;
+				}
+			}
+
+			.slick-dots {
+				display: block;
+				line-height: 0;
+				list-style: none;
+				margin: 0;
+				padding: 0;
+				text-align: center;
+				width: 100%;
+
+				li {
+					cursor: pointer;
+					display: inline-block;
+					margin: 0;
+					padding: 0;
+					position: relative;
+
+					button {
+						background: transparent;
+						border: 0;
+						box-shadow: none;
+						color: transparent;
+						cursor: pointer;
+						display: block;
+						font-size: 0;
+						font-style: normal;
+						letter-spacing: normal;
+						line-height: 0;
+						margin: 0;
+						outline: none;
+						padding: 0;
+
+						&:active,
+						&:hover,
+						&:focus {
+							box-shadow: none; // Prevent box shadow in Vantage.
+							outline: none;
+						}
+
+						&:before {
+							content: '•';
+							display: block;
+							font-family: initial;
+							-webkit-font-smoothing: antialiased;
+							-moz-osx-font-smoothing: grayscale;
+							position: relative;
+							text-align: center;
+						}
+					}
+
+					&.slick-active button {
+
+						&:before {
+							opacity: 1;
+						}
+
+						&:hover {
+							cursor: default;
+						}
+					}
+				}
+			}
+		}
+	}
+}

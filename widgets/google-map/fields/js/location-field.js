@@ -1,41 +1,21 @@
 /* global jQuery, sowbForms, soLocationField */
 
 window.sowbForms = window.sowbForms || {};
+window.sowb = window.sowb || {};
 
 sowbForms.LocationField = function () {
 	return {
 		init: function ( element ) {
 			
-			if ( typeof google.maps.places === 'undefined' ) {
+			if ( typeof window.google.maps.places === 'undefined' ) {
 				console.error( 'SiteOrigin Google Maps Widget: Failed to load the places library.' );
 				return;
 			}
 			
 			var inputField = element.querySelector( '.siteorigin-widget-location-input' );
 			var valueField = element.querySelector( '.siteorigin-widget-input' );
-			var autocomplete = new google.maps.places.Autocomplete( inputField );
+			var autocomplete = new window.google.maps.places.Autocomplete( inputField );
 			
-			var getSimplePlace = function ( place ) {
-				return new Promise(function (resolve, reject) {
-					var simplePlace = {name: place.name};
-					simplePlace.address = place.hasOwnProperty('formatted_address') ? place.formatted_address : '';
-					if (place.hasOwnProperty('geometry')) {
-						simplePlace.location = place.geometry.location.toString();
-						resolve(simplePlace);
-					} else {
-						var addr = {address: place.hasOwnProperty('formatted_address') ? place.formatted_address : place.name};
-						new google.maps.Geocoder().geocode(addr,
-							function (results, status) {
-								if (status === google.maps.GeocoderStatus.OK) {
-									simplePlace.location = results[0].geometry.location.toString();
-									resolve(simplePlace);
-								} else {
-									reject(status);
-								}
-							});
-					}
-				});
-			};
 
 			var setInputField = function () {
 				var parsedVal = JSON.parse(valueField.value);
@@ -65,7 +45,7 @@ sowbForms.LocationField = function () {
 			var onPlaceChanged = function () {
 				var place = autocomplete.getPlace();
 				
-				getSimplePlace( place )
+				sowbForms.LocationField().getSimplePlace( place )
 				.then( function ( simplePlace ) {
 					setValueField(simplePlace);
 				} )
@@ -102,7 +82,7 @@ sowbForms.LocationField = function () {
 					}
 					var delay = 100;
 					function callGetSimplePlace( place, field ) {
-						getSimplePlace( place )
+						sowbForms.LocationField().getSimplePlace( place )
 						.then( function ( simplePlace ) {
 							field.value = JSON.stringify( simplePlace );
 							valueField.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}));
@@ -117,7 +97,7 @@ sowbForms.LocationField = function () {
 							}
 						} )
 						.catch( function ( status ) {
-							if ( status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT ) {
+							if ( status === window.google.maps.GeocoderStatus.OVER_QUERY_LIMIT ) {
 								if ( ! sowbForms.hasOwnProperty( 'overQueryLimitCount' ) ) {
 									sowbForms.overQueryLimitCount = 1;
 								} else {
@@ -150,12 +130,35 @@ sowbForms.LocationField = function () {
 					setInputField();
 				}
 			}
+		},
+		getSimplePlace: function ( place ) {
+			return new Promise( function( resolve, reject ) {
+				var simplePlace = { name: place.name };
+				simplePlace.address = place.hasOwnProperty( 'formatted_address') ? place.formatted_address : '';
+				if ( place.hasOwnProperty( 'geometry' ) ) {
+					simplePlace.location = place.geometry.location.toString();
+					resolve( simplePlace );
+				} else {
+					var addr = { address: place.hasOwnProperty( 'formatted_address' ) ? place.formatted_address : place.name };
+					new window.google.maps.Geocoder().geocode(
+						addr,
+						function( results, status ) {
+							if ( status === window.google.maps.GeocoderStatus.OK ) {
+								simplePlace.location = results[0].geometry.location.toString();
+								resolve( simplePlace );
+							} else {
+								reject( status );
+							}
+						}
+					);
+				}
+			} );
 		}
 	};
 };
 
 sowbForms.setupLocationFields = function () {
-	if ( google && google.maps && google.maps.places ) {
+	if ( window.google && window.google.maps && window.google.maps.places ) {
 		document.querySelectorAll( '.siteorigin-widget-field-type-location' ).forEach( function ( element ) {
 			var elementVisible = !!( element.offsetWidth !== 0 && element.offsetHeight !== 0 );
 			if ( elementVisible && element.getAttribute( 'data-initialized' ) !== 'true' ) {
@@ -168,10 +171,15 @@ sowbForms.setupLocationFields = function () {
 
 // Called by Google Maps API when it has loaded.
 function sowbAdminGoogleMapInit() {
+	jQuery( window.sowb ).trigger( 'sow-google-map-loaded' );
+}
+
+jQuery( window.sowb ).on( 'sow-google-map-loaded', function() {
 	sowbForms.mapsInitializing = false;
 	sowbForms.mapsInitialized = true;
 	sowbForms.setupLocationFields();
-}
+} );
+
 
 window.addEventListener('DOMContentLoaded', function () {
 
@@ -268,10 +276,14 @@ window.addEventListener('DOMContentLoaded', function () {
 			
 			window.console.error = sowbForms.checkMapsApiInvalidKeyError;
 		}
-		
-		// Try to load even if API key is missing to allow Google Maps API to provide it's own warnings/errors about missing API key.
-		var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&libraries=places&callback=sowbAdminGoogleMapInit';
-		$( 'body' ).append( '<script async type="text/javascript" src="' + apiUrl + '">' );
+
+		if ( ! $( '#sow-google-maps-js' ).length ) {
+			// Try to load even if API key is missing to allow Google Maps API to provide it's own warnings/errors about missing API key.
+			var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&libraries=places&callback=sowbAdminGoogleMapInit';
+			$( 'body' ).append( '<script async type="text/javascript" id="sow-google-maps-js" src="' + apiUrl + '">' );
+		} else {
+			jQuery( window.sowb ).trigger( 'sow-google-map-loaded' );
+		}
 	} );
 
 });

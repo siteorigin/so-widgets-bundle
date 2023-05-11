@@ -43,8 +43,8 @@ jQuery( function ( $ ) {
 
 					if ($('#so-pt-icon-' + icon).length) {
 						var svg = $('#so-pt-icon-' + icon + ' svg').clone().css({
-							'max-width': 24,
-							'max-height': 24
+							'max-width': '24px',
+							'max-height': '24px',
 						});
 
 						if ($$.data('icon-color') !== '') {

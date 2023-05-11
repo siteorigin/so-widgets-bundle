@@ -27,7 +27,7 @@ jQuery( function ( $ ) {
 						
 						if ( width.length ) {
 							width = Math.min.apply( Math, width );
-							$img.css( 'max-width', width );
+							$img.css( 'max-width', width + 'px' );
 						}
 						
 					} );
@@ -40,7 +40,7 @@ jQuery( function ( $ ) {
 				};
 				alignImages();
 				
-				$( window ).resize( alignImages );
+				$( window ).on( 'resize', alignImages );
 
 				var event = document.createEvent('Event');
 				event.initEvent('layoutComplete', true, true);

@@ -1,22 +1,41 @@
-@spacing: default;
+@padding: default;
+@alignment_horizontal: center;
+@alignment_vertical: end;
+@title_alignment: default;
+@title_color: default;
+@title_font: default;
+@title_font_size: default;
+@title_font_style: default;
+@title_font_weight: default;
+@title_padding: default;
 
 .sow-image-grid-wrapper {
-	padding-top: @spacing;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: @alignment_horizontal;
+	align-items: @alignment_vertical;
 	line-height: 0;
-	text-align:center;
+	text-align: center;
 
 	.sow-image-grid-image {
-		padding: 0 @spacing @spacing @spacing;
+		padding: @padding;
 		display: inline-block;
-
-		> a {
-			display: inline-block;
-		}
 
 		img {
 			opacity: 0;
 			max-width:100%;
 			height:auto;
+		}
+
+		.image-title {
+			color: @title_color;
+			font-family: @title_font;
+			font-size: @title_font_size;
+			font-style: @title_font_style;
+			font-weight: @title_font_weight;
+			line-height: 1.25;
+			padding: @title_padding;
+			text-align: @title_alignment;
 		}
 	}
 }

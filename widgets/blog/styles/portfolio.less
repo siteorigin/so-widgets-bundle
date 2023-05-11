@@ -1,0 +1,181 @@
+@categories: default;
+@columns: 3;
+@column_width: 50%;
+@responsive_breakpoint: 780px;
+
+// Pagination.
+@pagination_background: default;
+@pagination_background_hover: default;
+@pagination_border_color: default;
+@pagination_border_color_hover: default;
+@pagination_border_radius: default;
+@pagination_font: default;
+@pagination_font_size: default;
+@pagination_font_style: default;
+@pagination_font_weight: default;
+@pagination_height: default;
+@pagination_link_color: default;
+@pagination_link_margin: default;
+@pagination_link_margin_offset: default;
+@pagination_link_color_hover: default;
+@pagination_dots_color: default;
+@pagination_top_margin: default;
+@pagination_width: default;
+
+// Filter Categories.
+@filter_categories_font: default;
+@filter_categories_font_size: default;
+@filter_categories_font_style: default;
+@filter_categories_font_weight: 600;
+@filter_categories_color: default;
+@filter_categories_color_hover: default;
+@filter_categories_text_transform: default;
+@filter_categories_selected_border_color: default;
+@filter_categories_selected_border_thickness: default;
+
+// Featured Image.
+@featured_image_border_color: default;
+@featured_image_hover_overlay_color: default;
+@featured_image_post_title_font: default;
+@featured_image_post_title_font_size: default;
+@featured_image_post_title_font_style: default;
+@featured_image_post_title_font_weight: 700;
+@featured_image_post_title_color: default;
+@featured_image_divider_border_color: default;
+@featured_image_divider_border_thickness: default;
+@featured_image_divider_border_margin: default;
+@featured_image_post_meta_font: default;
+@featured_image_post_meta_font_size: default;
+@featured_image_post_meta_font_style: default;
+@featured_image_post_meta_font_weight: 600;
+@featured_image_post_meta_color: default;
+
+.sow-blog-layout-portfolio {
+
+	.sow-blog-posts {
+		column-gap: 1.1667%;
+		display: grid;
+		grid-template-columns: repeat( @columns, 1fr );
+
+		article {
+			margin-bottom: 30px;
+			padding: 0 1.1667%;
+			width: @column_width;
+
+			@media (max-width: @responsive_breakpoint) {
+				width: 100%;
+			}
+
+			.sow-entry-thumbnail {
+
+				&:hover .sow-entry-overlay {
+					background: @featured_image_hover_overlay_color;
+					border: 2px solid @featured_image_border_color;
+				}
+
+				.sow-entry-title {
+					color: @featured_image_post_title_color;
+					font-family: @featured_image_post_title_font;
+					font-size: @featured_image_post_title_font_size;
+					font-style: @featured_image_post_title_font_style;
+					font-weight: @featured_image_post_title_font_weight;
+				}
+
+				& when( @categories = 1 ) {
+					.sow-entry-divider {
+						margin: @featured_image_divider_border_margin 0;
+						border: @featured_image_divider_border_thickness solid @featured_image_divider_border_color;
+					}
+
+					.sow-entry-project-type {
+						color: @featured_image_post_meta_color;
+						font-family: @featured_image_post_meta_font;
+						font-size: @featured_image_post_meta_font_size;
+						font-style: @featured_image_post_meta_font_style;
+						font-weight: @featured_image_post_meta_font_weight;
+						letter-spacing: 1px;
+						line-height: 1.7333;
+						text-transform: uppercase;
+					}
+				}
+			}
+		}
+	}
+
+	& when( @categories = 1 ) {
+
+		.sow-portfolio-filter-terms {
+
+			button {
+				border: none;
+				border-bottom: @filter_categories_selected_border_thickness solid transparent;
+				border-radius: 0;
+				color: @filter_categories_color;
+				font-family: @filter_categories_font;
+				font-size: @filter_categories_font_size;
+				font-style: @filter_categories_font_style;
+				font-weight: @filter_categories_font_weight;
+				letter-spacing: 1px;
+				line-height: normal;
+				text-transform: @filter_categories_text_transform;
+
+				@media (max-width: @responsive_breakpoint) {
+					margin: 0 10px 5px 0;
+				}
+
+				&:hover,
+				&:focus {
+					color: @filter_categories_color_hover;
+				}
+
+				&.active {
+					border-bottom-color: @filter_categories_selected_border_color;
+				}
+			}
+		}
+	}
+
+	.sow-post-navigation {
+
+		.sow-nav-links {
+			margin-top: @pagination_top_margin;
+		}
+
+		.page-numbers {
+			align-items: center;
+			display: flex;
+			height: @pagination_height;
+			justify-content: center;
+			width: @pagination_width;
+
+			&:not(.dots) {
+				background: @pagination_background;
+				border: 1px solid @pagination_border_color;
+				border-radius: @pagination_border_radius;
+				color: @pagination_link_color;
+				font-family: @pagination_font;
+				font-size: @pagination_font_size;
+				font-style: @pagination_font_style;
+				font-weight: @pagination_font_weight;
+				margin-right: @pagination_link_margin;
+
+				&:last-child {
+					margin-right: 0;
+				}
+
+				&.current,
+				&:hover,
+				&:focus {
+					background: @pagination_background_hover;
+					color: @pagination_link_color_hover;
+					border-color: @pagination_border_color_hover;
+				}
+			}
+		}
+
+		.dots {
+			color: @pagination_dots_color;
+			margin-left: @pagination_link_margin_offset;
+		}
+	}
+}

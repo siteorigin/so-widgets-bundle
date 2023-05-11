@@ -1,22 +1,28 @@
 @import "../../../less/mixins";
 
-.siteorigin-widget-form .siteorigin-widget-field-type-media {
+div.siteorigin-widget-form div.siteorigin-widget-field.siteorigin-widget-field-type-media {
 
 	.media-field-wrapper {
 		border: 1px solid #bbb;
 		.box-shadow(~"0 1px 2px rgba(0, 0, 0, 0.1)");
+		box-sizing: content-box;
 		display: block;
 		float: left;
 		font-size: 13px;
 		.gradient(#f9f9f9, #f2f2f2, #f9f9f9);
 		height: 32px;
 		line-height: 18.2px;
-		overflow: auto;
+		overflow: visible;
 		position: relative;
 		.rounded(3px);
 
+		&:focus,
 		&:hover {
 			.box-shadow(~"0 1px 2px rgba(0, 0, 0, 0.15)");
+		}
+
+		* {
+			box-sizing: content-box;
 		}
 
 		.current {
@@ -62,6 +68,7 @@
 		.media-upload-button,
 		.find-image-button {
 			display: block;
+			border-bottom: none;
 			cursor: pointer;
 			float: left;
 			font-size: 11px;
@@ -69,10 +76,12 @@
 			color: #666;
 			outline: none;
 			.rounded(2px);
-			padding: 7px 8px;
+			line-height: 32px;
+			padding: 0 8px;
 			text-decoration: none;
 			text-shadow: 0 1px 0 #fff;
 
+			&:focus,
 			&:hover {
 				background: rgba(255, 255, 255, 0.75);
 			}
@@ -82,18 +91,21 @@
 			border-left: 1px solid #bbb;
 		}
 
-		&:hover .media-upload-button{
-			color: #707070;
+		&:focus,
+		&:hover {
+			.media-upload-button{
+				color: #707070;
+			}
 		}
 	}
 
 	.media-remove-button {
 		display: block;
+		border-bottom: none;
 		color: #aaa;
 		float: left;
 		font-size: 11px;
-		line-height: 1em;
-		margin-right: 25px;
+		line-height: 18.2px;
 		opacity: 1;
 		padding: 11px 0 11px 6px;
 		position: static;
@@ -105,6 +117,7 @@
 			pointer-events: none;
 		}
 
+		&:focus,
 		&:hover {
 			color: #bc0b0b;
 		}
@@ -119,6 +132,7 @@
 
 		@media (min-width: 680px) {
 			float: left;
+			margin-left: 25px;
 			margin-top: 2px !important;
 			max-width: 320px;
 		}

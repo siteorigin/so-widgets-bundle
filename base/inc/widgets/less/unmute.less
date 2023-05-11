@@ -1,0 +1,70 @@
+@unmute_position: top_right;
+@volume_controls_font: default;
+
+@font-face {
+	font-family: 'so-slider-volume-controls';
+	src: url( '@{volume_controls_font}.eot' ) format( 'embedded-opentype' ),
+		url( '@{volume_controls_font}.ttf' ) format( 'truetype' ),
+		url( '@{volume_controls_font}.woff' ) format( 'woff' ),
+		url( '@{volume_controls_font}.svg' ) format( 'svg' );
+	font-weight: normal;
+	font-style: normal;
+	font-display: block;
+}
+
+.sow-player-controls-sound {
+	position: absolute;
+	z-index: 101;
+	&::before {
+		background: rgba(0,0,0,0.8);
+		border-radius: 4px;
+		color: #fff;
+		content: "\e900";
+		cursor: pointer;
+		font-family: 'so-slider-volume-controls';
+		font-size: 20px;
+		padding: 10px;
+	}
+
+	&:hover::before,
+	&:focus::before {
+		content: "\e901";
+	}
+
+	&.sow-player-unmuted {
+		&:hover,
+		&:focus {
+			&::before {
+				content: "\e901";
+			}
+		}
+	}
+
+	& when ( @unmute_position = top_right ) {
+		top: 11px;
+		right: 8px;
+	}
+	& when ( @unmute_position = bottom_right ) {
+		right: 8px;
+		bottom: 11px;
+	}
+	& when ( @unmute_position = bottom_left ) {
+		bottom: 11px;
+		left: 8px;
+	}
+
+	& when ( @unmute_position = top_left ) {
+		top: 8px;
+		left: 8px;
+	}
+
+	&.sow-player-unmuted {
+		&::before {
+			content: "\e901";
+		}
+		&:hover::before,
+		&:focus::before {
+			content: "\e900";
+		}
+	}
+}

@@ -1,19 +1,20 @@
 <?php
 /**
- * @var array $instance
- * @var array $panels
+ * @var array  $instance
+ * @var array  $panels
  * @var string $icon_open
  * @var string $icon_close
  */
-
-if( !empty( $instance['title'] ) ) {
+if ( ! empty( $instance['title'] ) ) {
 	echo $args['before_title'] . $instance['title'] . $args['after_title'];
 }
 ?>
 <div>
 	<div class="sow-accordion">
-	<?php foreach ( $panels as $panel ) : ?>
-		<div class="sow-accordion-panel<?php if ( $panel['initial_state'] == 'open' ) echo ' sow-accordion-panel-open'; ?>"
+	<?php foreach ( $panels as $panel ) { ?>
+		<div class="sow-accordion-panel<?php if ( $panel['initial_state'] == 'open' ) {
+			echo ' sow-accordion-panel-open';
+		} ?>"
 			 data-anchor="<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>">
 				<div class="sow-accordion-panel-header-container" role="heading" aria-level="2">
 					<div class="sow-accordion-panel-header" tabindex="0" role="button" id="accordion-label-<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>" aria-controls="accordion-content-<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>" aria-expanded="<?php echo $panel['initial_state'] == 'open' ? 'true' : 'false'; ?>">
@@ -33,12 +34,22 @@ if( !empty( $instance['title'] ) ) {
 					</div>
 				</div>
 
-			<div class="sow-accordion-panel-content" role="region" aria-labelledby="accordion-label-<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>" id="accordion-content-<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>">
+			<div
+				class="sow-accordion-panel-content"
+				role="region"
+				aria-labelledby="accordion-label-<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>"
+				id="accordion-content-<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>"
+				<?php
+				if ( $panel['initial_state'] == 'closed' ) {
+					echo 'style="display: none;"';
+				}
+				?>
+			>
 				<div class="sow-accordion-panel-border" tabindex="0">
 					<?php $this->render_panel_content( $panel, $instance ); ?>
 				</div>
 			</div>
 		</div>
-	<?php endforeach; ?>
+	<?php } ?>
 	</div>
 </div>

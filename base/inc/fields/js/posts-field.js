@@ -4,7 +4,7 @@
 
 	$( document ).on( 'sowsetupform', '.siteorigin-widget-field-type-posts', function ( e ) {
 		var $postsField = $( this );
-		$postsField.change( function ( event ) {
+		$postsField.on( 'change', function( event ) {
 			var postsValues = sowbForms.getWidgetFormValues( $postsField );
 			var queryObj = postsValues.hasOwnProperty( 'posts' ) ? postsValues.posts : null;
 

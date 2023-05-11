@@ -1,0 +1,369 @@
+{
+	"standard": {
+		"label": "Standard",
+		"values": {
+			"settings": {
+				"featured_image": true,
+				"content": "full",
+				"read_more": true,
+				"excerpt_length": "55",
+				"date": true,
+				"author": true,
+				"categories": true,
+				"tags": false,
+				"comment_count": true,
+				"featured_image_size": "full"
+			},
+			"design": {
+				"post":{
+					"background": "#fff",
+					"border": "#e6e6e6"
+				},
+				"title": {
+					"color": "#2d2d2d",
+					"color_hover": "#626262",
+					"font": "default",
+					"font_size": "24"
+				},
+				"meta":{
+					"color": "#929292",
+					"color_hover": "#f14e4e",
+					"font": "default",
+					"font_size": "13"
+				},
+				"content":{
+					"color": "#626262",
+					"color_hover": "",
+					"font": "default",
+					"font_size": "15",
+					"link_color": "#f14e4e",
+					"link_color_hover": "#626262"
+				},
+				"pagination":{
+					"background": "",
+					"background_hover": "",
+					"border_color": "#626262",
+					"border_color_hover": "#f14e4e",
+					"border_radius": "0",
+					"font": "default",
+					"font_size": "14",
+					"height":"43",
+					"link_color": "#626262",
+					"link_color_hover": "#f14e4e",
+					"dots_color": "#626262",
+					"link_margin": "8",
+					"top_margin": "30",
+					"width": "44"
+				}
+			}
+		}
+	},
+	"grid": {
+		"label": "Grid",
+		"values": {
+			"settings": {
+				"columns": 2,
+				"featured_image": true,
+				"content": "excerpt",
+				"read_more": true,
+				"excerpt_length": "55",
+				"date": true,
+				"author": true,
+				"categories": true,
+				"tags": false,
+				"comment_count": true,
+				"featured_image_size": "sow-blog-grid"
+			},
+			"design": {
+				"post":{
+					"background": "#fff",
+					"border": "#e6e6e6"
+				},
+				"title": {
+					"color": "#2d2d2d",
+					"color_hover": "#626262",
+					"font": "default",
+					"font_size": "16"
+				},
+				"meta":{
+					"color": "#929292",
+					"color_hover": "#f14e4e",
+					"font": "default",
+					"font_size": "13"
+				},
+				"content":{
+					"color": "#626262",
+					"color_hover": "",
+					"font": "default",
+					"font_size": "14",
+					"link_color": "#f14e4e",
+					"link_color_hover": "#626262"
+				},
+				"pagination":{
+					"background": "",
+					"background_hover": "",
+					"border_color": "#626262",
+					"border_color_hover": "#f14e4e",
+					"border_radius": "0",
+					"font": "default",
+					"font_size": "14",
+					"height":"43",
+					"link_color": "#626262",
+					"link_color_hover": "#f14e4e",
+					"dots_color": "#626262",
+					"link_margin": "8",
+					"top_margin": "30",
+					"width": "44"
+				}
+			}
+		}
+	},
+	"offset": {
+		"label": "Offset",
+		"values": {
+			"settings": {
+				"featured_image": true,
+				"content": "full",
+				"read_more": true,
+				"excerpt_length": "55",
+				"date": true,
+				"author": true,
+				"categories": true,
+				"tags": false,
+				"comment_count": true,
+				"featured_image_size": "full"
+			},
+			"design": {
+				"post":{
+					"border": "#e6e6e6",
+					"background": "#fff"
+				},
+				"title": {
+					"color": "#2d2d2d",
+					"color_hover": "#626262",
+					"font": "default",
+					"font_size": "24"
+				},
+				"meta":{
+					"color": "#929292",
+					"color_hover": "#f14e4e",
+					"font": "default",
+					"font_size": "13"
+				},
+				"offset_post_meta":{
+					"color": "#929292",
+					"font": "default",
+					"font_size": "13",
+					"link_color": "#2d2d2d",
+					"link_color_hover": "#f14e4e",
+					"link_font_size": "14"
+				},				
+				"content":{
+					"color": "#626262",
+					"color_hover": "",
+					"font": "default",
+					"font_size": "15",
+					"link_color": "#f14e4e",
+					"link_color_hover": "#626262"
+				},
+				"pagination":{
+					"background": "",
+					"background_hover": "",
+					"border_color": "#626262",
+					"border_color_hover": "#f14e4e",
+					"border_radius": "0",
+					"font": "default",
+					"font_size": "14",
+					"height":"43",
+					"link_color": "#626262",
+					"link_color_hover": "#f14e4e",
+					"dots_color": "#626262",
+					"link_margin": "8",
+					"top_margin": "30",
+					"width": "44"
+				}
+			}
+		}
+	},
+	"alternate": {
+		"label": "Alternate",
+		"values": {
+			"settings": {
+				"featured_image": true,
+				"content": "excerpt",
+				"read_more": true,
+				"excerpt_length": "55",
+				"date": true,
+				"author": true,
+				"categories": true,
+				"tags": false,
+				"comment_count": true,
+				"featured_image_size": "sow-blog-alternate"
+			},
+			"design": {
+				"post":{
+					"border": "#e6e6e6",
+					"background": "#fff"
+				},
+				"title": {
+					"font": "default",
+					"font_size": "16",
+					"color": "#2d2d2d",
+					"color_hover": "#626262"
+				},
+				"meta":{
+					"color": "#929292",
+					"color_hover": "#f14e4e",
+					"font": "default",
+					"font_size": "13"
+				},
+				"content":{
+					"color": "#626262",
+					"color_hover": "",
+					"font": "default",
+					"font_size": "15",
+					"link_color": "#f14e4e",
+					"link_color_hover": "#626262"
+				},
+				"pagination":{
+					"background": "",
+					"background_hover": "",
+					"border_color": "#626262",
+					"border_color_hover": "#f14e4e",
+					"border_radius": "0",
+					"font": "default",
+					"font_size": "14",
+					"height":"43",
+					"link_color": "#626262",
+					"link_color_hover": "#f14e4e",
+					"dots_color": "#626262",
+					"link_margin": "8",
+					"top_margin": "30",
+					"width": "44"
+				}
+			}
+		}
+	},
+	"masonry": {
+		"label": "Masonry",
+		"values": {
+			"settings": {
+				"columns": 2,
+				"featured_image": true,
+				"content": "excerpt",
+				"read_more": true,
+				"excerpt_length": "55",
+				"date": true,
+				"author": true,
+				"categories": true,
+				"tags": false,
+				"comment_count": true,
+				"featured_image_size": "full"
+			},
+			"design": {
+				"post":{
+					"border": "#e6e6e6",
+					"background": "#fff"
+				},
+				"title": {
+					"color": "#2d2d2d",
+					"color_hover": "#626262",
+					"font": "default",
+					"font_size": "16"
+				},
+				"meta":{
+					"color": "#929292",
+					"color_hover": "#f14e4e",
+					"font": "default",
+					"font_size": "13"
+				},
+				"overlay_post_category": {
+					"background": "#000",
+					"background_hover": "#000",
+					"background_opacity": "0.7",
+					"background_opacity_hover": "0.75",
+					"color": "#fff",
+					"color_hover": "#fff",
+					"font": "default",
+					"font_size": "11"
+				},
+				"content":{
+					"color": "#626262",
+					"color_hover": "",
+					"font": "default",
+					"font_size": "14",
+					"link_color": "#f14e4e",
+					"link_color_hover": "#626262"
+				},
+				"pagination":{
+					"background": "",
+					"background_hover": "",
+					"border_color": "#626262",
+					"border_color_hover": "#f14e4e",
+					"border_radius": "0",
+					"font": "default",
+					"font_size": "14",
+					"height":"43",
+					"link_color": "#626262",
+					"link_color_hover": "#f14e4e",
+					"link_margin": "8",
+					"top_margin": "30",
+					"width": "44"
+				}
+			}
+		}
+	},
+	"portfolio": {
+		"label": "Portfolio",
+		"values": {
+			"settings": {
+				"content": "full",
+				"columns": 3,
+				"filter_categories": "true",
+				"categories": true,
+				"featured_image_size": "sow-blog-portfolio"
+			},
+			"design": {
+				"filter_categories":{
+					"color": "#929292",
+					"color_hover": "#2d2d2d",
+					"font": "default",
+					"font_size": "11",
+					"text_transform": "true",
+					"selected_border_color": "#2d2d2d",
+					"selected_border_thickness": "2"
+				},
+				"featured_image":{
+					"border_color": "#929292",
+					"divider_border_color": "#2d2d2d",
+					"divider_border_thickness": "1",
+					"divider_border_margin": "13",
+					"hover_overlay_color": "#ffffff",
+					"hover_overlay_opacity": "0.9",
+					"post_meta_font": "default",
+					"post_meta_font_size": "11",
+					"post_meta_color": "#929292",
+					"post_title_color": "#2d2d2d",
+					"post_title_font": "default",
+					"post_title_font_size": "15"
+				},
+				"pagination":{
+					"background": "",
+					"background_hover": "",
+					"border_color": "#626262",
+					"border_color_hover": "#f14e4e",
+					"border_radius": "0",
+					"font": "default",
+					"font_size": "14",
+					"height":"43",
+					"link_color": "#626262",
+					"link_color_hover": "#f14e4e",
+					"dots_color": "#626262",
+					"link_margin": "8",
+					"top_margin": "30",
+					"width": "44"
+				}
+			}
+		}
+	}
+}

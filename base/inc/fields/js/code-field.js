@@ -191,14 +191,14 @@
 									end = start;
 								}
 								if (defaults.textarea.setSelectionRange) {
-									defaults.textarea.focus();
+									defaults.textarea.trigger( 'focus' );
 									defaults.textarea.setSelectionRange(start, end);
 								} else if (defaults.textarea.createTextRange) {
 									var range = defaults.textarea.createTextRange();
 									range.collapse(true);
 									range.moveEnd('character', end);
 									range.moveStart('character', start);
-									range.select();
+									range.trigger( 'select' );
 								}
 							},
 							selection: function(){

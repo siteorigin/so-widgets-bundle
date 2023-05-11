@@ -47,7 +47,7 @@
 					onSelect: updateValField,
 				} );
 
-				$field.change( function ( event ) {
+				$field.on( 'change', function( event ) {
 					var dateVal = parse( $field.val() );
 					updateValField( dateVal );
 					
@@ -66,7 +66,7 @@
 			var afterPicker = createPikadayInput( 'after', initRange.after );
 			var beforePicker = createPikadayInput( 'before', initRange.before );
 
-			valField.change( function ( event, data ) {
+			valField.on( 'change', function( event, data ) {
 				if ( ! ( data && data.silent ) ) {
 					var newRange = valField.val() === '' ? { after: '', before: '' } : JSON.parse( valField.val() );
 					afterPicker.setDate( newRange.after );
@@ -78,7 +78,7 @@
 			$dateRangeField.find( '.sowb-relative-date' ).each( function () {
 				var $name = $( this ).data( 'name' );
 
-				$( this ).change( function () {
+				$( this ).on( 'change', function() {
 					var range = valField.val() === '' ? {} : JSON.parse( valField.val() );
 
 					if ( ! range.hasOwnProperty( $name ) ) {
@@ -92,7 +92,7 @@
 					valField.trigger( 'change', { silent: true } );
 				}.bind( this ) );
 
-				valField.change( function ( event, data ) {
+				valField.on( 'change', function( event, data ) {
 					if ( ! ( data && data.silent ) ) {
 						var range = valField.val() === '' ? { from: {}, to: {} } : JSON.parse( valField.val() );
 

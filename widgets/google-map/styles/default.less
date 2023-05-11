@@ -1,0 +1,81 @@
+@import "../../../base/less/mixins";
+
+@height: 480px;
+@responsive_breakpoint: 780px;
+@map_consent: default;
+
+@map_consent_notice_text_background: #000;
+@map_consent_notice_text_color: #fff;
+@map_consent_notice_text_link: #fff;
+@map_consent_notice_text_link_hover: #aaa;
+
+@map_consent_notice_button_color: #fff;
+@map_consent_notice_button_color_hover: #eee;
+@map_consent_notice_button_background: #41a9d5;
+@map_consent_notice_button_background_hover: #298fba;
+
+.sow-google-map-canvas {
+	height: @height;
+
+	img {
+		border-radius: 0;
+		box-shadow: none;
+		line-height: normal;
+		max-width: none;
+		zoom: normal;
+	}
+
+	// Reset the position of all divs to prevent a potential situation where the Google Maps logo could be hidden by unrelated CSS.
+	div:not(.gm-style-iw-t):not(.gm-style-iw) {
+		position: initial;
+	}
+}
+
+& when ( @map_consent = 1 ) {
+	.sow-google-map-consent {
+		align-items: center;
+		display: flex;
+		min-height: @height;
+
+		.sow-google-map-consent-prompt {
+			background: fade( @map_consent_notice_text_background, 85% );
+			color: @map_consent_notice_text_color;
+			width: 100%;
+
+			.sow-google-map-consent-prompt-inner {
+				margin: 0 auto;
+				max-width: 780px;
+				padding: 50px;
+				text-align: center;
+
+				@media (max-width: @responsive_breakpoint) {
+					max-width: none;
+					padding: 25px;
+				}
+
+				a {
+					color: @map_consent_notice_text_link;
+					&:focus,
+					&:hover {
+						color: @map_consent_notice_text_link_hover;
+
+					}
+				}
+
+				button {
+					background: @map_consent_notice_button_background;
+					border: none;
+					color: @map_consent_notice_button_color;
+					display: block;
+					margin: 10px auto 0;
+
+					&:focus,
+					&:hover {
+						background: @map_consent_notice_button_background_hover;
+						color: @map_consent_notice_button_color_hover;
+					}
+				}
+			}
+		}
+	}
+}

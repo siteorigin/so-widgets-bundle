@@ -15,6 +15,7 @@ module.exports = {
             'widgets/**/*.less',
             'compat/**/*.less',
             '!base/less/*.less',
+            '!base/inc/widgets/less/*.less',
             '!widgets/**/styles/*.less'
         ],
         include:[]
@@ -31,8 +32,8 @@ module.exports = {
             'js/**/*.js',
             'widgets/**/*.js',
             '!{node_modules,node_modules/**}',  // Ignore node_modules/ and contents
-            '!{tests,tests/**}',                // Ignore tests/ and contents
-            '!{tmp,tmp/**}'                     // Ignore dist/ and contents
+            '!{tmp,tmp/**}',                    // Ignore dist/ and contents
+            '!**/**/*.min.js'                   // Ignore already minified files.
         ]
     },
     bust : {
@@ -44,11 +45,10 @@ module.exports = {
             'icons/**/*css',                    // Copy CSS for icon packs.
             'js/lib/**/*css',                   // Copy CSS for JS libs.
             'base/less/*.less',                 // LESS libraries used in runtime styles
+            'base/inc/widgets/less/*.less',
             'widgets/**/styles/*.less',         // All the widgets' runtime .less files
             '!{build,build/**}',                // Ignore build/ and contents
-            '!{tests,tests/**}',                // Ignore tests/ and contents
             '!{tmp,tmp/**}',                    // Ignore tmp/ and contents
-            '!phpunit.xml',                     // Not the unit tests configuration file.
             '!so-widgets-bundle.php',           // Not the base plugin file. It is copied by the 'version' task.
             '!readme.txt',                      // Not the readme.txt file. It is copied by the 'version' task.
             '!readme.md',                       // Ignore the readme.md file. It is for the github repo.

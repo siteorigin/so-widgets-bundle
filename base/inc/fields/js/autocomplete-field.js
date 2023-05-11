@@ -3,7 +3,8 @@
 (function( $ ) {
 
 	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-autocomplete', function ( e ) {
-		var $$ = $(this);
+		var $$ = $( this );
+		var $contentSelector = $$.find(' .existing-content-selector' );
 
 		if ( $$.data( 'initialized' ) ) {
 			return;
@@ -45,6 +46,12 @@
 			} else if ( source === 'terms' ) {
 				ajaxData.term = query;
 			}
+
+			// If WPML is enabled for this page, include page language for filtering.
+			if ( typeof icl_this_lang == 'string' ) {
+				ajaxData.language = icl_this_lang;
+			}
+
 			var $ul = $$.find('ul.items').empty().addClass('loading');
 			return $.get(
 				soWidgets.ajaxurl,
@@ -66,12 +73,11 @@
 			);
 		};
 
-		$$.find('.siteorigin-widget-autocomplete-input').click(function () {
-			var $s = $$.find('.existing-content-selector');
-			$s.show();
+		$$.find( '.siteorigin-widget-autocomplete-input' ).on( 'click', function () {
+			$contentSelector.show();
 
 			var refreshPromise = new $.Deferred();
-			if( $s.is(':visible') && $s.find('ul.items li').length === 0 ) {
+			if( $contentSelector.is(':visible') && $contentSelector.find('ul.items li').length === 0 ) {
 				refreshPromise = refreshList();
 			} else {
 				refreshPromise.resolve();
@@ -81,41 +87,53 @@
 		});
 
 		var closeContent = function () {
-			$$.find('.existing-content-selector').hide();
+			$contentSelector.hide();
 		};
 
-		$(window).mousedown(function (event) {
+		$( window ).on( 'mousedown', function( event ) {
 			var mouseDownOutside = $$.find(event.target).length === 0;
 			if ( mouseDownOutside ) {
 				closeContent();
 			}
 		});
 
-		$$.find('.button-close').click( closeContent );
+		$$.find('.button-close').on( 'click', closeContent );
 
 		// Clicking on one of the url items
-		$$.on( 'click', '.items li', function(e) {
+		$$.on( 'click keypress', '.items li', function( e ) {
 			e.preventDefault();
-			var $li = $(this);
-			var selectedItems = getSelectedItems();
-			var clickedItem = $li.data( 'value' );
 
-			var curIndex = selectedItems.indexOf( clickedItem );
-
-			if ( curIndex > -1 ) {
-				selectedItems.splice( curIndex, 1 );
-				$li.removeClass( 'selected' );
-			} else {
-				selectedItems.push( clickedItem );
-				$li.addClass( 'selected' );
+			if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
+				return;
 			}
 			var $input = $$.find('input.siteorigin-widget-input');
-			$input.val( selectedItems.join(',') );
-			$input.change();
+			var $li = $( this );
+			var clickedItem = $li.data( 'value' );
+
+			if ( $contentSelector.data( 'multiple' ) ) {
+				var selectedItems = getSelectedItems();
+
+				var curIndex = selectedItems.indexOf( clickedItem );
+
+				if ( curIndex > -1 ) {
+					selectedItems.splice( curIndex, 1 );
+					$li.removeClass( 'selected' );
+				} else {
+					selectedItems.push( clickedItem );
+					$li.addClass( 'selected' );
+				}				
+				$input.val( selectedItems.join(',') );
+			} else {
+				$li.parent().find( '.selected' ).removeClass( 'selected' );
+				$li.addClass( 'selected' );
+				$input.val( clickedItem );
+				closeContent();
+			}
+			$input.trigger( 'change' );
 		} );
 
 		var interval = null;
-		$$.find('.content-text-search').keyup( function(){
+		$$.find('.content-text-search').on( 'keyup', function() {
 			if( interval !== null ) {
 				clearTimeout(interval);
 			}

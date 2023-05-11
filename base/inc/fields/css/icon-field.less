@@ -1,17 +1,19 @@
 @import "../../../less/mixins";
 
-.siteorigin-widget-form .siteorigin-widget-field-type-icon {
+div.siteorigin-widget-form div.siteorigin-widget-field.siteorigin-widget-field-type-icon {
 
 	.siteorigin-widget-icon-selector-current {
-		display: inline-block;
-		.gradient( #f9f9f9, #f2f2f2, #f9f9f9 );
+		align-items: center;
+		border: 1px solid #bbbbbb;
 		.box-shadow(~"0 1px 2px rgba(0,0,0,0.1)");
+		box-sizing: content-box;
+		display: inline-flex;
+		.gradient( #f9f9f9, #f2f2f2, #f9f9f9 );
+		height: 35px;
 		.rounded(3px);
 		vertical-align: middle;
 
-		border: 1px solid #bbbbbb;
-		height: 35px;
-
+		&:focus,
 		&:hover {
 			.gradient( #ffffff, #f7f7f7, #ffffff );
 			.box-shadow(~"0 1px 2px rgba(0,0,0,0.15)");
@@ -42,7 +44,7 @@
 			text-shadow: 0 1px 0 #FFF;
 			font-weight: 600;
 			font-size: 11px;
-			padding: 9px 10px 7px 7px;
+			padding: 0 10px 0 7px;
 			outline: none;
 			cursor: pointer;
 		}
@@ -57,6 +59,12 @@
 		font-size: 11px;
 		line-height: 1em;
 		padding: 11px 0 11px 6px;
+		.transition(0.25s);
+
+		&:focus,
+		&:hover {
+			color: #bc0b0b;
+		}
 	}
 
 	&.siteorigin-widget-active {
@@ -73,16 +81,32 @@
 		.box-shadow(~"0 1px 2px rgba(0,0,0,0.0275)");
 		margin-top: 10px;
 
-		select.siteorigin-widget-icon-family {
-			font-size: 11px;
-			display: inline-block;
+		select {
+			min-width: unset;
 		}
 
 		.siteorigin-widget-icon-search {
-			font-size: 11px;
-			display: inline-block;
-			width: 260px;
+			font-size: 14px;
+			line-height: 30px;
 			padding: 6px 8px;
+			width: 260px;
+		}
+
+		select.siteorigin-widget-icon-family,
+		select.siteorigin-widget-icon-family-styles,
+		.siteorigin-widget-icon-search {
+			display: inline-block;
+			height: 30px;
+			min-height: 0;
+			vertical-align: top;
+
+			@media (max-width: 665px) {
+				margin-bottom: 4px;
+			}
+
+			@media (max-width: 399px) {
+				width: 100%;
+			}
 		}
 
 		.siteorigin-widget-icon-icons {
@@ -106,6 +130,11 @@
 
 				cursor: pointer;
 				text-align: center;
+
+				&:focus {
+					background: #fcf8f8;
+					border: 1px solid #43aaec;
+				}
 
 				&.siteorigin-widget-active {
 					background: #f6fafc;

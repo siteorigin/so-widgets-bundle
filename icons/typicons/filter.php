@@ -1,6 +1,6 @@
 <?php
 
-function siteorigin_widgets_icons_typicons_filter($icons) {
+function siteorigin_widgets_icons_typicons_filter( $icons ) {
 	return array_merge( $icons, array(
 		'adjust-brightness' => '&#xe000;',
 		'adjust-contrast' => '&#xe001;',
@@ -338,6 +338,6 @@ function siteorigin_widgets_icons_typicons_filter($icons) {
 		'zoom-out' => '&#xe14d;',
 		'zoom-outline' => '&#xe14e;',
 		'zoom' => '&#xe14f;',
-	));
+	) );
 }
-add_filter('siteorigin_widgets_icons_typicons', 'siteorigin_widgets_icons_typicons_filter');
+add_filter( 'siteorigin_widgets_icons_typicons', 'siteorigin_widgets_icons_typicons_filter' );

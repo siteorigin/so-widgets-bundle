@@ -38,26 +38,22 @@ jQuery( function ( $ ) {
 						rowSpan = Math.max( Math.min( rowSpan, layout.numColumns ), 1 );
 						//Use rowHeight if non-zero else fall back to matching columnWidth.
 						var rowHeight = layout.rowHeight || columnWidth;
-						$$.css( 'height', ( rowHeight * rowSpan ) + ( layout.gutter * ( rowSpan - 1 ) ) );
+						$$.css( 'height', ( rowHeight * rowSpan ) + ( layout.gutter * ( rowSpan - 1 ) ) + 'px' );
 						
 						var $img = $$.find( '> img,> a > img' );
-						var imgAR = $img.height() > 0 ? $img.width() / $img.height() : 1;
-						var itemAR = $$.height() > 0 ? $$.width() / $$.height() : 1;
-						imgAR = parseFloat( imgAR.toFixed( 3 ) );
-						itemAR = parseFloat( itemAR.toFixed( 3 ) );
-						if ( imgAR > itemAR ) {
-							$img.css( 'width', 'auto' );
-							$img.css( 'height', '100%' );
-							$img.css( 'margin-top', '' );
-							var marginLeft = ( $img.width() - $$.width() ) * -0.5;
-							$img.css( 'margin-left', marginLeft + 'px' );
-						} else {
-							$img.css( 'height', 'auto' );
-							$img.css( 'width', '100%' );
-							$img.css( 'margin-left', '' );
-							var marginTop = ( $img.height() - $$.height() ) * -0.5;
-							$img.css( 'margin-top', marginTop + 'px' );
+
+						// If this image has a title present, increase row height for it.
+						var heightSet = false;
+						if ( $$.find( '.image-title' ) ) {
+							var title_height = parseInt( $$.find( '.image-title' ).outerHeight() );
+							if ( ! isNaN( title_height ) ) {
+								rowHeight += title_height;
+								 $$.find( '.sow-masonry-grid-image' ).css( 'height', 'calc( 100% - ' + title_height + 'px)' );
+								heightSet = true;
+							}
 						}
+
+						$img.css( 'height', heightSet ? $$.height() - title_height : $$.height() + 'px' );
 					} );
 
 					$gridEl.packery( {

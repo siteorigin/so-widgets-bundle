@@ -1,0 +1,166 @@
+// Post.
+@post_border_color: default;
+@post_background: default;
+
+// Post Title
+@title_color: default;
+@title_color_hover: default;
+@title_font: default;
+@title_font_style: default;
+@title_font_weight: default;
+@title_font_size: default;
+
+// Meta.
+@meta_color: default;
+@meta_color_hover: default;
+@meta_font: default;
+@meta_font_style: default;
+@meta_font_size: default;
+@meta_font_weight: default;
+
+// Content.
+@content_color: default;
+@content_font: default;
+@content_font_style: default;
+@content_font_weight: default;
+@content_font_size: default;
+@content_link: default;
+@content_link_hover: default;
+
+// Pagination.
+@pagination_background: default;
+@pagination_background_hover: default;
+@pagination_border_color: default;
+@pagination_border_color_hover: default;
+@pagination_border_radius: default;
+@pagination_font: default;
+@pagination_font_size: default;
+@pagination_font_style: default;
+@pagination_font_weight: default;
+@pagination_height: default;
+@pagination_link_color: default;
+@pagination_link_margin: default;
+@pagination_link_margin_offset: default;
+@pagination_link_color_hover: default;
+@pagination_dots_color: default;
+@pagination_top_margin: default;
+@pagination_width: default;
+
+.sow-blog-layout-standard {
+
+	.sow-blog-posts article {
+
+		.sow-blog-content-wrapper {
+			background: @post_background;
+			border: 1px solid @post_border_color;
+		}
+
+		.sow-entry-header {
+
+			.sow-entry-title a {
+				font-family: @title_font;
+				font-size: @title_font_size;
+				font-style: @title_font_style;
+				font-weight: @title_font_weight;
+				color: @title_color;
+
+				&:hover,
+				&:focus {
+					color: @title_color_hover;
+				}
+			}
+
+			.sow-entry-meta {
+				font-family: @meta_font;
+				font-size: @meta_font_size;
+				font-style: @meta_font_style;
+				font-weight: @meta_font_weight;
+
+				span {
+					color: @meta_color;
+
+					a {
+						color: @meta_color;
+
+						&:hover,
+						&:focus {
+							color: @meta_color_hover;
+						}
+					}
+				}
+
+				&:not(:last-child)::after {
+					font-size: @meta_font_size;
+				}
+			}
+		}
+
+		.sow-entry-content {
+			color: @content_color;
+			font-family: @content_font;
+			font-size: @content_font_size;
+			font-style: @content_font_style;
+			font-weight: @content_font_weight;
+
+			a {
+				color: @content_link;
+
+				&:hover,
+				&:focus {
+					color: @content_link_hover;
+				}
+			}
+		}
+
+		.sow-more-link {
+			font-family: @content_font;
+			font-size: @content_font_size;
+			font-style: @content_font_style;
+			font-weight: @content_font_weight;
+		}
+	}
+
+	.sow-post-navigation {
+
+		.sow-nav-links {
+			margin-top: @pagination_top_margin;
+		}
+
+		.page-numbers {
+			align-items: center;
+			display: flex;
+			height: @pagination_height;
+			justify-content: center;
+			width: @pagination_width;
+
+			&:not(.dots) {
+				background: @pagination_background;
+				border: 1px solid @pagination_border_color;
+				border-radius: @pagination_border_radius;
+				color: @pagination_link_color;
+				font-family: @pagination_font;
+				font-size: @pagination_font_size;
+				font-style: @pagination_font_style;
+				font-weight: @pagination_font_weight;
+				margin-right: @pagination_link_margin;
+
+				&:last-child {
+					margin-right: 0;
+				}
+
+				&.current,
+				&:hover,
+				&:focus {
+					background: @pagination_background_hover;
+					color: @pagination_link_color_hover;
+					border-color: @pagination_border_color_hover;
+				}
+			}
+		}
+
+		.dots {
+			color: @pagination_dots_color;
+			margin-left: @pagination_link_margin_offset;
+		}
+	}
+}

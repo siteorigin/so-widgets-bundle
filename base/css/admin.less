@@ -24,7 +24,7 @@
 .siteorigin-widget-form-notification {
 	padding: 8px 12px;
 	border: 1px solid #a4cadd;
-	background-color: #CDE2EC;
+	background-color: #cde2ec;
 	margin-bottom: 20px;
 
 	> span {
@@ -37,7 +37,7 @@
 	}
 }
 
-.siteorigin-widget-form {
+div.siteorigin-widget-form {
 
 	> div:first-child {
 		margin-top: 0;
@@ -50,16 +50,11 @@
 	display: block !important;
 	margin: 15px 0;
 
-	@media (min-width: 680px) {
-		&.siteorigin-widget-form-main {
-			min-width: 600px;
-		}
-	}
-
-	.siteorigin-widget-field {
+	div.siteorigin-widget-field {
 		margin: 1em 0;
 
-		> label {
+		> label,
+		> label.siteorigin-widget-field-label {
 			display: block;
 			font-size: 13px;
 			font-weight: 400;
@@ -78,8 +73,8 @@
 		}
 
 		.siteorigin-widget-description {
-			font-size: 0.9em;
-			margin-top: 0.2em;
+			font-size: 11.7px;
+			margin-top: 2.34px;
 			color: #999;
 			font-style: italic;
 		}
@@ -101,12 +96,39 @@
 
 		&.siteorigin-widget-field-is-required {
 			.field-required {
-				font-weight: normal;
-				font-size: 0.8em;
-				vertical-align: super;
-				padding-left: 0.5em;
-				color: #F02311;
+				color: #f02311;
+				font-size: 1.2em;
 				font-style: italic;
+				font-weight: normal;
+			}
+
+			.siteorigin-widget-input,
+			.field-required-message {
+				transition: 300ms ease-in-out border-color;
+			}
+
+			.field-required-message {
+				background: #fce4e5;
+				border-radius: 2px;
+				border: 1px solid #ec666a;
+				color: #ec666a;
+				display: none;
+				font-size: 0.8em;
+				list-style: none;
+				margin-top: 1px;
+				margin-bottom: 10px;
+				padding: 5px;
+			}
+
+			&.sow-required-error {
+
+				.field-required-message {
+					display: block;
+				}
+
+				.siteorigin-widget-input {
+					border-color: #f02311;
+				}
 			}
 		}
 
@@ -141,444 +163,487 @@
 		}
 	}
 
-	.siteorigin-widget-field-type-slider {
+	div.siteorigin-widget-field {
+		&.siteorigin-widget-field-type-slider {
 
-		.siteorigin-widget-slider-wrapper {
-			margin: 10px 0;
-			border: 1px solid #E0E0E0;
-			padding: 12px 15px;
-			background: #F4F4F4;
-			.rounded(4px);
-			max-width: 500px;
-			display: block;
-			margin-left: 55px;
-		}
-
-		.siteorigin-widget-slider-value {
-			display: block;
-			float: left;
-			margin-top: 0;
-			border: 1px solid #E0E0E0;
-			padding: 11px 0;
-			background: #F4F4F4;
-			font-weight: bold;
-			color: #666;
-			width: 45px;
-			text-align: center;
-		}
-
-		.siteorigin-widget-value-slider {
-			position: relative;
-			height: 5px;
-			background: #A0A0A0;
-			.box-shadow(~"inset 0 1px 2px rgba(0,0,0,0.25)");
-			.rounded(4px);
-		}
-
-		.ui-slider-handle {
-			cursor: move;
-			.box-sizing(border-box);
-			border: 1px solid #a4a3a8;
-			z-index: 10;
-			position: absolute;
-			width: 18px;
-			height: 18px;
-			margin-top: -7px;
-			margin-left: -9px;
-			background: #F9F9F9;
-			.rounded(10px);
-			top: 0;
-			left: 0;
-			.box-shadow(~"inset 0 1px 0 #FFFFFF, 0 1px 1px rgba(0,0,0,0.1)");
-		}
-
-		input[type="number"] {
-			display: none;
-		}
-
-	}
-
-	.siteorigin-widget-field-repeater {
-
-		.siteorigin-widget-field-repeater-top {
-			background: #F0F0F0;
-			border: 1px solid #D0D0D0;
-			padding: 10px;
-			position: relative;
-
-			h3 {
-				font-size: 13px;
-				margin: 0;
-				padding: 0 !important;
+			.siteorigin-widget-slider-wrapper {
+				margin: 10px 0;
+				border: 1px solid #e0e0e0;
+				padding: 12px 15px;
+				background: #f4f4f4;
+				.rounded(4px);
+				max-width: 500px;
+				display: block;
+				margin-left: 55px;
 			}
-		}
 
-		.siteorigin-widget-field-expand,
-		.siteorigin-widget-field-copy,
-		.siteorigin-widget-field-remove {
-			width: 14px;
-			height: 14px;
-			position: absolute;
-			top: 50%;
-			margin-top: -7px;
-			cursor: pointer;
-			font-size: 14px;
-			line-height: 14px;
-			text-align: center;
+			.siteorigin-widget-slider-value {
+				display: block;
+				float: left;
+				margin-top: 0;
+				border: 1px solid #e0e0e0;
+				padding: 11px 0;
+				background: #f4f4f4;
+				font-weight: bold;
+				color: #666;
+				width: 45px;
+				text-align: center;
+			}
 
-			&:before {
-				font-family: dashicons;
-				color: #999999;
+			.siteorigin-widget-value-slider {
+				position: relative;
+				height: 5px;
+				background: #a0a0a0;
+				.box-shadow(~"inset 0 1px 2px rgba(0,0,0,0.25)");
+				.rounded(4px);
+			}
+
+			.ui-slider-handle {
+				cursor: move;
+				.box-sizing(border-box);
+				border: 1px solid #a4a3a8;
+				z-index: 10;
+				position: absolute;
+				width: 18px;
+				height: 18px;
+				margin-top: -7px;
+				margin-left: -9px;
+				background: #f9f9f9;
+				.rounded(10px);
+				top: 0;
+				left: 0;
+				.box-shadow(~"inset 0 1px 0 #ffffff, 0 1px 1px rgba(0,0,0,0.1)");
+			}
+
+			input[type="number"] {
+				display: none;
 			}
 
 		}
 
-		.siteorigin-widget-field-expand {
-			right: 48px;
+		&.siteorigin-widget-field-type-repeater {
 
-			&:before {
-				content: "\f140";
-			}
+			.siteorigin-widget-field-repeater-top {
+				background: #f0f0f0;
+				border: 1px solid #d0d0d0;
+				padding: 10px;
+				position: relative;
 
-			&:hover {
-				//background: #989fa5;
-
-				&:before {
-					color: #50575D;
+				h3 {
+					font-size: 13px;
+					margin: 0;
+					padding: 0 !important;
 				}
 			}
-		}
 
-		.siteorigin-widget-field-copy {
-			right: 28px;
+			.siteorigin-widget-field-repeater-item-top {
 
-			&:before {
-				content: "\f105";
-			}
+				.siteorigin-widget-field-expand,
+				.siteorigin-widget-field-copy,
+				.siteorigin-widget-field-remove {
+					width: 14px;
+					height: 14px;
+					position: absolute;
+					top: 50%;
+					margin-top: -7px;
+					cursor: pointer;
+					font-size: 14px;
+					line-height: 14px;
+					text-align: center;
 
-			&:hover {
-				//background: #989fa5;
-
-				&:before {
-					color: #50575D;
-				}
-			}
-		}
-
-		.siteorigin-widget-field-remove {
-			right: 12px;
-
-			&:before {
-				content: '\f158';
-			}
-
-			&:hover {
-				background: #ff0000;
-
-				&:before {
-					color: #FFFFFF;
-				}
-			}
-		}
-
-		.siteorigin-widget-field-repeater-items {
-			background: #FCFCFC;
-			border: 1px solid #EEEEEE;
-			border-top: 0;
-			border-bottom: 0;
-
-			.siteorigin-widget-field-repeater-item {
-				background: #FCFCFC;
-				border-bottom: 1px solid #EEEEEE;
-
-				.siteorigin-widget-field-repeater-item-top {
-					padding: 10px;
-					cursor: move;
-					position: relative;
-					background: #F6F6F6;
-
-					h4 {
-						font-size: 12px;
-						margin: 0;
+					&:before {
+						font-family: dashicons;
+						color: #999999;
 					}
 
 				}
 
-				h4 {
-					font-size: 15px;
-					margin: 0;
+				.siteorigin-widget-field-expand {
+					right: 48px;
+
+					&:before {
+						content: "\f140";
+					}
+
+					&:focus,
+					&:hover {
+
+						&:before {
+							color: #50575d;
+						}
+					}
 				}
 
-				&:last-child {
-					border-bottom: 0;
+				.siteorigin-widget-field-copy {
+					right: 28px;
+
+					&:before {
+						content: "\f105";
+					}
+
+					&:focus,
+					&:hover {
+
+						&:before {
+							color: #50575d;
+						}
+					}
 				}
 
-				.siteorigin-widget-field-repeater-item-form {
-					border-top: 1px solid #EEEEEE;
-					display: none;
-					padding: 1px 10px;
-				}
-			}
-		}
+				.siteorigin-widget-field-remove {
+					right: 12px;
 
-		.siteorigin-widget-field-repeater-add {
-			padding: 7px 10px;
-			background: #F0F0F0;
-			border: 1px dashed #D0D0D0;
-			font-size: 12px;
-			line-height: 1em;
-			text-align: center;
-			cursor: pointer;
+					&:before {
+						content: '\f158';
+					}
 
-			&:hover {
-				background: #F4F4F4;
-			}
-		}
+					&:focus,
+					&:hover {
+						background: #ff0000;
 
-		/* This is for sub level forms */
-
-		.siteorigin-widget-field-repeater {
-
-			.siteorigin-widget-field-repeater-top {
-				background: #eaf2f6;
-				border-color: #c9d0d4;
-
-				h3 {
-					color: #42484b;
+						&:before {
+							color: #ffffff;
+						}
+					}
 				}
 			}
 
 			.siteorigin-widget-field-repeater-items {
-				background: #f6fdff;
-				border-color: #e8eff3;
+				background: #fcfcfc;
+				border: 1px solid #eeeeee;
+				border-top: 0;
+				border-bottom: 0;
 
 				.siteorigin-widget-field-repeater-item {
-					background: #f8fdff;
-					border-bottom-color: #e8eff3;
+					background: #fcfcfc;
+					border-bottom: 1px solid #eeeeee;
 
 					.siteorigin-widget-field-repeater-item-top {
-						background: #f0f8fc;
+						padding: 10px;
+						cursor: move;
+						position: relative;
+						background: #f6f6f6;
+
+						&:focus,
+						&:focus-within {
+							background: #fafafa;
+						}
+
+						h4 {
+							font-size: 12px;
+							margin: 0;
+						}
+
 					}
 
-					.siteorigin-widget-field-repeater-item-form {
-						border-top-color: #e8eff3;
-					}
-				}
-			}
-
-			.siteorigin-widget-field-repeater-add {
-				background: #eaf2f6;
-				border-color: #c9d0d4;
-				color: #42484b;
-
-				&:hover {
-					background: #edf5f9;
-				}
-			}
-
-		}
-	}
-
-	.siteorigin-widget-field-type-posts {
-		.posts-container-label-wrapper {
-			background: #F0F0F0;
-			border: 1px solid #D0D0D0;
-			padding: 10px;
-			display: block;
-			margin-bottom: 0;
-
-			> label {
-				display: inline;
-				font-weight: bold;
-			}
-
-			&:before {
-				float: left;
-				margin: 3px 6px 0 0;
-				display: block;
-				width: 14px;
-				height: 14px;
-				font-size: 14px;
-				line-height: 1;
-				font-family: "dashicons";
-				content:"\f132";
-			}
-
-			&.siteorigin-widget-section-visible {
-				&:before {
-					content:"\f460";
-				}
-			}
-
-			span.sow-current-count {
-				display: inline-block;
-				border-radius: 9px;
-				background: #f92700;
-				border: 1px solid #da0900;
-				line-height: 14px;
-				font-size: 7px;
-				width: 17px;
-				height: 17px;
-				text-align: center;
-				vertical-align: middle;
-				font-weight: bold;
-				color: #FFFFFF;
-				box-sizing: border-box;
-				margin: 1px 5px;
-			}
-
-		}
-	}
-
-	.siteorigin-widget-field-type-widget,
-	.siteorigin-widget-field-type-section {
-
-		> label {
-			background: #F0F0F0;
-			border: 1px solid #D0D0D0;
-			line-height: 1.4;
-			padding: 10px;
-			display: block;
-			margin-bottom: 0;
-
-			&:before {
-				float: left;
-				margin: 3px 6px 0 0;
-				display: block;
-				width: 14px;
-				height: 14px;
-				font-size: 14px;
-				line-height: 1;
-				font-family: "dashicons";
-				content:"\f132";
-			}
-
-			&.siteorigin-widget-section-visible {
-				&:before {
-					content:"\f460";
-				}
-			}
-		}
-	}
-
-	.siteorigin-widget-field-type-posts,
-	.siteorigin-widget-field-type-widget,
-	.siteorigin-widget-field-type-section {
-		.siteorigin-widget-section {
-			padding: 1px 10px;
-			background: #FCFCFC;
-			border: 1px solid #EEEEEE;
-			border-top: 0;
-
-			&.siteorigin-widget-section-hide {
-				display: none;
-			}
-		}
-	}
-
-	.siteorigin-widget-field-type-autocomplete,
-	.siteorigin-widget-field-type-link {
-
-		position: relative;
-
-		.existing-content-selector {
-			padding: 20px;
-			display: none;
-			position: absolute;
-			top: 110%;
-			width: 360px;
-			z-index: 10;
-			border: 1px solid #c0c0c0;
-			background: #F6F6F6;
-			.box-shadow(~"0 2px 4px rgba(0,0,0,0.2)");
-			.rounded(3px);
-
-			.content-text-search {
-				width: 100%;
-				margin-bottom: 15px;
-			}
-
-			.items, .posts {
-				margin: 0;
-				padding: 0;
-				background: #fff;
-				max-height: 300px;
-				overflow-y: scroll;
-				border: 1px solid #e4e4e4;
-
-				li {
-					cursor: pointer;
-					padding: 5px 10px;
-					color: #32373c;
-					border-bottom: 1px solid #f1f1f1;
-					margin: 0;
-					font-size: 0.95em;
-
-					&.selected {
-						background: #e1edfa;
-					}
-
-					&:hover {
-						background: #eaf2fa;
+					h4 {
+						font-size: 15px;
+						margin: 0;
 					}
 
 					&:last-child {
 						border-bottom: 0;
 					}
 
-					span {
-						font-size: 0.9em;
-						display: inline-block;
-						float: right;
-						color: #999;
-						margin-left: 10px;
+					.siteorigin-widget-field-repeater-item-form {
+						border-top: 1px solid #eeeeee;
+						display: none;
+						padding: 1px 10px;
+					}
+				}
+			}
+
+			.siteorigin-widget-field-repeater-add {
+				padding: 7px 10px;
+				background: #f0f0f0;
+				border: 1px dashed #d0d0d0;
+				font-size: 12px;
+				line-height: 1em;
+				text-align: center;
+				cursor: pointer;
+
+				&:focus,
+				&:hover {
+					background: #f4f4f4;
+				}
+			}
+
+			/* Max items */
+			.siteorigin-widget-field-repeater-item-top  {
+				.siteorigin-widget-field-copy,
+				.siteorigin-widget-field-repeater-add {
+					transition: opacity 300ms ease-in-out;
+				}
+			}
+
+			.sow-max-reached .siteorigin-widget-field-repeater-item-top {
+				.siteorigin-widget-field-copy,
+				.siteorigin-widget-field-repeater-add {
+					opacity: 0.25;
+					cursor: not-allowed;
+				}
+			}
+
+			/* This is for sub level forms */
+
+			.siteorigin-widget-field-repeater {
+
+				.siteorigin-widget-field-repeater-top {
+					background: #eaf2f6;
+					border-color: #c9d0d4;
+
+					&:focus,
+					&:focus-within {
+						background: #eaf2f6;
+					}
+
+					h3 {
+						color: #42484b;
 					}
 				}
 
-				&.loading {
-					min-height: 40px;
-					background: #FFFFFF url("img/wpspin_light.gif") center center no-repeat;
+				.siteorigin-widget-field-repeater-items {
+					background: #f6fdff;
+					border-color: #e8eff3;
 
-					@media  (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-						& {
-							background-image: url("img/wpspin_light-2x.gif");
-							background-size: 16px 16px;
+					.siteorigin-widget-field-repeater-item {
+						background: #f8fdff;
+						border-bottom-color: #e8eff3;
+
+						.siteorigin-widget-field-repeater-item-top {
+							background: #f0f8fc;
+						}
+
+						.siteorigin-widget-field-repeater-item-form {
+							border-top-color: #e8eff3;
+						}
+					}
+				}
+
+				.siteorigin-widget-field-repeater-add {
+					background: #eaf2f6;
+					border-color: #c9d0d4;
+					color: #42484b;
+
+					&:focus,
+					&:hover {
+						background: #edf5f9;
+					}
+				}
+
+			}
+		}
+
+		&.siteorigin-widget-field-type-posts {
+			.posts-container-label-wrapper {
+				background: #f0f0f0;
+				border: 1px solid #d0d0d0;
+				padding: 10px;
+				display: block;
+				margin-bottom: 0;
+
+				> label {
+					display: inline;
+					font-weight: bold;
+				}
+
+				&:before {
+					float: left;
+					margin: 3px 6px 0 0;
+					display: block;
+					width: 14px;
+					height: 14px;
+					font-size: 14px;
+					line-height: 1;
+					font-family: "dashicons";
+					content:"\f132";
+				}
+
+				&.siteorigin-widget-section-visible {
+					&:before {
+						content:"\f460";
+					}
+				}
+
+				span.sow-current-count {
+					display: inline-block;
+					border-radius: 9px;
+					background: #f92700;
+					border: 1px solid #da0900;
+					line-height: 14px;
+					font-size: 7px;
+					width: 17px;
+					height: 17px;
+					text-align: center;
+					vertical-align: middle;
+					font-weight: bold;
+					color: #ffffff;
+					box-sizing: border-box;
+					margin: 1px 5px;
+				}
+
+			}
+		}
+
+		&.siteorigin-widget-field-type-widget,
+		&.siteorigin-widget-field-type-section {
+
+			> label {
+				background: #f0f0f0;
+				border: 1px solid #d0d0d0;
+				line-height: 1.4;
+				padding: 10px;
+				display: block;
+				margin-bottom: 0;
+
+				&:focus {
+					background: #f5f5f5;
+				}
+
+				&:before {
+					float: left;
+					margin: 3px 6px 0 0;
+					display: block;
+					width: 14px;
+					height: 14px;
+					font-size: 14px;
+					line-height: 1;
+					font-family: "dashicons";
+					content:"\f132";
+				}
+
+				&.siteorigin-widget-section-visible {
+					&:before {
+						content:"\f460";
+					}
+				}
+			}
+		}
+
+		&.siteorigin-widget-field-type-posts,
+		&.siteorigin-widget-field-type-widget,
+		&.siteorigin-widget-field-type-section {
+			.siteorigin-widget-section {
+				padding: 1px 10px;
+				background: #fcfcfc;
+				border: 1px solid #eeeeee;
+				border-top: 0;
+
+				&.siteorigin-widget-section-hide {
+					display: none;
+				}
+			}
+		}
+
+		&.siteorigin-widget-field-type-autocomplete,
+		&.siteorigin-widget-field-type-link {
+
+			position: relative;
+
+			.existing-content-selector {
+				padding: 20px;
+				display: none;
+				position: absolute;
+				top: 110%;
+				width: 360px;
+				z-index: 10;
+				border: 1px solid #c0c0c0;
+				background: #f6f6f6;
+				.box-shadow(~"0 2px 4px rgba(0,0,0,0.2)");
+				.rounded(3px);
+
+				.content-text-search {
+					width: 100%;
+					margin-bottom: 15px;
+				}
+
+				.items, .posts {
+					margin: 0;
+					padding: 0;
+					background: #fff;
+					max-height: 300px;
+					overflow-y: scroll;
+					border: 1px solid #e4e4e4;
+
+					li {
+						cursor: pointer;
+						padding: 5px 10px;
+						color: #32373c;
+						border-bottom: 1px solid #f1f1f1;
+						margin: 0;
+						font-size: 0.95em;
+
+						&.selected {
+							background: #e1edfa;
+						}
+
+						&:focus,
+						&:hover {
+							background: #eaf2fa;
+						}
+
+						&:last-child {
+							border-bottom: 0;
+						}
+
+						span {
+							font-size: 0.9em;
+							display: inline-block;
+							float: right;
+							color: #999;
+							margin-left: 10px;
 						}
 					}
 
-					li {
-						display: none;
+					&.loading {
+						min-height: 40px;
+						background: #ffffff url("img/wpspin_light.gif") center center no-repeat;
+
+						@media  (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+							& {
+								background-image: url("img/wpspin_light-2x.gif");
+								background-size: 16px 16px;
+							}
+						}
+
+						li {
+							display: none;
+						}
+					}
+				}
+
+				.buttons {
+					margin-top: 15px;
+					text-align: right;
+
+					a {
+						display: inline-block;
 					}
 				}
 			}
 
-			.buttons {
-				margin-top: 15px;
-				text-align: right;
+			.url-input-wrapper {
+				display: block;
+				margin-right: 130px;
 
-				a {
+				.siteorigin-widget-input {
 					display: inline-block;
 				}
 			}
+
+			.select-content-button {
+				float: right;
+				line-height: 28px;
+				min-height: 30px;
+				width: 120px;
+				text-align: center;
+			}
 		}
 
-		.url-input-wrapper {
-			display: block;
-			margin-right: 130px;
-		}
-
-		.select-content-button {
-			float: right;
-			line-height: 28px;
-			min-height: 30px;
-			width: 120px;
-			text-align: center;
-		}
-	}
-
-	.siteorigin-widget-field-type-link {
-		.existing-content-selector {
-			right: 0;
+		&.siteorigin-widget-field-type-link {
+			.existing-content-selector {
+				right: 0;
+			}
 		}
 	}
 
@@ -600,7 +665,7 @@
 .so-widgets-dialog {
 
 	@edge_spacing: 30px;
-	@border_color: #D8D8D8;
+	@border_color: #d8d8d8;
 
 	.so-widgets-dialog-overlay {
 		position: fixed;
@@ -647,6 +712,7 @@
 			border-left: 1px solid #d8d8d8;
 			border-bottom: 1px solid #d8d8d8;
 
+			&:focus,
 			&:hover {
 				background: #e9e9e9;
 				.so-dialog-icon {
@@ -676,7 +742,7 @@
 		left: @edge_spacing;
 		right: @edge_spacing;
 		bottom: @edge_spacing;
-		background: #FFFFFF url("img/wpspin_light.gif") center center no-repeat;
+		background: #ffffff url("img/wpspin_light.gif") center center no-repeat;
 
 		@media  (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
 			& {
@@ -706,7 +772,8 @@
 }
 
 // WP 5 Block Editor compatibility styles
-.block-editor {
+.block-editor,
+.block-editor-page {
 
 	.so-widget-placeholder {
 		text-align: left;
@@ -735,12 +802,50 @@
 		}
 	}
 
-	.siteorigin-widget-form {
-		.siteorigin-widget-field {
+	div.siteorigin-widget-form div.siteorigin-widget-field {
+		.siteorigin-widget-icon-selector > select,
+		select.siteorigin-widget-input {
+			border: 1px solid #8c8f94;
+			border-radius: 3px;
+			box-shadow: none;
+			color: #2c3338;
+			font-size: 14px;
+			padding: 0 24px 0 8px;
+
+			/* 5.7.2 .wp-core-ui select styling */
+			-webkit-appearance: none;
+			background: #fff url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E') no-repeat right 5px top 55%;
+			background-size: auto;
+			background-size: 16px 16px;
+			border: 1px solid #8c8f94; // Changed border to avoid override by revert.
+			border-radius: 3px;
+			box-shadow: none;
+			color: #2c3338;
+			cursor: pointer;
+			font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
+			font-size: 14px;
+			line-height: 2;
+			min-height: 30px;
+			padding: 0 24px 0 8px;
+			vertical-align: middle;
+			width: auto;
+		}
+
+		@media (max-width: 399px) {
+			.siteorigin-widget-icon-selector > select {
+				width: 100%;
+			}
+		}
+	}
+
+
+	div.siteorigin-widget-form {
+		div.siteorigin-widget-field {
 			text-align: left;
 
 			input {
-				padding: 3px 5px;
+				padding: 0 8px;
+				line-height: 2;
 
 				&[type=checkbox] {
 					background-color: #ffffff;
@@ -749,6 +854,7 @@
 
 			&.siteorigin-widget-field-type-autocomplete, &.siteorigin-widget-field-type-link {
 				.select-content-button {
+					color: #2271b1;
 					box-shadow: unset;
 					font-size: 13px;
 					height: 28px;
@@ -771,6 +877,59 @@
 			> span {
 				display: inline-block;
 			}
+		}
+	}
+}
+
+// WP 5.8 Widgets page compatibility styles
+.widgets-php.block-editor-page {
+	.wp-block-legacy-widget__edit-form {
+		div.siteorigin-widget-form {
+			small {
+				font-size: 11.7px;
+			}
+
+			.siteorigin-widget-input {
+				margin-top: 0;
+			}
+
+			// Revert to 5.7.2 font-family and color wherever possible.
+			&,
+			label,
+			.siteorigin-widget-input,
+			select.siteorigin-widget-input,
+			.button,
+			input {
+				color: #3c434a;
+				font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
+				font-size: 13px;
+				line-height: 1.4;
+			}
+
+			select.siteorigin-widget-input, {
+				line-height: 2;
+			}
+		}
+
+		div.siteorigin-widget-field.siteorigin-widget-field-type-link .select-content-button {
+			line-height: 28px;
+		}
+
+		a.siteorigin-widget-preview-button.button-secondary,
+		a.siteorigin-widget-help-link,
+		div.siteorigin-widget-form .siteorigin-widget-form-notification a,
+		div.siteorigin-widget-form a {
+			color: #2271b1;
+			font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
+			font-size: 13px;
+			line-height: 1.4;
+			&:hover {
+				color: #0a4b78;
+			}
+		}
+
+		a.siteorigin-widget-preview-button.button-secondary {
+			line-height: 2.15384615;
 		}
 	}
 }

@@ -1,0 +1,69 @@
+@import "../../../less/mixins";
+
+div.siteorigin-widget-form .siteorigin-widget-field-type-multiple_media {
+
+	.multiple-media-field-wrapper {
+
+		.button {
+			box-sizing: border-box;
+		}
+
+		.multiple-media-field-items {
+			box-sizing: content-box;
+		}
+
+		.multiple-media-field-items {
+			line-height: 18.2px;
+			overflow: auto;
+		}
+
+		.multiple-media-field-item {
+			.box-sizing(border-box);
+			float: left;
+			padding: 4px;
+			position: relative;
+			margin: 5px 0;
+
+			.thumbnail {
+				border: 1px solid #999;
+				box-shadow: 0px 1px 1px #fff;
+				box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+				.gradient(#cfcfcf, #cccccc, #cfcfcf);
+				line-height: 0;
+			}
+
+			.title {
+				display: none;
+
+				&.title-enabled {
+					display: block;
+					font-size: 12px;
+					word-break: break-all;
+				}
+			}
+			.media-remove-button {
+				color: #aaa;
+				display: block;
+				font-size: 11px;
+				line-height: 1em;
+				opacity: 1;
+				text-align: center;
+				text-decoration: none;
+				.transition(0.25s);
+
+				&.remove-hide {
+					opacity: 0;
+					pointer-events: none;
+				}
+
+				&:hover {
+					color: #bc0b0b;
+				}
+			}
+		}
+	}
+
+	.media-field-template {
+		display: none;
+	}
+}

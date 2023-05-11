@@ -1,13 +1,13 @@
 <?php
-abstract class SiteOrigin_Widget_ContactForm_Field_Base {
 
+abstract class SiteOrigin_Widget_ContactForm_Field_Base {
 	/**
 	 * The options for this field. Used when enqueueing styles and scripts and rendering the field.
 	 *
-	 * @access protected
 	 * @var array
 	 */
 	protected $options;
+	private $type;
 
 	public function __construct( $options ) {
 		$this->options = $options;
@@ -25,5 +25,13 @@ abstract class SiteOrigin_Widget_ContactForm_Field_Base {
 
 	public function render() {
 		$this->render_field( $this->options );
+	}
+
+	public static function add_custom_attrs( $type ) {
+		$attr = apply_filters( 'siteorigin_widgets_contact_field_attr', array(), $type );
+
+		foreach ( $attr as $k => $v ) {
+			echo esc_attr( $k ) . '="' . esc_attr( $v ) . '" ';
+		}
 	}
 }

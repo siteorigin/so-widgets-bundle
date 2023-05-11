@@ -8,8 +8,7 @@ Documentation: https://siteorigin.com/widgets-bundle/tabs-widget/
 */
 
 class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
-	function __construct() {
-		
+	public function __construct() {
 		parent::__construct(
 			'sow-tabs',
 			__( 'SiteOrigin Tabs', 'so-widgets-bundle' ),
@@ -22,25 +21,50 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 			plugin_dir_path( __FILE__ )
 		);
 	}
-	
+
 	/**
-	 * Initialize the tabs widget.
+	 * Initialize the Tabs Widget.
 	 */
-	function initialize() {
+	public function initialize() {
 		$this->register_frontend_scripts(
 			array(
 				array(
 					'sow-tabs',
 					plugin_dir_url( __FILE__ ) . 'js/tabs' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' ),
-					SOW_BUNDLE_VERSION
-				)
+					SOW_BUNDLE_VERSION,
+				),
+			)
+		);
+
+		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-tabs', array( $this, 'enqueue_widget_scripts' ) );
+	}
+
+	public function get_settings_form() {
+		return array(
+			'scrollto_after_change' => array(
+				'type'        => 'checkbox',
+				'label'       => __( 'Scroll top', 'so-widgets-bundle' ),
+				'default'     => true,
+				'description' => __( 'When opening a tab, scroll the user to the top of the tab.', 'so-widgets-bundle' ),
+			),
+		);
+	}
+
+	public function enqueue_widget_scripts() {
+		$global_settings = $this->get_global_settings();
+		wp_localize_script(
+			'sow-tabs',
+			'sowTabs',
+			array(
+				'scrollto_after_change' => ! empty( $global_settings['scrollto_after_change'] ),
+				'scrollto_offset' => (int) apply_filters( 'siteorigin_widgets_tabs_scrollto_offset', 90 ),
+				'always_scroll' => (bool) apply_filters( 'siteorigin_widgets_tabs_always_scroll', false ),
 			)
 		);
 	}
-	
-	function get_widget_form() {
-		
+
+	public function get_widget_form() {
 		return array(
 			'title' => array(
 				'type' => 'text',
@@ -52,7 +76,7 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 				'item_label' => array(
 					'selector' => "[id*='tabs-title']",
 					'update_event' => 'change',
-					'value_method' => 'val'
+					'value_method' => 'val',
 				),
 				'fields' => array(
 					'title' => array(
@@ -108,17 +132,17 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 							'background_hover_color' => array(
 								'type' => 'color',
 								'label' => __( 'Background hover color', 'so-widgets-bundle' ),
-								'default' => '#F9F9F9',
+								'default' => '#f9f9f9',
 							),
 							'title_color' => array(
 								'type' => 'color',
-								'label' => __( 'Title color',  'so-widgets-bundle' ),
-								'default' => '#FFFFFF',
+								'label' => __( 'Title color', 'so-widgets-bundle' ),
+								'default' => '#fff',
 							),
 							'title_hover_color' => array(
 								'type' => 'color',
 								'label' => __( 'Title hover color', 'so-widgets-bundle' ),
-								'default' => '#2D2D2D',
+								'default' => '#2d2d2d',
 							),
 							'border_color' => array(
 								'type' => 'color',
@@ -128,7 +152,7 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 							'border_hover_color' => array(
 								'type' => 'color',
 								'label' => __( 'Border hover color', 'so-widgets-bundle' ),
-								'default' => '#F9F9F9',
+								'default' => '#f9f9f9',
 							),
 							'border_width' => array(
 								'type' => 'measurement',
@@ -147,12 +171,12 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 						'fields' => array(
 							'background_color' => array(
 								'type' => 'color',
-								'label' => __( 'Background color',  'so-widgets-bundle' ),
-								'default' => '#F9F9F9',
+								'label' => __( 'Background color', 'so-widgets-bundle' ),
+								'default' => '#f9f9f9',
 							),
 							'font_color' => array(
 								'type' => 'color',
-								'label' => __( 'Font color',  'so-widgets-bundle' ),
+								'label' => __( 'Font color', 'so-widgets-bundle' ),
 							),
 							'border_color' => array(
 								'type' => 'color',
@@ -168,14 +192,14 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 			),
 		);
 	}
-	
+
 	public function get_less_variables( $instance ) {
 		if ( empty( $instance ) || empty( $instance['design'] ) ) {
 			return array();
 		}
 
 		$design = $instance['design'];
-		
+
 		return array(
 			'tabs_container_background_color' => $design['tabs_container']['background_color'],
 			'tabs_container_border_color' => $design['tabs_container']['border_color'],
@@ -198,25 +222,29 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 			'has_panels_border_width' => empty( $design['panels']['border_width'] ) ? 'false' : 'true',
 		);
 	}
-	
+
 	public function get_template_variables( $instance, $args ) {
-		if( empty( $instance ) ) return array();
-		
+		if ( empty( $instance ) ) {
+			return array();
+		}
+
 		$tabs = empty( $instance['tabs'] ) ? array() : $instance['tabs'];
-		
+
 		foreach ( $tabs as $i => &$tab ) {
 			if ( empty( $tab['before_title'] ) ) {
 				$tab['before_title'] = '';
 			}
+
 			if ( empty( $tab['after_title'] ) ) {
 				$tab['after_title'] = '';
 			}
-			
+
 			if ( empty( $tab['title'] ) ) {
 				$id = $this->id_base;
+
 				if ( ! empty( $instance['_sow_form_id'] ) ) {
 					$id .= '-' . $instance['_sow_form_id'];
-				} else if ( ! empty( $args['widget_id'] ) ) {
+				} elseif ( ! empty( $args['widget_id'] ) ) {
 					$id .= '-' . $args['widget_id'];
 				}
 				$tab['anchor'] = $id . '-' . $i;
@@ -224,36 +252,45 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 				$tab['anchor'] = $tab['title'];
 			}
 		}
-		
+
 		if ( empty( $instance['initial_tab_position'] ) ||
 			 $instance['initial_tab_position'] < 1 ||
 			 $instance['initial_tab_position'] > count( $tabs ) ) {
-			
 			$init_tab_index = 0;
 		} else {
 			$init_tab_index = $instance['initial_tab_position'] - 1;
 		}
-		
+
 		return array(
 			'tabs' => $tabs,
 			'initial_tab_index' => $init_tab_index,
 		);
 	}
-	
+
 	public function render_panel_content( $panel, $instance ) {
 		$content = wp_kses_post( $panel['content_text'] );
-		
+
 		echo apply_filters( 'siteorigin_widgets_tabs_render_panel_content', $content, $panel, $instance );
 	}
-	
-	function get_form_teaser(){
-		if( class_exists( 'SiteOrigin_Premium' ) ) return false;
-		return sprintf(
-			__( 'Get more customization options and the ability to use widgets and layouts as your tabs content with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tabs" target="_blank">',
-			'</a>'
+
+	public function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
+
+		return array(
+			sprintf(
+				__( 'Get more customization options and the ability to use widgets and layouts as your tabs content with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tabs" target="_blank">',
+				'</a>'
+			),
+			sprintf(
+				__( 'Use Google Fonts right inside the Tabs Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/web-font-selector" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			),
 		);
 	}
 }
 
-siteorigin_widget_register('sow-tabs', __FILE__, 'SiteOrigin_Widget_Tabs_Widget');
+siteorigin_widget_register( 'sow-tabs', __FILE__, 'SiteOrigin_Widget_Tabs_Widget' );
