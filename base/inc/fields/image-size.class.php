@@ -108,7 +108,7 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 						<?php _e( 'Enforce Dimensions', 'so-widgets-bundle' ); ?>
 						<input
 							type="checkbox"
-							value="<?php echo esc_attr( $enforce ); ?>"
+							<?php checked( ! empty( $enforce ) ); ?>
 							name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_enforce', $this->parent_container ) ); ?>"
 							class="custom-image-size custom-image-size-enforce siteorigin-widget-input"
 						/>
