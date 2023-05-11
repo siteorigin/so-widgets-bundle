@@ -119,9 +119,15 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 						'default' => '1em',
 					),
 					'rounding'   => array(
-						'type'    => 'measurement',
+						'type'    => 'select',
 						'label'   => __( 'Rounding', 'so-widgets-bundle' ),
-						'default' => '0.25em',
+						'default' => '0.25',
+						'options' => array(
+							'0'    => __( 'None', 'so-widgets-bundle' ),
+							'0.25' => __( 'Slightly rounded', 'so-widgets-bundle' ),
+							'0.5'  => __( 'Very rounded', 'so-widgets-bundle' ),
+							'1.5'  => __( 'Completely rounded', 'so-widgets-bundle' ),
+						),
 					),
 					'padding'    => array(
 						'type'    => 'measurement',
@@ -197,8 +203,6 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		if ( ! empty( $instance['design'] ) && ! isset( $instance['design']['icon_size_unit'] ) ) {
 			$instance['design']['icon_size']      = $instance['design']['icon_size'] . 'em';
 			$instance['design']['icon_size_unit'] = 'em';
-			$instance['design']['rounding']       = $instance['design']['rounding'] . 'em';
-			$instance['design']['rounding_unit']  = 'em';
 			$instance['design']['padding']        = $instance['design']['padding'] . 'em';
 			$instance['design']['padding_unit']   = 'em';
 
@@ -255,7 +259,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		$design = $instance['design'];
 		return array(
 			'icon_size'             => $design['icon_size'],
-			'rounding'              => $design['rounding'],
+			'rounding'              => $design['rounding'] . 'em',
 			'padding'               => $design['padding'],
 			'align'                 => $design['align'],
 			'mobile_align'          => ! empty( $design['mobile_align'] ) ? $design['mobile_align'] : '',
