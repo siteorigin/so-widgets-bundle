@@ -1,9 +1,11 @@
+@responsive_breakpoint: 780px;
 @title_alignment: default;
 @image_alignment: default;
 @image_display: block;
 @image_max_width: default;
 @image_height: default;
 @image_width: default;
+@size_enforce: default;
 
 .widget-title {
 	text-align: @title_alignment;
@@ -38,6 +40,13 @@
 		max-width: @image_max_width;
 		width: @image_width;
 		height: @image_height;
+
+		& when (@size_enforce = 1 ) {
+			@media (max-width: @responsive_breakpoint) {
+				max-width: 100%;
+				height: auto !important;
+			}
+		}
 	}
 }
 
