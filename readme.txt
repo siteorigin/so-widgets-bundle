@@ -106,6 +106,14 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.50.0 - 16 May 2023 =
+* Button: Update to only apply Hover Text Color if Use Hover Effects enabled.
+* Blog: Corrected Portfolio Hover Overlay Opacity migration.
+* Carousel: Added compatibility for Virtue Premium home slider.
+* Contact: Update to apply `Fields` design settings to `select` field.
+* Image: Added `Custom Size > Enforce Dimensions` checkbox.
+* Color Fields: Added alpha support.
+
 = 1.49.2 - 03 May 2023 =
 * Features: Various adjustments to improve desktop and mobile alignment.
 * Image: Update to allow automatic resizing for Custom Size when one value is added.
