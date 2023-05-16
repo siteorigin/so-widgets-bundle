@@ -13,7 +13,10 @@ div.siteorigin-widget-form div.siteorigin-widget-field.siteorigin-widget-field-t
 
 		.siteorigin-widget-input {
 			font-weight: 400;
-			width: 80px;
+
+			&:not(.custom-image-size-enforce) {
+				width: 80px;
+			}
 		}
 	}
 }
