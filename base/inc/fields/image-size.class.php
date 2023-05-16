@@ -4,6 +4,14 @@
  * Class SiteOrigin_Widget_Field_Image_Size
  */
 class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select {
+
+	/**
+	 * An optional array containing the sizes to allow.
+	 *
+	 * @var bool
+	 */
+	protected $sizes;
+
 	/**
 	 * Whether to allow custom image sizes. By default, Custom Sizes are disabled.
 	 *
@@ -12,11 +20,12 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 	protected $custom_size;
 
 	/**
-	 * An optional array containing the sizes to allow.
+	 * An optional checkbox that allows widgets to know if the user wants to enforce dimensions or not.
+	 * Enforcement is handled by widget.
 	 *
 	 * @var bool
 	 */
-	protected $sizes;
+	protected $custom_size_enforce;
 
 	protected function get_default_options() {
 		$image_size_configs = siteorigin_widgets_get_image_sizes();
@@ -70,6 +79,7 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 			$field_prefix = $this->get_custom_size_setting_prefix( $this->base_name );
 			$width = ! empty( $instance[ $field_prefix . '_width' ] ) ? $instance[ $field_prefix . '_width' ] : '';
 			$height = ! empty( $instance[ $field_prefix . '_height' ] ) ? $instance[ $field_prefix . '_height' ] : '';
+			$enforce = ! empty( $instance[ $field_prefix . '_enforce' ] ) ? $instance[ $field_prefix . '_enforce' ] : '';
 			?>
 
 			<div class="custom-size-wrapper">
@@ -92,6 +102,18 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 						class="custom-image-size custom-image-size-height siteorigin-widget-input"
 					/>
 				</label>
+
+				<?php if ( ! empty( $this->custom_size_enforce ) ) { ?>
+					<label>
+						<?php _e( 'Enforce Dimensions', 'so-widgets-bundle' ); ?>
+						<input
+							type="checkbox"
+							<?php checked( ! empty( $enforce ) ); ?>
+							name="<?php echo esc_attr( $this->for_widget->so_get_field_name( $this->base_name . '_enforce', $this->parent_container ) ); ?>"
+							class="custom-image-size custom-image-size-enforce siteorigin-widget-input"
+						/>
+					</label>
+				<?php } ?>
 			</div>
 			<?php
 		}
