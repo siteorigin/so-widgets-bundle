@@ -70,14 +70,11 @@
 			}
 		}
 
-		&:active,
-		&:hover{
-			color: @hover_text_color !important;
-		}
-
+		&.ow-button-hover:active,
 		&.ow-button-hover:hover {
 			.gradient(lighten(@hover_background_color, 2%), lighten(darken(@hover_background_color, 10%), 2%), lighten(@hover_background_color, 2%));
 			border-color: lighten(lighten(@hover_background_color, 2%), 2%) lighten(@hover_background_color, 2%) darken(lighten(@hover_background_color, 2%), 3%) lighten(@hover_background_color, 2%);
+			color: @hover_text_color !important;
 		}
 	}
 }

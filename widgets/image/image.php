@@ -23,6 +23,17 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	public function get_settings_form() {
+		return array(
+			'responsive_breakpoint' => array(
+				'type'        => 'measurement',
+				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
+				'default'     => '780px',
+				'description' => __( 'Device width, in pixels, to collapse into a mobile view.', 'so-widgets-bundle' ),
+			),
+		);
+	}
+
 	public function get_widget_form() {
 		return array(
 			'image' => array(
@@ -43,6 +54,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 				'type' => 'image-size',
 				'label' => __( 'Image size', 'so-widgets-bundle' ),
 				'custom_size' => true,
+				'custom_size_enforce' => true,
 			),
 
 			'size_external' => array(
@@ -200,7 +212,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 				}
 			}
 
-			if ( ! empty( $custom_size ) ) {
+			if ( ! empty( $custom_size ) && ! empty( $instance['size_enforce'] ) ) {
 				$attr['style'] = 'width: ' . $attr['width'] . 'px; height: '. $attr['height'] . 'px;';	
 			}
 		}
@@ -289,6 +301,8 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			'image_max_width' => ! empty( $instance['bound'] ) ? '100%' : '',
 			'image_height' => ! empty( $instance['bound'] ) ? 'auto' : '',
 			'image_width' => ! empty( $instance['full_width'] ) ? '100%' : '',
+			'size_enforce' => $instance['size'] == 'custom_size' && ! empty( $instance['size_enforce'] ),
+			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 		);
 	}
 

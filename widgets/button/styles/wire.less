@@ -70,12 +70,13 @@
 
 		&:active,
 		&:hover{
-			color: @hover_text_color !important;
 		}
 
+		&.ow-button-hover:active,
 		&.ow-button-hover:hover {
 			background: @hover_background_color;
 			border-color: @hover_background_color;
+			color: @hover_text_color !important;
 		}
 	}
 }
