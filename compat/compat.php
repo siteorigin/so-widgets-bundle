@@ -24,9 +24,11 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 		}
 
 		// These actions handle alerting cache plugins that they need to regenerate a page cache.
-		add_action( 'siteorigin_widgets_stylesheet_deleted', array( $this, 'clear_page_cache' ) );
-		add_action( 'siteorigin_widgets_stylesheet_added', array( $this, 'clear_page_cache' ) );
-		add_action( 'siteorigin_widgets_stylesheet_cleared', array( $this, 'clear_all_cache' ) );
+		if ( apply_filters( 'siteorigin_widgets_load_cache_compatibility', true ) ) {
+			add_action( 'siteorigin_widgets_stylesheet_deleted', array( $this, 'clear_page_cache' ) );
+			add_action( 'siteorigin_widgets_stylesheet_added', array( $this, 'clear_page_cache' ) );
+			add_action( 'siteorigin_widgets_stylesheet_cleared', array( $this, 'clear_all_cache' ) );
+		}
 
 		if (
 			function_exists( 'amp_is_enabled' ) &&
