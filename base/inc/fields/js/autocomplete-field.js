@@ -1,8 +1,8 @@
 /* global jQuery, soWidgets */
 
-(function( $ ) {
+( function( $ ) {
 
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-autocomplete', function ( e ) {
+	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-autocomplete', function( e ) {
 		var $$ = $( this );
 		var $contentSelector = $$.find(' .existing-content-selector' );
 
@@ -17,7 +17,7 @@
 
 		var updateSelectedItems = function() {
 			var selectedItems = getSelectedItems();
-			$$.find( 'ul.items > li' ).each( function ( index, element ) {
+			$$.find( 'ul.items > li' ).each( function( index, element ) {
 				var $li = $( this );
 
 				if ( selectedItems.indexOf( $li.data( 'value' ) ) > -1 ) {
@@ -28,17 +28,16 @@
 			} );
 		};
 
-		// Function that refreshes the list of
 		var request = null;
 		var refreshList = function(){
 			if( request !== null ) {
 				request.abort();
 			}
 
-			var $contentSearchInput = $$.find('.content-text-search');
+			var $contentSearchInput = $$.find( '.content-text-search' );
 			var query = $contentSearchInput.val();
-			var source = $contentSearchInput.data('source');
-			var postTypes = $contentSearchInput.data('postTypes');
+			var source = $contentSearchInput.data( 'source' );
+			var postTypes = $contentSearchInput.data( 'postTypes' );
 			var ajaxData = { action: 'so_widgets_search_' + source };
 			if ( source === 'posts' ) {
 				ajaxData.query = query;
@@ -52,52 +51,52 @@
 				ajaxData.language = icl_this_lang;
 			}
 
-			var $ul = $$.find('ul.items').empty().addClass('loading');
+			var $ul = $$.find( 'ul.items' ).empty().addClass( 'loading' );
 			return $.get(
 				soWidgets.ajaxurl,
 				ajaxData,
-				function(results) {
-					results.forEach(function (item) {
-						if (item.label === '') {
+				function( results ) {
+					results.forEach( function( item ) {
+						if ( item.label === '' ) {
 							item.label = '&nbsp;';
 						}
 						// Add all the items
 						$ul.append(
-							$('<li>')
-								.html(item.label + '<span>(' + item.type + ')</span>')
-								.data(item)
+							$( '<li>' )
+								.html( item.label + '<span>(' + item.type + ')</span>' )
+								.data( item )
 						);
-					});
-					$ul.removeClass('loading');
+					} );
+					$ul.removeClass( 'loading' );
 				}
 			);
 		};
 
-		$$.find( '.siteorigin-widget-autocomplete-input' ).on( 'click', function () {
+		$$.find( '.siteorigin-widget-autocomplete-input' ).on( 'click', function() {
 			$contentSelector.show();
 
 			var refreshPromise = new $.Deferred();
-			if( $contentSelector.is(':visible') && $contentSelector.find('ul.items li').length === 0 ) {
+			if( $contentSelector.is( ':visible' ) && $contentSelector.find( 'ul.items li' ).length === 0 ) {
 				refreshPromise = refreshList();
 			} else {
 				refreshPromise.resolve();
 			}
 
 			refreshPromise.done( updateSelectedItems );
-		});
+		} );
 
-		var closeContent = function () {
+		var closeContent = function() {
 			$contentSelector.hide();
 		};
 
 		$( window ).on( 'mousedown', function( event ) {
-			var mouseDownOutside = $$.find(event.target).length === 0;
+			var mouseDownOutside = $$.find( event.target ).length === 0;
 			if ( mouseDownOutside ) {
 				closeContent();
 			}
-		});
+		} );
 
-		$$.find('.button-close').on( 'click', closeContent );
+		$$.find( '.button-close' ).on( 'click', closeContent );
 
 		// Clicking on one of the url items
 		$$.on( 'click keypress', '.items li', function( e ) {
@@ -106,7 +105,7 @@
 			if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
 				return;
 			}
-			var $input = $$.find('input.siteorigin-widget-input');
+			var $input = $$.find( 'input.siteorigin-widget-input' );
 			var $li = $( this );
 			var clickedItem = $li.data( 'value' );
 
@@ -122,7 +121,7 @@
 					selectedItems.push( clickedItem );
 					$li.addClass( 'selected' );
 				}				
-				$input.val( selectedItems.join(',') );
+				$input.val( selectedItems.join( ',' ) );
 			} else {
 				$li.parent().find( '.selected' ).removeClass( 'selected' );
 				$li.addClass( 'selected' );
@@ -133,12 +132,12 @@
 		} );
 
 		var interval = null;
-		$$.find('.content-text-search').on( 'keyup', function() {
+		$$.find( '.content-text-search' ).on( 'keyup', function() {
 			if( interval !== null ) {
-				clearTimeout(interval);
+				clearTimeout( interval );
 			}
 
-			interval = setTimeout(function(){
+			interval = setTimeout( function() {
 				refreshList();
 			}, 500);
 		} );
@@ -146,4 +145,4 @@
 		$$.data( 'initialized', true );
 	} );
 
-})( jQuery );
+} )( jQuery );

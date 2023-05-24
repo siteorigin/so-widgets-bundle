@@ -636,11 +636,11 @@
 
 ( function( $ ) {
 
-	$(document).on( 'sowsetupformfield', '.siteorigin-widget-field-type-code', function(e) {
+	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-code', function( e ) {
 		var $$ = $( this );
-		new Behave({
+		new Behave( {
 			textarea: $$.find( '.siteorigin-widget-code-input' ).get( 0 ),
-		});
+		} );
 	} );
 
 } )( jQuery );
