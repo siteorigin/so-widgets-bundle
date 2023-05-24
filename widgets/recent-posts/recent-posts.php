@@ -21,6 +21,15 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			false,
 			plugin_dir_path( __FILE__ )
 		);
+		add_filter( 'siteorigin_widgets_block_exclude_widget', array( $this, 'exclude_from_widgets_block_cache' ), 10, 2 );
+	}
+
+	public function exclude_from_widgets_block_cache( $exclude, $widget_class ) {
+		if ( $widget_class == 'SiteOrigin_Widget_Recent_Posts_Widget' ) {
+			$exclude = true;
+		}
+
+		return $exclude;
 	}
 
 	public function get_settings_form() {
