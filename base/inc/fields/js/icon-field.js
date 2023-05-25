@@ -16,7 +16,7 @@
 			return;
 		}
 
-		// Clicking on the button should display the icon selector
+		// Clicking on the button should display the icon selector.
 		$b.on( 'click keyup', function( e ) {
 			if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
 				return;
@@ -27,7 +27,7 @@
 			searchIcons();
 		} );
 
-		// Clicking on the remove button
+		// Clicking on the remove button.
 		$remove.on( 'click keyup', function( e ) {
 			e.preventDefault();
 
@@ -49,7 +49,7 @@
 						value = $$.attr( 'data-value' );
 
 					value = value.replace( /-/, ' ' );
-					if( value.indexOf( q ) === -1 ) {
+					if ( value.indexOf( q ) === -1 ) {
 						$$.hide();
 					} else {
 						$$.show();
@@ -135,21 +135,21 @@
 						var $$ = $( this );
 
 						if ( $$.hasClass( 'siteorigin-widget-active' ) ) {
-							// This is being unselected
+							// This is being unselected.
 							$$.removeClass( 'siteorigin-widget-active' );
 							$v.val( '' );
 
-							// Hide the button icon
+							// Hide the button icon.
 							$b.find( 'span' ).hide();
 
 							$remove.hide();
 						} else {
-							// This is being selected
+							// This is being selected.
 							container.find( '.siteorigin-widget-icon-icons-icon' ).removeClass( 'siteorigin-widget-active' );
 							$$.addClass( 'siteorigin-widget-active' );
 							$v.val( $$.data( 'value' ) );
 
-							// Also add this to the button
+							// Also add this to the button.
 							$b.find( 'span' )
 								.show()
 								.attr( 'data-sow-icon', $$.attr( 'data-sow-icon' ) )
@@ -161,13 +161,13 @@
 
 						$v.trigger( 'change', { isRendering: true } );
 
-						// Hide the icon selector
+						// Hide the icon selector.
 						$is.slideUp();
 					} );
 				
 				container.append( $icon );
 
-				if( $v.val() === familyValue ) {
+				if ( $v.val() === familyValue ) {
 					// Add selected icon to the button.
 					$b.find( 'span' )
 					.show()
@@ -178,15 +178,15 @@
 				}
 			}
 
-			// Move a selected item to the first position
+			// Move a selected item to the first position.
 			container.prepend( container.find('.siteorigin-widget-active') );
 
 			searchIcons();
 		};
 
-		// Create the functionfor changing the icon family and call it once
+		// Create the function for changing the icon family and call it once.
 		var changeIconFamily = function( init ) {
-			// Fetch the family icons from the server
+			// Fetch the family icons from the server.
 			var family = $is.find( 'select.siteorigin-widget-icon-family' ).val();
 
 			var dataIcons = $is.find( 'select.siteorigin-widget-icon-family option:selected' ).data( 'icons' );
@@ -198,7 +198,7 @@
 				return;
 			}
 
-			if( typeof iconWidgetCache[ family ] === 'undefined' ) {
+			if ( typeof iconWidgetCache[ family ] === 'undefined' ) {
 				var $container = $is.find( '.siteorigin-widget-icon-icons' );
 				$container.addClass( 'loading' );
 				

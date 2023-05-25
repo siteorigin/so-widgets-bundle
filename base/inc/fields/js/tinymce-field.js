@@ -57,7 +57,7 @@
 			);
 			if ( $wpautopToggleField ) {
 				$wpautopToggleField.off( 'change' );
-				$wpautopToggleField.on( 'change', function () {
+				$wpautopToggleField.on( 'change', function() {
 					wp.editor.remove( id );
 					settings.tinymce.wpautop = $wpautopToggleField.is( ':checked' );
 					wp.editor.initialize( id, settings );
@@ -116,7 +116,7 @@
 			var mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
 			if ( mode === 'tmce' ) {
 				var editor = window.tinymce.get( id );
-				// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex
+				// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex.
 				if ( editor !== null ) {
 					var content = $textarea.val();
 					if ( content.search( '<' ) !== -1 && content.search( '>' ) === -1 ) {
@@ -162,7 +162,7 @@
 			$form = ui.item.find( '.siteorigin-widget-form' );
 		}
 		
-		$form.find( '.siteorigin-widget-field-type-tinymce' ).each( function () {
+		$form.find( '.siteorigin-widget-field-type-tinymce' ).each( function() {
 			$( this ).data( 'initialized', null );
 			setup( $( this ) );
 		} );

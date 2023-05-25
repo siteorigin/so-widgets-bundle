@@ -29,8 +29,8 @@
 		};
 
 		var request = null;
-		var refreshList = function(){
-			if( request !== null ) {
+		var refreshList = function() {
+			if ( request !== null ) {
 				request.abort();
 			}
 
@@ -60,7 +60,7 @@
 						if ( item.label === '' ) {
 							item.label = '&nbsp;';
 						}
-						// Add all the items
+						// Add all the items.
 						$ul.append(
 							$( '<li>' )
 								.html( item.label + '<span>(' + item.type + ')</span>' )
@@ -98,7 +98,7 @@
 
 		$$.find( '.button-close' ).on( 'click', closeContent );
 
-		// Clicking on one of the url items
+		// Clicking on one of the url items.
 		$$.on( 'click keypress', '.items li', function( e ) {
 			e.preventDefault();
 
@@ -139,7 +139,7 @@
 
 			interval = setTimeout( function() {
 				refreshList();
-			}, 500);
+			}, 500 );
 		} );
 
 		$$.data( 'initialized', true );

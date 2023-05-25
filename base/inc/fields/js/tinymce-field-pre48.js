@@ -61,7 +61,7 @@
 					tinyMCEPreInit.mceInit[ id ] = mceSettings;
 					var wrapDiv = $container.find( 'div#wp-' + id + '-wrap' );
 					if ( wrapDiv.hasClass( 'tmce-active' ) ) {
-						// Add a small timeout to make sure everything is ready - mainly for customizer and widgets interface
+						// Add a small timeout to make sure everything is ready - mainly for customizer and widgets interface.
 						if ( $( '#' + id ).is( ':visible' ) ) {
 							tinymce.init( tinyMCEPreInit.mceInit[ id ] );
 						} else {
@@ -86,9 +86,9 @@
 					if ( $target.hasClass( 'wp-switch-editor' ) ) {
 						var mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
 						if ( mode == 'tmce') {
-							// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex
+							// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex.
 							var editor = tinymce.get( id );
-							if (editor != null) {
+							if ( editor != null ) {
 								var content = $textarea.val();
 								if ( content.search( '<' ) != -1 ) {
 									if ( content.search( '>' ) == -1 ) {
@@ -116,7 +116,7 @@
 		var $f = $( e.target );
 
 		if ( $f.is( '.siteorigin-widget-field-repeater-item-form' ) ) {
-			if( $f.is( ':visible' ) ) {
+			if ( $f.is( ':visible' ) ) {
 				setup( $f );
 			} else {
 				$f.on( 'slideToggleOpenComplete', function onSlideToggleComplete() {
@@ -131,7 +131,7 @@
 		}
 	} );
 	$( document ).on( 'sortstop', function( event, ui ) {
-		if( ui.item.is( '.siteorigin-widget-field-repeater-item' ) ) {
+		if ( ui.item.is( '.siteorigin-widget-field-repeater-item' ) ) {
 			ui.item.find( '> .siteorigin-widget-field-repeater-item-form' ).each( function() {
 				setup( $( this ) );
 			} );

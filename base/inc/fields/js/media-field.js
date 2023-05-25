@@ -12,7 +12,7 @@
 			return;
 		}
 
-		// Handle the media uploader
+		// Handle the media uploader.
 		$media.find( '.media-upload-button' ).on( 'click', function( e ) {
 			e.preventDefault();
 			if ( typeof wp.media === 'undefined' ) {
@@ -35,7 +35,9 @@
 
 				// Tell the modal to show only images.
 				library: {
-					type: $$.data( 'library' ).split( ',' ).map( function( v ){ return v.trim(); } )
+					type: $$.data( 'library' ).split( ',' ).map( function( v ) {
+						return v.trim();
+					} )
 				},
 
 				// Customize the submit button.
@@ -57,7 +59,7 @@
 				}
 			} );
 
-			// Store the frame
+			// Store the frame.
 			$$.data( 'frame', frame );
 
 			// When an image is selected, run a callback.
@@ -72,8 +74,8 @@
 
 				var $thumbnail = $field.find( '.current .thumbnail' );
 
-				if ( typeof attachment.sizes !== 'undefined' ){
-					if ( typeof attachment.sizes.thumbnail !== 'undefined' ){
+				if ( typeof attachment.sizes !== 'undefined' ) {
+					if ( typeof attachment.sizes.thumbnail !== 'undefined' ) {
 						$thumbnail.attr( 'src', attachment.sizes.thumbnail.url ).fadeIn();
 					} else {
 						$thumbnail.attr( 'src', attachment.sizes.full.url ).fadeIn();
@@ -102,7 +104,7 @@
 				$( this ).addClass( 'remove-hide' ).attr( 'tabindex', -1 );
 			} );
 
-		// Everything for the dialog
+		// Everything for the dialog.
 		var dialog;
 
 		var reflowDialog = function() {
@@ -129,7 +131,7 @@
 
 		var setupDialog = function() {
 			if ( ! dialog ) {
-				// Create the dialog
+				// Create the dialog.
 				dialog = $( $('#so-widgets-bundle-tpl-image-search-dialog').html().trim() ).appendTo( 'body' );
 				dialog.find( '.close' ).on( 'click keyup', function( e ) {
 					if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
@@ -156,7 +158,7 @@
 							'_sononce' : dialog.find( 'input[name="_sononce"]' ).val()
 						},
 						function( response ) {
-							if( response.error ) {
+							if ( response.error ) {
 								alert( response.message );
 								return;
 							}
@@ -168,7 +170,7 @@
 									.addClass( 'source-' + r.source );
 								var img = result.find( '.so-widgets-result-image' );
 
-								// Preload the image
+								// Preload the image.
 								img.css( 'background-image', 'url(' + r.thumbnail + ')' );
 								img.data( 'thumbnail', r.thumbnail );
 								img.data( 'preview', r.preview );
@@ -213,21 +215,21 @@
 					);
 				};
 
-				// Setup the search
+				// Setup the search.
 				dialog.find( '#so-widgets-image-search-form' ).on( 'submit', function( e ) {
 					e.preventDefault();
 
-					// Perform the search
+					// Perform the search.
 					var q = dialog.find( '.so-widgets-search-input' ).val();
 					results.empty();
 
-					if( q !== '' ) {
-						// Send the query to the server
+					if ( q !== '' ) {
+						// Send the query to the server.
 						fetchImages( q, 1 );
 					}
 				} );
 
-				// Clicking on the related search buttons
+				// Clicking on the related search buttons.
 				dialog.on( 'click', '.so-keywords-list a', function( e ) {
 					e.preventDefault();
 					var $$ = $( this ).trigger( 'blur' );
@@ -235,7 +237,7 @@
 					dialog.find( '#so-widgets-image-search-form' ).trigger( 'submit' );
 				} );
 
-				// Clicking on the more button
+				// Clicking on the more button.
 				dialog.find( '.so-widgets-results-more button' ).on( 'click', function() {
 					var $$ = $( this );
 					fetchImages( $$.data( 'query' ), $$.data( 'page' ) );
@@ -243,7 +245,7 @@
 
 				var hoverTimeout;
 
-				// Clicking on an image to import it
+				// Clicking on an image to import it.
 				dialog.on( 'click', '.so-widgets-result-image', function( e ) {
 					var $$ = $( this );
 					if ( ! $$.data( 'full_url' ) ) {
@@ -260,7 +262,7 @@
 							postId = '';
 						}
 
-						// Send the message to import the URL
+						// Send the message to import the URL.
 						$.get(
 							ajaxurl,
 							{
@@ -273,8 +275,8 @@
 							function( response ) {
 								dialog.find( '#so-widgets-image-search-frame' ).removeClass( 'so-widgets-importing' );
 
-								if( response.error === false ) {
-									// This was a success
+								if ( response.error === false ) {
+									// This was a success.
 									dialog.hide();
 									dialog.find( '.so-widgets-results-loading' ).hide();
 									$inputField.val( response.attachment_id ).trigger( 'change', { silent: true } );
@@ -288,7 +290,7 @@
 							}
 						);
 
-						// Clear the dialog
+						// Clear the dialog.
 						dialog.find( '.so-widgets-results-loading' ).fadeIn( 'fast' );
 						dialog.find( '.so-widgets-results-loading strong' ).html(
 							dialog.find( '.so-widgets-results-loading strong' ).data( 'importing' )
@@ -298,7 +300,7 @@
 					}
 				} );
 
-				// Hovering over an image to preview it
+				// Hovering over an image to preview it.
 				var previewWindow = dialog.find( '.so-widgets-preview-window' );
 				dialog
 					.on( 'mouseenter', '.so-widgets-result-image', function() {
@@ -308,7 +310,7 @@
 						clearTimeout( hoverTimeout );
 
 						hoverTimeout = setTimeout( function() {
-							// Scale the preview sizes
+							// Scale the preview sizes.
 							var scalePreviewX = 1, scalePreviewY = 1;
 							if ( preview[1] > $( window ).outerWidth() * 0.33 ) {
 								scalePreviewX = $( window ).outerWidth() * 0.33 / preview[1];
@@ -317,7 +319,7 @@
 								scalePreviewY = $( window ).outerHeight() * 0.5 / preview[2];
 							}
 							var scalePreview = Math.min( scalePreviewX, scalePreviewY );
-							// Never upscale
+							// Never upscale.
 							if ( scalePreview > 1 ) {
 								scalePreview = 1;
 							}
@@ -335,13 +337,13 @@
 						}, 1000 );
 
 					} )
-					.on( 'mouseleave', '.so-widgets-result-image', function(){
+					.on( 'mouseleave', '.so-widgets-result-image', function() {
 						previewWindow.hide().find( 'img' ).remove();
 						clearTimeout( hoverTimeout );
 					} );
 
 				var lastX, lastY;
-				dialog.on( 'mousemove', function( e ){
+				dialog.on( 'mousemove', function( e ) {
 					if ( e.clientX ) {
 						lastX = e.clientX;
 					}
@@ -357,15 +359,15 @@
 							ww = $( window ).outerWidth();
 
 
-						// Calculate the top position
+						// Calculate the top position.
 						var top = lastY - ph / 2;
 						top = Math.max( top, 10 );
 						top = Math.min( top, wh - 10 - ph );
 
-						// Calculate the left position
+						// Calculate the left position.
 						var left = ( lastX < ww / 2 ) ? lastX + 15 : lastX - 15 - pw;
 
-						// Figure out where the preview needs to go
+						// Figure out where the preview needs to go.
 						previewWindow.css( {
 							'top': top + 'px',
 							'left': left + 'px',
@@ -379,7 +381,7 @@
 			dialog.find( '.so-widgets-search-input' ).trigger( 'focus' );
 		};
 
-		// Handle displaying the image search dialog
+		// Handle displaying the image search dialog.
 		$media.find( '.find-image-button' ).on( 'click', function( e ) {
 			e.preventDefault();
 			setupDialog();
