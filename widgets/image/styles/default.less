@@ -6,6 +6,10 @@
 @image_height: default;
 @image_width: default;
 @size_enforce: default;
+@image_shape: default;
+@image_shape_size: default;
+@image_shape_repeat: default;
+@image_shape_position: default;
 
 .widget-title {
 	text-align: @title_alignment;
@@ -36,10 +40,18 @@
 	}
 
 	.so-widget-image {
+		-webkit-mask-image: @image_shape;
+		-webkit-mask-position: center;
+		-webkit-mask-repeat: @image_shape_repeat;
+		-webkit-mask-size: @image_shape_size;
 		display: block;
+		height: @image_height;
+		mask-image: @image_shape;
+		mask-position: center;
+		mask-repeat: @image_shape_repeat;
+		mask-size: @image_shape_size;
 		max-width: @image_max_width;
 		width: @image_width;
-		height: @image_height;
 
 		& when (@size_enforce = 1 ) {
 			@media (max-width: @responsive_breakpoint) {
