@@ -372,7 +372,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		);
 
 		if ( ! empty( $instance['image_shape'] ) && siteorigin_widgets_image_shapes( $instance['image_shape']['shape'] ) ) {		
-			$less_variables['image_shape_size'] = ! empty( $instance['image_shape']['size'] ) ? $instance['image_shape']['size'] : 'cover';
+			$less_variables['image_shape_size'] = ! empty( $instance['image_shape']['size'] ) ? $instance['image_shape']['size'] : 'contain';
 			$less_variables['image_shape_repeat'] = ! empty( $instance['image_shape']['repeat'] ) ? $instance['image_shape']['repeat'] : 'no-repeat';
 			$less_variables['image_shape_position'] = ! empty( $instance['image_shape']['image_shape_alignment'] ) ? $instance['image_shape']['image_shape_alignment'] : 'center';
 			$less_variables['image_shape'] = 'url( "' . esc_url( siteorigin_widgets_image_shape( $instance['image_shape']['shape'] ) ) . '" )';
