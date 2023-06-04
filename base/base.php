@@ -89,7 +89,7 @@ function siteorigin_widget_get_icon( $icon_value, $icon_styles = false, $title =
 	$style = empty( $value_parts['style'] ) ? null : $value_parts['style'];
 	$icon = $value_parts['icon'];
 
-	if ( empty( $family ) || empty( $icon ) ) {
+	if ( empty( $family ) || ! isset( $icon ) ) {
 		return false;
 	}
 
