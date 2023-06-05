@@ -323,15 +323,30 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		$breakpoint = $this->get_global_settings( 'responsive_breakpoint' );
 
 		$design = $instance['design'];
-		return array(
+		$less_vars = array(
 			'icon_size'             => $design['icon_size'],
 			'rounding'              => $design['rounding'] . 'em',
 			'padding'               => $design['padding'],
 			'align'                 => $design['align'],
 			'mobile_align'          => ! empty( $design['mobile_align'] ) ? $design['mobile_align'] : '',
 			'responsive_breakpoint' => ! empty( $breakpoint ) ? $breakpoint : '',
-			'margin'                => $design['margin'],
 		);
+
+		$margin = explode( ' ', $design['margin'] );
+		switch ( $less_vars['align'] ) {
+			case 'left':
+				$margin[3] = 0;
+				break;
+			case 'right':
+				$margin[1] = 0;
+				break;
+			case 'center':
+				$margin[3] = $margin[1] = 'auto';
+				break;
+		}
+		$less_vars['margin'] = implode( ' ', $margin );
+
+		return $less_vars;
 	}
 
 	public function less_generate_calls_to( $instance, $args ) {
