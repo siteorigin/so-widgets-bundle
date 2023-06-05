@@ -20,9 +20,7 @@ class SiteOrigin_Widget_Field_Tabs extends SiteOrigin_Widget_Field_Base {
 		<ul class="siteorigin-widget-tabs" <?php if ( count( $this->tabs ) == 1 ) echo 'style="display: none;"'; ?>>
 			<?php
 			foreach( $this->tabs as $id => $tab ) {
-				?>
-				<li data-id="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $tab ); ?></li>
-				<?php
+				?><li data-id="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $tab ); ?></li><?php
 			}
 			?>
 		</ul>
