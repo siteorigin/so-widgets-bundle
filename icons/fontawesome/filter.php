@@ -2132,7 +2132,6 @@ function siteorigin_widgets_icon_migrate_fontawesome_name_map() {
 		'share-square-o' => 'share-square',
 		'shekel' => 'shekel-sign',
 		'sheqel' => 'shekel-sign',
-		'shield' => 'shield-alt',
 		'sign-in' => 'sign-in-alt',
 		'sign-out' => 'sign-out-alt',
 		'signing' => 'sign-language',
