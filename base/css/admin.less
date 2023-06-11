@@ -322,7 +322,7 @@ div.siteorigin-widget-form {
 						padding: 10px;
 						cursor: move;
 						position: relative;
-						background: #f6f6f6;
+						background: #f0f0f1;
 
 						&:focus,
 						&:focus-within {
@@ -517,6 +517,53 @@ div.siteorigin-widget-form {
 						content:"\f460";
 					}
 				}
+
+				@media (min-width: 501px) {
+					&.siteorigin-widget-section-tab {
+						display: none;
+					}
+				}
+			}
+
+		}
+
+		&.siteorigin-widget-field-type-tabs .siteorigin-widget-tabs {
+			border-bottom: 1px solid #dcdcde;
+			margin: 0;
+			margin-bottom: -13px;
+			padding: 5px 0 0 11px;
+
+			@media (max-width: 500px) {
+				display: none;
+			}
+
+			li {
+				background: #f6f7f7;
+				border: 1px solid #dcdcde;
+				border-right-width: 0;
+				color: #555;
+				cursor: pointer;
+				display: inline-block;
+				font-size: 12px;
+				font-weight: bold;
+				line-height: 1em;
+				margin: 0 0 -1px 0;
+				padding: 12px 25px;
+				position: relative;
+				transition: all 0.2s;
+
+				&:hover,
+				&.sow-active-tab {
+					background: #fcfcfc;
+				}
+
+				&.sow-active-tab {
+					border-bottom: 1px solid #fcfcfc;
+				}
+
+				&:last-of-type {
+					border-right-width: 1px;
+				}
 			}
 		}
 
@@ -535,6 +582,15 @@ div.siteorigin-widget-form {
 			}
 		}
 
+		&.siteorigin-widget-field-type-section .siteorigin-widget-section.sow-active-tab {
+			display: block;
+		}
+
+		.siteorigin-widget-section.sow-active-tab {
+			border: 1px solid #dcdcde;
+			border-top: 0;
+		}
+
 		&.siteorigin-widget-field-type-autocomplete,
 		&.siteorigin-widget-field-type-link {
 
@@ -548,7 +604,7 @@ div.siteorigin-widget-form {
 				width: 360px;
 				z-index: 10;
 				border: 1px solid #c0c0c0;
-				background: #f6f6f6;
+				background: #f0f0f1;
 				.box-shadow(~"0 2px 4px rgba(0,0,0,0.2)");
 				.rounded(3px);
 
