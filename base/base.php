@@ -89,7 +89,7 @@ function siteorigin_widget_get_icon( $icon_value, $icon_styles = false, $title =
 	$style = empty( $value_parts['style'] ) ? null : $value_parts['style'];
 	$icon = $value_parts['icon'];
 
-	if ( empty( $family ) || empty( $icon ) ) {
+	if ( empty( $family ) || ! isset( $icon ) ) {
 		return false;
 	}
 
@@ -176,7 +176,16 @@ function siteorigin_widget_get_font( $font_value ) {
 			global $sow_registered_fonts;
 
 			$font_weight_styles = array_keys( $sow_registered_fonts[ $font['family'] ] );
-			$wp_styles->registered[ $style_name ]->src = esc_url( apply_filters( 'siteorigin_web_font_url', 'https://fonts.googleapis.com/css' ) . '?family=' . urlencode( $font['family'] . ':' . implode( ',', $font_weight_styles ) ) );
+			$wp_styles->registered[ $style_name ]->src = esc_url(
+				apply_filters(
+					'siteorigin_web_font_url_processed',
+					apply_filters(
+						'siteorigin_web_font_url',
+						'https://fonts.googleapis.com/css' ) . '?family=' . urlencode(
+						$font['family'] . ':' . implode( ',', $font_weight_styles )
+					)
+				)
+			);
 		}
 	} else {
 		$font['family'] = $font_value;

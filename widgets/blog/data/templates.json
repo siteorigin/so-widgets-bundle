@@ -278,10 +278,8 @@
 					"font_size": "13"
 				},
 				"overlay_post_category": {
-					"background": "#000",
-					"background_hover": "#000",
-					"background_opacity": "0.7",
-					"background_opacity_hover": "0.75",
+					"background": "rgba(0,0,0,0.7)",
+					"background_hover": "rgba(0,0,0,0.75)",
 					"color": "#fff",
 					"color_hover": "#fff",
 					"font": "default",
@@ -338,8 +336,7 @@
 					"divider_border_color": "#2d2d2d",
 					"divider_border_thickness": "1",
 					"divider_border_margin": "13",
-					"hover_overlay_color": "#ffffff",
-					"hover_overlay_opacity": "0.9",
+					"hover_overlay_color": "rgba(255,255,255,0.9)",
 					"post_meta_font": "default",
 					"post_meta_font_size": "11",
 					"post_meta_color": "#929292",

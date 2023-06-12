@@ -657,7 +657,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 
 		// Pass the Widgets Bundle directory path to allow us to include the volume controls font.
 		$sow_plugin_dir_url = str_replace( site_url(), '', plugin_dir_url( SOW_BUNDLE_BASE_FILE ) );
-		$less_variables['volume_controls_font'] = "'${sow_plugin_dir_url}css/slider/fonts/volume-controls'";
+		$less_variables['volume_controls_font'] = "'{$sow_plugin_dir_url}css/slider/fonts/volume-controls'";
 
 		return $less_variables;
 	}
