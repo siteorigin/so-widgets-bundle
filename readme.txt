@@ -106,6 +106,15 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.50.1 - 12 June 2023 =
+* Slider: Resolved deprecated warning and improved link alignment.
+* Blog: Updated template defaults to include colors with alpha.
+* Added Tabs Form Field for improved widget organization.
+* Updated Google Fonts with new fonts and weights.
+* Updated Font Awesome from version 6.2.0 to 6.4.0, adding new icons.
+* Added `siteorigin_widgets_load_cache_compatibility` filter for optional cache compatibility control.
+* Various improvements to form fields and code formatting.
+
 = 1.50.0 - 16 May 2023 =
 * Button: Update to only apply Hover Text Color if Use Hover Effects enabled.
 * Blog: Corrected Portfolio Hover Overlay Opacity migration.
