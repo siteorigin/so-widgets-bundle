@@ -46,6 +46,7 @@ module.exports = {
             'js/lib/**/*css',                   // Copy CSS for JS libs.
             'base/less/*.less',                 // LESS libraries used in runtime styles
             'base/inc/widgets/less/*.less',
+            'base/inc/installer/css/*css',      // Include Installer CSS.
             'widgets/**/styles/*.less',         // All the widgets' runtime .less files
             '!{build,build/**}',                // Ignore build/ and contents
             '!{tmp,tmp/**}',                    // Ignore tmp/ and contents
