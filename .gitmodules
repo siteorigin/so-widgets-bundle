@@ -1,3 +1,7 @@
 [submodule "build"]
 	path = build
 	url = git@github.com:siteorigin/plugin-build.git
+
+[submodule "base/inc/installer"]
+	path = base/inc/installer
+	url = git@github.com:siteorigin/siteorigin-installer.git
