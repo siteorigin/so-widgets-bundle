@@ -170,6 +170,13 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				),
 			),
 
+			'fitvids' => array(
+				'type' => 'checkbox',
+				'default' => true,
+				'label' => __( 'Use FitVids', 'so-widgets-bundle' ),
+				'description' => __( 'FitVids will scale background videos to fill the width of the slide while maintaining aspect ratio.', 'so-widgets-bundle' ),
+			),
+
 			'background_video_mobile' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Show slide background videos on mobile', 'so-widgets-bundle' ),
@@ -361,6 +368,10 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			}
 		}
 
+		if ( isset( $instance['controls']['fitvids'] ) ) {
+			$instance['controls']['fitvids'] = true;
+		}
+
 		return $instance;
 	}
 
@@ -535,6 +546,10 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				} elseif ( isset( $frame['background']['loop_background_videos'] ) ) {
 					// All other slider widgets.
 					$controls['opacity'] = $frame['background']['background_video_opacity'];
+				}
+
+				if ( ! empty( $controls['fitvids'] ) && ! wp_script_is( 'jquery-fitvids' ) ) {
+					wp_enqueue_script( 'jquery-fitvids' );
 				}
 
 				$this->video_code( $background['videos'], $classes, $controls );

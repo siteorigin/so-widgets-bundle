@@ -857,7 +857,7 @@ class SiteOrigin_Widgets_Bundle {
 		wp_register_script(
 			'sowb-pikaday',
 			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/pikaday' . SOW_BUNDLE_JS_SUFFIX . '.js',
-			array( ),
+			array(),
 			'1.6.1'
 		);
 
@@ -871,6 +871,13 @@ class SiteOrigin_Widgets_Bundle {
 		wp_register_style(
 			'sowb-pikaday',
 			plugin_dir_url( __FILE__ ) . 'js/lib/pikaday.css'
+		);
+
+		wp_register_script(
+			'jquery-fitvids',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/jquery.fitvids' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			1.1
 		);
 	}
 
