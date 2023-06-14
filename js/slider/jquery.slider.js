@@ -53,15 +53,25 @@ sowb.SiteOriginSlider = function($) {
 			if ( $unmuteButton.length ) {
 				// Mute all slide videos.
 				$( slider ).find( '.sow-slider-image > video' ).prop( 'muted', true );
+				var $activeSlideVideo;
+				var $embed = $( slider ).find( '.sow-slide-video-oembed iframe' );
+				if ( $embed.length ) {
+					$activeSlideVideo = $embed;
+				} else {
+					$activeSlideVideo = active.find( '> video' );
+				}
 
-				var $activeSlideVideo = active.find( '> video' );
 				if ( $activeSlideVideo.length ) {
 					$unmuteButton.clearQueue().fadeIn( speed );
 
 					var settings = $unmuteButton.siblings( '.sow-slider-images').data( 'settings' );
 					// Unmute video if previously unmuted.
 					if ( $activeSlideVideo.hasClass( 'sow-player-unmuted' ) ) {
-						$activeSlideVideo.prop( 'muted', false );
+						if ( ! $embed.length ) {
+							$activeSlideVideo.prop( 'muted', false );
+						} else {
+							$embed.contentWindow.postMessage( '{"event":"command","func":"unMute","args":""}', '*' )
+						}
 						$unmuteButton.addClass( 'sow-player-unmuted' );
 						// Let screen readers know how to handle this button.
 						$unmuteButton.attr( 'aria-label', settings.muteLoc );
@@ -333,23 +343,36 @@ jQuery( function($){
 				if ( settings.unmute ) {
 					$base.find( '.sow-player-controls-sound' ).on( 'click', function() {
 						var $sc = $( this ),
+							$activeSlideVideo,
+							$embed = $sc.next().find( '.cycle-slide-active .sow-slide-video-oembed iframe' );
+
+						if ( $embed.length ) {
+							$activeSlideVideo = $embed;
+						} else {
 							$activeSlideVideo = $sc.next().find( '.cycle-slide-active > video' );
+						}
 
-						$activeSlideVideo.prop( 'muted',
-							! $activeSlideVideo.prop( 'muted' )
-						);
-
-						if ( ! $activeSlideVideo.prop( 'muted' ) ) {
+						if ( $sc.hasClass( 'sow-player-unmuted' ) ) {
+							$sc.removeClass( 'sow-player-unmuted' );
+							$activeSlideVideo.removeClass( 'sow-player-muted' );
+							$sc.attr( 'aria-label', settings.unmuteLoc );
+							if ( $embed.length ) {
+								$embed[0].contentWindow.postMessage( '{"event":"command","func":"mute","args":""}', '*' )
+							} else {
+								$activeSlideVideo.prop( 'muted', true );
+							}
+						} else {
 							// Used for changing the text/icon of mute button.
 							$sc.addClass( 'sow-player-unmuted' );
 							// State tracking.
 							$activeSlideVideo.addClass( 'sow-player-unmuted' );
 							// Let screen readers know how to handle this button.
 							$sc.attr( 'aria-label', settings.muteLoc );
-						} else {
-							$sc.removeClass( 'sow-player-unmuted' );
-							$activeSlideVideo.removeClass( 'sow-player-muted' );
-							$sc.attr( 'aria-label', settings.unmuteLoc );
+							if ( $embed.length ) {
+								$embed[0].contentWindow.postMessage( '{"event":"command","func":"unMute","args":""}', '*' )
+							} else {
+								$activeSlideVideo.prop( 'muted', false );
+							}
 						}
 					} );
 				}
