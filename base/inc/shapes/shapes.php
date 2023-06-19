@@ -4,15 +4,15 @@ function siteorigin_widgets_image_shapes( $shape = false) {
 	$shapes = apply_filters(
 		'siteorigin_widgets_image_shapes',
 		array(
-			'circle' => __( 'Circle', 'so-widgets-bundle'  ),
-			'oval' => __( 'Oval', 'so-widgets-bundle'  ),
-			'triangle' => __( 'Triangle', 'so-widgets-bundle'  ),
-			'square' => __( 'Square', 'so-widgets-bundle'  ),
-			'diamond' => __( 'Diamond', 'so-widgets-bundle'  ),
-			'rhombus' => __( 'Rhombus', 'so-widgets-bundle'  ),
-			'parallelogram' => __( 'Parallelogram', 'so-widgets-bundle'  ),
-			'pentagon' => __( 'Pentagon', 'so-widgets-bundle'  ),
-			'hexagon' => __( 'Hexagon', 'so-widgets-bundle'  ),
+			'circle' => __( 'Circle', 'so-widgets-bundle' ),
+			'oval' => __( 'Oval', 'so-widgets-bundle' ),
+			'triangle' => __( 'Triangle', 'so-widgets-bundle' ),
+			'square' => __( 'Square', 'so-widgets-bundle' ),
+			'diamond' => __( 'Diamond', 'so-widgets-bundle' ),
+			'rhombus' => __( 'Rhombus', 'so-widgets-bundle' ),
+			'parallelogram' => __( 'Parallelogram', 'so-widgets-bundle' ),
+			'pentagon' => __( 'Pentagon', 'so-widgets-bundle' ),
+			'hexagon' => __( 'Hexagon', 'so-widgets-bundle' ),
 		)
 	);
 
