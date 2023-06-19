@@ -33,18 +33,18 @@ function siteorigin_widgets_image_shape( $shape ) {
 		$file = wp_normalize_path(
 			apply_filters(
 				'siteorigin_widgets_image_shape_file_path',
-				plugin_dir_path( __FILE__ ) . 'images/' . $shape . '.svg',
+				plugin_dir_path( __FILE__ ) . 'images/',
 				$shape
 			)
-		); 
+		) . $shape . '.svg';
 		if ( file_exists( $file ) ) {
 			return wp_normalize_path(
 				apply_filters(
 					'siteorigin_widgets_image_shape_file_url',
-					plugin_dir_url( __FILE__ ) . 'images/' . $shape . '.svg',
+					plugin_dir_url( __FILE__ ) . 'images/',
 					$shape
 				)
-			);
+			) . $shape . '.svg';
 		} else {
 			return false;
 		}
