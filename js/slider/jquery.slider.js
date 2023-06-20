@@ -389,6 +389,10 @@ jQuery( function($){
 			if(images.length === 0) {
 				setupSlider();
 			}
+
+			if ( $.isFunction( $.fn.fitVids ) ) {
+				$$.find( '.sow-slide-video-oembed' ).fitVids();
+			}
 			
 			$$.data( 'initialized', true );
 		});
