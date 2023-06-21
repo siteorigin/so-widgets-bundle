@@ -143,7 +143,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'unmute' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Unmute icon', 'so-widgets-bundle' ),
-				'description' => __( 'Slide background videos are muted. Enable to display an unmute/mute icon. Only applies to self-hosted videos.', 'so-widgets-bundle' ),
+				'description' => __( 'Slide background videos are muted. Enable to display an unmute/mute icon.', 'so-widgets-bundle' ),
 				'default' => false,
 				'state_emitter' => array(
 					'callback' => 'conditional',
