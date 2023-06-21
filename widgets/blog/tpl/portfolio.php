@@ -39,7 +39,12 @@ if ( $settings['categories'] || $template_settings['filter_categories'] ) {
 		if ( ! has_post_thumbnail() ) {
 			echo apply_filters( 'siteorigin_widgets_blog_featured_image_fallback', false, $settings );
 		} else {
-			the_post_thumbnail( 'sow-blog-portfolio' );
+			if ( ! empty( $settings['featured_image_size'] ) ) {
+				$size = $settings['featured_image_size'] == 'custom_size' ? array( $settings['featured_image_size_width'], $settings['featured_image_size_height'] ) : $settings['featured_image_size'];
+			} else {
+				$size = 'sow-blog-portfolio';
+			}
+			the_post_thumbnail( $size );
 		}
 		?>
 	</div>
