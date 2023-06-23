@@ -732,7 +732,7 @@ public function __construct() {
 			if ( ! empty( $instance['settings']['featured_image_size'] ) ) {
 				$less_vars['column_width'] = $instance['settings']['featured_image_size'] == 'custom_size' ? $instance['settings']['featured_image_size_width'] : $instance['settings']['featured_image_size'];
 				if ( isset( $_wp_additional_image_sizes[ $less_vars['column_width'] ] ) ) {
-					$less_vars['column_width'] =  $_wp_additional_image_sizes[ $less_vars['column_width'] ]['width'] . 'px';
+					$less_vars['column_width'] = $_wp_additional_image_sizes[ $less_vars['column_width'] ]['width'] . 'px';
 				} else {
 					$set_fallback_size = true;
 				}
