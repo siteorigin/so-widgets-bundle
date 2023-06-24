@@ -730,19 +730,13 @@ public function __construct() {
 		} else {
 			global $_wp_additional_image_sizes;
 			if ( ! empty( $instance['settings']['featured_image_size'] ) ) {
-				$less_vars['column_width'] = $instance['settings']['featured_image_size'] == 'custom_size' ? $instance['settings']['featured_image_size_width'] : $instance['settings']['featured_image_size'];
-				if ( isset( $_wp_additional_image_sizes[ $less_vars['column_width'] ] ) ) {
-					$less_vars['column_width'] = $_wp_additional_image_sizes[ $less_vars['column_width'] ]['width'] . 'px';
-				} else {
-					$set_fallback_size = true;
+				$less_vars['image_size'] = $instance['settings']['featured_image_size'] == 'custom_size' ? $instance['settings']['featured_image_size_width'] : $instance['settings']['featured_image_size'];
+				if ( isset( $_wp_additional_image_sizes[ $less_vars['image_size'] ] ) ) {
+					$less_vars['image_size'] = $_wp_additional_image_sizes[ $less_vars['image_size'] ]['width'] . 'px';
 				}
-			} else {
-				$set_fallback_size = true;
 			}
 
-			if ( ! empty( $set_fallback_size ) ) {
-				$less_vars['column_width'] = number_format( 100 / $less_vars['columns'], 2 ) . '%';
-			}
+			$less_vars['column_width'] = number_format( 100 / $less_vars['columns'], 2 ) . '%';
 
 			if ( empty( $less_vars['categories'] ) && ! empty( $instance['settings']['filter_categories'] ) ) {
 				$less_vars['categories'] = 1;
