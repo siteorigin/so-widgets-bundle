@@ -17,6 +17,22 @@ if ( $settings['categories'] || $template_settings['filter_categories'] ) {
 		$types = $filtering ? join( ' ', $filtering_links ) : ' ';
 	}
 }
+
+$featured_image = null;
+if ( ! has_post_thumbnail() ) {
+	$featured_image = apply_filters( 'siteorigin_widgets_blog_featured_image_fallback', false, $settings );
+} else {
+	if ( ! empty( $settings['featured_image_size'] ) ) {
+		$size = $settings['featured_image_size'] == 'custom_size' ? array( $settings['featured_image_size_width'], $settings['featured_image_size_height'] ) : $settings['featured_image_size'];
+	} else {
+		$size = 'sow-blog-portfolio';
+	}
+	$featured_image = get_the_post_thumbnail( get_the_ID(), $size );
+}
+
+if ( empty( $featured_image ) && ! empty( $settings['featured_image_empty'] ) ) {
+	return;
+}
 ?>
 <article id="post-<?php the_ID(); ?> <?php echo $types; ?>" <?php post_class( 'sow-portfolio-item ' . $types ); ?>>
 	<div class="sow-entry-thumbnail">
@@ -39,7 +55,12 @@ if ( $settings['categories'] || $template_settings['filter_categories'] ) {
 		if ( ! has_post_thumbnail() ) {
 			echo apply_filters( 'siteorigin_widgets_blog_featured_image_fallback', false, $settings );
 		} else {
-			the_post_thumbnail( 'sow-blog-portfolio' );
+			if ( ! empty( $settings['featured_image_size'] ) ) {
+				$size = $settings['featured_image_size'] == 'custom_size' ? array( $settings['featured_image_size_width'], $settings['featured_image_size_height'] ) : $settings['featured_image_size'];
+			} else {
+				$size = 'sow-blog-portfolio';
+			}
+			the_post_thumbnail( $size );
 		}
 		?>
 	</div>
