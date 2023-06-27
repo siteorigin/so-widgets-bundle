@@ -344,7 +344,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
-			'button_attributes' => apply_filters( 'siteorigin_widgets_button_attributes', $button_attributes ),
+			'button_attributes' => apply_filters( 'siteorigin_widgets_button_attributes', $button_attributes, $instance ),
 			'href' => ! empty( $instance['url'] ) ? $instance['url'] : '#',
 			'on_click' => ! empty( $attributes['on_click'] ) ? $attributes['on_click'] : '',
 			'align' => $instance['design']['align'],
