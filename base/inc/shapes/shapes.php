@@ -29,7 +29,10 @@ add_filter( 'siteorigin_widgets_icon_families', 'siteorigin_widgets_icon_familie
 
 function siteorigin_widgets_image_shape( $shape ) {
 	$shapes = siteorigin_widgets_image_shapes( $shape );
-	if ( siteorigin_widgets_image_shapes( $shape ) ) {
+	if (
+		$shape != 'custom' &&
+		siteorigin_widgets_image_shapes( $shape )
+	) {
 		$file = wp_normalize_path(
 			apply_filters(
 				'siteorigin_widgets_image_shape_file_path',
