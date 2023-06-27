@@ -215,4 +215,26 @@ jQuery( function( $ ){
 		$('div[data-id="' + openSettingsId +  '"] button.so-widget-settings').trigger( 'click' );
 	}
 
+	$( '.installer-link' ).on( 'click', function( e ) {
+		e.preventDefault();
+		$( this ).hide();
+		$( '.installer-container' ).slideDown( 'fast' );
+	} );
+
+	$( '.installer_status' ).on( 'change', function() {
+		var $$ = $( this );
+		$$.prop( 'disabled', true );
+		jQuery.post(
+			ajaxurl,
+			{
+				action: 'so_installer_status',
+				nonce: $$.data( 'nonce' ),
+				status: $$.is( ':checked' )
+			},
+			function() {
+				$$.prop( 'disabled', false );
+			}
+		);
+	} );
+
 } );
