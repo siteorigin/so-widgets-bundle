@@ -110,11 +110,22 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'label' => __( 'Background image', 'so-widgets-bundle' ),
 								'library' => 'image',
 								'fallback' => true,
+								'state_emitter' => array(
+									'callback' => 'conditional',
+									'args'     => array(
+										'has_background_image[show]: isNaN( val )',
+										'has_background_image[hide]: ! isNaN( val )',
+									),
+								),
 							),
 
 							'size' => array(
 								'type' => 'image-size',
 								'label' => __( 'Image size', 'so-widgets-bundle' ),
+								'state_handler' => array(
+									'has_background_image[show]' => array( 'show' ),
+									'has_background_image[hide]' => array( 'hide' ),
+								),
 							),
 
 							'image_type' => array(
@@ -124,6 +135,10 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 									'cover' => __( 'Cover', 'so-widgets-bundle' ),
 								),
 								'default' => 'cover',
+								'state_handler' => array(
+									'has_background_image[show]' => array( 'show' ),
+									'has_background_image[hide]' => array( 'hide' ),
+								),
 							),
 
 							'opacity' => array(
@@ -132,6 +147,10 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'min' => 0,
 								'max' => 100,
 								'default' => 100,
+								'state_handler' => array(
+									'has_background_image[show]' => array( 'show' ),
+									'has_background_image[hide]' => array( 'hide' ),
+								),
 							),
 
 							'color' => array(
