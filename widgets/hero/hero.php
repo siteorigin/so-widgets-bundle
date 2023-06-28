@@ -157,6 +157,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'type' => 'color',
 								'label' => __( 'Background color', 'so-widgets-bundle' ),
 								'default' => '#333333',
+								'alpha' => true,
 							),
 
 							'url' => array(
