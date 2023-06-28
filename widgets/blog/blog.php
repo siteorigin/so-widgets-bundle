@@ -728,7 +728,7 @@ public function __construct() {
 			$less_vars['content_link'] = ! empty( $instance['design']['content']['link_color'] ) ? $instance['design']['content']['link_color'] : '';
 			$less_vars['content_link_hover'] = ! empty( $instance['design']['content']['link_color_hover'] ) ? $instance['design']['content']['link_color_hover'] : '';
 		} else {
-			$less_vars['column_width'] = number_format( 100 / $less_vars['columns'], 2 ) . '%';
+			$less_vars['column_width'] = number_format( 98.8333 / $less_vars['columns'], 2 ) . '%';
 
 			if ( empty( $less_vars['categories'] ) && ! empty( $instance['settings']['filter_categories'] ) ) {
 				$less_vars['categories'] = 1;
