@@ -736,7 +736,7 @@ public function __construct() {
 				}
 			}
 
-			$less_vars['column_width'] = number_format( 100 / $less_vars['columns'], 2 ) . '%';
+			$less_vars['column_width'] = number_format( 98.8333 / $less_vars['columns'], 2 ) . '%';
 
 			if ( empty( $less_vars['categories'] ) && ! empty( $instance['settings']['filter_categories'] ) ) {
 				$less_vars['categories'] = 1;
