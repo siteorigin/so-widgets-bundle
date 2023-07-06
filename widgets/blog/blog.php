@@ -102,7 +102,7 @@ public function __construct() {
 						),
 						'featured_image_empty' => array(
 							'type' => 'checkbox',
-							'label' => __( 'Skip Post If No Featured Image', 'so-widgets-bundle' ),
+							'label' => __( 'Skip Post if No Featured Image', 'so-widgets-bundle' ),
 							'default' => true,
 						),
 						'featured_image_size' => array(
