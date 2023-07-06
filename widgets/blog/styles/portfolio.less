@@ -1,6 +1,7 @@
 @categories: default;
 @columns: 3;
 @column_width: 50%;
+@image_size: 375px;
 @responsive_breakpoint: 780px;
 
 // Pagination.
@@ -67,6 +68,8 @@
 			}
 
 			.sow-entry-thumbnail {
+				max-width: 100%;
+				width: @image_size;
 
 				&:hover .sow-entry-overlay {
 					background: @featured_image_hover_overlay_color;
