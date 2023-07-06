@@ -217,8 +217,7 @@ jQuery( function( $ ){
 
 	$( '.installer-link' ).on( 'click', function( e ) {
 		e.preventDefault();
-		$( this ).hide();
-		$( '.installer-container' ).slideDown( 'fast' );
+		$( '.installer-container' ).slideToggle( 'fast' );
 	} );
 
 	$( '.installer_status' ).on( 'change', function() {
