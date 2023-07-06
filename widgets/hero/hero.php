@@ -113,8 +113,8 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'state_emitter' => array(
 									'callback' => 'conditional',
 									'args'     => array(
-										'has_background_image[show]: isNaN( val )',
-										'has_background_image[hide]: ! isNaN( val )',
+										'has_background_image[show]: val',
+										'has_background_image[hide]: ! val',
 									),
 								),
 							),
