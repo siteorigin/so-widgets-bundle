@@ -170,7 +170,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 					'shape' => array(
 						'type' => 'select',
 						'label' => __( 'Image Shape', 'so-widgets-bundle' ),
-						'options' => siteorigin_widgets_image_shapes(),
+						'options' => SiteOrigin_Widget_Image_Shapes::single()->get_shapes(),
 						'state_handler' => array(
 							'image_shape[enabled]' => array( 'show' ),
 							'image_shape[disabled]' => array( 'hide' ),
@@ -371,11 +371,11 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 		);
 
-		if ( ! empty( $instance['image_shape'] ) && siteorigin_widgets_image_shapes( $instance['image_shape']['shape'] ) ) {
+		if ( ! empty( $instance['image_shape'] ) &&  SiteOrigin_Widget_Image_Shapes::single()->is_valid_shape( $instance['image_shape']['shape'] ) ) {
 			$less_variables['image_shape_size'] = ! empty( $instance['image_shape']['size'] ) ? $instance['image_shape']['size'] : 'contain';
 			$less_variables['image_shape_repeat'] = ! empty( $instance['image_shape']['repeat'] ) ? $instance['image_shape']['repeat'] : 'no-repeat';
 			$less_variables['image_shape_position'] = ! empty( $instance['image_shape']['alignment'] ) ? $instance['image_shape']['alignment'] : 'center';
-			$less_variables['image_shape'] = 'url( "' . esc_url( siteorigin_widgets_image_shape( $instance['image_shape']['shape'] ) ) . '" )';
+			$less_variables['image_shape'] = 'url( "' . esc_url( SiteOrigin_Widget_Image_Shapes::single()->get_image_shape( $instance['image_shape']['shape'] ) ) . '" )';
 		}
 
 		return $less_variables;
