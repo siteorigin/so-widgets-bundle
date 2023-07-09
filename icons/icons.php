@@ -6,6 +6,7 @@ function siteorigin_widgets_icon_families_filter( $families ) {
 	$bundled = array(
 		'fontawesome' => __( 'Font Awesome', 'so-widgets-bundle' ),
 		'elegantline' => __( 'Elegant Themes Line Icons', 'so-widgets-bundle' ),
+		'materialicons' => __( 'Google Material Icons / Symbols', 'so-widgets-bundle' ),
 		'genericons' => __( 'Genericons', 'so-widgets-bundle' ),
 		'icomoon' => __( 'Icomoon Free', 'so-widgets-bundle' ),
 		'typicons' => __( 'Typicons', 'so-widgets-bundle' ),
