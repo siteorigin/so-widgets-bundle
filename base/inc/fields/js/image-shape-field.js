@@ -16,7 +16,11 @@
 		var loadActiveShape = function( $shape ) {
 			$shape.addClass( 'selected' );
 			$current.find( '.siteorigin-widget-shape' ).html( $shape.find( '.siteorigin-widget-shape-image' ).clone() );
-			$field.trigger( 'shape_change', $shape, $current );
+			$current.find( '.siteorigin-widget-shape-image' ).data( 'shape', $shape.data( 'shape' ) )
+			$field.trigger( 'shape_change', {
+				shape: $shape.data( 'shape' ),
+				field: $field
+			} );
 		}
 
 		$current.on( 'click', function() {
