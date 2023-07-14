@@ -117,6 +117,17 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				),
 			),
 
+			'nav_align' => array(
+				'type' => 'select',
+				'label' => __( 'Navigation alignment', 'so-widgets-bundle' ),
+				'default' => 'right',
+				'options' => array(
+					'left' => __( 'Left', 'so-widgets-bundle' ),
+					'center' => __( 'Center', 'so-widgets-bundle' ),
+					'right' => __( 'Right', 'so-widgets-bundle' ),
+				),
+			),
+
 			'nav_size' => array(
 				'type' => 'number',
 				'label' => __( 'Navigation size', 'so-widgets-bundle' ),
