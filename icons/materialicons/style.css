@@ -1,0 +1,72 @@
+@font-face {
+	font-family: 'SOW Material Icons';
+	font-style: normal;
+	font-weight: 400;
+	src: url( 'webfonts/MaterialIcons-Regular.woff2' ) format( 'woff2' );
+}
+
+.sowm-regular {
+	font-family: 'SOW Material Icons';
+}
+
+@font-face {
+	font-family: 'SOW Material Icons Outlined';
+	font-style: normal;
+	font-weight: 400;
+	src: url( 'webfonts/MaterialIconsOutlined-Regular.woff2' ) format( 'woff2' );
+}
+
+.sowm-outlined {
+	font-family: 'SOW Material Icons Outlined';
+}
+
+@font-face {
+	font-family: 'SOW Material Icons Round';
+	font-style: normal;
+	font-weight: 400;
+	src: url( 'webfonts/MaterialIconsRound-Regular.woff2' ) format( 'woff2' );
+}
+
+.sowm-round {
+	font-family: 'SOW Material Icons Round';
+}
+
+@font-face {
+	font-family: 'SOW Material Icons Sharp';
+	font-style: normal;
+	font-weight: 400;
+	src: url( 'webfonts/MaterialIconsSharp-Regular.woff2' ) format( 'woff2' );
+}
+
+.sowm-sharp {
+	font-family: 'SOW Material Icons Sharp';
+}
+
+@font-face {
+	font-family: 'SOW Material Icons TwoTone';
+	font-style: normal;
+	font-weight: 400;
+	src: url( 'webfonts/MaterialIconsTwoTone-Regular.woff2' ) format( 'woff2' );
+}
+
+.sowm-twotone {
+	font-family: 'SOW Material Icons TwoTone';
+}
+
+.sow-icon-materialicons {
+	font-weight: normal;
+	font-style: normal;
+	line-height: 1;
+	letter-spacing: normal;
+	text-transform: none;
+	display: inline-block;
+	white-space: nowrap;
+	word-wrap: normal;
+	direction: ltr;
+	-moz-font-feature-settings: 'liga';
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.sow-icon-materialicons[data-sow-icon]:before {
+	content: attr(data-sow-icon);
+}

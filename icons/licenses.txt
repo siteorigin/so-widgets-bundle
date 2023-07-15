@@ -8,6 +8,14 @@ License: SIL OFL 1.1
 License Info: http://fortawesome.github.io/Font-Awesome/license/
 License URI: http://scripts.sil.org/OFL
 
+== Google Material Icons / Material Symbols ==
+
+Author: Google
+Font URI: https://github.com/google/material-design-icons
+License: Apache License 2.0
+License Info: https://github.com/google/material-design-icons/blob/master/LICENSE
+License URI: https://github.com/google/material-design-icons/blob/master/LICENSE
+
 == Icomoon ==
 
 Author: Icomoon

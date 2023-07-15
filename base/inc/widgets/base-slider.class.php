@@ -143,7 +143,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'unmute' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Unmute icon', 'so-widgets-bundle' ),
-				'description' => __( 'Slide background videos are muted. Enable to display an unmute/mute icon. Only applies to self-hosted videos.', 'so-widgets-bundle' ),
+				'description' => __( 'Slide background videos are muted. Enable to display an unmute/mute icon.', 'so-widgets-bundle' ),
 				'default' => false,
 				'state_emitter' => array(
 					'callback' => 'conditional',
@@ -168,6 +168,13 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					'unmute_slider[show]' => array( 'show' ),
 					'unmute_slider[hide]' => array( 'hide' ),
 				),
+			),
+
+			'fitvids' => array(
+				'type' => 'checkbox',
+				'default' => true,
+				'label' => __( 'Use FitVids', 'so-widgets-bundle' ),
+				'description' => __( 'FitVids will scale background videos to fill the width of the slide while maintaining aspect ratio.', 'so-widgets-bundle' ),
 			),
 
 			'background_video_mobile' => array(
@@ -361,6 +368,10 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			}
 		}
 
+		if ( isset( $instance['controls']['fitvids'] ) ) {
+			$instance['controls']['fitvids'] = true;
+		}
+
 		return $instance;
 	}
 
@@ -535,6 +546,10 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				} elseif ( isset( $frame['background']['loop_background_videos'] ) ) {
 					// All other slider widgets.
 					$controls['opacity'] = $frame['background']['background_video_opacity'];
+				}
+
+				if ( ! empty( $controls['fitvids'] ) && ! wp_script_is( 'jquery-fitvids' ) ) {
+					wp_enqueue_script( 'jquery-fitvids' );
 				}
 
 				$this->video_code( $background['videos'], $classes, $controls );

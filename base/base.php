@@ -13,6 +13,12 @@ include plugin_dir_path( __FILE__ ) . 'inc/actions.php';
 include plugin_dir_path( __FILE__ ) . 'inc/shortcode.php';
 include plugin_dir_path( __FILE__ ) . 'inc/video.php';
 include plugin_dir_path( __FILE__ ) . 'inc/routes/sowb-rest-routes.php';
+include plugin_dir_path( __FILE__ ) . 'inc/shapes/shapes.php';
+
+// Load the Installer if it's not already active.
+if ( is_admin() && ! class_exists( 'SiteOrigin_Installer' ) ) {
+	include plugin_dir_path( __FILE__ ) . 'inc/installer/siteorigin-installer.php';
+}
 
 function siteorigin_widget_add_inline_css( $css ) {
 	global $siteorigin_widgets_inline_styles;

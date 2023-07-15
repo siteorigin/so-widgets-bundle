@@ -120,6 +120,28 @@
 
 	</div>
 
+	<?php if ( ! class_exists( 'SiteOrigin_Panels' ) ) { ?>
+		<div class="installer">
+			<a href="#" class="installer-link">
+				<?php _e( 'General Widget Bundle Settings', 'so-widgets-bundle' ); ?>
+			</a>
+
+			<div class="installer-container" style="display: none;">
+				<label>
+					<?php echo __( 'Enable SiteOrigin Installer: ', 'so-widgets-bundle' ); ?>
+					<input
+						type="checkbox"
+						name="installer_status"
+						class="installer_status"
+						<?php checked( get_option( 'siteorigin_installer', true ), 1 ); ?>
+						data-nonce="<?php echo wp_create_nonce( 'siteorigin_installer_status' ); ?>"
+					>
+				</label>
+			</div>
+		</div>
+	<?php } ?>
+
+
 	<div class="developers-link">
 		<?php _e( 'Developers - create your own widgets for the Widgets Bundle.', 'so-widgets-bundle' ); ?>
 		<a href="https://siteorigin.com/docs/widgets-bundle/" target="_blank" rel="noopener noreferrer"><?php _e( 'Read More', 'so-widgets-bundle' ); ?></a>.
