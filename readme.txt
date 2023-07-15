@@ -106,6 +106,18 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.51.0 - 15 July 2023 =
+* Added `Google Material Icons / Material Symbols` support.
+* Blog: Updated Portfolio to use Image Size for column sizing.
+* Blog: Updated Portfolio column width to account for column gutter.
+* Hero: Enabled alpha support for frame background color.
+* Hero: Update to hide `Background Image` settings if no background image is set.
+* Image: Added Image Shapes!
+* Slider: Added a `Use FitVids` setting for responsive videos.
+* Slider: Added unmute support for YouTube videos.
+* Added a check to confirm the ID is valid for widget activation or deactivation.
+* Developer: Added `siteorigin_widgets_button_attributes` to Button.
+
 = 1.50.1 - 12 June 2023 =
 * Slider: Resolved deprecated warning and improved link alignment.
 * Blog: Updated template defaults to include colors with alpha.
