@@ -168,9 +168,8 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 						),
 					),
 					'shape' => array(
-						'type' => 'select',
+						'type' => 'image_shape',
 						'label' => __( 'Image Shape', 'so-widgets-bundle' ),
-						'options' => SiteOrigin_Widget_Image_Shapes::single()->get_shapes(),
 						'state_handler' => array(
 							'image_shape[enabled]' => array( 'show' ),
 							'image_shape[disabled]' => array( 'hide' ),

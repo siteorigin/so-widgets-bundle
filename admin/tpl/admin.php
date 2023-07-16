@@ -120,7 +120,7 @@
 
 	</div>
 
-	<?php if ( ! class_exists( 'SiteOrigin_Panels' ) ) { ?>
+	<?php if ( ! class_exists( 'SiteOrigin_Panels' ) || ! class_exists( 'SiteOrigin_Premium' ) ) { ?>
 		<div class="installer">
 			<a href="#" class="installer-link">
 				<?php _e( 'General Widget Bundle Settings', 'so-widgets-bundle' ); ?>
