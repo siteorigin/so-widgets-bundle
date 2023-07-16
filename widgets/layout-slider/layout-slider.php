@@ -386,6 +386,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		// Slider navigation controls
 		$less['nav_color_hex'] = $instance['controls']['nav_color_hex'];
 		$less['nav_size'] = $instance['controls']['nav_size'];
+		$less['nav_align'] = ! empty( $instance['controls']['nav_align'] ) ? $instance['controls']['nav_align'] : 'right';
 
 		// Measurement field type options
 		$meas_options = array();
