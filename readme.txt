@@ -106,6 +106,15 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.52.0 - 16 July 2023 =
+* Added a new setting for Sliders, allowing users to choose the alignment of the pagination dots (left, center, or right).
+* Introduced a new field called "Image Shape" to a widget, including necessary CSS styles, PHP class for rendering, and JavaScript for handling behavior.
+* Updated the Image Widget to use the new "Image Shape" field.
+* Fixed an issue with image shapes being enabled when they shouldn't be.
+* Prevented the installer setting from showing if SiteOrigin Premium is active.
+* Renamed the `Navigation alignment` setting in the `base-slider.class.php` file to `Pagination alignment` for clarity.
+* Updated Build submodule.
+
 = 1.51.0 - 15 July 2023 =
 * Added `Google Material Icons / Material Symbols` support.
 * Blog: Updated Portfolio to use Image Size for column sizing.

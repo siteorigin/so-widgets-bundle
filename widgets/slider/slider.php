@@ -299,6 +299,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			$less['nav_size'] = $instance['controls']['nav_size'];
 		}
 
+		$less['nav_align'] = ! empty( $instance['controls']['nav_align'] ) ? $instance['controls']['nav_align'] : 'right';
 		$less['slide_height'] = ! empty( $instance['design']['height'] ) ? $instance['design']['height'] : false;
 		$less['slide_height_responsive'] = ! empty( $instance['design']['height_responsive'] ) ? $instance['design']['height_responsive'] : false;
 
