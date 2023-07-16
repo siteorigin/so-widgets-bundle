@@ -133,6 +133,17 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'label' => __( 'Always show navigation on mobile', 'so-widgets-bundle' ),
 			),
 
+			'nav_align' => array(
+				'type' => 'select',
+				'label' => __( 'Pagination alignment', 'so-widgets-bundle' ),
+				'default' => 'right',
+				'options' => array(
+					'left' => __( 'Left', 'so-widgets-bundle' ),
+					'center' => __( 'Center', 'so-widgets-bundle' ),
+					'right' => __( 'Right', 'so-widgets-bundle' ),
+				),
+			),
+
 			'swipe' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Swipe control', 'so-widgets-bundle' ),
