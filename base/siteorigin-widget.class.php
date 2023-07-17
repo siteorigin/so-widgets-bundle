@@ -612,19 +612,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_style( 'siteorigin-widget-admin', plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'base/css/admin.css', array( 'media-views' ), SOW_BUNDLE_VERSION );
 
-			wp_register_script(
-				'wp-color-picker-alpha',
-				plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/wp-color-picker-alpha' . SOW_BUNDLE_JS_SUFFIX . '.js',
-				array( 'wp-color-picker' ),
-				'3.0.2',
-				true
-			);
-
 			wp_enqueue_media();
 			wp_enqueue_script(
 				'siteorigin-widget-admin',
 				plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'base/js/admin' . SOW_BUNDLE_JS_SUFFIX . '.js',
-				array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-slider', 'underscore', 'wp-color-picker-alpha' ),
+				array(
+					'jquery',
+					'jquery-ui-sortable',
+					'jquery-ui-slider',
+					'underscore'
+				),
 				SOW_BUNDLE_VERSION,
 				true
 			);
@@ -642,6 +639,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					),
 				),
 			) );
+
+			if ( ! class_exists( 'FLBuilderModel' ) || FLBuilderModel::is_builder_active() ) {
+				wp_enqueue_script(
+					'wp-color-picker-alpha',
+					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/wp-color-picker-alpha' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					array( 'wp-color-picker' ),
+					'3.0.2',
+					true
+				);
+			}
 
 			global $wp_customize;
 
