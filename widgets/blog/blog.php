@@ -35,6 +35,7 @@ public function __construct() {
 			)
 		);
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_template_assets' ) );
+		add_filter( 'siteorigin_widgets_blog_query', array( $this, 'portfolio_filter_posts' ), 8, 2 );
 	}
 
 	public function register_image_sizes() {
@@ -986,6 +987,23 @@ public function __construct() {
 			'template_settings' => $template_settings,
 			'posts' => new WP_Query( apply_filters( 'siteorigin_widgets_blog_query', $query, $instance ) ),
 		);
+	}
+
+	public function portfolio_filter_posts( $query, $instance ) {
+		if (
+			$instance['template'] == 'portfolio' &&
+			! empty( $instance['settings']['featured_image_empty'] ) &&
+			empty( $instance['settings']['featured_image_fallback'] )
+		) {
+			$query['meta_query'] = array(
+				array(
+					'key' => '_thumbnail_id',
+					'compare' => 'EXISTS',
+				),
+			);
+		}
+
+		return $query;
 	}
 
 	public static function post_meta( $settings ) {
