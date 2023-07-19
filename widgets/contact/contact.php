@@ -502,6 +502,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'multi_margin' => array(
 								'type'  => 'multi-measurement',
 								'label' => __( 'Margin', 'so-widgets-bundle' ),
+								'default' => '0px 0px 15px 0px',
 								'measurements' => array(
 									'top' => array(
 										'label' => __( 'Top', 'so-widgets-bundle' ),
