@@ -105,6 +105,10 @@ public function __construct() {
 							'type' => 'checkbox',
 							'label' => __( 'Skip Post if No Featured Image', 'so-widgets-bundle' ),
 							'default' => true,
+							'state_handler' => array(
+								'active_template[portfolio]' => array( 'slideDown' ),
+								'_else[active_template]' => array( 'slideUp' ),
+							),
 						),
 						'featured_image_size' => array(
 							'type' => 'image-size',
