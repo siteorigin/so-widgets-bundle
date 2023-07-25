@@ -349,3 +349,32 @@ function siteorigin_widgets_get_measurements_list() {
 function siteorigin_widgets_url( $path = '' ) {
 	return plugins_url( 'so-widgets-bundle/' . $path );
 }
+
+function siteorigin_loading_optimization_attributes( $attr, $widget, $instance, $class ) {
+	// Allow other plugins to override whether this widget is lazy loaded or not.
+	if (
+		apply_filters(
+			'siteorigin_widgets_' . $widget . '_lazy_load',
+			'lazy',
+			$instance,
+			$class
+		)
+	) {
+		if ( function_exists( 'wp_get_loading_optimization_attributes' ) ) {
+			// WP 6.3.
+			$attr['loading'] = 'lazy';
+			$attr = array_merge(
+				$attr,
+				wp_get_loading_optimization_attributes( 'img', $attr, 'wp_get_attachment_image' )
+			);
+		} elseif (
+			function_exists( 'wp_lazy_loading_enabled' ) &&
+			wp_lazy_loading_enabled( 'img', 'sow-image' ) &&
+			function_exists( 'wp_get_loading_attr_default' )
+		) {
+			// WP 5.9 to 6.2.x.
+			$attr['loading'] = function_exists( 'wp_get_loading_attr_default' ) ? wp_get_loading_attr_default( 'the_content' ) : 'lazy';
+		}
+	}
+	return $attr;
+}
