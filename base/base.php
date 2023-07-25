@@ -369,10 +369,9 @@ function siteorigin_loading_optimization_attributes( $attr, $widget, $instance, 
 			);
 		} elseif (
 			function_exists( 'wp_lazy_loading_enabled' ) &&
-			wp_lazy_loading_enabled( 'img', 'sow-image' ) &&
-			function_exists( 'wp_get_loading_attr_default' )
+			wp_lazy_loading_enabled( 'img', 'sow-image' )
 		) {
-			// WP 5.9 to 6.2.x.
+			// < WP 6.3.
 			$attr['loading'] = function_exists( 'wp_get_loading_attr_default' ) ? wp_get_loading_attr_default( 'the_content' ) : 'lazy';
 		}
 	}
