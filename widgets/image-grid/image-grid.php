@@ -274,31 +274,28 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				continue;
 			}
 
-			$loading_val = function_exists( 'wp_get_loading_attr_default' ) ? wp_get_loading_attr_default( 'the_content' ) : 'lazy';
 			$link_atts = empty( $image['link_attributes'] ) ? array() : $image['link_attributes'];
-
 			if ( ! empty( $image['new_window'] ) ) {
 				$link_atts['target'] = '_blank';
 				$link_atts['rel'] = 'noopener noreferrer';
 			}
 			$image['link_attributes'] = $link_atts;
 
-			$title = $this->get_image_title( $image );
-
-			// Allow other plugins to override whether this image is lazy loaded or not.
-			$lazy_load_current = apply_filters(
-				'siteorigin_widgets_image_grid_lazy_load',
-				// If WordPress 5.9 or higher is being used, let WordPress control if Lazy Load is enabled.
-				$lazy && $loading_val == 'lazy',
-				$instance,
-				$this
-			);
+			$attr = array();
+			$attr['title'] = $this->get_image_title( $image );
+			$attr['alt'] = ! empty( $image['alt'] ) ? $image['alt'] . '"' : '';
+			$attr['class'] = 'sow-image-grid-image_html';
 
 			if ( empty( $image['image'] ) && ! empty( $image['image_fallback'] ) ) {
-				$alt = ! empty( $image['alt'] ) ? $image['alt'] . '"' : '';
-
-				// lazy_load_current
-				$image['image_html'] = '<img src="' . esc_url( $image['image_fallback'] ) . '" alt="' . esc_attr( $alt ) . '" title="' . esc_attr( $title ) . '" class="sow-image-grid-image_html" ' . ( $lazy_load_current ? 'loading="lazy"' : '' ) . '>';
+				$attr['src'] = esc_url( $image['image_fallback'] );
+				$attr = siteorigin_loading_optimization_attributes( $attr, 'image_grid', $instance, $this );
+				$image['image_html'] = '<img ';
+				foreach ( $attr as $n => $v ) {
+					if ( $n === 'alt' || ! empty( $v ) ) {
+						$image['image_html'] .= $n . '="' . esc_attr( $v ) . '" ';
+					}
+				}
+				$image['image_html'] .= '>';
 			} else {
 				if (
 					$instance['display']['attachment_size'] == 'custom_size' &&
@@ -315,12 +312,19 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 					$instance['display']['max_width'] = $instance['display']['attachment_size'][1];
 				}
 
-				$image['image_html'] = wp_get_attachment_image( $image['image'], $instance['display']['attachment_size'], false, array(
-					'title' => $title,
-					'alt' => $image['alt'],
-					'class' => 'sow-image-grid-image_html',
-					'loading' => $lazy_load_current ? 'lazy' : '',
-				) );
+				$attr['class'] = 'sow-image-grid-image_html';
+
+				$image['image_html'] = wp_get_attachment_image(
+					$image['image'],
+					$instance['display']['attachment_size'],
+					false,
+					siteorigin_loading_optimization_attributes(
+						$attr,
+						'image_grid',
+						$instance,
+						$this
+					)
+				);
 			}
 		}
 
