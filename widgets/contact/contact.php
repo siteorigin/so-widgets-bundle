@@ -750,7 +750,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			),
 		);
 
-	if ( function_exists( 'imagecreatetruecolor' ) ) {
+		if ( function_exists( 'imagecreatetruecolor' ) ) {
 			siteorigin_widgets_array_insert(
 				$form_options['spam']['fields'],
 				'akismet',
@@ -1376,6 +1376,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					);
 					break;
 			}
+
+			do_action( 'siteorigin_widgets_contact_post_var_field', $value, $field );
 		}
 
 		// Add in a default email address if no email field is defined in the form at all.
@@ -1427,6 +1429,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		$errors = apply_filters( 'siteorigin_widgets_contact_validation', $errors, $post_vars, $email_fields, $instance );
 
 		if ( empty( $errors ) ) {
+			$email_fields = apply_filters( 'siteorigin_widgets_contact_email_fields', $email_fields, $post_vars, $instance );
 			// We can send the email
 			$success = $this->send_mail( $email_fields, $instance );
 
