@@ -2,6 +2,10 @@
 
 class SiteOrigin_Widget_ContactForm_Field_Select extends SiteOrigin_Widget_ContactForm_Field_Base {
 	public function render_field( $options ) {
+		if ( ! empty( $options['field']['multiple_select'] ) ) {
+			wp_enqueue_script( 'select2' );
+			wp_enqueue_style( 'select2' );
+		}
 		?>
 		<select
 			name="<?php echo esc_attr( $options['field_name'] ); ?><?php echo ! empty( $options['field']['multiple_select'] ) ? '[]' : ''; ?>"
