@@ -20,7 +20,11 @@ class SiteOrigin_Widget_Field_Image_Shape extends SiteOrigin_Widget_Field_Base {
 			foreach ( $shapes as $shape => $name ) {
 				?>
 				<div class="siteorigin-widget-shape" data-shape="<?php echo esc_attr( $shape ); ?>">
-					<img class="siteorigin-widget-shape-image" src="<?php echo esc_url( SiteOrigin_Widget_Image_Shapes::single()->get_image_shape( $shape ) ); ?>" />
+					<?php if ( $shape == 'custom' ) { ?>
+						<span class="siteorigin-widget-shape-image dashicons dashicons-insert"></span>
+					<?php } else { ?>
+						<img class="siteorigin-widget-shape-image" src="<?php echo esc_url( SiteOrigin_Widget_Image_Shapes::single()->get_image_shape( $shape ) ); ?>" />
+					<?php } ?>
 					<div class="siteorigin-widget-shape-name"><?php echo esc_html( $name ); ?></div>
 				</div>
 				<?php
