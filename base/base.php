@@ -377,3 +377,20 @@ function siteorigin_loading_optimization_attributes( $attr, $widget, $instance, 
 	}
 	return $attr;
 }
+
+/**
+ * The ajax handler for the links field using the the post: ID format without a title set.
+ */
+function siteorigin_widgets_links_get_title() {
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
+	}
+
+	if ( empty( $_GET['postId'] ) || ! is_numeric( $_GET['postId'] ) ) {
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );
+	}
+	$postTitle = get_the_title( $_GET['postId'] );
+	echo ! empty( $postTitle ) ? esc_attr( $postTitle ) : __( '(No Title)', 'so-widgets-bundle' );
+	die();
+}
+add_action( 'wp_ajax_so_widgets_links_get_title', 'siteorigin_widgets_links_get_title' );
