@@ -353,12 +353,12 @@ function siteorigin_widgets_url( $path = '' ) {
 function siteorigin_loading_optimization_attributes( $attr, $widget, $instance, $class ) {
 	// Allow other plugins to override whether this widget is lazy loaded or not.
 	if (
-		apply_filters(
+		! empty( apply_filters(
 			'siteorigin_widgets_' . $widget . '_lazy_load',
 			'lazy',
 			$instance,
 			$class
-		)
+		) )
 	) {
 		if ( function_exists( 'wp_get_loading_optimization_attributes' ) ) {
 			// WP 6.3.
