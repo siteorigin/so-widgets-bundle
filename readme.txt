@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: widget, button, slider, hero, google maps, image, carousel, lottie, features, icons, price table, tinymce, social icons
 Requires at least: 4.2
-Tested up to: 6.2
+Tested up to: 6.3
 Requires PHP: 5.6.20
 Stable tag: trunk
 Build time: unbuilt
