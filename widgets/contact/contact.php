@@ -53,6 +53,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_widget_form() {
+		$useable_units = array(
+			'px',
+			'%',
+		);
+
 		$form_options = array(
 			'title' => array(
 				'type'    => 'text',
@@ -494,9 +499,28 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'type'  => 'color',
 								'label' => __( 'Text color', 'so-widgets-bundle' ),
 							),
-							'margin'        => array(
-								'type'  => 'measurement',
+							'multi_margin' => array(
+								'type'  => 'multi-measurement',
 								'label' => __( 'Margin', 'so-widgets-bundle' ),
+								'default' => '0px 0px 15px 0px',
+								'measurements' => array(
+									'top' => array(
+										'label' => __( 'Top', 'so-widgets-bundle' ),
+										'units' => $useable_units,
+									),
+									'right' => array(
+										'label' => __( 'Right', 'so-widgets-bundle' ),
+										'units' => $useable_units,
+									),
+									'bottom' => array(
+										'label' => __( 'Bottom', 'so-widgets-bundle' ),
+										'units' => $useable_units,
+									),
+									'left' => array(
+										'label' => __( 'Left', 'so-widgets-bundle' ),
+										'units' => $useable_units,
+									),
+								),
 							),
 							'padding'       => array(
 								'type'  => 'measurement',
@@ -883,6 +907,18 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$instance['spam']['browser_check'] = false;
 		}
 
+		if (
+			! empty( $instance['design'] ) &&
+			! empty( $instance['design']['fields'] ) &&
+			isset( $instance['design']['fields']['margin'] )
+		) {
+			$everything_else = ! empty( $instance['design']['fields']['margin'] ) ? (int) $instance['design']['fields']['margin'] : '0';
+			$botton_margin = ( $everything_else + '15' ) . 'px';
+			$everything_else .= 'px';
+			$instance['design']['fields']['multi_margin'] = "$everything_else $everything_else $botton_margin $everything_else";
+			unset( $instance['design']['fields']['margin'] );
+		}
+
 		return $instance;
 	}
 
@@ -1052,7 +1088,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'field_font_family'          => $field_font['family'],
 			'field_font_size'            => $instance['design']['fields']['font_size'],
 			'field_font_color'           => $instance['design']['fields']['color'],
-			'field_margin'               => $instance['design']['fields']['margin'],
+			'field_margin'               => $instance['design']['fields']['multi_margin'],
 			'field_padding'              => $instance['design']['fields']['padding'],
 			'field_max_width'            => ! empty( $instance['design']['fields']['max_width'] ) ? $instance['design']['fields']['max_width'] : '',
 			'field_height'               => $instance['design']['fields']['height'],
