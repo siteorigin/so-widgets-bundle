@@ -242,6 +242,12 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				'default' => 3,
 			),
 
+			'center_items' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Center items', 'so-widgets-bundle' ),
+				'description' => __( 'If there are fewer features on a line than the maximum, center the items.', 'so-widgets-bundle' ),
+			),
+
 			'feature_space' => array(
 				'type' => 'measurement',
 				'label' => __( 'Space between each feature', 'so-widgets-bundle' ),
@@ -355,6 +361,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		$less_vars['icon_size'] = $instance['icon_size'];
 		$less_vars['title_tag'] = ! empty( $instance['fonts']['title_options']['tag'] ) ? $instance['fonts']['title_options']['tag'] : 'h5';
 		$less_vars['per_row'] = $instance['per_row'];
+		$less_vars['center_items'] = ! empty( $instance['center_items'] );
 		$less_vars['feature_space'] = ! empty( $instance['feature_space'] ) ? $instance['feature_space'] : '25px';
 		$less_vars['use_icon_size'] = empty( $instance['icon_size_custom'] ) ? 'false' : 'true';
 		$less_vars['link_feature'] = ! empty( $instance['link_feature'] );
