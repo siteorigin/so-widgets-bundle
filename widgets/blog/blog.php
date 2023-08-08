@@ -950,6 +950,11 @@ public function __construct() {
 			siteorigin_widget_post_selector_process_query( $instance['posts'] )
 		);
 
+		// If the user has set an offset, account for it after the first page.
+		if ( isset( $query['offset'] ) && isset( $instance['paged'] ) ) {
+			$query['offset'] = $query['offset'] + $instance['paged'] * $query['posts_per_page'];
+		}
+
 		if ( $instance['template'] == 'portfolio' && ! empty( $instance['featured_image_fallback'] ) ) {
 			// The portfolio template relies on each post having an image so exclude any posts that don't.
 			$query['meta_query'] = array(
