@@ -950,9 +950,9 @@ public function __construct() {
 			siteorigin_widget_post_selector_process_query( $instance['posts'] )
 		);
 
-		// If the user has set an offset, account for it after the first page.
-		if ( isset( $query['offset'] ) && isset( $instance['paged'] ) ) {
-			$query['offset'] = $query['offset'] + $instance['paged'] * $query['posts_per_page'];
+		// If the user has set an offset, remove it after the first page.
+		if ( isset( $query['offset'] ) && $instance['paged'] > 1 ) {
+			unset( $query['offset'] );
 		}
 
 		if ( $instance['template'] == 'portfolio' && ! empty( $instance['featured_image_fallback'] ) ) {
