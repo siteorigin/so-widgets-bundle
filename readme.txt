@@ -106,6 +106,14 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.53.0 - 09 August 2023 =
+* Added multi-measurement support for the field margin in the Contact widget.
+* Resolved issue with the "Use FitVids" option being locked to enabled in the Slider widget.
+* Updated the Simple Masonry, Image, and Image Grid widgets to use the `siteorigin_loading_optimization_attributes` function for better control over lazy loading of images.
+* Improved logic in the `siteorigin_loading_optimization_attributes` filter check to avoid potential errors.
+* Updated the "Tested up to" version in the readme.txt file to 6.3.
+* Reverted changes to the Blog widget that attempted to show correct terms for selected post types due to implementation issues.
+
 = 1.52.0 - 16 July 2023 =
 * Added a new setting for Sliders, allowing users to choose the alignment of the pagination dots (left, center, or right).
 * Introduced a new field called "Image Shape" to a widget, including necessary CSS styles, PHP class for rendering, and JavaScript for handling behavior.
