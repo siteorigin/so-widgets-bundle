@@ -245,7 +245,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			'center_items' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Center items', 'so-widgets-bundle' ),
-				'description' => __( 'If there are fewer features on a line than the maximum, center the items.', 'so-widgets-bundle' ),
+				'description' => __( 'If fewer features are on a line than the maximum, center the items.', 'so-widgets-bundle' ),
 			),
 
 			'feature_space' => array(
