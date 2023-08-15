@@ -187,10 +187,6 @@
 			padding: @field_padding;
 		}
 
-		.select2-selection__rendered {
-			margin: 0;
-		}
-
 		.select2-container,
 		.select2-search__field {
 			width: 100% !important;
@@ -204,6 +200,27 @@
 				outline: none;
 			}
 		}
+
+		.select2-selection__choice__remove {
+			height: 100%;
+		}
+
+		.select2-selection__choice {
+			margin-left: 2px;
+			margin-top: 0;
+		}
+
+		.select2-selection--multiple {
+				align-items: center;
+				display: flex;
+				padding: 0;				}
+
+				.select2-selection__rendered {
+					margin: 0;
+					.select2-search__field {
+						margin-top: 0;
+					}
+				}
 	}
 
 	@description_font_size: 0.9em;
