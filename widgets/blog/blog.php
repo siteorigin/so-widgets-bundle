@@ -1223,6 +1223,18 @@ public function __construct() {
 		}
 	}
 
+	public function total_pages( $posts ) {
+		// WP Query's max_num_pages doesn't account for offset, so let's do that now.
+		if (
+			! empty( $posts->query['offset'] ) &&
+			is_numeric( $posts->query['offset'] )
+		) {
+			return ceil( max( $posts->found_posts - $posts->query['offset'], 1 ) / $posts->query['posts_per_page'] );
+		} else {
+			return $posts->max_num_pages;
+		}
+	}
+
 	public function get_form_teaser() {
 		if ( class_exists( 'SiteOrigin_Premium' ) ) {
 			return false;
