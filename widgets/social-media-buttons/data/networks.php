@@ -7,11 +7,11 @@ return array(
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#3A5795',
 	),
-	'twitter' => array(
-		'label' => __( 'Twitter', 'so-widgets-bundle' ),
+	'x-twitter' => array(
+		'label' => __( 'X (Twitter)', 'so-widgets-bundle' ),
 		'base_url' => 'https://twitter.com/',
-		'icon_color' => '#FFFFFF',
-		'button_color' => '#78BDF1',
+		'icon_color' => '#000',
+		'button_color' => '#fff',
 	),
 	'rss'  => array(
 		'label' => __( 'RSS', 'so-widgets-bundle' ),
@@ -309,6 +309,12 @@ return array(
 		'base_url' => 'https://www.twitch.tv/',
 		'icon_color' => '#FFFFFF',
 		'button_color' => '#6542A6',
+	),
+	'twitter' => array(
+		'label' => __( 'Twitter (Classic Logo)', 'so-widgets-bundle' ),
+		'base_url' => 'https://twitter.com/',
+		'icon_color' => '#ffffff',
+		'button_color' => '#78bdf1',
 	),
 	'vimeo-square' => array(
 		'label' => __( 'Vimeo', 'so-widgets-bundle' ),
