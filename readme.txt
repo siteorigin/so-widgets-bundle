@@ -106,6 +106,11 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.54.0 - 16 August 2023 =
+* Added a new setting called "Center Items" to the Features widget. This setting allows users to center the items if there are fewer features on a line than the maximum.
+* Added a new setting called "Skip Post if No Featured Image" to the Blog Portfolio widget. This setting allows users to skip posts without a featured image when the active template is set to "Portfolio".
+* Updated the SiteOrigin Installer.
+
 = 1.53.0 - 09 August 2023 =
 * Added multi-measurement support for the field margin in the Contact widget.
 * Resolved issue with the "Use FitVids" option being locked to enabled in the Slider widget.
