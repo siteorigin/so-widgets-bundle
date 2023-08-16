@@ -30,6 +30,10 @@
 				height: 16px;
 				width: 16px;
 			}
+
+			.siteorigin-widget-shape-image.dashicons {
+				font-size: 16px;
+			}
 		}
 
 		label {
@@ -97,8 +101,18 @@
 			}
 	
 			&-image {
+				display: flex;
 				height: 40px;
 				width: auto;
+
+				&.dashicons {
+					font-size: 40px;
+
+					&::before {
+						align-self: center;
+						display: block;
+					}
+				}
 			}
 		
 			&-name {
