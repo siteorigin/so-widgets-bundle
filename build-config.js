@@ -44,6 +44,7 @@ module.exports = {
             '**/!(*.js|*.less|*.css)',          // Everything except .js, .css and .less files
             'icons/**/*css',                    // Copy CSS for icon packs.
             'js/lib/**/*css',                   // Copy CSS for JS libs.
+            'css/lib/**/*css',                  // Copy CSS for JS libs.
             'base/less/*.less',                 // LESS libraries used in runtime styles
             'base/inc/widgets/less/*.less',
             'base/inc/installer/css/*css',      // Include Installer CSS.
