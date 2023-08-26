@@ -204,6 +204,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'default' => '1em',
 					),
 
+					'icon_size' => array(
+						'type' => 'measurement',
+						'label' => __( 'Icon Size', 'so-widgets-bundle' ),
+						'default' => '1.3em',
+					),
+
 					'padding' => array(
 						'type' => 'measurement',
 						'label' => __( 'Padding', 'so-widgets-bundle' ),
@@ -372,6 +378,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'button_width' => isset( $instance['design']['width'] ) ? $instance['design']['width'] : '',
 			'button_color' => $button_color,
 			'text_color' => $text_color,
+			'icon_size' => ! empty( $instance['design']['icon_size'] ) ? $instance['design']['icon_size'] : '1.3em',
 			'hover_text_color' => ! empty( $instance['design']['hover_text_color'] ) ? $instance['design']['hover_text_color'] : $text_color,
 			'hover_background_color' => ! empty( $instance['design']['hover_background_color'] ) ? $instance['design']['hover_background_color'] : $button_color,
 			'font_size' => isset( $instance['design']['font_size'] ) ? $instance['design']['font_size'] : '',
@@ -470,6 +477,10 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 		if ( ! empty( $instance['design']['rounding'] ) && is_numeric( $instance['design']['rounding'] ) ) {
 			$instance['design']['rounding'] = $instance['design']['rounding'] . 'em ' . $instance['design']['rounding'] . 'em ' . $instance['design']['rounding'] . 'em ' . $instance['design']['rounding'] . 'em';
+		}
+
+		if ( empty( $instance['design']['icon_size'] ) ) {
+			$instance['design']['icon_size'] = '9.3em';
 		}
 
 		return $instance;
