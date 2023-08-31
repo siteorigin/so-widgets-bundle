@@ -121,6 +121,7 @@ public function __construct() {
 								'type' => 'number',
 								'label' => __( 'Image Size', 'so-widgets-bundle' ),
 								'default' => 100,
+								'unit' => 'px',
 							),
 							'position' => array(
 								'type' => 'radio',
