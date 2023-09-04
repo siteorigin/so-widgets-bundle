@@ -52,7 +52,7 @@ add_action( 'wp_head', 'siteorigin_widget_print_styles' );
 add_action( 'wp_footer', 'siteorigin_widget_print_styles' );
 
 /**
- * The ajax handler for getting a list of available icons.
+ * The Ajax handler for getting a list of available icons.
  */
 function siteorigin_widget_get_icon_list() {
 	if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
