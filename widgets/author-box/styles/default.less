@@ -1,5 +1,9 @@
 @responsive_breakpoint: 780px;
+
 @container_background: default;
+@container_border_color: default;
+@container_padding: default;
+@container_border_thickness: default;
 @container_border_radius: default;
 
 @name_font: default;
@@ -21,9 +25,12 @@
 
 .sow-author-box {
 	background: @container_background;
+	border-color: @container_border_color;
 	border-radius: @container_border_radius;
+	border-style: solid;
+	border-width: @container_border_thickness;
 	margin: 20px 0;
-	padding: 20px;
+	padding: @container_padding;
 
 	& when ( @avatar_border_position = right ) {
 		flex-direction: row-reverse;
