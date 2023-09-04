@@ -328,7 +328,7 @@ jQuery( function($){
 				} );
 
 				$base.on( 'keyup', function( e ) {
-					if( e.which === 37 ) {
+					if ( e.which === 37 ) {
 						$$.cycle( 'prev' );
 					} else if ( e.which === 39 ) {
 						$$.cycle( 'next' );
