@@ -13,8 +13,10 @@
 @name_color: default;
 @name_color_hover: default;
 @name_link_all: default;
+
 @avatar_border_radius: default;
 @avatar_border_position: left;
+
 @bio_color: default;
 @bio_font: default;
 @bio_font_style: default;
@@ -77,6 +79,7 @@
 		}
 	}
 
+
 	&-title {
 		font-family: @name_font;
 		font-size: @name_font_size;
@@ -93,11 +96,11 @@
 		a {
 			color: @name_color;
 			text-decoration: none;
+
 			&:hover,
 			&:focus {
 				color: @name_color_hover;
 			}
-
 		}
 
 	}
@@ -111,7 +114,6 @@
 			display: block;
 			font-size: 0.867em;
 			margin-bottom: 10px;
-			test: @name_link_all;
 			text-decoration: none;
 			@media (max-width: @responsive_breakpoint) {
 				margin-top: 1em;
@@ -133,6 +135,7 @@
 
 		a {
 			color: @bio_link;
+
 			&:hover,
 			&:focus {
 				color: @bio_link_hover;
