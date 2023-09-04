@@ -53,15 +53,23 @@
 			flex: 9;
 		}
 	}
-
-	@media (max-width: @responsive_breakpoint) {
-		text-align: center;
-	}
-
+	
 	&-title-wrapper {
 		align-items: center;
 		display: flex;
 		gap: 10px;
+		
+		& when ( @avatar_border_position = right ) {
+			justify-content: end;
+		}
+	}
+	
+	@media (max-width: @responsive_breakpoint) {
+		text-align: center;
+	
+		&-title-wrapper {
+			justify-content: center;
+		}
 	}
 
 	&-title {
