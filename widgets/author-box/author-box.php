@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Author Box
-Description: Placeholder.
+Description: Display author details, including avatar, name, and links to their posts, all while customizing the box style to suit your page.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/author-box-widget/
@@ -260,8 +260,8 @@ public function __construct() {
 
 		return array(
 			sprintf(
-				__( 'Placeholder teaser for %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/addon-link" target="_blank" rel="noopener noreferrer">',
+				__( '%sSiteOrigin Premium%s adds depth to the Author Box Widget with placement options, author bios, recent post visibility, social buttons, and design customizations. Enjoy centralized global control of author boxes.', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/author-box" target="_blank" rel="noopener noreferrer">',
 				'</a>'
 			),
 		);
