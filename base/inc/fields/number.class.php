@@ -62,10 +62,12 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 		return $input_classes;
 	}
 
-	protected function render_after_field() {
+	protected function render_after_field( $value, $instance ) {
 		if ( ! empty( $this->unit ) ) {
 			echo '<span class="siteorigin-widget-input-number-unit">' . $this->unit . '</span>';
 		}
+
+		parent::render_after_field( $value, $instance );
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
