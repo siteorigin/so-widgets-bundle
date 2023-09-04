@@ -329,17 +329,15 @@ jQuery( function( $ ) {
 					$$.cycle( $( this ).data( 'action' ) );
 				} );
 
-				$base.on( 'keydown',
-					function( event ) {
-						if ( event.which === 37 ) {
-							//left
-							$$.cycle( 'prev' );
-						} else if ( event.which === 39 ) {
-							//right
-							$$.cycle( 'next' );
-						}
+				$base.on( 'keyup', function( e ) {
+					if ( e.which === 37 ) {
+						$$.cycle( 'prev' );
+					} else if ( e.which === 39 ) {
+						$$.cycle( 'next' );
 					}
-				);
+
+					$base.trigger( 'focus' );
+				} );
 
 				if ( settings.unmute ) {
 					$base.find( '.sow-player-controls-sound' ).on( 'click', function() {

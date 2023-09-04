@@ -9,7 +9,7 @@ if ( $result['status'] == 'success' ) {
 	// Display the success message
 	?>
 	<div class="sow-contact-form-success" id="contact-form-<?php echo esc_attr( $short_hash ); ?>">
-		<?php echo $instance['settings']['success_message']; ?>
+		<?php echo wp_kses_post( apply_filters( 'siteorigin_widgets_contact_success_message', $instance['settings']['success_message'] ) ); ?>
 	</div>
 	<?php
 } else {
