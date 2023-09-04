@@ -91,12 +91,26 @@ public function __construct() {
 								'label' => __( 'Background', 'so-widgets-bundle' ),
 								'alpha' => true,
 							),
+							'border_color' => array(
+								'type' => 'color',
+								'label' => __( 'Border Color', 'so-widgets-bundle' ),
+							),
 							'border_radius' => array(
 								'type' => 'slider',
 								'label' => __( 'Border Radius', 'so-widgets-bundle' ),
 								'max' => 50,
 								'min' => 0,
 								'step' => 1,
+							),
+							'border_thickness' => array(
+								'type' => 'measurement',
+								'label' => __( 'Border Thickness', 'so-widgets-bundle' ),
+								'default' => '1px',
+							),
+							'padding' => array(
+								'type' => 'measurement',
+								'label' => __( 'Padding', 'so-widgets-bundle' ),
+								'default' => '20px',
 							),
 						),
 					),
@@ -217,6 +231,9 @@ public function __construct() {
 
 		$less_vars['container_background'] = ! empty( $instance['design']['container']['background_color'] ) ? $instance['design']['container']['background_color'] : '';
 		$less_vars['container_border_radius'] = ! empty( $instance['design']['container']['border_radius'] ) ? $instance['design']['container']['border_radius'] . 'px' : '';
+		$less_vars['container_border_color'] = ! empty( $instance['design']['container']['border_color'] ) ? $instance['design']['container']['border_color'] : '';
+		$less_vars['container_border_thickness'] = ! empty( $instance['design']['container']['border_thickness'] ) ? $instance['design']['container']['border_thickness'] . 'px' : '1px';
+		$less_vars['container_padding'] = ! empty( $instance['design']['container']['padding'] ) ? $instance['design']['container']['padding'] . 'px' : '20px';
 
 		if ( ! empty( $instance['design']['name']['font'] ) ) {
 			$font = siteorigin_widget_get_font( $instance['design']['name']['font'] );
