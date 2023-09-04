@@ -143,7 +143,13 @@ function siteorigin_widget_post_selector_all_post_types() {
  */
 function siteorigin_widget_post_selector_count_posts( $query ) {
 	$query = siteorigin_widget_post_selector_process_query( $query );
+
 	$posts = new WP_Query( $query );
 
-	return $posts->found_posts;
+	// WP Query doesn't reduce found_posts by the offset value, let's do that now.
+	if ( ! empty( $query['offset'] ) && is_numeric( $query['offset'] ) ) {
+		$total = max( $posts->found_posts - $query['offset'], 0 );
+	}
+
+	return empty( $total ) ? $posts->found_posts : $total;
 }
