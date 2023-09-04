@@ -480,7 +480,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		}
 
 		if ( empty( $instance['design']['icon_size'] ) ) {
-			$instance['design']['icon_size'] = '9.3em';
+			$instance['design']['icon_size'] = '1.3em';
 		}
 
 		return $instance;
