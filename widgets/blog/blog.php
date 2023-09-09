@@ -979,6 +979,11 @@ public function __construct() {
 			siteorigin_widget_post_selector_process_query( $instance['posts'] )
 		);
 
+		// If the user has set an offset, account for it after the first page.
+		if ( isset( $query['offset'] ) && $instance['paged'] > 1 ) {
+			$query['offset'] = $offset = ( $query['paged'] - 1 ) * $query['posts_per_page'] + $query['offset'];
+		}
+
 		if ( $instance['template'] == 'portfolio' && ! empty( $instance['featured_image_fallback'] ) ) {
 			// The portfolio template relies on each post having an image so exclude any posts that don't.
 			$query['meta_query'] = array(
@@ -1261,6 +1266,18 @@ public function __construct() {
 				</div>
 			</nav>
 			<?php
+		}
+	}
+
+	public function total_pages( $posts ) {
+		// WP Query's max_num_pages doesn't account for offset, so let's do that now.
+		if (
+			! empty( $posts->query['offset'] ) &&
+			is_numeric( $posts->query['offset'] )
+		) {
+			return ceil( max( $posts->found_posts - $posts->query['offset'], 1 ) / $posts->query['posts_per_page'] );
+		} else {
+			return $posts->max_num_pages;
 		}
 	}
 

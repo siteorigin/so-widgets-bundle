@@ -67,6 +67,10 @@ sowb.SiteOriginContactForm = {
 					$( this ).append( `<input type="hidden" name="sow-js-${js_key}" value="${js_key}">` );
 				}
 			} );
+
+			if ( typeof $.fn.select2 == 'function' ) {
+				$( '.sow-form-field-select select[multiple]' ).select2();
+			}
 		} );
 	},
 };
