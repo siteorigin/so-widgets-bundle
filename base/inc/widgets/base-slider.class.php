@@ -379,7 +379,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			}
 		}
 
-		if ( isset( $instance['controls']['fitvids'] ) ) {
+		if ( ! isset( $instance['controls']['fitvids'] ) ) {
 			$instance['controls']['fitvids'] = true;
 		}
 
@@ -403,7 +403,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		switch( $part ) {
 			case 'before_slider':
 				?>
-				<div class="sow-slider-base" style="display: none">
+				<div class="sow-slider-base" style="display: none" tabindex="0">
 					<?php
 					if ( isset( $controls['unmute'] ) && $controls['unmute'] ) {
 						?>

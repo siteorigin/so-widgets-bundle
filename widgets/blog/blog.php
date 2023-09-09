@@ -35,6 +35,7 @@ public function __construct() {
 			)
 		);
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_template_assets' ) );
+		add_filter( 'siteorigin_widgets_blog_query', array( $this, 'portfolio_filter_posts' ), 8, 2 );
 	}
 
 	public function register_image_sizes() {
@@ -98,6 +99,15 @@ public function __construct() {
 									'featured_image[show]: val',
 									'featured_image[hide]: ! val',
 								),
+							),
+						),
+						'featured_image_empty' => array(
+							'type' => 'checkbox',
+							'label' => __( 'Skip Post if No Featured Image', 'so-widgets-bundle' ),
+							'default' => true,
+							'state_handler' => array(
+								'active_template[portfolio]' => array( 'slideDown' ),
+								'_else[active_template]' => array( 'slideUp' ),
 							),
 						),
 						'featured_image_size' => array(
@@ -852,11 +862,30 @@ public function __construct() {
 			} else {
 				$terms = get_terms( 'jetpack-portfolio-type' );
 			}
+		} else {
+			// Check if a developer has set a term for this post type.
+			$post_type = wp_parse_args( siteorigin_widget_post_selector_process_query( $instance['posts'] ) )['post_type'];
+			$taxonomy = apply_filters( 'siteorigin_widgets_blog_portfolio_taxonomy', '', $instance, $post_type );
+			if ( ! empty( $taxonomy ) ) {
+				$terms = get_terms( $taxonomy );
+			}
+			
+			if ( empty( $terms ) || is_wp_error( $terms ) ) {
+				// Let's try to find a taxonomy that has terms for this post type.
+				$possible_tax = get_object_taxonomies( $post_type );
+				foreach ( $possible_tax as $tax ) {
+					$possible_terms = get_terms( $tax );
+					if ( ! empty( $possible_terms ) && ! is_wp_error( $possible_terms ) ) {
+						$terms = $possible_terms;
+						break;
+					}
+				}
+			}
 		}
 
 		if ( empty( $terms ) || is_wp_error( $terms ) ) {
 			$fallback = apply_filters( 'siteorigin_widgets_blog_portfolio_fallback_term', 'category', $instance );
-			// Unable to find posts with portfolio type. Try using fallback term.
+			// Unable to find posts for this type. Try using the fallback term.
 			if ( $post_id ) {
 				return get_the_terms( (int) $post_id, $fallback );
 			} else {
@@ -950,6 +979,11 @@ public function __construct() {
 			siteorigin_widget_post_selector_process_query( $instance['posts'] )
 		);
 
+		// If the user has set an offset, account for it after the first page.
+		if ( isset( $query['offset'] ) && $instance['paged'] > 1 ) {
+			$query['offset'] = $offset = ( $query['paged'] - 1 ) * $query['posts_per_page'] + $query['offset'];
+		}
+
 		if ( $instance['template'] == 'portfolio' && ! empty( $instance['featured_image_fallback'] ) ) {
 			// The portfolio template relies on each post having an image so exclude any posts that don't.
 			$query['meta_query'] = array(
@@ -989,6 +1023,23 @@ public function __construct() {
 			'template_settings' => $template_settings,
 			'posts' => new WP_Query( apply_filters( 'siteorigin_widgets_blog_query', $query, $instance ) ),
 		);
+	}
+
+	public function portfolio_filter_posts( $query, $instance ) {
+		if (
+			$instance['template'] == 'portfolio' &&
+			! empty( $instance['settings']['featured_image_empty'] ) &&
+			empty( $instance['settings']['featured_image_fallback'] )
+		) {
+			$query['meta_query'] = array(
+				array(
+					'key' => '_thumbnail_id',
+					'compare' => 'EXISTS',
+				),
+			);
+		}
+
+		return $query;
 	}
 
 	public static function post_meta( $settings ) {
@@ -1215,6 +1266,18 @@ public function __construct() {
 				</div>
 			</nav>
 			<?php
+		}
+	}
+
+	public function total_pages( $posts ) {
+		// WP Query's max_num_pages doesn't account for offset, so let's do that now.
+		if (
+			! empty( $posts->query['offset'] ) &&
+			is_numeric( $posts->query['offset'] )
+		) {
+			return ceil( max( $posts->found_posts - $posts->query['offset'], 1 ) / $posts->query['posts_per_page'] );
+		} else {
+			return $posts->max_num_pages;
 		}
 	}
 

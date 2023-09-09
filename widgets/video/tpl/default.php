@@ -65,7 +65,7 @@ do_action( 'siteorigin_widgets_sow-video_before_video', $instance );
 			<?php } ?>
 		</video>
 	<?php } else { ?>
-		<?php echo $so_video->get_video_oembed( $src, $autoplay, false, $loop ); ?>
+		<?php echo $so_video->get_video_oembed( $src, $autoplay, false, $loop, true ); ?>
 	<?php } ?>
 </div>
 <?php do_action( 'siteorigin_widgets_sow-video_after_video', $instance ); ?>

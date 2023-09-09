@@ -358,19 +358,20 @@ var sowbForms = window.sowbForms || {};
 			///////////////////////////////////////
 			// Setup the URL fields
 
-			$fields.filter('.siteorigin-widget-field-type-link').each(function () {
-				var $$ = $(this);
+			$fields.filter( '.siteorigin-widget-field-type-link' ).each( function () {
+				var $$ = $( this );
+				var $fieldVal = $$.find( 'input.siteorigin-widget-input' );
 
 				// Function that refreshes the list of
 				var request = null;
 				var refreshList = function () {
-					if (request !== null) {
+					if ( request !== null ) {
 						request.abort();
 					}
 
-					var $contentSearchInput = $$.find('.content-text-search');
+					var $contentSearchInput = $$.find( '.content-text-search' );
 					var query = $contentSearchInput.val();
-					var postTypes = $contentSearchInput.data('postTypes');
+					var postTypes = $contentSearchInput.data( 'postTypes' );
 
 					var ajaxData = {
 						action: 'so_widgets_search_posts',
@@ -383,26 +384,26 @@ var sowbForms = window.sowbForms || {};
 						ajaxData.language = icl_this_lang;
 					}
 
-					var $ul = $$.find('ul.posts').empty().addClass('loading');
+					var $ul = $$.find( 'ul.posts' ).empty().addClass( 'loading' );
 					$.get(
 						soWidgets.ajaxurl,
 						ajaxData,
-						function (data) {
-							for (var i = 0; i < data.length; i++) {
-								if (data[i].label === '') {
-									data[i].label = '&nbsp;';
+						function( data ) {
+							for ( var i = 0; i < data.length; i++ ) {
+								if (data[ i ].label === '') {
+									data[ i ].label = '&nbsp;';
 								}
 
 								// Add all the post items
 								$ul.append(
-									$('<li>')
-										.addClass('post')
-										.html(data[i].label + '<span>(' + data[i].type + ')</span>')
-										.data(data[i])
+									$( '<li>' )
+										.addClass( 'post' )
+										.html( data[ i ].label + '<span>(' + data[ i ].type + ')</span>' )
+										.data( data[ i ] )
 										.attr( 'tabindex', 0 )
 								);
 							}
-							$ul.removeClass('loading');
+							$ul.removeClass( 'loading' );
 						}
 					);
 				};
@@ -410,14 +411,13 @@ var sowbForms = window.sowbForms || {};
 				// Toggle display of the existing content
 				$$.find( '.select-content-button, .button-close' ).on( 'click', function( e ) {
 					e.preventDefault();
-					$(this).trigger( 'blur' );
-					var $s = $$.find('.existing-content-selector');
+					$( this ).trigger( 'blur' );
+					var $s = $$.find( '.existing-content-selector' );
 					$s.toggle();
 
-					if ($s.is(':visible') && $s.find('ul.posts li').length === 0) {
+					if ( $s.is( ':visible' ) && $s.find( 'ul.posts li' ).length === 0 ) {
 						refreshList();
 					}
-
 				});
 
 				// Clicking on one of the url items
@@ -428,11 +428,11 @@ var sowbForms = window.sowbForms || {};
 						return;
 					}
 
-					var $li = $(this);
-					$$.find('input.siteorigin-widget-input').val('post: ' + $li.data('value'));
+					var $li = $( this );
+					$fieldVal.val( 'post: ' + $li.data( 'value' ) + ' (' + $li.get(0).childNodes[0].nodeValue + ')' );
 					$$.trigger( 'change' );
-					$$.find('.existing-content-selector').toggle();
-				});
+					$$.find( '.existing-content-selector' ).toggle();
+				} );
 
 				var interval = null;
 				$$.find( '.content-text-search' ).on( 'keyup', function() {
@@ -444,7 +444,21 @@ var sowbForms = window.sowbForms || {};
 						refreshList();
 					}, 500);
 				});
-			});
+
+				var linkFieldId = $fieldVal.val().replace( 'post: ', '' );
+				if ( linkFieldId != '' && isFinite( linkFieldId ) ) {
+					$.get(
+						soWidgets.ajaxurl,
+						{
+							action: 'so_widgets_links_get_title',
+							postId: linkFieldId,
+						},
+						function( data ) {
+							$fieldVal.val( $fieldVal.val() + ' (' + data + ')' );
+						}
+					);
+				}
+			} );
 
 			///////////////////////////////////////
 			// Setup the Builder fields

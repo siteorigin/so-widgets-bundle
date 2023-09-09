@@ -19,6 +19,7 @@
 @more_text_size: default;
 @more_text_color: default;
 @per_row: 3;
+@center_items: 3;
 @feature_space: 25px;
 
 @container_size: 84px;
@@ -34,6 +35,9 @@
 	flex-wrap: wrap;
 	& when ( @more_text_bottom_align = true ) {
 		align-items: stretch;
+	}
+	& when ( @center_items = 1 ) {
+		justify-content: center;
 	}
 
 	.sow-features-feature {
@@ -185,7 +189,9 @@
 			font-size: @text_size;
 			font-style: @text_font_style;
 			& when ( @more_text_bottom_align = true ) {
-				height: 100%;
+				@media (min-width: @responsive_breakpoint) {
+					height: 100%;
+				}
 			}
 
 			> @{title_tag} {

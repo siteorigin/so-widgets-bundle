@@ -46,9 +46,10 @@ class SiteOrigin_Video {
 			'autoplay' => $autoplay,
 			'loop'     => $loop,
 		) ) );
-
 		// Standardize YouTube video URL.
 		if ( strpos(  $src, 'youtu.be' ) !== false ) {
+			// Remove any parameters from URL as it'll fail to embed.
+			$src = preg_replace( '/\?.*/', '', $src );
 			$src = str_replace( 'youtu.be/', 'youtube.com/watch?v=', $src );
 		}
 
@@ -65,7 +66,6 @@ class SiteOrigin_Video {
 		}
 
 		$html = get_transient( 'sow-vid-embed[' . $hash . ']' );
-
 		if ( empty( $html ) ) {
 			$html = wp_oembed_get( $this->src, array( 'width' => $video_width ) );
 

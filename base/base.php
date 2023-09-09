@@ -52,7 +52,7 @@ add_action( 'wp_head', 'siteorigin_widget_print_styles' );
 add_action( 'wp_footer', 'siteorigin_widget_print_styles' );
 
 /**
- * The ajax handler for getting a list of available icons.
+ * The Ajax handler for getting a list of available icons.
  */
 function siteorigin_widget_get_icon_list() {
 	if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
@@ -353,12 +353,12 @@ function siteorigin_widgets_url( $path = '' ) {
 function siteorigin_loading_optimization_attributes( $attr, $widget, $instance, $class ) {
 	// Allow other plugins to override whether this widget is lazy loaded or not.
 	if (
-		apply_filters(
+		! empty( apply_filters(
 			'siteorigin_widgets_' . $widget . '_lazy_load',
 			'lazy',
 			$instance,
 			$class
-		)
+		) )
 	) {
 		if ( function_exists( 'wp_get_loading_optimization_attributes' ) ) {
 			// WP 6.3.
@@ -377,3 +377,20 @@ function siteorigin_loading_optimization_attributes( $attr, $widget, $instance, 
 	}
 	return $attr;
 }
+
+/**
+ * The ajax handler for the links field using the the post: ID format without a title set.
+ */
+function siteorigin_widgets_links_get_title() {
+	if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
+	}
+
+	if ( empty( $_GET['postId'] ) || ! is_numeric( $_GET['postId'] ) ) {
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );
+	}
+	$postTitle = get_the_title( $_GET['postId'] );
+	echo ! empty( $postTitle ) ? esc_attr( $postTitle ) : __( '(No Title)', 'so-widgets-bundle' );
+	die();
+}
+add_action( 'wp_ajax_so_widgets_links_get_title', 'siteorigin_widgets_links_get_title' );
