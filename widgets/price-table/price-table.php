@@ -195,6 +195,11 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 						'type' => 'section',
 						'label' => __( 'Button', 'so-widgets-bundle' ),
 						'fields' => array(
+							'container_color' => array(
+								'type'  => 'color',
+								'label' => __( 'Container background color', 'so-widgets-bundle' ),
+								'default' => '#e8e8e8',
+							),
 							'background_color' => array(
 								'type'  => 'color',
 								'label' => __( 'Color', 'so-widgets-bundle' ),
@@ -334,6 +339,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 
 			'feature_text_color'          => $instance['design']['feature']['color'],
 
+			'button_container_color'               => $instance['design']['button']['container_color'],
 			'button_background_color'      => $instance['design']['button']['background_color'],
 			'featured_button_background_color'      => $instance['design']['button']['featured_background_color'],
 		);
