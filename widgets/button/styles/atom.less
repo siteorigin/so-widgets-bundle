@@ -8,6 +8,7 @@
 @button_color: #41a9d5;
 @border_color: darken(@button_color, 15%);
 @text_color: #FFFFFF;
+@icon_size: 1.3em;
 
 @hover_background_color: #41a9d5;
 @hover_text_color:  #FFFFFF;
@@ -67,6 +68,16 @@
 			.sow-icon-image,
 			[class^="sow-icon-"] {
 					margin: 0;
+			}
+		}
+
+		& > span {
+			align-items: center;
+			display: flex;
+			justify-content: center;
+
+			[class^="sow-icon-"] {
+				font-size: @icon_size;
 			}
 		}
 
