@@ -160,7 +160,37 @@ div.siteorigin-widget-form {
 			&[multiple] {
 				max-height: 83px;
 			}
+
 		}
+
+		.select2 {
+			width: 100% !important;
+
+			.select2-selection--multiple {
+				align-items: center;
+				background-color: #fff;
+				border-radius: 4px;
+				border: 1px solid #8c8f94;
+				box-shadow: 0 0 0 transparent;
+				color: #2c3338;
+				display: flex;
+				padding: 0;
+
+				&:focus {
+					border-color: #2271b1;
+					box-shadow: 0 0 0 1px #2271b1;
+					outline: 2px solid transparent;
+				}
+
+				.select2-selection__rendered {
+					margin: 0;
+					.select2-search__field {
+						margin-top: 0;
+					}
+				}
+			}
+		}
+
 	}
 
 	div.siteorigin-widget-field {
