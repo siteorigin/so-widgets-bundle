@@ -640,7 +640,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				),
 			) );
 
-			if ( ! class_exists( 'FLBuilderModel' ) || FLBuilderModel::is_builder_active() ) {
+			if ( ! class_exists( 'FLBuilderModel' ) || ! FLBuilderModel::is_builder_active() ) {
 				wp_enqueue_script(
 					'wp-color-picker-alpha',
 					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/wp-color-picker-alpha' . SOW_BUNDLE_JS_SUFFIX . '.js',

@@ -21,7 +21,11 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 			return;
 		}
 
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
+		if ( isset( $_GET['fl_builder_ui'] ) ) {
+			add_action( 'fl_builder_ui_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
+		} else {
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
+		}
 		add_action( 'wp_print_footer_scripts', array( $this, 'print_footer_templates' ) );
 
 		// Don't want to show the form preview button when using Beaver Builder
@@ -55,7 +59,7 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 			plugin_dir_url( __FILE__ ) . 'styles.css'
 		);
 
-		$deps = ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? array( 'jquery', 'fl-builder' ) : array( 'fl-builder-min' );
+		$deps = ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? array( 'jquery', 'fl-builder', 'siteorigin-widget-admin' ) : array( 'fl-builder-min', 'siteorigin-widget-admin' );
 		wp_enqueue_script(
 			'sowb-js-for-beaver',
 			plugin_dir_url( __FILE__ ) . 'sowb-beaver-builder' . SOW_BUNDLE_JS_SUFFIX . '.js',
