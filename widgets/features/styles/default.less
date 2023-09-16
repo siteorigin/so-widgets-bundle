@@ -72,7 +72,7 @@
 		}
 
 		&.sow-icon-container-position-right {
-			text-align: left;
+			align-items: center;
 
 			.sow-icon-container {
 				margin-right: 10px;
@@ -80,7 +80,8 @@
 		}
 
 		&.sow-icon-container-position-left {
-			text-align: left;
+			justify-content: end;
+			align-items: center;
 
 			.sow-icon-container {
 				margin-left: 10px;
@@ -95,7 +96,8 @@
 			}
 		}
 
-		&.sow-icon-container-position-top, &.sow-icon-container-position-bottom {
+		&.sow-icon-container-position-top,
+		&.sow-icon-container-position-bottom {
 			.sow-icon-container {
 				& when ( @per_row = 1 ) {
 					& when ( @more_text_bottom_align = true ) {
@@ -115,12 +117,8 @@
 			width: @container_size;
 			flex: 0 0 @container_size;
 
-			& when not ( @per_row = 1 ) {
-				margin: auto;
-			}
-
 			& when ( @more_text_bottom_align = true ) {
-					margin: auto;
+				margin: auto;
 			}
 
 			&:not(.sow-container-none) [class^="sow-icon-"],
