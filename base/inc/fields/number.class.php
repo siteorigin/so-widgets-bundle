@@ -26,6 +26,13 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 	protected $step;
 
 	/**
+	 * The measurement unit this number uses.
+	 *
+	 * @var string
+	 */
+	protected $unit;
+
+	/**
 	 * Whether to apply abs() when saving to ensure only positive numbers are possible.
 	 *
 	 * @var bool
@@ -53,6 +60,14 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 		$input_classes[] = 'siteorigin-widget-input-number';
 
 		return $input_classes;
+	}
+
+	protected function render_after_field( $value, $instance ) {
+		if ( ! empty( $this->unit ) ) {
+			echo '<span class="siteorigin-widget-input-number-unit">' . $this->unit . '</span>';
+		}
+
+		parent::render_after_field( $value, $instance );
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
