@@ -106,6 +106,24 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.55.0 - 16 September 2023 =
+* Blog: Updated the Portfolio template to improve term display for selected post type.
+* Blog: Account for possible offset after the first page load.
+* Button: Added Icon Size setting.
+* Contact: Added multi-measurement support for the Field Margin setting.
+* Contact: Added Select2 support to the Dropdown Select field.
+* Features: Resolved mobile misalignment with `Align Bottom More`.
+* Sliders: Added frame keyboard navigation.
+* Video: Update to resolve a YouTube short URL display issue.
+* Destination URL Field: Update to fetch post title if using `Post: ID` format.
+* Post Query: Update to account for `offset` in the total post count.
+* Updated the Google Fonts list.
+* Font Awesome: Updated from `6.4.0` to `6.4.2`.
+* Added Select2 support.
+* Measurement Field: Prevented `Deprecated: strlen()` notice.
+* Developer: Added additional hooks to the Contact Form Widget.
+* Developer: Added an optional measurement unit parameter to the Number field.
+
 = 1.54.0 - 16 August 2023 =
 * Added a new setting called "Center Items" to the Features widget. This setting allows users to center the items if there are fewer features on a line than the maximum.
 * Added a new setting called "Skip Post if No Featured Image" to the Blog Portfolio widget. This setting allows users to skip posts without a featured image when the active template is set to "Portfolio".
