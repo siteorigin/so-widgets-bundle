@@ -1183,7 +1183,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			<?php
 		}
 
-		$fields = apply_filters( 'siteorigin_widgets_contact_email_fields', $fields );
+		$fields = apply_filters( 'siteorigin_widgets_contact_fields', $fields );
 		foreach ( $fields as $i => $field ) {
 			if ( empty( $field['type'] ) ) {
 				continue;
