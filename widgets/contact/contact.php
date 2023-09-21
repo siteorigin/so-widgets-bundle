@@ -1328,6 +1328,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		$field_ids = array();
 
+		$instance['fields'] = apply_filters( 'siteorigin_widgets_contact_fields', $instance['fields'] );
 		foreach ( $instance['fields'] as $i => $field ) {
 			if ( empty( $field['type'] ) ) {
 				continue;
