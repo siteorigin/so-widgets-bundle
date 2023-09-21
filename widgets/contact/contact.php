@@ -1183,6 +1183,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			<?php
 		}
 
+		$fields = apply_filters( 'siteorigin_widgets_contact_email_fields', $fields );
 		foreach ( $fields as $i => $field ) {
 			if ( empty( $field['type'] ) ) {
 				continue;
@@ -1196,11 +1197,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 			if ( ! empty( $_POST[ $field_name ] ) && wp_verify_nonce( $_POST['_wpnonce'], '_contact_form_submit' ) ) {
 				$value = stripslashes_deep( $_POST[ $field_name ] );
+			} elseif ( ! empty( $field['value'] ) ) {
+				$value = $field['value'];
 			}
 
 			?>
-            <div class="sow-form-field sow-form-field-<?php echo sanitize_html_class( $field['type'] ); ?>">
-            	<?php
+			<div class="sow-form-field sow-form-field-<?php echo sanitize_html_class( $field['type'] ); ?>">
+				<?php
 
 				$label = $field['label'];
 				$indicate_as_required = $indicate_required_fields && ! empty( $field['required']['required'] );
