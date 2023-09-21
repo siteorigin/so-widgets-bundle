@@ -67,18 +67,22 @@
 		& when not ( @has_text = true ) {
 			.sow-icon-image,
 			[class^="sow-icon-"] {
-					margin: 0;
+				margin: 0;
 			}
 		}
 
 		& > span {
-			align-items: center;
+			align-items: start;
 			display: flex;
 			justify-content: center;
 
 			[class^="sow-icon-"] {
 				font-size: @icon_size;
 			}
+		}
+		
+		&.ow-icon-placement-right > span {
+			flex-direction: row-reverse;
 		}
 
 		&.ow-button-hover:active,
