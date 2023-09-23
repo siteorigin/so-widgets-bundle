@@ -70,7 +70,6 @@
 		}
 
 		& > span {
-			align-items: start;
 			display: flex;
 			justify-content: center;
 
@@ -78,9 +77,21 @@
 				font-size: @icon_size;
 			}
 		}
+		
+		&.ow-icon-placement-top > span {
+			flex-direction: column;
+		}
 
 		&.ow-icon-placement-right > span {
 			flex-direction: row-reverse;
+		}
+		
+		&.ow-icon-placement-bottom > span {
+			flex-direction: column-reverse;
+		}
+
+		&.ow-icon-placement-left > span {
+			align-items: start;
 		}
 
 		&.ow-button-hover:active,
