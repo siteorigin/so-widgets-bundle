@@ -106,6 +106,11 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.55.1 - 23 September 2023 =
+* Resolved right positioned icon overflow and slight vertical misalignment in the Button widget.
+* Prevented icon right aligned overlap in the Button widget.
+* Restored icon vertical alignment in the Button widget.
+
 = 1.55.0 - 16 September 2023 =
 * Blog: Updated the Portfolio template to improve term display for selected post type.
 * Blog: Account for possible offset after the first page load.
