@@ -142,6 +142,13 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	public function modify_child_widget_form( $child_widget_form, $child_widget ) {
+		unset( $child_widget_form['design']['fields']['align'] );
+		unset( $child_widget_form['design']['fields']['mobile_align'] );
+
+		return $child_widget_form;
+	}
+
 	public function modify_instance( $instance ) {
 		if ( empty( $instance ) || empty( $instance['design'] ) ) {
 			return array();
@@ -182,11 +189,17 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 		return $less_vars;
 	}
 
-	public function modify_child_widget_form( $child_widget_form, $child_widget ) {
-		unset( $child_widget_form['design']['fields']['align'] );
-		unset( $child_widget_form['design']['fields']['mobile_align'] );
+	public function get_template_variables( $instance, $args ) {
+		$template_vars = array(
+			'title' => ! empty( $instance['title'] ) ? $instance['title'] : '',
+			'sub_title' => ! empty( $instance['sub_title'] ) ? $instance['sub_title'] : '',
+			'button' => $instance['button'],
+			'title_tag' => 'h4',
+			'sub_title_tag' => 'h5',
+		);
 
-		return $child_widget_form;
+
+		return $template_vars;
 	}
 
 	public function get_form_teaser() {
