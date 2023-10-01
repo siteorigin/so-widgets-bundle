@@ -329,8 +329,8 @@ if (
 					var showPrompt = true;
 					var sowbCurrentBlocks = wp.data.select( 'core/block-editor' ).getBlocks();
 					for ( var i = 0; i < sowbCurrentBlocks.length; i++ ) {
-						if ( sowbCurrentBlocks[ i ].name == 'sowb/widget-block' && sowbCurrentBlocks[ i ].isValid ) {
-							$form = jQuery( '#block-' + sowbCurrentBlocks[ i ].clientId ).find( '.so-widget-placeholder ');
+						if ( sowbCurrentBlocks[ i ].name.startsWith( 'sowb/' ) && sowbCurrentBlocks[ i ].isValid ) {
+							$form = jQuery( '#block-' + sowbCurrentBlocks[ i ].clientId ).find( '.so-widget-placeholder' );
 							if ( ! sowbForms.validateFields( $form, showPrompt) ) {
 							 	showPrompt = false;
 							}
