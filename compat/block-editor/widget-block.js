@@ -302,6 +302,48 @@
 		} );
 	} );
 
+	
+	// Register a stripped back version of our old block to allow for migration.
+	registerBlockType( 'sowb/widget-block', {
+		title: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
+		description: __( 'Select a SiteOrigin widget from the dropdown.', 'so-widgets-bundle' ),
+		attributes: {
+			widgetClass: {
+				type: 'string',
+			},
+			anchor: {
+				type: 'string',
+			},
+			widgetData: {
+				type: 'object',
+			},
+			widgetHtml: {
+				type: 'string',
+			},
+			widgetIcons: {
+				type: 'array',
+			},
+		},
+		edit: function () {
+			return null;
+		},
+		save: function () {
+			return null;
+		}
+	} );
+
+	// Find all instances of the SiteOrigin Widgets Block.
+	var widgetBlockIds = wp.data.select( 'core/block-editor' ).getBlocks()
+		.filter( block => block.name === 'sowb/widget-block' );
+		
+	widgetBlockIds.forEach( currentBlock => {
+		wp.data.dispatch( 'core/block-editor' ).replaceBlock( currentBlock.clientId, {
+			name: 'sowb/' + currentBlock.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
+			attributes: currentBlock.attributes,
+			innerBlocks: [],
+		} );
+	} );
+
 } )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.compose, window.wp.blockEditor );
 
 // Setup SiteOrigin Widgets Block Validation.
