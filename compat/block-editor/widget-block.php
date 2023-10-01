@@ -42,11 +42,6 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			SOW_BUNDLE_VERSION
 		);
 
-		wp_enqueue_style(
-			'sowb-widget-block',
-			plugins_url( 'widget-block.css', __FILE__ )
-		);
-
 		$widgets_metadata_list = SiteOrigin_Widgets_Bundle::single()->get_widgets_list();
 		$widgets_manager = SiteOrigin_Widgets_Widget_Manager::single();
 
