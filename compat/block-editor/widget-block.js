@@ -27,7 +27,7 @@
 		}
 		props.setState( { loadingWidgetPreview: true } );
 		sowPreviewRequest = true;
-		setTimeout(() => sowPreviewRequest = false, 1000)
+		setTimeout( () => sowPreviewRequest = false, 1000 )
 		if (
 			typeof wp.data.select( 'core/editor' ) == 'object' &&
 			typeof wp.data.dispatch( 'core/editor' ) == 'object'
@@ -196,7 +196,7 @@
 									{
 										className: 'components-icon-button components-toolbar__control',
 										label: __( 'Preview widget.', 'so-widgets-bundle' ),
-										onClick: (() => props.setState( {
+										onClick: ( () => props.setState( {
 											editing: false,
 											previewInitialized: false
 										} ) ),
