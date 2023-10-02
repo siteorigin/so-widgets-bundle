@@ -31,7 +31,6 @@
 @responsive_breakpoint: 520px;
 
 .sow-features-list {
-	.box-sizing(border-box);
 	display: flex;
 	flex-wrap: wrap;
 	gap: 40px @feature_space;
@@ -176,6 +175,10 @@
 		}
 
 		p:last-child {
+			margin-bottom: 0;
+		}
+
+		&.sow-features-feature-last-row {
 			margin-bottom: 0;
 		}
 
