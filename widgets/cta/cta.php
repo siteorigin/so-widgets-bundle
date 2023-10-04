@@ -51,6 +51,9 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 				),
 			)
 		);
+
+		
+		add_filter( 'siteorigin_widgets_google_font_fields_sow-cta', array( $this, 'add_google_font_fields' ), 10, 3 );
 	}
 
 	public function get_settings_form() {
@@ -101,6 +104,56 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 							'subtitle_color' => array(
 								'type' => 'color',
 								'label' => __( 'Subtitle Color', 'so-widgets-bundle' ),
+							),
+						),
+					),
+					'fonts' => array(
+						'type' => 'section',
+						'label' => __( 'Fonts', 'so-widgets-bundle' ),
+						'fields' => array(
+							'title_tag' => array(
+								'type' => 'select',
+								'label' => __( 'Title HTML Tag', 'siteorigin-premiu,' ),
+								'default' => 'h4',
+								'options' => array(
+									'h1' => __( 'H1', 'so-widgets-bundle' ),
+									'h2' => __( 'H2', 'so-widgets-bundle' ),
+									'h3' => __( 'H3', 'so-widgets-bundle' ),
+									'h4' => __( 'H4', 'so-widgets-bundle' ),
+									'h5' => __( 'H5', 'so-widgets-bundle' ),
+									'h6' => __( 'H6', 'so-widgets-bundle' ),
+									'p' => __( 'Paragraph', 'so-widgets-bundle' ),
+								),
+							),
+							'title_font_family' => array(
+								'type' => 'font',
+								'label' => __( 'Title Font Family', 'so-widgets-bundle' ),
+							),
+							'title_font_size' => array(
+								'type' => 'measurement',
+								'label' => __( 'Title Font Size', 'so-widgets-bundle' ),
+							),
+							'sub_title_tag' => array(
+								'type' => 'select',
+								'label' => __( 'Subtitle HTML Tag', 'so-widgets-bundle' ),
+								'default' => 'h5',
+								'options' => array(
+									'h1' => __( 'H1', 'so-widgets-bundle' ),
+									'h2' => __( 'H2', 'so-widgets-bundle' ),
+									'h3' => __( 'H3', 'so-widgets-bundle' ),
+									'h4' => __( 'H4', 'so-widgets-bundle' ),
+									'h5' => __( 'H5', 'so-widgets-bundle' ),
+									'h6' => __( 'H6', 'so-widgets-bundle' ),
+									'p' => __( 'Paragraph', 'so-widgets-bundle' ),
+								),
+							),
+							'subtitle_font_family' => array(
+								'type' => 'font',
+								'label' => __( 'Subtitle Font Family', 'so-widgets-bundle' ),
+							),
+							'subtitle_font_size' => array(
+								'type' => 'measurement',
+								'label' => __( 'Subtitle Font Size', 'so-widgets-bundle' ),
 							),
 						),
 					),
@@ -186,6 +239,34 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 			$less_vars['responsive_breakpoint'] = ! empty( $global_settings['responsive_breakpoint'] ) ? $global_settings['responsive_breakpoint'] : '780px';
 		}
 
+		$fonts = empty( $instance['design']['fonts'] ) ? array() : $instance['design']['fonts'];
+
+		if ( ! empty( $fonts['title_font_family'] ) ) {
+			$font = siteorigin_widget_get_font( $fonts['title_font_family'] );
+			$less_vars['title_font_family'] = $font['family'];
+
+			if ( ! empty( $font['weight'] ) ) {
+				$less_vars['title_font_weight'] = $font['weight'];
+			}
+		}
+
+		if ( ! empty( $fonts['title_font_size'] ) ) {
+			$less_vars['title_font_size'] = $fonts['title_font_size'];
+		}
+
+		if ( ! empty( $fonts['subtitle_font_family'] ) ) {
+			$font = siteorigin_widget_get_font( $fonts['subtitle_font_family'] );
+			$less_vars['subtitle_font_family'] = $font['family'];
+
+			if ( ! empty( $font['weight'] ) ) {
+				$less_vars['subtitle_font_weight'] = $font['weight'];
+			}
+		}
+
+		if ( ! empty( $fonts['subtitle_font_size'] ) ) {
+			$less_vars['subtitle_font_size'] = $fonts['subtitle_font_size'];
+		}
+
 		return $less_vars;
 	}
 
@@ -200,6 +281,18 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 
 
 		return $template_vars;
+	}
+
+	public function add_google_font_fields( $fields, $instance, $widget ) {
+		if ( ! empty( $instance['design']['fonts']['title_font_family'] ) ) {
+			$fields[] = $instance['design']['fonts']['title_font_family'];
+		}
+
+		if ( ! empty( $instance['design']['fonts']['subtitle_font_family'] ) ) {
+			$fields[] = $instance['design']['fonts']['subtitle_font_family'];
+		}
+
+		return $fields;
 	}
 
 	public function get_form_teaser() {
