@@ -749,6 +749,21 @@ div.siteorigin-widget-form {
 				padding-left: 5px;
 			}
 		}
+
+		&.siteorigin-widget-field-type-radio input[type="radio"] {
+			width: 16px;
+
+			&:focus {
+				box-shadow: none;
+			}
+
+			&:checked::before {
+				float: none;
+				height: 11px;
+				margin: 2px;
+				width: 11px;
+			}
+		}
 	}
 
 	.siteorigin-widget-description {
