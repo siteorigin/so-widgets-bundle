@@ -869,7 +869,7 @@ public function __construct() {
 			if ( ! empty( $taxonomy ) ) {
 				$terms = get_terms( $taxonomy );
 			}
-			
+
 			if ( empty( $terms ) || is_wp_error( $terms ) ) {
 				// Let's try to find a taxonomy that has terms for this post type.
 				$possible_tax = get_object_taxonomies( $post_type );
@@ -1188,6 +1188,25 @@ public function __construct() {
 
 	public function alter_excerpt_length( $length = 55 ) {
 		return get_query_var( 'siteorigin_blog_excerpt_length' );
+	}
+
+	public static function output_content( $settings, $space_above = 20 ) {
+		if ( apply_filters( 'siteorigin_widgets_blog_show_content', true, $settings ) ) {
+			?>
+			<div
+				class="sow-entry-content"
+				style="margin-top: <?php echo $space_above; ?>px;"
+			>
+				<?php
+				if ( $settings['content'] == 'full' ) {
+					the_content();
+				} else {
+					self::generate_excerpt( $settings );
+				}
+				?>
+			</div>
+			<?php
+		}
 	}
 
 	public static function generate_excerpt( $settings ) {
