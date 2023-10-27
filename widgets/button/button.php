@@ -388,6 +388,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 			'align' => $instance['design']['align'],
 			'mobile_align' => $instance['design']['mobile_align'],
+			'has_button_icon' => empty( $instance['button_icon']['icon_selected'] ) ? 'false' : 'true',
 		);
 
 		if ( ! empty( $instance['design']['font'] ) ) {
