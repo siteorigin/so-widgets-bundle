@@ -93,12 +93,11 @@ jQuery( function ( $ ) {
 			// navigation that Slick has trouble accounting for.
 			if ( carouselSettings.autoplay ) {
 				var interrupted = false;
-				var autoplayNav = $$.parent().parent().find( '.sow-carousel-' + ( $$.data( 'dir' ) == 'ltr' ? 'next' : 'prev' ) );
 				// Check if this is a Block Editor preview, and if it is, don't autoplay.
 				if ( ! $( 'body' ).hasClass( 'block-editor-page' ) ) {
 					setInterval( function() {
 						if ( ! interrupted ) {
-							autoplayNav.trigger( 'click' );
+							handleCarouselNavigation( true, false );
 						}
 					}, carouselSettings.autoplaySpeed );
 
@@ -113,11 +112,7 @@ jQuery( function ( $ ) {
 				}
 			}
 
-			// click is used rather than Slick's beforeChange or afterChange
-			// due to the inability to stop a slide from changing from those events
-			$$.parent().parent().find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click touchend', function( e, refocus ) {
-				e.preventDefault();
-
+			var handleCarouselNavigation = function( nextSlide, refocus ) {
 				var $items = $$.find( '.sow-carousel-items' ),
 					numItems = $items.find( '.sow-carousel-item' ).length,
 					complete = numItems >= $$.data( 'item_count' ),
@@ -130,8 +125,8 @@ jQuery( function ( $ ) {
 				// Post Carousel has a loading indicator so we need to pad the lastPosition.
 				if (
 					$$.data( 'widget' ) == 'post' &&
-					( 
-						$$.data( 'carousel_settings' ).theme != 'undefined' && 
+					(
+						$$.data( 'carousel_settings' ).theme != 'undefined' &&
 						complete
 					)
 				) {
@@ -141,7 +136,7 @@ jQuery( function ( $ ) {
 				// Check if all items are displayed
 				if ( ! complete ) {
 					// For Ajax Carousels, check if we need to fetch the next batch of items.
-					if ( 
+					if (
 						$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ||
 						$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition
 					) {
@@ -157,7 +152,7 @@ jQuery( function ( $ ) {
 				// The Slick Infinite setting has a positioning bug that can result in the first item
 				// being hidden so we need to manually handle that
 				// https://github.com/kenwheeler/slick/issues/3567
-				if ( $( this ).hasClass( 'sow-carousel-next' ) && ! loading ) {
+				if ( nextSlide && ! loading ) {
 					// Check if this is the last slide, and we need to loop
 					if (
 						complete &&
@@ -178,7 +173,7 @@ jQuery( function ( $ ) {
 					} else {
 						$items.slick( 'slickNext' );
 					}
-				} else if ( $( this ).hasClass( 'sow-carousel-previous' ) ) {
+				} else {
 					if ( $$.data( 'carousel_settings' ).loop && $items.slick( 'slickCurrentSlide' ) == 0 ) {
 						$items.slick( 'slickGoTo', lastPosition );
 					} else if ( $$.data( 'widget' ) == 'post' && $items.slick( 'slickCurrentSlide' ) <= slidesToScroll ) {
@@ -193,6 +188,16 @@ jQuery( function ( $ ) {
 					$$.find( 'li.slick-active' ).removeClass( 'slick-active' );
 					$$.find( '.slick-dots li' ).eq( Math.ceil( $$.find( '.sow-carousel-items' ).slick( 'slickCurrentSlide' ) / slidesToScroll ) ).addClass( 'slick-active' );
 				}
+			}
+
+			// Click is used instead of Slick's beforeChange or afterChange events
+			// due to the inability to stop a slide from changing.
+			$$.parent().parent().find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click touchend', function( e, refocus ) {
+				e.preventDefault();
+				handleCarouselNavigation(
+					$( this ).hasClass( 'sow-carousel-next' ),
+					refocus
+				)
 			} );
 
 			if ( carouselSettings.dots && ( $$.data( 'variable_width' ) || $$.data( 'carousel_settings' ).theme ) ) {
@@ -229,7 +234,7 @@ jQuery( function ( $ ) {
 
 						// Check if all items are displayed
 						if ( ! complete ) {
-							if ( 
+							if (
 								$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ||
 								$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition
 							) {
