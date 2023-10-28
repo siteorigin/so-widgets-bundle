@@ -106,6 +106,11 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.55.2 - 28 October 2023 =
+* Improved the sizing of number fields in the admin interface.
+* Modified the button widget to only apply flex styling if an icon is set.
+* Developer: Added a central method of handling post content in the Blog widget.
+
 = 1.55.1 - 23 September 2023 =
 * Resolved right positioned icon overflow and slight vertical misalignment in the Button widget.
 * Prevented icon right aligned overlap in the Button widget.
