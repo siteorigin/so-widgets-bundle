@@ -963,7 +963,7 @@ public function __construct() {
 			unset( $instance['design']['overlay_post_category']['background_opacity_hover'] );
 		}
 
-		$instance['paged_id'] = ! empty( $instance['_sow_form_id'] ) ? (int) substr( $instance['_sow_form_id'], 0, 5 ) : null;
+		$instance['paged_id'] = $this->get_style_hash( $instance );
 
 		return $instance;
 	}
