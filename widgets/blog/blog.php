@@ -34,6 +34,17 @@ public function __construct() {
 				),
 			)
 		);
+		$this->register_frontend_scripts(
+			array(
+				array(
+					'sow-blog',
+					plugin_dir_url( __FILE__ ) . 'js/blog' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					array( 'jquery' ),
+					SOW_BUNDLE_VERSION
+				),
+			)
+		);
+
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_template_assets' ) );
 		add_filter( 'siteorigin_widgets_blog_query', array( $this, 'portfolio_filter_posts' ), 8, 2 );
 	}
@@ -623,6 +634,12 @@ public function __construct() {
 				'default'     => '780px',
 				'description' => __( 'Device width, in pixels, to collapse into a mobile view.', 'so-widgets-bundle' ),
 			),
+			'scrollto' => array(
+				'type'        => 'checkbox',
+				'label'       => __( 'Scroll top', 'so-widgets-bundle' ),
+				'default'     => true,
+				'description' => __( 'Scroll the user to top of the blog widget when navigating between pages.', 'so-widgets-bundle' ),
+			),
 		);
 	}
 
@@ -631,6 +648,17 @@ public function __construct() {
 		wp_register_script( 'sow-blog-template-portfolio', plugin_dir_url( __FILE__ ) . 'js/portfolio' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-isotope' ) );
 
 		wp_register_script( 'jquery-isotope', plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/isotope.pkgd' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery' ), '3.0.4', true );
+
+		$global_settings = $this->get_global_settings();
+		wp_localize_script(
+			'sow-blog',
+			'soBlogWidget',
+			array(
+				'scrollto' => ! empty( $global_settings['scrollto'] ),
+				'scrollto_offset' => ( int ) apply_filters( 'siteorigin_widgets_blog_scrollto_offset', 90 ),
+			)
+		);
+
 
 		do_action( 'siteorigin_widgets_blog_template_stylesheets' );
 	}
