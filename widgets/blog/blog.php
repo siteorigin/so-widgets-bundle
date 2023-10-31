@@ -636,9 +636,9 @@ public function __construct() {
 			),
 			'scrollto' => array(
 				'type'        => 'checkbox',
-				'label'       => __( 'Scroll top', 'so-widgets-bundle' ),
+				'label'       => __( 'Scroll Top', 'so-widgets-bundle' ),
 				'default'     => true,
-				'description' => __( 'Scroll the user to top of the blog widget when navigating between pages.', 'so-widgets-bundle' ),
+				'description' => __( 'Scroll the user to the top of the Blog Widget after pagination links are clicked', 'so-widgets-bundle' ),
 			),
 		);
 	}
