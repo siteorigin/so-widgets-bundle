@@ -111,8 +111,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 					'hide_controls' => array(
 						'type'    => 'checkbox',
 						'default' => false,
-						'label'   => __( 'Hide player controls', 'so-widgets-bundle' ),
-						'description'   => __( 'Hide the player controls and only show the video.', 'so-widgets-bundle' ),
+						'label'   => __( 'Hide Player Controls', 'so-widgets-bundle' ),
 						'state_handler' => array(
 							'video_type[self]'     => array( 'show' ),
 							'video_type[external]' => array( 'hide' ),
