@@ -395,6 +395,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'background'   => array(
 								'type'    => 'color',
 								'label'   => __( 'Background color', 'so-widgets-bundle' ),
+								'alpha'   => true,
 								'default' => '#f2f2f2',
 							),
 							'padding'      => array(
