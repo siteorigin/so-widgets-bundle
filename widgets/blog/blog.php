@@ -45,6 +45,8 @@ public function __construct() {
 			)
 		);
 
+		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-blog', array( $this, 'localize_scrollto' ), 10, 2 );
+
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_template_assets' ) );
 		add_filter( 'siteorigin_widgets_blog_query', array( $this, 'portfolio_filter_posts' ), 8, 2 );
 	}
@@ -649,6 +651,10 @@ public function __construct() {
 
 		wp_register_script( 'jquery-isotope', plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/isotope.pkgd' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery' ), '3.0.4', true );
 
+		do_action( 'siteorigin_widgets_blog_template_stylesheets' );
+	}
+
+	public function localize_scrollto( $instance, $widget ) {
 		$global_settings = $this->get_global_settings();
 		wp_localize_script(
 			'sow-blog',
@@ -659,8 +665,6 @@ public function __construct() {
 			)
 		);
 
-
-		do_action( 'siteorigin_widgets_blog_template_stylesheets' );
 	}
 
 	public function get_template_name( $instance ) {
