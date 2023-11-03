@@ -21,6 +21,7 @@
 @rounding: 0.25em;
 @padding: 1em;
 @has_text: true;
+@has_button_icon: false;
 
 .ow-button-base {
 	.clearfix();
@@ -70,29 +71,32 @@
 				margin: 0;
 			}
 		}
-		& > span {
-			display: flex;
-			justify-content: center;
 
-			[class^="sow-icon-"] {
-				font-size: @icon_size;
+		& when ( @has_button_icon = true ) {
+			& > span {
+				display: flex;
+				justify-content: center;
+
+				[class^="sow-icon-"] {
+					font-size: @icon_size;
+				}
 			}
-		}
-		
-		&.ow-icon-placement-top > span {
-			flex-direction: column;
-		}
 
-		&.ow-icon-placement-right > span {
-			flex-direction: row-reverse;
-		}
-		
-		&.ow-icon-placement-bottom > span {
-			flex-direction: column-reverse;
-		}
+			&.ow-icon-placement-top > span {
+				flex-direction: column;
+			}
 
-		&.ow-icon-placement-left > span {
-			align-items: start;
+			&.ow-icon-placement-right > span {
+				flex-direction: row-reverse;
+			}
+
+			&.ow-icon-placement-bottom > span {
+				flex-direction: column-reverse;
+			}
+
+			&.ow-icon-placement-left > span {
+				align-items: start;
+			}
 		}
 
 		&.ow-button-hover:active,

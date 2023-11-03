@@ -4,7 +4,7 @@
 			<?php if ( function_exists( 'coauthors_posts_links' ) ) { ?>
 				<?php $coauthors = get_coauthors(); ?>
 				<span class="sow-meta-text">
-					<?php echo esc_html( _n( 'Author', 'Authors', count( $coauthors ), 'so-widgets-bundle' ) ); ?>	
+					<?php echo esc_html( _n( 'Author', 'Authors', count( $coauthors ), 'so-widgets-bundle' ) ); ?>
 				</span>
 				<?php foreach ( $coauthors as $author ) { ?>
 					<div class="sow-entry-author-avatar">
@@ -61,7 +61,7 @@
 	<div class="sow-blog-entry" style="width: 78%;">
 		<?php SiteOrigin_Widget_Blog_Widget::post_featured_image( $settings ); ?>
 		<div class="sow-blog-content-wrapper" style="padding: 25px 30px 33px;">
-			<header class="sow-entry-header" style="margin-bottom: 20px;">
+			<header class="sow-entry-header">
 				<?php
 				SiteOrigin_Widget_Blog_Widget::generate_post_title( $settings );
 				if ( ! empty( $template_settings['time_string'] ) ) {
@@ -87,15 +87,7 @@
 				<?php } ?>
 			</header>
 
-			<div class="sow-entry-content">
-				<?php
-				if ( $settings['content'] == 'full' ) {
-					the_content();
-				} else {
-					SiteOrigin_Widget_Blog_Widget::generate_excerpt( $settings );
-				}
-				?>
-			</div>
+			<?php SiteOrigin_Widget_Blog_Widget::output_content( $settings ); ?>
 		</div>
 	</div>
 </article>

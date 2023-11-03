@@ -108,6 +108,15 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 						'label'   => __( 'Use FitVids', 'so-widgets-bundle' ),
 						'description'   => __( 'FitVids will scale the video to fill the width of the widget area while maintaining aspect ratio.', 'so-widgets-bundle' ),
 					),
+					'hide_controls' => array(
+						'type'    => 'checkbox',
+						'default' => false,
+						'label'   => __( 'Hide Player Controls', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'video_type[self]'     => array( 'show' ),
+							'video_type[external]' => array( 'hide' ),
+						),
+					),
 					'oembed'   => array(
 						'type'          => 'checkbox',
 						'default'       => true,
@@ -144,7 +153,13 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				);
 			}
 
-			if ( ! wp_style_is( 'wp-mediaelement' ) ) {
+			if (
+				! wp_style_is( 'wp-mediaelement' ) &&
+				(
+					empty( $instance['playback']['hide_controls'] ) ||
+					$instance['playback']['hide_controls'] == false
+				)
+			) {
 				wp_enqueue_style( 'wp-mediaelement' );
 			}
 
@@ -226,19 +241,15 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'loop'                    => ! empty( $instance['playback']['loop'] ),
 			'skin_class'              => 'default',
 			'fitvids'                 => ! empty( $instance['playback']['fitvids'] ),
+			'show_controls'           => isset( $instance['playback']['hide_controls'] ) ? $instance['playback']['hide_controls'] : false,
 		);
-
+		
 		if ( $instance['host_type'] == 'external' && $instance['playback']['oembed'] ) {
 			// Force oEmbed for this video if oEmbed is enabled.
 			$return['is_skinnable_video_host'] = false;
 		}
 
 		return $return;
-	}
-
-	public function get_style_name( $instance ) {
-		// For now, we'll only use the default style
-		return '';
 	}
 
 	/**
@@ -261,6 +272,16 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		global $wp_version;
 
 		return $video_host == 'self' || ( ( $video_host == 'youtube' || $video_host == 'vimeo' ) && $wp_version >= 4.2 );
+	}
+
+	public function get_less_variables( $instance ) {
+		if ( empty( $instance ) ) {
+			return array();
+		}
+
+		return array(
+			'hide_controls' => ! empty( $instance['playback']['hide_controls'] ) ? $instance['playback']['hide_controls'] : false,
+		);
 	}
 
 	/**

@@ -11,6 +11,7 @@
 		data-template="<?php echo esc_attr( $instance['template'] ); ?>"
 		data-settings="<?php echo esc_attr( json_encode( $settings ) ); ?>"
 		data-paged="<?php echo esc_attr( $posts->query['paged'] ); ?>"
+		data-paging-id="<?php echo esc_attr( $instance['paged_id'] ); ?>"
 		data-total-pages="<?php echo esc_attr( $this->total_pages( $posts ) ); ?>"
 		data-hash="<?php echo esc_attr( $storage_hash ); ?>"
 	>
@@ -25,11 +26,11 @@
 			?>
 			<div class="sow-portfolio-filter-terms" style="margin-bottom: 25px;">
 				<button data-filter="*" class="active" style="background: none; margin-right: 34px; padding: 0 0 6px;">
-					<?php echo esc_html__( 'All', 'so-widgets-bundle' ); ?>		
+					<?php echo esc_html__( 'All', 'so-widgets-bundle' ); ?>
 				</button>
 				<?php foreach ( $template_settings['terms'] as $tax_term ) { ?>
 					<button data-filter=".<?php echo $tax_term->slug; ?>" style="background: none; box-shadow: none; margin-right: 34px; padding: 0 0 6px;">
-						<?php echo $tax_term->slug; ?>	
+						<?php echo $tax_term->slug; ?>
 					</button>
 				<?php } ?>
 			</div>

@@ -1672,7 +1672,7 @@ var sowbForms = window.sowbForms || {};
 	} );
 
 	// Further widget validation code for Customizer.
-	if ( typeof wp.customize != 'undefined' ) {
+	if ( typeof wp != 'undefined' && typeof wp.customize != 'undefined' ) {
 		jQuery( document ).on( 'widget-added widget-updated widget-synced', function( e, widget, form = false ) {
 			if ( form.length ) {
 				sowbForms.validateFields( $( form ) )

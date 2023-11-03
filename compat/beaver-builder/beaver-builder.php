@@ -21,7 +21,11 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 			return;
 		}
 
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
+		if ( isset( $_GET['fl_builder_ui'] ) ) {
+			add_action( 'fl_builder_ui_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
+		} else {
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
+		}
 		add_action( 'wp_print_footer_scripts', array( $this, 'print_footer_templates' ) );
 
 		// Don't want to show the form preview button when using Beaver Builder
@@ -33,7 +37,8 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 
 		// Beaver Builder does it's editing in the front end so enqueue required form scripts for active widgets.
 		$so_widgets_bundle = SiteOrigin_Widgets_Bundle::single();
-		$so_widgets_bundle->enqueue_registered_widgets_scripts( false, true );
+		$so_widgets_bundle->register_general_scripts();
+		$so_widgets_bundle->enqueue_registered_widgets_scripts( true, true );
 
 		$any_widgets_active = false;
 
@@ -49,43 +54,12 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 			return;
 		}
 
-		if ( ! wp_script_is( 'wp-color-picker' ) ) {
-			// wp-color-picker hasn't been registered because we're in the front end, so enqueue with full args.
-			wp_enqueue_script( 'iris', '/wp-admin/js/iris.min.js', array(
-				'jquery-ui-draggable',
-				'jquery-ui-slider',
-				'jquery-touch-punch',
-			), '1.0.7', 1 );
-
-			wp_enqueue_script(
-				'wp-color-picker',
-				'/wp-admin/js/color-picker' . SOW_BUNDLE_JS_SUFFIX . '.js',
-				array( 'iris' ),
-				false,
-				1
-			);
-
-			wp_enqueue_style( 'wp-color-picker' );
-
-			global $wp_version;
-
-			if ( version_compare( $wp_version, '5.5', '<' ) ) {
-				// Localization args for when wp-color-picker script hasn't been registered.
-				wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', array(
-					'clear'         => __( 'Clear', 'so-widgets-bundle' ),
-					'defaultString' => __( 'Default', 'so-widgets-bundle' ),
-					'pick'          => __( 'Select Color', 'so-widgets-bundle' ),
-					'current'       => __( 'Current Color', 'so-widgets-bundle' ),
-				) );
-			}
-		}
-
 		wp_enqueue_style(
 			'sowb-styles-for-beaver',
 			plugin_dir_url( __FILE__ ) . 'styles.css'
 		);
 
-		$deps = ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? array( 'jquery', 'fl-builder' ) : array( 'fl-builder-min' );
+		$deps = ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? array( 'jquery', 'fl-builder', 'siteorigin-widget-admin' ) : array( 'fl-builder-min', 'siteorigin-widget-admin' );
 		wp_enqueue_script(
 			'sowb-js-for-beaver',
 			plugin_dir_url( __FILE__ ) . 'sowb-beaver-builder' . SOW_BUNDLE_JS_SUFFIX . '.js',
