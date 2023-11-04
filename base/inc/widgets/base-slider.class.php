@@ -503,7 +503,11 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		}
 
 		if ( ! empty( $background['image'] ) && $background['opacity'] >= 1 && empty( $frame['no_output'] ) ) {
-			$wrapper_attributes['style'][] = 'background-image: url(' . esc_url( $background['image'] ) . ')';
+			if ( $i == 0 ) {
+				$wrapper_attributes['style'][] = 'background-image: url(' . esc_url( $background['image'] ) . ')';
+			} else {
+				$wrapper_attributes['data-background'] = 'url(' . esc_url( $background['image'] ) . ')';
+			}
 		}
 
 		if ( ! empty( $background['url'] ) ) {
@@ -567,13 +571,23 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			}
 
 			if ( $background['opacity'] < 1 && ! empty( $background['image'] ) ) {
+				$attrs_array = array(
+					'opacity: ' . (float) $background['opacity'],
+				);
+
+				if ( $i === 0 ) {
+					$attrs_array[] = 'background-image: url(' . esc_url( $background['image'] ) . ')';
+				}
+
 				$overlay_attributes = array(
 					'class' => array( 'sow-slider-image-overlay', 'sow-slider-image-' . $background['image-sizing'] ),
-					'style' => array(
-						'background-image: url(' . $background['image'] . ')',
-						'opacity: ' . (float) $background['opacity'],
-					),
+					'style' => $attrs_array,
 				);
+
+				if ( $i !== 0 ) {
+					$overlay_attributes['data-background'] = 'url(' . esc_url( $background['image'] ) . ')';
+				}
+
 				$overlay_attributes = apply_filters( 'siteorigin_widgets_slider_overlay_attributes', $overlay_attributes, $frame, $background );
 
 				$overlay_attributes['class'] = empty( $overlay_attributes['class'] ) ? '' : implode( ' ', $overlay_attributes['class'] );

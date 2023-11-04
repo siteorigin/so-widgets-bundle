@@ -33,6 +33,8 @@
 .sow-features-list {
 	display: flex;
 	flex-wrap: wrap;
+	gap: 40px @feature_space;
+
 	& when ( @more_text_bottom_align = true ) {
 		align-items: stretch;
 	}
@@ -42,7 +44,6 @@
 
 	.sow-features-feature {
 		.box-sizing(border-box);
-		padding: 0 @feature_space;
 		position: relative;
 		& when ( @more_text_bottom_align = true ) {
 			display: flex;
@@ -172,12 +173,6 @@
 		}
 
 		p:last-child {
-			margin-bottom: 0;
-		}
-
-		margin-bottom: 40px;
-
-		&.sow-features-feature-last-row {
 			margin-bottom: 0;
 		}
 
