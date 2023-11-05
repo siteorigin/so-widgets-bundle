@@ -1,7 +1,7 @@
 <?php
 $per_row = ! empty( $instance['per_row'] ) ? $instance['per_row'] : 3;
 
-$feature_gap = empty( $instance['feature_space'] ) ? '25' : $instance['feature_space'];
+$feature_gap = empty( $instance['feature_space'] ) ? '25px' : $instance['feature_space'];
 $feature_width = 'calc(' . round( 100 / $per_row, 3 ) . '% - ' . $feature_gap . ')';
 ?>
 
