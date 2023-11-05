@@ -1000,6 +1000,28 @@ public function __construct() {
 		return $instance;
 	}
 
+	public static function get_template( $instance ) {
+		$template_file = apply_filters(
+			'siteorigin_widgets_blog_template_file',
+			plugin_dir_path( __FILE__ ) . '/tpl/' . sanitize_file_name( $instance['template'] ) . '.php',
+			$instance
+		);
+
+		// Must be a PHP file.
+		if ( substr( $template_file, -4 ) != '.php' ) {
+			return false;
+		}
+
+		if (
+			! empty( $template_file ) &&
+			file_exists( $template_file )
+		) {
+			return $template_file;
+		}
+
+		return false;
+	}
+
 	public function get_template_variables( $instance, $args ) {
 		if ( ! isset( $instance['paged'] ) ) {
 			$instance['paged'] = ! empty( $_GET['sow-' . $instance['paged_id'] ] ) ? (int) $_GET['sow-' . $instance['paged_id'] ] : 1;
