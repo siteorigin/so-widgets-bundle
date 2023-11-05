@@ -89,6 +89,24 @@
 			}
 		}
 
+		& when ( @more_text_bottom_align = true ) {
+			&.sow-icon-container-position-right,
+			&.sow-icon-container-position-left {
+
+				& > div {
+					height: 100%;
+
+					.sow-icon-container {
+						margin: 0 auto;
+					}
+				}
+
+				.textwidget {
+					height: 100%;
+				}
+			}
+		}
+
 		&.sow-icon-container-position-bottom {
 			text-align: center;
 
