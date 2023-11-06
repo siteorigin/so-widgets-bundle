@@ -1559,8 +1559,8 @@ var sowbForms = window.sowbForms || {};
 				if ( button.classes && button.classes.length ) {
 					buttonClasses = ' ' + button.classes.join( ' ' );
 				}
-				var $button = $( '<a class="button button-small' + buttonClasses + '" tabindex="0">' + button.label + '</a>' );
-				
+				var $button = $( '<a class="button button-small' + buttonClasses + '" tabindex="0" target="_blank" rel="noopener noreferrer">' + button.label + '</a>' );
+
 				if ( button.url ) {
 					$button.attr( 'href', button.url );
 				}
