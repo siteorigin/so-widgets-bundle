@@ -267,10 +267,19 @@
 		&.sow-features-responsive {
 			margin: 0;
 
+			.sow-icon-container-position-right > div,
+			.sow-icon-container-position-left > div,
 			.sow-features-feature,
 			.sow-features-feature .textwidget {
 				display: block !important;
+			}
 
+			& when ( @more_text_bottom_align = true ) {
+				.sow-icon-container-position-right > div,
+				.sow-icon-container-position-left > div {
+						height: auto;
+						text-align: center;
+				}
 			}
 
 			.sow-features-feature {
