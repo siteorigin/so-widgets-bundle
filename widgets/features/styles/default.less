@@ -33,6 +33,8 @@
 .sow-features-list {
 	display: flex;
 	flex-wrap: wrap;
+	gap: 40px @feature_space;
+
 	& when ( @more_text_bottom_align = true ) {
 		align-items: stretch;
 	}
@@ -42,7 +44,6 @@
 
 	.sow-features-feature {
 		.box-sizing(border-box);
-		padding: 0 @feature_space;
 		position: relative;
 		& when ( @more_text_bottom_align = true ) {
 			display: flex;
@@ -72,7 +73,7 @@
 		}
 
 		&.sow-icon-container-position-right {
-			text-align: left;
+			align-items: center;
 
 			.sow-icon-container {
 				margin-right: 10px;
@@ -80,10 +81,29 @@
 		}
 
 		&.sow-icon-container-position-left {
-			text-align: left;
+			justify-content: center;
+			align-items: center;
 
 			.sow-icon-container {
 				margin-left: 10px;
+			}
+		}
+
+		& when ( @more_text_bottom_align = true ) {
+			&.sow-icon-container-position-right,
+			&.sow-icon-container-position-left {
+
+				& > div {
+					height: 100%;
+
+					.sow-icon-container {
+						margin: 0 auto;
+					}
+				}
+
+				.textwidget {
+					height: 100%;
+				}
 			}
 		}
 
@@ -95,7 +115,8 @@
 			}
 		}
 
-		&.sow-icon-container-position-top, &.sow-icon-container-position-bottom {
+		&.sow-icon-container-position-top,
+		&.sow-icon-container-position-bottom {
 			.sow-icon-container {
 				& when ( @per_row = 1 ) {
 					& when ( @more_text_bottom_align = true ) {
@@ -115,12 +136,8 @@
 			width: @container_size;
 			flex: 0 0 @container_size;
 
-			& when not ( @per_row = 1 ) {
-				margin: auto;
-			}
-
 			& when ( @more_text_bottom_align = true ) {
-					margin: auto;
+				margin: auto;
 			}
 
 			&:not(.sow-container-none) [class^="sow-icon-"],
@@ -174,12 +191,6 @@
 		}
 
 		p:last-child {
-			margin-bottom: 0;
-		}
-
-		margin-bottom: 40px;
-
-		&.sow-features-feature-last-row {
 			margin-bottom: 0;
 		}
 
@@ -256,10 +267,19 @@
 		&.sow-features-responsive {
 			margin: 0;
 
+			.sow-icon-container-position-right > div,
+			.sow-icon-container-position-left > div,
 			.sow-features-feature,
 			.sow-features-feature .textwidget {
 				display: block !important;
+			}
 
+			& when ( @more_text_bottom_align = true ) {
+				.sow-icon-container-position-right > div,
+				.sow-icon-container-position-left > div {
+						height: auto;
+						text-align: center;
+				}
 			}
 
 			.sow-features-feature {

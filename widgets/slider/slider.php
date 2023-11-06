@@ -203,17 +203,21 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 					<div class="sow-slider-image-foreground-wrapper">
 						<?php
 						echo siteorigin_widgets_get_attachment_image(
-						$frame['foreground_image'],
-						'full',
-						! empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : '',
-						apply_filters(
+							$frame['foreground_image'],
+							'full',
+							! empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : '',
+							siteorigin_loading_optimization_attributes(
+								apply_filters(
 									'siteorigin_widgets_slider_attr',
 									array(
-										'class' => 'sow-slider-foreground-image skip-lazy',
-										'loading' => apply_filters( 'siteorigin_widgets_slider_loading_attr', 'eager' ),
+										'class' => 'sow-slider-foreground-image',
 										'style' => ! empty( $foreground_style_attr ) ? $foreground_style_attr : '',
 									)
-								)
+								),
+								'sliders',
+								new stdClass(),
+								$this
+							)
 						);
 						?>
 					</div>
