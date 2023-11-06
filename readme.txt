@@ -106,6 +106,20 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.56.0 - 06 November 2023 =
+* Anything Carousel: Prevented an autoplay conflict caused by `click` trigger.
+* Blog: Added Scroll Top functionality and global setting at `Plugins > SiteOrigin Widgets > Blog`.
+* Call To Action: Added new hooks and padding.
+* Contact Form: Added RGBA support for `Container Background Color`.
+* Contact Form: Resolved warnings related to PHP 8.2.
+* Features: Ensured the feature contents is centered rather than aligned to the Container Icon Position.
+* Features: Resolved a mobile misalignment when using `Bottom Align More Link Text`.
+* Sliders: Added Lazy Load support.
+* Video Player: Addd a `Hide Player Controls` setting.
+* Beaver Builder: Resolved `Uncaught TypeError: sowbForms.getWidgetIdBase`.
+* Admin Metabox: Reset cursor for active tabs.
+* Updated SiteOrigin Installer.
+
 = 1.55.2 - 28 October 2023 =
 * Improved the sizing of number fields in the admin interface.
 * Modified the button widget to only apply flex styling if an icon is set.
