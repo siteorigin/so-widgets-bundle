@@ -589,6 +589,7 @@ div.siteorigin-widget-form {
 
 				&.sow-active-tab {
 					border-bottom: 1px solid #fcfcfc;
+					cursor: default;
 				}
 
 				&:last-of-type {
@@ -732,23 +733,10 @@ div.siteorigin-widget-form {
 			}
 		}
 
-		&.siteorigin-widget-field-type-number {
-			align-items: center;
-			display: flex;
-			flex-wrap: wrap;
-
-			.siteorigin-widget-field-label {
-				flex: 100%;
-			}
-
-			.siteorigin-widget-input-number  {
-				flex: 1;
-			}
-
-			.siteorigin-widget-input-number-unit {
-				padding-left: 5px;
-			}
+		&.siteorigin-widget-field-type-number .siteorigin-widget-input-number-unit {
+			padding-left: 5px;
 		}
+
 	}
 
 	.siteorigin-widget-description {

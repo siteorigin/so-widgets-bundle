@@ -20,6 +20,7 @@
 @rounding: 0.25em;
 @padding: 1em;
 @has_text: true;
+@has_button_icon: false;
 
 .ow-button-base {
 	.clearfix();
@@ -65,17 +66,34 @@
 		& when not ( @has_text = true ) {
 			.sow-icon-image,
 			[class^="sow-icon-"] {
-					margin: 0;
+				margin: 0;
 			}
 		}
 
-		& > span {
-			align-items: center;
-			display: flex;
-			justify-content: center;
+		& when ( @has_button_icon = true ) {
+			& > span {
+				display: flex;
+				justify-content: center;
 
-			[class^="sow-icon-"] {
-				font-size: @icon_size;
+				[class^="sow-icon-"] {
+					font-size: @icon_size;
+				}
+			}
+
+			&.ow-icon-placement-top > span {
+				flex-direction: column;
+			}
+
+			&.ow-icon-placement-right > span {
+				flex-direction: row-reverse;
+			}
+
+			&.ow-icon-placement-bottom > span {
+				flex-direction: column-reverse;
+			}
+
+			&.ow-icon-placement-left > span {
+				align-items: start;
 			}
 		}
 

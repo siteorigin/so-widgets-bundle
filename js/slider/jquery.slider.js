@@ -33,7 +33,12 @@ sowb.SiteOriginSlider = function( $ ) {
 				embed[0].contentWindow.postMessage( '{"method":"pause"}', "*" );
 				// YouTube
 				embed[0].contentWindow.postMessage( '{"event":"command","func":"pauseVideo","args":""}', '*' )
-			}	
+			}
+		},
+
+		enableBackground: function( el, background ) {
+			el.css( 'background-image', background );
+			el.removeAttr( 'data-background' );
 		},
 
 		setupActiveSlide: function( slider, newActive, speed ) {
@@ -42,6 +47,21 @@ sowb.SiteOriginSlider = function( $ ) {
 				active = $( newActive ),
 				video = active.find( 'video.sow-background-element' ),
 				$unmuteButton = $( slider ).prev();
+
+			// If this slide hasn't loaded its background, add it.
+			var background = active.attr( 'data-background' );
+			if ( background !== undefined ) {
+				this.enableBackground( active, background );
+			}
+
+			// If the slider overlay hasn't loaded, set it up.
+			var overlay = active.find( '.sow-slider-image-overlay' );
+			if ( overlay ) {
+				var overlayBackground = overlay.attr( 'data-background' );
+				if ( overlayBackground !== undefined ) {
+					this.enableBackground( overlay, overlayBackground );
+				}
+			}
 
 			if ( speed === undefined ) {
 				sentinel.css( 'height', active.outerHeight() + 'px' );
@@ -119,12 +139,12 @@ jQuery( function( $ ) {
 
 		$( '.sow-slider-images' ).each( function() {
 			var $$ = $( this );
-			
-			
+
+
 			if ( $$.data( 'initialized' ) ) {
 				return $$;
 			}
-			
+
 			var $p = $$.siblings( '.sow-slider-pagination' );
 			var $base = $$.closest( '.sow-slider-base' );
 			var $n = $base.find( '.sow-slide-nav' );
@@ -193,7 +213,7 @@ jQuery( function( $ ) {
 
 				// Show everything for this slider
 				$base.show();
-				
+
 				var resizeFrames = function() {
 					$$.find( '.sow-slider-image' ).each( function() {
 						var $i = $( this );
@@ -218,7 +238,7 @@ jQuery( function( $ ) {
 						}, 425 );
 					}
 				}
-				
+
 				$$.trigger( 'slider_setup_before' );
 
 				// Set up the Cycle with videos
@@ -376,45 +396,15 @@ jQuery( function( $ ) {
 					} );
 				}
 			};
-			
+
 			$$.trigger( 'slider_setup_after' );
 
-			var images = $$.find( 'img.sow-slider-background-image, img.sow-slider-foreground-image' );
-			var imagesLoaded = 0;
-			var sliderLoaded = false;
-
-			// Preload all of the slide images, when they're loaded, then display the slider.
-			images.each( function() {
-				var $i = $( this );
-				if ( this.complete ) {
-					imagesLoaded++;
-				} else {
-					$( this ).one('load', function() {
-						imagesLoaded++;
-
-						if ( imagesLoaded === images.length && ! sliderLoaded ) {
-							setupSlider();
-							sliderLoaded = true;
-						}
-					} )
-					// Reset src attribute to force 'load' event for cached images in IE9 and IE10.
-						.attr( 'src', $( this ).attr( 'src' ) );
-				}
-
-				if ( imagesLoaded === images.length && ! sliderLoaded ) {
-					setupSlider();
-					sliderLoaded = true;
-				}
-			} );
-
-			if ( images.length === 0 ) {
-				setupSlider();
-			}
+			setupSlider();
 
 			if ( $.isFunction( $.fn.fitVids ) ) {
 				$$.find( '.sow-slide-video-oembed' ).fitVids();
 			}
-			
+
 			$$.data( 'initialized', true );
 		} );
 	};

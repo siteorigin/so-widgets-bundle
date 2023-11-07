@@ -395,6 +395,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'background'   => array(
 								'type'    => 'color',
 								'label'   => __( 'Background color', 'so-widgets-bundle' ),
+								'alpha'   => true,
 								'default' => '#f2f2f2',
 							),
 							'padding'      => array(
@@ -1018,7 +1019,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 				if (
 					! empty( $template_vars['result'] ) &&
-					! empty( $template_vars['result'] ) &&
 					! empty( $template_vars['result']['errors'] ) &&
 					! empty( $template_vars['result']['errors']['_general'] ) &&
 					! empty( $template_vars['result']['errors']['_general']['simple'] )
@@ -1171,8 +1171,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 *
 	 * @param array $errors
 	 */
-	public function render_form_fields( $fields, $errors, $instance ) {
+	public function render_form_fields( $fields, $result, $instance ) {
 		$field_ids = array();
+		$errors = ! empty( $result['errors'] ) ? $result['errors'] : array();
 		$label_position = $instance['design']['labels']['position'];
 
 		$indicate_required_fields = $instance['settings']['required_field_indicator'];
@@ -1188,9 +1189,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			if ( empty( $field['type'] ) ) {
 				continue;
 			}
+			$field_name = $this->name_from_label( ! empty( $field['label'] ) ? $field['label'] : $i, $field_ids );
+
 			// Using `$instance['_sow_form_id']` to uniquely identify contact form fields across widgets.
 			// I.e. if there are many contact form widgets on a page this will prevent field name conflicts.
-			$field_name = $this->name_from_label( ! empty( $field['label'] ) ? $field['label'] : $i, $field_ids ) . '-' . $instance['_sow_form_id'];
+			$field_name .= ! empty( $instance['_sow_form_id'] ) ? '-' . $instance['_sow_form_id'] : '';
+
 			$field_id = 'sow-contact-form-field-' . $field_name;
 
 			$value = '';
@@ -1305,7 +1309,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 
 		if ( empty( $_POST['instance_hash'] ) || $_POST['instance_hash'] != $storage_hash ) {
-			return false;
+			return array();
 		}
 
 		if ( empty( $instance['fields'] ) ) {
