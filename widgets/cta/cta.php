@@ -52,7 +52,7 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 			)
 		);
 
-		
+
 		add_filter( 'siteorigin_widgets_google_font_fields_sow-cta', array( $this, 'add_google_font_fields' ), 10, 3 );
 	}
 
@@ -113,7 +113,7 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 						'fields' => array(
 							'title_tag' => array(
 								'type' => 'select',
-								'label' => __( 'Title HTML Tag', 'siteorigin-premiu,' ),
+								'label' => __( 'Title HTML Tag', 'siteorigin-premium' ),
 								'default' => 'h4',
 								'options' => array(
 									'h1' => __( 'H1', 'so-widgets-bundle' ),
@@ -275,10 +275,9 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 			'title' => ! empty( $instance['title'] ) ? $instance['title'] : '',
 			'sub_title' => ! empty( $instance['sub_title'] ) ? $instance['sub_title'] : '',
 			'button' => $instance['button'],
-			'title_tag' => 'h4',
-			'sub_title_tag' => 'h5',
+			'title_tag' => ! empty( $instance['design']['fonts']['title_tag'] ) ? $instance['design']['fonts']['title_tag'] : 'h4',
+			'sub_title_tag' => ! empty( $instance['design']['fonts']['title_tag'] ) ? $instance['design']['fonts']['sub_title_tag'] : 'h5',
 		);
-
 
 		return $template_vars;
 	}
