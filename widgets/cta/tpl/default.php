@@ -20,4 +20,6 @@
 
 	</div>
 
+	<?php do_action( 'siteorigin_widgets_cta_after_wrapper', $instance ); ?>
+
 </div>
