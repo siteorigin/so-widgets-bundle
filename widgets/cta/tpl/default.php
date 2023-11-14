@@ -1,4 +1,8 @@
-<div class="sow-cta-base">
+<div
+	class="sow-cta-base"
+	<?php echo apply_filters( 'siteorigin_widgets_cta_base', '', $instance ); ?>
+>
+	<?php do_action( 'siteorigin_widgets_cta_before_wrapper', $instance ); ?>
 
 	<div class="sow-cta-wrapper">
 
@@ -21,5 +25,4 @@
 	</div>
 
 	<?php do_action( 'siteorigin_widgets_cta_after_wrapper', $instance ); ?>
-
 </div>
