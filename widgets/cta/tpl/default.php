@@ -7,11 +7,20 @@
 	<div class="sow-cta-wrapper">
 
 		<div class="sow-cta-text">
-			<h4 class="sow-cta-title"><?php echo wp_kses_post( $instance['title'] ); ?></h4>
-			<h5 class="sow-cta-subtitle"><?php echo wp_kses_post( $instance['sub_title'] ); ?></h5>
+			<?php if ( ! empty( $title ) ) { ?>
+				<<?php echo $title_tag; ?> class="sow-cta-title">
+					<?php echo wp_kses_post( $title ); ?>
+				</<?php echo $title_tag; ?>>
+			<?php } ?>
+
+			<?php if ( ! empty( $sub_title ) ) { ?>
+				<<?php echo $sub_title_tag; ?> class="sow-cta-subtitle">
+					<?php echo wp_kses_post( $sub_title ); ?>
+				</<?php echo $sub_title_tag; ?>>
+			<?php } ?>
 		</div>
 
-		<?php $this->sub_widget( 'SiteOrigin_Widget_Button_Widget', $args, $instance['button'] ); ?>
+		<?php $this->sub_widget( 'SiteOrigin_Widget_Button_Widget', $args, $button ); ?>
 
 	</div>
 
