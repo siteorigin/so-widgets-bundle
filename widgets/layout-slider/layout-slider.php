@@ -412,7 +412,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 
 				if ( ! empty( $settings['extra_top_padding'] ) ) {
 					// Add extra padding to top padidng.
-					$meas_options['slide_padding_top_responsive'] = (int) $meas_options['slide_padding_responsive'] + (int) $settings['extra_top_padding'];
+					$meas_options['slide_padding_top_responsive'] = $settings['extra_top_padding'];
 				}
 			}
 		}
