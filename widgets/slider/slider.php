@@ -142,13 +142,11 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 
 	public function get_frame_background( $i, $frame ) {
-		if ( ! empty( $frame['foreground_image'] ) ) {
-			$background_image = siteorigin_widgets_get_attachment_image_src(
-				$frame['background_image'],
-				'full',
-				! empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : ''
-			);
-		}
+		$background_image = siteorigin_widgets_get_attachment_image_src(
+			$frame['background_image'],
+			'full',
+			! empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : ''
+		);
 
 		return array(
 			'color' => ! empty( $frame['background_color'] ) ? $frame['background_color'] : false,
