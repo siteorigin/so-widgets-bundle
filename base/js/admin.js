@@ -264,9 +264,18 @@ var sowbForms = window.sowbForms || {};
 			// For any repeater items currently in existence
 			$el.find('.siteorigin-widget-field-repeater-item').sowSetupRepeaterItems();
 
-			// Set up any color fields
+			var canSetupColorPicker = typeof jQuery.fn.wpColorPicker !== 'undefined';
+			// Set up any color fields.
 			$fields.find( '> .siteorigin-widget-input-color' ).each( function() {
 				var $colorField = $( this );
+
+				if ( ! canSetupColorPicker ) {
+					// We can't load the color picker, so let's convert the field to a color input.
+					$colorField.attr( 'type' , 'color' );
+
+					return;
+				}
+
 				var colorResult = ''
 				var alphaImage = '';
 
