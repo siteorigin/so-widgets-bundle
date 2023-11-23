@@ -84,13 +84,13 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 						'type'  => 'text',
 						'label' => __( 'Price', 'so-widgets-bundle' ),
 					),
-					'per'      => array(
-						'type'  => 'text',
-						'label' => __( 'Per', 'so-widgets-bundle' ),
-					),
 					'sale_price' => array(
 						'type'  => 'text',
 						'label' => __( 'Sale price', 'so-widgets-bundle' ),
+					),
+					'per'      => array(
+						'type'  => 'text',
+						'label' => __( 'Per', 'so-widgets-bundle' ),
 					),
 					'button'   => array(
 						'type'  => 'text',
