@@ -26,8 +26,15 @@
             </div>
 
             <div class="ow-pt-details">
-                <div class="ow-pt-price"><?php echo esc_html( $column['price'] ); ?></div>
-                <div class="ow-pt-per"><?php echo esc_html( $column['per'] ); ?></div>
+                <div class="ow-pt-price">
+					<?php echo esc_html( $column['price'] ); ?>
+				</div>
+				<?php if ( ! empty( $column['sale_price'] ) ) { ?>
+					<span class="ow-pt-sale-price">
+						<?php echo wp_kses_post( $column['sale_price'] ); ?>
+					</span>
+				<?php } ?>
+                <div class="ow-pt-per"><?php echo wp_kses_post( $column['per'] ); ?></div>
             </div>
 
 			<?php if ( ( $equalize_row_heights && $any_column_has_image ) || ! ( $equalize_row_heights || empty( $column['image'] ) ) ) { ?>

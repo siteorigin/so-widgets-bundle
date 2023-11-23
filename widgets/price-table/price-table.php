@@ -88,6 +88,10 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 						'type'  => 'text',
 						'label' => __( 'Per', 'so-widgets-bundle' ),
 					),
+					'sale_price' => array(
+						'type'  => 'text',
+						'label' => __( 'Sale price', 'so-widgets-bundle' ),
+					),
 					'button'   => array(
 						'type'  => 'text',
 						'label' => __( 'Button text', 'so-widgets-bundle' ),
@@ -208,6 +212,10 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			$classes[] = 'ow-pt-even';
 		} else {
 			$classes[] = 'ow-pt-odd';
+		}
+
+		if ( ! empty( $column['sale_price'] ) ) {
+			$classes[] = 'ow-pt-on-sale';
 		}
 
 		return implode( ' ', $classes );
