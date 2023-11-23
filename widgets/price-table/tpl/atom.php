@@ -19,15 +19,18 @@
 	<?php foreach ( $columns as $i => $column ) { ?>
         <div class="ow-pt-column <?php echo $this->get_column_classes( $column, $i, $columns ); ?>"
              style="width: <?php echo round( 100 / count( $columns ), 3 ); ?>%">
-            <div class="ow-pt-title">
-				<?php echo esc_html( $column['title'] ); ?>
+			<div class="ow-pt-title">
+				<?php echo wp_kses_post( $column['title'] ); ?>
 				<?php if ( ! empty( $column['subtitle'] ) ) { ?>
-                    <div class="ow-pt-subtitle"><?php echo esc_html( $column['subtitle'] ); ?></div><?php } ?>
-            </div>
+					<div class="ow-pt-subtitle">
+						<?php echo wp_kses_post( $column['subtitle'] ); ?>
+					</div>
+				<?php } ?>
+			</div>
 
             <div class="ow-pt-details">
-                <div class="ow-pt-price"><?php echo esc_html( $column['price'] ); ?></div>
-                <div class="ow-pt-per"><?php echo esc_html( $column['per'] ); ?></div>
+                <div class="ow-pt-price"><?php echo wp_kses_post( $column['price'] ); ?></div>
+                <div class="ow-pt-per"><?php echo wp_kses_post( $column['per'] ); ?></div>
             </div>
 
 			<?php if ( ( $equalize_row_heights && $any_column_has_image ) || ! ( $equalize_row_heights || empty( $column['image'] ) ) ) { ?>
@@ -73,7 +76,7 @@
         </div>
 	<?php
 	}
-	
+
 	global $siteorigin_price_table_icons;
 
 	if ( empty( $siteorigin_price_table_icons ) ) {
