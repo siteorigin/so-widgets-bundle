@@ -106,6 +106,13 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.57.0 - 24 November 2023 =
+* Added additional font settings to the Call To Action (CTA) Widget, including Title HTML Tag, Title Font Family, Title Font Size, Subtitle HTML Tag, Subtitle Font Family, and Subtitle Font Size.
+* Contact Form: Added an optional `readonly` attribute for the Text Field.
+* Contact Form: Added `siteorigin_widgets_contact_fields` filter to allow customization of the email fields.
+* Beaver Builder: Fixed an issue with the UI not loading by removing Core BB JS as a dependency.
+* Updated the "Tested up to" version in the readme.txt file to 6.4.
+
 = 1.56.0 - 06 November 2023 =
 * Anything Carousel: Prevented an autoplay conflict caused by `click` trigger.
 * Blog: Added Scroll Top functionality and global setting at `Plugins > SiteOrigin Widgets > Blog`.
