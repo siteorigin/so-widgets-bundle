@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: widget, button, slider, hero, google maps, image, carousel, lottie, features, icons, price table, tinymce, social icons
 Requires at least: 4.2
-Tested up to: 6.3
+Tested up to: 6.4
 Requires PHP: 5.6.20
 Stable tag: trunk
 Build time: unbuilt
@@ -105,6 +105,13 @@ SiteOrigin Premium includes access to our professional email support service, pe
 The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets. Widgets can be enabled or disabled as needed. If a widget offers global settings, you can access those via the Settings button next to each applicable widget.
 
 == Changelog ==
+
+= 1.57.0 - 24 November 2023 =
+* Added additional font settings to the Call To Action (CTA) Widget, including Title HTML Tag, Title Font Family, Title Font Size, Subtitle HTML Tag, Subtitle Font Family, and Subtitle Font Size.
+* Contact Form: Added an optional `readonly` attribute for the Text Field.
+* Contact Form: Added `siteorigin_widgets_contact_fields` filter to allow customization of the email fields.
+* Beaver Builder: Fixed an issue with the UI not loading by removing Core BB JS as a dependency.
+* Updated the "Tested up to" version in the readme.txt file to 6.4.
 
 = 1.56.0 - 06 November 2023 =
 * Anything Carousel: Prevented an autoplay conflict caused by `click` trigger.
