@@ -114,9 +114,6 @@ jQuery( function ( $ ) {
 				}
 			} );
 
-			if ( $widget.data( 'anchor-id' ) ) {
-			}
-
 			$widget.data( 'initialized', true );
 		} );
 	};
