@@ -15,7 +15,7 @@ if ( ! empty( $instance['title'] ) ) {
 		<div class="sow-accordion-panel<?php if ( $panel['initial_state'] == 'open' ) {
 			echo ' sow-accordion-panel-open';
 		} ?>"
-			 data-anchor="<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>">
+			 data-anchor-id="<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>">
 				<div class="sow-accordion-panel-header-container" role="heading" aria-level="2">
 					<div class="sow-accordion-panel-header" tabindex="0" role="button" id="accordion-label-<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>" aria-controls="accordion-content-<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>" aria-expanded="<?php echo $panel['initial_state'] == 'open' ? 'true' : 'false'; ?>">
 						<div class="sow-accordion-title <?php echo empty( $panel['after_title'] ) ? 'sow-accordion-title-icon-left' : 'sow-accordion-title-icon-right'; ?>">
