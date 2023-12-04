@@ -56,7 +56,7 @@ var sowbForms = window.sowbForms || {};
 							}
 							handler = repeaterHandler;
 						}
-						
+
 						var widgetFieldId = sowbForms.getContainerFieldId( $$, 'widget', '.siteorigin-widget-widget' );
 						if ( widgetFieldId !== false ) {
 							var widgetFieldHandler = {};
@@ -68,7 +68,7 @@ var sowbForms = window.sowbForms || {};
 								} else {
 									st = '_else[' + stMatches[ 1 ] + '_' + widgetFieldId + ']';
 								}
-								
+
 								widgetFieldHandler[st] = handler[wdgFldState];
 							}
 							handler = widgetFieldHandler;
@@ -165,7 +165,7 @@ var sowbForms = window.sowbForms || {};
 											$$f.trigger( 'sowsetupformfield' );
 										}
 									}
-									
+
 								}
 
 								// Store that we've run a handler
@@ -189,8 +189,7 @@ var sowbForms = window.sowbForms || {};
 						$teaser.remove();
 					});
 				});
-				
-				
+
 				if ( ! $el.data( 'backupDisabled' ) ) {
 					var _sow_form_id = $el.find( '> .siteorigin-widgets-form-id' ).val();
 					var $timestampField = $el.find( '> .siteorigin-widgets-form-timestamp' );
@@ -244,7 +243,7 @@ var sowbForms = window.sowbForms || {};
 
 			// Process any sub sections
 			$fields.find('> .siteorigin-widget-section').sowSetupForm();
-			
+
 			var $subwidgetFields = $fields.find('> .siteorigin-widget-widget');
 			$subwidgetFields.find('> .siteorigin-widget-section').sowSetupForm();
 
@@ -486,7 +485,7 @@ var sowbForms = window.sowbForms || {};
 							// Skip if the function doesn't exist, or it starts with an underscore (internal functions).
 							return currentStates;
 						}
-						
+
 						// Skip if this is an unselected radio input.
 						if ( $$.is( '[type="radio"]' ) && !$$.is( ':checked' ) ) {
 							return currentStates;
@@ -499,7 +498,7 @@ var sowbForms = window.sowbForms || {};
 								return a.replace('{$repeater}', repeaterIndex);
 							});
 						}
-						
+
 						var widgetFieldId = sowbForms.getContainerFieldId( $$, 'widget', '.siteorigin-widget-widget' );
 						if ( widgetFieldId !== false && ! emitter.hasOwnProperty( 'widgetFieldId' ) ) {
 							emitter.widgetFieldId = widgetFieldId;
@@ -571,9 +570,9 @@ var sowbForms = window.sowbForms || {};
 			};
 
 			$fields.filter('[data-state-emitter]').each(function () {
-				
+
 				var $input = $( this ).find( '.siteorigin-widget-input' );
-				
+
 				// Listen for any change events on an emitter field
 				$input.on('keyup change', stateEmitterChangeHandler);
 
@@ -666,15 +665,15 @@ var sowbForms = window.sowbForms || {};
 						$(input).data('repeater-positions', pos);
 					});
 				});
-				
+
 				// Update the field names for all the input items
 				$$.find('.siteorigin-widget-input').each( function ( i, input ) {
 					var $in = $( input );
 					var pos = $in.data( 'repeater-positions' );
-					
+
 					if ( typeof pos !== 'undefined' ) {
 						var newName = $in.attr( 'data-original-name' );
-						
+
 						if ( !newName ) {
 							$in.attr( 'data-original-name', $in.attr( 'name' ) );
 							newName = $in.attr( 'name' );
@@ -682,7 +681,7 @@ var sowbForms = window.sowbForms || {};
 						if ( !newName ) {
 							return;
 						}
-						
+
 						if ( pos ) {
 							for ( var k in pos ) {
 								newName = newName.replace( '#' + k + '#', pos[ k ] );
@@ -691,7 +690,7 @@ var sowbForms = window.sowbForms || {};
 						$in.attr( 'name', newName );
 					}
 				} );
-				
+
 				if ( !$$.data( 'initialSetup' ) ) {
 					// Setup default checked values, now that we've updated input names.
 					// Without this radio inputs in repeaters will be rendered as if they all belong to the same group.
@@ -806,7 +805,7 @@ var sowbForms = window.sowbForms || {};
 					$$.attr('name', $(this).data('name'));
 				}
 			});
-			
+
 			// Replace repeater item id placeholders with the index of the repeater item.
 			var repeaterHtml = '';
 			repeaterObject.find( '> .siteorigin-widget-field' )
@@ -942,7 +941,10 @@ var sowbForms = window.sowbForms || {};
 							}
 						}
 
-						itemTop.find( 'h4' ).text( txt );
+						if ( text ) {
+							itemTop.find( 'h4' ).text( text );
+						}
+
 					};
 					updateLabel();
 					var eventName = ( itemLabel.hasOwnProperty('updateEvent') && itemLabel.updateEvent ) ? itemLabel.updateEvent : 'change';
@@ -950,7 +952,7 @@ var sowbForms = window.sowbForms || {};
 				}
 
 				itemTop.on( 'click keyup', function( e ) {
-					if (e.target.className === "siteorigin-widget-field-remove" || e.target.className === "siteorigin-widget-field-copy") {
+					if ( e.target.className === 'siteorigin-widget-field-remove' || e.target.className === 'siteorigin-widget-field-copy' ) {
 						return;
 					}
 
@@ -959,25 +961,24 @@ var sowbForms = window.sowbForms || {};
 					}
 
 					e.preventDefault();
-					$(this).closest('.siteorigin-widget-field-repeater-item').find('.siteorigin-widget-field-repeater-item-form').eq(0).slideToggle('fast', function () {
+					$( this ).closest( '.siteorigin-widget-field-repeater-item' ).find( '.siteorigin-widget-field-repeater-item-form' ).eq( 0 ).slideToggle( 'fast', function() {
 						$( window ).trigger( 'resize' );
-						if ($(this).is(':visible')) {
-							$(this).trigger('slideToggleOpenComplete');
-							
+						if ( $ ( this ).is( ':visible' ) ) {
+							$( this ).trigger( 'slideToggleOpenComplete' );
+
 							$( this ).find( '.siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field,> .siteorigin-widget-field' )
 							.each( function (index, element) {
 								var $field = $( element );
 								if ( $field.is( ':visible' ) ) {
 									$field.trigger( 'sowsetupformfield' );
 								}
-								
+
 							} );
+						} else {
+							$( this ).trigger( 'slideToggleCloseComplete' );
 						}
-						else {
-							$(this).trigger('slideToggleCloseComplete');
-						}
-					});
-				});
+					} );
+				} );
 				itemTop.find( '.siteorigin-widget-field-remove' ).on( 'click keyup', function( e, params ) {
 					e.preventDefault();
 
@@ -1179,7 +1180,7 @@ var sowbForms = window.sowbForms || {};
 		if ( ! this.hasOwnProperty( fieldIdPropName ) ) {
 			this[ fieldIdPropName ] = 1;
 		}
-		
+
 		var $field = $el.closest( containerClass );
 		if ( $field.length ) {
 			var fieldId = $field.data( 'field-id' );
@@ -1187,7 +1188,7 @@ var sowbForms = window.sowbForms || {};
 				fieldId = this[ fieldIdPropName ]++;
 			}
 			$field.data( 'field-id', fieldId );
-			
+
 			return fieldId;
 		}
 		else {
@@ -1233,7 +1234,7 @@ var sowbForms = window.sowbForms || {};
 			callback(window.sowVars[widget][key]);
 		}
 	};
-	
+
 	sowbForms.getWidgetIdBase = function ( formContainer ) {
 		return formContainer.data( 'id-base' );
 	};
@@ -1293,7 +1294,7 @@ var sowbForms = window.sowbForms || {};
 					if ( typeof tinyMCE !== 'undefined' ) {
 						editor = tinyMCE.get( $$.attr( 'id' ) );
 					}
-					
+
 					if ( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
 						fieldValue = editor.getContent();
 					}
@@ -1342,7 +1343,7 @@ var sowbForms = window.sowbForms || {};
 		});
 		return data;
 	};
-	
+
 	sowbForms.isEnter = function( e, triggerClick = false ) {
 		if ( e.which == 13 ) {
 			if ( triggerClick ) {
@@ -1352,7 +1353,7 @@ var sowbForms = window.sowbForms || {};
 			}
 		}
 	};
-	
+
 	/**
 	 * Sets all the widget form fields in the given container with the given data values.
 	 *
@@ -1393,7 +1394,7 @@ var sowbForms = window.sowbForms || {};
 					}
 					repeaterData = elementVars;
 				}
-				
+
 				if ( ! repeaterData || ! Array.isArray( repeaterData ) ) {
 					return;
 				}
@@ -1581,8 +1582,7 @@ var sowbForms = window.sowbForms || {};
 		};
 		processFields( index, $fields );
 	};
-	
-	
+
 	/**
 	 * Displays an informational notice either at the top of the supplied container, or above the optionally supplied
 	 * element.
@@ -1596,12 +1596,12 @@ var sowbForms = window.sowbForms || {};
 	 *
 	 */
 	sowbForms.displayNotice = function ( $container, title, message, buttons, $element ) {
-		
+
 		var $notice = $( '<div class="siteorigin-widget-form-notification"></div>' );
 		if ( title ) {
 			$notice.append( '<span>' + title + '</span>' );
 		}
-		
+
 		if ( buttons && buttons.length ) {
 			buttons.forEach( function ( button ) {
 				var buttonClasses = '';
@@ -1609,7 +1609,7 @@ var sowbForms = window.sowbForms || {};
 					buttonClasses = ' ' + button.classes.join( ' ' );
 				}
 				var $button = $( '<a class="button button-small' + buttonClasses + '" tabindex="0">' + button.label + '</a>' );
-				
+
 				if ( button.url ) {
 					$button.attr( 'href', button.url );
 				}
@@ -1622,14 +1622,14 @@ var sowbForms = window.sowbForms || {};
 						button.callback( $notice );
 					});
 				}
-				
+
 				$notice.append( $button );
 			} );
 		}
 		if ( message ) {
 			$notice.append( '<div><small>' + message + '</small></div>' );
 		}
-		
+
 		if ( $element ) {
 			$element.before( $notice );
 		} else {
@@ -1741,7 +1741,7 @@ var sowbForms = window.sowbForms || {};
 	$( document ).on( 'widget-added', function( e, widget ) {
 		widget.find( '.siteorigin-widget-form' ).sowSetupForm();
 	} );
-	
+
 	if ( $body.hasClass('block-editor-page') ) {
 		// Setup new widgets when they're previewed in the block editor.
 		$(document).on('panels_setup_preview', function () {
