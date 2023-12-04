@@ -844,6 +844,10 @@ var sowbForms = window.sowbForms || {};
 		});
 	};
 
+	$.fn.iconFormField = function() {
+		return $( this ).find( '.siteorigin-widget-icon' ).html();
+	}
+
 	$.fn.sowSetupRepeaterItems = function () {
 		return $(this).each(function (i, el) {
 			var $el = $(el);

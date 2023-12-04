@@ -16,6 +16,9 @@
 			return;
 		}
 
+		// Clear the base icon to prevent a potential duplicate icon.
+		$b.find( '.sow-icon-clear' ).remove();
+
 		// Clicking on the button should display the icon selector.
 		$b.on( 'click keyup', function( e ) {
 			if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
