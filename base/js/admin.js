@@ -862,6 +862,9 @@ var sowbForms = window.sowbForms || {};
 			return '';
 		}
 
+		// Escape the text.
+		text = $( '<div></div>' ).text( text ).html();
+
 		if ( text.length > 80 ) {
 			return text.substr( 0, 79 ) + '...';
 		}
