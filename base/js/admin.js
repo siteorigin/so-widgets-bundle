@@ -774,6 +774,20 @@ var sowbForms = window.sowbForms || {};
 					$( window ).trigger( 'resize' );
 				});
 			});
+
+			// Setup Repeater Grid Header if necessary.
+			const itemLabel = $el.data( 'item-label' );
+			if ( 'grid' in itemLabel ) {
+				$el.addClass( 'sow-repeater-has-grid' );
+
+				let labels = itemLabel.selectorArray.map( item => item.label || '' );
+				let listItems = labels.map( label => `<li role="listitem">${ limitTextLength( label ) }</li>`).join( '' );
+
+				$el.find( '.siteorigin-widget-field-repeater-top' )
+					.append( `<ul class="sow-repeater-grid" role="list" aria-label="${ soWidgets.grid.header }">${ listItems }</ul>` )
+					.append( `<span class="sow-repeater-grid-actions">${ soWidgets.grid.actions }</span>` );
+			}
+
 		});
 	};
 
@@ -844,51 +858,86 @@ var sowbForms = window.sowbForms || {};
 		});
 	};
 
+	const limitTextLength = function( text ) {
+		if ( typeof text === 'undefined' ) {
+			return '';
+		}
+
+		if ( text.length > 80 ) {
+			return text.substr( 0, 79 ) + '...';
+		}
+
+		return text;
+	}
 	$.fn.sowSetupRepeaterItems = function () {
 		return $(this).each(function (i, el) {
 			var $el = $(el);
 
-			if (typeof $el.data('sowrepeater-actions-setup') === 'undefined') {
+			if ( typeof $el.data( 'sowrepeater-actions-setup' ) === 'undefined' ) {
 				var $parentRepeater = $el.closest('.siteorigin-widget-field-repeater');
 				var itemTop = $el.find('> .siteorigin-widget-field-repeater-item-top');
 				var itemLabel = $parentRepeater.data('item-label');
 				var defaultLabel = $el.parents('.siteorigin-widget-field-repeater').data('item-name');
 				if ( itemLabel && ( itemLabel.hasOwnProperty( 'selector' ) || itemLabel.hasOwnProperty( 'selectorArray' ) ) ) {
+
 					var updateLabel = function () {
-						var functionName, txt, selectorRow;
+						const isGrid = 'grid' in itemLabel;
+
+						var functionName, text, selectorRow;
+						if ( isGrid ) {
+							var grid = [];
+						}
 						if ( itemLabel.hasOwnProperty( 'selectorArray' ) ) {
 							for ( var i = 0 ; i < itemLabel.selectorArray.length ; i++ ) {
 								selectorRow = itemLabel.selectorArray[ i ];
 								functionName = ( selectorRow.hasOwnProperty( 'valueMethod' ) && selectorRow.valueMethod ) ? selectorRow.valueMethod : 'val';
-								txt = $el.find( selectorRow.selector )[ functionName ]();
-								if ( txt ) {
+								let foundText = $el.find( selectorRow.selector )[ functionName ]();
+
+								if ( isGrid ) {
+									// No matter what, we need to push this value for consistent spacing.
+									grid.push( {
+										value: foundText,
+										type: selectorRow.valueMethod,
+									} );
+								} else if ( foundText ) {
+									text = text ? `${ text } ${ foundText }` : foundText;
 									break;
 								}
 							}
 						} else {
 							functionName = ( itemLabel.hasOwnProperty( 'valueMethod' ) && itemLabel.valueMethod ) ? itemLabel.valueMethod : 'val';
-							txt = $el.find( itemLabel.selector )[ functionName ]();
+							text = $el.find( itemLabel.selector )[ functionName ]();
 						}
-						if (txt) {
-							if (txt.length > 80) {
-								txt = txt.substr(0, 79) + '...';
+
+						if ( isGrid ) {
+							// Ensure the grid is present.
+							if ( ! itemTop.find( '.sow-repeater-grid' ).length ) {
+								itemTop.find( 'h4' ).after( '<ul class="sow-repeater-grid" role="list"></ul>' );
+								itemTop.find( 'h4' ).remove();
 							}
+
+							let listItems = '';
+							grid.forEach( ( item, index ) => {
+								console.log( item );
+								text = item.type === 'iconFormField' ? item.value : limitTextLength( item.value );
+								console.log( text );
+								listItems += `<li role="listitem">${ text }</li>`;
+							} );
+
+							itemTop.find( '.sow-repeater-grid' ).empty().append( listItems );
+
+						} else if ( ! isGrid && text ) {
+							text = limitTextLength( text );
 						} else {
-							txt = defaultLabel;
+							text = defaultLabel;
 
 							// Add item index to label if needed.
 							if ( itemLabel.increment ) {
-								var index = $el.index();
-								// var index = itemTop.parents( '.siteorigin-widget-field-repeater-item' ).index();
-								// Increment for zero-index.
-								index++;
+								// Get the index of the item and avoid the zero-index.
+								var index = $el.index() + 1;
 
-								if ( ! isNaN( index ) ) {
-									if ( itemLabel.increment == 'before' ) {
-										txt = index + ' ' + txt;
-									} else {
-										txt += ' ' + index;
-									}
+								if ( ! isNaN( index )) {
+									text = itemLabel.increment === 'before' ? `${ index } ${ text }` : `${ text } ${ index }`;
 								}
 							}
 						}

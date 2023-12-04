@@ -253,6 +253,12 @@ div.siteorigin-widget-form {
 
 		&.siteorigin-widget-field-type-repeater {
 
+			.sow-repeater-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+				width: 95%;
+			}
+
 			.siteorigin-widget-field-repeater-top {
 				background: #f0f0f0;
 				border: 1px solid #d0d0d0;
@@ -264,6 +270,28 @@ div.siteorigin-widget-form {
 					margin: 0;
 					padding: 0 !important;
 				}
+
+				.sow-repeater-grid {
+					font-weight: bold;
+					margin-bottom: -10px;
+					margin-top: 10px;
+				}
+
+				.sow-repeater-grid-actions {
+					bottom: 6px;
+					font-weight: bold;
+					position: absolute;
+					right: 11px;
+				}
+			}
+
+			.siteorigin-widget-field-repeater.sow-repeater-has-grid .siteorigin-widget-field-repeater-item:nth-of-type(even) .siteorigin-widget-field-repeater-item-top {
+				background: #f8fdff;
+			}
+
+			.siteorigin-widget-field-repeater.sow-repeater-has-grid .siteorigin-widget-field-repeater-item:hover > .siteorigin-widget-field-repeater-item-top,
+			.siteorigin-widget-field-repeater.sow-repeater-has-grid .siteorigin-widget-field-repeater-item:focus > .siteorigin-widget-field-repeater-item-top {
+				background: #eaf2f6;
 			}
 
 			.siteorigin-widget-field-repeater-item-top {
@@ -335,6 +363,10 @@ div.siteorigin-widget-form {
 							color: #ffffff;
 						}
 					}
+				}
+
+				.sow-repeater-grid {
+					margin: 0;
 				}
 			}
 
