@@ -844,6 +844,11 @@ var sowbForms = window.sowbForms || {};
 		});
 	};
 
+	$.fn.checkboxFormField = function() {
+		const icon = $( this ).is( ':checked' ) ? 'yes' : 'minus';
+		return `<span class="dashicons dashicons-${ icon }"></span>`;
+	}
+
 	$.fn.sowSetupRepeaterItems = function () {
 		return $(this).each(function (i, el) {
 			var $el = $(el);
