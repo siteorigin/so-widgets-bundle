@@ -920,9 +920,12 @@ var sowbForms = window.sowbForms || {};
 
 							let listItems = '';
 							table.forEach( ( item, index ) => {
-								console.log( item );
-								text = item.type === 'iconFormField' ? item.value : limitTextLength( item.value );
-								console.log( text );
+								if ( item.type === 'iconFormField' || item.type === 'checkboxFormField' ) {
+									text = item.value;
+								} else {
+									text = limitTextLength( item.value );
+								}
+
 								listItems += `<li role="listitem">${ text }</li>`;
 							} );
 
