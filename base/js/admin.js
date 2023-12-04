@@ -774,17 +774,17 @@ var sowbForms = window.sowbForms || {};
 				});
 			});
 
-			// Setup Repeater Grid Header if necessary.
+			// Setup Repeater Table Header if necessary.
 			const itemLabel = $el.data( 'item-label' );
-			if ( 'grid' in itemLabel ) {
-				$el.addClass( 'sow-repeater-has-grid' );
+			if ( 'table' in itemLabel ) {
+				$el.addClass( 'sow-repeater-has-table' );
 
 				let labels = itemLabel.selectorArray.map( item => item.label || '' );
 				let listItems = labels.map( label => `<li role="listitem">${ limitTextLength( label ) }</li>`).join( '' );
 
 				$el.find( '.siteorigin-widget-field-repeater-top' )
-					.append( `<ul class="sow-repeater-grid" role="list" aria-label="${ soWidgets.grid.header }">${ listItems }</ul>` )
-					.append( `<span class="sow-repeater-grid-actions">${ soWidgets.grid.actions }</span>` );
+					.append( `<ul class="sow-repeater-table" role="list" aria-label="${ soWidgets.table.header }">${ listItems }</ul>` )
+					.append( `<span class="sow-repeater-table-actions">${ soWidgets.table.actions }</span>` );
 			}
 
 		});
@@ -880,11 +880,11 @@ var sowbForms = window.sowbForms || {};
 				if ( itemLabel && ( itemLabel.hasOwnProperty( 'selector' ) || itemLabel.hasOwnProperty( 'selectorArray' ) ) ) {
 
 					var updateLabel = function () {
-						const isGrid = 'grid' in itemLabel;
+						const isTable = 'table' in itemLabel;
 
 						var functionName, text, selectorRow;
-						if ( isGrid ) {
-							var grid = [];
+						if ( isTable ) {
+							var table = [];
 						}
 						if ( itemLabel.hasOwnProperty( 'selectorArray' ) ) {
 							for ( var i = 0 ; i < itemLabel.selectorArray.length ; i++ ) {
@@ -892,9 +892,9 @@ var sowbForms = window.sowbForms || {};
 								functionName = ( selectorRow.hasOwnProperty( 'valueMethod' ) && selectorRow.valueMethod ) ? selectorRow.valueMethod : 'val';
 								let foundText = $el.find( selectorRow.selector )[ functionName ]();
 
-								if ( isGrid ) {
+								if ( isTable ) {
 									// No matter what, we need to push this value for consistent spacing.
-									grid.push( {
+									table.push( {
 										value: foundText,
 										type: selectorRow.valueMethod,
 									} );
@@ -908,24 +908,24 @@ var sowbForms = window.sowbForms || {};
 							text = $el.find( itemLabel.selector )[ functionName ]();
 						}
 
-						if ( isGrid ) {
-							// Ensure the grid is present.
-							if ( ! itemTop.find( '.sow-repeater-grid' ).length ) {
-								itemTop.find( 'h4' ).after( '<ul class="sow-repeater-grid" role="list"></ul>' );
+						if ( isTable ) {
+							// Ensure the table is present.
+							if ( ! itemTop.find( '.sow-repeater-table' ).length ) {
+								itemTop.find( 'h4' ).after( '<ul class="sow-repeater-table" role="list"></ul>' );
 								itemTop.find( 'h4' ).remove();
 							}
 
 							let listItems = '';
-							grid.forEach( ( item, index ) => {
+							table.forEach( ( item, index ) => {
 								console.log( item );
 								text = item.type === 'iconFormField' ? item.value : limitTextLength( item.value );
 								console.log( text );
 								listItems += `<li role="listitem">${ text }</li>`;
 							} );
 
-							itemTop.find( '.sow-repeater-grid' ).empty().append( listItems );
+							itemTop.find( '.sow-repeater-table' ).empty().append( listItems );
 
-						} else if ( ! isGrid && text ) {
+						} else if ( ! isTable && text ) {
 							text = limitTextLength( text );
 						} else {
 							text = defaultLabel;

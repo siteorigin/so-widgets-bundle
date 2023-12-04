@@ -629,8 +629,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				'ajaxurl' => wp_nonce_url( admin_url( 'admin-ajax.php' ), 'widgets_action', '_widgets_nonce' ),
 				'sure' => __( 'Are you sure?', 'so-widgets-bundle' ),
 				'missing_required' => __( 'You have empty required widgets. Are you sure you wish to continue?', 'so-widgets-bundle' ),
-				'grid' => array(
-					'header' => __( 'Grid Header', 'so-widgets-bundle' ),
+				'table' => array(
+					'header' => __( 'Table header', 'so-widgets-bundle' ),
 					'actions' => __( 'Actions', 'so-widgets-bundle' ),
 				),
 				'backup' => array(
