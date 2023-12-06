@@ -38,8 +38,11 @@ if ( $result['status'] == 'success' ) {
 			</ul>
 		<?php } ?>
 
-		<?php $this->render_form_fields( $instance['fields'], $result['errors'], $instance ); ?>
-		<?php if ( $template_vars['honeypot'] ) { ?>
+		<?php
+		$this->render_form_fields( $instance['fields'], $result, $instance );
+
+		if ( $template_vars['honeypot'] ) {
+			?>
 			<input type="text" name="sow-<?php echo esc_attr( $instance['_sow_form_id'] ); ?>" class="sow-text-field" style="display: none !important; visibility: hidden !important;" autocomplete="off" aria-hidden="true">
 		<?php } ?>
 
