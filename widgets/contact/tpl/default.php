@@ -52,9 +52,9 @@ if ( $result['status'] == 'success' ) {
 					data-config="<?php echo esc_attr( json_encode( $recaptcha_v2 ) ); ?>"
 				<?php } ?>
 			></div>
-		<?php } ?>
+			<?php
+		}
 
-		<?php
 		if ( ! empty( $really_simple_spam ) ) {
 			if ( $really_simple_spam == 'missing' ) {
 				echo __( 'Unable to detect Really Simple CAPTCHA plugin.', 'so-widgets-bundle' );
@@ -64,26 +64,28 @@ if ( $result['status'] == 'success' ) {
 		}
 		?>
 
-		<input type="hidden" name="instance_hash" value="<?php echo esc_attr( $instance_hash ); ?>" />
-		<?php wp_nonce_field( '_contact_form_submit' ); ?>
 		<div class="sow-submit-wrapper <?php if ( $instance['design']['submit']['styled'] ) {
 			echo 'sow-submit-styled';
 		} ?>">
 
-		<button class="sow-submit<?php if ( $recaptcha && empty( $recaptcha_v2 ) ) {
-			echo ' g-recaptcha';
-		} ?>"
-			<?php foreach ( $submit_attributes as $name => $val ) {
-				echo $name . '="' . esc_attr( $val ) . '" ';
-			} ?>
-			<?php if ( ! empty( $onclick ) ) {
-				echo 'onclick="' . esc_js( $onclick ) . '"';
-			} ?>
-		>
-			<?php echo esc_attr( $instance['settings']['submit_text'] ); ?>
-		</button>
+			<button class="sow-submit<?php if ( $recaptcha && empty( $recaptcha_v2 ) ) {
+				echo ' g-recaptcha';
+			} ?>"
+				<?php
+				foreach ( $submit_attributes as $name => $val ) {
+					echo $name . '="' . esc_attr( $val ) . '" ';
+				}
 
+				if ( ! empty( $onclick ) ) {
+					echo 'onclick="' . esc_js( $onclick ) . '"';
+				}
+				?>
+			>
+				<?php echo esc_attr( $instance['settings']['submit_text'] ); ?>
+			</button>
 		</div>
+		<input type="hidden" name="instance_hash" value="<?php echo esc_attr( $instance_hash ); ?>" />
+		<?php wp_nonce_field( '_contact_form_submit' ); ?>
 	</form>
 	<?php
 }
