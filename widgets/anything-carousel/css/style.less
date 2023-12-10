@@ -43,18 +43,26 @@
 			flex-direction: row-reverse;
 		}
 
-		a.sow-carousel-next,
-		a.sow-carousel-previous {
-			-moz-osx-font-smoothing: grayscale;
-			-webkit-font-smoothing: antialiased;
-			font-family: 'anything-carousel-arrows';
-			font-style: normal;
-			font-variant: normal;
-			font-weight: normal;
-			text-align: center;
-			text-decoration: none;
-			text-transform: none;
+		.sow-carousel-navigation {
+			.sow-carousel-disabled {
+				cursor: default;
+				opacity: 0.6;
+			}
+
+			a.sow-carousel-next,
+			a.sow-carousel-previous {
+				-moz-osx-font-smoothing: grayscale;
+				-webkit-font-smoothing: antialiased;
+				font-family: 'anything-carousel-arrows';
+				font-style: normal;
+				font-variant: normal;
+				font-weight: normal;
+				text-align: center;
+				text-decoration: none;
+				text-transform: none;
+			}
 		}
+
 
 		.sow-carousel-wrapper {
 			left: 0;
