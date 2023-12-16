@@ -299,9 +299,11 @@ var sowbForms = window.sowbForms || {};
 					$colorFieldOptions.palettes = $colorField.data( 'palettes' );
 				}
 
-				$colorField.wpColorPicker( $colorFieldOptions );
-				if ( $colorField.data( 'alpha-enabled' ) ) {
-					$colorField.on( 'change', handleAlphaDefault ).trigger( 'change' );
+				if ( typeof $.fn.wpColorPicker === 'function' ) {
+					$colorField.wpColorPicker( $colorFieldOptions );
+					if ( $colorField.data( 'alpha-enabled' ) ) {
+						$colorField.on( 'change', handleAlphaDefault ).trigger( 'change' );
+					}
 				}
 			} );
 

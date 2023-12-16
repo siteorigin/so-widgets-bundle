@@ -15,10 +15,12 @@
 						$urlInput.val( selectedNetwork.base_url );
 						
 						var $iconColorPicker = $closestForm.find( '[id*="networks-icon_color"]' );
-						$iconColorPicker.wpColorPicker( 'color', selectedNetwork.icon_color );
-						
-						var $buttonColorPicker = $closestForm.find( '[id*="networks-button_color"]' );
-						$buttonColorPicker.wpColorPicker( 'color', selectedNetwork.button_color );
+
+						if ( typeof $.fn.wpColorPicker === 'function' ) {
+							$iconColorPicker.wpColorPicker( 'color', selectedNetwork.icon_color );
+
+							var $buttonColorPicker = $closestForm.find( '[id*="networks-button_color"]' );
+							$buttonColorPicker.wpColorPicker( 'color', selectedNetwork.button_color );
 					}
 				}
 			);
