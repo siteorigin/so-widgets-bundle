@@ -118,7 +118,7 @@ sowb.SiteOriginGoogleMap = function($) {
 					}
 				}.bind( this ) );
 
-				window.google.maps.event.addDomListener( autocompleteElement, 'keypress', function( event ) {
+				window.google.maps.event.addListener( autocompleteElement, 'keypress', function( event ) {
 					var key = event.keyCode || event.which;
 					if ( key === '13' ) {
 						event.preventDefault();
