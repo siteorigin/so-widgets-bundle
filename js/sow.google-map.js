@@ -69,16 +69,6 @@ sowb.SiteOriginGoogleMap = function($) {
 				map.centerMarker = this.centerMarker;
 			}
 
-			if(options.keepCentered) {
-				var center;
-				window.google.maps.event.addDomListener( map, 'idle', function() {
-					center = map.getCenter();
-				});
-				window.google.maps.event.addDomListener( window, 'resize', function() {
-					map.setCenter(center);
-				});
-			}
-
 			this.linkAutocompleteField(options.autocomplete, options.autocompleteElement, map, options);
 			this.showMarkers(options.markerPositions, map, options);
 			this.showDirections(options.directions, map, options);
