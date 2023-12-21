@@ -1001,25 +1001,30 @@ public function __construct() {
 	}
 
 	public static function get_template( $instance ) {
-		$template_file = apply_filters(
+		$template_file = plugin_dir_path( __FILE__ ) . '/tpl/' . sanitize_file_name( $instance['template'] ) . '.php';
+
+		$override_file = apply_filters(
 			'siteorigin_widgets_blog_template_file',
-			plugin_dir_path( __FILE__ ) . '/tpl/' . sanitize_file_name( $instance['template'] ) . '.php',
+			$template_file,
 			$instance
 		);
 
-		// Must be a PHP file.
-		if ( substr( $template_file, -4 ) != '.php' ) {
-			return false;
-		}
-
-		if (
-			! empty( $template_file ) &&
-			file_exists( $template_file )
-		) {
+		// If any of the below checks fail, return the default template.
+		// Otherwise, allow the override.
+		if ( empty( $override_file ) ) {
 			return $template_file;
 		}
 
-		return false;
+		// File name must end in '-sow-blog.php'
+		if ( substr( $override_file, -13 ) != '-sow-blog.php' ) {
+			return $template_file;
+		}
+
+		if ( ! file_exists( $override_file ) ) {
+			return $template_file;
+		}
+
+		return $override_file;
 	}
 
 	public function get_template_variables( $instance, $args ) {
