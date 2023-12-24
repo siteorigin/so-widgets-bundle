@@ -1005,7 +1005,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	public static function get_template( $instance ) {
-		$template_file = plugin_dir_path( __FILE__ ) . '/tpl/' . sanitize_file_name( $instance['template'] ) . '.php';
+		$template_file = plugin_dir_path( __FILE__ ) . 'tpl/' . sanitize_file_name( $instance['template'] ) . '.php';
 
 		$override_file = apply_filters(
 			'siteorigin_widgets_blog_template_file',
