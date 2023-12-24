@@ -120,7 +120,8 @@ jQuery( function ( $ ) {
 					numVisibleItemsFloor = Math.floor( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' ),
 					lastPosition = numItems - numVisibleItems,
-					loading = false;
+					loading = false,
+					navigationContainer = $$.parent().parent();
 
 				// Post Carousel has a loading indicator so we need to pad the lastPosition.
 				if (
@@ -143,7 +144,6 @@ jQuery( function ( $ ) {
 						$( sowb ).trigger( 'carousel_load_new_items', [ $$, $items, refocus ] );
 						loading = true;
 					}
-
 				}
 
 				// Enable/disable navigation buttons as needed.
@@ -151,14 +151,14 @@ jQuery( function ( $ ) {
 					const direction = $$.data( 'dir' ) == 'ltr' ? 'previous' : 'next';
 
 					if ( $items.slick( 'slickCurrentSlide' ) == 0 ) {
-						$$.parent().parent().find( `.sow-carousel-${ direction }` )
+						navigationContainer.find( `.sow-carousel-${ direction }` )
 							.removeClass( 'sow-carousel-disabled' )
 							.removeAttr( 'aria-disabled' );
 					} else if (
 						! nextSlide &&
 						$items.slick( 'slickCurrentSlide' ) - slidesToScroll == 0
 					) {
-						button = $$.parent().parent().find( `.sow-carousel-${ direction }` )
+						navigationContainer.find( `.sow-carousel-${ direction }` )
 							.addClass( 'sow-carousel-disabled' )
 							.attr( 'aria-disabled', 'true' );
 					}
