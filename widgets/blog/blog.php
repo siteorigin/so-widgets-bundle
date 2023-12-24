@@ -8,7 +8,7 @@ Documentation: https://siteorigin.com/widgets-bundle/blog-widget/
 */
 
 class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
-public function __construct() {
+	public function __construct() {
 		parent::__construct(
 			'sow-blog',
 			__( 'SiteOrigin Blog', 'so-widgets-bundle' ),
@@ -940,18 +940,22 @@ public function __construct() {
 		if ( empty( $instance['template'] ) ) {
 			$instance['template'] = 'standard';
 		} else {
-			// Ensure selected template is valid.
-			switch ( $instance['template'] ) {
-				case 'alternate':
-				case 'grid':
-				case 'masonry':
-				case 'offset':
-				case 'portfolio':
-				case 'standard':
-					break;
-				default:
-					$instance['template'] = 'standard';
-					break;
+			$custom_template = apply_filters( 'siteorigin_widgets_blog_custom_template', false, $instance );
+
+			if ( ! $custom_template ) {
+				// Ensure selected template is valid.
+				switch ( $instance['template'] ) {
+					case 'alternate':
+					case 'grid':
+					case 'masonry':
+					case 'offset':
+					case 'portfolio':
+					case 'standard':
+						break;
+					default:
+						$instance['template'] = 'standard';
+						break;
+				}
 			}
 		}
 
