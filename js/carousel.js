@@ -192,6 +192,17 @@ jQuery( function ( $ ) {
 					} else {
 						$items.slick( 'slickNext' );
 					}
+
+					// Have we just scrolled to the last slide, and is looping disabled?.
+					// If so, disable the next button.
+					if (
+						$items.slick( 'slickCurrentSlide' ) == lastPosition &&
+						! $$.data( 'carousel_settings' ).loop
+					) {
+						navigationContainer.find( '.sow-carousel-next' )
+							.addClass( 'sow-carousel-disabled' )
+							.attr( 'aria-disabled', 'true' );
+					}
 				} else {
 					if ( $$.data( 'carousel_settings' ).loop && $items.slick( 'slickCurrentSlide' ) == 0 ) {
 						$items.slick( 'slickGoTo', lastPosition );
@@ -199,6 +210,12 @@ jQuery( function ( $ ) {
 						$items.slick( 'slickGoTo', 0 );
 					} else {
 						$items.slick( 'slickPrev' );
+
+						var next = navigationContainer.find( '.sow-carousel-next' );
+						if ( next.hasClass( 'sow-carousel-disabled' ) ) {
+							next.removeClass( 'sow-carousel-disabled' )
+								.removeAttr( 'aria-disabled' );
+						}
 					}
 				}
 
