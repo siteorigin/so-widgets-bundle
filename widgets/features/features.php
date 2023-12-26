@@ -252,7 +252,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			'feature_spacing' => array(
 				'type' => 'multi-measurement',
 				'label' => __( 'Space between each feature', 'so-widgets-bundle' ),
-				'default' => '10px 25px',
+				'default' => '25px 25px',
 				'measurements' => array(
 					'vertical' => array(
 						'label' => __( 'Vertical', 'so-widgets-bundle' ),
@@ -354,9 +354,9 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		}
 
 		if ( isset( $instance['feature_space'] ) ) {
-			$instance['feature_spacing'] = '10px ' . $instance['feature_space'];
+			$instance['feature_spacing'] = '25px ' . $instance['feature_space'];
 		} elseif ( ! isset( $instance['feature_spacing'] ) ) {
-			$instance['feature_spacing'] = '10px 25px';
+			$instance['feature_spacing'] = '25px 25px';
 		}
 
 
@@ -402,8 +402,8 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		$less_vars['title_tag'] = ! empty( $instance['fonts']['title_options']['tag'] ) ? $instance['fonts']['title_options']['tag'] : 'h5';
 		$less_vars['per_row'] = $instance['per_row'];
 		$less_vars['center_items'] = ! empty( $instance['center_items'] );
-		$less_vars['feature_spacing'] = ! empty( $instance['feature_spacing'] ) ? $instance['feature_spacing'] : '10px 25px';
-		$less_vars['feature_spacing_mobile'] = ! empty( $instance['feature_spacing_mobile'] ) ? $instance['feature_spacing_mobile'] : '10px 25px';
+		$less_vars['feature_spacing'] = ! empty( $instance['feature_spacing'] ) ? $instance['feature_spacing'] : '25px';
+		$less_vars['feature_spacing_mobile'] = ! empty( $instance['feature_spacing_mobile'] ) ? $instance['feature_spacing_mobile'] : '25px';
 		$less_vars['use_icon_size'] = empty( $instance['icon_size_custom'] ) ? 'false' : 'true';
 		$less_vars['link_feature'] = ! empty( $instance['link_feature'] );
 		$less_vars['more_text_bottom_align'] = ! empty( $instance['more_text_bottom_align'] ) ? 'true' : 'false';
