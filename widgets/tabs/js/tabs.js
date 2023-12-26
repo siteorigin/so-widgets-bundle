@@ -122,6 +122,9 @@ jQuery( function ( $ ) {
 					return;
 				}
 
+				// Prevent browser horizontal scroll.
+				e.preventDefault();
+
 				var $newTab;
 				// Did the user press left arrow?
 				if ( e.keyCode === 37 ) {
