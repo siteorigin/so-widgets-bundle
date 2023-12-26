@@ -115,7 +115,7 @@ jQuery( function ( $ ) {
 				selectTab( this );
 			} );
 
-			$tabs.on( 'keyup', function( e ) {
+			$tabs.on( 'keydown', function( e ) {
 				var $currentTab = $( this );
 
 				if ( e.keyCode !== 37 && e.keyCode !== 39 ){
