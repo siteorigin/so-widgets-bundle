@@ -65,11 +65,9 @@ jQuery( function ( $ ) {
 
 					// Set previous tab as inactive.
 					$prevTab.attr( 'aria-selected', false );
-					prevTabContent.attr( 'tabindex', -1 );
 
 					// Set new tab as active.
 					$tab.attr( 'aria-selected', true );
-					selectedTabContent.attr( 'tabindex', 0 );
 
 					prevTabContent.attr( 'aria-hidden', 'true' );
 					tabAnimation = $tabPanels.eq( prevTabIndex ).fadeOut( 'fast',

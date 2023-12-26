@@ -29,11 +29,15 @@ if ( ! empty( $instance['title'] ) ) {
 		</div>
 	<?php } ?>
 	</div>
-	
+
 	<div class="sow-tabs-panel-container">
 	<?php foreach ( $tabs as $i => $tab ) { ?>
 		<div class="sow-tabs-panel">
-			<div class="sow-tabs-panel-content" role="tabpanel" <?php echo $i != $initial_tab_index ? 'aria-hidden="true"' : 'tabindex="0"'; ?>>
+			<div
+				class="sow-tabs-panel-content"
+				role="tabpanel"
+				aria-hidden="<?php echo $i != $initial_tab_index ? 'true' : 'false'; ?>"
+			>
 				<?php $this->render_panel_content( $tab, $instance ); ?>
 			</div>
 		</div>
