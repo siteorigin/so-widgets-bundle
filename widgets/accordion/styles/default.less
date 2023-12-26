@@ -34,6 +34,7 @@
 	.sow-accordion-panel {
 
 		.sow-accordion-panel-header {
+			align-items: center;
 			background-color: @heading_background_color;
 			border-radius: @heading_border_radius;
 			color: @title_color;
@@ -88,9 +89,11 @@
 				}
 			}
 
-			& when ( @show_open_close_icon = false ) {
-				.sow-accordion-open-close-button {
-						display: none;
+			.sow-accordion-open-close-button {
+				line-height: 0;
+
+				& when ( @show_open_close_icon = false ) {
+					display: none;
 				}
 			}
 
