@@ -257,10 +257,16 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					'vertical' => array(
 						'label' => __( 'Vertical', 'so-widgets-bundle' ),
 						'units' => $useable_units,
+						'classes' => array(
+							'sow-input-vertical',
+						),
 					),
 					'horizontal' => array(
 						'label' => __( 'Horizontal', 'so-widgets-bundle' ),
 						'units' => $useable_units,
+						'classes' => array(
+							'sow-input-horizontal',
+						),
 					),
 				),
 			),
@@ -272,10 +278,16 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					'vertical' => array(
 						'label' => __( 'Vertical', 'so-widgets-bundle' ),
 						'units' => $useable_units,
+						'classes' => array(
+							'sow-input-vertical',
+						),
 					),
 					'horizontal' => array(
 						'label' => __( 'Horizontal', 'so-widgets-bundle' ),
 						'units' => $useable_units,
+						'classes' => array(
+							'sow-input-horizontal',
+						),
 					),
 				),
 				'state_handler' => array(
