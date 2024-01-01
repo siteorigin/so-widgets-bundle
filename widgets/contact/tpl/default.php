@@ -5,7 +5,7 @@ if ( $instance['display_title'] && ! empty( $instance['title'] ) ) {
 }
 $short_hash = substr( $instance_hash, 0, 4 );
 
-if ( $result['status'] == 'success' ) {
+if ( is_array( $result ) && $result['status'] == 'success' ) {
 	// Display the success message
 	?>
 	<div class="sow-contact-form-success" id="contact-form-<?php echo esc_attr( $short_hash ); ?>">
