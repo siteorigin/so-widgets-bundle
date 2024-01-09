@@ -261,8 +261,8 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 					'type' => 'checkbox',
 					'label' => __( 'Autoplay continuous scroll', 'so-widgets-bundle' ),
 					'state_handler' => array(
-						'loop_posts[show]' => array( 'show' ),
-						'loop_posts[hide]' => array( 'hide' ),
+						'autoplay[show]' => array( 'show' ),
+						'autoplay[hide]' => array( 'hide' ),
 					),
 				),
 			)
