@@ -3,7 +3,6 @@
 var sowb = window.sowb || {};
 
 jQuery( function ( $ ) {
-	
 	sowb.setupTabs = function () {
 		$( '.sow-tabs' ).each( function ( index, element ) {
 			var $this = $( element );
@@ -65,14 +64,10 @@ jQuery( function ( $ ) {
 					var selectedTabContent = $tabPanels.eq( selectedIndex ).children();
 
 					// Set previous tab as inactive.
-					$prevTab.attr( 'tabindex', -1 );
 					$prevTab.attr( 'aria-selected', false );
-					prevTabContent.attr( 'tabindex', -1 );
 
 					// Set new tab as active.
-					$tab.attr( 'tabindex', 0 );
 					$tab.attr( 'aria-selected', true );
-					selectedTabContent.attr( 'tabindex', 0 );
 
 					prevTabContent.attr( 'aria-hidden', 'true' );
 					tabAnimation = $tabPanels.eq( prevTabIndex ).fadeOut( 'fast',
@@ -120,12 +115,15 @@ jQuery( function ( $ ) {
 				selectTab( this );
 			} );
 
-			$tabs.on( 'keyup', function( e ) {
+			$tabs.on( 'keydown', function( e ) {
 				const $currentTab = $( this );
 
 				if ( e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' ){
 					return;
 				}
+
+				// Prevent browser horizontal scroll.
+				e.preventDefault();
 
 				let $newTab;
 				// Did the user press left arrow?
