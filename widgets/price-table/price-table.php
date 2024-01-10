@@ -181,7 +181,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 
 					'feature' => array(
 						'type' => 'section',
-						'label' => __( 'feature', 'so-widgets-bundle' ),
+						'label' => __( 'Feature', 'so-widgets-bundle' ),
 						'fields' => array(
 							'color' => array(
 								'type' => 'color',
