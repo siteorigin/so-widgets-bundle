@@ -180,7 +180,7 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 
 		$blocks = parse_blocks( $shop_page->post_content );
 		// Check if any SiteOrigin Widgets Bundle blocks exist.
-		$blocks = array_filter( $blocks, function ( $block ) {
+		$blocks = array_filter( $blocks, function( $block ) {
 			return strpos( $block['blockName'], 'sowb/' ) === 0;
 		} );
 
