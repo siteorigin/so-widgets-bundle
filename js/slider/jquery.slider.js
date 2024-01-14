@@ -350,9 +350,9 @@ jQuery( function( $ ) {
 				} );
 
 				$base.on( 'keyup', function( e ) {
-					if ( e.key !== 'ArrowLeft' ) {
+					if ( e.key === 'ArrowLeft' ) {
 						$$.cycle( 'prev' );
-					} else if ( e.key !== 'ArrowRight' ) {
+					} else if ( e.key === 'ArrowRight' ) {
 						$$.cycle( 'next' );
 					} else {
 						return;
