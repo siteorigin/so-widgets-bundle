@@ -66,7 +66,7 @@
   position: absolute;
   left: -100000px;
   width: 100%;
-  z-index: 100001; /* Increased due to PB Modal */ }
+  z-index: 1051; }
 
 .select2-results {
   display: block; }
@@ -85,10 +85,7 @@
   cursor: pointer; }
 
 .select2-container--open .select2-dropdown {
-  left: 0;}
-
-body:not(.wp-admin) .select2-container--open .select2-dropdown {
-  top: 32px;}
+  left: 0; }
 
 .select2-container--open .select2-dropdown--above {
   border-bottom: none;

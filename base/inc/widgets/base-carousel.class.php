@@ -464,7 +464,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		return $encode ? json_encode( $variables ) : $variables;
 	}
 
-	public function render_template( $settings, $args ) {
+	public function render_template( $settings, $args, $instance ) {
 		include plugin_dir_path( __FILE__ ) . 'tpl/carousel.php';
 	}
 

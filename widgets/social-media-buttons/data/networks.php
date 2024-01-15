@@ -298,6 +298,12 @@ return array(
 		'icon_color' => '#ffffff',
 		'button_color' => '#78bdf1',
 	),
+	'viber' => array(
+		'label' => __( 'Viber', 'so-widgets-bundle' ),
+		'base_url' => 'https://www.viber.com/',
+		'icon_color' => '#ffffff',
+		'button_color' => '#574e92',
+	),
 	'vimeo-square' => array(
 		'label' => __( 'Vimeo', 'so-widgets-bundle' ),
 		'base_url' => 'https://vimeo.com/',
