@@ -59,11 +59,10 @@ class SiteOrigin_Widgets_Bundle_Beaver_Builder {
 			plugin_dir_url( __FILE__ ) . 'styles.css'
 		);
 
-		$deps = ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? array( 'jquery', 'fl-builder', 'siteorigin-widget-admin' ) : array( 'fl-builder-min', 'siteorigin-widget-admin' );
 		wp_enqueue_script(
 			'sowb-js-for-beaver',
 			plugin_dir_url( __FILE__ ) . 'sowb-beaver-builder' . SOW_BUNDLE_JS_SUFFIX . '.js',
-			$deps
+			array( 'jquery', 'siteorigin-widget-admin' )
 		);
 
 		wp_enqueue_style(

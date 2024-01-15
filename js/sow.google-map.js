@@ -17,7 +17,7 @@ sowb.SiteOriginGoogleMap = function($) {
 			var zoom = Number(options.zoom);
 
 			if ( !zoom ) zoom = 14;
-			
+
 			var breakpointCheck = window.matchMedia( '(max-width: ' + options.breakpoint + 'px)' )
 			// Check if the user is viewing the map on mobile
 			if ( breakpointCheck.matches ) {
@@ -69,16 +69,6 @@ sowb.SiteOriginGoogleMap = function($) {
 				map.centerMarker = this.centerMarker;
 			}
 
-			if(options.keepCentered) {
-				var center;
-				window.google.maps.event.addDomListener( map, 'idle', function() {
-					center = map.getCenter();
-				});
-				window.google.maps.event.addDomListener( window, 'resize', function() {
-					map.setCenter(center);
-				});
-			}
-
 			this.linkAutocompleteField(options.autocomplete, options.autocompleteElement, map, options);
 			this.showMarkers(options.markerPositions, map, options);
 			this.showDirections(options.directions, map, options);
@@ -118,7 +108,7 @@ sowb.SiteOriginGoogleMap = function($) {
 					}
 				}.bind( this ) );
 
-				window.google.maps.event.addDomListener( autocompleteElement, 'keypress', function( event ) {
+				window.google.maps.event.addListener( autocompleteElement, 'keypress', function( event ) {
 					var key = event.keyCode || event.which;
 					if ( key === '13' ) {
 						event.preventDefault();
@@ -183,7 +173,7 @@ sowb.SiteOriginGoogleMap = function($) {
 					markerBatches[ batchIndex ][ i % BATCH_SIZE ] = markerPositions[ i ];
 				}
 				var geocodeMarker = function ( mrkr ) {
-					
+
 					var customIcon = mrkr.customMarkerIcon;
 					var markerInfo = mrkr.hasOwnProperty( 'info' ) ? mrkr.info : null;
 					var infoMaxWidth = mrkr.hasOwnProperty( 'infoMaxWidth' ) ? mrkr.infoMaxWidth : null;
@@ -200,14 +190,14 @@ sowb.SiteOriginGoogleMap = function($) {
 							icon: mrkerIcon,
 							title: ''
 						} );
-						
+
 						if ( markerInfo ) {
 							var infoWindowOptions = { content: markerInfo };
-							
+
 							if ( infoMaxWidth ) {
 								infoWindowOptions.maxWidth = infoMaxWidth;
 							}
-							
+
 							var infoDisplay = options.markerInfoDisplay;
 							infoWindowOptions.disableAutoPan = infoDisplay === 'always';
 							var infoWindow = new window.google.maps.InfoWindow( infoWindowOptions );
@@ -245,7 +235,7 @@ sowb.SiteOriginGoogleMap = function($) {
 						console.log( errorStatus );
 					} );
 				}.bind( this );
-				
+
 				var overQuota = false;
 				var geocodeMarkerBatch = function ( markerBatchHead, markerBatchTail ) {
 					var doneCount = 0;
@@ -261,7 +251,7 @@ sowb.SiteOriginGoogleMap = function($) {
 								}
 							}
 						);
-						
+
 					}
 				}.bind( this );
 				geocodeMarkerBatch( markerBatches.shift(), markerBatches );
@@ -383,7 +373,7 @@ sowb.SiteOriginGoogleMap = function($) {
 			var location = { address: inputLocation };
 			//check if address is actually a valid latlng
 			var latLng;
-			
+
 			if ( inputLocation && inputLocation.indexOf( ',' ) > -1 ) {
 				// A latlng value should be of the format 'lat,lng' or '(lat,lng)'
 				var vals = inputLocation.replace(/[\(\)]/g, '').split( ',' );
@@ -535,11 +525,11 @@ jQuery(function ($) {
 		) {
 			$( '#sow-google-maps-js' ).remove();
 		}
-			
+
 		if ( ! sowb.googleMapsData.apiKey ) {
 			console.warn( 'SiteOrigin Google Maps: Could not find API key. Google Maps API key is required.' );
 		}
-		
+
 		// Try to load even if API key is missing to allow Google Maps API to provide it's own warnings/errors about missing API key.
 		// var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + sowb.googleMapsData.apiKey;
 		var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + sowb.googleMapsData.apiKey + '&callback=soGoogleMapInitialize';

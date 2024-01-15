@@ -243,13 +243,17 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				$frame['background_image'],
 				'full',
 				! empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : '',
-				apply_filters(
-					'siteorigin_widgets_slider_attr',
-					array(
-						'class' => 'sow-slider-background-image skip-lazy',
-						'style' => ! empty( $frame['custom_height'] ) ? 'height: ' . intval( $frame['custom_height'] ) . 'px; width: auto; margin: 0 auto;' : '',
-						'loading' => 'eager',
-					)
+				siteorigin_loading_optimization_attributes(
+					apply_filters(
+						'siteorigin_widgets_slider_attr',
+						array(
+							'class' => 'sow-slider-background-image',
+							'style' => ! empty( $frame['custom_height'] ) ? 'height: ' . intval( $frame['custom_height'] ) . 'px; width: auto; margin: 0 auto;' : '',
+						)
+					),
+					'sliders',
+					new stdClass(),
+					$this
 				)
 			);
 
