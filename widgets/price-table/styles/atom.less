@@ -61,6 +61,23 @@
 			}
 		}
 
+		&.ow-pt-on-sale {
+
+			.ow-pt-price {
+				display: inline-block;
+				font-size: 1.8em;
+				text-decoration: line-through;
+			}
+
+			.ow-pt-sale-price {
+				display: inline-block;
+				font-size: 2.5em;
+				font-weight: 300;
+				line-height: 1.25em;
+				text-shadow: 0 1px 1px rgba( 0, 0, 0, 0.25 );
+			}
+		}
+
 		.ow-pt-image {
 			line-height: 0;
 
@@ -207,7 +224,7 @@
 @media (max-width:680px) {
 	.ow-pt-columns-atom {
 		padding-top: 0;
-		
+
 		&.sow-equalize-row-heights {
 			.ow-pt-title, .ow-pt-details, .ow-pt-image, .ow-pt-features, .ow-pt-button, .ow-pt-feature {
 				height: auto !important;
