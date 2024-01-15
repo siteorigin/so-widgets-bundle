@@ -45,7 +45,7 @@ if ( ! empty( $instance['title'] ) ) {
 				}
 				?>
 			>
-				<div class="sow-accordion-panel-border" tabindex="0">
+				<div class="sow-accordion-panel-border">
 					<?php $this->render_panel_content( $panel, $instance ); ?>
 				</div>
 			</div>

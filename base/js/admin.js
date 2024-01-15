@@ -190,7 +190,6 @@ var sowbForms = window.sowbForms || {};
 					});
 				});
 
-
 				if ( ! $el.data( 'backupDisabled' ) ) {
 					var _sow_form_id = $el.find( '> .siteorigin-widgets-form-id' ).val();
 					var $timestampField = $el.find( '> .siteorigin-widgets-form-timestamp' );
@@ -299,9 +298,11 @@ var sowbForms = window.sowbForms || {};
 					$colorFieldOptions.palettes = $colorField.data( 'palettes' );
 				}
 
-				$colorField.wpColorPicker( $colorFieldOptions );
-				if ( $colorField.data( 'alpha-enabled' ) ) {
-					$colorField.on( 'change', handleAlphaDefault ).trigger( 'change' );
+				if ( typeof $.fn.wpColorPicker === 'function' ) {
+					$colorField.wpColorPicker( $colorFieldOptions );
+					if ( $colorField.data( 'alpha-enabled' ) ) {
+						$colorField.on( 'change', handleAlphaDefault ).trigger( 'change' );
+					}
 				}
 			} );
 
@@ -774,6 +775,20 @@ var sowbForms = window.sowbForms || {};
 					$( window ).trigger( 'resize' );
 				});
 			});
+
+			// Setup Repeater Table Header if necessary.
+			const itemLabel = $el.data( 'item-label' );
+			if ( 'table' in itemLabel ) {
+				$el.addClass( 'sow-repeater-has-table' );
+
+				let labels = itemLabel.selectorArray.map( item => item.label || '' );
+				let listItems = labels.map( label => `<li role="listitem">${ limitTextLength( label ) }</li>`).join( '' );
+
+				$el.find( '.siteorigin-widget-field-repeater-top' )
+					.append( `<ul class="sow-repeater-table" role="list" aria-label="${ soWidgets.table.header }">${ listItems }</ul>` )
+					.append( `<span class="sow-repeater-table-actions">${ soWidgets.table.actions }</span>` );
+			}
+
 		});
 	};
 
@@ -844,56 +859,100 @@ var sowbForms = window.sowbForms || {};
 		});
 	};
 
+	const limitTextLength = function( text ) {
+		if ( typeof text === 'undefined' ) {
+			return '';
+		}
+
+		// Escape the text.
+		text = $( '<div></div>' ).text( text ).html();
+
+		if ( text.length > 80 ) {
+			return text.substr( 0, 79 ) + '...';
+		}
+
+		return text;
+	}
 	$.fn.sowSetupRepeaterItems = function () {
 		return $(this).each(function (i, el) {
 			var $el = $(el);
 
-			if (typeof $el.data('sowrepeater-actions-setup') === 'undefined') {
+			if ( typeof $el.data( 'sowrepeater-actions-setup' ) === 'undefined' ) {
 				var $parentRepeater = $el.closest('.siteorigin-widget-field-repeater');
 				var itemTop = $el.find('> .siteorigin-widget-field-repeater-item-top');
 				var itemLabel = $parentRepeater.data('item-label');
 				var defaultLabel = $el.parents('.siteorigin-widget-field-repeater').data('item-name');
 				if ( itemLabel && ( itemLabel.hasOwnProperty( 'selector' ) || itemLabel.hasOwnProperty( 'selectorArray' ) ) ) {
+
 					var updateLabel = function () {
-						var functionName, txt, selectorRow;
+						const isTable = 'table' in itemLabel;
+
+						var functionName, text, selectorRow;
+						if ( isTable ) {
+							var table = [];
+						}
 						if ( itemLabel.hasOwnProperty( 'selectorArray' ) ) {
 							for ( var i = 0 ; i < itemLabel.selectorArray.length ; i++ ) {
 								selectorRow = itemLabel.selectorArray[ i ];
 								functionName = ( selectorRow.hasOwnProperty( 'valueMethod' ) && selectorRow.valueMethod ) ? selectorRow.valueMethod : 'val';
-								txt = $el.find( selectorRow.selector )[ functionName ]();
-								if ( txt ) {
+								let foundText = $el.find( selectorRow.selector )[ functionName ]();
+
+								if ( isTable ) {
+									// No matter what, we need to push this value for consistent spacing.
+									table.push( {
+										value: foundText,
+										type: selectorRow.valueMethod,
+									} );
+								} else if ( foundText ) {
+									text = text ? `${ text } ${ foundText }` : foundText;
 									break;
 								}
 							}
 						} else {
 							functionName = ( itemLabel.hasOwnProperty( 'valueMethod' ) && itemLabel.valueMethod ) ? itemLabel.valueMethod : 'val';
-							txt = $el.find( itemLabel.selector )[ functionName ]();
+							text = $el.find( itemLabel.selector )[ functionName ]();
 						}
-						if (txt) {
-							if (txt.length > 80) {
-								txt = txt.substr(0, 79) + '...';
+
+						if ( isTable ) {
+							// Ensure the table is present.
+							if ( ! itemTop.find( '.sow-repeater-table' ).length ) {
+								itemTop.find( 'h4' ).after( '<ul class="sow-repeater-table" role="list"></ul>' );
+								itemTop.find( 'h4' ).remove();
 							}
+
+							let listItems = '';
+							table.forEach( ( item, index ) => {
+								if ( item.type === 'iconFormField' || item.type === 'checkboxFormField' ) {
+									text = item.value;
+								} else {
+									text = limitTextLength( item.value );
+								}
+
+								listItems += `<li role="listitem">${ text }</li>`;
+							} );
+
+							itemTop.find( '.sow-repeater-table' ).empty().append( listItems );
+
+						} else if ( ! isTable && text ) {
+							text = limitTextLength( text );
 						} else {
-							txt = defaultLabel;
+							text = defaultLabel;
 
 							// Add item index to label if needed.
 							if ( itemLabel.increment ) {
-								var index = $el.index();
-								// var index = itemTop.parents( '.siteorigin-widget-field-repeater-item' ).index();
-								// Increment for zero-index.
-								index++;
+								// Get the index of the item and avoid the zero-index.
+								var index = $el.index() + 1;
 
-								if ( ! isNaN( index ) ) {
-									if ( itemLabel.increment == 'before' ) {
-										txt = index + ' ' + txt;
-									} else {
-										txt += ' ' + index;
-									}
+								if ( ! isNaN( index )) {
+									text = itemLabel.increment === 'before' ? `${ index } ${ text }` : `${ text } ${ index }`;
 								}
 							}
 						}
 
-						itemTop.find( 'h4' ).text( txt );
+						if ( text ) {
+							itemTop.find( 'h4' ).text( text );
+						}
+
 					};
 					updateLabel();
 					var eventName = ( itemLabel.hasOwnProperty('updateEvent') && itemLabel.updateEvent ) ? itemLabel.updateEvent : 'change';
@@ -901,7 +960,7 @@ var sowbForms = window.sowbForms || {};
 				}
 
 				itemTop.on( 'click keyup', function( e ) {
-					if (e.target.className === "siteorigin-widget-field-remove" || e.target.className === "siteorigin-widget-field-copy") {
+					if ( e.target.className === 'siteorigin-widget-field-remove' || e.target.className === 'siteorigin-widget-field-copy' ) {
 						return;
 					}
 
@@ -910,10 +969,10 @@ var sowbForms = window.sowbForms || {};
 					}
 
 					e.preventDefault();
-					$(this).closest('.siteorigin-widget-field-repeater-item').find('.siteorigin-widget-field-repeater-item-form').eq(0).slideToggle('fast', function () {
+					$( this ).closest( '.siteorigin-widget-field-repeater-item' ).find( '.siteorigin-widget-field-repeater-item-form' ).eq( 0 ).slideToggle( 'fast', function() {
 						$( window ).trigger( 'resize' );
-						if ($(this).is(':visible')) {
-							$(this).trigger('slideToggleOpenComplete');
+						if ( $ ( this ).is( ':visible' ) ) {
+							$( this ).trigger( 'slideToggleOpenComplete' );
 
 							$( this ).find( '.siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field,> .siteorigin-widget-field' )
 							.each( function (index, element) {
@@ -923,12 +982,11 @@ var sowbForms = window.sowbForms || {};
 								}
 
 							} );
+						} else {
+							$( this ).trigger( 'slideToggleCloseComplete' );
 						}
-						else {
-							$(this).trigger('slideToggleCloseComplete');
-						}
-					});
-				});
+					} );
+				} );
 				itemTop.find( '.siteorigin-widget-field-remove' ).on( 'click keyup', function( e, params ) {
 					e.preventDefault();
 
@@ -1533,7 +1591,6 @@ var sowbForms = window.sowbForms || {};
 		processFields( index, $fields );
 	};
 
-
 	/**
 	 * Displays an informational notice either at the top of the supplied container, or above the optionally supplied
 	 * element.
@@ -1560,7 +1617,6 @@ var sowbForms = window.sowbForms || {};
 					buttonClasses = ' ' + button.classes.join( ' ' );
 				}
 				var $button = $( '<a class="button button-small' + buttonClasses + '" tabindex="0" target="_blank" rel="noopener noreferrer">' + button.label + '</a>' );
-
 				if ( button.url ) {
 					$button.attr( 'href', button.url );
 				}

@@ -640,7 +640,7 @@ public function __construct() {
 				'type'        => 'checkbox',
 				'label'       => __( 'Scroll Top', 'so-widgets-bundle' ),
 				'default'     => true,
-				'description' => __( 'Scroll the user to the top of the Blog Widget after pagination links are clicked', 'so-widgets-bundle' ),
+				'description' => __( 'Scroll the user to the top of the Blog Widget after pagination links are clicked.', 'so-widgets-bundle' ),
 			),
 		);
 	}

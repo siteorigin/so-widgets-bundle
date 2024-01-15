@@ -191,13 +191,18 @@
 			width: 100% !important;
 		}
 
+		.select2-selection__rendered,
 		.select2-search__field {
-			padding: 5px;
+			padding: 0;
 			margin: 0;
 
 			&:focus {
 				outline: none;
 			}
+		}
+
+		.select2-search {
+			margin-left: 3px;
 		}
 
 		.select2-selection__choice__remove {
@@ -210,16 +215,11 @@
 		}
 
 		.select2-selection--multiple {
-				align-items: center;
-				display: flex;
-				padding: 0;				}
-
-				.select2-selection__rendered {
-					margin: 0;
-					.select2-search__field {
-						margin-top: 0;
-					}
-				}
+			align-items: center;
+			border: none;
+			display: flex;
+			padding: 0;
+		}
 	}
 
 	@description_font_size: 0.9em;

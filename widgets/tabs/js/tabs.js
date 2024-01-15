@@ -3,7 +3,6 @@
 var sowb = window.sowb || {};
 
 jQuery( function ( $ ) {
-	
 	sowb.setupTabs = function () {
 		$( '.sow-tabs' ).each( function ( index, element ) {
 			var $this = $( element );
@@ -65,14 +64,10 @@ jQuery( function ( $ ) {
 					var selectedTabContent = $tabPanels.eq( selectedIndex ).children();
 
 					// Set previous tab as inactive.
-					$prevTab.attr( 'tabindex', -1 );
 					$prevTab.attr( 'aria-selected', false );
-					prevTabContent.attr( 'tabindex', -1 );
 
 					// Set new tab as active.
-					$tab.attr( 'tabindex', 0 );
 					$tab.attr( 'aria-selected', true );
-					selectedTabContent.attr( 'tabindex', 0 );
 
 					prevTabContent.attr( 'aria-hidden', 'true' );
 					tabAnimation = $tabPanels.eq( prevTabIndex ).fadeOut( 'fast',
@@ -120,16 +115,19 @@ jQuery( function ( $ ) {
 				selectTab( this );
 			} );
 
-			$tabs.on( 'keyup', function( e ) {
-				var $currentTab = $( this );
+			$tabs.on( 'keydown', function( e ) {
+				const $currentTab = $( this );
 
-				if ( e.keyCode !== 37 && e.keyCode !== 39 ){
+				if ( e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' ){
 					return;
 				}
 
-				var $newTab;
+				// Prevent browser horizontal scroll.
+				e.preventDefault();
+
+				let $newTab;
 				// Did the user press left arrow?
-				if ( e.keyCode === 37 ) {
+				if ( e.key === 'ArrowLeft' ) {
 					// Check if there are any additional tabs to the left.
 					if ( ! $currentTab.prev().get(0) ) { // No tabs to left.
 						$newTab = $currentTab.siblings().last();
@@ -139,7 +137,7 @@ jQuery( function ( $ ) {
 				}
 
 				// Did the user press right arrow?
-				if ( e.keyCode === 39 ) {
+				if ( e.key === 'ArrowRight' ) {
 					// Check if there are any additional tabs to the right.
 					if ( ! $currentTab.next().get(0) ) { // No tabs to right.
 						$newTab = $currentTab.siblings().first();
@@ -147,11 +145,13 @@ jQuery( function ( $ ) {
 						$newTab = $currentTab.next();
 					}
 				}
+
 				if ( $currentTab === $newTab ){
 					return;
 				}
+
 				$newTab.trigger( 'focus' );
-				selectTab( $newTab.get(0) );
+				selectTab( $newTab.get( 0 ) );
 			} );
 
 			if ( $widget.data( 'anchor-id' ) || $widget.data( 'use-anchor-tags' ) ) {
