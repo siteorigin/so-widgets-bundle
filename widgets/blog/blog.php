@@ -8,7 +8,7 @@ Documentation: https://siteorigin.com/widgets-bundle/blog-widget/
 */
 
 class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
-public function __construct() {
+	public function __construct() {
 		parent::__construct(
 			'sow-blog',
 			__( 'SiteOrigin Blog', 'so-widgets-bundle' ),
@@ -940,18 +940,22 @@ public function __construct() {
 		if ( empty( $instance['template'] ) ) {
 			$instance['template'] = 'standard';
 		} else {
-			// Ensure selected template is valid.
-			switch ( $instance['template'] ) {
-				case 'alternate':
-				case 'grid':
-				case 'masonry':
-				case 'offset':
-				case 'portfolio':
-				case 'standard':
-					break;
-				default:
-					$instance['template'] = 'standard';
-					break;
+			$custom_template = apply_filters( 'siteorigin_widgets_blog_custom_template', false, $instance );
+
+			if ( ! $custom_template ) {
+				// Ensure selected template is valid.
+				switch ( $instance['template'] ) {
+					case 'alternate':
+					case 'grid':
+					case 'masonry':
+					case 'offset':
+					case 'portfolio':
+					case 'standard':
+						break;
+					default:
+						$instance['template'] = 'standard';
+						break;
+				}
 			}
 		}
 
@@ -998,6 +1002,33 @@ public function __construct() {
 		$instance['paged_id'] = $this->get_style_hash( $instance );
 
 		return $instance;
+	}
+
+	public static function get_template( $instance ) {
+		$template_file = plugin_dir_path( __FILE__ ) . 'tpl/' . sanitize_file_name( $instance['template'] ) . '.php';
+
+		$override_file = apply_filters(
+			'siteorigin_widgets_blog_template_file',
+			$template_file,
+			$instance
+		);
+
+		// If any of the below checks fail, return the default template.
+		// Otherwise, allow the override.
+		if ( empty( $override_file ) ) {
+			return $template_file;
+		}
+
+		// File name must end in '-sow-blog.php'
+		if ( substr( $override_file, -13 ) != '-sow-blog.php' ) {
+			return $template_file;
+		}
+
+		if ( ! file_exists( $override_file ) ) {
+			return $template_file;
+		}
+
+		return $override_file;
 	}
 
 	public function get_template_variables( $instance, $args ) {
