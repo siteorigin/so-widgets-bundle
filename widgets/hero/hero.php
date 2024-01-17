@@ -446,40 +446,6 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 
 	/**
-	 * Handle Migration of `extra_top_padding` to `padding_top_padding` setting.
-	 *
-	 * The `padding_top_padding` setting was introduced because of an issue
-	 * With padding being unreliably set.
-	 *
-	 * @return $instance
-	 */
-	private static function migrate_padding( $instance, $context ) {
-		// If padding and extra top padding unit of measurement is different,
-		// we need to reset the extra top padding unit to be the same as the
-		// base padding to prevent unexpected changes.
-		if (
-			! empty( $instance['layout'][ $context ]['padding'] ) &&
-			$instance['layout'][ $context ]['padding_unit'] != $instance['layout'][ $context ]['extra_top_padding_unit']
-		) {
-			$instance['layout'][ $context ]['padding_extra_top'] = str_replace(
-				$instance['layout'][ $context ]['extra_top_padding_unit'],
-				$instance['layout'][ $context ]['padding_unit'],
-				$instance['layout'][ $context ]['extra_top_padding']
-			);
-			$instance['layout'][ $context ]['padding_extra_top_unit'] = $instance['layout'][ $context ]['padding_unit'];
-		} else {
-			// No adjustments needed, copy extra padding setting to new setting structure.
-			$instance['layout'][ $context ]['padding_extra_top_unit'] = $instance['layout'][ $context ]['extra_top_padding_unit'];
-			$instance['layout'][ $context ]['padding_extra_top'] = $instance['layout'][ $context ]['extra_top_padding'];
-		}
-
-		unset( $instance['layout'][ $context ]['extra_top_padding'] );
-		unset( $instance['layout'][ $context ]['extra_top_padding_unit'] );
-
-		return $instance;
-	}
-
-	/**
 	 * Migrate Slider settings.
 	 *
 	 * @return mixed
@@ -500,15 +466,6 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		// Run general slider migrations.
 		$instance = parent::modify_instance( $instance );
-
-		// Migrate `extra_top_padding` to `padding_extra_top`.
-		if ( ! empty( $instance['layout']['desktop']['extra_top_padding'] ) ) {
-			$instance = self::migrate_padding( $instance, 'desktop' );
-		}
-
-		if ( ! empty( $instance['layout']['mobile']['extra_top_padding'] ) ) {
-			$instance = self::migrate_padding( $instance, 'mobile' );
-		}
 
 		return $instance;
 	}
