@@ -3,6 +3,8 @@
 var sowb = window.sowb || {};
 
 jQuery( function ( $ ) {
+	// We remove animations if the user has motion disabled.
+	const reduceMotion = window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
 
 	sowb.setupCarousel = function () {
 		$.fn.setSlideTo = function( slide ) {
@@ -28,6 +30,11 @@ jQuery( function ( $ ) {
 				$items = $$.find( '.sow-carousel-items' ),
 				responsiveSettings = $$.data( 'responsive' ),
 				carouselSettings = $$.data( 'carousel_settings' );
+
+			// Remove animations if needed.
+			if ( reduceMotion ) {
+				carouselSettings.animation_speed = 0;
+			}
 
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
@@ -120,7 +127,8 @@ jQuery( function ( $ ) {
 					numVisibleItemsFloor = Math.floor( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' ),
 					lastPosition = numItems - numVisibleItems,
-					loading = false;
+					loading = false,
+					navigationContainer = $$.parent().parent();
 
 				// Post Carousel has a loading indicator so we need to pad the lastPosition.
 				if (
@@ -142,6 +150,24 @@ jQuery( function ( $ ) {
 					) {
 						$( sowb ).trigger( 'carousel_load_new_items', [ $$, $items, refocus ] );
 						loading = true;
+					}
+				}
+
+				// Enable/disable navigation buttons as needed.
+				if ( ! $$.data( 'carousel_settings' ).loop ) {
+					const direction = $$.data( 'dir' ) == 'ltr' ? 'previous' : 'next';
+
+					if ( $items.slick( 'slickCurrentSlide' ) == 0 ) {
+						navigationContainer.find( `.sow-carousel-${ direction }` )
+							.removeClass( 'sow-carousel-disabled' )
+							.removeAttr( 'aria-disabled' );
+					} else if (
+						! nextSlide &&
+						$items.slick( 'slickCurrentSlide' ) - slidesToScroll == 0
+					) {
+						navigationContainer.find( `.sow-carousel-${ direction }` )
+							.addClass( 'sow-carousel-disabled' )
+							.attr( 'aria-disabled', 'true' );
 					}
 				}
 
@@ -173,6 +199,17 @@ jQuery( function ( $ ) {
 					} else {
 						$items.slick( 'slickNext' );
 					}
+
+					// Have we just scrolled to the last slide, and is looping disabled?.
+					// If so, disable the next button.
+					if (
+						$items.slick( 'slickCurrentSlide' ) == lastPosition &&
+						! $$.data( 'carousel_settings' ).loop
+					) {
+						navigationContainer.find( '.sow-carousel-next' )
+							.addClass( 'sow-carousel-disabled' )
+							.attr( 'aria-disabled', 'true' );
+					}
 				} else {
 					if ( $$.data( 'carousel_settings' ).loop && $items.slick( 'slickCurrentSlide' ) == 0 ) {
 						$items.slick( 'slickGoTo', lastPosition );
@@ -180,6 +217,12 @@ jQuery( function ( $ ) {
 						$items.slick( 'slickGoTo', 0 );
 					} else {
 						$items.slick( 'slickPrev' );
+
+						var next = navigationContainer.find( '.sow-carousel-next' );
+						if ( next.hasClass( 'sow-carousel-disabled' ) ) {
+							next.removeClass( 'sow-carousel-disabled' )
+								.removeAttr( 'aria-disabled' );
+						}
 					}
 				}
 
@@ -190,14 +233,24 @@ jQuery( function ( $ ) {
 				}
 			}
 
+			if ( ! carouselSettings.loop && $items.slick( 'slickCurrentSlide' ) == 0 ) {
+				const direction = $$.data( 'dir' ) == 'ltr' ? 'previous' : 'next';
+				$$.parent().parent().find( `.sow-carousel-${ direction }` )
+					.addClass( 'sow-carousel-disabled' )
+					.attr( 'aria-disabled', 'true' );
+			}
+
 			// Click is used instead of Slick's beforeChange or afterChange events
 			// due to the inability to stop a slide from changing.
 			$$.parent().parent().find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click touchend', function( e, refocus ) {
 				e.preventDefault();
-				handleCarouselNavigation(
-					$( this ).hasClass( 'sow-carousel-next' ),
-					refocus
-				)
+
+				if ( ! $( this ).hasClass( 'sow-carousel-disabled' ) ) {
+					handleCarouselNavigation(
+						$( this ).hasClass( 'sow-carousel-next' ),
+						refocus
+					)
+				}
 			} );
 
 			if ( carouselSettings.dots && ( $$.data( 'variable_width' ) || $$.data( 'carousel_settings' ).theme ) ) {

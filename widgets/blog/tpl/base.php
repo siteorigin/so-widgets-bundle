@@ -36,13 +36,18 @@
 			</div>
 		<?php } ?>
 
-		<div class="sow-blog-posts">
-			<?php while ( $posts->have_posts() ) {
-				$posts->the_post(); ?>
-				<?php include plugin_dir_path( __FILE__ ) . $instance['template'] . '.php'; ?>
-			<?php } ?>
-		</div>
-		<?php $this->paginate_links( $settings, $posts, $instance ); ?>
+		<?php $template = SiteOrigin_Widget_Blog_Widget::get_template( $instance ); ?>
+		<?php if ( ! empty( $template ) ) { ?>
+			<div class="sow-blog-posts">
+				<?php
+				while ( $posts->have_posts() ) {
+					$posts->the_post();
+					include $template;
+				}
+				?>
+			</div>
+			<?php $this->paginate_links( $settings, $posts, $instance ); ?>
+		<?php } ?>
 		<?php do_action( 'siteorigin_widgets_blog_output_after', $settings ); ?>
 	</div>
 	<?php $this->override_read_more( $settings ); ?>

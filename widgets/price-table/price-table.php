@@ -84,6 +84,10 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 						'type'  => 'text',
 						'label' => __( 'Price', 'so-widgets-bundle' ),
 					),
+					'sale_price' => array(
+						'type'  => 'text',
+						'label' => __( 'Sale price', 'so-widgets-bundle' ),
+					),
 					'per'      => array(
 						'type'  => 'text',
 						'label' => __( 'Per', 'so-widgets-bundle' ),
@@ -127,56 +131,6 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 				),
 			),
 
-			'theme' => array(
-				'type'    => 'select',
-				'label'   => __( 'Price table theme', 'so-widgets-bundle' ),
-				'options' => array(
-					'atom' => __( 'Atom', 'so-widgets-bundle' ),
-				),
-			),
-
-			'header_color' => array(
-				'type'  => 'color',
-				'label' => __( 'Header background color', 'so-widgets-bundle' ),
-				'default' => '#65707f',
-			),
-
-			'header_text_color' => array(
-				'type'  => 'color',
-				'label' => __( 'Header text color', 'so-widgets-bundle' ),
-				'default' => '#fff',
-			),
-
-			'featured_header_color' => array(
-				'type'  => 'color',
-				'label' => __( 'Featured header background color', 'so-widgets-bundle' ),
-				'default' => '#707d8d',
-			),
-
-			'featured_header_text_color' => array(
-				'type' => 'color',
-				'label' => __( 'Featured header text color', 'so-widgets-bundle' ),
-				'default' => '#fff',
-			),
-
-			'feature_text_color' => array(
-				'type' => 'color',
-				'label' => __( 'Feature text color', 'so-widgets-bundle' ),
-				'default' => '#5f6062',
-			),
-
-			'button_color' => array(
-				'type'  => 'color',
-				'label' => __( 'Button color', 'so-widgets-bundle' ),
-				'default' => '#41a9d5',
-			),
-
-			'featured_button_color' => array(
-				'type'  => 'color',
-				'label' => __( 'Featured button color', 'so-widgets-bundle' ),
-				'default' => '#2e9fcf',
-			),
-
 			'button_new_window' => array(
 				'type'  => 'checkbox',
 				'label' => __( 'Open Button URL in a new window', 'so-widgets-bundle' ),
@@ -185,6 +139,85 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			'equalize_row_heights' => array(
 				'type'  => 'checkbox',
 				'label' => __( 'Equalize row heights', 'so-widgets-bundle' ),
+			),
+
+			'design' => array(
+				'type' => 'section',
+				'label' => __( 'Design', 'so-widgets-bundle' ),
+				'fields' => array(
+					'theme' => array(
+						'type'    => 'select',
+						'label'   => __( 'Price table theme', 'so-widgets-bundle' ),
+						'options' => array(
+							'atom' => __( 'Atom', 'so-widgets-bundle' ),
+						),
+					),
+
+					'header' => array(
+						'type' => 'section',
+						'label' => __( 'Header', 'so-widgets-bundle' ),
+						'fields' => array(
+							'background_color' => array(
+								'type'  => 'color',
+								'label' => __( 'Background color', 'so-widgets-bundle' ),
+								'default' => '#65707f',
+							),
+
+							'featured_background_color' => array(
+								'type'  => 'color',
+								'label' => __( 'Featured background color', 'so-widgets-bundle' ),
+								'default' => '#707d8d',
+							),
+
+							'color' => array(
+								'type'  => 'color',
+								'label' => __( 'Color', 'so-widgets-bundle' ),
+								'default' => '#fff',
+							),
+
+							'featured_color' => array(
+								'type'  => 'color',
+								'label' => __( 'Featured color', 'so-widgets-bundle' ),
+								'default' => '#fff',
+							),
+						),
+					),
+
+					'feature' => array(
+						'type' => 'section',
+						'label' => __( 'Feature', 'so-widgets-bundle' ),
+						'fields' => array(
+							'color' => array(
+								'type' => 'color',
+								'label' => __( 'Color', 'so-widgets-bundle' ),
+								'default' => '#5f6062',
+							),
+						),
+					),
+
+					'button' => array(
+						'type' => 'section',
+						'label' => __( 'Button', 'so-widgets-bundle' ),
+						'fields' => array(
+							'container_color' => array(
+								'type'  => 'color',
+								'label' => __( 'Container background color', 'so-widgets-bundle' ),
+								'default' => '#e8e8e8',
+							),
+							'background_color' => array(
+								'type'  => 'color',
+								'label' => __( 'Color', 'so-widgets-bundle' ),
+								'default' => '#41a9d5',
+							),
+							'featured_background_color' => array(
+								'type'  => 'color',
+								'label' => __( 'Background color', 'so-widgets-bundle' ),
+								'default' => '#2e9fcf',
+							),
+						),
+					),
+
+				),
 			),
 		);
 	}
@@ -208,6 +241,10 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			$classes[] = 'ow-pt-even';
 		} else {
 			$classes[] = 'ow-pt-odd';
+		}
+
+		if ( ! empty( $column['sale_price'] ) ) {
+			$classes[] = 'ow-pt-on-sale';
 		}
 
 		return implode( ' ', $classes );
@@ -279,11 +316,11 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_style_name( $instance ) {
-		if ( empty( $instance['theme'] ) ) {
+		if ( empty( $instance['design']['theme'] ) ) {
 			return 'atom';
 		}
 
-		return $instance['theme'];
+		return $instance['design']['theme'];
 	}
 
 	/**
@@ -298,32 +335,35 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			'featured_header_color' => '',
 			'featured_header_text_color' => '',
 			'feature_text_color' => '',
-			'button_color'          => '',
-			'featured_button_color' => '',
+			'background_color'          => '',
+			'featured_background_color' => '',
 		) );
 
 		$colors = array(
-			'header_color'               => $instance['header_color'],
-			'header_text_color'          => $instance['header_text_color'],
-			'featured_header_color'      => $instance['featured_header_color'],
-			'featured_header_text_color' => $instance['featured_header_text_color'],
-			'feature_text_color'         => $instance['feature_text_color'],
-			'button_color'               => $instance['button_color'],
-			'featured_button_color'      => $instance['featured_button_color'],
+			'header_color'               => $instance['design']['header']['background_color'],
+			'featured_header_color'      => $instance['design']['header']['featured_background_color'],
+			'header_text_color'         => $instance['design']['header']['color'],
+			'featured_header_text_color' => $instance['design']['header']['featured_color'],
+
+			'feature_text_color'          => $instance['design']['feature']['color'],
+
+			'button_container_color'               => $instance['design']['button']['container_color'],
+			'button_background_color'      => $instance['design']['button']['background_color'],
+			'featured_button_background_color'      => $instance['design']['button']['featured_background_color'],
 		);
 
 		if ( ! class_exists( 'SiteOrigin_Widgets_Color_Object' ) ) {
 			require plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . 'base/inc/color.php';
 		}
 
-		if ( ! empty( $instance['button_color'] ) ) {
-			$color = new SiteOrigin_Widgets_Color_Object( $instance['button_color'] );
+		if ( ! empty( $instance['design']['button']['background_color'] ) ) {
+			$color = new SiteOrigin_Widgets_Color_Object( $instance['design']['button']['background_color'] );
 			$color->lum += ( $color->lum > 0.75 ? - 0.5 : 0.8 );
 			$colors['button_text_color'] = $color->hex;
 		}
 
-		if ( ! empty( $instance['featured_button_color'] ) ) {
-			$color = new SiteOrigin_Widgets_Color_Object( $instance['featured_button_color'] );
+		if ( ! empty( $instance['design']['button']['featured_background_color'] ) ) {
+			$color = new SiteOrigin_Widgets_Color_Object( $instance['design']['button']['featured_background_color'] );
 			$color->lum += ( $color->lum > 0.75 ? - 0.5 : 0.8 );
 			$colors['featured_button_text_color'] = $color->hex;
 		}
@@ -349,6 +389,39 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 					$feature['icon_new'] = 'fontawesome-' . $feature['icon'];
 				}
 			}
+		}
+
+		// Migrate fields to design section.
+		if ( isset( $instance['theme'] ) ) {
+			$fields = array(
+				'header' => array(
+					'header_text_color' => 'color',
+					'featured_header_text_color' => 'featured_color',
+					'header_color' => 'background_color',
+					'featured_header_color' => 'featured_background_color',
+				),
+				'feature' => array(
+					'feature_text_color' => 'color',
+				),
+				'button' => array(
+					'button_color' => 'background_color',
+					'featured_button_color' => 'featured_background_color',
+				),
+			);
+
+			foreach ( $fields as $section => $fields ) {
+				foreach ( $fields as $field_id => $field ) {
+					if ( isset( $instance[ $field_id ] ) ) {
+						$instance['design'][ $section ][ $field ] = $instance[ $field_id ];
+						unset( $instance[ $field_id ] );
+					}
+				}
+			}
+			
+			$instance['design']['theme'] = $instance['theme'];
+			unset( $instance['theme'] );
+
+			$instance['design']['button']['container_color'] = '#e8e8e8';
 		}
 
 		return $instance;

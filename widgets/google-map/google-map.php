@@ -170,16 +170,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						'label'       => __( 'Disable default UI', 'so-widgets-bundle' ),
 						'description' => __( 'Hides the default Google Maps controls.', 'so-widgets-bundle' ),
 					),
-					'keep_centered' => array(
-						'type' => 'checkbox',
-						'default' => false,
-						'state_handler' => array(
-							'map_type[interactive]' => array( 'show' ),
-							'_else[map_type]' => array( 'hide' ),
-						),
-						'label'       => __( 'Keep map centered', 'so-widgets-bundle' ),
-						'description' => __( 'Keeps the map centered when it\'s container is resized.', 'so-widgets-bundle' ),
-					),
 					'fallback_image' => array(
 						'type' => 'media',
 						'label' => __( 'Fallback Image', 'so-widgets-bundle' ),
@@ -618,7 +608,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'mobileZoom'        => $settings['mobile_zoom'],
 				'gestureHandling'   => isset( $settings['gesture_handling'] ) ? $settings['gesture_handling'] : 'greedy',
 				'disable_ui'        => $settings['disable_default_ui'],
-				'keep_centered'     => $settings['keep_centered'],
 				'marker_icon'       => ! empty( $mrkr_src ) ? $mrkr_src[0] : '',
 				'markers_draggable' => isset( $markers['markers_draggable'] ) ? $markers['markers_draggable'] : '',
 				'marker_at_center'  => ! empty( $markers['marker_at_center'] ),

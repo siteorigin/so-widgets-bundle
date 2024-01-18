@@ -299,7 +299,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 				'animation_speed' => array(
 					'type' => 'number',
 					'label' => __( 'Animation speed', 'so-widgets-bundle' ),
-					'default' => 800,
+					'default' => 400,
 				),
 				'autoplay' => array(
 					'type' => 'checkbox',
@@ -454,7 +454,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			'loop' => isset( $settings['loop'] ) ? $settings['loop'] : true,
 			'dots' => isset( $settings['dots'] ) ? $settings['dots'] : true,
 			'animation' => isset( $settings['animation'] ) ? $settings['animation'] : 'ease',
-			'animation_speed' => ! empty( $settings['animation_speed'] ) ? $settings['animation_speed'] : 800,
+			'animation_speed' => ! empty( $settings['animation_speed'] ) ? $settings['animation_speed'] : 400,
 			'autoplay' => isset( $settings['autoplay'] ) ? $settings['autoplay'] : false,
 			'pauseOnHover' => isset( $settings['autoplay_pause_hover'] ) ? $settings['autoplay_pause_hover'] : false,
 			'autoplaySpeed' => ! empty( $settings['timeout'] ) ? $settings['timeout'] : 8000,
@@ -464,7 +464,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		return $encode ? json_encode( $variables ) : $variables;
 	}
 
-	public function render_template( $settings, $args ) {
+	public function render_template( $settings, $args, $instance ) {
 		include plugin_dir_path( __FILE__ ) . 'tpl/carousel.php';
 	}
 
