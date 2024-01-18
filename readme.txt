@@ -106,6 +106,43 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.58.0 - 18 January 2024 =
+* Accordion: Improved accessibility.
+* Accordion: Improved the title icon vertical alignment.
+* Accordion & Tabs: Adjusted the default header background colors.
+* Anything Carousel: Improved cross-browser navigation display.
+* Beaver Builder: Resolved SiteOrigin Slider related error.
+* Carousel: Disabled the 'previous' navigation button on the first slide when loop functionality is disabled.
+* Carousel: Resolved a potential undefined variable notice.
+* Carousels: Increased `Animation Speed` default value.
+* Carousels: Disabled slide transitions if browser motion is set to `Reduced`.
+* Contact Form: Resolved potential submission form error message display.
+* Features: Reset before/after spacing to prevent misalignment due to third-party global styles.
+* Features: Added a `Feature Spacing` setting.
+* Google Maps: Resolved deprecated notice.
+* Google Maps: Update to prevent potential data loss when navigating away from the page while editing.
+* Layout Slider: Resolved Extra Top Padding unit of measurement output if a value other than `px` is selected.
+* Post Carousel: Update to display `Autoplay continuous scroll` if `Autoplay` is enabled.
+* Post Carousel: Updated to prevent thumbnail from exceeding display width on mobile.
+* Price Table: Added a `Sale Price` setting.
+* Price Table: Added HTML support to the Title, Subtitle, Price, and Per fields.
+* Price Table: Moved design related settings to a Design settings section.
+* Slider: Added `loading` support to the widget's background image.
+* Slider: Resolved a potential double-up of background images via HTML and CSS.
+* Sliders: Updated to prevent loss of form field focus on input.
+* Social Media Buttons: Added Viber.
+* Tabs: Improved accessibility.
+* Tabs: Updated deprecated KeyCode usage.
+* WooCommerce: Re-render the shop page if there are any Widgets Bundle blocks present.
+* Updated Google Fonts.
+* Updated Font Awesome from `6.4.2` to `6.5.1`.
+* Measurement Units: Minor admin styling improvements.
+* Admin Radio Form Fields: Improved cross-browser display.
+* Select2: Minor styling improvements.
+* Developer: Added repeater table item label display option. Allows the repeater to act more like a table.
+* Developer: Added `siteorigin_widgets_blog_custom_template` to the Blog Widget. Allows for custom templates to be selected from the Template select.
+* Developer: Added box model type indicator classes.
+
 = 1.57.0 - 24 November 2023 =
 * Added additional font settings to the Call To Action (CTA) Widget, including Title HTML Tag, Title Font Family, Title Font Size, Subtitle HTML Tag, Subtitle Font Family, and Subtitle Font Size.
 * Contact Form: Added an optional `readonly` attribute for the Text Field.
