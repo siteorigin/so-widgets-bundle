@@ -162,7 +162,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 								'default' => '50px',
 							),
 
-							'extra_top_padding' => array(
+							'padding_extra_top' => array(
 								'type' => 'measurement',
 								'label' => __( 'Extra top padding', 'so-widgets-bundle' ),
 								'description' => __( 'Additional padding added to the top of the slider', 'so-widgets-bundle' ),
@@ -196,7 +196,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 								'label' => __( 'Top and bottom padding', 'so-widgets-bundle' ),
 							),
 
-							'extra_top_padding' => array(
+							'padding_extra_top' => array(
 								'type' => 'measurement',
 								'label' => __( 'Extra top padding', 'so-widgets-bundle' ),
 								'description' => __( 'Additional padding added to the top of the slider', 'so-widgets-bundle' ),
@@ -398,7 +398,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 
 				$meas_options['slide_height'] = ! empty( $settings['height'] ) ? $settings['height'] : '';
 				$meas_options['slide_padding'] = ! empty( $settings['padding'] ) ? $settings['padding'] : '';
-				$meas_options['slide_padding_extra_top'] = ! empty( $settings['extra_top_padding'] ) ? $settings['extra_top_padding'] : '';
+				$meas_options['slide_padding_extra_top'] = ! empty( $settings['padding_extra_top'] ) ? $settings['padding_extra_top'] : '';
 				$meas_options['slide_padding_sides'] = ! empty( $settings['padding_sides'] ) ? $settings['padding_sides'] : '';
 				$meas_options['slide_width'] = ! empty( $settings['width'] ) ? $settings['width'] : '';
 			}
@@ -410,9 +410,9 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 				$meas_options['slide_padding_responsive'] = ! empty( $settings['padding'] ) ? $settings['padding'] : '';
 				$meas_options['slide_padding_sides_responsive'] = ! empty( $settings['padding_sides'] ) ? $settings['padding_sides'] : '';
 
-				if ( ! empty( $settings['extra_top_padding'] ) ) {
-					// Add extra padding to top padidng.
-					$meas_options['slide_padding_top_responsive'] = (int) $meas_options['slide_padding_responsive'] + (int) $settings['extra_top_padding'];
+				if ( ! empty( $settings['padding_extra_top'] ) ) {
+					// Add extra padding to top padding.
+					$meas_options['slide_padding_top_responsive'] = $settings['padding_extra_top'];
 				}
 			}
 		}
