@@ -179,16 +179,31 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 		}
 
 		$blocks = parse_blocks( $shop_page->post_content );
-		// Check if any SiteOrigin Widgets Bundle blocks exist.
-		$blocks = array_filter( $blocks, function( $block ) {
-			return strpos( $block['blockName'], 'sowb/' ) === 0;
-		} );
 
+		// Check if any SiteOrigin Widgets Bundle blocks.
+		$blocks = array_filter( $blocks, array( $this, 'find_sowb_block' ) );
 		if ( ! empty( $blocks ) ) {
 			$content = do_blocks( $shop_page->post_content );
 		}
 
 		return $content;
+	}
+
+	public function find_sowb_block( $block ) {
+		if (
+			! empty( $block['blockName'] ) &&
+			strpos( $block['blockName'], 'sowb/' ) === 0
+		) {
+			return true;
+		}
+
+		foreach ( $block['innerBlocks'] as $inner ) {
+			if ( $this->find_sowb_block( $inner ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
 
