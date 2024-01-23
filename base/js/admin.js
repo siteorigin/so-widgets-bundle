@@ -778,7 +778,7 @@ var sowbForms = window.sowbForms || {};
 
 			// Setup Repeater Table Header if necessary.
 			const itemLabel = $el.data( 'item-label' );
-			if ( 'table' in itemLabel ) {
+			if ( itemLabel !== undefined && 'table' in itemLabel ) {
 				$el.addClass( 'sow-repeater-has-table' );
 
 				let labels = itemLabel.selectorArray.map( item => item.label || '' );
@@ -885,7 +885,7 @@ var sowbForms = window.sowbForms || {};
 				if ( itemLabel && ( itemLabel.hasOwnProperty( 'selector' ) || itemLabel.hasOwnProperty( 'selectorArray' ) ) ) {
 
 					var updateLabel = function () {
-						const isTable = 'table' in itemLabel;
+						const isTable = itemLabel !== undefined && 'table' in itemLabel;
 
 						var functionName, text, selectorRow;
 						if ( isTable ) {
