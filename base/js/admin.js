@@ -778,7 +778,7 @@ var sowbForms = window.sowbForms || {};
 
 			// Setup Repeater Table Header if necessary.
 			const itemLabel = $el.data( 'item-label' );
-			if ( 'table' in itemLabel ) {
+			if ( itemLabel !== undefined && 'table' in itemLabel ) {
 				$el.addClass( 'sow-repeater-has-table' );
 
 				let labels = itemLabel.selectorArray.map( item => item.label || '' );
@@ -890,7 +890,7 @@ var sowbForms = window.sowbForms || {};
 				if ( itemLabel && ( itemLabel.hasOwnProperty( 'selector' ) || itemLabel.hasOwnProperty( 'selectorArray' ) ) ) {
 
 					var updateLabel = function () {
-						const isTable = 'table' in itemLabel;
+						const isTable = itemLabel !== undefined && 'table' in itemLabel;
 
 						var functionName, text, selectorRow;
 						if ( isTable ) {
@@ -1621,8 +1621,7 @@ var sowbForms = window.sowbForms || {};
 				if ( button.classes && button.classes.length ) {
 					buttonClasses = ' ' + button.classes.join( ' ' );
 				}
-				var $button = $( '<a class="button button-small' + buttonClasses + '" tabindex="0">' + button.label + '</a>' );
-
+				var $button = $( '<a class="button button-small' + buttonClasses + '" tabindex="0" target="_blank" rel="noopener noreferrer">' + button.label + '</a>' );
 				if ( button.url ) {
 					$button.attr( 'href', button.url );
 				}

@@ -117,12 +117,12 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 							'background_color' => array(
 								'type' => 'color',
 								'label' => __( 'Background color', 'so-widgets-bundle' ),
-								'default' => '#828282',
+								'default' => '#757575',
 							),
 							'background_hover_color' => array(
 								'type' => 'color',
 								'label' => __( 'Background hover color', 'so-widgets-bundle' ),
-								'default' => '#8c8c8c',
+								'default' => '#616161',
 							),
 							'title_color' => array(
 								'type' => 'color',

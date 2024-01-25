@@ -45,6 +45,13 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 				array( 'jquery' ),
 				SOW_BUNDLE_VERSION
 			);
+
+			wp_enqueue_style(
+				'so-select-field',
+				plugin_dir_url( __FILE__ ) . 'css/select-field.css',
+				array(),
+				SOW_BUNDLE_VERSION
+			);
 		}
 	}
 
