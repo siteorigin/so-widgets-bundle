@@ -1203,11 +1203,19 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				continue;
 			}
 
-			$this->render_form_field( $field, $errors, $label_position, $indicate_required_fields, $field_ids, $i );
+			$this->render_form_field( $field, $errors, $label_position, $instance, $indicate_required_fields, $field_ids, $i );
 		}
 	}
 
-	public function render_form_field( $field, $errors, $label_position, $indicate_required_fields, $field_ids = array(), $i = 0 ) {
+	public function render_form_field(
+		$field,
+		$errors,
+		$label_position,
+		$instance,
+		$indicate_required_fields,
+		$field_ids = array(),
+		$i = 0
+	) {
 		$field_name = $this->name_from_label( ! empty( $field['label'] ) ? $field['label'] : $i, $field_ids );
 
 		// Using `$instance['_sow_form_id']` to uniquely identify contact form fields across widgets.
