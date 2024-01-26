@@ -106,6 +106,12 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.58.1 - 26 January 2024 =
+* Icon: Prevented a Potential `TypeError`.
+* WooCommerce Shop: Check for SiteOrigin blocks within other blocks.
+* Developer: Added Contact Form `siteorigin_widgets_contact_form_field_output`.
+* Developer: Prevented a potential error when an `ItemLabel` isn't defined.
+
 = 1.58.0 - 18 January 2024 =
 * Accordion: Improved accessibility.
 * Accordion: Improved the title icon vertical alignment.
