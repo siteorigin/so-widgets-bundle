@@ -16,6 +16,9 @@
 			return;
 		}
 
+		// Clear the base icon to prevent a potential duplicate icon.
+		$b.find( '.sow-icon-clear' ).remove();
+
 		// Clicking on the button should display the icon selector.
 		$b.on( 'click keyup', function( e ) {
 			if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
@@ -59,15 +62,15 @@
 		};
 
 		$search.on( 'keyup change', searchIcons );
-		
+
 		var renderStylesSelect = function( init ) {
 			var $familySelect = $is.find( 'select.siteorigin-widget-icon-family' );
 			var family = $familySelect.val();
-			
+
 			if ( typeof iconWidgetCache[ family ] === 'undefined' ) {
 				return;
 			}
-			
+
 			var $stylesSelect = $is.find( '.siteorigin-widget-icon-family-styles' );
 			if ( ! init ) {
 				$stylesSelect.off( 'change', rerenderIcons );
@@ -81,7 +84,7 @@
 					if ( options ) {
 						$stylesSelect = $( '<select class="siteorigin-widget-icon-family-styles"></select>' ).append( options );
 						$familySelect.after( $stylesSelect );
-						
+
 					}
 				}
 			}
@@ -92,13 +95,13 @@
 			var $familySelect = $is.find( 'select.siteorigin-widget-icon-family' );
 			var family = $familySelect.val();
 			var container = $is.find('.siteorigin-widget-icon-icons');
-			
+
 			if ( typeof iconWidgetCache[ family ] === 'undefined' ) {
 				return;
 			}
 
 			container.empty();
-			
+
 			var iconFamily = iconWidgetCache[ family ];
 			var icons = iconFamily.icons;
 			var style;
@@ -164,7 +167,7 @@
 						// Hide the icon selector.
 						$is.slideUp();
 					} );
-				
+
 				container.append( $icon );
 
 				if ( $v.val() === familyValue ) {
@@ -201,7 +204,7 @@
 			if ( typeof iconWidgetCache[ family ] === 'undefined' ) {
 				var $container = $is.find( '.siteorigin-widget-icon-icons' );
 				$container.addClass( 'loading' );
-				
+
 				$.getJSON(
 					soWidgets.ajaxurl,
 					{

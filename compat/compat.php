@@ -44,6 +44,14 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 				return $attr;
 			} );
 		}
+
+		add_action( 'init' , array( $this, 'init' ) );
+	}
+
+	public function init() {
+		if ( function_exists( 'WC' ) ) {
+			add_filter( 'woocommerce_format_content', array( $this, 'woocommerce_shop_page_content' ), 10, 2 );
+		}
 	}
 
 	public function get_active_builder() {
@@ -144,6 +152,58 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 			rocket_clean_domain();
 			rocket_clean_minify( 'css' );
 		}
+	}
+
+	/**
+	 * Filter the content of the WooCommerce shop page to ensure that our widgets are rendered correctly.
+	 *
+	 * @param $content
+	 *
+	 * @return string
+	 */
+	public function woocommerce_shop_page_content( $content ) {
+		if ( is_search() ) {
+			return $content;
+		}
+
+		if (
+			! is_post_type_archive( 'product' ) ||
+			! in_array( absint( get_query_var( 'paged' ) ), array( 0, 1 ), true )
+		) {
+			return $content;
+		}
+
+		$shop_page = get_post( wc_get_page_id( 'shop' ) );
+		if ( empty( $shop_page ) ) {
+			return $content;
+		}
+
+		$blocks = parse_blocks( $shop_page->post_content );
+
+		// Check if any SiteOrigin Widgets Bundle blocks.
+		$blocks = array_filter( $blocks, array( $this, 'find_sowb_block' ) );
+		if ( ! empty( $blocks ) ) {
+			$content = do_blocks( $shop_page->post_content );
+		}
+
+		return $content;
+	}
+
+	public function find_sowb_block( $block ) {
+		if (
+			! empty( $block['blockName'] ) &&
+			strpos( $block['blockName'], 'sowb/' ) === 0
+		) {
+			return true;
+		}
+
+		foreach ( $block['innerBlocks'] as $inner ) {
+			if ( $this->find_sowb_block( $inner ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
 

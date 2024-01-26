@@ -63,10 +63,22 @@ class SiteOrigin_Widget_Field_Multi_Measurement extends SiteOrigin_Widget_Field_
 				$units = array( 'px' );
 			}
 			$input_id = $this->element_id . '-' . $name;
+
+			if ( ! empty( $measurement_config['classes'] ) ) {
+				$classes = ' ' . implode( ' ', ( array ) $measurement_config['classes'] );
+			} else {
+				$classes = '';
+			}
 			?>
 			<div class="sow-multi-measurement-input-container">
 				<label for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_html( $label ); ?></label>
-				<input id="<?php echo esc_attr( $input_id ); ?>" type="text" class="sow-multi-measurement-input">
+
+				<input
+					id="<?php echo esc_attr( $input_id ); ?>"
+					type="text"
+					class="sow-multi-measurement-input<?php echo esc_attr( $classes ); ?>"
+				>
+
 				<select class="sow-multi-measurement-select-unit">
 					<?php foreach ( (array) $units as $unit ) { ?>
 						<option value="<?php echo esc_attr( $unit ); ?>"><?php echo esc_html( $unit ); ?></option>

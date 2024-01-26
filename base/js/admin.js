@@ -778,7 +778,7 @@ var sowbForms = window.sowbForms || {};
 
 			// Setup Repeater Table Header if necessary.
 			const itemLabel = $el.data( 'item-label' );
-			if ( 'table' in itemLabel ) {
+			if ( itemLabel !== undefined && 'table' in itemLabel ) {
 				$el.addClass( 'sow-repeater-has-table' );
 
 				let labels = itemLabel.selectorArray.map( item => item.label || '' );
@@ -859,10 +859,13 @@ var sowbForms = window.sowbForms || {};
 		});
 	};
 
-
 	$.fn.checkboxFormField = function() {
 		const icon = $( this ).is( ':checked' ) ? 'yes' : 'minus';
 		return `<span class="dashicons dashicons-${ icon }"></span>`;
+	}
+  
+	$.fn.iconFormField = function() {
+		return $( this ).find( '.siteorigin-widget-icon span[data-sow-icon]' ).prop( 'outerHTML' );
 	}
 
 	const limitTextLength = function( text ) {
@@ -880,6 +883,17 @@ var sowbForms = window.sowbForms || {};
 		return text;
 	}
 
+	const setTextBasedOnType = function( text, type ) {
+		if (
+			type === 'iconFormField' ||
+			type === 'checkboxFormField'
+		) {
+			return text;
+		}
+
+		return limitTextLength( text );
+	}
+
 	$.fn.sowSetupRepeaterItems = function () {
 		return $(this).each(function (i, el) {
 			var $el = $(el);
@@ -892,7 +906,7 @@ var sowbForms = window.sowbForms || {};
 				if ( itemLabel && ( itemLabel.hasOwnProperty( 'selector' ) || itemLabel.hasOwnProperty( 'selectorArray' ) ) ) {
 
 					var updateLabel = function () {
-						const isTable = 'table' in itemLabel;
+						const isTable = itemLabel !== undefined && 'table' in itemLabel;
 
 						var functionName, text, selectorRow;
 						if ( isTable ) {
@@ -929,11 +943,7 @@ var sowbForms = window.sowbForms || {};
 
 							let listItems = '';
 							table.forEach( ( item, index ) => {
-								if ( item.type === 'iconFormField' || item.type === 'checkboxFormField' ) {
-									text = item.value;
-								} else {
-									text = limitTextLength( item.value );
-								}
+								text = setTextBasedOnType( item.value, item.type );
 
 								listItems += `<li role="listitem">${ text }</li>`;
 							} );
@@ -941,7 +951,7 @@ var sowbForms = window.sowbForms || {};
 							itemTop.find( '.sow-repeater-table' ).empty().append( listItems );
 
 						} else if ( ! isTable && text ) {
-							text = limitTextLength( text );
+							text = setTextBasedOnType( text, functionName );
 						} else {
 							text = defaultLabel;
 
@@ -950,16 +960,43 @@ var sowbForms = window.sowbForms || {};
 								// Get the index of the item and avoid the zero-index.
 								var index = $el.index() + 1;
 
-								if ( ! isNaN( index )) {
+								if ( ! isNaN( index ) ) {
 									text = itemLabel.increment === 'before' ? `${ index } ${ text }` : `${ text } ${ index }`;
 								}
 							}
 						}
 
-						if ( text ) {
-							itemTop.find( 'h4' ).text( text );
+						if ( ! text ) {
+							return;
 						}
 
+						if ( functionName === 'checkboxFormField' ) {
+							itemTop.find( 'h4' ).html( text );
+							return;
+						}
+
+						if ( functionName === 'iconFormField' ) {
+							// There's a chance the default label could show up unexpectedly. Skip it.
+							if ( text == 'Item' ) {
+								return;
+							}
+
+							const $item = $( text );
+							if ( ! $item ) {
+								return;
+							}
+
+							// If the icon is hidden, it's been removed.
+							if ( $item.css('display') === 'none' ) {
+								itemTop.find( 'h4' ).text( defaultLabel );
+								return;
+							}
+
+							itemTop.find( 'h4' ).html( text );
+							return;
+						}
+
+						itemTop.find( 'h4' ).text( text );
 					};
 					updateLabel();
 					var eventName = ( itemLabel.hasOwnProperty('updateEvent') && itemLabel.updateEvent ) ? itemLabel.updateEvent : 'change';
@@ -1623,8 +1660,7 @@ var sowbForms = window.sowbForms || {};
 				if ( button.classes && button.classes.length ) {
 					buttonClasses = ' ' + button.classes.join( ' ' );
 				}
-				var $button = $( '<a class="button button-small' + buttonClasses + '" tabindex="0">' + button.label + '</a>' );
-
+				var $button = $( '<a class="button button-small' + buttonClasses + '" tabindex="0" target="_blank" rel="noopener noreferrer">' + button.label + '</a>' );
 				if ( button.url ) {
 					$button.attr( 'href', button.url );
 				}

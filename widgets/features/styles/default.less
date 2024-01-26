@@ -20,7 +20,8 @@
 @more_text_color: default;
 @per_row: 3;
 @center_items: 3;
-@feature_space: 25px;
+@feature_spacing: 25px;
+@feature_spacing_mobile: default;
 
 @container_size: 84px;
 @icon_size: 24px;
@@ -33,7 +34,7 @@
 .sow-features-list {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 40px @feature_space;
+	gap: @feature_spacing;
 
 	& when ( @more_text_bottom_align = true ) {
 		align-items: stretch;
@@ -264,9 +265,9 @@
 	}
 
 	@media (max-width: @responsive_breakpoint) {
-		&.sow-features-responsive {
-			margin: 0;
+		gap: @feature_spacing_mobile;
 
+		&.sow-features-responsive {
 			.sow-icon-container-position-right > div,
 			.sow-icon-container-position-left > div,
 			.sow-features-feature,
@@ -283,12 +284,7 @@
 			}
 
 			.sow-features-feature {
-				margin-bottom: 40px;
 				width: 100% !important;
-
-				&:last-child {
-					margin-bottom: 0px;
-				}
 			}
 
 			.textwidget,

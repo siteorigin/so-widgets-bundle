@@ -1151,6 +1151,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		return $vars;
 	}
 
+	public static function single() {
+		static $single;
+
+		return empty( $single ) ? $single = new self() : $single;
+	}
+
 	public static function name_from_label( $label, & $ids ) {
 		$it = 0;
 
@@ -1185,27 +1191,48 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 
 		$fields = apply_filters( 'siteorigin_widgets_contact_fields', $fields );
+
+		$field_output = apply_filters( 'siteorigin_widgets_contact_form_field_output', '', $fields, $result, $instance );
+		if ( ! empty( $field_output ) ) {
+			echo $field_output;
+			return;
+		}
+
 		foreach ( $fields as $i => $field ) {
 			if ( empty( $field['type'] ) ) {
 				continue;
 			}
-			$field_name = $this->name_from_label( ! empty( $field['label'] ) ? $field['label'] : $i, $field_ids );
 
-			// Using `$instance['_sow_form_id']` to uniquely identify contact form fields across widgets.
-			// I.e. if there are many contact form widgets on a page this will prevent field name conflicts.
-			$field_name .= ! empty( $instance['_sow_form_id'] ) ? '-' . $instance['_sow_form_id'] : '';
+			$this->render_form_field( $field, $errors, $label_position, $instance, $indicate_required_fields, $field_ids, $i );
+		}
+	}
 
-			$field_id = 'sow-contact-form-field-' . $field_name;
+	public function render_form_field(
+		$field,
+		$errors,
+		$label_position,
+		$instance,
+		$indicate_required_fields,
+		$field_ids = array(),
+		$i = 0
+	) {
+		$field_name = $this->name_from_label( ! empty( $field['label'] ) ? $field['label'] : $i, $field_ids );
 
-			$value = '';
+		// Using `$instance['_sow_form_id']` to uniquely identify contact form fields across widgets.
+		// I.e. if there are many contact form widgets on a page this will prevent field name conflicts.
+		$field_name .= ! empty( $instance['_sow_form_id'] ) ? '-' . $instance['_sow_form_id'] : '';
 
-			if ( ! empty( $_POST[ $field_name ] ) && wp_verify_nonce( $_POST['_wpnonce'], '_contact_form_submit' ) ) {
-				$value = stripslashes_deep( $_POST[ $field_name ] );
-			} elseif ( ! empty( $field['value'] ) ) {
-				$value = $field['value'];
-			}
+		$field_id = 'sow-contact-form-field-' . $field_name;
 
-			?>
+		$value = '';
+
+		if ( ! empty( $_POST[ $field_name ] ) && wp_verify_nonce( $_POST['_wpnonce'], '_contact_form_submit' ) ) {
+			$value = stripslashes_deep( $_POST[ $field_name ] );
+		} elseif ( ! empty( $field['value'] ) ) {
+			$value = $field['value'];
+		}
+
+		?>
 			<div class="sow-form-field sow-form-field-<?php echo sanitize_html_class( $field['type'] ); ?>">
 				<?php
 
@@ -1273,7 +1300,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				?>
 			</div>
 			<?php
-		}
 	}
 
 	public function render_form_label( $field_id, $label, $position, $indicate_as_required = false ) {

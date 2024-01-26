@@ -3,6 +3,8 @@
 var sowb = window.sowb || {};
 
 jQuery( function ( $ ) {
+	// We remove animations if the user has motion disabled.
+	const reduceMotion = window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
 
 	sowb.setupCarousel = function () {
 		$.fn.setSlideTo = function( slide ) {
@@ -28,6 +30,11 @@ jQuery( function ( $ ) {
 				$items = $$.find( '.sow-carousel-items' ),
 				responsiveSettings = $$.data( 'responsive' ),
 				carouselSettings = $$.data( 'carousel_settings' );
+
+			// Remove animations if needed.
+			if ( reduceMotion ) {
+				carouselSettings.animation_speed = 0;
+			}
 
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
