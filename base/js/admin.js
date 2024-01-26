@@ -859,6 +859,11 @@ var sowbForms = window.sowbForms || {};
 		});
 	};
 
+	$.fn.checkboxFormField = function() {
+		const icon = $( this ).is( ':checked' ) ? 'yes' : 'minus';
+		return `<span class="dashicons dashicons-${ icon }"></span>`;
+	}
+  
 	$.fn.iconFormField = function() {
 		return $( this ).find( '.siteorigin-widget-icon span[data-sow-icon]' ).prop( 'outerHTML' );
 	}
