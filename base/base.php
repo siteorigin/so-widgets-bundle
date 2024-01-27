@@ -408,7 +408,7 @@ function siteorigin_widget_onclick( $onclick ) {
 
 	if ( apply_filters( 'siteorigin_widgets_onclick_allowlist', true ) ) {
 		$onclick_parts = explode( ';', $onclick );
-		$allowed_functions = array(
+		$allowed_functions = array_flip( array(
 			'_km',
 			'_paq',
 			'_qevents',
@@ -447,12 +447,13 @@ function siteorigin_widget_onclick( $onclick ) {
 			'twttr',
 			'woopra',
 			'ym',
-		);
+		) );
 
 		// Remove anything not inside of an allowed function.
 		foreach ( $onclick_parts as $part ) {
 			$function_name = substr( $part, 0, strpos( $part, '(' ) );
-			if ( ! in_array( trim( strtolower( $function_name ) ), $allowed_functions ) ) {
+			$function_name = strtolower( trim( $function_name ) );
+			if ( ! isset( $allowed_functions[ $function_name ] ) ) {
 				// Not an allowed function name, skip this part
 				continue;
 			}
