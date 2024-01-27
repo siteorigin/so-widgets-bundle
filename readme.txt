@@ -106,6 +106,9 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.58.2 - 27 January 2024 =
+* Button: Restricted OnClick field allowed values to known services and functions.
+
 = 1.58.1 - 26 January 2024 =
 * Icon: Prevented a Potential `TypeError`.
 * WooCommerce Shop: Check for SiteOrigin blocks within other blocks.
