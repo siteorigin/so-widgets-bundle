@@ -77,7 +77,7 @@ if ( is_array( $result ) && $result['status'] == 'success' ) {
 				}
 
 				if ( ! empty( $onclick ) ) {
-					echo 'onclick="' . esc_js( $onclick ) . '"';
+					echo 'onclick="' . siteorigin_widget_onclick( $onclick ) . '"';
 				}
 				?>
 			>

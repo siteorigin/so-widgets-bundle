@@ -630,7 +630,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				'sure' => __( 'Are you sure?', 'so-widgets-bundle' ),
 				'missing_required' => __( 'You have empty required fields. Are you sure you wish to continue?', 'so-widgets-bundle' ),
 				'table' => array(
-					'header' => __( 'Table header', 'so-widgets-bundle' ),
+					'header' => __( 'Table Header', 'so-widgets-bundle' ),
 					'actions' => __( 'Actions', 'so-widgets-bundle' ),
 				),
 				'backup' => array(
