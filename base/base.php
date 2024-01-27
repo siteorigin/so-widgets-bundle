@@ -394,3 +394,78 @@ function siteorigin_widgets_links_get_title() {
 	die();
 }
 add_action( 'wp_ajax_so_widgets_links_get_title', 'siteorigin_widgets_links_get_title' );
+
+/**
+ * Filters onclick attributes to remove disallowed code.
+ *
+ * @param string $onclick The onclick attribute value.
+ * @return string The filtered onclick attribute value.
+ */
+function siteorigin_widget_onclick( $onclick ) {
+	if ( empty( $onclick ) ) {
+		return;
+	}
+
+	$on_click_parts = explode( ';', $onclick );
+	$on_click = '';
+	$allowed_functions = array(
+		'_km',
+		'_paq',
+		'_qevents',
+		'_vis_opt',
+		'amplitude',
+		'ce',
+		'chartbeat',
+		'clarity',
+		'clicky',
+		'crazyegg',
+		'datalayer.push',
+		'fathom',
+		'fbq',
+		'fullstory',
+		'ga',
+		'google_optimize',
+		'gosquared',
+		'gtag',
+		'heap',
+		'hj',
+		'hubspot',
+		'Intercom',
+		'linkedin_data_partner_id',
+		'logrocket',
+		'mixpanel',
+		'mouseflow',
+		'optimizely',
+		'parsely',
+		'pinterest',
+		'piwik',
+		'plausible',
+		's.omtr',
+		'snaptr',
+		'statcounter',
+		'tealium',
+		'twttr',
+		'woopra',
+		'ym',
+	);
+
+	// Remove anything not inside of an allowed function.
+	foreach ( $on_click_parts as $part ) {
+		$function_name = substr( $part, 0, strpos( $part, '(' ) );
+		if ( ! in_array( trim( strtolower( $function_name ) ), $allowed_functions ) ) {
+			// Not an allowed function name, skip this part
+			continue;
+		}
+		$on_click .= $part . ';';
+	}
+
+	// It's possible for allowed functions to contain disallowed functions, so we need to loop through and remove.
+	$disallowed_functions = array( 'alert', 'eval', 'execScript', 'setTimeout', 'setInterval', 'function', 'document', 'Object', 'window', 'innerHTML', 'outerHTML', 'onload', 'onerror', 'onclick', 'localStorage', 'sessionStorage', 'fetch', 'XMLHttpRequest', 'jQuery', '$.', 'prototype', '__proto__', 'constructor', 'decode', 'encode', 'atob', 'btoa', 'Promise', 'setImmediate', 'unescape', 'escape', 'captureEvents', 'proxy', 'Reflect', 'Array', 'String', 'Math', 'Date', 'property', 'Properties', 'Error', 'Map', 'Set', 'Generator', 'Web', 'dataview', 'Blob', 'URL', 'Text', 'Intl', 'JSON', 'RegExp', 'console', 'history', 'location', 'navigator', 'screen', 'worker', 'FinalizationRegistry', 'weak' );
+
+	do {
+		$previous = $on_click;
+		$on_click = preg_replace( '/(' . implode( '|', $disallowed_functions ) . ')/i', '', $on_click );
+	} while ( $on_click !== $previous );
+
+	return wp_unslash( esc_js( $on_click ) );
+}
