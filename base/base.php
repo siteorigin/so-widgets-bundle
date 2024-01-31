@@ -421,6 +421,7 @@ function siteorigin_widget_onclick( $onclick ) {
 
 	if ( apply_filters( 'siteorigin_widgets_onclick_allowlist', true ) ) {
 		$onclick_parts = explode( ';', $onclick );
+		$adjusted_onclick = '';
 		$allowed_functions = array_flip( array(
 			'_km',
 			'_paq',
@@ -470,7 +471,7 @@ function siteorigin_widget_onclick( $onclick ) {
 				// Not an allowed function name, skip this part
 				continue;
 			}
-			$onclick .= $part . ';';
+			$adjusted_onclick .= $part . ';';
 		}
 	}
 
