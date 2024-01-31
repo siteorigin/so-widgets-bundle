@@ -406,6 +406,9 @@ function siteorigin_widget_onclick( $onclick ) {
 		return;
 	}
 
+	// Remove unicode escape sequences.
+	$onclick = preg_replace( '/\\\\u([0-9a-fA-F]{4})/', '', $onclick );
+
 	if ( apply_filters( 'siteorigin_widgets_onclick_disallowlist', true ) ) {
 		// It's possible for allowed functions to contain disallowed functions, so we need to loop through and remove.
 		$disallowed_functions = array( 'alert', 'eval', 'execScript', 'setTimeout', 'setInterval', 'function', 'document', 'Object', 'window', 'innerHTML', 'outerHTML', 'onload', 'onerror', 'onclick', 'localStorage', 'sessionStorage', 'fetch', 'XMLHttpRequest', 'jQuery', '$.', 'prototype', '__proto__', 'constructor', 'decode', 'encode', 'atob', 'btoa', 'Promise', 'setImmediate', 'unescape', 'escape', 'captureEvents', 'proxy', 'Reflect', 'Array', 'String', 'Math', 'Date', 'property', 'Properties', 'Error', 'Map', 'Set', 'Generator', 'Web', 'dataview', 'Blob', 'URL', 'Text', 'Intl', 'JSON', 'RegExp', 'console', 'history', 'location', 'navigator', 'screen', 'worker', 'FinalizationRegistry', 'weak' );
@@ -418,6 +421,7 @@ function siteorigin_widget_onclick( $onclick ) {
 
 	if ( apply_filters( 'siteorigin_widgets_onclick_allowlist', true ) ) {
 		$onclick_parts = explode( ';', $onclick );
+		$adjusted_onclick = '';
 		$allowed_functions = array_flip( array(
 			'_km',
 			'_paq',
@@ -467,9 +471,12 @@ function siteorigin_widget_onclick( $onclick ) {
 				// Not an allowed function name, skip this part
 				continue;
 			}
-			$onclick .= $part . ';';
+			$adjusted_onclick .= $part . ';';
 		}
 	}
 
-	return wp_unslash( esc_js( $onclick ) );
+	// Remove unicode escape sequences.
+	$onclick = preg_replace( '/\\\\u([0-9a-fA-F]{4})/', '', $onclick );
+
+	return wp_unslash( esc_js( sanitize_text_field( $onclick ) ) );
 }
