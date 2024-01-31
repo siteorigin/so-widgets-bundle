@@ -265,6 +265,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'type' => 'text',
 						'label' => __( 'Onclick', 'so-widgets-bundle' ),
 						'description' => __( 'Run this JavaScript when the button is clicked. Ideal for tracking.', 'so-widgets-bundle' ),
+						'onclick' => true,
 					),
 
 					'rel' => array(
