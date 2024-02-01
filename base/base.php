@@ -461,6 +461,7 @@ function siteorigin_widget_onclick( $onclick ) {
 			'twttr',
 			'woopra',
 			'ym',
+			'ml_account', // MailerLite Forms.
 		) );
 
 		// Remove anything not inside of an allowed function.
@@ -473,6 +474,8 @@ function siteorigin_widget_onclick( $onclick ) {
 			}
 			$adjusted_onclick .= $part . ';';
 		}
+
+		$onclick = $adjusted_onclick;
 	}
 
 	// Remove unicode escape sequences.
