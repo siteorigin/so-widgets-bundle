@@ -401,10 +401,13 @@ add_action( 'wp_ajax_so_widgets_links_get_title', 'siteorigin_widgets_links_get_
  * @param string $onclick The onclick attribute value.
  * @return string The filtered onclick attribute value.
  */
-function siteorigin_widget_onclick( $onclick ) {
+function siteorigin_widget_onclick( $onclick = null ) {
 	if ( empty( $onclick ) ) {
 		return;
 	}
+
+	// Remove unicode escape sequences.
+	$onclick = preg_replace( '/\\\\u([0-9a-fA-F]{4})/', '', $onclick );
 
 	if ( apply_filters( 'siteorigin_widgets_onclick_disallowlist', true ) ) {
 		// It's possible for allowed functions to contain disallowed functions, so we need to loop through and remove.
@@ -418,6 +421,7 @@ function siteorigin_widget_onclick( $onclick ) {
 
 	if ( apply_filters( 'siteorigin_widgets_onclick_allowlist', true ) ) {
 		$onclick_parts = explode( ';', $onclick );
+		$adjusted_onclick = '';
 		$allowed_functions = array_flip( array(
 			'_km',
 			'_paq',
@@ -457,6 +461,7 @@ function siteorigin_widget_onclick( $onclick ) {
 			'twttr',
 			'woopra',
 			'ym',
+			'ml_account', // MailerLite Forms.
 		) );
 
 		// Remove anything not inside of an allowed function.
@@ -467,9 +472,14 @@ function siteorigin_widget_onclick( $onclick ) {
 				// Not an allowed function name, skip this part
 				continue;
 			}
-			$onclick .= $part . ';';
+			$adjusted_onclick .= $part . ';';
 		}
+
+		$onclick = $adjusted_onclick;
 	}
 
-	return wp_unslash( esc_js( $onclick ) );
+	// Remove unicode escape sequences.
+	$onclick = preg_replace( '/\\\\u([0-9a-fA-F]{4})/', '', $onclick );
+
+	return wp_unslash( esc_js( sanitize_text_field( $onclick ) ) );
 }

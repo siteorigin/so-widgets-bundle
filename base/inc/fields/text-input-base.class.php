@@ -27,6 +27,8 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 	 */
 	protected $input_type;
 
+	protected $onclick;
+
 	/**
 	 * The CSS classes to be applied to the rendered text input.
 	 */
@@ -97,6 +99,13 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 	protected function sanitize_field_input( $value, $instance ) {
 		$sanitized_value = wp_kses_post( $value );
 		$sanitized_value = balanceTags( $sanitized_value, true );
+
+		// Remove unicode escape sequences
+		$sanitized_value = preg_replace( '/\\\\u([0-9a-fA-F]{4})/', '', $sanitized_value );
+
+		if ( ! empty( $this->onclick ) ) {
+			return siteorigin_widget_onclick( $sanitized_value );
+		}
 
 		return $sanitized_value;
 	}
