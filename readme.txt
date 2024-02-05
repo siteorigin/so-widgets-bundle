@@ -106,6 +106,10 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.58.3 - 05 February 2024 =
+* Button: Additional improvements for OnClick handling
+* Button: Added OnClick support for MailerLite.
+
 = 1.58.2 - 27 January 2024 =
 * Button: Restricted OnClick field allowed values to known services and functions.
 
