@@ -401,7 +401,7 @@ add_action( 'wp_ajax_so_widgets_links_get_title', 'siteorigin_widgets_links_get_
  * @param string $onclick The onclick attribute value.
  * @return string The filtered onclick attribute value.
  */
-function siteorigin_widget_onclick( $onclick ) {
+function siteorigin_widget_onclick( $onclick = null ) {
 	if ( empty( $onclick ) ) {
 		return;
 	}
@@ -461,6 +461,7 @@ function siteorigin_widget_onclick( $onclick ) {
 			'twttr',
 			'woopra',
 			'ym',
+			'ml_account', // MailerLite Forms.
 		) );
 
 		// Remove anything not inside of an allowed function.
@@ -473,6 +474,8 @@ function siteorigin_widget_onclick( $onclick ) {
 			}
 			$adjusted_onclick .= $part . ';';
 		}
+
+		$onclick = $adjusted_onclick;
 	}
 
 	// Remove unicode escape sequences.
