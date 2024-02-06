@@ -292,7 +292,7 @@ return array(
 		'icon_color' => '#ffffff',
 		'button_color' => '#6542a6',
 	),
-	'twitter' => array(
+	'twitter-classic' => array(
 		'label' => __( 'Twitter (Classic Logo)', 'so-widgets-bundle' ),
 		'base_url' => 'https://twitter.com/',
 		'icon_color' => '#ffffff',
