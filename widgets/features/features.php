@@ -452,6 +452,21 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		return $style;
 	}
 
+	public function calculate_feature_width( $instance ) {
+		$per_row = ! empty( $instance['per_row'] ) ? $instance['per_row'] : 3;
+
+		if ( ! empty( $instance['feature_spacing'] ) ) {
+			// It's possible $feature_gap is either a single value, or two.
+			// If two, return the second value. Otherwise, return the first.
+			$feature_gap = explode( ' ', $instance['feature_spacing'] );
+			$feature_gap = count( $feature_gap ) > 1 ? $feature_gap[1] : $feature_gap[0];
+		} else {
+			$feature_gap = '25px';
+		}
+
+		return 'calc(' . round( 100 / $per_row, 3 ) . '% - ' . $feature_gap . ')';
+	}
+
 	public function get_settings_form() {
 		return array(
 			'responsive_breakpoint' => array(
