@@ -255,10 +255,14 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 					// If the color wasn't adjusted, use the X colours.
 					if (
 						$network['icon_color'] == '#ffffff' &&
-						$network['button_color'] == '#78bdf1'
+						$network['icon_color_hover'] == '#ffffff' &&
+						$network['button_color'] == '#78bdf1' &&
+						$network['button_color_hover'] == '#78bdf1'
 					) {
 						$network['icon_color'] = '#fff';
+						$network['icon_color_hover'] = '#fff';
 						$network['button_color'] = '#000';
+						$network['button_color_hover'] = '#000';
 					}
 				}
 
