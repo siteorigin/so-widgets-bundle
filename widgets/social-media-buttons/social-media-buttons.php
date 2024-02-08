@@ -247,6 +247,25 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 					$network['name'] = 'suitcase';
 				}
 
+				// Migrate the Classic Twitter icon to the X icon.
+				// The old logo is still selectable in the widget.
+				if ( $network['name'] == 'twitter' ) {
+					$network['name'] = 'x-twitter';
+
+					// If the color wasn't adjusted, use the X colours.
+					if (
+						$network['icon_color'] == '#ffffff' &&
+						$network['icon_color_hover'] == '#ffffff' &&
+						$network['button_color'] == '#78bdf1' &&
+						$network['button_color_hover'] == '#78bdf1'
+					) {
+						$network['icon_color'] = '#fff';
+						$network['icon_color_hover'] = '#fff';
+						$network['button_color'] = '#000';
+						$network['button_color_hover'] = '#000';
+					}
+				}
+
 				if (
 					$network['name'] != 'envelope' &&
 					$network['name'] != 'suitcase' &&
@@ -344,7 +363,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 					$call .= ! empty( $network['border_color'] ) ? ', @border_color:' . $network['border_color'] : '';
 					$border_color_hover_fallback = ! empty( $network['border_color'] ) ? ', @button_color_hover:' . $network['border_color'] : '';
 					$call .= ! empty( $network['border_hover_color'] ) ? ', @border_hover_color:' . $network['border_hover_color'] : $border_color_hover_fallback;
-					
+
 				}
 				$call .= ');';
 				$calls[] = $call;
