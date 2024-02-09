@@ -420,7 +420,6 @@ function siteorigin_widgets_strip_escape_sequences( $value, $html = false ) {
 	return $value;
 }
 
-
 /**
  * Filters onclick attributes to remove disallowed code.
  *
