@@ -396,27 +396,58 @@ function siteorigin_widgets_links_get_title() {
 add_action( 'wp_ajax_so_widgets_links_get_title', 'siteorigin_widgets_links_get_title' );
 
 /**
+ * Strips escape sequences & HTML entities from a given value.
+ *
+ * Accounts for:
+ * - Unicode escape sequences.
+ * - Hexadecimal escape sequences.
+ * - Octal escape sequences.
+ * - Control characters.
+ *
+ * @param string $value The value to strip escape sequences from.
+ * @param bool $html Optional. Whether to remove HTML entities. Default false.
+ * @return string The value with escape sequences stripped.
+ */
+function siteorigin_widgets_strip_escape_sequences( $value, $html = false ) {
+	// Remove escape sequences.
+	$value = preg_replace( '/\\\\u[0-9a-fA-F]{4}|\\\\x[0-9a-fA-F]{2}|\\\\[0-7]{3}|\p{C}+/u', '', $value );
+
+	// HTML entities.
+	if ( $html ) {
+		$value = preg_replace( '/&[^;]+;/', '', $value );
+	}
+
+	return $value;
+}
+
+/**
  * Filters onclick attributes to remove disallowed code.
  *
  * @param string $onclick The onclick attribute value.
+ * @param bool   $recursive Whether to recursively filter the onclick attribute.
  * @return string The filtered onclick attribute value.
  */
-function siteorigin_widget_onclick( $onclick = null ) {
+function siteorigin_widget_onclick( $onclick = null, $recursive = true ) {
 	if ( empty( $onclick ) ) {
 		return;
 	}
 
-	// Remove unicode escape sequences.
-	$onclick = preg_replace( '/\\\\u([0-9a-fA-F]{4})/', '', $onclick );
+	$stripped_onclick = siteorigin_widgets_strip_escape_sequences( $onclick );
+
+	if ( $stripped_onclick !== $onclick ) {
+		// There was some escape sequences removed.
+		// To play it safe, return nothing.
+		return;
+	}
 
 	if ( apply_filters( 'siteorigin_widgets_onclick_disallowlist', true ) ) {
 		// It's possible for allowed functions to contain disallowed functions, so we need to loop through and remove.
-		$disallowed_functions = array( 'alert', 'eval', 'execScript', 'setTimeout', 'setInterval', 'function', 'document', 'Object', 'window', 'innerHTML', 'outerHTML', 'onload', 'onerror', 'onclick', 'localStorage', 'sessionStorage', 'fetch', 'XMLHttpRequest', 'jQuery', '$.', 'prototype', '__proto__', 'constructor', 'decode', 'encode', 'atob', 'btoa', 'Promise', 'setImmediate', 'unescape', 'escape', 'captureEvents', 'proxy', 'Reflect', 'Array', 'String', 'Math', 'Date', 'property', 'Properties', 'Error', 'Map', 'Set', 'Generator', 'Web', 'dataview', 'Blob', 'URL', 'Text', 'Intl', 'JSON', 'RegExp', 'console', 'history', 'location', 'navigator', 'screen', 'worker', 'FinalizationRegistry', 'weak' );
+		$disallowed_functions = array( 'alert', 'eval', 'execScript', 'setTimeout', 'setInterval', 'function', 'document', 'Object', 'window', 'innerHTML', 'outerHTML', 'onload', 'onerror', 'onclick', 'storage', 'fetch', 'XMLHttpRequest', 'jQuery', '$.', 'prototype', '__proto__', 'constructor', 'decode', 'encode', 'atob', 'btoa', 'Promise', 'setImmediate', 'unescape', 'escape', 'captureEvents', 'proxy', 'Reflect', 'Array', 'String', 'Math', 'Date', 'property', 'Properties', 'Error', 'Map', 'Set', 'Generator', 'Web', 'dataview', 'Blob', 'URL', 'Text', 'Intl', 'JSON', 'RegExp', 'console', 'history', 'location', 'navigator', 'screen', 'worker', 'FinalizationRegistry', 'weak', 'top', 'self', 'open', 'parent', 'frame', 'import', 'fragment', 'globalThis', 'frames', 'import', 'this', 'escape', 'watch', 'element', 'file', 'db', 'url', 'worker', 'EventSource', 'join' );
 
-		do {
-			$previous = $onclick;
-			$onclick = preg_replace( '/(' . implode( '|', $disallowed_functions ) . ')/i', '', $onclick );
-		} while ( $onclick !== $previous );
+		if ( preg_match( '/\b(' . implode( '|', array_map( 'preg_quote', $disallowed_functions ) ) . ')\b/i', $onclick ) ) {
+			return;
+		}
+
 	}
 
 	if ( apply_filters( 'siteorigin_widgets_onclick_allowlist', true ) ) {
@@ -461,7 +492,7 @@ function siteorigin_widget_onclick( $onclick = null ) {
 			'twttr',
 			'woopra',
 			'ym',
-			'ml_account', // MailerLite Forms.
+			'ml_account', // MailerLite.
 		) );
 
 		// Remove anything not inside of an allowed function.
@@ -478,8 +509,17 @@ function siteorigin_widget_onclick( $onclick = null ) {
 		$onclick = $adjusted_onclick;
 	}
 
-	// Remove unicode escape sequences.
-	$onclick = preg_replace( '/\\\\u([0-9a-fA-F]{4})/', '', $onclick );
+	$onclick = siteorigin_widgets_strip_escape_sequences( $onclick, true );
+
+	if ( $recursive ) {
+		// Keep filtering the $onclick value until it's safe as the script allows.
+		$current_value = $onclick;
+		$recursive_value = siteorigin_widget_onclick( $current_value, false );
+		while ( $current_value !== $recursive_value ) {
+			$current_value = $recursive_value;
+			$recursive_value = siteorigin_widget_onclick( $current_value, false );
+		}
+	}
 
 	return wp_unslash( esc_js( sanitize_text_field( $onclick ) ) );
 }

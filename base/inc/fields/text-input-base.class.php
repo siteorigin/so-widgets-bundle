@@ -100,8 +100,8 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 		$sanitized_value = wp_kses_post( $value );
 		$sanitized_value = balanceTags( $sanitized_value, true );
 
-		// Remove unicode escape sequences
-		$sanitized_value = preg_replace( '/\\\\u([0-9a-fA-F]{4})/', '', $sanitized_value );
+		// Remove escape sequences.
+		$sanitized_value = siteorigin_widgets_strip_escape_sequences( $sanitized_value );
 
 		if ( ! empty( $this->onclick ) ) {
 			return siteorigin_widget_onclick( $sanitized_value );
