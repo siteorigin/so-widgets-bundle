@@ -433,16 +433,22 @@ function siteorigin_widget_onclick( $onclick = null, $recursive = true ) {
 		return;
 	}
 
-	$onclick = siteorigin_widgets_strip_escape_sequences( $onclick, true );
+	$stripped_onclick = siteorigin_widgets_strip_escape_sequences( $onclick );
+
+	if ( $stripped_onclick !== $onclick ) {
+		// There was some escape sequences removed.
+		// To play it safe, return nothing.
+		return;
+	}
 
 	if ( apply_filters( 'siteorigin_widgets_onclick_disallowlist', true ) ) {
 		// It's possible for allowed functions to contain disallowed functions, so we need to loop through and remove.
 		$disallowed_functions = array( 'alert', 'eval', 'execScript', 'setTimeout', 'setInterval', 'function', 'document', 'Object', 'window', 'innerHTML', 'outerHTML', 'onload', 'onerror', 'onclick', 'storage', 'fetch', 'XMLHttpRequest', 'jQuery', '$.', 'prototype', '__proto__', 'constructor', 'decode', 'encode', 'atob', 'btoa', 'Promise', 'setImmediate', 'unescape', 'escape', 'captureEvents', 'proxy', 'Reflect', 'Array', 'String', 'Math', 'Date', 'property', 'Properties', 'Error', 'Map', 'Set', 'Generator', 'Web', 'dataview', 'Blob', 'URL', 'Text', 'Intl', 'JSON', 'RegExp', 'console', 'history', 'location', 'navigator', 'screen', 'worker', 'FinalizationRegistry', 'weak', 'top', 'self', 'open', 'parent', 'frame', 'import', 'fragment', 'globalThis', 'frames', 'import', 'this', 'escape', 'watch', 'element', 'file', 'db', 'url', 'worker', 'EventSource', 'join' );
 
-		do {
-			$previous = $onclick;
-			$onclick = preg_replace( '/(' . implode( '|', $disallowed_functions ) . ')/i', '', $onclick );
-		} while ( $onclick !== $previous );
+		if ( preg_match( '/\b(' . implode( '|', array_map( 'preg_quote', $disallowed_functions ) ) . ')\b/i', $onclick ) ) {
+			return;
+		}
+
 	}
 
 	if ( apply_filters( 'siteorigin_widgets_onclick_allowlist', true ) ) {
