@@ -695,7 +695,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 			'categories' => ! empty( $instance['settings']['categories'] ) ? $instance['settings']['categories'] : false,
 			'author' => ! empty( $instance['settings']['author'] ) ? $instance['settings']['author'] : false,
-			'columns' => (int) $instance['settings']['columns'] > 0 ? (int) $instance['settings']['columns'] : 1,
+			'columns' => isset( $instance['settings']['columns'] ) && (int) $instance['settings']['columns'] > 0 ? (int) $instance['settings']['columns'] : 1,
 		);
 
 		if ( $instance['template'] == 'masonry' ) {
