@@ -106,6 +106,12 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.58.4 - 10 February 2024 =
+* Call to Action: Improved tag handling.
+* Features: Fixed spacing and gap value output.
+* Fields: Improved field sanitization.
+* Social Media Buttons: Migrated Twitter to X.
+
 = 1.58.3 - 05 February 2024 =
 * Button: Additional improvements for OnClick handling
 * Button: Added OnClick support for MailerLite.

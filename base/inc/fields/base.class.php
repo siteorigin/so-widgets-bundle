@@ -372,6 +372,13 @@ abstract class SiteOrigin_Widget_Field_Base {
 			}
 		}
 
+		if (
+			! current_user_can( 'unfiltered_html' ) &&
+			! apply_filters( 'siteorigin_widgets_field_allow_unfiltered_html', false )
+		) {
+			return wp_kses_post( $value );
+		}
+
 		return $value;
 	}
 

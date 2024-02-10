@@ -1,8 +1,5 @@
 <?php
-$per_row = ! empty( $instance['per_row'] ) ? $instance['per_row'] : 3;
-
-$feature_gap = empty( $instance['feature_space'] ) ? '25px' : $instance['feature_space'];
-$feature_width = 'calc(' . round( 100 / $per_row, 3 ) . '% - ' . $feature_gap . ')';
+$feature_width = $this->calculate_feature_width( $instance );
 ?>
 
 <div class="sow-features-list <?php if ( $instance['responsive'] ) {
@@ -23,7 +20,7 @@ $feature_width = 'calc(' . round( 100 / $per_row, 3 ) . '% - ' . $feature_gap . 
 			?>
 			<div
 				class="sow-features-feature sow-icon-container-position-<?php echo esc_attr( $feature['container_position'] ); ?>"
-				style="display: flex; flex-direction: <?php echo $this->get_feature_flex_direction( $feature['container_position'], ! empty( $instance['more_text_bottom_align'] ) ); ?>; width: <?php echo $feature_width; ?>;"
+				style="display: flex; flex-direction: <?php echo $this->get_feature_flex_direction( $feature['container_position'], ! empty( $instance['more_text_bottom_align'] ) ); ?>; width: <?php echo esc_attr( $feature_width ); ?>;"
 			>
 			<?php if ( $right_left_read_more ) { ?>
 				<div class="sow-features-feature-right-left-container" style="display: flex; flex-direction: inherit;">
@@ -65,16 +62,24 @@ $feature_width = 'calc(' . round( 100 / $per_row, 3 ) . '% - ' . $feature_gap . 
 				}
 
 				if ( ! empty( $feature['icon_color'] ) ) {
-					$icon_styles[] = 'color: ' . $feature['icon_color'];
+					$icon_styles[] = 'color: ' . esc_attr( $feature['icon_color'] );
 				}
 
 				echo siteorigin_widget_get_icon( $feature['icon'], $icon_styles );
 			}
 			?>
 				</div>
-				<?php if ( ! empty( $feature['more_url'] ) && $instance['icon_link'] && empty( $instance['link_feature'] ) ) { ?>
+				<?php
+				if (
+					! empty( $feature['more_url'] ) &&
+					$instance['icon_link'] &&
+					empty( $instance['link_feature'] )
+				) {
+					?>
 					</a>
-				<?php } ?>
+					<?php
+				}
+				?>
 
 				<div class="textwidget">
 					<?php if ( $right_left_read_more ) { ?>
