@@ -350,6 +350,10 @@ abstract class SiteOrigin_Widget_Field_Base {
 	public function sanitize( $value, $instance = array(), $old_value = null ) {
 		$value = $this->sanitize_field_input( $value, $instance );
 
+		if ( empty( $value ) ) {
+			return '';
+		}
+
 		if ( isset( $this->sanitize ) ) {
 			// This field also needs some custom sanitization
 			switch( $this->sanitize ) {
@@ -373,6 +377,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 		}
 
 		if (
+			! empty( $value ) &&
 			! current_user_can( 'unfiltered_html' ) &&
 			! apply_filters( 'siteorigin_widgets_field_allow_unfiltered_html', false )
 		) {
