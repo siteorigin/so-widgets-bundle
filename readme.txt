@@ -106,6 +106,10 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.58.5 - 12 February 2024 =
+* Blog: Resolved a potential columns related warning.
+* Block Editor: Prevented a potential text field empty value error.
+
 = 1.58.4 - 10 February 2024 =
 * Call to Action: Improved tag handling.
 * Features: Fixed spacing and gap value output.
