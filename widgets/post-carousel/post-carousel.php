@@ -338,6 +338,10 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 		// Migrate settings to the Settings section.
 		if ( isset( $instance['loop_posts'] ) ) {
+			if ( ! is_array( $instance['carousel_settings'] ) ) {
+				$instance['carousel_settings'] = array();
+			}
+
 			$instance['carousel_settings']['loop'] = $instance['loop_posts'];
 			unset( $instance['loop_posts'] );
 		}
