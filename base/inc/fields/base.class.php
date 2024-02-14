@@ -378,6 +378,10 @@ abstract class SiteOrigin_Widget_Field_Base {
 
 		if (
 			! empty( $value ) &&
+			// Fields can be sanitized for setup purposes during display.
+			// As the data is sanitized during the saving purpose, we can
+			// safely skip this. Not doing so could result in an error.
+			is_user_logged_in() &&
 			! current_user_can( 'unfiltered_html' ) &&
 			! apply_filters( 'siteorigin_widgets_field_allow_unfiltered_html', false )
 		) {
