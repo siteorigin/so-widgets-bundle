@@ -410,7 +410,7 @@ add_action( 'wp_ajax_so_widgets_links_get_title', 'siteorigin_widgets_links_get_
  */
 function siteorigin_widgets_strip_escape_sequences( $value, $html = false ) {
 	// Remove escape sequences.
-	$value = preg_replace( '/\\\\u[0-9a-fA-F]{4}|\\\\x[0-9a-fA-F]{2}|\\\\[0-7]{3}|\p{C}+/u', '', $value );
+	$value = preg_replace( '/\\\\u[0-9a-fA-F]{4}|\\\\x[0-9a-fA-F]{2}|\\\\[0-7]{3}|[\p{C}&&[^\r\n]]+/u', '', $value );
 
 	// HTML entities.
 	if ( $html ) {
