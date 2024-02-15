@@ -106,6 +106,12 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.58.6 - 15 February 2024 =
+* Added recursive sanitization to fields to prevent potential errors during saving.
+* Post Carousel: Prevented a potential fatal error related to the `loop_posts` migration.
+* Social Media Buttons: Resolved a potential warning by adjusting the conditions for color changes.
+* Social Media Buttons: Removed redundant changes to the `icon_color` and `icon_color_hover` values.
+
 = 1.58.5 - 12 February 2024 =
 * Blog: Resolved a potential columns related warning.
 * Block Editor: Prevented a potential text field empty value error.
