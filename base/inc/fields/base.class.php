@@ -378,13 +378,32 @@ abstract class SiteOrigin_Widget_Field_Base {
 
 		if (
 			! empty( $value ) &&
+			// Fields can be sanitized for setup purposes during display.
+			// As the data is sanitized during the saving purpose, we can
+			// safely skip this. Not doing so could result in an error.
+			is_user_logged_in() &&
 			! current_user_can( 'unfiltered_html' ) &&
 			! apply_filters( 'siteorigin_widgets_field_allow_unfiltered_html', false )
 		) {
-			return wp_kses_post( $value );
+			$value = $this->recursive_sanitize_kses( $value );
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Recursively sanitizes and filters the given value using wp_kses_post().
+	 *
+	 * If the value is an array, it recursively applies the sanitization to each element.
+	 *
+	 * @param mixed $value The value to be sanitized.
+	 * @return mixed The sanitized value.
+	 */
+	public function recursive_sanitize_kses( $value ) {
+		if ( is_array( $value ) ) {
+			return array_map( array( $this, 'recursive_sanitize_kses' ), $value );
+		}
+		return wp_kses_post( $value );
 	}
 
 	/**
