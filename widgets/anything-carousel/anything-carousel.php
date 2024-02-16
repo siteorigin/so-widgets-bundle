@@ -179,6 +179,50 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		);
 	}
 
+	public function override_carousel_settings() {
+		$carousel_settings = get_option( 'so_widget_settings[' . $this->widget_class . ']', array() );
+
+		if ( empty( $carousel_settings ) ) {
+			return array();
+		}
+		$carousel_settings = $carousel_settings['responsive'];
+		return array(
+			'breakpoints' => array(
+				'desktop' => $carousel_settings['desktop']['breakpoints'],
+				'tablet_landscape' => $carousel_settings['tablet']['landscape']['breakpoints'],
+				'breakpoint' => $carousel_settings['tablet']['portrait']['breakpoints'],
+				'mobile' => $carousel_settings['mobile']['breakpoints'],
+			),
+			'slides_to_scroll' => array(
+				'desktop' => $carousel_settings['desktop']['slides_to_scroll'],
+				'tablet_landscape' => $carousel_settings['tablet']['landscape']['slides_to_scroll'],
+				'tablet_portrait' => $carousel_settings['tablet']['portrait']['slides_to_scroll'],
+				'mobile' => $carousel_settings['mobile']['slides_to_scroll'],
+			),
+			'slides_to_show' => array(
+				'desktop' => $carousel_settings['desktop']['slides_to_show'],
+				'tablet_landscape' => $carousel_settings['tablet']['landscape']['slides_to_show'],
+				'tablet_portrait' => $carousel_settings['tablet']['portrait']['slides_to_show'],
+				'mobile' => $carousel_settings['mobile']['slides_to_show'],
+
+			),
+			'navigation' => array(
+				'desktop' => $carousel_settings['desktop']['navigation'],
+				'tablet_landscape' => $carousel_settings['tablet']['landscape']['navigation'],
+				'tablet_portrait' => $carousel_settings['tablet']['portrait']['navigation'],
+				'mobile' => $carousel_settings['mobile']['navigation'],
+
+			),
+			'navigation_dots' => array(
+				'desktop' => $carousel_settings['desktop']['navigation_dots'],
+				'tablet_landscape' => $carousel_settings['tablet']['landscape']['navigation_dots'],
+				'tablet_portrait' => $carousel_settings['tablet']['portrait']['navigation_dots'],
+				'mobile' => $carousel_settings['mobile']['navigation_dots'],
+
+			),
+		);
+	}
+
 	public function modify_instance( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
