@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Button Grid
-Description: Placeholder
+Description: Add multiple buttons in one go, customize individually, and present them in a neat grid layout.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/button-grid-widget/
