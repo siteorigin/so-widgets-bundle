@@ -1325,7 +1325,10 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			) );
 		}
 
-		if ( ! empty( $pagination_markup ) ) {
+		if (
+			! empty( $pagination_markup ) &&
+			$settings['pagination'] != 'disabled'
+		) {
 			// To resolve a potential issue with the Block Editor, we need to override REST URLs with the actual permalink.
 			if (
 				defined( 'REST_REQUEST' ) &&
