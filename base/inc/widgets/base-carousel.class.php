@@ -100,7 +100,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 					'mobile' => true,
 				),
 				'navigation_dots_label' => __( 'Navigation dots', 'so-widgets-bundle' ),
-			),
+			)
 		);
 
 		return $this->global_settings;
