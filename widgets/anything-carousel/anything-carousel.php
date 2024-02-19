@@ -188,10 +188,9 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		$carousel_settings = $carousel_settings['responsive'];
 		return array(
 			'breakpoints' => array(
-				'desktop' => $carousel_settings['desktop']['breakpoints'],
-				'tablet_landscape' => $carousel_settings['tablet']['landscape']['breakpoints'],
-				'breakpoint' => $carousel_settings['tablet']['portrait']['breakpoints'],
-				'mobile' => $carousel_settings['mobile']['breakpoints'],
+				'tablet_landscape' => $carousel_settings['tablet']['landscape']['breakpoint'],
+				'tablet_portrait' => $carousel_settings['tablet']['portrait']['breakpoint'],
+				'mobile' => $carousel_settings['mobile']['breakpoint'],
 			),
 			'slides_to_scroll' => array(
 				'desktop' => $carousel_settings['desktop']['slides_to_scroll'],
