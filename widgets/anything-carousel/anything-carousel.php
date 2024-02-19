@@ -188,36 +188,33 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		$carousel_settings = $carousel_settings['responsive'];
 		return array(
 			'breakpoints' => array(
-				'tablet_landscape' => $carousel_settings['tablet']['landscape']['breakpoint'],
-				'tablet_portrait' => $carousel_settings['tablet']['portrait']['breakpoint'],
-				'mobile' => $carousel_settings['mobile']['breakpoint'],
+				'tablet_landscape' => isset( $carousel_settings['tablet']['landscape']['breakpoint'] ) ? $carousel_settings['tablet']['landscape']['breakpoint'] : null,
+				'tablet_portrait' => isset( $carousel_settings['tablet']['portrait']['breakpoint'] ) ? $carousel_settings['tablet']['portrait']['breakpoint'] : null,
+				'mobile' => isset( $carousel_settings['mobile']['breakpoint'] ) ? $carousel_settings['mobile']['breakpoint'] : null,
 			),
 			'slides_to_scroll' => array(
-				'desktop' => $carousel_settings['desktop']['slides_to_scroll'],
-				'tablet_landscape' => $carousel_settings['tablet']['landscape']['slides_to_scroll'],
-				'tablet_portrait' => $carousel_settings['tablet']['portrait']['slides_to_scroll'],
-				'mobile' => $carousel_settings['mobile']['slides_to_scroll'],
+				'desktop' => isset( $carousel_settings['desktop']['slides_to_scroll'] ) ? $carousel_settings['desktop']['slides_to_scroll'] : null,
+				'tablet_landscape' => isset( $carousel_settings['tablet']['landscape']['slides_to_scroll'] ) ? $carousel_settings['tablet']['landscape']['slides_to_scroll'] : null,
+				'tablet_portrait' => isset( $carousel_settings['tablet']['portrait']['slides_to_scroll'] ) ? $carousel_settings['tablet']['portrait']['slides_to_scroll'] : null,
+				'mobile' => isset( $carousel_settings['mobile']['slides_to_scroll'] ) ? $carousel_settings['mobile']['slides_to_scroll'] : null,
 			),
 			'slides_to_show' => array(
-				'desktop' => $carousel_settings['desktop']['slides_to_show'],
-				'tablet_landscape' => $carousel_settings['tablet']['landscape']['slides_to_show'],
-				'tablet_portrait' => $carousel_settings['tablet']['portrait']['slides_to_show'],
-				'mobile' => $carousel_settings['mobile']['slides_to_show'],
-
+				'desktop' => isset( $carousel_settings['desktop']['slides_to_show'] ) ? $carousel_settings['desktop']['slides_to_show'] : null,
+				'tablet_landscape' => isset( $carousel_settings['tablet']['landscape']['slides_to_show'] ) ? $carousel_settings['tablet']['landscape']['slides_to_show'] : null,
+				'tablet_portrait' => isset( $carousel_settings['tablet']['portrait']['slides_to_show'] ) ? $carousel_settings['tablet']['portrait']['slides_to_show'] : null,
+				'mobile' => isset( $carousel_settings['mobile']['slides_to_show'] ) ? $carousel_settings['mobile']['slides_to_show'] : null,
 			),
 			'navigation' => array(
-				'desktop' => $carousel_settings['desktop']['navigation'],
-				'tablet_landscape' => $carousel_settings['tablet']['landscape']['navigation'],
-				'tablet_portrait' => $carousel_settings['tablet']['portrait']['navigation'],
-				'mobile' => $carousel_settings['mobile']['navigation'],
-
+				'desktop' => isset( $carousel_settings['desktop']['navigation'] ) ? $carousel_settings['desktop']['navigation'] : null,
+				'tablet_landscape' => isset( $carousel_settings['tablet']['landscape']['navigation'] ) ? $carousel_settings['tablet']['landscape']['navigation'] : null,
+				'tablet_portrait' => isset( $carousel_settings['tablet']['portrait']['navigation'] ) ? $carousel_settings['tablet']['portrait']['navigation'] : null,
+				'mobile' => isset( $carousel_settings['mobile']['navigation'] ) ? $carousel_settings['mobile']['navigation'] : null,
 			),
 			'navigation_dots' => array(
-				'desktop' => $carousel_settings['desktop']['navigation_dots'],
-				'tablet_landscape' => $carousel_settings['tablet']['landscape']['navigation_dots'],
-				'tablet_portrait' => $carousel_settings['tablet']['portrait']['navigation_dots'],
-				'mobile' => $carousel_settings['mobile']['navigation_dots'],
-
+				'desktop' => isset( $carousel_settings['desktop']['navigation_dots'] ) ? $carousel_settings['desktop']['navigation_dots'] : null,
+				'tablet_landscape' => isset( $carousel_settings['tablet']['landscape']['navigation_dots'] ) ? $carousel_settings['tablet']['landscape']['navigation_dots'] : null,
+				'tablet_portrait' => isset( $carousel_settings['tablet']['portrait']['navigation_dots'] ) ? $carousel_settings['tablet']['portrait']['navigation_dots'] : null,
+				'mobile' => isset( $carousel_settings['mobile']['navigation_dots'] ) ? $carousel_settings['mobile']['navigation_dots'] : null,
 			),
 		);
 	}
