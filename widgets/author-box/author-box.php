@@ -94,6 +94,7 @@ public function __construct() {
 							'border_color' => array(
 								'type' => 'color',
 								'label' => __( 'Border Color', 'so-widgets-bundle' ),
+								'default' => '#D2D2D2',
 							),
 							'border_radius' => array(
 								'type' => 'slider',
@@ -170,7 +171,7 @@ public function __construct() {
 							'color_hover' => array(
 								'type' => 'color',
 								'label' => __( 'Hover Color', 'so-widgets-bundle' ),
-								'default' => '#2d2d2d',
+								'default' => '#62626',
 							),
 						),
 					),
