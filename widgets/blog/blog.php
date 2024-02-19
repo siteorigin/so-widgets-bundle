@@ -1325,7 +1325,10 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			) );
 		}
 
-		if ( ! empty( $pagination_markup ) ) {
+		if (
+			! empty( $pagination_markup ) &&
+			$settings['pagination'] != 'disabled'
+		) {
 			// To resolve a potential issue with the Block Editor, we need to override REST URLs with the actual permalink.
 			if (
 				defined( 'REST_REQUEST' ) &&
@@ -1340,7 +1343,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			}
 			?>
 			<nav class="sow-post-navigation">
-				<h2 class="screen-reader-text"><?php esc_html_e( 'Post navigation', 'so-widgets-bundle' ); ?></h2>
+				<h3 class="screen-reader-text"><?php esc_html_e( 'Pagination', 'so-widgets-bundle' ); ?></h3>
 				<div class="sow-nav-links<?php if ( ! empty( $settings['pagination'] ) ) {
 					echo ' sow-post-pagination-' . esc_attr( $settings['pagination'] );
 				} ?>">
