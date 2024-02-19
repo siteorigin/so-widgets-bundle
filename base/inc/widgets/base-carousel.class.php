@@ -1,6 +1,8 @@
 <?php
 
 abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
+	public $global_settings;
+
 	/**
 	 * Register all the frontend scripts and styles for the base carousel.
 	 */
@@ -51,6 +53,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 	 */
 	public function override_carousel_settings() {
 		// Intentionally left blank.
+		return array();
 	}
 
 	/**
@@ -59,7 +62,11 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 	 * @return array
 	 */
 	private function get_carousel_settings() {
-		return wp_parse_args(
+		if ( ! empty( $this->global_settings ) ) {
+			return $this->global_settings;
+		}
+
+		$this->global_settings = wp_parse_args(
 			$this->override_carousel_settings(),
 			array(
 				'breakpoints' => array(
@@ -95,6 +102,8 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 				'navigation_dots_label' => __( 'Navigation dots', 'so-widgets-bundle' ),
 			)
 		);
+
+		return $this->global_settings;
 	}
 
 	/**
