@@ -26,6 +26,14 @@
 @bio_link: default;
 @bio_link_hover: default;
 
+@all_font: default;
+@all_font_size: default;
+@all_font_style: default;
+@all_font_weight: default;
+@all_color: default;
+@all_color_hover: default;
+@all_spacing: default;
+
 .sow-author-box {
 	background: @container_background;
 	border-color: @container_border_color;
@@ -111,17 +119,21 @@
 		text-decoration: none;
 
 		.sow-author-box-author-all {
-			color: #626262;
+			color: @all_color;
 			display: block;
-			font-size: 0.867em;
-			margin-bottom: 10px;
+			font-family: @all_font;
+			font-size: @all_font_size;
+			font-style: @all_font_style;
+			font-weight: @all_font_weight;
 			text-decoration: none;
-			@media (max-width: @responsive_breakpoint) {
-				margin-top: 1em;
+
+			& when not ( @all_spacing = default ) {
+				margin: @all_spacing;
 			}
 
+			&:focus,
 			&:hover {
-				color: @name_color;
+				color: @all_color_hover;
 			}
 		}
 

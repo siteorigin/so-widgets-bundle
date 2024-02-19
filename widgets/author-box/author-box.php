@@ -205,6 +205,36 @@ public function __construct() {
 							),
 						),
 					),
+					'all' => array(
+						'type' => 'section',
+						'label' => __( 'View All Posts', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'font' => array(
+								'type' => 'font',
+								'label' => __( 'Font', 'so-widgets-bundle' ),
+							),
+							'size' => array(
+								'type' => 'measurement',
+								'label' => __( 'Font Size', 'so-widgets-bundle' ),
+								'default' => '13px',
+							),
+							'color' => array(
+								'type' => 'color',
+								'label' => __( 'Color', 'so-widgets-bundle' ),
+								'default' => '#626262',
+							),
+							'color_hover' => array(
+								'type' => 'color',
+								'label' => __( 'Hover Color', 'so-widgets-bundle' ),
+								'default' => '#2d2d2d',
+							),
+							'spacing' => array(
+								'type' => 'measurement',
+								'label' => __( 'Margin Top and Bottom', 'so-widgets-bundle' ),
+							),
+						),
+					),
 				),
 			),
 		);
@@ -249,10 +279,11 @@ public function __construct() {
 		$less_vars['name_color_hover'] = ! empty( $instance['design']['name']['color_hover'] ) ? $instance['design']['name']['color_hover'] : '';
 		$less_vars['name_link_all'] = ! empty( $instance['settings']['link_avatar'] );
 
+		// Author Avatar.
 		$less_vars['avatar_border_radius'] = ! empty( $instance['design']['avatar']['border_radius'] ) ? $instance['design']['avatar']['border_radius'] . '%' : '';
 		$less_vars['avatar_border_position'] = ! empty( $instance['design']['avatar']['position'] ) ? $instance['design']['avatar']['position'] : '';
 
-
+		// Bio.
 		if ( ! empty( $instance['design']['bio']['font'] ) ) {
 			$font = siteorigin_widget_get_font( $instance['design']['bio']['font'] );
 			$less_vars['bio_font'] = $font['family'];
@@ -266,6 +297,21 @@ public function __construct() {
 		$less_vars['bio_color'] = ! empty( $instance['design']['bio']['color'] ) ? $instance['design']['bio']['color'] : '';
 		$less_vars['bio_link'] = ! empty( $instance['design']['bio']['link'] ) ? $instance['design']['bio']['link'] : '';
 		$less_vars['bio_link_hover'] = ! empty( $instance['design']['bio']['link_hover'] ) ? $instance['design']['bio']['link_hover'] : '';
+
+		// All link.
+		if ( ! empty( $instance['design']['all']['font'] ) ) {
+			$font = siteorigin_widget_get_font( $instance['design']['all']['font'] );
+			$less_vars['all_font'] = $font['family'];
+
+			if ( ! empty( $font['weight'] ) ) {
+				$less_vars['all_font_style'] = $font['style'];
+				$less_vars['all_font_weight'] = $font['weight_raw'];
+			}
+		}
+		$less_vars['all_font_size'] = ! empty( $instance['design']['all']['size'] ) ? $instance['design']['all']['size'] : '';
+		$less_vars['all_color'] = ! empty( $instance['design']['all']['color'] ) ? $instance['design']['all']['color'] : '';
+		$less_vars['all_color_hover'] = ! empty( $instance['design']['all']['color_hover'] ) ? $instance['design']['all']['color_hover'] : '';
+		$less_vars['all_spacing'] = ! empty( $instance['design']['all']['spacing'] ) ? $instance['design']['all']['spacing'] : '';
 
 		return $less_vars;
 	}
