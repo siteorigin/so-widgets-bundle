@@ -179,6 +179,46 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		);
 	}
 
+	public function override_carousel_settings() {
+		$carousel_settings = get_option( 'so_widget_settings[' . $this->widget_class . ']', array() );
+
+		if ( empty( $carousel_settings ) ) {
+			return array();
+		}
+		$carousel_settings = $carousel_settings['responsive'];
+		return array(
+			'breakpoints' => array(
+				'tablet_landscape' => isset( $carousel_settings['tablet']['landscape']['breakpoint'] ) ? $carousel_settings['tablet']['landscape']['breakpoint'] : null,
+				'tablet_portrait' => isset( $carousel_settings['tablet']['portrait']['breakpoint'] ) ? $carousel_settings['tablet']['portrait']['breakpoint'] : null,
+				'mobile' => isset( $carousel_settings['mobile']['breakpoint'] ) ? $carousel_settings['mobile']['breakpoint'] : null,
+			),
+			'slides_to_scroll' => array(
+				'desktop' => isset( $carousel_settings['desktop']['slides_to_scroll'] ) ? $carousel_settings['desktop']['slides_to_scroll'] : null,
+				'tablet_landscape' => isset( $carousel_settings['tablet']['landscape']['slides_to_scroll'] ) ? $carousel_settings['tablet']['landscape']['slides_to_scroll'] : null,
+				'tablet_portrait' => isset( $carousel_settings['tablet']['portrait']['slides_to_scroll'] ) ? $carousel_settings['tablet']['portrait']['slides_to_scroll'] : null,
+				'mobile' => isset( $carousel_settings['mobile']['slides_to_scroll'] ) ? $carousel_settings['mobile']['slides_to_scroll'] : null,
+			),
+			'slides_to_show' => array(
+				'desktop' => isset( $carousel_settings['desktop']['slides_to_show'] ) ? $carousel_settings['desktop']['slides_to_show'] : null,
+				'tablet_landscape' => isset( $carousel_settings['tablet']['landscape']['slides_to_show'] ) ? $carousel_settings['tablet']['landscape']['slides_to_show'] : null,
+				'tablet_portrait' => isset( $carousel_settings['tablet']['portrait']['slides_to_show'] ) ? $carousel_settings['tablet']['portrait']['slides_to_show'] : null,
+				'mobile' => isset( $carousel_settings['mobile']['slides_to_show'] ) ? $carousel_settings['mobile']['slides_to_show'] : null,
+			),
+			'navigation' => array(
+				'desktop' => isset( $carousel_settings['desktop']['navigation'] ) ? $carousel_settings['desktop']['navigation'] : null,
+				'tablet_landscape' => isset( $carousel_settings['tablet']['landscape']['navigation'] ) ? $carousel_settings['tablet']['landscape']['navigation'] : null,
+				'tablet_portrait' => isset( $carousel_settings['tablet']['portrait']['navigation'] ) ? $carousel_settings['tablet']['portrait']['navigation'] : null,
+				'mobile' => isset( $carousel_settings['mobile']['navigation'] ) ? $carousel_settings['mobile']['navigation'] : null,
+			),
+			'navigation_dots' => array(
+				'desktop' => isset( $carousel_settings['desktop']['navigation_dots'] ) ? $carousel_settings['desktop']['navigation_dots'] : null,
+				'tablet_landscape' => isset( $carousel_settings['tablet']['landscape']['navigation_dots'] ) ? $carousel_settings['tablet']['landscape']['navigation_dots'] : null,
+				'tablet_portrait' => isset( $carousel_settings['tablet']['portrait']['navigation_dots'] ) ? $carousel_settings['tablet']['portrait']['navigation_dots'] : null,
+				'mobile' => isset( $carousel_settings['mobile']['navigation_dots'] ) ? $carousel_settings['mobile']['navigation_dots'] : null,
+			),
+		);
+	}
+
 	public function modify_instance( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
