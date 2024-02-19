@@ -104,14 +104,26 @@ public function __construct() {
 								'step' => 1,
 							),
 							'border_thickness' => array(
-								'type' => 'measurement',
+								'type' => 'multi-measurement',
 								'label' => __( 'Border Thickness', 'so-widgets-bundle' ),
-								'default' => '1px',
+								'default' => '1px 0 0 0',
+								'measurements' => array(
+									'top' => __( 'Top', 'so-widgets-bundle' ),
+									'right' => __( 'Right', 'so-widgets-bundle' ),
+									'bottom' => __( 'Bottom', 'so-widgets-bundle' ),
+									'left' => __( 'Left', 'so-widgets-bundle' ),
+								),
 							),
 							'padding' => array(
-								'type' => 'measurement',
+								'type' => 'multi-measurement',
 								'label' => __( 'Padding', 'so-widgets-bundle' ),
-								'default' => '20px',
+								'default' => '20px 0 0 0',
+								'measurements' => array(
+									'top' => __( 'Top', 'so-widgets-bundle' ),
+									'right' => __( 'Right', 'so-widgets-bundle' ),
+									'bottom' => __( 'Bottom', 'so-widgets-bundle' ),
+									'left' => __( 'Left', 'so-widgets-bundle' ),
+								),
 							),
 						),
 					),
@@ -260,12 +272,14 @@ public function __construct() {
 
 		$less_vars = array();
 
+		// Container.
 		$less_vars['container_background'] = ! empty( $instance['design']['container']['background_color'] ) ? $instance['design']['container']['background_color'] : '';
-		$less_vars['container_border_radius'] = ! empty( $instance['design']['container']['border_radius'] ) ? $instance['design']['container']['border_radius'] : '';
+		$less_vars['container_border_radius'] = ! empty( $instance['design']['container']['border_radius'] ) ? $instance['design']['container']['border_radius'] . '%' : '';
 		$less_vars['container_border_color'] = ! empty( $instance['design']['container']['border_color'] ) ? $instance['design']['container']['border_color'] : '';
-		$less_vars['container_border_thickness'] = ! empty( $instance['design']['container']['border_thickness'] ) ? $instance['design']['container']['border_thickness'] : '1px';
-		$less_vars['container_padding'] = ! empty( $instance['design']['container']['padding'] ) ? $instance['design']['container']['padding'] : '20px';
+		$less_vars['container_border_thickness'] = ! empty( $instance['design']['container']['border_thickness'] ) ? $instance['design']['container']['border_thickness'] : '1px 0 0 0';
+		$less_vars['container_padding'] = ! empty( $instance['design']['container']['padding'] ) ? $instance['design']['container']['padding'] : '20px 0 0 0';
 
+		// Author Name.
 		if ( ! empty( $instance['design']['name']['font'] ) ) {
 			$font = siteorigin_widget_get_font( $instance['design']['name']['font'] );
 			$less_vars['name_font'] = $font['family'];
