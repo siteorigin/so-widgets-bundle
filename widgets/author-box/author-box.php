@@ -161,6 +161,36 @@ public function __construct() {
 							),
 						),
 					),
+					'all' => array(
+						'type' => 'section',
+						'label' => __( 'Author All Posts Link', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'font' => array(
+								'type' => 'font',
+								'label' => __( 'Font', 'so-widgets-bundle' ),
+							),
+							'size' => array(
+								'type' => 'measurement',
+								'label' => __( 'Font Size', 'so-widgets-bundle' ),
+								'default' => '13px',
+							),
+							'color' => array(
+								'type' => 'color',
+								'label' => __( 'Color', 'so-widgets-bundle' ),
+								'default' => '#626262',
+							),
+							'color_hover' => array(
+								'type' => 'color',
+								'label' => __( 'Hover Color', 'so-widgets-bundle' ),
+								'default' => '#2d2d2d',
+							),
+							'spacing' => array(
+								'type' => 'measurement',
+								'label' => __( 'Margin Top and Bottom', 'so-widgets-bundle' ),
+							),
+						),
+					),
 					'name' => array(
 						'type' => 'section',
 						'label' => __( 'Author Name', 'so-widgets-bundle' ),
@@ -215,36 +245,6 @@ public function __construct() {
 								'type' => 'color',
 								'label' => __( 'Link Hover Color', 'so-widgets-bundle' ),
 								'default' => '#626262',
-							),
-						),
-					),
-					'all' => array(
-						'type' => 'section',
-						'label' => __( 'View All Posts', 'so-widgets-bundle' ),
-						'hide' => true,
-						'fields' => array(
-							'font' => array(
-								'type' => 'font',
-								'label' => __( 'Font', 'so-widgets-bundle' ),
-							),
-							'size' => array(
-								'type' => 'measurement',
-								'label' => __( 'Font Size', 'so-widgets-bundle' ),
-								'default' => '13px',
-							),
-							'color' => array(
-								'type' => 'color',
-								'label' => __( 'Color', 'so-widgets-bundle' ),
-								'default' => '#626262',
-							),
-							'color_hover' => array(
-								'type' => 'color',
-								'label' => __( 'Hover Color', 'so-widgets-bundle' ),
-								'default' => '#2d2d2d',
-							),
-							'spacing' => array(
-								'type' => 'measurement',
-								'label' => __( 'Margin Top and Bottom', 'so-widgets-bundle' ),
 							),
 						),
 					),
