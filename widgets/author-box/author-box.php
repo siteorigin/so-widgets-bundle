@@ -274,7 +274,7 @@ public function __construct() {
 
 		// Container.
 		$less_vars['container_background'] = ! empty( $instance['design']['container']['background_color'] ) ? $instance['design']['container']['background_color'] : '';
-		$less_vars['container_border_radius'] = ! empty( $instance['design']['container']['border_radius'] ) ? $instance['design']['container']['border_radius'] . '%' : '';
+		$less_vars['container_border_radius'] = ! empty( $instance['design']['container']['border_radius'] ) ? $instance['design']['container']['border_radius'] . 'px' : '';
 		$less_vars['container_border_color'] = ! empty( $instance['design']['container']['border_color'] ) ? $instance['design']['container']['border_color'] : '';
 		$less_vars['container_border_thickness'] = ! empty( $instance['design']['container']['border_thickness'] ) ? $instance['design']['container']['border_thickness'] : '1px 0 0 0';
 		$less_vars['container_padding'] = ! empty( $instance['design']['container']['padding'] ) ? $instance['design']['container']['padding'] : '40px 0 0 0';
@@ -295,7 +295,7 @@ public function __construct() {
 		$less_vars['name_link_all'] = ! empty( $instance['settings']['link_avatar'] );
 
 		// Author Avatar.
-		$less_vars['avatar_border_radius'] = ! empty( $instance['design']['avatar']['border_radius'] ) ? $instance['design']['avatar']['border_radius'] . '%' : '';
+		$less_vars['avatar_border_radius'] = ! empty( $instance['design']['avatar']['border_radius'] ) ? $instance['design']['avatar']['border_radius'] . 'px' : '';
 		$less_vars['avatar_border_position'] = ! empty( $instance['design']['avatar']['position'] ) ? $instance['design']['avatar']['position'] : '';
 
 		// Bio.
