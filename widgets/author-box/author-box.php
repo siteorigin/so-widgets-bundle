@@ -117,7 +117,7 @@ public function __construct() {
 							'padding' => array(
 								'type' => 'multi-measurement',
 								'label' => __( 'Padding', 'so-widgets-bundle' ),
-								'default' => '20px 0 0 0',
+								'default' => '40px 0 0 0',
 								'measurements' => array(
 									'top' => __( 'Top', 'so-widgets-bundle' ),
 									'right' => __( 'Right', 'so-widgets-bundle' ),
@@ -277,7 +277,7 @@ public function __construct() {
 		$less_vars['container_border_radius'] = ! empty( $instance['design']['container']['border_radius'] ) ? $instance['design']['container']['border_radius'] . '%' : '';
 		$less_vars['container_border_color'] = ! empty( $instance['design']['container']['border_color'] ) ? $instance['design']['container']['border_color'] : '';
 		$less_vars['container_border_thickness'] = ! empty( $instance['design']['container']['border_thickness'] ) ? $instance['design']['container']['border_thickness'] : '1px 0 0 0';
-		$less_vars['container_padding'] = ! empty( $instance['design']['container']['padding'] ) ? $instance['design']['container']['padding'] : '20px 0 0 0';
+		$less_vars['container_padding'] = ! empty( $instance['design']['container']['padding'] ) ? $instance['design']['container']['padding'] : '40px 0 0 0';
 
 		// Author Name.
 		if ( ! empty( $instance['design']['name']['font'] ) ) {
