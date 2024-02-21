@@ -59,14 +59,27 @@
 				display: inline-block;
 				line-height: 0;
 			}
-			.avatar {
-				border-radius: @avatar_border_radius;
-			}
 		}
 
 		.sow-author-box-description {
 			flex: 9;
 		}
+	}
+
+	@media (max-width: @responsive_breakpoint) {
+		text-align: center;
+
+		&-avatar {
+			margin-bottom: 15px;
+		}
+
+		&-title-wrapper {
+			justify-content: center;
+		}
+	}
+
+	&-avatar .avatar {
+		border-radius: @avatar_border_radius;
 	}
 
 	&-title-wrapper {
@@ -76,14 +89,6 @@
 
 		& when ( @avatar_border_position = right ) {
 			justify-content: end;
-		}
-	}
-
-	@media (max-width: @responsive_breakpoint) {
-		text-align: center;
-
-		&-title-wrapper {
-			justify-content: center;
 		}
 	}
 
