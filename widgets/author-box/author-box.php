@@ -210,6 +210,14 @@ public function __construct() {
 								'type' => 'color',
 								'label' => __( 'Hover Color', 'so-widgets-bundle' ),
 								'default' => '#2d2d2d',
+							),
+							'spacing' => array(
+								'type' => 'multi-measurement',
+								'label' => __( 'Margin', 'so-widgets-bundle' ),
+								'default' => '0 10px',
+								'measurements' => array(
+									'top' => __( 'Top', 'so-widgets-bundle' ),
+									'bottom' => __( 'Bottom', 'so-widgets-bundle' ),
 								),
 							),
 						),
@@ -323,7 +331,13 @@ public function __construct() {
 		$less_vars['all_font_size'] = ! empty( $instance['design']['all']['size'] ) ? $instance['design']['all']['size'] : '';
 		$less_vars['all_color'] = ! empty( $instance['design']['all']['color'] ) ? $instance['design']['all']['color'] : '';
 		$less_vars['all_color_hover'] = ! empty( $instance['design']['all']['color_hover'] ) ? $instance['design']['all']['color_hover'] : '';
-		$less_vars['all_spacing'] = ! empty( $instance['design']['all']['spacing'] ) ? $instance['design']['all']['spacing'] : '';
+
+		if ( ! empty( $instance['design']['all']['spacing'] ) ) {
+			$spacing = explode( ' ', $instance['design']['all']['spacing'] );
+			$less_vars['all_spacing'] = implode( ' 0 ', $spacing );
+		} else {
+			$less_vars['all_spacing'] = '';
+		}
 
 		return $less_vars;
 	}
