@@ -82,7 +82,9 @@ class SiteOrigin_Widget_Field_Repeater extends SiteOrigin_Widget_Field_Container
 			} ?>>
 			<div class="siteorigin-widget-field-repeater-top">
 				<div class="siteorigin-widget-field-repeater-expand"></div>
-				<h3><?php echo esc_html( $this->label ); ?></h3>
+				<?php if ( ! empty( $this->label ) ) { ?>
+					<h3><?php echo esc_html( $this->label ); ?></h3>
+				<?php } ?>
 			</div>
 			<div class="siteorigin-widget-field-repeater-items">
 				<?php
