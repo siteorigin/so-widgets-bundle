@@ -161,6 +161,32 @@ public function __construct() {
 							),
 						),
 					),
+					'name' => array(
+						'type' => 'section',
+						'label' => __( 'Author Name', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'font' => array(
+								'type' => 'font',
+								'label' => __( 'Font', 'so-widgets-bundle' ),
+							),
+							'font_size' => array(
+								'type' => 'measurement',
+								'label' => __( 'Font Size', 'so-widgets-bundle' ),
+								'default' => '15px',
+							),
+							'color' => array(
+								'type' => 'color',
+								'label' => __( 'Color', 'so-widgets-bundle' ),
+								'default' => '#2d2d2d',
+							),
+							'color_hover' => array(
+								'type' => 'color',
+								'label' => __( 'Hover Color', 'so-widgets-bundle' ),
+								'default' => '#626262',
+							),
+						),
+					),
 					'all' => array(
 						'type' => 'section',
 						'label' => __( 'Author All Posts Link', 'so-widgets-bundle' ),
@@ -184,36 +210,7 @@ public function __construct() {
 								'type' => 'color',
 								'label' => __( 'Hover Color', 'so-widgets-bundle' ),
 								'default' => '#2d2d2d',
-							),
-							'spacing' => array(
-								'type' => 'measurement',
-								'label' => __( 'Margin Top and Bottom', 'so-widgets-bundle' ),
-							),
-						),
-					),
-					'name' => array(
-						'type' => 'section',
-						'label' => __( 'Author Name', 'so-widgets-bundle' ),
-						'hide' => true,
-						'fields' => array(
-							'font' => array(
-								'type' => 'font',
-								'label' => __( 'Font', 'so-widgets-bundle' ),
-							),
-							'font_size' => array(
-								'type' => 'measurement',
-								'label' => __( 'Font Size', 'so-widgets-bundle' ),
-								'default' => '15px',
-							),
-							'color' => array(
-								'type' => 'color',
-								'label' => __( 'Color', 'so-widgets-bundle' ),
-								'default' => '#2d2d2d',
-							),
-							'color_hover' => array(
-								'type' => 'color',
-								'label' => __( 'Hover Color', 'so-widgets-bundle' ),
-								'default' => '#62626',
+								),
 							),
 						),
 					),
