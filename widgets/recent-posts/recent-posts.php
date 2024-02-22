@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Recent Posts
-Description: Placeholder
+Description: Customize and display your site’s recent posts with adjustable HTML tags, title links, date view, and design elements, ensuring a responsive and engaging user experience.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/recent-posts-widget/
