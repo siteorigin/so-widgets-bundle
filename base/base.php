@@ -433,7 +433,6 @@ function siteorigin_widget_onclick( $onclick = null, $recursive = true ) {
 	}
 
 	$stripped_onclick = siteorigin_widgets_strip_escape_sequences( $onclick );
-
 	if ( $stripped_onclick !== $onclick ) {
 		// There was some escape sequences removed.
 		// To play it safe, return nothing.
@@ -442,16 +441,25 @@ function siteorigin_widget_onclick( $onclick = null, $recursive = true ) {
 
 	if ( apply_filters( 'siteorigin_widgets_onclick_disallowlist', true ) ) {
 		// It's possible for allowed functions to contain disallowed functions, so we need to loop through and remove.
-		$disallowed_functions = array( 'alert', 'eval', 'execScript', 'setTimeout', 'setInterval', 'function', 'document', 'Object', 'window', 'innerHTML', 'outerHTML', 'onload', 'onerror', 'onclick', 'storage', 'fetch', 'XMLHttpRequest', 'jQuery', '$.', 'prototype', '__proto__', 'constructor', 'decode', 'encode', 'atob', 'btoa', 'Promise', 'setImmediate', 'unescape', 'escape', 'captureEvents', 'proxy', 'Reflect', 'Array', 'String', 'Math', 'Date', 'property', 'Properties', 'Error', 'Map', 'Set', 'Generator', 'Web', 'dataview', 'Blob', 'URL', 'Text', 'Intl', 'JSON', 'RegExp', 'console', 'history', 'location', 'navigator', 'screen', 'worker', 'FinalizationRegistry', 'weak', 'top', 'self', 'open', 'parent', 'frame', 'import', 'fragment', 'globalThis', 'frames', 'import', 'this', 'escape', 'watch', 'element', 'file', 'db', 'url', 'worker', 'EventSource', 'join' );
+		$disallowed_functions = array( 'alert', 'eval', 'execScript', 'setTimeout', 'setInterval', 'function', 'document', 'Object', 'window', 'innerHTML', 'outerHTML', 'onload', 'onerror', 'onclick', 'storage', 'fetch', 'XMLHttpRequest', 'jQuery', '$.', 'prototype', '__proto__', 'constructor', 'decode', 'encode', 'atob', 'btoa', 'Promise', 'setImmediate', 'unescape', 'escape', 'captureEvents', 'proxy', 'Reflect', 'Array', 'String', 'Math', 'Date', 'property', 'Properties', 'Error', 'Map', 'Set', 'Generator', 'Web', 'dataview', 'Blob', 'javascript', 'Text', 'Intl', 'JSON', 'RegExp', 'console', 'history', 'location', 'navigator', 'screen', 'worker', 'FinalizationRegistry', 'weak', 'top', 'self', 'open', 'parent', 'frame', 'import', 'fragment', 'globalThis', 'frames', 'import', 'this', 'escape', 'watch', 'element', 'file', 'db', 'worker', 'EventSource', 'join', 'upper' );
 
 		if ( preg_match( '/\b(' . implode( '|', array_map( 'preg_quote', $disallowed_functions ) ) . ')\b/i', $onclick ) ) {
 			return;
 		}
 
+		// Case sensitive disallow.
+		$case_sensitive_disallow = array(
+			'URL',
+		);
+
+		if ( preg_match( '/\b(' . implode( '|', array_map( 'preg_quote', $case_sensitive_disallow ) ) . ')\b/', $onclick ) ) {
+			return;
+		}
 	}
 
 	if ( apply_filters( 'siteorigin_widgets_onclick_allowlist', true ) ) {
-		$onclick_parts = explode( ';', $onclick );
+		$onclick_parts = explode( ');', $onclick );
+
 		$adjusted_onclick = '';
 		$allowed_functions = array_flip( array(
 			'_km',
@@ -493,6 +501,7 @@ function siteorigin_widget_onclick( $onclick = null, $recursive = true ) {
 			'woopra',
 			'ym',
 			'ml_account', // MailerLite.
+			'calendly.initpopupwidget', // Calendly.
 		) );
 
 		// Remove anything not inside of an allowed function.
@@ -503,7 +512,7 @@ function siteorigin_widget_onclick( $onclick = null, $recursive = true ) {
 				// Not an allowed function name, skip this part
 				continue;
 			}
-			$adjusted_onclick .= $part . ';';
+			$adjusted_onclick .= $part . ');';
 		}
 
 		$onclick = $adjusted_onclick;
