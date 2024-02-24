@@ -315,7 +315,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		}
 
 
-		// Check if 'playback' is not set or not an array
+		// Check if 'playback' is not set or not an array.
 		if ( ! isset( $instance['playback'] ) || ! is_array( $instance['playback'] ) ) {
 			$instance['playback'] = array(
 				'fitvids' => false,
