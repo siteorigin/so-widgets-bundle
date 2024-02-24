@@ -29,6 +29,8 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 
 	protected $onclick;
 
+	protected $sanitize = 'text';
+
 	/**
 	 * The CSS classes to be applied to the rendered text input.
 	 */
