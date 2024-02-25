@@ -8,12 +8,12 @@ Documentation: https://siteorigin.com/widgets-bundle/author-box-widget/
 */
 
 class SiteOrigin_Widget_Author_Box_Widget extends SiteOrigin_Widget {
-public function __construct() {
+	public function __construct() {
 		parent::__construct(
 			'sow-author-box',
 			__( 'SiteOrigin Author Box', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Placeholder', 'so-widgets-bundle' ),
+				'description' => __( 'Display author details, including avatar, name, and links to their posts, all while customizing the box style to suit your page.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/author-box-widget/',
 				'has_preview' => false,
 				'panels_title' => false,
