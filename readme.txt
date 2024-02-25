@@ -106,6 +106,15 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.58.7 - 25 February 2024 =
+* Anything Carousel: Corrected global responsive settings propagation.
+* Blog: Removed pagination markup if pagination is disabled.
+* Blog: Updated pagination screen reader text and level.
+* Button: Added `Calendly` to OnClick allowed list.
+* Video Player: Resolved potential FitVids warning.
+* Repeater Tables: Minor styling updates.
+* Textarea: Update to allow line breaks.
+
 = 1.58.6 - 15 February 2024 =
 * Added recursive sanitization to fields to prevent potential errors during saving.
 * Post Carousel: Prevented a potential fatal error related to the `loop_posts` migration.
