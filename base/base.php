@@ -506,6 +506,17 @@ function siteorigin_widget_onclick( $onclick = null, $recursive = true ) {
 
 		// Remove anything not inside of an allowed function.
 		foreach ( $onclick_parts as $part ) {
+			$part = trim( $part );
+
+			// Allow Buttons to prevent the default action.
+			if (
+				$part === 'return false;' ||
+				$part === 'return;'
+			) {
+				$adjusted_onclick .= $part;
+				continue;
+			}
+
 			$function_name = substr( $part, 0, strpos( $part, '(' ) );
 			$function_name = strtolower( trim( $function_name ) );
 			if ( ! isset( $allowed_functions[ $function_name ] ) ) {
