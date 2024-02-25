@@ -243,7 +243,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'fitvids'                 => ! empty( $instance['playback']['fitvids'] ),
 			'show_controls'           => isset( $instance['playback']['hide_controls'] ) ? $instance['playback']['hide_controls'] : false,
 		);
-		
+
 		if ( $instance['host_type'] == 'external' && $instance['playback']['oembed'] ) {
 			// Force oEmbed for this video if oEmbed is enabled.
 			$return['is_skinnable_video_host'] = false;
@@ -312,6 +312,19 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		// Prevent FitVids from being enabled for widgets created before FitVids was added.
 		if ( ! isset( $instance['playback']['fitvids'] ) ) {
 			$instance['playback']['fitvids'] = false;
+		}
+
+
+		// Check if 'playback' is not set or not an array.
+		if ( ! isset( $instance['playback'] ) || ! is_array( $instance['playback'] ) ) {
+			$instance['playback'] = array(
+				'fitvids' => false,
+			);
+		} else {
+			// Prevent FitVids from being enabled for widgets created before FitVids was added.
+			if ( ! isset( $instance['playback']['fitvids'] ) ) {
+				$instance['playback']['fitvids'] = false;
+			}
 		}
 
 		return $instance;

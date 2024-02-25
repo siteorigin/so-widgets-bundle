@@ -82,7 +82,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected $required;
 	/**
-	 * Specifies an additional sanitization to be performed. Available sanitizations are 'email' and 'url'. If the
+	 * Specifies an additional sanitization to be performed. Available sanitizations are `text`, `email` and `url`. If the
 	 * specified sanitization isn't recognized it is assumed to be a custom sanitization and a filter is applied using
 	 * the pattern `'siteorigin_widgets_sanitize_field_' . $sanitize`, in case the sanitization is defined elsewhere.
 	 *
@@ -357,6 +357,18 @@ abstract class SiteOrigin_Widget_Field_Base {
 		if ( isset( $this->sanitize ) ) {
 			// This field also needs some custom sanitization
 			switch( $this->sanitize ) {
+				case 'text':
+					if (
+						is_user_logged_in() &&
+						// Fields can be sanitized for setup purposes during display.
+						// As the data is sanitized during the saving purpose, we can
+						// safely skip this. Not doing so could result in an error.
+						! current_user_can( 'unfiltered_html' ) &&
+						! apply_filters( 'siteorigin_widgets_field_allow_unfiltered_html', false )
+					) {
+						$value = $this->recursive_sanitize( $value );
+					}
+					break;
 				case 'url':
 					$value = sow_esc_url_raw( $value );
 					break;
@@ -376,34 +388,22 @@ abstract class SiteOrigin_Widget_Field_Base {
 			}
 		}
 
-		if (
-			! empty( $value ) &&
-			// Fields can be sanitized for setup purposes during display.
-			// As the data is sanitized during the saving purpose, we can
-			// safely skip this. Not doing so could result in an error.
-			is_user_logged_in() &&
-			! current_user_can( 'unfiltered_html' ) &&
-			! apply_filters( 'siteorigin_widgets_field_allow_unfiltered_html', false )
-		) {
-			$value = $this->recursive_sanitize_kses( $value );
-		}
-
 		return $value;
 	}
 
 	/**
-	 * Recursively sanitizes and filters the given value using wp_kses_post().
+	 * Recursively sanitizes and filters the given value using sanitize_text_field().
 	 *
 	 * If the value is an array, it recursively applies the sanitization to each element.
 	 *
 	 * @param mixed $value The value to be sanitized.
 	 * @return mixed The sanitized value.
 	 */
-	public function recursive_sanitize_kses( $value ) {
+	public function recursive_sanitize( $value ) {
 		if ( is_array( $value ) ) {
-			return array_map( array( $this, 'recursive_sanitize_kses' ), $value );
+			return array_map( array( $this, 'recursive_sanitize' ), $value );
 		}
-		return wp_kses_post( $value );
+		return sanitize_text_field( $value );
 	}
 
 	/**
