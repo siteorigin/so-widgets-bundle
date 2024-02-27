@@ -109,15 +109,10 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
-		if (
-			! current_user_can( 'unfiltered_html' ) &&
-			! apply_filters( 'siteorigin_widgets_field_allow_unfiltered_html', false )
-		) {
-			if ( $this->allow_html ) {
-				$value = wp_kses_post( $value );
-			} else {
-				$value = sanitize_text_field( $value );
-			}
+		if ( $this->allow_html ) {
+			$value = wp_kses_post( $value );
+		} else {
+			$value = sanitize_text_field( $value );
 		}
 
 		$value = balanceTags( $value, true );
