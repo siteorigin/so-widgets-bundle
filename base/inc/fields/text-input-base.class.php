@@ -114,21 +114,21 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 			! apply_filters( 'siteorigin_widgets_field_allow_unfiltered_html', false )
 		) {
 			if ( $this->allow_html ) {
-				$sanitized_value = wp_kses_post( $value );
+				$value = wp_kses_post( $value );
 			} else {
-				$sanitized_value = sanitize_text_field( $value );
+				$value = sanitize_text_field( $value );
 			}
 		}
 
-		$sanitized_value = balanceTags( $sanitized_value, true );
+		$value = balanceTags( $value, true );
 
 		// Remove escape sequences.
-		$sanitized_value = siteorigin_widgets_strip_escape_sequences( $sanitized_value );
+		$value = siteorigin_widgets_strip_escape_sequences( $value );
 
 		if ( ! empty( $this->onclick ) ) {
-			return siteorigin_widget_onclick( $sanitized_value );
+			return siteorigin_widget_onclick( $value );
 		}
 
-		return $sanitized_value;
+		return $value;
 	}
 }
