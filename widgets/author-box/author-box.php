@@ -349,7 +349,7 @@ class SiteOrigin_Widget_Author_Box_Widget extends SiteOrigin_Widget {
 
 		return array(
 			sprintf(
-				__( '%sSiteOrigin Premium%s adds depth to the Author Box Widget with placement options, author bios, recent post visibility, social buttons, and design customizations. Enjoy centralized global control of author boxes.', 'so-widgets-bundle' ),
+				__( '%sSiteOrigin Premium%s adds depth to the Author Box Widget with placement options, author bios, recent post visibility, social buttons, and design customizations. Enjoy centralized global control of author boxes', 'so-widgets-bundle' ),
 				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/author-box" target="_blank" rel="noopener noreferrer">',
 				'</a>'
 			),
