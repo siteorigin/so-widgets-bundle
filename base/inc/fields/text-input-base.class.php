@@ -27,9 +27,19 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 	 */
 	protected $input_type;
 
+	/**
+	 * Whether to apply onclick sanitization to this field when saving.
+	 *
+	 * @var string
+	 */
 	protected $onclick;
 
-	protected $sanitize = 'text';
+	/**
+	 * Whether to allow HTML or not.
+	 *
+	 * @var bool
+	 */
+	protected $allow_html = true;
 
 	/**
 	 * The CSS classes to be applied to the rendered text input.
@@ -99,7 +109,17 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
-		$sanitized_value = wp_kses_post( $value );
+		if (
+			! current_user_can( 'unfiltered_html' ) &&
+			! apply_filters( 'siteorigin_widgets_field_allow_unfiltered_html', false )
+		) {
+			if ( $this->allow_html ) {
+				$sanitized_value = wp_kses_post( $value );
+			} else {
+				$sanitized_value = sanitize_text_field( $value );
+			}
+		}
+
 		$sanitized_value = balanceTags( $sanitized_value, true );
 
 		// Remove escape sequences.
