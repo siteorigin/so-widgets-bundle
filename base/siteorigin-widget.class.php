@@ -730,7 +730,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 *
 	 * @return array|void
 	 */
-	public function update( $new_instance, $old_instance = array(), $form_type = 'widget' ) {
+	public function update( $new_instance, $old_instance, $form_type = 'widget' ) {
 		if ( ! class_exists( 'SiteOrigin_Widgets_Color_Object' ) ) {
 			require plugin_dir_path( __FILE__ ) . 'inc/color.php';
 		}
