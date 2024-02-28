@@ -42,6 +42,10 @@ class SiteOrigin_Widget_Field_Widget extends SiteOrigin_Widget_Field_Container_B
 	}
 
 	protected function render_field( $value, $instance ) {
+		if ( empty( $value ) ) {
+			$value = array();
+		}
+
 		echo '<div class="siteorigin-widget-widget">';
 
 		if ( $this->collapsible ) {
