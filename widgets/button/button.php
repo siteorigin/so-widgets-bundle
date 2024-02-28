@@ -387,8 +387,8 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'padding' => isset( $instance['design']['padding'] ) ? $instance['design']['padding'] : '',
 			'has_text' => empty( $instance['text'] ) ? 'false' : 'true',
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
-			'align' => $instance['design']['align'],
-			'mobile_align' => $instance['design']['mobile_align'],
+			'align' => ! empty( $instance['design']['align'] ) ? $instance['design']['align'] : 'center',
+			'mobile_align' => ! empty( $instance['design']['mobile_align'] ) ? $instance['design']['mobile_align'] : 'center',
 			'has_button_icon' => empty( $instance['button_icon']['icon_selected'] ) ? 'false' : 'true',
 		);
 
