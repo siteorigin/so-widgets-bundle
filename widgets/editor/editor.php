@@ -152,7 +152,10 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 	}
 
 	public function add_noreferrer_to_link_targets( $instance ) {
-		if ( function_exists( 'wp_targeted_link_rel' ) ) {
+		if (
+			function_exists( 'wp_targeted_link_rel' ) &&
+			! empty( $instance['text'] )
+		) {
 			$instance['text'] = wp_targeted_link_rel( $instance['text'] );
 		}
 
