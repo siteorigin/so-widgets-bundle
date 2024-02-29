@@ -61,6 +61,10 @@ class SiteOrigin_Widget_Field_Color extends SiteOrigin_Widget_Field_Text_Input_B
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
+		if ( empty( $value ) ) {
+			return false;
+		}
+
 		$sanitized_value = $value;
 		if ( ! empty( $this->alpha ) && strpos( $sanitized_value, 'rgba' ) !== false ) {
 			sscanf( $sanitized_value, 'rgba(%d,%d,%d,%f)', $r, $g, $b, $a );
