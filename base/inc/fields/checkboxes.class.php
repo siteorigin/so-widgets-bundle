@@ -28,7 +28,7 @@ class SiteOrigin_Widget_Field_Checkboxes extends SiteOrigin_Widget_Field_Base {
 					id="<?php echo esc_attr( $this->element_id ); ?>-<?php echo esc_attr( $id ); ?>"
 					<?php checked( in_array( $id, $value ) ); ?>
 					/>
-				<?php echo $label; ?>
+				<?php echo esc_html( $label ); ?>
 			</label>
 			<?php
 		}

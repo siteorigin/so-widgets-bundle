@@ -367,7 +367,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 			echo siteorigin_panels_render( 'w' . $content_builder_id, true, $content );
 			remove_shortcode( 'slide_control' );
 		} else {
-			echo __( 'This widget requires Page Builder.', 'so-widgets-bundle' );
+			esc_html__( 'This widget requires Page Builder.', 'so-widgets-bundle' );
 		}
 	}
 

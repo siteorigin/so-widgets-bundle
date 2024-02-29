@@ -1108,7 +1108,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	public static function post_meta( $settings ) {
 		if ( is_sticky() ) {
 			?>
-			<span class="sow-featured-post"><?php echo esc_html__( 'Sticky', 'so-widgets-bundle' ); ?></span>
+			<span class="sow-featured-post"><?php esc_html_e( 'Sticky', 'so-widgets-bundle' ); ?></span>
 			<?php
 		}
 
@@ -1183,7 +1183,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							<?php echo get_the_category_list(); ?>
 						</div>
 					<?php } ?>
-					<a href="<?php the_permalink(); ?>">
+					<a href="<?php echo esc_url( get_the_permalink() ); ?>">
 						<?php
 						if ( has_post_thumbnail() ) {
 							if ( ! empty( $settings['featured_image_size'] ) ) {
@@ -1258,7 +1258,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			?>
 			<div
 				class="sow-entry-content"
-				style="margin-top: <?php echo $space_above; ?>px;"
+				style="margin-top: <?php echo (int) $space_above; ?>px;"
 			>
 				<?php
 				if ( $settings['content'] == 'full' ) {

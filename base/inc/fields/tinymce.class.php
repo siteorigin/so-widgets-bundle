@@ -468,7 +468,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			} ?>
 			<?php if ( ! empty( $this->readonly ) ) {
 				echo 'readonly';
-			} ?>><?php echo ! empty( $value ) ? htmlentities( $value, ENT_QUOTES, 'UTF-8' ) : ''; ?></textarea>
+			} ?>><?php echo ! empty( $value ) ? esc_textarea( $value ) : ''; ?></textarea>
 		</div>
 		<input
 			type="hidden"
