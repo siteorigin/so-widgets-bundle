@@ -77,7 +77,7 @@ class SiteOrigin_Widget_Field_Widget extends SiteOrigin_Widget_Field_Container_B
 		// Allow migrations.
 		$value = $this->sub_widget->modify_instance( $value );
 
- 		// Add any missing default values to the instance
+ 		// Add any missing default values to the instance.
 		$value = $this->sub_widget->add_defaults( $this->fields, $value );
 
 		$this->create_and_render_sub_fields( $value, array( 'name' => $this->base_name, 'type' => 'widget' ) );
