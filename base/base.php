@@ -553,7 +553,7 @@ function siteorigin_widget_onclick( $onclick = null, $recursive = true ) {
  * @return string A valid HTML tag for the widget.
  */
 function siteorigin_widget_valid_tag( $tag, $fallback = null, $valid_tags = array() ) {
-	if ( empty( $valid_tags ) ) {
+	if ( empty( $valid_tags ) || ! is_array( $valid_tags ) ) {
 		$valid_tags = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p' );
 	}
 
