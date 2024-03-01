@@ -430,8 +430,16 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 			return array();
 		}
 
+		// Ensure the title array exists.
+		if ( empty( $instance['title'] ) ) {
+			$instance['title'] = array();
+		}
+
 		// If this Simple Masonry was created before the title settings were added, disable it by default.
-		if ( ! empty( $instance['display'] ) || ! isset( $instance['title']['display'] ) ) {
+		if (
+			! empty( $instance['display'] ) ||
+			! isset( $instance['title']['display'] )
+		) {
 			$instance['title']['title_display'] = false;
 		}
 

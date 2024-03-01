@@ -281,7 +281,6 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 			),
 			'sub_title_tag' => siteorigin_widget_valid_tag(
 				! empty( $instance['design']['fonts']['sub_title_tag'] ) ? $instance['design']['fonts']['sub_title_tag'] : 'h5',
-				$instance['design']['sub_title_tag'],
 				'h5'
 			),
 		);

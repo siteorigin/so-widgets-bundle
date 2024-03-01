@@ -1745,7 +1745,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 * @return mixed
 	 */
 	public static function sanitize_header( $value ) {
-		return preg_replace( '=((<CR>|<LF>|0x0A/%0A|0x0D/%0D|\\n|\\r)\S).*=i', null, $value );
+		return preg_replace( '/(<CR>|<LF>|%0A|%0D|\\n|\\r)/i', '', sanitize_text_field( $value ) );
 	}
 
 	private function is_dev_email( $email ) {

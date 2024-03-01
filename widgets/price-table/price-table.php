@@ -411,10 +411,18 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 
 			foreach ( $fields as $section => $fields ) {
 				foreach ( $fields as $field_id => $field ) {
-					if ( isset( $instance[ $field_id ] ) ) {
-						$instance['design'][ $section ][ $field ] = $instance[ $field_id ];
-						unset( $instance[ $field_id ] );
+					if ( ! isset( $instance[ $field_id ] ) ) {
+						continue;
 					}
+					// Ensure the section is valid before processing.
+					if (
+						! isset( $instance['design'][ $section ] ) ||
+						! is_array( $instance['design'][ $section ] )
+					) {
+						$instance['design'][ $section ] = array();
+					}
+					$instance['design'][ $section ][ $field ] = $instance[ $field_id ];
+					unset( $instance[ $field_id ] );
 				}
 			}
 
