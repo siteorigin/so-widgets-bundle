@@ -413,6 +413,14 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 				),
 			);
 
+			// Ensure the design section exists, and is an array.
+			if (
+				! isset( $instance['design'] ) ||
+				! is_array( $instance['design'] )
+			) {
+				$instance['design'] = array();
+			}
+
 			foreach ( $fields as $section => $fields ) {
 				foreach ( $fields as $field_id => $field ) {
 					if ( ! isset( $instance[ $field_id ] ) ) {
