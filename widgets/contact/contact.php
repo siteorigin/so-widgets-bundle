@@ -1185,7 +1185,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		$label_position = $instance['design']['labels']['position'];
 		$valid_positions = array('above', 'below', 'left', 'right', 'inside');
 		if ( ! in_array( $label_position, $valid_positions ) ) {
-			$label_position = 'above'; // default value
+			$label_position = 'above'; // Default value.
 		}
 
 		$indicate_required_fields = $instance['settings']['required_field_indicator'];
