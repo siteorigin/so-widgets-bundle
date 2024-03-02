@@ -113,7 +113,7 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 							?>
 							<div class="multiple-media-field-item current" data-id="<?php echo esc_attr( $attachment ); ?>">
 								<?php if ( ! empty( $src ) ) { ?>
-									<img src="<?php echo sow_esc_url( $src ); ?>" class="thumbnail" title="<?php echo esc_attr( $item_title ); ?>" width="<?php echo $this->thumbnail_dimensions[0]; ?>" height="<?php echo $this->thumbnail_dimensions[1]; ?>"/>
+									<img src="<?php echo sow_esc_url( $src ); ?>" class="thumbnail" title="<?php echo esc_attr( $item_title ); ?>" width="<?php echo (int) $this->thumbnail_dimensions[0]; ?>" height="<?php echo (int) $this->thumbnail_dimensions[1]; ?>"/>
 								<?php } ?>
 								<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
 								<div class="title <?php echo (bool) $this->title ? 'title-enabled" style="width: ' . $this->thumbnail_dimensions[0] . 'px' : ''; ?>">
@@ -121,7 +121,7 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 									if ( ! empty( $item_title ) ) {
 										echo esc_attr( $item_title );
 									}
-							?>		
+									?>
 								</div>
 							</div>
 						<?php
@@ -129,10 +129,10 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 					}
 				?>
 				</div>
-				
+
 				<div class="multiple-media-field-template" style="display:none">
 					<div class="multiple-media-field-item current">
-						<img class="thumbnail" width="<?php echo $this->thumbnail_dimensions[0]; ?>" height="<?php echo $this->thumbnail_dimensions[1]; ?>"/>
+						<img class="thumbnail" width="<?php echo (int) $this->thumbnail_dimensions[0]; ?>" height="<?php echo (int) $this->thumbnail_dimensions[1]; ?>"/>
 						<a href="#" class="media-remove-button"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
 						<div class="title <?php echo (bool) $this->title ? 'title-enabled" style="width: ' . $this->thumbnail_dimensions[0] . 'px' : ''; ?>"></div>
 					</div>

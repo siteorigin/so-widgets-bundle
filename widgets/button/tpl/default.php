@@ -30,7 +30,7 @@
 				$icon_styles = array();
 
 				if ( ! empty( $icon_color ) ) {
-					$icon_styles[] = 'color: ' . $icon_color;
+					$icon_styles[] = 'color: ' . esc_attr( $icon_color );
 				}
 				echo siteorigin_widget_get_icon( $icon, $icon_styles );
 			}

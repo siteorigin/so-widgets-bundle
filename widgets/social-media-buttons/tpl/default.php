@@ -5,7 +5,7 @@
 ?>
 
 <?php if ( ! empty( $instance['title'] ) ) {
-	echo $args['before_title'] . $instance['title'] . $args['after_title'];
+	echo $args['before_title'] . wp_kses_post( $instance['title'] ) . $args['after_title'];
 } ?>
 
 <div class="social-media-button-container">
@@ -52,11 +52,11 @@
 		?>
 
 		<a <?php foreach ( $button_attributes as $name => $val ) {
-			echo $name . '="' . esc_attr( $val ) . '" ';
+			echo esc_html( $name ) . '="' . esc_attr( $val ) . '" ';
 		} ?>>
 			<span>
 				<?php if ( ! empty( $network['is_custom'] ) ) {
-					echo '<!-- premium-' . $network['name'] . ' -->';
+					echo '<!-- premium-' . esc_attr( $network['name'] ) . ' -->';
 				} ?>
 				<?php echo siteorigin_widget_get_icon( $network['icon_name'] ); ?>
 				<?php if ( ! empty( $network['is_custom'] ) ) {

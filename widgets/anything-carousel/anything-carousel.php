@@ -186,6 +186,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 			return array();
 		}
 		$carousel_settings = $carousel_settings['responsive'];
+
 		return array(
 			'breakpoints' => array(
 				'tablet_landscape' => isset( $carousel_settings['tablet']['landscape']['breakpoint'] ) ? $carousel_settings['tablet']['landscape']['breakpoint'] : null,
@@ -302,7 +303,10 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 				'item_template' => plugin_dir_path( __FILE__ ) . 'tpl/item.php',
 				'navigation' => 'side',
 				'navigation_arrows' => isset( $instance['carousel_settings']['arrows'] ) ? ! empty( $instance['carousel_settings']['arrows'] ) : true,
-				'item_title_tag' => $instance['design']['item_title']['tag'],
+				'item_title_tag' => siteorigin_widget_valid_tag(
+					$instance['design']['item_title']['tag'],
+					'h4'
+				),
 				'items' => ! empty( $instance['items'] ) ? $instance['items'] : array(),
 				'attributes' => array(
 					'widget' => 'anything',

@@ -14,7 +14,7 @@
 	echo $before_title . $title . $after_title;
 } ?>
 
-<div class="ow-pt-columns-atom<?php echo $equalize_row_heights ? ' sow-equalize-row-heights' : ''; ?>">
+<div class="ow-pt-columns-atom<?php echo (bool) $equalize_row_heights ? ' sow-equalize-row-heights' : ''; ?>">
 
 	<?php foreach ( $columns as $i => $column ) { ?>
 		<div class="ow-pt-column <?php echo $this->get_column_classes( $column, $i, $columns ); ?>"
@@ -94,12 +94,11 @@
 		foreach ( $column['features'] as $feature ) {
 			if ( ! empty( $feature['icon'] ) && empty( $siteorigin_price_table_icons[ $feature['icon'] ] ) ) {
 				$siteorigin_price_table_icons[ $feature['icon'] ] = true;
-				echo '<div style="display:none" id="so-pt-icon-' . $feature['icon'] . '">';
-				readfile( plugin_dir_path( __FILE__ ) . '../fontawesome/' . $feature['icon'] . '.svg' );
+				echo '<div style="display:none" id="so-pt-icon-' . esc_url( $feature['icon'] ) . '">';
+				readfile( plugin_dir_path( __FILE__ ) . '../fontawesome/' . sanitize_file_name( $feature['icon'] ) . '.svg' );
 				echo '</div>';
 			}
 		}
 	}
 	?>
-
 </div>
