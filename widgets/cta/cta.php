@@ -270,35 +270,19 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 		return $less_vars;
 	}
 
-	/**
-	 * Ensure the tag is valid before output. If it's not, return the fallback.
-	 *
-	 * @param array $instance The widget instance.
-	 * @param string $field The field to check in the 'design' array.
-	 * @param string $fallback The fallback value if the field is empty or invalid.
-	 * @return string The tag value for the CTA widget instance.
-	 */
-	private function set_tag( $instance, $field, $fallback ) {
-		if ( empty( $instance['design'][ $field ] ) ) {
-			return $fallback;
-		}
-
-		$value = $instance['design'][ $field ];
-
-		if ( ! in_array( $value, array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p' ) ) ) {
-			return $fallback;
-		}
-
-		return $value;
-	}
-
 	public function get_template_variables( $instance, $args ) {
 		$template_vars = array(
 			'title' => ! empty( $instance['title'] ) ? $instance['title'] : '',
 			'sub_title' => ! empty( $instance['sub_title'] ) ? $instance['sub_title'] : '',
 			'button' => $instance['button'],
-			'title_tag' => $this->set_tag( 'title_tag', $instance, 'h4' ),
-			'sub_title_tag' => $this->set_tag( 'sub_title_tag', $instance, 'h5' ),
+			'title_tag' => siteorigin_widget_valid_tag(
+				! empty( $instance['design']['fonts']['title_tag'] ) ? $instance['design']['fonts']['title_tag'] : 'h4',
+				'h4'
+			),
+			'sub_title_tag' => siteorigin_widget_valid_tag(
+				! empty( $instance['design']['fonts']['sub_title_tag'] ) ? $instance['design']['fonts']['sub_title_tag'] : 'h5',
+				'h5'
+			),
 		);
 
 		return $template_vars;

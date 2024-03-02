@@ -292,7 +292,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				$image['image_html'] = '<img ';
 				foreach ( $attr as $n => $v ) {
 					if ( $n === 'alt' || ! empty( $v ) ) {
-						$image['image_html'] .= $n . '="' . esc_attr( $v ) . '" ';
+						$image['image_html'] .= esc_html( $n ) . '="' . esc_attr( $v ) . '" ';
 					}
 				}
 				$image['image_html'] .= '>';

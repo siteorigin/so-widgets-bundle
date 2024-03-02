@@ -278,7 +278,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			}
 
 			if ( ! empty( $custom_size ) && ! empty( $instance['size_enforce'] ) ) {
-				$attr['style'] = 'width: ' . $attr['width'] . 'px; height: '. $attr['height'] . 'px;';	
+				$attr['style'] = 'width: ' . (int) $attr['width'] . 'px; height: '.  (int) $attr['height'] . 'px;';
 			}
 		}
 		$attr = apply_filters( 'siteorigin_widgets_image_attr', $attr, $instance, $this );
@@ -387,7 +387,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			<?php
 			foreach ( $link_attributes as $attr => $val ) {
 				if ( ! empty( $val ) ) {
-					echo $attr . '="' . esc_attr( $val ) . '" ';
+					echo esc_html( $attr ) . '="' . esc_attr( $val ) . '" ';
 				}
 			}
 		?>

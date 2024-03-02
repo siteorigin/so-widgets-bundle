@@ -460,7 +460,9 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			// If two, return the second value. Otherwise, return the first.
 			$feature_gap = explode( ' ', $instance['feature_spacing'] );
 			$feature_gap = count( $feature_gap ) > 1 ? $feature_gap[1] : $feature_gap[0];
-		} else {
+		}
+
+		if ( empty( $feature_gap ) ) {
 			$feature_gap = '25px';
 		}
 

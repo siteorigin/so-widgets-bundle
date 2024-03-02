@@ -515,7 +515,16 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 				}
 
 				// If neither padding is set, we need to unset them both to prevent an override.
-				if ( $meas_options['slide_padding_responsive'] == '0px' && $meas_options['slide_padding_extra_top_responsive'] == '0px' ) {
+				if (
+					(
+						empty( $settings['slide_padding_responsive'] ) ||
+						$meas_options['slide_padding_responsive'] == '0px'
+					) &&
+					(
+						empty( $settings['slide_padding_extra_top_responsive'] ) ||
+						$meas_options['slide_padding_extra_top_responsive'] == '0px'
+					)
+				) {
 					unset( $meas_options['slide_padding_responsive'] );
 					unset( $meas_options['slide_padding_extra_top_responsive'] );
 				}

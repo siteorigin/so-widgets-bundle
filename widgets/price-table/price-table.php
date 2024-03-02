@@ -277,9 +277,9 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			$attr_string = '';
 
 			foreach ( $img_attrs as $attr => $val ) {
-				$attr_string .= ' ' . $attr . '="' . esc_attr( $val ) . '"';
+				$attr_string .= ' ' . esc_attr( $attr ) . '="' . esc_attr( $val ) . '"';
 			}
-			?><img src="<?php echo $src[0]; ?>"<?php echo $attr_string; ?>/> <?php
+			?><img src="<?php echo esc_url( $src[0] ); ?>"<?php echo $attr_string; ?>/> <?php
 		}
 	}
 
@@ -375,6 +375,10 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 	 * Modify the instance to use the new icon.
 	 */
 	public function modify_instance( $instance ) {
+		if ( empty( $instance ) || ! is_array( $instance ) ) {
+			return array();
+		}
+
 		if ( empty( $instance['columns'] ) || ! is_array( $instance['columns'] ) ) {
 			return $instance;
 		}
@@ -409,15 +413,31 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 				),
 			);
 
+			// Ensure the design section exists, and is an array.
+			if (
+				! isset( $instance['design'] ) ||
+				! is_array( $instance['design'] )
+			) {
+				$instance['design'] = array();
+			}
+
 			foreach ( $fields as $section => $fields ) {
 				foreach ( $fields as $field_id => $field ) {
-					if ( isset( $instance[ $field_id ] ) ) {
-						$instance['design'][ $section ][ $field ] = $instance[ $field_id ];
-						unset( $instance[ $field_id ] );
+					if ( ! isset( $instance[ $field_id ] ) ) {
+						continue;
 					}
+					// Ensure the section is valid before processing.
+					if (
+						! isset( $instance['design'][ $section ] ) ||
+						! is_array( $instance['design'][ $section ] )
+					) {
+						$instance['design'][ $section ] = array();
+					}
+					$instance['design'][ $section ][ $field ] = $instance[ $field_id ];
+					unset( $instance[ $field_id ] );
 				}
 			}
-			
+
 			$instance['design']['theme'] = $instance['theme'];
 			unset( $instance['theme'] );
 

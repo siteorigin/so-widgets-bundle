@@ -16,9 +16,9 @@ if ( $title_position == 'above' ) {
 	echo $args['before_title'];
 
 	if ( $link_title && ! empty( $url ) ) {
-		echo $this->generate_anchor_open( $url, $link_attributes ) . $title . '</a>';
+		echo $this->generate_anchor_open( $url, $link_attributes ) . wp_kses_post( $title ) . '</a>';
 	} else {
-		echo $title;
+		echo wp_kses_post( $title );
 	}
 	echo $args['after_title'];
 }
@@ -30,7 +30,7 @@ if ( $title_position == 'above' ) {
 	} ?>
 	<img <?php foreach ( $attributes as $n => $v ) {
 		if ( $n === 'alt' || ! empty( $v ) ) {
-			echo $n . '="' . esc_attr( $v ) . '" ';
+			echo esc_html( $n ) . '="' . esc_attr( $v ) . '" ';
 		}
 	} ?>
 		class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>"/>
@@ -42,9 +42,9 @@ if ( $title_position == 'below' ) {
 	echo $args['before_title'];
 
 	if ( $link_title && ! empty( $url ) ) {
-		echo $this->generate_anchor_open( $url, $link_attributes ) . $title . '</a>';
+		echo $this->generate_anchor_open( $url, $link_attributes ) . wp_kses_post( $title ) . '</a>';
 	} else {
-		echo $title;
+		echo wp_kses_post( $title );
 	}
 	echo $args['after_title'];
 }

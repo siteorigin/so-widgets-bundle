@@ -526,7 +526,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		<?php } ?>
 
 		<?php if ( ! empty( $this->widget_options['help'] ) ) { ?>
-			<a href="<?php echo sow_esc_url( $this->widget_options['help'] ); ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank" rel="noopener noreferrer"><?php _e( 'Help', 'so-widgets-bundle' ); ?></a>
+			<a href="<?php echo sow_esc_url( $this->widget_options['help'] ); ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Help', 'so-widgets-bundle' ); ?></a>
 		<?php } ?>
 
 		<script type="text/javascript">
@@ -707,7 +707,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					<iframe name="siteorigin-widgets-preview-iframe" id="siteorigin-widget-preview-iframe" style="visibility: hidden"></iframe>
 				</div>
 
-				<form target="siteorigin-widgets-preview-iframe" action="<?php echo wp_nonce_url( admin_url( 'admin-ajax.php' ), 'widgets_action', '_widgets_nonce' ); ?>" method="post">
+				<form target="siteorigin-widgets-preview-iframe" action="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-ajax.php' ), 'widgets_action', '_widgets_nonce' ) ); ?>" method="post">
 					<input type="hidden" name="action" value="so_widgets_preview" />
 					<input type="hidden" name="data" value="" />
 					<input type="hidden" name="class" value="" />

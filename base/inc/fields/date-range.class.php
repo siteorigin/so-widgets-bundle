@@ -34,7 +34,7 @@ class SiteOrigin_Widget_Field_Date_Range extends SiteOrigin_Widget_Field_Base {
 			<?php
 			_ex( 'From', 'From this date', 'so-widgets-bundle' );
 			?>
-				
+
 			</span>
 			<input type="text" class="datepicker after-picker"/>
 		</div>
@@ -77,7 +77,12 @@ class SiteOrigin_Widget_Field_Date_Range extends SiteOrigin_Widget_Field_Base {
 			<input type="number" min="0" step="1" class="sowb-relative-date-value" value="<?php echo esc_attr( $val ); ?>"/>
 			<select class="sowb-relative-date-unit">
 				<?php foreach ( $units as $value => $label ) { ?>
-					<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $value, $unit ); ?>><?php echo $label; ?></option>
+					<option
+						value="<?php echo esc_attr( $value ); ?>"
+						<?php selected( $value, $unit ); ?>
+					>
+						<?php echo esc_html( $label ); ?>
+					</option>
 				<?php } ?>
 			</select>
 			<span><?php _e( 'ago', 'so-widgets-bundle' ); ?></span>
