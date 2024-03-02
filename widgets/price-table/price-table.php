@@ -375,6 +375,10 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 	 * Modify the instance to use the new icon.
 	 */
 	public function modify_instance( $instance ) {
+		if ( empty( $instance ) || ! is_array( $instance ) ) {
+			return array();
+		}
+
 		if ( empty( $instance['columns'] ) || ! is_array( $instance['columns'] ) ) {
 			return $instance;
 		}

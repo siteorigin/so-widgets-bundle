@@ -426,12 +426,15 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 	}
 
 	public function modify_instance( $instance ) {
-		if ( empty( $instance ) ) {
+		if ( empty( $instance ) || ! is_array( $instance ) ) {
 			return array();
 		}
 
 		// Ensure the title array exists.
-		if ( empty( $instance['title'] ) ) {
+		if (
+			! isset( $instance['title'] ) ||
+			! is_array( $instance['title'] )
+		) {
 			$instance['title'] = array();
 		}
 
