@@ -411,6 +411,10 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			}
 		}
 
+		if ( empty( $instance['controls'] ) ) {
+			$instance['controls'] = array();
+		}
+
 		if ( ! isset( $instance['controls']['fitvids'] ) ) {
 			$instance['controls']['fitvids'] = true;
 		}
@@ -572,7 +576,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 
 		?>
 		<li <?php foreach ( $wrapper_attributes as $attr => $val ) {
-			echo $attr . '="' . esc_attr( $val ) . '" ';
+			echo esc_html( $attr ) . '="' . esc_attr( $val ) . '" ';
 		} ?>>
 			<?php
 			do_action( 'siteorigin_widgets_slider_before_contents', $frame );
@@ -660,7 +664,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			return;
 		}
 		$loop = ! empty( $controls['loop_background_videos'] ) && $controls['loop_background_videos'] ? 'loop' : '';
-		$opacity = isset( $controls['opacity'] ) ? 'style="opacity: ' . ( $controls['opacity'] / 100 ) . '"' : '';
+		$opacity = isset( $controls['opacity'] ) ? 'style="opacity: ' . ( (int) $controls['opacity'] / 100 ) . '"' : '';
 
 		$video_element = '<video class="' . esc_attr( implode( ' ', $classes ) ) . '" autoplay ' . $loop . ' ' . $opacity . ' muted playsinline>';
 		$so_video = new SiteOrigin_Video();

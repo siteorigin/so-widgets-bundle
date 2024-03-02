@@ -12,7 +12,7 @@
  * @var $fitvids
  */
 if ( ! empty( $instance['title'] ) ) {
-	echo $args['before_title'] . $instance['title'] . $args['after_title'];
+	echo $args['before_title'] . wp_kses_post( $instance['title'] ) . $args['after_title'];
 }
 
 $video_args = array(
@@ -60,7 +60,7 @@ if ( ! $show_controls ) {
 	<?php if ( $is_skinnable_video_host ) { ?>
 		<video
 			<?php foreach ( $video_args as $k => $v ) { ?>
-				<?php echo $k . '="' . $v . '" '; ?>
+				<?php echo esc_html( $k ) . '="' . esc_attr( $v ) . '" '; ?>
 			<?php } ?>
 			<?php if ( apply_filters( 'sow_video_add_controls', $show_controls ) ) { ?>
 				<?php echo 'controls'; ?>

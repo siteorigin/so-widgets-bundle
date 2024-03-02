@@ -275,7 +275,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 		}
 
 		?><div <?php foreach ( $wrapper_attributes as $attr => $attr_val ) {
-			echo $attr . '="' . esc_attr( $attr_val ) . '" ';
+			echo esc_html( $attr ) . '="' . esc_attr( $attr_val ) . '" ';
 		} ?>><?php
 
 		// Allow subclasses and to render something before and after the render_field() function is called.
@@ -306,12 +306,12 @@ abstract class SiteOrigin_Widget_Field_Base {
 			echo esc_html( $this->label );
 
 			if ( ! empty( $this->optional ) ) {
-				echo '<span class="field-optional">(' . __( 'Optional', 'so-widgets-bundle' ) . ')</span>';
+				echo '<span class="field-optional">(' . esc_html__( 'Optional', 'so-widgets-bundle' ) . ')</span>';
 			}
 
 			if ( ! empty( $this->required ) ) {
 				/* translators: Used to indicate field as required. */
-				echo '<span class="field-required">' . __( '*', 'so-widgets-bundle' ) . '</span>';
+				echo '<span class="field-required">' . esc_html__( '*', 'so-widgets-bundle' ) . '</span>';
 			}
 			?>
 		</label>

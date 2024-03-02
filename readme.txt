@@ -106,6 +106,19 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.58.8 - 02 March 2024 =
+* Button: Resolved a potential alignment warning.
+* Contact Form: Resolved a potential deprecated notice.
+* Editor: Resolved a potential noreferrer empty text deprecated notice.
+* Features: Prevent a potential feature width CSS miscalculation.
+* Google Maps: Resolved a potential PHP 8.2+ warning.
+* Sliders: Resolved a potential FitVids related error.
+* Color Fields: Resolved a potential deprecated notice.
+* Text Input: Resolved undesired HTML removal on multisite installations.
+* Shifted control for lazy loading images to WordPress.
+* Added additional data sanitization.
+* Beaver Builder: Resolved an issue on save.
+
 = 1.58.7 - 25 February 2024 =
 * Anything Carousel: Corrected global responsive settings propagation.
 * Blog: Removed pagination markup if pagination is disabled.

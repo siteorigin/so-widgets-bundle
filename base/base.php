@@ -362,7 +362,6 @@ function siteorigin_loading_optimization_attributes( $attr, $widget, $instance, 
 	) {
 		if ( function_exists( 'wp_get_loading_optimization_attributes' ) ) {
 			// WP 6.3.
-			$attr['loading'] = 'lazy';
 			$attr = array_merge(
 				$attr,
 				wp_get_loading_optimization_attributes( 'img', $attr, 'wp_get_attachment_image' )
@@ -390,7 +389,7 @@ function siteorigin_widgets_links_get_title() {
 		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );
 	}
 	$postTitle = get_the_title( $_GET['postId'] );
-	echo ! empty( $postTitle ) ? esc_attr( $postTitle ) : __( '(No Title)', 'so-widgets-bundle' );
+	echo ! empty( $postTitle ) ? esc_attr( $postTitle ) : esc_html__( '(No Title)', 'so-widgets-bundle' );
 	die();
 }
 add_action( 'wp_ajax_so_widgets_links_get_title', 'siteorigin_widgets_links_get_title' );
@@ -542,4 +541,24 @@ function siteorigin_widget_onclick( $onclick = null, $recursive = true ) {
 	}
 
 	return wp_unslash( esc_js( sanitize_text_field( $onclick ) ) );
+}
+
+/**
+ * Ensure the tag is valid before output. If it's not, return the fallback.
+ *
+ * @param string $field The field to check in the 'design' array.
+ * @param string $fallback The fallback value if the field is empty or invalid.
+ * @param array $valid_tags An array containing valid tags.
+ * @return string A valid HTML tag for the widget.
+ */
+function siteorigin_widget_valid_tag( $tag, $fallback = null, $valid_tags = array() ) {
+	if ( empty( $valid_tags ) || ! is_array( $valid_tags ) ) {
+		$valid_tags = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p' );
+	}
+
+	if ( ! in_array( $tag, $valid_tags ) ) {
+		return $fallback;
+	}
+
+	return $tag;
 }

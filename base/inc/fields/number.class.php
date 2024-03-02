@@ -64,7 +64,7 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 
 	protected function render_after_field( $value, $instance ) {
 		if ( ! empty( $this->unit ) ) {
-			echo '<span class="siteorigin-widget-input-number-unit">' . $this->unit . '</span>';
+			echo '<span class="siteorigin-widget-input-number-unit">' . esc_html( $this->unit ) . '</span>';
 		}
 
 		parent::render_after_field( $value, $instance );

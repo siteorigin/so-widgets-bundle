@@ -1,7 +1,7 @@
 <?php
 // Display the title.
 if ( $instance['display_title'] && ! empty( $instance['title'] ) ) {
-	echo $args['before_title'] . $instance['title'] . $args['after_title'];
+	echo $args['before_title'] . wp_kses_post( $instance['title'] ) . $args['after_title'];
 }
 $short_hash = substr( $instance_hash, 0, 4 );
 
@@ -57,7 +57,7 @@ if ( is_array( $result ) && $result['status'] == 'success' ) {
 
 		if ( ! empty( $really_simple_spam ) ) {
 			if ( $really_simple_spam == 'missing' ) {
-				echo __( 'Unable to detect Really Simple CAPTCHA plugin.', 'so-widgets-bundle' );
+				esc_html_e( 'Unable to detect Really Simple CAPTCHA plugin.', 'so-widgets-bundle' );
 			} else {
 				require 'simple.php';
 			}
@@ -73,7 +73,7 @@ if ( is_array( $result ) && $result['status'] == 'success' ) {
 			} ?>"
 				<?php
 				foreach ( $submit_attributes as $name => $val ) {
-					echo $name . '="' . esc_attr( $val ) . '" ';
+					echo esc_attr( $name ) . '="' . esc_attr( $val ) . '" ';
 				}
 
 				if ( ! empty( $onclick ) ) {

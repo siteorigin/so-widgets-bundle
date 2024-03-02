@@ -1,7 +1,7 @@
 <?php if ( ! empty( $posts ) && $posts->have_posts() ) { ?>
 	<?php
 	if ( ! empty( $instance['title'] ) ) {
-		echo $args['before_title'] . $instance['title'] . $args['after_title'];
+		echo $args['before_title'] . wp_kses_post( $instance['title'] ) . $args['after_title'];
 	}
 
 	$this->override_read_more( $settings );
@@ -26,11 +26,11 @@
 			?>
 			<div class="sow-portfolio-filter-terms" style="margin-bottom: 25px;">
 				<button data-filter="*" class="active" style="background: none; margin-right: 34px; padding: 0 0 6px;">
-					<?php echo esc_html__( 'All', 'so-widgets-bundle' ); ?>
+					<?php esc_html_e( 'All', 'so-widgets-bundle' ); ?>
 				</button>
 				<?php foreach ( $template_settings['terms'] as $tax_term ) { ?>
-					<button data-filter=".<?php echo $tax_term->slug; ?>" style="background: none; box-shadow: none; margin-right: 34px; padding: 0 0 6px;">
-						<?php echo $tax_term->slug; ?>
+					<button data-filter=".<?php echo esc_attr( $tax_term->slug ); ?>" style="background: none; box-shadow: none; margin-right: 34px; padding: 0 0 6px;">
+						<?php echo esc_html( $tax_term->slug ); ?>
 					</button>
 				<?php } ?>
 			</div>

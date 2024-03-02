@@ -526,7 +526,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		<?php } ?>
 
 		<?php if ( ! empty( $this->widget_options['help'] ) ) { ?>
-			<a href="<?php echo sow_esc_url( $this->widget_options['help'] ); ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank" rel="noopener noreferrer"><?php _e( 'Help', 'so-widgets-bundle' ); ?></a>
+			<a href="<?php echo sow_esc_url( $this->widget_options['help'] ); ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Help', 'so-widgets-bundle' ); ?></a>
 		<?php } ?>
 
 		<script type="text/javascript">
@@ -707,7 +707,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					<iframe name="siteorigin-widgets-preview-iframe" id="siteorigin-widget-preview-iframe" style="visibility: hidden"></iframe>
 				</div>
 
-				<form target="siteorigin-widgets-preview-iframe" action="<?php echo wp_nonce_url( admin_url( 'admin-ajax.php' ), 'widgets_action', '_widgets_nonce' ); ?>" method="post">
+				<form target="siteorigin-widgets-preview-iframe" action="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-ajax.php' ), 'widgets_action', '_widgets_nonce' ) ); ?>" method="post">
 					<input type="hidden" name="action" value="so_widgets_preview" />
 					<input type="hidden" name="data" value="" />
 					<input type="hidden" name="class" value="" />
@@ -745,6 +745,32 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		if ( ! empty( $form_options ) ) {
+			if ( isset( $_GET['fl_builder'] ) && is_array( $new_instance ) ) {
+				$key = array_keys( $new_instance )[0];
+				$new_instance = $this->update_fields(
+					$new_instance[ $key ],
+					$old_instance,
+					$form_options
+				);
+			} else {
+				$new_instance = $this->update_fields(
+					$new_instance,
+					$old_instance,
+					$form_options
+				);
+			}
+		}
+
+		// Remove the old CSS, it'll be regenerated on page load.
+		if ( $form_type == 'widget' ) {
+			$this->delete_css( $this->modify_instance( $old_instance ) );
+		}
+
+		return $new_instance;
+	}
+
+	private function update_fields( $new_instance, $old_instance, $form_options ) {
+		if ( ! empty( $form_options ) ) {
 			/* @var $field_factory SiteOrigin_Widget_Field_Factory */
 			$field_factory = SiteOrigin_Widget_Field_Factory::single();
 
@@ -756,6 +782,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$field = $field_factory->create_field( $field_name, $field_options, $this );
 					$this->fields[ $field_name ] = $field;
 				}
+
 				$new_instance[ $field_name ] = $field->sanitize(
 					isset( $new_instance[ $field_name ] ) ? $new_instance[ $field_name ] : null,
 					$new_instance,
@@ -767,14 +794,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			// Let other plugins also sanitize the instance
 			$new_instance = apply_filters( 'siteorigin_widgets_sanitize_instance', $new_instance, $form_options, $this );
 			$new_instance = apply_filters( 'siteorigin_widgets_sanitize_instance_' . $this->id_base, $new_instance, $form_options, $this );
+			return $new_instance;
 		}
-
-		// Remove the old CSS, it'll be regenerated on page load.
-		if ( $form_type == 'widget' ) {
-			$this->delete_css( $this->modify_instance( $old_instance ) );
-		}
-
-		return $new_instance;
 	}
 
 	/**

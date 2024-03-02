@@ -66,42 +66,49 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			return $this->global_settings;
 		}
 
+		$defaults = array(
+			'breakpoints' => array(
+				'tablet_landscape' => 1366,
+				'tablet_portrait' => 1025,
+				'mobile' => 480,
+			),
+			'slides_to_scroll' => array(
+				'desktop' => 3,
+				'tablet_landscape' => 3,
+				'tablet_portrait' => 2,
+				'mobile' => 1,
+			),
+			'slides_to_show' => array(
+				'desktop' => 3,
+				'tablet_landscape' => 3,
+				'tablet_portrait' => 2,
+				'mobile' => 1,
+			),
+			'navigation' => array(
+				'desktop' => true,
+				'tablet_landscape' => true,
+				'tablet_portrait' => true,
+				'mobile' => true,
+			),
+			'navigation_label' => __( 'Navigation arrows', 'so-widgets-bundle' ),
+			'navigation_dots' => array(
+				'desktop' => true,
+				'tablet_landscape' => true,
+				'tablet_portrait' => true,
+				'mobile' => true,
+			),
+			'navigation_dots_label' => __( 'Navigation dots', 'so-widgets-bundle' ),
+		);
+
 		$this->global_settings = wp_parse_args(
 			$this->override_carousel_settings(),
-			array(
-				'breakpoints' => array(
-					'tablet_landscape' => 1366,
-					'tablet_portrait' => 1025,
-					'mobile' => 480,
-				),
-				'slides_to_scroll' => array(
-					'desktop' => 3,
-					'tablet_landscape' => 3,
-					'tablet_portrait' => 2,
-					'mobile' => 1,
-				),
-				'slides_to_show' => array(
-					'desktop' => 3,
-					'tablet_landscape' => 3,
-					'tablet_portrait' => 2,
-					'mobile' => 1,
-				),
-				'navigation' => array(
-					'desktop' => true,
-					'tablet_landscape' => true,
-					'tablet_portrait' => true,
-					'mobile' => true,
-				),
-				'navigation_label' => __( 'Navigation arrows', 'so-widgets-bundle' ),
-				'navigation_dots' => array(
-					'desktop' => true,
-					'tablet_landscape' => true,
-					'tablet_portrait' => true,
-					'mobile' => true,
-				),
-				'navigation_dots_label' => __( 'Navigation dots', 'so-widgets-bundle' ),
-			)
+			$defaults
 		);
+
+		// If the global settings are somehow empty, return the defaults.
+		if ( empty( $this->global_settings ) ) {
+			$this->global_settings = $defaults;
+		}
 
 		return $this->global_settings;
 	}

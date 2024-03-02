@@ -183,10 +183,10 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 		if ( ! empty( $foreground_src ) ) {
 			// If a custom height is set, build the foreground style attribute.
 			if ( ! empty( $frame['custom_height'] ) ) {
-				$foreground_style_attr = 'height: ' . intval( $frame['custom_height'] ) . 'px; width: auto;';
+				$foreground_style_attr = 'height: ' . (int) $frame['custom_height'] . 'px; width: auto;';
 
 				if ( ! empty( $foreground_src[2] ) ) {
-					$foreground_style_attr .= 'max-height: ' . intval( $foreground_src[2] ) . 'px';
+					$foreground_style_attr .= 'max-height: ' . (int) $foreground_src[2] . 'px';
 				}
 			}
 			?>
@@ -198,7 +198,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 						<a href="<?php echo sow_esc_url( $frame['url'] ); ?>"
 						<?php foreach ( $frame['link_attributes'] as $att => $val ) { ?>
 							<?php if ( ! empty( $val ) ) { ?>
-								<?php echo $att . '="' . esc_attr( $val ) . '" '; ?>
+								<?php echo esc_html( $att ) . '="' . esc_attr( $val ) . '" '; ?>
 							<?php } ?>
 						<?php } ?>>
 					<?php } ?>
@@ -235,7 +235,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				<a href="<?php echo sow_esc_url( $frame['url'] ); ?>"
 				<?php foreach ( $frame['link_attributes'] as $att => $val ) { ?>
 					<?php if ( ! empty( $val ) ) { ?>
-						<?php echo $att . '="' . esc_attr( $val ) . '" '; ?>
+						<?php echo esc_html( $att ) . '="' . esc_attr( $val ) . '" '; ?>
 					<?php } ?>
 				<?php } ?>>
 			<?php

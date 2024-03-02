@@ -1181,7 +1181,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	public function render_form_fields( $fields, $result, $instance ) {
 		$field_ids = array();
 		$errors = ! empty( $result['errors'] ) ? $result['errors'] : array();
+
 		$label_position = $instance['design']['labels']['position'];
+		$valid_positions = array('above', 'below', 'left', 'right', 'inside');
+		if ( ! in_array( $label_position, $valid_positions ) ) {
+			$label_position = 'above'; // Default value.
+		}
 
 		$indicate_required_fields = $instance['settings']['required_field_indicator'];
 
@@ -1236,7 +1241,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		?>
 			<div class="sow-form-field sow-form-field-<?php echo sanitize_html_class( $field['type'] ); ?>">
 				<?php
-
 				$label = $field['label'];
 				$indicate_as_required = $indicate_required_fields && ! empty( $field['required']['required'] );
 				$no_placeholder_support = ( $field['type'] != 'radio' && $field['type'] != 'checkboxes' );
@@ -1741,7 +1745,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 * @return mixed
 	 */
 	public static function sanitize_header( $value ) {
-		return preg_replace( '=((<CR>|<LF>|0x0A/%0A|0x0D/%0D|\\n|\\r)\S).*=i', null, $value );
+		return preg_replace( '/(<CR>|<LF>|%0A|%0D|\\n|\\r)/i', '', sanitize_text_field( $value ) );
 	}
 
 	private function is_dev_email( $email ) {
