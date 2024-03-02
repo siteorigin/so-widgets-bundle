@@ -362,7 +362,6 @@ function siteorigin_loading_optimization_attributes( $attr, $widget, $instance, 
 	) {
 		if ( function_exists( 'wp_get_loading_optimization_attributes' ) ) {
 			// WP 6.3.
-			$attr['loading'] = 'lazy';
 			$attr = array_merge(
 				$attr,
 				wp_get_loading_optimization_attributes( 'img', $attr, 'wp_get_attachment_image' )
