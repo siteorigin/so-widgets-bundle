@@ -106,6 +106,9 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.58.9 - 03 March 2024 =
+* Editor: Resolved shortcode output.
+
 = 1.58.8 - 02 March 2024 =
 * Button: Resolved a potential alignment warning.
 * Contact Form: Resolved a potential deprecated notice.
