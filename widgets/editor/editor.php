@@ -61,7 +61,9 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			array( 'text' => '' )
 		);
 
-		$instance['text'] = wp_kses_post( $instance['text'] );
+		if ( ! apply_filters( 'siteorigin_widgets_editor_allow_unfiltered_html', false ) ) {
+			$instance['text'] = wp_kses_post( $instance['text'] );
+		}
 
 		if (
 			// Only run these parts if we're rendering for the frontend.
