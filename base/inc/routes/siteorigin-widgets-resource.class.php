@@ -131,74 +131,10 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_widget_preview( $request ) {
-		$widget_class = $request['widgetClass'];
-		$widget_data = $request['widgetData'];
-
-		$widget = SiteOrigin_Widgets_Widget_Manager::get_widget_instance( $widget_class );
-		// Attempt to activate the widget if it's not already active.
-		if ( ! empty( $widget_class ) && empty( $widget ) ) {
-			$widget = SiteOrigin_Widgets_Bundle::single()->load_missing_widget( false, $widget_class );
-		}
-
-		// This ensures styles are added inline.
-		add_filter( 'siteorigin_widgets_is_preview', '__return_true' );
-		$GLOBALS[ 'SO_WIDGETS_BUNDLE_PREVIEW_RENDER' ] = true;
-
-		$valid_widget_class = ! empty( $widget ) &&
-							  is_object( $widget ) &&
-							  is_subclass_of( $widget, 'SiteOrigin_Widget' );
-
-		if ( $valid_widget_class && ! empty( $widget_data ) ) {
-			ob_start();
-			// Add anchor to widget wrapper.
-			if ( ! empty( $request['anchor'] ) ) {
-				$this->widgetAnchor = $request['anchor'];
-				add_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10, 3 );
-			}
-			/* @var $widget SiteOrigin_Widget */
-			$instance = $widget->update( $widget_data, $widget_data );
-			$widget->widget( array(), $instance );
-			$rendered_widget = array();
-			$rendered_widget['html'] = ob_get_clean();
-
-			if ( ! empty( $request['anchor'] ) ) {
-				remove_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10 );
-			}
-
-			// Check if this widget loaded any icons, and if it has, store them.
-			$styles = wp_styles();
-
-			if ( ! empty( $styles->queue ) ) {
-				$rendered_widget['icons'] = array();
-
-				foreach ( $styles->queue as $style ) {
-					if ( strpos( $style, 'siteorigin-widget-icon-font' ) !== false ) {
-						$rendered_widget['icons'][] = $style;
-					}
-				}
-			}
-		} else {
-			if ( empty( $valid_widget_class ) ) {
-				$rendered_widget = new WP_Error(
-					400,
-					'Invalid or missing widget class: ' . $widget_class,
-					array(
-						'status' => 400,
-					)
-				);
-			} elseif ( empty( $widget_data ) ) {
-				$rendered_widget = new WP_Error(
-					400,
-					'Unable to render preview. Invalid or missing widget data.',
-					array(
-						'status' => 400,
-					)
-				);
-			}
-		}
-
-		unset( $GLOBALS['SO_WIDGETS_BUNDLE_PREVIEW_RENDER'] );
-
-		return rest_ensure_response( $rendered_widget );
+		return rest_ensure_response(
+			SiteOrigin_Widgets_Bundle_Widget_Block::single()->get_widget_preview(
+				$request
+			)
+		);
 	}
 }
