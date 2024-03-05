@@ -386,7 +386,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		unset( $GLOBALS['SO_WIDGETS_BUNDLE_PREVIEW_RENDER'] );
 
-		if ( $just_html ) {
+		if ( $just_html || is_wp_error( $rendered_widget ) ) {
 			return $rendered_widget;
 		}
 
