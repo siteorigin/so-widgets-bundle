@@ -42,11 +42,6 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			SOW_BUNDLE_VERSION
 		);
 
-		wp_enqueue_style(
-			'sowb-widget-block',
-			plugins_url( 'widget-block.css', __FILE__ )
-		);
-
 		$widgets_metadata_list = SiteOrigin_Widgets_Bundle::single()->get_widgets_list();
 		$widgets_manager = SiteOrigin_Widgets_Widget_Manager::single();
 
@@ -84,9 +79,22 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				foreach ( $widgets_metadata_list as $widget_metadata ) {
 					if ( $widgets_manager->get_class_from_path( wp_normalize_path( $widget_metadata['File'] ) ) == $class ) {
 						$author = $widget_metadata['Author'];
+						if ( ! empty( $widget_metadata['Description'] ) ) {
+							$description = $widget_metadata['Description'];
+						}
+
 						break;
 					}
 				}
+
+				// Ensure every widget has a description.
+				if ( empty( $description ) ) {
+					$description = __( 'No description available.', 'so-widgets-bundle' );
+				}
+
+
+				$block_name = strtolower( str_replace( '_', '-', $class ) );
+
 				// For SiteOrigin widgets, just display the widget's name. For third party widgets, display the Author
 				// to try avoid confusion when the widgets have the same name.
 				if ( preg_match( '/^SiteOrigin /', $widget_obj->name ) == 1 && $author == 'SiteOrigin' ) {
@@ -95,12 +103,16 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					$so_widgets[] = array(
 						'name' => $name,
 						'class' => $class,
+						'description' => $description,
+						'blockName' => $block_name,
 					);
 				} else {
 					$name = sprintf( __( '%s by %s', 'so-widgets-bundle' ), $widget_obj->name, $author );
 					$third_party_widgets[] = array(
 						'name' => $name,
 						'class' => $class,
+						'description' => $description,
+					 	'blockName' => $block_name,
 					);
 				}
 			}
