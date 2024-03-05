@@ -59,7 +59,7 @@
 			widgetData: {
 				type: 'object',
 			},
-			widgetHtml: {
+			widgetMarkup: {
 				type: 'string',
 			},
 			widgetIcons: {
@@ -119,7 +119,7 @@
 					} );
 
 					props.setAttributes( {
-						widgetHtml: widgetPreview.html,
+						widgetMarkup: widgetPreview.html,
 						widgetIcons: widgetPreview.icons
 					} );
 
@@ -279,7 +279,7 @@
 					props.attributes.widgetData;
 				if ( loadWidgetPreview ) {
 					props.setAttributes( {
-						widgetHtml: null,
+						widgetMarkup: null,
 						widgetIcons: null
 					} );
 					generateWidgetPreview();
