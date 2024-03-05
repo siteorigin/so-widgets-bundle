@@ -106,6 +106,11 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.58.10 - 05 March 2024 =
+* Enhanced the saving process and validation for widgets and blocks in the Widgets Block.
+* Loaded defaults for the widget form field.
+* Removed the `unfiltered_html` check in the Editor Widget.
+
 = 1.58.9 - 03 March 2024 =
 * Editor: Resolved shortcode output.
 
