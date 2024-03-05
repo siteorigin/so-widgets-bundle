@@ -390,17 +390,19 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			return $rendered_widget;
 		}
 
-		// Prevent style from being added for the icon.
-		if ( ! empty( $rendered_widget['widgetIcons'] ) ) {
-			$rendered_widget['html'] = preg_replace( '/<style.*?>(.*?)<\/style>/s', '', $rendered_widget['html'] );
+		// If there's a style tag, we can't set set widgetMarkup.
+		if ( strpos( $rendered_widget['html'], '<style' ) !== false ) {
+			$rendered_widget['widgetMarkup'] = '';
+		} else {
+			$rendered_widget['widgetMarkup'] = $rendered_widget['html'];
 		}
 
 		return array(
 			'widgetClass' => $widget_class,
 			'widgetData' => $widget_data,
-			'widgetMarkup' => $rendered_widget['html'],
+			'widgetMarkup' => $rendered_widget['widgetMarkup'],
 			'html' => $rendered_widget['html'],
-			'widgetIcons' => isset( $rendered_widget['widgetIcons'] ) ? $rendered_widget['widgetIcons'] : array(),
+			'widgetIcons' => isset( $rendered_widget['css'] ) ? $rendered_widget['widgetIcons'] : array(),
 		);
 	}
 }
