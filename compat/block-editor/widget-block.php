@@ -175,7 +175,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 			ob_start();
 			/*
-			 * If we have pre-generated widgetHtml or there's a valid $_POST, generate the widget.
+			 * If we have pre-generated widgetMarkup or there's a valid $_POST, generate the widget.
 			 * There are certain situations where we bypass the cache:
 			 *
 			 * - We don't show the pre-generated widget when there's a valid $_POST
@@ -188,7 +188,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			$current_page_id = get_the_ID();
 
 			if (
-				empty( $attributes['widgetHtml'] ) ||
+				empty( $attributes['widgetMarkup'] ) ||
 				! empty( $_POST ) ||
 				$attributes['widgetClass'] == 'SiteOrigin_Widget_PostCarousel_Widget' ||
 				$attributes['widgetClass'] == 'SiteOrigin_Widgets_ContactForm_Widget' ||
@@ -241,7 +241,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					}
 				}
 
-				echo $attributes['widgetHtml'];
+				echo $attributes['widgetMarkup'];
 			}
 
 			$rendered_widget = ob_get_clean();
@@ -395,7 +395,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		return array(
 			'widgetClass' => $widget_class,
 			'widgetData' => $widget_data,
-			'widgetHtml' => $rendered_widget['html'],
+			'widgetMarkup' => $rendered_widget['html'],
 			'html' => $rendered_widget['html'],
 			'icons' => $rendered_widget['icons'],
 		);
