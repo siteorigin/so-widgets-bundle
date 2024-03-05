@@ -397,7 +397,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			'widgetData' => $widget_data,
 			'widgetMarkup' => $rendered_widget['html'],
 			'html' => $rendered_widget['html'],
-			'icons' => $rendered_widget['icons'],
+			'icons' => isset( $rendered_widget['icons'] ) ? $rendered_widget['icons'] : array(),
 		);
 	}
 }
