@@ -240,7 +240,6 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 						}
 					}
 				}
-
 				echo $attributes['widgetMarkup'];
 			}
 
@@ -316,7 +315,6 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		$block['attrs'] = $rendered_widget;
 		return $block;
-
 	}
 
 	public function get_widget_preview( $block, $just_html = true ) {
@@ -358,11 +356,11 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			$styles = wp_styles();
 
 			if ( ! empty( $styles->queue ) ) {
-				$rendered_widget['icons'] = array();
+				$rendered_widget['widgetIcons'] = array();
 
 				foreach ( $styles->queue as $style ) {
 					if ( strpos( $style, 'siteorigin-widget-icon-font' ) !== false ) {
-						$rendered_widget['icons'][] = $style;
+						$rendered_widget['widgetIcons'][] = $style;
 					}
 				}
 			}
@@ -392,12 +390,17 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			return $rendered_widget;
 		}
 
+		// Prevent style from being added for the icon.
+		if ( ! empty( $rendered_widget['widgetIcons'] ) ) {
+			$rendered_widget['html'] = preg_replace( '/<style.*?>(.*?)<\/style>/s', '', $rendered_widget['html'] );
+		}
+
 		return array(
 			'widgetClass' => $widget_class,
 			'widgetData' => $widget_data,
 			'widgetMarkup' => $rendered_widget['html'],
 			'html' => $rendered_widget['html'],
-			'icons' => isset( $rendered_widget['icons'] ) ? $rendered_widget['icons'] : array(),
+			'widgetIcons' => isset( $rendered_widget['widgetIcons'] ) ? $rendered_widget['widgetIcons'] : array(),
 		);
 	}
 }
