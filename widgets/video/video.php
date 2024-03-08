@@ -193,7 +193,10 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		$video_host = $instance['host_type'];
 
 		if ( $video_host == 'self' ) {
-			if ( isset( $instance['video']['self_sources'] ) ) {
+			if (
+				! empty( $instance['video']['self_sources'] ) &&
+				is_array( $instance['video']['self_sources'] )
+			) {
 				foreach ( $instance['video']['self_sources'] as $source ) {
 					$src = '';
 					$video_type = '';
