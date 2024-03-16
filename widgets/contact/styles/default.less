@@ -2,7 +2,6 @@
 
 .sow-form-field {
 	display: block;
-	margin-bottom: 1em;
 	.clearfix();
 
 	label {
@@ -169,6 +168,57 @@
 				margin-right: 0.5em;
 				flex: none;
 			}
+		}
+	}
+
+	&.sow-form-field-select {
+
+		select,
+		.select2-container {
+			.font(@field_font_family, @field_font_weight);
+			background: @field_background;
+			border-radius: @field_border_radius;
+			border: @field_border_width @field_border_style @field_border_color;
+			color: @field_font_color;
+			font-size: @field_font_size;
+			font-style: @field_font_style;
+			margin: @field_margin;
+			padding: @field_padding;
+		}
+
+		.select2-container,
+		.select2-search__field {
+			width: 100% !important;
+		}
+
+		.select2-selection__rendered,
+		.select2-search__field {
+			padding: 0;
+			margin: 0;
+
+			&:focus {
+				outline: none;
+			}
+		}
+
+		.select2-search {
+			margin-left: 3px;
+		}
+
+		.select2-selection__choice__remove {
+			height: 100%;
+		}
+
+		.select2-selection__choice {
+			margin-left: 2px;
+			margin-top: 0;
+		}
+
+		.select2-selection--multiple {
+			align-items: center;
+			border: none;
+			display: flex;
+			padding: 0;
 		}
 	}
 

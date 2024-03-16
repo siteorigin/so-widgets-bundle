@@ -6,7 +6,7 @@
  * @var string $icon_close
  */
 if ( ! empty( $instance['title'] ) ) {
-	echo $args['before_title'] . $instance['title'] . $args['after_title'];
+	echo $args['before_title'] . wp_kses_post( $instance['title'] ) . $args['after_title'];
 }
 ?>
 <div>
@@ -45,7 +45,7 @@ if ( ! empty( $instance['title'] ) ) {
 				}
 				?>
 			>
-				<div class="sow-accordion-panel-border" tabindex="0">
+				<div class="sow-accordion-panel-border">
 					<?php $this->render_panel_content( $panel, $instance ); ?>
 				</div>
 			</div>

@@ -1,8 +1,8 @@
 /* global jQuery, soWidgets, sowbForms */
 
-(function( $ ) {
+( function( $ ) {
 
-	$( document ).on( 'sowsetupform', '.siteorigin-widget-field-type-posts', function ( e ) {
+	$( document ).on( 'sowsetupform', '.siteorigin-widget-field-type-posts', function( e ) {
 		var $postsField = $( this );
 		$postsField.on( 'change', function( event ) {
 			var postsValues = sowbForms.getWidgetFormValues( $postsField );
@@ -19,7 +19,7 @@
 			$.post(
 				soWidgets.ajaxurl,
 				{ action: 'sow_get_posts_count', query: query },
-				function(data){
+				function( data ) {
 					$postsField.find( '.sow-current-count' ).text( data.posts_count );
 
 				}
@@ -27,4 +27,4 @@
 		} );
 	} );
 
-})( jQuery );
+} )( jQuery );

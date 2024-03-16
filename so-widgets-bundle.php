@@ -390,12 +390,25 @@ class SiteOrigin_Widgets_Bundle {
 		wp_register_script(
 			'sowb-pikaday',
 			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/pikaday' . SOW_BUNDLE_JS_SUFFIX . '.js',
-			array( ),
+			array(),
 			'1.5.1'
 		);
+
 		wp_register_style(
 			'sowb-pikaday',
 			plugin_dir_url( __FILE__ ) . 'js/lib/pikaday.css'
+		);
+
+		wp_register_script(
+			'select2',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/select2' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			'4.1.0-rc.0'
+		);
+
+		wp_register_style(
+			'select2',
+			plugin_dir_url( __FILE__ ) . 'css/lib/select2.css'
 		);
 	}
 
@@ -589,6 +602,7 @@ class SiteOrigin_Widgets_Bundle {
 	public function activate_widget( $widget_id, $include = true ) {
 		$exists = false;
 		$widget_folders = $this->get_widget_folders();
+		$widget_id = sanitize_file_name( $widget_id );
 
 		foreach ( $widget_folders as $folder ) {
 			if ( ! file_exists( $folder . $widget_id . '/' . $widget_id . '.php' ) ) {
@@ -654,9 +668,10 @@ class SiteOrigin_Widgets_Bundle {
 	/**
 	 * Deactivate a widget.
 	 */
-	public function deactivate_widget( $id ) {
+	public function deactivate_widget( $widget_id ) {
+		$widget_id = sanitize_file_name( $widget_id );
 		$active_widgets = $this->get_active_widgets();
-		$active_widgets[ $id ] = false;
+		$active_widgets[ $widget_id ] = false;
 		update_option( 'siteorigin_widgets_active', $active_widgets );
 		wp_cache_delete( 'active_widgets', 'siteorigin_widgets' );
 	}
@@ -857,7 +872,7 @@ class SiteOrigin_Widgets_Bundle {
 		wp_register_script(
 			'sowb-pikaday',
 			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/pikaday' . SOW_BUNDLE_JS_SUFFIX . '.js',
-			array( ),
+			array(),
 			'1.6.1'
 		);
 
@@ -871,6 +886,25 @@ class SiteOrigin_Widgets_Bundle {
 		wp_register_style(
 			'sowb-pikaday',
 			plugin_dir_url( __FILE__ ) . 'js/lib/pikaday.css'
+		);
+
+		wp_register_script(
+			'jquery-fitvids',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/jquery.fitvids' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			1.1
+		);
+
+		wp_register_script(
+			'select2',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/select2' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			'4.1.0-rc.0'
+		);
+
+		wp_register_style(
+			'select2',
+			plugin_dir_url( __FILE__ ) . 'css/lib/select2.css'
 		);
 	}
 

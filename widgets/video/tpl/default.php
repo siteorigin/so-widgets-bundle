@@ -12,7 +12,7 @@
  * @var $fitvids
  */
 if ( ! empty( $instance['title'] ) ) {
-	echo $args['before_title'] . $instance['title'] . $args['after_title'];
+	echo $args['before_title'] . wp_kses_post( $instance['title'] ) . $args['after_title'];
 }
 
 $video_args = array(
@@ -48,15 +48,21 @@ $so_video = new SiteOrigin_Video();
 do_action( 'siteorigin_widgets_sow-video_before_video', $instance );
 ?>
 
-<div class="sow-video-wrapper<?php if ( $fitvids ) {
+<div class="sow-video-wrapper<?php
+if ( $fitvids ) {
 	echo ' use-fitvids';
-} ?>">
+}
+
+if ( ! $show_controls ) {
+	echo ' no-controls';
+}
+?>">
 	<?php if ( $is_skinnable_video_host ) { ?>
 		<video
 			<?php foreach ( $video_args as $k => $v ) { ?>
-				<?php echo $k . '="' . $v . '" '; ?>
+				<?php echo esc_html( $k ) . '="' . esc_attr( $v ) . '" '; ?>
 			<?php } ?>
-			<?php if ( apply_filters( 'sow_video_add_controls', false ) ) { ?>
+			<?php if ( apply_filters( 'sow_video_add_controls', $show_controls ) ) { ?>
 				<?php echo 'controls'; ?>
 			<?php } ?>
 		>
@@ -65,7 +71,7 @@ do_action( 'siteorigin_widgets_sow-video_before_video', $instance );
 			<?php } ?>
 		</video>
 	<?php } else { ?>
-		<?php echo $so_video->get_video_oembed( $src, $autoplay, false, $loop ); ?>
+		<?php echo $so_video->get_video_oembed( $src, $autoplay, false, $loop, true ); ?>
 	<?php } ?>
 </div>
 <?php do_action( 'siteorigin_widgets_sow-video_after_video', $instance ); ?>

@@ -7,7 +7,7 @@
 ?>
 
 <?php if ( ! empty( $instance['widget_title'] ) ) {
-	echo $args['before_title'] . $instance['widget_title'] . $args['after_title'];
+	echo $args['before_title'] . wp_kses_post( $instance['widget_title'] ) . $args['after_title'];
 } ?>
 
 <?php if ( $preloader_enabled ) { ?>
@@ -18,10 +18,12 @@
 	<?php
 	if ( ! empty( $items ) ) {
 		foreach ( $items as $item ) {
-			$src   = wp_get_attachment_image_src( $item['image'], 'full' );
-			$src   = empty( $src ) ? '' : $src[0];
-			$title = empty( $item['title'] ) ? '' : $item['title'];
-			$url   = empty( $item['url'] ) ? '' : $item['url'];
+			$attr = array();
+			$attr['class'] = 'sow-masonry-grid-image';
+			$src = wp_get_attachment_image_src( $item['image'], 'full' );
+			$src = empty( $src ) ? '' : $src[0];
+			$attr['title'] = empty( $item['title'] ) ? '' : $item['title'];
+			$url = empty( $item['url'] ) ? '' : $item['url'];
 			?>
 			<div class="sow-masonry-grid-item" data-col-span="<?php echo esc_attr( $item['column_span'] ); ?>"
 			     data-row-span="<?php echo esc_attr( $item['row_span'] ); ?>">
@@ -29,7 +31,7 @@
 					<a href="<?php echo sow_esc_url( $url ); ?>"
 					<?php foreach ( $item['link_attributes'] as $att => $val ) { ?>
 						<?php if ( ! empty( $val ) ) { ?>
-							<?php echo $att . '="' . esc_attr( $val ) . '" '; ?>
+							<?php echo esc_html( $att ) . '="' . esc_attr( $val ) . '" '; ?>
 						<?php } ?>
 					<?php } ?>>
 				<?php } ?>
@@ -48,15 +50,15 @@
 				<?php } ?>
 
 				<?php
-				$loading_val = function_exists( 'wp_get_loading_attr_default' ) ? wp_get_loading_attr_default( 'the_content' ) : 'lazy';
 				echo siteorigin_widgets_get_attachment_image(
 					$item['image'],
 					'full',
 					! empty( $item['image_fallback'] ) ? $item['image_fallback'] : '',
-					array(
-						'title' => esc_attr( $title ),
-						'class' => 'sow-masonry-grid-image',
-						'loading' => $preloader_enabled ? false : $loading_val,
+					siteorigin_loading_optimization_attributes(
+						$attr,
+						'masonry_grid',
+						$instance,
+						$this
 					)
 				);
 				?>

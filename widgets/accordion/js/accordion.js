@@ -3,7 +3,7 @@
 var sowb = window.sowb || {};
 
 jQuery( function ( $ ) {
-	
+
 	sowb.setupAccordion = function() {
 		$( '.sow-accordion' ).each( function ( index, element ) {
 			var $widget = $( this ).closest( '.so-widget-sow-accordion' );
@@ -17,7 +17,7 @@ jQuery( function ( $ ) {
 			var updateHash = function () {
 				// noop
 			};
-			
+
 			var scrollToPanel = function ( $panel, smooth ) {
 				// Add some magic number offset to make space for possible nav menus etc.
 				var navOffset = sowAccordion.scrollto_offset ? sowAccordion.scrollto_offset : 80;
@@ -72,7 +72,7 @@ jQuery( function ( $ ) {
 					}
 				}
 			};
-			
+
 			var closePanel = function ( panel, preventHashChange ) {
 				var $panel = $( panel );
 				if ( $panel.is( '.sow-accordion-panel-open' ) ) {
@@ -89,10 +89,10 @@ jQuery( function ( $ ) {
 					}
 				}
 			};
-			
+
 			$accordionPanels.find( '> .sow-accordion-panel-header-container > .sow-accordion-panel-header' ).on( 'click keydown', function( e ) {
 				if ( e.type == 'keydown' ) {
-					if ( e.keyCode !== 13 && e.keyCode !== 32 ){
+					if ( e.key !== 'Enter' && e.key !== 'Space' ) {
 						return;
 					}
 					e.preventDefault();
@@ -127,7 +127,7 @@ jQuery( function ( $ ) {
 						clearTimeout( timeoutId );
 					}
 					timeoutId = setTimeout( function () {
-						
+
 						var anchors = [];
 						var allOpenPanels = $( '.sow-accordion-panel-open' ).toArray();
 						for ( var i = 0; i < allOpenPanels.length; i++ ) {
@@ -143,7 +143,7 @@ jQuery( function ( $ ) {
 								}
 							}
 						}
-						
+
 						if ( anchors && anchors.length ) {
 							window.location.hash = anchors.join( ',' );
 						} else if ( window.location.hash ) { // This prevents adding a history event if no was present on load
@@ -151,7 +151,7 @@ jQuery( function ( $ ) {
 						}
 					}, 100 );
 				};
-				
+
 				var updatePanelStates = function () {
 					var panels = $accordionPanels.toArray();
 					var anchors = window.location.hash.substring( 1 ).split( ',' );
@@ -194,13 +194,13 @@ jQuery( function ( $ ) {
 					}, 500 );
 				}
 			}
-			
+
 			$widget.data( 'initialized', true );
 		} );
 	};
-	
+
 	sowb.setupAccordion();
-	
+
 	$( sowb ).on( 'setup_widgets', sowb.setupAccordion );
 } );
 

@@ -8,6 +8,7 @@
 @button_color: #41a9d5;
 @border_color: darken(@button_color, 5%);
 @text_color: #FFFFFF;
+@icon_size: 1.3em;
 
 @hover_background_color: #41a9d5;
 @hover_text_color:  #FFFFFF;
@@ -20,6 +21,7 @@
 @rounding: 0.25em;
 @padding: 1em;
 @has_text: true;
+@has_button_icon: false;
 
 .ow-button-base {
 	.clearfix();
@@ -66,18 +68,42 @@
 		& when not ( @has_text = true ) {
 			.sow-icon-image,
 			[class^="sow-icon-"] {
-					margin: 0;
+				margin: 0;
 			}
 		}
 
-		&:active,
-		&:hover{
-			color: @hover_text_color !important;
+		& when ( @has_button_icon = true ) {
+			& > span {
+				display: flex;
+				justify-content: center;
+
+				[class^="sow-icon-"] {
+					font-size: @icon_size;
+				}
+			}
+
+			&.ow-icon-placement-top > span {
+				flex-direction: column;
+			}
+
+			&.ow-icon-placement-right > span {
+				flex-direction: row-reverse;
+			}
+
+			&.ow-icon-placement-bottom > span {
+				flex-direction: column-reverse;
+			}
+
+			&.ow-icon-placement-left > span {
+				align-items: start;
+			}
 		}
 
+		&.ow-button-hover:active,
 		&.ow-button-hover:hover {
 			background: lighten(@hover_background_color, 4%);
 			border-color: lighten(@hover_background_color, 4%);
+			color: @hover_text_color !important;
 		}
 	}
 }

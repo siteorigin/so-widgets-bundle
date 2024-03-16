@@ -82,7 +82,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected $required;
 	/**
-	 * Specifies an additional sanitization to be performed. Available sanitizations are 'email' and 'url'. If the
+	 * Specifies an additional sanitization to be performed. Available sanitizations are `text`, `email` and `url`. If the
 	 * specified sanitization isn't recognized it is assumed to be a custom sanitization and a filter is applied using
 	 * the pattern `'siteorigin_widgets_sanitize_field_' . $sanitize`, in case the sanitization is defined elsewhere.
 	 *
@@ -275,7 +275,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 		}
 
 		?><div <?php foreach ( $wrapper_attributes as $attr => $attr_val ) {
-			echo $attr . '="' . esc_attr( $attr_val ) . '" ';
+			echo esc_html( $attr ) . '="' . esc_attr( $attr_val ) . '" ';
 		} ?>><?php
 
 		// Allow subclasses and to render something before and after the render_field() function is called.
@@ -306,12 +306,12 @@ abstract class SiteOrigin_Widget_Field_Base {
 			echo esc_html( $this->label );
 
 			if ( ! empty( $this->optional ) ) {
-				echo '<span class="field-optional">(' . __( 'Optional', 'so-widgets-bundle' ) . ')</span>';
+				echo '<span class="field-optional">(' . esc_html__( 'Optional', 'so-widgets-bundle' ) . ')</span>';
 			}
 
 			if ( ! empty( $this->required ) ) {
 				/* translators: Used to indicate field as required. */
-				echo '<span class="field-required">' . __( '*', 'so-widgets-bundle' ) . '</span>';
+				echo '<span class="field-required">' . esc_html__( '*', 'so-widgets-bundle' ) . '</span>';
 			}
 			?>
 		</label>
@@ -350,9 +350,25 @@ abstract class SiteOrigin_Widget_Field_Base {
 	public function sanitize( $value, $instance = array(), $old_value = null ) {
 		$value = $this->sanitize_field_input( $value, $instance );
 
+		if ( empty( $value ) ) {
+			return '';
+		}
+
 		if ( isset( $this->sanitize ) ) {
 			// This field also needs some custom sanitization
 			switch( $this->sanitize ) {
+				case 'text':
+					if (
+						is_user_logged_in() &&
+						// Fields can be sanitized for setup purposes during display.
+						// As the data is sanitized during the saving purpose, we can
+						// safely skip this. Not doing so could result in an error.
+						! current_user_can( 'unfiltered_html' ) &&
+						! apply_filters( 'siteorigin_widgets_field_allow_unfiltered_html', false )
+					) {
+						$value = $this->recursive_sanitize( $value );
+					}
+					break;
 				case 'url':
 					$value = sow_esc_url_raw( $value );
 					break;
@@ -373,6 +389,21 @@ abstract class SiteOrigin_Widget_Field_Base {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Recursively sanitizes and filters the given value using sanitize_text_field().
+	 *
+	 * If the value is an array, it recursively applies the sanitization to each element.
+	 *
+	 * @param mixed $value The value to be sanitized.
+	 * @return mixed The sanitized value.
+	 */
+	public function recursive_sanitize( $value ) {
+		if ( is_array( $value ) ) {
+			return array_map( array( $this, 'recursive_sanitize' ), $value );
+		}
+		return sanitize_text_field( $value );
 	}
 
 	/**

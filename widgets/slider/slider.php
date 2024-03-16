@@ -142,11 +142,13 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 
 	public function get_frame_background( $i, $frame ) {
-		$background_image = siteorigin_widgets_get_attachment_image_src(
-			$frame['background_image'],
-			'full',
-			! empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : ''
-		);
+		if ( ! empty( $frame['foreground_image'] ) ) {
+			$background_image = siteorigin_widgets_get_attachment_image_src(
+				$frame['background_image'],
+				'full',
+				! empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : ''
+			);
+		}
 
 		return array(
 			'color' => ! empty( $frame['background_color'] ) ? $frame['background_color'] : false,
@@ -181,10 +183,10 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 		if ( ! empty( $foreground_src ) ) {
 			// If a custom height is set, build the foreground style attribute.
 			if ( ! empty( $frame['custom_height'] ) ) {
-				$foreground_style_attr = 'height: ' . intval( $frame['custom_height'] ) . 'px; width: auto;';
+				$foreground_style_attr = 'height: ' . (int) $frame['custom_height'] . 'px; width: auto;';
 
 				if ( ! empty( $foreground_src[2] ) ) {
-					$foreground_style_attr .= 'max-height: ' . intval( $foreground_src[2] ) . 'px';
+					$foreground_style_attr .= 'max-height: ' . (int) $foreground_src[2] . 'px';
 				}
 			}
 			?>
@@ -196,24 +198,28 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 						<a href="<?php echo sow_esc_url( $frame['url'] ); ?>"
 						<?php foreach ( $frame['link_attributes'] as $att => $val ) { ?>
 							<?php if ( ! empty( $val ) ) { ?>
-								<?php echo $att . '="' . esc_attr( $val ) . '" '; ?>
+								<?php echo esc_html( $att ) . '="' . esc_attr( $val ) . '" '; ?>
 							<?php } ?>
 						<?php } ?>>
 					<?php } ?>
 					<div class="sow-slider-image-foreground-wrapper">
 						<?php
 						echo siteorigin_widgets_get_attachment_image(
-						$frame['foreground_image'],
-						'full',
-						! empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : '',
-						apply_filters(
+							$frame['foreground_image'],
+							'full',
+							! empty( $frame['foreground_image_fallback'] ) ? $frame['foreground_image_fallback'] : '',
+							siteorigin_loading_optimization_attributes(
+								apply_filters(
 									'siteorigin_widgets_slider_attr',
 									array(
-										'class' => 'sow-slider-foreground-image skip-lazy',
-										'loading' => apply_filters( 'siteorigin_widgets_slider_loading_attr', 'eager' ),
+										'class' => 'sow-slider-foreground-image',
 										'style' => ! empty( $foreground_style_attr ) ? $foreground_style_attr : '',
 									)
-								)
+								),
+								'sliders',
+								new stdClass(),
+								$this
+							)
 						);
 						?>
 					</div>
@@ -229,7 +235,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				<a href="<?php echo sow_esc_url( $frame['url'] ); ?>"
 				<?php foreach ( $frame['link_attributes'] as $att => $val ) { ?>
 					<?php if ( ! empty( $val ) ) { ?>
-						<?php echo $att . '="' . esc_attr( $val ) . '" '; ?>
+						<?php echo esc_html( $att ) . '="' . esc_attr( $val ) . '" '; ?>
 					<?php } ?>
 				<?php } ?>>
 			<?php
@@ -239,13 +245,17 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				$frame['background_image'],
 				'full',
 				! empty( $frame['background_image_fallback'] ) ? $frame['background_image_fallback'] : '',
-				apply_filters(
-					'siteorigin_widgets_slider_attr',
-					array(
-						'class' => 'sow-slider-background-image skip-lazy',
-						'style' => ! empty( $frame['custom_height'] ) ? 'height: ' . intval( $frame['custom_height'] ) . 'px; width: auto; margin: 0 auto;' : '',
-						'loading' => 'eager',
-					)
+				siteorigin_loading_optimization_attributes(
+					apply_filters(
+						'siteorigin_widgets_slider_attr',
+						array(
+							'class' => 'sow-slider-background-image',
+							'style' => ! empty( $frame['custom_height'] ) ? 'height: ' . intval( $frame['custom_height'] ) . 'px; width: auto; margin: 0 auto;' : '',
+						)
+					),
+					'sliders',
+					new stdClass(),
+					$this
 				)
 			);
 
@@ -269,6 +279,11 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				$frame['link_attributes'] = $link_atts;
 
 				$frame['custom_height'] = ! empty( $instance['design']['height'] ) ? $instance['design']['height'] : 0;
+
+				$frame['custom_height'] = ! empty( $instance['design']['height'] ) ? $instance['design']['height'] : 0;
+				if ( ! empty( $frame['custom_height'] ) && empty( $frame['foreground_image'] )) {
+					$frame['no_output'] = true;
+				}
 			}
 		}
 
@@ -294,6 +309,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			$less['nav_size'] = $instance['controls']['nav_size'];
 		}
 
+		$less['nav_align'] = ! empty( $instance['controls']['nav_align'] ) ? $instance['controls']['nav_align'] : 'right';
 		$less['slide_height'] = ! empty( $instance['design']['height'] ) ? $instance['design']['height'] : false;
 		$less['slide_height_responsive'] = ! empty( $instance['design']['height_responsive'] ) ? $instance['design']['height_responsive'] : false;
 

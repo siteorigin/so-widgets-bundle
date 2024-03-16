@@ -1,6 +1,6 @@
 <?php
 if ( empty( $file ) ) {
-	echo __( 'Unable to display Lottie Player.', 'so-widgets-bundle' );
+	esc_html_e( 'Unable to display Lottie Player.', 'so-widgets-bundle' );
 
 	return;
 }
@@ -23,9 +23,9 @@ if ( empty( $file ) ) {
 		foreach ( $attributes as $name => $value ) {
 			if ( ! empty( $value ) ) {
 				if ( $value === true ) {
-					echo "$name ";
+					echo esc_attr( "$name " );
 				} else {
-					echo $name . '="' . esc_attr( $value ) . '" ';
+					echo esc_attr( $name ) . '="' . esc_attr( $value ) . '" ';
 				}
 			}
 		}

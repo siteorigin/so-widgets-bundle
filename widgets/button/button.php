@@ -204,6 +204,12 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'default' => '1em',
 					),
 
+					'icon_size' => array(
+						'type' => 'measurement',
+						'label' => __( 'Icon Size', 'so-widgets-bundle' ),
+						'default' => '1.3em',
+					),
+
 					'padding' => array(
 						'type' => 'measurement',
 						'label' => __( 'Padding', 'so-widgets-bundle' ),
@@ -259,6 +265,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 						'type' => 'text',
 						'label' => __( 'Onclick', 'so-widgets-bundle' ),
 						'description' => __( 'Run this JavaScript when the button is clicked. Ideal for tracking.', 'so-widgets-bundle' ),
+						'onclick' => true,
 					),
 
 					'rel' => array(
@@ -344,7 +351,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
-			'button_attributes' => $button_attributes,
+			'button_attributes' => apply_filters( 'siteorigin_widgets_button_attributes', $button_attributes, $instance ),
 			'href' => ! empty( $instance['url'] ) ? $instance['url'] : '#',
 			'on_click' => ! empty( $attributes['on_click'] ) ? $attributes['on_click'] : '',
 			'align' => $instance['design']['align'],
@@ -372,6 +379,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'button_width' => isset( $instance['design']['width'] ) ? $instance['design']['width'] : '',
 			'button_color' => $button_color,
 			'text_color' => $text_color,
+			'icon_size' => ! empty( $instance['design']['icon_size'] ) ? $instance['design']['icon_size'] : '1.3em',
 			'hover_text_color' => ! empty( $instance['design']['hover_text_color'] ) ? $instance['design']['hover_text_color'] : $text_color,
 			'hover_background_color' => ! empty( $instance['design']['hover_background_color'] ) ? $instance['design']['hover_background_color'] : $button_color,
 			'font_size' => isset( $instance['design']['font_size'] ) ? $instance['design']['font_size'] : '',
@@ -379,8 +387,9 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'padding' => isset( $instance['design']['padding'] ) ? $instance['design']['padding'] : '',
 			'has_text' => empty( $instance['text'] ) ? 'false' : 'true',
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
-			'align' => $instance['design']['align'],
-			'mobile_align' => $instance['design']['mobile_align'],
+			'align' => ! empty( $instance['design']['align'] ) ? $instance['design']['align'] : 'center',
+			'mobile_align' => ! empty( $instance['design']['mobile_align'] ) ? $instance['design']['mobile_align'] : 'center',
+			'has_button_icon' => empty( $instance['button_icon']['icon_selected'] ) ? 'false' : 'true',
 		);
 
 		if ( ! empty( $instance['design']['font'] ) ) {
@@ -470,6 +479,10 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 		if ( ! empty( $instance['design']['rounding'] ) && is_numeric( $instance['design']['rounding'] ) ) {
 			$instance['design']['rounding'] = $instance['design']['rounding'] . 'em ' . $instance['design']['rounding'] . 'em ' . $instance['design']['rounding'] . 'em ' . $instance['design']['rounding'] . 'em';
+		}
+
+		if ( empty( $instance['design']['icon_size'] ) ) {
+			$instance['design']['icon_size'] = '1.3em';
 		}
 
 		return $instance;

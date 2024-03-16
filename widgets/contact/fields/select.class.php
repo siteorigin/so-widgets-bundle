@@ -2,6 +2,10 @@
 
 class SiteOrigin_Widget_ContactForm_Field_Select extends SiteOrigin_Widget_ContactForm_Field_Base {
 	public function render_field( $options ) {
+		if ( ! empty( $options['field']['multiple_select'] ) ) {
+			wp_enqueue_script( 'select2' );
+			wp_enqueue_style( 'select2' );
+		}
 		?>
 		<select
 			name="<?php echo esc_attr( $options['field_name'] ); ?><?php echo ! empty( $options['field']['multiple_select'] ) ? '[]' : ''; ?>"
@@ -10,14 +14,18 @@ class SiteOrigin_Widget_ContactForm_Field_Select extends SiteOrigin_Widget_Conta
 			<?php echo ! empty( $options['field']['multiple_select'] ) ? 'multiple' : ''; ?>
 		>
 			<?php
-			if ( $options['show_placeholder'] ) {
+			if ( $options['show_placeholder'] && empty( $options['field']['multiple_select'] ) ) {
 				?>
 				<option selected disabled><?php esc_html_e( $options['field']['label'] ); ?></option>
 				<?php
 			}
 
 			if ( ! empty( $options['field']['options'] ) ) {
-				if ( ! $options['show_placeholder'] && $options['field']['required']['required'] ) {
+				if (
+					! $options['show_placeholder'] &&
+					$options['field']['required']['required'] &&
+					empty( $options['field']['multiple_select'] )
+				) {
 					?>
 					<option selected <?php if ( ! $options['field']['required']['required'] ) {
 						echo 'disabled';

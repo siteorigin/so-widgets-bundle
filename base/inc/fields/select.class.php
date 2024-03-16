@@ -25,7 +25,47 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 	 */
 	protected $multiple;
 
+	/**
+	 * Determines whether this is a single or multiple select field.
+	 *
+	 * @var bool
+	 */
+	protected $select2;
+
+	public function enqueue_scripts() {
+		if (
+			! empty( $this->multiple ) &&
+			! empty( $this->select2 )
+		) {
+			wp_enqueue_script( 'select2' );
+			wp_enqueue_style( 'select2' );
+			wp_enqueue_script(
+				'so-select-field',
+				plugin_dir_url( __FILE__ ) . 'js/select-field' . SOW_BUNDLE_JS_SUFFIX . '.js',
+				array( 'jquery' ),
+				SOW_BUNDLE_VERSION
+			);
+
+			wp_enqueue_style(
+				'so-select-field',
+				plugin_dir_url( __FILE__ ) . 'css/select-field.css',
+				array(),
+				SOW_BUNDLE_VERSION
+			);
+		}
+	}
+
 	protected function render_field( $value, $instance ) {
+
+		if (
+			! empty( $this->multiple ) &&
+			! empty( $this->select2 )
+		) {
+			if ( ! empty( $this->input_css_classes ) ) {
+				$this->input_css_classes = array();
+			}
+			$this->input_css_classes[] = 'sow-select2';
+		}
 		?>
 		<select
 			name="<?php echo esc_attr( $this->element_name ); ?>"

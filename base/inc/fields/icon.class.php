@@ -54,7 +54,14 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 		?>
 
 		<div class="siteorigin-widget-icon-selector-current" tabindex="0">
-			<div class="siteorigin-widget-icon"><span></span></div>
+			<div class="siteorigin-widget-icon">
+				<span></span>
+				<?php
+				if ( ! empty( $value ) ) {
+					echo '<span class="sow-icon-clear">' . siteorigin_widget_get_icon( $value, true ) . '</span>';
+				}
+				?>
+			</div>
 			<label><?php _e( 'Choose Icon', 'so-widgets-bundle' ); ?></label>
 		</div>
 
@@ -75,7 +82,7 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 					</option>
 				<?php } ?>
 			</select>
-			
+
 			<?php if ( ! empty( $widget_icon_families[$value_family]['styles'] ) ) {
 				$family_styles = $widget_icon_families[ $value_family ]['styles'];
 				?>
