@@ -93,7 +93,7 @@ $tag = siteorigin_widget_valid_tag(
 					<?php } ?>
 
 					<?php if ( ! empty( $feature['title'] ) ) { ?>
-						<<?php esc_html_e( $tag ); ?>>
+						<<?php echo esc_html( $tag ); ?>>
 							<?php if ( ! empty( $feature['more_url'] ) && $instance['title_link'] && empty( $instance['link_feature'] ) ) { ?>
 								<a
 									href="<?php echo sow_esc_url( $feature['more_url'] ); ?>"
@@ -105,7 +105,7 @@ $tag = siteorigin_widget_valid_tag(
 							<?php if ( ! empty( $feature['more_url'] ) && $instance['title_link'] && empty( $instance['link_feature'] ) ) { ?>
 								</a>
 							<?php } ?>
-						</<?php esc_html_e( $tag ); ?>>
+						</<?php echo esc_html( $tag ); ?>>
 					<?php } ?>
 
 					<?php if ( ! empty( $feature['text'] ) ) { ?>
