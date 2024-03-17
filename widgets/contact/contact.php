@@ -1644,6 +1644,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 		}
 
+		$errors = apply_filters( 'siteorigin_widgets_contact_spam_check', $errors, $post_vars, $email_fields, $instance );
+
 		return $errors;
 	}
 

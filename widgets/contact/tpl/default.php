@@ -62,6 +62,8 @@ if ( is_array( $result ) && $result['status'] == 'success' ) {
 				require 'simple.php';
 			}
 		}
+
+		do_action( 'siteorigin_contact_form_before_submit', $instance, $result );
 		?>
 
 		<div class="sow-submit-wrapper <?php if ( $instance['design']['submit']['styled'] ) {
@@ -84,6 +86,7 @@ if ( is_array( $result ) && $result['status'] == 'success' ) {
 				<?php echo esc_attr( $instance['settings']['submit_text'] ); ?>
 			</button>
 		</div>
+		<?php do_action( 'siteorigin_contact_form_after_submit', $instance, $result ); ?>
 		<input type="hidden" name="instance_hash" value="<?php echo esc_attr( $instance_hash ); ?>" />
 		<?php wp_nonce_field( '_contact_form_submit' ); ?>
 	</form>
