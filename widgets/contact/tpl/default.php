@@ -70,9 +70,13 @@ if ( is_array( $result ) && $result['status'] == 'success' ) {
 			echo 'sow-submit-styled';
 		} ?>">
 
-			<button class="sow-submit<?php if ( $recaptcha && empty( $recaptcha_v2 ) ) {
-				echo ' g-recaptcha';
-			} ?>"
+			<button
+				type="submit"
+				class="sow-submit<?php
+				if ( $recaptcha && empty( $recaptcha_v2 ) ) {
+					echo ' g-recaptcha';
+				}
+				?>"
 				<?php
 				foreach ( $submit_attributes as $name => $val ) {
 					echo esc_attr( $name ) . '="' . esc_attr( $val ) . '" ';
@@ -83,7 +87,7 @@ if ( is_array( $result ) && $result['status'] == 'success' ) {
 				}
 				?>
 			>
-				<?php echo esc_attr( $instance['settings']['submit_text'] ); ?>
+				<?php echo esc_html( $instance['settings']['submit_text'] ); ?>
 			</button>
 		</div>
 		<?php do_action( 'siteorigin_contact_form_after_submit', $instance, $result ); ?>

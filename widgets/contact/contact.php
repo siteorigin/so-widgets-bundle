@@ -1606,6 +1606,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 			// Pretend to check with Akismet
 			$response = Akismet::http_post( Akismet::build_query( $comment ), 'comment-check' );
+
 			$is_spam = ! empty( $response[1] ) && $response[1] == 'true';
 
 			if ( $is_spam ) {
