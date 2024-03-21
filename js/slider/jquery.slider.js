@@ -403,7 +403,7 @@ jQuery( function( $ ) {
 
 			setupSlider();
 
-			if ( $.isFunction( $.fn.fitVids ) ) {
+			if ( typeof $.fn.fitVids === 'function' ) {
 				$$.find( '.sow-slide-video-oembed' ).fitVids();
 			}
 
