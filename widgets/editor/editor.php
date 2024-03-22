@@ -105,8 +105,6 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 				$instance['text'] = wpautop( $instance['text'] );
 			}
 
-			$instance['text'] = do_shortcode( shortcode_unautop( $instance['text'] ) );
-
 			// Don't process more more quicktag if this is a preview.
 			if (
 				! $this->is_preview() &&
@@ -119,6 +117,8 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 				$instance['text'] = $this->process_more_quicktag( $instance['text'] );
 			}
 		}
+
+		$instance['text'] = do_shortcode( shortcode_unautop( $instance['text'] ) );
 
 		return array(
 			'text' => $instance['text'],
