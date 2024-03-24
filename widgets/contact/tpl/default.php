@@ -62,15 +62,21 @@ if ( is_array( $result ) && $result['status'] == 'success' ) {
 				require 'simple.php';
 			}
 		}
+
+		do_action( 'siteorigin_widgets_contact_before_submit', $instance, $result );
 		?>
 
 		<div class="sow-submit-wrapper <?php if ( $instance['design']['submit']['styled'] ) {
 			echo 'sow-submit-styled';
 		} ?>">
 
-			<button class="sow-submit<?php if ( $recaptcha && empty( $recaptcha_v2 ) ) {
-				echo ' g-recaptcha';
-			} ?>"
+			<button
+				type="submit"
+				class="sow-submit<?php
+				if ( $recaptcha && empty( $recaptcha_v2 ) ) {
+					echo ' g-recaptcha';
+				}
+				?>"
 				<?php
 				foreach ( $submit_attributes as $name => $val ) {
 					echo esc_attr( $name ) . '="' . esc_attr( $val ) . '" ';
@@ -81,9 +87,10 @@ if ( is_array( $result ) && $result['status'] == 'success' ) {
 				}
 				?>
 			>
-				<?php echo esc_attr( $instance['settings']['submit_text'] ); ?>
+				<?php echo esc_html( $instance['settings']['submit_text'] ); ?>
 			</button>
 		</div>
+		<?php do_action( 'siteorigin_widgets_contact_after_submit', $instance, $result ); ?>
 		<input type="hidden" name="instance_hash" value="<?php echo esc_attr( $instance_hash ); ?>" />
 		<?php wp_nonce_field( '_contact_form_submit' ); ?>
 	</form>

@@ -397,6 +397,11 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			} else {
 				++$network_classes[$name];
 			}
+
+			if ( $name === 'suitcase' ) {
+				$network['name'] = 'Tripadvisor';
+			}
+
 			$name .= '-' . $network_classes[$name];
 			$network['css_class_name'] = $name;
 		}
