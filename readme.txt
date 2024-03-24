@@ -106,6 +106,10 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.58.12 - 24 March 2024 =
+* Post Loop: Resolved a potential `post__in` error.
+* Post Loop: Resolved a potential post selector `post__not_in` deprecated warning.
+
 = 1.58.11 - 23 March 2024 =
 * Carousel: Resolved a potential warning.
 * Features: Correct HTML tag output.
