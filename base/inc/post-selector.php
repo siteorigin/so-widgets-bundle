@@ -112,6 +112,7 @@ function siteorigin_widget_post_selector_process_query( $query, $exclude_current
 	if ( ! empty( $query['additional'] ) ) {
 		$query = wp_parse_args( $query['additional'], $query );
 		unset( $query['additional'] );
+	}
 
 	if ( ! empty( $query['post__not_in'] ) ) {
 		if ( ! is_array( $query['post__not_in'] ) ) {
