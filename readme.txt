@@ -106,6 +106,18 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.58.11 - 23 March 2024 =
+* Carousel: Resolved a potential warning.
+* Features: Correct HTML tag output.
+* Slider: Replaced `$.isFunction` usage.
+* Social Media Buttons: Updated Tripadvisor title label.
+* Video Player: Resolved potential warning.
+* Block Editor: Always process shortcodes.
+* Color Field: Added support for color hexadecimal values with alpha channel notation (e.g., #RRGGBBAA). Enhanced validation for RGBA color values.
+* Post Selector: Resolved a potential deprecated notice.
+* Updated SiteOrigin Installer.
+* Developer: Added new Contact Form hooks.
+
 = 1.58.10 - 05 March 2024 =
 * Enhanced the saving process and validation for widgets and blocks in the Widgets Block.
 * Loaded defaults for the widget form field.
