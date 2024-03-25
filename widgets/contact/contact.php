@@ -366,7 +366,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'fields' => array(
 							'use_akismet' => array(
 								'type'    => 'checkbox',
-								'label'   => __( 'Use Akismet filtering', 'so-widgets-bundle' ),
+								'label'   => __( 'Akismet Filtering', 'so-widgets-bundle' ),
 								'description' => sprintf(
 									__( 'Use the %sAkismet%s plugin to filter spam submissions.', 'so-widgets-bundle' ),
 									'<a href="https://wordpress.org/plugins/akismet/" target="_blank" rel="noopener noreferrer">',
