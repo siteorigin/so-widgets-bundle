@@ -1009,6 +1009,23 @@ class SiteOrigin_Widgets_Bundle {
 
 		return $excluded;
 	}
+
+	public function is_block_editor() {
+		$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+
+		// This is for the Gutenberg plugin.
+		$is_gutenberg_page = $current_screen != null &&
+							 function_exists( 'is_gutenberg_page' ) &&
+							 is_gutenberg_page();
+		// This is for WP 5 with the integrated block editor.
+		$is_block_editor = false;
+
+		if ( ! empty( $current_screen ) && method_exists( $current_screen, 'is_block_editor' ) ) {
+			$is_block_editor = $current_screen->is_block_editor();
+		}
+
+		return $is_block_editor || $is_gutenberg_page;
+	}
 }
 
 // Create the initial single.
