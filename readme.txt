@@ -1,5 +1,5 @@
 === SiteOrigin Widgets Bundle ===
-Tags: widget, button, slider, hero, google maps, image, carousel, lottie, features, icons, price table, tinymce, social icons
+Tags: widgets, blocks, contact form, blog, slider
 Requires at least: 4.2
 Tested up to: 6.4
 Requires PHP: 5.6.20
