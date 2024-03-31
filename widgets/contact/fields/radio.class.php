@@ -1,11 +1,11 @@
 <?php
 
 class SiteOrigin_Widget_ContactForm_Field_Radio extends SiteOrigin_Widget_ContactForm_Field_Base {
-
 	public function render_field( $options ) {
-		if ( ! empty( $options['field']['options'] ) ): ?>
+		if ( ! empty( $options['field']['options'] ) ) {
+			?>
 			<ul>
-				<?php foreach ( $options['field']['options'] as $i => $option ): ?>
+				<?php foreach ( $options['field']['options'] as $i => $option ) { ?>
 					<li>
 						<label>
 							<input
@@ -19,8 +19,9 @@ class SiteOrigin_Widget_ContactForm_Field_Radio extends SiteOrigin_Widget_Contac
 							<?php echo esc_html( $option['value'] ); ?>
 						</label>
 					</li>
-				<?php endforeach; ?>
+				<?php } ?>
 			</ul>
-		<?php endif;
+		<?php
+		}
 	}
 }

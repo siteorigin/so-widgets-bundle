@@ -8,28 +8,28 @@ Documentation: https://siteorigin.com/widgets-bundle/lottie-player-widget/
 */
 
 class SiteOrigin_Widget_Lottie_Player_Widget extends SiteOrigin_Widget {
-	function __construct() {
+	public function __construct() {
 		parent::__construct(
 			'sow-lottie-player',
 			__( 'SiteOrigin Lottie Player', 'so-widgets-bundle' ),
 			array(
 				'description' => __( 'Bring your pages to life with Lottie animations.', 'so-widgets-bundle' ),
-				'help' => 'https://siteorigin.com/widgets-bundle/lottie-player-widget/'
+				'help' => 'https://siteorigin.com/widgets-bundle/lottie-player-widget/',
 			),
 			array(),
 			false,
-			plugin_dir_path(__FILE__)
+			plugin_dir_path( __FILE__ )
 		);
 	}
 
-	function initialize() {
+	public function initialize() {
 		$this->register_frontend_scripts(
 			array(
 				array(
 					'sow-lottie-player',
 					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/lottie-player' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array(),
-					'1.6.1'
+					'1.6.1',
 				),
 			)
 		);
@@ -37,13 +37,15 @@ class SiteOrigin_Widget_Lottie_Player_Widget extends SiteOrigin_Widget {
 		add_filter( 'upload_mimes', array( $this, 'add_json_mime' ) );
 	}
 
-	function add_json_mime( $types ) {
+	public function add_json_mime( $types ) {
 		$types['json'] = 'text/plain';
+
 		return $types;
 	}
 
-	function get_widget_form() {
+	public function get_widget_form() {
 		$global_settings = $this->get_global_settings();
+
 		return array(
 			'file' => array(
 				'type' => 'media',
@@ -95,8 +97,11 @@ class SiteOrigin_Widget_Lottie_Player_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_form_teaser() {
-		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+	public function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
+
 		return array(
 			sprintf(
 				__( 'Customize and enhance your Lottie Player with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),

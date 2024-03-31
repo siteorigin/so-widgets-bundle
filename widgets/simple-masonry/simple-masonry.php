@@ -8,40 +8,38 @@ Documentation: https://siteorigin.com/widgets-bundle/simple-masonry-widget/
 */
 
 class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
-	function __construct() {
-
+	public function __construct() {
 		parent::__construct(
 			'sow-simple-masonry',
-			__('SiteOrigin Simple Masonry', 'so-widgets-bundle'),
+			__( 'SiteOrigin Simple Masonry', 'so-widgets-bundle' ),
 			array(
-				'description' => __('A masonry layout for images. Images can link to your posts.', 'so-widgets-bundle'),
+				'description' => __( 'A masonry layout for images. Images can link to your posts.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/simple-masonry-widget/',
 			),
 			array(),
 			false,
-			plugin_dir_path(__FILE__)
+			plugin_dir_path( __FILE__ )
 		);
-
 	}
 
-	function initialize() {
+	public function initialize() {
 		$this->register_frontend_scripts(
 			array(
 				array(
 					'sow-simple-masonry',
 					siteorigin_widget_get_plugin_dir_url( 'sow-simple-masonry' ) . 'js/simple-masonry' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery', 'dessandro-imagesLoaded', 'dessandro-packery' ),
-					SOW_BUNDLE_VERSION
+					SOW_BUNDLE_VERSION,
 				),
 			)
 		);
 	}
 
-	function get_widget_form(){
+	public function get_widget_form() {
 		return array(
 			'widget_title' => array(
 				'type' => 'text',
-				'label' => __('Title', 'so-widgets-bundle'),
+				'label' => __( 'Title', 'so-widgets-bundle' ),
 			),
 
 			'items' => array(
@@ -55,14 +53,14 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 						),
 						array(
 							'selector' => '.media-field-wrapper .current .title',
-							'valueMethod' => 'html'
+							'valueMethod' => 'html',
 						),
 					),
 				),
 				'fields' => array(
 					'image' => array(
 						'type' => 'media',
-						'label' => __( 'Image', 'so-widgets-bundle'),
+						'label' => __( 'Image', 'so-widgets-bundle' ),
 						'fallback' => true,
 					),
 					'column_span' => array(
@@ -71,7 +69,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 						'description' => __( 'Number of columns this item should span. (Limited to number of columns selected in Layout section below.)', 'so-widgets-bundle' ),
 						'min' => 1,
 						'max' => 10,
-						'default' => 1
+						'default' => 1,
 					),
 					'row_span' => array(
 						'type' => 'slider',
@@ -79,22 +77,22 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 						'description' => __( 'Number of rows this item should span. (Limited to number of columns selected in Layout section below.)', 'so-widgets-bundle' ),
 						'min' => 1,
 						'max' => 10,
-						'default' => 1
+						'default' => 1,
 					),
 					'title' => array(
 						'type' => 'text',
-						'label' => __('Title', 'so-widgets-bundle'),
+						'label' => __( 'Title', 'so-widgets-bundle' ),
 					),
 					'url' => array(
 						'type' => 'link',
-						'label' => __('Destination URL', 'so-widgets-bundle'),
+						'label' => __( 'Destination URL', 'so-widgets-bundle' ),
 					),
 					'new_window' => array(
 						'type' => 'checkbox',
 						'default' => false,
-						'label' => __('Open in a new window', 'so-widgets-bundle'),
+						'label' => __( 'Open in a new window', 'so-widgets-bundle' ),
 					),
-				)
+				),
 			),
 
 			'preloader' => array(
@@ -104,20 +102,20 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 				'fields' => array(
 					'enabled' => array(
 						'type' => 'checkbox',
-						'label' => __( 'Enable preloader', 'so-widgets-bundle' )
+						'label' => __( 'Enable preloader', 'so-widgets-bundle' ),
 					),
 					'color' => array(
 						'type' => 'color',
 						'label' => __( 'Preloader icon color', 'so-widgets-bundle' ),
-						'default' => '#232323'
+						'default' => '#232323',
 					),
 					'height' => array(
 						'type' => 'measurement',
 						'label' => __( 'Preloader height', 'so-widgets-bundle' ),
 						'default' => '250px',
-						'description' => __( 'The size of the preloader prior to the Masonry images showing.', 'so-widgets-bundle' )
-					)
-				)
+						'description' => __( 'The size of the preloader prior to the Masonry images showing.', 'so-widgets-bundle' ),
+					),
+				),
 			),
 
 			'title' => array(
@@ -148,7 +146,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 						'state_handler' => array(
 							'title_display[show]' => array( 'show' ),
 							'title_display[hide]' => array( 'hide' ),
-						)
+						),
 					),
 
 					'alignment' => array(
@@ -255,7 +253,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 							),
 							'gutter' => array(
 								'type' => 'number',
-								'label' => __( 'Gutter', 'so-widgets-bundle'),
+								'label' => __( 'Gutter', 'so-widgets-bundle' ),
 								'description' => __( 'Space between masonry items.', 'so-widgets-bundle' ),
 							),
 						),
@@ -286,7 +284,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 							),
 							'gutter' => array(
 								'type' => 'number',
-								'label' => __( 'Gutter', 'so-widgets-bundle'),
+								'label' => __( 'Gutter', 'so-widgets-bundle' ),
 								'description' => __( 'Space between masonry items.', 'so-widgets-bundle' ),
 							),
 						),
@@ -317,7 +315,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 							),
 							'gutter' => array(
 								'type' => 'number',
-								'label' => __( 'Gutter', 'so-widgets-bundle'),
+								'label' => __( 'Gutter', 'so-widgets-bundle' ),
 								'description' => __( 'Space between masonry items.', 'so-widgets-bundle' ),
 							),
 						),
@@ -329,9 +327,10 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 
 	public function get_template_variables( $instance, $args ) {
 		$items = isset( $instance['items'] ) ? $instance['items'] : array();
-		
+
 		foreach ( $items as &$item ) {
 			$link_atts = empty( $item['link_attributes'] ) ? array() : $item['link_attributes'];
+
 			if ( ! empty( $item['new_window'] ) ) {
 				$link_atts['target'] = '_blank';
 				$link_atts['rel'] = 'noopener noreferrer';
@@ -339,6 +338,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 			$item['link_attributes'] = $link_atts;
 			$item['title'] = $this->get_image_title( $item );
 		}
+
 		return array(
 			'args' => $args,
 			'items' => $items,
@@ -368,26 +368,26 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 						'gutter' => empty( $instance['layout']['mobile']['gutter'] ) ? 0 : (int) $instance['layout']['mobile']['gutter'],
 					)
 				),
-			)
+			),
 		);
 	}
 
 	/**
 	 * Try to figure out an image's title for display.
 	 *
-	 * @param $image
-	 *
 	 * @return string The title of the image.
 	 */
 	private function get_image_title( $image ) {
 		if ( ! empty( $image['title'] ) ) {
 			$title = $image['title'];
-		} else if ( apply_filters( 'siteorigin_widgets_auto_title', true, 'sow-simple-masonry' ) ) {
+		} elseif ( apply_filters( 'siteorigin_widgets_auto_title', true, 'sow-simple-masonry' ) ) {
 			$title = wp_get_attachment_caption( $image['image'] );
+
 			if ( empty( $title ) ) {
 				// We do not want to use the default image titles as they're based on the file name without the extension
 				$file_name = pathinfo( get_post_meta( $image['image'], '_wp_attached_file', true ), PATHINFO_FILENAME );
 				$title = get_the_title( $image['image'] );
+
 				if ( $title == $file_name ) {
 					return;
 				}
@@ -401,6 +401,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 
 	public function get_less_variables( $instance ) {
 		$less = array();
+
 		if ( ! empty( $instance['preloader'] ) && ! empty( $instance['preloader']['enabled'] ) ) {
 			$less['preloader_enabled'] = 'true';
 			$less['preloader_height'] = $instance['preloader']['height'];
@@ -411,6 +412,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 			$less['title_alignment'] = ! empty( $instance['title']['display'] ) ? $instance['title']['alignment'] : '';
 			$title_font = siteorigin_widget_get_font( $instance['title']['font'] );
 			$less['title_font'] = $title_font['family'];
+
 			if ( ! empty( $title_font['weight'] ) ) {
 				$less['title_font_weight'] = $title_font['weight_raw'];
 				$less['title_font_style'] = $title_font['style'];
@@ -419,20 +421,30 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 			$less['title_color'] = ! empty( $instance['title']['color'] ) ? $instance['title']['color'] : '';
 			$less['title_padding'] = ! empty( $instance['title']['padding'] ) ? $instance['title']['padding'] : '';
 		}
-		
+
 		return $less;
 	}
 
-	function modify_instance( $instance ) {
-		if ( empty( $instance ) ) {
+	public function modify_instance( $instance ) {
+		if ( empty( $instance ) || ! is_array( $instance ) ) {
 			return array();
 		}
 
-		// If this Simple Masonry was created before the title settings were added, disable it by default.
-		if ( ! empty( $instance['display'] ) || ! isset( $instance['title']['display'] ) ) {
-			$instance['title']['title_display'] = false;
+		// Ensure the title array exists.
+		if (
+			! isset( $instance['title'] ) ||
+			! is_array( $instance['title'] )
+		) {
+			$instance['title'] = array();
 		}
 
+		// If this Simple Masonry was created before the title settings were added, disable it by default.
+		if (
+			! empty( $instance['display'] ) ||
+			! isset( $instance['title']['display'] )
+		) {
+			$instance['title']['title_display'] = false;
+		}
 
 		// Migrate Legacy device layout settings to layout seciton.
 		if ( ! empty( $instance['desktop_layout'] ) ) {
@@ -475,8 +487,11 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 		return $instance;
 	}
 
-	function get_form_teaser() {
-		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+	public function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
+
 		return array(
 			sprintf(
 				__( 'Add a Lightbox to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),

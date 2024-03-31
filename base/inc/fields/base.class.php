@@ -5,90 +5,75 @@
  *
  * Class SiteOrigin_Widget_Field
  */
-
 abstract class SiteOrigin_Widget_Field_Base {
-
 	/* ============================================================================================================== */
 	/* CORE FIELD PROPERTIES                                                                                          */
 	/* Properties which are essential to successful rendering of fields and saving of data input into fields.         */
 	/* ============================================================================================================== */
 
-
 	/**
 	 * The base name for this field. It is used in the generation of HTML element id and name attributes.
 	 *
-	 * @access protected
 	 * @var string
 	 */
 	protected $base_name;
 	/**
 	 * The rendered HTML element id attribute.
 	 *
-	 * @access protected
 	 * @var string
 	 */
 	protected $element_id;
 	/**
 	 * The rendered HTML element name attribute
 	 *
-	 * @access protected
 	 * @var string
 	 */
 	protected $element_name;
 	/**
 	 * The field configuration options.
 	 *
-	 * @access protected
 	 * @var array
 	 */
 	protected $field_options;
 	/**
 	 * Variables may be added to this array which will be propagated to the front end for use in dynamic rendering.
 	 *
-	 * @access protected
 	 * @var array
 	 */
 	protected $javascript_variables;
-
 
 	/* ============================================================================================================== */
 	/* BASE FIELD CONFIGURATION PROPERTIES                                                                            */
 	/* Common configuration properties used by all fields.                                                            */
 	/* ============================================================================================================== */
 
-
 	/**
 	 * The type of the field.
 	 *
-	 * @access protected
 	 * @var string
 	 */
 	protected $type;
 	/**
 	 * Render a label for the field with the given value.
 	 *
-	 * @access protected
 	 * @var string
 	 */
 	protected $label;
 	/**
 	 * The field will be prepopulated with this default value.
 	 *
-	 * @access protected
 	 * @var mixed
 	 */
 	protected $default;
 	/**
 	 * Render small italic text below the field to describe the field's purpose.
 	 *
-	 * @access protected
 	 * @var string
 	 */
 	protected $description;
 	/**
 	 * Append '(Optional)' to this field's label as a small green superscript.
 	 *
-	 * @access protected
 	 * @var bool
 	 */
 	protected $optional;
@@ -97,18 +82,16 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected $required;
 	/**
-	 * Specifies an additional sanitization to be performed. Available sanitizations are 'email' and 'url'. If the
+	 * Specifies an additional sanitization to be performed. Available sanitizations are `text`, `email` and `url`. If the
 	 * specified sanitization isn't recognized it is assumed to be a custom sanitization and a filter is applied using
 	 * the pattern `'siteorigin_widgets_sanitize_field_' . $sanitize`, in case the sanitization is defined elsewhere.
 	 *
-	 * @access protected
 	 * @var string
 	 */
 	protected $sanitize;
 	/**
 	 * Reference to the parent widget required for creating child fields.
 	 *
-	 * @access private
 	 * @var SiteOrigin_Widget
 	 */
 	protected $for_widget;
@@ -121,19 +104,16 @@ abstract class SiteOrigin_Widget_Field_Base {
 	/**
 	 * Whether or not this field contains other fields.
 	 *
-	 * @access protected
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $is_container;
 	/**
 	 * Additional CSS classes to output in this field's HTML class attribute. It is left up to the field's render_field
 	 * function to output these classes.
 	 *
-	 * @access protected
 	 * @var array
 	 */
 	protected $input_css_classes;
-
 
 	/* ============================================================================================================== */
 	/* FIELD STATES PROPERTIES                                                                                        */
@@ -143,24 +123,18 @@ abstract class SiteOrigin_Widget_Field_Base {
 	/* ============================================================================================================== */
 
 	/**
-	 *
 	 * Specifies the callback type and arguments to use when deciding on the state to be emitted.
 	 *
-	 * @access protected
 	 * @var array
 	 */
 	protected $state_emitter;
 	/**
-	 *
 	 * Specifies the different possible states to be handled by this field and the resulting effect of the each state.
 	 *
-	 * @access protected
 	 * @var array
 	 */
 	protected $state_handler;
-	/**
-	 * @var
-	 */
+
 	protected $state_handler_initial;
 
 	/**
@@ -168,17 +142,15 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * @param $element_id string The id to be used as the id attribute of the wrapping HTML element.
 	 * @param $element_name string The name to be used as the name attribute of the wrapping HTML element.
 	 * @param $field_options array Configuration for the field.
-	 *
 	 * @param SiteOrigin_Widget $for_widget
 	 * @param array $parent_container
 	 *
 	 * @throws InvalidArgumentException
 	 */
 	public function __construct( $base_name, $element_id, $element_name, $field_options, $for_widget = null, $parent_container = array() ) {
-		if( isset( $field_options['type'] ) ) {
+		if ( isset( $field_options['type'] ) ) {
 			$this->type = $field_options['type'];
-		}
-		else {
+		} else {
 			throw new InvalidArgumentException( 'SiteOrigin_Widget_Field_Base::__construct: $field_options must contain a \'type\' field.' );
 		}
 
@@ -213,7 +185,8 @@ abstract class SiteOrigin_Widget_Field_Base {
 	private function init_options() {
 		// First set properties from default options if any have been set.
 		$default_field_options = $this->get_default_options();
-		if( ! empty( $default_field_options ) ) {
+
+		if ( ! empty( $default_field_options ) ) {
 			foreach ( $default_field_options as $key => $value ) {
 				if ( property_exists( $this, $key ) ) {
 					if ( isset( $default_field_options[$key] ) ) {
@@ -224,15 +197,15 @@ abstract class SiteOrigin_Widget_Field_Base {
 		}
 
 		$field_options = $this->field_options;
+
 		foreach ( $field_options as $key => $value ) {
-			if( property_exists( $this, $key ) ) {
+			if ( property_exists( $this, $key ) ) {
 				if ( isset( $field_options[$key] ) ) {
 					$this->$key = $value;
 				}
 			}
 		}
 	}
-
 
 	protected function get_default_options() {
 		//Stub: This function may be overridden by subclasses to have default field options.
@@ -273,35 +246,42 @@ abstract class SiteOrigin_Widget_Field_Base {
 			'class' => array(
 				'siteorigin-widget-field',
 				'siteorigin-widget-field-type-' . $this->type,
-				'siteorigin-widget-field-' . $this->base_name
-			)
+				'siteorigin-widget-field-' . $this->base_name,
+			),
 		);
 
-		if( !empty( $this->optional ) ) $wrapper_attributes['class'][] = 'siteorigin-widget-field-is-optional';
-		if( !empty( $this->required ) ) $wrapper_attributes['class'][] = 'siteorigin-widget-field-is-required';
-		$wrapper_attributes['class'] = implode(' ', array_map('sanitize_html_class', $wrapper_attributes['class']) );
+		if ( ! empty( $this->optional ) ) {
+			$wrapper_attributes['class'][] = 'siteorigin-widget-field-is-optional';
+		}
 
-		if( !empty( $this->state_emitter ) ) {
+		if ( ! empty( $this->required ) ) {
+			$wrapper_attributes['class'][] = 'siteorigin-widget-field-is-required';
+		}
+		$wrapper_attributes['class'] = implode( ' ', array_map( 'sanitize_html_class', $wrapper_attributes['class'] ) );
+
+		if ( ! empty( $this->state_emitter ) ) {
 			// State emitters create new states for the form
 			$wrapper_attributes['data-state-emitter'] = json_encode( $this->state_emitter );
 		}
 
-		if( !empty( $this->state_handler ) ) {
+		if ( ! empty( $this->state_handler ) ) {
 			// State handlers decide what to do with form states
 			$wrapper_attributes['data-state-handler'] = json_encode( $this->state_handler );
 		}
 
-		if( !empty( $this->state_handler_initial ) ) {
+		if ( ! empty( $this->state_handler_initial ) ) {
 			// Initial state handlers are only run when the form is first loaded
 			$wrapper_attributes['data-state-handler-initial'] = json_encode( $this->state_handler_initial );
 		}
 
-		?><div <?php foreach( $wrapper_attributes as $attr => $attr_val ) echo $attr.'="' . esc_attr( $attr_val ) . '" ' ?>><?php
+		?><div <?php foreach ( $wrapper_attributes as $attr => $attr_val ) {
+			echo esc_html( $attr ) . '="' . esc_attr( $attr_val ) . '" ';
+		} ?>><?php
 
 		// Allow subclasses and to render something before and after the render_field() function is called.
 		$this->render_before_field( $value, $instance );
 		$this->render_field( $value, array() );
-		$this->render_after_field( $value, $instance);
+		$this->render_after_field( $value, $instance );
 
 		?></div><?php
 	}
@@ -321,15 +301,17 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected function render_field_label( $value, $instance ) {
 		?>
-		<label for="<?php echo esc_attr( $this->element_id ) ?>" <?php $this->render_CSS_classes( $this->get_label_classes( $value, $instance ) ) ?>>
+		<label for="<?php echo esc_attr( $this->element_id ); ?>" <?php $this->render_CSS_classes( $this->get_label_classes( $value, $instance ) ); ?>>
 			<?php
 			echo esc_html( $this->label );
-			if( !empty( $this->optional ) ) {
-				echo '<span class="field-optional">(' . __('Optional', 'so-widgets-bundle') . ')</span>';
+
+			if ( ! empty( $this->optional ) ) {
+				echo '<span class="field-optional">(' . esc_html__( 'Optional', 'so-widgets-bundle' ) . ')</span>';
 			}
+
 			if ( ! empty( $this->required ) ) {
 				/* translators: Used to indicate field as required. */
-				echo '<span class="field-required">' . __( '*', 'so-widgets-bundle' ) . '</span>';
+				echo '<span class="field-required">' . esc_html__( '*', 'so-widgets-bundle' ) . '</span>';
 			}
 			?>
 		</label>
@@ -340,18 +322,18 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * Helper function to render the HTML class attribute with the array of classes.
 	 */
 	protected function render_CSS_classes( $CSS_classes ) {
-		if( ! empty( $CSS_classes ) ) {
-			?>class="<?php echo esc_attr( implode( ' ', array_map( 'sanitize_html_class', $CSS_classes ) ) ) ?>"<?php
+		if ( ! empty( $CSS_classes ) ) {
+			?>class="<?php echo esc_attr( implode( ' ', array_map( 'sanitize_html_class', $CSS_classes ) ) ); ?>"<?php
 		}
 	}
 
 	/**
-	 *
 	 * The main field rendering function. This function should be overridden by all subclasses and used to render their
 	 * specific form field HTML for display.
 	 *
 	 * @param $value mixed The current value of this field.
 	 * @param $instance array The current widget instance.
+	 *
 	 * @return mixed Should output the desired HTML.
 	 */
 	abstract protected function render_field( $value, $instance );
@@ -366,12 +348,27 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * @return mixed|string
 	 */
 	public function sanitize( $value, $instance = array(), $old_value = null ) {
-
 		$value = $this->sanitize_field_input( $value, $instance );
 
-		if( isset( $this->sanitize ) ) {
+		if ( empty( $value ) ) {
+			return '';
+		}
+
+		if ( isset( $this->sanitize ) ) {
 			// This field also needs some custom sanitization
 			switch( $this->sanitize ) {
+				case 'text':
+					if (
+						is_user_logged_in() &&
+						// Fields can be sanitized for setup purposes during display.
+						// As the data is sanitized during the saving purpose, we can
+						// safely skip this. Not doing so could result in an error.
+						! current_user_can( 'unfiltered_html' ) &&
+						! apply_filters( 'siteorigin_widgets_field_allow_unfiltered_html', false )
+					) {
+						$value = $this->recursive_sanitize( $value );
+					}
+					break;
 				case 'url':
 					$value = sow_esc_url_raw( $value );
 					break;
@@ -382,10 +379,9 @@ abstract class SiteOrigin_Widget_Field_Base {
 
 				default:
 					// This isn't a built in sanitization. Maybe it's handled elsewhere.
-					if( is_callable( $this->sanitize ) ) {
+					if ( is_callable( $this->sanitize ) ) {
 						$value = call_user_func( $this->sanitize, $value, $old_value );
-					}
-					else if( is_string( $this->sanitize ) ) {
+					} elseif ( is_string( $this->sanitize ) ) {
 						$value = apply_filters( 'siteorigin_widgets_sanitize_field_' . $this->sanitize, $value );
 					}
 					break;
@@ -396,6 +392,21 @@ abstract class SiteOrigin_Widget_Field_Base {
 	}
 
 	/**
+	 * Recursively sanitizes and filters the given value using sanitize_text_field().
+	 *
+	 * If the value is an array, it recursively applies the sanitization to each element.
+	 *
+	 * @param mixed $value The value to be sanitized.
+	 * @return mixed The sanitized value.
+	 */
+	public function recursive_sanitize( $value ) {
+		if ( is_array( $value ) ) {
+			return array_map( array( $this, 'recursive_sanitize' ), $value );
+		}
+		return sanitize_text_field( $value );
+	}
+
+	/**
 	 * This function is called after the main render function.
 	 *
 	 * @param $value mixed The current value of this field.
@@ -403,6 +414,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 */
 	protected function render_after_field( $value, $instance ) {
 		$this->render_field_description();
+
 		if ( ! empty( $this->required ) && is_string( $this->required ) ) {
 			/* translators: Used to indicate field as required. */
 			echo '<span class="field-required-message">' . esc_html( $this->required ) . '</span>';
@@ -414,13 +426,12 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * differently.
 	 */
 	protected function render_field_description() {
-		if( ! empty( $this->description ) ) {
-			?><div <?php $this->render_CSS_classes( $this->get_description_classes() ) ?>><?php echo wp_kses_post( $this->description ) ?></div><?php
+		if ( ! empty( $this->description ) ) {
+			?><div <?php $this->render_CSS_classes( $this->get_description_classes() ); ?>><?php echo wp_kses_post( $this->description ); ?></div><?php
 		}
 	}
 
 	/**
-	 *
 	 * The main sanitization function. This function should be overridden by all subclasses and used to sanitize the
 	 * input received from their HTML form field.
 	 *
@@ -435,7 +446,6 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * There are cases where a field may affect values on the widget instance, other than it's own input. It then becomes
 	 * necessary to perform additional sanitization on the widget instance, which should be done here.
 	 *
-	 * @param $instance
 	 * @return mixed
 	 */
 	public function sanitize_instance( $instance ) {

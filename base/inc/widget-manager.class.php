@@ -8,12 +8,10 @@
 class SiteOrigin_Widgets_Widget_Manager {
 	/**
 	 * Regsitered widgets
-	 *
-	 * @var
 	 */
 	private $registered;
 
-	function __construct(){
+	public function __construct() {
 		$this->registered = array();
 		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
 	}
@@ -23,10 +21,10 @@ class SiteOrigin_Widgets_Widget_Manager {
 	 *
 	 * @return SiteOrigin_Widgets_Widget_Manager
 	 */
-	static function single() {
+	public static function single() {
 		static $single;
 
-		if( empty($single) ) {
+		if ( empty( $single ) ) {
 			$single = new self();
 		}
 
@@ -34,15 +32,15 @@ class SiteOrigin_Widgets_Widget_Manager {
 	}
 
 	/**
-	 * @param $id
-	 * @param $path
 	 * @param bool|false $class
+	 *
 	 * @return mixed
 	 */
-	public function register( $id, $path, $class = false ){
+	public function register( $id, $path, $class = false ) {
 		$path = wp_normalize_path( $path );
+
 		if ( empty( $class ) ) {
-			$class = 'SiteOrigin_Widget_' . str_replace( ' ', '', ucwords( str_replace('-', ' ', $id) ) ) . '_Widget';
+			$class = 'SiteOrigin_Widget_' . str_replace( ' ', '', ucwords( str_replace( '-', ' ', $id ) ) ) . '_Widget';
 		}
 
 		$this->registered[ $id ] = new stdClass();
@@ -56,9 +54,11 @@ class SiteOrigin_Widgets_Widget_Manager {
 	/**
 	 * Initialize all the widgets.
 	 */
-	public function widgets_init(){
-		foreach( $this->registered as $id => & $info ) {
-			if( $info->registered ) continue;
+	public function widgets_init() {
+		foreach ( $this->registered as $id => & $info ) {
+			if ( $info->registered ) {
+				continue;
+			}
 			register_widget( $info->class );
 			$info->registered = true;
 		}
@@ -67,49 +67,48 @@ class SiteOrigin_Widgets_Widget_Manager {
 	/**
 	 * Get the path of the widget
 	 *
-	 * @param $id
-	 *
 	 * @return bool
 	 */
 	public function get_plugin_path( $id ) {
-		if( empty( $this->registered[ $id ] ) ) {
+		if ( empty( $this->registered[ $id ] ) ) {
 			// This call might be using the incorrect ID convention.
-			if( substr($id, 0, 4) == 'sow-' ) $id = substr($id, 4);
-			else $id = 'sow-' . $id;
+			if ( substr( $id, 0, 4 ) == 'sow-' ) {
+				$id = substr( $id, 4 );
+			} else {
+				$id = 'sow-' . $id;
+			}
 		}
 
-		return !empty($this->registered[$id]) ? $this->registered[$id]->path : false;
+		return ! empty( $this->registered[ $id ] ) ? $this->registered[ $id ]->path : false;
 	}
 
 	/**
 	 * Get the filename of the widget
 	 *
-	 * @param $id
-	 *
 	 * @return string|bool
 	 */
 	public function get_widget_filename( $id ) {
 		$path = $this->get_plugin_path( $id );
+
 		if ( ! empty( $path ) ) {
 			$info = pathinfo( $path );
 
 			return $info['filename'];
 		}
+
 		return false;
 	}
 
 	/**
-	 * @param $id
-	 *
 	 * @return string
 	 *
 	 * @todo examine this when using a widget in a theme folder.
 	 */
-	function get_plugin_dir_path( $id ){
+	public function get_plugin_dir_path( $id ) {
 		return plugin_dir_path( $this->get_plugin_path( $id ) );
 	}
 
-	function get_plugin_dir_url( $id ){
+	public function get_plugin_dir_url( $id ) {
 		return plugin_dir_url( $this->get_plugin_path( $id ) );
 	}
 
@@ -120,23 +119,28 @@ class SiteOrigin_Widgets_Widget_Manager {
 	 *
 	 * @return string The ID.
 	 */
-	function get_id_from_path( $path ){
-		foreach( $this->registered as $id => $r ) {
-			if( $r->path == $path ) return $id;
+	public function get_id_from_path( $path ) {
+		foreach ( $this->registered as $id => $r ) {
+			if ( $r->path == $path ) {
+				return $id;
+			}
 		}
+
 		return false;
 	}
 
 	/**
 	 * Get the class name of a widget from the
 	 *
-	 * @param $path
 	 * @return mixed
 	 */
-	function get_class_from_path( $path ) {
-		foreach( $this->registered as $id => $r ) {
-			if( $r->path == $path ) return $r->class;
+	public function get_class_from_path( $path ) {
+		foreach ( $this->registered as $id => $r ) {
+			if ( $r->path == $path ) {
+				return $r->class;
+			}
 		}
+
 		return false;
 	}
 
@@ -145,20 +149,18 @@ class SiteOrigin_Widgets_Widget_Manager {
 	 *
 	 * @return array
 	 */
-	function get_registered_widgets() {
+	public function get_registered_widgets() {
 		return $this->registered;
 	}
 
 	/**
 	 * Get the registered widget instance by it's class name or the hash generated when it was registered.
 	 *
-	 * @param $class_or_hash
-	 *
 	 * @return array
-	 *
 	 */
-	static function get_widget_instance( $class_or_hash ) {
+	public static function get_widget_instance( $class_or_hash ) {
 		global $wp_widget_factory;
+
 		if ( isset( $wp_widget_factory->widgets[ $class_or_hash ] ) ) {
 			return $wp_widget_factory->widgets[ $class_or_hash ];
 		} else {
@@ -168,6 +170,7 @@ class SiteOrigin_Widgets_Widget_Manager {
 				}
 			}
 		}
+
 		return null;
 	}
 }
@@ -176,11 +179,11 @@ SiteOrigin_Widgets_Widget_Manager::single();
 /**
  * Register a widget
  *
- * @param string $id The ID of the widget
- * @param string $path The path of the widget
+ * @param string      $id    The ID of the widget
+ * @param string      $path  The path of the widget
  * @param bool|string $class The name of the class
  */
-function siteorigin_widget_register( $id, $path, $class = false ){
+function siteorigin_widget_register( $id, $path, $class = false ) {
 	SiteOrigin_Widgets_Widget_Manager::single()->register( $id, $path, $class );
 }
 
@@ -188,28 +191,27 @@ function siteorigin_widget_register( $id, $path, $class = false ){
  * Get the base file of a widget plugin
  *
  * @param $name
+ *
  * @return bool
  */
-function siteorigin_widget_get_plugin_path($id){
+function siteorigin_widget_get_plugin_path( $id ) {
 	return SiteOrigin_Widgets_Widget_Manager::single()->get_plugin_path( $id );
 }
 
 /**
  * Get the base path folder of a widget plugin.
  *
- * @param $id
  * @return string
  */
-function siteorigin_widget_get_plugin_dir_path($id){
+function siteorigin_widget_get_plugin_dir_path( $id ) {
 	return SiteOrigin_Widgets_Widget_Manager::single()->get_plugin_dir_path( $id );
 }
 
 /**
  * Get the base path URL of a widget plugin.
  *
- * @param $id
  * @return string
  */
-function siteorigin_widget_get_plugin_dir_url($id){
+function siteorigin_widget_get_plugin_dir_url( $id ) {
 	return SiteOrigin_Widgets_Widget_Manager::single()->get_plugin_dir_url( $id );
 }

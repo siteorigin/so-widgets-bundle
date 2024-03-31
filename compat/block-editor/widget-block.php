@@ -1,7 +1,7 @@
 <?php
 
 class SiteOrigin_Widgets_Bundle_Widget_Block {
-	var $widgetAnchor;
+	public $widgetAnchor;
 	/**
 	 * Get the singleton instance
 	 *
@@ -16,6 +16,14 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_widget_block' ) );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_widget_block_editor_assets' ) );
+
+		$post_types = get_post_types( array( 'public' => true ), 'names' );
+		if ( empty( $post_types ) ) {
+			$post_types = array( 'post', 'page' );
+		}
+		foreach ( $post_types as $post_type ) {
+			add_action( 'rest_pre_insert_' . $post_type, array( $this, 'server_side_validation' ), 10, 2 );
+		}
 	}
 
 	public function register_widget_block() {
@@ -75,6 +83,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		global $wp_widget_factory;
 		$third_party_widgets = array();
+
 		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
 			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
 				/** @var SiteOrigin_Widget $widget_obj */
@@ -119,6 +128,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				'confirmChangeWidget' => __( 'Selecting a different widget will revert any changes. Continue?', 'so-widgets-bundle' ),
 			)
 		);
+
 		if ( function_exists( 'wp_set_script_translations' ) ) {
 			wp_set_script_translations( 'sowb-widget-block', 'so-widgets-bundle' );
 		}
@@ -129,17 +139,16 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$so_widgets_bundle->enqueue_registered_widgets_scripts();
 	}
 
-	function add_widget_id( $id, $instance, $widget ) {
+	public function add_widget_id( $id, $instance, $widget ) {
 		return $this->widgetAnchor;
 	}
 
 	public function render_widget_block( $attributes ) {
 		if ( empty( $attributes['widgetClass'] ) ) {
-			return '<div>'.
-				   __( 'You need to select a widget type before you\'ll see anything here. :)', 'so-widgets-bundle' ) .
-				   '</div>';
+			return '<div>' .
+				__( 'You need to select a widget type before you\'ll see anything here. :)', 'so-widgets-bundle' ) .
+				'</div>';
 		}
-
 
 		$widget_class = $attributes['widgetClass'];
 		global $wp_widget_factory;
@@ -151,10 +160,11 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		}
 
 		// Support for Additional CSS classes.
-		$add_custom_class_name = function( $class_names ) use ( $attributes ) {
+		$add_custom_class_name = function ( $class_names ) use ( $attributes ) {
 			if ( ! empty( $attributes['className'] ) ) {
 				$class_names = array_merge( $class_names, explode( ' ', $attributes['className'] ) );
 			}
+
 			return $class_names;
 		};
 
@@ -163,26 +173,27 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			$instance = $attributes['widgetData'];
 			add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 
-
 			ob_start();
 			/*
-			 * If we have pre-generated widgetHtml or there's a valid $_POST, generate the widget.
-			 * There are certain sitautions where we bypass the cache:
-			 * 
+			 * If we have pre-generated widgetMarkup or there's a valid $_POST, generate the widget.
+			 * There are certain situations where we bypass the cache:
+			 *
 			 * - We don't show the pre-generated widget when there's a valid $_POST
 			 * as widgets will likely change when that happens.
-			 * 
+			 *
 			 * - Pages with an active WPML translation will bypass cache.
-			 * 
+			 *
 			 * - We also exclude certain widgets from the cache.
 			 */
 			$current_page_id = get_the_ID();
+
 			if (
-				empty( $attributes['widgetHtml'] ) ||
+				empty( $attributes['widgetMarkup'] ) ||
 				! empty( $_POST ) ||
 				$attributes['widgetClass'] == 'SiteOrigin_Widget_PostCarousel_Widget' ||
 				$attributes['widgetClass'] == 'SiteOrigin_Widgets_ContactForm_Widget' ||
 				$attributes['widgetClass'] == 'SiteOrigin_Widget_Blog_Widget' ||
+				apply_filters( 'siteorigin_widgets_block_exclude_widget', false, $attributes['widgetClass'], $instance ) ||
 				// Is WPML active? If so, is there a translation for this page?
 				(
 					defined( 'ICL_LANGUAGE_CODE' ) &&
@@ -221,6 +232,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				// Check if this widget uses any icons that need to be enqueued.
 				if ( ! empty( $attributes['widgetIcons'] ) ) {
 					$widget_icon_families = apply_filters( 'siteorigin_widgets_icon_families', array() );
+
 					foreach ( $attributes['widgetIcons'] as $icon_font ) {
 						if ( ! wp_style_is( $icon_font ) ) {
 							$font_family = explode( 'siteorigin-widget-icon-font-', $icon_font )[1];
@@ -228,23 +240,170 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 						}
 					}
 				}
-				echo $attributes['widgetHtml'];
+				echo $attributes['widgetMarkup'];
 			}
 
 			$rendered_widget = ob_get_clean();
 			remove_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 			unset( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
 		} else {
-			return '<div>'.
-				   sprintf(
-			   			__( 'Invalid widget class %s. Please make sure the widget has been activated in %sSiteOrigin Widgets%s.', 'so-widgets-bundle' ),
-					   $widget_class,
-					   '<a href="' . admin_url( 'plugins.php?page=so-widgets-plugins' ) . '">',
-					   '</a>'
-				   ) .
-				   '</div>';
+			return
+				'<div>' .
+					sprintf(
+						__( 'Invalid widget class %s. Please make sure the widget has been activated in %sSiteOrigin Widgets%s.', 'so-widgets-bundle' ),
+						$widget_class,
+						'<a href="' . admin_url( 'plugins.php?page=so-widgets-plugins' ) . '">',
+						'</a>'
+					) .
+				'</div>';
 		}
+
 		return $rendered_widget;
+	}
+
+	public function server_side_validation( $prepared_post, $request ) {
+		if ( empty( $prepared_post->post_content ) ) {
+			return $prepared_post;
+		}
+
+		$blocks = parse_blocks( $prepared_post->post_content );
+		if ( empty( $blocks ) ) {
+			return $prepared_post;
+		}
+
+		foreach( $blocks as &$block ) {
+			$block = $this->sanitize_blocks( $block, true );
+		}
+		$prepared_post->post_content = serialize_blocks( $blocks );
+
+		return $prepared_post;
+	}
+
+	public function sanitize_blocks( $block ) {
+		if (
+			! empty( $block['blockName'] ) &&
+			$block['blockName'] === 'sowb/widget-block'
+		) {
+			$block = $this->sanitize_block( $block );
+		}
+
+		if ( ! empty( $block['innerBlocks'] ) ) {
+			foreach( $block['innerBlocks'] as $i => $inner ) {
+				$block['innerBlocks'][$i] = $this->sanitize_blocks( $inner );
+			}
+		}
+
+		return $block;
+	}
+
+	public function sanitize_block( $block ) {
+		if (
+			empty( $block['attrs'] ) ||
+			empty( $block['attrs']['widgetClass'] )
+		) {
+			return $block;
+		}
+
+		$rendered_widget = $this->get_widget_preview( $block['attrs'], false );
+		if ( is_wp_error( $rendered_widget ) ) {
+			return rest_ensure_response( $rendered_widget );
+		}
+
+		if ( empty( $rendered_widget ) ) {
+			return new WP_Error( 'rest_invalid_param', __( 'Invalid Widgets Bundle data', 'so-widgets-bundle' ), array( 'status' => 400 ) );
+		}
+
+		$block['attrs'] = $rendered_widget;
+		return $block;
+	}
+
+	public function get_widget_preview( $block, $just_html = true ) {
+		$widget_class = $block['widgetClass'];
+		$widget_data = $block['widgetData'];
+
+		$widget = SiteOrigin_Widgets_Widget_Manager::get_widget_instance( $widget_class );
+		// Attempt to activate the widget if it's not already active.
+		if ( ! empty( $widget_class ) && empty( $widget ) ) {
+			$widget = SiteOrigin_Widgets_Bundle::single()->load_missing_widget( false, $widget_class );
+		}
+
+		// This ensures styles are added inline.
+		add_filter( 'siteorigin_widgets_is_preview', '__return_true' );
+		$GLOBALS[ 'SO_WIDGETS_BUNDLE_PREVIEW_RENDER' ] = true;
+
+		$valid_widget_class = ! empty( $widget ) &&
+							  is_object( $widget ) &&
+							  is_subclass_of( $widget, 'SiteOrigin_Widget' );
+
+		if ( $valid_widget_class && ! empty( $widget_data ) ) {
+			ob_start();
+			// Add anchor to widget wrapper.
+			if ( ! empty( $block['anchor'] ) ) {
+				$this->widgetAnchor = $block['anchor'];
+				add_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10, 3 );
+			}
+			/* @var $widget SiteOrigin_Widget */
+			$instance = $widget->update( $widget_data, $widget_data );
+			$widget->widget( array(), $instance );
+			$rendered_widget = array();
+			$rendered_widget['html'] = ob_get_clean();
+
+			if ( ! empty( $block['anchor'] ) ) {
+				remove_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10 );
+			}
+
+			// Check if this widget loaded any icons, and if it has, store them.
+			$styles = wp_styles();
+
+			if ( ! empty( $styles->queue ) ) {
+				$rendered_widget['widgetIcons'] = array();
+
+				foreach ( $styles->queue as $style ) {
+					if ( strpos( $style, 'siteorigin-widget-icon-font' ) !== false ) {
+						$rendered_widget['widgetIcons'][] = $style;
+					}
+				}
+			}
+		} else {
+			if ( empty( $valid_widget_class ) ) {
+				$rendered_widget = new WP_Error(
+					400,
+					'Invalid or missing widget class: ' . $widget_class,
+					array(
+						'status' => 400,
+					)
+				);
+			} elseif ( empty( $widget_data ) ) {
+				$rendered_widget = new WP_Error(
+					400,
+					'Unable to render preview. Invalid or missing widget data.',
+					array(
+						'status' => 400,
+					)
+				);
+			}
+		}
+
+		unset( $GLOBALS['SO_WIDGETS_BUNDLE_PREVIEW_RENDER'] );
+
+		if ( $just_html || is_wp_error( $rendered_widget ) ) {
+			return $rendered_widget;
+		}
+
+		// If there's a style tag, we can't set set widgetMarkup.
+		if ( strpos( $rendered_widget['html'], '<style' ) !== false ) {
+			$rendered_widget['widgetMarkup'] = '';
+		} else {
+			$rendered_widget['widgetMarkup'] = $rendered_widget['html'];
+		}
+
+		return array(
+			'widgetClass' => $widget_class,
+			'widgetData' => $widget_data,
+			'widgetMarkup' => $rendered_widget['widgetMarkup'],
+			'html' => $rendered_widget['html'],
+			'widgetIcons' => isset( $rendered_widget['css'] ) ? $rendered_widget['widgetIcons'] : array(),
+		);
 	}
 }
 

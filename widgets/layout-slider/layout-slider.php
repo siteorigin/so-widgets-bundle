@@ -7,36 +7,38 @@ Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/layout-slider-widget/
 */
 
-if( !class_exists( 'SiteOrigin_Widget_Base_Slider' ) ) include_once plugin_dir_path(SOW_BUNDLE_BASE_FILE) . '/base/inc/widgets/base-slider.class.php';
+if ( ! class_exists( 'SiteOrigin_Widget_Base_Slider' ) ) {
+	include_once plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . '/base/inc/widgets/base-slider.class.php';
+}
 
 class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slider {
-
 	protected $buttons = array();
 
-	function __construct() {
+	public function __construct() {
 		parent::__construct(
 			'sow-layout-slider',
-			__('SiteOrigin Layout Slider', 'so-widgets-bundle'),
+			__( 'SiteOrigin Layout Slider', 'so-widgets-bundle' ),
 			array(
-				'description' => __('A slider that allows you to create responsive columnized content for each slide.', 'so-widgets-bundle'),
+				'description' => __( 'A slider that allows you to create responsive columnized content for each slide.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/layout-slider-widget/',
 				'panels_title' => false,
 			),
 			array( ),
 			false,
-			plugin_dir_path(__FILE__)
+			plugin_dir_path( __FILE__ )
 		);
 
 		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-layout-slider', array( $this, 'register_shortcode_script' ) );
 	}
 
-	function get_widget_form(){
+	public function get_widget_form() {
 		$show_heading_fields = apply_filters( 'sow_layout_slider_show_heading_fields', false );
+
 		return parent::widget_form( array(
 			'frames' => array(
 				'type' => 'repeater',
-				'label' => __('Slider frames', 'so-widgets-bundle'),
-				'item_name' => __('Frame', 'so-widgets-bundle'),
+				'label' => __( 'Slider frames', 'so-widgets-bundle' ),
+				'item_name' => __( 'Frame', 'so-widgets-bundle' ),
 				'item_label' => array(
 					'selectorArray' => array(
 						array(
@@ -60,7 +62,6 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 				),
 
 				'fields' => array(
-
 					'content' => array(
 						'type' => 'builder',
 						'builder_type' => 'layout_slider_builder',
@@ -69,7 +70,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 
 					'background' => array(
 						'type' => 'section',
-						'label' => __('Background', 'so-widgets-bundle'),
+						'label' => __( 'Background', 'so-widgets-bundle' ),
 						'fields' => array(
 							'image' => array(
 								'type' => 'media',
@@ -82,7 +83,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 								'type' => 'select',
 								'label' => __( 'Background image type', 'so-widgets-bundle' ),
 								'options' => array(
-									'cover' => __( 'Cover', 'so-widgets-bundle '),
+									'cover' => __( 'Cover', 'so-widgets-bundle ' ),
 									'tile' => __( 'Tile', 'so-widgets-bundle' ),
 								),
 								'default' => 'cover',
@@ -114,8 +115,8 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 
 							'videos' => array(
 								'type' => 'repeater',
-								'item_name' => __('Video', 'so-widgets-bundle'),
-								'label' => __('Background videos', 'so-widgets-bundle'),
+								'item_name' => __( 'Video', 'so-widgets-bundle' ),
+								'label' => __( 'Background videos', 'so-widgets-bundle' ),
 								'item_label' => array(
 									'selectorArray' => array(
 										array(
@@ -131,15 +132,15 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 								),
 								'fields' => $this->video_form_fields(),
 							),
-						)
+						),
 					),
 				),
 			),
 
 			'controls' => array(
 				'type' => 'section',
-				'label' => __('Slider Controls', 'so-widgets-bundle'),
-				'fields' => $this->control_form_fields()
+				'label' => __( 'Slider Controls', 'so-widgets-bundle' ),
+				'fields' => $this->control_form_fields(),
 			),
 
 			'layout' => array(
@@ -161,7 +162,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 								'default' => '50px',
 							),
 
-							'extra_top_padding' => array(
+							'padding_extra_top' => array(
 								'type' => 'measurement',
 								'label' => __( 'Extra top padding', 'so-widgets-bundle' ),
 								'description' => __( 'Additional padding added to the top of the slider', 'so-widgets-bundle' ),
@@ -179,7 +180,6 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 								'label' => __( 'Maximum container width', 'so-widgets-bundle' ),
 								'default' => '1280px',
 							),
-
 						),
 					),
 					'mobile' => array(
@@ -196,7 +196,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 								'label' => __( 'Top and bottom padding', 'so-widgets-bundle' ),
 							),
 
-							'extra_top_padding' => array(
+							'padding_extra_top' => array(
 								'type' => 'measurement',
 								'label' => __( 'Extra top padding', 'so-widgets-bundle' ),
 								'description' => __( 'Additional padding added to the top of the slider', 'so-widgets-bundle' ),
@@ -206,7 +206,6 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 								'type' => 'measurement',
 								'label' => __( 'Side padding', 'so-widgets-bundle' ),
 							),
-
 						),
 					),
 					'vertically_align' => array(
@@ -251,20 +250,19 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 						'type' => 'color',
 						'label' => __( 'Text color', 'so-widgets-bundle' ),
 					),
-
-				)
+				),
 			),
 		) );
 	}
 
-	function form( $instance, $form_type = 'widget' ) {
-		if ( ( is_admin() || ( defined('REST_REQUEST' ) && function_exists( 'register_block_type' ) ) ) && defined('SITEORIGIN_PANELS_VERSION') ) {
+	public function form( $instance, $form_type = 'widget' ) {
+		if ( ( is_admin() || ( defined( 'REST_REQUEST' ) && function_exists( 'register_block_type' ) ) ) && defined( 'SITEORIGIN_PANELS_VERSION' ) ) {
 			parent::form( $instance, $form_type );
 		} else {
 			?>
 			<p>
-				<?php _e( 'This widget requires: ', 'so-widgets-bundle' ) ?>
-				<a href="https://siteorigin.com/page-builder/" target="_blank" rel="noopener noreferrer"><?php _e( 'SiteOrigin Page Builder', 'so-widgets-bundle' ) ?></a>
+				<?php _e( 'This widget requires: ', 'so-widgets-bundle' ); ?>
+				<a href="https://siteorigin.com/page-builder/" target="_blank" rel="noopener noreferrer"><?php _e( 'SiteOrigin Page Builder', 'so-widgets-bundle' ); ?></a>
 			</p>
 			<?php
 		}
@@ -273,26 +271,23 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 	/**
 	 * Get everything necessary for the background image.
 	 *
-	 * @param $i
-	 * @param $frame
-	 *
 	 * @return array
 	 */
-	function get_frame_background( $i, $frame ){
+	public function get_frame_background( $i, $frame ) {
 		$background_image = siteorigin_widgets_get_attachment_image_src(
 			$frame['background']['image'],
 			'full',
-			!empty( $frame['background']['image_fallback'] ) ? $frame['background']['image_fallback'] : ''
+			! empty( $frame['background']['image_fallback'] ) ? $frame['background']['image_fallback'] : ''
 		);
 
 		return array(
-			'color' => !empty( $frame['background']['color'] ) ? $frame['background']['color'] : false,
-			'image' => !empty( $background_image[0] ) ? $background_image[0] : false,
-			'image-width' => !empty( $background_image[1] ) ? $background_image[1] : 0,
-			'image-height' => !empty( $background_image[2] ) ? $background_image[2] : 0,
+			'color' => ! empty( $frame['background']['color'] ) ? $frame['background']['color'] : false,
+			'image' => ! empty( $background_image[0] ) ? $background_image[0] : false,
+			'image-width' => ! empty( $background_image[1] ) ? $background_image[1] : 0,
+			'image-height' => ! empty( $background_image[2] ) ? $background_image[2] : 0,
 			'image-sizing' => $frame['background']['image_type'],
-			'url' => !empty( $frame['background']['url'] ) ? $frame['background']['url'] : false,
-			'new_window' => !empty( $frame['background']['new_window'] ),
+			'url' => ! empty( $frame['background']['url'] ) ? $frame['background']['url'] : false,
+			'new_window' => ! empty( $frame['background']['new_window'] ),
 			'videos' => $frame['background']['videos'],
 			'video-sizing' => 'background',
 			'opacity' => (int) $frame['background']['opacity'] / 100,
@@ -301,11 +296,8 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 
 	/**
 	 * Render the actual content of the frame
-	 *
-	 * @param $i
-	 * @param $frame
 	 */
-	function render_frame_contents($i, $frame) {
+	public function render_frame_contents( $i, $frame ) {
 		?>
 		<div class="sow-slider-image-container">
 			<div class="sow-slider-image-wrapper">
@@ -315,7 +307,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		<?php
 	}
 
-	function register_shortcode_script() {
+	public function register_shortcode_script() {
 		wp_register_script(
 			'sow-layout-slide-control',
 			plugin_dir_url( __FILE__ ) . 'js/slide-control' . SOW_BUNDLE_JS_SUFFIX . '.js',
@@ -325,7 +317,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		);
 	}
 
-	function add_shortcode( $atts ) {
+	public function add_shortcode( $atts ) {
 		ob_start();
 		$atts = shortcode_atts( array(
 			'slide' => 'next',
@@ -366,31 +358,25 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 	/**
 	 * Process the content.
 	 *
-	 * @param $content
-	 * @param $frame
-	 *
 	 * @return string
 	 */
-	function process_content( $content, $frame ) {
-		if( function_exists( 'siteorigin_panels_render' ) ) {
+	public function process_content( $content, $frame ) {
+		if ( function_exists( 'siteorigin_panels_render' ) ) {
 			add_shortcode( 'slide_control', array( $this, 'add_shortcode' ) );
 			$content_builder_id = substr( md5( json_encode( $content ) ), 0, 8 );
-			echo siteorigin_panels_render( 'w'.$content_builder_id, true, $content );
+			echo siteorigin_panels_render( 'w' . $content_builder_id, true, $content );
 			remove_shortcode( 'slide_control' );
-		}
-		else {
-			echo __( 'This widget requires Page Builder.', 'so-widgets-bundle' );
+		} else {
+			esc_html__( 'This widget requires Page Builder.', 'so-widgets-bundle' );
 		}
 	}
 
 	/**
 	 * The less variables to control the design of the slider
 	 *
-	 * @param $instance
-	 *
 	 * @return array
 	 */
-	function get_less_variables($instance) {
+	public function get_less_variables( $instance ) {
 		$less = array();
 
 		if ( empty( $instance ) ) {
@@ -400,6 +386,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		// Slider navigation controls
 		$less['nav_color_hex'] = $instance['controls']['nav_color_hex'];
 		$less['nav_size'] = $instance['controls']['nav_size'];
+		$less['nav_align'] = ! empty( $instance['controls']['nav_align'] ) ? $instance['controls']['nav_align'] : 'right';
 
 		// Measurement field type options
 		$meas_options = array();
@@ -411,7 +398,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 
 				$meas_options['slide_height'] = ! empty( $settings['height'] ) ? $settings['height'] : '';
 				$meas_options['slide_padding'] = ! empty( $settings['padding'] ) ? $settings['padding'] : '';
-				$meas_options['slide_padding_extra_top'] = ! empty( $settings['extra_top_padding'] ) ? $settings['extra_top_padding'] : '';
+				$meas_options['slide_padding_extra_top'] = ! empty( $settings['padding_extra_top'] ) ? $settings['padding_extra_top'] : '';
 				$meas_options['slide_padding_sides'] = ! empty( $settings['padding_sides'] ) ? $settings['padding_sides'] : '';
 				$meas_options['slide_width'] = ! empty( $settings['width'] ) ? $settings['width'] : '';
 			}
@@ -423,9 +410,9 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 				$meas_options['slide_padding_responsive'] = ! empty( $settings['padding'] ) ? $settings['padding'] : '';
 				$meas_options['slide_padding_sides_responsive'] = ! empty( $settings['padding_sides'] ) ? $settings['padding_sides'] : '';
 
-				if ( ! empty( $settings['extra_top_padding'] ) ) {
-					// Add extra padding to top padidng.
-					$meas_options['slide_padding_top_responsive'] = (int) $meas_options['slide_padding_responsive'] + (int) $settings['extra_top_padding'];
+				if ( ! empty( $settings['padding_extra_top'] ) ) {
+					// Add extra padding to top padding.
+					$meas_options['slide_padding_top_responsive'] = $settings['padding_extra_top'];
 				}
 			}
 		}
@@ -461,17 +448,21 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		return $less;
 	}
 
-	function add_default_measurement_unit($val) {
-		if (!empty($val)) {
-			if (!preg_match('/\d+([a-zA-Z%]+)/', $val)) {
+	public function add_default_measurement_unit( $val ) {
+		if ( ! empty( $val ) ) {
+			if ( ! preg_match( '/\d+([a-zA-Z%]+)/', $val ) ) {
 				$val .= 'px';
 			}
 		}
+
 		return $val;
 	}
 
-	function get_form_teaser() {
-		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+	public function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
+
 		return array(
 			sprintf(
 				__( 'Add multiple Layout Slider frames in one go with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
@@ -487,4 +478,4 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 	}
 }
 
-siteorigin_widget_register('sow-layout-slider', __FILE__, 'SiteOrigin_Widget_LayoutSlider_Widget');
+siteorigin_widget_register( 'sow-layout-slider', __FILE__, 'SiteOrigin_Widget_LayoutSlider_Widget' );

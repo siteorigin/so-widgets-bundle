@@ -7,35 +7,36 @@ Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/hero-image-widget/
 */
 
-if( !class_exists( 'SiteOrigin_Widget_Base_Slider' ) ) include_once plugin_dir_path(SOW_BUNDLE_BASE_FILE) . '/base/inc/widgets/base-slider.class.php';
+if ( ! class_exists( 'SiteOrigin_Widget_Base_Slider' ) ) {
+	include_once plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . '/base/inc/widgets/base-slider.class.php';
+}
 
 class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
-
 	protected $buttons = array();
 
-	function __construct() {
+	public function __construct() {
 		parent::__construct(
 			'sow-hero',
-			__('SiteOrigin Hero', 'so-widgets-bundle'),
+			__( 'SiteOrigin Hero', 'so-widgets-bundle' ),
 			array(
-				'description' => __('A big hero image with a few settings to make it your own.', 'so-widgets-bundle'),
+				'description' => __( 'A big hero image with a few settings to make it your own.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/hero-image-widget/',
 				'panels_title' => false,
 			),
 			array( ),
 			false,
-			plugin_dir_path(__FILE__)
+			plugin_dir_path( __FILE__ )
 		);
 	}
 
-	function initialize(){
+	public function initialize() {
 		// This widget requires the button widget
-		if( !class_exists('SiteOrigin_Widget_Button_Widget') ) {
+		if ( ! class_exists( 'SiteOrigin_Widget_Button_Widget' ) ) {
 			SiteOrigin_Widgets_Bundle::single()->include_widget( 'button' );
 		}
-		
+
 		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_' . $this->id_base, array( $this, 'enqueue_widget_scripts' ) );
-		
+
 		add_filter( 'siteorigin_widgets_wrapper_classes_' . $this->id_base, array( $this, 'wrapper_class_filter' ), 10, 2 );
 		add_filter( 'siteorigin_widgets_wrapper_data_' . $this->id_base, array( $this, 'wrapper_data_filter' ), 10, 2 );
 
@@ -43,12 +44,12 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		parent::initialize();
 	}
 
-	function get_widget_form(){
+	public function get_widget_form() {
 		return parent::widget_form( array(
 			'frames' => array(
 				'type' => 'repeater',
-				'label' => __('Hero frames', 'so-widgets-bundle'),
-				'item_name' => __('Frame', 'so-widgets-bundle'),
+				'label' => __( 'Hero frames', 'so-widgets-bundle' ),
+				'item_name' => __( 'Frame', 'so-widgets-bundle' ),
 				'item_label' => array(
 					'selectorArray' => array(
 						array(
@@ -67,7 +68,6 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 					),
 				),
 				'fields' => array(
-
 					'content' => array(
 						'type' => 'tinymce',
 						'label' => __( 'Content', 'so-widgets-bundle' ),
@@ -81,49 +81,64 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 					'buttons' => array(
 						'type' => 'repeater',
-						'label' => __('Buttons', 'so-widgets-bundle'),
-						'item_name' => __('Button', 'so-widgets-bundle'),
-						'description' => __('Add [buttons] shortcode to the content to insert these buttons.', 'so-widgets-bundle'),
+						'label' => __( 'Buttons', 'so-widgets-bundle' ),
+						'item_name' => __( 'Button', 'so-widgets-bundle' ),
+						'description' => __( 'Add [buttons] shortcode to the content to insert these buttons.', 'so-widgets-bundle' ),
 
 						'item_label' => array(
 							'selector' => "[id*='buttons-button-text']",
 							'update_event' => 'change',
-							'value_method' => 'val'
+							'value_method' => 'val',
 						),
 						'fields' => array(
 							'button' => array(
 								'type' => 'widget',
 								'class' => 'SiteOrigin_Widget_Button_Widget',
-								'label' => __('Button', 'so-widgets-bundle'),
+								'label' => __( 'Button', 'so-widgets-bundle' ),
 								'form_filter' => array( $this, 'filter_button_widget_form' ),
 								'collapsible' => false,
-							)
-						)
+							),
+						),
 					),
 
 					'background' => array(
 						'type' => 'section',
-						'label' => __('Background', 'so-widgets-bundle'),
+						'label' => __( 'Background', 'so-widgets-bundle' ),
 						'fields' => array(
 							'image' => array(
 								'type' => 'media',
 								'label' => __( 'Background image', 'so-widgets-bundle' ),
 								'library' => 'image',
 								'fallback' => true,
+								'state_emitter' => array(
+									'callback' => 'conditional',
+									'args'     => array(
+										'has_background_image[show]: val',
+										'has_background_image[hide]: ! val',
+									),
+								),
 							),
 
 							'size' => array(
 								'type' => 'image-size',
-								'label' => __('Image size', 'so-widgets-bundle'),
+								'label' => __( 'Image size', 'so-widgets-bundle' ),
+								'state_handler' => array(
+									'has_background_image[show]' => array( 'show' ),
+									'has_background_image[hide]' => array( 'hide' ),
+								),
 							),
 
 							'image_type' => array(
 								'type' => 'select',
-								'label' => __('Background image type', 'so-widgets-bundle'),
+								'label' => __( 'Background image type', 'so-widgets-bundle' ),
 								'options' => array(
-									'cover' => __('Cover', 'so-widgets-bundle'),
+									'cover' => __( 'Cover', 'so-widgets-bundle' ),
 								),
 								'default' => 'cover',
+								'state_handler' => array(
+									'has_background_image[show]' => array( 'show' ),
+									'has_background_image[hide]' => array( 'hide' ),
+								),
 							),
 
 							'opacity' => array(
@@ -132,12 +147,17 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'min' => 0,
 								'max' => 100,
 								'default' => 100,
+								'state_handler' => array(
+									'has_background_image[show]' => array( 'show' ),
+									'has_background_image[hide]' => array( 'hide' ),
+								),
 							),
 
 							'color' => array(
 								'type' => 'color',
 								'label' => __( 'Background color', 'so-widgets-bundle' ),
 								'default' => '#333333',
+								'alpha' => true,
 							),
 
 							'url' => array(
@@ -152,8 +172,8 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 							'videos' => array(
 								'type' => 'repeater',
-								'item_name' => __('Video', 'so-widgets-bundle'),
-								'label' => __('Background videos', 'so-widgets-bundle'),
+								'item_name' => __( 'Video', 'so-widgets-bundle' ),
+								'label' => __( 'Background videos', 'so-widgets-bundle' ),
 								'item_label' => array(
 									'selectorArray' => array(
 										array(
@@ -169,15 +189,15 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								),
 								'fields' => $this->video_form_fields(),
 							),
-						)
+						),
 					),
 				),
 			),
 
 			'controls' => array(
 				'type' => 'section',
-				'label' => __('Slider Controls', 'so-widgets-bundle'),
-				'fields' => $this->control_form_fields()
+				'label' => __( 'Slider Controls', 'so-widgets-bundle' ),
+				'fields' => $this->control_form_fields(),
 			),
 
 			'layout' => array(
@@ -217,7 +237,6 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'label' => __( 'Maximum container width', 'so-widgets-bundle' ),
 								'default' => '1280px',
 							),
-
 						),
 					),
 					'mobile' => array(
@@ -244,7 +263,6 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'type' => 'measurement',
 								'label' => __( 'Side padding', 'so-widgets-bundle' ),
 							),
-
 						),
 					),
 					'vertically_align' => array(
@@ -261,19 +279,19 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 				'fields' => array(
 					'heading_font' => array(
 						'type' => 'font',
-						'label' => __('Heading font', 'so-widgets-bundle'),
+						'label' => __( 'Heading font', 'so-widgets-bundle' ),
 						'default' => '',
 					),
 
 					'heading_color' => array(
 						'type' => 'color',
-						'label' => __('Heading color', 'so-widgets-bundle'),
+						'label' => __( 'Heading color', 'so-widgets-bundle' ),
 						'default' => '#fff',
 					),
 
 					'heading_size' => array(
 						'type' => 'measurement',
-						'label' => __('Heading size', 'so-widgets-bundle'),
+						'label' => __( 'Heading size', 'so-widgets-bundle' ),
 						'description' => __( 'Enter the h1 font size. h2 - h6 will be proportionally sized based on this value.', 'so-widgets-bundle' ),
 						'default' => '38px',
 					),
@@ -287,7 +305,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 							'callback' => 'conditional',
 							'args'     => array(
 								'use_fittext[show]: val',
-								'use_fittext[hide]: ! val'
+								'use_fittext[hide]: ! val',
 							),
 						),
 					),
@@ -301,7 +319,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 						'state_handler' => array(
 							'use_fittext[show]' => array( 'show' ),
 							'use_fittext[hide]' => array( 'hide' ),
-						)
+						),
 					),
 
 					'heading_shadow' => array(
@@ -337,50 +355,45 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 					'link_color' => array(
 						'type' => 'color',
-						'label' => __( 'Link color', 'so-widgets-bundle' )
+						'label' => __( 'Link color', 'so-widgets-bundle' ),
 					),
 
 					'link_color_hover' => array(
 						'type' => 'color',
-						'label' => __( 'Link hover color', 'so-widgets-bundle' )
+						'label' => __( 'Link hover color', 'so-widgets-bundle' ),
 					),
-
-				)
+				),
 			),
 		) );
 	}
-	
-	function filter_button_widget_form( $form_fields ) {
-		
+
+	public function filter_button_widget_form( $form_fields ) {
 		unset( $form_fields['design']['fields']['align'] );
 		unset( $form_fields['design']['fields']['mobile_align'] );
-		
+
 		return $form_fields;
 	}
 
 	/**
 	 * Get everything necessary for the background image.
 	 *
-	 * @param $i
-	 * @param $frame
-	 *
 	 * @return array
 	 */
-	function get_frame_background( $i, $frame ) {
+	public function get_frame_background( $i, $frame ) {
 		$background_image = siteorigin_widgets_get_attachment_image_src(
 			$frame['background']['image'],
-			!empty( $frame['background']['size'] ) ? $frame['background']['size'] : 'full',
-			!empty( $frame['background']['image_fallback'] ) ? $frame['background']['image_fallback'] : ''
+			! empty( $frame['background']['size'] ) ? $frame['background']['size'] : 'full',
+			! empty( $frame['background']['image_fallback'] ) ? $frame['background']['image_fallback'] : ''
 		);
 
 		return array(
-			'color' => !empty( $frame['background']['color'] ) ? $frame['background']['color'] : false,
-			'image' => !empty( $background_image[0] ) ? $background_image[0] : false,
-			'image-width' => !empty( $background_image[1] ) ? $background_image[1] : 0,
-			'image-height' => !empty( $background_image[2] ) ? $background_image[2] : 0,
+			'color' => ! empty( $frame['background']['color'] ) ? $frame['background']['color'] : false,
+			'image' => ! empty( $background_image[0] ) ? $background_image[0] : false,
+			'image-width' => ! empty( $background_image[1] ) ? $background_image[1] : 0,
+			'image-height' => ! empty( $background_image[2] ) ? $background_image[2] : 0,
 			'image-sizing' => $frame['background']['image_type'],
-			'url' => !empty( $frame['background']['url'] ) ? $frame['background']['url'] : false,
-			'new_window' => !empty( $frame['background']['new_window'] ),
+			'url' => ! empty( $frame['background']['url'] ) ? $frame['background']['url'] : false,
+			'new_window' => ! empty( $frame['background']['new_window'] ),
 			'videos' => $frame['background']['videos'],
 			'video-sizing' => 'background',
 			'opacity' => (int) $frame['background']['opacity'] / 100,
@@ -389,11 +402,8 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 	/**
 	 * Render the actual content of the frame
-	 *
-	 * @param $i
-	 * @param $frame
 	 */
-	function render_frame_contents( $i, $frame ) {
+	public function render_frame_contents( $i, $frame ) {
 		?>
 		<div class="sow-slider-image-container">
 			<div class="sow-slider-image-wrapper">
@@ -406,13 +416,9 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	/**
 	 * Process the content. Most importantly add the buttons by replacing [buttons] in the content
 	 *
-	 * @param $content
-	 * @param $frame
-	 *
 	 * @return string
 	 */
-	function process_content( $content, $frame ) {
-
+	public function process_content( $content, $frame ) {
 		$content = wp_kses_post( $content );
 
 		if ( ! empty( $frame['autop'] ) ) {
@@ -425,65 +431,26 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 			$button_code = '';
 			// Generate buttons.
-			foreach( $frame['buttons'] as $button ) {
+			foreach ( $frame['buttons'] as $button ) {
 				$button_code .= $this->sub_widget( 'SiteOrigin_Widget_Button_Widget', array(), $button['button'], true );
 			}
 
 			// Add buttons to wrapper.
 			$content = str_replace( '[SiteOriginHeroButton]', $button_code, $content );
 		}
-		
+
 		// Process normal shortcodes
 		$content = do_shortcode( shortcode_unautop( $content ) );
-		
+
 		return apply_filters( 'siteorigin_hero_frame_content', $content, $frame );
-	}
-
-	/**
-	 * Handle Migration of `extra_top_padding` to `padding_top_padding` setting.
-	 *
-	 * The `padding_top_padding` setting was introduced because of an issue
-	 * With padding being unreliably set.
-	 *
-	 * @param $instance
-	 * @param $context
-	 *
-	 * @return $instance
-	 */
-	private static function migrate_padding( $instance, $context ) {
-		// If padding and extra top padding unit of measurement is different,
-		// we need to reset the extra top padding unit to be the same as the
-		// base padding to prevent unexpected changes.
-		if (
-			! empty( $instance['layout'][ $context ]['padding'] ) &&
-			$instance['layout'][ $context ]['padding_unit'] != $instance['layout'][ $context ]['extra_top_padding_unit']
-		) {
-			$instance['layout'][ $context ]['padding_extra_top'] = str_replace(
-				$instance['layout'][ $context ]['extra_top_padding_unit'],
-				$instance['layout'][ $context ]['padding_unit'],
-				$instance['layout'][ $context ]['extra_top_padding']
-			);
-			$instance['layout'][ $context ]['padding_extra_top_unit'] = $instance['layout'][ $context ]['padding_unit'];
-		} else {
-			// No adjustments needed, copy extra padding setting to new setting structure.
-			$instance['layout'][ $context ]['padding_extra_top_unit'] = $instance['layout'][ $context ]['extra_top_padding_unit'];
-			$instance['layout'][ $context ]['padding_extra_top'] = $instance['layout'][ $context ]['extra_top_padding'];
-		}
-
-		unset( $instance['layout'][ $context ]['extra_top_padding'] );
-		unset( $instance['layout'][ $context ]['extra_top_padding_unit'] );
-
-		return $instance;
 	}
 
 	/**
 	 * Migrate Slider settings.
 	 *
-	 * @param $instance
-	 *
 	 * @return mixed
 	 */
-	function modify_instance( $instance ) {
+	public function modify_instance( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
 		}
@@ -500,26 +467,15 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		// Run general slider migrations.
 		$instance = parent::modify_instance( $instance );
 
-		// Migrate `extra_top_padding` to `padding_extra_top`.
-		if ( ! empty( $instance['layout']['desktop']['extra_top_padding'] ) ) {
-			$instance = self::migrate_padding( $instance, 'desktop' );
-		}
-
-		if ( ! empty( $instance['layout']['mobile']['extra_top_padding'] ) ) {
-			$instance = self::migrate_padding( $instance, 'mobile' );
-		}
-
 		return $instance;
 	}
 
 	/**
 	 * The less variables to control the design of the slider
 	 *
-	 * @param $instance
-	 *
 	 * @return array
 	 */
-	function get_less_variables($instance) {
+	public function get_less_variables( $instance ) {
 		$less = array();
 
 		if ( empty( $instance ) ) {
@@ -529,6 +485,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		// Slider navigation controls
 		$less['nav_color_hex'] = $instance['controls']['nav_color_hex'];
 		$less['nav_size'] = $instance['controls']['nav_size'];
+		$less['nav_align'] = ! empty( $instance['controls']['nav_align'] ) ? $instance['controls']['nav_align'] : 'right';
 
 		// Measurement field type options
 		$meas_options = array();
@@ -558,7 +515,16 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 				}
 
 				// If neither padding is set, we need to unset them both to prevent an override.
-				if ( $meas_options['slide_padding_responsive'] == '0px' && $meas_options['slide_padding_extra_top_responsive'] == '0px') {
+				if (
+					(
+						empty( $settings['slide_padding_responsive'] ) ||
+						$meas_options['slide_padding_responsive'] == '0px'
+					) &&
+					(
+						empty( $settings['slide_padding_extra_top_responsive'] ) ||
+						$meas_options['slide_padding_extra_top_responsive'] == '0px'
+					)
+				) {
 					unset( $meas_options['slide_padding_responsive'] );
 					unset( $meas_options['slide_padding_extra_top_responsive'] );
 				}
@@ -568,6 +534,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		$meas_options['heading_size'] = $instance['design']['heading_size'];
 		$meas_options['text_size'] = $instance['design']['text_size'];
+
 		foreach ( $meas_options as $key => $val ) {
 			$less[ $key ] = $this->add_default_measurement_unit( $val );
 		}
@@ -579,21 +546,21 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		$less['text_shadow'] = isset( $instance['design']['text_shadow'] ) ? (float) $instance['design']['text_shadow'] : 25;
 		$less['text_color'] = $instance['design']['text_color'];
 
-
 		$less['link_color'] = ! empty( $instance['design']['link_color'] ) ? $instance['design']['link_color'] : '';
 		$less['link_color_hover'] = ! empty( $instance['design']['link_color_hover'] ) ? $instance['design']['link_color_hover'] : '';
 
-
 		$heading_font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
 		$less['heading_font'] = $heading_font['family'];
+
 		if ( ! empty( $heading_font['weight'] ) ) {
 			$less['heading_font_weight'] = $heading_font['weight_raw'];
 			$less['heading_font_style'] = $heading_font['style'];
 		}
-		
+
 		if ( ! empty( $instance['design']['text_font'] ) ) {
 			$text_font = siteorigin_widget_get_font( $instance['design']['text_font'] );
 			$less['text_font'] = $text_font['family'];
+
 			if ( ! empty( $text_font['weight'] ) ) {
 				$less['text_font_weight'] = $text_font['weight_raw'];
 				$less['text_font_style'] = $text_font['style'];
@@ -609,37 +576,43 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		return $less;
 	}
 
-	function add_default_measurement_unit($val) {
-		if (!empty($val)) {
-			if (!preg_match('/\d+([a-zA-Z%]+)/', $val)) {
+	public function add_default_measurement_unit( $val ) {
+		if ( ! empty( $val ) ) {
+			if ( !preg_match( '/\d+([a-zA-Z%]+)/', $val ) ) {
 				$val .= 'px';
 			}
 		}
+
 		return $val;
 	}
 
-	function wrapper_class_filter( $classes, $instance ){
-		if( ! empty( $instance['design']['fittext'] ) ) {
+	public function wrapper_class_filter( $classes, $instance ) {
+		if ( ! empty( $instance['design']['fittext'] ) ) {
 			$classes[] = 'so-widget-fittext-wrapper';
 		}
+
 		return $classes;
 	}
 
-	function wrapper_data_filter( $data, $instance ) {
-		if( ! empty( $instance['design']['fittext'] ) && ! empty( $instance['design']['fittext_compressor'] ) ) {
+	public function wrapper_data_filter( $data, $instance ) {
+		if ( ! empty( $instance['design']['fittext'] ) && ! empty( $instance['design']['fittext_compressor'] ) ) {
 			$data['fit-text-compressor'] = $instance['design']['fittext_compressor'];
 		}
+
 		return $data;
 	}
-	
-	function enqueue_widget_scripts( $instance ) {
-		if( ! empty( $instance['design']['fittext'] ) || $this->is_preview( $instance ) ) {
+
+	public function enqueue_widget_scripts( $instance ) {
+		if ( ! empty( $instance['design']['fittext'] ) || $this->is_preview( $instance ) ) {
 			wp_enqueue_script( 'sowb-fittext' );
 		}
 	}
 
-	function get_form_teaser() {
-		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+	public function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
+
 		return array(
 			sprintf(
 				__( 'Add multiple Hero frames in one go with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
@@ -665,4 +638,4 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 }
 
-siteorigin_widget_register('sow-hero', __FILE__, 'SiteOrigin_Widget_Hero_Widget');
+siteorigin_widget_register( 'sow-hero', __FILE__, 'SiteOrigin_Widget_Hero_Widget' );

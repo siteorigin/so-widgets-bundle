@@ -12,13 +12,13 @@ if ( ! class_exists( 'SiteOrigin_Widget_Base_Carousel' ) ) {
 }
 
 class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_Carousel {
-	function __construct() {
+	public function __construct() {
 		parent::__construct(
 			'sow-anything-carousel',
 			__( 'SiteOrigin Anything Carousel', 'so-widgets-bundle' ),
 			array(
 				'description' => __( 'Display images, text, or any other content in a carousel.', 'so-widgets-bundle' ),
-				'help' => 'https://siteorigin.com/widgets-bundle/anything-carousel-widget/'
+				'help' => 'https://siteorigin.com/widgets-bundle/anything-carousel-widget/',
 			),
 			array(),
 			false,
@@ -26,7 +26,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		);
 	}
 
-	function initialize() {
+	public function initialize() {
 		// Let the carousel base class do its initialization.
 		parent::initialize();
 
@@ -40,7 +40,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		);
 	}
 
-	function get_widget_form() {
+	public function get_widget_form() {
 		$useable_units = array(
 			'px',
 			'%',
@@ -72,7 +72,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 				'item_label' => array(
 					'selector' => "[id*='title']",
 					'update_event' => 'change',
-					'value_method' => 'val'
+					'value_method' => 'val',
 				),
 
 				'fields' => array(
@@ -179,12 +179,53 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		);
 	}
 
-	function modify_instance( $instance ) {
+	public function override_carousel_settings() {
+		$carousel_settings = get_option( 'so_widget_settings[' . $this->widget_class . ']', array() );
+
+		if ( empty( $carousel_settings ) ) {
+			return array();
+		}
+		$carousel_settings = $carousel_settings['responsive'];
+
+		return array(
+			'breakpoints' => array(
+				'tablet_landscape' => isset( $carousel_settings['tablet']['landscape']['breakpoint'] ) ? $carousel_settings['tablet']['landscape']['breakpoint'] : null,
+				'tablet_portrait' => isset( $carousel_settings['tablet']['portrait']['breakpoint'] ) ? $carousel_settings['tablet']['portrait']['breakpoint'] : null,
+				'mobile' => isset( $carousel_settings['mobile']['breakpoint'] ) ? $carousel_settings['mobile']['breakpoint'] : null,
+			),
+			'slides_to_scroll' => array(
+				'desktop' => isset( $carousel_settings['desktop']['slides_to_scroll'] ) ? $carousel_settings['desktop']['slides_to_scroll'] : null,
+				'tablet_landscape' => isset( $carousel_settings['tablet']['landscape']['slides_to_scroll'] ) ? $carousel_settings['tablet']['landscape']['slides_to_scroll'] : null,
+				'tablet_portrait' => isset( $carousel_settings['tablet']['portrait']['slides_to_scroll'] ) ? $carousel_settings['tablet']['portrait']['slides_to_scroll'] : null,
+				'mobile' => isset( $carousel_settings['mobile']['slides_to_scroll'] ) ? $carousel_settings['mobile']['slides_to_scroll'] : null,
+			),
+			'slides_to_show' => array(
+				'desktop' => isset( $carousel_settings['desktop']['slides_to_show'] ) ? $carousel_settings['desktop']['slides_to_show'] : null,
+				'tablet_landscape' => isset( $carousel_settings['tablet']['landscape']['slides_to_show'] ) ? $carousel_settings['tablet']['landscape']['slides_to_show'] : null,
+				'tablet_portrait' => isset( $carousel_settings['tablet']['portrait']['slides_to_show'] ) ? $carousel_settings['tablet']['portrait']['slides_to_show'] : null,
+				'mobile' => isset( $carousel_settings['mobile']['slides_to_show'] ) ? $carousel_settings['mobile']['slides_to_show'] : null,
+			),
+			'navigation' => array(
+				'desktop' => isset( $carousel_settings['desktop']['navigation'] ) ? $carousel_settings['desktop']['navigation'] : null,
+				'tablet_landscape' => isset( $carousel_settings['tablet']['landscape']['navigation'] ) ? $carousel_settings['tablet']['landscape']['navigation'] : null,
+				'tablet_portrait' => isset( $carousel_settings['tablet']['portrait']['navigation'] ) ? $carousel_settings['tablet']['portrait']['navigation'] : null,
+				'mobile' => isset( $carousel_settings['mobile']['navigation'] ) ? $carousel_settings['mobile']['navigation'] : null,
+			),
+			'navigation_dots' => array(
+				'desktop' => isset( $carousel_settings['desktop']['navigation_dots'] ) ? $carousel_settings['desktop']['navigation_dots'] : null,
+				'tablet_landscape' => isset( $carousel_settings['tablet']['landscape']['navigation_dots'] ) ? $carousel_settings['tablet']['landscape']['navigation_dots'] : null,
+				'tablet_portrait' => isset( $carousel_settings['tablet']['portrait']['navigation_dots'] ) ? $carousel_settings['tablet']['portrait']['navigation_dots'] : null,
+				'mobile' => isset( $carousel_settings['mobile']['navigation_dots'] ) ? $carousel_settings['mobile']['navigation_dots'] : null,
+			),
+		);
+	}
+
+	public function modify_instance( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
 		}
 
-		// If slides_to_scroll existed (regardless of value) prior to the introduction 
+		// If slides_to_scroll existed (regardless of value) prior to the introduction
 		// of slides_to_show, set slides_to_scroll to slides_to_show to prevent unintended change.
 		if (
 			! empty( $instance['responsive'] ) &&
@@ -194,7 +235,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 			$instance['responsive']['desktop']['slides_to_show'] = $instance['responsive']['desktop']['slides_to_scroll'];
 			$instance['responsive']['tablet']['landscape']['slides_to_show'] = $instance['responsive']['tablet']['landscape']['slides_to_scroll'];
 			$instance['responsive']['tablet']['portrait']['slides_to_show'] = $instance['responsive']['tablet']['portrait']['slides_to_scroll'];
-			$instance['responsive']['mobile']['slides_to_show'] = $instance['responsive']['mobile']['slides_to_scroll'];	
+			$instance['responsive']['mobile']['slides_to_show'] = $instance['responsive']['mobile']['slides_to_scroll'];
 		}
 
 		// 	If carousel was created before Adaptive Height was introduced, disable it.
@@ -205,11 +246,11 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		return $instance;
 	}
 
-	function get_style_name( $instance ) {
+	public function get_style_name( $instance ) {
 		return empty( $instance['design']['theme'] ) ? 'base' : $instance['design']['theme'];
 	}
 
-	function get_less_variables( $instance ) {
+	public function get_less_variables( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
 		}
@@ -233,6 +274,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 
 		$item_title_font = siteorigin_widget_get_font( $instance['design']['item_title']['font'] );
 		$less_vars['item_title_font'] = $item_title_font['family'];
+
 		if ( ! empty( $item_title_font['weight'] ) ) {
 			$less_vars['item_title_font_style'] = $item_title_font['style'];
 			$less_vars['item_title_font_weight'] = $item_title_font['weight_raw'];
@@ -240,6 +282,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 
 		$item_font = siteorigin_widget_get_font( $instance['design']['item']['font'] );
 		$less_vars['item_font'] = $item_font['family'];
+
 		if ( ! empty( $item_font['weight'] ) ) {
 			$less_vars['item_font_style'] = $item_font['style'];
 			$less_vars['item_font_weight'] = $item_font['weight_raw'];
@@ -260,7 +303,10 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 				'item_template' => plugin_dir_path( __FILE__ ) . 'tpl/item.php',
 				'navigation' => 'side',
 				'navigation_arrows' => isset( $instance['carousel_settings']['arrows'] ) ? ! empty( $instance['carousel_settings']['arrows'] ) : true,
-				'item_title_tag' => $instance['design']['item_title']['tag'],
+				'item_title_tag' => siteorigin_widget_valid_tag(
+					$instance['design']['item_title']['tag'],
+					'h4'
+				),
 				'items' => ! empty( $instance['items'] ) ? $instance['items'] : array(),
 				'attributes' => array(
 					'widget' => 'anything',
@@ -273,11 +319,11 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		);
 	}
 
-	function render_item_content( $item, $instance ) {
+	public function render_item_content( $item, $instance ) {
 		echo apply_filters( 'siteorigin_widgets_anything_carousel_render_item_content', $item['content_text'], $item, $instance );
 	}
 
-	function get_form_teaser() {
+	public function get_form_teaser() {
 		if ( class_exists( 'SiteOrigin_Premium' ) ) {
 			return false;
 		}

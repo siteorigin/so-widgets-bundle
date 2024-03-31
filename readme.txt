@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: widget, button, slider, hero, google maps, image, carousel, lottie, features, icons, price table, tinymce, social icons
 Requires at least: 4.2
-Tested up to: 6.1
+Tested up to: 6.4
 Requires PHP: 5.6.20
 Stable tag: trunk
 Build time: unbuilt
@@ -105,6 +105,58 @@ SiteOrigin Premium includes access to our professional email support service, pe
 The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets. Widgets can be enabled or disabled as needed. If a widget offers global settings, you can access those via the Settings button next to each applicable widget.
 
 == Changelog ==
+
+= 1.49.0 - 23 April 2023 =
+* Features: Updated CSS to Flexbox.
+* Features: Added `Space Between Each Feature` setting.
+* Features: Ensured all icon alignment states center align on mobile.
+* Features: Increased the responsive breakpoint` to 768px.
+* Price Table: Added color settings default values.
+* Slider: Improved slide background removal.
+* Social Media Buttons: Fixed potential `Undefined variable` error.
+* Video: Resolved an issue with YouTube video looping.
+* Widget Block: Added `siteorigin_widgets_block_exclude_widget`. Developers can exclude widgets from SiteOrigin Widgets Block cache.
+
+= 1.48.0 - 12 April 2023 =
+* Slider: Added Height and Responsive Height settings regardless of whether a Foreground Image is present.
+* Social Media Buttons: Added Wire Border Color settings.
+
+= 1.47.1 - 04 April 2023 =
+* Blog: Fixed Alternate Template featured image mobile collapse.
+* Post Carousel: Improved `Thumbnail Overlay` migration.
+* Post Carousel: Added `siteorigin_post_carousel_item_template` filter.
+* Sliders: Default enabled `Show slide background videos on mobile.`
+* Tabs: Addeded `siteorigin_widgets_tabs_always_scroll` filter.
+* Font Field: Resolved PHP 8 deprecated notice.
+* Textarea Form Field: Resolved PHP 8 deprecated notice.
+* Media Field: Minor styling improvement.
+* Improved missing widget detection.
+* PHP coding standards update.
+
+= 1.47.0 - 30 March 2023 =
+* Blog: Added a `Post Title HTML Tag` setting.
+* Google Maps: Fixed a potential `Map Style > Predefined Styles` PHP 8.x error.
+* Updated Tested up to tag.
+
+= 1.46.7 - 15 March 2023 =
+* Developer: Updated Google Maps location `getSimplePlace` a method.
+
+= 1.46.6 - 01 March 2023 =
+* Blog: Fixed a potential Alternate Template featured image fallback misalignment and improved responsiveness.
+* Blog: Vertically center aligned the Alternate Template featured image fallback image.
+
+= 1.46.5 - 03 February 2023 =
+* Repeaters: Restored action icons.
+
+= 1.46.4 - 02 February 2023 =
+* Accordion and Tabs: Prevented unexpected scroll.
+* Blog: Removed Portfolio `Filter Category` setting requirement.
+* Lottie Player: Updated library to `1.6.0`.
+* Slider: Removed potential spacing after a slide foreground image.
+* Removed unintentional widget asset enqueue in the Classic Editor.
+* Widget Block: Resolved Customizer `ReferenceError`.
+* Autoptimize: Avoided using strpos with empty string in `include_widgets_css_in_autoptimize`.
+* Developer: Updated repeater actions to prevent naming conflicts. 
 
 = 1.46.3 - 23 January 2023 =
 * Simple Masonry: Resolved pre-WordPress 5.9 error.

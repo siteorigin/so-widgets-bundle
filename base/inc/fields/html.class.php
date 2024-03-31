@@ -7,13 +7,14 @@ class SiteOrigin_Widget_Field_Html extends SiteOrigin_Widget_Field_Base {
 	/**
 	 * The markup of this field.
 	 *
-	 * @access protected
 	 * @var string
 	 */
 	protected $markup;
 
 	protected function render_field( $value, $instance ) {
-		if ( empty( $this->markup ) ) return;
+		if ( empty( $this->markup ) ) {
+			return;
+		}
 		?>
 		<div class="siteorigin-widget-html-field">
 			<?php echo wp_kses_post( $this->markup ); ?>

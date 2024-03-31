@@ -1,7 +1,7 @@
 <?php
 
-function siteorigin_widgets_icons_icomoon_filter( $icons ){
-	return array_merge($icons, array(
+function siteorigin_widgets_icons_icomoon_filter( $icons ) {
+	return array_merge( $icons, array(
 		'home' => '&#xe900;',
 		'home2' => '&#xe901;',
 		'home3' => '&#xe902;',
@@ -493,6 +493,6 @@ function siteorigin_widgets_icons_icomoon_filter( $icons ){
 		'codepen' => '&#xeae8;',
 		'sv' => '&#xeae9;',
 		'IcoMoon' => '&#xeaea;',
-	));
+	) );
 }
-add_filter('siteorigin_widgets_icons_icomoon', 'siteorigin_widgets_icons_icomoon_filter');
+add_filter( 'siteorigin_widgets_icons_icomoon', 'siteorigin_widgets_icons_icomoon_filter' );

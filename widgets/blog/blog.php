@@ -8,7 +8,7 @@ Documentation: https://siteorigin.com/widgets-bundle/blog-widget/
 */
 
 class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
-	function __construct() {
+	public function __construct() {
 		parent::__construct(
 			'sow-blog',
 			__( 'SiteOrigin Blog', 'so-widgets-bundle' ),
@@ -24,7 +24,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function initialize() {
+	public function initialize() {
 		add_action( 'wp_loaded', array( $this, 'register_image_sizes' ) );
 		$this->register_frontend_styles(
 			array(
@@ -34,31 +34,45 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				),
 			)
 		);
-		add_action( 'wp_enqueue_scripts', array( $this, 'register_template_assets' ) );
+		$this->register_frontend_scripts(
+			array(
+				array(
+					'sow-blog',
+					plugin_dir_url( __FILE__ ) . 'js/blog' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					array( 'jquery' ),
+					SOW_BUNDLE_VERSION
+				),
+			)
+		);
 
+		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-blog', array( $this, 'localize_scrollto' ), 10, 2 );
+
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_template_assets' ) );
+		add_filter( 'siteorigin_widgets_blog_query', array( $this, 'portfolio_filter_posts' ), 8, 2 );
 	}
 
-	function register_image_sizes() {
+	public function register_image_sizes() {
 		$image_sizes = apply_filters( 'siteorigin_widgets_blog_image_sizes', array(
 			'portfolio' => array(
 				375,
-				375
+				375,
 			),
 			'grid' => array(
 				720,
-				480
+				480,
 			),
 			'alternate' => array(
 				950,
-				630
-			)
+				630,
+			),
 		) );
+
 		foreach ( $image_sizes as $k => $size ) {
 			add_image_size( 'sow-blog-' . $k, (int) $size[0], (int) $size[1], true );
 		}
 	}
 
-	function get_widget_form() {
+	public function get_widget_form() {
 		$templates = apply_filters( 'siteorigin_widgets_blog_templates', json_decode( file_get_contents( plugin_dir_path( __FILE__ ) . 'data/templates.json' ), true ) );
 
 		return $this->dynamic_preset_state_handler(
@@ -71,7 +85,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				),
 				'template' => array(
 					'type' => 'presets',
-					'label' => __( 'Template', 'so-widgets-bundle'),
+					'label' => __( 'Template', 'so-widgets-bundle' ),
 					'default' => 'standard',
 					'options' => $templates,
 					'state_emitter' => array(
@@ -92,11 +106,45 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'type' => 'checkbox',
 							'label' => __( 'Featured Image', 'so-widgets-bundle' ),
 							'default' => true,
+							'state_emitter' => array(
+								'callback' => 'conditional',
+								'args' => array(
+									'featured_image[show]: val',
+									'featured_image[hide]: ! val',
+								),
+							),
+						),
+						'featured_image_empty' => array(
+							'type' => 'checkbox',
+							'label' => __( 'Skip Post if No Featured Image', 'so-widgets-bundle' ),
+							'default' => true,
+							'state_handler' => array(
+								'active_template[portfolio]' => array( 'slideDown' ),
+								'_else[active_template]' => array( 'slideUp' ),
+							),
 						),
 						'featured_image_size' => array(
 							'type' => 'image-size',
 							'label' => __( 'Featured Image Size', 'siteorigin-premium' ),
 							'custom_size' => true,
+							'state_handler' => array(
+								'featured_image[show]' => array( 'show' ),
+								'featured_image[hide]' => array( 'hide' ),
+							),
+						),
+						'tag' => array(
+							'type' => 'select',
+							'label' => __( 'Post Title HTML Tag', 'so-widgets-bundle' ),
+							'default' => 'h2',
+							'options' => array(
+								'h1' => __( 'H1', 'so-widgets-bundle' ),
+								'h2' => __( 'H2', 'so-widgets-bundle' ),
+								'h3' => __( 'H3', 'so-widgets-bundle' ),
+								'h4' => __( 'H4', 'so-widgets-bundle' ),
+								'h5' => __( 'H5', 'so-widgets-bundle' ),
+								'h6' => __( 'H6', 'so-widgets-bundle' ),
+								'p' => __( 'Paragraph', 'so-widgets-bundle' ),
+							)
 						),
 						'content' => array(
 							'type' => 'select',
@@ -314,28 +362,14 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'background' => array(
 									'type' => 'color',
 									'label' => __( 'Background', 'so-widgets-bundle' ),
-									'default' => '#000',
+									'default' => 'rgba(0,0,0,0.7)',
+									'alpha' => true,
 								),
 								'background_hover' => array(
 									'type' => 'color',
 									'label' => __( 'Hover Background', 'so-widgets-bundle' ),
-									'default' => '#000',
-								),
-								'background_opacity' => array(
-									'type' => 'slider',
-									'label' => __( 'Background Opacity', 'so-widgets-bundle' ),
-									'min' => 0,
-									'max' => 1,
-									'step' => 0.01,
-									'default' => '0.7',
-								),
-								'background_opacity_hover' => array(
-									'type' => 'slider',
-									'label' => __( 'Background Hover Opacity', 'so-widgets-bundle' ),
-									'min' => 0,
-									'max' => 1,
-									'step' => 0.01,
-									'default' => '0.75',
+									'default' => 'rgba(0,0,0,0.75)',
+									'alpha' => true,
 								),
 							),
 						),
@@ -455,15 +489,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'hover_overlay_color' => array(
 									'type' => 'color',
 									'label' => __( 'Hover Overlay Color', 'so-widgets-bundle' ),
-									'default' => '#ffffff',
-								),
-								'hover_overlay_opacity' => array(
-									'label' => __( 'Hover Overlay Opacity', 'so-widgets-bundle' ),
-									'type' => 'slider',
-									'min' => 0,
-									'max' => 1,
-									'step' => 0.01,
-									'default' => '0.9',
+									'default' => 'rgba(255,255,255,0.9)',
+									'alpha' => true,
 								),
 								'post_title_font' => array(
 									'type' => 'font',
@@ -601,18 +628,24 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_settings_form() {
+	public function get_settings_form() {
 		return array(
 			'responsive_breakpoint' => array(
 				'type'        => 'measurement',
 				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
 				'default'     => '780px',
-				'description' => __( 'Device width, in pixels, to collapse into a mobile view.', 'so-widgets-bundle' )
-			)
+				'description' => __( 'Device width, in pixels, to collapse into a mobile view.', 'so-widgets-bundle' ),
+			),
+			'scrollto' => array(
+				'type'        => 'checkbox',
+				'label'       => __( 'Scroll Top', 'so-widgets-bundle' ),
+				'default'     => true,
+				'description' => __( 'Scroll the user to the top of the Blog Widget after pagination links are clicked.', 'so-widgets-bundle' ),
+			),
 		);
 	}
 
-	function register_template_assets() {
+	public function register_template_assets() {
 		wp_register_script( 'sow-blog-template-masonry', plugin_dir_url( __FILE__ ) . 'js/masonry' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-isotope' ) );
 		wp_register_script( 'sow-blog-template-portfolio', plugin_dir_url( __FILE__ ) . 'js/portfolio' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'jquery-isotope' ) );
 
@@ -621,11 +654,24 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		do_action( 'siteorigin_widgets_blog_template_stylesheets' );
 	}
 
-	function get_template_name( $instance ) {
+	public function localize_scrollto( $instance, $widget ) {
+		$global_settings = $this->get_global_settings();
+		wp_localize_script(
+			'sow-blog',
+			'soBlogWidget',
+			array(
+				'scrollto' => ! empty( $global_settings['scrollto'] ),
+				'scrollto_offset' => ( int ) apply_filters( 'siteorigin_widgets_blog_scrollto_offset', 90 ),
+			)
+		);
+
+	}
+
+	public function get_template_name( $instance ) {
 		return 'base';
 	}
 
-	function get_style_name( $instance ) {
+	public function get_style_name( $instance ) {
 		$template = empty( $instance['template'] ) ? 'standard' : $instance['template'];
 
 		// If this template has any assets, load them.
@@ -640,7 +686,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		return $template;
 	}
 
-	function get_less_variables( $instance ) {
+	public function get_less_variables( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
 		}
@@ -649,7 +695,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 			'categories' => ! empty( $instance['settings']['categories'] ) ? $instance['settings']['categories'] : false,
 			'author' => ! empty( $instance['settings']['author'] ) ? $instance['settings']['author'] : false,
-			'columns' => (int) $instance['settings']['columns'] > 0 ? (int) $instance['settings']['columns'] : 1,
+			'columns' => isset( $instance['settings']['columns'] ) && (int) $instance['settings']['columns'] > 0 ? (int) $instance['settings']['columns'] : 1,
 		);
 
 		if ( $instance['template'] == 'masonry' ) {
@@ -659,7 +705,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		}
 
 		if ( $instance['template'] != 'portfolio' ) {
-
 			// Post.
 			$less_vars['post_border_color'] = ! empty( $instance['design']['post']['border'] ) ? $instance['design']['post']['border'] : '';
 			$less_vars['post_background'] = ! empty( $instance['design']['post']['background'] ) ? $instance['design']['post']['background'] : '';
@@ -668,6 +713,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			if ( ! empty( $instance['design']['title']['font'] ) ) {
 				$font = siteorigin_widget_get_font( $instance['design']['title']['font'] );
 				$less_vars['title_font'] = $font['family'];
+
 				if ( ! empty( $font['weight'] ) ) {
 					$less_vars['title_font_style'] = $font['style'];
 					$less_vars['title_font_weight'] = $font['weight_raw'];
@@ -681,6 +727,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			if ( ! empty( $instance['design']['meta']['font'] ) ) {
 				$font = siteorigin_widget_get_font( $instance['design']['meta']['font'] );
 				$less_vars['meta_font'] = $font['family'];
+
 				if ( ! empty( $font['weight'] ) ) {
 					$less_vars['meta_font_style'] = $font['style'];
 					$less_vars['meta_font_weight'] = $font['weight_raw'];
@@ -695,6 +742,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				if ( ! empty( $instance['design']['offset_post_meta']['font'] ) ) {
 					$font = siteorigin_widget_get_font( $instance['design']['offset_post_meta']['font'] );
 					$less_vars['offset_post_meta_font'] = $font['family'];
+
 					if ( ! empty( $font['weight'] ) ) {
 						$less_vars['offset_post_meta_font_style'] = $font['style'];
 						$less_vars['offset_post_meta_font_weight'] = $font['weight_raw'];
@@ -711,6 +759,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			if ( ! empty( $instance['design']['content']['font'] ) ) {
 				$font = siteorigin_widget_get_font( $instance['design']['content']['font'] );
 				$less_vars['content_font'] = $font['family'];
+
 				if ( ! empty( $font['weight'] ) ) {
 					$less_vars['content_font_style'] = $font['style'];
 					$less_vars['content_font_weight'] = $font['weight_raw'];
@@ -721,7 +770,16 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$less_vars['content_link'] = ! empty( $instance['design']['content']['link_color'] ) ? $instance['design']['content']['link_color'] : '';
 			$less_vars['content_link_hover'] = ! empty( $instance['design']['content']['link_color_hover'] ) ? $instance['design']['content']['link_color_hover'] : '';
 		} else {
-			$less_vars['column_width'] = number_format( 100 / $less_vars['columns'], 2 ) . '%';
+			global $_wp_additional_image_sizes;
+			if ( ! empty( $instance['settings']['featured_image_size'] ) ) {
+				$less_vars['image_size'] = $instance['settings']['featured_image_size'] == 'custom_size' ? $instance['settings']['featured_image_size_width'] : $instance['settings']['featured_image_size'];
+				if ( isset( $_wp_additional_image_sizes[ $less_vars['image_size'] ] ) ) {
+					$less_vars['image_size'] = $_wp_additional_image_sizes[ $less_vars['image_size'] ]['width'] . 'px';
+				}
+			}
+
+			$less_vars['column_width'] = number_format( 98.8333 / $less_vars['columns'], 2 ) . '%';
+
 			if ( empty( $less_vars['categories'] ) && ! empty( $instance['settings']['filter_categories'] ) ) {
 				$less_vars['categories'] = 1;
 			}
@@ -736,9 +794,11 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		$less_vars['pagination_background'] = ! empty( $instance['design']['pagination']['background'] ) ? $instance['design']['pagination']['background'] : '';
 		$less_vars['pagination_background_hover'] = ! empty( $instance['design']['pagination']['background_hover'] ) ? $instance['design']['pagination']['background_hover'] : '';
 		$less_vars['pagination_border_radius'] = ! empty( $instance['design']['pagination']['border_radius'] ) ? $instance['design']['pagination']['border_radius'] . 'px' : '';
+
 		if ( ! empty( $instance['design']['pagination']['font'] ) ) {
 			$font = siteorigin_widget_get_font( $instance['design']['pagination']['font'] );
 			$less_vars['pagination_font'] = $font['family'];
+
 			if ( ! empty( $font['weight'] ) ) {
 				$less_vars['pagination_font_style'] = $font['style'];
 				$less_vars['pagination_font_weight'] = $font['weight_raw'];
@@ -756,6 +816,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			if ( ! empty( $instance['design']['overlay_post_category']['font'] ) ) {
 				$font = siteorigin_widget_get_font( $instance['design']['overlay_post_category']['font'] );
 				$less_vars['overlay_post_category_font'] = $font['family'];
+
 				if ( ! empty( $font['weight'] ) ) {
 					$less_vars['overlay_post_category_font_style'] = $font['style'];
 					$less_vars['overlay_post_category_font_weight'] = $font['weight_raw'];
@@ -765,17 +826,9 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$less_vars['overlay_post_category_color'] = ! empty( $instance['design']['overlay_post_category']['color'] ) ? $instance['design']['overlay_post_category']['color'] : '';
 			$less_vars['overlay_post_category_color_hover'] = ! empty( $instance['design']['overlay_post_category']['color_hover'] ) ? $instance['design']['overlay_post_category']['color_hover'] : '';
 
-			$color = ! empty( $instance['design']['overlay_post_category']['background'] ) ? $instance['design']['overlay_post_category']['background'] : '#000';
-			$rgb = ltrim( $color, '#' );
-			$rgb = array_map( 'hexdec', str_split( $rgb , strlen( $rgb ) == 6 ? 2 : 1 ) );
-			$opacity = ! empty( $instance['design']['overlay_post_category']['background_opacity'] ) ? $instance['design']['overlay_post_category']['background_opacity'] : 0.8;
-			$less_vars['overlay_post_category_background'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
+			$less_vars['overlay_post_category_background'] = ! empty( $instance['design']['overlay_post_category']['background'] ) ? $instance['design']['overlay_post_category']['background'] : 'rgba(0,0,0,0.80)';
 
-			$color = ! empty( $instance['design']['overlay_post_category']['background_hover'] ) ? $instance['design']['overlay_post_category']['background_hover'] : '#000';
-			$rgb = ltrim( $color, '#' );
-			$rgb = array_map( 'hexdec', str_split( $rgb , strlen( $rgb ) == 6 ? 2 : 1 ) );
-			$opacity = ! empty( $instance['design']['overlay_post_category']['background_opacity_hover'] ) ? $instance['design']['overlay_post_category']['background_opacity_hover'] : 0.75;
-			$less_vars['overlay_post_category_background_hover'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
+			$less_vars['overlay_post_category_background_hover'] = ! empty( $instance['design']['overlay_post_category']['background_hover'] ) ? $instance['design']['overlay_post_category']['background_hover'] : 'rgba(0,0,0,0.75)';
 		}
 
 		if ( $instance['template'] == 'portfolio' ) {
@@ -783,6 +836,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			if ( ! empty( $instance['design']['filter_categories']['font'] ) ) {
 				$font = siteorigin_widget_get_font( $instance['design']['filter_categories']['font'] );
 				$less_vars['filter_categories_font'] = $font['family'];
+
 				if ( ! empty( $font['weight'] ) ) {
 					$less_vars['filter_categories_font_style'] = $font['style'];
 					$less_vars['filter_categories_font_weight'] = $font['weight_raw'];
@@ -797,17 +851,13 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 			// Featured Images.
 			$less_vars['featured_image_border_color'] = ! empty( $instance['design']['featured_image']['border_color'] ) ? $instance['design']['featured_image']['border_color'] : '';
+			$less_vars['featured_image_hover_overlay_color'] = ! empty( $instance['design']['featured_image']['hover_overlay_color'] ) ? $instance['design']['featured_image']['hover_overlay_color'] : '';
 
-			if ( ! empty( $instance['design']['featured_image']['hover_overlay_color'] ) ) {
-				$rgb = ltrim( $instance['design']['featured_image']['hover_overlay_color'], '#' );
-				$rgb = array_map( 'hexdec', str_split( $rgb , strlen( $rgb ) == 6 ? 2 : 1 ) );
-				$opacity = ! empty( $instance['design']['featured_image']['hover_overlay_opacity'] ) ? $instance['design']['featured_image']['hover_overlay_opacity'] : 0.9;
-				$less_vars['featured_image_hover_overlay_color'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
-			}
 
 			if ( ! empty( $instance['design']['featured_image']['post_title_font'] ) ) {
 				$font = siteorigin_widget_get_font( $instance['design']['featured_image']['post_title_font'] );
 				$less_vars['featured_image_post_title_font'] = $font['family'];
+
 				if ( ! empty( $font['weight'] ) ) {
 					$less_vars['featured_image_post_title_font_style'] = $font['style'];
 					$less_vars['featured_image_post_title_font_weight'] = $font['weight_raw'];
@@ -818,9 +868,11 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$less_vars['featured_image_divider_border_color'] = ! empty( $instance['design']['featured_image']['divider_border_color'] ) ? $instance['design']['featured_image']['divider_border_color'] : '';
 			$less_vars['featured_image_divider_border_thickness'] = ! empty( $instance['design']['featured_image']['divider_border_thickness'] ) ? $instance['design']['featured_image']['divider_border_thickness'] : '';
 			$less_vars['featured_image_divider_border_margin'] = ! empty( $instance['design']['featured_image']['divider_border_margin'] ) ? $instance['design']['featured_image']['divider_border_margin'] : '';
+
 			if ( ! empty( $instance['design']['featured_image']['post_meta_font'] ) ) {
 				$font = siteorigin_widget_get_font( $instance['design']['featured_image']['post_meta_font'] );
 				$less_vars['featured_image_post_meta_font'] = $font['family'];
+
 				if ( ! empty( $font['weight'] ) ) {
 					$less_vars['featured_image_post_meta_font_style'] = $font['style'];
 					$less_vars['featured_image_post_meta_font_weight'] = $font['weight_raw'];
@@ -833,19 +885,39 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		return $less_vars;
 	}
 
-	static public function portfolio_get_terms( $instance, $post_id = 0 ) {
+	public static function portfolio_get_terms( $instance, $post_id = 0 ) {
 		$terms = array();
+
 		if ( post_type_exists( 'jetpack-portfolio' ) ) {
 			if ( $post_id ) {
 				$terms = get_the_terms( (int) $post_id, 'jetpack-portfolio-type' );
 			} else {
 				$terms = get_terms( 'jetpack-portfolio-type' );
 			}
+		} else {
+			// Check if a developer has set a term for this post type.
+			$post_type = wp_parse_args( siteorigin_widget_post_selector_process_query( $instance['posts'] ) )['post_type'];
+			$taxonomy = apply_filters( 'siteorigin_widgets_blog_portfolio_taxonomy', '', $instance, $post_type );
+			if ( ! empty( $taxonomy ) ) {
+				$terms = get_terms( $taxonomy );
+			}
+
+			if ( empty( $terms ) || is_wp_error( $terms ) ) {
+				// Let's try to find a taxonomy that has terms for this post type.
+				$possible_tax = get_object_taxonomies( $post_type );
+				foreach ( $possible_tax as $tax ) {
+					$possible_terms = get_terms( $tax );
+					if ( ! empty( $possible_terms ) && ! is_wp_error( $possible_terms ) ) {
+						$terms = $possible_terms;
+						break;
+					}
+				}
+			}
 		}
 
 		if ( empty( $terms ) || is_wp_error( $terms ) ) {
 			$fallback = apply_filters( 'siteorigin_widgets_blog_portfolio_fallback_term', 'category', $instance );
-			// Unable to find posts with portfolio type. Try using fallback term.
+			// Unable to find posts for this type. Try using the fallback term.
 			if ( $post_id ) {
 				return get_the_terms( (int) $post_id, $fallback );
 			} else {
@@ -854,29 +926,36 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		} else {
 			return $terms;
 		}
-
 	}
 
-	function modify_instance( $instance ) {
+	public function modify_instance( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
+		}
+
+		if ( ! isset( $instance['settings']['tag'] ) ) {
+			$instance['settings']['tag'] = 'h2';
 		}
 
 		if ( empty( $instance['template'] ) ) {
 			$instance['template'] = 'standard';
 		} else {
-			// Ensure selected template is valid.
-			switch ( $instance['template'] ) {
-				case 'alternate':
-				case 'grid':
-				case 'masonry':
-				case 'offset':
-				case 'portfolio':
-				case 'standard':
-					break;
-				default:
-					$instance['template'] = 'standard';
-					break;
+			$custom_template = apply_filters( 'siteorigin_widgets_blog_custom_template', false, $instance );
+
+			if ( ! $custom_template ) {
+				// Ensure selected template is valid.
+				switch ( $instance['template'] ) {
+					case 'alternate':
+					case 'grid':
+					case 'masonry':
+					case 'offset':
+					case 'portfolio':
+					case 'standard':
+						break;
+					default:
+						$instance['template'] = 'standard';
+						break;
+				}
 			}
 		}
 
@@ -891,9 +970,65 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$instance['settings']['featured_image_size_height'] = 0;
 		}
 
-		$instance['paged_id'] = ! empty( $instance['_sow_form_id'] ) ? (int) substr( $instance['_sow_form_id'], 0, 5 ) : null;
+
+		// Migrate old opacity fields.
+		if ( ! empty( $instance['design']['featured_image']['hover_overlay_opacity'] ) ) {
+			$color = ! empty( $instance['design']['featured_image']['hover_overlay_color'] ) ? $instance['design']['featured_image']['hover_overlay_color'] : '#fff';
+			$color = ltrim( $instance['design']['featured_image']['hover_overlay_color'], '#' );
+			$rgb = array_map( 'hexdec', str_split( $color , strlen( $color ) == 6 ? 2 : 1 ) );
+			$opacity = ! empty( $instance['design']['featured_image']['hover_overlay_opacity'] ) ? $instance['design']['featured_image']['hover_overlay_opacity'] : 0.9;
+			$instance['design']['featured_image']['hover_overlay_color'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
+			unset( $instance['design']['featured_image']['hover_overlay_opacity'] );
+		}
+
+		if ( ! empty( $instance['design']['overlay_post_category']['background_opacity'] ) ) {
+			$color = ! empty( $instance['design']['overlay_post_category']['background'] ) ? $instance['design']['overlay_post_category']['background'] : '#000';
+			$color = ltrim( $color, '#' );
+			$rgb = array_map( 'hexdec', str_split( $color , strlen( $color ) == 6 ? 2 : 1 ) );
+			$opacity = $instance['design']['overlay_post_category']['background_opacity'];
+			$instance['design']['overlay_post_category']['background'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
+			unset( $instance['design']['overlay_post_category']['background_opacity'] );
+		}
+
+		if ( ! empty( $instance['design']['overlay_post_category']['background_opacity_hover'] ) ) {
+			$color = ! empty( $instance['design']['overlay_post_category']['background_hover'] ) ? $instance['design']['overlay_post_category']['background_hover'] : '#000';
+			$color = ltrim( $color, '#' );
+			$rgb = array_map( 'hexdec', str_split( $color , strlen( $color ) == 6 ? 2 : 1 ) );
+			$opacity = $instance['design']['overlay_post_category']['background_opacity_hover'];
+			$instance['design']['overlay_post_category']['background_hover'] = "rgba( $rgb[0], $rgb[1], $rgb[2], $opacity )";
+			unset( $instance['design']['overlay_post_category']['background_opacity_hover'] );
+		}
+
+		$instance['paged_id'] = $this->get_style_hash( $instance );
 
 		return $instance;
+	}
+
+	public static function get_template( $instance ) {
+		$template_file = plugin_dir_path( __FILE__ ) . 'tpl/' . sanitize_file_name( $instance['template'] ) . '.php';
+
+		$override_file = apply_filters(
+			'siteorigin_widgets_blog_template_file',
+			$template_file,
+			$instance
+		);
+
+		// If any of the below checks fail, return the default template.
+		// Otherwise, allow the override.
+		if ( empty( $override_file ) ) {
+			return $template_file;
+		}
+
+		// File name must end in '-sow-blog.php'
+		if ( substr( $override_file, -13 ) != '-sow-blog.php' ) {
+			return $template_file;
+		}
+
+		if ( ! file_exists( $override_file ) ) {
+			return $template_file;
+		}
+
+		return $override_file;
 	}
 
 	public function get_template_variables( $instance, $args ) {
@@ -907,12 +1042,17 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			siteorigin_widget_post_selector_process_query( $instance['posts'] )
 		);
 
-		if ( $instance['template'] == 'portfolio' ) {
+		// If the user has set an offset, account for it after the first page.
+		if ( isset( $query['offset'] ) && $instance['paged'] > 1 ) {
+			$query['offset'] = $offset = ( $query['paged'] - 1 ) * $query['posts_per_page'] + $query['offset'];
+		}
+
+		if ( $instance['template'] == 'portfolio' && ! empty( $instance['featured_image_fallback'] ) ) {
 			// The portfolio template relies on each post having an image so exclude any posts that don't.
 			$query['meta_query'] = array(
 				array(
 					'key' => '_thumbnail_id',
-					'compare' => 'EXISTS'
+					'compare' => 'EXISTS',
 				),
 			);
 		}
@@ -921,6 +1061,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		$template_settings = array(
 			'date_format' => isset( $instance['settings']['date_format'] ) ? $instance['settings']['date_format'] : null,
 		);
+
 		if ( $instance['template'] == 'offset' ) {
 			if ( $instance['settings']['date'] ) {
 				if ( get_the_time( 'U' ) !== get_the_modified_time( 'U' ) ) {
@@ -947,14 +1088,31 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	static public function post_meta( $settings ) {
+	public function portfolio_filter_posts( $query, $instance ) {
+		if (
+			$instance['template'] == 'portfolio' &&
+			! empty( $instance['settings']['featured_image_empty'] ) &&
+			empty( $instance['settings']['featured_image_fallback'] )
+		) {
+			$query['meta_query'] = array(
+				array(
+					'key' => '_thumbnail_id',
+					'compare' => 'EXISTS',
+				),
+			);
+		}
+
+		return $query;
+	}
+
+	public static function post_meta( $settings ) {
 		if ( is_sticky() ) {
 			?>
-			<span class="sow-featured-post"><?php echo esc_html__( 'Sticky', 'so-widgets-bundle' ); ?></span>
+			<span class="sow-featured-post"><?php esc_html_e( 'Sticky', 'so-widgets-bundle' ); ?></span>
 			<?php
 		}
 
-		if ( $settings['date'] ) :	
+		if ( $settings['date'] ) {
 			$date_format = isset( $settings['date_format'] ) ? $settings['date_format'] : null;
 			?>
 			<span class="sow-entry-date">
@@ -967,89 +1125,99 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 					</time>
 				</a>
 			</span>
-		<?php endif; ?>
+		<?php } ?>
 
-		<?php if ( $settings['author'] ) : ?>
+		<?php if ( $settings['author'] ) { ?>
 			<span class="sow-entry-author-link byline">
-				<?php if ( function_exists( 'coauthors_posts_links' ) ) : ?>
+				<?php if ( function_exists( 'coauthors_posts_links' ) ) { ?>
 					<?php coauthors_posts_links(); ?>
-				<?php else: ?>
+				<?php } else { ?>
 					<span class="sow-author author vcard">
 						<a class="url fn n" href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>" rel="author">
 							<?php echo esc_html( get_the_author() ); ?>
 						</a>
 					</span>
-				<?php endif; ?>
+				<?php } ?>
 			</span>
-		<?php endif; ?>
+		<?php } ?>
 
-		<?php if ( $settings['categories'] && has_category() ) : ?>
+		<?php if ( $settings['categories'] && has_category() ) { ?>
 			<span class="sow-entry-categories">
 				<?php
 				/* translators: used between list items, there is a space after the comma */
 				the_category( esc_html__( ', ', 'so-widgets-bundle' ) );
-				?>
+			?>
 			</span>
-		<?php endif; ?>
+		<?php } ?>
 
-		<?php if ( ! empty( $settings['tags'] ) && has_tag() ) : ?>
+		<?php if ( ! empty( $settings['tags'] ) && has_tag() ) { ?>
 			<span class="sow-entry-tags">
 				<?php the_tags( '' ); ?>
 			</span>
-		<?php endif; ?>
+		<?php } ?>
 
-		<?php if ( comments_open() && $settings['comment_count'] ) : ?>
+		<?php if ( comments_open() && $settings['comment_count'] ) { ?>
 			<span class="sow-entry-comments">
 				<?php
-				comments_popup_link(
-					esc_html__( 'Leave a comment', 'so-widgets-bundle' ),
-					esc_html__( 'One Comment', 'so-widgets-bundle' ),
-					esc_html__( '% Comments', 'so-widgets-bundle' )
-				);
-				?>
+			comments_popup_link(
+				esc_html__( 'Leave a comment', 'so-widgets-bundle' ),
+				esc_html__( 'One Comment', 'so-widgets-bundle' ),
+				esc_html__( '% Comments', 'so-widgets-bundle' )
+			);
+			?>
 			</span>
-		<?php endif;
-	}
+		<?php }
+		}
 
 	static public function post_featured_image( $settings, $categories = false, $size = 'full' ) {
-		if ( $settings['featured_image'] && has_post_thumbnail() ) : ?>
-			<?php ob_start(); ?>
-			<div class="sow-entry-thumbnail">
-				<?php if ( $categories && $settings['categories'] && has_category() ) : ?>
-					<div class="sow-thumbnail-meta">
-						<?php echo get_the_category_list(); ?>
-					</div>
-				<?php endif; ?>
-				<a href="<?php the_permalink(); ?>">
-					<?php
-					if ( ! empty( $settings['featured_image_size'] ) ) {
-						$size = $settings['featured_image_size'] == 'custom_size' ? array( $settings['featured_image_size_width'], $settings['featured_image_size_height'] ) : $settings['featured_image_size'];
-					} else {
-						// Check if this template has a different default image size.
-						if (
-							$size == 'full' &&
-							has_image_size( 'sow-blog-' . $settings['template'] )
-						) {
-							$size = 'sow-blog-' . $settings['template'];
+		if ( $settings['featured_image'] ) {
+			if ( ! has_post_thumbnail() && ! empty( $settings['featured_image_fallback'] ) ) {
+				$featured_image = apply_filters( 'siteorigin_widgets_blog_featured_image_fallback', false, $settings );
+			}
+			if ( has_post_thumbnail() || ! empty( $featured_image ) ) {
+				ob_start();
+				?>
+				<div class="sow-entry-thumbnail">
+					<?php if ( $categories && $settings['categories'] && has_category() ) { ?>
+						<div class="sow-thumbnail-meta">
+							<?php echo get_the_category_list(); ?>
+						</div>
+					<?php } ?>
+					<a href="<?php echo esc_url( get_the_permalink() ); ?>">
+						<?php
+						if ( has_post_thumbnail() ) {
+							if ( ! empty( $settings['featured_image_size'] ) ) {
+								$size = $settings['featured_image_size'] == 'custom_size' ? array( $settings['featured_image_size_width'], $settings['featured_image_size_height'] ) : $settings['featured_image_size'];
+							} else {
+								// Check if this template has a different default image size.
+								if (
+									$size == 'full' &&
+									has_image_size( 'sow-blog-' . $settings['template'] )
+								) {
+									$size = 'sow-blog-' . $settings['template'];
+								}
+							}
+							the_post_thumbnail( $size );
+						} elseif( ! empty( $featured_image ) ) {
+							echo $featured_image;
 						}
-					}
-					the_post_thumbnail( $size );
-					?>
-				</a>
-			</div>
-			<?php
-			echo apply_filters( 'siteorigin_widgets_blog_featured_image_markup', ob_get_clean(), $settings, $categories = false, $size = 'full' );
-		endif;
+						?>
+					</a>
+				</div>
+				<?php
+				echo apply_filters( 'siteorigin_widgets_blog_featured_image_markup', ob_get_clean(), $settings, $categories = false, $size = 'full' );
+			}
+		}
 	}
 
-	static public function generate_post_title() {
+	static public function generate_post_title( $settings ) {
 		the_title(
-			'<h2 class="sow-entry-title" style="margin: 0 0 5px;"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">',
-			'</a></h2>'
+			'<' . $settings['tag'] . ' class="sow-entry-title" style="margin: 0 0 5px;"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">',
+			'</a></' . $settings['tag'] . '>'
 		);
 	}
 
-	function override_read_more( $settings, $setup = true ) {
+	public function override_read_more( $settings, $setup = true ) {
 		// Read More Override.
 		if ( $settings['content'] == 'full' && apply_filters( 'siteorigin_widgets_blog_full_content_read_more', true ) ) {
 			if ( $setup ) {
@@ -1073,19 +1241,38 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		}
 	}
 
-	function alter_read_more_link( $link ) {
+	public function alter_read_more_link( $link ) {
 		return '<a class="sow-more-link more-link excerpt" href="' . esc_url( get_permalink() ) . '"> ' . esc_html( get_query_var( 'siteorigin_blog_read_more' ) ) . '<span class="sow-more-link-arrow">&rarr;</span></a>';
 	}
 
-	function alter_excerpt_more_indicator( $indicator ) {
+	public function alter_excerpt_more_indicator( $indicator ) {
 		return apply_filters( 'siteorigin_widgets_blog_excerpt_trim', get_query_var( 'siteorigin_blog_excerpt_length' ) == 0 ? '' : '...' );
 	}
 
-	function alter_excerpt_length( $length = 55 ) {
+	public function alter_excerpt_length( $length = 55 ) {
 		return get_query_var( 'siteorigin_blog_excerpt_length' );
 	}
 
-	static public function generate_excerpt( $settings ) {
+	public static function output_content( $settings, $space_above = 20 ) {
+		if ( apply_filters( 'siteorigin_widgets_blog_show_content', true, $settings ) ) {
+			?>
+			<div
+				class="sow-entry-content"
+				style="margin-top: <?php echo (int) $space_above; ?>px;"
+			>
+				<?php
+				if ( $settings['content'] == 'full' ) {
+					the_content();
+				} else {
+					self::generate_excerpt( $settings );
+				}
+				?>
+			</div>
+			<?php
+		}
+	}
+
+	public static function generate_excerpt( $settings ) {
 		if ( $settings['read_more'] ) {
 			$read_more_text = ! empty( $settings['read_more_text'] ) ? $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' );
 			$read_more_text = '<a class="sow-more-link more-link excerpt" href="' . esc_url( get_permalink() ) . '">
@@ -1095,6 +1282,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		$length = get_query_var( 'siteorigin_blog_excerpt_length' );
 		$excerpt = get_the_excerpt();
 		$excerpt_add_read_more = count( preg_split( '~[^\p{L}\p{N}\']+~u', $excerpt ) ) >= $length;
+
 		if ( ! has_excerpt() ) {
 			$excerpt = wp_trim_words(
 				$excerpt,
@@ -1110,8 +1298,9 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		echo '<p>' . wp_kses_post( $excerpt ) . '</p>';
 	}
 
-	function paginate_links( $settings, $posts, $instance ) {
+	public function paginate_links( $settings, $posts, $instance ) {
 		$addon_active = class_exists( 'SiteOrigin_Premium' ) && ! empty( SiteOrigin_Premium::single()->get_active_addons()['plugin/blog'] );
+
 		if ( $addon_active ) {
 			$pagination_markup = apply_filters( 'siteorigin_widgets_blog_pagination_markup', false, $settings, $posts, $instance );
 		}
@@ -1136,7 +1325,10 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			) );
 		}
 
-		if ( ! empty( $pagination_markup ) ) {
+		if (
+			! empty( $pagination_markup ) &&
+			$settings['pagination'] != 'disabled'
+		) {
 			// To resolve a potential issue with the Block Editor, we need to override REST URLs with the actual permalink.
 			if (
 				defined( 'REST_REQUEST' ) &&
@@ -1151,8 +1343,10 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			}
 			?>
 			<nav class="sow-post-navigation">
-				<h2 class="screen-reader-text"><?php esc_html_e( 'Post navigation', 'so-widgets-bundle' ); ?></h2>
-				<div class="sow-nav-links<?php if ( ! empty( $settings['pagination'] ) ) echo ' sow-post-pagination-' . esc_attr( $settings['pagination'] ); ?>">
+				<h3 class="screen-reader-text"><?php esc_html_e( 'Pagination', 'so-widgets-bundle' ); ?></h3>
+				<div class="sow-nav-links<?php if ( ! empty( $settings['pagination'] ) ) {
+					echo ' sow-post-pagination-' . esc_attr( $settings['pagination'] );
+				} ?>">
 					<?php echo $pagination_markup; ?>
 				</div>
 			</nav>
@@ -1160,8 +1354,23 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		}
 	}
 
-	function get_form_teaser() {
-		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+	public function total_pages( $posts ) {
+		// WP Query's max_num_pages doesn't account for offset, so let's do that now.
+		if (
+			! empty( $posts->query['offset'] ) &&
+			is_numeric( $posts->query['offset'] )
+		) {
+			return ceil( max( $posts->found_posts - $posts->query['offset'], 1 ) / $posts->query['posts_per_page'] );
+		} else {
+			return $posts->max_num_pages;
+		}
+	}
+
+	public function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
+
 		return array(
 			sprintf(
 				__( 'Get more pagination themes and Ajax reloading with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
@@ -1174,7 +1383,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				'</a>'
 			),
 		);
-	}	
+	}
 }
 
 siteorigin_widget_register( 'sow-blog', __FILE__, 'SiteOrigin_Widget_Blog_Widget' );

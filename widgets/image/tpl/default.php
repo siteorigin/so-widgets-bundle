@@ -14,32 +14,37 @@
 <?php
 if ( $title_position == 'above' ) {
 	echo $args['before_title'];
+
 	if ( $link_title && ! empty( $url ) ) {
-		echo $this->generate_anchor_open( $url, $link_attributes ) . $title . '</a>';
+		echo $this->generate_anchor_open( $url, $link_attributes ) . wp_kses_post( $title ) . '</a>';
 	} else {
-		echo $title;
+		echo wp_kses_post( $title );
 	}
 	echo $args['after_title'];
 }
 ?>
 
-<?php
-
-?>
 <div class="sow-image-container">
-	<?php if ( ! empty( $url ) ) : $this->generate_anchor_open( $url, $link_attributes ); endif; ?>
-	<img <?php foreach( $attributes as $n => $v ) if ( $n === 'alt' || ! empty( $v ) ) : echo $n.'="' . esc_attr( $v ) . '" '; endif; ?>
-		class="<?php echo esc_attr( implode(' ', $classes ) ) ?>"/>
-	<?php if ( ! empty( $url ) ) : ?></a><?php endif; ?>
+	<?php if ( ! empty( $url ) ) {
+		$this->generate_anchor_open( $url, $link_attributes );
+	} ?>
+	<img <?php foreach ( $attributes as $n => $v ) {
+		if ( $n === 'alt' || ! empty( $v ) ) {
+			echo esc_html( $n ) . '="' . esc_attr( $v ) . '" ';
+		}
+	} ?>
+		class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>"/>
+	<?php if ( ! empty( $url ) ) { ?></a><?php } ?>
 </div>
 
 <?php
 if ( $title_position == 'below' ) {
 	echo $args['before_title'];
+
 	if ( $link_title && ! empty( $url ) ) {
-		echo $this->generate_anchor_open( $url, $link_attributes ) . $title . '</a>';
+		echo $this->generate_anchor_open( $url, $link_attributes ) . wp_kses_post( $title ) . '</a>';
 	} else {
-		echo $title;
+		echo wp_kses_post( $title );
 	}
 	echo $args['after_title'];
 }

@@ -59,8 +59,12 @@
 		width: 100%;
 
 		@media (max-width: @responsive_breakpoint) {
+			flex-direction: column;
+
+			& > img,
 			.sow-entry-thumbnail,
 			.sow-entry-thumbnail .wp-post-image {
+				flex: 1;
 				height: auto;
 				width: 100%;
 			}
@@ -68,10 +72,16 @@
 
 		// Alternating featured image alignment.
 		@media (min-width: @responsive_breakpoint) {
+			& > img,
 			.sow-entry-thumbnail {
+				flex: 1;
 				width: 41.5006%;
 
 				a {
+					align-items: center;
+					display: flex;
+					height: 100%;
+					margin: 0;
 					text-align: left;
 				}
 			}
@@ -81,11 +91,13 @@
 			}
 
 			&:nth-of-type(2n) .sow-entry-thumbnail a {
+				justify-content: end;
 				text-align: right;
 			}
 		}
 
 		.sow-blog-content-wrapper {
+			flex: 1;
 			width: 58.4994%;
 
 			@media (max-width: @responsive_breakpoint) {

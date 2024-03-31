@@ -8,9 +8,7 @@ Documentation: https://siteorigin.com/widgets-bundle/contact-form-widget/
 */
 
 class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
-
-	function __construct() {
-
+	public function __construct() {
 		parent::__construct(
 			'sow-contact-form',
 			__( 'SiteOrigin Contact Form', 'so-widgets-bundle' ),
@@ -27,22 +25,22 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	/**
 	 * Initialize the contact form widget
 	 */
-	function initialize() {
+	public function initialize() {
 		$this->register_frontend_scripts(
 			array(
 				array(
 					'sow-contact',
 					plugin_dir_url( __FILE__ ) . 'js/contact' . SOW_BUNDLE_JS_SUFFIX . '.js',
 					array( 'jquery' ),
-					SOW_BUNDLE_VERSION
-				)
+					SOW_BUNDLE_VERSION,
+				),
 			)
 		);
 		add_filter( 'siteorigin_widgets_sanitize_field_multiple_emails', array( $this, 'sanitize_multiple_emails' ) );
 		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-contact-form', array( $this, 'enqueue_widget_scripts' ) );
 	}
 
-	function enqueue_widget_scripts() {
+	public function enqueue_widget_scripts() {
 		$global_settings = $this->get_global_settings();
 		wp_localize_script(
 			'sow-contact',
@@ -54,8 +52,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	function get_widget_form() {
-		return array(
+	public function get_widget_form() {
+		$useable_units = array(
+			'px',
+			'%',
+		);
+
+		$form_options = array(
 			'title' => array(
 				'type'    => 'text',
 				'label'   => __( 'Title', 'so-widgets-bundle' ),
@@ -98,12 +101,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'type'        => 'tinymce',
 						'label'       => __( 'Success message', 'so-widgets-bundle' ),
 						'description' => __( 'Message to display after message successfully sent.', 'so-widgets-bundle' ),
-						'default'     => __( "Thanks for contacting us. We'll get back to you shortly.", 'so-widgets-bundle' )
+						'default'     => __( "Thanks for contacting us. We'll get back to you shortly.", 'so-widgets-bundle' ),
 					),
 					'submit_text'                      => array(
 						'type'    => 'text',
 						'label'   => __( 'Submit button text', 'so-widgets-bundle' ),
-						'default' => __( "Contact Us", 'so-widgets-bundle' )
+						'default' => __( 'Contact Us', 'so-widgets-bundle' ),
 					),
 					'submit_id' => array(
 						'type' => 'text',
@@ -114,6 +117,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'type'        => 'text',
 						'label'       => __( 'Onclick', 'so-widgets-bundle' ),
 						'description' => __( 'Run this JavaScript when the button is clicked. Ideal for tracking.', 'so-widgets-bundle' ),
+						'onclick' => true,
 					),
 					'required_field_indicator'         => array(
 						'type'          => 'checkbox',
@@ -122,9 +126,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'callback' => 'conditional',
 							'args'     => array(
 								'required_fields[show]: val',
-								'required_fields[hide]: ! val'
+								'required_fields[hide]: ! val',
 							),
-						)
+						),
 					),
 					'required_field_indicator_message' => array(
 						'type'          => 'text',
@@ -133,7 +137,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'state_handler' => array(
 							'required_fields[show]' => array( 'show' ),
 							'required_fields[hide]' => array( 'hide' ),
-						)
+						),
 					),
 					'log_ip_address' => array(
 						'type' => 'checkbox',
@@ -145,7 +149,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			),
 
 			'fields' => array(
-
 				'type'       => 'repeater',
 				'label'      => __( 'Fields', 'so-widgets-bundle' ),
 				'item_name'  => __( 'Field', 'so-widgets-bundle' ),
@@ -153,7 +156,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					'selector' => "[id*='label']",
 				),
 				'fields'     => array(
-
 					'type' => array(
 						'type'    => 'select',
 						'label'   => __( 'Field Type', 'so-widgets-bundle' ),
@@ -173,7 +175,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'state_emitter' => array(
 							'callback' => 'select',
 							'args'     => array( 'field_type_{$repeater}' ),
-						)
+						),
 					),
 
 					'label' => array(
@@ -201,8 +203,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'label'       => __( 'Missing message', 'so-widgets-bundle' ),
 								'description' => __( 'Error message to display if this field is missing.', 'so-widgets-bundle' ),
 								'default'     => __( 'Required field', 'so-widgets-bundle' ),
-							)
-						)
+							),
+						),
 					),
 
 					'multiple_select' => array(
@@ -282,7 +284,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'state_emitter' => array(
 									'callback' => 'select',
 									'args' => array( 'recaptcha_version' ),
-								)
+								),
 							),
 							'site_key'    => array(
 								'type'  => 'text',
@@ -355,49 +357,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'_else[recaptcha_version]' => array( 'slideUp' ),
 								),
 							),
-						)
-					),
-
-					'simple' => array(
-						'type'   => 'section',
-						'label'  => __( 'Really Simple CAPTCHA', 'so-widgets-bundle' ),
-						'fields' => array(
-							'enabled' => array(
-								'type'    => 'checkbox',
-								'label'   => __( 'Add Really Simple CAPTCHA', 'so-widgets-bundle' ),
-								'description' => sprintf(
-									__( 'The %sReally Simple CAPTCHA%s plugin is DSGVO compliant.', 'so-widgets-bundle' ),
-									'<a href="https://wordpress.org/plugins/really-simple-captcha/" target="_blank">',
-									'</a>'
-								),
-								'default' => false,
-								'state_emitter' => array(
-									'callback' => 'conditional',
-									'args'     => array(
-										'really_simple[show]: val',
-										'really_simple[hide]: ! val'
-									),
-								)
-							),
-							'background'   => array(
-								'type'    => 'color',
-								'label'   => __( 'Background color', 'so-widgets-bundle' ),
-								'default' => '#ffffff',
-								'state_handler' => array(
-									'really_simple[show]' => array( 'slideDown' ),
-									'really_simple[hide]' => array( 'slideUp' ),
-								),
-							),
-							'color'   => array(
-								'type'    => 'color',
-								'label'   => __( 'Text color', 'so-widgets-bundle' ),
-								'default' => '#000000',
-								'state_handler' => array(
-									'really_simple[show]' => array( 'slideDown' ),
-									'really_simple[hide]' => array( 'slideUp' ),
-								),
-							),
-						)
+						),
 					),
 
 					'akismet' => array(
@@ -406,7 +366,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'fields' => array(
 							'use_akismet' => array(
 								'type'    => 'checkbox',
-								'label'   => __( 'Use Akismet filtering', 'so-widgets-bundle' ),
+								'label'   => __( 'Akismet Filtering', 'so-widgets-bundle' ),
+								'description' => sprintf(
+									__( 'Use the %sAkismet%s plugin to filter spam submissions.', 'so-widgets-bundle' ),
+									'<a href="https://wordpress.org/plugins/akismet/" target="_blank" rel="noopener noreferrer">',
+									'</a>'
+								),
 								'default' => true,
 							),
 							'spam_action' => array(
@@ -419,7 +384,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'description' => __( 'How to handle submissions that are identified as spam.', 'so-widgets-bundle' ),
 								'default'     => 'error',
 							),
-						)
+						),
 					),
 				),
 			),
@@ -429,7 +394,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				'label'  => __( 'Design', 'so-widgets-bundle' ),
 				'hide'   => true,
 				'fields' => array(
-
 					'container' => array(
 						'type'   => 'section',
 						'label'  => __( 'Container', 'so-widgets-bundle' ),
@@ -437,6 +401,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'background'   => array(
 								'type'    => 'color',
 								'label'   => __( 'Background color', 'so-widgets-bundle' ),
+								'alpha'   => true,
 								'default' => '#f2f2f2',
 							),
 							'padding'      => array(
@@ -469,9 +434,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'ridge'  => __( 'Ridge', 'so-widgets-bundle' ),
 									'inset'  => __( 'Inset', 'so-widgets-bundle' ),
 									'outset' => __( 'Outset', 'so-widgets-bundle' ),
-								)
+								),
 							),
-						)
+						),
 					),
 
 					'labels' => array(
@@ -519,7 +484,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'right'   => __( 'Right', 'so-widgets-bundle' ),
 									'center'  => __( 'Center', 'so-widgets-bundle' ),
 									'justify' => __( 'Justify', 'so-widgets-bundle' ),
-								)
+								),
 							),
 						),
 					),
@@ -535,19 +500,38 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'font_size'     => array(
 								'type'  => 'measurement',
-								'label' => __( 'Font size', 'so-widgets-bundle' )
+								'label' => __( 'Font size', 'so-widgets-bundle' ),
 							),
 							'color'         => array(
 								'type'  => 'color',
 								'label' => __( 'Text color', 'so-widgets-bundle' ),
 							),
-							'margin'        => array(
-								'type'  => 'measurement',
-								'label' => __( 'Margin', 'so-widgets-bundle' )
+							'multi_margin' => array(
+								'type'  => 'multi-measurement',
+								'label' => __( 'Margin', 'so-widgets-bundle' ),
+								'default' => '0px 0px 15px 0px',
+								'measurements' => array(
+									'top' => array(
+										'label' => __( 'Top', 'so-widgets-bundle' ),
+										'units' => $useable_units,
+									),
+									'right' => array(
+										'label' => __( 'Right', 'so-widgets-bundle' ),
+										'units' => $useable_units,
+									),
+									'bottom' => array(
+										'label' => __( 'Bottom', 'so-widgets-bundle' ),
+										'units' => $useable_units,
+									),
+									'left' => array(
+										'label' => __( 'Left', 'so-widgets-bundle' ),
+										'units' => $useable_units,
+									),
+								),
 							),
 							'padding'       => array(
 								'type'  => 'measurement',
-								'label' => __( 'Padding', 'so-widgets-bundle' )
+								'label' => __( 'Padding', 'so-widgets-bundle' ),
 							),
 							'max_width'    => array(
 								'type'    => 'measurement',
@@ -556,11 +540,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'height'        => array(
 								'type'  => 'measurement',
-								'label' => __( 'Height', 'so-widgets-bundle' )
+								'label' => __( 'Height', 'so-widgets-bundle' ),
 							),
 							'height_textarea' => array(
 								'type'  => 'measurement',
-								'label' => __( 'Text area height', 'so-widgets-bundle' )
+								'label' => __( 'Text area height', 'so-widgets-bundle' ),
 							),
 							'background'    => array(
 								'type'  => 'color',
@@ -591,16 +575,16 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'ridge'  => __( 'Ridge', 'so-widgets-bundle' ),
 									'inset'  => __( 'Inset', 'so-widgets-bundle' ),
 									'outset' => __( 'Outset', 'so-widgets-bundle' ),
-								)
+								),
 							),
 							'border_radius' => array(
 								'type'    => 'slider',
 								'label'   => __( 'Border rounding', 'so-widgets-bundle' ),
 								'default' => 0,
 								'max'     => 50,
-								'min'     => 0
+								'min'     => 0,
 							),
-						)
+						),
 					),
 
 					'descriptions' => array(
@@ -624,9 +608,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'options' => array(
 									'italic' => __( 'Italic', 'so-widgets-bundle' ),
 									'normal' => __( 'Normal', 'so-widgets-bundle' ),
-								)
+								),
 							),
-						)
+						),
 					),
 
 					'errors' => array(
@@ -658,7 +642,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'label'   => __( 'Error margin', 'so-widgets-bundle' ),
 								'default' => '10px',
 							),
-						)
+						),
 					),
 
 					'submit' => array(
@@ -696,7 +680,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'solid'  => __( 'Solid', 'so-widgets-bundle' ),
 									'dotted' => __( 'Dotted', 'so-widgets-bundle' ),
 									'dashed' => __( 'Dashed', 'so-widgets-bundle' ),
-								)
+								),
 							),
 							'border_width'        => array(
 								'type'    => 'measurement',
@@ -708,7 +692,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'label'   => __( 'Border rounding', 'so-widgets-bundle' ),
 								'default' => 3,
 								'max'     => 50,
-								'min'     => 0
+								'min'     => 0,
 							),
 							'text_color'          => array(
 								'type'    => 'color',
@@ -728,7 +712,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'normal' => __( 'Normal', 'so-widgets-bundle' ),
 									'500'    => __( 'Semi-bold', 'so-widgets-bundle' ),
 									'bold'   => __( 'Bold', 'so-widgets-bundle' ),
-								)
+								),
 							),
 							'padding'             => array(
 								'type'    => 'measurement',
@@ -747,7 +731,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'left'    => __( 'Left', 'so-widgets-bundle' ),
 									'right'   => __( 'Right', 'so-widgets-bundle' ),
 									'center'  => __( 'Center', 'so-widgets-bundle' ),
-								)
+								),
 							),
 							'inset_highlight'     => array(
 								'type'        => 'slider',
@@ -755,9 +739,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'description' => __( 'The white highlight at the bottom of the button', 'so-widgets-bundle' ),
 								'default'     => 50,
 								'max'         => 100,
-								'min'         => 0
+								'min'         => 0,
 							),
-						)
+						),
 					),
 
 					'focus' => array(
@@ -779,7 +763,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'outset' => __( 'Outset', 'so-widgets-bundle' ),
 									'none'   => __( 'None', 'so-widgets-bundle' ),
 									'hidden' => __( 'Hidden', 'so-widgets-bundle' ),
-								)
+								),
 							),
 							'color' => array(
 								'type'    => 'color',
@@ -796,10 +780,63 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				),
 			),
 		);
+
+		if ( function_exists( 'imagecreatetruecolor' ) ) {
+			siteorigin_widgets_array_insert(
+				$form_options['spam']['fields'],
+				'akismet',
+				array(
+					'simple' => array(
+						'type'   => 'section',
+						'label'  => __( 'Really Simple CAPTCHA', 'so-widgets-bundle' ),
+						'fields' => array(
+							'enabled' => array(
+								'type'    => 'checkbox',
+								'label'   => __( 'Add Really Simple CAPTCHA', 'so-widgets-bundle' ),
+								'description' => sprintf(
+									__( 'The %sReally Simple CAPTCHA%s plugin is DSGVO compliant.', 'so-widgets-bundle' ),
+									'<a href="https://wordpress.org/plugins/really-simple-captcha/" target="_blank">',
+									'</a>'
+								),
+								'default' => false,
+								'state_emitter' => array(
+									'callback' => 'conditional',
+									'args'     => array(
+										'really_simple[show]: val',
+										'really_simple[hide]: ! val'
+									),
+								)
+							),
+							'background'   => array(
+								'type'    => 'color',
+								'label'   => __( 'Background color', 'so-widgets-bundle' ),
+								'default' => '#ffffff',
+								'state_handler' => array(
+									'really_simple[show]' => array( 'slideDown' ),
+									'really_simple[hide]' => array( 'slideUp' ),
+								),
+							),
+							'color'   => array(
+								'type'    => 'color',
+								'label'   => __( 'Text color', 'so-widgets-bundle' ),
+								'default' => '#000000',
+								'state_handler' => array(
+									'really_simple[show]' => array( 'slideDown' ),
+									'really_simple[hide]' => array( 'slideUp' ),
+								),
+							),
+						)
+					),
+				)
+			);
+		}
+
+		return $form_options;
 	}
 
-	function sanitize_multiple_emails( $value ) {
+	public function sanitize_multiple_emails( $value ) {
 		$values = explode( ',', $value );
+
 		foreach ( $values as $i => $email ) {
 			$values[ $i ] = sanitize_email( $email );
 		}
@@ -807,13 +844,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		return implode( ',', $values );
 	}
 
-	function modify_instance( $instance ) {
+	public function modify_instance( $instance ) {
 		// Use this to set up an initial version of the
 		if ( empty( $instance['settings']['to'] ) || $this->is_dev_email( $instance['settings']['to'] ) ) {
-			$current_user               = wp_get_current_user();
+			$current_user = wp_get_current_user();
 			$instance['settings']['to'] = $current_user->user_email;
 		}
-		if ( empty( $instance['settings']['from'] )  || $this->is_dev_email( $instance['settings']['from'] ) ) {
+
+		if ( empty( $instance['settings']['from'] ) || $this->is_dev_email( $instance['settings']['from'] ) ) {
 			$instance['settings']['from'] = $this->default_from_address();
 		}
 
@@ -876,10 +914,22 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$instance['spam']['browser_check'] = false;
 		}
 
+		if (
+			! empty( $instance['design'] ) &&
+			! empty( $instance['design']['fields'] ) &&
+			isset( $instance['design']['fields']['margin'] )
+		) {
+			$everything_else = ! empty( $instance['design']['fields']['margin'] ) ? (int) $instance['design']['fields']['margin'] : '0';
+			$botton_margin = ( $everything_else + '15' ) . 'px';
+			$everything_else .= 'px';
+			$instance['design']['fields']['multi_margin'] = "$everything_else $everything_else $botton_margin $everything_else";
+			unset( $instance['design']['fields']['margin'] );
+		}
+
 		return $instance;
 	}
 
-	static function is_recaptcha_enabled( $settings, $use_v3 = false ) {
+	public static function is_recaptcha_enabled( $settings, $use_v3 = false ) {
 		return ! empty( $settings['use_captcha'] ) &&
 			(
 				! $use_v3 ||
@@ -900,7 +950,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			);
 	}
 
-	function get_template_variables( $instance, $args ) {
+	public function get_template_variables( $instance, $args ) {
 		unset( $instance['title'] );
 		unset( $instance['display_title'] );
 		unset( $instance['design'] );
@@ -911,6 +961,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		);
 
 		$submit_attributes = array();
+
 		if ( ! empty( $instance['spam']['browser_check'] ) ) {
 			$submit_attributes['data-js-key'] = $instance['_sow_form_id'];
 		}
@@ -925,6 +976,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 
 		$template_vars['recaptcha'] = self::is_recaptcha_enabled( $instance['spam']['recaptcha'] );
+
 		if ( $template_vars['recaptcha'] ) {
 			// reCAPTCHA v3
 			if ( self::is_recaptcha_enabled( $instance['spam']['recaptcha'], true ) ) {
@@ -936,14 +988,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					'sitekey' => $instance['spam']['recaptcha']['site_key'],
 					'theme'   => $instance['spam']['recaptcha']['theme'],
 					'type'    => $instance['spam']['recaptcha']['type'],
-					'size'    => $instance['spam']['recaptcha']['size']
+					'size'    => $instance['spam']['recaptcha']['size'],
 				);
 			}
 		}
 		$template_vars['submit_attributes'] = $submit_attributes;
 
 		if ( ! empty( $instance['spam']['simple'] ) && ! empty( $instance['spam']['simple']['enabled'] ) ) {
-			if ( ! class_exists( 'ReallySimpleCaptcha' ) ) {
+			if ( ! class_exists( 'ReallySimpleCaptcha' ) || ! function_exists( 'imagecreatetruecolor' ) ) {
 				$template_vars['really_simple_spam'] = 'missing';
 			} else {
 				$template_vars['really_simple_spam'] = new ReallySimpleCaptcha();
@@ -973,7 +1025,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 				if (
 					! empty( $template_vars['result'] ) &&
-					! empty( $template_vars['result'] ) &&
 					! empty( $template_vars['result']['errors'] ) &&
 					! empty( $template_vars['result']['errors']['_general'] ) &&
 					! empty( $template_vars['result']['errors']['_general']['simple'] )
@@ -989,7 +1040,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		return $template_vars;
 	}
 
-	function get_settings_form() {
+	public function get_settings_form() {
 		return array(
 			'responsive_breakpoint' => array(
 				'type'        => 'measurement',
@@ -1002,14 +1053,15 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				'label'       => __( 'Scroll top', 'so-widgets-bundle' ),
 				'default'     => true,
 				'description' => __( 'After submission, scroll the user to the top of the contact form.', 'so-widgets-bundle' ),
-			)
+			),
 		);
 	}
 
-	function get_less_variables( $instance ) {
+	public function get_less_variables( $instance ) {
 		if ( empty( $instance['design'] ) ) {
 			return;
 		}
+
 		if ( empty( $instance['design']['labels']['font'] ) ) {
 			$instance['design']['labels'] = array( 'font' => '' );
 		}
@@ -1017,6 +1069,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		$field_font = siteorigin_widget_get_font( $instance['design']['fields']['font'] );
 
 		$label_position = $instance['design']['labels']['position'];
+
 		if ( $label_position != 'left' && $label_position != 'right' ) {
 			$label_position = 'default';
 		}
@@ -1041,7 +1094,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'field_font_family'          => $field_font['family'],
 			'field_font_size'            => $instance['design']['fields']['font_size'],
 			'field_font_color'           => $instance['design']['fields']['color'],
-			'field_margin'               => $instance['design']['fields']['margin'],
+			'field_margin'               => $instance['design']['fields']['multi_margin'],
 			'field_padding'              => $instance['design']['fields']['padding'],
 			'field_max_width'            => ! empty( $instance['design']['fields']['max_width'] ) ? $instance['design']['fields']['max_width'] : '',
 			'field_height'               => $instance['design']['fields']['height'],
@@ -1096,6 +1149,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 
 		$global_settings = $this->get_global_settings();
+
 		if ( ! empty( $global_settings['responsive_breakpoint'] ) ) {
 			$less_vars['responsive_breakpoint'] = $global_settings['responsive_breakpoint'];
 		}
@@ -1103,11 +1157,18 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		return $vars;
 	}
 
-	static function name_from_label( $label, & $ids ) {
+	public static function single() {
+		static $single;
+
+		return empty( $single ) ? $single = new self() : $single;
+	}
+
+	public static function name_from_label( $label, & $ids ) {
 		$it = 0;
 
 		$label = str_replace( ' ', '-', strtolower( $label ) );
 		$label = sanitize_html_class( $label );
+
 		do {
 			$id = $label . ( $it > 0 ? '-' . $it : '' );
 			$it ++;
@@ -1120,113 +1181,152 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	/**
 	 * Render the form fields
 	 *
-	 * @param $fields
 	 * @param array $errors
-	 * @param $instance
 	 */
-	function render_form_fields( $fields, $errors, $instance ) {
+	public function render_form_fields( $fields, $result, $instance ) {
+		$field_ids = array();
+		$errors = ! empty( $result['errors'] ) ? $result['errors'] : array();
 
-		$field_ids      = array();
 		$label_position = $instance['design']['labels']['position'];
+		$valid_positions = array('above', 'below', 'left', 'right', 'inside');
+		if ( ! in_array( $label_position, $valid_positions ) ) {
+			$label_position = 'above'; // Default value.
+		}
 
 		$indicate_required_fields = $instance['settings']['required_field_indicator'];
 
 		if ( ! empty( $indicate_required_fields ) ) {
 			?>
-            <p><em><?php echo esc_html( $instance['settings']['required_field_indicator_message'] ) ?></em></p>
+            <p><em><?php echo esc_html( $instance['settings']['required_field_indicator_message'] ); ?></em></p>
 			<?php
+		}
+
+		$fields = apply_filters( 'siteorigin_widgets_contact_fields', $fields );
+
+		$field_output = apply_filters( 'siteorigin_widgets_contact_form_field_output', '', $fields, $result, $instance );
+		if ( ! empty( $field_output ) ) {
+			echo $field_output;
+			return;
 		}
 
 		foreach ( $fields as $i => $field ) {
 			if ( empty( $field['type'] ) ) {
 				continue;
 			}
-			// Using `$instance['_sow_form_id']` to uniquely identify contact form fields across widgets.
-			// I.e. if there are many contact form widgets on a page this will prevent field name conflicts.
-			$field_name = $this->name_from_label( ! empty( $field['label'] ) ? $field['label'] : $i, $field_ids ) . '-' . $instance['_sow_form_id'];
-			$field_id   = 'sow-contact-form-field-' . $field_name;
 
-			$value = '';
-			if ( ! empty( $_POST[ $field_name ] ) && wp_verify_nonce( $_POST['_wpnonce'], '_contact_form_submit' ) ) {
-				$value = stripslashes_deep( $_POST[ $field_name ] );
-			}
-
-			?>
-            <div class="sow-form-field sow-form-field-<?php echo sanitize_html_class( $field['type'] ) ?>"><?php
-
-			$label = $field['label'];
-			$indicate_as_required = $indicate_required_fields && ! empty( $field['required']['required'] );
-			$no_placeholder_support = ( $field['type'] != 'radio' && $field['type'] != 'checkboxes' );
-			// label should be rendered before the field, then CSS will do the exact positioning.
-			$render_label_before_field = ( $label_position != 'below' && $label_position != 'inside' ) || ( $label_position == 'inside' && ! $no_placeholder_support );
-			if ( empty( $label_position ) || $render_label_before_field ) {
-				$this->render_form_label( $field_id, $label, $label_position, $indicate_as_required );
-			}
-
-			$show_placeholder = $label_position == 'inside';
-			if ( $show_placeholder && $indicate_as_required ) {
-				$label .= '*';
-			}
-
-			if ( is_array( $errors ) && ! empty( $errors[ $field_name ] ) ) {
-				?>
-                <div class="sow-error">
-					<?php echo wp_kses_post( $errors[ $field_name ] ) ?>
-                </div>
-				<?php
-			}
-			?><span class="sow-field-container"><?php
-			$class_name = empty( $field['type'] ) ? '' : 'SiteOrigin_Widget_ContactForm_Field_' . ucwords( $field['type'] );
-			// This does autoloading if required.
-			if ( class_exists( $class_name ) ) {
-				/**
-				 * @var $contact_field SiteOrigin_Widget_ContactForm_Field_Base
-				 */
-				$field_input_options = array(
-					'field'            => $field,
-					'field_id'         => $field_id,
-					'field_name'       => $field_name,
-					'value'            => $value,
-					'show_placeholder' => $show_placeholder,
-					'label'            => $label,
-				);
-				$contact_field       = new $class_name( $field_input_options );
-				$contact_field->render();
-			} else {
-				echo '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '"  value="' . esc_attr( $value ) . '"  class="sow-text-field" ' . ( $show_placeholder ? 'placeholder="' . esc_attr( $label ) . '"' : '' ) . '/>';
-			}
-			?></span><?php
-
-			if ( ! empty( $label_position ) && $label_position == 'below' ) {
-				$this->render_form_label( $field_id, $label, $instance, $indicate_as_required );
-			}
-
-			if ( ! empty( $field['description'] ) ) {
-				?>
-                <div class="sow-form-field-description">
-					<?php echo wp_kses_post( $field['description'] ) ?>
-                </div>
-				<?php
-			}
-
-			?></div><?php
+			$this->render_form_field( $field, $errors, $label_position, $instance, $indicate_required_fields, $field_ids, $i );
 		}
 	}
 
-	function render_form_label( $field_id, $label, $position, $indicate_as_required = false ) {
+	public function render_form_field(
+		$field,
+		$errors,
+		$label_position,
+		$instance,
+		$indicate_required_fields,
+		$field_ids = array(),
+		$i = 0
+	) {
+		$field_name = $this->name_from_label( ! empty( $field['label'] ) ? $field['label'] : $i, $field_ids );
+
+		// Using `$instance['_sow_form_id']` to uniquely identify contact form fields across widgets.
+		// I.e. if there are many contact form widgets on a page this will prevent field name conflicts.
+		$field_name .= ! empty( $instance['_sow_form_id'] ) ? '-' . $instance['_sow_form_id'] : '';
+
+		$field_id = 'sow-contact-form-field-' . $field_name;
+
+		$value = '';
+
+		if ( ! empty( $_POST[ $field_name ] ) && wp_verify_nonce( $_POST['_wpnonce'], '_contact_form_submit' ) ) {
+			$value = stripslashes_deep( $_POST[ $field_name ] );
+		} elseif ( ! empty( $field['value'] ) ) {
+			$value = $field['value'];
+		}
+
+		?>
+			<div class="sow-form-field sow-form-field-<?php echo sanitize_html_class( $field['type'] ); ?>">
+				<?php
+				$label = $field['label'];
+				$indicate_as_required = $indicate_required_fields && ! empty( $field['required']['required'] );
+				$no_placeholder_support = ( $field['type'] != 'radio' && $field['type'] != 'checkboxes' );
+				// label should be rendered before the field, then CSS will do the exact positioning.
+				$render_label_before_field = ( $label_position != 'below' && $label_position != 'inside' ) || ( $label_position == 'inside' && ! $no_placeholder_support );
+
+				if ( empty( $label_position ) || $render_label_before_field ) {
+					$this->render_form_label( $field_id, $label, $label_position, $indicate_as_required );
+				}
+
+				$show_placeholder = $label_position == 'inside';
+
+				if ( $show_placeholder && $indicate_as_required ) {
+					$label .= '*';
+				}
+
+				if ( is_array( $errors ) && ! empty( $errors[ $field_name ] ) ) {
+					?>
+	                <div class="sow-error">
+						<?php echo wp_kses_post( $errors[ $field_name ] ); ?>
+	                </div>
+					<?php
+				}
+				?>
+				<span class="sow-field-container">
+					<?php
+					$class_name = empty( $field['type'] ) ? '' : 'SiteOrigin_Widget_ContactForm_Field_' . ucwords( $field['type'] );
+					// This does autoloading if required.
+					if ( class_exists( $class_name ) ) {
+						/**
+						 * @var $contact_field SiteOrigin_Widget_ContactForm_Field_Base
+						 */
+						$field_input_options = array(
+							'field'            => $field,
+							'field_id'         => $field_id,
+							'field_name'       => $field_name,
+							'value'            => $value,
+							'show_placeholder' => $show_placeholder,
+							'label'            => $label,
+						);
+						$contact_field = new $class_name( $field_input_options );
+						$contact_field->render();
+					} else {
+						echo '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '"  value="' . esc_attr( $value ) . '"  class="sow-text-field" ' . ( $show_placeholder ? 'placeholder="' . esc_attr( $label ) . '"' : '' ) . '/>';
+					}
+					?>
+				</span>
+				<?php
+
+				if ( ! empty( $label_position ) && $label_position == 'below' ) {
+					$this->render_form_label( $field_id, $label, $instance, $indicate_as_required );
+				}
+
+				if ( ! empty( $field['description'] ) ) {
+					?>
+	                <div class="sow-form-field-description">
+						<?php echo wp_kses_post( $field['description'] ); ?>
+	                </div>
+					<?php
+				}
+
+				?>
+			</div>
+			<?php
+	}
+
+	public function render_form_label( $field_id, $label, $position, $indicate_as_required = false ) {
 		if ( ! empty( $label ) ) {
 			$label_class = '';
+
 			if ( ! empty( $position ) ) {
 				$label_class = ' class="sow-form-field-label-' . $position . '"';
 			}
 			?><label<?php if ( ! empty( $label_class ) ) {
 				echo $label_class;
-			} ?> for="<?php echo esc_attr( $field_id ) ?>">
+			} ?> for="<?php echo esc_attr( $field_id ); ?>">
 				<strong>
-					<?php echo esc_html( $label ) ?>
-					<?php if ( $indicate_as_required ) : ?>
+					<?php echo esc_html( $label ); ?>
+					<?php if ( $indicate_as_required ) { ?>
 						<span class="sow-form-field-required">*</span>
-					<?php endif; ?>
+					<?php } ?>
 				</strong>
 			</label>
 			<?php
@@ -1236,7 +1336,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	/**
 	 * Ajax action handler to send the form
 	 */
-	function contact_form_action( $instance, $storage_hash ) {
+	public function contact_form_action( $instance, $storage_hash ) {
 		if ( empty( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], '_contact_form_submit' ) ) {
 			// Using `return false;` instead of `wp_die` because this function may sometimes be called as a side effect
 			// of trying to enqueue scripts required for the front end or when previewing widgets e.g. in the block editor.
@@ -1245,7 +1345,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 
 		if ( empty( $_POST['instance_hash'] ) || $_POST['instance_hash'] != $storage_hash ) {
-			return false;
+			return array();
 		}
 
 		if ( empty( $instance['fields'] ) ) {
@@ -1257,22 +1357,25 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		// Make sure that this action only runs once per instance
 		static $send_cache = array();
 		$send_cache_hash = md5( serialize( $instance ) . '::' . $storage_hash );
+
 		if ( isset( $send_cache[ $send_cache_hash ] ) ) {
 			return $send_cache[ $send_cache_hash ];
 		}
 
-		$errors       = array();
+		$errors = array();
 		$email_fields = array();
-		$post_vars    = stripslashes_deep( $_POST );
+		$post_vars = stripslashes_deep( $_POST );
 
 		$field_ids = array();
+
+		$instance['fields'] = apply_filters( 'siteorigin_widgets_contact_fields', $instance['fields'] );
 		foreach ( $instance['fields'] as $i => $field ) {
 			if ( empty( $field['type'] ) ) {
 				continue;
 			}
 
 			$field_name = $this->name_from_label( ! empty( $field['label'] ) ? $field['label'] : $i, $field_ids ) . '-' . ( ! empty( $instance['_sow_form_id'] ) ? $instance['_sow_form_id'] : '' );
-			$value      = isset( $post_vars[ $field_name ] ) ? $post_vars[ $field_name ] : '';
+			$value = isset( $post_vars[ $field_name ] ) ? $post_vars[ $field_name ] : '';
 
 			// Can't just use `strlen` here as $value could be an array. E.g. for checkboxes field.
 			if ( empty( $value ) && $value !== '0' ) {
@@ -1317,7 +1420,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					// non-digit characters. Apparently, the lower limit for phone numbers is 3. See
 					// https://github.com/siteorigin/so-widgets-bundle/issues/958#issuecomment-573139753
 					$digits = preg_replace( '/\D/', '', $value );
-					if ( strlen($digits) < 3 ) {
+
+					if ( strlen( $digits ) < 3 ) {
 						$errors[ $field_name ] = __( 'Invalid phone number. It should contain at least three digits.', 'so-widgets-bundle' );
 					} else {
 						$email_fields['message'][] = array(
@@ -1334,10 +1438,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						$email_fields[ $field['type'] ] = $value;
 					}
 					break;
+
 				case 'select':
 					if ( ! empty( $field['multiple_select'] ) && is_array( $value ) ) {
 						$value = implode( ', ', $value );
-					} 
+					}
 
 					$email_fields['message'][] = array(
 						'label' => $field['label'],
@@ -1351,6 +1456,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					);
 					break;
 			}
+
+			do_action( 'siteorigin_widgets_contact_post_var_field', $value, $field );
 		}
 
 		// Add in a default email address if no email field is defined in the form at all.
@@ -1376,6 +1483,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				unset( $email_errors['subject'] );
 				$email_fields['subject'] = get_bloginfo() . ' ' . __( 'Contact Form', 'siteorigin-widgets' );
 			}
+
 			if ( ! empty( $email_errors ) ) {
 				$errors['_general'] = $email_errors;
 			}
@@ -1384,6 +1492,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		// And if we get this far, do some spam filtering and Captcha checking
 		if ( empty( $errors ) ) {
 			$spam_errors = $this->spam_check( $post_vars, $email_fields, $instance );
+
 			if ( ! empty( $spam_errors ) ) {
 				// Now we can decide how we want to handle this spam status
 				if ( ! empty( $spam_errors['akismet'] ) && $instance['spam']['akismet']['spam_action'] == 'tag' ) {
@@ -1400,12 +1509,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		$errors = apply_filters( 'siteorigin_widgets_contact_validation', $errors, $post_vars, $email_fields, $instance );
 
 		if ( empty( $errors ) ) {
+			$email_fields = apply_filters( 'siteorigin_widgets_contact_email_fields', $email_fields, $post_vars, $instance );
 			// We can send the email
 			$success = $this->send_mail( $email_fields, $instance );
 
 			if ( is_wp_error( $success ) ) {
 				$errors['_general'] = array( 'send' => $success->get_error_message() );
-			} else if ( empty( $success ) ) {
+			} elseif ( empty( $success ) ) {
 				$errors['_general'] = array( 'send' => __( 'Error sending email, please try again later.', 'so-widgets-bundle' ) );
 			} else {
 				// This action will allow other plugins to run code when contact form has successfully been sent
@@ -1420,7 +1530,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		$send_cache[ $send_cache_hash ] = array(
 			'status' => empty( $errors ) ? 'success' : 'fail',
-			'errors' => $errors
+			'errors' => $errors,
 		);
 
 		return $send_cache[ $send_cache_hash ];
@@ -1429,8 +1539,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	/**
 	 * Validate fields of an email message
 	 */
-	function validate_mail( $email_fields ) {
+	public function validate_mail( $email_fields ) {
 		$errors = array();
+
 		if ( empty( $email_fields['email'] ) ) {
 			$errors['email'] = __( 'A valid email is required', 'so-widgets-bundle' );
 		} elseif ( function_exists( 'filter_var' ) && ! filter_var( $email_fields['email'], FILTER_VALIDATE_EMAIL ) ) {
@@ -1447,13 +1558,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	/**
 	 * Check the email for spam
 	 *
-	 * @param $email_fields
-	 * @param $instance
-	 *
 	 * @return array
 	 */
-	function spam_check( $post_vars, $email_fields, $instance ) {
+	public function spam_check( $post_vars, $email_fields, $instance ) {
 		$errors = array();
+
 		if ( self::is_recaptcha_enabled( $instance['spam']['recaptcha'] ) ) {
 			$result = wp_remote_post(
 				'https://www.google.com/recaptcha/api/siteverify',
@@ -1462,44 +1571,47 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'secret'   => $instance['spam']['recaptcha']['use_captcha'] == 'v2' ? $instance['spam']['recaptcha']['secret_key'] : $instance['spam']['recaptcha']['secret_key_v3'],
 						'response' => isset( $post_vars['g-recaptcha-response'] ) ? $post_vars['g-recaptcha-response'] : '',
 						'remoteip' => isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : null,
-					)
+					),
 				)
 			);
 
 			if ( ! is_wp_error( $result ) && ! empty( $result['body'] ) ) {
 				$result = json_decode( $result['body'], true );
+
 				if ( isset( $result['success'] ) && ! $result['success'] ) {
 					$errors['recaptcha'] = __( 'Error validating your Captcha response.', 'so-widgets-bundle' );
 				}
 			}
 		}
+
 		if ( $instance['spam']['akismet']['use_akismet'] && class_exists( 'Akismet' ) ) {
 			$comment = array();
 
 			$message_text = array();
+
 			if ( ! empty( $email_fields['message'] ) ) {
 				foreach ( $email_fields['message'] as $m ) {
 					$message_text[] = $m['value'];
 				}
 			}
 
-			$comment['comment_content']      = $email_fields['subject'] . "\n\n" . implode( "\n\n", $message_text );
-			$comment['comment_author']       = ! empty( $email_fields['name'] ) ? $email_fields['name'] : '';
+			$comment['comment_content'] = $email_fields['subject'] . "\n\n" . implode( "\n\n", $message_text );
+			$comment['comment_author'] = ! empty( $email_fields['name'] ) ? $email_fields['name'] : '';
 			$comment['comment_author_email'] = $email_fields['email'];
-			$comment['comment_post_ID']      = get_the_ID();
+			$comment['comment_post_ID'] = get_the_ID();
 
 			$comment['comment_type'] = 'contact-form';
 
-			$comment['user_ip']      = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : null;
-			$comment['user_agent']   = isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : null;
-			$comment['referrer']     = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : null;
-			$comment['blog']         = get_option( 'home' );
-			$comment['blog_lang']    = get_locale();
+			$comment['user_ip'] = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : null;
+			$comment['user_agent'] = isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : null;
+			$comment['referrer'] = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : null;
+			$comment['blog'] = get_option( 'home' );
+			$comment['blog_lang'] = get_locale();
 			$comment['blog_charset'] = get_option( 'blog_charset' );
 
-			// Pretend to check with Akismet
+			// Check with Akismet.
 			$response = Akismet::http_post( Akismet::build_query( $comment ), 'comment-check' );
-			$is_spam  = ! empty( $response[1] ) && $response[1] == 'true';
+			$is_spam = ! empty( $response[1] ) && $response[1] == 'true';
 
 			if ( $is_spam ) {
 				$errors['akismet'] = __( 'Unfortunately our system identified your message as spam.', 'so-widgets-bundle' );
@@ -1513,8 +1625,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			} else {
 				$captcha = new ReallySimpleCaptcha();
 				$prefix = $post_vars['really-simple-captcha-prefix-' . $post_vars['instance_hash'] ];
+
 				if ( ! $captcha->check(
-					$prefix, 
+					$prefix,
 					$post_vars['really-simple-captcha-' . $post_vars['instance_hash'] ]
 				) ) {
 					$errors['simple'] = __( 'Error validating your Captcha response. Please try again.', 'so-widgets-bundle' );
@@ -1536,12 +1649,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 		}
 
+		$errors = apply_filters( 'siteorigin_widgets_contact_spam_check', $errors, $post_vars, $email_fields, $instance );
+
 		return $errors;
 	}
 
-	function send_mail( $email_fields, $instance ) {
+	public function send_mail( $email_fields, $instance ) {
 		if ( ! empty( $email_fields['name'] ) || ! empty( $email_fields['email'] ) ) {
-
 			$body = '<strong>' . _x( 'From', 'The name of who sent this email', 'so-widgets-bundle' ) . ':</strong> ';
 
 			if ( ! empty( $email_fields['email'] ) ) {
@@ -1572,14 +1686,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 		$body = wpautop( trim( $body ) );
 
-		if ( $this->is_dev_email($instance['settings']['to']) || empty( $instance['settings']['to'] ) ) {
+		if ( $this->is_dev_email( $instance['settings']['to'] ) || empty( $instance['settings']['to'] ) ) {
 			// Replace default and empty email address.
 			// Also replaces the email address that comes from the prebuilt layout directory and SiteOrigin Support Email
 			$instance['settings']['to'] = get_option( 'admin_email' );
 		}
 
 		if (
-			$this->is_dev_email($instance['settings']['from']) ||
+			$this->is_dev_email( $instance['settings']['from'] ) ||
 			empty( $instance['settings']['from'] ) ||
 			$instance['settings']['from'] == $instance['settings']['to']
 		) {
@@ -1593,11 +1707,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		);
 
 		// Check if this is a duplicated send
-		$hash       = md5( json_encode( array(
+		$hash = md5( json_encode( array(
 			'to'      => $instance['settings']['to'],
 			'subject' => $email_fields['subject'],
 			'body'    => $body,
-			'headers' => $headers
+			'headers' => $headers,
 		) ) );
 		$hash_check = get_option( 'so_contact_hashes', array() );
 		// Remove expired hashes
@@ -1621,6 +1735,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$body,
 			apply_filters( 'siteorigin_widgets_contact_email_headers', $headers )
 		);
+
 		if ( $mail_success ) {
 			$hash_check[ $hash ] = time();
 			update_option( 'so_contact_hashes', $hash_check, true );
@@ -1634,25 +1749,24 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 *
 	 * From Pear Mail https://pear.php.net/package/Mail (BSD Style license - https://pear.php.net/copyright.php).
 	 *
-	 * @param $value
-	 *
 	 * @return mixed
 	 */
-	static function sanitize_header( $value ) {
-		return preg_replace( '=((<CR>|<LF>|0x0A/%0A|0x0D/%0D|\\n|\\r)\S).*=i', null, $value );
+	public static function sanitize_header( $value ) {
+		return preg_replace( '/(<CR>|<LF>|%0A|%0D|\\n|\\r)/i', '', sanitize_text_field( $value ) );
 	}
 
 	private function is_dev_email( $email ) {
 		return $email == 'ibrossiter@gmail.com' ||
-		       $email == 'amisplon@gmail.com' ||
-		       $email == 'test@example.com' ||
-		       $email == 'greg@siteorigin.com' ||
-		       $email == 'support@siteorigin.com';
+			   $email == 'amisplon@gmail.com' ||
+			   $email == 'test@example.com' ||
+			   $email == 'greg@siteorigin.com' ||
+			   $email == 'support@siteorigin.com';
 	}
 
 	private function default_from_address() {
 		// Get the site domain and get rid of www.
 		$sitename = strtolower( $_SERVER['SERVER_NAME'] );
+
 		if ( substr( $sitename, 0, 4 ) == 'www.' ) {
 			$sitename = substr( $sitename, 4 );
 		}
@@ -1660,8 +1774,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		return apply_filters( 'siteorigin_widgets_contact_default_email', 'wordpress@' . $sitename );
 	}
 
-	function get_form_teaser() {
-		if ( class_exists( 'SiteOrigin_Premium' ) ) return false;
+	public function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
+
 		return array(
 			sprintf(
 				__( 'Add a form autoresponder and additional fields, including a date and time picker with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
@@ -1675,7 +1792,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			),
 		);
 	}
-
 }
 
 siteorigin_widget_register( 'sow-contact-form', __FILE__, 'SiteOrigin_Widgets_ContactForm_Widget' );
@@ -1686,14 +1802,14 @@ function contactform_fields_class_paths( $class_paths ) {
 
 	$loader->add_class_prefixes(
 		apply_filters( 'siteorigin_widgets_contact_form_field_class_prefixes', array(
-			'SiteOrigin_Widget_ContactForm_Field_'
+			'SiteOrigin_Widget_ContactForm_Field_',
 		) ),
 		'contact-form'
 	);
 
 	$loader->add_class_paths(
 		apply_filters( 'siteorigin_widgets_contact_form_field_class_paths', array(
-			plugin_dir_path( __FILE__ ) . 'fields/'
+			plugin_dir_path( __FILE__ ) . 'fields/',
 		) ),
 		'contact-form'
 	);

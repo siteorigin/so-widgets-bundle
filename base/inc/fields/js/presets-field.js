@@ -1,7 +1,7 @@
 /* global jQuery, sowbForms */
 
-(function ( $ ) {
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-presets', function ( e ) {
+( function( $ ) {
+	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-presets', function( e ) {
 		
 		var $presetSelect = $( this ).find( 'select[class="siteorigin-widget-input"]' );
 		if ( $presetSelect.data( 'initialized' ) ) {
@@ -51,7 +51,7 @@
 						}
 						if ( $undoLink.not( ':visible' ) ) {
 							$undoLink.show();
-							$undoLink.on( 'click', function ( event ) {
+							$undoLink.on( 'click', function( event ) {
 								event.preventDefault();
 								$undoLink.hide();
 								sowbForms.setWidgetFormValues( $formContainer, previousValues, false, 'preset' );
@@ -82,4 +82,4 @@
 
 		$presetSelect.data( 'initialized', true );
 	} );
-})( jQuery );
+} )( jQuery );

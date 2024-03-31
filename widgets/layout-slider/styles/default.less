@@ -2,6 +2,7 @@
 
 @nav_color_hex: #FFFFFF;
 @nav_size: 25;
+@nav_align: right;
 
 // Layout.
 @vertically_align: false;
@@ -15,8 +16,8 @@
 // Layout Mobile.
 @responsive_breakpoint: 780px;
 @slide_height_responsive: default;
-@slide_padding_responsive: default;
-@slide_padding_top_responsive: default;
+@slide_padding_responsive: 0px;
+@slide_padding_top_responsive: 0px;
 @slide_padding_sides_responsive: default;
 
 // Design.
@@ -44,10 +45,10 @@
 		min-height: 0 !important;
 
 		.sow-slider-image-wrapper {
-			padding: @slide_padding+@slide_padding_extra_top @slide_padding_sides @slide_padding @slide_padding_sides;
+			padding: ~"calc( @{slide_padding} + @{slide_padding_extra_top} )" @slide_padding_sides @slide_padding @slide_padding_sides;
 			max-width: @slide_width;
 			height: @slide_height;
-			
+
 			& when (@vertically_align = true) {
 				display: flex;
 				flex-direction: column;
@@ -59,14 +60,13 @@
 				& when not ( isnumber( @slide_height_responsive ) ) {
 					height: auto;
 				}
-				
+
 				& when ( isnumber( @slide_height_responsive ) ) {
 					height: @slide_height_responsive;
 				}
 
-				& when ( isnumber( @slide_padding_top_responsive ) ) {
-					padding-top: @slide_padding_top_responsive;
-				}
+				padding-top: @slide_padding_responsive;
+				padding-top: calc(~"@{slide_padding_responsive} + @{slide_padding_top_responsive}");
 
 				& when ( isnumber( @slide_padding_sides_responsive ) ) {
 					padding-right: @slide_padding_sides_responsive;
@@ -104,6 +104,8 @@
 	}
 
 	.sow-slider-pagination {
+		text-align: @nav_align;
+
 		li a {
 			background: @nav_color_hex;
 		}

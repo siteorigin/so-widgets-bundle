@@ -4,12 +4,9 @@
  * Class SiteOrigin_Widget_Field_Number
  */
 class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_Base {
-
-
 	/**
 	 * The minimum value of the allowed range.
 	 *
-	 * @access protected
 	 * @var float
 	 */
 	protected $min;
@@ -17,7 +14,6 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 	/**
 	 * The maximum value of the allowed range.
 	 *
-	 * @access protected
 	 * @var float
 	 */
 	protected $max;
@@ -25,16 +21,21 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 	/**
 	 * The step size when moving in the range.
 	 *
-	 * @access protected
 	 * @var float
 	 */
 	protected $step;
 
-	 /**
+	/**
+	 * The measurement unit this number uses.
+	 *
+	 * @var string
+	 */
+	protected $unit;
+
+	/**
 	 * Whether to apply abs() when saving to ensure only positive numbers are possible.
 	 *
-	 * @access protected
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $abs;
 
@@ -50,17 +51,26 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 			'min'  => $this->min,
 			'max'  => $this->max,
 		);
+
 		return array_filter( $input_attributes );
 	}
 
 	protected function get_input_classes() {
-		$input_classes = parent::get_input_classes();
-		$input_classes[] = 'siteorigin-widget-input-number';
-		return $input_classes;
+		return array(
+			'siteorigin-widget-input',
+			'siteorigin-widget-input-number',
+		);
+	}
+
+	protected function render_after_field( $value, $instance ) {
+		if ( ! empty( $this->unit ) ) {
+			echo '<span class="siteorigin-widget-input-number-unit">' . esc_html( $this->unit ) . '</span>';
+		}
+
+		parent::render_after_field( $value, $instance );
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
-
 		if ( empty( $value ) ) {
 			return false;
 		}
@@ -76,6 +86,7 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 		if ( ! empty( $this->abs ) ) {
 			$value = abs( $value );
 		}
+
 		return (float) $value;
 	}
 }

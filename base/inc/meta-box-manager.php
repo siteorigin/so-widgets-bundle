@@ -1,7 +1,6 @@
 <?php
 
 class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
-
 	const POST_META_KEY = 'siteorigin-widgets-post-meta';
 
 	/**
@@ -19,9 +18,12 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 	 *
 	 * @return SiteOrigin_Widget_Meta_Box_Manager
 	 */
-	static function single(){
+	public static function single() {
 		static $single = false;
-		if( empty($single) ) $single = new SiteOrigin_Widget_Meta_Box_Manager();
+
+		if ( empty( $single ) ) {
+			$single = new SiteOrigin_Widget_Meta_Box_Manager();
+		}
 
 		return $single;
 	}
@@ -32,17 +34,17 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 	public function __construct() {
 		parent::__construct(
 			'sow-meta-box-manager',
-			__('SiteOrigin Meta Box Manager', 'so-widgets-bundle'),
+			__( 'SiteOrigin Meta Box Manager', 'so-widgets-bundle' ),
 			array(
 				'has_preview' => false,
-				'help' => false
+				'help' => false,
 			),
 			array(),
 			array()
 		);
 	}
 
-	function initialize() {
+	public function initialize() {
 		// Initialize number for field name attributes.
 		$this->number = 1;
 		$this->post_types = array();
@@ -55,17 +57,15 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 	/**
 	 * This handles the 'add_meta_boxes' action. It merges widget fields into the form_options array before adding the
 	 * meta box
-	 *
-	 * @param $post_type
 	 */
 	public function add_meta_boxes( $post_type ) {
-
 		$this->form_options = array();
+
 		foreach ( $this->widget_form_fields as $widget_id => $post_type_form_fields ) {
-			foreach( $post_type_form_fields as $form_fields ) {
+			foreach ( $post_type_form_fields as $form_fields ) {
 				if ( in_array( 'all', $form_fields['post_types'] ) || in_array( $post_type, $form_fields['post_types'] ) ) {
 					foreach ( $form_fields['fields'] as $field_name => $field ) {
-						$this->form_options[$widget_id . '_' . $field_name] = $field;
+						$this->form_options[ $widget_id . '_' . $field_name ] = $field;
 					}
 				}
 			}
@@ -84,24 +84,22 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 					'__block_editor_compatible_meta_box' => false,
 				)
 			);
-
 		}
 	}
 
 	/**
 	 * This is the callback used by add_meta_box to render the widgets meta box form and enqueue any necessary scripts.
-	 *
-	 * @param $post
 	 */
 	public function render_widgets_meta_box( $post ) {
 		wp_enqueue_script(
 			'sow-meta-box-manager-js',
-			plugin_dir_url(SOW_BUNDLE_BASE_FILE).'base/js/meta-box-manager' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'base/js/meta-box-manager' . SOW_BUNDLE_JS_SUFFIX . '.js',
 			array( 'jquery' ),
 			SOW_BUNDLE_VERSION,
 			true
 		);
 		$widget_post_meta = get_post_meta( $post->ID, self::POST_META_KEY, true );
+
 		if ( empty( $widget_post_meta ) ) {
 			$widget_post_meta = array();
 		}
@@ -114,48 +112,52 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 	 * This method should be called by any widgets that want to be able to store post meta data. It may be called
 	 * multiple times by a widget and the additional fields for a widget will be appended and rendered.
 	 *
-	 * @param string $widget_id Base id of the widget adding the fields.
-	 * @param array $fields The fields to add.
+	 * @param string       $widget_id  Base id of the widget adding the fields.
+	 * @param array        $fields     The fields to add.
 	 * @param string|array $post_types A post type string, 'all' or an array of post types
 	 */
 	public function append_to_form( $widget_id, $fields, $post_types = 'all' ) {
-		if( empty( $fields ) || empty( $post_types ) ) return;
+		if ( empty( $fields ) || empty( $post_types ) ) {
+			return;
+		}
 
-		if( $post_types == 'all' ) {
+		if ( $post_types == 'all' ) {
 			$post_types = array( 'all' );
 		}
 
-		foreach( $post_types as $post_type ) {
-			if( !in_array( $post_type, $this->post_types ) ) {
+		foreach ( $post_types as $post_type ) {
+			if ( ! in_array( $post_type, $this->post_types ) ) {
 				$this->post_types[] = $post_type;
 			}
 		}
 
-		if( ! isset( $this->widget_form_fields[$widget_id] ) ) {
-			$this->widget_form_fields[$widget_id] = array();
+		if ( ! isset( $this->widget_form_fields[ $widget_id ] ) ) {
+			$this->widget_form_fields [$widget_id ] = array();
 		}
 
-		$this->widget_form_fields[$widget_id][] = array(
-			'post_types' =>  $post_types,
-			'fields' => $fields
+		$this->widget_form_fields[ $widget_id ][] = array(
+			'post_types' => $post_types,
+			'fields' => $fields,
 		);
 	}
 
 	/**
 	 * This handles the 'save_post' action. It checks for a nonce, checks user permissions, and filters the input data
 	 * and decodes it from the JSON format before storing it in the post's meta data.
-	 *
-	 * @param $post_id
 	 */
 	public function save_widget_post_meta( $post_id ) {
-		if ( empty( $_POST['_widget_post_meta_nonce'] ) || !wp_verify_nonce( $_POST['_widget_post_meta_nonce'], 'widget_post_meta_save' ) ) return;
-		if ( !current_user_can( 'edit_post', $post_id ) ) return;
+		if ( empty( $_POST['_widget_post_meta_nonce'] ) || !wp_verify_nonce( $_POST['_widget_post_meta_nonce'], 'widget_post_meta_save' ) ) {
+			return;
+		}
+
+		if ( !current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
 
 		$widget_post_meta = isset( $_POST['widget_post_meta'] ) ? stripslashes_deep( $_POST['widget_post_meta'] ) : '';
-		$widget_post_meta = json_decode( $widget_post_meta, true);
+		$widget_post_meta = json_decode( $widget_post_meta, true );
 
 		update_post_meta( $post_id, self::POST_META_KEY, $widget_post_meta );
-
 	}
 
 	/**
@@ -169,9 +171,16 @@ class SiteOrigin_Widget_Meta_Box_Manager extends SiteOrigin_Widget {
 	 */
 	public function get_widget_post_meta( $post_id, $widget_id, $meta_key ) {
 		$widget_post_meta = get_post_meta( $post_id, self::POST_META_KEY, true );
-		if( empty( $widget_post_meta ) ) return '';
+
+		if ( empty( $widget_post_meta ) ) {
+			return '';
+		}
 		$widget_post_meta_field = $widget_id . '_' . $meta_key;
-		if( ! isset( $widget_post_meta[$widget_post_meta_field] ) ) return '';
-		return $widget_post_meta[$widget_post_meta_field];
+
+		if ( ! isset( $widget_post_meta[ $widget_post_meta_field ] ) ) {
+			return '';
+		}
+
+		return $widget_post_meta[ $widget_post_meta_field ];
 	}
 }
