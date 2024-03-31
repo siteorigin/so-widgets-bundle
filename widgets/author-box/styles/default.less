@@ -17,6 +17,7 @@
 @avatar_border_radius: default;
 @avatar_border_position: left;
 @author_box_padding: default;
+@avatar_image_size: 100px;
 
 @bio_color: default;
 @bio_font: default;
@@ -52,7 +53,6 @@
 		gap: 30px;
 
 		.sow-author-box-avatar {
-			flex: 1;
 			text-align: center;
 
 			a {
@@ -70,8 +70,12 @@
 		text-align: center;
 	}
 
-	&-avatar .avatar {
-		border-radius: @avatar_border_radius;
+	&-avatar {
+		width: @avatar_image_size;
+
+		.avatar {
+			border-radius: @avatar_border_radius;
+		}
 	}
 
 	&-title-wrapper {
