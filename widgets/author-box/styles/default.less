@@ -96,7 +96,7 @@
 			margin-bottom: 10px;
 		}
 
-		&,
+	& when not ( @name_link_all = 1 ) {
 		a {
 			color: @name_color;
 			text-decoration: none;
@@ -106,7 +106,6 @@
 				color: @name_color_hover;
 			}
 		}
-
 	}
 
 	&-info {
