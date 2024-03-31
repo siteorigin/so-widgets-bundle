@@ -106,68 +106,116 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
-= 1.49.0 - 23 April 2023 =
-* Features: Updated CSS to Flexbox.
-* Features: Added `Space Between Each Feature` setting.
-* Features: Ensured all icon alignment states center align on mobile.
-* Features: Increased the responsive breakpoint` to 768px.
-* Price Table: Added color settings default values.
-* Slider: Improved slide background removal.
-* Social Media Buttons: Fixed potential `Undefined variable` error.
-* Video: Resolved an issue with YouTube video looping.
-* Widget Block: Added `siteorigin_widgets_block_exclude_widget`. Developers can exclude widgets from SiteOrigin Widgets Block cache.
+= 1.58.12 - 24 March 2024 =
+- Post Loop: Resolved a potential `post__in` error.
+- Post Loop: Resolved a potential post selector `post__not_in` deprecated warning.
 
-= 1.48.0 - 12 April 2023 =
-* Slider: Added Height and Responsive Height settings regardless of whether a Foreground Image is present.
-* Social Media Buttons: Added Wire Border Color settings.
+= 1.58.11 - 23 March 2024 =
+- Carousel: Resolved a potential warning.
+- Features: Correct HTML tag output.
+- Slider: Replaced `$.isFunction` usage.
+- Social Media Buttons: Updated Tripadvisor title label.
+- Video Player: Resolved potential warning.
+- Block Editor: Always process shortcodes.
+- Color Field: Added support for color hexadecimal values with alpha channel notation (e.g., #RRGGBBAA). Enhanced validation for RGBA color values.
+- Post Selector: Resolved a potential deprecated notice.
+- Updated SiteOrigin Installer.
+- Developer: Added new Contact Form hooks.
 
-= 1.47.1 - 04 April 2023 =
-* Blog: Fixed Alternate Template featured image mobile collapse.
-* Post Carousel: Improved `Thumbnail Overlay` migration.
-* Post Carousel: Added `siteorigin_post_carousel_item_template` filter.
-* Sliders: Default enabled `Show slide background videos on mobile.`
-* Tabs: Addeded `siteorigin_widgets_tabs_always_scroll` filter.
-* Font Field: Resolved PHP 8 deprecated notice.
-* Textarea Form Field: Resolved PHP 8 deprecated notice.
-* Media Field: Minor styling improvement.
-* Improved missing widget detection.
-* PHP coding standards update.
+= 1.58.10 - 05 March 2024 =
+- Enhanced the saving process and validation for widgets and blocks in the Widgets Block.
+- Loaded defaults for the widget form field.
+- Removed the `unfiltered_html` check in the Editor Widget.
 
-= 1.47.0 - 30 March 2023 =
-* Blog: Added a `Post Title HTML Tag` setting.
-* Google Maps: Fixed a potential `Map Style > Predefined Styles` PHP 8.x error.
-* Updated Tested up to tag.
+= 1.58.9 - 03 March 2024 =
+- Editor: Resolved shortcode output.
 
-= 1.46.7 - 15 March 2023 =
-* Developer: Updated Google Maps location `getSimplePlace` a method.
+= 1.58.8 - 02 March 2024 =
+- Button: Resolved a potential alignment warning.
+- Contact Form: Resolved a potential deprecated notice.
+- Editor: Resolved a potential noreferrer empty text deprecated notice.
+- Features: Prevent a potential feature width CSS miscalculation.
+- Google Maps: Resolved a potential PHP 8.2+ warning.
+- Sliders: Resolved a potential FitVids related error.
+- Color Fields: Resolved a potential deprecated notice.
+- Text Input: Resolved undesired HTML removal on multisite installations.
+- Shifted control for lazy loading images to WordPress.
+- Added additional data sanitization.
+- Beaver Builder: Resolved an issue on save.
 
-= 1.46.6 - 01 March 2023 =
-* Blog: Fixed a potential Alternate Template featured image fallback misalignment and improved responsiveness.
-* Blog: Vertically center aligned the Alternate Template featured image fallback image.
+= 1.58.7 - 25 February 2024 =
+- Anything Carousel: Corrected global responsive settings propagation.
+- Blog: Removed pagination markup if pagination is disabled.
+- Blog: Updated pagination screen reader text and level.
+- Button: Added `Calendly` to OnClick allowed list.
+- Video Player: Resolved potential FitVids warning.
+- Repeater Tables: Minor styling updates.
+- Textarea: Update to allow line breaks.
 
-= 1.46.5 - 03 February 2023 =
-* Repeaters: Restored action icons.
+= 1.58.6 - 15 February 2024 =
+- Added recursive sanitization to fields to prevent potential errors during saving.
+- Post Carousel: Prevented a potential fatal error related to the `loop_posts` migration.
+- Social Media Buttons: Resolved a potential warning by adjusting the conditions for color changes.
+- Social Media Buttons: Removed redundant changes to the `icon_color` and `icon_color_hover` values.
 
-= 1.46.4 - 02 February 2023 =
-* Accordion and Tabs: Prevented unexpected scroll.
-* Blog: Removed Portfolio `Filter Category` setting requirement.
-* Lottie Player: Updated library to `1.6.0`.
-* Slider: Removed potential spacing after a slide foreground image.
-* Removed unintentional widget asset enqueue in the Classic Editor.
-* Widget Block: Resolved Customizer `ReferenceError`.
-* Autoptimize: Avoided using strpos with empty string in `include_widgets_css_in_autoptimize`.
-* Developer: Updated repeater actions to prevent naming conflicts. 
+= 1.58.5 - 12 February 2024 =
+- Blog: Resolved a potential columns related warning.
+- Block Editor: Prevented a potential text field empty value error.
 
-= 1.46.3 - 23 January 2023 =
-* Simple Masonry: Resolved pre-WordPress 5.9 error.
-* Resolved potential `mce_external_plugins` missing `editor_id` error.
+= 1.58.4 - 10 February 2024 =
+- Call to Action: Improved tag handling.
+- Features: Fixed spacing and gap value output.
+- Fields: Improved field sanitization.
+- Social Media Buttons: Migrated Twitter to X.
 
-= 1.46.2 - 14 January 2023 =
-* Color Form Field: Added `siteorigin_widget_color_palette` filter.
-* Lottie Player: Filtered new media uploads for application files.
+= 1.58.3 - 05 February 2024 =
+- Button: Additional improvements for OnClick handling
+- Button: Added OnClick support for MailerLite.
 
-= 1.46.1 - 01 January 2023 =
-* Contact Form: Added `siteorigin_widgets_contact_validation` filter.
-* Widgets Block Editor: Resolve potential TinyMCE related errors.
+= 1.58.2 - 27 January 2024 =
+- Button: Restricted OnClick field allowed values to known services and functions.
+
+= 1.58.1 - 26 January 2024 =
+- Icon: Prevented a Potential `TypeError`.
+- WooCommerce Shop: Check for SiteOrigin blocks within other blocks.
+- Developer: Added Contact Form `siteorigin_widgets_contact_form_field_output`.
+- Developer: Prevented a potential error when an `ItemLabel` isn't defined.
+
+= 1.58.0 - 18 January 2024 =
+- Accordion: Improved accessibility.
+- Accordion: Improved the title icon vertical alignment.
+- Accordion & Tabs: Adjusted the default header background colors.
+- Anything Carousel: Improved cross-browser navigation display.
+- Beaver Builder: Resolved SiteOrigin Slider related error.
+- Carousel: Disabled the 'previous' navigation button on the first slide when loop functionality is disabled.
+- Carousel: Resolved a potential undefined variable notice.
+- Carousels: Increased `Animation Speed` default value.
+- Carousels: Disabled slide transitions if browser motion is set to `Reduced`.
+- Contact Form: Resolved potential submission form error message display.
+- Features: Reset before/after spacing to prevent misalignment due to third-party global styles.
+- Features: Added a `Feature Spacing` setting.
+- Google Maps: Resolved deprecated notice.
+- Google Maps: Update to prevent potential data loss when navigating away from the page while editing.
+- Layout Slider: Resolved Extra Top Padding unit of measurement output if a value other than `px` is selected.
+- Post Carousel: Update to display `Autoplay continuous scroll` if `Autoplay` is enabled.
+- Post Carousel: Updated to prevent thumbnail from exceeding display width on mobile.
+- Price Table: Added a `Sale Price` setting.
+- Price Table: Added HTML support to the Title, Subtitle, Price, and Per fields.
+- Price Table: Moved design related settings to a Design settings section.
+- Slider: Added `loading` support to the widget's background image.
+- Slider: Resolved a potential double-up of background images via HTML and CSS.
+- Sliders: Updated to prevent loss of form field focus on input.
+- Social Media Buttons: Added Viber.
+- Tabs: Improved accessibility.
+- Tabs: Updated deprecated KeyCode usage.
+- WooCommerce: Re-render the shop page if there are any Widgets Bundle blocks present.
+- Updated Google Fonts.
+- Updated Font Awesome from `6.4.2` to `6.5.1`.
+- Measurement Units: Minor admin styling improvements.
+- Admin Radio Form Fields: Improved cross-browser display.
+- Select2: Minor styling improvements.
+- Developer: Added repeater table item label display option. Allows the repeater to act more like a table.
+- Developer: Added `siteorigin_widgets_blog_custom_template` to the Blog Widget. Allows for custom templates to be selected from the Template select.
+- Developer: Added box model type indicator classes.
 
 [View full changelog.](https://siteorigin.com/widgets-bundle/changelog/)
