@@ -149,6 +149,7 @@ class SiteOrigin_Widget_Author_Box_Widget extends SiteOrigin_Widget {
 								'label' => __( 'Image Size', 'so-widgets-bundle' ),
 								'default' => 100,
 								'unit' => 'px',
+								'width' => 70,
 							),
 							'position' => array(
 								'type' => 'radio',
