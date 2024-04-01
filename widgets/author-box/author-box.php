@@ -267,7 +267,7 @@ class SiteOrigin_Widget_Author_Box_Widget extends SiteOrigin_Widget {
 			'link_name' => ! empty( $instance['settings']['link_name'] ),
 			'author_bio' => ! empty( $instance['settings']['author_bio'] ),
 			'link_all_posts' => ! empty( $instance['settings']['link_all_posts'] ),
-			'avatar_image_size' => ! empty( $instance['design']['avatar']['size'] ) ? $instance['design']['avatar']['size'] : 100,
+			'avatar_image_size' => ! empty( $instance['design']['avatar']['size'] ) ? (int) $instance['design']['avatar']['size'] . 'px' : '100px',
 		);
 	}
 
