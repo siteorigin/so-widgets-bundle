@@ -298,7 +298,7 @@ class SiteOrigin_Widget_Author_Box_Widget extends SiteOrigin_Widget {
 		$less_vars['name_font_size'] = ! empty( $instance['design']['name']['font_size'] ) ? $instance['design']['name']['font_size'] : '';
 		$less_vars['name_color'] = ! empty( $instance['design']['name']['color'] ) ? $instance['design']['name']['color'] : '';
 		$less_vars['name_color_hover'] = ! empty( $instance['design']['name']['color_hover'] ) ? $instance['design']['name']['color_hover'] : '';
-		$less_vars['name_link_all'] = ! empty( $instance['settings']['link_avatar'] );
+		$less_vars['name_link'] = ! empty( $instance['settings']['link_name'] );
 
 		// Author Avatar.
 		$less_vars['avatar_border_radius'] = ! empty( $instance['design']['avatar']['border_radius'] ) ? $instance['design']['avatar']['border_radius'] . 'px' : '';
