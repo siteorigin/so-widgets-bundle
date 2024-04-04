@@ -186,6 +186,11 @@ class SiteOrigin_Widget_Author_Box_Widget extends SiteOrigin_Widget {
 								'label' => __( 'Hover Color', 'so-widgets-bundle' ),
 								'default' => '#626262',
 							),
+							'margin_bottom' => array(
+								'type' => 'measurement',
+								'label' => __( 'Bottom Margin', 'so-widgets-bundle' ),
+								'default' => '10px',
+							),
 						),
 					),
 					'all' => array(
@@ -298,6 +303,7 @@ class SiteOrigin_Widget_Author_Box_Widget extends SiteOrigin_Widget {
 		$less_vars['name_font_size'] = ! empty( $instance['design']['name']['font_size'] ) ? $instance['design']['name']['font_size'] : '';
 		$less_vars['name_color'] = ! empty( $instance['design']['name']['color'] ) ? $instance['design']['name']['color'] : '';
 		$less_vars['name_color_hover'] = ! empty( $instance['design']['name']['color_hover'] ) ? $instance['design']['name']['color_hover'] : '';
+		$less_vars['name_margin_bottom'] = ! empty( $instance['design']['name']['margin_bottom'] ) ? $instance['design']['name']['margin_bottom'] : '';
 		$less_vars['name_link'] = ! empty( $instance['settings']['link_name'] );
 
 		// Author Avatar.

@@ -13,6 +13,7 @@
 @name_color: default;
 @name_color_hover: default;
 @name_link: default;
+@name_margin_bottom: default;
 
 @avatar_border_position: left;
 @avatar_border_radius: default;
@@ -88,13 +89,16 @@
 	}
 
 	&-title {
+		margin: 0;
+		margin-bottom: @name_margin_bottom;
+	}
+
+	&-title {
 		font-family: @name_font;
 		font-size: @name_font_size;
 		font-style: @name_font_style;
 		font-weight: @name_font_weight;
 		line-height: 1;
-		margin: 0;
-		margin-bottom: 10px;
 	}
 
 	& when ( @name_link = 1 ) {
