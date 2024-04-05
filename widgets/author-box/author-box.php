@@ -189,7 +189,7 @@ class SiteOrigin_Widget_Author_Box_Widget extends SiteOrigin_Widget {
 							'margin_bottom' => array(
 								'type' => 'measurement',
 								'label' => __( 'Bottom Margin', 'so-widgets-bundle' ),
-								'default' => '10px',
+								'default' => '5px',
 							),
 						),
 					),
