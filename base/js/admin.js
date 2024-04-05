@@ -1626,8 +1626,11 @@ var sowbForms = window.sowbForms || {};
 					$inputs.each( function( index, element ) {
 						const $input = $( element );
 						const part = valuesArray[ index ];
-						if ( part && compareValues( $input.val(), values.value[ part ] ) ) {
-							$input.val( part );
+						if ( typeof part !== 'number' ) {
+							return true;
+						}
+						$input.val( part );
+						if ( ! updated && compareValues( $input.val(), values.value[ part ] ) ) {
 							updated = true;
 						}
 					} );
