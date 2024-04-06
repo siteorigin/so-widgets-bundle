@@ -15,7 +15,7 @@
 
 		& when( iscolor( @button_color ) ) {
 			& when not( iscolor( @border_color ) ) {
-				border: 2px solid darken(@button_color, 15%) !important;
+				border: 2px solid @button_color !important;
 			}
 			color: @button_color !important;
 
