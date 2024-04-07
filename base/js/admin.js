@@ -863,7 +863,7 @@ var sowbForms = window.sowbForms || {};
 		const icon = $( this ).is( ':checked' ) ? 'yes' : 'minus';
 		return `<span class="dashicons dashicons-${ icon }"></span>`;
 	}
-  
+
 	$.fn.iconFormField = function() {
 		return $( this ).find( '.siteorigin-widget-icon span[data-sow-icon]' ).prop( 'outerHTML' );
 	}
@@ -1484,6 +1484,7 @@ var sowbForms = window.sowbForms || {};
 		updateRepeaterChildren(formContainer, data);
 
 		$fields = formContainer.find( '*[name]' );
+
 		var index = 0;
 		var validateParts = function( parts ) {
 			parts.map( function ( e ) {
@@ -1553,7 +1554,10 @@ var sowbForms = window.sowbForms || {};
 					$$.hasClass( 'sow-measurement-select-unit' ) ||
 					$$.attr( 'data-presets' ) ||
 					$$.parent().hasClass( 'siteorigin-widget-field-type-posts' ) ||
-					$$.attr( 'type' ) == 'hidden'
+					(
+						$$.attr( 'type' ) == 'hidden' &&
+						! $$.hasClass( 'sow-multi-measurement-input-values' )
+					)
 				) {
 					continue;
 				}
@@ -1563,6 +1567,7 @@ var sowbForms = window.sowbForms || {};
 				// Make sure we either have numbers or strings
 				parts = validateParts( parts );
 				var values = getValues( data, parts )
+
 				if ( skipMissingValues && values.value == '' ) {
 					continue;
 				}
@@ -1610,6 +1615,25 @@ var sowbForms = window.sowbForms || {};
 							updated = true;
 						}
 					}
+				} else if ( $$.hasClass( 'sow-multi-measurement-input-values' ) ) {
+					const $inputs = $$.prev().find( '.sow-multi-measurement-input, .sow-multi-measurement-select-unit' );
+					const valuesArray = [];
+					values.value.split(' ').forEach( field => {
+						valuesArray.push( parseInt( field, 10 ) );
+						valuesArray.push( field.replace( parseInt( field, 10 ), '' ) );
+					} );
+
+					$inputs.each( function( index, element ) {
+						const $input = $( element );
+						const part = valuesArray[ index ];
+						if ( typeof part !== 'number' ) {
+							return true;
+						}
+						$input.val( part );
+						if ( ! updated && compareValues( $input.val(), values.value[ part ] ) ) {
+							updated = true;
+						}
+					} );
 				} else if ( compareValues( $$.val(), values.value ) ) {
 					$$.val( values.value );
 					updated = true;
