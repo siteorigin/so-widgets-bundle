@@ -1,7 +1,7 @@
 ( function ( $ ) {
 
 	// After the form is setup, add some custom stuff.
-	$( document ).on( 'sowsetupform', '.siteorigin-widget-form[data-class="SiteOrigin_Widget_SocialMediaButtons_Widget"]', function () {
+	$( document ).on( 'sowsetupform', '.siteorigin-widget-form[data-class="SiteOrigin_Widget_SocialMediaButtons_Widget"], .siteorigin-widget-field-social_media_buttons_widget', function () {
 		var $socialMediaForm = $( this );
 
 		var setNetworkDefaults = function ( $selectNetworkInput ) {
