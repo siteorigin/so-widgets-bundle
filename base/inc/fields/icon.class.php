@@ -176,10 +176,12 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 		// migrations are available.
 		self::get_icon_families();
 
+		$value_family = sanitize_text_field( $value_family );
+
 		return apply_filters( 'siteorigin_widgets_icon_migrate_' . $value_family, array(
 			'family' => $value_family,
-			'style' => ! empty( $value_style ) ? $value_style : null,
-			'icon' => $value_icon,
+			'style' => ! empty( $value_style ) ? sanitize_text_field( $value_style ) : null,
+			'icon' => sanitize_text_field( $value_icon ),
 		) );
 	}
 
