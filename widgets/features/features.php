@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Features
-Description: Displays a block of features with icons.
+Description: Showcase features with icons, titles, text, and links in a customizable grid layout.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/features-widget-documentation/
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			'sow-features',
 			__( 'SiteOrigin Features', 'so-widgets-bundle' ),
 			array(
-				'description'  => __( 'Displays a block of features with icons.', 'so-widgets-bundle' ),
+				'description'  => __( 'Showcase features with icons, titles, text, and links in a customizable grid layout.' ),
 				'help'         => 'https://siteorigin.com/widgets-bundle/features-widget-documentation/',
 				'panels_title' => false,
 			),

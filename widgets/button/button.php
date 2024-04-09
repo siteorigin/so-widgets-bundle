@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Button
-Description: A powerful yet simple button widget for your sidebars or Page Builder pages.
+Description: Create a custom button with flexible styling, icon support, and click tracking functionality.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/button-widget-documentation/
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			'sow-button',
 			__( 'SiteOrigin Button', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A powerful yet simple button widget for your sidebars or Page Builder pages.', 'so-widgets-bundle' ),
+				'description' => __( 'Create a custom button with flexible styling, icon support, and click tracking functionality.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/button-widget-documentation/',
 			),
 			array(

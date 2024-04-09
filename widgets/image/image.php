@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Image
-Description: A simple image widget with massive power.
+Description: Add a responsive image with custom dimensions, positioning, caption, link, and styling options.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/image-widget-documentation/
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			'sow-image',
 			__( 'SiteOrigin Image', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A simple image widget with massive power.', 'so-widgets-bundle' ),
+				'description' => __( 'Add a responsive image with custom dimensions, positioning, caption, link, and styling options.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/image-widget-documentation/',
 			),
 			array(

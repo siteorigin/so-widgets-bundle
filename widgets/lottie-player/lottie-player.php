@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Lottie Player
-Description: Bring your pages to life with Lottie animations.
+Description: Bring your content to life using interactive Lottie animations with personalized settings and links.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/lottie-player-widget/
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Lottie_Player_Widget extends SiteOrigin_Widget {
 			'sow-lottie-player',
 			__( 'SiteOrigin Lottie Player', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Bring your pages to life with Lottie animations.', 'so-widgets-bundle' ),
+				'description' => __( 'Bring your content to life using interactive Lottie animations with personalized settings and links.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/lottie-player-widget/',
 			),
 			array(),
