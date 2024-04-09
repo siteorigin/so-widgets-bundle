@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Simple Masonry Layout
-Description: A masonry layout for images. Images can link to your posts.
+Description: Display images in an attractive masonry grid with adjustable columns, gutters, and optional captions.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/simple-masonry-widget/
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 			'sow-simple-masonry',
 			__( 'SiteOrigin Simple Masonry', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A masonry layout for images. Images can link to your posts.', 'so-widgets-bundle' ),
+				'description' => __( 'Display images in an attractive masonry grid with adjustable columns, gutters, and optional captions.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/simple-masonry-widget/',
 			),
 			array(),

@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Image Slider
-Description: A responsive slider widget that supports images and video.
+Description: Create a responsive slider with customizable image and video frames, navigation, and appearance settings.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/slider-widget-documentation/
@@ -17,7 +17,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 			'sow-slider',
 			__( 'SiteOrigin Slider', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A responsive slider widget that supports images and video.', 'so-widgets-bundle' ),
+				'description' => __( 'Create a responsive slider with customizable image and video frames, navigation, and appearance settings.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/slider-widget-documentation/',
 				'panels_title' => false,
 			),

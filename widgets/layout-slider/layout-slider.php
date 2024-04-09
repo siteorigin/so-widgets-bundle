@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Layout Slider
-Description: A slider that allows you to create responsive columnized content for each slide.
+Description: Design responsive slider frames with unique layouts, backgrounds, and content built with Page Builder.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/layout-slider-widget/
@@ -19,7 +19,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 			'sow-layout-slider',
 			__( 'SiteOrigin Layout Slider', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A slider that allows you to create responsive columnized content for each slide.', 'so-widgets-bundle' ),
+				'description' => __( 'Design responsive slider frames with unique layouts, backgrounds, and content built with Page Builder.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/layout-slider-widget/',
 				'panels_title' => false,
 			),

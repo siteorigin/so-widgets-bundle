@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Contact Form
-Description: A lightweight contact form builder.
+Description: Add a contact form with custom fields, design options, spam protection, and email notifications.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/contact-form-widget/
@@ -13,7 +13,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'sow-contact-form',
 			__( 'SiteOrigin Contact Form', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A lightweight contact form builder.', 'so-widgets-bundle' ),
+				'description' => __( 'Add a contact form with custom fields, design options, spam protection, and email notifications.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/contact-form-widget/',
 			),
 			array(),

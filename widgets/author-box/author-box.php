@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Author Box
-Description: Display author details, including avatar, name, and links to their posts, all while customizing the box style to suit your page.
+Description: Display author information, including avatar, name, bio, and post links in a customizable box.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/author-box-widget/
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Author_Box_Widget extends SiteOrigin_Widget {
 			'sow-author-box',
 			__( 'SiteOrigin Author Box', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Display author details, including avatar, name, and links to their posts, all while customizing the box style to suit your page.', 'so-widgets-bundle' ),
+				'description' => __( 'Display author information, including avatar, name, bio, and post links in a customizable box.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/author-box-widget/',
 				'has_preview' => false,
 				'panels_title' => false,

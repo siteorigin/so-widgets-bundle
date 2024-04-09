@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Blog
-Description: Display blog posts in a list or grid. Choose a design that suits your content.
+Description: Showcase blog content in personalized list or grid layouts with flexible design and display settings.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/blog-widget/
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			'sow-blog',
 			__( 'SiteOrigin Blog', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Display blog posts in a list or grid. Choose a design that suits your content.', 'so-widgets-bundle' ),
+				'description' => __( 'Showcase blog content in personalized list or grid layouts with flexible design and display settings.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/blog-widget/',
 				'instance_storage' => true,
 				'panels_title' => false,

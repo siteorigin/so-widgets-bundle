@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Headline
-Description: A headline to headline all headlines.
+Description: Engage visitors with a prominent, stylish headline and optional divider and sub-headline to convey key messages.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/headline-widget/
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {
 			'sow-headline',
 			__( 'SiteOrigin Headline', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A headline to headline all headlines.', 'so-widgets-bundle' ),
+				'description' => __( 'Engage visitors with a prominent, stylish headline and optional divider and sub-headline to convey key messages.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/headline-widget/',
 			),
 			array(),

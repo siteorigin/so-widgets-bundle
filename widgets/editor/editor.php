@@ -1,8 +1,7 @@
 <?php
 /*
 Widget Name: Editor
-Description: A widget which allows editing of content using the TinyMCE editor.
-Author: SiteOrigin
+Description: Insert and customize content with a rich text editor offering extensive formatting options.
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/editor-widget/
 */
@@ -13,7 +12,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			'sow-editor',
 			__( 'SiteOrigin Editor', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A widget which allows editing of content using the TinyMCE editor.', 'so-widgets-bundle' ),
+				'description' => __( 'Insert and customize content with a rich text editor offering extensive formatting options.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/editor-widget/',
 			),
 			array(),
