@@ -21,31 +21,32 @@ SiteOrigin Widgets are ready to be used **anywhere**, in [Page Builder by SiteOr
 
 Our collection is growing; here's what we have so far:
 
-- **Accordion:** Squeeze a lot of content into a small space.
-- **Anything Carousel:** Display images, text, or any other content in a carousel.
-- **Blog:** Display blog posts in a list or grid. Choose a design that suits your content.
-- **Button:** A simple button widget with a variety of styling options.
-- **Call To Action:** Get users moving in the right direction.
-- **Contact Form:** A lightweight contact form builder.
-- **Editor:** Rich text editing anywhere.
-- **Features:** Displays a block of features with icons.
-- **Google Maps:** Help your site find its place and give it some direction.
-- **Headline:** A widget to get you noticed.
-- **Hero Image:** More than just a large image. Support for headings, text, buttons, slides, and background videos.
-- **Icon:** For when only icons will do.
-- **Image:** A simple image widget with massive power.
-- **Image Grid:** Display a grid of images. Also useful for displaying client logos.
-- **Image Slider:** A simple, easy-to-use slider with support for image layering and HTML5 videos.
-- **Layout Slider:** Build layouts on slides using SiteOrigin Page Builder.
-- **Lottie Player:** Bring your pages to life with Lottie animations.
-- **Post Carousel:** Display your posts as a carousel.
-- **Price Table:** A simple yet powerful interface for building a price table.
-- **Simple Masonry:** A masonry layout for images. Images can link to your posts.
-- **Social Media Buttons:** Customizable buttons which link to your social media profiles.
-- **Tabs:** Group content into tabbed sections.
-- **Taxonomy:** Display the selected taxonomy for the current post.
-- **Testimonials:** Share your product or service testimonials in a variety of different layouts.
-- **Video:** Play your self or externally hosted videos in a customizable player.
+- **Accordion** Efficiently display content in expandable sections, maximizing space for improved organization.
+- **Anything Carousel** Display images, text, or any content in a highly customizable and responsive carousel slider.
+- **Author Box** Display author information, including avatar, name, bio, and post links in a customizable box.
+- **Blog** Showcase blog content in personalized list or grid layouts with flexible design and display settings.
+- **Button** Create a custom button with flexible styling, icon support, and click tracking functionality.
+- **Contact Form** Add a contact form with custom fields, design options, spam protection, and email notifications.
+- **Call To Action** Prompt visitors to take action with a customizable title, subtitle, button, and design settings.
+- **Editor** Insert and customize content with a rich text editor offering extensive formatting options.
+- **Features** Showcase features with icons, titles, text, and links in a customizable grid layout.
+- **Google Maps** Embed a customizable Google Map with markers, directions, styling options, and interactive elements.
+- **Headline** Engage visitors with a prominent, stylish headline and optional divider and sub-headline to convey key messages.
+- **Hero Image** Build an impressive hero image section with custom content, buttons, background image, color, and video.
+- **Icon** Display a customizable icon with color, size, alignment, and optional link settings.
+- **Image** Add a responsive image with custom dimensions, positioning, caption, link, and styling options.
+- **Image Grid** Showcase images in a responsive grid layout with custom size, spacing, alignment, and captions.
+- **Layout Slider** Design responsive slider frames with unique layouts, backgrounds, and content built with Page Builder.
+- **Lottie Player** Bring your content to life using interactive Lottie animations with personalized settings and links.
+- **Post Carousel** Display blog posts or custom post types in a responsive, customizable carousel layout.
+- **Price Table** Display pricing plans in a professional table format with custom columns, features, and design.
+- **Simple Masonry Layout** Display images in an attractive masonry grid with adjustable columns, gutters, and optional captions.
+- **Image Slider** Create a responsive slider with customizable image and video frames, navigation, and appearance settings.
+- **Social Media Buttons** Add social media buttons to your site with personalized icons, colors, and design settings.
+- **Tabs** Create tabbed content panels with customizable titles, content, initial tab, and design settings.
+- **Taxonomy** Automatically display the taxonomies of the current post with customizable labels, colors, and link settings.
+- **Testimonials** Feature testimonials from satisfied customers with tailored layouts, images, text, colors, and mobile compatibility.
+- **Video Player** Embed self-hosted or externally hosted videos with a customizable player, controls, and responsive sizing.
 
 = Ready to Be Used Anywhere =
 

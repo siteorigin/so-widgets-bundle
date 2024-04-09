@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Icon
-Description: An iconic icon.
+Description: Display a customizable icon with color, size, alignment, and optional link settings.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/icon-widget/
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Icon_Widget extends SiteOrigin_Widget {
 			'sow-icon',
 			__( 'SiteOrigin Icon', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'An iconic icon.', 'so-widgets-bundle' ),
+				'description' => __( 'Display a customizable icon with color, size, alignment, and optional link settings.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/icon-widget/',
 			),
 			array(),
