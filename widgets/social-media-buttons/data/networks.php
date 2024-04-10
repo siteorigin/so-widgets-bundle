@@ -37,6 +37,12 @@ return array(
 		'icon_color' => '#ffffff',
 		'button_color' => '#fffc00',
 	),
+	'square-snapchat' => array(
+		'label' => __( 'Snapchat (Square Version)', 'so-widgets-bundle' ),
+		'base_url' => 'https://www.snapchat.com/',
+		'icon_color' => '#ffffff',
+		'button_color' => '#fffc00',
+	),
 	'skype' => array(
 		'label' => __( 'Skype', 'so-widgets-bundle' ),
 		'base_url' => 'https://skype.com/',
