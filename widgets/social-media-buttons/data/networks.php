@@ -10,8 +10,8 @@ return array(
 	'x-twitter' => array(
 		'label' => __( 'X (Twitter)', 'so-widgets-bundle' ),
 		'base_url' => 'https://twitter.com/',
-		'icon_color' => '#000',
-		'button_color' => '#fff',
+		'icon_color' => '#fff',
+		'button_color' => '#000',
 	),
 	'rss'  => array(
 		'label' => __( 'RSS', 'so-widgets-bundle' ),
