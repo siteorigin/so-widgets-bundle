@@ -153,7 +153,7 @@ function siteorigin_widget_get_font( $font_value ) {
 		global $sow_registered_fonts;
 
 		$font_parts = explode( ':', $font_value );
-		$font['family'] = $font_parts[0];
+		$font['family'] = sanitize_text_field( $font_parts[0] );
 		$font_url_param = urlencode( $font_parts[0] );
 
 		if ( count( $font_parts ) > 1 ) {
@@ -194,7 +194,7 @@ function siteorigin_widget_get_font( $font_value ) {
 			);
 		}
 	} else {
-		$font['family'] = $font_value;
+		$font['family'] = sanitize_text_field( $font_value );
 		$font = apply_filters( 'siteorigin_widget_get_custom_font_family', $font );
 	}
 
