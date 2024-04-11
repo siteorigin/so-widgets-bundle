@@ -115,7 +115,7 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 * Social Media Buttons: Updated Wire theme border default colors.
 * Improved icon and font handling.
 * Updated Google Fonts list.
-* Block Editor: Moveed editor check to the main Widgets Bundle class.
+* Block Editor: Moved editor check to the main Widgets Bundle class.
 * Developer: Added a width argument to text input fields.
 * Developer: Added multi-measurement support to the presets field.
 * Developer: Removed `tmp_grunion_allow_editor_view`.
