@@ -1167,7 +1167,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		$it = 0;
 
 		$label = str_replace( ' ', '-', strtolower( $label ) );
-		$label = sanitize_html_class( $label );
+		$label = sanitize_title( $label );
 
 		do {
 			$id = $label . ( $it > 0 ? '-' . $it : '' );
