@@ -62,13 +62,13 @@
 				return picker;
 			}.bind( this );
 
-			var initRange = ( valField.val() === '' || valField.val() === 'null' ) ? { after: 0, before: 1 } : JSON.parse( valField.val() );
+			var initRange = ( valField.val() === '' || valField.val() === 'null' ) ? { after: '', before: '' } : JSON.parse( valField.val() );
 			var afterPicker = createPikadayInput( 'after', initRange.after );
 			var beforePicker = createPikadayInput( 'before', initRange.before );
 
 			valField.on( 'change', function( event, data ) {
 				if ( ! ( data && data.silent ) ) {
-					var newRange = ( valField.val() === '' || valField.val() === 'null' ) ? { after: 0, before: 1 } : JSON.parse( valField.val() );
+					var newRange = ( valField.val() === '' || valField.val() === 'null' ) ? { after: '', before: '' } : JSON.parse( valField.val() );
 					afterPicker.setDate( newRange.after );
 					beforePicker.setDate( newRange.before );
 				}
