@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: widgets, blocks, contact form, blog, slider
 Requires at least: 4.2
-Tested up to: 6.4
+Tested up to: 6.5
 Requires PHP: 5.6.20
 Stable tag: trunk
 Build time: unbuilt
@@ -106,6 +106,19 @@ SiteOrigin Premium includes access to our professional email support service, pe
 The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets. Widgets can be enabled or disabled as needed. If a widget offers global settings, you can access those via the Settings button next to each applicable widget.
 
 == Changelog ==
+
+= 1.59.0 - 11 April 2024 =
+* New Widget! Display author information, including avatar, name, bio, and post links in a customizable box.
+* Contact Form: Resolved an issue where using multibyte characters (e.g., "מייל" for Email) as field labels prevented the form from being submitted correctly.
+* Social Media Buttons: Updated X network color defaults.
+* Social Media Buttons: Added Snapshot Square icon.
+* Social Media Buttons: Updated Wire theme border default colors.
+* Improved icon and font handling.
+* Updated Google Fonts list.
+* Block Editor: Moveed editor check to the main Widgets Bundle class.
+* Developer: Added a width argument to text input fields.
+* Developer: Added multi-measurement support to the presets field.
+* Developer: Removed `tmp_grunion_allow_editor_view`.
 
 = 1.58.12 - 24 March 2024 =
 * Post Loop: Resolved a potential `post__in` error.
