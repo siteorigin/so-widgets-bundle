@@ -15,7 +15,7 @@
 </div>
 
 <div class="sow-carousel-container <?php echo ! empty( $container_classes ) ? esc_attr( $container_classes ) : ''; ?>">
-	<?php if ( $settings['navigation'] == 'side' ) { ?>
+	<?php if ( $settings['navigation'] == 'side' || $settings['navigation'] == 'full' ) { ?>
 		<div class="sow-carousel-navigation sow-carousel-navigation-prev <?php echo ! $settings['navigation_arrows'] ? 'sow-carousel-navigation-hidden' : ''; ?>">
 			<?php $this->render_navigation( 'prev' ); ?>
 		</div>
