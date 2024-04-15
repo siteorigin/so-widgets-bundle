@@ -8,7 +8,7 @@
 				</span>
 				<?php foreach ( $coauthors as $author ) { ?>
 					<div class="sow-entry-author-avatar">
-						<a href="<?php echo get_author_posts_url( $author->ID ); ?>">
+						<a href="<?php echo esc_url( get_author_posts_url( $author->ID ) ); ?>">
 							<?php echo get_avatar( $author->ID, 70 ); ?>
 						</a>
 					</div>
@@ -18,14 +18,14 @@
 				<?php } ?>
 			<?php } else { ?>
 				<div class="sow-entry-author-avatar">
-					<a href="<?php echo get_author_posts_url( get_the_author_meta( 'ID' ) ); ?>">
+					<a href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>">
 						<?php echo get_avatar( get_the_author_meta( 'ID' ), 70 ); ?>
 					</a>
 				</div>
 				<div class="sow-entry-author-link">
 					<span class="sow-meta-text"><?php esc_html_e( 'Written by', 'so-widgets-bundle' ); ?></span>
-					<a href="<?php echo get_author_posts_url( get_the_author_meta( 'ID' ) ); ?>">
-						<?php echo get_the_author(); ?>
+					<a href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>">
+						<?php echo esc_html( get_the_author() ) ?>
 					</a>
 				</div>
 			<?php } ?>

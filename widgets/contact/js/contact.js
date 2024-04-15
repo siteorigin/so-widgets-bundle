@@ -29,7 +29,7 @@ sowb.SiteOriginContactForm = {
 					formPosition += parseInt( sowContact.scrollto_offset );
 					$( 'html, body' ).scrollTop( formPosition );
 				}
-				
+
 				if ( formSubmitSuccess ) {
 					// The form was submitted successfully, so we don't need to do anything else.
 					return;
@@ -108,5 +108,13 @@ jQuery( function ( $ ) {
 		}
 	} else {
 		sowb.SiteOriginContactForm.init( $, recaptcha );
+	}
+
+
+	if ( typeof $.fn.select2 == 'function' ) {
+		// We need to adjust the dropdown position, or it'll cover the field.
+		$( document ).on( 'click', '.sow-form-field-select .select2-selection--multiple', function() {
+			$( '.select2-container--open .select2-dropdown' ).css( 'top', '32px' );
+		} );
 	}
 } );

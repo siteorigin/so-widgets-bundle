@@ -88,7 +88,7 @@ jQuery( function ( $ ) {
 
 			$accordionPanels.find( '> .sow-accordion-panel-header-container > .sow-accordion-panel-header' ).on( 'click keydown', function( e ) {
 				if ( e.type == 'keydown' ) {
-					if ( e.keyCode !== 13 && e.keyCode !== 32 ){
+					if ( e.key !== 'Enter' && e.key !== 'Space' ) {
 						return;
 					}
 					e.preventDefault();

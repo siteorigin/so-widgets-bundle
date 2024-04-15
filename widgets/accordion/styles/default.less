@@ -34,6 +34,7 @@
 	.sow-accordion-panel {
 
 		.sow-accordion-panel-header {
+			align-items: center;
 			background-color: @heading_background_color;
 			border-radius: @heading_border_radius;
 			color: @title_color;
@@ -61,14 +62,13 @@
 			}
 
 			&:hover {
-				background-color: @heading_background_hover_color;
-				color: @title_hover_color;
 				border-color: @heading_border_hover_color;
 			}
 
-			&:focus {
-				outline: 1px dotted #666;
-				outline: auto 5px -webkit-focus-ring-color;
+			&:focus,
+			&:hover {
+				background-color: @heading_background_hover_color;
+				color: @title_hover_color;
 			}
 
 			.sow-accordion-title {
@@ -88,9 +88,11 @@
 				}
 			}
 
-			& when ( @show_open_close_icon = false ) {
-				.sow-accordion-open-close-button {
-						display: none;
+			.sow-accordion-open-close-button {
+				line-height: 0;
+
+				& when ( @show_open_close_icon = false ) {
+					display: none;
 				}
 			}
 
@@ -138,11 +140,6 @@
 				font-size: @panels_font_size;
 				overflow: auto;
 				padding: @panels_padding;
-
-				&:focus {
-					outline: 1px dotted #666;
-					outline: auto 5px -webkit-focus-ring-color;
-				}
 			}
 		}
 		margin-bottom: @panels_margin_bottom;

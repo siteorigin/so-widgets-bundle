@@ -7,7 +7,7 @@ abstract class SiteOrigin_Widget_ContactForm_Field_Base {
 	 * @var array
 	 */
 	protected $options;
-	private $type;
+	public $type;
 
 	public function __construct( $options ) {
 		$this->options = $options;

@@ -359,20 +359,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	protected function is_block_editor_page() {
-		$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
-
-		// This is for the Gutenberg plugin.
-		$is_gutenberg_page = $current_screen != null &&
-							 function_exists( 'is_gutenberg_page' ) &&
-							 is_gutenberg_page();
-		// This is for WP 5 with the integrated block editor.
-		$is_block_editor = false;
-
-		if ( ! empty( $current_screen ) && method_exists( $current_screen, 'is_block_editor' ) ) {
-			$is_block_editor = $current_screen->is_block_editor();
-		}
-
-		return $is_block_editor || $is_gutenberg_page;
+		return SiteOrigin_Widgets_Bundle::single()->is_block_editor();
 	}
 
 	/**
@@ -526,7 +513,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		<?php } ?>
 
 		<?php if ( ! empty( $this->widget_options['help'] ) ) { ?>
-			<a href="<?php echo sow_esc_url( $this->widget_options['help'] ); ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank" rel="noopener noreferrer"><?php _e( 'Help', 'so-widgets-bundle' ); ?></a>
+			<a href="<?php echo sow_esc_url( $this->widget_options['help'] ); ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Help', 'so-widgets-bundle' ); ?></a>
 		<?php } ?>
 
 		<script type="text/javascript">
@@ -612,26 +599,27 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_style( 'siteorigin-widget-admin', plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'base/css/admin.css', array( 'media-views' ), SOW_BUNDLE_VERSION );
 
-			wp_register_script(
-				'wp-color-picker-alpha',
-				plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/wp-color-picker-alpha' . SOW_BUNDLE_JS_SUFFIX . '.js',
-				array( 'wp-color-picker' ),
-				'3.0.2',
-				true
-			);
-
 			wp_enqueue_media();
 			wp_enqueue_script(
 				'siteorigin-widget-admin',
 				plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'base/js/admin' . SOW_BUNDLE_JS_SUFFIX . '.js',
-				array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-slider', 'underscore', 'wp-color-picker-alpha' ),
+				array(
+					'jquery',
+					'jquery-ui-sortable',
+					'jquery-ui-slider',
+					'underscore'
+				),
 				SOW_BUNDLE_VERSION,
 				true
 			);
 			wp_localize_script( 'siteorigin-widget-admin', 'soWidgets', array(
 				'ajaxurl' => wp_nonce_url( admin_url( 'admin-ajax.php' ), 'widgets_action', '_widgets_nonce' ),
 				'sure' => __( 'Are you sure?', 'so-widgets-bundle' ),
-				'missing_required' => __( 'You have empty required widgets. Are you sure you wish to continue?', 'so-widgets-bundle' ),
+				'missing_required' => __( 'You have empty required fields. Are you sure you wish to continue?', 'so-widgets-bundle' ),
+				'table' => array(
+					'header' => __( 'Table Header', 'so-widgets-bundle' ),
+					'actions' => __( 'Actions', 'so-widgets-bundle' ),
+				),
 				'backup' => array(
 					'newerVersion' => __( "There is a newer version of this widget's content available.", 'so-widgets-bundle' ),
 					'restore' => __( 'Restore', 'so-widgets-bundle' ),
@@ -642,6 +630,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					),
 				),
 			) );
+
+			if ( ! class_exists( 'FLBuilderModel' ) || ! FLBuilderModel::is_builder_active() ) {
+				wp_enqueue_script(
+					'wp-color-picker-alpha',
+					plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/wp-color-picker-alpha' . SOW_BUNDLE_JS_SUFFIX . '.js',
+					array( 'wp-color-picker' ),
+					'3.0.2',
+					true
+				);
+			}
 
 			global $wp_customize;
 
@@ -696,7 +694,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					<iframe name="siteorigin-widgets-preview-iframe" id="siteorigin-widget-preview-iframe" style="visibility: hidden"></iframe>
 				</div>
 
-				<form target="siteorigin-widgets-preview-iframe" action="<?php echo wp_nonce_url( admin_url( 'admin-ajax.php' ), 'widgets_action', '_widgets_nonce' ); ?>" method="post">
+				<form target="siteorigin-widgets-preview-iframe" action="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-ajax.php' ), 'widgets_action', '_widgets_nonce' ) ); ?>" method="post">
 					<input type="hidden" name="action" value="so_widgets_preview" />
 					<input type="hidden" name="data" value="" />
 					<input type="hidden" name="class" value="" />
@@ -734,6 +732,32 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		if ( ! empty( $form_options ) ) {
+			if ( isset( $_GET['fl_builder'] ) && is_array( $new_instance ) ) {
+				$key = array_keys( $new_instance )[0];
+				$new_instance = $this->update_fields(
+					$new_instance[ $key ],
+					$old_instance,
+					$form_options
+				);
+			} else {
+				$new_instance = $this->update_fields(
+					$new_instance,
+					$old_instance,
+					$form_options
+				);
+			}
+		}
+
+		// Remove the old CSS, it'll be regenerated on page load.
+		if ( $form_type == 'widget' ) {
+			$this->delete_css( $this->modify_instance( $old_instance ) );
+		}
+
+		return $new_instance;
+	}
+
+	private function update_fields( $new_instance, $old_instance, $form_options ) {
+		if ( ! empty( $form_options ) ) {
 			/* @var $field_factory SiteOrigin_Widget_Field_Factory */
 			$field_factory = SiteOrigin_Widget_Field_Factory::single();
 
@@ -745,6 +769,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$field = $field_factory->create_field( $field_name, $field_options, $this );
 					$this->fields[ $field_name ] = $field;
 				}
+
 				$new_instance[ $field_name ] = $field->sanitize(
 					isset( $new_instance[ $field_name ] ) ? $new_instance[ $field_name ] : null,
 					$new_instance,
@@ -756,14 +781,8 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			// Let other plugins also sanitize the instance
 			$new_instance = apply_filters( 'siteorigin_widgets_sanitize_instance', $new_instance, $form_options, $this );
 			$new_instance = apply_filters( 'siteorigin_widgets_sanitize_instance_' . $this->id_base, $new_instance, $form_options, $this );
+			return $new_instance;
 		}
-
-		// Remove the old CSS, it'll be regenerated on page load.
-		if ( $form_type == 'widget' ) {
-			$this->delete_css( $this->modify_instance( $old_instance ) );
-		}
-
-		return $new_instance;
 	}
 
 	/**

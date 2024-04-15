@@ -51,6 +51,10 @@ class SiteOrigin_Widget_Field_Link extends SiteOrigin_Widget_Field_Text_Input_Ba
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
+		if ( empty( $value ) ) {
+			return '';
+		}
+
 		$sanitized_value = trim( $value );
 
 		if ( preg_match( '/^post\: *([0-9]+)/', $sanitized_value, $matches ) ) {

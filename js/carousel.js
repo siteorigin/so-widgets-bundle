@@ -3,6 +3,8 @@
 var sowb = window.sowb || {};
 
 jQuery( function ( $ ) {
+	// We remove animations if the user has motion disabled.
+	const reduceMotion = window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
 
 	sowb.setupCarousel = function () {
 		$.fn.setSlideTo = function( slide ) {
@@ -28,6 +30,11 @@ jQuery( function ( $ ) {
 				$items = $$.find( '.sow-carousel-items' ),
 				responsiveSettings = $$.data( 'responsive' ),
 				carouselSettings = $$.data( 'carousel_settings' );
+
+			// Remove animations if needed.
+			if ( reduceMotion ) {
+				carouselSettings.animation_speed = 0;
+			}
 
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
@@ -93,12 +100,11 @@ jQuery( function ( $ ) {
 			// navigation that Slick has trouble accounting for.
 			if ( carouselSettings.autoplay ) {
 				var interrupted = false;
-				var autoplayNav = $$.parent().parent().find( '.sow-carousel-' + ( $$.data( 'dir' ) == 'ltr' ? 'next' : 'prev' ) );
 				// Check if this is a Block Editor preview, and if it is, don't autoplay.
 				if ( ! $( 'body' ).hasClass( 'block-editor-page' ) ) {
 					setInterval( function() {
 						if ( ! interrupted ) {
-							autoplayNav.trigger( 'click' );
+							handleCarouselNavigation( true, false );
 						}
 					}, carouselSettings.autoplaySpeed );
 
@@ -113,11 +119,7 @@ jQuery( function ( $ ) {
 				}
 			}
 
-			// click is used rather than Slick's beforeChange or afterChange
-			// due to the inability to stop a slide from changing from those events
-			$$.parent().parent().find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click touchend', function( e, refocus ) {
-				e.preventDefault();
-
+			var handleCarouselNavigation = function( nextSlide, refocus ) {
 				var $items = $$.find( '.sow-carousel-items' ),
 					numItems = $items.find( '.sow-carousel-item' ).length,
 					complete = numItems >= $$.data( 'item_count' ),
@@ -125,13 +127,14 @@ jQuery( function ( $ ) {
 					numVisibleItemsFloor = Math.floor( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
 					slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' ),
 					lastPosition = numItems - numVisibleItems,
-					loading = false;
+					loading = false,
+					navigationContainer = $$.parent().parent();
 
 				// Post Carousel has a loading indicator so we need to pad the lastPosition.
 				if (
 					$$.data( 'widget' ) == 'post' &&
-					( 
-						$$.data( 'carousel_settings' ).theme != 'undefined' && 
+					(
+						$$.data( 'carousel_settings' ).theme != 'undefined' &&
 						complete
 					)
 				) {
@@ -141,12 +144,30 @@ jQuery( function ( $ ) {
 				// Check if all items are displayed
 				if ( ! complete ) {
 					// For Ajax Carousels, check if we need to fetch the next batch of items.
-					if ( 
+					if (
 						$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ||
 						$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition
 					) {
 						$( sowb ).trigger( 'carousel_load_new_items', [ $$, $items, refocus ] );
 						loading = true;
+					}
+				}
+
+				// Enable/disable navigation buttons as needed.
+				if ( ! $$.data( 'carousel_settings' ).loop ) {
+					const direction = $$.data( 'dir' ) == 'ltr' ? 'previous' : 'next';
+
+					if ( $items.slick( 'slickCurrentSlide' ) == 0 ) {
+						navigationContainer.find( `.sow-carousel-${ direction }` )
+							.removeClass( 'sow-carousel-disabled' )
+							.removeAttr( 'aria-disabled' );
+					} else if (
+						! nextSlide &&
+						$items.slick( 'slickCurrentSlide' ) - slidesToScroll == 0
+					) {
+						navigationContainer.find( `.sow-carousel-${ direction }` )
+							.addClass( 'sow-carousel-disabled' )
+							.attr( 'aria-disabled', 'true' );
 					}
 				}
 
@@ -157,7 +178,7 @@ jQuery( function ( $ ) {
 				// The Slick Infinite setting has a positioning bug that can result in the first item
 				// being hidden so we need to manually handle that
 				// https://github.com/kenwheeler/slick/issues/3567
-				if ( $( this ).hasClass( 'sow-carousel-next' ) && ! loading ) {
+				if ( nextSlide && ! loading ) {
 					// Check if this is the last slide, and we need to loop
 					if (
 						complete &&
@@ -178,13 +199,30 @@ jQuery( function ( $ ) {
 					} else {
 						$items.slick( 'slickNext' );
 					}
-				} else if ( $( this ).hasClass( 'sow-carousel-previous' ) ) {
+
+					// Have we just scrolled to the last slide, and is looping disabled?.
+					// If so, disable the next button.
+					if (
+						$items.slick( 'slickCurrentSlide' ) == lastPosition &&
+						! $$.data( 'carousel_settings' ).loop
+					) {
+						navigationContainer.find( '.sow-carousel-next' )
+							.addClass( 'sow-carousel-disabled' )
+							.attr( 'aria-disabled', 'true' );
+					}
+				} else {
 					if ( $$.data( 'carousel_settings' ).loop && $items.slick( 'slickCurrentSlide' ) == 0 ) {
 						$items.slick( 'slickGoTo', lastPosition );
 					} else if ( $$.data( 'widget' ) == 'post' && $items.slick( 'slickCurrentSlide' ) <= slidesToScroll ) {
 						$items.slick( 'slickGoTo', 0 );
 					} else {
 						$items.slick( 'slickPrev' );
+
+						var next = navigationContainer.find( '.sow-carousel-next' );
+						if ( next.hasClass( 'sow-carousel-disabled' ) ) {
+							next.removeClass( 'sow-carousel-disabled' )
+								.removeAttr( 'aria-disabled' );
+						}
 					}
 				}
 
@@ -192,6 +230,26 @@ jQuery( function ( $ ) {
 				if ( carouselSettings.dots && $$.data( 'widget' ) == 'post' ) {
 					$$.find( 'li.slick-active' ).removeClass( 'slick-active' );
 					$$.find( '.slick-dots li' ).eq( Math.ceil( $$.find( '.sow-carousel-items' ).slick( 'slickCurrentSlide' ) / slidesToScroll ) ).addClass( 'slick-active' );
+				}
+			}
+
+			if ( ! carouselSettings.loop && $items.slick( 'slickCurrentSlide' ) == 0 ) {
+				const direction = $$.data( 'dir' ) == 'ltr' ? 'previous' : 'next';
+				$$.parent().parent().find( `.sow-carousel-${ direction }` )
+					.addClass( 'sow-carousel-disabled' )
+					.attr( 'aria-disabled', 'true' );
+			}
+
+			// Click is used instead of Slick's beforeChange or afterChange events
+			// due to the inability to stop a slide from changing.
+			$$.parent().parent().find( '.sow-carousel-previous, .sow-carousel-next' ).on( 'click touchend', function( e, refocus ) {
+				e.preventDefault();
+
+				if ( ! $( this ).hasClass( 'sow-carousel-disabled' ) ) {
+					handleCarouselNavigation(
+						$( this ).hasClass( 'sow-carousel-next' ),
+						refocus
+					)
 				}
 			} );
 
@@ -229,7 +287,7 @@ jQuery( function ( $ ) {
 
 						// Check if all items are displayed
 						if ( ! complete ) {
-							if ( 
+							if (
 								$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ||
 								$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition
 							) {
