@@ -17,9 +17,9 @@
 		foreach ( $button_attributes as $name => $val ) {
 			echo esc_attr( $name ) . '="' . esc_attr( $val ) . '" ';
 		}
-		
+
 		if ( ! empty( $on_click ) ) {
-			echo 'onclick="' . wp_unslash( esc_js( $on_click ) ) . '"';
+			echo 'onclick="' . siteorigin_widget_onclick( $on_click ) . '"';
 		} ?>
 	>
 		<span>
@@ -30,7 +30,7 @@
 				$icon_styles = array();
 
 				if ( ! empty( $icon_color ) ) {
-					$icon_styles[] = 'color: ' . $icon_color;
+					$icon_styles[] = 'color: ' . esc_attr( $icon_color );
 				}
 				echo siteorigin_widget_get_icon( $icon, $icon_styles );
 			}

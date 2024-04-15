@@ -20,7 +20,8 @@
 @more_text_color: default;
 @per_row: 3;
 @center_items: 3;
-@feature_space: 25px;
+@feature_spacing: 25px;
+@feature_spacing_mobile: default;
 
 @container_size: 84px;
 @icon_size: 24px;
@@ -33,7 +34,7 @@
 .sow-features-list {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 40px @feature_space;
+	gap: @feature_spacing;
 
 	& when ( @more_text_bottom_align = true ) {
 		align-items: stretch;
@@ -81,7 +82,6 @@
 		}
 
 		&.sow-icon-container-position-left {
-			justify-content: center;
 			align-items: center;
 
 			.sow-icon-container {
@@ -108,6 +108,7 @@
 		}
 
 		&.sow-icon-container-position-bottom {
+			align-items: center;
 			text-align: center;
 
 			.sow-icon-container {
@@ -264,31 +265,34 @@
 	}
 
 	@media (max-width: @responsive_breakpoint) {
-		&.sow-features-responsive {
-			margin: 0;
+		gap: @feature_spacing_mobile;
 
-			.sow-icon-container-position-right > div,
-			.sow-icon-container-position-left > div,
-			.sow-features-feature,
-			.sow-features-feature .textwidget {
-				display: block !important;
+		&.sow-features-responsive {
+			.sow-features-feature  {
+				flex-direction: row !important;
+				justify-content: center;
+			}
+
+			.sow-icon-container-position-top,
+			.sow-icon-container-position-right,
+			.sow-icon-container-position-left {
+				flex-direction: column !important;
+			}
+
+			.sow-icon-container-position-bottom {
+				flex-direction: column-reverse !important;
 			}
 
 			& when ( @more_text_bottom_align = true ) {
 				.sow-icon-container-position-right > div,
 				.sow-icon-container-position-left > div {
-						height: auto;
-						text-align: center;
+					height: auto;
+					text-align: center;
 				}
 			}
 
 			.sow-features-feature {
-				margin-bottom: 40px;
 				width: 100% !important;
-
-				&:last-child {
-					margin-bottom: 0px;
-				}
 			}
 
 			.textwidget,
@@ -301,6 +305,14 @@
 				display: flex;
 				justify-content: center;
 				width: 100%;
+			}
+
+			.sow-icon-container-position-left .sow-icon-container {
+				margin-left: 0;
+			}
+
+			.sow-icon-container-position-right .sow-icon-container {
+				margin-right: 0;
 			}
 		}
 	}

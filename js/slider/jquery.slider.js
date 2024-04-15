@@ -350,10 +350,12 @@ jQuery( function( $ ) {
 				} );
 
 				$base.on( 'keyup', function( e ) {
-					if ( e.which === 37 ) {
+					if ( e.key === 'ArrowLeft' ) {
 						$$.cycle( 'prev' );
-					} else if ( e.which === 39 ) {
+					} else if ( e.key === 'ArrowRight' ) {
 						$$.cycle( 'next' );
+					} else {
+						return;
 					}
 
 					$base.trigger( 'focus' );
@@ -401,7 +403,7 @@ jQuery( function( $ ) {
 
 			setupSlider();
 
-			if ( $.isFunction( $.fn.fitVids ) ) {
+			if ( typeof $.fn.fitVids === 'function' ) {
 				$$.find( '.sow-slide-video-oembed' ).fitVids();
 			}
 

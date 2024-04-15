@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Image
-Description: A simple image widget with massive power.
+Description: Add a responsive image with custom dimensions, positioning, caption, link, and styling options.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/image-widget-documentation/
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			'sow-image',
 			__( 'SiteOrigin Image', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A simple image widget with massive power.', 'so-widgets-bundle' ),
+				'description' => __( 'Add a responsive image with custom dimensions, positioning, caption, link, and styling options.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/image-widget-documentation/',
 			),
 			array(
@@ -278,7 +278,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			}
 
 			if ( ! empty( $custom_size ) && ! empty( $instance['size_enforce'] ) ) {
-				$attr['style'] = 'width: ' . $attr['width'] . 'px; height: '. $attr['height'] . 'px;';	
+				$attr['style'] = 'width: ' . (int) $attr['width'] . 'px; height: '.  (int) $attr['height'] . 'px;';
 			}
 		}
 		$attr = apply_filters( 'siteorigin_widgets_image_attr', $attr, $instance, $this );
@@ -387,7 +387,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			<?php
 			foreach ( $link_attributes as $attr => $val ) {
 				if ( ! empty( $val ) ) {
-					echo $attr . '="' . esc_attr( $val ) . '" ';
+					echo esc_html( $attr ) . '="' . esc_attr( $val ) . '" ';
 				}
 			}
 		?>

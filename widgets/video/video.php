@@ -2,7 +2,7 @@
 
 /*
 Widget Name: Video Player
-Description: Play all your self or externally hosted videos in a customizable video player.
+Description: Embed self-hosted or externally hosted videos with a customizable player, controls, and responsive sizing.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/video-player-widget/
@@ -14,7 +14,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'sow-video',
 			__( 'SiteOrigin Video Player', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Play all your self or externally hosted videos in a customizable video player.', 'so-widgets-bundle' ),
+				'description' => __( 'Embed self-hosted or externally hosted videos with a customizable player, controls, and responsive sizing.', 'so-widgets-bundle' ),
 				'help'        => 'http://siteorigin.com/widgets-bundle/video-widget-documentation/',
 			),
 			array(),
@@ -193,7 +193,10 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		$video_host = $instance['host_type'];
 
 		if ( $video_host == 'self' ) {
-			if ( isset( $instance['video']['self_sources'] ) ) {
+			if (
+				! empty( $instance['video']['self_sources'] ) &&
+				is_array( $instance['video']['self_sources'] )
+			) {
 				foreach ( $instance['video']['self_sources'] as $source ) {
 					$src = '';
 					$video_type = '';
@@ -243,7 +246,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'fitvids'                 => ! empty( $instance['playback']['fitvids'] ),
 			'show_controls'           => isset( $instance['playback']['hide_controls'] ) ? $instance['playback']['hide_controls'] : false,
 		);
-		
+
 		if ( $instance['host_type'] == 'external' && $instance['playback']['oembed'] ) {
 			// Force oEmbed for this video if oEmbed is enabled.
 			$return['is_skinnable_video_host'] = false;
@@ -312,6 +315,19 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		// Prevent FitVids from being enabled for widgets created before FitVids was added.
 		if ( ! isset( $instance['playback']['fitvids'] ) ) {
 			$instance['playback']['fitvids'] = false;
+		}
+
+
+		// Check if 'playback' is not set or not an array.
+		if ( ! isset( $instance['playback'] ) || ! is_array( $instance['playback'] ) ) {
+			$instance['playback'] = array(
+				'fitvids' => false,
+			);
+		} else {
+			// Prevent FitVids from being enabled for widgets created before FitVids was added.
+			if ( ! isset( $instance['playback']['fitvids'] ) ) {
+				$instance['playback']['fitvids'] = false;
+			}
 		}
 
 		return $instance;

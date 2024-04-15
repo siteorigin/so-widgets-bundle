@@ -81,7 +81,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'type' => 'number',
 				'label' => __( 'Animation speed', 'so-widgets-bundle' ),
 				'description' => __( 'Animation speed in milliseconds.', 'so-widgets-bundle' ),
-				'default' => 800,
+				'default' => 400,
 			),
 
 			'timeout' => array(
@@ -304,6 +304,38 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		return $form_options;
 	}
 
+
+	/**
+	 * Handle Migration of `extra_top_padding` to `padding_top_padding` setting.
+	 *
+	 * The `padding_top_padding` setting was introduced because of an issue
+	 * With padding being unreliably set.
+	 *
+	 * @return $instance
+	 */
+	private static function migrate_padding( $instance, $context ) {
+		// If padding and extra top padding unit of measurement is different,
+		// we need to reset the extra top padding unit to be the same as the
+		// base padding to prevent unexpected changes.
+		$layoutContext = &$instance['layout'][$context];
+
+		if ( ! empty( $layoutContext['padding'] ) && $layoutContext['padding_unit'] != $layoutContext['extra_top_padding_unit'] ) {
+			$layoutContext['padding_extra_top'] = str_replace(
+				$layoutContext['extra_top_padding_unit'],
+				$layoutContext['padding_unit'],
+				$layoutContext['extra_top_padding']
+			);
+			$layoutContext['padding_extra_top_unit'] = $layoutContext['padding_unit'];
+		} else {
+			$layoutContext['padding_extra_top_unit'] = $layoutContext['extra_top_padding_unit'];
+			$layoutContext['padding_extra_top'] = $layoutContext['extra_top_padding'];
+		}
+
+		unset( $layoutContext['extra_top_padding'], $layoutContext['extra_top_padding_unit'] );
+
+		return $instance;
+	}
+
 	/**
 	 * Migrate Slider settings.
 	 *
@@ -379,8 +411,21 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			}
 		}
 
+		if ( empty( $instance['controls'] ) ) {
+			$instance['controls'] = array();
+		}
+
 		if ( ! isset( $instance['controls']['fitvids'] ) ) {
 			$instance['controls']['fitvids'] = true;
+		}
+
+		// Migrate `extra_top_padding` to `padding_extra_top`.
+		if ( ! empty( $instance['layout']['desktop']['extra_top_padding'] ) ) {
+			$instance = self::migrate_padding( $instance, 'desktop' );
+		}
+
+		if ( ! empty( $instance['layout']['mobile']['extra_top_padding'] ) ) {
+			$instance = self::migrate_padding( $instance, 'mobile' );
 		}
 
 		return $instance;
@@ -531,7 +576,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 
 		?>
 		<li <?php foreach ( $wrapper_attributes as $attr => $val ) {
-			echo $attr . '="' . esc_attr( $val ) . '" ';
+			echo esc_html( $attr ) . '="' . esc_attr( $val ) . '" ';
 		} ?>>
 			<?php
 			do_action( 'siteorigin_widgets_slider_before_contents', $frame );
@@ -619,7 +664,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			return;
 		}
 		$loop = ! empty( $controls['loop_background_videos'] ) && $controls['loop_background_videos'] ? 'loop' : '';
-		$opacity = isset( $controls['opacity'] ) ? 'style="opacity: ' . ( $controls['opacity'] / 100 ) . '"' : '';
+		$opacity = isset( $controls['opacity'] ) ? 'style="opacity: ' . ( (int) $controls['opacity'] / 100 ) . '"' : '';
 
 		$video_element = '<video class="' . esc_attr( implode( ' ', $classes ) ) . '" autoplay ' . $loop . ' ' . $opacity . ' muted playsinline>';
 		$so_video = new SiteOrigin_Video();

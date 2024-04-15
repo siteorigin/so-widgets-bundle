@@ -26,7 +26,7 @@
 		<?php
 		foreach ( $settings['attributes'] as $n => $v ) {
 			if ( ! empty( $n ) ) {
-				echo 'data-' . $n . '="' . esc_attr( $v ) . '" ';
+				echo 'data-' . esc_html( $n ) . '="' . esc_attr( $v ) . '" ';
 			}
 		}
 		?>

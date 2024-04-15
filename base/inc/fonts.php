@@ -6,6 +6,17 @@ return array(
 			0 => 'regular',
 			1 => 'italic',
 		),
+	'ADLaM Display' =>
+		array(
+			0 => 'regular',
+		),
+	'AR One Sans' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+		),
 	'Abel' =>
 		array(
 			0 => 'regular',
@@ -66,6 +77,21 @@ return array(
 			15 => '700italic',
 			16 => '800italic',
 			17 => '900italic',
+		),
+	'Afacad' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => 'italic',
+			5 => '500italic',
+			6 => '600italic',
+			7 => '700italic',
+		),
+	'Agbalumo' =>
+		array(
+			0 => 'regular',
 		),
 	'Agdasima' =>
 		array(
@@ -532,6 +558,11 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Annapurna SIL' =>
+		array(
+			0 => 'regular',
+			1 => '700',
+		),
 	'Annie Use Your Telescope' =>
 		array(
 			0 => 'regular',
@@ -542,6 +573,10 @@ return array(
 			1 => 'italic',
 			2 => '700',
 			3 => '700italic',
+		),
+	'Anta' =>
+		array(
+			0 => 'regular',
 		),
 	'Antic' =>
 		array(
@@ -1367,8 +1402,10 @@ return array(
 			0 => '200',
 			1 => '300',
 			2 => 'regular',
-			3 => '700',
-			4 => '800',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
 		),
 	'BioRhyme Expanded' =>
 		array(
@@ -3104,6 +3141,15 @@ return array(
 			2 => '700',
 			3 => '700italic',
 		),
+	'Gabarito' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => '800',
+			5 => '900',
+		),
 	'Gabriela' =>
 		array(
 			0 => 'regular',
@@ -3622,6 +3668,14 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Hedvig Letters Sans' =>
+		array(
+			0 => 'regular',
+		),
+	'Hedvig Letters Serif' =>
+		array(
+			0 => 'regular',
+		),
 	'Heebo' =>
 		array(
 			0 => '100',
@@ -3711,6 +3765,10 @@ return array(
 			0 => 'regular',
 		),
 	'Homenaje' =>
+		array(
+			0 => 'regular',
+		),
+	'Honk' =>
 		array(
 			0 => 'regular',
 		),
@@ -3944,6 +4002,11 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Inclusive Sans' =>
+		array(
+			0 => 'regular',
+			1 => 'italic',
+		),
 	'Inconsolata' =>
 		array(
 			0 => '200',
@@ -4077,6 +4140,10 @@ return array(
 			0 => 'regular',
 		),
 	'Itim' =>
+		array(
+			0 => 'regular',
+		),
+	'Jacquarda Bastarda 9' =>
 		array(
 			0 => 'regular',
 		),
@@ -4292,10 +4359,22 @@ return array(
 			1 => 'regular',
 			2 => '700',
 		),
+	'Kalnia' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+		),
 	'Kameron' =>
 		array(
 			0 => 'regular',
-			1 => '700',
+			1 => '500',
+			2 => '600',
+			3 => '700',
 		),
 	'Kanit' =>
 		array(
@@ -4381,6 +4460,13 @@ return array(
 	'Kavoon' =>
 		array(
 			0 => 'regular',
+		),
+	'Kay Pho Du' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
 		),
 	'Kdam Thmor Pro' =>
 		array(
@@ -4474,6 +4560,13 @@ return array(
 			9 => '600italic',
 			10 => '700',
 			11 => '700italic',
+		),
+	'Kode Mono' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
 		),
 	'Koh Santepheap' =>
 		array(
@@ -4919,6 +5012,18 @@ return array(
 			0 => 'regular',
 			1 => 'italic',
 		),
+	'Linefont' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+		),
 	'Lisu Bosa' =>
 		array(
 			0 => '200',
@@ -5161,6 +5266,10 @@ return array(
 			5 => '700',
 			6 => '800',
 			7 => '900',
+		),
+	'Madimi One' =>
+		array(
+			0 => 'regular',
 		),
 	'Magra' =>
 		array(
@@ -5483,6 +5592,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Micro 5' =>
+		array(
+			0 => 'regular',
+		),
 	'Milonga' =>
 		array(
 			0 => 'regular',
@@ -5672,6 +5785,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Mooli' =>
+		array(
+			0 => 'regular',
+		),
 	'Moon Dance' =>
 		array(
 			0 => 'regular',
@@ -5829,6 +5946,14 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Namdhinggo' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => '800',
+		),
 	'Nanum Brush Script' =>
 		array(
 			0 => 'regular',
@@ -5857,6 +5982,10 @@ return array(
 	'Narnoor' =>
 		array(
 			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => '800',
 		),
 	'Neonderthaw' =>
 		array(
@@ -6029,22 +6158,22 @@ return array(
 	'Noto Sans' =>
 		array(
 			0 => '100',
-			1 => '100italic',
-			2 => '200',
-			3 => '200italic',
-			4 => '300',
-			5 => '300italic',
-			6 => 'regular',
-			7 => 'italic',
-			8 => '500',
-			9 => '500italic',
-			10 => '600',
-			11 => '600italic',
-			12 => '700',
-			13 => '700italic',
-			14 => '800',
-			15 => '800italic',
-			16 => '900',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
 			17 => '900italic',
 		),
 	'Noto Sans Adlam' =>
@@ -6319,6 +6448,9 @@ return array(
 	'Noto Sans Gunjala Gondi' =>
 		array(
 			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
 		),
 	'Noto Sans Gurmukhi' =>
 		array(
@@ -6335,11 +6467,14 @@ return array(
 	'Noto Sans HK' =>
 		array(
 			0 => '100',
-			1 => '300',
-			2 => 'regular',
-			3 => '500',
-			4 => '700',
-			5 => '900',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
 		),
 	'Noto Sans Hanifi Rohingya' =>
 		array(
@@ -6406,11 +6541,14 @@ return array(
 	'Noto Sans KR' =>
 		array(
 			0 => '100',
-			1 => '300',
-			2 => 'regular',
-			3 => '500',
-			4 => '700',
-			5 => '900',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
 		),
 	'Noto Sans Kaithi' =>
 		array(
@@ -6427,6 +6565,13 @@ return array(
 			6 => '700',
 			7 => '800',
 			8 => '900',
+		),
+	'Noto Sans Kawi' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
 		),
 	'Noto Sans Kayah Li' =>
 		array(
@@ -6629,6 +6774,13 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Noto Sans NKo Unjoined' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+		),
 	'Noto Sans Nabataean' =>
 		array(
 			0 => 'regular',
@@ -6757,11 +6909,14 @@ return array(
 	'Noto Sans SC' =>
 		array(
 			0 => '100',
-			1 => '300',
-			2 => 'regular',
-			3 => '500',
-			4 => '700',
-			5 => '900',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
 		),
 	'Noto Sans Samaritan' =>
 		array(
@@ -6868,11 +7023,14 @@ return array(
 	'Noto Sans TC' =>
 		array(
 			0 => '100',
-			1 => '300',
-			2 => 'regular',
-			3 => '500',
-			4 => '700',
-			5 => '900',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
 		),
 	'Noto Sans Tagalog' =>
 		array(
@@ -7278,6 +7436,10 @@ return array(
 			2 => '600',
 			3 => '700',
 		),
+	'Noto Serif Old Uyghur' =>
+		array(
+			0 => 'regular',
+		),
 	'Noto Serif Oriya' =>
 		array(
 			0 => 'regular',
@@ -7505,6 +7667,16 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Ojuju' =>
+		array(
+			0 => '200',
+			1 => '300',
+			2 => 'regular',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
+		),
 	'Old Standard TT' =>
 		array(
 			0 => 'regular',
@@ -7528,6 +7700,18 @@ return array(
 		array(
 			0 => 'regular',
 			1 => '700',
+		),
+	'Onest' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
 		),
 	'Oooh Baby' =>
 		array(
@@ -7906,6 +8090,13 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Pixelify Sans' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+		),
 	'Plaster' =>
 		array(
 			0 => 'regular',
@@ -7959,6 +8150,17 @@ return array(
 			3 => '700italic',
 			4 => '900',
 			5 => '900italic',
+		),
+	'Playpen Sans' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
 		),
 	'Plus Jakarta Sans' =>
 		array(
@@ -8118,6 +8320,22 @@ return array(
 			17 => '900italic',
 		),
 	'Prosto One' =>
+		array(
+			0 => 'regular',
+		),
+	'Protest Guerrilla' =>
+		array(
+			0 => 'regular',
+		),
+	'Protest Revolution' =>
+		array(
+			0 => 'regular',
+		),
+	'Protest Riot' =>
+		array(
+			0 => 'regular',
+		),
+	'Protest Strike' =>
 		array(
 			0 => 'regular',
 		),
@@ -8469,6 +8687,19 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Rethink Sans' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => '800',
+			5 => 'italic',
+			6 => '500italic',
+			7 => '600italic',
+			8 => '700italic',
+			9 => '800italic',
+		),
 	'Revalia' =>
 		array(
 			0 => 'regular',
@@ -8514,12 +8745,24 @@ return array(
 		),
 	'Roboto Condensed' =>
 		array(
-			0 => '300',
-			1 => '300italic',
-			2 => 'regular',
-			3 => 'italic',
-			4 => '700',
-			5 => '700italic',
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
 		),
 	'Roboto Flex' =>
 		array(
@@ -8678,6 +8921,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Rubik Broken Fax' =>
+		array(
+			0 => 'regular',
+		),
 	'Rubik Bubbles' =>
 		array(
 			0 => 'regular',
@@ -8694,6 +8941,14 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Rubik Doodle Shadow' =>
+		array(
+			0 => 'regular',
+		),
+	'Rubik Doodle Triangles' =>
+		array(
+			0 => 'regular',
+		),
 	'Rubik Gemstones' =>
 		array(
 			0 => 'regular',
@@ -8702,7 +8957,19 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Rubik Glitch Pop' =>
+		array(
+			0 => 'regular',
+		),
 	'Rubik Iso' =>
+		array(
+			0 => 'regular',
+		),
+	'Rubik Lines' =>
+		array(
+			0 => 'regular',
+		),
+	'Rubik Maps' =>
 		array(
 			0 => 'regular',
 		),
@@ -8731,6 +8998,10 @@ return array(
 			0 => 'regular',
 		),
 	'Rubik Puddles' =>
+		array(
+			0 => 'regular',
+		),
+	'Rubik Scribble' =>
 		array(
 			0 => 'regular',
 		),
@@ -9187,6 +9458,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Sixtyfour' =>
+		array(
+			0 => 'regular',
+		),
 	'Skranji' =>
 		array(
 			0 => 'regular',
@@ -9348,6 +9623,17 @@ return array(
 			2 => '500',
 			3 => '700',
 			4 => '800',
+		),
+	'Sometype Mono' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => 'italic',
+			5 => '500italic',
+			6 => '600italic',
+			7 => '700italic',
 		),
 	'Song Myung' =>
 		array(
@@ -10292,6 +10578,18 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Wavefont' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+		),
 	'Wellfleet' =>
 		array(
 			0 => 'regular',
@@ -10355,6 +10653,10 @@ return array(
 			16 => '800italic',
 			17 => '900italic',
 		),
+	'Workbench' =>
+		array(
+			0 => 'regular',
+		),
 	'Xanh Mono' =>
 		array(
 			0 => 'regular',
@@ -10408,6 +10710,10 @@ return array(
 			0 => 'regular',
 		),
 	'Yomogi' =>
+		array(
+			0 => 'regular',
+		),
+	'Young Serif' =>
 		array(
 			0 => 'regular',
 		),

@@ -1,19 +1,19 @@
 <?php
 /*
 Widget Name: Blog
-Description: Display blog posts in a list or grid. Choose a design that suits your content.
+Description: Showcase blog content in personalized list or grid layouts with flexible design and display settings.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/blog-widget/
 */
 
 class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
-public function __construct() {
+	public function __construct() {
 		parent::__construct(
 			'sow-blog',
 			__( 'SiteOrigin Blog', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Display blog posts in a list or grid. Choose a design that suits your content.', 'so-widgets-bundle' ),
+				'description' => __( 'Showcase blog content in personalized list or grid layouts with flexible design and display settings.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/blog-widget/',
 				'instance_storage' => true,
 				'panels_title' => false,
@@ -695,7 +695,7 @@ public function __construct() {
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 			'categories' => ! empty( $instance['settings']['categories'] ) ? $instance['settings']['categories'] : false,
 			'author' => ! empty( $instance['settings']['author'] ) ? $instance['settings']['author'] : false,
-			'columns' => (int) $instance['settings']['columns'] > 0 ? (int) $instance['settings']['columns'] : 1,
+			'columns' => isset( $instance['settings']['columns'] ) && (int) $instance['settings']['columns'] > 0 ? (int) $instance['settings']['columns'] : 1,
 		);
 
 		if ( $instance['template'] == 'masonry' ) {
@@ -940,18 +940,22 @@ public function __construct() {
 		if ( empty( $instance['template'] ) ) {
 			$instance['template'] = 'standard';
 		} else {
-			// Ensure selected template is valid.
-			switch ( $instance['template'] ) {
-				case 'alternate':
-				case 'grid':
-				case 'masonry':
-				case 'offset':
-				case 'portfolio':
-				case 'standard':
-					break;
-				default:
-					$instance['template'] = 'standard';
-					break;
+			$custom_template = apply_filters( 'siteorigin_widgets_blog_custom_template', false, $instance );
+
+			if ( ! $custom_template ) {
+				// Ensure selected template is valid.
+				switch ( $instance['template'] ) {
+					case 'alternate':
+					case 'grid':
+					case 'masonry':
+					case 'offset':
+					case 'portfolio':
+					case 'standard':
+						break;
+					default:
+						$instance['template'] = 'standard';
+						break;
+				}
 			}
 		}
 
@@ -998,6 +1002,33 @@ public function __construct() {
 		$instance['paged_id'] = $this->get_style_hash( $instance );
 
 		return $instance;
+	}
+
+	public static function get_template( $instance ) {
+		$template_file = plugin_dir_path( __FILE__ ) . 'tpl/' . sanitize_file_name( $instance['template'] ) . '.php';
+
+		$override_file = apply_filters(
+			'siteorigin_widgets_blog_template_file',
+			$template_file,
+			$instance
+		);
+
+		// If any of the below checks fail, return the default template.
+		// Otherwise, allow the override.
+		if ( empty( $override_file ) ) {
+			return $template_file;
+		}
+
+		// File name must end in '-sow-blog.php'
+		if ( substr( $override_file, -13 ) != '-sow-blog.php' ) {
+			return $template_file;
+		}
+
+		if ( ! file_exists( $override_file ) ) {
+			return $template_file;
+		}
+
+		return $override_file;
 	}
 
 	public function get_template_variables( $instance, $args ) {
@@ -1077,7 +1108,7 @@ public function __construct() {
 	public static function post_meta( $settings ) {
 		if ( is_sticky() ) {
 			?>
-			<span class="sow-featured-post"><?php echo esc_html__( 'Sticky', 'so-widgets-bundle' ); ?></span>
+			<span class="sow-featured-post"><?php esc_html_e( 'Sticky', 'so-widgets-bundle' ); ?></span>
 			<?php
 		}
 
@@ -1152,7 +1183,7 @@ public function __construct() {
 							<?php echo get_the_category_list(); ?>
 						</div>
 					<?php } ?>
-					<a href="<?php the_permalink(); ?>">
+					<a href="<?php echo esc_url( get_the_permalink() ); ?>">
 						<?php
 						if ( has_post_thumbnail() ) {
 							if ( ! empty( $settings['featured_image_size'] ) ) {
@@ -1227,7 +1258,7 @@ public function __construct() {
 			?>
 			<div
 				class="sow-entry-content"
-				style="margin-top: <?php echo $space_above; ?>px;"
+				style="margin-top: <?php echo (int) $space_above; ?>px;"
 			>
 				<?php
 				if ( $settings['content'] == 'full' ) {
@@ -1294,7 +1325,10 @@ public function __construct() {
 			) );
 		}
 
-		if ( ! empty( $pagination_markup ) ) {
+		if (
+			! empty( $pagination_markup ) &&
+			$settings['pagination'] != 'disabled'
+		) {
 			// To resolve a potential issue with the Block Editor, we need to override REST URLs with the actual permalink.
 			if (
 				defined( 'REST_REQUEST' ) &&
@@ -1309,7 +1343,7 @@ public function __construct() {
 			}
 			?>
 			<nav class="sow-post-navigation">
-				<h2 class="screen-reader-text"><?php esc_html_e( 'Post navigation', 'so-widgets-bundle' ); ?></h2>
+				<h3 class="screen-reader-text"><?php esc_html_e( 'Pagination', 'so-widgets-bundle' ); ?></h3>
 				<div class="sow-nav-links<?php if ( ! empty( $settings['pagination'] ) ) {
 					echo ' sow-post-pagination-' . esc_attr( $settings['pagination'] );
 				} ?>">

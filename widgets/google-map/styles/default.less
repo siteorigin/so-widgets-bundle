@@ -4,7 +4,7 @@
 @responsive_breakpoint: 780px;
 @map_consent: default;
 
-@map_consent_notice_text_background: #000;
+@map_consent_notice_text_background: rgba(0, 0, 0, 0.85);
 @map_consent_notice_text_color: #fff;
 @map_consent_notice_text_link: #fff;
 @map_consent_notice_text_link_hover: #aaa;
@@ -38,7 +38,7 @@
 		min-height: @height;
 
 		.sow-google-map-consent-prompt {
-			background: fade( @map_consent_notice_text_background, 85% );
+			background: @map_consent_notice_text_background;
 			color: @map_consent_notice_text_color;
 			width: 100%;
 
