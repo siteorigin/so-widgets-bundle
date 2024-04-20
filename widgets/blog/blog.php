@@ -933,7 +933,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			return array();
 		}
 
-		if ( ! is_array( $instance['settings'] ) ) {
+		if ( ! isset( $instance['settings'] ) || ! is_array( $instance['settings'] ) ) {
 			$instance['settings'] = array();
 		}
 
