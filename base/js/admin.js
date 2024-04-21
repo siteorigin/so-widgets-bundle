@@ -1634,6 +1634,10 @@ var sowbForms = window.sowbForms || {};
 							updated = true;
 						}
 					} );
+
+					if ( updated ) {
+						$$.val( values.value );
+					}
 				} else if ( compareValues( $$.val(), values.value ) ) {
 					$$.val( values.value );
 					updated = true;
