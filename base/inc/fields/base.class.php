@@ -377,6 +377,10 @@ abstract class SiteOrigin_Widget_Field_Base {
 					$value = sanitize_email( $value );
 					break;
 
+				case 'number':
+					$value = (int) $value;
+					break;
+
 				default:
 					// This isn't a built in sanitization. Maybe it's handled elsewhere.
 					if ( is_callable( $this->sanitize ) ) {
