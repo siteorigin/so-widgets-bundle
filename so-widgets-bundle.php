@@ -619,6 +619,12 @@ class SiteOrigin_Widgets_Bundle {
 		update_option( 'siteorigin_widgets_active', $active_widgets );
 		wp_cache_delete( 'active_widgets', 'siteorigin_widgets' );
 
+		// Clear the PB widgets cache.
+		if ( defined( 'SITEORIGIN_PANELS_VERSION' ) ) {
+			delete_transient( 'siteorigin_panels_widgets' );
+			delete_transient( 'siteorigin_panels_widget_dialog_tabs' );
+		}
+
 		// If we don't want to include the widget files, then our job here is done.
 		if ( ! $include ) {
 			return;
@@ -671,6 +677,12 @@ class SiteOrigin_Widgets_Bundle {
 		$active_widgets[ $widget_id ] = false;
 		update_option( 'siteorigin_widgets_active', $active_widgets );
 		wp_cache_delete( 'active_widgets', 'siteorigin_widgets' );
+
+		// Clear the PB widgets cache.
+		if ( defined( 'SITEORIGIN_PANELS_VERSION' ) ) {
+			delete_transient( 'siteorigin_panels_widgets' );
+			delete_transient( 'siteorigin_panels_widget_dialog_tabs' );
+		}
 	}
 
 	/**
