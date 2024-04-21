@@ -56,15 +56,15 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 	}
 
 	protected function get_input_classes() {
-		$input_classes = parent::get_input_classes();
-		$input_classes[] = 'siteorigin-widget-input-number';
-
-		return $input_classes;
+		return array(
+			'siteorigin-widget-input',
+			'siteorigin-widget-input-number',
+		);
 	}
 
 	protected function render_after_field( $value, $instance ) {
 		if ( ! empty( $this->unit ) ) {
-			echo '<span class="siteorigin-widget-input-number-unit">' . $this->unit . '</span>';
+			echo '<span class="siteorigin-widget-input-number-unit">' . esc_html( $this->unit ) . '</span>';
 		}
 
 		parent::render_after_field( $value, $instance );

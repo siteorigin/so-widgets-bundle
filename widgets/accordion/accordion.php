@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Accordion
-Description: An accordion to squeeze a lot of content into a small space.
+Description: Efficiently display content in expandable sections, maximizing space for improved organization.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/accordion-widget/
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			'sow-accordion',
 			__( 'SiteOrigin Accordion', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'An accordion to squeeze a lot of content into a small space.', 'so-widgets-bundle' ),
+				'description' => __( 'Efficiently display content in expandable sections, maximizing space for improved organization.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/accordion-widget/',
 			),
 			array(),
@@ -117,12 +117,12 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 							'background_color' => array(
 								'type' => 'color',
 								'label' => __( 'Background color', 'so-widgets-bundle' ),
-								'default' => '#828282',
+								'default' => '#757575',
 							),
 							'background_hover_color' => array(
 								'type' => 'color',
 								'label' => __( 'Background hover color', 'so-widgets-bundle' ),
-								'default' => '#8c8c8c',
+								'default' => '#616161',
 							),
 							'title_color' => array(
 								'type' => 'color',

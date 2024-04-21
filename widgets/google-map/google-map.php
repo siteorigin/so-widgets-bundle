@@ -2,7 +2,7 @@
 
 /*
 Widget Name: Google Maps
-Description: A highly customisable Google Maps widget. Help your site find its place and give it some direction.
+Description: Embed a customizable Google Map with markers, directions, styling options, and interactive elements.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/google-maps-widget/
@@ -14,7 +14,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			'sow-google-map',
 			__( 'SiteOrigin Google Maps', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A highly customisable Google Maps widget. Help your site find its place and give it some direction.', 'so-widgets-bundle' ),
+				'description' => __( 'Embed a customizable Google Map with markers, directions, styling options, and interactive elements.', 'so-widgets-bundle' ),
 				'help'        => 'https://siteorigin.com/widgets-bundle/google-maps-widget/',
 			),
 			array(),
@@ -169,16 +169,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						),
 						'label'       => __( 'Disable default UI', 'so-widgets-bundle' ),
 						'description' => __( 'Hides the default Google Maps controls.', 'so-widgets-bundle' ),
-					),
-					'keep_centered' => array(
-						'type' => 'checkbox',
-						'default' => false,
-						'state_handler' => array(
-							'map_type[interactive]' => array( 'show' ),
-							'_else[map_type]' => array( 'hide' ),
-						),
-						'label'       => __( 'Keep map centered', 'so-widgets-bundle' ),
-						'description' => __( 'Keeps the map centered when it\'s container is resized.', 'so-widgets-bundle' ),
 					),
 					'fallback_image' => array(
 						'type' => 'media',
@@ -618,7 +608,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'mobileZoom'        => $settings['mobile_zoom'],
 				'gestureHandling'   => isset( $settings['gesture_handling'] ) ? $settings['gesture_handling'] : 'greedy',
 				'disable_ui'        => $settings['disable_default_ui'],
-				'keep_centered'     => $settings['keep_centered'],
 				'marker_icon'       => ! empty( $mrkr_src ) ? $mrkr_src[0] : '',
 				'markers_draggable' => isset( $markers['markers_draggable'] ) ? $markers['markers_draggable'] : '',
 				'marker_at_center'  => ! empty( $markers['marker_at_center'] ),
@@ -803,7 +792,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 
 						if ( is_bool( $prop_val ) ) {
 							$prop_val = $prop_val ? 'true' : 'false';
-						} elseif ( $prop_val[0] == '#' ) {
+						} elseif (
+							is_string( $prop_val ) &&
+							$prop_val[0] == '#'
+						) {
 							$prop_val = '0x' . substr( $prop_val, 1 );
 						}
 						$st_string .= $prop_name . ':' . $prop_val;

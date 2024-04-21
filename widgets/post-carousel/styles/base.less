@@ -34,8 +34,8 @@
 		background: @navigation_background;
 		color: @navigation_color;
 
-		&:focus,
-		&:hover {
+		&:not(.sow-carousel-disabled):focus,
+		&:not(.sow-carousel-disabled):hover {
 			background: @navigation_hover_background;
 			color: @navigation_color_hover;
 		}
@@ -87,6 +87,18 @@
 
 				span.overlay {
 					background: @thumbnail_overlay_hover_color;
+				}
+			}
+
+			@media (max-width: @breakpoint_mobile) {
+				.sow-carousel-thumbnail a {
+					background-size: cover;
+				}
+
+				&,
+				.sow-carousel-thumbnail,
+				a {
+					max-width: 100vw;
 				}
 			}
 

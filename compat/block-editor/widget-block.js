@@ -317,7 +317,7 @@
 			widgetData: {
 				type: 'object',
 			},
-			widgetHtml: {
+			widgetMarkup: {
 				type: 'string',
 			},
 			widgetIcons: {

@@ -3,7 +3,6 @@
 var sowb = window.sowb || {};
 
 jQuery( function ( $ ) {
-	
 	sowb.setupTabs = function () {
 		$( '.sow-tabs' ).each( function ( index, element ) {
 			var $this = $( element );
@@ -23,7 +22,7 @@ jQuery( function ( $ ) {
 			$tabPanels.not( ':eq(' + selectedIndex + ')' ).hide();
 			var tabAnimation;
 
-			var scrollToTab = function ( smooth ) {
+			var scrollToTab = function( smooth ) {
 				// Add offset to make space for possible nav menus etc.
 				var navOffset = sowTabs.scrollto_offset ? sowTabs.scrollto_offset : 90;
 				var scrollTop = $widget.offset().top - navOffset;
@@ -65,14 +64,10 @@ jQuery( function ( $ ) {
 					var selectedTabContent = $tabPanels.eq( selectedIndex ).children();
 
 					// Set previous tab as inactive.
-					$prevTab.attr( 'tabindex', -1 );
 					$prevTab.attr( 'aria-selected', false );
-					prevTabContent.attr( 'tabindex', -1 );
 
 					// Set new tab as active.
-					$tab.attr( 'tabindex', 0 );
 					$tab.attr( 'aria-selected', true );
-					selectedTabContent.attr( 'tabindex', 0 );
 
 					prevTabContent.attr( 'aria-hidden', 'true' );
 					tabAnimation = $tabPanels.eq( prevTabIndex ).fadeOut( 'fast',
@@ -102,16 +97,14 @@ jQuery( function ( $ ) {
 					);
 					$tab.addClass( 'sow-tabs-tab-selected' );
 
-					if ( ! preventHashChange && ( anchorId || $widget.data( 'use-anchor-tags' ) ) ) {
-						if ( ! anchorId ) {
-							window.location.hash = $tab.data( 'anchor' );
-						} else {
-							var anchor = $tab.data( 'anchor' );
-							if ( $widget.data( 'anchor-id' ) != 1 ) {
-								anchor = $widget.data( 'anchor-id' ) + '-' + anchor;
-							}
-							window.location.hash = anchor;
-						}
+					if (
+						! preventHashChange &&
+						(
+							anchorId ||
+							$widget.data( 'use-anchor-tags' )
+						)
+					) {
+						$widget.trigger( 'tab_change', [ $tab, $widget ] );
 					}
 				}
 			};
@@ -120,16 +113,19 @@ jQuery( function ( $ ) {
 				selectTab( this );
 			} );
 
-			$tabs.on( 'keyup', function( e ) {
-				var $currentTab = $( this );
+			$tabs.on( 'keydown', function( e ) {
+				const $currentTab = $( this );
 
-				if ( e.keyCode !== 37 && e.keyCode !== 39 ){
+				if ( e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' ){
 					return;
 				}
 
-				var $newTab;
+				// Prevent browser horizontal scroll.
+				e.preventDefault();
+
+				let $newTab;
 				// Did the user press left arrow?
-				if ( e.keyCode === 37 ) {
+				if ( e.key === 'ArrowLeft' ) {
 					// Check if there are any additional tabs to the left.
 					if ( ! $currentTab.prev().get(0) ) { // No tabs to left.
 						$newTab = $currentTab.siblings().last();
@@ -139,7 +135,7 @@ jQuery( function ( $ ) {
 				}
 
 				// Did the user press right arrow?
-				if ( e.keyCode === 39 ) {
+				if ( e.key === 'ArrowRight' ) {
 					// Check if there are any additional tabs to the right.
 					if ( ! $currentTab.next().get(0) ) { // No tabs to right.
 						$newTab = $currentTab.siblings().first();
@@ -147,36 +143,14 @@ jQuery( function ( $ ) {
 						$newTab = $currentTab.next();
 					}
 				}
+
 				if ( $currentTab === $newTab ){
 					return;
 				}
-				$newTab.trigger( 'focus' );
-				selectTab( $newTab.get(0) );
-			} );
 
-			if ( $widget.data( 'anchor-id' ) || $widget.data( 'use-anchor-tags' ) ) {
-				var updateSelectedTab = function () {
-					if ( window.location.hash ) {
-						var anchors = window.location.hash.substring(1).split( ',' );
-						anchors.forEach( function ( anchor ) {
-							var tab = $tabs.filter( function ( index, element ) {
-								var tabAnchor = $( element ).data( 'anchor' );
-								if ( $widget.data( 'anchor-id' ) && $widget.data( 'anchor-id' ) != 1 ) {
-									tabAnchor = $widget.data( 'anchor-id' ) + '-' + tabAnchor;
-								}
-								return decodeURI( anchor ) === decodeURI( tabAnchor );
-							} );
-							if ( tab.length > 0 ) {
-								selectTab( tab, true );
-							}
-						} );
-					}
-				};
-				$( window ).on( 'hashchange', updateSelectedTab );
-				if ( window.location.hash ) {
-					updateSelectedTab();
-				}
-			}
+				$newTab.trigger( 'focus' );
+				selectTab( $newTab.get( 0 ) );
+			} );
 
 			$widget.data( 'initialized', true );
 		} );

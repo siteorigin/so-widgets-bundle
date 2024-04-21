@@ -60,24 +60,57 @@ class SiteOrigin_Widget_Field_Color extends SiteOrigin_Widget_Field_Text_Input_B
 		return $data_attributes;
 	}
 
+	private function validate_rgba( $value, $is_alpha = false ) {
+		$max_value = $is_alpha ? 1 : 255;
+		return is_numeric( $value ) &&
+			$value >= 0 &&
+			$value <= $max_value;
+	}
+
 	protected function sanitize_field_input( $value, $instance ) {
+		if ( empty( $value ) ) {
+			return false;
+		}
+
 		$sanitized_value = $value;
 		if ( ! empty( $this->alpha ) && strpos( $sanitized_value, 'rgba' ) !== false ) {
 			sscanf( $sanitized_value, 'rgba(%d,%d,%d,%f)', $r, $g, $b, $a );
+
 			if (
-				isset( $r ) && isset( $g ) && isset( $b ) && isset( $a )
-				&& is_numeric( $r ) && is_numeric( $g ) && is_numeric( $b ) && is_numeric( $a )
+				! isset( $r ) ||
+				! $this->validate_rgba( $r )
 			) {
-				$sanitized_value = "rgba($r,$g,$b,$a)";
-			} else {
-				$sanitized_value = false;
+				$r = 0;
 			}
+
+			if (
+				! isset( $g ) ||
+				! $this->validate_rgba( $g )
+			) {
+				$g = 0;
+			}
+			if (
+				! isset( $b ) ||
+				! $this->validate_rgba( $b )
+			) {
+				$b = 0;
+			}
+
+			if (
+				! isset( $a ) ||
+				! $this->validate_rgba( $a, true )
+			) {
+				$a = 0;
+			}
+
+			$sanitized_value = "rgba($r,$g,$b,$a)";
 		} else {
-			if( ! preg_match('|^#|', $sanitized_value) ) {
+			if ( ! preg_match( '|^#|', $sanitized_value ) ) {
 				$sanitized_value = '#' . $sanitized_value;
 			}
-			if ( ! preg_match('|^#([A-Fa-f0-9]{3}){1,2}$|', $sanitized_value ) ){
-				// 3 or 6 hex digits, or the empty string.
+
+			if ( ! preg_match( '|^#([A-Fa-f0-9]{3}){1,3}$|', $sanitized_value ) ) {
+				// 3, 6, or 8 hex digits, or the empty string.
 				$sanitized_value = false;
 			}
 		}

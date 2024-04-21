@@ -2,7 +2,7 @@
 
 /*
 Widget Name: Video Player
-Description: Play all your self or externally hosted videos in a customizable video player.
+Description: Embed self-hosted or externally hosted videos with a customizable player, controls, and responsive sizing.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/video-player-widget/
@@ -14,7 +14,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'sow-video',
 			__( 'SiteOrigin Video Player', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Play all your self or externally hosted videos in a customizable video player.', 'so-widgets-bundle' ),
+				'description' => __( 'Embed self-hosted or externally hosted videos with a customizable player, controls, and responsive sizing.', 'so-widgets-bundle' ),
 				'help'        => 'http://siteorigin.com/widgets-bundle/video-widget-documentation/',
 			),
 			array(),
@@ -108,6 +108,15 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 						'label'   => __( 'Use FitVids', 'so-widgets-bundle' ),
 						'description'   => __( 'FitVids will scale the video to fill the width of the widget area while maintaining aspect ratio.', 'so-widgets-bundle' ),
 					),
+					'hide_controls' => array(
+						'type'    => 'checkbox',
+						'default' => false,
+						'label'   => __( 'Hide Player Controls', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'video_type[self]'     => array( 'show' ),
+							'video_type[external]' => array( 'hide' ),
+						),
+					),
 					'oembed'   => array(
 						'type'          => 'checkbox',
 						'default'       => true,
@@ -144,7 +153,13 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				);
 			}
 
-			if ( ! wp_style_is( 'wp-mediaelement' ) ) {
+			if (
+				! wp_style_is( 'wp-mediaelement' ) &&
+				(
+					empty( $instance['playback']['hide_controls'] ) ||
+					$instance['playback']['hide_controls'] == false
+				)
+			) {
 				wp_enqueue_style( 'wp-mediaelement' );
 			}
 
@@ -178,7 +193,10 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		$video_host = $instance['host_type'];
 
 		if ( $video_host == 'self' ) {
-			if ( isset( $instance['video']['self_sources'] ) ) {
+			if (
+				! empty( $instance['video']['self_sources'] ) &&
+				is_array( $instance['video']['self_sources'] )
+			) {
 				foreach ( $instance['video']['self_sources'] as $source ) {
 					$src = '';
 					$video_type = '';
@@ -226,6 +244,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'loop'                    => ! empty( $instance['playback']['loop'] ),
 			'skin_class'              => 'default',
 			'fitvids'                 => ! empty( $instance['playback']['fitvids'] ),
+			'show_controls'           => isset( $instance['playback']['hide_controls'] ) ? $instance['playback']['hide_controls'] : false,
 		);
 
 		if ( $instance['host_type'] == 'external' && $instance['playback']['oembed'] ) {
@@ -234,11 +253,6 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		}
 
 		return $return;
-	}
-
-	public function get_style_name( $instance ) {
-		// For now, we'll only use the default style
-		return '';
 	}
 
 	/**
@@ -261,6 +275,16 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		global $wp_version;
 
 		return $video_host == 'self' || ( ( $video_host == 'youtube' || $video_host == 'vimeo' ) && $wp_version >= 4.2 );
+	}
+
+	public function get_less_variables( $instance ) {
+		if ( empty( $instance ) ) {
+			return array();
+		}
+
+		return array(
+			'hide_controls' => ! empty( $instance['playback']['hide_controls'] ) ? $instance['playback']['hide_controls'] : false,
+		);
 	}
 
 	/**
@@ -291,6 +315,19 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 		// Prevent FitVids from being enabled for widgets created before FitVids was added.
 		if ( ! isset( $instance['playback']['fitvids'] ) ) {
 			$instance['playback']['fitvids'] = false;
+		}
+
+
+		// Check if 'playback' is not set or not an array.
+		if ( ! isset( $instance['playback'] ) || ! is_array( $instance['playback'] ) ) {
+			$instance['playback'] = array(
+				'fitvids' => false,
+			);
+		} else {
+			// Prevent FitVids from being enabled for widgets created before FitVids was added.
+			if ( ! isset( $instance['playback']['fitvids'] ) ) {
+				$instance['playback']['fitvids'] = false;
+			}
 		}
 
 		return $instance;

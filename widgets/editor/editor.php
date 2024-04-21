@@ -1,8 +1,7 @@
 <?php
 /*
 Widget Name: Editor
-Description: A widget which allows editing of content using the TinyMCE editor.
-Author: SiteOrigin
+Description: Insert and customize content with a rich text editor offering extensive formatting options.
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/editor-widget/
 */
@@ -13,7 +12,7 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			'sow-editor',
 			__( 'SiteOrigin Editor', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A widget which allows editing of content using the TinyMCE editor.', 'so-widgets-bundle' ),
+				'description' => __( 'Insert and customize content with a rich text editor offering extensive formatting options.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/editor-widget/',
 			),
 			array(),
@@ -105,8 +104,6 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 				$instance['text'] = wpautop( $instance['text'] );
 			}
 
-			$instance['text'] = do_shortcode( shortcode_unautop( $instance['text'] ) );
-
 			// Don't process more more quicktag if this is a preview.
 			if (
 				! $this->is_preview() &&
@@ -119,6 +116,8 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 				$instance['text'] = $this->process_more_quicktag( $instance['text'] );
 			}
 		}
+
+		$instance['text'] = do_shortcode( shortcode_unautop( $instance['text'] ) );
 
 		return array(
 			'text' => $instance['text'],
@@ -152,7 +151,10 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 	}
 
 	public function add_noreferrer_to_link_targets( $instance ) {
-		if ( function_exists( 'wp_targeted_link_rel' ) ) {
+		if (
+			function_exists( 'wp_targeted_link_rel' ) &&
+			! empty( $instance['text'] )
+		) {
 			$instance['text'] = wp_targeted_link_rel( $instance['text'] );
 		}
 

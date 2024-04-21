@@ -34,7 +34,7 @@ class SiteOrigin_Widget_Field_Date_Range extends SiteOrigin_Widget_Field_Base {
 			<?php
 			_ex( 'From', 'From this date', 'so-widgets-bundle' );
 			?>
-				
+
 			</span>
 			<input type="text" class="datepicker after-picker"/>
 		</div>
@@ -68,16 +68,23 @@ class SiteOrigin_Widget_Field_Date_Range extends SiteOrigin_Widget_Field_Base {
 	private function render_relative_date_selector_part( $name, $label, $value ) {
 		$units = $this->get_units();
 
-		$val = ! empty( $value['value'] ) ? $value['value'] : 0;
+		$min = $name == 'from' ? 0 : 1;
+
+		$val = ! empty( $value['value'] ) ? $value['value'] : $min;
 		$unit = ! empty( $value['unit'] ) ? $value['unit'] : 'days';
 
 		?>
 		<div class="sowb-relative-date" data-name="<?php echo esc_attr( $name ); ?>">
 			<span><?php echo esc_html( $label ); ?></span>
-			<input type="number" min="0" step="1" class="sowb-relative-date-value" value="<?php echo esc_attr( $val ); ?>"/>
+			<input type="number" min="<?php echo $min; ?>" step="1" class="sowb-relative-date-value" value="<?php echo esc_attr( $val ); ?>"/>
 			<select class="sowb-relative-date-unit">
 				<?php foreach ( $units as $value => $label ) { ?>
-					<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $value, $unit ); ?>><?php echo $label; ?></option>
+					<option
+						value="<?php echo esc_attr( $value ); ?>"
+						<?php selected( $value, $unit ); ?>
+					>
+						<?php echo esc_html( $label ); ?>
+					</option>
 				<?php } ?>
 			</select>
 			<span><?php _e( 'ago', 'so-widgets-bundle' ); ?></span>
@@ -138,13 +145,13 @@ class SiteOrigin_Widget_Field_Date_Range extends SiteOrigin_Widget_Field_Base {
 				$unit_keys = array_keys( $this->get_units() );
 
 				foreach ( array( 'from', 'to' ) as $key ) {
-					if ( empty( $value[$key] ) ) {
-						$value[$key] = array();
+					if ( empty( $value[ $key ] ) ) {
+						$value[ $key ] = array();
 					}
-					$item = $value[$key];
+					$item = $value[ $key ];
 					$val = empty( $item['value'] ) ? 0 : (int) $item['value'];
 					$unit = ( ! empty( $item['unit'] ) && in_array( $item['unit'], $unit_keys ) ) ? $item['unit'] : $unit_keys[0];
-					$value[$key] = array( 'value' => $val, 'unit' => $unit );
+					$value[ $key ] = array( 'value' => $val, 'unit' => $unit );
 				}
 			} else {
 				$value = array( 'from' => array(), 'to' => array() );
