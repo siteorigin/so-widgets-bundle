@@ -933,6 +933,10 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			return array();
 		}
 
+		if ( ! isset( $instance['settings'] ) || ! is_array( $instance['settings'] ) ) {
+			$instance['settings'] = array();
+		}
+
 		if ( ! isset( $instance['settings']['tag'] ) ) {
 			$instance['settings']['tag'] = 'h2';
 		}
