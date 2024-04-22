@@ -75,8 +75,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				}
 
 				$so_widgets[] = array(
-					'name' => $widget_name,
-					'class' => $widget_class,
+					'name' => esc_html( $widget_name ),
+					'class' => esc_html( $widget_class ),
 				);
 			}
 		}
@@ -105,29 +105,23 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					$description = __( 'No description available.', 'so-widgets-bundle' );
 				}
 
-
 				$block_name = strtolower( str_replace( '_', '-', $class ) );
 
-				// For SiteOrigin widgets, just display the widget's name. For third party widgets, display the Author
-				// to try avoid confusion when the widgets have the same name.
-				if ( preg_match( '/^SiteOrigin /', $widget_obj->name ) == 1 && $author == 'SiteOrigin' ) {
-					$name = preg_replace( '/^SiteOrigin /', '', $widget_obj->name );
-
-					$so_widgets[] = array(
-						'name' => $name,
-						'class' => $class,
-						'description' => $description,
-						'blockName' => $block_name,
-					);
+				// For SiteOrigin authored widgets, display the widget's name directly. For third-party widgets, append the author's name to the widget name to avoid confusion when multiple widgets have the same name.
+				if (
+					preg_match( '/^SiteOrigin /', $widget_obj->name ) == 1 &&
+					$author == 'SiteOrigin'
+				) {
+					$widget_name = $widget_obj->name;
 				} else {
-					$name = sprintf( __( '%s by %s', 'so-widgets-bundle' ), $widget_obj->name, $author );
-					$third_party_widgets[] = array(
-						'name' => $name,
-						'class' => $class,
-						'description' => $description,
-					 	'blockName' => $block_name,
-					);
+					$widget_name = sprintf( __( '%s by %s', 'so-widgets-bundle' ), $widget_obj->name, $author );
 				}
+				$so_widgets[] = array(
+					'name' => esc_html( $widget_name ),
+					'class' => esc_html( $class ),
+					'description' => esc_html( $description ),
+					'blockName' => esc_html( $block_name ),
+				);
 			}
 		}
 		// Sort the list of widgets so SiteOrigin widgets are at the top and then third party widgets.
