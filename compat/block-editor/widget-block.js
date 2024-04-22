@@ -210,7 +210,15 @@
 								instructions: widget.description
 							},
 							( props.loadingWidgets || loadWidgetForm ?
-								el( Spinner ) :
+								el( 'div', {
+										className: 'so-widgets-spinner-container'
+									},
+									el(
+										'span',
+										null,
+										el( Spinner )
+									)
+								) :
 								el(
 									'div',
 									{ className: 'so-widget-block-container' },
