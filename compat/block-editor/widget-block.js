@@ -28,13 +28,13 @@
 		props.setState( { loadingWidgetPreview: true } );
 		sowPreviewRequest = true;
 		setTimeout( () => sowPreviewRequest = false, 1000 )
-		if (
-			typeof wp.data.select( 'core/editor' ) == 'object' &&
-			typeof wp.data.dispatch( 'core/editor' ) == 'object'
-		) {
+		const canLockPostSaving = typeof wp.data.select( 'core/editor' ) == 'object' &&
+			typeof wp.data.dispatch( 'core/editor' ) == 'object';
+
+		if ( canLockPostSaving ) {
 			wp.data.dispatch( 'core/editor' ).lockPostSaving();
 		}
-	
+
 		jQuery.post( {
 			url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/previews',
 			beforeSend: function( xhr ) {
@@ -51,16 +51,13 @@
 				widgetPreviewHtml: widgetPreview.html,
 				previewInitialized: false,
 			} );
-	
+
 			props.setAttributes( {
 				widgetMarkup: widgetPreview.html,
 				widgetIcons: widgetPreview.icons
 			} );
-	
-			if (
-				typeof wp.data.select( 'core/editor' ) == 'object' &&
-				typeof wp.data.dispatch( 'core/editor' ) == 'object'
-			) {
+
+			if ( canLockPostSaving ) {
 				wp.data.dispatch( 'core/editor' ).unlockPostSaving();
 			}
 		} )
@@ -95,7 +92,7 @@
 					widgetPreviewHtml: null,
 					previewInitialized: false
 				} );
-				
+
 				// As setAttributes doesn't support callbacks, we have to manually pass the widgetData to the preview.
 				var widgetData = sowbForms.getWidgetFormValues( $mainForm );
 				props.setAttributes( { widgetData: widgetData } );
@@ -105,8 +102,7 @@
 		}
 	}
 
-	// Add all SiteOrigin Blocks.
-	sowbBlockEditorAdmin.widgets.forEach( widget => {
+	const setupSoWidgetBlock = function( widget ) {
 		registerBlockType( 'sowb/' + widget.blockName, {
 			title: __( 'SiteOrigin ' + widget.name, 'so-widgets-bundle' ),
 			description: __( widget.description, 'so-widgets-bundle' ),
@@ -177,9 +173,9 @@
 							props.setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>', } );
 						} );
 					}
-	
+
 					var widgetForm = props.widgetFormHtml ? props.widgetFormHtml : '';
-	
+
 					return [
 						!! widgetForm && el(
 							BlockControls,
@@ -233,7 +229,7 @@
 						! props.widgetPreviewHtml &&
 						props.attributes.widgetData &&
 						! props.loadingWidgetPreview;
-	
+
 					if ( loadWidgetPreview ) {
 						props.setAttributes( {
 							widgetMarkup: null,
@@ -295,14 +291,17 @@
 					];
 				}
 			} ),
-	
+
 			save: function( context ) {
 				return null;
 			}
 		} );
-	} );
+	}
 
-	
+	// Add all SiteOrigin Blocks.
+	sowbBlockEditorAdmin.widgets.forEach( setupSoWidgetBlock );
+
+
 	// Register a stripped back version of our old block to allow for migration.
 	registerBlockType( 'sowb/widget-block', {
 		title: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
@@ -333,10 +332,10 @@
 	} );
 
 	// Find all instances of the SiteOrigin Widgets Block.
-	var widgetBlockIds = wp.data.select( 'core/block-editor' ).getBlocks()
+	var widgetBlocks = wp.data.select( 'core/block-editor' ).getBlocks()
 		.filter( block => block.name === 'sowb/widget-block' );
-		
-	widgetBlockIds.forEach( currentBlock => {
+
+	widgetBlocks.forEach( currentBlock => {
 		wp.data.dispatch( 'core/block-editor' ).replaceBlock( currentBlock.clientId, {
 			name: 'sowb/' + currentBlock.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
 			attributes: currentBlock.attributes,
