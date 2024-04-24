@@ -26,20 +26,27 @@ if ( $query->have_posts() ) {
 					<?php } ?>
 				</span>
 
+				<?php if ( ! empty( $instance['date'] ) ) { ?>
+					<span class="sow-recent-posts-date">
+						<?php $date_format = isset( $instance['date_format'] ) ? $instance['date_format'] : null; ?>
+						<time
+							class="published"
+							datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>"
+							aria-label="<?php esc_attr_e( 'Published on:', 'so-widgets-bundle' ); ?>"
+						>
+							<?php echo esc_html( get_the_date( $date_format ) ); ?>
+						</time>
 
-					</<?php echo esc_html( $tag ); ?>>
-					<?php if ( ! empty( $instance['date'] ) ) { ?>
-						<span class="sow-recent-posts-date">
-							<?php $date_format = isset( $instance['date_format'] ) ? $instance['date_format'] : null; ?>
-							<time class="published" datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
-								<?php echo esc_html( get_the_date( $date_format ) ); ?>
-							</time>
-							<time class="updated" datetime="<?php echo esc_attr( get_the_modified_date( 'c' ) ); ?>">
-								<?php echo esc_html( get_the_modified_date() ); ?>
-							</time>
-						</span>
-					<?php } ?>
-					<?php do_action( 'siteorigin_widgets_recent_posts_item_end', $instance ); ?>
+						<time
+							class="updated"
+							datetime="<?php echo esc_attr( get_the_modified_date( 'c' ) ); ?>"
+							aria-label="<?php esc_attr_e( 'Last updated on:', 'so-widgets-bundle' ); ?>"
+						>
+							<?php echo esc_html( get_the_modified_date( $date_format ) ); ?>
+						</time>
+					</span>
+				<?php } ?>
+				<?php do_action( 'siteorigin_widgets_recent_posts_item_end', $instance ); ?>
 			</li>
 		<?php
 		}
