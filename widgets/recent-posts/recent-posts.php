@@ -45,20 +45,6 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 
 	function get_widget_form() {
 		return array(
-			'title_tag' => array(
-				'type' => 'select',
-				'label' => __( 'Post HTML Tag', 'so-widgets-bundle' ),
-				'default' => 'h4',
-				'options' => array(
-					'h1' => __( 'H1', 'so-widgets-bundle' ),
-					'h2' => __( 'H2', 'so-widgets-bundle' ),
-					'h3' => __( 'H3', 'so-widgets-bundle' ),
-					'h4' => __( 'H4', 'so-widgets-bundle' ),
-					'h5' => __( 'H5', 'so-widgets-bundle' ),
-					'h6' => __( 'H6', 'so-widgets-bundle' ),
-					'p' => __( 'Paragraph', 'so-widgets-bundle' ),
-				),
-			),
 			'link_title' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Link Post Title', 'so-widgets-bundle' ),

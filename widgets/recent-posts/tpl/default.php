@@ -2,11 +2,6 @@
 $processed_query = siteorigin_widget_post_selector_process_query( $instance['query'] );
 $query = new WP_Query( $processed_query );
 
-$tag = siteorigin_widget_valid_tag(
-	$instance['title_tag'],
-	'h4'
-);
-
 // Loop through the posts and do something with them.
 if ( $query->have_posts() ) {
 	do_action( 'siteorigin_widgets_recent_posts_before', $instance );
@@ -16,18 +11,21 @@ if ( $query->have_posts() ) {
 		while( $query->have_posts() ) {
 			$query->the_post();
 			?>
-			<li>
-				<div class="sow-recent-posts-item">
-					<?php do_action( 'siteorigin_widgets_recent_posts_item_start', $instance ); ?>
-					<<?php echo esc_html( $tag ); ?> class="sow-recent-posts-title">
-						<?php if ( ! empty( $instance['link_title'] ) ) { ?>
-							<a href="<?php echo esc_url( get_the_permalink() ); ?>" <?php echo ! empty( $instance['new_window'] ) ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
-						<?php } ?>
-						<?php the_title() ?>
+			<li class="sow-recent-posts-item">
+				<?php do_action( 'siteorigin_widgets_recent_posts_item_start', $instance ); ?>
+				<span class="sow-recent-posts-title">
+					<?php if ( ! empty( $instance['link_title'] ) ) { ?>
+						<a
+							href="<?php echo esc_url( get_the_permalink() ); ?>"
+							<?php echo ! empty( $instance['new_window'] ) ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
+						>
+					<?php } ?>
+					<?php the_title() ?>
+					<?php if ( ! empty( $instance['link_title'] ) ) { ?>
+						</a>
+					<?php } ?>
+				</span>
 
-						<?php if ( ! empty( $instance['link_title'] ) ) { ?>
-								</a>
-						<?php } ?>
 
 					</<?php echo esc_html( $tag ); ?>>
 					<?php if ( ! empty( $instance['date'] ) ) { ?>
@@ -42,7 +40,6 @@ if ( $query->have_posts() ) {
 						</span>
 					<?php } ?>
 					<?php do_action( 'siteorigin_widgets_recent_posts_item_end', $instance ); ?>
-				</div>
 			</li>
 		<?php
 		}
