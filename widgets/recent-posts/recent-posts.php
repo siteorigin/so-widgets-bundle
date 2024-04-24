@@ -128,7 +128,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							'font_size' => array(
 								'type' => 'measurement',
 								'label' => __( 'Font Size', 'so-widgets-bundle' ),
-								'default' => '13px',
+								'default' => '0.87rem',
 							),
 							'color' => array(
 								'type' => 'color',
@@ -222,7 +222,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							'color' => array(
 								'type' => 'color',
 								'label' => __( 'Color', 'so-widgets-bundle' ),
-
+								'default' => '#929292',
 								'state_handler' => array(
 									'list_type[none]' => array( 'hide' ),
 									'_else[list_type]' => array( 'show' ),

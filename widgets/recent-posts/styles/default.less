@@ -41,11 +41,13 @@
 	}
 
 	&-date {
-		display: inline-block; // Required for inside list stlye position.
-		font-family: @title_font;
-		font-size: @title_font_size;
-		font-style: @title_font_style;
-		font-weight: @title_font_weight;
+		color: @date_color;
+		display: block;
+		font-family: @date_font;
+		font-size: @date_font_size;
+		font-size: ~"max(12px, @{date_font_size})";
+		font-style: @date_font_style;
+		font-weight: @date_font_weight;
 		line-height: 1;
 		margin: 5px 0;
 
