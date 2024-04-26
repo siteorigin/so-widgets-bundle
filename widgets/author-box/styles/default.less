@@ -80,9 +80,10 @@
 	}
 
 	&-title-wrapper {
-		align-items: center;
+		align-items: end;
 		display: flex;
 		gap: 10px;
+		margin-bottom: @name_margin_bottom;
 
 		& when ( @avatar_border_position = right ) {
 			justify-content: end;
@@ -91,7 +92,6 @@
 
 	&-title {
 		margin: 0;
-		margin-bottom: @name_margin_bottom;
 	}
 
 	&-title {

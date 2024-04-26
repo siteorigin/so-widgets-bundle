@@ -15,7 +15,7 @@
 </div>
 
 <div class="sow-carousel-container <?php echo ! empty( $container_classes ) ? esc_attr( $container_classes ) : ''; ?>">
-	<?php if ( $settings['navigation'] == 'side' ) { ?>
+	<?php if ( $settings['navigation'] == 'side' || $settings['navigation'] == 'full' ) { ?>
 		<div class="sow-carousel-navigation sow-carousel-navigation-prev <?php echo ! $settings['navigation_arrows'] ? 'sow-carousel-navigation-hidden' : ''; ?>">
 			<?php $this->render_navigation( 'prev' ); ?>
 		</div>
@@ -41,16 +41,18 @@
 		>
 			<?php include $settings['item_template']; ?>
 		</div>
-		<?php if ( $settings['navigation'] == 'container' ) { ?>
+		<?php if ( $settings['navigation'] == 'container' || $settings['navigation'] == 'full' ) { ?>
 			<div class="sow-carousel-nav" <?php echo ! $settings['navigation_arrows'] && empty( $settings['navigation_dots'] ) ? 'style="display: none;"' : ''; ?>>
-				<div class="sow-carousel-nav-arrows" <?php echo ! $settings['navigation_arrows'] ? 'style="display: none;"' : ''; ?>>
-					<?php $this->render_navigation( 'both' ); ?>
-				</div>
+				<?php if ( $settings['navigation'] !== 'full' ) { ?>
+					<div class="sow-carousel-nav-arrows" <?php echo ! $settings['navigation_arrows'] ? 'style="display: none;"' : ''; ?>>
+						<?php $this->render_navigation( 'both' ); ?>
+					</div>
+				<?php } ?>
 			</div>
 		<?php } ?>
 	</div>
 
-	<?php if ( $settings['navigation'] == 'side' ) { ?>
+	<?php if ( $settings['navigation'] == 'side' || $settings['navigation'] == 'full' ) { ?>
 		<div class="sow-carousel-navigation sow-carousel-navigation-next <?php echo ! $settings['navigation_arrows'] ? 'sow-carousel-navigation-hidden' : ''; ?>">
 			<?php $this->render_navigation( 'next' ); ?>
 		</div>

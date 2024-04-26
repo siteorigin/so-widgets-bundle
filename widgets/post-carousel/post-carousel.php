@@ -219,7 +219,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		);
 
 		// Override defaults.
-		$design_settings['fields']['item_title']['label'] = __( 'Post title', 'so-widgets-bundle' );
+		$design_settings['fields']['item_title']['label'] = __( 'Post Title', 'so-widgets-bundle' );
 		$design_settings['fields']['item_title']['fields']['tag']['default'] = 'h3';
 
 		// Reposition thumbnail settings.
@@ -227,7 +227,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			array(
 				'thumbnail' => array(
 					'type' => 'section',
-					'label' => __( 'Post thumbnail', 'so-widgets-bundle' ),
+					'label' => __( 'Post Thumbnail', 'so-widgets-bundle' ),
 					'hide' => true,
 					'fields' => array(
 						'thumbnail_overlay_hover_color' => array(
