@@ -79,11 +79,11 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 			$value = max( $value, $this->min );
 		}
 
-		if ( ! empty( $this->max ) ) {
+		if ( ! empty( $this->max ) && ! empty( $value ) ) {
 			$value = min( $value, $this->max );
 		}
 
-		if ( ! empty( $this->abs ) ) {
+		if ( ! empty( $this->abs ) && ! empty( $value ) ) {
 			$value = abs( $value );
 		}
 
