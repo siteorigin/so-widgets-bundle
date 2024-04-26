@@ -24,7 +24,7 @@
 
 					if ( ! empty( $text ) ) {
 						?>
-						<<?php esc_html_e( $tag ); ?> class="<?php echo $class; ?>">
+						<<?php echo esc_attr( $tag ); ?> class="<?php echo $class; ?>">
 						<?php
 						if ( ! empty( $destination_url ) ) { ?>
 							<a href="<?php echo sow_esc_url( $destination_url ); ?>" <?php echo (bool) $new_window ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
@@ -37,7 +37,7 @@
 							echo '</a>';
 						}
 						?>
-						</<?php esc_html_e( $tag ); ?>>
+						</<?php echo esc_attr( $tag ); ?>>
 						<?php
 					}
 				break;
