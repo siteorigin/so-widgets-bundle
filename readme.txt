@@ -107,6 +107,24 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.60.0 - 26 April 2024 =
+* Author Box: Applied title margin directly to wrapper and adjusted alignment.
+* Blog: Resolved a potential fatal `TypeError`.
+* Blog: Resolved settings warning caused by undefined "settings" array key.
+* Carousel: Added `full` navigation output option.
+* Features: Improved icon position alignment on desktop and mobile.
+* Headline: Resolved a translation issue related to the Tag setting.
+* Post Carousel: Minor settings label adjustments.
+* Post Carousel: Fixed RTL output.
+* Tabs: Updated to use the Anchor ID Manager.
+* Query Posts: Date Range: Changed default and minimum to `1`.
+* Multi-Measurement Preset: Resolved an issue with saving values.
+* Page Builder: Resolved missing widgets in the Add Widget modal.
+* Widgets Block: Prevented empty needle warning.
+* Number Field: Updated to account for potential null values to prevent deprecated notice.
+* Fields: Ensured `$value` isn't null before processing it to resolve `preg_replace()` deprecated notice.
+* Deprecated Notices: Resolved `intval` deprecated notice.
+
 = 1.59.0 - 11 April 2024 =
 * New Widget! Display author information, including avatar, name, bio, and post links in a customizable box.
 * Contact Form: Resolved an issue where using multibyte characters (e.g., "מייל" for Email) as field labels prevented the form from being submitted correctly.
