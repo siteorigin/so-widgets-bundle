@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Anything Carousel
-Description: Display images, text, or any other content in a carousel.
+Description: Display images, text, or any content in a highly customizable and responsive carousel slider.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/anything-carousel-widget/
@@ -17,7 +17,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 			'sow-anything-carousel',
 			__( 'SiteOrigin Anything Carousel', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Display images, text, or any other content in a carousel.', 'so-widgets-bundle' ),
+				'description' => __( 'Display images, text, or any content in a highly customizable and responsive carousel slider.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/anything-carousel-widget/',
 			),
 			array(),

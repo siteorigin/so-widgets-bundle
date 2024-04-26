@@ -2,7 +2,7 @@
 
 /*
 Widget Name: Price Table
-Description: A powerful yet simple price table widget for your sidebars or Page Builder pages.
+Description: Display pricing plans in a professional table format with custom columns, features, and design.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/price-table-widget/
@@ -14,7 +14,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			'sow-price-table',
 			__( 'SiteOrigin Price Table', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A powerful yet simple price table widget for your sidebars or Page Builder pages.', 'so-widgets-bundle' ),
+				'description' => __( 'Display pricing plans in a professional table format with custom columns, features, and design.', 'so-widgets-bundle' ),
 				'help'        => 'https://siteorigin.com/widgets-bundle/price-table-widget/',
 			),
 			array(),

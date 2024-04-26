@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Tabs
-Description: A tabby widget to switch between tabbed content panels.
+Description: Create tabbed content panels with customizable titles, content, initial tab, and design settings.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/tabs-widget/
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 			'sow-tabs',
 			__( 'SiteOrigin Tabs', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A tabby widget to switch between tabbed content panels.', 'so-widgets-bundle' ),
+				'description' => __( 'Create tabbed content panels with customizable titles, content, initial tab, and design settings.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/tabs-widget/',
 			),
 			array(),

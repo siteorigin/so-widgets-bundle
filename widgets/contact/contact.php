@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Contact Form
-Description: A lightweight contact form builder.
+Description: Add a contact form with custom fields, design options, spam protection, and email notifications.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/contact-form-widget/
@@ -13,7 +13,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'sow-contact-form',
 			__( 'SiteOrigin Contact Form', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A lightweight contact form builder.', 'so-widgets-bundle' ),
+				'description' => __( 'Add a contact form with custom fields, design options, spam protection, and email notifications.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/contact-form-widget/',
 			),
 			array(),
@@ -366,7 +366,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'fields' => array(
 							'use_akismet' => array(
 								'type'    => 'checkbox',
-								'label'   => __( 'Use Akismet filtering', 'so-widgets-bundle' ),
+								'label'   => __( 'Akismet Filtering', 'so-widgets-bundle' ),
+								'description' => sprintf(
+									__( 'Use the %sAkismet%s plugin to filter spam submissions.', 'so-widgets-bundle' ),
+									'<a href="https://wordpress.org/plugins/akismet/" target="_blank" rel="noopener noreferrer">',
+									'</a>'
+								),
 								'default' => true,
 							),
 							'spam_action' => array(
@@ -1162,7 +1167,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		$it = 0;
 
 		$label = str_replace( ' ', '-', strtolower( $label ) );
-		$label = sanitize_html_class( $label );
+		$label = sanitize_title( $label );
 
 		do {
 			$id = $label . ( $it > 0 ? '-' . $it : '' );
@@ -1604,9 +1609,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$comment['blog_lang'] = get_locale();
 			$comment['blog_charset'] = get_option( 'blog_charset' );
 
-			// Pretend to check with Akismet
+			// Check with Akismet.
 			$response = Akismet::http_post( Akismet::build_query( $comment ), 'comment-check' );
-
 			$is_spam = ! empty( $response[1] ) && $response[1] == 'true';
 
 			if ( $is_spam ) {

@@ -91,7 +91,7 @@ class SiteOrigin_Widget_Field_Multi_Measurement extends SiteOrigin_Widget_Field_
 		?>
 		</div>
 		<input type="hidden"
-			class="siteorigin-widget-input"
+			class="siteorigin-widget-input sow-multi-measurement-input-values"
 			value="<?php echo esc_attr( $value ); ?>"
 			name="<?php echo esc_attr( $this->element_name ); ?>"
 			data-autofill="<?php echo empty( $this->autofill ) ? 'false' : 'true'; ?>"

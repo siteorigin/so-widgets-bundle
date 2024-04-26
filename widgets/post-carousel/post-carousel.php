@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Post Carousel
-Description: Gives you a widget to display your posts as a carousel.
+Description: Display blog posts or custom post types in a responsive, customizable carousel layout.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/post-carousel-widget/
@@ -102,7 +102,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			'sow-post-carousel',
 			__( 'SiteOrigin Post Carousel', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Gives you a widget to display your posts as a carousel.', 'so-widgets-bundle' ),
+				'description' => __( 'Display blog posts or custom post types in a responsive, customizable carousel layout.', 'so-widgets-bundle' ),
 				'instance_storage' => true,
 				'help' => 'https://siteorigin.com/widgets-bundle/post-carousel-widget/',
 			),
@@ -219,7 +219,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		);
 
 		// Override defaults.
-		$design_settings['fields']['item_title']['label'] = __( 'Post title', 'so-widgets-bundle' );
+		$design_settings['fields']['item_title']['label'] = __( 'Post Title', 'so-widgets-bundle' );
 		$design_settings['fields']['item_title']['fields']['tag']['default'] = 'h3';
 
 		// Reposition thumbnail settings.
@@ -227,7 +227,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			array(
 				'thumbnail' => array(
 					'type' => 'section',
-					'label' => __( 'Post thumbnail', 'so-widgets-bundle' ),
+					'label' => __( 'Post Thumbnail', 'so-widgets-bundle' ),
 					'hide' => true,
 					'fields' => array(
 						'thumbnail_overlay_hover_color' => array(

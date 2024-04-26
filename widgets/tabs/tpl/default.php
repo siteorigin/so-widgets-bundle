@@ -17,7 +17,7 @@ if ( ! empty( $instance['title'] ) ) {
 				echo ' sow-tabs-tab-selected';
 			} ?>"
 			role="tab"
-			data-anchor="<?php echo sanitize_title_with_dashes( $tab['anchor'] ); ?>"
+			data-anchor-id="<?php echo sanitize_title_with_dashes( $tab['anchor'] ); ?>"
 			aria-selected="<?php echo $i == $initial_tab_index ? 'true' : 'false'; ?>"
 			tabindex="0"
 		>

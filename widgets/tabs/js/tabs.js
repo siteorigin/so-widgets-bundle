@@ -22,7 +22,7 @@ jQuery( function ( $ ) {
 			$tabPanels.not( ':eq(' + selectedIndex + ')' ).hide();
 			var tabAnimation;
 
-			var scrollToTab = function ( smooth ) {
+			var scrollToTab = function( smooth ) {
 				// Add offset to make space for possible nav menus etc.
 				var navOffset = sowTabs.scrollto_offset ? sowTabs.scrollto_offset : 90;
 				var scrollTop = $widget.offset().top - navOffset;
@@ -97,16 +97,14 @@ jQuery( function ( $ ) {
 					);
 					$tab.addClass( 'sow-tabs-tab-selected' );
 
-					if ( ! preventHashChange && ( anchorId || $widget.data( 'use-anchor-tags' ) ) ) {
-						if ( ! anchorId ) {
-							window.location.hash = $tab.data( 'anchor' );
-						} else {
-							var anchor = $tab.data( 'anchor' );
-							if ( $widget.data( 'anchor-id' ) != 1 ) {
-								anchor = $widget.data( 'anchor-id' ) + '-' + anchor;
-							}
-							window.location.hash = anchor;
-						}
+					if (
+						! preventHashChange &&
+						(
+							anchorId ||
+							$widget.data( 'use-anchor-tags' )
+						)
+					) {
+						$widget.trigger( 'tab_change', [ $tab, $widget ] );
 					}
 				}
 			};
@@ -153,30 +151,6 @@ jQuery( function ( $ ) {
 				$newTab.trigger( 'focus' );
 				selectTab( $newTab.get( 0 ) );
 			} );
-
-			if ( $widget.data( 'anchor-id' ) || $widget.data( 'use-anchor-tags' ) ) {
-				var updateSelectedTab = function () {
-					if ( window.location.hash ) {
-						var anchors = window.location.hash.substring(1).split( ',' );
-						anchors.forEach( function ( anchor ) {
-							var tab = $tabs.filter( function ( index, element ) {
-								var tabAnchor = $( element ).data( 'anchor' );
-								if ( $widget.data( 'anchor-id' ) && $widget.data( 'anchor-id' ) != 1 ) {
-									tabAnchor = $widget.data( 'anchor-id' ) + '-' + tabAnchor;
-								}
-								return decodeURI( anchor ) === decodeURI( tabAnchor );
-							} );
-							if ( tab.length > 0 ) {
-								selectTab( tab, true );
-							}
-						} );
-					}
-				};
-				$( window ).on( 'hashchange', updateSelectedTab );
-				if ( window.location.hash ) {
-					updateSelectedTab();
-				}
-			}
 
 			$widget.data( 'initialized', true );
 		} );

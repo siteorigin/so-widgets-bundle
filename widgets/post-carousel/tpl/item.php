@@ -2,7 +2,7 @@
 while ( $settings['posts']->have_posts() ) {
 	$settings['posts']->the_post();
 	?>
-	<div class="sow-carousel-item" tabindex="-1" style="float: left;">
+	<div class="sow-carousel-item" tabindex="-1" style="float: <?php echo is_rtl() ? 'right' : 'left'; ?>;">
 		<div class="sow-carousel-thumbnail">
 			<?php
 			if ( has_post_thumbnail() ) {

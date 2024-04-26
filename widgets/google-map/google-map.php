@@ -2,7 +2,7 @@
 
 /*
 Widget Name: Google Maps
-Description: A highly customisable Google Maps widget. Help your site find its place and give it some direction.
+Description: Embed a customizable Google Map with markers, directions, styling options, and interactive elements.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/google-maps-widget/
@@ -14,7 +14,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			'sow-google-map',
 			__( 'SiteOrigin Google Maps', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A highly customisable Google Maps widget. Help your site find its place and give it some direction.', 'so-widgets-bundle' ),
+				'description' => __( 'Embed a customizable Google Map with markers, directions, styling options, and interactive elements.', 'so-widgets-bundle' ),
 				'help'        => 'https://siteorigin.com/widgets-bundle/google-maps-widget/',
 			),
 			array(),
