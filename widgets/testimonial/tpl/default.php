@@ -5,7 +5,7 @@
  * @var $testimonials
  */
 if ( ! empty( $instance['title'] ) ) {
-	echo $args['before_title'] . $instance['title'] . $args['after_title'];
+	echo $args['before_title'] . wp_kses_post( $instance['title'] ) . $args['after_title'];
 }
 $this->caret_svg();
 ?>
@@ -32,7 +32,7 @@ $this->caret_svg();
 
 				<div class="sow-testimonial-user">
 					<?php if ( $has_image ) { ?>
-					<div class="sow-image-wrapper sow-image-wrapper-shape-<?php echo $design['image']['image_shape']; ?>">
+					<div class="sow-image-wrapper sow-image-wrapper-shape-<?php echo esc_attr( $design['image']['image_shape'] ); ?>">
 						<?php if ( $link_image ) { ?>
 						<a href="<?php echo sow_esc_url( $url ); ?>" <?php if ( ! empty( $new_window ) ) {
 							echo 'target="_blank" rel="noopener noreferrer"';

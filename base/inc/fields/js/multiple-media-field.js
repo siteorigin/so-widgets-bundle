@@ -138,14 +138,14 @@
 
 			// Finally, open the modal.
 			frame.open();
-		});
+		} );
 
 		if ( ! repeater ) {
-			$( document ).on( 'click','.siteorigin-widget-field-type-multiple_media a.media-remove-button', function( e ) {
+			$field.on( 'click', 'a.media-remove-button', function( e ) {
 				e.preventDefault();
 				var $currentItem = $( this ).parent();
 
-				selectedMedia.splice( selectedMedia.indexOf( $currentItem.data( 'id' ) ) );
+				selectedMedia.splice( selectedMedia.indexOf( $currentItem.data( 'id' ) ), 1 );
 				$data.val( selectedMedia.join( ',' ) );
 
 				$currentItem.remove();

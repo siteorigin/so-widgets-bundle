@@ -108,8 +108,8 @@ class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_I
 			$unit = empty( $this->default_unit ) ? 'px' : $this->default_unit;
 		}
 
-		// `strlen( $value ) == 0` should prevent 0, 0.0, or '0' from being seen as empty.
-		$value = ( empty( $value ) && strlen( $value ) == 0 ) ? false : ( (float) $value ) . $unit;
+		// Return false if empty, while still accepting 0 as a valid value.
+		$value = ( empty( $value ) && ! is_numeric( $value ) ) ? false : ( (float) $value ) . $unit;
 
 		return $value;
 	}

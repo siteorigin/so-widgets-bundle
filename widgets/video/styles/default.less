@@ -1,0 +1,9 @@
+@hide_controls: default;
+
+& when( @hide_controls = 1 ) {
+	.mejs-offscreen,
+	.mejs-layers,
+	.mejs-controls {
+		display: none !important;
+	}
+}

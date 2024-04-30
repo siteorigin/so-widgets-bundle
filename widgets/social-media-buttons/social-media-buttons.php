@@ -1,8 +1,7 @@
 <?php
 /*
 Widget Name: Social Media Buttons
-Description: Customizable buttons which link to all your social media profiles.
-Author: SiteOrigin
+Description: Add social media buttons to your site with personalized icons, colors, and design settings.
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/social-media-buttons-widget/
 */
@@ -15,7 +14,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			'sow-social-media-buttons',
 			__( 'SiteOrigin Social Media Buttons', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Customizable buttons which link to all your social media profiles.', 'so-widgets-bundle' ),
+				'description' => __( 'Add social media buttons to your site with personalized icons, colors, and design settings.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/social-media-buttons-widget/',
 			),
 			array(),
@@ -247,6 +246,25 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 					$network['name'] = 'suitcase';
 				}
 
+				// Migrate the Classic Twitter icon to the X icon.
+				// The old logo is still selectable in the widget.
+				if ( $network['name'] == 'twitter' ) {
+					$network['name'] = 'x-twitter';
+
+					// If the color wasn't adjusted, use the X colours.
+					if (
+						$network['icon_color'] == '#ffffff' &&
+						$network['button_color'] == '#78bdf1' &&
+						! empty( $network['icon_color_hover'] ) &&
+						$network['icon_color_hover'] == '#ffffff' &&
+						! empty( $network['button_color_hover'] ) &&
+						$network['button_color_hover'] == '#78bdf1'
+					) {
+						$network['button_color'] = '#000';
+						$network['button_color_hover'] = '#000';
+					}
+				}
+
 				if (
 					$network['name'] != 'envelope' &&
 					$network['name'] != 'suitcase' &&
@@ -343,8 +361,8 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 				if ( $instance['design']['theme'] == 'wire' ) {
 					$call .= ! empty( $network['border_color'] ) ? ', @border_color:' . $network['border_color'] : '';
 					$border_color_hover_fallback = ! empty( $network['border_color'] ) ? ', @button_color_hover:' . $network['border_color'] : '';
-					$call .= ! empty( $network['border_hover_color'] ) ? ', @border_hover_color:' . $network['border_hover_color'] : $border_hover_color_fallback;
-					
+					$call .= ! empty( $network['border_hover_color'] ) ? ', @border_hover_color:' . $network['border_hover_color'] : $border_color_hover_fallback;
+
 				}
 				$call .= ');';
 				$calls[] = $call;
@@ -378,6 +396,11 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			} else {
 				++$network_classes[$name];
 			}
+
+			if ( $name === 'suitcase' ) {
+				$network['name'] = 'Tripadvisor';
+			}
+
 			$name .= '-' . $network_classes[$name];
 			$network['css_class_name'] = $name;
 		}

@@ -1,9 +1,15 @@
+@responsive_breakpoint: 780px;
 @title_alignment: default;
 @image_alignment: default;
 @image_display: block;
 @image_max_width: default;
 @image_height: default;
 @image_width: default;
+@size_enforce: default;
+@image_shape: default;
+@image_shape_size: default;
+@image_shape_repeat: default;
+@image_shape_position: default;
 
 .widget-title {
 	text-align: @title_alignment;
@@ -35,9 +41,27 @@
 
 	.so-widget-image {
 		display: block;
+		height: @image_height;
 		max-width: @image_max_width;
 		width: @image_width;
-		height: @image_height;
+
+		& when not (@image_shape = default ) {
+			-webkit-mask-image: @image_shape;
+			-webkit-mask-position: @image_shape_position;
+			-webkit-mask-repeat: @image_shape_repeat;
+			-webkit-mask-size: @image_shape_size;
+			mask-image: @image_shape;
+			mask-position: @image_shape_position;
+			mask-repeat: @image_shape_repeat;
+			mask-size: @image_shape_size;
+		}
+
+		& when (@size_enforce = 1 ) {
+			@media (max-width: @responsive_breakpoint) {
+				height: auto !important;
+				max-width: 100%;
+			}
+		}
 	}
 }
 

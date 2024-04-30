@@ -81,7 +81,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'type' => 'number',
 				'label' => __( 'Animation speed', 'so-widgets-bundle' ),
 				'description' => __( 'Animation speed in milliseconds.', 'so-widgets-bundle' ),
-				'default' => 800,
+				'default' => 400,
 			),
 
 			'timeout' => array(
@@ -133,6 +133,17 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				'label' => __( 'Always show navigation on mobile', 'so-widgets-bundle' ),
 			),
 
+			'nav_align' => array(
+				'type' => 'select',
+				'label' => __( 'Pagination alignment', 'so-widgets-bundle' ),
+				'default' => 'right',
+				'options' => array(
+					'left' => __( 'Left', 'so-widgets-bundle' ),
+					'center' => __( 'Center', 'so-widgets-bundle' ),
+					'right' => __( 'Right', 'so-widgets-bundle' ),
+				),
+			),
+
 			'swipe' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Swipe control', 'so-widgets-bundle' ),
@@ -143,7 +154,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			'unmute' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Unmute icon', 'so-widgets-bundle' ),
-				'description' => __( 'Slide background videos are muted. Enable to display an unmute/mute icon. Only applies to self-hosted videos.', 'so-widgets-bundle' ),
+				'description' => __( 'Slide background videos are muted. Enable to display an unmute/mute icon.', 'so-widgets-bundle' ),
 				'default' => false,
 				'state_emitter' => array(
 					'callback' => 'conditional',
@@ -168,6 +179,13 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					'unmute_slider[show]' => array( 'show' ),
 					'unmute_slider[hide]' => array( 'hide' ),
 				),
+			),
+
+			'fitvids' => array(
+				'type' => 'checkbox',
+				'default' => true,
+				'label' => __( 'Use FitVids', 'so-widgets-bundle' ),
+				'description' => __( 'FitVids will scale background videos to fill the width of the slide while maintaining aspect ratio.', 'so-widgets-bundle' ),
 			),
 
 			'background_video_mobile' => array(
@@ -286,6 +304,38 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		return $form_options;
 	}
 
+
+	/**
+	 * Handle Migration of `extra_top_padding` to `padding_top_padding` setting.
+	 *
+	 * The `padding_top_padding` setting was introduced because of an issue
+	 * With padding being unreliably set.
+	 *
+	 * @return $instance
+	 */
+	private static function migrate_padding( $instance, $context ) {
+		// If padding and extra top padding unit of measurement is different,
+		// we need to reset the extra top padding unit to be the same as the
+		// base padding to prevent unexpected changes.
+		$layoutContext = &$instance['layout'][$context];
+
+		if ( ! empty( $layoutContext['padding'] ) && $layoutContext['padding_unit'] != $layoutContext['extra_top_padding_unit'] ) {
+			$layoutContext['padding_extra_top'] = str_replace(
+				$layoutContext['extra_top_padding_unit'],
+				$layoutContext['padding_unit'],
+				$layoutContext['extra_top_padding']
+			);
+			$layoutContext['padding_extra_top_unit'] = $layoutContext['padding_unit'];
+		} else {
+			$layoutContext['padding_extra_top_unit'] = $layoutContext['extra_top_padding_unit'];
+			$layoutContext['padding_extra_top'] = $layoutContext['extra_top_padding'];
+		}
+
+		unset( $layoutContext['extra_top_padding'], $layoutContext['extra_top_padding_unit'] );
+
+		return $instance;
+	}
+
 	/**
 	 * Migrate Slider settings.
 	 *
@@ -361,6 +411,23 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			}
 		}
 
+		if ( empty( $instance['controls'] ) ) {
+			$instance['controls'] = array();
+		}
+
+		if ( ! isset( $instance['controls']['fitvids'] ) ) {
+			$instance['controls']['fitvids'] = true;
+		}
+
+		// Migrate `extra_top_padding` to `padding_extra_top`.
+		if ( ! empty( $instance['layout']['desktop']['extra_top_padding'] ) ) {
+			$instance = self::migrate_padding( $instance, 'desktop' );
+		}
+
+		if ( ! empty( $instance['layout']['mobile']['extra_top_padding'] ) ) {
+			$instance = self::migrate_padding( $instance, 'mobile' );
+		}
+
 		return $instance;
 	}
 
@@ -381,7 +448,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		switch( $part ) {
 			case 'before_slider':
 				?>
-				<div class="sow-slider-base" style="display: none">
+				<div class="sow-slider-base" style="display: none" tabindex="0">
 					<?php
 					if ( isset( $controls['unmute'] ) && $controls['unmute'] ) {
 						?>
@@ -480,9 +547,11 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			$wrapper_attributes['style'][] = 'background-color: ' . esc_attr( $background['color'] );
 		}
 
-		if ( $background['opacity'] >= 1 ) {
-			if ( ! empty( $background['image'] ) ) {
+		if ( ! empty( $background['image'] ) && $background['opacity'] >= 1 && empty( $frame['no_output'] ) ) {
+			if ( $i == 0 ) {
 				$wrapper_attributes['style'][] = 'background-image: url(' . esc_url( $background['image'] ) . ')';
+			} else {
+				$wrapper_attributes['data-background'] = 'url(' . esc_url( $background['image'] ) . ')';
 			}
 		}
 
@@ -507,7 +576,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 
 		?>
 		<li <?php foreach ( $wrapper_attributes as $attr => $val ) {
-			echo $attr . '="' . esc_attr( $val ) . '" ';
+			echo esc_html( $attr ) . '="' . esc_attr( $val ) . '" ';
 		} ?>>
 			<?php
 			do_action( 'siteorigin_widgets_slider_before_contents', $frame );
@@ -539,17 +608,31 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					$controls['opacity'] = $frame['background']['background_video_opacity'];
 				}
 
+				if ( ! empty( $controls['fitvids'] ) && ! wp_script_is( 'jquery-fitvids' ) ) {
+					wp_enqueue_script( 'jquery-fitvids' );
+				}
+
 				$this->video_code( $background['videos'], $classes, $controls );
 			}
 
 			if ( $background['opacity'] < 1 && ! empty( $background['image'] ) ) {
+				$attrs_array = array(
+					'opacity: ' . (float) $background['opacity'],
+				);
+
+				if ( $i === 0 ) {
+					$attrs_array[] = 'background-image: url(' . esc_url( $background['image'] ) . ')';
+				}
+
 				$overlay_attributes = array(
 					'class' => array( 'sow-slider-image-overlay', 'sow-slider-image-' . $background['image-sizing'] ),
-					'style' => array(
-						'background-image: url(' . $background['image'] . ')',
-						'opacity: ' . (float) $background['opacity'],
-					),
+					'style' => $attrs_array,
 				);
+
+				if ( $i !== 0 ) {
+					$overlay_attributes['data-background'] = 'url(' . esc_url( $background['image'] ) . ')';
+				}
+
 				$overlay_attributes = apply_filters( 'siteorigin_widgets_slider_overlay_attributes', $overlay_attributes, $frame, $background );
 
 				$overlay_attributes['class'] = empty( $overlay_attributes['class'] ) ? '' : implode( ' ', $overlay_attributes['class'] );
@@ -581,7 +664,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			return;
 		}
 		$loop = ! empty( $controls['loop_background_videos'] ) && $controls['loop_background_videos'] ? 'loop' : '';
-		$opacity = isset( $controls['opacity'] ) ? 'style="opacity: ' . ( $controls['opacity'] / 100 ) . '"' : '';
+		$opacity = isset( $controls['opacity'] ) ? 'style="opacity: ' . ( (int) $controls['opacity'] / 100 ) . '"' : '';
 
 		$video_element = '<video class="' . esc_attr( implode( ' ', $classes ) ) . '" autoplay ' . $loop . ' ' . $opacity . ' muted playsinline>';
 		$so_video = new SiteOrigin_Video();
@@ -659,7 +742,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 
 		// Pass the Widgets Bundle directory path to allow us to include the volume controls font.
 		$sow_plugin_dir_url = str_replace( site_url(), '', plugin_dir_url( SOW_BUNDLE_BASE_FILE ) );
-		$less_variables['volume_controls_font'] = "'${sow_plugin_dir_url}css/slider/fonts/volume-controls'";
+		$less_variables['volume_controls_font'] = "'{$sow_plugin_dir_url}css/slider/fonts/volume-controls'";
 
 		return $less_variables;
 	}

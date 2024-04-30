@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Features
-Description: Displays a block of features with icons.
+Description: Showcase features with icons, titles, text, and links in a customizable grid layout.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/features-widget-documentation/
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			'sow-features',
 			__( 'SiteOrigin Features', 'so-widgets-bundle' ),
 			array(
-				'description'  => __( 'Displays a block of features with icons.', 'so-widgets-bundle' ),
+				'description'  => __( 'Showcase features with icons, titles, text, and links in a customizable grid layout.' ),
 				'help'         => 'https://siteorigin.com/widgets-bundle/features-widget-documentation/',
 				'panels_title' => false,
 			),
@@ -37,6 +37,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_widget_form() {
+		$useable_units = array( 'px', '%' );
 		return array(
 			'features' => array(
 				'type' => 'repeater',
@@ -242,10 +243,70 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				'default' => 3,
 			),
 
+			'center_items' => array(
+				'type' => 'checkbox',
+				'label' => __( 'Center items', 'so-widgets-bundle' ),
+				'description' => __( 'If fewer features are on a line than the maximum, center the items.', 'so-widgets-bundle' ),
+			),
+
+			'feature_spacing' => array(
+				'type' => 'multi-measurement',
+				'label' => __( 'Space between each feature', 'so-widgets-bundle' ),
+				'default' => '25px 25px',
+				'measurements' => array(
+					'vertical' => array(
+						'label' => __( 'Vertical', 'so-widgets-bundle' ),
+						'units' => $useable_units,
+						'classes' => array(
+							'sow-input-vertical',
+						),
+					),
+					'horizontal' => array(
+						'label' => __( 'Horizontal', 'so-widgets-bundle' ),
+						'units' => $useable_units,
+						'classes' => array(
+							'sow-input-horizontal',
+						),
+					),
+				),
+			),
+
+			'feature_spacing_mobile' => array(
+				'type' => 'multi-measurement',
+				'label' => __( 'Space between each feature on mobile', 'so-widgets-bundle' ),
+				'measurements' => array(
+					'vertical' => array(
+						'label' => __( 'Vertical', 'so-widgets-bundle' ),
+						'units' => $useable_units,
+						'classes' => array(
+							'sow-input-vertical',
+						),
+					),
+					'horizontal' => array(
+						'label' => __( 'Horizontal', 'so-widgets-bundle' ),
+						'units' => $useable_units,
+						'classes' => array(
+							'sow-input-horizontal',
+						),
+					),
+				),
+				'state_handler' => array(
+					'responsive[hide]' => array( 'hide' ),
+					'responsive[show]' => array( 'show' ),
+				),
+			),
+
 			'responsive' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Responsive layout', 'so-widgets-bundle' ),
 				'default' => true,
+				'state_emitter' => array(
+					'callback' => 'conditional',
+					'args' => array(
+						'responsive[show]: val',
+						'responsive[hide]: ! val',
+					),
+				),
 			),
 
 			'more_text_bottom_align' => array(
@@ -304,6 +365,13 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			unset( $instance['title_tag'] );
 		}
 
+		if ( isset( $instance['feature_space'] ) ) {
+			$instance['feature_spacing'] = '25px ' . $instance['feature_space'];
+		} elseif ( ! isset( $instance['feature_spacing'] ) ) {
+			$instance['feature_spacing'] = '25px 25px';
+		}
+
+
 		return $instance;
 	}
 
@@ -345,6 +413,9 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		$less_vars['icon_size'] = $instance['icon_size'];
 		$less_vars['title_tag'] = ! empty( $instance['fonts']['title_options']['tag'] ) ? $instance['fonts']['title_options']['tag'] : 'h5';
 		$less_vars['per_row'] = $instance['per_row'];
+		$less_vars['center_items'] = ! empty( $instance['center_items'] );
+		$less_vars['feature_spacing'] = ! empty( $instance['feature_spacing'] ) ? $instance['feature_spacing'] : '25px';
+		$less_vars['feature_spacing_mobile'] = ! empty( $instance['feature_spacing_mobile'] ) ? $instance['feature_spacing_mobile'] : '25px';
 		$less_vars['use_icon_size'] = empty( $instance['icon_size_custom'] ) ? 'false' : 'true';
 		$less_vars['link_feature'] = ! empty( $instance['link_feature'] );
 		$less_vars['more_text_bottom_align'] = ! empty( $instance['more_text_bottom_align'] ) ? 'true' : 'false';
@@ -381,13 +452,30 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		return $style;
 	}
 
+	public function calculate_feature_width( $instance ) {
+		$per_row = ! empty( $instance['per_row'] ) ? $instance['per_row'] : 3;
+
+		if ( ! empty( $instance['feature_spacing'] ) ) {
+			// It's possible $feature_gap is either a single value, or two.
+			// If two, return the second value. Otherwise, return the first.
+			$feature_gap = explode( ' ', $instance['feature_spacing'] );
+			$feature_gap = count( $feature_gap ) > 1 ? $feature_gap[1] : $feature_gap[0];
+		}
+
+		if ( empty( $feature_gap ) ) {
+			$feature_gap = '25px';
+		}
+
+		return 'calc(' . round( 100 / $per_row, 3 ) . '% - ' . $feature_gap . ')';
+	}
+
 	public function get_settings_form() {
 		return array(
 			'responsive_breakpoint' => array(
 				'type'        => 'measurement',
 				'label'       => __( 'Responsive Breakpoint', 'so-widgets-bundle' ),
-				'default'     => '520px',
-				'description' => __( 'This setting controls when the features widget will collapse for mobile devices. The default value is 520px', 'so-widgets-bundle' ),
+				'default'     => '780px',
+				'description' => __( 'This setting controls when the features widget will collapse for mobile devices. The default value is 780px', 'so-widgets-bundle' ),
 			),
 		);
 	}

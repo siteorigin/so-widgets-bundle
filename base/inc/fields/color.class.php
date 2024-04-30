@@ -12,6 +12,13 @@ class SiteOrigin_Widget_Field_Color extends SiteOrigin_Widget_Field_Text_Input_B
 	 */
 	protected $palettes;
 
+	/**
+	 * Whether to allow for transparent colors (RGBA) or not.
+	 *
+	 * @access protected
+	 * @var bool
+	 */
+	protected $alpha;
 	protected function get_input_classes() {
 		$input_classes = parent::get_input_classes();
 		$input_classes[] = 'siteorigin-widget-input-color';
@@ -45,19 +52,67 @@ class SiteOrigin_Widget_Field_Color extends SiteOrigin_Widget_Field_Text_Input_B
 			}
 		}
 
+		if ( ! empty( $this->alpha ) ) {
+			$data_attributes['alpha-enabled'] = 'true';
+			$data_attributes['alpha-color-type'] = 'hex';
+		}
+
 		return $data_attributes;
 	}
 
-	protected function sanitize_field_input( $value, $instance ) {
-		$sanitized_value = $value;
+	private function validate_rgba( $value, $is_alpha = false ) {
+		$max_value = $is_alpha ? 1 : 255;
+		return is_numeric( $value ) &&
+			$value >= 0 &&
+			$value <= $max_value;
+	}
 
-		if ( ! preg_match( '|^#|', $sanitized_value ) ) {
-			$sanitized_value = '#' . $sanitized_value;
+	protected function sanitize_field_input( $value, $instance ) {
+		if ( empty( $value ) ) {
+			return false;
 		}
 
-		if ( ! preg_match( '|^#([A-Fa-f0-9]{3}){1,2}$|', $sanitized_value ) ) {
-			// 3 or 6 hex digits, or the empty string.
-			$sanitized_value = false;
+		$sanitized_value = $value;
+		if ( ! empty( $this->alpha ) && strpos( $sanitized_value, 'rgba' ) !== false ) {
+			sscanf( $sanitized_value, 'rgba(%d,%d,%d,%f)', $r, $g, $b, $a );
+
+			if (
+				! isset( $r ) ||
+				! $this->validate_rgba( $r )
+			) {
+				$r = 0;
+			}
+
+			if (
+				! isset( $g ) ||
+				! $this->validate_rgba( $g )
+			) {
+				$g = 0;
+			}
+			if (
+				! isset( $b ) ||
+				! $this->validate_rgba( $b )
+			) {
+				$b = 0;
+			}
+
+			if (
+				! isset( $a ) ||
+				! $this->validate_rgba( $a, true )
+			) {
+				$a = 0;
+			}
+
+			$sanitized_value = "rgba($r,$g,$b,$a)";
+		} else {
+			if ( ! preg_match( '|^#|', $sanitized_value ) ) {
+				$sanitized_value = '#' . $sanitized_value;
+			}
+
+			if ( ! preg_match( '|^#([A-Fa-f0-9]{3}){1,3}$|', $sanitized_value ) ) {
+				// 3, 6, or 8 hex digits, or the empty string.
+				$sanitized_value = false;
+			}
 		}
 
 		return $sanitized_value;

@@ -3,7 +3,7 @@
 var sowb = window.sowb || {};
 
 jQuery( function ( $ ) {
-	
+
 	sowb.setupAccordion = function() {
 		$( '.sow-accordion' ).each( function ( index, element ) {
 			var $widget = $( this ).closest( '.so-widget-sow-accordion' );
@@ -14,10 +14,6 @@ jQuery( function ( $ ) {
 			var $accordionPanels = $( element ).find( '> .sow-accordion-panel' );
 			var openPanels = $accordionPanels.filter( '.sow-accordion-panel-open' ).toArray();
 
-			var updateHash = function () {
-				// noop
-			};
-			
 			var scrollToPanel = function ( $panel, smooth ) {
 				// Add some magic number offset to make space for possible nav menus etc.
 				var navOffset = sowAccordion.scrollto_offset ? sowAccordion.scrollto_offset : 80;
@@ -68,11 +64,11 @@ jQuery( function ( $ ) {
 						openPanel( $parentPanel.get( 0 ), true );
 					}
 					if ( ! preventHashChange ) {
-						updateHash();
+						$widget.trigger( 'accordion_open', [ panel, $widget ] );
 					}
 				}
 			};
-			
+
 			var closePanel = function ( panel, preventHashChange ) {
 				var $panel = $( panel );
 				if ( $panel.is( '.sow-accordion-panel-open' ) ) {
@@ -85,14 +81,14 @@ jQuery( function ( $ ) {
 					$panel.removeClass( 'sow-accordion-panel-open' );
 					openPanels.splice( openPanels.indexOf( panel ), 1 );
 					if ( ! preventHashChange ) {
-						updateHash();
+						$widget.trigger( 'accordion_close', [ panel, $widget ] );
 					}
 				}
 			};
-			
+
 			$accordionPanels.find( '> .sow-accordion-panel-header-container > .sow-accordion-panel-header' ).on( 'click keydown', function( e ) {
 				if ( e.type == 'keydown' ) {
-					if ( e.keyCode !== 13 && e.keyCode !== 32 ){
+					if ( e.key !== 'Enter' && e.key !== 'Space' ) {
 						return;
 					}
 					e.preventDefault();
@@ -118,89 +114,12 @@ jQuery( function ( $ ) {
 				}
 			} );
 
-			if ( $widget.data( 'anchor-id' ) || $widget.data( 'use-anchor-tags' ) ) {
-				var anchorId = $widget.data( 'anchor-id' ) ? $widget.data( 'anchor-id' ) : false;
-				var timeoutId;
-
-				updateHash = function () {
-					if ( timeoutId ) {
-						clearTimeout( timeoutId );
-					}
-					timeoutId = setTimeout( function () {
-						
-						var anchors = [];
-						var allOpenPanels = $( '.sow-accordion-panel-open' ).toArray();
-						for ( var i = 0; i < allOpenPanels.length; i++ ) {
-							var anchor = $( allOpenPanels[ i ] ).data( 'anchor' );
-							if ( anchorId && anchorId != 1 ) {
-								anchor = anchorId  + '-' + anchor;
-							}
-
-							if ( anchor ) {
-								var $parentPanel = $( allOpenPanels[ i ] ).parents( '.sow-accordion-panel' );
-								if ( ! $parentPanel.length || ( $parentPanel.length && $parentPanel.hasClass( 'sow-accordion-panel-open' ) ) ) {
-									anchors[ i ] = anchor;
-								}
-							}
-						}
-						
-						if ( anchors && anchors.length ) {
-							window.location.hash = anchors.join( ',' );
-						} else if ( window.location.hash ) { // This prevents adding a history event if no was present on load
-							window.history.pushState( '', document.title, window.location.pathname + window.location.search );
-						}
-					}, 100 );
-				};
-				
-				var updatePanelStates = function () {
-					var panels = $accordionPanels.toArray();
-					var anchors = window.location.hash.substring( 1 ).split( ',' );
-					for ( var i = 0; i < panels.length; i++ ) {
-						var panel = panels[ i ];
-						var panelAnchor = $( panel ).data( 'anchor' );
-						var anchorId = $widget.data( 'anchor-id' ) ? $widget.data( 'anchor-id' ) : false;
-
-						if ( anchorId && anchorId != 1 ) {
-							panelAnchor = $widget.data( 'anchor-id' ) + '-' + panelAnchor;
-						}
-						var panelOpen = anchors.some( function ( anchor ) {
-							return decodeURI( panelAnchor ) === decodeURI( anchor );
-						});
-
-						if ( panelOpen ) {
-							openPanel( panel, true, true );
-						} else {
-							closePanel( panel, true );
-						}
-					}
-				};
-				$( window ).on( 'hashchange', updatePanelStates );
-				if ( window.location.hash ) {
-					updatePanelStates();
-				} else {
-					updateHash();
-				}
-				var initialScrollPanel = $widget.data( 'initialScrollPanel' );
-				if ( window.location.hash && openPanels.length ) {
-					setTimeout( function() {
-						scrollToPanel( $( openPanels[0] ) );
-					}, 500 );
-				} else if ( initialScrollPanel > 0 ) {
-					var $initialScrollPanel = initialScrollPanel > $accordionPanels.length ?
-						$accordionPanels.last() :
-						$accordionPanels.eq( initialScrollPanel - 1 );
-					setTimeout( function () {
-						scrollToPanel( $initialScrollPanel );
-					}, 500 );
-				}
-			}
-			
 			$widget.data( 'initialized', true );
 		} );
 	};
-	
+
 	sowb.setupAccordion();
-	
+
 	$( sowb ).on( 'setup_widgets', sowb.setupAccordion );
 } );
 

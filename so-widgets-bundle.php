@@ -82,9 +82,6 @@ class SiteOrigin_Widgets_Bundle {
 		add_filter( 'wp_enqueue_scripts', array( $this, 'register_general_scripts' ) );
 		add_filter( 'wp_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
 
-		// This is a temporary filter to disable the new Jetpack Grunion contact form editor.
-		add_filter( 'tmp_grunion_allow_editor_view', '__return_false' );
-
 		// Add compatibility for Autoptimize.
 		if ( class_exists( 'autoptimizeMain', false ) ) {
 			add_filter( 'autoptimize_filter_css_exclude', array( $this, 'include_widgets_css_in_autoptimize' ), 10, 2 );
@@ -390,12 +387,25 @@ class SiteOrigin_Widgets_Bundle {
 		wp_register_script(
 			'sowb-pikaday',
 			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/pikaday' . SOW_BUNDLE_JS_SUFFIX . '.js',
-			array( ),
+			array(),
 			'1.5.1'
 		);
+
 		wp_register_style(
 			'sowb-pikaday',
 			plugin_dir_url( __FILE__ ) . 'js/lib/pikaday.css'
+		);
+
+		wp_register_script(
+			'select2',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/select2' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			'4.1.0-rc.0'
+		);
+
+		wp_register_style(
+			'select2',
+			plugin_dir_url( __FILE__ ) . 'css/lib/select2.css'
 		);
 	}
 
@@ -589,6 +599,7 @@ class SiteOrigin_Widgets_Bundle {
 	public function activate_widget( $widget_id, $include = true ) {
 		$exists = false;
 		$widget_folders = $this->get_widget_folders();
+		$widget_id = sanitize_file_name( $widget_id );
 
 		foreach ( $widget_folders as $folder ) {
 			if ( ! file_exists( $folder . $widget_id . '/' . $widget_id . '.php' ) ) {
@@ -607,6 +618,12 @@ class SiteOrigin_Widgets_Bundle {
 		$active_widgets[ $widget_id ] = true;
 		update_option( 'siteorigin_widgets_active', $active_widgets );
 		wp_cache_delete( 'active_widgets', 'siteorigin_widgets' );
+
+		// Clear the PB widgets cache.
+		if ( defined( 'SITEORIGIN_PANELS_VERSION' ) ) {
+			delete_transient( 'siteorigin_panels_widgets' );
+			delete_transient( 'siteorigin_panels_widget_dialog_tabs' );
+		}
 
 		// If we don't want to include the widget files, then our job here is done.
 		if ( ! $include ) {
@@ -654,11 +671,18 @@ class SiteOrigin_Widgets_Bundle {
 	/**
 	 * Deactivate a widget.
 	 */
-	public function deactivate_widget( $id ) {
+	public function deactivate_widget( $widget_id ) {
+		$widget_id = sanitize_file_name( $widget_id );
 		$active_widgets = $this->get_active_widgets();
-		$active_widgets[ $id ] = false;
+		$active_widgets[ $widget_id ] = false;
 		update_option( 'siteorigin_widgets_active', $active_widgets );
 		wp_cache_delete( 'active_widgets', 'siteorigin_widgets' );
+
+		// Clear the PB widgets cache.
+		if ( defined( 'SITEORIGIN_PANELS_VERSION' ) ) {
+			delete_transient( 'siteorigin_panels_widgets' );
+			delete_transient( 'siteorigin_panels_widget_dialog_tabs' );
+		}
 	}
 
 	/**
@@ -857,7 +881,7 @@ class SiteOrigin_Widgets_Bundle {
 		wp_register_script(
 			'sowb-pikaday',
 			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/pikaday' . SOW_BUNDLE_JS_SUFFIX . '.js',
-			array( ),
+			array(),
 			'1.6.1'
 		);
 
@@ -871,6 +895,25 @@ class SiteOrigin_Widgets_Bundle {
 		wp_register_style(
 			'sowb-pikaday',
 			plugin_dir_url( __FILE__ ) . 'js/lib/pikaday.css'
+		);
+
+		wp_register_script(
+			'jquery-fitvids',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/jquery.fitvids' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			1.1
+		);
+
+		wp_register_script(
+			'select2',
+			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/select2' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			'4.1.0-rc.0'
+		);
+
+		wp_register_style(
+			'select2',
+			plugin_dir_url( __FILE__ ) . 'css/lib/select2.css'
 		);
 	}
 
@@ -974,6 +1017,23 @@ class SiteOrigin_Widgets_Bundle {
 		$excluded = implode( ',', array_filter( array_merge( $excl, $add ) ) );
 
 		return $excluded;
+	}
+
+	public function is_block_editor() {
+		$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+
+		// This is for the Gutenberg plugin.
+		$is_gutenberg_page = $current_screen != null &&
+							 function_exists( 'is_gutenberg_page' ) &&
+							 is_gutenberg_page();
+		// This is for WP 5 with the integrated block editor.
+		$is_block_editor = false;
+
+		if ( ! empty( $current_screen ) && method_exists( $current_screen, 'is_block_editor' ) ) {
+			$is_block_editor = $current_screen->is_block_editor();
+		}
+
+		return $is_block_editor || $is_gutenberg_page;
 	}
 }
 

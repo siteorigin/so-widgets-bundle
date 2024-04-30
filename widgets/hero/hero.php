@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Hero Image
-Description: A big hero image with a few settings to make it your own.
+Description: Build an impressive hero image section with custom content, buttons, background image, color, and video.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/hero-image-widget/
@@ -19,7 +19,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			'sow-hero',
 			__( 'SiteOrigin Hero', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'A big hero image with a few settings to make it your own.', 'so-widgets-bundle' ),
+				'description' => __( 'Build an impressive hero image section with custom content, buttons, background image, color, and video.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/hero-image-widget/',
 				'panels_title' => false,
 			),
@@ -110,11 +110,22 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'label' => __( 'Background image', 'so-widgets-bundle' ),
 								'library' => 'image',
 								'fallback' => true,
+								'state_emitter' => array(
+									'callback' => 'conditional',
+									'args'     => array(
+										'has_background_image[show]: val',
+										'has_background_image[hide]: ! val',
+									),
+								),
 							),
 
 							'size' => array(
 								'type' => 'image-size',
 								'label' => __( 'Image size', 'so-widgets-bundle' ),
+								'state_handler' => array(
+									'has_background_image[show]' => array( 'show' ),
+									'has_background_image[hide]' => array( 'hide' ),
+								),
 							),
 
 							'image_type' => array(
@@ -124,6 +135,10 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 									'cover' => __( 'Cover', 'so-widgets-bundle' ),
 								),
 								'default' => 'cover',
+								'state_handler' => array(
+									'has_background_image[show]' => array( 'show' ),
+									'has_background_image[hide]' => array( 'hide' ),
+								),
 							),
 
 							'opacity' => array(
@@ -132,12 +147,17 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 								'min' => 0,
 								'max' => 100,
 								'default' => 100,
+								'state_handler' => array(
+									'has_background_image[show]' => array( 'show' ),
+									'has_background_image[hide]' => array( 'hide' ),
+								),
 							),
 
 							'color' => array(
 								'type' => 'color',
 								'label' => __( 'Background color', 'so-widgets-bundle' ),
 								'default' => '#333333',
+								'alpha' => true,
 							),
 
 							'url' => array(
@@ -426,40 +446,6 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 
 	/**
-	 * Handle Migration of `extra_top_padding` to `padding_top_padding` setting.
-	 *
-	 * The `padding_top_padding` setting was introduced because of an issue
-	 * With padding being unreliably set.
-	 *
-	 * @return $instance
-	 */
-	private static function migrate_padding( $instance, $context ) {
-		// If padding and extra top padding unit of measurement is different,
-		// we need to reset the extra top padding unit to be the same as the
-		// base padding to prevent unexpected changes.
-		if (
-			! empty( $instance['layout'][ $context ]['padding'] ) &&
-			$instance['layout'][ $context ]['padding_unit'] != $instance['layout'][ $context ]['extra_top_padding_unit']
-		) {
-			$instance['layout'][ $context ]['padding_extra_top'] = str_replace(
-				$instance['layout'][ $context ]['extra_top_padding_unit'],
-				$instance['layout'][ $context ]['padding_unit'],
-				$instance['layout'][ $context ]['extra_top_padding']
-			);
-			$instance['layout'][ $context ]['padding_extra_top_unit'] = $instance['layout'][ $context ]['padding_unit'];
-		} else {
-			// No adjustments needed, copy extra padding setting to new setting structure.
-			$instance['layout'][ $context ]['padding_extra_top_unit'] = $instance['layout'][ $context ]['extra_top_padding_unit'];
-			$instance['layout'][ $context ]['padding_extra_top'] = $instance['layout'][ $context ]['extra_top_padding'];
-		}
-
-		unset( $instance['layout'][ $context ]['extra_top_padding'] );
-		unset( $instance['layout'][ $context ]['extra_top_padding_unit'] );
-
-		return $instance;
-	}
-
-	/**
 	 * Migrate Slider settings.
 	 *
 	 * @return mixed
@@ -481,15 +467,6 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		// Run general slider migrations.
 		$instance = parent::modify_instance( $instance );
 
-		// Migrate `extra_top_padding` to `padding_extra_top`.
-		if ( ! empty( $instance['layout']['desktop']['extra_top_padding'] ) ) {
-			$instance = self::migrate_padding( $instance, 'desktop' );
-		}
-
-		if ( ! empty( $instance['layout']['mobile']['extra_top_padding'] ) ) {
-			$instance = self::migrate_padding( $instance, 'mobile' );
-		}
-
 		return $instance;
 	}
 
@@ -508,6 +485,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		// Slider navigation controls
 		$less['nav_color_hex'] = $instance['controls']['nav_color_hex'];
 		$less['nav_size'] = $instance['controls']['nav_size'];
+		$less['nav_align'] = ! empty( $instance['controls']['nav_align'] ) ? $instance['controls']['nav_align'] : 'right';
 
 		// Measurement field type options
 		$meas_options = array();
@@ -537,7 +515,16 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 				}
 
 				// If neither padding is set, we need to unset them both to prevent an override.
-				if ( $meas_options['slide_padding_responsive'] == '0px' && $meas_options['slide_padding_extra_top_responsive'] == '0px' ) {
+				if (
+					(
+						empty( $settings['slide_padding_responsive'] ) ||
+						$meas_options['slide_padding_responsive'] == '0px'
+					) &&
+					(
+						empty( $settings['slide_padding_extra_top_responsive'] ) ||
+						$meas_options['slide_padding_extra_top_responsive'] == '0px'
+					)
+				) {
 					unset( $meas_options['slide_padding_responsive'] );
 					unset( $meas_options['slide_padding_extra_top_responsive'] );
 				}
