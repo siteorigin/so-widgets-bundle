@@ -1,7 +1,7 @@
 <?php
 
 /**
- * A simple shortcode that just renders a
+ * A simple shortcode that just renders a widget.
  *
  * @param string $content
  *
@@ -13,12 +13,12 @@ function siteorigin_widget_shortcode( $attr, $content = '' ) {
 		'id' => '',
 	), $attr, 'panels_widget' );
 
-	$attr[ 'class' ] = html_entity_decode( $attr[ 'class' ] );
+	$attr['class'] = html_entity_decode( $attr['class'] );
 
 	global $wp_widget_factory;
 
-	if ( ! empty( $attr[ 'class' ] ) && isset( $wp_widget_factory->widgets[ $attr[ 'class' ] ] ) ) {
-		$the_widget = $wp_widget_factory->widgets[ $attr[ 'class' ] ];
+	if ( ! empty( $attr['class'] ) && isset( $wp_widget_factory->widgets[ $attr['class'] ] ) ) {
+		$the_widget = $wp_widget_factory->widgets[ $attr['class'] ];
 
 		// Parse the value of the shortcode
 		preg_match( '/value="(.*?)"/', trim( $content ), $matches );
@@ -27,8 +27,8 @@ function siteorigin_widget_shortcode( $attr, $content = '' ) {
 			$data = json_decode( html_entity_decode( $matches[1] ), true );
 		}
 
-		$widget_args = ! empty( $data[ 'args' ] ) ? $data[ 'args' ] : array();
-		$widget_instance = ! empty( $data[ 'instance' ] ) ? $data[ 'instance' ] : array();
+		$widget_args = ! empty( $data['args'] ) ? $data['args'] : array();
+		$widget_instance = ! empty( $data['instance'] ) ? $data['instance'] : array();
 
 		$widget_args = escape_widget_data( $widget_args );
 		$widget_instance = escape_widget_data( $widget_instance );
@@ -63,7 +63,7 @@ function siteorigin_widget_shortcode_register() {
 	global $shortcode_tags;
 
 	// Only load this as a fallback if Page Builder hasn't already registered it.
-	if ( empty( $shortcode_tags[ 'siteorigin_widget' ] ) ) {
+	if ( empty( $shortcode_tags['siteorigin_widget'] ) ) {
 		add_shortcode( 'siteorigin_widget', 'siteorigin_widget_shortcode' );
 	}
 }
