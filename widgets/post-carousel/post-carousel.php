@@ -251,7 +251,6 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 		$carousel_settings = $this->carousel_settings_form_fields();
 		$carousel_settings['fields']['loop']['description'] = __( 'Automatically return to the first post after the last post.', 'so-widgets-bundle' );
-		unset( $carousel_settings['fields']['animation'] );
 
 		siteorigin_widgets_array_insert(
 			$carousel_settings['fields'],
