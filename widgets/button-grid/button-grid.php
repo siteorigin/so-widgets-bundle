@@ -74,8 +74,8 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 								'label' => __( 'Button Alignment', 'so-widgets-bundle' ),
 								'default' => 'space-between',
 								'options' => array(
-									'space-evenly' => __( 'Items Spaced Evenly', 'so-widgets-bundle' ),
 									'space-between' => __( 'Space Between Items', 'so-widgets-bundle' ),
+									'space-evenly' => __( 'Items Spaced Evenly', 'so-widgets-bundle' ),
 									'left' => __( 'Left', 'so-widgets-bundle' ),
 									'center' => __( 'Center', 'so-widgets-bundle' ),
 									'end' => __( 'Right', 'so-widgets-bundle' ),
@@ -102,8 +102,8 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 								'label' => __( 'Button Alignment', 'so-widgets-bundle' ),
 								'default' => 'space-between',
 								'options' => array(
-									'below' => __( 'Evenly', 'so-widgets-bundle' ),
 									'space-between' => __( 'Space Between Items', 'so-widgets-bundle' ),
+									'below' => __( 'Evenly', 'so-widgets-bundle' ),
 									'space-evenaly' => __( 'Items Spaced Evenly', 'so-widgets-bundle' ),
 									'left' => __( 'Left', 'so-widgets-bundle' ),
 									'center' => __( 'Center', 'so-widgets-bundle' ),
