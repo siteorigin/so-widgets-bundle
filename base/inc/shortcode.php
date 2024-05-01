@@ -30,6 +30,9 @@ function siteorigin_widget_shortcode( $attr, $content = '' ) {
 		$widget_args = ! empty( $data[ 'args' ] ) ? $data[ 'args' ] : array();
 		$widget_instance = ! empty( $data[ 'instance' ] ) ? $data[ 'instance' ] : array();
 
+		$widget_args = escape_widget_data( $widget_args );
+		$widget_instance = escape_widget_data( $widget_instance );
+
 		$widget_args = wp_parse_args( array(
 			'before_widget' => '',
 			'after_widget' => '',
@@ -42,6 +45,18 @@ function siteorigin_widget_shortcode( $attr, $content = '' ) {
 
 		return ob_get_clean();
 	}
+}
+
+function escape_widget_data( $data ) {
+	$escaped_data = array();
+	foreach ( $data as $key => $value ) {
+		if ( is_array( $value ) ) {
+			$escaped_data[ $key ] = escape_widget_data( $value );
+		} else {
+			$escaped_data[ $key ] = esc_html( $value );
+		}
+	}
+	return $escaped_data;
 }
 
 function siteorigin_widget_shortcode_register() {
