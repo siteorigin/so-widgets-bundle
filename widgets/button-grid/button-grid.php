@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 			'sow-button-grid',
 			__( 'SiteOrigin Button Grid', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Placeholder.', 'so-widgets-bundle' ),
+				'description' => __( 'Add multiple buttons in one go, customize individually, and present them in a neat grid layout.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/button-grid-widget/',
 				'instance_storage' => true,
 				'panels_title' => false,
