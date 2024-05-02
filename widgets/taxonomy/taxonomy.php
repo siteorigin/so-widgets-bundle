@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Taxonomy
-Description: Displays the selected taxonomy for the current post.
+Description: Automatically display the taxonomies of the current post with customizable labels, colors, and link settings.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/taxonomy-widget/
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {
 			'sow-taxonomy',
 			__( 'SiteOrigin Taxonomy', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Displays the selected taxonomy for the current post.', 'so-widgets-bundle' ),
+				'description' => __( 'Automatically display the taxonomies of the current post with customizable labels, colors, and link settings.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/taxonomy-widget/',
 			),
 			array(),

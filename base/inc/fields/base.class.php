@@ -348,13 +348,13 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * @return mixed|string
 	 */
 	public function sanitize( $value, $instance = array(), $old_value = null ) {
-		$value = $this->sanitize_field_input( $value, $instance );
-
 		if ( empty( $value ) ) {
 			return '';
 		}
 
-		if ( isset( $this->sanitize ) ) {
+		$value = $this->sanitize_field_input( $value, $instance );
+
+		if ( isset( $this->sanitize ) && ! empty( $value ) ) {
 			// This field also needs some custom sanitization
 			switch( $this->sanitize ) {
 				case 'text':
@@ -375,6 +375,10 @@ abstract class SiteOrigin_Widget_Field_Base {
 
 				case 'email':
 					$value = sanitize_email( $value );
+					break;
+
+				case 'number':
+					$value = (int) $value;
 					break;
 
 				default:

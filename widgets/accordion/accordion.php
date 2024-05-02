@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Accordion
-Description: An accordion to squeeze a lot of content into a small space.
+Description: Efficiently display content in expandable sections, maximizing space for improved organization.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/accordion-widget/
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			'sow-accordion',
 			__( 'SiteOrigin Accordion', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'An accordion to squeeze a lot of content into a small space.', 'so-widgets-bundle' ),
+				'description' => __( 'Efficiently display content in expandable sections, maximizing space for improved organization.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/accordion-widget/',
 			),
 			array(),

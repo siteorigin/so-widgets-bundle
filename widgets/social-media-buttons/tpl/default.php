@@ -56,7 +56,7 @@
 		} ?>>
 			<span>
 				<?php if ( ! empty( $network['is_custom'] ) ) {
-					echo '<!-- premium-' . esc_attr( $network['name'] ) . ' -->';
+					echo '<!-- premium-' . esc_html( $network['name'] ) . ' -->';
 				} ?>
 				<?php echo siteorigin_widget_get_icon( $network['icon_name'] ); ?>
 				<?php if ( ! empty( $network['is_custom'] ) ) {

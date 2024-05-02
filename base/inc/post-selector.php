@@ -28,7 +28,15 @@ function siteorigin_widget_post_selector_process_query( $query, $exclude_current
 	}
 
 	if ( ! empty( $query['post__in'] ) ) {
-		$query['post__in'] = explode( ',', $query['post__in'] );
+		if ( ! is_array( $query['post__in'] ) ) {
+			$query['post__in'] = explode( ',', $query['post__in'] );
+		}
+
+		// Filter out empty values to prevent deprecated warnings.
+		$query['post__in'] = array_filter( $query['post__in'], function( $value ) {
+			return ! empty( $value );
+		} );
+
 		$query['post__in'] = array_map( 'intval', $query['post__in'] );
 	}
 
@@ -103,12 +111,19 @@ function siteorigin_widget_post_selector_process_query( $query, $exclude_current
 	if ( ! empty( $query['additional'] ) ) {
 		$query = wp_parse_args( $query['additional'], $query );
 		unset( $query['additional'] );
+	}
 
-		// If post_not_in is set, we need to convert it to an array to avoid issues with the query.
-		if ( ! empty( $query['post__not_in'] ) && !is_array( $query['post__not_in'] ) ) {
+	if ( ! empty( $query['post__not_in'] ) ) {
+		if ( ! is_array( $query['post__not_in'] ) ) {
 			$query['post__not_in'] = explode( ',', $query['post__not_in'] );
-			$query['post__not_in'] = array_map( 'intval', $query['post__not_in'] );
 		}
+
+		// Filter out empty values to prevent deprecated warnings.
+		$query['post__not_in'] = array_filter( $query['post__not_in'], function( $value ) {
+			return ! empty( $value );
+		} );
+
+		$query['post__not_in'] = array_map( 'intval', $query['post__not_in'] );
 	}
 
 	if ( $exclude_current && get_the_ID() ) {

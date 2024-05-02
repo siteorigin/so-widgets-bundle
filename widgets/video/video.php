@@ -2,7 +2,7 @@
 
 /*
 Widget Name: Video Player
-Description: Play all your self or externally hosted videos in a customizable video player.
+Description: Embed self-hosted or externally hosted videos with a customizable player, controls, and responsive sizing.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/video-player-widget/
@@ -14,7 +14,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'sow-video',
 			__( 'SiteOrigin Video Player', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Play all your self or externally hosted videos in a customizable video player.', 'so-widgets-bundle' ),
+				'description' => __( 'Embed self-hosted or externally hosted videos with a customizable player, controls, and responsive sizing.', 'so-widgets-bundle' ),
 				'help'        => 'http://siteorigin.com/widgets-bundle/video-widget-documentation/',
 			),
 			array(),

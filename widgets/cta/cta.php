@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Call To Action
-Description: Insert a title, subtitle, and button. Get visitors moving in the right direction.
+Description: Prompt visitors to take action with a customizable title, subtitle, button, and design settings.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/call-action-widget/
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 			'sow-cta',
 			__( 'SiteOrigin Call To Action', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Insert a title, subtitle, and button. Get visitors moving in the right direction.', 'so-widgets-bundle' ),
+				'description' => __( 'Prompt visitors to take action with a customizable title, subtitle, button, and design settings.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/call-action-widget/',
 			),
 			array(
