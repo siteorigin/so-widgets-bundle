@@ -1,29 +1,35 @@
 @responsive_breakpoint: 780px;
 @date: default;
+
+@bottom_margin: default;
+
 @list_style_type: default;
 @list_style_color: default;
 @list_style_position: default;
+
 @title_font: default;
 @title_font_style: default;
 @title_font_weight: default;
 @title_font_size: default;
 @title_color: default;
 @title_color_hover: default;
+
 @date_font: default;
 @date_font_style: default;
 @date_font_weight: default;
 @date_font_size: default;
 @date_color: default;
 
+
+@featured_image: default;
+@featured_image_placement: default;
+@featured_image_border_color: default;
+@featured_image_border_thickness: 1px;
+@list_style_image: default;
+
 .sow-recent-posts {
-	li {
-		color: @list_style_color;
-		list-style-position: @list_style_position;
-		list-style-type: @list_style_type;
-	}
 
 	&-title {
-		display: inline-block; // Required for inside list style position.
 		font-family: @title_font;
 		font-size: @title_font_size;
 		font-style: @title_font_style;
@@ -53,6 +59,72 @@
 
 		.updated:not(.published){
 			display:none
+		}
+	}
+
+	&-item {
+		color: @list_style_color;
+		margin-bottom: @bottom_margin;
+		margin: 0;
+		padding: 0;
+		position: relative;
+
+		& when ( @list_style_image = default ) {
+			list-style-position: @list_style_position;
+			list-style-type: @list_style_type;
+		}
+
+		& when not ( @list_style_image = default ) {
+			list-style: none;
+
+			&::before {
+				background: @list_style_image;
+				content: '';
+				display: inline-block;
+				height: 25px;
+				left: -25px;
+				position: absolute;
+				width: 25px;
+			}
+		}
+
+		// Prevent featured image from being misaligned by list item.
+		.wp-post-image {
+			display: inline-block;
+			vertical-align: middle;
+		}
+
+		@media (min-width: @responsive_breakpoint) {
+			&-inner {
+				align-items: center;
+				display: grid;
+				gap: 5px;
+				grid-template-columns: 1fr 6fr;
+			}
+		}
+
+		& when not (@featured_image = default) {
+
+			.so-premium-recent-posts-entry-thumbnail {
+				& when (@featured_image_placement = above) {
+					flex-basis: 100%;
+				}
+
+				& when (@featured_image_placement = below) {
+					flex-basis: 100%;
+					order: 1;
+				}
+
+				& when (@featured_image_placement = right) {
+					order: 1;
+				}
+			}
+
+			& when not ( @featured_image_border_color = default ) {
+				.so-premium-recent-posts-entry-thumbnail img {
+					border: @featured_image_border_thickness solid @featured_image_border_color;
+				}
+			}
 		}
 	}
 }

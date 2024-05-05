@@ -21,7 +21,11 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			false,
 			plugin_dir_path( __FILE__ )
 		);
+
+	}
+	public function initialize() {
 		add_filter( 'siteorigin_widgets_block_exclude_widget', array( $this, 'exclude_from_widgets_block_cache' ), 10, 2 );
+		add_action( 'wp_loaded', array( $this, 'register_image_size' ) );
 	}
 
 	public function exclude_from_widgets_block_cache( $exclude, $widget_class ) {
@@ -30,6 +34,10 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 		}
 
 		return $exclude;
+	}
+
+	public function register_image_size() {
+		add_image_size( 'sow-recent-post', 72, 72, true );
 	}
 
 	public function get_settings_form() {
@@ -45,43 +53,236 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 
 	function get_widget_form() {
 		return array(
-			'link_title' => array(
-				'type' => 'checkbox',
-				'label' => __( 'Link Post Title', 'so-widgets-bundle' ),
-				'default' => true,
-				'state_emitter' => array(
-					'callback' => 'conditional',
-					'args' => array(
-						'link_title[true]: val',
-						'link_title[false]: ! val',
+			'settings' => array(
+				'type' => 'section',
+				'label' => __( 'Settings', 'so-widgets-bundle' ),
+				'fields' => array(
+					'featured_image' => array(
+						'type' => 'checkbox',
+						'label' => __( 'Display Featured Image', 'so-widgets-bundle' ),
+						'default' => true,
+						'state_emitter' => array(
+							'callback' => 'conditional',
+							'args' => array(
+								'featured_image[show]: val',
+								'featured_image[hide]: ! val',
+							),
+						),
+					),
+					'featured_image_size' => array(
+						'type' => 'image-size',
+						'label' => __( 'Featured Image Size', 'so-widgets-bundle' ),
+						'default' => 'sow-recent-post',
+						'state_handler' => array(
+							'featured_image[show]' => array( 'show' ),
+							'featured_image[hide]' => array( 'hide' ),
+						),
+					),
+					'post_title' => array(
+						'type' => 'checkbox',
+						'label' => __( 'Post Title', 'so-widgets-bundle' ),
+						'default' => true,
+						'state_emitter' => array(
+							'callback' => 'conditional',
+							'args' => array(
+								'post_title[true]: val',
+								'post_title[false]: ! val',
+							),
+						),
+					),
+					'tag' => array(
+						'type' => 'select',
+						'label' => __( 'Post Title HTML Tag', 'so-widgets-bundle' ),
+						'default' => 'h3',
+						'options' => array(
+							'h1' => __( 'H1', 'so-widgets-bundle' ),
+							'h2' => __( 'H2', 'so-widgets-bundle' ),
+							'h3' => __( 'H3', 'so-widgets-bundle' ),
+							'h4' => __( 'H4', 'so-widgets-bundle' ),
+							'h5' => __( 'H5', 'so-widgets-bundle' ),
+							'h6' => __( 'H6', 'so-widgets-bundle' ),
+							'p' => __( 'Paragraph', 'so-widgets-bundle' ),
+						)
+					),
+					'new_window' => array(
+						'type' => 'checkbox',
+						'label' => __( 'Open Post in New ', 'so-widgets-bundle' ),
+					),
+					'date' => array(
+						'type' => 'checkbox',
+						'label' => __( 'Display Post Date', 'so-widgets-bundle' ),
+						'default' => true,
+						'state_emitter' => array(
+							'callback' => 'conditional',
+							'args' => array(
+								'post_date[true]: val',
+								'post_date[false]: ! val',
+							),
+						),
+					),
+					'date_format' => array(
+						'type' => 'select',
+						'label' => __( 'Post Date Format', 'so-widgets-bundle' ),
+						'default' => 'default',
+						'state_handler' => array(
+							'post_date[true]' => array( 'show' ),
+							'post_date[false]' => array( 'hide' ),
+						),
+						'default' => sanitize_option( 'date_format', get_option( 'date_format' ) ),
+						'options' => array(
+							'' => sprintf(
+								__( 'Default (%s)', 'so-widgets-bundle' ),
+								date(
+									sanitize_option(
+										'date_format',
+										get_option( 'date_format' )
+									)
+								)
+							),
+							'Y-m-d' => sprintf( __( 'yyyy-mm-dd (%s)', 'so-widgets-bundle' ), date( 'Y/m/d' ) ),
+							'm/d/Y' => sprintf( __( 'mm/dd/yyyy (%s)', 'so-widgets-bundle' ), date( 'm/d/Y' ) ),
+							'd/m/Y' => sprintf( __( 'dd/mm/yyyy (%s)', 'so-widgets-bundle' ), date( 'd/m/Y' ) ),
+						),
+					),
+					'post_content' => array(
+						'type' => 'select',
+						'label' => __( 'Display Post Content', 'so-widgets-bundle' ),
+						'state_emitter' => array(
+							'callback' => 'select',
+							'args' => array( 'post_content' ),
+						),
+						'options' => array(
+							'' => __( 'None', 'so-widgets-bundle' ),
+							'excerpt' => __( 'Excerpt', 'so-widgets-bundle' ),
+						),
+					),
+					'excerpt_length' => array(
+						'type' => 'number',
+						'label' => __( 'Excerpt Length', 'so-widgets-bundle' ),
+						'default' => 55,
+						'state_handler' => array(
+							'post_content[excerpt]' => array( 'show' ),
+							'_else[post_content]' => array( 'hide' ),
+						),
+					),
+					'excerpt_trim' => array(
+						'type' => 'text',
+						'label' => __( 'Post Excerpt Trim Indicator', 'so-widgets-bundle' ),
+						'default' => '...',
+						'state_handler' => array(
+							'post_content[excerpt]' => array( 'show' ),
+							'_else[post_content]' => array( 'hide' ),
+						),
+					),
+					'read_more' => array(
+						'type' => 'checkbox',
+						'label' => __( 'Display Read More Link', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'post_content[excerpt]' => array( 'show' ),
+							'_else[post_content]' => array( 'hide' ),
+						),
+						'state_emitter' => array(
+							'callback' => 'conditional',
+							'args' => array(
+								'read_more[true]: val',
+								'read_more[false]: ! val',
+							),
+						),
+					),
+					'read_more_text' => array(
+						'type' => 'text',
+						'label' => __( 'Read More Text', 'so-widgets-bundle' ),
+						'default' => __( 'Continue reading', 'so-widgets-bundle' ),
+						'state_handler' => array(
+							'read_more[true]' => array( 'show' ),
+							'read_more[false]' => array( 'hide' ),
+						),
 					),
 				),
 			),
-			'new_window' => array(
-				'type' => 'checkbox',
-				'label' => __( 'Open In New Window', 'so-widgets-bundle' ),
-				'state_handler' => array(
-					'link_title[true]' => array( 'show' ),
-					'link_title[false]' => array( 'hide' ),
-				),
-			),
-			'date' => array(
-				'type' => 'checkbox',
-				'label' => __( 'Display Post Date', 'so-widgets-bundle' ),
-				'default' => true,
-				'state_emitter' => array(
-					'callback' => 'conditional',
-					'args' => array(
-						'post_date[true]: val',
-						'post_date[false]: ! val',
-					),
-				),
-			),
+
 			'design' => array(
 				'type' => 'section',
 				'label' => __( 'Design', 'so-widgets-bundle' ),
 				'hide' => true,
 				'fields' => array(
+					'post' => array(
+						'type' => 'section',
+						'label' => __( 'Post', 'so-widgets-bundle' ),
+						'hide' => true,
+						'fields' => array(
+							'bottom_margin' => array(
+								'type' => 'measurement',
+								'label' => __( 'Bottom Margin', 'so-widgets-bundle' ),
+								'default' => '16px',
+							)
+						),
+					),
+					'featured_image' => array(
+						'type' => 'section',
+						'label' => __( 'Featured Image', 'so-widgets-bundle' ),
+						'hide' => true,
+						'state_handler' => array(
+							'featured_image[show]' => array( 'show' ),
+							'featured_image[hide]' => array( 'hide' ),
+						),
+						'fields' => array(
+							'placement' => array(
+							'type' => 'select',
+								'label' => __( 'Placement', 'so-widgets-bundle' ),
+								'default' => 'above',
+								'options' => array(
+									'above' => __( 'Above', 'so-widgets-bundle' ),
+									'right' => __( 'Right', 'so-widgets-bundle' ),
+									'below' => __( 'Below', 'so-widgets-bundle' ),
+									'left' => __( 'Left', 'so-widgets-bundle' ),
+								),
+							),
+							'padding' => array(
+								'type' => 'measurement',
+								'label' => __( 'Padding', 'so-widgets-bundle' ),
+								'default' => '0px',
+							),
+							'border' => array(
+								'type' => 'select',
+								'label' => __( 'Border Style', 'so-widgets-bundle' ),
+								'default' => 'none',
+								'state_emitter' => array(
+									'callback' => 'select',
+									'args' => array( 'border_style' ),
+								),
+								'options' => array(
+									'' => __( 'None', 'so-widgets-bundle' ),
+									'solid' => __( 'Solid', 'so-widgets-bundle' ),
+									'dotted' => __( 'Dotted', 'so-widgets-bundle' ),
+									'dashed' => __( 'Dashed', 'so-widgets-bundle' ),
+									'double' => __( 'Double', 'so-widgets-bundle' ),
+									'groove' => __( 'Groove', 'so-widgets-bundle' ),
+									'ridge' => __( 'Ridge', 'so-widgets-bundle' ),
+									'inset' => __( 'Inset', 'so-widgets-bundle' ),
+									'outset' => __( 'Outset', 'so-widgets-bundle' ),
+								),
+							),
+							'border_color' => array(
+								'type' => 'color',
+								'label' => __( 'Border Color', 'so-widgets-bundle' ),
+								'default' => '#e6e6e6',
+								'state_handler' => array(
+									'border_style[none]' => array( 'hide' ),
+									'_else[border_style]' => array( 'show' ),
+								),
+							),
+							'border_thickness' => array(
+								'type' => 'measurement',
+								'label' => __( 'Border Thickness', 'so-widgets-bundle' ),
+								'default' => '1px',
+								'state_handler' => array(
+									'border_style[none]' => array( 'hide' ),
+									'_else[border_style]' => array( 'show' ),
+								),
+							),
+						),
+					),
 					'title' => array(
 						'type' => 'section',
 						'label' => __( 'Post Title', 'so-widgets-bundle' ),
@@ -94,7 +295,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							'font_size' => array(
 								'type' => 'measurement',
 								'label' => __( 'Font Size', 'so-widgets-bundle' ),
-								'default' => '20px',
+								'default' => '14px',
 							),
 							'color' => array(
 								'type' => 'color',
@@ -105,10 +306,6 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 								'type' => 'color',
 								'label' => __( 'Hover Color', 'so-widgets-bundle' ),
 								'default' => '#626262',
-								'state_handler' => array(
-									'link_title[true]' => array( 'show' ),
-									'link_title[false]' => array( 'hide' ),
-								),
 							),
 						),
 					),
@@ -116,10 +313,6 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 						'type' => 'section',
 						'label' => __( 'Post Date', 'so-widgets-bundle' ),
 						'hide' => true,
-						'state_handler' => array(
-							'link_title[true]' => array( 'show' ),
-							'link_title[false]' => array( 'hide' ),
-						),
 						'fields' => array(
 							'font' => array(
 								'type' => 'font',
@@ -128,7 +321,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							'font_size' => array(
 								'type' => 'measurement',
 								'label' => __( 'Font Size', 'so-widgets-bundle' ),
-								'default' => '0.87rem',
+								'default' => '12px',
 							),
 							'color' => array(
 								'type' => 'color',
@@ -145,13 +338,14 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							'type' => array(
 								'type' => 'select',
 								'label' => __( 'Type', 'so-widgets-bundle' ),
-								'default' => 'disc',
+								'default' => 'none',
 								'state_emitter' => array(
 									'callback' => 'select',
 									'args' => array( 'list_type' ),
 								),
 								'options' => array(
 									'none' => __( 'None', 'so-widgets-bundle' ),
+									'image' => __( 'Image', 'so-widgets-bundle' ),
 									'disc' => __( 'disc', 'so-widgets-bundle' ),
 									'circle' => __( 'circle', 'so-widgets-bundle' ),
 									'square' => __( 'square', 'so-widgets-bundle' ),
@@ -219,12 +413,21 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 									'-moz-urdu' => __( '-moz-urdu', 'so-widgets-bundle' ),
 								),
 							),
+							'image' => array(
+								'type' => 'media',
+								'label' => __( 'Image', 'so-widgets-bundle' ),
+								'fallback' => true,
+								'state_handler' => array(
+									'list_type[image]' => array( 'show' ),
+									'_else[list_type]' => array( 'hide' ),
+								),
+							),
 							'color' => array(
 								'type' => 'color',
 								'label' => __( 'Color', 'so-widgets-bundle' ),
 								'default' => '#929292',
 								'state_handler' => array(
-									'list_type[none]' => array( 'hide' ),
+									'list_type[none,image]' => array( 'hide' ),
 									'_else[list_type]' => array( 'show' ),
 								),
 							),
@@ -233,7 +436,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 								'label' => __( 'Position', 'so-widgets-bundle' ),
 								'default' => 'outside',
 								'state_handler' => array(
-									'list_type[none]' => array( 'hide' ),
+									'list_type[none,image]' => array( 'hide' ),
 									'_else[list_type]' => array( 'show' ),
 								),
 								'options' => array(
@@ -277,6 +480,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			'title_color_hover' => ! empty( $instance['design']['title']['color_hover'] ) ? $instance['design']['title']['color_hover'] : '',
 			'date_font_size' => ! empty( $instance['design']['date']['font_size'] ) ? $instance['design']['date']['font_size'] : '',
 			'date_color' => ! empty( $instance['design']['date']['color'] ) ? $instance['design']['date']['color'] : '',
+			'bottom_margin' => ! empty( $instance['design']['post']['bottom_margin'] ) ? $instance['design']['post']['bottom_margin'] : '',
 		);
 
 		if ( ! empty( $instance['design']['title']['font'] ) ) {
@@ -297,7 +501,151 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			}
 		}
 
+		if ( ! empty( $instance['settings']['featured_image'] ) ) {
+			$less_vars['featured_image'] = true;
+			$less_vars['featured_image_placement'] = ! empty( $instance['design']['featured_image']['placement'] ) ? $instance['design']['featured_image']['placement'] : '';
+			$less_vars['featured_image_border_style'] = ! empty( $instance['design']['featured_image']['border_style'] ) ? $instance['design']['featured_image']['border_style'] : '';
+			$less_vars['featured_image_border_thickness'] = ! empty( $instance['design']['featured_image']['border_thickness'] ) ? $instance['design']['featured_image']['border_thickness'] : '1px';
+			$less_vars['featured_image_border_color'] = ! empty( $instance['design']['featured_image']['border_color'] ) ? $instance['design']['featured_image']['border_color'] : '';
+		}
+
+		if (
+			$instance['design']['list_style']['type'] == 'image' &&
+			(
+				! empty( $instance['design']['list_style']['image'] ) ||
+				! empty( $instance['design']['list_style']['image_fallback'] )
+			)
+		) {
+			$src = siteorigin_widgets_get_attachment_image_src(
+				$instance['design']['list_style']['image'],
+				apply_filters( 'siteorigin_widgets_recent_posts_image_size', array( 25, 25 ) ),
+				! empty( $instance['design']['list_style']['image_fallback'] ) ? $instance['design']['list_style']['image_fallback'] : false
+			);
+
+			if ( ! empty( $src ) ) {
+				$less_vars['list_style_image'] = 'url( "' . esc_url( $src[0] ) . '")';
+			}
+		}
+
 		return $less_vars;
+	}
+
+	public function get_template_variables( $instance, $args ) {
+		return array(
+			'settings' => ! empty( $instance ) ? $instance['settings'] : array(),
+		);
+	}
+
+	public static function featured_image( $settings ) {
+		if ( empty( $settings['featured_image'] ) || ! has_post_thumbnail() ) {
+			// Prevent misalignment by not outputting a thumbnail.
+			echo '<div class="sow-recent-posts-thumbnail"></div>';
+			return;
+		}
+
+		ob_start();
+		?>
+		<a
+			class="sow-recent-posts-thumbnail"
+			href="<?php the_permalink(); ?>"
+			<?php echo ! empty( $settings['new_window'] ) ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
+		>
+			<?php
+			the_post_thumbnail( $settings['featured_image_size'] == 'custom_size' ? array( $settings['featured_image_size_width'], $settings['featured_image_size_height'] ) : $settings['featured_image_size'] );
+			?>
+		</a>
+		<?php
+		echo apply_filters( 'siteorigin_widgets_recent_posts_featured_image_markup', ob_get_clean(), $settings );
+	}
+
+	public static function post_title( $settings ) {
+
+		if ( empty( $settings['post_title'] ) ) {
+			return;
+		}
+
+		$tag = siteorigin_widget_valid_tag(
+			! empty( $settings['tag'] ) ? $settings['tag'] : 'h3',
+			'h3'
+		);
+		?>
+		<<?php echo esc_html( $tag ); ?> class="sow-recent-posts-title">
+			<a
+				href="<?php echo esc_url( get_the_permalink() ); ?>"
+				<?php echo ! empty( $new_window ) ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
+			>
+				<?php echo get_the_title(); ?>
+			</a>
+		</<?php echo esc_html( $tag ); ?>>
+		<?php
+	}
+
+	public static function post_date( $settings ) {
+		if ( empty( $settings['date'] ) ) {
+			return;
+		}
+
+		$date_format = ! empty( $settings['date_format'] ) ? $settings['date_format'] : sanitize_option(
+			'date_format',
+			get_option( 'date_format' )
+		);
+		?>
+		<span class="sow-recent-posts-date">
+			<time
+				class="published"
+				datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>"
+				aria-label="<?php esc_attr_e( 'Published on:', 'so-widgets-bundle' ); ?>"
+			>
+			<?php echo esc_html( get_the_date( $date_format ) ); ?>
+		</time>
+
+		<time
+				class="updated"
+				datetime="<?php echo esc_attr( get_the_modified_date( 'c' ) ); ?>"
+				aria-label="<?php esc_attr_e( 'Last updated on:', 'so-widgets-bundle' ); ?>"
+			>
+				<?php echo esc_html( get_the_modified_date( $date_format ) ); ?>
+			</time>
+		</span>
+		<?php
+	}
+
+	public static function content( $settings ) {
+		if ( empty( $settings['post_content'] ) ) {
+			return;
+		}
+
+		$excerpt = get_the_excerpt();
+		if ( ! has_excerpt() ) {
+			$length = ! empty( $settings['excerpt_length'] ) ? $settings['excerpt_length'] : 55;
+			$excerpt_trim = empty( $settings['excerpt_trim'] ) ? '...' : $settings['excerpt_trim'];
+			$excerpt = wp_trim_words(
+				$excerpt,
+				$length,
+				$excerpt_trim
+			);
+		}
+
+		if ( empty( $excerpt ) ) {
+			return;
+		}
+
+		echo '<p class="sow-recent-posts-excerpt">' . wp_kses_post( $excerpt ) . '</p>';
+	}
+
+	public static function read_more( $settings ) {
+		if ( empty( $settings['read_more'] ) ) {
+			return;
+		}
+		?>
+		<a
+			class="sow-recent-posts-read-more"
+			href="<?php esc_url( the_permalink() ); ?>"
+			<?php echo ! empty( $settings['new_window'] ) ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
+		>
+			<?php echo esc_html( $settings['read_more_text'] ); ?>
+		</a>
+		<?php
 	}
 }
 siteorigin_widget_register( 'sow-recent-posts', __FILE__, 'SiteOrigin_Widget_Recent_Posts_Widget' );
