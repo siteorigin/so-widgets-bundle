@@ -62,6 +62,9 @@
 		.rounded(@rounding);
 
 		text-shadow: 0 1px 0 rgba(0,0,0,0.05);
+		& when ( @has_text = true ) {
+			padding-inline: @padding * 2;
+		}
 
 		& when not ( @has_text = true ) {
 			.sow-icon-image,
