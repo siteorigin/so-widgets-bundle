@@ -23,7 +23,7 @@ return array(
 		'label' => __( 'Email', 'so-widgets-bundle' ),
 		'base_url' => 'mailto:',
 		'icon_color' => '#ffffff',
-		'button_color' => '#99c4e6',
+		'button_color' => '#4682b4',
 	),
 	'phone' => array(
 		'label' => __( 'Phone', 'so-widgets-bundle' ),
