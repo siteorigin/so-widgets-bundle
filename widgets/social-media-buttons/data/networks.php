@@ -71,7 +71,7 @@ return array(
 		'label' => __( 'Instagram', 'so-widgets-bundle' ),
 		'base_url' => 'https://instagram.com/',
 		'icon_color' => '#ffffff',
-		'button_color' => '#3d739c',
+		'button_color' => '#405DE6',
 	),
 	'vk' => array(
 		'label' => __( 'VK', 'so-widgets-bundle' ),
