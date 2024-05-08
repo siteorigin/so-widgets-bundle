@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			'sow-recent-posts',
 			__( 'SiteOrigin Recent Posts', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Placeholder.', 'so-widgets-bundle' ),
+				'description' => __( 'Customize and display your site’s recent posts with adjustable HTML tags, title links, date view, and design elements, ensuring a responsive and engaging user experience.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/recent-posts-widget/',
 				'panels_title' => false,
 			),
@@ -59,7 +59,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 				'fields' => array(
 					'featured_image' => array(
 						'type' => 'checkbox',
-						'label' => __( 'Display Featured Image', 'so-widgets-bundle' ),
+						'label' => __( 'Featured Image', 'so-widgets-bundle' ),
 						'default' => true,
 						'state_emitter' => array(
 							'callback' => 'conditional',
@@ -106,11 +106,11 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 					),
 					'new_window' => array(
 						'type' => 'checkbox',
-						'label' => __( 'Open Post in New ', 'so-widgets-bundle' ),
+						'label' => __( 'Open Post in New Tab', 'so-widgets-bundle' ),
 					),
 					'date' => array(
 						'type' => 'checkbox',
-						'label' => __( 'Display Post Date', 'so-widgets-bundle' ),
+						'label' => __( 'Post Date', 'so-widgets-bundle' ),
 						'default' => true,
 						'state_emitter' => array(
 							'callback' => 'conditional',
@@ -146,7 +146,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 					),
 					'post_content' => array(
 						'type' => 'select',
-						'label' => __( 'Display Post Content', 'so-widgets-bundle' ),
+						'label' => __( 'Post Content', 'so-widgets-bundle' ),
 						'state_emitter' => array(
 							'callback' => 'select',
 							'args' => array( 'post_content' ),
@@ -159,7 +159,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 					'excerpt_length' => array(
 						'type' => 'number',
 						'label' => __( 'Excerpt Length', 'so-widgets-bundle' ),
-						'default' => 55,
+						'default' => 10,
 						'state_handler' => array(
 							'post_content[excerpt]' => array( 'show' ),
 							'_else[post_content]' => array( 'hide' ),
@@ -176,7 +176,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 					),
 					'read_more' => array(
 						'type' => 'checkbox',
-						'label' => __( 'Display Read More Link', 'so-widgets-bundle' ),
+						'label' => __( 'Read More Link', 'so-widgets-bundle' ),
 						'state_handler' => array(
 							'post_content[excerpt]' => array( 'show' ),
 							'_else[post_content]' => array( 'hide' ),
@@ -228,9 +228,9 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 						),
 						'fields' => array(
 							'placement' => array(
-							'type' => 'select',
+								'type' => 'select',
 								'label' => __( 'Placement', 'so-widgets-bundle' ),
-								'default' => 'above',
+								'default' => 'left',
 								'options' => array(
 									'above' => __( 'Above', 'so-widgets-bundle' ),
 									'right' => __( 'Right', 'so-widgets-bundle' ),
@@ -246,13 +246,12 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							'border' => array(
 								'type' => 'select',
 								'label' => __( 'Border Style', 'so-widgets-bundle' ),
-								'default' => 'none',
+								'default' => 'solid',
 								'state_emitter' => array(
 									'callback' => 'select',
 									'args' => array( 'border_style' ),
 								),
 								'options' => array(
-									'' => __( 'None', 'so-widgets-bundle' ),
 									'solid' => __( 'Solid', 'so-widgets-bundle' ),
 									'dotted' => __( 'Dotted', 'so-widgets-bundle' ),
 									'dashed' => __( 'Dashed', 'so-widgets-bundle' ),
@@ -617,7 +616,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 
 		$excerpt = get_the_excerpt();
 		if ( ! has_excerpt() ) {
-			$length = ! empty( $settings['excerpt_length'] ) ? $settings['excerpt_length'] : 55;
+			$length = ! empty( $settings['excerpt_length'] ) ? $settings['excerpt_length'] : 10;
 			$excerpt_trim = empty( $settings['excerpt_trim'] ) ? '...' : $settings['excerpt_trim'];
 			$excerpt = wp_trim_words(
 				$excerpt,
