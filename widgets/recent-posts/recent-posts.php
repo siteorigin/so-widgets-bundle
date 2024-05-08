@@ -575,7 +575,11 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 	}
 
 	public static function featured_image( $settings ) {
-		if ( empty( $settings['featured_image'] ) || ! has_post_thumbnail() ) {
+		if ( empty( $settings['featured_image'] ) ) {
+			return;
+		}
+
+		if ( ! has_post_thumbnail() ) {
 			// Prevent misalignment by not outputting a thumbnail.
 			echo '<div class="sow-recent-posts-thumbnail"></div>';
 			return;
