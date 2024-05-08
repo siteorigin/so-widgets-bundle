@@ -78,18 +78,6 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							'featured_image[hide]' => array( 'hide' ),
 						),
 					),
-					'post_title' => array(
-						'type' => 'checkbox',
-						'label' => __( 'Post Title', 'so-widgets-bundle' ),
-						'default' => true,
-						'state_emitter' => array(
-							'callback' => 'conditional',
-							'args' => array(
-								'post_title[true]: val',
-								'post_title[false]: ! val',
-							),
-						),
-					),
 					'tag' => array(
 						'type' => 'select',
 						'label' => __( 'Post Title HTML Tag', 'so-widgets-bundle' ),
@@ -518,7 +506,6 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-
 		if ( ! empty( $instance['design']['excerpt']['font'] ) ) {
 			$font = siteorigin_widget_get_font( $instance['design']['excerpt']['font'] );
 			$less_vars['excerpt_font'] = $font['family'];
@@ -601,11 +588,6 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 	}
 
 	public static function post_title( $settings ) {
-
-		if ( empty( $settings['post_title'] ) ) {
-			return;
-		}
-
 		$tag = siteorigin_widget_valid_tag(
 			! empty( $settings['tag'] ) ? $settings['tag'] : 'h3',
 			'h3'
