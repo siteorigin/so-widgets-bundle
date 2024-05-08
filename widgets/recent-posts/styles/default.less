@@ -27,6 +27,7 @@
 @featured_image_placement: default;
 @featured_image_border_color: default;
 @featured_image_border_thickness: 1px;
+@featured_image_border_style: solid;
 @list_style_image: default;
 
 .sow-recent-posts {
@@ -90,12 +91,6 @@
 			}
 		}
 
-		// Prevent featured image from being misaligned by list item.
-		.wp-post-image {
-			display: inline-block;
-			vertical-align: middle;
-		}
-
 		@media (min-width: @responsive_breakpoint) {
 			&-inner {
 				align-items: center;
@@ -105,15 +100,15 @@
 			}
 		}
 
-		& when not (@featured_image = default) {
+		& when (@featured_image = 1) {
+			.sow-recent-posts-thumbnail {
 
-			.so-premium-recent-posts-entry-thumbnail {
 				& when (@featured_image_placement = above) {
-					flex-basis: 100%;
+					grid-column: span 2;
 				}
 
 				& when (@featured_image_placement = below) {
-					flex-basis: 100%;
+					grid-column: span 2;
 					order: 1;
 				}
 
@@ -131,8 +126,8 @@
 			}
 
 			& when not ( @featured_image_border_color = default ) {
-				.so-premium-recent-posts-entry-thumbnail img {
-					border: @featured_image_border_thickness solid @featured_image_border_color;
+				.sow-recent-posts-thumbnail img {
+					border: @featured_image_border_thickness @featured_image_border_style @featured_image_border_color;
 				}
 			}
 		}
