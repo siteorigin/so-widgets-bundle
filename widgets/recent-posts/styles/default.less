@@ -22,6 +22,8 @@
 
 
 @featured_image: default;
+@featured_image_gutter: default;
+@featured_image_max_width: default;
 @featured_image_placement: default;
 @featured_image_border_color: default;
 @featured_image_border_thickness: 1px;
@@ -97,9 +99,9 @@
 		@media (min-width: @responsive_breakpoint) {
 			&-inner {
 				align-items: center;
+				column-gap: @featured_image_gutter;
 				display: grid;
-				gap: 5px;
-				grid-template-columns: 1fr 6fr;
+				grid-template-columns: auto 12fr;
 			}
 		}
 
@@ -117,6 +119,14 @@
 
 				& when (@featured_image_placement = right) {
 					order: 1;
+				}
+
+				.wp-post-image {
+					display: inline-block;
+					height: auto;
+					max-width: @featured_image_max_width;
+					// Prevent featured image from being misaligned by list item.
+					vertical-align: middle;
 				}
 			}
 

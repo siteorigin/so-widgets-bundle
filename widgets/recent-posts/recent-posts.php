@@ -238,6 +238,20 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 									'left' => __( 'Left', 'so-widgets-bundle' ),
 								),
 							),
+							'gutter' => array(
+								'type' => 'measurement',
+								'label' => __( 'Gutter', 'so-widgets-bundle' ),
+								'default' => '5px',
+							),
+							'max_width' => array(
+								'type' => 'measurement',
+								'label' => __( 'Max Image Width', 'so-widgets-bundle' ),
+								'default' => '72px',
+								'state_handler' => array(
+									'image_size[custom_size]' => array( 'hide' ),
+									'_else[image_size]' => array( 'show' ),
+								),
+							),
 							'padding' => array(
 								'type' => 'measurement',
 								'label' => __( 'Padding', 'so-widgets-bundle' ),
@@ -502,6 +516,8 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 
 		if ( ! empty( $instance['settings']['featured_image'] ) ) {
 			$less_vars['featured_image'] = true;
+			$less_vars['featured_image_gutter'] = ! empty( $instance['design']['featured_image']['gutter'] ) ? $instance['design']['featured_image']['gutter'] : '';
+			$less_vars['featured_image_max_width'] = ! empty( $instance['design']['featured_image']['max_width'] ) ? $instance['design']['featured_image']['max_width'] : '';
 			$less_vars['featured_image_placement'] = ! empty( $instance['design']['featured_image']['placement'] ) ? $instance['design']['featured_image']['placement'] : '';
 			$less_vars['featured_image_border_style'] = ! empty( $instance['design']['featured_image']['border_style'] ) ? $instance['design']['featured_image']['border_style'] : '';
 			$less_vars['featured_image_border_thickness'] = ! empty( $instance['design']['featured_image']['border_thickness'] ) ? $instance['design']['featured_image']['border_thickness'] : '1px';
