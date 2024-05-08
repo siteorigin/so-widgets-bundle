@@ -444,19 +444,6 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 									'_else[list_type]' => array( 'show' ),
 								),
 							),
-							'position' => array(
-								'type' => 'radio',
-								'label' => __( 'Position', 'so-widgets-bundle' ),
-								'default' => 'outside',
-								'state_handler' => array(
-									'list_type[none,image]' => array( 'hide' ),
-									'_else[list_type]' => array( 'show' ),
-								),
-								'options' => array(
-									'outside' => __( 'Outside', 'so-widgets-bundle' ),
-									'inside' => __( 'Inside', 'so-widgets-bundle' ),
-								),
-							),
 						),
 					),
 				),
@@ -487,7 +474,6 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			'date' => ! empty( $instance['date'] ) ? $instance['date'] : '',
 			'list_style_type' => ! empty( $instance['design']['list_style']['type'] ) ? $instance['design']['list_style']['type'] : 'disc',
 			'list_style_color' => ! empty( $instance['design']['list_style']['color'] ) ? $instance['design']['list_style']['color'] : '',
-			'list_style_position' => ! empty( $instance['design']['list_style']['position'] ) ? $instance['design']['list_style']['position'] : 'outside',
 			'title_font_size' => ! empty( $instance['design']['title']['font_size'] ) ? $instance['design']['title']['font_size'] : '',
 			'title_color' => ! empty( $instance['design']['title']['color'] ) ? $instance['design']['title']['color'] : '',
 			'title_color_hover' => ! empty( $instance['design']['title']['color_hover'] ) ? $instance['design']['title']['color_hover'] : '',
