@@ -348,7 +348,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * @return mixed|string
 	 */
 	public function sanitize( $value, $instance = array(), $old_value = null ) {
-		if ( empty( $value ) ) {
+		if ( $value === '' || is_null( $value ) ) {
 			return '';
 		}
 
