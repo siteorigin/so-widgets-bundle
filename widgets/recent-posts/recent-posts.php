@@ -343,6 +343,31 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							),
 						),
 					),
+					'excerpt' => array(
+						'type' => 'section',
+						'label' => __( 'Post Excerpt', 'so-widgets-bundle' ),
+						'hide' => true,
+						'state_handler' => array(
+							'post_content[excerpt]' => array( 'show' ),
+							'_else[post_content]' => array( 'hide' ),
+						),
+						'fields' => array(
+							'font' => array(
+								'type' => 'font',
+								'label' => __( 'Font', 'so-widgets-bundle' ),
+							),
+							'font_size' => array(
+								'type' => 'measurement',
+								'label' => __( 'Font Size', 'so-widgets-bundle' ),
+								'default' => '13px',
+							),
+							'color' => array(
+								'type' => 'color',
+								'label' => __( 'Color', 'so-widgets-bundle' ),
+								'default' => '#626262',
+							),
+						),
+					),
 					'list_style' => array(
 						'type' => 'section',
 						'label' => __( 'List Style', 'so-widgets-bundle' ),
@@ -480,6 +505,8 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			'date_font_size' => ! empty( $instance['design']['date']['font_size'] ) ? $instance['design']['date']['font_size'] : '',
 			'date_color' => ! empty( $instance['design']['date']['color'] ) ? $instance['design']['date']['color'] : '',
 			'bottom_margin' => ! empty( $instance['design']['post']['bottom_margin'] ) ? $instance['design']['post']['bottom_margin'] : '',
+			'excerpt_font_size' => ! empty( $instance['design']['excerpt']['font_size'] ) ? $instance['design']['excerpt']['font_size'] : '',
+			'excerpt_color' => ! empty( $instance['design']['excerpt']['color'] ) ? $instance['design']['excerpt']['color'] : '',
 		);
 
 		if ( ! empty( $instance['design']['title']['font'] ) ) {
@@ -488,6 +515,16 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			if ( ! empty( $font['weight'] ) ) {
 				$less_vars['title_font_style'] = $font['style'];
 				$less_vars['title_font_weight'] = $font['weight_raw'];
+			}
+		}
+
+
+		if ( ! empty( $instance['design']['excerpt']['font'] ) ) {
+			$font = siteorigin_widget_get_font( $instance['design']['excerpt']['font'] );
+			$less_vars['excerpt_font'] = $font['family'];
+			if ( ! empty( $font['weight'] ) ) {
+				$less_vars['excerpt_font_style'] = $font['style'];
+				$less_vars['excerpt_font_weight'] = $font['weight_raw'];
 			}
 		}
 
