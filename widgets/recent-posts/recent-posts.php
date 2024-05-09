@@ -618,10 +618,11 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			$less_vars['featured_image'] = true;
 			$less_vars['featured_image_gutter'] = ! empty( $instance['design']['featured_image']['gutter'] ) ? $instance['design']['featured_image']['gutter'] : '';
 			$less_vars['featured_image_max_width'] = ! empty( $instance['design']['featured_image']['max_width'] ) ? $instance['design']['featured_image']['max_width'] : '';
+			$less_vars['featured_image_padding'] = ! empty( $instance['design']['featured_image']['padding'] ) ? $instance['design']['featured_image']['padding'] : '';
 			$less_vars['featured_image_placement'] = ! empty( $instance['design']['featured_image']['placement'] ) ? $instance['design']['featured_image']['placement'] : '';
-			$less_vars['featured_image_border_style'] = ! empty( $instance['design']['featured_image']['border_style'] ) ? $instance['design']['featured_image']['border_style'] : 'solid';
+			$less_vars['featured_image_border_style'] = ! empty( $instance['design']['featured_image']['border_style'] ) ? $instance['design']['featured_image']['border_style'] : '';
 			$less_vars['featured_image_border_thickness'] = ! empty( $instance['design']['featured_image']['border_thickness'] ) ? $instance['design']['featured_image']['border_thickness'] : '1px';
-			$less_vars['featured_image_border_color'] = ! empty( $instance['design']['featured_image']['border_color'] ) ? $instance['design']['featured_image']['border_color'] : '';
+			$less_vars['featured_image_border_color'] = ! empty( $instance['design']['featured_image']['border_color'] ) ? $instance['design']['featured_image']['border_color'] : '#e6e6e6';
 		}
 
 		if (
