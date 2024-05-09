@@ -53,6 +53,10 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 
 	function get_widget_form() {
 		return array(
+			'title' => array(
+				'type' => 'text',
+				'label' => __( 'Title', 'so-widgets-bundle' ),
+			),
 			'settings' => array(
 				'type' => 'section',
 				'label' => __( 'Settings', 'so-widgets-bundle' ),

@@ -3,7 +3,13 @@ $processed_query = siteorigin_widget_post_selector_process_query( $instance['que
 $query = new WP_Query( $processed_query );
 
 if ( $query->have_posts() ) {
-	do_action( 'siteorigin_widgets_recent_posts_before', $instance );
+	do_action( 'siteorigin_widgets_recent_posts_title_before', $instance );
+
+	if ( ! empty( $instance['title'] ) ) {
+		echo $args['before_title'] . wp_kses_post( $instance['title'] ) . $args['after_title'];
+	}
+
+	do_action( 'siteorigin_widgets_recent_posts_loop_before', $instance );
 	?>
 	<ul class="sow-recent-posts">
 		<?php
