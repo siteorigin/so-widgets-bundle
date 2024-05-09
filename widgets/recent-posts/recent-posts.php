@@ -515,6 +515,16 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 									'_else[list_type]' => array( 'show' ),
 								),
 							),
+							'max_size' => array(
+								'type' => 'measurement',
+								'label' => __( 'Max Image Size', 'so-widgets-bundle' ),
+								'default' => '25px',
+
+								'state_handler' => array(
+									'list_type[image]' => array( 'show' ),
+									'_else[list_type]' => array( 'hide' ),
+								),
+							),
 							'color' => array(
 								'type' => 'color',
 								'label' => __( 'Color', 'so-widgets-bundle' ),
@@ -555,6 +565,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			'list_style_type' => ! empty( $instance['design']['list_style']['type'] ) ? $instance['design']['list_style']['type'] : 'disc',
 			'list_style_indent' => ! empty( $instance['design']['list_style']['indent'] ) ? $instance['design']['list_style']['indent'] : '5px',
 			'list_style_color' => ! empty( $instance['design']['list_style']['color'] ) ? $instance['design']['list_style']['color'] : '',
+			'list_style_image_max_size' => ! empty( $instance['design']['list_style']['max_size'] ) ? $instance['design']['list_style']['max_size'] : '25px',
 			'title_font_size' => ! empty( $instance['design']['title']['font_size'] ) ? $instance['design']['title']['font_size'] : '',
 			'title_color' => ! empty( $instance['design']['title']['color'] ) ? $instance['design']['title']['color'] : '',
 			'title_color_hover' => ! empty( $instance['design']['title']['color_hover'] ) ? $instance['design']['title']['color_hover'] : '',
@@ -614,9 +625,10 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 				! empty( $instance['design']['list_style']['image_fallback'] )
 			)
 		) {
+			$icon_image_size = ! empty( (int) $instance['design']['list_style']['max_size'] ) ? (int) $instance['design']['list_style']['max_size'] * 3 : 75;
 			$src = siteorigin_widgets_get_attachment_image_src(
 				$instance['design']['list_style']['image'],
-				apply_filters( 'siteorigin_widgets_recent_posts_image_size', array( 25, 25 ) ),
+				array( $icon_image_size, $icon_image_size ),
 				! empty( $instance['design']['list_style']['image_fallback'] ) ? $instance['design']['list_style']['image_fallback'] : false
 			);
 
