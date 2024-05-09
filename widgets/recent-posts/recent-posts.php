@@ -37,7 +37,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 	}
 
 	public function register_image_size() {
-		add_image_size( 'sow-recent-post', 72, 72, true );
+		add_image_size( 'sow-recent-post', 216, 216, array( 'center', 'center' ) );
 	}
 
 	public function get_settings_form() {
@@ -73,13 +73,6 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							),
 						),
 					),
-					'featured_image_size' => array(
-						'type' => 'image-size',
-						'label' => __( 'Featured Image Size', 'so-widgets-bundle' ),
-						'default' => 'sow-recent-post',
-						'state_handler' => array(
-							'featured_image[show]' => array( 'show' ),
-							'featured_image[hide]' => array( 'hide' ),
 						),
 					),
 					'tag' => array(
@@ -586,7 +579,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			<?php echo ! empty( $settings['new_window'] ) ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
 		>
 			<?php
-			the_post_thumbnail( $settings['featured_image_size'] == 'custom_size' ? array( $settings['featured_image_size_width'], $settings['featured_image_size_height'] ) : $settings['featured_image_size'] );
+			the_post_thumbnail( 'sow-recent-post' );
 			?>
 		</a>
 		<?php
