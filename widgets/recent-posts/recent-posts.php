@@ -213,7 +213,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							'bottom_margin' => array(
 								'type' => 'measurement',
 								'label' => __( 'Bottom Margin', 'so-widgets-bundle' ),
-								'default' => '16px',
+								'default' => '24px',
 							)
 						),
 					),
