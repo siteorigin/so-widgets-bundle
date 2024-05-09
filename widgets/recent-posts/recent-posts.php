@@ -246,10 +246,6 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 								'type' => 'measurement',
 								'label' => __( 'Max Image Width', 'so-widgets-bundle' ),
 								'default' => '72px',
-								'state_handler' => array(
-									'image_size[custom_size]' => array( 'hide' ),
-									'_else[image_size]' => array( 'show' ),
-								),
 							),
 							'padding' => array(
 								'type' => 'measurement',
