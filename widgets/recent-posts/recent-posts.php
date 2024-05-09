@@ -1,7 +1,7 @@
 <?php
 /*
 Widget Name: Recent Posts
-Description: Customize and display your site’s recent posts with adjustable HTML tags, title links, date view, and design elements, ensuring a responsive and engaging user experience.
+Description: Drive traffic to your latest content with a visually appealing, fully customizable recent posts showcase.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/recent-posts-widget/
@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			'sow-recent-posts',
 			__( 'SiteOrigin Recent Posts', 'so-widgets-bundle' ),
 			array(
-				'description' => __( 'Customize and display your site’s recent posts with adjustable HTML tags, title links, date view, and design elements, ensuring a responsive and engaging user experience.', 'so-widgets-bundle' ),
+				'description' => __( 'Drive traffic to your latest content with a visually appealing, fully customizable recent posts showcase.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/recent-posts-widget/',
 				'panels_title' => false,
 			),
