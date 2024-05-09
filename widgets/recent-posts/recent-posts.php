@@ -73,12 +73,26 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							),
 						),
 					),
+					'post_title' => array(
+						'type' => 'checkbox',
+						'label' => __( 'Post Title', 'so-widgets-bundle' ),
+						'default' => true,
+						'state_emitter' => array(
+							'callback' => 'conditional',
+							'args' => array(
+								'post_title[true]: val',
+								'post_title[false]: ! val',
+							),
 						),
 					),
 					'tag' => array(
 						'type' => 'select',
 						'label' => __( 'Post Title HTML Tag', 'so-widgets-bundle' ),
 						'default' => 'h3',
+						'state_handler' => array(
+							'post_title[true]' => array( 'show' ),
+							'post_title[false]' => array( 'hide' ),
+						),
 						'options' => array(
 							'h1' => __( 'H1', 'so-widgets-bundle' ),
 							'h2' => __( 'H2', 'so-widgets-bundle' ),
@@ -285,6 +299,10 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 						'type' => 'section',
 						'label' => __( 'Post Title', 'so-widgets-bundle' ),
 						'hide' => true,
+						'state_handler' => array(
+							'post_title[true]' => array( 'show' ),
+							'post_title[false]' => array( 'hide' ),
+						),
 						'fields' => array(
 							'font' => array(
 								'type' => 'font',
@@ -587,6 +605,10 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 	}
 
 	public static function post_title( $settings ) {
+		if ( empty( $settings['post_title'] ) ) {
+			return;
+		}
+
 		$tag = siteorigin_widget_valid_tag(
 			! empty( $settings['tag'] ) ? $settings['tag'] : 'h3',
 			'h3'
