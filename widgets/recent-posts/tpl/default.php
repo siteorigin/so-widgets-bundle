@@ -38,5 +38,5 @@ if ( $query->have_posts() ) {
 		?>
 	</ul>
 	<?php
-	do_action( 'siteorigin_widgets_recent_posts_after', $instance );
+	do_action( 'siteorigin_widgets_recent_posts_loop_after', $instance );
 }
