@@ -590,6 +590,15 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			}
 		}
 
+		if ( ! empty( $instance['design']['date']['font'] ) ) {
+			$font = siteorigin_widget_get_font( $instance['design']['date']['font'] );
+			$less_vars['date_font'] = $font['family'];
+			if ( ! empty( $font['weight'] ) ) {
+				$less_vars['date_font_style'] = $font['style'];
+				$less_vars['date_font_weight'] = $font['weight_raw'];
+			}
+		}
+
 		if ( ! empty( $instance['design']['excerpt']['font'] ) ) {
 			$font = siteorigin_widget_get_font( $instance['design']['excerpt']['font'] );
 			$less_vars['excerpt_font'] = $font['family'];
@@ -599,12 +608,13 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		if ( ! empty( $instance['design']['date']['font'] ) ) {
-			$font = siteorigin_widget_get_font( $instance['design']['date']['font'] );
-			$less_vars['date_font'] = $font['family'];
+
+		if ( ! empty( $instance['design']['read_more']['font'] ) ) {
+			$font = siteorigin_widget_get_font( $instance['design']['read_more']['font'] );
+			$less_vars['read_more_font'] = $font['family'];
 			if ( ! empty( $font['weight'] ) ) {
-				$less_vars['date_font_style'] = $font['style'];
-				$less_vars['date_font_weight'] = $font['weight_raw'];
+				$less_vars['read_more_font_style'] = $font['style'];
+				$less_vars['read_more_font_weight'] = $font['weight_raw'];
 			}
 		}
 
