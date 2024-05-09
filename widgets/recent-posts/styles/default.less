@@ -4,7 +4,9 @@
 @bottom_margin: default;
 
 @list_style_type: default;
+@list_style_indent: default;
 @list_style_color: default;
+@list_style_image: default;
 
 @title_font: default;
 @title_font_style: default;
@@ -32,7 +34,6 @@
 @featured_image_border_color: default;
 @featured_image_border_thickness: 1px;
 @featured_image_border_style: solid;
-@list_style_image: default;
 
 @read_more_font: default;
 @read_more_font_style: default;
@@ -88,7 +89,7 @@
 		position: relative;
 
 		& when ( @list_style_image = default ) {
-			list-style-position: outside;
+			list-style-position: inside;
 			list-style-type: @list_style_type;
 		}
 
@@ -99,10 +100,10 @@
 				background: @list_style_image;
 				content: '';
 				display: inline-block;
-				height: 25px;
-				left: -25px;
+				height: @list_style_image_max_width;
+				left: 0;
 				position: absolute;
-				width: 25px;
+				width: @list_style_image_max_width;
 			}
 		}
 
@@ -112,6 +113,7 @@
 				column-gap: @featured_image_gutter;
 				display: grid;
 				grid-template-columns: auto 12fr;
+				margin-left: calc(25px + @list_style_indent);
 			}
 		}
 
@@ -169,6 +171,18 @@
 		&:focus {
 			background: @read_more_background_hover;
 			color: @read_more_color_hover;
+		}
+	}
+}
+
+// RTL List Styling.
+& when not ( @list_style_image = default ) {
+	body.rtl .sow-recent-posts-item {
+		padding-left: @list_style_indent;
+
+		&::before {
+			left: auto;
+			right: 0;
 		}
 	}
 }

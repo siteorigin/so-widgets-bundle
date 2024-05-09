@@ -505,6 +505,15 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 									'_else[list_type]' => array( 'hide' ),
 								),
 							),
+							'indent' => array(
+								'type' => 'measurement',
+								'label' => __( 'Space Between List Indicator and Post', 'so-widgets-bundle' ),
+								'default' => '5px',
+								'state_handler' => array(
+									'list_type[none]' => array( 'hide' ),
+									'_else[list_type]' => array( 'show' ),
+								),
+							),
 							'color' => array(
 								'type' => 'color',
 								'label' => __( 'Color', 'so-widgets-bundle' ),
@@ -543,6 +552,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 			'date' => ! empty( $instance['date'] ) ? $instance['date'] : '',
 			'list_style_type' => ! empty( $instance['design']['list_style']['type'] ) ? $instance['design']['list_style']['type'] : 'disc',
+			'list_style_indent' => ! empty( $instance['design']['list_style']['indent'] ) ? $instance['design']['list_style']['indent'] : '5px',
 			'list_style_color' => ! empty( $instance['design']['list_style']['color'] ) ? $instance['design']['list_style']['color'] : '',
 			'title_font_size' => ! empty( $instance['design']['title']['font_size'] ) ? $instance['design']['title']['font_size'] : '',
 			'title_color' => ! empty( $instance['design']['title']['color'] ) ? $instance['design']['title']['color'] : '',
