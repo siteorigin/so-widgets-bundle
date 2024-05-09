@@ -688,7 +688,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 		<<?php echo esc_html( $tag ); ?> class="sow-recent-posts-title">
 			<a
 				href="<?php echo esc_url( get_the_permalink() ); ?>"
-				<?php echo ! empty( $new_window ) ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
+				<?php echo ! empty( $settings['new_window'] ) ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
 			>
 				<?php echo get_the_title(); ?>
 			</a>
