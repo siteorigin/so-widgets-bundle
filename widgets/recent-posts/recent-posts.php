@@ -371,6 +371,48 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							),
 						),
 					),
+					'read_more' => array(
+						'type' => 'section',
+						'label' => __( 'Read More', 'so-widgets-bundle' ),
+						'hide' => true,
+						'state_handler' => array(
+							'read_more[true]' => array( 'show' ),
+							'read_more[false]' => array( 'hide' ),
+						),
+						'fields' => array(
+							'font' => array(
+								'type' => 'font',
+								'label' => __( 'Font', 'so-widgets-bundle' ),
+							),
+							'font_size' => array(
+								'type' => 'measurement',
+								'label' => __( 'Font Size', 'so-widgets-bundle' ),
+								'default' => '13px',
+							),
+							'color' => array(
+								'type' => 'color',
+								'label' => __( 'Color', 'so-widgets-bundle' ),
+								'default' => '#2d2d2d',
+							),
+							'color_hover' => array(
+								'type' => 'color',
+								'label' => __( 'Color Hover', 'so-widgets-bundle' ),
+								'default' => '#626262',
+							),
+							'padding' => array(
+								'type' => 'measurement',
+								'label' => __( 'Padding', 'so-widgets-bundle' ),
+							),
+							'background' => array(
+								'type' => 'color',
+								'label' => __( 'Background', 'so-widgets-bundle' ),
+							),
+							'background_hover' => array(
+								'type' => 'color',
+								'label' => __( 'Background Hover', 'so-widgets-bundle' ),
+							),
+						),
+					),
 					'list_style' => array(
 						'type' => 'section',
 						'label' => __( 'List Style', 'so-widgets-bundle' ),
@@ -510,6 +552,11 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			'bottom_margin' => ! empty( $instance['design']['post']['bottom_margin'] ) ? $instance['design']['post']['bottom_margin'] : '',
 			'excerpt_font_size' => ! empty( $instance['design']['excerpt']['font_size'] ) ? $instance['design']['excerpt']['font_size'] : '',
 			'excerpt_color' => ! empty( $instance['design']['excerpt']['color'] ) ? $instance['design']['excerpt']['color'] : '',
+			'read_more_font_size' => ! empty( $instance['design']['read_more']['font_size'] ) ? $instance['design']['read_more']['font_size'] : '',
+			'read_more_color' => ! empty( $instance['design']['read_more']['color'] ) ? $instance['design']['read_more']['color'] : '',
+			'read_more_padding' => ! empty( $instance['design']['read_more']['padding'] ) ? $instance['design']['read_more']['padding'] : '',
+			'read_more_background' => ! empty( $instance['design']['read_more']['background'] ) ? $instance['design']['read_more']['background'] : '',
+			'read_more_background_hover' => ! empty( $instance['design']['read_more']['background_hover'] ) ? $instance['design']['read_more']['background_hover'] : '',
 		);
 
 		if ( ! empty( $instance['design']['title']['font'] ) ) {
