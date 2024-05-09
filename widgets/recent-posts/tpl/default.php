@@ -1,7 +1,4 @@
 <?php
-$processed_query = siteorigin_widget_post_selector_process_query( $instance['query'] );
-$query = new WP_Query( $processed_query );
-
 if ( $query->have_posts() ) {
 	do_action( 'siteorigin_widgets_recent_posts_title_before', $instance );
 

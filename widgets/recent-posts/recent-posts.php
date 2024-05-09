@@ -560,7 +560,9 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_template_variables( $instance, $args ) {
+		$processed_query = siteorigin_widget_post_selector_process_query( $instance['query'] );
 		return array(
+			'query' => new WP_Query( $processed_query ),
 			'settings' => ! empty( $instance ) ? $instance['settings'] : array(),
 		);
 	}
