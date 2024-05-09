@@ -7,6 +7,7 @@
 @list_style_indent: default;
 @list_style_color: default;
 @list_style_image: default;
+@list_style_image_max_width: default;
 
 @title_font: default;
 @title_font_style: default;
@@ -31,6 +32,7 @@
 @featured_image_gutter: default;
 @featured_image_max_width: default;
 @featured_image_placement: default;
+@featured_image_padding: default;
 @featured_image_border_color: default;
 @featured_image_border_thickness: 1px;
 @featured_image_border_style: solid;
@@ -136,6 +138,7 @@
 				.wp-post-image {
 					display: inline-block;
 					height: auto;
+					padding: @featured_image_padding;
 					max-width: @featured_image_max_width;
 					// Prevent featured image from being misaligned by list item.
 					vertical-align: middle;
