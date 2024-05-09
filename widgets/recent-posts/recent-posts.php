@@ -259,12 +259,13 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							'border' => array(
 								'type' => 'select',
 								'label' => __( 'Border Style', 'so-widgets-bundle' ),
-								'default' => 'solid',
+								'default' => 'none',
 								'state_emitter' => array(
 									'callback' => 'select',
 									'args' => array( 'border_style' ),
 								),
 								'options' => array(
+									'none' => __( 'None', 'so-widgets-bundle' ),
 									'solid' => __( 'Solid', 'so-widgets-bundle' ),
 									'dotted' => __( 'Dotted', 'so-widgets-bundle' ),
 									'dashed' => __( 'Dashed', 'so-widgets-bundle' ),
