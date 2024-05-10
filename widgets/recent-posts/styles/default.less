@@ -92,7 +92,7 @@
 		padding: 0;
 		position: relative;
 
-		& when not ( @list_style_icon = default ) {
+		& when not ( @list_style_icon = none ) {
 
 			&::before {
 				display: inline-block;
@@ -102,8 +102,8 @@
 				transform: translateY(-50%);
 
 				& when ( @list_style_icon = image ) {
-					background-size: cover;
 					background: @list_style_image;
+					background-size: cover;
 					content: '';
 					height: @list_style_image_max_size;
 					width: @list_style_image_max_size;
@@ -149,7 +149,7 @@
 				display: inline-grid;
 				grid-template-columns: auto 12fr;
 
-				& when not ( @list_style_icon = default ) {
+				& when not ( @list_style_icon = none ) {
 					margin-left: calc(@list_style_image_max_size + @list_style_indent);
 				}
 			}
