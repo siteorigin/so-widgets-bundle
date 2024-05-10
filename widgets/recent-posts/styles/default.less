@@ -124,7 +124,7 @@
 				}
 
 				& when not ( @list_style_image = default ) {
-					margin-left: calc(24px + @list_style_indent);
+					margin-left: calc(@list_style_image_max_size + @list_style_indent);
 				}
 			}
 		}
