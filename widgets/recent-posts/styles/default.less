@@ -3,7 +3,7 @@
 
 @bottom_margin: default;
 
-@list_style_type: default;
+@list_style_icon: default;
 @list_style_indent: default;
 @list_style_color: default;
 @list_style_image: default;
@@ -86,30 +86,60 @@
 
 	&-item {
 		color: @list_style_color;
+		list-style-type: none;
 		margin: 0;
 		margin-bottom: @bottom_margin;
 		padding: 0;
 		position: relative;
 
-		& when ( @list_style_image = default ) {
-			list-style-position: inside;
-			list-style-type: @list_style_type;
-		}
-
-		& when not ( @list_style_image = default ) {
-			list-style: none;
+		& when not ( @list_style_icon = default ) {
 
 			&::before {
-				background: @list_style_image;
-				background-size: cover;
-				content: '';
 				display: inline-block;
-				height: @list_style_image_max_size;
 				left: 0;
 				position: absolute;
 				top: 50%;
 				transform: translateY(-50%);
-				width: @list_style_image_max_size;
+
+				& when ( @list_style_icon = image ) {
+					background-size: cover;
+					background: @list_style_image;
+					content: '';
+					height: @list_style_image_max_size;
+					width: @list_style_image_max_size;
+				}
+
+				& when not ( @list_style_icon = image ) {
+					font-size: @list_style_image_max_size;
+				}
+
+				& when ( @list_style_icon = disc ) {
+					content: '•';
+				}
+
+				& when ( @list_style_icon = circle ) {
+					content: '◦';
+				}
+
+				& when ( @list_style_icon = square ) {
+					content: '▪';
+				}
+
+				& when ( @list_style_icon = checkmark ) {
+					content: "\2713";
+				}
+
+				& when ( @list_style_icon = star ) {
+					content: "\2605";
+				}
+
+				& when ( @list_style_icon = heart ) {
+					content: "\2764";
+				}
+
+				& when ( @list_style_icon = arrow ) {
+					content: "\21D2";
+				}
 			}
 		}
 
@@ -119,11 +149,7 @@
 				display: inline-grid;
 				grid-template-columns: auto 12fr;
 
-				& when not ( @list_style_type = none ) {
-					margin-left: @list_style_indent;
-				}
-
-				& when not ( @list_style_image = default ) {
+				& when not ( @list_style_icon = default ) {
 					margin-left: calc(@list_style_image_max_size + @list_style_indent);
 				}
 			}

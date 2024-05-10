@@ -405,82 +405,24 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 						'label' => __( 'List Style', 'so-widgets-bundle' ),
 						'hide' => true,
 						'fields' => array(
-							'type' => array(
+							'icon' => array(
 								'type' => 'select',
-								'label' => __( 'Type', 'so-widgets-bundle' ),
+								'label' => __( 'Icon', 'so-widgets-bundle' ),
 								'default' => 'none',
 								'state_emitter' => array(
 									'callback' => 'select',
-									'args' => array( 'list_type' ),
+									'args' => array( 'list_icon' ),
 								),
 								'options' => array(
 									'none' => __( 'None', 'so-widgets-bundle' ),
 									'image' => __( 'Image', 'so-widgets-bundle' ),
-									'disc' => __( 'disc', 'so-widgets-bundle' ),
-									'circle' => __( 'circle', 'so-widgets-bundle' ),
-									'square' => __( 'square', 'so-widgets-bundle' ),
-									'decimal' => __( 'decimal', 'so-widgets-bundle' ),
-									'decimal-leading-zero' => __( 'decimal-leading-zero', 'so-widgets-bundle' ),
-									'cjk-decimal' => __( 'cjk-decimal', 'so-widgets-bundle' ),
-									'lower-roman' => __( 'lower-roman', 'so-widgets-bundle' ),
-									'upper-roman' => __( 'upper-roman', 'so-widgets-bundle' ),
-									'lower-greek' => __( 'lower-greek', 'so-widgets-bundle' ),
-									'lower-alpha, lower-latin' => __( 'lower-alpha, lower-latin', 'so-widgets-bundle' ),
-									'upper-alpha, upper-latin' => __( 'upper-alpha, upper-latin', 'so-widgets-bundle' ),
-									'arabic-indic' => __( 'arabic-indic', 'so-widgets-bundle' ),
-									'armenian' => __( 'armenian', 'so-widgets-bundle' ),
-									'bengali' => __( 'bengali', 'so-widgets-bundle' ),
-									'cambodian' => __( 'cambodian', 'so-widgets-bundle' ),
-									'cjk-earthly-branch' => __( 'cjk-earthly-branch', 'so-widgets-bundle' ),
-									'cjk-heavenly-stem' => __( 'cjk-heavenly-stem', 'so-widgets-bundle' ),
-									'cjk-ideographic' => __( 'cjk-ideographic', 'so-widgets-bundle' ),
-									'devanagari' => __( 'devanagari', 'so-widgets-bundle' ),
-									'ethiopic-numeric' => __( 'ethiopic-numeric', 'so-widgets-bundle' ),
-									'georgian' => __( 'georgian', 'so-widgets-bundle' ),
-									'gujarati' => __( 'gujarati', 'so-widgets-bundle' ),
-									'gurmukhi' => __( 'gurmukhi', 'so-widgets-bundle' ),
-									'hebrew' => __( 'hebrew', 'so-widgets-bundle' ),
-									'hiragana' => __( 'hiragana', 'so-widgets-bundle' ),
-									'hiragana-iroha' => __( 'hiragana-iroha', 'so-widgets-bundle' ),
-									'japanese-formal' => __( 'japanese-formal', 'so-widgets-bundle' ),
-									'japanese-informal' => __( 'japanese-informal', 'so-widgets-bundle' ),
-									'kannada' => __( 'kannada', 'so-widgets-bundle' ),
-									'katakana' => __( 'katakana', 'so-widgets-bundle' ),
-									'katakana-iroha' => __( 'katakana-iroha', 'so-widgets-bundle' ),
-									'khmer' => __( 'khmer', 'so-widgets-bundle' ),
-									'korean-hangul-formal' => __( 'korean-hangul-formal', 'so-widgets-bundle' ),
-									'korean-hanja-formal' => __( 'korean-hanja-formal', 'so-widgets-bundle' ),
-									'korean-hanja-informal' => __( 'korean-hanja-informal', 'so-widgets-bundle' ),
-									'lao' => __( 'lao', 'so-widgets-bundle' ),
-									'lower-armenian' => __( 'lower-armenian', 'so-widgets-bundle' ),
-									'malayalam' => __( 'malayalam', 'so-widgets-bundle' ),
-									'mongolian' => __( 'mongolian', 'so-widgets-bundle' ),
-									'myanmar' => __( 'myanmar', 'so-widgets-bundle' ),
-									'oriya' => __( 'oriya', 'so-widgets-bundle' ),
-									'persian' => __( 'persian', 'so-widgets-bundle' ),
-									'simp-chinese-formal' => __( 'simp-chinese-formal', 'so-widgets-bundle' ),
-									'simp-chinese-informal' => __( 'simp-chinese-informal', 'so-widgets-bundle' ),
-									'tamil' => __( 'tamil', 'so-widgets-bundle' ),
-									'telugu' => __( 'telugu', 'so-widgets-bundle' ),
-									'thai' => __( 'thai', 'so-widgets-bundle' ),
-									'tibetan' => __( 'tibetan', 'so-widgets-bundle' ),
-									'trad-chinese-formal' => __( 'trad-chinese-formal', 'so-widgets-bundle' ),
-									'trad-chinese-informal' => __( 'trad-chinese-informal', 'so-widgets-bundle' ),
-									'upper-armenian' => __( 'upper-armenian', 'so-widgets-bundle' ),
-									'disclosure-open' => __( 'disclosure-open', 'so-widgets-bundle' ),
-									'disclosure-closed' => __( 'disclosure-closed', 'so-widgets-bundle' ),
-									'-moz-ethiopic-halehame' => __( '-moz-ethiopic-halehame', 'so-widgets-bundle' ),
-									'-moz-ethiopic-halehame-am' => __( '-moz-ethiopic-halehame-am', 'so-widgets-bundle' ),
-									'ethiopic-halehame-ti-er' => __( 'ethiopic-halehame-ti-er', 'so-widgets-bundle' ),
-									'ethiopic-halehame-ti-et' => __( 'ethiopic-halehame-ti-et', 'so-widgets-bundle' ),
-									'hangul' => __( 'hangul', 'so-widgets-bundle' ),
-									'hangul-consonant' => __( 'hangul-consonant', 'so-widgets-bundle' ),
-									'urdu' => __( 'urdu', 'so-widgets-bundle' ),
-									'-moz-ethiopic-halehame-ti-er' => __( '-moz-ethiopic-halehame-ti-er', 'so-widgets-bundle' ),
-									'-moz-ethiopic-halehame-ti-et' => __( '-moz-ethiopic-halehame-ti-et', 'so-widgets-bundle' ),
-									'-moz-hangul' => __( '-moz-hangul', 'so-widgets-bundle' ),
-									'-moz-hangul-consonant' => __( '-moz-hangul-consonant', 'so-widgets-bundle' ),
-									'-moz-urdu' => __( '-moz-urdu', 'so-widgets-bundle' ),
+									'disc' => __( 'Disc', 'so-widgets-bundle' ),
+									'circle' => __( 'Circle', 'so-widgets-bundle' ),
+									'square' => __( 'Square', 'so-widgets-bundle' ),
+									'checkmark' => __( 'Checkmark', 'so-widgets-bundle' ),
+									'star' => __( 'Star', 'so-widgets-bundle' ),
+									'heart' => __( 'Heart', 'so-widgets-bundle' ),
+									'arrow' => __( 'Arrow', 'so-widgets-bundle' ),
 								),
 							),
 							'image' => array(
@@ -488,8 +430,8 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 								'label' => __( 'Image', 'so-widgets-bundle' ),
 								'fallback' => true,
 								'state_handler' => array(
-									'list_type[image]' => array( 'show' ),
-									'_else[list_type]' => array( 'hide' ),
+									'list_icon[image]' => array( 'show' ),
+									'_else[list_icon]' => array( 'hide' ),
 								),
 							),
 							'indent' => array(
@@ -497,18 +439,18 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 								'label' => __( 'Indent', 'so-widgets-bundle' ),
 								'default' => '5px',
 								'state_handler' => array(
-									'list_type[none]' => array( 'hide' ),
-									'_else[list_type]' => array( 'show' ),
+									'list_icon[none]' => array( 'hide' ),
+									'_else[list_icon]' => array( 'show' ),
 								),
 							),
 							'max_size' => array(
 								'type' => 'measurement',
-								'label' => __( 'Max Image Size', 'so-widgets-bundle' ),
+								'label' => __( 'Max Icon Size', 'so-widgets-bundle' ),
 								'default' => '25px',
 
 								'state_handler' => array(
-									'list_type[image]' => array( 'show' ),
-									'_else[list_type]' => array( 'hide' ),
+									'list_icon[image]' => array( 'show' ),
+									'_else[list_icon]' => array( 'hide' ),
 								),
 							),
 							'color' => array(
@@ -516,8 +458,8 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 								'label' => __( 'Color', 'so-widgets-bundle' ),
 								'default' => '#929292',
 								'state_handler' => array(
-									'list_type[none,image]' => array( 'hide' ),
-									'_else[list_type]' => array( 'show' ),
+									'list_icon[none,image]' => array( 'hide' ),
+									'_else[list_icon]' => array( 'show' ),
 								),
 							),
 						),
@@ -548,7 +490,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 		$less_vars = array(
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 			'date' => ! empty( $instance['date'] ) ? $instance['date'] : '',
-			'list_style_type' => ! empty( $instance['design']['list_style']['type'] ) ? $instance['design']['list_style']['type'] : 'disc',
+			'list_style_icon' => ! empty( $instance['design']['list_style']['icon'] ) ? $instance['design']['list_style']['icon'] : 'disc',
 			'list_style_indent' => ! empty( $instance['design']['list_style']['indent'] ) ? $instance['design']['list_style']['indent'] : '5px',
 			'list_style_color' => ! empty( $instance['design']['list_style']['color'] ) ? $instance['design']['list_style']['color'] : '',
 			'list_style_image_max_size' => ! empty( $instance['design']['list_style']['max_size'] ) ? $instance['design']['list_style']['max_size'] : '24px',
@@ -594,7 +536,6 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-
 		if ( ! empty( $instance['design']['read_more']['font'] ) ) {
 			$font = siteorigin_widget_get_font( $instance['design']['read_more']['font'] );
 			$less_vars['read_more_font'] = $font['family'];
@@ -616,7 +557,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 		}
 
 		if (
-			$instance['design']['list_style']['type'] == 'image' &&
+			$instance['design']['list_style']['icon'] == 'image' &&
 			(
 				! empty( $instance['design']['list_style']['image'] ) ||
 				! empty( $instance['design']['list_style']['image_fallback'] )
