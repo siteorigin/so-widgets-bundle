@@ -136,10 +136,11 @@
 				}
 
 				.wp-post-image {
+					box-sizing: content-box;
 					display: inline-block;
 					height: auto;
-					padding: @featured_image_padding;
 					max-width: @featured_image_max_width;
+					padding: @featured_image_padding;
 					// Prevent featured image from being misaligned by list item.
 					vertical-align: middle;
 				}
