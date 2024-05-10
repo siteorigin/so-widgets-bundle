@@ -115,7 +115,14 @@
 				column-gap: @featured_image_gutter;
 				display: inline-grid;
 				grid-template-columns: auto 12fr;
-				margin-left: calc(25px + @list_style_indent);
+
+				& when not ( @list_style_type = none ) {
+					margin-left: @list_style_indent;
+				}
+
+				& when not ( @list_style_image = default ) {
+					margin-left: calc(24px + @list_style_indent);
+				}
 			}
 		}
 
