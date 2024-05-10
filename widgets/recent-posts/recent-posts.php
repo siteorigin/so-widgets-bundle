@@ -240,7 +240,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							'gutter' => array(
 								'type' => 'measurement',
 								'label' => __( 'Gutter', 'so-widgets-bundle' ),
-								'default' => '5px',
+								'default' => '14px',
 							),
 							'max_width' => array(
 								'type' => 'measurement',
@@ -389,12 +389,10 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							'color' => array(
 								'type' => 'color',
 								'label' => __( 'Color', 'so-widgets-bundle' ),
-								'default' => '#2d2d2d',
 							),
 							'color_hover' => array(
 								'type' => 'color',
 								'label' => __( 'Color Hover', 'so-widgets-bundle' ),
-								'default' => '#626262',
 							),
 							'padding' => array(
 								'type' => 'measurement',
