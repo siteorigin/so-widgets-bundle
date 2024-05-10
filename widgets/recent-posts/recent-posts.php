@@ -244,7 +244,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							),
 							'max_width' => array(
 								'type' => 'measurement',
-								'label' => __( 'Max Image Width', 'so-widgets-bundle' ),
+								'label' => __( 'Max Image Size', 'so-widgets-bundle' ),
 								'default' => '72px',
 							),
 							'padding' => array(
