@@ -213,7 +213,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							'bottom_margin' => array(
 								'type' => 'measurement',
 								'label' => __( 'Bottom Margin', 'so-widgets-bundle' ),
-								'default' => '24px',
+								'default' => '18px',
 							)
 						),
 					),
@@ -240,7 +240,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							'gutter' => array(
 								'type' => 'measurement',
 								'label' => __( 'Gutter', 'so-widgets-bundle' ),
-								'default' => '14px',
+								'default' => '12px',
 							),
 							'max_width' => array(
 								'type' => 'measurement',
