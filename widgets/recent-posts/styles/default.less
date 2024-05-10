@@ -45,7 +45,7 @@
 @read_more_color_hover: default;
 @read_more_background: default;
 @read_more_background_hover: default;
-@read_more_padding: default;
+@read_more_top_margin: default;
 
 .sow-recent-posts {
 	margin: 0;
@@ -162,17 +162,16 @@
 	}
 
 	&-read-more {
-		background: @read_more_background;
 		color: @read_more_color;
+		display: block;
 		font-family: @read_more_font;
 		font-size: @read_more_font_size;
 		font-style: @read_more_font_style;
 		font-weight: @read_more_font_weight;
-		padding: @read_more_padding;
+		margin-top: @read_more_top_margin;
 
 		&:hover,
 		&:focus {
-			background: @read_more_background_hover;
 			color: @read_more_color_hover;
 		}
 	}

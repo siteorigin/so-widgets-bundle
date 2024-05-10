@@ -370,7 +370,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 					),
 					'read_more' => array(
 						'type' => 'section',
-						'label' => __( 'Read More', 'so-widgets-bundle' ),
+						'label' => __( 'Read More Link', 'so-widgets-bundle' ),
 						'hide' => true,
 						'state_handler' => array(
 							'read_more[true]' => array( 'show' ),
@@ -394,17 +394,9 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 								'type' => 'color',
 								'label' => __( 'Color Hover', 'so-widgets-bundle' ),
 							),
-							'padding' => array(
+							'top_margin' => array(
 								'type' => 'measurement',
-								'label' => __( 'Padding', 'so-widgets-bundle' ),
-							),
-							'background' => array(
-								'type' => 'color',
-								'label' => __( 'Background', 'so-widgets-bundle' ),
-							),
-							'background_hover' => array(
-								'type' => 'color',
-								'label' => __( 'Background Hover', 'so-widgets-bundle' ),
+								'label' => __( 'Top Margin', 'so-widgets-bundle' ),
 							),
 						),
 					),
@@ -570,9 +562,9 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			'excerpt_color' => ! empty( $instance['design']['excerpt']['color'] ) ? $instance['design']['excerpt']['color'] : '',
 			'read_more_font_size' => ! empty( $instance['design']['read_more']['font_size'] ) ? $instance['design']['read_more']['font_size'] : '',
 			'read_more_color' => ! empty( $instance['design']['read_more']['color'] ) ? $instance['design']['read_more']['color'] : '',
-			'read_more_padding' => ! empty( $instance['design']['read_more']['padding'] ) ? $instance['design']['read_more']['padding'] : '',
-			'read_more_background' => ! empty( $instance['design']['read_more']['background'] ) ? $instance['design']['read_more']['background'] : '',
-			'read_more_background_hover' => ! empty( $instance['design']['read_more']['background_hover'] ) ? $instance['design']['read_more']['background_hover'] : '',
+			'read_more_top_margin' => ! empty( $instance['design']['read_more']['top_margin'] ) ? $instance['design']['read_more']['top_margin'] : '',
+			'read_more_color' => ! empty( $instance['design']['read_more']['color'] ) ? $instance['design']['read_more']['color'] : '',
+			'read_more_color_hover' => ! empty( $instance['design']['read_more']['color_hover'] ) ? $instance['design']['read_more']['color_hover'] : '',
 		);
 
 		if ( ! empty( $instance['design']['title']['font'] ) ) {
