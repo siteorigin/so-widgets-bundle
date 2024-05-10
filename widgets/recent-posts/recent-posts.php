@@ -494,7 +494,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							),
 							'indent' => array(
 								'type' => 'measurement',
-								'label' => __( 'Space Between List Indicator and Post', 'so-widgets-bundle' ),
+								'label' => __( 'Indent', 'so-widgets-bundle' ),
 								'default' => '5px',
 								'state_handler' => array(
 									'list_type[none]' => array( 'hide' ),
