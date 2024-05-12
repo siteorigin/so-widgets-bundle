@@ -96,10 +96,8 @@
 
 			&::before {
 				display: inline-block;
-				left: 0;
-				position: absolute;
+				position: relative;
 				top: 50%;
-				transform: translateY(-50%);
 
 				& when ( @list_style_icon = image ) {
 					background: @list_style_image;
@@ -134,7 +132,7 @@
 				grid-template-columns: auto 12fr;
 
 				& when not ( @list_style_icon = none ) {
-					margin-left: calc(@list_style_image_max_size + @list_style_indent);
+					margin-left: @list_style_indent;
 				}
 			}
 		}
