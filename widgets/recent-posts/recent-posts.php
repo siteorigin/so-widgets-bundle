@@ -419,10 +419,6 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 									'disc' => __( 'Disc', 'so-widgets-bundle' ),
 									'circle' => __( 'Circle', 'so-widgets-bundle' ),
 									'square' => __( 'Square', 'so-widgets-bundle' ),
-									'checkmark' => __( 'Checkmark', 'so-widgets-bundle' ),
-									'star' => __( 'Star', 'so-widgets-bundle' ),
-									'heart' => __( 'Heart', 'so-widgets-bundle' ),
-									'arrow' => __( 'Arrow', 'so-widgets-bundle' ),
 								),
 							),
 							'image' => array(
