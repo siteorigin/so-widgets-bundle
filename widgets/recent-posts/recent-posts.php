@@ -59,7 +59,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			),
 			'recent_settings' => array(
 				'type' => 'section',
-				'label' => __( 'recent_settings', 'so-widgets-bundle' ),
+				'label' => __( 'Settings', 'so-widgets-bundle' ),
 				'fields' => array(
 					'featured_image' => array(
 						'type' => 'checkbox',
@@ -202,7 +202,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 
 			'recent_design' => array(
 				'type' => 'section',
-				'label' => __( 'recent_design', 'so-widgets-bundle' ),
+				'label' => __( 'Design', 'so-widgets-bundle' ),
 				'hide' => true,
 				'fields' => array(
 					'post' => array(
