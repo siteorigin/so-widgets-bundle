@@ -433,7 +433,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							'indent' => array(
 								'type' => 'measurement',
 								'label' => __( 'Indent', 'so-widgets-bundle' ),
-								'default' => '5px',
+								'default' => '10px',
 								'state_handler' => array(
 									'list_icon[none]' => array( 'hide' ),
 									'_else[list_icon]' => array( 'show' ),
