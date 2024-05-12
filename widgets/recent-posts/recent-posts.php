@@ -577,8 +577,8 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 	public function get_template_variables( $instance, $args ) {
 		$processed_query = siteorigin_widget_post_selector_process_query( $instance['recent_query'] );
 		return array(
-			'recent_query' => new WP_Query( $processed_query ),
-			'recent_settings' => ! empty( $instance ) ? $instance['recent_settings'] : array(),
+			'query' => new WP_Query( $processed_query ),
+			'settings' => ! empty( $instance ) ? $instance['recent_settings'] : array(),
 		);
 	}
 
