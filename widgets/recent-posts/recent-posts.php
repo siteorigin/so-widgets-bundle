@@ -57,9 +57,9 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 				'type' => 'text',
 				'label' => __( 'Title', 'so-widgets-bundle' ),
 			),
-			'settings' => array(
+			'recent_settings' => array(
 				'type' => 'section',
-				'label' => __( 'Settings', 'so-widgets-bundle' ),
+				'label' => __( 'recent_settings', 'so-widgets-bundle' ),
 				'fields' => array(
 					'featured_image' => array(
 						'type' => 'checkbox',
@@ -200,9 +200,9 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 				),
 			),
 
-			'design' => array(
+			'recent_design' => array(
 				'type' => 'section',
-				'label' => __( 'Design', 'so-widgets-bundle' ),
+				'label' => __( 'recent_design', 'so-widgets-bundle' ),
 				'hide' => true,
 				'fields' => array(
 					'post' => array(
@@ -462,7 +462,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 					),
 				),
 			),
-			'query' => array(
+			'recent_query' => array(
 				'type' => 'posts',
 				'label' => __( 'Posts Query', 'so-widgets-bundle' ),
 				'hide' => true,
@@ -486,27 +486,27 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 		$less_vars = array(
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 			'date' => ! empty( $instance['date'] ) ? $instance['date'] : '',
-			'list_style_icon' => ! empty( $instance['design']['list_style']['icon'] ) ? $instance['design']['list_style']['icon'] : 'disc',
-			'list_style_indent' => ! empty( $instance['design']['list_style']['indent'] ) ? $instance['design']['list_style']['indent'] : '5px',
-			'list_style_color' => ! empty( $instance['design']['list_style']['color'] ) ? $instance['design']['list_style']['color'] : '',
-			'list_style_image_max_size' => ! empty( $instance['design']['list_style']['max_size'] ) ? $instance['design']['list_style']['max_size'] : '24px',
-			'title_font_size' => ! empty( $instance['design']['title']['font_size'] ) ? $instance['design']['title']['font_size'] : '',
-			'title_color' => ! empty( $instance['design']['title']['color'] ) ? $instance['design']['title']['color'] : '',
-			'title_color_hover' => ! empty( $instance['design']['title']['color_hover'] ) ? $instance['design']['title']['color_hover'] : '',
-			'date_font_size' => ! empty( $instance['design']['date']['font_size'] ) ? $instance['design']['date']['font_size'] : '',
-			'date_color' => ! empty( $instance['design']['date']['color'] ) ? $instance['design']['date']['color'] : '',
-			'bottom_margin' => ! empty( $instance['design']['post']['bottom_margin'] ) ? $instance['design']['post']['bottom_margin'] : '0',
-			'excerpt_font_size' => ! empty( $instance['design']['excerpt']['font_size'] ) ? $instance['design']['excerpt']['font_size'] : '',
-			'excerpt_color' => ! empty( $instance['design']['excerpt']['color'] ) ? $instance['design']['excerpt']['color'] : '',
-			'read_more_font_size' => ! empty( $instance['design']['read_more']['font_size'] ) ? $instance['design']['read_more']['font_size'] : '',
-			'read_more_color' => ! empty( $instance['design']['read_more']['color'] ) ? $instance['design']['read_more']['color'] : '',
-			'read_more_top_margin' => ! empty( $instance['design']['read_more']['top_margin'] ) ? $instance['design']['read_more']['top_margin'] : '',
-			'read_more_color' => ! empty( $instance['design']['read_more']['color'] ) ? $instance['design']['read_more']['color'] : '',
-			'read_more_color_hover' => ! empty( $instance['design']['read_more']['color_hover'] ) ? $instance['design']['read_more']['color_hover'] : '',
+			'list_style_icon' => ! empty( $instance['recent_design']['list_style']['icon'] ) ? $instance['recent_design']['list_style']['icon'] : 'disc',
+			'list_style_indent' => ! empty( $instance['recent_design']['list_style']['indent'] ) ? $instance['recent_design']['list_style']['indent'] : '5px',
+			'list_style_color' => ! empty( $instance['recent_design']['list_style']['color'] ) ? $instance['recent_design']['list_style']['color'] : '',
+			'list_style_image_max_size' => ! empty( $instance['recent_design']['list_style']['max_size'] ) ? $instance['recent_design']['list_style']['max_size'] : '24px',
+			'title_font_size' => ! empty( $instance['recent_design']['title']['font_size'] ) ? $instance['recent_design']['title']['font_size'] : '',
+			'title_color' => ! empty( $instance['recent_design']['title']['color'] ) ? $instance['recent_design']['title']['color'] : '',
+			'title_color_hover' => ! empty( $instance['recent_design']['title']['color_hover'] ) ? $instance['recent_design']['title']['color_hover'] : '',
+			'date_font_size' => ! empty( $instance['recent_design']['date']['font_size'] ) ? $instance['recent_design']['date']['font_size'] : '',
+			'date_color' => ! empty( $instance['recent_design']['date']['color'] ) ? $instance['recent_design']['date']['color'] : '',
+			'bottom_margin' => ! empty( $instance['recent_design']['post']['bottom_margin'] ) ? $instance['recent_design']['post']['bottom_margin'] : '0',
+			'excerpt_font_size' => ! empty( $instance['recent_design']['excerpt']['font_size'] ) ? $instance['recent_design']['excerpt']['font_size'] : '',
+			'excerpt_color' => ! empty( $instance['recent_design']['excerpt']['color'] ) ? $instance['recent_design']['excerpt']['color'] : '',
+			'read_more_font_size' => ! empty( $instance['recent_design']['read_more']['font_size'] ) ? $instance['recent_design']['read_more']['font_size'] : '',
+			'read_more_color' => ! empty( $instance['recent_design']['read_more']['color'] ) ? $instance['recent_design']['read_more']['color'] : '',
+			'read_more_top_margin' => ! empty( $instance['recent_design']['read_more']['top_margin'] ) ? $instance['recent_design']['read_more']['top_margin'] : '',
+			'read_more_color' => ! empty( $instance['recent_design']['read_more']['color'] ) ? $instance['recent_design']['read_more']['color'] : '',
+			'read_more_color_hover' => ! empty( $instance['recent_design']['read_more']['color_hover'] ) ? $instance['recent_design']['read_more']['color_hover'] : '',
 		);
 
-		if ( ! empty( $instance['design']['title']['font'] ) ) {
-			$font = siteorigin_widget_get_font( $instance['design']['title']['font'] );
+		if ( ! empty( $instance['recent_design']['title']['font'] ) ) {
+			$font = siteorigin_widget_get_font( $instance['recent_design']['title']['font'] );
 			$less_vars['title_font'] = $font['family'];
 			if ( ! empty( $font['weight'] ) ) {
 				$less_vars['title_font_style'] = $font['style'];
@@ -514,8 +514,8 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		if ( ! empty( $instance['design']['date']['font'] ) ) {
-			$font = siteorigin_widget_get_font( $instance['design']['date']['font'] );
+		if ( ! empty( $instance['recent_design']['date']['font'] ) ) {
+			$font = siteorigin_widget_get_font( $instance['recent_design']['date']['font'] );
 			$less_vars['date_font'] = $font['family'];
 			if ( ! empty( $font['weight'] ) ) {
 				$less_vars['date_font_style'] = $font['style'];
@@ -523,8 +523,8 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		if ( ! empty( $instance['design']['excerpt']['font'] ) ) {
-			$font = siteorigin_widget_get_font( $instance['design']['excerpt']['font'] );
+		if ( ! empty( $instance['recent_design']['excerpt']['font'] ) ) {
+			$font = siteorigin_widget_get_font( $instance['recent_design']['excerpt']['font'] );
 			$less_vars['excerpt_font'] = $font['family'];
 			if ( ! empty( $font['weight'] ) ) {
 				$less_vars['excerpt_font_style'] = $font['style'];
@@ -532,8 +532,8 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		if ( ! empty( $instance['design']['read_more']['font'] ) ) {
-			$font = siteorigin_widget_get_font( $instance['design']['read_more']['font'] );
+		if ( ! empty( $instance['recent_design']['read_more']['font'] ) ) {
+			$font = siteorigin_widget_get_font( $instance['recent_design']['read_more']['font'] );
 			$less_vars['read_more_font'] = $font['family'];
 			if ( ! empty( $font['weight'] ) ) {
 				$less_vars['read_more_font_style'] = $font['style'];
@@ -541,29 +541,29 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		if ( ! empty( $instance['settings']['featured_image'] ) ) {
+		if ( ! empty( $instance['recent_settings']['featured_image'] ) ) {
 			$less_vars['featured_image'] = true;
-			$less_vars['featured_image_gutter'] = ! empty( $instance['design']['featured_image']['gutter'] ) ? $instance['design']['featured_image']['gutter'] : '';
-			$less_vars['featured_image_max_width'] = ! empty( $instance['design']['featured_image']['max_width'] ) ? $instance['design']['featured_image']['max_width'] : '';
-			$less_vars['featured_image_padding'] = ! empty( $instance['design']['featured_image']['padding'] ) ? $instance['design']['featured_image']['padding'] : '';
-			$less_vars['featured_image_placement'] = ! empty( $instance['design']['featured_image']['placement'] ) ? $instance['design']['featured_image']['placement'] : '';
-			$less_vars['featured_image_border_style'] = ! empty( $instance['design']['featured_image']['border_style'] ) ? $instance['design']['featured_image']['border_style'] : '';
-			$less_vars['featured_image_border_thickness'] = ! empty( $instance['design']['featured_image']['border_thickness'] ) ? $instance['design']['featured_image']['border_thickness'] : '1px';
-			$less_vars['featured_image_border_color'] = ! empty( $instance['design']['featured_image']['border_color'] ) ? $instance['design']['featured_image']['border_color'] : '#e6e6e6';
+			$less_vars['featured_image_gutter'] = ! empty( $instance['recent_design']['featured_image']['gutter'] ) ? $instance['recent_design']['featured_image']['gutter'] : '';
+			$less_vars['featured_image_max_width'] = ! empty( $instance['recent_design']['featured_image']['max_width'] ) ? $instance['recent_design']['featured_image']['max_width'] : '';
+			$less_vars['featured_image_padding'] = ! empty( $instance['recent_design']['featured_image']['padding'] ) ? $instance['recent_design']['featured_image']['padding'] : '';
+			$less_vars['featured_image_placement'] = ! empty( $instance['recent_design']['featured_image']['placement'] ) ? $instance['recent_design']['featured_image']['placement'] : '';
+			$less_vars['featured_image_border_style'] = ! empty( $instance['recent_design']['featured_image']['border_style'] ) ? $instance['recent_design']['featured_image']['border_style'] : '';
+			$less_vars['featured_image_border_thickness'] = ! empty( $instance['recent_design']['featured_image']['border_thickness'] ) ? $instance['recent_design']['featured_image']['border_thickness'] : '1px';
+			$less_vars['featured_image_border_color'] = ! empty( $instance['recent_design']['featured_image']['border_color'] ) ? $instance['recent_design']['featured_image']['border_color'] : '#e6e6e6';
 		}
 
 		if (
-			$instance['design']['list_style']['icon'] == 'image' &&
+			$instance['recent_design']['list_style']['icon'] == 'image' &&
 			(
-				! empty( $instance['design']['list_style']['image'] ) ||
-				! empty( $instance['design']['list_style']['image_fallback'] )
+				! empty( $instance['recent_design']['list_style']['image'] ) ||
+				! empty( $instance['recent_design']['list_style']['image_fallback'] )
 			)
 		) {
-			$icon_image_size = ! empty( (int) $instance['design']['list_style']['max_size'] ) ? (int) $instance['design']['list_style']['max_size'] * 3 : 75;
+			$icon_image_size = ! empty( (int) $instance['recent_design']['list_style']['max_size'] ) ? (int) $instance['recent_design']['list_style']['max_size'] * 3 : 75;
 			$src = siteorigin_widgets_get_attachment_image_src(
-				$instance['design']['list_style']['image'],
+				$instance['recent_design']['list_style']['image'],
 				array( $icon_image_size, $icon_image_size ),
-				! empty( $instance['design']['list_style']['image_fallback'] ) ? $instance['design']['list_style']['image_fallback'] : false
+				! empty( $instance['recent_design']['list_style']['image_fallback'] ) ? $instance['recent_design']['list_style']['image_fallback'] : false
 			);
 
 			if ( ! empty( $src ) ) {
@@ -575,10 +575,10 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_template_variables( $instance, $args ) {
-		$processed_query = siteorigin_widget_post_selector_process_query( $instance['query'] );
+		$processed_query = siteorigin_widget_post_selector_process_query( $instance['recent_query'] );
 		return array(
-			'query' => new WP_Query( $processed_query ),
-			'settings' => ! empty( $instance ) ? $instance['settings'] : array(),
+			'recent_query' => new WP_Query( $processed_query ),
+			'recent_settings' => ! empty( $instance ) ? $instance['recent_settings'] : array(),
 		);
 	}
 
