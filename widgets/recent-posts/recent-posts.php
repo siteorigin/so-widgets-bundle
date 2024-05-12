@@ -252,7 +252,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 								'label' => __( 'Padding', 'so-widgets-bundle' ),
 								'default' => '0px',
 							),
-							'border' => array(
+							'border_style' => array(
 								'type' => 'select',
 								'label' => __( 'Border Style', 'so-widgets-bundle' ),
 								'default' => 'none',
@@ -495,7 +495,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			'title_color_hover' => ! empty( $instance['design']['title']['color_hover'] ) ? $instance['design']['title']['color_hover'] : '',
 			'date_font_size' => ! empty( $instance['design']['date']['font_size'] ) ? $instance['design']['date']['font_size'] : '',
 			'date_color' => ! empty( $instance['design']['date']['color'] ) ? $instance['design']['date']['color'] : '',
-			'bottom_margin' => ! empty( $instance['design']['post']['bottom_margin'] ) ? $instance['design']['post']['bottom_margin'] : '',
+			'bottom_margin' => ! empty( $instance['design']['post']['bottom_margin'] ) ? $instance['design']['post']['bottom_margin'] : '0',
 			'excerpt_font_size' => ! empty( $instance['design']['excerpt']['font_size'] ) ? $instance['design']['excerpt']['font_size'] : '',
 			'excerpt_color' => ! empty( $instance['design']['excerpt']['color'] ) ? $instance['design']['excerpt']['color'] : '',
 			'read_more_font_size' => ! empty( $instance['design']['read_more']['font_size'] ) ? $instance['design']['read_more']['font_size'] : '',

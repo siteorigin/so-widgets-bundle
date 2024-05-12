@@ -164,11 +164,11 @@
 					// Prevent featured image from being misaligned by list item.
 					vertical-align: middle;
 				}
-			}
 
-			& when not ( @featured_image_border_style = default ) {
-				.sow-recent-posts-thumbnail img {
-					border: @featured_image_border_thickness @featured_image_border_style @featured_image_border_color;
+				& when not ( @featured_image_border_style = none ) {
+					.wp-post-image {
+						border: @featured_image_border_thickness @featured_image_border_style @featured_image_border_color;
+					}
 				}
 			}
 		}
