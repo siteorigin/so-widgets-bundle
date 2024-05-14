@@ -1,21 +1,22 @@
 @responsive_breakpoint: 780px;
 @columns: 3;
 @alignment: space-between;
-@row_gap: 20px;
 @mobile_columns: 3;
+@desktop_gap: 20px;
 @mobile_alignment: center;
 @mobile_row_gap: 20px;
+@mobile_gap: 20px;
 
 .sow-buttons-grid {
 	align-items: center;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: @alignment;
-	row-gap: @row_gap;
+	gap: @desktop_gap;
 
 	@media (max-width: @responsive_breakpoint) {
+		gap: @mobile_gap;
 		justify-content: @mobile_alignment;
-		row-gap: @mobile_row_gap;
 	}
 
 	.so-widget-sow-button  {

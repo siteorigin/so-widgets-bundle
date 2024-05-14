@@ -81,10 +81,14 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 									'end' => __( 'Right', 'so-widgets-bundle' ),
 								),
 							),
-							'row_gap' => array(
-								'type' => 'measurement',
-								'label' => __( 'Space Between Rows', 'so-widgets-bundle' ),
-								'default' => '20px',
+							'gap' => array(
+								'type' => 'multi-measurement',
+								'label' => __( 'Gap', 'so-widgets-bundle' ),
+								'default' => '20px 20px',
+								'measurements' => array(
+									'row' => __( 'Row', 'so-widgets-bundle' ),
+									'column' => __( 'Column', 'so-widgets-bundle' ),
+								),
 							),
 						),
 					),
@@ -110,11 +114,16 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 									'end' => __( 'Right', 'so-widgets-bundle' ),
 								),
 							),
-							'row_gap' => array(
-								'type' => 'measurement',
-								'label' => __( 'Space Between Rows', 'so-widgets-bundle' ),
-								'default' => '20px',
+							'gap' => array(
+								'type' => 'multi-measurement',
+								'label' => __( 'Gap', 'so-widgets-bundle' ),
+								'default' => '20px 20px',
+								'measurements' => array(
+									'row' => __( 'Row', 'so-widgets-bundle' ),
+									'column' => __( 'Column', 'so-widgets-bundle' ),
+								),
 							),
+
 						),
 					),
 				),
@@ -131,10 +140,10 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 			'columns' => ! empty( $instance['layout']['desktop']['columns'] ) ? 100 / $instance['layout']['desktop']['columns'] . '%' : 33.33,
 			'alignment' => ! empty( $instance['layout']['desktop']['alignment'] ) ? $instance['layout']['desktop']['alignment'] : 'space-between',
-			'row_gap' => ! empty( $instance['layout']['desktop']['row_gap'] ) ? $instance['layout']['desktop']['row_gap'] : '20px',
 			'mobile_columns' => ! empty( $instance['layout']['mobile']['columns'] ) ? 100 / $instance['layout']['mobile']['columns'] . '%' : 100,
 			'mobile_alignment' => ! empty( $instance['layout']['mobile']['alignment'] ) ? $instance['layout']['mobile']['alignment'] : 'space-between',
-			'mobile_row_gap' => ! empty( $instance['layout']['mobile']['row_gap'] ) ? $instance['layout']['mobile']['row_gap'] : '20px',
+			'gap' => ! empty( $instance['layout']['desktop']['gap'] ) ? $instance['layout']['desktop']['gap'] : '20px',
+			'mobile_gap' => ! empty( $instance['layout']['mobile']['gap'] ) ? $instance['layout']['mobile']['gap'] : '20px',
 		);
 	}
 }
