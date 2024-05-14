@@ -66,11 +66,21 @@ function siteorigin_widget_post_selector_process_query( $query, $exclude_current
 		}
 	}
 
-	if ( isset( $query['date_type'] ) && $query['date_type'] == 'relative' ) {
-		$date_query_rel = json_decode(
-			stripslashes( $query['date_query_relative'] ),
-			true
-		);
+	if (
+		isset( $query['date_type'] ) &&
+		$query['date_type'] == 'relative' &&
+		! empty( $query['date_query_relative'] )
+	) {
+		// Check if we need to decode date_query_relative.
+		if ( ! is_array( stripslashes( $query['date_query_relative'] ) ) ) {
+			$query['date_query_relative'] = json_decode(
+				stripslashes( $query['date_query_relative'] ),
+				true
+			);
+		} else {
+			$date_query_rel = $query['date_query_relative'];
+		}
+
 		$value_after = new DateTime(
 			$date_query_rel['from']['value'] . ' ' . $date_query_rel['from']['unit'] . ' ago'
 		);
