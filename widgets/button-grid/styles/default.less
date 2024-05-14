@@ -1,29 +1,42 @@
 @responsive_breakpoint: 780px;
-@columns: 3;
-@alignment: space-between;
-@mobile_columns: 3;
+
+@desktop_alignment: space-between;
+@desktop_columns: 3;
 @desktop_gap: 20px;
+@desktop_system: grid;
+
+@mobile_system: grid;
 @mobile_alignment: center;
-@mobile_row_gap: 20px;
+@mobile_columns: 3;
 @mobile_gap: 20px;
 
 .sow-buttons-grid {
 	align-items: center;
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: @alignment;
 	gap: @desktop_gap;
+	justify-content: @desktop_alignment;
+
+	& when (@desktop_system = grid) {
+		display: grid;
+		grid-template-columns: repeat(@desktop_columns, minmax(100px, 1fr));
+	}
+
+	& when (@desktop_system = flex) {
+		display: flex;
+		flex-wrap: wrap;
+	}
 
 	@media (max-width: @responsive_breakpoint) {
 		gap: @mobile_gap;
 		justify-content: @mobile_alignment;
-	}
 
-	.so-widget-sow-button  {
-		flex-basis: @columns;
+		& when (@mobile_system = grid) {
+			display: grid;
+			grid-template-columns: repeat(@mobile_columns, minmax(100px, 1fr));
+		}
 
-		@media (max-width: @responsive_breakpoint) {
-			flex-basis: @mobile_columns;
+		& when (@mobile_system = flex) {
+			display: flex;
+			flex-wrap: wrap;
 		}
 	}
 }
