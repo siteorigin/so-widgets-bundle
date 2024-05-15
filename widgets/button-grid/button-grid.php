@@ -139,12 +139,10 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 	 * @return array $form_fields A modified Button Widget form options.
 	 */
 	function filter_buttons_widget_form( $form_fields ) {
-		$form_fields['design']['fields']['align']['options']['grid'] = __( 'Grid', 'so-widgets-bundle' );
-		$form_fields['design']['fields']['align']['default'] = 'grid';
-		$form_fields['design']['fields']['align']['description'] = __( 'Grid align result in the Grid widget controlling the alignment.', 'so-widgets-bundle' );
-		$form_fields['design']['fields']['mobile_align']['options']['grid'] = __( 'Grid', 'so-widgets-bundle' );
-		$form_fields['design']['fields']['mobile_align']['default'] = 'grid';
-		$form_fields['design']['fields']['mobile_align']['description'] = __( 'Grid align result in the Grid widget controlling the alignment.', 'so-widgets-bundle' );
+		$form_fields['design']['fields']['align']['options']['default'] = __( 'Default', 'so-widgets-bundle' );
+		$form_fields['design']['fields']['align']['default'] = 'default';
+		$form_fields['design']['fields']['mobile_align']['options']['default'] = __( 'Default', 'so-widgets-bundle' );
+		$form_fields['design']['fields']['mobile_align']['default'] = 'default';
 
 		return $form_fields;
 	}
@@ -186,11 +184,11 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 	}
 
 	public function override_button_less_variables( $vars, $instance, $widget ) {
-		if ( $instance['desktop']['align'] === 'grid' ) {
+		if ( $instance['desktop']['align'] === 'default' ) {
 			$vars['align'] = $this->settings['desktop_alignment'];
 		}
 
-		if ( $instance['mobile']['align'] === 'grid' ) {
+		if ( $instance['mobile']['align'] === 'default' ) {
 			$vars['mobile_align'] = $this->settings['mobile_alignment'];
 		}
 
