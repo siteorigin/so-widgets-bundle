@@ -72,7 +72,7 @@ function siteorigin_widget_post_selector_process_query( $query, $exclude_current
 		! empty( $query['date_query_relative'] )
 	) {
 		// Check if we need to decode date_query_relative.
-		if ( ! is_array( stripslashes( $query['date_query_relative'] ) ) ) {
+		if ( ! is_array( $query['date_query_relative'] ) ) {
 			$date_query_rel = json_decode(
 				stripslashes( $query['date_query_relative'] ),
 				true
