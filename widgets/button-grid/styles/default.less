@@ -13,7 +13,6 @@
 .sow-buttons-grid {
 	align-items: center;
 	gap: @desktop_gap;
-	justify-content: @desktop_alignment;
 
 	& when (@desktop_system = grid) {
 		display: grid;
@@ -23,11 +22,11 @@
 	& when (@desktop_system = flex) {
 		display: flex;
 		flex-wrap: wrap;
+		justify-content: @desktop_alignment;
 	}
 
 	@media (max-width: @responsive_breakpoint) {
 		gap: @mobile_gap;
-		justify-content: @mobile_alignment;
 
 		& when (@mobile_system = grid) {
 			display: grid;
@@ -37,6 +36,7 @@
 		& when (@mobile_system = flex) {
 			display: flex;
 			flex-wrap: wrap;
+			justify-content: @mobile_alignment;
 		}
 	}
 }

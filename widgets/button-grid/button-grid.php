@@ -8,6 +8,8 @@ Documentation: https://siteorigin.com/widgets-bundle/button-grid-widget/
 */
 
 class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
+	private $settings;
+
 	public function __construct() {
 		parent::__construct(
 			'sow-button-grid',
@@ -22,6 +24,9 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 			false,
 			plugin_dir_path( __FILE__ )
 		);
+		add_filter( 'siteorigin_widgets_less_variables_sow-button', array( $this, 'override_button_less_variables' ), 10, 3 );
+
+		add_filter( 'siteorigin_widgets_template_variables_sow-button', array( $this, 'override_button_variables' ), 10, 2 );
 	}
 
 	public function get_settings_form() {
@@ -52,10 +57,10 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 						'type' => 'widget',
 						'collapsible' => false,
 						'class' => 'SiteOrigin_Widget_Button_Widget',
+						'form_filter' => array( $this, 'filter_buttons_widget_form' ),
 					),
 				),
 			),
-
 			'layout' => array(
 				'type' => 'section',
 				'label' => __( 'Layout', 'so-widgets-bundle' ),
@@ -113,7 +118,7 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 								'options' => array(
 									'left' => __( 'Left', 'so-widgets-bundle' ),
 									'center' => __( 'Center', 'so-widgets-bundle' ),
-									'end' => __( 'Right', 'so-widgets-bundle' ),
+									'right' => __( 'Right', 'so-widgets-bundle' ),
 								),
 							),
 							'gap' => array(
@@ -180,7 +185,7 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 								'options' => array(
 									'left' => __( 'Left', 'so-widgets-bundle' ),
 									'center' => __( 'Center', 'so-widgets-bundle' ),
-									'end' => __( 'Right', 'so-widgets-bundle' ),
+									'right' => __( 'Right', 'so-widgets-bundle' ),
 								),
 							),
 							'gap' => array(
@@ -198,6 +203,24 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 				),
 			),
 		);
+	}
+
+	/**
+	 * Adds a dedicated Grid option to the Button Widget. This allow users to override the Button Grid Alignment on a button by button basis.
+	 *
+	 * @param array $form_fields
+	 *
+	 * @return array $form_fields A modified Button Widget form options.
+	 */
+	function filter_buttons_widget_form( $form_fields ) {
+		$form_fields['design']['fields']['align']['options']['grid'] = __( 'Grid', 'so-widgets-bundle' );
+		$form_fields['design']['fields']['align']['default'] = 'grid';
+		$form_fields['design']['fields']['align']['description'] = __( 'Grid align result in the Grid widget controlling the alignment.', 'so-widgets-bundle' );
+		$form_fields['design']['fields']['mobile_align']['options']['grid'] = __( 'Grid', 'so-widgets-bundle' );
+		$form_fields['design']['fields']['mobile_align']['default'] = 'grid';
+		$form_fields['design']['fields']['mobile_align']['description'] = __( 'Grid align result in the Grid widget controlling the alignment.', 'so-widgets-bundle' );
+
+		return $form_fields;
 	}
 
 	public function get_less_variables( $instance ) {
@@ -223,6 +246,9 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 			'mobile'
 		);
 
+		// Store $settings so we can access it in the override_button_less_variables method.
+		$this->settings = $settings;
+
 		return $settings;
 	}
 
@@ -237,6 +263,30 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 		}
 
 		return $settings;
+	}
+
+	public function override_button_less_variables( $vars, $instance, $widget ) {
+		if (
+			$this->settings['desktop_system'] ==='grid' &&
+			$instance['desktop']['align'] === 'grid'
+		) {
+			$vars['align'] = $this->settings['desktop_alignment'];
+		}
+
+		if (
+			$this->settings['mobile_system'] ==='grid' &&
+			$instance['mobile']['align'] === 'grid'
+		) {
+			$vars['mobile_align'] = $this->settings['mobile_alignment'];
+		}
+
+		return $vars;
+	}
+
+	// The Button Widget outputs the desktop alignment as a class so we need to override it.
+	public function override_button_variables( $vars, $instance ) {
+		$vars['align'] = $this->settings['desktop_alignment'];
+		return $vars;
 	}
 }
 siteorigin_widget_register( 'sow-button-grid', __FILE__, 'SiteOrigin_Widget_Button_Grid_Widget' );
