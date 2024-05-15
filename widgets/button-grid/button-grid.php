@@ -26,7 +26,7 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 		);
 		add_filter( 'siteorigin_widgets_less_variables_sow-button', array( $this, 'override_button_less_variables' ), 10, 3 );
 
-		add_filter( 'siteorigin_widgets_template_variables_sow-button', array( $this, 'override_button_variables' ), 10, 2 );
+		add_filter( 'siteorigin_widgets_template_variables_sow-button', array( $this, 'override_button_variables' ), 10, 1 );
 	}
 
 	public function get_settings_form() {
@@ -69,52 +69,15 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 						'type' => 'section',
 						'label' => __( 'Desktop', 'so-widgets-bundle' ),
 						'fields' => array(
-							'system' => array(
-								'type' => 'radio',
-								'label' => __( 'Layout System', 'so-widgets-bundle' ),
-								'default' => 'grid',
-								'options' => array(
-									'grid' => __( 'Grid', 'so-widgets-bundle' ),
-									'flex' => __( 'Flex', 'so-widgets-bundle' ),
-								),
-								'state_emitter' => array(
-									'callback' => 'select',
-									'args' => array( 'system' )
-								),
-							),
-							'alignment_flex' => array(
-								'type' => 'select',
-								'label' => __( 'Button Alignment', 'so-widgets-bundle' ),
-								'default' => 'space-between',
-								'state_handler' => array(
-									'system[flex]' => array( 'show' ),
-									'_else[system]' => array( 'hide' ),
-								),
-								'options' => array(
-									'space-between' => __( 'Space Between Items', 'so-widgets-bundle' ),
-									'space-evenly' => __( 'Items Spaced Evenly', 'so-widgets-bundle' ),
-									'left' => __( 'Left', 'so-widgets-bundle' ),
-									'center' => __( 'Center', 'so-widgets-bundle' ),
-									'end' => __( 'Right', 'so-widgets-bundle' ),
-								),
-							),
 							'columns' => array(
 								'type' => 'number',
 								'label' => __( 'Buttons Per Line', 'so-widgets-bundle' ),
 								'default' => 3,
-								'state_handler' => array(
-									'system[grid]' => array( 'show' ),
-									'_else[system]' => array( 'hide' ),
-								),
 							),
-							'alignment_grid' => array(
+							'alignment' => array(
 								'type' => 'select',
 								'label' => __( 'Button Alignment', 'so-widgets-bundle' ),
 								'default' => 'center',
-								'state_handler' => array(
-									'system[grid]' => array( 'show' ),
-									'_else[system]' => array( 'hide' ),
-								),
 								'options' => array(
 									'left' => __( 'Left', 'so-widgets-bundle' ),
 									'center' => __( 'Center', 'so-widgets-bundle' ),
@@ -136,52 +99,15 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 						'type' => 'section',
 						'label' => __( 'Mobile', 'so-widgets-bundle' ),
 						'fields' => array(
-							'system' => array(
-								'type' => 'radio',
-								'label' => __( 'Layout System', 'so-widgets-bundle' ),
-								'default' => 'grid',
-								'options' => array(
-									'grid' => __( 'Grid', 'so-widgets-bundle' ),
-									'flex' => __( 'Flex', 'so-widgets-bundle' ),
-								),
-								'state_emitter' => array(
-									'callback' => 'select',
-									'args' => array( 'system_mobile' )
-								),
-							),
-							'alignment_flex' => array(
-								'type' => 'select',
-								'label' => __( 'Button Alignment', 'so-widgets-bundle' ),
-								'default' => 'space-between',
-								'state_handler' => array(
-									'system_mobile[flex]' => array( 'show' ),
-									'_else[system_mobile]' => array( 'hide' ),
-								),
-								'options' => array(
-									'space-between' => __( 'Space Between Items', 'so-widgets-bundle' ),
-									'space-evenly' => __( 'Items Spaced Evenly', 'so-widgets-bundle' ),
-									'left' => __( 'Left', 'so-widgets-bundle' ),
-									'center' => __( 'Center', 'so-widgets-bundle' ),
-									'end' => __( 'Right', 'so-widgets-bundle' ),
-								),
-							),
 							'columns' => array(
 								'type' => 'number',
 								'label' => __( 'Buttons Per Line', 'so-widgets-bundle' ),
 								'default' => 3,
-								'state_handler' => array(
-									'system_mobile[grid]' => array( 'show' ),
-									'_else[system_mobile]' => array( 'hide' ),
-								),
 							),
-							'alignment_grid' => array(
+							'alignment' => array(
 								'type' => 'select',
 								'label' => __( 'Button Alignment', 'so-widgets-bundle' ),
 								'default' => 'center',
-								'state_handler' => array(
-									'system_mobile[grid]' => array( 'show' ),
-									'_else[system_mobile]' => array( 'hide' ),
-								),
 								'options' => array(
 									'left' => __( 'Left', 'so-widgets-bundle' ),
 									'center' => __( 'Center', 'so-widgets-bundle' ),
@@ -253,30 +179,18 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 	}
 
 	private function generate_system_css( $settings, $context_settings, $context ) {
-		if ( $context_settings['system'] === 'grid' ) {
-			$settings[ $context . '_system' ] = 'grid';
-			$settings[ $context . '_columns' ] = ! empty( $context_settings['columns'] ) ? (int) $context_settings['columns'] : 3;
-			$settings[ $context . '_alignment' ] = ! empty( $context_settings['alignment_grid'] ) ? $context_settings['alignment_grid'] : 'center';
-		} else {
-			$settings[ $context . '_system' ] = 'flex';
-			$settings[ $context . '_alignment' ] = ! empty( $context_settings['alignment_flex'] ) ? $context_settings['alignment_flex'] : 'space-between';
-		}
+		$settings[ $context . '_columns' ] = ! empty( $context_settings['columns'] ) ? (int) $context_settings['columns'] : 3;
+		$settings[ $context . '_alignment' ] = ! empty( $context_settings['alignment'] ) ? $context_settings['alignment'] : 'center';
 
 		return $settings;
 	}
 
 	public function override_button_less_variables( $vars, $instance, $widget ) {
-		if (
-			$this->settings['desktop_system'] ==='grid' &&
-			$instance['desktop']['align'] === 'grid'
-		) {
+		if ( $instance['desktop']['align'] === 'grid' ) {
 			$vars['align'] = $this->settings['desktop_alignment'];
 		}
 
-		if (
-			$this->settings['mobile_system'] ==='grid' &&
-			$instance['mobile']['align'] === 'grid'
-		) {
+		if ( $instance['mobile']['align'] === 'grid' ) {
 			$vars['mobile_align'] = $this->settings['mobile_alignment'];
 		}
 
@@ -284,7 +198,7 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 	}
 
 	// The Button Widget outputs the desktop alignment as a class so we need to override it.
-	public function override_button_variables( $vars, $instance ) {
+	public function override_button_variables( $vars ) {
 		$vars['align'] = $this->settings['desktop_alignment'];
 		return $vars;
 	}

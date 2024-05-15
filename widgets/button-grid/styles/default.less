@@ -3,40 +3,21 @@
 @desktop_alignment: space-between;
 @desktop_columns: 3;
 @desktop_gap: 20px;
-@desktop_system: grid;
 
-@mobile_system: grid;
 @mobile_alignment: center;
 @mobile_columns: 3;
 @mobile_gap: 20px;
 
 .sow-buttons-grid {
 	align-items: center;
+	display: grid;
 	gap: @desktop_gap;
+	grid-template-columns: repeat(@desktop_columns, minmax(100px, 1fr));
 
-	& when (@desktop_system = grid) {
-		display: grid;
-		grid-template-columns: repeat(@desktop_columns, minmax(100px, 1fr));
-	}
-
-	& when (@desktop_system = flex) {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: @desktop_alignment;
-	}
 
 	@media (max-width: @responsive_breakpoint) {
+		display: grid;
 		gap: @mobile_gap;
-
-		& when (@mobile_system = grid) {
-			display: grid;
-			grid-template-columns: repeat(@mobile_columns, minmax(100px, 1fr));
-		}
-
-		& when (@mobile_system = flex) {
-			display: flex;
-			flex-wrap: wrap;
-			justify-content: @mobile_alignment;
-		}
+		grid-template-columns: repeat(@mobile_columns, minmax(100px, 1fr));
 	}
 }
