@@ -207,7 +207,7 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 
 		$settings = array(
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
-			'gap' => ! empty( $instance['layout']['desktop']['gap'] ) ? $instance['layout']['desktop']['gap'] : '20px',
+			'desktop_gap' => ! empty( $instance['layout']['desktop']['gap'] ) ? $instance['layout']['desktop']['gap'] : '20px',
 			'mobile_gap' => ! empty( $instance['layout']['mobile']['gap'] ) ? $instance['layout']['mobile']['gap'] : '20px',
 		);
 
