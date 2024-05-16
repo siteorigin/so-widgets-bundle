@@ -62,6 +62,8 @@
 
 		a {
 			color: @title_color;
+			text-decoration: none;
+
 			&:hover,
 			&:focus {
 				color: @title_color_hover;
@@ -89,8 +91,8 @@
 		color: @list_style_color;
 		display: flex;
 		list-style-type: none;
-		margin: 0;
 		margin-bottom: @bottom_margin;
+		margin: 0;
 		padding: 0;
 		position: relative;
 
@@ -180,7 +182,7 @@
 		font-size: @excerpt_font_size;
 		font-style: @excerpt_font_style;
 		font-weight: @excerpt_font_weight;
-		margin-bottom: 0;
+		margin-block: 0;
 	}
 
 	&-read-more {
