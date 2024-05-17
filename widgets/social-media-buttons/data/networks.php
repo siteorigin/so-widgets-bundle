@@ -46,8 +46,8 @@ return array(
 	'skype' => array(
 		'label' => __( 'Skype', 'so-widgets-bundle' ),
 		'base_url' => 'https://skype.com/',
-		'icon_color' => '#0078d7',
-		'button_color' => '#ffffff',
+		'icon_color' => '#f5faff',
+		'button_color' => '#00adf0',
 	),
 	'linkedin' => array(
 		'label' => __( 'LinkedIn', 'so-widgets-bundle' ),
