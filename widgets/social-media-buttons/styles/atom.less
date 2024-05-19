@@ -7,7 +7,7 @@
 	.social-media-button-base();
 }
 
-.create_social_media_button_style( @name, @icon_color:'', @button_color:'', @icon_color_hover: '', @button_color_hover: '' ) {
+.create_social_media_button_style( @name, @icon_color:'', @button_color:'', @button_color_hover: '', @icon_color_hover: '' ) {
 
 	.sow-social-media-button-@{name} {
 		border: 1px solid;
@@ -19,14 +19,16 @@
 			border-color: lighten(@border_color, 2%) @border_color darken(@border_color, 3%) @border_color;
 			.gradient(@button_color, darken(@button_color, 10%), @button_color);
 
-			&.ow-button-hover:focus,
-			&.ow-button-hover:hover {
-				@border_color_hover: darken( @button_color_hover, 15% );
-				.gradient( lighten( @button_color_hover, 2% ), lighten( darken( @button_color_hover, 10% ), 2% ), lighten( @button_color_hover, 2% ) );
-				border-top: 1px solid lighten( lighten( @border_color_hover, 2%), 2%);
-				border-right: 1px solid lighten( @border_color_hover, 2% );
-				border-bottom: 1px solid  darken( lighten( @border_color_hover, 2% ), 3% );
-				border-left: 1px solid lighten( @border_color_hover, 2% );
+			& when( iscolor( @button_color_hover ) ) {
+				@darker_border_hover_color: darken( @button_color_hover, 15% );
+				&.ow-button-hover:focus,
+				&.ow-button-hover:hover {
+					.gradient( lighten( @button_color_hover, 2% ), lighten( darken( @button_color_hover, 10% ), 2% ), lighten( @button_color_hover, 2% ) );
+					border-top: 1px solid lighten( lighten( @darker_border_hover_color, 2%), 2%);
+					border-right: 1px solid lighten( @darker_border_hover_color, 2% );
+					border-bottom: 1px solid  darken( lighten( @darker_border_hover_color, 2% ), 3% );
+					border-left: 1px solid lighten( @darker_border_hover_color, 2% );
+				}
 			}
 		}
 

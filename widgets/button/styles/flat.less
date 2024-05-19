@@ -46,24 +46,25 @@
 
 	a {
 		.box-sizing(border-box);
+		.font(@button_font, @button_font_weight);
+		.rounded(@rounding);
+		background: @button_color;
+		border-width: 1px 0;
+		border: 1px solid @button_color;
+		color: @text_color !important;
+		font-size: @font_size;
+		font-style: @button_font_style;
+		padding: @padding;
+		text-shadow: 0 1px 0 rgba(0,0,0,0.05);
+
 		& when( isnumber( @button_width ) ) {
 			width: @button_width;
 			max-width: 100%;
 		}
-		.font(@button_font, @button_font_weight);
-		font-style: @button_font_style;
 
-		font-size: @font_size;
-		padding: @padding @padding*2;
-		background: @button_color;
-
-		color: @text_color !important;
-		border: 1px solid @button_color;
-		border-width: 1px 0;
-
-		.rounded(@rounding);
-
-		text-shadow: 0 1px 0 rgba(0,0,0,0.05);
+		& when ( @has_text = true ) {
+			padding-inline: @padding * 2;
+		}
 
 		& when not ( @has_text = true ) {
 			.sow-icon-image,

@@ -1,0 +1,215 @@
+@responsive_breakpoint: 780px;
+@date: default;
+
+@bottom_margin: default;
+
+@list_style_icon: default;
+@list_style_indent: default;
+@list_style_color: default;
+@list_style_image: default;
+@list_style_image_max_size: default;
+
+@title_font: default;
+@title_font_style: default;
+@title_font_weight: default;
+@title_font_size: default;
+@title_color: default;
+@title_color_hover: default;
+
+@date_font: default;
+@date_font_style: default;
+@date_font_weight: default;
+@date_font_size: default;
+@date_color: default;
+
+@excerpt_font: default;
+@excerpt_font_style: default;
+@excerpt_font_weight: default;
+@excerpt_font_size: default;
+@excerpt_color: default;
+
+@featured_image: default;
+@featured_image_gutter: default;
+@featured_image_max_width: default;
+@featured_image_placement: default;
+@featured_image_padding: default;
+@featured_image_border_color: default;
+@featured_image_border_thickness: 1px;
+@featured_image_border_style: default;
+
+@read_more_font: default;
+@read_more_font_style: default;
+@read_more_font_weight: default;
+@read_more_font_size: default;
+@read_more_color: default;
+@read_more_color_hover: default;
+@read_more_background: default;
+@read_more_background_hover: default;
+@read_more_top_margin: default;
+
+.sow-recent-posts {
+	margin: 0;
+	padding: 0;
+
+	&-title {
+		font-family: @title_font;
+		font-size: @title_font_size;
+		font-style: @title_font_style;
+		font-weight: @title_font_weight;
+		line-height: 1;
+		margin: 0;
+		margin-bottom: 5px;
+
+		a {
+			color: @title_color;
+			text-decoration: none;
+
+			&:hover,
+			&:focus {
+				color: @title_color_hover;
+			}
+		}
+	}
+
+	&-date {
+		color: @date_color;
+		display: block;
+		font-family: @date_font;
+		font-size: @date_font_size;
+		font-style: @date_font_style;
+		font-weight: @date_font_weight;
+		line-height: 1;
+		margin: 5px 0;
+
+		.updated:not(.published){
+			display:none
+		}
+	}
+
+	&-item {
+		align-items: center;
+		color: @list_style_color;
+		display: flex;
+		line-height: normal;
+		list-style-type: none;
+		margin: 0;
+		margin-bottom: @bottom_margin;
+		padding: 0;
+		position: relative;
+
+		& when not ( @list_style_icon = none ) {
+
+			&::before {
+				display: inline-block;
+				position: relative;
+				top: 50%;
+
+				& when ( @list_style_icon = image ) {
+					background: @list_style_image;
+					background-size: cover;
+					content: '';
+					height: @list_style_image_max_size;
+					width: @list_style_image_max_size;
+				}
+
+				& when not ( @list_style_icon = image ) {
+					font-size: @list_style_image_max_size;
+				}
+
+				& when ( @list_style_icon = disc ) {
+					content: '•';
+				}
+
+				& when ( @list_style_icon = circle ) {
+					content: '◦';
+				}
+
+				& when ( @list_style_icon = square ) {
+					content: '▪';
+				}
+			}
+		}
+
+		@media (min-width: @responsive_breakpoint) {
+			&-inner {
+				gap: @featured_image_gutter;
+				display: inline-grid;
+				grid-template-columns: auto 12fr;
+
+				& when not ( @list_style_icon = none ) {
+					margin-left: @list_style_indent;
+				}
+			}
+		}
+
+		& when (@featured_image = 1) {
+			.sow-recent-posts-thumbnail {
+
+				& when (@featured_image_placement = above) {
+					grid-column: span 2;
+				}
+
+				& when (@featured_image_placement = below) {
+					grid-column: span 2;
+					order: 1;
+				}
+
+				& when (@featured_image_placement = right) {
+					order: 1;
+				}
+
+				.wp-post-image {
+					box-sizing: content-box;
+					display: inline-block;
+					height: auto;
+					max-width: @featured_image_max_width;
+					padding: @featured_image_padding;
+					// Prevent featured image from being misaligned by list item.
+					vertical-align: middle;
+				}
+
+				& when not ( @featured_image_border_style = none ) {
+					.wp-post-image {
+						border: @featured_image_border_thickness @featured_image_border_style @featured_image_border_color;
+					}
+				}
+			}
+		}
+	}
+
+	&-excerpt {
+		color: @excerpt_color;
+		font-family: @excerpt_font;
+		font-size: @excerpt_font_size;
+		font-style: @excerpt_font_style;
+		font-weight: @excerpt_font_weight;
+		margin-block: 0;
+	}
+
+	&-read-more {
+		color: @read_more_color;
+		display: block;
+		font-family: @read_more_font;
+		font-size: @read_more_font_size;
+		font-style: @read_more_font_style;
+		font-weight: @read_more_font_weight;
+		margin-top: @read_more_top_margin;
+
+		&:hover,
+		&:focus {
+			color: @read_more_color_hover;
+		}
+	}
+}
+
+// RTL List Styling.
+& when not ( @list_style_image = default ) {
+	body.rtl .sow-recent-posts-item {
+		padding-left: @list_style_indent;
+
+		&::before {
+			left: auto;
+			right: 0;
+		}
+	}
+}

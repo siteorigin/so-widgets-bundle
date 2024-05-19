@@ -7,11 +7,15 @@
 	.social-media-button-base();
 }
 
-.create_social_media_button_style( @name, @icon_color:'', @button_color:'', @icon_color_hover: '', @button_color_hover: '', @border_color: '', @border_hover_color: '' ) {
+.create_social_media_button_style( @name, @icon_color:'', @button_color:'', @icon_color_hover: '', @border_color: '', @button_color_hover: '', @border_hover_color: '' ) {
 
 	.sow-social-media-button-@{name} {
 		background: transparent;
 		text-shadow: 0 1px 0 rgba(0,0,0,0.05);
+
+		& when( iscolor( @icon_color ) ) {
+			color: @icon_color !important;
+		}
 
 		& when( iscolor( @button_color ) ) {
 			border: 2px solid @button_color !important;
@@ -36,14 +40,14 @@
 				border-color: @border_hover_color !important;
 			}
 
-			& when( iscolor( @icon_color ) ) {
-				& when not( iscolor( @icon_color_hover ) ) {
+			& when not( iscolor( @icon_color_hover ) ) {
+				& when( iscolor( @icon_color ) ) {
 					color: @icon_color !important;
 				}
+			}
 
-				& when( iscolor( @icon_color_hover ) ) {
-					color: @icon_color_hover !important;
-				}
+			& when( iscolor( @icon_color_hover ) ) {
+				color: @icon_color_hover !important;
 			}
 		}
 	}
