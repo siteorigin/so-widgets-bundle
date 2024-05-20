@@ -107,6 +107,9 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.61.1 - 20 May 2024 =
+* Button: Resolved Atom theme background error. 
+
 = 1.61.0 - 19 May 2024 =
 * New Widget! Recent Posts: Drive traffic to your latest content with a visually appealing, fully customizable recent posts showcase.
 * Button: Minor padding adjustments to improve alignment.
