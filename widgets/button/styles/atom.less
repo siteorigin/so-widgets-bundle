@@ -48,13 +48,13 @@
 		.box-sizing(border-box);
 		.font(@button_font, @button_font_weight);
 		.gradient(@button_color, darken(@button_color, 10%), @button_color);
+		.rounded(@rounding);
 		border-color: lighten(@border_color, 2%) @border_color darken(@border_color, 3%) @border_color;
 		border: 1px solid;
 		color: @text_color !important;
 		font-size: @font_size;
 		font-style: @button_font_style;
 		padding-block: @padding;
-		rounded(@rounding);
 		text-shadow: 0 1px 0 rgba(0,0,0,0.05);
 
 		& when( isnumber( @button_width ) ) {
