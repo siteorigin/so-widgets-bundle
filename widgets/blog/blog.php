@@ -1215,9 +1215,14 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	static public function generate_post_title( $settings ) {
+		$tag = siteorigin_widget_valid_tag(
+			$settings['tag'],
+			'h2'
+		);
+
 		the_title(
-			'<' . $settings['tag'] . ' class="sow-entry-title" style="margin: 0 0 5px;"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">',
-			'</a></' . $settings['tag'] . '>'
+			'<' . $tag  . ' class="sow-entry-title" style="margin: 0 0 5px;"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">',
+			'</a></' . $tag  . '>'
 		);
 	}
 
