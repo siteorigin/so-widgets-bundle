@@ -7,7 +7,6 @@
 if ( ! empty( $instance['title'] ) ) {
 	echo $args['before_title'] . wp_kses_post( $instance['title'] ) . $args['after_title'];
 }
-$this->caret_svg();
 ?>
 <div class="sow-testimonials">
 	<?php foreach ( $testimonials as $testimonial ) { ?>
