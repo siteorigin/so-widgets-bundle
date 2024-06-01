@@ -1,0 +1,23 @@
+@responsive_breakpoint: 780px;
+
+@desktop_alignment: space-between;
+@desktop_columns: 3;
+@desktop_gap: 20px;
+
+@mobile_alignment: center;
+@mobile_columns: 3;
+@mobile_gap: 20px;
+
+.sow-buttons-grid {
+	align-items: center;
+	display: grid;
+	gap: @desktop_gap;
+	grid-template-columns: repeat(@desktop_columns, minmax(100px, 1fr));
+
+
+	@media (max-width: @responsive_breakpoint) {
+		display: grid;
+		gap: @mobile_gap;
+		grid-template-columns: repeat(@mobile_columns, minmax(100px, 1fr));
+	}
+}
