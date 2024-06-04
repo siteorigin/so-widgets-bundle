@@ -34,6 +34,9 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 	public function get_widget_form() {
 		$show_heading_fields = apply_filters( 'sow_layout_slider_show_heading_fields', false );
 
+		$units = siteorigin_widgets_get_measurements_list();
+		unset( $units[1] ); // Remove %;
+
 		return parent::widget_form( array(
 			'frames' => array(
 				'type' => 'repeater',
@@ -154,6 +157,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 							'height' => array(
 								'type' => 'measurement',
 								'label' => __( 'Height', 'so-widgets-bundle' ),
+								'units' => $units,
 							),
 
 							'padding' => array(
@@ -189,6 +193,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 							'height_responsive' => array(
 								'type' => 'measurement',
 								'label' => __( 'Height', 'so-widgets-bundle' ),
+								'units' => $units,
 							),
 
 							'padding' => array(

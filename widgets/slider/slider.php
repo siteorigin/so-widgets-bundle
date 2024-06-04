@@ -29,6 +29,9 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 	}
 
 	public function get_widget_form() {
+		$units = siteorigin_widgets_get_measurements_list();
+		unset( $units[1] ); // Remove %;
+
 		return parent::widget_form( array(
 			'frames' => array(
 				'type' => 'repeater',
@@ -130,11 +133,13 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 					'height' => array(
 						'type' => 'measurement',
 						'label' => __( 'Height', 'so-widgets-bundle' ),
+						'units' => $units,
 					),
 
 					'height_responsive' => array(
 						'type' => 'measurement',
 						'label' => __( 'Responsive Height', 'so-widgets-bundle' ),
+						'units' => $units,
 					),
 				),
 			),
