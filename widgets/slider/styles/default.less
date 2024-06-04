@@ -10,16 +10,16 @@
 // Prevent jump by "pre-filling" slider widget area if height is set.
 & when ( isnumber( @slide_height ) ) {
 	@media (min-width: @responsive_breakpoint) {
-		& {
-			min-height: @slide_height;
+		.sow-slider-background-image {
+			height: @slide_height;
 		}
 	}
 }
 
 & when ( isnumber( @slide_height_responsive ) ) {
 	@media (max-width: @responsive_breakpoint) {
-		& {
-			min-height: @slide_height_responsive;
+		.sow-slider-background-image {
+			height: @slide_height_responsive !important;
 		}
 	}
 }
