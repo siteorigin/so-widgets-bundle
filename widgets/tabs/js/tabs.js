@@ -10,7 +10,7 @@ jQuery( function ( $ ) {
 			if ( $widget.data( 'initialized' ) ) {
 				return $( this );
 			}
-			var anchorId = $widget.data( 'anchor-id' ) ? $widget.data( 'anchor-id' ) : false;
+
 			var $tabPanelsContainer = $this.find( '> .sow-tabs-panel-container' );
 
 			var $tabs = $this.find( '> .sow-tabs-tab-container > .sow-tabs-tab' );
@@ -96,14 +96,7 @@ jQuery( function ( $ ) {
 						}
 					);
 					$tab.addClass( 'sow-tabs-tab-selected' );
-
-					if (
-						! preventHashChange &&
-						(
-							anchorId ||
-							$widget.data( 'use-anchor-tags' )
-						)
-					) {
+					if ( ! preventHashChange ) {
 						$widget.trigger( 'tab_change', [ $tab, $widget ] );
 					}
 				}

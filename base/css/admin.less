@@ -777,16 +777,25 @@ div.siteorigin-widget-form {
 			}
 
 			.url-input-wrapper {
-				display: block;
-				margin-right: 130px;
+				display: flex;
+				gap: 1%;
 
 				.siteorigin-widget-input {
 					display: inline-block;
+					width: 35%;
+				}
+
+				@media (max-width: 600px) {
+					display: block;
+
+					.siteorigin-widget-input {
+						margin-top: 2%;
+						width: 100%;
+					}
 				}
 			}
 
 			.select-content-button {
-				float: right;
 				line-height: 28px;
 				min-height: 30px;
 				width: 120px;
@@ -796,7 +805,7 @@ div.siteorigin-widget-form {
 
 		&.siteorigin-widget-field-type-link {
 			.existing-content-selector {
-				right: 0;
+				left: 18%;
 			}
 		}
 
