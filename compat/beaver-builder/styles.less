@@ -41,7 +41,20 @@
 		}
 
 		input.siteorigin-widget-input-color {
-			height: inherit !important;
+			border: none;
+			height: 20px;
+			padding: 0;
+			width: 40px;
+
+			&::-moz-color-swatch-wrapper,
+			&::-webkit-color-swatch-wrapper {
+			    padding: 0;
+			}
+
+			&::-moz-color-swatch,
+			&::-webkit-color-swatch {
+			    border: none;
+			}
 		}
 
 		input.siteorigin-widget-input-measurement {
