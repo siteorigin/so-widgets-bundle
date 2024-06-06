@@ -108,6 +108,14 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.62.0 - 06 June 2024 =
+* New Widget! Button Grid: Add multiple buttons in one go, customize individually, and present them in a neat grid layout.
+* Blog: Validate title HTML tag before output.
+* Slider: Restored Responsive Height setting.
+* Tabs: Always trigger `tab_change` event when changing tabs.
+* Testimonials: Removed unused SVG.
+* Links Field: Reduced width.
+
 = 1.61.1 - 20 May 2024 =
 * Button: Resolved Atom theme background error. 
 
