@@ -71,7 +71,7 @@ function siteorigin_widgets_get_attachment_image( $attachment, $size, $fallback,
 		$return = '<img ';
 
 		foreach ( $atts as $id => $val ) {
-			$return .= $id . '="' . esc_attr( $val ) . '" ';
+			$return .= sanitize_key( $id ) . '="' . esc_attr( $val ) . '" ';
 		}
 		$return .= '>';
 
