@@ -1135,16 +1135,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'outline_width'              => $instance['design']['focus']['width'],
 		);
 
-		// Ensure all border values exist before setting vars
-		// to prevent potential CSS errors.
+		// Ensure all border values exist before setting border
+		// to prevent potential CSS error.
 		if (
 			! empty( $instance['design']['fields']['border_color'] ) &&
 			! empty( $instance['design']['fields']['border_width'] ) &&
 			! empty( $instance['design']['fields']['border_style'] )
 		) {
-			$vars['field_border_color'] = $instance['design']['fields']['border_color'];
-			$vars['field_border_width'] = $instance['design']['fields']['border_width'];
-			$vars['field_border_style'] = $instance['design']['fields']['border_style'];
+			$vars['field_border'] = $instance['design']['fields']['border_width'] . ' ' . $instance['design']['fields']['border_color'] . ' ' . $instance['design']['fields']['border_style'];
 		}
 
 		if ( ! empty( $label_font['weight'] ) ) {

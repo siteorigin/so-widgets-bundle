@@ -66,9 +66,7 @@
 	@field_margin: default;
 	@field_padding: default;
 	@field_border_radius: default;
-	@field_border_color: default;
-	@field_border_width: default;
-	@field_border_style: default;
+	@field_border: default;
 	@field_max_width: default;
 	@field_height: default;
 	@field_height_textarea: default;
@@ -111,7 +109,7 @@
 		.box-sizing(border-box);
 		border-radius: @field_border_radius;
 		margin: @field_margin;
-		border: @field_border_width @field_border_style @field_border_color;
+		border: @field_border;
 		padding: @field_padding;
 		background: @field_background;
 		color: @field_font_color;
@@ -178,7 +176,7 @@
 			.font(@field_font_family, @field_font_weight);
 			background: @field_background;
 			border-radius: @field_border_radius;
-			border: @field_border_width @field_border_style @field_border_color;
+			border: @field_border;
 			color: @field_font_color;
 			font-size: @field_font_size;
 			font-style: @field_font_style;
