@@ -58,7 +58,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			'sowAccordion',
 			array(
 				'scrollto_after_change' => ! empty( $global_settings['scrollto_after_change'] ),
-				'scrollto_offset' => (int) apply_filters( 'siteorigin_widgets_accordion_scrollto_offset', 80 ),
+				'scrollto_offset' => (int) apply_filters( 'siteorigin_widgets_accordion_scrollto_offset', 90 ),
 			)
 		);
 	}
