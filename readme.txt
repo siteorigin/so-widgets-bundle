@@ -26,6 +26,7 @@ Our collection is growing, and here are some of the powerful widgets included so
 - **Author Box** Display author information, including avatar, name, bio, and post links in a customizable box.
 - **Blog** Showcase blog content in personalized list or grid layouts with flexible design and display settings.
 - **Button** Create a custom button with flexible styling, icon support, and click tracking functionality.
+- **Button Grid** Add multiple buttons in one go, customize individually, and present them in a neat grid layout.
 - **Contact Form** Add a contact form with custom fields, design options, spam protection, and email notifications.
 - **Call To Action** Prompt visitors to take action with a customizable title, subtitle, button, and design settings.
 - **Editor** Insert and customize content with a rich text editor offering extensive formatting options.
@@ -107,6 +108,14 @@ SiteOrigin Premium includes access to our professional email support service, pe
 The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets. Widgets can be enabled or disabled as needed. If a widget offers global settings, you can access those via the Settings button next to each applicable widget.
 
 == Changelog ==
+
+= 1.62.1 - 17 June 2024 =
+* Accordion: Aligned Scroll to Offset value with Tabs.
+* Button Grid: Resolved a potential layout warning.
+* Contact Form: Resolved potential invalid field border.
+* Updated Google Fonts.
+* Updated Font Awesome.
+* Updated SiteOrigin Installer.
 
 = 1.62.0 - 06 June 2024 =
 * New Widget! Button Grid: Add multiple buttons in one go, customize individually, and present them in a neat grid layout.
