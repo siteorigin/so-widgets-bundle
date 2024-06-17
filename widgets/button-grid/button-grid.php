@@ -152,21 +152,28 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 			return array();
 		}
 
+		if ( ! is_array( $instance['layout'] ) ) {
+			$instance['layout'] = array();
+		}
+
+		$desktop = ! empty( $instance['layout']['desktop'] ) ? $instance['layout']['desktop'] : array();
+		$mobile = ! empty( $instance['layout']['mobile'] ) ? $instance['layout']['mobile'] : array();
+
 		$settings = array(
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
-			'desktop_gap' => ! empty( $instance['layout']['desktop']['gap'] ) ? $instance['layout']['desktop']['gap'] : '20px',
-			'mobile_gap' => ! empty( $instance['layout']['mobile']['gap'] ) ? $instance['layout']['mobile']['gap'] : '20px',
+			'desktop_gap' => ! empty( $desktop['gap'] ) ? $desktop['gap'] : '20px',
+			'mobile_gap' => ! empty( $mobile['gap'] ) ? $mobile['gap'] : '20px',
 		);
 
 		$settings = $this->generate_system_css(
 			$settings,
-			$instance['layout']['desktop'],
+			$desktop,
 			'desktop'
 		);
 
 		$settings = $this->generate_system_css(
 			$settings,
-			$instance['layout']['mobile'],
+			$mobile,
 			'mobile'
 		);
 
