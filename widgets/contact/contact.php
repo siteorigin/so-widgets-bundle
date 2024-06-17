@@ -1100,9 +1100,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'field_height'               => $instance['design']['fields']['height'],
 			'field_height_textarea'      => ! empty( $instance['design']['fields']['height_textarea'] ) ? $instance['design']['fields']['height_textarea'] : '',
 			'field_background'           => $instance['design']['fields']['background'],
-			'field_border_color'         => $instance['design']['fields']['border_color'],
-			'field_border_width'         => $instance['design']['fields']['border_width'],
-			'field_border_style'         => $instance['design']['fields']['border_style'],
 			'field_border_radius'        => $instance['design']['fields']['border_radius'] . 'px',
 
 			// Field descriptions
@@ -1137,6 +1134,16 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'outline_color'              => $instance['design']['focus']['color'],
 			'outline_width'              => $instance['design']['focus']['width'],
 		);
+
+		// Ensure all border values exist before setting border
+		// to prevent potential CSS error.
+		if (
+			! empty( $instance['design']['fields']['border_color'] ) &&
+			! empty( $instance['design']['fields']['border_width'] ) &&
+			! empty( $instance['design']['fields']['border_style'] )
+		) {
+			$vars['field_border'] = $instance['design']['fields']['border_width'] . ' ' . $instance['design']['fields']['border_color'] . ' ' . $instance['design']['fields']['border_style'];
+		}
 
 		if ( ! empty( $label_font['weight'] ) ) {
 			$vars['label_font_weight'] = $label_font['weight_raw'];
