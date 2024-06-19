@@ -191,11 +191,21 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 	}
 
 	public function override_button_less_variables( $vars, $instance, $widget ) {
-		if ( $instance['desktop']['align'] === 'default' ) {
+		if ( empty( $instance ) ) {
+			return $vars;
+		}
+
+		if (
+			is_array( $instance['desktop'] ) &&
+			$instance['desktop']['align'] === 'default'
+		) {
 			$vars['align'] = $this->settings['desktop_alignment'];
 		}
 
-		if ( $instance['mobile']['align'] === 'default' ) {
+		if (
+			is_array( $instance['desktop'] ) &&
+			$instance['mobile']['align'] === 'default'
+		) {
 			$vars['mobile_align'] = $this->settings['mobile_alignment'];
 		}
 
