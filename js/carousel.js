@@ -36,6 +36,7 @@ jQuery( function ( $ ) {
 				carouselSettings.animation_speed = 0;
 			}
 
+			const isBlockEditor = $( 'body' ).hasClass( 'block-editor-page' );
 			const isContinuous = carouselSettings.autoplay_continuous_scroll &&
 			carouselSettings.autoplay;
 
@@ -84,7 +85,7 @@ jQuery( function ( $ ) {
 						}
 					},
 				],
-				autoplay: isContinuous,
+				autoplay: ! isBlockEditor && isContinuous,
 				autoplaySpeed: 0,
 			} );
 
@@ -107,7 +108,7 @@ jQuery( function ( $ ) {
 				// Check if this is a Block Editor preview or continuous autoplay is enabled.
 				// If either are true, don't setup (this) autoplay.
 				if (
-					$( 'body' ).hasClass( 'block-editor-page' ) ||
+					isBlockEditor ||
 					isContinuous
 				) {
 					return;
