@@ -196,17 +196,24 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 		}
 
 		if (
-			! empty( $instance['desktop'] ) &&
-			is_array( $instance['desktop'] ) &&
-			$instance['desktop']['align'] === 'default'
+			empty( $instance['design'] ) ||
+			! is_array( $instance['design'] )
+		) {
+			return $vars;
+		}
+
+		if (
+			! empty ( $this->settings['desktop_alignment'] ) &&
+			! empty( $instance['design']['align'] ) &&
+			$instance['design']['align'] === 'default'
 		) {
 			$vars['align'] = $this->settings['desktop_alignment'];
 		}
 
 		if (
-			! empty( $instance['mobile'] ) &&
-			is_array( $instance['mobile'] ) &&
-			$instance['mobile']['align'] === 'default'
+			! empty ( $this->settings['mobile_alignment'] ) &&
+			! empty( $instance['design']['mobile_align'] ) &&
+			$instance['design']['mobile_align'] === 'default'
 		) {
 			$vars['mobile_align'] = $this->settings['mobile_alignment'];
 		}
