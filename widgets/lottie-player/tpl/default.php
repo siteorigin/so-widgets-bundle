@@ -23,7 +23,7 @@ if ( empty( $file ) ) {
 		foreach ( $attributes as $name => $value ) {
 			if ( ! empty( $value ) ) {
 				if ( $value === true ) {
-					echo sanitize_key( "$name " );
+					echo sanitize_key( $name ) . ' ';
 				} else {
 					echo sanitize_key( $name ) . '="' . esc_attr( $value ) . '" ';
 				}
