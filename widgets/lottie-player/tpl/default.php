@@ -23,9 +23,9 @@ if ( empty( $file ) ) {
 		foreach ( $attributes as $name => $value ) {
 			if ( ! empty( $value ) ) {
 				if ( $value === true ) {
-					echo esc_attr( "$name " );
+					echo sanitize_key( $name ) . ' ';
 				} else {
-					echo esc_attr( $name ) . '="' . esc_attr( $value ) . '" ';
+					echo sanitize_key( $name ) . '="' . esc_attr( $value ) . '" ';
 				}
 			}
 		}

@@ -79,7 +79,7 @@ if ( is_array( $result ) && $result['status'] == 'success' ) {
 				?>"
 				<?php
 				foreach ( $submit_attributes as $name => $val ) {
-					echo esc_attr( $name ) . '="' . esc_attr( $val ) . '" ';
+					echo sanitize_key( $name ) . '="' . esc_attr( $val ) . '" ';
 				}
 
 				if ( ! empty( $onclick ) ) {

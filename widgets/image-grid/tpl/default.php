@@ -27,7 +27,7 @@
 					<a href="<?php echo sow_esc_url( $image['url'] ); ?>"
 					<?php foreach ( $image['link_attributes'] as $attr=> $val ) { ?>
 						<?php if ( ! empty( $val ) ) { ?>
-							<?php echo esc_html( $attr ) . '="' . esc_attr( $val ) . '" '; ?>
+							<?php echo sanitize_key( $attr ) . '="' . esc_attr( $val ) . '" '; ?>
 						<?php } ?>
 					<?php } ?>>
 				<?php } ?>

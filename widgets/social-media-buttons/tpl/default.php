@@ -52,7 +52,7 @@
 		?>
 
 		<a <?php foreach ( $button_attributes as $name => $val ) {
-			echo esc_html( $name ) . '="' . esc_attr( $val ) . '" ';
+			echo sanitize_key( $name ) . '="' . esc_attr( $val ) . '" ';
 		} ?>>
 			<span>
 				<?php if ( ! empty( $network['is_custom'] ) ) {

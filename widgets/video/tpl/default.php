@@ -60,7 +60,7 @@ if ( ! $show_controls ) {
 	<?php if ( $is_skinnable_video_host ) { ?>
 		<video
 			<?php foreach ( $video_args as $k => $v ) { ?>
-				<?php echo esc_html( $k ) . '="' . esc_attr( $v ) . '" '; ?>
+				<?php echo sanitize_key( $k ) . '="' . esc_attr( $v ) . '" '; ?>
 			<?php } ?>
 			<?php if ( apply_filters( 'sow_video_add_controls', $show_controls ) ) { ?>
 				<?php echo 'controls'; ?>
