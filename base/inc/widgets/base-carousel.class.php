@@ -440,7 +440,9 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 		}
 
 		// Negative values can be problematic so let's avoid them by ensuring everything is positive.
-		$variables = array_map( 'abs', $variables );
+		$variables = array_map( function( $value ) {
+			return is_null( $value ) ? 0 : abs( $value );
+		}, $variables );
 
 		return $encode ? json_encode( $variables ) : $variables;
 	}
