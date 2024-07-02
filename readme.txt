@@ -109,6 +109,14 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.62.2 - 30 June 2024 =
+* Improved attribute name handling.
+* Button Grid: Accounted for possible warnings.
+* Carousel: Improved continuous scrolling behavior.
+* Carousel: Update to prevent autoplay in the Block Editor preview.
+* Carousel: Resolved potential PHP deprecated warning.
+* Lottie Player: Fixed attribute output.
+
 = 1.62.1 - 17 June 2024 =
 * Accordion: Aligned Scroll to Offset value with Tabs.
 * Button Grid: Resolved a potential layout warning.
