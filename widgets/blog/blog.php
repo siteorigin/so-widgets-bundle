@@ -1145,16 +1145,34 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			</span>
 		<?php } ?>
 
-		<?php if ( $settings['categories'] && has_category() ) { ?>
-			<span class="sow-entry-categories">
-				<?php
-				/* translators: used between list items, there is a space after the comma */
-				the_category( esc_html__( ', ', 'so-widgets-bundle' ) );
-			?>
-			</span>
-		<?php } ?>
+		<?php
+		if ( $settings['categories'] && has_category() ) {
 
-		<?php if ( ! empty( $settings['tags'] ) && has_tag() ) { ?>
+			$categories = get_the_terms( get_the_ID(), 'category' );
+			$categories = apply_filters(
+				'siteorigin_widgets_blog_filter_categories_output',
+				$categories,
+				$settings
+			);
+
+			if ( ! empty( $categories ) ) {
+				echo '<span class="sow-entry-categories">';
+				$category_links = [];
+
+				foreach ( $categories as $category ) {
+					$category_link = get_category_link( $category->term_id );
+					$category_links[] = '<a href="' . esc_url( $category_link ) . '">' .
+						esc_html__( $category->name, 'so-widgets-bundle' ) . '</a>';
+				}
+
+				/* translators: used between list items, there is a space after the comma */
+				echo implode( esc_html__( ', ', 'so-widgets-bundle' ), $category_links );
+				echo '</span>';
+			}
+		}
+
+		if ( ! empty( $settings['tags'] ) && has_tag() ) {
+			?>
 			<span class="sow-entry-tags">
 				<?php the_tags( '' ); ?>
 			</span>
