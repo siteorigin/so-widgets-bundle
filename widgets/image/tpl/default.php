@@ -30,7 +30,7 @@ if ( $title_position == 'above' ) {
 	} ?>
 	<img <?php foreach ( $attributes as $n => $v ) {
 		if ( $n === 'alt' || ! empty( $v ) ) {
-			echo sanitize_key( $n ) . '="' . esc_attr( $v ) . '" ';
+			echo siteorigin_sanitize_attribute_key( $n ) . '="' . esc_attr( $v ) . '" ';
 		}
 	} ?>
 		class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>"/>

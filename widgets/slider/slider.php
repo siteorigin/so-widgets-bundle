@@ -203,7 +203,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 						<a href="<?php echo sow_esc_url( $frame['url'] ); ?>"
 						<?php foreach ( $frame['link_attributes'] as $att => $val ) { ?>
 							<?php if ( ! empty( $val ) ) { ?>
-								<?php echo sanitize_key( $att ) . '="' . esc_attr( $val ) . '" '; ?>
+								<?php echo siteorigin_sanitize_attribute_key( $att ) . '="' . esc_attr( $val ) . '" '; ?>
 							<?php } ?>
 						<?php } ?>>
 					<?php } ?>
@@ -240,7 +240,7 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				<a href="<?php echo sow_esc_url( $frame['url'] ); ?>"
 				<?php foreach ( $frame['link_attributes'] as $att => $val ) { ?>
 					<?php if ( ! empty( $val ) ) { ?>
-						<?php echo sanitize_key( $att ) . '="' . esc_attr( $val ) . '" '; ?>
+						<?php echo siteorigin_sanitize_attribute_key( $att ) . '="' . esc_attr( $val ) . '" '; ?>
 					<?php } ?>
 				<?php } ?>>
 			<?php
