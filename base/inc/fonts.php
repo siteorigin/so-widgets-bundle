@@ -423,6 +423,10 @@ return array(
 	'Anaheim' =>
 		array(
 			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => '800',
 		),
 	'Andada Pro' =>
 		array(
@@ -594,6 +598,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Anton SC' =>
+		array(
+			0 => 'regular',
+		),
 	'Antonio' =>
 		array(
 			0 => '100',
@@ -736,6 +744,13 @@ return array(
 			0 => 'regular',
 		),
 	'Arsenal' =>
+		array(
+			0 => 'regular',
+			1 => 'italic',
+			2 => '700',
+			3 => '700italic',
+		),
+	'Arsenal SC' =>
 		array(
 			0 => 'regular',
 			1 => 'italic',
@@ -1182,6 +1197,10 @@ return array(
 			0 => 'regular',
 			1 => 'italic',
 		),
+	'Baskervville SC' =>
+		array(
+			0 => 'regular',
+		),
 	'Battambang' =>
 		array(
 			0 => '100',
@@ -1226,6 +1245,17 @@ return array(
 	'Bebas Neue' =>
 		array(
 			0 => 'regular',
+		),
+	'Beiruti' =>
+		array(
+			0 => '200',
+			1 => '300',
+			2 => 'regular',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
+			7 => '900',
 		),
 	'Belanosima' =>
 		array(
@@ -1505,11 +1535,32 @@ return array(
 			10 => '800italic',
 			11 => '900italic',
 		),
+	'Bodoni Moda SC' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => '800',
+			5 => '900',
+			6 => 'italic',
+			7 => '500italic',
+			8 => '600italic',
+			9 => '700italic',
+			10 => '800italic',
+			11 => '900italic',
+		),
 	'Bokor' =>
 		array(
 			0 => 'regular',
 		),
 	'Bona Nova' =>
+		array(
+			0 => 'regular',
+			1 => 'italic',
+			2 => '700',
+		),
+	'Bona Nova SC' =>
 		array(
 			0 => 'regular',
 			1 => 'italic',
@@ -3141,6 +3192,16 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Fustat' =>
+		array(
+			0 => '200',
+			1 => '300',
+			2 => 'regular',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
+		),
 	'Fuzzy Bubbles' =>
 		array(
 			0 => 'regular',
@@ -3156,6 +3217,10 @@ return array(
 			1 => 'italic',
 			2 => '700',
 			3 => '700italic',
+		),
+	'Ga Maamli' =>
+		array(
+			0 => 'regular',
 		),
 	'Gabarito' =>
 		array(
@@ -5408,6 +5473,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Maname' =>
+		array(
+			0 => 'regular',
+		),
 	'Mandali' =>
 		array(
 			0 => 'regular',
@@ -5790,7 +5859,9 @@ return array(
 	'Monda' =>
 		array(
 			0 => 'regular',
-			1 => '700',
+			1 => '500',
+			2 => '600',
+			3 => '700',
 		),
 	'Monofett' =>
 		array(
@@ -8280,6 +8351,375 @@ return array(
 			5 => '600',
 			6 => '700',
 			7 => '800',
+		),
+	'Playwrite AR' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite AT' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '100italic',
+			5 => '200italic',
+			6 => '300italic',
+			7 => 'italic',
+		),
+	'Playwrite AU NSW' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite AU QLD' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite AU SA' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite AU TAS' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite AU VIC' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite BE VLG' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite BE WAL' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite BR' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite CA' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite CL' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite CO' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite CU' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite CZ' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite DE Grund' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite DE LA' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite DE SAS' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite DE VA' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite DK Loopet' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite DK Uloopet' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite ES' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite ES Deco' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite FR Moderne' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite FR Trad' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite GB J' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '100italic',
+			5 => '200italic',
+			6 => '300italic',
+			7 => 'italic',
+		),
+	'Playwrite GB S' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '100italic',
+			5 => '200italic',
+			6 => '300italic',
+			7 => 'italic',
+		),
+	'Playwrite HR' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite HR Lijeva' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite HU' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite ID' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite IE' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite IN' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite IS' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite IT Moderna' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite IT Trad' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite MX' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite NG Modern' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite NL' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite NO' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite NZ' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite PE' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite PL' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite PT' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite RO' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite SK' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite TZ' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite US Modern' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite US Trad' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite VN' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+		),
+	'Playwrite ZA' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
 		),
 	'Plus Jakarta Sans' =>
 		array(
@@ -10845,6 +11285,21 @@ return array(
 	'Wire One' =>
 		array(
 			0 => 'regular',
+		),
+	'Wittgenstein' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+			4 => '800',
+			5 => '900',
+			6 => 'italic',
+			7 => '500italic',
+			8 => '600italic',
+			9 => '700italic',
+			10 => '800italic',
+			11 => '900italic',
 		),
 	'Wix Madefor Display' =>
 		array(
