@@ -42,7 +42,7 @@ class SiteOrigin_Widget_Field_Presets extends SiteOrigin_Widget_Field_Base {
 			<?php } ?>
 			>
 
-			<?php if ( ! empty( $this->default_preset ) ) { ?>
+			<?php if ( empty( $this->default_preset ) ) { ?>
 				<option value="default"></option>
 				<?php
 			}
