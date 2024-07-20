@@ -86,7 +86,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				'template' => array(
 					'type' => 'presets',
 					'label' => __( 'Template', 'so-widgets-bundle' ),
-					'default' => 'standard',
+					'default_preset' => 'standard',
 					'options' => $templates,
 					'state_emitter' => array(
 						'callback' => 'select',
