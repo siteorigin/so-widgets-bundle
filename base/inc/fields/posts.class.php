@@ -30,7 +30,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 		$this->fields = array(
 			'post_type' => array(
 				'type' => 'select',
-				'label' => __( 'Post type', 'so-widgets-bundle' ),
+				'label' => __( 'Post Type', 'so-widgets-bundle' ),
 				'multiple' => true,
 				'options' => $type_options,
 				'default' => 'post',
@@ -38,7 +38,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 
 			'post__in' => array(
 				'type' => 'autocomplete',
-				'label' => __( 'Post in', 'so-widgets-bundle' ),
+				'label' => __( 'Post In', 'so-widgets-bundle' ),
 				'source' => 'posts',
 			),
 
@@ -51,7 +51,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 
 			'tax_query_relation' => array(
 				'type' => 'radio',
-				'label' => __( 'Taxonomies relationship', 'so-widgets-bundle' ),
+				'label' => __( 'Taxonomies Relationship', 'so-widgets-bundle' ),
 				'options' => array(
 					'OR' => __( 'OR', 'so-widgets-bundle' ),
 					'AND' => __( 'AND', 'so-widgets-bundle' ),
@@ -62,7 +62,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 
 			'date_type' => array(
 				'type' => 'radio',
-				'label' => __( 'Date selection type', 'so-widgets-bundle' ),
+				'label' => __( 'Date Selection Type', 'so-widgets-bundle' ),
 				'options' => array(
 					'specific' => __( 'Specific', 'so-widgets-bundle' ),
 					'relative' => __( 'Relative', 'so-widgets-bundle' ),
@@ -97,7 +97,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 
 			'orderby' => array(
 				'type' => 'select',
-				'label' => __( 'Order by', 'so-widgets-bundle' ),
+				'label' => __( 'Order By', 'so-widgets-bundle' ),
 				'options' => array(
 					'none' => __( 'No order', 'so-widgets-bundle' ),
 					'ID' => __( 'Post ID', 'so-widgets-bundle' ),
@@ -118,7 +118,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 
 			'order' => array(
 				'type' => 'radio',
-				'label' => __( 'Order direction', 'so-widgets-bundle' ),
+				'label' => __( 'Order Direction', 'so-widgets-bundle' ),
 				'options' => array(
 					'ASC' => __( 'Ascending', 'so-widgets-bundle' ),
 					'DESC' => __( 'Descending', 'so-widgets-bundle' ),
@@ -128,12 +128,12 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 
 			'posts_per_page' => array(
 				'type' => 'number',
-				'label' => __( 'Posts per page', 'so-widgets-bundle' ),
+				'label' => __( 'Posts Per Page', 'so-widgets-bundle' ),
 			),
 
 			'sticky' => array(
 				'type' => 'select',
-				'label' => __( 'Sticky posts', 'so-widgets-bundle' ),
+				'label' => __( 'Sticky Posts', 'so-widgets-bundle' ),
 				'options' => array(
 					'' => __( 'Default', 'so-widgets-bundle' ),
 					'ignore' => __( 'Ignore sticky', 'so-widgets-bundle' ),
