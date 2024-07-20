@@ -387,7 +387,7 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 			<?php
 			foreach ( $link_attributes as $attr => $val ) {
 				if ( ! empty( $val ) ) {
-					echo sanitize_key( $attr ) . '="' . esc_attr( $val ) . '" ';
+					echo siteorigin_sanitize_attribute_key( $attr ) . '="' . esc_attr( $val ) . '" ';
 				}
 			}
 		?>

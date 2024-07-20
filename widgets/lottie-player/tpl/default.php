@@ -23,9 +23,9 @@ if ( empty( $file ) ) {
 		foreach ( $attributes as $name => $value ) {
 			if ( ! empty( $value ) ) {
 				if ( $value === true ) {
-					echo sanitize_key( $name ) . ' ';
+					echo siteorigin_sanitize_attribute_key( $name ) . ' ';
 				} else {
-					echo sanitize_key( $name ) . '="' . esc_attr( $value ) . '" ';
+					echo siteorigin_sanitize_attribute_key( $name ) . '="' . esc_attr( $value ) . '" ';
 				}
 			}
 		}
