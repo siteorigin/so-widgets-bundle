@@ -11,6 +11,14 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 	 */
 	protected $post_types;
 
+	/**
+	 * Whether to show the total number of posts returned by the query or not.
+	 * Enabled by default.
+	 *
+	 * @var bool
+	 */
+	protected $show_count = true;
+
 	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_container = array() ) {
 		parent::__construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_container );
 
@@ -156,7 +164,12 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 			echo ' siteorigin-widget-section-visible';
 		} ?>">
 			<?php parent::render_field_label( $value, $instance ); ?>
-			<span class="sow-current-count"><?php echo esc_html( siteorigin_widget_post_selector_count_posts( $value ) ); ?></span>
+
+			<?php if ( ! empty( $this->show_count ) ) { ?>
+				<span class="sow-current-count">
+					<?php echo esc_html( siteorigin_widget_post_selector_count_posts( $value ) ); ?>		
+				</span>
+			<?php } ?>
 		</div>
 		<?php
 	}
