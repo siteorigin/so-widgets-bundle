@@ -1299,6 +1299,22 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		}
 	}
 
+	public static function content_wrapper( $settings, $styles = array()) {
+		$styles = apply_filters( 'siteorigin_widgets_blog_content_wrapper_styles', $styles, $settings );
+		?>
+		<div class="sow-entry-content-wrapper"
+		<?php
+		if ( ! empty( $style ) ) {
+			echo ' style="';
+			foreach ( $styles as $key => $val ) {
+				echo siteorigin_sanitize_attribute_key( $key ) . ': ' . esc_attr( $val ) . ';';
+			}
+			echo '"';
+		}
+		?>>
+		<?php
+	}
+
 	public static function generate_excerpt( $settings ) {
 		if ( $settings['read_more'] ) {
 			$read_more_text = ! empty( $settings['read_more_text'] ) ? $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' );
