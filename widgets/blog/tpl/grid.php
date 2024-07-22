@@ -5,7 +5,7 @@
 		$settings,
 		array(
 			'padding' => '25px 30px 33px',
-		),
+		)
 	);
 	?>
 		<header class="sow-entry-header">
