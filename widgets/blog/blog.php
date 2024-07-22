@@ -1304,7 +1304,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		?>
 		<div class="sow-entry-content-wrapper"
 		<?php
-		if ( ! empty( $style ) ) {
+		if ( ! empty( $styles ) ) {
 			echo ' style="';
 			foreach ( $styles as $key => $val ) {
 				echo siteorigin_sanitize_attribute_key( $key ) . ': ' . esc_attr( $val ) . ';';
