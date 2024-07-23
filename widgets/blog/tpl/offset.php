@@ -60,7 +60,14 @@
 	</div>
 	<div class="sow-blog-entry" style="width: 78%;">
 		<?php SiteOrigin_Widget_Blog_Widget::post_featured_image( $settings ); ?>
-		<div class="sow-blog-content-wrapper" style="padding: 25px 30px 33px;">
+		<?php
+		SiteOrigin_Widget_Blog_Widget::content_wrapper(
+			$settings,
+			array(
+				'padding' => '25px 30px 33px',
+			)
+		);
+		?>
 			<header class="sow-entry-header">
 				<?php
 				SiteOrigin_Widget_Blog_Widget::generate_post_title( $settings );
