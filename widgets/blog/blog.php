@@ -1299,7 +1299,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		}
 	}
 
-	public static function content_wrapper( $settings, $styles = array()) {
+	public static function content_wrapper( $settings, $styles = array() ) {
 		$styles = apply_filters( 'siteorigin_widgets_blog_content_wrapper_styles', $styles, $settings );
 		?>
 		<div class="sow-blog-content-wrapper"
