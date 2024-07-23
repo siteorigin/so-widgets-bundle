@@ -277,7 +277,7 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			$attr_string = '';
 
 			foreach ( $img_attrs as $attr => $val ) {
-				$attr_string .= ' ' . esc_attr( $attr ) . '="' . esc_attr( $val ) . '"';
+				$attr_string .= ' ' . siteorigin_sanitize_attribute_key( $attr ) . '="' . esc_attr( $val ) . '"';
 			}
 			?><img src="<?php echo esc_url( $src[0] ); ?>"<?php echo $attr_string; ?>/> <?php
 		}

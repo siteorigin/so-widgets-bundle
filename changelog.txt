@@ -1,5 +1,81 @@
 == Changelog ==
 
+= 1.62.3 - 23 July 2024 =
+* Updated Google Fonts.
+* Presets: Hid empty default if `default_preset` is set.
+* Blog: Ensured default content size outputs with `px` unit of measurement.
+* Developer: Posts Field: Added `show_count` to optionally show the post count.
+* Developer: Blog: Addded `siteorigin_widgets_blog_filter_categories_output`.
+* Developer: Blog: Added `siteorigin_widgets_blog_content_wrapper_styles`.
+
+= 1.62.2 - 30 June 2024 =
+* Improved attribute name handling.
+* Button Grid: Accounted for possible warnings.
+* Carousel: Improved continuous scrolling behavior.
+* Carousel: Update to prevent autoplay in the Block Editor preview.
+* Carousel: Resolved potential PHP deprecated warning.
+* Lottie Player: Fixed attribute output.
+
+= 1.62.1 - 17 June 2024 =
+* Accordion: Aligned Scroll to Offset value with Tabs.
+* Button Grid: Resolved a potential layout warning.
+* Contact Form: Resolved potential invalid field border.
+* Updated Google Fonts.
+* Updated Font Awesome.
+* Updated SiteOrigin Installer.
+
+= 1.62.0 - 06 June 2024 =
+* New Widget! Button Grid: Add multiple buttons in one go, customize individually, and present them in a neat grid layout.
+* Blog: Validate title HTML tag before output.
+* Slider: Restored Responsive Height setting.
+* Tabs: Always trigger `tab_change` event when changing tabs.
+* Testimonials: Removed unused SVG.
+* Links Field: Reduced width.
+
+= 1.61.1 - 20 May 2024 =
+* Button: Resolved Atom theme background error. 
+
+= 1.61.0 - 19 May 2024 =
+* New Widget! Recent Posts: Drive traffic to your latest content with a visually appealing, fully customizable recent posts showcase.
+* Button: Minor padding adjustments to improve alignment.
+* Post Carousel: Add Animation Setting.
+* Social Media Buttons: Update to ensure Atom buttons render normally if hover styles are cleared.
+* Social Media Buttons: Updated Skype default colors.
+* Post Selector: Corrected `date_query_relative` check.
+* Resolved fallback shortcode decoding issue.
+* Increased the required PHP version.
+
+= 1.60.0 - 26 April 2024 =
+* Author Box: Applied title margin directly to wrapper and adjusted alignment.
+* Blog: Resolved a potential fatal `TypeError`.
+* Blog: Resolved settings warning caused by undefined "settings" array key.
+* Carousel: Added `full` navigation output option.
+* Features: Improved icon position alignment on desktop and mobile.
+* Headline: Resolved a translation issue related to the Tag setting.
+* Post Carousel: Minor settings label adjustments.
+* Post Carousel: Fixed RTL output.
+* Tabs: Updated to use the Anchor ID Manager.
+* Query Posts: Date Range: Changed default and minimum to `1`.
+* Multi-Measurement Preset: Resolved an issue with saving values.
+* Page Builder: Resolved missing widgets in the Add Widget modal.
+* Widgets Block: Prevented empty needle warning.
+* Number Field: Updated to account for potential null values to prevent deprecated notice.
+* Fields: Ensured `$value` isn't null before processing it to resolve `preg_replace()` deprecated notice.
+* Deprecated Notices: Resolved `intval` deprecated notice.
+
+= 1.59.0 - 11 April 2024 =
+* New Widget! Author Box: Display author information, including avatar, name, bio, and post links in a customizable box.
+* Contact Form: Resolved an issue where using multibyte characters (e.g., "מייל" for Email) as field labels prevented the form from being submitted correctly.
+* Social Media Buttons: Updated X network color defaults.
+* Social Media Buttons: Added Snapshot Square icon.
+* Social Media Buttons: Updated Wire theme border default colors.
+* Improved icon and font handling.
+* Updated Google Fonts list.
+* Block Editor: Moved editor check to the main Widgets Bundle class.
+* Developer: Added a width argument to text input fields.
+* Developer: Added multi-measurement support to the presets field.
+* Developer: Removed `tmp_grunion_allow_editor_view`.
+
 = 1.58.12 - 24 March 2024 =
 * Post Loop: Resolved a potential `post__in` error.
 * Post Loop: Resolved a potential post selector `post__not_in` deprecated warning.

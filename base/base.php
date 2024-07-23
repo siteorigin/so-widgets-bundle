@@ -564,3 +564,28 @@ function siteorigin_widget_valid_tag( $tag, $fallback = null, $valid_tags = arra
 
 	return $tag;
 }
+
+/**
+ * Sanitize HTML attribute names.
+ *
+ * This function sanitizes the given attribute name by converting it to lowercase,
+ * running it through sanitize_key, and then specifically rejecting any
+ * attribute name that starts with "on".
+ *
+ *
+ * @param string $attr The attribute name to be sanitized.
+ * @return string Sanitized attribute name or 'invalid-attribute' if it starts with "on".
+ */
+function siteorigin_sanitize_attribute_key( $attr ) {
+	$attr = sanitize_key( strtolower( $attr ) );
+
+	// "On" prefixed attributes are too risky to allow.
+	if (
+		empty( $attr ) ||
+		strpos( $attr, 'on' ) === 0
+	) {
+		return 'invalid-attribute';
+	};
+
+	return $attr;
+}

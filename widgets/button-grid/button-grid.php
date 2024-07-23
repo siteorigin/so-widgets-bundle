@@ -191,11 +191,30 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 	}
 
 	public function override_button_less_variables( $vars, $instance, $widget ) {
-		if ( $instance['desktop']['align'] === 'default' ) {
+		if ( empty( $instance ) ) {
+			return $vars;
+		}
+
+		if (
+			empty( $instance['design'] ) ||
+			! is_array( $instance['design'] )
+		) {
+			return $vars;
+		}
+
+		if (
+			! empty ( $this->settings['desktop_alignment'] ) &&
+			! empty( $instance['design']['align'] ) &&
+			$instance['design']['align'] === 'default'
+		) {
 			$vars['align'] = $this->settings['desktop_alignment'];
 		}
 
-		if ( $instance['mobile']['align'] === 'default' ) {
+		if (
+			! empty ( $this->settings['mobile_alignment'] ) &&
+			! empty( $instance['design']['mobile_align'] ) &&
+			$instance['design']['mobile_align'] === 'default'
+		) {
 			$vars['mobile_align'] = $this->settings['mobile_alignment'];
 		}
 
@@ -204,7 +223,7 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 
 	// The Button Widget outputs the desktop alignment as a class so we need to override it.
 	public function override_button_variables( $vars ) {
-		$vars['align'] = $this->settings['desktop_alignment'];
+		$vars['align'] = ! empty(  $this->settings['desktop_alignment'] ) ? $this->settings['desktop_alignment'] : 'center';
 		return $vars;
 	}
 }

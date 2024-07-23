@@ -26,7 +26,7 @@
 		<?php
 		foreach ( $settings['attributes'] as $n => $v ) {
 			if ( ! empty( $n ) ) {
-				echo 'data-' . esc_html( $n ) . '="' . esc_attr( $v ) . '" ';
+				echo 'data-' . siteorigin_sanitize_attribute_key( $n ) . '="' . esc_attr( $v ) . '" ';
 			}
 		}
 		?>

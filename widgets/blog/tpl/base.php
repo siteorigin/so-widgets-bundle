@@ -1,7 +1,11 @@
 <?php if ( ! empty( $posts ) && $posts->have_posts() ) { ?>
-	<?php
-	if ( ! empty( $instance['title'] ) ) {
-		echo $args['before_title'] . wp_kses_post( $instance['title'] ) . $args['after_title'];
+	<?php if ( ! empty( $instance['title'] ) ) { ?>
+		<div class="sow-blog-title">
+			<?php
+			echo $args['before_title'] . wp_kses_post( $instance['title'] ) . $args['after_title'];
+			?>
+		</div>
+		<?php
 	}
 
 	$this->override_read_more( $settings );

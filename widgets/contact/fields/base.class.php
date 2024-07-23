@@ -31,7 +31,7 @@ abstract class SiteOrigin_Widget_ContactForm_Field_Base {
 		$attr = apply_filters( 'siteorigin_widgets_contact_field_attr', array(), $type );
 
 		foreach ( $attr as $k => $v ) {
-			echo esc_attr( $k ) . '="' . esc_attr( $v ) . '" ';
+			echo siteorigin_sanitize_attribute_key( $k ) . '="' . esc_attr( $v ) . '" ';
 		}
 	}
 }
