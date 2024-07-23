@@ -386,7 +386,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'font_size' => array(
 									'type' => 'measurement',
 									'label' => __( 'Font Size', 'so-widgets-bundle' ),
-									'default' => '15',
+									'default' => '15px',
 								),
 								'color' => array(
 									'type' => 'color',
