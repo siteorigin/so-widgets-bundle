@@ -1,5 +1,13 @@
 == Changelog ==
 
+= 1.62.3 - 23 July 2024 =
+* Updated Google Fonts.
+* Presets: Hid empty default if `default_preset` is set.
+* Blog: Ensured default content size outputs with `px` unit of measurement.
+* Developer: Posts Field: Added `show_count` to optionally show the post count.
+* Developer: Blog: Addded `siteorigin_widgets_blog_filter_categories_output`.
+* Developer: Blog: Added `siteorigin_widgets_blog_content_wrapper_styles`.
+
 = 1.62.2 - 30 June 2024 =
 * Improved attribute name handling.
 * Button Grid: Accounted for possible warnings.
