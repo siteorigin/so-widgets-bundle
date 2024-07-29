@@ -168,6 +168,10 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'type' => 'checkbox',
 							'label' => __( 'Trim Manual Excerpt', 'so-widgets-bundle' ),
 							'description' => __( 'Trim the excerpt length even if a manual excerpt has been added to the post.', 'so-widgets-bundle' ),
+							'state_handler' => array(
+								'content_type[excerpt]' => array( 'show' ),
+								'_else[content_type]' => array( 'hide' ),
+							),
 						),
 						'read_more' => array(
 							'type' => 'checkbox',
