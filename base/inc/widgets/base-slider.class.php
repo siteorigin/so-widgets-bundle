@@ -487,7 +487,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				?>
 				<ol class="sow-slider-pagination">
 					<?php foreach ( $frames as $i => $frame ) { ?>
-						<li><a href="#" data-goto="<?php echo $i; ?>" aria-label="<?php printf( __( 'display slide %s', 'so-widgets-bundle' ), $i + 1 ); ?>"></a></li>
+						<li><a href="#" data-goto="<?php echo (int) $i; ?>" aria-label="<?php printf( __( 'display slide %s', 'so-widgets-bundle' ), (int) $i + 1 ); ?>"></a></li>
 					<?php } ?>
 				</ol>
 
