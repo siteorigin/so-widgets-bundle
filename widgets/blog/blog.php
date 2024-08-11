@@ -164,6 +164,15 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'_else[active_template]' => array( 'slideUp' ),
 							),
 						),
+						'trim_manual_excerpt' => array(
+							'type' => 'checkbox',
+							'label' => __( 'Trim Manual Excerpt', 'so-widgets-bundle' ),
+							'description' => __( 'Trim the excerpt length even if a manual excerpt has been added to the post.', 'so-widgets-bundle' ),
+							'state_handler' => array(
+								'content_type[excerpt]' => array( 'show' ),
+								'_else[content_type]' => array( 'hide' ),
+							),
+						),
 						'read_more' => array(
 							'type' => 'checkbox',
 							'label' => __( 'Post Excerpt Read More Link', 'so-widgets-bundle' ),
@@ -1326,7 +1335,10 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		$excerpt = get_the_excerpt();
 		$excerpt_add_read_more = count( preg_split( '~[^\p{L}\p{N}\']+~u', $excerpt ) ) >= $length;
 
-		if ( ! has_excerpt() ) {
+		if (
+			! has_excerpt() ||
+			! empty( $settings['trim_manual_excerpt'] )
+		) {
 			$excerpt = wp_trim_words(
 				$excerpt,
 				$length,

@@ -24,9 +24,23 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 			false,
 			plugin_dir_path( __FILE__ )
 		);
-		add_filter( 'siteorigin_widgets_less_variables_sow-button', array( $this, 'override_button_less_variables' ), 10, 3 );
+	}
 
+	// Setup hooks to safely override button widget variables.
+	public function get_template_variables( $instance, $args ) {
+		add_filter( 'siteorigin_widgets_less_variables_sow-button', array( $this, 'override_button_less_variables' ), 10, 3 );
 		add_filter( 'siteorigin_widgets_template_variables_sow-button', array( $this, 'override_button_variables' ), 10, 1 );
+
+		add_action( 'siteorigin_widgets_after_widget_sow-button-grid', array( $this, 'remove_hooks' ) );
+
+		return array();
+	}
+
+	// Remove hooks after the Button Grid has finished rendering.
+	public function remove_hooks() {
+		remove_filter( 'siteorigin_widgets_less_variables_sow-button', array( $this, 'override_button_less_variables' ), 10, 3 );
+		remove_filter( 'siteorigin_widgets_template_variables_sow-button', array( $this, 'override_button_variables' ), 10, 1 );
+		remove_action( 'siteorigin_widgets_before_widget_sow-button-grid', array( $this, 'remove_hooks' ) );
 	}
 
 	public function get_settings_form() {
