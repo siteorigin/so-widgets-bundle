@@ -1,5 +1,12 @@
 == Changelog ==
 
+= 1.63.0 - 11 August 2024 =
+* Button Grid: Update to ensure the Grid Widget doesn't override the settings of unrelated Button Widgets.
+* Blog Offset: Increased the author avatar image width.
+* Blog: Added `Trim Manual Excerpt` setting. Trim the excerpt even if a manual excerpt has been added.
+* Slider: Resolved a potential PHP 8 TypeError.
+* Video: Ensured video oEmbed is able to apply full screen.
+
 = 1.62.3 - 23 July 2024 =
 * Updated Google Fonts.
 * Presets: Hid empty default if `default_preset` is set.
