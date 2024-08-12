@@ -360,9 +360,8 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 
 				if ( $instance['design']['theme'] == 'wire' ) {
 					$call .= ! empty( $network['border_color'] ) ? ', @border_color:' . $network['border_color'] : '';
-					$border_color_hover_fallback = ! empty( $network['border_color'] ) ? ', @button_color_hover:' . $network['border_color'] : '';
-					$call .= ! empty( $network['border_hover_color'] ) ? ', @border_hover_color:' . $network['border_hover_color'] : $border_color_hover_fallback;
-
+					$border_hover_color_fallback = ! empty( $network['border_color'] ) ? ', @border_hover_color:' . $network['border_color'] : ", @border_hover_color: ''";
+					$call .= ! empty( $network['border_hover_color'] ) ? ', @border_hover_color:' . $network['border_hover_color'] : $border_hover_color_fallback;
 				}
 				$call .= ');';
 				$calls[] = $call;

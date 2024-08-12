@@ -1,8 +1,8 @@
 === SiteOrigin Widgets Bundle ===
 Tags: widgets, blocks, contact form, blog, slider
 Requires at least: 4.2
-Tested up to: 6.5
-Requires PHP: 5.6.20
+Tested up to: 6.6
+Requires PHP: 7.0.0
 Stable tag: trunk
 Build time: unbuilt
 License: GPLv3 or later
@@ -19,13 +19,14 @@ SiteOrigin Widgets are ready to be used **anywhere**, in [Page Builder by SiteOr
 
 [vimeo https://vimeo.com/102103379]
 
-Our collection is growing; here's what we have so far:
+Our collection is growing, and here are some of the powerful widgets included so far:
 
 - **Accordion** Efficiently display content in expandable sections, maximizing space for improved organization.
 - **Anything Carousel** Display images, text, or any content in a highly customizable and responsive carousel slider.
 - **Author Box** Display author information, including avatar, name, bio, and post links in a customizable box.
 - **Blog** Showcase blog content in personalized list or grid layouts with flexible design and display settings.
 - **Button** Create a custom button with flexible styling, icon support, and click tracking functionality.
+- **Button Grid** Add multiple buttons in one go, customize individually, and present them in a neat grid layout.
 - **Contact Form** Add a contact form with custom fields, design options, spam protection, and email notifications.
 - **Call To Action** Prompt visitors to take action with a customizable title, subtitle, button, and design settings.
 - **Editor** Insert and customize content with a rich text editor offering extensive formatting options.
@@ -36,12 +37,13 @@ Our collection is growing; here's what we have so far:
 - **Icon** Display a customizable icon with color, size, alignment, and optional link settings.
 - **Image** Add a responsive image with custom dimensions, positioning, caption, link, and styling options.
 - **Image Grid** Showcase images in a responsive grid layout with custom size, spacing, alignment, and captions.
+- **Image Slider** Create a responsive slider with customizable image and video frames, navigation, and appearance settings.
 - **Layout Slider** Design responsive slider frames with unique layouts, backgrounds, and content built with Page Builder.
 - **Lottie Player** Bring your content to life using interactive Lottie animations with personalized settings and links.
 - **Post Carousel** Display blog posts or custom post types in a responsive, customizable carousel layout.
 - **Price Table** Display pricing plans in a professional table format with custom columns, features, and design.
+- **Recent Posts** Drive traffic to your latest content with a visually appealing, fully customizable recent posts showcase.
 - **Simple Masonry Layout** Display images in an attractive masonry grid with adjustable columns, gutters, and optional captions.
-- **Image Slider** Create a responsive slider with customizable image and video frames, navigation, and appearance settings.
 - **Social Media Buttons** Add social media buttons to your site with personalized icons, colors, and design settings.
 - **Tabs** Create tabbed content panels with customizable titles, content, initial tab, and design settings.
 - **Taxonomy** Automatically display the taxonomies of the current post with customizable labels, colors, and link settings.
@@ -106,6 +108,89 @@ SiteOrigin Premium includes access to our professional email support service, pe
 The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets. Widgets can be enabled or disabled as needed. If a widget offers global settings, you can access those via the Settings button next to each applicable widget.
 
 == Changelog ==
+
+= 1.63.0 - 11 August 2024 =
+* Button Grid: Update to ensure the Grid Widget doesn't override the settings of unrelated Button Widgets.
+* Blog Offset: Increased the author avatar image width.
+* Blog: Added `Trim Manual Excerpt` setting. Trim the excerpt even if a manual excerpt has been added.
+* Slider: Resolved a potential PHP 8 TypeError.
+* Video: Ensured video oEmbed is able to apply full screen.
+
+= 1.62.3 - 23 July 2024 =
+* Updated Google Fonts.
+* Presets: Hid empty default if `default_preset` is set.
+* Blog: Ensured default content size outputs with `px` unit of measurement.
+* Developer: Posts Field: Added `show_count` to optionally show the post count.
+* Developer: Blog: Addded `siteorigin_widgets_blog_filter_categories_output`.
+* Developer: Blog: Added `siteorigin_widgets_blog_content_wrapper_styles`.
+
+= 1.62.2 - 30 June 2024 =
+* Improved attribute name handling.
+* Button Grid: Accounted for possible warnings.
+* Carousel: Improved continuous scrolling behavior.
+* Carousel: Update to prevent autoplay in the Block Editor preview.
+* Carousel: Resolved potential PHP deprecated warning.
+* Lottie Player: Fixed attribute output.
+
+= 1.62.1 - 17 June 2024 =
+* Accordion: Aligned Scroll to Offset value with Tabs.
+* Button Grid: Resolved a potential layout warning.
+* Contact Form: Resolved potential invalid field border.
+* Updated Google Fonts.
+* Updated Font Awesome.
+* Updated SiteOrigin Installer.
+
+= 1.62.0 - 06 June 2024 =
+* New Widget! Button Grid: Add multiple buttons in one go, customize individually, and present them in a neat grid layout.
+* Blog: Validate title HTML tag before output.
+* Slider: Restored Responsive Height setting.
+* Tabs: Always trigger `tab_change` event when changing tabs.
+* Testimonials: Removed unused SVG.
+* Links Field: Reduced width.
+
+= 1.61.1 - 20 May 2024 =
+* Button: Resolved Atom theme background error. 
+
+= 1.61.0 - 19 May 2024 =
+* New Widget! Recent Posts: Drive traffic to your latest content with a visually appealing, fully customizable recent posts showcase.
+* Button: Minor padding adjustments to improve alignment.
+* Post Carousel: Add Animation Setting.
+* Social Media Buttons: Update to ensure Atom buttons render normally if hover styles are cleared.
+* Social Media Buttons: Updated Skype default colors.
+* Post Selector: Corrected `date_query_relative` check.
+* Resolved fallback shortcode decoding issue.
+* Increased the required PHP version.
+
+= 1.60.0 - 26 April 2024 =
+* Author Box: Applied title margin directly to wrapper and adjusted alignment.
+* Blog: Resolved a potential fatal `TypeError`.
+* Blog: Resolved settings warning caused by undefined "settings" array key.
+* Carousel: Added `full` navigation output option.
+* Features: Improved icon position alignment on desktop and mobile.
+* Headline: Resolved a translation issue related to the Tag setting.
+* Post Carousel: Minor settings label adjustments.
+* Post Carousel: Fixed RTL output.
+* Tabs: Updated to use the Anchor ID Manager.
+* Query Posts: Date Range: Changed default and minimum to `1`.
+* Multi-Measurement Preset: Resolved an issue with saving values.
+* Page Builder: Resolved missing widgets in the Add Widget modal.
+* Widgets Block: Prevented empty needle warning.
+* Number Field: Updated to account for potential null values to prevent deprecated notice.
+* Fields: Ensured `$value` isn't null before processing it to resolve `preg_replace()` deprecated notice.
+* Deprecated Notices: Resolved `intval` deprecated notice.
+
+= 1.59.0 - 11 April 2024 =
+* New Widget! Author Box: Display author information, including avatar, name, bio, and post links in a customizable box.
+* Contact Form: Resolved an issue where using multibyte characters (e.g., "מייל" for Email) as field labels prevented the form from being submitted correctly.
+* Social Media Buttons: Updated X network color defaults.
+* Social Media Buttons: Added Snapshot Square icon.
+* Social Media Buttons: Updated Wire theme border default colors.
+* Improved icon and font handling.
+* Updated Google Fonts list.
+* Block Editor: Moved editor check to the main Widgets Bundle class.
+* Developer: Added a width argument to text input fields.
+* Developer: Added multi-measurement support to the presets field.
+* Developer: Removed `tmp_grunion_allow_editor_view`.
 
 = 1.58.12 - 24 March 2024 =
 * Post Loop: Resolved a potential `post__in` error.

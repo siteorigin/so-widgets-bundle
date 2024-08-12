@@ -36,6 +36,10 @@ jQuery( function ( $ ) {
 				carouselSettings.animation_speed = 0;
 			}
 
+			const isBlockEditor = $( 'body' ).hasClass( 'block-editor-page' );
+			const isContinuous = carouselSettings.autoplay_continuous_scroll &&
+			carouselSettings.autoplay;
+
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
 				dots: carouselSettings.dots,
@@ -49,8 +53,7 @@ jQuery( function ( $ ) {
 						! $$.data( 'ajax-url' ) ||
 						(
 							$$.data( 'ajax-url' ) &&
-							carouselSettings.autoplay_continuous_scroll &&
-							carouselSettings.autoplay
+							isContinuous
 						)
 					),
 				variableWidth: $$.data( 'variable_width' ),
@@ -82,6 +85,8 @@ jQuery( function ( $ ) {
 						}
 					},
 				],
+				autoplay: ! isBlockEditor && isContinuous,
+				autoplaySpeed: 0,
 			} );
 
 			// Clear the pre-fill width if one is set.
@@ -100,22 +105,28 @@ jQuery( function ( $ ) {
 			// navigation that Slick has trouble accounting for.
 			if ( carouselSettings.autoplay ) {
 				var interrupted = false;
-				// Check if this is a Block Editor preview, and if it is, don't autoplay.
-				if ( ! $( 'body' ).hasClass( 'block-editor-page' ) ) {
-					setInterval( function() {
-						if ( ! interrupted ) {
-							handleCarouselNavigation( true, false );
-						}
-					}, carouselSettings.autoplaySpeed );
+				// Check if this is a Block Editor preview or continuous autoplay is enabled.
+				// If either are true, don't setup (this) autoplay.
+				if (
+					isBlockEditor ||
+					isContinuous
+				) {
+					return;
+				}
 
-					if ( carouselSettings.pauseOnHover ) {
-						$items.on('mouseenter.slick', function() {
-							 interrupted = true;
-						} );
-						$items.on( 'mouseleave.slick', function() {
-							 interrupted = false;
-						} );
+				setInterval( function() {
+					if ( ! interrupted ) {
+						handleCarouselNavigation( true, false );
 					}
+				}, carouselSettings.autoplaySpeed );
+
+				if ( carouselSettings.pauseOnHover ) {
+					$items.on('mouseenter.slick', function() {
+							interrupted = true;
+					} );
+					$items.on( 'mouseleave.slick', function() {
+							interrupted = false;
+					} );
 				}
 			}
 

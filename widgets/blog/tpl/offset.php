@@ -9,7 +9,7 @@
 				<?php foreach ( $coauthors as $author ) { ?>
 					<div class="sow-entry-author-avatar">
 						<a href="<?php echo esc_url( get_author_posts_url( $author->ID ) ); ?>">
-							<?php echo get_avatar( $author->ID, 70 ); ?>
+							<?php echo get_avatar( $author->ID, 140 ); ?>
 						</a>
 					</div>
 					<div class="sow-entry-author-link">
@@ -19,7 +19,7 @@
 			<?php } else { ?>
 				<div class="sow-entry-author-avatar">
 					<a href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>">
-						<?php echo get_avatar( get_the_author_meta( 'ID' ), 70 ); ?>
+						<?php echo get_avatar( get_the_author_meta( 'ID' ), 140 ); ?>
 					</a>
 				</div>
 				<div class="sow-entry-author-link">
@@ -60,7 +60,14 @@
 	</div>
 	<div class="sow-blog-entry" style="width: 78%;">
 		<?php SiteOrigin_Widget_Blog_Widget::post_featured_image( $settings ); ?>
-		<div class="sow-blog-content-wrapper" style="padding: 25px 30px 33px;">
+		<?php
+		SiteOrigin_Widget_Blog_Widget::content_wrapper(
+			$settings,
+			array(
+				'padding' => '25px 30px 33px',
+			)
+		);
+		?>
 			<header class="sow-entry-header">
 				<?php
 				SiteOrigin_Widget_Blog_Widget::generate_post_title( $settings );

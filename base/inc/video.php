@@ -90,6 +90,9 @@ class SiteOrigin_Video {
 				), $html );
 			}
 
+			// Ensure the embed is able to go fullscreen.
+			$html = preg_replace( '/<iframe(.*?)>/', '<iframe$1 allowfullscreen mozallowfullscreen webkitallowfullscreen>', $html );
+
 			if ( ! empty( $html ) ) {
 				set_transient( 'sow-vid-embed[' . $hash . ']', $html, 30 * 86400 );
 			}

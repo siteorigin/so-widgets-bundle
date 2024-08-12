@@ -31,7 +31,7 @@
 					<a href="<?php echo sow_esc_url( $url ); ?>"
 					<?php foreach ( $item['link_attributes'] as $att => $val ) { ?>
 						<?php if ( ! empty( $val ) ) { ?>
-							<?php echo esc_html( $att ) . '="' . esc_attr( $val ) . '" '; ?>
+							<?php echo siteorigin_sanitize_attribute_key( $att ) . '="' . esc_attr( $val ) . '" '; ?>
 						<?php } ?>
 					<?php } ?>>
 				<?php } ?>

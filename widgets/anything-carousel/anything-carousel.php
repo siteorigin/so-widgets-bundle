@@ -251,7 +251,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 	}
 
 	public function get_less_variables( $instance ) {
-		if ( empty( $instance ) ) {
+		if ( empty( $instance ) || empty( $instance['design'] ) ) {
 			return array();
 		}
 

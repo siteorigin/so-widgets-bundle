@@ -487,7 +487,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				?>
 				<ol class="sow-slider-pagination">
 					<?php foreach ( $frames as $i => $frame ) { ?>
-						<li><a href="#" data-goto="<?php echo $i; ?>" aria-label="<?php printf( __( 'display slide %s', 'so-widgets-bundle' ), $i + 1 ); ?>"></a></li>
+						<li><a href="#" data-goto="<?php echo (int) $i; ?>" aria-label="<?php printf( __( 'display slide %s', 'so-widgets-bundle' ), (int) $i + 1 ); ?>"></a></li>
 					<?php } ?>
 				</ol>
 
@@ -576,7 +576,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 
 		?>
 		<li <?php foreach ( $wrapper_attributes as $attr => $val ) {
-			echo esc_html( $attr ) . '="' . esc_attr( $val ) . '" ';
+			echo siteorigin_sanitize_attribute_key( $attr ) . '="' . esc_attr( $val ) . '" ';
 		} ?>>
 			<?php
 			do_action( 'siteorigin_widgets_slider_before_contents', $frame );
@@ -639,7 +639,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 				$overlay_attributes['style'] = empty( $overlay_attributes['style'] ) ? '' : implode( ';', $overlay_attributes['style'] );
 
 				?><div <?php foreach ( $overlay_attributes as $attr => $val ) {
-					echo $attr . '="' . esc_attr( $val ) . '" ';
+					echo siteorigin_sanitize_attribute_key( $attr ) . '="' . esc_attr( $val ) . '" ';
 				} ?> ></div><?php
 			}
 

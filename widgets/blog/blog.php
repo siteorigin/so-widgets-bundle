@@ -86,7 +86,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				'template' => array(
 					'type' => 'presets',
 					'label' => __( 'Template', 'so-widgets-bundle' ),
-					'default' => 'standard',
+					'default_preset' => 'standard',
 					'options' => $templates,
 					'state_emitter' => array(
 						'callback' => 'select',
@@ -162,6 +162,15 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'state_handler' => array(
 								'active_template[standard,masonry,grid,offset,alternate]' => array( 'slideDown' ),
 								'_else[active_template]' => array( 'slideUp' ),
+							),
+						),
+						'trim_manual_excerpt' => array(
+							'type' => 'checkbox',
+							'label' => __( 'Trim Manual Excerpt', 'so-widgets-bundle' ),
+							'description' => __( 'Trim the excerpt length even if a manual excerpt has been added to the post.', 'so-widgets-bundle' ),
+							'state_handler' => array(
+								'content_type[excerpt]' => array( 'show' ),
+								'_else[content_type]' => array( 'hide' ),
 							),
 						),
 						'read_more' => array(
@@ -386,7 +395,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'font_size' => array(
 									'type' => 'measurement',
 									'label' => __( 'Font Size', 'so-widgets-bundle' ),
-									'default' => '15',
+									'default' => '15px',
 								),
 								'color' => array(
 									'type' => 'color',
@@ -1145,16 +1154,34 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			</span>
 		<?php } ?>
 
-		<?php if ( $settings['categories'] && has_category() ) { ?>
-			<span class="sow-entry-categories">
-				<?php
-				/* translators: used between list items, there is a space after the comma */
-				the_category( esc_html__( ', ', 'so-widgets-bundle' ) );
-			?>
-			</span>
-		<?php } ?>
+		<?php
+		if ( $settings['categories'] && has_category() ) {
 
-		<?php if ( ! empty( $settings['tags'] ) && has_tag() ) { ?>
+			$categories = get_the_terms( get_the_ID(), 'category' );
+			$categories = apply_filters(
+				'siteorigin_widgets_blog_filter_categories_output',
+				$categories,
+				$settings
+			);
+
+			if ( ! empty( $categories ) ) {
+				echo '<span class="sow-entry-categories">';
+				$category_links = [];
+
+				foreach ( $categories as $category ) {
+					$category_link = get_category_link( $category->term_id );
+					$category_links[] = '<a href="' . esc_url( $category_link ) . '">' .
+						esc_html__( $category->name, 'so-widgets-bundle' ) . '</a>';
+				}
+
+				/* translators: used between list items, there is a space after the comma */
+				echo implode( esc_html__( ', ', 'so-widgets-bundle' ), $category_links );
+				echo '</span>';
+			}
+		}
+
+		if ( ! empty( $settings['tags'] ) && has_tag() ) {
+			?>
 			<span class="sow-entry-tags">
 				<?php the_tags( '' ); ?>
 			</span>
@@ -1215,9 +1242,14 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	static public function generate_post_title( $settings ) {
+		$tag = siteorigin_widget_valid_tag(
+			$settings['tag'],
+			'h2'
+		);
+
 		the_title(
-			'<' . $settings['tag'] . ' class="sow-entry-title" style="margin: 0 0 5px;"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">',
-			'</a></' . $settings['tag'] . '>'
+			'<' . $tag  . ' class="sow-entry-title" style="margin: 0 0 5px;"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">',
+			'</a></' . $tag  . '>'
 		);
 	}
 
@@ -1276,6 +1308,22 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		}
 	}
 
+	public static function content_wrapper( $settings, $styles = array() ) {
+		$styles = apply_filters( 'siteorigin_widgets_blog_content_wrapper_styles', $styles, $settings );
+		?>
+		<div class="sow-blog-content-wrapper"
+		<?php
+		if ( ! empty( $styles ) ) {
+			echo ' style="';
+			foreach ( $styles as $key => $val ) {
+				echo siteorigin_sanitize_attribute_key( $key ) . ': ' . esc_attr( $val ) . ';';
+			}
+			echo '"';
+		}
+		?>>
+		<?php
+	}
+
 	public static function generate_excerpt( $settings ) {
 		if ( $settings['read_more'] ) {
 			$read_more_text = ! empty( $settings['read_more_text'] ) ? $settings['read_more_text'] : __( 'Continue reading', 'so-widgets-bundle' );
@@ -1287,7 +1335,10 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		$excerpt = get_the_excerpt();
 		$excerpt_add_read_more = count( preg_split( '~[^\p{L}\p{N}\']+~u', $excerpt ) ) >= $length;
 
-		if ( ! has_excerpt() ) {
+		if (
+			! has_excerpt() ||
+			! empty( $settings['trim_manual_excerpt'] )
+		) {
 			$excerpt = wp_trim_words(
 				$excerpt,
 				$length,

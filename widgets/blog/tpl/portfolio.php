@@ -24,9 +24,14 @@ if ( $settings['categories'] || $template_settings['filter_categories'] ) {
 		<span class="sow-entry-overlay">&nbsp;</span>
 		<div class="sow-entry-content">
 			<?php
+			$tag = siteorigin_widget_valid_tag(
+				$settings['tag'],
+				'h2'
+			);
+
 			the_title(
-				'<' . $settings['tag'] . ' class="sow-entry-title" style="margin: 0 0 5px;">',
-				'</' . $settings['tag'] . '>'
+				'<' . $tag . ' class="sow-entry-title" style="margin: 0 0 5px;">',
+				'</' . $tag . '>'
 			);
 
 			if ( $settings['categories'] ) {

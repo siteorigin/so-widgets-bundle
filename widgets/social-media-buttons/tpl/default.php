@@ -52,11 +52,11 @@
 		?>
 
 		<a <?php foreach ( $button_attributes as $name => $val ) {
-			echo esc_html( $name ) . '="' . esc_attr( $val ) . '" ';
+			echo siteorigin_sanitize_attribute_key( $name ) . '="' . esc_attr( $val ) . '" ';
 		} ?>>
 			<span>
 				<?php if ( ! empty( $network['is_custom'] ) ) {
-					echo '<!-- premium-' . esc_html( $network['name'] ) . ' -->';
+					echo '<!-- premium-' . siteorigin_sanitize_attribute_key( $network['name'] ) . ' -->';
 				} ?>
 				<?php echo siteorigin_widget_get_icon( $network['icon_name'] ); ?>
 				<?php if ( ! empty( $network['is_custom'] ) ) {

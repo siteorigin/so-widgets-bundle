@@ -275,7 +275,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 		}
 
 		?><div <?php foreach ( $wrapper_attributes as $attr => $attr_val ) {
-			echo esc_html( $attr ) . '="' . esc_attr( $attr_val ) . '" ';
+			echo siteorigin_sanitize_attribute_key( $attr ) . '="' . esc_attr( $attr_val ) . '" ';
 		} ?>><?php
 
 		// Allow subclasses and to render something before and after the render_field() function is called.
@@ -348,13 +348,13 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * @return mixed|string
 	 */
 	public function sanitize( $value, $instance = array(), $old_value = null ) {
-		$value = $this->sanitize_field_input( $value, $instance );
-
-		if ( empty( $value ) ) {
+		if ( $value === '' || is_null( $value ) ) {
 			return '';
 		}
 
-		if ( isset( $this->sanitize ) ) {
+		$value = $this->sanitize_field_input( $value, $instance );
+
+		if ( isset( $this->sanitize ) && ! empty( $value ) ) {
 			// This field also needs some custom sanitization
 			switch( $this->sanitize ) {
 				case 'text':

@@ -15,7 +15,7 @@
 	href="<?php echo sow_esc_url( do_shortcode( $href ) ); ?>"
 		<?php
 		foreach ( $button_attributes as $name => $val ) {
-			echo esc_attr( $name ) . '="' . esc_attr( $val ) . '" ';
+			echo siteorigin_sanitize_attribute_key( $name ) . '="' . esc_attr( $val ) . '" ';
 		}
 
 		if ( ! empty( $on_click ) ) {
