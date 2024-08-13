@@ -9,7 +9,7 @@ License: GPLv3 or later
 Contributors: gpriday, braam-genis, alexgso
 Donate link: https://siteorigin.com/downloads/premium/
 
-The SiteOrigin Widgets Bundle gives you all the elements you need to build modern, responsive, and engaging website pages. Using the Widgets Bundle, you can quickly and effortlessly add buttons, sliders, heroes, maps, images, carousels, features, icons, and so much more.
+Essential elements for modern websites. Add buttons, sliders, heroes, maps, images, carousels, features, icons, more. Create dynamic pages easily.
 
 == Description ==
 
