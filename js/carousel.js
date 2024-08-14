@@ -137,8 +137,7 @@ jQuery( function ( $ ) {
 				const currentSlide = $items.slick( 'slickCurrentSlide' );
 				const numItems = $items.find( '.sow-carousel-item' ).length;
 				const complete = numItems >= $$.data( 'item_count' );
-				const numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) );
-				const numVisibleItemsFloor = Math.floor( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) );
+				const numVisibleItems = Math.floor( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) );
 
 				let slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' );
 				let lastPosition = numItems - numVisibleItems;
@@ -201,11 +200,11 @@ jQuery( function ( $ ) {
 					} else if (
 						$$.data( 'widget' ) == 'post' &&
 						$$.data( 'carousel_settings' ).theme == 'undefined' &&
-						slidesToScroll >= numVisibleItemsFloor
+						slidesToScroll >= numVisibleItems
 					) {
 						// There's more slides than items, update Slick settings to allow for scrolling of partially visible items.
-						$items.slick( 'slickSetOption', 'slidesToShow', numVisibleItemsFloor );
-						$items.slick( 'slickSetOption', 'slidesToScroll', numVisibleItemsFloor );
+						$items.slick( 'slickSetOption', 'slidesToShow', numVisibleItems );
+						$items.slick( 'slickSetOption', 'slidesToScroll', numVisibleItems );
 						$items.slick( 'slickNext' );
 					// Check if the number of slides to scroll exceeds lastPosition, go to the last slide, or
 					} else if ( currentSlide + slidesToScroll > lastPosition ) {
