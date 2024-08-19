@@ -338,28 +338,48 @@
 			return null;
 		}
 	} );
-
-	// Find all instances of the SiteOrigin Widgets Block.
-	var widgetBlocks = wp.data.select( 'core/block-editor' ).getBlocks()
-		.filter( block => block.name === 'sowb/widget-block' );
-
-	widgetBlocks.forEach( currentBlock => {
-		wp.data.dispatch( 'core/block-editor' ).replaceBlock( currentBlock.clientId, {
-			name: 'sowb/' + currentBlock.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
-			attributes: currentBlock.attributes,
-			innerBlocks: [],
-		} );
-	} );
-
 } )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.compose, window.wp.blockEditor );
 
-// Setup SiteOrigin Widgets Block Validation.
-var sowbTimeoutSetup = false;
 if (
 	typeof adminpage != 'undefined' &&
 	adminpage != 'widgets-php' &&
 	typeof wp.data.select == 'function'
-) {
+	) {
+	let soIsEditorReady = false;
+	const migrateOldBlocks = wp.data.subscribe( () => {
+		if (
+			! soIsEditorReady &&
+			wp.data.select( 'core/block-editor' ).getBlocks().length > 0
+		) {
+			soIsEditorReady = true;
+			migrateOldBlocks();
+
+			// Find any legacy WB blocks.
+			const widgetBlocks = wp.data.select( 'core/block-editor' ).getBlocks()
+				.filter( block => block.name === 'sowb/widget-block' );
+
+			if ( widgetBlocks.length === 0 ) {
+				return;
+			}
+
+			widgetBlocks.forEach( currentBlock => {
+				const newBlock = wp.blocks.createBlock(
+					'sowb/' + currentBlock.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
+					currentBlock.attributes
+				);
+
+				if ( newBlock ) {
+					wp.data.dispatch('core/block-editor' ).replaceBlock(
+						currentBlock.clientId,
+						newBlock
+					);
+				}
+			} );
+		}
+	} );
+
+	let sowbTimeoutSetup = false;
+	// Setup SiteOrigin Widgets Block Validation.
 	wp.data.subscribe( function() {
 		if (
 			! sowbTimeoutSetup &&
