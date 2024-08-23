@@ -96,6 +96,10 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 							$description = $widget_metadata['Description'];
 						}
 
+						if ( ! empty( $widget_metadata['Keywords'] ) ) {
+							$keywords = $widget_metadata['Keywords'];
+						}
+
 						break;
 					}
 				}
@@ -116,11 +120,13 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				} else {
 					$widget_name = sprintf( __( '%s by %s', 'so-widgets-bundle' ), $widget_obj->name, $author );
 				}
+
 				$so_widgets[] = array(
 					'name' => esc_html( $widget_name ),
 					'class' => esc_html( $class ),
 					'description' => esc_html( $description ),
 					'blockName' => esc_html( $block_name ),
+					'keywords' => ! empty( $keywords ) ? $keywords : array(),
 				);
 			}
 		}

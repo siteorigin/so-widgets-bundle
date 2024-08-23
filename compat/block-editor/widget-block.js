@@ -115,12 +115,7 @@
 				)
 			},
 			category: 'widgets',
-			keywords: [sowbBlockEditorAdmin.widgets.reduce( function( keywords, widgetObj ) {
-				if ( keywords.length > 0 ) {
-					keywords += ',';
-				}
-				return keywords + widgetObj.name;
-			}, '' )],
+			keywords: widget.keywords ?? '',
 			supports: {
 				html: false,
 				anchor: true,
