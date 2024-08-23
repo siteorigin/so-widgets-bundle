@@ -104,7 +104,7 @@
 
 	const setupSoWidgetBlock = function( widget ) {
 		registerBlockType( 'sowb/' + widget.blockName, {
-			title: __( 'SiteOrigin ' + widget.name, 'so-widgets-bundle' ),
+			title: __( widget.name, 'so-widgets-bundle' ),
 			description: __( widget.description, 'so-widgets-bundle' ),
 			icon: function() {
 				return el(
