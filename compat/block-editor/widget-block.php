@@ -303,7 +303,10 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			$block = $this->sanitize_block( $block );
 		}
 
-		if ( ! empty( $block['innerBlocks'] ) ) {
+		if (
+			is_array( $block['innerBlocks'] ) &&
+			! empty( $block['innerBlocks'] )
+		) {
 			foreach( $block['innerBlocks'] as $i => $inner ) {
 				$block['innerBlocks'][$i] = $this->sanitize_blocks( $inner );
 			}
