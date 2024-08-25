@@ -124,6 +124,12 @@ return array(
 		'icon_color' => '#f1f1f1',
 		'button_color' => '#ff5722',
 	),
+	'bluesky' => array(
+		'label' => __( 'Bluesky', 'so-widgets-bundle' ),
+		'base_url' => 'https://bsky.social/',
+		'icon_color' => '#ffffff',
+		'button_color' => '#0886fe',
+	),
 	'codepen' => array(
 		'label' => __( 'Codepen', 'so-widgets-bundle' ),
 		'base_url' => 'https://codepen.io/',
