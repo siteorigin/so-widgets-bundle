@@ -296,6 +296,10 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	}
 
 	public function sanitize_blocks( $block ) {
+		if ( is_wp_error( $block ) ) {
+			return rest_ensure_response( $block );
+		}
+
 		if (
 			! empty( $block['blockName'] ) &&
 			$block['blockName'] === 'sowb/'
