@@ -298,7 +298,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	public function sanitize_blocks( $block ) {
 		if (
 			! empty( $block['blockName'] ) &&
-			$block['blockName'] === 'sowb/widget-block'
+			$block['blockName'] === 'sowb/'
 		) {
 			$block = $this->sanitize_block( $block );
 		}
