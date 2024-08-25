@@ -2,6 +2,7 @@
 /*
 Widget Name: Social Media Buttons
 Description: Add social media buttons to your site with personalized icons, colors, and design settings.
+Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/social-media-buttons-widget/
 */
