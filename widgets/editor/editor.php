@@ -2,6 +2,7 @@
 /*
 Widget Name: Editor
 Description: Insert and customize content with a rich text editor offering extensive formatting options.
+Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/editor-widget/
 */

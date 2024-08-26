@@ -903,7 +903,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			} else {
 				$terms = get_terms( 'jetpack-portfolio-type' );
 			}
-		} else {
+		} elseif ( $post_id === 0 ) {
 			// Check if a developer has set a term for this post type.
 			$post_type = wp_parse_args( siteorigin_widget_post_selector_process_query( $instance['posts'] ) )['post_type'];
 			$taxonomy = apply_filters( 'siteorigin_widgets_blog_portfolio_taxonomy', '', $instance, $post_type );

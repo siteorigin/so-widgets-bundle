@@ -131,50 +131,43 @@ jQuery( function ( $ ) {
 			}
 
 			var handleCarouselNavigation = function( nextSlide, refocus ) {
-				var $items = $$.find( '.sow-carousel-items' ),
-					numItems = $items.find( '.sow-carousel-item' ).length,
-					complete = numItems >= $$.data( 'item_count' ),
-					numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
-					numVisibleItemsFloor = Math.floor( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
-					slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' ),
-					lastPosition = numItems - numVisibleItems,
-					loading = false,
-					navigationContainer = $$.parent().parent();
+				const $items = $$.find( '.sow-carousel-items' );
+				const navigationContainer = $$.parent().parent();
 
-				// Post Carousel has a loading indicator so we need to pad the lastPosition.
+				const currentSlide = $items.slick( 'slickCurrentSlide' );
+				const numItems = $items.find( '.sow-carousel-item' ).length;
+				const complete = numItems >= $$.data( 'item_count' );
+				const numVisibleItems = Math.floor( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) );
+
+				let slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' );
+				let lastPosition = numItems - numVisibleItems;
+				let loading = $$.data( 'fetching' );
+				let preloaded = $$.data( 'preloaded' );
+				let loadMorePosts = false;
+
 				if (
-					$$.data( 'widget' ) == 'post' &&
+					! complete &&
+					! preloaded &&
 					(
-						$$.data( 'carousel_settings' ).theme != 'undefined' &&
-						complete
+						currentSlide + numVisibleItems >= numItems - 1 ||
+						currentSlide + ( slidesToScroll * 2 ) > lastPosition
 					)
 				) {
-					lastPosition++;
-				}
-
-				// Check if all items are displayed
-				if ( ! complete ) {
 					// For Ajax Carousels, check if we need to fetch the next batch of items.
-					if (
-						$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ||
-						$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition
-					) {
-						$( sowb ).trigger( 'carousel_load_new_items', [ $$, $items, refocus ] );
-						loading = true;
-					}
+					loadMorePosts = true;
 				}
 
 				// Enable/disable navigation buttons as needed.
 				if ( ! $$.data( 'carousel_settings' ).loop ) {
 					const direction = $$.data( 'dir' ) == 'ltr' ? 'previous' : 'next';
 
-					if ( $items.slick( 'slickCurrentSlide' ) == 0 ) {
+					if ( currentSlide == 0 ) {
 						navigationContainer.find( `.sow-carousel-${ direction }` )
 							.removeClass( 'sow-carousel-disabled' )
 							.removeAttr( 'aria-disabled' );
 					} else if (
 						! nextSlide &&
-						$items.slick( 'slickCurrentSlide' ) - slidesToScroll == 0
+						currentSlide - slidesToScroll == 0
 					) {
 						navigationContainer.find( `.sow-carousel-${ direction }` )
 							.addClass( 'sow-carousel-disabled' )
@@ -189,24 +182,40 @@ jQuery( function ( $ ) {
 				// The Slick Infinite setting has a positioning bug that can result in the first item
 				// being hidden so we need to manually handle that
 				// https://github.com/kenwheeler/slick/issues/3567
-				if ( nextSlide && ! loading ) {
+				if ( nextSlide ) {
+					// If we're already loading posts, don't do anything.
+					if ( loading && ! preloaded ) {
+						return;
+					}
+
 					// Check if this is the last slide, and we need to loop
 					if (
 						complete &&
-						$items.slick( 'slickCurrentSlide' ) >= lastPosition
+						currentSlide >= lastPosition
 					) {
 						if ( $$.data( 'carousel_settings' ).loop ) {
 							$items.slick( 'slickGoTo', 0 );
 						}
 					// If slidesToScroll is higher than the the number of visible items, go to the last item.
-					} else if ( $$.data( 'widget' ) == 'post' && $$.data( 'carousel_settings' ).theme == 'undefined' && slidesToScroll >= numVisibleItemsFloor ) {
+					} else if (
+						$$.data( 'widget' ) == 'post' &&
+						$$.data( 'carousel_settings' ).theme == 'undefined' &&
+						slidesToScroll >= numVisibleItems
+					) {
 						// There's more slides than items, update Slick settings to allow for scrolling of partially visible items.
-						$items.slick( 'slickSetOption', 'slidesToShow', numVisibleItemsFloor );
-						$items.slick( 'slickSetOption', 'slidesToScroll', numVisibleItemsFloor );
+						$items.slick( 'slickSetOption', 'slidesToShow', numVisibleItems );
+						$items.slick( 'slickSetOption', 'slidesToScroll', numVisibleItems );
 						$items.slick( 'slickNext' );
 					// Check if the number of slides to scroll exceeds lastPosition, go to the last slide, or
-					} else if ( $items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition ) {
+					} else if ( currentSlide + slidesToScroll > lastPosition ) {
 						$items.setSlideTo( lastPosition );
+					// Is the current slide a non-standard slideToScroll?
+					} else if ( currentSlide % slidesToScroll !== 0 ) {
+						// We need to increase the slidesToScroll temporarily to
+						// bring it back line with the slidesToScroll.
+						$items.slick( 'slickSetOption', 'slidesToScroll', slidesToScroll + 1 );
+						$items.slick( 'slickNext' );
+						$items.slick( 'slickSetOption', 'slidesToScroll', slidesToScroll );
 					} else {
 						$items.slick( 'slickNext' );
 					}
@@ -214,7 +223,7 @@ jQuery( function ( $ ) {
 					// Have we just scrolled to the last slide, and is looping disabled?.
 					// If so, disable the next button.
 					if (
-						$items.slick( 'slickCurrentSlide' ) == lastPosition &&
+						currentSlide == lastPosition &&
 						! $$.data( 'carousel_settings' ).loop
 					) {
 						navigationContainer.find( '.sow-carousel-next' )
@@ -222,14 +231,30 @@ jQuery( function ( $ ) {
 							.attr( 'aria-disabled', 'true' );
 					}
 				} else {
-					if ( $$.data( 'carousel_settings' ).loop && $items.slick( 'slickCurrentSlide' ) == 0 ) {
-						$items.slick( 'slickGoTo', lastPosition );
-					} else if ( $$.data( 'widget' ) == 'post' && $items.slick( 'slickCurrentSlide' ) <= slidesToScroll ) {
-						$items.slick( 'slickGoTo', 0 );
+					let slickPrev = false;
+					if ( $$.data( 'widget' ) === 'post' ) {
+						if (
+							$$.data( 'carousel_settings' ).loop &&
+							currentSlide === 0
+						) {
+							// Determine lastPosition based on the 'complete' flag
+							lastPosition = complete ? numItems : numItems - 1;
+							loadMorePosts = ! complete;
+
+							$items.slick( 'slickGoTo', lastPosition );
+						} else if ( currentSlide <= slidesToScroll ) {
+							$items.slick('slickGoTo', 0);
+						} else {
+							slickPrev = true;
+						}
 					} else {
+						slickPrev = true;
+					}
+
+					if ( slickPrev ) {
 						$items.slick( 'slickPrev' );
 
-						var next = navigationContainer.find( '.sow-carousel-next' );
+						const next = navigationContainer.find( '.sow-carousel-next' );
 						if ( next.hasClass( 'sow-carousel-disabled' ) ) {
 							next.removeClass( 'sow-carousel-disabled' )
 								.removeAttr( 'aria-disabled' );
@@ -241,6 +266,11 @@ jQuery( function ( $ ) {
 				if ( carouselSettings.dots && $$.data( 'widget' ) == 'post' ) {
 					$$.find( 'li.slick-active' ).removeClass( 'slick-active' );
 					$$.find( '.slick-dots li' ).eq( Math.ceil( $$.find( '.sow-carousel-items' ).slick( 'slickCurrentSlide' ) / slidesToScroll ) ).addClass( 'slick-active' );
+				}
+
+				// Do we need to load more posts?
+				if ( loadMorePosts ) {
+					$( sowb ).trigger( 'carousel_load_new_items', [ $$, $items, refocus ] );
 				}
 			}
 
@@ -338,7 +368,7 @@ jQuery( function ( $ ) {
 				return;
 			}
 
-			var $wrapper =  $( this ).parents( '.sow-carousel-wrapper' ),
+			var $wrapper = $( this ).parents( '.sow-carousel-wrapper' ),
 				$items = $wrapper.find( '.sow-carousel-items' ),
 				numItems = $items.find( '.sow-carousel-item' ).length,
 				itemIndex = $( this ).data( 'slick-index' ),
