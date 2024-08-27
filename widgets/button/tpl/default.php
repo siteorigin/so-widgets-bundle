@@ -11,8 +11,12 @@
  */
 ?>
 <div class="ow-button-base ow-button-align-<?php echo esc_attr( $align ); ?>">
-	<a
-	href="<?php echo sow_esc_url( do_shortcode( $href ) ); ?>"
+	<?php if ( ! empty( $href ) ) { ?>
+		<a
+		href="<?php echo sow_esc_url( do_shortcode( $href ) ); ?>"
+	<?php } else { ?>
+		<div
+	<?php } ?>
 		<?php
 		foreach ( $button_attributes as $name => $val ) {
 			echo siteorigin_sanitize_attribute_key( $name ) . '="' . esc_attr( $val ) . '" ';
@@ -22,21 +26,26 @@
 			echo 'onclick="' . siteorigin_widget_onclick( $on_click ) . '"';
 		} ?>
 	>
-		<span>
-			<?php
-			if ( ! empty( $icon_image_url ) ) {
-				?><div class="sow-icon-image" style="<?php echo 'background-image: url(' . sow_esc_url( $icon_image_url ) . ')'; ?>"></div><?php
-			} else {
-				$icon_styles = array();
 
-				if ( ! empty( $icon_color ) ) {
-					$icon_styles[] = 'color: ' . esc_attr( $icon_color );
+			<span>
+				<?php
+				if ( ! empty( $icon_image_url ) ) {
+					?><div class="sow-icon-image" style="<?php echo 'background-image: url(' . sow_esc_url( $icon_image_url ) . ')'; ?>"></div><?php
+				} else {
+					$icon_styles = array();
+
+					if ( ! empty( $icon_color ) ) {
+						$icon_styles[] = 'color: ' . esc_attr( $icon_color );
+					}
+					echo siteorigin_widget_get_icon( $icon, $icon_styles );
 				}
-				echo siteorigin_widget_get_icon( $icon, $icon_styles );
-			}
-			?>
+				?>
 
-			<?php echo wp_kses_post( $text ); ?>
-		</span>
-	</a>
+				<?php echo wp_kses_post( $text ); ?>
+			</span>
+	<?php if ( ! empty( $href ) ) { ?>
+		</a>
+	<?php } else { ?>
+		</div>
+	<?php } ?>
 </div>
