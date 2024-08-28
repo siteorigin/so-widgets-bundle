@@ -115,7 +115,7 @@
 				)
 			},
 			category: 'widgets',
-			keywords: widget.keywords ?? '',
+			keywords: widget.keywords ? widget.keywords : '',
 			supports: {
 				html: false,
 				anchor: true,
