@@ -109,6 +109,14 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.63.1 - 28 August 2024 =
+* Blog: Resolved a potential Portfolio filtering issue.
+* Post Carousel: Resolved a backtracking issue and added preloading.
+* Social Media Buttons: Added Bluesky.
+* SiteOrigin Widget Block: Added missing author description for Editor and Social Media Buttons.
+* Updated Google Fonts.
+* Updated Font Awesome from 6.5.2 to 6.6.0.
+
 = 1.63.0 - 11 August 2024 =
 * Button Grid: Update to ensure the Grid Widget doesn't override the settings of unrelated Button Widgets.
 * Blog Offset: Increased the author avatar image width.
