@@ -1673,6 +1673,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Bungee Tint' =>
+		array(
+			0 => 'regular',
+		),
 	'Butcherman' =>
 		array(
 			0 => 'regular',
@@ -2589,6 +2593,13 @@ return array(
 			2 => '600',
 			3 => '700',
 			4 => '800',
+		),
+	'Edu AU VIC WA NT Hand' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
 		),
 	'Edu NSW ACT Foundation' =>
 		array(
@@ -4175,6 +4186,15 @@ return array(
 			6 => '700',
 			7 => '800',
 			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
 		),
 	'Inter Tight' =>
 		array(
@@ -4505,6 +4525,16 @@ return array(
 			2 => '700',
 		),
 	'Kalnia' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+		),
+	'Kalnia Glaze' =>
 		array(
 			0 => '100',
 			1 => '200',
@@ -5602,6 +5632,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Matemasie' =>
+		array(
+			0 => 'regular',
+		),
 	'Material Icons' =>
 		array(
 			0 => 'regular',
@@ -5826,6 +5860,15 @@ return array(
 	'Modern Antiqua' =>
 		array(
 			0 => 'regular',
+		),
+	'Moderustic' =>
+		array(
+			0 => '300',
+			1 => 'regular',
+			2 => '500',
+			3 => '600',
+			4 => '700',
+			5 => '800',
 		),
 	'Mogra' =>
 		array(
@@ -6174,6 +6217,10 @@ return array(
 			3 => 'italic',
 			4 => '700',
 			5 => '800',
+		),
+	'New Amsterdam' =>
+		array(
+			0 => 'regular',
 		),
 	'New Rocker' =>
 		array(
@@ -9783,6 +9830,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Sankofa Display' =>
+		array(
+			0 => 'regular',
+		),
 	'Sansita' =>
 		array(
 			0 => 'regular',
@@ -11546,6 +11597,15 @@ return array(
 	'ZCOOL XiaoWei' =>
 		array(
 			0 => 'regular',
+		),
+	'Zain' =>
+		array(
+			0 => '200',
+			1 => '300',
+			2 => 'regular',
+			3 => '700',
+			4 => '800',
+			5 => '900',
 		),
 	'Zen Antique' =>
 		array(

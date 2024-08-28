@@ -4,21 +4,18 @@ $types = null;
 if ( $settings['categories'] || $template_settings['filter_categories'] ) {
 	$terms = SiteOrigin_Widget_Blog_Widget::portfolio_get_terms( $instance, get_the_ID() );
 
-	if ( ! is_wp_error( $terms ) ) {
+	if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
 		$filtering_links = array();
 
-		if ( $terms ) {
-			foreach ( $terms as $term ) {
-				$filtering_links[] = $term->slug;
-			}
+		foreach ( $terms as $term ) {
+			$filtering_links[] = sanitize_html_class( $term->slug );
 		}
-
 		$filtering = join( ', ', $filtering_links );
 		$types = $filtering ? join( ' ', $filtering_links ) : ' ';
 	}
 }
 ?>
-<article id="post-<?php the_ID(); ?>" <?php post_class( 'sow-portfolio-item ' . sanitize_html_class( $types ) ); ?>>
+<article id="post-<?php the_ID(); ?>" <?php post_class( 'sow-portfolio-item ' . $types ); ?>>
 	<div class="sow-entry-thumbnail">
 		<a href="<?php the_permalink(); ?>" class="sow-entry-link-overlay">&nbsp;</a>
 		<span class="sow-entry-overlay">&nbsp;</span>
