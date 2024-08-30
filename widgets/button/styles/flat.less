@@ -31,20 +31,20 @@
 			text-align: @mobile_align;
 
 			& when not ( @mobile_align = justify ) {
-				&.ow-button-align-justify a {
+				&.ow-button-align-justify .sowb-button {
 					display: inline-block;
 				}
 			}
 
 			& when ( @mobile_align = justify ) {
-				a {
+				.sowb-button {
 					display: block;
 				}
 			}
 		}
 	}
 
-	a {
+	.sowb-button {
 		.box-sizing(border-box);
 		.font(@button_font, @button_font_weight);
 		.rounded(@rounding);
