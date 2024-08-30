@@ -487,6 +487,18 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 	}
 
 	public function render_template( $settings, $args, $instance ) {
+		if (
+			! empty( $settings['container_classes'] ) &&
+			is_array( $settings['container_classes'] )
+		) {
+			$container_classes = implode(
+				array_map(
+					'sanitize_html_class',
+					$settings['container_classes']
+				)
+			);
+		}
+
 		include plugin_dir_path( __FILE__ ) . 'tpl/carousel.php';
 	}
 
