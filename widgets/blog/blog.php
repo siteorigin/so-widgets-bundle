@@ -907,8 +907,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			// Check if a developer has set a term for this post type.
 			$post_type = wp_parse_args( siteorigin_widget_post_selector_process_query( $instance['posts'] ) )['post_type'];
 			$taxonomy = apply_filters( 'siteorigin_widgets_blog_portfolio_taxonomy', '', $instance, $post_type );
-			if ( ! empty( $taxonomy ) ) {
-				$terms = get_terms( $taxonomy );
+			if ( ! empty( $taxonomy ) && is_array( $taxonomy ) ) {
+				return $taxonomy;
 			}
 
 			if ( empty( $terms ) || is_wp_error( $terms ) ) {
