@@ -1369,6 +1369,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				$show_all_prev_next = false;
 			}
 
+			wp_reset_query();
+
 			$pagination_markup = paginate_links( array(
 				'format' => '?sow-' . $instance['paged_id'] . '=%#%',
 				'total' => $posts->max_num_pages,
@@ -1377,6 +1379,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				'prev_next' => ! $show_all_prev_next,
 				'prev_text' => is_rtl() ? '&rarr;' : '&larr;',
 				'next_text' => is_rtl() ? '&larr;' : '&rarr;',
+				// Prevent Multiple Blog Widgets from "stacking" pagination.
+				'base' => get_the_permalink() . '%_%',
 			) );
 		}
 
