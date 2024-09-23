@@ -109,6 +109,12 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.63.2 - 23 September 2024 =
+* Blog: Output Filtered taxonomy directly.
+* Blog: Prevented multiple Blog Widgets on a page from "stacking" pagination.
+* Blog: Updated styling to prevent Read More underline from themes or plugins.
+* Carousel: Added `container_classes`.
+
 = 1.63.1 - 28 August 2024 =
 * Blog: Resolved a potential Portfolio filtering issue.
 * Post Carousel: Resolved a backtracking issue and added preloading.
