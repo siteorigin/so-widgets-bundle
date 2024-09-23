@@ -301,7 +301,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		if ( ! empty( $classes ) ) {
 			$classes .= ' ';
 		}
-		$classes .= 'ow-icon-placement-' . $instance['button_icon']['icon_placement'];
+		$classes .= 'sowb-button ow-icon-placement-' . $instance['button_icon']['icon_placement'];
 
 		if ( ! empty( $instance['design']['hover'] ) ) {
 			$classes .= ' ow-button-hover';
@@ -352,7 +352,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 
 		return array(
 			'button_attributes' => apply_filters( 'siteorigin_widgets_button_attributes', $button_attributes, $instance ),
-			'href' => ! empty( $instance['url'] ) ? $instance['url'] : '#',
+			'href' => ! empty( $instance['url'] ) ? $instance['url'] : '',
 			'on_click' => ! empty( $attributes['on_click'] ) ? $attributes['on_click'] : '',
 			'align' => $instance['design']['align'],
 			'icon_image_url' => $icon_image_url,

@@ -907,8 +907,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			// Check if a developer has set a term for this post type.
 			$post_type = wp_parse_args( siteorigin_widget_post_selector_process_query( $instance['posts'] ) )['post_type'];
 			$taxonomy = apply_filters( 'siteorigin_widgets_blog_portfolio_taxonomy', '', $instance, $post_type );
-			if ( ! empty( $taxonomy ) ) {
-				$terms = get_terms( $taxonomy );
+			if ( ! empty( $taxonomy ) && is_array( $taxonomy ) ) {
+				return $taxonomy;
 			}
 
 			if ( empty( $terms ) || is_wp_error( $terms ) ) {
@@ -1369,6 +1369,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				$show_all_prev_next = false;
 			}
 
+			wp_reset_query();
+
 			$pagination_markup = paginate_links( array(
 				'format' => '?sow-' . $instance['paged_id'] . '=%#%',
 				'total' => $posts->max_num_pages,
@@ -1377,6 +1379,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				'prev_next' => ! $show_all_prev_next,
 				'prev_text' => is_rtl() ? '&rarr;' : '&larr;',
 				'next_text' => is_rtl() ? '&larr;' : '&rarr;',
+				// Prevent multiple Blog widgets from "stacking" pagination.
+				'base' => get_the_permalink() . '%_%',
 			) );
 		}
 
