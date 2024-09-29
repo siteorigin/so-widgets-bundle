@@ -126,7 +126,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 							'left' => __( 'Left', 'so-widgets-bundle' ),
 							'right' => __( 'Right', 'so-widgets-bundle' ),
 							'center' => __( 'Center', 'so-widgets-bundle' ),
-							'justify' => __( 'Justify', 'so-widgets-bundle' ),
+							'justify' => __( 'Full Width', 'so-widgets-bundle' ),
 						),
 					),
 					'mobile_align' => array(
@@ -137,7 +137,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 							'left' => __( 'Left', 'so-widgets-bundle' ),
 							'right' => __( 'Right', 'so-widgets-bundle' ),
 							'center' => __( 'Center', 'so-widgets-bundle' ),
-							'justify' => __( 'Justify', 'so-widgets-bundle' ),
+							'justify' => __( 'Full Width', 'so-widgets-bundle' ),
 						),
 					),
 					'theme' => array(
