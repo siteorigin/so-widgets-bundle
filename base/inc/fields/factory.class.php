@@ -32,7 +32,11 @@ class SiteOrigin_Widget_Field_Factory {
 				'',
 				array(
 					'type' => 'error',
-					'message' => 'The class \'' . $field_class . '\' could not be found. Please make sure you specified the correct field type and that the class exists.',
+					// Translators: %s is the field class that could not be found.
+					'message' => sprintf(
+						'The class \'%s\' could not be found. Please make sure you specified the correct field type and that the class exists.',
+						'so-widgets-bundle',
+						$field_class ),
 				)
 			);
 		}
