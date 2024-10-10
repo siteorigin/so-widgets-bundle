@@ -125,7 +125,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 						),
 						'featured_image_size' => array(
 							'type' => 'image-size',
-							'label' => __( 'Featured Image Size', 'siteorigin-premium' ),
+							'label' => __( 'Featured Image Size', 'so-widgets-bundle' ),
 							'custom_size' => true,
 							'state_handler' => array(
 								'featured_image[show]' => array( 'show' ),

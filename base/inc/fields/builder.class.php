@@ -24,7 +24,7 @@ class SiteOrigin_Widget_Field_Builder extends SiteOrigin_Widget_Field_Base {
 				>
 				<p>
 					<button class="button-secondary siteorigin-panels-display-builder">
-						<?php _e( 'Open Builder', 'siteorigin-panels' ); ?>
+						<?php esc_html_e( 'Open Builder', 'so-widgets-bundle' ); ?>
 					</button>
 				</p>
 				<input
