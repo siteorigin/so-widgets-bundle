@@ -113,7 +113,7 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 						'fields' => array(
 							'title_tag' => array(
 								'type' => 'select',
-								'label' => __( 'Title HTML Tag', 'siteorigin-premium' ),
+								'label' => __( 'Title HTML Tag', 'so-widgets-bundle' ),
 								'default' => 'h4',
 								'options' => array(
 									'h1' => __( 'H1', 'so-widgets-bundle' ),
