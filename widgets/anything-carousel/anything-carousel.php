@@ -53,7 +53,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 			array(
 				'adaptive_height' => array(
 					'type' => 'checkbox',
-					'label' => __( 'Adaptive height', 'so-widgets-bundle' ),
+					'label' => __( 'Adaptive Height', 'so-widgets-bundle' ),
 					'default' => false,
 				),
 			)
@@ -93,7 +93,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 						'fields' => array(
 							'bottom_margin' => array(
 								'type' => 'measurement',
-								'label' => __( 'Bottom margin', 'so-widgets-bundle' ),
+								'label' => __( 'Bottom Margin', 'so-widgets-bundle' ),
 								'default' => '24px',
 							),
 						),
@@ -109,7 +109,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 							),
 							'size' => array(
 								'type' => 'measurement',
-								'label' => __( 'Font size', 'so-widgets-bundle' ),
+								'label' => __( 'Font Size', 'so-widgets-bundle' ),
 							),
 							'color' => array(
 								'type' => 'color',
@@ -148,27 +148,27 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 						'fields' => array(
 							'arrow_color' => array(
 								'type' => 'color',
-								'label' => __( 'Arrows color', 'so-widgets-bundle' ),
+								'label' => __( 'Arrows Color', 'so-widgets-bundle' ),
 								'default' => '#626262',
 							),
 							'arrow_color_hover' => array(
 								'type' => 'color',
-								'label' => __( 'Arrows hover color', 'so-widgets-bundle' ),
+								'label' => __( 'Arrows Hover Color', 'so-widgets-bundle' ),
 								'default' => '#000',
 							),
 							'arrow_margin' => array(
 								'type' => 'measurement',
-								'label' => __( 'Arrows margin', 'so-widgets-bundle' ),
+								'label' => __( 'Arrows Margin', 'so-widgets-bundle' ),
 								'description' => __( 'The space between the navigation arrows and items.', 'so-widgets-bundle' ),
 							),
 							'dots_color' => array(
 								'type' => 'color',
-								'label' => __( 'Dots color', 'so-widgets-bundle' ),
+								'label' => __( 'Dots Color', 'so-widgets-bundle' ),
 								'default' => '#bebebe',
 							),
 							'dots_color_hover' => array(
 								'type' => 'color',
-								'label' => __( 'Dots selected and hover color', 'so-widgets-bundle' ),
+								'label' => __( 'Dots Selected and Hover Color', 'so-widgets-bundle' ),
 								'default' => '#f14e4e',
 							),
 						),
