@@ -196,12 +196,12 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 					'fields' => array(
 						'navigation_color' => array(
 							'type' => 'color',
-							'label' => __( 'Arrow color', 'so-widgets-bundle' ),
+							'label' => __( 'Arrow Color', 'so-widgets-bundle' ),
 							'default' => '#fff',
 						),
 						'navigation_color_hover' => array(
 							'type' => 'color',
-							'label' => __( 'Arrow hover color', 'so-widgets-bundle' ),
+							'label' => __( 'Arrow Hover Color', 'so-widgets-bundle' ),
 						),
 						'navigation_background' => array(
 							'type' => 'color',
@@ -210,7 +210,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 						),
 						'navigation_hover_background' => array(
 							'type' => 'color',
-							'label' => __( 'Hover background', 'so-widgets-bundle' ),
+							'label' => __( 'Hover Background', 'so-widgets-bundle' ),
 							'default' => '#444',
 						),
 					),
@@ -232,12 +232,12 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 					'fields' => array(
 						'thumbnail_overlay_hover_color' => array(
 							'type' => 'color',
-							'label' => __( 'Thumbnail overlay hover color', 'so-widgets-bundle' ),
+							'label' => __( 'Thumbnail Overlay Hover Color', 'so-widgets-bundle' ),
 							'default' => '#3279bb',
 						),
 						'thumbnail_overlay_hover_opacity' => array(
 							'type' => 'slider',
-							'label' => __( 'Thumbnail overlay hover opacity', 'so-widgets-bundle' ),
+							'label' => __( 'Thumbnail Overlay Hover Opacity', 'so-widgets-bundle' ),
 							'default' => '0.5',
 							'min' => 0,
 							'max' => 1,
@@ -258,7 +258,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			array(
 				'autoplay_continuous_scroll' => array(
 					'type' => 'checkbox',
-					'label' => __( 'Autoplay continuous scroll', 'so-widgets-bundle' ),
+					'label' => __( 'Autoplay Continuous Scroll', 'so-widgets-bundle' ),
 					'state_handler' => array(
 						'autoplay[show]' => array( 'show' ),
 						'autoplay[hide]' => array( 'hide' ),
@@ -284,13 +284,13 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 			'image_size' => array(
 				'type' => 'image-size',
-				'label' => __( 'Featured Image size', 'so-widgets-bundle' ),
+				'label' => __( 'Featured Image Size', 'so-widgets-bundle' ),
 				'default' => 'sow-carousel-default',
 			),
 
 			'link_target' => array(
 				'type' => 'select',
-				'label' => __( 'Link target', 'so-widgets-bundle' ),
+				'label' => __( 'Link Target', 'so-widgets-bundle' ),
 				'description' => __( 'Choose where to open each carousel item.', 'so-widgets-bundle' ),
 				'options' => array(
 					'same'    => __( 'Same window ', 'so-widgets-bundle' ),
@@ -302,11 +302,11 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 			'posts' => array(
 				'type' => 'posts',
-				'label' => __( 'Posts query', 'so-widgets-bundle' ),
+				'label' => __( 'Posts Query', 'so-widgets-bundle' ),
 				'hide' => true,
 				'fields' => array(
 					'posts_per_page' => array(
-						'label' => __( 'Posts per load', 'so-widgets-bundle' ),
+						'label' => __( 'Posts Per Load', 'so-widgets-bundle' ),
 						'description' => __( 'Set the number of posts preloaded in the background when clicking next. The default is 10.', 'so-widgets-bundle' ),
 					),
 				),
