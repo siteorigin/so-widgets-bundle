@@ -10,25 +10,25 @@
 @title_padding: default;
 
 .sow-image-grid-wrapper {
+	align-items: @alignment_vertical;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: @alignment_horizontal;
-	align-items: @alignment_vertical;
 	line-height: 0;
 	text-align: center;
 
 	.sow-image-grid-image {
-		padding: @padding;
 		display: inline-block;
+		padding: @padding;
 
 		a {
 			display: block;
 		}
 
 		img {
+			height: auto;
+			max-width: 100%;
 			opacity: 0;
-			max-width:100%;
-			height:auto;
 		}
 
 		.image-title {
