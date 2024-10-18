@@ -61,6 +61,7 @@ jQuery( function ( $ ) {
 						columnWidth: columnWidth,
 						gutter: layout.gutter,
 						originLeft: $gridEl.data( 'layout-origin-left' ),
+						transitionDuration: 0,
 					} );
 
 					// If preloader is present, remove and show masonry
