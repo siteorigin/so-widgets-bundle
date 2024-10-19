@@ -98,6 +98,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 			'preloader' => array(
 				'type' => 'section',
 				'label' => __( 'Preloader', 'so-widgets-bundle' ),
+				'default' => true,
 				'hide' => true,
 				'fields' => array(
 					'enabled' => array(
