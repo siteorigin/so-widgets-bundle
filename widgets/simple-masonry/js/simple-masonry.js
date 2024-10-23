@@ -73,9 +73,9 @@ jQuery( function ( $ ) {
 			} );
 		};
 
-		$( window ).on( 'resize panelsStretchRows', resizeMasonry );
+		$( window ).on( 'load resize panelsStretchRows', resizeMasonry ).trigger( 'resize' );
 
-		// Ensure that the masonry has resized correctly on load.
+		// Attempt to resize the masonry early.
 		setTimeout( function () {
 			resizeMasonry();
 		}, 100 );
