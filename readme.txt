@@ -109,6 +109,10 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.63.4 - 23 October 2024 =
+* Image Grid: Ensured the image link always covers the image.
+* Simple Masonry: Removed removed transition to improve CLS.
+
 = 1.63.3 - 11 October 2024 =
 * Button: Renamed Justify alignment to Full Width.
 * Button: Update to ensure Justify full-width output in conjunction with the Atom theme.
