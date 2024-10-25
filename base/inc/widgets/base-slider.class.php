@@ -475,7 +475,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 					class="sow-slider-images"
 					data-settings="<?php echo esc_attr( json_encode( $settings ) ); ?>"
 					<?php echo ! empty( $layout['desktop'] ) && ! empty( $layout['desktop']['height'] ) ? 'style="min-height: ' . esc_attr( $layout['desktop']['height'] ) . '"' : ''; ?>
-					data-anchor-id="<?php echo ! empty( $controls['anchor'] ) ? esc_attr( $controls['anchor'] ) : ''; ?>"
+					data-anchor-id="<?php echo ! empty( $controls['anchor'] ) ? esc_attr( sanitize_title( $controls['anchor'] ) ) : ''; ?>"
 				><?php
 				break;
 
