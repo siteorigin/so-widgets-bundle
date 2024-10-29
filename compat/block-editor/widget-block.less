@@ -26,6 +26,14 @@
 		}
 
 		// Form Field changes.
+		input[type="checkbox"] {
+			appearance: checkbox;
+
+			&::before {
+				content: none;
+			}
+		}
+
 		.mce-edit-area {
 			padding: 5px;
 			padding-right: 0;
