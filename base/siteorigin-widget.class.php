@@ -629,6 +629,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						'<em>' . __( 'Restore', 'so-widgets-bundle' ) . '</em>'
 					),
 				),
+				'fonts' => siteorigin_widgets_font_families(),
 			) );
 
 			if ( ! class_exists( 'FLBuilderModel' ) || ! FLBuilderModel::is_builder_active() ) {

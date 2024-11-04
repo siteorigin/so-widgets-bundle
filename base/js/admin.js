@@ -260,10 +260,32 @@ var sowbForms = window.sowbForms || {};
 			// Setup all the repeaters
 			$fields.find('> .siteorigin-widget-field-repeater').sowSetupRepeater();
 
-			// For any repeater items currently in existence
+			// For any repeater items currently in existence.
 			$el.find('.siteorigin-widget-field-repeater-item').sowSetupRepeaterItems();
 
-			// Set up any color fields
+			// Set up any font fields.
+			if ( $fields.find( '> .siteorigin-widget-font-selector' ).length ) {
+				// To help with performance, we build the font option early.
+				let fontList = '';
+				for (const [ value, label ] of Object.entries( soWidgets.fonts ) ) {
+					fontList += '<option value="' + value + '">' + label + '</option>';
+				}
+
+				if ( fontList ) {
+					$fields.find( '> .siteorigin-widget-font-selector' ).each( function() {
+						var $fontSelect =  $( this ).find( 'select' );
+						$fontSelect.append( fontList );
+
+						// Set selected font.
+						var selectedFont = $fontSelect.data( 'selected' );
+						if ( selectedFont ) {
+							$fontSelect.val( selectedFont );
+						}
+					} );
+				}
+			}
+
+			// Set up any color fields.
 			$fields.find( '> .siteorigin-widget-input-color' ).each( function() {
 				var $colorField = $( this );
 				var colorResult = ''
