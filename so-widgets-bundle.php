@@ -700,6 +700,7 @@ class SiteOrigin_Widgets_Bundle {
 			'WidgetURI' => 'Widget URI',
 			'VideoURI' => 'Video URI',
 			'Documentation' => 'Documentation',
+			'HideActivate' => 'Hide Activate',
 		);
 
 		$widgets = array();
@@ -724,6 +725,7 @@ class SiteOrigin_Widgets_Bundle {
 				$widget['ID'] = $id;
 				$widget['Active'] = ! empty( $active[ $id ] );
 				$widget['File'] = $file;
+				$widget['HideActivate'] = ! empty( $widget['HideActivate'] );
 
 				$widgets[ $file ] = $widget;
 			}
