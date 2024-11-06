@@ -68,7 +68,11 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 		}
 		?>
 		<select
-			name="<?php echo esc_attr( $this->element_name ); ?>"
+			name="<?php echo esc_attr( $this->element_name );
+				if ( ! empty( $this->multiple ) ) {
+					echo '[]';
+				}
+			?>"
 			id="<?php echo esc_attr( $this->element_id ); ?>"
 			class="siteorigin-widget-input siteorigin-widget-input-select<?php if ( ! empty( $this->input_css_classes ) ) {
 					echo ' ' . implode( ' ', $this->input_css_classes );
