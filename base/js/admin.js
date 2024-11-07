@@ -4,6 +4,30 @@ var sowbForms = window.sowbForms || {};
 
 (function ($) {
 
+	let fontList = '';
+	for (const [ value, label ] of Object.entries( soWidgets.fonts ) ) {
+		fontList += '<option value="' + value + '">' + label + '</option>';
+	}
+
+	/**
+	 * Set up font fields when the section is hovered.
+	 *
+	 * This function finds all font fields within the section and appends the font list to each font field.
+	 * It also sets the selected font if a font is already selected.
+	 */
+	const setupFontFieldsOnHover = function() {
+		const $fields = $( this ).find( '> .siteorigin-widget-section > .siteorigin-widget-field-font .siteorigin-widget-input' );
+		$fields.each( function() {
+			const $fontSelect = $( this );
+			$fontSelect.append( fontList );
+
+			var selectedFont = $fontSelect.data( 'selected' );
+			if ( selectedFont ) {
+				$fontSelect.val( selectedFont );
+			}
+		} );
+	}
+
 	$.fn.sowSetupForm = function () {
 
 		return $(this).each(function (i, el) {
@@ -264,25 +288,33 @@ var sowbForms = window.sowbForms || {};
 			$el.find('.siteorigin-widget-field-repeater-item').sowSetupRepeaterItems();
 
 			// Set up any font fields.
-			if ( $fields.find( '> .siteorigin-widget-font-selector' ).length ) {
-				// To help with performance, we build the font option early.
-				let fontList = '';
-				for (const [ value, label ] of Object.entries( soWidgets.fonts ) ) {
-					fontList += '<option value="' + value + '">' + label + '</option>';
-				}
+			if (
+				$fields.find( '> .siteorigin-widget-font-selector' ).length &&
+				fontList
+			) {
+				const $fontSelect = $fields.find( '> .siteorigin-widget-font-selector select' );
+				$fontSelect.each( function() {
+					const sectionParent = $( this ).closest( '.siteorigin-widget-field-type-section' );
 
-				if ( fontList ) {
-					$fields.find( '> .siteorigin-widget-font-selector' ).each( function() {
-						var $fontSelect =  $( this ).find( 'select' );
-						$fontSelect.append( fontList );
+					// If the font isn't in a section, set it up immediately.
+					if ( ! sectionParent.length ) {
+						$( this ).append( fontList );
+						return;
+					}
 
-						// Set selected font.
-						var selectedFont = $fontSelect.data( 'selected' );
-						if ( selectedFont ) {
-							$fontSelect.val( selectedFont );
-						}
-					} );
-				}
+					// If this section has already had its event setup, skip it.
+					if ( sectionParent.data( 'font-setup' ) ) {
+						return;
+					}
+
+					// Is the section visible? If so, set it up after 200ms.
+					if ( sectionParent.hasClass( 'siteorigin-widget-section-visible' ) ) {
+						setTimeout( setupFontFieldsOnHover, 200 );
+					}
+
+					sectionParent.data( 'font-setup', true );
+					sectionParent.one( 'mouseover', setupFontFieldsOnHover );
+				} );
 			}
 
 			// Set up any color fields.
