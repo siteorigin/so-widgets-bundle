@@ -15,17 +15,29 @@ var sowbForms = window.sowbForms || {};
 	 * This function finds all font fields within the section and appends the font list to each font field.
 	 * It also sets the selected font if a font is already selected.
 	 */
-	const setupFontFieldsOnHover = function() {
+	const setupFontFieldsOnHover = () => {
 		const $fields = $( this ).find( '> .siteorigin-widget-section > .siteorigin-widget-field-font .siteorigin-widget-input' );
-		$fields.each( function() {
-			const $fontSelect = $( this );
-			$fontSelect.append( fontList );
 
-			var selectedFont = $fontSelect.data( 'selected' );
-			if ( selectedFont ) {
-				$fontSelect.val( selectedFont );
-			}
+		$fields.each( function() {
+			setupFontField( $( this ) );
 		} );
+	}
+
+	/**
+	 * Set up a single font field.
+	 *
+	 * This function appends the font list to the given font field and sets the selected font if a font is already selected.
+	 *
+	 * @param {jQuery} $fontSelect - The jQuery object representing the font select element.
+ 	*/
+	const setupFontField = ( $fontSelect ) => {
+		$fontSelect.append( fontList );
+
+		// Set selected font.
+		var selectedFont = $fontSelect.data( 'selected' );
+		if ( selectedFont ) {
+			$fontSelect.val( selectedFont );
+		}
 	}
 
 	$.fn.sowSetupForm = function () {
@@ -298,18 +310,21 @@ var sowbForms = window.sowbForms || {};
 
 					// If the font isn't in a section, set it up immediately.
 					if ( ! sectionParent.length ) {
-						$( this ).append( fontList );
+						setupFontField( $( this ) );
+						return;
+					}
+
+					// Is the section visible? If so, set it up after 200ms.
+					if ( sectionParent.find( '> .siteorigin-widget-section-visible' ) ) {
+						setTimeout( () => {
+							setupFontField( $( this ) );
+						}, 200 );
 						return;
 					}
 
 					// If this section has already had its event setup, skip it.
 					if ( sectionParent.data( 'font-setup' ) ) {
 						return;
-					}
-
-					// Is the section visible? If so, set it up after 200ms.
-					if ( sectionParent.hasClass( 'siteorigin-widget-section-visible' ) ) {
-						setTimeout( setupFontFieldsOnHover, 200 );
 					}
 
 					sectionParent.data( 'font-setup', true );
