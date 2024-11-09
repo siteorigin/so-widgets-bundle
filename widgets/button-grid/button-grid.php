@@ -85,7 +85,7 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 						'fields' => array(
 							'columns' => array(
 								'type' => 'number',
-								'label' => __( 'Buttons Per Line', 'so-widgets-bundle' ),
+								'label' => __( 'Buttons Per Row', 'so-widgets-bundle' ),
 								'default' => 3,
 							),
 							'alignment' => array(
@@ -115,7 +115,7 @@ class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {
 						'fields' => array(
 							'columns' => array(
 								'type' => 'number',
-								'label' => __( 'Buttons Per Line', 'so-widgets-bundle' ),
+								'label' => __( 'Buttons Per Row', 'so-widgets-bundle' ),
 								'default' => 3,
 							),
 							'alignment' => array(
