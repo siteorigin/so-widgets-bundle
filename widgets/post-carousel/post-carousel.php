@@ -138,6 +138,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			$this->register_theme_assets();
 		} else {
 			add_action( 'wp_enqueue_scripts', array( $this, 'register_theme_assets' ) );
+			add_action( 'enqueue_block_assets', array( $this, 'register_theme_assets' ) );
 		}
 	}
 
@@ -178,6 +179,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 	public function get_style_name( $instance ) {
 		$theme = self::get_theme( $instance );
+
 		// If this theme has a dedicated stylesheet load it.
 		if ( wp_style_is( 'sow-post-carousel-' . $theme, 'registered' ) ) {
 			wp_enqueue_style( 'sow-post-carousel-' . $theme );
