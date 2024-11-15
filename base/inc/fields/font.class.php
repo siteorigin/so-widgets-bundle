@@ -12,11 +12,12 @@ class SiteOrigin_Widget_Field_Font extends SiteOrigin_Widget_Field_Base {
 		}
 		?>
 		<div class="siteorigin-widget-font-selector siteorigin-widget-field-subcontainer">
-			<select name="<?php echo esc_attr( $this->element_name ); ?>" id="<?php echo esc_attr( $this->element_id ); ?>" class="siteorigin-widget-input">
+			<select
+				name="<?php echo esc_attr( $this->element_name ); ?>"
+				id="<?php echo esc_attr( $this->element_id ); ?>" class="siteorigin-widget-input"
+				data-selected="<?php echo esc_attr( $value ); ?>"
+			>
 				<option value="default" selected="selected"><?php esc_html_e( 'Use theme font', 'so-widgets-bundle' ); ?></option>
-				<?php foreach ( $widget_font_families as $key => $val ) { ?>
-					<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $key, $value ); ?>><?php echo esc_html( $val ); ?></option>
-				<?php } ?>
 			</select>
 		</div>
 		<?php

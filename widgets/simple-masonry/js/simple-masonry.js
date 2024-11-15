@@ -5,11 +5,11 @@ var sowb = window.sowb || {};
 jQuery( function ( $ ) {
 	sowb.setupSimpleMasonries = function () {
 		var $grid = $( '.sow-masonry-grid' );
-		
+
 		if ( $grid.data( 'initialized' ) ) {
 			return $grid;
 		}
-		
+
 		var resizeMasonry = function () {
 			$grid.each( function () {
 				var $gridEl = $( this );
@@ -27,7 +27,7 @@ jQuery( function ( $ ) {
 				var horizontalGutterSpace = layout.gutter * ( numColumns - 1 );
 				var columnWidth = ( $gridEl.width() - ( horizontalGutterSpace ) ) / numColumns;
 				$gridEl.width( ( columnWidth * numColumns ) + horizontalGutterSpace );
-				
+
 				$gridEl.imagesLoaded( function () {
 					$gridEl.find( '> .sow-masonry-grid-item' ).each( function () {
 						var $$ = $( this );
@@ -39,7 +39,7 @@ jQuery( function ( $ ) {
 						//Use rowHeight if non-zero else fall back to matching columnWidth.
 						var rowHeight = layout.rowHeight || columnWidth;
 						$$.css( 'height', ( rowHeight * rowSpan ) + ( layout.gutter * ( rowSpan - 1 ) ) + 'px' );
-						
+
 						var $img = $$.find( '> img,> a > img' );
 
 						// If this image has a title present, increase row height for it.
@@ -61,6 +61,7 @@ jQuery( function ( $ ) {
 						columnWidth: columnWidth,
 						gutter: layout.gutter,
 						originLeft: $gridEl.data( 'layout-origin-left' ),
+						transitionDuration: 0,
 					} );
 
 					// If preloader is present, remove and show masonry
@@ -71,18 +72,18 @@ jQuery( function ( $ ) {
 				} );
 			} );
 		};
-		
-		$( window ).on( 'resize panelsStretchRows', resizeMasonry );
-		
-		// Ensure that the masonry has resized correctly on load.
+
+		$( window ).on( 'load resize panelsStretchRows', resizeMasonry ).trigger( 'resize' );
+
+		// Attempt to resize the masonry early.
 		setTimeout( function () {
 			resizeMasonry();
 		}, 100 );
-		
+
 		$grid.data( 'initialized', true );
 	};
 	sowb.setupSimpleMasonries();
-	
+
 	$( sowb ).on( 'setup_widgets', sowb.setupSimpleMasonries );
 } );
 

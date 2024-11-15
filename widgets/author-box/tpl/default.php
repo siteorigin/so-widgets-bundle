@@ -25,7 +25,7 @@
 		<?php do_action( 'siteorigin_widgets_author_box_description_above', $instance ); ?>
 
 		<div class="sow-author-box-title-wrapper">
-			<h4 class="sow-author-box-title">
+			<<?php echo esc_html( $title_tag ); ?> class="sow-author-box-title">
 				<?php if ( $link_name ) { ?>
 					<a href="<?php echo esc_urL( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>"  class="sow-author-box-author">
 					<?php
@@ -36,7 +36,7 @@
 					?>
 					</a>
 				<?php } ?>
-			</h4>
+			</<?php echo esc_html( $title_tag ); ?>>
 
 			<?php
 			ob_start();

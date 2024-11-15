@@ -9,10 +9,25 @@
  * @var string $icon_color
  * @var string $text
  */
+
+$add_anchor = ! empty( $href ) ||
+	apply_filters( 'siteorigin_widgets_button_always_add_anchor', true );
 ?>
-<div class="ow-button-base ow-button-align-<?php echo esc_attr( $align ); ?>">
-	<a
-	href="<?php echo sow_esc_url( do_shortcode( $href ) ); ?>"
+<div class="ow-button-base ow-button-align-<?php echo esc_attr( $align ); ?>"<?php
+	if ( $align === 'justify' ) {
+		echo ' style="display: block;"';
+	}
+?>>
+	<?php if ( $add_anchor ) { ?>
+		<a
+		<?php if ( ! empty( $href ) ) { ?>
+			href="<?php echo sow_esc_url( do_shortcode( $href ) ); ?>"
+			<?php
+		}
+	} else {
+		?>
+		<div
+	<?php } ?>
 		<?php
 		foreach ( $button_attributes as $name => $val ) {
 			echo siteorigin_sanitize_attribute_key( $name ) . '="' . esc_attr( $val ) . '" ';
@@ -38,5 +53,9 @@
 
 			<?php echo wp_kses_post( $text ); ?>
 		</span>
-	</a>
+	<?php if ( $add_anchor ) { ?>
+		</a>
+	<?php } else { ?>
+		</div>
+	<?php } ?>
 </div>

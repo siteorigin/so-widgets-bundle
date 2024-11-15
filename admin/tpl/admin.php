@@ -72,15 +72,17 @@
 							</div>
 						<?php } ?>
 						<div class="so-action-links">
-							<div class="so-widget-toggle-active">
-								<button class="button-secondary so-widget-activate" data-status="1">
-									<?php esc_html_e( 'Activate', 'so-widgets-bundle' ); ?>
-								</button>
+							<?php if ( empty( $widget['HideActivate'] ) ) { ?>
+								<div class="so-widget-toggle-active">
+									<button class="button-secondary so-widget-activate" data-status="1">
+										<?php esc_html_e( 'Activate', 'so-widgets-bundle' ); ?>
+									</button>
 
-								<button class="button-secondary so-widget-deactivate" data-status="0">
-									<?php esc_html_e( 'Deactivate', 'so-widgets-bundle' ); ?>
-								</button>
-							</div>
+									<button class="button-secondary so-widget-deactivate" data-status="0">
+										<?php esc_html_e( 'Deactivate', 'so-widgets-bundle' ); ?>
+									</button>
+								</div>
+							<?php } ?>
 
 							<?php
 							/** @var SiteOrigin_Widget $widget_object */
