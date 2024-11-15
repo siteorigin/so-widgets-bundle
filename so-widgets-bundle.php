@@ -700,6 +700,7 @@ class SiteOrigin_Widgets_Bundle {
 			'WidgetURI' => 'Widget URI',
 			'VideoURI' => 'Video URI',
 			'Documentation' => 'Documentation',
+			'Keywords' => 'Keywords',
 			'HideActivate' => 'Hide Activate',
 		);
 
