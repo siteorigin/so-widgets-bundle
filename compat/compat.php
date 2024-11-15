@@ -13,6 +13,10 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 	}
 
 	public function __construct() {
+		add_action( 'init' , array( $this, 'init' ) );
+	}
+
+	public function init() {
 		$builder = $this->get_active_builder();
 
 		if ( ! empty( $builder ) ) {
@@ -30,6 +34,7 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 			add_action( 'siteorigin_widgets_stylesheet_cleared', array( $this, 'clear_all_cache' ) );
 		}
 
+		// Compatibility with AMP plugin.
 		if (
 			function_exists( 'amp_is_enabled' ) &&
 			amp_is_enabled()
@@ -45,10 +50,7 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 			} );
 		}
 
-		add_action( 'init' , array( $this, 'init' ) );
-	}
-
-	public function init() {
+		// Compatibility with WooCommerce.
 		if ( function_exists( 'WC' ) ) {
 			add_filter( 'woocommerce_format_content', array( $this, 'woocommerce_shop_page_content' ), 10, 2 );
 		}
