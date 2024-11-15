@@ -180,10 +180,8 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 	public function get_style_name( $instance ) {
 		$theme = self::get_theme( $instance );
 
-		// If this theme has a dedicated stylesheet load it.
-		if ( wp_style_is( 'sow-post-carousel-' . $theme, 'registered' ) ) {
-			wp_enqueue_style( 'sow-post-carousel-' . $theme );
-		}
+		// Try to load carousel theme stylesheet.
+		wp_enqueue_style( 'sow-post-carousel-' . $theme );
 
 		return $theme;
 	}
