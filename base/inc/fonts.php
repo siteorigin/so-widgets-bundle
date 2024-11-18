@@ -89,6 +89,18 @@ return array(
 			6 => '600italic',
 			7 => '700italic',
 		),
+	'Afacad Flux' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+		),
 	'Agbalumo' =>
 		array(
 			0 => 'regular',
@@ -2535,6 +2547,18 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Doto' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+		),
 	'Dr Sugiyama' =>
 		array(
 			0 => 'regular',
@@ -2594,7 +2618,28 @@ return array(
 			3 => '700',
 			4 => '800',
 		),
+	'Edu AU VIC WA NT Dots' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+		),
+	'Edu AU VIC WA NT Guides' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+		),
 	'Edu AU VIC WA NT Hand' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
+		),
+	'Edu AU VIC WA NT Pre' =>
 		array(
 			0 => 'regular',
 			1 => '500',
@@ -2851,6 +2896,10 @@ return array(
 			7 => '700italic',
 		),
 	'Explora' =>
+		array(
+			0 => 'regular',
+		),
+	'Faculty Glyphic' =>
 		array(
 			0 => 'regular',
 		),
@@ -3203,6 +3252,30 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Funnel Display' =>
+		array(
+			0 => '300',
+			1 => 'regular',
+			2 => '500',
+			3 => '600',
+			4 => '700',
+			5 => '800',
+		),
+	'Funnel Sans' =>
+		array(
+			0 => '300',
+			1 => 'regular',
+			2 => '500',
+			3 => '600',
+			4 => '700',
+			5 => '800',
+			6 => '300italic',
+			7 => 'italic',
+			8 => '500italic',
+			9 => '600italic',
+			10 => '700italic',
+			11 => '800italic',
+		),
 	'Fustat' =>
 		array(
 			0 => '200',
@@ -3306,6 +3379,30 @@ return array(
 			0 => '100',
 			1 => 'regular',
 			2 => '700',
+		),
+	'Geist' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+		),
+	'Geist Mono' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
 		),
 	'Gelasio' =>
 		array(
@@ -3864,9 +3961,43 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Host Grotesk' =>
+		array(
+			0 => '300',
+			1 => 'regular',
+			2 => '500',
+			3 => '600',
+			4 => '700',
+			5 => '800',
+			6 => '300italic',
+			7 => 'italic',
+			8 => '500italic',
+			9 => '600italic',
+			10 => '700italic',
+			11 => '800italic',
+		),
 	'Hubballi' =>
 		array(
 			0 => 'regular',
+		),
+	'Hubot Sans' =>
+		array(
+			0 => '200',
+			1 => '300',
+			2 => 'regular',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
+			7 => '900',
+			8 => '200italic',
+			9 => '300italic',
+			10 => 'italic',
+			11 => '500italic',
+			12 => '600italic',
+			13 => '700italic',
+			14 => '800italic',
+			15 => '900italic',
 		),
 	'Hurricane' =>
 		array(
@@ -4611,6 +4742,16 @@ return array(
 			11 => '600italic',
 			12 => '700italic',
 			13 => '800italic',
+		),
+	'Karla Tamil Inclined' =>
+		array(
+			0 => 'regular',
+			1 => '700',
+		),
+	'Karla Tamil Upright' =>
+		array(
+			0 => 'regular',
+			1 => '700',
 		),
 	'Karma' =>
 		array(
@@ -5823,7 +5964,9 @@ return array(
 	'Miriam Libre' =>
 		array(
 			0 => 'regular',
-			1 => '700',
+			1 => '500',
+			2 => '600',
+			3 => '700',
 		),
 	'Mirza' =>
 		array(
@@ -5898,6 +6041,25 @@ return array(
 	'Molle' =>
 		array(
 			0 => 'italic',
+		),
+	'Mona Sans' =>
+		array(
+			0 => '200',
+			1 => '300',
+			2 => 'regular',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
+			7 => '900',
+			8 => '200italic',
+			9 => '300italic',
+			10 => 'italic',
+			11 => '500italic',
+			12 => '600italic',
+			13 => '700italic',
+			14 => '800italic',
+			15 => '900italic',
 		),
 	'Monda' =>
 		array(
@@ -9743,6 +9905,17 @@ return array(
 			6 => '600italic',
 			7 => '700italic',
 		),
+	'SUSE' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+		),
 	'Sacramento' =>
 		array(
 			0 => 'regular',
@@ -10137,6 +10310,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Sixtyfour Convergence' =>
+		array(
+			0 => 'regular',
+		),
 	'Skranji' =>
 		array(
 			0 => 'regular',
@@ -10343,6 +10520,27 @@ return array(
 		array(
 			0 => 'regular',
 			1 => 'italic',
+		),
+	'Sour Gummy' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
 		),
 	'Source Code Pro' =>
 		array(
