@@ -263,7 +263,7 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_template_variables( $instance, $args ) {
-		$images = isset( $instance['images'] ) ? $instance['images'] : array();
+		$images = isset( $instance['images'] ) ? (array) $instance['images'] : array();
 
 		// If WordPress 5.9 or higher is being used, let WordPress control if Lazy Load is enabled.
 		$lazy = function_exists( 'wp_lazy_loading_enabled' ) && wp_lazy_loading_enabled( 'img', 'sow-image-grid' );
