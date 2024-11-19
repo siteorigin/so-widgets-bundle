@@ -175,6 +175,10 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 	public function register_theme_assets() {
 		wp_register_style( 'sow-post-carousel-base', plugin_dir_url( __FILE__ ) . 'css/base.css' );
 		do_action( 'siteorigin_widgets_post_carousel_theme_assets' );
+
+		if ( $this->is_block_editor_page() ) {
+			wp_enqueue_style( 'sow-post-carousel-base' );
+		}
 	}
 
 	public function get_style_name( $instance ) {
