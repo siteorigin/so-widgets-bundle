@@ -4,6 +4,14 @@
  * Class SiteOrigin_Widget_Field_Font
  */
 class SiteOrigin_Widget_Field_Font extends SiteOrigin_Widget_Field_Base {
+
+	/**
+	 * Whether to default to $this->default when saving the field if the value is empty.
+	 *
+	 * @var int
+	 */
+	protected $use_default_if_empty = false;
+
 	protected function render_field( $value, $instance ) {
 		static $widget_font_families;
 
@@ -44,7 +52,7 @@ class SiteOrigin_Widget_Field_Font extends SiteOrigin_Widget_Field_Base {
 		}
 		$keys = array_keys( $widget_font_families );
 
-		if ( ! in_array( $sanitized_value, $keys ) ) {
+		if ( ! in_array( $sanitized_value, $keys ) && $this->use_default_if_empty ) {
 			$sanitized_value = isset( $this->default ) ? $this->default : 'default';
 		}
 
