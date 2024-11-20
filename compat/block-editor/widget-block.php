@@ -14,13 +14,15 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	}
 
 	public function __construct() {
-		add_action( 'init', array( $this, 'register_widget_block' ) );
+		$this->register_widget_block();
+
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_widget_block_editor_assets' ) );
 
 		$post_types = get_post_types( array( 'public' => true ), 'names' );
 		if ( empty( $post_types ) ) {
 			$post_types = array( 'post', 'page' );
 		}
+
 		foreach ( $post_types as $post_type ) {
 			add_action( 'rest_pre_insert_' . $post_type, array( $this, 'server_side_validation' ), 10, 2 );
 		}
