@@ -388,6 +388,19 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		);
 		$less_vars = $this->responsive_less_variables( $less_vars, $instance );
 
+		if (
+			! empty( $instance['design']['item_title'] ) &&
+			! empty( $instance['design']['item_title']['font'] )
+		) {
+			$item_title_font = siteorigin_widget_get_font( $instance['design']['item_title']['font'] );
+			$less_vars['title_font'] = $item_title_font['family'];
+
+			if ( ! empty( $item_title_font['weight'] ) ) {
+				$less_vars['title_font_style'] = $item_title_font['style'];
+				$less_vars['title_font_weight'] = $item_title_font['weight_raw'];
+			}
+		}
+
 		return $less_vars;
 	}
 
