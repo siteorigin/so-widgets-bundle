@@ -23,6 +23,10 @@
 @item_title_font_size: 15px;
 @item_title_color: #474747;
 
+@title_font: default;
+@title_font_style: default;
+@title_font_weight: 500;
+
 .sow-carousel-title {
 
 	.sow-carousel-navigation-hidden {
@@ -103,8 +107,10 @@
 			}
 
 			@{item_title_tag}.sow-carousel-item-title {
+				font-family: @title_font;
 				font-size: @item_title_font_size;
-				font-weight: 500;
+				font-style: @title_font_style;
+				font-weight: @title_font_weight;
 				margin: 10px 0 0 0;
 				text-align: center;
 
