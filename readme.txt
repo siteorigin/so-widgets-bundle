@@ -109,6 +109,20 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.64.0 - 24 November 2024 =
+* Anchor ID: Improved ID handling to better support special characters and international text.
+* Author Box: Added Author Name HTML Tag setting.
+* Button Grid: Renamed setting `Buttons Per Line` to `Buttons Per Row`.
+* Carousels: Resolved minor Block Editor display issues.
+* Post Carousel: Added Post Title Font setting.
+* Simple Masonry: Improved loading.
+* Widget Block: Various admin form styling fixes and improvements.
+* Fixed `load_textdomain` notice.
+* Improved admin font field performance.
+* Updated Google Fonts list.
+* Updated Font Awesome from 6.6.0 to 6.7.0.
+* Updated Tested up to tag.
+
 = 1.63.4 - 23 October 2024 =
 * Image Grid: Ensured the image link always covers the image.
 * Simple Masonry: Removed removed transition to improve CLS.
