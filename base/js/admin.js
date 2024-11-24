@@ -4,6 +4,42 @@ var sowbForms = window.sowbForms || {};
 
 (function ($) {
 
+	let fontList = '';
+	for (const [ value, label ] of Object.entries( soWidgets.fonts ) ) {
+		fontList += '<option value="' + value + '">' + label + '</option>';
+	}
+
+	/**
+	 * Set up font fields when the section is hovered.
+	 *
+	 * This function finds all font fields within the section and appends the font list to each font field.
+	 * It also sets the selected font if a font is already selected.
+	 */
+	const setupFontFieldsOnHover = () => {
+		const $fields = $( this ).find( '> .siteorigin-widget-section > .siteorigin-widget-field-font .siteorigin-widget-input' );
+
+		$fields.each( function() {
+			setupFontField( $( this ) );
+		} );
+	}
+
+	/**
+	 * Set up a single font field.
+	 *
+	 * This function appends the font list to the given font field and sets the selected font if a font is already selected.
+	 *
+	 * @param {jQuery} $fontSelect - The jQuery object representing the font select element.
+ 	*/
+	const setupFontField = ( $fontSelect ) => {
+		$fontSelect.append( fontList );
+
+		// Set selected font.
+		var selectedFont = $fontSelect.data( 'selected' );
+		if ( selectedFont ) {
+			$fontSelect.val( selectedFont );
+		}
+	}
+
 	$.fn.sowSetupForm = function () {
 
 		return $(this).each(function (i, el) {
@@ -260,10 +296,43 @@ var sowbForms = window.sowbForms || {};
 			// Setup all the repeaters
 			$fields.find('> .siteorigin-widget-field-repeater').sowSetupRepeater();
 
-			// For any repeater items currently in existence
+			// For any repeater items currently in existence.
 			$el.find('.siteorigin-widget-field-repeater-item').sowSetupRepeaterItems();
 
-			// Set up any color fields
+			// Set up any font fields.
+			if (
+				$fields.find( '> .siteorigin-widget-font-selector' ).length &&
+				fontList
+			) {
+				const $fontSelect = $fields.find( '> .siteorigin-widget-font-selector select' );
+				$fontSelect.each( function() {
+					const sectionParent = $( this ).closest( '.siteorigin-widget-field-type-section' );
+
+					// If the font isn't in a section, set it up immediately.
+					if ( ! sectionParent.length ) {
+						setupFontField( $( this ) );
+						return;
+					}
+
+					// Is the section visible? If so, set it up after 200ms.
+					if ( sectionParent.find( '> .siteorigin-widget-section-visible' ) ) {
+						setTimeout( () => {
+							setupFontField( $( this ) );
+						}, 200 );
+						return;
+					}
+
+					// If this section has already had its event setup, skip it.
+					if ( sectionParent.data( 'font-setup' ) ) {
+						return;
+					}
+
+					sectionParent.data( 'font-setup', true );
+					sectionParent.one( 'mouseover', setupFontFieldsOnHover );
+				} );
+			}
+
+			// Set up any color fields.
 			$fields.find( '> .siteorigin-widget-input-color' ).each( function() {
 				var $colorField = $( this );
 				var colorResult = ''

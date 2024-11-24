@@ -1,5 +1,19 @@
 == Changelog ==
 
+= 1.64.0 - 24 November 2024 =
+* Anchor ID: Improved ID handling to better support special characters and international text.
+* Author Box: Added Author Name HTML Tag setting.
+* Button Grid: Renamed setting `Buttons Per Line` to `Buttons Per Row`.
+* Carousels: Resolved minor Block Editor display issues.
+* Post Carousel: Added Post Title Font setting.
+* Simple Masonry: Improved loading.
+* Widget Block: Various admin form styling fixes and improvements.
+* Fixed `load_textdomain` notice.
+* Improved admin font field performance.
+* Updated Google Fonts list.
+* Updated Font Awesome from 6.6.0 to 6.7.0.
+* Updated Tested up to tag.
+
 = 1.63.0 - 11 August 2024 =
 * Button Grid: Update to ensure the Grid Widget doesn't override the settings of unrelated Button Widgets.
 * Blog Offset: Increased the author avatar image width.

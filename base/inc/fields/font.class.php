@@ -4,6 +4,7 @@
  * Class SiteOrigin_Widget_Field_Font
  */
 class SiteOrigin_Widget_Field_Font extends SiteOrigin_Widget_Field_Base {
+
 	protected function render_field( $value, $instance ) {
 		static $widget_font_families;
 
@@ -12,11 +13,12 @@ class SiteOrigin_Widget_Field_Font extends SiteOrigin_Widget_Field_Base {
 		}
 		?>
 		<div class="siteorigin-widget-font-selector siteorigin-widget-field-subcontainer">
-			<select name="<?php echo esc_attr( $this->element_name ); ?>" id="<?php echo esc_attr( $this->element_id ); ?>" class="siteorigin-widget-input">
+			<select
+				name="<?php echo esc_attr( $this->element_name ); ?>"
+				id="<?php echo esc_attr( $this->element_id ); ?>" class="siteorigin-widget-input"
+				data-selected="<?php echo esc_attr( $value ); ?>"
+			>
 				<option value="default" selected="selected"><?php esc_html_e( 'Use theme font', 'so-widgets-bundle' ); ?></option>
-				<?php foreach ( $widget_font_families as $key => $val ) { ?>
-					<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $key, $value ); ?>><?php echo esc_html( $val ); ?></option>
-				<?php } ?>
 			</select>
 		</div>
 		<?php
@@ -28,6 +30,7 @@ class SiteOrigin_Widget_Field_Font extends SiteOrigin_Widget_Field_Base {
 		}
 
 		$sanitized_value = trim( $value );
+
 		// Any alphanumeric character followed by alphanumeric or whitespace characters (except newline),
 		// with optional colon followed by optional variant.
 		if ( preg_match( '/[\w\d]+[\w\d\t\r ]*(:\w+)?/', $sanitized_value, $sanitized_matches ) ) {
@@ -41,9 +44,12 @@ class SiteOrigin_Widget_Field_Font extends SiteOrigin_Widget_Field_Base {
 		if ( empty( $widget_font_families ) ) {
 			$widget_font_families = siteorigin_widgets_font_families();
 		}
-		$keys = array_keys( $widget_font_families );
 
-		if ( ! in_array( $sanitized_value, $keys ) ) {
+		// If selected font isn't set to default, ensure the font is valid.
+		if (
+			$sanitized_value !== 'default' &&
+			! isset( $widget_font_families[ $sanitized_value ] )
+		) {
 			$sanitized_value = isset( $this->default ) ? $this->default : 'default';
 		}
 

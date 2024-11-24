@@ -167,6 +167,20 @@ class SiteOrigin_Widget_Author_Box_Widget extends SiteOrigin_Widget {
 						'label' => __( 'Author Name', 'so-widgets-bundle' ),
 						'hide' => true,
 						'fields' => array(
+							'tag' => array(
+								'type' => 'select',
+								'label' => __( 'HTML Tag', 'so-widgets-bundle' ),
+								'default' => 'h4',
+								'options' => array(
+									'h1' => __( 'H1', 'so-widgets-bundle' ),
+									'h2' => __( 'H2', 'so-widgets-bundle' ),
+									'h3' => __( 'H3', 'so-widgets-bundle' ),
+									'h4' => __( 'H4', 'so-widgets-bundle' ),
+									'h5' => __( 'H5', 'so-widgets-bundle' ),
+									'h6' => __( 'H6', 'so-widgets-bundle' ),
+									'p' => __( 'Paragraph', 'so-widgets-bundle' ),
+								),
+							),
 							'font' => array(
 								'type' => 'font',
 								'label' => __( 'Font', 'so-widgets-bundle' ),
@@ -265,7 +279,13 @@ class SiteOrigin_Widget_Author_Box_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_template_variables( $instance, $args ) {
+		$title_tag = siteorigin_widget_valid_tag(
+			$instance['design']['name']['tag'] ?? '',
+			'h4'
+		);
+
 		return array(
+			'title_tag' => $title_tag,
 			'responsive_breakpoint' => $this->get_global_settings( 'responsive_breakpoint' ),
 			'show_avatar' => ! empty( $instance['settings']['avatar'] ),
 			'link_avatar' => ! empty( $instance['settings']['link_avatar'] ),

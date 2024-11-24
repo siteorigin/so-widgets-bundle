@@ -59,7 +59,7 @@ class SiteOrigin_Widgets_Bundle {
 		add_action( 'wp_ajax_so_widgets_setting_save', array( $this, 'admin_ajax_settings_save' ) );
 
 		// Initialize the widgets, but do it fairly late.
-		add_action( 'plugins_loaded', array( $this, 'set_plugin_textdomain' ), 1 );
+		add_action( 'init', array( $this, 'set_plugin_textdomain' ), 10, 0 );
 		add_action( 'after_setup_theme', array( $this, 'get_widget_folders' ), 11 );
 		add_action( 'after_setup_theme', array( $this, 'load_widget_plugins' ), 11 );
 
@@ -700,6 +700,7 @@ class SiteOrigin_Widgets_Bundle {
 			'WidgetURI' => 'Widget URI',
 			'VideoURI' => 'Video URI',
 			'Documentation' => 'Documentation',
+			'HideActivate' => 'Hide Activate',
 		);
 
 		$widgets = array();
@@ -724,6 +725,7 @@ class SiteOrigin_Widgets_Bundle {
 				$widget['ID'] = $id;
 				$widget['Active'] = ! empty( $active[ $id ] );
 				$widget['File'] = $file;
+				$widget['HideActivate'] = ! empty( $widget['HideActivate'] );
 
 				$widgets[ $file ] = $widget;
 			}
@@ -1040,6 +1042,14 @@ class SiteOrigin_Widgets_Bundle {
 // Create the initial single.
 SiteOrigin_Widgets_Bundle::single();
 
-// Initialize the Meta Box Manager.
-global $sow_meta_box_manager;
-$sow_meta_box_manager = SiteOrigin_Widget_Meta_Box_Manager::single();
+// Initialize the Meta Box Manager. This is required to prevent a WP 6.7 notice.
+$sow_meta_box_manager = null;
+function siteorigin_widgets_load_meta_box_manager() {
+	global $sow_meta_box_manager;
+
+	// Confirm we haven't already set up the Meta Box Manager.
+	if ( ! is_a( $sow_meta_box_manager, 'SiteOrigin_Widget_Meta_Box_Manager' ) ) {
+		$sow_meta_box_manager = SiteOrigin_Widget_Meta_Box_Manager::single();
+	}
+}
+add_action( 'init', 'siteorigin_widgets_load_meta_box_manager' );

@@ -170,6 +170,16 @@ div.siteorigin-widget-form {
 		.select2 {
 			width: 100% !important;
 
+			.select2-selection__choice__remove {
+				height: 100%;
+
+				span {
+					display: inline-block;
+					margin-top: 8px;
+					transform: translateY(-50%);
+				}
+			}
+
 			.select2-selection--multiple {
 				align-items: center;
 				background-color: #fff;
@@ -945,18 +955,6 @@ div.siteorigin-widget-form {
 
 }
 
-/* Icons */
-.widget-icon.so-widget-icon {
-	background-size: cover;
-	background-image: url("img/bundle-icon.png");
-
-	&.so-block-editor-icon {
-		width: 20px;
-		height: 20px;
-		display: inline-block;
-	}
-}
-
 // WP 5 Block Editor compatibility styles
 .block-editor,
 .block-editor-page {
@@ -1117,5 +1115,17 @@ div.siteorigin-widget-form {
 		a.siteorigin-widget-preview-button.button-secondary {
 			line-height: 2.15384615;
 		}
+	}
+}
+
+// SiteOrigin Widget Icon.
+.widget-icon.so-widget-icon {
+	background-image: url('img/bundle-icon.png');
+	background-size: cover;
+
+	&.so-block-editor-icon {
+		background-size: contain;
+		height: 100%;
+		width: 40px;
 	}
 }

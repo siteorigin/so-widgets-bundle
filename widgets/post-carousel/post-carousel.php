@@ -138,6 +138,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			$this->register_theme_assets();
 		} else {
 			add_action( 'wp_enqueue_scripts', array( $this, 'register_theme_assets' ) );
+			add_action( 'enqueue_block_assets', array( $this, 'register_theme_assets' ) );
 		}
 	}
 
@@ -174,14 +175,17 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 	public function register_theme_assets() {
 		wp_register_style( 'sow-post-carousel-base', plugin_dir_url( __FILE__ ) . 'css/base.css' );
 		do_action( 'siteorigin_widgets_post_carousel_theme_assets' );
+
+		if ( $this->is_block_editor_page() ) {
+			wp_enqueue_style( 'sow-post-carousel-base' );
+		}
 	}
 
 	public function get_style_name( $instance ) {
 		$theme = self::get_theme( $instance );
-		// If this theme has a dedicated stylesheet load it.
-		if ( wp_style_is( 'sow-post-carousel-' . $theme, 'registered' ) ) {
-			wp_enqueue_style( 'sow-post-carousel-' . $theme );
-		}
+
+		// Try to load carousel theme stylesheet.
+		wp_enqueue_style( 'sow-post-carousel-' . $theme );
 
 		return $theme;
 	}
@@ -383,6 +387,19 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			'item_title_color' => ! empty( $instance['design']['item_title']['color'] ) ? $instance['design']['item_title']['color'] : '',
 		);
 		$less_vars = $this->responsive_less_variables( $less_vars, $instance );
+
+		if (
+			! empty( $instance['design']['item_title'] ) &&
+			! empty( $instance['design']['item_title']['font'] )
+		) {
+			$item_title_font = siteorigin_widget_get_font( $instance['design']['item_title']['font'] );
+			$less_vars['title_font'] = $item_title_font['family'];
+
+			if ( ! empty( $item_title_font['weight'] ) ) {
+				$less_vars['title_font_style'] = $item_title_font['style'];
+				$less_vars['title_font_weight'] = $item_title_font['weight_raw'];
+			}
+		}
 
 		return $less_vars;
 	}
