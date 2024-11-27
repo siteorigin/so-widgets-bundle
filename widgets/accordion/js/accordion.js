@@ -52,6 +52,7 @@ jQuery( function ( $ ) {
 								scrollToPanel( $panel, true );
 							}
 							$( this ).trigger( 'show' );
+							$( window ).trigger( 'panelsStretchRows' );
 						}
 					});
 					$panel.find(  '> .sow-accordion-panel-header-container > .sow-accordion-panel-header' ).attr( 'aria-expanded', true );

@@ -91,6 +91,8 @@ jQuery( function ( $ ) {
 									if ( preventHashChange || shouldScroll( $tab ) ) {
 										scrollToTab( true );
 									}
+
+									$( window ).trigger( 'panelsStretchRows' );
 								}
 							});
 						}
