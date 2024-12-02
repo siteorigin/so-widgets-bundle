@@ -63,80 +63,100 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$so_widgets = array();
 		// Add data for any inactive widgets.
 		foreach ( $widgets_metadata_list as $widget ) {
-			if ( ! $widget['Active'] ) {
-				include_once wp_normalize_path( $widget['File'] );
-				// The last class will always be from the widget file we just loaded.
-				$classes = get_declared_classes();
-				$widget_class = end( $classes );
-
-				// Append author's name to third-party widget names, if not already
-				// present, to help distinguish widgets with similar names.
-				if (
-					! empty( $widget['Author'] ) &&
-					$widget['Author'] != 'SiteOrigin' &&
-					strpos( $widget['Name'], $widget['Author'] ) === false
-				) {
-					$widget_name = sprintf( __( '%s by %s', 'so-widgets-bundle' ), $widget['Name'], $widget['Author'] );
-				} else {
-					$widget_name = $widget['Name'];
-				}
-
-				$so_widgets[] = array(
-					'name' => esc_html( $widget_name ),
-					'class' => esc_html( $widget_class ),
-				);
+			if ( $widget['Active'] ) {
+				continue;
 			}
+
+			include_once wp_normalize_path( $widget['File'] );
+
+			// The last class will always be from the widget file we just loaded.
+			$classes = get_declared_classes();
+			$widget_class = end( $classes );
+
+			// Append author's name to third-party widget names, if not already
+			// present, to help distinguish widgets with similar names.
+			if (
+				! empty( $widget['Author'] ) &&
+				$widget['Author'] != 'SiteOrigin' &&
+				strpos( $widget['Name'], $widget['Author'] ) === false
+			) {
+				$widget_name = sprintf( __( '%s by %s', 'so-widgets-bundle' ), $widget['Name'], $widget['Author'] );
+			} else {
+				$widget_name = $widget['Name'];
+			}
+
+			$so_widgets[] = array(
+				'name' => esc_html( $widget_name ),
+				'class' => esc_html( $widget_class ),
+				'description' => esc_html( $widget['Description'] ),
+			);
 		}
 
 		global $wp_widget_factory;
 		$third_party_widgets = array();
 
 		foreach ( $wp_widget_factory->widgets as $class => $widget_obj ) {
-			if ( ! empty( $widget_obj ) && is_object( $widget_obj ) && is_subclass_of( $widget_obj, 'SiteOrigin_Widget' ) ) {
-				/** @var SiteOrigin_Widget $widget_obj */
-				$author = '';
-				// Try to find a widget's author from its file metadata, by matching the filename to the ID (which is derived from the filename).
-				foreach ( $widgets_metadata_list as $widget_metadata ) {
-					if ( $widgets_manager->get_class_from_path( wp_normalize_path( $widget_metadata['File'] ) ) == $class ) {
-						$author = $widget_metadata['Author'];
-						if ( ! empty( $widget_metadata['Description'] ) ) {
-							$description = $widget_metadata['Description'];
-						}
+			if (
+				empty( $widget_obj ) ||
+				! is_object( $widget_obj ) ||
+				! is_subclass_of( $widget_obj, 'SiteOrigin_Widget' )
+			) {
+				continue;
+			}
 
-						if ( ! empty( $widget_metadata['Keywords'] ) ) {
-							$keywords = $widget_metadata['Keywords'];
-						}
+			$is_so_widget = false;
 
-						break;
+			/** @var SiteOrigin_Widget $widget_obj */
+			$author = '';
+			// Try to find a widget's author from its file metadata, by matching the filename to the ID (which is derived from the filename).
+			foreach ( $widgets_metadata_list as $widget_metadata ) {
+				if ( $widgets_manager->get_class_from_path( wp_normalize_path( $widget_metadata['File'] ) ) == $class ) {
+					$author = $widget_metadata['Author'];
+					if ( ! empty( $widget_metadata['Description'] ) ) {
+						$description = $widget_metadata['Description'];
 					}
+
+					if ( ! empty( $widget_metadata['Keywords'] ) ) {
+						$keywords = $widget_metadata['Keywords'];
+					}
+
+					break;
 				}
+			}
 
-				// Ensure every widget has a description.
-				if ( empty( $description ) ) {
-					$description = __( 'No description available.', 'so-widgets-bundle' );
-				}
+			// Ensure every widget has a description.
+			if ( empty( $description ) ) {
+				$description = __( 'No description available.', 'so-widgets-bundle' );
+			}
 
-				$block_name = strtolower( str_replace( '_', '-', $class ) );
+			$block_name = strtolower( str_replace( '_', '-', $class ) );
 
-				// For SiteOrigin authored widgets, display the widget's name directly. For third-party widgets, append the author's name to the widget name to avoid confusion when multiple widgets have the same name.
-				if (
-					preg_match( '/^SiteOrigin /', $widget_obj->name ) == 1 &&
-					$author == 'SiteOrigin'
-				) {
-					$widget_name = $widget_obj->name;
-				} else {
-					$widget_name = sprintf( __( '%s by %s', 'so-widgets-bundle' ), $widget_obj->name, $author );
-				}
+			// For SiteOrigin authored widgets, display the widget's name directly. For third-party widgets, append the author's name to the widget name to avoid confusion when multiple widgets have the same name.
+			if (
+				preg_match( '/^SiteOrigin /', $widget_obj->name ) == 1 &&
+				$author == 'SiteOrigin'
+			) {
+				$widget_name = $widget_obj->name;
+				$is_so_widget = true;
+			} else {
+				$widget_name = sprintf( __( '%s by %s', 'so-widgets-bundle' ), $widget_obj->name, $author );
+			}
 
-				$so_widgets[] = array(
-					'name' => esc_html( $widget_name ),
-					'class' => esc_html( $class ),
-					'description' => esc_html( $description ),
-					'blockName' => esc_html( $block_name ),
-					'keywords' => ! empty( $keywords ) ? $keywords : array(),
-				);
+			$widget_data = array(
+				'name' => esc_html( $widget_name ),
+				'class' => esc_html( $class ),
+				'description' => esc_html( $description ),
+				'blockName' => esc_html( $block_name ),
+				'keywords' => ! empty( $keywords ) ? $keywords : array(),
+			);
+
+			if ( $is_so_widget ) {
+				$so_widgets[] = $widget_data;
+			} else {
+				$third_party_widgets[] = $widget_data;
 			}
 		}
+
 		// Sort the list of widgets so SiteOrigin widgets are at the top and then third party widgets.
 		sort( $so_widgets );
 		sort( $third_party_widgets );
