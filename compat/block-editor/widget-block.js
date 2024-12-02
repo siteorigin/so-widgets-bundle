@@ -3,14 +3,15 @@
 	var el = element.createElement;
 	var registerBlockType = blocks.registerBlockType;
 	var BlockControls = blockEditor.BlockControls;
-	var withState = compose.withState;
+	const { Component, useMemo } = element;
+
 	var Toolbar = components.Toolbar;
 	var ToolbarButton = components.ToolbarButton;
 	var Placeholder = components.Placeholder;
 	var Spinner = components.Spinner;
 	var __ = i18n.__;
 
-	var getAjaxErrorMsg = function( response ) {
+	const getAjaxErrorMsg = ( response ) => {
 		var errorMessage = '';
 		if ( response.hasOwnProperty( 'responseJSON' ) ) {
 			errorMessage = response.responseJSON.message;
@@ -20,14 +21,32 @@
 		return errorMessage;
 	}
 
-	var sowPreviewRequest = false;
-	function sowbGenerateWidgetPreview( props, widgetData = false, widgetClass = false ) {
-		if ( sowPreviewRequest ) {
+	/**
+	 * Generate a widget preview.
+	 *
+	 * This function generates a preview for the widget by making
+	 * an AJAX request to the server. It sets the loading state,
+	 * sends the request, and updates the state with the preview
+	 * HTML or an error message based on the response.
+	 *
+	 * @param {Object} props - The properties passed to the function.
+	 * @param {boolean} loadingWidgetPreview - Indicates if the widget preview is currently loading.
+	 * @param {Function} setState - The setState function to update the component's state.
+	 * @param {Object} [widgetData=false] - The data for the widget. Defaults to false.
+	 * @param {string} [widgetClass=false] - The class of the widget. Defaults to false.
+	 *
+	 * @returns {void}
+	 */
+	const sowbGenerateWidgetPreview = ( props, loadingWidgetPreview, setState, widgetData = false, widgetClass = false ) => {
+		if ( loadingWidgetPreview ) {
 			return;
 		}
-		props.setState( { loadingWidgetPreview: true } );
-		sowPreviewRequest = true;
-		setTimeout( () => sowPreviewRequest = false, 1000 )
+
+		setState( {
+			loadingWidgetPreview: true,
+			widgetPreviewHtml: null,
+		} );
+
 		const canLockPostSaving = typeof wp.data.select( 'core/editor' ) == 'object' &&
 			typeof wp.data.dispatch( 'core/editor' ) == 'object';
 
@@ -37,7 +56,7 @@
 
 		jQuery.post( {
 			url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/previews',
-			beforeSend: function( xhr ) {
+			beforeSend: ( xhr ) => {
 				xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
 			},
 			data: {
@@ -46,8 +65,8 @@
 				widgetData: widgetData ? widgetData : props.attributes.widgetData || {}
 			}
 		} )
-		.done( function( widgetPreview ) {
-			props.setState( {
+		.done( ( widgetPreview ) => {
+			setState( {
 				widgetPreviewHtml: widgetPreview.html,
 				previewInitialized: false,
 			} );
@@ -61,24 +80,61 @@
 				wp.data.dispatch( 'core/editor' ).unlockPostSaving();
 			}
 		} )
-		.fail( function( response ) {
-			props.setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>', } );
+		.fail( ( response ) => {
+			setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
 		} )
-		.always( function() {
-			props.setState( { loadingWidgetPreview: false } );
+		.always( () => {
+			setState( { loadingWidgetPreview: false } );
 		} );
 	}
 
-	function sowbSetupWidgetForm( props, widgetClass ) {
-		var $mainForm = jQuery( '[data-block="' + props.clientId + '"]' ).find( '.siteorigin-widget-form-main' );
-		if ( $mainForm.length > 0 && ! props.formInitialized ) {
+	/**
+	 * Memoized component for WidgetBlockEdit.
+	 *
+	 * This function memoizes the WidgetBlockEdit component to
+	 * prevent unnecessary re-renders. It uses the useMemo hook to
+	 * only re-render the component when the props or widget change.
+	 *
+	 * @param {Object} params - The parameters passed to the function.
+	 * @param {Object} params.props - The properties passed to the WidgetBlockEdit component.
+	 * @param {Object} params.widget - The widget data passed to the WidgetBlockEdit component.
+	 *
+	 * @returns {Object} The memoized WidgetBlockEdit component.
+	 */
+	const memoizedWidgetBlockEdit = ({ props, widget }) => {
+		return useMemo( () =>
+			el(
+				WidgetBlockEdit,
+				{ ...props, widget }
+			),
+			[ props, widget ]
+		);
+	};
+
+	/**
+	 * Set up the widget form.
+	 *
+	 * This function sets up the widget form by initializing the
+	 * form, setting widget data, and handles triggering
+	 * componentDidUpdate. It ensures that the form is only set up
+	 * once and prevents unnecessary re-renders.
+	 *
+	 * @param {Object} props - The properties passed to the function.
+	 * @param {Object} state - The current state of the component.
+	 * @param {Function} setState - The setState function to update the component's state.
+	 */
+	const sowbSetupWidgetForm = ( props, state, setState ) => {
+		const $mainForm = jQuery( '[data-block="' + props.clientId + '"]' ).find( '.siteorigin-widget-form-main' );
+
+		if ( $mainForm.length > 0 && ! state.formInitialized ) {
 			var $previewContainer = $mainForm.siblings( '.siteorigin-widget-preview' );
 			$previewContainer.find( '> a' ).on( 'click', function( event ) {
 				event.stopImmediatePropagation();
-				props.setState( { editing: false, previewInitialized: false } );
+				setState( { editing: false, previewInitialized: false } );
 			} );
 			$mainForm.data( 'backupDisabled', true );
 			$mainForm.sowSetupForm();
+
 			if ( props.attributes.widgetData ) {
 				// If we call `setWidgetFormValues` with the last parameter ( `triggerChange` ) set to false,
 				// it won't show the correct values for some fields e.g. color and media fields.
@@ -86,22 +142,266 @@
 			} else {
 				props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
 			}
-			$mainForm.on( 'change', function() {
-				props.setState( {
+
+			$mainForm.on( 'change', () => {
+				// As setAttributes doesn't support callbacks, we have to manually pass the widgetData to the preview.
+				var widgetData = sowbForms.getWidgetFormValues( $mainForm );
+				props.setAttributes( { widgetData: widgetData } );
+			} );
+			setState( { formInitialized: true } );
+		}
+	}
+
+	/**
+	 * WidgetBlockEdit component.
+	 *
+	 * This component handles the editing and previewing of SiteOrigin
+	 * Widget Blocks. It manages:
+	 * - the state of the widget form.
+	 * - the state of the widget preview.
+	 * - the initialization and loading of the widget form and preview.
+	 *
+	 */
+	class WidgetBlockEdit extends Component {
+		
+		constructor( props ) {
+			super( props );
+
+			this.initialState = {
+				editing: false,
+				formInitialized: false,
+				loadingForm: false,
+				loadingWidgetPreview: false,
+				previewInitialized: false,
+				widgetFormHtml: '',
+				widgetPreviewHtml: '',
+				widgetSettingsChanged: false,
+			};
+
+			this.state = {
+				... this.initialState,
+				isStillMounted: true
+			};
+		}
+
+		componentDidMount() {
+			this.setState( {
+				isStillMounted: true
+			} );
+
+			this.loadWidgetData();
+		}
+
+		componentWillUnmount() {
+			this.setState( {
+				...this.initialState,
+				isStillMounted: false
+			} );
+		}
+
+		componentDidUpdate( prevProps, prevState ) {
+			if ( ! this.state.isStillMounted ) {
+				return;
+			}
+
+			if (
+				this.state.editing !== prevState.editing ||
+				this.props.attributes.widgetData !== prevProps.attributes.widgetData
+			) {
+				// If there's been an update, clear the preview.
+				this.setState( {
 					widgetSettingsChanged: true,
 					widgetPreviewHtml: null,
 					previewInitialized: false
 				} );
 
-				// As setAttributes doesn't support callbacks, we have to manually pass the widgetData to the preview.
-				var widgetData = sowbForms.getWidgetFormValues( $mainForm );
-				props.setAttributes( { widgetData: widgetData } );
-				sowbGenerateWidgetPreview( props, widgetData, widgetClass );
-			} );
-			props.setState( { formInitialized: true } );
+				this.loadWidgetData();
+			}
+		}
+
+		loadWidgetData() {
+			if ( ! this.state.isStillMounted ) {
+				return;
+			}
+
+			const { editing, widgetFormHtml, loadingForm } = this.state;
+			const { attributes } = this.props;
+
+			if (
+				editing ||
+				! attributes.widgetData
+			) {
+				const loadWidgetForm = ! widgetFormHtml.length;
+
+				if ( loadWidgetForm && ! loadingForm ) {
+					this.setState( { loadingForm: true });
+					jQuery.post( {
+						url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/forms',
+						beforeSend: (xhr) => {
+							xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
+						},
+						data: {
+							widgetClass: this.props.widget.class,
+							widgetData: attributes.widgetData,
+						}
+					} )
+					.done( ( widgetForm ) => {
+						this.setState( {
+							widgetFormHtml: widgetForm,
+							loadingForm: false
+						} );
+					} )
+					.fail( ( response) => {
+						this.setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
+					} );
+				}
+			}
+
+			// Regardless of whether we're editing or not, update the
+			// widget preview if the widget settings have changed.
+			const loadWidgetPreview = ! this.props.loadingWidgets &&
+				! this.state.widgetPreviewHtml &&
+				attributes.widgetData &&
+				! this.state.loadingWidgetPreview;
+
+			if ( loadWidgetPreview ) {
+				this.props.setAttributes( {
+					widgetMarkup: null,
+					widgetIcons: null
+				} );
+
+				sowbGenerateWidgetPreview(
+					this.props,
+					this.state.loadingWidgetPreview,
+					this.setState.bind( this ),
+					false,
+					this.props.widget.class
+				);
+			}
+		}
+
+		render() {
+			const { editing, widgetFormHtml, loadingForm, widgetPreviewHtml, loadingWidgetPreview, previewInitialized } = this.state;
+			const { attributes } = this.props;
+
+			return el(
+				'div',
+				null,
+				editing || ! attributes.widgetData ? [
+					!! widgetFormHtml && el(
+						BlockControls,
+						{ key: 'controls' },
+						el(
+							Toolbar,
+							{ label: __( 'Preview widget.' + editing, 'so-widgets-bundle' ) },
+							el(
+								ToolbarButton,
+								{
+									className: 'components-icon-button components-toolbar__control',
+									label: __( 'Preview widget.', 'so-widgets-bundle' ),
+									onClick: () => this.setState( {
+										editing: false,
+									} ),
+									icon: 'visibility'
+								}
+							)
+						)
+					),
+					el(
+						Placeholder,
+						{
+							key: 'placeholder',
+							className: 'so-widget-placeholder',
+							label: this.props.widget.name,
+							instructions: this.props.widget.description
+						},
+						loadingForm ?
+						el( 'div',
+							{
+								className: 'so-widgets-spinner-container'
+							},
+							el(
+								'span',
+								null,
+								el( Spinner )
+							)
+						) :
+						el( 'div', {
+							className: 'so-widget-block-container',
+							dangerouslySetInnerHTML: { __html: widgetFormHtml },
+							ref: () => sowbSetupWidgetForm(
+								this.props,
+								this.state,
+								this.setState.bind( this ),
+								this.props.widget.class
+							)
+						} )
+					)
+				] : [
+					el(
+						BlockControls,
+						{ key: 'controls' },
+						el(
+							Toolbar,
+							{ label: __( 'Edit widget.', 'so-widgets-bundle' ) },
+							el(
+								ToolbarButton,
+								{
+									className: 'components-icon-button components-toolbar__control',
+									label: __( 'Edit widget.', 'so-widgets-bundle' ),
+									onClick: () => this.setState( {
+										editing: true,
+										loadingForm: false,
+										widgetFormHtml: '',
+										formInitialized: false,
+									} ),
+									icon: 'edit'
+								}
+							)
+						)
+					),
+					el(
+						'div',
+						{
+							key: 'preview',
+							className: 'so-widget-preview-container'
+						},
+						loadingWidgetPreview ?
+						el( 'div',
+							{ className: 'so-widgets-spinner-container' },
+							el(
+								'span',
+								null,
+								el( Spinner )
+							)
+						) :
+						el( 'div', {
+							dangerouslySetInnerHTML: {
+								__html: widgetPreviewHtml
+							},
+							ref: () => {
+								if ( ! previewInitialized ) {
+									jQuery( window.sowb ).trigger( 'setup_widgets', { preview: true } );
+									this.setState( { previewInitialized: true } );
+								}
+							}
+						} )
+					)
+				]
+			);
 		}
 	}
 
+	/**
+	 * Register a SiteOrigin Widget Block.
+	 *
+	 * @param {Object} widget - The widget configuration object.
+	 * @param {string} widget.class - The class of the widget.
+	 * @param {string} widget.blockName - The block name.
+	 * @param {string} widget.name - The display name of the widget.
+	 * @param {string} widget.description - The description of the widget.
+	 * @param {Array} [widget.keywords] - An array of keywords for the widget.
+	 */
 	const setupSoWidgetBlock = function( widget ) {
 		registerBlockType( 'sowb/' + widget.blockName, {
 			title: __( widget.name, 'so-widgets-bundle' ),
@@ -137,173 +437,15 @@
 					type: 'array',
 				},
 			},
-			edit: withState( {
-				editing: false,
-				formInitialized: false,
-				previewInitialized: false,
-				widgetFormHtml: '',
-				widgetSettingsChanged: false,
-				widgetPreviewHtml: '',
-				loadingWidgetPreview: false,
-				loadingForm: false,
-			} )( function( props ) {
-				if ( props.editing || ! props.attributes.widgetData ) {
-					var loadWidgetForm = ! props.widgetFormHtml.length;
-					if ( loadWidgetForm && ! props.loadingForm ) {
-						props.setState( { loadingForm: true } );
-						jQuery.post( {
-							url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/forms',
-							beforeSend: function( xhr ) {
-								xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
-							},
-							data: {
-								widgetClass: widget.class,
-								widgetData: props.attributes.widgetData,
-							}
-						} )
-						.done( function( widgetForm ) {
-							props.setState( { widgetFormHtml: widgetForm, loadingForm: false } );
-						} )
-						.fail( function( response ) {
-							props.setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>', } );
-						} );
-					}
-
-					var widgetForm = props.widgetFormHtml ? props.widgetFormHtml : '';
-
-					return [
-						!! widgetForm && el(
-							BlockControls,
-							{
-								key: 'controls',
-							},
-							el(
-								Toolbar,
-								{
-									label: __( 'Preview widget.', 'so-widgets-bundle' ),
-								},
-								el(
-									ToolbarButton,
-									{
-										className: 'components-icon-button components-toolbar__control',
-										label: __( 'Preview widget.', 'so-widgets-bundle' ),
-										onClick: ( () => props.setState( {
-											editing: false,
-											previewInitialized: false
-										} ) ),
-										icon: 'visibility'
-									}
-								)
-							)
-						),
-						el(
-							Placeholder,
-							{
-								key: 'placeholder',
-								className: 'so-widget-placeholder',
-								label: widget.name,
-								instructions: widget.description
-							},
-							( props.loadingWidgets || loadWidgetForm ?
-								el( 'div', {
-										className: 'so-widgets-spinner-container'
-									},
-									el(
-										'span',
-										null,
-										el( Spinner )
-									)
-								) :
-								el(
-									'div',
-									{ className: 'so-widget-block-container' },
-									el( 'div', {
-										className: 'so-widget-block-form-container',
-										dangerouslySetInnerHTML: { __html: widgetForm },
-										ref: ( () => sowbSetupWidgetForm( props, widget.class ) ),
-									} )
-								)
-							)
-						)
-					];
-				} else {
-					var loadWidgetPreview = ! props.loadingWidgets &&
-						! props.editing &&
-						! props.widgetPreviewHtml &&
-						props.attributes.widgetData &&
-						! props.loadingWidgetPreview;
-
-					if ( loadWidgetPreview ) {
-						props.setAttributes( {
-							widgetMarkup: null,
-							widgetIcons: null
-						} );
-						sowbGenerateWidgetPreview( props, false, widget.class );
-					}
-					var widgetPreview = props.widgetPreviewHtml ? props.widgetPreviewHtml : '';
-					return [
-						el(
-							BlockControls,
-							{ key: 'controls' },
-							el(
-								Toolbar,
-								{
-									label: __( 'Preview widget.', 'so-widgets-bundle' ),
-								},
-								el(
-									ToolbarButton,
-									{
-										className: 'components-icon-button components-toolbar__control',
-										label: __( 'Edit widget.', 'so-widgets-bundle' ),
-										onClick: ( () => props.setState( {
-											editing: true,
-											formInitialized: false
-										} ) ),
-										icon: 'edit'
-									}
-								)
-							)
-						),
-						el(
-							'div',
-							{
-								key: 'preview',
-								className: 'so-widget-preview-container'
-							},
-							( loadWidgetPreview ?
-								el( 'div', {
-										className: 'so-widgets-spinner-container'
-									},
-									el(
-										'span',
-										null,
-										el( Spinner )
-									)
-								) :
-								el( 'div', {
-									dangerouslySetInnerHTML: { __html: widgetPreview },
-									ref: ( () => {
-										if ( ! props.previewInitialized ) {
-											jQuery( window.sowb ).trigger( 'setup_widgets', { preview: true } );
-											props.setState( { previewInitialized: true } );
-										}
-									} ),
-								} )
-							)
-						)
-					];
-				}
-			} ),
-
+			edit: ( props ) => el( memoizedWidgetBlockEdit, { props, widget } ),
 			save: function( context ) {
-				return null;
-			}
+				return null; // This block is dynamic and rendered on the server.
+			},
 		} );
-	}
+	};
 
-	// Add all SiteOrigin Blocks.
+	// Register all SiteOrigin Blocks.
 	sowbBlockEditorAdmin.widgets.forEach( setupSoWidgetBlock );
-
 
 	// Register a stripped back version of our old block to allow for migration.
 	registerBlockType( 'sowb/widget-block', {
@@ -326,12 +468,20 @@
 				type: 'array',
 			},
 		},
+		icon: function() {
+			return el(
+				'span',
+				{
+					className: 'widget-icon so-widget-icon so-block-editor-icon'
+				}
+			)
+		},
 		edit: function () {
 			return null;
 		},
 		save: function () {
 			return null;
-		}
+		},
 	} );
 } )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.compose, window.wp.blockEditor );
 
