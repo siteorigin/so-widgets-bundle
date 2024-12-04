@@ -34,6 +34,41 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		) );
 	}
 
+	/**
+	 * Get the icon for a widget.
+	 *
+	 * This function retrieves the icon for a widget by checking if a banner.svg exists
+	 * in the widget's assets directory. If the file exists, it constructs the URL
+	 * to the icon.
+	 *
+	 * The icon URL can be filtered using the 'siteorigin_widgets_block_icon'
+	 * filter.
+	 *
+	 * @param string $widget_file - The full widget file path.
+	 *
+	 * @return string - The URL to the widget's icon.
+	 */
+	public static function get_widget_icon( $widget_file ) {
+		$icon = '';
+		$widget_dir = wp_normalize_path( dirname( $widget_file ) );
+
+		if ( file_exists( $widget_dir . '/assets/icon.svg' ) ) {
+			$icon = str_replace(
+				wp_normalize_path( WP_CONTENT_DIR ),
+				content_url(),
+				$widget_dir
+			) . '/assets/icon.svg';
+		}
+
+		$icon = apply_filters(
+			'siteorigin_widgets_block_icon',
+			$icon,
+			$widget_file
+		);
+
+		return $icon;
+	}
+
 	public function enqueue_widget_block_editor_assets() {
 		$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : false;
 		wp_enqueue_script(
@@ -89,6 +124,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				'name' => esc_html( $widget_name ),
 				'class' => esc_html( $widget_class ),
 				'description' => esc_html( $widget['Description'] ),
+				'icon' => esc_url( self::get_widget_icon( $widget['File'] ) ),
 			);
 		}
 
@@ -105,6 +141,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			}
 
 			$is_so_widget = false;
+			$file = '';
 
 			/** @var SiteOrigin_Widget $widget_obj */
 			$author = '';
@@ -119,6 +156,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					if ( ! empty( $widget_metadata['Keywords'] ) ) {
 						$keywords = $widget_metadata['Keywords'];
 					}
+
+					$file = $widget_metadata['File'];
 
 					break;
 				}
@@ -148,6 +187,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				'description' => esc_html( $description ),
 				'blockName' => esc_html( $block_name ),
 				'keywords' => ! empty( $keywords ) ? $keywords : array(),
+				'icon' => ! empty( $file ) ? esc_url( self::get_widget_icon( $file ) ) : '',
 			);
 
 			if ( $is_so_widget ) {

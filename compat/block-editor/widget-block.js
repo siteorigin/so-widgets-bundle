@@ -163,7 +163,7 @@
 	 *
 	 */
 	class WidgetBlockEdit extends Component {
-		
+
 		constructor( props ) {
 			super( props );
 
@@ -407,7 +407,16 @@
 			title: __( widget.name, 'so-widgets-bundle' ),
 			description: __( widget.description, 'so-widgets-bundle' ),
 			icon: function() {
-				return el(
+				return widget.icon ?
+				el(
+					'img',
+					{
+						className: 'widget-icon so-widget-icon so-block-editor-icon',
+						src: widget.icon,
+						alt: widget.name
+					}
+				)
+				: el(
 					'span',
 					{
 						className: 'widget-icon so-widget-icon so-block-editor-icon'
