@@ -55,8 +55,28 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 		}
 	}
 
-	protected function render_field( $value, $instance ) {
+	/**
+	 * Get the field name for the select element.
+	 *
+	 * This method returns the field name for the select element. If the current
+	 * context is inside of Page Builder, and the select element supports multiple
+	 * selections, '[]' is appended to the field name to indicate that it is an
+	 * array. Otherwise, the field name is returned as is.
+	 *
+	 * @return string The field name for the select element.
+	 */
+	private function get_select_field_name() {
+		if (
+			! empty( $this->multiple ) &&
+			filter_input( INPUT_POST, 'action' ) === 'so_panels_widget_form'
+		) {
+			return $this->element_name;
+		}
 
+		return $this->element_name . '[]';
+	}
+
+	protected function render_field( $value, $instance ) {
 		if (
 			! empty( $this->multiple ) &&
 			! empty( $this->select2 )
@@ -68,11 +88,7 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 		}
 		?>
 		<select
-			name="<?php echo esc_attr( $this->element_name );
-				if ( ! empty( $this->multiple ) ) {
-					echo '[]';
-				}
-			?>"
+			name="<?php echo esc_attr( $this->get_select_field_name() ); ?>"
 			id="<?php echo esc_attr( $this->element_id ); ?>"
 			class="siteorigin-widget-input siteorigin-widget-input-select<?php if ( ! empty( $this->input_css_classes ) ) {
 					echo ' ' . implode( ' ', $this->input_css_classes );
@@ -101,6 +117,7 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 
 	protected function sanitize_field_input( $value, $instance ) {
 		$values = is_array( $value ) ? $value : array( $value );
+
 		$keys = array_keys( $this->options );
 		$sanitized_value = array();
 
