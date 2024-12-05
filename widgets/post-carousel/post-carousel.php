@@ -441,7 +441,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 		$carousel_settings = $this->carousel_settings_template_variables( $instance['carousel_settings'], false );
 		$carousel_settings['autoplay_continuous_scroll'] = ! empty( $instance['carousel_settings']['autoplay_continuous_scroll'] ) ? $instance['carousel_settings']['autoplay_continuous_scroll'] : false;
-		// The base theme doesn't support dot noviation so let's remove it.
+		// The base theme doesn't support dot navigation so let's remove it.
 		if ( $theme == 'base' ) {
 			unset( $carousel_settings['dots'] );
 		}
