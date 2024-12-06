@@ -895,6 +895,26 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	/**
+	 * Get terms for a given taxonomy.
+	 *
+	 * This method retrieves the terms for a given taxonomy. If a post ID is provided,
+	 * it retrieves the terms associated with that post. Otherwise, it retrieves
+	 * all terms for the taxonomy.
+	 *
+	 * @param string $taxonomy - The taxonomy to retrieve terms for.
+	 * @param int $post_id - The post ID. Defaults to 0.
+	 *
+	 * @return array|WP_Error - The terms for the taxonomy or a WP_Error object.
+	 */
+	private static function get_terms_for_taxonomy( $term, $post_id = 0 ) {
+		if ( $post_id ) {
+			return get_the_terms( (int) $post_id, $term );
+		}
+
+		return get_terms( $term );
+	}
+
+	/**
 	 * Get the terms for the portfolio.
 	 *
 	 * This method retrieves the terms for the portfolio based on the instance
@@ -923,11 +943,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			post_type_exists( 'jetpack-portfolio' ) &&
 			$post_type === 'jetpack-portfolio'
 		) {
-			if ( $post_id ) {
-				$terms = get_the_terms( (int) $post_id, 'jetpack-portfolio-type' );
-			} else {
-				$terms = get_terms( 'jetpack-portfolio-type' );
-			}
+			$terms = self::get_terms_for_taxonomy( 'jetpack-portfolio-type', $post_id );
 
 			if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
 				return $terms;
@@ -937,7 +953,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		// Check for terms in other possible taxonomies.
 		$possible_tax = get_object_taxonomies( $post_type );
 		foreach ( $possible_tax as $tax ) {
-			$terms = get_terms( $tax );
+			$terms = self::get_terms_for_taxonomy( $tax, $post_id );
 
 			if (
 				! empty( $terms ) &&
@@ -955,11 +971,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$instance
 		);
 
-		if ( $post_id ) {
-			return get_the_terms( (int) $post_id, $fallback );
-		}
-
-		return get_terms( $fallback );
+		return self::get_terms_for_taxonomy( $fallback, $post_id );
 	}
 
 	public function modify_instance( $instance ) {
