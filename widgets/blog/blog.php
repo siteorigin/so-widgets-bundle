@@ -914,32 +914,38 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			} else {
 				$terms = get_terms( 'jetpack-portfolio-type' );
 			}
-		} elseif ( $post_id === 0 ) {
 
-			if ( empty( $terms ) || is_wp_error( $terms ) ) {
-				// Let's try to find a taxonomy that has terms for this post type.
-				$possible_tax = get_object_taxonomies( $post_type );
-				foreach ( $possible_tax as $tax ) {
-					$possible_terms = get_terms( $tax );
-					if ( ! empty( $possible_terms ) && ! is_wp_error( $possible_terms ) ) {
-						$terms = $possible_terms;
-						break;
-					}
-				}
+			if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+				return $terms;
 			}
 		}
 
-		if ( empty( $terms ) || is_wp_error( $terms ) ) {
-			$fallback = apply_filters( 'siteorigin_widgets_blog_portfolio_fallback_term', 'category', $instance );
-			// Unable to find posts for this type. Try using the fallback term.
-			if ( $post_id ) {
-				return get_the_terms( (int) $post_id, $fallback );
-			} else {
-				return get_terms( $fallback );
+		// Check for terms in other possible taxonomies.
+		$possible_tax = get_object_taxonomies( $post_type );
+		foreach ( $possible_tax as $tax ) {
+			$possible_terms = get_terms( $tax );
+
+			if (
+				! empty( $possible_terms ) &&
+				! is_wp_error( $possible_terms )
+			) {
+				return $terms;
+				break;
 			}
-		} else {
-			return $terms;
 		}
+
+		// Use fallback term if no terms are found.
+		$fallback = apply_filters(
+			'siteorigin_widgets_blog_portfolio_fallback_term',
+			'category',
+			$instance
+		);
+
+		if ( $post_id ) {
+			return get_the_terms( (int) $post_id, $fallback );
+		}
+
+		return get_terms( $fallback );
 	}
 
 	public function modify_instance( $instance ) {
