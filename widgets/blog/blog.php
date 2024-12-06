@@ -937,11 +937,11 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		// Check for terms in other possible taxonomies.
 		$possible_tax = get_object_taxonomies( $post_type );
 		foreach ( $possible_tax as $tax ) {
-			$possible_terms = get_terms( $tax );
+			$terms = get_terms( $tax );
 
 			if (
-				! empty( $possible_terms ) &&
-				! is_wp_error( $possible_terms )
+				! empty( $terms ) &&
+				! is_wp_error( $terms )
 			) {
 				return $terms;
 				break;
