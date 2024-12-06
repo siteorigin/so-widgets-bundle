@@ -903,6 +903,12 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		if ( ! empty( $taxonomy ) && is_array( $taxonomy ) ) {
 			return $taxonomy;
 		}
+
+		// Check for Jetpack Portfolio terms.
+		if (
+			post_type_exists( 'jetpack-portfolio' ) &&
+			$post_type === 'jetpack-portfolio'
+		) {
 			if ( $post_id ) {
 				$terms = get_the_terms( (int) $post_id, 'jetpack-portfolio-type' );
 			} else {
