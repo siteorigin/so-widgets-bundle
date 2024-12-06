@@ -894,6 +894,20 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		return $less_vars;
 	}
 
+	/**
+	 * Get the terms for the portfolio.
+	 *
+	 * This method retrieves the terms for the portfolio based on the instance
+	 * and post ID. It checks for developer-set terms, Jetpack Portfolio terms,
+	 * and other possible taxonomies. If no terms are found, it uses a fallback term.
+	 * The fallback term is `category`. The fallback term can be filtered using
+	 * the `siteorigin_widgets_blog_portfolio_fallback_term` filter.
+	 *
+	 * @param array $instance - The instance configuration array.
+	 * @param int $post_id - The post ID. Defaults to 0.
+	 *
+	 * @return array|WP_Error - The terms for the portfolio, or a `WP_Error` object.
+	 */
 	public static function portfolio_get_terms( $instance, $post_id = 0 ) {
 		$terms = array();
 		$post_type = wp_parse_args( siteorigin_widget_post_selector_process_query( $instance['posts'] ) )['post_type'];
