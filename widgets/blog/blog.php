@@ -896,20 +896,19 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 	public static function portfolio_get_terms( $instance, $post_id = 0 ) {
 		$terms = array();
+		$post_type = wp_parse_args( siteorigin_widget_post_selector_process_query( $instance['posts'] ) )['post_type'];
 
-		if ( post_type_exists( 'jetpack-portfolio' ) ) {
+		// Check if a developer has set a terms for this post type.
+		$taxonomy = apply_filters( 'siteorigin_widgets_blog_portfolio_taxonomy', '', $instance, $post_type );
+		if ( ! empty( $taxonomy ) && is_array( $taxonomy ) ) {
+			return $taxonomy;
+		}
 			if ( $post_id ) {
 				$terms = get_the_terms( (int) $post_id, 'jetpack-portfolio-type' );
 			} else {
 				$terms = get_terms( 'jetpack-portfolio-type' );
 			}
 		} elseif ( $post_id === 0 ) {
-			// Check if a developer has set a term for this post type.
-			$post_type = wp_parse_args( siteorigin_widget_post_selector_process_query( $instance['posts'] ) )['post_type'];
-			$taxonomy = apply_filters( 'siteorigin_widgets_blog_portfolio_taxonomy', '', $instance, $post_type );
-			if ( ! empty( $taxonomy ) && is_array( $taxonomy ) ) {
-				return $taxonomy;
-			}
 
 			if ( empty( $terms ) || is_wp_error( $terms ) ) {
 				// Let's try to find a taxonomy that has terms for this post type.
