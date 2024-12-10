@@ -79,22 +79,30 @@ function siteorigin_widgets_get_attachment_image( $attachment, $size, $fallback,
 	}
 }
 
+$siteorigin_image_sizes = array();
 /**
  * Get size information for all currently-registered image sizes.
  *
  * This function retrieves the configuration for all currently-registered image sizes.
  * It includes both the hardcoded sizes (thumbnail, medium, medium_large, large) and
- * any additional image sizes registered by themes or plugins.
+ * any additional image sizes registered by themes or plugins. The resulting sizes
+ * array is stored in the $siteorigin_image_sizes global variable for caching
+ * purposes.
  *
  * From codex example here: https://codex.wordpress.org/Function_Reference/get_intermediate_image_sizes
  *
  * @global array $_wp_additional_image_sizes
+ * @global array $siteorigin_image_sizes
  * @uses   get_intermediate_image_sizes()
  *
  * @return array $sizes Data for all currently-registered image sizes.
  */
 function siteorigin_widgets_get_image_sizes() {
-	global $_wp_additional_image_sizes;
+	global $_wp_additional_image_sizes, $siteorigin_image_sizes;
+
+	if ( ! empty( $siteorigin_image_sizes ) ) {
+		return $siteorigin_image_sizes;
+	}
 
 	$sizes = array();
 	$intermediate_sizes = get_intermediate_image_sizes();
@@ -120,6 +128,8 @@ function siteorigin_widgets_get_image_sizes() {
 			$sizes[ $_size] = $_wp_additional_image_sizes[ $_size ];
 		}
 	}
+
+	$siteorigin_image_sizes = $sizes;
 
 	return $sizes;
 }
