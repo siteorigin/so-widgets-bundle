@@ -117,9 +117,14 @@ function siteorigin_widgets_get_image_sizes() {
 function siteorigin_widgets_get_image_size( $size ) {
 	$sizes = siteorigin_widgets_get_image_sizes();
 
-	if ( ! empty( $sizes[ $size ] ) ) {
-		return $sizes[ $size ];
+
+	if (
+		empty( $sizes ) ||
+		! is_string( $size ) ||
+		! isset( $sizes[ $size ] )
+	) {
+		return null;
 	}
 
-	return null;
+	return $sizes[ $size ];
 }
