@@ -34,7 +34,7 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 		// 'thumb' is a small thumbnail image size defined by the current theme.
 		$sizes = array(
 			'full' => __( 'Full', 'so-widgets-bundle' ),
-			'thumb' => __( 'Thumbnail (Theme-defined)', 'so-widgets-bundle' ),
+			'thumbnail' => __( 'Thumbnail (Theme-defined)', 'so-widgets-bundle' ),
 		);
 
 		foreach ( $image_size_configs as $name => $size_config ) {

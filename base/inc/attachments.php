@@ -125,11 +125,24 @@ function siteorigin_widgets_get_image_sizes() {
 }
 
 /**
- * @return mixed
+ * Get the image size configuration.
+ *
+ * This function retrieves the configuration for the specified image size.
+ * It returns null if the size is not defined, or if the sizes array is empty.
+ * If the size identifier is 'thumb', we override it to 'thumbnail' to match the
+ * current WordPress core image size.
+ *
+ * @param string $size - The image size identifier.
+ *
+ * @return array|null - The configuration array for the image size, or null if not found.
  */
 function siteorigin_widgets_get_image_size( $size ) {
 	$sizes = siteorigin_widgets_get_image_sizes();
 
+	// Previously, we stored the thumbnail size as 'thumb'. It's now 'thumbnail'.
+	if ( $size === 'thumb' ) {
+		$size = 'thumbnail';
+	}
 
 	if (
 		empty( $sizes ) ||
