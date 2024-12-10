@@ -81,10 +81,14 @@ function siteorigin_widgets_get_attachment_image( $attachment, $size, $fallback,
 
 /**
  * Get size information for all currently-registered image sizes.
+ *
+ * This function retrieves the configuration for all currently-registered image sizes.
+ * It includes both the hardcoded sizes (thumbnail, medium, medium_large, large) and
+ * any additional image sizes registered by themes or plugins.
+ *
  * From codex example here: https://codex.wordpress.org/Function_Reference/get_intermediate_image_sizes
  *
- * @global $_wp_additional_image_sizes
- *
+ * @global array $_wp_additional_image_sizes
  * @uses   get_intermediate_image_sizes()
  *
  * @return array $sizes Data for all currently-registered image sizes.
@@ -93,18 +97,27 @@ function siteorigin_widgets_get_image_sizes() {
 	global $_wp_additional_image_sizes;
 
 	$sizes = array();
+	$intermediate_sizes = get_intermediate_image_sizes();
+	$hardcoded_sizes = array(
+		'thumbnail',
+		'medium',
+		'medium_large',
+		'large'
+	);
 
-	foreach ( get_intermediate_image_sizes() as $_size ) {
-		if ( in_array( $_size, array( 'thumbnail', 'medium', 'medium_large', 'large' ) ) ) {
-			$sizes[ $_size ]['width'] = get_option( "{$_size}_size_w" );
-			$sizes[ $_size ]['height'] = get_option( "{$_size}_size_h" );
-			$sizes[ $_size ]['crop'] = (bool) get_option( "{$_size}_crop" );
-		} elseif ( isset( $_wp_additional_image_sizes[ $_size ] ) ) {
+	foreach ( $intermediate_sizes as $_size ) {
+		if ( in_array( $_size, $hardcoded_sizes ) ) {
 			$sizes[ $_size ] = array(
-				'width'  => $_wp_additional_image_sizes[ $_size ]['width'],
-				'height' => $_wp_additional_image_sizes[ $_size ]['height'],
-				'crop'   => $_wp_additional_image_sizes[ $_size ]['crop'],
+				'width'  => (int) get_option( $_size . '_size_w' ),
+				'height' => (int) get_option( $_size . '_size_h' ),
+				'crop'   => (bool) get_option( $_size . '_crop' ),
 			);
+
+			continue;
+		}
+
+		if ( isset( $_wp_additional_image_sizes[ $_size ] ) ) {
+			$sizes[ $_size] = $_wp_additional_image_sizes[ $_size ];
 		}
 	}
 
