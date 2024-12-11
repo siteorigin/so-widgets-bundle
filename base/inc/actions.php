@@ -121,6 +121,45 @@ function siteorigin_widget_action_search_posts() {
 }
 add_action( 'wp_ajax_so_widgets_search_posts', 'siteorigin_widget_action_search_posts' );
 
+$siteorigin_widget_taxonomies = array();
+/**
+ * Get the capability required for a taxonomy term.
+ *
+ * Determines the lowest available capability needed for the specified taxonomy
+ * type. Caches the result in the $siteorigin_widget_taxonomies global array.
+ *
+ * @param string $type The taxonomy type to get the capability for.
+ *
+ * @return string|false The capability required for the taxonomy term, or false if not available.
+ */
+function siteorigin_widget_get_taxonomy_capability( $type ) {
+	global $siteorigin_widget_taxonomies;
+
+	if ( ! empty( $siteorigin_widget_taxonomies[ $type ] ) ) {
+		return $siteorigin_widget_taxonomies[ $type ];
+	}
+
+	// Let's identify the post type for this taxonomy.
+	$taxonomy = get_taxonomy( $type );
+
+	if (
+		empty( $taxonomy ) ||
+		! is_object(  $taxonomy->cap )
+	) {
+		return false;
+	}
+
+	// Get the lowest capability possible.
+	$capability = $taxonomy->cap->assign_terms
+	?? $taxonomy->cap->edit_terms
+	?? $taxonomy->cap->manage_terms
+	?? false;
+
+	$siteorigin_widget_taxonomies[ $type ] = $capability;
+
+	return $siteorigin_widget_taxonomies[ $type ];
+}
+
 /**
  * Action to handle searching taxonomy terms.
  */
@@ -130,7 +169,7 @@ function siteorigin_widget_action_search_terms() {
 	}
 
 	global $wpdb;
-	$term = ! empty( $_GET['term'] ) ? stripslashes( $_GET['term'] ) : '';
+	$term = ! empty( $_GET['term'] ) ? sanitize_text_field( stripslashes( $_GET['term'] ) ) : '';
 	$term = trim( $term, '%' );
 
 	$query = $wpdb->prepare( "
@@ -140,16 +179,25 @@ function siteorigin_widget_action_search_terms() {
 		WHERE
 			terms.name LIKE '%s'
 		LIMIT 20
-	", '%' . esc_sql( $term ) . '%' );
+	", '%' . $wpdb->esc_like( $term ) . '%' );
 
 	$results = array();
 
-	foreach ( $wpdb->get_results( $query ) as $result ) {
-		$results[] = array(
-			'value' => $result->type . ':' . $result->value,
-			'label' => $result->label,
-			'type' => $result->type,
-		);
+	$query_results = $wpdb->get_results( $query );
+	if ( empty( $query_results ) ) {
+		return array();
+	}
+
+	foreach ( $query_results as $result ) {
+		if ( current_user_can(
+			siteorigin_widget_get_taxonomy_capability( $result->type )
+		) ) {
+			$results[] = array(
+				'value' => $result->type . ':' . $result->value,
+				'label' => $result->label,
+				'type' => $result->type,
+			);
+		}
 	}
 
 	wp_send_json( $results );
