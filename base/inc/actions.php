@@ -69,6 +69,23 @@ function siteorigin_widget_preview_widget_action() {
 }
 add_action( 'wp_ajax_so_widgets_preview', 'siteorigin_widget_preview_widget_action' );
 
+function siteorigin_widgets_post_types() {
+	$post_types = siteorigin_panels_setting( 'post-types' );
+	if ( empty( $post_types ) ) {
+		return array();
+	}
+
+	foreach ( $post_types as $id => $post_type ) {
+		$post_type_object = get_post_type_object( $post_type );
+
+		if ( ! current_user_can( $post_type_object->cap->edit_posts ) ) {
+			unset( $post_types[ $id ] );
+		}
+	}
+
+	return $post_types;
+}
+
 /**
  * Action to handle searching posts
  */
