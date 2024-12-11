@@ -69,21 +69,24 @@ function siteorigin_widget_preview_widget_action() {
 }
 add_action( 'wp_ajax_so_widgets_preview', 'siteorigin_widget_preview_widget_action' );
 
-function siteorigin_widgets_post_types() {
-	$post_types = siteorigin_panels_setting( 'post-types' );
-	if ( empty( $post_types ) ) {
-		return array();
+/**
+ * Check if the current user can edit posts of a specific post type.
+ *
+ * This function checks if the current user has the capability to edit posts
+ * of the specified post type. It retrieves the post type object if necessary
+ * and then checks the user's capabilities.
+ *
+ * @param string|object $post_type The post type name or object.
+ *
+ * @return bool True if the user can edit posts of the specified post type,
+ * false otherwise.
+ */
+function siteorigin_widget_user_can_edit_post_type( $post_type ) {
+	if ( ! is_object( $post_type ) ) {
+		$post_type = get_post_type_object( $post_type );
 	}
 
-	foreach ( $post_types as $id => $post_type ) {
-		$post_type_object = get_post_type_object( $post_type );
-
-		if ( ! current_user_can( $post_type_object->cap->edit_posts ) ) {
-			unset( $post_types[ $id ] );
-		}
-	}
-
-	return $post_types;
+	return $post_type && current_user_can( $post_type->cap->edit_posts );
 }
 
 /**
@@ -107,12 +110,11 @@ function siteorigin_widget_action_search_posts() {
 		$post_types = array_intersect( explode( ',', sanitize_text_field( $_REQUEST['postTypes'] ) ), $post_types );
 
 		// Ensure the user can edit this post type.
-		$post_types = array_filter( $post_types, function( $post_type ) {
-			$post_type_object = get_post_type_object( $post_type );
-
-			return $post_type_object &&
-				current_user_can( $post_type_object->cap->edit_posts );
-		} );
+		foreach ( $post_types as $key => $post_type ) {
+			if ( ! siteorigin_widget_user_can_edit_post_type( $post_type ) ) {
+				unset( $post_types[ $key ] );
+			}
+		}
 	} else {
 		unset( $post_types['attachment'] );
 	}
