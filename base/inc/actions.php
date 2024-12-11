@@ -95,8 +95,8 @@ function siteorigin_widget_action_search_posts() {
 	}
 
 	global $wpdb;
-	$query = null;
-	$wpml_query = null;
+	$query = '';
+	$wpml_query = '';
 
 	// Get all public post types, besides attachments
 	$post_types = (array) get_post_types( array(
@@ -104,19 +104,27 @@ function siteorigin_widget_action_search_posts() {
 	) );
 
 	if ( ! empty( $_REQUEST['postTypes'] ) ) {
-		$post_types = array_intersect( explode( ',', $_REQUEST['postTypes'] ), $post_types );
+		$post_types = array_intersect( explode( ',', sanitize_text_field( $_REQUEST['postTypes'] ) ), $post_types );
+
+		// Ensure the user can edit this post type.
+		$post_types = array_filter( $post_types, function( $post_type ) {
+			$post_type_object = get_post_type_object( $post_type );
+
+			return $post_type_object &&
+				current_user_can( $post_type_object->cap->edit_posts );
+		} );
 	} else {
 		unset( $post_types['attachment'] );
 	}
 
 	// If WPML is installed, only include posts from the currently active language.
 	if ( defined( 'ICL_LANGUAGE_CODE' ) && ! empty( $_REQUEST['language'] ) ) {
-		$query .= " AND {$wpdb->prefix}icl_translations.language_code = '" . esc_sql( $_REQUEST['language'] ) . "' ";
+		$query .= $wpdb->prepare(" AND {$wpdb->prefix}icl_translations.language_code = %s ", sanitize_text_field( $_REQUEST['language'] ));
 		$wpml_query .= " INNER JOIN {$wpdb->prefix}icl_translations ON ($wpdb->posts.ID = {$wpdb->prefix}icl_translations.element_id) ";
 	}
 
 	if ( ! empty( $_GET['query'] ) ) {
-		$query .= "AND post_title LIKE '%" . esc_sql( $_GET['query'] ) . "%'";
+		$query .= $wpdb->prepare(" AND post_title LIKE %s ", '%' . $wpdb->esc_like( sanitize_text_field( $_GET['query'] ) ) . '%');
 	}
 
 	$post_types = apply_filters( 'siteorigin_widgets_search_posts_post_types', $post_types );
@@ -133,6 +141,11 @@ function siteorigin_widget_action_search_posts() {
 		ORDER BY {$ordered_by}
 		LIMIT 20
 	", ARRAY_A );
+
+	// Filter results to ensure the user can view the post.
+	$results = array_filter( $results, function( $post ) {
+		return current_user_can( 'read_post', $post['value'] );
+	} );
 
 	wp_send_json( apply_filters( 'siteorigin_widgets_search_posts_results', $results ) );
 }
