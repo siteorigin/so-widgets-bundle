@@ -144,9 +144,9 @@ function siteorigin_widget_action_search_posts() {
 		LIMIT 20
 	", ARRAY_A );
 
-	// Filter results to ensure the user can view the post.
+	// Filter results to ensure the user can edit the post.
 	$results = array_filter( $results, function( $post ) {
-		return current_user_can( 'read_post', $post['value'] );
+		return current_user_can( 'edit_post', $post['value'] );
 	} );
 
 	wp_send_json( apply_filters( 'siteorigin_widgets_search_posts_results', $results ) );
