@@ -108,13 +108,6 @@ function siteorigin_widget_action_search_posts() {
 
 	if ( ! empty( $_REQUEST['postTypes'] ) ) {
 		$post_types = array_intersect( explode( ',', sanitize_text_field( $_REQUEST['postTypes'] ) ), $post_types );
-
-		// Ensure the user can edit this post type.
-		foreach ( $post_types as $key => $post_type ) {
-			if ( ! siteorigin_widget_user_can_edit_post_type( $post_type ) ) {
-				unset( $post_types[ $key ] );
-			}
-		}
 	} else {
 		unset( $post_types['attachment'] );
 	}
@@ -126,10 +119,19 @@ function siteorigin_widget_action_search_posts() {
 	}
 
 	if ( ! empty( $_GET['query'] ) ) {
-		$query .= $wpdb->prepare(" AND post_title LIKE %s ", '%' . $wpdb->esc_like( sanitize_text_field( $_GET['query'] ) ) . '%');
+		$search_query = '%' . $wpdb->esc_like( sanitize_text_field( $_GET['query'] ) ) . '%';
+		$query .= $wpdb->prepare( " AND post_title LIKE %s ", $search_query );
 	}
 
 	$post_types = apply_filters( 'siteorigin_widgets_search_posts_post_types', $post_types );
+
+	// Ensure the user can edit this post type.
+	foreach ( $post_types as $key => $post_type ) {
+		if ( ! siteorigin_widget_user_can_edit_post_type( $post_type ) ) {
+			unset( $post_types[ $key ] );
+		}
+
+	}
 	$post_types = "'" . implode( "', '", array_map( 'esc_sql', $post_types ) ) . "'";
 
 	$ordered_by = esc_sql( apply_filters( 'siteorigin_widgets_search_posts_order_by', 'post_modified DESC' ) );
@@ -144,9 +146,10 @@ function siteorigin_widget_action_search_posts() {
 		LIMIT 20
 	", ARRAY_A );
 
-	// Filter results to ensure the user can edit the post.
+	// Filter results to ensure the user can read the post.
 	$results = array_filter( $results, function( $post ) {
-		return current_user_can( 'edit_post', $post['value'] );
+
+		return current_user_can( 'read_post', $post['value'] );
 	} );
 
 	wp_send_json( apply_filters( 'siteorigin_widgets_search_posts_results', $results ) );
