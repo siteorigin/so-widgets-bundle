@@ -429,21 +429,23 @@ var sowbForms = window.sowbForms || {};
 			// Setup the URL fields
 
 			$fields.filter( '.siteorigin-widget-field-type-link' ).each( function () {
-				var $$ = $( this );
-				var $fieldVal = $$.find( 'input.siteorigin-widget-input' );
+				const $$ = $( this );
+				const $fieldVal = $$.find( 'input.siteorigin-widget-input' );
 
-				// Function that refreshes the list of
-				var request = null;
-				var refreshList = function () {
+				const $itemList = $$.find( 'ul.posts' );
+				const $noResults = $$.find( '.content-no-results' );
+
+				let request = null;
+				const refreshList = () => {
 					if ( request !== null ) {
 						request.abort();
 					}
 
-					var $contentSearchInput = $$.find( '.content-text-search' );
-					var query = $contentSearchInput.val();
-					var postTypes = $contentSearchInput.data( 'postTypes' );
+					const $contentSearchInput = $$.find( '.content-text-search' );
+					const query = $contentSearchInput.val();
+					const postTypes = $contentSearchInput.data( 'postTypes' );
 
-					var ajaxData = {
+					const ajaxData = {
 						action: 'so_widgets_search_posts',
 						query: query,
 						postTypes: postTypes
@@ -454,26 +456,39 @@ var sowbForms = window.sowbForms || {};
 						ajaxData.language = icl_this_lang;
 					}
 
-					var $ul = $$.find( 'ul.posts' ).empty().addClass( 'loading' );
+					// Visually prep the field.
+					$noResults.addClass( 'hidden' );
+					$itemList.empty();
+					$itemList.removeClass( 'hidden' )
+					$itemList.addClass( 'loading' );
+
 					$.get(
 						soWidgets.ajaxurl,
 						ajaxData,
-						function( data ) {
-							for ( var i = 0; i < data.length; i++ ) {
-								if (data[ i ].label === '') {
-									data[ i ].label = '&nbsp;';
+						( results ) => {
+							// If there aren't any results, show a message.
+							if ( results.length === 0 ) {
+								$noResults.removeClass( 'hidden' );
+								$itemList.addClass( 'hidden' );
+								$itemList.removeClass( 'loading' );
+								return;
+							}
+
+							for ( var i = 0; i < results.length; i++ ) {
+								if (results[ i ].label === '') {
+									results[ i ].label = '&nbsp;';
 								}
 
 								// Add all the post items
-								$ul.append(
+								$itemList.append(
 									$( '<li>' )
 										.addClass( 'post' )
-										.html( data[ i ].label + '<span>(' + data[ i ].type + ')</span>' )
-										.data( data[ i ] )
+										.html( results[ i ].label + '<span>(' + results[ i ].type + ')</span>' )
+										.data( results[ i ] )
 										.attr( 'tabindex', 0 )
 								);
 							}
-							$ul.removeClass( 'loading' );
+							$itemList.removeClass( 'loading' );
 						}
 					);
 				};
