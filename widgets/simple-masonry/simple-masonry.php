@@ -330,13 +330,13 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 		$items = isset( $instance['items'] ) ? (array) $instance['items'] : array();
 
 		foreach ( $items as &$item ) {
-			$link_atts = empty( $item['link_attributes'] ) ? array() : $item['link_attributes'];
+			$item['link_attributes'] = array();
 
 			if ( ! empty( $item['new_window'] ) ) {
-				$link_atts['target'] = '_blank';
-				$link_atts['rel'] = 'noopener noreferrer';
+				$item['link_attributes']['target'] = '_blank';
+				$item['link_attributes']['rel'] = 'noopener noreferrer';
 			}
-			$item['link_attributes'] = $link_atts;
+
 			$item['title'] = $this->get_image_title( $item );
 		}
 

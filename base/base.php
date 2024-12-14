@@ -381,13 +381,25 @@ function siteorigin_loading_optimization_attributes( $attr, $widget, $instance, 
  * The ajax handler for the links field using the the post: ID format without a title set.
  */
 function siteorigin_widgets_links_get_title() {
-	if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
+	if (
+		empty( $_REQUEST['_widgets_nonce'] ) ||
+		! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' )
+	) {
 		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
 	}
 
-	if ( empty( $_GET['postId'] ) || ! is_numeric( $_GET['postId'] ) ) {
+	if (
+		empty( $_GET['postId'] ) ||
+		! is_numeric( $_GET['postId'] )
+	) {
 		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );
 	}
+
+	// Don't allow users to link to posts they can't view.
+	if ( ! current_user_can( 'read_post', $_GET['postId'] ) ) {
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
+	}
+
 	$postTitle = get_the_title( $_GET['postId'] );
 	echo ! empty( $postTitle ) ? esc_attr( $postTitle ) : esc_html__( '(No Title)', 'so-widgets-bundle' );
 	die();

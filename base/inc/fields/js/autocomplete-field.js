@@ -28,17 +28,19 @@
 			} );
 		};
 
-		var request = null;
-		var refreshList = function() {
+		const $itemList = $$.find( 'ul.items' );
+		const $noResults = $$.find( '.content-no-results' );
+		let request = null;
+		const refreshList = () => {
 			if ( request !== null ) {
 				request.abort();
 			}
 
-			var $contentSearchInput = $$.find( '.content-text-search' );
-			var query = $contentSearchInput.val();
-			var source = $contentSearchInput.data( 'source' );
-			var postTypes = $contentSearchInput.data( 'postTypes' );
-			var ajaxData = { action: 'so_widgets_search_' + source };
+			const $contentSearchInput = $$.find( '.content-text-search' );
+			const query = $contentSearchInput.val();
+			const source = $contentSearchInput.data( 'source' );
+			const postTypes = $contentSearchInput.data( 'postTypes' );
+			const ajaxData = { action: 'so_widgets_search_' + source };
 			if ( source === 'posts' ) {
 				ajaxData.query = query;
 				ajaxData.postTypes = postTypes;
@@ -51,31 +53,47 @@
 				ajaxData.language = icl_this_lang;
 			}
 
-			var $ul = $$.find( 'ul.items' ).empty().addClass( 'loading' );
+			// Visually prep the field.
+			$noResults.addClass( 'hidden' );
+			$itemList.empty();
+			$itemList.removeClass( 'hidden' )
+			$itemList.addClass( 'loading' );
+
 			return $.get(
 				soWidgets.ajaxurl,
 				ajaxData,
-				function( results ) {
-					results.forEach( function( item ) {
+				( results ) => {
+					// If there aren't any results, show a message.
+					if ( results.length === 0 ) {
+						$noResults.removeClass( 'hidden' );
+						$itemList.addClass( 'hidden' );
+						$itemList.removeClass( 'loading' );
+						return;
+					}
+
+
+					results.forEach( ( item ) => {
 						if ( item.label === '' ) {
 							item.label = '&nbsp;';
 						}
 						// Add all the items.
-						$ul.append(
+						$itemList.append(
 							$( '<li>' )
 								.html( item.label + '<span>(' + item.type + ')</span>' )
 								.data( item )
 						);
 					} );
-					$ul.removeClass( 'loading' );
+					$itemList.removeClass( 'loading' );
 				}
 			);
 		};
 
-		$$.find( '.siteorigin-widget-autocomplete-input' ).on( 'click', function() {
+		$$.find( '.siteorigin-widget-autocomplete-input' ).on( 'click', () => {
+			$noResults.addClass( 'hidden' );
+			$itemList.show();
 			$contentSelector.show();
 
-			var refreshPromise = new $.Deferred();
+			let refreshPromise = new $.Deferred();
 			if( $contentSelector.is( ':visible' ) && $contentSelector.find( 'ul.items li' ).length === 0 ) {
 				refreshPromise = refreshList();
 			} else {
@@ -120,7 +138,7 @@
 				} else {
 					selectedItems.push( clickedItem );
 					$li.addClass( 'selected' );
-				}				
+				}
 				$input.val( selectedItems.join( ',' ) );
 			} else {
 				$li.parent().find( '.selected' ).removeClass( 'selected' );

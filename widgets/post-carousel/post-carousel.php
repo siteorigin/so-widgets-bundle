@@ -267,8 +267,21 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 						'autoplay[show]' => array( 'show' ),
 						'autoplay[hide]' => array( 'hide' ),
 					),
+					'state_emitter' => array(
+						'callback' => 'conditional',
+						'args' => array(
+							'autoplay_continuous[show]: val',
+							'autoplay_continuous[hide]: ! val',
+						),
+					),
 				),
 			)
+		);
+
+		// Continuous autoplay doesn't have navigation, so we need to hide the setting.
+		$carousel_settings['fields']['arrows']['state_handler'] = array(
+			'autoplay_continuous[show]' => array( 'hide' ),
+			'autoplay_continuous[hide]' => array( 'show' ),
 		);
 
 		return array(
@@ -428,7 +441,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 		$carousel_settings = $this->carousel_settings_template_variables( $instance['carousel_settings'], false );
 		$carousel_settings['autoplay_continuous_scroll'] = ! empty( $instance['carousel_settings']['autoplay_continuous_scroll'] ) ? $instance['carousel_settings']['autoplay_continuous_scroll'] : false;
-		// The base theme doesn't support dot noviation so let's remove it.
+		// The base theme doesn't support dot navigation so let's remove it.
 		if ( $theme == 'base' ) {
 			unset( $carousel_settings['dots'] );
 		}
@@ -438,6 +451,16 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		$carousel_settings = apply_filters( 'siteorigin_widgets_post_carousel_settings_frontend', $carousel_settings, $instance );
 
 		$size = siteorigin_widgets_get_image_size( $instance['image_size'] );
+
+		$navigation = 'title';
+
+		// If continuous scroll is enabled, hide the navigation.
+		if (
+			! empty( $instance['carousel_settings']['autoplay'] ) &&
+			! empty( $instance['carousel_settings']['autoplay_continuous_scroll'] )
+		) {
+			$navigation = 'hidden';
+		}
 
 		return array(
 			'settings' => array(
@@ -449,7 +472,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				'image_size' => $instance['image_size'],
 				'link_target' => ! empty( $instance['link_target'] ) ? $instance['link_target'] : 'same',
 				'item_template' => apply_filters( 'siteorigin_post_carousel_item_template', plugin_dir_path( __FILE__ ) . 'tpl/item.php' ),
-				'navigation' => 'title',
+				'navigation' => $navigation,
 				'navigation_arrows' => isset( $instance['carousel_settings']['arrows'] ) ? ! empty( $instance['carousel_settings']['arrows'] ) : true,
 				'navigation_dots' => isset( $instance['carousel_settings']['dots'] ) ? ! empty( $instance['carousel_settings']['dots'] ) : false,
 				'height' => ! empty( $size['height'] ) ? 'min-height: ' . $size['height'] . 'px' : '',
