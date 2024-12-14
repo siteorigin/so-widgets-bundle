@@ -30,7 +30,14 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 		}
 
 		foreach ( $types as $id => $type ) {
-			if ( empty( $this->post_types ) || in_array( $id, $this->post_types ) ) {
+			if ( ! siteorigin_widget_user_can_edit_post_type( $id ) ) {
+				continue;
+			}
+
+			if (
+				empty( $this->post_types ) ||
+				in_array( $id, $this->post_types )
+			) {
 				$type_options[ $id ] = $type->labels->name;
 			}
 		}
@@ -167,7 +174,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 
 			<?php if ( ! empty( $this->show_count ) ) { ?>
 				<span class="sow-current-count">
-					<?php echo esc_html( siteorigin_widget_post_selector_count_posts( $value ) ); ?>		
+					<?php echo esc_html( siteorigin_widget_post_selector_count_posts( $value ) ); ?>
 				</span>
 			<?php } ?>
 		</div>

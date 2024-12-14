@@ -70,6 +70,26 @@ function siteorigin_widget_preview_widget_action() {
 add_action( 'wp_ajax_so_widgets_preview', 'siteorigin_widget_preview_widget_action' );
 
 /**
+ * Check if the current user can edit posts of a specific post type.
+ *
+ * This function checks if the current user has the capability to edit posts
+ * of the specified post type. It retrieves the post type object if necessary
+ * and then checks the user's capabilities.
+ *
+ * @param string|object $post_type The post type name or object.
+ *
+ * @return bool True if the user can edit posts of the specified post type,
+ * false otherwise.
+ */
+function siteorigin_widget_user_can_edit_post_type( $post_type ) {
+	if ( ! is_object( $post_type ) ) {
+		$post_type = get_post_type_object( $post_type );
+	}
+
+	return $post_type && current_user_can( $post_type->cap->edit_posts );
+}
+
+/**
  * Action to handle searching posts
  */
 function siteorigin_widget_action_search_posts() {
@@ -78,8 +98,8 @@ function siteorigin_widget_action_search_posts() {
 	}
 
 	global $wpdb;
-	$query = null;
-	$wpml_query = null;
+	$query = '';
+	$wpml_query = '';
 
 	// Get all public post types, besides attachments
 	$post_types = (array) get_post_types( array(
@@ -87,22 +107,31 @@ function siteorigin_widget_action_search_posts() {
 	) );
 
 	if ( ! empty( $_REQUEST['postTypes'] ) ) {
-		$post_types = array_intersect( explode( ',', $_REQUEST['postTypes'] ), $post_types );
+		$post_types = array_intersect( explode( ',', sanitize_text_field( $_REQUEST['postTypes'] ) ), $post_types );
 	} else {
 		unset( $post_types['attachment'] );
 	}
 
 	// If WPML is installed, only include posts from the currently active language.
 	if ( defined( 'ICL_LANGUAGE_CODE' ) && ! empty( $_REQUEST['language'] ) ) {
-		$query .= " AND {$wpdb->prefix}icl_translations.language_code = '" . esc_sql( $_REQUEST['language'] ) . "' ";
+		$query .= $wpdb->prepare(" AND {$wpdb->prefix}icl_translations.language_code = %s ", sanitize_text_field( $_REQUEST['language'] ));
 		$wpml_query .= " INNER JOIN {$wpdb->prefix}icl_translations ON ($wpdb->posts.ID = {$wpdb->prefix}icl_translations.element_id) ";
 	}
 
 	if ( ! empty( $_GET['query'] ) ) {
-		$query .= "AND post_title LIKE '%" . esc_sql( $_GET['query'] ) . "%'";
+		$search_query = '%' . $wpdb->esc_like( sanitize_text_field( $_GET['query'] ) ) . '%';
+		$query .= $wpdb->prepare( " AND post_title LIKE %s ", $search_query );
 	}
 
 	$post_types = apply_filters( 'siteorigin_widgets_search_posts_post_types', $post_types );
+
+	// Ensure the user can edit this post type.
+	foreach ( $post_types as $key => $post_type ) {
+		if ( ! siteorigin_widget_user_can_edit_post_type( $post_type ) ) {
+			unset( $post_types[ $key ] );
+		}
+
+	}
 	$post_types = "'" . implode( "', '", array_map( 'esc_sql', $post_types ) ) . "'";
 
 	$ordered_by = esc_sql( apply_filters( 'siteorigin_widgets_search_posts_order_by', 'post_modified DESC' ) );
@@ -117,9 +146,54 @@ function siteorigin_widget_action_search_posts() {
 		LIMIT 20
 	", ARRAY_A );
 
+	// Filter results to ensure the user can read the post.
+	$results = array_filter( $results, function( $post ) {
+
+		return current_user_can( 'read_post', $post['value'] );
+	} );
+
 	wp_send_json( apply_filters( 'siteorigin_widgets_search_posts_results', $results ) );
 }
 add_action( 'wp_ajax_so_widgets_search_posts', 'siteorigin_widget_action_search_posts' );
+
+$siteorigin_widget_taxonomies = array();
+/**
+ * Get the capability required for a taxonomy term.
+ *
+ * Determines the lowest available capability needed for the specified taxonomy
+ * type. Caches the result in the $siteorigin_widget_taxonomies global array.
+ *
+ * @param string $type The taxonomy type to get the capability for.
+ *
+ * @return string|false The capability required for the taxonomy term, or false if not available.
+ */
+function siteorigin_widget_get_taxonomy_capability( $type ) {
+	global $siteorigin_widget_taxonomies;
+
+	if ( ! empty( $siteorigin_widget_taxonomies[ $type ] ) ) {
+		return $siteorigin_widget_taxonomies[ $type ];
+	}
+
+	// Let's identify the post type for this taxonomy.
+	$taxonomy = get_taxonomy( $type );
+
+	if (
+		empty( $taxonomy ) ||
+		! is_object(  $taxonomy->cap )
+	) {
+		return false;
+	}
+
+	// Get the lowest capability possible.
+	$capability = $taxonomy->cap->assign_terms
+	?? $taxonomy->cap->edit_terms
+	?? $taxonomy->cap->manage_terms
+	?? false;
+
+	$siteorigin_widget_taxonomies[ $type ] = $capability;
+
+	return $siteorigin_widget_taxonomies[ $type ];
+}
 
 /**
  * Action to handle searching taxonomy terms.
@@ -130,7 +204,7 @@ function siteorigin_widget_action_search_terms() {
 	}
 
 	global $wpdb;
-	$term = ! empty( $_GET['term'] ) ? stripslashes( $_GET['term'] ) : '';
+	$term = ! empty( $_GET['term'] ) ? sanitize_text_field( stripslashes( $_GET['term'] ) ) : '';
 	$term = trim( $term, '%' );
 
 	$query = $wpdb->prepare( "
@@ -140,16 +214,25 @@ function siteorigin_widget_action_search_terms() {
 		WHERE
 			terms.name LIKE '%s'
 		LIMIT 20
-	", '%' . esc_sql( $term ) . '%' );
+	", '%' . $wpdb->esc_like( $term ) . '%' );
 
 	$results = array();
 
-	foreach ( $wpdb->get_results( $query ) as $result ) {
-		$results[] = array(
-			'value' => $result->type . ':' . $result->value,
-			'label' => $result->label,
-			'type' => $result->type,
-		);
+	$query_results = $wpdb->get_results( $query );
+	if ( empty( $query_results ) ) {
+		return array();
+	}
+
+	foreach ( $query_results as $result ) {
+		if ( current_user_can(
+			siteorigin_widget_get_taxonomy_capability( $result->type )
+		) ) {
+			$results[] = array(
+				'value' => $result->type . ':' . $result->value,
+				'label' => $result->label,
+				'type' => $result->type,
+			);
+		}
 	}
 
 	wp_send_json( $results );
