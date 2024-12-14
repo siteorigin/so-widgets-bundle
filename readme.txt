@@ -109,6 +109,12 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.64.1 - 14 December 2024 =
+* Post Carousel: Auto disabled navigation arrows when `Autoplay Continuous Scroll` enabled.
+* Simple Masonry: Resolved a potenital error.
+* Posts & Links Fields: Improved post and taxonomy search functionality; added user capability checks and no results handling.
+* Select2: Removed `multiple` requirement for Select2 usage.
+
 = 1.64.0 - 24 November 2024 =
 * Anchor ID: Improved ID handling to better support special characters and international text.
 * Author Box: Added Author Name HTML Tag setting.
