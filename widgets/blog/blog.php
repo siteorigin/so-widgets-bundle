@@ -901,17 +901,27 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	 * it retrieves the terms associated with that post. Otherwise, it retrieves
 	 * all terms for the taxonomy.
 	 *
-	 * @param string $taxonomy - The taxonomy to retrieve terms for.
-	 * @param int $post_id - The post ID. Defaults to 0.
+	 * @param string $taxonomy The taxonomy to retrieve terms for.
+	 * @param int $post_id The post ID. Defaults to 0.
+	 * @param bool $error_check Whether to check for errors. Defaults to true.
 	 *
-	 * @return array|WP_Error - The terms for the taxonomy or a WP_Error object.
+	 * @return array|false The terms for the taxonomy or false if an error occurs.
 	 */
-	private static function get_terms_for_taxonomy( $term, $post_id = 0 ) {
-		if ( $post_id ) {
-			return get_the_terms( (int) $post_id, $term );
+	public static function get_terms_for_taxonomy( $taxonomy, $post_id = 0, $error_check = true ) {
+		$terms = $post_id ? get_the_terms( (int) $post_id, $taxonomy ) : get_terms( $taxonomy );
+
+		if ( ! $error_check ) {
+			set_query_var( 'siteorigin_widgets_portfolio_taxonomy', $taxonomy );
+			return $terms;
 		}
 
-		return get_terms( $term );
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return false;
+		}
+
+		set_query_var( 'siteorigin_widgets_portfolio_taxonomy', $taxonomy );
+
+		return $terms;
 	}
 
 	/**
@@ -923,19 +933,21 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	 * The fallback term is `category`. The fallback term can be filtered using
 	 * the `siteorigin_widgets_blog_portfolio_fallback_term` filter.
 	 *
-	 * @param array $instance - The instance configuration array.
-	 * @param int $post_id - The post ID. Defaults to 0.
+	 * @param array $instance The instance configuration array.
+	 * @param int $post_id The post ID. Defaults to 0.
 	 *
-	 * @return array|WP_Error - The terms for the portfolio, or a `WP_Error` object.
+	 * @return array|false The terms for the portfolio, or false if no terms are found.
 	 */
 	public static function portfolio_get_terms( $instance, $post_id = 0 ) {
 		$terms = array();
 		$post_type = wp_parse_args( siteorigin_widget_post_selector_process_query( $instance['posts'] ) )['post_type'];
 
-		// Check if a developer has set a terms for this post type.
-		$taxonomy = apply_filters( 'siteorigin_widgets_blog_portfolio_taxonomy', '', $instance, $post_type );
-		if ( ! empty( $taxonomy ) && is_array( $taxonomy ) ) {
-			return $taxonomy;
+		if ( $post_id ) {
+			// Check if a developer has set terms for this post type.
+			$taxonomy = apply_filters( 'siteorigin_widgets_blog_portfolio_taxonomy', '', $instance, $post_type );
+			if ( ! empty( $taxonomy ) && is_array( $taxonomy ) ) {
+				return $taxonomy;
+			}
 		}
 
 		// Check for Jetpack Portfolio terms.
@@ -943,9 +955,12 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			post_type_exists( 'jetpack-portfolio' ) &&
 			$post_type === 'jetpack-portfolio'
 		) {
-			$terms = self::get_terms_for_taxonomy( 'jetpack-portfolio-type', $post_id );
+			$terms = self::get_terms_for_taxonomy(
+				'jetpack-portfolio-type',
+				$post_id
+			);
 
-			if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+			if ( $terms ) {
 				return $terms;
 			}
 		}
@@ -955,12 +970,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		foreach ( $possible_tax as $tax ) {
 			$terms = self::get_terms_for_taxonomy( $tax, $post_id );
 
-			if (
-				! empty( $terms ) &&
-				! is_wp_error( $terms )
-			) {
+			if ( $terms ) {
 				return $terms;
-				break;
 			}
 		}
 
@@ -971,7 +982,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$instance
 		);
 
-		return self::get_terms_for_taxonomy( $fallback, $post_id );
+		return self::get_terms_for_taxonomy( $fallback, $post_id, false );
 	}
 
 	public function modify_instance( $instance ) {
@@ -1122,9 +1133,16 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		if ( $instance['template'] == 'portfolio' ) {
-			$template_settings['terms'] = $this->portfolio_get_terms( $instance );
-			$template_settings['filter_categories'] = ! empty( $instance['settings']['filter_categories'] );
+		$posts = new WP_Query( apply_filters( 'siteorigin_widgets_blog_query', $query, $instance ) );
+
+		$template_settings['filter_categories'] = ! empty( $instance['settings']['filter_categories'] );
+		if ( $template_settings['filter_categories'] === true ) {
+			$terms = self::portfolio_get_terms( $instance );
+
+			$template_settings['terms'] = self::remove_terms_not_in_posts(
+				$terms,
+				$posts->posts
+			);
 		}
 
 		// Add the current template to the settings array to allow for easier referencing.
@@ -1134,8 +1152,58 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			'title' => $instance['title'],
 			'settings' => $instance['settings'],
 			'template_settings' => $template_settings,
-			'posts' => new WP_Query( apply_filters( 'siteorigin_widgets_blog_query', $query, $instance ) ),
+			'posts' => $posts,
 		);
+	}
+
+	/**
+	 * Remove terms that are not in the posts.
+	 *
+	 * If `siteorigin_widgets_blog_portfolio_ensure_valid_terms` returns true,
+	 * this method filters out terms that are not associated with the given posts.
+	 *
+	 * @param array $terms The terms to filter.
+	 * @param array $posts The posts to check for terms.
+	 * @return array The filtered terms.
+	 */
+	private static function remove_terms_not_in_posts( $terms, $posts ) {
+		if ( ! apply_filters(
+			'siteorigin_widgets_blog_portfolio_ensure_valid_terms',
+			true
+		) ) {
+			return $terms;
+		}
+
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return $terms;
+		}
+
+		$taxonomy = apply_filters(
+			'siteorigin_widgets_blog_portfolio_taxonomy_filter',
+			get_query_var( 'siteorigin_widgets_portfolio_taxonomy' )
+		);
+
+		// Get all of the terms for the posts.
+		$all_terms = array();
+		foreach ( $posts as $post ) {
+			$post_terms = wp_get_post_terms( $post->ID, $taxonomy );
+
+			foreach ( $post_terms as $post_term ) {
+				$all_terms[] = $post_term->slug;
+			}
+		}
+
+		$all_terms = array_unique( $all_terms );
+
+		// Filter out any terms that aren't in the posts.
+		$filtered_terms = array();
+		foreach ( $terms as $term ) {
+			if ( in_array( $term->slug, $all_terms ) ) {
+				$filtered_terms[] = $term;
+			}
+		}
+
+		return $filtered_terms;
 	}
 
 	public function portfolio_filter_posts( $query, $instance ) {
