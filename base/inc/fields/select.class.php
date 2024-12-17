@@ -66,7 +66,7 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 	 */
 	private function get_select_field_name() {
 		if (
-			! empty( $this->multiple ) &&
+			! empty( $this->multiple ) ||
 			filter_input( INPUT_POST, 'action' ) === 'so_panels_widget_form'
 		) {
 			return $this->element_name;
