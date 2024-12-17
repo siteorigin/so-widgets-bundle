@@ -350,6 +350,36 @@ function siteorigin_widgets_url( $path = '' ) {
 	return plugins_url( 'so-widgets-bundle/' . $path );
 }
 
+/**
+ * Check if the Page Builder can render.
+ *
+ * This method checks if the necessary conditions are met for Page Builder to
+ * render. It first verifies that Page Builder is active. It then checks
+ * if either:
+ * - The request is in the admin area, OR
+ * - If this is a REST request and the block editor is active.
+ *
+ * If none of these conditions are met, Page Builder can't render.
+ *
+ * @return bool True if Page Builder builder can render, false otherwise.
+ */
+function siteorigin_widgets_can_render_builder_field() {
+	if ( ! defined( 'SITEORIGIN_PANELS_VERSION' ) ) {
+		return false;
+	}
+
+	if ( is_admin() ) {
+		return true;
+	}
+
+	// Is this field being rendered inside one of our blocks?
+	if ( defined( 'REST_REQUEST' ) && function_exists( 'register_block_type' ) ) {
+		return true;
+	}
+
+	return false;
+}
+
 function siteorigin_loading_optimization_attributes( $attr, $widget, $instance, $class ) {
 	// Allow other plugins to override whether this widget is lazy loaded or not.
 	if (
