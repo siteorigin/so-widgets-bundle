@@ -50,7 +50,9 @@ function siteorigin_widget_preview_widget_action() {
 	?>
 	<html>
 	<head>
-		<title><?php _e( 'Widget Preview', 'so-widgets-bundle' ); ?></title>
+		<title>
+			<?php echo esc_html( 'Widget Preview', 'so-widgets-bundle' ); ?>
+		</title>
 		<?php
 		wp_print_scripts();
 		wp_print_styles();

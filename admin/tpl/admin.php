@@ -6,7 +6,9 @@
 			<img src="<?php echo siteorigin_widgets_url( 'admin/images/icon-gear.png' ); ?>" class="icon-gear" width="26" height="26">
 			<img src="<?php echo siteorigin_widgets_url( 'admin/images/icon-front.png' ); ?>" class="icon-front" width="50" height="43">
 		</span>
-		<h1><?php _e( 'SiteOrigin Widgets Bundle', 'so-widgets-bundle' ); ?></h1>
+		<h1>
+			<?php echo esc_html__( 'SiteOrigin Widgets Bundle', 'so-widgets-bundle' ); ?>
+		</h1>
 
 		<div id="sow-widget-search">
 			<input type="search" placeholder="<?php esc_attr_e( 'Filter Widgets', 'so-widgets-bundle' ); ?>" />
@@ -14,9 +16,21 @@
 	</div>
 
 	<ul class="page-nav">
-		<li class="active"><a href="#all"><?php _e( 'All', 'so-widgets-bundle' ); ?></a></li>
-		<li><a href="#enabled"><?php _e( 'Enabled', 'so-widgets-bundle' ); ?></a></li>
-		<li><a href="#disabled"><?php _e( 'Disabled', 'so-widgets-bundle' ); ?></a></li>
+		<li class="active">
+			<a href="#all">
+				<?php echo esc_html__( 'All', 'so-widgets-bundle' ); ?>
+			</a>
+		</li>
+		<li>
+			<a href="#enabled">
+				<?php echo esc_html__( 'Enabled', 'so-widgets-bundle' ); ?>
+			</a>
+		</li>
+		<li>
+			<a href="#disabled">
+				<?php echo esc_html__( 'Disabled', 'so-widgets-bundle' ); ?>
+			</a>
+		</li>
 	</ul>
 
 
@@ -46,7 +60,9 @@
 
 					<div class="so-widget-text">
 
-						<div class="so-widget-active-indicator"><?php _e( 'Active', 'so-widgets-bundle' ); ?></div>
+						<div class="so-widget-active-indicator">
+							<?php echo esc_html__( 'Active', 'so-widgets-bundle' ); ?>
+						</div>
 
 						<h3><?php echo esc_html( $widget['Name'] ); ?></h3>
 
@@ -75,11 +91,11 @@
 							<?php if ( empty( $widget['HideActivate'] ) ) { ?>
 								<div class="so-widget-toggle-active">
 									<button class="button-secondary so-widget-activate" data-status="1">
-										<?php esc_html_e( 'Activate', 'so-widgets-bundle' ); ?>
+										<?php echo esc_html__( 'Activate', 'so-widgets-bundle' ); ?>
 									</button>
 
 									<button class="button-secondary so-widget-deactivate" data-status="0">
-										<?php esc_html_e( 'Deactivate', 'so-widgets-bundle' ); ?>
+										<?php echo esc_html__( 'Deactivate', 'so-widgets-bundle' ); ?>
 									</button>
 								</div>
 							<?php } ?>
@@ -102,7 +118,7 @@
 
 								?>
 								<button class="button-secondary so-widget-settings" data-form-url="<?php echo esc_url( $form_url ); ?>">
-									<?php esc_html_e( 'Settings', 'so-widgets-bundle' ); ?>
+									<?php echo esc_html__( 'Settings', 'so-widgets-bundle' ); ?>
 								</button>
 								<?php
 							}
@@ -110,7 +126,7 @@
 
 							<?php if ( ! empty( $widget['Documentation'] ) ) { ?>
 								<a href="<?php echo esc_url( $widget['Documentation'] ); ?>" target="_blank" rel="noopener noreferrer" class="so-widget-documentation">
-									<?php _e( 'Documentation', 'so-widgets-bundle' ); ?>
+									<?php echo esc_html__( 'Documentation', 'so-widgets-bundle' ); ?>
 								</a>
 							<?php } ?>
 						</div>
@@ -125,7 +141,7 @@
 	<?php if ( ! class_exists( 'SiteOrigin_Panels' ) || ! class_exists( 'SiteOrigin_Premium' ) ) { ?>
 		<div class="installer">
 			<a href="#" class="installer-link">
-				<?php _e( 'General Widget Bundle Settings', 'so-widgets-bundle' ); ?>
+				<?php echo esc_html__( 'General Widget Bundle Settings', 'so-widgets-bundle' ); ?>
 			</a>
 
 			<div class="installer-container" style="display: none;">
@@ -145,15 +161,19 @@
 
 
 	<div class="developers-link">
-		<?php _e( 'Developers - create your own widgets for the Widgets Bundle.', 'so-widgets-bundle' ); ?>
-		<a href="https://siteorigin.com/docs/widgets-bundle/" target="_blank" rel="noopener noreferrer"><?php _e( 'Read More', 'so-widgets-bundle' ); ?></a>.
+		<?php echo esc_html__( 'Developers - create your own widgets for the Widgets Bundle.', 'so-widgets-bundle' ); ?>
+		<a href="https://siteorigin.com/docs/widgets-bundle/" target="_blank" rel="noopener noreferrer">
+			<?php echo esc_html__( 'Read More', 'so-widgets-bundle' ); ?>
+		</a>.
 	</div>
 
 	<div id="sow-settings-dialog">
 		<div class="so-overlay"></div>
 
 		<div class="so-title-bar">
-			<h3 class="so-title"><?php _e( 'Widget Settings', 'so-widgets-bundle' ); ?></h3>
+			<h3 class="so-title">
+				<?php echo esc_html__( 'Widget Settings', 'so-widgets-bundle' ); ?>
+			</h3>
 			<a class="so-close" tabindex="0">
 				<span class="so-dialog-icon"></span>
 			</a>
@@ -165,7 +185,7 @@
 		<div class="so-toolbar">
 			<div class="so-buttons">
 				<button class="button-primary so-save" tabindex="0">
-					<?php _e( 'Save', 'so-widgets-bundle' ); ?>
+					<?php echo esc_html__( 'Save', 'so-widgets-bundle' ); ?>
 				</button>
 			</div>
 		</div>
