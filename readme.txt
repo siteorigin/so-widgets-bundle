@@ -109,6 +109,9 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.64.2 - 18 December 2024 =
+* Select: Fixed field name handling to prevent unintended array format in Widgets Bundle forms.
+
 = 1.64.1 - 14 December 2024 =
 * Post Carousel: Auto disabled navigation arrows when `Autoplay Continuous Scroll` enabled.
 * Simple Masonry: Resolved a potenital error.
