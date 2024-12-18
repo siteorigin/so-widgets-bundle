@@ -14,7 +14,7 @@
 	<div class="sow-masonry-grid-preloader"><div></div><div></div><div></div><div></div></div>
 <?php } ?>
 <div class="sow-masonry-grid"
-	 data-layouts="<?php echo esc_attr( json_encode( $layouts ) ); ?>" data-layout-origin-left="<?php esc_attr_e( $layout_origin_left ); ?>" <?php echo ! empty( $preloader_enabled ) ? 'style="opacity: 0;"' : ''; ?>>
+	 data-layouts="<?php echo esc_attr( json_encode( $layouts ) ); ?>" data-layout-origin-left="<?php echo esc_attr( $layout_origin_left ); ?>" <?php echo ! empty( $preloader_enabled ) ? 'style="opacity: 0;"' : ''; ?>>
 	<?php
 	if ( ! empty( $items ) ) {
 		foreach ( $items as $item ) {
