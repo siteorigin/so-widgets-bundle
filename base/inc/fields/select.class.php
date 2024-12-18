@@ -54,25 +54,25 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 		);
 	}
 
-	/**
+	 /**
 	 * Get the field name for the select element.
 	 *
-	 * This method returns the field name for the select element. If the current
-	 * context is inside of Page Builder, and the select element supports multiple
-	 * selections, '[]' is appended to the field name to indicate that it is an
-	 * array. Otherwise, the field name is returned as is.
+	 * This method returns the field name for the select element. If the
+	 * select element supports multiple selections and the current context is
+	 * not from Page Builder, '[]' is appended to the field name to indicate
+	 * that it is an array. Otherwise, the field name is returned as is.
 	 *
 	 * @return string The field name for the select element.
 	 */
 	private function get_select_field_name() {
 		if (
 			! empty( $this->multiple ) &&
-			filter_input( INPUT_POST, 'action' ) === 'so_panels_widget_form'
+			filter_input( INPUT_POST, 'action' ) !== 'so_panels_widget_form'
 		) {
-			return $this->element_name;
+			return $this->element_name . '[]';
 		}
 
-		return $this->element_name . '[]';
+		return $this->element_name;
 	}
 
 	protected function render_field( $value, $instance ) {
