@@ -86,7 +86,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 								'type' => 'select',
 								'label' => __( 'Background image type', 'so-widgets-bundle' ),
 								'options' => array(
-									'cover' => __( 'Cover', 'so-widgets-bundle ' ),
+									'cover' => __( 'Cover', 'so-widgets-bundle' ),
 									'tile' => __( 'Tile', 'so-widgets-bundle' ),
 								),
 								'default' => 'cover',
