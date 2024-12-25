@@ -3,7 +3,7 @@
 		<label
 			class="sow-form-field-label-<?php echo esc_attr( $instance['design']['labels']['position'] != 'inside' ? $instance['design']['labels']['position'] : 'above' ); ?>"
 			for="really-simple-captcha-<?php echo esc_attr( $instance_hash ); ?>">
-			<strong><?php _e( 'Captcha', 'so-widgets-bundle' ); ?></strong>
+			<strong><?php echo esc_html__( 'Captcha', 'so-widgets-bundle' ); ?></strong>
 		</label>
 	<?php } ?>
 
@@ -23,7 +23,7 @@
 	</span>
 	<?php if ( $instance['design']['labels']['position'] == 'below' ) { ?>
 		<label class="sow-form-field-label-left" for="really-simple-captcha-<?php echo esc_attr( $instance_hash ); ?>">
-			<strong><?php _e( 'Captcha', 'so-widgets-bundle' ); ?></strong>
+			<strong><?php echo esc_html__( 'Captcha', 'so-widgets-bundle' ); ?></strong>
 		</label>
 	<?php } ?>
 	<input type="hidden" name="really-simple-captcha-prefix-<?php echo esc_attr( $instance_hash ); ?>" value="<?php echo esc_attr( $really_simple_spam_prefix ); ?>" />

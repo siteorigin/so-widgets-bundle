@@ -62,7 +62,10 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 				}
 				?>
 			</div>
-			<label><?php _e( 'Choose Icon', 'so-widgets-bundle' ); ?></label>
+			<label>
+				<?php echo esc_html__( 'Choose Icon', 'so-widgets-bundle' ); ?>
+					
+				</label>
 		</div>
 
 		<a class="so-icon-remove" style="display: <?php echo ! empty( $value ) ? 'inline-block' : 'none'; ?>;" tabindex="0"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
