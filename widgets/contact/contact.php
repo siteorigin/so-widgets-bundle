@@ -38,6 +38,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		);
 		add_filter( 'siteorigin_widgets_sanitize_field_multiple_emails', array( $this, 'sanitize_multiple_emails' ) );
 		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-contact-form', array( $this, 'enqueue_widget_scripts' ) );
+
+		add_filter( 'siteorigin_widgets_contact_body', array( $this, 'format_email_body' ), 10, 2 );
 	}
 
 	public function enqueue_widget_scripts() {
@@ -1786,10 +1788,21 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			return true;
 		}
 
+		$formatted_body = apply_filters(
+			'siteorigin_widgets_contact_body',
+			$body,
+			$email_fields['subject'],
+			$instance
+		);
+
+		if ( empty( $formatted_body ) ) {
+			$formatted_body = $body;
+		}
+
 		$mail_success = wp_mail(
 			$to_email,
 			$email_fields['subject'],
-			$body,
+			$formatted_body,
 			apply_filters( 'siteorigin_widgets_contact_email_headers', $headers )
 		);
 
@@ -1829,6 +1842,26 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 
 		return apply_filters( 'siteorigin_widgets_contact_default_email', 'wordpress@' . $sitename );
+	}
+
+	/**
+	 * Format the email body before sending it.
+	 *
+	 * This method formats the email body to be a valid HTML document.
+	 * It uses output buffering to capture the content of the template and
+	 * returns it as a string.
+	 *
+	 * It uses the `siteorigin_widgets_contact_body` filter to do this.
+	 *
+	 * @param string $body The email body.
+	 * @param string $subject The email subject.
+	 *
+	 * @return string The formatted email body.
+	 */
+	public function format_email_body( $body, $subject ) {
+		ob_start();
+		require plugin_dir_path( __FILE__ ) . 'tpl/email.php';
+		return ob_get_clean();
 	}
 
 	public function get_form_teaser() {
