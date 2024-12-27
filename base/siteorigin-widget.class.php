@@ -565,12 +565,22 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				if ( is_array( $teaser ) ) {
 					$teaser = $teaser[ array_rand( $teaser ) ];
 				}
-
 				?>
-				<div class="siteorigin-widget-teaser">
-					<?php echo wp_kses_post( $teaser ); ?>.
-					<span class="dashicons dashicons-dismiss" data-dismiss-url="<?php echo esc_url( $dismiss_url ); ?>"></span>
-				</div>
+				<section class="siteorigin-widget-teaser">
+					<p class="siteorigin-widget-teaser-message">
+						<?php echo wp_kses_post( $teaser ); ?>.
+					</p>
+
+					<button
+						type="button"
+						class="siteorigin-widget-teaser-dismiss dashicons dashicons-dismiss"
+						data-dismiss-url="<?php echo esc_url( $dismiss_url ); ?>"
+					>
+						<span class="screen-reader-text">
+							<?php echo esc_html( 'Dismiss this message', 'so-widgets-bundle' ); ?>
+						</span>
+					</button>
+				</section>
 				<?php
 			}
 		}

@@ -5,19 +5,47 @@
 }
 
 .siteorigin-widget-teaser {
-	padding: 10px 12px;
-	border: 1px solid #5fc133;
+	align-items: center;
 	background: #edfbe7;
+	border: 1px solid #5fc133;
 	color: #394a3a;
+	display: flex;
+	justify-content: space-between;
 	margin-bottom: 20px;
+	padding: 10px 12px;
 
-	.dashicons {
-		float: right;
-		margin: 1px 2px 6px 10px;
+	&-message {
+		margin: 0;
+
+		a {
+
+			&:hover,
+			&:focus {
+				text-decoration: none;
+			}
+		}
+	}
+
+	&-dismiss {
+		appearance: none;
+		background: none;
+		border: none;
+		color: #394a3a;
 		cursor: pointer;
-		font-size: 18px;
-		width: 18px;
-		height: 18px;
+
+		&:hover,
+		&:focus {
+			color: #666;
+		}
+
+		.dashicons {
+			cursor: pointer;
+			float: right;
+			font-size: 18px;
+			height: 18px;
+			margin: 1px 2px 6px 10px;
+			width: 18px;
+		}
 	}
 }
 
