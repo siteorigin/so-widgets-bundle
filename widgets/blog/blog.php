@@ -910,16 +910,11 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	public static function get_terms_for_taxonomy( $taxonomy, $post_id = 0, $error_check = true ) {
 		$terms = $post_id ? get_the_terms( (int) $post_id, $taxonomy ) : get_terms( $taxonomy );
 
-		if ( ! $error_check ) {
-			set_query_var( 'siteorigin_widgets_portfolio_taxonomy', $taxonomy );
-			return $terms;
-		}
+		set_query_var( 'siteorigin_widgets_portfolio_taxonomy', $taxonomy );
 
-		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+		if ( $error_check && ( empty( $terms ) || is_wp_error( $terms ) ) ) {
 			return false;
 		}
-
-		set_query_var( 'siteorigin_widgets_portfolio_taxonomy', $taxonomy );
 
 		return $terms;
 	}
