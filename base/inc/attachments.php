@@ -79,47 +79,88 @@ function siteorigin_widgets_get_attachment_image( $attachment, $size, $fallback,
 	}
 }
 
+$siteorigin_image_sizes = array();
 /**
  * Get size information for all currently-registered image sizes.
+ *
+ * This function retrieves the configuration for all currently-registered image sizes.
+ * It includes both the hardcoded sizes (thumbnail, medium, medium_large, large) and
+ * any additional image sizes registered by themes or plugins. The resulting sizes
+ * array is stored in the $siteorigin_image_sizes global variable for caching
+ * purposes.
+ *
  * From codex example here: https://codex.wordpress.org/Function_Reference/get_intermediate_image_sizes
  *
- * @global $_wp_additional_image_sizes
- *
+ * @global array $_wp_additional_image_sizes
+ * @global array $siteorigin_image_sizes
  * @uses   get_intermediate_image_sizes()
  *
  * @return array $sizes Data for all currently-registered image sizes.
  */
 function siteorigin_widgets_get_image_sizes() {
-	global $_wp_additional_image_sizes;
+	global $_wp_additional_image_sizes, $siteorigin_image_sizes;
+
+	if ( ! empty( $siteorigin_image_sizes ) ) {
+		return $siteorigin_image_sizes;
+	}
 
 	$sizes = array();
+	$intermediate_sizes = get_intermediate_image_sizes();
+	$hardcoded_sizes = array(
+		'thumbnail',
+		'medium',
+		'medium_large',
+		'large'
+	);
 
-	foreach ( get_intermediate_image_sizes() as $_size ) {
-		if ( in_array( $_size, array( 'thumbnail', 'medium', 'medium_large', 'large' ) ) ) {
-			$sizes[ $_size ]['width'] = get_option( "{$_size}_size_w" );
-			$sizes[ $_size ]['height'] = get_option( "{$_size}_size_h" );
-			$sizes[ $_size ]['crop'] = (bool) get_option( "{$_size}_crop" );
-		} elseif ( isset( $_wp_additional_image_sizes[ $_size ] ) ) {
+	foreach ( $intermediate_sizes as $_size ) {
+		if ( in_array( $_size, $hardcoded_sizes ) ) {
 			$sizes[ $_size ] = array(
-				'width'  => $_wp_additional_image_sizes[ $_size ]['width'],
-				'height' => $_wp_additional_image_sizes[ $_size ]['height'],
-				'crop'   => $_wp_additional_image_sizes[ $_size ]['crop'],
+				'width'  => (int) get_option( $_size . '_size_w' ),
+				'height' => (int) get_option( $_size . '_size_h' ),
+				'crop'   => (bool) get_option( $_size . '_crop' ),
 			);
+
+			continue;
+		}
+
+		if ( isset( $_wp_additional_image_sizes[ $_size ] ) ) {
+			$sizes[ $_size] = $_wp_additional_image_sizes[ $_size ];
 		}
 	}
+
+	$siteorigin_image_sizes = $sizes;
 
 	return $sizes;
 }
 
 /**
- * @return mixed
+ * Get the image size configuration.
+ *
+ * This function retrieves the configuration for the specified image size.
+ * It returns null if the size is not defined, or if the sizes array is empty.
+ * If the size identifier is 'thumb', we override it to 'thumbnail' to match the
+ * current WordPress core image size.
+ *
+ * @param string $size - The image size identifier.
+ *
+ * @return array|null - The configuration array for the image size, or null if not found.
  */
 function siteorigin_widgets_get_image_size( $size ) {
 	$sizes = siteorigin_widgets_get_image_sizes();
 
-	if ( ! empty( $sizes[ $size ] ) ) {
-		return $sizes[ $size ];
+	// Previously, we stored the thumbnail size as 'thumb'. It's now 'thumbnail'.
+	if ( $size === 'thumb' ) {
+		$size = 'thumbnail';
 	}
 
-	return null;
+	if (
+		empty( $sizes ) ||
+		! is_string( $size ) ||
+		! isset( $sizes[ $size ] )
+	) {
+		return null;
+	}
+
+	return $sizes[ $size ];
 }

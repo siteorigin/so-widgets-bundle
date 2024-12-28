@@ -16,7 +16,9 @@ class SiteOrigin_Widget_ContactForm_Field_Select extends SiteOrigin_Widget_Conta
 			<?php
 			if ( $options['show_placeholder'] && empty( $options['field']['multiple_select'] ) ) {
 				?>
-				<option selected disabled><?php esc_html_e( $options['field']['label'] ); ?></option>
+				<option selected disabled>
+					<?php echo esc_html__( $options['field']['label'], 'so-widgets-bundle' ); ?>
+				</option>
 				<?php
 			}
 

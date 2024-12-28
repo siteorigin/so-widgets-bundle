@@ -508,12 +508,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		<?php if ( $this->show_preview_button() ) { ?>
 			<div class="siteorigin-widget-preview" style="display: none">
-				<a href="#" class="siteorigin-widget-preview-button button-secondary"><?php _e( 'Preview', 'so-widgets-bundle' ); ?></a>
+				<a href="#" class="siteorigin-widget-preview-button button-secondary">
+					<?php echo esc_html__( 'Preview', 'so-widgets-bundle' ); ?>
+				</a>
 			</div>
 		<?php } ?>
 
 		<?php if ( ! empty( $this->widget_options['help'] ) ) { ?>
-			<a href="<?php echo sow_esc_url( $this->widget_options['help'] ); ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Help', 'so-widgets-bundle' ); ?></a>
+			<a href="<?php echo sow_esc_url( $this->widget_options['help'] ); ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank" rel="noopener noreferrer">
+				<?php esc_html_e( 'Help', 'so-widgets-bundle' ); ?>
+			</a>
 		<?php } ?>
 
 		<script type="text/javascript">
@@ -584,8 +588,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 	public function scripts_loading_message() {
 		?>
-		<p><strong><?php _e( 'This widget has scripts and styles that need to be loaded before you can use it. Please save and reload your current page.', 'so-widgets-bundle' ); ?></strong></p>
-		<p><strong><?php _e( 'You will only need to do this once.', 'so-widgets-bundle' ); ?></strong></p>
+		<p>
+			<strong><?php echo esc_html__( 'This widget has scripts and styles that need to be loaded before you can use it. Please save and reload your current page.', 'so-widgets-bundle' ); ?></strong>
+		</p>
+		<p>
+			<strong><?php echo esc_html__( 'You will only need to do this once.', 'so-widgets-bundle' ); ?></strong>
+		</p>
 		<?php
 	}
 
@@ -687,7 +695,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				<div class="so-widgets-dialog-overlay"></div>
 
 				<div class="so-widgets-toolbar">
-					<h3><?php _e( 'Widget Preview', 'so-widgets-bundle' ); ?></h3>
+					<h3>
+						<?php echo esc_html__( 'Widget Preview', 'so-widgets-bundle' ); ?>
+					</h3>
 					<div class="close" tabindex="0"><span class="dashicons dashicons-arrow-left-alt2"></span></div>
 				</div>
 

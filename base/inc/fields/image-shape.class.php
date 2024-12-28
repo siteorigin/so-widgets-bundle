@@ -13,9 +13,9 @@ class SiteOrigin_Widget_Field_Image_Shape extends SiteOrigin_Widget_Field_Base {
 			<div class="siteorigin-widget-shape"><span></span></div>
 			<label><?php echo esc_html( __( 'Choose Shape', 'so-widgets-bundle' ) ); ?></label>
 		</div>
-	
+
 		<div class="siteorigin-widget-shapes" tabindex="0">
-			<input type="search" class="siteorigin-widget-shape-search" placeholder="<?php esc_attr_e( 'Search Shapes' ); ?>" />
+			<input type="search" class="siteorigin-widget-shape-search" placeholder="<?php esc_attr_e( 'Search Shapes', 'so-widgets-bundle' ); ?>" />
 			<?php
 			foreach ( $shapes as $shape => $name ) {
 				?>

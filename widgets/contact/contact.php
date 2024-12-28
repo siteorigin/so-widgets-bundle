@@ -272,9 +272,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'label'   => __( 'reCAPTCHA', 'so-widgets-bundle' ),
 								'default' => false,
 								'options' => array(
-									''   => __( 'Disabled', 'so-widgets' ),
-									'v2' => __( 'v2', 'so-widgets' ),
-									'v3' => __( 'v3', 'so-widgets' ),
+									''   => __( 'Disabled', 'so-widgets-bundle' ),
+									'v2' => __( 'v2', 'so-widgets-bundle' ),
+									'v3' => __( 'v3', 'so-widgets-bundle' ),
 								),
 								'description' => sprintf(
 									__( 'Please make sure you register a new reCAPTCHA key %shere%s.', 'so-widgets-bundle' ),
@@ -1488,7 +1488,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			// Missing subject input and no default subject set. Revert to using a generic default 'SiteName Contact Form'
 			if ( ! isset( $email_fields['subject'] ) && ! empty( $email_errors['subject'] ) ) {
 				unset( $email_errors['subject'] );
-				$email_fields['subject'] = get_bloginfo() . ' ' . __( 'Contact Form', 'siteorigin-widgets' );
+				$email_fields['subject'] = get_bloginfo() . ' ' . __( 'Contact Form', 'so-widgets-bundle' );
 			}
 
 			if ( ! empty( $email_errors ) ) {

@@ -62,7 +62,10 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 				}
 				?>
 			</div>
-			<label><?php _e( 'Choose Icon', 'so-widgets-bundle' ); ?></label>
+			<label>
+				<?php echo esc_html__( 'Choose Icon', 'so-widgets-bundle' ); ?>
+					
+				</label>
 		</div>
 
 		<a class="so-icon-remove" style="display: <?php echo ! empty( $value ) ? 'inline-block' : 'none'; ?>;" tabindex="0"><?php esc_html_e( 'Remove', 'so-widgets-bundle' ); ?></a>
@@ -90,13 +93,13 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 				<?php foreach ( $family_styles as $family_style => $family_style_name ) { ?>
 					<option value="<?php echo esc_attr( $family_style ); ?>"
 							<?php selected( $value_parts['style'], $family_style ); ?>>
-						<?php esc_html_e( $family_style_name ); ?>
+						<?php echo esc_html( $family_style_name ); ?>
 					</option>
 				<?php } ?>
 			</select>
 			<?php }?>
 
-			<input type="search" class="siteorigin-widget-icon-search" placeholder="<?php esc_attr_e( 'Search Icons' ); ?>" />
+			<input type="search" class="siteorigin-widget-icon-search" placeholder="<?php esc_attr_e( 'Search Icons', 'so-widgets-bundle' ); ?>" />
 
 			<input
 				type="hidden"

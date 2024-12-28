@@ -262,7 +262,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						'type' => 'checkbox',
 						'label' => __( 'Allow multiple simultaneous Info Windows?', 'so-widgets-bundle' ),
 						'default' => true,
-						'description' => __( 'This setting is ignored when Info Windows are set to always display.' ),
+						'description' => __( 'This setting is ignored when Info Windows are set to always display.', 'so-widgets-bundle' ),
 					),
 				),
 			),
