@@ -1147,12 +1147,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		if ( ! empty( $label_font['weight'] ) ) {
 			$vars['label_font_weight'] = $label_font['weight_raw'];
-			$lessvars_vars['label_font_style'] = $label_font['style'];
+			$vars['label_font_style'] = $label_font['style'];
 		}
 
 		if ( ! empty( $field_font['weight'] ) ) {
 			$vars['field_font_weight'] = $field_font['weight_raw'];
-			$lessvars_vars['field_font_style'] = $field_font['style'];
+			$vars['field_font_style'] = $field_font['style'];
 		}
 
 		$global_settings = $this->get_global_settings();
