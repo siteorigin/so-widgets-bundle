@@ -1137,5 +1137,10 @@ div.siteorigin-widget-form {
 		background-size: contain;
 		height: 100%;
 		width: 40px;
+
+		// Prevent default icon from showing up when the widget has an icon.
+		&:not(.so-widget-icon-default) {
+			background: none;
+		}
 	}
 }

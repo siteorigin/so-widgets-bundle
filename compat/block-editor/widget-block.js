@@ -419,7 +419,7 @@
 				: el(
 					'span',
 					{
-						className: 'widget-icon so-widget-icon so-block-editor-icon'
+						className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
 					}
 				)
 			},
