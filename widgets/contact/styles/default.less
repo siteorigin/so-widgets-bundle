@@ -349,13 +349,16 @@
 	@success_padding: default;
 
 	background-color: @success_background_color;
-	border-color: @success_border_color;
-	border-style: @success_border_style;
-	border-width: @success_border_width;
 	color: @success_color;
 	font-family: @success_font_family;
 	font-size: @success_font_size;
 	font-style: @success_font_style;
 	font-weight: @success_font_weight;
 	padding: @success_padding;
+
+	& when not ( @success_border_color = default ) {
+		border-color: @success_border_color;
+		border-style: @success_border_style;
+		border-width: @success_border_width;
+	}
 }
