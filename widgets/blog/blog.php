@@ -962,8 +962,13 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		// Has user set terms? If so, let's use that.
-		if ( ! empty( $query ) && ! empty( $query['tax_query'] ) ) {
+		// Has user set terms? If so, let's use that if a post id hasn't be set.
+		// Individual posts should use their terms, rather than one set in the widget.
+		if (
+			empty( $post_id ) &&
+			! empty( $query ) &&
+			! empty( $query['tax_query'] )
+		 ) {
 			foreach ( $query['tax_query'] as $tax ) {
 				if ( isset( $tax['terms'] ) ) {
 					$terms[] = $tax['terms'];
