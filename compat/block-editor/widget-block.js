@@ -499,18 +499,47 @@ if (
 	adminpage != 'widgets-php' &&
 	typeof wp.data.select == 'function'
 ) {
+	/**
+	 * Remove the legacy widget block.
+	 *
+	 * This function removes the 'sowb/widget-block' block type,
+	 * which is only present to prevent errors and aid in migration.
+	 *
+	 * It also prevents further migration attempts.
+	 *
+	 * @returns {boolean} Returns false to prevent further execution
+	 */
+	const removeLegacyWidgetBlock = () => {
+		// Remove the placeholder block. It's only present to prevent errors,
+		// and to aide in migration. We don't want users actually using it.
+		wp.blocks.unregisterBlockType( 'sowb/widget-block' );
 
+		// Unsubscribe the migration.
+		migrateOldBlocks();
+
+		return false;
+	}
+
+	/**
+	 * Migrate SiteOrigin Widget Blocks to their dedicated widget block.
+	 *
+	 * This function subscribes to the block editor data store and
+	 * migrates any legacy 'sowb/widget-block' blocks to their new block types.
+	 * After migration, it removes the legacy widget block and unsubscribes
+	 * from the data store.
+	 */
 	const migrateOldBlocks = wp.data.subscribe( () => {
 		if ( wp.data.select( 'core/block-editor' ).getBlocks().length === 0 ) {
-			return;
+			return removeLegacyWidgetBlock();
 		}
+
 
 		// Find any legacy WB blocks.
 		const widgetBlocks = wp.data.select( 'core/block-editor' ).getBlocks()
 			.filter( block => block.name === 'sowb/widget-block' );
 
 		if ( widgetBlocks.length === 0 ) {
-			return;
+			return removeLegacyWidgetBlock();
 		}
 
 		widgetBlocks.forEach( currentBlock => {
@@ -526,6 +555,8 @@ if (
 				);
 			}
 		} );
+
+		return removeLegacyWidgetBlock();
 	} );
 
 	let sowbTimeoutSetup = false;
