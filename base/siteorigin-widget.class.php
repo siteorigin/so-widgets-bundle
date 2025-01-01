@@ -648,6 +648,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					),
 				),
 				'fonts' => siteorigin_widgets_font_families(),
+				'icons' => array(),
 			) );
 
 			if ( ! class_exists( 'FLBuilderModel' ) || ! FLBuilderModel::is_builder_active() ) {

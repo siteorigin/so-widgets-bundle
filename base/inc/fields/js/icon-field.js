@@ -1,8 +1,9 @@
 /* global jQuery, soWidgets */
-
 ( function( $ ) {
-
-	var iconWidgetCache = {};
+	if ( window.soWidgets === undefined ) {
+		window.soWidgets = {};
+	}
+	window.soWidgets.icons = [];
 
 	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-icon', function( e ) {
 		var $$ = $( this ),
@@ -67,7 +68,7 @@
 			var $familySelect = $is.find( 'select.siteorigin-widget-icon-family' );
 			var family = $familySelect.val();
 
-			if ( typeof iconWidgetCache[ family ] === 'undefined' ) {
+			if ( typeof window.soWidgets.icons[ family ] === 'undefined' ) {
 				return;
 			}
 
@@ -75,7 +76,7 @@
 			if ( ! init ) {
 				$stylesSelect.off( 'change', rerenderIcons );
 				$stylesSelect.remove();
-				var iconFamily = iconWidgetCache[ family ];
+				var iconFamily = window.soWidgets.icons[ family ];
 				if ( iconFamily.hasOwnProperty( 'styles' ) && iconFamily.styles ) {
 					var options = '';
 					for ( var styleClass in iconFamily.styles ) {
@@ -96,13 +97,13 @@
 			var family = $familySelect.val();
 			var container = $is.find('.siteorigin-widget-icon-icons');
 
-			if ( typeof iconWidgetCache[ family ] === 'undefined' ) {
+			if ( typeof window.soWidgets.icons[ family ] === 'undefined' ) {
 				return;
 			}
 
 			container.empty();
 
-			var iconFamily = iconWidgetCache[ family ];
+			var iconFamily = window.soWidgets.icons[ family ];
 			var icons = iconFamily.icons;
 			var style;
 			if ( iconFamily.hasOwnProperty( 'styles' ) && iconFamily.styles ) {
@@ -113,7 +114,7 @@
 
 				$( "<link rel='stylesheet' type='text/css'>" )
 					.attr( 'id', 'siteorigin-widget-font-' + family )
-					.attr( 'href', iconWidgetCache[ family ].style_uri )
+					.attr( 'href', window.soWidgets.icons[ family ].style_uri )
 					.appendTo( 'head' );
 			}
 
@@ -194,14 +195,14 @@
 
 			var dataIcons = $is.find( 'select.siteorigin-widget-icon-family option:selected' ).data( 'icons' );
 			if ( dataIcons !== null ) {
-				iconWidgetCache[ family ] = dataIcons;
+				window.soWidgets.icons[ family ] = dataIcons;
 			}
 
 			if ( typeof family === 'undefined' || family === '' ) {
 				return;
 			}
 
-			if ( typeof iconWidgetCache[ family ] === 'undefined' ) {
+			if ( typeof window.soWidgets.icons[ family ] === 'undefined' ) {
 				var $container = $is.find( '.siteorigin-widget-icon-icons' );
 				$container.addClass( 'loading' );
 
@@ -212,7 +213,7 @@
 						'family' :  $is.find('select.siteorigin-widget-icon-family').val()
 					},
 					function( data ) {
-						iconWidgetCache[ family ] = data;
+						window.soWidgets.icons[ family ] = data;
 						renderStylesSelect( init );
 						$container.removeClass( 'loading' );
 						rerenderIcons();
