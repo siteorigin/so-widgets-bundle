@@ -1702,18 +1702,27 @@ var sowbForms = window.sowbForms || {};
 				} else if ( $$.hasClass( 'sow-multi-measurement-input-values' ) ) {
 					const $inputs = $$.prev().find( '.sow-multi-measurement-input, .sow-multi-measurement-select-unit' );
 					const valuesArray = [];
-					values.value.split(' ').forEach( field => {
-						valuesArray.push( parseInt( field, 10 ) );
-						valuesArray.push( field.replace( parseInt( field, 10 ), '' ) );
-					} );
+
+					if ( values.value !== '' ) {
+						values.value.split(' ').forEach( field => {
+							valuesArray.push( parseInt( field, 10 ) );
+							valuesArray.push( field.replace( parseInt( field, 10 ), '' ) );
+						} );
+					}
 
 					$inputs.each( function( index, element ) {
 						const $input = $( element );
-						const part = valuesArray[ index ];
-						if ( typeof part !== 'number' ) {
+
+						if ( typeof valuesArray[ index ] !== 'number' ) {
 							return true;
 						}
-						$input.val( part );
+
+						const part = parseInt( valuesArray[ index ] );
+
+						$input.val(
+							isNaN( part ) ? '' : part
+						);
+
 						if ( ! updated && compareValues( $input.val(), values.value[ part ] ) ) {
 							updated = true;
 						}
