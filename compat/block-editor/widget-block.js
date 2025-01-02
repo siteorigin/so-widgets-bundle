@@ -515,8 +515,6 @@ if (
 	 * @returns {boolean} Returns false to prevent further execution
 	 */
 	const removeLegacyWidgetBlock = () => {
-		// Remove the placeholder block. It's only present to prevent errors,
-		// and to aide in migration. We don't want users actually using it.
 		wp.blocks.unregisterBlockType( 'sowb/widget-block' );
 
 		// Unsubscribe the migration.
@@ -534,14 +532,13 @@ if (
 	 * from the data store.
 	 */
 	const migrateOldBlocks = wp.data.subscribe( () => {
-		if ( wp.data.select( 'core/block-editor' ).getBlocks().length === 0 ) {
-			return removeLegacyWidgetBlock();
+		const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
+		if ( blocks.length === 0 ) {
+			return;
 		}
 
-
 		// Find any legacy WB blocks.
-		const widgetBlocks = wp.data.select( 'core/block-editor' ).getBlocks()
-			.filter( block => block.name === 'sowb/widget-block' );
+		const widgetBlocks = blocks.filter( block => block.name === 'sowb/widget-block' );
 
 		if ( widgetBlocks.length === 0 ) {
 			return removeLegacyWidgetBlock();
