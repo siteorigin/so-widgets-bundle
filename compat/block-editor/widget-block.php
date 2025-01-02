@@ -2,6 +2,7 @@
 
 class SiteOrigin_Widgets_Bundle_Widget_Block {
 	public $widgetAnchor;
+	public $widgetBlocks = array();
 	/**
 	 * Get the singleton instance
 	 *
@@ -15,9 +16,22 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 	public function __construct() {
 		$this->register_widget_block();
+		$this->setup_rest_validation();
 
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_widget_block_editor_assets' ) );
+	}
 
+	/**
+	 * Setup REST API validation for SiteOrigin widgets.
+	 *
+	 * This method sets up server-side validation for SiteOrigin widgets
+	 * in the REST API. It retrieves all public post types and adds a
+	 * REST API pre-insert action for each post type to perform
+	 * server-side validation.
+	 *
+	 * @return void
+	 */
+	public function setup_rest_validation() {
 		$post_types = get_post_types( array( 'public' => true ), 'names' );
 		if ( empty( $post_types ) ) {
 			$post_types = array( 'post', 'page' );
