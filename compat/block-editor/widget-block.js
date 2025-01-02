@@ -182,6 +182,11 @@
 				... this.initialState,
 				isStillMounted: true
 			};
+
+			// Store the widget class if it's not already set.
+			if ( ! props.attributes.widgetClass ) {
+				this.props.setAttributes( { widgetClass: props.widget.class } );
+			}
 		}
 
 		componentDidMount() {
