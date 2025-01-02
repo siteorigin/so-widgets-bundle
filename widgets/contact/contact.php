@@ -777,6 +777,77 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 						),
 					),
+
+					'success' => array(
+						'type' => 'section',
+						'label'=> __( 'Success message', 'so-widgets-bundle' ),
+						'fields' => array(
+							'font'	 => array(
+								'type' => 'font',
+								'label' => __( 'Font', 'so-widgets-bundle' ),
+							),
+							'font_size' => array(
+								'type' => 'measurement',
+								'label' => __( 'Font size', 'so-widgets-bundle' ),
+							),
+							'color' => array(
+								'type' => 'color',
+								'label' => __( 'Text color', 'so-widgets-bundle' ),
+							),
+							'background_color' => array(
+								'type' => 'color',
+								'label' => __( 'Background color', 'so-widgets-bundle' ),
+							),
+							'padding' => array(
+								'type' => 'multi-measurement',
+								'label' => __( 'Padding', 'so-widgets-bundle' ),
+								'measurements' => array(
+									'top' => array(
+										'label' => __( 'Top', 'so-widgets-bundle' ),
+										'units' => $useable_units,
+									),
+									'right' => array(
+										'label' => __( 'Right', 'so-widgets-bundle' ),
+										'units' => $useable_units,
+									),
+									'bottom' => array(
+										'label' => __( 'Bottom', 'so-widgets-bundle' ),
+										'units' => $useable_units,
+									),
+									'left' => array(
+										'label' => __( 'Left', 'so-widgets-bundle' ),
+										'units' => $useable_units,
+									),
+								),
+							),
+							'border_color' => array(
+								'type' => 'color',
+								'label' => __( 'Border color', 'so-widgets-bundle' ),
+							),
+							'border_width' => array(
+								'type' => 'measurement',
+								'label' => __( 'Border width', 'so-widgets-bundle' ),
+								'default' => '1px',
+							),
+							'border_style' => array(
+								'type'  => 'select',
+								'label' => __( 'Border style', 'so-widgets-bundle' ),
+								'default' => 'solid',
+								'options' => array(
+									'none'   => __( 'None', 'so-widgets-bundle' ),
+									'hidden' => __( 'Hidden', 'so-widgets-bundle' ),
+									'dotted' => __( 'Dotted', 'so-widgets-bundle' ),
+									'dashed' => __( 'Dashed', 'so-widgets-bundle' ),
+									'solid'  => __( 'Solid', 'so-widgets-bundle' ),
+									'double' => __( 'Double', 'so-widgets-bundle' ),
+									'groove' => __( 'Groove', 'so-widgets-bundle' ),
+									'ridge'  => __( 'Ridge', 'so-widgets-bundle' ),
+									'inset'  => __( 'Inset', 'so-widgets-bundle' ),
+									'outset' => __( 'Outset', 'so-widgets-bundle' ),
+								),
+							),
+						),
+					),
 				),
 			),
 		);
@@ -1133,6 +1204,15 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'outline_style'              => $instance['design']['focus']['style'],
 			'outline_color'              => $instance['design']['focus']['color'],
 			'outline_width'              => $instance['design']['focus']['width'],
+
+			// Success message styles.
+			'success_font_size'          => ! empty( $instance['design']['success']['font_size'] ) ? $instance['design']['success']['font_size'] : '',
+			'success_color'              => ! empty( $instance['design']['success']['color'] ) ? $instance['design']['success']['color'] : '',
+			'success_background_color'   => ! empty( $instance['design']['success']['background_color'] ) ? $instance['design']['success']['background_color'] : '',
+			'success_padding'            => ! empty( $instance['design']['success']['padding'] ) ? $instance['design']['success']['padding'] : '',
+			'success_border_width'       => ! empty( $instance['design']['success']['border_width'] ) ? $instance['design']['success']['border_width'] : '',
+			'success_border_color'       => ! empty( $instance['design']['success']['border_color'] ) ? $instance['design']['success']['border_color'] : '',
+			'success_border_style'       => ! empty( $instance['design']['success']['border_style'] ) ? $instance['design']['success']['border_style'] : '',
 		);
 
 		// Ensure all border values exist before setting border
@@ -1147,12 +1227,22 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		if ( ! empty( $label_font['weight'] ) ) {
 			$vars['label_font_weight'] = $label_font['weight_raw'];
-			$lessvars_vars['label_font_style'] = $label_font['style'];
+			$vars['label_font_style'] = $label_font['style'];
 		}
 
 		if ( ! empty( $field_font['weight'] ) ) {
 			$vars['field_font_weight'] = $field_font['weight_raw'];
-			$lessvars_vars['field_font_style'] = $field_font['style'];
+			$vars['field_font_style'] = $field_font['style'];
+		}
+
+		$success_message_font = siteorigin_widget_get_font(
+			! empty( $instance['design']['success']['font'] ) ? $instance['design']['success']['font'] : ''
+		);
+
+		if ( ! empty( $success_message_font ) && is_array( $success_message_font ) ) {
+			$vars['success_font_family'] = $success_message_font['family'];
+			$vars['success_font_weight'] = $success_message_font['weight_raw'];
+			$vars['success_font_style'] = $success_message_font['style'];
 		}
 
 		$global_settings = $this->get_global_settings();

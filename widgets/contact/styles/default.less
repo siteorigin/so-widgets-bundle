@@ -335,3 +335,34 @@
 		}
 	}
 }
+
+.sow-contact-form-success {
+	@success_background_color: default;
+	@success_border_color: default;
+	@success_border_style: solid;
+	@success_border_width: 1px;
+	@success_color: default;
+	@success_font_family: default;
+	@success_font_size: default;
+	@success_font_style: default;
+	@success_font_weight: default;
+	@success_padding: default;
+
+	background-color: @success_background_color;
+	color: @success_color;
+	font-family: @success_font_family;
+	font-size: @success_font_size;
+	font-style: @success_font_style;
+	font-weight: @success_font_weight;
+	padding: @success_padding;
+
+	& when not ( @success_border_color = default ) {
+		border-color: @success_border_color;
+		border-style: @success_border_style;
+		border-width: @success_border_width;
+	}
+
+	p:last-of-type {
+		margin-bottom: 0;
+	}
+}
