@@ -28,7 +28,29 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		}
 	}
 
+	/**
+	 * Register SiteOrigin Widget blocks.
+	 *
+	 * This method registers block types for all SiteOrigin widgets
+	 * that have a block name. It also registers a legacy widget block to allow for unmigrated widgets to still be rendered.
+	 *
+	 * @return void
+	 */
 	public function register_widget_block() {
+		$so_widgets = $this->get_all_widgets();
+
+		foreach( $so_widgets as $widget ) {
+			if ( empty( $widget['blockName'] ) ) {
+				continue;
+			}
+
+			register_block_type( 'sowb/' . $widget['blockName'], array(
+				'render_callback' => array( $this, 'render_widget_block' ),
+			) );
+		}
+
+		// Register legacy widget block. This will allow for unmigrated
+		// widgets to still be rendered.
 		register_block_type( 'sowb/widget-block', array(
 			'render_callback' => array( $this, 'render_widget_block' ),
 		) );
@@ -69,29 +91,18 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		return $icon;
 	}
 
-	public function enqueue_widget_block_editor_assets() {
-		$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : false;
-		wp_enqueue_script(
-			'sowb-widget-block',
-			plugins_url( 'widget-block' . SOW_BUNDLE_JS_SUFFIX . '.js', __FILE__ ),
-			array(
-				// The WP 5.8 Widget Area requires a specific editor script to be used.
-				is_object( $current_screen ) && $current_screen->base == 'widgets' ? 'wp-edit-widgets' : 'wp-editor',
-				'wp-blocks',
-				'wp-i18n',
-				'wp-element',
-				'wp-components',
-				'wp-compose',
-				'wp-data',
-			),
-			SOW_BUNDLE_VERSION
-		);
-
-		wp_enqueue_style(
-			'sowb-widget-block',
-			plugins_url( 'widget-block.css', __FILE__ )
-		);
-
+	/**
+	 * Retrieve all widgets.
+	 *
+	 * This method retrieves all widgets, including inactive
+	 * SiteOrigin widgets and third-party widgets. It loads
+	 * inactive widgets, extracts their metadata, and
+	 * combines them with active widgets. The resulting list is sorted
+	 * with SiteOrigin widgets at the top, followed by third-party widgets.
+	 *
+	 * @return array An array of widgets with their metadata, including name, class, description, icon, and keywords.
+	 */
+	private function get_all_widgets() {
 		$widgets_metadata_list = SiteOrigin_Widgets_Bundle::single()->get_widgets_list();
 		$widgets_manager = SiteOrigin_Widgets_Widget_Manager::single();
 
@@ -200,7 +211,33 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		// Sort the list of widgets so SiteOrigin widgets are at the top and then third party widgets.
 		sort( $so_widgets );
 		sort( $third_party_widgets );
-		$so_widgets = array_merge( $so_widgets, $third_party_widgets );
+		return array_merge( $so_widgets, $third_party_widgets );
+	}
+
+	public function enqueue_widget_block_editor_assets() {
+		$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : false;
+		wp_enqueue_script(
+			'sowb-widget-block',
+			plugins_url( 'widget-block' . SOW_BUNDLE_JS_SUFFIX . '.js', __FILE__ ),
+			array(
+				// The WP 5.8 Widget Area requires a specific editor script to be used.
+				is_object( $current_screen ) && $current_screen->base == 'widgets' ? 'wp-edit-widgets' : 'wp-editor',
+				'wp-blocks',
+				'wp-i18n',
+				'wp-element',
+				'wp-components',
+				'wp-compose',
+				'wp-data',
+			),
+			SOW_BUNDLE_VERSION
+		);
+
+		wp_enqueue_style(
+			'sowb-widget-block',
+			plugins_url( 'widget-block.css', __FILE__ )
+		);
+
+		$so_widgets = $this->get_all_widgets();
 
 		wp_localize_script(
 			'sowb-widget-block',
@@ -226,14 +263,17 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		return $this->widgetAnchor;
 	}
 
-	public function render_widget_block( $attributes ) {
-		if ( empty( $attributes['widgetClass'] ) ) {
+	public function render_widget_block( $block_content, $block, $instance ) {
+		if (
+			empty( $block_content['widgetClass'] ) &&
+			substr( $instance->parsed_block['blockName'], 0, 5 ) !== 'sowb/'
+		) {
 			return '<div>' .
 				__( 'You need to select a widget type before you\'ll see anything here. :)', 'so-widgets-bundle' ) .
 				'</div>';
 		}
 
-		$widget_class = $attributes['widgetClass'];
+		$widget_class = $block_content['widgetClass'];
 		global $wp_widget_factory;
 
 		$widget = ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ? $wp_widget_factory->widgets[ $widget_class ] : false;
@@ -243,9 +283,9 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		}
 
 		// Support for Additional CSS classes.
-		$add_custom_class_name = function ( $class_names ) use ( $attributes ) {
-			if ( ! empty( $attributes['className'] ) ) {
-				$class_names = array_merge( $class_names, explode( ' ', $attributes['className'] ) );
+		$add_custom_class_name = function ( $class_names ) use ( $block_content ) {
+			if ( ! empty( $block_content['className'] ) ) {
+				$class_names = array_merge( $class_names, explode( ' ', $block_content['className'] ) );
 			}
 
 			return $class_names;
@@ -253,7 +293,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
 			$GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] = true;
-			$instance = $attributes['widgetData'];
+			$instance = $block_content['widgetData'];
 			add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 
 			ob_start();
@@ -271,12 +311,12 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			$current_page_id = get_the_ID();
 
 			if (
-				empty( $attributes['widgetMarkup'] ) ||
+				empty( $block_content['widgetMarkup'] ) ||
 				! empty( $_POST ) ||
-				$attributes['widgetClass'] == 'SiteOrigin_Widget_PostCarousel_Widget' ||
-				$attributes['widgetClass'] == 'SiteOrigin_Widgets_ContactForm_Widget' ||
-				$attributes['widgetClass'] == 'SiteOrigin_Widget_Blog_Widget' ||
-				apply_filters( 'siteorigin_widgets_block_exclude_widget', false, $attributes['widgetClass'], $instance ) ||
+				$block_content['widgetClass'] == 'SiteOrigin_Widget_PostCarousel_Widget' ||
+				$block_content['widgetClass'] == 'SiteOrigin_Widgets_ContactForm_Widget' ||
+				$block_content['widgetClass'] == 'SiteOrigin_Widget_Blog_Widget' ||
+				apply_filters( 'siteorigin_widgets_block_exclude_widget', false, $block_content['widgetClass'], $instance ) ||
 				// Is WPML active? If so, is there a translation for this page?
 				(
 					defined( 'ICL_LANGUAGE_CODE' ) &&
@@ -292,8 +332,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				)
 			) {
 				// Add anchor to widget wrapper.
-				if ( ! empty( $attributes['anchor'] ) ) {
-					$this->widgetAnchor = $attributes['anchor'];
+				if ( ! empty( $block_content['anchor'] ) ) {
+					$this->widgetAnchor = $block_content['anchor'];
 					add_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10, 3 );
 				}
 				/* @var $widget SiteOrigin_Widget */
@@ -305,7 +345,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					'after_title' => '</h3>',
 				), $instance );
 
-				if ( ! empty( $attributes['anchor'] ) ) {
+				if ( ! empty( $block_content['anchor'] ) ) {
 					remove_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10 );
 				}
 			} else {
@@ -313,17 +353,17 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				$widget->enqueue_frontend_scripts( $instance );
 
 				// Check if this widget uses any icons that need to be enqueued.
-				if ( ! empty( $attributes['widgetIcons'] ) ) {
+				if ( ! empty( $block_content['widgetIcons'] ) ) {
 					$widget_icon_families = apply_filters( 'siteorigin_widgets_icon_families', array() );
 
-					foreach ( $attributes['widgetIcons'] as $icon_font ) {
+					foreach ( $block_content['widgetIcons'] as $icon_font ) {
 						if ( ! wp_style_is( $icon_font ) ) {
 							$font_family = explode( 'siteorigin-widget-icon-font-', $icon_font )[1];
 							wp_enqueue_style( $icon_font, $widget_icon_families[ $font_family ]['style_uri'] );
 						}
 					}
 				}
-				echo $attributes['widgetMarkup'];
+				echo $block_content['widgetMarkup'];
 			}
 
 			$rendered_widget = ob_get_clean();
