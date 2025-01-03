@@ -7,7 +7,6 @@ sowb.SiteOriginContactForm = {
 		var $contactForms = $('form.sow-contact-form,.sow-contact-form-success');
 		$contactForms.each( function() {
 			var $el = $( this );
-			var formId = $el.attr( 'id' );
 			var formSubmitSuccess = $el.is( '.sow-contact-form-success' );
 			var formSubmitted = $el.is( '.sow-contact-submitted' );
 			if ( formSubmitted || formSubmitSuccess ) {
@@ -63,8 +62,7 @@ sowb.SiteOriginContactForm = {
 				$submitButton.prop( 'disabled', true );
 
 				if ( $submitButton.data( 'js-key' ) ) {
-					var js_key = $submitButton.data( 'js-key' );
-					$( this ).append( `<input type="hidden" name="sow-js-${js_key}" value="${js_key}">` );
+					$( this ).append( `<input type="hidden" name="sow-js" value="${js_key}">` );
 				}
 			} );
 
