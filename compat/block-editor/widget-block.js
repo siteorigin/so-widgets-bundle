@@ -252,9 +252,14 @@
 					} )
 					.done( ( widgetForm ) => {
 						this.setState( {
-							widgetFormHtml: widgetForm,
-							loadingForm: false
+							widgetFormHtml: widgetForm
 						} );
+
+						setTimeout(() => {
+							this.setState( {
+								loadingForm: false
+							} );
+						}, 0);
 					} )
 					.fail( ( response) => {
 						this.setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
