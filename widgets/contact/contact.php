@@ -1241,8 +1241,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		if ( ! empty( $success_message_font ) && is_array( $success_message_font ) ) {
 			$vars['success_font_family'] = $success_message_font['family'];
-			$vars['success_font_weight'] = $success_message_font['weight_raw'];
-			$vars['success_font_style'] = $success_message_font['style'];
+			$vars['success_font_weight'] = ! empty( $success_message_font['weight_raw'] ) ? $success_message_font['weight_raw'] : '';
+			$vars['success_font_style'] = ! empty( $success_message_font['style'] ) ? $success_message_font['style'] : '';
 		}
 
 		$global_settings = $this->get_global_settings();
