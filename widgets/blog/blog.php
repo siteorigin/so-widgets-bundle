@@ -1029,10 +1029,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	private static function get_filter_categories( $instance, $posts, $query ) {
 		$terms = self::get_query_terms( $instance, $query );
 
-		if ( ! empty( $query['tax_query'] ) ) {
-			return $terms;
-		}
-
 		if ( ! apply_filters(
 			'siteorigin_widgets_blog_portfolio_ensure_valid_terms',
 			true
