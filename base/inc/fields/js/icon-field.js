@@ -6,6 +6,7 @@
 	window.soWidgets.icons = [];
 
 	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-icon', function( e ) {
+
 		var $$ = $( this ),
 			$is = $$.find( '.siteorigin-widget-icon-selector' ),
 			$v = $is.find( '.siteorigin-widget-icon-icon' ),
@@ -64,7 +65,7 @@
 
 		$search.on( 'keyup change', searchIcons );
 
-		var renderStylesSelect = function( init ) {
+		var renderStylesSelect = function() {
 			var $familySelect = $is.find( 'select.siteorigin-widget-icon-family' );
 			var family = $familySelect.val();
 
@@ -73,57 +74,58 @@
 			}
 
 			var $stylesSelect = $is.find( '.siteorigin-widget-icon-family-styles' );
-			if ( ! init ) {
-				$stylesSelect.off( 'change', rerenderIcons );
-				$stylesSelect.remove();
-				var iconFamily = window.soWidgets.icons[ family ];
-				if ( iconFamily.hasOwnProperty( 'styles' ) && iconFamily.styles ) {
-					var options = '';
-					for ( var styleClass in iconFamily.styles ) {
-						options += '<option value="' + styleClass + '">' + iconFamily.styles[ styleClass ] + '</option>';
-					}
-					if ( options ) {
-						$stylesSelect = $( '<select class="siteorigin-widget-icon-family-styles"></select>' ).append( options );
-						$familySelect.after( $stylesSelect );
 
-					}
+			$stylesSelect.off( 'change', rerenderIcons );
+			$stylesSelect.remove();
+			var iconFamily = window.soWidgets.icons[ family ];
+			if ( iconFamily.hasOwnProperty( 'styles' ) && iconFamily.styles ) {
+				var options = '';
+				for ( var styleClass in iconFamily.styles ) {
+					options += '<option value="' + styleClass + '">' + iconFamily.styles[ styleClass ] + '</option>';
+				}
+				if ( options ) {
+					$stylesSelect = $( '<select class="siteorigin-widget-icon-family-styles"></select>' ).append( options );
+					$familySelect.after( $stylesSelect );
+
 				}
 			}
 			$stylesSelect.on( 'change', rerenderIcons );
 		};
 
-		var rerenderIcons = function() {
-			var $familySelect = $is.find( 'select.siteorigin-widget-icon-family' );
-			var family = $familySelect.val();
-			var container = $is.find('.siteorigin-widget-icon-icons');
+		const rerender = () => {
+			renderStylesSelect();
+			rerenderIcons();
+		}
+
+		const rerenderIcons = () => {
+			const $familySelect = $is.find( 'select.siteorigin-widget-icon-family' );
+			const family = $familySelect.val();
+			const container = $is.find('.siteorigin-widget-icon-icons');
 
 			if ( typeof window.soWidgets.icons[ family ] === 'undefined' ) {
+				// Font hasn't been loaded yet. Render it after
+				// it's finished loading.
+				fetchIconFamily();
 				return;
 			}
 
 			container.empty();
 
-			var iconFamily = window.soWidgets.icons[ family ];
-			var icons = iconFamily.icons;
-			var style;
+			const iconFamily = window.soWidgets.icons[ family ];
+			const icons = iconFamily.icons;
+			let style;
 			if ( iconFamily.hasOwnProperty( 'styles' ) && iconFamily.styles ) {
 				style = $is.find( '.siteorigin-widget-icon-family-styles' ).val();
-			}
-
-			if ( $( '#'+'siteorigin-widget-font-' + family ).length === 0 ) {
-
-				$( "<link rel='stylesheet' type='text/css'>" )
-					.attr( 'id', 'siteorigin-widget-font-' + family )
-					.attr( 'href', window.soWidgets.icons[ family ].style_uri )
-					.appendTo( 'head' );
 			}
 
 			for ( var i in icons ) {
 				var iconData = icons[ i ];
 				var unicode = iconData.hasOwnProperty( 'unicode' ) ? iconData.unicode : iconData;
+
 				if ( iconData.hasOwnProperty( 'styles' ) && iconData.styles.indexOf( style ) === -1 ) {
 					continue;
 				}
+
 				var familyStyle = 'sow-icon-' + family + ( style ? ' ' + style : '' );
 				var familyValue = family + ( style ? '-' + style : '' ) + '-' + i;
 
@@ -188,51 +190,52 @@
 			searchIcons();
 		};
 
-		// Create the function for changing the icon family and call it once.
-		var changeIconFamily = function( init ) {
-			// Fetch the family icons from the server.
-			var family = $is.find( 'select.siteorigin-widget-icon-family' ).val();
-
-			var dataIcons = $is.find( 'select.siteorigin-widget-icon-family option:selected' ).data( 'icons' );
-			if ( dataIcons !== null ) {
-				window.soWidgets.icons[ family ] = dataIcons;
-			}
+		const fetchIconFamily = () => {
+			// Fetch the family icons from the server if needed.
+			const family = $is.find( 'select.siteorigin-widget-icon-family' ).val();
 
 			if ( typeof family === 'undefined' || family === '' ) {
 				return;
 			}
 
-			if ( typeof window.soWidgets.icons[ family ] === 'undefined' ) {
-				var $container = $is.find( '.siteorigin-widget-icon-icons' );
-				$container.addClass( 'loading' );
-
-				$.getJSON(
-					soWidgets.ajaxurl,
-					{
-						'action' : 'siteorigin_widgets_get_icons',
-						'family' :  $is.find('select.siteorigin-widget-icon-family').val()
-					},
-					function( data ) {
-						window.soWidgets.icons[ family ] = data;
-						renderStylesSelect( init );
-						$container.removeClass( 'loading' );
-						rerenderIcons();
-					}
-				);
-			} else {
-				rerenderIcons();
+			if ( typeof window.soWidgets.icons[ family ] !== 'undefined' ) {
+				rerender();
+				return;
 			}
+
+			const $container = $is.find( '.siteorigin-widget-icon-icons' );
+			$container.addClass( 'loading' );
+
+			$.getJSON(
+				soWidgets.ajaxurl,
+				{
+					'action' : 'siteorigin_widgets_get_icons',
+					'family' :  $is.find( 'select.siteorigin-widget-icon-family' ).val()
+				},
+				( data ) => {
+					window.soWidgets.icons[ family ] = data;
+
+					// Add the font to the page.
+					$( "<link rel='stylesheet' type='text/css' />" )
+						.attr('id', `siteorigin-widget-font-${ family }`)
+						.attr('href', encodeURI( data.style_uri ) )
+						.appendTo( 'head' );
+
+					rerender();
+					$container.removeClass( 'loading' );
+				}
+			);
 		};
-		changeIconFamily( true );
+		fetchIconFamily();
 
 		$is.find( 'select.siteorigin-widget-icon-family' ).on( 'change', function() {
 			$is.find( '.siteorigin-widget-icon-icons' ).empty();
-			changeIconFamily();
+			rerender();
 		} );
 
 		$v.on( 'change', function( event, data ) {
 			if ( ! ( data && data.isRendering ) ) {
-				rerenderIcons();
+				rerender();
 			}
 		} );
 
