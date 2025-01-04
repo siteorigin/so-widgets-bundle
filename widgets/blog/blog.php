@@ -975,6 +975,18 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				}
 			}
 
+			// We need to set a taxonomy so we can hide/show terms.
+			// Let's use the first term's taxonomy.
+			if (
+				! empty( $terms ) &&
+				! empty( $query['tax_query'][1] ) &&
+				! empty( $query['tax_query'][1]['taxonomy'] )
+			) {
+				set_query_var( 'siteorigin_widgets_portfolio_taxonomy',
+					$query['tax_query'][1]['taxonomy']
+				);
+			}
+
 			return $terms;
 		}
 
@@ -1060,7 +1072,9 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		// Filter out any terms that aren't in the posts.
 		$filtered_terms = array();
 		foreach ( $terms as $term ) {
-			if ( in_array( $term->slug, $all_terms ) ) {
+			$slug = is_object( $term ) ? $term->slug : $term;
+
+			if ( in_array( $slug, $all_terms ) ) {
 				$filtered_terms[] = $term;
 			}
 		}
