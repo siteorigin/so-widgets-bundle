@@ -1506,7 +1506,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 			$field_name = $this->name_from_label(
 				! empty( $field['label'] ) ? $field['label'] : $i,
-				$post_vars,
+				$post_vars
 			);
 
 			$value = isset( $post_vars[ $field_name ] ) ? $post_vars[ $field_name ] : '';
