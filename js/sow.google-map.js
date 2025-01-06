@@ -12,6 +12,29 @@ sowb.SiteOriginGoogleMap = function($) {
 			'San Francisco Bay Area, CA, United States',
 			'New York, NY, United States',
 		],
+		randomMapId: () => Math.random().toString( 36 ).substring( 7 ),
+		/**
+		 * Create an image element for the marker icon.
+		 *
+		 * This function creates an image element for the marker icon.
+		 * Google Maps requires marker icons to be valid elements
+		 * rather than just URLs. The image element is created with
+		 * the provided icon URL and optimized for lazy loading.
+		 *
+		 * @param {string} icon - The URL of the marker icon.
+		 *
+		 * @returns {HTMLImageElement|null} The image element for the marker icon, or null if the icon is undefined.
+		 */
+		drawMarkerEl: ( icon ) => {
+			if ( icon === undefined ) {
+				return null;
+			}
+
+			const imgElement = document.createElement( 'img' );
+			imgElement.src = icon;
+			imgElement.loading = 'lazy';
+			return imgElement;
+		},
 		showMap: function(element, location, options) {
 
 			var zoom = Number(options.zoom);
@@ -33,6 +56,7 @@ sowb.SiteOriginGoogleMap = function($) {
 				zoomControl: options.zoomControl,
 				panControl: options.panControl,
 				center: location,
+				mapId: this.randomMapId(),
 				mapTypeControlOptions: {
 					mapTypeIds: [
 						window.google.maps.MapTypeId.ROADMAP,
@@ -58,13 +82,14 @@ sowb.SiteOriginGoogleMap = function($) {
 			}
 
 			if (options.markerAtCenter) {
-				this.centerMarker = new window.google.maps.Marker( {
+				this.centerMarker = new window.google.maps.marker.AdvancedMarkerElement( {
 					position: location,
 					map: map,
 					draggable: options.markersDraggable,
-					icon: options.markerIcon,
+					gmpDraggable: options.markersDraggable,
+					content: this.drawMarkerEl( options.markerIcon ),
 					title: ''
-				});
+				} );
 
 				map.centerMarker = this.centerMarker;
 			}
@@ -178,16 +203,13 @@ sowb.SiteOriginGoogleMap = function($) {
 					var markerInfo = mrkr.hasOwnProperty( 'info' ) ? mrkr.info : null;
 					var infoMaxWidth = mrkr.hasOwnProperty( 'infoMaxWidth' ) ? mrkr.infoMaxWidth : null;
 					return this.getLocation( mrkr.place ).done( function ( location ) {
-						var mrkerIcon = options.markerIcon;
-						if ( customIcon ) {
-							mrkerIcon = customIcon;
-						}
+						const markerIcon = customIcon ? customIcon : options.markerIcon;
 
-						var marker = new window.google.maps.Marker( {
+						const marker = new google.maps.marker.AdvancedMarkerElement( {
 							position: location,
 							map: map,
-							draggable: options.markersDraggable,
-							icon: mrkerIcon,
+							gmpDraggable: options.markersDraggable,
+							content: this.drawMarkerEl( markerIcon ),
 							title: ''
 						} );
 
@@ -437,7 +459,9 @@ jQuery( window.sowb ).on( 'sow-google-map-loaded', function() {
 
 jQuery(function ($) {
 	sowb.googleMapsData = [];
-	sowb.googleMapsData.libraries = [];
+	sowb.googleMapsData.libraries = [
+		'marker',
+	];
 	sowb.setupGoogleMaps = function( e, forceLoad = false ) {
 		var $mapCanvas = $( '.sow-google-map-canvas' );
 		if ( ! $mapCanvas.length ) {
