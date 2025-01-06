@@ -1,9 +1,11 @@
 <?php
+$this->instance_hash = $storage_hash;
+$short_hash = substr( $this->instance_hash, 0, 4 );
+
 // Display the title.
 if ( $instance['display_title'] && ! empty( $instance['title'] ) ) {
 	echo $args['before_title'] . wp_kses_post( $instance['title'] ) . $args['after_title'];
 }
-$short_hash = substr( $instance_hash, 0, 4 );
 
 if ( is_array( $result ) && $result['status'] == 'success' ) {
 	// Display the success message
@@ -43,7 +45,14 @@ if ( is_array( $result ) && $result['status'] == 'success' ) {
 
 		if ( $template_vars['honeypot'] ) {
 			?>
-			<input type="text" name="sow-<?php echo esc_attr( $instance['_sow_form_id'] ); ?>" class="sow-text-field" style="display: none !important; visibility: hidden !important;" autocomplete="off" aria-hidden="true">
+			<input
+				type="text"
+				name="sow-name"
+				class="sow-text-field"
+				style="display: none !important; visibility: hidden !important;"
+				autocomplete="off"
+				aria-hidden="true"
+			>
 		<?php } ?>
 
 		<?php if ( $recaptcha ) { ?>
@@ -90,8 +99,20 @@ if ( is_array( $result ) && $result['status'] == 'success' ) {
 				<?php echo esc_html( $instance['settings']['submit_text'] ); ?>
 			</button>
 		</div>
-		<?php do_action( 'siteorigin_widgets_contact_after_submit', $instance, $result ); ?>
-		<input type="hidden" name="instance_hash" value="<?php echo esc_attr( $instance_hash ); ?>" />
+		<?php
+		do_action( 'siteorigin_widgets_contact_after_submit', $instance, $result );
+		?>
+		<input
+			type="hidden"
+			name="<?php echo esc_attr( $this->name_from_label( 'instance_hash' ) ); ?>"
+			value="<?php echo esc_attr( $this->instance_hash ); ?>"
+		/>
+
+		<input
+			type="hidden"
+			name="form_id"
+			value="<?php echo esc_attr( $form_id ); ?>"
+		/>
 		<?php wp_nonce_field( '_contact_form_submit' ); ?>
 	</form>
 	<?php

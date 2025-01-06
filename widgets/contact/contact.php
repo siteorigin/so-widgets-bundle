@@ -7,7 +7,10 @@ Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/contact-form-widget/
 */
 
+$field_ids = array();
 class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
+	public $instance_hash;
+
 	public function __construct() {
 		parent::__construct(
 			'sow-contact-form',
@@ -15,6 +18,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			array(
 				'description' => __( 'Add a contact form with custom fields, design options, spam protection, and email notifications.', 'so-widgets-bundle' ),
 				'help' => 'https://siteorigin.com/widgets-bundle/contact-form-widget/',
+				'instance_storage' => true,
 			),
 			array(),
 			false,
@@ -971,18 +975,19 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$instance['settings']['on_click'] = $instance['settings']['onclick'];
 		}
 
-		// If using an older version of reCAPTCHA settings, migrate.
-		if (
-			! empty( $instance['spam'] ) &&
-			! empty( $instance['spam']['recaptcha'] ) &&
-			$instance['spam']['recaptcha']['use_captcha'] === true
-		) {
-			$instance['spam']['recaptcha']['use_captcha'] = 'v2';
-		}
+		if ( ! empty( $instance['spam'] ) ) {
+			// If using an older version of reCAPTCHA settings, migrate.
+			if (
+				! empty( $instance['spam']['recaptcha'] ) &&
+				$instance['spam']['recaptcha']['use_captcha'] === true
+			) {
+				$instance['spam']['recaptcha']['use_captcha'] = 'v2';
+			}
 
-		if ( ! isset( $instance['spam']['honeypot'] ) ) {
-			$instance['spam']['honeypot'] = false;
-			$instance['spam']['browser_check'] = false;
+			if ( ! isset( $instance['spam']['honeypot'] ) ) {
+				$instance['spam']['honeypot'] = false;
+				$instance['spam']['browser_check'] = false;
+			}
 		}
 
 		if (
@@ -1027,19 +1032,16 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		unset( $instance['design'] );
 		unset( $instance['panels_info'] );
 
+		static $form_id = 1;
+		$instance['form_id'] = $form_id++;
+
 		$template_vars = array(
 			'onclick' => ! empty( $instance['settings']['on_click'] ) ? $instance['settings']['on_click'] : '',
 		);
 
 		$submit_attributes = array();
 
-		if ( ! empty( $instance['spam']['browser_check'] ) ) {
-			$submit_attributes['data-js-key'] = $instance['_sow_form_id'];
-		}
-
-		// Include '_sow_form_id' in generation of 'instance_hash' to allow multiple instances of the same form on a page.
-		$template_vars['instance_hash'] = md5( serialize( $instance ) );
-		$template_vars['result'] = $this->contact_form_action( $instance, $template_vars['instance_hash'] );
+		$template_vars['result'] = $this->contact_form_action( $instance );
 		unset( $instance['_sow_form_id'] );
 
 		if ( ! empty( $instance['settings']['submit_id'] ) ) {
@@ -1063,6 +1065,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				);
 			}
 		}
+
+		if ( ! empty( $instance['spam']['browser_check'] ) ) {
+			$submit_attributes['data-js-key'] = md5( $instance['form_id'] );
+		}
+
 		$template_vars['submit_attributes'] = $submit_attributes;
 
 		if ( ! empty( $instance['spam']['simple'] ) && ! empty( $instance['spam']['simple']['enabled'] ) ) {
@@ -1088,9 +1095,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 				// Allow other plugins to adjust Really Simple Captcha settings.
 				$template_vars['really_simple_spam'] = apply_filters( 'siteorigin_widgets_contact_really_simple_captcha', $template_vars['really_simple_spam'] );
-				$template_vars['really_simple_spam_prefix'] = mt_rand() . $template_vars['instance_hash'];
 				$template_vars['really_simple_spam_image'] = $template_vars['really_simple_spam']->generate_image(
-					$template_vars['really_simple_spam_prefix'],
+					wp_rand(),
 					$template_vars['really_simple_spam']->generate_random_word()
 				);
 
@@ -1260,17 +1266,34 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		return empty( $single ) ? $single = new self() : $single;
 	}
 
-	public static function name_from_label( $label, & $ids ) {
-		$it = 0;
+	public function name_from_label(
+		$label,
+		$post_vars = array()
+	) {
+		$it = 1;
 
 		$label = str_replace( ' ', '-', strtolower( $label ) );
 		$label = sanitize_title( $label );
 
+		// Is this a form submission?
+		if ( ! empty( $post_vars ) ) {
+			// Try to find the full label based on the submitted fields.
+			foreach ( $post_vars as $key => $value ) {
+				if ( strpos( $key, $label ) === 0 ) {
+					return $key;
+				}
+			}
+
+			// Couldn't find the field. Fallback to just the label.
+			return $label;
+		}
+
+		global $field_ids;
 		do {
 			$id = $label . ( $it > 0 ? '-' . $it : '' );
 			$it ++;
-		} while ( ! empty( $ids[ $id ] ) );
-		$ids[ $id ] = true;
+		} while ( ! empty( $field_ids[ $id ] ) );
+		$field_ids[ $id ] = true;
 
 		return $id;
 	}
@@ -1281,7 +1304,6 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 * @param array $errors
 	 */
 	public function render_form_fields( $fields, $result, $instance ) {
-		$field_ids = array();
 		$errors = ! empty( $result['errors'] ) ? $result['errors'] : array();
 
 		$label_position = $instance['design']['labels']['position'];
@@ -1311,7 +1333,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				continue;
 			}
 
-			$this->render_form_field( $field, $errors, $label_position, $instance, $indicate_required_fields, $field_ids, $i );
+			$this->render_form_field( $field, $errors, $label_position, $instance, $indicate_required_fields, $i );
 		}
 	}
 
@@ -1321,14 +1343,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		$label_position,
 		$instance,
 		$indicate_required_fields,
-		$field_ids = array(),
 		$i = 0
 	) {
-		$field_name = $this->name_from_label( ! empty( $field['label'] ) ? $field['label'] : $i, $field_ids );
-
-		// Using `$instance['_sow_form_id']` to uniquely identify contact form fields across widgets.
-		// I.e. if there are many contact form widgets on a page this will prevent field name conflicts.
-		$field_name .= ! empty( $instance['_sow_form_id'] ) ? '-' . $instance['_sow_form_id'] : '';
+		$field_name = $this->name_from_label( ! empty( $field['label'] ) ? $field['label'] : $i );
 
 		$field_id = 'sow-contact-form-field-' . $field_name;
 
@@ -1433,7 +1450,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	/**
 	 * Ajax action handler to send the form
 	 */
-	public function contact_form_action( $instance, $storage_hash ) {
+	public function contact_form_action( $instance ) {
 		if ( empty( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], '_contact_form_submit' ) ) {
 			// Using `return false;` instead of `wp_die` because this function may sometimes be called as a side effect
 			// of trying to enqueue scripts required for the front end or when previewing widgets e.g. in the block editor.
@@ -1441,19 +1458,37 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			return false;
 		}
 
-		if ( empty( $_POST['instance_hash'] ) || $_POST['instance_hash'] != $storage_hash ) {
-			return array();
-		}
-
+		// Ensure this contact form has fields.
 		if ( empty( $instance['fields'] ) ) {
-			array(
+			return array(
 				'status' => null,
 			);
 		}
 
+		$post_vars = stripslashes_deep( $_POST );
+
+		$instance_hash_field = $this->name_from_label( 'instance_hash', $post_vars );
+
+		// If there is no instance hash, then we can't do anything.
+		if ( empty( $post_vars[ $instance_hash_field ] ) ) {
+			return array(
+				'status' => null,
+			);
+		}
+
+		// Let's check if this is the right form.
+		$submitted_form_id = (int) explode( '-', $instance_hash_field )[1];
+		if ( $submitted_form_id !== $instance['form_id'] ) {
+			return array(
+				'status' => null,
+			);
+		}
+
+		$this->instance_hash = sanitize_text_field( $post_vars[ $instance_hash_field ] );
+
 		// Make sure that this action only runs once per instance
 		static $send_cache = array();
-		$send_cache_hash = md5( serialize( $instance ) . '::' . $storage_hash );
+		$send_cache_hash = md5( serialize( $instance ) . '::' . $this->instance_hash );
 
 		if ( isset( $send_cache[ $send_cache_hash ] ) ) {
 			return $send_cache[ $send_cache_hash ];
@@ -1461,17 +1496,19 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		$errors = array();
 		$email_fields = array();
-		$post_vars = stripslashes_deep( $_POST );
-
-		$field_ids = array();
 
 		$instance['fields'] = apply_filters( 'siteorigin_widgets_contact_fields', $instance['fields'] );
+
 		foreach ( $instance['fields'] as $i => $field ) {
 			if ( empty( $field['type'] ) ) {
 				continue;
 			}
 
-			$field_name = $this->name_from_label( ! empty( $field['label'] ) ? $field['label'] : $i, $field_ids ) . '-' . ( ! empty( $instance['_sow_form_id'] ) ? $instance['_sow_form_id'] : '' );
+			$field_name = $this->name_from_label(
+				! empty( $field['label'] ) ? $field['label'] : $i,
+				$post_vars
+			);
+
 			$value = isset( $post_vars[ $field_name ] ) ? $post_vars[ $field_name ] : '';
 
 			// Can't just use `strlen` here as $value could be an array. E.g. for checkboxes field.
@@ -1721,11 +1758,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				$errors['simple'] = __( 'Error validating your Captcha response. Really Simple CAPTCHA missing.', 'so-widgets-bundle' );
 			} else {
 				$captcha = new ReallySimpleCaptcha();
-				$prefix = $post_vars['really-simple-captcha-prefix-' . $post_vars['instance_hash'] ];
+				$prefix = $this->name_from_label( 'really-simple-captcha-prefix', $post_vars );
 
 				if ( ! $captcha->check(
 					$prefix,
-					$post_vars['really-simple-captcha-' . $post_vars['instance_hash'] ]
+					$post_vars['really-simple-captcha'],
+					$this->name_from_label( 'really-simple-captcha', $post_vars )
 				) ) {
 					$errors['simple'] = __( 'Error validating your Captcha response. Please try again.', 'so-widgets-bundle' );
 				}
@@ -1733,14 +1771,17 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		if ( ! empty( $instance['spam']['honeypot'] ) && ! empty( $_POST[ 'sow-' . $instance['_sow_form_id'] ] ) ) {
+		if (
+			! empty( $instance['spam']['honeypot'] ) &&
+			! empty( $_POST['sow-name'] )
+		) {
 			$errors['spam-js'] = __( 'Unfortunately, our system identified your message as spam.', 'so-widgets-bundle' );
 		}
 
 		if ( ! empty( $instance['spam']['browser_check'] ) ) {
 			if (
-				empty( $_POST[ 'sow-js-' . $instance['_sow_form_id'] ] ) ||
-				$_POST[ 'sow-js-' . $instance['_sow_form_id'] ] != $instance['_sow_form_id']
+				empty( $_POST['sow-js'] ) ||
+				$_POST['sow-js'] !== md5( $instance['form_id'] )
 			) {
 				$errors['spam-honeypot'] = __( 'Unfortunately, our system identified your message as spam.', 'so-widgets-bundle' );
 			}
