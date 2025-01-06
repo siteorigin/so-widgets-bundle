@@ -665,6 +665,10 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'label'   => __( 'Background color', 'so-widgets-bundle' ),
 								'default' => '#eeeeee',
 							),
+							'background_color_hover'    => array(
+								'type'    => 'color',
+								'label'   => __( 'Background Hover Color', 'so-widgets-bundle' ),
+							),
 							'background_gradient' => array(
 								'type'    => 'slider',
 								'label'   => __( 'Gradient intensity', 'so-widgets-bundle' ),
@@ -674,6 +678,10 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'type'    => 'color',
 								'label'   => __( 'Border color', 'so-widgets-bundle' ),
 								'default' => '#989a9c',
+							),
+							'border_color_hover'    => array(
+								'type'    => 'color',
+								'label'   => __( 'Border Hover Color', 'so-widgets-bundle' ),
 							),
 							'border_style'        => array(
 								'type'    => 'select',
@@ -702,6 +710,10 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 								'type'    => 'color',
 								'label'   => __( 'Text color', 'so-widgets-bundle' ),
 								'default' => '#5a5a5a',
+							),
+							'text_color_hover'    => array(
+								'type'    => 'color',
+								'label'   => __( 'Text Hover Color', 'so-widgets-bundle' ),
 							),
 							'font_size'           => array(
 								'type'    => 'measurement',
@@ -1192,19 +1204,22 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'error_margin'               => $instance['design']['errors']['margin'],
 
 			// The submit button
-			'submit_background_color'    => $instance['design']['submit']['background_color'],
-			'submit_background_gradient' => $instance['design']['submit']['background_gradient'] . '%',
-			'submit_border_color'        => $instance['design']['submit']['border_color'],
-			'submit_border_style'        => $instance['design']['submit']['border_style'],
-			'submit_border_width'        => $instance['design']['submit']['border_width'],
-			'submit_border_radius'       => $instance['design']['submit']['border_radius'] . 'px',
-			'submit_text_color'          => $instance['design']['submit']['text_color'],
-			'submit_font_size'           => $instance['design']['submit']['font_size'],
-			'submit_weight'              => $instance['design']['submit']['weight'],
-			'submit_padding'             => $instance['design']['submit']['padding'],
-			'submit_width'               => ! empty( $instance['design']['submit']['width'] ) ? $instance['design']['submit']['width'] : '',
-			'submit_align'               => ! empty( $instance['design']['submit']['align'] ) ? $instance['design']['submit']['align'] : '',
-			'submit_inset_highlight'     => $instance['design']['submit']['inset_highlight'] . '%',
+			'submit_background_color'       => $instance['design']['submit']['background_color'],
+			'submit_background_color_hover' => ! empty( $instance['design']['submit']['background_color_hover'] ) ? $instance['design']['submit']['background_color_hover'] : '',
+			'submit_background_gradient'    => $instance['design']['submit']['background_gradient'] . '%',
+			'submit_border_color'           => $instance['design']['submit']['border_color'],
+			'submit_border_color_hover'     => ! empty( $instance['design']['submit']['border_color_hover'] ) ? $instance['design']['submit']['border_color_hover'] : '',
+			'submit_border_style'           => $instance['design']['submit']['border_style'],
+			'submit_border_width'           => $instance['design']['submit']['border_width'],
+			'submit_border_radius'          => $instance['design']['submit']['border_radius'] . 'px',
+			'submit_text_color'             => $instance['design']['submit']['text_color'],
+			'submit_text_color_hover'       => ! empty( $instance['design']['submit']['text_color_hover'] ) ? $instance['design']['submit']['text_color_hover'] : '',
+			'submit_font_size'              => $instance['design']['submit']['font_size'],
+			'submit_weight'                 => $instance['design']['submit']['weight'],
+			'submit_padding'                => $instance['design']['submit']['padding'],
+			'submit_width'                  => ! empty( $instance['design']['submit']['width'] ) ? $instance['design']['submit']['width'] : '',
+			'submit_align'                  => ! empty( $instance['design']['submit']['align'] ) ? $instance['design']['submit']['align'] : '',
+			'submit_inset_highlight'        => $instance['design']['submit']['inset_highlight'] . '%',
 
 			// Input focus styles
 			'outline_style'              => $instance['design']['focus']['style'],
