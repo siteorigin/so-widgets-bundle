@@ -56,6 +56,23 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	public function enqueue_admin_scripts() {
+		wp_enqueue_script(
+			'sow-contact-form-admin',
+			plugin_dir_url( __FILE__ ) . 'js/contact-form-admin' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			SOW_BUNDLE_VERSION
+		);
+
+		wp_localize_script(
+			'sow-contact-form-admin',
+			'sowContactAdmin',
+			array(
+				'error' => esc_html__( 'The To and From email address are the same. This can cause email delivery issues. Please change either email.', 'so-widgets-bundle' ),
+			)
+		);
+	}
+
 	public function get_widget_form() {
 		$useable_units = array(
 			'px',
