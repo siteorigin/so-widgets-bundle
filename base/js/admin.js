@@ -1820,7 +1820,7 @@ var sowbForms = window.sowbForms || {};
 				valid,
 				form,
 				// Widget ID.
-				typeof jQuery( '.widget-content' ).data( 'id-base' ) !== 'undefined' ? form.find( '.siteorigin-widget-form' ).data( 'id-base' ) : ''
+				typeof jQuery( '.widget-content' ).data( 'id-base' ) !== undefined ? form.find( '.siteorigin-widget-form' ).data( 'id-base' ) : ''
 			]
 		);
 
