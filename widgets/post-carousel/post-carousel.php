@@ -272,33 +272,59 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		$carousel_settings = $this->carousel_settings_form_fields();
 		$carousel_settings['fields']['loop']['description'] = __( 'Automatically return to the first post after the last post.', 'so-widgets-bundle' );
 
-		siteorigin_widgets_array_insert(
-			$carousel_settings['fields'],
-			'autoplay_pause_hover',
-			array(
-				'autoplay_continuous_scroll' => array(
-					'type' => 'checkbox',
-					'label' => __( 'Autoplay Continuous Scroll', 'so-widgets-bundle' ),
-					'state_handler' => array(
-						'autoplay[show]' => array( 'show' ),
-						'autoplay[hide]' => array( 'hide' ),
-					),
-					'state_emitter' => array(
-						'callback' => 'conditional',
-						'args' => array(
-							'autoplay_continuous[show]: val',
-							'autoplay_continuous[hide]: ! val',
+		$carousel_settings['fields']['autoplay'] = array(
+			'type' => 'presets',
+			'label' => __( 'Autoplay', 'so-widgets-bundle' ),
+			'default_preset' => 'off',
+			'state_emitter' => array(
+				'callback' => 'select',
+				'args' => array( 'autoplay' ),
+			),
+			'options' => array(
+				'off' => array(
+					'label' => __( 'Off', 'so-widgets-bundle' ),
+					'values' => array(
+						'carousel_settings' => array(
+							'animation_speed' => 400,
+							'timeout' => 8000,
 						),
 					),
 				),
-			)
+				'on' => array(
+					'label' => __( 'On', 'so-widgets-bundle' ),
+					'values' => array(
+						'carousel_settings' => array(
+							'animation_speed' => 400,
+							'timeout' => 8000,
+						),
+					),
+				),
+				'continuous' => array(
+					'label' => __( 'Continuous', 'so-widgets-bundle' ),
+					'values' => array(
+						'carousel_settings' => array(
+							'animation_speed' => 4000,
+							'timeout' => 400,
+							'autoplay_pause_hover' => true,
+						),
+					),
+				),
+			),
 		);
 
 		// Continuous autoplay doesn't have navigation, so we need to hide the setting.
 		$carousel_settings['fields']['arrows']['state_handler'] = array(
-			'autoplay_continuous[show]' => array( 'hide' ),
-			'autoplay_continuous[hide]' => array( 'show' ),
+			'autoplay[continuous]' => array( 'hide' ),
+			'_else[autoplay]' => array( 'show' ),
 		);
+
+		// Hide autoplay specific settings if autoplay is off.
+		$if_off_hide = array(
+			'autoplay[off]' => array( 'hide' ),
+			'_else[autoplay]' => array( 'show' ),
+		);
+		$carousel_settings['fields']['autoplay_pause_hover']['state_handler'] = $if_off_hide;
+		$carousel_settings['fields']['timeout']['state_handler'] = $if_off_hide;
 
 		return array(
 			'title' => array(
@@ -376,6 +402,33 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 			$instance['carousel_settings']['loop'] = $instance['loop_posts'];
 			unset( $instance['loop_posts'] );
+		}
+
+		// Migrate autoplay settings.
+		if (
+			isset( $instance['settings']['autoplay'] ) &&
+			! in_array( $instance['settings']['autoplay'], array(
+				'off',
+				'on',
+				'continuous'
+			) )
+		) {
+			if ( empty( $instance['settings']['autoplay'] ) ) {
+				$instance['settings']['autoplay'] = 'off';
+			} elseif ( ! empty( $instance['settings']['autoplay_continuous_scroll'] ) ) {
+				$instance['settings']['autoplay'] = 'continuous';
+
+				// Adjust timeout/autoplay if they're using defaults.
+				if ( $instance['settings']['timeout'] == 8000 ) {
+					$instance['settings']['timeout'] = 400;
+				}
+
+				if ( $instance['settings']['autoplay'] == 400 ) {
+					$instance['settings']['autoplay'] = 4000;
+				}
+			} else {
+				$instance['settings']['autoplay'] = 'on';
+			}
 		}
 
 		return $instance;
@@ -456,7 +509,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		$posts = new WP_Query( $query );
 
 		$carousel_settings = $this->carousel_settings_template_variables( $instance['carousel_settings'], false );
-		$carousel_settings['autoplay_continuous_scroll'] = ! empty( $instance['carousel_settings']['autoplay_continuous_scroll'] ) ? $instance['carousel_settings']['autoplay_continuous_scroll'] : false;
+		$carousel_settings['autoplay_continuous_scroll'] = $instance['carousel_settings']['autoplay'] === 'continuous';
 		// The base theme doesn't support dot navigation so let's remove it.
 		if ( $theme == 'base' ) {
 			unset( $carousel_settings['dots'] );
@@ -473,7 +526,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		// If continuous scroll is enabled, hide the navigation.
 		if (
 			! empty( $instance['carousel_settings']['autoplay'] ) &&
-			! empty( $instance['carousel_settings']['autoplay_continuous_scroll'] )
+			$instance['carousel_settings']['autoplay'] === 'continuous'
 		) {
 			$navigation = 'hidden';
 		}

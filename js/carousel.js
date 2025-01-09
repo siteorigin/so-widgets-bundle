@@ -37,8 +37,7 @@ jQuery( function ( $ ) {
 			}
 
 			const isBlockEditor = $( 'body' ).hasClass( 'block-editor-page' );
-			const isContinuous = carouselSettings.autoplay_continuous_scroll &&
-			carouselSettings.autoplay;
+			const isContinuous = carouselSettings.autoplay === 'continuous';
 
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
@@ -101,9 +100,12 @@ jQuery( function ( $ ) {
 			} );
 
 			// Set up Autoplay. We use a custom autoplay rather than the Slick
-			// autoplay to account for the (sometimes) non-standard nature of our
-			// navigation that Slick has trouble accounting for.
-			if ( carouselSettings.autoplay ) {
+			// autoplay to account for the (sometimes) non-standard nature
+			// of our navigation that Slick has trouble accounting for.
+			if (
+				carouselSettings.autoplay &&
+				carouselSettings.autoplay !== 'off'
+			) {
 				var interrupted = false;
 				// Check if this is a Block Editor preview or continuous autoplay is enabled.
 				// If either are true, don't setup (this) autoplay.
