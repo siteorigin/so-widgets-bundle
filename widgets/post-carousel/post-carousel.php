@@ -406,28 +406,24 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 		// Migrate autoplay settings.
 		if (
-			isset( $instance['settings']['autoplay'] ) &&
-			! in_array( $instance['settings']['autoplay'], array(
-				'off',
-				'on',
-				'continuous'
-			) )
+			isset( $instance['carousel_settings']['autoplay'] ) &&
+			is_bool( $instance['carousel_settings']['autoplay'] )
 		) {
-			if ( empty( $instance['settings']['autoplay'] ) ) {
-				$instance['settings']['autoplay'] = 'off';
-			} elseif ( ! empty( $instance['settings']['autoplay_continuous_scroll'] ) ) {
-				$instance['settings']['autoplay'] = 'continuous';
+			if ( empty( $instance['carousel_settings']['autoplay'] ) ) {
+				$instance['carousel_settings']['autoplay'] = 'off';
+			} elseif ( ! empty( $instance['carousel_settings']['autoplay_continuous_scroll'] ) ) {
+				$instance['carousel_settings']['autoplay'] = 'continuous';
 
 				// Adjust timeout/autoplay if they're using defaults.
-				if ( $instance['settings']['timeout'] == 8000 ) {
-					$instance['settings']['timeout'] = 400;
+				if ( $instance['carousel_settings']['timeout'] == 8000 ) {
+					$instance['carousel_settings']['timeout'] = 400;
 				}
 
-				if ( $instance['settings']['autoplay'] == 400 ) {
-					$instance['settings']['autoplay'] = 4000;
+				if ( $instance['carousel_settings']['autoplay'] == 400 ) {
+					$instance['carousel_settings']['autoplay'] = 4000;
 				}
 			} else {
-				$instance['settings']['autoplay'] = 'on';
+				$instance['carousel_settings']['autoplay'] = 'on';
 			}
 		}
 
