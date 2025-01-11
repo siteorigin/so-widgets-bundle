@@ -955,8 +955,15 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		$terms = array();
 
 		if ( ! empty( $post_id ) ) {
+			$query['post_type'] = ! empty( $query['post_type'] ) ? $query['post_type'] : array( 'post' );
+
 			// Check if a developer has set terms for this post type.
-			$taxonomy = apply_filters( 'siteorigin_widgets_blog_portfolio_taxonomy', '', $instance, $query['post_type'] );
+			$taxonomy = apply_filters(
+				'siteorigin_widgets_blog_portfolio_taxonomy',
+				'',
+				$instance,
+				$query['post_type']
+			);
 			if ( ! empty( $taxonomy ) && is_array( $taxonomy ) ) {
 				return $taxonomy;
 			}
