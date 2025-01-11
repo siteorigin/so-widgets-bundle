@@ -21,12 +21,12 @@ sowb.SiteOriginGoogleMap = function($) {
 		 * rather than just URLs. The image element is created with
 		 * the provided icon URL and optimized for lazy loading.
 		 *
-		 * @param {string} icon - The URL of the marker icon.
+		 * @param {string|bool|undefined} icon - The URL of the marker icon.
 		 *
 		 * @returns {HTMLImageElement|null} The image element for the marker icon, or null if the icon is undefined.
 		 */
 		drawMarkerEl: ( icon ) => {
-			if ( icon === undefined ) {
+			if ( icon === undefined || icon === false ) {
 				return null;
 			}
 
@@ -56,6 +56,7 @@ sowb.SiteOriginGoogleMap = function($) {
 				zoomControl: options.zoomControl,
 				panControl: options.panControl,
 				center: location,
+
 				mapId: this.randomMapId(),
 				mapTypeControlOptions: {
 					mapTypeIds: [
