@@ -383,9 +383,8 @@ var sowbForms = window.sowbForms || {};
 				}
 				$(this).toggleClass('siteorigin-widget-section-visible');
 				$(this).parent().find('> .siteorigin-widget-section, > .siteorigin-widget-widget > .siteorigin-widget-section')
-					.slideToggle('fast', function () {
-						$( window ).trigger( 'resize' );
-						$(this).find('> .siteorigin-widget-field-container-state').val($(this).is(':visible') ? 'open' : 'closed');
+					.slideToggle( 'fast', function() {
+						$( this ).find( '> .siteorigin-widget-field-container-state' ).val( $( this ).is( ':visible' ) ? 'open' : 'closed');
 
 						if ( $( this ).is( ':visible' ) ) {
 							var $fields = $( this ).find( '> .siteorigin-widget-field' );
