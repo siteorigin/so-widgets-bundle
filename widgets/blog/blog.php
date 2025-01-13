@@ -204,7 +204,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 						'filter_categories' => array(
 							'type' => 'checkbox',
 							'label' => __( 'Filter Categories ', 'so-widgets-bundle' ),
-							'default' => true,
 							'state_emitter' => array(
 								'callback' => 'conditional',
 								'args' => array(
@@ -1158,6 +1157,15 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		}
 
 		$instance['paged_id'] = $this->get_style_hash( $instance );
+
+		// Ensure Filter Categories is disabled for templates that
+		// don't support it.
+		if (
+			$instance['template'] !== 'portfolio' &&
+			$instance['template'] !== 'masonry'
+		) {
+			$instance['settings']['filter_categories'] = false;
+		}
 
 		return $instance;
 	}
