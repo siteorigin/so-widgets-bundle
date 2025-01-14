@@ -83,30 +83,29 @@ function soContactFormSubmit( token, e ) {
 }
 
 jQuery( function ( $ ) {
-	var recaptcha = $( 'form.sow-contact-form .sow-recaptcha' );
+	const recaptcha = $( 'form.sow-contact-form .sow-recaptcha' );
 	// Check if reCAPTCHA is being used.
-	if ( recaptcha.length ) {
-		if (window.recaptcha) {
-			sowb.SiteOriginContactForm.init( $, recaptcha );
-		} else {
-			var apiUrl = 'https://www.google.com/recaptcha/api.js?onload=soContactFormInitialize';
-			// v2 requires a specific render type.
-			if ( recaptcha.first().data( 'config' ) != undefined ) {
-				sowb.SiteOriginContactFormV2 = true;
-				apiUrl += '&render=explicit';
-			} else {
-				// v3 requires a click event for submission.
-				$( 'button.sow-submit ' ).on( 'click', function( e ) {
-					e.preventDefault();
-					sowb.SiteOriginContactFormV3 = $( this );
-				} );
-			}
-			var script = $( '<script type="text/javascript" src="' + apiUrl + '" async defer>' );
-			$( 'body' ).append( script );
-		}
-	} else {
+	if ( ! recaptcha.length ) {
 		sowb.SiteOriginContactForm.init( $, recaptcha );
+		return;
 	}
+
+	let apiUrl = 'https://www.google.com/recaptcha/api.js?onload=soContactFormInitialize';
+	// v2 requires a specific render type.
+	if ( recaptcha.first().data( 'config' ) != undefined ) {
+		sowb.SiteOriginContactFormV2 = true;
+		apiUrl += '&render=explicit';
+	} else {
+		// v3 requires a click event for submission.
+		$( 'button.sow-submit ' ).on( 'click', function( e ) {
+			e.preventDefault();
+			sowb.SiteOriginContactFormV3 = $( this );
+		} );
+	}
+
+	$( 'body' ).append(
+		'<script type="text/javascript" src="' + apiUrl + '" async defer>'
+	);
 
 
 	if ( typeof $.fn.select2 == 'function' ) {
