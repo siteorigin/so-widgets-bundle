@@ -42,6 +42,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		);
 		add_filter( 'siteorigin_widgets_sanitize_field_multiple_emails', array( $this, 'sanitize_multiple_emails' ) );
 		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-contact-form', array( $this, 'enqueue_widget_scripts' ) );
+
+		add_filter( 'siteorigin_widgets_contact_body', array( $this, 'format_email_body' ), 10, 2 );
 	}
 
 	public function enqueue_widget_scripts() {
@@ -1792,6 +1794,42 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		return $errors;
 	}
 
+	/**
+	 * Format an email address with an optional name.
+	 *
+	 * This method formats an email address with an optional name.
+	 * If a name is provided, it sanitizes both the name and the email address
+	 * and returns them in the format "Name <email@example.com>".
+	 * If no name is provided, it returns the sanitized email address.
+	 *
+	 * If the email field contains multiple email addresses separated by commas,
+	 * it formats each email address with the optional name and returns them
+	 * as a comma-separated string.
+	 *
+	 * @param string $email The email address or addresses to format.
+	 * @param string|null $name The optional name to include with the email address.
+	 *
+	 * @return string The formatted email address or addresses with the optional name.
+	 */
+	private function format_email( $email, $name = null ) {
+		if ( empty( $name ) ) {
+			return sanitize_email( $email );
+		}
+
+		// If this field has multiple emails, format them all.
+		if ( strpos( $email, ',' ) !== false ) {
+			$emails = explode( ',', $email );
+
+			foreach ( $emails as $key => $email ) {
+				$emails[ $key ] = $this->format_email( $email, $name );
+			}
+
+			return implode( ', ', $emails );
+		}
+
+		return $this->sanitize_header( $name ) . ' <' . sanitize_email( $email ) . '>';
+	}
+
 	public function send_mail( $email_fields, $instance ) {
 		if ( ! empty( $email_fields['name'] ) || ! empty( $email_fields['email'] ) ) {
 			$body = '<strong>' . _x( 'From', 'The name of who sent this email', 'so-widgets-bundle' ) . ':</strong> ';
@@ -1838,15 +1876,29 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			$instance['settings']['from'] = $this->default_from_address();
 		}
 
+		$to_email = $this->format_email(
+			$instance['settings']['to'],
+			sprintf(
+				__( '%s Contact Form', 'so-widgets-bundle' ),
+				get_bloginfo( 'name' )
+			)
+		);
+
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
-			'From: ' . ( ! empty( $email_fields['name'] ) ? $this->sanitize_header( $email_fields['name'] ) : '' ) . ' <' . sanitize_email( $instance['settings']['from'] ) . '>',
-			'Reply-To: ' . ( ! empty( $email_fields['name'] ) ? $this->sanitize_header( $email_fields['name'] ) : '' ) . ' <' . sanitize_email( $email_fields['email'] ) . '>',
+			'From: ' . $this->format_email(
+				$instance['settings']['from'],
+				$email_fields['name']
+			),
+			'Reply-To: ' . $this->format_email(
+				$email_fields['email'],
+				$email_fields['name']
+			)
 		);
 
 		// Check if this is a duplicated send
 		$hash = md5( json_encode( array(
-			'to'      => $instance['settings']['to'],
+			'to'      => $to_email,
 			'subject' => $email_fields['subject'],
 			'body'    => $body,
 			'headers' => $headers,
@@ -1867,10 +1919,21 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			return true;
 		}
 
-		$mail_success = wp_mail(
-			$instance['settings']['to'],
-			$email_fields['subject'],
+		$formatted_body = apply_filters(
+			'siteorigin_widgets_contact_body',
 			$body,
+			$email_fields['subject'],
+			$instance
+		);
+
+		if ( empty( $formatted_body ) ) {
+			$formatted_body = $body;
+		}
+
+		$mail_success = wp_mail(
+			$to_email,
+			$email_fields['subject'],
+			$formatted_body,
 			apply_filters( 'siteorigin_widgets_contact_email_headers', $headers )
 		);
 
@@ -1910,6 +1973,26 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 
 		return apply_filters( 'siteorigin_widgets_contact_default_email', 'wordpress@' . $sitename );
+	}
+
+	/**
+	 * Format the email body before sending it.
+	 *
+	 * This method formats the email body to be a valid HTML document.
+	 * It uses output buffering to capture the content of the template and
+	 * returns it as a string.
+	 *
+	 * It uses the `siteorigin_widgets_contact_body` filter to do this.
+	 *
+	 * @param string $body The email body.
+	 * @param string $subject The email subject.
+	 *
+	 * @return string The formatted email body.
+	 */
+	public function format_email_body( $body, $subject ) {
+		ob_start();
+		require plugin_dir_path( __FILE__ ) . 'tpl/email.php';
+		return ob_get_clean();
 	}
 
 	public function get_form_teaser() {
