@@ -507,6 +507,11 @@ function siteorigin_widget_onclick( $onclick = null, $recursive = true ) {
 	}
 
 	if ( apply_filters( 'siteorigin_widgets_onclick_allowlist', true ) ) {
+		// Ensure $onclick ends with a semicolon to prevent syntax errors.
+		if ( substr( $onclick, -1 ) !== ';' ) {
+			$onclick .= ';';
+		}
+
 		$onclick_parts = explode( ');', $onclick );
 
 		$adjusted_onclick = '';
