@@ -431,6 +431,39 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						$instance[ $id ] = array_keys( $field['options'] );
 					}
 				}
+
+			}elseif ( $field['type'] === 'widget' ) {
+				// We need to load the widget to be able to get its defaults.
+				$sub_widget = new $field['class'];
+				if ( ! is_a( $sub_widget, 'SiteOrigin_Widget' ) ) {
+					continue;
+				}
+
+				// Does this widget have a form filter?
+				if (
+					! empty( $field['form_filter'] ) &&
+					is_callable( $field['form_filter'] )
+				) {
+
+					$fields = call_user_func(
+						$field['form_filter'],
+						$sub_widget->form_options()
+					);
+
+					$instance[ $id ] = $this->add_defaults(
+						$fields,
+						$instance[ $id ],
+						$level + 1
+					);
+
+					continue;
+				}
+
+				$instance[ $id ] = $this->add_defaults(
+					$sub_widget->form_options(),
+					$instance[ $id ],
+					$level + 1
+				);
 			} elseif ( ! isset( $instance[ $id ] ) ) {
 				$instance[ $id ] = isset( $field['default'] ) ? $field['default'] : '';
 			}
