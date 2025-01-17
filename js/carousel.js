@@ -130,12 +130,11 @@ jQuery( function ( $ ) {
 			}
 
 			/**
-			 * Navigate to a specific slide in the carousel.
+			 * Navigate to a specific slide in the carousel, and then
+			 * (optionally) adapts the height of the carousel.
 			 *
 			 * This function navigates to a specific slide in the carousel.
-			 * If adaptive height is enabled, it also adjusts the height of
-			 * the carousel to fit the tallest visible slide, including
-			 * any bottom margin.
+			 * If adaptive height is enabled, by calling adaptiveHeight().
 			 *
 			 * @param {number|string|null} newSlide - The slide to navigate to.
 			 * Can be a slide index (int), command (string), or null.
@@ -153,6 +152,22 @@ jQuery( function ( $ ) {
 					}
 				}
 
+				adaptiveHeight();
+			};
+
+			/**
+			 * Adjust the height of the carousel to fit the tallest
+			 * visible slide.
+			 *
+			 * This function adjusts the height of the carousel to fit
+			 * the tallest visible slide, including any bottom margin.
+			 * It is used as a custom solution for adaptive height since
+			 * Slick's adaptive height only factors in the "active" item,
+			 * not all visible items.
+			 *
+			 * @returns {void}
+			 */
+			const adaptiveHeight = function() {
 				if ( ! carouselSettings.adaptive_height ) {
 					return;
 				}
@@ -182,7 +197,10 @@ jQuery( function ( $ ) {
 				}, carouselSettings.animation_speed );
 
 				visibleSlides.css( 'height', maxHeight );
-			};
+			}
+
+			// Size items on load if needed.
+			$items.on( 'init', adaptiveHeight );
 
 			var handleCarouselNavigation = function( nextSlide, refocus ) {
 				const $items = $$.find( '.sow-carousel-items' );
