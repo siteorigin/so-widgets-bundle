@@ -381,17 +381,19 @@ var sowbForms = window.sowbForms || {};
 				if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
 					return;
 				}
-				$(this).toggleClass('siteorigin-widget-section-visible');
-				$(this).parent().find('> .siteorigin-widget-section, > .siteorigin-widget-widget > .siteorigin-widget-section')
-					.slideToggle('fast', function () {
-						$( window ).trigger( 'resize' );
-						$(this).find('> .siteorigin-widget-field-container-state').val($(this).is(':visible') ? 'open' : 'closed');
 
-						if ( $( this ).is( ':visible' ) ) {
-							var $fields = $( this ).find( '> .siteorigin-widget-field' );
-							$fields.trigger( 'sowsetupformfield' );
-						}
-					} );
+				const $this = $( this );
+				$this.toggleClass( 'siteorigin-widget-section-visible' );
+				const $section = $this.parent().find( '> .siteorigin-widget-section, > .siteorigin-widget-widget > .siteorigin-widget-section' );
+
+				$section.slideToggle( 'fast', function() {
+					const $thisSection = $( this );
+					$thisSection.find( '> .siteorigin-widget-field-container-state' ).val( $thisSection.is( ':visible' ) ? 'open' : 'closed' );
+
+					if ( $thisSection.is( ':visible' ) ) {
+						$thisSection.find( '> .siteorigin-widget-field' ).trigger( 'sowsetupformfield' );
+					}
+				} );
 			};
 			$fields.filter( '.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section' ).find( '> label' )
 			.on( 'click keyup', expandContainer )
