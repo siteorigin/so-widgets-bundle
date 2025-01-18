@@ -468,7 +468,8 @@ jQuery( function ( $ ) {
 				}
 			}
 
-			$items.slick( 'slickGoTo', itemIndex, true );
+			$items.navigateToSlide( itemIndex );
+
 			$wrapper.find( '.sow-carousel-item' ).prop( 'tabindex', -1 );
 			$wrapper.find( '.sow-carousel-item[data-slick-index="' + itemIndex + '"]' )
 				.trigger( 'focus' )
