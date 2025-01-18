@@ -238,7 +238,7 @@ jQuery( function ( $ ) {
 							currentSlide === 0
 						) {
 							// Determine lastPosition based on the 'complete' flag
-							lastPosition = complete ? numItems : numItems - 1;
+							lastPosition = complete ? numItems : numItems - 2;
 							loadMorePosts = ! complete;
 
 							$items.slick( 'slickGoTo', lastPosition );
