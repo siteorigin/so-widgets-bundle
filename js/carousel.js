@@ -36,6 +36,10 @@ jQuery( function ( $ ) {
 				carouselSettings.animation_speed = 0;
 			}
 
+			// Store reference to Adaptive height and speed for later use.
+			$items.data( 'adaptive_height', carouselSettings.adaptive_height );
+			$items.data( 'animation_speed', carouselSettings.animation_speed );
+
 			const isBlockEditor = $( 'body' ).hasClass( 'block-editor-page' );
 			const isContinuous = carouselSettings.autoplay_continuous_scroll &&
 			carouselSettings.autoplay;
@@ -152,7 +156,7 @@ jQuery( function ( $ ) {
 					}
 				}
 
-				adaptiveHeight();
+				adaptiveHeight( $$ );
 			};
 
 			/**
@@ -167,8 +171,8 @@ jQuery( function ( $ ) {
 			 *
 			 * @returns {void}
 			 */
-			const adaptiveHeight = function() {
-				if ( ! carouselSettings.adaptive_height ) {
+			const adaptiveHeight = function( $$ ) {
+				if ( ! $$.data( 'adaptive_height' ) ) {
 					return;
 				}
 
@@ -194,13 +198,15 @@ jQuery( function ( $ ) {
 
 				$$.animate( {
 					height: maxHeight + marginBottom,
-				}, carouselSettings.animation_speed );
+				},  $$.data( 'adaptive_height' ) );
 
 				visibleSlides.css( 'height', maxHeight );
 			}
 
-			// Size items on load if needed.
-			$items.on( 'init', adaptiveHeight );
+			// Trigger adaptive height resize during setup.
+			$items.on( 'init', () => {
+				adaptiveHeight( $items );
+			} ).trigger( 'init' );
 
 			var handleCarouselNavigation = function( nextSlide, refocus ) {
 				const $items = $$.find( '.sow-carousel-items' );
