@@ -1705,6 +1705,14 @@ var sowbForms = window.sowbForms || {};
 					const $inputs = $$.prev().find( '.sow-multi-measurement-input, .sow-multi-measurement-select-unit' );
 					const valuesArray = [];
 
+					// Ensure this field has a state handler, or emitter.
+					if (
+						$$.attr( 'data-state' ) ||
+						$$.attr( 'data-state-handler' )
+					) {
+						continue;
+					}
+
 					if ( values.value !== '' ) {
 						values.value.split(' ').forEach( field => {
 							valuesArray.push( parseInt( field, 10 ) );
