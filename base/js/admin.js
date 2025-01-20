@@ -1712,14 +1712,14 @@ var sowbForms = window.sowbForms || {};
 					const $inputs = $$.prev().find( '.sow-multi-measurement-input, .sow-multi-measurement-select-unit' );
 					const valuesArray = [];
 
-					// Only process field if it has a state handler/emitter,
-					// or the current editor is the Block Editor.
+					// Only process field if the current editor isn't the Block
+					// Editor, or it doesn't have a state handler/emitter.
 					if (
+						! isBlockEditor &&
 						(
 							$$.attr( 'data-state' ) ||
 							$$.attr( 'data-state-handler' )
-						) ||
-						! isBlockEditor
+						)
 					) {
 						continue;
 					}

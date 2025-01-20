@@ -3,28 +3,33 @@
 ( function( $ ) {
 	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-multi-measurement', function( e ) {
 
-		const valField = $( this ).find( '.sow-multi-measurement-input-values' );
+		// Only set this field up once.
+		if ( $( this ).data( 'sow-multi-measurement-setup' ) ) {
+			return;
+		}
+
+		const $$ = $( this );
+		$$.data( 'sow-multi-measurement-setup', true );
+
+		const valField = $$.find( '.sow-multi-measurement-input-values' );
 		const separator = valField.data( 'separator' );
 		const autoFillEnabled = valField.data( 'autofill' );
-		const $valInputs = $( this ).find( '.sow-multi-measurement-input' );
+		const $valInputs = $$.find( '.sow-multi-measurement-input' );
 		let values = valField.val() === '' ? [] : valField.val().split( separator );
-		const $inputContainers = $( this ).find( '.sow-multi-measurement-input-container' );
-
-		// We only want to handle value changes, if there is a state
-		// handler or autofill is enabled.
-		const hasState = $( this ).attr( 'data-state-handler' ) !== undefined || $( this ).attr( 'data-state' ) !== undefined;
+		const $inputContainers = $$.find( '.sow-multi-measurement-input-container' );
 
 		const updateValue = function( $element ) {
-			var vals = valField.val() === '' ? [] : valField.val().split( separator );
+			const vals = valField.val() === '' ? [] : valField.val().split( separator );
 
-			var $unitInput = $element.find( '+ .sow-multi-measurement-select-unit' );
+			const $unitInput = $element.find( '+ .sow-multi-measurement-select-unit' );
 
-			var index = $valInputs.index( $element );
-			vals[ index ] = $element.val() + ( $element.val() === '' ? '' : $unitInput.val() );
+			const index = $valInputs.index( $element );
+			const fieldValue = $element.val().trim();
+			vals[ index ] = fieldValue + ( fieldValue === '' ? '' : $unitInput.val() );
 			valField.val( vals.join( separator ) );
 		};
 
-		// Initial setup of the filed.
+		// Initial setup of the field.
 		$valInputs.each( function( index, element ) {
 			if ( values.length > index ) {
 				var valueResult = values[ index ].match( /(\d+\.?\d*)([a-z%]+)*/ );
@@ -74,7 +79,7 @@
 		$inputContainers.on( 'change', function( event ) {
 			var $valInput = $( event.currentTarget ).find( '> .sow-multi-measurement-input' );
 
-			if ( maybeAutoFill( $valInput ) || hasState ) {
+			if ( maybeAutoFill( $valInput ) ) {
 				return;
 			}
 
