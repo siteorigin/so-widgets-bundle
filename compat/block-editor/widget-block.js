@@ -522,8 +522,10 @@ if (
 	const removeLegacyWidgetBlock = () => {
 		wp.blocks.unregisterBlockType( 'sowb/widget-block' );
 
-		// Unsubscribe the migration.
-		migrateOldBlocks();
+		setTimeout( () => {
+			// Unsubscribe the migration.
+			migrateOldBlocks();
+		}, 0 );
 
 		return false;
 	}
@@ -538,6 +540,7 @@ if (
 	 */
 	const migrateOldBlocks = wp.data.subscribe( () => {
 		const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
+
 		if ( blocks.length === 0 ) {
 			return;
 		}
@@ -546,9 +549,10 @@ if (
 		const widgetBlocks = blocks.filter( block => block.name === 'sowb/widget-block' );
 
 		if ( widgetBlocks.length === 0 ) {
-			return removeLegacyWidgetBlock();
+			return;
 		}
 
+		// Migrate the blocks.
 		widgetBlocks.forEach( currentBlock => {
 			const newBlock = wp.blocks.createBlock(
 				'sowb/' + currentBlock.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
@@ -556,7 +560,7 @@ if (
 			);
 
 			if ( newBlock ) {
-				wp.data.dispatch('core/block-editor' ).replaceBlock(
+				wp.data.dispatch( 'core/block-editor' ).replaceBlock(
 					currentBlock.clientId,
 					newBlock
 				);
