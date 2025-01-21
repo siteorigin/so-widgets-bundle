@@ -66,6 +66,29 @@
 			}
 		} )
 		.done( ( widgetPreview ) => {
+			let renderPreviewHtml = false;
+
+			// Is the preview empty?
+			if ( widgetPreview.html ) {
+				const tempElement = jQuery( '<div>' + widgetPreview.html + '</div>' );
+				const widgetContent = tempElement.find( 'div:first-of-type' );
+				if ( widgetContent.length > 0 ) {
+					// Is there any text present?
+					if ( widgetContent.text().trim() !== '' ) {
+						renderPreviewHtml = true;
+					} else if ( widgetContent.find( 'img' ).length > 0 ) {
+						// No text, but there's an image.
+						renderPreviewHtml = true;
+					}
+				}
+
+				tempElement.remove();
+			}
+
+			if ( ! renderPreviewHtml ) {
+				widgetPreview.html = '<div class="so-widget-preview-empty">' + __( 'No widget preview available.', 'so-widgets-bundle' ) + '</div>';
+			}
+
 			setState( {
 				widgetPreviewHtml: widgetPreview.html,
 				previewInitialized: false,
