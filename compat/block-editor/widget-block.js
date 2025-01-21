@@ -124,7 +124,7 @@
 	 *
 	 * @returns {Object} The memoized WidgetBlockEdit component.
 	 */
-	const memoizedWidgetBlockEdit = ({ props, widget }) => {
+	const memoizedWidgetBlockEdit = ( { props, widget } ) => {
 		return useMemo( () =>
 			el(
 				WidgetBlockEdit,
@@ -284,11 +284,11 @@
 							widgetFormHtml: widgetForm
 						} );
 
-						setTimeout(() => {
+						setTimeout( () => {
 							this.setState( {
 								loadingForm: false
 							} );
-						}, 0);
+						}, 0 );
 					} )
 					.fail( ( response) => {
 						this.setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
