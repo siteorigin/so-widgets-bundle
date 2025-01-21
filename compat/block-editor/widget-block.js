@@ -150,10 +150,15 @@
 		const $mainForm = jQuery( '[data-block="' + props.clientId + '"]' ).find( '.siteorigin-widget-form-main' );
 
 		if ( $mainForm.length > 0 && ! state.formInitialized ) {
-			var $previewContainer = $mainForm.siblings( '.siteorigin-widget-preview' );
+			const $previewContainer = $mainForm.siblings( '.siteorigin-widget-preview' );
 			$previewContainer.find( '> a' ).on( 'click', function( event ) {
 				event.stopImmediatePropagation();
-				setState( { editing: false, previewInitialized: false } );
+
+				setState( {
+					editing: false,
+					previewInitialized: false,
+					widgetPreviewHtml: false,
+				} );
 			} );
 			$mainForm.data( 'backupDisabled', true );
 			$mainForm.sowSetupForm();
