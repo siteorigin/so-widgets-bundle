@@ -4,8 +4,10 @@ var sowbForms = window.sowbForms || {};
 
 (function ($) {
 
+	const isBlockEditor = $( 'body' ).hasClass( 'block-editor-page' );
+
 	let fontList = '';
-	for (const [ value, label ] of Object.entries( soWidgets.fonts ) ) {
+	for ( const [ value, label ] of Object.entries( soWidgets.fonts ) ) {
 		fontList += '<option value="' + value + '">' + label + '</option>';
 	}
 
@@ -62,7 +64,12 @@ var sowbForms = window.sowbForms || {};
 				}
 				// If we're in the legacy main widgets interface and the form isn't visible and it isn't contained in a
 				// panels dialog (when using the Layout Builder widget), don't worry about setting it up.
-				if ( $body.hasClass( 'widgets-php' ) && ! $body.hasClass( 'block-editor-page' ) && ! $el.is( ':visible' ) && $el.closest( '.panel-dialog' ).length === 0 ) {
+				if (
+					$body.hasClass( 'widgets-php' ) &&
+					! isBlockEditor &&
+					! $el.is( ':visible' ) &&
+					$el.closest( '.panel-dialog' ).length === 0
+				) {
 					return true;
 				}
 
@@ -1705,6 +1712,18 @@ var sowbForms = window.sowbForms || {};
 					const $inputs = $$.prev().find( '.sow-multi-measurement-input, .sow-multi-measurement-select-unit' );
 					const valuesArray = [];
 
+					// Only process field if the current editor isn't the Block
+					// Editor, or it doesn't have a state handler/emitter.
+					if (
+						! isBlockEditor &&
+						(
+							$$.attr( 'data-state' ) ||
+							$$.attr( 'data-state-handler' )
+						)
+					) {
+						continue;
+					}
+
 					if ( values.value !== '' ) {
 						values.value.split(' ').forEach( field => {
 							valuesArray.push( parseInt( field, 10 ) );
@@ -1910,13 +1929,13 @@ var sowbForms = window.sowbForms || {};
 			$$.sowSetupForm();
 		}, 200);
 	});
-	var $body = $( 'body' );
+
 	// Setup new widgets when they're added in the Customizer or new widgets interface.
 	$( document ).on( 'widget-added', function( e, widget ) {
 		widget.find( '.siteorigin-widget-form' ).sowSetupForm();
 	} );
 
-	if ( $body.hasClass('block-editor-page') ) {
+	if ( isBlockEditor ) {
 		// Setup new widgets when they're previewed in the block editor.
 		$(document).on('panels_setup_preview', function () {
 			if (window.hasOwnProperty('sowb')) {
