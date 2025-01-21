@@ -9,9 +9,12 @@
  * @var $attributes
  * @var $classes
  */
-?>
 
-<?php
+// Don't output an empty image.
+if ( empty( $attributes['src'] ) ) {
+	return;
+}
+
 if ( $title_position == 'above' ) {
 	echo $args['before_title'];
 
