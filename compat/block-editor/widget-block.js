@@ -196,7 +196,8 @@
 			super( props );
 
 			this.initialState = {
-				editing: false,
+				// If this widget was just added, show the form.
+				editing: props.attributes.widgetData === undefined,
 				formInitialized: false,
 				loadingForm: false,
 				loadingWidgetPreview: false,
