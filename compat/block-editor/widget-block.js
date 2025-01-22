@@ -1,18 +1,25 @@
-( function(blocks, i18n, element, components, compose, blockEditor ) {
+( function( blocks, i18n, element, components, blockEditor ) {
 
-	var el = element.createElement;
-	var registerBlockType = blocks.registerBlockType;
-	var BlockControls = blockEditor.BlockControls;
-	const { Component, useMemo } = element;
+	const el = element.createElement;
+	const registerBlockType = blocks.registerBlockType;
+	const BlockControls = blockEditor.BlockControls;
+	const {
+		Component,
+		useMemo
+	} = element;
 
-	var Toolbar = components.Toolbar;
-	var ToolbarButton = components.ToolbarButton;
-	var Placeholder = components.Placeholder;
-	var Spinner = components.Spinner;
-	var __ = i18n.__;
+	const {
+		Toolbar,
+		ToolbarButton,
+		Placeholder,
+		Button,
+		Spinner
+	} = components;
+
+	const __ = i18n.__;
 
 	const getAjaxErrorMsg = ( response ) => {
-		var errorMessage = '';
+		let errorMessage = '';
 		if ( response.hasOwnProperty( 'responseJSON' ) ) {
 			errorMessage = response.responseJSON.message;
 		} else if ( response.hasOwnProperty( 'responseText' ) ) {
@@ -160,6 +167,32 @@
 					widgetPreviewHtml: false,
 				} );
 			} );
+
+			$mainForm.parent().find( '.legacy-migrate' ).on( 'click', () => {
+				if ( ! confirm( __( 'Are you sure you want to migrate this block back to the legacy format?', 'so-widgets-bundle' ) ) ) {
+					return;
+				}
+
+				// Prevent automatic migrations back to the new format.
+				props.attributes.legacy = true;
+
+				// Is `sowb/widget-block` active?
+				const hasLegacyBlock = wp.blocks.getBlockType( 'sowb/widget-block' );
+				if ( ! hasLegacyBlock ) {
+					registerLegacyBlock();
+				}
+
+				const newBlock = wp.blocks.createBlock(
+					'sowb/widget-block',
+					props.attributes
+				);
+
+				wp.data.dispatch( 'core/block-editor' ).replaceBlock(
+					props.clientId,
+					newBlock
+				);
+			} );
+
 			$mainForm.data( 'backupDisabled', true );
 			$mainForm.sowSetupForm();
 
@@ -205,6 +238,9 @@
 				widgetFormHtml: '',
 				widgetPreviewHtml: '',
 				widgetSettingsChanged: false,
+				// If the user has migrated the block back to the legacy format,
+				// we set this flag to prevent automatic migrations back.
+				legacyBlock: false,
 			};
 
 			this.state = {
@@ -496,42 +532,73 @@
 	sowbBlockEditorAdmin.widgets.forEach( setupSoWidgetBlock );
 
 	// Register a stripped back version of our old block to allow for migration.
-	registerBlockType( 'sowb/widget-block', {
-		title: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
-		description: __( 'Select a SiteOrigin widget from the dropdown.', 'so-widgets-bundle' ),
-		attributes: {
-			widgetClass: {
-				type: 'string',
+	const registerLegacyBlock = () => {
+		registerBlockType( 'sowb/widget-block', {
+			title: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
+			description: __( 'Select a SiteOrigin widget from the dropdown.', 'so-widgets-bundle' ),
+			attributes: {
+				widgetClass: {
+					type: 'string',
+				},
+				anchor: {
+					type: 'string',
+				},
+				widgetData: {
+					type: 'object',
+				},
+				widgetMarkup: {
+					type: 'string',
+				},
+				widgetIcons: {
+					type: 'array',
+				},
+				legacy: {
+					type: 'boolean',
+					default: false,
+				},
 			},
-			anchor: {
-				type: 'string',
+			icon: function() {
+				return el(
+					'span',
+					{
+						className: 'widget-icon so-widget-icon so-block-editor-icon'
+					}
+				)
 			},
-			widgetData: {
-				type: 'object',
+			edit: function ( props ) {
+				return el(
+					Placeholder,
+					{
+						label: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
+						instructions: __( 'This block is using the legacy format. Please migrate to the new block format.', 'so-widgets-bundle' )
+					},
+					el(
+						Button,
+						{
+							isPrimary: true,
+							onClick: () => {
+								const newBlock = wp.blocks.createBlock(
+									'sowb/' + props.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
+									props.attributes
+								);
+
+								wp.data.dispatch( 'core/block-editor' ).replaceBlock(
+									props.clientId,
+									newBlock
+								);
+							},
+						},
+						__( 'Migrate to New Block Format', 'so-widgets-bundle' )
+					)
+				);
 			},
-			widgetMarkup: {
-				type: 'string',
+			save: function () {
+				return null;
 			},
-			widgetIcons: {
-				type: 'array',
-			},
-		},
-		icon: function() {
-			return el(
-				'span',
-				{
-					className: 'widget-icon so-widget-icon so-block-editor-icon'
-				}
-			)
-		},
-		edit: function () {
-			return null;
-		},
-		save: function () {
-			return null;
-		},
-	} );
-} )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.compose, window.wp.blockEditor );
+		} );
+	}
+	registerLegacyBlock();
+} )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.blockEditor );
 
 if (
 	typeof adminpage != 'undefined' &&
@@ -539,17 +606,21 @@ if (
 	typeof wp.data.select == 'function'
 ) {
 	/**
-	 * Remove the legacy widget block.
+	 * Remove the legacy widget block, and prevent further migration attempts.
 	 *
-	 * This function removes the 'sowb/widget-block' block type,
-	 * which is only present to prevent errors and aid in migration.
+	 * This function prevents further migration attempts by unsubscribing
+	 * the migration process. If hasLegacyBlock is false, this function
+	 * also removes the 'sowb/widget-block' block type.
 	 *
-	 * It also prevents further migration attempts.
+	 * @param {boolean} hasLegacyBlock - Indicates whether there is a legacy block present.
 	 *
-	 * @returns {boolean} Returns false to prevent further execution
+	 * @returns {boolean} Returns false to prevent further execution.
 	 */
-	const removeLegacyWidgetBlock = () => {
-		wp.blocks.unregisterBlockType( 'sowb/widget-block' );
+	const removeLegacyWidgetBlock = ( hasLegacyBlock = false ) => {
+
+		if ( ! hasLegacyBlock ) {
+			wp.blocks.unregisterBlockType( 'sowb/widget-block' );
+		}
 
 		setTimeout( () => {
 			// Unsubscribe the migration.
@@ -581,8 +652,17 @@ if (
 			return;
 		}
 
+		let hasLegacyBlock = false;
+
 		// Migrate the blocks.
 		widgetBlocks.forEach( currentBlock => {
+
+			// Prevent migration if there's a legacy flag.
+			if ( currentBlock.attributes.legacy ) {
+				hasLegacyBlock = true;
+				return;
+			}
+
 			const newBlock = wp.blocks.createBlock(
 				'sowb/' + currentBlock.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
 				currentBlock.attributes
@@ -596,7 +676,7 @@ if (
 			}
 		} );
 
-		return removeLegacyWidgetBlock();
+		return removeLegacyWidgetBlock( hasLegacyBlock );
 	} );
 
 	let sowbTimeoutSetup = false;

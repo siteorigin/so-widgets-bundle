@@ -514,11 +514,18 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			</div>
 		<?php } ?>
 
-		<?php if ( ! empty( $this->widget_options['help'] ) ) { ?>
-			<a href="<?php echo sow_esc_url( $this->widget_options['help'] ); ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank" rel="noopener noreferrer">
-				<?php esc_html_e( 'Help', 'so-widgets-bundle' ); ?>
-			</a>
-		<?php } ?>
+		<footer class="siteorigin-widget-footer">
+			<?php if ( ! empty( $this->widget_options['help'] ) ) { ?>
+				<a href="<?php echo sow_esc_url( $this->widget_options['help'] ); ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank" rel="noopener noreferrer">
+					<?php esc_html_e( 'Help', 'so-widgets-bundle' ); ?>
+				</a>
+			<?php } ?>
+			<?php if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) { ?>
+				<button type="button" class="button button-secondary legacy-migrate">
+					<?php esc_html_e( 'Migrate to legacy block', 'so-widgets-bundle' ); ?>
+				</button>
+			<?php } ?>
+		</footer>
 
 		<script type="text/javascript">
 			( function( $ ) {
