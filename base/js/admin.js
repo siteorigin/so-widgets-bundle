@@ -1450,12 +1450,13 @@ var sowbForms = window.sowbForms || {};
 					var selected = $$.find( 'option:selected' );
 					if ( selected.length === 1 ) {
 						fieldValue = $$.find( 'option:selected' ).val();
-					}
-					else if ( selected.length > 1 ) {
-						// This is a mutli-select field
-						fieldValue = _.map( $$.find( 'option:selected' ), function ( n, i ) {
-							return $( n ).val();
-						} );
+					} else if ( selected.length > 1 ) {
+
+						const selectedOptions = $$.find( 'option:selected' );
+						fieldValue = [];
+						for ( var i = 0; i < selectedOptions.length; i++ ) {
+							fieldValue.push( selectedOptions[ i ].value );
+						}
 					}
 				} else {
 					fieldValue = $$.val();
