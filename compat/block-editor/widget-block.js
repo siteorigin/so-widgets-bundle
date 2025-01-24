@@ -168,31 +168,6 @@
 				} );
 			} );
 
-			$mainForm.parent().find( '.legacy-migrate' ).on( 'click', () => {
-				if ( ! confirm( __( 'Are you sure you want to migrate this block back to the legacy format?', 'so-widgets-bundle' ) ) ) {
-					return;
-				}
-
-				// Prevent automatic migrations back to the new format.
-				props.attributes.legacy = true;
-
-				// Is `sowb/widget-block` active?
-				const hasLegacyBlock = wp.blocks.getBlockType( 'sowb/widget-block' );
-				if ( ! hasLegacyBlock ) {
-					registerLegacyBlock();
-				}
-
-				const newBlock = wp.blocks.createBlock(
-					'sowb/widget-block',
-					props.attributes
-				);
-
-				wp.data.dispatch( 'core/block-editor' ).replaceBlock(
-					props.clientId,
-					newBlock
-				);
-			} );
-
 			$mainForm.data( 'backupDisabled', true );
 			$mainForm.sowSetupForm();
 
@@ -238,9 +213,6 @@
 				widgetFormHtml: '',
 				widgetPreviewHtml: '',
 				widgetSettingsChanged: false,
-				// If the user has migrated the block back to the legacy format,
-				// we set this flag to prevent automatic migrations back.
-				legacyBlock: false,
 			};
 
 			this.state = {
@@ -531,153 +503,141 @@
 	// Register all SiteOrigin Blocks.
 	sowbBlockEditorAdmin.widgets.forEach( setupSoWidgetBlock );
 
-	// Register a stripped back version of our old block to allow for migration.
-	const registerLegacyBlock = () => {
-		registerBlockType( 'sowb/widget-block', {
-			title: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
-			description: __( 'Select a SiteOrigin widget from the dropdown.', 'so-widgets-bundle' ),
-			attributes: {
-				widgetClass: {
-					type: 'string',
-				},
-				anchor: {
-					type: 'string',
-				},
-				widgetData: {
-					type: 'object',
-				},
-				widgetMarkup: {
-					type: 'string',
-				},
-				widgetIcons: {
-					type: 'array',
-				},
-				legacy: {
-					type: 'boolean',
-					default: false,
-				},
-			},
-			icon: function() {
-				return el(
-					'span',
-					{
-						className: 'widget-icon so-widget-icon so-block-editor-icon'
-					}
-				)
-			},
-			edit: function ( props ) {
-				return el(
-					Placeholder,
-					{
-						label: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
-						instructions: __( 'This block is using the legacy format. Please migrate to the new block format.', 'so-widgets-bundle' )
-					},
-					el(
-						Button,
-						{
-							isPrimary: true,
-							onClick: () => {
-								const newBlock = wp.blocks.createBlock(
-									'sowb/' + props.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
-									props.attributes
-								);
 
-								wp.data.dispatch( 'core/block-editor' ).replaceBlock(
-									props.clientId,
-									newBlock
-								);
-							},
+	registerBlockType( 'sowb/widget-block', {
+		title: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
+		description: __( 'Select a SiteOrigin widget from the dropdown.', 'so-widgets-bundle' ),
+		attributes: {
+			widgetClass: {
+				type: 'string',
+			},
+			anchor: {
+				type: 'string',
+			},
+			widgetData: {
+				type: 'object',
+			},
+			widgetMarkup: {
+				type: 'string',
+			},
+			widgetIcons: {
+				type: 'array',
+			},
+		},
+		icon: function() {
+			return el(
+				'span',
+				{
+					className: 'widget-icon so-widget-icon so-block-editor-icon'
+				}
+			)
+		},
+		edit: function () {
+			const isAdmin = wp.data.select( 'core' ).getCurrentUser().is_super_admin;
+			return el(
+				Placeholder,
+				{
+					label: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
+					instructions: __( 'This block is using the legacy format. Please migrate to the new block format.', 'so-widgets-bundle' )
+				},
+				isAdmin ?
+				el(
+					Button,
+					{
+						isPrimary: true,
+						onClick: () => {
+							jQuery.post( ajaxurl, {
+								action: 'so_widgets_block_migration_notice_consent',
+								nonce: sowbBlockMigration.nonce
+							} );
+
+							migrateOldBlocks();
 						},
-						__( 'Migrate to New Block Format', 'so-widgets-bundle' )
-					)
-				);
-			},
-			save: function () {
-				return null;
-			},
-		} );
-	}
-	registerLegacyBlock();
+					},
+					__( 'Migrate to New Block Format', 'so-widgets-bundle' )
+				) :
+
+				el(
+					'span',
+					null,
+					__( 'Please contact your site administrator to migrate this block.', 'so-widgets-bundle' )
+				)
+			);
+		},
+		save: function () {
+			return null;
+		},
+	} );
 } )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.blockEditor );
+
+/**
+ * Migrate SiteOrigin Widget Blocks to their dedicated widget block.
+ *
+ * This function subscribes to the block editor data store and
+ * migrates any legacy 'sowb/widget-block' blocks to their new block types.
+ * After migration, it removes the legacy widget block and unsubscribes
+ * from the data store.
+ */
+const migrateOldBlocks = () => {
+	const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
+	if ( blocks.length === 0 ) {
+		return;
+	}
+
+	// Find any legacy WB blocks.
+	const widgetBlocks = blocks.filter( block => block.name === 'sowb/widget-block' );
+	if ( widgetBlocks.length === 0 ) {
+		return;
+	}
+
+	// Confirm consent, or admin status.
+	if ( ! sowbBlockEditorAdmin.consent && ! wp.data.select( 'core' ).getCurrentUser().is_super_admin ) {
+		migrateOldBlocks();
+		return;
+	}
+
+	// Migrate the blocks.
+	widgetBlocks.forEach( currentBlock => {
+		const newBlock = wp.blocks.createBlock(
+			'sowb/' + currentBlock.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
+			currentBlock.attributes
+		);
+
+		if ( newBlock ) {
+			wp.data.dispatch( 'core/block-editor' ).replaceBlock(
+				currentBlock.clientId,
+				newBlock
+			);
+		}
+	} );
+
+	return removeLegacyWidgetBlock();
+};
+
+/**
+ * Remove the legacy widget block, and prevent further migration attempts.
+ *
+ * This function prevents further migration attempts by unsubscribing
+ * the migration process.
+ *
+ * @returns {boolean} Returns false to prevent further execution.
+ */
+const removeLegacyWidgetBlock = () => {
+	setTimeout( () => {
+		migrateOldBlocks();
+	}, 0 );
+
+	return false;
+};
 
 if (
 	typeof adminpage != 'undefined' &&
 	adminpage != 'widgets-php' &&
 	typeof wp.data.select == 'function'
 ) {
-	/**
-	 * Remove the legacy widget block, and prevent further migration attempts.
-	 *
-	 * This function prevents further migration attempts by unsubscribing
-	 * the migration process. If hasLegacyBlock is false, this function
-	 * also removes the 'sowb/widget-block' block type.
-	 *
-	 * @param {boolean} hasLegacyBlock - Indicates whether there is a legacy block present.
-	 *
-	 * @returns {boolean} Returns false to prevent further execution.
-	 */
-	const removeLegacyWidgetBlock = ( hasLegacyBlock = false ) => {
-
-		if ( ! hasLegacyBlock ) {
-			wp.blocks.unregisterBlockType( 'sowb/widget-block' );
-		}
-
-		setTimeout( () => {
-			// Unsubscribe the migration.
-			migrateOldBlocks();
-		}, 0 );
-
-		return false;
+	if ( sowbBlockEditorAdmin.consent ) {
+		wp.data.subscribe( migrateOldBlocks );
 	}
-
-	/**
-	 * Migrate SiteOrigin Widget Blocks to their dedicated widget block.
-	 *
-	 * This function subscribes to the block editor data store and
-	 * migrates any legacy 'sowb/widget-block' blocks to their new block types.
-	 * After migration, it removes the legacy widget block and unsubscribes
-	 * from the data store.
-	 */
-	const migrateOldBlocks = wp.data.subscribe( () => {
-		const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
-
-		if ( blocks.length === 0 ) {
-			return;
-		}
-
-		// Find any legacy WB blocks.
-		const widgetBlocks = blocks.filter( block => block.name === 'sowb/widget-block' );
-
-		if ( widgetBlocks.length === 0 ) {
-			return;
-		}
-
-		let hasLegacyBlock = false;
-
-		// Migrate the blocks.
-		widgetBlocks.forEach( currentBlock => {
-
-			// Prevent migration if there's a legacy flag.
-			if ( currentBlock.attributes.legacy ) {
-				hasLegacyBlock = true;
-				return;
-			}
-
-			const newBlock = wp.blocks.createBlock(
-				'sowb/' + currentBlock.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
-				currentBlock.attributes
-			);
-
-			if ( newBlock ) {
-				wp.data.dispatch( 'core/block-editor' ).replaceBlock(
-					currentBlock.clientId,
-					newBlock
-				);
-			}
-		} );
-
-		return removeLegacyWidgetBlock( hasLegacyBlock );
-	} );
 
 	let sowbTimeoutSetup = false;
 	// Setup SiteOrigin Widgets Block Validation.
