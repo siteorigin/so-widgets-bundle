@@ -28,6 +28,13 @@
 		return errorMessage;
 	}
 
+	// Certain widgets are excluded from the content check as
+	// they don't contain "standard" content indicators.
+	const widgetsExcludedFromContentCheck = [
+		'sowb/siteorigin-widget-googlemap-widget',
+		'sowb/siteorigin-widget-icon-widget',
+	];
+
 	/**
 	 * Generate a widget preview.
 	 *
@@ -61,6 +68,40 @@
 			wp.data.dispatch( 'core/editor' ).lockPostSaving();
 		}
 
+		/**
+		 * Check if the provided HTML contains any text or images.
+		 *
+		 * This function creates a temporary DOM element with the provided HTML,
+		 * checks if there is any text content or images present, and returns
+		 * a boolean indicating whether the HTML should be rendered.
+		 *
+		 * @param {string} html - The HTML string to check for content.
+		 *
+		 * @returns {boolean} - Returns true if the HTML contains text or images, false otherwise.
+		 */
+		const checkHtmlForContent = ( html ) => {
+			const tempElement = jQuery( '<div>' + html + '</div>' );
+			let renderPreviewHtml = false;
+
+			const widgetContent = tempElement.find( 'div:first-of-type' );
+			if ( widgetContent.length > 0 ) {
+				console.log(widgetContent);
+				// Is there any text present?
+				if ( widgetContent.text().trim() !== '' ) {
+					renderPreviewHtml = true;
+
+				// No text is present. Check for anything that
+				// could be considered content.
+				} else if ( widgetContent.find( 'img, video, a' ).length > 0 ) {
+					renderPreviewHtml = true;
+				}
+			}
+
+			tempElement.remove();
+
+			return renderPreviewHtml;
+		};
+
 		jQuery.post( {
 			url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/previews',
 			beforeSend: ( xhr ) => {
@@ -77,19 +118,12 @@
 
 			// Is the preview empty?
 			if ( widgetPreview.html ) {
-				const tempElement = jQuery( '<div>' + widgetPreview.html + '</div>' );
-				const widgetContent = tempElement.find( 'div:first-of-type' );
-				if ( widgetContent.length > 0 ) {
-					// Is there any text present?
-					if ( widgetContent.text().trim() !== '' ) {
-						renderPreviewHtml = true;
-					} else if ( widgetContent.find( 'img' ).length > 0 ) {
-						// No text, but there's an image.
-						renderPreviewHtml = true;
-					}
+				// Is this widget excluded from the content check?
+				if ( widgetsExcludedFromContentCheck.includes( props.name ) ) {
+					renderPreviewHtml = true;
+				} else {
+					renderPreviewHtml = checkHtmlForContent( widgetPreview.html );
 				}
-
-				tempElement.remove();
 			}
 
 			if ( ! renderPreviewHtml ) {
