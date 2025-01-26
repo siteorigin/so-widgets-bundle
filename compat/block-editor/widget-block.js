@@ -266,7 +266,12 @@
 				return;
 			}
 
-			const { editing, widgetFormHtml, loadingForm } = this.state;
+			const {
+				editing,
+				widgetFormHtml,
+				loadingForm,
+				loadingWidgetPreview
+			} = this.state;
 			const { attributes } = this.props;
 
 			if (
@@ -302,14 +307,10 @@
 						this.setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
 					} );
 				}
+				return;
 			}
 
-			// Regardless of whether we're editing or not, update the
-			// widget preview if the widget settings have changed.
-			const loadWidgetPreview = ! this.props.loadingWidgets &&
-				! this.state.widgetPreviewHtml &&
-				attributes.widgetData &&
-				! this.state.loadingWidgetPreview;
+			const loadWidgetPreview = ! loadingWidgetPreview && ! editing;
 
 			if ( loadWidgetPreview ) {
 				this.props.setAttributes( {
