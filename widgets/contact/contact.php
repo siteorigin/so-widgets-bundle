@@ -16,6 +16,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		'amisplon@gmail.com',
 		'test@example.com',
 		'greg@siteorigin.com',
+		'wordpress@layouts.siteorigin.com',
 		'support@siteorigin.com',
 	);
 
