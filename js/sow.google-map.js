@@ -463,6 +463,36 @@ jQuery(function ($) {
 	sowb.googleMapsData.libraries = [
 		'marker',
 	];
+
+	/**
+	 * Wait for the block editor to be fully loaded and initialize Google Maps.
+	 *
+	 * This function checks if the block editor and Google Maps are
+	 * fully loaded. If they aren't, it checks again after a delay. Once
+	 * the block editor is ready and blocks are loaded, it initializes
+	 * Google Maps and unsubscribes from further updates.
+	 */
+	const waitForBlockEditor = () => {
+		if (
+			typeof window.wp !== 'object' ||
+			typeof window.wp.data !== 'object' ||
+			typeof window.google.maps === 'undefined'
+		) {
+			setTimeout( waitForBlockEditor, 250 );
+			return;
+		}
+
+		const checkForBlocks = wp.data.subscribe(() => {
+			const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
+			if ( blocks.length === 0 ) {
+				return;
+			}
+
+			soGoogleMapInitialize();
+			checkForBlocks();
+		} );
+	}
+
 	sowb.setupGoogleMaps = function( e, forceLoad = false ) {
 		var $mapCanvas = $( '.sow-google-map-canvas' );
 		if ( ! $mapCanvas.length ) {
@@ -501,7 +531,17 @@ jQuery(function ($) {
 		) {
 			// If this is an admin preview, and the API has already been setup,
 			// skip any further API checks to confirm it's working and set it up.
-			if ( $( 'body.wp-admin' ).length && $( '#sow-google-maps-js' ).length ) {
+			if ( $( 'body.wp-admin' ).length ) {
+				if ( ! $( '#sow-google-maps-js' ).length ) {
+					sowb.loadGoogleMapsAPI( forceLoad );
+				}
+
+				// Is this the Block Editor?
+				if ( $( '.editor-styles-wrapper' ).length ) {
+					waitForBlockEditor();
+					return;
+				}
+
 				setTimeout( function() {
 					soGoogleMapInitialize();
 				}, 250 );
