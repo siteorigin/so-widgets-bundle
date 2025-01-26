@@ -11,6 +11,14 @@ $field_ids = array();
 class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	public $instance_hash;
 
+	private $dev_emails = array(
+		'ibrossiter@gmail.com',
+		'amisplon@gmail.com',
+		'test@example.com',
+		'greg@siteorigin.com',
+		'support@siteorigin.com',
+	);
+
 	public function __construct() {
 		parent::__construct(
 			'sow-contact-form',
@@ -1993,11 +2001,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	private function is_dev_email( $email ) {
-		return $email == 'ibrossiter@gmail.com' ||
-			   $email == 'amisplon@gmail.com' ||
-			   $email == 'test@example.com' ||
-			   $email == 'greg@siteorigin.com' ||
-			   $email == 'support@siteorigin.com';
+		return in_array( $email, $this->dev_emails, true );
 	}
 
 	private function default_from_address() {
