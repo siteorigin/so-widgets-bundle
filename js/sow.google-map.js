@@ -596,8 +596,7 @@ jQuery(function ($) {
 		}
 
 		// Try to load even if API key is missing to allow Google Maps API to provide it's own warnings/errors about missing API key.
-		// var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + sowb.googleMapsData.apiKey;
-		var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + sowb.googleMapsData.apiKey + '&callback=soGoogleMapInitialize';
+		let apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + sowb.googleMapsData.apiKey + '&callback=soGoogleMapInitialize&loading=async';
 
 		if ( sowb.googleMapsData.libraries && sowb.googleMapsData.libraries.length ) {
 			apiUrl += '&libraries=' + sowb.googleMapsData.libraries.join( ',' );
