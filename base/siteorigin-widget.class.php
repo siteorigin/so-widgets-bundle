@@ -410,9 +410,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					}
 				}
 			} elseif ( $field['type'] == 'section' ) {
+				if ( empty( $instance ) ) {
+					$instance = array();
+				}
+
 				if ( empty( $instance[ $id ] ) ) {
 					$instance[ $id ] = array();
 				}
+
 				$instance[ $id ] = $this->add_defaults( $field['fields'], $instance[ $id ], $level + 1 );
 			} elseif ( $field['type'] == 'measurement' ) {
 				if ( ! isset( $instance[ $id ] ) ) {
