@@ -58,6 +58,27 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	public function enqueue_admin_scripts() {
+		wp_enqueue_script(
+			'sow-contact-form-admin',
+			plugin_dir_url( __FILE__ ) . 'js/contact-form-admin' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			SOW_BUNDLE_VERSION
+		);
+
+		wp_localize_script(
+			'sow-contact-form-admin',
+			'sowContactAdmin',
+			array(
+				'error' =>  sprintf(
+					esc_html__( "The 'To' and 'From' email addresses cannot be the same. This can cause email delivery issues or trigger spam filters. %sLearn why and how to fix this%s.", 'so-widgets-bundle' ),
+					'<a href="https://siteorigin.com/widgets-bundle/contact-form-widget/#heading-avoiding-issues-with-the-to-and-from-email-fields" target="_blank" rel="noopener noreferrer">',
+					'</a>'
+				),
+			)
+		);
+	}
+
 	public function get_widget_form() {
 		$useable_units = array(
 			'px',
