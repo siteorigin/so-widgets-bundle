@@ -68,7 +68,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'sow-contact-form-admin',
 			'sowContactAdmin',
 			array(
-				'error' => esc_html__( 'The To and From email address are the same. This can cause email delivery issues. Please change either email.', 'so-widgets-bundle' ),
+				'error' =>  sprintf(
+					esc_html__( "The 'To' and 'From' email addresses cannot be the same. This can cause email delivery issues or trigger spam filters. %sLearn why and how to fix this%s.", 'so-widgets-bundle' ),
+					'<a href="https://siteorigin.com/widgets-bundle/contact-form-widget/#heading-avoiding-issues-with-the-to-and-from-email-fields" target="_blank" rel="noopener noreferrer">',
+					'</a>'
+				),
 			)
 		);
 	}
