@@ -1267,6 +1267,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	public static function post_meta( $settings ) {
+		ob_start();
 		if ( is_sticky() ) {
 			?>
 			<span class="sow-featured-post"><?php esc_html_e( 'Sticky', 'so-widgets-bundle' ); ?></span>
@@ -1345,8 +1346,13 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			);
 			?>
 			</span>
-		<?php }
+		<?php
 		}
+
+		$post_meta = ob_get_clean();
+
+		echo apply_filters( 'siteorigin_widgets_blog_post_meta', $post_meta, $settings );
+	}
 
 	static public function post_featured_image( $settings, $categories = false, $size = 'full' ) {
 		if ( $settings['featured_image'] ) {
