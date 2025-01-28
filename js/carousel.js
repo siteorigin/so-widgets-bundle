@@ -8,16 +8,16 @@ jQuery( function ( $ ) {
 
 	sowb.setupCarousel = function () {
 		$.fn.setSlideTo = function( slide ) {
-			$item = $( this );
+			$items = $( this );
 			// We need to reset the Slick slide settings to avoid https://github.com/kenwheeler/slick/issues/1006.
-			var slidesToShow = $item.slick( 'slickGetOption', 'slidesToShow' );
-			var slidesToScroll = $item.slick( 'slickGetOption', 'slidesToScroll' );
+			const slidesToShow = $item.slick( 'slickGetOption', 'slidesToShow' );
+			const slidesToScroll = $item.slick( 'slickGetOption', 'slidesToScroll' );
 
-			$item.slick( 'slickSetOption', 'slidesToShow', 1 );
-			$item.slick( 'slickSetOption', 'slidesToScroll', 1 );
-			$item.slick( 'slickGoTo', slide );
-			$item.slick( 'slickSetOption', 'slidesToShow', slidesToShow );
-			$item.slick( 'slickSetOption', 'slidesToScroll', slidesToScroll );
+			$items.slick( 'slickSetOption', 'slidesToShow', 1 );
+			$items.slick( 'slickSetOption', 'slidesToScroll', 1 );
+			$items.navigateToSlide( slide );
+			$items.slick( 'slickSetOption', 'slidesToShow', slidesToShow );
+			$items.slick( 'slickSetOption', 'slidesToScroll', slidesToScroll );
 		};
 
 		$( '.sow-carousel-wrapper' ).on( 'init', function( e, slick ) {
@@ -387,7 +387,7 @@ jQuery( function ( $ ) {
 					if ( targetItem + numVisibleItems >= numItems ) {
 						// Blank spacing would occur, let's go to the last possible item
 						// make it appear as though we navigated to the selected item.
-						$items.slick( 'slickGoTo', lastPosition );
+						$items.navigateToSlide( lastPosition );
 						$dots = $( this ).parent();
 						$dots.find( '.slick-active' ).removeClass( 'slick-active' );
 						$dots.children().eq( targetItem ).addClass( 'slick-active' );
@@ -397,7 +397,7 @@ jQuery( function ( $ ) {
 							// We need to account for an empty item.
 							targetItem = Math.ceil( $( this ).index() * slidesToScroll );
 						}
-						$items.slick( 'slickGoTo', targetItem );
+						$items.navigateToSlide( targetItem );
 					}
 
 					// Is this a Post Carousel? If so, let's check if we need to load more posts.
