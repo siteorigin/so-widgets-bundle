@@ -317,7 +317,7 @@ jQuery( function ( $ ) {
 							currentSlide === 0
 						) {
 							// Determine lastPosition based on the 'complete' flag
-							lastPosition = complete ? numItems : numItems - 1;
+							lastPosition = complete ? numItems : lastPosition;
 							loadMorePosts = ! complete;
 							$items.navigateToSlide( lastPosition );
 						} else if ( currentSlide <= slidesToScroll ) {
