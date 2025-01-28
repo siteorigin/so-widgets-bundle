@@ -262,6 +262,7 @@
 
 		componentDidMount() {
 			this.setState( {
+				...this.initialState,
 				isStillMounted: true
 			} );
 
