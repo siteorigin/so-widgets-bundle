@@ -334,7 +334,8 @@
 
 						setTimeout( () => {
 							this.setState( {
-								loadingForm: false
+								loadingForm: false,
+								formInitialized: false,
 							} );
 						}, 0 );
 					} )
