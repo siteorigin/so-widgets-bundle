@@ -269,11 +269,13 @@ var sowbForms = window.sowbForms || {};
 							sessionStorage.removeItem( _sow_form_id );
 						}
 					}
-					$el.on( 'change', function() {
+
+					// Debounce backups to prevent potential performance issues.
+					$el.on( 'change', _.debounce( function() {
 						$timestampField.val( new Date().getTime() );
-						var data = sowbForms.getWidgetFormValues( $el );
+						const data = sowbForms.getWidgetFormValues( $el );
 						sessionStorage.setItem( _sow_form_id, JSON.stringify( data ) );
-					} );
+					}, 500 ) );
 				}
 			}
 			else {
