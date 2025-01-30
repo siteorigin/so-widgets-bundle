@@ -397,7 +397,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	/**
 	 * Add default values to the instance.
 	 */
-	public function add_defaults( $form, $instance, $level = 0 ) {
+	public function add_defaults( $form, $instance = array(), $level = 0 ) {
 		if ( $level > 10 ) {
 			return $instance;
 		}
