@@ -439,6 +439,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					continue;
 				}
 
+				if ( empty( $instance[ $id ] ) ) {
+					$instance[ $id ] = array();
+				}
+
 				// Does this widget have a form filter?
 				if (
 					! empty( $field['form_filter'] ) &&
