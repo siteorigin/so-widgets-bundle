@@ -608,6 +608,48 @@
 } )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.blockEditor );
 
 /**
+ * Find all legacy SiteOrigin widget blocks in the editor.
+ *
+ * Recursively traverses blocks and their inner blocks to find all legacy
+ * SiteOrigin widget blocks. Handles widget areas differently by directly
+ * accessing their blocks through the block editor store.
+ *
+ * @param {Array} blocks Array of blocks to check.
+ *
+ * @returns {Array} Array of found legacy widget blocks.
+ */
+const findLegacyBlocks = ( blocks ) => {
+	return blocks.reduce( ( legacyBlocks, block ) => {
+		 // If the current block is widget area, we need to handle
+		 // things slightly different.
+		if ( block.name === 'core/widget-area' ) {
+			const innerBlocks = wp.data.select( 'core/block-editor' ).getBlocks( block.clientId );
+
+			// Check each widget in the block area
+			innerBlocks.forEach( widget => {
+				if ( widget.name === 'sowb/widget-block' ) {
+					legacyBlocks.push( widget );
+				}
+			} );
+
+			return legacyBlocks;
+		}
+
+		// Check if current block is legacy
+		if ( block.name === 'sowb/widget-block' ) {
+			legacyBlocks.push( block );
+		}
+
+		// Recursively check innerBlocks if they exist
+		if ( block.innerBlocks && block.innerBlocks.length > 0 ) {
+			legacyBlocks.push( ...findLegacyBlocks( block.innerBlocks ) );
+		}
+
+		return legacyBlocks;
+	}, [] );
+}
+
+/**
  * Migrate SiteOrigin Widget Blocks to their dedicated widget block.
  *
  * This function subscribes to the block editor data store and
@@ -622,19 +664,22 @@ const migrateOldBlocks = () => {
 	}
 
 	// Find any legacy WB blocks.
-	const widgetBlocks = blocks.filter( block => block.name === 'sowb/widget-block' );
-	if ( widgetBlocks.length === 0 ) {
+	const legacyBlocks = findLegacyBlocks( blocks );
+	if ( legacyBlocks.length === 0 ) {
 		return;
 	}
 
 	// Confirm consent, or admin status.
-	if ( ! sowbBlockEditorAdmin.consent && ! wp.data.select( 'core' ).getCurrentUser().is_super_admin ) {
+	if (
+		! sowbBlockEditorAdmin.consent &&
+		! wp.data.select( 'core' ).getCurrentUser().is_super_admin
+	) {
 		migrateOldBlocks();
 		return;
 	}
 
 	// Migrate the blocks.
-	widgetBlocks.forEach( currentBlock => {
+	legacyBlocks.forEach( currentBlock => {
 		const newBlock = wp.blocks.createBlock(
 			'sowb/' + currentBlock.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
 			currentBlock.attributes
@@ -667,14 +712,21 @@ const removeLegacyWidgetBlock = () => {
 	return false;
 };
 
+jQuery( function ( $ ) {
+	if (
+		$( 'body.block-editor-page' ).length &&
+		sowbBlockEditorAdmin.consent
+	) {
+		wp.data.subscribe( migrateOldBlocks );
+	}
+} );
+
+
 if (
 	typeof adminpage != 'undefined' &&
 	adminpage != 'widgets-php' &&
 	typeof wp.data.select == 'function'
 ) {
-	if ( sowbBlockEditorAdmin.consent ) {
-		wp.data.subscribe( migrateOldBlocks );
-	}
 
 	let sowbTimeoutSetup = false;
 	// Setup SiteOrigin Widgets Block Validation.
