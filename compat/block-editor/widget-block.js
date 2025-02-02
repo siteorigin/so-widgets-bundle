@@ -488,8 +488,8 @@
 	 */
 	const setupSoWidgetBlock = function( widget ) {
 		registerBlockType( 'sowb/' + widget.blockName, {
-			title: __( widget.name, 'so-widgets-bundle' ),
-			description: __( widget.description, 'so-widgets-bundle' ),
+			title: widget.name,
+			description: widget.description,
 			icon: function() {
 				return widget.icon ?
 				el(
