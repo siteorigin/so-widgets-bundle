@@ -25,10 +25,6 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_widget_block_editor_assets' ) );
 
-		add_action( 'admin_enqueue_scripts', array( $this, 'block_migration_notice_assets' ) );
-		add_action( 'admin_notices', array( $this, 'block_migration_notice' ) );
-
-		add_action( 'wp_ajax_so_widgets_block_migration_notice_dismiss', array( $this, 'block_migration_dismiss_notice' ) );
 		add_action( 'wp_ajax_so_widgets_block_migration_notice_consent', array( $this, 'block_migration_consent' ) );
 	}
 
@@ -272,6 +268,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				'restUrl' => esc_url_raw( rest_url() ),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
 				'consent' => $this->hasMigrationConsent,
+				'migrationNotice' => wp_create_nonce( 'so_block_migration_consent' ),
 			)
 		);
 
@@ -560,76 +557,6 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			'html' => $rendered_widget['html'],
 			'widgetIcons' => isset( $rendered_widget['css'] ) ? $rendered_widget['widgetIcons'] : array(),
 		);
-	}
-
-	public function block_migration_notice_assets() {
-		if ( $this->hasMigrationConsent ) {
-			return;
-		}
-
-		wp_enqueue_script(
-			'sowb-block-migration-notice',
-			plugins_url( 'block-migration-notice' . SOW_BUNDLE_JS_SUFFIX . '.js', __FILE__ ),
-			array( 'jquery' ),
-			SOW_BUNDLE_VERSION
-		);
-
-		wp_localize_script(
-			'sowb-block-migration-notice',
-			'sowbBlockMigration',
-			array(
-				'nonce' => wp_create_nonce( 'so_block_migration_consent' ),
-			)
-		);
-	}
-
-	public function block_migration_notice() {
-		if ( $this->hasMigrationConsent ) {
-			return;
-		}
-
-		// If the current user can't edit posts, don't show the notice.
-		if ( ! current_user_can( 'edit_posts' ) ) {
-			return;
-		}
-
-		// Has this user already dismissed the notice?
-		$dismissed = get_user_meta(
-			get_current_user_id(), 'sowb_block_migration_dismissed',
-			true
-		);
-		if ( $dismissed ) {
-			return;
-		}
-
-		// Is the current user an admin, or super admin?
-		$is_admin = current_user_can( 'manage_options' );
-		if ( $is_admin ) {
-			$message = __( 'Placeholder admin notice', 'so-widgets-bundle' );
-		} else {
-			$message = __( 'Placeholder user notice', 'so-widgets-bundle' );
-		}
-
-		require plugin_dir_path( __FILE__ ) . 'notice.php';
-	}
-
-	public function block_migration_dismiss_notice() {
-		if (
-			! empty( $_POST['nonce'] ) &&
-			! wp_verify_nonce( $_REQUEST['nonce'], 'so_block_migration_consent' )
-		) {
-			die();
-		}
-
-
-		add_user_meta(
-			get_current_user_id(),
-			'sowb_block_migration_dismissed',
-			true,
-			true
-		);
-
-		wp_send_json_success();
 	}
 
 	public function block_migration_consent() {

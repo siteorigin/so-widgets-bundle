@@ -585,7 +585,7 @@
 						onClick: () => {
 							jQuery.post( ajaxurl, {
 								action: 'so_widgets_block_migration_notice_consent',
-								nonce: sowbBlockMigration.nonce
+								nonce: sowbBlockEditorAdmin.migrationNotice
 							} );
 
 							migrateOldBlocks();
