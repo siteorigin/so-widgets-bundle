@@ -569,8 +569,48 @@
 				}
 			)
 		},
-		edit: function () {
-			const isAdmin = wp.data.select( 'core' ).getCurrentUser().is_super_admin;
+		edit: function() {
+			const [ isAdmin, setIsAdmin ] = element.useState( false );
+			const [ isLoading, setIsLoading ] = element.useState( true );
+
+			/**
+			 * Effect hook to check if current user is admin.
+			 *
+			 * Subscribes to user data changes and updates admin status
+			 * when user data becomes available. Cleans up subscription on unmount.
+			 *
+			 * @param {Function} setIsAdmin - State setter for admin status
+			 * @param {Function} setIsLoading - State setter for loading status
+			 */
+			wp.element.useEffect( () => {
+				const isAdminCheck = wp.data.subscribe( () => {
+					const user = wp.data.select( 'core' ).getCurrentUser?.();
+					if (
+						typeof user === 'object' &&
+						typeof user.id === 'number'
+					) {
+						setIsAdmin( user?.is_super_admin ?? false );
+						setIsLoading( false );
+						isAdminCheck();
+					}
+				} );
+
+				return () => isAdminCheck();
+			}, [] );
+
+			if ( isLoading ) {
+				return el( 'div',
+					{
+						className: 'so-widgets-spinner-container'
+					},
+					el(
+						'span',
+						null,
+						el( Spinner )
+					)
+				);
+			}
+
 			return el(
 				Placeholder,
 				{
@@ -578,28 +618,27 @@
 					instructions: __( 'This block is using the legacy format. Please migrate to the new block format.', 'so-widgets-bundle' )
 				},
 				isAdmin ?
-				el(
-					Button,
-					{
-						isPrimary: true,
-						onClick: () => {
-							jQuery.post( ajaxurl, {
-								action: 'so_widgets_block_migration_notice_consent',
-								nonce: sowbBlockEditorAdmin.migrationNotice
-							} );
+					el(
+						Button,
+						{
+							isPrimary: true,
+							onClick: () => {
+								jQuery.post( ajaxurl, {
+									action: 'so_widgets_block_migration_notice_consent',
+									nonce: sowbBlockEditorAdmin.migrationNotice
+								} );
 
-							migrateOldBlocks();
+								migrateOldBlocks();
+							},
 						},
-					},
-					__( 'Migrate to New Block Format', 'so-widgets-bundle' )
-				) :
-
-				el(
-					'span',
-					null,
-					__( 'Please contact your site administrator to migrate this block.', 'so-widgets-bundle' )
-				)
-			);
+						__( 'Migrate to New Block Format', 'so-widgets-bundle' )
+					) :
+					el(
+						'span',
+						null,
+						__( 'Please contact your site administrator to migrate this block.', 'so-widgets-bundle' )
+					)
+				);
 		},
 		save: function () {
 			return null;
