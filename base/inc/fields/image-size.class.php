@@ -34,7 +34,7 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 		// 'thumb' is a small thumbnail image size defined by the current theme.
 		$sizes = array(
 			'full' => __( 'Full', 'so-widgets-bundle' ),
-			'thumb' => __( 'Thumbnail (Theme-defined)', 'so-widgets-bundle' ),
+			'thumbnail' => __( 'Thumbnail (Theme-defined)', 'so-widgets-bundle' ),
 		);
 
 		foreach ( $image_size_configs as $name => $size_config ) {
@@ -84,7 +84,7 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 
 			<div class="custom-size-wrapper">
 				<label>
-					<?php _e( 'Width', 'so-widgets-bundle' ); ?>
+					<?php echo esc_html__( 'Width', 'so-widgets-bundle' ); ?>
 					<input
 						type="number"
 						value="<?php echo esc_attr( $width ); ?>"
@@ -94,7 +94,7 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 				</label>
 
 				<label>
-					<?php _e( 'Height', 'so-widgets-bundle' ); ?>
+					<?php echo esc_html__( 'Height', 'so-widgets-bundle' ); ?>
 					<input
 						type="number"
 						value="<?php echo esc_attr( $height ); ?>"
@@ -105,7 +105,7 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 
 				<?php if ( ! empty( $this->custom_size_enforce ) ) { ?>
 					<label>
-						<?php _e( 'Enforce Dimensions', 'so-widgets-bundle' ); ?>
+						<?php echo esc_html__( 'Enforce Dimensions', 'so-widgets-bundle' ); ?>
 						<input
 							type="checkbox"
 							<?php checked( ! empty( $enforce ) ); ?>

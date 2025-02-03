@@ -2,13 +2,15 @@
 $types = null;
 
 if ( $settings['categories'] || $template_settings['filter_categories'] ) {
-	$terms = SiteOrigin_Widget_Blog_Widget::portfolio_get_terms( $instance, get_the_ID() );
+	$terms = SiteOrigin_Widget_Blog_Widget::get_query_terms( $instance, $query, get_the_ID() );
 
-	if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
+	if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
 		$filtering_links = array();
 
 		foreach ( $terms as $term ) {
-			$filtering_links[] = sanitize_html_class( $term->slug );
+			$filtering_links[] = sanitize_html_class(
+				is_object( $term ) ? $term->slug : $term
+			);
 		}
 		$filtering = join( ', ', $filtering_links );
 		$types = $filtering ? join( ' ', $filtering_links ) : ' ';

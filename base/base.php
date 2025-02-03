@@ -350,6 +350,36 @@ function siteorigin_widgets_url( $path = '' ) {
 	return plugins_url( 'so-widgets-bundle/' . $path );
 }
 
+/**
+ * Check if the Page Builder can render.
+ *
+ * This method checks if the necessary conditions are met for Page Builder to
+ * render. It first verifies that Page Builder is active. It then checks
+ * if either:
+ * - The request is in the admin area, OR
+ * - If this is a REST request and the block editor is active.
+ *
+ * If none of these conditions are met, Page Builder can't render.
+ *
+ * @return bool True if Page Builder builder can render, false otherwise.
+ */
+function siteorigin_widgets_can_render_builder_field() {
+	if ( ! defined( 'SITEORIGIN_PANELS_VERSION' ) ) {
+		return false;
+	}
+
+	if ( is_admin() ) {
+		return true;
+	}
+
+	// Is this field being rendered inside one of our blocks?
+	if ( defined( 'REST_REQUEST' ) && function_exists( 'register_block_type' ) ) {
+		return true;
+	}
+
+	return false;
+}
+
 function siteorigin_loading_optimization_attributes( $attr, $widget, $instance, $class ) {
 	// Allow other plugins to override whether this widget is lazy loaded or not.
 	if (
@@ -452,10 +482,18 @@ function siteorigin_widget_onclick( $onclick = null, $recursive = true ) {
 
 	if ( apply_filters( 'siteorigin_widgets_onclick_disallowlist', true ) ) {
 		// It's possible for allowed functions to contain disallowed functions, so we need to loop through and remove.
-		$disallowed_functions = array( 'alert', 'eval', 'execScript', 'setTimeout', 'setInterval', 'function', 'document', 'Object', 'window', 'innerHTML', 'outerHTML', 'onload', 'onerror', 'onclick', 'storage', 'fetch', 'XMLHttpRequest', 'jQuery', '$.', 'prototype', '__proto__', 'constructor', 'decode', 'encode', 'atob', 'btoa', 'Promise', 'setImmediate', 'unescape', 'escape', 'captureEvents', 'proxy', 'Reflect', 'Array', 'String', 'Math', 'Date', 'property', 'Properties', 'Error', 'Map', 'Set', 'Generator', 'Web', 'dataview', 'Blob', 'javascript', 'Text', 'Intl', 'JSON', 'RegExp', 'console', 'history', 'location', 'navigator', 'screen', 'worker', 'FinalizationRegistry', 'weak', 'top', 'self', 'open', 'parent', 'frame', 'import', 'fragment', 'globalThis', 'frames', 'import', 'this', 'escape', 'watch', 'element', 'file', 'db', 'worker', 'EventSource', 'join', 'upper' );
+		$disallowed_functions = array( 'alert', 'eval', 'execScript', 'setTimeout', 'setInterval', 'function', 'document', 'Object', 'window', 'innerHTML', 'outerHTML', 'onload', 'onerror', 'onclick', 'storage', 'fetch', 'XMLHttpRequest', 'jQuery', '$.', 'prototype', '__proto__', 'constructor', 'decode', 'encode', 'atob', 'btoa', 'Promise', 'setImmediate', 'unescape', 'escape', 'captureEvents', 'proxy', 'Reflect', 'Array', 'String', 'Math', 'Date', 'property', 'Properties', 'Error', 'Map', 'Set', 'Generator', 'Web', 'dataview', 'Blob', 'javascript', 'Text', 'Intl', 'JSON', 'RegExp', 'console', 'history', 'location', 'navigator', 'screen', 'worker', 'FinalizationRegistry', 'weak', 'top', 'self', 'parent', 'frame', 'import', 'fragment', 'globalThis', 'frames', 'import', 'this', 'escape', 'watch', 'element', 'file', 'db', 'worker', 'EventSource', 'join', 'upper' );
 
 		if ( preg_match( '/\b(' . implode( '|', array_map( 'preg_quote', $disallowed_functions ) ) . ')\b/i', $onclick ) ) {
 			return;
+		}
+
+		// If string contains 'open' or 'close', check if there's a
+		// preceding dot. If not, disallow.
+		if ( preg_match( '/\b(open|close)\b/i', $onclick ) ) {
+			if ( ! preg_match( '/\.\s*(open|close)\s*\(/i', $onclick ) ) {
+				return;
+			}
 		}
 
 		// Case sensitive disallow.
@@ -469,6 +507,11 @@ function siteorigin_widget_onclick( $onclick = null, $recursive = true ) {
 	}
 
 	if ( apply_filters( 'siteorigin_widgets_onclick_allowlist', true ) ) {
+		// Ensure $onclick ends with a semicolon to prevent syntax errors.
+		if ( substr( $onclick, -1 ) !== ';' ) {
+			$onclick .= ';';
+		}
+
 		$onclick_parts = explode( ');', $onclick );
 
 		$adjusted_onclick = '';
@@ -514,6 +557,7 @@ function siteorigin_widget_onclick( $onclick = null, $recursive = true ) {
 				'ym',
 				'ml_account', // MailerLite.
 				'calendly.initpopupwidget', // Calendly.
+				'pum.open', // Popup Maker.
 			)
 		) );
 

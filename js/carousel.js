@@ -8,20 +8,49 @@ jQuery( function ( $ ) {
 
 	sowb.setupCarousel = function () {
 		$.fn.setSlideTo = function( slide ) {
-			$item = $( this );
+			$items = $( this );
 			// We need to reset the Slick slide settings to avoid https://github.com/kenwheeler/slick/issues/1006.
-			var slidesToShow = $item.slick( 'slickGetOption', 'slidesToShow' );
-			var slidesToScroll = $item.slick( 'slickGetOption', 'slidesToScroll' );
+			const slidesToShow = $item.slick( 'slickGetOption', 'slidesToShow' );
+			const slidesToScroll = $item.slick( 'slickGetOption', 'slidesToScroll' );
 
-			$item.slick( 'slickSetOption', 'slidesToShow', 1 );
-			$item.slick( 'slickSetOption', 'slidesToScroll', 1 );
-			$item.slick( 'slickGoTo', slide );
-			$item.slick( 'slickSetOption', 'slidesToShow', slidesToShow );
-			$item.slick( 'slickSetOption', 'slidesToScroll', slidesToScroll );
+			$items.slick( 'slickSetOption', 'slidesToShow', 1 );
+			$items.slick( 'slickSetOption', 'slidesToScroll', 1 );
+			$items.navigateToSlide( slide );
+			$items.slick( 'slickSetOption', 'slidesToShow', slidesToShow );
+			$items.slick( 'slickSetOption', 'slidesToScroll', slidesToScroll );
+		};
+
+		// Restrict the height of the carousel to the largest item.
+		$.fn.fixContainerHeight = function() {
+			const $$ = $( this );
+			const $largestItem = $$.find( '.sow-carousel-item' ).sort( function( a, b ) {
+				return $( b ).outerHeight() - $( a ).outerHeight();
+			} )[0];
+
+			const $largestItemEl = $( $largestItem );
+
+			$$.css( 'height',
+				$largestItemEl.outerHeight() +
+				parseFloat( $largestItemEl.css( 'margin-bottom' ) )
+			);
 		};
 
 		$( '.sow-carousel-wrapper' ).on( 'init', function( e, slick ) {
-			$( this ).css( 'opacity', 1 );
+			const $$ = $( this );
+			$$.css( 'opacity', 1 );
+
+			if ( ! $$.data( 'carousel_settings' ).dynamic_navigation ) {
+				return;
+			}
+
+			const $items = $$.find( '.sow-carousel-items' );
+
+			$$.addClass( 'fixed-navigation' );
+			$items.fixContainerHeight();
+
+			$( window ).on( 'resize', () => {
+				$items.fixContainerHeight();
+			} );
 		} );
 
 		// The carousel widget
@@ -36,9 +65,12 @@ jQuery( function ( $ ) {
 				carouselSettings.animation_speed = 0;
 			}
 
+			// Store reference to Adaptive height and speed for later use.
+			$items.data( 'adaptive_height', carouselSettings.adaptive_height );
+			$items.data( 'animation_speed', carouselSettings.animation_speed );
+
 			const isBlockEditor = $( 'body' ).hasClass( 'block-editor-page' );
-			const isContinuous = carouselSettings.autoplay_continuous_scroll &&
-			carouselSettings.autoplay;
+			const isContinuous = carouselSettings.autoplay === 'continuous';
 
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
@@ -58,7 +90,6 @@ jQuery( function ( $ ) {
 					),
 				variableWidth: $$.data( 'variable_width' ),
 				accessibility: false,
-				adaptiveHeight: carouselSettings.adaptive_height,
 				cssEase: carouselSettings.animation,
 				speed: carouselSettings.animation_speed,
 				slidesToScroll: responsiveSettings.desktop_slides_to_scroll,
@@ -101,9 +132,12 @@ jQuery( function ( $ ) {
 			} );
 
 			// Set up Autoplay. We use a custom autoplay rather than the Slick
-			// autoplay to account for the (sometimes) non-standard nature of our
-			// navigation that Slick has trouble accounting for.
-			if ( carouselSettings.autoplay ) {
+			// autoplay to account for the (sometimes) non-standard nature
+			// of our navigation that Slick has trouble accounting for.
+			if (
+				carouselSettings.autoplay &&
+				carouselSettings.autoplay !== 'off'
+			) {
 				var interrupted = false;
 				// Check if this is a Block Editor preview or continuous autoplay is enabled.
 				// If either are true, don't setup (this) autoplay.
@@ -129,6 +163,81 @@ jQuery( function ( $ ) {
 					} );
 				}
 			}
+
+			/**
+			 * Navigate to a specific slide in the carousel, and then
+			 * (optionally) adapts the height of the carousel.
+			 *
+			 * This function navigates to a specific slide in the carousel.
+			 * If adaptive height is enabled, by calling adaptiveHeight().
+			 *
+			 * @param {number|string|null} newSlide - The slide to navigate to.
+			 * Can be a slide index (int), command (string), or null.
+			 *
+			 * @returns {void}
+			 */
+			$.fn.navigateToSlide = function( newSlide ) {
+				const $$ = $( this );
+
+				if ( newSlide !== null ) {
+					if ( typeof newSlide === 'string' ) {
+						$$.slick( newSlide );
+					} else {
+						$$.slick( 'slickGoTo', newSlide - 1 );
+					}
+				}
+
+				adaptiveHeight( $$ );
+			};
+
+			/**
+			 * Adjust the height of the carousel to fit the tallest
+			 * visible slide.
+			 *
+			 * This function adjusts the height of the carousel to fit
+			 * the tallest visible slide, including any bottom margin.
+			 * It is used as a custom solution for adaptive height since
+			 * Slick's adaptive height only factors in the "active" item,
+			 * not all visible items.
+			 *
+			 * @returns {void}
+			 */
+			const adaptiveHeight = function( $$ ) {
+				if ( ! $$.data( 'adaptive_height' ) ) {
+					return;
+				}
+
+				// We're using a custom solution for adaptive height as Slick's
+				// adaptive height only factors in the "active" item, not all
+				// visible items.
+				const visibleSlides = $$.find( '.slick-active' );
+				visibleSlides.css( 'height', 'fit-content' );
+
+				let maxHeight = 0;
+				visibleSlides.each( function() {
+					const $item = $( this );
+					const slideHeight = $item.outerHeight();
+
+					if ( slideHeight > maxHeight ) {
+						maxHeight = slideHeight;
+					}
+				} );
+
+				// It's possible that the slides will have a margin-bottom set,
+				// and we need to account for that in the sizing.
+				const marginBottom = parseFloat( visibleSlides.first().css( 'margin-bottom' ) );
+
+				$$.find( '.slick-list' ).animate( {
+					height: maxHeight + marginBottom,
+				}, $$.data( 'adaptive_height' ) );
+
+				visibleSlides.css( 'height', maxHeight );
+			}
+
+			// Trigger adaptive height resize during setup.
+			$items.on( 'init', () => {
+				adaptiveHeight( $items );
+			} ).trigger( 'init' );
 
 			var handleCarouselNavigation = function( nextSlide, refocus ) {
 				const $items = $$.find( '.sow-carousel-items' );
@@ -194,7 +303,7 @@ jQuery( function ( $ ) {
 						currentSlide >= lastPosition
 					) {
 						if ( $$.data( 'carousel_settings' ).loop ) {
-							$items.slick( 'slickGoTo', 0 );
+							$items.navigateToSlide( 0 );
 						}
 					// If slidesToScroll is higher than the the number of visible items, go to the last item.
 					} else if (
@@ -205,19 +314,20 @@ jQuery( function ( $ ) {
 						// There's more slides than items, update Slick settings to allow for scrolling of partially visible items.
 						$items.slick( 'slickSetOption', 'slidesToShow', numVisibleItems );
 						$items.slick( 'slickSetOption', 'slidesToScroll', numVisibleItems );
-						$items.slick( 'slickNext' );
+						$items.navigateToSlide( 'slickNext' );
 					// Check if the number of slides to scroll exceeds lastPosition, go to the last slide, or
 					} else if ( currentSlide + slidesToScroll > lastPosition ) {
 						$items.setSlideTo( lastPosition );
+						$items.navigateToSlide( null );
 					// Is the current slide a non-standard slideToScroll?
 					} else if ( currentSlide % slidesToScroll !== 0 ) {
 						// We need to increase the slidesToScroll temporarily to
 						// bring it back line with the slidesToScroll.
 						$items.slick( 'slickSetOption', 'slidesToScroll', slidesToScroll + 1 );
-						$items.slick( 'slickNext' );
+						$items.navigateToSlide( 'slickNext' );
 						$items.slick( 'slickSetOption', 'slidesToScroll', slidesToScroll );
 					} else {
-						$items.slick( 'slickNext' );
+						$items.navigateToSlide( 'slickNext' );
 					}
 
 					// Have we just scrolled to the last slide, and is looping disabled?.
@@ -238,12 +348,11 @@ jQuery( function ( $ ) {
 							currentSlide === 0
 						) {
 							// Determine lastPosition based on the 'complete' flag
-							lastPosition = complete ? numItems : numItems - 1;
+							lastPosition = complete ? numItems : lastPosition;
 							loadMorePosts = ! complete;
-
-							$items.slick( 'slickGoTo', lastPosition );
+							$items.navigateToSlide( lastPosition );
 						} else if ( currentSlide <= slidesToScroll ) {
-							$items.slick('slickGoTo', 0);
+							$items.navigateToSlide( 0 );
 						} else {
 							slickPrev = true;
 						}
@@ -252,7 +361,7 @@ jQuery( function ( $ ) {
 					}
 
 					if ( slickPrev ) {
-						$items.slick( 'slickPrev' );
+						$items.navigateToSlide( 'slickPrev' );
 
 						const next = navigationContainer.find( '.sow-carousel-next' );
 						if ( next.hasClass( 'sow-carousel-disabled' ) ) {
@@ -309,7 +418,7 @@ jQuery( function ( $ ) {
 					if ( targetItem + numVisibleItems >= numItems ) {
 						// Blank spacing would occur, let's go to the last possible item
 						// make it appear as though we navigated to the selected item.
-						$items.slick( 'slickGoTo', lastPosition );
+						$items.navigateToSlide( lastPosition );
 						$dots = $( this ).parent();
 						$dots.find( '.slick-active' ).removeClass( 'slick-active' );
 						$dots.children().eq( targetItem ).addClass( 'slick-active' );
@@ -319,7 +428,7 @@ jQuery( function ( $ ) {
 							// We need to account for an empty item.
 							targetItem = Math.ceil( $( this ).index() * slidesToScroll );
 						}
-						$items.slick( 'slickGoTo', targetItem );
+						$items.navigateToSlide( targetItem );
 					}
 
 					// Is this a Post Carousel? If so, let's check if we need to load more posts.
@@ -390,7 +499,8 @@ jQuery( function ( $ ) {
 				}
 			}
 
-			$items.slick( 'slickGoTo', itemIndex, true );
+			$items.navigateToSlide( itemIndex );
+
 			$wrapper.find( '.sow-carousel-item' ).prop( 'tabindex', -1 );
 			$wrapper.find( '.sow-carousel-item[data-slick-index="' + itemIndex + '"]' )
 				.trigger( 'focus' )

@@ -7,7 +7,6 @@ sowb.SiteOriginContactForm = {
 		var $contactForms = $('form.sow-contact-form,.sow-contact-form-success');
 		$contactForms.each( function() {
 			var $el = $( this );
-			var formId = $el.attr( 'id' );
 			var formSubmitSuccess = $el.is( '.sow-contact-form-success' );
 			var formSubmitted = $el.is( '.sow-contact-submitted' );
 			if ( formSubmitted || formSubmitSuccess ) {
@@ -63,8 +62,7 @@ sowb.SiteOriginContactForm = {
 				$submitButton.prop( 'disabled', true );
 
 				if ( $submitButton.data( 'js-key' ) ) {
-					var js_key = $submitButton.data( 'js-key' );
-					$( this ).append( `<input type="hidden" name="sow-js-${js_key}" value="${js_key}">` );
+					$( this ).append( `<input type="hidden" name="sow-js" value="${js_key}">` );
 				}
 			} );
 
@@ -85,30 +83,29 @@ function soContactFormSubmit( token, e ) {
 }
 
 jQuery( function ( $ ) {
-	var recaptcha = $( 'form.sow-contact-form .sow-recaptcha' );
+	const recaptcha = $( 'form.sow-contact-form .sow-recaptcha' );
 	// Check if reCAPTCHA is being used.
-	if ( recaptcha.length ) {
-		if (window.recaptcha) {
-			sowb.SiteOriginContactForm.init( $, recaptcha );
-		} else {
-			var apiUrl = 'https://www.google.com/recaptcha/api.js?onload=soContactFormInitialize';
-			// v2 requires a specific render type.
-			if ( recaptcha.first().data( 'config' ) != undefined ) {
-				sowb.SiteOriginContactFormV2 = true;
-				apiUrl += '&render=explicit';
-			} else {
-				// v3 requires a click event for submission.
-				$( 'button.sow-submit ' ).on( 'click', function( e ) {
-					e.preventDefault();
-					sowb.SiteOriginContactFormV3 = $( this );
-				} );
-			}
-			var script = $( '<script type="text/javascript" src="' + apiUrl + '" async defer>' );
-			$( 'body' ).append( script );
-		}
-	} else {
+	if ( ! recaptcha.length ) {
 		sowb.SiteOriginContactForm.init( $, recaptcha );
+		return;
 	}
+
+	let apiUrl = 'https://www.google.com/recaptcha/api.js?onload=soContactFormInitialize';
+	// v2 requires a specific render type.
+	if ( recaptcha.first().data( 'config' ) != undefined ) {
+		sowb.SiteOriginContactFormV2 = true;
+		apiUrl += '&render=explicit';
+	} else {
+		// v3 requires a click event for submission.
+		$( 'button.sow-submit ' ).on( 'click', function( e ) {
+			e.preventDefault();
+			sowb.SiteOriginContactFormV3 = $( this );
+		} );
+	}
+
+	$( 'body' ).append(
+		'<script type="text/javascript" src="' + apiUrl + '" async defer>'
+	);
 
 
 	if ( typeof $.fn.select2 == 'function' ) {

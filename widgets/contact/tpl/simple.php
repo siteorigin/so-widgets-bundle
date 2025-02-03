@@ -1,9 +1,16 @@
+<?php
+$captcha_name = $this->name_from_label( 'really-simple-captcha' );
+?>
+
 <div class="sow-form-field sow-form-field-captcha">
 	<?php if ( $instance['design']['labels']['position'] != 'below' ) { ?>
 		<label
 			class="sow-form-field-label-<?php echo esc_attr( $instance['design']['labels']['position'] != 'inside' ? $instance['design']['labels']['position'] : 'above' ); ?>"
-			for="really-simple-captcha-<?php echo esc_attr( $instance_hash ); ?>">
-			<strong><?php _e( 'Captcha', 'so-widgets-bundle' ); ?></strong>
+			for="<?php echo esc_attr( $captcha_name ); ?>"
+		>
+			<strong>
+				<?php echo esc_html__( 'Captcha', 'so-widgets-bundle' ); ?>
+			</strong>
 		</label>
 	<?php } ?>
 
@@ -19,12 +26,27 @@
 		height="<?php echo esc_attr( $really_simple_spam->img_size[1] ); ?>"
 	>
 	<span class="sow-field-container">
-		<input type="text" name="really-simple-captcha-<?php echo esc_attr( $instance_hash ); ?>" id="really-simple-captcha-<?php echo esc_attr( $instance_hash ); ?>" value="" class="sow-text-field">
+		<input
+			type="text"
+			name="<?php echo esc_attr( $captcha_name ); ?>"
+			id="<?php echo esc_attr( $captcha_name ); ?>"
+			value=""
+			class="sow-text-field"
+		>
 	</span>
 	<?php if ( $instance['design']['labels']['position'] == 'below' ) { ?>
-		<label class="sow-form-field-label-left" for="really-simple-captcha-<?php echo esc_attr( $instance_hash ); ?>">
-			<strong><?php _e( 'Captcha', 'so-widgets-bundle' ); ?></strong>
+		<label
+			class="sow-form-field-label-left"
+			for="<?php echo esc_attr( $captcha_name ); ?>"
+		>
+			<strong>
+				<?php echo esc_html__( 'Captcha', 'so-widgets-bundle' ); ?>
+			</strong>
 		</label>
 	<?php } ?>
-	<input type="hidden" name="really-simple-captcha-prefix-<?php echo esc_attr( $instance_hash ); ?>" value="<?php echo esc_attr( $really_simple_spam_prefix ); ?>" />
+	<input
+		type="hidden"
+		name="<?php echo esc_attr( $this->name_from_label( 'really-simple-captcha-prefix' ) ); ?>"
+		value="<?php echo esc_attr( $really_simple_spam_prefix ); ?>"
+	/>
 </div>

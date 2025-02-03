@@ -1,5 +1,41 @@
 == Changelog ==
 
+= 1.65.0 - 03 February 2025 =
+* Blog: Added support for `siteorigin_widgets_blog_post_meta`.
+* Blog: Added a fallback for undefined `post_type` to avoid errors.
+* Blog: Reset filter categories when the template doesn't support them.
+* Carousel: Improved adaptive height so the slider adjusts based on all visible items.
+* Contact Form: Added a check to ensure the "To" and "From" email addresses aren't identical, improving deliverability.
+* Contact Form: Introduced settings for submit button hover/focus styling (background, border, and text colors).
+* Contact Form: Added design options for success messages.
+* Contact Form: Applied title case to admin labels for consistency.
+* Contact Form: Improved field handling by switching to Widgets Bundle instance storage and refining form name management to prevent conflicts.
+* Contact Form: Resolved warnings related to undefined array keys in the contact widget.
+* Contact Form: Adjustment to always set up reCAPTCHA when in use.
+* Contact Form: Improved developer email handling and layout directory email.
+* Google Maps: Replaced the deprecated `google.maps.Marker` with `AdvancedMarkerElement` to address deprecation notices.
+* Google Maps: Moved widget configuration from siteorigin-panels and updated admin texts for translation.
+* Icon Field: Improved icon caching in the Block Editor to reduce redundant icon fetch requests.
+* Image: Prevented empty `<img>` output when no image is set.
+* Post Carousel: Changed autoplay to a preset field and improved continuous scrolling handling.
+* Post Carousel: Added a filter for valid widget instances in Ajax handling and refactored the Ajax code.
+* Taxonomy: Removed the preview button since this widget relies on the loop.
+* Block Editor Select: Adjusted spacing so the text no longer touches the chevron.
+* Multi-Measurement: Fixed a potential `NaN` value issue when no value is present.
+* Multi-Measurement: Fixed value update issues when no state handler is present.
+* Onclick: Added Popup Maker support and ensured a semicolon is appended to prevent syntax errors.
+* Default Form Options: Added widget form field support so defaults are now saved correctly.
+* Section Defaults: Resolved a TypeError in widget sections.
+* Select2 Form Field: Moved editor CSS to the field stylesheet to prevent conflicts with other plugins.
+* Select Form Field Multiple: Fixed a gap issue in the Block Editor.
+* Teaser: Resolved dismiss button misalignment and improved overall structure and hover behavior.
+* Widget Form: Debounce widget change backups to improve performance during rapid edits.
+* WPML: Adjusted editor labels for compatibility with the upcoming WPML 4.7 release.
+* Admin: Prevented the aside area from becoming stuck during resize events in the Page Builder.
+* getWidgetFormValues: Improved select value performance on Apple devices.
+* Added missing i18n domains and fixed non-singular string literal text issues.
+* Corrected text domain mismatches.
+
 = 1.64.2 - 18 December 2024 =
 * Select: Fixed field name handling to prevent unintended array format in Widgets Bundle forms.
 

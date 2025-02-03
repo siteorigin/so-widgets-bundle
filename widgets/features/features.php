@@ -13,7 +13,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			'sow-features',
 			__( 'SiteOrigin Features', 'so-widgets-bundle' ),
 			array(
-				'description'  => __( 'Showcase features with icons, titles, text, and links in a customizable grid layout.' ),
+				'description'  => __( 'Showcase features with icons, titles, text, and links in a customizable grid layout.', 'so-widgets-bundle' ),
 				'help'         => 'https://siteorigin.com/widgets-bundle/features-widget-documentation/',
 				'panels_title' => false,
 			),

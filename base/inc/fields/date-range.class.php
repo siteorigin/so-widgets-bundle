@@ -31,10 +31,9 @@ class SiteOrigin_Widget_Field_Date_Range extends SiteOrigin_Widget_Field_Base {
 		?>
 		<div class="sowb-specific-date-after">
 			<span>
-			<?php
-			_ex( 'From', 'From this date', 'so-widgets-bundle' );
-			?>
-
+				<?php
+				echo esc_html_x( 'From', 'From this date', 'so-widgets-bundle' );
+				?>
 			</span>
 			<input type="text" class="datepicker after-picker"/>
 		</div>
@@ -42,7 +41,7 @@ class SiteOrigin_Widget_Field_Date_Range extends SiteOrigin_Widget_Field_Base {
 		<div class="sowb-specific-date-before">
 			<span>
 				<?php
-				_e( 'to', 'so-widgets-bundle' );
+				echo esc_html__( 'to', 'so-widgets-bundle' );
 				?>
 			</span>
 			<input type="text" class="datepicker before-picker"/>
@@ -87,7 +86,7 @@ class SiteOrigin_Widget_Field_Date_Range extends SiteOrigin_Widget_Field_Base {
 					</option>
 				<?php } ?>
 			</select>
-			<span><?php _e( 'ago', 'so-widgets-bundle' ); ?></span>
+			<span><?php echo esc_html__( 'ago', 'so-widgets-bundle' ); ?></span>
 		</div>
 		<?php
 	}

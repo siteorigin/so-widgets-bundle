@@ -4,8 +4,10 @@ var sowbForms = window.sowbForms || {};
 
 (function ($) {
 
+	const isBlockEditor = $( 'body' ).hasClass( 'block-editor-page' );
+
 	let fontList = '';
-	for (const [ value, label ] of Object.entries( soWidgets.fonts ) ) {
+	for ( const [ value, label ] of Object.entries( soWidgets.fonts ) ) {
 		fontList += '<option value="' + value + '">' + label + '</option>';
 	}
 
@@ -62,7 +64,12 @@ var sowbForms = window.sowbForms || {};
 				}
 				// If we're in the legacy main widgets interface and the form isn't visible and it isn't contained in a
 				// panels dialog (when using the Layout Builder widget), don't worry about setting it up.
-				if ( $body.hasClass( 'widgets-php' ) && ! $body.hasClass( 'block-editor-page' ) && ! $el.is( ':visible' ) && $el.closest( '.panel-dialog' ).length === 0 ) {
+				if (
+					$body.hasClass( 'widgets-php' ) &&
+					! isBlockEditor &&
+					! $el.is( ':visible' ) &&
+					$el.closest( '.panel-dialog' ).length === 0
+				) {
 					return true;
 				}
 
@@ -262,11 +269,13 @@ var sowbForms = window.sowbForms || {};
 							sessionStorage.removeItem( _sow_form_id );
 						}
 					}
-					$el.on( 'change', function() {
+
+					// Debounce backups to prevent potential performance issues.
+					$el.on( 'change', _.debounce( function() {
 						$timestampField.val( new Date().getTime() );
-						var data = sowbForms.getWidgetFormValues( $el );
+						const data = sowbForms.getWidgetFormValues( $el );
 						sessionStorage.setItem( _sow_form_id, JSON.stringify( data ) );
-					} );
+					}, 500 ) );
 				}
 			}
 			else {
@@ -381,17 +390,19 @@ var sowbForms = window.sowbForms || {};
 				if ( e.type == 'keyup' && ! sowbForms.isEnter( e ) ) {
 					return;
 				}
-				$(this).toggleClass('siteorigin-widget-section-visible');
-				$(this).parent().find('> .siteorigin-widget-section, > .siteorigin-widget-widget > .siteorigin-widget-section')
-					.slideToggle('fast', function () {
-						$( window ).trigger( 'resize' );
-						$(this).find('> .siteorigin-widget-field-container-state').val($(this).is(':visible') ? 'open' : 'closed');
 
-						if ( $( this ).is( ':visible' ) ) {
-							var $fields = $( this ).find( '> .siteorigin-widget-field' );
-							$fields.trigger( 'sowsetupformfield' );
-						}
-					} );
+				const $this = $( this );
+				$this.toggleClass( 'siteorigin-widget-section-visible' );
+				const $section = $this.parent().find( '> .siteorigin-widget-section, > .siteorigin-widget-widget > .siteorigin-widget-section' );
+
+				$section.slideToggle( 'fast', function() {
+					const $thisSection = $( this );
+					$thisSection.find( '> .siteorigin-widget-field-container-state' ).val( $thisSection.is( ':visible' ) ? 'open' : 'closed' );
+
+					if ( $thisSection.is( ':visible' ) ) {
+						$thisSection.find( '> .siteorigin-widget-field' ).trigger( 'sowsetupformfield' );
+					}
+				} );
 			};
 			$fields.filter( '.siteorigin-widget-field-type-widget, .siteorigin-widget-field-type-section' ).find( '> label' )
 			.on( 'click keyup', expandContainer )
@@ -1441,12 +1452,13 @@ var sowbForms = window.sowbForms || {};
 					var selected = $$.find( 'option:selected' );
 					if ( selected.length === 1 ) {
 						fieldValue = $$.find( 'option:selected' ).val();
-					}
-					else if ( selected.length > 1 ) {
-						// This is a mutli-select field
-						fieldValue = _.map( $$.find( 'option:selected' ), function ( n, i ) {
-							return $( n ).val();
-						} );
+					} else if ( selected.length > 1 ) {
+
+						const selectedOptions = $$.find( 'option:selected' );
+						fieldValue = [];
+						for ( var i = 0; i < selectedOptions.length; i++ ) {
+							fieldValue.push( selectedOptions[ i ].value );
+						}
 					}
 				} else {
 					fieldValue = $$.val();
@@ -1702,18 +1714,39 @@ var sowbForms = window.sowbForms || {};
 				} else if ( $$.hasClass( 'sow-multi-measurement-input-values' ) ) {
 					const $inputs = $$.prev().find( '.sow-multi-measurement-input, .sow-multi-measurement-select-unit' );
 					const valuesArray = [];
-					values.value.split(' ').forEach( field => {
-						valuesArray.push( parseInt( field, 10 ) );
-						valuesArray.push( field.replace( parseInt( field, 10 ), '' ) );
-					} );
+
+					// Only process field if the current editor isn't the Block
+					// Editor, or it doesn't have a state handler/emitter.
+					if (
+						! isBlockEditor &&
+						(
+							$$.attr( 'data-state' ) ||
+							$$.attr( 'data-state-handler' )
+						)
+					) {
+						continue;
+					}
+
+					if ( values.value !== '' ) {
+						values.value.split(' ').forEach( field => {
+							valuesArray.push( parseInt( field, 10 ) );
+							valuesArray.push( field.replace( parseInt( field, 10 ), '' ) );
+						} );
+					}
 
 					$inputs.each( function( index, element ) {
 						const $input = $( element );
-						const part = valuesArray[ index ];
-						if ( typeof part !== 'number' ) {
+
+						if ( typeof valuesArray[ index ] !== 'number' ) {
 							return true;
 						}
-						$input.val( part );
+
+						const part = parseInt( valuesArray[ index ] );
+
+						$input.val(
+							isNaN( part ) ? '' : part
+						);
+
 						if ( ! updated && compareValues( $input.val(), values.value[ part ] ) ) {
 							updated = true;
 						}
@@ -1811,7 +1844,7 @@ var sowbForms = window.sowbForms || {};
 				valid,
 				form,
 				// Widget ID.
-				typeof jQuery( '.widget-content' ).data( 'id-base' ) !== 'undefined' ? form.find( '.siteorigin-widget-form' ).data( 'id-base' ) : ''
+				typeof jQuery( '.widget-content' ).data( 'id-base' ) !== undefined ? form.find( '.siteorigin-widget-form' ).data( 'id-base' ) : ''
 			]
 		);
 
@@ -1899,13 +1932,13 @@ var sowbForms = window.sowbForms || {};
 			$$.sowSetupForm();
 		}, 200);
 	});
-	var $body = $( 'body' );
+
 	// Setup new widgets when they're added in the Customizer or new widgets interface.
 	$( document ).on( 'widget-added', function( e, widget ) {
 		widget.find( '.siteorigin-widget-form' ).sowSetupForm();
 	} );
 
-	if ( $body.hasClass('block-editor-page') ) {
+	if ( isBlockEditor ) {
 		// Setup new widgets when they're previewed in the block editor.
 		$(document).on('panels_setup_preview', function () {
 			if (window.hasOwnProperty('sowb')) {

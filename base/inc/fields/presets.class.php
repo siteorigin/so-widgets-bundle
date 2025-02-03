@@ -58,7 +58,9 @@ class SiteOrigin_Widget_Field_Presets extends SiteOrigin_Widget_Field_Base {
 				<?php } ?>
 			<?php } ?>
 		</select>
-		<a href="#" class="sowb-presets-field-undo"><?php _e( 'Undo', 'so-widgets-bundle' ); ?></a>
+		<a href="#" class="sowb-presets-field-undo">
+			<?php echo esc_html__( 'Undo', 'so-widgets-bundle' ); ?>
+		</a>
 		<?php
 	}
 

@@ -204,7 +204,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 						'filter_categories' => array(
 							'type' => 'checkbox',
 							'label' => __( 'Filter Categories ', 'so-widgets-bundle' ),
-							'default' => true,
 							'state_emitter' => array(
 								'callback' => 'conditional',
 								'args' => array(
@@ -894,47 +893,200 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		return $less_vars;
 	}
 
+	/**
+	 * Get terms for a given taxonomy.
+	 *
+	 * This method retrieves the terms for a given taxonomy. If a post ID is provided,
+	 * it retrieves the terms associated with that post. Otherwise, it retrieves
+	 * all terms for the taxonomy.
+	 *
+	 * @param string $taxonomy The taxonomy to retrieve terms for.
+	 * @param int $post_id The post ID. Defaults to 0.
+	 * @param bool $error_check Whether to check for errors. Defaults to true.
+	 *
+	 * @return array|false The terms for the taxonomy or false if an error occurs.
+	 */
+	public static function get_terms_for_taxonomy( $taxonomy, $post_id = 0, $error_check = true ) {
+		$terms = $post_id ? get_the_terms( (int) $post_id, $taxonomy ) : get_terms( $taxonomy );
+
+		set_query_var( 'siteorigin_widgets_portfolio_taxonomy', $taxonomy );
+
+		if ( $error_check && ( empty( $terms ) || is_wp_error( $terms ) ) ) {
+			return false;
+		}
+
+		return $terms;
+	}
+
+	/**
+	 * Legacy method to get the terms for the portfolio.
+	 *
+	 * This method retrieves the terms for a given query. It is the legacy version of
+	 * `get_query_terms`, and ideally should be replaced with the newer method.
+	 *
+	 * @param array $instance The instance settings.
+	 * @param int $post_id Optional. The post ID to retrieve terms for. Default is 0.
+	 *
+	 * @return array The terms for the query.
+	 */
 	public static function portfolio_get_terms( $instance, $post_id = 0 ) {
+		$query = wp_parse_args( siteorigin_widget_post_selector_process_query( $instance['posts'] ) );
+
+		return self::get_query_terms( $instance, $query, $post_id );
+	}
+
+	/**
+	 * Get query terms for the instance.
+	 *
+	 * This method retrieves the terms for the portfolio based on the instance
+	 * and post ID. It checks for developer-set terms, Jetpack Portfolio terms,
+	 * and other possible taxonomies. If no terms are found, it uses a fallback term.
+	 * The fallback term is `category`. The fallback term can be filtered using
+	 * the `siteorigin_widgets_blog_portfolio_fallback_term` filter.
+	 *
+	* @param array $instance The instance configuration array.
+	* @param array $query The Blog query that'll be used to retrieve the posts.
+	* @param int $post_id Optional. The post ID to retrieve terms for. Default is 0.
+	 *
+	 * @return array|false The terms for the portfolio, or false if no terms are found.
+	 */
+	public static function get_query_terms( $instance, $query, $post_id = 0 ) {
 		$terms = array();
 
-		if ( post_type_exists( 'jetpack-portfolio' ) ) {
-			if ( $post_id ) {
-				$terms = get_the_terms( (int) $post_id, 'jetpack-portfolio-type' );
-			} else {
-				$terms = get_terms( 'jetpack-portfolio-type' );
-			}
-		} elseif ( $post_id === 0 ) {
-			// Check if a developer has set a term for this post type.
-			$post_type = wp_parse_args( siteorigin_widget_post_selector_process_query( $instance['posts'] ) )['post_type'];
-			$taxonomy = apply_filters( 'siteorigin_widgets_blog_portfolio_taxonomy', '', $instance, $post_type );
+		$query['post_type'] = ! empty( $query['post_type'] ) ? $query['post_type'] : array( 'post' );
+
+		if ( ! empty( $post_id ) ) {
+
+			// Check if a developer has set terms for this post type.
+			$taxonomy = apply_filters(
+				'siteorigin_widgets_blog_portfolio_taxonomy',
+				'',
+				$instance,
+				$query['post_type']
+			);
 			if ( ! empty( $taxonomy ) && is_array( $taxonomy ) ) {
 				return $taxonomy;
 			}
+		}
 
-			if ( empty( $terms ) || is_wp_error( $terms ) ) {
-				// Let's try to find a taxonomy that has terms for this post type.
-				$possible_tax = get_object_taxonomies( $post_type );
-				foreach ( $possible_tax as $tax ) {
-					$possible_terms = get_terms( $tax );
-					if ( ! empty( $possible_terms ) && ! is_wp_error( $possible_terms ) ) {
-						$terms = $possible_terms;
-						break;
-					}
+		// Has user set terms? If so, let's use that if a post id hasn't be set.
+		// Individual posts should use their terms, rather than one set in the widget.
+		if (
+			empty( $post_id ) &&
+			! empty( $query ) &&
+			! empty( $query['tax_query'] )
+		 ) {
+			foreach ( $query['tax_query'] as $tax ) {
+				if ( isset( $tax['terms'] ) ) {
+					$terms[] = $tax['terms'];
 				}
 			}
+
+			// We need to set a taxonomy so we can hide/show terms.
+			// Let's use the first term's taxonomy.
+			if (
+				! empty( $terms ) &&
+				! empty( $query['tax_query'][1] ) &&
+				! empty( $query['tax_query'][1]['taxonomy'] )
+			) {
+				set_query_var( 'siteorigin_widgets_portfolio_taxonomy',
+					$query['tax_query'][1]['taxonomy']
+				);
+			}
+
+			return $terms;
+		}
+
+		// Check for Jetpack Portfolio terms.
+		if (
+			post_type_exists( 'jetpack-portfolio' ) &&
+			$query['post_type'] === 'jetpack-portfolio'
+		) {
+			$terms = self::get_terms_for_taxonomy(
+				'jetpack-portfolio-type',
+				$post_id
+			);
+
+			if ( $terms ) {
+				return $terms;
+			}
+		}
+
+		// Check for terms in other possible taxonomies.
+		$possible_tax = get_object_taxonomies( $query['post_type'] );
+		foreach ( $possible_tax as $tax ) {
+			$terms = self::get_terms_for_taxonomy( $tax, $post_id );
+
+			if ( $terms ) {
+				return $terms;
+			}
+		}
+
+		// Use fallback term if no terms are found.
+		$fallback = apply_filters(
+			'siteorigin_widgets_blog_portfolio_fallback_term',
+			'category',
+			$instance
+		);
+
+		return self::get_terms_for_taxonomy( $fallback, $post_id, false );
+	}
+
+	/**
+	 * Retrieves a list of terms for the given instance for the purpose of filtering.
+	 *
+	 * This method retrieves the terms for the given instance and posts. It first finds
+	 * the query terms, ensures that the terms are valid and (optionally) filters out any
+	 * terms that aren't associated with the posts.
+	 *
+	 * @param array $instance The instance configuration array.
+	 * @param WP_Query $posts The query object containing the posts.
+	 * @param array $query The query array.
+	 *
+	 * @return array The filtered terms for the instance and posts.
+	 */
+	private static function get_filter_categories( $instance, $posts, $query ) {
+		$terms = self::get_query_terms( $instance, $query );
+
+		if ( ! apply_filters(
+			'siteorigin_widgets_blog_portfolio_ensure_valid_terms',
+			true
+		) ) {
+			return $terms;
 		}
 
 		if ( empty( $terms ) || is_wp_error( $terms ) ) {
-			$fallback = apply_filters( 'siteorigin_widgets_blog_portfolio_fallback_term', 'category', $instance );
-			// Unable to find posts for this type. Try using the fallback term.
-			if ( $post_id ) {
-				return get_the_terms( (int) $post_id, $fallback );
-			} else {
-				return get_terms( $fallback );
-			}
-		} else {
 			return $terms;
 		}
+
+		$taxonomy = apply_filters(
+			'siteorigin_widgets_blog_portfolio_taxonomy_filter',
+			get_query_var( 'siteorigin_widgets_portfolio_taxonomy' )
+		);
+
+		// Get all of the terms for the posts.
+		$all_terms = array();
+		foreach ( $posts->posts as $post ) {
+			$post_terms = wp_get_post_terms( $post->ID, $taxonomy );
+
+			foreach ( $post_terms as $post_term ) {
+				$all_terms[] = $post_term->slug;
+			}
+		}
+
+		$all_terms = array_unique( $all_terms );
+
+		// Filter out any terms that aren't in the posts.
+		$filtered_terms = array();
+		foreach ( $terms as $term ) {
+			$slug = is_object( $term ) ? $term->slug : $term;
+
+			if ( in_array( $slug, $all_terms ) ) {
+				$filtered_terms[] = $term;
+			}
+		}
+
+		return $filtered_terms;
 	}
 
 	public function modify_instance( $instance ) {
@@ -1014,6 +1166,15 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 		$instance['paged_id'] = $this->get_style_hash( $instance );
 
+		// Ensure Filter Categories is disabled for templates that
+		// don't support it.
+		if (
+			$instance['template'] !== 'portfolio' &&
+			$instance['template'] !== 'masonry'
+		) {
+			$instance['settings']['filter_categories'] = false;
+		}
+
 		return $instance;
 	}
 
@@ -1085,9 +1246,11 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		if ( $instance['template'] == 'portfolio' ) {
-			$template_settings['terms'] = $this->portfolio_get_terms( $instance );
-			$template_settings['filter_categories'] = ! empty( $instance['settings']['filter_categories'] );
+		$posts = new WP_Query( apply_filters( 'siteorigin_widgets_blog_query', $query, $instance ) );
+
+		$template_settings['filter_categories'] = ! empty( $instance['settings']['filter_categories'] );
+		if ( $template_settings['filter_categories'] === true ) {
+			$template_settings['terms'] = self::get_filter_categories( $instance, $posts, $query );
 		}
 
 		// Add the current template to the settings array to allow for easier referencing.
@@ -1097,7 +1260,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			'title' => $instance['title'],
 			'settings' => $instance['settings'],
 			'template_settings' => $template_settings,
-			'posts' => new WP_Query( apply_filters( 'siteorigin_widgets_blog_query', $query, $instance ) ),
+			'posts' => $posts,
+			'query' => $query,
 		);
 	}
 
@@ -1119,6 +1283,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	public static function post_meta( $settings ) {
+		ob_start();
 		if ( is_sticky() ) {
 			?>
 			<span class="sow-featured-post"><?php esc_html_e( 'Sticky', 'so-widgets-bundle' ); ?></span>
@@ -1197,8 +1362,13 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			);
 			?>
 			</span>
-		<?php }
+		<?php
 		}
+
+		$post_meta = ob_get_clean();
+
+		echo apply_filters( 'siteorigin_widgets_blog_post_meta', $post_meta, $settings );
+	}
 
 	static public function post_featured_image( $settings, $categories = false, $size = 'full' ) {
 		if ( $settings['featured_image'] ) {

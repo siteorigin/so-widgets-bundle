@@ -397,7 +397,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	/**
 	 * Add default values to the instance.
 	 */
-	public function add_defaults( $form, $instance, $level = 0 ) {
+	public function add_defaults( $form, $instance = array(), $level = 0 ) {
 		if ( $level > 10 ) {
 			return $instance;
 		}
@@ -410,9 +410,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					}
 				}
 			} elseif ( $field['type'] == 'section' ) {
+				if ( empty( $instance ) ) {
+					$instance = array();
+				}
+
 				if ( empty( $instance[ $id ] ) ) {
 					$instance[ $id ] = array();
 				}
+
 				$instance[ $id ] = $this->add_defaults( $field['fields'], $instance[ $id ], $level + 1 );
 			} elseif ( $field['type'] == 'measurement' ) {
 				if ( ! isset( $instance[ $id ] ) ) {
@@ -431,6 +436,43 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						$instance[ $id ] = array_keys( $field['options'] );
 					}
 				}
+
+			} elseif ( $field['type'] === 'widget' ) {
+				// We need to load the widget to be able to get its defaults.
+				$sub_widget = new $field['class'];
+				if ( ! is_a( $sub_widget, 'SiteOrigin_Widget' ) ) {
+					continue;
+				}
+
+				if ( empty( $instance[ $id ] ) ) {
+					$instance[ $id ] = array();
+				}
+
+				// Does this widget have a form filter?
+				if (
+					! empty( $field['form_filter'] ) &&
+					is_callable( $field['form_filter'] )
+				) {
+
+					$fields = call_user_func(
+						$field['form_filter'],
+						$sub_widget->form_options()
+					);
+
+					$instance[ $id ] = $this->add_defaults(
+						$fields,
+						$instance[ $id ],
+						$level + 1
+					);
+
+					continue;
+				}
+
+				$instance[ $id ] = $this->add_defaults(
+					$sub_widget->form_options(),
+					$instance[ $id ],
+					$level + 1
+				);
 			} elseif ( ! isset( $instance[ $id ] ) ) {
 				$instance[ $id ] = isset( $field['default'] ) ? $field['default'] : '';
 			}
@@ -508,12 +550,16 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		<?php if ( $this->show_preview_button() ) { ?>
 			<div class="siteorigin-widget-preview" style="display: none">
-				<a href="#" class="siteorigin-widget-preview-button button-secondary"><?php _e( 'Preview', 'so-widgets-bundle' ); ?></a>
+				<a href="#" class="siteorigin-widget-preview-button button-secondary">
+					<?php echo esc_html__( 'Preview', 'so-widgets-bundle' ); ?>
+				</a>
 			</div>
 		<?php } ?>
 
 		<?php if ( ! empty( $this->widget_options['help'] ) ) { ?>
-			<a href="<?php echo sow_esc_url( $this->widget_options['help'] ); ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Help', 'so-widgets-bundle' ); ?></a>
+			<a href="<?php echo sow_esc_url( $this->widget_options['help'] ); ?>" class="siteorigin-widget-help-link siteorigin-panels-help-link" target="_blank" rel="noopener noreferrer">
+				<?php esc_html_e( 'Help', 'so-widgets-bundle' ); ?>
+			</a>
 		<?php } ?>
 
 		<script type="text/javascript">
@@ -561,12 +607,22 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				if ( is_array( $teaser ) ) {
 					$teaser = $teaser[ array_rand( $teaser ) ];
 				}
-
 				?>
-				<div class="siteorigin-widget-teaser">
-					<?php echo wp_kses_post( $teaser ); ?>.
-					<span class="dashicons dashicons-dismiss" data-dismiss-url="<?php echo esc_url( $dismiss_url ); ?>"></span>
-				</div>
+				<section class="siteorigin-widget-teaser">
+					<p class="siteorigin-widget-teaser-message">
+						<?php echo wp_kses_post( $teaser ); ?>.
+					</p>
+
+					<button
+						type="button"
+						class="siteorigin-widget-teaser-dismiss dashicons dashicons-dismiss"
+						data-dismiss-url="<?php echo esc_url( $dismiss_url ); ?>"
+					>
+						<span class="screen-reader-text">
+							<?php echo esc_html( 'Dismiss this message', 'so-widgets-bundle' ); ?>
+						</span>
+					</button>
+				</section>
 				<?php
 			}
 		}
@@ -584,8 +640,12 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 	public function scripts_loading_message() {
 		?>
-		<p><strong><?php _e( 'This widget has scripts and styles that need to be loaded before you can use it. Please save and reload your current page.', 'so-widgets-bundle' ); ?></strong></p>
-		<p><strong><?php _e( 'You will only need to do this once.', 'so-widgets-bundle' ); ?></strong></p>
+		<p>
+			<strong><?php echo esc_html__( 'This widget has scripts and styles that need to be loaded before you can use it. Please save and reload your current page.', 'so-widgets-bundle' ); ?></strong>
+		</p>
+		<p>
+			<strong><?php echo esc_html__( 'You will only need to do this once.', 'so-widgets-bundle' ); ?></strong>
+		</p>
 		<?php
 	}
 
@@ -630,6 +690,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					),
 				),
 				'fonts' => siteorigin_widgets_font_families(),
+				'icons' => array(),
 			) );
 
 			if ( ! class_exists( 'FLBuilderModel' ) || ! FLBuilderModel::is_builder_active() ) {
@@ -687,7 +748,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				<div class="so-widgets-dialog-overlay"></div>
 
 				<div class="so-widgets-toolbar">
-					<h3><?php _e( 'Widget Preview', 'so-widgets-bundle' ); ?></h3>
+					<h3>
+						<?php echo esc_html__( 'Widget Preview', 'so-widgets-bundle' ); ?>
+					</h3>
 					<div class="close" tabindex="0"><span class="dashicons dashicons-arrow-left-alt2"></span></div>
 				</div>
 

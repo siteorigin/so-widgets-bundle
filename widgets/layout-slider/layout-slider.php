@@ -86,7 +86,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 								'type' => 'select',
 								'label' => __( 'Background image type', 'so-widgets-bundle' ),
 								'options' => array(
-									'cover' => __( 'Cover', 'so-widgets-bundle ' ),
+									'cover' => __( 'Cover', 'so-widgets-bundle' ),
 									'tile' => __( 'Tile', 'so-widgets-bundle' ),
 								),
 								'default' => 'cover',
@@ -260,17 +260,41 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		) );
 	}
 
-	public function form( $instance, $form_type = 'widget' ) {
-		if ( ( is_admin() || ( defined( 'REST_REQUEST' ) && function_exists( 'register_block_type' ) ) ) && defined( 'SITEORIGIN_PANELS_VERSION' ) ) {
-			parent::form( $instance, $form_type );
-		} else {
-			?>
-			<p>
-				<?php _e( 'This widget requires: ', 'so-widgets-bundle' ); ?>
-				<a href="https://siteorigin.com/page-builder/" target="_blank" rel="noopener noreferrer"><?php _e( 'SiteOrigin Page Builder', 'so-widgets-bundle' ); ?></a>
-			</p>
-			<?php
+
+	private static function can_render() {
+		if ( ! defined( 'SITEORIGIN_PANELS_VERSION' ) ) {
+			return false;
 		}
+
+		if ( is_admin() ) {
+			return true;
+		}
+
+		// Is this field being rendered inside one of our blocks?
+		if ( defined( 'REST_REQUEST' ) && function_exists( 'register_block_type' ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function form( $instance, $form_type = 'widget' ) {
+		if ( siteorigin_widgets_can_render_builder_field() ) {
+			parent::form( $instance, $form_type );
+			return;
+		}
+		?>
+
+		<p>
+			<?php
+			printf(
+				esc_html__( 'This widget requires %sSiteOrigin Page Builder%s to be installed and activated.', 'so-widgets-bundle' ),
+				'<a href="https://siteorigin.com/page-builder/" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			);
+			?>
+		</p>
+		<?php
 	}
 
 	/**
