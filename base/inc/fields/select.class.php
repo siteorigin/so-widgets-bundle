@@ -38,7 +38,6 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 		}
 
 		wp_enqueue_script( 'select2' );
-		wp_enqueue_style( 'select2' );
 		wp_enqueue_script(
 			'so-select-field',
 			plugin_dir_url( __FILE__ ) . 'js/select-field' . SOW_BUNDLE_JS_SUFFIX . '.js',

@@ -204,7 +204,6 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 						'filter_categories' => array(
 							'type' => 'checkbox',
 							'label' => __( 'Filter Categories ', 'so-widgets-bundle' ),
-							'default' => true,
 							'state_emitter' => array(
 								'callback' => 'conditional',
 								'args' => array(
@@ -954,9 +953,17 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	public static function get_query_terms( $instance, $query, $post_id = 0 ) {
 		$terms = array();
 
+		$query['post_type'] = ! empty( $query['post_type'] ) ? $query['post_type'] : array( 'post' );
+
 		if ( ! empty( $post_id ) ) {
+
 			// Check if a developer has set terms for this post type.
-			$taxonomy = apply_filters( 'siteorigin_widgets_blog_portfolio_taxonomy', '', $instance, $query['post_type'] );
+			$taxonomy = apply_filters(
+				'siteorigin_widgets_blog_portfolio_taxonomy',
+				'',
+				$instance,
+				$query['post_type']
+			);
 			if ( ! empty( $taxonomy ) && is_array( $taxonomy ) ) {
 				return $taxonomy;
 			}
@@ -1159,6 +1166,15 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 		$instance['paged_id'] = $this->get_style_hash( $instance );
 
+		// Ensure Filter Categories is disabled for templates that
+		// don't support it.
+		if (
+			$instance['template'] !== 'portfolio' &&
+			$instance['template'] !== 'masonry'
+		) {
+			$instance['settings']['filter_categories'] = false;
+		}
+
 		return $instance;
 	}
 
@@ -1267,6 +1283,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	public static function post_meta( $settings ) {
+		ob_start();
 		if ( is_sticky() ) {
 			?>
 			<span class="sow-featured-post"><?php esc_html_e( 'Sticky', 'so-widgets-bundle' ); ?></span>
@@ -1345,8 +1362,13 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			);
 			?>
 			</span>
-		<?php }
+		<?php
 		}
+
+		$post_meta = ob_get_clean();
+
+		echo apply_filters( 'siteorigin_widgets_blog_post_meta', $post_meta, $settings );
+	}
 
 	static public function post_featured_image( $settings, $categories = false, $size = 'full' ) {
 		if ( $settings['featured_image'] ) {

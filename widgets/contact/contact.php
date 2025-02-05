@@ -11,6 +11,15 @@ $field_ids = array();
 class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	public $instance_hash;
 
+	private $dev_emails = array(
+		'ibrossiter@gmail.com',
+		'amisplon@gmail.com',
+		'test@example.com',
+		'greg@siteorigin.com',
+		'wordpress@layouts.siteorigin.com',
+		'support@siteorigin.com',
+	);
+
 	public function __construct() {
 		parent::__construct(
 			'sow-contact-form',
@@ -58,6 +67,27 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	public function enqueue_admin_scripts() {
+		wp_enqueue_script(
+			'sow-contact-form-admin',
+			plugin_dir_url( __FILE__ ) . 'js/contact-form-admin' . SOW_BUNDLE_JS_SUFFIX . '.js',
+			array( 'jquery' ),
+			SOW_BUNDLE_VERSION
+		);
+
+		wp_localize_script(
+			'sow-contact-form-admin',
+			'sowContactAdmin',
+			array(
+				'error' =>  sprintf(
+					esc_html__( "The 'To' and 'From' email addresses cannot be the same. This can cause email delivery issues or trigger spam filters. %sLearn why and how to fix this%s.", 'so-widgets-bundle' ),
+					'<a href="https://siteorigin.com/widgets-bundle/contact-form-widget/#heading-avoiding-issues-with-the-to-and-from-email-fields" target="_blank" rel="noopener noreferrer">',
+					'</a>'
+				),
+			)
+		);
+	}
+
 	public function get_widget_form() {
 		$useable_units = array(
 			'px',
@@ -73,7 +103,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 			'display_title' => array(
 				'type'  => 'checkbox',
-				'label' => __( 'Display title', 'so-widgets-bundle' ),
+				'label' => __( 'Display Title', 'so-widgets-bundle' ),
 			),
 
 			'settings' => array(
@@ -83,35 +113,35 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				'fields' => array(
 					'to'                               => array(
 						'type'        => 'text',
-						'label'       => __( 'To email address', 'so-widgets-bundle' ),
+						'label'       => __( 'To Email Address', 'so-widgets-bundle' ),
 						'description' => __( 'Where contact emails will be delivered to. You can send to multiple emails by separating the emails with a comma (,)', 'so-widgets-bundle' ),
 						'sanitize'    => 'multiple_emails',
 					),
 					'from'                               => array(
 						'type'        => 'text',
-						'label'       => __( 'From email address', 'so-widgets-bundle' ),
+						'label'       => __( 'From Email Address', 'so-widgets-bundle' ),
 						'description' => __( 'It will appear as if emails are sent from this address. Ideally, this should be in the same domain as this server to avoid spam filters.', 'so-widgets-bundle' ),
 						'sanitize'    => 'email',
 					),
 					'default_subject'                  => array(
 						'type'        => 'text',
-						'label'       => __( 'Default subject', 'so-widgets-bundle' ),
+						'label'       => __( 'Default Subject', 'so-widgets-bundle' ),
 						'description' => __( "Subject to use when there isn't one supplied by the user. If you make use of this option it won't be possible to set the Subject field as required because the default subject will be used as a fallback.", 'so-widgets-bundle' ),
 					),
 					'subject_prefix'                   => array(
 						'type'        => 'text',
-						'label'       => __( 'Subject prefix', 'so-widgets-bundle' ),
+						'label'       => __( 'Subject Prefix', 'so-widgets-bundle' ),
 						'description' => __( 'Prefix added to all incoming email subjects.', 'so-widgets-bundle' ),
 					),
 					'success_message'                  => array(
 						'type'        => 'tinymce',
-						'label'       => __( 'Success message', 'so-widgets-bundle' ),
+						'label'       => __( 'Success Message', 'so-widgets-bundle' ),
 						'description' => __( 'Message to display after message successfully sent.', 'so-widgets-bundle' ),
 						'default'     => __( "Thanks for contacting us. We'll get back to you shortly.", 'so-widgets-bundle' ),
 					),
 					'submit_text'                      => array(
 						'type'    => 'text',
-						'label'   => __( 'Submit button text', 'so-widgets-bundle' ),
+						'label'   => __( 'Submit Button Text', 'so-widgets-bundle' ),
 						'default' => __( 'Contact Us', 'so-widgets-bundle' ),
 					),
 					'submit_id' => array(
@@ -127,7 +157,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					),
 					'required_field_indicator'         => array(
 						'type'          => 'checkbox',
-						'label'         => __( 'Indicate required fields with asterisk (*)', 'so-widgets-bundle' ),
+						'label'         => __( 'Indicate Required Fields With Asterisk (*)', 'so-widgets-bundle' ),
 						'state_emitter' => array(
 							'callback' => 'conditional',
 							'args'     => array(
@@ -138,7 +168,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					),
 					'required_field_indicator_message' => array(
 						'type'          => 'text',
-						'label'         => __( 'Required field indicator message', 'so-widgets-bundle' ),
+						'label'         => __( 'Required Field Indicator Message', 'so-widgets-bundle' ),
 						'default'       => __( 'Fields marked with * are required', 'so-widgets-bundle' ),
 						'state_handler' => array(
 							'required_fields[show]' => array( 'show' ),
@@ -147,7 +177,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					),
 					'log_ip_address' => array(
 						'type' => 'checkbox',
-						'label' => __( 'Log IP addresses', 'so-widgets-bundle' ),
+						'label' => __( 'Log IP Addresses', 'so-widgets-bundle' ),
 						'description' => __( 'List in contact emails, the IP address of the form sender.', 'so-widgets-bundle' ),
 						'default' => false,
 					),
@@ -201,12 +231,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'fields' => array(
 							'required'        => array(
 								'type'        => 'checkbox',
-								'label'       => __( 'Required field', 'so-widgets-bundle' ),
+								'label'       => __( 'Required Field', 'so-widgets-bundle' ),
 								'description' => __( 'Is this field required?', 'so-widgets-bundle' ),
 							),
 							'missing_message' => array(
 								'type'        => 'text',
-								'label'       => __( 'Missing message', 'so-widgets-bundle' ),
+								'label'       => __( 'Missing Message', 'so-widgets-bundle' ),
 								'description' => __( 'Error message to display if this field is missing.', 'so-widgets-bundle' ),
 								'default'     => __( 'Required field', 'so-widgets-bundle' ),
 							),
@@ -215,7 +245,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 					'multiple_select' => array(
 						'type'  => 'checkbox',
-						'label' => __( 'Allow multiple selections', 'so-widgets-bundle' ),
+						'label' => __( 'Allow Multiple Selections', 'so-widgets-bundle' ),
 						'state_handler' => array(
 							'field_type_{$repeater}[select]' => array( 'show' ),
 							'_else[field_type_{$repeater}]' => array( 'hide' ),
@@ -339,7 +369,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'type'        => array(
 								'type'    => 'select',
-								'label'   => __( 'Challenge type', 'so-widgets-bundle' ),
+								'label'   => __( 'Challenge Type', 'so-widgets-bundle' ),
 								'default' => 'image',
 								'options' => array(
 									'image' => __( 'Image', 'so-widgets-bundle' ),
@@ -382,7 +412,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'spam_action' => array(
 								'type'        => 'select',
-								'label'       => __( 'Spam action', 'so-widgets-bundle' ),
+								'label'       => __( 'Spam Action', 'so-widgets-bundle' ),
 								'options'     => array(
 									'error' => __( 'Show error message', 'so-widgets-bundle' ),
 									'tag'   => __( 'Tag as spam in subject', 'so-widgets-bundle' ),
@@ -406,7 +436,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 						'fields' => array(
 							'background'   => array(
 								'type'    => 'color',
-								'label'   => __( 'Background color', 'so-widgets-bundle' ),
+								'label'   => __( 'Background Color', 'so-widgets-bundle' ),
 								'alpha'   => true,
 								'default' => '#f2f2f2',
 							),
@@ -417,17 +447,17 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'border_color' => array(
 								'type'    => 'color',
-								'label'   => __( 'Border color', 'so-widgets-bundle' ),
+								'label'   => __( 'Border Color', 'so-widgets-bundle' ),
 								'default' => '#c0c0c0',
 							),
 							'border_width' => array(
 								'type'    => 'measurement',
-								'label'   => __( 'Border width', 'so-widgets-bundle' ),
+								'label'   => __( 'Border Width', 'so-widgets-bundle' ),
 								'default' => '1px',
 							),
 							'border_style' => array(
 								'type'    => 'select',
-								'label'   => __( 'Border style', 'so-widgets-bundle' ),
+								'label'   => __( 'Border Style', 'so-widgets-bundle' ),
 								'default' => 'solid',
 								'options' => array(
 									'none'   => __( 'None', 'so-widgets-bundle' ),
@@ -447,7 +477,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 					'labels' => array(
 						'type'   => 'section',
-						'label'  => __( 'Field labels', 'so-widgets-bundle' ),
+						'label'  => __( 'Field Labels', 'so-widgets-bundle' ),
 						'fields' => array(
 							'font'     => array(
 								'type'    => 'font',
@@ -456,7 +486,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'size'     => array(
 								'type'    => 'measurement',
-								'label'   => __( 'Font size', 'so-widgets-bundle' ),
+								'label'   => __( 'Font Size', 'so-widgets-bundle' ),
 								'default' => 'default',
 							),
 							'color'    => array(
@@ -506,11 +536,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'font_size'     => array(
 								'type'  => 'measurement',
-								'label' => __( 'Font size', 'so-widgets-bundle' ),
+								'label' => __( 'Font Size', 'so-widgets-bundle' ),
 							),
 							'color'         => array(
 								'type'  => 'color',
-								'label' => __( 'Text color', 'so-widgets-bundle' ),
+								'label' => __( 'Text Color', 'so-widgets-bundle' ),
 							),
 							'multi_margin' => array(
 								'type'  => 'multi-measurement',
@@ -541,7 +571,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'max_width'    => array(
 								'type'    => 'measurement',
-								'label'   => __( 'Max width', 'so-widgets-bundle' ),
+								'label'   => __( 'Max Width', 'so-widgets-bundle' ),
 								'default' => '',
 							),
 							'height'        => array(
@@ -550,7 +580,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'height_textarea' => array(
 								'type'  => 'measurement',
-								'label' => __( 'Text area height', 'so-widgets-bundle' ),
+								'label' => __( 'Text Area Height', 'so-widgets-bundle' ),
 							),
 							'background'    => array(
 								'type'  => 'color',
@@ -558,17 +588,17 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'border_color'  => array(
 								'type'    => 'color',
-								'label'   => __( 'Border color', 'so-widgets-bundle' ),
+								'label'   => __( 'Border Color', 'so-widgets-bundle' ),
 								'default' => '#c0c0c0',
 							),
 							'border_width'  => array(
 								'type'    => 'measurement',
-								'label'   => __( 'Border width', 'so-widgets-bundle' ),
+								'label'   => __( 'Border Width', 'so-widgets-bundle' ),
 								'default' => '1px',
 							),
 							'border_style'  => array(
 								'type'    => 'select',
-								'label'   => __( ' Border style', 'so-widgets-bundle' ),
+								'label'   => __( ' Border Style', 'so-widgets-bundle' ),
 								'default' => 'solid',
 								'options' => array(
 									'none'   => __( 'None', 'so-widgets-bundle' ),
@@ -585,7 +615,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'border_radius' => array(
 								'type'    => 'slider',
-								'label'   => __( 'Border rounding', 'so-widgets-bundle' ),
+								'label'   => __( 'Border Rounding', 'so-widgets-bundle' ),
 								'default' => 0,
 								'max'     => 50,
 								'min'     => 0,
@@ -595,7 +625,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 					'descriptions' => array(
 						'type'   => 'section',
-						'label'  => __( 'Field descriptions', 'so-widgets-bundle' ),
+						'label'  => __( 'Field Descriptions', 'so-widgets-bundle' ),
 						'fields' => array(
 							'size'  => array(
 								'type'    => 'measurement',
@@ -621,31 +651,31 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 					'errors' => array(
 						'type'   => 'section',
-						'label'  => __( 'Error messages', 'so-widgets-bundle' ),
+						'label'  => __( 'Error Messages', 'so-widgets-bundle' ),
 						'fields' => array(
 							'background'   => array(
 								'type'    => 'color',
-								'label'   => __( 'Error background color', 'so-widgets-bundle' ),
+								'label'   => __( 'Error Background Color', 'so-widgets-bundle' ),
 								'default' => '#fce4e5',
 							),
 							'border_color' => array(
 								'type'    => 'color',
-								'label'   => __( 'Error border color', 'so-widgets-bundle' ),
+								'label'   => __( 'Error Border Color', 'so-widgets-bundle' ),
 								'default' => '#ec666a',
 							),
 							'text_color'   => array(
 								'type'    => 'color',
-								'label'   => __( 'Error text color', 'so-widgets-bundle' ),
+								'label'   => __( 'Error Text Color', 'so-widgets-bundle' ),
 								'default' => '#ec666a',
 							),
 							'padding'      => array(
 								'type'    => 'measurement',
-								'label'   => __( 'Error padding', 'so-widgets-bundle' ),
+								'label'   => __( 'Error Padding', 'so-widgets-bundle' ),
 								'default' => '5px',
 							),
 							'margin'       => array(
 								'type'    => 'measurement',
-								'label'   => __( 'Error margin', 'so-widgets-bundle' ),
+								'label'   => __( 'Error Margin', 'so-widgets-bundle' ),
 								'default' => '10px',
 							),
 						),
@@ -653,33 +683,41 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 					'submit' => array(
 						'type'   => 'section',
-						'label'  => __( 'Submit button', 'so-widgets-bundle' ),
+						'label'  => __( 'Submit Button', 'so-widgets-bundle' ),
 						'fields' => array(
 							'styled' => array(
 								'type'        => 'checkbox',
-								'label'       => __( 'Style submit button', 'so-widgets-bundle' ),
+								'label'       => __( 'Style Submit Button', 'so-widgets-bundle' ),
 								'description' => __( 'Style the button or leave it with default theme styling.', 'so-widgets-bundle' ),
 								'default'     => true,
 							),
 
 							'background_color'    => array(
 								'type'    => 'color',
-								'label'   => __( 'Background color', 'so-widgets-bundle' ),
+								'label'   => __( 'Background Color', 'so-widgets-bundle' ),
 								'default' => '#eeeeee',
+							),
+							'background_color_hover'    => array(
+								'type'    => 'color',
+								'label'   => __( 'Background Hover Color', 'so-widgets-bundle' ),
 							),
 							'background_gradient' => array(
 								'type'    => 'slider',
-								'label'   => __( 'Gradient intensity', 'so-widgets-bundle' ),
+								'label'   => __( 'Gradient Intensity', 'so-widgets-bundle' ),
 								'default' => 10,
 							),
 							'border_color'        => array(
 								'type'    => 'color',
-								'label'   => __( 'Border color', 'so-widgets-bundle' ),
+								'label'   => __( 'Border Color', 'so-widgets-bundle' ),
 								'default' => '#989a9c',
+							),
+							'border_color_hover'    => array(
+								'type'    => 'color',
+								'label'   => __( 'Border Hover Color', 'so-widgets-bundle' ),
 							),
 							'border_style'        => array(
 								'type'    => 'select',
-								'label'   => __( 'Border style', 'so-widgets-bundle' ),
+								'label'   => __( 'Border Style', 'so-widgets-bundle' ),
 								'default' => 'solid',
 								'options' => array(
 									'none'   => __( 'None', 'so-widgets-bundle' ),
@@ -690,29 +728,33 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'border_width'        => array(
 								'type'    => 'measurement',
-								'label'   => __( 'Border width', 'so-widgets-bundle' ),
+								'label'   => __( 'Border Width', 'so-widgets-bundle' ),
 								'default' => '1px',
 							),
 							'border_radius'       => array(
 								'type'    => 'slider',
-								'label'   => __( 'Border rounding', 'so-widgets-bundle' ),
+								'label'   => __( 'Border Rounding', 'so-widgets-bundle' ),
 								'default' => 3,
 								'max'     => 50,
 								'min'     => 0,
 							),
 							'text_color'          => array(
 								'type'    => 'color',
-								'label'   => __( 'Text color', 'so-widgets-bundle' ),
+								'label'   => __( 'Text Color', 'so-widgets-bundle' ),
 								'default' => '#5a5a5a',
+							),
+							'text_color_hover'    => array(
+								'type'    => 'color',
+								'label'   => __( 'Text Hover Color', 'so-widgets-bundle' ),
 							),
 							'font_size'           => array(
 								'type'    => 'measurement',
-								'label'   => __( 'Font size', 'so-widgets-bundle' ),
+								'label'   => __( 'Font Size', 'so-widgets-bundle' ),
 								'default' => 'default',
 							),
 							'weight'              => array(
 								'type'    => 'select',
-								'label'   => __( 'Font weight', 'so-widgets-bundle' ),
+								'label'   => __( 'Font Weight', 'so-widgets-bundle' ),
 								'default' => '500',
 								'options' => array(
 									'normal' => __( 'Normal', 'so-widgets-bundle' ),
@@ -741,7 +783,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'inset_highlight'     => array(
 								'type'        => 'slider',
-								'label'       => __( 'Inset highlight', 'so-widgets-bundle' ),
+								'label'       => __( 'Inset Highlight', 'so-widgets-bundle' ),
 								'description' => __( 'The white highlight at the bottom of the button', 'so-widgets-bundle' ),
 								'default'     => 50,
 								'max'         => 100,
@@ -752,7 +794,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 					'focus' => array(
 						'type'   => 'section',
-						'label'  => __( 'Input focus', 'so-widgets-bundle' ),
+						'label'  => __( 'Input Focus', 'so-widgets-bundle' ),
 						'fields' => array(
 							'style' => array(
 								'type'    => 'select',
@@ -786,7 +828,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 					'success' => array(
 						'type' => 'section',
-						'label'=> __( 'Success message', 'so-widgets-bundle' ),
+						'label'=> __( 'Success Message', 'so-widgets-bundle' ),
 						'fields' => array(
 							'font'	 => array(
 								'type' => 'font',
@@ -794,15 +836,15 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'font_size' => array(
 								'type' => 'measurement',
-								'label' => __( 'Font size', 'so-widgets-bundle' ),
+								'label' => __( 'Font Size', 'so-widgets-bundle' ),
 							),
 							'color' => array(
 								'type' => 'color',
-								'label' => __( 'Text color', 'so-widgets-bundle' ),
+								'label' => __( 'Text Color', 'so-widgets-bundle' ),
 							),
 							'background_color' => array(
 								'type' => 'color',
-								'label' => __( 'Background color', 'so-widgets-bundle' ),
+								'label' => __( 'Background Color', 'so-widgets-bundle' ),
 							),
 							'padding' => array(
 								'type' => 'multi-measurement',
@@ -828,16 +870,16 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'border_color' => array(
 								'type' => 'color',
-								'label' => __( 'Border color', 'so-widgets-bundle' ),
+								'label' => __( 'Border Color', 'so-widgets-bundle' ),
 							),
 							'border_width' => array(
 								'type' => 'measurement',
-								'label' => __( 'Border width', 'so-widgets-bundle' ),
+								'label' => __( 'Border Width', 'so-widgets-bundle' ),
 								'default' => '1px',
 							),
 							'border_style' => array(
 								'type'  => 'select',
-								'label' => __( 'Border style', 'so-widgets-bundle' ),
+								'label' => __( 'Border Style', 'so-widgets-bundle' ),
 								'default' => 'solid',
 								'options' => array(
 									'none'   => __( 'None', 'so-widgets-bundle' ),
@@ -886,7 +928,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'background'   => array(
 								'type'    => 'color',
-								'label'   => __( 'Background color', 'so-widgets-bundle' ),
+								'label'   => __( 'Background Color', 'so-widgets-bundle' ),
 								'default' => '#ffffff',
 								'state_handler' => array(
 									'really_simple[show]' => array( 'slideDown' ),
@@ -895,7 +937,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							),
 							'color'   => array(
 								'type'    => 'color',
-								'label'   => __( 'Text color', 'so-widgets-bundle' ),
+								'label'   => __( 'Text Color', 'so-widgets-bundle' ),
 								'default' => '#000000',
 								'state_handler' => array(
 									'really_simple[show]' => array( 'slideDown' ),
@@ -1129,7 +1171,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			),
 			'scrollto' => array(
 				'type'        => 'checkbox',
-				'label'       => __( 'Scroll top', 'so-widgets-bundle' ),
+				'label'       => __( 'Scroll Top', 'so-widgets-bundle' ),
 				'default'     => true,
 				'description' => __( 'After submission, scroll the user to the top of the contact form.', 'so-widgets-bundle' ),
 			),
@@ -1194,19 +1236,22 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'error_margin'               => $instance['design']['errors']['margin'],
 
 			// The submit button
-			'submit_background_color'    => $instance['design']['submit']['background_color'],
-			'submit_background_gradient' => $instance['design']['submit']['background_gradient'] . '%',
-			'submit_border_color'        => $instance['design']['submit']['border_color'],
-			'submit_border_style'        => $instance['design']['submit']['border_style'],
-			'submit_border_width'        => $instance['design']['submit']['border_width'],
-			'submit_border_radius'       => $instance['design']['submit']['border_radius'] . 'px',
-			'submit_text_color'          => $instance['design']['submit']['text_color'],
-			'submit_font_size'           => $instance['design']['submit']['font_size'],
-			'submit_weight'              => $instance['design']['submit']['weight'],
-			'submit_padding'             => $instance['design']['submit']['padding'],
-			'submit_width'               => ! empty( $instance['design']['submit']['width'] ) ? $instance['design']['submit']['width'] : '',
-			'submit_align'               => ! empty( $instance['design']['submit']['align'] ) ? $instance['design']['submit']['align'] : '',
-			'submit_inset_highlight'     => $instance['design']['submit']['inset_highlight'] . '%',
+			'submit_background_color'       => $instance['design']['submit']['background_color'],
+			'submit_background_color_hover' => ! empty( $instance['design']['submit']['background_color_hover'] ) ? $instance['design']['submit']['background_color_hover'] : '',
+			'submit_background_gradient'    => $instance['design']['submit']['background_gradient'] . '%',
+			'submit_border_color'           => $instance['design']['submit']['border_color'],
+			'submit_border_color_hover'     => ! empty( $instance['design']['submit']['border_color_hover'] ) ? $instance['design']['submit']['border_color_hover'] : '',
+			'submit_border_style'           => $instance['design']['submit']['border_style'],
+			'submit_border_width'           => $instance['design']['submit']['border_width'],
+			'submit_border_radius'          => $instance['design']['submit']['border_radius'] . 'px',
+			'submit_text_color'             => $instance['design']['submit']['text_color'],
+			'submit_text_color_hover'       => ! empty( $instance['design']['submit']['text_color_hover'] ) ? $instance['design']['submit']['text_color_hover'] : '',
+			'submit_font_size'              => $instance['design']['submit']['font_size'],
+			'submit_weight'                 => $instance['design']['submit']['weight'],
+			'submit_padding'                => $instance['design']['submit']['padding'],
+			'submit_width'                  => ! empty( $instance['design']['submit']['width'] ) ? $instance['design']['submit']['width'] : '',
+			'submit_align'                  => ! empty( $instance['design']['submit']['align'] ) ? $instance['design']['submit']['align'] : '',
+			'submit_inset_highlight'        => $instance['design']['submit']['inset_highlight'] . '%',
 
 			// Input focus styles
 			'outline_style'              => $instance['design']['focus']['style'],
@@ -1957,11 +2002,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	private function is_dev_email( $email ) {
-		return $email == 'ibrossiter@gmail.com' ||
-			   $email == 'amisplon@gmail.com' ||
-			   $email == 'test@example.com' ||
-			   $email == 'greg@siteorigin.com' ||
-			   $email == 'support@siteorigin.com';
+		return in_array( $email, $this->dev_emails, true );
 	}
 
 	private function default_from_address() {
