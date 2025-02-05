@@ -6,6 +6,43 @@ jQuery( function ( $ ) {
 	// We remove animations if the user has motion disabled.
 	const reduceMotion = window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
 
+	$.fn.fixContainerHeight = function() {
+		const $$ = $( this );
+		const $largestItem = $$.find( '.sow-carousel-item' ).sort( function( a, b ) {
+			return $( b ).outerHeight() - $( a ).outerHeight();
+		} )[0];
+
+		const $largestItemEl = $( $largestItem );
+
+		$$.css( 'height',
+			$largestItemEl.outerHeight() +
+			parseFloat( $largestItemEl.css( 'margin-bottom' ) )
+		);
+	};
+
+	$( '.sow-carousel-wrapper' ).on( 'init', function( e, slick ) {
+		const $$ = $( this );
+		$$.css( 'opacity', 1 );
+
+		const carousel_settings = $$.data( 'carousel_settings' );
+		if (
+			carousel_settings.dynamic_navigation ||
+			carousel_settings.theme !== 'cards' ||
+			$$.hasClass( 'fixed-navigation' )
+		) {
+			return;
+		}
+
+		const $items = $$.find( '.sow-carousel-items' );
+
+		$$.addClass( 'fixed-navigation' );
+		$items.fixContainerHeight();
+
+		$( window ).on( 'resize', () => {
+			$items.fixContainerHeight();
+		} );
+	} );
+
 	sowb.setupCarousel = function () {
 		$.fn.setSlideTo = function( slide ) {
 			$items = $( this );
@@ -19,39 +56,6 @@ jQuery( function ( $ ) {
 			$items.slick( 'slickSetOption', 'slidesToShow', slidesToShow );
 			$items.slick( 'slickSetOption', 'slidesToScroll', slidesToScroll );
 		};
-
-		// Restrict the height of the carousel to the largest item.
-		$.fn.fixContainerHeight = function() {
-			const $$ = $( this );
-			const $largestItem = $$.find( '.sow-carousel-item' ).sort( function( a, b ) {
-				return $( b ).outerHeight() - $( a ).outerHeight();
-			} )[0];
-
-			const $largestItemEl = $( $largestItem );
-
-			$$.css( 'height',
-				$largestItemEl.outerHeight() +
-				parseFloat( $largestItemEl.css( 'margin-bottom' ) )
-			);
-		};
-
-		$( '.sow-carousel-wrapper' ).on( 'init', function( e, slick ) {
-			const $$ = $( this );
-			$$.css( 'opacity', 1 );
-
-			if ( ! $$.data( 'carousel_settings' ).dynamic_navigation ) {
-				return;
-			}
-
-			const $items = $$.find( '.sow-carousel-items' );
-
-			$$.addClass( 'fixed-navigation' );
-			$items.fixContainerHeight();
-
-			$( window ).on( 'resize', () => {
-				$items.fixContainerHeight();
-			} );
-		} );
 
 		// The carousel widget
 		$( '.sow-carousel-wrapper' ).each( function () {
