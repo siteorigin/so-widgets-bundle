@@ -584,12 +584,17 @@
 			 */
 			wp.element.useEffect( () => {
 				const isAdminCheck = wp.data.subscribe( () => {
-					const user = wp.data.select( 'core' ).getCurrentUser?.();
+					const getCurrentUser = wp.data.select( 'core' ).getCurrentUser;
+					if ( typeof getCurrentUser === undefined ) {
+						return;
+					}
+
+					const user = getCurrentUser();
 					if (
 						typeof user === 'object' &&
 						typeof user.id === 'number'
 					) {
-						setIsAdmin( user?.is_super_admin ?? false );
+						setIsAdmin( user.is_super_admin || false );
 						setIsLoading( false );
 						isAdminCheck();
 					}
