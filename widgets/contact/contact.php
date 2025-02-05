@@ -1440,6 +1440,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				<div class="sow-field-container">
 					<?php
 					$class_name = empty( $field['type'] ) ? '' : 'SiteOrigin_Widget_ContactForm_Field_' . ucwords( $field['type'] );
+
+					$has_description = ! empty( $field['description'] );
 					// This does autoloading if required.
 					if ( class_exists( $class_name ) ) {
 						/**
@@ -1452,6 +1454,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'value'            => $value,
 							'show_placeholder' => $show_placeholder,
 							'label'            => $label,
+							'has_description'  => $has_description,
 						);
 						$contact_field = new $class_name( $field_input_options );
 						$contact_field->render();
@@ -1461,12 +1464,17 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							name="' . esc_attr( $field_name ) . '"
 							id="' . esc_attr( $field_id ) . '"
 							value="' . esc_attr( $value ) . '"
-							class="sow-text-field" ' . ( $show_placeholder ? 'placeholder="' . esc_attr( $label ) . '"' : '' ) . '/>';
+							class="sow-text-field" ' . ( $show_placeholder ? 'placeholder="' . esc_attr( $label ) . '"' : '' ) .'
+							' . ( $has_description ? 'aria-describedby="' . esc_attr( $field_id ) . '-description"' : '' ) . '
+							/>';
 					}
 
 					if ( ! empty( $field['description'] ) ) {
 						?>
-						<div class="sow-form-field-description" id="<?php echo esc_attr( $field_id ); ?>-description">
+						<div
+							class="sow-form-field-description"
+							id="<?php echo esc_attr( $field_id ); ?>-description"
+						>
 							<?php echo wp_kses_post( $field['description'] ); ?>
 						</div>
 						<?php

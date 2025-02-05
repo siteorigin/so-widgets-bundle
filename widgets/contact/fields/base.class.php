@@ -27,8 +27,24 @@ abstract class SiteOrigin_Widget_ContactForm_Field_Base {
 		$this->render_field( $this->options );
 	}
 
-	public static function add_custom_attrs( $type ) {
-		$attr = apply_filters( 'siteorigin_widgets_contact_field_attr', array(), $type );
+	public static function add_custom_attrs( $type, $options = array() ) {
+		$attr = array();
+
+		// If the field has a description, add the aria-describedby attribute.
+		if (
+			! empty( $options ) &&
+			is_array( $options ) &&
+			! empty( $options['has_description'] )
+		) {
+			$attr['aria-describedby'] = esc_attr( $options['field_id'] . '-description' );
+		}
+
+		$attr = apply_filters(
+			'siteorigin_widgets_contact_field_attr',
+			$attr,
+			$type,
+			$options
+		);
 
 		foreach ( $attr as $k => $v ) {
 			echo siteorigin_sanitize_attribute_key( $k ) . '="' . esc_attr( $v ) . '" ';

@@ -14,7 +14,7 @@ class SiteOrigin_Widget_ContactForm_Field_Text extends SiteOrigin_Widget_Contact
 			id="<?php echo esc_attr( $options['field_id'] ); ?>"
 			value="<?php echo esc_attr( $options['value'] ); ?>"
 			class="sow-text-field"<?php echo $options['show_placeholder'] ? 'placeholder="' . esc_attr( $options['label'] ) . '"' : ''; ?>
-			<?php self::add_custom_attrs( $this->type ); ?>
+			<?php self::add_custom_attrs( $this->type, $options ); ?>
 			<?php if ( ! empty( $options['field']['readonly'] ) ) {
 				echo 'readonly';
 			} ?>
