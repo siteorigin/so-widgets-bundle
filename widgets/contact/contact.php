@@ -646,6 +646,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'normal' => __( 'Normal', 'so-widgets-bundle' ),
 								),
 							),
+							'top_margin' => array(
+								'type'    => 'measurement',
+								'label'   => __( 'Top Margin', 'so-widgets-bundle' ),
+								'default' => '0.2em',
+							)
 						),
 					),
 
@@ -1227,6 +1232,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'description_font_size'      => $instance['design']['descriptions']['size'],
 			'description_font_color'     => $instance['design']['descriptions']['color'],
 			'description_font_style'     => $instance['design']['descriptions']['style'],
+			'description_top_margin'     => ! empty( $instance['design']['descriptions']['top_margin'] ) ? $instance['design']['descriptions']['top_margin'] : '',
 
 			// The error message styles
 			'error_background'           => $instance['design']['errors']['background'],
