@@ -615,7 +615,7 @@
 				Placeholder,
 				{
 					label: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
-					instructions: __( 'This block is using the legacy format. Please migrate to the new block format.', 'so-widgets-bundle' )
+					instructions: sowbBlockEditorAdmin.legacyNotice,
 				},
 				isAdmin ?
 					el(

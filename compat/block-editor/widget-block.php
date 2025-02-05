@@ -269,6 +269,11 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				'nonce' => wp_create_nonce( 'wp_rest' ),
 				'consent' => $this->hasMigrationConsent,
 				'migrationNotice' => wp_create_nonce( 'so_block_migration_consent' ),
+				'legacyNotice' => sprintf(
+					__( 'For improved block navigation, individual SiteOrigin Widget Blocks are now available. The multi-select SiteOrigin Widget Block will be automatically converted to the new individual SiteOrigin Widget Block format on page save; this action requires your consent to proceed. %sFind out more about this migration%s', 'so-widgets-bundle' ),
+					'<a href="https://siteorigin.com/placeholder" target="_blank" rel="noopener noreferrer">',
+					'</a>'
+				),
 			)
 		);
 
