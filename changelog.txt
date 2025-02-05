@@ -1,5 +1,9 @@
 == Changelog ==
 
+= 1.65.1 - 05 February 2025 =
+* Carousel: Fixed `Dynamic Navigation` potential to be applied when disabled.
+* Contact Form: Fixed Browser Check setting.
+
 = 1.65.0 - 03 February 2025 =
 * Blog: Added support for `siteorigin_widgets_blog_post_meta`.
 * Blog: Added a fallback for undefined `post_type` to avoid errors.
