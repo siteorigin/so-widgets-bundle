@@ -62,6 +62,7 @@ sowb.SiteOriginContactForm = {
 				$submitButton.prop( 'disabled', true );
 
 				if ( $submitButton.data( 'js-key' ) ) {
+					const js_key = $submitButton.data( 'js-key' );
 					$( this ).append( `<input type="hidden" name="sow-js" value="${js_key}">` );
 				}
 			} );
