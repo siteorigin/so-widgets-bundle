@@ -543,7 +543,7 @@
 
 	registerBlockType( 'sowb/widget-block', {
 		title: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
-		description: __( 'Select a SiteOrigin widget from the dropdown.', 'so-widgets-bundle' ),
+		description: __( 'This block is intended as a legacy placeholder.', 'so-widgets-bundle' ),
 		attributes: {
 			widgetClass: {
 				type: 'string',
