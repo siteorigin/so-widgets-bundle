@@ -542,7 +542,7 @@
 
 
 	registerBlockType( 'sowb/widget-block', {
-		title: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
+		title: __( 'Legacy SiteOrigin Widget', 'so-widgets-bundle' ),
 		description: __( 'This block is intended as a legacy placeholder.', 'so-widgets-bundle' ),
 		attributes: {
 			widgetClass: {
@@ -619,7 +619,7 @@
 			return el(
 				Placeholder,
 				{
-					label: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
+					label: __( 'Legacy SiteOrigin Widget', 'so-widgets-bundle' ),
 				},
 				el( 'p', {
 					dangerouslySetInnerHTML: {
