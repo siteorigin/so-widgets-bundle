@@ -620,8 +620,12 @@
 				Placeholder,
 				{
 					label: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
-					instructions: sowbBlockEditorAdmin.legacyNotice,
 				},
+				el( 'p', {
+					dangerouslySetInnerHTML: {
+						__html: sowbBlockEditorAdmin.legacyNotice
+					}
+				} ),
 				isAdmin ?
 					el(
 						Button,
@@ -643,7 +647,7 @@
 						null,
 						__( 'Please contact your site administrator to migrate this block.', 'so-widgets-bundle' )
 					)
-				);
+			);
 		},
 		save: function () {
 			return null;
