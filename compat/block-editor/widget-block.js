@@ -632,12 +632,19 @@
 						{
 							isPrimary: true,
 							onClick: () => {
+								setIsLoading(true);
+
+								// Migrate the blocks.
+								setTimeout( () => {
+									sowbBlockEditorAdmin.consent = true;
+									migrateOldBlocks();
+								}, 0 );
+
+								// Log the user's consent.
 								jQuery.post( ajaxurl, {
 									action: 'so_widgets_block_migration_notice_consent',
 									nonce: sowbBlockEditorAdmin.migrationNotice
 								} );
-
-								migrateOldBlocks();
 							},
 						},
 						__( 'Migrate to New Block Format', 'so-widgets-bundle' )
