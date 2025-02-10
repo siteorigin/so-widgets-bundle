@@ -16,7 +16,7 @@
 		Spinner
 	} = components;
 
-	const __ = i18n.__;
+	const { __, sprintf } = i18n;
 
 	const getAjaxErrorMsg = ( response ) => {
 		let errorMessage = '';
@@ -560,6 +560,9 @@
 			widgetIcons: {
 				type: 'array',
 			},
+			widgetNotFound: {
+				type: 'boolean',
+			}
 		},
 		icon: function() {
 			return el(
@@ -569,7 +572,7 @@
 				}
 			)
 		},
-		edit: function() {
+		edit: function( props ) {
 			const [ isAdmin, setIsAdmin ] = element.useState( false );
 			const [ isLoading, setIsLoading ] = element.useState( true );
 
@@ -602,6 +605,23 @@
 
 				return () => isAdminCheck();
 			}, [] );
+
+			if ( props.attributes.widgetNotFound ) {
+				return el(
+					Placeholder,
+					{
+						label: __('SiteOrigin Widget', 'so-widgets-bundle'),
+					},
+					el(
+						'p',
+						null,
+						sprintf(
+							__( 'The widget for %s cannot be found.', 'so-widgets-bundle' ),
+							props.attributes.widgetClass
+						)
+					)
+				);
+			}
 
 			if ( isLoading ) {
 				return el( 'div',
@@ -637,7 +657,8 @@
 								// Migrate the blocks.
 								setTimeout( () => {
 									sowbBlockEditorAdmin.consent = true;
-									migrateOldBlocks();
+									sowbBlockEditorAdmin.consentGiven = true;
+									sowbMigrateOldBlocks();
 								}, 0 );
 
 								// Log the user's consent.
@@ -702,7 +723,11 @@ const findLegacyBlocks = ( blocks ) => {
 
 		return legacyBlocks;
 	}, [] );
-}
+};
+
+const sowbIsWidgetActive = ( widgetClass ) => {
+	return sowbBlockEditorAdmin.widgets.find(widget => widget.class === widgetClass)
+};
 
 /**
  * Migrate SiteOrigin Widget Blocks to their dedicated widget block.
@@ -735,6 +760,12 @@ const migrateOldBlocks = () => {
 
 	// Migrate the blocks.
 	legacyBlocks.forEach( currentBlock => {
+		// Before migrating widget, confirm the widget is active.
+		if ( ! sowbIsWidgetActive( currentBlock.attributes.widgetClass ) ) {
+			currentBlock.attributes.widgetNotFound = true;
+			return;
+		}
+
 		const newBlock = wp.blocks.createBlock(
 			'sowb/' + currentBlock.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
 			currentBlock.attributes
