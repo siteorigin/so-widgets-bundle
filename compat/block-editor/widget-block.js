@@ -776,6 +776,10 @@ const sowbMigrateOldBlocks = () => {
 		}
 	} );
 
+	if ( sowbBlockEditorAdmin.consentGiven ) {
+		return false;
+	}
+
 	return sowbRemoveLegacyWidgetBlock();
 };
 
