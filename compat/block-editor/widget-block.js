@@ -694,7 +694,7 @@
  *
  * @returns {Array} Array of found legacy widget blocks.
  */
-const findLegacyBlocks = ( blocks ) => {
+const sowbFindLegacyBlocks = ( blocks ) => {
 	return blocks.reduce( ( legacyBlocks, block ) => {
 		 // If the current block is widget area, we need to handle
 		 // things slightly different.
@@ -718,7 +718,7 @@ const findLegacyBlocks = ( blocks ) => {
 
 		// Recursively check innerBlocks if they exist
 		if ( block.innerBlocks && block.innerBlocks.length > 0 ) {
-			legacyBlocks.push( ...findLegacyBlocks( block.innerBlocks ) );
+			legacyBlocks.push( ...sowbFindLegacyBlocks( block.innerBlocks ) );
 		}
 
 		return legacyBlocks;
@@ -737,24 +737,21 @@ const sowbIsWidgetActive = ( widgetClass ) => {
  * After migration, it removes the legacy widget block and unsubscribes
  * from the data store.
  */
-const migrateOldBlocks = () => {
+const sowbMigrateOldBlocks = () => {
 	const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
 	if ( blocks.length === 0 ) {
 		return;
 	}
 
 	// Find any legacy WB blocks.
-	const legacyBlocks = findLegacyBlocks( blocks );
+	const legacyBlocks = sowbFindLegacyBlocks( blocks );
 	if ( legacyBlocks.length === 0 ) {
 		return;
 	}
 
 	// Confirm consent, or admin status.
-	if (
-		! sowbBlockEditorAdmin.consent &&
-		! wp.data.select( 'core' ).getCurrentUser().is_super_admin
-	) {
-		migrateOldBlocks();
+	if ( ! sowbBlockEditorAdmin.consent ) {
+		sowbMigrateOldBlocks();
 		return;
 	}
 
@@ -779,7 +776,7 @@ const migrateOldBlocks = () => {
 		}
 	} );
 
-	return removeLegacyWidgetBlock();
+	return sowbRemoveLegacyWidgetBlock();
 };
 
 /**
@@ -790,23 +787,22 @@ const migrateOldBlocks = () => {
  *
  * @returns {boolean} Returns false to prevent further execution.
  */
-const removeLegacyWidgetBlock = () => {
+const sowbRemoveLegacyWidgetBlock = () => {
 	setTimeout( () => {
-		migrateOldBlocks();
+		sowbMigrateOldBlocks();
 	}, 0 );
 
 	return false;
 };
 
-jQuery( function ( $ ) {
+jQuery( function( $ ) {
 	if (
 		$( 'body.block-editor-page' ).length &&
 		sowbBlockEditorAdmin.consent
 	) {
-		wp.data.subscribe( migrateOldBlocks );
+		wp.data.subscribe( sowbMigrateOldBlocks );
 	}
 } );
-
 
 if (
 	typeof adminpage != 'undefined' &&
