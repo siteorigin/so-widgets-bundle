@@ -182,6 +182,14 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 								'_else[content_type]' => array( 'hide' ),
 							),
 						),
+						'read_more_always' => array(
+							'type' => 'checkbox',
+							'label' => __( 'Always Add Read More Link', 'so-widgets-bundle' ),
+							'state_handler' => array(
+								'content_type[excerpt]' => array( 'show' ),
+								'_else[content_type]' => array( 'hide' ),
+							),
+						),
 						'excerpt_length' => array(
 							'type' => 'number',
 							'label' => __( 'Excerpt Length', 'so-widgets-bundle' ),
@@ -1516,7 +1524,13 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			);
 		}
 
-		if ( $settings['read_more'] && ( has_excerpt() || $excerpt_add_read_more ) ) {
+		if (
+			$settings['read_more'] &&
+			(
+				! empty( $settings['read_more_always'] ) ||
+				( has_excerpt() || $excerpt_add_read_more )
+			)
+		) {
 			$excerpt .= $read_more_text;
 		}
 
