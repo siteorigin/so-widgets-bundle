@@ -85,7 +85,6 @@
 
 			const widgetContent = tempElement.find( 'div:first-of-type' );
 			if ( widgetContent.length > 0 ) {
-				console.log(widgetContent);
 				// Is there any text present?
 				if ( widgetContent.text().trim() !== '' ) {
 					renderPreviewHtml = true;
