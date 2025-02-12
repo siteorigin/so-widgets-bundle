@@ -593,6 +593,10 @@
 						return;
 					}
 
+					if ( isLoading ) {
+						setIsLoading( false );
+					}
+
 					const isAdmin = wp.data.select( 'core' ).canUser( 'update', {
 						kind: 'root',
 						name: 'site',
@@ -603,13 +607,7 @@
 						return;
 					}
 
-					if ( isAdmin ) {
-						setIsAdmin( true );
-						setIsLoading( false );
-					} else {
-						setIsAdmin( false );
-						setIsLoading( false );
-					}
+					setIsAdmin( isAdmin );
 
 					isAdminCheck();
 				} );
