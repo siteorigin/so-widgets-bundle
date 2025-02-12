@@ -577,30 +577,42 @@
 			const [ isLoading, setIsLoading ] = element.useState( true );
 
 			/**
-			 * Effect hook to check if current user is admin.
+			 * Effect hook to check if current user has admin permissions.
 			 *
-			 * Subscribes to user data changes and updates admin status
-			 * when user data becomes available. Cleans up subscription on unmount.
+			 * Sets up wp.data subscription to monitor user permissions
+			 * state. Checks if user can update site settings to
+			 * determine admin status.
 			 *
-			 * @param {Function} setIsAdmin - State setter for admin status
-			 * @param {Function} setIsLoading - State setter for loading status
+			 * Updates admin and loading states based on permissions check.
+			 *
+			 * @return {Function} Cleanup function that unsubscribes from
+			 * data store
 			 */
 			wp.element.useEffect( () => {
 				const isAdminCheck = wp.data.subscribe( () => {
-					const getCurrentUser = wp.data.select( 'core' ).getCurrentUser;
-					if ( typeof getCurrentUser === undefined ) {
+					if ( typeof wp.data.select( 'core' ).canUser !== 'function' ) {
 						return;
 					}
 
-					const user = getCurrentUser();
-					if (
-						typeof user === 'object' &&
-						typeof user.id === 'number'
-					) {
-						setIsAdmin( user.is_super_admin || false );
-						setIsLoading( false );
-						isAdminCheck();
+					const isAdmin = wp.data.select( 'core' ).canUser( 'update', {
+						kind: 'root',
+						name: 'site',
+					} );
+
+					// If isAdmin isn't a boolean, user data is still loading.
+					if ( typeof isAdmin !== 'boolean' ) {
+						return;
 					}
+
+					if ( isAdmin ) {
+						setIsAdmin( true );
+						setIsLoading( false );
+					} else {
+						setIsAdmin( false );
+						setIsLoading( false );
+					}
+
+					isAdminCheck();
 				} );
 
 				return () => isAdminCheck();
