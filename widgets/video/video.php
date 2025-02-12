@@ -172,7 +172,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				);
 			}
 
-			if ( ! empty( $instance['playback']['fitvids'] ) && ! wp_script_is( 'jquery-fitvids' ) ) {
+			if ( ! empty( $instance['playback']['fitvids'] ) ) {
 				wp_enqueue_script( 'jquery-fitvids' );
 			}
 		}
