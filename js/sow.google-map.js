@@ -12,8 +12,9 @@ sowb.SiteOriginGoogleMap = function($) {
 			'San Francisco Bay Area, CA, United States',
 			'New York, NY, United States',
 		],
-		randomMapId: () => Math.random().toString( 36 ).substring( 7 ),
+
 		hasMapStyles: false,
+
 		/**
 		 * Create an image element for the marker icon.
 		 *
@@ -57,8 +58,6 @@ sowb.SiteOriginGoogleMap = function($) {
 				zoomControl: options.zoomControl,
 				panControl: options.panControl,
 				center: location,
-
-				mapId: this.randomMapId(),
 				mapTypeControlOptions: {
 					mapTypeIds: [
 						window.google.maps.MapTypeId.ROADMAP,
@@ -69,6 +68,10 @@ sowb.SiteOriginGoogleMap = function($) {
 			};
 
 			this.hasMapStyles = options.mapStyles && Object.keys( options.mapStyles ).length > 0;
+			if ( ! this.hasMapStyles ) {
+				mapOptions.mapId = options.id;
+			}
+
 			var map = new window.google.maps.Map( element, mapOptions );
 
 			var userMapOptions = {

@@ -105,6 +105,12 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						),
 					),
 
+					'map_id' => array(
+						'type' => 'text',
+						'label' => __( 'Map ID', 'so-widgets-bundle' ),
+						'description' => __( 'A Map ID allows you to manage certain settings about the map through Google Cloud Console. This is only used if Map Styles are not set.', 'so-widgets-bundle' ),
+					),
+
 					'new_window' => array(
 						'type' => 'checkbox',
 						'default' => false,
@@ -603,6 +609,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			$location = $this->get_location_string( $instance['map_center'] );
 
 			$map_data = siteorigin_widgets_underscores_to_camel_case( array(
+				'id'                => ! empty( $settings['map_id'] ) ? $settings['map_id'] : rand( 0, 9999 ),
 				'address'           => $location,
 				'zoom'              => $settings['zoom'],
 				'mobileZoom'        => $settings['mobile_zoom'],
@@ -804,6 +811,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				$st_string = '&style=' . $st_string;
 				$src_url .= $st_string;
 			}
+		} elseif ( ! empty( $instance['settings']['map_id'] ) ) {
+			// As styles aren't set, check if a map id is.
+			// This will allow for Cloud Styles to work.
+			$src_url .= '&map_id=' . $instance['settings']['map_id'];
 		}
 
 		if ( ! empty( $instance['markers'] ) ) {
