@@ -1929,15 +1929,17 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			)
 		);
 
+		$submitter_name = isset( $email_fields['name'] ) ? $email_fields['name'] : '';
+
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
 			'From: ' . $this->format_email(
 				$instance['settings']['from'],
-				$email_fields['name']
+				$submitter_name
 			),
 			'Reply-To: ' . $this->format_email(
 				$email_fields['email'],
-				$email_fields['name']
+				$submitter_name
 			)
 		);
 
