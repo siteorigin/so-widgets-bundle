@@ -613,7 +613,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 			$location = $this->get_location_string( $instance['map_center'] );
 
 			$map_data = siteorigin_widgets_underscores_to_camel_case( array(
-				'id'                => ! empty( $settings['map_id'] ) ? $settings['map_id'] : rand( 0, 9999 ),
 				'address'           => $location,
 				'zoom'              => $settings['zoom'],
 				'mobileZoom'        => $settings['mobile_zoom'],
@@ -631,6 +630,11 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'api_key'           => self::get_api_key( $instance ),
 				'breakpoint'        => $breakpoint,
 			) );
+
+			// Only set Map ID if there aren't any styles.
+			if ( empty( $styles['styles'] ) ) {
+				$map_data['id'] = ! empty( $settings['map_id'] ) ? $settings['map_id'] : substr( uniqid(), 0, 6 );
+			}
 
 			return array(
 				'map_id'   => md5( json_encode( $instance ) ),
