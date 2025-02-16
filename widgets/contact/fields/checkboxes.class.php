@@ -19,7 +19,7 @@ class SiteOrigin_Widget_ContactForm_Field_Checkboxes extends SiteOrigin_Widget_C
 							name="<?php echo esc_attr( $options['field_name'] ); ?>[]"
 							id="<?php echo esc_attr( $options['field_id'] ) . '-' . $i; ?>"
 							<?php echo checked( $is_checked, true, false ); ?>
-							<?php self::add_custom_attrs( 'checkboxes' ); ?>
+							<?php self::add_custom_attrs( 'checkboxes', $options ); ?>
 						/>
 						<label for="<?php echo esc_attr( $options['field_id'] ) . '-' . $i; ?>">
 							<?php echo wp_kses_post( $option['value'] ); ?>

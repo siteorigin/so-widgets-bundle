@@ -102,13 +102,16 @@
 		height: @field_height_textarea;
 	}
 
+	.sow-field-container {
+		margin: @field_margin;
+	}
+
 	textarea,
 	.sow-text-field {
 		display: block;
 		width: 100%;
 		.box-sizing(border-box);
 		border-radius: @field_border_radius;
-		margin: @field_margin;
 		border: @field_border;
 		padding: @field_padding;
 		background: @field_background;
@@ -180,7 +183,6 @@
 			color: @field_font_color;
 			font-size: @field_font_size;
 			font-style: @field_font_style;
-			margin: @field_margin;
 			padding: @field_padding;
 		}
 
@@ -223,10 +225,11 @@
 	@description_font_size: 0.9em;
 	@description_font_color: #999;
 	@description_font_style: italic;
+	@description_top_margin: 0.2em;
 
 	.sow-form-field-description {
 		font-size: @description_font_size;
-		margin-top: 0.2em;
+		margin-top: @description_top_margin;
 		margin-left: 0.2em;
 		color: @description_font_color;
 		font-style: @description_font_style;
