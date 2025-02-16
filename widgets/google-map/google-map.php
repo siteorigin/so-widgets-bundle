@@ -108,7 +108,11 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					'map_id' => array(
 						'type' => 'text',
 						'label' => __( 'Map ID', 'so-widgets-bundle' ),
-						'description' => __( 'A Map ID allows you to manage certain settings about the map through Google Cloud Console. This is only used if Map Styles are not set.', 'so-widgets-bundle' ),
+						'description' => sprintf(
+							__( 'A Map ID allows you to manage your map styles using the %sGoogle Cloud Console%s. This is only used if Map Styles are not set.', 'so-widgets-bundle' ),
+							'<a href="https://console.cloud.google.com/google/maps-apis/studio/maps" target="_blank" rel="noopener noreferrer">',
+							'</a>'
+						),
 					),
 
 					'new_window' => array(
