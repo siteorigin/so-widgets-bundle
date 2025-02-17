@@ -20,8 +20,6 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			false,
 			plugin_dir_path( __FILE__ )
 		);
-
-		add_filter( 'siteorigin_widgets_sanitize_instance_sow-editor', array( $this, 'add_noreferrer_to_link_targets' ) );
 	}
 
 	public function get_widget_form() {
@@ -149,17 +147,6 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 		}
 
 		return $content;
-	}
-
-	public function add_noreferrer_to_link_targets( $instance ) {
-		if (
-			function_exists( 'wp_targeted_link_rel' ) &&
-			! empty( $instance['text'] )
-		) {
-			$instance['text'] = wp_targeted_link_rel( $instance['text'] );
-		}
-
-		return $instance;
 	}
 
 	public function get_style_name( $instance ) {
