@@ -306,6 +306,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					),
 					'raw_json_map_styles' => array(
 						'type'        => 'textarea',
+						'json'        => true,
 						'state_handler' => array(
 							'style_method[raw_json]' => array( 'show' ),
 							'_else[style_method]' => array( 'hide' ),
