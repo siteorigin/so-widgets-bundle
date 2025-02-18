@@ -774,7 +774,14 @@ const sowbMigrateOldBlocks = () => {
 		try {
 			// Before migrating widget, confirm the widget is active.
 			if ( ! sowbIsWidgetActive( currentBlock.attributes.widgetClass ) ) {
-				currentBlock.attributes.widgetNotFound = true;
+				// We need to update the widgetNotFound flag to indicate
+				// the widget is no longer available.
+				const attributes = { ...currentBlock.attributes };
+				attributes.widgetNotFound = true;
+				wp.data.dispatch( 'core/block-editor' ).updateBlock(
+					currentBlock.clientId,
+					{ attributes }
+				);
 				return;
 			}
 
