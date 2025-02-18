@@ -771,22 +771,26 @@ const sowbMigrateOldBlocks = () => {
 
 	// Migrate the blocks.
 	legacyBlocks.forEach( currentBlock => {
-		// Before migrating widget, confirm the widget is active.
-		if ( ! sowbIsWidgetActive( currentBlock.attributes.widgetClass ) ) {
-			currentBlock.attributes.widgetNotFound = true;
-			return;
-		}
+		try {
+			// Before migrating widget, confirm the widget is active.
+			if ( ! sowbIsWidgetActive( currentBlock.attributes.widgetClass ) ) {
+				currentBlock.attributes.widgetNotFound = true;
+				return;
+			}
 
-		const newBlock = wp.blocks.createBlock(
-			'sowb/' + currentBlock.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
-			currentBlock.attributes
-		);
-
-		if ( newBlock ) {
-			wp.data.dispatch( 'core/block-editor' ).replaceBlock(
-				currentBlock.clientId,
-				newBlock
+			const newBlock = wp.blocks.createBlock(
+				'sowb/' + currentBlock.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
+				currentBlock.attributes
 			);
+
+			if ( newBlock ) {
+				wp.data.dispatch( 'core/block-editor' ).replaceBlock(
+					currentBlock.clientId,
+					newBlock
+				);
+			}
+		} catch ( err ) {
+			console.error( 'SiteOrigin Widget Block migration failed:', err );
 		}
 	} );
 
