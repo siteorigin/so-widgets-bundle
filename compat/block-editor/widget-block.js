@@ -738,6 +738,7 @@ const sowbIsWidgetActive = ( widgetClass ) => {
 	return sowbBlockEditorAdmin.widgets.find(widget => widget.class === widgetClass)
 };
 
+let sowbMigrateBlockSubscribe = false;
 /**
  * Migrate SiteOrigin Widget Blocks to their dedicated widget block.
  *
@@ -760,7 +761,11 @@ const sowbMigrateOldBlocks = () => {
 
 	// Confirm consent, or admin status.
 	if ( ! sowbBlockEditorAdmin.consent ) {
-		sowbMigrateOldBlocks();
+		// If this is the initial check, we might be able to stop
+		// further attempts to process this.
+		if ( typeof sowbMigrateBlockSubscribe === 'function' ) {
+			sowbMigrateBlockSubscribe();
+		}
 		return;
 	}
 
@@ -802,18 +807,21 @@ const sowbMigrateOldBlocks = () => {
  */
 const sowbRemoveLegacyWidgetBlock = () => {
 	setTimeout( () => {
-		sowbMigrateOldBlocks();
+		if ( typeof sowbMigrateBlockSubscribe === 'function' ) {
+			sowbMigrateBlockSubscribe();
+		}
 	}, 0 );
 
 	return false;
 };
 
 jQuery( function( $ ) {
-	if (
-		$( 'body.block-editor-page' ).length &&
-		sowbBlockEditorAdmin.consent
-	) {
-		wp.data.subscribe( sowbMigrateOldBlocks );
+	if ( ! $( 'body.block-editor-page' ).length ) {
+		return;
+	}
+
+	if ( sowbBlockEditorAdmin.consent ) {
+		sowbMigrateBlockSubscribe = wp.data.subscribe( sowbMigrateOldBlocks );
 	}
 } );
 
