@@ -37,10 +37,6 @@ jQuery( function ( $ ) {
 
 		$$.addClass( 'fixed-navigation' );
 		$items.fixContainerHeight();
-
-		$( window ).on( 'resize', () => {
-			$items.fixContainerHeight();
-		} );
 	} );
 
 	sowb.setupCarousel = function () {
@@ -523,6 +519,15 @@ jQuery( function ( $ ) {
 					$items.slick( 'slickSetOption', 'slidesToScroll', responsiveSettings.tablet_landscape_slides_to_scroll );
 				}
 
+				const carousel_settings = currentCarousel.data( 'carousel_settings' );
+				if (
+					carousel_settings.dynamic_navigation ||
+					carousel_settings.theme !== 'cards'
+				) {
+					return;
+				}
+
+				$items.fixContainerHeight();
 			} );
 
 			$( '.sow-carousel-item:first-of-type' ).prop( 'tabindex', 0 );
