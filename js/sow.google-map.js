@@ -220,7 +220,9 @@ sowb.SiteOriginGoogleMap = function($) {
 
 			// Are we adding a legacy marker?
 			if ( this.hasMapStyles ) {
-				markerOptions.icon = icon;
+				if ( typeof icon === 'string' ) {
+					markerOptions.icon = icon;
+				}
 
 				return new window.google.maps.Marker( markerOptions );
 			}
