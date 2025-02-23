@@ -39,6 +39,77 @@ jQuery( function ( $ ) {
 		$items.fixContainerHeight();
 	} );
 
+	/**
+	 * Navigate to a specific slide in the carousel, and then
+	 * (optionally) adapts the height of the carousel.
+	 *
+	 * This function navigates to a specific slide in the carousel.
+	 * If adaptive height is enabled, by calling adaptiveHeight().
+	 *
+	 * @param {number|string|null} newSlide - The slide to navigate to.
+	 * Can be a slide index (int), command (string), or null.
+	 *
+	 * @returns {void}
+	 */
+	$.fn.navigateToSlide = function( newSlide ) {
+		const $$ = $( this );
+
+		if ( newSlide !== null ) {
+			if ( typeof newSlide === 'string' ) {
+				$$.slick( newSlide );
+			} else {
+				$$.slick( 'slickGoTo', newSlide - 1 );
+			}
+		}
+
+		$$.adaptiveHeight();
+	};
+
+	/**
+	 * Adjust the height of the carousel to fit the tallest
+	 * visible slide.
+	 *
+	 * This function adjusts the height of the carousel to fit
+	 * the tallest visible slide, including any bottom margin.
+	 * It is used as a custom solution for adaptive height since
+	 * Slick's adaptive height only factors in the "active" item,
+	 * not all visible items.
+	 *
+	 * @returns {void}
+	 */
+	$.fn.adaptiveHeight = function() {
+		const $$ = $( this );
+		if ( ! $$.data( 'adaptive_height' ) ) {
+			return;
+		}
+
+		// We're using a custom solution for adaptive height as Slick's
+		// adaptive height only factors in the "active" item, not all
+		// visible items.
+		const visibleSlides = $$.find( '.slick-active' );
+		visibleSlides.css( 'height', 'fit-content' );
+
+		let maxHeight = 0;
+		visibleSlides.each( function() {
+			const $item = $( this );
+			const slideHeight = $item.outerHeight();
+
+			if ( slideHeight > maxHeight ) {
+				maxHeight = slideHeight;
+			}
+		} );
+
+		// It's possible that the slides will have a margin-bottom set,
+		// and we need to account for that in the sizing.
+		const marginBottom = parseFloat( visibleSlides.first().css( 'margin-bottom' ) );
+
+		$$.find( '.slick-list' ).animate( {
+			height: maxHeight + marginBottom,
+		}, $$.data( 'adaptive_height' ) );
+
+		visibleSlides.css( 'height', maxHeight );
+	}
+
 	sowb.setupCarousel = function () {
 		$.fn.setSlideTo = function( slide ) {
 			$items = $( this );
@@ -164,80 +235,7 @@ jQuery( function ( $ ) {
 				}
 			}
 
-			/**
-			 * Navigate to a specific slide in the carousel, and then
-			 * (optionally) adapts the height of the carousel.
-			 *
-			 * This function navigates to a specific slide in the carousel.
-			 * If adaptive height is enabled, by calling adaptiveHeight().
-			 *
-			 * @param {number|string|null} newSlide - The slide to navigate to.
-			 * Can be a slide index (int), command (string), or null.
-			 *
-			 * @returns {void}
-			 */
-			$.fn.navigateToSlide = function( newSlide ) {
-				const $$ = $( this );
-
-				if ( newSlide !== null ) {
-					if ( typeof newSlide === 'string' ) {
-						$$.slick( newSlide );
-					} else {
-						$$.slick( 'slickGoTo', newSlide - 1 );
-					}
-				}
-
-				adaptiveHeight( $$ );
-			};
-
-			/**
-			 * Adjust the height of the carousel to fit the tallest
-			 * visible slide.
-			 *
-			 * This function adjusts the height of the carousel to fit
-			 * the tallest visible slide, including any bottom margin.
-			 * It is used as a custom solution for adaptive height since
-			 * Slick's adaptive height only factors in the "active" item,
-			 * not all visible items.
-			 *
-			 * @returns {void}
-			 */
-			const adaptiveHeight = function( $$ ) {
-				if ( ! $$.data( 'adaptive_height' ) ) {
-					return;
-				}
-
-				// We're using a custom solution for adaptive height as Slick's
-				// adaptive height only factors in the "active" item, not all
-				// visible items.
-				const visibleSlides = $$.find( '.slick-active' );
-				visibleSlides.css( 'height', 'fit-content' );
-
-				let maxHeight = 0;
-				visibleSlides.each( function() {
-					const $item = $( this );
-					const slideHeight = $item.outerHeight();
-
-					if ( slideHeight > maxHeight ) {
-						maxHeight = slideHeight;
-					}
-				} );
-
-				// It's possible that the slides will have a margin-bottom set,
-				// and we need to account for that in the sizing.
-				const marginBottom = parseFloat( visibleSlides.first().css( 'margin-bottom' ) );
-
-				$$.find( '.slick-list' ).animate( {
-					height: maxHeight + marginBottom,
-				}, $$.data( 'adaptive_height' ) );
-
-				visibleSlides.css( 'height', maxHeight );
-			}
-
-			// Trigger adaptive height resize during setup.
-			$items.on( 'init', () => {
-				adaptiveHeight( $items );
-			} ).trigger( 'init' );
+			$items.adaptiveHeight();
 
 			var handleCarouselNavigation = function( nextSlide, refocus ) {
 				const $items = $$.find( '.sow-carousel-items' );
