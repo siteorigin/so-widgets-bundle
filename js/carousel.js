@@ -424,7 +424,7 @@ jQuery( function ( $ ) {
 					} else {
 						if ( $$.data( 'widget' ) == 'post' ) {
 							// We need to account for an empty item.
-							targetItem = Math.ceil( $( this ).index() * slidesToScroll );
+							targetItem = Math.ceil( targetItem + 1 * slidesToScroll );
 						}
 						$items.navigateToSlide( targetItem );
 					}
