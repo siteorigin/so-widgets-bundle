@@ -556,6 +556,13 @@ jQuery( function ( $ ) {
 				return false;
 			} );
 
+			if ( $items.data( 'adaptive_height' ) ) {
+				$items.one( 'breakpoint', () => {
+					$items.adaptiveHeight()
+				} );
+
+				return;
+			}
 
 			if (
 				settings.dynamic_navigation ||
