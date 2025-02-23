@@ -505,34 +505,75 @@ jQuery( function ( $ ) {
 				.prop( 'tabindex', 0 );
 		} );
 
-		var carousel_resizer = function() {
-			$( '.sow-carousel-wrapper' ).each( function() {
-				var currentCarousel = $( this ),
-					$items = currentCarousel.find( '.sow-carousel-items.slick-initialized' );
+		/**
+		 * Updates Slick carousel based on current resolution, and
+		 * conditionally triggers a fixed container height refresh if needed.
+		 *
+		 * @this {jQuery} The current carousel wrapper.
+		 */
+		const handleCarouselResize = function() {
+			const $$ = $( this );
+			const $items = $$.find( '.sow-carousel-items.slick-initialized' );
+			if ( ! $items.length ) {
+				return;
+			}
 
-				// Change Slick Settings on iPad Pro while Landscape
-				var responsiveSettings = currentCarousel.data( 'responsive' );
-				if ( window.matchMedia( '(min-width: ' + responsiveSettings.tablet_portrait_breakpoint + 'px) and (max-width: ' + responsiveSettings.tablet_landscape_breakpoint + 'px) and (orientation: landscape)' ).matches ) {
-					$items.slick( 'slickSetOption', 'slidesToShow', responsiveSettings.tablet_landscape_slides_to_show );
-					$items.slick( 'slickSetOption', 'slidesToScroll', responsiveSettings.tablet_landscape_slides_to_scroll );
+			const responsive = $$.data( 'responsive' );
+			const settings = $$.data( 'carousel_settings' );
+
+			const breakpoints = [
+				{
+					query: `(min-width: ${ responsive.tablet_landscape_breakpoint }px)`,
+					show: responsive.desktop_slides_to_show,
+					scroll: responsive.desktop_slides_to_scroll
+				},
+				{
+					query: `(min-width: ${ responsive.tablet_portrait_breakpoint }px) and (max-width: ${ responsive.tablet_landscape_breakpoint }px) and (orientation: landscape)`,
+					show: responsive.tablet_landscape_slides_to_show,
+					scroll: responsive.tablet_landscape_slides_to_scroll
+				},
+				{
+					query: `(min-width: ${ responsive.mobile_breakpoint }px) and (max-width: ${responsive.tablet_portrait_breakpoint}px)`,
+					show: responsive.tablet_portrait_slides_to_show,
+					scroll: responsive.tablet_portrait_slides_to_scroll
+				},
+				{
+					query: `(max-width: ${ responsive.mobile_breakpoint }px)`,
+					show: responsive.mobile_slides_to_show,
+					scroll: responsive.mobile_slides_to_scroll
+				}
+			];
+
+			// Conditionally update Slick settings based on current resolution.
+			breakpoints.some( breakpoint => {
+				if ( window.matchMedia( breakpoint.query ).matches ) {
+					$items.slick( 'slickSetOption', 'slidesToShow', breakpoint.show );
+					$items.slick( 'slickSetOption', 'slidesToScroll', breakpoint.scroll );
+
+					return true;
 				}
 
-				const carousel_settings = currentCarousel.data( 'carousel_settings' );
-				if (
-					carousel_settings.dynamic_navigation ||
-					carousel_settings.theme !== 'cards'
-				) {
-					return;
-				}
-
-				$items.fixContainerHeight();
+				return false;
 			} );
 
-			$( '.sow-carousel-item:first-of-type' ).prop( 'tabindex', 0 );
+
+			if (
+				settings.dynamic_navigation ||
+				settings.theme === 'cards'
+			) {
+				return;
+			}
+
+			$items.one( 'breakpoint', () => {
+				$items.fixContainerHeight();
+			} );
 		};
 
-		carousel_resizer();
-		$( window ).on( 'resize load', carousel_resizer );
+		$( window ).on( 'resize load', () => {
+			$( '.sow-carousel-wrapper' ).each( handleCarouselResize );
+
+			$( '.sow-carousel-item:first-of-type' ).prop( 'tabindex', 0 );
+		} ).trigger( 'resize' );
 	};
 
 	sowb.setupCarousel();
