@@ -558,7 +558,7 @@ jQuery( function ( $ ) {
 
 			if ( $items.data( 'adaptive_height' ) ) {
 				$items.one( 'breakpoint', () => {
-					$items.adaptiveHeight()
+					$items.adaptiveHeight();
 				} );
 
 				return;
@@ -576,8 +576,12 @@ jQuery( function ( $ ) {
 			} );
 		};
 
+		let resizeTimeout;
 		$( window ).on( 'resize load', () => {
-			$( '.sow-carousel-wrapper' ).each( handleCarouselResize );
+			clearTimeout( resizeTimeout );
+			resizeTimeout = setTimeout( () => {
+				$( '.sow-carousel-wrapper' ).each( handleCarouselResize );
+			}, 100 );
 
 			$( '.sow-carousel-item:first-of-type' ).prop( 'tabindex', 0 );
 		} ).trigger( 'resize' );
