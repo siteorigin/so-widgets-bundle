@@ -13,10 +13,13 @@ jQuery( function ( $ ) {
 		} )[0];
 
 		const $largestItemEl = $( $largestItem );
+		const margin_height = parseFloat( $largestItemEl.css( 'margin-bottom' ) );
+		// const inner_height = parseFloat( $largestItemEl.find( '.sow-carousel-item-inner' ).outerHeight() );
+		// console.log( margin_height, inner_height );
 
 		$$.css( 'height',
 			$largestItemEl.outerHeight() +
-			parseFloat( $largestItemEl.css( 'margin-bottom' ) )
+			margin_height
 		);
 	};
 
@@ -420,7 +423,6 @@ jQuery( function ( $ ) {
 						$dots = $( this ).parent();
 						$dots.find( '.slick-active' ).removeClass( 'slick-active' );
 						$dots.children().eq( targetItem ).addClass( 'slick-active' );
-
 					} else {
 						if ( $$.data( 'widget' ) == 'post' ) {
 							// We need to account for an empty item.
@@ -514,13 +516,13 @@ jQuery( function ( $ ) {
 		const handleCarouselResize = function() {
 			const $$ = $( this );
 			const $items = $$.find( '.sow-carousel-items.slick-initialized' );
+
 			if ( ! $items.length ) {
 				return;
 			}
 
 			const responsive = $$.data( 'responsive' );
 			const settings = $$.data( 'carousel_settings' );
-
 			const breakpoints = [
 				{
 					query: `(min-width: ${ responsive.tablet_landscape_breakpoint }px)`,
@@ -556,22 +558,17 @@ jQuery( function ( $ ) {
 				return false;
 			} );
 
-			if ( $items.data( 'adaptive_height' ) ) {
-				$items.one( 'breakpoint', () => {
-					$items.adaptiveHeight();
-				} );
-
-				return;
-			}
-
-			if (
-				settings.dynamic_navigation ||
-				settings.theme === 'cards'
-			) {
+			if ( ! $items.data( 'adaptive_height' ) ) {
 				return;
 			}
 
 			$items.one( 'breakpoint', () => {
+				$items.adaptiveHeight();
+
+				if ( settings.theme !== 'cards' || settings.dynamic_navigation ) {
+					return;
+				}
+
 				$items.fixContainerHeight();
 			} );
 		};
