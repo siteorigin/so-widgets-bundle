@@ -645,3 +645,58 @@ function siteorigin_sanitize_attribute_key( $attr ) {
 
 	return $attr;
 }
+
+/**
+ * Sanitize a JSON string by validating structure and cleaning values.
+ *
+ * Decodes JSON, validates the structure, and sanitizes all string values.
+ * Removes any values with disallowed types. Allowed types are:
+ * - string.
+ * - integer.
+ * - double.
+ * - boolean.
+ * - NULL.
+ *
+ * @param string $value     The JSON string to sanitize.
+ * @param int    $max_depth Maximum recursion depth when decoding.
+ *
+ * @return string Sanitized JSON string, or '[]' if invalid.
+ */
+function siteorigin_sanitize_json( $value, $max_depth = 10 ) {
+	if ( empty( $value ) ) {
+		return '[]';
+	}
+
+	// Decode the JSON to ensure it's valid.
+	$decoded = json_decode( $value, true, $max_depth, JSON_BIGINT_AS_STRING );
+	if (
+		$decoded === null ||
+		! is_array( $decoded ) ||
+		json_last_error() !== JSON_ERROR_NONE
+	) {
+		return '[]';
+	}
+
+	$allowed_types = array(
+		'string',
+		'integer',
+		'double',
+		'boolean',
+		'NULL',
+	);
+
+	// Sanitize the JSON values.
+	array_walk_recursive( $decoded, function( &$item ) use ( $allowed_types ) {
+		if ( ! in_array( gettype( $item ), $allowed_types, true ) ) {
+			$item = '';
+			return;
+		}
+
+		if ( is_string( $item ) ) {
+			$item = sanitize_text_field( $item );
+		}
+	} );
+
+	$json = wp_json_encode( $decoded, JSON_UNESCAPED_SLASHES );
+	return $json ? $json : '[]';
+}

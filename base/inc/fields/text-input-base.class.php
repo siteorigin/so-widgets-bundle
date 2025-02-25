@@ -49,6 +49,13 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 	protected $width;
 
 	/**
+	 * Whether the field is intended to contain JSON.
+	 *
+	 * @var bool
+	 */
+	protected $json = false;
+
+	/**
 	 * The CSS classes to be applied to the rendered text input.
 	 */
 	protected function get_input_classes() {
@@ -121,6 +128,14 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
+		if ( empty( $value ) ) {
+			return '';
+		}
+
+		if ( $this->json ) {
+			return siteorigin_sanitize_json( $value );
+		}
+
 		if ( $this->allow_html ) {
 			$value = wp_kses_post( $value );
 		} else {
@@ -128,14 +143,12 @@ abstract class SiteOrigin_Widget_Field_Text_Input_Base extends SiteOrigin_Widget
 		}
 
 		$value = balanceTags( $value, true );
-
-		// Remove escape sequences.
 		$value = siteorigin_widgets_strip_escape_sequences( $value );
 
-		if ( ! empty( $this->onclick ) ) {
-			return siteorigin_widget_onclick( $value );
+		if ( empty( $this->onclick ) ) {
+			return $value;
 		}
 
-		return $value;
+		return siteorigin_widget_onclick( $value );
 	}
 }
