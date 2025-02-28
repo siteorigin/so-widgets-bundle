@@ -826,6 +826,60 @@ const sowbRemoveLegacyWidgetBlock = () => {
 	return false;
 };
 
+/**
+ * Check if a block is a missing SiteOrigin widget block.
+ *
+ * @param {Object} block Block to check.
+ *
+ * @return {boolean} True if block is a missing SiteOrigin widget.
+ */
+const sowbIsMissingBlockSowb = ( block ) => {
+	return block.name === 'core/missing' &&
+		block.isValid &&
+		block.attributes &&
+		block.attributes.originalName.startsWith( 'sowb/' )
+};
+
+/**
+ * Find all missing SiteOrigin widget blocks in the editor.
+ *
+ * Recursively traverses blocks and their inner blocks to find missing
+ * SiteOrigin widgets. Handles widget areas differently by directly
+ * accessing their blocks through the block editor store.
+ *
+ * @param {Array} inactiveBlocks Array of blocks to check.
+ *
+ * @return {Array} Array of found missing SiteOrigin widget blocks.
+ */
+const sowbFindInactiveBlock = ( inactiveBlocks ) => {
+	return inactiveBlocks.reduce( ( blocks, block ) => {
+		 // If the current block is widget area, we need to handle
+		 // things slightly different.
+		if ( block.name === 'core/widget-area' ) {
+			const innerBlocks = wp.data.select( 'core/block-editor' ).getBlocks( block.clientId );
+
+			innerBlocks.forEach( block => {
+				if ( sowbIsMissingBlockSowb( block ) ) {
+					blocks.push( block );
+				}
+			} );
+
+			return blocks;
+		}
+
+		if ( sowbIsMissingBlockSowb( block ) ) {
+			blocks.push( block );
+		}
+
+		// Recursively check innerBlocks if present.
+		if ( block.innerBlocks && block.innerBlocks.length > 0 ) {
+			blocks.push( ...sowbFindInactiveBlock( block.innerBlocks ) );
+		}
+
+		return blocks;
+	}, [] );
+};
+
 jQuery( function( $ ) {
 	if ( ! $( 'body.block-editor-page' ).length ) {
 		return;
@@ -834,6 +888,56 @@ jQuery( function( $ ) {
 	if ( sowbBlockEditorAdmin.consent ) {
 		sowbMigrateBlockSubscribe = wp.data.subscribe( sowbMigrateOldBlocks );
 	}
+
+	/**
+	 * Update warning messages for inactive SiteOrigin widget blocks.
+	 *
+	 * @param {Array} blocks Array of inactive blocks to update.
+	 */
+	const sowbUpdateInactiveBlocksMessage = ( blocks ) => {
+		blocks.forEach( block => {
+			const message = document.querySelector( `[data-block="${ block.clientId }"] .block-editor-warning__message` );
+			if ( ! message ) {
+				return;
+			}
+
+			message.innerHTML = sprintf(
+				wp.i18n.__( 'The "%s" block is currently not available. The plugin or theme that powers the block might be deactivated or not installed. You can leave it as is or remove it. %sRead our troubleshooting guide for more details%s.', 'so-widgets-bundle' ),
+				`<strong>${block.attributes.originalName}</strong>`,
+				'<a href="https://siteorigin.com/widgets-bundle/troubleshooting/" target="_blank" rel="noopener noreferrer">',
+				'</a>'
+			);
+		} );
+	};
+
+	/**
+	 * Handle inactive SiteOrigin widget blocks in the editor.
+	 *
+	 * Sets up subscription to monitor for missing widget
+	 * blocks and updates their warning messages with
+	 * helpful information. Uses setTimeout to
+	 * ensure DOM is ready before modifying messages.
+	 *
+	 * @return {Function} Cleanup function that unsubscribes from block editor.
+ 	*/
+	const sowbHandleInactiveWidgets = wp.data.subscribe( () => {
+		// Are we good to start checking?
+		const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
+		if ( blocks.length === 0 ) {
+			return;
+		}
+
+		const inactiveBlocks = sowbFindInactiveBlock( blocks );
+		if ( ! inactiveBlocks.length ) {
+			return;
+		}
+
+		setTimeout( () => {
+			sowbUpdateInactiveBlocksMessage( inactiveBlocks );
+		}, 0 );
+
+		sowbHandleInactiveWidgets();
+	} );
 } );
 
 if (
