@@ -48,8 +48,6 @@
 	 * @param {Function} setState - The setState function to update the component's state.
 	 * @param {Object} [widgetData=false] - The data for the widget. Defaults to false.
 	 * @param {string} [widgetClass=false] - The class of the widget. Defaults to false.
-	 *
-	 * @returns {void}
 	 */
 	const sowbGenerateWidgetPreview = ( props, loadingWidgetPreview, setState, widgetData = false, widgetClass = false ) => {
 		if ( loadingWidgetPreview ) {
@@ -77,7 +75,8 @@
 		 *
 		 * @param {string} html - The HTML string to check for content.
 		 *
-		 * @returns {boolean} - Returns true if the HTML contains text or images, false otherwise.
+		 * @returns {boolean} - Returns true if the HTML contains text or images,
+		 * false otherwise.
 		 */
 		const checkHtmlForContent = ( html ) => {
 			const tempElement = jQuery( '<div>' + html + '</div>' );
@@ -205,15 +204,17 @@
 			$mainForm.sowSetupForm();
 
 			if ( props.attributes.widgetData ) {
-				// If we call `setWidgetFormValues` with the last parameter ( `triggerChange` ) set to false,
-				// it won't show the correct values for some fields e.g. color and media fields.
+				// If we call `setWidgetFormValues` with the last parameter
+				// ( `triggerChange` ) set to false, it won't show the correct values
+				// for some fields e.g. color and media fields.
 				sowbForms.setWidgetFormValues( $mainForm, props.attributes.widgetData );
 			} else {
 				props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
 			}
 
 			$mainForm.on( 'change', () => {
-				// As setAttributes doesn't support callbacks, we have to manually pass the widgetData to the preview.
+				// As setAttributes doesn't support callbacks, we have to manually
+				// pass the widgetData to the preview.
 				var widgetData = sowbForms.getWidgetFormValues( $mainForm );
 				props.setAttributes( { widgetData: widgetData } );
 			} );
@@ -531,14 +532,14 @@
 			},
 			edit: ( props ) => el( memoizedWidgetBlockEdit, { props, widget } ),
 			save: function( context ) {
-				return null; // This block is dynamic and rendered on the server.
+				// This block is dynamic and rendered on the server.
+				return null;
 			},
 		} );
 	};
 
 	// Register all SiteOrigin Blocks.
 	sowbBlockEditorAdmin.widgets.forEach( setupSoWidgetBlock );
-
 
 	registerBlockType( 'sowb/widget-block', {
 		title: __( 'Legacy SiteOrigin Widget', 'so-widgets-bundle' ),
@@ -584,8 +585,8 @@
 			 *
 			 * Updates admin and loading states based on permissions check.
 			 *
-			 * @return {Function} Cleanup function that unsubscribes from
-			 * data store
+			 * @return {Function} Cleanup function that unsubscribes
+			 * from data store.
 			 */
 			wp.element.useEffect( () => {
 				const isAdminCheck = wp.data.subscribe( () => {
@@ -619,7 +620,7 @@
 				return el(
 					Placeholder,
 					{
-						label: __('SiteOrigin Widget', 'so-widgets-bundle'),
+						label: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
 					},
 					el(
 						'p',
@@ -710,7 +711,6 @@ const sowbFindLegacyBlocks = ( blocks ) => {
 		if ( block.name === 'core/widget-area' ) {
 			const innerBlocks = wp.data.select( 'core/block-editor' ).getBlocks( block.clientId );
 
-			// Check each widget in the block area
 			innerBlocks.forEach( widget => {
 				if ( widget.name === 'sowb/widget-block' ) {
 					legacyBlocks.push( widget );
@@ -720,12 +720,11 @@ const sowbFindLegacyBlocks = ( blocks ) => {
 			return legacyBlocks;
 		}
 
-		// Check if current block is legacy
 		if ( block.name === 'sowb/widget-block' ) {
 			legacyBlocks.push( block );
 		}
 
-		// Recursively check innerBlocks if they exist
+		// Recursively check innerBlocks if they exist.
 		if ( block.innerBlocks && block.innerBlocks.length > 0 ) {
 			legacyBlocks.push( ...sowbFindLegacyBlocks( block.innerBlocks ) );
 		}
