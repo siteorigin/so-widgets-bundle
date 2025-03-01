@@ -10,6 +10,7 @@ class SiteOrigin_Widget_ContactForm_Field_Name extends SiteOrigin_Widget_Contact
 			value="<?php echo esc_attr( $options['value'] ); ?>"
 			class="sow-text-field"
 			<?php echo $options['show_placeholder'] ? 'placeholder="' . esc_attr( $options['label'] ) . '"' : ''; ?>
+			<?php self::add_custom_attrs( 'name', $options ); ?>
 		/>
 		<?php
 	}

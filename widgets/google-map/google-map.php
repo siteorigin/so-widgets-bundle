@@ -105,6 +105,16 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 						),
 					),
 
+					'map_id' => array(
+						'type' => 'text',
+						'label' => __( 'Map ID', 'so-widgets-bundle' ),
+						'description' => sprintf(
+							__( 'A Map ID allows you to manage your map styles using the %sGoogle Cloud Console%s. This is only used if Map Styles are not set.', 'so-widgets-bundle' ),
+							'<a href="https://console.cloud.google.com/google/maps-apis/studio/maps" target="_blank" rel="noopener noreferrer">',
+							'</a>'
+						),
+					),
+
 					'new_window' => array(
 						'type' => 'checkbox',
 						'default' => false,
@@ -296,6 +306,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 					),
 					'raw_json_map_styles' => array(
 						'type'        => 'textarea',
+						'json'        => true,
 						'state_handler' => array(
 							'style_method[raw_json]' => array( 'show' ),
 							'_else[style_method]' => array( 'hide' ),
@@ -621,6 +632,11 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'breakpoint'        => $breakpoint,
 			) );
 
+			// Only set Map ID if there aren't any styles.
+			if ( empty( $styles['styles'] ) ) {
+				$map_data['id'] = ! empty( $settings['map_id'] ) ? $settings['map_id'] : substr( uniqid(), 0, 6 );
+			}
+
 			return array(
 				'map_id'   => md5( json_encode( $instance ) ),
 				'map_data' => $map_data,
@@ -804,6 +820,10 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				$st_string = '&style=' . $st_string;
 				$src_url .= $st_string;
 			}
+		} elseif ( ! empty( $instance['settings']['map_id'] ) ) {
+			// As styles aren't set, check if a map id is.
+			// This will allow for Cloud Styles to work.
+			$src_url .= '&map_id=' . $instance['settings']['map_id'];
 		}
 
 		if ( ! empty( $instance['markers'] ) ) {

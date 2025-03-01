@@ -646,6 +646,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 									'normal' => __( 'Normal', 'so-widgets-bundle' ),
 								),
 							),
+							'top_margin' => array(
+								'type'    => 'measurement',
+								'label'   => __( 'Top Margin', 'so-widgets-bundle' ),
+								'default' => '0.2em',
+							)
 						),
 					),
 
@@ -1227,6 +1232,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'description_font_size'      => $instance['design']['descriptions']['size'],
 			'description_font_color'     => $instance['design']['descriptions']['color'],
 			'description_font_style'     => $instance['design']['descriptions']['style'],
+			'description_top_margin'     => ! empty( $instance['design']['descriptions']['top_margin'] ) ? $instance['design']['descriptions']['top_margin'] : '',
 
 			// The error message styles
 			'error_background'           => $instance['design']['errors']['background'],
@@ -1431,9 +1437,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					<?php
 				}
 				?>
-				<span class="sow-field-container">
+				<div class="sow-field-container">
 					<?php
 					$class_name = empty( $field['type'] ) ? '' : 'SiteOrigin_Widget_ContactForm_Field_' . ucwords( $field['type'] );
+
+					$has_description = ! empty( $field['description'] );
 					// This does autoloading if required.
 					if ( class_exists( $class_name ) ) {
 						/**
@@ -1446,28 +1454,38 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 							'value'            => $value,
 							'show_placeholder' => $show_placeholder,
 							'label'            => $label,
+							'has_description'  => $has_description,
 						);
 						$contact_field = new $class_name( $field_input_options );
 						$contact_field->render();
 					} else {
-						echo '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_id ) . '"  value="' . esc_attr( $value ) . '"  class="sow-text-field" ' . ( $show_placeholder ? 'placeholder="' . esc_attr( $label ) . '"' : '' ) . '/>';
+						echo '<input
+							type="text"
+							name="' . esc_attr( $field_name ) . '"
+							id="' . esc_attr( $field_id ) . '"
+							value="' . esc_attr( $value ) . '"
+							class="sow-text-field" ' . ( $show_placeholder ? 'placeholder="' . esc_attr( $label ) . '"' : '' ) .'
+							' . ( $has_description ? 'aria-describedby="' . esc_attr( $field_id ) . '-description"' : '' ) . '
+							/>';
+					}
+
+					if ( ! empty( $field['description'] ) ) {
+						?>
+						<div
+							class="sow-form-field-description"
+							id="<?php echo esc_attr( $field_id ); ?>-description"
+						>
+							<?php echo wp_kses_post( $field['description'] ); ?>
+						</div>
+						<?php
 					}
 					?>
-				</span>
+				</div>
 				<?php
 
 				if ( ! empty( $label_position ) && $label_position == 'below' ) {
 					$this->render_form_label( $field_id, $label, $instance, $indicate_as_required );
 				}
-
-				if ( ! empty( $field['description'] ) ) {
-					?>
-	                <div class="sow-form-field-description">
-						<?php echo wp_kses_post( $field['description'] ); ?>
-	                </div>
-					<?php
-				}
-
 				?>
 			</div>
 			<?php
@@ -1929,15 +1947,17 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			)
 		);
 
+		$submitter_name = isset( $email_fields['name'] ) ? $email_fields['name'] : '';
+
 		$headers = array(
 			'Content-Type: text/html; charset=UTF-8',
 			'From: ' . $this->format_email(
 				$instance['settings']['from'],
-				$email_fields['name']
+				$submitter_name
 			),
 			'Reply-To: ' . $this->format_email(
 				$email_fields['email'],
-				$email_fields['name']
+				$submitter_name
 			)
 		);
 

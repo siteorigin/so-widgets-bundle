@@ -12,7 +12,9 @@ sowb.SiteOriginGoogleMap = function($) {
 			'San Francisco Bay Area, CA, United States',
 			'New York, NY, United States',
 		],
-		randomMapId: () => Math.random().toString( 36 ).substring( 7 ),
+
+		hasMapStyles: false,
+
 		/**
 		 * Create an image element for the marker icon.
 		 *
@@ -35,7 +37,7 @@ sowb.SiteOriginGoogleMap = function($) {
 			imgElement.loading = 'lazy';
 			return imgElement;
 		},
-		showMap: function(element, location, options) {
+		showMap: function( element, location, options ) {
 
 			var zoom = Number(options.zoom);
 
@@ -56,8 +58,6 @@ sowb.SiteOriginGoogleMap = function($) {
 				zoomControl: options.zoomControl,
 				panControl: options.panControl,
 				center: location,
-
-				mapId: this.randomMapId(),
 				mapTypeControlOptions: {
 					mapTypeIds: [
 						window.google.maps.MapTypeId.ROADMAP,
@@ -67,30 +67,38 @@ sowb.SiteOriginGoogleMap = function($) {
 				}
 			};
 
+			this.hasMapStyles = options.mapStyles && Object.keys( options.mapStyles ).length > 0;
+			if ( ! this.hasMapStyles ) {
+				mapOptions.mapId = options.id;
+			}
+
 			var map = new window.google.maps.Map( element, mapOptions );
 
 			var userMapOptions = {
 				name: options.mapName
 			};
 
-			var userMapStyles = options.mapStyles;
+			if ( this.hasMapStyles ) {
+				var userMapType = new window.google.maps.StyledMapType(
+					options.mapStyles,
+					userMapOptions
+				);
 
-			if ( userMapStyles ) {
-				var userMapType = new window.google.maps.StyledMapType( userMapStyles, userMapOptions );
+				map.mapTypes.set(
+					userMapTypeId,
+					userMapType
+				);
 
-				map.mapTypes.set(userMapTypeId, userMapType);
-				map.setMapTypeId(userMapTypeId);
+				map.setMapTypeId( userMapTypeId );
 			}
 
-			if (options.markerAtCenter) {
-				this.centerMarker = new window.google.maps.marker.AdvancedMarkerElement( {
-					position: location,
-					map: map,
-					draggable: options.markersDraggable,
-					gmpDraggable: options.markersDraggable,
-					content: this.drawMarkerEl( options.markerIcon ),
-					title: ''
-				} );
+			if ( options.markerAtCenter ) {
+				this.centerMarker = this.addMarker(
+					location,
+					map,
+					options.markerIcon,
+					options.markersDraggable
+				);
 
 				map.centerMarker = this.centerMarker;
 			}
@@ -185,6 +193,44 @@ sowb.SiteOriginGoogleMap = function($) {
 			}
 		},
 
+		/**
+		 * Add a marker to the map.
+		 *
+		 * Creates either an AdvancedMarkerElement, or legacy
+		 * Marker based on map styles.
+		 *
+		 * Advanced markers support Cloud Styles while legacy
+		 * markers maintain backwards compatibility with JSON.
+		 *
+		 * @param {google.maps.LatLng} location - The position for the marker.
+		 * @param {google.maps.Map} map - The map instance to add marker to.
+		 * @param {Object} icon - Custom icon configuration for the marker.
+		 * @param {boolean} draggable - Whether the marker should be draggable.
+		 *
+		 * @return {google.maps.marker.AdvancedMarkerElement|google.maps.Marker} The created marker
+		 */
+		addMarker: function( location, map, icon, draggable ) {
+			const markerOptions = {
+				position: location,
+				map: map,
+				gmpDraggable: draggable,
+				draggable: draggable,
+				title: ''
+			};
+
+			// Are we adding a legacy marker?
+			if ( this.hasMapStyles ) {
+				if ( typeof icon === 'string' ) {
+					markerOptions.icon = icon;
+				}
+
+				return new window.google.maps.Marker( markerOptions );
+			}
+
+			markerOptions.content = this.drawMarkerEl( icon );
+			return 	new window.google.maps.marker.AdvancedMarkerElement( markerOptions )
+		},
+
 		showMarkers: function(markerPositions, map, options) {
 			if ( markerPositions && markerPositions.length ) {
 				this.infoWindows = [];
@@ -206,13 +252,12 @@ sowb.SiteOriginGoogleMap = function($) {
 					return this.getLocation( mrkr.place ).done( function ( location ) {
 						const markerIcon = customIcon ? customIcon : options.markerIcon;
 
-						const marker = new google.maps.marker.AdvancedMarkerElement( {
-							position: location,
-							map: map,
-							gmpDraggable: options.markersDraggable,
-							content: this.drawMarkerEl( markerIcon ),
-							title: ''
-						} );
+						const marker = this.addMarker(
+							location,
+							map,
+							markerIcon,
+							options.markersDraggable
+						);
 
 						if ( markerInfo ) {
 							var infoWindowOptions = { content: markerInfo };
