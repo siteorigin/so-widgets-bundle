@@ -1011,13 +1011,6 @@ div.siteorigin-widget-form {
 	.so-widget-placeholder {
 		text-align: left;
 
-		// WB icon for placeholder.
-		& > .components-placeholder__label {
-			background: url("img/bundle-icon.png") no-repeat left;
-			background-size: 20px;
-			padding-left: 25px;
-		}
-
 		& > .components-placeholder__fieldset {
 			max-width: unset;
 
@@ -1183,5 +1176,10 @@ div.siteorigin-widget-form {
 		background-size: contain;
 		height: 100%;
 		width: 40px;
+
+		// Prevent default icon from showing up when the widget has an icon.
+		&:not(.so-widget-icon-default) {
+			background: none;
+		}
 	}
 }
