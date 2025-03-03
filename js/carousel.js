@@ -117,8 +117,8 @@ jQuery( function ( $ ) {
 		$.fn.setSlideTo = function( slide ) {
 			$items = $( this );
 			// We need to reset the Slick slide settings to avoid https://github.com/kenwheeler/slick/issues/1006.
-			const slidesToShow = $item.slick( 'slickGetOption', 'slidesToShow' );
-			const slidesToScroll = $item.slick( 'slickGetOption', 'slidesToScroll' );
+			const slidesToShow = $items.slick( 'slickGetOption', 'slidesToShow' );
+			const slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' );
 
 			$items.slick( 'slickSetOption', 'slidesToShow', 1 );
 			$items.slick( 'slickSetOption', 'slidesToScroll', 1 );
