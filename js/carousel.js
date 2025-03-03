@@ -445,6 +445,11 @@ jQuery( function ( $ ) {
 							}
 						}
 					}
+
+					triggerResize(
+						$items,
+						$$.data( 'carousel_settings' )
+					);
 				};
 				$$.find( '.slick-dots li' ).on( 'click touchend', carouselDotNavigation );
 
