@@ -447,9 +447,16 @@ jQuery( function ( $ ) {
 					}
 				};
 				$$.find( '.slick-dots li' ).on( 'click touchend', carouselDotNavigation );
+
 				// Setup Slick Dot Navigation again when new posts are added.
 				$( sowb ).on( 'carousel_posts_added', function() {
+					const $$ = $( this );
 					$$.find( '.slick-dots li' ).on( 'click touchend', carouselDotNavigation );
+
+					triggerResize(
+						$$.find( '.sow-carousel-items.slick-initialized' ),
+						$$.data( 'carousel_settings' )
+					);
 				} );
 			}
 		} );
