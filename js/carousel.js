@@ -407,13 +407,14 @@ jQuery( function ( $ ) {
 			if ( carouselSettings.dots && ( $$.data( 'variable_width' ) || $$.data( 'carousel_settings' ).theme ) ) {
 				// Unbind base Slick Dot Navigation as we use a custom event to prevent blank spaces.
 				$$.find( '.slick-dots li' ).off( 'click.slick' );
-				var carouselDotNavigation = function() {
-					$items = $$.find( '.sow-carousel-items' );
-					var targetItem = $( this ).index(),
-						slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' ),
-						numItems = $items.find( '.sow-carousel-item' ).length,
-						numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) ),
-						lastPosition = numItems - numVisibleItems;
+				const carouselDotNavigation = function() {
+					const $items = $$.find( '.sow-carousel-items' );
+					const slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' );
+					const numItems = $items.find( '.sow-carousel-item' ).length;
+					const numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) );
+					const lastPosition = numItems - numVisibleItems;
+
+					let targetItem = $( this ).index();
 
 					// Check if navigating to the selected item would result in a blank space.
 					if ( targetItem + numVisibleItems >= numItems ) {
@@ -433,7 +434,7 @@ jQuery( function ( $ ) {
 
 					// Is this a Post Carousel? If so, let's check if we need to load more posts.
 					if ( $$.data( 'widget' ) == 'post' ) {
-						var complete = numItems >= $$.data( 'item_count' );
+						const complete = numItems >= $$.data( 'item_count' );
 
 						// Check if all items are displayed
 						if ( ! complete ) {
