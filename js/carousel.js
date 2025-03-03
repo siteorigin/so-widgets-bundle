@@ -562,16 +562,34 @@ jQuery( function ( $ ) {
 				return;
 			}
 
-			$items.one( 'breakpoint', () => {
-				$items.adaptiveHeight();
-
-				if ( settings.theme !== 'cards' || settings.dynamic_navigation ) {
-					return;
-				}
-
-				$items.fixContainerHeight();
-			} );
+			$items.one( 'breakpoint', () => triggerResize( $items, settings ) );
 		};
+
+		/**
+		 * Trigger resize adjustments for carousel items.
+		 *
+		 * Handles adaptive height adjustments and container height fixes.
+		 * for carousel items. Only applies height adjustments if:
+		 * - Adaptive height is enabled.
+		 * - Theme is 'cards'.
+		 * - Dynamic navigation is disabled.
+		 *
+		 * @param {jQuery} $items Carousel items jQuery element.
+		 * @param {Object} settings Carousel settings object.
+		 */
+		const triggerResize = ( $items, settings ) => {
+			if ( ! $items.data( 'adaptive_height' ) ) {
+				return;
+			}
+
+			$items.adaptiveHeight();
+
+			if ( settings.theme !== 'cards' || settings.dynamic_navigation ) {
+				return;
+			}
+
+			$items.fixContainerHeight();
+		}
 
 		let resizeTimeout;
 		$( window ).on( 'resize load', () => {
