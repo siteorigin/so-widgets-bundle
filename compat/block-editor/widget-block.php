@@ -291,6 +291,20 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		return $this->widgetAnchor;
 	}
 
+	private function wpml_render_check() {
+		$current_page_id = get_the_ID();
+		return defined( 'ICL_LANGUAGE_CODE' ) &&
+		is_numeric(
+			apply_filters(
+				'wpml_object_id',
+				$current_page_id,
+				get_post_type( $current_page_id ),
+				false,
+				ICL_LANGUAGE_CODE
+			)
+		);
+	}
+
 	public function render_widget_block( $block_content, $block, $instance ) {
 		if (
 			empty( $block_content['widgetClass'] ) &&
@@ -319,85 +333,11 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			return $class_names;
 		};
 
-		if ( ! empty( $widget ) && is_object( $widget ) && is_subclass_of( $widget, 'SiteOrigin_Widget' ) ) {
-			$GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] = true;
-			$instance = $block_content['widgetData'];
-			add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
-
-			ob_start();
-			/*
-			 * If we have pre-generated widgetMarkup or there's a valid $_POST, generate the widget.
-			 * There are certain situations where we bypass the cache:
-			 *
-			 * - We don't show the pre-generated widget when there's a valid $_POST
-			 * as widgets will likely change when that happens.
-			 *
-			 * - Pages with an active WPML translation will bypass cache.
-			 *
-			 * - We also exclude certain widgets from the cache.
-			 */
-			$current_page_id = get_the_ID();
-
-			if (
-				empty( $block_content['widgetMarkup'] ) ||
-				! empty( $_POST ) ||
-				$block_content['widgetClass'] == 'SiteOrigin_Widget_PostCarousel_Widget' ||
-				$block_content['widgetClass'] == 'SiteOrigin_Widgets_ContactForm_Widget' ||
-				$block_content['widgetClass'] == 'SiteOrigin_Widget_Blog_Widget' ||
-				apply_filters( 'siteorigin_widgets_block_exclude_widget', false, $block_content['widgetClass'], $instance ) ||
-				// Is WPML active? If so, is there a translation for this page?
-				(
-					defined( 'ICL_LANGUAGE_CODE' ) &&
-					is_numeric(
-						apply_filters(
-							'wpml_object_id',
-							$current_page_id,
-							get_post_type( $current_page_id ),
-							false,
-							ICL_LANGUAGE_CODE
-						)
-					)
-				)
-			) {
-				// Add anchor to widget wrapper.
-				if ( ! empty( $block_content['anchor'] ) ) {
-					$this->widgetAnchor = $block_content['anchor'];
-					add_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10, 3 );
-				}
-				/* @var $widget SiteOrigin_Widget */
-				$instance = $widget->update( $instance, $instance );
-				$widget->widget( array(
-					'before_widget' => '',
-					'after_widget' => '',
-					'before_title' => '<h3 class="widget-title">',
-					'after_title' => '</h3>',
-				), $instance );
-
-				if ( ! empty( $block_content['anchor'] ) ) {
-					remove_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10 );
-				}
-			} else {
-				$widget->generate_and_enqueue_instance_styles( $instance );
-				$widget->enqueue_frontend_scripts( $instance );
-
-				// Check if this widget uses any icons that need to be enqueued.
-				if ( ! empty( $block_content['widgetIcons'] ) ) {
-					$widget_icon_families = apply_filters( 'siteorigin_widgets_icon_families', array() );
-
-					foreach ( $block_content['widgetIcons'] as $icon_font ) {
-						if ( ! wp_style_is( $icon_font ) ) {
-							$font_family = explode( 'siteorigin-widget-icon-font-', $icon_font )[1];
-							wp_enqueue_style( $icon_font, $widget_icon_families[ $font_family ]['style_uri'] );
-						}
-					}
-				}
-				echo $block_content['widgetMarkup'];
-			}
-
-			$rendered_widget = ob_get_clean();
-			remove_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
-			unset( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
-		} else {
+		if (
+			empty( $widget ) ||
+			! is_object( $widget ) ||
+			! is_subclass_of( $widget, 'SiteOrigin_Widget' )
+		) {
 			return
 				'<div>' .
 					sprintf(
@@ -409,6 +349,77 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				'</div>';
 		}
 
+		$GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] = true;
+		$instance = $block_content['widgetData'];
+		add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
+
+		ob_start();
+
+		$always_render_widget_list = array(
+			'SiteOrigin_Widget_PostCarousel_Widget',
+			'SiteOrigin_Widgets_ContactForm_Widget',
+			'SiteOrigin_Widget_Blog_Widget',
+		);
+
+		/*
+		* Generate widget markup if:
+		* - No pre-generated widgetMarkup exists.
+		* - widgetMarkup contains "No widget preview available".
+		* - POST data exists (widget settings likely changed).
+		* - Widget is in always_render_widget_list.
+		* - Widget excluded via siteorigin_widgets_block_exclude_widget filter.
+		* - Active WPML translation exists.
+		*/
+		if (
+			(
+				empty( $block_content['widgetMarkup'] ) ||
+				// Does widgetMarkup contain the string No widget preview available?
+				strpos( $block_content['widgetMarkup'], __( 'No widget preview available.', 'so-widgets-bundle' ) ) !== false
+			) ||
+			! empty( $_POST ) ||
+			in_array( $block_content['widgetClass'], $always_render_widget_list ) ||
+			apply_filters( 'siteorigin_widgets_block_exclude_widget', false, $block_content['widgetClass'], $instance ) ||
+			$this->wpml_render_check()
+		) {
+			// Add anchor to widget wrapper.
+			if ( ! empty( $block_content['anchor'] ) ) {
+				$this->widgetAnchor = $block_content['anchor'];
+				add_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10, 3 );
+			}
+
+			/* @var $widget SiteOrigin_Widget */
+			$instance = $widget->update( $instance, $instance );
+			$widget->widget( array(
+				'before_widget' => '',
+				'after_widget' => '',
+				'before_title' => '<h3 class="widget-title">',
+				'after_title' => '</h3>',
+			), $instance );
+
+			if ( ! empty( $block_content['anchor'] ) ) {
+				remove_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10 );
+			}
+		} else {
+			$widget->generate_and_enqueue_instance_styles( $instance );
+			$widget->enqueue_frontend_scripts( $instance );
+
+			// Check if this widget uses any icons that need to be enqueued.
+			if ( ! empty( $block_content['widgetIcons'] ) ) {
+				$widget_icon_families = apply_filters( 'siteorigin_widgets_icon_families', array() );
+
+				foreach ( $block_content['widgetIcons'] as $icon_font ) {
+					if ( ! wp_style_is( $icon_font ) ) {
+						$font_family = explode( 'siteorigin-widget-icon-font-', $icon_font )[1];
+						wp_enqueue_style( $icon_font, $widget_icon_families[ $font_family ]['style_uri'] );
+					}
+				}
+			}
+			echo $block_content['widgetMarkup'];
+		}
+
+		$rendered_widget = ob_get_clean();
+		remove_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
+		unset( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
 		return $rendered_widget;
 	}
 
