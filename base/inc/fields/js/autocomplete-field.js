@@ -6,6 +6,8 @@
 		var $$ = $( this );
 		var $contentSelector = $$.find(' .existing-content-selector' );
 
+		const postId = parseInt( jQuery( '#post_ID' ).val() );
+
 		if ( $$.data( 'initialized' ) ) {
 			return;
 		}
@@ -40,7 +42,11 @@
 			const query = $contentSearchInput.val();
 			const source = $contentSearchInput.data( 'source' );
 			const postTypes = $contentSearchInput.data( 'postTypes' );
-			const ajaxData = { action: 'so_widgets_search_' + source };
+			const ajaxData = {
+				action: 'so_widgets_search_' + source,
+				postId: postId,
+			};
+
 			if ( source === 'posts' ) {
 				ajaxData.query = query;
 				ajaxData.postTypes = postTypes;
