@@ -119,7 +119,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							),
 						),
 					),
-					'date_output_format' => array(
+					'date_format' => array(
 						'type' => 'select',
 						'label' => __( 'Post Date Format', 'so-widgets-bundle' ),
 						'default' => 'default',
@@ -478,24 +478,6 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 		);
 	}
 
-	public function modify_instance( $instance ) {
-		if ( empty( $instance ) || ! is_array( $instance ) ) {
-			return array();
-		}
-
-		// Migrate date_format to new setting name to prevent potential WAF false positive.
-		if (
-			is_array( $instance['recent_settings'] ) &&
-			isset( $instance['recent_settings']['date_format'] )
-		) {
-			$instance['recent_settings']['date_output_format'] = $instance['recent_settings']['date_format'];
-			unset( $instance['recent_settings']['date_format'] );
-		}
-
-		return $instance;
-
-	}
-
 	public function get_less_variables( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
@@ -646,7 +628,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			return;
 		}
 
-		$date_format = ! empty( $settings['date_output_format'] ) ? $settings['date_output_format'] : sanitize_option(
+		$date_format = ! empty( $settings['date_format'] ) ? $settings['date_format'] : sanitize_option(
 			'date_format',
 			get_option( 'date_format' )
 		);
