@@ -483,7 +483,9 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			return array();
 		}
 
-		// Migrate date_format to new setting name to prevent potential WAF false positive.
+		// Migrate the old `date_format` setting to `date_output_format`.
+		// The old name was incorrectly flagged by a WAF in a Page Builder layout.
+		// WAF scan JSON for PHP functions and date_format was detected because of that.
 		if (
 			is_array( $instance['recent_settings'] ) &&
 			isset( $instance['recent_settings']['date_format'] )
