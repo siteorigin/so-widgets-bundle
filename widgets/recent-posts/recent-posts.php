@@ -119,7 +119,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 							),
 						),
 					),
-					'date_format' => array(
+					'date_output_format' => array(
 						'type' => 'select',
 						'label' => __( 'Post Date Format', 'so-widgets-bundle' ),
 						'default' => 'default',
@@ -478,6 +478,26 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	public function modify_instance( $instance ) {
+		if ( empty( $instance ) || ! is_array( $instance ) ) {
+			return array();
+		}
+
+		// Migrate the old `date_format` setting to `date_output_format`.
+		// The old name was incorrectly flagged by a WAF in a Page Builder layout.
+		// WAF scan JSON for PHP functions and date_format was detected because of that.
+		if (
+			is_array( $instance['recent_settings'] ) &&
+			isset( $instance['recent_settings']['date_format'] )
+		) {
+			$instance['recent_settings']['date_output_format'] = $instance['recent_settings']['date_format'];
+			unset( $instance['recent_settings']['date_format'] );
+		}
+
+		return $instance;
+
+	}
+
 	public function get_less_variables( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
@@ -628,7 +648,7 @@ class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {
 			return;
 		}
 
-		$date_format = ! empty( $settings['date_format'] ) ? $settings['date_format'] : sanitize_option(
+		$date_format = ! empty( $settings['date_output_format'] ) ? $settings['date_output_format'] : sanitize_option(
 			'date_format',
 			get_option( 'date_format' )
 		);
