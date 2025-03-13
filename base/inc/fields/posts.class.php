@@ -19,6 +19,13 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 	 */
 	protected $show_count = true;
 
+	/**
+	 * Whether to add the Maximum posts drop down.
+	 *
+	 * @var bool
+	 */
+	protected $max_posts = false;
+
 	public function __construct( $base_name, $element_id, $element_name, $field_options, SiteOrigin_Widget $for_widget, $parent_container = array() ) {
 		parent::__construct( $base_name, $element_id, $element_name, $field_options, $for_widget, $parent_container );
 
@@ -144,6 +151,26 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 			'posts_per_page' => array(
 				'type' => 'number',
 				'label' => __( 'Posts Per Page', 'so-widgets-bundle' ),
+				'state_emitter' => array(
+					'callback' => 'conditional',
+					'args' => array(
+						'post_posts_per_page[show]: val',
+						'post_posts_per_page[hide]: ! val',
+					),
+				),
+			),
+
+			'max_posts' => array(
+				'type' => 'select',
+				'label' => __( 'Maximum Posts', 'so-widgets-bundle' ),
+				'options' => array(
+					'' => __( 'Load All Available Posts', 'so-widgets-bundle' ),
+					'limit' => __( 'Limit Total Posts', 'so-widgets-bundle' ),
+				),
+				'state_handler' => array(
+					'post_posts_per_page[show]' => array( 'show' ),
+					'post_posts_per_page[hide]' => array( 'hide' ),
+				),
 			),
 
 			'sticky' => array(
@@ -163,6 +190,10 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 				'description' => __( 'Additional query arguments. See <a href="https://developer.wordpress.org/reference/functions/query_posts/" target="_blank" rel="noopener noreferrer">query_posts</a>.', 'so-widgets-bundle' ),
 			),
 		);
+
+		if ( empty( $this->max_posts ) ) {
+			unset( $this->fields['max_posts'] );
+		}
 	}
 
 	protected function render_field_label( $value, $instance ) {
