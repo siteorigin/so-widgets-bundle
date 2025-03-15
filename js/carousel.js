@@ -14,8 +14,6 @@ jQuery( function ( $ ) {
 
 		const $largestItemEl = $( $largestItem );
 		const margin_height = parseFloat( $largestItemEl.css( 'margin-bottom' ) );
-		// const inner_height = parseFloat( $largestItemEl.find( '.sow-carousel-item-inner' ).outerHeight() );
-		// console.log( margin_height, inner_height );
 
 		$$.css( 'height',
 			$largestItemEl.outerHeight() +
@@ -111,6 +109,79 @@ jQuery( function ( $ ) {
 		}, $$.data( 'adaptive_height' ) );
 
 		visibleSlides.css( 'height', maxHeight );
+	}
+
+	$.fn.carouselDotNavigation = function( e ) {
+		const $$ = $( this );
+		const $items = $$.find( '.sow-carousel-items' );
+		const slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' );
+		const numItems = $items.find( '.sow-carousel-item' ).length;
+		const numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) );
+		const lastPosition = numItems - numVisibleItems;
+
+		let targetItem = $( e.currentTarget ).index();
+
+		// Check if navigating to the selected item would result in a blank space.
+		if ( targetItem + numVisibleItems >= numItems ) {
+			// Blank spacing would occur, let's go to the last possible item
+			// make it appear as though we navigated to the selected item.
+			$items.navigateToSlide( lastPosition );
+			$dots = $$.parent();
+			$dots.find( '.slick-active' ).removeClass( 'slick-active' );
+			$dots.children().eq( targetItem ).addClass( 'slick-active' );
+		} else {
+			if ( $$.data( 'widget' ) == 'post' ) {
+				// We need to account for an empty item.
+				targetItem = Math.ceil( targetItem + 1 * slidesToScroll );
+			}
+			$items.navigateToSlide( targetItem );
+		}
+
+		// Is this a Post Carousel? If so, let's check if we need to load more posts.
+		if ( $$.data( 'widget' ) == 'post' ) {
+			const complete = numItems >= $$.data( 'item_count' );
+
+			// Check if all items are displayed
+			if ( ! complete ) {
+				if (
+					$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ||
+					$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition
+				) {
+					$( sowb ).trigger( 'carousel_load_new_items', [ $$, $items, false ] );
+				}
+			}
+		}
+
+		triggerResize(
+			$items,
+			$$.data( 'carousel_settings' )
+		);
+	};
+
+	/**
+	 * Trigger resize adjustments for carousel items.
+	 *
+	 * Handles adaptive height adjustments and container height fixes.
+	 * for carousel items. Only applies height adjustments if:
+	 * - Adaptive height is enabled.
+	 * - Theme is 'cards'.
+	 * - Dynamic navigation is disabled.
+	 *
+	 * @param {jQuery} $items Carousel items jQuery element.
+	 * @param {Object} settings Carousel settings object.
+	 */
+	const triggerResize = ( $items, settings ) => {
+		if ( ! $items.data( 'adaptive_height' ) ) {
+			return;
+		}
+
+		$items.adaptiveHeight();
+
+		if ( settings.theme !== 'cards' || settings.dynamic_navigation ) {
+			return;
+		}
+
+		$items.fixContainerHeight();
 	}
 
 	sowb.setupCarousel = function () {
@@ -407,57 +478,22 @@ jQuery( function ( $ ) {
 			if ( carouselSettings.dots && ( $$.data( 'variable_width' ) || $$.data( 'carousel_settings' ).theme ) ) {
 				// Unbind base Slick Dot Navigation as we use a custom event to prevent blank spaces.
 				$$.find( '.slick-dots li' ).off( 'click.slick' );
-				const carouselDotNavigation = function() {
-					const $items = $$.find( '.sow-carousel-items' );
-					const slidesToScroll = $items.slick( 'slickGetOption', 'slidesToScroll' );
-					const numItems = $items.find( '.sow-carousel-item' ).length;
-					const numVisibleItems = Math.ceil( $items.outerWidth() / $items.find( '.sow-carousel-item' ).outerWidth( true ) );
-					const lastPosition = numItems - numVisibleItems;
-
-					let targetItem = $( this ).index();
-
-					// Check if navigating to the selected item would result in a blank space.
-					if ( targetItem + numVisibleItems >= numItems ) {
-						// Blank spacing would occur, let's go to the last possible item
-						// make it appear as though we navigated to the selected item.
-						$items.navigateToSlide( lastPosition );
-						$dots = $( this ).parent();
-						$dots.find( '.slick-active' ).removeClass( 'slick-active' );
-						$dots.children().eq( targetItem ).addClass( 'slick-active' );
-					} else {
-						if ( $$.data( 'widget' ) == 'post' ) {
-							// We need to account for an empty item.
-							targetItem = Math.ceil( targetItem + 1 * slidesToScroll );
-						}
-						$items.navigateToSlide( targetItem );
-					}
-
-					// Is this a Post Carousel? If so, let's check if we need to load more posts.
-					if ( $$.data( 'widget' ) == 'post' ) {
-						const complete = numItems >= $$.data( 'item_count' );
-
-						// Check if all items are displayed
-						if ( ! complete ) {
-							if (
-								$items.slick( 'slickCurrentSlide' ) + numVisibleItems >= numItems - 1 ||
-								$items.slick( 'slickCurrentSlide' ) + slidesToScroll > lastPosition
-							) {
-								$( sowb ).trigger( 'carousel_load_new_items', [ $$, $items, false ] );
-							}
-						}
-					}
-
-					triggerResize(
-						$items,
-						$$.data( 'carousel_settings' )
-					);
-				};
-				$$.find( '.slick-dots li' ).on( 'click touchend', carouselDotNavigation );
+				$$.find( '.slick-dots li' ).on( 'click touchend', function( e ) {
+					$$.carouselDotNavigation( e );
+				} );
 
 				// Setup Slick Dot Navigation again when new posts are added.
 				$( sowb ).on( 'carousel_posts_added', function() {
 					const $$ = $( this );
-					$$.find( '.slick-dots li' ).on( 'click touchend', carouselDotNavigation );
+					const $dots = $$.find( '.slick-dots li' );
+
+					if ( $dots ) {
+						$dots
+							.off( 'click touchend' )
+							.on( 'click touchend', function( e ) {
+								$$.carouselDotNavigation( e );
+							} );
+					}
 
 					triggerResize(
 						$$.find( '.sow-carousel-items.slick-initialized' ),
@@ -577,32 +613,6 @@ jQuery( function ( $ ) {
 
 			$items.one( 'breakpoint', () => triggerResize( $items, settings ) );
 		};
-
-		/**
-		 * Trigger resize adjustments for carousel items.
-		 *
-		 * Handles adaptive height adjustments and container height fixes.
-		 * for carousel items. Only applies height adjustments if:
-		 * - Adaptive height is enabled.
-		 * - Theme is 'cards'.
-		 * - Dynamic navigation is disabled.
-		 *
-		 * @param {jQuery} $items Carousel items jQuery element.
-		 * @param {Object} settings Carousel settings object.
-		 */
-		const triggerResize = ( $items, settings ) => {
-			if ( ! $items.data( 'adaptive_height' ) ) {
-				return;
-			}
-
-			$items.adaptiveHeight();
-
-			if ( settings.theme !== 'cards' || settings.dynamic_navigation ) {
-				return;
-			}
-
-			$items.fixContainerHeight();
-		}
 
 		let resizeTimeout;
 		$( window ).on( 'resize load', () => {
