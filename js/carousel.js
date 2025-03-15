@@ -483,8 +483,8 @@ jQuery( function ( $ ) {
 				} );
 
 				// Setup Slick Dot Navigation again when new posts are added.
-				$( sowb ).on( 'carousel_posts_added', function() {
-					const $$ = $( this );
+				$( sowb ).on( 'carousel_posts_added', function( e, carousel) {
+					const $$ = $( carousel );
 					const $dots = $$.find( '.slick-dots li' );
 
 					if ( $dots ) {
