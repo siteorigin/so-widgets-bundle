@@ -163,13 +163,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				);
 			}
 
-			if (
-				(
-					empty( $instance['playback']['hide_controls'] ) ||
-					$instance['playback']['hide_controls'] == false
-				)
-			) {
-				wp_enqueue_style( 'wp-mediaelement' );
+			if ( ! empty( $instance['playback']['hide_controls'] ) ) {
 				$load_video_js = true;
 			}
 		}
