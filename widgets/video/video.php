@@ -163,7 +163,10 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				);
 			}
 
-			if ( ! empty( $instance['playback']['hide_controls'] ) ) {
+			if (
+				$video_host !== 'self' ||
+				! empty( $instance['playback']['hide_controls'] )
+			) {
 				$load_video_js = true;
 			}
 		}
