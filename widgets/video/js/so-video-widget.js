@@ -27,7 +27,8 @@ jQuery( function ( $ ) {
 					return;
 				}
 
-				player.paused ? player.play() : player.pause();
+				const video = e.target;
+				video.paused ? video.play() : video.pause();
 			} );
 		} );
 
