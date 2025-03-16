@@ -248,6 +248,15 @@ jQuery( function ( $ ) {
 				}, 50 );
 			} );
 
+			if ( carouselSettings.theme === 'cards' ) {
+				// To prevent a sizing issue, we need to check if the Cards Carousel
+				// is inside of a Layout Builder, and if so, set the parent container
+				// to overflow hidden.
+				if ( $$.closest( '.widget_siteorigin-panels-builder' ).length ) {
+					const $cell = $$.closest( '.so-panel' ).parent().css( 'overflow', 'hidden' );
+				}
+			}
+
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
 				dots: carouselSettings.dots,
