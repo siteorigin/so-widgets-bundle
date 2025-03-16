@@ -222,7 +222,7 @@ function siteorigin_widget_action_search_terms() {
 
 	$query_results = $wpdb->get_results( $query );
 	if ( empty( $query_results ) ) {
-		return array();
+		wp_send_json( array() );
 	}
 
 	foreach ( $query_results as $result ) {
