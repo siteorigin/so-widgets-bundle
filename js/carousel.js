@@ -245,6 +245,8 @@ jQuery( function ( $ ) {
 					}
 
 					$items.adaptiveHeight();
+
+					$wrapper.css( 'opacity', 1 );
 				}, 50 );
 			} );
 
