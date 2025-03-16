@@ -6,51 +6,48 @@ jQuery( function ( $ ) {
 	// We remove animations if the user has motion disabled.
 	const reduceMotion = window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
 
+	/**
+	 * Fix container height to prevent layout shifts
+	 *
+	 * Calculates and sets optimal container height based on the tallest
+	 * carousel item:
+	 * - Stores current height to compare with calculated height.
+	 * - Efficiently measures all items to find maximum height.
+	 * - Adds margin-bottom to final height calculation.
+	 * - Only updates DOM if height difference exceeds 1px threshold.
+	 * - Prevents unnecessary reflows by checking height before setting.
+	 */
 	$.fn.fixContainerHeight = function() {
 		const $$ = $( this );
-		const $largestItem = $$.find( '.sow-carousel-item' ).sort( function( a, b ) {
-			return $( b ).outerHeight() - $( a ).outerHeight();
-		} )[0];
+		const currentHeight = $$.height();
+		const $items = $$.find( '.sow-carousel-item' );
 
-		const $largestItemEl = $( $largestItem );
-		const margin_height = parseFloat( $largestItemEl.css( 'margin-bottom' ) );
-
-		$$.css( 'height',
-			$largestItemEl.outerHeight() +
-			margin_height
-		);
-	};
-
-	$( '.sow-carousel-wrapper' ).on( 'init', function( e, slick ) {
-		const $$ = $( this );
-		$$.css( 'opacity', 1 );
-
-		const carousel_settings = $$.data( 'carousel_settings' );
-		if (
-			carousel_settings.dynamic_navigation ||
-			carousel_settings.theme !== 'cards' ||
-			$$.hasClass( 'fixed-navigation' )
-		) {
+		if ( ! $items.length ) {
 			return;
 		}
 
-		const $items = $$.find( '.sow-carousel-items' );
+		// Find the tallest item
+		let maxHeight = 0;
+		$items.each( function() {
+			const $item = $( this );
+			const height = $item.outerHeight();
+			if ( height > maxHeight ) {
+				maxHeight = height;
+			}
+		} );
 
-		$$.addClass( 'fixed-navigation' );
-		$items.fixContainerHeight();
-	} );
+		const margin_height = parseFloat( $items.first().css( 'margin-bottom' ) );
+		const newHeight = maxHeight + margin_height;
+
+		// Only change height if necessary and avoid unnecessary reflows.
+		if ( Math.abs( currentHeight - newHeight ) > 1 ) {
+			$$.css( 'height', newHeight );
+		}
+	};
 
 	/**
 	 * Navigate to a specific slide in the carousel, and then
 	 * (optionally) adapts the height of the carousel.
-	 *
-	 * This function navigates to a specific slide in the carousel.
-	 * If adaptive height is enabled, by calling adaptiveHeight().
-	 *
-	 * @param {number|string|null} newSlide - The slide to navigate to.
-	 * Can be a slide index (int), command (string), or null.
-	 *
-	 * @returns {void}
 	 */
 	$.fn.navigateToSlide = function( newSlide ) {
 		const $$ = $( this );
@@ -66,17 +63,18 @@ jQuery( function ( $ ) {
 		$$.adaptiveHeight();
 	};
 
+	let carouselLoading = true;
+
 	/**
-	 * Adjust the height of the carousel to fit the tallest
-	 * visible slide.
+	 * Adjust carousel height to fit tallest visible slide.
 	 *
-	 * This function adjusts the height of the carousel to fit
-	 * the tallest visible slide, including any bottom margin.
-	 * It is used as a custom solution for adaptive height since
-	 * Slick's adaptive height only factors in the "active" item,
-	 * not all visible items.
-	 *
-	 * @returns {void}
+	 * Extends jQuery with an adaptive height function that:
+	 * - Measures all visible slides (not just active one like Slick does).
+	 * - Adjusts container height to match tallest slide.
+	 * - Handles initial loading state differently to avoid navigation jump.
+	 * - Adds smooth transition animation for subsequent height changes.
+	 * - Accounts for margin-bottom spacing between slides.
+	 * - Sets consistent height for all visible slides.
 	 */
 	$.fn.adaptiveHeight = function() {
 		const $$ = $( this );
@@ -104,9 +102,25 @@ jQuery( function ( $ ) {
 		// and we need to account for that in the sizing.
 		const marginBottom = parseFloat( visibleSlides.first().css( 'margin-bottom' ) );
 
-		$$.find( '.slick-list' ).animate( {
-			height: maxHeight + marginBottom,
-		}, $$.data( 'adaptive_height' ) );
+		$slickList = $$.find( '.slick-list' );
+
+		// Check if the carousel has been loaded before.
+		if ( $slickList.hasClass( 'sow-loaded' ) ) {
+
+			$slickList.animate( {
+				height: maxHeight + marginBottom,
+			}, $$.data( 'adaptive_height' ) || 150 );
+		} else {
+			// Prevent the navigation from moving on load.
+			$slickList.css( 'height', maxHeight + marginBottom );
+
+			if ( carouselLoading ) {
+				setTimeout( function() {
+					$slickList.addClass( 'sow-loaded' )
+					carouselLoading = false;
+				}, 150 );
+			}
+		}
 
 		visibleSlides.css( 'height', maxHeight );
 	}
@@ -217,6 +231,34 @@ jQuery( function ( $ ) {
 			const isBlockEditor = $( 'body' ).hasClass( 'block-editor-page' );
 			const isContinuous = carouselSettings.autoplay === 'continuous';
 
+			$items.on( 'init', function(e, slick) {
+				const $wrapper = $(this).closest('.sow-carousel-wrapper');
+
+				setTimeout( function() {
+					if (
+						carouselSettings.theme === 'cards' &&
+						! carouselSettings.dynamic_navigation &&
+						! $wrapper.hasClass( 'fixed-navigation' )
+					) {
+						$wrapper.addClass( 'fixed-navigation' );
+						$items.fixContainerHeight();
+					}
+
+					$items.adaptiveHeight();
+
+					$wrapper.css( 'opacity', 1 );
+				}, 50 );
+			} );
+
+			if ( carouselSettings.theme === 'cards' ) {
+				// To prevent a sizing issue, we need to check if the Cards Carousel
+				// is inside of a Layout Builder, and if so, set the parent container
+				// to overflow hidden.
+				if ( $$.closest( '.widget_siteorigin-panels-builder' ).length ) {
+					const $cell = $$.closest( '.so-panel' ).parent().css( 'overflow', 'hidden' );
+				}
+			}
+
 			$items.not( '.slick-initialized' ).slick( {
 				arrows: false,
 				dots: carouselSettings.dots,
@@ -308,8 +350,6 @@ jQuery( function ( $ ) {
 					} );
 				}
 			}
-
-			$items.adaptiveHeight();
 
 			var handleCarouselNavigation = function( nextSlide, refocus ) {
 				const $items = $$.find( '.sow-carousel-items' );
@@ -607,11 +647,15 @@ jQuery( function ( $ ) {
 				return false;
 			} );
 
-			if ( ! $items.data( 'adaptive_height' ) ) {
-				return;
-			}
+			if ( $items.data( 'adaptive_height' ) ) {
+				window.requestAnimationFrame(() => {
+					$items.adaptiveHeight();
 
-			$items.one( 'breakpoint', () => triggerResize( $items, settings ) );
+					if ( settings.theme === 'cards' && ! settings.dynamic_navigation ) {
+						$items.fixContainerHeight();
+					}
+				} );
+			}
 		};
 
 		let resizeTimeout;
