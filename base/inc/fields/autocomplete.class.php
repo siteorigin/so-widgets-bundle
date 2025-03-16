@@ -57,6 +57,8 @@ class SiteOrigin_Widget_Field_Autocomplete extends SiteOrigin_Widget_Field_Text_
 
 			<ul class="items"></ul>
 
+			<p class="content-no-results hidden"><?php esc_html_e( 'No results found.', 'so-widgets-bundle' ); ?></p>
+
 			<div class="buttons">
 				<a href="#" class="button-close button"><?php esc_html_e( 'Close', 'so-widgets-bundle' ); ?></a>
 			</div>
