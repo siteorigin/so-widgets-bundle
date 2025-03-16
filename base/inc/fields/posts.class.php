@@ -164,8 +164,8 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 				'type' => 'select',
 				'label' => __( 'Maximum Posts', 'so-widgets-bundle' ),
 				'options' => array(
-					'' => __( 'Load All Available Posts', 'so-widgets-bundle' ),
-					'limit' => __( 'Limit Total Posts', 'so-widgets-bundle' ),
+					'' => __( 'Load all available posts', 'so-widgets-bundle' ),
+					'limit' => __( 'Limit posts', 'so-widgets-bundle' ),
 				),
 				'state_handler' => array(
 					'post_posts_per_page[show]' => array( 'show' ),
