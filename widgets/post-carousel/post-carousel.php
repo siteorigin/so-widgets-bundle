@@ -203,6 +203,9 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		// Try to load carousel theme stylesheet.
 		wp_enqueue_style( 'sow-post-carousel-' . $theme );
 
+
+		add_action( 'wp_head', array( $this, 'prevent_potential_shifts' ), 10, 0 );
+
 		return $theme;
 	}
 
@@ -575,6 +578,33 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/carousel" target="_blank" rel="noopener noreferrer">',
 			'</a>'
 		);
+	}
+
+	/**
+	 * Prevent potential layout shifts during carousel initialization
+	 *
+	 * Adds CSS to ensure carousels have a minimum height while loading
+	 * and only become visible after Slick initialization is complete.
+	 * Uses static variable to ensure styles are only added once per page load.
+	 */
+	public function prevent_potential_shifts(): void {
+		// Use static variable to ensure this only runs once
+		static $carousel_styles_added = false;
+
+		if ( $carousel_styles_added ) {
+			return;
+		}
+		?><style type="text/css">
+			.sow-carousel-wrapper:has(.slick-initialized) {
+				visibility: visible !important;
+				opacity: 1 !important;
+			}
+
+			.sow-post-carousel-wrapper:not(:has(.slick-initialized)) .sow-carousel-items {
+				visibility: hidden;
+			}
+		</style><?php
+		$carousel_styles_added = true;
 	}
 }
 

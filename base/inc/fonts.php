@@ -1,6 +1,15 @@
 <?php
 
 return array(
+	'42dot Sans' =>
+		array(
+			0 => '300',
+			1 => 'regular',
+			2 => '500',
+			3 => '600',
+			4 => '700',
+			5 => '800',
+		),
 	'ABeeZee' =>
 		array(
 			0 => 'regular',
@@ -109,6 +118,10 @@ return array(
 		array(
 			0 => 'regular',
 			1 => '700',
+		),
+	'Agu Display' =>
+		array(
+			0 => 'regular',
 		),
 	'Aguafina Script' =>
 		array(
@@ -999,6 +1012,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Badeen Display' =>
+		array(
+			0 => 'regular',
+		),
 	'Bagel Fat One' =>
 		array(
 			0 => 'regular',
@@ -1351,7 +1368,31 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Big Shoulders' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+		),
 	'Big Shoulders Display' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+		),
+	'Big Shoulders Inline' =>
 		array(
 			0 => '100',
 			1 => '200',
@@ -1376,6 +1417,18 @@ return array(
 			8 => '900',
 		),
 	'Big Shoulders Inline Text' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+		),
+	'Big Shoulders Stencil' =>
 		array(
 			0 => '100',
 			1 => '200',
@@ -2617,6 +2670,13 @@ return array(
 			2 => '600',
 			3 => '700',
 			4 => '800',
+		),
+	'Edu AU VIC WA NT Arrows' =>
+		array(
+			0 => 'regular',
+			1 => '500',
+			2 => '600',
+			3 => '700',
 		),
 	'Edu AU VIC WA NT Dots' =>
 		array(
@@ -3929,6 +3989,14 @@ return array(
 			3 => '600',
 			4 => '700',
 		),
+	'Hind Mysuru' =>
+		array(
+			0 => '300',
+			1 => 'regular',
+			2 => '500',
+			3 => '600',
+			4 => '700',
+		),
 	'Hind Siliguri' =>
 		array(
 			0 => '300',
@@ -4023,18 +4091,18 @@ return array(
 	'IBM Plex Sans' =>
 		array(
 			0 => '100',
-			1 => '100italic',
-			2 => '200',
-			3 => '200italic',
-			4 => '300',
-			5 => '300italic',
-			6 => 'regular',
-			7 => 'italic',
-			8 => '500',
-			9 => '500italic',
-			10 => '600',
-			11 => '600italic',
-			12 => '700',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '100italic',
+			8 => '200italic',
+			9 => '300italic',
+			10 => 'italic',
+			11 => '500italic',
+			12 => '600italic',
 			13 => '700italic',
 		),
 	'IBM Plex Sans Arabic' =>
@@ -4227,8 +4295,16 @@ return array(
 		),
 	'Inclusive Sans' =>
 		array(
-			0 => 'regular',
-			1 => 'italic',
+			0 => '300',
+			1 => 'regular',
+			2 => '500',
+			3 => '600',
+			4 => '700',
+			5 => '300italic',
+			6 => 'italic',
+			7 => '500italic',
+			8 => '600italic',
+			9 => '700italic',
 		),
 	'Inconsolata' =>
 		array(
@@ -5371,6 +5447,10 @@ return array(
 			14 => '900',
 			15 => '900italic',
 		),
+	'Liter' =>
+		array(
+			0 => 'regular',
+		),
 	'Literata' =>
 		array(
 			0 => '200',
@@ -6072,6 +6152,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Monomakh' =>
+		array(
+			0 => 'regular',
+		),
 	'Monomaniac One' =>
 		array(
 			0 => 'regular',
@@ -6152,6 +6236,27 @@ return array(
 		array(
 			0 => 'regular',
 			1 => '700',
+		),
+	'Montserrat Underline' =>
+		array(
+			0 => '100',
+			1 => '200',
+			2 => '300',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
 		),
 	'Moo Lah Lah' =>
 		array(
@@ -7262,7 +7367,7 @@ return array(
 		array(
 			0 => 'regular',
 		),
-	'Noto Sans Phags Pa' =>
+	'Noto Sans PhagsPa' =>
 		array(
 			0 => 'regular',
 		),
@@ -7710,6 +7815,17 @@ return array(
 			7 => '800',
 			8 => '900',
 		),
+	'Noto Serif Hentaigana' =>
+		array(
+			0 => '200',
+			1 => '300',
+			2 => 'regular',
+			3 => '500',
+			4 => '600',
+			5 => '700',
+			6 => '800',
+			7 => '900',
+		),
 	'Noto Serif JP' =>
 		array(
 			0 => '200',
@@ -7923,6 +8039,10 @@ return array(
 			6 => '700',
 			7 => '800',
 			8 => '900',
+		),
+	'Noto Serif Todhri' =>
+		array(
+			0 => 'regular',
 		),
 	'Noto Serif Toto' =>
 		array(
@@ -8320,6 +8440,15 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Parkinsans' =>
+		array(
+			0 => '300',
+			1 => 'regular',
+			2 => '500',
+			3 => '600',
+			4 => '700',
+			5 => '800',
+		),
 	'Passero One' =>
 		array(
 			0 => 'regular',
@@ -8423,6 +8552,11 @@ return array(
 			15 => '700italic',
 			16 => '800italic',
 			17 => '900italic',
+		),
+	'Phetsarath' =>
+		array(
+			0 => 'regular',
+			1 => '700',
 		),
 	'Philosopher' =>
 		array(
@@ -8568,6 +8702,10 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite AR Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite AT' =>
 		array(
 			0 => '100',
@@ -8579,12 +8717,21 @@ return array(
 			6 => '300italic',
 			7 => 'italic',
 		),
+	'Playwrite AT Guides' =>
+		array(
+			0 => 'regular',
+			1 => 'italic',
+		),
 	'Playwrite AU NSW' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite AU NSW Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite AU QLD' =>
 		array(
@@ -8593,12 +8740,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite AU QLD Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite AU SA' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite AU SA Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite AU TAS' =>
 		array(
@@ -8607,12 +8762,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite AU TAS Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite AU VIC' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite AU VIC Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite BE VLG' =>
 		array(
@@ -8621,12 +8784,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite BE VLG Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite BE WAL' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite BE WAL Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite BR' =>
 		array(
@@ -8635,12 +8806,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite BR Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite CA' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite CA Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite CL' =>
 		array(
@@ -8649,12 +8828,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite CL Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite CO' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite CO Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite CU' =>
 		array(
@@ -8663,12 +8850,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite CU Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite CZ' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite CZ Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite DE Grund' =>
 		array(
@@ -8677,12 +8872,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite DE Grund Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite DE LA' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite DE LA Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite DE SAS' =>
 		array(
@@ -8691,12 +8894,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite DE SAS Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite DE VA' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite DE VA Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite DK Loopet' =>
 		array(
@@ -8705,12 +8916,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite DK Loopet Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite DK Uloopet' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite DK Uloopet Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite ES' =>
 		array(
@@ -8726,6 +8945,14 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite ES Deco Guides' =>
+		array(
+			0 => 'regular',
+		),
+	'Playwrite ES Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite FR Moderne' =>
 		array(
 			0 => '100',
@@ -8733,12 +8960,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite FR Moderne Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite FR Trad' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite FR Trad Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite GB J' =>
 		array(
@@ -8751,6 +8986,11 @@ return array(
 			6 => '300italic',
 			7 => 'italic',
 		),
+	'Playwrite GB J Guides' =>
+		array(
+			0 => 'regular',
+			1 => 'italic',
+		),
 	'Playwrite GB S' =>
 		array(
 			0 => '100',
@@ -8762,12 +9002,21 @@ return array(
 			6 => '300italic',
 			7 => 'italic',
 		),
+	'Playwrite GB S Guides' =>
+		array(
+			0 => 'regular',
+			1 => 'italic',
+		),
 	'Playwrite HR' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite HR Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite HR Lijeva' =>
 		array(
@@ -8776,12 +9025,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite HR Lijeva Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite HU' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite HU Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite ID' =>
 		array(
@@ -8790,12 +9047,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite ID Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite IE' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite IE Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite IN' =>
 		array(
@@ -8804,12 +9069,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite IN Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite IS' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite IS Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite IT Moderna' =>
 		array(
@@ -8818,12 +9091,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite IT Moderna Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite IT Trad' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite IT Trad Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite MX' =>
 		array(
@@ -8832,12 +9113,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite MX Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite NG Modern' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite NG Modern Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite NL' =>
 		array(
@@ -8846,12 +9135,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite NL Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite NO' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite NO Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite NZ' =>
 		array(
@@ -8860,12 +9157,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite NZ Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite PE' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite PE Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite PL' =>
 		array(
@@ -8874,12 +9179,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite PL Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite PT' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite PT Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite RO' =>
 		array(
@@ -8888,12 +9201,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite RO Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite SK' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite SK Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite TZ' =>
 		array(
@@ -8902,12 +9223,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite TZ Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite US Modern' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite US Modern Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Playwrite US Trad' =>
 		array(
@@ -8916,6 +9245,10 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite US Trad Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite VN' =>
 		array(
 			0 => '100',
@@ -8923,12 +9256,20 @@ return array(
 			2 => '300',
 			3 => 'regular',
 		),
+	'Playwrite VN Guides' =>
+		array(
+			0 => 'regular',
+		),
 	'Playwrite ZA' =>
 		array(
 			0 => '100',
 			1 => '200',
 			2 => '300',
 			3 => 'regular',
+		),
+	'Playwrite ZA Guides' =>
+		array(
+			0 => 'regular',
 		),
 	'Plus Jakarta Sans' =>
 		array(
@@ -8946,6 +9287,10 @@ return array(
 			11 => '600italic',
 			12 => '700italic',
 			13 => '800italic',
+		),
+	'Pochaevsk' =>
+		array(
+			0 => 'regular',
 		),
 	'Podkova' =>
 		array(
@@ -8984,6 +9329,14 @@ return array(
 			1 => 'italic',
 		),
 	'Pompiere' =>
+		array(
+			0 => 'regular',
+		),
+	'Ponnala' =>
+		array(
+			0 => 'regular',
+		),
+	'Ponomar' =>
 		array(
 			0 => 'regular',
 		),
@@ -9555,17 +9908,23 @@ return array(
 	'Roboto' =>
 		array(
 			0 => '100',
-			1 => '100italic',
+			1 => '200',
 			2 => '300',
-			3 => '300italic',
-			4 => 'regular',
-			5 => 'italic',
-			6 => '500',
-			7 => '500italic',
-			8 => '700',
-			9 => '700italic',
-			10 => '900',
-			11 => '900italic',
+			3 => 'regular',
+			4 => '500',
+			5 => '600',
+			6 => '700',
+			7 => '800',
+			8 => '900',
+			9 => '100italic',
+			10 => '200italic',
+			11 => '300italic',
+			12 => 'italic',
+			13 => '500italic',
+			14 => '600italic',
+			15 => '700italic',
+			16 => '800italic',
+			17 => '900italic',
 		),
 	'Roboto Condensed' =>
 		array(
@@ -10168,6 +10527,10 @@ return array(
 			0 => 'regular',
 		),
 	'Shadows Into Light Two' =>
+		array(
+			0 => 'regular',
+		),
+	'Shafarik' =>
 		array(
 			0 => 'regular',
 		),
@@ -11134,6 +11497,10 @@ return array(
 		array(
 			0 => 'regular',
 		),
+	'Triodion' =>
+		array(
+			0 => 'regular',
+		),
 	'Trirong' =>
 		array(
 			0 => '100',
@@ -11800,10 +12167,12 @@ return array(
 		array(
 			0 => '200',
 			1 => '300',
-			2 => 'regular',
-			3 => '700',
-			4 => '800',
-			5 => '900',
+			2 => '300italic',
+			3 => 'regular',
+			4 => 'italic',
+			5 => '700',
+			6 => '800',
+			7 => '900',
 		),
 	'Zen Antique' =>
 		array(

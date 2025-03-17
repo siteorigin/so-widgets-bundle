@@ -590,7 +590,15 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				if ( empty( $instance['directions']['waypoints'] ) ) {
 					unset( $instance['directions']['waypoints'] );
 				}
+
 				$directions = siteorigin_widgets_underscores_to_camel_case( $instance['directions'] );
+
+				// Google Maps has strict type checks so we need to
+				// ensure boolean values are set correctly.
+				$directions['optimizeWaypoints'] = ! empty( $directions['optimizeWaypoints'] );
+				$directions['avoidHighways'] = ! empty( $directions['avoidHighways'] );
+				$directions['avoidTolls'] = ! empty( $directions['avoidTolls'] );
+				$directions['preserveViewport'] = ! empty( $directions['preserveViewport'] );
 			}
 
 			$markerpos = isset( $markers['marker_positions'] ) ? $markers['marker_positions'] : '';

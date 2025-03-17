@@ -1,5 +1,15 @@
 == Changelog ==
 
+= 1.67.0 - 17 March 2025 =
+* SiteOrigin Widget Block: Transitioned from a single multi-select block to dedicated individual blocks for each widget, significantly improving the block editor experience.
+* Blog: Improved author avatar sizing and prevented false positive Web Application Firewall (WAF) flags.
+* Cards, Post Carousel: Enhanced resize handling after posts are loaded and fixed dot navigation.
+* Google Maps: Resolved type check issues.
+* Post Carousel: Implemented sizing improvements.
+* Recent Posts: Prevented WAF blocking.
+* General: Added more info link to legacy block and implemented preview check for widget blocks.
+* Developer: Updated Google Fonts and Font Awesome libraries.
+
 = 1.66.0 - 01 March 2025 =
 * Carousel: Improved resize handling by delaying events, ensuring adaptive height application and correct breakpoints, and reorganizing layout.
 * Cards Carousel, Post/Card Carousel: Maintained fixed container height after resize and fixed second dot display.
