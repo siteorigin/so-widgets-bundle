@@ -1,5 +1,11 @@
 == Changelog ==
 
+= 1.67.1 - 18 March 2025 =
+* Posts Query: Added no results text for improved user feedback.
+* Posts Query: Enhanced autocomplete functionality to pass post ID.
+* Video: Added click-to-play functionality for self-hosted videos.
+* General: Implemented manual widget block tests.
+
 = 1.67.0 - 17 March 2025 =
 * SiteOrigin Widget Block: Transitioned from a single multi-select block to dedicated individual blocks for each widget, significantly improving the block editor experience.
 * Blog: Improved author avatar sizing and prevented false positive Web Application Firewall (WAF) flags.
