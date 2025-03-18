@@ -137,15 +137,14 @@
 				widgetMarkup: widgetPreview.html,
 				widgetIcons: widgetPreview.icons
 			} );
-
-			if ( canLockPostSaving ) {
-				wp.data.dispatch( 'core/editor' ).unlockPostSaving();
-			}
 		} )
 		.fail( ( response ) => {
 			setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
 		} )
 		.always( () => {
+			if ( canLockPostSaving ) {
+				wp.data.dispatch( 'core/editor' ).unlockPostSaving();
+			}
 			setState( { loadingWidgetPreview: false } );
 		} );
 	}
@@ -201,7 +200,6 @@
 			} );
 
 			$mainForm.data( 'backupDisabled', true );
-			$mainForm.sowSetupForm();
 
 			if ( props.attributes.widgetData ) {
 				// If we call `setWidgetFormValues` with the last parameter
@@ -212,11 +210,26 @@
 				props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
 			}
 
-			$mainForm.on( 'change', () => {
+			$mainForm.sowSetupForm();
+
+			$mainForm.on( 'change', function() {
 				// As setAttributes doesn't support callbacks, we have to manually
 				// pass the widgetData to the preview.
 				var widgetData = sowbForms.getWidgetFormValues( $mainForm );
 				props.setAttributes( { widgetData: widgetData } );
+
+				// Set up a preview debounce timer to prevent multiple requests.
+				clearTimeout( state.previewDebounceTimer );
+
+				state.previewDebounceTimer = setTimeout( () => {
+					sowbGenerateWidgetPreview(
+						props,
+						state.loadingWidgetPreview,
+						setState,
+						widgetData,
+						props.widget.class
+					);
+				}, 300 );
 			} );
 			setState( { formInitialized: true } );
 		}
@@ -247,6 +260,7 @@
 				widgetFormHtml: '',
 				widgetPreviewHtml: '',
 				widgetSettingsChanged: false,
+				previewDebounceTimer: null,
 			};
 
 			this.state = {
@@ -476,6 +490,8 @@
 		}
 	}
 
+	const sowbUnregisteredWidgetBlocks = {};
+
 	/**
 	 * Register a SiteOrigin Widget Block.
 	 *
@@ -486,7 +502,13 @@
 	 * @param {string} widget.description - The description of the widget.
 	 * @param {Array} [widget.keywords] - An array of keywords for the widget.
 	 */
-	const setupSoWidgetBlock = function( widget ) {
+	const setupSoWidgetBlock = ( widget ) => {
+		// Skip any blocks that are manually registered.
+		if ( widget.registerBlock !== undefined && ! widget.registerBlock ) {
+			sowbUnregisteredWidgetBlocks.editor = widget;
+			return;
+		}
+
 		registerBlockType( 'sowb/' + widget.blockName, {
 			title: widget.name,
 			description: widget.description,
@@ -541,8 +563,51 @@
 	// Register all SiteOrigin Blocks.
 	sowbBlockEditorAdmin.widgets.forEach( setupSoWidgetBlock );
 
+	// Manually set up the SiteOrigin Editor widget.
+	registerBlockType( 'sowb/siteorigin-widget-editor-widget', {
+		title: __( 'SiteOrigin Editor', 'so-widgets-bundle' ),
+		description: __( 'Insert and customize content with a rich text editor offering extensive formatting options.', 'so-widgets-bundle' ),
+		icon: function() {
+			return el(
+				'span',
+				{
+					className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
+				}
+			)
+		},
+		category: 'widgets',
+		supports: {
+			html: false,
+			anchor: true,
+		},
+		attributes: {
+			widgetClass: {
+				type: 'string',
+			},
+			anchor: {
+				type: 'string',
+			},
+			widgetData: {
+				type: 'object',
+			},
+			widgetMarkup: {
+				type: 'string',
+			},
+			widgetIcons: {
+				type: 'array',
+			},
+		},
+		edit: ( props ) => el(
+			memoizedWidgetBlockEdit, { props, widget: sowbUnregisteredWidgetBlocks.editor }
+		),
+		save: function( context ) {
+			// This block is dynamic and rendered on the server.
+			return null;
+		},
+	} );
+
 	registerBlockType( 'sowb/widget-block', {
-		title: __( 'Legacy SiteOrigin Widget', 'so-widgets-bundle' ),
+		title: __( 'SiteOrigin Widgets Block', 'so-widgets-bundle' ),
 		description: __( 'This block is intended as a legacy placeholder.', 'so-widgets-bundle' ),
 		attributes: {
 			widgetClass: {
@@ -738,6 +803,7 @@ const sowbIsWidgetActive = ( widgetClass ) => {
 };
 
 let sowbMigrateBlockSubscribe = false;
+let sowbMigrationInProgress = false;
 /**
  * Migrate SiteOrigin Widget Blocks to their dedicated widget block.
  *
@@ -747,6 +813,10 @@ let sowbMigrateBlockSubscribe = false;
  * from the data store.
  */
 const sowbMigrateOldBlocks = () => {
+	if ( sowbMigrationInProgress === true ) {
+		return;
+	}
+
 	const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
 	if ( blocks.length === 0 ) {
 		return;
@@ -768,37 +838,45 @@ const sowbMigrateOldBlocks = () => {
 		return;
 	}
 
-	// Migrate the blocks.
-	legacyBlocks.forEach( currentBlock => {
-		try {
-			// Before migrating widget, confirm the widget is active.
-			if ( ! sowbIsWidgetActive( currentBlock.attributes.widgetClass ) ) {
-				// We need to update the widgetNotFound flag to indicate
-				// the widget is no longer available.
-				const attributes = { ...currentBlock.attributes };
-				attributes.widgetNotFound = true;
-				wp.data.dispatch( 'core/block-editor' ).updateBlock(
-					currentBlock.clientId,
-					{ attributes }
-				);
-				return;
-			}
+	sowbMigrationInProgress = true;
 
-			const newBlock = wp.blocks.createBlock(
-				'sowb/' + currentBlock.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
-				currentBlock.attributes
-			);
+	try {
+		legacyBlocks.forEach( currentBlock => {
+			try {
+				// Before migrating widget, confirm the widget is active.
+				if ( ! sowbIsWidgetActive( currentBlock.attributes.widgetClass ) ) {
+					// We need to update the widgetNotFound flag to indicate
+					// the widget is no longer available.
+					const attributes = { ...currentBlock.attributes };
+					attributes.widgetNotFound = true;
+					wp.data.dispatch( 'core/block-editor' ).updateBlock(
+						currentBlock.clientId,
+						{ attributes }
+					);
+					return;
+				}
 
-			if ( newBlock ) {
-				wp.data.dispatch( 'core/block-editor' ).replaceBlock(
-					currentBlock.clientId,
-					newBlock
+				const newBlock = wp.blocks.createBlock(
+					'sowb/' + currentBlock.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
+					currentBlock.attributes
 				);
+
+				if ( newBlock ) {
+					wp.data.dispatch( 'core/block-editor' ).replaceBlock(
+						currentBlock.clientId,
+						newBlock
+					);
+				}
+			} catch ( err ) {
+				console.error( 'SiteOrigin Widget Block migration failed:', err );
 			}
-		} catch ( err ) {
-			console.error( 'SiteOrigin Widget Block migration failed:', err );
-		}
-	} );
+		} );
+	} finally {
+		// Finished migrating, reset the flag.
+		setTimeout( () => {
+			sowbMigrationInProgress = false;
+		}, 100 );
+	}
 
 	if ( sowbBlockEditorAdmin.consentGiven ) {
 		return false;
