@@ -148,6 +148,10 @@ function siteorigin_widget_action_search_posts() {
 		LIMIT 20
 	", ARRAY_A );
 
+	if ( empty( $results ) ) {
+		wp_send_json( array() );
+	}
+
 	// Filter results to ensure the user can read the post.
 	$results = array_filter( $results, function( $post ) {
 
@@ -222,7 +226,7 @@ function siteorigin_widget_action_search_terms() {
 
 	$query_results = $wpdb->get_results( $query );
 	if ( empty( $query_results ) ) {
-		return array();
+		wp_send_json( array() );
 	}
 
 	foreach ( $query_results as $result ) {
