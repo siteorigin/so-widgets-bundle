@@ -228,7 +228,7 @@
 						widgetData,
 						props.widget.class
 					);
-				}, 100 );
+				}, 300 );
 			} );
 			setState( { formInitialized: true } );
 		}
