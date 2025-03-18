@@ -137,15 +137,14 @@
 				widgetMarkup: widgetPreview.html,
 				widgetIcons: widgetPreview.icons
 			} );
-
-			if ( canLockPostSaving ) {
-				wp.data.dispatch( 'core/editor' ).unlockPostSaving();
-			}
 		} )
 		.fail( ( response ) => {
 			setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
 		} )
 		.always( () => {
+			if ( canLockPostSaving ) {
+				wp.data.dispatch( 'core/editor' ).unlockPostSaving();
+			}
 			setState( { loadingWidgetPreview: false } );
 		} );
 	}
