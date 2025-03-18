@@ -200,7 +200,6 @@
 			} );
 
 			$mainForm.data( 'backupDisabled', true );
-			$mainForm.sowSetupForm();
 
 			if ( props.attributes.widgetData ) {
 				// If we call `setWidgetFormValues` with the last parameter
@@ -210,6 +209,8 @@
 			} else {
 				props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
 			}
+
+			$mainForm.sowSetupForm();
 
 			$mainForm.on( 'change', function() {
 				// As setAttributes doesn't support callbacks, we have to manually
