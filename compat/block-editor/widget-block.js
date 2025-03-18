@@ -490,10 +490,9 @@
 	 */
 	const setupSoWidgetBlock = ( widget ) => {
 		// Skip any blocks that are manually registered.
-		if ( widget.registerBlock !== 'undefined' && ! widget.registerBlock ) {
+		if ( widget.registerBlock !== undefined && ! widget.registerBlock ) {
 			sowbUnregisteredWidgetBlocks.editor = widget;
 			return;
-
 		}
 
 		registerBlockType( 'sowb/' + widget.blockName, {
