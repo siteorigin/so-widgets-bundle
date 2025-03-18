@@ -594,7 +594,7 @@
 	} );
 
 	registerBlockType( 'sowb/widget-block', {
-		title: __( 'Legacy SiteOrigin Widget', 'so-widgets-bundle' ),
+		title: __( 'SiteOrigin Widgets Block', 'so-widgets-bundle' ),
 		description: __( 'This block is intended as a legacy placeholder.', 'so-widgets-bundle' ),
 		attributes: {
 			widgetClass: {
