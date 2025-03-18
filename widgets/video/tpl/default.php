@@ -10,6 +10,7 @@
  * @var $src
  * @var $video_type
  * @var $fitvids
+ * @var $hide_controls
  */
 if ( ! empty( $instance['title'] ) ) {
 	echo $args['before_title'] . wp_kses_post( $instance['title'] ) . $args['after_title'];
@@ -43,6 +44,10 @@ if ( $skin_class != 'default' ) {
 	$video_args['class'] = 'mejs-' . $skin_class;
 }
 
+if ( ! apply_filters( 'sow_video_add_controls', $hide_controls ) ) {
+	$video_args['controls'] = '';
+}
+
 $so_video = new SiteOrigin_Video();
 
 do_action( 'siteorigin_widgets_sow-video_before_video', $instance );
@@ -52,19 +57,13 @@ do_action( 'siteorigin_widgets_sow-video_before_video', $instance );
 if ( $fitvids ) {
 	echo ' use-fitvids';
 }
-
-if ( ! $show_controls ) {
-	echo ' no-controls';
-}
 ?>">
 	<?php if ( $is_skinnable_video_host ) { ?>
 		<video
 			<?php foreach ( $video_args as $k => $v ) { ?>
-				<?php echo siteorigin_sanitize_attribute_key( $k ) . '="' . esc_attr( $v ) . '" '; ?>
-			<?php } ?>
-			<?php if ( apply_filters( 'sow_video_add_controls', $show_controls ) ) { ?>
-				<?php echo 'controls'; ?>
-			<?php } ?>
+				<?php echo siteorigin_sanitize_attribute_key( $k ) . '="' . esc_attr( $v ) . '" ';
+			}
+			?>
 		>
 			<?php foreach ( $sources as $source ) { ?>
 				<source type="<?php echo esc_attr( $source['video_type'] ); ?>" src="<?php echo esc_url( $source['src'] ); ?>"/>

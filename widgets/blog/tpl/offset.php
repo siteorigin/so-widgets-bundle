@@ -75,9 +75,9 @@
 					$time_string = sprintf(
 						$template_settings['time_string'],
 						esc_attr( get_the_date( DATE_W3C ) ),
-						esc_html( get_the_date( $template_settings['date_format'] ) ),
+						esc_html( get_the_date( $template_settings['date_output_format'] ) ),
 						esc_attr( get_the_modified_date( DATE_W3C ) ),
-						esc_html( get_the_modified_date( $template_settings['date_format'] ) )
+						esc_html( get_the_modified_date( $template_settings['date_output_format'] ) )
 					);
 					?>
 					<div class="sow-entry-meta">

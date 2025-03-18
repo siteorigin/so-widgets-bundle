@@ -148,6 +148,10 @@ function siteorigin_widget_action_search_posts() {
 		LIMIT 20
 	", ARRAY_A );
 
+	if ( empty( $results ) ) {
+		wp_send_json( array() );
+	}
+
 	// Filter results to ensure the user can read the post.
 	$results = array_filter( $results, function( $post ) {
 

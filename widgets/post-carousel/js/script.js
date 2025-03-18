@@ -44,7 +44,7 @@ jQuery( function ( $ ) {
 					$items.find( '.sow-carousel-item[tabindex="0"]' ).trigger( 'focus' );
 				}
 
-				$( sowb ).trigger( 'carousel_posts_added' );
+				$( sowb ).trigger( 'carousel_posts_added', carousel );
 			}
 		);
 	} );
