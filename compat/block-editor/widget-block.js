@@ -789,6 +789,7 @@ const sowbIsWidgetActive = ( widgetClass ) => {
 };
 
 let sowbMigrateBlockSubscribe = false;
+let sowbMigrationInProgress = false;
 /**
  * Migrate SiteOrigin Widget Blocks to their dedicated widget block.
  *
@@ -798,6 +799,10 @@ let sowbMigrateBlockSubscribe = false;
  * from the data store.
  */
 const sowbMigrateOldBlocks = () => {
+	if ( sowbMigrationInProgress === true ) {
+		return;
+	}
+
 	const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
 	if ( blocks.length === 0 ) {
 		return;
@@ -819,37 +824,45 @@ const sowbMigrateOldBlocks = () => {
 		return;
 	}
 
-	// Migrate the blocks.
-	legacyBlocks.forEach( currentBlock => {
-		try {
-			// Before migrating widget, confirm the widget is active.
-			if ( ! sowbIsWidgetActive( currentBlock.attributes.widgetClass ) ) {
-				// We need to update the widgetNotFound flag to indicate
-				// the widget is no longer available.
-				const attributes = { ...currentBlock.attributes };
-				attributes.widgetNotFound = true;
-				wp.data.dispatch( 'core/block-editor' ).updateBlock(
-					currentBlock.clientId,
-					{ attributes }
-				);
-				return;
-			}
+	sowbMigrationInProgress = true;
 
-			const newBlock = wp.blocks.createBlock(
-				'sowb/' + currentBlock.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
-				currentBlock.attributes
-			);
+	try {
+		legacyBlocks.forEach( currentBlock => {
+			try {
+				// Before migrating widget, confirm the widget is active.
+				if ( ! sowbIsWidgetActive( currentBlock.attributes.widgetClass ) ) {
+					// We need to update the widgetNotFound flag to indicate
+					// the widget is no longer available.
+					const attributes = { ...currentBlock.attributes };
+					attributes.widgetNotFound = true;
+					wp.data.dispatch( 'core/block-editor' ).updateBlock(
+						currentBlock.clientId,
+						{ attributes }
+					);
+					return;
+				}
 
-			if ( newBlock ) {
-				wp.data.dispatch( 'core/block-editor' ).replaceBlock(
-					currentBlock.clientId,
-					newBlock
+				const newBlock = wp.blocks.createBlock(
+					'sowb/' + currentBlock.attributes.widgetClass.toLowerCase().replace( /_/g, '-' ),
+					currentBlock.attributes
 				);
+
+				if ( newBlock ) {
+					wp.data.dispatch( 'core/block-editor' ).replaceBlock(
+						currentBlock.clientId,
+						newBlock
+					);
+				}
+			} catch ( err ) {
+				console.error( 'SiteOrigin Widget Block migration failed:', err );
 			}
-		} catch ( err ) {
-			console.error( 'SiteOrigin Widget Block migration failed:', err );
-		}
-	} );
+		} );
+	} finally {
+		// Finished migrating, reset the flag.
+		setTimeout( () => {
+			sowbMigrationInProgress = false;
+		}, 100 );
+	}
 
 	if ( sowbBlockEditorAdmin.consentGiven ) {
 		return false;
