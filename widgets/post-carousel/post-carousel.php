@@ -16,33 +16,72 @@ function sow_carousel_register_image_sizes() {
 add_action( 'init', 'sow_carousel_register_image_sizes' );
 
 /**
- * This function allows for users to limit the total number of posts.
+ * Handle post limits for carousel widgets.
+ *
+ * Processes query results to enforce post limits from various sources:
+ * - Global filter-based limits.
+ * - Query-specific max_posts settings.
+ * - Pagination boundaries.
+ *
+ * Calculates the correct slice of posts to display based on the current page
+ * and posts_per_page setting. Sets the 'sow-total_posts' query var for use
+ * in pagination calculations.
+ *
+ * @param WP_Query $posts The query result object containing posts.
+ * @param int $paged Current page number (0-indexed).
+ *
+ * @return WP_Query Modified query object with correct post limits applied.
  */
 function sow_carousel_handle_post_limit( $posts, $paged = 0 ) {
 	$post_limit = apply_filters( 'siteorigin_widgets_post_carousel_post_limit', false );
 
-	if ( is_numeric( $post_limit ) && $posts->found_posts > $post_limit ) {
-		$posts_per_page = $posts->query['posts_per_page'];
-		$current = $posts_per_page * ( $paged - 1 );
+	// Account for the Post Query Max Posts setting.
+	if (
+		! empty( $posts->query['max_posts'] ) &&
+		$posts->query['max_posts'] === 'limit' &&
+		! empty( $posts->query['posts_per_page'] )
+	) {
+		$post_limit = min(
+			$posts->found_posts,
+			$posts->query['posts_per_page']
+		);
+	}
 
-		if ( $current < 0 ) {
-			$current = $posts_per_page;
-		}
+	// If there's no limit, or the limit is higher than the total number of
+	// posts, return the posts without modification.
+	if ( ! is_numeric( $post_limit ) ||  $posts->found_posts < $post_limit ) {
+		set_query_var( 'sow-total_posts', $posts->found_posts );
+		return $posts;
+	}
 
-		set_query_var( 'sow-total_posts', $post_limit - 1 );
+	$posts_per_page = $posts->query['posts_per_page'];
+	$current = $posts_per_page * ( $paged - 1 );
 
-		if ( $current >= $post_limit ) {
-			// Check if we've exceeded the expected pagination.
-			if ( $current + 1 > $post_limit + $posts_per_page ) {
-				$posts->posts = null;
-			} else {
-				// Work out how many posts we need to return.
-				$posts->post_count = $post_limit % $posts_per_page;
-				$posts->posts = array_slice( $posts->posts, $current % $posts_per_page, $posts->post_count );
+	if ( $current < 0 ) {
+		$current = $posts_per_page;
+	}
+
+	set_query_var( 'sow-total_posts', $post_limit - 1 );
+
+	if ( $current >= $post_limit ) {
+		// Check if we've exceeded the expected pagination.
+		if ( $paged !== 0 && $current > $post_limit ) {
+			$posts->posts = array();
+			$posts->post_count = 0;
+		} else {
+			// We haven't. Limit the number of posts to the remaining amount.
+			$remaining = max( 1, $post_limit - ( $current - $posts_per_page ) );
+			$posts->post_count = min( $posts_per_page, $remaining );
+
+			// Make sure we're not trying to slice with zero length.
+			if ( $posts->post_count > 0 ) {
+				$posts->posts = array_slice(
+					$posts->posts,
+					0,
+					$posts->post_count
+				);
 			}
 		}
-	} else {
-		set_query_var( 'sow-total_posts', $posts->found_posts );
 	}
 
 	return $posts;
@@ -366,6 +405,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				'type' => 'posts',
 				'label' => __( 'Posts Query', 'so-widgets-bundle' ),
 				'hide' => true,
+				'max_posts' => true,
 				'fields' => array(
 					'posts_per_page' => array(
 						'label' => __( 'Posts Per Load', 'so-widgets-bundle' ),

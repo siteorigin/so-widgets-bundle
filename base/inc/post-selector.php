@@ -176,11 +176,16 @@ function siteorigin_widget_post_selector_all_post_types() {
 }
 
 /**
- * Tells us how many posts this query has
+ * Count posts for a given query.
  *
- * @return int
+ * Processes a query array and returns the total number of matching posts,
+ * taking into account offset and max_posts values.
+ *
+ * @param array|string $query The query to count posts for.
+ *
+ * @return int Total number of matching posts, adjusted for offset and limits.
  */
-function siteorigin_widget_post_selector_count_posts( $query ) {
+function siteorigin_widget_post_selector_count_posts( $query ): int {
 	$query = siteorigin_widget_post_selector_process_query( $query );
 
 	$posts = new WP_Query( $query );
@@ -188,6 +193,19 @@ function siteorigin_widget_post_selector_count_posts( $query ) {
 	// WP Query doesn't reduce found_posts by the offset value, let's do that now.
 	if ( ! empty( $query['offset'] ) && is_numeric( $query['offset'] ) ) {
 		$total = max( $posts->found_posts - $query['offset'], 0 );
+	}
+
+	// If `max_posts` is set to limit, and posts_per_page is set,
+	// limit the total to `posts_per_page`.
+	if (
+		isset( $query['max_posts'] ) &&
+		$query['max_posts'] === 'limit' &&
+		! empty( $query['posts_per_page'] )
+	) {
+		$posts->found_posts = min(
+			$posts->found_posts,
+			$query['posts_per_page']
+		);
 	}
 
 	return empty( $total ) ? $posts->found_posts : $total;
