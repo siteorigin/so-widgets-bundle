@@ -237,7 +237,7 @@ function siteorigin_widget_action_search_terms() {
 		}
 	}
 
-	wp_send_json( $results );
+	wp_send_json( apply_filters( 'siteorigin_widgets_search_terms_results', $results ) );
 }
 add_action( 'wp_ajax_so_widgets_search_terms', 'siteorigin_widget_action_search_terms' );
 
