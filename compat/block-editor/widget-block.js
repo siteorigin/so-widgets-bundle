@@ -476,6 +476,8 @@
 		}
 	}
 
+	const sowbUnregisteredWidgetBlocks = {};
+
 	/**
 	 * Register a SiteOrigin Widget Block.
 	 *
@@ -486,7 +488,14 @@
 	 * @param {string} widget.description - The description of the widget.
 	 * @param {Array} [widget.keywords] - An array of keywords for the widget.
 	 */
-	const setupSoWidgetBlock = function( widget ) {
+	const setupSoWidgetBlock = ( widget ) => {
+		// Skip any blocks that are manually registered.
+		if ( widget.registerBlock !== 'undefined' && ! widget.registerBlock ) {
+			sowbUnregisteredWidgetBlocks.editor = widget;
+			return;
+
+		}
+
 		registerBlockType( 'sowb/' + widget.blockName, {
 			title: widget.name,
 			description: widget.description,
@@ -540,6 +549,49 @@
 
 	// Register all SiteOrigin Blocks.
 	sowbBlockEditorAdmin.widgets.forEach( setupSoWidgetBlock );
+
+	// Manually set up the SiteOrigin Editor widget.
+	registerBlockType( 'sowb/siteorigin-widget-editor-widget', {
+		title: __( 'SiteOrigin Editor', 'so-widgets-bundle' ),
+		description: __( 'Insert and customize content with a rich text editor offering extensive formatting options.', 'so-widgets-bundle' ),
+		icon: function() {
+			return el(
+				'span',
+				{
+					className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
+				}
+			)
+		},
+		category: 'widgets',
+		supports: {
+			html: false,
+			anchor: true,
+		},
+		attributes: {
+			widgetClass: {
+				type: 'string',
+			},
+			anchor: {
+				type: 'string',
+			},
+			widgetData: {
+				type: 'object',
+			},
+			widgetMarkup: {
+				type: 'string',
+			},
+			widgetIcons: {
+				type: 'array',
+			},
+		},
+		edit: ( props ) => el(
+			memoizedWidgetBlockEdit, { props, widget: sowbUnregisteredWidgetBlocks.editor }
+		),
+		save: function( context ) {
+			// This block is dynamic and rendered on the server.
+			return null;
+		},
+	} );
 
 	registerBlockType( 'sowb/widget-block', {
 		title: __( 'Legacy SiteOrigin Widget', 'so-widgets-bundle' ),

@@ -223,6 +223,10 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			);
 
 			if ( $is_so_widget ) {
+				if ( $block_name === 'siteorigin-widget-editor-widget' ) {
+					$widget_data['registerBlock'] = false;
+				}
+
 				$so_widgets[] = $widget_data;
 			} else {
 				$third_party_widgets[] = $widget_data;
