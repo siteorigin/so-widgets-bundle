@@ -5,6 +5,7 @@
 	$( document ).on( 'sowsetupform', '.siteorigin-widget-field-type-posts', function( e ) {
 		const $postsField = $( this );
 		const hasCount = $postsField.find( '.sow-current-count' ).length > 0;
+		const postId = parseInt( jQuery( '#post_ID' ).val() );
 
 		if ( ! hasCount ) {
 			return;
@@ -24,7 +25,11 @@
 
 			$.post(
 				soWidgets.ajaxurl,
-				{ action: 'sow_get_posts_count', query: query },
+				{
+					action: 'sow_get_posts_count',
+					query: query,
+					postId: postId,
+				},
 				function( data ) {
 					$postsField.find( '.sow-current-count' ).text( data.posts_count );
 
