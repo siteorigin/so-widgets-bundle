@@ -164,12 +164,9 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			}
 
 			if (
-				(
-					empty( $instance['playback']['hide_controls'] ) ||
-					$instance['playback']['hide_controls'] == false
-				)
+				$video_host !== 'self' ||
+				! empty( $instance['playback']['hide_controls'] )
 			) {
-				wp_enqueue_style( 'wp-mediaelement' );
 				$load_video_js = true;
 			}
 		}
@@ -256,7 +253,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'loop'                    => ! empty( $instance['playback']['loop'] ),
 			'skin_class'              => 'default',
 			'fitvids'                 => ! empty( $instance['playback']['fitvids'] ),
-			'show_controls'           => isset( $instance['playback']['hide_controls'] ) ? $instance['playback']['hide_controls'] : false,
+			'hide_controls'           => isset( $instance['playback']['hide_controls'] ) ? $instance['playback']['hide_controls'] : false,
 		);
 
 		if ( $instance['host_type'] == 'external' && $instance['playback']['oembed'] ) {

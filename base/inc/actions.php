@@ -148,6 +148,10 @@ function siteorigin_widget_action_search_posts() {
 		LIMIT 20
 	", ARRAY_A );
 
+	if ( empty( $results ) ) {
+		wp_send_json( array() );
+	}
+
 	// Filter results to ensure the user can read the post.
 	$results = array_filter( $results, function( $post ) {
 
@@ -221,23 +225,21 @@ function siteorigin_widget_action_search_terms() {
 	$results = array();
 
 	$query_results = $wpdb->get_results( $query );
-	if ( empty( $query_results ) ) {
-		return array();
-	}
-
-	foreach ( $query_results as $result ) {
-		if ( current_user_can(
-			siteorigin_widget_get_taxonomy_capability( $result->type )
-		) ) {
-			$results[] = array(
-				'value' => $result->type . ':' . $result->value,
-				'label' => $result->label,
-				'type' => $result->type,
-			);
+	if ( ! empty( $query_results ) ) {
+		foreach ( $query_results as $result ) {
+			if ( current_user_can(
+				siteorigin_widget_get_taxonomy_capability( $result->type )
+			) ) {
+				$results[] = array(
+					'value' => $result->type . ':' . $result->value,
+					'label' => $result->label,
+					'type' => $result->type,
+				);
+			}
 		}
 	}
 
-	wp_send_json( $results );
+	wp_send_json( apply_filters( 'siteorigin_widgets_search_terms_results', $results ) );
 }
 add_action( 'wp_ajax_so_widgets_search_terms', 'siteorigin_widget_action_search_terms' );
 
