@@ -212,11 +212,24 @@
 				props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
 			}
 
-			$mainForm.on( 'change', () => {
+			$mainForm.on( 'change', function() {
 				// As setAttributes doesn't support callbacks, we have to manually
 				// pass the widgetData to the preview.
 				var widgetData = sowbForms.getWidgetFormValues( $mainForm );
 				props.setAttributes( { widgetData: widgetData } );
+
+				// Set up a preview debounce timer to prevent multiple requests.
+				clearTimeout( state.previewDebounceTimer );
+
+				state.previewDebounceTimer = setTimeout( () => {
+					sowbGenerateWidgetPreview(
+						props,
+						state.loadingWidgetPreview,
+						setState,
+						widgetData,
+						props.widget.class
+					);
+				}, 300 );
 			} );
 			setState( { formInitialized: true } );
 		}
@@ -247,6 +260,7 @@
 				widgetFormHtml: '',
 				widgetPreviewHtml: '',
 				widgetSettingsChanged: false,
+				previewDebounceTimer: null,
 			};
 
 			this.state = {
