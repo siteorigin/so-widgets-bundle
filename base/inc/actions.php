@@ -221,19 +221,17 @@ function siteorigin_widget_action_search_terms() {
 	$results = array();
 
 	$query_results = $wpdb->get_results( $query );
-	if ( empty( $query_results ) ) {
-		return array();
-	}
-
-	foreach ( $query_results as $result ) {
-		if ( current_user_can(
-			siteorigin_widget_get_taxonomy_capability( $result->type )
-		) ) {
-			$results[] = array(
-				'value' => $result->type . ':' . $result->value,
-				'label' => $result->label,
-				'type' => $result->type,
-			);
+	if ( ! empty( $query_results ) ) {
+		foreach ( $query_results as $result ) {
+			if ( current_user_can(
+				siteorigin_widget_get_taxonomy_capability( $result->type )
+			) ) {
+				$results[] = array(
+					'value' => $result->type . ':' . $result->value,
+					'label' => $result->label,
+					'type' => $result->type,
+				);
+			}
 		}
 	}
 
