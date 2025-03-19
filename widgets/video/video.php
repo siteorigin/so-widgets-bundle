@@ -183,6 +183,8 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				array( 'jquery', 'mediaelement' ),
 				SOW_BUNDLE_VERSION
 			);
+
+			wp_enqueue_style( 'mediaelement' );
 		}
 
 		parent::enqueue_frontend_scripts( $instance );

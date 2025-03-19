@@ -12,13 +12,10 @@ jQuery( function ( $ ) {
 
 		$video.each( function () {
 			const $this = $( this );
-			const $container = $this.closest( '.mejs-container' );
-			const $controls = $container.find( '.mejs-controls' );
 
 			// Do we need to set up Media Elements?
-			if ( $controls.css( 'display' ) === 'none' ) {
+			if ( typeof $.fn.mediaelementplayer === 'function' ) {
 				$this.mediaelementplayer();
-				return;
 			}
 
 			// Controls are hidden. Add click event to play/pause video.
