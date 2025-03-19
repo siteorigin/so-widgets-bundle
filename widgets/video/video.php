@@ -291,6 +291,15 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			return array();
 		}
 
+		$video_host = empty( $instance['host_type'] ) ? '' : $instance['host_type'];
+
+		// Hide controls isn't a setting for external videos.
+		if ( $video_host === 'external' ) {
+			return array(
+				'hide_controls' => true,
+			);
+		}
+
 		return array(
 			'hide_controls' => ! empty( $instance['playback']['hide_controls'] ) ? $instance['playback']['hide_controls'] : false,
 		);

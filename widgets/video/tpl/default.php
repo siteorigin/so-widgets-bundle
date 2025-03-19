@@ -44,7 +44,7 @@ if ( $skin_class != 'default' ) {
 	$video_args['class'] = 'mejs-' . $skin_class;
 }
 
-if ( ! apply_filters( 'sow_video_add_controls', $hide_controls ) ) {
+if ( $host_type === 'self' && ! apply_filters( 'sow_video_add_controls', $hide_controls ) ) {
 	$video_args['controls'] = '';
 }
 
