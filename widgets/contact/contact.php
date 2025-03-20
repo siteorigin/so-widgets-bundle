@@ -1144,8 +1144,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 				// Allow other plugins to adjust Really Simple Captcha settings.
 				$template_vars['really_simple_spam'] = apply_filters( 'siteorigin_widgets_contact_really_simple_captcha', $template_vars['really_simple_spam'] );
+				$template_vars['really_simple_spam_prefix'] = wp_rand();
 				$template_vars['really_simple_spam_image'] = $template_vars['really_simple_spam']->generate_image(
-					wp_rand(),
+					$template_vars['really_simple_spam_prefix'],
 					$template_vars['really_simple_spam']->generate_random_word()
 				);
 
@@ -1824,11 +1825,11 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			} else {
 				$captcha = new ReallySimpleCaptcha();
 				$prefix = $this->name_from_label( 'really-simple-captcha-prefix', $post_vars );
+				$response = $this->name_from_label( 'really-simple-captcha', $post_vars );
 
 				if ( ! $captcha->check(
-					$prefix,
-					$post_vars['really-simple-captcha'],
-					$this->name_from_label( 'really-simple-captcha', $post_vars )
+					! empty( $post_vars[ $prefix ] ) ? $post_vars[ $prefix ] : '',
+					! empty( $post_vars[ $response ] ) ? $post_vars[ $response ] : ''
 				) ) {
 					$errors['simple'] = __( 'Error validating your Captcha response. Please try again.', 'so-widgets-bundle' );
 				}
