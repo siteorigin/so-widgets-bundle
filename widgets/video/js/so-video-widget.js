@@ -1,6 +1,6 @@
 /* globals jQuery, sowb */
 
-let sowb = window.sowb || {};
+var sowb = window.sowb || {};
 
 jQuery( function ( $ ) {
 	sowb.setupVideoPlayers = () => {
@@ -12,11 +12,12 @@ jQuery( function ( $ ) {
 
 		$video.each( function () {
 			const $this = $( this );
-			const $container = $this.closest( '.mejs-container' );
-			const $controls = $container.find( '.mejs-controls' );
 
 			// Do we need to set up Media Elements?
-			if ( $controls.css( 'display' ) === 'none' ) {
+			if (
+				typeof $.fn.mediaelementplayer === 'function' &&
+				$this.attr( 'controls' )
+			) {
 				$this.mediaelementplayer();
 				return;
 			}
@@ -42,5 +43,3 @@ jQuery( function ( $ ) {
 
 	$( sowb ).on( 'setup_widgets', sowb.setupVideoPlayers );
 } );
-
-window.sowb = sowb;
