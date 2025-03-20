@@ -1,6 +1,6 @@
 /* globals jQuery, sowb */
 
-let sowb = window.sowb || {};
+var sowb = window.sowb || {};
 
 jQuery( function ( $ ) {
 	sowb.setupVideoPlayers = () => {
@@ -43,5 +43,3 @@ jQuery( function ( $ ) {
 
 	$( sowb ).on( 'setup_widgets', sowb.setupVideoPlayers );
 } );
-
-window.sowb = sowb;
