@@ -14,8 +14,12 @@ jQuery( function ( $ ) {
 			const $this = $( this );
 
 			// Do we need to set up Media Elements?
-			if ( typeof $.fn.mediaelementplayer === 'function' ) {
+			if (
+				typeof $.fn.mediaelementplayer === 'function' &&
+				$this.attr( 'controls' )
+			) {
 				$this.mediaelementplayer();
+				return;
 			}
 
 			// Controls are hidden. Add click event to play/pause video.
