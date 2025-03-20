@@ -24,7 +24,7 @@ $video_args = array(
 );
 
 if ( $autoplay ) {
-	$video_args['autoplay'] = 1;
+	$video_args['autoplay'] = '';
 	$video_args['playsinline'] = '';
 	// In most browsers, Videos need to be muted to autoplay.
 	if ( apply_filters( 'sow_video_autoplay_mute_self_hosted', true ) ) {
@@ -44,7 +44,7 @@ if ( $skin_class != 'default' ) {
 	$video_args['class'] = 'mejs-' . $skin_class;
 }
 
-if ( ! apply_filters( 'sow_video_add_controls', $hide_controls ) ) {
+if ( ! $hide_controls ) {
 	$video_args['controls'] = '';
 }
 
@@ -60,8 +60,16 @@ if ( $fitvids ) {
 ?>">
 	<?php if ( $is_skinnable_video_host ) { ?>
 		<video
-			<?php foreach ( $video_args as $k => $v ) { ?>
-				<?php echo siteorigin_sanitize_attribute_key( $k ) . '="' . esc_attr( $v ) . '" ';
+			<?php
+			foreach ( $video_args as $k => $v ) {
+				echo siteorigin_sanitize_attribute_key( $k );
+
+				if ( empty( $v ) ) {
+					echo ' ';
+					continue;
+				}
+				
+				echo '="' . esc_attr( $v ) . '" ';
 			}
 			?>
 		>

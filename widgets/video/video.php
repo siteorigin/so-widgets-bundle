@@ -183,6 +183,8 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				array( 'jquery', 'mediaelement' ),
 				SOW_BUNDLE_VERSION
 			);
+
+			wp_enqueue_style( 'mediaelement' );
 		}
 
 		parent::enqueue_frontend_scripts( $instance );
@@ -241,6 +243,14 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			}
 		}
 
+		$hide_controls = ! empty( $instance['playback']['hide_controls'] );
+
+		if ( $instance['host_type'] === 'self' ) {
+			$hide_controls = apply_filters( 'sow_video_add_controls', $hide_controls );
+		} else {
+			$hide_controls = $instance['playback']['oembed'];
+		}
+
 		$return = array(
 			'player_id'               => 'sow-player-' . ( $player_id ++ ),
 			'host_type'               => $instance['host_type'],
@@ -253,7 +263,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'loop'                    => ! empty( $instance['playback']['loop'] ),
 			'skin_class'              => 'default',
 			'fitvids'                 => ! empty( $instance['playback']['fitvids'] ),
-			'hide_controls'           => isset( $instance['playback']['hide_controls'] ) ? $instance['playback']['hide_controls'] : false,
+			'hide_controls'           => $hide_controls,
 		);
 
 		if ( $instance['host_type'] == 'external' && $instance['playback']['oembed'] ) {
@@ -287,6 +297,15 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 	public function get_less_variables( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
+		}
+
+		$video_host = empty( $instance['host_type'] ) ? '' : $instance['host_type'];
+
+		// Hide controls isn't a setting for external videos.
+		if ( $video_host === 'external' ) {
+			return array(
+				'hide_controls' => true,
+			);
 		}
 
 		return array(
