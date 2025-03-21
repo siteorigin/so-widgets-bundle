@@ -176,11 +176,18 @@ function siteorigin_widget_post_selector_all_post_types() {
 }
 
 /**
- * Tells us how many posts this query has
+ * Counts the total number of posts matching a query.
  *
- * @return int
+ * This function processes a post selector query and returns the total
+ * count of matching posts. It handles special query parameters like 'offset'
+ * and 'posts_limit' to provide accurate counts:
+ * - When 'offset' is set, it subtracts the offset value from the total count.
+ * - When 'posts_limit' is set, it ensures the count doesn't exceed this limit.
+ *
+ * @param string|array $query The query string or array to process.
+ * @return int The number of posts matching the query.
  */
-function siteorigin_widget_post_selector_count_posts( $query ) {
+function siteorigin_widget_post_selector_count_posts( $query ): int {
 	$query = siteorigin_widget_post_selector_process_query( $query );
 
 	$posts = new WP_Query( $query );
@@ -188,6 +195,14 @@ function siteorigin_widget_post_selector_count_posts( $query ) {
 	// WP Query doesn't reduce found_posts by the offset value, let's do that now.
 	if ( ! empty( $query['offset'] ) && is_numeric( $query['offset'] ) ) {
 		$total = max( $posts->found_posts - $query['offset'], 0 );
+	}
+
+	// If `posts_limit` is a valid number, limit the total number of posts.
+	if ( ! empty( $query['posts_limit'] ) ) {
+		$posts->found_posts = min(
+			$posts->found_posts,
+			(int) $query['posts_limit']
+		);
 	}
 
 	return empty( $total ) ? $posts->found_posts : $total;
