@@ -10,6 +10,7 @@
  * @var $src
  * @var $video_type
  * @var $fitvids
+ * @var $hide_controls
  */
 if ( ! empty( $instance['title'] ) ) {
 	echo $args['before_title'] . wp_kses_post( $instance['title'] ) . $args['after_title'];
@@ -23,7 +24,7 @@ $video_args = array(
 );
 
 if ( $autoplay ) {
-	$video_args['autoplay'] = 1;
+	$video_args['autoplay'] = '';
 	$video_args['playsinline'] = '';
 	// In most browsers, Videos need to be muted to autoplay.
 	if ( apply_filters( 'sow_video_autoplay_mute_self_hosted', true ) ) {
@@ -43,6 +44,10 @@ if ( $skin_class != 'default' ) {
 	$video_args['class'] = 'mejs-' . $skin_class;
 }
 
+if ( ! $hide_controls ) {
+	$video_args['controls'] = '';
+}
+
 $so_video = new SiteOrigin_Video();
 
 do_action( 'siteorigin_widgets_sow-video_before_video', $instance );
@@ -52,19 +57,21 @@ do_action( 'siteorigin_widgets_sow-video_before_video', $instance );
 if ( $fitvids ) {
 	echo ' use-fitvids';
 }
-
-if ( ! $show_controls ) {
-	echo ' no-controls';
-}
 ?>">
 	<?php if ( $is_skinnable_video_host ) { ?>
 		<video
-			<?php foreach ( $video_args as $k => $v ) { ?>
-				<?php echo siteorigin_sanitize_attribute_key( $k ) . '="' . esc_attr( $v ) . '" '; ?>
-			<?php } ?>
-			<?php if ( apply_filters( 'sow_video_add_controls', $show_controls ) ) { ?>
-				<?php echo 'controls'; ?>
-			<?php } ?>
+			<?php
+			foreach ( $video_args as $k => $v ) {
+				echo siteorigin_sanitize_attribute_key( $k );
+
+				if ( empty( $v ) ) {
+					echo ' ';
+					continue;
+				}
+				
+				echo '="' . esc_attr( $v ) . '" ';
+			}
+			?>
 		>
 			<?php foreach ( $sources as $source ) { ?>
 				<source type="<?php echo esc_attr( $source['video_type'] ); ?>" src="<?php echo esc_url( $source['src'] ); ?>"/>

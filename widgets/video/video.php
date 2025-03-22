@@ -9,6 +9,14 @@ Documentation: https://siteorigin.com/widgets-bundle/video-player-widget/
 */
 
 class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
+	private $skinnable_hosts = array(
+		'self' => true,
+		'youtube' => true,
+		'youtu' => true, // For shortened YouTube URLs (youtu.be).
+		'youtube-nocookie' => true,
+		'vimeo' => true
+	);
+
 	public function __construct() {
 		parent::__construct(
 			'sow-video',
@@ -139,6 +147,8 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			$video_host = ! empty( $instance['video']['external_video'] ) ? $this->get_host_from_url( $instance['video']['external_video'] ) : '';
 		}
 
+		$load_video_js = false;
+
 		if ( $this->is_skinnable_video_host( $video_host ) ) {
 			if ( $video_host == 'vimeo' && ! wp_script_is( 'froogaloop' ) ) {
 				wp_enqueue_script( 'froogaloop' );
@@ -154,28 +164,29 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			}
 
 			if (
-				! wp_style_is( 'wp-mediaelement' ) &&
-				(
-					empty( $instance['playback']['hide_controls'] ) ||
-					$instance['playback']['hide_controls'] == false
-				)
+				$video_host !== 'self' ||
+				! empty( $instance['playback']['hide_controls'] )
 			) {
-				wp_enqueue_style( 'wp-mediaelement' );
-			}
-
-			if ( ! wp_script_is( 'so-video-widget' ) ) {
-				wp_enqueue_script(
-					'so-video-widget',
-					plugin_dir_url( __FILE__ ) . 'js/so-video-widget' . SOW_BUNDLE_JS_SUFFIX . '.js',
-					array( 'jquery', 'mediaelement' ),
-					SOW_BUNDLE_VERSION
-				);
-			}
-
-			if ( ! empty( $instance['playback']['fitvids'] ) && ! wp_script_is( 'jquery-fitvids' ) ) {
-				wp_enqueue_script( 'jquery-fitvids' );
+				$load_video_js = true;
 			}
 		}
+
+		if ( ! empty( $instance['playback']['fitvids'] ) ) {
+			$load_video_js = true;
+			wp_enqueue_script( 'jquery-fitvids' );
+		}
+
+		if ( $load_video_js ) {
+			wp_enqueue_script(
+				'so-video-widget',
+				plugin_dir_url( __FILE__ ) . 'js/so-video-widget' . SOW_BUNDLE_JS_SUFFIX . '.js',
+				array( 'jquery', 'mediaelement' ),
+				SOW_BUNDLE_VERSION
+			);
+
+			wp_enqueue_style( 'mediaelement' );
+		}
+
 		parent::enqueue_frontend_scripts( $instance );
 	}
 
@@ -232,6 +243,14 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			}
 		}
 
+		$hide_controls = ! empty( $instance['playback']['hide_controls'] );
+
+		if ( $instance['host_type'] === 'self' ) {
+			$hide_controls = apply_filters( 'sow_video_add_controls', $hide_controls );
+		} else {
+			$hide_controls = $instance['playback']['oembed'];
+		}
+
 		$return = array(
 			'player_id'               => 'sow-player-' . ( $player_id ++ ),
 			'host_type'               => $instance['host_type'],
@@ -244,7 +263,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'loop'                    => ! empty( $instance['playback']['loop'] ),
 			'skin_class'              => 'default',
 			'fitvids'                 => ! empty( $instance['playback']['fitvids'] ),
-			'show_controls'           => isset( $instance['playback']['hide_controls'] ) ? $instance['playback']['hide_controls'] : false,
+			'hide_controls'           => $hide_controls,
 		);
 
 		if ( $instance['host_type'] == 'external' && $instance['playback']['oembed'] ) {
@@ -267,19 +286,26 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 	}
 
 	/**
-	 * Check if the current host is skinnable
+	 * Check if the current host is skinnable.
 	 *
-	 * @return bool
+	 * @return bool True if the host is skinnable, false otherwise.
 	 */
 	private function is_skinnable_video_host( $video_host ) {
-		global $wp_version;
-
-		return $video_host == 'self' || ( ( $video_host == 'youtube' || $video_host == 'vimeo' ) && $wp_version >= 4.2 );
+		return isset( $this->skinnable_hosts[ $video_host ] );
 	}
 
 	public function get_less_variables( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
+		}
+
+		$video_host = empty( $instance['host_type'] ) ? '' : $instance['host_type'];
+
+		// Hide controls isn't a setting for external videos.
+		if ( $video_host === 'external' ) {
+			return array(
+				'hide_controls' => true,
+			);
 		}
 
 		return array(

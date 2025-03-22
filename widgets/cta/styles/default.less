@@ -73,6 +73,8 @@
 	}
 
 	& when ( @button_align = bottom ) {
+		flex-direction: column;
+
 		.sow-cta-text {
 			text-align: center;
 		}
@@ -131,5 +133,11 @@
 				}
 			}
 		}
+	}
+
+	.sow-cta-wrapper::after {
+		clear: both;
+		content: "";
+		display: table;
 	}
 }

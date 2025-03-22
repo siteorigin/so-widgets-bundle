@@ -123,6 +123,10 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 			if ( function_exists( 'rocket_clean_post' ) ) {
 				rocket_clean_post( $id );
 			}
+
+			if ( class_exists( 'WP_Optimize' ) ) {
+				WPO_Page_Cache::instance()->delete_single_post_cache( $id );
+			}
 		}
 	}
 
@@ -153,6 +157,13 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 		if ( function_exists( 'rocket_clean_domain' ) && function_exists( 'rocket_clean_minify' ) ) {
 			rocket_clean_domain();
 			rocket_clean_minify( 'css' );
+		}
+
+		if ( class_exists( 'WP_Optimize' ) ) {
+			// WP Optimize does a filter check to see if it should purge the cache.
+			// This filter will allow us to bypass that check.
+			add_filter( 'wpo_purge_page_cache_on_activate_deactivate_plugin', '__return_true' );
+			WPO_Page_Cache::instance()->purge();
 		}
 	}
 

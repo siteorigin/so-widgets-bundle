@@ -1090,7 +1090,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	}
 
 	public function modify_instance( $instance ) {
-		if ( empty( $instance ) ) {
+		if ( empty( $instance ) || ! is_array( $instance ) ) {
 			return array();
 		}
 
@@ -1175,6 +1175,15 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$instance['settings']['filter_categories'] = false;
 		}
 
+		// Prevent WAF PHP function block.
+		if (
+			is_array( $instance['settings'] ) &&
+			isset( $instance['settings']['date_format'] )
+		) {
+			$instance['settings']['date_output_format'] = $instance['settings']['date_format'];
+			unset( $instance['settings']['date_format'] );
+		}
+
 		return $instance;
 	}
 
@@ -1233,7 +1242,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 
 		// Add template specific settings.
 		$template_settings = array(
-			'date_format' => isset( $instance['settings']['date_format'] ) ? $instance['settings']['date_format'] : null,
+			'date_output_format' => isset( $instance['settings']['date_output_format'] ) ? $instance['settings']['date_output_format'] : null,
 		);
 
 		if ( $instance['template'] == 'offset' ) {
@@ -1291,12 +1300,12 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		}
 
 		if ( $settings['date'] ) {
-			$date_format = isset( $settings['date_format'] ) ? $settings['date_format'] : null;
+			$date_output_format = isset( $settings['date_output_format'] ) ? $settings['date_output_format'] : null;
 			?>
 			<span class="sow-entry-date">
 				<a href="<?php echo esc_url( get_permalink() ); ?>" rel="bookmark">
 					<time class="published" datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
-						<?php echo esc_html( get_the_date( $date_format ) ); ?>
+						<?php echo esc_html( get_the_date( $date_output_format ) ); ?>
 					</time>
 					<time class="updated" datetime="<?php echo esc_attr( get_the_modified_date( 'c' ) ); ?>">
 						<?php echo esc_html( get_the_modified_date() ); ?>
