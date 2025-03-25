@@ -509,6 +509,11 @@
 			return;
 		}
 
+		// Don't register any blocks that don't have a blockName.
+		if ( ! widget.blockName ) {
+			return;
+		}
+
 		registerBlockType( 'sowb/' + widget.blockName, {
 			title: widget.name,
 			description: widget.description,
