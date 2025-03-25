@@ -641,44 +641,11 @@
 			const [ isAdmin, setIsAdmin ] = element.useState( false );
 			const [ isLoading, setIsLoading ] = element.useState( true );
 
-			/**
-			 * Effect hook to check if current user has admin permissions.
-			 *
-			 * Sets up wp.data subscription to monitor user permissions
-			 * state. Checks if user can update site settings to
-			 * determine admin status.
-			 *
-			 * Updates admin and loading states based on permissions check.
-			 *
-			 * @return {Function} Cleanup function that unsubscribes
-			 * from data store.
-			 */
-			wp.element.useEffect( () => {
-				const isAdminCheck = wp.data.subscribe( () => {
-					if ( typeof wp.data.select( 'core' ).canUser !== 'function' ) {
-						return;
-					}
-
-					if ( isLoading ) {
-						setIsLoading( false );
-					}
-
-					const isAdmin = wp.data.select( 'core' ).canUser( 'update', {
-						kind: 'root',
-						name: 'site',
-					} );
-
-					// If isAdmin isn't a boolean, user data is still loading.
-					if ( typeof isAdmin !== 'boolean' ) {
-						return;
-					}
-
-					setIsAdmin( isAdmin );
-
-					isAdminCheck();
+			element.useEffect( () => {
+				doesUserHaveAdminPermissions().then( hasPermission => {
+					setIsAdmin( hasPermission );
+					setIsLoading( false );
 				} );
-
-				return () => isAdminCheck();
 			}, [] );
 
 			if ( props.attributes.widgetNotFound ) {
@@ -756,6 +723,38 @@
 			return null;
 		},
 	} );
+
+	let adminPermissionCheck = null;
+	/**
+	 * Checks if current user has admin permissions to migrate widgets.
+	 * Uses a Promise to cache the result and prevent multiple API calls.
+	 *
+	 * @return {Promise<boolean>} Promise that resolves to true if user has permissions.
+	 */
+	const doesUserHaveAdminPermissions = () => {
+		// If we already have a permission check in progress, return that promise.
+		if ( adminPermissionCheck !== null ) {
+			return adminPermissionCheck;
+		}
+
+		adminPermissionCheck = new Promise( ( resolve, reject ) => {
+			jQuery.post( {
+				url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/permission',
+				beforeSend: ( xhr ) => {
+					xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
+				},
+			} )
+			.done( ( canMigrateWidgets ) => {
+				resolve(canMigrateWidgets);
+			} )
+			.fail( ( error ) => {
+				console.error('Failed to check admin permissions:', error);
+				resolve( false );
+			} );
+		} );
+
+		return adminPermissionCheck;
+	};
 } )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.blockEditor );
 
 /**
