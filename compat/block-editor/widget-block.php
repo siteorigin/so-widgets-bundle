@@ -128,37 +128,6 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$widgets_manager = SiteOrigin_Widgets_Widget_Manager::single();
 
 		$so_widgets = array();
-		// Add data for any inactive widgets.
-		foreach ( $widgets_metadata_list as $widget ) {
-			if ( $widget['Active'] ) {
-				continue;
-			}
-
-			include_once wp_normalize_path( $widget['File'] );
-
-			// The last class will always be from the widget file we just loaded.
-			$classes = get_declared_classes();
-			$widget_class = end( $classes );
-
-			// Append author's name to third-party widget names, if not already
-			// present, to help distinguish widgets with similar names.
-			if (
-				! empty( $widget['Author'] ) &&
-				$widget['Author'] != 'SiteOrigin' &&
-				strpos( $widget['Name'], $widget['Author'] ) === false
-			) {
-				$widget_name = sprintf( __( '%s by %s', 'so-widgets-bundle' ), $widget['Name'], $widget['Author'] );
-			} else {
-				$widget_name = $widget['Name'];
-			}
-
-			$so_widgets[] = array(
-				'name' => esc_html( $widget_name ),
-				'class' => esc_html( $widget_class ),
-				'description' => esc_html( $widget['Description'] ),
-				'icon' => esc_url( self::get_widget_icon( $widget['File'] ) ),
-			);
-		}
 
 		global $wp_widget_factory;
 		$third_party_widgets = array();
