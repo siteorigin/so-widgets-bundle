@@ -233,7 +233,10 @@ var sowbForms = window.sowbForms || {};
 					});
 				});
 
-				if ( ! $el.data( 'backupDisabled' ) ) {
+				if (
+					soWidgets.backup.enabled &&
+					! $el.data( 'backupDisabled' )
+				) {
 					var _sow_form_id = $el.find( '> .siteorigin-widgets-form-id' ).val();
 					var $timestampField = $el.find( '> .siteorigin-widgets-form-timestamp' );
 					var _sow_form_timestamp = parseInt( $timestampField.val() || 0 );
