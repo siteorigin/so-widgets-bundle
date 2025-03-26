@@ -273,11 +273,25 @@ var sowbForms = window.sowbForms || {};
 						}
 					}
 
+					let isUserChange = false;
+					// Add user change detection to the form to prevent unintended
+					// backups of automated changes.
+					$el.on( 'keydown mouseup touchend', ( e ) => {
+						// Don't trigger a backup if the user clicked on a section.
+						if ( $( e.target ).parent().is( '.siteorigin-widget-field-type-section' ) ) {
+							return false;
+						}
+
+						isUserChange = true;
+					} );
+
 					// Debounce backups to prevent potential performance issues.
-					$el.on( 'change', _.debounce( function() {
-						$timestampField.val( new Date().getTime() );
-						const data = sowbForms.getWidgetFormValues( $el );
-						sessionStorage.setItem( _sow_form_id, JSON.stringify( data ) );
+					$el.on( 'change', _.debounce( () => {
+						if ( isUserChange ) {
+							$timestampField.val( new Date().getTime() );
+							const data = sowbForms.getWidgetFormValues( $el );
+							sessionStorage.setItem( _sow_form_id, JSON.stringify( data ) );
+						}
 					}, 500 ) );
 				}
 			}
