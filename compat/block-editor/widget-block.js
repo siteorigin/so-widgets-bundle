@@ -691,7 +691,7 @@
 					}
 				)
 			},
-			category: 'widgets',
+			category: 'siteorigin',
 			keywords: widget.keywords ? widget.keywords : '',
 			supports: {
 				html: false,
@@ -748,6 +748,7 @@
 							}
 						)
 					},
+					category: 'siteorigin',
 					supports: {
 						html: false,
 						anchor: true,

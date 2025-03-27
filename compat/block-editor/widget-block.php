@@ -75,6 +75,22 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		register_block_type( 'sowb/widget-block', array(
 			'render_callback' => array( $this, 'render_widget_block' ),
 		) );
+
+		add_filter( 'block_categories_all', array( $this, 'setup_block_category' ), 1, 1 );
+	}
+
+	/**
+	 * Register a new block category for SiteOrigin widgets.
+	 *
+	 * @param array $categories - The existing block categories.
+	 * @return array - The updated block categories.
+	 */
+	public function setup_block_category( $categories ) {
+		$categories[] = array(
+			'slug'  => 'siteorigin',
+			'title' => __( 'SiteOrigin', 'so-widgets-bundle' ),
+		);
+		return $categories;
 	}
 
 	/**
