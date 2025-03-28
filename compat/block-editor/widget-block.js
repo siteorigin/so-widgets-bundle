@@ -409,7 +409,7 @@
 						Placeholder,
 						{
 							key: 'placeholder',
-							className: 'so-widget-placeholder',
+							className: 'so-widget-block-form',
 							label: this.props.widget.name,
 							instructions: this.props.widget.description
 						},
@@ -658,6 +658,7 @@
 					Placeholder,
 					{
 						label: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
+						className: 'so-widget-block-form'
 					},
 					el(
 						'p',
@@ -673,7 +674,7 @@
 			if ( isLoading ) {
 				return el( 'div',
 					{
-						className: 'so-widgets-spinner-container'
+						className: 'so-widget-block-form so-widgets-spinner-container'
 					},
 					el(
 						'span',
@@ -684,16 +685,21 @@
 			}
 
 			return el(
-				Placeholder,
+				'div',
 				{
-					label: __( 'Legacy SiteOrigin Widget', 'so-widgets-bundle' ),
+					className: 'so-widget-block-form'
 				},
-				el( 'p', {
-					dangerouslySetInnerHTML: {
-						__html: sowbBlockEditorAdmin.legacyNotice
-					}
-				} ),
-				isAdmin ?
+				el(
+					Placeholder,
+					{
+						label: __( 'Legacy SiteOrigin Widget', 'so-widgets-bundle' ),
+					},
+					el( 'p', {
+						dangerouslySetInnerHTML: {
+							__html: sowbBlockEditorAdmin.legacyNotice
+						}
+					} ),
+					isAdmin ?
 					el(
 						Button,
 						{
@@ -722,6 +728,7 @@
 						null,
 						__( 'Please contact your site administrator to migrate this block.', 'so-widgets-bundle' )
 					)
+				)
 			);
 		},
 		save: function () {
@@ -1048,7 +1055,7 @@ if (
 					var sowbCurrentBlocks = wp.data.select( 'core/block-editor' ).getBlocks();
 					for ( var i = 0; i < sowbCurrentBlocks.length; i++ ) {
 						if ( sowbCurrentBlocks[ i ].name.startsWith( 'sowb/' ) && sowbCurrentBlocks[ i ].isValid ) {
-							$form = jQuery( '#block-' + sowbCurrentBlocks[ i ].clientId ).find( '.so-widget-placeholder' );
+							$form = jQuery( '#block-' + sowbCurrentBlocks[ i ].clientId ).find( '.so-widget-block-form' );
 							if ( ! sowbForms.validateFields( $form, showPrompt) ) {
 							 	showPrompt = false;
 							}
