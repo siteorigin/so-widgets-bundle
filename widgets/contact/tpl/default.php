@@ -108,11 +108,6 @@ if ( is_array( $result ) && $result['status'] == 'success' ) {
 			value="<?php echo esc_attr( $this->instance_hash ); ?>"
 		/>
 
-		<input
-			type="hidden"
-			name="form_id"
-			value="<?php echo esc_attr( $form_id ); ?>"
-		/>
 		<?php wp_nonce_field( '_contact_form_submit' ); ?>
 	</form>
 	<?php
