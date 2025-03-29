@@ -239,7 +239,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			);
 
 			if ( $is_so_widget ) {
-				if ( strpos( $class, 'SiteOrigin_Widget_' ) === 0 ) {
+				// str starts with
+				if ( strpos( $class, 'SiteOrigin_Widget' ) === 0 ) {
 					$widget_data['manuallyRegister'] = true;
 				}
 
