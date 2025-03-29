@@ -634,6 +634,9 @@
 				type: 'boolean',
 			}
 		},
+		supports: {
+			inserter: false,
+		},
 		icon: function() {
 			return el(
 				'span',
