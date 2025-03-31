@@ -535,6 +535,8 @@ jQuery(function ($) {
 
 			soGoogleMapInitialize();
 			checkForBlocks();
+
+			sowb.loadGoogleMapsAPI( true );
 		} );
 	}
 
