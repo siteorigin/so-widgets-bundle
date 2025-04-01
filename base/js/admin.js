@@ -1024,11 +1024,28 @@ var sowbForms = window.sowbForms || {};
 						if ( isTable ) {
 							var table = [];
 						}
+
 						if ( itemLabel.hasOwnProperty( 'selectorArray' ) ) {
 							for ( var i = 0 ; i < itemLabel.selectorArray.length ; i++ ) {
 								selectorRow = itemLabel.selectorArray[ i ];
 								functionName = ( selectorRow.hasOwnProperty( 'valueMethod' ) && selectorRow.valueMethod ) ? selectorRow.valueMethod : 'val';
-								let foundText = $el.find( selectorRow.selector )[ functionName ]();
+								let foundText = '';
+
+								// Is this a single selector or multiple?
+								if ( ! isTable || ! selectorRow.selectorArray ) {
+									foundText = $el.find( selectorRow.selector )[ functionName ]();
+								} else {
+									// This item has multiple selectors to check.
+									// Set foundText to the first valid value found.
+									for ( var j = 0 ; j < selectorRow.selectorArray.length ; j++ ) {
+										const selector = selectorRow.selectorArray[ j ];
+										foundText = $el.find( selector.selector )[ selector.valueMethod ]();
+
+										if ( foundText ) {
+											break;
+										}
+									}
+								}
 
 								if ( isTable ) {
 									// No matter what, we need to push this value for consistent spacing.
