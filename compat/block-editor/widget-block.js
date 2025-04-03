@@ -1,4 +1,4 @@
-( function( blocks, i18n, element, components, blockEditor ) {
+( async function( blocks, i18n, element, components, blockEditor ) {
 
 	const el = element.createElement;
 	const registerBlockType = blocks.registerBlockType;
@@ -490,126 +490,6 @@
 		}
 	}
 
-	const sowbUnregisteredWidgetBlocks = {};
-
-	/**
-	 * Register a SiteOrigin Widget Block.
-	 *
-	 * @param {Object} widget - The widget configuration object.
-	 * @param {string} widget.class - The class of the widget.
-	 * @param {string} widget.blockName - The block name.
-	 * @param {string} widget.name - The display name of the widget.
-	 * @param {string} widget.description - The description of the widget.
-	 * @param {Array} [widget.keywords] - An array of keywords for the widget.
-	 */
-	const setupSoWidgetBlock = ( widget ) => {
-		// Skip any blocks that are manually registered.
-		if ( widget.registerBlock !== undefined && ! widget.registerBlock ) {
-			sowbUnregisteredWidgetBlocks.editor = widget;
-			return;
-		}
-
-		// Don't register any blocks that don't have a blockName.
-		if ( ! widget.blockName ) {
-			return;
-		}
-
-		registerBlockType( 'sowb/' + widget.blockName, {
-			title: widget.name,
-			description: widget.description,
-			icon: function() {
-				return widget.icon ?
-				el(
-					'img',
-					{
-						className: 'widget-icon so-widget-icon so-block-editor-icon',
-						src: widget.icon,
-						alt: widget.name
-					}
-				)
-				: el(
-					'span',
-					{
-						className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
-					}
-				)
-			},
-			category: 'widgets',
-			keywords: widget.keywords ? widget.keywords : '',
-			supports: {
-				html: false,
-				anchor: true,
-			},
-			attributes: {
-				widgetClass: {
-					type: 'string',
-				},
-				anchor: {
-					type: 'string',
-				},
-				widgetData: {
-					type: 'object',
-				},
-				widgetMarkup: {
-					type: 'string',
-				},
-				widgetIcons: {
-					type: 'array',
-				},
-			},
-			edit: ( props ) => el( memoizedWidgetBlockEdit, { props, widget } ),
-			save: function( context ) {
-				// This block is dynamic and rendered on the server.
-				return null;
-			},
-		} );
-	};
-
-	// Register all SiteOrigin Blocks.
-	sowbBlockEditorAdmin.widgets.forEach( setupSoWidgetBlock );
-
-	// Manually set up the SiteOrigin Editor widget.
-	registerBlockType( 'sowb/siteorigin-widget-editor-widget', {
-		title: __( 'SiteOrigin Editor', 'so-widgets-bundle' ),
-		description: __( 'Insert and customize content with a rich text editor offering extensive formatting options.', 'so-widgets-bundle' ),
-		icon: function() {
-			return el(
-				'span',
-				{
-					className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
-				}
-			)
-		},
-		category: 'widgets',
-		supports: {
-			html: false,
-			anchor: true,
-		},
-		attributes: {
-			widgetClass: {
-				type: 'string',
-			},
-			anchor: {
-				type: 'string',
-			},
-			widgetData: {
-				type: 'object',
-			},
-			widgetMarkup: {
-				type: 'string',
-			},
-			widgetIcons: {
-				type: 'array',
-			},
-		},
-		edit: ( props ) => el(
-			memoizedWidgetBlockEdit, { props, widget: sowbUnregisteredWidgetBlocks.editor }
-		),
-		save: function( context ) {
-			// This block is dynamic and rendered on the server.
-			return null;
-		},
-	} );
 
 	registerBlockType( 'sowb/widget-block', {
 		title: __( 'SiteOrigin Widgets Block', 'so-widgets-bundle' ),
@@ -767,6 +647,126 @@
 
 		return adminPermissionCheck;
 	};
+
+	const sowbManuallyRegisteredBlocks = {};
+
+	/**
+	 * Registers a SiteOrigin Widget as a block.
+	 *
+	 * This function takes a widget configuration object and registers it as
+	 * a block using the block editor API. It handles special cases like manually registered blocks and widgets without block names.
+	 *
+	 * @param {Object} widget - The widget configuration object
+	 * @param {string} widget.class - PHP class name of the widget
+	 * @param {string} widget.blockName - Block identifier (without the 'sowb/' prefix)
+	 * @param {string} widget.name - Display name shown in the block inserter
+	 * @param {string} widget.description - Block description text
+	 * @param {string} [widget.icon] - URL to the widget's icon image
+	 * @param {Array} [widget.keywords] - Search keywords for the block inserter
+	 * @param {boolean} [widget.manuallyRegister] - Whether this widget needs special registration
+	 * @return {void}
+	 */
+	const setupSoWidgetBlock = ( widget ) => {
+		// Skip any blocks that are manually registered.
+		if ( widget.manuallyRegister !== undefined && widget.manuallyRegister ) {
+			sowbManuallyRegisteredBlocks[ widget.blockName ] = widget;
+			return;
+		}
+
+		// Don't register any blocks that don't have a blockName.
+		if ( ! widget.blockName ) {
+			return;
+		}
+
+		registerBlockType( 'sowb/' + widget.blockName, {
+			title: widget.name,
+			description: widget.description,
+			icon: function() {
+				return widget.icon ?
+				el(
+					'img',
+					{
+						className: 'widget-icon so-widget-icon so-block-editor-icon',
+						src: widget.icon,
+						alt: widget.name
+					}
+				)
+				: el(
+					'span',
+					{
+						className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
+					}
+				)
+			},
+			category: 'siteorigin',
+			keywords: widget.keywords ? widget.keywords : '',
+			supports: {
+				html: false,
+				anchor: true,
+			},
+			attributes: {
+				widgetClass: {
+					type: 'string',
+				},
+				anchor: {
+					type: 'string',
+				},
+				widgetData: {
+					type: 'object',
+				},
+				widgetMarkup: {
+					type: 'string',
+				},
+				widgetIcons: {
+					type: 'array',
+				},
+			},
+			edit: ( props ) => el( memoizedWidgetBlockEdit, { props, widget } ),
+			save: function( context ) {
+				// This block is dynamic and rendered on the server.
+				return null;
+			},
+		} );
+	};
+
+	// Register all Widget Bundle widgets, and build `sowbManuallyRegisteredBlocks`.
+	await sowbBlockEditorAdmin.widgets.forEach( setupSoWidgetBlock );
+
+	// Register all of our manually registered blocks.
+	await soRegisterWidgetBlocks( sowbManuallyRegisteredBlocks );
+
+	// Modify all of the manually registered blocks with additional properties.
+	Object.entries( sowbManuallyRegisteredBlocks ).forEach( ( [ key, widget ] ) => {
+		wp.hooks.addFilter(
+			'blocks.registerBlockType',
+			'sowb/' + widget.blockName,
+			function ( settings, name ) {
+				if ( name !== 'sowb/' + widget.blockName ) {
+					return settings;
+				}
+
+				return {
+					...settings,
+					icon: function() {
+						return el(
+							'span',
+							{
+								className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
+							}
+						)
+					},
+					category: 'siteorigin',
+					supports: {
+						html: false,
+						anchor: true,
+					},
+					edit: ( props ) => el(
+						memoizedWidgetBlockEdit, { props, widget }
+					)
+				};
+			}
+		);
+	} );
 } )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.blockEditor );
 
 /**

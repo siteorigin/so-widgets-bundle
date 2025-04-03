@@ -75,6 +75,22 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		register_block_type( 'sowb/widget-block', array(
 			'render_callback' => array( $this, 'render_widget_block' ),
 		) );
+
+		add_filter( 'block_categories_all', array( $this, 'setup_block_category' ), 1, 1 );
+	}
+
+	/**
+	 * Register a new block category for SiteOrigin widgets.
+	 *
+	 * @param array $categories - The existing block categories.
+	 * @return array - The updated block categories.
+	 */
+	public function setup_block_category( $categories ) {
+		$categories[] = array(
+			'slug'  => 'siteorigin',
+			'title' => __( 'SiteOrigin', 'so-widgets-bundle' ),
+		);
+		return $categories;
 	}
 
 	/**
@@ -223,8 +239,9 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			);
 
 			if ( $is_so_widget ) {
-				if ( $block_name === 'siteorigin-widget-editor-widget' ) {
-					$widget_data['registerBlock'] = false;
+				// str starts with
+				if ( strpos( $class, 'SiteOrigin_Widget' ) === 0 ) {
+					$widget_data['manuallyRegister'] = true;
 				}
 
 				$so_widgets[] = $widget_data;
@@ -241,10 +258,22 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 	public function enqueue_widget_block_editor_assets() {
 		$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : false;
+
+		wp_enqueue_script(
+			'sowb-register-widget-blocks',
+			plugins_url( 'register-widget-blocks' . SOW_BUNDLE_JS_SUFFIX . '.js', __FILE__ ),
+			array(
+				'wp-blocks',
+				'wp-i18n',
+			),
+			SOW_BUNDLE_VERSION
+		);
+
 		wp_enqueue_script(
 			'sowb-widget-block',
 			plugins_url( 'widget-block' . SOW_BUNDLE_JS_SUFFIX . '.js', __FILE__ ),
 			array(
+				'sowb-register-widget-blocks',
 				// The WP 5.8 Widget Area requires a specific editor script to be used.
 				is_object( $current_screen ) && $current_screen->base == 'widgets' ? 'wp-edit-widgets' : 'wp-editor',
 				'wp-blocks',
