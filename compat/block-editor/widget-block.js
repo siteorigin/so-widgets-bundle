@@ -18,6 +18,8 @@
 
 	const { __, sprintf } = i18n;
 
+	const { updateCategory } = blocks;
+
 	const getAjaxErrorMsg = ( response ) => {
 		let errorMessage = '';
 		if ( response.hasOwnProperty( 'responseJSON' ) ) {
@@ -769,6 +771,17 @@
 				};
 			}
 		);
+	} );
+
+	updateCategory( 'siteorigin', {
+		icon: el( 'img', {
+			src: sowbBlockEditorAdmin.categoryIcon,
+			alt: __( 'SiteOrigin Widgets Bundle Blocks Category', 'so-widgets-bundle' ),
+			style: {
+				height: '20px',
+				width: '20px',
+			}
+		} )
 	} );
 } )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.blockEditor );
 
