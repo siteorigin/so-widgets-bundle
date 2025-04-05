@@ -654,10 +654,85 @@
 	const sowbManuallyRegisteredBlocks = {};
 
 	/**
+	 * Identifies widgets that need manual block registration.
+	 *
+	 * This function examines each widget to determine if it needs special handling:
+	 * 1. Skips and removes widgets without a blockName.
+	 * 2. Identifies widgets marked for manual registration and adds them to the
+	 *    sowbManuallyRegisteredBlocks object.
+	 * 3. Removes manually registered widgets from the general widgets list to
+	 *    prevent duplicate registration.
+	 *
+	 * @param {Object} widget - The widget configuration object.
+	 * @param {string} widget.blockName - Block identifier name.
+	 * @param {boolean} [widget.manuallyRegister] - Whether widget needs manual registration.
+	 * @param {string} widget.class - PHP class of the widget.
+	 *
+	 * @return {void}
+	 */
+	const identifyBlocksThatNeedManualRegistration = async ( widget ) => {
+		// Don't register any blocks that don't have a blockName.
+		if ( ! widget.blockName ) {
+			delete sowbBlockEditorAdmin.widgets[ widget.class ];
+			return;
+		}
+
+		// Skip any blocks that are manually registered.
+		if (
+			widget.manuallyRegister !== undefined &&
+			widget.manuallyRegister
+		) {
+			sowbManuallyRegisteredBlocks[ widget.blockName ] = widget;
+
+			delete sowbBlockEditorAdmin.widgets[ widget.class ];
+			return;
+		}
+	}
+
+	// Register all Widget Bundle widgets, and build `sowbManuallyRegisteredBlocks`.
+	await sowbBlockEditorAdmin.widgets.forEach( identifyBlocksThatNeedManualRegistration );
+
+	// Register all of our manually registered blocks.
+	await soRegisterWidgetBlocks( sowbManuallyRegisteredBlocks );
+
+	// Modify all of the manually registered blocks with additional properties.
+	Object.entries( sowbManuallyRegisteredBlocks ).forEach( ( [ key, widget ] ) => {
+		wp.hooks.addFilter(
+			'blocks.registerBlockType',
+			'sowb/' + widget.blockName,
+			function ( settings, name ) {
+				if ( name !== 'sowb/' + widget.blockName ) {
+					return settings;
+				}
+
+				return {
+					...settings,
+					icon: function() {
+						return el(
+							'span',
+							{
+								className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
+							}
+						)
+					},
+					category: 'siteorigin',
+					supports: {
+						html: false,
+						anchor: true,
+					},
+					edit: ( props ) => el(
+						memoizedWidgetBlockEdit, { props, widget }
+					)
+				};
+			}
+		);
+	} );
+
+	/**
 	 * Registers a SiteOrigin Widget as a block.
 	 *
 	 * This function takes a widget configuration object and registers it as
-	 * a block using the block editor API. It handles special cases like manually registered blocks and widgets without block names.
+	 * a block using the block editor API.
 	 *
 	 * @param {Object} widget - The widget configuration object
 	 * @param {string} widget.class - PHP class name of the widget
@@ -666,21 +741,9 @@
 	 * @param {string} widget.description - Block description text
 	 * @param {string} [widget.icon] - URL to the widget's icon image
 	 * @param {Array} [widget.keywords] - Search keywords for the block inserter
-	 * @param {boolean} [widget.manuallyRegister] - Whether this widget needs special registration
 	 * @return {void}
 	 */
 	const setupSoWidgetBlock = ( widget ) => {
-		// Skip any blocks that are manually registered.
-		if ( widget.manuallyRegister !== undefined && widget.manuallyRegister ) {
-			sowbManuallyRegisteredBlocks[ widget.blockName ] = widget;
-			return;
-		}
-
-		// Don't register any blocks that don't have a blockName.
-		if ( ! widget.blockName ) {
-			return;
-		}
-
 		registerBlockType( 'sowb/' + widget.blockName, {
 			title: widget.name,
 			description: widget.description,
@@ -732,44 +795,8 @@
 		} );
 	};
 
-	// Register all Widget Bundle widgets, and build `sowbManuallyRegisteredBlocks`.
+	// Register all blocks that haven't been manually registered.
 	await sowbBlockEditorAdmin.widgets.forEach( setupSoWidgetBlock );
-
-	// Register all of our manually registered blocks.
-	await soRegisterWidgetBlocks( sowbManuallyRegisteredBlocks );
-
-	// Modify all of the manually registered blocks with additional properties.
-	Object.entries( sowbManuallyRegisteredBlocks ).forEach( ( [ key, widget ] ) => {
-		wp.hooks.addFilter(
-			'blocks.registerBlockType',
-			'sowb/' + widget.blockName,
-			function ( settings, name ) {
-				if ( name !== 'sowb/' + widget.blockName ) {
-					return settings;
-				}
-
-				return {
-					...settings,
-					icon: function() {
-						return el(
-							'span',
-							{
-								className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
-							}
-						)
-					},
-					category: 'siteorigin',
-					supports: {
-						html: false,
-						anchor: true,
-					},
-					edit: ( props ) => el(
-						memoizedWidgetBlockEdit, { props, widget }
-					)
-				};
-			}
-		);
-	} );
 } )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.blockEditor );
 
 /**
