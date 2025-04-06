@@ -123,19 +123,34 @@ div.siteorigin-widget-form div.siteorigin-widget-field.siteorigin-widget-field-t
 		}
 	}
 
+	@supports (container-type: inline-size) {
+		container: sowb_media_field / inline-size;
+	}
+
 	.media-fallback-external {
 		width: 100%;
 
-		@media (max-width: 680px) {
-			margin-top: 1em !important;
+		@media (max-width: 1000px) {
+			margin-top: 5px !important;
 		}
 
-		@media (min-width: 680px) {
+		@media (min-width: 1000px) {
 			float: left;
 			margin-left: 25px;
 			margin-top: 2px !important;
 			max-width: 320px;
 		}
+	}
+}
+
+// Our build script doesn't handle selectors within @container rules correctly.
+// So we need to add the full selector here.
+@container sowb_media_field (max-width: 630px) {
+	div.siteorigin-widget-form div.siteorigin-widget-field.siteorigin-widget-field-type-media .media-fallback-external {
+		clear: both;
+		display: block;
+		margin-left: 0;
+		max-width: none;
 	}
 }
 
