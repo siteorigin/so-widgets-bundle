@@ -267,6 +267,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			'sowbBlockEditorAdmin',
 			array(
 				'widgets' => $so_widgets,
+				'categoryIcon' => plugins_url( 'assets/icon.svg', __FILE__ ),
 				'restUrl' => esc_url_raw( rest_url() ),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
 				'consent' => $this->hasMigrationConsent,
