@@ -233,7 +233,10 @@ var sowbForms = window.sowbForms || {};
 					});
 				});
 
-				if ( ! $el.data( 'backupDisabled' ) ) {
+				if (
+					soWidgets.backup.enabled &&
+					! $el.data( 'backupDisabled' )
+				) {
 					var _sow_form_id = $el.find( '> .siteorigin-widgets-form-id' ).val();
 					var $timestampField = $el.find( '> .siteorigin-widgets-form-timestamp' );
 					var _sow_form_timestamp = parseInt( $timestampField.val() || 0 );
@@ -270,11 +273,25 @@ var sowbForms = window.sowbForms || {};
 						}
 					}
 
+					let isUserChange = false;
+					// Add user change detection to the form to prevent unintended
+					// backups of automated changes.
+					$el.on( 'keydown mouseup touchend', ( e ) => {
+						// Don't trigger a backup if the user clicked on a section.
+						if ( $( e.target ).parent().is( '.siteorigin-widget-field-type-section' ) ) {
+							return false;
+						}
+
+						isUserChange = true;
+					} );
+
 					// Debounce backups to prevent potential performance issues.
-					$el.on( 'change', _.debounce( function() {
-						$timestampField.val( new Date().getTime() );
-						const data = sowbForms.getWidgetFormValues( $el );
-						sessionStorage.setItem( _sow_form_id, JSON.stringify( data ) );
+					$el.on( 'change', _.debounce( () => {
+						if ( isUserChange ) {
+							$timestampField.val( new Date().getTime() );
+							const data = sowbForms.getWidgetFormValues( $el );
+							sessionStorage.setItem( _sow_form_id, JSON.stringify( data ) );
+						}
 					}, 500 ) );
 				}
 			}
@@ -1007,11 +1024,28 @@ var sowbForms = window.sowbForms || {};
 						if ( isTable ) {
 							var table = [];
 						}
+
 						if ( itemLabel.hasOwnProperty( 'selectorArray' ) ) {
 							for ( var i = 0 ; i < itemLabel.selectorArray.length ; i++ ) {
 								selectorRow = itemLabel.selectorArray[ i ];
 								functionName = ( selectorRow.hasOwnProperty( 'valueMethod' ) && selectorRow.valueMethod ) ? selectorRow.valueMethod : 'val';
-								let foundText = $el.find( selectorRow.selector )[ functionName ]();
+								let foundText = '';
+
+								// Is this a single selector or multiple?
+								if ( ! isTable || ! selectorRow.selectorArray ) {
+									foundText = $el.find( selectorRow.selector )[ functionName ]();
+								} else {
+									// This item has multiple selectors to check.
+									// Set foundText to the first valid value found.
+									for ( var j = 0 ; j < selectorRow.selectorArray.length ; j++ ) {
+										const selector = selectorRow.selectorArray[ j ];
+										foundText = $el.find( selector.selector )[ selector.valueMethod ]();
+
+										if ( foundText ) {
+											break;
+										}
+									}
+								}
 
 								if ( isTable ) {
 									// No matter what, we need to push this value for consistent spacing.

@@ -64,7 +64,7 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 			</div>
 			<label>
 				<?php echo esc_html__( 'Choose Icon', 'so-widgets-bundle' ); ?>
-					
+
 				</label>
 		</div>
 
@@ -73,33 +73,36 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 		<div class="clear"></div>
 
 		<div class="siteorigin-widget-icon-selector siteorigin-widget-field-subcontainer">
-			<select class="siteorigin-widget-icon-family" >
-				<?php foreach ( $widget_icon_families as $family_id => $family_info ) { ?>
-					<option value="<?php echo esc_attr( $family_id ); ?>"
-						<?php selected( $value_family, $family_id ); ?>
-						<?php if ( ! empty( $this->icons_callback ) ) {
-							echo 'data-icons="' . esc_attr( json_encode( $family_info ) ) . '"';
-						} ?>
-						>
-						<?php echo esc_html( $family_info['name'] ); ?> (<?php echo count( $family_info['icons'] ); ?>)
-					</option>
-				<?php } ?>
-			</select>
+			<div class="siteorigin-widget-icon-selector-header">
+				<select class="siteorigin-widget-icon-family" >
+					<?php foreach ( $widget_icon_families as $family_id => $family_info ) { ?>
+						<option value="<?php echo esc_attr( $family_id ); ?>"
+							<?php selected( $value_family, $family_id ); ?>
+							<?php if ( ! empty( $this->icons_callback ) ) {
+								echo 'data-icons="' . esc_attr( json_encode( $family_info ) ) . '"';
+							} ?>
+							>
+							<?php echo esc_html( $family_info['name'] ); ?> (<?php echo count( $family_info['icons'] ); ?>)
+						</option>
+					<?php } ?>
+				</select>
 
-			<?php if ( ! empty( $widget_icon_families[$value_family]['styles'] ) ) {
-				$family_styles = $widget_icon_families[ $value_family ]['styles'];
-				?>
-			<select class="siteorigin-widget-icon-family-styles">
-				<?php foreach ( $family_styles as $family_style => $family_style_name ) { ?>
-					<option value="<?php echo esc_attr( $family_style ); ?>"
-							<?php selected( $value_parts['style'], $family_style ); ?>>
-						<?php echo esc_html( $family_style_name ); ?>
-					</option>
-				<?php } ?>
-			</select>
-			<?php }?>
+				<?php if ( ! empty( $widget_icon_families[$value_family]['styles'] ) ) {
+					$family_styles = $widget_icon_families[ $value_family ]['styles'];
+					?>
+				<select class="siteorigin-widget-icon-family-styles">
+					<?php foreach ( $family_styles as $family_style => $family_style_name ) { ?>
+						<option value="<?php echo esc_attr( $family_style ); ?>"
+								<?php selected( $value_parts['style'], $family_style ); ?>>
+							<?php echo esc_html( $family_style_name ); ?>
+						</option>
+					<?php } ?>
+				</select>
+				<?php }?>
 
-			<input type="search" class="siteorigin-widget-icon-search" placeholder="<?php esc_attr_e( 'Search Icons', 'so-widgets-bundle' ); ?>" />
+				<input type="search" class="siteorigin-widget-icon-search" placeholder="<?php esc_attr_e( 'Search Icons', 'so-widgets-bundle' ); ?>" />
+
+			</div>
 
 			<input
 				type="hidden"

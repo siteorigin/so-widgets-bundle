@@ -1,4 +1,4 @@
-( function( blocks, i18n, element, components, blockEditor ) {
+( async function( blocks, i18n, element, components, blockEditor ) {
 
 	const el = element.createElement;
 	const registerBlockType = blocks.registerBlockType;
@@ -17,6 +17,8 @@
 	} = components;
 
 	const { __, sprintf } = i18n;
+
+	const { updateCategory } = blocks;
 
 	const getAjaxErrorMsg = ( response ) => {
 		let errorMessage = '';
@@ -409,7 +411,7 @@
 						Placeholder,
 						{
 							key: 'placeholder',
-							className: 'so-widget-placeholder',
+							className: 'so-widget-block-form',
 							label: this.props.widget.name,
 							instructions: this.props.widget.description
 						},
@@ -490,25 +492,274 @@
 		}
 	}
 
-	const sowbUnregisteredWidgetBlocks = {};
+
+	registerBlockType( 'sowb/widget-block', {
+		title: __( 'SiteOrigin Widgets Block', 'so-widgets-bundle' ),
+		description: __( 'This block is intended as a legacy placeholder.', 'so-widgets-bundle' ),
+		attributes: {
+			widgetClass: {
+				type: 'string',
+			},
+			anchor: {
+				type: 'string',
+			},
+			widgetData: {
+				type: 'object',
+			},
+			widgetMarkup: {
+				type: 'string',
+			},
+			widgetIcons: {
+				type: 'array',
+			},
+			widgetNotFound: {
+				type: 'boolean',
+			}
+		},
+		supports: {
+			inserter: false,
+		},
+		icon: function() {
+			return el(
+				'span',
+				{
+					className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
+				}
+			)
+		},
+		edit: function( props ) {
+			const [ isAdmin, setIsAdmin ] = element.useState( false );
+			const [ isLoading, setIsLoading ] = element.useState( true );
+
+			element.useEffect( () => {
+				doesUserHaveAdminPermissions().then( hasPermission => {
+					setIsAdmin( hasPermission );
+					setIsLoading( false );
+				} );
+			}, [] );
+
+			if ( props.attributes.widgetNotFound ) {
+				return el(
+					Placeholder,
+					{
+						label: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
+						className: 'so-widget-block-form'
+					},
+					el(
+						'p',
+						null,
+						sprintf(
+							__( 'The widget for %s cannot be found.', 'so-widgets-bundle' ),
+							props.attributes.widgetClass
+						)
+					)
+				);
+			}
+
+			if ( isLoading ) {
+				return el( 'div',
+					{
+						className: 'so-widget-block-form so-widgets-spinner-container'
+					},
+					el(
+						'span',
+						null,
+						el( Spinner )
+					)
+				);
+			}
+
+			return el(
+				'div',
+				{
+					className: 'so-widget-block-form'
+				},
+				el(
+					Placeholder,
+					{
+						label: __( 'Legacy SiteOrigin Widget', 'so-widgets-bundle' ),
+					},
+					el( 'p', {
+						dangerouslySetInnerHTML: {
+							__html: sowbBlockEditorAdmin.legacyNotice
+						}
+					} ),
+					isAdmin ?
+					el(
+						Button,
+						{
+							isPrimary: true,
+							onClick: () => {
+								setIsLoading(true);
+
+								// Migrate the blocks.
+								setTimeout( () => {
+									sowbBlockEditorAdmin.consent = true;
+									sowbBlockEditorAdmin.consentGiven = true;
+									sowbMigrateOldBlocks();
+								}, 0 );
+
+								// Log the user's consent.
+								jQuery.post( ajaxurl, {
+									action: 'so_widgets_block_migration_notice_consent',
+									nonce: sowbBlockEditorAdmin.migrationNotice
+								} );
+							},
+						},
+						__( 'Migrate to New Block Format', 'so-widgets-bundle' )
+					) :
+					el(
+						'span',
+						null,
+						__( 'Please contact your site administrator to migrate this block.', 'so-widgets-bundle' )
+					)
+				)
+			);
+		},
+		save: function () {
+			return null;
+		},
+	} );
+
+	let adminPermissionCheck = null;
+	/**
+	 * Checks if current user has admin permissions to migrate widgets.
+	 * Uses a Promise to cache the result and prevent multiple API calls.
+	 *
+	 * @return {Promise<boolean>} Promise that resolves to true if user has permissions.
+	 */
+	const doesUserHaveAdminPermissions = () => {
+		// If we already have a permission check in progress, return that promise.
+		if ( adminPermissionCheck !== null ) {
+			return adminPermissionCheck;
+		}
+
+		adminPermissionCheck = new Promise( ( resolve, reject ) => {
+			jQuery.post( {
+				url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/permission',
+				beforeSend: ( xhr ) => {
+					xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
+				},
+			} )
+			.done( ( canMigrateWidgets ) => {
+				resolve(canMigrateWidgets);
+			} )
+			.fail( ( error ) => {
+				console.error('Failed to check admin permissions:', error);
+				resolve( false );
+			} );
+		} );
+
+		return adminPermissionCheck;
+	};
+
+	const sowbManuallyRegisteredBlocks = {};
 
 	/**
-	 * Register a SiteOrigin Widget Block.
+	 * Identifies widgets that need manual block registration.
+	 *
+	 * This function examines each widget to determine if it needs special handling:
+	 * 1. Skips and removes widgets without a blockName.
+	 * 2. Identifies widgets marked for manual registration and adds them to the
+	 *    sowbManuallyRegisteredBlocks object.
+	 * 3. Removes manually registered widgets from the general widgets list to
+	 *    prevent duplicate registration.
 	 *
 	 * @param {Object} widget - The widget configuration object.
-	 * @param {string} widget.class - The class of the widget.
-	 * @param {string} widget.blockName - The block name.
-	 * @param {string} widget.name - The display name of the widget.
-	 * @param {string} widget.description - The description of the widget.
-	 * @param {Array} [widget.keywords] - An array of keywords for the widget.
+	 * @param {string} widget.blockName - Block identifier name.
+	 * @param {boolean} [widget.manuallyRegister] - Whether widget needs manual registration.
+	 * @param {string} widget.class - PHP class of the widget.
+	 * @param {key} key - The key of the widget in the widgets list.
+	 *
+	 * @return {void}
 	 */
-	const setupSoWidgetBlock = ( widget ) => {
-		// Skip any blocks that are manually registered.
-		if ( widget.registerBlock !== undefined && ! widget.registerBlock ) {
-			sowbUnregisteredWidgetBlocks.editor = widget;
+	const identifyBlocksThatNeedManualRegistration = async ( widget, key ) => {
+		// Don't register any blocks that don't have a blockName.
+		if ( ! widget.blockName ) {
+			delete sowbBlockEditorAdmin.widgets[ key ];
 			return;
 		}
 
+		// Skip any blocks that are manually registered.
+		if (
+			widget.manuallyRegister !== undefined &&
+			widget.manuallyRegister
+		) {
+			sowbManuallyRegisteredBlocks[ widget.blockName ] = widget;
+
+			delete sowbBlockEditorAdmin.widgets[ key ];
+			return;
+		}
+	}
+
+	// Register all Widget Bundle widgets, and build `sowbManuallyRegisteredBlocks`.
+	await Promise.all(
+		Object.entries( sowbBlockEditorAdmin.widgets ).map( async ( [ key, widget ] ) => {
+			identifyBlocksThatNeedManualRegistration( widget, key );
+		} )
+	);
+
+	// Register all of our manually registered blocks.
+	await soRegisterWidgetBlocks( sowbManuallyRegisteredBlocks );
+
+	// Modify all of the manually registered blocks with additional properties.
+	Object.entries( sowbManuallyRegisteredBlocks ).forEach( ( [ key, widget ] ) => {
+		wp.hooks.addFilter(
+			'blocks.registerBlockType',
+			'sowb/' + widget.blockName,
+			function ( settings, name ) {
+				if ( name !== 'sowb/' + widget.blockName ) {
+					return settings;
+				}
+
+				return {
+					...settings,
+					icon: function() {
+						return widget.icon ?
+							el(
+								'img',
+								{
+									className: 'widget-icon so-widget-icon so-block-editor-icon',
+									src: widget.icon,
+									alt: widget.name
+								}
+							)
+							: el(
+								'span',
+								{
+									className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
+								}
+							)
+					},
+					category: 'siteorigin',
+					supports: {
+						html: false,
+						anchor: true,
+					},
+					edit: ( props ) => el(
+						memoizedWidgetBlockEdit, { props, widget }
+					)
+				};
+			}
+		);
+	} );
+
+	/**
+	 * Registers a SiteOrigin Widget as a block.
+	 *
+	 * This function takes a widget configuration object and registers it as
+	 * a block using the block editor API.
+	 *
+	 * @param {Object} widget - The widget configuration object
+	 * @param {string} widget.class - PHP class name of the widget
+	 * @param {string} widget.blockName - Block identifier (without the 'sowb/' prefix)
+	 * @param {string} widget.name - Display name shown in the block inserter
+	 * @param {string} widget.description - Block description text
+	 * @param {string} [widget.icon] - URL to the widget's icon image
+	 * @param {Array} [widget.keywords] - Search keywords for the block inserter
+	 * @return {void}
+	 */
+	const setupSoWidgetBlock = ( widget ) => {
 		registerBlockType( 'sowb/' + widget.blockName, {
 			title: widget.name,
 			description: widget.description,
@@ -529,7 +780,7 @@
 					}
 				)
 			},
-			category: 'widgets',
+			category: 'siteorigin',
 			keywords: widget.keywords ? widget.keywords : '',
 			supports: {
 				html: false,
@@ -560,201 +811,19 @@
 		} );
 	};
 
-	// Register all SiteOrigin Blocks.
-	sowbBlockEditorAdmin.widgets.forEach( setupSoWidgetBlock );
+	// Register all blocks that haven't been manually registered.
+	await sowbBlockEditorAdmin.widgets.forEach( setupSoWidgetBlock );
 
-	// Manually set up the SiteOrigin Editor widget.
-	registerBlockType( 'sowb/siteorigin-widget-editor-widget', {
-		title: __( 'SiteOrigin Editor', 'so-widgets-bundle' ),
-		description: __( 'Insert and customize content with a rich text editor offering extensive formatting options.', 'so-widgets-bundle' ),
-		icon: function() {
-			return el(
-				'span',
-				{
-					className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
-				}
-			)
-		},
-		category: 'widgets',
-		supports: {
-			html: false,
-			anchor: true,
-		},
-		attributes: {
-			widgetClass: {
-				type: 'string',
-			},
-			anchor: {
-				type: 'string',
-			},
-			widgetData: {
-				type: 'object',
-			},
-			widgetMarkup: {
-				type: 'string',
-			},
-			widgetIcons: {
-				type: 'array',
-			},
-		},
-		edit: ( props ) => el(
-			memoizedWidgetBlockEdit, { props, widget: sowbUnregisteredWidgetBlocks.editor }
-		),
-		save: function( context ) {
-			// This block is dynamic and rendered on the server.
-			return null;
-		},
-	} );
-
-	registerBlockType( 'sowb/widget-block', {
-		title: __( 'SiteOrigin Widgets Block', 'so-widgets-bundle' ),
-		description: __( 'This block is intended as a legacy placeholder.', 'so-widgets-bundle' ),
-		attributes: {
-			widgetClass: {
-				type: 'string',
-			},
-			anchor: {
-				type: 'string',
-			},
-			widgetData: {
-				type: 'object',
-			},
-			widgetMarkup: {
-				type: 'string',
-			},
-			widgetIcons: {
-				type: 'array',
-			},
-			widgetNotFound: {
-				type: 'boolean',
+  // Add SiteOrigin Widgets Bundle Block Category Meta.
+	updateCategory( 'siteorigin', {
+		icon: el( 'img', {
+			src: sowbBlockEditorAdmin.categoryIcon,
+			alt: __( 'SiteOrigin Widgets Bundle Blocks Category', 'so-widgets-bundle' ),
+			style: {
+				height: '20px',
+				width: '20px',
 			}
-		},
-		icon: function() {
-			return el(
-				'span',
-				{
-					className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
-				}
-			)
-		},
-		edit: function( props ) {
-			const [ isAdmin, setIsAdmin ] = element.useState( false );
-			const [ isLoading, setIsLoading ] = element.useState( true );
-
-			/**
-			 * Effect hook to check if current user has admin permissions.
-			 *
-			 * Sets up wp.data subscription to monitor user permissions
-			 * state. Checks if user can update site settings to
-			 * determine admin status.
-			 *
-			 * Updates admin and loading states based on permissions check.
-			 *
-			 * @return {Function} Cleanup function that unsubscribes
-			 * from data store.
-			 */
-			wp.element.useEffect( () => {
-				const isAdminCheck = wp.data.subscribe( () => {
-					if ( typeof wp.data.select( 'core' ).canUser !== 'function' ) {
-						return;
-					}
-
-					if ( isLoading ) {
-						setIsLoading( false );
-					}
-
-					const isAdmin = wp.data.select( 'core' ).canUser( 'update', {
-						kind: 'root',
-						name: 'site',
-					} );
-
-					// If isAdmin isn't a boolean, user data is still loading.
-					if ( typeof isAdmin !== 'boolean' ) {
-						return;
-					}
-
-					setIsAdmin( isAdmin );
-
-					isAdminCheck();
-				} );
-
-				return () => isAdminCheck();
-			}, [] );
-
-			if ( props.attributes.widgetNotFound ) {
-				return el(
-					Placeholder,
-					{
-						label: __( 'SiteOrigin Widget', 'so-widgets-bundle' ),
-					},
-					el(
-						'p',
-						null,
-						sprintf(
-							__( 'The widget for %s cannot be found.', 'so-widgets-bundle' ),
-							props.attributes.widgetClass
-						)
-					)
-				);
-			}
-
-			if ( isLoading ) {
-				return el( 'div',
-					{
-						className: 'so-widgets-spinner-container'
-					},
-					el(
-						'span',
-						null,
-						el( Spinner )
-					)
-				);
-			}
-
-			return el(
-				Placeholder,
-				{
-					label: __( 'Legacy SiteOrigin Widget', 'so-widgets-bundle' ),
-				},
-				el( 'p', {
-					dangerouslySetInnerHTML: {
-						__html: sowbBlockEditorAdmin.legacyNotice
-					}
-				} ),
-				isAdmin ?
-					el(
-						Button,
-						{
-							isPrimary: true,
-							onClick: () => {
-								setIsLoading(true);
-
-								// Migrate the blocks.
-								setTimeout( () => {
-									sowbBlockEditorAdmin.consent = true;
-									sowbBlockEditorAdmin.consentGiven = true;
-									sowbMigrateOldBlocks();
-								}, 0 );
-
-								// Log the user's consent.
-								jQuery.post( ajaxurl, {
-									action: 'so_widgets_block_migration_notice_consent',
-									nonce: sowbBlockEditorAdmin.migrationNotice
-								} );
-							},
-						},
-						__( 'Migrate to New Block Format', 'so-widgets-bundle' )
-					) :
-					el(
-						'span',
-						null,
-						__( 'Please contact your site administrator to migrate this block.', 'so-widgets-bundle' )
-					)
-			);
-		},
-		save: function () {
-			return null;
-		},
+		} )
 	} );
 } )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.blockEditor );
 
@@ -1044,7 +1113,7 @@ if (
 					var sowbCurrentBlocks = wp.data.select( 'core/block-editor' ).getBlocks();
 					for ( var i = 0; i < sowbCurrentBlocks.length; i++ ) {
 						if ( sowbCurrentBlocks[ i ].name.startsWith( 'sowb/' ) && sowbCurrentBlocks[ i ].isValid ) {
-							$form = jQuery( '#block-' + sowbCurrentBlocks[ i ].clientId ).find( '.so-widget-placeholder' );
+							$form = jQuery( '#block-' + sowbCurrentBlocks[ i ].clientId ).find( '.so-widget-block-form' );
 							if ( ! sowbForms.validateFields( $form, showPrompt) ) {
 							 	showPrompt = false;
 							}

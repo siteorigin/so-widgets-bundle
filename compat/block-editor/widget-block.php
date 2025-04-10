@@ -75,6 +75,22 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		register_block_type( 'sowb/widget-block', array(
 			'render_callback' => array( $this, 'render_widget_block' ),
 		) );
+
+		add_filter( 'block_categories_all', array( $this, 'setup_block_category' ), 1, 1 );
+	}
+
+	/**
+	 * Register a new block category for SiteOrigin widgets.
+	 *
+	 * @param array $categories - The existing block categories.
+	 * @return array - The updated block categories.
+	 */
+	public function setup_block_category( $categories ) {
+		$categories[] = array(
+			'slug'  => 'siteorigin',
+			'title' => __( 'SiteOrigin', 'so-widgets-bundle' ),
+		);
+		return $categories;
 	}
 
 	/**
@@ -128,37 +144,6 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$widgets_manager = SiteOrigin_Widgets_Widget_Manager::single();
 
 		$so_widgets = array();
-		// Add data for any inactive widgets.
-		foreach ( $widgets_metadata_list as $widget ) {
-			if ( $widget['Active'] ) {
-				continue;
-			}
-
-			include_once wp_normalize_path( $widget['File'] );
-
-			// The last class will always be from the widget file we just loaded.
-			$classes = get_declared_classes();
-			$widget_class = end( $classes );
-
-			// Append author's name to third-party widget names, if not already
-			// present, to help distinguish widgets with similar names.
-			if (
-				! empty( $widget['Author'] ) &&
-				$widget['Author'] != 'SiteOrigin' &&
-				strpos( $widget['Name'], $widget['Author'] ) === false
-			) {
-				$widget_name = sprintf( __( '%s by %s', 'so-widgets-bundle' ), $widget['Name'], $widget['Author'] );
-			} else {
-				$widget_name = $widget['Name'];
-			}
-
-			$so_widgets[] = array(
-				'name' => esc_html( $widget_name ),
-				'class' => esc_html( $widget_class ),
-				'description' => esc_html( $widget['Description'] ),
-				'icon' => esc_url( self::get_widget_icon( $widget['File'] ) ),
-			);
-		}
 
 		global $wp_widget_factory;
 		$third_party_widgets = array();
@@ -223,8 +208,9 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			);
 
 			if ( $is_so_widget ) {
-				if ( $block_name === 'siteorigin-widget-editor-widget' ) {
-					$widget_data['registerBlock'] = false;
+				// str starts with
+				if ( strpos( $class, 'SiteOrigin_Widget' ) === 0 ) {
+					$widget_data['manuallyRegister'] = true;
 				}
 
 				$so_widgets[] = $widget_data;
@@ -241,10 +227,22 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 	public function enqueue_widget_block_editor_assets() {
 		$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : false;
+
+		wp_enqueue_script(
+			'sowb-register-widget-blocks',
+			plugins_url( 'register-widget-blocks' . SOW_BUNDLE_JS_SUFFIX . '.js', __FILE__ ),
+			array(
+				'wp-blocks',
+				'wp-i18n',
+			),
+			SOW_BUNDLE_VERSION
+		);
+
 		wp_enqueue_script(
 			'sowb-widget-block',
 			plugins_url( 'widget-block' . SOW_BUNDLE_JS_SUFFIX . '.js', __FILE__ ),
 			array(
+				'sowb-register-widget-blocks',
 				// The WP 5.8 Widget Area requires a specific editor script to be used.
 				is_object( $current_screen ) && $current_screen->base == 'widgets' ? 'wp-edit-widgets' : 'wp-editor',
 				'wp-blocks',
@@ -269,6 +267,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			'sowbBlockEditorAdmin',
 			array(
 				'widgets' => $so_widgets,
+				'categoryIcon' => plugins_url( 'assets/icon.svg', __FILE__ ),
 				'restUrl' => esc_url_raw( rest_url() ),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
 				'consent' => $this->hasMigrationConsent,

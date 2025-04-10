@@ -39,6 +39,13 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 			),
 			'permission_callback' => array( $this, 'permissions_check' ),
 		) );
+
+		$subresource = 'permission';
+		register_rest_route( $namespace, '/' . $resource . '/' . $subresource, array(
+			'methods' => WP_REST_Server::CREATABLE,
+			'callback' => array( $this, 'can_user_migrate_widgets' ),
+			'permission_callback' => array( $this, 'permissions_check' ),
+		) );
 	}
 
 	/**
@@ -136,5 +143,17 @@ class SiteOrigin_Widgets_Resource extends WP_REST_Controller {
 				$request
 			)
 		);
+	}
+
+	/**
+	 * Checks if current user can migrate widgets.
+	 *
+	 * Determines if the current user has permission to migrate widgets
+	 * by checking if they have the 'manage_options' capability.
+	 *
+	 * @return bool True if user can migrate widgets, false otherwise.
+	 */
+	public function can_user_migrate_widgets(): bool {
+		return current_user_can( 'manage_options' );
 	}
 }

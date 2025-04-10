@@ -93,7 +93,7 @@ $tag = siteorigin_widget_valid_tag(
 					<?php } ?>
 
 					<?php if ( ! empty( $feature['title'] ) ) { ?>
-						<<?php echo esc_html( $tag ); ?>>
+						<<?php echo esc_html( $tag ); ?> class="sow-features-feature-title">
 							<?php if ( ! empty( $feature['more_url'] ) && $instance['title_link'] && empty( $instance['link_feature'] ) ) { ?>
 								<a
 									href="<?php echo sow_esc_url( $feature['more_url'] ); ?>"
@@ -109,7 +109,9 @@ $tag = siteorigin_widget_valid_tag(
 					<?php } ?>
 
 					<?php if ( ! empty( $feature['text'] ) ) { ?>
+						<div class="sow-features-feature-text">
 						<?php echo wp_kses_post( do_shortcode( $feature['text'] ) ); ?>
+						</div>
 					<?php } ?>
 
 					<?php if ( $right_left_read_more ) { ?>

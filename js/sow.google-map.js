@@ -228,7 +228,7 @@ sowb.SiteOriginGoogleMap = function($) {
 			}
 
 			markerOptions.content = this.drawMarkerEl( icon );
-			return 	new window.google.maps.marker.AdvancedMarkerElement( markerOptions )
+			return new window.google.maps.marker.AdvancedMarkerElement( markerOptions )
 		},
 
 		showMarkers: function(markerPositions, map, options) {
@@ -535,6 +535,8 @@ jQuery(function ($) {
 
 			soGoogleMapInitialize();
 			checkForBlocks();
+
+			sowb.loadGoogleMapsAPI( true );
 		} );
 	}
 

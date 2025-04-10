@@ -681,6 +681,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					'actions' => __( 'Actions', 'so-widgets-bundle' ),
 				),
 				'backup' => array(
+					'enabled' => apply_filters( 'siteorigin_widgets_backup', true ),
 					'newerVersion' => __( "There is a newer version of this widget's content available.", 'so-widgets-bundle' ),
 					'restore' => __( 'Restore', 'so-widgets-bundle' ),
 					'dismiss' => __( 'Dismiss', 'so-widgets-bundle' ),
