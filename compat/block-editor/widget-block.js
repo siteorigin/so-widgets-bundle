@@ -669,13 +669,14 @@
 	 * @param {string} widget.blockName - Block identifier name.
 	 * @param {boolean} [widget.manuallyRegister] - Whether widget needs manual registration.
 	 * @param {string} widget.class - PHP class of the widget.
+	 * @param {key} key - The key of the widget in the widgets list.
 	 *
 	 * @return {void}
 	 */
-	const identifyBlocksThatNeedManualRegistration = async ( widget ) => {
+	const identifyBlocksThatNeedManualRegistration = async ( widget, key ) => {
 		// Don't register any blocks that don't have a blockName.
 		if ( ! widget.blockName ) {
-			delete sowbBlockEditorAdmin.widgets[ widget.class ];
+			delete sowbBlockEditorAdmin.widgets[ key ];
 			return;
 		}
 
@@ -686,13 +687,17 @@
 		) {
 			sowbManuallyRegisteredBlocks[ widget.blockName ] = widget;
 
-			delete sowbBlockEditorAdmin.widgets[ widget.class ];
+			delete sowbBlockEditorAdmin.widgets[ key ];
 			return;
 		}
 	}
 
 	// Register all Widget Bundle widgets, and build `sowbManuallyRegisteredBlocks`.
-	await sowbBlockEditorAdmin.widgets.forEach( identifyBlocksThatNeedManualRegistration );
+	await Promise.all(
+		Object.entries( sowbBlockEditorAdmin.widgets ).map( async ( [ key, widget ] ) => {
+			identifyBlocksThatNeedManualRegistration( widget, key );
+		} )
+	);
 
 	// Register all of our manually registered blocks.
 	await soRegisterWidgetBlocks( sowbManuallyRegisteredBlocks );
