@@ -710,12 +710,21 @@
 				return {
 					...settings,
 					icon: function() {
-						return el(
-							'span',
-							{
-								className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
-							}
-						)
+						return widget.icon ?
+							el(
+								'img',
+								{
+									className: 'widget-icon so-widget-icon so-block-editor-icon',
+									src: widget.icon,
+									alt: widget.name
+								}
+							)
+							: el(
+								'span',
+								{
+									className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
+								}
+							)
 					},
 					category: 'siteorigin',
 					supports: {
