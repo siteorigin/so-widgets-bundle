@@ -654,6 +654,7 @@
 	};
 
 	const sowbManuallyRegisteredBlocks = {};
+	const sowbWidgets = [ ...Object.values( sowbBlockEditorAdmin.widgets ) ];
 
 	/**
 	 * Identifies widgets that need manual block registration.
@@ -676,7 +677,7 @@
 	const identifyBlocksThatNeedManualRegistration = async ( widget, key ) => {
 		// Don't register any blocks that don't have a blockName.
 		if ( ! widget.blockName ) {
-			delete sowbBlockEditorAdmin.widgets[ key ];
+			delete sowbWidgets[ key ];
 			return;
 		}
 
@@ -686,15 +687,14 @@
 			widget.manuallyRegister
 		) {
 			sowbManuallyRegisteredBlocks[ widget.blockName ] = widget;
-
-			delete sowbBlockEditorAdmin.widgets[ key ];
+			delete sowbWidgets[ key ];
 			return;
 		}
 	}
 
 	// Register all Widget Bundle widgets, and build `sowbManuallyRegisteredBlocks`.
 	await Promise.all(
-		Object.entries( sowbBlockEditorAdmin.widgets ).map( async ( [ key, widget ] ) => {
+		Object.entries( sowbWidgets ).map( async ( [ key, widget ] ) => {
 			identifyBlocksThatNeedManualRegistration( widget, key );
 		} )
 	);
@@ -812,7 +812,7 @@
 	};
 
 	// Register all blocks that haven't been manually registered.
-	await sowbBlockEditorAdmin.widgets.forEach( setupSoWidgetBlock );
+	await sowbWidgets.forEach( setupSoWidgetBlock );
 
   // Add SiteOrigin Widgets Bundle Block Category Meta.
 	updateCategory( 'siteorigin', {
