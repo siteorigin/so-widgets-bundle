@@ -109,6 +109,9 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.68.1 - 12 April 2025 =
+* Widgets Bundle Blocks: Resolved widget migration error by improving widget registration process and maintaining widget list integrity.
+
 = 1.68.0 - 10 April 2025 =
 * Accordion: Fixed custom sized icon output to maintain correct dimensions.
 * Blog: Added "Always Add Read More" setting and made it enabled by default.
