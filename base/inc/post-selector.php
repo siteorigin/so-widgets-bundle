@@ -110,7 +110,10 @@ function siteorigin_widget_post_selector_process_query( $query, $exclude_current
 		$query['date_query'] = json_decode( stripslashes( $query['date_query'] ), true );
 	}
 
-	if ( ! empty( $query['date_query'] ) ) {
+	if (
+		! empty( $query['date_query'] ) &&
+		is_array( $query['date_query'] )
+	) {
 		$query['date_query']['inclusive'] = true;
 	}
 
