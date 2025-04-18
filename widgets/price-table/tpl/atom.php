@@ -4,10 +4,12 @@
  * @var $columns array
  * @var $before_title string
  * @var $after_title string
- * @var $button_new_window boolean
+ * @var $button_attrs boolean
  * @var $equalize_row_heights boolean
  * @var $any_column_has_image boolean
  */
+
+$initial_button_attrs = $button_attrs;
 ?>
 
 <?php if ( ! empty( $title ) ) {
@@ -74,10 +76,20 @@
 
 			<?php if ( ! empty( $column['button'] ) ) { ?>
 				<div class="ow-pt-button">
-					<a href='<?php echo sow_esc_url( $column['url'] ); ?>'
-					   class="ow-pt-link" <?php if ( ! empty( $button_new_window ) ) {
-						echo 'target="_blank" rel="noopener noreferrer"';
-					   } ?>><?php echo esc_html( $column['button'] ); ?></a>
+					<a
+						href="<?php echo sow_esc_url( $column['url'] ); ?>"
+						<?php
+						$button_attrs = apply_filters(
+							'siteorigin_widgets_price_table_button_attributes',
+							$initial_button_attrs,
+							$column
+						);
+
+						foreach ( $button_attrs as $attr => $val ) {
+							echo siteorigin_sanitize_attribute_key( $attr ) . '="' . esc_attr( $val ) . '" ';
+						}
+						?>
+					><?php echo esc_html( $column['button'] ); ?></a>
 				</div>
 			<?php } ?>
 		</div>
