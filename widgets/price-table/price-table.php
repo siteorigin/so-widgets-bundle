@@ -308,8 +308,6 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 			'class' => 'ow-pt-link',
 		);
 
-
-
 		if ( ! empty( $instance['button_new_window'] ) ) {
 			$button_attrs['target'] = '_blank';
 			$button_attrs['rel'] = 'noopener noreferrer';
