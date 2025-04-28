@@ -42,4 +42,13 @@ jQuery( function ( $ ) {
 	sowb.setupVideoPlayers();
 
 	$( sowb ).on( 'setup_widgets', sowb.setupVideoPlayers );
+
+	jQuery( '.sow-video-wrapper.use-fitvids' ).on( 'setupFitVids', function() {
+		$( this ).fitVids();
+	} );
+} );
+
+// It's possible that the video was blocked during initial setup by the SO Embed Blocker.
+jQuery( document ).on('siteorigin_embed_blocker_unblock', () => {
+	jQuery( '.sow-video-wrapper.use-fitvids' ).trigger( 'setupFitVids' );
 } );
