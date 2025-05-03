@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: widgets, blocks, contact form, blog, slider
 Requires at least: 4.2
-Tested up to: 6.7
+Tested up to: 6.8
 Requires PHP: 7.0.0
 Stable tag: trunk
 Build time: unbuilt
@@ -108,6 +108,13 @@ SiteOrigin Premium includes access to our professional email support service, pe
 The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets. Widgets can be enabled or disabled as needed. If a widget offers global settings, you can access those via the Settings button next to each applicable widget.
 
 == Changelog ==
+
+= 1.68.2 - 03 May 2025 =
+* Icon Field: Fixed icon callback support to ensure proper rendering of custom icons.
+* Posts Selector: Resolved fatal error related to date query handling.
+* Price Table: Added `siteorigin_widgets_price_table_button_attributes` filter for enhanced button customization.
+* Video Player: Fixed self-hosted video embeds and improved FitVids integration by triggering after unblock and resize events.
+* General: Updated documentation and readme files for improved clarity and consistency.
 
 = 1.68.1 - 12 April 2025 =
 * Widgets Bundle Blocks: Resolved widget migration error by improving widget registration process and maintaining widget list integrity.
