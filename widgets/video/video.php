@@ -251,13 +251,37 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			$hide_controls = $instance['playback']['oembed'];
 		}
 
+		// Account for self hosted videos that are actually embedding external videos.
+		if ( $video_host === 'self' && ! empty( $self_sources ) ) {
+			$skin_video = true;
+
+			$has_local_videos = array_filter( $self_sources, function( $source ) {
+				return ! empty( $source['video_type'] ) && ! empty( $source['src'] );
+			} );
+
+			if ( ! $has_local_videos ) {
+				// The media picker was not used, and there are external video sources.
+				// Let's check if there's any embeds present.
+				$has_embeds = array_filter( $self_sources, function( $source ) {
+					return in_array( $this->get_host_from_url( $source['src'] ), array_keys( $this->skinnable_hosts ) );
+				} );
+
+				if ( $has_embeds ) {
+					$skin_video = false;
+					$external_src = ! $self_sources[0]['src'] ? false : $self_sources[0]['src'];
+				}
+			}
+		} else {
+			$skin_video = $this->is_skinnable_video_host( $video_host );
+		}
+
 		$return = array(
 			'player_id'               => 'sow-player-' . ( $player_id ++ ),
 			'host_type'               => $instance['host_type'],
 			'src'                     => $external_src,
 			'sources'                 => $self_sources,
 			'video_type'              => $external_video_type,
-			'is_skinnable_video_host' => $this->is_skinnable_video_host( $video_host ),
+			'is_skinnable_video_host' => $skin_video,
 			'poster'                  => $poster,
 			'autoplay'                => ! empty( $instance['playback']['autoplay'] ),
 			'loop'                    => ! empty( $instance['playback']['loop'] ),

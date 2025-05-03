@@ -190,15 +190,43 @@
 			searchIcons();
 		};
 
+		const addStylesheet = ( family, uri ) => {
+			if ( $( `#siteorigin-widget-font-${ family }` ).length ) {
+				return;
+			}
+
+			$( "<link rel='stylesheet' type='text/css' />" )
+				.attr('id', `siteorigin-widget-font-${ family }`)
+				.attr('href', encodeURI( uri ) )
+				.appendTo( 'head' );
+		};
+
 		const fetchIconFamily = () => {
 			// Fetch the family icons from the server if needed.
 			const family = $is.find( 'select.siteorigin-widget-icon-family' ).val();
 
-			if ( typeof family === 'undefined' || family === '' ) {
+			if (
+				typeof family === 'undefined' ||
+				family === ''
+			) {
 				return;
 			}
 
 			if ( typeof window.soWidgets.icons[ family ] !== 'undefined' ) {
+				rerender();
+				return;
+			}
+
+			const selectedEl = $is.find( 'select.siteorigin-widget-icon-family option[value="' + family + '"]' );
+
+			// Was this icon added using the `icon_callback`?
+			// If so, we can skip the AJAX request.
+			if ( selectedEl.attr( 'data-icons' ) ) {
+				const icons = JSON.parse( selectedEl.attr( 'data-icons' ) );
+				window.soWidgets.icons[ family ] = icons;
+
+				addStylesheet( family, icons.style_uri );
+
 				rerender();
 				return;
 			}
@@ -210,16 +238,12 @@
 				soWidgets.ajaxurl,
 				{
 					'action' : 'siteorigin_widgets_get_icons',
-					'family' :  $is.find( 'select.siteorigin-widget-icon-family' ).val()
+					'family' :  family,
 				},
 				( data ) => {
 					window.soWidgets.icons[ family ] = data;
 
-					// Add the font to the page.
-					$( "<link rel='stylesheet' type='text/css' />" )
-						.attr('id', `siteorigin-widget-font-${ family }`)
-						.attr('href', encodeURI( data.style_uri ) )
-						.appendTo( 'head' );
+					addStylesheet( family, data.style_uri );
 
 					rerender();
 					$container.removeClass( 'loading' );
