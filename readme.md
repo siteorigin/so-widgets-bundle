@@ -1,11 +1,14 @@
 # SiteOrigin Widgets Bundle
 
-Welcome to the development page for the SiteOrigin widgets bundle. We created this bundle primarily for you to use with your [Page Builder](https://siteorigin.com/page-builder/) pages.
+Development repository for the SiteOrigin Widgets Bundle, a collection of widgets designed for use anywhere in WordPress - [Page Builder by SiteOrigin](https://siteorigin.com/page-builder/), the Block Editor, theme widget areas, and more.
 
 ## Contributing
 
-We welcome issue reports and pull requests. If you're familiar with how the widget bundle works, you can even submit entire widgets.
+You can contribute via issue reports and pull requests. You can also build your own custom widgets on the Widgets Bundle framework – see our [developer documentation](https://siteorigin.com/docs/widgets-bundle/) for details.
 
 ## Support
 
-You can get support for the widgets bundle on the [SiteOrigin support forums](https://siteorigin.com/thread/).
+We offer two support tiers:
+
+1.  **Free Tier (Forum):** Please post questions and support requests on the [SiteOrigin Support Forum](https://siteorigin.com/thread/). All threads receive a reply from our team.
+2.  **Premium Tier (Email):** If you have an active **SiteOrigin Premium** license, please email [support@siteorigin.com](mailto:support@siteorigin.com) for priority assistance.
