@@ -637,10 +637,11 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 
 				$overlay_attributes['class'] = empty( $overlay_attributes['class'] ) ? '' : implode( ' ', $overlay_attributes['class'] );
 				$overlay_attributes['style'] = empty( $overlay_attributes['style'] ) ? '' : implode( ';', $overlay_attributes['style'] );
-
-				?><div <?php foreach ( $overlay_attributes as $attr => $val ) {
-					echo siteorigin_sanitize_attribute_key( $attr ) . '="' . esc_attr( $val ) . '" ';
-				} ?> ></div><?php
+				if ( ! empty( $overlay_attributes ) ) {
+					?><div <?php foreach ( $overlay_attributes as $attr => $val ) {
+						echo siteorigin_sanitize_attribute_key( $attr ) . '="' . esc_attr( $val ) . '" ';
+					} ?> ></div><?php
+				}
 			}
 
 			?>
