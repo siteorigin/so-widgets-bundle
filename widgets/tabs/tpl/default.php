@@ -13,9 +13,13 @@ if ( ! empty( $instance['title'] ) ) {
 	<div class="sow-tabs-tab-container" role="tablist">
 	<?php foreach ( $tabs as $i => $tab ) { ?>
 		<div
-			class="sow-tabs-tab<?php if ( $i == $initial_tab_index ) {
+			class="sow-tabs-tab
+			<?php
+			if ( $i == $initial_tab_index ) {
 				echo ' sow-tabs-tab-selected';
-			} ?>"
+			}
+			?>
+			"
 			role="tab"
 			data-anchor-id="<?php echo esc_attr( sanitize_title( $tab['anchor'] ) ); ?>"
 			aria-selected="<?php echo $i == $initial_tab_index ? 'true' : 'false'; ?>"

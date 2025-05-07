@@ -39,7 +39,7 @@
 			}
 			?>
 		>
-			<?php include $settings['item_template']; ?>
+			<?php require $settings['item_template']; ?>
 		</div>
 		<?php if ( $settings['navigation'] == 'container' || $settings['navigation'] == 'full' ) { ?>
 			<div class="sow-carousel-nav" <?php echo ! $settings['navigation_arrows'] && empty( $settings['navigation_dots'] ) ? 'style="display: none;"' : ''; ?>>

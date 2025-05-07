@@ -10,7 +10,7 @@ if ( $query->have_posts() ) {
 	?>
 	<ul class="sow-recent-posts">
 		<?php
-		while( $query->have_posts() ) {
+		while ( $query->have_posts() ) {
 			$query->the_post();
 			?>
 			<li class="sow-recent-posts-item">

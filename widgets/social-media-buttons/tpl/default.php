@@ -4,12 +4,15 @@
  */
 ?>
 
-<?php if ( ! empty( $instance['title'] ) ) {
+<?php
+if ( ! empty( $instance['title'] ) ) {
 	echo $args['before_title'] . wp_kses_post( $instance['title'] ) . $args['after_title'];
-} ?>
+}
+?>
 
 <div class="social-media-button-container">
-	<?php foreach ( $networks as $network ) {
+	<?php
+	foreach ( $networks as $network ) {
 		$classes = array();
 
 		if ( ! empty( $instance['design']['hover'] ) ) {
@@ -51,17 +54,25 @@
 		}
 		?>
 
-		<a <?php foreach ( $button_attributes as $name => $val ) {
+		<a 
+		<?php
+		foreach ( $button_attributes as $name => $val ) {
 			echo siteorigin_sanitize_attribute_key( $name ) . '="' . esc_attr( $val ) . '" ';
-		} ?>>
+		}
+		?>
+		>
 			<span>
-				<?php if ( ! empty( $network['is_custom'] ) ) {
+				<?php
+				if ( ! empty( $network['is_custom'] ) ) {
 					echo '<!-- premium-' . siteorigin_sanitize_attribute_key( $network['name'] ) . ' -->';
-				} ?>
+				}
+				?>
 				<?php echo siteorigin_widget_get_icon( $network['icon_name'] ); ?>
-				<?php if ( ! empty( $network['is_custom'] ) ) {
+				<?php
+				if ( ! empty( $network['is_custom'] ) ) {
 					echo '<!-- endpremium -->';
-				} ?>
+				}
+				?>
 			</span>
 		</a>
 	<?php } ?>

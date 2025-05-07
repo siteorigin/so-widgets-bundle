@@ -2,7 +2,7 @@
 if ( ! class_exists( 'SiteOrigin_Widget_Image_Shapes' ) ) {
 	class SiteOrigin_Widget_Image_Shapes {
 		public $shapes = array();
-		
+
 		public function __construct() {
 			add_action( 'init', array( $this, 'setup_shapes' ) );
 		}

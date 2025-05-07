@@ -28,16 +28,24 @@ if ( $title_position == 'above' ) {
 ?>
 
 <div class="sow-image-container">
-	<?php if ( ! empty( $url ) ) {
+	<?php
+	if ( ! empty( $url ) ) {
 		$this->generate_anchor_open( $url, $link_attributes );
-	} ?>
-	<img <?php foreach ( $attributes as $n => $v ) {
+	}
+	?>
+	<img 
+	<?php
+	foreach ( $attributes as $n => $v ) {
 		if ( $n === 'alt' || ! empty( $v ) ) {
 			echo siteorigin_sanitize_attribute_key( $n ) . '="' . esc_attr( $v ) . '" ';
 		}
-	} ?>
+	}
+	?>
 		class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>"/>
-	<?php if ( ! empty( $url ) ) { ?></a><?php } ?>
+	<?php
+	if ( ! empty( $url ) ) {
+		?>
+		</a><?php } ?>
 </div>
 
 <?php
