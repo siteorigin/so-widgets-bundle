@@ -6,7 +6,11 @@ if ( empty( $file ) ) {
 }
 ?>
 
-<div class="sow-lottie-player" <?php if ( ! empty( $url ) ) { ?>style="position: relative;"<?php } ?>>
+<div class="sow-lottie-player" 
+<?php
+if ( ! empty( $url ) ) {
+	?>
+	style="position: relative;"<?php } ?>>
 	<?php if ( ! empty( $url ) ) { ?>
 		<?php $bottom = ! empty( $attributes['controls'] ) ? '35px' : 0; ?>
 		<a

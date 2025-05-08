@@ -9,12 +9,16 @@
 <?php if ( ! empty( $images ) ) { ?>
 	<div
 		class="sow-image-grid-wrapper"
-		<?php if ( ! empty( $max_width ) ) {
+		<?php
+		if ( ! empty( $max_width ) ) {
 			echo 'data-max-width="' . (int) $max_width . '"';
-		} ?>
-		<?php if ( ! empty( $max_height ) ) {
+		}
+		?>
+		<?php
+		if ( ! empty( $max_height ) ) {
 			echo 'data-max-height="' . (int) $max_height . '"';
-		} ?>
+		}
+		?>
 	>
 		<?php foreach ( $images as $image ) { ?>
 			<div class="sow-image-grid-image">
@@ -25,7 +29,7 @@
 				<?php } ?>
 				<?php if ( ! empty( $image['url'] ) ) { ?>
 					<a href="<?php echo sow_esc_url( $image['url'] ); ?>"
-					<?php foreach ( $image['link_attributes'] as $attr=> $val ) { ?>
+					<?php foreach ( $image['link_attributes'] as $attr => $val ) { ?>
 						<?php if ( ! empty( $val ) ) { ?>
 							<?php echo siteorigin_sanitize_attribute_key( $attr ) . '="' . esc_attr( $val ) . '" '; ?>
 						<?php } ?>

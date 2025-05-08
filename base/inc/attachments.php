@@ -110,7 +110,7 @@ function siteorigin_widgets_get_image_sizes() {
 		'thumbnail',
 		'medium',
 		'medium_large',
-		'large'
+		'large',
 	);
 
 	foreach ( $intermediate_sizes as $_size ) {

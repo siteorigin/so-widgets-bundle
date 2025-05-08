@@ -1,19 +1,19 @@
 <?php
 
-include plugin_dir_path( __FILE__ ) . 'inc/fields/siteorigin-widget-field-class-loader.class.php';
-include plugin_dir_path( __FILE__ ) . 'siteorigin-widget.class.php';
+require plugin_dir_path( __FILE__ ) . 'inc/fields/siteorigin-widget-field-class-loader.class.php';
+require plugin_dir_path( __FILE__ ) . 'siteorigin-widget.class.php';
 
-include plugin_dir_path( __FILE__ ) . 'inc/widget-manager.class.php';
-include plugin_dir_path( __FILE__ ) . 'inc/meta-box-manager.php';
-include plugin_dir_path( __FILE__ ) . 'inc/post-selector.php';
-include plugin_dir_path( __FILE__ ) . 'inc/string-utils.php';
-include plugin_dir_path( __FILE__ ) . 'inc/array-utils.php';
-include plugin_dir_path( __FILE__ ) . 'inc/attachments.php';
-include plugin_dir_path( __FILE__ ) . 'inc/actions.php';
-include plugin_dir_path( __FILE__ ) . 'inc/shortcode.php';
-include plugin_dir_path( __FILE__ ) . 'inc/video.php';
-include plugin_dir_path( __FILE__ ) . 'inc/routes/sowb-rest-routes.php';
-include plugin_dir_path( __FILE__ ) . 'inc/shapes/shapes.php';
+require plugin_dir_path( __FILE__ ) . 'inc/widget-manager.class.php';
+require plugin_dir_path( __FILE__ ) . 'inc/meta-box-manager.php';
+require plugin_dir_path( __FILE__ ) . 'inc/post-selector.php';
+require plugin_dir_path( __FILE__ ) . 'inc/string-utils.php';
+require plugin_dir_path( __FILE__ ) . 'inc/array-utils.php';
+require plugin_dir_path( __FILE__ ) . 'inc/attachments.php';
+require plugin_dir_path( __FILE__ ) . 'inc/actions.php';
+require plugin_dir_path( __FILE__ ) . 'inc/shortcode.php';
+require plugin_dir_path( __FILE__ ) . 'inc/video.php';
+require plugin_dir_path( __FILE__ ) . 'inc/routes/sowb-rest-routes.php';
+require plugin_dir_path( __FILE__ ) . 'inc/shapes/shapes.php';
 
 // Load the Installer if it's not already active.
 if ( is_admin() && ! class_exists( 'SiteOrigin_Installer' ) ) {
@@ -100,12 +100,12 @@ function siteorigin_widget_get_icon( $icon_value, $icon_styles = false, $title =
 	}
 
 	if ( empty( $widget_icon_families[ $family ] ) ||
-		 empty( $widget_icon_families[ $family ]['icons'][ $icon ] ) ) {
+		empty( $widget_icon_families[ $family ]['icons'][ $icon ] ) ) {
 		return false;
 	}
 
 	if ( empty( $widget_icons_enqueued[ $family ] ) &&
-		 ! empty( $widget_icon_families[ $family ]['style_uri'] ) ) {
+		! empty( $widget_icon_families[ $family ]['style_uri'] ) ) {
 		if ( ! wp_style_is( 'siteorigin-widget-icon-font-' . $family ) ) {
 			wp_enqueue_style( 'siteorigin-widget-icon-font-' . $family, $widget_icon_families[ $family ]['style_uri'] );
 		}
@@ -187,7 +187,8 @@ function siteorigin_widget_get_font( $font_value ) {
 					'siteorigin_web_font_url_processed',
 					apply_filters(
 						'siteorigin_web_font_url',
-						'https://fonts.googleapis.com/css' ) . '?family=' . urlencode(
+						'https://fonts.googleapis.com/css'
+					) . '?family=' . urlencode(
 						$font['family'] . ':' . implode( ',', $font_weight_styles )
 					)
 				)
@@ -383,12 +384,14 @@ function siteorigin_widgets_can_render_builder_field() {
 function siteorigin_loading_optimization_attributes( $attr, $widget, $instance, $class ) {
 	// Allow other plugins to override whether this widget is lazy loaded or not.
 	if (
-		! empty( apply_filters(
-			'siteorigin_widgets_' . $widget . '_lazy_load',
-			'lazy',
-			$instance,
-			$class
-		) )
+		! empty(
+			apply_filters(
+				'siteorigin_widgets_' . $widget . '_lazy_load',
+				'lazy',
+				$instance,
+				$class
+			)
+		)
 	) {
 		if ( function_exists( 'wp_get_loading_optimization_attributes' ) ) {
 			// WP 6.3.
@@ -515,51 +518,54 @@ function siteorigin_widget_onclick( $onclick = null, $recursive = true ) {
 		$onclick_parts = explode( ');', $onclick );
 
 		$adjusted_onclick = '';
-		$allowed_functions = array_flip( apply_filters( 'siteorigin_widgets_onclick_allowlist_functions',
-			array(
-				'_km',
-				'_paq',
-				'_qevents',
-				'_vis_opt',
-				'amplitude',
-				'ce',
-				'chartbeat',
-				'clarity',
-				'clicky',
-				'crazyegg',
-				'datalayer.push',
-				'fathom',
-				'fbq',
-				'fullstory',
-				'ga',
-				'google_optimize',
-				'gosquared',
-				'gtag',
-				'heap',
-				'hj',
-				'hubspot',
-				'Intercom',
-				'linkedin_data_partner_id',
-				'logrocket',
-				'mixpanel',
-				'mouseflow',
-				'optimizely',
-				'parsely',
-				'pinterest',
-				'piwik',
-				'plausible',
-				's.omtr',
-				'snaptr',
-				'statcounter',
-				'tealium',
-				'twttr',
-				'woopra',
-				'ym',
-				'ml_account', // MailerLite.
-				'calendly.initpopupwidget', // Calendly.
-				'pum.open', // Popup Maker.
+		$allowed_functions = array_flip(
+			apply_filters(
+				'siteorigin_widgets_onclick_allowlist_functions',
+				array(
+					'_km',
+					'_paq',
+					'_qevents',
+					'_vis_opt',
+					'amplitude',
+					'ce',
+					'chartbeat',
+					'clarity',
+					'clicky',
+					'crazyegg',
+					'datalayer.push',
+					'fathom',
+					'fbq',
+					'fullstory',
+					'ga',
+					'google_optimize',
+					'gosquared',
+					'gtag',
+					'heap',
+					'hj',
+					'hubspot',
+					'Intercom',
+					'linkedin_data_partner_id',
+					'logrocket',
+					'mixpanel',
+					'mouseflow',
+					'optimizely',
+					'parsely',
+					'pinterest',
+					'piwik',
+					'plausible',
+					's.omtr',
+					'snaptr',
+					'statcounter',
+					'tealium',
+					'twttr',
+					'woopra',
+					'ym',
+					'ml_account', // MailerLite.
+					'calendly.initpopupwidget', // Calendly.
+					'pum.open', // Popup Maker.
+				)
 			)
-		) );
+		);
 
 		// Remove anything not inside of an allowed function.
 		foreach ( $onclick_parts as $part ) {
@@ -628,7 +634,6 @@ function siteorigin_widget_valid_tag( $tag, $fallback = null, $valid_tags = arra
  * running it through sanitize_key, and then specifically rejecting any
  * attribute name that starts with "on".
  *
- *
  * @param string $attr The attribute name to be sanitized.
  * @return string Sanitized attribute name or 'invalid-attribute' if it starts with "on".
  */
@@ -641,7 +646,7 @@ function siteorigin_sanitize_attribute_key( $attr ) {
 		strpos( $attr, 'on' ) === 0
 	) {
 		return 'invalid-attribute';
-	};
+	}
 
 	return $attr;
 }
@@ -686,16 +691,19 @@ function siteorigin_sanitize_json( $value, $max_depth = 10 ) {
 	);
 
 	// Sanitize the JSON values.
-	array_walk_recursive( $decoded, function( &$item ) use ( $allowed_types ) {
-		if ( ! in_array( gettype( $item ), $allowed_types, true ) ) {
-			$item = '';
-			return;
-		}
+	array_walk_recursive(
+		$decoded,
+		function ( &$item ) use ( $allowed_types ) {
+			if ( ! in_array( gettype( $item ), $allowed_types, true ) ) {
+				$item = '';
+				return;
+			}
 
-		if ( is_string( $item ) ) {
-			$item = sanitize_text_field( $item );
+			if ( is_string( $item ) ) {
+				$item = sanitize_text_field( $item );
+			}
 		}
-	} );
+	);
 
 	$json = wp_json_encode( $decoded, JSON_UNESCAPED_SLASHES );
 	return $json ? $json : '[]';

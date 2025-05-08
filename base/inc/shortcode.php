@@ -8,10 +8,14 @@
  * @return string
  */
 function siteorigin_widget_shortcode( $attr, $content = '' ) {
-	$attr = shortcode_atts( array(
-		'class' => false,
-		'id' => '',
-	), $attr, 'panels_widget' );
+	$attr = shortcode_atts(
+		array(
+			'class' => false,
+			'id' => '',
+		),
+		$attr,
+		'panels_widget'
+	);
 
 	$attr['class'] = html_entity_decode( $attr['class'] );
 
@@ -33,12 +37,15 @@ function siteorigin_widget_shortcode( $attr, $content = '' ) {
 		$widget_args = siteorigin_widget_shortcode_escape_widget_data( $widget_args );
 		$widget_instance = siteorigin_widget_shortcode_escape_widget_data( $widget_instance );
 
-		$widget_args = wp_parse_args( array(
-			'before_widget' => '',
-			'after_widget' => '',
-			'before_title' => '<h3 class="widget-title">',
-			'after_title' => '</h3>',
-		), $widget_args );
+		$widget_args = wp_parse_args(
+			array(
+				'before_widget' => '',
+				'after_widget' => '',
+				'before_title' => '<h3 class="widget-title">',
+				'after_title' => '</h3>',
+			),
+			$widget_args
+		);
 
 		ob_start();
 		$the_widget->widget( $widget_args, $widget_instance );
@@ -58,7 +65,7 @@ function siteorigin_widget_shortcode_escape_widget_data( $data ) {
 			}
 		}
 		return $escaped_data;
-	} catch (Exception $e) {
+	} catch ( Exception $e ) {
 		// There was an error, return empty array.
 		return array();
 	}

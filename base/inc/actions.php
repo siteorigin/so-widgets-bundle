@@ -38,12 +38,15 @@ function siteorigin_widget_preview_widget_action() {
 	do_action( 'siteorigin_widgets_render_preview_' . $widget->id_base, $widget );
 
 	ob_start();
-	$widget->widget( array(
-		'before_widget' => '',
-		'after_widget' => '',
-		'before_title' => '<h3 class="widget-title">',
-		'after_title' => '</h3>',
-	), $instance );
+	$widget->widget(
+		array(
+			'before_widget' => '',
+			'after_widget' => '',
+			'before_title' => '<h3 class="widget-title">',
+			'after_title' => '</h3>',
+		),
+		$instance
+	);
 	$widget_html = ob_get_clean();
 
 	// Print all the scripts and styles
@@ -104,9 +107,11 @@ function siteorigin_widget_action_search_posts() {
 	$wpml_query = '';
 
 	// Get all public post types, besides attachments
-	$post_types = (array) get_post_types( array(
-		'public' => true,
-	) );
+	$post_types = (array) get_post_types(
+		array(
+			'public' => true,
+		)
+	);
 
 	if ( ! empty( $_REQUEST['postTypes'] ) ) {
 		$post_types = array_intersect( explode( ',', sanitize_text_field( $_REQUEST['postTypes'] ) ), $post_types );
@@ -116,13 +121,13 @@ function siteorigin_widget_action_search_posts() {
 
 	// If WPML is installed, only include posts from the currently active language.
 	if ( defined( 'ICL_LANGUAGE_CODE' ) && ! empty( $_REQUEST['language'] ) ) {
-		$query .= $wpdb->prepare(" AND {$wpdb->prefix}icl_translations.language_code = %s ", sanitize_text_field( $_REQUEST['language'] ));
+		$query .= $wpdb->prepare( " AND {$wpdb->prefix}icl_translations.language_code = %s ", sanitize_text_field( $_REQUEST['language'] ) );
 		$wpml_query .= " INNER JOIN {$wpdb->prefix}icl_translations ON ($wpdb->posts.ID = {$wpdb->prefix}icl_translations.element_id) ";
 	}
 
 	if ( ! empty( $_GET['query'] ) ) {
 		$search_query = '%' . $wpdb->esc_like( sanitize_text_field( $_GET['query'] ) ) . '%';
-		$query .= $wpdb->prepare( " AND post_title LIKE %s ", $search_query );
+		$query .= $wpdb->prepare( ' AND post_title LIKE %s ', $search_query );
 	}
 
 	$post_types = apply_filters( 'siteorigin_widgets_search_posts_post_types', $post_types );
@@ -132,13 +137,13 @@ function siteorigin_widget_action_search_posts() {
 		if ( ! siteorigin_widget_user_can_edit_post_type( $post_type ) ) {
 			unset( $post_types[ $key ] );
 		}
-
 	}
 	$post_types = "'" . implode( "', '", array_map( 'esc_sql', $post_types ) ) . "'";
 
 	$ordered_by = esc_sql( apply_filters( 'siteorigin_widgets_search_posts_order_by', 'post_modified DESC' ) );
 
-	$results = $wpdb->get_results( "
+	$results = $wpdb->get_results(
+		"
 		SELECT ID AS 'value', post_title AS label, post_type AS 'type'
 		FROM {$wpdb->posts}
 		{$wpml_query}
@@ -146,17 +151,22 @@ function siteorigin_widget_action_search_posts() {
 			post_type IN ( {$post_types} ) AND post_status = 'publish' {$query}
 		ORDER BY {$ordered_by}
 		LIMIT 20
-	", ARRAY_A );
+	",
+		ARRAY_A
+	);
 
 	if ( empty( $results ) ) {
 		wp_send_json( array() );
 	}
 
 	// Filter results to ensure the user can read the post.
-	$results = array_filter( $results, function( $post ) {
+	$results = array_filter(
+		$results,
+		function ( $post ) {
 
-		return current_user_can( 'read_post', $post['value'] );
-	} );
+			return current_user_can( 'read_post', $post['value'] );
+		}
+	);
 
 	wp_send_json( apply_filters( 'siteorigin_widgets_search_posts_results', $results ) );
 }
@@ -185,7 +195,7 @@ function siteorigin_widget_get_taxonomy_capability( $type ) {
 
 	if (
 		empty( $taxonomy ) ||
-		! is_object(  $taxonomy->cap )
+		! is_object( $taxonomy->cap )
 	) {
 		return false;
 	}
@@ -213,14 +223,17 @@ function siteorigin_widget_action_search_terms() {
 	$term = ! empty( $_GET['term'] ) ? sanitize_text_field( stripslashes( $_GET['term'] ) ) : '';
 	$term = trim( $term, '%' );
 
-	$query = $wpdb->prepare( "
+	$query = $wpdb->prepare(
+		"
 		SELECT terms.term_id, terms.slug AS 'value', terms.name AS 'label', termtaxonomy.taxonomy AS 'type'
 		FROM $wpdb->terms AS terms
 		JOIN $wpdb->term_taxonomy AS termtaxonomy ON terms.term_id = termtaxonomy.term_id
 		WHERE
 			terms.name LIKE '%s'
 		LIMIT 20
-	", '%' . $wpdb->esc_like( $term ) . '%' );
+	",
+		'%' . $wpdb->esc_like( $term ) . '%'
+	);
 
 	$results = array();
 
@@ -268,14 +281,20 @@ function siteorigin_widget_remote_image_search() {
 	}
 
 	// Send the query to stock search server
-	$url = add_query_arg( array(
-		'q' => $_GET[ 'q' ],
-		'page' => ! empty( $_GET[ 'page' ] ) ? (int) $_GET[ 'page' ] : 1,
-	), 'http://stock.siteorigin.com/wp-admin/admin-ajax.php?action=image_search' );
+	$url = add_query_arg(
+		array(
+			'q' => $_GET[ 'q' ],
+			'page' => ! empty( $_GET[ 'page' ] ) ? (int) $_GET[ 'page' ] : 1,
+		),
+		'http://stock.siteorigin.com/wp-admin/admin-ajax.php?action=image_search'
+	);
 
-	$result = wp_remote_get( $url, array(
-		'timeout' => 20,
-	) );
+	$result = wp_remote_get(
+		$url,
+		array(
+			'timeout' => 20,
+		)
+	);
 
 	if ( ! is_wp_error( $result ) ) {
 		$result = json_decode( $result['body'], true );

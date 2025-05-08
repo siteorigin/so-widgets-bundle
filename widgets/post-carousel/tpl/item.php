@@ -42,6 +42,6 @@ while ( $settings['posts']->have_posts() ) {
 			</a>
 		</<?php echo esc_attr( $settings['item_title_tag'] ); ?>>
 	</div>
-<?php
+	<?php
 }
 wp_reset_postdata();

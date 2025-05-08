@@ -33,9 +33,12 @@ function siteorigin_widget_post_selector_process_query( $query, $exclude_current
 		}
 
 		// Filter out empty values to prevent deprecated warnings.
-		$query['post__in'] = array_filter( $query['post__in'], function( $value ) {
-			return ! empty( $value );
-		} );
+		$query['post__in'] = array_filter(
+			$query['post__in'],
+			function ( $value ) {
+				return ! empty( $value );
+			}
+		);
 
 		$query['post__in'] = array_map( 'intval', $query['post__in'] );
 	}
@@ -118,7 +121,7 @@ function siteorigin_widget_post_selector_process_query( $query, $exclude_current
 	}
 
 	if ( ! empty( $query['sticky'] ) ) {
-		switch( $query['sticky'] ) {
+		switch ( $query['sticky'] ) {
 			case 'ignore':
 				$query['ignore_sticky_posts'] = 1;
 				break;
@@ -146,9 +149,12 @@ function siteorigin_widget_post_selector_process_query( $query, $exclude_current
 		}
 
 		// Filter out empty values to prevent deprecated warnings.
-		$query['post__not_in'] = array_filter( $query['post__not_in'], function( $value ) {
-			return ! empty( $value );
-		} );
+		$query['post__not_in'] = array_filter(
+			$query['post__not_in'],
+			function ( $value ) {
+				return ! empty( $value );
+			}
+		);
 
 		$query['post__not_in'] = array_map( 'intval', $query['post__not_in'] );
 	}

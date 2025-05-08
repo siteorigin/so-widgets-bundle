@@ -6,15 +6,17 @@
  */
 ?>
 
-<?php if ( ! empty( $instance['widget_title'] ) ) {
+<?php
+if ( ! empty( $instance['widget_title'] ) ) {
 	echo $args['before_title'] . wp_kses_post( $instance['widget_title'] ) . $args['after_title'];
-} ?>
+}
+?>
 
 <?php if ( $preloader_enabled ) { ?>
 	<div class="sow-masonry-grid-preloader"><div></div><div></div><div></div><div></div></div>
 <?php } ?>
 <div class="sow-masonry-grid"
-	 data-layouts="<?php echo esc_attr( json_encode( $layouts ) ); ?>" data-layout-origin-left="<?php echo esc_attr( $layout_origin_left ); ?>" <?php echo ! empty( $preloader_enabled ) ? 'style="opacity: 0;"' : ''; ?>>
+	data-layouts="<?php echo esc_attr( json_encode( $layouts ) ); ?>" data-layout-origin-left="<?php echo esc_attr( $layout_origin_left ); ?>" <?php echo ! empty( $preloader_enabled ) ? 'style="opacity: 0;"' : ''; ?>>
 	<?php
 	if ( ! empty( $items ) ) {
 		foreach ( $items as $item ) {
@@ -26,7 +28,7 @@
 			$url = empty( $item['url'] ) ? '' : $item['url'];
 			?>
 			<div class="sow-masonry-grid-item" data-col-span="<?php echo esc_attr( $item['column_span'] ); ?>"
-			     data-row-span="<?php echo esc_attr( $item['row_span'] ); ?>">
+				data-row-span="<?php echo esc_attr( $item['row_span'] ); ?>">
 				<?php if ( ! empty( $url ) ) { ?>
 					<a href="<?php echo sow_esc_url( $url ); ?>"
 					<?php foreach ( $item['link_attributes'] as $att => $val ) { ?>
@@ -83,6 +85,6 @@
 			<?php
 		}
 	}
-?>
+	?>
 
 </div>
