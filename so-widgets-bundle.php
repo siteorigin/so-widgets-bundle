@@ -701,6 +701,7 @@ class SiteOrigin_Widgets_Bundle {
 			'VideoURI' => 'Video URI',
 			'Documentation' => 'Documentation',
 			'HideActivate' => 'Hide Activate',
+			'Keywords' => 'Keywords',
 		);
 
 		$widgets = array();
