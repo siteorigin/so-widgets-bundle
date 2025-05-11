@@ -188,7 +188,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 						$description = $widget_metadata['Description'];
 					}
 
-					$keywords = $widget_metadata['Keywords'] ? self::keywords_to_array( $widget_metadata['Keywords'] ) : array();
+					$keywords = ! empty( $widget_metadata['Keywords'] ) ? self::keywords_to_array( $widget_metadata['Keywords'] ) : array();
 
 					$file = $widget_metadata['File'];
 
