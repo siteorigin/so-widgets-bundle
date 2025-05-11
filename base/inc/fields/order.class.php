@@ -10,15 +10,18 @@ class SiteOrigin_Widget_Field_Order extends SiteOrigin_Widget_Field_Base {
 		$value = $this->sanitize_field_input( $value, $instance );
 
 		if ( ! empty( $this->options ) && ! empty( $value ) ) {
-			?><div class="siteorigin-widget-order-items"><?php
+			?><div class="siteorigin-widget-order-items">
+			<?php
 			foreach ( $value as $key ) {
 				?>
 				<div class="siteorigin-widget-order-item" data-value="<?php echo esc_attr( $key ); ?>">
-					<?php echo esc_html( $this->options[ $key ] ); ?>
+				<?php echo esc_html( $this->options[ $key ] ); ?>
 				</div>
 				<?php
 			}
-			?></div><?php
+			?>
+			</div>
+			<?php
 		}
 
 		?>

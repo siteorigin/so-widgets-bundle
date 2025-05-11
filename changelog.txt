@@ -1,5 +1,12 @@
 == Changelog ==
 
+= 1.68.3 - 11 May 2025 =
+* Image Grid: Added gallery keyword support.
+* Simple Masonry: Fixed preloader visibility, removed incorrect type, and resolved potential TypeError.
+* Slider: Prevented empty overlay issues.
+* Widget Blocks: Fixed icon saving and keyword support.
+* General: Updated Installer submodule and performed bulk PHP CS improvements.
+
 = 1.68.2 - 03 May 2025 =
 * Icon Field: Fixed icon callback support to ensure proper rendering of custom icons.
 * Posts Selector: Resolved fatal error related to date query handling.

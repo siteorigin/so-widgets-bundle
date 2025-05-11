@@ -1,32 +1,32 @@
 <div class="sow-headline-container <?php if ( $instance['fittext'] ) {
-	;
-} ?>">
+									} ?>">
 	<?php
 	foreach ( $order as $item ) {
 		unset( $text );
 
-		switch( $item ) {
+		switch ( $item ) {
 			case 'headline':
-				case 'headline':
-					$text = $headline;
-					$tag = $headline_tag;
-					$destination_url = $headline_destination_url;
-					$new_window = $headline_new_window;
-					$class = 'sow-headline';
-				case 'sub_headline':
-					if ( ! isset( $text ) ) {
-						$text = $sub_headline;
-						$tag = $sub_headline_tag;
-						$destination_url = $sub_headline_destination_url;
-						$new_window = $sub_headline_new_window;
-						$class = 'sow-sub-headline';
-					}
+			case 'headline':
+				$text = $headline;
+				$tag = $headline_tag;
+				$destination_url = $headline_destination_url;
+				$new_window = $headline_new_window;
+				$class = 'sow-headline';
+			case 'sub_headline':
+				if ( ! isset( $text ) ) {
+					$text = $sub_headline;
+					$tag = $sub_headline_tag;
+					$destination_url = $sub_headline_destination_url;
+					$new_window = $sub_headline_new_window;
+					$class = 'sow-sub-headline';
+				}
 
-					if ( ! empty( $text ) ) {
-						?>
+				if ( ! empty( $text ) ) {
+					?>
 						<<?php echo esc_attr( $tag ); ?> class="<?php echo $class; ?>">
 						<?php
-						if ( ! empty( $destination_url ) ) { ?>
+						if ( ! empty( $destination_url ) ) {
+							?>
 							<a href="<?php echo sow_esc_url( $destination_url ); ?>" <?php echo (bool) $new_window ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>>
 								<?php
 						}
@@ -39,7 +39,7 @@
 						?>
 						</<?php echo esc_attr( $tag ); ?>>
 						<?php
-					}
+				}
 				break;
 
 			case 'divider':

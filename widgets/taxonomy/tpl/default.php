@@ -28,9 +28,13 @@ if ( ! empty( $title ) ) {
 			<?php if ( $display_format == 'text' ) { ?>
 				<span class="so-taxonomy-text" ref="tag"><?php echo esc_html( $term->name ); ?></span>
 			<?php } else { ?>
-				<a class="so-taxonomy-<?php echo esc_attr( $display_format ); ?>" href="<?php echo esc_url( get_term_link( $term, $taxonomy_name ) ); ?>" rel="tag"  <?php if ( ! empty( $new_window ) ) {
+				<a class="so-taxonomy-<?php echo esc_attr( $display_format ); ?>" href="<?php echo esc_url( get_term_link( $term, $taxonomy_name ) ); ?>" rel="tag"  
+				<?php
+				if ( ! empty( $new_window ) ) {
 					echo 'target="_blank" rel="noopener noreferrer"';
-				} ?>><?php echo esc_html( $term->name ); ?></a>
+				}
+				?>
+				><?php echo esc_html( $term->name ); ?></a>
 			<?php } ?>
 		<?php } ?>
 

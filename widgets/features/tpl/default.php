@@ -7,9 +7,13 @@ $tag = siteorigin_widget_valid_tag(
 );
 ?>
 
-<div class="sow-features-list <?php if ( $instance['responsive'] ) {
+<div class="sow-features-list 
+<?php
+if ( $instance['responsive'] ) {
 	echo 'sow-features-responsive';
-} ?>">
+}
+?>
+">
 
 	<?php if ( isset( $instance['features'] ) ) { ?>
 		<?php foreach ( $instance['features'] as $i => $feature ) { ?>
@@ -60,7 +64,9 @@ $tag = siteorigin_widget_valid_tag(
 								$icon_styles[] = 'font-size: ' . (int) $instance['icon_size'] . esc_attr( $instance['icon_size_unit'] );
 							}
 
-							?><div class="sow-icon-image" style="<?php echo implode( '; ', $icon_styles ); ?>"></div><?php
+							?>
+							<div class="sow-icon-image" style="<?php echo implode( '; ', $icon_styles ); ?>"></div>
+							<?php
 						}
 					} else {
 						if ( ! empty( $instance['icon_size'] ) ) {
@@ -117,13 +123,17 @@ $tag = siteorigin_widget_valid_tag(
 					<?php if ( $right_left_read_more ) { ?>
 						</div>
 						<p class="sow-more-text">
-							<?php if ( ! empty( $feature['more_url'] ) ) {
+							<?php
+							if ( ! empty( $feature['more_url'] ) ) {
 								echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( (bool) $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : '' ) . '>';
-							} ?>
+							}
+							?>
 							<?php echo wp_kses_post( $feature['more_text'] ); ?>
-							<?php if ( ! empty( $feature['more_url'] ) ) {
+							<?php
+							if ( ! empty( $feature['more_url'] ) ) {
 								echo '</a>';
-							} ?>
+							}
+							?>
 						</p>
 					<?php } ?>
 				</div>
@@ -138,15 +148,20 @@ $tag = siteorigin_widget_valid_tag(
 						$feature['container_position'] == 'top' ||
 						$feature['container_position'] == 'bottom'
 					)
-				) { ?>
+				) {
+					?>
 					<p class="sow-more-text">
-						<?php if ( ! empty( $feature['more_url'] ) ) {
+						<?php
+						if ( ! empty( $feature['more_url'] ) ) {
 							echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( (bool) $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : '' ) . '>';
-						} ?>
+						}
+						?>
 						<?php echo wp_kses_post( $feature['more_text'] ); ?>
-						<?php if ( ! empty( $feature['more_url'] ) ) {
+						<?php
+						if ( ! empty( $feature['more_url'] ) ) {
 							echo '</a>';
-						} ?>
+						}
+						?>
 					</p>
 				<?php } ?>
 

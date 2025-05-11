@@ -6,7 +6,7 @@
 			<?php do_action( 'siteorigin_widgets_author_box_avatar_above', $instance ); ?>
 			<?php if ( $link_avatar ) { ?>
 				<a href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>">
-			<?php
+				<?php
 			}
 
 			echo get_avatar(
@@ -17,8 +17,10 @@
 			if ( $link_avatar ) {
 				?>
 				</a>
-			<?php } ?>
-			<?php do_action( 'siteorigin_widgets_author_box_avatar_below', $instance ); ?>
+				<?php
+			}
+			do_action( 'siteorigin_widgets_author_box_avatar_below', $instance );
+			?>
 		</div>
 	<?php } ?>
 	<div class="sow-author-box-description">

@@ -137,7 +137,7 @@
 
 			props.setAttributes( {
 				widgetMarkup: widgetPreview.html,
-				widgetIcons: widgetPreview.icons
+				widgetIcons: widgetPreview.widgetIcons,
 			} );
 		} )
 		.fail( ( response ) => {
@@ -731,6 +731,7 @@
 								}
 							)
 					},
+					keywords: widget.keywords ? widget.keywords : '',
 					category: 'siteorigin',
 					supports: {
 						html: false,

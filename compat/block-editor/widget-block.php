@@ -129,6 +129,24 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	}
 
 	/**
+	 * Convert a comma-separated string of keywords into an array.
+	 *
+	 * This function takes a comma-separated string of keywords,
+	 * trims whitespace, and sanitizes each keyword using sanitize_title.
+	 *
+	 * @param string $keywords - The comma-separated string of keywords.
+	 *
+	 * @return array - An array of sanitized keywords.
+	 */
+	private function keywords_to_array( $keywords ) {
+		$keywords = explode( ',', $keywords );
+		$keywords = array_map( 'trim', $keywords );
+		$keywords = array_map( 'sanitize_title', $keywords );
+
+		return $keywords;
+	}
+
+	/**
 	 * Retrieve all widgets.
 	 *
 	 * This method retrieves all widgets, including inactive
@@ -170,9 +188,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 						$description = $widget_metadata['Description'];
 					}
 
-					if ( ! empty( $widget_metadata['Keywords'] ) ) {
-						$keywords = $widget_metadata['Keywords'];
-					}
+					$keywords = ! empty( $widget_metadata['Keywords'] ) ? self::keywords_to_array( $widget_metadata['Keywords'] ) : array();
 
 					$file = $widget_metadata['File'];
 

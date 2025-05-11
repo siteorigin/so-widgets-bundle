@@ -75,17 +75,23 @@ if ( is_array( $result ) && $result['status'] == 'success' ) {
 		do_action( 'siteorigin_widgets_contact_before_submit', $instance, $result );
 		?>
 
-		<div class="sow-submit-wrapper <?php if ( $instance['design']['submit']['styled'] ) {
+		<div class="sow-submit-wrapper 
+		<?php
+		if ( $instance['design']['submit']['styled'] ) {
 			echo 'sow-submit-styled';
-		} ?>">
+		}
+		?>
+		">
 
 			<button
 				type="submit"
-				class="sow-submit<?php
+				class="sow-submit
+				<?php
 				if ( $recaptcha && empty( $recaptcha_v2 ) ) {
 					echo ' g-recaptcha';
 				}
-				?>"
+				?>
+				"
 				<?php
 				foreach ( $submit_attributes as $name => $val ) {
 					echo siteorigin_sanitize_attribute_key( $name ) . '="' . esc_attr( $val ) . '" ';

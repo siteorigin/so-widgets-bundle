@@ -40,7 +40,7 @@ function sow_carousel_handle_post_limit( $posts, $paged = 0 ) {
 
 	// If there's no limit, or the limit is higher than the total number of
 	// posts, return the posts without modification.
-	if ( ! is_numeric( $post_limit ) ||  $posts->found_posts < $post_limit ) {
+	if ( ! is_numeric( $post_limit ) || $posts->found_posts < $post_limit ) {
 		set_query_var( 'sow-total_posts', $posts->found_posts );
 		return $posts;
 	}
@@ -131,9 +131,11 @@ function sow_carousel_get_next_posts_page() {
 
 	ob_start();
 	include apply_filters( 'siteorigin_post_carousel_ajax_item_template', 'tpl/item.php', $instance );
-	wp_send_json( array(
-		'html' => ob_get_clean()
-	) );
+	wp_send_json(
+		array(
+			'html' => ob_get_clean(),
+		)
+	);
 }
 add_action( 'wp_ajax_sow_carousel_load', 'sow_carousel_get_next_posts_page' );
 add_action( 'wp_ajax_nopriv_sow_carousel_load', 'sow_carousel_get_next_posts_page' );
@@ -152,8 +154,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 				'instance_storage' => true,
 				'help' => 'https://siteorigin.com/widgets-bundle/post-carousel-widget/',
 			),
-			array(
-			),
+			array(),
 			false,
 			plugin_dir_path( __FILE__ )
 		);
@@ -232,7 +233,6 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 		// Try to load carousel theme stylesheet.
 		wp_enqueue_style( 'sow-post-carousel-' . $theme );
-
 
 		add_action( 'wp_head', array( $this, 'prevent_potential_shifts' ), 10, 0 );
 
@@ -485,9 +485,9 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 
 		$less_vars = array(
 			'thumbnail_width' => $thumb_width . 'px',
-			'thumbnail_height'=> $thumb_height . 'px',
+			'thumbnail_height' => $thumb_height . 'px',
 			'thumbnail_hover_width' => $thumb_hover_width . 'px',
-			'thumbnail_hover_height'=> $thumb_hover_height . 'px',
+			'thumbnail_hover_height' => $thumb_hover_height . 'px',
 			'thumbnail_overlay_hover_color' => ! empty( $instance['design']['thumbnail']['thumbnail_overlay_hover_color'] ) ? $instance['design']['thumbnail']['thumbnail_overlay_hover_color'] : '',
 			'thumbnail_overlay_hover_opacity' => ! empty( $instance['design']['thumbnail']['thumbnail_overlay_hover_opacity'] ) ? $instance['design']['thumbnail']['thumbnail_overlay_hover_opacity'] : 0.5,
 			'navigation_color' => ! empty( $instance['design']['navigation']['navigation_color'] ) ? $instance['design']['navigation']['navigation_color'] : '',
@@ -530,12 +530,14 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			$default_thumbnail = siteorigin_widgets_get_attachment_image_src( $instance['default_thumbnail'], $instance['image_size'], $instance['default_thumbnail_fallback'] );
 		}
 
-		$query = siteorigin_widget_post_selector_process_query( wp_parse_args(
-			$instance['posts'],
-			array(
-				'paged' => empty( $instance['paged'] ) ? 1 : $instance['paged'],
+		$query = siteorigin_widget_post_selector_process_query(
+			wp_parse_args(
+				$instance['posts'],
+				array(
+					'paged' => empty( $instance['paged'] ) ? 1 : $instance['paged'],
+				)
 			)
-		) );
+		);
 		$posts = new WP_Query( $query );
 
 		$carousel_settings = $this->carousel_settings_template_variables( $instance['carousel_settings'], false );
@@ -634,7 +636,8 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			.sow-post-carousel-wrapper:not(:has(.slick-initialized)) .sow-carousel-items {
 				visibility: hidden;
 			}
-		</style><?php
+		</style>
+		<?php
 		$carousel_styles_added = true;
 	}
 }

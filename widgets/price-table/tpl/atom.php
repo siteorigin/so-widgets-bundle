@@ -12,15 +12,17 @@
 $initial_button_attrs = $button_attrs;
 ?>
 
-<?php if ( ! empty( $title ) ) {
+<?php
+if ( ! empty( $title ) ) {
 	echo $before_title . $title . $after_title;
-} ?>
+}
+?>
 
 <div class="ow-pt-columns-atom<?php echo (bool) $equalize_row_heights ? ' sow-equalize-row-heights' : ''; ?>">
 
 	<?php foreach ( $columns as $i => $column ) { ?>
 		<div class="ow-pt-column <?php echo $this->get_column_classes( $column, $i, $columns ); ?>"
-			 style="width: <?php echo round( 100 / count( $columns ), 3 ); ?>%">
+			style="width: <?php echo round( 100 / count( $columns ), 3 ); ?>%">
 			<div class="ow-pt-title">
 				<?php echo wp_kses_post( $column['title'] ); ?>
 				<?php if ( ! empty( $column['subtitle'] ) ) { ?>
@@ -30,8 +32,8 @@ $initial_button_attrs = $button_attrs;
 				<?php } ?>
 			</div>
 
-            <div class="ow-pt-details">
-                <div class="ow-pt-price">
+			<div class="ow-pt-details">
+				<div class="ow-pt-price">
 					<?php echo wp_kses_post( $column['price'] ); ?>
 				</div>
 				<?php if ( ! empty( $column['sale_price'] ) ) { ?>
@@ -39,8 +41,8 @@ $initial_button_attrs = $button_attrs;
 						<?php echo wp_kses_post( $column['sale_price'] ); ?>
 					</span>
 				<?php } ?>
-                <div class="ow-pt-per"><?php echo wp_kses_post( $column['per'] ); ?></div>
-            </div>
+				<div class="ow-pt-per"><?php echo wp_kses_post( $column['per'] ); ?></div>
+			</div>
 
 			<?php if ( ( $equalize_row_heights && $any_column_has_image ) || ! ( $equalize_row_heights || empty( $column['image'] ) ) ) { ?>
 				<div class="ow-pt-image">
@@ -53,16 +55,17 @@ $initial_button_attrs = $button_attrs;
 					<div class="ow-pt-feature ow-pt-feature-<?php echo $i % 2 == 0 ? 'even' : 'odd'; ?> ow-pt-feature-index-<?php echo $i; ?>" title="<?php echo ! empty( $feature['hover'] ) ? esc_attr( $feature['hover'] ) : ''; ?>">
 
 						<?php
-						if ( ! empty( $feature['icon_new'] ) ) { ?>
+						if ( ! empty( $feature['icon_new'] ) ) {
+							?>
 							<div class="sow-feature-icon">
 								<?php
 								$icon_styles = array();
 
-							if ( ! empty( $feature['icon_color'] ) ) {
-								$icon_styles[] = 'color: ' . $feature['icon_color'];
-							}
-							echo siteorigin_widget_get_icon( $feature['icon_new'], $icon_styles );
-							?>
+								if ( ! empty( $feature['icon_color'] ) ) {
+									$icon_styles[] = 'color: ' . $feature['icon_color'];
+								}
+								echo siteorigin_widget_get_icon( $feature['icon_new'], $icon_styles );
+								?>
 							</div>
 						<?php } ?>
 						<div class="sow-feature-text">
@@ -93,7 +96,7 @@ $initial_button_attrs = $button_attrs;
 				</div>
 			<?php } ?>
 		</div>
-	<?php
+		<?php
 	}
 
 	global $siteorigin_price_table_icons;
