@@ -137,7 +137,7 @@
 
 			props.setAttributes( {
 				widgetMarkup: widgetPreview.html,
-				widgetIcons: widgetPreview.icons
+				widgetIcons: widgetPreview.widgetIcons,
 			} );
 		} )
 		.fail( ( response ) => {
