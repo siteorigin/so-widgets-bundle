@@ -327,7 +327,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_template_variables( $instance, $args ) {
-		$items = isset( $instance['items'] ) ? (array) $instance['items'] : array();
+		$items = ! empty( $instance['items'] ) && is_array( $instance['items'] ) ? (array) $instance['items'] : array();
 
 		foreach ( $items as &$item ) {
 			$item['link_attributes'] = array();
