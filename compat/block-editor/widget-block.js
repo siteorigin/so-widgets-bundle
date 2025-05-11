@@ -731,6 +731,7 @@
 								}
 							)
 					},
+					keywords: widget.keywords ? widget.keywords : '',
 					category: 'siteorigin',
 					supports: {
 						html: false,

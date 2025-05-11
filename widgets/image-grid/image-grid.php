@@ -5,6 +5,7 @@ Description: Showcase images in a responsive grid layout with custom size, spaci
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/image-grid/
+Keywords: gallery
 */
 
 class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
