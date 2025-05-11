@@ -66,7 +66,7 @@ jQuery( function ( $ ) {
 
 					// If preloader is present, remove and show masonry
 					if ( $grid.prev( '.sow-masonry-grid-preloader' ).length ) {
-						$grid.prev().remove()
+						$grid.prev().hide();
 						$grid.css( 'opacity', 1 );
 					}
 				} );

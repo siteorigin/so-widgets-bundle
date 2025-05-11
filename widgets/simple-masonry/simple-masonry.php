@@ -342,7 +342,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 		return array(
 			'args' => $args,
 			'items' => $items,
-			'preloader_enabled' => ! empty( $instance['preloader']['enabled'] ) ? true : false,
+			'preloader_enabled' => ! empty( $instance['preloader']['enabled'] ),
 			'layout_origin_left' => ! empty( $instance['layout']['origin_left'] ) ? $instance['layout']['origin_left'] : 'true',
 			'layouts' => array(
 				'desktop' => siteorigin_widgets_underscores_to_camel_case(
