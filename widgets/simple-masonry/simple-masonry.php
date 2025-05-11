@@ -194,7 +194,6 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 					),
 
 					'padding' => array(
-						'type' => 'color',
 						'label' => __( 'Title Padding', 'so-widgets-bundle' ),
 						'type' => 'multi-measurement',
 						'autofill' => true,
