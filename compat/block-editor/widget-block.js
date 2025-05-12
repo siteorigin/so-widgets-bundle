@@ -716,14 +716,25 @@
 					...settings,
 					icon: function() {
 						return widget.icon ?
-							el(
-								'img',
-								{
-									className: 'widget-icon so-widget-icon so-block-editor-icon',
-									src: widget.icon,
-									alt: widget.name
-								}
-							)
+							widget.icon.trim().startsWith('<svg') ?
+								el(
+									'span',
+									{
+										className: 'widget-icon so-widget-icon so-block-editor-icon',
+										dangerouslySetInnerHTML: { __html: widget.icon }
+									}
+								)
+								:
+								el(
+									'img',
+									{
+										className: 'widget-icon so-widget-icon so-block-editor-icon',
+										src: widget.icon,
+										alt: widget.name
+									}
+								)
+
+							// Widget doesn't have icon set. Add default icon.
 							: el(
 								'span',
 								{
