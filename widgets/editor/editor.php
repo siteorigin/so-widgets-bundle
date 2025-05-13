@@ -5,6 +5,7 @@ Description: Insert and customize content with a rich text editor offering exten
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/editor-widget/
+Keywords: content, formatting, richtext, text, tinymce, toolbar
 */
 
 class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {

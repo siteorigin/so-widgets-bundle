@@ -6,6 +6,7 @@ Description: Embed self-hosted or externally hosted videos with a customizable p
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/video-player-widget/
+Keywords: autoplay, embed, fullscreen, media, mp4, oembed, player, self-hosted, video file, video url, vimeo, youtube
 */
 
 class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {

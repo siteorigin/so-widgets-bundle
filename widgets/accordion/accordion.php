@@ -5,6 +5,7 @@ Description: Efficiently display content in expandable sections, maximizing spac
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/accordion-widget/
+Keywords: collapsible, dropdown, expandable, faq, foldable, hide, read more, readmore, show, show/hide, toggle
 */
 
 class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {

@@ -5,6 +5,7 @@ Description: Create tabbed content panels with customizable titles, content, ini
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/tabs-widget/
+Keywords: collapsible, content, expandable, faq, panel, section, tabbed, title, toggle, show/hide
 */
 
 class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
