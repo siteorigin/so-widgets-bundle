@@ -523,7 +523,12 @@
 			return el(
 				'span',
 				{
-					className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
+					className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default',
+					dangerouslySetInnerHTML: { 
+						__html: sowbBlockEditorAdmin.defaultIcon ? 
+							'<img src="data:image/svg+xml;base64,' + sowbBlockEditorAdmin.defaultIcon + '" alt="Widget Icon" />' : 
+							''
+					}
 				}
 			)
 		},
@@ -738,7 +743,12 @@
 							: el(
 								'span',
 								{
-									className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
+									className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default',
+									dangerouslySetInnerHTML: { 
+										__html: sowbBlockEditorAdmin.defaultIcon ? 
+											'<img src="data:image/svg+xml;base64,' + sowbBlockEditorAdmin.defaultIcon + '" alt="Widget Icon" />' : 
+											''
+									}
 								}
 							)
 					},
@@ -788,7 +798,12 @@
 				: el(
 					'span',
 					{
-						className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
+						className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default',
+						dangerouslySetInnerHTML: { 
+							__html: sowbBlockEditorAdmin.defaultIcon ? 
+								'<img src="data:image/svg+xml;base64,' + sowbBlockEditorAdmin.defaultIcon + '" alt="Widget Icon" />' : 
+								''
+						}
 					}
 				)
 			},
