@@ -1,0 +1,141 @@
+div.siteorigin-widget-form div.siteorigin-widget-field.siteorigin-widget-field-type-toggle {
+	.siteorigin-widget-field-label {
+		align-items: center;
+		display: flex;
+	}
+
+	.sowb-toggle-switch-input {
+		display: none;
+	}
+
+	.sowb-toggle-switch-container {
+		background-color:#fff;
+		background-image: linear-gradient(180deg,#eee,#fff 25px);
+		border-radius: 24px;
+		box-shadow: inset 0 -1px #fff,inset 0 1px 1px rgba(0,0,0,.05);
+		cursor: pointer;
+		display: inline-block;
+		height: 24px;
+		margin: 0 10px 0 0;
+		padding: 3px;
+		position: relative;
+		vertical-align: top;
+		width: 68px;
+
+		.sowb-toggle-switch-input {
+			left: 0;
+			opacity: 0;
+			position: absolute;
+			top: 0;
+		}
+
+		.sowb-toggle-switch-label {
+			background: #eceeef;
+			border-radius: inherit;
+			box-shadow: inset 0 1px 2px rgba(0,0,0,.12),inset 0 0 2px rgba(0,0,0,.15);
+			display: block;
+			font-size: 12px;
+			height: inherit;
+			position: relative;
+			text-transform: uppercase;
+			transition-property: opacity background;
+			transition: .15s ease-out;
+
+			&:after,
+			&:before {
+				line-height:1;
+				margin-top: -.5em;
+				position: absolute;
+				top: 50%;
+				transition: inherit;
+			}
+
+			&:before {
+				color: #aaa;
+				content: attr(data-off);
+				right: 11px;
+				text-shadow: 0 1px hsla(0,0%,100%,.5);
+			}
+
+			&:after {
+				color: #fff;
+				content: attr(data-on);
+				left: 13px;
+				opacity: 0;
+				text-shadow: 0 1px rgba(0,0,0,.2);
+			}
+		}
+
+		.sowb-toggle-switch-handle {
+			background-image: linear-gradient(180deg,#fff 40%,#f0f0f0);
+			background: #fff;
+			border-radius: 12px;
+			box-shadow: 1px 1px 5px rgba(0,0,0,.2);
+			height: 22px;
+			left: 4px;
+			position: absolute;
+			top: 4px;
+			transition: left .15s ease-out;
+			width: 22px;
+
+			&:before {
+				background-image: linear-gradient(180deg,#eee,#fff);
+				background: #f9f9f9;
+				border-radius: 7px;
+				box-shadow: inset 0 1px rgba(0,0,0,.02);
+				content: '';
+				height: 14px;
+				left: 50%;
+				margin: -7px 0 0 -7px;
+				position: absolute;
+				top: 50%;
+				width: 14px;
+			}
+		}
+	}
+
+	/* Handle the movement of the toggle switch. */
+	.sowb-toggled-on {
+
+		.sowb-toggle-switch-label {
+			background: #47a8d8;
+			box-shadow: inset 0 1px 2px rgba(0,0,0,.15),inset 0 0 3px rgba(0,0,0,.2);
+
+			&:before {
+				opacity: 0;
+			}
+
+			&:after {
+				opacity: 1;
+			}
+		}
+
+		.sowb-toggle-switch-handle {
+			box-shadow: -1px 1px 5px rgba(0,0,0,.2);
+			left: 48px;
+		}
+
+		.siteorigin-widget-toggle {
+			display: block;
+		}
+	}
+
+	.sowb-toggled-off ~ .siteorigin-widget-toggle {
+		display: none;
+	}
+
+	.siteorigin-widget-toggle {
+		padding: 10px;
+		margin-block: 5px 1em;
+		background: #fcfcfc;
+		border: 1px solid #eeeeee;
+
+		.siteorigin-widget-field:first-of-type {
+			margin-top: 0;
+		}
+
+		.siteorigin-widget-field:last-of-type {
+			margin-bottom: 0;
+		}
+	}
+}
