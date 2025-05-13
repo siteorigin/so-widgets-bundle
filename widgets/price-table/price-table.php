@@ -1,5 +1,4 @@
 <?php
-
 /*
 Widget Name: Price Table
 Description: Display pricing plans in a professional table format with custom columns, features, and design.

@@ -1,5 +1,4 @@
 <?php
-
 /*
 Widget Name: Video Player
 Description: Embed self-hosted or externally hosted videos with a customizable player, controls, and responsive sizing.

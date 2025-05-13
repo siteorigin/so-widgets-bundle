@@ -1,5 +1,4 @@
 <?php
-
 /*
 Widget Name: Google Maps
 Description: Embed a customizable Google Map with markers, directions, styling options, and interactive elements.
