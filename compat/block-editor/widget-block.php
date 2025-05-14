@@ -253,7 +253,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$icon_svg_path = plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . 'base/css/img/bundle-icon.svg';
 		$default_icon = '';
 		if ( file_exists( $icon_svg_path ) ) {
-			$default_icon = base64_encode( file_get_contents( $icon_svg_path ) );
+			$default_icon = file_get_contents( $icon_svg_path );
 		}
 
 		wp_enqueue_script(
