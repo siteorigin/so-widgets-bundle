@@ -5,6 +5,7 @@ Description: Prompt visitors to take action with a customizable title, subtitle,
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/call-action-widget/
+Keywords: button, heading, subheading, prompt, subtitle, title
 */
 
 class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {

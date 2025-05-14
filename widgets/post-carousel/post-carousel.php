@@ -5,6 +5,7 @@ Description: Display blog posts or custom post types in a responsive, customizab
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/post-carousel-widget/
+Keywords: blog, query
 */
 
 /**

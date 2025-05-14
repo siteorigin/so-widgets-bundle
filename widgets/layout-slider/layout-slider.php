@@ -5,6 +5,7 @@ Description: Design responsive slider frames with unique layouts, backgrounds, a
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/layout-slider-widget/
+Keywords: background, button, column, content, image, layout, rows, video, widget
 */
 
 if ( ! class_exists( 'SiteOrigin_Widget_Base_Slider' ) ) {

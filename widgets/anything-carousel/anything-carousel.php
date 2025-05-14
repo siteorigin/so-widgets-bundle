@@ -5,6 +5,7 @@ Description: Display images, text, or any content in a highly customizable and r
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/anything-carousel-widget/
+Keywords: image, photo, text
 */
 
 if ( ! class_exists( 'SiteOrigin_Widget_Base_Carousel' ) ) {

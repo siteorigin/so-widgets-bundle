@@ -5,6 +5,7 @@ Description: Add a responsive image with custom dimensions, positioning, caption
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/image-widget-documentation/
+Keywords: caption, photo
 */
 
 class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {

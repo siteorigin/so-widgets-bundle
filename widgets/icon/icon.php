@@ -5,6 +5,7 @@ Description: Display a customizable icon with color, size, alignment, and option
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/icon-widget/
+Keywords: font awesome, link, symbol
 */
 
 class SiteOrigin_Widget_Icon_Widget extends SiteOrigin_Widget {

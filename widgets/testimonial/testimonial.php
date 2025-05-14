@@ -5,6 +5,7 @@ Description: Feature testimonials from satisfied customers with tailored layouts
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/testimonials-widget/
+Keywords: customer, quote, review, social
 */
 
 class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {

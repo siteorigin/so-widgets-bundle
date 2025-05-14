@@ -5,6 +5,7 @@ Description: Build an impressive hero image section with custom content, buttons
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/hero-image-widget/
+Keywords: background, button, content, image, video
 */
 
 if ( ! class_exists( 'SiteOrigin_Widget_Base_Slider' ) ) {

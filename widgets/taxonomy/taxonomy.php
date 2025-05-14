@@ -5,6 +5,7 @@ Description: Automatically display the taxonomies of the current post with custo
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/taxonomy-widget/
+Keywords: category, meta, tag
 */
 
 class SiteOrigin_Widget_Taxonomy_Widget extends SiteOrigin_Widget {

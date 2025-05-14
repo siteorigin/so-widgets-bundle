@@ -5,6 +5,7 @@ Description: Add a contact form with custom fields, design options, spam protect
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/contact-form-widget/
+Keywords: akismet, email, field, message, notification, recaptcha, spam
 */
 
 $field_ids = array();
