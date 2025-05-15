@@ -1,8 +1,8 @@
 <?php
 
 class SiteOrigin_Widget_Field_Toggle extends SiteOrigin_Widget_Field_Container_Base {
-	protected string $toggle_on;
-	protected string $toggle_off;
+	protected $toggle_on;
+	protected $toggle_off;
 
 	protected function get_label_classes( $value, $instance ) {
 		$label_classes = parent::get_label_classes( $value, $instance );
@@ -28,7 +28,7 @@ class SiteOrigin_Widget_Field_Toggle extends SiteOrigin_Widget_Field_Container_B
 		?>
 		<label
 			class="siteorigin-widget-field-label sowb-toggle-switch sowb-toggled-<?php
-				echo $this->state ==== 'open' ? 'on' : 'off';
+				echo $this->state === 'open' ? 'on' : 'off';
 			?>"
 			for="<?php echo esc_attr( $this->element_id . '-so_field_container_state' ); ?>"
 		>
