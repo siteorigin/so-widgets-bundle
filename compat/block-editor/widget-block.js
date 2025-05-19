@@ -38,6 +38,48 @@
 	];
 
 	/**
+	 * This function setups up the icon for a SiteOrigin Widget block.
+	 *
+	 * It checks if the widget has an icon set. If it does, it
+	 * returns a span element with the icon. If the icon is an SVG,
+	 * it uses dangerouslySetInnerHTML to set the inner HTML.
+	 * Otherwise, it returns an img element with the icon URL.
+	 *
+	 * If no icon is set, it returns a default icon span element.
+	 *
+	 * @param {*} icon
+	 * @returns {*} The icon element.
+	 */
+	const sowbSetupIcon = ( icon ) => {
+		return icon ?
+			icon.trim().startsWith( '<svg' ) ?
+				el(
+					'span',
+					{
+						className: 'widget-icon so-widget-icon so-block-editor-icon',
+						dangerouslySetInnerHTML: { __html: icon }
+					}
+				)
+				:
+				el(
+					'img',
+					{
+						className: 'widget-icon so-widget-icon so-block-editor-icon',
+						src: widget.icon,
+						alt: widget.name
+					}
+				)
+
+			// Widget doesn't have icon set. Add default icon.
+			: el(
+				'span',
+				{
+					className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
+				}
+			)
+	};
+
+	/**
 	 * Generate a widget preview.
 	 *
 	 * This function generates a preview for the widget by making
@@ -714,34 +756,7 @@
 
 				return {
 					...settings,
-					icon: function() {
-						return widget.icon ?
-							widget.icon.trim().startsWith('<svg') ?
-								el(
-									'span',
-									{
-										className: 'widget-icon so-widget-icon so-block-editor-icon',
-										dangerouslySetInnerHTML: { __html: widget.icon }
-									}
-								)
-								:
-								el(
-									'img',
-									{
-										className: 'widget-icon so-widget-icon so-block-editor-icon',
-										src: widget.icon,
-										alt: widget.name
-									}
-								)
-
-							// Widget doesn't have icon set. Add default icon.
-							: el(
-								'span',
-								{
-									className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
-								}
-							)
-					},
+					icon: sowbSetupIcon( widget.icon ),
 					keywords: widget.keywords ? widget.keywords : '',
 					category: 'siteorigin',
 					supports: {
@@ -775,23 +790,7 @@
 		registerBlockType( 'sowb/' + widget.blockName, {
 			title: widget.name,
 			description: widget.description,
-			icon: function() {
-				return widget.icon ?
-				el(
-					'img',
-					{
-						className: 'widget-icon so-widget-icon so-block-editor-icon',
-						src: widget.icon,
-						alt: widget.name
-					}
-				)
-				: el(
-					'span',
-					{
-						className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
-					}
-				)
-			},
+			icon: sowbSetupIcon( widget.icon ),
 			category: 'siteorigin',
 			keywords: widget.keywords ? widget.keywords : '',
 			supports: {
