@@ -1,5 +1,12 @@
 == Changelog ==
 
+= 1.68.4 - 20 May 2025 =
+* Blog Alternate: Fixed mobile spacing issue.
+* Toggle Field: Adjusted toggle text to 11px, decreased size, and aligned toggle switch style and spacing with Page Builder (PB).
+* Widget Block Icons: Refactored icon setup logic to centralize and simplify code, ensuring consistent handling of SVG and image icons.
+* Widget Blocks: Added inline SVG icons.
+* General: Updated Installer submodule.
+
 = 1.68.3 - 11 May 2025 =
 * Image Grid: Added gallery keyword support.
 * Simple Masonry: Fixed preloader visibility, removed incorrect type, and resolved potential TypeError.
