@@ -1,11 +1,11 @@
 <?php
-
 /*
 Widget Name: Price Table
 Description: Display pricing plans in a professional table format with custom columns, features, and design.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/price-table-widget/
+Keywords: feature, plans, tier
 */
 
 class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {

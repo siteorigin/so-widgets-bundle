@@ -5,6 +5,7 @@ Description: Display author information, including avatar, name, bio, and post l
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/author-box-widget/
+Keywords: author, avatar, bio, name
 */
 
 class SiteOrigin_Widget_Author_Box_Widget extends SiteOrigin_Widget {

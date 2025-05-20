@@ -5,6 +5,7 @@ Description: Drive traffic to your latest content with a visually appealing, ful
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/recent-posts-widget/
+Keywords: blog, latest, list, showcase, query
 */
 
 class SiteOrigin_Widget_Recent_Posts_Widget extends SiteOrigin_Widget {

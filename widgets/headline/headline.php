@@ -5,6 +5,7 @@ Description: Engage visitors with a prominent, stylish headline and optional div
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/headline-widget/
+Keywords: divider, heading, message, subheading, text, title
 */
 
 class SiteOrigin_Widget_Headline_Widget extends SiteOrigin_Widget {

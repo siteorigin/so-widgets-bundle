@@ -1,11 +1,11 @@
 <?php
-
 /*
 Widget Name: Google Maps
 Description: Embed a customizable Google Map with markers, directions, styling options, and interactive elements.
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/google-maps-widget/
+Keywords: directions, embed, interactive, map, markers, navigation, navigate
 */
 
 class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
