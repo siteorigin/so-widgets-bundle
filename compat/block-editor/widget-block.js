@@ -50,7 +50,7 @@
 	 */
 	const sowbSetupIcon = ( widget ) => {
 		return widget.icon ?
-			icon.trim().startsWith( '<svg' ) ?
+			widget.icon.trim().startsWith( '<svg' ) ?
 				el(
 					'span',
 					{
