@@ -38,17 +38,15 @@
 	];
 
 	/**
-	 * This function setups up the icon for a SiteOrigin Widget block.
+	 * Sets up the icon for a SiteOrigin Widget block.
 	 *
-	 * It checks if the widget has an icon set. If it does, it
-	 * returns a span element with the icon. If the icon is an SVG,
-	 * it uses dangerouslySetInnerHTML to set the inner HTML.
-	 * Otherwise, it returns an img element with the icon URL.
+	 * Checks if the widget has an icon set. If set, returns a span element with the icon.
+	 * For SVG icons, uses dangerouslySetInnerHTML. For image icons, returns an img element.
+	 * Returns a default icon span if no icon is set.
 	 *
-	 * If no icon is set, it returns a default icon span element.
+	 * @param {Object} widget - The widget object containing icon and name properties.
 	 *
-	 * @param {*} icon
-	 * @returns {*} The icon element.
+	 * @returns {HTMLSpanElement|HTMLImageElement} The icon element.
 	 */
 	const sowbSetupIcon = ( widget ) => {
 		return widget.icon ?
