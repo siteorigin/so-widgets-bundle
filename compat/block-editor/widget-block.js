@@ -50,14 +50,14 @@
 	 * @param {*} icon
 	 * @returns {*} The icon element.
 	 */
-	const sowbSetupIcon = ( icon ) => {
-		return icon ?
+	const sowbSetupIcon = ( widget ) => {
+		return widget.icon ?
 			icon.trim().startsWith( '<svg' ) ?
 				el(
 					'span',
 					{
 						className: 'widget-icon so-widget-icon so-block-editor-icon',
-						dangerouslySetInnerHTML: { __html: icon }
+						dangerouslySetInnerHTML: { __html: widget.icon }
 					}
 				)
 				:
@@ -756,7 +756,7 @@
 
 				return {
 					...settings,
-					icon: sowbSetupIcon( widget.icon ),
+					icon: sowbSetupIcon( widget ),
 					keywords: widget.keywords ? widget.keywords : '',
 					category: 'siteorigin',
 					supports: {
@@ -790,7 +790,7 @@
 		registerBlockType( 'sowb/' + widget.blockName, {
 			title: widget.name,
 			description: widget.description,
-			icon: sowbSetupIcon( widget.icon ),
+			icon: sowbSetupIcon( widget ),
 			category: 'siteorigin',
 			keywords: widget.keywords ? widget.keywords : '',
 			supports: {
