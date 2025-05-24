@@ -5,6 +5,7 @@ Description: Bring your content to life using interactive Lottie animations with
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/lottie-player-widget/
+Keywords: animation, interactive, link, motion, playback
 */
 
 class SiteOrigin_Widget_Lottie_Player_Widget extends SiteOrigin_Widget {

@@ -5,6 +5,7 @@ Description: Add multiple buttons in one go, customize individually, and present
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/button-grid-widget/
+Keywords: event, icon, link, list
 */
 
 class SiteOrigin_Widget_Button_Grid_Widget extends SiteOrigin_Widget {

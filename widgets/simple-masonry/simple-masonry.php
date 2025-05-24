@@ -5,6 +5,7 @@ Description: Display images in an attractive masonry grid with adjustable column
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/simple-masonry-widget/
+Keywords: caption, gallery, image, photo
 */
 
 class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {

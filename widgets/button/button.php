@@ -5,6 +5,7 @@ Description: Create a custom button with flexible styling, icon support, and cli
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/button-widget-documentation/
+Keywords: event, icon, link
 */
 
 class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {

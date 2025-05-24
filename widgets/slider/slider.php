@@ -5,6 +5,7 @@ Description: Create a responsive slider with customizable image and video frames
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/slider-widget-documentation/
+Keywords: gallery, image, video
 */
 
 if ( ! class_exists( 'SiteOrigin_Widget_Base_Slider' ) ) {

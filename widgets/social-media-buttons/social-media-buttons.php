@@ -5,6 +5,7 @@ Description: Add social media buttons to your site with personalized icons, colo
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/social-media-buttons-widget/
+Keywords: button, icon, link, network, social
 */
 
 class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {

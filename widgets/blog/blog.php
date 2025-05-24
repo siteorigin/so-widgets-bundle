@@ -5,6 +5,7 @@ Description: Showcase blog content in personalized list or grid layouts with fle
 Author: SiteOrigin
 Author URI: https://siteorigin.com
 Documentation: https://siteorigin.com/widgets-bundle/blog-widget/
+Keywords: list, post, query
 */
 
 class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
