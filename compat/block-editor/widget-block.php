@@ -250,11 +250,12 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			SOW_BUNDLE_VERSION
 		);
 
-		$icon_svg_path = plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . 'base/css/img/bundle-icon.svg';
-		$default_icon = '';
-		if ( file_exists( $icon_svg_path ) ) {
-			$default_icon = file_get_contents( $icon_svg_path );
-		}
+		// Use the centralized icon system for the bundle default icon.
+		$bundle_icon_path = plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . 'base/css/img/bundle-icon.svg';
+		$default_icon = file_exists( $bundle_icon_path ) ? file_get_contents( $bundle_icon_path ) : '';
+
+		// Apply the same filter as the centralized system for consistency.
+		$default_icon = apply_filters( 'siteorigin_widgets_block_icon', $default_icon, $bundle_icon_path );
 
 		wp_enqueue_script(
 			'sowb-widget-block',

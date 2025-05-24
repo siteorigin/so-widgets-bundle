@@ -72,9 +72,10 @@
 			: el(
 				'span',
 				{
-					className: 'widget-icon so-widget-icon so-block-editor-icon so-widget-icon-default'
+					className: 'widget-icon so-widget-icon so-block-editor-icon',
+					dangerouslySetInnerHTML: { __html: sowbBlockEditorAdmin.defaultIcon }
 				}
-			)
+			);
 	};
 
 	/**
