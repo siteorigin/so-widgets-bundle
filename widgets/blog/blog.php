@@ -683,14 +683,8 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	public function get_style_name( $instance ) {
 		$template = empty( $instance['template'] ) ? 'standard' : $instance['template'];
 
-		// If this template has any assets, load them.
-		if ( wp_style_is( 'sow-blog-template-' . $template, 'registered' ) ) {
-			wp_enqueue_style( 'sow-blog-template-' . $template );
-		}
-
-		if ( wp_script_is( 'sow-blog-template-' . $template, 'registered' ) ) {
-			wp_enqueue_script( 'sow-blog-template-' . $template );
-		}
+		wp_enqueue_style( 'sow-blog-template-' . $template );
+		wp_enqueue_script( 'sow-blog-template-' . $template );
 
 		return $template;
 	}
