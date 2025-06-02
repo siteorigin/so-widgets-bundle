@@ -65,6 +65,14 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 			plugin_dir_url( __FILE__ ) . 'sowb-elementor' . SOW_BUNDLE_JS_SUFFIX . '.js',
 			array( 'jquery' )
 		);
+
+		// Inline color scheme preference detection.
+		wp_add_inline_script(
+			'sowb-js-for-elementor',
+			'if ( window.matchMedia && window.matchMedia( `(prefers-color-scheme: dark)` ).matches )
+				{ document.body.classList.add( `swob-theme-dark` );
+			}'
+		);
 	}
 
 	public function print_footer_templates() {
