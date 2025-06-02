@@ -61,7 +61,15 @@
 		article {
 			margin-bottom: 30px;
 			padding: 0 1.1667%;
-			width: @column_width;
+
+			/*
+			* The Masonry JS Library requires a percentage width for items.
+			* This width can cause sizing issues in the Block Editor so only set
+			* it outside of the editor.
+			*/
+			body:not(.block-editor-page) & {
+				width: @column_width;
+			}
 
 			@media (max-width: @responsive_breakpoint) {
 				width: 100%;

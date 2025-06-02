@@ -109,6 +109,12 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.68.5 - 02 June 2025 =
+* Blog: Fixed JavaScript (JS) and Cascading Style Sheets (CSS) not outputting in Block Editor preview.
+* Blog Portfolio: Fixed sizing issue in Block Editor preview.
+* TinyMCE Form Field: Prevented potential TypeError.
+* Elementor: Improved dark mode styling, resolved misaligned checkbox checkmark placement, and fixed widget JS not being enqueued and preview not being flagged.
+
 = 1.68.4 - 20 May 2025 =
 * Blog Alternate: Fixed mobile spacing issue.
 * Toggle Field: Adjusted toggle text to 11px, decreased size, and aligned toggle switch style and spacing with Page Builder (PB).

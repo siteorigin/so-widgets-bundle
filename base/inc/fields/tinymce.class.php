@@ -137,6 +137,8 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 				'redo',
 				'wp_help',
 			),
+			'mce_buttons_3' => array(),
+			'mce_buttons_4' => array(),
 			'quicktags_buttons' => array(
 				'strong',
 				'em',

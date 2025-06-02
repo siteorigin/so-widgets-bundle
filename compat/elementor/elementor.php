@@ -15,24 +15,25 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 	private $plugin;
 
 	public function __construct() {
-		add_action( 'admin_action_elementor', array( $this, 'init_editor' ) );
 		add_action( 'template_redirect', array( $this, 'init_preview' ) );
 
 		add_filter( 'siteorigin_widgets_is_preview', array( $this, 'is_elementor_preview' ) );
+
 		add_action( 'wp_ajax_elementor_editor_get_wp_widget_form', array( $this, 'ajax_render_widget_form' ) );
+		add_action( 'elementor/editor/before_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
 
 		add_filter( 'elementor/frontend/builder_content/before_print_css', array( $this, 'remove_post_type_filter' ), 10, 1 );
 		add_filter( 'elementor/frontend/the_content', array( $this, 'restore_post_type_filter' ), 10, 1 );
 	}
 
-	public function init_editor() {
-		add_action( 'elementor/editor/before_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
-	}
-
 	public function init_preview() {
 		$this->plugin = Elementor\Plugin::instance();
 
-		if ( ! empty( $this->plugin->preview ) && method_exists( $this->plugin->preview, 'is_preview_mode' ) && $this->plugin->preview->is_preview_mode() ) {
+		if (
+			! empty( $this->plugin->preview ) &&
+			method_exists( $this->plugin->preview, 'is_preview_mode' ) &&
+			$this->plugin->preview->is_preview_mode()
+		) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ) );
 			add_action( 'elementor/preview/enqueue_styles', array( $this, 'enqueue_frontend_scripts' ) );
 		}
@@ -41,7 +42,10 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 	public function enqueue_frontend_scripts() {
 		$so_widgets_bundle = SiteOrigin_Widgets_Bundle::single();
 		$so_widgets_bundle->register_general_scripts();
-		$so_widgets_bundle->enqueue_registered_widgets_scripts( true, false );
+		$so_widgets_bundle->enqueue_registered_widgets_scripts(
+			true,
+			$this->is_elementor_preview()
+		);
 	}
 
 	public function enqueue_active_widgets_scripts() {
@@ -49,7 +53,10 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 
 		$so_widgets_bundle = SiteOrigin_Widgets_Bundle::single();
 		$so_widgets_bundle->register_general_scripts();
-		$so_widgets_bundle->enqueue_registered_widgets_scripts( false, true );
+		$so_widgets_bundle->enqueue_registered_widgets_scripts(
+			false,
+			$this->is_elementor_preview()
+		);
 
 		wp_enqueue_style( 'sowb-styles-for-elementor', plugin_dir_url( __FILE__ ) . 'styles.css' );
 
@@ -57,6 +64,14 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 			'sowb-js-for-elementor',
 			plugin_dir_url( __FILE__ ) . 'sowb-elementor' . SOW_BUNDLE_JS_SUFFIX . '.js',
 			array( 'jquery' )
+		);
+
+		// Inline color scheme preference detection.
+		wp_add_inline_script(
+			'sowb-js-for-elementor',
+			'if ( window.matchMedia && window.matchMedia( `(prefers-color-scheme: dark)` ).matches )
+				{ document.body.classList.add( `swob-theme-dark` );
+			}'
 		);
 	}
 
@@ -72,13 +87,39 @@ class SiteOrigin_Widgets_Bundle_Elementor {
 		}
 	}
 
-	public function is_elementor_preview( $is_preview ) {
-		$this->plugin = Elementor\Plugin::instance();
-		$is_elementor_preview = ! empty( $this->plugin->preview ) && method_exists( $this->plugin->preview, 'is_preview_mode' ) && $this->plugin->preview->is_preview_mode();
-		$is_elementor_edit_mode = $this->plugin->editor->is_edit_mode();
+	/**
+	 * Check if the current request is an Elementor preview.
+	 *
+	 * @param bool $is_preview The default state provided by Elementor. Default is false.
+	 *
+	 * @return bool True if the current request is an Elementor preview, false otherwise.
+	 */
+	public function is_elementor_preview( $is_preview = false ) : bool {
+		if ( $is_preview ) {
+			return true;
+		}
 
-		return $is_preview || $is_elementor_preview || $is_elementor_edit_mode ||
-			   ( ! empty( $_REQUEST['action'] ) && $_REQUEST['action'] == 'elementor_ajax' );
+		// Check if Elementor has `is_preview_mode` method.
+		$this->plugin = Elementor\Plugin::instance();
+		$is_elementor_preview = ! empty( $this->plugin->preview ) &&
+			method_exists( $this->plugin->preview, 'is_preview_mode' ) &&
+			$this->plugin->preview->is_preview_mode();
+		if ( $is_elementor_preview ) {
+			return true;
+		}
+
+
+		// Check if Elementor is in edit mode.
+		if ( $this->plugin->editor->is_edit_mode() ) {
+			return true;
+		}
+
+		// Check if Elementor this is an Elementor preview request.
+		if ( ( ! empty( $_REQUEST['action'] ) && $_REQUEST['action'] == 'elementor_ajax' ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public function ajax_render_widget_form() {
