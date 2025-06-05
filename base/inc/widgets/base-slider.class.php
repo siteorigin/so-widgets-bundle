@@ -538,6 +538,7 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		$background = wp_parse_args( $this->get_frame_background( $i, $frame ), array(
 			'color' => false,
 			'image' => false,
+			'image-alt' => '',
 			'image-width' => 0,
 			'image-height' => 0,
 			'opacity' => 1,
@@ -591,6 +592,15 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 		} ?>>
 			<?php
 			do_action( 'siteorigin_widgets_slider_before_contents', $frame );
+
+			if ( ! empty( $background['image'] ) && ! empty( $background['image-alt'] ) ) {
+				?>
+				<div class="sowb-slider-background-alt so-sr-only">
+					<?php echo esc_html( $background['image-alt'] ); ?>
+				</div>
+				<?php
+			}
+
 			$this->render_frame_contents( $i, $frame );
 			do_action( 'siteorigin_widgets_slider_after_contents', $frame );
 
