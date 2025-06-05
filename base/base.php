@@ -220,6 +220,19 @@ function siteorigin_widget_add_bundle_groups( $widgets ) {
 add_filter( 'siteorigin_panels_widgets', 'siteorigin_widget_add_bundle_groups', 11 );
 
 /**
+ * Get the allowed protocols for escaping URLs.
+ *
+ * @return array
+ */
+function sow_get_allowed_esc_url_protocols() {
+	$protocols = wp_allowed_protocols();
+	$protocols[] = 'skype';
+	$protocols[] = 'steam';
+
+	return apply_filters( 'siteorigin_esc_url_protocols', $protocols );
+}
+
+/**
  * Escape a URL
  *
  * @return string
@@ -234,9 +247,7 @@ function sow_esc_url( $url ) {
 		}
 	}
 
-	$protocols = apply_filters( 'siteorigin_esc_url_protocols', wp_allowed_protocols() );
-	$protocols[] = 'skype';
-	$protocols[] = 'steam';
+	$protocols = sow_get_allowed_esc_url_protocols();
 
 	return esc_url( $url, $protocols );
 }
@@ -252,9 +263,7 @@ function sow_esc_url_raw( $url ) {
 		$url = get_the_permalink( (int) $matches[1] );
 	}
 
-	$protocols = apply_filters( 'siteorigin_esc_url_protocols', wp_allowed_protocols() );
-	$protocols[] = 'skype';
-	$protocols[] = 'steam';
+	$protocols = sow_get_allowed_esc_url_protocols();
 
 	return esc_url_raw( $url, $protocols );
 }

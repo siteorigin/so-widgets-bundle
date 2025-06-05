@@ -134,6 +134,66 @@ sowb.SiteOriginSlider = function( $ ) {
 
 
 jQuery( function( $ ) {
+	/**
+	 * Validator for the SiteOrigin Slider onClick URL.
+	 *
+	 * This function checks if the URL is valid for the slider's onClick action.
+	 * It ensures that the URL does not contain JavaScript, and checks for valid protocols.
+	 * It allows URLs that start with `//`, `/`, or `#`, and checks against a list of
+	 * allowed protocols using the URL constructor for robust parsing.
+	 *
+	 * @param {Object} urlData - The data object containing the URL to validate.
+	 * @param {string} urlData.url - The URL to validate.
+	 *
+	 * @returns {boolean} - Returns true if the URL is valid and safe, false otherwise.
+	 */
+	const sowbSliderOnClickValidator = function( urlData ) {
+		if ( ! urlData || ! urlData.hasOwnProperty( 'url' ) ) {
+			return false;
+		}
+
+		let urlToCheck;
+
+		// Try to decode the URL to handle any encoded characters.
+		try {
+			urlToCheck = decodeURIComponent( urlData.url ).toLowerCase();
+		} catch ( e ) {
+			return false;
+		}
+
+		// We explicitly don't allow the JavaScript protocol in URLs.
+		if ( urlToCheck.indexOf( 'javascript:' ) !== -1 ) {
+			return false;
+		}
+
+		// Check for valid patterns that don't need protocol checking.
+		if (
+			urlToCheck.startsWith( '//' ) ||
+			(
+				urlToCheck.startsWith( '/' ) &&
+				! urlToCheck.startsWith( '//' )
+			) ||
+			urlToCheck.startsWith( '#' )
+		) {
+			return true;
+		}
+
+		// Check against allowed protocols.
+		if ( typeof sowb_slider_allowed_protocols !== 'undefined' ) {
+			try {
+				const url = new URL( urlData.url, window.location.origin );
+				const protocol = url.protocol.toLowerCase().replace( ':', '' );
+				return sowb_slider_allowed_protocols.includes( protocol );
+			} catch ( e ) {
+				// Invalid URL
+				return false;
+			}
+		}
+
+		// Fallback validation for http and https.
+		return /^https?:/.test( urlToCheck );
+	};
+
 	sowb.setupSliders = sowb.setupSlider = function() {
 		var siteoriginSlider = new sowb.SiteOriginSlider( $ );
 
@@ -162,11 +222,11 @@ jQuery( function( $ ) {
 				} );
 			}
 
-			$slides.each(function( index, el) {
+			$slides.each( function( index, el ) {
 				var $slide = $( el );
-				var urlData = $slide.data( 'url' );
+				let urlData = $slide.data( 'url' );
 
-				if ( urlData !== undefined && urlData.hasOwnProperty( 'url' ) ) {
+				if ( sowbSliderOnClickValidator( urlData ) ) {
 					$slide.on( 'click', function( event ) {
 
 						event.preventDefault();

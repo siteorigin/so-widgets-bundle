@@ -45,6 +45,17 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			array( 'jquery' ),
 			SOW_BUNDLE_VERSION
 		);
+
+		static $protocols_added = false;
+		if ( ! $protocols_added ) {
+			$protocols_added = true;
+
+			wp_localize_script(
+				'sow-slider-slider',
+				'sowb_slider_allowed_protocols',
+				sow_get_allowed_esc_url_protocols()
+			);
+		}
 	}
 
 	/**
