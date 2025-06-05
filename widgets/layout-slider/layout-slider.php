@@ -81,6 +81,13 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 								'label' => __( 'Background image', 'so-widgets-bundle' ),
 								'library' => 'image',
 								'fallback' => true,
+								'state_emitter' => array(
+									'callback' => 'conditional',
+									'args'     => array(
+										'has_background_image[show]: val',
+										'has_background_image[hide]: ! val',
+									),
+								),
 							),
 
 							'image_type' => array(
@@ -91,6 +98,10 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 									'tile' => __( 'Tile', 'so-widgets-bundle' ),
 								),
 								'default' => 'cover',
+								'state_handler' => array(
+									'has_background_image[show]' => array( 'show' ),
+									'has_background_image[hide]' => array( 'hide' ),
+								),
 							),
 
 							'opacity' => array(
@@ -99,6 +110,10 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 								'min' => 0,
 								'max' => 100,
 								'default' => 100,
+								'state_handler' => array(
+									'has_background_image[show]' => array( 'show' ),
+									'has_background_image[hide]' => array( 'hide' ),
+								),
 							),
 
 							'color' => array(
