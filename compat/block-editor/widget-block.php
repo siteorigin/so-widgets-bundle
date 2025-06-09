@@ -250,6 +250,13 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			SOW_BUNDLE_VERSION
 		);
 
+		// Use the centralized icon system for the bundle default icon.
+		$bundle_icon_path = plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . 'base/css/img/bundle-icon.svg';
+		$default_icon = file_exists( $bundle_icon_path ) ? file_get_contents( $bundle_icon_path ) : '';
+
+		// Apply the same filter as the centralized system for consistency.
+		$default_icon = apply_filters( 'siteorigin_widgets_block_icon', $default_icon, $bundle_icon_path );
+
 		wp_enqueue_script(
 			'sowb-widget-block',
 			plugins_url( 'widget-block' . SOW_BUNDLE_JS_SUFFIX . '.js', __FILE__ ),
@@ -279,11 +286,12 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			'sowbBlockEditorAdmin',
 			array(
 				'widgets' => $so_widgets,
-				'categoryIcon' => plugins_url( 'assets/icon.svg', __FILE__ ),
 				'restUrl' => esc_url_raw( rest_url() ),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
 				'consent' => $this->hasMigrationConsent,
 				'migrationNotice' => wp_create_nonce( 'so_block_migration_consent' ),
+				'categoryIcon' => plugins_url( 'assets/icon.svg', __FILE__ ),
+				'defaultIcon' => $default_icon,
 				'legacyNotice' => sprintf(
 					__( 'For improved block navigation, individual SiteOrigin Widget Blocks are now available. The multi-select SiteOrigin Widget Block will be automatically converted sitewide to the new individual SiteOrigin Widget Block format on page save; this action requires your consent to proceed. %sFind out more about this migration%s.', 'so-widgets-bundle' ),
 					'<a href="https://siteorigin.com/smarter-blocks-smoother-workflow-individual-siteorigin-widget-blocks-arrive" target="_blank" rel="noopener noreferrer">',
