@@ -1,5 +1,12 @@
 == Changelog ==
 
+= 1.69.0 - 12 June 2025 =
+* Hero: Added image alt support for improved accessibility.
+* Layout Slider: Added image alt support and improved background image settings by hiding the settings until a background has been added.
+* Slider: Added image alt support and improved URL handling with validation before setup.
+* Widget Block: Replaced block editor bundle icon with Scalable Vector Graphics (SVG) implementation and updated to use inline SVG for default icon.
+* General: Added new `sow_get_allowed_esc_url_protocols` helper function for enhanced URL protocol handling.
+
 = 1.68.5 - 02 June 2025 =
 * Blog: Fixed JavaScript (JS) and Cascading Style Sheets (CSS) not outputting in Block Editor preview.
 * Blog Portfolio: Fixed sizing issue in Block Editor preview.
