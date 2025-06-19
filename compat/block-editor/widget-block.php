@@ -338,7 +338,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				'</div>';
 		}
 
-		$widget_class = $block_content['widgetClass'];
+		$widget_class = isset( $block_content['widgetClass'] ) ? $block_content['widgetClass'] : '';
 		global $wp_widget_factory;
 
 		$widget = ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ? $wp_widget_factory->widgets[ $widget_class ] : false;
