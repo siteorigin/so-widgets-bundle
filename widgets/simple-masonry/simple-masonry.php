@@ -358,7 +358,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 						'break_point' => empty( $instance['layout']['tablet']['columns'] ) ? '768px' : $instance['layout']['tablet']['break_point'],
 						'num_columns' => empty( $instance['layout']['tablet']['columns'] ) ? 2 : $instance['layout']['tablet']['columns'],
 						'row_height' => empty( $instance['layout']['tablet']['row_height'] ) ? 0 : (int) $instance['layout']['tablet']['row_height'],
-						'gutter' => empty( $instance['layout']['tablet']['gutter'] ) ? 0 : (int) $instance['layout']['tablet']['gutter'],
+						'gutter' => ! isset( $instance['layout']['tablet']['gutter'] ) || $instance['layout']['tablet']['gutter'] === '' ? ( empty( $instance['layout']['desktop']['gutter'] ) ? 0 : (int) $instance['layout']['desktop']['gutter'] ) : (int) $instance['layout']['tablet']['gutter'],
 					)
 				),
 				'mobile' => siteorigin_widgets_underscores_to_camel_case(
@@ -366,7 +366,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 						'break_point' => empty( $instance['layout']['mobile']['columns'] ) ? '480px' : $instance['layout']['mobile']['break_point'],
 						'num_columns' => empty( $instance['layout']['mobile']['columns'] ) ? 1 : $instance['layout']['mobile']['columns'],
 						'row_height' => empty( $instance['layout']['mobile']['row_height'] ) ? 0 : (int) $instance['layout']['mobile']['row_height'],
-						'gutter' => empty( $instance['layout']['mobile']['gutter'] ) ? 0 : (int) $instance['layout']['mobile']['gutter'],
+						'gutter' => ! isset( $instance['layout']['mobile']['gutter'] ) || $instance['layout']['mobile']['gutter'] === '' ? ( isset( $instance['layout']['tablet']['gutter'] ) && $instance['layout']['tablet']['gutter'] !== '' ? (int) $instance['layout']['tablet']['gutter'] : ( empty( $instance['layout']['desktop']['gutter'] ) ? 0 : (int) $instance['layout']['desktop']['gutter'] ) ) : (int) $instance['layout']['mobile']['gutter'],
 					)
 				),
 			),
