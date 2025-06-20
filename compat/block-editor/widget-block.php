@@ -4,6 +4,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	public $widgetAnchor;
 	public $widgetBlocks = array();
 	public $hasMigrationConsent = false;
+	private $so_widgets = array();
+
 	/**
 	 * Get the singleton instance
 	 *
@@ -58,9 +60,9 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	 * @return void
 	 */
 	public function register_widget_block() {
-		$so_widgets = $this->get_all_widgets();
+		$this->prepare_widget_data();
 
-		foreach( $so_widgets as $widget ) {
+		foreach( $this->so_widgets as $widget ) {
 			if ( empty( $widget['blockName'] ) ) {
 				continue;
 			}
@@ -143,17 +145,26 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	}
 
 	/**
-	 * Retrieve all widgets.
+	 * Prepare and store widget data in the `$so_widgets` property.
 	 *
-	 * This method retrieves all widgets, including inactive
-	 * SiteOrigin widgets and third-party widgets. It loads
-	 * inactive widgets, extracts their metadata, and
-	 * combines them with active widgets. The resulting list is sorted
-	 * with SiteOrigin widgets at the top, followed by third-party widgets.
+	 * Retrieves all widgets, including inactive SiteOrigin and
+	 * third-party widgets, processes their metadata, and stores them
+	 * in `$so_widgets`. SiteOrigin widgets are sorted to appear first.
 	 *
-	 * @return array An array of widgets with their metadata, including name, class, description, icon, and keywords.
+	 * Widget metadata includes:
+	 * - `name`: The name of the widget.
+	 * - `class`: The PHP class name of the widget.
+	 * - `description`: A brief description of the widget.
+	 * - `blockName`: The block name used for registering the widget in the block editor.
+	 * - `keywords`: An array of keywords associated with the widget.
+	 * - `icon`: The SVG icon for the widget, if available.
+	 * - `manuallyRegister`: Indicates if the widget requires manual registration.
 	 */
-	private function get_all_widgets() {
+	private function prepare_widget_data() : void {
+		if ( ! empty( $this->so_widgets ) ) {
+			return;
+		}
+
 		$widgets_metadata_list = SiteOrigin_Widgets_Bundle::single()->get_widgets_list();
 		$widgets_manager = SiteOrigin_Widgets_Widget_Manager::single();
 
@@ -234,7 +245,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		// Sort the list of widgets so SiteOrigin widgets are at the top and then third party widgets.
 		sort( $so_widgets );
 		sort( $third_party_widgets );
-		return array_merge( $so_widgets, $third_party_widgets );
+
+		$this->so_widgets = array_merge( $so_widgets, $third_party_widgets );
 	}
 
 	public function enqueue_widget_block_editor_assets() {
@@ -279,13 +291,13 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			plugins_url( 'widget-block.css', __FILE__ )
 		);
 
-		$so_widgets = $this->get_all_widgets();
+		$this->prepare_widget_data();
 
 		wp_localize_script(
 			'sowb-widget-block',
 			'sowbBlockEditorAdmin',
 			array(
-				'widgets' => $so_widgets,
+				'widgets' => $this->so_widgets,
 				'restUrl' => esc_url_raw( rest_url() ),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
 				'consent' => $this->hasMigrationConsent,
