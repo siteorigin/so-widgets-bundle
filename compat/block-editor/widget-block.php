@@ -75,7 +75,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		// Register legacy widget block. This will allow for unmigrated
 		// widgets to still be rendered.
 		register_block_type( 'sowb/widget-block', array(
-			'render_callback' => array( $this, 'render_widget_block' ),
+			'render_callback' => array( $this, 'legacy_render_widget_block' ),
 		) );
 
 		add_filter( 'block_categories_all', array( $this, 'setup_block_category' ), 1, 1 );
@@ -340,16 +340,37 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		);
 	}
 
-	public function render_widget_block( $block_content, $block, $instance ) {
+	/**
+	 * Render the widget block for legacy compatibility.
+	 *
+	 * This function checks if the block content has a widget class.
+	 * If not, it returns a notice prompting the user to select a widget type.
+	 * Otherwise, it calls the `render_widget_block` method to render the widget.
+	 *
+	 * @param array $block_content The block content to render.
+	 * @param array $block The block data.
+	 * @param object $instance The widget instance data.
+	 *
+	 * @return string The rendered widget block content or a notice.
+	 */
+	public function legacy_render_widget_block( $block_content, $block, $instance ) {
 		if (
 			empty( $block_content['widgetClass'] ) &&
 			substr( $instance->parsed_block['blockName'], 0, 5 ) !== 'sowb/'
 		) {
 			return '<div>' .
-				__( 'You need to select a widget type before you\'ll see anything here. :)', 'so-widgets-bundle' ) .
+				__( "You need to select a widget type before you'll see anything here. :)", 'so-widgets-bundle' ) .
 				'</div>';
 		}
 
+		return $this->render_widget_block(
+			$block_content,
+			$block,
+			$instance
+		);
+	}
+
+	public function render_widget_block( $block_content, $block, $instance ) {
 		$widget_class = $block_content['widgetClass'];
 		global $wp_widget_factory;
 
