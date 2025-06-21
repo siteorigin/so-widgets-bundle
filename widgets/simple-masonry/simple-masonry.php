@@ -381,10 +381,10 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 	 * @return int The gutter value.
 	 */
 	private function get_responsive_gutter( $instance, $breakpoint ) {
-		$gutter_value = $instance['layout'][$breakpoint]['gutter'] ?? '';
+		$gutter_value = isset( $instance['layout'][ $breakpoint ]['gutter'] ) ? $instance['layout'][ $breakpoint ]['gutter'] : '';
 		
 		// If gutter is explicitly set and not empty string, use it.
-		if ( isset( $instance['layout'][$breakpoint]['gutter'] ) && $gutter_value !== '' ) {
+		if ( isset( $instance['layout'][ $breakpoint ]['gutter'] ) && $gutter_value !== '' ) {
 			return (int) $gutter_value;
 		}
 		
@@ -394,7 +394,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 		}
 		
 		if ( $breakpoint === 'mobile' ) {
-			$tablet_gutter = $instance['layout']['tablet']['gutter'] ?? '';
+			$tablet_gutter = isset( $instance['layout']['tablet']['gutter'] ) ? $instance['layout']['tablet']['gutter'] : '';
 			if ( isset( $instance['layout']['tablet']['gutter'] ) && $tablet_gutter !== '' ) {
 				return (int) $tablet_gutter;
 			}
