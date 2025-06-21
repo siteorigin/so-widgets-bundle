@@ -231,11 +231,6 @@ jQuery( function ( $ ) {
 			const isBlockEditor = $( 'body' ).hasClass( 'block-editor-page' );
 			const isContinuous = carouselSettings.autoplay === 'continuous';
 
-			// For continuous mode, prevent 0 animation speed as it causes rapid scrolling.
-			const animationSpeed = ( isContinuous && carouselSettings.animation_speed === 0 ) 
-				? 4000 
-				: carouselSettings.animation_speed;
-
 			$items.on( 'init', function(e, slick) {
 				const $wrapper = $(this).closest('.sow-carousel-wrapper');
 
@@ -283,7 +278,7 @@ jQuery( function ( $ ) {
 				variableWidth: $$.data( 'variable_width' ),
 				accessibility: false,
 				cssEase: carouselSettings.animation,
-				speed: animationSpeed,
+				speed: carouselSettings.animation_speed,
 				slidesToScroll: responsiveSettings.desktop_slides_to_scroll,
 				slidesToShow: typeof responsiveSettings.desktop_slides_to_show == 'undefined'
 					? responsiveSettings.desktop_slides_to_scroll
