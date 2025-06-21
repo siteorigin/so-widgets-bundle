@@ -337,7 +337,8 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 					'label' => __( 'Continuous', 'so-widgets-bundle' ),
 					'values' => array(
 						'carousel_settings' => array(
-							'animation_speed' => 4000,
+							'animation' => 'linear',
+							'animation_speed' => 8000,
 							'timeout' => 400,
 							'autoplay_pause_hover' => true,
 						),
