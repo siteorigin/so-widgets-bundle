@@ -4,6 +4,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	public $widgetAnchor;
 	public $widgetBlocks = array();
 	public $hasMigrationConsent = false;
+	private $so_widgets = array();
+
 	/**
 	 * Get the singleton instance
 	 *
@@ -58,9 +60,9 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	 * @return void
 	 */
 	public function register_widget_block() {
-		$so_widgets = $this->get_all_widgets();
+		$this->prepare_widget_data();
 
-		foreach( $so_widgets as $widget ) {
+		foreach( $this->so_widgets as $widget ) {
 			if ( empty( $widget['blockName'] ) ) {
 				continue;
 			}
@@ -73,7 +75,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		// Register legacy widget block. This will allow for unmigrated
 		// widgets to still be rendered.
 		register_block_type( 'sowb/widget-block', array(
-			'render_callback' => array( $this, 'render_widget_block' ),
+			'render_callback' => array( $this, 'legacy_render_widget_block' ),
 		) );
 
 		add_filter( 'block_categories_all', array( $this, 'setup_block_category' ), 1, 1 );
@@ -143,17 +145,26 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	}
 
 	/**
-	 * Retrieve all widgets.
+	 * Prepare and store widget data in the `$so_widgets` property.
 	 *
-	 * This method retrieves all widgets, including inactive
-	 * SiteOrigin widgets and third-party widgets. It loads
-	 * inactive widgets, extracts their metadata, and
-	 * combines them with active widgets. The resulting list is sorted
-	 * with SiteOrigin widgets at the top, followed by third-party widgets.
+	 * Retrieves all widgets, including inactive SiteOrigin and
+	 * third-party widgets, processes their metadata, and stores them
+	 * in `$so_widgets`. SiteOrigin widgets are sorted to appear first.
 	 *
-	 * @return array An array of widgets with their metadata, including name, class, description, icon, and keywords.
+	 * Widget metadata includes:
+	 * - `name`: The name of the widget.
+	 * - `class`: The PHP class name of the widget.
+	 * - `description`: A brief description of the widget.
+	 * - `blockName`: The block name used for registering the widget in the block editor.
+	 * - `keywords`: An array of keywords associated with the widget.
+	 * - `icon`: The SVG icon for the widget, if available.
+	 * - `manuallyRegister`: Indicates if the widget requires manual registration.
 	 */
-	private function get_all_widgets() {
+	private function prepare_widget_data() : void {
+		if ( ! empty( $this->so_widgets ) ) {
+			return;
+		}
+
 		$widgets_metadata_list = SiteOrigin_Widgets_Bundle::single()->get_widgets_list();
 		$widgets_manager = SiteOrigin_Widgets_Widget_Manager::single();
 
@@ -220,7 +231,6 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			);
 
 			if ( $is_so_widget ) {
-				// str starts with
 				if ( strpos( $class, 'SiteOrigin_Widget' ) === 0 ) {
 					$widget_data['manuallyRegister'] = true;
 				}
@@ -234,7 +244,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		// Sort the list of widgets so SiteOrigin widgets are at the top and then third party widgets.
 		sort( $so_widgets );
 		sort( $third_party_widgets );
-		return array_merge( $so_widgets, $third_party_widgets );
+
+		$this->so_widgets = array_merge( $so_widgets, $third_party_widgets );
 	}
 
 	public function enqueue_widget_block_editor_assets() {
@@ -279,13 +290,13 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			plugins_url( 'widget-block.css', __FILE__ )
 		);
 
-		$so_widgets = $this->get_all_widgets();
+		$this->prepare_widget_data();
 
 		wp_localize_script(
 			'sowb-widget-block',
 			'sowbBlockEditorAdmin',
 			array(
-				'widgets' => $so_widgets,
+				'widgets' => $this->so_widgets,
 				'restUrl' => esc_url_raw( rest_url() ),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
 				'consent' => $this->hasMigrationConsent,
@@ -328,23 +339,174 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		);
 	}
 
-	public function render_widget_block( $block_content, $block, $instance ) {
+	/**
+	 * Generate a HTML notice for an invalid Block widget class.
+	 *
+	 * @param string|null $widget_class The widget class name. Defaults to null.
+	 *
+	 * @return string The HTML notice.
+	 */
+	private function return_invalid_widget_class_notice( $widget_class = '' ) : string {
+		// If the widget class isn't empty, add a space before it.
+		if ( ! empty( $widget_class ) ) {
+			$widget_class = ' ' . esc_html( $widget_class );
+		}
+
+		return
+			'<div>' .
+				sprintf(
+					__( 'Invalid widget class%s. Please make sure the widget has been activated in %sSiteOrigin Widgets%s.', 'so-widgets-bundle' ),
+					$widget_class,
+					'<a href="' . esc_url( admin_url( 'plugins.php?page=so-widgets-plugins' ) ) . '">',
+					'</a>'
+				)
+			 . '</div>';
+	}
+
+	/**
+	 * Find the widget class by its block name.
+	 *
+	 * This function searches through the prepared widget data to find
+	 * the class associated with a given block name. If the block name
+	 * starts with 'sowb/', it removes that prefix before searching.
+	 *
+	 * @param string $block_name The block name to search for.
+	 *
+	 * @return string|false The widget class if found, false otherwise.
+	 */
+	private function find_widget_class_by_block_name( $block_name ) {
+		$this->prepare_widget_data();
+
+		// If the block_name starts with 'sowb/', remove it.
+		if ( strpos( $block_name, 'sowb/' ) === 0 ) {
+			$block_name = substr( $block_name, 5 );
+		}
+
+		foreach( $this->so_widgets as $widget ) {
+			if ( $widget['blockName'] === $block_name ) {
+				return $widget['class'];
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Retrieve the widget instance for a given class.
+	 *
+	 * Attempts to fetch the widget from `$wp_widget_factory`.
+	 * If not found, it uses the Widget Bundle's `load_missing_widget` method.
+	 *
+	 * If the widget class is invalid, it tries to find a valid class using the
+	 * block name and recursively calls itself. Returns an error notice
+	 * if no valid widget is found.
+	 *
+	 * @param string $widget_class The widget class name.
+	 * @param string $block_name The block name associated with the widget.
+	 * This is used as a fallback.
+	 *
+	 * @return SiteOrigin_Widget|string The widget instance or an error notice.
+	 */
+	private function get_block_widget( $widget_class, $block_name ) {
+		global $wp_widget_factory;
+
+		$widget = ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ?
+			$wp_widget_factory->widgets[ $widget_class ] :
+			false;
+
+		// Attempt to activate the widget if it's not already active.
+		if ( empty( $widget ) ) {
+			$widget = SiteOrigin_Widgets_Bundle::single()->load_missing_widget(
+				false,
+				$widget_class
+			);
+		}
+
+		// If we can't find a valid SiteOrigin widget class, we can't render it.
+		if (
+			empty( $widget ) ||
+			! is_object( $widget ) ||
+			! is_subclass_of( $widget, 'SiteOrigin_Widget' )
+		) {
+			// Maybe the widget class is invalid. Try finding it using its block name.
+			$found_widget_class = $this->find_widget_class_by_block_name(
+				$block_name
+			);
+
+			if ( $found_widget_class !== $widget_class ) {
+				// We found a different widget class, try returning that widget instead.
+				return $this->get_block_widget(
+					$found_widget_class,
+					$block_name
+				);
+			}
+
+			return $this->return_invalid_widget_class_notice( $widget_class );
+		}
+
+		return $widget;
+	}
+
+	/**
+	 * Render the widget block for legacy compatibility.
+	 *
+	 * This function checks if the block content has a widget class.
+	 * If not, it returns a notice prompting the user to select a widget type.
+	 * Otherwise, it calls the `render_widget_block` method to render the widget.
+	 *
+	 * @param array $block_content The block content to render.
+	 * @param array $block The block data.
+	 * @param object $instance The widget instance data.
+	 *
+	 * @return string The rendered widget block content or a notice.
+	 */
+	public function legacy_render_widget_block( $block_content, $block, $instance ) {
 		if (
 			empty( $block_content['widgetClass'] ) &&
 			substr( $instance->parsed_block['blockName'], 0, 5 ) !== 'sowb/'
 		) {
 			return '<div>' .
-				__( 'You need to select a widget type before you\'ll see anything here. :)', 'so-widgets-bundle' ) .
+				__( "You need to select a widget type before you'll see anything here. :)", 'so-widgets-bundle' ) .
 				'</div>';
 		}
 
-		$widget_class = $block_content['widgetClass'];
-		global $wp_widget_factory;
+		return $this->render_widget_block(
+			$block_content,
+			$block,
+			$instance
+		);
+	}
 
-		$widget = ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ? $wp_widget_factory->widgets[ $widget_class ] : false;
-		// Attempt to activate the widget if it's not already active.
-		if ( ! empty( $widget_class ) && empty( $widget ) ) {
-			$widget = SiteOrigin_Widgets_Bundle::single()->load_missing_widget( false, $widget_class );
+	/**
+	 * Render the widget block.
+	 *
+	 * This function renders the widget block by checking if the widget class is set.
+	 * If not, it attempts to find the widget class by its block name.
+	 * It then retrieves the widget instance and renders it with the provided instance data.
+	 * If the widget class is invalid or not found, it returns an error notice.
+	 *
+	 * @param array $block_content The block content to render.
+	 * @param array $block The block data.
+	 * @param object $instance The widget instance data.
+	 *
+	 * @return string The rendered widget block content or an error notice.
+	 */
+	public function render_widget_block( $block_content, $block, $instance ) {
+		if ( empty( $block_content['widgetClass'] ) ) {
+			$block_content['widgetClass'] = $this->find_widget_class_by_block_name( $instance->name );
+
+			if ( empty( $block_content['widgetClass'] ) ) {
+				return $this->return_invalid_widget_class_notice();
+			}
+		}
+
+		$widget = $this->get_block_widget(
+			$block_content['widgetClass'],
+			$instance->name
+		);
+
+		if ( ! is_object( $widget ) ) {
+			return $this->return_invalid_widget_class_notice( $block_content['widgetClass'] );
 		}
 
 		// Support for Additional CSS classes.
@@ -355,22 +517,6 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 			return $class_names;
 		};
-
-		if (
-			empty( $widget ) ||
-			! is_object( $widget ) ||
-			! is_subclass_of( $widget, 'SiteOrigin_Widget' )
-		) {
-			return
-				'<div>' .
-					sprintf(
-						__( 'Invalid widget class %s. Please make sure the widget has been activated in %sSiteOrigin Widgets%s.', 'so-widgets-bundle' ),
-						$widget_class,
-						'<a href="' . admin_url( 'plugins.php?page=so-widgets-plugins' ) . '">',
-						'</a>'
-					) .
-				'</div>';
-		}
 
 		$GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] = true;
 		$instance = $block_content['widgetData'];
