@@ -358,7 +358,7 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 						'break_point' => empty( $instance['layout']['tablet']['columns'] ) ? '768px' : $instance['layout']['tablet']['break_point'],
 						'num_columns' => empty( $instance['layout']['tablet']['columns'] ) ? 2 : $instance['layout']['tablet']['columns'],
 						'row_height' => empty( $instance['layout']['tablet']['row_height'] ) ? 0 : (int) $instance['layout']['tablet']['row_height'],
-						'gutter' => empty( $instance['layout']['tablet']['gutter'] ) ? 0 : (int) $instance['layout']['tablet']['gutter'],
+						'gutter' => $this->get_responsive_gutter( $instance, 'tablet' ),
 					)
 				),
 				'mobile' => siteorigin_widgets_underscores_to_camel_case(
@@ -366,11 +366,42 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 						'break_point' => empty( $instance['layout']['mobile']['columns'] ) ? '480px' : $instance['layout']['mobile']['break_point'],
 						'num_columns' => empty( $instance['layout']['mobile']['columns'] ) ? 1 : $instance['layout']['mobile']['columns'],
 						'row_height' => empty( $instance['layout']['mobile']['row_height'] ) ? 0 : (int) $instance['layout']['mobile']['row_height'],
-						'gutter' => empty( $instance['layout']['mobile']['gutter'] ) ? 0 : (int) $instance['layout']['mobile']['gutter'],
+						'gutter' => $this->get_responsive_gutter( $instance, 'mobile' ),
 					)
 				),
 			),
 		);
+	}
+
+	/**
+	 * Get the gutter value for a responsive breakpoint with fallback logic.
+	 *
+	 * @param array $instance The widget instance.
+	 * @param string $breakpoint The breakpoint (tablet, mobile).
+	 * @return int The gutter value.
+	 */
+	private function get_responsive_gutter( $instance, $breakpoint ) {
+		$gutter_value = isset( $instance['layout'][ $breakpoint ]['gutter'] ) ? $instance['layout'][ $breakpoint ]['gutter'] : '';
+		
+		// If gutter is explicitly set and not empty string, use it.
+		if ( isset( $instance['layout'][ $breakpoint ]['gutter'] ) && $gutter_value !== '' ) {
+			return (int) $gutter_value;
+		}
+		
+		// Fallback logic for tablet and mobile.
+		if ( $breakpoint === 'tablet' ) {
+			return empty( $instance['layout']['desktop']['gutter'] ) ? 0 : (int) $instance['layout']['desktop']['gutter'];
+		}
+		
+		if ( $breakpoint === 'mobile' ) {
+			$tablet_gutter = isset( $instance['layout']['tablet']['gutter'] ) ? $instance['layout']['tablet']['gutter'] : '';
+			if ( isset( $instance['layout']['tablet']['gutter'] ) && $tablet_gutter !== '' ) {
+				return (int) $tablet_gutter;
+			}
+			return empty( $instance['layout']['desktop']['gutter'] ) ? 0 : (int) $instance['layout']['desktop']['gutter'];
+		}
+		
+		return 0;
 	}
 
 	/**
