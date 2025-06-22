@@ -476,7 +476,7 @@ abstract class SiteOrigin_Widget_Base_Carousel extends SiteOrigin_Widget {
 			'loop' => isset( $settings['loop'] ) ? $settings['loop'] : true,
 			'dots' => isset( $settings['dots'] ) ? $settings['dots'] : true,
 			'animation' => isset( $settings['animation'] ) ? $settings['animation'] : 'ease',
-			'animation_speed' => ! empty( $settings['animation_speed'] ) ? $settings['animation_speed'] : 400,
+			'animation_speed' => isset( $settings['animation_speed'] ) ? (int) $settings['animation_speed'] : 400,
 			'autoplay' => isset( $settings['autoplay'] ) ? $settings['autoplay'] : false,
 			'pauseOnHover' => isset( $settings['autoplay_pause_hover'] ) ? $settings['autoplay_pause_hover'] : false,
 			'autoplaySpeed' => ! empty( $settings['timeout'] ) ? $settings['timeout'] : 8000,
