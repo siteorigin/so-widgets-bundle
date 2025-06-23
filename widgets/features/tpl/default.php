@@ -34,9 +34,11 @@ if ( empty( $instance['features'] ) ) {
 				<a
 					href="<?php echo sow_esc_url( $feature['more_url'] ); ?>"
 					<?php echo (bool) $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
-					class="sow-features-feature-linked-column so-sr-only"
+					class="sow-features-feature-linked-column"
 				>
-					<?php echo wp_kses_post( $feature['more_text'] ); ?>
+					<span class="so-sr-only">
+						<?php echo wp_kses_post( $feature['more_text'] ); ?>
+					</span>
 				</a>
 			<?php } ?>
 
