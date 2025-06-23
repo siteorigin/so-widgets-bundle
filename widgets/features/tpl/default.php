@@ -12,8 +12,8 @@ if ( empty( $instance['features'] ) ) {
 	?>
 ">
 
-	<?php foreach ( $instance['features'] as $i => $feature ) { ?>
-		<?php
+	<?php
+	foreach ( $instance['features'] as $i => $feature ) {
 		$link_overlay = ! empty( $instance['link_feature'] ) &&
 		! empty( $feature['more_url'] );
 
@@ -56,7 +56,11 @@ if ( empty( $instance['features'] ) ) {
 				>
 			<?php } ?>
 			<div
-				class="sow-icon-container <?php echo ! empty( $instance['container_shape'] ) ? 'sow-container-' . esc_attr( $instance['container_shape'] ) : 'sow-container-none'; ?>"
+				class="sow-icon-container <?php
+				echo ! empty( $instance['container_shape'] ) ?
+					'sow-container-' . esc_attr( $instance['container_shape'] ) :
+					'sow-container-none';
+				?>"
 				style="color: <?php echo esc_attr( $feature['container_color'] ); ?>; "
 				<?php echo ! empty( $feature['icon_title'] ) ? 'title="' . esc_attr( $feature['icon_title'] ) . '"' : ''; ?>
 			>
@@ -123,9 +127,13 @@ if ( empty( $instance['features'] ) ) {
 						?>
 							<a
 								href="<?php echo sow_esc_url( $feature['more_url'] ); ?>"
-								<?php echo (bool) $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
+								<?php
+								echo (bool) $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : '';
+								?>
 							>
-						<?php } ?>
+							<?php
+						}
+
 						echo wp_kses_post( $feature['title'] );
 
 						if (
@@ -145,7 +153,8 @@ if ( empty( $instance['features'] ) ) {
 					<div class="sow-features-feature-text">
 					<?php echo wp_kses_post( do_shortcode( $feature['text'] ) ); ?>
 					</div>
-				<?php } ?>
+					<?php
+				}
 
 				if (
 					$right_left_read_more &&
@@ -187,9 +196,9 @@ if ( empty( $instance['features'] ) ) {
 					if ( ! empty( $feature['more_url'] ) ) {
 						echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( (bool) $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : '' ) . '>';
 					}
-					?>
-					<?php echo wp_kses_post( $feature['more_text'] ); ?>
-					<?php
+
+					echo wp_kses_post( $feature['more_text'] );
+
 					if ( ! empty( $feature['more_url'] ) ) {
 						echo '</a>';
 					}
