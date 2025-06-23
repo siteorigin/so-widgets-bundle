@@ -2,13 +2,6 @@
 if ( empty( $instance['features'] ) ) {
 	return;
 }
-
-$feature_width = $this->calculate_feature_width( $instance );
-
-$tag = siteorigin_widget_valid_tag(
-	$instance['fonts']['title_options']['tag'],
-	'h5'
-);
 ?>
 <ul
 	class="sow-features-list

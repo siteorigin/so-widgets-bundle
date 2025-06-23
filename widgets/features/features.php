@@ -376,6 +376,21 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		return $instance;
 	}
 
+	public function get_template_variables( $instance, $args ) {
+		$feature_width = $this->calculate_feature_width( $instance );
+
+		$tag = siteorigin_widget_valid_tag(
+			$instance['fonts']['title_options']['tag'],
+			'h5'
+		);
+
+
+		return array(
+			'feature_width' => $feature_width,
+			'tag' => $tag,
+		);
+	}
+
 	public function get_less_variables( $instance ) {
 		$less_vars = array();
 
