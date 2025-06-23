@@ -384,6 +384,9 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			'h5'
 		);
 
+		if ( ! empty( $instance ) && ! empty( $instance['link_feature'] ) ) {
+			wp_enqueue_style( 'sow-accessibility' );
+		}
 
 		return array(
 			'feature_width' => $feature_width,

@@ -14,6 +14,9 @@ if ( empty( $instance['features'] ) ) {
 
 	<?php foreach ( $instance['features'] as $i => $feature ) { ?>
 		<?php
+		$link_overlay = ! empty( $instance['link_feature'] ) &&
+		! empty( $feature['more_url'] );
+
 		$right_left_read_more = ! empty( $feature['more_text'] ) &&
 		(
 			empty( $instance['more_text_bottom_align'] ) ||
@@ -27,11 +30,26 @@ if ( empty( $instance['features'] ) ) {
 			class="sow-features-feature sow-icon-container-position-<?php echo esc_attr( $feature['container_position'] ); ?>"
 			style="display: flex; flex-direction: <?php echo $this->get_feature_flex_direction( $feature['container_position'], ! empty( $instance['more_text_bottom_align'] ) ); ?>; width: <?php echo esc_attr( $feature_width ); ?>;"
 		>
-		<?php if ( $right_left_read_more ) { ?>
-			<div class="sow-features-feature-right-left-container" style="display: flex; flex-direction: inherit;">
-		<?php } ?>
+			<?php if ( $link_overlay ) { ?>
+				<a
+					href="<?php echo sow_esc_url( $feature['more_url'] ); ?>"
+					<?php echo (bool) $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
+					class="sow-features-feature-linked-column so-sr-only"
+				>
+					<?php echo wp_kses_post( $feature['more_text'] ); ?>
+				</a>
+			<?php } ?>
 
-			<?php if ( ! empty( $feature['more_url'] ) && $instance['icon_link'] && empty( $instance['link_feature'] ) ) { ?>
+			<?php if ( $right_left_read_more ) { ?>
+				<div class="sow-features-feature-right-left-container" style="display: flex; flex-direction: inherit;">
+				<?php
+			}
+
+			if (
+				! empty( $feature['more_url'] ) &&
+				$instance['icon_link'] &&
+				! $link_overlay
+			) { ?>
 				<a
 					href="<?php echo sow_esc_url( $feature['more_url'] ); ?>"
 					<?php echo (bool) $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
@@ -81,7 +99,7 @@ if ( empty( $instance['features'] ) ) {
 			if (
 				! empty( $feature['more_url'] ) &&
 				$instance['icon_link'] &&
-				empty( $instance['link_feature'] )
+				! $link_overlay
 			) {
 				?>
 				</a>
@@ -96,17 +114,30 @@ if ( empty( $instance['features'] ) ) {
 
 				<?php if ( ! empty( $feature['title'] ) ) { ?>
 					<<?php echo esc_html( $tag ); ?> class="sow-features-feature-title">
-						<?php if ( ! empty( $feature['more_url'] ) && $instance['title_link'] && empty( $instance['link_feature'] ) ) { ?>
+						<?php
+						if (
+							! empty( $feature['more_url'] ) &&
+							$instance['title_link'] &&
+							! $link_overlay
+						) {
+						?>
 							<a
 								href="<?php echo sow_esc_url( $feature['more_url'] ); ?>"
 								<?php echo (bool) $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
 							>
 						<?php } ?>
+						echo wp_kses_post( $feature['title'] );
 
-						<?php echo wp_kses_post( $feature['title'] ); ?>
-						<?php if ( ! empty( $feature['more_url'] ) && $instance['title_link'] && empty( $instance['link_feature'] ) ) { ?>
+						if (
+							! empty( $feature['more_url'] ) &&
+							$instance['title_link'] &&
+							! $link_overlay
+						) {
+								?>
 							</a>
-						<?php } ?>
+							<?php
+						}
+						?>
 					</<?php echo esc_html( $tag ); ?>>
 				<?php } ?>
 
@@ -116,7 +147,11 @@ if ( empty( $instance['features'] ) ) {
 					</div>
 				<?php } ?>
 
-				<?php if ( $right_left_read_more ) { ?>
+				if (
+					$right_left_read_more &&
+					! $link_overlay
+				) {
+					?>
 					</div>
 					<p class="sow-more-text">
 						<?php
@@ -143,7 +178,8 @@ if ( empty( $instance['features'] ) ) {
 				(
 					$feature['container_position'] == 'top' ||
 					$feature['container_position'] == 'bottom'
-				)
+				) &&
+				! $link_overlay
 			) {
 				?>
 				<p class="sow-more-text">
@@ -159,16 +195,6 @@ if ( empty( $instance['features'] ) ) {
 					}
 					?>
 				</p>
-			<?php } ?>
-
-			<?php if ( ! empty( $instance['link_feature'] ) && ! empty( $feature['more_url'] ) ) { ?>
-				<a
-					href="<?php echo sow_esc_url( $feature['more_url'] ); ?>"
-					<?php echo (bool) $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
-					class="sow-features-feature-linked-column"
-				>
-					&nbsp;
-				</a>
 			<?php } ?>
 		</li>
 
