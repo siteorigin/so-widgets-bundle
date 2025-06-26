@@ -13,5 +13,6 @@ tmp
 # But not icon or lib CSS files.
 !icons/**/*.css
 !**/lib/**/*.css
+!/css/accessibility.css
 
 .cursorrules
