@@ -1367,13 +1367,14 @@ var sowbForms = window.sowbForms || {};
 	 *
 	 * @param {Object} current - Current field values.
 	 * @param {Object} stored - Stored field values.
+	 * @param {string} formId - The ID of the form being compared.
 	 *
 	 * @returns {boolean} - Returns `true` if the current values are different from the stored values, otherwise `false`.
 	 */
-	const fieldBackupCompare = ( current, stored ) => {
+	const fieldBackupCompare = ( current, stored, formId ) => {
 		// Check if the old data is relevant.
 		if ( current['_sow_form_timestamp'] > stored['_sow_form_timestamp'] ) {
-			sessionStorage.removeItem( _sow_form_id );
+			sessionStorage.removeItem( formId );
 			return false;
 		}
 
@@ -1437,7 +1438,11 @@ var sowbForms = window.sowbForms || {};
 		// Update the stored timestamp to match the current form's timestamp.
 		currentFieldValues['_sow_form_timestamp'] = parseInt( $timestampField.val() || 0 );
 
-		if ( fieldBackupCompare( currentFieldValues, storedFieldValues ) ) {
+		if ( fieldBackupCompare(
+			currentFieldValues,
+			storedFieldValues,
+			_sow_form_id
+		) ) {
 			sowbForms.displayNotice(
 				$el,
 				soWidgets.backup.newerVersion,
