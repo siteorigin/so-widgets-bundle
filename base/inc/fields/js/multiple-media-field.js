@@ -145,6 +145,9 @@
 				frame.close();
 			} );
 
+			// Store the frame
+			$$.data( 'frame', frame );
+
 			// Finally, open the modal.
 			frame.open();
 		} );
