@@ -267,7 +267,6 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 				} );
 
 				if ( $has_embeds ) {
-					$skin_video = false;
 					$external_src = ! $self_sources[0]['src'] ? false : $self_sources[0]['src'];
 				}
 			}
