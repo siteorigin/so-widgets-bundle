@@ -145,7 +145,7 @@
 				frame.close();
 			} );
 
-			// Store the frame
+			// Store the frame.
 			$$.data( 'frame', frame );
 
 			// Finally, open the modal.
