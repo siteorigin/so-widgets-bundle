@@ -385,7 +385,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		);
 
 		if ( ! empty( $instance ) && ! empty( $instance['link_feature'] ) ) {
-			wp_enqueue_style( 'sow-accessibility' );
+			wp_enqueue_style( 'siteorigin-accessibility' );
 		}
 
 		return array(
