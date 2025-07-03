@@ -851,12 +851,12 @@ class SiteOrigin_Widgets_Bundle {
 
 	public function register_general_scripts() {
 		wp_register_style(
-			'sow-accessibility',
+			'siteorigin-accessibility',
 			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'css/accessibility.css',
 			array(),
 			SOW_BUNDLE_VERSION
 		);
-		
+
 		wp_register_script(
 			'sowb-fittext',
 			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/sow.jquery.fittext' . SOW_BUNDLE_JS_SUFFIX . '.js',
