@@ -71,7 +71,7 @@ class SiteOrigin_Widget_Field_Number extends SiteOrigin_Widget_Field_Text_Input_
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
-		if ( empty( $value ) ) {
+		if ( ! is_numeric( $value ) ) {
 			return false;
 		}
 

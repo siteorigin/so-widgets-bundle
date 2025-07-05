@@ -593,7 +593,11 @@ abstract class SiteOrigin_Widget_Base_Slider extends SiteOrigin_Widget {
 			<?php
 			do_action( 'siteorigin_widgets_slider_before_contents', $frame );
 
-			if ( ! empty( $background['image'] ) && ! empty( $background['image-alt'] ) ) {
+			if (
+				! empty( $background['image'] ) &&
+				! empty( $background['image-alt'] )
+			) {
+				wp_enqueue_style( 'siteorigin-accessibility' );
 				?>
 				<div class="sowb-slider-background-alt so-sr-only">
 					<?php echo esc_html( $background['image-alt'] ); ?>

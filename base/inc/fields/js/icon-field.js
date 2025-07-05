@@ -65,30 +65,43 @@
 
 		$search.on( 'keyup change', searchIcons );
 
-		var renderStylesSelect = function() {
-			var $familySelect = $is.find( 'select.siteorigin-widget-icon-family' );
-			var family = $familySelect.val();
+		const renderStylesSelect = function() {
+			const $familySelect = $is.find( 'select.siteorigin-widget-icon-family' );
+			const family = $familySelect.val();
+			const selectedStyle = $is.find( '.siteorigin-widget-icon-family-styles' ).val();
 
 			if ( typeof window.soWidgets.icons[ family ] === 'undefined' ) {
 				return;
 			}
 
-			var $stylesSelect = $is.find( '.siteorigin-widget-icon-family-styles' );
+			let $stylesSelect = $is.find( '.siteorigin-widget-icon-family-styles' );
+			const iconFamily = window.soWidgets.icons[ family ];
+
+			// Check if the selected icon family has associated styles.
+			if ( ! iconFamily.hasOwnProperty( 'styles' ) || ! iconFamily.styles ) {
+				$stylesSelect.off( 'change', rerenderIcons );
+				$stylesSelect.remove();
+				return;
+			}
 
 			$stylesSelect.off( 'change', rerenderIcons );
 			$stylesSelect.remove();
-			var iconFamily = window.soWidgets.icons[ family ];
-			if ( iconFamily.hasOwnProperty( 'styles' ) && iconFamily.styles ) {
-				var options = '';
-				for ( var styleClass in iconFamily.styles ) {
-					options += '<option value="' + styleClass + '">' + iconFamily.styles[ styleClass ] + '</option>';
-				}
-				if ( options ) {
-					$stylesSelect = $( '<select class="siteorigin-widget-icon-family-styles"></select>' ).append( options );
-					$familySelect.after( $stylesSelect );
 
+			let options = '';
+			for ( const styleClass in iconFamily.styles ) {
+				options += '<option value="' + styleClass + '">' + iconFamily.styles[ styleClass ] + '</option>';
+			}
+
+			if ( options ) {
+				$stylesSelect = $( '<select class="siteorigin-widget-icon-family-styles"></select>' ).append( options );
+				$familySelect.after( $stylesSelect );
+
+				// Set the selected style if it exists.
+				if ( selectedStyle && iconFamily.styles.hasOwnProperty( selectedStyle ) ) {
+					$stylesSelect.val( selectedStyle );
 				}
 			}
+
 			$stylesSelect.on( 'change', rerenderIcons );
 		};
 

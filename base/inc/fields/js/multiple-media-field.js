@@ -60,8 +60,17 @@
 				} );
 			}
 
-			// Store the frame
-			$$.data( 'frame', frame );
+			// Refresh the media library after a new image is uploaded.
+			// The first `_requery()` triggers the loading indicator,
+			// while the second ensures the updated images are displayed correctly.
+			// This resolves a timing issue where newly uploaded images may not
+			// appear immediately in the library.
+			frame.on( 'library:selection:add', function() {
+				wp.media.frame.content.get().collection._requery( true );
+				setTimeout( function() {
+					wp.media.frame.content.get().collection._requery( true );
+				}, 0 );
+			} );
 
 			// When an image is selected, run a callback.
 			frame.on( 'select', function() {
@@ -135,6 +144,9 @@
 
 				frame.close();
 			} );
+
+			// Store the frame.
+			$$.data( 'frame', frame );
 
 			// Finally, open the modal.
 			frame.open();

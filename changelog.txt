@@ -1,5 +1,14 @@
 == Changelog ==
 
+= 1.69.1 - 05 July 2025 =
+* Carousel, Post Carousel: Fixed animation speed and timeout to preserve zero values, updated continuous mode defaults, and improved animation speed handling.
+* Features: Fixed link overlay functionality, improved feature link overlay, set feature width and tag prior to template rendering, and switched to semantic friendly list.
+* Icon: Fixed icon rendering issue for sub styles.
+* Multiple Media: Improved frame storage and refresh library after uploading new files.
+* Simple Masonry: Fixed gutter field cascading from desktop to tablet/mobile and refactored gutter logic.
+* Video Player: Added cover support for local external videos.
+* General: Fixed number field sanitization to preserve zero values, renamed accessibility stylesheet to siteorigin-accessibility, added central accessibility stylesheet, improved widget form backup handling, and enhanced widget block functionality.
+
 = 1.69.0 - 12 June 2025 =
 * Hero: Added image alt support for improved accessibility.
 * Layout Slider: Added image alt support and improved background image settings by hiding the settings until a background has been added.

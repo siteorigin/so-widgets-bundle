@@ -57,6 +57,8 @@ var sowbForms = window.sowbForms || {};
 				return this;
 			}
 
+			let setupFieldBackups = false;
+
 			// Skip this if we've already set up the form
 			if ( $el.is('.siteorigin-widget-form-main') ) {
 				if ($el.data('sow-form-setup') === true) {
@@ -237,62 +239,7 @@ var sowbForms = window.sowbForms || {};
 					soWidgets.backup.enabled &&
 					! $el.data( 'backupDisabled' )
 				) {
-					var _sow_form_id = $el.find( '> .siteorigin-widgets-form-id' ).val();
-					var $timestampField = $el.find( '> .siteorigin-widgets-form-timestamp' );
-					var _sow_form_timestamp = parseInt( $timestampField.val() || 0 );
-					var data = JSON.parse( sessionStorage.getItem( _sow_form_id ) );
-					if ( data ) {
-						if ( data['_sow_form_timestamp'] > _sow_form_timestamp ) {
-							sowbForms.displayNotice(
-								$el,
-								soWidgets.backup.newerVersion,
-								soWidgets.backup.replaceWarning,
-								[
-									{
-										label: soWidgets.backup.restore,
-										callback: function ( $notice ) {
-											sowbForms.setWidgetFormValues( $mainForm, data );
-											$notice.slideUp( 'fast', function () {
-												$notice.remove();
-											} );
-										},
-									},
-									{
-										label: soWidgets.backup.dismiss,
-										callback: function ( $notice ) {
-											$notice.slideUp( 'fast', function () {
-												sessionStorage.removeItem( _sow_form_id );
-												$notice.remove();
-											} );
-										},
-									},
-								]
-							);
-						} else {
-							sessionStorage.removeItem( _sow_form_id );
-						}
-					}
-
-					let isUserChange = false;
-					// Add user change detection to the form to prevent unintended
-					// backups of automated changes.
-					$el.on( 'keydown mouseup touchend', ( e ) => {
-						// Don't trigger a backup if the user clicked on a section.
-						if ( $( e.target ).parent().is( '.siteorigin-widget-field-type-section' ) ) {
-							return false;
-						}
-
-						isUserChange = true;
-					} );
-
-					// Debounce backups to prevent potential performance issues.
-					$el.on( 'change', _.debounce( () => {
-						if ( isUserChange ) {
-							$timestampField.val( new Date().getTime() );
-							const data = sowbForms.getWidgetFormValues( $el );
-							sessionStorage.setItem( _sow_form_id, JSON.stringify( data ) );
-						}
-					}, 500 ) );
+					setupFieldBackups = true;
 				}
 			}
 			else {
@@ -705,6 +652,10 @@ var sowbForms = window.sowbForms || {};
 				});
 
 			});
+
+			if ( setupFieldBackups ) {
+				$el.sowFieldBackups( $mainForm );
+			}
 
 			// Give plugins a chance to influence the form
 			$el.trigger('sowsetupform', $fields).data('sow-form-setup', true);
@@ -1345,6 +1296,183 @@ var sowbForms = window.sowbForms || {};
 			}
 		});
 	};
+
+	/**
+	 * Strip new lines from a string.
+	 *
+	 * Certain fields, such as the SiteOrigin Editor widget, can contain
+	 * unexpected new lines that can cause issues when comparing values.
+	 *
+	 * @param {*} str The string to strip new lines from.
+	 *
+	 * @returns {string} The string with new lines stripped, or
+	 * the original value if it's not a string.
+	 */
+	const stripNewLines = function( str ) {
+		if ( typeof str !== 'string' || str.length === 0 ) {
+			return str;
+		}
+
+		return str.replace( /\n/g, '' );
+	}
+
+	/**
+	 * Recursively compares current field values with stored values to determine if they are different.
+	 *
+	 * @param {Object} current - Current field values.
+	 * @param {Object} stored - Stored field values.
+	 * @param {string} key - The key to compare in the current and stored objects.
+	 *
+	 * @returns {boolean} - Returns `true` if the values are different, otherwise `false`.
+	 */
+	const fieldBackupCompareLoop = ( current, stored, key ) => {
+		// Exclude keys that are not relevant for field value comparison.
+		if (
+			key === '_sow_form_timestamp' ||
+			key === '_sow_form_id'
+		) {
+			return false;
+		}
+
+		// If the key is missing in the stored values, assume a difference.
+		if ( ! stored.hasOwnProperty( key ) ) {
+			return true;
+		}
+
+		const currentValue = current[ key ];
+		const storedValue = stored[ key ];
+
+		// If both values are objects, compare them recursively.
+		if (
+			typeof currentValue === 'object' &&
+			currentValue !== null &&
+			typeof storedValue === 'object' &&
+			storedValue !== null
+		) {
+			for ( const nestedKey in currentValue ) {
+				if ( fieldBackupCompareLoop( currentValue, storedValue, nestedKey ) ) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		// Compare the values after stripping new lines.
+		return stripNewLines( currentValue ) !== stripNewLines( storedValue );
+	};
+
+
+	/**
+	 * Compare current field values with stored values to determine if they are different.
+	 *
+	 * @param {Object} current - Current field values.
+	 * @param {Object} stored - Stored field values.
+	 * @param {string} formId - The ID of the form being compared.
+	 *
+	 * @returns {boolean} - Returns `true` if the current values are different from the stored values, otherwise `false`.
+	 */
+	const fieldBackupCompare = ( current, stored, formId ) => {
+		// Check if the old data is relevant.
+		if ( current['_sow_form_timestamp'] > stored['_sow_form_timestamp'] ) {
+			sessionStorage.removeItem( formId );
+			return false;
+		}
+
+		for ( const key in current ) {
+			if ( fieldBackupCompareLoop( current, stored, key ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	};
+
+	/**
+	 * Handles field backup functionality for Widget Bundle widgets.
+	 *
+	 * This function monitors changes to widget fields and stores
+	 * their values in sessionStorage to allow restoration in case
+	 * of accidental changes or loss. It also displays a notice if
+	 * a newer version of the field values is available for restoration.
+	 *
+	 * @param {jQuery} $mainForm - The main form container for the widget fields.
+	 */
+	$.fn.sowFieldBackups = function( $mainForm ) {
+		const $el = $( this );
+		const _sow_form_id = $el.find( '> .siteorigin-widgets-form-id' ).val();
+		const $timestampField = $el.find( '> .siteorigin-widgets-form-timestamp' );
+
+		let isUserChange = false;
+		// Add user change detection to the form to prevent unintended
+		// backups of automated changes.
+		$el.on( 'keydown mouseup touchend', ( e ) => {
+			// Don't trigger a backup if the user clicked on a section.
+			if ( $( e.target ).parent().is( '.siteorigin-widget-field-type-section' ) ) {
+				return false;
+			}
+
+			isUserChange = true;
+		} );
+
+		// Debounce backups to prevent potential performance issues.
+		$el.on( 'change', _.debounce( () => {
+			if ( isUserChange ) {
+				$timestampField.val( new Date().getTime() );
+				const data = sowbForms.getWidgetFormValues( $el );
+				sessionStorage.setItem( _sow_form_id, JSON.stringify( data ) );
+			}
+		}, 500 ) );
+
+		// Do we need to show the backup data mismatch notice?
+		const currentFieldValues = sowbForms.getWidgetFormValues( $el );
+		if ( ! currentFieldValues ) {
+			return;
+		}
+
+		// Check if we need to display the field backup notice.
+		const storedFieldValues = JSON.parse( sessionStorage.getItem( _sow_form_id ) );
+		if ( ! storedFieldValues ) {
+			return;
+		}
+
+		// Update the stored timestamp to match the current form's timestamp.
+		currentFieldValues['_sow_form_timestamp'] = parseInt( $timestampField.val() || 0 );
+
+		if ( fieldBackupCompare(
+			currentFieldValues,
+			storedFieldValues,
+			_sow_form_id
+		) ) {
+			sowbForms.displayNotice(
+				$el,
+				soWidgets.backup.newerVersion,
+				soWidgets.backup.replaceWarning,
+				[
+					{
+						label: soWidgets.backup.restore,
+						callback: function ( $notice ) {
+							sowbForms.setWidgetFormValues(
+								$mainForm,
+								storedFieldValues
+							);
+							$notice.slideUp( 'fast', function () {
+								$notice.remove();
+							} );
+						},
+					},
+					{
+						label: soWidgets.backup.dismiss,
+						callback: function ( $notice ) {
+							$notice.slideUp( 'fast', function () {
+								sessionStorage.removeItem( _sow_form_id );
+								$notice.remove();
+							} );
+						},
+					},
+				]
+			);
+		}
+	}
 
 	// Widgets Bundle utility functions
 	/**
