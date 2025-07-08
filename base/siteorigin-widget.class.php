@@ -479,11 +479,6 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$level + 1
 				);
 			} elseif ( ! isset( $instance[ $id ] ) ) {
-				// Ensure $instance is an array before attempting array access.
-				if ( ! is_array( $instance ) ) {
-					// If $instance is not an array, we can't add the field default - this prevents the "Cannot access offset of type string on string" error.
-					continue;
-				}
 				$instance[ $id ] = isset( $field['default'] ) ? $field['default'] : '';
 			}
 		}
