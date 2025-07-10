@@ -401,10 +401,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		if ( $level > 10 ) {
 			return $instance;
 		}
+		
+		// Ensure $instance is an array - if not, return it as-is to prevent type errors.
+		if ( ! is_array( $instance ) ) {
+			return $instance;
+		}
 
 		foreach ( $form as $id => $field ) {
 			if ( $field['type'] == 'repeater' ) {
-				if ( ! empty( $instance[ $id ] ) ) {
+				if ( is_array( $instance[ $id ] ) ) {
 					foreach ( array_keys( $instance[ $id ] ) as $i ) {
 						$instance[ $id ][ $i ] = $this->add_defaults( $field['fields'], $instance[ $id ][ $i ], $level + 1 );
 					}
