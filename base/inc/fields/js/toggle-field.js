@@ -1,6 +1,6 @@
 ( function( $ ) {
 
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-toggle', function( e ) {
+	const setupToggleField = function( e ) {
 		const $field = $( this );
 
 		if ( $field.data( 'initialized' ) ) {
@@ -34,6 +34,17 @@
 		} );
 
 		$field.data( 'initialized', true );
+	};
+
+	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-toggle', setupToggleField );
+
+	// Add support for the Site Editor.
+	window.addEventListener( 'message', function( e ) {
+		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
+			$( '.siteorigin-widget-field-type-toggle' ).each( function() {
+				setupToggleField.call( this );
+			} );
+		}
 	} );
 
 } )( jQuery );
