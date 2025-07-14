@@ -477,7 +477,7 @@
 						Placeholder,
 						{
 							key: 'placeholder',
-							className: 'so-widget-block-form',
+							className: 'so-widget-block-form siteorigin-widget-form wp-core-ui',
 							label: this.props.widget.name,
 							instructions: this.props.widget.description
 						},
@@ -493,7 +493,7 @@
 							)
 						) :
 						el( 'div', {
-							className: 'so-widget-block-container',
+							className: 'so-widget-block-container siteorigin-widget-form wp-core-ui',
 							dangerouslySetInnerHTML: { __html: widgetFormHtml },
 							ref: () => {
 								sowbSetupWidgetForm(
