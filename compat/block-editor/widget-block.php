@@ -69,6 +69,9 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 			register_block_type( 'sowb/' . $widget['blockName'], array(
 				'render_callback' => array( $this, 'render_widget_block' ),
+				'script' => array(
+					'jquery',
+				),
 			) );
 		}
 
