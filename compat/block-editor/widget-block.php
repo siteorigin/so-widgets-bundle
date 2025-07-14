@@ -25,7 +25,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			$this->hasMigrationConsent = true;
 		}
 
-		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_widget_block_editor_assets' ) );
+		add_action( 'enqueue_block_assets', array( $this, 'enqueue_widget_block_editor_assets' ) );
 
 		add_action( 'wp_ajax_so_widgets_block_migration_notice_consent', array( $this, 'block_migration_consent' ) );
 	}
@@ -70,6 +70,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			register_block_type( 'sowb/' . $widget['blockName'], array(
 				'render_callback' => array( $this, 'render_widget_block' ),
 				'script' => array(
+					'wp-tinymce',
 					'jquery',
 				),
 			) );
@@ -322,6 +323,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		// This is to ensure necessary scripts can be enqueued for previews.
 		$so_widgets_bundle->register_general_scripts();
 		$so_widgets_bundle->enqueue_registered_widgets_scripts();
+
+		$this->load_editor_scripts();
 	}
 
 	public function add_widget_id( $id, $instance, $widget ) {
@@ -592,6 +595,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$rendered_widget = ob_get_clean();
 		remove_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 		unset( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
+
 		return $rendered_widget;
 	}
 
@@ -764,6 +768,53 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			(int) get_current_user_id(),
 			false
 		);
+	}
+
+	/**
+	 * Load TinyMCE editor scripts for the Site Editor.
+	 *
+	 * This method ensures that the necessary TinyMCE scripts are loaded for
+	 * the Site Editor. It checks if the current screen is the Site Editor
+	 * and enqueues the required scripts.
+	 *
+	 * Additionally, it initializes the editor to make the scripts available.
+	 */
+	public function load_editor_scripts() {
+		static $tinymce_scripts_loaded = false;
+		if ( $tinymce_scripts_loaded ) {
+			return;
+		}
+
+		$tinymce_scripts_loaded = true;
+
+		if ( ! is_admin() || ! function_exists( 'get_current_screen' ) ) {
+			return;
+		}
+
+		if ( ! is_a( get_current_screen(), 'WP_Screen' ) || get_current_screen()->base !== 'site-editor' ) {
+			return;
+		}
+
+		wp_tinymce_inline_scripts();
+		wp_enqueue_editor();
+
+		// Load the editor to ensure the necessary scripts are available in
+		// the Site editor. This isn't ideal, but WordPress doesn't provide
+		// many ways of doing this.
+		ob_start();
+		wp_editor(
+			'',
+			'content',
+			array(
+				'drag_drop_upload'    => true,
+				'editor_height'       => 300,
+				'tinymce'             => array(
+					'resize'             => false,
+					'add_unload_trigger' => false,
+				),
+			)
+		);
+		ob_end_clean();
 	}
 }
 
