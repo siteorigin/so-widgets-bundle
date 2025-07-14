@@ -2,7 +2,7 @@
 
 ( function( $ ) {
 
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-select', function( e ) {
+	const setupSelectField = function() {
 		var $$ = $( this );
 
 		if ( $$.data( 'initialized' ) ) {
@@ -28,6 +28,17 @@
 		}
 
 		$$.data( 'initialized', true );
+	};
+
+	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-select', setupSelectField );
+
+	// Add support for the Site Editor.
+	window.addEventListener( 'message', function( e ) {
+		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
+			$( '.siteorigin-widget-field-type-select' ).each( function() {
+				setupSelectField.call( this );
+			} );
+		}
 	} );
 
 } )( jQuery );
