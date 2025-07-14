@@ -227,8 +227,9 @@
 	 * @param {Object} state - The current state of the component.
 	 * @param {Function} setState - The setState function to update the component's state.
 	 */
-	const sowbSetupWidgetForm = ( props, state, setState ) => {
-		const $mainForm = jQuery( '[data-block="' + props.clientId + '"]' ).find( '.siteorigin-widget-form-main' );
+	const sowbSetupWidgetForm = async ( props, state, setState ) => {
+		const $mainForm = sowbGetBlockForm( props.clientId );
+		sowbMaybeSetupSiteEditorAssets();
 
 		if ( $mainForm.length > 0 && ! state.formInitialized ) {
 			const $previewContainer = $mainForm.siblings( '.siteorigin-widget-preview' );
@@ -275,6 +276,30 @@
 				}, 300 );
 			} );
 			setState( { formInitialized: true } );
+		}
+	}
+
+	/**
+	 * Initializes WB Form Fields in the Site Editor iframe.
+	 *
+	 * Unlike the regular editor, the Site Editor uses an iframe to
+	 * display blocks. This requires us to reinitialize WB form fields
+	 * in the iframe context after the form has been set up.
+	 */
+	const initializeFormFieldsInIframe = () => {
+		if ( sowbSiteEditorCanvas.length === 0 ) {
+			return;
+		}
+
+		try {
+			const iframeWindow = sowbSiteEditorCanvas[ 0 ].contentWindow;
+			if ( iframeWindow ) {
+				iframeWindow.postMessage( {
+					action: 'sowbBlockFormInit'
+				}, '*' );
+			}
+		} catch ( e ) {
+			console.error( 'SiteOrigin Widgets: Failed to send postMessage to iframe:', e );
 		}
 	}
 
@@ -470,12 +495,14 @@
 						el( 'div', {
 							className: 'so-widget-block-container',
 							dangerouslySetInnerHTML: { __html: widgetFormHtml },
-							ref: () => sowbSetupWidgetForm(
-								this.props,
-								this.state,
-								this.setState.bind( this ),
-								this.props.widget.class
-							)
+							ref: () => {
+								sowbSetupWidgetForm(
+									this.props,
+									this.state,
+									this.setState.bind( this ),
+									this.props.widget.class
+								).then( initializeFormFieldsInIframe );
+							}
 						} )
 					)
 				] : [
@@ -836,6 +863,101 @@
 		} )
 	} );
 } )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.blockEditor );
+
+let sowbSiteEditorCanvas = false;
+
+/**
+ * Gets the widget form inside a specific block in either the main editor, or iframe.
+ *
+ * Locates the widget form element by client ID, handling both standard Block Editor
+ * and Site Editor iframe contexts appropriately.
+ *
+ * @param {string} clientId - The block's client ID
+ *
+ * @returns {jQuery} jQuery reference to the widget form
+ */
+const sowbGetBlockForm = ( clientId ) => {
+	if ( sowbSiteEditorCanvas === false ) {
+		sowbSiteEditorCanvas = jQuery( '.edit-site-visual-editor__editor-canvas' );
+	}
+
+	if ( sowbSiteEditorCanvas.length === 0 ) {
+		return jQuery( '[data-block="' + clientId + '"]' ).find( '.siteorigin-widget-form-main' );
+	}
+
+	// Return the main WB form.
+	return sowbSiteEditorCanvas
+		.contents()
+		.find( '[data-block="' + clientId + '"]' )
+		.find( '.siteorigin-widget-form-main' );
+};
+
+const sowbSiteEditorElementsToCopy = [
+	// WP.
+	'#tmpl-media-selection',
+	'#tmpl-media-modal',
+	'#tmpl-media-frame',
+	'#tmpl-uploader-window',
+	'#tmpl-uploader-inline',
+	'#tmpl-uploader-status',
+	'#tmpl-uploader-status-error',
+	'#tmpl-attachment',
+	'#tmpl-attachment-details',
+	'#tmpl-attachment-display-settings',
+	'#tmpl-embed-link-settings',
+	'#tmpl-image-editor',
+	'#dashicons-css',
+	'#buttons-css',
+
+	// Stylesheets.
+	'#editor-buttons-css',
+	'#forms-css',
+	'#media-views-css',
+
+	// WB.
+	'#so-widgets-bundle-tpl-image-search-dialog',
+	'#so-widgets-bundle-tpl-image-search-result',
+	'#so-widgets-bundle-tpl-image-search-result-sponsored',
+
+];
+
+let sowbSiteEditorAssetsSetup = false;
+/**
+ * Sets up assets required for the Site Editor iframe.
+ *
+ * This function ensures that necessary HTML templates and assets are copied
+ * from the main document to the Site Editor iframe. It also sets the `ajaxurl`
+ * variable in the iframe's `contentWindow` if it is not already defined.
+ *
+ * The function performs the following steps:
+ * 1. Checks if the Site Editor iframe (`sowbSiteEditorCanvas`) exists and is accessible.
+ * 2. Copies elements specified in `sowbSiteEditorElementsToCopy` from the main document
+ *    to the iframe's `<body>`.
+ * 3. Sets the `ajaxurl` variable in the iframe's `contentWindow` for AJAX requests.
+ */
+const sowbMaybeSetupSiteEditorAssets = () => {
+	if ( sowbSiteEditorCanvas.length === 0 || sowbSiteEditorAssetsSetup) {
+		sowbSiteEditorAssetsSetup = true;
+		return;
+	}
+	sowbSiteEditorAssetsSetup = true;
+
+	const $iframe = jQuery( sowbSiteEditorCanvas[ 0 ].contentDocument );
+	const $canvasBody = $iframe.find( 'body' );
+
+	sowbSiteEditorElementsToCopy.forEach( ( selector ) => {
+		const elementHTML = jQuery( selector )[ 0 ]?.outerHTML;
+
+		if ( elementHTML ) {
+			$canvasBody.append( elementHTML );
+		}
+	} );
+
+	// Is ajaxurl set?
+	if ( typeof sowbSiteEditorCanvas[ 0 ].contentWindow.ajaxurl === 'undefined' ) {
+		sowbSiteEditorCanvas[ 0 ].contentWindow.ajaxurl = window.ajaxurl;
+	}
+}
 
 /**
  * Find all legacy SiteOrigin widget blocks in the editor.
