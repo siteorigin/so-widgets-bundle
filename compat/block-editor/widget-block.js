@@ -434,7 +434,7 @@
 						{ key: 'controls' },
 						el(
 							ToolbarGroup,
-							{},
+							{ label: __( 'Widget Preview Controls', 'so-widgets-bundle' ) },
 							el(
 								ToolbarButton,
 								{
@@ -483,7 +483,7 @@
 						{ key: 'controls' },
 						el(
 							ToolbarGroup,
-							{},
+							{ label: __( 'Widget Edit Controls', 'so-widgets-bundle' ) },
 							el(
 								ToolbarButton,
 								{
