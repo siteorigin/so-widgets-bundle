@@ -9,7 +9,7 @@
 	} = element;
 
 	const {
-		Toolbar,
+		ToolbarGroup,
 		ToolbarButton,
 		Placeholder,
 		Button,
@@ -433,12 +433,11 @@
 						BlockControls,
 						{ key: 'controls' },
 						el(
-							Toolbar,
-							{ label: __( 'Preview widget.' + editing, 'so-widgets-bundle' ) },
+							ToolbarGroup,
+							{ label: __( 'Widget Preview Controls', 'so-widgets-bundle' ) },
 							el(
 								ToolbarButton,
 								{
-									className: 'components-icon-button components-toolbar__control',
 									label: __( 'Preview widget.', 'so-widgets-bundle' ),
 									onClick: () => this.setState( {
 										editing: false,
@@ -483,12 +482,11 @@
 						BlockControls,
 						{ key: 'controls' },
 						el(
-							Toolbar,
-							{ label: __( 'Edit widget.', 'so-widgets-bundle' ) },
+							ToolbarGroup,
+							{ label: __( 'Widget Edit Controls', 'so-widgets-bundle' ) },
 							el(
 								ToolbarButton,
 								{
-									className: 'components-icon-button components-toolbar__control',
 									label: __( 'Edit widget.', 'so-widgets-bundle' ),
 									onClick: () => this.setState( {
 										editing: true,
