@@ -1,5 +1,11 @@
 == Changelog ==
 
+= 1.69.2 - 19 July 2025 =
+* Features: Fixed icon disappearing when link overlay enabled and prevented theme margin on list items.
+* General: Added array type validation to get_active_widgets() method.
+* General: Improved widget toolbar with WordPress standard ToolbarGroup and accessibility labels.
+* General: Resolved type mismatch error in add_defaults method caused by Lightbox Addon.
+
 = 1.69.1 - 05 July 2025 =
 * Carousel, Post Carousel: Fixed animation speed and timeout to preserve zero values, updated continuous mode defaults, and improved animation speed handling.
 * Features: Fixed link overlay functionality, improved feature link overlay, set feature width and tag prior to template rendering, and switched to semantic friendly list.
