@@ -250,6 +250,11 @@ class SiteOrigin_Widgets_Bundle {
 
 		if ( empty( $active_widgets ) ) {
 			$active_widgets = get_option( 'siteorigin_widgets_active', array() );
+			
+			if ( ! is_array( $active_widgets ) ) {
+				$active_widgets = array();
+			}
+			
 			$active_widgets = wp_parse_args( $active_widgets, apply_filters( 'siteorigin_widgets_default_active', self::$default_active_widgets ) );
 
 			// Migrate any old names.
