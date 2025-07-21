@@ -1,8 +1,8 @@
-/* global jQuery, soWidgets, sowbForms */
+/* global jQuery, window.top.window.top.soWidgets, sowbForms */
 
 ( function( $ ) {
 
-	$( document ).on( 'sowsetupform', '.siteorigin-widget-field-type-posts', function( e ) {
+	const sowSetupPostsField = function( e ) {
 		const $postsField = $( this );
 		const hasCount = $postsField.find( '.sow-current-count' ).length > 0;
 		const postId = parseInt( jQuery( '#post_ID' ).val() );
@@ -12,11 +12,11 @@
 		}
 
 		$postsField.on( 'change', function( event ) {
-			var postsValues = sowbForms.getWidgetFormValues( $postsField );
-			var queryObj = postsValues.hasOwnProperty( 'posts' ) ? postsValues.posts : null;
+			const postsValues = sowbForms.getWidgetFormValues( $postsField );
+			const queryObj = postsValues.hasOwnProperty( 'posts' ) ? postsValues.posts : null;
 
-			var query = '';
-			for ( var key in queryObj ) {
+			let query = '';
+			for ( const key in queryObj ) {
 				if ( query !== '' ) {
 					query += '&';
 				}
@@ -24,7 +24,7 @@
 			}
 
 			$.post(
-				soWidgets.ajaxurl,
+				window.top.soWidgets.ajaxurl,
 				{
 					action: 'sow_get_posts_count',
 					query: query,
@@ -36,6 +36,17 @@
 				}
 			);
 		} );
+	}
+
+	$( document ).on( 'sowsetupform', '.siteorigin-widget-field-type-posts', sowSetupPostsField );
+
+	// Add support for the Site Editor.
+	window.addEventListener( 'message', function( e ) {
+		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
+			$( '.siteorigin-widget-field-type-posts' ).each( function() {
+				sowSetupPostsField.call( this );
+			} );
+		}
 	} );
 
 } )( jQuery );
