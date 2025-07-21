@@ -918,6 +918,8 @@ const sowbSiteEditorElementsToCopy = [
 	'#so-widgets-bundle-tpl-image-search-dialog',
 	'#so-widgets-bundle-tpl-image-search-result',
 	'#so-widgets-bundle-tpl-image-search-result-sponsored',
+	'#so-date-range-field-js',
+	'#siteorigin-widget-admin-js',
 
 ];
 
