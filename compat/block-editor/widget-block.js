@@ -920,8 +920,26 @@ const sowbSiteEditorElementsToCopy = [
 	'#so-widgets-bundle-tpl-image-search-dialog',
 	'#so-widgets-bundle-tpl-image-search-result',
 	'#so-widgets-bundle-tpl-image-search-result-sponsored',
-	'#so-date-range-field-js',
 	'#siteorigin-widget-admin-js',
+
+	// WB Fields.
+	'#so-autocomplete-field-js',
+	'#so-code-field-js',
+	'#so-date-range-field-js',
+	'#so-icon-field-js',
+	'#so-image-radio-field-js',
+	'#so-image-size-js',
+	'#so-media-field-js',
+	'#so-multi-measurement-field-js',
+	'#so-multiple-image-shape-field-js',
+	'#so-multiple-media-field-js',
+	'#so-order-field-js',
+	'#so-posts-selector-field-js',
+	'#so-presets-field-js',
+	'#so-select-field-js',
+	'#so-tabs-field-js',
+	'#so-tinymce-field-js',
+	'#so-toggle-field-js',
 
 ];
 
