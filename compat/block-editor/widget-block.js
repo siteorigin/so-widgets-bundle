@@ -893,7 +893,11 @@ const sowbGetBlockForm = ( clientId ) => {
 };
 
 const sowbSiteEditorElementsToCopy = [
-	// WP.
+	// WP Assets.
+	'#dashicons-css',
+	'#buttons-css',
+
+	// WP Templates.
 	'#tmpl-media-selection',
 	'#tmpl-media-modal',
 	'#tmpl-media-frame',
@@ -906,8 +910,6 @@ const sowbSiteEditorElementsToCopy = [
 	'#tmpl-attachment-display-settings',
 	'#tmpl-embed-link-settings',
 	'#tmpl-image-editor',
-	'#dashicons-css',
-	'#buttons-css',
 
 	// Stylesheets.
 	'#editor-buttons-css',
