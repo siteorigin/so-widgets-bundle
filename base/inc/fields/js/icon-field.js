@@ -1,12 +1,11 @@
-/* global jQuery, soWidgets */
+/* global jQuery, window.top.soWidgets */
 ( function( $ ) {
-	if ( window.soWidgets === undefined ) {
-		window.soWidgets = {};
+	if ( window.top.soWidgets === undefined ) {
+		window.top.soWidgets = {};
 	}
-	window.soWidgets.icons = [];
+	window.top.soWidgets.icons = [];
 
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-icon', function( e ) {
-
+	const setupIconField = function( e ) {
 		var $$ = $( this ),
 			$is = $$.find( '.siteorigin-widget-icon-selector' ),
 			$v = $is.find( '.siteorigin-widget-icon-icon' ),
@@ -70,12 +69,12 @@
 			const family = $familySelect.val();
 			const selectedStyle = $is.find( '.siteorigin-widget-icon-family-styles' ).val();
 
-			if ( typeof window.soWidgets.icons[ family ] === 'undefined' ) {
+			if ( typeof window.top.soWidgets.icons[ family ] === 'undefined' ) {
 				return;
 			}
 
 			let $stylesSelect = $is.find( '.siteorigin-widget-icon-family-styles' );
-			const iconFamily = window.soWidgets.icons[ family ];
+			const iconFamily = window.top.soWidgets.icons[ family ];
 
 			// Check if the selected icon family has associated styles.
 			if ( ! iconFamily.hasOwnProperty( 'styles' ) || ! iconFamily.styles ) {
@@ -115,7 +114,7 @@
 			const family = $familySelect.val();
 			const container = $is.find('.siteorigin-widget-icon-icons');
 
-			if ( typeof window.soWidgets.icons[ family ] === 'undefined' ) {
+			if ( typeof window.top.soWidgets.icons[ family ] === 'undefined' ) {
 				// Font hasn't been loaded yet. Render it after
 				// it's finished loading.
 				fetchIconFamily();
@@ -124,7 +123,7 @@
 
 			container.empty();
 
-			const iconFamily = window.soWidgets.icons[ family ];
+			const iconFamily = window.top.soWidgets.icons[ family ];
 			const icons = iconFamily.icons;
 			let style;
 			if ( iconFamily.hasOwnProperty( 'styles' ) && iconFamily.styles ) {
@@ -225,7 +224,7 @@
 				return;
 			}
 
-			if ( typeof window.soWidgets.icons[ family ] !== 'undefined' ) {
+			if ( typeof window.top.soWidgets.icons[ family ] !== 'undefined' ) {
 				rerender();
 				return;
 			}
@@ -236,7 +235,7 @@
 			// If so, we can skip the AJAX request.
 			if ( selectedEl.attr( 'data-icons' ) ) {
 				const icons = JSON.parse( selectedEl.attr( 'data-icons' ) );
-				window.soWidgets.icons[ family ] = icons;
+				window.top.soWidgets.icons[ family ] = icons;
 
 				addStylesheet( family, icons.style_uri );
 
@@ -248,13 +247,13 @@
 			$container.addClass( 'loading' );
 
 			$.getJSON(
-				soWidgets.ajaxurl,
+				window.top.soWidgets.ajaxurl,
 				{
 					'action' : 'siteorigin_widgets_get_icons',
 					'family' :  family,
 				},
 				( data ) => {
-					window.soWidgets.icons[ family ] = data;
+					window.top.soWidgets.icons[ family ] = data;
 
 					addStylesheet( family, data.style_uri );
 
@@ -277,6 +276,16 @@
 		} );
 
 		$$.data( 'initialized', true );
-	} );
+	}
 
+	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-icon',  setupIconField );
+
+	// Add support for the Site Editor.
+	window.addEventListener( 'message', function( e ) {
+		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
+			$( '.siteorigin-widget-field-type-icon' ).each( function() {
+				setupIconField.call( this );
+			} );
+		}
+	} );
 } )( jQuery );
