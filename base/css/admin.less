@@ -15,7 +15,8 @@
 	padding: 10px 12px;
 
 	&-message {
-		margin: 0;
+		line-height: 1.4 !important;
+		margin: 0 !important;
 
 		a {
 
@@ -28,14 +29,20 @@
 
 	&-dismiss {
 		appearance: none;
-		background: none;
-		border: none;
+		background: none !important;
+		border: none !important;
 		color: #394a3a;
 		cursor: pointer;
 		font-size: 18px;
 
+		&::before {
+			font-family: dashicons;
+		}
+
 		&:hover,
 		&:focus {
+			background: none !important;
+			border: none !important;
 			color: #666;
 		}
 
