@@ -448,6 +448,25 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	}
 
 	/**
+	 * Determine if a valid widget class exists in block content.
+	 *
+	 * @param array $block_content The block content to check.
+	 *
+	 * @return bool True if a valid widget class exists, false otherwise.
+	 */
+	private function has_valid_widget_class( $block_content ): bool {
+		if (
+			! is_array( $block_content ) ||
+			! isset( $block_content['widgetClass'] ) ||
+			empty( $block_content['widgetClass'] )
+		) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Render the widget block for legacy compatibility.
 	 *
 	 * This function checks if the block content has a widget class.
@@ -462,7 +481,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	 */
 	public function legacy_render_widget_block( $block_content, $block, $instance ) {
 		if (
-			empty( $block_content['widgetClass'] ) &&
+			! $this->has_valid_widget_class( $block_content ) &&
 			substr( $instance->parsed_block['blockName'], 0, 5 ) !== 'sowb/'
 		) {
 			return '<div>' .
@@ -492,10 +511,10 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	 * @return string The rendered widget block content or an error notice.
 	 */
 	public function render_widget_block( $block_content, $block, $instance ) {
-		if ( empty( $block_content['widgetClass'] ) ) {
+		if ( ! $this->has_valid_widget_class( $block_content ) ) {
 			$block_content['widgetClass'] = $this->find_widget_class_by_block_name( $instance->name );
 
-			if ( empty( $block_content['widgetClass'] ) ) {
+			if ( ! $this->has_valid_widget_class( $block_content ) ) {
 				return $this->return_invalid_widget_class_notice();
 			}
 		}
