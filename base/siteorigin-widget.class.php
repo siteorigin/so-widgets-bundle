@@ -411,7 +411,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			if ( $field['type'] == 'repeater' ) {
 				if ( isset( $instance[ $id ] ) && is_array( $instance[ $id ] ) ) {
 					foreach ( array_keys( $instance[ $id ] ) as $i ) {
-						$instance[ $id ][ $i ] = $this->add_defaults( $field['fields'], $instance[ $id ][ $i ], $level + 1 );
+						$instance[ $id ][ $i ] = $this->add_defaults( $field['fields'] ?? array(), $instance[ $id ][ $i ], $level + 1 );
 					}
 				}
 			} elseif ( $field['type'] == 'section' ) {
@@ -423,7 +423,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					$instance[ $id ] = array();
 				}
 
-				$instance[ $id ] = $this->add_defaults( $field['fields'], $instance[ $id ], $level + 1 );
+				$instance[ $id ] = $this->add_defaults( $field['fields'] ?? array(), $instance[ $id ], $level + 1 );
 			} elseif ( $field['type'] == 'measurement' ) {
 				if ( ! isset( $instance[ $id ] ) ) {
 					$instance[ $id ] = isset( $field['default'] ) ? $field['default'] : '';
@@ -438,7 +438,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						$instance[ $id ] = $field['default'];
 					} else {
 						// If no default order is specified, just use the order of the options.
-						$instance[ $id ] = array_keys( $field['options'] );
+						$instance[ $id ] = array_keys( $field['options'] ?? array() );
 					}
 				}
 
