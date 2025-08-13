@@ -15,7 +15,9 @@ if ( empty( $instance['features'] ) ) {
 	<?php
 	foreach ( $instance['features'] as $i => $feature ) {
 		$link_overlay = ! empty( $instance['link_feature'] ) &&
-		! empty( $feature['more_url'] );
+
+		$add_more_text_link = ! empty( $feature['more_url'] ) &&
+			! $link_overlay;
 
 		$right_left_read_more = ! empty( $feature['more_text'] ) &&
 		(
@@ -158,21 +160,18 @@ if ( empty( $instance['features'] ) ) {
 					<?php
 				}
 
-				if (
-					$right_left_read_more &&
-					! $link_overlay
-				) {
+				if ( $right_left_read_more ) {
 					?>
 					</div>
 					<p class="sow-more-text">
 						<?php
-						if ( ! empty( $feature['more_url'] ) ) {
+						if ( $add_more_text_link ) {
 							echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( (bool) $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : '' ) . '>';
 						}
 						?>
 						<?php echo wp_kses_post( $feature['more_text'] ); ?>
 						<?php
-						if ( ! empty( $feature['more_url'] ) ) {
+						if ( $add_more_text_link ) {
 							echo '</a>';
 						}
 						?>
@@ -189,19 +188,18 @@ if ( empty( $instance['features'] ) ) {
 				(
 					$feature['container_position'] == 'top' ||
 					$feature['container_position'] == 'bottom'
-				) &&
-				! $link_overlay
+				)
 			) {
 				?>
 				<p class="sow-more-text">
 					<?php
-					if ( ! empty( $feature['more_url'] ) ) {
+					if ( $add_more_text_link ) {
 						echo '<a href="' . sow_esc_url( $feature['more_url'] ) . '" ' . ( (bool) $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : '' ) . '>';
 					}
 
 					echo wp_kses_post( $feature['more_text'] );
 
-					if ( ! empty( $feature['more_url'] ) ) {
+					if ( $add_more_text_link ) {
 						echo '</a>';
 					}
 					?>
