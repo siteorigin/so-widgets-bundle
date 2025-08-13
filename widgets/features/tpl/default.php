@@ -15,7 +15,10 @@ if ( empty( $instance['features'] ) ) {
 	<?php
 	foreach ( $instance['features'] as $i => $feature ) {
 		$link_overlay = ! empty( $instance['link_feature'] ) &&
-		! empty( $feature['more_url'] );
+			! empty( $feature['more_url'] );
+
+		$link_icon = ! empty( $feature['more_url'] ) &&
+			$instance['icon_link'];
 
 		$right_left_read_more = ! empty( $feature['more_text'] ) &&
 		(
@@ -47,17 +50,9 @@ if ( empty( $instance['features'] ) ) {
 				<?php
 			}
 
-			if (
-				! empty( $feature['more_url'] ) &&
-				$instance['icon_link'] &&
-				! $link_overlay
-			) { ?>
-				<a
-					href="<?php echo sow_esc_url( $feature['more_url'] ); ?>"
-					<?php echo (bool) $instance['new_window'] ? 'target="_blank" rel="noopener noreferrer"' : ''; ?>
-				>
-			<?php } ?>
-			<div
+			$icon_container_element = $link_icon ? 'a' : 'div';
+			?>
+			<<?php echo $icon_container_element; ?>
 				class="sow-icon-container <?php
 				echo ! empty( $instance['container_shape'] ) ?
 					'sow-container-' . esc_attr( $instance['container_shape'] ) :
@@ -65,6 +60,15 @@ if ( empty( $instance['features'] ) ) {
 				?>"
 				style="color: <?php echo esc_attr( $feature['container_color'] ); ?>; "
 				<?php echo ! empty( $feature['icon_title'] ) ? 'title="' . esc_attr( $feature['icon_title'] ) . '"' : ''; ?>
+
+				<?php if ( $link_icon  ) { ?>
+					href="<?php echo sow_esc_url( $feature['more_url'] ); ?>"
+					<?php
+					echo (bool) $instance['new_window'] ?
+						'target="_blank" rel="noopener noreferrer"' :
+						'';
+				}
+				?>
 			>
 				<?php
 				$icon_styles = array();
@@ -100,18 +104,7 @@ if ( empty( $instance['features'] ) ) {
 					echo siteorigin_widget_get_icon( $feature['icon'], $icon_styles );
 				}
 				?>
-			</div>
-			<?php
-			if (
-				! empty( $feature['more_url'] ) &&
-				$instance['icon_link'] &&
-				! $link_overlay
-			) {
-				?>
-				</a>
-				<?php
-			}
-			?>
+			</<?php echo $icon_container_element; ?>>
 
 			<div class="textwidget">
 				<?php if ( $right_left_read_more ) { ?>
