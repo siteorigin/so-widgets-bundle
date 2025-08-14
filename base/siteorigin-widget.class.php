@@ -746,7 +746,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$field = $field_factory->create_field( $field_name, $field_options, $this );
 			$field->enqueue_scripts();
 
-			if ( ! empty( $field_options['fields'] ) ) {
+			if ( is_array( $field_options ) && ! empty( $field_options['fields'] ) ) {
 				$this->enqueue_field_scripts( $field_options['fields'] );
 			}
 		}
