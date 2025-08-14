@@ -408,6 +408,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		foreach ( $form as $id => $field ) {
+			// Skip if field is not an array or doesn't have a type.
+			if ( ! is_array( $field ) || ! isset( $field['type'] ) ) {
+				continue;
+			}
+			
 			if ( $field['type'] == 'repeater' ) {
 				if ( isset( $instance[ $id ] ) && is_array( $instance[ $id ] ) ) {
 					foreach ( array_keys( $instance[ $id ] ) as $i ) {
