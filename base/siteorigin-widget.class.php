@@ -449,6 +449,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 			} elseif ( $field['type'] === 'widget' ) {
 				// We need to load the widget to be able to get its defaults.
+				if ( ! isset( $field['class'] ) ) {
+					continue;
+				}
 				$sub_widget = new $field['class'];
 				if ( ! is_a( $sub_widget, 'SiteOrigin_Widget' ) ) {
 					continue;
