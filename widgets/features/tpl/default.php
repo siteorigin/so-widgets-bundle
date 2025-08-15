@@ -15,6 +15,7 @@ if ( empty( $instance['features'] ) ) {
 	<?php
 	foreach ( $instance['features'] as $i => $feature ) {
 		$link_overlay = ! empty( $instance['link_feature'] ) &&
+			! empty( $feature['more_url'] );
 
 		$add_more_text_link = ! empty( $feature['more_url'] ) &&
 			! $link_overlay;
