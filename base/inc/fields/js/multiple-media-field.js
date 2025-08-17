@@ -156,7 +156,16 @@
 		$field.data( 'initialized', true );
 	};
 
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-multiple_media', setupMultipleMediaField );
+	 // If the current page isn't the site editor, set up the Multiple Media field now.
+	 if (
+		 window.top === window.self &&
+		 (
+			 typeof pagenow === 'string' &&
+			 pagenow !== 'site-editor'
+		 )
+	 ) {
+		 $( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-multiple_media', setupMultipleMediaField );
+	 }
 
 	// Add support for the Site Editor.
 	window.addEventListener( 'message', function( e ) {

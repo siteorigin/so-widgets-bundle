@@ -15,7 +15,16 @@
 		} ).trigger( 'change' );
 	}
 
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-image-size', setupRadioField );
+	 // If the current page isn't the site editor, set up the Image Size field now.
+	 if (
+		 window.top === window.self &&
+		 (
+			 typeof pagenow === 'string' &&
+			 pagenow !== 'site-editor'
+		 )
+	 ) {
+		 $( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-image-size', setupImageSizeField );
+	 }
 
 	// Add support for the Site Editor.
 	window.addEventListener( 'message', function( e ) {
@@ -25,5 +34,6 @@
 			} );
 		}
 	} );
+
 
 }( jQuery ) );

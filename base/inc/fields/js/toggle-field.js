@@ -36,7 +36,16 @@
 		$field.data( 'initialized', true );
 	};
 
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-toggle', setupToggleField );
+	 // If the current page isn't the site editor, set up the Toggle field now.
+	 if (
+		 window.top === window.self &&
+		 (
+			 typeof pagenow === 'string' &&
+			 pagenow !== 'site-editor'
+		 )
+	 ) {
+		 $( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-toggle', setupToggleField );
+	 }
 
 	// Add support for the Site Editor.
 	window.addEventListener( 'message', function( e ) {

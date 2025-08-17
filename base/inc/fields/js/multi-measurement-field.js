@@ -87,7 +87,16 @@
 
 	}
 
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-multi-measurement', setupMultiMeasurementField );
+	 // If the current page isn't the site editor, set up the Multi-Measurement field now.
+	 if (
+		 window.top === window.self &&
+		 (
+			 typeof pagenow === 'string' &&
+			 pagenow !== 'site-editor'
+		 )
+	 ) {
+		 $( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-multi-measurement', setupMultiMeasurementField );
+	 }
 
 	// Add support for the Site Editor.
 	window.addEventListener( 'message', function( e ) {
