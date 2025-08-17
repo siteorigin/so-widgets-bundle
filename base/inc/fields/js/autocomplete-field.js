@@ -114,7 +114,7 @@
 			$contentSelector.hide();
 		};
 
-		$( document ).on( 'mousedown', function( event ) {
+		$( window ).on( 'mousedown', function( event ) {
 			const mouseDownOutside = $$.find( event.target ).length === 0;
 			if ( mouseDownOutside ) {
 				closeContent();
@@ -127,7 +127,7 @@
 		$$.on( 'click keypress', '.items li', function( e ) {
 			e.preventDefault();
 
-			if ( e.type == 'keyup' && ! window.top.sowbForms.isEnter( e ) ) {
+			if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
 				return;
 			}
 			const $input = $$.find( 'input.siteorigin-widget-input' );
