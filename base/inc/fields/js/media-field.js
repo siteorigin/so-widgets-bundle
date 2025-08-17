@@ -8,9 +8,10 @@
 		const $inputField = $field.find( '.siteorigin-widget-input' ).not( '.media-fallback-external' );
 		const $externalField = $field.find( '.media-fallback-external' );
 
-		if ( $media.data( 'initialized' ) ) {
+		if ( $field.attr( 'data-initialized' ) ) {
 			return;
 		}
+		$field.attr( 'data-initialized', true );
 
 		// Handle the media uploader.
 		$media.find( '.media-upload-button' ).on( 'click', function( e ) {
@@ -100,12 +101,16 @@
 				$inputField.val( '' );
 				$field.find( '.current .title' ).empty();
 				$inputField.trigger( 'change', { silent: true } );
-				$field.find( '.current .thumbnail' ).fadeOut( 'fast' );
+				// Clear the src attribute first, then hide the thumbnail.
+				const $thumbnail = $field.find( '.current .thumbnail' );
+				$thumbnail.attr( 'src', '' );
+				$thumbnail.fadeOut( 'fast' );
 				$( this ).addClass( 'remove-hide' ).attr( 'tabindex', -1 );
 			} );
 
-		// Everything for the dialog.
+
 		let dialog;
+		let activeImportField = null;
 
 		const reflowDialog = function() {
 			if ( ! dialog ) {
@@ -129,15 +134,20 @@
 		};
 		$( window ).on( 'resize', reflowDialog );
 
-		const setupDialog = function() {
+		const setupDialog = function( $currentField ) {
 			if ( ! dialog ) {
 				// Create the dialog.
-				dialog = $( $('#so-widgets-bundle-tpl-image-search-dialog').html().trim() ).appendTo( 'body' );
+				dialog = $( $('#so-widgets-bundle-tpl-image-search-dialog').html().trim() ).appendTo( window.top.document.body );
 				dialog.find( '.close' ).on( 'click keyup', function( e ) {
 					if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
 						return;
 					}
 					dialog.hide();
+					// Only clear the importing class when dialog is manually closed, not during import.
+					if ( ! dialog.hasClass( 'so-widgets-importing' ) ) {
+						$( '.so-importing-image' ).removeClass( 'so-importing-image' );
+						activeImportField = null;
+					}
 				} );
 
 				const results = dialog.find( '.so-widgets-image-results' );
@@ -273,20 +283,38 @@
 								'_sononce' : dialog.find( 'input[name="_sononce"]' ).val()
 							},
 							function( response ) {
-								dialog.find( '#so-widgets-image-search-frame' ).removeClass( 'so-widgets-importing' );
-
 								if ( response.error === false ) {
 									// This was a success.
-									dialog.hide();
-									dialog.find( '.so-widgets-results-loading' ).hide();
-									$inputField.val( response.attachment_id ).trigger( 'change', { silent: true } );
-									$field.find( '.current .thumbnail' ).attr( 'src', response.thumb ).fadeIn();
+									const $currentField = activeImportField;
 
-									$field.find( '.media-remove-button' ).removeClass( 'remove-hide' ).attr( 'tabindex', 0 );
+									if ( $currentField && $currentField.length ) {
+										// Update field.
+										const $inputField = $currentField.find( '.siteorigin-widget-input' ).not( '.media-fallback-external' );
+										$inputField.val( response.attachment_id );
+										$inputField.trigger( 'change' );
+
+										// Update the thumbnail.
+										const $thumbnail = $currentField.find( '.current .thumbnail' );
+										$thumbnail.attr( 'src', response.thumb );
+										$thumbnail.fadeIn();
+
+										$currentField.find( '.media-remove-button' )
+											.removeClass( 'remove-hide' )
+											.attr( 'tabindex', 0 );
+
+										$currentField.removeClass( 'so-importing-image' );
+
+										activeImportField = null;
+									}
+									dialog.hide();
 								} else {
 									alert( response.message );
 									dialog.find( '.so-widgets-results-loading' ).hide();
 								}
+
+								// Clean up dialog state after import (success or failure).
+								dialog.removeClass( 'so-widgets-importing' );
+								dialog.find( '#so-widgets-image-search-frame' ).removeClass( 'so-widgets-importing' );
 							}
 						);
 
@@ -384,7 +412,15 @@
 		// Handle displaying the image search dialog.
 		$media.find( '.find-image-button' ).on( 'click', function( e ) {
 			e.preventDefault();
-			setupDialog();
+
+			// Clear any existing importing class and add it to current field.
+			$( '.so-importing-image' ).removeClass( 'so-importing-image' );
+			$field.addClass( 'so-importing-image' );
+
+			// Store direct reference to the current field for later use.
+			activeImportField = $field;
+
+			setupDialog( $field );
 		} );
 
 		$inputField.on( 'change', function( event, data ) {
@@ -433,16 +469,27 @@
 			}
 
 		} );
-
-		$media.data( 'initialized', true );
 	};
 
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-media', setupMediaField );
+	// If the current page isn't the site editor, set up the Media field now.
+	if (
+		window.top === window.self &&
+		(
+			typeof pagenow === 'string' &&
+			pagenow !== 'site-editor'
+		)
+	) {
+		$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-media', setupMediaField );
+	}
 
 	// Add support for the Site Editor.
 	window.addEventListener( 'message', function( e ) {
 		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
 			$( '.siteorigin-widget-field-type-media' ).each( function() {
+				if ( $( this ).attr( 'data-initialized' ) ) {
+					return;
+				}
+
 				setupMediaField.call( this );
 			} );
 		}
