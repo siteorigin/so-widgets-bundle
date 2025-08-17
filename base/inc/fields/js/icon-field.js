@@ -13,16 +13,17 @@
 			$remove = $$.find( '.so-icon-remove' ),
 			$search = $$.find( '.siteorigin-widget-icon-search' );
 
-		if ( $$.data( 'initialized' ) ) {
+		if ( $$.attr( 'data-initialized' ) ) {
 			return;
 		}
+		$$.attr( 'data-initialized', true );
 
 		// Clear the base icon to prevent a potential duplicate icon.
 		$b.find( '.sow-icon-clear' ).remove();
 
 		// Clicking on the button should display the icon selector.
 		$b.on( 'click keyup', function( e ) {
-			if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
+			if ( e.type == 'keyup' && ! window.top.sowbForms.isEnter( e ) ) {
 				return;
 			}
 
@@ -35,7 +36,7 @@
 		$remove.on( 'click keyup', function( e ) {
 			e.preventDefault();
 
-			if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
+			if ( e.type == 'keyup' && ! window.top.sowbForms.isEnter( e ) ) {
 				return;
 			}
 
@@ -146,7 +147,7 @@
 					.addClass( familyStyle )
 					.addClass( 'siteorigin-widget-icon-icons-icon' )
 					.on( 'click keyup', function( e ) {
-						if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
+						if ( e.type == 'keyup' && ! window.top.sowbForms.isEnter( e ) ) {
 							return;
 						}
 
@@ -274,16 +275,27 @@
 				rerender();
 			}
 		} );
-
-		$$.data( 'initialized', true );
 	}
 
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-icon',  setupIconField );
+	// If the current page isn't the site editor, set up the Icon field now.
+	if (
+		window.top === window.self &&
+		(
+			typeof pagenow === 'string' &&
+			pagenow !== 'site-editor'
+		)
+	) {
+		$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-icon', setupIconField );
+	}
 
 	// Add support for the Site Editor.
 	window.addEventListener( 'message', function( e ) {
 		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
 			$( '.siteorigin-widget-field-type-icon' ).each( function() {
+				if ( $( this ).attr( 'data-initialized' ) ) {
+					return;
+				}
+
 				setupIconField.call( this );
 			} );
 		}
