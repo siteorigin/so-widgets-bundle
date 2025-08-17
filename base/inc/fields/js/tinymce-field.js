@@ -30,11 +30,14 @@
 			multiple: false
 		} );
 
-		const editor = window.tinymce.get( editorId );
 		// Add the selected media to the TinyMCE editor.
 		mediaFrame.on( 'select', () => {
 			const attachment = mediaFrame.state().get( 'selection' ).first().toJSON();
+			const editor = window.tinymce.get( editorId );
+
 			editor.insertContent( `<img src="${ attachment.url }" alt="${ attachment.alt }" />` );
+			editor.save();
+			editor.fire( 'change' );
 		} );
 
 		// Change the mediaFrameOpen flag when the media frame is closed.
@@ -52,9 +55,11 @@
 	 * @param {jQuery} $field - jQuery object of the field container element.
 	 */
 	const setupTinyMCEField = function( $field ) {
-		if ( ! window.frameElement && $field.data( 'initialized' ) ) {
+		if ( ! window.frameElement && $field.attr( 'data-initialized' ) ) {
 			return;
 		}
+
+		$field.attr( 'data-initialized', true );
 
 		const wpEditor = wp.oldEditor ? wp.oldEditor : wp.editor;
 		if ( wpEditor && wpEditor.hasOwnProperty( 'autop' ) ) {
@@ -154,8 +159,8 @@
 
 					if ( window.frameElement ) {
 						addMediaButton
-							.removeClass( 'insert-media' )
-							.addClass('siteorigin-widget-tinymce-add-media')
+							.removeClass( 'insert-media add_media' )
+							.addClass( 'siteorigin-widget-tinymce-add-media' )
 							.on( 'click', () => {
 								siteEditorAddMediaOverride( editorId );
 							} );
@@ -221,8 +226,6 @@
 
 			$field.find( '.siteorigin-widget-tinymce-selected-editor' ).val( mode );
 		} );
-
-		$field.data( 'initialized', true );
 	};
 
 	/**
@@ -267,19 +270,33 @@
 		}
 
 		$form.find( '.siteorigin-widget-field-type-tinymce' ).each( function() {
-			$( this ).data( 'initialized', null );
+			$( this ).removeAttr( 'data-initialized' );
 			setupTinyMCEField( $( this ) );
 		} );
 	};
 
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-tinymce', setupTinyMCEFieldInitializer );
+
+		/// If the current page isn't the site editor, set up the TinyMCE field now.
+	if (
+		window.top === window.self &&
+		(
+			typeof pagenow === 'string' &&
+			pagenow !== 'site-editor'
+		)
+	) {
+		$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-tinymce', setupTinyMCEFieldInitializer );
+	}
+
 	$( document ).on( 'sortstop', sortStopEvent );
 
 	// Add support for the Site Editor.
 	window.addEventListener( 'message', function( e ) {
 		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
 			$( '.siteorigin-widget-field-type-tinymce' ).each( function() {
-				$( this ).data( 'initialized', null );
+				if ( $( this ).attr( 'data-initialized' ) ) {
+					return;
+				}
+
 				setupTinyMCEFieldInitializer.call( this );
 			} );
 
