@@ -319,6 +319,57 @@ test(
  * @param {Object} page The Playwright page object.
  */
 test(
+	'Test the Blog widget.',
+	async ( { page } ) => {
+		const { widget } = await testPrep(
+			page,
+			'sowb/siteorigin-widget-blog-widget'
+		);
+
+		// Open the Settings Section.
+		const settingsSection = widget.locator( '.siteorigin-widget-field-settings' );
+		const settingsSectionLabel = settingsSection.locator( ' > .siteorigin-widget-field-label' );
+		await expect( settingsSection ).toBeVisible();
+		await expect( settingsSectionLabel ).toBeVisible();
+
+		await settingsSection.click();
+
+		// Validate the Settings Section is open.
+		await expect( settingsSectionLabel ).toHaveClass( /siteorigin-widget-section-visible/ );
+
+		const featuredImageSetting = settingsSection.locator( '.siteorigin-widget-field-featured_image .siteorigin-widget-input' );
+		const featuredImageSizeSetting = settingsSection.locator( '.siteorigin-widget-field-featured_image_size .siteorigin-widget-input-select' );
+
+		await expect( featuredImageSizeSetting ).toBeVisible();
+
+		// Validate Checkbox field works as expected.
+		await expect( featuredImageSetting ).toBeChecked();
+		await featuredImageSetting.uncheck();
+		await expect( featuredImageSetting ).not.toBeChecked();
+
+		// Due to the `featuredImageSetting` being unchecked, the
+		// featuredImageSizeSetting should be hidden.
+		await expect( featuredImageSizeSetting ).toBeHidden();
+
+		// Validate Presets field by changing the preset to a preset that
+		// will tick the featuredImageSetting checkbox.
+		const presetsField = widget.locator( '.siteorigin-widget-field-template .siteorigin-widget-input' );
+		await presetsField.selectOption( 'grid' );
+
+		// Validate that featuredImageSetting is checked.
+		await expect( featuredImageSetting ).toBeChecked();
+	}
+);
+
+/**
+ * Validates the following for the Blog widget in the Site Editor:
+ * 1. Test that sections are able to be opened.
+ * 2. That state emitters (checkbox and select) are working as expected and update related fields.
+ * 3. That the preset field updates the featured image checkbox and triggers correct UI changes.
+ *
+ * @param {Object} page The Playwright page object.
+ */
+test(
 	'Test the Headline widget.',
 	async ( { page } ) => {
 		const { widget } = await testPrep(
