@@ -6,8 +6,10 @@ const {
 const {
 	addBlock,
 	doLogin,
+	handleDialog,
 	openSiteEditorCanvas,
 	initializeAdmin,
+	waitForRequestToFinish,
 } = require('siteorigin-tests-common/playwright/common');
 
 const {
@@ -186,3 +188,125 @@ test(
 		await expect( iframe.locator( 'img' ) ).toBeVisible( { timeout: 10000 } );
 	}
 );
+
+/**
+ * Validates the following for the Image widget in the Site Editor:
+ * 1. Image field: initialization, visibility, and value setting.
+ * 2. Image importer: modal interaction, image search, import, and prompt handling.
+ * 3. Image clearing: Remove Image button functionality and value reset.
+ * 4. Image field Media Library: uploading and inserting an image via media modal.
+ * 5. Image field: verifies correct value after each image operation.
+ * 6. Shape field: Validate searching/filtering for shapes.
+ * 7. Shape field: Validates shape selection.
+ * 8. Ensures correct UI state and value after each operation.
+ *
+ * @param {Object} page The Playwright page object.
+ */
+test(
+	'Test the Image widget.',
+	async ( { page } ) => {
+		const { admin, widget } = await testPrep(
+			page,
+			'sowb/siteorigin-widget-image-widget'
+		);
+
+		const imageField = await getField( widget, 'media' );
+
+		// Open Image Search modal.
+		const mediaSearchButton = imageField.getByText( 'Image Search' );
+		await expect( mediaSearchButton ).toBeVisible();
+		await mediaSearchButton.click( { force: true } );
+
+		// Ensure the importer modal is visible.
+		await expect( imageField ).toHaveClass( /so-importing-image/, { timeout: 5000 } );
+
+		const mediaSearchModal = page.locator( '#so-widgets-image-search' );
+		const loadingIndicator = mediaSearchModal.locator( '.so-widgets-results-loading' );
+		const mediaSearchModalInput = mediaSearchModal.locator( '.so-widgets-search-input' );
+		const mediaSearchModalResults = mediaSearchModal.locator( '.so-widgets-image-results' );
+
+		await expect( mediaSearchModalInput ).toBeVisible();
+
+		// Search for an image.
+		await mediaSearchModalInput.fill( 'test' );
+		await mediaSearchModalInput.press( 'Enter' );
+
+		// Wait for the loading indicator to disappear.
+		await expect( loadingIndicator ).toBeHidden( { timeout: 10000 } );
+
+		// Select the first search result once it's visible.
+		const firstResult = mediaSearchModalResults.locator( '.so-widgets-result' ).first().locator( '.so-widgets-result-image' );
+		await expect( firstResult ).toBeVisible( { timeout: 10000 } );
+		firstResult.click();
+
+		// After clicking the image, a browser prompt will appear.
+		// Accept it, and then wait for the loader to be visible.
+		await handleDialog( page, 'accept', async ( dialog ) => {
+			await expect( loadingIndicator ).toBeVisible( { timeout: 5000 } );
+		} );
+
+		// The importer is now running. Wait for the transfer to finish.
+		await waitForRequestToFinish(
+			page,
+			'so_widgets_image_import'
+		);
+
+		// Ensure modal has closed.
+		await expect( imageField ).not.toHaveClass( /so-importing-image/ );
+
+		// Validate that the image has been set.
+		const imageValue = imageField.locator( '.siteorigin-widget-input[type="hidden"]' );
+		await expect( imageValue ).toHaveValue( /.+/ );
+
+		// Clear the image.
+		const clearButton = imageField.locator( '.media-remove-button' );
+		await expect( clearButton ).toBeVisible();
+		await expect( clearButton ).not.toHaveClass( 'remove-hide' );
+		await clearButton.click();
+
+		// Validate the image has been cleared.
+		await expect( imageValue ).toHaveValue( '' );
+
+		// Now try to upload an image.
+		const addMediaButton = imageField.locator( '.media-upload-button' );
+		await addMediaButton.click( { force: true } );
+
+		await uploadImageToMediaLibrary( admin );
+
+		// Validate the image has been set in the widget.
+		await expect( imageValue ).toHaveValue( /.+/ );
+
+		// Test the Shape field.
+		const shapeSection = widget.locator( '.siteorigin-widget-field-image_shape' );
+		const shapeEnableSetting = shapeSection.locator( '.siteorigin-widget-field-enable .siteorigin-widget-input' );
+		const shapeField = widget.locator( '.siteorigin-widget-field-type-image_shape' );
+		const shapeOpenButton = shapeField.locator( '.siteorigin-widget-shape-current' );
+		const shapeList = shapeField.locator( '.siteorigin-widget-shapes' );
+		await shapeSection.click();
+
+		// Enable the shape field.
+		await expect( shapeEnableSetting ).toBeVisible();
+		await shapeEnableSetting.check();
+		await expect( shapeOpenButton ).toBeVisible();
+
+		// Open the shape list.
+		shapeOpenButton.click();
+		await expect( shapeList ).toHaveClass( /siteorigin-widget-shapes-open/ );
+
+		// Search for a shape.
+		const shapeSearch = shapeField.locator( '.siteorigin-widget-shape-search' );
+		await expect( shapeSearch ).toBeVisible();
+		await shapeSearch.fill( 'Diamond' );
+		await shapeSearch.press( 'Enter' );
+
+		// Confirm there's only one shape visible.
+		await expect( shapeList.locator( '.siteorigin-widget-shape:visible' ) ).toHaveCount( 1 );
+
+		// Select that one shape.
+		await shapeList.locator( '.siteorigin-widget-shape:visible' ).click();
+
+		// Confirm the shape has been set by checking shapeField .siteorigin-widget-input
+		await expect( shapeField.locator( '.siteorigin-widget-input' ) ).toHaveValue( 'diamond' );
+	}
+);
+
