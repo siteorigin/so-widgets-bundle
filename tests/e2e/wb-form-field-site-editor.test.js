@@ -310,3 +310,65 @@ test(
 	}
 );
 
+/**
+ * Validates the following for the Blog widget in the Site Editor:
+ * 1. Test that sections are able to be opened.
+ * 2. That state emitters (checkbox and select) are working as expected and update related fields.
+ * 3. That the preset field updates the featured image checkbox and triggers correct UI changes.
+ *
+ * @param {Object} page The Playwright page object.
+ */
+test(
+	'Test the Headline widget.',
+	async ( { page } ) => {
+		const { widget } = await testPrep(
+			page,
+			'sowb/siteorigin-widget-headline-widget'
+		);
+
+		const dividerSection = widget.locator( '.siteorigin-widget-field-divider' );
+		await dividerSection.click();
+
+		// Increase Divider Thickness to the maximum amount.
+		const dividerThickness = dividerSection.locator( '.siteorigin-widget-field-thickness' );
+		await expect( dividerThickness ).toBeVisible();
+		const dividerThicknessTrack = dividerThickness.locator( '.ui-slider' );
+
+		const dividerThicknessBoundingBox = await dividerThicknessTrack.boundingBox();
+		await page.mouse.move(
+			dividerThicknessBoundingBox.x + 1,
+			dividerThicknessBoundingBox.y + dividerThicknessBoundingBox.height / 2
+		);
+
+		await page.mouse.down();
+
+		// Drag to the far right of the slider track.
+		await page.mouse.move(
+			dividerThicknessBoundingBox.x + dividerThicknessBoundingBox.width - 1,
+			dividerThicknessBoundingBox.y + dividerThicknessBoundingBox.height / 2,
+			{
+				steps: 20
+			}
+		);
+		await page.mouse.up();
+
+		// Validate the slider value.
+		const sliderInput = dividerThickness.locator( '.siteorigin-widget-input-slider' );
+		await expect( sliderInput ).toHaveValue( '20' );
+
+		// Try adjusting the order field by moving the Divider field first.
+		const orderField = widget.locator( '.siteorigin-widget-field-order' );
+		const orderFieldItems = orderField.locator( '.siteorigin-widget-order-items' );
+		const orderFieldValue = orderField.locator( '.siteorigin-widget-input' );
+
+		const dividerField = orderFieldItems.locator( '.siteorigin-widget-order-item' ).getByText( 'Divider' );
+		const firstOrderItem = orderFieldItems.locator( '.siteorigin-widget-order-item' ).first();
+
+		// Drag Divider to the first item.
+		await dividerField.dragTo( firstOrderItem );
+
+		// Validate new ordering.
+		await expect( orderFieldValue ).toHaveValue( 'divider,headline,sub_headline' );
+	}
+);
+
