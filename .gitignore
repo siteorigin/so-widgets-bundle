@@ -16,3 +16,9 @@ tmp
 !/css/accessibility.css
 
 .cursorrules
+# Playwright.
+tests/cache
+tests/results
+tests/screenshots
+
+so-tests.env
