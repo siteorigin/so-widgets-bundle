@@ -154,3 +154,35 @@ async ( { page } ) => {
 	await expect(linkInput).toBeVisible();
 	await expect(linkInput).toHaveValue(/.+/);
 } );
+
+/**
+ * Validates the following for the SiteOrigin Editor widget in the Site Editor:
+ * 1. TinyMCE field: media upload and image insertion.
+ * 2. Ensures the TinyMCE editor is focused before media insertion.
+ * 3. Confirms the <img> tag appears in the TinyMCE editor iframe after upload.
+ *
+ * @param {Object} page The Playwright page object.
+ */
+test(
+	'Test the Editor widget.',
+	async ( { page } ) => {
+		const { admin, widget } = await testPrep(
+			page,
+			'sowb/siteorigin-widget-editor-widget'
+		);
+
+		const tinymceField = await getField( widget, 'tinymce' );
+
+		// Try to upload an image.
+		const addMediaButton = tinymceField.locator( '.siteorigin-widget-tinymce-add-media' );
+		await expect( addMediaButton ).toBeVisible( { timeout: 10000 } );
+		await expect( addMediaButton ).toBeEnabled( { timeout: 10000 } );
+		await addMediaButton.click( { force: true } );
+
+		await uploadImageToMediaLibrary( admin );
+
+		// Wait for the <img> tag to appear in the TinyMCE editor iframe
+		const iframe = tinymceField.frameLocator( 'iframe' );
+		await expect( iframe.locator( 'img' ) ).toBeVisible( { timeout: 10000 } );
+	}
+);
