@@ -372,3 +372,83 @@ test(
 	}
 );
 
+/**
+ * Validates the following for the Hero widget in the Site Editor:
+ * 1. The repeater is able to have multiple frames added.
+ * 2. Frames are able to be opened.
+ * 3. Frames are able to be re-ordered.
+ *
+ * @param {Object} page The Playwright page object.
+ */
+test(
+	'Test the Hero widget.',
+	async ( { page } ) => {
+		const { widget } = await testPrep(
+			page,
+			'sowb/siteorigin-widget-hero-widget'
+		);
+
+		const frames = widget.locator( '.siteorigin-widget-field-frames' );
+		await expect( frames ).toBeVisible();
+
+		// Add three frames.
+		const addFrameButton = frames.locator( '> div > .siteorigin-widget-field-repeater-add' );
+
+		await expect( addFrameButton ).toBeVisible();
+		await addFrameButton.click();
+		await addFrameButton.click();
+		await addFrameButton.click();
+
+		// Validate that three frames have been added.
+		let frameItems = frames.locator( '.siteorigin-widget-field-repeater-item' );
+		await expect( frameItems ).toHaveCount( 3 );
+
+		// Open the first frame.
+		const firstFrame = frameItems.first();
+		await firstFrame.click();
+
+		// Check the Automatically add paragraphs setting.
+		const automaticallyAddParagraphsSetting = firstFrame.locator( '.siteorigin-widget-field-autop .siteorigin-widget-input' );
+		await expect( automaticallyAddParagraphsSetting ).toBeVisible();
+		await automaticallyAddParagraphsSetting.check();
+
+		// Close the first frame, and validate.
+		const firstFrameCloser = firstFrame.locator( '.siteorigin-widget-field-repeater-item-top' );
+		const firstFrameForm = firstFrame.locator( '.siteorigin-widget-field-repeater-item-form' );
+		await firstFrameCloser.click();
+		await expect( firstFrameForm ).not.toBeVisible();
+
+		// Open the last frame.
+		const lastFrame = frameItems.last();
+		await lastFrame.click();
+
+		const lastFrameTop = lastFrame.locator( '.siteorigin-widget-field-repeater-item-top' );
+
+		// Drag the last frame to the top of the frames list.
+		const firstFrameBoundingBox = await firstFrame.boundingBox();
+		const lastFrameTopBoundingBox = await lastFrameTop.boundingBox();
+
+		// Click on the top of the last frame.
+		await page.mouse.move(
+			lastFrameTopBoundingBox.x + lastFrameTopBoundingBox.width / 2,
+			lastFrameTopBoundingBox.y + lastFrameTopBoundingBox.height / 2
+		);
+		await page.mouse.down();
+
+		// Move the cursor 100px higher than the top edge of the first frame.
+		await page.mouse.move(
+			firstFrameBoundingBox.x + firstFrameBoundingBox.width / 2,
+			firstFrameBoundingBox.y - 100, // 100px above the top edge of the first frame.
+			{ steps: 10 }
+		);
+
+		// Release the left click.
+		await page.mouse.up();
+
+		// Validate the last frame is now positioned first by checking the autop setting.
+		frameItems = frames.locator( '.siteorigin-widget-field-repeater-item' );
+		const lastAutomaticallyAddParagraphsSetting = frameItems.first().locator( '.siteorigin-widget-field-autop .siteorigin-widget-input' );
+		await expect( lastAutomaticallyAddParagraphsSetting ).toBeVisible();
+		await expect( lastAutomaticallyAddParagraphsSetting ).not.toBeChecked();
+	}
+);
