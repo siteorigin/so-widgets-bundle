@@ -1,5 +1,6 @@
 const {
 	addBlock,
+	doLogin,
 	openSiteEditorCanvas,
 	initializeAdmin,
 } = require('siteorigin-tests-common/playwright/common');
@@ -42,3 +43,16 @@ const testPrep = async( page, blockName ) => {
 	};
 };
 
+/**
+ * Runs before each test to log in to WordPress.
+ *
+ * Ensures the test user is authenticated before running any test case.
+ *
+ * @async
+ * @param {Object} context - The Playwright test context.
+ * @param {import('@playwright/test').Page} context.page - The Playwright page object.
+ * @returns {Promise<void>} Resolves when login is complete.
+ */
+test.beforeEach( async ( { page } ) => {
+	await doLogin( page );
+} );
