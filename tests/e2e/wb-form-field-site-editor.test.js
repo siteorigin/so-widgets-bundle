@@ -522,3 +522,43 @@ test(
 		await expect( lastAutomaticallyAddParagraphsSetting ).not.toBeChecked();
 	}
 );
+
+/**
+ * Validates the following for the Image Grid widget in the Site Editor:
+ * 1. Ensures the padding field is visible and accessible by default.
+ * 2. Validates that the multi-measurement field is working as expected.
+ *
+ * @param {Object} page The Playwright page object.
+ */
+test(
+	'Test the Image Grid widget.',
+	async ( { page } ) => {
+		const { widget } = await testPrep(
+			page,
+			'sowb/siteorigin-widgets-imagegrid-widget'
+		);
+
+		const imagePaddingSetting = widget.locator( '.siteorigin-widget-field-padding' );
+		await expect( imagePaddingSetting ).toBeVisible();
+
+		// Clear the widget's default values.
+		const imagePaddingFields = imagePaddingSetting.locator( '.sow-multi-measurement-input' );
+		for (let i = 0; i < 4; i++) {
+			const field = imagePaddingFields.nth(i);
+			await field.fill(''); // Clear the value.
+		}
+
+		const firstImage = imagePaddingFields.first();
+
+		await expect( firstImage ).toHaveValue( '' );
+
+		// Validate the multi-measurement field is autofilling.
+		await firstImage.press( '5' );
+		await page.keyboard.press('Tab');
+		await page.waitForTimeout( 100 );
+		for (let i = 0; i < 4; i++) {
+			const field = imagePaddingFields.nth(i);
+			await expect(field).toHaveValue('5');
+		}
+	}
+);
