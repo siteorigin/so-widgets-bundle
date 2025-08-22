@@ -315,13 +315,14 @@ test(
  * 1. Test that sections are able to be opened.
  * 2. That state emitters (checkbox and select) are working as expected and update related fields.
  * 3. That the preset field updates the featured image checkbox and triggers correct UI changes.
+ * 4. Validates the date picker field is working as expected.
  *
  * @param {Object} page The Playwright page object.
  */
 test(
 	'Test the Blog widget.',
 	async ( { page } ) => {
-		const { widget } = await testPrep(
+		const { admin, widget } = await testPrep(
 			page,
 			'sowb/siteorigin-widget-blog-widget'
 		);
@@ -339,16 +340,12 @@ test(
 
 		const featuredImageSetting = settingsSection.locator( '.siteorigin-widget-field-featured_image .siteorigin-widget-input' );
 		const featuredImageSizeSetting = settingsSection.locator( '.siteorigin-widget-field-featured_image_size .siteorigin-widget-input-select' );
-
 		await expect( featuredImageSizeSetting ).toBeVisible();
 
 		// Validate Checkbox field works as expected.
 		await expect( featuredImageSetting ).toBeChecked();
 		await featuredImageSetting.uncheck();
 		await expect( featuredImageSetting ).not.toBeChecked();
-
-		// Due to the `featuredImageSetting` being unchecked, the
-		// featuredImageSizeSetting should be hidden.
 		await expect( featuredImageSizeSetting ).toBeHidden();
 
 		// Validate Presets field by changing the preset to a preset that
@@ -358,6 +355,28 @@ test(
 
 		// Validate that featuredImageSetting is checked.
 		await expect( featuredImageSetting ).toBeChecked();
+
+		// Open the Post Query section.
+		const postQuerySection = widget.locator( '.siteorigin-widget-field-posts' );
+		await postQuerySection.click();
+
+		const postQueryDateFrom = postQuerySection.locator( '.sowb-specific-date-after .after-picker' );
+		await expect( postQueryDateFrom ).toBeVisible();
+
+		// Activate the Dates From field so that the date picker pops up.
+		await postQueryDateFrom.click({ force: true });
+		await postQueryDateFrom.focus();
+		await expect(postQueryDateFrom).toBeFocused();
+
+		// Validate that that date picker is present, and then select the 15th.
+		const datePicker = admin.editor.canvas.locator('.pika-single:not(.is-hidden)');
+		await expect(datePicker).toBeVisible();
+		const day15Button = datePicker.locator('.pika-button[data-pika-day="15"]');
+		await expect(day15Button).toBeVisible();
+		await day15Button.click();
+
+		// Validate that a date has been set.
+		await expect(postQueryDateFrom).toHaveValue(/.+/);
 	}
 );
 
