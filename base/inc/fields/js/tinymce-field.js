@@ -55,7 +55,10 @@
 	 * @param {jQuery} $field - jQuery object of the field container element.
 	 */
 	const setupTinyMCEField = function( $field ) {
-		if ( ! window.frameElement && $field.attr( 'data-initialized' ) ) {
+		if (
+			! window.frameElement &&
+			$field.attr( 'data-initialized' )
+		) {
 			return;
 		}
 
@@ -229,28 +232,33 @@
 	};
 
 	/**
-	 * Initializes a TinyMCE field within a widget form
-	 * Handles cases where the field is within a repeater item
-	 * Sets up the TinyMCE editor when the field is visible
+	 * Initializes a TinyMCE field within a widget form.
+	 *
+	 * This function handles the initialization of TinyMCE editors for
+	 * fields in widget forms. If the field is visible, it initializes
+	 * the editor immediately. Otherwise, it waits for the field to
+	 * become visible before setting up the editor.
 	 */
 	const setupTinyMCEFieldInitializer = function() {
 		const $field = $( this );
-		const $parentRepeaterItem = $field.closest( '.siteorigin-widget-field-repeater-item-form' );
 
-		if ( $parentRepeaterItem.length > 0 ) {
-			if ( $parentRepeaterItem.is( ':visible' ) ) {
-				setupTinyMCEField( $field );
-			} else {
-				$parentRepeaterItem.on( 'slideToggleOpenComplete', function onSlideToggleComplete() {
-					if ( $parentRepeaterItem.is( ':visible' ) ) {
-						setupTinyMCEField( $field );
-						$parentRepeaterItem.off( 'slideToggleOpenComplete' );
-					}
-				} );
-			}
-		} else {
+		// If the field is visible, initialize the TinyMCE editor immediately.
+		if ( $field.is( ':visible' ) ) {
 			setupTinyMCEField( $field );
+			return;
 		}
+		// If the field is already marked for initialization, skip further setup.
+		else if ( $field.attr( 'data-pre-init' ) ) {
+			return;
+		}
+
+		// Mark the field for initialization and wait for it to become visible.
+		// Once visible, the 'sowsetupformfield' event triggers the editor setup.
+		$field
+			.attr( 'data-pre-init', true )
+			.one( 'sowsetupformfield', () => {
+				setupTinyMCEField( $field );
+			} );
 	};
 
 	/**
@@ -276,7 +284,7 @@
 	};
 
 
-		/// If the current page isn't the site editor, set up the TinyMCE field now.
+	/// If the current page isn't the site editor, set up the TinyMCE field now.
 	if (
 		window.top === window.self &&
 		(
@@ -293,10 +301,6 @@
 	window.addEventListener( 'message', function( e ) {
 		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
 			$( '.siteorigin-widget-field-type-tinymce' ).each( function() {
-				if ( $( this ).attr( 'data-initialized' ) ) {
-					return;
-				}
-
 				setupTinyMCEFieldInitializer.call( this );
 			} );
 
