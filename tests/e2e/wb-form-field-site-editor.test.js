@@ -445,8 +445,9 @@ test(
 /**
  * Validates the following for the Hero widget in the Site Editor:
  * 1. The repeater is able to have multiple frames added.
- * 2. Frames are able to be opened.
- * 3. Frames are able to be re-ordered.
+ * 2. The TinyMCE field works as expected in repeaters.
+ * 3. Frames are able to be opened.
+ * 4. Frames are able to be re-ordered.
  *
  * @param {Object} page The Playwright page object.
  */
@@ -477,7 +478,11 @@ test(
 		const firstFrame = frameItems.first();
 		await firstFrame.click();
 
-		// Check the Automatically add paragraphs setting.
+		// Validate that the TinyMCE field rendered correctly inside of the repeater.
+		const tinyMCEField = firstFrame.locator( '.siteorigin-widget-field-content ' );
+		await expect( tinyMCEField ).toBeVisible();
+
+		// Tick the Automatically add paragraphs setting.
 		const automaticallyAddParagraphsSetting = firstFrame.locator( '.siteorigin-widget-field-autop .siteorigin-widget-input' );
 		await expect( automaticallyAddParagraphsSetting ).toBeVisible();
 		await automaticallyAddParagraphsSetting.check();
