@@ -915,6 +915,7 @@ const sowbClonedElements = [
 	'#editor-buttons-css',
 	'#forms-css',
 	'#media-views-css',
+	'#select2-css',
 
 const sowbCanvasElements = [
 	// WB.
