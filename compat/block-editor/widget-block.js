@@ -892,35 +892,37 @@ const sowbGetBlockForm = ( clientId ) => {
 		.find( '.siteorigin-widget-form-main' );
 };
 
-const sowbSiteEditorElementsToCopy = [
+const sowbClonedElements = [
 	// WP Assets.
-	'#dashicons-css',
 	'#buttons-css',
+	'#dashicons-css',
 
 	// WP Templates.
-	'#tmpl-media-selection',
-	'#tmpl-media-modal',
-	'#tmpl-media-frame',
-	'#tmpl-uploader-window',
-	'#tmpl-uploader-inline',
-	'#tmpl-uploader-status',
-	'#tmpl-uploader-status-error',
-	'#tmpl-attachment',
 	'#tmpl-attachment-details',
 	'#tmpl-attachment-display-settings',
+	'#tmpl-attachment',
 	'#tmpl-embed-link-settings',
 	'#tmpl-image-editor',
+	'#tmpl-media-frame',
+	'#tmpl-media-modal',
+	'#tmpl-media-selection',
+	'#tmpl-uploader-inline',
+	'#tmpl-uploader-status-error',
+	'#tmpl-uploader-status',
+	'#tmpl-uploader-window',
 
 	// Stylesheets.
 	'#editor-buttons-css',
 	'#forms-css',
 	'#media-views-css',
 
+const sowbCanvasElements = [
 	// WB.
-	'#so-widgets-bundle-tpl-image-search-dialog',
-	'#so-widgets-bundle-tpl-image-search-result',
-	'#so-widgets-bundle-tpl-image-search-result-sponsored',
+	'#siteorigin-widget-admin-js-extra',
 	'#siteorigin-widget-admin-js',
+	'#so-widgets-bundle-tpl-image-search-dialog',
+	'#so-widgets-bundle-tpl-image-search-result-sponsored',
+	'#so-widgets-bundle-tpl-image-search-result',
 
 	// WB Fields.
 	'#so-autocomplete-field-js',
@@ -940,8 +942,28 @@ const sowbSiteEditorElementsToCopy = [
 	'#so-tabs-field-js',
 	'#so-tinymce-field-js',
 	'#so-toggle-field-js',
-
 ];
+
+/**
+ * Appends elements to the canvas body.
+ *
+ * @param {Array} elements         Array of selectors to process.
+ * @param {jQuery} $canvasBody     The jQuery object representing the canvas body.
+ * @param {boolean} removeOriginal Whether to remove the original element after appending.
+ */
+const sowbAppendElementsToCanvas = ( elements, $canvasBody, removeOriginal = false ) => {
+	for ( const selector of elements ) {
+		const $element = jQuery( selector );
+		const elementHTML = $element[0]?.outerHTML;
+
+		if ( elementHTML ) {
+			$canvasBody.append( elementHTML );
+			if ( removeOriginal ) {
+				$element.remove();
+			}
+		}
+	}
+};
 
 let sowbSiteEditorAssetsSetup = false;
 /**
@@ -953,9 +975,10 @@ let sowbSiteEditorAssetsSetup = false;
  *
  * The function performs the following steps:
  * 1. Checks if the Site Editor iframe (`sowbSiteEditorCanvas`) exists and is accessible.
- * 2. Copies elements specified in `sowbSiteEditorElementsToCopy` from the main document
- *    to the iframe's `<body>`.
- * 3. Sets the `ajaxurl` variable in the iframe's `contentWindow` for AJAX requests.
+ * 2. Copies elements specified in `sowbClonedElements` and `sowbCanvasElements`from the
+ * main document to the Site Editor canvas.
+ * 4. Removes elements specified in `sowbCanvasElements` from the main document.
+ * 5. Sets the `ajaxurl` variable in the iframe's `contentWindow` for AJAX requests.
  */
 const sowbMaybeSetupSiteEditorAssets = () => {
 	if ( sowbSiteEditorCanvas.length === 0 || sowbSiteEditorAssetsSetup) {
@@ -967,13 +990,11 @@ const sowbMaybeSetupSiteEditorAssets = () => {
 	const $iframe = jQuery( sowbSiteEditorCanvas[ 0 ].contentDocument );
 	const $canvasBody = $iframe.find( 'body' );
 
-	sowbSiteEditorElementsToCopy.forEach( ( selector ) => {
-		const elementHTML = jQuery( selector )[ 0 ]?.outerHTML;
+	// Clone elements to the canvas.
+	sowbAppendElementsToCanvas( sowbClonedElements, $canvasBody );
 
-		if ( elementHTML ) {
-			$canvasBody.append( elementHTML );
-		}
-	} );
+	// Copy elements, and then remove the originals.
+	sowbAppendElementsToCanvas( sowbCanvasElements, $canvasBody, true );
 
 	// Is ajaxurl set?
 	if ( typeof sowbSiteEditorCanvas[ 0 ].contentWindow.ajaxurl === 'undefined' ) {
