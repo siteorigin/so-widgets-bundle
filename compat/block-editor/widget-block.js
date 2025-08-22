@@ -923,6 +923,8 @@ const sowbCanvasElements = [
 	'#so-widgets-bundle-tpl-image-search-dialog',
 	'#so-widgets-bundle-tpl-image-search-result-sponsored',
 	'#so-widgets-bundle-tpl-image-search-result',
+	'#sowb-pikaday-js',
+	'#sowb-pikaday-css',
 
 	// WB Fields.
 	'#so-autocomplete-field-js',
