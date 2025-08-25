@@ -919,6 +919,7 @@ const sowbClonedElements = [
 
 const sowbCanvasElements = [
 	// WB.
+	'#siteorigin-widget-admin-css',
 	'#siteorigin-widget-admin-js-extra',
 	'#siteorigin-widget-admin-js',
 	'#so-widgets-bundle-tpl-image-search-dialog',
