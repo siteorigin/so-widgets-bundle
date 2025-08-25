@@ -314,8 +314,9 @@ test(
  * Validates the following for the Blog widget in the Site Editor:
  * 1. Test that sections are able to be opened.
  * 2. That state emitters (checkbox and select) are working as expected and update related fields.
- * 3. That the preset field updates the featured image checkbox and triggers correct UI changes.
- * 4. Validates the date picker field is working as expected.
+ * 3. That the Image Size field's custom size feature work as expected.
+ * 4. That the preset field updates the featured image checkbox and triggers correct UI changes.
+ * 5. Validates the date picker field is working as expected.
  *
  * @param {Object} page The Playwright page object.
  */
@@ -341,9 +342,17 @@ test(
 		const featuredImageSetting = settingsSection.locator( '.siteorigin-widget-field-featured_image .siteorigin-widget-input' );
 		const featuredImageSizeSetting = settingsSection.locator( '.siteorigin-widget-field-featured_image_size .siteorigin-widget-input-select' );
 		await expect( featuredImageSizeSetting ).toBeVisible();
+		await expect( featuredImageSetting ).toBeChecked();
+
+		// Validate that the Image Size Custom Size setting works as expected.
+		const customSizeWidth = settingsSection.locator( '.custom-size-wrapper .custom-image-size-width' );
+
+		await expect( customSizeWidth ).toBeHidden();
+		await featuredImageSizeSetting.selectOption( 'custom_size' );
+		await expect( featuredImageSizeSetting ).toHaveValue( 'custom_size' );
+		await expect( customSizeWidth ).toBeVisible();
 
 		// Validate Checkbox field works as expected.
-		await expect( featuredImageSetting ).toBeChecked();
 		await featuredImageSetting.uncheck();
 		await expect( featuredImageSetting ).not.toBeChecked();
 		await expect( featuredImageSizeSetting ).toBeHidden();
