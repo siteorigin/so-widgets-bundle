@@ -2,7 +2,7 @@
 
 ( function( $ ) {
 
-	const = setupPresetsField = function( e ) {
+	const setupPresetsField = function( e ) {
 
 		const $presetSelect = $( this ).find( 'select[class="siteorigin-widget-input"]' );
 		if ( $presetSelect.data( 'initialized' ) ) {
