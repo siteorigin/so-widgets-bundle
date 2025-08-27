@@ -28,7 +28,7 @@
 			errorMessage = response.responseText;
 		}
 		return errorMessage;
-	}
+	};
 
 	// Certain widgets are excluded from the content check as
 	// they don't contain "standard" content indicators.
@@ -190,7 +190,7 @@
 			}
 			setState( { loadingWidgetPreview: false } );
 		} );
-	}
+	};
 
 	/**
 	 * Memoized component for WidgetBlockEdit.
@@ -277,7 +277,7 @@
 			} );
 			setState( { formInitialized: true } );
 		}
-	}
+	};
 
 	/**
 	 * Initializes WB Form Fields in the Site Editor iframe.
@@ -301,7 +301,7 @@
 		} catch ( e ) {
 			console.error( 'SiteOrigin Widgets: Failed to send postMessage to iframe:', e );
 		}
-	}
+	};
 
 	/**
 	 * WidgetBlockEdit component.
@@ -398,7 +398,7 @@
 				const loadWidgetForm = ! widgetFormHtml.length;
 
 				if ( loadWidgetForm && ! loadingForm ) {
-					this.setState( { loadingForm: true });
+					this.setState( { loadingForm: true } );
 					jQuery.post( {
 						url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/forms',
 						beforeSend: (xhr) => {
@@ -421,7 +421,7 @@
 							} );
 						}, 0 );
 					} )
-					.fail( ( response) => {
+					.fail( ( response ) => {
 						this.setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
 					} );
 				}
@@ -459,7 +459,7 @@
 						{ key: 'controls' },
 						el(
 							Toolbar,
-							{ label: __( 'Preview widget.' + editing, 'so-widgets-bundle' ) },
+							{ label: __( 'Preview widget.', 'so-widgets-bundle' ) },
 							el(
 								ToolbarButton,
 								{
@@ -758,7 +758,7 @@
 			delete sowbWidgets[ key ];
 			return;
 		}
-	}
+	};
 
 	// Register all Widget Bundle widgets, and build `sowbManuallyRegisteredBlocks`.
 	await Promise.all(
@@ -849,9 +849,9 @@
 	};
 
 	// Register all blocks that haven't been manually registered.
-	await sowbWidgets.forEach( setupSoWidgetBlock );
+	sowbWidgets.forEach( setupSoWidgetBlock );
 
-  // Add SiteOrigin Widgets Bundle Block Category Meta.
+	// Add SiteOrigin Widgets Bundle Block Category Meta.
 	updateCategory( 'siteorigin', {
 		icon: el( 'img', {
 			src: sowbBlockEditorAdmin.categoryIcon,
@@ -916,6 +916,7 @@ const sowbClonedElements = [
 	'#forms-css',
 	'#media-views-css',
 	'#select2-css',
+];
 
 const sowbCanvasElements = [
 	// WB.
@@ -958,7 +959,7 @@ const sowbCanvasElements = [
 const sowbAppendElementsToCanvas = ( elements, $canvasBody, removeOriginal = false ) => {
 	for ( const selector of elements ) {
 		const $element = jQuery( selector );
-		const elementHTML = $element[0]?.outerHTML;
+		const elementHTML = $element[0] && $element[0].outerHTML;
 
 		if ( elementHTML ) {
 			$canvasBody.append( elementHTML );
@@ -1004,7 +1005,7 @@ const sowbMaybeSetupSiteEditorAssets = () => {
 	if ( typeof sowbSiteEditorCanvas[ 0 ].contentWindow.ajaxurl === 'undefined' ) {
 		sowbSiteEditorCanvas[ 0 ].contentWindow.ajaxurl = window.ajaxurl;
 	}
-}
+};
 
 /**
  * Find all legacy SiteOrigin widget blocks in the editor.
@@ -1047,7 +1048,7 @@ const sowbFindLegacyBlocks = ( blocks ) => {
 };
 
 const sowbIsWidgetActive = ( widgetClass ) => {
-	return sowbBlockEditorAdmin.widgets.find(widget => widget.class === widgetClass)
+	return sowbBlockEditorAdmin.widgets.find(widget => widget.class === widgetClass);
 };
 
 let sowbMigrateBlockSubscribe = false;
