@@ -1,7 +1,7 @@
 const {
 	expect,
 	test
-} = require('@playwright/test');
+} = require( '@playwright/test' );
 
 const {
 	addBlock,
@@ -10,15 +10,15 @@ const {
 	openSiteEditorCanvas,
 	initializeAdmin,
 	waitForRequestToFinish,
-} = require('siteorigin-tests-common/playwright/common');
+} = require( 'siteorigin-tests-common/playwright/common' );
 
 const {
 	getField
-} = require('siteorigin-tests-common/playwright/utilities/widgets-bundle');
+} = require( 'siteorigin-tests-common/playwright/utilities/widgets-bundle' );
 
 const {
 	uploadImageToMediaLibrary
-} = require('siteorigin-tests-common/playwright/utilities/media');
+} = require( 'siteorigin-tests-common/playwright/utilities/media' );
 
 /**
  * Prepares the Site Editor test environment and inserts the specified block.
@@ -74,88 +74,89 @@ test.beforeEach( async ( { page } ) => {
  */
 test(
 	'Test the Icon Widget',
-async ( { page } ) => {
-	const { widget } = await testPrep(
-		page,
-		'sowb/siteorigin-widget-icon-widget'
-	);
+	async ( { page } ) => {
+		const { widget } = await testPrep(
+			page,
+			'sowb/siteorigin-widget-icon-widget'
+		);
 
-	const iconField = await getField( widget, 'icon' );
+		const iconField = await getField( widget, 'icon' );
 
-	// Validate Icon field works as expected.
-	const iconFieldSelector = iconField.locator('.siteorigin-widget-icon-selector-current');
-	await expect(iconFieldSelector).toBeVisible();
-	await iconFieldSelector.click({ force: true });
+		// Validate Icon field works as expected.
+		const iconFieldSelector = iconField.locator( '.siteorigin-widget-icon-selector-current' );
+		await expect( iconFieldSelector ).toBeVisible();
+		await iconFieldSelector.click( { force: true } );
 
-	const iconFieldContainer = iconField.locator('.siteorigin-widget-icon-selector');
-	await expect(iconFieldContainer).toHaveCSS('display', 'block');
+		const iconFieldContainer = iconField.locator( '.siteorigin-widget-icon-selector' );
+		await expect( iconFieldContainer ).toHaveCSS( 'display', 'block' );
 
-	const iconFieldIcons = iconFieldContainer.locator('.siteorigin-widget-icon-icons');
-	await expect(iconFieldIcons).toBeVisible();
+		const iconFieldIcons = iconFieldContainer.locator( '.siteorigin-widget-icon-icons' );
+		await expect( iconFieldIcons ).toBeVisible();
 
-	// Switch to Material Icons to validate icons are loading correctly.
-	const fontFamilySelector = iconFieldContainer.locator('.siteorigin-widget-icon-family');
-	await expect(fontFamilySelector).toBeVisible();
-	await fontFamilySelector.selectOption('materialicons');
+		// Switch to Material Icons to validate icons are loading correctly.
+		const fontFamilySelector = iconFieldContainer.locator( '.siteorigin-widget-icon-family' );
+		await expect( fontFamilySelector ).toBeVisible();
+		await fontFamilySelector.selectOption( 'materialicons' );
 
-	await expect(iconFieldIcons).not.toHaveClass('loading');
+		await expect( iconFieldIcons ).not.toHaveClass( 'loading' );
 
-	// Search for the Home icon.
-	const iconSearch = iconFieldContainer.locator('.siteorigin-widget-icon-search');
-	await expect(iconSearch).toBeVisible({ timeout: 10000 });
-	await iconSearch.fill('home');
+		// Search for the Home icon.
+		const iconSearch = iconFieldContainer.locator( '.siteorigin-widget-icon-search' );
+		await expect( iconSearch ).toBeVisible( { timeout: 10000 } );
+		await iconSearch.fill( 'home' );
 
-	// Click the `Add Home` icon.
-	// The timeout is required due to give time for finding the icon.
-	const iconOption = iconFieldContainer.locator('[data-value="materialicons-sowm-regular-add_home"]');
-	await expect(iconOption).toBeVisible({ timeout: 10000 });
-	await iconOption.click();
+		// Click the `Add Home` icon.
+		// The timeout is required due to give time for finding the icon.
+		const iconOption = iconFieldContainer.locator( '[data-value="materialicons-sowm-regular-add_home"]' );
+		await expect( iconOption ).toBeVisible( { timeout: 10000 } );
+		await iconOption.click();
 
-	// Confirm icon has been set.
-	const icon = iconField.locator('.siteorigin-widget-icon span');
-	await expect(icon).toBeVisible();
-	await expect(icon).toHaveClass(/sow-icon-materialicons/);
+		// Confirm icon has been set.
+		const icon = iconField.locator( '.siteorigin-widget-icon span' );
+		await expect( icon ).toBeVisible();
+		await expect( icon ).toHaveClass( /sow-icon-materialicons/ );
 
-	// Validate Color field works as expected.
-	const colorField = widget.locator('.siteorigin-widget-field-type-color');
-	await expect(colorField).toBeVisible();
+		// Validate Color field works as expected.
+		const colorField = widget.locator( '.siteorigin-widget-field-type-color' );
+		await expect( colorField ).toBeVisible();
 
-	const colorFieldButton = colorField.locator( 'button.wp-color-result' );
-	await expect(colorFieldButton).toBeVisible();
-	await colorFieldButton.click({ force: true });
+		const colorFieldButton = colorField.locator( 'button.wp-color-result' );
+		await expect( colorFieldButton ).toBeVisible();
+		await colorFieldButton.click( { force: true } );
 
-	// Wait until the color picker has opened.
-	await expect(colorFieldButton).toHaveClass(/wp-picker-open/);
+		// Wait until the color picker has opened.
+		await expect( colorFieldButton ).toHaveClass( /wp-picker-open/ );
 
-	// Select the first color from the palette.
-	const palette = colorField.locator('.iris-palette').first();
-	await expect(palette).toBeVisible();
-	await palette.click();
+		// Select the first color from the palette.
+		const palette = colorField.locator( '.iris-palette' ).first();
+		await expect( palette ).toBeVisible();
+		await palette.click();
 
-	// Verify the color has been applied.
-	const colorPreview = colorField.locator('.wp-color-result');
-	await expect(colorPreview).toBeVisible();
-	await expect(colorPreview).toHaveCSS('background-color', 'rgb(0, 0, 0)');
+		// Verify the color has been applied.
+		const colorPreview = colorField.locator( '.wp-color-result' );
+		await expect( colorPreview ).toBeVisible();
+		await expect( colorPreview ).toHaveCSS( 'background-color', 'rgb(0, 0, 0)' );
 
-	// Validate autocomplete field works as expected.
-	const linkField = widget.locator('.siteorigin-widget-field-type-link');
-	await expect(linkField).toBeVisible();
-	const linkButton = linkField.locator('.select-content-button');
-	await expect(linkButton).toBeVisible();
-	await linkButton.click({ force: true });
+		// Validate autocomplete field works as expected.
+		const linkField = widget.locator( '.siteorigin-widget-field-type-link' );
+		await expect( linkField ).toBeVisible();
+		const linkButton = linkField.locator( '.select-content-button' );
+		await expect( linkButton ).toBeVisible();
+		await linkButton.click( { force: true } );
 
-	// Select the first post from the list.
-	const postsList = linkField.locator('.posts');
-	await expect(postsList).toBeVisible();
-	const firstPost = postsList.locator('.post').first();
-	await expect(firstPost).toBeVisible();
-	await firstPost.click({ force: true });
+		// Select the first post from the list.
+		const postsList = linkField.locator( '.posts' );
+		await expect( postsList ).toBeVisible();
+		const firstPost = postsList.locator( '.post' ).first();
+		await expect( firstPost ).toBeVisible();
+		await firstPost.click( { force: true } );
 
-	// Validate link text has been set.
-	const linkInput = linkField.locator('.siteorigin-widget-input');
-	await expect(linkInput).toBeVisible();
-	await expect(linkInput).toHaveValue(/.+/);
-} );
+		// Validate link text has been set.
+		const linkInput = linkField.locator( '.siteorigin-widget-input' );
+		await expect( linkInput ).toBeVisible();
+		await expect( linkInput ).toHaveValue( /.+/ );
+	}
+);
 
 /**
  * Validates the following for the SiteOrigin Editor widget in the Site Editor:
@@ -373,19 +374,19 @@ test(
 		await expect( postQueryDateFrom ).toBeVisible();
 
 		// Activate the Dates From field so that the date picker pops up.
-		await postQueryDateFrom.click({ force: true });
+		await postQueryDateFrom.click( { force: true } );
 		await postQueryDateFrom.focus();
-		await expect(postQueryDateFrom).toBeFocused();
+		await expect( postQueryDateFrom ).toBeFocused();
 
 		// Validate that that date picker is present, and then select the 15th.
-		const datePicker = admin.editor.canvas.locator('.pika-single:not(.is-hidden)');
-		await expect(datePicker).toBeVisible();
-		const day15Button = datePicker.locator('.pika-button[data-pika-day="15"]');
-		await expect(day15Button).toBeVisible();
+		const datePicker = admin.editor.canvas.locator( '.pika-single:not(.is-hidden)' );
+		await expect( datePicker ).toBeVisible();
+		const day15Button = datePicker.locator( '.pika-button[data-pika-day="15"]' );
+		await expect( day15Button ).toBeVisible();
 		await day15Button.click();
 
 		// Validate that a date has been set.
-		await expect(postQueryDateFrom).toHaveValue(/.+/);
+		await expect( postQueryDateFrom ).toHaveValue( /.+/ );
 	}
 );
 
@@ -557,9 +558,9 @@ test(
 
 		// Clear the widget's default values.
 		const imagePaddingFields = imagePaddingSetting.locator( '.sow-multi-measurement-input' );
-		for (let i = 0; i < 4; i++) {
-			const field = imagePaddingFields.nth(i);
-			await field.fill(''); // Clear the value.
+		for ( let i = 0; i < 4; i++ ) {
+			const field = imagePaddingFields.nth( i );
+			await field.fill( '' ); // Clear the value.
 		}
 
 		const firstImage = imagePaddingFields.first();
@@ -568,11 +569,11 @@ test(
 
 		// Validate the multi-measurement field is autofilling.
 		await firstImage.press( '5' );
-		await page.keyboard.press('Tab');
+		await page.keyboard.press( 'Tab' );
 		await page.waitForTimeout( 100 );
-		for (let i = 0; i < 4; i++) {
-			const field = imagePaddingFields.nth(i);
-			await expect(field).toHaveValue('5');
+		for ( let i = 0; i < 4; i++ ) {
+			const field = imagePaddingFields.nth( i );
+			await expect( field ).toHaveValue( '5' );
 		}
 	}
 );
