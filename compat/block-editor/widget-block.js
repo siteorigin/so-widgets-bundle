@@ -893,6 +893,10 @@ const sowbGetBlockForm = ( clientId ) => {
 };
 
 const sowbClonedElements = [
+	// WP Scripts.
+	'#jquery-core-js',
+	'#jquery-migrate-js',
+
 	// WP Assets.
 	'#buttons-css',
 	'#dashicons-css',
@@ -916,9 +920,7 @@ const sowbClonedElements = [
 	'#forms-css',
 	'#media-views-css',
 	'#select2-css',
-];
 
-const sowbCanvasElements = [
 	// WB.
 	'#siteorigin-widget-admin-css',
 	'#siteorigin-widget-admin-js-extra',
@@ -928,7 +930,9 @@ const sowbCanvasElements = [
 	'#so-widgets-bundle-tpl-image-search-result',
 	'#sowb-pikaday-js',
 	'#sowb-pikaday-css',
+];
 
+const sowbCanvasElements = [
 	// WB Fields.
 	'#so-autocomplete-field-js',
 	'#so-code-field-js',

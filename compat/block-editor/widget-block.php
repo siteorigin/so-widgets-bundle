@@ -291,7 +291,15 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		wp_enqueue_style(
 			'sowb-widget-block',
-			plugins_url( 'widget-block.css', __FILE__ )
+			plugins_url( 'widget-block.css', __FILE__ ),
+			array(
+				'dashicons',
+				'buttons',
+				'editor-buttons',
+				'forms',
+				'media-views',
+				'editor',
+			)
 		);
 
 		$this->prepare_widget_data();
