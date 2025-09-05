@@ -5,7 +5,7 @@
     "test": "tests"
   },
   "scripts": {
-    "tests": "node -e \"require('siteorigin-tests-common/playwright/runTests.js')\"",
+    "tests": "node -e \"require('siteorigin-tests-common/playwright/runTests-legacy.js')\"",
     "test:e2e": "playwright test"
   },
   "repository": {
