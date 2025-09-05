@@ -120,7 +120,7 @@ async ( { page } ) => {
 	const colorField = widget.locator('.siteorigin-widget-field-type-color');
 	await expect(colorField).toBeVisible();
 
-	const colorFieldButton = colorField.getByRole('button', { name: 'Select Colour' });
+	const colorFieldButton = colorField.locator( 'button.wp-color-result' );
 	await expect(colorFieldButton).toBeVisible();
 	await colorFieldButton.click({ force: true });
 
