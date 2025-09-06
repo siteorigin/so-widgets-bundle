@@ -55,7 +55,6 @@ module.exports = {
             'css/**/!(*.js|*.less|*.css)',
             'icons/**/!(*.js|*.less|*.css)',
             'js/**/!(*.js|*.less|*.css)',
-            'lang/**/!(*.js|*.less|*.css)',
             'widgets/**/!(*.js|*.less|*.css)',
             'icons/**/*css',                                      // Copy CSS for icon packs.
             'js/lib/**/*css',                                     // Copy CSS for JS libs.
@@ -71,12 +70,18 @@ module.exports = {
             '!base/inc/installer/inc/github-plugin-updater.php',  // Exclude Installer's  Updater.
         ]
     },
-    i18n: {
+    pot: {
         src: [
             '**/*.php',                         // All the PHP files.
             '!tmp/**/*.php',                    // Ignore tmp/ and contents.
             '!dist/**/*.php'                    // Ignore dist/ and contents.
         ],
+        textdomain: 'so-widgets-bundle',
+        destFile: 'so-widgets-bundle.pot',
+        package: 'SiteOrigin Widgets Bundle',
+        bugReport: 'http://www.siteorigin.com/thread',
+        lastTranslator: 'SiteOrigin <support@siteorigin.com>',
+        team: 'SiteOrigin <support@siteorigin.com>'
     },
     googleFonts: {
         dest: 'base/inc/fonts.php',
