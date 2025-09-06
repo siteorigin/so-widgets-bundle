@@ -98,6 +98,11 @@ test(
 		await expect( fontFamilySelector ).toBeVisible();
 		await fontFamilySelector.selectOption( 'materialicons' );
 
+		// Wait for icons to download.
+		await waitForRequestToFinish(
+			page,
+			'siteorigin_widgets_get_icons'
+		);
 		await expect( iconFieldIcons ).not.toHaveClass( 'loading' );
 
 		// Search for the Home icon.
