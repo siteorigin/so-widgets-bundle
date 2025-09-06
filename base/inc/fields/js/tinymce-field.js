@@ -55,31 +55,26 @@
 	 * @param {jQuery} $field - jQuery object of the field container element.
 	 */
 	const setupTinyMCEField = function( $field ) {
-		if (
-			! window.frameElement &&
-			$field.attr( 'data-initialized' )
-		) {
+		if ( $field.attr( 'data-initialized' ) ) {
 			return;
 		}
-
 		$field.attr( 'data-initialized', true );
 
-		const wpEditor = wp.oldEditor ? wp.oldEditor : wp.editor;
+		const wpEditor = window.wp.editor;
 		if ( wpEditor && wpEditor.hasOwnProperty( 'autop' ) ) {
 			wp.editor.autop = wpEditor.autop;
 			wp.editor.removep = wpEditor.removep;
 			wp.editor.initialize = wpEditor.initialize
 		}
 
-		const currentContext = window.frameElement ? window.parent : window.top;
 		const $container = $field.find( '.siteorigin-widget-tinymce-container' );
 		const settings = $container.data( 'editorSettings' );
 
 		if (
-			currentContext.window.tinyMCEPreInit.mceInit &&
-			currentContext.window.tinyMCEPreInit.mceInit.hasOwnProperty( 'content' )
+			window.top.tinyMCEPreInit.mceInit &&
+			window.top.tinyMCEPreInit.mceInit.hasOwnProperty( 'content' )
 		) {
-			const mainContentSettings = currentContext.window.tinyMCEPreInit.mceInit['content'];
+			const mainContentSettings = window.top.tinyMCEPreInit.mceInit['content'];
 			if ( mainContentSettings.hasOwnProperty( 'content_css' ) && mainContentSettings.content_css ) {
 				const mainContentCss = mainContentSettings.content_css.split( ',' );
 				if ( settings.tinymce.hasOwnProperty( 'content_css' ) && settings.tinymce.content_css ) {
@@ -113,24 +108,24 @@
 			$textarea.attr( 'id', id );
 		}
 
-		const setupEditor = function( editor ) {
-			editor.on( 'change', function() {
-				const ed = window.tinymce.get( id );
-				ed.save();
-				$textarea.trigger( 'change' );
-			} );
-
-			if ( $wpautopToggleField ) {
-				$wpautopToggleField.off( 'change' );
-				$wpautopToggleField.on( 'change', function() {
-					wp.editor.remove( id );
-					settings.tinymce.wpautop = $wpautopToggleField.is( ':checked' );
-					wp.editor.initialize( id, settings );
-				} );
-			}
-		};
-
 		if ( settings.tinymce ) {
+			const setupEditor = function( editor ) {
+				editor.on( 'change', function() {
+					const ed = window.top.tinymce.get( id );
+					ed.save();
+					$textarea.trigger( 'change' );
+				} );
+
+				if ( $wpautopToggleField ) {
+					$wpautopToggleField.off( 'change' );
+					$wpautopToggleField.on( 'change', function() {
+						window.top.wp.editor.remove( id );
+						settings.tinymce.wpautop = $wpautopToggleField.is( ':checked' );
+						window.top.wp.editor.initialize( id, settings );
+					} );
+				}
+			};
+
 			settings.tinymce = $.extend( {}, settings.tinymce, {
 				selector: '#' + id,
 				setup: function ( editor ) {
@@ -139,10 +134,12 @@
 						editor.on( 'init', () => {
 							const textTab = document.querySelector( `#${id}-html` );
 							if ( textTab ) {
-								textTab.innerHTML = wp.i18n.__( 'Code' );
+								textTab.innerHTML = window.top.wp.i18n.__( 'Code' );
 							}
 						} );
 					}
+
+					setupEditor( editor );
 				},
 			} );
 		}
@@ -184,8 +181,8 @@
 		} );
 
 		wpEditor.remove( id );
-		if ( currentContext.window.tinymce ) {
-			window.tinymce.EditorManager.overrideDefaults( { base_url: settings.baseURL, suffix: settings.suffix } );
+		if ( window.top.tinymce ) {
+			window.top.tinymce.EditorManager.overrideDefaults( { base_url: settings.baseURL, suffix: settings.suffix } );
 		}
 
 		// Wait for textarea to be visible before initialization.
