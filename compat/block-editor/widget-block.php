@@ -295,10 +295,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			array(
 				'dashicons',
 				'buttons',
-				'editor-buttons',
 				'forms',
 				'media-views',
-				'editor',
 			)
 		);
 

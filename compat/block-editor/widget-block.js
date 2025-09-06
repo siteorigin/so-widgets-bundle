@@ -893,13 +893,27 @@ const sowbGetBlockForm = ( clientId ) => {
 };
 
 const sowbClonedElements = [
-	// WP Scripts.
+	// WP Scripts and assets.
 	'#jquery-core-js',
 	'#jquery-migrate-js',
-
-	// WP Assets.
+	'#editor-js',
+	'#editor-js-after',
+	'#wp-tinymce-root-js',
+	'#wp-tinymce-js',
+	'#wp-block-library-js-before',
+	'#jquery-ui-core-js',
+	'#jquery-ui-mouse-js',
+	'#jquery-ui-slider-js',
+	'#jquery-ui-sortable-js',
+	'#jquery-ui-resizable-js',
+	'#jquery-ui-draggable-js',
+	'#wplink-js-extra',
+	'#wplink-js',
 	'#buttons-css',
 	'#dashicons-css',
+
+	// Load all styles imported using load-styles.php.
+	'link[href*="wp-admin/load-styles.php"]',
 
 	// WP Templates.
 	'#tmpl-attachment-details',
@@ -930,13 +944,14 @@ const sowbClonedElements = [
 	'#so-widgets-bundle-tpl-image-search-result',
 	'#sowb-pikaday-js',
 	'#sowb-pikaday-css',
+	'#wp-color-picker-alpha-js',
 ];
 
 const sowbCanvasElements = [
-	// WB Fields.
 	'#so-autocomplete-field-js',
 	'#so-code-field-js',
 	'#so-date-range-field-js',
+	'#so-date-range-field-css',
 	'#so-icon-field-js',
 	'#so-image-radio-field-js',
 	'#so-image-size-js',
@@ -1249,7 +1264,7 @@ jQuery( function( $ ) {
 	 * ensure DOM is ready before modifying messages.
 	 *
 	 * @return {Function} Cleanup function that unsubscribes from block editor.
- 	*/
+	*/
 	const sowbHandleInactiveWidgets = wp.data.subscribe( () => {
 		// Are we good to start checking?
 		const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
@@ -1299,7 +1314,7 @@ if (
 						if ( sowbCurrentBlocks[ i ].name.startsWith( 'sowb/' ) && sowbCurrentBlocks[ i ].isValid ) {
 							$form = jQuery( '#block-' + sowbCurrentBlocks[ i ].clientId ).find( '.so-widget-block-form' );
 							if ( ! sowbForms.validateFields( $form, showPrompt) ) {
-							 	showPrompt = false;
+								showPrompt = false;
 							}
 							$form.find( '.siteorigin-widget-field-is-required input' ).on( 'change', function() {
 								sowbForms.validateFields( $form );
