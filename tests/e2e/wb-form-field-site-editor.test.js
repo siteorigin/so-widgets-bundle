@@ -237,8 +237,10 @@ test(
 		await mediaSearchModalInput.fill( 'test' );
 		await mediaSearchModalInput.press( 'Enter' );
 
-		// Wait for the loading indicator to disappear.
-		await expect( loadingIndicator ).toBeHidden( { timeout: 10000 } );
+		await waitForRequestToFinish(
+			page,
+			'so_widgets_image_search'
+		);
 
 		// Select the first search result once it's visible.
 		const firstResult = mediaSearchModalResults.locator( '.so-widgets-result' ).first().locator( '.so-widgets-result-image' );
