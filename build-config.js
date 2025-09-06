@@ -88,5 +88,12 @@ module.exports = {
     },
     fontAwesome: {
         base: 'icons/fontawesome/',
+        version: '6.7.2',
+        css: {
+            dest: 'icons/fontawesome/'
+        },
+        fonts: {
+            dest: 'icons/fontawesome/webfonts/'
+        }
     }
 };
