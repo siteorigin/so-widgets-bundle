@@ -85,7 +85,7 @@ test(
 		// Validate Icon field works as expected.
 		const iconFieldSelector = iconField.locator( '.siteorigin-widget-icon-selector-current' );
 		await expect( iconFieldSelector ).toBeVisible();
-		await iconFieldSelector.click( { force: true } );
+		await iconFieldSelector.click();
 
 		const iconFieldContainer = iconField.locator( '.siteorigin-widget-icon-selector' );
 		await expect( iconFieldContainer ).toHaveCSS( 'display', 'block' );
@@ -114,7 +114,7 @@ test(
 		// The timeout is required due to give time for finding the icon.
 		const iconOption = iconFieldContainer.locator( '[data-value="materialicons-sowm-regular-add_home"]' );
 		await expect( iconOption ).toBeVisible( { timeout: 10000 } );
-		await iconOption.click();
+		await iconOption.click( { force: true } );
 
 		// Confirm icon has been set.
 		const icon = iconField.locator( '.siteorigin-widget-icon span' );
