@@ -49,6 +49,7 @@
 			if ( q === '' ) {
 				$is.find('.siteorigin-widget-icon-icons-icon').show();
 			} else {
+				$container.addClass( 'loading' );
 				$is.find('.siteorigin-widget-icon-icons-icon').each( function() {
 					var $$ = $( this ),
 						value = $$.attr( 'data-value' );
@@ -60,6 +61,7 @@
 						$$.show();
 					}
 				} );
+				$container.removeClass( 'loading' );
 			}
 		};
 
