@@ -290,14 +290,15 @@ test(
 		// Test the Shape field.
 		const shapeSection = widget.locator( '.siteorigin-widget-field-image_shape' );
 		const shapeEnableSetting = shapeSection.locator( '.siteorigin-widget-field-enable .siteorigin-widget-input' );
-		const shapeField = widget.locator( '.siteorigin-widget-field-type-image_shape' );
-		const shapeOpenButton = shapeField.locator( '.siteorigin-widget-shape-current' );
-		const shapeList = shapeField.locator( '.siteorigin-widget-shapes' );
 		await shapeSection.click();
 
 		// Enable the shape field.
 		await expect( shapeEnableSetting ).toBeVisible();
 		await shapeEnableSetting.check();
+
+		const shapeField = await getField( widget, 'image_shape', true );
+		const shapeOpenButton = shapeField.locator( '.siteorigin-widget-shape-current' );
+		const shapeList = shapeField.locator( '.siteorigin-widget-shapes' );
 		await expect( shapeOpenButton ).toBeVisible();
 
 		// Open the shape list.
