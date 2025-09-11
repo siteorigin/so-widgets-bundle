@@ -110,15 +110,18 @@ test(
 		await expect( iconSearch ).toBeVisible( { timeout: 10000 } );
 		await iconSearch.fill( 'home' );
 
+		await expect( iconFieldIcons ).not.toHaveClass( 'loading' );
+
 		// Click the `Add Home` icon.
 		// The timeout is required due to give time for finding the icon.
-		const iconOption = iconFieldContainer.locator( '[data-value="materialicons-sowm-regular-add_home"]' );
+		const iconOption = iconFieldIcons.locator( '[data-value="materialicons-sowm-regular-add_home"]' );
 		await expect( iconOption ).toBeVisible( { timeout: 10000 } );
-		await iconOption.click( { force: true } );
+		// Due to the large amount of icons being added at once, wait 250ms to allow for rendering.
+		await page.waitForTimeout( 350 );
+		await iconOption.click({ force: true });
 
 		// Confirm icon has been set.
-		const icon = iconField.locator( '.siteorigin-widget-icon span' );
-		await expect( icon ).toBeVisible();
+		const icon = iconFieldSelector.locator( '.siteorigin-widget-icon span' );
 		await expect( icon ).toHaveClass( /sow-icon-materialicons/ );
 
 		// Validate Color field works as expected.
