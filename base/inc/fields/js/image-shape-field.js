@@ -2,12 +2,13 @@
 
 ( function( $ ) {
 	const setupImageShapeField = function( e ) {
-		if ( $( this ).data( 'initialized' ) ) {
+		const $field = $( this );
+
+		if ( $field.attr( 'data-initialized' ) !== undefined ) {
 			return;
 		}
 
-		const $field = $( this ),
-			$search = $field.find( '.siteorigin-widget-shape-search' ),
+		const $search = $field.find( '.siteorigin-widget-shape-search' ),
 			$shapes = $field.find( '.siteorigin-widget-shapes' ),
 			$data = $field.find( '.siteorigin-widget-input' ),
 			$current = $field.find( '.siteorigin-widget-shape-current' );
@@ -23,7 +24,9 @@
 		}
 
 		$current.on( 'click', function() {
-			$shapes.toggleClass( 'siteorigin-widget-shapes-open' );
+			$shapes.hasClass('siteorigin-widget-shapes-open') ?
+				$shapes.removeClass('siteorigin-widget-shapes-open') :
+				$shapes.addClass('siteorigin-widget-shapes-open');
 		} );
 
 		// Handle shape selection.
@@ -54,7 +57,7 @@
 
 		loadActiveShape( $shapes.find( '.siteorigin-widget-shape[data-shape="' + ( $data.val() !== '' ? $data.val() : 'circle' ) + '"]' ) );
 
-		$field.data( 'initialized', true );
+		$field.attr( 'data-initialized', true );
 	};
 
 
