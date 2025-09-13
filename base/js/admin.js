@@ -1407,6 +1407,10 @@ var sowbForms = window.sowbForms || {};
 		// Add user change detection to the form to prevent unintended
 		// backups of automated changes.
 		$el.on( 'keydown mouseup touchend', ( e ) => {
+			if ( isUserChange ) {
+				return;
+			}
+
 			// Don't trigger a backup if the user clicked on a section.
 			if ( $( e.target ).parent().is( '.siteorigin-widget-field-type-section' ) ) {
 				return false;
