@@ -1329,7 +1329,8 @@ var sowbForms = window.sowbForms || {};
 		// Exclude keys that are not relevant for field value comparison.
 		if (
 			key === '_sow_form_timestamp' ||
-			key === '_sow_form_id'
+			key === '_sow_form_id' ||
+			key === 'builder_id'
 		) {
 			return false;
 		}
