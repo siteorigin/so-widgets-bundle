@@ -329,10 +329,6 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				'type' => 'checkbox',
 				'label' => __( 'Link icon to more URL', 'so-widgets-bundle' ),
 				'default' => false,
-				'state_handler' => array(
-					'link_feature[hide]' => array( 'hide' ),
-					'link_feature[show]' => array( 'show' ),
-				),
 			),
 
 			'link_feature' => array(

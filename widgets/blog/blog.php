@@ -1295,7 +1295,14 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		}
 
 		if ( $settings['date'] ) {
-			$date_output_format = isset( $settings['date_output_format'] ) ? $settings['date_output_format'] : null;
+			if (
+				isset( $settings['date_output_format'] ) &&
+				is_string( $settings['date_output_format'] )
+			) {
+				$date_output_format = $settings['date_output_format'];
+			} else {
+				$date_output_format = null;
+			}
 			?>
 			<span class="sow-entry-date">
 				<a href="<?php echo esc_url( get_permalink() ); ?>" rel="bookmark">
