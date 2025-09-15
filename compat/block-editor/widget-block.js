@@ -896,9 +896,7 @@ const sowbClonedElements = [
 	// WP Scripts and assets.
 	'#jquery-core-js',
 	'#jquery-migrate-js',
-	'#editor-js',
 	'#editor-js-after',
-	'#wp-tinymce-root-js',
 	'#wp-tinymce-js',
 	'#wp-block-library-js-before',
 	'#jquery-ui-core-js',

@@ -58,9 +58,15 @@
 		if ( $field.attr( 'data-initialized' ) ) {
 			return;
 		}
+
 		$field.attr( 'data-initialized', true );
 
-		const wpEditor = window.wp.editor;
+		// If this is in an iframe, copy necessary globals from the parent window.
+		if ( frameElement && typeof window.tinyMCEPreInit === 'undefined' ) {
+			window.tinyMCEPreInit = window.top.tinyMCEPreInit;
+		}
+
+		const wpEditor = wp.oldEditor ? wp.oldEditor : wp.editor;
 		if ( wpEditor && wpEditor.hasOwnProperty( 'autop' ) ) {
 			wp.editor.autop = wpEditor.autop;
 			wp.editor.removep = wpEditor.removep;
@@ -108,10 +114,45 @@
 			$textarea.attr( 'id', id );
 		}
 
+		$( window.document ).on( 'wp-before-tinymce-init', function( event, init ) {
+			if ( init.selector !== settings.tinymce.selector ) {
+				return;
+			}
+			const mediaButtons = $container.data( 'mediaButtons' );
+			if ( typeof mediaButtons != 'undefined' && $field.find( '.wp-media-buttons' ).length === 0 ) {
+				$field.find( '.wp-editor-tabs' ).before( mediaButtons.html );
+			}
+
+			const addMediaButton = $field.find( '.add_media' );
+			if ( addMediaButton.length > 0 ) {
+				const $textarea = $container.find( 'textarea' );
+				const editorId = $textarea.data( 'tinymce-id' );
+				addMediaButton.attr( 'data-editor', editorId );
+
+				if ( window.frameElement ) {
+					addMediaButton
+						.removeClass( 'insert-media add_media' )
+						.addClass( 'siteorigin-widget-tinymce-add-media' )
+						.on( 'click', () => {
+							siteEditorAddMediaOverride( editorId );
+						} );
+				}
+			}
+		} );
+
+		$( window.top.document ).on( 'tinymce-editor-setup', function() {
+			const $wpEditorWrap = $field.find( '.wp-editor-wrap' );
+			if ( $wpEditorWrap.length > 0 && ! $wpEditorWrap.hasClass( settings.selectedEditor + '-active' ) ) {
+				setTimeout( function() {
+					window.switchEditors.go( id );
+				}, 10 );
+			}
+		} );
+
 		if ( settings.tinymce ) {
 			const setupEditor = function( editor ) {
 				editor.on( 'change', function() {
-					const ed = window.top.tinymce.get( id );
+					const ed = window.tinymce.get( id );
 					ed.save();
 					$textarea.trigger( 'change' );
 				} );
@@ -119,9 +160,9 @@
 				if ( $wpautopToggleField ) {
 					$wpautopToggleField.off( 'change' );
 					$wpautopToggleField.on( 'change', function() {
-						window.top.wp.editor.remove( id );
+						window.wp.editor.remove( id );
 						settings.tinymce.wpautop = $wpautopToggleField.is( ':checked' );
-						window.top.wp.editor.initialize( id, settings );
+						window.wp.editor.initialize( id, settings );
 					} );
 				}
 			};
@@ -144,45 +185,9 @@
 			} );
 		}
 
-		$( document ).on( 'wp-before-tinymce-init', function( event, init ) {
-			if ( init.selector === settings.tinymce.selector ) {
-				const mediaButtons = $container.data( 'mediaButtons' );
-				if ( typeof mediaButtons != 'undefined' && $field.find( '.wp-media-buttons' ).length === 0 ) {
-					$field.find( '.wp-editor-tabs' ).before( mediaButtons.html );
-				}
-
-				const addMediaButton = $field.find( '.add_media' );
-				if ( addMediaButton.length > 0 ) {
-					const $textarea = $container.find( 'textarea' );
-					const editorId = $textarea.data( 'tinymce-id' );
-					addMediaButton.attr( 'data-editor', editorId );
-
-					if ( window.frameElement ) {
-						addMediaButton
-							.removeClass( 'insert-media add_media' )
-							.addClass( 'siteorigin-widget-tinymce-add-media' )
-							.on( 'click', () => {
-								siteEditorAddMediaOverride( editorId );
-							} );
-					}
-				}
-
-
-			}
-		} );
-
-		$( document ).on( 'tinymce-editor-setup', function() {
-			const $wpEditorWrap = $field.find( '.wp-editor-wrap' );
-			if ( $wpEditorWrap.length > 0 && ! $wpEditorWrap.hasClass( settings.selectedEditor + '-active' ) ) {
-				setTimeout( function() {
-					window.switchEditors.go( id );
-				}, 10 );
-			}
-		} );
-
 		wpEditor.remove( id );
-		if ( window.top.tinymce ) {
-			window.top.tinymce.EditorManager.overrideDefaults( { base_url: settings.baseURL, suffix: settings.suffix } );
+		if ( window.tinymce ) {
+			window.tinymce.EditorManager.overrideDefaults( { base_url: settings.baseURL, suffix: settings.suffix } );
 		}
 
 		// Wait for textarea to be visible before initialization.
@@ -302,7 +307,7 @@
 			} );
 
 			if ( ! window.wp.editor.getDefaultSettings ) {
-				window.wp.editor.getDefaultSettings = window.parent.wp.editor.getDefaultSettings;
+				window.wp.editor.getDefaultSettings = window.top.wp.editor.getDefaultSettings;
 			}
 
 			// Check if the sortstop event is already bound.
