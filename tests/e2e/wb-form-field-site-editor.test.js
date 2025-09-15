@@ -41,9 +41,6 @@ const testPrep = async( page, blockName ) => {
 
 	const widget = await addBlock( admin, blockName );
 
-	// Give time for fields to be set up.
-	await page.waitForTimeout( 1000 );
-
 	return {
 		admin,
 		widget,
