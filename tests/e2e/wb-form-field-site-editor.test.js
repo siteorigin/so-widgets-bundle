@@ -184,6 +184,19 @@ test(
 
 		const tinymceField = await getField( widget, 'tinymce' );
 
+		const visualModeButton = tinymceField.locator( '.wp-editor-tabs .switch-tmce' );
+		const textModeButton = tinymceField.locator( '.wp-editor-tabs .switch-html' );
+		await expect( textModeButton ).toBeVisible();
+		await expect( visualModeButton ).toBeVisible();
+
+		// Confirm mode switching works as expected.
+		await textModeButton.click();
+		await expect( visualModeButton ).toHaveAttribute( 'aria-pressed', 'false' );
+		await expect( textModeButton ).toHaveAttribute( 'aria-pressed', 'true' );
+		await visualModeButton.click();
+		await expect( visualModeButton ).toHaveAttribute( 'aria-pressed', 'true' );
+		await expect( textModeButton ).toHaveAttribute( 'aria-pressed', 'false' );
+
 		// Try to upload an image.
 		const addMediaButton = tinymceField.locator( '.siteorigin-widget-tinymce-add-media' );
 		await expect( addMediaButton ).toBeVisible( { timeout: 10000 } );
