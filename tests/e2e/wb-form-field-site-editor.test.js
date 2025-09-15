@@ -179,7 +179,7 @@ test(
 			'sowb/siteorigin-widget-editor-widget'
 		);
 
-		const tinymceField = await getField( widget, 'tinymce' );
+		const tinymceField = await getField( widget, 'tinymce', true );
 
 		const visualModeButton = tinymceField.locator( '.wp-editor-tabs .switch-tmce' );
 		const textModeButton = tinymceField.locator( '.wp-editor-tabs .switch-html' );
