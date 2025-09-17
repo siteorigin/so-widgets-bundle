@@ -743,6 +743,10 @@
 
 	// Modify all of the manually registered blocks with additional properties.
 	Object.entries( sowbManuallyRegisteredBlocks ).forEach( ( [ key, widget ] ) => {
+		if ( ! widget.blockName ) {
+			return;
+		}
+
 		wp.hooks.addFilter(
 			'blocks.registerBlockType',
 			'sowb/' + widget.blockName,
@@ -784,6 +788,10 @@
 	 * @return {void}
 	 */
 	const setupSoWidgetBlock = ( widget ) => {
+		if ( ! widget.blockName ) {
+			return;
+		}
+
 		registerBlockType( 'sowb/' + widget.blockName, {
 			title: widget.name,
 			description: widget.description,
