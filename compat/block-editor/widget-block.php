@@ -636,7 +636,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		if (
 			! empty( $block['blockName'] ) &&
-			$block['blockName'] === 'sowb/'
+			strpos( $block['blockName'], 'sowb/' ) === 0
 		) {
 			$block = $this->sanitize_block( $block );
 		}
