@@ -1411,12 +1411,43 @@ var sowbForms = window.sowbForms || {};
 				return;
 			}
 
+			const $target = $( e.target );
+
 			// Don't trigger a backup if the user clicked on a section.
-			if ( $( e.target ).parent().is( '.siteorigin-widget-field-type-section' ) ) {
+			if ( $target.is( 'label' ) ) {
+				const $parent = $target.parent();
+				// Check if the label is part of a section/widget field.
+				if (
+					$parent.hasClass( 'siteorigin-widget-field-type-section' ) ||
+					$parent.hasClass( 'siteorigin-widget-field-type-widget' )
+				) {
+					return false;
+				}
+			}
+
+			// Don't trigger if user opens Builder field.
+			if ( $target.is( '.siteorigin-panels-display-builder' ) ) {
 				return false;
 			}
 
-			isUserChange = true;
+			const validElementClasses = [
+				'input',
+				'select',
+				'textarea',
+				'iframe',
+				'label',
+				'.ui-slider-handle',
+				'.ui-slider',
+				'.siteorigin-widget-icon-icons-icon',
+				'.so-panels-dialog-add-builder .so-close',
+				'a.media-upload-button',
+				'a.media-remove-button',
+			];
+
+			if ( validElementClasses.some( ( selector ) => $target.is( selector ) ) ) {
+				isUserChange = true;
+			}
+
 		} );
 
 		// Debounce backups to prevent potential performance issues.
