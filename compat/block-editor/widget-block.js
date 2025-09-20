@@ -297,7 +297,7 @@
 		}
 
 		try {
-			const iframeWindow = sowbSiteEditorCanvas[ 0 ].contentWindow;
+			const iframeWindow = sowbSiteEditorCanvas[0].contentWindow;
 			if ( iframeWindow ) {
 				iframeWindow.postMessage( {
 					action: 'sowbBlockFormInit'
@@ -878,6 +878,12 @@
 			}
 		} )
 	} );
+
+	// Copy over assets to the Site Editor iframe asap.
+	if ( window.frameElement ) {
+		sowbSiteEditorCanvas = window.frameElement;
+		sowbMaybeSetupSiteEditorAssets();
+	}
 } )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.blockEditor );
 
 let sowbSiteEditorCanvas = false;
@@ -908,7 +914,7 @@ const sowbGetBlockForm = ( clientId ) => {
 		.find( '.siteorigin-widget-form-main' );
 };
 
-const sowbClonedElements = [
+const sowbCanvasCloneElements = [
 	// WP Scripts and assets.
 	'#jquery-core-js',
 	'#jquery-migrate-js',
@@ -938,6 +944,7 @@ const sowbClonedElements = [
 	'#tmpl-media-frame',
 	'#tmpl-media-modal',
 	'#tmpl-media-selection',
+	'#tmpl-uploader-editor',
 	'#tmpl-uploader-inline',
 	'#tmpl-uploader-status-error',
 	'#tmpl-uploader-status',
@@ -959,9 +966,6 @@ const sowbClonedElements = [
 	'#sowb-pikaday-js',
 	'#sowb-pikaday-css',
 	'#wp-color-picker-alpha-js',
-];
-
-const sowbCanvasElements = [
 	'#so-autocomplete-field-js',
 	'#so-code-field-js',
 	'#so-date-range-field-js',
@@ -985,20 +989,23 @@ const sowbCanvasElements = [
 /**
  * Appends elements to the canvas body.
  *
- * @param {Array} elements         Array of selectors to process.
- * @param {jQuery} $canvasBody     The jQuery object representing the canvas body.
- * @param {boolean} removeOriginal Whether to remove the original element after appending.
+ * @param {jQuery} $canvasBody     The jQuery object representing the canvas body.*
  */
-const sowbAppendElementsToCanvas = ( elements, $canvasBody, removeOriginal = false ) => {
-	for ( const selector of elements ) {
+const sowbCloneElementsToCanvas = ( $canvasBody ) => {
+	for ( const selector of sowbCanvasCloneElements ) {
 		const $element = jQuery( selector );
-		const elementHTML = $element[0] && $element[0].outerHTML;
+		if ( $element.length === 0 ) {
+			continue;
+		}
 
-		if ( elementHTML ) {
+		const elementHTML = $element[0] && $element[0].outerHTML;
+		if ( ! elementHTML ) {
+			continue;
+		}
+
+		// Copy element if it doesn't already exist in the canvas.
+		if ( $canvasBody.find( selector ).length === 0 ) {
 			$canvasBody.append( elementHTML );
-			if ( removeOriginal ) {
-				$element.remove();
-			}
 		}
 	}
 };
@@ -1007,36 +1014,40 @@ let sowbSiteEditorAssetsSetup = false;
 /**
  * Sets up assets required for the Site Editor iframe.
  *
- * This function ensures that necessary HTML templates and assets are copied
+ * This function ensures that necessary HTML templates, scripts, and styles are copied
  * from the main document to the Site Editor iframe. It also sets the `ajaxurl`
  * variable in the iframe's `contentWindow` if it is not already defined.
  *
  * The function performs the following steps:
  * 1. Checks if the Site Editor iframe (`sowbSiteEditorCanvas`) exists and is accessible.
- * 2. Copies elements specified in `sowbClonedElements` and `sowbCanvasElements`from the
- * main document to the Site Editor canvas.
- * 4. Removes elements specified in `sowbCanvasElements` from the main document.
- * 5. Sets the `ajaxurl` variable in the iframe's `contentWindow` for AJAX requests.
+ * 2. Copies elements specified in `sowbCanvasCloneElements` to the iframe's canvas body.
+ * 3. Copies elements specified in `sowbCanvasRemoveElements` to the iframe's canvas body
+ *    and removes the originals from the main document.
+ * 4. Sets the `ajaxurl` variable in the iframe's `contentWindow` for AJAX requests if it
+ *    is not already defined.
+ * 5. Ensures the setup process only runs once by using the `sowbSiteEditorAssetsSetup` flag.
  */
 const sowbMaybeSetupSiteEditorAssets = () => {
-	if ( sowbSiteEditorCanvas.length === 0 || sowbSiteEditorAssetsSetup) {
+	if ( sowbSiteEditorCanvas.length === 0 || sowbSiteEditorAssetsSetup ) {
 		sowbSiteEditorAssetsSetup = true;
 		return;
 	}
 	sowbSiteEditorAssetsSetup = true;
 
-	const $iframe = jQuery( sowbSiteEditorCanvas[ 0 ].contentDocument );
+	const frame = typeof sowbSiteEditorCanvas[0] !== 'undefined' ?
+		sowbSiteEditorCanvas[0] :
+		sowbSiteEditorCanvas;
+
+	const $iframe = jQuery( frame.contentDocument );
+
 	const $canvasBody = $iframe.find( 'body' );
 
 	// Clone elements to the canvas.
-	sowbAppendElementsToCanvas( sowbClonedElements, $canvasBody );
-
-	// Copy elements, and then remove the originals.
-	sowbAppendElementsToCanvas( sowbCanvasElements, $canvasBody, true );
+	sowbCloneElementsToCanvas( $canvasBody );
 
 	// Is ajaxurl set?
-	if ( typeof sowbSiteEditorCanvas[ 0 ].contentWindow.ajaxurl === 'undefined' ) {
-		sowbSiteEditorCanvas[ 0 ].contentWindow.ajaxurl = window.ajaxurl;
+	if ( typeof frame.contentWindow.ajaxurl === 'undefined' ) {
+		frame.contentWindow.ajaxurl = window.ajaxurl;
 	}
 };
 
