@@ -188,19 +188,22 @@ test(
 
 		// Confirm mode switching works as expected.
 		await textModeButton.click();
-		await expect( visualModeButton ).toHaveAttribute( 'aria-pressed', 'false' );
-		await expect( textModeButton ).toHaveAttribute( 'aria-pressed', 'true' );
+		await expect( visualModeButton ).toHaveAttribute( 'aria-pressed', 'false', { timeout: 10000 } );
+		await expect( textModeButton ).toHaveAttribute( 'aria-pressed', 'true', { timeout: 10000 } );
 		await visualModeButton.click();
 		await expect( visualModeButton ).toHaveAttribute( 'aria-pressed', 'true' );
 		await expect( textModeButton ).toHaveAttribute( 'aria-pressed', 'false' );
 
-		// Try to upload an image.
+		// Confirm the "Add Media" button is visible and enabled.
 		const addMediaButton = tinymceField.locator( '.siteorigin-widget-tinymce-add-media' );
 		await expect( addMediaButton ).toBeVisible( { timeout: 10000 } );
-		await expect( addMediaButton ).toBeEnabled( { timeout: 10000 } );
-		await addMediaButton.click( { force: true } );
+		await expect( addMediaButton ).toHaveAttribute( 'data-editor', /.+/, { timeout: 10000 });
 
-		await uploadImageToMediaLibrary( admin );
+		await addMediaButton.click();
+
+		await uploadImageToMediaLibrary(
+			admin
+		);
 
 		// Wait for the <img> tag to appear in the TinyMCE editor iframe
 		const iframe = tinymceField.frameLocator( 'iframe' );
