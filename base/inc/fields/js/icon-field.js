@@ -11,7 +11,8 @@
 			$v = $is.find( '.siteorigin-widget-icon-icon' ),
 			$b = $$.find( '.siteorigin-widget-icon-selector-current' ),
 			$remove = $$.find( '.so-icon-remove' ),
-			$search = $$.find( '.siteorigin-widget-icon-search' );
+			$search = $$.find( '.siteorigin-widget-icon-search' ),
+			$iconContainer = $is.find( '.siteorigin-widget-icon-icons' );
 
 		if ( $$.attr( 'data-initialized' ) ) {
 			return;
@@ -49,7 +50,7 @@
 			if ( q === '' ) {
 				$is.find('.siteorigin-widget-icon-icons-icon').show();
 			} else {
-				$container.addClass( 'loading' );
+				$iconContainer.addClass( 'loading' );
 				$is.find('.siteorigin-widget-icon-icons-icon').each( function() {
 					var $$ = $( this ),
 						value = $$.attr( 'data-value' );
@@ -61,7 +62,7 @@
 						$$.show();
 					}
 				} );
-				$container.removeClass( 'loading' );
+				$iconContainer.removeClass( 'loading' );
 			}
 		};
 
@@ -246,8 +247,7 @@
 				return;
 			}
 
-			const $container = $is.find( '.siteorigin-widget-icon-icons' );
-			$container.addClass( 'loading' );
+			$iconContainer.addClass( 'loading' );
 
 			$.getJSON(
 				window.top.soWidgets.ajaxurl,
@@ -261,7 +261,7 @@
 					addStylesheet( family, data.style_uri );
 
 					rerender();
-					$container.removeClass( 'loading' );
+					$iconContainer.removeClass( 'loading' );
 				}
 			);
 		};
