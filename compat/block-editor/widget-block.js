@@ -257,6 +257,11 @@
 			$mainForm.sowSetupForm();
 
 			$mainForm.on( 'change', function() {
+				// Check form has been set up before reacting to changes.
+				if ( ! $mainForm.data( 'sow-form-setup' ) ) {
+					return;
+				}
+
 				// As setAttributes doesn't support callbacks, we have to manually
 				// pass the widgetData to the preview.
 				var widgetData = sowbForms.getWidgetFormValues( $mainForm );
