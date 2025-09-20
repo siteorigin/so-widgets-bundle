@@ -338,7 +338,8 @@
 
 			this.state = {
 				... this.initialState,
-				isStillMounted: true
+				isStillMounted: true,
+				devModeRemount: false,
 			};
 
 			// Store the widget class if it's not already set.
@@ -350,7 +351,7 @@
 		componentDidMount() {
 			this.setState( {
 				...this.initialState,
-				isStillMounted: true
+				isStillMounted: true,
 			} );
 
 			this.loadWidgetData();
@@ -359,7 +360,8 @@
 		componentWillUnmount() {
 			this.setState( {
 				...this.initialState,
-				isStillMounted: false
+				isStillMounted: false,
+				devModeRemount: true,
 			} );
 		}
 
@@ -505,7 +507,18 @@
 									this.state,
 									this.setState.bind( this ),
 									this.props.widget.class
-								).then( initializeFormFieldsInIframe );
+								).then( () => {
+									// In dev mode, blocks are rendered twice in
+									// quick succession. To prevent issues with
+									// form field scripts we need to wait until the
+									// second render to initialize the fields.
+									if (
+										! sowbBlockEditorAdmin.wpScriptDebug ||
+										this.state.devModeRemount
+									) {
+										initializeFormFieldsInIframe();
+									}
+								} );
 							}
 						} )
 					)
