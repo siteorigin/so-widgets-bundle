@@ -199,7 +199,7 @@ test(
 		// Confirm the "Add Media" button is visible and enabled.
 		const addMediaButton = tinymceField.locator( '.siteorigin-widget-tinymce-add-media' );
 		await expect( addMediaButton ).toBeVisible( { timeout: 10000 } );
-		await expect( addMediaButton ).toHaveAttribute( 'data-editor', /.+/, { timeout: 10000 });
+		await expect( addMediaButton ).toHaveAttribute( 'data-editor', /.+/, { timeout: 10000 } );
 
 		await addMediaButton.click();
 
