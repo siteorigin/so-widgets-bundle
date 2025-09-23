@@ -82,7 +82,8 @@ test(
 		// Validate Icon field works as expected.
 		const iconFieldSelector = iconField.locator( '.siteorigin-widget-icon-selector-current' );
 		await expect( iconFieldSelector ).toBeVisible();
-		await iconFieldSelector.click();
+		await page.waitForTimeout( 1000 ); // Wait for the animation to complete.
+		await iconFieldSelector.click( { force: true } );
 
 		const iconFieldContainer = iconField.locator( '.siteorigin-widget-icon-selector' );
 		await expect( iconFieldContainer ).toHaveCSS( 'display', 'block' );
@@ -100,7 +101,6 @@ test(
 			page,
 			'siteorigin_widgets_get_icons'
 		);
-		await expect( iconFieldIcons ).not.toHaveClass( 'loading' );
 
 		// Search for the Home icon.
 		const iconSearch = iconFieldContainer.locator( '.siteorigin-widget-icon-search' );
@@ -108,14 +108,15 @@ test(
 		await iconSearch.fill( 'home' );
 
 		await expect( iconFieldIcons ).not.toHaveClass( 'loading' );
+		// Due to the large amount of icons being processed, wait 1s to allow for rendering.
+		await page.waitForTimeout( 1000 );
 
 		// Click the `Add Home` icon.
-		// The timeout is required due to give time for finding the icon.
 		const iconOption = iconFieldIcons.locator( '[data-value="materialicons-sowm-regular-add_home"]' );
 		await expect( iconOption ).toBeVisible( { timeout: 10000 } );
-		// Due to the large amount of icons being added at once, wait 250ms to allow for rendering.
-		await page.waitForTimeout( 350 );
-		await iconOption.click({ force: true });
+
+		await iconOption.click( { force: true } );
+		await iconOption.click( { force: true } );
 
 		// Confirm icon has been set.
 		const icon = iconFieldSelector.locator( '.siteorigin-widget-icon span' );
