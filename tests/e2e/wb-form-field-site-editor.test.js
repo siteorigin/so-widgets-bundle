@@ -77,7 +77,7 @@ test(
 			'sowb/siteorigin-widget-icon-widget'
 		);
 
-		const iconField = await getField( widget, 'icon' );
+		const iconField = await getField( widget, 'icon', true );
 
 		// Validate Icon field works as expected.
 		const iconFieldSelector = iconField.locator( '.siteorigin-widget-icon-selector-current' );
