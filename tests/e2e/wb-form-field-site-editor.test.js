@@ -454,15 +454,15 @@ test(
 		// Try adjusting the order field by moving the Divider field first.
 		const orderField = widget.locator( '.siteorigin-widget-field-order' );
 		const orderFieldItems = orderField.locator( '.siteorigin-widget-order-items' );
-		const orderFieldValue = orderField.locator( '.siteorigin-widget-input' );
 
-		const dividerField = orderFieldItems.locator( '.siteorigin-widget-order-item' ).getByText( 'Divider' );
+		const dividerField = orderFieldItems.locator( '.siteorigin-widget-order-item[data-value="divider"]' );
 		const firstOrderItem = orderFieldItems.locator( '.siteorigin-widget-order-item' ).first();
 
 		// Drag Divider to the first item.
 		await dividerField.dragTo( firstOrderItem );
 
 		// Validate new ordering.
+		const orderFieldValue = orderField.locator( '.siteorigin-widget-input' );
 		await expect( orderFieldValue ).toHaveValue( 'divider,headline,sub_headline' );
 	}
 );
