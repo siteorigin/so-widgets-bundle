@@ -416,7 +416,7 @@ test(
 );
 
 /**
- * Validates the following for the Blog widget in the Site Editor:
+ * Validates the following for the Headline widget in the Site Editor:
  * 1. Test that sections are able to be opened.
  * 2. That state emitters (checkbox and select) are working as expected and update related fields.
  * 3. That the preset field updates the featured image checkbox and triggers correct UI changes.
