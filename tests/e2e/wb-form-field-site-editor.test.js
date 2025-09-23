@@ -13,7 +13,8 @@ const {
 } = require( 'siteorigin-tests-common/playwright/common' );
 
 const {
-	getField
+	getField,
+	openSection,
 } = require( 'siteorigin-tests-common/playwright/utilities/widgets-bundle' );
 
 const {
@@ -431,31 +432,20 @@ test(
 			'sowb/siteorigin-widget-headline-widget'
 		);
 
-		const dividerSection = widget.locator( '.siteorigin-widget-field-divider' );
-		await dividerSection.click();
+		const dividerSection = await openSection( 'divider', widget );
 
 		// Increase Divider Thickness to the maximum amount.
 		const dividerThickness = dividerSection.locator( '.siteorigin-widget-field-thickness' );
-		await expect( dividerThickness ).toBeVisible();
-		const dividerThicknessTrack = dividerThickness.locator( '.ui-slider' );
+		const handle = dividerThickness.locator( '.ui-slider-handle' );
+		const track = dividerThickness.locator( '.ui-slider' );
+		const boundingBox = await track.boundingBox();
 
-		const dividerThicknessBoundingBox = await dividerThicknessTrack.boundingBox();
-		await page.mouse.move(
-			dividerThicknessBoundingBox.x + 1,
-			dividerThicknessBoundingBox.y + dividerThicknessBoundingBox.height / 2
-		);
-
-		await page.mouse.down();
-
-		// Drag to the far right of the slider track.
-		await page.mouse.move(
-			dividerThicknessBoundingBox.x + dividerThicknessBoundingBox.width - 1,
-			dividerThicknessBoundingBox.y + dividerThicknessBoundingBox.height / 2,
-			{
-				steps: 20
+		await track.click({
+			position: {
+				x: boundingBox.width - 5, // 5px from the right edge.
+				y: boundingBox.height / 2  // Center vertically.
 			}
-		);
-		await page.mouse.up();
+		} );
 
 		// Validate the slider value.
 		const sliderInput = dividerThickness.locator( '.siteorigin-widget-input-slider' );
