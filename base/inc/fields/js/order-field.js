@@ -23,7 +23,8 @@
 				if ( e && e.stopImmediatePropagation ) {
 					e.stopImmediatePropagation();
 				}
-			}
+			},
+			zIndex: 999999,
 		} );
 
 		$field.on( 'change', function( event, params ) {
