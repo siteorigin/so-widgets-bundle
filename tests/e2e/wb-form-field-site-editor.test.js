@@ -303,7 +303,8 @@ test(
 		await expect( imageValue ).toHaveValue( /.+/ );
 
 		// Test the Shape field.
-		const shapeSection = widget.locator( '.siteorigin-widget-field-image_shape' );
+		const shapeSection = await openSection( 'image_shape', widget );
+
 		const shapeEnableSetting = shapeSection.locator( '.siteorigin-widget-field-enable .siteorigin-widget-input' );
 		await shapeSection.click();
 
@@ -355,16 +356,7 @@ test(
 			'sowb/siteorigin-widget-blog-widget'
 		);
 
-		// Open the Settings Section.
-		const settingsSection = widget.locator( '.siteorigin-widget-field-settings' );
-		const settingsSectionLabel = settingsSection.locator( ' > .siteorigin-widget-field-label' );
-		await expect( settingsSection ).toBeVisible();
-		await expect( settingsSectionLabel ).toBeVisible();
-
-		await settingsSection.click();
-
-		// Validate the Settings Section is open.
-		await expect( settingsSectionLabel ).toHaveClass( /siteorigin-widget-section-visible/ );
+		const settingsSection = await openSection( 'settings', widget );
 
 		const featuredImageSetting = settingsSection.locator( '.siteorigin-widget-field-featured_image .siteorigin-widget-input' );
 		const featuredImageSizeSetting = settingsSection.locator( '.siteorigin-widget-field-featured_image_size .siteorigin-widget-input-select' );
@@ -393,8 +385,7 @@ test(
 		await expect( featuredImageSetting ).toBeChecked();
 
 		// Open the Post Query section.
-		const postQuerySection = widget.locator( '.siteorigin-widget-field-posts' );
-		await postQuerySection.click();
+		const postQuerySection = await openSection( 'posts', widget );
 
 		const postQueryDateFrom = postQuerySection.locator( '.sowb-specific-date-after .after-picker' );
 		await expect( postQueryDateFrom ).toBeVisible();
