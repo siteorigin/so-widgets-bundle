@@ -465,7 +465,9 @@ class SiteOrigin_Widgets_Bundle {
 
 		$widget_objects = $this->get_widget_objects();
 
-		$widget_path = empty( $_GET['id'] ) ? false : wp_normalize_path( WP_CONTENT_DIR ) . $_GET['id'];
+		$widget_path = empty( $_GET['id'] ) ?
+			false :
+			wp_normalize_path( WP_PLUGIN_DIR ) . sanitize_text_field( $_GET['id'] );
 
 		$widget_object = empty( $widget_objects[ $widget_path ] ) ? false : $widget_objects[ $widget_path ];
 
@@ -508,7 +510,10 @@ class SiteOrigin_Widgets_Bundle {
 		}
 
 		$widget_objects = $this->get_widget_objects();
-		$widget_path = empty( $_GET['id'] ) ? false : wp_normalize_path( WP_CONTENT_DIR ) . $_GET['id'];
+		$widget_path = empty( $_GET['id'] ) ?
+			false :
+			wp_normalize_path( WP_PLUGIN_DIR ) . sanitize_text_field( $_GET['id'] );
+
 		$widget_object = empty( $widget_objects[ $widget_path ] ) ? false : $widget_objects[ $widget_path ];
 
 		if ( empty( $widget_object ) || ! $widget_object->has_form( 'settings' ) ) {
