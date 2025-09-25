@@ -632,7 +632,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						data-dismiss-url="<?php echo esc_url( $dismiss_url ); ?>"
 					>
 						<span class="screen-reader-text">
-							<?php echo esc_html( 'Dismiss this message', 'so-widgets-bundle' ); ?>
+							<?php esc_html_e( 'Dismiss this message', 'so-widgets-bundle' ); ?>
 						</span>
 					</button>
 				</section>
