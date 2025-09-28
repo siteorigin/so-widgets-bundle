@@ -528,6 +528,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$form_id = 'siteorigin_widget_form_' . md5( $id );
 		$class_name = str_replace( '_', '-', strtolower( $this->widget_class ) );
 
+		// Handle cases where instance is a JSON string (e.g., from WooCommerce REST API updates).
+		if ( is_string( $instance ) ) {
+			$instance = json_decode( $instance, true );
+			if ( ! is_array( $instance ) ) {
+				$instance = array();
+			}
+		}
+
 		if ( empty( $instance['_sow_form_id'] ) ) {
 			$instance['_sow_form_id'] = $id;
 		}
