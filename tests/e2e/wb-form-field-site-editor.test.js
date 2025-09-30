@@ -543,6 +543,7 @@ test(
 
 		// Open the last frame.
 		const lastFrame = frameItems.last();
+		await ensureElementVisible( lastFrame, offset );
 		await lastFrame.click();
 
 		const lastFrameTop = lastFrame.locator( '.siteorigin-widget-field-repeater-item-top' );
