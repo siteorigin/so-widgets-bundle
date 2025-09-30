@@ -91,7 +91,7 @@ class SiteOrigin_Video {
 			}
 
 			// Ensure the embed is able to go fullscreen.
-			$html = preg_replace( '/<iframe(.*?)>/', '<iframe$1 allowfullscreen mozallowfullscreen webkitallowfullscreen>', $html );
+			$html = preg_replace( '/<iframe(.*?)>/', '<iframe$1 allowfullscreen mozallowfullscreen webkitallowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation">', $html );
 
 			if ( ! empty( $html ) ) {
 				set_transient( 'sow-vid-embed[' . $hash . ']', $html, 30 * 86400 );
