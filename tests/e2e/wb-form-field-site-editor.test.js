@@ -538,6 +538,9 @@ test(
 		await ensureElementVisible( firstFrameCloser, offset );
 		await firstFrameForm.click();
 
+		// Wait for frame to close.
+		await page.waitForTimeout( 300 );
+
 		// Open the last frame.
 		const lastFrame = frameItems.last();
 		await lastFrame.click();
