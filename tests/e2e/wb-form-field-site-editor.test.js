@@ -5,10 +5,12 @@ const {
 
 const {
 	addBlock,
+	calculateOffset,
 	doLogin,
+	ensureElementVisible,
 	handleDialog,
 	openSiteEditorCanvas,
-	initializeAdmin,
+	setupAdminE2E,
 	waitForRequestToFinish,
 } = require( 'siteorigin-tests-common/playwright/common' );
 
@@ -37,14 +39,17 @@ const {
  * @returns {Promise<{admin: Admin, widget: Locator}>} The initialized admin and widget locator.
  */
 const testPrep = async( page, blockName ) => {
-	const admin = await initializeAdmin( page );
+	const admin = await setupAdminE2E( page );
 	await openSiteEditorCanvas( page, admin );
 
 	const widget = await addBlock( admin, blockName );
 
+	const offset = await calculateOffset( admin.editor.canvas, 'header.wp-block-template-part > .is-position-sticky' );
+
 	return {
 		admin,
 		widget,
+		offset,
 	};
 };
 
@@ -73,7 +78,10 @@ test.beforeEach( async ( { page } ) => {
 test(
 	'Test the Icon Widget',
 	async ( { page } ) => {
-		const { widget } = await testPrep(
+		const {
+			offset,
+			widget,
+		} = await testPrep(
 			page,
 			'sowb/siteorigin-widget-icon-widget'
 		);
@@ -82,19 +90,20 @@ test(
 
 		// Validate Icon field works as expected.
 		const iconFieldSelector = iconField.locator( '.siteorigin-widget-icon-selector-current' );
-		await expect( iconFieldSelector ).toBeVisible();
+		await ensureElementVisible( iconFieldSelector, offset );
 		await page.waitForTimeout( 1000 ); // Wait for the animation to complete.
 		await iconFieldSelector.click( { force: true } );
 
 		const iconFieldContainer = iconField.locator( '.siteorigin-widget-icon-selector' );
+		await ensureElementVisible( iconFieldContainer, offset );
 		await expect( iconFieldContainer ).toHaveCSS( 'display', 'block' );
 
 		const iconFieldIcons = iconFieldContainer.locator( '.siteorigin-widget-icon-icons' );
-		await expect( iconFieldIcons ).toBeVisible();
+		await ensureElementVisible( iconFieldIcons, offset );
 
 		// Switch to Material Icons to validate icons are loading correctly.
 		const fontFamilySelector = iconFieldContainer.locator( '.siteorigin-widget-icon-family' );
-		await expect( fontFamilySelector ).toBeVisible();
+		await ensureElementVisible( fontFamilySelector, offset );
 		await fontFamilySelector.selectOption( 'materialicons' );
 
 		// Wait for icons to download.
@@ -105,7 +114,7 @@ test(
 
 		// Search for the Home icon.
 		const iconSearch = iconFieldContainer.locator( '.siteorigin-widget-icon-search' );
-		await expect( iconSearch ).toBeVisible( { timeout: 10000 } );
+		await ensureElementVisible( iconSearch, offset, 10000 );
 		await iconSearch.fill( 'home' );
 
 		await expect( iconFieldIcons ).not.toHaveClass( 'loading' );
@@ -114,9 +123,8 @@ test(
 
 		// Click the `Add Home` icon.
 		const iconOption = iconFieldIcons.locator( '[data-value="materialicons-sowm-regular-add_home"]' );
-		await expect( iconOption ).toBeVisible( { timeout: 10000 } );
+		await ensureElementVisible( iconOption, offset, 10000 );
 
-		await iconOption.click( { force: true } );
 		await iconOption.click( { force: true } );
 
 		// Confirm icon has been set.
@@ -125,42 +133,42 @@ test(
 
 		// Validate Color field works as expected.
 		const colorField = widget.locator( '.siteorigin-widget-field-type-color' );
-		await expect( colorField ).toBeVisible();
+		await ensureElementVisible( colorField, offset );
 
 		const colorFieldButton = colorField.locator( 'button.wp-color-result' );
-		await expect( colorFieldButton ).toBeVisible();
-		await colorFieldButton.click( { force: true } );
+		await ensureElementVisible( colorFieldButton, offset );
+		await colorFieldButton.click();
 
 		// Wait until the color picker has opened.
 		await expect( colorFieldButton ).toHaveClass( /wp-picker-open/ );
 
 		// Select the first color from the palette.
 		const palette = colorField.locator( '.iris-palette' ).first();
-		await expect( palette ).toBeVisible();
+		await ensureElementVisible( palette, offset );
 		await palette.click();
 
 		// Verify the color has been applied.
 		const colorPreview = colorField.locator( '.wp-color-result' );
-		await expect( colorPreview ).toBeVisible();
+		await ensureElementVisible( colorPreview, offset );
 		await expect( colorPreview ).toHaveCSS( 'background-color', 'rgb(0, 0, 0)' );
 
 		// Validate autocomplete field works as expected.
 		const linkField = widget.locator( '.siteorigin-widget-field-type-link' );
-		await expect( linkField ).toBeVisible();
+		await ensureElementVisible( linkField, offset );
 		const linkButton = linkField.locator( '.select-content-button' );
-		await expect( linkButton ).toBeVisible();
+		await ensureElementVisible( linkButton, offset );
 		await linkButton.click( { force: true } );
 
 		// Select the first post from the list.
 		const postsList = linkField.locator( '.posts' );
-		await expect( postsList ).toBeVisible();
+		await ensureElementVisible( postsList, offset );
 		const firstPost = postsList.locator( '.post' ).first();
-		await expect( firstPost ).toBeVisible();
+		await ensureElementVisible( firstPost, offset );
 		await firstPost.click( { force: true } );
 
 		// Validate link text has been set.
 		const linkInput = linkField.locator( '.siteorigin-widget-input' );
-		await expect( linkInput ).toBeVisible();
+		await ensureElementVisible( linkInput, offset );
 		await expect( linkInput ).toHaveValue( /.+/ );
 	}
 );
@@ -176,7 +184,11 @@ test(
 test(
 	'Test the Editor widget.',
 	async ( { page } ) => {
-		const { admin, widget } = await testPrep(
+		const {
+			admin,
+			offset,
+			widget
+		} = await testPrep(
 			page,
 			'sowb/siteorigin-widget-editor-widget'
 		);
@@ -185,8 +197,8 @@ test(
 
 		const visualModeButton = tinymceField.locator( '.wp-editor-tabs .switch-tmce' );
 		const textModeButton = tinymceField.locator( '.wp-editor-tabs .switch-html' );
-		await expect( textModeButton ).toBeVisible();
-		await expect( visualModeButton ).toBeVisible();
+		await ensureElementVisible( textModeButton, offset );
+		await ensureElementVisible( visualModeButton, offset );
 
 		// Confirm mode switching works as expected.
 		await textModeButton.click();
@@ -198,7 +210,7 @@ test(
 
 		// Confirm the "Add Media" button is visible and enabled.
 		const addMediaButton = tinymceField.locator( '.siteorigin-widget-tinymce-add-media' );
-		await expect( addMediaButton ).toBeVisible( { timeout: 10000 } );
+		await ensureElementVisible( addMediaButton, offset, 10000 );
 		await expect( addMediaButton ).toHaveAttribute( 'data-editor', /.+/, { timeout: 10000 } );
 
 		await addMediaButton.click();
@@ -229,7 +241,11 @@ test(
 test(
 	'Test the Image widget.',
 	async ( { page } ) => {
-		const { admin, widget } = await testPrep(
+		const {
+			admin,
+			offset,
+			widget
+		} = await testPrep(
 			page,
 			'sowb/siteorigin-widget-image-widget'
 		);
@@ -238,7 +254,7 @@ test(
 
 		// Open Image Search modal.
 		const mediaSearchButton = imageField.getByText( 'Image Search' );
-		await expect( mediaSearchButton ).toBeVisible();
+		await ensureElementVisible( mediaSearchButton, offset );
 		await mediaSearchButton.click( { force: true } );
 
 		// Ensure the importer modal is visible.
@@ -249,7 +265,7 @@ test(
 		const mediaSearchModalInput = mediaSearchModal.locator( '.so-widgets-search-input' );
 		const mediaSearchModalResults = mediaSearchModal.locator( '.so-widgets-image-results' );
 
-		await expect( mediaSearchModalInput ).toBeVisible();
+		await ensureElementVisible( mediaSearchModalInput );
 
 		// Search for an image.
 		await mediaSearchModalInput.fill( 'test' );
@@ -262,13 +278,13 @@ test(
 
 		// Select the first search result once it's visible.
 		const firstResult = mediaSearchModalResults.locator( '.so-widgets-result' ).first().locator( '.so-widgets-result-image' );
-		await expect( firstResult ).toBeVisible( { timeout: 10000 } );
+		await ensureElementVisible( firstResult, offset, 10000 );
 		firstResult.click();
 
 		// After clicking the image, a browser prompt will appear.
 		// Accept it, and then wait for the loader to be visible.
 		await handleDialog( page, 'accept', async ( dialog ) => {
-			await expect( loadingIndicator ).toBeVisible( { timeout: 5000 } );
+			await ensureElementVisible( loadingIndicator );
 		} );
 
 		// The importer is now running. Wait for the transfer to finish.
@@ -286,7 +302,7 @@ test(
 
 		// Clear the image.
 		const clearButton = imageField.locator( '.media-remove-button' );
-		await expect( clearButton ).toBeVisible();
+		await ensureElementVisible( clearButton, offset );
 		await expect( clearButton ).not.toHaveClass( 'remove-hide' );
 		await clearButton.click();
 
@@ -309,13 +325,13 @@ test(
 		await shapeSection.click();
 
 		// Enable the shape field.
-		await expect( shapeEnableSetting ).toBeVisible();
+		await ensureElementVisible( shapeEnableSetting, offset );
 		await shapeEnableSetting.check();
 
 		const shapeField = await getField( widget, 'image_shape', true );
 		const shapeOpenButton = shapeField.locator( '.siteorigin-widget-shape-current' );
 		const shapeList = shapeField.locator( '.siteorigin-widget-shapes' );
-		await expect( shapeOpenButton ).toBeVisible();
+		await ensureElementVisible( shapeField, offset );
 
 		// Open the shape list.
 		shapeOpenButton.click();
@@ -323,7 +339,7 @@ test(
 
 		// Search for a shape.
 		const shapeSearch = shapeField.locator( '.siteorigin-widget-shape-search' );
-		await expect( shapeSearch ).toBeVisible();
+		await ensureElementVisible( shapeSearch, offset );
 		await shapeSearch.fill( 'Diamond' );
 		await shapeSearch.press( 'Enter' );
 
@@ -351,7 +367,11 @@ test(
 test(
 	'Test the Blog widget.',
 	async ( { page } ) => {
-		const { admin, widget } = await testPrep(
+		const {
+			admin,
+			offset,
+			widget
+		} = await testPrep(
 			page,
 			'sowb/siteorigin-widget-blog-widget'
 		);
@@ -360,7 +380,7 @@ test(
 
 		const featuredImageSetting = settingsSection.locator( '.siteorigin-widget-field-featured_image .siteorigin-widget-input' );
 		const featuredImageSizeSetting = settingsSection.locator( '.siteorigin-widget-field-featured_image_size .siteorigin-widget-input-select' );
-		await expect( featuredImageSizeSetting ).toBeVisible();
+		await ensureElementVisible( featuredImageSetting, offset );
 		await expect( featuredImageSetting ).toBeChecked();
 
 		// Validate that the Image Size Custom Size setting works as expected.
@@ -369,7 +389,7 @@ test(
 		await expect( customSizeWidth ).toBeHidden();
 		await featuredImageSizeSetting.selectOption( 'custom_size' );
 		await expect( featuredImageSizeSetting ).toHaveValue( 'custom_size' );
-		await expect( customSizeWidth ).toBeVisible();
+		await ensureElementVisible( customSizeWidth, offset );
 
 		// Validate Checkbox field works as expected.
 		await featuredImageSetting.uncheck();
@@ -388,7 +408,7 @@ test(
 		const postQuerySection = await openSection( 'posts', widget );
 
 		const postQueryDateFrom = postQuerySection.locator( '.sowb-specific-date-after .after-picker' );
-		await expect( postQueryDateFrom ).toBeVisible();
+		await ensureElementVisible( postQueryDateFrom, offset );
 
 		// Activate the Dates From field so that the date picker pops up.
 		await postQueryDateFrom.click( { force: true } );
@@ -397,9 +417,9 @@ test(
 
 		// Validate that that date picker is present, and then select the 15th.
 		const datePicker = admin.editor.canvas.locator( '.pika-single:not(.is-hidden)' );
-		await expect( datePicker ).toBeVisible();
+		await ensureElementVisible( datePicker, offset);
 		const day15Button = datePicker.locator( '.pika-button[data-pika-day="15"]' );
-		await expect( day15Button ).toBeVisible();
+		await ensureElementVisible( day15Button, offset );
 		await day15Button.click();
 
 		// Validate that a date has been set.
@@ -418,7 +438,10 @@ test(
 test(
 	'Test the Headline widget.',
 	async ( { page } ) => {
-		const { widget } = await testPrep(
+		const {
+			offset,
+			widget
+		} = await testPrep(
 			page,
 			'sowb/siteorigin-widget-headline-widget'
 		);
@@ -470,20 +493,25 @@ test(
 test(
 	'Test the Hero widget.',
 	async ( { page } ) => {
-		const { widget } = await testPrep(
+		const {
+			offset,
+			widget
+		} = await testPrep(
 			page,
 			'sowb/siteorigin-widget-hero-widget'
 		);
 
 		const frames = widget.locator( '.siteorigin-widget-field-frames' );
-		await expect( frames ).toBeVisible();
+		await ensureElementVisible( frames, offset );
 
 		// Add three frames.
 		const addFrameButton = frames.locator( '> div > .siteorigin-widget-field-repeater-add' );
 
-		await expect( addFrameButton ).toBeVisible();
+		await ensureElementVisible( addFrameButton, offset );
 		await addFrameButton.click();
+		await ensureElementVisible( addFrameButton, offset );
 		await addFrameButton.click();
+		await ensureElementVisible( addFrameButton, offset );
 		await addFrameButton.click();
 
 		// Validate that three frames have been added.
@@ -492,22 +520,23 @@ test(
 
 		// Open the first frame.
 		const firstFrame = frameItems.first();
-		await firstFrame.click();
+		await ensureElementVisible( firstFrame, offset );
+		await firstFrame.click( { force: true } );
 
 		// Validate that the TinyMCE field rendered correctly inside of the repeater.
-		const tinyMCEField = firstFrame.locator( '.siteorigin-widget-field-content ' );
-		await expect( tinyMCEField ).toBeVisible();
+		const tinyMCEField = firstFrame.locator( '.siteorigin-widget-field-content' );
+		await ensureElementVisible( tinyMCEField, offset );
 
 		// Tick the Automatically add paragraphs setting.
 		const automaticallyAddParagraphsSetting = firstFrame.locator( '.siteorigin-widget-field-autop .siteorigin-widget-input' );
-		await expect( automaticallyAddParagraphsSetting ).toBeVisible();
+		await ensureElementVisible( automaticallyAddParagraphsSetting, offset );
 		await automaticallyAddParagraphsSetting.check();
 
 		// Close the first frame, and validate.
 		const firstFrameCloser = firstFrame.locator( '.siteorigin-widget-field-repeater-item-top' );
 		const firstFrameForm = firstFrame.locator( '.siteorigin-widget-field-repeater-item-form' );
-		await firstFrameCloser.click();
-		await expect( firstFrameForm ).not.toBeVisible();
+		await ensureElementVisible( firstFrameCloser, offset );
+		await firstFrameForm.click();
 
 		// Open the last frame.
 		const lastFrame = frameItems.last();
@@ -539,7 +568,7 @@ test(
 		// Validate the last frame is now positioned first by checking the autop setting.
 		frameItems = frames.locator( '.siteorigin-widget-field-repeater-item' );
 		const lastAutomaticallyAddParagraphsSetting = frameItems.first().locator( '.siteorigin-widget-field-autop .siteorigin-widget-input' );
-		await expect( lastAutomaticallyAddParagraphsSetting ).toBeVisible();
+		await ensureElementVisible( lastAutomaticallyAddParagraphsSetting, offset );
 		await expect( lastAutomaticallyAddParagraphsSetting ).not.toBeChecked();
 	}
 );
@@ -554,13 +583,16 @@ test(
 test(
 	'Test the Image Grid widget.',
 	async ( { page } ) => {
-		const { widget } = await testPrep(
+		const {
+			offset,
+			widget
+		} = await testPrep(
 			page,
 			'sowb/siteorigin-widgets-imagegrid-widget'
 		);
 
 		const imagePaddingSetting = widget.locator( '.siteorigin-widget-field-padding' );
-		await expect( imagePaddingSetting ).toBeVisible();
+		await ensureElementVisible( imagePaddingSetting, offset );
 
 		// Clear the widget's default values.
 		const imagePaddingFields = imagePaddingSetting.locator( '.sow-multi-measurement-input' );
