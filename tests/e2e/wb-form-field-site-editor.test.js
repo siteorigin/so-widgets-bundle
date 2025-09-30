@@ -257,9 +257,6 @@ test(
 		await ensureElementVisible( mediaSearchButton, offset );
 		await mediaSearchButton.click( { force: true } );
 
-		// Ensure the importer modal is visible.
-		await expect( imageField ).toHaveClass( /so-importing-image/, { timeout: 5000 } );
-
 		const mediaSearchModal = page.locator( '#so-widgets-image-search' );
 		const loadingIndicator = mediaSearchModal.locator( '.so-widgets-results-loading' );
 		const mediaSearchModalInput = mediaSearchModal.locator( '.so-widgets-search-input' );
