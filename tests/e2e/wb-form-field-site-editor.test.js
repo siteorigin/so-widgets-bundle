@@ -92,11 +92,11 @@ test(
 		const iconFieldSelector = iconField.locator( '.siteorigin-widget-icon-selector-current' );
 		await ensureElementVisible( iconFieldSelector, offset );
 		await page.waitForTimeout( 1000 ); // Wait for the animation to complete.
-		await iconFieldSelector.click( { force: true } );
+		await iconFieldSelector.click();
 
 		const iconFieldContainer = iconField.locator( '.siteorigin-widget-icon-selector' );
-		await ensureElementVisible( iconFieldContainer, offset );
 		await expect( iconFieldContainer ).toHaveCSS( 'display', 'block' );
+		await ensureElementVisible( iconFieldContainer, offset );
 
 		const iconFieldIcons = iconFieldContainer.locator( '.siteorigin-widget-icon-icons' );
 		await ensureElementVisible( iconFieldIcons, offset );
