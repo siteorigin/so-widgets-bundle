@@ -42,9 +42,10 @@ const testPrep = async( page, blockName ) => {
 	const admin = await setupAdminE2E( page );
 	await openSiteEditorCanvas( page, admin );
 
-	const widget = await addBlock( admin, blockName );
 
 	const offset = await calculateOffset( admin.editor.canvas, 'header.wp-block-template-part > .is-position-sticky' );
+
+	const widget = await addBlock( admin, blockName, offset );
 
 	return {
 		admin,
