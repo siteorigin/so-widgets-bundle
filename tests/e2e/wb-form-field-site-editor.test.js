@@ -254,14 +254,13 @@ test(
 		const imageField = await getField( widget, 'media' );
 
 		// Open Image Search modal.
-		const mediaSearchButton = imageField.getByText( 'Image Search' );
+		const mediaSearchButton = imageField.locator( '.find-image-button' );
 		await ensureElementVisible( mediaSearchButton, offset );
-		await mediaSearchButton.click( { force: true } );
+		await mediaSearchButton.click();
 
-		const mediaSearchModal = page.locator( '#so-widgets-image-search' );
+		const mediaSearchModal = page.locator( '#so-widgets-image-search-frame' );
 		const loadingIndicator = mediaSearchModal.locator( '.so-widgets-results-loading' );
 		const mediaSearchModalInput = mediaSearchModal.locator( '.so-widgets-search-input' );
-		const mediaSearchModalResults = mediaSearchModal.locator( '.so-widgets-image-results' );
 
 		await ensureElementVisible( mediaSearchModalInput );
 
@@ -273,6 +272,9 @@ test(
 			page,
 			'so_widgets_image_search'
 		);
+
+		const mediaSearchModalResults = mediaSearchModal.locator( '.so-widgets-image-results' );
+		await ensureElementVisible( mediaSearchModalResults, offset, 10000 );
 
 		// Select the first search result once it's visible.
 		const firstResult = mediaSearchModalResults.locator( '.so-widgets-result' ).first().locator( '.so-widgets-result-image' );
