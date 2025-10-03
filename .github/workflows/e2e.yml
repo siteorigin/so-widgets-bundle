@@ -2,11 +2,11 @@ name: Run Playwright Tests
 
 on:
   workflow_dispatch:
-  inputs:
-    release_version:
-      description: "The release version to use"
-      required: true
-      default: "2.0.0"
+    inputs:
+      release_version:
+        description: "The release version to use"
+        required: true
+        default: "2.0.0"
 
 jobs:
   test:
@@ -24,7 +24,7 @@ jobs:
       run: npx playwright install --with-deps
     - name: Install Build Dependencies & Make Build
       run: |
-        export RELEASE_VERSION=${{ inputs.release_version }}
+        export RELEASE_VERSION=${{ github.event.inputs.release_version }}
         npm install && npm run build:release
       working-directory: build
     - name: Run Tests
