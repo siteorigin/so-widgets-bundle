@@ -13,12 +13,10 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Build Dependencies
-      run: npm install
-      working-directory: build
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Run Tests
-      run: npm run tests
+    - name: Install build dependencies and Run Tests
+      run: |
+        npm ci &&
+        cd build && npm install &&
+        cd .. && npm run tests
