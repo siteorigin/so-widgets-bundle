@@ -23,8 +23,8 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Install Build Dependencies & Make Build
-      working-directory: build
       run: |
+        cd build
         export RELEASE_VERSION=${{ github.event.inputs.release_version }}
         npm install && npm run build:release
     - name: Run Tests
