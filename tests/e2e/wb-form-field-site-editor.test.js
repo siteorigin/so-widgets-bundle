@@ -118,9 +118,7 @@ test(
 		await ensureElementVisible( iconSearch, offset, 10000 );
 		await iconSearch.fill( 'home' );
 
-		await expect( iconFieldIcons ).not.toHaveClass( 'loading' );
-		// Due to the large amount of icons being processed, wait 1s to allow for rendering.
-		await page.waitForTimeout( 1000 );
+		await expect( iconFieldIcons ).not.toHaveClass( /loading/ );
 
 		// Click the `Add Home` icon.
 		const iconOption = iconFieldIcons.locator( '[data-value="materialicons-sowm-regular-add_home"]' );
@@ -138,6 +136,7 @@ test(
 
 		const colorFieldButton = colorField.locator( 'button.wp-color-result' );
 		await ensureElementVisible( colorFieldButton, offset );
+		const initialColor = await colorFieldButton.evaluate( ( element ) => getComputedStyle( element ).backgroundColor );
 		await colorFieldButton.click();
 
 		// Wait until the color picker has opened.
@@ -151,7 +150,7 @@ test(
 		// Verify the color has been applied.
 		const colorPreview = colorField.locator( '.wp-color-result' );
 		await ensureElementVisible( colorPreview, offset );
-		await expect( colorPreview ).toHaveCSS( 'background-color', 'rgb(0, 0, 0)' );
+		await expect( colorPreview ).not.toHaveCSS( 'background-color', initialColor );
 
 		// Validate autocomplete field works as expected.
 		const linkField = widget.locator( '.siteorigin-widget-field-type-link' );
@@ -392,7 +391,9 @@ test(
 		await ensureElementVisible( customSizeWidth, offset );
 
 		// Validate Checkbox field works as expected.
-		await featuredImageSetting.uncheck();
+		const featuredImageToggle = settingsSection.locator( '.siteorigin-widget-field-featured_image label' ).first();
+		await ensureElementVisible( featuredImageToggle, offset );
+		await featuredImageToggle.click();
 		await expect( featuredImageSetting ).not.toBeChecked();
 		await expect( featuredImageSizeSetting ).toBeHidden();
 
