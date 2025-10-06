@@ -37,6 +37,7 @@
 	<div id="widgets-list">
 
 		<?php
+		$plugin_dir = wp_normalize_path( WP_PLUGIN_DIR );
 		foreach ( $widgets as $file => $widget ) {
 			$file = wp_normalize_path( $file );
 			?>
@@ -48,7 +49,11 @@
 					$widget_dir = dirname( $file );
 
 					if ( file_exists( $widget_dir . '/assets/banner.svg' ) ) {
-						$banner = str_replace( wp_normalize_path( WP_CONTENT_DIR ), content_url(), $widget_dir ) . '/assets/banner.svg';
+						$banner = str_replace(
+							$plugin_dir,
+							plugins_url(),
+							wp_normalize_path( $widget_dir )
+						) . '/assets/banner.svg';
 					}
 					$banner = apply_filters( 'siteorigin_widgets_widget_banner', $banner, $widget );
 					?>
@@ -105,7 +110,7 @@
 							$widget_object = ! empty( $widget_objects[ $file ] ) ? $widget_objects[ $file ] : false;
 
 							if ( ! empty( $widget_object ) && $widget_object->has_form( 'settings' ) ) {
-								$rel_path = str_replace( wp_normalize_path( WP_CONTENT_DIR ), '', $file );
+								$rel_path = str_replace( wp_normalize_path( WP_PLUGIN_DIR ), '', $file );
 
 								$form_url = add_query_arg(
 									array(
