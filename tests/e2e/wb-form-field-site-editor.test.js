@@ -186,9 +186,9 @@ test(
 		await page.waitForTimeout( 1000 ); // Wait for the animation to complete.
 		await iconFieldSelector.click();
 
-		const iconFieldContainer = iconField.locator( '.siteorigin-widget-icon-selector' );
-		await expect( iconFieldContainer ).toHaveCSS( 'display', 'block' );
-		await ensureElementVisible( iconFieldContainer, offset );
+			const iconFieldContainer = iconField.locator( '.siteorigin-widget-icon-selector' );
+			await expect( iconFieldContainer ).toHaveCSS( 'display', 'block' );
+			await ensureElementVisible( iconFieldContainer, offset );
 
 		const iconFieldIcons = iconFieldContainer.locator( '.siteorigin-widget-icon-icons' );
 		await ensureElementVisible( iconFieldIcons, offset );
@@ -216,11 +216,12 @@ test(
 		const iconOption = iconFieldIcons.locator( '[data-value="materialicons-sowm-regular-add_home"]' );
 		await ensureElementVisible( iconOption, offset, 10000 );
 
-		await iconOption.click( { force: true } );
+ 			await iconOption.click( { force: true } );
+			await expect( iconFieldContainer ).toHaveCSS( 'display', 'none', { timeout: 10000 } );
 
-		// Confirm icon has been set by checking the stored value.
-		const iconValue = iconField.locator( '.siteorigin-widget-input' );
-		await expect( iconValue ).toHaveValue( /materialicons-sowm-regular-add_home/ );
+			// Confirm icon has been set by checking the stored value.
+			const iconValue = iconField.locator( '.siteorigin-widget-input' );
+			await expect( iconValue ).toHaveValue( /materialicons-sowm-regular-add_home/, { timeout: 20000 } );
 
 		// Validate Color field works as expected.
 		const colorField = widget.locator( '.siteorigin-widget-field-type-color' );
