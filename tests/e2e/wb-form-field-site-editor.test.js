@@ -22,6 +22,35 @@ const {
 	uploadImageToMediaLibrary
 } = require( 'siteorigin-tests-common/playwright/utilities/media' );
 
+const dismissSiteEditorGuide = async ( admin ) => {
+	const overlay = admin.page.locator( '.components-modal__screen-overlay' );
+	if ( await overlay.count() === 0 ) {
+		return;
+	}
+
+	try {
+		if ( await overlay.first().isVisible() ) {
+			const closeButton = admin.page.locator( '.edit-site-welcome-guide button[aria-label="Close dialog"]' );
+			if ( await closeButton.count() ) {
+				await closeButton.first().click();
+			}
+
+			const doneButton = admin.page.locator( '.edit-site-welcome-guide button:has-text("Close")' );
+			if ( await doneButton.count() ) {
+				await doneButton.first().click();
+			}
+
+			if ( await overlay.first().isVisible() ) {
+				await admin.page.keyboard.press( 'Escape' );
+			}
+
+			await overlay.first().waitFor( { state: 'hidden', timeout: 5000 } ).catch( () => {} );
+		}
+	} catch ( error ) {
+		console.warn( '[dismissSiteEditorGuide] Unable to close welcome guide', error );
+	}
+};
+
 const neutralizeSiteEditorStickyHeader = async ( admin ) => {
 	await admin.page.evaluate( () => {
 		const iframe = document.querySelector( 'iframe[name="editor-canvas"]' );
@@ -54,6 +83,7 @@ const neutralizeSiteEditorStickyHeader = async ( admin ) => {
 
 const openSiteEditorCanvas = async ( page, admin ) => {
 	await common.openSiteEditorCanvas( page, admin );
+	await dismissSiteEditorGuide( admin );
 	await neutralizeSiteEditorStickyHeader( admin );
 };
 
@@ -78,6 +108,7 @@ const calculateOffset = async ( page, selector ) => {
 
 const addBlock = async ( admin, blockName, offset ) => {
 	await admin.editor.insertBlock( { name: blockName } );
+	await dismissSiteEditorGuide( admin );
 
 	await waitForRequestToFinish( admin.page, '/wp-json/sowb/v1/widgets/forms', 45000 );
 
