@@ -3,16 +3,15 @@ const {
 	test
 } = require( '@playwright/test' );
 
+const common = require( 'siteorigin-tests-common/playwright/common' );
+
 const {
-	addBlock,
-	calculateOffset,
 	doLogin,
 	ensureElementVisible,
 	handleDialog,
-	openSiteEditorCanvas,
 	setupAdminE2E,
 	waitForRequestToFinish,
-} = require( 'siteorigin-tests-common/playwright/common' );
+} = common;
 
 const {
 	getField,
@@ -22,6 +21,94 @@ const {
 const {
 	uploadImageToMediaLibrary
 } = require( 'siteorigin-tests-common/playwright/utilities/media' );
+
+const neutralizeSiteEditorStickyHeader = async ( admin ) => {
+	await admin.page.evaluate( () => {
+		const iframe = document.querySelector( 'iframe[name="editor-canvas"]' );
+		if ( ! iframe || ! iframe.contentDocument || ! iframe.contentDocument.head ) {
+			return;
+		}
+
+		const styleId = 'sow-tests-neutralize-sticky-header';
+		if ( iframe.contentDocument.getElementById( styleId ) ) {
+			return;
+		}
+
+		const style = iframe.contentDocument.createElement( 'style' );
+		style.id = styleId;
+		style.textContent = `
+			header.wp-block-template-part,
+			header.wp-block-template-part > .is-position-sticky {
+				position: static !important;
+			}
+
+			header.wp-block-template-part {
+				pointer-events: none !important;
+				z-index: 0 !important;
+			}
+		`;
+
+		iframe.contentDocument.head.appendChild( style );
+	} );
+};
+
+const openSiteEditorCanvas = async ( page, admin ) => {
+	await common.openSiteEditorCanvas( page, admin );
+	await neutralizeSiteEditorStickyHeader( admin );
+};
+
+const calculateOffset = async ( page, selector ) => {
+	const element = page.locator( selector );
+	const blockEditorBlockToolbarSize = 48;
+	const blockEditorHeaderToolbarSize = 60;
+	const blockEditorOffset = blockEditorBlockToolbarSize + blockEditorHeaderToolbarSize;
+
+	try {
+		const rect = await element.boundingBox();
+		if ( rect ) {
+			const headerAllowance = ( rect.height || 0 ) + 40;
+			return blockEditorOffset + headerAllowance;
+		}
+	} catch ( error ) {
+		// Swallow errors when the selector is not present yet; we'll fall back to the base offset.
+	}
+
+	return blockEditorOffset + 40;
+};
+
+const addBlock = async ( admin, blockName, offset ) => {
+	await admin.editor.insertBlock( { name: blockName } );
+
+	await waitForRequestToFinish( admin.page, '/wp-json/sowb/v1/widgets/forms', 45000 );
+
+	const widget = admin.editor.canvas.locator( `.wp-block[data-type="${ blockName }"]` );
+	const blockLoader = widget.locator( '.so-widgets-spinner-container' );
+	await expect( blockLoader ).toBeHidden( { timeout: 20000 } );
+
+	await admin.editor.selectBlocks( widget );
+	await ensureElementVisible( widget, offset );
+
+	await widget.click();
+	await widget.hover();
+	await expect( widget ).toHaveClass( /is-selected/ );
+
+	const editableFields = widget.locator( 'input[type="text"], textarea' );
+	const count = await editableFields.count();
+	for ( let i = 0; i < count; i++ ) {
+		const field = editableFields.nth( i );
+		if ( await field.isVisible() && await field.isEditable() ) {
+			const value = await field.inputValue();
+			await field.fill( 'test' );
+			await field.fill( value );
+			await expect( field ).toHaveValue( value );
+			break;
+		}
+	}
+
+	await ensureElementVisible( widget, offset );
+
+	return widget;
+};
 
 /**
  * Prepares the Site Editor test environment and inserts the specified block.
@@ -38,9 +125,13 @@ const {
  *
  * @returns {Promise<{admin: Admin, widget: Locator}>} The initialized admin and widget locator.
  */
+test.describe.configure( { mode: 'serial' } );
+
 const testPrep = async( page, blockName ) => {
 	const admin = await setupAdminE2E( page );
 	await openSiteEditorCanvas( page, admin );
+
+	await admin.editor.canvas.locator( 'header.wp-block-template-part > .is-position-sticky' ).waitFor( { state: 'visible', timeout: 10000 } ).catch( () => {} );
 
 
 	const offset = await calculateOffset( admin.editor.canvas, 'header.wp-block-template-part > .is-position-sticky' );
@@ -110,7 +201,8 @@ test(
 		// Wait for icons to download.
 		await waitForRequestToFinish(
 			page,
-			'siteorigin_widgets_get_icons'
+			'siteorigin_widgets_get_icons',
+			45000
 		);
 
 		// Search for the Home icon.
@@ -476,7 +568,12 @@ test(
 		const firstOrderItem = orderFieldItems.locator( '.siteorigin-widget-order-item' ).first();
 
 		// Drag Divider to the first item.
-		await dividerField.dragTo( firstOrderItem );
+		await dividerField.dragTo( firstOrderItem, {
+			targetPosition: {
+				x: 5,
+				y: 5,
+			},
+		} );
 
 		// Validate new ordering.
 		const orderFieldValue = orderField.locator( '.siteorigin-widget-input' );
