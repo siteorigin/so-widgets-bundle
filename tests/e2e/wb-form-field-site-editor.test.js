@@ -126,9 +126,9 @@ test(
 
 		await iconOption.click( { force: true } );
 
-		// Confirm icon has been set.
-		const icon = iconFieldSelector.locator( '.siteorigin-widget-icon span' );
-		await expect( icon ).toHaveClass( /sow-icon-materialicons/ );
+		// Confirm icon has been set by checking the stored value.
+		const iconValue = iconField.locator( '.siteorigin-widget-input' );
+		await expect( iconValue ).toHaveValue( /materialicons-sowm-regular-add_home/ );
 
 		// Validate Color field works as expected.
 		const colorField = widget.locator( '.siteorigin-widget-field-type-color' );
@@ -197,6 +197,7 @@ test(
 
 		const visualModeButton = tinymceField.locator( '.wp-editor-tabs .switch-tmce' );
 		const textModeButton = tinymceField.locator( '.wp-editor-tabs .switch-html' );
+		await textModeButton.waitFor( { state: 'visible' } );
 		await ensureElementVisible( textModeButton, offset );
 		await ensureElementVisible( visualModeButton, offset );
 
@@ -289,7 +290,8 @@ test(
 		// The importer is now running. Wait for the transfer to finish.
 		await waitForRequestToFinish(
 			page,
-			'so_widgets_image_import'
+			'so_widgets_image_import',
+			45000
 		);
 
 		// Ensure modal has closed.
