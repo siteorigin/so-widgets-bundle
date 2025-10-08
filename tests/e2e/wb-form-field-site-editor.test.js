@@ -42,9 +42,41 @@ const {
  */
 test.describe.configure( { mode: 'serial' } );
 
+const neutralizeSiteEditorStickyHeader = async ( admin ) => {
+	await admin.page.evaluate( () => {
+		const iframe = document.querySelector( 'iframe[name="editor-canvas"]' );
+		if ( ! iframe || ! iframe.contentDocument || ! iframe.contentDocument.head ) {
+			return;
+		}
+
+		const doc = iframe.contentDocument;
+		const styleId = 'sow-tests-neutralize-sticky-header';
+		if ( doc.getElementById( styleId ) ) {
+			return;
+		}
+
+		const style = doc.createElement( 'style' );
+		style.id = styleId;
+		style.textContent = `
+			header.wp-block-template-part,
+			header.wp-block-template-part > .is-position-sticky {
+				position: static !important;
+			}
+
+			header.wp-block-template-part {
+				pointer-events: none !important;
+				z-index: 0 !important;
+			}
+		`;
+
+		doc.head.appendChild( style );
+	} );
+};
+
 const testPrep = async( page, blockName ) => {
 	const admin = await setupAdminE2E( page );
 	await openSiteEditorCanvas( page, admin );
+	await neutralizeSiteEditorStickyHeader( admin );
 
 	await admin.editor.canvas.locator( 'header.wp-block-template-part > .is-position-sticky' ).waitFor( { state: 'visible', timeout: 10000 } ).catch( () => {} );
 
