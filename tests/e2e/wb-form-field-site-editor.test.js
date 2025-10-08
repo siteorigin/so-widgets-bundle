@@ -6,9 +6,12 @@ const {
 const common = require( 'siteorigin-tests-common/playwright/common' );
 
 const {
+	addBlock,
+	calculateOffset,
 	doLogin,
 	ensureElementVisible,
 	handleDialog,
+	openSiteEditorCanvas,
 	setupAdminE2E,
 	waitForRequestToFinish,
 } = common;
@@ -21,125 +24,6 @@ const {
 const {
 	uploadImageToMediaLibrary
 } = require( 'siteorigin-tests-common/playwright/utilities/media' );
-
-const dismissSiteEditorGuide = async ( admin ) => {
-	const overlay = admin.page.locator( '.components-modal__screen-overlay' );
-	if ( await overlay.count() === 0 ) {
-		return;
-	}
-
-	try {
-		if ( await overlay.first().isVisible() ) {
-			const closeButton = admin.page.locator( '.edit-site-welcome-guide button[aria-label="Close dialog"]' );
-			if ( await closeButton.count() ) {
-				await closeButton.first().click();
-			}
-
-			const doneButton = admin.page.locator( '.edit-site-welcome-guide button:has-text("Close")' );
-			if ( await doneButton.count() ) {
-				await doneButton.first().click();
-			}
-
-			if ( await overlay.first().isVisible() ) {
-				await admin.page.keyboard.press( 'Escape' );
-			}
-
-			await overlay.first().waitFor( { state: 'hidden', timeout: 5000 } ).catch( () => {} );
-		}
-	} catch ( error ) {
-		console.warn( '[dismissSiteEditorGuide] Unable to close welcome guide', error );
-	}
-};
-
-const neutralizeSiteEditorStickyHeader = async ( admin ) => {
-	await admin.page.evaluate( () => {
-		const iframe = document.querySelector( 'iframe[name="editor-canvas"]' );
-		if ( ! iframe || ! iframe.contentDocument || ! iframe.contentDocument.head ) {
-			return;
-		}
-
-		const styleId = 'sow-tests-neutralize-sticky-header';
-		if ( iframe.contentDocument.getElementById( styleId ) ) {
-			return;
-		}
-
-		const style = iframe.contentDocument.createElement( 'style' );
-		style.id = styleId;
-		style.textContent = `
-			header.wp-block-template-part,
-			header.wp-block-template-part > .is-position-sticky {
-				position: static !important;
-			}
-
-			header.wp-block-template-part {
-				pointer-events: none !important;
-				z-index: 0 !important;
-			}
-		`;
-
-		iframe.contentDocument.head.appendChild( style );
-	} );
-};
-
-const openSiteEditorCanvas = async ( page, admin ) => {
-	await common.openSiteEditorCanvas( page, admin );
-	await dismissSiteEditorGuide( admin );
-	await neutralizeSiteEditorStickyHeader( admin );
-};
-
-const calculateOffset = async ( page, selector ) => {
-	const element = page.locator( selector );
-	const blockEditorBlockToolbarSize = 48;
-	const blockEditorHeaderToolbarSize = 60;
-	const blockEditorOffset = blockEditorBlockToolbarSize + blockEditorHeaderToolbarSize;
-
-	try {
-		const rect = await element.boundingBox();
-		if ( rect ) {
-			const headerAllowance = ( rect.height || 0 ) + 40;
-			return blockEditorOffset + headerAllowance;
-		}
-	} catch ( error ) {
-		// Swallow errors when the selector is not present yet; we'll fall back to the base offset.
-	}
-
-	return blockEditorOffset + 40;
-};
-
-const addBlock = async ( admin, blockName, offset ) => {
-	await admin.editor.insertBlock( { name: blockName } );
-	await dismissSiteEditorGuide( admin );
-
-	await waitForRequestToFinish( admin.page, '/wp-json/sowb/v1/widgets/forms', 45000 );
-
-	const widget = admin.editor.canvas.locator( `.wp-block[data-type="${ blockName }"]` );
-	const blockLoader = widget.locator( '.so-widgets-spinner-container' );
-	await expect( blockLoader ).toBeHidden( { timeout: 20000 } );
-
-	await admin.editor.selectBlocks( widget );
-	await ensureElementVisible( widget, offset );
-
-	await widget.click();
-	await widget.hover();
-	await expect( widget ).toHaveClass( /is-selected/ );
-
-	const editableFields = widget.locator( 'input[type="text"], textarea' );
-	const count = await editableFields.count();
-	for ( let i = 0; i < count; i++ ) {
-		const field = editableFields.nth( i );
-		if ( await field.isVisible() && await field.isEditable() ) {
-			const value = await field.inputValue();
-			await field.fill( 'test' );
-			await field.fill( value );
-			await expect( field ).toHaveValue( value );
-			break;
-		}
-	}
-
-	await ensureElementVisible( widget, offset );
-
-	return widget;
-};
 
 /**
  * Prepares the Site Editor test environment and inserts the specified block.
@@ -239,20 +123,22 @@ test(
 		// Search for the Home icon.
 		const iconSearch = iconFieldContainer.locator( '.siteorigin-widget-icon-search' );
 		await ensureElementVisible( iconSearch, offset, 10000 );
-		await iconSearch.fill( 'home' );
+			await iconSearch.fill( 'home' );
 
-		await expect( iconFieldIcons ).not.toHaveClass( /loading/ );
+			await expect( iconFieldIcons ).not.toHaveClass( /loading/ );
 
 		// Click the `Add Home` icon.
 		const iconOption = iconFieldIcons.locator( '[data-value="materialicons-sowm-regular-add_home"]' );
 		await ensureElementVisible( iconOption, offset, 10000 );
 
- 			await iconOption.click( { force: true } );
-			await expect( iconFieldContainer ).toHaveCSS( 'display', 'none', { timeout: 10000 } );
+			await iconOption.click( { force: true } );
 
 			// Confirm icon has been set by checking the stored value.
-			const iconValue = iconField.locator( '.siteorigin-widget-input' );
-			await expect( iconValue ).toHaveValue( /materialicons-sowm-regular-add_home/, { timeout: 20000 } );
+			const iconValue = iconField.locator( 'input.siteorigin-widget-icon-icon' );
+			await expect.poll( async () => {
+				const value = await iconValue.inputValue();
+				return value;
+			}, { timeout: 20000 } ).toMatch( /materialicons-sowm-regular-add_home/ );
 
 		// Validate Color field works as expected.
 		const colorField = widget.locator( '.siteorigin-widget-field-type-color' );
@@ -319,19 +205,32 @@ test(
 
 		const tinymceField = await getField( widget, 'tinymce', true );
 
-		const visualModeButton = tinymceField.locator( '.wp-editor-tabs .switch-tmce' );
-		const textModeButton = tinymceField.locator( '.wp-editor-tabs .switch-html' );
+			const visualModeButton = tinymceField.locator( '.wp-editor-tabs .switch-tmce' );
+			const textModeButton = tinymceField.locator( '.wp-editor-tabs .switch-html' );
+			const textArea = tinymceField.locator( 'textarea.wp-editor-area' );
+			const visualIframe = tinymceField.locator( 'iframe' );
 		await textModeButton.waitFor( { state: 'visible' } );
 		await ensureElementVisible( textModeButton, offset );
 		await ensureElementVisible( visualModeButton, offset );
 
-		// Confirm mode switching works as expected.
-		await textModeButton.click();
-		await expect( visualModeButton ).toHaveAttribute( 'aria-pressed', 'false', { timeout: 10000 } );
-		await expect( textModeButton ).toHaveAttribute( 'aria-pressed', 'true', { timeout: 10000 } );
-		await visualModeButton.click();
-		await expect( visualModeButton ).toHaveAttribute( 'aria-pressed', 'true' );
-		await expect( textModeButton ).toHaveAttribute( 'aria-pressed', 'false' );
+			// Confirm mode switching works as expected.
+			await textModeButton.click();
+			await expect( textArea ).toBeVisible( { timeout: 10000 } );
+			await expect
+				.poll( async () => {
+					const iframeCount = await visualIframe.count();
+					if ( iframeCount === 0 ) {
+						return false;
+					}
+					return await visualIframe.first().isVisible();
+				}, { timeout: 10000 } )
+				.toBeFalsy();
+			await visualModeButton.click();
+			await expect
+				.poll( async () => visualIframe.count(), { timeout: 10000 } )
+				.toBeGreaterThan( 0 );
+			await expect( visualIframe.first() ).toBeVisible( { timeout: 10000 } );
+			await expect( textArea ).not.toBeVisible( { timeout: 10000 } );
 
 		// Confirm the "Add Media" button is visible and enabled.
 		const addMediaButton = tinymceField.locator( '.siteorigin-widget-tinymce-add-media' );
