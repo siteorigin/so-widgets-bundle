@@ -11,19 +11,41 @@
 			return;
 		}
 
-		$postsField.on( 'change', function( event ) {
-			var postsValues = sowbForms.getWidgetFormValues( $postsField );
-			var queryObj = postsValues.hasOwnProperty( 'posts' ) ? postsValues.posts : null;
+		let debounceTimer;
+		let currentRequest;
+		let lastQuery = '';
 
-			var query = '';
-			for ( var key in queryObj ) {
+		/**
+		 * Debounced function to handle the posts count request.
+		 *
+		 * This function retrieves widget form values, builds a query string,
+		 * prevents duplicate requests, and makes an AJAX call to get the posts count.
+		 */
+		const handlePostsCountRequest = function() {
+			const postsValues = sowbForms.getWidgetFormValues( $postsField );
+			const queryObj = postsValues.hasOwnProperty( 'posts' ) ? postsValues.posts : null;
+
+			let query = '';
+			for ( const key in queryObj ) {
 				if ( query !== '' ) {
 					query += '&';
 				}
 				query += key + '=' + queryObj[ key ];
 			}
 
-			$.post(
+			// Prevent duplicate requests with same query
+			if ( query === lastQuery ) {
+				return;
+			}
+
+			// Abort previous request if still pending
+			if ( currentRequest && currentRequest.readyState !== 4 ) {
+				currentRequest.abort();
+			}
+
+			lastQuery = query;
+
+			currentRequest = $.post(
 				soWidgets.ajaxurl,
 				{
 					action: 'sow_get_posts_count',
@@ -32,9 +54,13 @@
 				},
 				function( data ) {
 					$postsField.find( '.sow-current-count' ).text( data.posts_count );
-
 				}
 			);
+		};
+
+		$postsField.on( 'change', function() {
+			clearTimeout( debounceTimer );
+			debounceTimer = setTimeout( handlePostsCountRequest, 300 );
 		} );
 	} );
 
