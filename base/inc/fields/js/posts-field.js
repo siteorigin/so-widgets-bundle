@@ -33,12 +33,12 @@
 				query += key + '=' + queryObj[ key ];
 			}
 
-			// Prevent duplicate requests with same query
+			// Prevent duplicate requests with same query.
 			if ( query === lastQuery ) {
 				return;
 			}
 
-			// Abort previous request if still pending
+			// Abort previous request if still pending.
 			if ( currentRequest && currentRequest.readyState !== 4 ) {
 				currentRequest.abort();
 			}
