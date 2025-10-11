@@ -11,6 +11,7 @@ const {
 	doLogin,
 	ensureElementVisible,
 	handleDialog,
+	neutralizeSiteEditorStickyHeader,
 	openSiteEditorCanvas,
 	setupAdminE2E,
 	waitForRequestToFinish,
@@ -42,44 +43,12 @@ const {
  */
 test.describe.configure( { mode: 'serial' } );
 
-const neutralizeSiteEditorStickyHeader = async ( admin ) => {
-	await admin.page.evaluate( () => {
-		const iframe = document.querySelector( 'iframe[name="editor-canvas"]' );
-		if ( ! iframe || ! iframe.contentDocument || ! iframe.contentDocument.head ) {
-			return;
-		}
-
-		const doc = iframe.contentDocument;
-		const styleId = 'sow-tests-neutralize-sticky-header';
-		if ( doc.getElementById( styleId ) ) {
-			return;
-		}
-
-		const style = doc.createElement( 'style' );
-		style.id = styleId;
-		style.textContent = `
-			header.wp-block-template-part,
-			header.wp-block-template-part > .is-position-sticky {
-				position: static !important;
-			}
-
-			header.wp-block-template-part {
-				pointer-events: none !important;
-				z-index: 0 !important;
-			}
-		`;
-
-		doc.head.appendChild( style );
-	} );
-};
-
 const testPrep = async( page, blockName ) => {
 	const admin = await setupAdminE2E( page );
 	await openSiteEditorCanvas( page, admin );
 	await neutralizeSiteEditorStickyHeader( admin );
 
 	await admin.editor.canvas.locator( 'header.wp-block-template-part > .is-position-sticky' ).waitFor( { state: 'visible', timeout: 10000 } ).catch( () => {} );
-
 
 	const offset = await calculateOffset( admin.editor.canvas, 'header.wp-block-template-part > .is-position-sticky' );
 
@@ -159,18 +128,17 @@ test(
 
 			await expect( iconFieldIcons ).not.toHaveClass( /loading/ );
 
-		// Click the `Add Home` icon.
-		const iconOption = iconFieldIcons.locator( '[data-value="materialicons-sowm-regular-add_home"]' );
-		await ensureElementVisible( iconOption, offset, 10000 );
+			// Click the `Add Home` icon.
+			const iconOption = iconFieldIcons.locator( '[data-value="materialicons-sowm-regular-add_home"]' );
+			await ensureElementVisible( iconOption, offset, 10000 );
+			await expect( iconOption ).toBeVisible( { timeout: 20000 } );
+			await expect( iconOption ).toBeEnabled( { timeout: 20000 } );
 
-			await iconOption.click( { force: true } );
+				await iconOption.click( { force: true } );
 
-			// Confirm icon has been set by checking the stored value.
-			const iconValue = iconField.locator( 'input.siteorigin-widget-icon-icon' );
-			await expect.poll( async () => {
-				const value = await iconValue.inputValue();
-				return value;
-			}, { timeout: 20000 } ).toMatch( /materialicons-sowm-regular-add_home/ );
+				// Confirm icon has been set by checking the stored value.
+				const iconValue = iconField.locator( 'input.siteorigin-widget-icon-icon' );
+				await expect( iconValue ).toHaveValue( /materialicons-sowm-regular-add_home/, { timeout: 20000 } );
 
 		// Validate Color field works as expected.
 		const colorField = widget.locator( '.siteorigin-widget-field-type-color' );
@@ -241,8 +209,10 @@ test(
 			const textModeButton = tinymceField.locator( '.wp-editor-tabs .switch-html' );
 			const textArea = tinymceField.locator( 'textarea.wp-editor-area' );
 			const visualIframe = tinymceField.locator( 'iframe' );
-		await textModeButton.waitFor( { state: 'visible' } );
+		await expect( tinymceField.locator( '.wp-editor-tabs' ) ).toBeVisible( { timeout: 20000 } );
+		await expect( textModeButton ).toBeVisible( { timeout: 20000 } );
 		await ensureElementVisible( textModeButton, offset );
+		await expect( visualModeButton ).toBeVisible( { timeout: 20000 } );
 		await ensureElementVisible( visualModeButton, offset );
 
 			// Confirm mode switching works as expected.
