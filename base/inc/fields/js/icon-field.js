@@ -293,22 +293,60 @@
 	// Add support for the Site Editor.
 	window.addEventListener( 'message', function( e ) {
 		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
-			$( '.siteorigin-widget-field-type-icon' ).each( function() {
-				setupIconField.call( this );
-			} );
+			ensureIconFieldsInitialized();
 		}
 	} );
 
-	const initializeExistingIconFields = () => {
+	const initializeIconFields = () => {
+		let found = false;
+		let pending = false;
+
 		$( '.siteorigin-widget-field-type-icon' ).each( function() {
-			setupIconField.call( this );
+			found = true;
+			if ( ! $( this ).attr( 'data-initialized' ) ) {
+				pending = true;
+				setupIconField.call( this );
+			}
 		} );
+
+		return {
+			found,
+			pending,
+		};
 	};
 
+	const ensureIconFieldsInitialized = ( attempts = 20 ) => {
+		const { found, pending } = initializeIconFields();
+
+		if ( attempts <= 0 ) {
+			return;
+		}
+
+		const schedule = typeof window.requestAnimationFrame === 'function'
+			? window.requestAnimationFrame
+			: ( callback ) => setTimeout( callback, 0 );
+
+		if ( ! found || pending ) {
+			schedule( () => ensureIconFieldsInitialized( attempts - 1 ) );
+		}
+	};
+
+	const initWhenReady = () => ensureIconFieldsInitialized();
+
 	if ( document.readyState === 'loading' ) {
-		document.addEventListener( 'DOMContentLoaded', initializeExistingIconFields );
+		document.addEventListener( 'DOMContentLoaded', initWhenReady );
 	} else {
-		initializeExistingIconFields();
+		initWhenReady();
+	}
+
+	if ( window.top !== window.self ) {
+		const runIframeInitialization = () => ensureIconFieldsInitialized();
+
+		if ( document.readyState === 'loading' ) {
+			document.addEventListener( 'DOMContentLoaded', runIframeInitialization );
+		} else {
+			runIframeInitialization();
+		}
 	}
 
 	const shouldObserveIconFields = () => {
