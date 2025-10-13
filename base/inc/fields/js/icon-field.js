@@ -294,12 +294,55 @@
 	window.addEventListener( 'message', function( e ) {
 		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
 			$( '.siteorigin-widget-field-type-icon' ).each( function() {
-				if ( $( this ).attr( 'data-initialized' ) ) {
-					return;
-				}
-
 				setupIconField.call( this );
 			} );
 		}
 	} );
+
+	const shouldObserveIconFields = () => {
+		if ( window.top === window.self ) {
+			return typeof pagenow === 'string' && pagenow === 'site-editor';
+		}
+
+		return true;
+	};
+
+	if ( shouldObserveIconFields() && typeof MutationObserver !== 'undefined' ) {
+		const observer = new MutationObserver( ( mutations ) => {
+			mutations.forEach( ( mutation ) => {
+				mutation.addedNodes.forEach( ( node ) => {
+					if ( node.nodeType !== 1 ) {
+						return;
+					}
+
+					const $node = $( node );
+
+					if ( $node.is( '.siteorigin-widget-field-type-icon' ) ) {
+						setupIconField.call( node );
+					}
+
+					$node.find( '.siteorigin-widget-field-type-icon' ).each( function() {
+						setupIconField.call( this );
+					} );
+				} );
+			} );
+		} );
+
+		const startObserving = () => {
+			if ( ! document.body ) {
+				return;
+			}
+
+			observer.observe( document.body, {
+				childList: true,
+				subtree: true,
+			} );
+		};
+
+		if ( document.readyState === 'loading' ) {
+			document.addEventListener( 'DOMContentLoaded', startObserving );
+		} else {
+			startObserving();
+		}
+	}
 } )( jQuery );
