@@ -299,6 +299,18 @@
 		}
 	} );
 
+	const initializeExistingIconFields = () => {
+		$( '.siteorigin-widget-field-type-icon' ).each( function() {
+			setupIconField.call( this );
+		} );
+	};
+
+	if ( document.readyState === 'loading' ) {
+		document.addEventListener( 'DOMContentLoaded', initializeExistingIconFields );
+	} else {
+		initializeExistingIconFields();
+	}
+
 	const shouldObserveIconFields = () => {
 		if ( window.top === window.self ) {
 			return typeof pagenow === 'string' && pagenow === 'site-editor';
@@ -309,22 +321,29 @@
 
 	if ( shouldObserveIconFields() && typeof MutationObserver !== 'undefined' ) {
 		const observer = new MutationObserver( ( mutations ) => {
-			mutations.forEach( ( mutation ) => {
-				mutation.addedNodes.forEach( ( node ) => {
-					if ( node.nodeType !== 1 ) {
-						return;
-					}
+			const processNode = ( node ) => {
+				if ( node.nodeType === 11 ) {
+					Array.from( node.childNodes ).forEach( processNode );
+					return;
+				}
 
-					const $node = $( node );
+				if ( node.nodeType !== 1 ) {
+					return;
+				}
 
-					if ( $node.is( '.siteorigin-widget-field-type-icon' ) ) {
-						setupIconField.call( node );
-					}
+				const $node = $( node );
 
-					$node.find( '.siteorigin-widget-field-type-icon' ).each( function() {
-						setupIconField.call( this );
-					} );
+				if ( $node.is( '.siteorigin-widget-field-type-icon' ) ) {
+					setupIconField.call( node );
+				}
+
+				$node.find( '.siteorigin-widget-field-type-icon' ).each( function() {
+					setupIconField.call( this );
 				} );
+			};
+
+			mutations.forEach( ( mutation ) => {
+				mutation.addedNodes.forEach( processNode );
 			} );
 		} );
 
