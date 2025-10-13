@@ -1,0 +1,20 @@
+{
+  "name": "so-widgets-bundle",
+  "description": "Development repository for the SiteOrigin Widgets Bundle, a collection of widgets designed for use anywhere in WordPress - [Page Builder by SiteOrigin](https://siteorigin.com/page-builder/), the Block Editor, theme widget areas, and more.",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "tests": "node ./tests/scripts/run-playwright.js",
+    "test:e2e": "playwright test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/siteorigin/so-widgets-bundle.git"
+  },
+  "author": "siteorigin",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "siteorigin-tests-common": "github:siteorigin/siteorigin-tests-common#feature/neutralize-site-editor-header"
+  }
+}

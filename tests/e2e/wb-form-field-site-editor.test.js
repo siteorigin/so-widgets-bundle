@@ -1,0 +1,654 @@
+const {
+	expect,
+	test
+} = require( '@playwright/test' );
+
+const common = require( 'siteorigin-tests-common/playwright/common' );
+
+const {
+	addBlock,
+	calculateOffset,
+	doLogin,
+	ensureElementVisible,
+	handleDialog,
+	neutralizeSiteEditorStickyHeader,
+	openSiteEditorCanvas,
+	setupAdminE2E,
+	waitForRequestToFinish,
+} = common;
+
+const {
+	getField,
+	openSection,
+} = require( 'siteorigin-tests-common/playwright/utilities/widgets-bundle' );
+
+const {
+	uploadImageToMediaLibrary
+} = require( 'siteorigin-tests-common/playwright/utilities/media' );
+
+/**
+ * Prepares the Site Editor test environment and inserts the specified block.
+ *
+ * This helper:
+ * - Initializes the Admin instance for the given page.
+ * - Navigates directly to the Site Editor canvas for speed.
+ * - Waits for the editor canvas to be ready.
+ * - Inserts the specified block and returns its widget container.
+ *
+ * @async
+ * @param {import('@playwright/test').Page} page - The Playwright page object.
+ * @param {string} blockName - The block's full name.
+ *
+ * @returns {Promise<{admin: Admin, widget: Locator}>} The initialized admin and widget locator.
+ */
+test.describe.configure( { mode: 'serial' } );
+
+const testPrep = async( page, blockName ) => {
+	const admin = await setupAdminE2E( page );
+	await openSiteEditorCanvas( page, admin );
+	await neutralizeSiteEditorStickyHeader( admin );
+
+	await admin.editor.canvas.locator( 'header.wp-block-template-part > .is-position-sticky' ).waitFor( { state: 'visible', timeout: 10000 } ).catch( () => {} );
+
+	const offset = await calculateOffset( admin.editor.canvas, 'header.wp-block-template-part > .is-position-sticky' );
+
+	const widget = await addBlock( admin, blockName, offset );
+
+	return {
+		admin,
+		widget,
+		offset,
+	};
+};
+
+/**
+ * Runs before each test to log in to WordPress.
+ *
+ * Ensures the test user is authenticated before running any test case.
+ *
+ * @async
+ * @param {Object} context - The Playwright test context.
+ * @param {import('@playwright/test').Page} context.page - The Playwright page object.
+ * @returns {Promise<void>} Resolves when login is complete.
+ */
+test.beforeEach( async ( { page } ) => {
+	await doLogin( page );
+} );
+
+/**
+ * Validates the following for the Icon Widget in the Site Editor:
+ * 1. Icon field: selection and rendering of Material Icons.
+ * 2. Color field: color picker interaction and color application.
+ * 3. Link field: link selection and value assignment.
+ *
+ * @param {Object} page The Playwright page object.
+ */
+test(
+	'Test the Icon Widget',
+	async ( { page } ) => {
+		const {
+			offset,
+			widget,
+		} = await testPrep(
+			page,
+			'sowb/siteorigin-widget-icon-widget'
+		);
+
+		const iconField = await getField( widget, 'icon', true );
+
+		// Validate Icon field works as expected.
+		const iconFieldSelector = iconField.locator( '.siteorigin-widget-icon-selector-current' );
+		await ensureElementVisible( iconFieldSelector, offset );
+		await page.waitForTimeout( 1000 ); // Wait for the animation to complete.
+		await iconFieldSelector.click();
+
+			const iconFieldContainer = iconField.locator( '.siteorigin-widget-icon-selector' );
+			await expect( iconFieldContainer ).toHaveCSS( 'display', 'block' );
+			await ensureElementVisible( iconFieldContainer, offset );
+
+		const iconFieldIcons = iconFieldContainer.locator( '.siteorigin-widget-icon-icons' );
+		await ensureElementVisible( iconFieldIcons, offset );
+
+		// Switch to Material Icons to validate icons are loading correctly.
+		const fontFamilySelector = iconFieldContainer.locator( '.siteorigin-widget-icon-family' );
+		await ensureElementVisible( fontFamilySelector, offset );
+		await fontFamilySelector.selectOption( 'materialicons' );
+
+		// Wait for icons to download.
+		await waitForRequestToFinish(
+			page,
+			'siteorigin_widgets_get_icons',
+			45000
+		);
+
+		// Search for the Home icon.
+		const iconSearch = iconFieldContainer.locator( '.siteorigin-widget-icon-search' );
+		await ensureElementVisible( iconSearch, offset, 10000 );
+			await iconSearch.fill( 'home' );
+
+			await expect( iconFieldIcons ).not.toHaveClass( /loading/ );
+
+			// Click the `Add Home` icon.
+			const iconOption = iconFieldIcons.locator( '[data-value="materialicons-sowm-regular-add_home"]' );
+			await ensureElementVisible( iconOption, offset, 10000 );
+			await expect( iconOption ).toBeVisible( { timeout: 20000 } );
+			await expect( iconOption ).toBeEnabled( { timeout: 20000 } );
+
+				await iconOption.click( { force: true } );
+
+				// Confirm icon has been set by checking the stored value.
+				const iconValue = iconField.locator( 'input.siteorigin-widget-icon-icon' );
+				await expect( iconValue ).toHaveValue( /materialicons-sowm-regular-add_home/, { timeout: 20000 } );
+
+		// Validate Color field works as expected.
+		const colorField = widget.locator( '.siteorigin-widget-field-type-color' );
+		await ensureElementVisible( colorField, offset );
+
+		const colorFieldButton = colorField.locator( 'button.wp-color-result' );
+		await ensureElementVisible( colorFieldButton, offset );
+		const initialColor = await colorFieldButton.evaluate( ( element ) => getComputedStyle( element ).backgroundColor );
+		await colorFieldButton.click();
+
+		// Wait until the color picker has opened.
+		await expect( colorFieldButton ).toHaveClass( /wp-picker-open/ );
+
+		// Select the first color from the palette.
+		const palette = colorField.locator( '.iris-palette' ).first();
+		await ensureElementVisible( palette, offset );
+		await palette.click();
+
+		// Verify the color has been applied.
+		const colorPreview = colorField.locator( '.wp-color-result' );
+		await ensureElementVisible( colorPreview, offset );
+		await expect( colorPreview ).not.toHaveCSS( 'background-color', initialColor );
+
+		// Validate autocomplete field works as expected.
+		const linkField = widget.locator( '.siteorigin-widget-field-type-link' );
+		await ensureElementVisible( linkField, offset );
+		const linkButton = linkField.locator( '.select-content-button' );
+		await ensureElementVisible( linkButton, offset );
+		await linkButton.click( { force: true } );
+
+		// Select the first post from the list.
+		const postsList = linkField.locator( '.posts' );
+		await ensureElementVisible( postsList, offset );
+		const firstPost = postsList.locator( '.post' ).first();
+		await ensureElementVisible( firstPost, offset );
+		await firstPost.click( { force: true } );
+
+		// Validate link text has been set.
+		const linkInput = linkField.locator( '.siteorigin-widget-input' );
+		await ensureElementVisible( linkInput, offset );
+		await expect( linkInput ).toHaveValue( /.+/ );
+	}
+);
+
+/**
+ * Validates the following for the SiteOrigin Editor widget in the Site Editor:
+ * 1. TinyMCE field: media upload and image insertion.
+ * 2. Ensures the TinyMCE editor is focused before media insertion.
+ * 3. Confirms the <img> tag appears in the TinyMCE editor iframe after upload.
+ *
+ * @param {Object} page The Playwright page object.
+ */
+test(
+	'Test the Editor widget.',
+	async ( { page } ) => {
+		const {
+			admin,
+			offset,
+			widget
+		} = await testPrep(
+			page,
+			'sowb/siteorigin-widget-editor-widget'
+		);
+
+		const tinymceField = await getField( widget, 'tinymce', true );
+
+			const visualModeButton = tinymceField.locator( '.wp-editor-tabs .switch-tmce' );
+			const textModeButton = tinymceField.locator( '.wp-editor-tabs .switch-html' );
+			const textArea = tinymceField.locator( 'textarea.wp-editor-area' );
+			const visualIframe = tinymceField.locator( 'iframe' );
+		await expect( tinymceField.locator( '.wp-editor-tabs' ) ).toBeVisible( { timeout: 20000 } );
+		await expect( textModeButton ).toBeVisible( { timeout: 20000 } );
+		await ensureElementVisible( textModeButton, offset );
+		await expect( visualModeButton ).toBeVisible( { timeout: 20000 } );
+		await ensureElementVisible( visualModeButton, offset );
+
+			// Confirm mode switching works as expected.
+			await textModeButton.click();
+			await expect( textArea ).toBeVisible( { timeout: 10000 } );
+			await expect
+				.poll( async () => {
+					const iframeCount = await visualIframe.count();
+					if ( iframeCount === 0 ) {
+						return false;
+					}
+					return await visualIframe.first().isVisible();
+				}, { timeout: 10000 } )
+				.toBeFalsy();
+			await visualModeButton.click();
+			await expect
+				.poll( async () => visualIframe.count(), { timeout: 10000 } )
+				.toBeGreaterThan( 0 );
+			await expect( visualIframe.first() ).toBeVisible( { timeout: 10000 } );
+			await expect( textArea ).not.toBeVisible( { timeout: 10000 } );
+
+		// Confirm the "Add Media" button is visible and enabled.
+		const addMediaButton = tinymceField.locator( '.siteorigin-widget-tinymce-add-media' );
+		await ensureElementVisible( addMediaButton, offset, 10000 );
+		await expect( addMediaButton ).toHaveAttribute( 'data-editor', /.+/, { timeout: 10000 } );
+
+		await addMediaButton.click();
+
+		await uploadImageToMediaLibrary(
+			admin
+		);
+
+		// Wait for the <img> tag to appear in the TinyMCE editor iframe
+		const iframe = tinymceField.frameLocator( 'iframe' );
+		await expect( iframe.locator( 'img' ) ).toBeVisible( { timeout: 10000 } );
+	}
+);
+
+/**
+ * Validates the following for the Image widget in the Site Editor:
+ * 1. Image field: initialization, visibility, and value setting.
+ * 2. Image importer: modal interaction, image search, import, and prompt handling.
+ * 3. Image clearing: Remove Image button functionality and value reset.
+ * 4. Image field Media Library: uploading and inserting an image via media modal.
+ * 5. Image field: verifies correct value after each image operation.
+ * 6. Shape field: Validate searching/filtering for shapes.
+ * 7. Shape field: Validates shape selection.
+ * 8. Ensures correct UI state and value after each operation.
+ *
+ * @param {Object} page The Playwright page object.
+ */
+test(
+	'Test the Image widget.',
+	async ( { page } ) => {
+		const {
+			admin,
+			offset,
+			widget
+		} = await testPrep(
+			page,
+			'sowb/siteorigin-widget-image-widget'
+		);
+
+		const imageField = await getField( widget, 'media' );
+
+		// Open Image Search modal.
+		const mediaSearchButton = imageField.locator( '.find-image-button' );
+		await ensureElementVisible( mediaSearchButton, offset );
+		await mediaSearchButton.click();
+
+		const mediaSearchModal = page.locator( '#so-widgets-image-search-frame' );
+		const loadingIndicator = mediaSearchModal.locator( '.so-widgets-results-loading' );
+		const mediaSearchModalInput = mediaSearchModal.locator( '.so-widgets-search-input' );
+
+		await ensureElementVisible( mediaSearchModalInput );
+
+		// Search for an image.
+		await mediaSearchModalInput.fill( 'test' );
+		await mediaSearchModalInput.press( 'Enter' );
+
+		await waitForRequestToFinish(
+			page,
+			'so_widgets_image_search'
+		);
+
+		const mediaSearchModalResults = mediaSearchModal.locator( '.so-widgets-image-results' );
+		await ensureElementVisible( mediaSearchModalResults, offset, 10000 );
+
+		// Select the first search result once it's visible.
+		const firstResult = mediaSearchModalResults.locator( '.so-widgets-result' ).first().locator( '.so-widgets-result-image' );
+		await ensureElementVisible( firstResult, offset, 10000 );
+		firstResult.click();
+
+		// After clicking the image, a browser prompt will appear.
+		// Accept it, and then wait for the loader to be visible.
+		await handleDialog( page, 'accept', async ( dialog ) => {
+			await ensureElementVisible( loadingIndicator );
+		} );
+
+		// The importer is now running. Wait for the transfer to finish.
+		await waitForRequestToFinish(
+			page,
+			'so_widgets_image_import',
+			45000
+		);
+
+		// Ensure modal has closed.
+		await expect( imageField ).not.toHaveClass( /so-importing-image/ );
+
+		// Validate that the image has been set.
+		const imageValue = imageField.locator( '.siteorigin-widget-input[type="hidden"]' );
+		await expect( imageValue ).toHaveValue( /.+/ );
+
+		// Clear the image.
+		const clearButton = imageField.locator( '.media-remove-button' );
+		await ensureElementVisible( clearButton, offset );
+		await expect( clearButton ).not.toHaveClass( 'remove-hide' );
+		await clearButton.click();
+
+		// Validate the image has been cleared.
+		await expect( imageValue ).toHaveValue( '' );
+
+		// Now try to upload an image.
+		const addMediaButton = imageField.locator( '.media-upload-button' );
+		await addMediaButton.click( { force: true } );
+
+		await uploadImageToMediaLibrary( admin );
+
+		// Validate the image has been set in the widget.
+		await expect( imageValue ).toHaveValue( /.+/ );
+
+		// Test the Shape field.
+		const shapeSection = await openSection( 'image_shape', widget );
+
+		const shapeEnableSetting = shapeSection.locator( '.siteorigin-widget-field-enable .siteorigin-widget-input' );
+		await shapeSection.click();
+
+		// Enable the shape field.
+		await ensureElementVisible( shapeEnableSetting, offset );
+		await shapeEnableSetting.check();
+
+		const shapeField = await getField( widget, 'image_shape', true );
+		const shapeOpenButton = shapeField.locator( '.siteorigin-widget-shape-current' );
+		const shapeList = shapeField.locator( '.siteorigin-widget-shapes' );
+		await ensureElementVisible( shapeField, offset );
+
+		// Open the shape list.
+		shapeOpenButton.click();
+		await expect( shapeList ).toHaveClass( /siteorigin-widget-shapes-open/ );
+
+		// Search for a shape.
+		const shapeSearch = shapeField.locator( '.siteorigin-widget-shape-search' );
+		await ensureElementVisible( shapeSearch, offset );
+		await shapeSearch.fill( 'Diamond' );
+		await shapeSearch.press( 'Enter' );
+
+		// Confirm there's only one shape visible.
+		await expect( shapeList.locator( '.siteorigin-widget-shape:visible' ) ).toHaveCount( 1 );
+
+		// Select that one shape.
+		await shapeList.locator( '.siteorigin-widget-shape:visible' ).click();
+
+		// Confirm the shape has been set by checking shapeField .siteorigin-widget-input
+		await expect( shapeField.locator( '.siteorigin-widget-input' ) ).toHaveValue( 'diamond' );
+	}
+);
+
+/**
+ * Validates the following for the Blog widget in the Site Editor:
+ * 1. Test that sections are able to be opened.
+ * 2. That state emitters (checkbox and select) are working as expected and update related fields.
+ * 3. That the Image Size field's custom size feature work as expected.
+ * 4. That the preset field updates the featured image checkbox and triggers correct UI changes.
+ * 5. Validates the date picker field is working as expected.
+ *
+ * @param {Object} page The Playwright page object.
+ */
+test(
+	'Test the Blog widget.',
+	async ( { page } ) => {
+		const {
+			admin,
+			offset,
+			widget
+		} = await testPrep(
+			page,
+			'sowb/siteorigin-widget-blog-widget'
+		);
+
+		const settingsSection = await openSection( 'settings', widget );
+
+		const featuredImageSetting = settingsSection.locator( '.siteorigin-widget-field-featured_image .siteorigin-widget-input' );
+		const featuredImageSizeSetting = settingsSection.locator( '.siteorigin-widget-field-featured_image_size .siteorigin-widget-input-select' );
+		await ensureElementVisible( featuredImageSetting, offset );
+		await expect( featuredImageSetting ).toBeChecked();
+
+		// Validate that the Image Size Custom Size setting works as expected.
+		const customSizeWidth = settingsSection.locator( '.custom-size-wrapper .custom-image-size-width' );
+
+		await expect( customSizeWidth ).toBeHidden();
+		await featuredImageSizeSetting.selectOption( 'custom_size' );
+		await expect( featuredImageSizeSetting ).toHaveValue( 'custom_size' );
+		await ensureElementVisible( customSizeWidth, offset );
+
+		// Validate Checkbox field works as expected.
+		const featuredImageToggle = settingsSection.locator( '.siteorigin-widget-field-featured_image label' ).first();
+		await ensureElementVisible( featuredImageToggle, offset );
+		await featuredImageToggle.click();
+		await expect( featuredImageSetting ).not.toBeChecked();
+		await expect( featuredImageSizeSetting ).toBeHidden();
+
+		// Validate Presets field by changing the preset to a preset that
+		// will tick the featuredImageSetting checkbox.
+		const presetsField = widget.locator( '.siteorigin-widget-field-template .siteorigin-widget-input' );
+		await presetsField.selectOption( 'grid' );
+
+		// Validate that featuredImageSetting is checked.
+		await expect( featuredImageSetting ).toBeChecked();
+
+		// Open the Post Query section.
+		const postQuerySection = await openSection( 'posts', widget );
+
+		const postQueryDateFrom = postQuerySection.locator( '.sowb-specific-date-after .after-picker' );
+		await ensureElementVisible( postQueryDateFrom, offset );
+
+		// Activate the Dates From field so that the date picker pops up.
+		await postQueryDateFrom.click( { force: true } );
+		await postQueryDateFrom.focus();
+		await expect( postQueryDateFrom ).toBeFocused();
+
+		// Validate that that date picker is present, and then select the 15th.
+		const datePicker = admin.editor.canvas.locator( '.pika-single:not(.is-hidden)' );
+		await ensureElementVisible( datePicker, offset);
+		const day15Button = datePicker.locator( '.pika-button[data-pika-day="15"]' );
+		await ensureElementVisible( day15Button, offset );
+		await day15Button.click();
+
+		// Validate that a date has been set.
+		await expect( postQueryDateFrom ).toHaveValue( /.+/ );
+	}
+);
+
+/**
+ * Validates the following for the Headline widget in the Site Editor:
+ * 1. Test that sections are able to be opened.
+ * 2. That state emitters (checkbox and select) are working as expected and update related fields.
+ * 3. That the preset field updates the featured image checkbox and triggers correct UI changes.
+ *
+ * @param {Object} page The Playwright page object.
+ */
+test(
+	'Test the Headline widget.',
+	async ( { page } ) => {
+		const {
+			offset,
+			widget
+		} = await testPrep(
+			page,
+			'sowb/siteorigin-widget-headline-widget'
+		);
+
+		const dividerSection = await openSection( 'divider', widget );
+
+		// Increase Divider Thickness to the maximum amount.
+		const dividerThickness = dividerSection.locator( '.siteorigin-widget-field-thickness' );
+		const handle = dividerThickness.locator( '.ui-slider-handle' );
+		const track = dividerThickness.locator( '.ui-slider' );
+		const boundingBox = await track.boundingBox();
+
+		await track.click({
+			position: {
+				x: boundingBox.width - 5, // 5px from the right edge.
+				y: boundingBox.height / 2  // Center vertically.
+			}
+		} );
+
+		// Validate the slider value.
+		const sliderInput = dividerThickness.locator( '.siteorigin-widget-input-slider' );
+		await expect( sliderInput ).toHaveValue( '20' );
+
+		// Try adjusting the order field by moving the Divider field first.
+		const orderField = widget.locator( '.siteorigin-widget-field-order' );
+		const orderFieldItems = orderField.locator( '.siteorigin-widget-order-items' );
+
+		const dividerField = orderFieldItems.locator( '.siteorigin-widget-order-item[data-value="divider"]' );
+		const firstOrderItem = orderFieldItems.locator( '.siteorigin-widget-order-item' ).first();
+
+		// Drag Divider to the first item.
+		await dividerField.dragTo( firstOrderItem, {
+			targetPosition: {
+				x: 5,
+				y: 5,
+			},
+		} );
+
+		// Validate new ordering.
+		const orderFieldValue = orderField.locator( '.siteorigin-widget-input' );
+		await expect( orderFieldValue ).toHaveValue( 'divider,headline,sub_headline' );
+	}
+);
+
+/**
+ * Validates the following for the Hero widget in the Site Editor:
+ * 1. The repeater is able to have multiple frames added.
+ * 2. The TinyMCE field works as expected in repeaters.
+ * 3. Frames are able to be opened.
+ * 4. Frames are able to be re-ordered.
+ *
+ * @param {Object} page The Playwright page object.
+ */
+test(
+	'Test the Hero widget.',
+	async ( { page } ) => {
+		const {
+			offset,
+			widget
+		} = await testPrep(
+			page,
+			'sowb/siteorigin-widget-hero-widget'
+		);
+
+		const frames = widget.locator( '.siteorigin-widget-field-frames' );
+		await ensureElementVisible( frames, offset );
+
+		// Add three frames.
+		const addFrameButton = frames.locator( '> div > .siteorigin-widget-field-repeater-add' );
+
+		await ensureElementVisible( addFrameButton, offset );
+		await addFrameButton.click();
+		await ensureElementVisible( addFrameButton, offset );
+		await addFrameButton.click();
+		await ensureElementVisible( addFrameButton, offset );
+		await addFrameButton.click();
+
+		// Validate that three frames have been added.
+		let frameItems = frames.locator( '.siteorigin-widget-field-repeater-item' );
+		await expect( frameItems ).toHaveCount( 3 );
+
+		// Open the first frame.
+		const firstFrame = frameItems.first();
+		await ensureElementVisible( firstFrame, offset );
+		await firstFrame.click( { force: true } );
+
+		// Validate that the TinyMCE field rendered correctly inside of the repeater.
+		const tinyMCEField = firstFrame.locator( '.siteorigin-widget-field-content' );
+		await ensureElementVisible( tinyMCEField, offset );
+
+		// Tick the Automatically add paragraphs setting.
+		const automaticallyAddParagraphsSetting = firstFrame.locator( '.siteorigin-widget-field-autop .siteorigin-widget-input' );
+		await ensureElementVisible( automaticallyAddParagraphsSetting, offset );
+		await automaticallyAddParagraphsSetting.check();
+
+		// Close the first frame, and validate.
+		const firstFrameCloser = firstFrame.locator( '.siteorigin-widget-field-repeater-item-top' );
+		const firstFrameForm = firstFrame.locator( '.siteorigin-widget-field-repeater-item-form' );
+		await ensureElementVisible( firstFrameCloser, offset );
+		await firstFrameForm.click();
+
+		// Wait for frame to close.
+		await page.waitForTimeout( 300 );
+
+		// Open the last frame.
+		const lastFrame = frameItems.last();
+		await ensureElementVisible( lastFrame, offset );
+		await lastFrame.click();
+
+		const lastFrameTop = lastFrame.locator( '.siteorigin-widget-field-repeater-item-top' );
+
+		// Drag the last frame to the top of the frames list.
+		const firstFrameBoundingBox = await firstFrame.boundingBox();
+		const lastFrameTopBoundingBox = await lastFrameTop.boundingBox();
+
+		// Click on the top of the last frame.
+		await page.mouse.move(
+			lastFrameTopBoundingBox.x + lastFrameTopBoundingBox.width / 2,
+			lastFrameTopBoundingBox.y + lastFrameTopBoundingBox.height / 2
+		);
+		await page.mouse.down();
+
+		// Move the cursor 100px higher than the top edge of the first frame.
+		await page.mouse.move(
+			firstFrameBoundingBox.x + firstFrameBoundingBox.width / 2,
+			firstFrameBoundingBox.y - 100, // 100px above the top edge of the first frame.
+			{ steps: 10 }
+		);
+
+		// Release the left click.
+		await page.mouse.up();
+
+		// Validate the last frame is now positioned first by checking the autop setting.
+		frameItems = frames.locator( '.siteorigin-widget-field-repeater-item' );
+		const lastAutomaticallyAddParagraphsSetting = frameItems.first().locator( '.siteorigin-widget-field-autop .siteorigin-widget-input' );
+		await ensureElementVisible( lastAutomaticallyAddParagraphsSetting, offset );
+		await expect( lastAutomaticallyAddParagraphsSetting ).not.toBeChecked();
+	}
+);
+
+/**
+ * Validates the following for the Image Grid widget in the Site Editor:
+ * 1. Ensures the padding field is visible and accessible by default.
+ * 2. Validates that the multi-measurement field is working as expected.
+ *
+ * @param {Object} page The Playwright page object.
+ */
+test(
+	'Test the Image Grid widget.',
+	async ( { page } ) => {
+		const {
+			offset,
+			widget
+		} = await testPrep(
+			page,
+			'sowb/siteorigin-widgets-imagegrid-widget'
+		);
+
+		const imagePaddingSetting = widget.locator( '.siteorigin-widget-field-padding' );
+		await ensureElementVisible( imagePaddingSetting, offset );
+
+		// Clear the widget's default values.
+		const imagePaddingFields = imagePaddingSetting.locator( '.sow-multi-measurement-input' );
+		for ( let i = 0; i < 4; i++ ) {
+			const field = imagePaddingFields.nth( i );
+			await field.fill( '' ); // Clear the value.
+		}
+
+		const firstImage = imagePaddingFields.first();
+
+		await expect( firstImage ).toHaveValue( '' );
+
+		// Validate the multi-measurement field is autofilling.
+		await firstImage.press( '5' );
+		await page.keyboard.press( 'Tab' );
+		await page.waitForTimeout( 100 );
+		for ( let i = 0; i < 4; i++ ) {
+			const field = imagePaddingFields.nth( i );
+			await expect( field ).toHaveValue( '5' );
+		}
+	}
+);

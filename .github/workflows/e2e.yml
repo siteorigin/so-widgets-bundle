@@ -2,22 +2,32 @@ name: Run Playwright Tests
 
 on:
   workflow_dispatch:
+    inputs:
+      release_version:
+        description: "The release version to use"
+        required: true
+        default: "2.0.0"
 
 jobs:
   test:
-    timeout-minutes: 10
+    timeout-minutes: 40
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        submodules: recursive
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
-    - name: Install dependencies
+    - name: Install Dependencies
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Install Build dependencies
-      run: cd build && npm install
+    - name: Install Build Dependencies & Make Build
+      run: |
+        cd build
+        export RELEASE_VERSION=${{ github.event.inputs.release_version }}
+        npm install && npm run build:release
     - name: Run Tests
       run: npm run tests

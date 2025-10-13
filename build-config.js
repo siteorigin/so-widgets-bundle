@@ -64,10 +64,10 @@ module.exports = {
             'base/inc/installer/css/*css',                        // Include Installer CSS.
             'widgets/**/styles/*.less',                           // All the widgets' runtime .less files.
             '!{build,build/**}',                                  // Ignore build/ and contents
-            '!{node_modules,node_modules/**}',                    // Ignore node_modules/ and contents.
-            '!{tests,tests/**}',                                  // Ignore tests/ and contents.
+			'!{node_modules,node_modules/**}',                    // Ignore node_modules/ and contents.
+			'!{tests,tests/**}',                                  // Ignore tests/ and contents.
             '!{tmp,tmp/**}',                                      // Ignore tmp/ and contents
-            '!playwright.config.js',                             // Exclude playwright config file.
+			'!playwright.config.js',                              // Exclude playwright config file.
             '!so-widgets-bundle.php',                             // Not the base plugin file. It is copied by the 'version' task.
             '!readme.txt',                                        // Not the readme.txt file. It is copied by the 'version' task.
             '!readme.md',                                         // Ignore the readme.md file. It is for the github repo.
