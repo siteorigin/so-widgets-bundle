@@ -2,25 +2,26 @@
 
 ( function( $ ) {
 
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-autocomplete', function( e ) {
-		var $$ = $( this );
-		var $contentSelector = $$.find(' .existing-content-selector' );
-
-		const postId = parseInt( jQuery( '#post_ID' ).val() );
+	const setupAutocompleteField = function( e ) {
+		const $$ = $( this );
 
 		if ( $$.data( 'initialized' ) ) {
 			return;
 		}
 
-		var getSelectedItems = function() {
-			var selectedItems = $$.find( 'input.siteorigin-widget-input' ).val();
+		const $contentSelector = $$.find(' .existing-content-selector' );
+
+		const postId = parseInt( jQuery( '#post_ID' ).val() );
+
+		const getSelectedItems = function() {
+			const selectedItems = $$.find( 'input.siteorigin-widget-input' ).val();
 			return selectedItems.length === 0 ? [] : selectedItems.split( ',' );
 		};
 
-		var updateSelectedItems = function() {
-			var selectedItems = getSelectedItems();
+		const updateSelectedItems = function() {
+			const selectedItems = getSelectedItems();
 			$$.find( 'ul.items > li' ).each( function( index, element ) {
-				var $li = $( this );
+				const $li = $( this );
 
 				if ( selectedItems.indexOf( $li.data( 'value' ) ) > -1 ) {
 					$li.addClass( 'selected' );
@@ -66,7 +67,7 @@
 			$itemList.addClass( 'loading' );
 
 			return $.get(
-				soWidgets.ajaxurl,
+				window.top.soWidgets.ajaxurl,
 				ajaxData,
 				( results ) => {
 					// If there aren't any results, show a message.
@@ -109,12 +110,12 @@
 			refreshPromise.done( updateSelectedItems );
 		} );
 
-		var closeContent = function() {
+		const closeContent = function() {
 			$contentSelector.hide();
 		};
 
 		$( window ).on( 'mousedown', function( event ) {
-			var mouseDownOutside = $$.find( event.target ).length === 0;
+			const mouseDownOutside = $$.find( event.target ).length === 0;
 			if ( mouseDownOutside ) {
 				closeContent();
 			}
@@ -129,14 +130,14 @@
 			if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
 				return;
 			}
-			var $input = $$.find( 'input.siteorigin-widget-input' );
-			var $li = $( this );
-			var clickedItem = $li.data( 'value' );
+			const $input = $$.find( 'input.siteorigin-widget-input' );
+			const $li = $( this );
+			const clickedItem = $li.data( 'value' );
 
 			if ( $contentSelector.data( 'multiple' ) ) {
-				var selectedItems = getSelectedItems();
+				const selectedItems = getSelectedItems();
 
-				var curIndex = selectedItems.indexOf( clickedItem );
+				const curIndex = selectedItems.indexOf( clickedItem );
 
 				if ( curIndex > -1 ) {
 					selectedItems.splice( curIndex, 1 );
@@ -155,7 +156,7 @@
 			$input.trigger( 'change' );
 		} );
 
-		var interval = null;
+		let interval = null;
 		$$.find( '.content-text-search' ).on( 'keyup', function() {
 			if( interval !== null ) {
 				clearTimeout( interval );
@@ -167,6 +168,25 @@
 		} );
 
 		$$.data( 'initialized', true );
-	} );
+	}
 
+	 // If the current page isn't the site editor, set up the Autocomplete field now.
+	 if (
+		 window.top === window.self &&
+		 (
+			 typeof pagenow === 'string' &&
+			 pagenow !== 'site-editor'
+		 )
+	 ) {
+		 $( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-autocomplete', setupAutocompleteField );
+	 }
+
+	// Add support for the Site Editor.
+	window.addEventListener( 'message', function( e ) {
+		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
+			$( '.siteorigin-widget-field-type-autocomplete' ).each( function() {
+				setupAutocompleteField.call( this );
+			} );
+		}
+	} );
 } )( jQuery );

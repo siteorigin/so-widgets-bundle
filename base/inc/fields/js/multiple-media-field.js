@@ -1,16 +1,16 @@
 /* global jQuery, soWidgets */
 
 ( function( $ ) {
-
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-multiple_media', function( e ) {
-		var $field = $( this ),
-			$data = $field.find( '.siteorigin-widget-input' ),
-			selectedMedia = $data.val().split( ',' ),
-			repeater = $data.data( 'repeater' )
+	const setupMultipleMediaField = function() {
+		const $field = $( this );
 
 		if ( $field.data( 'initialized' ) ) {
 			return;
 		}
+
+		const $data = $field.find( '.siteorigin-widget-input' );
+		let selectedMedia = $data.val().split( ',' ),
+			repeater = $data.data( 'repeater' );
 
 		if ( repeater ) {
 			// This field is used to bulk add repeater items.
@@ -19,14 +19,15 @@
 		}
 
 		// Handle the media uploader
-		$field.find( '.button' ).on( 'click', function( e ) {
+		$field.find( '.button-secondary' ).on( 'click', function( e ) {
 			e.preventDefault();
-			if ( typeof wp.media === 'undefined' ) {
+
+			if ( typeof window.top.wp.media === 'undefined' ) {
 				return;
 			}
 
-			var $$ = $( this );
-			var frame = $( this ).data( 'frame' );
+			const $$ = $( this );
+			let frame = $( this ).data( 'frame' );
 
 			// If the media frame already exists, reopen it.
 			if ( frame ) {
@@ -35,7 +36,7 @@
 			}
 
 			// Create the media frame.
-			frame = wp.media( {
+			frame = window.top.wp.media( {
 				title: $$.data( 'choose' ),
 				library: {
 					type: $$.data( 'library' ).split( ',' ).map( function( v ) { return v.trim(); } )
@@ -51,31 +52,22 @@
 			if ( ! repeater ) {
 				frame.on( 'open', function() {
 					if ( selectedMedia.length ) {
-						var selection = frame.state().get( 'selection' );
+						const selection = frame.state().get( 'selection' );
 
 						$.each( selectedMedia, function() {
-						    selection.add( wp.media.attachment( this ) );
+							selection.add( window.top.wp.media.attachment( this ) );
 						} );
 					}
 				} );
 			}
 
-			// Refresh the media library after a new image is uploaded.
-			// The first `_requery()` triggers the loading indicator,
-			// while the second ensures the updated images are displayed correctly.
-			// This resolves a timing issue where newly uploaded images may not
-			// appear immediately in the library.
-			frame.on( 'library:selection:add', function() {
-				wp.media.frame.content.get().collection._requery( true );
-				setTimeout( function() {
-					wp.media.frame.content.get().collection._requery( true );
-				}, 0 );
-			} );
+			// Store the frame
+			$$.data( 'frame', frame );
 
 			// When an image is selected, run a callback.
 			frame.on( 'select', function() {
-				var attachmentIds = [],
-					attachment,
+				const attachmentIds = [];
+				let attachment,
 					attachmentUrl,
 					$currentItem,
 					$thumbnail,
@@ -131,7 +123,7 @@
 					if ( attachmentIds.indexOf( $( this ).data( 'id' ) ) == -1 ) {
 						$( this ).remove();
 					}
-				} )
+				} );
 
 				// Store image data.
 				if ( attachmentIds.length ) {
@@ -145,9 +137,6 @@
 				frame.close();
 			} );
 
-			// Store the frame.
-			$$.data( 'frame', frame );
-
 			// Finally, open the modal.
 			frame.open();
 		} );
@@ -155,7 +144,7 @@
 		if ( ! repeater ) {
 			$field.on( 'click', 'a.media-remove-button', function( e ) {
 				e.preventDefault();
-				var $currentItem = $( this ).parent();
+				const $currentItem = $( this ).parent();
 
 				selectedMedia.splice( selectedMedia.indexOf( $currentItem.data( 'id' ) ), 1 );
 				$data.val( selectedMedia.join( ',' ) );
@@ -165,6 +154,25 @@
 		}
 
 		$field.data( 'initialized', true );
-	} );
+	};
 
+	 // If the current page isn't the site editor, set up the Multiple Media field now.
+	 if (
+		 window.top === window.self &&
+		 (
+			 typeof pagenow === 'string' &&
+			 pagenow !== 'site-editor'
+		 )
+	 ) {
+		 $( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-multiple_media', setupMultipleMediaField );
+	 }
+
+	// Add support for the Site Editor.
+	window.addEventListener( 'message', function( e ) {
+		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
+			$( '.siteorigin-widget-field-type-multiple_media' ).each( function() {
+				setupMultipleMediaField.call( this );
+			} );
+		}
+	} );
 } )( jQuery );

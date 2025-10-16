@@ -636,11 +636,31 @@
 
 ( function( $ ) {
 
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-code', function( e ) {
-		var $$ = $( this );
+	const setupCodeField = function( e ) {
+		const $$ = $( this );
 		new Behave( {
 			textarea: $$.find( '.siteorigin-widget-code-input' ).get( 0 ),
 		} );
+	};
+
+	 // If the current page isn't the site editor, set up the Code field now.
+	 if (
+		 window.top === window.self &&
+		 (
+			 typeof pagenow === 'string' &&
+			 pagenow !== 'site-editor'
+		 )
+	 ) {
+		 $( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-code', setupCodeField );
+	 }
+
+	// Add support for the Site Editor.
+	window.addEventListener( 'message', function( e ) {
+		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
+			$( '.siteorigin-widget-field-type-code' ).each( function() {
+				setupCodeField.call( this );
+			} );
+		}
 	} );
 
 } )( jQuery );

@@ -1,8 +1,7 @@
 /* global jQuery */
 
 ( function( $ ) {
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-multi-measurement', function( e ) {
-
+	const setupMultiMeasurementField = function( e ) {
 		// Only set this field up once.
 		if ( $( this ).data( 'sow-multi-measurement-setup' ) ) {
 			return;
@@ -32,10 +31,10 @@
 		// Initial setup of the field.
 		$valInputs.each( function( index, element ) {
 			if ( values.length > index ) {
-				var valueResult = values[ index ].match( /(\d+\.?\d*)([a-z%]+)*/ );
+				const valueResult = values[ index ].match( /(\d+\.?\d*)([a-z%]+)*/ );
 				if ( valueResult && valueResult.length ) {
-					var amount = valueResult[ 1 ];
-					var unit = typeof valueResult[ 2 ] != 'undefined' ? valueResult[ 2 ] : 'px';
+					const amount = valueResult[ 1 ];
+					const unit = typeof valueResult[ 2 ] != 'undefined' ? valueResult[ 2 ] : 'px';
 					$( element ).val( amount );
 					$( element ).find( '+ .sow-multi-measurement-select-unit' ).val( unit );
 				}
@@ -77,7 +76,7 @@
 		}
 
 		$inputContainers.on( 'change', function( event ) {
-			var $valInput = $( event.currentTarget ).find( '> .sow-multi-measurement-input' );
+			const $valInput = $( event.currentTarget ).find( '> .sow-multi-measurement-input' );
 
 			if ( maybeAutoFill( $valInput ) ) {
 				return;
@@ -86,5 +85,25 @@
 			updateValue( $valInput );
 		} );
 
+	}
+
+	 // If the current page isn't the site editor, set up the Multi-Measurement field now.
+	 if (
+		 window.top === window.self &&
+		 (
+			 typeof pagenow === 'string' &&
+			 pagenow !== 'site-editor'
+		 )
+	 ) {
+		 $( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-multi-measurement', setupMultiMeasurementField );
+	 }
+
+	// Add support for the Site Editor.
+	window.addEventListener( 'message', function( e ) {
+		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
+			$( '.siteorigin-widget-field-type-multi-measurement' ).each( function() {
+				setupMultiMeasurementField.call( this );
+			} );
+		}
 	} );
 } )( jQuery );
