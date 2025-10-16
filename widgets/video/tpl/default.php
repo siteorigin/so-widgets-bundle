@@ -63,6 +63,7 @@ if ( $fitvids ) {
 	<?php if ( $is_skinnable_video_host ) { ?>
 		<video
 			<?php
+			$video_args = apply_filters( 'siteorigin_widgets_sow-video_local_video_args', $video_args, $instance );
 			foreach ( $video_args as $k => $v ) {
 				echo siteorigin_sanitize_attribute_key( $k );
 
