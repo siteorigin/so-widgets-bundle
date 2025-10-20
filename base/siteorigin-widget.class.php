@@ -839,6 +839,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$this->delete_css( $this->modify_instance( $old_instance ) );
 		}
 
+		if ( $new_instance !== $old_instance ) {
+			$new_instance['_sow_form_timestamp'] = time();
+		}
+
 		return $new_instance;
 	}
 
