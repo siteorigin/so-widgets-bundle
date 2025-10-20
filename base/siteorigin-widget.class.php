@@ -840,7 +840,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		if ( $new_instance !== $old_instance ) {
-			$new_instance['_sow_form_timestamp'] = time();
+			$new_instance['_sow_form_timestamp'] = (int) round( microtime( true ) * 1000 );
 		}
 
 		return $new_instance;
