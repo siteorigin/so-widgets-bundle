@@ -840,17 +840,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		}
 
 		if ( $new_instance !== $old_instance ) {
-			$current_timestamp = isset( $new_instance['_sow_form_timestamp'] ) ? $new_instance['_sow_form_timestamp'] : null;
-			$previous_timestamp = isset( $old_instance['_sow_form_timestamp'] ) ? $old_instance['_sow_form_timestamp'] : null;
-
-			$current_timestamp_numeric = is_numeric( $current_timestamp ) ? (float) $current_timestamp : 0;
-			$previous_timestamp_numeric = is_numeric( $previous_timestamp ) ? (float) $previous_timestamp : 0;
-
-			if ( $current_timestamp_numeric <= $previous_timestamp_numeric ) {
-				$current_timestamp = round( microtime( true ) * 1000 );
-			}
-
-			$new_instance['_sow_form_timestamp'] = $current_timestamp;
+			$new_instance['_sow_form_timestamp'] = round( microtime( true ) * 1000 );
 		}
 
 		return $new_instance;
