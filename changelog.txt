@@ -1,5 +1,19 @@
 == Changelog ==
 
+= 1.70.0 - 31 October 2025 =
+* Blog: Resolved potential date output format fatal error, debounced post count update, and optimized post selector count function.
+* Features: Fixed icon alignment with bottom aligned more link and refined right/left alignment for bottom aligned features.
+* Portfolio: Limited blog filter categories control to portfolio by default.
+* Video Player: Added siteorigin_widgets_sow-video_local_video_args filter and sandbox attribute.
+* General: Added extensive Site Editor support including improvements for form fields, asset cloning, and JavaScript Object Notation (JSON) handling.
+* General: Fixed TypeError when widget instance is JSON string in Representational State Transfer Application Programming Interface (REST API) context.
+* General: Migrated build tooling to Gulp 5.
+* General: Improved Select2 handling to prevent conflicts.
+* General: Replaced usage of WP_CONTENT_DIR.
+* General: Improved widget timestamp handling using microtime and ensured timestamp is set when saving widgets.
+* General: Adjusted field backup change detection to prevent incorrect flags and excluded builder_id from comparison.
+* General: Fixed Widget Block blockName check and ensured valid block names before registering.
+
 = 1.69.3 - 22 August 2025 =
 * Block Editor: Fixed teaser styling issues.
 * Features: Added link icon support when column is set to be linked.
