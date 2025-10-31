@@ -1012,16 +1012,20 @@ div.siteorigin-widget-form {
 
 }
 
-// WP 5 Block Editor compatibility styles
+// Block Editor compatibility styles.
 .block-editor,
+.block-editor-iframe__body,
 .block-editor-page {
 
 	.so-widget-block-form {
 		text-align: left;
 
 		&,
-		p,
-		button {
+		p {
+			font-family: Arial, Helvetica Neue, Helvetica, sans-serif; 
+		}
+
+		button:not(.dashicons) {
 			font-family: Arial, Helvetica Neue, Helvetica, sans-serif; 
 		}
 

@@ -528,6 +528,14 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$form_id = 'siteorigin_widget_form_' . md5( $id );
 		$class_name = str_replace( '_', '-', strtolower( $this->widget_class ) );
 
+		// Handle cases where instance is a JSON string (e.g., from WooCommerce REST API updates).
+		if ( is_string( $instance ) ) {
+			$instance = json_decode( $instance, true );
+			if ( ! is_array( $instance ) ) {
+				$instance = array();
+			}
+		}
+
 		if ( empty( $instance['_sow_form_id'] ) ) {
 			$instance['_sow_form_id'] = $id;
 		}
@@ -632,7 +640,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 						data-dismiss-url="<?php echo esc_url( $dismiss_url ); ?>"
 					>
 						<span class="screen-reader-text">
-							<?php echo esc_html( 'Dismiss this message', 'so-widgets-bundle' ); ?>
+							<?php esc_html_e( 'Dismiss this message', 'so-widgets-bundle' ); ?>
 						</span>
 					</button>
 				</section>
@@ -829,6 +837,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		// Remove the old CSS, it'll be regenerated on page load.
 		if ( $form_type == 'widget' ) {
 			$this->delete_css( $this->modify_instance( $old_instance ) );
+		}
+
+		if ( $new_instance !== $old_instance ) {
+			$new_instance['_sow_form_timestamp'] = round( microtime( true ) * 1000 );
 		}
 
 		return $new_instance;

@@ -199,20 +199,33 @@ function siteorigin_widget_post_selector_all_post_types() {
 function siteorigin_widget_post_selector_count_posts( $query ): int {
 	$query = siteorigin_widget_post_selector_process_query( $query );
 
-	$posts = new WP_Query( $query );
+	$count_query = array_merge( $query, array(
+		'fields'                 => 'ids',
+		'posts_per_page'         => 1,
+		'no_found_rows'          => false, // Required to get found_posts.
+		'cache_results'          => false,
+		'update_post_meta_cache' => false,
+		'update_post_term_cache' => false,
+	) );
+
+	$posts = new WP_Query( $count_query );
+	$total = $posts->found_posts;
 
 	// WP Query doesn't reduce found_posts by the offset value, let's do that now.
 	if ( ! empty( $query['offset'] ) && is_numeric( $query['offset'] ) ) {
-		$total = max( $posts->found_posts - $query['offset'], 0 );
+		$total = max(
+			$total - $query['offset'],
+			0
+		);
 	}
 
 	// If `posts_limit` is a valid number, limit the total number of posts.
 	if ( ! empty( $query['posts_limit'] ) ) {
-		$posts->found_posts = min(
-			$posts->found_posts,
+		$total = min(
+			$total,
 			(int) $query['posts_limit']
 		);
 	}
 
-	return empty( $total ) ? $posts->found_posts : $total;
+	return $total;
 }

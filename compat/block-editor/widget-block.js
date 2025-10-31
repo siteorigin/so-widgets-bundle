@@ -28,7 +28,7 @@
 			errorMessage = response.responseText;
 		}
 		return errorMessage;
-	}
+	};
 
 	// Certain widgets are excluded from the content check as
 	// they don't contain "standard" content indicators.
@@ -190,7 +190,7 @@
 			}
 			setState( { loadingWidgetPreview: false } );
 		} );
-	}
+	};
 
 	/**
 	 * Memoized component for WidgetBlockEdit.
@@ -227,8 +227,9 @@
 	 * @param {Object} state - The current state of the component.
 	 * @param {Function} setState - The setState function to update the component's state.
 	 */
-	const sowbSetupWidgetForm = ( props, state, setState ) => {
-		const $mainForm = jQuery( '[data-block="' + props.clientId + '"]' ).find( '.siteorigin-widget-form-main' );
+	const sowbSetupWidgetForm = async ( props, state, setState ) => {
+		const $mainForm = sowbGetBlockForm( props.clientId );
+		sowbMaybeSetupSiteEditorAssets();
 
 		if ( $mainForm.length > 0 && ! state.formInitialized ) {
 			const $previewContainer = $mainForm.siblings( '.siteorigin-widget-preview' );
@@ -256,6 +257,11 @@
 			$mainForm.sowSetupForm();
 
 			$mainForm.on( 'change', function() {
+				// Check form has been set up before reacting to changes.
+				if ( ! $mainForm.data( 'sow-form-setup' ) ) {
+					return;
+				}
+
 				// As setAttributes doesn't support callbacks, we have to manually
 				// pass the widgetData to the preview.
 				var widgetData = sowbForms.getWidgetFormValues( $mainForm );
@@ -276,7 +282,31 @@
 			} );
 			setState( { formInitialized: true } );
 		}
-	}
+	};
+
+	/**
+	 * Initializes WB Form Fields in the Site Editor iframe.
+	 *
+	 * Unlike the regular editor, the Site Editor uses an iframe to
+	 * display blocks. This requires us to reinitialize WB form fields
+	 * in the iframe context after the form has been set up.
+	 */
+	const initializeFormFieldsInIframe = () => {
+		if ( sowbSiteEditorCanvas.length === 0 ) {
+			return;
+		}
+
+		try {
+			const iframeWindow = sowbSiteEditorCanvas[0].contentWindow;
+			if ( iframeWindow ) {
+				iframeWindow.postMessage( {
+					action: 'sowbBlockFormInit'
+				}, '*' );
+			}
+		} catch ( e ) {
+			console.error( 'SiteOrigin Widgets: Failed to send postMessage to iframe:', e );
+		}
+	};
 
 	/**
 	 * WidgetBlockEdit component.
@@ -308,7 +338,8 @@
 
 			this.state = {
 				... this.initialState,
-				isStillMounted: true
+				isStillMounted: true,
+				devModeRemount: false,
 			};
 
 			// Store the widget class if it's not already set.
@@ -320,7 +351,7 @@
 		componentDidMount() {
 			this.setState( {
 				...this.initialState,
-				isStillMounted: true
+				isStillMounted: true,
 			} );
 
 			this.loadWidgetData();
@@ -329,7 +360,8 @@
 		componentWillUnmount() {
 			this.setState( {
 				...this.initialState,
-				isStillMounted: false
+				isStillMounted: false,
+				devModeRemount: true,
 			} );
 		}
 
@@ -373,7 +405,7 @@
 				const loadWidgetForm = ! widgetFormHtml.length;
 
 				if ( loadWidgetForm && ! loadingForm ) {
-					this.setState( { loadingForm: true });
+					this.setState( { loadingForm: true } );
 					jQuery.post( {
 						url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/forms',
 						beforeSend: (xhr) => {
@@ -396,7 +428,7 @@
 							} );
 						}, 0 );
 					} )
-					.fail( ( response) => {
+					.fail( ( response ) => {
 						this.setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
 					} );
 				}
@@ -451,7 +483,7 @@
 						Placeholder,
 						{
 							key: 'placeholder',
-							className: 'so-widget-block-form',
+							className: 'so-widget-block-form siteorigin-widget-form wp-core-ui',
 							label: this.props.widget.name,
 							instructions: this.props.widget.description
 						},
@@ -467,14 +499,27 @@
 							)
 						) :
 						el( 'div', {
-							className: 'so-widget-block-container',
+							className: 'so-widget-block-container siteorigin-widget-form wp-core-ui',
 							dangerouslySetInnerHTML: { __html: widgetFormHtml },
-							ref: () => sowbSetupWidgetForm(
-								this.props,
-								this.state,
-								this.setState.bind( this ),
-								this.props.widget.class
-							)
+							ref: () => {
+								sowbSetupWidgetForm(
+									this.props,
+									this.state,
+									this.setState.bind( this ),
+									this.props.widget.class
+								).then( () => {
+									// In dev mode, blocks are rendered twice in
+									// quick succession. To prevent issues with
+									// form field scripts we need to wait until the
+									// second render to initialize the fields.
+									if (
+										! sowbBlockEditorAdmin.wpScriptDebug ||
+										this.state.devModeRemount
+									) {
+										initializeFormFieldsInIframe();
+									}
+								} );
+							}
 						} )
 					)
 				] : [
@@ -729,7 +774,7 @@
 			delete sowbWidgets[ key ];
 			return;
 		}
-	}
+	};
 
 	// Register all Widget Bundle widgets, and build `sowbManuallyRegisteredBlocks`.
 	await Promise.all(
@@ -743,6 +788,10 @@
 
 	// Modify all of the manually registered blocks with additional properties.
 	Object.entries( sowbManuallyRegisteredBlocks ).forEach( ( [ key, widget ] ) => {
+		if ( ! widget.blockName ) {
+			return;
+		}
+
 		wp.hooks.addFilter(
 			'blocks.registerBlockType',
 			'sowb/' + widget.blockName,
@@ -784,6 +833,10 @@
 	 * @return {void}
 	 */
 	const setupSoWidgetBlock = ( widget ) => {
+		if ( ! widget.blockName ) {
+			return;
+		}
+
 		registerBlockType( 'sowb/' + widget.blockName, {
 			title: widget.name,
 			description: widget.description,
@@ -820,9 +873,9 @@
 	};
 
 	// Register all blocks that haven't been manually registered.
-	await sowbWidgets.forEach( setupSoWidgetBlock );
+	sowbWidgets.forEach( setupSoWidgetBlock );
 
-  // Add SiteOrigin Widgets Bundle Block Category Meta.
+	// Add SiteOrigin Widgets Bundle Block Category Meta.
 	updateCategory( 'siteorigin', {
 		icon: el( 'img', {
 			src: sowbBlockEditorAdmin.categoryIcon,
@@ -833,7 +886,178 @@
 			}
 		} )
 	} );
+
+	// Copy over assets to the Site Editor iframe asap.
+	if ( window.frameElement ) {
+		sowbSiteEditorCanvas = window.frameElement;
+		sowbMaybeSetupSiteEditorAssets();
+	}
 } )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.blockEditor );
+
+let sowbSiteEditorCanvas = false;
+
+/**
+ * Gets the widget form inside a specific block in either the main editor, or iframe.
+ *
+ * Locates the widget form element by client ID, handling both standard Block Editor
+ * and Site Editor iframe contexts appropriately.
+ *
+ * @param {string} clientId - The block's client ID
+ *
+ * @returns {jQuery} jQuery reference to the widget form
+ */
+const sowbGetBlockForm = ( clientId ) => {
+	if ( sowbSiteEditorCanvas === false ) {
+		sowbSiteEditorCanvas = jQuery( '.edit-site-visual-editor__editor-canvas' );
+	}
+
+	if ( sowbSiteEditorCanvas.length === 0 ) {
+		return jQuery( '[data-block="' + clientId + '"]' ).find( '.siteorigin-widget-form-main' );
+	}
+
+	// Return the main WB form.
+	return sowbSiteEditorCanvas
+		.contents()
+		.find( '[data-block="' + clientId + '"]' )
+		.find( '.siteorigin-widget-form-main' );
+};
+
+const sowbCanvasCloneElements = [
+	// WP Scripts and assets.
+	'#jquery-core-js',
+	'#jquery-migrate-js',
+	'#editor-js-after',
+	'#wp-tinymce-js',
+	'#wp-block-library-js-before',
+	'#jquery-ui-core-js',
+	'#jquery-ui-mouse-js',
+	'#jquery-ui-slider-js',
+	'#jquery-ui-sortable-js',
+	'#jquery-ui-resizable-js',
+	'#jquery-ui-draggable-js',
+	'#wplink-js-extra',
+	'#wplink-js',
+	'#buttons-css',
+	'#dashicons-css',
+
+	// Load all styles imported using load-styles.php.
+	'link[href*="wp-admin/load-styles.php"]',
+
+	// WP Templates.
+	'#tmpl-attachment-details',
+	'#tmpl-attachment-display-settings',
+	'#tmpl-attachment',
+	'#tmpl-embed-link-settings',
+	'#tmpl-image-editor',
+	'#tmpl-media-frame',
+	'#tmpl-media-modal',
+	'#tmpl-media-selection',
+	'#tmpl-uploader-editor',
+	'#tmpl-uploader-inline',
+	'#tmpl-uploader-status-error',
+	'#tmpl-uploader-status',
+	'#tmpl-uploader-window',
+
+	// Stylesheets.
+	'#editor-buttons-css',
+	'#forms-css',
+	'#media-views-css',
+	'#select2-css',
+
+	// WB.
+	'#siteorigin-widget-admin-css',
+	'#siteorigin-widget-admin-js-extra',
+	'#siteorigin-widget-admin-js',
+	'#so-widgets-bundle-tpl-image-search-dialog',
+	'#so-widgets-bundle-tpl-image-search-result-sponsored',
+	'#so-widgets-bundle-tpl-image-search-result',
+	'#sowb-pikaday-js',
+	'#sowb-pikaday-css',
+	'#wp-color-picker-alpha-js',
+	'#so-autocomplete-field-js',
+	'#so-code-field-js',
+	'#so-date-range-field-js',
+	'#so-date-range-field-css',
+	'#so-icon-field-js',
+	'#so-image-radio-field-js',
+	'#so-image-size-js',
+	'#so-media-field-js',
+	'#so-multi-measurement-field-js',
+	'#so-multiple-image-shape-field-js',
+	'#so-multiple-media-field-js',
+	'#so-order-field-js',
+	'#so-posts-selector-field-js',
+	'#so-presets-field-js',
+	'#so-select-field-js',
+	'#so-tabs-field-js',
+	'#so-tinymce-field-js',
+	'#so-toggle-field-js',
+];
+
+/**
+ * Appends elements to the canvas body.
+ *
+ * @param {jQuery} $canvasBody     The jQuery object representing the canvas body.*
+ */
+const sowbCloneElementsToCanvas = ( $canvasBody ) => {
+	for ( const selector of sowbCanvasCloneElements ) {
+		const $element = jQuery( selector );
+		if ( $element.length === 0 ) {
+			continue;
+		}
+
+		const elementHTML = $element[0] && $element[0].outerHTML;
+		if ( ! elementHTML ) {
+			continue;
+		}
+
+		// Copy element if it doesn't already exist in the canvas.
+		if ( $canvasBody.find( selector ).length === 0 ) {
+			$canvasBody.append( elementHTML );
+		}
+	}
+};
+
+let sowbSiteEditorAssetsSetup = false;
+/**
+ * Sets up assets required for the Site Editor iframe.
+ *
+ * This function ensures that necessary HTML templates, scripts, and styles are copied
+ * from the main document to the Site Editor iframe. It also sets the `ajaxurl`
+ * variable in the iframe's `contentWindow` if it is not already defined.
+ *
+ * The function performs the following steps:
+ * 1. Checks if the Site Editor iframe (`sowbSiteEditorCanvas`) exists and is accessible.
+ * 2. Copies elements specified in `sowbCanvasCloneElements` to the iframe's canvas body.
+ * 3. Copies elements specified in `sowbCanvasRemoveElements` to the iframe's canvas body
+ *    and removes the originals from the main document.
+ * 4. Sets the `ajaxurl` variable in the iframe's `contentWindow` for AJAX requests if it
+ *    is not already defined.
+ * 5. Ensures the setup process only runs once by using the `sowbSiteEditorAssetsSetup` flag.
+ */
+const sowbMaybeSetupSiteEditorAssets = () => {
+	if ( sowbSiteEditorCanvas.length === 0 || sowbSiteEditorAssetsSetup ) {
+		sowbSiteEditorAssetsSetup = true;
+		return;
+	}
+	sowbSiteEditorAssetsSetup = true;
+
+	const frame = typeof sowbSiteEditorCanvas[0] !== 'undefined' ?
+		sowbSiteEditorCanvas[0] :
+		sowbSiteEditorCanvas;
+
+	const $iframe = jQuery( frame.contentDocument );
+
+	const $canvasBody = $iframe.find( 'body' );
+
+	// Clone elements to the canvas.
+	sowbCloneElementsToCanvas( $canvasBody );
+
+	// Is ajaxurl set?
+	if ( typeof frame.contentWindow.ajaxurl === 'undefined' ) {
+		frame.contentWindow.ajaxurl = window.ajaxurl;
+	}
+};
 
 /**
  * Find all legacy SiteOrigin widget blocks in the editor.
@@ -876,7 +1100,7 @@ const sowbFindLegacyBlocks = ( blocks ) => {
 };
 
 const sowbIsWidgetActive = ( widgetClass ) => {
-	return sowbBlockEditorAdmin.widgets.find(widget => widget.class === widgetClass)
+	return sowbBlockEditorAdmin.widgets.find(widget => widget.class === widgetClass);
 };
 
 let sowbMigrateBlockSubscribe = false;
@@ -1073,7 +1297,7 @@ jQuery( function( $ ) {
 	 * ensure DOM is ready before modifying messages.
 	 *
 	 * @return {Function} Cleanup function that unsubscribes from block editor.
- 	*/
+	*/
 	const sowbHandleInactiveWidgets = wp.data.subscribe( () => {
 		// Are we good to start checking?
 		const blocks = wp.data.select( 'core/block-editor' ).getBlocks();
@@ -1123,7 +1347,7 @@ if (
 						if ( sowbCurrentBlocks[ i ].name.startsWith( 'sowb/' ) && sowbCurrentBlocks[ i ].isValid ) {
 							$form = jQuery( '#block-' + sowbCurrentBlocks[ i ].clientId ).find( '.so-widget-block-form' );
 							if ( ! sowbForms.validateFields( $form, showPrompt) ) {
-							 	showPrompt = false;
+								showPrompt = false;
 							}
 							$form.find( '.siteorigin-widget-field-is-required input' ).on( 'change', function() {
 								sowbForms.validateFields( $form );

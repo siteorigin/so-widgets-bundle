@@ -49,7 +49,7 @@ class SiteOrigin_Widgets_Bundle {
 		add_action( 'admin_menu', array( $this, 'admin_menu_init' ) );
 		add_action( 'admin_init', array( $this, 'clear_file_cache' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_register_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_register_scripts' ), 20, 1 );
 
 		// All the Ajax actions.
 		add_action( 'wp_ajax_so_widgets_bundle_manage', array( $this, 'admin_ajax_manage_handler' ) );
@@ -79,7 +79,7 @@ class SiteOrigin_Widgets_Bundle {
 		add_filter( 'siteorigin_panels_prebuilt_layout', array( $this, 'load_missing_widgets' ) );
 		add_filter( 'siteorigin_panels_widget_object', array( $this, 'load_missing_widget' ), 10, 2 );
 
-		add_filter( 'wp_enqueue_scripts', array( $this, 'register_general_scripts' ) );
+		add_filter( 'wp_enqueue_scripts', array( $this, 'register_general_scripts' ), 20, 1 );
 		add_filter( 'wp_enqueue_scripts', array( $this, 'enqueue_active_widgets_scripts' ) );
 
 		// Add compatibility for Autoptimize.
@@ -401,17 +401,24 @@ class SiteOrigin_Widgets_Bundle {
 			plugin_dir_url( __FILE__ ) . 'js/lib/pikaday.css'
 		);
 
-		wp_register_script(
-			'select2',
-			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/select2' . SOW_BUNDLE_JS_SUFFIX . '.js',
-			array( 'jquery' ),
-			'4.1.0-rc.0'
-		);
 
-		wp_register_style(
-			'select2',
-			plugin_dir_url( __FILE__ ) . 'css/lib/select2.css'
-		);
+		if (
+			! wp_script_is( 'select2', 'registered' ) &&
+			! wp_script_is( 'select2', 'enqueued' )
+		) {
+			wp_register_script(
+				'select2',
+				plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/select2' . SOW_BUNDLE_JS_SUFFIX . '.js',
+				array( 'jquery' ),
+				'4.1.0-rc.0'
+			);
+
+			wp_register_style(
+				'select2',
+				plugin_dir_url( __FILE__ ) . 'css/lib/select2.css'
+			);
+		}
+
 	}
 
 	/**
@@ -458,7 +465,9 @@ class SiteOrigin_Widgets_Bundle {
 
 		$widget_objects = $this->get_widget_objects();
 
-		$widget_path = empty( $_GET['id'] ) ? false : wp_normalize_path( WP_CONTENT_DIR ) . $_GET['id'];
+		$widget_path = empty( $_GET['id'] ) ?
+			false :
+			wp_normalize_path( WP_PLUGIN_DIR ) . sanitize_text_field( $_GET['id'] );
 
 		$widget_object = empty( $widget_objects[ $widget_path ] ) ? false : $widget_objects[ $widget_path ];
 
@@ -501,7 +510,10 @@ class SiteOrigin_Widgets_Bundle {
 		}
 
 		$widget_objects = $this->get_widget_objects();
-		$widget_path = empty( $_GET['id'] ) ? false : wp_normalize_path( WP_CONTENT_DIR ) . $_GET['id'];
+		$widget_path = empty( $_GET['id'] ) ?
+			false :
+			wp_normalize_path( WP_PLUGIN_DIR ) . sanitize_text_field( $_GET['id'] );
+
 		$widget_object = empty( $widget_objects[ $widget_path ] ) ? false : $widget_objects[ $widget_path ];
 
 		if ( empty( $widget_object ) || ! $widget_object->has_form( 'settings' ) ) {
@@ -919,17 +931,22 @@ class SiteOrigin_Widgets_Bundle {
 			1.1
 		);
 
-		wp_register_script(
-			'select2',
-			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/select2' . SOW_BUNDLE_JS_SUFFIX . '.js',
-			array( 'jquery' ),
-			'4.1.0-rc.0'
-		);
+		if (
+			! wp_script_is( 'select2', 'registered' ) &&
+			! wp_script_is( 'select2', 'enqueued' )
+		) {
+			wp_register_script(
+				'select2',
+				plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/select2' . SOW_BUNDLE_JS_SUFFIX . '.js',
+				array( 'jquery' ),
+				'4.1.0-rc.0'
+			);
 
-		wp_register_style(
-			'select2',
-			plugin_dir_url( __FILE__ ) . 'css/lib/select2.css'
-		);
+			wp_register_style(
+				'select2',
+				plugin_dir_url( __FILE__ ) . 'css/lib/select2.css'
+			);
+		}
 	}
 
 	/**

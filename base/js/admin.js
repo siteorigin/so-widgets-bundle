@@ -1092,22 +1092,39 @@ var sowbForms = window.sowbForms || {};
 						return;
 					}
 
+					const $itemForm = $( this ).closest( '.siteorigin-widget-field-repeater-item' ).find( '.siteorigin-widget-field-repeater-item-form' ).eq( 0 );
+
+					const initialState = $itemForm.is( ':visible' ) ? 'open' : 'closed';
+
 					e.preventDefault();
-					$( this ).closest( '.siteorigin-widget-field-repeater-item' ).find( '.siteorigin-widget-field-repeater-item-form' ).eq( 0 ).slideToggle( 'fast', function() {
-						$( window ).trigger( 'resize' );
-						if ( $ ( this ).is( ':visible' ) ) {
-							$( this ).trigger( 'slideToggleOpenComplete' );
+					$itemForm.slideToggle( {
+						duration: 'fast',
+						start: function() {
+							const $this = $( this );
 
-							$( this ).find( '.siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field,> .siteorigin-widget-field' )
-							.each( function (index, element) {
-								var $field = $( element );
-								if ( $field.is( ':visible' ) ) {
-									$field.trigger( 'sowsetupformfield' );
-								}
+							if ( initialState === 'open' ) {
+								$this.trigger( 'slideToggleCloseComplete' );
+								return;
+							}
 
+							$this.trigger( 'slideToggleOpenComplete' );
+
+							const $fields = $this.find(
+								'.siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field, > .siteorigin-widget-field'
+							);
+
+							const visibleFields = $fields.filter( function() {
+								return $( this ).is( ':visible' );
 							} );
-						} else {
-							$( this ).trigger( 'slideToggleCloseComplete' );
+
+							// Trigger 'sowsetupformfield' for all visible fields in a single batch
+							visibleFields.each( function() {
+								$( this ).trigger( 'sowsetupformfield' );
+							} );
+
+						},
+						complete: () => {
+							$( window ).trigger( 'resize' );
 						}
 					} );
 				} );
@@ -1329,7 +1346,8 @@ var sowbForms = window.sowbForms || {};
 		// Exclude keys that are not relevant for field value comparison.
 		if (
 			key === '_sow_form_timestamp' ||
-			key === '_sow_form_id'
+			key === '_sow_form_id' ||
+			key === 'builder_id'
 		) {
 			return false;
 		}
@@ -1406,12 +1424,47 @@ var sowbForms = window.sowbForms || {};
 		// Add user change detection to the form to prevent unintended
 		// backups of automated changes.
 		$el.on( 'keydown mouseup touchend', ( e ) => {
+			if ( isUserChange ) {
+				return;
+			}
+
+			const $target = $( e.target );
+
 			// Don't trigger a backup if the user clicked on a section.
-			if ( $( e.target ).parent().is( '.siteorigin-widget-field-type-section' ) ) {
+			if ( $target.is( 'label' ) ) {
+				const $parent = $target.parent();
+				// Check if the label is part of a section/widget field.
+				if (
+					$parent.hasClass( 'siteorigin-widget-field-type-section' ) ||
+					$parent.hasClass( 'siteorigin-widget-field-type-widget' )
+				) {
+					return false;
+				}
+			}
+
+			// Don't trigger if user opens Builder field.
+			if ( $target.is( '.siteorigin-panels-display-builder' ) ) {
 				return false;
 			}
 
-			isUserChange = true;
+			const validElementClasses = [
+				'input',
+				'select',
+				'textarea',
+				'iframe',
+				'label',
+				'.ui-slider-handle',
+				'.ui-slider',
+				'.siteorigin-widget-icon-icons-icon',
+				'.so-panels-dialog-add-builder .so-close',
+				'a.media-upload-button',
+				'a.media-remove-button',
+			];
+
+			if ( validElementClasses.some( ( selector ) => $target.is( selector ) ) ) {
+				isUserChange = true;
+			}
+
 		} );
 
 		// Debounce backups to prevent potential performance issues.

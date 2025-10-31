@@ -13,6 +13,7 @@
 	}
 
 	.so-widget-block-container {
+		flex: 100%;
 
 		// Avoid the Block Editor applying theme List Styling to the ComboboxControl suggestion list.
 		ul.components-form-token-field__suggestions-list {
@@ -54,6 +55,11 @@
 				color: #1e1e1e;
 			}
 		}
+
+		// Restore WP Core CSS in Site Editor.
+		.hidden {
+			display: none;
+		}
 	}
 
 	.so-widget-preview-container {
@@ -64,4 +70,21 @@
 .so-block-editor-icon:not(.so-widget-icon-default) svg {
 	fill: #009dff !important;
 	stroke: transparent !important;
+}
+
+.siteorigin-widget-tinymce-add-media {
+
+	.wp-media-buttons-icon {
+		display: inline-block;
+		height: 20px;
+		line-height: 1;
+		margin: 0 2px;
+		vertical-align: middle;
+		width: 20px;
+
+		&::before {
+			content: "\f104";
+			font: normal 18px/1 dashicons;
+		}
+	}
 }

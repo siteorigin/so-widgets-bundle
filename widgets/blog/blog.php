@@ -76,6 +76,29 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 	public function get_widget_form() {
 		$templates = apply_filters( 'siteorigin_widgets_blog_templates', json_decode( file_get_contents( plugin_dir_path( __FILE__ ) . 'data/templates.json' ), true ) );
 
+		$filter_categories_templates = apply_filters(
+			'siteorigin_widgets_blog_filter_categories_templates',
+			array( 'portfolio' )
+		);
+		$filter_categories_templates = array_unique(
+			array_filter(
+				array_map(
+					'sanitize_key',
+					(array) $filter_categories_templates
+				)
+			)
+		);
+
+		$filter_categories_state_handler = array();
+		if ( ! empty( $filter_categories_templates ) ) {
+			$filter_categories_state_handler[ 'active_template[' . implode( ',', $filter_categories_templates ) . ']' ] = array( 'slideDown' );
+		}
+		$filter_categories_state_handler['_else[active_template]'] = array( 'slideUp' );
+
+		$filter_categories_design_state_handler = $filter_categories_state_handler;
+		$filter_categories_design_state_handler['filter_categories[show]'] = array( 'slideDown' );
+		$filter_categories_design_state_handler['filter_categories[hide]'] = array( 'slideUp' );
+
 		return $this->dynamic_preset_state_handler(
 			'active_template',
 			$templates,
@@ -212,6 +235,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 									'filter_categories[hide]: ! val',
 								),
 							),
+							'state_handler' => $filter_categories_state_handler,
 						),
 						'categories' => array(
 							'type' => 'checkbox',
@@ -419,6 +443,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 							'type' => 'section',
 							'label' => __( 'Filter Categories', 'so-widgets-bundle' ),
 							'hide' => true,
+							'state_handler' => $filter_categories_design_state_handler,
 							'fields' => array(
 								'font' => array(
 									'type' => 'font',
@@ -1295,7 +1320,14 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 		}
 
 		if ( $settings['date'] ) {
-			$date_output_format = isset( $settings['date_output_format'] ) ? $settings['date_output_format'] : null;
+			if (
+				isset( $settings['date_output_format'] ) &&
+				is_string( $settings['date_output_format'] )
+			) {
+				$date_output_format = $settings['date_output_format'];
+			} else {
+				$date_output_format = null;
+			}
 			?>
 			<span class="sow-entry-date">
 				<a href="<?php echo esc_url( get_permalink() ); ?>" rel="bookmark">

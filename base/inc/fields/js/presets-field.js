@@ -1,41 +1,42 @@
 /* global jQuery, sowbForms */
 
 ( function( $ ) {
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-presets', function( e ) {
-		
-		var $presetSelect = $( this ).find( 'select[class="siteorigin-widget-input"]' );
+
+	const setupPresetsField = function( e ) {
+
+		const $presetSelect = $( this ).find( 'select[class="siteorigin-widget-input"]' );
 		if ( $presetSelect.data( 'initialized' ) ) {
 			return;
 		}
-		
-		var $undoLink = $presetSelect.find( '+ .sowb-presets-field-undo' );
+
+		const $undoLink = $presetSelect.find( '+ .sowb-presets-field-undo' );
 		$undoLink.hide();
 
-		var onLoadTrigger = false;
-		var addingDefault = false;
-		var presets = $presetSelect.data( 'presets' );
+		let onLoadTrigger = false;
+		let addingDefault = false;
+		const presets = $presetSelect.data( 'presets' );
 		$presetSelect.on( 'change', function() {
-			var selectedPreset = $presetSelect.val();
+			const selectedPreset = $presetSelect.val();
 			if ( selectedPreset && presets.hasOwnProperty( selectedPreset ) ) {
-				var presetValues = presets[ selectedPreset ].values;
-				var $formContainer = $presetSelect.closest( '.siteorigin-widget-form-main' );
+				const presetValues = presets[ selectedPreset ].values;
+				const $formContainer = $presetSelect.closest( '.siteorigin-widget-form-main' );
 
 				// If we're adding defaults, don't show undo.
 				if ( addingDefault || ! onLoadTrigger) {
-					var previousValues = $presetSelect.data( 'previousValues' );
+					let previousValues = $presetSelect.data( 'previousValues' );
 					if ( ! addingDefault ) {
 						if ( ! previousValues ) {
-							var presetClone = JSON.parse( JSON.stringify( presetValues ) );
-							var widgetData = sowbForms.getWidgetFormValues( $formContainer );
-							var recurseDepth = 0;
-							var copyValues = function( from, to ) {
+							const presetClone = JSON.parse( JSON.stringify( presetValues ) );
+							const widgetData = sowbForms.getWidgetFormValues( $formContainer );
+							let recurseDepth = 0;
+							const copyValues = function( from, to ) {
 								if ( ++recurseDepth > 10 ) {
 									return to;
 								}
-								for ( var key in to ) {
+								for ( const key in to ) {
 									if ( from.hasOwnProperty( key ) ) {
-										var fromItem = from[ key ];
-										var toItem = to[ key ];
+										const fromItem = from[ key ];
+										const toItem = to[ key ];
 										if ( fromItem !== null && toItem !== null && typeof fromItem === 'object' ) {
 											copyValues( fromItem, toItem );
 										} else {
@@ -81,5 +82,25 @@
 		$presetSelect.trigger( 'change' );
 
 		$presetSelect.data( 'initialized', true );
+	};
+
+	 // If the current page isn't the site editor, set up the Presets field now.
+	 if (
+		 window.top === window.self &&
+		 (
+			 typeof pagenow === 'string' &&
+			 pagenow !== 'site-editor'
+		 )
+	 ) {
+		 $( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-presets', setupPresetsField );
+	 }
+
+	// Add support for the Site Editor.
+	window.addEventListener( 'message', function( e ) {
+		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
+			$( '.siteorigin-widget-field-type-presets' ).each( function() {
+				setupPresetsField.call( this );
+			} );
+		}
 	} );
 } )( jQuery );

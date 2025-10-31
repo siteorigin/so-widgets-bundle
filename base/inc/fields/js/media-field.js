@@ -2,25 +2,26 @@
 
 ( function( $ ) {
 
-	$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-media', function( e ) {
-		var $field = $( this );
-		var $media = $field.find( '> .media-field-wrapper' );
-		var $inputField = $field.find( '.siteorigin-widget-input' ).not( '.media-fallback-external' );
-		var $externalField = $field.find( '.media-fallback-external' );
+	const setupMediaField = function( e ) {
+		const $field = $( this );
+		const $media = $field.find( '> .media-field-wrapper' );
+		const $inputField = $field.find( '.siteorigin-widget-input' ).not( '.media-fallback-external' );
+		const $externalField = $field.find( '.media-fallback-external' );
 
-		if ( $media.data( 'initialized' ) ) {
+		if ( $field.attr( 'data-initialized' ) ) {
 			return;
 		}
+		$field.attr( 'data-initialized', true );
 
 		// Handle the media uploader.
 		$media.find( '.media-upload-button' ).on( 'click', function( e ) {
 			e.preventDefault();
-			if ( typeof wp.media === 'undefined' ) {
+			if ( typeof window.top.wp.media === 'undefined' ) {
 				return;
 			}
 
-			var $$ = $( this );
-			var frame = $( this ).data( 'frame' );
+			const $$ = $( this );
+			let frame = $( this ).data( 'frame' );
 
 			// If the media frame already exists, reopen it.
 			if ( frame ) {
@@ -29,7 +30,7 @@
 			}
 
 			// Create the media frame.
-			frame = wp.media( {
+			frame = window.top.wp.media( {
 				// Set the title of the modal.
 				title: $$.data( 'choose' ),
 
@@ -50,12 +51,12 @@
 				}
 			} );
 
-			// If there's a selected image, highlight it. 
+			// If there's a selected image, highlight it.
 			frame.on( 'open', function() {
-				var selection = frame.state().get( 'selection' );
-				var selectedImage = $field.find( '.siteorigin-widget-input[type="hidden"]' ).val();
+				const selection = frame.state().get( 'selection' );
+				const selectedImage = $field.find( '.siteorigin-widget-input[type="hidden"]' ).val();
 				if ( selectedImage ) {
-				    selection.add( wp.media.attachment( selectedImage ) );
+					selection.add( window.top.wp.media.attachment( selectedImage ) );
 				}
 			} );
 
@@ -65,14 +66,14 @@
 			// When an image is selected, run a callback.
 			frame.on( 'select', function() {
 				// Grab the selected attachment.
-				var attachment = frame.state().get( 'selection' ).first().attributes;
+				const attachment = frame.state().get( 'selection' ).first().attributes;
 
 				$field.find( '.current .thumbnail' ).attr( 'title', attachment.title );
 				$field.find( '.current .title' ).html( attachment.title );
 				$inputField.val( attachment.id );
 				$inputField.trigger( 'change', { silent: true } );
 
-				var $thumbnail = $field.find( '.current .thumbnail' );
+				const $thumbnail = $field.find( '.current .thumbnail' );
 
 				if ( typeof attachment.sizes !== 'undefined' ) {
 					if ( typeof attachment.sizes.thumbnail !== 'undefined' ) {
@@ -100,24 +101,28 @@
 				$inputField.val( '' );
 				$field.find( '.current .title' ).empty();
 				$inputField.trigger( 'change', { silent: true } );
-				$field.find( '.current .thumbnail' ).fadeOut( 'fast' );
+				// Clear the src attribute first, then hide the thumbnail.
+				const $thumbnail = $field.find( '.current .thumbnail' );
+				$thumbnail.attr( 'src', '' );
+				$thumbnail.fadeOut( 'fast' );
 				$( this ).addClass( 'remove-hide' ).attr( 'tabindex', -1 );
 			} );
 
-		// Everything for the dialog.
-		var dialog;
 
-		var reflowDialog = function() {
+		let dialog;
+		let activeImportField = null;
+
+		const reflowDialog = function() {
 			if ( ! dialog ) {
 				return;
 			}
 
-			var results = dialog.find( '.so-widgets-image-results' );
+			const results = dialog.find( '.so-widgets-image-results' );
 			if ( results.length === 0 ) {
 				return;
 			}
 
-			var width = results.width(),
+			const width = results.width(),
 				perRow = Math.floor( width / 276 ),
 				spare = ( width - perRow * 276 ),
 				resultWidth = spare / perRow + 260;
@@ -129,20 +134,25 @@
 		};
 		$( window ).on( 'resize', reflowDialog );
 
-		var setupDialog = function() {
+		const setupDialog = function( $currentField ) {
 			if ( ! dialog ) {
 				// Create the dialog.
-				dialog = $( $('#so-widgets-bundle-tpl-image-search-dialog').html().trim() ).appendTo( 'body' );
+				dialog = $( $('#so-widgets-bundle-tpl-image-search-dialog').html().trim() ).appendTo( window.top.document.body );
 				dialog.find( '.close' ).on( 'click keyup', function( e ) {
 					if ( e.type == 'keyup' && ! window.sowbForms.isEnter( e ) ) {
 						return;
 					}
 					dialog.hide();
+					// Only clear the importing class when dialog is manually closed, not during import.
+					if ( ! dialog.hasClass( 'so-widgets-importing' ) ) {
+						$( '.so-importing-image' ).removeClass( 'so-importing-image' );
+						activeImportField = null;
+					}
 				} );
 
-				var results = dialog.find( '.so-widgets-image-results' );
+				const results = dialog.find( '.so-widgets-image-results' );
 
-				var fetchImages = function( query, page ) {
+				const fetchImages = function( query, page ) {
 					dialog.find( '.so-widgets-results-loading' ).fadeIn( 'fast' );
 					dialog.find( '.so-widgets-results-loading strong' ).html(
 						dialog.find( '.so-widgets-results-loading strong' ).data( 'loading' )
@@ -165,10 +175,10 @@
 
 							results.removeClass( 'so-loading' );
 							$.each( response.items, function( i, r ) {
-								var result = $( $( '#so-widgets-bundle-tpl-image-search-result' ).html().trim() )
+								const result = $( $( '#so-widgets-bundle-tpl-image-search-result' ).html().trim() )
 									.appendTo( results )
 									.addClass( 'source-' + r.source );
-								var img = result.find( '.so-widgets-result-image' );
+								const img = result.find( '.so-widgets-result-image' );
 
 								// Preload the image.
 								img.css( 'background-image', 'url(' + r.thumbnail + ')' );
@@ -220,7 +230,7 @@
 					e.preventDefault();
 
 					// Perform the search.
-					var q = dialog.find( '.so-widgets-search-input' ).val();
+					const q = dialog.find( '.so-widgets-search-input' ).val();
 					results.empty();
 
 					if ( q !== '' ) {
@@ -232,22 +242,22 @@
 				// Clicking on the related search buttons.
 				dialog.on( 'click', '.so-keywords-list a', function( e ) {
 					e.preventDefault();
-					var $$ = $( this ).trigger( 'blur' );
+					const $$ = $( this ).trigger( 'blur' );
 					dialog.find('.so-widgets-search-input').val( $$.data( 'keyword' ) );
 					dialog.find( '#so-widgets-image-search-form' ).trigger( 'submit' );
 				} );
 
 				// Clicking on the more button.
 				dialog.find( '.so-widgets-results-more button' ).on( 'click', function() {
-					var $$ = $( this );
+					const $$ = $( this );
 					fetchImages( $$.data( 'query' ), $$.data( 'page' ) );
 				} );
 
-				var hoverTimeout;
+				let hoverTimeout;
 
 				// Clicking on an image to import it.
 				dialog.on( 'click', '.so-widgets-result-image', function( e ) {
-					var $$ = $( this );
+					const $$ = $( this );
 					if ( ! $$.data( 'full_url' ) ) {
 						return;
 					}
@@ -257,7 +267,7 @@
 					if ( confirm( dialog.data( 'confirm-import' ) ) ) {
 						dialog.addClass( 'so-widgets-importing' );
 
-						var postId = $( '#post_ID' ).val();
+						const postId = $( '#post_ID' ).val();
 						if ( postId === null ) {
 							postId = '';
 						}
@@ -273,20 +283,38 @@
 								'_sononce' : dialog.find( 'input[name="_sononce"]' ).val()
 							},
 							function( response ) {
-								dialog.find( '#so-widgets-image-search-frame' ).removeClass( 'so-widgets-importing' );
-
 								if ( response.error === false ) {
 									// This was a success.
-									dialog.hide();
-									dialog.find( '.so-widgets-results-loading' ).hide();
-									$inputField.val( response.attachment_id ).trigger( 'change', { silent: true } );
-									$field.find( '.current .thumbnail' ).attr( 'src', response.thumb ).fadeIn();
+									const $currentField = activeImportField;
 
-									$field.find( '.media-remove-button' ).removeClass( 'remove-hide' ).attr( 'tabindex', 0 );
+									if ( $currentField && $currentField.length ) {
+										// Update field.
+										const $inputField = $currentField.find( '.siteorigin-widget-input' ).not( '.media-fallback-external' );
+										$inputField.val( response.attachment_id );
+										$inputField.trigger( 'change' );
+
+										// Update the thumbnail.
+										const $thumbnail = $currentField.find( '.current .thumbnail' );
+										$thumbnail.attr( 'src', response.thumb );
+										$thumbnail.fadeIn();
+
+										$currentField.find( '.media-remove-button' )
+											.removeClass( 'remove-hide' )
+											.attr( 'tabindex', 0 );
+
+										$currentField.removeClass( 'so-importing-image' );
+
+										activeImportField = null;
+									}
+									dialog.hide();
 								} else {
 									alert( response.message );
 									dialog.find( '.so-widgets-results-loading' ).hide();
 								}
+
+								// Clean up dialog state after import (success or failure).
+								dialog.removeClass( 'so-widgets-importing' );
+								dialog.find( '#so-widgets-image-search-frame' ).removeClass( 'so-widgets-importing' );
 							}
 						);
 
@@ -301,24 +329,24 @@
 				} );
 
 				// Hovering over an image to preview it.
-				var previewWindow = dialog.find( '.so-widgets-preview-window' );
+				const previewWindow = dialog.find( '.so-widgets-preview-window' );
 				dialog
 					.on( 'mouseenter', '.so-widgets-result-image', function() {
-						var $$ = $( this ),
+						const $$ = $( this ),
 							preview = $$.data( 'preview' );
 
 						clearTimeout( hoverTimeout );
 
 						hoverTimeout = setTimeout( function() {
 							// Scale the preview sizes.
-							var scalePreviewX = 1, scalePreviewY = 1;
+							let scalePreviewX = 1, scalePreviewY = 1;
 							if ( preview[1] > $( window ).outerWidth() * 0.33 ) {
 								scalePreviewX = $( window ).outerWidth() * 0.33 / preview[1];
 							}
 							if ( preview[2] > $( window ).outerHeight() * 0.5 ) {
 								scalePreviewY = $( window ).outerHeight() * 0.5 / preview[2];
 							}
-							var scalePreview = Math.min( scalePreviewX, scalePreviewY );
+							let scalePreview = Math.min( scalePreviewX, scalePreviewY );
 							// Never upscale.
 							if ( scalePreview > 1 ) {
 								scalePreview = 1;
@@ -342,7 +370,7 @@
 						clearTimeout( hoverTimeout );
 					} );
 
-				var lastX, lastY;
+				let lastX, lastY;
 				dialog.on( 'mousemove', function( e ) {
 					if ( e.clientX ) {
 						lastX = e.clientX;
@@ -353,19 +381,19 @@
 					}
 
 					if ( previewWindow.is( ':visible' ) ) {
-						var ph = previewWindow.outerHeight(),
+						const ph = previewWindow.outerHeight(),
 							pw = previewWindow.outerWidth(),
 							wh = $( window ).outerHeight(),
 							ww = $( window ).outerWidth();
 
 
 						// Calculate the top position.
-						var top = lastY - ph / 2;
+						let top = lastY - ph / 2;
 						top = Math.max( top, 10 );
 						top = Math.min( top, wh - 10 - ph );
 
 						// Calculate the left position.
-						var left = ( lastX < ww / 2 ) ? lastX + 15 : lastX - 15 - pw;
+						const left = ( lastX < ww / 2 ) ? lastX + 15 : lastX - 15 - pw;
 
 						// Figure out where the preview needs to go.
 						previewWindow.css( {
@@ -384,18 +412,26 @@
 		// Handle displaying the image search dialog.
 		$media.find( '.find-image-button' ).on( 'click', function( e ) {
 			e.preventDefault();
-			setupDialog();
+
+			// Clear any existing importing class and add it to current field.
+			$( '.so-importing-image' ).removeClass( 'so-importing-image' );
+			$field.addClass( 'so-importing-image' );
+
+			// Store direct reference to the current field for later use.
+			activeImportField = $field;
+
+			setupDialog( $field );
 		} );
 
 		$inputField.on( 'change', function( event, data ) {
 			if ( ! ( data && data.silent ) ) {
-				var newVal = $inputField.val();
+				const newVal = $inputField.val();
 				if ( newVal) {
-					var $thumbnail = $field.find( '.current .thumbnail' );
-					var attachment = wp.media.attachment( newVal );
+					const $thumbnail = $field.find( '.current .thumbnail' );
+					const attachment = window.top.wp.media.attachment( newVal );
 					attachment.fetch().done( function() {
 						if ( attachment.has( 'sizes' ) ) {
-							var sizes = attachment.get( 'sizes' );
+							const sizes = attachment.get( 'sizes' );
 							if ( typeof sizes.thumbnail !== 'undefined' ) {
 								$thumbnail.attr( 'src', sizes.thumbnail.url ).fadeIn();
 							}
@@ -433,7 +469,29 @@
 			}
 
 		} );
+	};
 
-		$media.data( 'initialized', true );
+	// If the current page isn't the site editor, set up the Media field now.
+	if (
+		window.top === window.self &&
+		(
+			typeof pagenow === 'string' &&
+			pagenow !== 'site-editor'
+		)
+	) {
+		$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-media', setupMediaField );
+	}
+
+	// Add support for the Site Editor.
+	window.addEventListener( 'message', function( e ) {
+		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
+			$( '.siteorigin-widget-field-type-media' ).each( function() {
+				if ( $( this ).attr( 'data-initialized' ) ) {
+					return;
+				}
+
+				setupMediaField.call( this );
+			} );
+		}
 	} );
 } )( jQuery );
