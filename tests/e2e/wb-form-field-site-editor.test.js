@@ -652,3 +652,22 @@ test(
 		}
 	}
 );
+
+/**
+ * Validates that editor scripts aren't being loaded on the frontend.
+ *
+ * @param {Object} page The Playwright page object.
+ */
+test(
+	'Test that editor scripts are not loaded on the frontend.',
+	async ( { page } ) => {
+		await page.goto( '/' );
+
+		const hasBlockCss = await page.$( '#sowb-widget-block-css' ) !== null;
+		const hasBlockJs = await page.$( '#sowb-widget-block-js' ) !== null;
+
+		expect( hasBlockCss ).toBe( false );
+		expect( hasBlockJs ).toBe( false );
+
+	}
+);
