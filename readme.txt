@@ -109,6 +109,9 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.70.1 - 03 November 2025 =
+* Block Editor: Prevented editor scripts from loading on the frontend while preserving Site Editor compatibility.
+
 = 1.70.0 - 31 October 2025 =
 * Blog: Resolved potential date output format fatal error, debounced post count update, and optimized post selector count function.
 * Features: Fixed icon alignment with bottom aligned more link and refined right/left alignment for bottom aligned features.
