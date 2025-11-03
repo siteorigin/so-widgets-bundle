@@ -252,8 +252,21 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$this->so_widgets = array_merge( $so_widgets, $third_party_widgets );
 	}
 
+	/**
+	 * Enqueue block editor assets for SiteOrigin Widget Blocks.
+	 *
+	 * This method enqueues the necessary scripts and styles for the block editor.
+	 * It also localizes widget data for use in the editor.
+	 */
 	public function enqueue_widget_block_editor_assets() {
 		$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : false;
+
+		if (
+			empty( $current_screen ) ||
+			! in_array( $current_screen->base, array( 'post', 'site-editor', 'widgets' ) )
+		) {
+			return;
+		}
 
 		wp_enqueue_script(
 			'sowb-register-widget-blocks',
