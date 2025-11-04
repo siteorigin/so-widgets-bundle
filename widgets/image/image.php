@@ -219,7 +219,15 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_style_hash( $instance ) {
-		return substr( md5( serialize( $this->get_less_variables( $instance ) ) ), 0, 12 );
+		$less_variables = $this->get_less_variables( $instance );
+		$less_variables = apply_filters(
+			'siteorigin_widgets_less_variables_' . $this->id_base,
+			$less_variables,
+			$instance,
+			$this
+		);
+
+		return substr( md5( serialize( $less_variables ) ), 0, 12 );
 	}
 
 	public function get_template_variables( $instance, $args ) {
