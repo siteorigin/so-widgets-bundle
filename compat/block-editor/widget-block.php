@@ -212,7 +212,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				$description = __( 'No description available.', 'so-widgets-bundle' );
 			}
 
-			$block_name = strtolower( str_replace( '_', '-', $class ) );
+			$block_name = strtolower( str_replace( ['_', '\\'], '-', $class ) );
 
 			// For SiteOrigin authored widgets, display the widget's name directly. For third-party widgets, append the author's name to the widget name to avoid confusion when multiple widgets have the same name.
 			if (
