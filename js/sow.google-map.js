@@ -386,7 +386,7 @@ sowb.SiteOriginGoogleMap = function($) {
 								autoCompleteInit.resolve();
 							}.bind(this)
 						).fail(function () {
-							$mapField.append('<div><p><strong>' + soWidgetsGoogleMap.geocode.noResults + '</strong></p></div>');
+							$mapField.append('<div><p><strong>' + window.soWidgetsGoogleMap.geocode.noResults + '</strong></p></div>');
 							autoCompleteInit.reject();
 						});
 					}
@@ -418,7 +418,7 @@ sowb.SiteOriginGoogleMap = function($) {
 							$$.data( 'initialized', true );
 						}.bind( this )
 					).fail( function () {
-						$$.append( '<div><p><strong>' + soWidgetsGoogleMap.geocode.noResults + '</strong></p></div>' );
+						$$.append( '<div><p><strong>' + window.soWidgetsGoogleMap.geocode.noResults + '</strong></p></div>' );
 					} );
 
 				}.bind(this));
@@ -677,7 +677,10 @@ jQuery(function ($) {
 
 			window.console.error = sowb.onLoadMapsApiError;
 		}
-		if ( soWidgetsGoogleMap.map_consent ) {
+
+		// Does the map require user consent?
+		const hasConsentElements = $( '.sow-google-map-consent' ).length > 0;
+		if ( hasConsentElements ) {
 			// Remove previous map consent setup.
 			if ( forceLoad ) {
 				$( '.sow-google-map-consent button' ).off( 'click' );

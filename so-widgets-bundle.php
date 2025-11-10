@@ -905,6 +905,16 @@ class SiteOrigin_Widgets_Bundle {
 			SOW_BUNDLE_VERSION
 		);
 
+		wp_localize_script(
+			'sow-google-map',
+			'soWidgetsGoogleMap',
+			array(
+				'geocode' => array(
+					'noResults' => __( 'There were no results for the place you entered. Please try another.', 'so-widgets-bundle' ),
+				),
+			)
+		);
+
 		wp_register_script(
 			'sowb-pikaday',
 			plugin_dir_url( SOW_BUNDLE_BASE_FILE ) . 'js/lib/pikaday' . SOW_BUNDLE_JS_SUFFIX . '.js',
