@@ -13,6 +13,8 @@ sowb.SiteOriginGoogleMap = function($) {
 			'New York, NY, United States',
 		],
 
+		noResults: window.top.soWidgetsGoogleMap?.geocode?.noResults ?? 'There were no results for the place you entered. Please try another.',
+
 		hasMapStyles: false,
 
 		/**
@@ -386,7 +388,7 @@ sowb.SiteOriginGoogleMap = function($) {
 								autoCompleteInit.resolve();
 							}.bind(this)
 						).fail(function () {
-							$mapField.append('<div><p><strong>' + window.soWidgetsGoogleMap.geocode.noResults + '</strong></p></div>');
+							$mapField.append('<div><p><strong>' + this.noResults + '</strong></p></div>');
 							autoCompleteInit.reject();
 						});
 					}
@@ -418,7 +420,7 @@ sowb.SiteOriginGoogleMap = function($) {
 							$$.data( 'initialized', true );
 						}.bind( this )
 					).fail( function () {
-						$$.append( '<div><p><strong>' + window.soWidgetsGoogleMap.geocode.noResults + '</strong></p></div>' );
+						$$.append( '<div><p><strong>' + this.noResults + '</strong></p></div>' );
 					} );
 
 				}.bind(this));
