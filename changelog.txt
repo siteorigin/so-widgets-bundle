@@ -1,5 +1,11 @@
 == Changelog ==
 
+= 1.70.2 - 13 November 2025 =
+* Google Maps: Moved localization into the bundle, detected consent prompts from the rendered markup, and added a fallback no-results message so interactive and static map scripts enqueue reliably without undefined `soWidgetsGoogleMap` errors.
+* Image: Included filtered LESS variables when generating the style hash so cached styles refresh when filters adjust widget appearance.
+* General: Normalized widget block registration for namespaced classes to eliminate invalid name warnings in the Block Editor.
+* General: Passed the TinyMCE field element identifier to the `tiny_mce_plugins` filter to prevent callbacks from triggering fatal errors.
+
 = 1.70.1 - 03 November 2025 =
 * Block Editor: Prevented editor scripts from loading on the frontend while preserving Site Editor compatibility.
 
