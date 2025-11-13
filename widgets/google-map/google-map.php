@@ -23,6 +23,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		);
 
 		add_filter( 'siteorigin_widgets_field_class_paths', array( $this, 'add_location_field_path' ) );
+		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-google-map', array( $this, 'enqueue_widget_scripts' ) );
 	}
 
 	// Tell the autoloader where to look for the location field class.
@@ -30,10 +31,6 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		$class_paths[] = plugin_dir_path( __FILE__ ) . 'fields/';
 
 		return $class_paths;
-	}
-
-	public function initialize() {
-		add_action( 'siteorigin_widgets_enqueue_frontend_scripts_sow-google-map', array( $this, 'enqueue_widget_scripts' ) );
 	}
 
 	public function get_widget_form() {
@@ -537,11 +534,13 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	}
 
 	public function get_template_name( $instance ) {
-		return $instance['settings']['map_type'] == 'static' ? 'static-map' : 'js-map';
+		return $this->get_map_type( $instance ) === 'static' ?
+			'static-map' :
+			'js-map';
 	}
 
 	public function get_style_name( $instance ) {
-		if ( $instance['settings']['map_type'] == 'static' ) {
+		if ( $this->get_map_type( $instance ) === 'static' ) {
 			return false;
 		}
 
@@ -692,27 +691,34 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		return $location;
 	}
 
+	/**
+	 * Get the map type for the current instance.
+	 *
+	 * @param array $instance The widget instance.
+	 * @return string The map type.
+	 */
+	public function get_map_type( $instance ) {
+		return ! empty( $instance['settings']['map_type'] ) ?
+			(string) $instance['settings']['map_type'] :
+			'interactive';
+	}
+
 	public function enqueue_widget_scripts( $instance ) {
-		if ( ! empty( $instance['settings']['map_type'] ) && $instance['settings']['map_type'] == 'interactive' ||
-			 $this->is_preview( $instance ) ) {
+		$is_preview = $this->is_preview( $instance );
+		$map_type = $this->get_map_type( $instance );
+
+		if (
+			$is_preview ||
+			$map_type === 'interactive'
+		) {
 			wp_enqueue_script( 'sow-google-map' );
-
-			$global_settings = $this->get_global_settings();
-
-			wp_localize_script(
-				'sow-google-map',
-				'soWidgetsGoogleMap',
-				array(
-					'map_consent'  => ! empty( $global_settings['map_consent'] ),
-					'geocode' => array(
-						'noResults' => __( 'There were no results for the place you entered. Please try another.', 'so-widgets-bundle' ),
-					),
-				)
-			);
 		}
 
-		if ( ! empty( $instance['settings']['map_type'] ) && $instance['settings']['map_type'] == 'static' ||
-			 $this->is_preview( $instance ) ) {
+
+		if (
+			$is_preview ||
+			$map_type === 'static'
+		) {
 			wp_enqueue_script(
 				'sow-google-map-static',
 				plugin_dir_url( __FILE__ ) . 'js/static-map' . SOW_BUNDLE_JS_SUFFIX . '.js',
