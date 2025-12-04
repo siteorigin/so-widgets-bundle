@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 1.70.3 - 04 December 2025 =
+* General: Confirmed compatibility with WordPress 6.9.
+
 = 1.70.2 - 13 November 2025 =
 * Google Maps: Moved localization into the bundle, detected consent prompts from the rendered markup, and added a fallback no-results message so interactive and static map scripts enqueue reliably without undefined `soWidgetsGoogleMap` errors.
 * Image: Included filtered LESS variables when generating the style hash so cached styles refresh when filters adjust widget appearance.
