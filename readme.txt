@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: widgets, blocks, contact form, blog, slider
 Requires at least: 4.2
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.0.0
 Stable tag: trunk
 Build time: unbuilt
@@ -108,6 +108,9 @@ SiteOrigin Premium includes access to our professional email support service, pe
 The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets. Widgets can be enabled or disabled as needed. If a widget offers global settings, you can access those via the Settings button next to each applicable widget.
 
 == Changelog ==
+
+= 1.70.3 - 04 December 2025 =
+* General: Confirmed compatibility with WordPress 6.9.
 
 = 1.70.2 - 13 November 2025 =
 * Google Maps: Moved localization into the bundle, detected consent prompts from the rendered markup, and added a fallback no-results message so interactive and static map scripts enqueue reliably without undefined `soWidgetsGoogleMap` errors.
