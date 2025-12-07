@@ -1179,6 +1179,11 @@ var sowbForms = window.sowbForms || {};
 						var $nextIndex = $items.children().length;
 						var newIds = {};
 
+						// Reset initialization flags so field setup runs for the cloned item.
+						$copyItem
+							.find( '.siteorigin-widget-field[data-initialized]' )
+							.removeAttr( 'data-initialized' );
+
 						$copyItem.find( '*[name]' ).each(function () {
 							var $inputElement = $( this );
 							var id = $inputElement.attr( 'id' );
