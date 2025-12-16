@@ -578,6 +578,7 @@
 
 
 	registerBlockType( 'sowb/widget-block', {
+		apiVersion: 3,
 		title: __( 'SiteOrigin Widgets Block', 'so-widgets-bundle' ),
 		description: __( 'This block is intended as a legacy placeholder.', 'so-widgets-bundle' ),
 		attributes: {
@@ -838,6 +839,7 @@
 		}
 
 		registerBlockType( 'sowb/' + widget.blockName, {
+			apiVersion: 3,
 			title: widget.name,
 			description: widget.description,
 			icon: sowbSetupIcon( widget ),
