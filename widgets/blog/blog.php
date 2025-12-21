@@ -1592,6 +1592,16 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 			$pagination_markup = apply_filters( 'siteorigin_widgets_blog_pagination_markup', false, $settings, $posts, $instance );
 		}
 
+		if (
+			! $addon_active &&
+			( ! isset( $settings['pagination'] ) || $settings['pagination'] !== 'disabled' )
+		) {
+			$pagination_enabled = apply_filters( 'siteorigin_widgets_blog_pagination_enabled', true, $settings, $posts, $instance );
+			if ( ! $pagination_enabled ) {
+				return;
+			}
+		}
+
 		if ( empty( $pagination_markup ) ) {
 			if ( $addon_active && isset( $settings['pagination_reload'] ) && $settings['pagination_reload'] == 'ajax' ) {
 				$current = 99999;
