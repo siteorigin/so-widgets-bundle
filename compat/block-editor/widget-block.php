@@ -702,8 +702,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	}
 
 	public function get_widget_preview( $block, $just_html = true ) {
-		$widget_class = $block['widgetClass'];
-		$widget_data = $block['widgetData'];
+		$widget_class = empty( $block['widgetClass'] ) ? '' : $block['widgetClass'];
+		$widget_data = empty( $block['widgetData'] ) ? array() : $block['widgetData'];
 
 		$widget = SiteOrigin_Widgets_Widget_Manager::get_widget_instance( $widget_class );
 		// Attempt to activate the widget if it's not already active.
