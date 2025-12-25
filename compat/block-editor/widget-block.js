@@ -301,7 +301,7 @@
 	 * in the iframe context after the form has been set up.
 	 */
 	const initializeFormFieldsInIframe = () => {
-		if ( sowbSiteEditorCanvas.length === 0 ) {
+		if ( ! sowbSiteEditorCanvas || sowbSiteEditorCanvas.length === 0 ) {
 			return;
 		}
 
@@ -1049,7 +1049,11 @@ let sowbSiteEditorAssetsSetup = false;
  * 5. Ensures the setup process only runs once by using the `sowbSiteEditorAssetsSetup` flag.
  */
 const sowbMaybeSetupSiteEditorAssets = () => {
-	if ( sowbSiteEditorCanvas.length === 0 || sowbSiteEditorAssetsSetup ) {
+	if (
+		! sowbSiteEditorCanvas ||
+		sowbSiteEditorCanvas.length === 0 ||
+		sowbSiteEditorAssetsSetup
+	) {
 		sowbSiteEditorAssetsSetup = true;
 		return;
 	}
