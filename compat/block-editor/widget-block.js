@@ -696,7 +696,7 @@
 								}, 0 );
 
 								// Log the user's consent.
-								jQuery.post( ajaxurl, {
+								jQuery.post( window.top.ajaxurl, {
 									action: 'so_widgets_block_migration_notice_consent',
 									nonce: sowbBlockEditorAdmin.migrationNotice
 								} );
@@ -1072,7 +1072,7 @@ const sowbMaybeSetupSiteEditorAssets = () => {
 
 	// Is ajaxurl set?
 	if ( typeof frame.contentWindow.ajaxurl === 'undefined' ) {
-		frame.contentWindow.ajaxurl = window.ajaxurl;
+		frame.contentWindow.ajaxurl = window.top.ajaxurl;
 	}
 };
 
