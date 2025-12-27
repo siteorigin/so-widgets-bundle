@@ -3,10 +3,7 @@
 	const el = element.createElement;
 	const registerBlockType = blocks.registerBlockType;
 	const BlockControls = blockEditor.BlockControls;
-	const {
-		Component,
-		useMemo
-	} = element;
+	const { useMemo } = element;
 
 	const {
 		ToolbarGroup,
@@ -167,46 +164,52 @@
 			}
 		} );
 
-		// Track the request so it can be aborted by subsequent calls.
 		sowbGenerateWidgetPreviewActiveRequest = previewRequest;
 
 		previewRequest
-		.done( ( widgetPreview ) => {
-			let renderPreviewHtml = false;
+			.done( ( widgetPreview ) => {
+				let renderPreviewHtml = false;
 
-			// Is the preview empty?
-			if ( widgetPreview.html ) {
-				// Is this widget excluded from the content check?
-				if ( widgetsExcludedFromContentCheck.includes( props.name ) ) {
-					renderPreviewHtml = true;
-				} else {
-					renderPreviewHtml = checkHtmlForContent( widgetPreview.html );
+				// Is the preview empty?
+				if ( widgetPreview.html ) {
+					// Is this widget excluded from the content check?
+					if ( widgetsExcludedFromContentCheck.includes( props.name ) ) {
+						renderPreviewHtml = true;
+					} else {
+						renderPreviewHtml = checkHtmlForContent( widgetPreview.html );
+					}
 				}
-			}
 
-			if ( ! renderPreviewHtml ) {
-				widgetPreview.html = '<div class="so-widget-preview-empty">' + __( 'No widget preview available.', 'so-widgets-bundle' ) + '</div>';
-			}
+				if ( ! renderPreviewHtml ) {
+					widgetPreview.html = '<div class="so-widget-preview-empty">' + __( 'No widget preview available.', 'so-widgets-bundle' ) + '</div>';
+				}
 
-			setState( {
-				widgetPreviewHtml: widgetPreview.html,
-				previewInitialized: false,
+				setState( {
+					widgetPreviewHtml: widgetPreview.html,
+					previewInitialized: false,
+				} );
+
+				props.setAttributes( {
+					widgetMarkup: widgetPreview.html,
+					widgetIcons: widgetPreview.widgetIcons,
+				} );
+			} )
+			.fail( ( response ) => {
+				if ( response && response.statusText === 'abort' ) {
+					return;
+				}
+
+				setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
+			} )
+			.always( () => {
+				sowbGenerateWidgetPreviewActiveRequest = null;
+
+				if ( canLockPostSaving ) {
+					wp.data.dispatch( 'core/editor' ).unlockPostSaving();
+				}
+
+				setState( { loadingWidgetPreview: false } );
 			} );
-
-			props.setAttributes( {
-				widgetMarkup: widgetPreview.html,
-				widgetIcons: widgetPreview.widgetIcons,
-			} );
-		} )
-		.fail( ( response ) => {
-			setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
-		} )
-		.always( () => {
-			if ( canLockPostSaving ) {
-				wp.data.dispatch( 'core/editor' ).unlockPostSaving();
-			}
-			setState( { loadingWidgetPreview: false } );
-		} );
 	};
 
 	/**
