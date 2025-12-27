@@ -30,6 +30,9 @@
 		return errorMessage;
 	};
 
+	// Track the active AJAX request for generating widget previews.
+	let sowbGenerateWidgetPreviewActiveRequest = null;
+
 	// Certain widgets are excluded from the content check as
 	// they don't contain "standard" content indicators.
 	const widgetsExcludedFromContentCheck = [
@@ -93,6 +96,15 @@
 	 * @param {string} [widgetClass=false] - The class of the widget. Defaults to false.
 	 */
 	const sowbGenerateWidgetPreview = ( props, loadingWidgetPreview, setState, widgetData = false, widgetClass = false ) => {
+		// If there is an active request, abort it before starting a new one.
+		if (
+			sowbGenerateWidgetPreviewActiveRequest &&
+			typeof sowbGenerateWidgetPreviewActiveRequest.abort === 'function'
+		) {
+			sowbGenerateWidgetPreviewActiveRequest.abort();
+			sowbGenerateWidgetPreviewActiveRequest = null;
+		}
+
 		if ( loadingWidgetPreview ) {
 			return;
 		}
@@ -143,7 +155,7 @@
 			return renderPreviewHtml;
 		};
 
-		jQuery.post( {
+		const previewRequest = jQuery.post( {
 			url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/previews',
 			beforeSend: ( xhr ) => {
 				xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
@@ -153,7 +165,12 @@
 				widgetClass: widgetClass,
 				widgetData: widgetData ? widgetData : props.attributes.widgetData || {}
 			}
-		} )
+		} );
+
+		// Track the request so it can be aborted by subsequent calls.
+		sowbGenerateWidgetPreviewActiveRequest = previewRequest;
+
+		previewRequest
 		.done( ( widgetPreview ) => {
 			let renderPreviewHtml = false;
 
