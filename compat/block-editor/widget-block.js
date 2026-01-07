@@ -27,9 +27,6 @@
 		return errorMessage;
 	};
 
-	// Track the active AJAX request for generating widget previews.
-	let sowbGenerateWidgetPreviewActiveRequest = null;
-
 	// Certain widgets are excluded from the content check as
 	// they don't contain "standard" content indicators.
 	const widgetsExcludedFromContentCheck = [
@@ -91,15 +88,16 @@
 	 * @param {Function} setState - The setState function to update the component's state.
 	 * @param {Object} [widgetData=false] - The data for the widget. Defaults to false.
 	 * @param {string} [widgetClass=false] - The class of the widget. Defaults to false.
+	 * @param {Object} activeRequestRef - React ref to track the active request for this block instance.
 	 */
-	const sowbGenerateWidgetPreview = ( props, loadingWidgetPreview, setState, widgetData = false, widgetClass = false ) => {
+	const sowbGenerateWidgetPreview = ( props, loadingWidgetPreview, setState, widgetData = false, widgetClass = false, activeRequestRef ) => {
 		// If there is an active request, abort it before starting a new one.
 		if (
-			sowbGenerateWidgetPreviewActiveRequest &&
-			typeof sowbGenerateWidgetPreviewActiveRequest.abort === 'function'
+			activeRequestRef.current &&
+			typeof activeRequestRef.current.abort === 'function'
 		) {
-			sowbGenerateWidgetPreviewActiveRequest.abort();
-			sowbGenerateWidgetPreviewActiveRequest = null;
+			activeRequestRef.current.abort();
+			activeRequestRef.current = null;
 		}
 
 		if ( loadingWidgetPreview ) {
@@ -164,7 +162,7 @@
 			}
 		} );
 
-		sowbGenerateWidgetPreviewActiveRequest = previewRequest;
+		activeRequestRef.current = previewRequest;
 
 		previewRequest
 			.done( ( widgetPreview ) => {
@@ -202,7 +200,7 @@
 				setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
 			} )
 			.always( () => {
-				sowbGenerateWidgetPreviewActiveRequest = null;
+				activeRequestRef.current = null;
 
 				if ( canLockPostSaving ) {
 					wp.data.dispatch( 'core/editor' ).unlockPostSaving();
@@ -303,7 +301,8 @@
 					false,
 					setState,
 					widgetData,
-					props.widget.class
+					props.widget.class,
+					activeRequestRef
 				);
 			}, 300 );
 
@@ -377,8 +376,8 @@
 			setState( ( prev ) => ( { ...prev, ...updates } ) );
 		};
 
-		// Keep a mounted ref to short-circuit async callbacks when unmounted.
 		const isMountedRef = element.useRef( true );
+		const activeRequestRef = element.useRef( null );
 
 		// Ensure widgetClass attribute is set once (was done in constructor).
 		element.useEffect( () => {
@@ -444,7 +443,8 @@
 					state.loadingWidgetPreview,
 					mergeState,
 					false,
-					props.widget.class
+					props.widget.class,
+					activeRequestRef
 				);
 			}
 		};
