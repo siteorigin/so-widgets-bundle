@@ -3,10 +3,7 @@
 	const el = element.createElement;
 	const registerBlockType = blocks.registerBlockType;
 	const BlockControls = blockEditor.BlockControls;
-	const {
-		Component,
-		useMemo
-	} = element;
+	const { useMemo } = element;
 
 	const {
 		ToolbarGroup,
@@ -91,8 +88,18 @@
 	 * @param {Function} setState - The setState function to update the component's state.
 	 * @param {Object} [widgetData=false] - The data for the widget. Defaults to false.
 	 * @param {string} [widgetClass=false] - The class of the widget. Defaults to false.
+	 * @param {Object} activeRequestRef - React ref to track the active request for this block instance.
 	 */
-	const sowbGenerateWidgetPreview = ( props, loadingWidgetPreview, setState, widgetData = false, widgetClass = false ) => {
+	const sowbGenerateWidgetPreview = ( props, loadingWidgetPreview, setState, widgetData = false, widgetClass = false, activeRequestRef ) => {
+		// If there is an active request, abort it before starting a new one.
+		if (
+			activeRequestRef.current &&
+			typeof activeRequestRef.current.abort === 'function'
+		) {
+			activeRequestRef.current.abort();
+			activeRequestRef.current = null;
+		}
+
 		if ( loadingWidgetPreview ) {
 			return;
 		}
@@ -143,7 +150,7 @@
 			return renderPreviewHtml;
 		};
 
-		jQuery.post( {
+		const previewRequest = jQuery.post( {
 			url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/previews',
 			beforeSend: ( xhr ) => {
 				xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
@@ -153,43 +160,54 @@
 				widgetClass: widgetClass,
 				widgetData: widgetData ? widgetData : props.attributes.widgetData || {}
 			}
-		} )
-		.done( ( widgetPreview ) => {
-			let renderPreviewHtml = false;
-
-			// Is the preview empty?
-			if ( widgetPreview.html ) {
-				// Is this widget excluded from the content check?
-				if ( widgetsExcludedFromContentCheck.includes( props.name ) ) {
-					renderPreviewHtml = true;
-				} else {
-					renderPreviewHtml = checkHtmlForContent( widgetPreview.html );
-				}
-			}
-
-			if ( ! renderPreviewHtml ) {
-				widgetPreview.html = '<div class="so-widget-preview-empty">' + __( 'No widget preview available.', 'so-widgets-bundle' ) + '</div>';
-			}
-
-			setState( {
-				widgetPreviewHtml: widgetPreview.html,
-				previewInitialized: false,
-			} );
-
-			props.setAttributes( {
-				widgetMarkup: widgetPreview.html,
-				widgetIcons: widgetPreview.widgetIcons,
-			} );
-		} )
-		.fail( ( response ) => {
-			setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
-		} )
-		.always( () => {
-			if ( canLockPostSaving ) {
-				wp.data.dispatch( 'core/editor' ).unlockPostSaving();
-			}
-			setState( { loadingWidgetPreview: false } );
 		} );
+
+		activeRequestRef.current = previewRequest;
+
+		previewRequest
+			.done( ( widgetPreview ) => {
+				let renderPreviewHtml = false;
+
+				// Is the preview empty?
+				if ( widgetPreview.html ) {
+					// Is this widget excluded from the content check?
+					if ( widgetsExcludedFromContentCheck.includes( props.name ) ) {
+						renderPreviewHtml = true;
+					} else {
+						renderPreviewHtml = checkHtmlForContent( widgetPreview.html );
+					}
+				}
+
+				if ( ! renderPreviewHtml ) {
+					widgetPreview.html = '<div class="so-widget-preview-empty">' + __( 'No widget preview available.', 'so-widgets-bundle' ) + '</div>';
+				}
+
+				setState( {
+					widgetPreviewHtml: widgetPreview.html,
+					previewInitialized: false,
+				} );
+
+				props.setAttributes( {
+					widgetMarkup: widgetPreview.html,
+					widgetIcons: widgetPreview.widgetIcons,
+				} );
+			} )
+			.fail( ( response ) => {
+				if ( response && response.statusText === 'abort' ) {
+					return;
+				}
+
+				setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
+			} )
+			.always( () => {
+				activeRequestRef.current = null;
+
+				if ( canLockPostSaving ) {
+					wp.data.dispatch( 'core/editor' ).unlockPostSaving();
+				}
+
+				setState( { loadingWidgetPreview: false } );
+			} );
 	};
 
 	/**
@@ -227,61 +245,71 @@
 	 * @param {Object} state - The current state of the component.
 	 * @param {Function} setState - The setState function to update the component's state.
 	 */
+
 	const sowbSetupWidgetForm = async ( props, state, setState ) => {
 		const $mainForm = sowbGetBlockForm( props.clientId );
+
+		if ( $mainForm.length === 0 || state.formInitialized ) {
+			return;
+		}
+
 		sowbMaybeSetupSiteEditorAssets();
+		const $previewContainer = $mainForm.siblings( '.siteorigin-widget-preview' );
+		$previewContainer.find( '> a' ).on( 'click', function( event ) {
+			event.stopImmediatePropagation();
 
-		if ( $mainForm.length > 0 && ! state.formInitialized ) {
-			const $previewContainer = $mainForm.siblings( '.siteorigin-widget-preview' );
-			$previewContainer.find( '> a' ).on( 'click', function( event ) {
-				event.stopImmediatePropagation();
-
-				setState( {
-					editing: false,
-					previewInitialized: false,
-					widgetPreviewHtml: false,
-				} );
+			setState( {
+				editing: false,
+				previewInitialized: false,
+				widgetPreviewHtml: false,
 			} );
+		} );
 
-			$mainForm.data( 'backupDisabled', true );
+		$mainForm.data( 'backupDisabled', true );
 
-			if ( props.attributes.widgetData ) {
-				// If we call `setWidgetFormValues` with the last parameter
-				// ( `triggerChange` ) set to false, it won't show the correct values
-				// for some fields e.g. color and media fields.
-				sowbForms.setWidgetFormValues( $mainForm, props.attributes.widgetData );
-			} else {
-				props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
+		if ( props.attributes.widgetData ) {
+			// If we call `setWidgetFormValues` with the last parameter
+			// ( `triggerChange` ) set to false, it won't show the correct values
+			// for some fields e.g. color and media fields.
+			sowbForms.setWidgetFormValues( $mainForm, props.attributes.widgetData );
+		} else {
+			props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
+		}
+
+		$mainForm.sowSetupForm();
+
+		$mainForm.on( 'change', function() {
+			// Check form has been set up before reacting to changes.
+			if ( ! $mainForm.data( 'sow-form-setup' ) ) {
+				return;
 			}
 
-			$mainForm.sowSetupForm();
+			// As setAttributes doesn't support callbacks, we have to manually
+			// pass the widgetData to the preview.
+			var widgetData = sowbForms.getWidgetFormValues( $mainForm );
+			props.setAttributes( { widgetData: widgetData } );
 
-			$mainForm.on( 'change', function() {
-				// Check form has been set up before reacting to changes.
-				if ( ! $mainForm.data( 'sow-form-setup' ) ) {
-					return;
-				}
+			// Set up a preview debounce timer to prevent multiple requests.
+			var oldTimer = $mainForm.data( 'sowb-preview-timer' );
+			if ( oldTimer ) {
+				clearTimeout( oldTimer );
+			}
 
-				// As setAttributes doesn't support callbacks, we have to manually
-				// pass the widgetData to the preview.
-				var widgetData = sowbForms.getWidgetFormValues( $mainForm );
-				props.setAttributes( { widgetData: widgetData } );
+			var sowb_preview_timer = setTimeout( () => {
+				sowbGenerateWidgetPreview(
+					props,
+					false,
+					setState,
+					widgetData,
+					props.widget.class,
+					activeRequestRef
+				);
+			}, 300 );
 
-				// Set up a preview debounce timer to prevent multiple requests.
-				clearTimeout( state.previewDebounceTimer );
+			$mainForm.data( 'sowb-preview-timer', sowb_preview_timer );
+		} );
 
-				state.previewDebounceTimer = setTimeout( () => {
-					sowbGenerateWidgetPreview(
-						props,
-						state.loadingWidgetPreview,
-						setState,
-						widgetData,
-						props.widget.class
-					);
-				}, 300 );
-			} );
-			setState( { formInitialized: true } );
-		}
+		setState( { formInitialized: true } );
 	};
 
 	/**
@@ -292,7 +320,7 @@
 	 * in the iframe context after the form has been set up.
 	 */
 	const initializeFormFieldsInIframe = () => {
-		if ( sowbSiteEditorCanvas.length === 0 ) {
+		if ( ! sowbSiteEditorCanvas || sowbSiteEditorCanvas.length === 0 ) {
 			return;
 		}
 
@@ -309,127 +337,94 @@
 	};
 
 	/**
-	 * WidgetBlockEdit component.
+	 * WidgetBlockEdit functional component.
 	 *
 	 * This component handles the editing and previewing of SiteOrigin
 	 * Widget Blocks. It manages:
 	 * - the state of the widget form.
 	 * - the state of the widget preview.
 	 * - the initialization and loading of the widget form and preview.
-	 *
 	 */
-	class WidgetBlockEdit extends Component {
+	function WidgetBlockEdit( props ) {
+		const initialState = {
+			editing: props.attributes.widgetData === undefined,
+			formInitialized: false,
+			loadingForm: false,
+			loadingWidgetPreview: false,
+			previewInitialized: false,
+			widgetFormHtml: '',
+			widgetPreviewHtml: '',
+			widgetSettingsChanged: false,
+			previewDebounceTimer: null,
+		};
 
-		constructor( props ) {
-			super( props );
+		const [ state, setState ] = element.useState( {
+			...initialState,
+			isStillMounted: true,
+			devModeRemount: false,
+		} );
 
-			this.initialState = {
-				// If this widget was just added, show the form.
-				editing: props.attributes.widgetData === undefined,
-				formInitialized: false,
-				loadingForm: false,
-				loadingWidgetPreview: false,
-				previewInitialized: false,
-				widgetFormHtml: '',
-				widgetPreviewHtml: '',
-				widgetSettingsChanged: false,
-				previewDebounceTimer: null,
-			};
+		/**
+		 * Merge partial state updates into the current state.
+		 *
+		 * Mirrors the class-style `this.setState` behavior by shallow-merging
+		 * the provided `updates` object onto the previous state object.
+		 *
+		 * @param {Object} updates Partial state object to shallow-merge.
+		 */
+		const mergeState = ( updates ) => {
+			setState( ( prev ) => ( { ...prev, ...updates } ) );
+		};
 
-			this.state = {
-				... this.initialState,
-				isStillMounted: true,
-				devModeRemount: false,
-			};
+		const isMountedRef = element.useRef( true );
+		const activeRequestRef = element.useRef( null );
 
-			// Store the widget class if it's not already set.
+		// Ensure widgetClass attribute is set once (was done in constructor).
+		element.useEffect( () => {
 			if ( ! props.attributes.widgetClass ) {
-				this.props.setAttributes( { widgetClass: props.widget.class } );
+				props.setAttributes( { widgetClass: props.widget.class } );
 			}
-		}
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, [] );
 
-		componentDidMount() {
-			this.setState( {
-				...this.initialState,
-				isStillMounted: true,
-			} );
-
-			this.loadWidgetData();
-		}
-
-		componentWillUnmount() {
-			this.setState( {
-				...this.initialState,
-				isStillMounted: false,
-				devModeRemount: true,
-			} );
-		}
-
-		componentDidUpdate( prevProps, prevState ) {
-			if ( ! this.state.isStillMounted ) {
-				return;
-			}
-
-			if (
-				this.state.editing !== prevState.editing ||
-				this.props.attributes.widgetData !== prevProps.attributes.widgetData
-			) {
-				// If there's been an update, clear the preview.
-				this.setState( {
-					widgetSettingsChanged: true,
-					widgetPreviewHtml: null,
-					previewInitialized: false
-				} );
-
-				this.loadWidgetData();
-			}
-		}
-
-		loadWidgetData() {
-			if ( ! this.state.isStillMounted ) {
-				return;
-			}
-
+		const loadWidgetData = () => {
 			const {
 				editing,
 				widgetFormHtml,
 				loadingForm,
 				loadingWidgetPreview
-			} = this.state;
-			const { attributes } = this.props;
+			} = state;
+			const { attributes } = props;
 
-			if (
-				editing ||
-				! attributes.widgetData
-			) {
+			if ( editing || ! attributes.widgetData ) {
 				const loadWidgetForm = ! widgetFormHtml.length;
 
 				if ( loadWidgetForm && ! loadingForm ) {
-					this.setState( { loadingForm: true } );
+					mergeState( { loadingForm: true } );
 					jQuery.post( {
 						url: sowbBlockEditorAdmin.restUrl + 'sowb/v1/widgets/forms',
 						beforeSend: (xhr) => {
 							xhr.setRequestHeader( 'X-WP-Nonce', sowbBlockEditorAdmin.nonce );
 						},
 						data: {
-							widgetClass: this.props.widget.class,
+							widgetClass: props.widget.class,
 							widgetData: attributes.widgetData,
 						}
 					} )
 					.done( ( widgetForm ) => {
-						this.setState( {
+						mergeState( {
 							widgetFormHtml: widgetForm
 						} );
 
 						setTimeout( () => {
-							this.setState( {
+							mergeState( {
 								loadingForm: false,
 								formInitialized: false,
 							} );
 						}, 0 );
 					} )
 					.fail( ( response ) => {
-						this.setState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
+						mergeState( { widgetFormHtml: '<div>' + getAjaxErrorMsg( response ) + '</div>' } );
 					} );
 				}
 				return;
@@ -438,146 +433,183 @@
 			const loadWidgetPreview = ! loadingWidgetPreview && ! editing;
 
 			if ( loadWidgetPreview ) {
-				this.props.setAttributes( {
+				props.setAttributes( {
 					widgetMarkup: null,
 					widgetIcons: null
 				} );
 
 				sowbGenerateWidgetPreview(
-					this.props,
-					this.state.loadingWidgetPreview,
-					this.setState.bind( this ),
+					props,
+					state.loadingWidgetPreview,
+					mergeState,
 					false,
-					this.props.widget.class
+					props.widget.class,
+					activeRequestRef
 				);
 			}
-		}
+		};
 
-		render() {
-			const { editing, widgetFormHtml, loadingForm, widgetPreviewHtml, loadingWidgetPreview, previewInitialized } = this.state;
-			const { attributes } = this.props;
+		// componentDidMount / componentWillUnmount replacement
+		element.useEffect( () => {
+			mergeState( {
+				...initialState,
+				isStillMounted: true,
+			} );
 
-			return el(
-				'div',
-				null,
-				editing || ! attributes.widgetData ? [
-					!! widgetFormHtml && el(
-						BlockControls,
-						{ key: 'controls' },
-						el(
-							ToolbarGroup,
-							{ label: __( 'Widget Preview Controls', 'so-widgets-bundle' ) },
-							el(
-								ToolbarButton,
-								{
-									label: __( 'Preview widget.', 'so-widgets-bundle' ),
-									onClick: () => this.setState( {
-										editing: false,
-									} ),
-									icon: 'visibility'
-								}
-							)
-						)
-					),
+			loadWidgetData();
+
+			return () => {
+				isMountedRef.current = false;
+				mergeState( {
+					...initialState,
+					isStillMounted: false,
+					devModeRemount: true,
+				} );
+			};
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, [] );
+
+		// componentDidUpdate replacement watching relevant props/state.
+		element.useEffect( () => {
+			if ( ! state.isStillMounted ) {
+				return;
+			}
+
+			// If editing flag changed or widgetData changed, refresh preview.
+			// We compare the state.editing via previous closure by using effect deps.
+			loadWidgetData();
+			// We only need to run this effect when the widgetData attribute changes
+			// or when the editing flag flips. Using props.attributes.widgetData and state.editing.
+		}, [ props.attributes.widgetData, state.editing ] );
+
+		// Use block props hook to provide wrapper attributes/classes for API v3.
+		const blockProps = blockEditor && blockEditor.useBlockProps ? blockEditor.useBlockProps() : {};
+
+		const {
+			editing,
+			widgetFormHtml,
+			loadingForm,
+			widgetPreviewHtml,
+			loadingWidgetPreview,
+			previewInitialized
+		} = state;
+		const { attributes } = props;
+
+		return el(
+			'div',
+			blockProps,
+			editing || ! attributes.widgetData ? [
+				!! widgetFormHtml && el(
+					BlockControls,
+					{ key: 'controls' },
 					el(
-						Placeholder,
-						{
-							key: 'placeholder',
-							className: 'so-widget-block-form siteorigin-widget-form wp-core-ui',
-							label: this.props.widget.name,
-							instructions: this.props.widget.description
-						},
-						loadingForm ?
-						el( 'div',
+						ToolbarGroup,
+						{ label: __( 'Widget Preview Controls', 'so-widgets-bundle' ) },
+						el(
+							ToolbarButton,
 							{
-								className: 'so-widgets-spinner-container'
-							},
-							el(
-								'span',
-								null,
-								el( Spinner )
-							)
-						) :
-						el( 'div', {
-							className: 'so-widget-block-container siteorigin-widget-form wp-core-ui',
-							dangerouslySetInnerHTML: { __html: widgetFormHtml },
-							ref: () => {
-								sowbSetupWidgetForm(
-									this.props,
-									this.state,
-									this.setState.bind( this ),
-									this.props.widget.class
-								).then( () => {
-									// In dev mode, blocks are rendered twice in
-									// quick succession. To prevent issues with
-									// form field scripts we need to wait until the
-									// second render to initialize the fields.
-									if (
-										! sowbBlockEditorAdmin.wpScriptDebug ||
-										this.state.devModeRemount
-									) {
-										initializeFormFieldsInIframe();
-									}
-								} );
+								label: __( 'Preview widget.', 'so-widgets-bundle' ),
+								onClick: () => mergeState( { editing: false } ),
+								icon: 'visibility'
 							}
-						} )
-					)
-				] : [
-					el(
-						BlockControls,
-						{ key: 'controls' },
-						el(
-							ToolbarGroup,
-							{ label: __( 'Widget Edit Controls', 'so-widgets-bundle' ) },
-							el(
-								ToolbarButton,
-								{
-									label: __( 'Edit widget.', 'so-widgets-bundle' ),
-									onClick: () => this.setState( {
-										editing: true,
-										loadingForm: false,
-										widgetFormHtml: '',
-										formInitialized: false,
-									} ),
-									icon: 'edit'
-								}
-							)
 						)
-					),
-					el(
-						'div',
-						{
-							key: 'preview',
-							className: 'so-widget-preview-container'
-						},
-						loadingWidgetPreview ?
-						el( 'div',
-							{ className: 'so-widgets-spinner-container' },
-							el(
-								'span',
-								null,
-								el( Spinner )
-							)
-						) :
-						el( 'div', {
-							dangerouslySetInnerHTML: {
-								__html: widgetPreviewHtml
-							},
-							ref: () => {
-								if ( ! previewInitialized ) {
-									jQuery( window.sowb ).trigger( 'setup_widgets', { preview: true } );
-									this.setState( { previewInitialized: true } );
-								}
-							}
-						} )
 					)
-				]
-			);
-		}
+				),
+				el(
+					Placeholder,
+					{
+						key: 'placeholder',
+						className: 'so-widget-block-form siteorigin-widget-form wp-core-ui',
+						label: props.widget.name,
+						instructions: props.widget.description
+					},
+					loadingForm ?
+					el( 'div',
+						{
+							className: 'so-widgets-spinner-container'
+						},
+						el(
+							'span',
+							null,
+							el( Spinner )
+						)
+					) :
+					el( 'div', {
+						className: 'so-widget-block-container siteorigin-widget-form-main wp-core-ui',
+						dangerouslySetInnerHTML: { __html: widgetFormHtml },
+						ref: () => {
+							sowbSetupWidgetForm(
+								props,
+								state,
+								mergeState
+							).then( () => {
+								// In dev mode, blocks are rendered twice in
+								// quick succession. To prevent issues with
+								// form field scripts we need to wait until the
+								// second render to initialize the fields.
+								if ( ! sowbBlockEditorAdmin.wpScriptDebug || state.devModeRemount ) {
+									initializeFormFieldsInIframe();
+								}
+							} );
+						}
+					} )
+				)
+			] : [
+				el(
+					BlockControls,
+					{ key: 'controls' },
+					el(
+						ToolbarGroup,
+						{ label: __( 'Widget Edit Controls', 'so-widgets-bundle' ) },
+						el(
+							ToolbarButton,
+							{
+								label: __( 'Edit widget.', 'so-widgets-bundle' ),
+								onClick: () => mergeState( {
+									editing: true,
+									loadingForm: false,
+									widgetFormHtml: '',
+									formInitialized: false,
+								} ),
+								icon: 'edit'
+							}
+						)
+					)
+				),
+				el(
+					'div',
+					{
+						key: 'preview',
+						className: 'so-widget-preview-container'
+					},
+					loadingWidgetPreview ?
+					el( 'div',
+						{ className: 'so-widgets-spinner-container' },
+						el(
+							'span',
+							null,
+							el( Spinner )
+						)
+					) :
+					el( 'div', {
+						dangerouslySetInnerHTML: {
+							__html: widgetPreviewHtml
+						},
+						ref: () => {
+							if ( ! previewInitialized ) {
+								jQuery( window.sowb ).trigger( 'setup_widgets', { preview: true } );
+								mergeState( { previewInitialized: true } );
+							}
+						}
+					} )
+				)
+			]
+		);
 	}
 
 
 	registerBlockType( 'sowb/widget-block', {
+		apiVersion: 3,
 		title: __( 'SiteOrigin Widgets Block', 'so-widgets-bundle' ),
 		description: __( 'This block is intended as a legacy placeholder.', 'so-widgets-bundle' ),
 		attributes: {
@@ -684,7 +716,7 @@
 								}, 0 );
 
 								// Log the user's consent.
-								jQuery.post( ajaxurl, {
+								jQuery.post( window.top.ajaxurl, {
 									action: 'so_widgets_block_migration_notice_consent',
 									nonce: sowbBlockEditorAdmin.migrationNotice
 								} );
@@ -838,6 +870,7 @@
 		}
 
 		registerBlockType( 'sowb/' + widget.blockName, {
+			apiVersion: 3,
 			title: widget.name,
 			description: widget.description,
 			icon: sowbSetupIcon( widget ),
@@ -1036,7 +1069,11 @@ let sowbSiteEditorAssetsSetup = false;
  * 5. Ensures the setup process only runs once by using the `sowbSiteEditorAssetsSetup` flag.
  */
 const sowbMaybeSetupSiteEditorAssets = () => {
-	if ( sowbSiteEditorCanvas.length === 0 || sowbSiteEditorAssetsSetup ) {
+	if (
+		! sowbSiteEditorCanvas ||
+		sowbSiteEditorCanvas.length === 0 ||
+		sowbSiteEditorAssetsSetup
+	) {
 		sowbSiteEditorAssetsSetup = true;
 		return;
 	}
@@ -1055,7 +1092,7 @@ const sowbMaybeSetupSiteEditorAssets = () => {
 
 	// Is ajaxurl set?
 	if ( typeof frame.contentWindow.ajaxurl === 'undefined' ) {
-		frame.contentWindow.ajaxurl = window.ajaxurl;
+		frame.contentWindow.ajaxurl = window.top.ajaxurl;
 	}
 };
 
