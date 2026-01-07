@@ -1,5 +1,12 @@
 == Changelog ==
 
+= 1.70.4 - 07 January 2026 =
+* Widget Block: Reworked the block editor widget block for Application Programming Interface (API) version 3 support, resolved the apiVersion notice, and added an extra site editor canvas check.
+* Widget Block: Improved preview request handling to abort stale requests per block, allow simultaneous previews, fix the `ajaxurl` value, and prevent missing preview data warnings.
+* Blog: Added the `siteorigin_widgets_blog_pagination_enabled` filter to allow pagination to be disabled.
+* General: Reinitialized media field controls after copying a repeater item to keep them usable.
+* General: Updated the JSON Web Signature (JWS) dependency to 3.2.3.
+
 = 1.70.3 - 04 December 2025 =
 * General: Confirmed compatibility with WordPress 6.9.
 
