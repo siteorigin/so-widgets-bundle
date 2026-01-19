@@ -137,7 +137,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 							'title_tag' => array(
 								'type' => 'select',
 								'label' => __( 'Title HTML Tag', 'so-widgets-bundle' ),
-								'default' => 'h3',
+								'default' => 'div',
 								'options' => array(
 									'h1' => __( 'H1', 'so-widgets-bundle' ),
 									'h2' => __( 'H2', 'so-widgets-bundle' ),
@@ -146,6 +146,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 									'h5' => __( 'H5', 'so-widgets-bundle' ),
 									'h6' => __( 'H6', 'so-widgets-bundle' ),
 									'p' => __( 'Paragraph', 'so-widgets-bundle' ),
+									'div' => __( 'Div', 'so-widgets-bundle' ),
 								),
 							),
 							'border_color' => array(
@@ -228,7 +229,8 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 
 		$title_tag = siteorigin_widget_valid_tag(
 			$instance['design']['heading']['title_tag'] ?? '',
-			'h3'
+			'div',
+			array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div' )
 		);
 		$title_level = 2;
 		if ( preg_match( '/^h([1-6])$/', $title_tag, $matches ) ) {
