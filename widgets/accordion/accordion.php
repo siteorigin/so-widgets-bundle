@@ -236,6 +236,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 		if ( preg_match( '/^h([1-6])$/', $title_tag, $matches ) ) {
 			$title_level = (int) $matches[1];
 		}
+		$title_has_native_heading = preg_match( '/^h[1-6]$/', $title_tag ) === 1;
 
 		$panels = empty( $instance['panels'] ) ? array() : $instance['panels'];
 
@@ -283,6 +284,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			'icon_close' => $instance['design']['heading']['icon_close'],
 			'title_tag' => $title_tag,
 			'title_level' => $title_level,
+			'title_has_native_heading' => $title_has_native_heading,
 		);
 	}
 
