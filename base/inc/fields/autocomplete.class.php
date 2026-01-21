@@ -20,6 +20,13 @@ class SiteOrigin_Widget_Field_Autocomplete extends SiteOrigin_Widget_Field_Text_
 	protected $source;
 
 	/**
+	 * Additional data to include with the autocomplete Ajax request.
+	 *
+	 * @var array
+	 */
+	protected $ajax_data;
+
+	/**
 	 * Whether to allow multiple items to be selected.
 	 *
 	 * @access protected
@@ -43,6 +50,10 @@ class SiteOrigin_Widget_Field_Autocomplete extends SiteOrigin_Widget_Field_Text_
 
 	protected function render_after_field( $value, $instance ) {
 		$post_types = ! empty( $this->post_types ) && is_array( $this->post_types ) ? implode( ',', $this->post_types ) : '';
+		$ajax_params_attribute = '';
+		if ( ! empty( $this->ajax_data ) && is_array( $this->ajax_data ) ) {
+			$ajax_params_attribute = ' data-ajax-params="' . esc_attr( wp_json_encode( $this->ajax_data ) ) . '"';
+		}
 		?>
 		<div class="existing-content-selector" data-multiple="<?php echo esc_attr( $this->multiple ); ?>">
 
@@ -51,6 +62,7 @@ class SiteOrigin_Widget_Field_Autocomplete extends SiteOrigin_Widget_Field_Text_
 				class="content-text-search"
 				data-post-types="<?php echo esc_attr( $post_types ); ?>"
 				data-source="<?php echo esc_attr( $this->source ); ?>"
+				<?php echo $ajax_params_attribute; ?>
 				placeholder="<?php esc_attr_e( 'Search', 'so-widgets-bundle' ); ?>"
 				tabindex="0"
 			/>
