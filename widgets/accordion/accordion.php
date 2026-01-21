@@ -134,6 +134,21 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 								'type' => 'color',
 								'label' => __( 'Title hover color', 'so-widgets-bundle' ),
 							),
+							'title_tag' => array(
+								'type' => 'select',
+								'label' => __( 'Title HTML Tag', 'so-widgets-bundle' ),
+								'default' => 'div',
+								'options' => array(
+									'h1' => __( 'H1', 'so-widgets-bundle' ),
+									'h2' => __( 'H2', 'so-widgets-bundle' ),
+									'h3' => __( 'H3', 'so-widgets-bundle' ),
+									'h4' => __( 'H4', 'so-widgets-bundle' ),
+									'h5' => __( 'H5', 'so-widgets-bundle' ),
+									'h6' => __( 'H6', 'so-widgets-bundle' ),
+									'p' => __( 'Paragraph', 'so-widgets-bundle' ),
+									'div' => __( 'Div', 'so-widgets-bundle' ),
+								),
+							),
 							'border_color' => array(
 								'type' => 'color',
 								'label' => __( 'Border color', 'so-widgets-bundle' ),
@@ -212,6 +227,17 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			return array();
 		}
 
+		$title_tag = siteorigin_widget_valid_tag(
+			$instance['design']['heading']['title_tag'] ?? '',
+			'div',
+			array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div' )
+		);
+		$title_level = 2;
+		if ( preg_match( '/^h([1-6])$/', $title_tag, $matches ) ) {
+			$title_level = (int) $matches[1];
+		}
+		$title_has_native_heading = preg_match( '/^h[1-6]$/', $title_tag ) === 1;
+
 		$panels = empty( $instance['panels'] ) ? array() : $instance['panels'];
 
 		$anchor_list = array();
@@ -256,6 +282,9 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 			'panels' => $panels,
 			'icon_open' => $instance['design']['heading']['icon_open'],
 			'icon_close' => $instance['design']['heading']['icon_close'],
+			'title_tag' => $title_tag,
+			'title_level' => $title_level,
+			'title_has_native_heading' => $title_has_native_heading,
 		);
 	}
 
