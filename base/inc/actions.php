@@ -96,7 +96,7 @@ function siteorigin_widget_user_can_edit_post_type( $post_type ) {
 
 class SiteOrigin_Widgets_Bundle_Actions {
 	/**
-	 * Action to handle searching posts
+	 * Action to handle searching posts.
 	 */
 	public static function search_posts() {
 		if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
@@ -107,7 +107,7 @@ class SiteOrigin_Widgets_Bundle_Actions {
 		$query = '';
 		$wpml_query = '';
 
-		// Get all public post types, besides attachments
+		// Get all public post types, besides attachments.
 		$post_types = (array) get_post_types(
 			array(
 				'public' => true,
@@ -183,7 +183,7 @@ class SiteOrigin_Widgets_Bundle_Actions {
 }
 
 /**
- * Action to handle searching posts
+ * Action to handle searching posts.
  */
 function siteorigin_widget_action_search_posts() {
 	SiteOrigin_Widgets_Bundle_Actions::search_posts();
