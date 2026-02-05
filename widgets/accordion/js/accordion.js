@@ -14,6 +14,21 @@ jQuery( function ( $ ) {
 			var $accordionPanels = $( element ).find( '> .sow-accordion-panel' );
 			var openPanels = $accordionPanels.filter( '.sow-accordion-panel-open' ).toArray();
 
+			var replaceLazyIframes = function( $panel ) {
+				$panel.find( 'so-iframe' ).each( function() {
+					var $soIframe = $( this );
+					var $iframe = $( '<iframe>' );
+
+					$.each( this.attributes, function() {
+						if ( this && this.name ) {
+							$iframe.attr( this.name, this.value );
+						}
+					} );
+
+					$soIframe.replaceWith( $iframe );
+				} );
+			};
+
 			var scrollToPanel = function ( $panel, smooth ) {
 				// Add some magic number offset to make space for possible nav menus etc.
 				var navOffset = sowAccordion.scrollto_offset ? sowAccordion.scrollto_offset : 80;
@@ -30,6 +45,7 @@ jQuery( function ( $ ) {
 			var openPanel = function ( panel, preventHashChange, keepVisible ) {
 				var $panel = $( panel );
 				if ( ! $panel.is( '.sow-accordion-panel-open' ) ) {
+					replaceLazyIframes( $panel );
 					$panel.find( '> .sow-accordion-panel-content' ).slideDown( {
 						start: function () {
 							// Sometimes the content of the panel relies on a window resize to setup correctly.
@@ -112,6 +128,11 @@ jQuery( function ( $ ) {
 						}
 					} );
 				}
+			} );
+
+			// Ensure iframes in initially open panels are loaded.
+			$accordionPanels.filter( '.sow-accordion-panel-open' ).each( function() {
+				replaceLazyIframes( $( this ) );
 			} );
 
 			$widget.data( 'initialized', true );
