@@ -4,6 +4,10 @@
  * Action for displaying the widget preview.
  */
 function siteorigin_widget_preview_widget_action() {
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		wp_die( __( 'You do not have permission to preview widgets.', 'so-widgets-bundle' ), 403 );
+	}
+
 	if (
 		empty( $_REQUEST['_widgets_nonce'] ) ||
 		! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' )
