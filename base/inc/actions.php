@@ -4,16 +4,9 @@
  * Action for displaying the widget preview.
  */
 function siteorigin_widget_preview_widget_action() {
-	if ( ! current_user_can( 'edit_posts' ) ) {
-		wp_die( __( 'You do not have permission to preview widgets.', 'so-widgets-bundle' ), 403 );
-	}
+	siteorigin_verify_request_permissions();
 
-	if (
-		empty( $_REQUEST['_widgets_nonce'] ) ||
-		! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' )
-	) {
-		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
-	} elseif ( empty( $_POST['class'] ) ) {
+	if ( empty( $_POST['class'] ) ) {
 		wp_die( __( 'Invalid widget.', 'so-widgets-bundle' ), 400 );
 	}
 
@@ -102,9 +95,7 @@ function siteorigin_widget_user_can_edit_post_type( $post_type ) {
  * Action to handle searching posts
  */
 function siteorigin_widget_action_search_posts() {
-	if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
-		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
-	}
+	siteorigin_verify_request_permissions();
 
 	global $wpdb;
 	$query = '';
@@ -219,9 +210,7 @@ function siteorigin_widget_get_taxonomy_capability( $type ) {
  * Action to handle searching taxonomy terms.
  */
 function siteorigin_widget_action_search_terms() {
-	if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
-		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
-	}
+	siteorigin_verify_request_permissions();
 
 	global $wpdb;
 	$term = ! empty( $_GET['term'] ) ? sanitize_text_field( stripslashes( $_GET['term'] ) ) : '';
@@ -264,9 +253,7 @@ add_action( 'wp_ajax_so_widgets_search_terms', 'siteorigin_widget_action_search_
  * Action for getting the number of posts returned by a query.
  */
 function siteorigin_widget_get_posts_count_action() {
-	if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
-		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
-	}
+	siteorigin_verify_request_permissions();
 
 	$query = stripslashes( $_POST['query'] );
 
@@ -276,9 +263,7 @@ function siteorigin_widget_get_posts_count_action() {
 add_action( 'wp_ajax_sow_get_posts_count', 'siteorigin_widget_get_posts_count_action' );
 
 function siteorigin_widget_remote_image_search() {
-	if ( empty( $_GET[ '_sononce' ] ) || ! wp_verify_nonce( $_GET[ '_sononce' ], 'so-image' ) ) {
-		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
-	}
+	siteorigin_verify_request_permissions( 'upload_files', '_sononce', 'so-image' );
 
 	if ( empty( $_GET['q'] ) ) {
 		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );
@@ -322,12 +307,9 @@ function siteorigin_widget_remote_image_search() {
 add_action( 'wp_ajax_so_widgets_image_search', 'siteorigin_widget_remote_image_search' );
 
 function siteorigin_widget_image_import() {
-	if ( empty( $_GET[ '_sononce' ] ) || ! wp_verify_nonce( $_GET[ '_sononce' ], 'so-image' ) ) {
-		$result = array(
-			'error' => true,
-			'message' => __( 'Nonce error', 'so-widgets-bundle' ),
-		);
-	} elseif (
+	siteorigin_verify_request_permissions( 'upload_files', '_sononce', 'so-image' );
+
+	if (
 		empty( $_GET['import_signature'] ) ||
 		empty( $_GET['full_url'] ) ||
 		md5( $_GET['full_url'] . '::' . NONCE_SALT ) !== $_GET['import_signature']
@@ -374,9 +356,7 @@ add_action( 'wp_ajax_so_widgets_image_import', 'siteorigin_widget_image_import' 
  * Action to handle a user dismissing a teaser notice.
  */
 function siteorigin_widgets_dismiss_widget_action() {
-	if ( empty( $_GET[ '_wpnonce' ] ) || ! wp_verify_nonce( $_GET[ '_wpnonce' ], 'dismiss-widget-teaser' ) ) {
-		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
-	}
+	siteorigin_verify_request_permissions( 'edit_posts', '_wpnonce', 'dismiss-widget-teaser' );
 
 	if ( empty( $_GET[ 'widget' ] ) ) {
 		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );

@@ -582,10 +582,7 @@ class SiteOrigin_Widgets_Bundle {
 	 * Get JavaScript variables for admin.
 	 */
 	public function admin_ajax_get_javascript_variables() {
-		if ( empty( $_REQUEST['_widgets_nonce'] ) ||
-			! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
-			wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
-		}
+		siteorigin_verify_request_permissions();
 
 		$widget_class = $_POST['widget'];
 		global $wp_widget_factory;
