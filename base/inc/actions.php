@@ -95,75 +95,92 @@ function siteorigin_widget_user_can_edit_post_type( $post_type ) {
  * Action to handle searching posts
  */
 function siteorigin_widget_action_search_posts() {
-	siteorigin_verify_request_permissions();
+		siteorigin_verify_request_permissions();
 
-	global $wpdb;
-	$query = '';
-	$wpml_query = '';
+		global $wpdb;
+		$query = '';
+		$wpml_query = '';
 
-	// Get all public post types, besides attachments
-	$post_types = (array) get_post_types(
-		array(
-			'public' => true,
-		)
-	);
+		// Get all public post types, besides attachments.
+		$post_types = (array) get_post_types(
+			array(
+				'public' => true,
+			)
+		);
 
-	if ( ! empty( $_REQUEST['postTypes'] ) ) {
-		$post_types = array_intersect( explode( ',', sanitize_text_field( $_REQUEST['postTypes'] ) ), $post_types );
-	} else {
-		unset( $post_types['attachment'] );
-	}
-
-	// If WPML is installed, only include posts from the currently active language.
-	if ( defined( 'ICL_LANGUAGE_CODE' ) && ! empty( $_REQUEST['language'] ) ) {
-		$query .= $wpdb->prepare( " AND {$wpdb->prefix}icl_translations.language_code = %s ", sanitize_text_field( $_REQUEST['language'] ) );
-		$wpml_query .= " INNER JOIN {$wpdb->prefix}icl_translations ON ($wpdb->posts.ID = {$wpdb->prefix}icl_translations.element_id) ";
-	}
-
-	if ( ! empty( $_GET['query'] ) ) {
-		$search_query = '%' . $wpdb->esc_like( sanitize_text_field( $_GET['query'] ) ) . '%';
-		$query .= $wpdb->prepare( ' AND post_title LIKE %s ', $search_query );
-	}
-
-	$post_types = apply_filters( 'siteorigin_widgets_search_posts_post_types', $post_types );
-
-	// Ensure the user can edit this post type.
-	foreach ( $post_types as $key => $post_type ) {
-		if ( ! siteorigin_widget_user_can_edit_post_type( $post_type ) ) {
-			unset( $post_types[ $key ] );
+		if ( ! empty( $_REQUEST['postTypes'] ) ) {
+			$post_types = array_intersect( explode( ',', sanitize_text_field( $_REQUEST['postTypes'] ) ), $post_types );
+		} else {
+			unset( $post_types['attachment'] );
 		}
-	}
-	$post_types = "'" . implode( "', '", array_map( 'esc_sql', $post_types ) ) . "'";
 
-	$ordered_by = esc_sql( apply_filters( 'siteorigin_widgets_search_posts_order_by', 'post_modified DESC' ) );
-
-	$results = $wpdb->get_results(
-		"
-		SELECT ID AS 'value', post_title AS label, post_type AS 'type'
-		FROM {$wpdb->posts}
-		{$wpml_query}
-		WHERE
-			post_type IN ( {$post_types} ) AND post_status = 'publish' {$query}
-		ORDER BY {$ordered_by}
-		LIMIT 20
-	",
-		ARRAY_A
-	);
-
-	if ( empty( $results ) ) {
-		wp_send_json( array() );
-	}
-
-	// Filter results to ensure the user can read the post.
-	$results = array_filter(
-		$results,
-		function ( $post ) {
-
-			return current_user_can( 'read_post', $post['value'] );
+		// If WPML is installed, only include posts from the currently active language.
+		if ( defined( 'ICL_LANGUAGE_CODE' ) && ! empty( $_REQUEST['language'] ) ) {
+			$query .= $wpdb->prepare( " AND {$wpdb->prefix}icl_translations.language_code = %s ", sanitize_text_field( $_REQUEST['language'] ) );
+			$wpml_query .= " INNER JOIN {$wpdb->prefix}icl_translations ON ($wpdb->posts.ID = {$wpdb->prefix}icl_translations.element_id) ";
 		}
-	);
 
-	wp_send_json( apply_filters( 'siteorigin_widgets_search_posts_results', $results ) );
+		if ( ! empty( $_GET['query'] ) ) {
+			$search_query = '%' . $wpdb->esc_like( sanitize_text_field( $_GET['query'] ) ) . '%';
+			$query .= $wpdb->prepare( ' AND post_title LIKE %s ', $search_query );
+		}
+
+		$post_types = apply_filters( 'siteorigin_widgets_search_posts_post_types', $post_types );
+
+		// Ensure the user can edit this post type.
+		foreach ( $post_types as $key => $post_type ) {
+			if ( ! siteorigin_widget_user_can_edit_post_type( $post_type ) ) {
+				unset( $post_types[ $key ] );
+			}
+		}
+		$post_types = "'" . implode( "', '", array_map( 'esc_sql', $post_types ) ) . "'";
+
+		$ordered_by = self::get_search_posts_order_by();
+
+		$results = $wpdb->get_results(
+			"
+			SELECT ID AS 'value', post_title AS label, post_type AS 'type'
+			FROM {$wpdb->posts}
+			{$wpml_query}
+			WHERE
+				post_type IN ( {$post_types} ) AND post_status = 'publish' {$query}
+			ORDER BY {$ordered_by}
+			LIMIT 20
+		",
+			ARRAY_A
+		);
+
+		if ( empty( $results ) ) {
+			wp_send_json( array() );
+		}
+
+		// Filter results to ensure the user can read the post.
+		$results = array_filter(
+			$results,
+			function ( $post ) {
+
+				return current_user_can( 'read_post', $post['value'] );
+			}
+		);
+
+		wp_send_json( apply_filters( 'siteorigin_widgets_search_posts_results', $results ) );
+	}
+
+	/**
+	 * Get the ORDER BY clause for post searches.
+	 *
+	 * @return string
+	 */
+	private static function get_search_posts_order_by() {
+		return esc_sql( apply_filters( 'siteorigin_widgets_search_posts_order_by', 'post_modified DESC' ) );
+	}
+}
+
+/**
+ * Action to handle searching posts.
+ */
+function siteorigin_widget_action_search_posts() {
+	SiteOrigin_Widgets_Bundle_Actions::search_posts();
 }
 add_action( 'wp_ajax_so_widgets_search_posts', 'siteorigin_widget_action_search_posts' );
 
