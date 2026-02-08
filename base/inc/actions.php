@@ -91,10 +91,11 @@ function siteorigin_widget_user_can_edit_post_type( $post_type ) {
 	return $post_type && current_user_can( $post_type->cap->edit_posts );
 }
 
-/**
- * Action to handle searching posts
- */
-function siteorigin_widget_action_search_posts() {
+class SiteOrigin_Widgets_Bundle_Actions {
+	/**
+	 * Action to handle searching posts.
+	 */
+	public static function search_posts() {
 		siteorigin_verify_request_permissions();
 
 		global $wpdb;
