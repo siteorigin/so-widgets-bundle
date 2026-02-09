@@ -49,7 +49,6 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 
 		if (
 			empty( $once ) &&
-			$this->library === 'image' &&
 			$this->user_can_upload_media()
 		) {
 			add_action( 'siteorigin_widgets_footer_admin_templates', array( $this, 'image_search_dialog' ) );
