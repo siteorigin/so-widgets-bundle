@@ -41,10 +41,17 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 	 */
 	protected $fallback;
 
+	/**
+	 * Initializes the media field, adding the image search dialog if necessary.
+	 */
 	protected function initialize() {
 		static $once;
 
-		if ( empty( $once ) ) {
+		if (
+			empty( $once ) &&
+			$this->library === 'image' &&
+			$this->user_can_upload_media()
+		) {
 			add_action( 'siteorigin_widgets_footer_admin_templates', array( $this, 'image_search_dialog' ) );
 		}
 		$once = true;
@@ -57,6 +64,16 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 			'image_search' => __( 'Image Search', 'so-widgets-bundle' ),
 			'library' => 'image',
 		);
+	}
+
+	/**
+	 * Checks if the current user has permissions to upload media.
+	 * If not, the media field will not be rendered.
+	 *
+	 * @return bool True if the user can upload media, false otherwise.
+	 */
+	private function user_can_upload_media() : bool {
+		return current_user_can( 'upload_files' );
 	}
 
 	protected function render_field( $value, $instance ) {
@@ -108,7 +125,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 			>
 				<?php echo esc_html( $this->choose ); ?>
 			</a>
-			<?php if ( $this->library == 'image' ) { ?>
+			<?php if ( $this->library == 'image' && $this->user_can_upload_media() ) { ?>
 				<a href="#" class="find-image-button">
 					<?php echo esc_html( $this->image_search ); ?>
 				</a>
