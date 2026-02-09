@@ -68,7 +68,7 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 
 	/**
 	 * Checks if the current user has permissions to upload media.
-	 * If not, the media field will not be rendered.
+	 * If they don't, the media search button and dialog will not be rendered.
 	 *
 	 * @return bool True if the user can upload media, false otherwise.
 	 */
