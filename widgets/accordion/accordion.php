@@ -291,7 +291,25 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 	public function render_panel_content( $panel, $instance ) {
 		$content = $panel['autop'] ? wpautop( $panel['content_text'] ) : $panel['content_text'];
 
-		echo apply_filters( 'siteorigin_widgets_accordion_render_panel_content', $content, $panel, $instance );
+		$content = apply_filters( 'siteorigin_widgets_accordion_render_panel_content', $content, $panel, $instance );
+
+		$lazy_iframes = apply_filters( 'siteorigin_widgets_accordion_lazy_iframes', true, $panel, $instance );
+		if ( $lazy_iframes ) {
+			// Ensure oEmbed URLs are converted before we swap iframes.
+			if ( class_exists( 'WP_Embed' ) ) {
+				global $wp_embed;
+				if ( $wp_embed instanceof WP_Embed ) {
+					$content = $wp_embed->autoembed( $content );
+					$content = $wp_embed->run_shortcode( $content );
+				}
+			}
+
+			// Replace iframe tags so we can swap them back on panel open for lazy loading.
+			$content = preg_replace( '/<\s*iframe\b([^>]*)>/i', '<so-iframe$1>', $content );
+			$content = preg_replace( '/<\/\s*iframe\s*>/i', '</so-iframe>', $content );
+		}
+
+		echo $content;
 	}
 
 	public function get_form_teaser() {
