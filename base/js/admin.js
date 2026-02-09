@@ -1110,7 +1110,7 @@ var sowbForms = window.sowbForms || {};
 							$this.trigger( 'slideToggleOpenComplete' );
 
 							const $fields = $this.find(
-								'.siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field, > .siteorigin-widget-field'
+								'.siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field, .siteorigin-widget-field'
 							);
 
 							const visibleFields = $fields.filter( function() {
