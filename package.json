@@ -15,6 +15,6 @@
   "author": "siteorigin",
   "license": "GPL-3.0",
   "devDependencies": {
-    "siteorigin-tests-common": "github:siteorigin/siteorigin-tests-common#feature/neutralize-site-editor-header"
+    "siteorigin-tests-common": "github:siteorigin/siteorigin-tests-common"
   }
 }
