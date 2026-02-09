@@ -55,9 +55,7 @@ add_action( 'wp_footer', 'siteorigin_widget_print_styles' );
  * The Ajax handler for getting a list of available icons.
  */
 function siteorigin_widget_get_icon_list() {
-	if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
-		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
-	}
+	siteorigin_verify_request_permissions();
 
 	if ( empty( $_GET['family'] ) ) {
 		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );
@@ -716,4 +714,34 @@ function siteorigin_sanitize_json( $value, $max_depth = 10 ) {
 
 	$json = wp_json_encode( $decoded, JSON_UNESCAPED_SLASHES );
 	return $json ? $json : '[]';
+}
+
+/**
+ * Verify capability and nonce for admin widget actions.
+ *
+ * This function verifies the nonce sent in the request If either check fails, it terminates the request with an generic error message.
+ *
+ * @param string $permission The capability required to perform the action. Default is 'edit_posts'.
+ * @param string $nonce The name of the nonce field to check in the request. Default is '_widgets_nonce'.
+ * @param string $nonce_action The action name to verify the nonce against. Default is 'widgets_action'.
+ *
+ * @return bool True if the nonce and capability checks pass.
+ */
+function siteorigin_verify_request_permissions(
+	$permission = 'edit_posts',
+	$nonce = '_widgets_nonce',
+	$nonce_action = 'widgets_action'
+) : bool {
+	if (
+		empty( $_REQUEST[ $nonce ] ) ||
+		! wp_verify_nonce( $_REQUEST[ $nonce ], $nonce_action )
+	) {
+		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
+	}
+
+	if ( ! current_user_can( $permission ) ) {
+		wp_die( __( 'You do not have permission to make this action.', 'so-widgets-bundle' ), 403 );
+	}
+
+	return true;
 }
