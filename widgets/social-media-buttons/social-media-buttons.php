@@ -267,7 +267,9 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 					}
 				}
 
-				if (
+				if ( $network['name'] === 'skype' ) {
+					$network['icon_name'] = 'fontawesome-sow-fab-microsoft';
+				} elseif (
 					$network['name'] != 'envelope' &&
 					$network['name'] != 'suitcase' &&
 					$network['name'] != 'rss' &&

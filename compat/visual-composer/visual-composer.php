@@ -132,9 +132,7 @@ class SiteOrigin_Widgets_Bundle_Visual_Composer {
 			wp_die();
 		}
 
-		if ( empty( $_REQUEST['_sowbnonce'] ) || ! wp_verify_nonce( $_REQUEST['_sowbnonce'], 'sowb_vc_widget_render_form' ) ) {
-			wp_die();
-		}
+		siteorigin_verify_request_permissions( 'edit_posts', '_sowbnonce', 'sowb_vc_widget_render_form' );
 
 		$request = array_map( 'stripslashes_deep', $_REQUEST );
 		$widget_class = $request['widget'];

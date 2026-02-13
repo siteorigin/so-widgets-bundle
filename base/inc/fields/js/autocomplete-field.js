@@ -43,6 +43,7 @@
 			const query = $contentSearchInput.val();
 			const source = $contentSearchInput.data( 'source' );
 			const postTypes = $contentSearchInput.data( 'postTypes' );
+			const ajaxParams = $contentSearchInput.data( 'ajaxParams' );
 			const ajaxData = {
 				action: 'so_widgets_search_' + source,
 				postId: postId,
@@ -53,6 +54,11 @@
 				ajaxData.postTypes = postTypes;
 			} else if ( source === 'terms' ) {
 				ajaxData.term = query;
+			}
+
+			if ( ajaxParams && typeof ajaxParams === 'object' && ! Array.isArray( ajaxParams ) ) {
+				Object.assign( ajaxData, ajaxParams );
+				ajaxData.action = 'so_widgets_search_' + source;
 			}
 
 			// If WPML is enabled for this page, include page language for filtering.

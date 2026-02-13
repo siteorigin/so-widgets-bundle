@@ -172,6 +172,12 @@ return array(
 		'icon_color' => '#ffffff',
 		'button_color' => '#202021',
 	),
+	'gitlab' => array(
+		'label' => __( 'GitLab', 'so-widgets-bundle' ),
+		'base_url' => 'https://gitlab.com/',
+		'icon_color' => '#ffffff',
+		'button_color' => '#fc6d26',
+	),
 	'goodreads-g' => array(
 		'label' => __( 'Goodreads', 'so-widgets-bundle' ),
 		'base_url' => 'https://goodreads.com/',

@@ -4,12 +4,9 @@
  * Action for displaying the widget preview.
  */
 function siteorigin_widget_preview_widget_action() {
-	if (
-		empty( $_REQUEST['_widgets_nonce'] ) ||
-		! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' )
-	) {
-		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
-	} elseif ( empty( $_POST['class'] ) ) {
+	siteorigin_verify_request_permissions();
+
+	if ( empty( $_POST['class'] ) ) {
 		wp_die( __( 'Invalid widget.', 'so-widgets-bundle' ), 400 );
 	}
 
@@ -94,81 +91,97 @@ function siteorigin_widget_user_can_edit_post_type( $post_type ) {
 	return $post_type && current_user_can( $post_type->cap->edit_posts );
 }
 
+class SiteOrigin_Widgets_Bundle_Actions {
+	/**
+	 * Action to handle searching posts.
+	 */
+	public static function search_posts() {
+		siteorigin_verify_request_permissions();
+
+		global $wpdb;
+		$query = '';
+		$wpml_query = '';
+
+		// Get all public post types, besides attachments.
+		$post_types = (array) get_post_types(
+			array(
+				'public' => true,
+			)
+		);
+
+		if ( ! empty( $_REQUEST['postTypes'] ) ) {
+			$post_types = array_intersect( explode( ',', sanitize_text_field( $_REQUEST['postTypes'] ) ), $post_types );
+		} else {
+			unset( $post_types['attachment'] );
+		}
+
+		// If WPML is installed, only include posts from the currently active language.
+		if ( defined( 'ICL_LANGUAGE_CODE' ) && ! empty( $_REQUEST['language'] ) ) {
+			$query .= $wpdb->prepare( " AND {$wpdb->prefix}icl_translations.language_code = %s ", sanitize_text_field( $_REQUEST['language'] ) );
+			$wpml_query .= " INNER JOIN {$wpdb->prefix}icl_translations ON ($wpdb->posts.ID = {$wpdb->prefix}icl_translations.element_id) ";
+		}
+
+		if ( ! empty( $_GET['query'] ) ) {
+			$search_query = '%' . $wpdb->esc_like( sanitize_text_field( $_GET['query'] ) ) . '%';
+			$query .= $wpdb->prepare( ' AND post_title LIKE %s ', $search_query );
+		}
+
+		$post_types = apply_filters( 'siteorigin_widgets_search_posts_post_types', $post_types );
+
+		// Ensure the user can edit this post type.
+		foreach ( $post_types as $key => $post_type ) {
+			if ( ! siteorigin_widget_user_can_edit_post_type( $post_type ) ) {
+				unset( $post_types[ $key ] );
+			}
+		}
+		$post_types = "'" . implode( "', '", array_map( 'esc_sql', $post_types ) ) . "'";
+
+		$ordered_by = self::get_search_posts_order_by();
+
+		$results = $wpdb->get_results(
+			"
+			SELECT ID AS 'value', post_title AS label, post_type AS 'type'
+			FROM {$wpdb->posts}
+			{$wpml_query}
+			WHERE
+				post_type IN ( {$post_types} ) AND post_status = 'publish' {$query}
+			ORDER BY {$ordered_by}
+			LIMIT 20
+		",
+			ARRAY_A
+		);
+
+		if ( empty( $results ) ) {
+			wp_send_json( array() );
+		}
+
+		// Filter results to ensure the user can read the post.
+		$results = array_filter(
+			$results,
+			function ( $post ) {
+
+				return current_user_can( 'read_post', $post['value'] );
+			}
+		);
+
+		wp_send_json( apply_filters( 'siteorigin_widgets_search_posts_results', $results ) );
+	}
+
+	/**
+	 * Get the ORDER BY clause for post searches.
+	 *
+	 * @return string
+	 */
+	private static function get_search_posts_order_by() {
+		return esc_sql( apply_filters( 'siteorigin_widgets_search_posts_order_by', 'post_modified DESC' ) );
+	}
+}
+
 /**
- * Action to handle searching posts
+ * Action to handle searching posts.
  */
 function siteorigin_widget_action_search_posts() {
-	if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
-		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
-	}
-
-	global $wpdb;
-	$query = '';
-	$wpml_query = '';
-
-	// Get all public post types, besides attachments
-	$post_types = (array) get_post_types(
-		array(
-			'public' => true,
-		)
-	);
-
-	if ( ! empty( $_REQUEST['postTypes'] ) ) {
-		$post_types = array_intersect( explode( ',', sanitize_text_field( $_REQUEST['postTypes'] ) ), $post_types );
-	} else {
-		unset( $post_types['attachment'] );
-	}
-
-	// If WPML is installed, only include posts from the currently active language.
-	if ( defined( 'ICL_LANGUAGE_CODE' ) && ! empty( $_REQUEST['language'] ) ) {
-		$query .= $wpdb->prepare( " AND {$wpdb->prefix}icl_translations.language_code = %s ", sanitize_text_field( $_REQUEST['language'] ) );
-		$wpml_query .= " INNER JOIN {$wpdb->prefix}icl_translations ON ($wpdb->posts.ID = {$wpdb->prefix}icl_translations.element_id) ";
-	}
-
-	if ( ! empty( $_GET['query'] ) ) {
-		$search_query = '%' . $wpdb->esc_like( sanitize_text_field( $_GET['query'] ) ) . '%';
-		$query .= $wpdb->prepare( ' AND post_title LIKE %s ', $search_query );
-	}
-
-	$post_types = apply_filters( 'siteorigin_widgets_search_posts_post_types', $post_types );
-
-	// Ensure the user can edit this post type.
-	foreach ( $post_types as $key => $post_type ) {
-		if ( ! siteorigin_widget_user_can_edit_post_type( $post_type ) ) {
-			unset( $post_types[ $key ] );
-		}
-	}
-	$post_types = "'" . implode( "', '", array_map( 'esc_sql', $post_types ) ) . "'";
-
-	$ordered_by = esc_sql( apply_filters( 'siteorigin_widgets_search_posts_order_by', 'post_modified DESC' ) );
-
-	$results = $wpdb->get_results(
-		"
-		SELECT ID AS 'value', post_title AS label, post_type AS 'type'
-		FROM {$wpdb->posts}
-		{$wpml_query}
-		WHERE
-			post_type IN ( {$post_types} ) AND post_status = 'publish' {$query}
-		ORDER BY {$ordered_by}
-		LIMIT 20
-	",
-		ARRAY_A
-	);
-
-	if ( empty( $results ) ) {
-		wp_send_json( array() );
-	}
-
-	// Filter results to ensure the user can read the post.
-	$results = array_filter(
-		$results,
-		function ( $post ) {
-
-			return current_user_can( 'read_post', $post['value'] );
-		}
-	);
-
-	wp_send_json( apply_filters( 'siteorigin_widgets_search_posts_results', $results ) );
+	SiteOrigin_Widgets_Bundle_Actions::search_posts();
 }
 add_action( 'wp_ajax_so_widgets_search_posts', 'siteorigin_widget_action_search_posts' );
 
@@ -215,9 +228,7 @@ function siteorigin_widget_get_taxonomy_capability( $type ) {
  * Action to handle searching taxonomy terms.
  */
 function siteorigin_widget_action_search_terms() {
-	if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
-		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
-	}
+	siteorigin_verify_request_permissions();
 
 	global $wpdb;
 	$term = ! empty( $_GET['term'] ) ? sanitize_text_field( stripslashes( $_GET['term'] ) ) : '';
@@ -260,9 +271,7 @@ add_action( 'wp_ajax_so_widgets_search_terms', 'siteorigin_widget_action_search_
  * Action for getting the number of posts returned by a query.
  */
 function siteorigin_widget_get_posts_count_action() {
-	if ( empty( $_REQUEST['_widgets_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_widgets_nonce'], 'widgets_action' ) ) {
-		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
-	}
+	siteorigin_verify_request_permissions();
 
 	$query = stripslashes( $_POST['query'] );
 
@@ -272,9 +281,7 @@ function siteorigin_widget_get_posts_count_action() {
 add_action( 'wp_ajax_sow_get_posts_count', 'siteorigin_widget_get_posts_count_action' );
 
 function siteorigin_widget_remote_image_search() {
-	if ( empty( $_GET[ '_sononce' ] ) || ! wp_verify_nonce( $_GET[ '_sononce' ], 'so-image' ) ) {
-		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
-	}
+	siteorigin_verify_request_permissions( 'upload_files', '_sononce', 'so-image' );
 
 	if ( empty( $_GET['q'] ) ) {
 		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );
@@ -318,12 +325,9 @@ function siteorigin_widget_remote_image_search() {
 add_action( 'wp_ajax_so_widgets_image_search', 'siteorigin_widget_remote_image_search' );
 
 function siteorigin_widget_image_import() {
-	if ( empty( $_GET[ '_sononce' ] ) || ! wp_verify_nonce( $_GET[ '_sononce' ], 'so-image' ) ) {
-		$result = array(
-			'error' => true,
-			'message' => __( 'Nonce error', 'so-widgets-bundle' ),
-		);
-	} elseif (
+	siteorigin_verify_request_permissions( 'upload_files', '_sononce', 'so-image' );
+
+	if (
 		empty( $_GET['import_signature'] ) ||
 		empty( $_GET['full_url'] ) ||
 		md5( $_GET['full_url'] . '::' . NONCE_SALT ) !== $_GET['import_signature']
@@ -370,9 +374,7 @@ add_action( 'wp_ajax_so_widgets_image_import', 'siteorigin_widget_image_import' 
  * Action to handle a user dismissing a teaser notice.
  */
 function siteorigin_widgets_dismiss_widget_action() {
-	if ( empty( $_GET[ '_wpnonce' ] ) || ! wp_verify_nonce( $_GET[ '_wpnonce' ], 'dismiss-widget-teaser' ) ) {
-		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 403 );
-	}
+	siteorigin_verify_request_permissions( 'edit_posts', '_wpnonce', 'dismiss-widget-teaser' );
 
 	if ( empty( $_GET[ 'widget' ] ) ) {
 		wp_die( __( 'Invalid request.', 'so-widgets-bundle' ), 400 );

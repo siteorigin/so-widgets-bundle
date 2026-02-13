@@ -16,6 +16,7 @@ tmp
 !/css/accessibility.css
 
 .cursorrules
+.claude/
 # Playwright.
 tests/cache
 tests/results
