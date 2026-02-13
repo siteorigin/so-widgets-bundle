@@ -109,6 +109,16 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.71.0 - 13 February 2026 =
+* Accordion: Added a heading title tag option, aligned the default with existing markup, refined title handling, and lazy-loaded embedded iframes.
+* Social Media Buttons: Added the GitLab network and updated the Skype icon to Microsoft branding.
+* General: Widget preview requests now verify user permissions with a shared helper and capability checks.
+* General: Autocomplete fields can send additional request parameters.
+* General: Repeater fields now trigger setup on all visible fields at any nesting level.
+* General: Media fields now hide the image search button when users cannot upload media and skip the library check before opening the search modal.
+* General: Search posts field restored the class wrapper and refined order by handling.
+* General: Updated dependencies, including lodash-es 4.17.23.
+
 = 1.70.4 - 07 January 2026 =
 * Widget Block: Reworked the block editor widget block for Application Programming Interface (API) version 3 support, resolved the apiVersion notice, and added an extra site editor canvas check.
 * Widget Block: Improved preview request handling to abort stale requests per block, allow simultaneous previews, fix the `ajaxurl` value, and prevent missing preview data warnings.
