@@ -36,7 +36,8 @@
 			}
 
 			&.sow-slider-image-cover {
-				background-repeat: repeat;
+				// "cover" should never tile; tiling is only appropriate for explicit "tile" sizing modes.
+				background-repeat: no-repeat;
 			}
 
 			.sow-slider-image-container {
@@ -74,7 +75,7 @@
 				}
 
 				&.sow-slider-image-cover {
-					background-repeat: repeat;
+					background-repeat: no-repeat;
 				}
 			}
 
