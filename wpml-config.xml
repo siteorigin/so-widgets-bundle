@@ -6,7 +6,3871 @@
     </key>
   </admin-texts>
   <gutenberg-blocks>
-    <gutenberg-block type="sowb/widget-block" translate="1">
+    <gutenberg-block type="sowb/siteorigin-widget-accordion-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-anything-carousel-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-author-box-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-blog-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-button-grid-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-button-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-cta-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-editor-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-features-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-googlemap-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-headline-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-hero-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-icon-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-image-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-layoutslider-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-lottie-player-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-postcarousel-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-pricetable-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-recent-posts-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-simple-masonry-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-slider-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-socialmediabuttons-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-tabs-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-taxonomy-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widget-video-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widgets-contactform-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widgets-imagegrid-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/siteorigin-widgets-testimonials-widget" translate="1">
+      <key name="widgetData">
+        <key name="title" />
+        <key name="text" />
+        <key name="alt" />
+        <key name="url" />
+        <key name="content" />
+        <key name="caption" />
+        <key name="attributes">
+          <key name="title" />
+        </key>
+        <key name="settings">
+          <key name="default_subject" />
+          <key name="subject_prefix" />
+          <key name="success_message" />
+          <key name="submit_text" />
+        </key>
+        <key name="fields">
+          <key name="*">
+            <key name="label" />
+            <key name="description" />
+            <key name="required">
+              <key name="missing_message" />
+            </key>
+          </key>
+        </key>
+        <key name="panels">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+          </key>
+        </key>
+        <key name="items">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="tabs">
+          <key name="*">
+            <key name="title" />
+            <key name="content_text" />
+            <key name="content_layout" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="images">
+          <key name="*">
+            <key name="title" />
+            <key name="alt" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="columns">
+          <key name="*">
+            <key name="title" />
+            <key name="subtitle" />
+            <key name="image_title" />
+            <key name="image_alt" />
+            <key name="per" />
+            <key name="button_text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="networks">
+          <key name="*">
+            <key name="url" />
+            <key name="icon_title" />
+          </key>
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="title" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="sub_headline">
+          <key name="text" />
+          <key name="destination_url" />
+        </key>
+        <key name="testimonials">
+          <key name="*">
+            <key name="text" />
+            <key name="url" />
+          </key>
+        </key>
+        <key name="frames">
+          <key name="*">
+            <key name="content" />
+          </key>
+        </key>
+        <key name="features">
+          <key name="*">
+            <key name="title" />
+            <key name="text" />
+            <key name="icon_title" />
+            <key name="more_text" />
+            <key name="more_url" />
+          </key>
+        </key>
+        <key name="cta">
+          <key name="*">
+            <key name="title" />
+            <key name="sub_title" />
+            <key name="button>text" />
+            <key name="button>destination_url" />
+            <key name="attributes>title" />
+          </key>
+        </key>
+        <key name="taxonomy">
+          <key name="*">
+            <key name="label" />
+          </key>
+        </key>
+      </key>
+    </gutenberg-block>
+<gutenberg-block type="sowb/widget-block" translate="1">
       <key name="widgetData">
         <key name="title" />
         <key name="text" />
