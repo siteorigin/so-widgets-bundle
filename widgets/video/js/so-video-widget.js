@@ -13,6 +13,13 @@ jQuery( function ( $ ) {
 		$video.each( function () {
 			const $this = $( this );
 
+			// Reset to poster image when video ends.
+			if ( $this.data( 'show-cover-on-end' ) ) {
+				this.addEventListener( 'ended', function () {
+					this.load();
+				} );
+			}
+
 			// Do we need to set up Media Elements?
 			if (
 				typeof $.fn.mediaelementplayer === 'function' &&
