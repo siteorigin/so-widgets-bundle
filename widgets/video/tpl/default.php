@@ -48,6 +48,10 @@ if ( ! $hide_controls ) {
 	$video_args['controls'] = '';
 }
 
+if ( apply_filters( 'sow_video_show_cover_on_end', false, $instance ) ) {
+	$video_args['data-show-cover-on-end'] = 'true';
+}
+
 $so_video = new SiteOrigin_Video();
 
 do_action( 'siteorigin_widgets_sow-video_before_video', $instance );
