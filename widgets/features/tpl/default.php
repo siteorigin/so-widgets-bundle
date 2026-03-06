@@ -119,8 +119,7 @@ if ( empty( $instance['features'] ) ) {
 						<?php
 						if (
 							! empty( $feature['more_url'] ) &&
-							$instance['title_link'] &&
-							! $link_overlay
+							( $instance['title_link'] || $link_overlay )
 						) {
 						?>
 							<a
@@ -136,8 +135,7 @@ if ( empty( $instance['features'] ) ) {
 
 						if (
 							! empty( $feature['more_url'] ) &&
-							$instance['title_link'] &&
-							! $link_overlay
+							( $instance['title_link'] || $link_overlay )
 						) {
 								?>
 							</a>
