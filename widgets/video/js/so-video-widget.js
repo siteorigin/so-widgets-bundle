@@ -4,9 +4,11 @@ var sowb = window.sowb || {};
 
 jQuery( function ( $ ) {
 	sowb.setupVideoPlayers = () => {
-		const $video = $( 'video.sow-video-widget' );
+		const $video = $( 'video.sow-video-widget' ).filter( function () {
+			return ! $( this ).data( 'initialized' );
+		} );
 
-		if ( $video.data( 'initialized' ) ) {
+		if ( ! $video.length ) {
 			return $video;
 		}
 
@@ -26,6 +28,7 @@ jQuery( function ( $ ) {
 				$this.attr( 'controls' )
 			) {
 				$this.mediaelementplayer();
+				$this.data( 'initialized', true );
 				return;
 			}
 
@@ -38,13 +41,13 @@ jQuery( function ( $ ) {
 				const video = e.target;
 				video.paused ? video.play() : video.pause();
 			} );
+
+			$this.data( 'initialized', true );
 		} );
 
 		if ( typeof $.fn.fitVids === 'function' ) {
 			$( '.sow-video-wrapper.use-fitvids' ).fitVids();
 		}
-
-		$video.data( 'initialized', true );
 	};
 	sowb.setupVideoPlayers();
 

@@ -142,9 +142,12 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 
 	public function enqueue_frontend_scripts( $instance ) {
 		$video_host = empty( $instance['host_type'] ) ? '' : $instance['host_type'];
+		$show_cover_on_end = false;
 
 		if ( $video_host == 'external' ) {
 			$video_host = ! empty( $instance['video']['external_video'] ) ? $this->get_host_from_url( $instance['video']['external_video'] ) : '';
+		} elseif ( $video_host === 'self' ) {
+			$show_cover_on_end = apply_filters( 'sow_video_show_cover_on_end', false, $instance );
 		}
 
 		$load_video_js = false;
@@ -165,7 +168,8 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 
 			if (
 				$video_host !== 'self' ||
-				! empty( $instance['playback']['hide_controls'] )
+				! empty( $instance['playback']['hide_controls'] ) ||
+				$show_cover_on_end
 			) {
 				$load_video_js = true;
 			}
