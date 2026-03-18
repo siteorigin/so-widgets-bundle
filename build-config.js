@@ -56,6 +56,7 @@ module.exports = {
             'icons/**/!(*.js|*.less|*.css)',
             'js/**/!(*.js|*.less|*.css)',
             'widgets/**/!(*.js|*.less|*.css)',
+            'css/*.css',                                          // Copy static root CSS assets.
             'icons/**/*css',                                      // Copy CSS for icon packs.
             'js/lib/**/*css',                                     // Copy CSS for JS libs.
             'css/lib/**/*css',                                    // Copy CSS for JS libs.
