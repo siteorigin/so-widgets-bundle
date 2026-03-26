@@ -14,22 +14,25 @@ jQuery( function ( $ ) {
 
 		$video.each( function () {
 			const $this = $( this );
-
-			// Reset to poster image when video ends.
-			if ( $this.data( 'show-cover-on-end' ) ) {
-				this.addEventListener( 'ended', function () {
-					this.load();
-				} );
-			}
+			const showCoverOnEnd = Boolean( $this.data( 'show-cover-on-end' ) );
 
 			// Do we need to set up Media Elements?
 			if (
 				typeof $.fn.mediaelementplayer === 'function' &&
 				$this.attr( 'controls' )
 			) {
-				$this.mediaelementplayer();
+				$this.mediaelementplayer( {
+					showPosterWhenEnded: showCoverOnEnd,
+				} );
 				$this.data( 'initialized', true );
 				return;
+			}
+
+			// Reset to the native poster image when MediaElement isn't in use.
+			if ( showCoverOnEnd ) {
+				this.addEventListener( 'ended', function () {
+					this.load();
+				} );
 			}
 
 			// Controls are hidden. Add click event to play/pause video.
