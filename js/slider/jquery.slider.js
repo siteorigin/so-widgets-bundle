@@ -274,6 +274,10 @@ jQuery( function( $ ) {
 				// Show everything for this slider
 				$base.show();
 
+				if ( typeof sowb.runFitText === 'function' ) {
+					sowb.runFitText();
+				}
+
 				var resizeFrames = function() {
 					$$.find( '.sow-slider-image' ).each( function() {
 						var $i = $( this );
@@ -308,6 +312,9 @@ jQuery( function( $ ) {
 							var $$ = $( this );
 							siteoriginSlider.playSlideVideo( incomingSlideEl );
 							siteoriginSlider.setupActiveSlide( $$, incomingSlideEl );
+							if ( typeof sowb.runFitText === 'function' ) {
+								sowb.runFitText();
+							}
 							$( incomingSlideEl ).trigger( 'sowSlideCycleAfter' );
 						},
 
@@ -322,6 +329,9 @@ jQuery( function( $ ) {
 						'cycle-initialized' : function( event, optionHash ) {
 							siteoriginSlider.playSlideVideo( $( this ).find( '.cycle-slide-active' ) );
 							siteoriginSlider.setupActiveSlide( $$, optionHash.slides[0] );
+							if ( typeof sowb.runFitText === 'function' ) {
+								sowb.runFitText();
+							}
 
 							$p.find( '>li' ).removeClass( 'sow-active' ).eq( 0 ).addClass( 'sow-active' );
 							$( this ).find( '.cycle-slide-active' ).trigger( 'sowSlideInitial' );
