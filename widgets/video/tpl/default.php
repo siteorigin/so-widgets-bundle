@@ -11,6 +11,7 @@
  * @var $video_type
  * @var $fitvids
  * @var $hide_controls
+ * @var $show_cover_on_end
  */
 if ( ! empty( $instance['title'] ) ) {
 	echo $args['before_title'] . wp_kses_post( $instance['title'] ) . $args['after_title'];
@@ -46,6 +47,10 @@ if ( $skin_class != 'default' ) {
 
 if ( ! $hide_controls ) {
 	$video_args['controls'] = '';
+}
+
+if ( $show_cover_on_end ) {
+	$video_args['data-show-cover-on-end'] = 'true';
 }
 
 $so_video = new SiteOrigin_Video();
