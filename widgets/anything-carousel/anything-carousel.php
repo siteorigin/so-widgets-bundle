@@ -147,6 +147,15 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 						'label' => __( 'Navigation', 'so-widgets-bundle' ),
 						'hide' => true,
 						'fields' => array(
+							'arrows_location' => array(
+								'type' => 'radio',
+								'label' => __( 'Arrows Location', 'so-widgets-bundle' ),
+								'default' => 'left_right',
+								'options' => array(
+									'left_right' => __( 'Left and Right', 'so-widgets-bundle' ),
+									'bottom_right' => __( 'Bottom Right', 'so-widgets-bundle' ),
+								),
+							),
 							'arrow_color' => array(
 								'type' => 'color',
 								'label' => __( 'Arrows Color', 'so-widgets-bundle' ),
@@ -296,19 +305,23 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 
 	public function get_template_variables( $instance, $args ) {
 		$carousel_settings = $this->carousel_settings_template_variables( $instance['carousel_settings'], false );
+		$arrows_location = ! empty( $instance['design']['navigation']['arrows_location'] ) ? $instance['design']['navigation']['arrows_location'] : 'left_right';
 		$carousel_settings['adaptive_height'] = $instance['carousel_settings']['adaptive_height'];
+		$carousel_settings['appendDots'] = $arrows_location === 'bottom_right';
 
 		return array(
 			'settings' => array(
 				'title' => $instance['title'],
 				'item_template' => plugin_dir_path( __FILE__ ) . 'tpl/item.php',
-				'navigation' => 'side',
+				'navigation' => $arrows_location === 'bottom_right' ? 'container' : 'side',
 				'navigation_arrows' => isset( $instance['carousel_settings']['arrows'] ) ? ! empty( $instance['carousel_settings']['arrows'] ) : true,
+				'navigation_dots' => isset( $instance['carousel_settings']['dots'] ) ? ! empty( $instance['carousel_settings']['dots'] ) : true,
 				'item_title_tag' => siteorigin_widget_valid_tag(
 					$instance['design']['item_title']['tag'],
 					'h4'
 				),
 				'items' => ! empty( $instance['items'] ) ? $instance['items'] : array(),
+				'container_classes' => $arrows_location === 'bottom_right' ? array( 'sow-anything-carousel-nav-bottom-right' ) : array(),
 				'attributes' => array(
 					'widget' => 'anything',
 					'item_count' => ! empty( $instance['items'] ) ? count( $instance['items'] ) : 0,

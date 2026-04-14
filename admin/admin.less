@@ -1,6 +1,27 @@
 @import "../base/less/mixins";
 
 #sow-widgets-page {
+	--sow-admin-button-bg: #eef0f1;
+	--sow-admin-button-border: #b2b8bc;
+	--sow-admin-button-text: #475158;
+
+	--sow-admin-button-hover-bg: #e6e9ea;
+	--sow-admin-button-hover-border: #9fa8ad;
+	--sow-admin-button-hover-text: #394248;
+
+	--sow-admin-button-active-bg: #dde2e4;
+	--sow-admin-button-active-border: #8c979d;
+	--sow-admin-button-active-text: #30383e;
+
+	--sow-admin-button-focus-ring: rgba(0, 115, 170, 0.20);
+
+	--sow-admin-button-disabled-bg: #eff1f2;
+	--sow-admin-button-disabled-border: #d2d7da;
+	--sow-admin-button-disabled-text: #98a0a5;
+
+	--sow-admin-link-color: #1880b6;
+	--sow-admin-link-hover-color: #0f6f9e;
+	--sow-admin-link-focus-ring: rgba(24, 128, 182, 0.22);
 
 	margin: 0 0 0 -20px;
 
@@ -75,6 +96,9 @@
 			input{
 				box-sizing: border-box;
 				width: 200px;
+				padding: 0 8px;
+				line-height: 2;
+				min-height: 30px;
 			}
 
 			.results {
@@ -273,13 +297,74 @@
 					margin-right: 1em;
 					margin-top: .5em;
 				}
-				
+
+				.so-widget-toggle-active button,
+				.so-widget-settings {
+					background: var(--sow-admin-button-bg);
+					border: 1px solid var(--sow-admin-button-border);
+					border-radius: 3px;
+					box-shadow: none;
+					color: var(--sow-admin-button-text);
+					font-size: 13px;
+					line-height: 2.15384615;
+					min-height: 30px;
+					padding: 0 10px;
+					text-shadow: none;
+					transition:
+						background-color 120ms ease,
+						border-color 120ms ease,
+						color 120ms ease,
+						box-shadow 120ms ease;
+
+					&:hover {
+						background: var(--sow-admin-button-hover-bg);
+						border-color: var(--sow-admin-button-hover-border);
+						color: var(--sow-admin-button-hover-text);
+					}
+
+					&:active {
+						background: var(--sow-admin-button-active-bg);
+						border-color: var(--sow-admin-button-active-border);
+						color: var(--sow-admin-button-active-text);
+					}
+
+					&:disabled,
+					&[disabled] {
+						background: var(--sow-admin-button-disabled-bg);
+						border-color: var(--sow-admin-button-disabled-border);
+						color: var(--sow-admin-button-disabled-text);
+						box-shadow: none;
+						cursor: default;
+					}
+				}
+
 				.so-widget-toggle-active button:focus {
 					outline: none;
 				}
 
+				.so-widget-toggle-active button:focus-visible,
+				.so-widget-settings:focus-visible {
+					border-color: #2271b1;
+					box-shadow:
+						0 0 0 1px #fff,
+						0 0 0 3px var(--sow-admin-button-focus-ring);
+					outline: 0;
+				}
+
 				.so-widget-documentation {
+					color: var(--sow-admin-link-color);
 					margin-top: 1em;
+
+					&:hover,
+					&:focus {
+						color: var(--sow-admin-link-hover-color);
+					}
+
+					&:focus-visible {
+						border-radius: 2px;
+						box-shadow: 0 0 0 3px var(--sow-admin-link-focus-ring);
+						outline: 0;
+					}
 				}
 			}
 

@@ -142,6 +142,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 
 	public function enqueue_frontend_scripts( $instance ) {
 		$video_host = empty( $instance['host_type'] ) ? '' : $instance['host_type'];
+		$show_cover_on_end = $this->show_cover_on_end( $instance );
 
 		if ( $video_host == 'external' ) {
 			$video_host = ! empty( $instance['video']['external_video'] ) ? $this->get_host_from_url( $instance['video']['external_video'] ) : '';
@@ -165,7 +166,8 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 
 			if (
 				$video_host !== 'self' ||
-				! empty( $instance['playback']['hide_controls'] )
+				! empty( $instance['playback']['hide_controls'] ) ||
+				$show_cover_on_end
 			) {
 				$load_video_js = true;
 			}
@@ -287,6 +289,7 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 			'skin_class'              => 'default',
 			'fitvids'                 => ! empty( $instance['playback']['fitvids'] ),
 			'hide_controls'           => $hide_controls,
+			'show_cover_on_end'       => $this->show_cover_on_end( $instance ),
 		);
 
 		if ( $instance['host_type'] == 'external' && $instance['playback']['oembed'] ) {
@@ -315,6 +318,21 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 	 */
 	private function is_skinnable_video_host( $video_host ) {
 		return isset( $this->skinnable_hosts[ $video_host ] );
+	}
+
+	/**
+	 * Determine if the cover image should be restored when a self-hosted video ends.
+	 *
+	 * @param array $instance The widget instance settings.
+	 *
+	 * @return bool
+	 */
+	private function show_cover_on_end( $instance ) {
+		if ( empty( $instance['host_type'] ) || $instance['host_type'] !== 'self' ) {
+			return false;
+		}
+
+		return (bool) apply_filters( 'sow_video_show_cover_on_end', false, $instance );
 	}
 
 	public function get_less_variables( $instance ) {

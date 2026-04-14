@@ -108,8 +108,79 @@
 		display: none !important;
 	}
 
-	.sow-carousel-wrapper {
+	&.sow-anything-carousel-nav-bottom-right {
 
+		.sow-carousel-nav {
+			align-items: center;
+			display: flex;
+			gap: 24px;
+			margin-top: @navigation_arrow_margin;
+			width: 100%;
+
+			body.rtl & {
+				flex-direction: row-reverse;
+			}
+
+			.slick-dots {
+				flex: 1 1 auto;
+				order: 1;
+				text-align: left;
+				width: auto;
+
+				body.rtl & {
+					order: 2;
+					text-align: right;
+				}
+			}
+
+			.sow-carousel-nav-arrows {
+				display: flex;
+				flex-shrink: 0;
+				gap: 12px;
+				margin-left: auto;
+				order: 2;
+
+				body.rtl & {
+					margin-left: 0;
+					margin-right: auto;
+					order: 1;
+				}
+
+				a.sow-carousel-next,
+				a.sow-carousel-previous {
+					-moz-osx-font-smoothing: grayscale;
+					-webkit-font-smoothing: antialiased;
+					font-family: 'anything-carousel-arrows';
+					font-style: normal;
+					font-variant: normal;
+					font-weight: normal;
+					text-align: center;
+					text-decoration: none;
+					text-transform: none;
+				}
+			}
+
+			a.sow-carousel-previous {
+				margin-right: 0;
+				order: 1;
+
+				body.rtl & {
+					order: 2;
+				}
+			}
+
+			a.sow-carousel-next {
+				margin-left: 0;
+				order: 2;
+
+				body.rtl & {
+					order: 1;
+				}
+			}
+		}
+	}
+
+	.sow-carousel-wrapper {
 		.sow-carousel-items {
 
 			.sow-carousel-item {
