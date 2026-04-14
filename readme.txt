@@ -109,6 +109,17 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.72.0 - 14 April 2026 =
+* Anything Carousel: Added bottom-right arrows navigation layout.
+* Features: Linked the title when the column link overlay is enabled.
+* Hero: Fixed FitText refresh on mobile devices.
+* Slider: Fixed cover background tiling.
+* Video: Added an option to show the cover image when a self-hosted video ends.
+* General: Resolved multiple WordPress (WP) 7 admin styling issues including checkbox appearance, button sizing, preview button height, measurement select chevron, and widgets search sizing.
+* General: Added custom action button styling for the widgets admin page.
+* General: Included accessibility Cascading Style Sheets (CSS) in release builds.
+* General: Added WordPress Multilingual (WPML) configuration entries for Widgets Bundle blocks.
+
 = 1.71.0 - 13 February 2026 =
 * Accordion: Added a heading title tag option, aligned the default with existing markup, refined title handling, and lazy-loaded embedded iframes.
 * Social Media Buttons: Added the GitLab network and updated the Skype icon to Microsoft branding.
