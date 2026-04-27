@@ -251,11 +251,11 @@ jQuery( function ( $ ) {
 			} );
 
 			if ( carouselSettings.theme === 'cards' ) {
-				// To prevent a sizing issue, we need to check if the Cards Carousel
-				// is inside of a Layout Builder, and if so, set the parent container
-				// to overflow hidden.
+				// To prevent card shadows from visually overflowing,
+				// set overflow hidden on the panel rather than the
+				// cell to avoid affecting sibling cell sizing.
 				if ( $$.closest( '.widget_siteorigin-panels-builder' ).length ) {
-					const $cell = $$.closest( '.so-panel' ).parent().css( 'overflow', 'hidden' );
+					$$.closest( '.so-panel' ).css( 'overflow', 'hidden' );
 				}
 			}
 
