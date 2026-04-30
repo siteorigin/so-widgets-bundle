@@ -830,13 +830,16 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			return;
 		}
 
+		if ( ! is_a( get_current_screen(), 'WP_Screen' ) || get_current_screen()->base !== 'site-editor' ) {
+			return;
+		}
+
 		wp_tinymce_inline_scripts();
 		wp_enqueue_editor();
 
 		// Load the editor to ensure the necessary scripts are available in
-		// the iframed editor canvas (Site Editor and post editor in WP 6.5+).
-		// This isn't ideal, but WordPress doesn't provide many ways of doing
-		// this.
+		// the Site editor. This isn't ideal, but WordPress doesn't provide
+		// many ways of doing this.
 		ob_start();
 		wp_editor(
 			'',
