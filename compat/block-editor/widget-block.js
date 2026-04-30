@@ -1051,11 +1051,23 @@ const sowbCanvasCloneElements = [
 /**
  * Appends elements to the canvas body.
  *
- * @param {jQuery} $canvasBody     The jQuery object representing the canvas body.*
+ * @param {jQuery}   $canvasBody  The jQuery object representing the canvas body.
+ * @param {Document} [sourceDoc]  The document to read source nodes from. When
+ *                                this helper runs from inside the editor iframe,
+ *                                the source `<script>`/`<link>` tags live in the
+ *                                parent admin document, not in the iframe's own
+ *                                document. Defaults to the current document for
+ *                                backwards compatibility with parent-side calls.
  */
-const sowbCloneElementsToCanvas = ( $canvasBody ) => {
+const sowbCloneElementsToCanvas = ( $canvasBody, sourceDoc ) => {
+	// jQuery( document ) is ambiguous when this script runs inside an iframe
+	// (it picks the iframe's own document). Passing the source doc explicitly
+	// removes the ambiguity. The default fallback to `document` preserves the
+	// existing parent-side caller path.
+	const $source = sourceDoc ? jQuery( sourceDoc ) : jQuery( document );
+
 	for ( const selector of sowbCanvasCloneElements ) {
-		const $element = jQuery( selector );
+		const $element = $source.find( selector );
 		if ( $element.length === 0 ) {
 			continue;
 		}
