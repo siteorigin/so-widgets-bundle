@@ -940,16 +940,29 @@ let sowbSiteEditorCanvas = false;
  * @returns {jQuery} jQuery reference to the widget form
  */
 const sowbGetBlockForm = ( clientId ) => {
-	if ( sowbSiteEditorCanvas === false ) {
-		sowbSiteEditorCanvas = jQuery( '.edit-site-visual-editor__editor-canvas' );
+	// Re-resolve the editor canvas on every call rather than caching to false,
+	// because the iframe element is mounted asynchronously by the block editor.
+	// Site Editor uses `.edit-site-visual-editor__editor-canvas`; the post editor
+	// (default since WP 6.5) uses `iframe[name="editor-canvas"]`.
+	let $canvas = jQuery( '.edit-site-visual-editor__editor-canvas' );
+	if ( $canvas.length === 0 ) {
+		$canvas = jQuery( 'iframe[name="editor-canvas"]' );
 	}
 
-	if ( sowbSiteEditorCanvas.length === 0 ) {
+	// Cache the resolved canvas for use by sowbMaybeSetupSiteEditorAssets()
+	// and other consumers, but only when the canvas is actually present so
+	// we never lock in an empty result before the iframe has mounted.
+	if ( $canvas.length > 0 ) {
+		sowbSiteEditorCanvas = $canvas;
+	}
+
+	if ( $canvas.length === 0 ) {
+		// No iframe (e.g. widgets.php Block Widgets screen, classic editor).
 		return jQuery( '[data-block="' + clientId + '"]' ).find( '.siteorigin-widget-form-main' );
 	}
 
-	// Return the main WB form.
-	return sowbSiteEditorCanvas
+	// Return the main WB form from inside the editor iframe.
+	return $canvas
 		.contents()
 		.find( '[data-block="' + clientId + '"]' )
 		.find( '.siteorigin-widget-form-main' );
