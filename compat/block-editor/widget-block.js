@@ -1106,10 +1106,10 @@ const sowbMaybeSetupSiteEditorAssets = () => {
 		sowbSiteEditorCanvas.length === 0 ||
 		sowbSiteEditorAssetsSetup
 	) {
-		sowbSiteEditorAssetsSetup = true;
+		// Do NOT latch on failure: the parent-side caller may still be
+		// able to run a successful clone once the iframe is mounted.
 		return;
 	}
-	sowbSiteEditorAssetsSetup = true;
 
 	const frame = typeof sowbSiteEditorCanvas[0] !== 'undefined' ?
 		sowbSiteEditorCanvas[0] :
@@ -1119,13 +1119,44 @@ const sowbMaybeSetupSiteEditorAssets = () => {
 
 	const $canvasBody = $iframe.find( 'body' );
 
+	if ( $canvasBody.length === 0 ) {
+		// iframe not yet mounted; bail without latching so we can retry
+		// on the next call from sowbSetupWidgetForm().
+		return;
+	}
+
+	// When this helper runs from INSIDE the iframe (the IIFE branch at the
+	// bottom of widget-block.js), the source <script>/<link> nodes live in
+	// the parent admin document, not in this script's own document. Read
+	// them from the parent. When this helper runs from the parent (Site
+	// Editor / post editor parent path), our own document is already
+	// correct.
+	let sourceDoc;
+	try {
+		sourceDoc = window.frameElement && window.parent && window.parent.document
+			? window.parent.document
+			: document;
+	} catch ( e ) {
+		// Cross-origin guard. Should not trigger for the same-origin
+		// editor canvas, but if it does we fall back to the local document.
+		sourceDoc = document;
+	}
+
 	// Clone elements to the canvas.
-	sowbCloneElementsToCanvas( $canvasBody );
+	sowbCloneElementsToCanvas( $canvasBody, sourceDoc );
 
 	// Is ajaxurl set?
-	if ( typeof frame.contentWindow.ajaxurl === 'undefined' ) {
-		frame.contentWindow.ajaxurl = window.top.ajaxurl;
+	try {
+		if ( typeof frame.contentWindow.ajaxurl === 'undefined' ) {
+			frame.contentWindow.ajaxurl = window.top.ajaxurl;
+		}
+	} catch ( e ) {
+		// Ignore cross-window errors (e.g. iframe detached between the
+		// initial check and the assignment).
 	}
+
+	// Only latch after a successful clone.
+	sowbSiteEditorAssetsSetup = true;
 };
 
 /**
