@@ -49,16 +49,67 @@
 	};
 
 	/**
+	 * Clears any pending TinyMCE setup state from a field.
+	 *
+	 * @param {jQuery} $field - jQuery object of the field container element.
+	 */
+	const clearTinyMCEFieldPendingSetup = function( $field ) {
+		const visibilityPoll = $field.data( 'sowb-tinymce-visibility-poll' );
+		if ( visibilityPoll ) {
+			clearInterval( visibilityPoll );
+			$field.removeData( 'sowb-tinymce-visibility-poll' );
+		}
+
+		$field.removeData( 'sowb-pre-init-bound' );
+		$field.removeAttr( 'data-pre-init' );
+	};
+
+	/**
+	 * Removes an existing TinyMCE editor instance when the runtime exposes a
+	 * compatible teardown API.
+	 *
+	 * WordPress can expose `wp.oldEditor` in iframe contexts for legacy
+	 * compatibility, but that object does not always implement `remove()`.
+	 * Prefer the active editor API when available and fall back to the
+	 * TinyMCE instance directly.
+	 *
+	 * @param {Object} wpEditor - The resolved WordPress editor API object.
+	 * @param {string} id - The editor textarea ID.
+	 */
+	const removeTinyMCEEditor = function( wpEditor, id ) {
+		if ( wpEditor && typeof wpEditor.remove === 'function' ) {
+			wpEditor.remove( id );
+			return;
+		}
+
+		if ( window.wp.editor && typeof window.wp.editor.remove === 'function' ) {
+			window.wp.editor.remove( id );
+			return;
+		}
+
+		if ( window.tinymce ) {
+			const editor = window.tinymce.get( id );
+			if ( editor && typeof editor.remove === 'function' ) {
+				editor.remove();
+			}
+		}
+	};
+
+	/**
 	 * Sets up a TinyMCE field within a widget form.
 	 * Handles initialization of the TinyMCE editor, event binding, and UI setup.
 	 *
 	 * @param {jQuery} $field - jQuery object of the field container element.
 	 */
 	const setupTinyMCEField = function( $field ) {
-		if ( $field.attr( 'data-initialized' ) ) {
+		if (
+			$field.attr( 'data-initialized' ) &&
+			$field.find( '.wp-editor-wrap, .mce-tinymce' ).length > 0
+		) {
 			return;
 		}
 
+		clearTinyMCEFieldPendingSetup( $field );
 		$field.attr( 'data-initialized', true );
 
 		// If this is in an iframe, copy necessary globals from the parent window.
@@ -107,12 +158,15 @@
 
 		const $textarea = $container.find( 'textarea' );
 		// Prevent potential id overlap by appending the textarea field with a random id.
-		let id = $textarea.data( 'tinymce-id' );
+		let id = $textarea.attr( 'data-tinymce-id' ) || $textarea.data( 'tinymce-id' );
 		if ( ! id ) {
 			id = $textarea.attr( 'id' ) + Math.floor( Math.random() * 1000 );
-			$textarea.data( 'tinymce-id', id );
-			$textarea.attr( 'id', id );
 		}
+
+		$textarea
+			.data( 'tinymce-id', id )
+			.attr( 'data-tinymce-id', id )
+			.attr( 'id', id );
 
 		$( window.document ).one( 'wp-before-tinymce-init', function( event, init ) {
 			if ( init.selector !== settings.tinymce.selector ) {
@@ -163,7 +217,7 @@
 				if ( $wpautopToggleField ) {
 					$wpautopToggleField.off( 'change' );
 					$wpautopToggleField.on( 'change', function() {
-						window.wp.editor.remove( id );
+						removeTinyMCEEditor( window.wp.editor, id );
 						settings.tinymce.wpautop = $wpautopToggleField.is( ':checked' );
 						window.wp.editor.initialize( id, settings );
 					} );
@@ -188,7 +242,7 @@
 			} );
 		}
 
-		wpEditor.remove( id );
+		removeTinyMCEEditor( wpEditor, id );
 		if ( window.tinymce ) {
 			window.tinymce.EditorManager.overrideDefaults( { base_url: settings.baseURL, suffix: settings.suffix } );
 		}
@@ -201,8 +255,11 @@
 				if ( $textarea.is( ':visible' ) ) {
 					wpEditor.initialize( id, settings );
 					clearInterval( intervalId );
+					$field.removeData( 'sowb-tinymce-visibility-poll' );
 				}
 			}, 500 );
+
+			$field.data( 'sowb-tinymce-visibility-poll', intervalId );
 		}
 
 		$field.on( 'click', function( event ) {
@@ -247,20 +304,24 @@
 	const setupTinyMCEFieldInitializer = function() {
 		const $field = $( this );
 
+		if ( $field.attr( 'data-pre-init' ) && ! $field.data( 'sowb-pre-init-bound' ) ) {
+			$field.removeAttr( 'data-pre-init' );
+		}
+
 		// If the field is visible, initialize the TinyMCE editor immediately.
 		if ( $field.is( ':visible' ) ) {
 			setupTinyMCEField( $field );
 			return;
 		}
-		// If the field is already marked for initialization, skip further setup.
-		else if ( $field.attr( 'data-pre-init' ) ) {
+
+		if ( $field.data( 'sowb-pre-init-bound' ) ) {
 			return;
 		}
 
 		// Mark the field for initialization and wait for it to become visible.
 		// Once visible, the 'sowsetupformfield' event triggers the editor setup.
 		$field
-			.attr( 'data-pre-init', true )
+			.data( 'sowb-pre-init-bound', true )
 			.one( 'sowsetupformfield', () => {
 				setupTinyMCEField( $field );
 			} );
@@ -283,9 +344,40 @@
 		}
 
 		$form.find( '.siteorigin-widget-field-type-tinymce' ).each( function() {
-			$( this ).removeAttr( 'data-initialized' );
-			setupTinyMCEField( $( this ) );
+			const $field = $( this );
+			clearTinyMCEFieldPendingSetup( $field );
+			$field.removeAttr( 'data-initialized' );
+			setupTinyMCEField( $field );
 		} );
+	};
+
+	/**
+	 * Initializes TinyMCE fields inside the Site Editor canvas iframe.
+	 *
+	 * The parent editor can post this request before iframe field scripts have
+	 * finished loading, so the iframe also calls this once its own script is
+	 * ready.
+	 */
+	const setupSiteEditorTinyMCEFields = function() {
+		if (
+			window.wp &&
+			window.wp.editor &&
+			! window.wp.editor.getDefaultSettings &&
+			window.top.wp &&
+			window.top.wp.editor
+		) {
+			window.wp.editor.getDefaultSettings = window.top.wp.editor.getDefaultSettings;
+		}
+
+		$( '.siteorigin-widget-field-type-tinymce' ).each( function() {
+			setupTinyMCEFieldInitializer.call( this );
+		} );
+
+		// Check if the sortstop event is already bound.
+		if ( ! $( window.top.document ).data( 'sortstop-bound' ) ) {
+			$( window.top.document ).data( 'sortstop-bound', true );
+			$( window.top.document ).on( 'sortstop', sortStopEvent );
+		}
 	};
 
 
@@ -305,20 +397,13 @@
 	// Add support for the Site Editor.
 	window.addEventListener( 'message', function( e ) {
 		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
-			$( '.siteorigin-widget-field-type-tinymce' ).each( function() {
-				setupTinyMCEFieldInitializer.call( this );
-			} );
-
-			if ( ! window.wp.editor.getDefaultSettings ) {
-				window.wp.editor.getDefaultSettings = window.top.wp.editor.getDefaultSettings;
-			}
-
-			// Check if the sortstop event is already bound.
-			if ( ! $( window.top.document ).data( 'sortstop-bound' ) ) {
-				$( window.top.document ).data( 'sortstop-bound', true );
-				$( window.top.document ).on( 'sortstop', sortStopEvent );
-			}
+			setupSiteEditorTinyMCEFields();
 		}
 	} );
+
+	if ( window.frameElement ) {
+		$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-tinymce', setupTinyMCEFieldInitializer );
+		$( setupSiteEditorTinyMCEFields );
+	}
 
 } )( jQuery );

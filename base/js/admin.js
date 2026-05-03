@@ -1263,6 +1263,7 @@ var sowbForms = window.sowbForms || {};
 									// Prevent potential id overlap by appending the textarea field with a random id.
 									newId += Math.floor( Math.random() * 1000 );
 									$inputElement.data( 'tinymce-id', newId );
+									$inputElement.attr( 'data-tinymce-id', newId );
 								}
 
 								$inputElement.attr( 'id', newId );
