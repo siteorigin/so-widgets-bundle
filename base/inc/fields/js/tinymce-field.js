@@ -380,6 +380,19 @@
 		}
 	};
 
+	let siteEditorSetupScheduled = false;
+	const scheduleSiteEditorTinyMCEFields = function() {
+		if ( siteEditorSetupScheduled ) {
+			return;
+		}
+
+		siteEditorSetupScheduled = true;
+		setTimeout( function() {
+			siteEditorSetupScheduled = false;
+			setupSiteEditorTinyMCEFields();
+		}, 50 );
+	};
+
 
 	/// If the current page isn't the site editor, set up the TinyMCE field now.
 	if (
@@ -404,6 +417,32 @@
 	if ( window.frameElement ) {
 		$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-tinymce', setupTinyMCEFieldInitializer );
 		$( setupSiteEditorTinyMCEFields );
+
+		if ( window.MutationObserver ) {
+			$( function() {
+				if ( ! document.body ) {
+					return;
+				}
+
+				const observer = new MutationObserver( scheduleSiteEditorTinyMCEFields );
+				observer.observe( document.body, {
+					attributes: true,
+					attributeFilter: [ 'class', 'style' ],
+					childList: true,
+					subtree: true,
+				} );
+			} );
+		} else {
+			let siteEditorSetupAttempts = 0;
+			const siteEditorSetupInterval = setInterval( function() {
+				setupSiteEditorTinyMCEFields();
+				siteEditorSetupAttempts++;
+
+				if ( siteEditorSetupAttempts >= 20 ) {
+					clearInterval( siteEditorSetupInterval );
+				}
+			}, 250 );
+		}
 	}
 
 } )( jQuery );

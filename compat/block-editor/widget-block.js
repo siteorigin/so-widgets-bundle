@@ -325,16 +325,24 @@
 			return;
 		}
 
-		try {
-			const iframeWindow = sowbSiteEditorCanvas[0].contentWindow;
-			if ( iframeWindow ) {
+		const sendInitMessage = () => {
+			try {
+				const iframeWindow = sowbSiteEditorCanvas[0].contentWindow;
+				if ( ! iframeWindow ) {
+					return;
+				}
+
 				iframeWindow.postMessage( {
 					action: 'sowbBlockFormInit'
 				}, '*' );
+			} catch ( e ) {
+				console.error( 'SiteOrigin Widgets: Failed to send postMessage to iframe:', e );
 			}
-		} catch ( e ) {
-			console.error( 'SiteOrigin Widgets: Failed to send postMessage to iframe:', e );
-		}
+		};
+
+		sendInitMessage();
+		setTimeout( sendInitMessage, 250 );
+		setTimeout( sendInitMessage, 1000 );
 	};
 
 	/**
