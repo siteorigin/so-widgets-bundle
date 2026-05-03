@@ -42,6 +42,24 @@ var sowbForms = window.sowbForms || {};
 		}
 	}
 
+	const repeaterSetupFieldSelector = '.siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field, .siteorigin-widget-field';
+
+	const triggerVisibleRepeaterFieldSetup = ( $container ) => {
+		const triggerSetup = () => {
+			$container
+				.find( repeaterSetupFieldSelector )
+				.filter( function() {
+					return $( this ).is( ':visible' );
+				} )
+				.each( function() {
+					$( this ).trigger( 'sowsetupformfield' );
+				} );
+		};
+
+		triggerSetup();
+		setTimeout( triggerSetup, 250 );
+	}
+
 	$.fn.sowSetupForm = function () {
 
 		return $(this).each(function (i, el) {
@@ -907,12 +925,7 @@ var sowbForms = window.sowbForms || {};
 			$el.find( '> .siteorigin-widget-field-repeater-items' ).append( item ).sortable( 'refresh' ).trigger( 'updateFieldPositions' );
 			item.sowSetupRepeaterItems();
 			item.hide().slideDown( 'fast', function () {
-				$( this )
-					.find( '.siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field, .siteorigin-widget-field' )
-					.each( function() {
-						$( this ).trigger( 'sowsetupformfield' );
-					} );
-
+				triggerVisibleRepeaterFieldSetup( $( this ) );
 				$( window ).trigger( 'resize' );
 			});
 			$el.trigger( 'change' );
@@ -1114,19 +1127,9 @@ var sowbForms = window.sowbForms || {};
 							}
 
 							$this.trigger( 'slideToggleOpenComplete' );
+							triggerVisibleRepeaterFieldSetup( $this );
 						},
-						complete: function() {
-							if ( initialState === 'closed' ) {
-								$( this )
-									.find(
-										'.siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field, .siteorigin-widget-field'
-									)
-									.filter( ':visible' )
-									.each( function() {
-										$( this ).trigger( 'sowsetupformfield' );
-									} );
-							}
-
+						complete: () => {
 							$( window ).trigger( 'resize' );
 						}
 					} );
@@ -1300,12 +1303,7 @@ var sowbForms = window.sowbForms || {};
 						$items.append( $copyItem ).sortable( 'refresh' ).trigger( 'updateFieldPositions' );
 						$copyItem.sowSetupRepeaterItems();
 						$copyItem.hide().slideDown( 'fast', function () {
-							$( this )
-								.find( '.siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field, .siteorigin-widget-field' )
-								.each( function() {
-									$( this ).trigger( 'sowsetupformfield' );
-								} );
-
+							triggerVisibleRepeaterFieldSetup( $( this ) );
 							$( window ).trigger( 'resize' );
 						});
 						// If increment is enabled for this item, trigger label updates.
@@ -1322,7 +1320,9 @@ var sowbForms = window.sowbForms || {};
 					}
 				});
 
-				$el.find( '> .siteorigin-widget-field-repeater-item-form' ).sowSetupForm();
+				const $itemForm = $el.find( '> .siteorigin-widget-field-repeater-item-form' );
+				$itemForm.sowSetupForm();
+				triggerVisibleRepeaterFieldSetup( $itemForm );
 
 				$el.data( 'sowrepeater-actions-setup', true );
 			}
