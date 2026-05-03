@@ -244,9 +244,10 @@
 	 * @param {Object} props - The properties passed to the function.
 	 * @param {Object} state - The current state of the component.
 	 * @param {Function} setState - The setState function to update the component's state.
+	 * @param {Object} activeRequestRef - React ref tracking the active preview request.
 	 */
 
-	const sowbSetupWidgetForm = async ( props, state, setState ) => {
+	const sowbSetupWidgetForm = async ( props, state, setState, activeRequestRef ) => {
 		const $mainForm = sowbGetBlockForm( props.clientId );
 
 		if ( $mainForm.length === 0 || state.formInitialized ) {
@@ -378,6 +379,7 @@
 
 		const isMountedRef = element.useRef( true );
 		const activeRequestRef = element.useRef( null );
+		const iframeFormInitKeyRef = element.useRef( null );
 
 		// Ensure widgetClass attribute is set once (was done in constructor).
 		element.useEffect( () => {
@@ -482,6 +484,32 @@
 			// or when the editing flag flips. Using props.attributes.widgetData and state.editing.
 		}, [ props.attributes.widgetData, state.editing ] );
 
+		element.useEffect( () => {
+			if ( ! state.editing || ! state.widgetFormHtml || ! state.formInitialized ) {
+				iframeFormInitKeyRef.current = null;
+				return;
+			}
+
+			const initKey = `${ props.clientId }::${ state.widgetFormHtml }`;
+			if ( iframeFormInitKeyRef.current === initKey ) {
+				return;
+			}
+
+			iframeFormInitKeyRef.current = initKey;
+
+			// In dev mode, blocks are rendered twice in quick succession. Wait
+			// for the remount pass before sending iframe field initialization.
+			if ( ! sowbBlockEditorAdmin.wpScriptDebug || state.devModeRemount ) {
+				initializeFormFieldsInIframe();
+			}
+		}, [
+			props.clientId,
+			state.editing,
+			state.widgetFormHtml,
+			state.formInitialized,
+			state.devModeRemount
+		] );
+
 		// Use block props hook to provide wrapper attributes/classes for API v3.
 		const blockProps = blockEditor && blockEditor.useBlockProps ? blockEditor.useBlockProps() : {};
 
@@ -541,16 +569,9 @@
 							sowbSetupWidgetForm(
 								props,
 								state,
-								mergeState
-							).then( () => {
-								// In dev mode, blocks are rendered twice in
-								// quick succession. To prevent issues with
-								// form field scripts we need to wait until the
-								// second render to initialize the fields.
-								if ( ! sowbBlockEditorAdmin.wpScriptDebug || state.devModeRemount ) {
-									initializeFormFieldsInIframe();
-								}
-							} );
+								mergeState,
+								activeRequestRef
+							);
 						}
 					} )
 				)
@@ -815,9 +836,6 @@
 		} )
 	);
 
-	// Register all of our manually registered blocks.
-	await soRegisterWidgetBlocks( sowbManuallyRegisteredBlocks );
-
 	// Modify all of the manually registered blocks with additional properties.
 	Object.entries( sowbManuallyRegisteredBlocks ).forEach( ( [ key, widget ] ) => {
 		if ( ! widget.blockName ) {
@@ -848,6 +866,10 @@
 			}
 		);
 	} );
+
+	// Register all of our manually registered blocks after the filters above are
+	// in place so they receive the same edit component as regular widget blocks.
+	await soRegisterWidgetBlocks( sowbManuallyRegisteredBlocks );
 
 	/**
 	 * Registers a SiteOrigin Widget as a block.
