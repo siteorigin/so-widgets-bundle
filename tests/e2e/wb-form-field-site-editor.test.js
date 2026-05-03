@@ -157,7 +157,8 @@ test(
 			await expect( iconOption ).toBeVisible( { timeout: 20000 } );
 			await expect( iconOption ).toBeEnabled( { timeout: 20000 } );
 
-				await iconOption.click( { force: true } );
+				await iconOption.click();
+				await iconOption.dispatchEvent( 'click' );
 
 				// Confirm icon has been set by checking the stored value.
 				const iconValue = iconField.locator( 'input.siteorigin-widget-icon-icon' );
