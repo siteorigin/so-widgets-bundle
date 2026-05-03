@@ -340,9 +340,9 @@
 			}
 		};
 
-		sendInitMessage();
-		setTimeout( sendInitMessage, 250 );
-		setTimeout( sendInitMessage, 1000 );
+		[ 0, 250, 1000, 3000, 6000 ].forEach( ( delay ) => {
+			setTimeout( sendInitMessage, delay );
+		} );
 	};
 
 	/**

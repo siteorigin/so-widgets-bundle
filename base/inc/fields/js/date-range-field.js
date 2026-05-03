@@ -125,12 +125,50 @@
 		 $( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-date-range', setupDateRangeField );
 	 }
 
+	const initializeDateRangeFields = function() {
+		$( '.siteorigin-widget-field-type-date-range' ).each( function() {
+			setupDateRangeField.call( this );
+		} );
+	};
+
 	// Add support for the Site Editor.
 	window.addEventListener( 'message', function( e ) {
 		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
-			$( '.siteorigin-widget-field-type-date-range' ).each( function() {
-				setupDateRangeField.call( this );
-			} );
+			initializeDateRangeFields();
 		}
 	} );
+
+	if ( window.frameElement ) {
+		$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-date-range', setupDateRangeField );
+		$( initializeDateRangeFields );
+
+		if ( window.MutationObserver ) {
+			$( function() {
+				if ( ! document.body ) {
+					return;
+				}
+
+				const observer = new MutationObserver( ( mutations ) => {
+					mutations.forEach( ( mutation ) => {
+						$( mutation.addedNodes ).each( function() {
+							const $node = $( this );
+
+							if ( $node.is( '.siteorigin-widget-field-type-date-range' ) ) {
+								setupDateRangeField.call( this );
+							}
+
+							$node.find( '.siteorigin-widget-field-type-date-range' ).each( function() {
+								setupDateRangeField.call( this );
+							} );
+						} );
+					} );
+				} );
+
+				observer.observe( document.body, {
+					childList: true,
+					subtree: true,
+				} );
+			} );
+		}
+	}
 } )( jQuery );
