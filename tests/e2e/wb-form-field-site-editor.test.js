@@ -98,6 +98,123 @@ const assertRepeaterTinyMCEChrome = async( frame, offset, fieldSelector = '.site
 		.toBeGreaterThan( 0 );
 };
 
+const collectConsoleAndPageErrors = ( page ) => {
+	const errors = [];
+
+	page.on( 'console', ( message ) => {
+		if ( [ 'error', 'warning' ].includes( message.type() ) ) {
+			errors.push( message.text() );
+		}
+	} );
+
+	page.on( 'pageerror', ( error ) => {
+		errors.push( error.message );
+	} );
+
+	return errors;
+};
+
+const getPremiumWebFontSelectorParentAssets = async( page ) => {
+	return page.evaluate( () => {
+		const normalizeAssetUrl = ( value ) => {
+			try {
+				return new URL( value, window.location.href ).href;
+			} catch ( e ) {
+				return '';
+			}
+		};
+
+		const pluginScript = document.getElementById( 'so-premium-font-selector-js' ) ||
+			document.querySelector( 'script[src*="/web-font-selector/js/so-premium-tmce-fonts-plugin"]' );
+
+		if ( ! pluginScript ) {
+			return {
+				enabled: false,
+				assets: [],
+			};
+		}
+
+		const pluginUrl = new URL(
+			pluginScript.getAttribute( 'src' ),
+			window.location.href
+		);
+		pluginUrl.search = '';
+		pluginUrl.hash = '';
+
+		const jsPathIndex = pluginUrl.pathname.indexOf( '/js/' );
+		if ( jsPathIndex === -1 ) {
+			return {
+				enabled: true,
+				assets: [],
+			};
+		}
+
+		pluginUrl.pathname = pluginUrl.pathname.substring( 0, jsPathIndex + 4 );
+
+		const assets = [];
+		const addAsset = ( element, url = '' ) => {
+			assets.push( {
+				id: element.id,
+				tagName: element.tagName.toLowerCase(),
+				url,
+			} );
+		};
+
+		document.querySelectorAll( 'script[src], link[rel="stylesheet"][href]' ).forEach( ( element ) => {
+			const attribute = element.tagName.toLowerCase() === 'script' ? 'src' : 'href';
+			const assetUrl = normalizeAssetUrl( element.getAttribute( attribute ) );
+
+			if ( ! assetUrl || assetUrl.indexOf( pluginUrl.href ) !== 0 ) {
+				return;
+			}
+
+			addAsset( element, assetUrl );
+
+			if ( element.tagName.toLowerCase() === 'script' && element.id ) {
+				const inlineScript = document.getElementById( element.id + '-extra' );
+				if ( inlineScript ) {
+					addAsset( inlineScript );
+				}
+			}
+		} );
+
+		return {
+			enabled: true,
+			assets,
+		};
+	} );
+};
+
+const getMissingCanvasAssets = async( admin, assets ) => {
+	return admin.editor.canvas.locator( 'body' ).evaluate( ( body, expectedAssets ) => {
+		const doc = body.ownerDocument;
+		const normalizeAssetUrl = ( value ) => {
+			try {
+				return new URL( value, doc.location.href ).href;
+			} catch ( e ) {
+				return '';
+			}
+		};
+
+		return expectedAssets.filter( ( asset ) => {
+			if ( asset.id && doc.getElementById( asset.id ) ) {
+				return false;
+			}
+
+			if ( ! asset.url ) {
+				return true;
+			}
+
+			const selector = asset.tagName === 'script' ? 'script[src]' : 'link[href]';
+			const attribute = asset.tagName === 'script' ? 'src' : 'href';
+
+			return ! [ ...body.querySelectorAll( selector ) ].some( ( element ) => {
+				return normalizeAssetUrl( element.getAttribute( attribute ) ) === asset.url;
+			} );
+		} ).map( ( asset ) => asset.id || asset.url );
+	}, assets );
+};
+
 /**
  * Validates the following for the Icon Widget in the Site Editor:
  * 1. Icon field: selection and rendering of Material Icons.
@@ -639,7 +756,9 @@ test(
 test(
 	'Test the Features widget.',
 	async ( { page } ) => {
+		const consoleAndPageErrors = collectConsoleAndPageErrors( page );
 		const {
+			admin,
 			offset,
 			widget
 		} = await testPrep(
@@ -670,6 +789,22 @@ test(
 		await ensureElementVisible( secondFeature, offset );
 		await secondFeatureTop.click( { force: true } );
 		await assertRepeaterTinyMCEChrome( secondFeature, offset, '.siteorigin-widget-field-text' );
+
+		const premiumAssets = await getPremiumWebFontSelectorParentAssets( page );
+		if ( premiumAssets.enabled ) {
+			await expect
+				.poll(
+					async() => getMissingCanvasAssets( admin, premiumAssets.assets ),
+					{ timeout: 10000 }
+				)
+				.toEqual( [] );
+
+			expect(
+				consoleAndPageErrors.filter( ( message ) => {
+					return message.indexOf( 'Failed to initialize plugin: so-premium-font-selector' ) !== -1;
+				} )
+			).toEqual( [] );
+		}
 	}
 );
 
