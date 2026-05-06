@@ -1078,6 +1078,221 @@ const sowbCanvasCloneElements = [
 	'#so-toggle-field-js',
 ];
 
+const sowbNormalizeAssetUrl = ( value, baseHref ) => {
+	if ( ! value ) {
+		return '';
+	}
+
+	try {
+		return new URL(
+			value,
+			baseHref || window.location.href
+		).href;
+	} catch ( e ) {
+		return '';
+	}
+};
+
+const sowbGetDocumentHref = ( doc ) => {
+	return doc && doc.location && doc.location.href ?
+		doc.location.href :
+		window.location.href;
+};
+
+const sowbGetElementById = ( doc, id ) => {
+	if ( ! doc || ! id || typeof doc.getElementById !== 'function' ) {
+		return null;
+	}
+
+	return doc.getElementById( id );
+};
+
+/**
+ * Gets the editor settings for a TinyMCE container.
+ *
+ * @param {Element} element TinyMCE container element.
+ *
+ * @returns {Object} Parsed editor settings.
+ */
+const sowbGetEditorSettingsFromContainer = ( element ) => {
+	const $element = jQuery( element );
+	const editorSettings = $element.data( 'editorSettings' );
+
+	if ( editorSettings && typeof editorSettings === 'object' ) {
+		return editorSettings;
+	}
+
+	const rawSettings = $element.attr( 'data-editor-settings' );
+	if ( ! rawSettings ) {
+		return {};
+	}
+
+	try {
+		const parsedSettings = JSON.parse( rawSettings );
+		return parsedSettings && typeof parsedSettings === 'object' ?
+			parsedSettings :
+			{};
+	} catch ( e ) {
+		return {};
+	}
+};
+
+/**
+ * Derives the asset root for a TinyMCE external plugin URL.
+ *
+ * @param {string} pluginUrl External plugin URL.
+ *
+ * @returns {string} Normalized asset root URL.
+ */
+const sowbGetTinyMCEExternalPluginAssetRoot = ( pluginUrl ) => {
+	const normalizedPluginUrl = sowbNormalizeAssetUrl(
+		pluginUrl,
+		window.location.href
+	);
+
+	if ( ! normalizedPluginUrl ) {
+		return '';
+	}
+
+	const assetRoot = new URL( normalizedPluginUrl );
+	assetRoot.search = '';
+	assetRoot.hash = '';
+
+	const jsPathIndex = assetRoot.pathname.indexOf( '/js/' );
+	if ( jsPathIndex !== -1 ) {
+		assetRoot.pathname = assetRoot.pathname.substring( 0, jsPathIndex + 4 );
+		return assetRoot.href;
+	}
+
+	const lastSlashIndex = assetRoot.pathname.lastIndexOf( '/' );
+	assetRoot.pathname = assetRoot.pathname.substring( 0, lastSlashIndex + 1 );
+
+	return assetRoot.href;
+};
+
+/**
+ * Gets TinyMCE external plugin asset roots from mounted iframe widget forms.
+ *
+ * @param {jQuery} $canvasBody The iframe body.
+ *
+ * @returns {Set} Set of normalized asset root URLs.
+ */
+const sowbGetTinyMCEExternalPluginAssetRoots = ( $canvasBody ) => {
+	const assetRoots = new Set();
+
+	$canvasBody.find( '.siteorigin-widget-tinymce-container' ).each( function() {
+		const settings = sowbGetEditorSettingsFromContainer( this );
+		const externalPlugins = settings &&
+			settings.tinymce &&
+			settings.tinymce.external_plugins ?
+			settings.tinymce.external_plugins :
+			null;
+
+		if ( ! externalPlugins || typeof externalPlugins !== 'object' ) {
+			return;
+		}
+
+		Object.values( externalPlugins ).forEach( ( pluginUrl ) => {
+			if ( typeof pluginUrl !== 'string' || pluginUrl.length === 0 ) {
+				return;
+			}
+
+			const assetRoot = sowbGetTinyMCEExternalPluginAssetRoot( pluginUrl );
+			if ( assetRoot ) {
+				assetRoots.add( assetRoot );
+			}
+		} );
+	} );
+
+	return assetRoots;
+};
+
+/**
+ * Appends a cloned source element to the canvas when it is not already present.
+ *
+ * @param {jQuery}  $canvasBody The iframe body.
+ * @param {Element} element     The source element to clone.
+ * @param {jQuery}  $source     Source document wrapper.
+ *
+ * @returns {boolean} Whether an element was cloned.
+ */
+const sowbCloneElementToCanvas = ( $canvasBody, element, $source ) => {
+	if ( ! element || ! element.outerHTML ) {
+		return false;
+	}
+
+	const canvasDoc = $canvasBody[0] && $canvasBody[0].ownerDocument;
+	const sourceDoc = $source && $source[0] && $source[0].nodeType === 9 ?
+		$source[0] :
+		element.ownerDocument;
+
+	if (
+		element.id &&
+		sowbGetElementById( canvasDoc, element.id )
+	) {
+		return false;
+	}
+
+	const assetAttribute = element.hasAttribute( 'src' ) ? 'src' : (
+		element.hasAttribute( 'href' ) ? 'href' : ''
+	);
+
+	if ( assetAttribute ) {
+		const assetUrl = sowbNormalizeAssetUrl(
+			element.getAttribute( assetAttribute ),
+			sowbGetDocumentHref( sourceDoc )
+		);
+
+		if ( assetUrl ) {
+			const selector = assetAttribute === 'src' ? 'script[src]' : 'link[href]';
+			const existingAsset = $canvasBody.find( selector ).toArray().some( ( candidate ) => {
+				return sowbNormalizeAssetUrl(
+					candidate.getAttribute( assetAttribute ),
+					sowbGetDocumentHref( candidate.ownerDocument )
+				) === assetUrl;
+			} );
+
+			if ( existingAsset ) {
+				return false;
+			}
+		}
+	}
+
+	$canvasBody.append( element.outerHTML );
+	return true;
+};
+
+/**
+ * Clones the inline localization script related to a source script handle.
+ *
+ * @param {jQuery} $canvasBody The iframe body.
+ * @param {jQuery} $source     Source document wrapper.
+ * @param {string} scriptId    Source script element id.
+ *
+ * @returns {boolean} Whether an inline script was cloned.
+ */
+const sowbCloneRelatedInlineScript = ( $canvasBody, $source, scriptId ) => {
+	if ( ! scriptId ) {
+		return false;
+	}
+
+	const inlineScriptId = scriptId + '-extra';
+	const sourceDoc = $source && $source[0] && $source[0].nodeType === 9 ?
+		$source[0] :
+		document;
+	const canvasDoc = $canvasBody[0] && $canvasBody[0].ownerDocument;
+	const inlineScript = sowbGetElementById( sourceDoc, inlineScriptId );
+
+	if (
+		! inlineScript ||
+		sowbGetElementById( canvasDoc, inlineScriptId )
+	) {
+		return false;
+	}
+
+	return sowbCloneElementToCanvas( $canvasBody, inlineScript, $source );
+};
+
 /**
  * Appends elements to the canvas body.
  *
@@ -1102,16 +1317,51 @@ const sowbCloneElementsToCanvas = ( $canvasBody, sourceDoc ) => {
 			continue;
 		}
 
-		const elementHTML = $element[0] && $element[0].outerHTML;
-		if ( ! elementHTML ) {
+		const element = $element[0];
+		if ( ! element ) {
 			continue;
 		}
 
-		// Copy element if it doesn't already exist in the canvas.
-		if ( $canvasBody.find( selector ).length === 0 ) {
-			$canvasBody.append( elementHTML );
-		}
+		sowbCloneElementToCanvas( $canvasBody, element, $source );
 	}
+};
+
+/**
+ * Clones parent-document assets related to mounted TinyMCE external plugins.
+ *
+ * @param {jQuery}   $canvasBody The iframe body.
+ * @param {Document} sourceDoc   Source document to read assets from.
+ */
+const sowbCloneTinyMCEExternalPluginAssets = ( $canvasBody, sourceDoc ) => {
+	const assetRoots = sowbGetTinyMCEExternalPluginAssetRoots( $canvasBody );
+	if ( assetRoots.size === 0 ) {
+		return;
+	}
+
+	const $source = sourceDoc ? jQuery( sourceDoc ) : jQuery( document );
+	const sourceBaseHref = sowbGetDocumentHref(
+		sourceDoc || document
+	);
+
+	$source.find( 'script[src], link[rel="stylesheet"][href]' ).each( function() {
+		const assetUrl = sowbNormalizeAssetUrl(
+			this.getAttribute( this.tagName.toLowerCase() === 'script' ? 'src' : 'href' ),
+			sourceBaseHref
+		);
+
+		if (
+			! assetUrl ||
+			! [ ...assetRoots ].some( ( assetRoot ) => assetUrl.indexOf( assetRoot ) === 0 )
+		) {
+			return;
+		}
+
+		if ( this.tagName.toLowerCase() === 'script' ) {
+			sowbCloneRelatedInlineScript( $canvasBody, $source, this.id );
+		}
+
+		sowbCloneElementToCanvas( $canvasBody, this, $source );
+	} );
 };
 
 let sowbSiteEditorAssetsSetup = false;
@@ -1134,8 +1384,7 @@ let sowbSiteEditorAssetsSetup = false;
 const sowbMaybeSetupSiteEditorAssets = () => {
 	if (
 		! sowbSiteEditorCanvas ||
-		sowbSiteEditorCanvas.length === 0 ||
-		sowbSiteEditorAssetsSetup
+		sowbSiteEditorCanvas.length === 0
 	) {
 		// Do NOT latch on failure: the parent-side caller may still be
 		// able to run a successful clone once the iframe is mounted.
@@ -1173,8 +1422,16 @@ const sowbMaybeSetupSiteEditorAssets = () => {
 		sourceDoc = document;
 	}
 
+	if ( sowbSiteEditorAssetsSetup ) {
+		// External plugin roots are discovered from mounted widget forms, which
+		// can appear after the base iframe assets have already been cloned.
+		sowbCloneTinyMCEExternalPluginAssets( $canvasBody, sourceDoc );
+		return;
+	}
+
 	// Clone elements to the canvas.
 	sowbCloneElementsToCanvas( $canvasBody, sourceDoc );
+	sowbCloneTinyMCEExternalPluginAssets( $canvasBody, sourceDoc );
 
 	// Is ajaxurl set?
 	try {
