@@ -42,6 +42,24 @@ var sowbForms = window.sowbForms || {};
 		}
 	}
 
+	const repeaterSetupFieldSelector = '.siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field, .siteorigin-widget-field';
+
+	const triggerVisibleRepeaterFieldSetup = ( $container ) => {
+		const triggerSetup = () => {
+			$container
+				.find( repeaterSetupFieldSelector )
+				.filter( function() {
+					return $( this ).is( ':visible' );
+				} )
+				.each( function() {
+					$( this ).trigger( 'sowsetupformfield' );
+				} );
+		};
+
+		triggerSetup();
+		setTimeout( triggerSetup, 250 );
+	}
+
 	$.fn.sowSetupForm = function () {
 
 		return $(this).each(function (i, el) {
@@ -907,6 +925,7 @@ var sowbForms = window.sowbForms || {};
 			$el.find( '> .siteorigin-widget-field-repeater-items' ).append( item ).sortable( 'refresh' ).trigger( 'updateFieldPositions' );
 			item.sowSetupRepeaterItems();
 			item.hide().slideDown( 'fast', function () {
+				triggerVisibleRepeaterFieldSetup( $( this ) );
 				$( window ).trigger( 'resize' );
 			});
 			$el.trigger( 'change' );
@@ -1108,20 +1127,7 @@ var sowbForms = window.sowbForms || {};
 							}
 
 							$this.trigger( 'slideToggleOpenComplete' );
-
-							const $fields = $this.find(
-								'.siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field, .siteorigin-widget-field'
-							);
-
-							const visibleFields = $fields.filter( function() {
-								return $( this ).is( ':visible' );
-							} );
-
-							// Trigger 'sowsetupformfield' for all visible fields in a single batch
-							visibleFields.each( function() {
-								$( this ).trigger( 'sowsetupformfield' );
-							} );
-
+							triggerVisibleRepeaterFieldSetup( $this );
 						},
 						complete: () => {
 							$( window ).trigger( 'resize' );
@@ -1260,6 +1266,7 @@ var sowbForms = window.sowbForms || {};
 									// Prevent potential id overlap by appending the textarea field with a random id.
 									newId += Math.floor( Math.random() * 1000 );
 									$inputElement.data( 'tinymce-id', newId );
+									$inputElement.attr( 'data-tinymce-id', newId );
 								}
 
 								$inputElement.attr( 'id', newId );
@@ -1296,6 +1303,7 @@ var sowbForms = window.sowbForms || {};
 						$items.append( $copyItem ).sortable( 'refresh' ).trigger( 'updateFieldPositions' );
 						$copyItem.sowSetupRepeaterItems();
 						$copyItem.hide().slideDown( 'fast', function () {
+							triggerVisibleRepeaterFieldSetup( $( this ) );
 							$( window ).trigger( 'resize' );
 						});
 						// If increment is enabled for this item, trigger label updates.
@@ -1312,7 +1320,9 @@ var sowbForms = window.sowbForms || {};
 					}
 				});
 
-				$el.find( '> .siteorigin-widget-field-repeater-item-form' ).sowSetupForm();
+				const $itemForm = $el.find( '> .siteorigin-widget-field-repeater-item-form' );
+				$itemForm.sowSetupForm();
+				triggerVisibleRepeaterFieldSetup( $itemForm );
 
 				$el.data( 'sowrepeater-actions-setup', true );
 			}

@@ -43,6 +43,18 @@ const {
  */
 test.describe.configure( { mode: 'serial' } );
 
+const waitForBlockRegistration = async( page, blockName ) => {
+	await expect
+		.poll(
+			async() => page.evaluate(
+				( name ) => !! window.wp?.blocks?.getBlockType( name ),
+				blockName
+			),
+			{ timeout: 20000 }
+		)
+		.toBeTruthy();
+};
+
 const testPrep = async( page, blockName ) => {
 	const admin = await setupAdminE2E( page );
 	await openSiteEditorCanvas( page, admin );
@@ -52,6 +64,7 @@ const testPrep = async( page, blockName ) => {
 
 	const offset = await calculateOffset( admin.editor.canvas, 'header.wp-block-template-part > .is-position-sticky' );
 
+	await waitForBlockRegistration( page, blockName );
 	const widget = await addBlock( admin, blockName, offset );
 
 	return {
@@ -74,6 +87,133 @@ const testPrep = async( page, blockName ) => {
 test.beforeEach( async ( { page } ) => {
 	await doLogin( page );
 } );
+
+const assertRepeaterTinyMCEChrome = async( frame, offset, fieldSelector = '.siteorigin-widget-field-content' ) => {
+	const tinyMCEField = frame.locator( fieldSelector );
+	await ensureElementVisible( tinyMCEField, offset );
+	await expect( tinyMCEField.locator( '.wp-editor-wrap' ) ).toBeVisible( { timeout: 20000 } );
+	await expect( tinyMCEField.locator( '.wp-editor-tabs' ) ).toBeVisible( { timeout: 20000 } );
+	await expect
+		.poll( async () => tinyMCEField.locator( 'iframe, .mce-toolbar-grp' ).count(), { timeout: 20000 } )
+		.toBeGreaterThan( 0 );
+};
+
+const collectConsoleAndPageErrors = ( page ) => {
+	const errors = [];
+
+	page.on( 'console', ( message ) => {
+		if ( [ 'error', 'warning' ].includes( message.type() ) ) {
+			errors.push( message.text() );
+		}
+	} );
+
+	page.on( 'pageerror', ( error ) => {
+		errors.push( error.message );
+	} );
+
+	return errors;
+};
+
+const getPremiumWebFontSelectorParentAssets = async( page ) => {
+	return page.evaluate( () => {
+		const normalizeAssetUrl = ( value ) => {
+			try {
+				return new URL( value, window.location.href ).href;
+			} catch ( e ) {
+				return '';
+			}
+		};
+
+		const pluginScript = document.getElementById( 'so-premium-font-selector-js' ) ||
+			document.querySelector( 'script[src*="/web-font-selector/js/so-premium-tmce-fonts-plugin"]' );
+
+		if ( ! pluginScript ) {
+			return {
+				enabled: false,
+				assets: [],
+			};
+		}
+
+		const pluginUrl = new URL(
+			pluginScript.getAttribute( 'src' ),
+			window.location.href
+		);
+		pluginUrl.search = '';
+		pluginUrl.hash = '';
+
+		const jsPathIndex = pluginUrl.pathname.indexOf( '/js/' );
+		if ( jsPathIndex === -1 ) {
+			return {
+				enabled: true,
+				assets: [],
+			};
+		}
+
+		pluginUrl.pathname = pluginUrl.pathname.substring( 0, jsPathIndex + 4 );
+
+		const assets = [];
+		const addAsset = ( element, url = '' ) => {
+			assets.push( {
+				id: element.id,
+				tagName: element.tagName.toLowerCase(),
+				url,
+			} );
+		};
+
+		document.querySelectorAll( 'script[src], link[rel="stylesheet"][href]' ).forEach( ( element ) => {
+			const attribute = element.tagName.toLowerCase() === 'script' ? 'src' : 'href';
+			const assetUrl = normalizeAssetUrl( element.getAttribute( attribute ) );
+
+			if ( ! assetUrl || assetUrl.indexOf( pluginUrl.href ) !== 0 ) {
+				return;
+			}
+
+			addAsset( element, assetUrl );
+
+			if ( element.tagName.toLowerCase() === 'script' && element.id ) {
+				const inlineScript = document.getElementById( element.id + '-extra' );
+				if ( inlineScript ) {
+					addAsset( inlineScript );
+				}
+			}
+		} );
+
+		return {
+			enabled: true,
+			assets,
+		};
+	} );
+};
+
+const getMissingCanvasAssets = async( admin, assets ) => {
+	return admin.editor.canvas.locator( 'body' ).evaluate( ( body, expectedAssets ) => {
+		const doc = body.ownerDocument;
+		const normalizeAssetUrl = ( value ) => {
+			try {
+				return new URL( value, doc.location.href ).href;
+			} catch ( e ) {
+				return '';
+			}
+		};
+
+		return expectedAssets.filter( ( asset ) => {
+			if ( asset.id && doc.getElementById( asset.id ) ) {
+				return false;
+			}
+
+			if ( ! asset.url ) {
+				return true;
+			}
+
+			const selector = asset.tagName === 'script' ? 'script[src]' : 'link[href]';
+			const attribute = asset.tagName === 'script' ? 'src' : 'href';
+
+			return ! [ ...body.querySelectorAll( selector ) ].some( ( element ) => {
+				return normalizeAssetUrl( element.getAttribute( attribute ) ) === asset.url;
+			} );
+		} ).map( ( asset ) => asset.id || asset.url );
+	}, assets );
+};
 
 /**
  * Validates the following for the Icon Widget in the Site Editor:
@@ -134,7 +274,8 @@ test(
 			await expect( iconOption ).toBeVisible( { timeout: 20000 } );
 			await expect( iconOption ).toBeEnabled( { timeout: 20000 } );
 
-				await iconOption.click( { force: true } );
+				await iconOption.click();
+				await iconOption.dispatchEvent( 'click' );
 
 				// Confirm icon has been set by checking the stored value.
 				const iconValue = iconField.locator( 'input.siteorigin-widget-icon-icon' );
@@ -517,7 +658,7 @@ test(
 /**
  * Validates the following for the Hero widget in the Site Editor:
  * 1. The repeater is able to have multiple frames added.
- * 2. The TinyMCE field works as expected in repeaters.
+ * 2. The TinyMCE field renders full editor chrome for frames 1, 2, and 3.
  * 3. Frames are able to be opened.
  * 4. Frames are able to be re-ordered.
  *
@@ -551,35 +692,30 @@ test(
 		let frameItems = frames.locator( '.siteorigin-widget-field-repeater-item' );
 		await expect( frameItems ).toHaveCount( 3 );
 
-		// Open the first frame.
+		// Open the first frame and validate the TinyMCE field.
 		const firstFrame = frameItems.first();
 		await ensureElementVisible( firstFrame, offset );
-		await firstFrame.click( { force: true } );
-
-		// Validate that the TinyMCE field rendered correctly inside of the repeater.
-		const tinyMCEField = firstFrame.locator( '.siteorigin-widget-field-content' );
-		await ensureElementVisible( tinyMCEField, offset );
+		const firstFrameTop = firstFrame.locator( '> .siteorigin-widget-field-repeater-item-top' );
+		await firstFrameTop.click( { force: true } );
+		await assertRepeaterTinyMCEChrome( firstFrame, offset );
 
 		// Tick the Automatically add paragraphs setting.
 		const automaticallyAddParagraphsSetting = firstFrame.locator( '.siteorigin-widget-field-autop .siteorigin-widget-input' );
 		await ensureElementVisible( automaticallyAddParagraphsSetting, offset );
 		await automaticallyAddParagraphsSetting.check();
 
-		// Close the first frame, and validate.
-		const firstFrameCloser = firstFrame.locator( '.siteorigin-widget-field-repeater-item-top' );
-		const firstFrameForm = firstFrame.locator( '.siteorigin-widget-field-repeater-item-form' );
-		await ensureElementVisible( firstFrameCloser, offset );
-		await firstFrameForm.click();
+		// Open the second and third frames and validate they render TinyMCE chrome too.
+		const secondFrame = frameItems.nth( 1 );
+		const secondFrameTop = secondFrame.locator( '> .siteorigin-widget-field-repeater-item-top' );
+		await ensureElementVisible( secondFrame, offset );
+		await secondFrameTop.click( { force: true } );
+		await assertRepeaterTinyMCEChrome( secondFrame, offset );
 
-		// Wait for frame to close.
-		await page.waitForTimeout( 300 );
-
-		// Open the last frame.
 		const lastFrame = frameItems.last();
 		await ensureElementVisible( lastFrame, offset );
-		await lastFrame.click();
-
 		const lastFrameTop = lastFrame.locator( '.siteorigin-widget-field-repeater-item-top' );
+		await lastFrameTop.click( { force: true } );
+		await assertRepeaterTinyMCEChrome( lastFrame, offset );
 
 		// Drag the last frame to the top of the frames list.
 		const firstFrameBoundingBox = await firstFrame.boundingBox();
@@ -607,6 +743,68 @@ test(
 		const lastAutomaticallyAddParagraphsSetting = frameItems.first().locator( '.siteorigin-widget-field-autop .siteorigin-widget-input' );
 		await ensureElementVisible( lastAutomaticallyAddParagraphsSetting, offset );
 		await expect( lastAutomaticallyAddParagraphsSetting ).not.toBeChecked();
+	}
+);
+
+/**
+ * Validates the following for the Features widget in the Site Editor:
+ * 1. The repeater is able to have multiple feature items added.
+ * 2. The TinyMCE field renders full editor chrome for feature items 1 and 2.
+ *
+ * @param {Object} page The Playwright page object.
+ */
+test(
+	'Test the Features widget.',
+	async ( { page } ) => {
+		const consoleAndPageErrors = collectConsoleAndPageErrors( page );
+		const {
+			admin,
+			offset,
+			widget
+		} = await testPrep(
+			page,
+			'sowb/siteorigin-widget-features-widget'
+		);
+
+		const features = widget.locator( '.siteorigin-widget-field-features .siteorigin-widget-field-repeater' );
+		await ensureElementVisible( features, offset );
+
+		const addFeatureButton = features.locator( '> .siteorigin-widget-field-repeater-add' );
+		await ensureElementVisible( addFeatureButton, offset );
+		await addFeatureButton.click();
+		await ensureElementVisible( addFeatureButton, offset );
+		await addFeatureButton.click();
+
+		const featureItems = features.locator( '.siteorigin-widget-field-repeater-item' );
+		await expect( featureItems ).toHaveCount( 2 );
+
+		const firstFeature = featureItems.first();
+		const firstFeatureTop = firstFeature.locator( '> .siteorigin-widget-field-repeater-item-top' );
+		await ensureElementVisible( firstFeature, offset );
+		await firstFeatureTop.click( { force: true } );
+		await assertRepeaterTinyMCEChrome( firstFeature, offset, '.siteorigin-widget-field-text' );
+
+		const secondFeature = featureItems.nth( 1 );
+		const secondFeatureTop = secondFeature.locator( '> .siteorigin-widget-field-repeater-item-top' );
+		await ensureElementVisible( secondFeature, offset );
+		await secondFeatureTop.click( { force: true } );
+		await assertRepeaterTinyMCEChrome( secondFeature, offset, '.siteorigin-widget-field-text' );
+
+		const premiumAssets = await getPremiumWebFontSelectorParentAssets( page );
+		if ( premiumAssets.enabled ) {
+			await expect
+				.poll(
+					async() => getMissingCanvasAssets( admin, premiumAssets.assets ),
+					{ timeout: 10000 }
+				)
+				.toEqual( [] );
+
+			expect(
+				consoleAndPageErrors.filter( ( message ) => {
+					return message.indexOf( 'Failed to initialize plugin: so-premium-font-selector' ) !== -1;
+				} )
+			).toEqual( [] );
+		}
 	}
 );
 

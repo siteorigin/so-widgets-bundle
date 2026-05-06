@@ -244,9 +244,10 @@
 	 * @param {Object} props - The properties passed to the function.
 	 * @param {Object} state - The current state of the component.
 	 * @param {Function} setState - The setState function to update the component's state.
+	 * @param {Object} activeRequestRef - React ref tracking the active preview request.
 	 */
 
-	const sowbSetupWidgetForm = async ( props, state, setState ) => {
+	const sowbSetupWidgetForm = async ( props, state, setState, activeRequestRef ) => {
 		const $mainForm = sowbGetBlockForm( props.clientId );
 
 		if ( $mainForm.length === 0 || state.formInitialized ) {
@@ -324,16 +325,24 @@
 			return;
 		}
 
-		try {
-			const iframeWindow = sowbSiteEditorCanvas[0].contentWindow;
-			if ( iframeWindow ) {
+		const sendInitMessage = () => {
+			try {
+				const iframeWindow = sowbSiteEditorCanvas[0].contentWindow;
+				if ( ! iframeWindow ) {
+					return;
+				}
+
 				iframeWindow.postMessage( {
 					action: 'sowbBlockFormInit'
 				}, '*' );
+			} catch ( e ) {
+				console.error( 'SiteOrigin Widgets: Failed to send postMessage to iframe:', e );
 			}
-		} catch ( e ) {
-			console.error( 'SiteOrigin Widgets: Failed to send postMessage to iframe:', e );
-		}
+		};
+
+		[ 0, 250, 1000, 3000, 6000 ].forEach( ( delay ) => {
+			setTimeout( sendInitMessage, delay );
+		} );
 	};
 
 	/**
@@ -378,6 +387,7 @@
 
 		const isMountedRef = element.useRef( true );
 		const activeRequestRef = element.useRef( null );
+		const iframeFormInitKeyRef = element.useRef( null );
 
 		// Ensure widgetClass attribute is set once (was done in constructor).
 		element.useEffect( () => {
@@ -482,6 +492,32 @@
 			// or when the editing flag flips. Using props.attributes.widgetData and state.editing.
 		}, [ props.attributes.widgetData, state.editing ] );
 
+		element.useEffect( () => {
+			if ( ! state.editing || ! state.widgetFormHtml || ! state.formInitialized ) {
+				iframeFormInitKeyRef.current = null;
+				return;
+			}
+
+			const initKey = `${ props.clientId }::${ state.widgetFormHtml }`;
+			if ( iframeFormInitKeyRef.current === initKey ) {
+				return;
+			}
+
+			iframeFormInitKeyRef.current = initKey;
+
+			// In dev mode, blocks are rendered twice in quick succession. Wait
+			// for the remount pass before sending iframe field initialization.
+			if ( ! sowbBlockEditorAdmin.wpScriptDebug || state.devModeRemount ) {
+				initializeFormFieldsInIframe();
+			}
+		}, [
+			props.clientId,
+			state.editing,
+			state.widgetFormHtml,
+			state.formInitialized,
+			state.devModeRemount
+		] );
+
 		// Use block props hook to provide wrapper attributes/classes for API v3.
 		const blockProps = blockEditor && blockEditor.useBlockProps ? blockEditor.useBlockProps() : {};
 
@@ -541,16 +577,9 @@
 							sowbSetupWidgetForm(
 								props,
 								state,
-								mergeState
-							).then( () => {
-								// In dev mode, blocks are rendered twice in
-								// quick succession. To prevent issues with
-								// form field scripts we need to wait until the
-								// second render to initialize the fields.
-								if ( ! sowbBlockEditorAdmin.wpScriptDebug || state.devModeRemount ) {
-									initializeFormFieldsInIframe();
-								}
-							} );
+								mergeState,
+								activeRequestRef
+							);
 						}
 					} )
 				)
@@ -815,9 +844,6 @@
 		} )
 	);
 
-	// Register all of our manually registered blocks.
-	await soRegisterWidgetBlocks( sowbManuallyRegisteredBlocks );
-
 	// Modify all of the manually registered blocks with additional properties.
 	Object.entries( sowbManuallyRegisteredBlocks ).forEach( ( [ key, widget ] ) => {
 		if ( ! widget.blockName ) {
@@ -848,6 +874,10 @@
 			}
 		);
 	} );
+
+	// Register all of our manually registered blocks after the filters above are
+	// in place so they receive the same edit component as regular widget blocks.
+	await soRegisterWidgetBlocks( sowbManuallyRegisteredBlocks );
 
 	/**
 	 * Registers a SiteOrigin Widget as a block.
@@ -940,16 +970,29 @@ let sowbSiteEditorCanvas = false;
  * @returns {jQuery} jQuery reference to the widget form
  */
 const sowbGetBlockForm = ( clientId ) => {
-	if ( sowbSiteEditorCanvas === false ) {
-		sowbSiteEditorCanvas = jQuery( '.edit-site-visual-editor__editor-canvas' );
+	// Re-resolve the editor canvas on every call rather than caching to false,
+	// because the iframe element is mounted asynchronously by the block editor.
+	// Site Editor uses `.edit-site-visual-editor__editor-canvas`; the post editor
+	// (default since WP 6.5) uses `iframe[name="editor-canvas"]`.
+	let $canvas = jQuery( '.edit-site-visual-editor__editor-canvas' );
+	if ( $canvas.length === 0 ) {
+		$canvas = jQuery( 'iframe[name="editor-canvas"]' );
 	}
 
-	if ( sowbSiteEditorCanvas.length === 0 ) {
+	// Cache the resolved canvas for use by sowbMaybeSetupSiteEditorAssets()
+	// and other consumers, but only when the canvas is actually present so
+	// we never lock in an empty result before the iframe has mounted.
+	if ( $canvas.length > 0 ) {
+		sowbSiteEditorCanvas = $canvas;
+	}
+
+	if ( $canvas.length === 0 ) {
+		// No iframe (e.g. widgets.php Block Widgets screen, classic editor).
 		return jQuery( '[data-block="' + clientId + '"]' ).find( '.siteorigin-widget-form-main' );
 	}
 
-	// Return the main WB form.
-	return sowbSiteEditorCanvas
+	// Return the main WB form from inside the editor iframe.
+	return $canvas
 		.contents()
 		.find( '[data-block="' + clientId + '"]' )
 		.find( '.siteorigin-widget-form-main' );
@@ -961,6 +1004,11 @@ const sowbCanvasCloneElements = [
 	'#jquery-migrate-js',
 	'#editor-js-after',
 	'#wp-tinymce-js',
+	'#utils-js',
+	'#editor-js-extra',
+	'#editor-js',
+	'#quicktags-js-extra',
+	'#quicktags-js',
 	'#wp-block-library-js-before',
 	'#jquery-ui-core-js',
 	'#jquery-ui-mouse-js',
@@ -968,6 +1016,9 @@ const sowbCanvasCloneElements = [
 	'#jquery-ui-sortable-js',
 	'#jquery-ui-resizable-js',
 	'#jquery-ui-draggable-js',
+	'#jquery-touch-punch-js',
+	'#iris-js',
+	'#wp-color-picker-js',
 	'#wplink-js-extra',
 	'#wplink-js',
 	'#buttons-css',
@@ -1027,28 +1078,290 @@ const sowbCanvasCloneElements = [
 	'#so-toggle-field-js',
 ];
 
+const sowbNormalizeAssetUrl = ( value, baseHref ) => {
+	if ( ! value ) {
+		return '';
+	}
+
+	try {
+		return new URL(
+			value,
+			baseHref || window.location.href
+		).href;
+	} catch ( e ) {
+		return '';
+	}
+};
+
+const sowbGetDocumentHref = ( doc ) => {
+	return doc && doc.location && doc.location.href ?
+		doc.location.href :
+		window.location.href;
+};
+
+const sowbGetElementById = ( doc, id ) => {
+	if ( ! doc || ! id || typeof doc.getElementById !== 'function' ) {
+		return null;
+	}
+
+	return doc.getElementById( id );
+};
+
+/**
+ * Gets the editor settings for a TinyMCE container.
+ *
+ * @param {Element} element TinyMCE container element.
+ *
+ * @returns {Object} Parsed editor settings.
+ */
+const sowbGetEditorSettingsFromContainer = ( element ) => {
+	const $element = jQuery( element );
+	const editorSettings = $element.data( 'editorSettings' );
+
+	if ( editorSettings && typeof editorSettings === 'object' ) {
+		return editorSettings;
+	}
+
+	const rawSettings = $element.attr( 'data-editor-settings' );
+	if ( ! rawSettings ) {
+		return {};
+	}
+
+	try {
+		const parsedSettings = JSON.parse( rawSettings );
+		return parsedSettings && typeof parsedSettings === 'object' ?
+			parsedSettings :
+			{};
+	} catch ( e ) {
+		return {};
+	}
+};
+
+/**
+ * Derives the asset root for a TinyMCE external plugin URL.
+ *
+ * @param {string} pluginUrl External plugin URL.
+ *
+ * @returns {string} Normalized asset root URL.
+ */
+const sowbGetTinyMCEExternalPluginAssetRoot = ( pluginUrl ) => {
+	const normalizedPluginUrl = sowbNormalizeAssetUrl(
+		pluginUrl,
+		window.location.href
+	);
+
+	if ( ! normalizedPluginUrl ) {
+		return '';
+	}
+
+	const assetRoot = new URL( normalizedPluginUrl );
+	assetRoot.search = '';
+	assetRoot.hash = '';
+
+	const jsPathIndex = assetRoot.pathname.indexOf( '/js/' );
+	if ( jsPathIndex !== -1 ) {
+		assetRoot.pathname = assetRoot.pathname.substring( 0, jsPathIndex + 4 );
+		return assetRoot.href;
+	}
+
+	const lastSlashIndex = assetRoot.pathname.lastIndexOf( '/' );
+	assetRoot.pathname = assetRoot.pathname.substring( 0, lastSlashIndex + 1 );
+
+	return assetRoot.href;
+};
+
+/**
+ * Gets TinyMCE external plugin asset roots from mounted iframe widget forms.
+ *
+ * @param {jQuery} $canvasBody The iframe body.
+ *
+ * @returns {Set} Set of normalized asset root URLs.
+ */
+const sowbGetTinyMCEExternalPluginAssetRoots = ( $canvasBody ) => {
+	const assetRoots = new Set();
+
+	$canvasBody.find( '.siteorigin-widget-tinymce-container' ).each( function() {
+		const settings = sowbGetEditorSettingsFromContainer( this );
+		const externalPlugins = settings &&
+			settings.tinymce &&
+			settings.tinymce.external_plugins ?
+			settings.tinymce.external_plugins :
+			null;
+
+		if ( ! externalPlugins || typeof externalPlugins !== 'object' ) {
+			return;
+		}
+
+		Object.values( externalPlugins ).forEach( ( pluginUrl ) => {
+			if ( typeof pluginUrl !== 'string' || pluginUrl.length === 0 ) {
+				return;
+			}
+
+			const assetRoot = sowbGetTinyMCEExternalPluginAssetRoot( pluginUrl );
+			if ( assetRoot ) {
+				assetRoots.add( assetRoot );
+			}
+		} );
+	} );
+
+	return assetRoots;
+};
+
+/**
+ * Appends a cloned source element to the canvas when it is not already present.
+ *
+ * @param {jQuery}  $canvasBody The iframe body.
+ * @param {Element} element     The source element to clone.
+ * @param {jQuery}  $source     Source document wrapper.
+ *
+ * @returns {boolean} Whether an element was cloned.
+ */
+const sowbCloneElementToCanvas = ( $canvasBody, element, $source ) => {
+	if ( ! element || ! element.outerHTML ) {
+		return false;
+	}
+
+	const canvasDoc = $canvasBody[0] && $canvasBody[0].ownerDocument;
+	const sourceDoc = $source && $source[0] && $source[0].nodeType === 9 ?
+		$source[0] :
+		element.ownerDocument;
+
+	if (
+		element.id &&
+		sowbGetElementById( canvasDoc, element.id )
+	) {
+		return false;
+	}
+
+	const assetAttribute = element.hasAttribute( 'src' ) ? 'src' : (
+		element.hasAttribute( 'href' ) ? 'href' : ''
+	);
+
+	if ( assetAttribute ) {
+		const assetUrl = sowbNormalizeAssetUrl(
+			element.getAttribute( assetAttribute ),
+			sowbGetDocumentHref( sourceDoc )
+		);
+
+		if ( assetUrl ) {
+			const selector = assetAttribute === 'src' ? 'script[src]' : 'link[href]';
+			const existingAsset = $canvasBody.find( selector ).toArray().some( ( candidate ) => {
+				return sowbNormalizeAssetUrl(
+					candidate.getAttribute( assetAttribute ),
+					sowbGetDocumentHref( candidate.ownerDocument )
+				) === assetUrl;
+			} );
+
+			if ( existingAsset ) {
+				return false;
+			}
+		}
+	}
+
+	$canvasBody.append( element.outerHTML );
+	return true;
+};
+
+/**
+ * Clones the inline localization script related to a source script handle.
+ *
+ * @param {jQuery} $canvasBody The iframe body.
+ * @param {jQuery} $source     Source document wrapper.
+ * @param {string} scriptId    Source script element id.
+ *
+ * @returns {boolean} Whether an inline script was cloned.
+ */
+const sowbCloneRelatedInlineScript = ( $canvasBody, $source, scriptId ) => {
+	if ( ! scriptId ) {
+		return false;
+	}
+
+	const inlineScriptId = scriptId + '-extra';
+	const sourceDoc = $source && $source[0] && $source[0].nodeType === 9 ?
+		$source[0] :
+		document;
+	const canvasDoc = $canvasBody[0] && $canvasBody[0].ownerDocument;
+	const inlineScript = sowbGetElementById( sourceDoc, inlineScriptId );
+
+	if (
+		! inlineScript ||
+		sowbGetElementById( canvasDoc, inlineScriptId )
+	) {
+		return false;
+	}
+
+	return sowbCloneElementToCanvas( $canvasBody, inlineScript, $source );
+};
+
 /**
  * Appends elements to the canvas body.
  *
- * @param {jQuery} $canvasBody     The jQuery object representing the canvas body.*
+ * @param {jQuery}   $canvasBody  The jQuery object representing the canvas body.
+ * @param {Document} [sourceDoc]  The document to read source nodes from. When
+ *                                this helper runs from inside the editor iframe,
+ *                                the source `<script>`/`<link>` tags live in the
+ *                                parent admin document, not in the iframe's own
+ *                                document. Defaults to the current document for
+ *                                backwards compatibility with parent-side calls.
  */
-const sowbCloneElementsToCanvas = ( $canvasBody ) => {
+const sowbCloneElementsToCanvas = ( $canvasBody, sourceDoc ) => {
+	// jQuery( document ) is ambiguous when this script runs inside an iframe
+	// (it picks the iframe's own document). Passing the source doc explicitly
+	// removes the ambiguity. The default fallback to `document` preserves the
+	// existing parent-side caller path.
+	const $source = sourceDoc ? jQuery( sourceDoc ) : jQuery( document );
+
 	for ( const selector of sowbCanvasCloneElements ) {
-		const $element = jQuery( selector );
+		const $element = $source.find( selector );
 		if ( $element.length === 0 ) {
 			continue;
 		}
 
-		const elementHTML = $element[0] && $element[0].outerHTML;
-		if ( ! elementHTML ) {
+		const element = $element[0];
+		if ( ! element ) {
 			continue;
 		}
 
-		// Copy element if it doesn't already exist in the canvas.
-		if ( $canvasBody.find( selector ).length === 0 ) {
-			$canvasBody.append( elementHTML );
-		}
+		sowbCloneElementToCanvas( $canvasBody, element, $source );
 	}
+};
+
+/**
+ * Clones parent-document assets related to mounted TinyMCE external plugins.
+ *
+ * @param {jQuery}   $canvasBody The iframe body.
+ * @param {Document} sourceDoc   Source document to read assets from.
+ */
+const sowbCloneTinyMCEExternalPluginAssets = ( $canvasBody, sourceDoc ) => {
+	const assetRoots = sowbGetTinyMCEExternalPluginAssetRoots( $canvasBody );
+	if ( assetRoots.size === 0 ) {
+		return;
+	}
+
+	const $source = sourceDoc ? jQuery( sourceDoc ) : jQuery( document );
+	const sourceBaseHref = sowbGetDocumentHref(
+		sourceDoc || document
+	);
+
+	$source.find( 'script[src], link[rel="stylesheet"][href]' ).each( function() {
+		const assetUrl = sowbNormalizeAssetUrl(
+			this.getAttribute( this.tagName.toLowerCase() === 'script' ? 'src' : 'href' ),
+			sourceBaseHref
+		);
+
+		if (
+			! assetUrl ||
+			! [ ...assetRoots ].some( ( assetRoot ) => assetUrl.indexOf( assetRoot ) === 0 )
+		) {
+			return;
+		}
+
+		if ( this.tagName.toLowerCase() === 'script' ) {
+			sowbCloneRelatedInlineScript( $canvasBody, $source, this.id );
+		}
+
+		sowbCloneElementToCanvas( $canvasBody, this, $source );
+	} );
 };
 
 let sowbSiteEditorAssetsSetup = false;
@@ -1071,13 +1384,12 @@ let sowbSiteEditorAssetsSetup = false;
 const sowbMaybeSetupSiteEditorAssets = () => {
 	if (
 		! sowbSiteEditorCanvas ||
-		sowbSiteEditorCanvas.length === 0 ||
-		sowbSiteEditorAssetsSetup
+		sowbSiteEditorCanvas.length === 0
 	) {
-		sowbSiteEditorAssetsSetup = true;
+		// Do NOT latch on failure: the parent-side caller may still be
+		// able to run a successful clone once the iframe is mounted.
 		return;
 	}
-	sowbSiteEditorAssetsSetup = true;
 
 	const frame = typeof sowbSiteEditorCanvas[0] !== 'undefined' ?
 		sowbSiteEditorCanvas[0] :
@@ -1087,13 +1399,52 @@ const sowbMaybeSetupSiteEditorAssets = () => {
 
 	const $canvasBody = $iframe.find( 'body' );
 
+	if ( $canvasBody.length === 0 ) {
+		// iframe not yet mounted; bail without latching so we can retry
+		// on the next call from sowbSetupWidgetForm().
+		return;
+	}
+
+	// When this helper runs from INSIDE the iframe (the IIFE branch at the
+	// bottom of widget-block.js), the source <script>/<link> nodes live in
+	// the parent admin document, not in this script's own document. Read
+	// them from the parent. When this helper runs from the parent (Site
+	// Editor / post editor parent path), our own document is already
+	// correct.
+	let sourceDoc;
+	try {
+		sourceDoc = window.frameElement && window.parent && window.parent.document
+			? window.parent.document
+			: document;
+	} catch ( e ) {
+		// Cross-origin guard. Should not trigger for the same-origin
+		// editor canvas, but if it does we fall back to the local document.
+		sourceDoc = document;
+	}
+
+	if ( sowbSiteEditorAssetsSetup ) {
+		// External plugin roots are discovered from mounted widget forms, which
+		// can appear after the base iframe assets have already been cloned.
+		sowbCloneTinyMCEExternalPluginAssets( $canvasBody, sourceDoc );
+		return;
+	}
+
 	// Clone elements to the canvas.
-	sowbCloneElementsToCanvas( $canvasBody );
+	sowbCloneElementsToCanvas( $canvasBody, sourceDoc );
+	sowbCloneTinyMCEExternalPluginAssets( $canvasBody, sourceDoc );
 
 	// Is ajaxurl set?
-	if ( typeof frame.contentWindow.ajaxurl === 'undefined' ) {
-		frame.contentWindow.ajaxurl = window.top.ajaxurl;
+	try {
+		if ( typeof frame.contentWindow.ajaxurl === 'undefined' ) {
+			frame.contentWindow.ajaxurl = window.top.ajaxurl;
+		}
+	} catch ( e ) {
+		// Ignore cross-window errors (e.g. iframe detached between the
+		// initial check and the assignment).
 	}
+
+	// Only latch after a successful clone.
+	sowbSiteEditorAssetsSetup = true;
 };
 
 /**
