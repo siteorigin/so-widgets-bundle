@@ -1342,25 +1342,50 @@ const sowbCloneTinyMCEExternalPluginAssets = ( $canvasBody, sourceDoc ) => {
 	const sourceBaseHref = sowbGetDocumentHref(
 		sourceDoc || document
 	);
+	const assetRootList = [ ...assetRoots ];
+	let previousMatchedScriptRoot = '';
+	let pendingDependencyScripts = [];
+
+	const cloneAssetElement = ( element ) => {
+		if ( element.tagName.toLowerCase() === 'script' ) {
+			sowbCloneRelatedInlineScript( $canvasBody, $source, element.id );
+		}
+
+		sowbCloneElementToCanvas( $canvasBody, element, $source );
+	};
 
 	$source.find( 'script[src], link[rel="stylesheet"][href]' ).each( function() {
+		const tagName = this.tagName.toLowerCase();
 		const assetUrl = sowbNormalizeAssetUrl(
-			this.getAttribute( this.tagName.toLowerCase() === 'script' ? 'src' : 'href' ),
+			this.getAttribute( tagName === 'script' ? 'src' : 'href' ),
 			sourceBaseHref
 		);
+		const matchedRoot = assetUrl ?
+			assetRootList.find( ( assetRoot ) => assetUrl.indexOf( assetRoot ) === 0 ) :
+			'';
 
-		if (
-			! assetUrl ||
-			! [ ...assetRoots ].some( ( assetRoot ) => assetUrl.indexOf( assetRoot ) === 0 )
-		) {
+		if ( matchedRoot ) {
+			if ( tagName === 'script' ) {
+				// WordPress prints script dependencies before dependents, but the
+				// DOM does not expose dependency handles. If a TinyMCE companion
+				// package has root-matched scripts on both sides of an intervening
+				// script, preserve that in-between dependency before the later
+				// matched script runs in the iframe.
+				if ( previousMatchedScriptRoot === matchedRoot ) {
+					pendingDependencyScripts.forEach( cloneAssetElement );
+				}
+
+				pendingDependencyScripts = [];
+				previousMatchedScriptRoot = matchedRoot;
+			}
+
+			cloneAssetElement( this );
 			return;
 		}
 
-		if ( this.tagName.toLowerCase() === 'script' ) {
-			sowbCloneRelatedInlineScript( $canvasBody, $source, this.id );
+		if ( tagName === 'script' && previousMatchedScriptRoot ) {
+			pendingDependencyScripts.push( this );
 		}
-
-		sowbCloneElementToCanvas( $canvasBody, this, $source );
 	} );
 };
 

@@ -153,6 +153,20 @@ const getPremiumWebFontSelectorParentAssets = async( page ) => {
 
 		const assets = [];
 		const addAsset = ( element, url = '' ) => {
+			const existingAsset = assets.some( ( asset ) => {
+				return (
+					element.id &&
+					asset.id === element.id
+				) || (
+					url &&
+					asset.url === url
+				);
+			} );
+
+			if ( existingAsset ) {
+				return;
+			}
+
 			assets.push( {
 				id: element.id,
 				tagName: element.tagName.toLowerCase(),
@@ -177,6 +191,16 @@ const getPremiumWebFontSelectorParentAssets = async( page ) => {
 				}
 			}
 		} );
+
+		const webFontLoaderScript = document.getElementById( 'web-font-loader-js' ) ||
+			document.querySelector( 'script[src*="ajax.googleapis.com/ajax/libs/webfont/"]' );
+
+		if ( webFontLoaderScript ) {
+			addAsset(
+				webFontLoaderScript,
+				normalizeAssetUrl( webFontLoaderScript.getAttribute( 'src' ) )
+			);
+		}
 
 		return {
 			enabled: true,
@@ -801,7 +825,10 @@ test(
 
 			expect(
 				consoleAndPageErrors.filter( ( message ) => {
-					return message.indexOf( 'Failed to initialize plugin: so-premium-font-selector' ) !== -1;
+					return [
+						'Failed to initialize plugin: so-premium-font-selector',
+						'WebFont is not defined',
+					].some( ( errorText ) => message.indexOf( errorText ) !== -1 );
 				} )
 			).toEqual( [] );
 		}
