@@ -42,22 +42,18 @@ var sowbForms = window.sowbForms || {};
 		}
 	}
 
-	const repeaterSetupFieldSelector = '.siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field, .siteorigin-widget-field';
+	const repeaterVisibilitySensitiveFieldSelector = '.siteorigin-widget-field-type-tinymce, .siteorigin-widget-field-type-date-range';
 
-	const triggerVisibleRepeaterFieldSetup = ( $container ) => {
-		const triggerSetup = () => {
-			$container
-				.find( repeaterSetupFieldSelector )
-				.filter( function() {
-					return $( this ).is( ':visible' );
-				} )
-				.each( function() {
-					$( this ).trigger( 'sowsetupformfield' );
-				} );
-		};
-
-		triggerSetup();
-		setTimeout( triggerSetup, 250 );
+	const triggerVisibleRepeaterVisibilityFieldSetup = ( $container ) => {
+		$container
+			.filter( repeaterVisibilitySensitiveFieldSelector )
+			.add( $container.find( repeaterVisibilitySensitiveFieldSelector ) )
+			.filter( function() {
+				return $( this ).is( ':visible' );
+			} )
+			.each( function() {
+				$( this ).trigger( 'sowsetupformfield' );
+			} );
 	}
 
 	$.fn.sowSetupForm = function () {
@@ -925,7 +921,7 @@ var sowbForms = window.sowbForms || {};
 			$el.find( '> .siteorigin-widget-field-repeater-items' ).append( item ).sortable( 'refresh' ).trigger( 'updateFieldPositions' );
 			item.sowSetupRepeaterItems();
 			item.hide().slideDown( 'fast', function () {
-				triggerVisibleRepeaterFieldSetup( $( this ) );
+				triggerVisibleRepeaterVisibilityFieldSetup( $( this ) );
 				$( window ).trigger( 'resize' );
 			});
 			$el.trigger( 'change' );
@@ -1118,18 +1114,16 @@ var sowbForms = window.sowbForms || {};
 					e.preventDefault();
 					$itemForm.slideToggle( {
 						duration: 'fast',
-						start: function() {
+						complete: function() {
 							const $this = $( this );
 
 							if ( initialState === 'open' ) {
 								$this.trigger( 'slideToggleCloseComplete' );
-								return;
+							} else {
+								$this.trigger( 'slideToggleOpenComplete' );
+								triggerVisibleRepeaterVisibilityFieldSetup( $this );
 							}
 
-							$this.trigger( 'slideToggleOpenComplete' );
-							triggerVisibleRepeaterFieldSetup( $this );
-						},
-						complete: () => {
 							$( window ).trigger( 'resize' );
 						}
 					} );
@@ -1303,7 +1297,7 @@ var sowbForms = window.sowbForms || {};
 						$items.append( $copyItem ).sortable( 'refresh' ).trigger( 'updateFieldPositions' );
 						$copyItem.sowSetupRepeaterItems();
 						$copyItem.hide().slideDown( 'fast', function () {
-							triggerVisibleRepeaterFieldSetup( $( this ) );
+							triggerVisibleRepeaterVisibilityFieldSetup( $( this ) );
 							$( window ).trigger( 'resize' );
 						});
 						// If increment is enabled for this item, trigger label updates.
@@ -1322,7 +1316,6 @@ var sowbForms = window.sowbForms || {};
 
 				const $itemForm = $el.find( '> .siteorigin-widget-field-repeater-item-form' );
 				$itemForm.sowSetupForm();
-				triggerVisibleRepeaterFieldSetup( $itemForm );
 
 				$el.data( 'sowrepeater-actions-setup', true );
 			}
