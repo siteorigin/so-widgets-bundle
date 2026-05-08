@@ -324,7 +324,7 @@
 		const iframeElement = sowbResolveSiteEditorFrame();
 
 		if ( ! iframeElement ) {
-			return () => {};
+			return null;
 		}
 
 		let iframeWindow;
@@ -354,7 +354,7 @@
 		}
 
 		if ( ! iframeWindow ) {
-			return () => {};
+			return null;
 		}
 
 		const timeoutIds = [];
@@ -549,8 +549,11 @@
 			// In dev mode, blocks are rendered twice in quick succession. Wait
 			// for the remount pass before sending iframe field initialization.
 			if ( ! sowbBlockEditorAdmin.wpScriptDebug || state.devModeRemount ) {
-				iframeFormInitKeyRef.current = initKey;
-				return initializeFormFieldsInIframe( props.clientId );
+				const cleanup = initializeFormFieldsInIframe( props.clientId );
+				if ( cleanup ) {
+					iframeFormInitKeyRef.current = initKey;
+					return cleanup;
+				}
 			}
 		}, [
 			props.clientId,
