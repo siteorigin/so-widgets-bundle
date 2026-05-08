@@ -959,6 +959,33 @@
 
 let sowbSiteEditorCanvas = false;
 
+const sowbResolveSiteEditorFrame = ( frame = null ) => {
+	if ( frame ) {
+		if ( frame.jquery ) {
+			return frame.length > 0 ? frame[0] : null;
+		}
+
+		return typeof frame[0] !== 'undefined' ? frame[0] : frame;
+	}
+
+	if ( window.frameElement ) {
+		sowbSiteEditorCanvas = window.frameElement;
+		return window.frameElement;
+	}
+
+	let $canvas = jQuery( '.edit-site-visual-editor__editor-canvas' );
+	if ( $canvas.length === 0 ) {
+		$canvas = jQuery( 'iframe[name="editor-canvas"]' );
+	}
+
+	if ( $canvas.length > 0 ) {
+		sowbSiteEditorCanvas = $canvas;
+		return $canvas[0];
+	}
+
+	return null;
+};
+
 /**
  * Gets the widget form inside a specific block in either the main editor, or iframe.
  *
@@ -1389,7 +1416,6 @@ const sowbCloneTinyMCEExternalPluginAssets = ( $canvasBody, sourceDoc ) => {
 	} );
 };
 
-let sowbSiteEditorAssetsSetup = false;
 /**
  * Sets up assets required for the Site Editor iframe.
  *
@@ -1398,35 +1424,33 @@ let sowbSiteEditorAssetsSetup = false;
  * variable in the iframe's `contentWindow` if it is not already defined.
  *
  * The function performs the following steps:
- * 1. Checks if the Site Editor iframe (`sowbSiteEditorCanvas`) exists and is accessible.
+ * 1. Resolves the current Site Editor iframe and confirms it is accessible.
  * 2. Copies elements specified in `sowbCanvasCloneElements` to the iframe's canvas body.
  * 3. Copies elements specified in `sowbCanvasRemoveElements` to the iframe's canvas body
  *    and removes the originals from the main document.
  * 4. Sets the `ajaxurl` variable in the iframe's `contentWindow` for AJAX requests if it
  *    is not already defined.
- * 5. Ensures the setup process only runs once by using the `sowbSiteEditorAssetsSetup` flag.
  */
-const sowbMaybeSetupSiteEditorAssets = () => {
-	if (
-		! sowbSiteEditorCanvas ||
-		sowbSiteEditorCanvas.length === 0
-	) {
-		// Do NOT latch on failure: the parent-side caller may still be
-		// able to run a successful clone once the iframe is mounted.
+const sowbMaybeSetupSiteEditorAssets = ( frame = null ) => {
+	const currentFrame = sowbResolveSiteEditorFrame( frame );
+
+	if ( ! currentFrame ) {
 		return;
 	}
 
-	const frame = typeof sowbSiteEditorCanvas[0] !== 'undefined' ?
-		sowbSiteEditorCanvas[0] :
-		sowbSiteEditorCanvas;
+	let iframeDocument;
+	try {
+		iframeDocument = currentFrame.contentDocument || (
+			currentFrame.contentWindow &&
+			currentFrame.contentWindow.document
+		);
+	} catch ( e ) {
+		return;
+	}
 
-	const $iframe = jQuery( frame.contentDocument );
-
-	const $canvasBody = $iframe.find( 'body' );
+	const $canvasBody = jQuery( iframeDocument ).find( 'body' );
 
 	if ( $canvasBody.length === 0 ) {
-		// iframe not yet mounted; bail without latching so we can retry
-		// on the next call from sowbSetupWidgetForm().
 		return;
 	}
 
@@ -1447,29 +1471,21 @@ const sowbMaybeSetupSiteEditorAssets = () => {
 		sourceDoc = document;
 	}
 
-	if ( sowbSiteEditorAssetsSetup ) {
-		// External plugin roots are discovered from mounted widget forms, which
-		// can appear after the base iframe assets have already been cloned.
-		sowbCloneTinyMCEExternalPluginAssets( $canvasBody, sourceDoc );
-		return;
-	}
-
-	// Clone elements to the canvas.
 	sowbCloneElementsToCanvas( $canvasBody, sourceDoc );
 	sowbCloneTinyMCEExternalPluginAssets( $canvasBody, sourceDoc );
 
 	// Is ajaxurl set?
 	try {
-		if ( typeof frame.contentWindow.ajaxurl === 'undefined' ) {
-			frame.contentWindow.ajaxurl = window.top.ajaxurl;
+		if (
+			currentFrame.contentWindow &&
+			typeof currentFrame.contentWindow.ajaxurl === 'undefined'
+		) {
+			currentFrame.contentWindow.ajaxurl = window.top.ajaxurl;
 		}
 	} catch ( e ) {
 		// Ignore cross-window errors (e.g. iframe detached between the
 		// initial check and the assignment).
 	}
-
-	// Only latch after a successful clone.
-	sowbSiteEditorAssetsSetup = true;
 };
 
 /**
