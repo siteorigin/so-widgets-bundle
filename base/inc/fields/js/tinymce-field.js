@@ -82,7 +82,7 @@
 			return;
 		}
 
-		if ( window.wp.editor && typeof window.wp.editor.remove === 'function' ) {
+		if ( window.wp && window.wp.editor && typeof window.wp.editor.remove === 'function' ) {
 			window.wp.editor.remove( id );
 			return;
 		}
@@ -96,17 +96,101 @@
 	};
 
 	/**
+	 * Resolve the textarea and editor id for a TinyMCE field.
+	 *
+	 * @param {jQuery} $field - jQuery object of the field container element.
+	 *
+	 * @returns {Object} The textarea and current editor id.
+	 */
+	const getTinyMCEFieldEditor = function( $field ) {
+		const $textarea = $field
+			.find( '.siteorigin-widget-tinymce-container textarea.wp-editor-area, .siteorigin-widget-tinymce-container textarea' )
+			.first();
+
+		return {
+			$textarea,
+			id: $textarea.attr( 'data-tinymce-id' ) || $textarea.data( 'tinymce-id' ) || $textarea.attr( 'id' )
+		};
+	};
+
+	/**
+	 * Checks whether a field has a usable editor instance or TinyMCE chrome.
+	 *
+	 * @param {jQuery} $field - jQuery object of the field container element.
+	 * @param {string} id - The editor textarea ID.
+	 *
+	 * @returns {boolean} True when the TinyMCE field is already healthy.
+	 */
+	const hasHealthyTinyMCEEditor = function( $field, id ) {
+		if ( ! id ) {
+			return false;
+		}
+
+		if ( window.tinymce && window.tinymce.get( id ) ) {
+			return true;
+		}
+
+		const fieldElement = $field.get( 0 );
+		const editorIframe = document.getElementById( id + '_ifr' );
+		if ( editorIframe && fieldElement && fieldElement.contains( editorIframe ) ) {
+			return true;
+		}
+
+		const editorWrap = document.getElementById( 'wp-' + id + '-wrap' );
+		if (
+			editorWrap &&
+			fieldElement &&
+			fieldElement.contains( editorWrap ) &&
+			$( editorWrap ).find( '.mce-tinymce, .mce-toolbar-grp' ).length > 0
+		) {
+			return true;
+		}
+
+		return false;
+	};
+
+	/**
+	 * Removes partial TinyMCE markup while keeping the textarea/content intact.
+	 *
+	 * @param {jQuery} $field - jQuery object of the field container element.
+	 * @param {string} id - The editor textarea ID.
+	 */
+	const removeStaleTinyMCEFieldState = function( $field, id ) {
+		if ( ! id ) {
+			return;
+		}
+
+		const wpEditor = window.wp ? ( window.wp.oldEditor ? window.wp.oldEditor : window.wp.editor ) : null;
+
+		removeTinyMCEEditor( wpEditor, id );
+
+		const editorWrap = document.getElementById( 'wp-' + id + '-wrap' );
+		if ( editorWrap ) {
+			const $textarea = $( document.getElementById( id ) );
+			if ( $textarea.length ) {
+				$( editorWrap ).after( $textarea );
+			}
+			$( editorWrap ).remove();
+		}
+	};
+
+	/**
 	 * Sets up a TinyMCE field within a widget form.
 	 * Handles initialization of the TinyMCE editor, event binding, and UI setup.
 	 *
 	 * @param {jQuery} $field - jQuery object of the field container element.
 	 */
 	const setupTinyMCEField = function( $field ) {
-		if (
-			$field.attr( 'data-initialized' ) &&
-			$field.find( '.wp-editor-wrap, .mce-tinymce' ).length > 0
-		) {
-			return;
+		if ( $field.attr( 'data-initialized' ) ) {
+			const initializedEditor = getTinyMCEFieldEditor( $field );
+
+			if ( hasHealthyTinyMCEEditor( $field, initializedEditor.id ) ) {
+				return;
+			}
+
+			clearTinyMCEFieldPendingSetup( $field );
+			removeStaleTinyMCEFieldState( $field, initializedEditor.id );
+			$field.removeAttr( 'data-initialized' );
 		}
 
 		clearTinyMCEFieldPendingSetup( $field );
