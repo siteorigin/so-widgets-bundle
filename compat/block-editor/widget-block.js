@@ -320,29 +320,72 @@
 	 * display blocks. This requires us to reinitialize WB form fields
 	 * in the iframe context after the form has been set up.
 	 */
-	const initializeFormFieldsInIframe = () => {
-		if ( ! sowbSiteEditorCanvas || sowbSiteEditorCanvas.length === 0 ) {
-			return;
+	const initializeFormFieldsInIframe = ( clientId ) => {
+		const iframeElement = sowbResolveSiteEditorFrame();
+
+		if ( ! iframeElement ) {
+			return () => {};
 		}
+
+		let iframeWindow;
+		let targetOrigin = window.location && window.location.origin ?
+			window.location.origin :
+			'*';
+
+		try {
+			iframeWindow = iframeElement.contentWindow;
+
+			const iframeDocument = iframeElement.contentDocument || (
+				iframeWindow &&
+				iframeWindow.document
+			);
+
+			if (
+				iframeDocument &&
+				iframeDocument.location &&
+				iframeDocument.location.origin &&
+				iframeDocument.location.origin !== 'null'
+			) {
+				targetOrigin = iframeDocument.location.origin;
+			}
+		} catch ( e ) {
+			// Keep the parent origin fallback when same-origin document access
+			// is unavailable but the iframe window reference is still usable.
+		}
+
+		if ( ! iframeWindow ) {
+			return () => {};
+		}
+
+		const timeoutIds = [];
+		const blockSelector = clientId ? `[data-block="${ clientId }"]` : '';
+		const formSelector = blockSelector ?
+			`${ blockSelector } .siteorigin-widget-form-main` :
+			'';
+		const message = {
+			action: 'sowbBlockFormInit',
+			clientId,
+			blockSelector,
+			formSelector
+		};
 
 		const sendInitMessage = () => {
 			try {
-				const iframeWindow = sowbSiteEditorCanvas[0].contentWindow;
-				if ( ! iframeWindow ) {
-					return;
-				}
-
-				iframeWindow.postMessage( {
-					action: 'sowbBlockFormInit'
-				}, '*' );
+				iframeWindow.postMessage( message, targetOrigin );
 			} catch ( e ) {
 				console.error( 'SiteOrigin Widgets: Failed to send postMessage to iframe:', e );
 			}
 		};
 
 		[ 0, 250, 1000, 3000, 6000 ].forEach( ( delay ) => {
-			setTimeout( sendInitMessage, delay );
+			timeoutIds.push( setTimeout( sendInitMessage, delay ) );
 		} );
+
+		return () => {
+			timeoutIds.forEach( ( timeoutId ) => {
+				clearTimeout( timeoutId );
+			} );
+		};
 	};
 
 	/**
@@ -503,12 +546,11 @@
 				return;
 			}
 
-			iframeFormInitKeyRef.current = initKey;
-
 			// In dev mode, blocks are rendered twice in quick succession. Wait
 			// for the remount pass before sending iframe field initialization.
 			if ( ! sowbBlockEditorAdmin.wpScriptDebug || state.devModeRemount ) {
-				initializeFormFieldsInIframe();
+				iframeFormInitKeyRef.current = initKey;
+				return initializeFormFieldsInIframe( props.clientId );
 			}
 		}, [
 			props.clientId,
