@@ -333,6 +333,8 @@
 
 		const sendInitMessage = () => {
 			try {
+				sowbEnsureIframeOldEditorApi( frame );
+
 				const iframeWindow = frame.contentWindow;
 				if ( ! iframeWindow ) {
 					return;
@@ -972,6 +974,64 @@ const sowbGetEditorCanvasFrame = () => {
 	}
 
 	return null;
+};
+
+const sowbEnsureIframeOldEditorApi = ( frame ) => {
+	if (
+		! frame ||
+		! frame.contentDocument ||
+		! frame.contentWindow ||
+		! frame.contentDocument.body
+	) {
+		return;
+	}
+
+	const iframeWindow = frame.contentWindow;
+	if (
+		iframeWindow.wp &&
+		(
+			iframeWindow.wp.oldEditor &&
+			typeof iframeWindow.wp.oldEditor.initialize === 'function'
+		)
+	) {
+		return;
+	}
+
+	if ( frame.contentDocument.getElementById( 'sowb-editor-js-retry' ) ) {
+		return;
+	}
+
+	const editorScript = document.getElementById( 'editor-js' );
+	if ( ! editorScript || ! editorScript.src ) {
+		return;
+	}
+
+	const previousEditor = iframeWindow.wp && iframeWindow.wp.editor;
+	const retryScript = frame.contentDocument.createElement( 'script' );
+	retryScript.id = 'sowb-editor-js-retry';
+	retryScript.src = editorScript.src;
+	retryScript.onload = () => {
+		if (
+			! iframeWindow.wp ||
+			! iframeWindow.wp.editor ||
+			typeof iframeWindow.wp.editor.initialize !== 'function'
+		) {
+			return;
+		}
+
+		const oldEditor = iframeWindow.wp.editor;
+		iframeWindow.wp.oldEditor = oldEditor;
+
+		if (
+			previousEditor &&
+			previousEditor !== oldEditor
+		) {
+			Object.assign( previousEditor, oldEditor );
+			iframeWindow.wp.editor = previousEditor;
+		}
+	};
+
+	frame.contentDocument.body.appendChild( retryScript );
 };
 
 /**
