@@ -193,6 +193,12 @@ const getMainWidgetForm = ( widget ) => {
 	return widget.locator( '.siteorigin-widget-form.siteorigin-widget-form-main' ).first();
 };
 
+const selectDirectWidgetBlock = async ( admin, clientId ) => {
+	await admin.page.evaluate( ( selectedClientId ) => {
+		window.wp.data.dispatch( 'core/block-editor' ).selectBlock( selectedClientId );
+	}, clientId );
+};
+
 const insertDirectWidgetBlock = async ( admin, blockName ) => {
 	const formRequest = waitForRequestToFinish(
 		admin.page,
@@ -220,8 +226,7 @@ const insertDirectWidgetBlock = async ( admin, blockName ) => {
 		{ timeout: 20000 }
 	).catch( () => null );
 
-	await admin.editor.selectBlocks( widget );
-	await widget.click();
+	await selectDirectWidgetBlock( admin, clientId );
 	const switchedToEdit = await switchWidgetMode( admin, widget, 'edit' );
 	if ( switchedToEdit === false ) {
 		throw new Error( `Unable to switch ${ blockName } to edit mode.` );
@@ -237,8 +242,11 @@ const reopenSavedWidgetForm = async ( page, admin, blockName ) => {
 
 	const widget = getWidgetBlock( admin, blockName );
 	await expect( widget ).toBeVisible( { timeout: 20000 } );
-	await admin.editor.selectBlocks( widget );
-	await widget.click();
+	const clientId = await widget.getAttribute( 'data-block', { timeout: 10000 } );
+
+	expect( clientId ).toBeTruthy();
+
+	await selectDirectWidgetBlock( admin, clientId );
 
 	const form = getMainWidgetForm( widget );
 	if ( await form.isVisible().catch( () => false ) ) {
