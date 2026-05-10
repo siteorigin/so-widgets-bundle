@@ -66,7 +66,17 @@
 			window.tinyMCEPreInit = window.top.tinyMCEPreInit;
 		}
 
-		const wpEditor = wp.oldEditor ? wp.oldEditor : wp.editor;
+		const wpEditor = wp.oldEditor && typeof wp.oldEditor.initialize === 'function' ?
+			wp.oldEditor :
+			wp.editor;
+		if (
+			! wpEditor ||
+			typeof wpEditor.initialize !== 'function'
+		) {
+			$field.removeAttr( 'data-initialized' );
+			return;
+		}
+
 		if ( wpEditor && wpEditor.hasOwnProperty( 'autop' ) ) {
 			wp.editor.autop = wpEditor.autop;
 			wp.editor.removep = wpEditor.removep;
