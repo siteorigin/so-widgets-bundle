@@ -247,11 +247,16 @@
 	 */
 
 	const sowbSetupWidgetForm = async ( props, state, setState ) => {
-		const $mainForm = sowbGetBlockForm( props.clientId );
+		let $mainForm = sowbGetBlockForm( props.clientId );
 
 		if ( $mainForm.length === 0 || state.formInitialized ) {
 			return;
 		}
+
+		const formWindow = sowbGetElementWindow( $mainForm[0] );
+		const formJQuery = formWindow.jQuery || jQuery;
+		const formForms = formWindow.sowbForms || sowbForms;
+		$mainForm = formJQuery( $mainForm[0] );
 
 		sowbMaybeSetupSiteEditorAssets();
 		const $previewContainer = $mainForm.siblings( '.siteorigin-widget-preview' );
@@ -271,9 +276,9 @@
 			// If we call `setWidgetFormValues` with the last parameter
 			// ( `triggerChange` ) set to false, it won't show the correct values
 			// for some fields e.g. color and media fields.
-			sowbForms.setWidgetFormValues( $mainForm, props.attributes.widgetData );
+			formForms.setWidgetFormValues( $mainForm, props.attributes.widgetData );
 		} else {
-			props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
+			props.setAttributes( { widgetData: formForms.getWidgetFormValues( $mainForm ) } );
 		}
 
 		$mainForm.sowSetupForm();
@@ -286,7 +291,7 @@
 
 			// As setAttributes doesn't support callbacks, we have to manually
 			// pass the widgetData to the preview.
-			var widgetData = sowbForms.getWidgetFormValues( $mainForm );
+			var widgetData = formForms.getWidgetFormValues( $mainForm );
 			props.setAttributes( { widgetData: widgetData } );
 
 			// Set up a preview debounce timer to prevent multiple requests.
@@ -320,12 +325,14 @@
 	 * in the iframe context after the form has been set up.
 	 */
 	const initializeFormFieldsInIframe = () => {
-		if ( ! sowbSiteEditorCanvas || sowbSiteEditorCanvas.length === 0 ) {
+		const frame = sowbGetEditorCanvasFrame();
+
+		if ( ! frame || ! frame.contentWindow ) {
 			return;
 		}
 
 		try {
-			const iframeWindow = sowbSiteEditorCanvas[0].contentWindow;
+			const iframeWindow = frame.contentWindow;
 			if ( iframeWindow ) {
 				iframeWindow.postMessage( {
 					action: 'sowbBlockFormInit'
@@ -920,14 +927,42 @@
 		} )
 	} );
 
-	// Copy over assets to the Site Editor iframe asap.
-	if ( window.frameElement ) {
-		sowbSiteEditorCanvas = window.frameElement;
-		sowbMaybeSetupSiteEditorAssets();
-	}
+	// Copy over assets to the editor iframe asap.
+	sowbMaybeSetupSiteEditorAssets();
 } )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.blockEditor );
 
-let sowbSiteEditorCanvas = false;
+const sowbGetElementWindow = ( element ) => {
+	return element && element.ownerDocument && element.ownerDocument.defaultView ?
+		element.ownerDocument.defaultView :
+		window;
+};
+
+const sowbGetEditorCanvasFrame = () => {
+	const siteEditorCanvas = document.querySelector( '.edit-site-visual-editor__editor-canvas' );
+	if (
+		siteEditorCanvas &&
+		siteEditorCanvas.contentDocument
+	) {
+		return siteEditorCanvas;
+	}
+
+	const editorCanvas = document.querySelector( 'iframe[name="editor-canvas"]' );
+	if (
+		editorCanvas &&
+		editorCanvas.contentDocument
+	) {
+		return editorCanvas;
+	}
+
+	if (
+		window.frameElement &&
+		window.frameElement.contentDocument
+	) {
+		return window.frameElement;
+	}
+
+	return null;
+};
 
 /**
  * Gets the widget form inside a specific block in either the main editor, or iframe.
@@ -940,17 +975,24 @@ let sowbSiteEditorCanvas = false;
  * @returns {jQuery} jQuery reference to the widget form
  */
 const sowbGetBlockForm = ( clientId ) => {
-	if ( sowbSiteEditorCanvas === false ) {
-		sowbSiteEditorCanvas = jQuery( '.edit-site-visual-editor__editor-canvas' );
+	const frame = sowbGetEditorCanvasFrame();
+
+	if (
+		frame &&
+		frame.contentDocument &&
+		frame.contentWindow
+	) {
+		const frameJQuery = frame.contentWindow.jQuery || jQuery;
+		const $iframeForm = frameJQuery( frame.contentDocument )
+			.find( '[data-block="' + clientId + '"]' )
+			.find( '.siteorigin-widget-form-main' );
+
+		if ( $iframeForm.length > 0 ) {
+			return $iframeForm;
+		}
 	}
 
-	if ( sowbSiteEditorCanvas.length === 0 ) {
-		return jQuery( '[data-block="' + clientId + '"]' ).find( '.siteorigin-widget-form-main' );
-	}
-
-	// Return the main WB form.
-	return sowbSiteEditorCanvas
-		.contents()
+	return jQuery( document )
 		.find( '[data-block="' + clientId + '"]' )
 		.find( '.siteorigin-widget-form-main' );
 };
@@ -959,6 +1001,7 @@ const sowbCanvasCloneElements = [
 	// WP Scripts and assets.
 	'#jquery-core-js',
 	'#jquery-migrate-js',
+	'#underscore-js',
 	'#editor-js-after',
 	'#wp-tinymce-js',
 	'#wp-block-library-js-before',
@@ -1051,7 +1094,7 @@ const sowbCloneElementsToCanvas = ( $canvasBody ) => {
 	}
 };
 
-let sowbSiteEditorAssetsSetup = false;
+const sowbSiteEditorAssetsSetup = new WeakSet();
 /**
  * Sets up assets required for the Site Editor iframe.
  *
@@ -1069,23 +1112,24 @@ let sowbSiteEditorAssetsSetup = false;
  * 5. Ensures the setup process only runs once by using the `sowbSiteEditorAssetsSetup` flag.
  */
 const sowbMaybeSetupSiteEditorAssets = () => {
+	const frame = sowbGetEditorCanvasFrame();
+
 	if (
-		! sowbSiteEditorCanvas ||
-		sowbSiteEditorCanvas.length === 0 ||
-		sowbSiteEditorAssetsSetup
+		! frame ||
+		sowbSiteEditorAssetsSetup.has( frame )
 	) {
-		sowbSiteEditorAssetsSetup = true;
 		return;
 	}
-	sowbSiteEditorAssetsSetup = true;
 
-	const frame = typeof sowbSiteEditorCanvas[0] !== 'undefined' ?
-		sowbSiteEditorCanvas[0] :
-		sowbSiteEditorCanvas;
-
-	const $iframe = jQuery( frame.contentDocument );
+	const frameJQuery = frame.contentWindow.jQuery || jQuery;
+	const $iframe = frameJQuery( frame.contentDocument );
 
 	const $canvasBody = $iframe.find( 'body' );
+	if ( $canvasBody.length === 0 ) {
+		return;
+	}
+
+	sowbSiteEditorAssetsSetup.add( frame );
 
 	// Clone elements to the canvas.
 	sowbCloneElementsToCanvas( $canvasBody );
