@@ -3,6 +3,11 @@
 ( function( $ ) {
 
 	let mediaFrameOpen = false;
+
+	const isTinyMCESelectedEditor = function( selectedEditor ) {
+		return selectedEditor === 'tinymce' || selectedEditor === 'tmce';
+	};
+
 	/**
 	 * Opens the WordPress media library for TinyMCE editors in an iframe context.
 	 *
@@ -55,11 +60,31 @@
 	 * @param {jQuery} $field - jQuery object of the field container element.
 	 */
 	const setupTinyMCEField = function( $field ) {
-		if ( $field.attr( 'data-initialized' ) ) {
+		const $container = $field.find( '.siteorigin-widget-tinymce-container' );
+		const settings = $container.data( 'editorSettings' );
+		const $textarea = $container.find( 'textarea' );
+		let id = $textarea.data( 'tinymce-id' ) || $textarea.attr( 'id' );
+		const existingEditor = window.tinymce && id ? window.tinymce.get( id ) : null;
+		const initializedWithoutIframe = !! (
+			$field.attr( 'data-initialized' ) &&
+			$field.is( ':visible' ) &&
+			settings &&
+			isTinyMCESelectedEditor( settings.selectedEditor ) &&
+			(
+				! existingEditor ||
+				! existingEditor.initialized ||
+				$field.find( 'iframe' ).length === 0
+			)
+		);
+
+		if ( initializedWithoutIframe ) {
+			if ( existingEditor && typeof existingEditor.remove === 'function' ) {
+				existingEditor.remove();
+			}
+			$field.removeAttr( 'data-initialized data-pre-init' );
+		} else if ( $field.attr( 'data-initialized' ) ) {
 			return;
 		}
-
-		$field.attr( 'data-initialized', true );
 
 		// If this is in an iframe, copy necessary globals from the parent window.
 		if ( frameElement && typeof window.tinyMCEPreInit === 'undefined' ) {
@@ -83,8 +108,10 @@
 			wp.editor.initialize = wpEditor.initialize
 		}
 
-		const $container = $field.find( '.siteorigin-widget-tinymce-container' );
-		const settings = $container.data( 'editorSettings' );
+		if ( ! settings ) {
+			$field.removeAttr( 'data-initialized' );
+			return;
+		}
 
 		if (
 			window.top.tinyMCEPreInit.mceInit &&
@@ -115,9 +142,8 @@
 			settings.tinymce.wpautop = $wpautopToggleField.is( ':checked' );
 		}
 
-		const $textarea = $container.find( 'textarea' );
 		// Prevent potential id overlap by appending the textarea field with a random id.
-		let id = $textarea.data( 'tinymce-id' );
+		id = $textarea.data( 'tinymce-id' );
 		if ( ! id ) {
 			id = $textarea.attr( 'id' ) + Math.floor( Math.random() * 1000 );
 			$textarea.data( 'tinymce-id', id );
@@ -203,16 +229,15 @@
 			window.tinymce.EditorManager.overrideDefaults( { base_url: settings.baseURL, suffix: settings.suffix } );
 		}
 
-		// Wait for textarea to be visible before initialization.
-		if ( $textarea.is( ':visible' ) ) {
+		// In visual mode WordPress hides the textarea. Initialize when the
+		// containing field is visible instead.
+		if ( $field.is( ':visible' ) ) {
+			$field.attr( 'data-initialized', true );
 			wpEditor.initialize( id, settings );
 		} else {
-			const intervalId = setInterval( function() {
-				if ( $textarea.is( ':visible' ) ) {
-					wpEditor.initialize( id, settings );
-					clearInterval( intervalId );
-				}
-			}, 500 );
+			$field.removeAttr( 'data-initialized' );
+			setupTinyMCEFieldInitializer.call( $field.get( 0 ) );
+			return;
 		}
 
 		$field.on( 'click', function( event ) {
