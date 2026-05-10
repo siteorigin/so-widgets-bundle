@@ -3,6 +3,11 @@
 ( function( $ ) {
 
 	let mediaFrameOpen = false;
+
+	const isTinyMCESelectedEditor = function( selectedEditor ) {
+		return selectedEditor === 'tinymce' || selectedEditor === 'tmce';
+	};
+
 	/**
 	 * Opens the WordPress media library for TinyMCE editors in an iframe context.
 	 *
@@ -55,7 +60,29 @@
 	 * @param {jQuery} $field - jQuery object of the field container element.
 	 */
 	const setupTinyMCEField = function( $field ) {
-		if ( $field.attr( 'data-initialized' ) ) {
+		const $container = $field.find( '.siteorigin-widget-tinymce-container' );
+		const settings = $container.data( 'editorSettings' );
+		const $textarea = $container.find( 'textarea' );
+		let id = $textarea.data( 'tinymce-id' ) || $textarea.attr( 'id' );
+		const existingEditor = window.tinymce && id ? window.tinymce.get( id ) : null;
+		const hasBrokenEditor = !! (
+			$field.attr( 'data-initialized' ) &&
+			$field.is( ':visible' ) &&
+			settings &&
+			isTinyMCESelectedEditor( settings.selectedEditor ) &&
+			(
+				! existingEditor ||
+				! existingEditor.initialized ||
+				$field.find( 'iframe' ).length === 0
+			)
+		);
+
+		if ( hasBrokenEditor ) {
+			if ( existingEditor ) {
+				existingEditor.remove();
+			}
+			$field.removeAttr( 'data-initialized data-pre-init' );
+		} else if ( $field.attr( 'data-initialized' ) ) {
 			return;
 		}
 
@@ -83,8 +110,10 @@
 			wp.editor.initialize = wpEditor.initialize
 		}
 
-		const $container = $field.find( '.siteorigin-widget-tinymce-container' );
-		const settings = $container.data( 'editorSettings' );
+		if ( ! settings ) {
+			$field.removeAttr( 'data-initialized' );
+			return;
+		}
 
 		if (
 			window.top.tinyMCEPreInit.mceInit &&
@@ -115,9 +144,8 @@
 			settings.tinymce.wpautop = $wpautopToggleField.is( ':checked' );
 		}
 
-		const $textarea = $container.find( 'textarea' );
 		// Prevent potential id overlap by appending the textarea field with a random id.
-		let id = $textarea.data( 'tinymce-id' );
+		id = $textarea.data( 'tinymce-id' );
 		if ( ! id ) {
 			id = $textarea.attr( 'id' ) + Math.floor( Math.random() * 1000 );
 			$textarea.data( 'tinymce-id', id );
@@ -200,22 +228,60 @@
 
 		wpEditor.remove( id );
 		if ( window.tinymce ) {
+			const editor = window.tinymce.get( id );
+			if ( editor ) {
+				editor.remove();
+			}
 			window.tinymce.EditorManager.overrideDefaults( { base_url: settings.baseURL, suffix: settings.suffix } );
 		}
 
-		// Wait for textarea to be visible before initialization.
-		if ( $textarea.is( ':visible' ) ) {
+		const initializeEditor = function() {
 			wpEditor.initialize( id, settings );
-		} else {
-			const intervalId = setInterval( function() {
-				if ( $textarea.is( ':visible' ) ) {
-					wpEditor.initialize( id, settings );
-					clearInterval( intervalId );
+
+			setTimeout( function() {
+				if (
+					! isTinyMCESelectedEditor( settings.selectedEditor ) ||
+					! $field.is( ':visible' )
+				) {
+					$field.removeData( 'sowb-tinymce-init-attempts' );
+					return;
 				}
-			}, 500 );
+
+				const editor = window.tinymce ? window.tinymce.get( id ) : null;
+				if (
+					editor &&
+					editor.initialized &&
+					$field.find( 'iframe' ).length > 0
+				) {
+					$field.removeData( 'sowb-tinymce-init-attempts' );
+					return;
+				}
+
+				const attempts = parseInt( $field.data( 'sowb-tinymce-init-attempts' ) || 0, 10 );
+				if ( attempts >= 3 ) {
+					$field.removeAttr( 'data-initialized' );
+					return;
+				}
+
+				$field.data( 'sowb-tinymce-init-attempts', attempts + 1 );
+				if ( editor ) {
+					editor.remove();
+				}
+				$field.removeAttr( 'data-initialized' );
+				setupTinyMCEField( $field );
+			}, 1000 );
+		};
+
+		if ( $field.is( ':visible' ) ) {
+			initializeEditor();
+		} else {
+			$field.removeAttr( 'data-initialized' );
+			setupTinyMCEFieldInitializer.call( $field.get( 0 ) );
+			return;
 		}
 
-		$field.on( 'click', function( event ) {
+		$field.off( 'click.sowbTinyMCE' );
+		$field.on( 'click.sowbTinyMCE', function( event ) {
 			const $target = $( event.target );
 			if ( ! $target.is( '.wp-switch-editor' ) ) {
 				return;
