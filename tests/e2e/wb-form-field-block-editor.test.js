@@ -193,6 +193,10 @@ const getMainWidgetForm = ( widget ) => {
 	return widget.locator( '.siteorigin-widget-form.siteorigin-widget-form-main' ).first();
 };
 
+const getWidgetFormContainer = ( widget ) => {
+	return widget.locator( '.so-widget-block-container.siteorigin-widget-form-main' ).first();
+};
+
 const selectDirectWidgetBlock = async ( admin, clientId ) => {
 	await admin.page.evaluate( ( selectedClientId ) => {
 		window.wp.data.dispatch( 'core/block-editor' ).selectBlock( selectedClientId );
@@ -215,7 +219,7 @@ const insertDirectWidgetBlock = async ( admin, blockName ) => {
 
 	expect( clientId ).toBeTruthy();
 
-	const form = getMainWidgetForm( widget );
+	const form = getWidgetFormContainer( widget );
 	if ( await form.isVisible().catch( () => false ) ) {
 		return { widget, clientId };
 	}
@@ -232,7 +236,7 @@ const insertDirectWidgetBlock = async ( admin, blockName ) => {
 		throw new Error( `Unable to switch ${ blockName } to edit mode.` );
 	}
 	await editFormRequest;
-	await form.waitFor( { state: 'visible', timeout: 10000 } );
+	await expect( form ).toBeVisible( { timeout: 10000 } );
 
 	return { widget, clientId };
 };
@@ -351,10 +355,10 @@ test(
 		try {
 			const { widget, clientId } = await insertDirectWidgetBlock( admin, blockName );
 
-			const form = getMainWidgetForm( widget );
+			const form = getWidgetFormContainer( widget );
 			await expect( form ).toBeVisible( { timeout: 10000 } );
 
-			const featuresField = form.locator( '> .siteorigin-widget-field-features' );
+			const featuresField = form.locator( '.siteorigin-widget-field-features' ).first();
 			await expect( featuresField ).toBeVisible( { timeout: 10000 } );
 
 			const featureItems = featuresField.locator(
