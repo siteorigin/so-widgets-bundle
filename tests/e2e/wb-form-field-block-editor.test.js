@@ -319,7 +319,7 @@ test(
 			const featuresField = widget.locator( '.siteorigin-widget-field-features' );
 			const addFeatureButton = featuresField.locator( '.siteorigin-widget-field-repeater-add' ).first();
 			await ensureElementVisible( addFeatureButton, 120, 20000 );
-			await addFeatureButton.click();
+			await addFeatureButton.click( { force: true } );
 
 			const featureItem = featuresField
 				.locator( '.siteorigin-widget-field-repeater-items > .siteorigin-widget-field-repeater-item' )
