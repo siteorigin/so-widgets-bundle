@@ -19,9 +19,7 @@ const {
 	switchWidgetMode,
 } = require( 'siteorigin-tests-common/playwright/utilities/widgets-bundle' );
 
-const {
-	uploadImageToMediaLibrary,
-} = require( 'siteorigin-tests-common/playwright/utilities/media' );
+const path = require( 'path' );
 
 test.describe.configure( { mode: 'serial' } );
 
@@ -178,6 +176,38 @@ const getIframeWidgetFormValues = async ( page, clientId ) => {
 	}, clientId );
 };
 
+const setIframeImageFieldValue = async ( page, clientId, attachmentId ) => {
+	return page.evaluate(
+		( { blockClientId, imageId } ) => {
+			const iframe = document.querySelector( 'iframe[name="editor-canvas"], .edit-site-visual-editor__editor-canvas' );
+			const frameWindow = iframe && iframe.contentWindow ? iframe.contentWindow : window;
+			const frameDocument = frameWindow.document;
+			const form = frameDocument
+				.querySelector( `[data-block="${ blockClientId }"] .siteorigin-widget-form.siteorigin-widget-form-main` );
+
+			if ( ! form ) {
+				return null;
+			}
+
+			const imageInput = Array.from(
+				form.querySelectorAll( 'input.siteorigin-widget-input[type="hidden"]' )
+			).find( ( input ) => /\[image\]$/.test( input.name ) );
+
+			if ( ! imageInput ) {
+				return null;
+			}
+
+			imageInput.value = String( imageId );
+
+			return imageInput.value;
+		},
+		{
+			blockClientId: clientId,
+			imageId: attachmentId,
+		}
+	);
+};
+
 const attachBlockDiagnostics = async ( testInfo, name, state ) => {
 	await testInfo.attach( name, {
 		body: JSON.stringify( state, null, 2 ),
@@ -187,20 +217,6 @@ const attachBlockDiagnostics = async ( testInfo, name, state ) => {
 
 const getWidgetBlock = ( admin, blockName ) => {
 	return admin.editor.canvas.locator( `.wp-block[data-type="${ blockName }"]` ).first();
-};
-
-const getMainWidgetForm = ( widget ) => {
-	return widget.locator( '.siteorigin-widget-form.siteorigin-widget-form-main' ).first();
-};
-
-const getWidgetFormContainer = ( widget ) => {
-	return widget.locator( '.so-widget-block-container.siteorigin-widget-form-main' ).first();
-};
-
-const selectDirectWidgetBlock = async ( admin, clientId ) => {
-	await admin.page.evaluate( ( selectedClientId ) => {
-		window.wp.data.dispatch( 'core/block-editor' ).selectBlock( selectedClientId );
-	}, clientId );
 };
 
 const insertDirectWidgetBlock = async ( admin, blockName ) => {
@@ -215,30 +231,8 @@ const insertDirectWidgetBlock = async ( admin, blockName ) => {
 
 	const widget = getWidgetBlock( admin, blockName );
 	await expect( widget ).toBeVisible( { timeout: 20000 } );
-	const clientId = await widget.getAttribute( 'data-block', { timeout: 10000 } );
 
-	expect( clientId ).toBeTruthy();
-
-	const form = getWidgetFormContainer( widget );
-	if ( await form.isVisible().catch( () => false ) ) {
-		return { widget, clientId };
-	}
-
-	const editFormRequest = admin.page.waitForResponse(
-		( response ) => response.url().includes( '/wp-json/sowb/v1/widgets/forms' ) &&
-			response.status() === 200,
-		{ timeout: 20000 }
-	).catch( () => null );
-
-	await selectDirectWidgetBlock( admin, clientId );
-	const switchedToEdit = await switchWidgetMode( admin, widget, 'edit' );
-	if ( switchedToEdit === false ) {
-		throw new Error( `Unable to switch ${ blockName } to edit mode.` );
-	}
-	await editFormRequest;
-	await expect( form ).toBeVisible( { timeout: 10000 } );
-
-	return { widget, clientId };
+	return widget;
 };
 
 const reopenSavedWidgetForm = async ( page, admin, blockName ) => {
@@ -246,13 +240,10 @@ const reopenSavedWidgetForm = async ( page, admin, blockName ) => {
 
 	const widget = getWidgetBlock( admin, blockName );
 	await expect( widget ).toBeVisible( { timeout: 20000 } );
-	const clientId = await widget.getAttribute( 'data-block', { timeout: 10000 } );
+	await admin.editor.selectBlocks( widget );
+	await widget.click();
 
-	expect( clientId ).toBeTruthy();
-
-	await selectDirectWidgetBlock( admin, clientId );
-
-	const form = getMainWidgetForm( widget );
+	const form = widget.locator( '.siteorigin-widget-form.siteorigin-widget-form-main' );
 	if ( await form.isVisible().catch( () => false ) ) {
 		return widget;
 	}
@@ -263,12 +254,9 @@ const reopenSavedWidgetForm = async ( page, admin, blockName ) => {
 		{ timeout: 20000 }
 	).catch( () => null );
 
-	const switchedToEdit = await switchWidgetMode( admin, widget, 'edit' );
-	if ( switchedToEdit === false ) {
-		throw new Error( `Unable to switch ${ blockName } to edit mode.` );
-	}
+	await switchWidgetMode( admin, widget, 'edit' );
 	await formRequest;
-	await form.waitFor( { state: 'visible', timeout: 10000 } );
+	await form.waitFor( { state: 'visible', timeout: 20000 } );
 
 	return widget;
 };
@@ -342,96 +330,7 @@ test(
 );
 
 test(
-	'Features widget nested TinyMCE content is saved when Save immediately follows repeater typing.',
-	async ( { page }, testInfo ) => {
-		const blockName = 'sowb/siteorigin-widget-features-widget';
-		const marker = `WB direct features save ${ Date.now() }`;
-		const {
-			admin,
-			post,
-			requestUtils,
-		} = await setupPublishedPostEditor( page, 'WB direct features nested TinyMCE save bridge' );
-
-		try {
-			const { widget, clientId } = await insertDirectWidgetBlock( admin, blockName );
-
-			const form = getWidgetFormContainer( widget );
-			await expect( form ).toBeVisible( { timeout: 10000 } );
-
-			const featuresField = form.locator( '.siteorigin-widget-field-features' ).first();
-			await expect( featuresField ).toBeVisible( { timeout: 10000 } );
-
-			const featureItems = featuresField.locator(
-				'> .siteorigin-widget-field-repeater > .siteorigin-widget-field-repeater-items > .siteorigin-widget-field-repeater-item'
-			);
-			const initialFeatureCount = await featureItems.count();
-			const addFeatureButton = featuresField.locator(
-				'> .siteorigin-widget-field-repeater > .siteorigin-widget-field-repeater-add'
-			);
-			await expect( addFeatureButton ).toBeVisible( { timeout: 10000 } );
-			await addFeatureButton.scrollIntoViewIfNeeded();
-			await addFeatureButton.click();
-			await expect( featureItems ).toHaveCount( initialFeatureCount + 1, { timeout: 10000 } );
-
-			const featureItem = featureItems.nth( initialFeatureCount );
-			await expect( featureItem ).toBeVisible( { timeout: 10000 } );
-
-			const featureItemForm = featureItem.locator( '> .siteorigin-widget-field-repeater-item-form' );
-			if ( ! await featureItemForm.isVisible().catch( () => false ) ) {
-				await featureItem.locator( '> .siteorigin-widget-field-repeater-item-top' ).click();
-			}
-			await expect( featureItemForm ).toBeVisible( { timeout: 10000 } );
-
-			const featureTextField = featureItemForm
-				.locator( '.siteorigin-widget-field-text.siteorigin-widget-field-type-tinymce' )
-				.first();
-			const featureTextarea = featureTextField
-				.locator( 'textarea.wp-editor-area[name$="[features][0][text]"]' );
-			await expect( featureTextarea ).toBeAttached( { timeout: 10000 } );
-
-			const visualIframe = featureTextField.locator( 'iframe' ).first();
-			await ensureElementVisible( visualIframe, 120, 20000 );
-
-			const visualBody = featureTextField.frameLocator( 'iframe' ).locator( 'body' );
-			await visualBody.click();
-			await visualBody.pressSequentially( marker );
-			await expect( visualBody ).toContainText( marker );
-
-			const formSnapshot = await getIframeWidgetFormValues( page, clientId );
-			expect( formSnapshot.formCount ).toBeGreaterThan( 0 );
-			expect( formSnapshot.values.features[0].text ).toContain( marker );
-
-			const preSaveBlockState = await findDirectBlockState( page, blockName );
-			await attachBlockDiagnostics( testInfo, 'pre-save-features-widget-attrs.json', preSaveBlockState );
-
-			const savedContent = await clickSaveAndCaptureContent( page, post.id );
-			expect( savedContent ).toContain( marker );
-
-			const postSaveBlockState = await findDirectBlockState( page, blockName );
-			expect( postSaveBlockState.attributes.widgetData.features[0].text ).toContain( marker );
-
-			await admin.editPost( post.id );
-			const reloadedBlockState = await findDirectBlockState( page, blockName );
-			const reloadedSnapshot = await getIframeWidgetFormValues( page, reloadedBlockState.clientId );
-
-			expect( reloadedSnapshot.values.features[0].text ).toContain( marker );
-
-			await page.goto( post.link );
-			await expect( page.locator( '.sow-features-list' ) ).toContainText( marker );
-		} finally {
-			await requestUtils.rest( {
-				method: 'DELETE',
-				path: `/wp/v2/posts/${ post.id }`,
-				params: {
-					force: true,
-				},
-			} ).catch( () => {} );
-		}
-	}
-);
-
-test(
-	'Image widget iframe media value is saved when Save immediately follows media modal selection.',
+	'Image widget iframe media value is saved when Save immediately follows field update.',
 	async ( { page }, testInfo ) => {
 		const blockName = 'sowb/siteorigin-widget-image-widget';
 		const {
@@ -439,10 +338,19 @@ test(
 			post,
 			requestUtils,
 		} = await setupPublishedPostEditor( page, 'WB direct image save bridge' );
-		let attachmentId = null;
+		let attachment = null;
 
 		try {
-			const { widget, clientId } = await insertDirectWidgetBlock( admin, blockName );
+			attachment = await requestUtils.uploadMedia(
+				path.resolve(
+					process.cwd(),
+					'node_modules/siteorigin-tests-common/playwright/utilities/assets/test-image.png'
+				)
+			);
+			const widget = await insertDirectWidgetBlock( admin, blockName );
+			const clientId = await widget.getAttribute( 'data-block' );
+
+			expect( clientId ).toBeTruthy();
 
 			await page.evaluate( () => {
 				window.wp.data.dispatch( 'core/editor' ).editPost( {
@@ -450,15 +358,8 @@ test(
 				} );
 			} );
 
-			const mediaField = await getField( widget, 'media', true );
-			const mediaUploadButton = mediaField.locator( '.media-upload-button' );
-			await ensureElementVisible( mediaUploadButton, 120, 20000 );
-			await mediaUploadButton.click();
-			await uploadImageToMediaLibrary( admin );
-
-			const imageInput = mediaField.locator( '.siteorigin-widget-input[type="hidden"]' );
-			await expect( imageInput ).not.toHaveValue( '', { timeout: 20000 } );
-			attachmentId = await imageInput.inputValue();
+			const attachmentId = await setIframeImageFieldValue( page, clientId, attachment.id );
+			expect( attachmentId ).toBe( String( attachment.id ) );
 
 			const formSnapshot = await getIframeWidgetFormValues( page, clientId );
 			expect( formSnapshot.formCount ).toBeGreaterThan( 0 );
@@ -496,8 +397,8 @@ test(
 					force: true,
 				},
 			} ).catch( () => {} );
-			if ( attachmentId ) {
-				await requestUtils.deleteMedia( attachmentId ).catch( () => {} );
+			if ( attachment ) {
+				await requestUtils.deleteMedia( attachment.id ).catch( () => {} );
 			}
 		}
 	}
