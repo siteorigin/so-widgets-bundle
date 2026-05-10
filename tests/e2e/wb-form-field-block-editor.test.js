@@ -205,10 +205,13 @@ const insertDirectWidgetBlock = async ( admin, blockName ) => {
 
 	const widget = getWidgetBlock( admin, blockName );
 	await expect( widget ).toBeVisible( { timeout: 20000 } );
+	const clientId = await widget.getAttribute( 'data-block', { timeout: 10000 } );
+
+	expect( clientId ).toBeTruthy();
 
 	const form = getMainWidgetForm( widget );
 	if ( await form.isVisible().catch( () => false ) ) {
-		return widget;
+		return { widget, clientId };
 	}
 
 	const editFormRequest = admin.page.waitForResponse(
@@ -226,7 +229,7 @@ const insertDirectWidgetBlock = async ( admin, blockName ) => {
 	await editFormRequest;
 	await form.waitFor( { state: 'visible', timeout: 10000 } );
 
-	return widget;
+	return { widget, clientId };
 };
 
 const reopenSavedWidgetForm = async ( page, admin, blockName ) => {
@@ -338,10 +341,7 @@ test(
 		} = await setupPublishedPostEditor( page, 'WB direct features nested TinyMCE save bridge' );
 
 		try {
-			const widget = await insertDirectWidgetBlock( admin, blockName );
-			const clientId = await widget.getAttribute( 'data-block' );
-
-			expect( clientId ).toBeTruthy();
+			const { widget, clientId } = await insertDirectWidgetBlock( admin, blockName );
 
 			const form = getMainWidgetForm( widget );
 			await expect( form ).toBeVisible( { timeout: 10000 } );
@@ -430,10 +430,7 @@ test(
 		let attachmentId = null;
 
 		try {
-			const widget = await insertDirectWidgetBlock( admin, blockName );
-			const clientId = await widget.getAttribute( 'data-block' );
-
-			expect( clientId ).toBeTruthy();
+			const { widget, clientId } = await insertDirectWidgetBlock( admin, blockName );
 
 			await page.evaluate( () => {
 				window.wp.data.dispatch( 'core/editor' ).editPost( {
