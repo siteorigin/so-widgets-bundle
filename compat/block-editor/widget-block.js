@@ -349,6 +349,8 @@
 		sendInitMessage();
 		setTimeout( sendInitMessage, 250 );
 		setTimeout( sendInitMessage, 1000 );
+		setTimeout( sendInitMessage, 2500 );
+		setTimeout( sendInitMessage, 5000 );
 	};
 
 	/**
