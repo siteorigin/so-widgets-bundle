@@ -556,7 +556,13 @@
 					el( 'div', {
 						className: 'so-widget-block-container siteorigin-widget-form-main wp-core-ui',
 						dangerouslySetInnerHTML: { __html: widgetFormHtml },
-						ref: () => {
+						ref: ( formContainer ) => {
+							if ( ! formContainer ) {
+								return;
+							}
+
+							sowbAttachFeaturesDebugPanel( formContainer, props, state );
+
 							sowbSetupWidgetForm(
 								props,
 								state,
@@ -1097,6 +1103,288 @@ const sowbGetBlockForm = ( clientId ) => {
 	return jQuery( document )
 		.find( '[data-block="' + clientId + '"]' )
 		.find( '.siteorigin-widget-form-main' );
+};
+
+const sowbFeaturesDebugVisible = ( element ) => {
+	if ( ! element ) {
+		return false;
+	}
+
+	const ownerWindow = element.ownerDocument && element.ownerDocument.defaultView;
+	const style = ownerWindow && ownerWindow.getComputedStyle ?
+		ownerWindow.getComputedStyle( element ) :
+		null;
+
+	return !! (
+		element.offsetWidth ||
+		element.offsetHeight ||
+		element.getClientRects().length
+	) && (
+		! style ||
+		(
+			style.display !== 'none' &&
+			style.visibility !== 'hidden'
+		)
+	);
+};
+
+const sowbFeaturesDebugCollect = ( formContainer, props, state ) => {
+	const ownerDocument = formContainer.ownerDocument || document;
+	const ownerWindow = ownerDocument.defaultView || window;
+	const form = formContainer.querySelector( '.siteorigin-widget-form.siteorigin-widget-form-main' );
+	const featuresField = formContainer.querySelector( '.siteorigin-widget-field-features' );
+	const repeaterItems = Array.from(
+		formContainer.querySelectorAll( '.siteorigin-widget-field-features .siteorigin-widget-field-repeater-item' )
+	);
+	const tinymceFields = Array.from(
+		formContainer.querySelectorAll( '.siteorigin-widget-field-type-tinymce' )
+	);
+	const textareas = Array.from(
+		formContainer.querySelectorAll( '.siteorigin-widget-field-type-tinymce textarea.wp-editor-area' )
+	);
+
+	return {
+		label: 'SOWB Features block debug',
+		clientId: props.clientId,
+		widgetClass: props.widget && props.widget.class,
+		state: {
+			editing: state.editing,
+			loadingForm: state.loadingForm,
+			formInitialized: state.formInitialized,
+			previewInitialized: state.previewInitialized,
+			widgetFormHtmlLength: state.widgetFormHtml ? state.widgetFormHtml.length : 0,
+			widgetSettingsChanged: state.widgetSettingsChanged,
+		},
+		attrs: {
+			hasWidgetData: !! ( props.attributes && props.attributes.widgetData ),
+			widgetDataKeys: props.attributes && props.attributes.widgetData ?
+				Object.keys( props.attributes.widgetData ) :
+				[],
+			widgetDataFeaturesCount: props.attributes &&
+				props.attributes.widgetData &&
+				Array.isArray( props.attributes.widgetData.features ) ?
+				props.attributes.widgetData.features.length :
+				null,
+		},
+		globals: {
+			hasJQuery: !! ownerWindow.jQuery,
+			hasSowbForms: !! ownerWindow.sowbForms,
+			hasTinyMCE: !! ownerWindow.tinymce,
+			hasWpEditor: !! (
+				ownerWindow.wp &&
+				ownerWindow.wp.editor &&
+				typeof ownerWindow.wp.editor.initialize === 'function'
+			),
+			hasOldEditor: !! (
+				ownerWindow.wp &&
+				ownerWindow.wp.oldEditor &&
+				typeof ownerWindow.wp.oldEditor.initialize === 'function'
+			),
+		},
+		dom: {
+			containerVisible: sowbFeaturesDebugVisible( formContainer ),
+			formFound: !! form,
+			formDisplay: form ? form.style.display : null,
+			formVisible: sowbFeaturesDebugVisible( form ),
+			featuresFieldFound: !! featuresField,
+			featuresFieldVisible: sowbFeaturesDebugVisible( featuresField ),
+			addButtonCount: formContainer.querySelectorAll(
+				'.siteorigin-widget-field-features .siteorigin-widget-field-repeater-add'
+			).length,
+			addButtonVisible: sowbFeaturesDebugVisible(
+				formContainer.querySelector( '.siteorigin-widget-field-features .siteorigin-widget-field-repeater-add' )
+			),
+			repeaterItemCount: repeaterItems.length,
+			repeaterItems: repeaterItems.slice( 0, 6 ).map( ( item, index ) => {
+				const itemForm = item.querySelector( ':scope > .siteorigin-widget-field-repeater-item-form' );
+
+				return {
+					index,
+					visible: sowbFeaturesDebugVisible( item ),
+					itemFormVisible: sowbFeaturesDebugVisible( itemForm ),
+					tinymceFieldCount: item.querySelectorAll( '.siteorigin-widget-field-type-tinymce' ).length,
+					tinymceIframeCount: item.querySelectorAll( '.siteorigin-widget-field-type-tinymce iframe' ).length,
+				};
+			} ),
+			tinymceFieldCount: tinymceFields.length,
+			tinymceIframeCount: formContainer.querySelectorAll( '.siteorigin-widget-field-type-tinymce iframe' ).length,
+			tinymceFields: tinymceFields.map( ( field, index ) => {
+				const textarea = field.querySelector( 'textarea.wp-editor-area' );
+				const editorId = textarea ? textarea.id : null;
+				const editor = editorId && ownerWindow.tinymce ? ownerWindow.tinymce.get( editorId ) : null;
+
+				return {
+					index,
+					visible: sowbFeaturesDebugVisible( field ),
+					dataInitialized: field.getAttribute( 'data-initialized' ),
+					dataPreInit: field.getAttribute( 'data-pre-init' ),
+					textareaId: editorId,
+					textareaName: textarea ? textarea.name : null,
+					textareaVisible: sowbFeaturesDebugVisible( textarea ),
+					iframeCount: field.querySelectorAll( 'iframe' ).length,
+					editorExists: !! editor,
+					editorInitialized: !! ( editor && editor.initialized ),
+					editorHidden: editor && typeof editor.isHidden === 'function' ? editor.isHidden() : null,
+				};
+			} ),
+			tinymceTextareaNames: textareas.map( ( textarea ) => textarea.name ),
+		},
+		values: {
+			textareaCount: textareas.length,
+			textareaNames: textareas.map( ( textarea ) => textarea.name ),
+			textareaValues: textareas.map( ( textarea, index ) => ( {
+				index,
+				name: textarea.name,
+				length: textarea.value ? textarea.value.length : 0,
+				preview: textarea.value ? textarea.value.slice( 0, 120 ) : '',
+			} ) ),
+		},
+	};
+};
+
+const sowbFeaturesDebugText = ( formContainer, props, state ) => {
+	try {
+		return JSON.stringify(
+			sowbFeaturesDebugCollect( formContainer, props, state ),
+			null,
+			2
+		);
+	} catch ( error ) {
+		return JSON.stringify( {
+			label: 'SOWB Features block debug',
+			error: error && error.message ? error.message : String( error ),
+		}, null, 2 );
+	}
+};
+
+const sowbWriteFeaturesDebugToPlan = ( debugText ) => {
+	if (
+		typeof sowbBlockEditorAdmin === 'undefined' ||
+		! sowbBlockEditorAdmin.ajaxUrl ||
+		! sowbBlockEditorAdmin.featuresDebugNonce ||
+		! debugText
+	) {
+		return;
+	}
+
+	const debugWindow = window.top || window;
+
+	if (
+		debugWindow._sowbFeaturesDebugLastWritten === debugText ||
+		debugWindow._sowbFeaturesDebugWriting === debugText
+	) {
+		return;
+	}
+
+	debugWindow._sowbFeaturesDebugWriting = debugText;
+
+	const body = new URLSearchParams();
+	body.set( 'action', 'sowb_features_debug_write_plan' );
+	body.set( 'nonce', sowbBlockEditorAdmin.featuresDebugNonce );
+	body.set( 'debug', debugText );
+
+	debugWindow.fetch( sowbBlockEditorAdmin.ajaxUrl, {
+		method: 'POST',
+		credentials: 'same-origin',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+		},
+		body: body.toString(),
+	} ).then( ( response ) => {
+		if ( response.ok ) {
+			debugWindow._sowbFeaturesDebugLastWritten = debugText;
+		}
+	} ).catch( ( error ) => {
+		debugWindow._sowbFeaturesDebugWriteError = error && error.message ? error.message : String( error );
+	} ).finally( () => {
+		if ( debugWindow._sowbFeaturesDebugWriting === debugText ) {
+			debugWindow._sowbFeaturesDebugWriting = null;
+		}
+	} );
+};
+
+const sowbAttachFeaturesDebugPanel = ( formContainer, props, state ) => {
+	if (
+		! props ||
+		! props.widget ||
+		props.widget.class !== 'SiteOrigin_Widget_Features_Widget'
+	) {
+		return;
+	}
+
+	try {
+		const debugWindow = window.top || window;
+
+		const refreshDebugOutput = () => {
+			const debugText = sowbFeaturesDebugText( formContainer, props, state );
+			debugWindow.sowbFeaturesDebugText = debugText;
+			return debugText;
+		};
+
+		const writeDebugOutput = () => {
+			const debugText = refreshDebugOutput();
+			sowbWriteFeaturesDebugToPlan( debugText );
+			return debugText;
+		};
+
+		debugWindow.sowbFeaturesDebugRefresh = refreshDebugOutput;
+		debugWindow.sowbFeaturesDebugWritePlan = writeDebugOutput;
+		debugWindow.sowbFeaturesDebugCopy = () => {
+			const debugText = writeDebugOutput();
+
+			if (
+				debugWindow.navigator &&
+				debugWindow.navigator.clipboard &&
+				typeof debugWindow.navigator.clipboard.writeText === 'function'
+			) {
+				return debugWindow.navigator.clipboard.writeText( debugText );
+			}
+
+			return debugText;
+		};
+		debugWindow.sowbFeaturesDebug = () => {
+			try {
+				return sowbFeaturesDebugCollect( formContainer, props, state );
+			} catch ( error ) {
+				return {
+					label: 'SOWB Features block debug',
+					error: error && error.message ? error.message : String( error ),
+				};
+			}
+		};
+
+		writeDebugOutput();
+
+		if ( ! formContainer._sowbFeaturesDebugBound ) {
+			const scheduleDebugWrite = () => {
+				clearTimeout( formContainer._sowbFeaturesDebugTimer );
+				formContainer._sowbFeaturesDebugTimer = setTimeout( writeDebugOutput, 500 );
+			};
+
+			formContainer.addEventListener( 'click', scheduleDebugWrite, true );
+			formContainer.addEventListener( 'input', scheduleDebugWrite, true );
+			formContainer.addEventListener( 'change', scheduleDebugWrite, true );
+
+			if ( typeof MutationObserver !== 'undefined' ) {
+				formContainer._sowbFeaturesDebugObserver = new MutationObserver( scheduleDebugWrite );
+				formContainer._sowbFeaturesDebugObserver.observe( formContainer, {
+					attributes: true,
+					childList: true,
+					subtree: true,
+					attributeFilter: [
+						'class',
+						'data-initialized',
+						'data-pre-init',
+						'style',
+					],
+				} );
+			}
+
+			formContainer._sowbFeaturesDebugBound = true;
+		}
+	} catch ( error ) {
+		// Debug output must never prevent the widget form from rendering.
+	}
 };
 
 const sowbIsDirectWidgetBlock = ( block ) => {

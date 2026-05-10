@@ -28,6 +28,50 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		add_action( 'enqueue_block_assets', array( $this, 'enqueue_widget_block_editor_assets' ) );
 
 		add_action( 'wp_ajax_so_widgets_block_migration_notice_consent', array( $this, 'block_migration_consent' ) );
+		add_action( 'wp_ajax_sowb_features_debug_write_plan', array( $this, 'write_features_debug_to_plan' ) );
+	}
+
+	public function write_features_debug_to_plan() {
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_send_json_error( 'Unauthorized.', 403 );
+		}
+
+		check_ajax_referer( 'sowb_features_debug', 'nonce' );
+
+		$debug = isset( $_POST['debug'] ) ? wp_unslash( $_POST['debug'] ) : '';
+		if ( ! is_string( $debug ) || $debug === '' ) {
+			wp_send_json_error( 'Missing debug data.', 400 );
+		}
+
+		$debug = substr( $debug, 0, 50000 );
+		$plan_file = plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . 'docs/plans/current.md';
+		$contents = file_exists( $plan_file ) ? file_get_contents( $plan_file ) : '';
+		$start_marker = "\n<!-- SOWB_FEATURES_DEBUG_START -->\n";
+		$end_marker = "\n<!-- SOWB_FEATURES_DEBUG_END -->\n";
+		$section = $start_marker .
+			"## Browser Features Debug Snapshot\n\n" .
+			"Auto-written by temporary debug code at `" . gmdate( 'c' ) . "`.\n\n" .
+			"```json\n" . $debug . "\n```\n" .
+			$end_marker;
+
+		$start = strpos( $contents, $start_marker );
+		$end = strpos( $contents, $end_marker );
+
+		if ( $start !== false && $end !== false && $end > $start ) {
+			$contents = substr( $contents, 0, $start ) .
+				$section .
+				substr( $contents, $end + strlen( $end_marker ) );
+		} else {
+			$contents .= "\n" . $section;
+		}
+
+		if ( file_put_contents( $plan_file, $contents ) === false ) {
+			wp_send_json_error( 'Unable to write debug data.', 500 );
+		}
+
+		wp_send_json_success( array(
+			'file' => $plan_file,
+		) );
 	}
 
 	/**
@@ -322,6 +366,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				'widgets' => $this->so_widgets,
 				'restUrl' => esc_url_raw( rest_url() ),
 				'nonce' => wp_create_nonce( 'wp_rest' ),
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'featuresDebugNonce' => wp_create_nonce( 'sowb_features_debug' ),
 				'consent' => $this->hasMigrationConsent,
 				'migrationNotice' => wp_create_nonce( 'so_block_migration_consent' ),
 				'categoryIcon' => plugins_url( 'assets/icon.svg', __FILE__ ),
