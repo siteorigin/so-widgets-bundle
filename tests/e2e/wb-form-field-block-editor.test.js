@@ -189,6 +189,10 @@ const getWidgetBlock = ( admin, blockName ) => {
 	return admin.editor.canvas.locator( `.wp-block[data-type="${ blockName }"]` ).first();
 };
 
+const getMainWidgetForm = ( widget ) => {
+	return widget.locator( '.siteorigin-widget-form.siteorigin-widget-form-main' ).first();
+};
+
 const insertDirectWidgetBlock = async ( admin, blockName ) => {
 	const formRequest = waitForRequestToFinish(
 		admin.page,
@@ -202,7 +206,7 @@ const insertDirectWidgetBlock = async ( admin, blockName ) => {
 	const widget = getWidgetBlock( admin, blockName );
 	await expect( widget ).toBeVisible( { timeout: 20000 } );
 
-	const form = widget.locator( '.siteorigin-widget-form.siteorigin-widget-form-main' );
+	const form = getMainWidgetForm( widget );
 	if ( await form.isVisible().catch( () => false ) ) {
 		return widget;
 	}
@@ -215,9 +219,12 @@ const insertDirectWidgetBlock = async ( admin, blockName ) => {
 
 	await admin.editor.selectBlocks( widget );
 	await widget.click();
-	await switchWidgetMode( admin, widget, 'edit' );
+	const switchedToEdit = await switchWidgetMode( admin, widget, 'edit' );
+	if ( switchedToEdit === false ) {
+		throw new Error( `Unable to switch ${ blockName } to edit mode.` );
+	}
 	await editFormRequest;
-	await form.waitFor( { state: 'visible', timeout: 20000 } );
+	await form.waitFor( { state: 'visible', timeout: 10000 } );
 
 	return widget;
 };
@@ -230,7 +237,7 @@ const reopenSavedWidgetForm = async ( page, admin, blockName ) => {
 	await admin.editor.selectBlocks( widget );
 	await widget.click();
 
-	const form = widget.locator( '.siteorigin-widget-form.siteorigin-widget-form-main' );
+	const form = getMainWidgetForm( widget );
 	if ( await form.isVisible().catch( () => false ) ) {
 		return widget;
 	}
@@ -241,9 +248,12 @@ const reopenSavedWidgetForm = async ( page, admin, blockName ) => {
 		{ timeout: 20000 }
 	).catch( () => null );
 
-	await switchWidgetMode( admin, widget, 'edit' );
+	const switchedToEdit = await switchWidgetMode( admin, widget, 'edit' );
+	if ( switchedToEdit === false ) {
+		throw new Error( `Unable to switch ${ blockName } to edit mode.` );
+	}
 	await formRequest;
-	await form.waitFor( { state: 'visible', timeout: 20000 } );
+	await form.waitFor( { state: 'visible', timeout: 10000 } );
 
 	return widget;
 };
@@ -329,18 +339,29 @@ test(
 
 		try {
 			const widget = await insertDirectWidgetBlock( admin, blockName );
-			const blockState = await findDirectBlockState( page, blockName );
+			const clientId = await widget.getAttribute( 'data-block' );
 
-			expect( blockState ).not.toBeNull();
+			expect( clientId ).toBeTruthy();
 
-			const featuresField = widget.locator( '.siteorigin-widget-field-features' );
-			const addFeatureButton = featuresField.locator( '.siteorigin-widget-field-repeater-add' ).first();
-			await ensureElementVisible( addFeatureButton, 120, 20000 );
-			await addFeatureButton.click( { force: true } );
+			const form = getMainWidgetForm( widget );
+			await expect( form ).toBeVisible( { timeout: 10000 } );
 
-			const featureItem = featuresField
-				.locator( '.siteorigin-widget-field-repeater-items > .siteorigin-widget-field-repeater-item' )
-				.first();
+			const featuresField = form.locator( '> .siteorigin-widget-field-features' );
+			await expect( featuresField ).toBeVisible( { timeout: 10000 } );
+
+			const featureItems = featuresField.locator(
+				'> .siteorigin-widget-field-repeater > .siteorigin-widget-field-repeater-items > .siteorigin-widget-field-repeater-item'
+			);
+			const initialFeatureCount = await featureItems.count();
+			const addFeatureButton = featuresField.locator(
+				'> .siteorigin-widget-field-repeater > .siteorigin-widget-field-repeater-add'
+			);
+			await expect( addFeatureButton ).toBeVisible( { timeout: 10000 } );
+			await addFeatureButton.scrollIntoViewIfNeeded();
+			await addFeatureButton.click();
+			await expect( featureItems ).toHaveCount( initialFeatureCount + 1, { timeout: 10000 } );
+
+			const featureItem = featureItems.nth( initialFeatureCount );
 			await expect( featureItem ).toBeVisible( { timeout: 10000 } );
 
 			const featureItemForm = featureItem.locator( '> .siteorigin-widget-field-repeater-item-form' );
@@ -364,7 +385,7 @@ test(
 			await visualBody.pressSequentially( marker );
 			await expect( visualBody ).toContainText( marker );
 
-			const formSnapshot = await getIframeWidgetFormValues( page, blockState.clientId );
+			const formSnapshot = await getIframeWidgetFormValues( page, clientId );
 			expect( formSnapshot.formCount ).toBeGreaterThan( 0 );
 			expect( formSnapshot.values.features[0].text ).toContain( marker );
 
