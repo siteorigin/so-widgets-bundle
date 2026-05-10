@@ -169,7 +169,7 @@ const getIframeWidgetFormValues = async ( page, clientId ) => {
 
 		const $form = frameJQuery( frameDocument )
 			.find( `[data-block="${ blockClientId }"]` )
-			.find( '.siteorigin-widget-form-main' );
+			.find( '.siteorigin-widget-form.siteorigin-widget-form-main' );
 
 		return {
 			formCount: $form.length,
@@ -197,7 +197,7 @@ const reopenSavedWidgetForm = async ( page, admin, blockName ) => {
 	await admin.editor.selectBlocks( widget );
 	await widget.click();
 
-	const form = widget.locator( '.siteorigin-widget-form-main' );
+	const form = widget.locator( '.siteorigin-widget-form.siteorigin-widget-form-main' );
 	if ( await form.isVisible().catch( () => false ) ) {
 		return widget;
 	}
