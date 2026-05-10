@@ -649,7 +649,11 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		}
 
 		foreach( $blocks as &$block ) {
-			$block = $this->sanitize_blocks( $block, true );
+			$block = $this->sanitize_blocks( $block );
+
+			if ( is_wp_error( $block ) ) {
+				return $block;
+			}
 		}
 		$prepared_post->post_content = serialize_blocks( $blocks );
 
@@ -658,7 +662,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 	public function sanitize_blocks( $block ) {
 		if ( is_wp_error( $block ) ) {
-			return rest_ensure_response( $block );
+			return $block;
 		}
 
 		if (
@@ -666,14 +670,24 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			strpos( $block['blockName'], 'sowb/' ) === 0
 		) {
 			$block = $this->sanitize_block( $block );
+
+			if ( is_wp_error( $block ) ) {
+				return $block;
+			}
 		}
 
 		if (
-			is_array( $block['innerBlocks'] ) &&
-			! empty( $block['innerBlocks'] )
+			! empty( $block['innerBlocks'] ) &&
+			is_array( $block['innerBlocks'] )
 		) {
 			foreach( $block['innerBlocks'] as $i => $inner ) {
-				$block['innerBlocks'][$i] = $this->sanitize_blocks( $inner );
+				$inner = $this->sanitize_blocks( $inner );
+
+				if ( is_wp_error( $inner ) ) {
+					return $inner;
+				}
+
+				$block['innerBlocks'][$i] = $inner;
 			}
 		}
 
@@ -690,7 +704,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		$rendered_widget = $this->get_widget_preview( $block['attrs'], false );
 		if ( is_wp_error( $rendered_widget ) ) {
-			return rest_ensure_response( $rendered_widget );
+			return $rendered_widget;
 		}
 
 		if ( empty( $rendered_widget ) ) {
