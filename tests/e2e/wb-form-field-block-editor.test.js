@@ -202,6 +202,23 @@ const insertDirectWidgetBlock = async ( admin, blockName ) => {
 	const widget = getWidgetBlock( admin, blockName );
 	await expect( widget ).toBeVisible( { timeout: 20000 } );
 
+	const form = widget.locator( '.siteorigin-widget-form.siteorigin-widget-form-main' );
+	if ( await form.isVisible().catch( () => false ) ) {
+		return widget;
+	}
+
+	const editFormRequest = admin.page.waitForResponse(
+		( response ) => response.url().includes( '/wp-json/sowb/v1/widgets/forms' ) &&
+			response.status() === 200,
+		{ timeout: 20000 }
+	).catch( () => null );
+
+	await admin.editor.selectBlocks( widget );
+	await widget.click();
+	await switchWidgetMode( admin, widget, 'edit' );
+	await editFormRequest;
+	await form.waitFor( { state: 'visible', timeout: 20000 } );
+
 	return widget;
 };
 
