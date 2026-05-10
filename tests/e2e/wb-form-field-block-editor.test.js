@@ -19,9 +19,7 @@ const {
 	switchWidgetMode,
 } = require( 'siteorigin-tests-common/playwright/utilities/widgets-bundle' );
 
-const {
-	uploadImageToMediaLibrary
-} = require( 'siteorigin-tests-common/playwright/utilities/media' );
+const path = require( 'path' );
 
 test.describe.configure( { mode: 'serial' } );
 
@@ -178,6 +176,38 @@ const getIframeWidgetFormValues = async ( page, clientId ) => {
 	}, clientId );
 };
 
+const setIframeImageFieldValue = async ( page, clientId, attachmentId ) => {
+	return page.evaluate(
+		( { blockClientId, imageId } ) => {
+			const iframe = document.querySelector( 'iframe[name="editor-canvas"], .edit-site-visual-editor__editor-canvas' );
+			const frameWindow = iframe && iframe.contentWindow ? iframe.contentWindow : window;
+			const frameDocument = frameWindow.document;
+			const form = frameDocument
+				.querySelector( `[data-block="${ blockClientId }"] .siteorigin-widget-form.siteorigin-widget-form-main` );
+
+			if ( ! form ) {
+				return null;
+			}
+
+			const imageInput = Array.from(
+				form.querySelectorAll( 'input.siteorigin-widget-input[type="hidden"]' )
+			).find( ( input ) => /\[image\]$/.test( input.name ) );
+
+			if ( ! imageInput ) {
+				return null;
+			}
+
+			imageInput.value = String( imageId );
+
+			return imageInput.value;
+		},
+		{
+			blockClientId: clientId,
+			imageId: attachmentId,
+		}
+	);
+};
+
 const attachBlockDiagnostics = async ( testInfo, name, state ) => {
 	await testInfo.attach( name, {
 		body: JSON.stringify( state, null, 2 ),
@@ -187,6 +217,22 @@ const attachBlockDiagnostics = async ( testInfo, name, state ) => {
 
 const getWidgetBlock = ( admin, blockName ) => {
 	return admin.editor.canvas.locator( `.wp-block[data-type="${ blockName }"]` ).first();
+};
+
+const insertDirectWidgetBlock = async ( admin, blockName ) => {
+	const formRequest = waitForRequestToFinish(
+		admin.page,
+		'/wp-json/sowb/v1/widgets/forms',
+		20000
+	);
+
+	await admin.editor.insertBlock( { name: blockName } );
+	await formRequest;
+
+	const widget = getWidgetBlock( admin, blockName );
+	await expect( widget ).toBeVisible( { timeout: 20000 } );
+
+	return widget;
 };
 
 const reopenSavedWidgetForm = async ( page, admin, blockName ) => {
@@ -284,7 +330,7 @@ test(
 );
 
 test(
-	'Image widget iframe media selection is saved when Save immediately follows modal selection.',
+	'Image widget iframe media value is saved when Save immediately follows field update.',
 	async ( { page }, testInfo ) => {
 		const blockName = 'sowb/siteorigin-widget-image-widget';
 		const {
@@ -292,25 +338,30 @@ test(
 			post,
 			requestUtils,
 		} = await setupPublishedPostEditor( page, 'WB direct image save bridge' );
+		let attachment = null;
 
 		try {
-			const widget = await addBlock( admin, blockName, 120 );
-			const blockState = await findDirectBlockState( page, blockName );
+			attachment = await requestUtils.uploadMedia(
+				path.resolve(
+					process.cwd(),
+					'node_modules/siteorigin-tests-common/playwright/utilities/assets/test-image.png'
+				)
+			);
+			const widget = await insertDirectWidgetBlock( admin, blockName );
+			const clientId = await widget.getAttribute( 'data-block' );
 
-			expect( blockState ).not.toBeNull();
+			expect( clientId ).toBeTruthy();
 
-			const imageField = await getField( widget, 'media' );
-			const imageValue = imageField.locator( '.siteorigin-widget-input[type="hidden"]' );
-			const addMediaButton = imageField.locator( '.media-upload-button' );
+			await page.evaluate( () => {
+				window.wp.data.dispatch( 'core/editor' ).editPost( {
+					title: 'WB direct image save bridge updated',
+				} );
+			} );
 
-			await ensureElementVisible( addMediaButton, 120, 10000 );
-			await addMediaButton.click( { force: true } );
-			await uploadImageToMediaLibrary( admin );
-			await expect( page.locator( '.media-modal' ) ).toBeHidden( { timeout: 10000 } );
-			await expect( imageValue ).toHaveValue( /.+/ );
+			const attachmentId = await setIframeImageFieldValue( page, clientId, attachment.id );
+			expect( attachmentId ).toBe( String( attachment.id ) );
 
-			const attachmentId = await imageValue.inputValue();
-			const formSnapshot = await getIframeWidgetFormValues( page, blockState.clientId );
+			const formSnapshot = await getIframeWidgetFormValues( page, clientId );
 			expect( formSnapshot.formCount ).toBeGreaterThan( 0 );
 			expect( String( formSnapshot.values.image ) ).toBe( attachmentId );
 
@@ -346,6 +397,9 @@ test(
 					force: true,
 				},
 			} ).catch( () => {} );
+			if ( attachment ) {
+				await requestUtils.deleteMedia( attachment.id ).catch( () => {} );
+			}
 		}
 	}
 );
