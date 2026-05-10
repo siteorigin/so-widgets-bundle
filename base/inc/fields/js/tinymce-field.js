@@ -259,6 +259,7 @@
 
 		// If the field is visible, initialize the TinyMCE editor immediately.
 		if ( $field.is( ':visible' ) ) {
+			$field.removeAttr( 'data-pre-init' );
 			setupTinyMCEField( $field );
 			return;
 		}
@@ -272,8 +273,18 @@
 		$field
 			.attr( 'data-pre-init', true )
 			.one( 'sowsetupformfield', () => {
+				$field.removeAttr( 'data-pre-init' );
 				setupTinyMCEField( $field );
 			} );
+	};
+
+	const bindTinyMCEFieldInitializer = function() {
+		if ( $( document ).data( 'sowb-tinymce-field-initializer-bound' ) ) {
+			return;
+		}
+
+		$( document ).data( 'sowb-tinymce-field-initializer-bound', true );
+		$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-tinymce', setupTinyMCEFieldInitializer );
 	};
 
 	/**
@@ -293,7 +304,7 @@
 		}
 
 		$form.find( '.siteorigin-widget-field-type-tinymce' ).each( function() {
-			$( this ).removeAttr( 'data-initialized' );
+			$( this ).removeAttr( 'data-initialized data-pre-init' );
 			setupTinyMCEField( $( this ) );
 		} );
 	};
@@ -307,7 +318,7 @@
 			pagenow !== 'site-editor'
 		)
 	) {
-		$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-tinymce', setupTinyMCEFieldInitializer );
+		bindTinyMCEFieldInitializer();
 	}
 
 	$( document ).on( 'sortstop', sortStopEvent );
@@ -315,6 +326,8 @@
 	// Add support for the Site Editor.
 	window.addEventListener( 'message', function( e ) {
 		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
+			bindTinyMCEFieldInitializer();
+
 			$( '.siteorigin-widget-field-type-tinymce' ).each( function() {
 				const $field = $( this );
 
@@ -322,7 +335,7 @@
 					$field.attr( 'data-initialized' ) &&
 					$field.find( 'iframe' ).length === 0
 				) {
-					$field.removeAttr( 'data-initialized' );
+					$field.removeAttr( 'data-initialized data-pre-init' );
 				}
 
 				setupTinyMCEFieldInitializer.call( this );
