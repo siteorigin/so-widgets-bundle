@@ -397,6 +397,7 @@
 
 		const isMountedRef = element.useRef( true );
 		const activeRequestRef = element.useRef( null );
+		const debugPanelRef = element.useRef( null );
 
 		// Ensure widgetClass attribute is set once (was done in constructor).
 		element.useEffect( () => {
@@ -501,6 +502,31 @@
 			// or when the editing flag flips. Using props.attributes.widgetData and state.editing.
 		}, [ props.attributes.widgetData, state.editing ] );
 
+		element.useEffect( () => {
+			if ( ! sowbShouldShowWidgetDebug( props ) ) {
+				return;
+			}
+
+			const updateDebugPanel = () => {
+				if ( debugPanelRef.current ) {
+					debugPanelRef.current.textContent = sowbGetWidgetDebugText( props, state );
+				}
+			};
+
+			updateDebugPanel();
+			const debugTimer = setInterval( updateDebugPanel, 1000 );
+
+			return () => clearInterval( debugTimer );
+		}, [
+			props.clientId,
+			props.attributes.widgetData,
+			state.editing,
+			state.formInitialized,
+			state.loadingForm,
+			state.previewInitialized,
+			state.widgetFormHtml,
+		] );
+
 		// Use block props hook to provide wrapper attributes/classes for API v3.
 		const blockProps = blockEditor && blockEditor.useBlockProps ? blockEditor.useBlockProps() : {};
 
@@ -513,11 +539,13 @@
 			previewInitialized
 		} = state;
 		const { attributes } = props;
+		const debugPanel = sowbRenderWidgetDebugPanel( props, debugPanelRef );
 
 		return el(
 			'div',
 			blockProps,
 			editing || ! attributes.widgetData ? [
+				debugPanel,
 				!! widgetFormHtml && el(
 					BlockControls,
 					{ key: 'controls' },
@@ -574,6 +602,7 @@
 					} )
 				)
 			] : [
+				debugPanel,
 				el(
 					BlockControls,
 					{ key: 'controls' },
@@ -1097,6 +1126,243 @@ const sowbGetBlockForm = ( clientId ) => {
 	return jQuery( document )
 		.find( '[data-block="' + clientId + '"]' )
 		.find( '.siteorigin-widget-form-main' );
+};
+
+const sowbShouldShowWidgetDebug = ( props ) => {
+	return props &&
+		props.widget &&
+		props.widget.class === 'SiteOrigin_Widget_Features_Widget';
+};
+
+const sowbIsDebugElementVisible = ( element ) => {
+	if ( ! element ) {
+		return false;
+	}
+
+	const ownerWindow = element.ownerDocument && element.ownerDocument.defaultView;
+	const style = ownerWindow && ownerWindow.getComputedStyle ?
+		ownerWindow.getComputedStyle( element ) :
+		null;
+
+	return !! (
+		element.offsetWidth ||
+		element.offsetHeight ||
+		element.getClientRects().length
+	) && (
+		! style ||
+		(
+			style.display !== 'none' &&
+			style.visibility !== 'hidden'
+		)
+	);
+};
+
+const sowbSummarizeWidgetValuesForDebug = ( values ) => {
+	if ( ! values || typeof values !== 'object' ) {
+		return values;
+	}
+
+	const summary = {
+		keys: Object.keys( values ),
+	};
+
+	if ( Array.isArray( values.features ) ) {
+		summary.features = values.features.map( ( feature, index ) => ( {
+			index,
+			keys: feature && typeof feature === 'object' ? Object.keys( feature ) : [],
+			textLength: feature && typeof feature.text === 'string' ? feature.text.length : null,
+			textPreview: feature && typeof feature.text === 'string' ? feature.text.slice( 0, 120 ) : null,
+		} ) );
+	}
+
+	return summary;
+};
+
+const sowbCollectWidgetDebug = ( props, state ) => {
+	const frame = sowbGetEditorCanvasFrame();
+	const frameWindow = frame && frame.contentWindow ? frame.contentWindow : window;
+	const frameDocument = frameWindow.document;
+	const frameJQuery = frameWindow.jQuery || jQuery;
+	const $forms = sowbGetBlockForm( props.clientId );
+	const $container = $forms.filter( '.so-widget-block-container' ).first();
+	const $form = $forms.filter( '.siteorigin-widget-form' ).first();
+	const $root = $container.length ? $container : $form;
+	const $featuresField = $root.find( '.siteorigin-widget-field-features' ).first();
+	const $repeaterItems = $featuresField.find( '.siteorigin-widget-field-repeater-item' );
+	const $tinymceFields = $root.find( '.siteorigin-widget-field-type-tinymce' );
+	let formValues = null;
+	let formValuesError = null;
+
+	if (
+		$form.length &&
+		frameWindow.sowbForms &&
+		typeof frameWindow.sowbForms.getWidgetFormValues === 'function'
+	) {
+		try {
+			formValues = frameWindow.sowbForms.getWidgetFormValues( $form );
+		} catch ( error ) {
+			formValuesError = error && error.message ? error.message : String( error );
+		}
+	}
+
+	let selectedClientId = null;
+	let blockState = null;
+
+	if ( window.wp && window.wp.data && window.wp.data.select ) {
+		const blockEditorSelect = window.wp.data.select( 'core/block-editor' );
+
+		selectedClientId = blockEditorSelect.getSelectedBlockClientId();
+		blockState = blockEditorSelect.getBlock( props.clientId );
+	}
+
+	return {
+		label: 'SOWB direct Features block debug',
+		copiedAt: new Date().toISOString(),
+		clientId: props.clientId,
+		selectedClientId,
+		widgetClass: props.widget && props.widget.class,
+		state: {
+			editing: state.editing,
+			formInitialized: state.formInitialized,
+			loadingForm: state.loadingForm,
+			loadingWidgetPreview: state.loadingWidgetPreview,
+			previewInitialized: state.previewInitialized,
+			widgetFormHtmlLength: state.widgetFormHtml ? state.widgetFormHtml.length : 0,
+			widgetPreviewHtmlLength: state.widgetPreviewHtml ? state.widgetPreviewHtml.length : 0,
+			widgetSettingsChanged: state.widgetSettingsChanged,
+		},
+		blockAttributes: {
+			hasWidgetData: !! ( props.attributes && props.attributes.widgetData ),
+			widgetDataKeys: props.attributes && props.attributes.widgetData ? Object.keys( props.attributes.widgetData ) : [],
+			widgetDataFeaturesCount: props.attributes &&
+				props.attributes.widgetData &&
+				Array.isArray( props.attributes.widgetData.features ) ?
+				props.attributes.widgetData.features.length :
+				null,
+		},
+		storeBlock: blockState ? {
+			name: blockState.name,
+			isValid: blockState.isValid,
+			hasWidgetData: !! (
+				blockState.attributes &&
+				blockState.attributes.widgetData
+			),
+			widgetDataFeaturesCount: blockState.attributes &&
+				blockState.attributes.widgetData &&
+				Array.isArray( blockState.attributes.widgetData.features ) ?
+				blockState.attributes.widgetData.features.length :
+				null,
+		} : null,
+		iframe: {
+			found: !! frame,
+			src: frame && frame.getAttribute ? frame.getAttribute( 'src' ) : null,
+			hasJQuery: !! frameWindow.jQuery,
+			hasSowbForms: !! frameWindow.sowbForms,
+			hasTinyMCE: !! frameWindow.tinymce,
+			hasWpEditor: !! (
+				frameWindow.wp &&
+				frameWindow.wp.editor &&
+				typeof frameWindow.wp.editor.initialize === 'function'
+			),
+			hasOldEditor: !! (
+				frameWindow.wp &&
+				frameWindow.wp.oldEditor &&
+				typeof frameWindow.wp.oldEditor.initialize === 'function'
+			),
+		},
+		dom: {
+			blockCount: frameJQuery( frameDocument )
+				.find( '[data-block="' + props.clientId + '"]' )
+				.length,
+			formMatchCount: $forms.length,
+			containerFound: !! $container.length,
+			containerVisible: sowbIsDebugElementVisible( $container.get( 0 ) ),
+			formFound: !! $form.length,
+			formDisplay: $form.get( 0 ) ? $form.get( 0 ).style.display : null,
+			formVisible: sowbIsDebugElementVisible( $form.get( 0 ) ),
+			featuresFieldFound: !! $featuresField.length,
+			featuresFieldVisible: sowbIsDebugElementVisible( $featuresField.get( 0 ) ),
+			addButtonCount: $featuresField.find( '.siteorigin-widget-field-repeater-add' ).length,
+			addButtonVisible: sowbIsDebugElementVisible(
+				$featuresField.find( '.siteorigin-widget-field-repeater-add' ).get( 0 )
+			),
+			repeaterItemCount: $repeaterItems.length,
+			repeaterItems: $repeaterItems.toArray().slice( 0, 5 ).map( ( item, index ) => {
+				const $item = frameJQuery( item );
+				const $itemForm = $item.find( '> .siteorigin-widget-field-repeater-item-form' );
+
+				return {
+					index,
+					visible: sowbIsDebugElementVisible( item ),
+					itemFormVisible: sowbIsDebugElementVisible( $itemForm.get( 0 ) ),
+					tinymceFieldCount: $item.find( '.siteorigin-widget-field-type-tinymce' ).length,
+					iframeCount: $item.find( '.siteorigin-widget-field-type-tinymce iframe' ).length,
+				};
+			} ),
+			tinymceFieldCount: $tinymceFields.length,
+			tinymceFields: $tinymceFields.toArray().map( ( field, index ) => {
+				const $field = frameJQuery( field );
+				const textarea = $field.find( 'textarea.wp-editor-area' ).get( 0 );
+				const editorId = textarea ? textarea.id : null;
+				const editor = editorId && frameWindow.tinymce ? frameWindow.tinymce.get( editorId ) : null;
+
+				return {
+					index,
+					visible: sowbIsDebugElementVisible( field ),
+					dataInitialized: $field.attr( 'data-initialized' ) || null,
+					dataPreInit: $field.attr( 'data-pre-init' ) || null,
+					textareaId: editorId,
+					textareaName: textarea ? textarea.name : null,
+					textareaVisible: sowbIsDebugElementVisible( textarea ),
+					iframeCount: $field.find( 'iframe' ).length,
+					editorExists: !! editor,
+					editorInitialized: !! ( editor && editor.initialized ),
+					editorHidden: editor && typeof editor.isHidden === 'function' ? editor.isHidden() : null,
+				};
+			} ),
+		},
+		formValues: sowbSummarizeWidgetValuesForDebug( formValues ),
+		formValuesError,
+	};
+};
+
+const sowbGetWidgetDebugText = ( props, state ) => {
+	try {
+		return JSON.stringify( sowbCollectWidgetDebug( props, state ), null, 2 );
+	} catch ( error ) {
+		return JSON.stringify( {
+			label: 'SOWB direct Features block debug',
+			error: error && error.message ? error.message : String( error ),
+		}, null, 2 );
+	}
+};
+
+const sowbRenderWidgetDebugPanel = ( props, debugPanelRef ) => {
+	if ( ! sowbShouldShowWidgetDebug( props ) ) {
+		return null;
+	}
+
+	return el(
+		'pre',
+		{
+			key: 'sowb-debug-panel',
+			ref: debugPanelRef,
+			style: {
+				background: '#fff8c5',
+				border: '2px solid #996800',
+				color: '#1d2327',
+				fontFamily: 'monospace',
+				fontSize: '12px',
+				lineHeight: '1.4',
+				margin: '0 0 12px',
+				maxHeight: '360px',
+				overflow: 'auto',
+				padding: '12px',
+				whiteSpace: 'pre-wrap',
+			},
+		},
+		'Collecting SOWB debug...'
+	);
 };
 
 const sowbIsDirectWidgetBlock = ( block ) => {
