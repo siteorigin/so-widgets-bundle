@@ -306,6 +306,15 @@
 	window.addEventListener( 'message', function( e ) {
 		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
 			$( '.siteorigin-widget-field-type-tinymce' ).each( function() {
+				const $field = $( this );
+
+				if (
+					$field.attr( 'data-initialized' ) &&
+					$field.find( 'iframe' ).length === 0
+				) {
+					$field.removeAttr( 'data-initialized' );
+				}
+
 				setupTinyMCEFieldInitializer.call( this );
 			} );
 
