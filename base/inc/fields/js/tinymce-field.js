@@ -203,16 +203,14 @@
 			window.tinymce.EditorManager.overrideDefaults( { base_url: settings.baseURL, suffix: settings.suffix } );
 		}
 
-		// Wait for textarea to be visible before initialization.
-		if ( $textarea.is( ':visible' ) ) {
+		// In visual mode WordPress can hide the textarea while the field
+		// itself is visible. Use the field visibility as the initialization gate.
+		if ( $field.is( ':visible' ) ) {
 			wpEditor.initialize( id, settings );
 		} else {
-			const intervalId = setInterval( function() {
-				if ( $textarea.is( ':visible' ) ) {
-					wpEditor.initialize( id, settings );
-					clearInterval( intervalId );
-				}
-			}, 500 );
+			$field.removeAttr( 'data-initialized' );
+			setupTinyMCEFieldInitializer.call( $field.get( 0 ) );
+			return;
 		}
 
 		$field.on( 'click', function( event ) {
