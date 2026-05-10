@@ -997,6 +997,149 @@ const sowbGetBlockForm = ( clientId ) => {
 		.find( '.siteorigin-widget-form-main' );
 };
 
+const sowbIsDirectWidgetBlock = ( block ) => {
+	return block &&
+		typeof block.name === 'string' &&
+		block.name.indexOf( 'sowb/' ) === 0 &&
+		block.name !== 'sowb/widget-block' &&
+		block.isValid !== false;
+};
+
+const sowbFindDirectWidgetBlocks = ( blocks ) => {
+	return blocks.reduce( ( foundBlocks, block ) => {
+		if ( sowbIsDirectWidgetBlock( block ) ) {
+			foundBlocks.push( block );
+		}
+
+		if ( block.innerBlocks && block.innerBlocks.length > 0 ) {
+			foundBlocks.push( ...sowbFindDirectWidgetBlocks( block.innerBlocks ) );
+		}
+
+		return foundBlocks;
+	}, [] );
+};
+
+const sowbHasWidgetDataSnapshot = ( widgetData ) => {
+	return widgetData &&
+		typeof widgetData === 'object' &&
+		! Array.isArray( widgetData ) &&
+		Object.keys( widgetData ).length > 0;
+};
+
+const sowbGetBlockFormSnapshot = async ( $form ) => {
+	if ( ! $form || $form.length === 0 ) {
+		return null;
+	}
+
+	const formWindow = sowbGetElementWindow( $form[0] );
+	const formJQuery = formWindow.jQuery || jQuery;
+	const formForms = formWindow.sowbForms || sowbForms;
+	const $ownerForm = formJQuery( $form[0] );
+
+	if (
+		formForms &&
+		typeof formForms.getWidgetFormSnapshot === 'function'
+	) {
+		return await formForms.getWidgetFormSnapshot( $ownerForm, {
+			awaitAsync: true,
+			triggerChange: false,
+		} );
+	}
+
+	if (
+		formForms &&
+		typeof formForms.getWidgetFormValues === 'function'
+	) {
+		return formForms.getWidgetFormValues( $ownerForm );
+	}
+
+	return null;
+};
+
+const sowbCloneBlocksWithWidgetData = ( blocks, widgetDataByClientId ) => {
+	return blocks.map( ( block ) => {
+		const clonedBlock = {
+			...block,
+			attributes: {
+				...( block.attributes || {} ),
+			},
+			innerBlocks: block.innerBlocks ?
+				sowbCloneBlocksWithWidgetData( block.innerBlocks, widgetDataByClientId ) :
+				[],
+		};
+
+		if ( Object.prototype.hasOwnProperty.call( widgetDataByClientId, block.clientId ) ) {
+			clonedBlock.attributes.widgetData = widgetDataByClientId[ block.clientId ];
+		}
+
+		return clonedBlock;
+	} );
+};
+
+wp.hooks.addFilter(
+	'editor.preSavePost',
+	'sowb/direct-widget-block-save-bridge',
+	async function( edits, options ) {
+		const blockEditorSelect = wp.data.select( 'core/block-editor' );
+		const blocks = blockEditorSelect.getBlocks();
+		const directBlocks = sowbFindDirectWidgetBlocks( blocks );
+
+		if ( directBlocks.length === 0 ) {
+			return edits;
+		}
+
+		const widgetDataByClientId = {};
+
+		for ( const block of directBlocks ) {
+			const $form = sowbGetBlockForm( block.clientId );
+
+			if ( $form.length === 0 ) {
+				continue;
+			}
+
+			const widgetData = await sowbGetBlockFormSnapshot( $form );
+
+			if ( ! sowbHasWidgetDataSnapshot( widgetData ) ) {
+				continue;
+			}
+
+			widgetDataByClientId[ block.clientId ] = widgetData;
+		}
+
+		const clientIds = Object.keys( widgetDataByClientId );
+		if ( clientIds.length === 0 ) {
+			return edits;
+		}
+
+		const clonedBlocks = sowbCloneBlocksWithWidgetData( blocks, widgetDataByClientId );
+		const nextEdits = {
+			...( edits || {} ),
+			content: wp.blocks.serialize( clonedBlocks ),
+		};
+		const attrsByClientId = clientIds.reduce( ( attributes, clientId ) => {
+			attributes[ clientId ] = {
+				widgetData: widgetDataByClientId[ clientId ],
+			};
+
+			return attributes;
+		}, {} );
+		const blockEditorDispatch = wp.data.dispatch( 'core/block-editor' );
+
+		if (
+			blockEditorDispatch &&
+			typeof blockEditorDispatch.updateBlockAttributes === 'function'
+		) {
+			blockEditorDispatch.updateBlockAttributes(
+				clientIds,
+				attrsByClientId,
+				{ uniqueByBlock: true }
+			);
+		}
+
+		return nextEdits;
+	}
+);
+
 const sowbCanvasCloneElements = [
 	// WP Scripts and assets.
 	'#jquery-core-js',
