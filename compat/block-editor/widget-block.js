@@ -986,6 +986,8 @@ const sowbEnsureIframeOldEditorApi = ( frame ) => {
 		return;
 	}
 
+	sowbEnsureIframeEditorGlobals( frame );
+
 	const iframeWindow = frame.contentWindow;
 	if (
 		iframeWindow.wp &&
@@ -1032,6 +1034,36 @@ const sowbEnsureIframeOldEditorApi = ( frame ) => {
 	};
 
 	frame.contentDocument.body.appendChild( retryScript );
+};
+
+const sowbEnsureIframeEditorGlobals = ( frame ) => {
+	if (
+		! frame ||
+		! frame.contentWindow
+	) {
+		return;
+	}
+
+	const iframeWindow = frame.contentWindow;
+	const topWindow = window.top || window;
+	const globals = [
+		'ajaxurl',
+		'userSettings',
+		'wpCookies',
+		'getUserSetting',
+		'setUserSetting',
+		'deleteUserSetting',
+		'getAllUserSettings',
+	];
+
+	for ( const globalName of globals ) {
+		if (
+			typeof iframeWindow[ globalName ] === 'undefined' &&
+			typeof topWindow[ globalName ] !== 'undefined'
+		) {
+			iframeWindow[ globalName ] = topWindow[ globalName ];
+		}
+	}
 };
 
 /**
@@ -1347,6 +1379,7 @@ const sowbMaybeSetupSiteEditorAssets = () => {
 	}
 
 	sowbSiteEditorAssetsSetup.add( frame );
+	sowbEnsureIframeEditorGlobals( frame );
 
 	// Clone elements to the canvas.
 	sowbCloneElementsToCanvas( $canvasBody );
