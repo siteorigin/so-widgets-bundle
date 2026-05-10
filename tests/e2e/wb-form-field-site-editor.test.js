@@ -26,6 +26,22 @@ const {
 	uploadImageToMediaLibrary
 } = require( 'siteorigin-tests-common/playwright/utilities/media' );
 
+const wp7TextInputRuleSelector = [
+	'input[type=date]',
+	'input[type=datetime-local]',
+	'input[type=datetime]',
+	'input[type=email]',
+	'input[type=month]',
+	'input[type=number]',
+	'input[type=password]',
+	'input[type=search]',
+	'input[type=tel]',
+	'input[type=text]',
+	'input[type=time]',
+	'input[type=url]',
+	'input[type=week]',
+].join( ',' );
+
 /**
  * Prepares the Site Editor test environment and inserts the specified block.
  *
@@ -59,6 +75,26 @@ const testPrep = async( page, blockName ) => {
 		widget,
 		offset,
 	};
+};
+
+const injectWp7TextInputRule = async( admin ) => {
+	await admin.editor.canvas.locator( 'body' ).evaluate(
+		( body, selector ) => {
+			const styleId = 'sowb-wp7-text-input-rule';
+			const doc = body.ownerDocument;
+			const previousStyle = doc.getElementById( styleId );
+
+			if ( previousStyle ) {
+				previousStyle.remove();
+			}
+
+			const style = doc.createElement( 'style' );
+			style.id = styleId;
+			style.textContent = `${ selector }{padding:0 12px;min-height:40px}`;
+			doc.head.appendChild( style );
+		},
+		wp7TextInputRuleSelector
+	);
 };
 
 /**
@@ -180,6 +216,46 @@ test(
 		const linkInput = linkField.locator( '.siteorigin-widget-input' );
 		await ensureElementVisible( linkInput, offset );
 		await expect( linkInput ).toHaveValue( /.+/ );
+	}
+);
+
+/**
+ * Validates that SiteOrigin widget fields keep compact heights when WordPress 7
+ * text input sizing is present in the Site Editor iframe.
+ *
+ * @param {Object} page The Playwright page object.
+ */
+test(
+	'WP7 input sizing keeps Features widget fields compact.',
+	async ( { page } ) => {
+		const {
+			admin,
+			offset,
+			widget
+		} = await testPrep(
+			page,
+			'sowb/siteorigin-widget-features-widget'
+		);
+
+		const perRowInput = widget.locator( '.siteorigin-widget-field-per_row input[type="number"].siteorigin-widget-input-number' );
+		const featureSpacingInputs = widget.locator( '.siteorigin-widget-field-feature_spacing input[type="text"].sow-multi-measurement-input' );
+
+		await ensureElementVisible( perRowInput, offset );
+		await expect( featureSpacingInputs ).toHaveCount( 2 );
+		await ensureElementVisible( featureSpacingInputs.first(), offset );
+
+		await injectWp7TextInputRule( admin );
+
+		await expect( perRowInput ).toHaveCSS( 'min-height', '30px' );
+		await expect( perRowInput ).toHaveCSS( 'padding-left', '8px' );
+		await expect( perRowInput ).toHaveCSS( 'padding-right', '8px' );
+		await expect( perRowInput ).toHaveCSS( 'vertical-align', 'middle' );
+
+		for ( let i = 0; i < 2; i++ ) {
+			const featureSpacingInput = featureSpacingInputs.nth( i );
+			await expect( featureSpacingInput ).toHaveCSS( 'height', '28px' );
+			await expect( featureSpacingInput ).toHaveCSS( 'min-height', '28px' );
+		}
 	}
 );
 
