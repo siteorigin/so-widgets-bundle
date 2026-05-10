@@ -331,16 +331,24 @@
 			return;
 		}
 
-		try {
-			const iframeWindow = frame.contentWindow;
-			if ( iframeWindow ) {
+		const sendInitMessage = () => {
+			try {
+				const iframeWindow = frame.contentWindow;
+				if ( ! iframeWindow ) {
+					return;
+				}
+
 				iframeWindow.postMessage( {
 					action: 'sowbBlockFormInit'
 				}, '*' );
+			} catch ( e ) {
+				console.error( 'SiteOrigin Widgets: Failed to send postMessage to iframe:', e );
 			}
-		} catch ( e ) {
-			console.error( 'SiteOrigin Widgets: Failed to send postMessage to iframe:', e );
-		}
+		};
+
+		sendInitMessage();
+		setTimeout( sendInitMessage, 250 );
+		setTimeout( sendInitMessage, 1000 );
 	};
 
 	/**
@@ -1145,6 +1153,10 @@ const sowbCanvasCloneElements = [
 	'#jquery-core-js',
 	'#jquery-migrate-js',
 	'#underscore-js',
+	'#utils-js',
+	'#quicktags-js-extra',
+	'#quicktags-js',
+	'#editor-js',
 	'#editor-js-after',
 	'#wp-tinymce-js',
 	'#wp-block-library-js-before',
