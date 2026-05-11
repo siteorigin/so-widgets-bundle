@@ -3,6 +3,232 @@
 ( function( $ ) {
 
 	let mediaFrameOpen = false;
+	const sowbTinyMCEEventNamespace = '.sowTinymce';
+
+	/**
+	 * Filters a jQuery collection to only those TinyMCE fields that are eligible
+	 * for editor initialization.
+	 *
+	 * Excludes fields that live inside a repeater item template
+	 * (`.siteorigin-widget-field-repeater-item-html`) and fields whose textarea ID
+	 * contains `_id_`, which indicates a placeholder that has not yet been cloned
+	 * into a real repeater row.
+	 *
+	 * @param {jQuery|Array} $fields - jQuery collection or array of field elements.
+	 *
+	 * @returns {jQuery} Filtered jQuery collection of eligible TinyMCE field elements.
+	 */
+	const getEligibleTinyMCEFields = function( $fields ) {
+		const $collection = $fields && $fields.jquery ?
+			$fields :
+			$( $fields || [] );
+
+		return $collection.filter( function() {
+			const $field = $( this );
+			const $textarea = $field.find( '.siteorigin-widget-tinymce-container textarea' ).first();
+			const textareaId = $textarea.attr( 'id' ) || '';
+
+			if ( $field.closest( '.siteorigin-widget-field-repeater-item-html' ).length ) {
+				return false;
+			}
+
+			if ( textareaId.indexOf( '_id_' ) !== -1 ) {
+				return false;
+			}
+
+			return true;
+		} );
+	};
+
+	/**
+	 * Escapes a string for safe use as a CSS selector value.
+	 *
+	 * Uses the native `CSS.escape` when available and falls back to a manual
+	 * regex replacement that escapes all CSS special characters.
+	 *
+	 * @param {string} value - The raw string to escape.
+	 *
+	 * @returns {string} The escaped string, or an empty string if value is not a string.
+	 */
+	const escapeSelectorValue = function( value ) {
+		if ( typeof value !== 'string' ) {
+			return '';
+		}
+
+		if ( window.CSS && typeof window.CSS.escape === 'function' ) {
+			return window.CSS.escape( value );
+		}
+
+		return value.replace( /([ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g, '\\$1' );
+	};
+
+	/**
+	 * Selects the best matching widget form from a set of candidates.
+	 *
+	 * Scores each form on multiple signals and returns the highest-scoring one.
+	 * Scoring weights (highest to lowest priority):
+	 *   - Connected to the live document       +10000
+	 *   - Visible (not hidden by CSS)          +5000
+	 *   - Hidden by aria-hidden               -2500
+	 *   - Inside a repeater item template     -5000
+	 *   - TinyMCE field count                 ×100 per field
+	 *   - Total field count                   +1 per field
+	 *   - DOM order tie-breaker               -index/1000 (earlier wins)
+	 *
+	 * @param {jQuery} $forms - jQuery collection of candidate form elements.
+	 *
+	 * @returns {jQuery} Single-element jQuery collection containing the best form,
+	 *                   or an empty jQuery object if no forms are provided.
+	 */
+	const selectBestFormInstance = function( $forms ) {
+		if ( ! $forms || ! $forms.length ) {
+			return $( [] );
+		}
+
+		if ( $forms.length === 1 ) {
+			return $forms;
+		}
+
+		let bestScore = Number.NEGATIVE_INFINITY;
+		let bestForm = null;
+
+		$forms.each( function( index ) {
+			const $form = $( this );
+			const fieldCount = $form.find( '.siteorigin-widget-field' ).length;
+			const tinymceFieldCount = $form.find( '.siteorigin-widget-field-type-tinymce' ).length;
+			const visible = $form.is( ':visible' );
+			const hiddenByAria = $form.is( '[aria-hidden="true"]' ) || $form.closest( '[aria-hidden="true"]' ).length > 0;
+			const connected = document.documentElement.contains( this );
+			const inRepeaterTemplate = $form.closest( '.siteorigin-widget-field-repeater-item-html' ).length > 0;
+
+			const score =
+				( connected ? 10000 : 0 ) +
+				( visible ? 5000 : 0 ) +
+				( hiddenByAria ? -2500 : 0 ) +
+				( inRepeaterTemplate ? -5000 : 0 ) +
+				( tinymceFieldCount * 100 ) +
+				fieldCount -
+				( index / 1000 );
+
+			if ( score > bestScore ) {
+				bestScore = score;
+				bestForm = this;
+			}
+		} );
+
+		return bestForm ? $( bestForm ) : $forms.first();
+	};
+
+	/**
+	 * Returns all eligible TinyMCE fields within a set of widget forms.
+	 *
+	 * When more than one form is supplied, delegates to `selectBestFormInstance`
+	 * to pick the most appropriate one before searching for fields. Within the
+	 * resolved form, visible forms are preferred over hidden ones.
+	 *
+	 * @param {jQuery} $forms - jQuery collection of widget form elements.
+	 *
+	 * @returns {jQuery} jQuery collection of eligible TinyMCE field elements.
+	 */
+	const getTinyMCEFieldsFromForms = function( $forms ) {
+		if ( ! $forms || ! $forms.length ) {
+			return $( [] );
+		}
+
+		// When multiple forms are present, delegate to selectBestFormInstance which
+		// scores on connected/visible/aria-hidden/repeater-template signals.
+		const $scopedForms = $forms.length > 1 ?
+			selectBestFormInstance( $forms ) :
+			$forms;
+
+		const $visibleForms = $scopedForms.filter( ':visible' );
+		const $activeForms = $visibleForms.length ? $visibleForms : $scopedForms;
+
+		return getEligibleTinyMCEFields(
+			$activeForms.find( '.siteorigin-widget-field-type-tinymce' )
+		);
+	};
+
+	/**
+	 * Resolves the target widget form(s) from a `sowbBlockFormInit` postMessage payload.
+	 *
+	 * Uses the `formSelector` from the message data to find matching forms, then
+	 * narrows the result using the currently-selected block's `is-selected` state
+	 * when more than one form matches. Falls back to `selectBestFormInstance` if
+	 * the selection-based narrowing still leaves multiple candidates.
+	 *
+	 * @param {Object} messageData            - The postMessage data object.
+	 * @param {string} messageData.formSelector - CSS selector targeting the form(s).
+	 * @param {string} [messageData.clientId]   - Block client ID used to narrow matches.
+	 *
+	 * @returns {jQuery} jQuery collection of the resolved form element(s).
+	 */
+	const resolvePostMessageForms = function( messageData ) {
+		if ( ! messageData || ! messageData.formSelector ) {
+			return $( [] );
+		}
+
+		let $forms = $( messageData.formSelector );
+
+		if ( $forms.length > 1 && messageData.clientId ) {
+			const escapedClientId = escapeSelectorValue( messageData.clientId );
+			const $selectedBlockForms = $(
+				'.block-editor-block-list__block.is-selected[data-block="' + escapedClientId + '"] .siteorigin-widget-form.siteorigin-widget-form-main, ' +
+				'.is-selected[data-block="' + escapedClientId + '"] .siteorigin-widget-form.siteorigin-widget-form-main, ' +
+				'[data-block="' + escapedClientId + '"][aria-selected="true"] .siteorigin-widget-form.siteorigin-widget-form-main'
+			);
+
+			if ( $selectedBlockForms.length ) {
+				$forms = selectBestFormInstance( $selectedBlockForms );
+			}
+		}
+
+		if ( $forms.length > 1 ) {
+			$forms = selectBestFormInstance( $forms );
+		}
+
+		return $forms;
+	};
+
+	/**
+	 * Sanitizes a string for use as a segment of a TinyMCE editor DOM ID.
+	 *
+	 * Replaces bracket notation (e.g. `[0]`) with hyphens, strips all characters
+	 * that are not alphanumeric, underscores, or hyphens, collapses consecutive
+	 * hyphens, and trims leading/trailing hyphens.
+	 *
+	 * @param {string} value - The raw string to sanitize.
+	 *
+	 * @returns {string} The sanitized string, or an empty string if the input is
+	 *                   not a non-empty string.
+	 */
+	const sanitizeIdSegment = function( value ) {
+		if ( typeof value !== 'string' || value.length === 0 ) {
+			return '';
+		}
+
+		return value
+			.replace( /\[[^\]]*\]/g, '-' )
+			.replace( /[^A-Za-z0-9_-]+/g, '-' )
+			.replace( /-+/g, '-' )
+			.replace( /^-+|-+$/g, '' );
+	};
+
+	/**
+	 * Resolves the best available WordPress editor API object.
+	 *
+	 * Prefers `wp.oldEditor` (present in iframe contexts for legacy compatibility)
+	 * over `wp.editor` so that teardown and initialization use the same object.
+	 *
+	 * @returns {Object|null} The resolved editor API, or null if unavailable.
+	 */
+	const resolveWpEditor = function() {
+		if ( ! window.wp ) {
+			return null;
+		}
+		return window.wp.oldEditor ? window.wp.oldEditor : ( window.wp.editor || null );
+	};
+
 	/**
 	 * Opens the WordPress media library for TinyMCE editors in an iframe context.
 	 *
