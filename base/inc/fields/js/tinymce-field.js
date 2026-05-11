@@ -195,16 +195,27 @@
 	/**
 	 * Resolves the best available WordPress editor API object.
 	 *
+	 * Delegates to `window.sowbResolveWpEditor` (defined in widget-block.js) when
+	 * available so the guard logic lives in one place. Falls back to an inline
+	 * implementation for contexts where widget-block.js has not yet been evaluated
+	 * (e.g. classic Page Builder or widgets screen).
+	 *
 	 * Prefers `wp.oldEditor` (present in iframe contexts for legacy compatibility)
-	 * over `wp.editor` so that teardown and initialization use the same object.
+	 * over `wp.editor`, and requires the resolved object to expose `initialize()`.
 	 *
 	 * @returns {Object|null} The resolved editor API, or null if unavailable.
 	 */
 	const resolveWpEditor = function() {
+		if ( typeof window.sowbResolveWpEditor === 'function' ) {
+			return window.sowbResolveWpEditor();
+		}
 		if ( ! window.wp ) {
 			return null;
 		}
-		return window.wp.oldEditor ? window.wp.oldEditor : ( window.wp.editor || null );
+		const candidate = window.wp.oldEditor && typeof window.wp.oldEditor.initialize === 'function'
+			? window.wp.oldEditor
+			: ( window.wp.editor || null );
+		return candidate && typeof candidate.initialize === 'function' ? candidate : null;
 	};
 
 	/**

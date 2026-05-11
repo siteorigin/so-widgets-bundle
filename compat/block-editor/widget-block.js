@@ -1036,6 +1036,31 @@
 
 let sowbSiteEditorCanvas = false;
 
+/**
+ * Resolves the best available WordPress editor API object.
+ *
+ * Prefers `wp.oldEditor` (present in iframe contexts for legacy compatibility)
+ * over `wp.editor` so that teardown and initialization use the same object.
+ * Requires the resolved object to expose `initialize()` before returning it,
+ * so callers always receive a fully usable API or null.
+ *
+ * Exposed as `window.sowbResolveWpEditor` so shared infrastructure
+ * (e.g. `tinymce-field.js`) and third-party code can call the same
+ * implementation without duplicating the guard logic.
+ *
+ * @returns {Object|null} The resolved editor API, or null if unavailable.
+ */
+const sowbResolveWpEditor = () => {
+	if ( ! window.wp ) {
+		return null;
+	}
+	const candidate = window.wp.oldEditor && typeof window.wp.oldEditor.initialize === 'function'
+		? window.wp.oldEditor
+		: ( window.wp.editor || null );
+	return candidate && typeof candidate.initialize === 'function' ? candidate : null;
+};
+window.sowbResolveWpEditor = sowbResolveWpEditor;
+
 const sowbResolveSiteEditorFrame = ( frame = null ) => {
 	if ( frame ) {
 		if ( frame.jquery ) {
