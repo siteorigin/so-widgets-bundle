@@ -311,14 +311,22 @@
 		} );
 
 		setState( { formInitialized: true } );
+		jQuery( document ).trigger( 'sowsetupform', [ $mainForm ] );
 	};
 
 	/**
 	 * Initializes WB Form Fields in the Site Editor iframe.
 	 *
-	 * Unlike the regular editor, the Site Editor uses an iframe to
-	 * display blocks. This requires us to reinitialize WB form fields
-	 * in the iframe context after the form has been set up.
+	 * Unlike the regular editor, the Site Editor uses an iframe to display
+	 * blocks. This function resolves the iframe window, builds a postMessage
+	 * payload targeting this block's form, sends it immediately, and attaches
+	 * a persistent document-level listener so that a fresh message is sent
+	 * whenever a repeater item is added inside this block.
+	 *
+	 * @param {string} clientId - The block's client ID.
+	 *
+	 * @returns {Function|null} Cleanup function that removes the repeater
+	 *                          listener, or null if no iframe was found.
 	 */
 	const initializeFormFieldsInIframe = ( clientId ) => {
 		const iframeElement = sowbResolveSiteEditorFrame();
@@ -357,10 +365,9 @@
 			return null;
 		}
 
-		const timeoutIds = [];
 		const blockSelector = clientId ? `[data-block="${ clientId }"]` : '';
 		const formSelector = blockSelector ?
-			`${ blockSelector } .siteorigin-widget-form-main` :
+			`${ blockSelector } .siteorigin-widget-form.siteorigin-widget-form-main` :
 			'';
 		const message = {
 			action: 'sowbBlockFormInit',
@@ -377,14 +384,25 @@
 			}
 		};
 
-		[ 0, 250, 1000, 3000, 6000 ].forEach( ( delay ) => {
-			timeoutIds.push( setTimeout( sendInitMessage, delay ) );
-		} );
+		// Send once immediately: by the time this effect runs, React has already
+		// rendered the form HTML and setWidgetFormValues has restored any saved
+		// repeater items, so the iframe DOM is stable.
+		sendInitMessage();
+
+		// Persistent event-driven listener: send a fresh postMessage whenever any
+		// repeater item is added inside this block's form, at any point in time.
+		const repeaterEventNamespace = '.sowbFormInit-' + clientId.replace( /-/g, '' );
+		jQuery( document )
+			.off( 'sowrepeaterfieldsadded' + repeaterEventNamespace )
+			.on( 'sowrepeaterfieldsadded' + repeaterEventNamespace, ( event, $fields, originClientId ) => {
+				if ( originClientId && originClientId !== clientId ) {
+					return;
+				}
+				sendInitMessage();
+			} );
 
 		return () => {
-			timeoutIds.forEach( ( timeoutId ) => {
-				clearTimeout( timeoutId );
-			} );
+			jQuery( document ).off( 'sowrepeaterfieldsadded' + repeaterEventNamespace );
 		};
 	};
 
@@ -541,7 +559,11 @@
 				return;
 			}
 
-			const initKey = `${ props.clientId }::${ state.widgetFormHtml }`;
+			// Use a compact fingerprint rather than the full HTML blob to avoid storing
+			// and comparing large strings on every effect run. Sample both ends to
+			// reduce collision risk for forms with identical boilerplate wrappers.
+			const formFingerprint = state.widgetFormHtml.length + ':' + state.widgetFormHtml.slice( 0, 32 ) + state.widgetFormHtml.slice( -32 );
+			const initKey = `${ props.clientId }::${ formFingerprint }`;
 			if ( iframeFormInitKeyRef.current === initKey ) {
 				return;
 			}
@@ -1060,14 +1082,14 @@ const sowbGetBlockForm = ( clientId ) => {
 
 	if ( $canvas.length === 0 ) {
 		// No iframe (e.g. widgets.php Block Widgets screen, classic editor).
-		return jQuery( '[data-block="' + clientId + '"]' ).find( '.siteorigin-widget-form-main' );
+		return jQuery( '[data-block="' + clientId + '"]' ).find( '.siteorigin-widget-form.siteorigin-widget-form-main' );
 	}
 
 	// Return the main WB form from inside the editor iframe.
 	return $canvas
 		.contents()
 		.find( '[data-block="' + clientId + '"]' )
-		.find( '.siteorigin-widget-form-main' );
+		.find( '.siteorigin-widget-form.siteorigin-widget-form-main' );
 };
 
 const sowbCanvasCloneElements = [

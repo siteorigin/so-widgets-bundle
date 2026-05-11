@@ -44,16 +44,35 @@ var sowbForms = window.sowbForms || {};
 
 	const repeaterVisibilitySensitiveFieldSelector = '.siteorigin-widget-field-type-tinymce, .siteorigin-widget-field-type-date-range';
 
+	/**
+	 * Triggers setup for visibility-sensitive repeater fields after a repeater
+	 * item is added or expanded.
+	 *
+	 * Fires `sowsetupformfield` immediately on visible fields, and always fires
+	 * `sowrepeaterfieldsadded` on the document for all fields (including hidden
+	 * ones) so that iframe pre-init handlers can bind before fields become
+	 * visible. The `clientId` of the enclosing block, when present, is passed as
+	 * a second argument so that only the relevant block reacts.
+	 *
+	 * @param {jQuery} $container - The newly added or expanded repeater item/form.
+	 */
 	const triggerVisibleRepeaterVisibilityFieldSetup = ( $container ) => {
-		$container
+		const $allFields = $container
 			.filter( repeaterVisibilitySensitiveFieldSelector )
-			.add( $container.find( repeaterVisibilitySensitiveFieldSelector ) )
-			.filter( function() {
-				return $( this ).is( ':visible' );
-			} )
-			.each( function() {
-				$( this ).trigger( 'sowsetupformfield' );
-			} );
+			.add( $container.find( repeaterVisibilitySensitiveFieldSelector ) );
+
+		const $fields = $allFields.filter( ':visible' );
+
+		$fields.each( function() {
+			$( this ).trigger( 'sowsetupformfield' );
+		} );
+
+		// Fire a document-level event to notify iframe-context listeners of repeater field additions.
+		// This must include hidden fields so TinyMCE pre-init handlers can bind before they become visible.
+		if ( $allFields.length > 0 ) {
+			const clientId = $container.closest( '[data-block]' ).attr( 'data-block' ) || null;
+			$( document ).trigger( 'sowrepeaterfieldsadded', [ $allFields, clientId ] );
+		}
 	}
 
 	$.fn.sowSetupForm = function () {
