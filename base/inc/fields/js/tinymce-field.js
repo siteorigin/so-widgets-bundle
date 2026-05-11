@@ -4,6 +4,8 @@
 
 	let mediaFrameOpen = false;
 	const sowbTinyMCEEventNamespace = '.sowTinymce';
+	let _tinymceDomIdSeq = 0;
+	let _tinymcePreInitSeq = 0;
 
 	/**
 	 * Filters a jQuery collection to only those TinyMCE fields that are eligible
@@ -76,7 +78,12 @@
 			const tinymceFieldCount = $form.find( '.siteorigin-widget-field-type-tinymce' ).length;
 			const visible = $form.is( ':visible' );
 			const hiddenByAria = $form.is( '[aria-hidden="true"]' ) || $form.closest( '[aria-hidden="true"]' ).length > 0;
-			const connected = document.documentElement.contains( this );
+			// Use ownerDocument rather than the closure `document` so this signal is
+			// accurate whether selectBestFormInstance is called from the parent window
+			// (resolvePostMessageForms path) or from inside the iframe.
+			const connected = ( this.ownerDocument && this.ownerDocument.documentElement )
+				? this.ownerDocument.documentElement.contains( this )
+				: false;
 			const inRepeaterTemplate = $form.closest( '.siteorigin-widget-field-repeater-item-html' ).length > 0;
 
 			const score =
@@ -258,6 +265,7 @@
 	 *   - `sowb-tinymce-initializing`      — initializing lock flag
 	 *   - `sowb-tinymce-initializing-id`   — ID recorded during initialization
 	 *   - `sowb-pre-init-bound`            — pre-init event listener flag
+	 *   - `sowb-pre-init-namespace`        — namespaced event suffix for the pre-init listener/poll pair
 	 *   - `data-pre-init` attribute
 	 *
 	 * @param {jQuery} $field - jQuery object of the field container element.
@@ -285,6 +293,12 @@
 		$field.removeData( 'sowb-tinymce-initializing-id' );
 		$field.removeData( 'sowb-pre-init-bound' );
 		$field.removeAttr( 'data-pre-init' );
+
+		const preInitNamespace = $field.data( 'sowb-pre-init-namespace' );
+		if ( preInitNamespace ) {
+			$field.off( 'sowsetupformfield' + preInitNamespace );
+			$field.removeData( 'sowb-pre-init-namespace' );
+		}
 	};
 
 	/**
@@ -439,9 +453,8 @@
 				return;
 			}
 
-			// Tear down timers/locks from the previous (unhealthy) initialization
-			// attempt before removing the stale editor markup.
-			clearTinyMCEFieldPendingSetup( $field );
+			// Tear down stale editor markup. Timers/locks are cleared unconditionally
+			// by the clearTinyMCEFieldPendingSetup call below.
 			removeStaleTinyMCEFieldState( $field, initializedEditor.id );
 			$field.removeAttr( 'data-initialized' );
 		}
@@ -529,7 +542,7 @@
 
 		if ( ! id ) {
 			const baseId = sanitizeIdSegment( $textarea.attr( 'id' ) || $textarea.attr( 'name' ) || 'sowb-tinymce' ) || 'sowb-tinymce';
-			id = baseId + '-' + Date.now() + '-' + Math.floor( Math.random() * 1000 );
+			id = baseId + '-' + ( ++_tinymceDomIdSeq );
 		}
 
 		$textarea
@@ -729,12 +742,18 @@
 
 		if ( $field.attr( 'data-initialized' ) ) {
 			const initializedEditor = getTinyMCEFieldEditor( $field );
-			if ( hasHealthyTinyMCEEditor( $field, initializedEditor.id ) ) {
+			// If the textarea ID cannot be resolved the data-initialized attr is stale;
+			// clear it and fall through to re-initialize rather than passing undefined
+			// to hasHealthyTinyMCEEditor (which would call tinymce.get(undefined)).
+			if ( ! initializedEditor.id ) {
+				$field.removeAttr( 'data-initialized' );
+			} else if ( hasHealthyTinyMCEEditor( $field, initializedEditor.id ) ) {
 				return;
+			} else {
+				// Stale data-initialized would cause setupTinyMCEField to attempt
+				// teardown of an editor that no longer exists; clear it now.
+				$field.removeAttr( 'data-initialized' );
 			}
-			// Stale data-initialized would cause setupTinyMCEField to attempt
-			// teardown of an editor that no longer exists; clear it now.
-			$field.removeAttr( 'data-initialized' );
 		}
 
 		// If the field is visible, initialize the TinyMCE editor immediately.
@@ -747,11 +766,20 @@
 			return;
 		}
 
+		// Use a per-field namespace so the poll can cancel the listener if it fires
+		// first, and the listener can cancel the poll if it fires first. This prevents
+		// both paths from racing to call setupTinyMCEField on the same field.
+		const preInitEventNamespace = '.sowbPreInit-' + ( ++_tinymcePreInitSeq );
+		$field.data( 'sowb-pre-init-namespace', preInitEventNamespace );
+
 		const preInitVisibilityPoll = setInterval( function() {
 			if ( $field.is( ':visible' ) ) {
 				clearInterval( preInitVisibilityPoll );
 				$field.removeData( 'sowb-pre-init-visibility-poll' );
 				$field.removeData( 'sowb-pre-init-bound' );
+				// Cancel the sowsetupformfield listener so it doesn't re-trigger
+				// initialization after the poll has already started it.
+				$field.off( 'sowsetupformfield' + preInitEventNamespace );
 				setupTinyMCEField( $field );
 			}
 		}, 250 );
@@ -762,7 +790,8 @@
 		// Once visible, the 'sowsetupformfield' event triggers the editor setup.
 		$field
 			.data( 'sowb-pre-init-bound', true )
-			.one( 'sowsetupformfield', () => {
+			.off( 'sowsetupformfield' + preInitEventNamespace )
+			.one( 'sowsetupformfield' + preInitEventNamespace, () => {
 				const existingPreInitPoll = $field.data( 'sowb-pre-init-visibility-poll' );
 				if ( existingPreInitPoll ) {
 					clearInterval( existingPreInitPoll );
@@ -851,33 +880,38 @@
 		.on( 'sortstop' + sowbTinyMCEEventNamespace, sortStopEvent );
 
 	// Add support for the Site Editor.
-	if ( ! window.sowbTinyMCEMessageListenerBound ) {
-		window.sowbTinyMCEMessageListenerBound = true;
+	// Store the handler reference on window so it can be removed and replaced on
+	// script re-evaluation (e.g. HMR or plugin updates) rather than accumulating.
+	if ( window._sowbTinyMCEMessageHandler ) {
+		window.removeEventListener( 'message', window._sowbTinyMCEMessageHandler );
+	}
+	window._sowbTinyMCEMessageHandler = function( e ) {
+		if ( ! e || e.origin !== window.location.origin ) {
+			return;
+		}
 
-		window.addEventListener( 'message', function( e ) {
-			if ( ! e || e.origin !== window.location.origin ) {
+		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
+			let $messageFields = null;
+			if ( e.data.formSelector ) {
+				const $form = resolvePostMessageForms( e.data );
+				if ( $form.length ) {
+					$messageFields = getTinyMCEFieldsFromForms( $form );
+				} else {
+					return;
+				}
+			}
+
+			// Bug fix: null means no formSelector was provided, which would cause
+			// setupSiteEditorTinyMCEFields to fall back to querying ALL TinyMCE
+			// fields. Guard against both null and an empty jQuery set.
+			if ( ! $messageFields || ! $messageFields.length ) {
 				return;
 			}
 
-			if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
-				let $messageFields = null;
-				if ( e.data.formSelector ) {
-					const $form = resolvePostMessageForms( e.data );
-					if ( $form.length ) {
-						$messageFields = getTinyMCEFieldsFromForms( $form );
-					} else {
-						return;
-					}
-				}
-
-				if ( $messageFields && ! $messageFields.length ) {
-					return;
-				}
-
-				setupSiteEditorTinyMCEFields( $messageFields );
-			}
-		} );
-	}
+			setupSiteEditorTinyMCEFields( $messageFields );
+		}
+	};
+	window.addEventListener( 'message', window._sowbTinyMCEMessageHandler );
 
 	if ( window.frameElement ) {
 		$( document )
@@ -889,12 +923,12 @@
 		$( document )
 			.off( 'sowsetupform' + sowbTinyMCEEventNamespace )
 			.on( 'sowsetupform' + sowbTinyMCEEventNamespace, function( e, $form ) {
+				if ( ! $form || ! $form.length ) {
+					return;
+				}
 				// $form is the wrapper element, not a field itself, so .find() is
 				// sufficient — no need to also .filter() the root element.
-				const $formFields = $form && $form.length ?
-					$form.find( '.siteorigin-widget-field-type-tinymce' ) :
-					null;
-				setupSiteEditorTinyMCEFields( $formFields );
+				setupSiteEditorTinyMCEFields( $form.find( '.siteorigin-widget-field-type-tinymce' ) );
 			} );
 
 		// sowrepeaterfieldsadded is fired by admin.js on the parent document, not the iframe's document,

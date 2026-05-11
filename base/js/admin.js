@@ -59,7 +59,12 @@ var sowbForms = window.sowbForms || {};
 	const triggerVisibleRepeaterVisibilityFieldSetup = ( $container ) => {
 		const $allFields = $container
 			.filter( repeaterVisibilitySensitiveFieldSelector )
-			.add( $container.find( repeaterVisibilitySensitiveFieldSelector ) );
+			.add( $container.find( repeaterVisibilitySensitiveFieldSelector ) )
+			// Exclude placeholder rows inside repeater item templates — these carry
+			// `_id_` in their textarea IDs and must never be initialized directly.
+			.not( function() {
+				return $( this ).closest( '.siteorigin-widget-field-repeater-item-html' ).length > 0;
+			} );
 
 		const $fields = $allFields.filter( ':visible' );
 
@@ -73,7 +78,7 @@ var sowbForms = window.sowbForms || {};
 			const clientId = $container.closest( '[data-block]' ).attr( 'data-block' ) || null;
 			$( document ).trigger( 'sowrepeaterfieldsadded', [ $allFields, clientId ] );
 		}
-	}
+	};
 
 	$.fn.sowSetupForm = function () {
 

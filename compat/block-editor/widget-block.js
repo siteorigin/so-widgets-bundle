@@ -311,7 +311,6 @@
 		} );
 
 		setState( { formInitialized: true } );
-		jQuery( document ).trigger( 'sowsetupform', [ $mainForm ] );
 	};
 
 	/**
