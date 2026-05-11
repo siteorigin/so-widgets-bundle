@@ -41,28 +41,6 @@
 	};
 
 	/**
-	 * Escapes a string for safe use as a CSS selector value.
-	 *
-	 * Uses the native `CSS.escape` when available and falls back to a manual
-	 * regex replacement that escapes all CSS special characters.
-	 *
-	 * @param {string} value - The raw string to escape.
-	 *
-	 * @returns {string} The escaped string, or an empty string if value is not a string.
-	 */
-	const escapeSelectorValue = function( value ) {
-		if ( typeof value !== 'string' ) {
-			return '';
-		}
-
-		if ( window.CSS && typeof window.CSS.escape === 'function' ) {
-			return window.CSS.escape( value );
-		}
-
-		return value.replace( /([ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g, '\\$1' );
-	};
-
-	/**
 	 * Selects the best matching widget form from a set of candidates.
 	 *
 	 * Scores each form on multiple signals and returns the highest-scoring one.
@@ -152,14 +130,16 @@
 	/**
 	 * Resolves the target widget form(s) from a `sowbBlockFormInit` postMessage payload.
 	 *
-	 * Uses the `formSelector` from the message data to find matching forms, then
-	 * narrows the result using the currently-selected block's `is-selected` state
-	 * when more than one form matches. Falls back to `selectBestFormInstance` if
-	 * the selection-based narrowing still leaves multiple candidates.
+	 * Queries `messageData.formSelector` against this iframe's document and, when
+	 * more than one form matches, delegates to `selectBestFormInstance` to pick the
+	 * best candidate based on visibility, DOM connectivity, and field count.
 	 *
-	 * @param {Object} messageData            - The postMessage data object.
+	 * Note: block-editor selection attributes (`is-selected`, `data-block`) live on
+	 * elements in the parent document and are never present in the iframe DOM, so no
+	 * attempt is made to narrow by clientId here.
+	 *
+	 * @param {Object} messageData              - The postMessage data object.
 	 * @param {string} messageData.formSelector - CSS selector targeting the form(s).
-	 * @param {string} [messageData.clientId]   - Block client ID used to narrow matches.
 	 *
 	 * @returns {jQuery} jQuery collection of the resolved form element(s).
 	 */
@@ -168,20 +148,11 @@
 			return $( [] );
 		}
 
+		// formSelector targets elements in this iframe document. Block-editor
+		// attributes such as `is-selected` and `data-block` belong to the parent
+		// document's block list and are never present here, so we go straight to
+		// selectBestFormInstance when more than one form matches.
 		let $forms = $( messageData.formSelector );
-
-		if ( $forms.length > 1 && messageData.clientId ) {
-			const escapedClientId = escapeSelectorValue( messageData.clientId );
-			const $selectedBlockForms = $(
-				'.block-editor-block-list__block.is-selected[data-block="' + escapedClientId + '"] .siteorigin-widget-form.siteorigin-widget-form-main, ' +
-				'.is-selected[data-block="' + escapedClientId + '"] .siteorigin-widget-form.siteorigin-widget-form-main, ' +
-				'[data-block="' + escapedClientId + '"][aria-selected="true"] .siteorigin-widget-form.siteorigin-widget-form-main'
-			);
-
-			if ( $selectedBlockForms.length ) {
-				$forms = selectBestFormInstance( $selectedBlockForms );
-			}
-		}
 
 		if ( $forms.length > 1 ) {
 			$forms = selectBestFormInstance( $forms );
@@ -314,21 +285,6 @@
 		$field.removeData( 'sowb-tinymce-initializing-id' );
 		$field.removeData( 'sowb-pre-init-bound' );
 		$field.removeAttr( 'data-pre-init' );
-	};
-
-	/**
-	 * Resolves the best available WordPress editor API object.
-	 *
-	 * Prefers `wp.oldEditor` (present in iframe contexts for legacy compatibility)
-	 * over `wp.editor` so that teardown and initialization use the same object.
-	 *
-	 * @returns {Object|null} The resolved editor API, or null if unavailable.
-	 */
-	const resolveWpEditor = function() {
-		if ( ! window.wp ) {
-			return null;
-		}
-		return window.wp.oldEditor ? window.wp.oldEditor : ( window.wp.editor || null );
 	};
 
 	/**
@@ -483,13 +439,16 @@
 				return;
 			}
 
+			// Tear down timers/locks from the previous (unhealthy) initialization
+			// attempt before removing the stale editor markup.
 			clearTinyMCEFieldPendingSetup( $field );
 			removeStaleTinyMCEFieldState( $field, initializedEditor.id );
 			$field.removeAttr( 'data-initialized' );
 		}
 
+		// Always clear any lingering state from a pre-init visibility poll or
+		// a prior partial setup, even when data-initialized was not set.
 		clearTinyMCEFieldPendingSetup( $field );
-		$field.attr( 'data-initialized', true );
 
 		// If this is in an iframe, copy necessary globals from the parent window.
 		if ( frameElement && typeof window.tinyMCEPreInit === 'undefined' ) {
@@ -500,6 +459,10 @@
 		if ( ! wpEditor ) {
 			return;
 		}
+
+		// Mark as initialized only after confirming the editor API is available, so a
+		// transient null wpEditor does not leave the field stranded with the attr set.
+		$field.attr( 'data-initialized', true );
 
 		// In iframe contexts wp.oldEditor is the authoritative API. Copy its text-processing
 		// methods onto wp.editor so both references stay in sync.
@@ -607,7 +570,8 @@
 					addMediaButton
 						.removeClass( 'insert-media add_media' )
 						.addClass( 'siteorigin-widget-tinymce-add-media' )
-						.on( 'click', () => {
+						.off( 'click.sowbMedia' )
+						.on( 'click.sowbMedia', () => {
 							siteEditorAddMediaOverride( editorId );
 						} );
 				}
@@ -648,8 +612,8 @@
 				} );
 
 				if ( $wpautopToggleField ) {
-					$wpautopToggleField.off( 'change' );
-					$wpautopToggleField.on( 'change', function() {
+					$wpautopToggleField.off( 'change' + fieldEventNamespace );
+					$wpautopToggleField.on( 'change' + fieldEventNamespace, function() {
 						const currentEditor = resolveWpEditor();
 						if ( ! currentEditor ) {
 							return;
@@ -705,6 +669,9 @@
 		const initTimeoutId = setTimeout( function() {
 			$field.removeData( 'sowb-tinymce-initializing' );
 			$field.removeData( 'sowb-tinymce-initializing-id' );
+			// If the TinyMCE init event never fired (e.g. field removed from DOM),
+			// clean up the top-document listener so it doesn't accumulate.
+			$( window.top.document ).off( 'tinymce-editor-setup' + fieldEventNamespace );
 		}, 5000 );
 
 		$field.data( 'sowb-tinymce-init-timeout', initTimeoutId );
@@ -765,6 +732,9 @@
 			if ( hasHealthyTinyMCEEditor( $field, initializedEditor.id ) ) {
 				return;
 			}
+			// Stale data-initialized would cause setupTinyMCEField to attempt
+			// teardown of an editor that no longer exists; clear it now.
+			$field.removeAttr( 'data-initialized' );
 		}
 
 		// If the field is visible, initialize the TinyMCE editor immediately.
@@ -919,8 +889,10 @@
 		$( document )
 			.off( 'sowsetupform' + sowbTinyMCEEventNamespace )
 			.on( 'sowsetupform' + sowbTinyMCEEventNamespace, function( e, $form ) {
+				// $form is the wrapper element, not a field itself, so .find() is
+				// sufficient — no need to also .filter() the root element.
 				const $formFields = $form && $form.length ?
-					$form.filter( '.siteorigin-widget-field-type-tinymce' ).add( $form.find( '.siteorigin-widget-field-type-tinymce' ) ) :
+					$form.find( '.siteorigin-widget-field-type-tinymce' ) :
 					null;
 				setupSiteEditorTinyMCEFields( $formFields );
 			} );
@@ -930,9 +902,7 @@
 		// in the parent and re-dispatches it as a sowbBlockFormInit postMessage to the iframe, covering
 		// all field types. No separate listener is needed here.
 
-		$( function() {
-			setupSiteEditorTinyMCEFields();
-		} );
+		setupSiteEditorTinyMCEFields();
 	}
 
 } )( jQuery );

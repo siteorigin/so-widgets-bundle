@@ -369,6 +369,9 @@
 		const formSelector = blockSelector ?
 			`${ blockSelector } .siteorigin-widget-form.siteorigin-widget-form-main` :
 			'';
+		// Built once from stable closure values (clientId, blockSelector, formSelector
+		// are all derived from props/state that do not change during this effect's
+		// lifetime) and reused by every sendInitMessage() call.
 		const message = {
 			action: 'sowbBlockFormInit',
 			clientId,
@@ -395,6 +398,9 @@
 		jQuery( document )
 			.off( 'sowrepeaterfieldsadded' + repeaterEventNamespace )
 			.on( 'sowrepeaterfieldsadded' + repeaterEventNamespace, ( event, $fields, originClientId ) => {
+				// $fields (the newly added field elements) is provided by admin.js for the
+				// benefit of other listeners. Not needed here — we send a full-form postMessage
+				// rather than targeting individual fields.
 				if ( originClientId && originClientId !== clientId ) {
 					return;
 				}
@@ -573,9 +579,14 @@
 			if ( ! sowbBlockEditorAdmin.wpScriptDebug || state.devModeRemount ) {
 				const cleanup = initializeFormFieldsInIframe( props.clientId );
 				if ( cleanup ) {
+					// Record the key only on success so that a failed attempt
+					// (no iframe window yet) is retried on the next render cycle.
 					iframeFormInitKeyRef.current = initKey;
 					return cleanup;
 				}
+				// initializeFormFieldsInIframe returned null: the iframe window is
+				// not reachable yet. iframeFormInitKeyRef is intentionally left at
+				// its current value so the effect runs again on the next render.
 			}
 		}, [
 			props.clientId,
