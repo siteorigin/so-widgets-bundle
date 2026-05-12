@@ -8,6 +8,20 @@
 	let _tinymcePreInitSeq = 0;
 
 	/**
+	 * Tracks in-flight TinyMCE editor initializations.
+	 *
+	 * Keyed by editor ID. Each entry holds `{ promise, resolve }` where `promise`
+	 * resolves (with no value) once the editor's `init` event has fired or the
+	 * 5 s safety timeout has elapsed. Entries are removed on resolution so the
+	 * map never grows unboundedly.
+	 *
+	 * Consumed by `window.sowbGetTinyMCEInitPromise`, which allows external code
+	 * (e.g. the save-bridge TinyMCE flusher) to await full editor readiness
+	 * before calling `editor.save()`.
+	 */
+	const _tinymceInitPending = {};
+
+	/**
 	 * Filters a jQuery collection to only those TinyMCE fields that are eligible
 	 * for editor initialization.
 	 *
@@ -561,6 +575,17 @@
 			.attr( 'data-tinymce-id', id )
 			.attr( 'id', id );
 
+		let _resolveInitPending;
+		_tinymceInitPending[ id ] = {
+			promise: new Promise( function( resolve ) {
+				_resolveInitPending = resolve;
+			} ),
+			resolve: function() {
+				_resolveInitPending();
+				delete _tinymceInitPending[ id ];
+			},
+		};
+
 		$field
 			.data( 'sowb-tinymce-initializing', true )
 			.data( 'sowb-tinymce-initializing-id', id );
@@ -622,6 +647,10 @@
 					if ( initTimeout ) {
 						clearTimeout( initTimeout );
 						$field.removeData( 'sowb-tinymce-init-timeout' );
+					}
+
+					if ( _tinymceInitPending[ id ] ) {
+						_tinymceInitPending[ id ].resolve();
 					}
 
 					$field.removeData( 'sowb-tinymce-initializing' );
@@ -691,6 +720,10 @@
 		}
 
 		const initTimeoutId = setTimeout( function() {
+			if ( _tinymceInitPending[ id ] ) {
+				_tinymceInitPending[ id ].resolve();
+			}
+
 			$field.removeData( 'sowb-tinymce-initializing' );
 			$field.removeData( 'sowb-tinymce-initializing-id' );
 			// If the TinyMCE init event never fired (e.g. field removed from DOM),
@@ -949,5 +982,27 @@
 
 		setupSiteEditorTinyMCEFields();
 	}
+
+	/**
+	 * Returns a Promise that resolves once the TinyMCE editor for the given ID
+	 * has finished initialising, or immediately if it is already ready.
+	 *
+	 * The promise always resolves (never rejects). If initialisation stalls the
+	 * safety timeout in `setupTinyMCEField` will resolve it after 5 seconds.
+	 *
+	 * Intended for use by the save-bridge TinyMCE flusher in admin.js so it can
+	 * await full editor readiness before calling `editor.save()`. The flusher
+	 * retrieves this via the field element's `ownerDocument.defaultView` (i.e.
+	 * the iframe's `window` in a Site Editor context) so that each frame's
+	 * pending-init map is consulted correctly.
+	 *
+	 * @param {string} editorId - The TinyMCE editor / textarea ID.
+	 * @return {Promise<void>}
+	 */
+	window.sowbGetTinyMCEInitPromise = function( editorId ) {
+		return _tinymceInitPending[ editorId ]
+			? _tinymceInitPending[ editorId ].promise
+			: Promise.resolve();
+	};
 
 } )( jQuery );
