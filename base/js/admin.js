@@ -1708,28 +1708,47 @@ var sowbForms = window.sowbForms || {};
 		const fieldWindow = getElementWindow( $field[0] );
 		const fieldJQuery = fieldWindow.jQuery || $;
 
+		// Collect per-textarea flush work as Promises so that flushWidgetForm can
+		// await them when options.awaitAsync is true (the default for snapshot calls).
+		// If sowbGetTinyMCEInitPromise is available on the field's window we wait for
+		// the editor's init event before calling editor.save(); otherwise we fall back
+		// to the previous synchronous behaviour so non-block-editor contexts are
+		// unaffected.
+		const flushPromises = [];
+
 		$field.find( 'textarea.wp-editor-area' ).each( function() {
 			const $textarea = fieldJQuery( this );
 			const editorId = $textarea.data( 'tinymce-id' ) || $textarea.attr( 'id' );
-			const editor = fieldWindow.tinymce && editorId ?
-				fieldWindow.tinymce.get( editorId ) :
-				null;
 
-			if (
-				editor &&
-				typeof editor.save === 'function' &&
-				(
-					typeof editor.isHidden !== 'function' ||
-					! editor.isHidden()
-				)
-			) {
-				editor.save();
-			}
+			const initPromise = ( editorId && typeof fieldWindow.sowbGetTinyMCEInitPromise === 'function' )
+				? fieldWindow.sowbGetTinyMCEInitPromise( editorId )
+				: Promise.resolve();
 
-			if ( options.triggerChange ) {
-				$textarea.trigger( 'change' );
-			}
+			flushPromises.push(
+				initPromise.then( function() {
+					const editor = fieldWindow.tinymce && editorId ?
+						fieldWindow.tinymce.get( editorId ) :
+						null;
+
+					if (
+						editor &&
+						typeof editor.save === 'function' &&
+						(
+							typeof editor.isHidden !== 'function' ||
+							! editor.isHidden()
+						)
+					) {
+						editor.save();
+					}
+
+					if ( options.triggerChange ) {
+						$textarea.trigger( 'change' );
+					}
+				} )
+			);
 		} );
+
+		return Promise.all( flushPromises );
 	} );
 
 	sowbForms.getWidgetFormValues = function ( formContainer ) {

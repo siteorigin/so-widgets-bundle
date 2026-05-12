@@ -403,3 +403,94 @@ test(
 		}
 	}
 );
+
+test(
+	'Editor widget content saves correctly when TinyMCE init is still in-flight at save time.',
+	async ( { page }, testInfo ) => {
+		const blockName = 'sowb/siteorigin-widget-editor-widget';
+		const marker = `WB tinymce flush race ${ Date.now() }`;
+		const {
+			admin,
+			post,
+			requestUtils,
+		} = await setupPublishedPostEditor( page, 'WB tinymce flush race' );
+
+		try {
+			const widget = await addBlock( admin, blockName, 120 );
+			const blockState = await findDirectBlockState( page, blockName );
+
+			expect( blockState ).not.toBeNull();
+
+			// Wait for TinyMCE to fully initialize so we can type content into it.
+			const tinymceField = await getField( widget, 'tinymce', true );
+			const visualIframe = tinymceField.locator( 'iframe' ).first();
+			await ensureElementVisible( visualIframe, 120, 20000 );
+
+			const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+			await visualBody.click();
+			await visualBody.pressSequentially( marker );
+			await expect( visualBody ).toContainText( marker );
+
+			// Retrieve the editor ID from the canvas iframe.
+			const editorId = await page.evaluate( ( clientId ) => {
+				const iframe = document.querySelector( 'iframe[name="editor-canvas"]' );
+				if ( ! iframe ) {
+					return null;
+				}
+				const textarea = iframe.contentDocument.querySelector(
+					`[data-block="${ clientId }"] textarea.wp-editor-area`
+				);
+				return textarea
+					? ( textarea.getAttribute( 'data-tinymce-id' ) || textarea.id )
+					: null;
+			}, blockState.clientId );
+
+			expect( editorId ).toBeTruthy();
+
+			// Simulate TinyMCE being mid-init by replacing sowbGetTinyMCEInitPromise
+			// in the canvas iframe with a version that imposes a 1.5 s delay for this
+			// specific editor ID. The flusher must await this promise before calling
+			// editor.save(), so the REST request should not fire until it resolves.
+			await page.evaluate( ( eid ) => {
+				const iframe = document.querySelector( 'iframe[name="editor-canvas"]' );
+				const frameWindow = iframe.contentWindow;
+				const original = frameWindow.sowbGetTinyMCEInitPromise;
+				frameWindow.sowbGetTinyMCEInitPromise = function( editorId ) {
+					if ( editorId === eid ) {
+						return new Promise( ( resolve ) => setTimeout( resolve, 1500 ) );
+					}
+					return original ? original( editorId ) : Promise.resolve();
+				};
+			}, editorId );
+
+			const saveStartTime = Date.now();
+			const savedContent = await clickSaveAndCaptureContent( page, post.id );
+			const saveElapsedMs = Date.now() - saveStartTime;
+
+			await attachBlockDiagnostics( testInfo, 'flush-race-save-attrs.json', {
+				editorId,
+				saveElapsedMs,
+				postSaveBlockState: await findDirectBlockState( page, blockName ),
+			} );
+
+			// The flusher awaited the 1.5 s fake pending init before calling
+			// editor.save(). The REST request must therefore have been delayed.
+			expect( saveElapsedMs ).toBeGreaterThanOrEqual( 1200 );
+
+			// The marker text typed before the fake delay was injected must appear
+			// in the saved post content, proving editor.save() ran correctly.
+			expect( savedContent ).toContain( marker );
+
+			const postSaveBlockState = await findDirectBlockState( page, blockName );
+			expect( postSaveBlockState.attributes.widgetData.text ).toContain( marker );
+		} finally {
+			await requestUtils.rest( {
+				method: 'DELETE',
+				path: `/wp/v2/posts/${ post.id }`,
+				params: {
+					force: true,
+				},
+			} ).catch( () => {} );
+		}
+	}
+);
