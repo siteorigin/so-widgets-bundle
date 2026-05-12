@@ -575,16 +575,19 @@
 			.attr( 'data-tinymce-id', id )
 			.attr( 'id', id );
 
-		let _resolveInitPending;
-		_tinymceInitPending[ id ] = {
-			promise: new Promise( function( resolve ) {
-				_resolveInitPending = resolve;
-			} ),
-			resolve: function() {
-				_resolveInitPending();
-				delete _tinymceInitPending[ id ];
-			},
-		};
+		_tinymceInitPending[ id ] = ( function( entryId ) {
+			let storedResolve;
+			const promise = new Promise( function( resolve ) {
+				storedResolve = resolve;
+			} );
+			return {
+				promise: promise,
+				resolve: function() {
+					storedResolve();
+					delete _tinymceInitPending[ entryId ];
+				},
+			};
+		} )( id );
 
 		$field
 			.data( 'sowb-tinymce-initializing', true )
