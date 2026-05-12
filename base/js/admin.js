@@ -1621,7 +1621,7 @@ var sowbForms = window.sowbForms || {};
 
 	const normalizeWidgetFormContainer = function( formContainer ) {
 		if (
-			_.isUndefined( formContainer ) ||
+			formContainer === undefined ||
 			formContainer === null ||
 			formContainer.length === 0
 		) {
@@ -1657,8 +1657,8 @@ var sowbForms = window.sowbForms || {};
 
 	sowbForms.registerFieldFlusher = function( fieldType, callback ) {
 		if (
-			! _.isString( fieldType ) ||
-			! _.isFunction( callback )
+			typeof fieldType !== 'string' ||
+			typeof callback !== 'function'
 		) {
 			return;
 		}
