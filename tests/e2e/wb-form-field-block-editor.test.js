@@ -416,7 +416,7 @@ test(
 		} = await setupPublishedPostEditor( page, 'WB tinymce flush race' );
 
 		try {
-			const widget = await addBlock( admin, blockName, 120 );
+			const widget = await insertDirectWidgetBlock( admin, blockName );
 			const blockState = await findDirectBlockState( page, blockName );
 
 			expect( blockState ).not.toBeNull();
@@ -463,25 +463,45 @@ test(
 				};
 			}, editorId );
 
+			// Measure how long after clicking Save it takes for the REST request to
+			// fire (not the full round-trip). With the 1.5 s fake init delay in place
+			// the flusher must await it before editor.save() is called, so the
+			// request must not fire until at least 1.2 s have elapsed.
+			const updatePath = getPostUpdatePath( post.id );
+			const isUpdateRequest = ( req ) =>
+				req.method() === 'POST' &&
+				new URL( req.url() ).pathname.endsWith( updatePath );
+			let requestFiredTime = null;
+			const requestFiredPromise = page.waitForRequest( ( req ) => {
+				if ( isUpdateRequest( req ) ) {
+					requestFiredTime = Date.now();
+					return true;
+				}
+				return false;
+			}, { timeout: 30000 } );
+
 			const saveStartTime = Date.now();
 			const savedContent = await clickSaveAndCaptureContent( page, post.id );
-			const saveElapsedMs = Date.now() - saveStartTime;
+			await requestFiredPromise;
+			const requestFireElapsedMs = ( requestFiredTime || Date.now() ) - saveStartTime;
 
 			await attachBlockDiagnostics( testInfo, 'flush-race-save-attrs.json', {
 				editorId,
-				saveElapsedMs,
+				requestFireElapsedMs,
 				postSaveBlockState: await findDirectBlockState( page, blockName ),
 			} );
 
 			// The flusher awaited the 1.5 s fake pending init before calling
 			// editor.save(). The REST request must therefore have been delayed.
-			expect( saveElapsedMs ).toBeGreaterThanOrEqual( 1200 );
+			expect( requestFireElapsedMs ).toBeGreaterThanOrEqual( 1200 );
 
 			// The marker text typed before the fake delay was injected must appear
 			// in the saved post content, proving editor.save() ran correctly.
 			expect( savedContent ).toContain( marker );
 
 			const postSaveBlockState = await findDirectBlockState( page, blockName );
+			expect( postSaveBlockState ).not.toBeNull();
+			expect( postSaveBlockState.attributes.widgetData ).toBeTruthy();
 			expect( postSaveBlockState.attributes.widgetData.text ).toContain( marker );
 		} finally {
 			await requestUtils.rest( {
