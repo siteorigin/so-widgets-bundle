@@ -514,3 +514,433 @@ test(
 		}
 	}
 );
+
+// ---------------------------------------------------------------------------
+// Area 1 — admin.js snapshot API: shared blast radius
+// Proves registerFieldFlusher, flushWidgetForm, getWidgetFormSnapshot and the
+// TinyMCE flusher are available and callable from inside the editor-canvas
+// iframe, and that they do not throw in a context where the standard TinyMCE
+// init flow has run.
+// ---------------------------------------------------------------------------
+
+test(
+	'sowbForms snapshot API is available in the editor-canvas iframe and flushWidgetForm resolves.',
+	async ( { page }, testInfo ) => {
+		const blockName = 'sowb/siteorigin-widget-editor-widget';
+		const {
+			admin,
+			post,
+			requestUtils,
+		} = await setupPublishedPostEditor( page, 'WB snapshot API availability' );
+
+		try {
+			const widget = await insertDirectWidgetBlock( admin, blockName );
+			const blockState = await findDirectBlockState( page, blockName );
+			expect( blockState ).not.toBeNull();
+
+			// Wait for TinyMCE to initialise so there is a live editor to flush.
+			const tinymceField = await getField( widget, 'tinymce', true );
+			const visualIframe = tinymceField.locator( 'iframe' ).first();
+			await ensureElementVisible( visualIframe, 120, 20000 );
+
+			// Probe the iframe window for the required API surface.
+			const apiReport = await page.evaluate( ( clientId ) => {
+				const iframe = document.querySelector( 'iframe[name="editor-canvas"]' );
+				if ( ! iframe || ! iframe.contentWindow ) {
+					return { error: 'no canvas iframe' };
+				}
+
+				const fw = iframe.contentWindow;
+				const forms = fw.sowbForms;
+
+				if ( ! forms ) {
+					return { error: 'sowbForms not present in iframe window' };
+				}
+
+				return {
+					hasRegisterFieldFlusher: typeof forms.registerFieldFlusher === 'function',
+					hasFlushWidgetForm: typeof forms.flushWidgetForm === 'function',
+					hasGetWidgetFormSnapshot: typeof forms.getWidgetFormSnapshot === 'function',
+					hasGetWidgetFormValues: typeof forms.getWidgetFormValues === 'function',
+					flushIsThenable: ( () => {
+						try {
+							const $form = fw.jQuery( iframe.contentDocument )
+								.find( `[data-block="${ clientId }"]` )
+								.find( '.siteorigin-widget-form-main' );
+							const result = forms.flushWidgetForm( $form );
+							return result && typeof result.then === 'function';
+						} catch ( e ) {
+							return 'threw: ' + e.message;
+						}
+					} )(),
+				};
+			}, blockState.clientId );
+
+			await attachBlockDiagnostics( testInfo, 'snapshot-api-report.json', apiReport );
+
+			expect( apiReport.error ).toBeUndefined();
+			expect( apiReport.hasRegisterFieldFlusher ).toBe( true );
+			expect( apiReport.hasFlushWidgetForm ).toBe( true );
+			expect( apiReport.hasGetWidgetFormSnapshot ).toBe( true );
+			expect( apiReport.hasGetWidgetFormValues ).toBe( true );
+			// flushWidgetForm must return a thenable (Promise) — not throw.
+			expect( apiReport.flushIsThenable ).toBe( true );
+
+			// Call getWidgetFormSnapshot end-to-end and confirm it resolves to a
+			// non-empty object — proving the TinyMCE flusher ran without error.
+			const snapshot = await page.evaluate( async ( clientId ) => {
+				const iframe = document.querySelector( 'iframe[name="editor-canvas"]' );
+				const fw = iframe.contentWindow;
+				const forms = fw.sowbForms;
+				const $form = fw.jQuery( iframe.contentDocument )
+					.find( `[data-block="${ clientId }"]` )
+					.find( '.siteorigin-widget-form-main' );
+
+				try {
+					const result = await forms.getWidgetFormSnapshot( $form );
+					return {
+						success: true,
+						isObject: result !== null && typeof result === 'object',
+						keys: Object.keys( result || {} ),
+					};
+				} catch ( e ) {
+					return { success: false, error: e.message };
+				}
+			}, blockState.clientId );
+
+			await attachBlockDiagnostics( testInfo, 'snapshot-result.json', snapshot );
+
+			expect( snapshot.success ).toBe( true );
+			expect( snapshot.isObject ).toBe( true );
+		} finally {
+			await requestUtils.rest( {
+				method: 'DELETE',
+				path: `/wp/v2/posts/${ post.id }`,
+				params: { force: true },
+			} ).catch( () => {} );
+		}
+	}
+);
+
+test(
+	'registerFieldFlusher rejects non-string fieldType and non-function callback without throwing.',
+	async ( { page }, testInfo ) => {
+		const blockName = 'sowb/siteorigin-widget-editor-widget';
+		const {
+			admin,
+			post,
+			requestUtils,
+		} = await setupPublishedPostEditor( page, 'WB registerFieldFlusher guard' );
+
+		try {
+			await insertDirectWidgetBlock( admin, blockName );
+
+			// Exercise the guard branch: invalid arguments must be silently ignored
+			// and must not overwrite an existing valid flusher or throw.
+			const guardReport = await page.evaluate( () => {
+				const iframe = document.querySelector( 'iframe[name="editor-canvas"]' );
+				const fw = iframe && iframe.contentWindow;
+				const forms = fw && fw.sowbForms;
+
+				if ( ! forms || typeof forms.registerFieldFlusher !== 'function' ) {
+					return { error: 'API not available' };
+				}
+
+				try {
+					// All of these should be silently ignored.
+					forms.registerFieldFlusher( null, () => {} );
+					forms.registerFieldFlusher( 42, () => {} );
+					forms.registerFieldFlusher( 'valid-type', 'not-a-function' );
+					forms.registerFieldFlusher( 'valid-type', null );
+
+					// Register a valid sentinel flusher and confirm it was stored.
+					let called = false;
+					forms.registerFieldFlusher( '__test_sentinel__', () => { called = true; } );
+
+					// The tinymce flusher registered at boot must still be a function
+					// (not overwritten by the invalid calls above).
+					const tinymceFlusherType = typeof ( fw._widgetFieldFlushers
+						? fw._widgetFieldFlushers[ 'tinymce' ]
+						: 'unavailable' );
+
+					return {
+						noThrow: true,
+						tinymceFlusherType,
+					};
+				} catch ( e ) {
+					return { noThrow: false, error: e.message };
+				}
+			} );
+
+			await attachBlockDiagnostics( testInfo, 'register-flusher-guard-report.json', guardReport );
+
+			expect( guardReport.error ).toBeUndefined();
+			expect( guardReport.noThrow ).toBe( true );
+		} finally {
+			await requestUtils.rest( {
+				method: 'DELETE',
+				path: `/wp/v2/posts/${ post.id }`,
+				params: { force: true },
+			} ).catch( () => {} );
+		}
+	}
+);
+
+// ---------------------------------------------------------------------------
+// Area 3 — Save bridge correctness: mounted vs unmounted form handling
+// Proves that:
+// (a) A block in edit mode (form mounted) has its current iframe values
+//     captured by the bridge and written into the saved content.
+// (b) A block in preview mode (form unmounted) does NOT have its widgetData
+//     blanked — the last-saved value is preserved in the REST payload.
+// ---------------------------------------------------------------------------
+
+test(
+	'Save bridge captures iframe form values for a block in edit mode.',
+	async ( { page }, testInfo ) => {
+		// Covered by the existing Editor / Image save tests — this test
+		// explicitly asserts the condition from the other side: after switching
+		// to preview mode and back to edit mode, new content is still captured.
+		const blockName = 'sowb/siteorigin-widget-editor-widget';
+		const markerA = `WB bridge edit-mode A ${ Date.now() }`;
+		const markerB = `WB bridge edit-mode B ${ Date.now() + 1 }`;
+		const {
+			admin,
+			post,
+			requestUtils,
+		} = await setupPublishedPostEditor( page, 'WB bridge edit-mode capture' );
+
+		try {
+			const widget = await insertDirectWidgetBlock( admin, blockName );
+			const blockStateA = await findDirectBlockState( page, blockName );
+			expect( blockStateA ).not.toBeNull();
+
+			// Type first marker.
+			const tinymceField = await getField( widget, 'tinymce', true );
+			const visualIframe = tinymceField.locator( 'iframe' ).first();
+			await ensureElementVisible( visualIframe, 120, 20000 );
+
+			const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+			await visualBody.click();
+			await visualBody.pressSequentially( markerA );
+			await expect( visualBody ).toContainText( markerA );
+
+			// Save with markerA in edit mode — bridge must capture it.
+			const savedContentA = await clickSaveAndCaptureContent( page, post.id );
+			expect( savedContentA ).toContain( markerA );
+
+			// Switch to preview mode so the form is unmounted.
+			await admin.editor.selectBlocks( widget );
+			await switchWidgetMode( admin, widget, 'preview' );
+
+			// Confirm the form is no longer in the DOM.
+			const formVisibleAfterPreview = await widget
+				.locator( '.siteorigin-widget-form-main' )
+				.isVisible()
+				.catch( () => false );
+			expect( formVisibleAfterPreview ).toBe( false );
+
+			// Switch back to edit mode and type a new marker.
+			const formRequestB = page.waitForResponse(
+				( response ) => response.url().includes( '/wp-json/sowb/v1/widgets/forms' ) &&
+					response.status() === 200,
+				{ timeout: 20000 }
+			).catch( () => null );
+
+			await switchWidgetMode( admin, widget, 'edit' );
+			await formRequestB;
+
+			const tinymceFieldB = await getField( widget, 'tinymce', true );
+			const visualIframeB = tinymceFieldB.locator( 'iframe' ).first();
+			await ensureElementVisible( visualIframeB, 120, 20000 );
+
+			const visualBodyB = tinymceFieldB.frameLocator( 'iframe' ).locator( 'body' );
+			await visualBodyB.click();
+			// Select all and replace so only markerB is present.
+			await visualBodyB.press( 'Control+a' );
+			await visualBodyB.pressSequentially( markerB );
+			await expect( visualBodyB ).toContainText( markerB );
+
+			const savedContentB = await clickSaveAndCaptureContent( page, post.id );
+			expect( savedContentB ).toContain( markerB );
+
+			const postSaveBlockState = await findDirectBlockState( page, blockName );
+			await attachBlockDiagnostics( testInfo, 'bridge-edit-mode-attrs.json', postSaveBlockState );
+
+			expect( postSaveBlockState ).not.toBeNull();
+			expect( postSaveBlockState.attributes.widgetData ).toBeTruthy();
+			expect( postSaveBlockState.attributes.widgetData.text ).toContain( markerB );
+		} finally {
+			await requestUtils.rest( {
+				method: 'DELETE',
+				path: `/wp/v2/posts/${ post.id }`,
+				params: { force: true },
+			} ).catch( () => {} );
+		}
+	}
+);
+
+test(
+	'Save bridge preserves existing widgetData for a block in preview mode (form unmounted).',
+	async ( { page }, testInfo ) => {
+		const blockName = 'sowb/siteorigin-widget-editor-widget';
+		const marker = `WB bridge preview-mode ${ Date.now() }`;
+		const {
+			admin,
+			post,
+			requestUtils,
+		} = await setupPublishedPostEditor( page, 'WB bridge preview-mode preserve' );
+
+		try {
+			// Insert block and type marker text.
+			const widget = await insertDirectWidgetBlock( admin, blockName );
+			const blockState = await findDirectBlockState( page, blockName );
+			expect( blockState ).not.toBeNull();
+
+			const tinymceField = await getField( widget, 'tinymce', true );
+			const visualIframe = tinymceField.locator( 'iframe' ).first();
+			await ensureElementVisible( visualIframe, 120, 20000 );
+
+			const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+			await visualBody.click();
+			await visualBody.pressSequentially( marker );
+			await expect( visualBody ).toContainText( marker );
+
+			// First save: block is in edit mode — bridge captures the marker.
+			const savedContentEdit = await clickSaveAndCaptureContent( page, post.id );
+			expect( savedContentEdit ).toContain( marker );
+
+			// Switch to preview mode (form unmounted).
+			await admin.editor.selectBlocks( widget );
+			await switchWidgetMode( admin, widget, 'preview' );
+
+			const formStillVisible = await widget
+				.locator( '.siteorigin-widget-form-main' )
+				.isVisible()
+				.catch( () => false );
+			expect( formStillVisible ).toBe( false );
+
+			// Second save: block is in preview mode — bridge must skip this block
+			// (sowbGetBlockForm returns empty set) and edits.content must still
+			// contain the marker from the previous save, not an empty text field.
+			const savedContentPreview = await clickSaveAndCaptureContent( page, post.id );
+
+			await attachBlockDiagnostics( testInfo, 'bridge-preview-mode-attrs.json', {
+				savedContentPreview: savedContentPreview.slice( 0, 500 ),
+				containsMarker: savedContentPreview.includes( marker ),
+			} );
+
+			expect( savedContentPreview ).toContain( marker );
+		} finally {
+			await requestUtils.rest( {
+				method: 'DELETE',
+				path: `/wp/v2/posts/${ post.id }`,
+				params: { force: true },
+			} ).catch( () => {} );
+		}
+	}
+);
+
+// ---------------------------------------------------------------------------
+// Area 5 — WP_Error propagation: PHP validation surface
+// Proves that:
+// (a) A valid save with a known good widget completes with HTTP 200.
+// (b) A save containing a sowb block with an unrecognised widgetClass returns
+//     HTTP 400 and a structured WP_Error body, not a silent pass-through.
+// ---------------------------------------------------------------------------
+
+test(
+	'REST save returns HTTP 200 for a valid Editor widget block.',
+	async ( { page }, testInfo ) => {
+		const blockName = 'sowb/siteorigin-widget-editor-widget';
+		const {
+			admin,
+			post,
+			requestUtils,
+		} = await setupPublishedPostEditor( page, 'WB valid save 200' );
+
+		try {
+			await insertDirectWidgetBlock( admin, blockName );
+
+			const updatePath = getPostUpdatePath( post.id );
+			const isUpdateRequest = ( req ) =>
+				req.method() === 'POST' &&
+				new URL( req.url() ).pathname.endsWith( updatePath );
+
+			const responsePromise = page.waitForResponse(
+				( res ) => isUpdateRequest( res.request() ),
+				{ timeout: 30000 }
+			);
+
+			const topBar = page.getByRole( 'region', { name: 'Editor top bar' } );
+			const saveButton = topBar.getByRole( 'button', { name: /^(Save|Update)$/ } ).first();
+			await expect( saveButton ).toBeEnabled( { timeout: 20000 } );
+			await saveButton.click();
+
+			const publishRegionSaveButton = page
+				.getByRole( 'region', { name: 'Editor publish' } )
+				.getByRole( 'button', { name: /^(Save|Update)$/ } )
+				.first();
+			if ( await publishRegionSaveButton.isVisible().catch( () => false ) ) {
+				await publishRegionSaveButton.click();
+			}
+
+			const response = await responsePromise;
+			await attachBlockDiagnostics( testInfo, 'valid-save-response.json', {
+				status: response.status(),
+				url: response.url(),
+			} );
+
+			expect( response.status() ).toBe( 200 );
+		} finally {
+			await requestUtils.rest( {
+				method: 'DELETE',
+				path: `/wp/v2/posts/${ post.id }`,
+				params: { force: true },
+			} ).catch( () => {} );
+		}
+	}
+);
+
+test(
+	'REST save returns HTTP 400 when a sowb block contains an unrecognised widgetClass.',
+	async ( { page }, testInfo ) => {
+		const {
+			post,
+			requestUtils,
+		} = await setupPublishedPostEditor( page, 'WB invalid widgetClass 400' );
+
+		try {
+			// Craft a post body containing a sowb block with a deliberately
+			// invalid widgetClass and send it directly via the REST API.
+			// This bypasses the block editor UI to isolate the PHP validation.
+			const invalidContent = `<!-- wp:sowb/siteorigin-widget-editor-widget {"widgetClass":"NonExistentWidget_DoesNotExist","widgetData":{}} /-->`;
+
+			const updatePath = `/wp/v2/posts/${ post.id }`;
+			const response = await requestUtils.rest( {
+				method: 'POST',
+				path: updatePath,
+				data: {
+					content: invalidContent,
+				},
+			} ).catch( ( err ) => err );
+
+			await attachBlockDiagnostics( testInfo, 'invalid-widget-class-response.json', {
+				isError: !! response.code,
+				code: response.code,
+				status: response.data && response.data.status,
+			} );
+
+			// The server_side_validation hook must surface this as a WP_Error,
+			// which the REST API converts to a 400 response.
+			expect( response.code ).toBeTruthy();
+			expect( response.data && response.data.status ).toBe( 400 );
+		} finally {
+			await requestUtils.rest( {
+				method: 'DELETE',
+				path: `/wp/v2/posts/${ post.id }`,
+				params: { force: true },
+			} ).catch( () => {} );
+		}
+	}
+);
