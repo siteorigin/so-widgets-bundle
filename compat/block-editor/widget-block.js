@@ -248,13 +248,27 @@
 	 */
 
 	const sowbSetupWidgetForm = async ( props, state, setState, activeRequestRef ) => {
-		const $mainForm = sowbGetBlockForm( props.clientId );
+		let $mainForm = sowbGetBlockForm( props.clientId );
 
 		if ( $mainForm.length === 0 || state.formInitialized ) {
 			return;
 		}
 
+		// Re-wrap the form node with the jQuery instance that owns it. In the
+		// iframe path this is the iframe's jQuery; in the non-iframe path it is
+		// the parent jQuery. sowSetupForm(), wpColorPicker, and all other field
+		// plugins are bound to whichever jQuery ran their defining script — using
+		// the same instance here ensures event handlers fire correctly.
+		const formWindow = sowbGetElementWindow( $mainForm[ 0 ] );
+		const formJQuery = formWindow.jQuery || jQuery;
+		const formForms = formWindow.sowbForms || sowbForms;
+		$mainForm = formJQuery( $mainForm[ 0 ] );
+
 		sowbMaybeSetupSiteEditorAssets();
+
+		// The preview-container 'a' click toggles React state in the parent
+		// component. Native DOM click events cross frame boundaries so this
+		// binding works from either context.
 		const $previewContainer = $mainForm.siblings( '.siteorigin-widget-preview' );
 		$previewContainer.find( '> a' ).on( 'click', function( event ) {
 			event.stopImmediatePropagation();
@@ -272,43 +286,49 @@
 			// If we call `setWidgetFormValues` with the last parameter
 			// ( `triggerChange` ) set to false, it won't show the correct values
 			// for some fields e.g. color and media fields.
-			sowbForms.setWidgetFormValues( $mainForm, props.attributes.widgetData );
+			formForms.setWidgetFormValues( $mainForm, props.attributes.widgetData );
 		} else {
-			props.setAttributes( { widgetData: sowbForms.getWidgetFormValues( $mainForm ) } );
+			props.setAttributes( { widgetData: formForms.getWidgetFormValues( $mainForm ) } );
 		}
 
 		$mainForm.sowSetupForm();
 
-		$mainForm.on( 'change', function() {
-			// Check form has been set up before reacting to changes.
-			if ( ! $mainForm.data( 'sow-form-setup' ) ) {
-				return;
-			}
+		// Namespace the change event so multiple sowbSetupWidgetForm calls for
+		// the same block (React double-render / stale closures) don't stack up
+		// duplicate handlers on the same DOM node.
+		const changeNs = '.sowbBlock-' + props.clientId.replace( /-/g, '' );
+		$mainForm
+			.off( 'change' + changeNs )
+			.on( 'change' + changeNs, function() {
+				// Only react to changes once the form has been fully set up.
+				if ( ! $mainForm.data( 'sow-form-setup' ) ) {
+					return;
+				}
 
-			// As setAttributes doesn't support callbacks, we have to manually
-			// pass the widgetData to the preview.
-			var widgetData = sowbForms.getWidgetFormValues( $mainForm );
-			props.setAttributes( { widgetData: widgetData } );
+				// As setAttributes doesn't support callbacks, we have to manually
+				// pass the widgetData to the preview.
+				var widgetData = formForms.getWidgetFormValues( $mainForm );
+				props.setAttributes( { widgetData: widgetData } );
 
-			// Set up a preview debounce timer to prevent multiple requests.
-			var oldTimer = $mainForm.data( 'sowb-preview-timer' );
-			if ( oldTimer ) {
-				clearTimeout( oldTimer );
-			}
+				// Set up a preview debounce timer to prevent multiple requests.
+				var oldTimer = $mainForm.data( 'sowb-preview-timer' );
+				if ( oldTimer ) {
+					clearTimeout( oldTimer );
+				}
 
-			var sowb_preview_timer = setTimeout( () => {
-				sowbGenerateWidgetPreview(
-					props,
-					false,
-					setState,
-					widgetData,
-					props.widget.class,
-					activeRequestRef
-				);
-			}, 300 );
+				var sowb_preview_timer = setTimeout( () => {
+					sowbGenerateWidgetPreview(
+						props,
+						false,
+						setState,
+						widgetData,
+						props.widget.class,
+						activeRequestRef
+					);
+				}, 300 );
 
-			$mainForm.data( 'sowb-preview-timer', sowb_preview_timer );
-		} );
+				$mainForm.data( 'sowb-preview-timer', sowb_preview_timer );
+			} );
 
 		setState( { formInitialized: true } );
 	};
@@ -648,7 +668,7 @@
 						)
 					) :
 					el( 'div', {
-						className: 'so-widget-block-container siteorigin-widget-form-main wp-core-ui',
+						className: 'so-widget-block-container siteorigin-widget-form siteorigin-widget-form-main wp-core-ui',
 						dangerouslySetInnerHTML: { __html: widgetFormHtml },
 						ref: () => {
 							sowbSetupWidgetForm(
@@ -1027,14 +1047,49 @@
 		} )
 	} );
 
-	// Copy over assets to the Site Editor iframe asap.
-	if ( window.frameElement ) {
-		sowbSiteEditorCanvas = window.frameElement;
-		sowbMaybeSetupSiteEditorAssets();
-	}
+	// Copy over assets to the editor iframe asap.
+	sowbMaybeSetupSiteEditorAssets();
 } )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.blockEditor );
 
 let sowbSiteEditorCanvas = false;
+
+/**
+ * Returns the window that owns the given DOM element.
+ *
+ * @param {Element} element
+ * @returns {Window}
+ */
+const sowbGetElementWindow = ( element ) => {
+	return element && element.ownerDocument && element.ownerDocument.defaultView ?
+		element.ownerDocument.defaultView :
+		window;
+};
+
+/**
+ * Returns the editor canvas iframe element, or null if not found / not accessible.
+ *
+ * Checks the Site Editor canvas, the post-editor canvas, and — when this script
+ * is running inside the iframe itself — window.frameElement.
+ *
+ * @returns {HTMLIFrameElement|null}
+ */
+const sowbGetEditorCanvasFrame = () => {
+	const siteEditorCanvas = document.querySelector( '.edit-site-visual-editor__editor-canvas' );
+	if ( siteEditorCanvas && siteEditorCanvas.contentDocument ) {
+		return siteEditorCanvas;
+	}
+
+	const editorCanvas = document.querySelector( 'iframe[name="editor-canvas"]' );
+	if ( editorCanvas && editorCanvas.contentDocument ) {
+		return editorCanvas;
+	}
+
+	if ( window.frameElement && window.frameElement.contentDocument ) {
+		return window.frameElement;
+	}
+
+	return null;
+};
 
 /**
  * Resolves the best available WordPress editor API object.
@@ -1099,32 +1154,33 @@ const sowbResolveSiteEditorFrame = ( frame = null ) => {
  * @returns {jQuery} jQuery reference to the widget form
  */
 const sowbGetBlockForm = ( clientId ) => {
-	// Re-resolve the editor canvas on every call rather than caching to false,
-	// because the iframe element is mounted asynchronously by the block editor.
-	// Site Editor uses `.edit-site-visual-editor__editor-canvas`; the post editor
-	// (default since WP 6.5) uses `iframe[name="editor-canvas"]`.
-	let $canvas = jQuery( '.edit-site-visual-editor__editor-canvas' );
-	if ( $canvas.length === 0 ) {
-		$canvas = jQuery( 'iframe[name="editor-canvas"]' );
+	const frame = sowbGetEditorCanvasFrame();
+
+	if ( frame && frame.contentDocument && frame.contentWindow ) {
+		// Update the cached canvas reference for sowbMaybeSetupSiteEditorAssets().
+		if ( frame !== window.frameElement ) {
+			sowbSiteEditorCanvas = jQuery( frame );
+		}
+
+		// Use the iframe's own jQuery so the returned object is already in the
+		// correct jQuery instance — sowSetupForm(), wpColorPicker, and all other
+		// field plugins are bound to this same jQuery when their scripts run.
+		const frameJQuery = frame.contentWindow.jQuery || jQuery;
+		const $iframeForm = frameJQuery( frame.contentDocument )
+			.find( '[data-block="' + clientId + '"]' )
+			.find( '.siteorigin-widget-form-main[data-class]' )
+			.first();
+
+		if ( $iframeForm.length > 0 ) {
+			return $iframeForm;
+		}
 	}
 
-	// Cache the resolved canvas for use by sowbMaybeSetupSiteEditorAssets()
-	// and other consumers, but only when the canvas is actually present so
-	// we never lock in an empty result before the iframe has mounted.
-	if ( $canvas.length > 0 ) {
-		sowbSiteEditorCanvas = $canvas;
-	}
-
-	if ( $canvas.length === 0 ) {
-		// No iframe (e.g. widgets.php Block Widgets screen, classic editor).
-		return jQuery( '[data-block="' + clientId + '"]' ).find( '.siteorigin-widget-form.siteorigin-widget-form-main' );
-	}
-
-	// Return the main WB form from inside the editor iframe.
-	return $canvas
-		.contents()
+	// No iframe (e.g. widgets.php Block Widgets screen, classic editor).
+	return jQuery( document )
 		.find( '[data-block="' + clientId + '"]' )
-		.find( '.siteorigin-widget-form.siteorigin-widget-form-main' );
+		.find( '.siteorigin-widget-form-main[data-class]' )
+		.first();
 };
 
 const sowbCanvasCloneElements = [

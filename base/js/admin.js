@@ -2204,6 +2204,14 @@ var sowbForms = window.sowbForms || {};
 
 
 	$(function () {
+		// When running inside the block editor canvas iframe, initialize any
+		// widget forms that are already in the DOM — but only if jQuery UI
+		// (sortable) is also already loaded. Scripts are injected asynchronously
+		// so execution order is not guaranteed; if sortable isn't available yet
+		// sowSetupRepeater would throw and abort setup before color pickers.
+		// The polling interval in sowbSetupWidgetForm (widget-block.js) is the
+		// primary mechanism; this path is a complementary fast-path for the case
+		// where all scripts happen to load before the form is rendered.
 		$(document).trigger('sowadminloaded');
 	});
 

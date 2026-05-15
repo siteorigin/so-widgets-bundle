@@ -314,8 +314,17 @@
 			$field.removeData( 'sowb-tinymce-init-timeout' );
 		}
 
+		// If an init was in flight, resolve (and remove) its pending promise now.
+		// The safety timeout was the only other resolver; cancelling it above without
+		// resolving here would leave sowbGetTinyMCEInitPromise() waiting forever.
+		const pendingId = $field.data( 'sowb-tinymce-initializing-id' );
+
 		$field.removeData( 'sowb-tinymce-initializing' );
 		$field.removeData( 'sowb-tinymce-initializing-id' );
+
+		if ( pendingId && _tinymceInitPending[ pendingId ] ) {
+			_tinymceInitPending[ pendingId ].resolve();
+		}
 		$field.removeData( 'sowb-pre-init-bound' );
 		$field.removeAttr( 'data-pre-init' );
 
@@ -796,6 +805,12 @@
 				$field.removeAttr( 'data-initialized' );
 			} else if ( hasHealthyTinyMCEEditor( $field, initializedEditor.id ) ) {
 				return;
+			} else if ( $field.data( 'sowb-tinymce-initializing' ) ) {
+				// An init is in flight: data-initialized was set when setupTinyMCEField
+				// started but TinyMCE hasn't fired 'init' yet. Clearing the attr here
+				// would leave the field unmarked after the pending init completes,
+				// causing the next setup event to tear down a healthy editor.
+				return;
 			} else {
 				// Stale data-initialized would cause setupTinyMCEField to attempt
 				// teardown of an editor that no longer exists; clear it now.
@@ -938,24 +953,23 @@
 		}
 
 		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
-			let $messageFields = null;
-			if ( e.data.formSelector ) {
-				const $form = resolvePostMessageForms( e.data );
-				if ( $form.length ) {
-					$messageFields = getTinyMCEFieldsFromForms( $form );
-				} else {
-					return;
-				}
-			}
-
-			// Bug fix: null means no formSelector was provided, which would cause
-			// setupSiteEditorTinyMCEFields to fall back to querying ALL TinyMCE
-			// fields. Guard against both null and an empty jQuery set.
-			if ( ! $messageFields || ! $messageFields.length ) {
+			if ( ! e.data.formSelector ) {
 				return;
 			}
 
-			setupSiteEditorTinyMCEFields( $messageFields );
+			const $form = resolvePostMessageForms( e.data );
+			if ( ! $form.length ) {
+				return;
+			}
+
+			// Full form setup (sowSetupForm, setWidgetFormValues) is handled by the
+			// polling interval in sowbSetupWidgetForm (widget-block.js), which waits
+			// for jQuery UI to be ready before calling sowSetupForm. This handler
+			// covers only TinyMCE fields, including those added by repeater items.
+			const $tinymceFields = getTinyMCEFieldsFromForms( $form );
+			if ( $tinymceFields.length ) {
+				setupSiteEditorTinyMCEFields( $tinymceFields );
+			}
 		}
 	};
 	window.addEventListener( 'message', window._sowbTinyMCEMessageHandler );
