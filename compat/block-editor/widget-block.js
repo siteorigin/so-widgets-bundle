@@ -266,19 +266,26 @@
 
 		sowbMaybeSetupSiteEditorAssets();
 
-		// The preview-container 'a' click toggles React state in the parent
-		// component. Native DOM click events cross frame boundaries so this
-		// binding works from either context.
-		const $previewContainer = $mainForm.siblings( '.siteorigin-widget-preview' );
-		$previewContainer.find( '> a' ).on( 'click', function( event ) {
-			event.stopImmediatePropagation();
+		const bindBlockPreviewHandler = function() {
+			// sowSetupForm() binds the legacy widget preview modal handler. Direct
+			// widget blocks have their own React preview path, so take ownership of
+			// this link after setup and prevent the legacy form/iframe submit path
+			// from navigating the editor canvas.
+			$mainForm
+				.siblings( '.siteorigin-widget-preview' )
+				.find( '> a' )
+				.off( 'click' )
+				.on( 'click.sowbBlockPreview', function( event ) {
+					event.preventDefault();
+					event.stopImmediatePropagation();
 
-			setState( {
-				editing: false,
-				previewInitialized: false,
-				widgetPreviewHtml: false,
-			} );
-		} );
+					setState( {
+						editing: false,
+						previewInitialized: false,
+						widgetPreviewHtml: false,
+					} );
+				} );
+		};
 
 		$mainForm.data( 'backupDisabled', true );
 
@@ -292,6 +299,7 @@
 		}
 
 		$mainForm.sowSetupForm();
+		bindBlockPreviewHandler();
 
 		// Namespace the change event so multiple sowbSetupWidgetForm calls for
 		// the same block (React double-render / stale closures) don't stack up
@@ -642,7 +650,14 @@
 							ToolbarButton,
 							{
 								label: __( 'Preview widget.', 'so-widgets-bundle' ),
-								onClick: () => mergeState( { editing: false } ),
+								onClick: ( event ) => {
+									if ( event ) {
+										event.preventDefault();
+										event.stopPropagation();
+									}
+
+									mergeState( { editing: false } );
+								},
 								icon: 'visibility'
 							}
 						)
@@ -691,12 +706,19 @@
 							ToolbarButton,
 							{
 								label: __( 'Edit widget.', 'so-widgets-bundle' ),
-								onClick: () => mergeState( {
-									editing: true,
-									loadingForm: false,
-									widgetFormHtml: '',
-									formInitialized: false,
-								} ),
+								onClick: ( event ) => {
+									if ( event ) {
+										event.preventDefault();
+										event.stopPropagation();
+									}
+
+									mergeState( {
+										editing: true,
+										loadingForm: false,
+										widgetFormHtml: '',
+										formInitialized: false,
+									} );
+								},
 								icon: 'edit'
 							}
 						)
