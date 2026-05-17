@@ -4,7 +4,15 @@ var sowbForms = window.sowbForms || {};
 
 (function ($) {
 
+	if ( window.sowbWidgetAdminScriptLoaded ) {
+		return;
+	}
+
+	window.sowbWidgetAdminScriptLoaded = true;
+	window.sowbWidgetAdminScriptLoadedAt = Date.now();
+
 	const isBlockEditor = $( 'body' ).hasClass( 'block-editor-page' );
+
 
 	let fontList = '';
 	for ( const [ value, label ] of Object.entries( soWidgets.fonts ) ) {
@@ -63,7 +71,9 @@ var sowbForms = window.sowbForms || {};
 			.querySelectorAll( 'span[data-mce-type="bookmark"], span.mce_SELRES_start, span.mce_SELRES_end' )
 			.forEach( ( marker ) => marker.remove() );
 
-		return wrapper.innerHTML.replace( /\uFEFF/g, '' );
+		const sanitizedContent = wrapper.innerHTML.replace( /\uFEFF/g, '' );
+
+		return sanitizedContent;
 	};
 
 	/**
@@ -1742,7 +1752,7 @@ var sowbForms = window.sowbForms || {};
 			}
 		} );
 
-		return Promise.all( flushPromises ).then( function() {} );
+		return Promise.all( flushPromises );
 	};
 
 	sowbForms.getWidgetFormSnapshot = function( formContainer, options ) {
@@ -1787,6 +1797,7 @@ var sowbForms = window.sowbForms || {};
 					if ( options.triggerChange ) {
 						$textarea.trigger( 'change' );
 					}
+
 				} )
 			);
 		} );
