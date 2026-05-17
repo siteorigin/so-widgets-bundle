@@ -949,6 +949,10 @@ var sowbForms = window.sowbForms || {};
 
 			// Create an object with the repeater html so we can make some changes to it.
 			var repeaterObject = $('<div>' + $el.find('> .siteorigin-widget-field-repeater-item-html').html() + '</div>');
+			repeaterObject
+				.find( '.siteorigin-widget-field[data-initialized]' )
+				.removeAttr( 'data-initialized' );
+
 			repeaterObject.find('.siteorigin-widget-input[data-name]').each(function () {
 				var $$ = $(this);
 				// Skip out items that are themselves inside repeater HTML wrappers

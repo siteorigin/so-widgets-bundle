@@ -1,12 +1,19 @@
 /* global jQuery, soWidgets */
 
 ( function( $ ) {
+	const isRepeaterTemplateField = function( $field ) {
+		return $field.closest( '.siteorigin-widget-field-repeater-item-html' ).length > 0;
+	};
 
 	const setupMediaField = function( e ) {
 		const $field = $( this );
 		const $media = $field.find( '> .media-field-wrapper' );
 		const $inputField = $field.find( '.siteorigin-widget-input' ).not( '.media-fallback-external' );
 		const $externalField = $field.find( '.media-fallback-external' );
+
+		if ( isRepeaterTemplateField( $field ) ) {
+			return;
+		}
 
 		if ( $field.attr( 'data-initialized' ) ) {
 			return;
@@ -487,7 +494,12 @@
 	window.addEventListener( 'message', function( e ) {
 		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
 			$( '.siteorigin-widget-field-type-media' ).each( function() {
-				if ( $( this ).attr( 'data-initialized' ) ) {
+				const $field = $( this );
+
+				if (
+					isRepeaterTemplateField( $field ) ||
+					$field.attr( 'data-initialized' )
+				) {
 					return;
 				}
 

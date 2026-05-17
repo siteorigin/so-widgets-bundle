@@ -846,12 +846,37 @@ test(
 	'Test the Image Grid widget.',
 	async ( { page } ) => {
 		const {
+			admin,
 			offset,
 			widget
 		} = await testPrep(
 			page,
 			'sowb/siteorigin-widgets-imagegrid-widget'
 		);
+
+		const imagesRepeater = widget.locator( '.siteorigin-widget-field-images > .siteorigin-widget-field-repeater' );
+		const addImageButton = imagesRepeater.locator( '> .siteorigin-widget-field-repeater-add' );
+		await ensureElementVisible( addImageButton, offset );
+		await addImageButton.click();
+
+		const imageItems = imagesRepeater.locator( '> .siteorigin-widget-field-repeater-items > .siteorigin-widget-field-repeater-item' );
+		await expect( imageItems ).toHaveCount( 1 );
+
+		const firstImageItem = imageItems.first();
+		const firstImageTop = firstImageItem.locator( '> .siteorigin-widget-field-repeater-item-top' );
+		await ensureElementVisible( firstImageTop, offset );
+		await firstImageTop.click( { force: true } );
+
+		const firstImageMediaField = firstImageItem.locator( '.siteorigin-widget-field-image' );
+		const firstImageMediaButton = firstImageMediaField.locator( '.media-upload-button' );
+		await ensureElementVisible( firstImageMediaButton, offset );
+		await firstImageMediaButton.click( { force: true } );
+
+		await uploadImageToMediaLibrary( admin );
+
+		await expect(
+			firstImageMediaField.locator( '.siteorigin-widget-input[type="hidden"]:not(.media-fallback-external)' )
+		).toHaveValue( /.+/ );
 
 		const imagePaddingSetting = widget.locator( '.siteorigin-widget-field-padding' );
 		await ensureElementVisible( imagePaddingSetting, offset );

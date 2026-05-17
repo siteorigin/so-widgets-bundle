@@ -1,8 +1,16 @@
 /* global jQuery, soWidgets */
 
 ( function( $ ) {
+	const isRepeaterTemplateField = function( $field ) {
+		return $field.closest( '.siteorigin-widget-field-repeater-item-html' ).length > 0;
+	};
+
 	const setupMultipleMediaField = function() {
 		const $field = $( this );
+
+		if ( isRepeaterTemplateField( $field ) ) {
+			return;
+		}
 
 		if ( $field.data( 'initialized' ) ) {
 			return;
@@ -172,6 +180,10 @@
 	window.addEventListener( 'message', function( e ) {
 		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
 			$( '.siteorigin-widget-field-type-multiple_media' ).each( function() {
+				if ( isRepeaterTemplateField( $( this ) ) ) {
+					return;
+				}
+
 				setupMultipleMediaField.call( this );
 			} );
 		}
