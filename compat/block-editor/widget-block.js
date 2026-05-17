@@ -266,6 +266,32 @@
 
 		sowbMaybeSetupSiteEditorAssets();
 
+		const switchToBlockPreview = async function() {
+			const oldTimer = $mainForm.data( 'sowb-preview-timer' );
+			if ( oldTimer ) {
+				clearTimeout( oldTimer );
+			}
+
+			const widgetData = await sowbSnapshotBlockFormToAttributes( props, $mainForm );
+
+			setState( {
+				editing: false,
+				previewInitialized: false,
+				widgetPreviewHtml: false,
+			} );
+
+			if ( widgetData ) {
+				sowbGenerateWidgetPreview(
+					props,
+					false,
+					setState,
+					widgetData,
+					props.widget.class,
+					activeRequestRef
+				);
+			}
+		};
+
 		const bindBlockPreviewHandler = function() {
 			// sowSetupForm() binds the legacy widget preview modal handler. Direct
 			// widget blocks have their own React preview path, so take ownership of
@@ -279,11 +305,7 @@
 					event.preventDefault();
 					event.stopImmediatePropagation();
 
-					setState( {
-						editing: false,
-						previewInitialized: false,
-						widgetPreviewHtml: false,
-					} );
+					switchToBlockPreview();
 				} );
 		};
 
@@ -483,6 +505,27 @@
 		const activeRequestRef = element.useRef( null );
 		const iframeFormInitKeyRef = element.useRef( null );
 
+		const switchToBlockPreview = async () => {
+			const widgetData = await sowbSnapshotBlockFormToAttributes( props );
+
+			mergeState( {
+				editing: false,
+				previewInitialized: false,
+				widgetPreviewHtml: false,
+			} );
+
+			if ( widgetData ) {
+				sowbGenerateWidgetPreview(
+					props,
+					false,
+					mergeState,
+					widgetData,
+					props.widget.class,
+					activeRequestRef
+				);
+			}
+		};
+
 		// Ensure widgetClass attribute is set once (was done in constructor).
 		element.useEffect( () => {
 			if ( ! props.attributes.widgetClass ) {
@@ -656,7 +699,7 @@
 										event.stopPropagation();
 									}
 
-									mergeState( { editing: false } );
+									switchToBlockPreview();
 								},
 								icon: 'visibility'
 							}
@@ -1262,6 +1305,26 @@ const sowbGetBlockFormSnapshot = async ( $form ) => {
 	}
 
 	return null;
+};
+
+const sowbSnapshotBlockFormToAttributes = async ( props, $form = null ) => {
+	const $snapshotForm = $form && $form.length ?
+		$form :
+		sowbGetBlockForm( props.clientId );
+
+	if ( ! $snapshotForm || $snapshotForm.length === 0 ) {
+		return null;
+	}
+
+	const widgetData = await sowbGetBlockFormSnapshot( $snapshotForm );
+
+	if ( ! sowbHasWidgetDataSnapshot( widgetData ) ) {
+		return null;
+	}
+
+	props.setAttributes( { widgetData } );
+
+	return widgetData;
 };
 
 const sowbCloneBlocksWithWidgetData = ( blocks, widgetDataByClientId ) => {
