@@ -44,6 +44,28 @@ var sowbForms = window.sowbForms || {};
 
 	const repeaterVisibilitySensitiveFieldSelector = '.siteorigin-widget-field-type-tinymce, .siteorigin-widget-field-type-date-range';
 
+	sowbForms.sanitizeTinyMCEContent = function( content ) {
+		if ( typeof content !== 'string' || content.length === 0 ) {
+			return content;
+		}
+
+		if (
+			content.indexOf( 'mce_SELRES_' ) === -1 &&
+			content.indexOf( 'data-mce-type="bookmark"' ) === -1 &&
+			content.indexOf( '\uFEFF' ) === -1
+		) {
+			return content;
+		}
+
+		const wrapper = document.createElement( 'div' );
+		wrapper.innerHTML = content;
+		wrapper
+			.querySelectorAll( 'span[data-mce-type="bookmark"], span.mce_SELRES_start, span.mce_SELRES_end' )
+			.forEach( ( marker ) => marker.remove() );
+
+		return wrapper.innerHTML.replace( /\uFEFF/g, '' );
+	};
+
 	/**
 	 * Triggers setup for visibility-sensitive repeater fields after a repeater
 	 * item is added or expanded.
@@ -1218,7 +1240,7 @@ var sowbForms = window.sowbForms || {};
 								$inputElement.css( 'display', '' );
 								var curEd = tinymce.get( id );
 								if ( curEd ) {
-									var contentVal = curEd.getContent();
+									var contentVal = sowbForms.sanitizeTinyMCEContent( curEd.getContent() );
 									if ( ! _.isEmpty( contentVal ) ) {
 										$inputElement.val( contentVal );
 									} else if ( contentVal.search( '<' ) !== -1 && contentVal.search( '>' ) === -1) {
@@ -1690,10 +1712,10 @@ var sowbForms = window.sowbForms || {};
 					}
 
 					if ( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
-						fieldValue = editor.getContent();
+						fieldValue = sowbForms.sanitizeTinyMCEContent( editor.getContent() );
 					}
 					else {
-						fieldValue = $$.val();
+						fieldValue = sowbForms.sanitizeTinyMCEContent( $$.val() );
 					}
 				} else if ( $$.prop( 'tagName' ) === 'SELECT' ) {
 					var selected = $$.find( 'option:selected' );
@@ -1933,20 +1955,22 @@ var sowbForms = window.sowbForms || {};
 						editor = tinyMCE.get( $$.attr( 'id' ) );
 					}
 
+					var tinyMCEFieldValue = sowbForms.sanitizeTinyMCEContent( values.value );
 					if ( editor !== null && typeof( editor.setContent ) === "function" && ! editor.isHidden() && $$.parent().is( ':visible' ) ) {
-						if ( compareValues( editor.getContent(), values.value ) ) {
+						if ( compareValues( sowbForms.sanitizeTinyMCEContent( editor.getContent() ), tinyMCEFieldValue ) ) {
 							if ( editor.initialized ) {
-								editor.setContent( values.value );
+								editor.setContent( tinyMCEFieldValue );
 								updated = true;
 							} else {
 								editor.on('init', function () {
-									editor.setContent( values.value );
+									editor.setContent( tinyMCEFieldValue );
 								});
 								updated = true;
 							}
 						}
-					} else if ( compareValues( $$.val(), values.value ) ) {
-						$$.val( values.value );
+					}
+					else if ( compareValues( sowbForms.sanitizeTinyMCEContent( $$.val() ), tinyMCEFieldValue ) ) {
+						$$.val( tinyMCEFieldValue );
 						updated = true;
 					}
 				} else if ( $$.is( '.panels-data' ) ) {

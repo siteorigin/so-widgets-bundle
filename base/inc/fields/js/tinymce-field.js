@@ -206,6 +206,48 @@
 			.replace( /^-+|-+$/g, '' );
 	};
 
+	const sanitizeTinyMCEContent = function( content ) {
+		if (
+			window.sowbForms &&
+			typeof window.sowbForms.sanitizeTinyMCEContent === 'function'
+		) {
+			return window.sowbForms.sanitizeTinyMCEContent( content );
+		}
+
+		if ( typeof content !== 'string' || content.length === 0 ) {
+			return content;
+		}
+
+		if (
+			content.indexOf( 'mce_SELRES_' ) === -1 &&
+			content.indexOf( 'data-mce-type="bookmark"' ) === -1 &&
+			content.indexOf( '\uFEFF' ) === -1
+		) {
+			return content;
+		}
+
+		const wrapper = document.createElement( 'div' );
+		wrapper.innerHTML = content;
+		wrapper
+			.querySelectorAll( 'span[data-mce-type="bookmark"], span.mce_SELRES_start, span.mce_SELRES_end' )
+			.forEach( ( marker ) => marker.remove() );
+
+		return wrapper.innerHTML.replace( /\uFEFF/g, '' );
+	};
+
+	const saveTinyMCEEditorContent = function( editor, $textarea ) {
+		if ( ! editor || typeof editor.getContent !== 'function' ) {
+			return '';
+		}
+
+		const content = sanitizeTinyMCEContent( editor.getContent() );
+		if ( $textarea && $textarea.length ) {
+			$textarea.val( content );
+		}
+
+		return content;
+	};
+
 	/**
 	 * Resolves the best available WordPress editor API object.
 	 *
@@ -266,7 +308,10 @@
 
 			if ( editor ) {
 				editor.insertContent( `<img src="${ attachment.url }" alt="${ attachment.alt }" />` );
-				editor.save();
+				saveTinyMCEEditorContent(
+					editor,
+					$( typeof editor.getElement === 'function' ? editor.getElement() : document.getElementById( editorId ) )
+				);
 				editor.fire( 'change' );
 			}
 		} );
@@ -557,6 +602,16 @@
 		let id = $textarea.attr( 'data-tinymce-id' ) || $textarea.data( 'tinymce-id' );
 		const fieldElement = $field.get( 0 );
 		const textareaElement = $textarea.get( 0 );
+		const updateTextTabLabel = function() {
+			const textTab = document.getElementById( id + '-html' );
+			if ( textTab ) {
+				const codeLabel = window.top.wp && window.top.wp.i18n && typeof window.top.wp.i18n.__ === 'function'
+					? window.top.wp.i18n.__( 'Code' )
+					: 'Code';
+				textTab.textContent = codeLabel;
+				textTab.setAttribute( 'aria-label', codeLabel );
+			}
+		};
 
 		if ( id ) {
 			const existingTextarea = document.getElementById( id );
@@ -671,7 +726,7 @@
 				editor.on( 'change', function() {
 					const ed = window.tinymce.get( id );
 					if ( ed ) {
-						ed.save();
+						saveTinyMCEEditorContent( ed, $textarea );
 						$textarea.trigger( 'change' );
 					}
 				} );
@@ -696,10 +751,7 @@
 					if ( window.frameElement ) {
 						// Fix code tab label in the Site Editor.
 						editor.on( 'init', () => {
-							const textTab = document.querySelector( `#${id}-html` );
-							if ( textTab ) {
-								textTab.innerHTML = window.top.wp.i18n.__( 'Code' );
-							}
+							updateTextTabLabel();
 						} );
 					}
 
@@ -757,15 +809,22 @@
 				const editor = window.tinymce.get( id );
 				// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex.
 				if ( editor !== null ) {
-					let content = $textarea.val();
+					let content = sanitizeTinyMCEContent( $textarea.val() );
 					if ( content.search( '<' ) !== -1 && content.search( '>' ) === -1 ) {
 						content = content.replace( /</g, '' );
-						$textarea.val( content );
 					}
+					$textarea.val( content );
 					editor.setContent( window.switchEditors.wpautop( content ) );
+				}
+			} else {
+				const editor = window.tinymce.get( id );
+				if ( editor !== null ) {
+					saveTinyMCEEditorContent( editor, $textarea );
 				}
 			}
 			settings.selectedEditor = mode;
+			updateTextTabLabel();
+			setTimeout( updateTextTabLabel, 0 );
 
 			$field.find( 'textarea.wp-editor-area' ).css(
 				'visibility', mode === 'tmce' ? 'hidden' : 'visible'
