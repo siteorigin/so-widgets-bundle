@@ -50,9 +50,12 @@ var sowbForms = window.sowbForms || {};
 		}
 	}
 
-	const repeaterSetupFieldSelector = [
+	const repeaterVisibilitySensitiveFieldSelector = [
 		'.siteorigin-widget-field-type-tinymce',
 		'.siteorigin-widget-field-type-date-range',
+	].join( ', ' );
+
+	const repeaterImmediateSetupFieldSelector = [
 		'.siteorigin-widget-field-type-media',
 		'.siteorigin-widget-field-type-multiple_media',
 	].join( ', ' );
@@ -85,25 +88,33 @@ var sowbForms = window.sowbForms || {};
 	 * Triggers setup for repeater fields that need explicit initialization after
 	 * a repeater item is added or expanded.
 	 *
-	 * Fires `sowsetupformfield` immediately on visible fields, and always fires
-	 * `sowrepeaterfieldsadded` on the document for all fields (including hidden
-	 * ones) so that iframe pre-init handlers can bind before fields become
-	 * visible. The `clientId` of the enclosing block, when present, is passed as
-	 * a second argument so that only the relevant block reacts.
+	 * Fires `sowsetupformfield` immediately on media fields and on visible
+	 * visibility-sensitive fields, and always fires `sowrepeaterfieldsadded` on
+	 * the document for all setup fields. The `clientId` of the enclosing block,
+	 * when present, is passed as a second argument so that only the relevant
+	 * block reacts.
 	 *
 	 * @param {jQuery} $container - The newly added or expanded repeater item/form.
 	 */
-	const triggerVisibleRepeaterVisibilityFieldSetup = ( $container ) => {
-		const $allFields = $container
-			.filter( repeaterSetupFieldSelector )
-			.add( $container.find( repeaterSetupFieldSelector ) )
+	const triggerRepeaterFieldSetup = ( $container ) => {
+		const $visibilitySensitiveFields = $container
+			.filter( repeaterVisibilitySensitiveFieldSelector )
+			.add( $container.find( repeaterVisibilitySensitiveFieldSelector ) )
 			// Exclude placeholder rows inside repeater item templates — these carry
 			// `_id_` in their textarea IDs and must never be initialized directly.
 			.not( function() {
 				return $( this ).closest( '.siteorigin-widget-field-repeater-item-html' ).length > 0;
 			} );
 
-		const $fields = $allFields.filter( ':visible' );
+		const $immediateFields = $container
+			.filter( repeaterImmediateSetupFieldSelector )
+			.add( $container.find( repeaterImmediateSetupFieldSelector ) )
+			.not( function() {
+				return $( this ).closest( '.siteorigin-widget-field-repeater-item-html' ).length > 0;
+			} );
+
+		const $allFields = $visibilitySensitiveFields.add( $immediateFields );
+		const $fields = $visibilitySensitiveFields.filter( ':visible' ).add( $immediateFields );
 
 		$fields.each( function() {
 			$( this ).trigger( 'sowsetupformfield' );
@@ -982,7 +993,7 @@ var sowbForms = window.sowbForms || {};
 			$el.find( '> .siteorigin-widget-field-repeater-items' ).append( item ).sortable( 'refresh' ).trigger( 'updateFieldPositions' );
 			item.sowSetupRepeaterItems();
 			item.hide().slideDown( 'fast', function () {
-				triggerVisibleRepeaterVisibilityFieldSetup( $( this ) );
+				triggerRepeaterFieldSetup( $( this ) );
 				$( window ).trigger( 'resize' );
 			});
 			$el.trigger( 'change' );
@@ -1182,7 +1193,7 @@ var sowbForms = window.sowbForms || {};
 								$this.trigger( 'slideToggleCloseComplete' );
 							} else {
 								$this.trigger( 'slideToggleOpenComplete' );
-								triggerVisibleRepeaterVisibilityFieldSetup( $this );
+								triggerRepeaterFieldSetup( $this );
 							}
 
 							$( window ).trigger( 'resize' );
@@ -1358,7 +1369,7 @@ var sowbForms = window.sowbForms || {};
 						$items.append( $copyItem ).sortable( 'refresh' ).trigger( 'updateFieldPositions' );
 						$copyItem.sowSetupRepeaterItems();
 						$copyItem.hide().slideDown( 'fast', function () {
-							triggerVisibleRepeaterVisibilityFieldSetup( $( this ) );
+							triggerRepeaterFieldSetup( $( this ) );
 							$( window ).trigger( 'resize' );
 						});
 						// If increment is enabled for this item, trigger label updates.
