@@ -471,9 +471,10 @@
 		} );
 	};
 
-	// If the current page isn't the site editor, set up the Media field now.
+	// In the Site Editor iframe, repeater rows added after the initial block
+	// postMessage still rely on the normal field setup event.
 	if (
-		window.top === window.self &&
+		window.top !== window.self ||
 		(
 			typeof pagenow === 'string' &&
 			pagenow !== 'site-editor'
