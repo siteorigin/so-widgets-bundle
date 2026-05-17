@@ -1655,6 +1655,145 @@ var sowbForms = window.sowbForms || {};
 		return formContainer.data( 'id-base' );
 	};
 
+	const widgetFieldFlushers = {};
+
+	const getElementWindow = function( element ) {
+		return element && element.ownerDocument && element.ownerDocument.defaultView ?
+			element.ownerDocument.defaultView :
+			window;
+	};
+
+	const getElementJQuery = function( element ) {
+		const elementWindow = getElementWindow( element );
+		return elementWindow.jQuery || $;
+	};
+
+	const normalizeWidgetFormContainer = function( formContainer ) {
+		if (
+			formContainer === undefined ||
+			formContainer === null ||
+			formContainer.length === 0
+		) {
+			return $();
+		}
+
+		const element = formContainer.jquery ? formContainer[0] : formContainer;
+		const elementJQuery = getElementJQuery( element );
+
+		return elementJQuery( element );
+	};
+
+	const getWidgetFieldType = function( $field ) {
+		const fieldClasses = ( $field.attr( 'class' ) || '' ).split( /\s+/ );
+
+		for ( let i = 0; i < fieldClasses.length; i++ ) {
+			const matches = fieldClasses[ i ].match( /^siteorigin-widget-field-type-(.+)$/ );
+
+			if ( matches ) {
+				return matches[1];
+			}
+		}
+
+		return null;
+	};
+
+	const normalizeWidgetFormSnapshotOptions = function( options ) {
+		return $.extend( {
+			awaitAsync: true,
+			triggerChange: false,
+		}, options || {} );
+	};
+
+	sowbForms.registerFieldFlusher = function( fieldType, callback ) {
+		if (
+			typeof fieldType !== 'string' ||
+			typeof callback !== 'function'
+		) {
+			return;
+		}
+
+		widgetFieldFlushers[ fieldType ] = callback;
+	};
+
+	sowbForms.flushWidgetForm = function( formContainer, options ) {
+		const $formContainer = normalizeWidgetFormContainer( formContainer );
+		const normalizedOptions = normalizeWidgetFormSnapshotOptions( options );
+		const flushPromises = [];
+
+		$formContainer.find( '.siteorigin-widget-field' ).each( function() {
+			const $field = getElementJQuery( this )( this );
+			const fieldType = getWidgetFieldType( $field );
+
+			if (
+				! fieldType ||
+				! widgetFieldFlushers[ fieldType ]
+			) {
+				return;
+			}
+
+			const flushResult = widgetFieldFlushers[ fieldType ]( $field, normalizedOptions );
+
+			if (
+				normalizedOptions.awaitAsync &&
+				flushResult &&
+				typeof flushResult.then === 'function'
+			) {
+				flushPromises.push( Promise.resolve( flushResult ) );
+			}
+		} );
+
+		return Promise.all( flushPromises ).then( function() {} );
+	};
+
+	sowbForms.getWidgetFormSnapshot = function( formContainer, options ) {
+		const $formContainer = normalizeWidgetFormContainer( formContainer );
+
+		return sowbForms.flushWidgetForm( $formContainer, options ).then( function() {
+			return sowbForms.getWidgetFormValues( $formContainer );
+		} );
+	};
+
+	sowbForms.registerFieldFlusher( 'tinymce', function( $field, options ) {
+		const fieldWindow = getElementWindow( $field[0] );
+		const fieldJQuery = fieldWindow.jQuery || $;
+		const flushPromises = [];
+
+		$field.find( 'textarea.wp-editor-area' ).each( function() {
+			const $textarea = fieldJQuery( this );
+			const editorId = $textarea.data( 'tinymce-id' ) || $textarea.attr( 'id' );
+			const initPromise = ( editorId && typeof fieldWindow.sowbGetTinyMCEInitPromise === 'function' ) ?
+				fieldWindow.sowbGetTinyMCEInitPromise( editorId ) :
+				Promise.resolve();
+
+			flushPromises.push(
+				initPromise.then( function() {
+					const editor = fieldWindow.tinymce && editorId ?
+						fieldWindow.tinymce.get( editorId ) :
+						null;
+
+					if (
+						editor &&
+						typeof editor.getContent === 'function' &&
+						(
+							typeof editor.isHidden !== 'function' ||
+							! editor.isHidden()
+						)
+					) {
+						$textarea.val( sowbForms.sanitizeTinyMCEContent( editor.getContent() ) );
+					} else {
+						$textarea.val( sowbForms.sanitizeTinyMCEContent( $textarea.val() ) );
+					}
+
+					if ( options.triggerChange ) {
+						$textarea.trigger( 'change' );
+					}
+				} )
+			);
+		} );
+
+		return Promise.all( flushPromises );
+	} );
+
 	sowbForms.getWidgetFormValues = function ( formContainer ) {
 
 		if ( _.isUndefined( formContainer ) ) {
