@@ -50,7 +50,12 @@ var sowbForms = window.sowbForms || {};
 		}
 	}
 
-	const repeaterVisibilitySensitiveFieldSelector = '.siteorigin-widget-field-type-tinymce, .siteorigin-widget-field-type-date-range';
+	const repeaterSetupFieldSelector = [
+		'.siteorigin-widget-field-type-tinymce',
+		'.siteorigin-widget-field-type-date-range',
+		'.siteorigin-widget-field-type-media',
+		'.siteorigin-widget-field-type-multiple_media',
+	].join( ', ' );
 
 	sowbForms.sanitizeTinyMCEContent = function( content ) {
 		if ( typeof content !== 'string' || content.length === 0 ) {
@@ -77,8 +82,8 @@ var sowbForms = window.sowbForms || {};
 	};
 
 	/**
-	 * Triggers setup for visibility-sensitive repeater fields after a repeater
-	 * item is added or expanded.
+	 * Triggers setup for repeater fields that need explicit initialization after
+	 * a repeater item is added or expanded.
 	 *
 	 * Fires `sowsetupformfield` immediately on visible fields, and always fires
 	 * `sowrepeaterfieldsadded` on the document for all fields (including hidden
@@ -90,8 +95,8 @@ var sowbForms = window.sowbForms || {};
 	 */
 	const triggerVisibleRepeaterVisibilityFieldSetup = ( $container ) => {
 		const $allFields = $container
-			.filter( repeaterVisibilitySensitiveFieldSelector )
-			.add( $container.find( repeaterVisibilitySensitiveFieldSelector ) )
+			.filter( repeaterSetupFieldSelector )
+			.add( $container.find( repeaterSetupFieldSelector ) )
 			// Exclude placeholder rows inside repeater item templates — these carry
 			// `_id_` in their textarea IDs and must never be initialized directly.
 			.not( function() {
