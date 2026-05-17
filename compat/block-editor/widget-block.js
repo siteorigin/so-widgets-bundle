@@ -860,9 +860,9 @@
 						dangerouslySetInnerHTML: {
 							__html: widgetPreviewHtml
 						},
-						ref: () => {
+						ref: ( previewElement ) => {
 							if ( ! previewInitialized ) {
-								jQuery( window.sowb ).trigger( 'setup_widgets', { preview: true } );
+								sowbSetupPreviewWidgets( previewElement );
 								mergeState( { previewInitialized: true } );
 							}
 						}
@@ -1206,6 +1206,20 @@ const sowbGetElementWindow = ( element ) => {
 	return element && element.ownerDocument && element.ownerDocument.defaultView ?
 		element.ownerDocument.defaultView :
 		window;
+};
+
+const sowbSetupPreviewWidgets = ( previewElement ) => {
+	sowbMaybeSetupSiteEditorAssets();
+
+	const previewWindow = sowbGetElementWindow( previewElement );
+	const previewJQuery = previewWindow.jQuery || jQuery;
+	const previewSowb = previewWindow.sowb || window.sowb;
+
+	if ( ! previewSowb ) {
+		return;
+	}
+
+	previewJQuery( previewSowb ).trigger( 'setup_widgets', { preview: true } );
 };
 
 /**
@@ -1600,6 +1614,10 @@ const sowbCanvasCloneElements = [
 	'#wplink-js',
 	'#buttons-css',
 	'#dashicons-css',
+
+	// Widget frontend preview scripts.
+	'#dessandro-imagesLoaded-js',
+	'#sow-image-grid-js',
 
 	// Load all styles imported using load-styles.php.
 	'link[href*="wp-admin/load-styles.php"]',
