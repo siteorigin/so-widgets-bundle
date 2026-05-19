@@ -4,7 +4,15 @@ var sowbForms = window.sowbForms || {};
 
 (function ($) {
 
+	if ( window.sowbWidgetAdminScriptLoaded ) {
+		return;
+	}
+
+	window.sowbWidgetAdminScriptLoaded = true;
+	window.sowbWidgetAdminScriptLoadedAt = Date.now();
+
 	const isBlockEditor = $( 'body' ).hasClass( 'block-editor-page' );
+
 
 	let fontList = '';
 	for ( const [ value, label ] of Object.entries( soWidgets.fonts ) ) {
@@ -41,6 +49,84 @@ var sowbForms = window.sowbForms || {};
 			$fontSelect.val( selectedFont );
 		}
 	}
+
+	const repeaterVisibilitySensitiveFieldSelector = [
+		'.siteorigin-widget-field-type-tinymce',
+		'.siteorigin-widget-field-type-date-range',
+	].join( ', ' );
+
+	const repeaterImmediateSetupFieldSelector = [
+		'.siteorigin-widget-field-type-media',
+		'.siteorigin-widget-field-type-multiple_media',
+	].join( ', ' );
+
+	sowbForms.sanitizeTinyMCEContent = function( content ) {
+		if ( typeof content !== 'string' || content.length === 0 ) {
+			return content;
+		}
+
+		if (
+			content.indexOf( 'mce_SELRES_' ) === -1 &&
+			content.indexOf( 'data-mce-type="bookmark"' ) === -1 &&
+			content.indexOf( '\uFEFF' ) === -1
+		) {
+			return content;
+		}
+
+		const wrapper = document.createElement( 'div' );
+		wrapper.innerHTML = content;
+		wrapper
+			.querySelectorAll( 'span[data-mce-type="bookmark"], span.mce_SELRES_start, span.mce_SELRES_end' )
+			.forEach( ( marker ) => marker.remove() );
+
+		const sanitizedContent = wrapper.innerHTML.replace( /\uFEFF/g, '' );
+
+		return sanitizedContent;
+	};
+
+	/**
+	 * Triggers setup for repeater fields that need explicit initialization after
+	 * a repeater item is added or expanded.
+	 *
+	 * Fires `sowsetupformfield` immediately on media fields and on visible
+	 * visibility-sensitive fields, and always fires `sowrepeaterfieldsadded` on
+	 * the document for all setup fields. The `clientId` of the enclosing block,
+	 * when present, is passed as a second argument so that only the relevant
+	 * block reacts.
+	 *
+	 * @param {jQuery} $container - The newly added or expanded repeater item/form.
+	 */
+	const triggerRepeaterFieldSetup = ( $container ) => {
+		const $visibilitySensitiveFields = $container
+			.filter( repeaterVisibilitySensitiveFieldSelector )
+			.add( $container.find( repeaterVisibilitySensitiveFieldSelector ) )
+			// Exclude placeholder rows inside repeater item templates — these carry
+			// `_id_` in their textarea IDs and must never be initialized directly.
+			.not( function() {
+				return $( this ).closest( '.siteorigin-widget-field-repeater-item-html' ).length > 0;
+			} );
+
+		const $immediateFields = $container
+			.filter( repeaterImmediateSetupFieldSelector )
+			.add( $container.find( repeaterImmediateSetupFieldSelector ) )
+			.not( function() {
+				return $( this ).closest( '.siteorigin-widget-field-repeater-item-html' ).length > 0;
+			} );
+
+		const $allFields = $visibilitySensitiveFields.add( $immediateFields );
+		const $fields = $visibilitySensitiveFields.filter( ':visible' ).add( $immediateFields );
+
+		$fields.each( function() {
+			$( this ).trigger( 'sowsetupformfield' );
+		} );
+
+		// Fire a document-level event to notify iframe-context listeners of repeater field additions.
+		// This must include hidden fields so TinyMCE pre-init handlers can bind before they become visible.
+		if ( $allFields.length > 0 ) {
+			const clientId = $container.closest( '[data-block]' ).attr( 'data-block' ) || null;
+			$( document ).trigger( 'sowrepeaterfieldsadded', [ $allFields, clientId ] );
+		}
+	};
 
 	$.fn.sowSetupForm = function () {
 
@@ -863,6 +949,10 @@ var sowbForms = window.sowbForms || {};
 
 			// Create an object with the repeater html so we can make some changes to it.
 			var repeaterObject = $('<div>' + $el.find('> .siteorigin-widget-field-repeater-item-html').html() + '</div>');
+			repeaterObject
+				.find( '.siteorigin-widget-field[data-initialized]' )
+				.removeAttr( 'data-initialized' );
+
 			repeaterObject.find('.siteorigin-widget-input[data-name]').each(function () {
 				var $$ = $(this);
 				// Skip out items that are themselves inside repeater HTML wrappers
@@ -907,6 +997,7 @@ var sowbForms = window.sowbForms || {};
 			$el.find( '> .siteorigin-widget-field-repeater-items' ).append( item ).sortable( 'refresh' ).trigger( 'updateFieldPositions' );
 			item.sowSetupRepeaterItems();
 			item.hide().slideDown( 'fast', function () {
+				triggerRepeaterFieldSetup( $( this ) );
 				$( window ).trigger( 'resize' );
 			});
 			$el.trigger( 'change' );
@@ -1099,31 +1190,16 @@ var sowbForms = window.sowbForms || {};
 					e.preventDefault();
 					$itemForm.slideToggle( {
 						duration: 'fast',
-						start: function() {
+						complete: function() {
 							const $this = $( this );
 
 							if ( initialState === 'open' ) {
 								$this.trigger( 'slideToggleCloseComplete' );
-								return;
+							} else {
+								$this.trigger( 'slideToggleOpenComplete' );
+								triggerRepeaterFieldSetup( $this );
 							}
 
-							$this.trigger( 'slideToggleOpenComplete' );
-
-							const $fields = $this.find(
-								'.siteorigin-widget-field-type-section > .siteorigin-widget-section > .siteorigin-widget-field, .siteorigin-widget-field'
-							);
-
-							const visibleFields = $fields.filter( function() {
-								return $( this ).is( ':visible' );
-							} );
-
-							// Trigger 'sowsetupformfield' for all visible fields in a single batch
-							visibleFields.each( function() {
-								$( this ).trigger( 'sowsetupformfield' );
-							} );
-
-						},
-						complete: () => {
 							$( window ).trigger( 'resize' );
 						}
 					} );
@@ -1194,7 +1270,7 @@ var sowbForms = window.sowbForms || {};
 								$inputElement.css( 'display', '' );
 								var curEd = tinymce.get( id );
 								if ( curEd ) {
-									var contentVal = curEd.getContent();
+									var contentVal = sowbForms.sanitizeTinyMCEContent( curEd.getContent() );
 									if ( ! _.isEmpty( contentVal ) ) {
 										$inputElement.val( contentVal );
 									} else if ( contentVal.search( '<' ) !== -1 && contentVal.search( '>' ) === -1) {
@@ -1260,6 +1336,7 @@ var sowbForms = window.sowbForms || {};
 									// Prevent potential id overlap by appending the textarea field with a random id.
 									newId += Math.floor( Math.random() * 1000 );
 									$inputElement.data( 'tinymce-id', newId );
+									$inputElement.attr( 'data-tinymce-id', newId );
 								}
 
 								$inputElement.attr( 'id', newId );
@@ -1296,6 +1373,7 @@ var sowbForms = window.sowbForms || {};
 						$items.append( $copyItem ).sortable( 'refresh' ).trigger( 'updateFieldPositions' );
 						$copyItem.sowSetupRepeaterItems();
 						$copyItem.hide().slideDown( 'fast', function () {
+							triggerRepeaterFieldSetup( $( this ) );
 							$( window ).trigger( 'resize' );
 						});
 						// If increment is enabled for this item, trigger label updates.
@@ -1312,7 +1390,8 @@ var sowbForms = window.sowbForms || {};
 					}
 				});
 
-				$el.find( '> .siteorigin-widget-field-repeater-item-form' ).sowSetupForm();
+				const $itemForm = $el.find( '> .siteorigin-widget-field-repeater-item-form' );
+				$itemForm.sowSetupForm();
 
 				$el.data( 'sowrepeater-actions-setup', true );
 			}
@@ -1693,7 +1772,7 @@ var sowbForms = window.sowbForms || {};
 			}
 		} );
 
-		return Promise.all( flushPromises ).then( function() {} );
+		return Promise.all( flushPromises );
 	};
 
 	sowbForms.getWidgetFormSnapshot = function( formContainer, options ) {
@@ -1707,22 +1786,14 @@ var sowbForms = window.sowbForms || {};
 	sowbForms.registerFieldFlusher( 'tinymce', function( $field, options ) {
 		const fieldWindow = getElementWindow( $field[0] );
 		const fieldJQuery = fieldWindow.jQuery || $;
-
-		// Collect per-textarea flush work as Promises so that flushWidgetForm can
-		// await them when options.awaitAsync is true (the default for snapshot calls).
-		// If sowbGetTinyMCEInitPromise is available on the field's window we wait for
-		// the editor's init event before calling editor.save(); otherwise we fall back
-		// to the previous synchronous behaviour so non-block-editor contexts are
-		// unaffected.
 		const flushPromises = [];
 
 		$field.find( 'textarea.wp-editor-area' ).each( function() {
 			const $textarea = fieldJQuery( this );
 			const editorId = $textarea.data( 'tinymce-id' ) || $textarea.attr( 'id' );
-
-			const initPromise = ( editorId && typeof fieldWindow.sowbGetTinyMCEInitPromise === 'function' )
-				? fieldWindow.sowbGetTinyMCEInitPromise( editorId )
-				: Promise.resolve();
+			const initPromise = ( editorId && typeof fieldWindow.sowbGetTinyMCEInitPromise === 'function' ) ?
+				fieldWindow.sowbGetTinyMCEInitPromise( editorId ) :
+				Promise.resolve();
 
 			flushPromises.push(
 				initPromise.then( function() {
@@ -1732,18 +1803,21 @@ var sowbForms = window.sowbForms || {};
 
 					if (
 						editor &&
-						typeof editor.save === 'function' &&
+						typeof editor.getContent === 'function' &&
 						(
 							typeof editor.isHidden !== 'function' ||
 							! editor.isHidden()
 						)
 					) {
-						editor.save();
+						$textarea.val( sowbForms.sanitizeTinyMCEContent( editor.getContent() ) );
+					} else {
+						$textarea.val( sowbForms.sanitizeTinyMCEContent( $textarea.val() ) );
 					}
 
 					if ( options.triggerChange ) {
 						$textarea.trigger( 'change' );
 					}
+
 				} )
 			);
 		} );
@@ -1808,10 +1882,10 @@ var sowbForms = window.sowbForms || {};
 					}
 
 					if ( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
-						fieldValue = editor.getContent();
+						fieldValue = sowbForms.sanitizeTinyMCEContent( editor.getContent() );
 					}
 					else {
-						fieldValue = $$.val();
+						fieldValue = sowbForms.sanitizeTinyMCEContent( $$.val() );
 					}
 				} else if ( $$.prop( 'tagName' ) === 'SELECT' ) {
 					var selected = $$.find( 'option:selected' );
@@ -2051,20 +2125,22 @@ var sowbForms = window.sowbForms || {};
 						editor = tinyMCE.get( $$.attr( 'id' ) );
 					}
 
+					var tinyMCEFieldValue = sowbForms.sanitizeTinyMCEContent( values.value );
 					if ( editor !== null && typeof( editor.setContent ) === "function" && ! editor.isHidden() && $$.parent().is( ':visible' ) ) {
-						if ( compareValues( editor.getContent(), values.value ) ) {
+						if ( compareValues( sowbForms.sanitizeTinyMCEContent( editor.getContent() ), tinyMCEFieldValue ) ) {
 							if ( editor.initialized ) {
-								editor.setContent( values.value );
+								editor.setContent( tinyMCEFieldValue );
 								updated = true;
 							} else {
 								editor.on('init', function () {
-									editor.setContent( values.value );
+									editor.setContent( tinyMCEFieldValue );
 								});
 								updated = true;
 							}
 						}
-					} else if ( compareValues( $$.val(), values.value ) ) {
-						$$.val( values.value );
+					}
+					else if ( compareValues( sowbForms.sanitizeTinyMCEContent( $$.val() ), tinyMCEFieldValue ) ) {
+						$$.val( tinyMCEFieldValue );
 						updated = true;
 					}
 				} else if ( $$.is( '.panels-data' ) ) {
@@ -2322,6 +2398,14 @@ var sowbForms = window.sowbForms || {};
 
 
 	$(function () {
+		// When running inside the block editor canvas iframe, initialize any
+		// widget forms that are already in the DOM — but only if jQuery UI
+		// (sortable) is also already loaded. Scripts are injected asynchronously
+		// so execution order is not guaranteed; if sortable isn't available yet
+		// sowSetupRepeater would throw and abort setup before color pickers.
+		// The polling interval in sowbSetupWidgetForm (widget-block.js) is the
+		// primary mechanism; this path is a complementary fast-path for the case
+		// where all scripts happen to load before the form is rendered.
 		$(document).trigger('sowadminloaded');
 	});
 
