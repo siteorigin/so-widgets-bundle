@@ -1,6 +1,44 @@
-/* global jQuery, pikaday */
+( function( factory ) {
+	let initialized = false;
+	const bootstrap = function() {
+		if ( initialized || typeof window.jQuery === 'undefined' ) {
+			return initialized;
+		}
 
-( function( $ ) {
+		initialized = true;
+		factory( window.jQuery );
+
+		return true;
+	};
+
+	if ( ! bootstrap() ) {
+		let attempts = 0;
+		const interval = setInterval( function() {
+			attempts++;
+
+			if ( bootstrap() || attempts >= 40 ) {
+				clearInterval( interval );
+			}
+		}, 50 );
+
+		document.addEventListener( 'DOMContentLoaded', bootstrap );
+	}
+} )( function( $ ) {
+	let dateRangeSetupAttempts = 0;
+	let dateRangeSetupScheduled = false;
+	const scheduleInitializeDateRangeFields = function() {
+		if ( dateRangeSetupScheduled || dateRangeSetupAttempts >= 40 ) {
+			return;
+		}
+
+		dateRangeSetupAttempts++;
+		dateRangeSetupScheduled = true;
+		setTimeout( function() {
+			dateRangeSetupScheduled = false;
+			initializeDateRangeFields();
+		}, 100 );
+	};
+
 	const setupDateRangeField = function( e ) {
 		const $dateRangeField = $( this );
 		const valField = $dateRangeField.find( 'input[type="hidden"][class="siteorigin-widget-input"]' );
@@ -10,6 +48,10 @@
 		}
 
 		if ( $dateRangeField.find( '[class*="sowb-specific-date"]' ).length > 0 ) {
+			if ( typeof window.Pikaday === 'undefined' ) {
+				scheduleInitializeDateRangeFields();
+				return;
+			}
 
 			const createPikadayInput = function( inputName, initVal ) {
 				const $field = $dateRangeField.find( '.' + inputName + '-picker' );
@@ -44,7 +86,7 @@
 					valField.trigger( 'change', { silent: true } );
 				};
 
-				const picker = new Pikaday( {
+				const picker = new window.Pikaday( {
 					field: $field[0],
 					blurFieldOnSelect: false,
 					toString: dateToString,
@@ -125,12 +167,50 @@
 		 $( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-date-range', setupDateRangeField );
 	 }
 
+	const initializeDateRangeFields = function() {
+		$( '.siteorigin-widget-field-type-date-range' ).each( function() {
+			setupDateRangeField.call( this );
+		} );
+	};
+
 	// Add support for the Site Editor.
 	window.addEventListener( 'message', function( e ) {
 		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
-			$( '.siteorigin-widget-field-type-date-range' ).each( function() {
-				setupDateRangeField.call( this );
-			} );
+			initializeDateRangeFields();
 		}
 	} );
-} )( jQuery );
+
+	if ( window.frameElement ) {
+		$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-date-range', setupDateRangeField );
+		$( initializeDateRangeFields );
+
+		if ( window.MutationObserver ) {
+			$( function() {
+				if ( ! document.body ) {
+					return;
+				}
+
+				const observer = new MutationObserver( ( mutations ) => {
+					mutations.forEach( ( mutation ) => {
+						$( mutation.addedNodes ).each( function() {
+							const $node = $( this );
+
+							if ( $node.is( '.siteorigin-widget-field-type-date-range' ) ) {
+								setupDateRangeField.call( this );
+							}
+
+							$node.find( '.siteorigin-widget-field-type-date-range' ).each( function() {
+								setupDateRangeField.call( this );
+							} );
+						} );
+					} );
+				} );
+
+				observer.observe( document.body, {
+					childList: true,
+					subtree: true,
+				} );
+			} );
+		}
+	}
+} );

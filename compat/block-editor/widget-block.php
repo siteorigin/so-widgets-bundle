@@ -27,6 +27,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		add_action( 'enqueue_block_assets', array( $this, 'enqueue_widget_block_editor_assets' ) );
 
+		add_filter( 'siteorigin_panels_filter_content_enabled', array( $this, 'disable_panels_content_for_widget_blocks' ) );
+
 		add_action( 'wp_ajax_so_widgets_block_migration_notice_consent', array( $this, 'block_migration_consent' ) );
 	}
 
@@ -48,7 +50,110 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		foreach ( $post_types as $post_type ) {
 			add_action( 'rest_pre_insert_' . $post_type, array( $this, 'server_side_validation' ), 10, 2 );
+			add_action( 'rest_after_insert_' . $post_type, array( $this, 'clear_panels_data_for_widget_blocks' ), 10, 3 );
 		}
+	}
+
+	/**
+	 * Prevent stale Page Builder metadata from replacing block editor widget content.
+	 *
+	 * @param bool $enabled Whether SiteOrigin Panels should filter post content.
+	 *
+	 * @return bool
+	 */
+	public function disable_panels_content_for_widget_blocks( $enabled ) {
+		if ( ! $enabled || is_admin() ) {
+			return $enabled;
+		}
+
+		$post = get_post();
+
+		if (
+			empty( $post ) ||
+			empty( $post->post_content )
+		) {
+			return $enabled;
+		}
+
+		return $this->content_has_widget_blocks( $post->post_content ) ? false : $enabled;
+	}
+
+	/**
+	 * Clear stale Page Builder data when a REST save contains SOWB widget blocks.
+	 *
+	 * @param WP_Post         $post     Inserted or updated post object.
+	 * @param WP_REST_Request $request  REST request.
+	 * @param bool            $creating Whether this was a create request.
+	 *
+	 * @return void
+	 */
+	public function clear_panels_data_for_widget_blocks( $post, $request, $creating ) {
+		if (
+			empty( $post ) ||
+			! is_a( $post, 'WP_Post' ) ||
+			wp_is_post_revision( $post->ID ) ||
+			wp_is_post_autosave( $post->ID ) ||
+			empty( $post->post_content ) ||
+			! $this->content_has_widget_blocks( $post->post_content ) ||
+			! get_post_meta( $post->ID, 'panels_data', true )
+		) {
+			return;
+		}
+
+		delete_post_meta( $post->ID, 'panels_data' );
+	}
+
+	/**
+	 * Check whether serialized block content contains a SOWB widget block.
+	 *
+	 * @param string $content Serialized block content.
+	 *
+	 * @return bool
+	 */
+	private function content_has_widget_blocks( $content ) {
+		if (
+			empty( $content ) ||
+			! function_exists( 'parse_blocks' ) ||
+			(
+				function_exists( 'has_blocks' ) &&
+				! has_blocks( $content )
+			)
+		) {
+			return false;
+		}
+
+		return $this->blocks_have_widget_blocks( parse_blocks( $content ) );
+	}
+
+	/**
+	 * Recursively check parsed blocks for SOWB widget blocks.
+	 *
+	 * @param array $blocks Parsed blocks.
+	 *
+	 * @return bool
+	 */
+	private function blocks_have_widget_blocks( $blocks ) {
+		if ( empty( $blocks ) || ! is_array( $blocks ) ) {
+			return false;
+		}
+
+		foreach ( $blocks as $block ) {
+			if (
+				! empty( $block['blockName'] ) &&
+				strpos( $block['blockName'], 'sowb/' ) === 0
+			) {
+				return true;
+			}
+
+			if (
+				! empty( $block['innerBlocks'] ) &&
+				$this->blocks_have_widget_blocks( $block['innerBlocks'] )
+			) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -649,7 +754,11 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		}
 
 		foreach( $blocks as &$block ) {
-			$block = $this->sanitize_blocks( $block, true );
+			$block = $this->sanitize_blocks( $block );
+
+			if ( is_wp_error( $block ) ) {
+				return $block;
+			}
 		}
 		$prepared_post->post_content = serialize_blocks( $blocks );
 
@@ -658,7 +767,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 	public function sanitize_blocks( $block ) {
 		if ( is_wp_error( $block ) ) {
-			return rest_ensure_response( $block );
+			return $block;
 		}
 
 		if (
@@ -666,14 +775,24 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			strpos( $block['blockName'], 'sowb/' ) === 0
 		) {
 			$block = $this->sanitize_block( $block );
+
+			if ( is_wp_error( $block ) ) {
+				return $block;
+			}
 		}
 
 		if (
-			is_array( $block['innerBlocks'] ) &&
-			! empty( $block['innerBlocks'] )
+			! empty( $block['innerBlocks'] ) &&
+			is_array( $block['innerBlocks'] )
 		) {
 			foreach( $block['innerBlocks'] as $i => $inner ) {
-				$block['innerBlocks'][$i] = $this->sanitize_blocks( $inner );
+				$inner = $this->sanitize_blocks( $inner );
+
+				if ( is_wp_error( $inner ) ) {
+					return $inner;
+				}
+
+				$block['innerBlocks'][$i] = $inner;
 			}
 		}
 
@@ -690,7 +809,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		$rendered_widget = $this->get_widget_preview( $block['attrs'], false );
 		if ( is_wp_error( $rendered_widget ) ) {
-			return rest_ensure_response( $rendered_widget );
+			return $rendered_widget;
 		}
 
 		if ( empty( $rendered_widget ) ) {

@@ -1101,35 +1101,49 @@ div.siteorigin-widget-form {
 		div.siteorigin-widget-field {
 			text-align: left;
 
-			input {
+			input[type="text"],
+			input[type="password"],
+			input[type="date"],
+			input[type="datetime"],
+			input[type="datetime-local"],
+			input[type="email"],
+			input[type="month"],
+			input[type="number"],
+			input[type="search"],
+			input[type="tel"],
+			input[type="time"],
+			input[type="url"],
+			input[type="week"] {
 				padding: 0 8px;
 				line-height: 2;
+				min-height: 30px;
+				vertical-align: middle;
+			}
 
-				&[type=checkbox] {
-					width: 16px;
-					height: 16px;
-					min-height: 16px;
-					border: 1px solid #8c8f94;
-					border-radius: 3px;
+			input[type=checkbox] {
+				width: 16px;
+				height: 16px;
+				min-height: 16px;
+				border: 1px solid #8c8f94;
+				border-radius: 3px;
+				background: #fff;
+
+				&:checked {
 					background: #fff;
+					border-color: #8c8f94;
+				}
 
-					&:checked {
-						background: #fff;
-						border-color: #8c8f94;
-					}
+				&:checked::before {
+					content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%233582c4%27%2F%3E%3C%2Fsvg%3E");
+					margin: -3px 0 0 -4px;
+					width: 1.3125rem;
+					height: 1.3125rem;
+				}
 
-					&:checked::before {
-						content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%233582c4%27%2F%3E%3C%2Fsvg%3E");
-						margin: -3px 0 0 -4px;
-						width: 1.3125rem;
-						height: 1.3125rem;
-					}
-
-					&:focus {
-						border-color: #2271b1;
-						box-shadow: 0 0 0 1px #2271b1;
-						outline: 2px solid transparent;
-					}
+				&:focus {
+					border-color: #2271b1;
+					box-shadow: 0 0 0 1px #2271b1;
+					outline: 2px solid transparent;
 				}
 			}
 
