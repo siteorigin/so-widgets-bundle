@@ -2,6 +2,13 @@
 
 ( function( $ ) {
 
+	if ( window.sowbTinyMCEFieldScriptLoaded ) {
+		return;
+	}
+
+	window.sowbTinyMCEFieldScriptLoaded = true;
+	window.sowbTinyMCEFieldScriptLoadedAt = Date.now();
+
 	let mediaFrameOpen = false;
 	const sowbTinyMCEEventNamespace = '.sowTinymce';
 	let _tinymceDomIdSeq = 0;
@@ -584,6 +591,10 @@
 			.attr( 'data-tinymce-id', id )
 			.attr( 'id', id );
 
+		if ( textareaElement ) {
+			textareaElement.sowbTinyMCELastSyncedContent = $textarea.val();
+		}
+
 		_tinymceInitPending[ id ] = ( function( entryId ) {
 			let storedResolve;
 			const promise = new Promise( function( resolve ) {
@@ -607,50 +618,50 @@
 		$( window.document )
 			.off( 'wp-before-tinymce-init' + fieldEventNamespace )
 			.on( 'wp-before-tinymce-init' + fieldEventNamespace, function( event, init ) {
-			if ( init.selector !== settings.tinymce.selector ) {
-				return;
-			}
-
-			$( window.document ).off( 'wp-before-tinymce-init' + fieldEventNamespace );
-
-			const mediaButtons = $container.data( 'mediaButtons' );
-			if (
-				typeof mediaButtons != 'undefined' &&
-				$field.find( '.wp-media-buttons' ).length === 0
-			) {
-				$field.find( '.wp-editor-tabs' ).before( mediaButtons.html );
-			}
-
-			const addMediaButton = $field.find( '.add_media' );
-			if ( addMediaButton.length > 0 ) {
-				const $textarea = $container.find( 'textarea' );
-				const editorId = $textarea.data( 'tinymce-id' );
-				addMediaButton.attr( 'data-editor', editorId );
-
-				if ( window.frameElement ) {
-					addMediaButton
-						.removeClass( 'insert-media add_media' )
-						.addClass( 'siteorigin-widget-tinymce-add-media' )
-						.off( 'click.sowbMedia' )
-						.on( 'click.sowbMedia', () => {
-							siteEditorAddMediaOverride( editorId );
-						} );
+				if ( init.selector !== settings.tinymce.selector ) {
+					return;
 				}
-			}
-		} );
+
+				$( window.document ).off( 'wp-before-tinymce-init' + fieldEventNamespace );
+
+				const mediaButtons = $container.data( 'mediaButtons' );
+				if (
+					typeof mediaButtons != 'undefined' &&
+					$field.find( '.wp-media-buttons' ).length === 0
+				) {
+					$field.find( '.wp-editor-tabs' ).before( mediaButtons.html );
+				}
+
+				const addMediaButton = $field.find( '.add_media' );
+				if ( addMediaButton.length > 0 ) {
+					const $textarea = $container.find( 'textarea' );
+					const editorId = $textarea.data( 'tinymce-id' );
+					addMediaButton.attr( 'data-editor', editorId );
+
+					if ( window.frameElement ) {
+						addMediaButton
+							.removeClass( 'insert-media add_media' )
+							.addClass( 'siteorigin-widget-tinymce-add-media' )
+							.off( 'click.sowbMedia' )
+							.on( 'click.sowbMedia', () => {
+								siteEditorAddMediaOverride( editorId );
+							} );
+					}
+				}
+			} );
 
 		$( window.top.document )
 			.off( 'tinymce-editor-setup' + fieldEventNamespace )
 			.on( 'tinymce-editor-setup' + fieldEventNamespace, function() {
-			const $wpEditorWrap = $field.find( '.wp-editor-wrap' );
-			if ( $wpEditorWrap.length > 0 && ! $wpEditorWrap.hasClass( settings.selectedEditor + '-active' ) ) {
-				setTimeout( function() {
-					window.switchEditors.go( id );
-				}, 10 );
-			}
+				const $wpEditorWrap = $field.find( '.wp-editor-wrap' );
+				if ( $wpEditorWrap.length > 0 && ! $wpEditorWrap.hasClass( settings.selectedEditor + '-active' ) ) {
+					setTimeout( function() {
+						window.switchEditors.go( id );
+					}, 10 );
+				}
 
-			$( window.top.document ).off( 'tinymce-editor-setup' + fieldEventNamespace );
-		} );
+				$( window.top.document ).off( 'tinymce-editor-setup' + fieldEventNamespace );
+			} );
 
 		if ( settings.tinymce ) {
 			const setupEditor = function( editor ) {
@@ -671,7 +682,20 @@
 				editor.on( 'change', function() {
 					const ed = window.tinymce.get( id );
 					if ( ed ) {
+						const textareaNode = $textarea.get( 0 );
+						const previousContent = textareaNode ?
+							textareaNode.sowbTinyMCELastSyncedContent :
+							undefined;
 						ed.save();
+
+						const currentContent = $textarea.val();
+						if ( textareaNode && previousContent === currentContent ) {
+							return;
+						}
+
+						if ( textareaNode ) {
+							textareaNode.sowbTinyMCELastSyncedContent = currentContent;
+						}
 						$textarea.trigger( 'change' );
 					}
 				} );
@@ -713,6 +737,20 @@
 			window.tinymce.EditorManager.overrideDefaults( { base_url: settings.baseURL, suffix: settings.suffix } );
 		}
 
+		const initTimeoutId = setTimeout( function() {
+			if ( _tinymceInitPending[ id ] ) {
+				_tinymceInitPending[ id ].resolve();
+			}
+
+			$field.removeData( 'sowb-tinymce-initializing' );
+			$field.removeData( 'sowb-tinymce-initializing-id' );
+			// If the TinyMCE init event never fired (e.g. field removed from DOM),
+			// clean up the top-document listener so it doesn't accumulate.
+			$( window.top.document ).off( 'tinymce-editor-setup' + fieldEventNamespace );
+		}, 5000 );
+
+		$field.data( 'sowb-tinymce-init-timeout', initTimeoutId );
+
 		// Wait for textarea to be visible before initialization.
 		if ( $textarea.is( ':visible' ) ) {
 			wpEditor.initialize( id, settings );
@@ -731,49 +769,59 @@
 			$field.data( 'sowb-tinymce-visibility-poll', intervalId );
 		}
 
-		const initTimeoutId = setTimeout( function() {
-			if ( _tinymceInitPending[ id ] ) {
-				_tinymceInitPending[ id ].resolve();
-			}
-
-			$field.removeData( 'sowb-tinymce-initializing' );
-			$field.removeData( 'sowb-tinymce-initializing-id' );
-			// If the TinyMCE init event never fired (e.g. field removed from DOM),
-			// clean up the top-document listener so it doesn't accumulate.
-			$( window.top.document ).off( 'tinymce-editor-setup' + fieldEventNamespace );
-		}, 5000 );
-
-		$field.data( 'sowb-tinymce-init-timeout', initTimeoutId );
-
-		$field.on( 'click', function( event ) {
-			const $target = $( event.target );
-			if ( ! $target.is( '.wp-switch-editor' ) ) {
-				return;
-			}
-
-			const mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
-
-			if ( mode === 'tmce' ) {
-				const editor = window.tinymce.get( id );
-				// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex.
-				if ( editor !== null ) {
-					let content = $textarea.val();
-					if ( content.search( '<' ) !== -1 && content.search( '>' ) === -1 ) {
-						content = content.replace( /</g, '' );
-						$textarea.val( content );
-					}
-					editor.setContent( window.switchEditors.wpautop( content ) );
+		$field
+			.off( 'click.sowTinymceSwitchEditor' )
+			.on( 'click.sowTinymceSwitchEditor', function( event ) {
+				const $target = $( event.target );
+				if ( ! $target.is( '.wp-switch-editor' ) ) {
+					return;
 				}
-			}
-			settings.selectedEditor = mode;
 
-			$field.find( 'textarea.wp-editor-area' ).css(
-				'visibility', mode === 'tmce' ? 'hidden' : 'visible'
-			);
+				const mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
+				const $selectedEditor = $field.find( '.siteorigin-widget-tinymce-selected-editor' );
+				if ( $selectedEditor.val() === mode ) {
+					return;
+				}
 
+				const fieldNode = $field.get( 0 );
+				const now = Date.now();
+				const lastSwitchClick = fieldNode && fieldNode.sowbTinyMCELastSwitchClick ?
+					fieldNode.sowbTinyMCELastSwitchClick :
+					null;
+				if (
+					lastSwitchClick &&
+					lastSwitchClick.mode === mode &&
+					now - lastSwitchClick.time < 50
+				) {
+					return;
+				}
+				if ( fieldNode ) {
+					fieldNode.sowbTinyMCELastSwitchClick = {
+						mode,
+						time: now,
+					};
+				}
 
-			$field.find( '.siteorigin-widget-tinymce-selected-editor' ).val( mode );
-		} );
+				if ( mode === 'tmce' ) {
+					const editor = window.tinymce.get( id );
+					// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex.
+					if ( editor !== null ) {
+						let content = $textarea.val();
+						if ( content.search( '<' ) !== -1 && content.search( '>' ) === -1 ) {
+							content = content.replace( /</g, '' );
+							$textarea.val( content );
+						}
+						editor.setContent( window.switchEditors.wpautop( content ) );
+					}
+				}
+				settings.selectedEditor = mode;
+
+				$field.find( 'textarea.wp-editor-area' ).css(
+					'visibility', mode === 'tmce' ? 'hidden' : 'visible'
+				);
+
+				$selectedEditor.val( mode );
+			} );
 	};
 
 	/**
@@ -984,12 +1032,18 @@
 		$( document )
 			.off( 'sowsetupform' + sowbTinyMCEEventNamespace )
 			.on( 'sowsetupform' + sowbTinyMCEEventNamespace, function( e, $form ) {
-				if ( ! $form || ! $form.length ) {
+				const $setupTarget = $form && $form.jquery ?
+					$form :
+					$( $form || [] );
+				if ( ! $setupTarget.length ) {
 					return;
 				}
-				// $form is the wrapper element, not a field itself, so .find() is
-				// sufficient — no need to also .filter() the root element.
-				setupSiteEditorTinyMCEFields( $form.find( '.siteorigin-widget-field-type-tinymce' ) );
+
+				setupSiteEditorTinyMCEFields(
+					$setupTarget
+						.filter( '.siteorigin-widget-field-type-tinymce' )
+						.add( $setupTarget.find( '.siteorigin-widget-field-type-tinymce' ) )
+				);
 			} );
 
 		// sowrepeaterfieldsadded is fired by admin.js on the parent document, not the iframe's document,

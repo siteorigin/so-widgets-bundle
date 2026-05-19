@@ -27,6 +27,14 @@
 		return errorMessage;
 	};
 
+	const sowbSerializeWidgetData = ( widgetData ) => {
+		try {
+			return JSON.stringify( widgetData || {} );
+		} catch ( error ) {
+			return null;
+		}
+	};
+
 	// Certain widgets are excluded from the content check as
 	// they don't contain "standard" content indicators.
 	const widgetsExcludedFromContentCheck = [
@@ -246,7 +254,6 @@
 	 * @param {Function} setState - The setState function to update the component's state.
 	 * @param {Object} activeRequestRef - React ref tracking the active preview request.
 	 */
-
 	const sowbSetupWidgetForm = async ( props, state, setState, activeRequestRef ) => {
 		let $mainForm = sowbGetBlockForm( props.clientId );
 
@@ -257,30 +264,106 @@
 		// Re-wrap the form node with the jQuery instance that owns it. In the
 		// iframe path this is the iframe's jQuery; in the non-iframe path it is
 		// the parent jQuery. sowSetupForm(), wpColorPicker, and all other field
-		// plugins are bound to whichever jQuery ran their defining script — using
+		// plugins are bound to whichever jQuery ran their defining script, using
 		// the same instance here ensures event handlers fire correctly.
 		const formWindow = sowbGetElementWindow( $mainForm[ 0 ] );
 		const formJQuery = formWindow.jQuery || jQuery;
 		const formForms = formWindow.sowbForms || sowbForms;
 		$mainForm = formJQuery( $mainForm[ 0 ] );
 
-		sowbMaybeSetupSiteEditorAssets();
+		const switchToBlockPreview = async function() {
+			const oldTimer = $mainForm.data( 'sowb-preview-timer' );
+			if ( oldTimer ) {
+				clearTimeout( oldTimer );
+			}
 
-		// The preview-container 'a' click toggles React state in the parent
-		// component. Native DOM click events cross frame boundaries so this
-		// binding works from either context.
-		const $previewContainer = $mainForm.siblings( '.siteorigin-widget-preview' );
-		$previewContainer.find( '> a' ).on( 'click', function( event ) {
-			event.stopImmediatePropagation();
+			const widgetData = await sowbSnapshotBlockFormToAttributes( props, $mainForm );
 
 			setState( {
 				editing: false,
 				previewInitialized: false,
 				widgetPreviewHtml: false,
 			} );
-		} );
 
+			if ( widgetData ) {
+				sowbGenerateWidgetPreview(
+					props,
+					false,
+					setState,
+					widgetData,
+					props.widget.class,
+					activeRequestRef
+				);
+			}
+		};
+
+		const bindBlockPreviewHandler = function() {
+			// sowSetupForm() binds the legacy widget preview modal handler. Direct
+			// widget blocks have their own React preview path, so take ownership of
+			// this link after setup and prevent the legacy form/iframe submit path
+			// from navigating the editor canvas.
+			$mainForm
+				.siblings( '.siteorigin-widget-preview' )
+				.find( '> a' )
+				.off( 'click' )
+				.on( 'click.sowbBlockPreview', function( event ) {
+					event.preventDefault();
+					event.stopImmediatePropagation();
+
+					switchToBlockPreview();
+				} );
+		};
+
+		if ( $mainForm.data( 'sowb-block-form-initializing' ) ) {
+			return;
+		}
+
+		if ( $mainForm.data( 'sow-form-setup' ) === true ) {
+			bindBlockPreviewHandler();
+			setState( { formInitialized: true } );
+			return;
+		}
+
+		const setupFrame = sowbGetEditorCanvasFrame();
+		if ( ! $mainForm.data( 'sowb-form-setup-assets-cloned' ) ) {
+			sowbMaybeSetupSiteEditorAssets();
+			$mainForm.data( 'sowb-form-setup-assets-cloned', true );
+		}
+
+		const dependencyStatus = sowbEnsureFormSetupDependencies( setupFrame, formWindow, $mainForm );
+		if ( ! dependencyStatus.ready ) {
+
+			const oldRetryTimer = $mainForm.data( 'sowb-form-setup-dependency-retry' );
+			if ( oldRetryTimer ) {
+				clearTimeout( oldRetryTimer );
+			}
+
+			const retryCount = ( $mainForm.data( 'sowb-form-setup-dependency-retry-count' ) || 0 ) + 1;
+			$mainForm.data( 'sowb-form-setup-dependency-retry-count', retryCount );
+
+			if ( retryCount <= 40 ) {
+				$mainForm.data(
+					'sowb-form-setup-dependency-retry',
+					setTimeout( function() {
+						sowbSetupWidgetForm(
+							props,
+							state,
+							setState,
+							activeRequestRef
+						);
+					}, 250 )
+				);
+			}
+
+			return;
+		}
+		$mainForm.removeData( 'sowb-form-setup-dependency-retry' );
+		$mainForm.removeData( 'sowb-form-setup-dependency-retry-count' );
+
+		$mainForm.data( 'sowb-block-form-initializing', true );
 		$mainForm.data( 'backupDisabled', true );
+
+		let currentWidgetDataJson = sowbSerializeWidgetData( props.attributes.widgetData );
 
 		if ( props.attributes.widgetData ) {
 			// If we call `setWidgetFormValues` with the last parameter
@@ -288,10 +371,20 @@
 			// for some fields e.g. color and media fields.
 			formForms.setWidgetFormValues( $mainForm, props.attributes.widgetData );
 		} else {
-			props.setAttributes( { widgetData: formForms.getWidgetFormValues( $mainForm ) } );
+			const initialWidgetData = formForms.getWidgetFormValues( $mainForm );
+			currentWidgetDataJson = sowbSerializeWidgetData( initialWidgetData );
+			props.setAttributes( { widgetData: initialWidgetData } );
 		}
 
-		$mainForm.sowSetupForm();
+		try {
+			$mainForm.sowSetupForm();
+		} catch ( error ) {
+			$mainForm.removeData( 'sowb-block-form-initializing' );
+			throw error;
+		}
+		bindBlockPreviewHandler();
+		$mainForm.removeData( 'sowb-block-form-initializing' );
+		$mainForm.data( 'sowb-block-last-widget-data-json', currentWidgetDataJson );
 
 		// Namespace the change event so multiple sowbSetupWidgetForm calls for
 		// the same block (React double-render / stale closures) don't stack up
@@ -308,6 +401,16 @@
 				// As setAttributes doesn't support callbacks, we have to manually
 				// pass the widgetData to the preview.
 				var widgetData = formForms.getWidgetFormValues( $mainForm );
+				const widgetDataJson = sowbSerializeWidgetData( widgetData );
+
+				if (
+					widgetDataJson !== null &&
+					widgetDataJson === $mainForm.data( 'sowb-block-last-widget-data-json' )
+				) {
+					return;
+				}
+
+				$mainForm.data( 'sowb-block-last-widget-data-json', widgetDataJson );
 				props.setAttributes( { widgetData: widgetData } );
 
 				// Set up a preview debounce timer to prevent multiple requests.
@@ -400,6 +503,7 @@
 
 		const sendInitMessage = () => {
 			try {
+				sowbEnsureIframeOldEditorApi( iframeElement );
 				iframeWindow.postMessage( message, targetOrigin );
 			} catch ( e ) {
 				console.error( 'SiteOrigin Widgets: Failed to send postMessage to iframe:', e );
@@ -474,6 +578,27 @@
 		const isMountedRef = element.useRef( true );
 		const activeRequestRef = element.useRef( null );
 		const iframeFormInitKeyRef = element.useRef( null );
+
+		const switchToBlockPreview = async () => {
+			const widgetData = await sowbSnapshotBlockFormToAttributes( props );
+
+			mergeState( {
+				editing: false,
+				previewInitialized: false,
+				widgetPreviewHtml: false,
+			} );
+
+			if ( widgetData ) {
+				sowbGenerateWidgetPreview(
+					props,
+					false,
+					mergeState,
+					widgetData,
+					props.widget.class,
+					activeRequestRef
+				);
+			}
+		};
 
 		// Ensure widgetClass attribute is set once (was done in constructor).
 		element.useEffect( () => {
@@ -642,7 +767,14 @@
 							ToolbarButton,
 							{
 								label: __( 'Preview widget.', 'so-widgets-bundle' ),
-								onClick: () => mergeState( { editing: false } ),
+								onClick: ( event ) => {
+									if ( event ) {
+										event.preventDefault();
+										event.stopPropagation();
+									}
+
+									switchToBlockPreview();
+								},
 								icon: 'visibility'
 							}
 						)
@@ -691,12 +823,19 @@
 							ToolbarButton,
 							{
 								label: __( 'Edit widget.', 'so-widgets-bundle' ),
-								onClick: () => mergeState( {
-									editing: true,
-									loadingForm: false,
-									widgetFormHtml: '',
-									formInitialized: false,
-								} ),
+								onClick: ( event ) => {
+									if ( event ) {
+										event.preventDefault();
+										event.stopPropagation();
+									}
+
+									mergeState( {
+										editing: true,
+										loadingForm: false,
+										widgetFormHtml: '',
+										formInitialized: false,
+									} );
+								},
 								icon: 'edit'
 							}
 						)
@@ -721,9 +860,9 @@
 						dangerouslySetInnerHTML: {
 							__html: widgetPreviewHtml
 						},
-						ref: () => {
+						ref: ( previewElement ) => {
 							if ( ! previewInitialized ) {
-								jQuery( window.sowb ).trigger( 'setup_widgets', { preview: true } );
+								sowbSetupPreviewWidgets( previewElement );
 								mergeState( { previewInitialized: true } );
 							}
 						}
@@ -1047,8 +1186,12 @@
 		} )
 	} );
 
-	// Copy over assets to the editor iframe asap.
-	sowbMaybeSetupSiteEditorAssets();
+	// Copy over assets to the editor iframe asap. When this script is itself
+	// running inside the editor iframe, the parent setup paths own asset
+	// cloning; self-cloning from the iframe can race with those paths.
+	if ( ! window.frameElement ) {
+		sowbMaybeSetupSiteEditorAssets();
+	}
 } )( window.wp.blocks, window.wp.i18n, window.wp.element, window.wp.components, window.wp.blockEditor );
 
 let sowbSiteEditorCanvas = false;
@@ -1063,6 +1206,20 @@ const sowbGetElementWindow = ( element ) => {
 	return element && element.ownerDocument && element.ownerDocument.defaultView ?
 		element.ownerDocument.defaultView :
 		window;
+};
+
+const sowbSetupPreviewWidgets = ( previewElement ) => {
+	sowbMaybeSetupSiteEditorAssets();
+
+	const previewWindow = sowbGetElementWindow( previewElement );
+	const previewJQuery = previewWindow.jQuery || jQuery;
+	const previewSowb = previewWindow.sowb || window.sowb;
+
+	if ( ! previewSowb ) {
+		return;
+	}
+
+	previewJQuery( previewSowb ).trigger( 'setup_widgets', { preview: true } );
 };
 
 /**
@@ -1115,6 +1272,87 @@ const sowbResolveWpEditor = () => {
 	return candidate && typeof candidate.initialize === 'function' ? candidate : null;
 };
 window.sowbResolveWpEditor = sowbResolveWpEditor;
+
+const sowbGetFormSetupDependencyStatus = ( formWindow, $form ) => {
+	const formJQuery = formWindow && formWindow.jQuery ? formWindow.jQuery : null;
+	let isIframeForm = false;
+	try {
+		isIframeForm = !! (
+			formWindow &&
+			(
+				formWindow !== window ||
+				formWindow.frameElement
+			)
+		);
+	} catch ( e ) {
+		isIframeForm = formWindow !== window;
+	}
+	const hasRepeater = !! (
+		$form &&
+		$form.length &&
+		$form.find( '.siteorigin-widget-field-repeater, .siteorigin-widget-field-type-repeater' ).length
+	);
+	const hasSlider = !! (
+		$form &&
+		$form.length &&
+		$form.find( '.siteorigin-widget-field-type-slider' ).length
+	);
+	const hasTinyMCE = !! (
+		$form &&
+		$form.length &&
+		$form.find( '.siteorigin-widget-field-type-tinymce' ).length
+	);
+	const hasWpEditorApi = !! (
+		formWindow &&
+		formWindow.wp &&
+		(
+			(
+				formWindow.wp.oldEditor &&
+				typeof formWindow.wp.oldEditor.initialize === 'function'
+			) ||
+			(
+				formWindow.wp.editor &&
+				typeof formWindow.wp.editor.initialize === 'function'
+			)
+		)
+	);
+
+	return {
+		hasJQuery: !! formJQuery,
+		hasSowSetupForm: !! ( formJQuery && formJQuery.fn && typeof formJQuery.fn.sowSetupForm === 'function' ),
+		hasJQueryUi: !! ( formJQuery && formJQuery.ui ),
+		hasMouse: !! ( formJQuery && formJQuery.ui && formJQuery.ui.mouse ),
+		hasSortable: !! ( formJQuery && formJQuery.fn && typeof formJQuery.fn.sortable === 'function' ),
+		hasSliderApi: !! ( formJQuery && formJQuery.fn && typeof formJQuery.fn.slider === 'function' ),
+		hasRepeater,
+		hasSlider,
+		hasTinyMCE,
+		isIframeForm,
+		hasWpEditorApi,
+		ready: !! (
+			formJQuery &&
+			formJQuery.fn &&
+			typeof formJQuery.fn.sowSetupForm === 'function' &&
+			( ! hasRepeater || typeof formJQuery.fn.sortable === 'function' ) &&
+			( ! hasSlider || typeof formJQuery.fn.slider === 'function' ) &&
+			( ! hasTinyMCE || ! isIframeForm || hasWpEditorApi )
+		),
+	};
+};
+
+const sowbEnsureFormSetupDependencies = ( frame, formWindow, $form ) => {
+	if ( frame ) {
+		sowbEnsureIframeOldEditorApi( frame );
+	}
+
+	const dependencyStatus = sowbGetFormSetupDependencyStatus( formWindow, $form );
+
+	if ( dependencyStatus.ready ) {
+		return dependencyStatus;
+	}
+
+	return dependencyStatus;
+};
 
 const sowbResolveSiteEditorFrame = ( frame = null ) => {
 	if ( frame ) {
@@ -1177,16 +1415,184 @@ const sowbGetBlockForm = ( clientId ) => {
 	}
 
 	// No iframe (e.g. widgets.php Block Widgets screen, classic editor).
-	return jQuery( document )
+	const $mainDocumentForm = jQuery( document )
 		.find( '[data-block="' + clientId + '"]' )
 		.find( '.siteorigin-widget-form-main[data-class]' )
 		.first();
+
+	return $mainDocumentForm;
 };
+
+const sowbIsDirectWidgetBlock = ( block ) => {
+	return block &&
+		typeof block.name === 'string' &&
+		block.name.indexOf( 'sowb/' ) === 0 &&
+		block.name !== 'sowb/widget-block' &&
+		block.isValid !== false;
+};
+
+const sowbFindDirectWidgetBlocks = ( blocks ) => {
+	return blocks.reduce( ( foundBlocks, block ) => {
+		if ( sowbIsDirectWidgetBlock( block ) ) {
+			foundBlocks.push( block );
+		}
+
+		if ( block.innerBlocks && block.innerBlocks.length > 0 ) {
+			foundBlocks.push( ...sowbFindDirectWidgetBlocks( block.innerBlocks ) );
+		}
+
+		return foundBlocks;
+	}, [] );
+};
+
+const sowbHasWidgetDataSnapshot = ( widgetData ) => {
+	return widgetData &&
+		typeof widgetData === 'object' &&
+		! Array.isArray( widgetData ) &&
+		Object.keys( widgetData ).length > 0;
+};
+
+const sowbGetBlockFormSnapshot = async ( $form ) => {
+	if ( ! $form || $form.length === 0 ) {
+		return null;
+	}
+
+	const formWindow = sowbGetElementWindow( $form[0] );
+	const formJQuery = formWindow.jQuery || jQuery;
+	const formForms = formWindow.sowbForms || sowbForms;
+	const $ownerForm = formJQuery( $form[0] );
+
+	if (
+		formForms &&
+		typeof formForms.getWidgetFormSnapshot === 'function'
+	) {
+		const widgetData = await formForms.getWidgetFormSnapshot( $ownerForm, {
+			awaitAsync: true,
+			triggerChange: false,
+		} );
+		return widgetData;
+	}
+
+	if (
+		formForms &&
+		typeof formForms.getWidgetFormValues === 'function'
+	) {
+		const widgetData = formForms.getWidgetFormValues( $ownerForm );
+		return widgetData;
+	}
+
+	return null;
+};
+
+const sowbSnapshotBlockFormToAttributes = async ( props, $form = null ) => {
+	const $snapshotForm = $form && $form.length ?
+		$form :
+		sowbGetBlockForm( props.clientId );
+
+	if ( ! $snapshotForm || $snapshotForm.length === 0 ) {
+		return null;
+	}
+
+	const widgetData = await sowbGetBlockFormSnapshot( $snapshotForm );
+
+	if ( ! sowbHasWidgetDataSnapshot( widgetData ) ) {
+		return null;
+	}
+
+	props.setAttributes( { widgetData } );
+
+	return widgetData;
+};
+
+const sowbCloneBlocksWithWidgetData = ( blocks, widgetDataByClientId ) => {
+	return blocks.map( ( block ) => {
+		const clonedBlock = {
+			...block,
+			attributes: {
+				...( block.attributes || {} ),
+			},
+			innerBlocks: block.innerBlocks ?
+				sowbCloneBlocksWithWidgetData( block.innerBlocks, widgetDataByClientId ) :
+				[],
+		};
+
+		if ( Object.prototype.hasOwnProperty.call( widgetDataByClientId, block.clientId ) ) {
+			clonedBlock.attributes.widgetData = widgetDataByClientId[ block.clientId ];
+		}
+
+		return clonedBlock;
+	} );
+};
+
+wp.hooks.addFilter(
+	'editor.preSavePost',
+	'sowb/direct-widget-block-save-bridge',
+	async function( edits ) {
+		const blockEditorSelect = wp.data.select( 'core/block-editor' );
+		const blocks = blockEditorSelect.getBlocks();
+		const directBlocks = sowbFindDirectWidgetBlocks( blocks );
+
+		if ( directBlocks.length === 0 ) {
+			return edits;
+		}
+
+		const widgetDataByClientId = {};
+
+		for ( const block of directBlocks ) {
+			const $form = sowbGetBlockForm( block.clientId );
+
+			if ( $form.length === 0 ) {
+				continue;
+			}
+
+			const widgetData = await sowbGetBlockFormSnapshot( $form );
+
+			if ( ! sowbHasWidgetDataSnapshot( widgetData ) ) {
+				continue;
+			}
+
+			widgetDataByClientId[ block.clientId ] = widgetData;
+		}
+
+		const clientIds = Object.keys( widgetDataByClientId );
+		if ( clientIds.length === 0 ) {
+			return edits;
+		}
+
+		const clonedBlocks = sowbCloneBlocksWithWidgetData( blocks, widgetDataByClientId );
+		const nextEdits = {
+			...( edits || {} ),
+			content: wp.blocks.serialize( clonedBlocks ),
+		};
+		const attrsByClientId = clientIds.reduce( ( attributes, clientId ) => {
+			attributes[ clientId ] = {
+				widgetData: widgetDataByClientId[ clientId ],
+			};
+
+			return attributes;
+		}, {} );
+		const blockEditorDispatch = wp.data.dispatch( 'core/block-editor' );
+
+		if (
+			blockEditorDispatch &&
+			typeof blockEditorDispatch.updateBlockAttributes === 'function'
+		) {
+			blockEditorDispatch.updateBlockAttributes(
+				clientIds,
+				attrsByClientId,
+				{ uniqueByBlock: true }
+			);
+		}
+
+		return nextEdits;
+	}
+);
 
 const sowbCanvasCloneElements = [
 	// WP Scripts and assets.
 	'#jquery-core-js',
 	'#jquery-migrate-js',
+	'#underscore-js',
 	'#editor-js-after',
 	'#wp-tinymce-js',
 	'#utils-js',
@@ -1208,6 +1614,10 @@ const sowbCanvasCloneElements = [
 	'#wplink-js',
 	'#buttons-css',
 	'#dashicons-css',
+
+	// Widget frontend preview scripts.
+	'#dessandro-imagesLoaded-js',
+	'#sow-image-grid-js',
 
 	// Load all styles imported using load-styles.php.
 	'link[href*="wp-admin/load-styles.php"]',
@@ -1290,6 +1700,238 @@ const sowbGetElementById = ( doc, id ) => {
 	}
 
 	return doc.getElementById( id );
+};
+
+const sowbIsScriptHandleLoadedInWindow = ( targetWindow, scriptId ) => {
+	if ( ! targetWindow || ! scriptId ) {
+		return false;
+	}
+
+	switch ( scriptId ) {
+		case 'jquery-core-js':
+			return !! targetWindow.jQuery;
+		case 'jquery-migrate-js':
+			return !! (
+				targetWindow.jQuery &&
+				targetWindow.jQuery.migrateVersion
+			);
+		case 'jquery-ui-core-js':
+			return !! (
+				targetWindow.jQuery &&
+				targetWindow.jQuery.ui
+			);
+		case 'jquery-ui-mouse-js':
+			return !! (
+				targetWindow.jQuery &&
+				targetWindow.jQuery.ui &&
+				targetWindow.jQuery.ui.mouse
+			);
+		case 'jquery-ui-slider-js':
+			return !! (
+				targetWindow.jQuery &&
+				targetWindow.jQuery.fn &&
+				typeof targetWindow.jQuery.fn.slider === 'function'
+			);
+		case 'jquery-ui-sortable-js':
+			return !! (
+				targetWindow.jQuery &&
+				targetWindow.jQuery.fn &&
+				typeof targetWindow.jQuery.fn.sortable === 'function'
+			);
+		case 'jquery-ui-resizable-js':
+			return !! (
+				targetWindow.jQuery &&
+				targetWindow.jQuery.fn &&
+				typeof targetWindow.jQuery.fn.resizable === 'function'
+			);
+		case 'jquery-ui-draggable-js':
+			return !! (
+				targetWindow.jQuery &&
+				targetWindow.jQuery.fn &&
+				typeof targetWindow.jQuery.fn.draggable === 'function'
+			);
+		case 'iris-js':
+			return !! (
+				targetWindow.jQuery &&
+				targetWindow.jQuery.fn &&
+				typeof targetWindow.jQuery.fn.iris === 'function'
+			);
+		case 'wp-color-picker-js':
+			return !! (
+				targetWindow.jQuery &&
+				targetWindow.jQuery.fn &&
+				typeof targetWindow.jQuery.fn.wpColorPicker === 'function'
+			);
+		case 'siteorigin-widget-admin-js-extra':
+			return !! targetWindow.soWidgets;
+		case 'siteorigin-widget-admin-js':
+			return !! (
+				targetWindow.sowbWidgetAdminScriptLoaded ||
+				(
+					targetWindow.sowbForms &&
+					targetWindow.jQuery &&
+					targetWindow.jQuery.fn &&
+					typeof targetWindow.jQuery.fn.sowSetupForm === 'function'
+				)
+			);
+		case 'so-tinymce-field-js':
+			return !! (
+				targetWindow.sowbTinyMCEFieldScriptLoaded ||
+				typeof targetWindow.sowbGetTinyMCEInitPromise === 'function'
+			);
+		case 'editor-js':
+			return !! (
+				targetWindow.wp &&
+				(
+					(
+						targetWindow.wp.oldEditor &&
+						typeof targetWindow.wp.oldEditor.initialize === 'function'
+					) ||
+					(
+						targetWindow.wp.editor &&
+						typeof targetWindow.wp.editor.initialize === 'function'
+					)
+				)
+			);
+		case 'wp-tinymce-js':
+			return !! targetWindow.tinymce;
+		case 'quicktags-js':
+			return !! targetWindow.QTags;
+		case 'underscore-js':
+			return !! targetWindow._;
+		default:
+			return false;
+	}
+};
+
+const sowbGetEditorAssetSourceDocument = () => {
+	try {
+		if (
+			window.frameElement &&
+			window.parent &&
+			window.parent.document
+		) {
+			return window.parent.document;
+		}
+	} catch ( e ) {
+	}
+
+	return document;
+};
+
+const sowbEnsureIframeEditorGlobals = ( frame ) => {
+	if (
+		! frame ||
+		! frame.contentWindow
+	) {
+		return;
+	}
+
+	const iframeWindow = frame.contentWindow;
+	const topWindow = window.top || window;
+	const globals = [
+		'ajaxurl',
+		'userSettings',
+		'wpCookies',
+		'getUserSetting',
+		'setUserSetting',
+		'deleteUserSetting',
+		'getAllUserSettings',
+	];
+
+	globals.forEach( ( globalName ) => {
+		if (
+			typeof iframeWindow[ globalName ] === 'undefined' &&
+			typeof topWindow[ globalName ] !== 'undefined'
+		) {
+			iframeWindow[ globalName ] = topWindow[ globalName ];
+		}
+	} );
+};
+
+const sowbEnsureIframeOldEditorApi = ( frame ) => {
+	if (
+		! frame ||
+		! frame.contentDocument ||
+		! frame.contentWindow ||
+		! frame.contentDocument.body
+	) {
+		return;
+	}
+
+	sowbEnsureIframeEditorGlobals( frame );
+
+	const iframeWindow = frame.contentWindow;
+	if (
+		iframeWindow.wp &&
+		iframeWindow.wp.oldEditor &&
+		typeof iframeWindow.wp.oldEditor.initialize === 'function'
+	) {
+		return;
+	}
+
+	if (
+		iframeWindow.wp &&
+		iframeWindow.wp.editor &&
+		typeof iframeWindow.wp.editor.initialize === 'function'
+	) {
+		iframeWindow.wp.oldEditor = iframeWindow.wp.editor;
+		return;
+	}
+
+	if ( frame.contentDocument.getElementById( 'sowb-editor-js-retry' ) ) {
+		return;
+	}
+
+	if (
+		iframeWindow.sowbEditorJsRetryPending ||
+		(
+			iframeWindow.sowbScriptClonePending &&
+			iframeWindow.sowbScriptClonePending[ 'id:editor-js' ]
+		)
+	) {
+		return;
+	}
+
+	const sourceDoc = sowbGetEditorAssetSourceDocument();
+	const editorScript = sowbGetElementById( sourceDoc, 'editor-js' );
+	if ( ! editorScript || ! editorScript.src ) {
+		return;
+	}
+
+	const previousEditor = iframeWindow.wp && iframeWindow.wp.editor;
+	const retryScript = frame.contentDocument.createElement( 'script' );
+	retryScript.id = 'sowb-editor-js-retry';
+	retryScript.src = editorScript.src;
+	retryScript.async = false;
+	retryScript.onload = () => {
+		iframeWindow.sowbEditorJsRetryPending = false;
+		if (
+			! iframeWindow.wp ||
+			! iframeWindow.wp.editor ||
+			typeof iframeWindow.wp.editor.initialize !== 'function'
+		) {
+			return;
+		}
+
+		const oldEditor = iframeWindow.wp.editor;
+		iframeWindow.wp.oldEditor = oldEditor;
+
+		if (
+			previousEditor &&
+			previousEditor !== oldEditor
+		) {
+			Object.assign( previousEditor, oldEditor );
+			iframeWindow.wp.editor = previousEditor;
+		}
+
+	};
+	retryScript.onerror = ( event ) => {
+		iframeWindow.sowbEditorJsRetryPending = false;
+	};
+
+	iframeWindow.sowbEditorJsRetryPending = true;
+	frame.contentDocument.body.appendChild( retryScript );
 };
 
 /**
@@ -1410,6 +2052,31 @@ const sowbCloneElementToCanvas = ( $canvasBody, element, $source ) => {
 	const sourceDoc = $source && $source[0] && $source[0].nodeType === 9 ?
 		$source[0] :
 		element.ownerDocument;
+	const canvasWindow = canvasDoc && canvasDoc.defaultView;
+	const tagName = element.tagName ? element.tagName.toLowerCase() : '';
+	const assetAttribute = element.hasAttribute( 'src' ) ? 'src' : (
+		element.hasAttribute( 'href' ) ? 'href' : ''
+	);
+	const assetUrl = assetAttribute ?
+		sowbNormalizeAssetUrl(
+			element.getAttribute( assetAttribute ),
+			sowbGetDocumentHref( sourceDoc )
+		) :
+		'';
+	const scriptCloneKey = tagName === 'script' ?
+		( element.id ? 'id:' + element.id : ( assetUrl ? 'url:' + assetUrl : '' ) ) :
+		'';
+
+	if ( scriptCloneKey && canvasWindow ) {
+		canvasWindow.sowbScriptClonePending = canvasWindow.sowbScriptClonePending || {};
+
+		if (
+			canvasWindow.sowbScriptClonePending[ scriptCloneKey ] ||
+			sowbIsScriptHandleLoadedInWindow( canvasWindow, element.id )
+		) {
+			return false;
+		}
+	}
 
 	if (
 		element.id &&
@@ -1418,32 +2085,51 @@ const sowbCloneElementToCanvas = ( $canvasBody, element, $source ) => {
 		return false;
 	}
 
-	const assetAttribute = element.hasAttribute( 'src' ) ? 'src' : (
-		element.hasAttribute( 'href' ) ? 'href' : ''
-	);
+	if ( assetUrl ) {
+		const selector = assetAttribute === 'src' ? 'script[src]' : 'link[href]';
+		const existingAsset = $canvasBody.find( selector ).toArray().some( ( candidate ) => {
+			return sowbNormalizeAssetUrl(
+				candidate.getAttribute( assetAttribute ),
+				sowbGetDocumentHref( candidate.ownerDocument )
+			) === assetUrl;
+		} );
 
-	if ( assetAttribute ) {
-		const assetUrl = sowbNormalizeAssetUrl(
-			element.getAttribute( assetAttribute ),
-			sowbGetDocumentHref( sourceDoc )
-		);
-
-		if ( assetUrl ) {
-			const selector = assetAttribute === 'src' ? 'script[src]' : 'link[href]';
-			const existingAsset = $canvasBody.find( selector ).toArray().some( ( candidate ) => {
-				return sowbNormalizeAssetUrl(
-					candidate.getAttribute( assetAttribute ),
-					sowbGetDocumentHref( candidate.ownerDocument )
-				) === assetUrl;
-			} );
-
-			if ( existingAsset ) {
-				return false;
-			}
+		if ( existingAsset ) {
+			return false;
 		}
 	}
 
-	$canvasBody.append( element.outerHTML );
+	let clonedElement;
+	if ( tagName === 'script' ) {
+		clonedElement = canvasDoc.createElement( 'script' );
+		for ( const attribute of element.attributes ) {
+			clonedElement.setAttribute( attribute.name, attribute.value );
+		}
+		clonedElement.textContent = element.textContent;
+		clonedElement.async = false;
+		if ( scriptCloneKey && canvasWindow ) {
+			clonedElement.addEventListener( 'load', () => {
+				delete canvasWindow.sowbScriptClonePending[ scriptCloneKey ];
+			}, { once: true } );
+			clonedElement.addEventListener( 'error', () => {
+				delete canvasWindow.sowbScriptClonePending[ scriptCloneKey ];
+			}, { once: true } );
+		}
+	} else {
+		clonedElement = element.cloneNode( true );
+	}
+	if ( scriptCloneKey && canvasWindow ) {
+		canvasWindow.sowbScriptClonePending[ scriptCloneKey ] = true;
+	}
+	$canvasBody[0].appendChild( clonedElement );
+	if (
+		tagName === 'script' &&
+		! assetUrl &&
+		scriptCloneKey &&
+		canvasWindow
+	) {
+		delete canvasWindow.sowbScriptClonePending[ scriptCloneKey ];
+	}
 	return true;
 };
 
@@ -1499,6 +2185,15 @@ const sowbCloneElementsToCanvas = ( $canvasBody, sourceDoc ) => {
 	for ( const selector of sowbCanvasCloneElements ) {
 		const $element = $source.find( selector );
 		if ( $element.length === 0 ) {
+			if ( [
+				'#wp-tinymce-js',
+				'#quicktags-js-extra',
+				'#quicktags-js',
+				'#siteorigin-widget-admin-js',
+				'#so-tinymce-field-js',
+				'#underscore-js',
+			].includes( selector ) ) {
+			}
 			continue;
 		}
 
@@ -1507,6 +2202,15 @@ const sowbCloneElementsToCanvas = ( $canvasBody, sourceDoc ) => {
 			continue;
 		}
 
+		if ( [
+			'#wp-tinymce-js',
+			'#quicktags-js-extra',
+			'#quicktags-js',
+			'#siteorigin-widget-admin-js',
+			'#so-tinymce-field-js',
+			'#underscore-js',
+		].includes( selector ) ) {
+		}
 		sowbCloneElementToCanvas( $canvasBody, element, $source );
 	}
 };
@@ -1528,8 +2232,6 @@ const sowbCloneTinyMCEExternalPluginAssets = ( $canvasBody, sourceDoc ) => {
 		sourceDoc || document
 	);
 	const assetRootList = [ ...assetRoots ];
-	let previousMatchedScriptRoot = '';
-	let pendingDependencyScripts = [];
 
 	const cloneAssetElement = ( element ) => {
 		if ( element.tagName.toLowerCase() === 'script' ) {
@@ -1538,6 +2240,14 @@ const sowbCloneTinyMCEExternalPluginAssets = ( $canvasBody, sourceDoc ) => {
 
 		sowbCloneElementToCanvas( $canvasBody, element, $source );
 	};
+
+	if ( assetRootList.some( ( assetRoot ) => assetRoot.indexOf( '/web-font-selector/js/' ) !== -1 ) ) {
+		$source
+			.find( '#web-font-loader-js, script[src*="ajax.googleapis.com/ajax/libs/webfont/"]' )
+			.each( function() {
+				cloneAssetElement( this );
+			} );
+	}
 
 	$source.find( 'script[src], link[rel="stylesheet"][href]' ).each( function() {
 		const tagName = this.tagName.toLowerCase();
@@ -1550,26 +2260,7 @@ const sowbCloneTinyMCEExternalPluginAssets = ( $canvasBody, sourceDoc ) => {
 			'';
 
 		if ( matchedRoot ) {
-			if ( tagName === 'script' ) {
-				// WordPress prints script dependencies before dependents, but the
-				// DOM does not expose dependency handles. If a TinyMCE companion
-				// package has root-matched scripts on both sides of an intervening
-				// script, preserve that in-between dependency before the later
-				// matched script runs in the iframe.
-				if ( previousMatchedScriptRoot === matchedRoot ) {
-					pendingDependencyScripts.forEach( cloneAssetElement );
-				}
-
-				pendingDependencyScripts = [];
-				previousMatchedScriptRoot = matchedRoot;
-			}
-
 			cloneAssetElement( this );
-			return;
-		}
-
-		if ( tagName === 'script' && previousMatchedScriptRoot ) {
-			pendingDependencyScripts.push( this );
 		}
 	} );
 };
@@ -1629,8 +2320,10 @@ const sowbMaybeSetupSiteEditorAssets = ( frame = null ) => {
 		sourceDoc = document;
 	}
 
+	sowbEnsureIframeEditorGlobals( currentFrame );
 	sowbCloneElementsToCanvas( $canvasBody, sourceDoc );
 	sowbCloneTinyMCEExternalPluginAssets( $canvasBody, sourceDoc );
+	sowbEnsureIframeOldEditorApi( currentFrame );
 
 	// Is ajaxurl set?
 	try {
