@@ -109,6 +109,15 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.73.0 - 19 May 2026 =
+* Cards Carousel: Scoped overflow handling to the panel to preserve sibling cell sizing in Layout Builder.
+* Image Grid: Loaded preview assets in the Block Editor and restored repeater media field setup.
+* Widget Block: Improved Block Editor and Site Editor widget forms with iframe asset loading, direct widget save bridge, preview snapshots, and stale Page Builder data handling.
+* General: Improved TinyMCE field handling for WordPress (WP) 7, including initialized detection, selection bookmark cleanup, Visual/Code switching, flush timing, unique editor IDs, and iframe setup.
+* General: Improved media, multiple media, and date range field initialization in iframe and repeater contexts.
+* General: Restored compact WP 7 admin field sizing and fixed TinyMCE editor borders in Panels dialogs.
+* General: Added focused end-to-end coverage for Block Editor, Site Editor, snapshot Application Programming Interface (API), save bridge, repeater media, and TinyMCE workflows.
+
 = 1.72.0 - 14 April 2026 =
 * Anything Carousel: Added bottom-right arrows navigation layout.
 * Features: Linked the title when the column link overlay is enabled.
