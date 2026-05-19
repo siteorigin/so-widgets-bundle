@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 1.73.1 - 19 May 2026 =
+* General: Corrected release package version metadata to prevent WordPress from repeatedly offering the same update after installing 1.73.0.
+
 = 1.73.0 - 19 May 2026 =
 * Cards Carousel: Scoped overflow handling to the panel to preserve sibling cell sizing in Layout Builder.
 * Image Grid: Loaded preview assets in the Block Editor and restored repeater media field setup.
