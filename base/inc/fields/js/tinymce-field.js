@@ -240,6 +240,22 @@
 	};
 
 	/**
+	 * Checks whether an element is still attached to its owning document.
+	 *
+	 * @param {Element|null} element - Element to inspect.
+	 *
+	 * @returns {boolean} True when the element is connected.
+	 */
+	const isConnectedElement = function( element ) {
+		return !! (
+			element &&
+			element.ownerDocument &&
+			element.ownerDocument.documentElement &&
+			element.ownerDocument.documentElement.contains( element )
+		);
+	};
+
+	/**
 	 * Opens the WordPress media library for TinyMCE editors in an iframe context.
 	 *
 	 * We manually handle this rather than relying on the default WordPress
@@ -405,34 +421,53 @@
 		}
 
 		const fieldElement = $field.get( 0 );
+		if ( ! isConnectedElement( fieldElement ) ) {
+			return false;
+		}
+
 		if ( window.tinymce && window.tinymce.get( id ) ) {
 			const editor = window.tinymce.get( id );
-			const editorElement = editor && typeof editor.getElement === 'function' ?
-				editor.getElement() :
-				( editor && editor.targetElm ? editor.targetElm : null );
 			const editorContainer = editor && typeof editor.getContainer === 'function' ?
 				editor.getContainer() :
 				null;
+			const editorIframe = editor && editor.iframeElement ?
+				editor.iframeElement :
+				document.getElementById( id + '_ifr' );
 
-			if ( editorElement && fieldElement && fieldElement.contains( editorElement ) ) {
+			if (
+				editorContainer &&
+				isConnectedElement( editorContainer ) &&
+				fieldElement.contains( editorContainer )
+			) {
 				return true;
 			}
 
-			if ( editorContainer && fieldElement && fieldElement.contains( editorContainer ) ) {
+			if (
+				editorIframe &&
+				isConnectedElement( editorIframe ) &&
+				fieldElement.contains( editorIframe ) &&
+				editorIframe.contentWindow &&
+				editorIframe.contentDocument
+			) {
 				return true;
 			}
-
 		}
 
 		const editorIframe = document.getElementById( id + '_ifr' );
-		if ( editorIframe && fieldElement && fieldElement.contains( editorIframe ) ) {
+		if (
+			editorIframe &&
+			isConnectedElement( editorIframe ) &&
+			fieldElement.contains( editorIframe ) &&
+			editorIframe.contentWindow &&
+			editorIframe.contentDocument
+		) {
 			return true;
 		}
 
 		const editorWrap = document.getElementById( 'wp-' + id + '-wrap' );
 		if (
 			editorWrap &&
-			fieldElement &&
+			isConnectedElement( editorWrap ) &&
 			fieldElement.contains( editorWrap ) &&
 			$( editorWrap ).find( '.mce-tinymce, .mce-toolbar-grp' ).length > 0
 		) {
@@ -576,7 +611,17 @@
 				existingEditor.getContainer() :
 				null;
 
-			if ( existingEditorContainer && fieldElement && ! fieldElement.contains( existingEditorContainer ) ) {
+			if (
+				existingEditor &&
+				(
+					! existingEditorContainer ||
+					! isConnectedElement( existingEditorContainer ) ||
+					( fieldElement && ! fieldElement.contains( existingEditorContainer ) )
+				)
+			) {
+				if ( typeof existingEditor.remove === 'function' ) {
+					existingEditor.remove();
+				}
 				id = '';
 			}
 		}
@@ -804,23 +849,33 @@
 
 				if ( mode === 'tmce' ) {
 					const editor = window.tinymce.get( id );
+					let content = $textarea.val() || '';
+
 					// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex.
-					if ( editor !== null ) {
-						let content = $textarea.val();
-						if ( content.search( '<' ) !== -1 && content.search( '>' ) === -1 ) {
-							content = content.replace( /</g, '' );
-							$textarea.val( content );
-						}
+					if ( content.search( '<' ) !== -1 && content.search( '>' ) === -1 ) {
+						content = content.replace( /</g, '' );
+						$textarea.val( content );
+					}
+
+					// In classic Customizer/widgets screens, WordPress core owns the
+					// Visual/Code switch and restores selection bookmarks during the
+					// same click event. Avoid touching the hidden editor before core's
+					// document handler runs, otherwise stale iframe selections in WP 7
+					// can throw inside TinyMCE's selection code.
+					if ( editor !== null && window.frameElement ) {
 						editor.setContent( window.switchEditors.wpautop( content ) );
 					}
 				}
-				settings.selectedEditor = mode;
 
-				$field.find( 'textarea.wp-editor-area' ).css(
-					'visibility', mode === 'tmce' ? 'hidden' : 'visible'
-				);
+				window.setTimeout( function() {
+					settings.selectedEditor = mode;
 
-				$selectedEditor.val( mode );
+					$field.find( 'textarea.wp-editor-area' ).css(
+						'visibility', mode === 'tmce' ? 'hidden' : 'visible'
+					);
+
+					$selectedEditor.val( mode );
+				}, 0 );
 			} );
 	};
 
