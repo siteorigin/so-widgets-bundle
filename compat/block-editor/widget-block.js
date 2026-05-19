@@ -1262,13 +1262,13 @@ const sowbGetEditorCanvasFrame = () => {
  *
  * @returns {Object|null} The resolved editor API, or null if unavailable.
  */
-const sowbResolveWpEditor = () => {
-	if ( ! window.wp ) {
+const sowbResolveWpEditor = ( targetWindow = window ) => {
+	if ( ! targetWindow.wp ) {
 		return null;
 	}
-	const candidate = window.wp.oldEditor && typeof window.wp.oldEditor.initialize === 'function'
-		? window.wp.oldEditor
-		: ( window.wp.editor || null );
+	const candidate = targetWindow.wp.oldEditor && typeof targetWindow.wp.oldEditor.initialize === 'function'
+		? targetWindow.wp.oldEditor
+		: ( targetWindow.wp.editor || null );
 	return candidate && typeof candidate.initialize === 'function' ? candidate : null;
 };
 window.sowbResolveWpEditor = sowbResolveWpEditor;
@@ -1302,20 +1302,7 @@ const sowbGetFormSetupDependencyStatus = ( formWindow, $form ) => {
 		$form.length &&
 		$form.find( '.siteorigin-widget-field-type-tinymce' ).length
 	);
-	const hasWpEditorApi = !! (
-		formWindow &&
-		formWindow.wp &&
-		(
-			(
-				formWindow.wp.oldEditor &&
-				typeof formWindow.wp.oldEditor.initialize === 'function'
-			) ||
-			(
-				formWindow.wp.editor &&
-				typeof formWindow.wp.editor.initialize === 'function'
-			)
-		)
-	);
+	const hasWpEditorApi = !! ( formWindow && sowbResolveWpEditor( formWindow ) );
 
 	return {
 		hasJQuery: !! formJQuery,
@@ -1528,63 +1515,71 @@ wp.hooks.addFilter(
 	'editor.preSavePost',
 	'sowb/direct-widget-block-save-bridge',
 	async function( edits ) {
-		const blockEditorSelect = wp.data.select( 'core/block-editor' );
-		const blocks = blockEditorSelect.getBlocks();
-		const directBlocks = sowbFindDirectWidgetBlocks( blocks );
+		try {
+			const blockEditorSelect = wp.data.select( 'core/block-editor' );
+			const blocks = blockEditorSelect.getBlocks();
+			const directBlocks = sowbFindDirectWidgetBlocks( blocks );
 
-		if ( directBlocks.length === 0 ) {
-			return edits;
-		}
-
-		const widgetDataByClientId = {};
-
-		for ( const block of directBlocks ) {
-			const $form = sowbGetBlockForm( block.clientId );
-
-			if ( $form.length === 0 ) {
-				continue;
+			if ( directBlocks.length === 0 ) {
+				return edits;
 			}
 
-			const widgetData = await sowbGetBlockFormSnapshot( $form );
+			const widgetDataByClientId = {};
 
-			if ( ! sowbHasWidgetDataSnapshot( widgetData ) ) {
-				continue;
+			for ( const block of directBlocks ) {
+				try {
+					const $form = sowbGetBlockForm( block.clientId );
+
+					if ( $form.length === 0 ) {
+						continue;
+					}
+
+					const widgetData = await sowbGetBlockFormSnapshot( $form );
+
+					if ( ! sowbHasWidgetDataSnapshot( widgetData ) ) {
+						continue;
+					}
+
+					widgetDataByClientId[ block.clientId ] = widgetData;
+				} catch ( blockErr ) {
+					console.error( 'SiteOrigin Widgets: failed to snapshot block ' + block.clientId, blockErr );
+				}
 			}
 
-			widgetDataByClientId[ block.clientId ] = widgetData;
-		}
+			const clientIds = Object.keys( widgetDataByClientId );
+			if ( clientIds.length === 0 ) {
+				return edits;
+			}
 
-		const clientIds = Object.keys( widgetDataByClientId );
-		if ( clientIds.length === 0 ) {
-			return edits;
-		}
-
-		const clonedBlocks = sowbCloneBlocksWithWidgetData( blocks, widgetDataByClientId );
-		const nextEdits = {
-			...( edits || {} ),
-			content: wp.blocks.serialize( clonedBlocks ),
-		};
-		const attrsByClientId = clientIds.reduce( ( attributes, clientId ) => {
-			attributes[ clientId ] = {
-				widgetData: widgetDataByClientId[ clientId ],
+			const clonedBlocks = sowbCloneBlocksWithWidgetData( blocks, widgetDataByClientId );
+			const nextEdits = {
+				...( edits || {} ),
+				content: wp.blocks.serialize( clonedBlocks ),
 			};
+			const attrsByClientId = clientIds.reduce( ( attributes, clientId ) => {
+				attributes[ clientId ] = {
+					widgetData: widgetDataByClientId[ clientId ],
+				};
 
-			return attributes;
-		}, {} );
-		const blockEditorDispatch = wp.data.dispatch( 'core/block-editor' );
+				return attributes;
+			}, {} );
+			const blockEditorDispatch = wp.data.dispatch( 'core/block-editor' );
 
-		if (
-			blockEditorDispatch &&
-			typeof blockEditorDispatch.updateBlockAttributes === 'function'
-		) {
-			blockEditorDispatch.updateBlockAttributes(
-				clientIds,
-				attrsByClientId,
-				{ uniqueByBlock: true }
-			);
+			if (
+				blockEditorDispatch &&
+				typeof blockEditorDispatch.updateBlockAttributes === 'function'
+			) {
+				blockEditorDispatch.updateBlockAttributes(
+					clientIds,
+					attrsByClientId
+				);
+			}
+
+			return nextEdits;
+		} catch ( err ) {
+			console.error( 'SiteOrigin Widgets: preSavePost bridge failed, returning original edits', err );
+			return edits;
 		}
-
-		return nextEdits;
 	}
 );
 
@@ -1780,19 +1775,7 @@ const sowbIsScriptHandleLoadedInWindow = ( targetWindow, scriptId ) => {
 				typeof targetWindow.sowbGetTinyMCEInitPromise === 'function'
 			);
 		case 'editor-js':
-			return !! (
-				targetWindow.wp &&
-				(
-					(
-						targetWindow.wp.oldEditor &&
-						typeof targetWindow.wp.oldEditor.initialize === 'function'
-					) ||
-					(
-						targetWindow.wp.editor &&
-						typeof targetWindow.wp.editor.initialize === 'function'
-					)
-				)
-			);
+			return !! sowbResolveWpEditor( targetWindow );
 		case 'wp-tinymce-js':
 			return !! targetWindow.tinymce;
 		case 'quicktags-js':
@@ -1862,20 +1845,11 @@ const sowbEnsureIframeOldEditorApi = ( frame ) => {
 	sowbEnsureIframeEditorGlobals( frame );
 
 	const iframeWindow = frame.contentWindow;
-	if (
-		iframeWindow.wp &&
-		iframeWindow.wp.oldEditor &&
-		typeof iframeWindow.wp.oldEditor.initialize === 'function'
-	) {
-		return;
-	}
-
-	if (
-		iframeWindow.wp &&
-		iframeWindow.wp.editor &&
-		typeof iframeWindow.wp.editor.initialize === 'function'
-	) {
-		iframeWindow.wp.oldEditor = iframeWindow.wp.editor;
+	const resolvedEditor = sowbResolveWpEditor( iframeWindow );
+	if ( resolvedEditor ) {
+		if ( ! ( iframeWindow.wp.oldEditor && typeof iframeWindow.wp.oldEditor.initialize === 'function' ) ) {
+			iframeWindow.wp.oldEditor = resolvedEditor;
+		}
 		return;
 	}
 
@@ -2185,15 +2159,6 @@ const sowbCloneElementsToCanvas = ( $canvasBody, sourceDoc ) => {
 	for ( const selector of sowbCanvasCloneElements ) {
 		const $element = $source.find( selector );
 		if ( $element.length === 0 ) {
-			if ( [
-				'#wp-tinymce-js',
-				'#quicktags-js-extra',
-				'#quicktags-js',
-				'#siteorigin-widget-admin-js',
-				'#so-tinymce-field-js',
-				'#underscore-js',
-			].includes( selector ) ) {
-			}
 			continue;
 		}
 
@@ -2202,15 +2167,6 @@ const sowbCloneElementsToCanvas = ( $canvasBody, sourceDoc ) => {
 			continue;
 		}
 
-		if ( [
-			'#wp-tinymce-js',
-			'#quicktags-js-extra',
-			'#quicktags-js',
-			'#siteorigin-widget-admin-js',
-			'#so-tinymce-field-js',
-			'#underscore-js',
-		].includes( selector ) ) {
-		}
 		sowbCloneElementToCanvas( $canvasBody, element, $source );
 	}
 };
@@ -2590,11 +2546,12 @@ jQuery( function( $ ) {
 			return;
 		}
 
+		// Unsubscribe inside the deferred callback so we don't fire again
+		// before the DOM update has had a chance to apply.
 		setTimeout( () => {
+			sowbHandleInactiveWidgets();
 			sowbUpdateInactiveBlocksMessage( inactiveBlocks );
 		}, 0 );
-
-		sowbHandleInactiveWidgets();
 	} );
 } );
 
@@ -2625,13 +2582,20 @@ if (
 					var sowbCurrentBlocks = wp.data.select( 'core/block-editor' ).getBlocks();
 					for ( var i = 0; i < sowbCurrentBlocks.length; i++ ) {
 						if ( sowbCurrentBlocks[ i ].name.startsWith( 'sowb/' ) && sowbCurrentBlocks[ i ].isValid ) {
-							$form = jQuery( '#block-' + sowbCurrentBlocks[ i ].clientId ).find( '.so-widget-block-form' );
+							// Use sowbGetBlockForm so the form is found in both the
+							// main document and the Site Editor iframe canvas.
+							var $form = sowbGetBlockForm( sowbCurrentBlocks[ i ].clientId );
+							if ( ! $form.length ) {
+								$form = jQuery( '#block-' + sowbCurrentBlocks[ i ].clientId ).find( '.so-widget-block-form' );
+							}
 							if ( ! sowbForms.validateFields( $form, showPrompt) ) {
 								showPrompt = false;
 							}
-							$form.find( '.siteorigin-widget-field-is-required input' ).on( 'change', function() {
-								sowbForms.validateFields( $form );
-							} );
+							( function( $capturedForm ) {
+								$capturedForm.find( '.siteorigin-widget-field-is-required input' ).on( 'change', function() {
+									sowbForms.validateFields( $capturedForm );
+								} );
+							} )( $form );
 						}
 					}
 					sowbTimeoutSetup = false;

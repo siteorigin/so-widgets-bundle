@@ -1827,7 +1827,7 @@ var sowbForms = window.sowbForms || {};
 
 	sowbForms.getWidgetFormValues = function ( formContainer ) {
 
-		if ( _.isUndefined( formContainer ) ) {
+		if ( formContainer === undefined ) {
 			return null;
 		}
 
@@ -1839,7 +1839,7 @@ var sowbForms = window.sowbForms || {};
 			try {
 				var name = /[a-zA-Z0-9\-]+\[[a-zA-Z0-9]+\]\[(.*)\]/.exec( $$.attr( 'name' ) );
 
-				if ( _.isEmpty( name ) ) {
+				if ( ! name ) {
 					return true;
 				}
 
@@ -1860,7 +1860,7 @@ var sowbForms = window.sowbForms || {};
 				var sub = data;
 				var fieldValue = null;
 
-				var fieldType = _.isString( $$.attr( 'type' ) ) ? $$.attr( 'type' ).toLowerCase() : null;
+				var fieldType = typeof $$.attr( 'type' ) === 'string' ? $$.attr( 'type' ).toLowerCase() : null;
 
 				if ( fieldType === 'checkbox' ) {
 					if ( $$.is( ':checked' ) ) {
@@ -1875,10 +1875,14 @@ var sowbForms = window.sowbForms || {};
 						return;
 					}
 				} else if ( $$.prop( 'tagName' ) === 'TEXTAREA' && $$.hasClass( 'wp-editor-area' ) ) {
-					// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content
+					// This is a TinyMCE editor, so we'll use the tinyMCE object to get the content.
+					// Use the element's own window so iframe-hosted editors are found correctly.
+					var fieldTinyMCE = ( $$.length && $$.get(0).ownerDocument && $$.get(0).ownerDocument.defaultView ) ?
+						$$.get(0).ownerDocument.defaultView.tinymce :
+						( typeof tinyMCE !== 'undefined' ? tinyMCE : undefined );
 					var editor = null;
-					if ( typeof tinyMCE !== 'undefined' ) {
-						editor = tinyMCE.get( $$.attr( 'id' ) );
+					if ( typeof fieldTinyMCE !== 'undefined' ) {
+						editor = fieldTinyMCE.get( $$.attr( 'id' ) );
 					}
 
 					if ( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
@@ -1912,9 +1916,9 @@ var sowbForms = window.sowbForms || {};
 						}
 					}
 					else {
-						if ( _.isUndefined( sub[ parts[ i ] ] ) ) {
+						if ( sub[ parts[ i ] ] === undefined ) {
 							// We assume that a numeric key means it's an array. (or empty string??)
-							if ( _.isNumber( parts[ i + 1 ] ) || parts[ i + 1 ] === '' ) {
+							if ( typeof parts[ i + 1 ] === 'number' || parts[ i + 1 ] === '' ) {
 								sub[ parts[ i ] ] = [];
 							} else {
 								sub[ parts[ i ] ] = {};
