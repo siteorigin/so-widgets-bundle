@@ -2,7 +2,243 @@
 
 ( function( $ ) {
 
+	if ( window.sowbTinyMCEFieldScriptLoaded ) {
+		return;
+	}
+
+	window.sowbTinyMCEFieldScriptLoaded = true;
+	window.sowbTinyMCEFieldScriptLoadedAt = Date.now();
+
 	let mediaFrameOpen = false;
+	const sowbTinyMCEEventNamespace = '.sowTinymce';
+	let _tinymceDomIdSeq = 0;
+	let _tinymcePreInitSeq = 0;
+
+	/**
+	 * Tracks in-flight TinyMCE editor initializations.
+	 *
+	 * Keyed by editor ID. Each entry holds `{ promise, resolve }` where `promise`
+	 * resolves (with no value) once the editor's `init` event has fired or the
+	 * 5 s safety timeout has elapsed. Entries are removed on resolution so the
+	 * map never grows unboundedly.
+	 *
+	 * Consumed by `window.sowbGetTinyMCEInitPromise`, which allows external code
+	 * (e.g. the save-bridge TinyMCE flusher) to await full editor readiness
+	 * before calling `editor.save()`.
+	 */
+	const _tinymceInitPending = {};
+
+	/**
+	 * Filters a jQuery collection to only those TinyMCE fields that are eligible
+	 * for editor initialization.
+	 *
+	 * Excludes fields that live inside a repeater item template
+	 * (`.siteorigin-widget-field-repeater-item-html`) and fields whose textarea ID
+	 * contains `_id_`, which indicates a placeholder that has not yet been cloned
+	 * into a real repeater row.
+	 *
+	 * @param {jQuery|Array} $fields - jQuery collection or array of field elements.
+	 *
+	 * @returns {jQuery} Filtered jQuery collection of eligible TinyMCE field elements.
+	 */
+	const getEligibleTinyMCEFields = function( $fields ) {
+		const $collection = $fields && $fields.jquery ?
+			$fields :
+			$( $fields || [] );
+
+		return $collection.filter( function() {
+			const $field = $( this );
+			const $textarea = $field.find( '.siteorigin-widget-tinymce-container textarea' ).first();
+			const textareaId = $textarea.attr( 'id' ) || '';
+
+			if ( $field.closest( '.siteorigin-widget-field-repeater-item-html' ).length ) {
+				return false;
+			}
+
+			if ( textareaId.indexOf( '_id_' ) !== -1 ) {
+				return false;
+			}
+
+			return true;
+		} );
+	};
+
+	/**
+	 * Selects the best matching widget form from a set of candidates.
+	 *
+	 * Scores each form on multiple signals and returns the highest-scoring one.
+	 * Scoring weights (highest to lowest priority):
+	 *   - Connected to the live document       +10000
+	 *   - Visible (not hidden by CSS)          +5000
+	 *   - Hidden by aria-hidden               -2500
+	 *   - Inside a repeater item template     -5000
+	 *   - TinyMCE field count                 ×100 per field
+	 *   - Total field count                   +1 per field
+	 *   - DOM order tie-breaker               -index/1000 (earlier wins)
+	 *
+	 * @param {jQuery} $forms - jQuery collection of candidate form elements.
+	 *
+	 * @returns {jQuery} Single-element jQuery collection containing the best form,
+	 *                   or an empty jQuery object if no forms are provided.
+	 */
+	const selectBestFormInstance = function( $forms ) {
+		if ( ! $forms || ! $forms.length ) {
+			return $( [] );
+		}
+
+		if ( $forms.length === 1 ) {
+			return $forms;
+		}
+
+		let bestScore = Number.NEGATIVE_INFINITY;
+		let bestForm = null;
+
+		$forms.each( function( index ) {
+			const $form = $( this );
+			const fieldCount = $form.find( '.siteorigin-widget-field' ).length;
+			const tinymceFieldCount = $form.find( '.siteorigin-widget-field-type-tinymce' ).length;
+			const visible = $form.is( ':visible' );
+			const hiddenByAria = $form.is( '[aria-hidden="true"]' ) || $form.closest( '[aria-hidden="true"]' ).length > 0;
+			// Use ownerDocument rather than the closure `document` so this signal is
+			// accurate whether selectBestFormInstance is called from the parent window
+			// (resolvePostMessageForms path) or from inside the iframe.
+			const connected = ( this.ownerDocument && this.ownerDocument.documentElement )
+				? this.ownerDocument.documentElement.contains( this )
+				: false;
+			const inRepeaterTemplate = $form.closest( '.siteorigin-widget-field-repeater-item-html' ).length > 0;
+
+			const score =
+				( connected ? 10000 : 0 ) +
+				( visible ? 5000 : 0 ) +
+				( hiddenByAria ? -2500 : 0 ) +
+				( inRepeaterTemplate ? -5000 : 0 ) +
+				( tinymceFieldCount * 100 ) +
+				fieldCount -
+				( index / 1000 );
+
+			if ( score > bestScore ) {
+				bestScore = score;
+				bestForm = this;
+			}
+		} );
+
+		return bestForm ? $( bestForm ) : $forms.first();
+	};
+
+	/**
+	 * Returns all eligible TinyMCE fields within a set of widget forms.
+	 *
+	 * When more than one form is supplied, delegates to `selectBestFormInstance`
+	 * to pick the most appropriate one before searching for fields. Within the
+	 * resolved form, visible forms are preferred over hidden ones.
+	 *
+	 * @param {jQuery} $forms - jQuery collection of widget form elements.
+	 *
+	 * @returns {jQuery} jQuery collection of eligible TinyMCE field elements.
+	 */
+	const getTinyMCEFieldsFromForms = function( $forms ) {
+		if ( ! $forms || ! $forms.length ) {
+			return $( [] );
+		}
+
+		// When multiple forms are present, delegate to selectBestFormInstance which
+		// scores on connected/visible/aria-hidden/repeater-template signals.
+		const $scopedForms = $forms.length > 1 ?
+			selectBestFormInstance( $forms ) :
+			$forms;
+
+		const $visibleForms = $scopedForms.filter( ':visible' );
+		const $activeForms = $visibleForms.length ? $visibleForms : $scopedForms;
+
+		return getEligibleTinyMCEFields(
+			$activeForms.find( '.siteorigin-widget-field-type-tinymce' )
+		);
+	};
+
+	/**
+	 * Resolves the target widget form(s) from a `sowbBlockFormInit` postMessage payload.
+	 *
+	 * Queries `messageData.formSelector` against this iframe's document and, when
+	 * more than one form matches, delegates to `selectBestFormInstance` to pick the
+	 * best candidate based on visibility, DOM connectivity, and field count.
+	 *
+	 * Note: block-editor selection attributes (`is-selected`, `data-block`) live on
+	 * elements in the parent document and are never present in the iframe DOM, so no
+	 * attempt is made to narrow by clientId here.
+	 *
+	 * @param {Object} messageData              - The postMessage data object.
+	 * @param {string} messageData.formSelector - CSS selector targeting the form(s).
+	 *
+	 * @returns {jQuery} jQuery collection of the resolved form element(s).
+	 */
+	const resolvePostMessageForms = function( messageData ) {
+		if ( ! messageData || ! messageData.formSelector ) {
+			return $( [] );
+		}
+
+		// formSelector targets elements in this iframe document. Block-editor
+		// attributes such as `is-selected` and `data-block` belong to the parent
+		// document's block list and are never present here, so we go straight to
+		// selectBestFormInstance when more than one form matches.
+		let $forms = $( messageData.formSelector );
+
+		if ( $forms.length > 1 ) {
+			$forms = selectBestFormInstance( $forms );
+		}
+
+		return $forms;
+	};
+
+	/**
+	 * Sanitizes a string for use as a segment of a TinyMCE editor DOM ID.
+	 *
+	 * Replaces bracket notation (e.g. `[0]`) with hyphens, strips all characters
+	 * that are not alphanumeric, underscores, or hyphens, collapses consecutive
+	 * hyphens, and trims leading/trailing hyphens.
+	 *
+	 * @param {string} value - The raw string to sanitize.
+	 *
+	 * @returns {string} The sanitized string, or an empty string if the input is
+	 *                   not a non-empty string.
+	 */
+	const sanitizeIdSegment = function( value ) {
+		if ( typeof value !== 'string' || value.length === 0 ) {
+			return '';
+		}
+
+		return value
+			.replace( /\[[^\]]*\]/g, '-' )
+			.replace( /[^A-Za-z0-9_-]+/g, '-' )
+			.replace( /-+/g, '-' )
+			.replace( /^-+|-+$/g, '' );
+	};
+
+	/**
+	 * Resolves the best available WordPress editor API object.
+	 *
+	 * Delegates to `window.sowbResolveWpEditor` (defined in widget-block.js) when
+	 * available so the guard logic lives in one place. Falls back to an inline
+	 * implementation for contexts where widget-block.js has not yet been evaluated
+	 * (e.g. classic Page Builder or widgets screen).
+	 *
+	 * Prefers `wp.oldEditor` (present in iframe contexts for legacy compatibility)
+	 * over `wp.editor`, and requires the resolved object to expose `initialize()`.
+	 *
+	 * @returns {Object|null} The resolved editor API, or null if unavailable.
+	 */
+	const resolveWpEditor = function() {
+		if ( typeof window.sowbResolveWpEditor === 'function' ) {
+			return window.sowbResolveWpEditor();
+		}
+		if ( ! window.wp ) {
+			return null;
+		}
+		const candidate = window.wp.oldEditor && typeof window.wp.oldEditor.initialize === 'function'
+			? window.wp.oldEditor
+			: ( window.wp.editor || null );
+		return candidate && typeof candidate.initialize === 'function' ? candidate : null;
+	};
+
 	/**
 	 * Opens the WordPress media library for TinyMCE editors in an iframe context.
 	 *
@@ -33,11 +269,13 @@
 		// Add the selected media to the TinyMCE editor.
 		mediaFrame.on( 'select', () => {
 			const attachment = mediaFrame.state().get( 'selection' ).first().toJSON();
-			const editor = window.tinymce.get( editorId );
+			const editor = window.tinymce ? window.tinymce.get( editorId ) : null;
 
-			editor.insertContent( `<img src="${ attachment.url }" alt="${ attachment.alt }" />` );
-			editor.save();
-			editor.fire( 'change' );
+			if ( editor ) {
+				editor.insertContent( `<img src="${ attachment.url }" alt="${ attachment.alt }" />` );
+				editor.save();
+				editor.fire( 'change' );
+			}
 		} );
 
 		// Change the mediaFrameOpen flag when the media frame is closed.
@@ -49,19 +287,59 @@
 	};
 
 	/**
-	 * Clears any pending TinyMCE setup state from a field.
+	 * Clears all pending TinyMCE setup state from a field element.
+	 *
+	 * Cancels any in-progress timers and intervals attached to the field and
+	 * removes the associated jQuery data keys:
+	 *   - `sowb-pre-init-visibility-poll`  — pre-init visibility interval
+	 *   - `sowb-tinymce-visibility-poll`   — post-init visibility interval
+	 *   - `sowb-tinymce-init-timeout`      — 5 s safety unlock timeout
+	 *   - `sowb-tinymce-initializing`      — initializing lock flag
+	 *   - `sowb-tinymce-initializing-id`   — ID recorded during initialization
+	 *   - `sowb-pre-init-bound`            — pre-init event listener flag
+	 *   - `sowb-pre-init-namespace`        — namespaced event suffix for the pre-init listener/poll pair
+	 *   - `data-pre-init` attribute
 	 *
 	 * @param {jQuery} $field - jQuery object of the field container element.
 	 */
 	const clearTinyMCEFieldPendingSetup = function( $field ) {
+		const preInitPoll = $field.data( 'sowb-pre-init-visibility-poll' );
+		if ( preInitPoll ) {
+			clearInterval( preInitPoll );
+			$field.removeData( 'sowb-pre-init-visibility-poll' );
+		}
+
 		const visibilityPoll = $field.data( 'sowb-tinymce-visibility-poll' );
 		if ( visibilityPoll ) {
 			clearInterval( visibilityPoll );
 			$field.removeData( 'sowb-tinymce-visibility-poll' );
 		}
 
+		const initTimeout = $field.data( 'sowb-tinymce-init-timeout' );
+		if ( initTimeout ) {
+			clearTimeout( initTimeout );
+			$field.removeData( 'sowb-tinymce-init-timeout' );
+		}
+
+		// If an init was in flight, resolve (and remove) its pending promise now.
+		// The safety timeout was the only other resolver; cancelling it above without
+		// resolving here would leave sowbGetTinyMCEInitPromise() waiting forever.
+		const pendingId = $field.data( 'sowb-tinymce-initializing-id' );
+
+		$field.removeData( 'sowb-tinymce-initializing' );
+		$field.removeData( 'sowb-tinymce-initializing-id' );
+
+		if ( pendingId && _tinymceInitPending[ pendingId ] ) {
+			_tinymceInitPending[ pendingId ].resolve();
+		}
 		$field.removeData( 'sowb-pre-init-bound' );
 		$field.removeAttr( 'data-pre-init' );
+
+		const preInitNamespace = $field.data( 'sowb-pre-init-namespace' );
+		if ( preInitNamespace ) {
+			$field.off( 'sowsetupformfield' + preInitNamespace );
+			$field.removeData( 'sowb-pre-init-namespace' );
+		}
 	};
 
 	/**
@@ -126,11 +404,26 @@
 			return false;
 		}
 
+		const fieldElement = $field.get( 0 );
 		if ( window.tinymce && window.tinymce.get( id ) ) {
-			return true;
+			const editor = window.tinymce.get( id );
+			const editorElement = editor && typeof editor.getElement === 'function' ?
+				editor.getElement() :
+				( editor && editor.targetElm ? editor.targetElm : null );
+			const editorContainer = editor && typeof editor.getContainer === 'function' ?
+				editor.getContainer() :
+				null;
+
+			if ( editorElement && fieldElement && fieldElement.contains( editorElement ) ) {
+				return true;
+			}
+
+			if ( editorContainer && fieldElement && fieldElement.contains( editorContainer ) ) {
+				return true;
+			}
+
 		}
 
-		const fieldElement = $field.get( 0 );
 		const editorIframe = document.getElementById( id + '_ifr' );
 		if ( editorIframe && fieldElement && fieldElement.contains( editorIframe ) ) {
 			return true;
@@ -160,9 +453,7 @@
 			return;
 		}
 
-		const wpEditor = window.wp ? ( window.wp.oldEditor ? window.wp.oldEditor : window.wp.editor ) : null;
-
-		removeTinyMCEEditor( wpEditor, id );
+		removeTinyMCEEditor( resolveWpEditor(), id );
 
 		const editorWrap = document.getElementById( 'wp-' + id + '-wrap' );
 		if ( editorWrap ) {
@@ -175,12 +466,27 @@
 	};
 
 	/**
-	 * Sets up a TinyMCE field within a widget form.
-	 * Handles initialization of the TinyMCE editor, event binding, and UI setup.
+	 * Sets up a TinyMCE editor for a single widget form field.
+	 *
+	 * Handles the full initialization lifecycle:
+	 *   - Skips if an initialization is already in progress.
+	 *   - Tears down and replaces any stale editor state if re-initializing.
+	 *   - Resolves the WordPress editor API via `resolveWpEditor`; bails early
+	 *     if no editor API is available.
+	 *   - Assigns or reuses a stable unique ID for the textarea.
+	 *   - Listens for `wp-before-tinymce-init` to inject media buttons.
+	 *   - Waits for the textarea to become visible before calling
+	 *     `wpEditor.initialize`, using a 500 ms interval poll if it is hidden.
+	 *   - Sets a 5 s safety timeout to release the initializing lock if the
+	 *     TinyMCE `init` event never fires.
 	 *
 	 * @param {jQuery} $field - jQuery object of the field container element.
 	 */
 	const setupTinyMCEField = function( $field ) {
+		if ( $field.data( 'sowb-tinymce-initializing' ) ) {
+			return;
+		}
+
 		if ( $field.attr( 'data-initialized' ) ) {
 			const initializedEditor = getTinyMCEFieldEditor( $field );
 
@@ -188,30 +494,43 @@
 				return;
 			}
 
-			clearTinyMCEFieldPendingSetup( $field );
+			// Tear down stale editor markup. Timers/locks are cleared unconditionally
+			// by the clearTinyMCEFieldPendingSetup call below.
 			removeStaleTinyMCEFieldState( $field, initializedEditor.id );
 			$field.removeAttr( 'data-initialized' );
 		}
 
+		// Always clear any lingering state from a pre-init visibility poll or
+		// a prior partial setup, even when data-initialized was not set.
 		clearTinyMCEFieldPendingSetup( $field );
-		$field.attr( 'data-initialized', true );
 
 		// If this is in an iframe, copy necessary globals from the parent window.
 		if ( frameElement && typeof window.tinyMCEPreInit === 'undefined' ) {
 			window.tinyMCEPreInit = window.top.tinyMCEPreInit;
 		}
 
-		const wpEditor = wp.oldEditor ? wp.oldEditor : wp.editor;
-		if ( wpEditor && wpEditor.hasOwnProperty( 'autop' ) ) {
-			wp.editor.autop = wpEditor.autop;
-			wp.editor.removep = wpEditor.removep;
-			wp.editor.initialize = wpEditor.initialize
+		const wpEditor = resolveWpEditor();
+		if ( ! wpEditor ) {
+			return;
+		}
+
+		// Mark as initialized only after confirming the editor API is available, so a
+		// transient null wpEditor does not leave the field stranded with the attr set.
+		$field.attr( 'data-initialized', true );
+
+		// In iframe contexts wp.oldEditor is the authoritative API. Copy its text-processing
+		// methods onto wp.editor so both references stay in sync.
+		if ( window.wp.oldEditor && window.wp.oldEditor.hasOwnProperty( 'autop' ) ) {
+			window.wp.editor.autop = window.wp.oldEditor.autop;
+			window.wp.editor.removep = window.wp.oldEditor.removep;
+			window.wp.editor.initialize = window.wp.oldEditor.initialize;
 		}
 
 		const $container = $field.find( '.siteorigin-widget-tinymce-container' );
-		const settings = $container.data( 'editorSettings' );
+		const settings = $.extend( true, {}, $container.data( 'editorSettings' ) || {} );
 
 		if (
+			window.top.tinyMCEPreInit &&
 			window.top.tinyMCEPreInit.mceInit &&
 			window.top.tinyMCEPreInit.mceInit.hasOwnProperty( 'content' )
 		) {
@@ -243,8 +562,28 @@
 		const $textarea = $container.find( 'textarea' );
 		// Prevent potential id overlap by appending the textarea field with a random id.
 		let id = $textarea.attr( 'data-tinymce-id' ) || $textarea.data( 'tinymce-id' );
+		const fieldElement = $field.get( 0 );
+		const textareaElement = $textarea.get( 0 );
+
+		if ( id ) {
+			const existingTextarea = document.getElementById( id );
+			if ( existingTextarea && textareaElement && existingTextarea !== textareaElement ) {
+				id = '';
+			}
+
+			const existingEditor = window.tinymce && window.tinymce.get( id ) ? window.tinymce.get( id ) : null;
+			const existingEditorContainer = existingEditor && typeof existingEditor.getContainer === 'function' ?
+				existingEditor.getContainer() :
+				null;
+
+			if ( existingEditorContainer && fieldElement && ! fieldElement.contains( existingEditorContainer ) ) {
+				id = '';
+			}
+		}
+
 		if ( ! id ) {
-			id = $textarea.attr( 'id' ) + Math.floor( Math.random() * 1000 );
+			const baseId = sanitizeIdSegment( $textarea.attr( 'id' ) || $textarea.attr( 'name' ) || 'sowb-tinymce' ) || 'sowb-tinymce';
+			id = baseId + '-' + ( ++_tinymceDomIdSeq );
 		}
 
 		$textarea
@@ -252,58 +591,125 @@
 			.attr( 'data-tinymce-id', id )
 			.attr( 'id', id );
 
-		$( window.document ).one( 'wp-before-tinymce-init', function( event, init ) {
-			if ( init.selector !== settings.tinymce.selector ) {
-				return;
-			}
-			const mediaButtons = $container.data( 'mediaButtons' );
-			if (
-				typeof mediaButtons != 'undefined' &&
-				$field.find( '.wp-media-buttons' ).length === 0
-			) {
-				$field.find( '.wp-editor-tabs' ).before( mediaButtons.html );
-			}
+		if ( textareaElement ) {
+			textareaElement.sowbTinyMCELastSyncedContent = $textarea.val();
+		}
 
-			const addMediaButton = $field.find( '.add_media' );
-			if ( addMediaButton.length > 0 ) {
-				const $textarea = $container.find( 'textarea' );
-				const editorId = $textarea.data( 'tinymce-id' );
-				addMediaButton.attr( 'data-editor', editorId );
+		_tinymceInitPending[ id ] = ( function( entryId ) {
+			let storedResolve;
+			const promise = new Promise( function( resolve ) {
+				storedResolve = resolve;
+			} );
+			return {
+				promise: promise,
+				resolve: function() {
+					storedResolve();
+					delete _tinymceInitPending[ entryId ];
+				},
+			};
+		} )( id );
 
-				if ( window.frameElement ) {
-					addMediaButton
-						.removeClass( 'insert-media add_media' )
-						.addClass( 'siteorigin-widget-tinymce-add-media' )
-						.on( 'click', () => {
-							siteEditorAddMediaOverride( editorId );
-						} );
+		$field
+			.data( 'sowb-tinymce-initializing', true )
+			.data( 'sowb-tinymce-initializing-id', id );
+
+		const fieldEventNamespace = '.sowTinymceField-' + ( sanitizeIdSegment( id ) || 'unknown' );
+
+		$( window.document )
+			.off( 'wp-before-tinymce-init' + fieldEventNamespace )
+			.on( 'wp-before-tinymce-init' + fieldEventNamespace, function( event, init ) {
+				if ( init.selector !== settings.tinymce.selector ) {
+					return;
 				}
-			}
-		} );
 
-		$( window.top.document ).one( 'tinymce-editor-setup', function() {
-			const $wpEditorWrap = $field.find( '.wp-editor-wrap' );
-			if ( $wpEditorWrap.length > 0 && ! $wpEditorWrap.hasClass( settings.selectedEditor + '-active' ) ) {
-				setTimeout( function() {
-					window.switchEditors.go( id );
-				}, 10 );
-			}
-		} );
+				$( window.document ).off( 'wp-before-tinymce-init' + fieldEventNamespace );
+
+				const mediaButtons = $container.data( 'mediaButtons' );
+				if (
+					typeof mediaButtons != 'undefined' &&
+					$field.find( '.wp-media-buttons' ).length === 0
+				) {
+					$field.find( '.wp-editor-tabs' ).before( mediaButtons.html );
+				}
+
+				const addMediaButton = $field.find( '.add_media' );
+				if ( addMediaButton.length > 0 ) {
+					const $textarea = $container.find( 'textarea' );
+					const editorId = $textarea.data( 'tinymce-id' );
+					addMediaButton.attr( 'data-editor', editorId );
+
+					if ( window.frameElement ) {
+						addMediaButton
+							.removeClass( 'insert-media add_media' )
+							.addClass( 'siteorigin-widget-tinymce-add-media' )
+							.off( 'click.sowbMedia' )
+							.on( 'click.sowbMedia', () => {
+								siteEditorAddMediaOverride( editorId );
+							} );
+					}
+				}
+			} );
+
+		$( window.top.document )
+			.off( 'tinymce-editor-setup' + fieldEventNamespace )
+			.on( 'tinymce-editor-setup' + fieldEventNamespace, function() {
+				const $wpEditorWrap = $field.find( '.wp-editor-wrap' );
+				if ( $wpEditorWrap.length > 0 && ! $wpEditorWrap.hasClass( settings.selectedEditor + '-active' ) ) {
+					setTimeout( function() {
+						window.switchEditors.go( id );
+					}, 10 );
+				}
+
+				$( window.top.document ).off( 'tinymce-editor-setup' + fieldEventNamespace );
+			} );
 
 		if ( settings.tinymce ) {
 			const setupEditor = function( editor ) {
+				editor.on( 'init', function() {
+					const initTimeout = $field.data( 'sowb-tinymce-init-timeout' );
+					if ( initTimeout ) {
+						clearTimeout( initTimeout );
+						$field.removeData( 'sowb-tinymce-init-timeout' );
+					}
+
+					if ( _tinymceInitPending[ id ] ) {
+						_tinymceInitPending[ id ].resolve();
+					}
+
+					$field.removeData( 'sowb-tinymce-initializing' );
+					$field.removeData( 'sowb-tinymce-initializing-id' );
+				} );
 				editor.on( 'change', function() {
 					const ed = window.tinymce.get( id );
-					ed.save();
-					$textarea.trigger( 'change' );
+					if ( ed ) {
+						const textareaNode = $textarea.get( 0 );
+						const previousContent = textareaNode ?
+							textareaNode.sowbTinyMCELastSyncedContent :
+							undefined;
+						ed.save();
+
+						const currentContent = $textarea.val();
+						if ( textareaNode && previousContent === currentContent ) {
+							return;
+						}
+
+						if ( textareaNode ) {
+							textareaNode.sowbTinyMCELastSyncedContent = currentContent;
+						}
+						$textarea.trigger( 'change' );
+					}
 				} );
 
 				if ( $wpautopToggleField ) {
-					$wpautopToggleField.off( 'change' );
-					$wpautopToggleField.on( 'change', function() {
-						removeTinyMCEEditor( window.wp.editor, id );
+					$wpautopToggleField.off( 'change' + fieldEventNamespace );
+					$wpautopToggleField.on( 'change' + fieldEventNamespace, function() {
+						const currentEditor = resolveWpEditor();
+						if ( ! currentEditor ) {
+							return;
+						}
+						removeTinyMCEEditor( currentEditor, id );
 						settings.tinymce.wpautop = $wpautopToggleField.is( ':checked' );
-						window.wp.editor.initialize( id, settings );
+						currentEditor.initialize( id, settings );
 					} );
 				}
 			};
@@ -331,13 +737,30 @@
 			window.tinymce.EditorManager.overrideDefaults( { base_url: settings.baseURL, suffix: settings.suffix } );
 		}
 
+		const initTimeoutId = setTimeout( function() {
+			if ( _tinymceInitPending[ id ] ) {
+				_tinymceInitPending[ id ].resolve();
+			}
+
+			$field.removeData( 'sowb-tinymce-initializing' );
+			$field.removeData( 'sowb-tinymce-initializing-id' );
+			// If the TinyMCE init event never fired (e.g. field removed from DOM),
+			// clean up the top-document listener so it doesn't accumulate.
+			$( window.top.document ).off( 'tinymce-editor-setup' + fieldEventNamespace );
+		}, 5000 );
+
+		$field.data( 'sowb-tinymce-init-timeout', initTimeoutId );
+
 		// Wait for textarea to be visible before initialization.
 		if ( $textarea.is( ':visible' ) ) {
 			wpEditor.initialize( id, settings );
 		} else {
 			const intervalId = setInterval( function() {
 				if ( $textarea.is( ':visible' ) ) {
-					wpEditor.initialize( id, settings );
+					const pollEditor = resolveWpEditor();
+					if ( pollEditor ) {
+						pollEditor.initialize( id, settings );
+					}
 					clearInterval( intervalId );
 					$field.removeData( 'sowb-tinymce-visibility-poll' );
 				}
@@ -346,35 +769,59 @@
 			$field.data( 'sowb-tinymce-visibility-poll', intervalId );
 		}
 
-		$field.on( 'click', function( event ) {
-			const $target = $( event.target );
-			if ( ! $target.is( '.wp-switch-editor' ) ) {
-				return;
-			}
-
-			const mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
-
-			if ( mode === 'tmce' ) {
-				const editor = window.tinymce.get( id );
-				// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex.
-				if ( editor !== null ) {
-					let content = $textarea.val();
-					if ( content.search( '<' ) !== -1 && content.search( '>' ) === -1 ) {
-						content = content.replace( /</g, '' );
-						$textarea.val( content );
-					}
-					editor.setContent( window.switchEditors.wpautop( content ) );
+		$field
+			.off( 'click.sowTinymceSwitchEditor' )
+			.on( 'click.sowTinymceSwitchEditor', function( event ) {
+				const $target = $( event.target );
+				if ( ! $target.is( '.wp-switch-editor' ) ) {
+					return;
 				}
-			}
-			settings.selectedEditor = mode;
 
-			$field.find( 'textarea.wp-editor-area' ).css(
-				'visibility', mode === 'tmce' ? 'hidden' : 'visible'
-			);
+				const mode = $target.hasClass( 'switch-tmce' ) ? 'tmce' : 'html';
+				const $selectedEditor = $field.find( '.siteorigin-widget-tinymce-selected-editor' );
+				if ( $selectedEditor.val() === mode ) {
+					return;
+				}
 
+				const fieldNode = $field.get( 0 );
+				const now = Date.now();
+				const lastSwitchClick = fieldNode && fieldNode.sowbTinyMCELastSwitchClick ?
+					fieldNode.sowbTinyMCELastSwitchClick :
+					null;
+				if (
+					lastSwitchClick &&
+					lastSwitchClick.mode === mode &&
+					now - lastSwitchClick.time < 50
+				) {
+					return;
+				}
+				if ( fieldNode ) {
+					fieldNode.sowbTinyMCELastSwitchClick = {
+						mode,
+						time: now,
+					};
+				}
 
-			$field.find( '.siteorigin-widget-tinymce-selected-editor' ).val( mode );
-		} );
+				if ( mode === 'tmce' ) {
+					const editor = window.tinymce.get( id );
+					// Quick bit of sanitization to prevent catastrophic backtracking in TinyMCE HTML parser regex.
+					if ( editor !== null ) {
+						let content = $textarea.val();
+						if ( content.search( '<' ) !== -1 && content.search( '>' ) === -1 ) {
+							content = content.replace( /</g, '' );
+							$textarea.val( content );
+						}
+						editor.setContent( window.switchEditors.wpautop( content ) );
+					}
+				}
+				settings.selectedEditor = mode;
+
+				$field.find( 'textarea.wp-editor-area' ).css(
+					'visibility', mode === 'tmce' ? 'hidden' : 'visible'
+				);
+
+				$selectedEditor.val( mode );
+			} );
 	};
 
 	/**
@@ -387,9 +834,36 @@
 	 */
 	const setupTinyMCEFieldInitializer = function() {
 		const $field = $( this );
+		const $textarea = $field.find( '.siteorigin-widget-tinymce-container textarea' ).first();
+
+		if ( $field.closest( '.siteorigin-widget-field-repeater-item-html' ).length || ( $textarea.attr( 'id' ) || '' ).indexOf( '_id_' ) !== -1 ) {
+			return;
+		}
 
 		if ( $field.attr( 'data-pre-init' ) && ! $field.data( 'sowb-pre-init-bound' ) ) {
 			$field.removeAttr( 'data-pre-init' );
+		}
+
+		if ( $field.attr( 'data-initialized' ) ) {
+			const initializedEditor = getTinyMCEFieldEditor( $field );
+			// If the textarea ID cannot be resolved the data-initialized attr is stale;
+			// clear it and fall through to re-initialize rather than passing undefined
+			// to hasHealthyTinyMCEEditor (which would call tinymce.get(undefined)).
+			if ( ! initializedEditor.id ) {
+				$field.removeAttr( 'data-initialized' );
+			} else if ( hasHealthyTinyMCEEditor( $field, initializedEditor.id ) ) {
+				return;
+			} else if ( $field.data( 'sowb-tinymce-initializing' ) ) {
+				// An init is in flight: data-initialized was set when setupTinyMCEField
+				// started but TinyMCE hasn't fired 'init' yet. Clearing the attr here
+				// would leave the field unmarked after the pending init completes,
+				// causing the next setup event to tear down a healthy editor.
+				return;
+			} else {
+				// Stale data-initialized would cause setupTinyMCEField to attempt
+				// teardown of an editor that no longer exists; clear it now.
+				$field.removeAttr( 'data-initialized' );
+			}
 		}
 
 		// If the field is visible, initialize the TinyMCE editor immediately.
@@ -402,12 +876,39 @@
 			return;
 		}
 
+		// Use a per-field namespace so the poll can cancel the listener if it fires
+		// first, and the listener can cancel the poll if it fires first. This prevents
+		// both paths from racing to call setupTinyMCEField on the same field.
+		const preInitEventNamespace = '.sowbPreInit-' + ( ++_tinymcePreInitSeq );
+		$field.data( 'sowb-pre-init-namespace', preInitEventNamespace );
+
+		const preInitVisibilityPoll = setInterval( function() {
+			if ( $field.is( ':visible' ) ) {
+				clearInterval( preInitVisibilityPoll );
+				$field.removeData( 'sowb-pre-init-visibility-poll' );
+				$field.removeData( 'sowb-pre-init-bound' );
+				// Cancel the sowsetupformfield listener so it doesn't re-trigger
+				// initialization after the poll has already started it.
+				$field.off( 'sowsetupformfield' + preInitEventNamespace );
+				setupTinyMCEField( $field );
+			}
+		}, 250 );
+
+		$field.data( 'sowb-pre-init-visibility-poll', preInitVisibilityPoll );
+
 		// Mark the field for initialization and wait for it to become visible.
 		// Once visible, the 'sowsetupformfield' event triggers the editor setup.
 		$field
 			.data( 'sowb-pre-init-bound', true )
-			.one( 'sowsetupformfield', () => {
-				setupTinyMCEField( $field );
+			.off( 'sowsetupformfield' + preInitEventNamespace )
+			.one( 'sowsetupformfield' + preInitEventNamespace, () => {
+				const existingPreInitPoll = $field.data( 'sowb-pre-init-visibility-poll' );
+				if ( existingPreInitPoll ) {
+					clearInterval( existingPreInitPoll );
+					$field.removeData( 'sowb-pre-init-visibility-poll' );
+				}
+				$field.removeData( 'sowb-pre-init-bound' );
+				setupTinyMCEFieldInitializer.call( $field.get( 0 ) );
 			} );
 	};
 
@@ -442,7 +943,13 @@
 	 * finished loading, so the iframe also calls this once its own script is
 	 * ready.
 	 */
-	const setupSiteEditorTinyMCEFields = function() {
+	const setupSiteEditorTinyMCEFields = function( $targetFields ) {
+		const hasTargetedFields = !! ( $targetFields && $targetFields.jquery && $targetFields.length );
+		const $rawFields = hasTargetedFields ?
+			$targetFields :
+			$( '.siteorigin-widget-field-type-tinymce' );
+		const $fields = getEligibleTinyMCEFields( $rawFields );
+
 		if (
 			window.wp &&
 			window.wp.editor &&
@@ -453,7 +960,7 @@
 			window.wp.editor.getDefaultSettings = window.top.wp.editor.getDefaultSettings;
 		}
 
-		$( '.siteorigin-widget-field-type-tinymce' ).each( function() {
+		$fields.each( function() {
 			setupTinyMCEFieldInitializer.call( this );
 		} );
 
@@ -462,19 +969,6 @@
 			$( window.top.document ).data( 'sortstop-bound', true );
 			$( window.top.document ).on( 'sortstop', sortStopEvent );
 		}
-	};
-
-	let siteEditorSetupScheduled = false;
-	const scheduleSiteEditorTinyMCEFields = function() {
-		if ( siteEditorSetupScheduled ) {
-			return;
-		}
-
-		siteEditorSetupScheduled = true;
-		setTimeout( function() {
-			siteEditorSetupScheduled = false;
-			setupSiteEditorTinyMCEFields();
-		}, 50 );
 	};
 
 
@@ -486,47 +980,100 @@
 			pagenow !== 'site-editor'
 		)
 	) {
-		$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-tinymce', setupTinyMCEFieldInitializer );
+		$( document )
+			.off( 'sowsetupformfield' + sowbTinyMCEEventNamespace, '.siteorigin-widget-field-type-tinymce' )
+			.on( 'sowsetupformfield' + sowbTinyMCEEventNamespace, '.siteorigin-widget-field-type-tinymce', setupTinyMCEFieldInitializer );
 	}
 
-	$( document ).on( 'sortstop', sortStopEvent );
+	$( document )
+		.off( 'sortstop' + sowbTinyMCEEventNamespace )
+		.on( 'sortstop' + sowbTinyMCEEventNamespace, sortStopEvent );
 
 	// Add support for the Site Editor.
-	window.addEventListener( 'message', function( e ) {
-		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
-			setupSiteEditorTinyMCEFields();
+	// Store the handler reference on window so it can be removed and replaced on
+	// script re-evaluation (e.g. HMR or plugin updates) rather than accumulating.
+	if ( window._sowbTinyMCEMessageHandler ) {
+		window.removeEventListener( 'message', window._sowbTinyMCEMessageHandler );
+	}
+	window._sowbTinyMCEMessageHandler = function( e ) {
+		if ( ! e || e.origin !== window.location.origin ) {
+			return;
 		}
-	} );
+
+		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
+			if ( ! e.data.formSelector ) {
+				return;
+			}
+
+			const $form = resolvePostMessageForms( e.data );
+			if ( ! $form.length ) {
+				return;
+			}
+
+			// Full form setup (sowSetupForm, setWidgetFormValues) is handled by the
+			// polling interval in sowbSetupWidgetForm (widget-block.js), which waits
+			// for jQuery UI to be ready before calling sowSetupForm. This handler
+			// covers only TinyMCE fields, including those added by repeater items.
+			const $tinymceFields = getTinyMCEFieldsFromForms( $form );
+			if ( $tinymceFields.length ) {
+				setupSiteEditorTinyMCEFields( $tinymceFields );
+			}
+		}
+	};
+	window.addEventListener( 'message', window._sowbTinyMCEMessageHandler );
 
 	if ( window.frameElement ) {
-		$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-tinymce', setupTinyMCEFieldInitializer );
-		$( setupSiteEditorTinyMCEFields );
+		$( document )
+			.off( 'sowsetupformfield' + sowbTinyMCEEventNamespace, '.siteorigin-widget-field-type-tinymce' )
+			.on( 'sowsetupformfield' + sowbTinyMCEEventNamespace, '.siteorigin-widget-field-type-tinymce', function( e ) {
+				setupTinyMCEFieldInitializer.call( this, e );
+			} );
 
-		if ( window.MutationObserver ) {
-			$( function() {
-				if ( ! document.body ) {
+		$( document )
+			.off( 'sowsetupform' + sowbTinyMCEEventNamespace )
+			.on( 'sowsetupform' + sowbTinyMCEEventNamespace, function( e, $form ) {
+				const $setupTarget = $form && $form.jquery ?
+					$form :
+					$( $form || [] );
+				if ( ! $setupTarget.length ) {
 					return;
 				}
 
-				const observer = new MutationObserver( scheduleSiteEditorTinyMCEFields );
-				observer.observe( document.body, {
-					attributes: true,
-					attributeFilter: [ 'class', 'style' ],
-					childList: true,
-					subtree: true,
-				} );
+				setupSiteEditorTinyMCEFields(
+					$setupTarget
+						.filter( '.siteorigin-widget-field-type-tinymce' )
+						.add( $setupTarget.find( '.siteorigin-widget-field-type-tinymce' ) )
+				);
 			} );
-		} else {
-			let siteEditorSetupAttempts = 0;
-			const siteEditorSetupInterval = setInterval( function() {
-				setupSiteEditorTinyMCEFields();
-				siteEditorSetupAttempts++;
 
-				if ( siteEditorSetupAttempts >= 20 ) {
-					clearInterval( siteEditorSetupInterval );
-				}
-			}, 250 );
-		}
+		// sowrepeaterfieldsadded is fired by admin.js on the parent document, not the iframe's document,
+		// because admin.js always runs in the parent window context. widget-block.js handles this event
+		// in the parent and re-dispatches it as a sowbBlockFormInit postMessage to the iframe, covering
+		// all field types. No separate listener is needed here.
+
+		setupSiteEditorTinyMCEFields();
 	}
+
+	/**
+	 * Returns a Promise that resolves once the TinyMCE editor for the given ID
+	 * has finished initialising, or immediately if it is already ready.
+	 *
+	 * The promise always resolves (never rejects). If initialisation stalls the
+	 * safety timeout in `setupTinyMCEField` will resolve it after 5 seconds.
+	 *
+	 * Intended for use by the save-bridge TinyMCE flusher in admin.js so it can
+	 * await full editor readiness before calling `editor.save()`. The flusher
+	 * retrieves this via the field element's `ownerDocument.defaultView` (i.e.
+	 * the iframe's `window` in a Site Editor context) so that each frame's
+	 * pending-init map is consulted correctly.
+	 *
+	 * @param {string} editorId - The TinyMCE editor / textarea ID.
+	 * @return {Promise<void>}
+	 */
+	window.sowbGetTinyMCEInitPromise = function( editorId ) {
+		return _tinymceInitPending[ editorId ]
+			? _tinymceInitPending[ editorId ].promise
+			: Promise.resolve();
+	};
 
 } )( jQuery );

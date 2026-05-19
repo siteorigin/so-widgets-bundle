@@ -1,8 +1,16 @@
 /* global jQuery, soWidgets */
 
 ( function( $ ) {
+	const isRepeaterTemplateField = function( $field ) {
+		return $field.closest( '.siteorigin-widget-field-repeater-item-html' ).length > 0;
+	};
+
 	const setupMultipleMediaField = function() {
 		const $field = $( this );
+
+		if ( isRepeaterTemplateField( $field ) ) {
+			return;
+		}
 
 		if ( $field.data( 'initialized' ) ) {
 			return;
@@ -156,21 +164,26 @@
 		$field.data( 'initialized', true );
 	};
 
-	 // If the current page isn't the site editor, set up the Multiple Media field now.
-	 if (
-		 window.top === window.self &&
-		 (
-			 typeof pagenow === 'string' &&
-			 pagenow !== 'site-editor'
-		 )
-	 ) {
-		 $( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-multiple_media', setupMultipleMediaField );
-	 }
+	// In the Site Editor iframe, repeater rows added after the initial block
+	// postMessage still rely on the normal field setup event.
+	if (
+		window.top !== window.self ||
+		(
+			typeof pagenow === 'string' &&
+			pagenow !== 'site-editor'
+		)
+	) {
+		$( document ).on( 'sowsetupformfield', '.siteorigin-widget-field-type-multiple_media', setupMultipleMediaField );
+	}
 
 	// Add support for the Site Editor.
 	window.addEventListener( 'message', function( e ) {
 		if ( e.data && e.data.action === 'sowbBlockFormInit' ) {
 			$( '.siteorigin-widget-field-type-multiple_media' ).each( function() {
+				if ( isRepeaterTemplateField( $( this ) ) ) {
+					return;
+				}
+
 				setupMultipleMediaField.call( this );
 			} );
 		}
