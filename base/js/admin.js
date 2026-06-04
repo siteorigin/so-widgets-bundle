@@ -25,13 +25,13 @@ var sowbForms = window.sowbForms || {};
 	 * This function finds all font fields within the section and appends the font list to each font field.
 	 * It also sets the selected font if a font is already selected.
 	 */
-	const setupFontFieldsOnHover = () => {
-		const $fields = $( this ).find( '> .siteorigin-widget-section > .siteorigin-widget-field-font .siteorigin-widget-input' );
+	const setupFontFieldsOnHover = function() {
+		const $fields = $( this ).find( '> .siteorigin-widget-section > .siteorigin-widget-field-type-font .siteorigin-widget-input' );
 
 		$fields.each( function() {
 			setupFontField( $( this ) );
 		} );
-	}
+	};
 
 	/**
 	 * Set up a single font field.
@@ -39,9 +39,14 @@ var sowbForms = window.sowbForms || {};
 	 * This function appends the font list to the given font field and sets the selected font if a font is already selected.
 	 *
 	 * @param {jQuery} $fontSelect - The jQuery object representing the font select element.
- 	*/
+	*/
 	const setupFontField = ( $fontSelect ) => {
+		if ( $fontSelect.data( 'sow-font-setup' ) ) {
+			return;
+		}
+
 		$fontSelect.append( fontList );
+		$fontSelect.data( 'sow-font-setup', true );
 
 		// Set selected font.
 		var selectedFont = $fontSelect.data( 'selected' );
@@ -374,7 +379,7 @@ var sowbForms = window.sowbForms || {};
 					}
 
 					// Is the section visible? If so, set it up after 200ms.
-					if ( sectionParent.find( '> .siteorigin-widget-section-visible' ) ) {
+					if ( sectionParent.find( '> .siteorigin-widget-section-visible' ).length ) {
 						setTimeout( () => {
 							setupFontField( $( this ) );
 						}, 200 );
