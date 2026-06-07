@@ -20,20 +20,6 @@ var sowbForms = window.sowbForms || {};
 	}
 
 	/**
-	 * Set up font fields when the section is hovered.
-	 *
-	 * This function finds all font fields within the section and appends the font list to each font field.
-	 * It also sets the selected font if a font is already selected.
-	 */
-	const setupFontFieldsOnHover = function() {
-		const $fields = $( this ).find( '> .siteorigin-widget-section > .siteorigin-widget-field-type-font .siteorigin-widget-input' );
-
-		$fields.each( function() {
-			setupFontField( $( this ) );
-		} );
-	};
-
-	/**
 	 * Set up a single font field.
 	 *
 	 * This function appends the font list to the given font field and sets the selected font if a font is already selected.
@@ -364,35 +350,15 @@ var sowbForms = window.sowbForms || {};
 			$el.find('.siteorigin-widget-field-repeater-item').sowSetupRepeaterItems();
 
 			// Set up any font fields.
+			// Populate each font select's options lazily on first focus. Building
+			// the full font list (~6,832 options) eagerly on form open freezes the
+			// form, so we defer it until the user is about to open the dropdown.
 			if (
 				$fields.find( '> .siteorigin-widget-font-selector' ).length &&
 				fontList
 			) {
-				const $fontSelect = $fields.find( '> .siteorigin-widget-font-selector select' );
-				$fontSelect.each( function() {
-					const sectionParent = $( this ).closest( '.siteorigin-widget-field-type-section' );
-
-					// If the font isn't in a section, set it up immediately.
-					if ( ! sectionParent.length ) {
-						setupFontField( $( this ) );
-						return;
-					}
-
-					// Is the section visible? If so, set it up after 200ms.
-					if ( sectionParent.find( '> .siteorigin-widget-section-visible' ).length ) {
-						setTimeout( () => {
-							setupFontField( $( this ) );
-						}, 200 );
-						return;
-					}
-
-					// If this section has already had its event setup, skip it.
-					if ( sectionParent.data( 'font-setup' ) ) {
-						return;
-					}
-
-					sectionParent.data( 'font-setup', true );
-					sectionParent.one( 'mouseover', setupFontFieldsOnHover );
+				$fields.find( '> .siteorigin-widget-font-selector select' ).one( 'focus', function() {
+					setupFontField( $( this ) );
 				} );
 			}
 
