@@ -31,6 +31,8 @@ var sowbForms = window.sowbForms || {};
 			return;
 		}
 
+		// Remove the PHP pre-rendered saved option to avoid duplicating it once the full list loads.
+		$fontSelect.find( 'option[data-sow-saved-option]' ).remove();
 		$fontSelect.append( fontList );
 		$fontSelect.data( 'sow-font-setup', true );
 
