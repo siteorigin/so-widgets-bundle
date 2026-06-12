@@ -18,7 +18,10 @@ class SiteOrigin_Widget_Field_Font extends SiteOrigin_Widget_Field_Base {
 				id="<?php echo esc_attr( $this->element_id ); ?>" class="siteorigin-widget-input"
 				data-selected="<?php echo esc_attr( $value ); ?>"
 			>
-				<option value="default" selected="selected"><?php esc_html_e( 'Use theme font', 'so-widgets-bundle' ); ?></option>
+				<option value="default"<?php echo ( empty( $value ) || $value === 'default' ) ? ' selected="selected"' : ''; ?>><?php esc_html_e( 'Use theme font', 'so-widgets-bundle' ); ?></option>
+				<?php if ( ! empty( $value ) && $value !== 'default' ) : ?>
+					<option value="<?php echo esc_attr( $value ); ?>" data-sow-saved-option selected="selected"><?php echo esc_html( isset( $widget_font_families[ $value ] ) ? $widget_font_families[ $value ] : $value ); ?></option>
+				<?php endif; ?>
 			</select>
 		</div>
 		<?php
