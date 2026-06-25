@@ -98,6 +98,76 @@ class SiteOrigin_Video {
 			}
 		}
 
+		if ( ! empty( $html ) ) {
+			// Default directives — the minimum YouTube/Vimeo need for playback.
+			$default_sandbox = array( 'allow-scripts', 'allow-same-origin', 'allow-presentation' );
+
+			/**
+			 * Filter the sandbox directives applied to the Video Player oEmbed iframe.
+			 *
+			 * Lets developers adjust the directives for strict internal security policies.
+			 * Note: the defaults are the minimum YouTube/Vimeo need; removing them, or
+			 * returning an empty value to omit the attribute, may break or relax playback
+			 * sandboxing rather than harden it.
+			 *
+			 * Return an empty array (or empty string) to omit the sandbox attribute.
+			 *
+			 * @param array  $directives Array of sandbox token strings.
+			 * @param string $src        Normalized video source URL ($this->src).
+			 * @param array  $context    Playback flags: 'autoplay', 'loop', 'js_api'.
+			 */
+			$sandbox = apply_filters(
+				'siteorigin_widgets_sow-video_oembed_iframe_sandbox',
+				$default_sandbox,
+				$this->src,
+				array(
+					'autoplay' => $autoplay,
+					'loop'     => $loop,
+					'js_api'   => $js_api,
+				)
+			);
+
+			// Normalize the filter return into a clean array of tokens.
+			if ( is_string( $sandbox ) ) {
+				$sandbox = preg_split( '/\s+/', $sandbox );
+			}
+			$sandbox = (array) $sandbox;
+			$sandbox = array_map( 'trim', $sandbox );
+			$sandbox = array_filter( $sandbox );
+			$sandbox = array_unique( $sandbox );
+
+			// Allow-list of valid iframe sandbox tokens used to sanitize the filter return.
+			$allowed_sandbox = array(
+				'allow-forms',
+				'allow-modals',
+				'allow-orientation-lock',
+				'allow-pointer-lock',
+				'allow-popups',
+				'allow-popups-to-escape-sandbox',
+				'allow-presentation',
+				'allow-same-origin',
+				'allow-scripts',
+				'allow-top-navigation',
+				'allow-top-navigation-by-user-activation',
+				'allow-downloads',
+			);
+			$sandbox = array_filter(
+				$sandbox,
+				function ( $token ) use ( $allowed_sandbox ) {
+					return in_array( $token, $allowed_sandbox, true );
+				}
+			);
+
+			// Strip any pre-existing sandbox attribute (handles legacy-format cached HTML).
+			$html = preg_replace( '/(<iframe\b[^>]*?)\s*sandbox=(["\']).*?\2/', '$1', $html );
+
+			// Inject the filtered sandbox attribute, or omit it entirely when empty.
+			if ( ! empty( $sandbox ) ) {
+				$sandbox_attr = implode( ' ', $sandbox );
+				$html = preg_replace( '/<iframe(.*?)>/', '<iframe$1 sandbox="' . esc_attr( $sandbox_attr ) . '">', $html );
+			}
+		}
+
 		return $html;
 	}
 
