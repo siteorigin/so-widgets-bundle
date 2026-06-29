@@ -48,6 +48,13 @@ class SiteOrigin_Widget_Field_Font extends SiteOrigin_Widget_Field_Base {
 			$widget_font_families = siteorigin_widgets_font_families();
 		}
 
+		// When the font families list didn't load this request, skip the
+		// validity reset and return the regex-cleaned value so a valid stored
+		// font isn't dropped to default.
+		if ( empty( $widget_font_families ) ) {
+			return $sanitized_value;
+		}
+
 		// If selected font isn't set to default, ensure the font is valid.
 		if (
 			$sanitized_value !== 'default' &&
