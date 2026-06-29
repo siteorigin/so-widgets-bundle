@@ -39,6 +39,12 @@ class SiteOrigin_Widget_Field_Checkboxes extends SiteOrigin_Widget_Field_Base {
 			$value = array();
 		}
 
+		// When the options registry didn't populate this request, return the
+		// stored value unchanged instead of resetting valid values to default.
+		if ( empty( $this->options ) ) {
+			return is_array( $value ) ? $value : array( $value );
+		}
+
 		$values = is_array( $value ) ? $value : array( $value );
 		$keys = array_keys( $this->options );
 		$sanitized_value = array();
