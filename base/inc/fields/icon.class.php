@@ -127,6 +127,13 @@ class SiteOrigin_Widget_Field_Icon extends SiteOrigin_Widget_Field_Base {
 
 		$widget_icon_families = $this->get_widget_icon_families();
 
+		// When the icon families list didn't load this request, skip the
+		// validity reset and return the regex-cleaned value so a valid stored
+		// icon isn't dropped to default.
+		if ( empty( $widget_icon_families ) ) {
+			return $sanitized_value;
+		}
+
 		$icon_families_styles = self::get_icon_families_styles( $widget_icon_families );
 
 		$value_parts = self::get_value_parts( $sanitized_value, $icon_families_styles );
