@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: widgets, blocks, contact form, blog, slider
 Requires at least: 4.2
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.0.0
 Stable tag: trunk
 Build time: unbuilt
