@@ -111,6 +111,13 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
+		// When the options registry didn't populate this request, every stored
+		// value would fail the in_array() check below and get reset to default,
+		// corrupting good stored data. Return the value unchanged instead.
+		if ( empty( $this->options ) ) {
+			return $value;
+		}
+
 		$values = is_array( $value ) ? $value : array( $value );
 
 		$keys = array_keys( $this->options );

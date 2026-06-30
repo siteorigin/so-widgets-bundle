@@ -251,8 +251,23 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
-		// Special handling for the 'additional' args field.
-		if ( ! empty( $value['additional'] ) ) {
+		// The stored value is a query string, but the rest of this method
+		// expects the associative array shape. Normalize string input back to
+		// an array (mirroring render_field()) so re-running on stored output is
+		// idempotent and doesn't get wiped to array() by the parent.
+		if ( is_string( $value ) ) {
+			$value = wp_parse_args( $value );
+		}
+
+		// Special handling for the 'additional' args field. Only encode when it
+		// is not already encoded, so re-running on stored output doesn't
+		// double-encode. If decoding the value changes nothing, it wasn't
+		// encoded yet.
+		// Edge case: a fresh value that already contains a literal %XX sequence is
+		// treated as pre-encoded and left as-is. 'additional' holds raw WP_Query
+		// args (orderby=date&meta_key=x), which never contain %XX, so this is
+		// intentional and safe.
+		if ( ! empty( $value['additional'] ) && urldecode( $value['additional'] ) === $value['additional'] ) {
 			$value['additional'] = urlencode( $value['additional'] );
 		}
 		$value = parent::sanitize_field_input( $value, $instance );
