@@ -263,6 +263,10 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 		// is not already encoded, so re-running on stored output doesn't
 		// double-encode. If decoding the value changes nothing, it wasn't
 		// encoded yet.
+		// Edge case: a fresh value that already contains a literal %XX sequence is
+		// treated as pre-encoded and left as-is. 'additional' holds raw WP_Query
+		// args (orderby=date&meta_key=x), which never contain %XX, so this is
+		// intentional and safe.
 		if ( ! empty( $value['additional'] ) && urldecode( $value['additional'] ) === $value['additional'] ) {
 			$value['additional'] = urlencode( $value['additional'] );
 		}
