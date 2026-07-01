@@ -67,6 +67,7 @@ module.exports = {
             '!{build,build/**}',                                  // Ignore build/ and contents
 			'!{node_modules,node_modules/**}',                    // Ignore node_modules/ and contents.
 			'!{tests,tests/**}',                                  // Ignore tests/ and contents.
+            '!{docs,docs/**}',                                    // Ignore docs/ (internal plans/research, never shipped)
             '!{tmp,tmp/**}',                                      // Ignore tmp/ and contents
 			'!playwright.config.js',                              // Exclude playwright config file.
             '!so-widgets-bundle.php',                             // Not the base plugin file. It is copied by the 'version' task.
