@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: widgets, blocks, contact form, blog, slider
 Requires at least: 4.2
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.0.0
 Stable tag: trunk
 Build time: unbuilt
@@ -108,6 +108,12 @@ SiteOrigin Premium includes access to our professional email support service, pe
 The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets. Widgets can be enabled or disabled as needed. If a widget offers global settings, you can access those via the Settings button next to each applicable widget.
 
 == Changelog ==
+
+= 1.73.2 - 01 July 2026 =
+* Blog: Fixed font field initialization lag by lazy-populating font selects on focus while preserving the saved value on save.
+* Video: Removed the hard-coded sandbox from cached oEmbed output and added the siteorigin_widgets_sow-video_oembed_iframe_sandbox filter to control iframe sandbox attributes.
+* General: Made field sanitization idempotent across the posts, multiple media, select, checkboxes, radio, image radio, icon, and font fields, and guarded resets against empty options and family lists.
+* General: Set Tested up to WordPress (WP) 7.0.
 
 = 1.73.1 - 19 May 2026 =
 * General: Corrected release package version metadata to prevent WordPress from repeatedly offering the same update after installing 1.73.0.

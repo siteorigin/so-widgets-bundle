@@ -50,6 +50,12 @@ class SiteOrigin_Widget_Field_Image_Radio extends SiteOrigin_Widget_Field_Base {
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
+		// When the options registry didn't populate this request, return the
+		// stored value unchanged instead of resetting it to default.
+		if ( empty( $this->options ) ) {
+			return $value;
+		}
+
 		$sanitized_value = $value;
 		$keys = array_keys( $this->options );
 

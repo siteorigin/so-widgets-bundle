@@ -160,7 +160,12 @@ class SiteOrigin_Widget_Field_Multiple_Media extends SiteOrigin_Widget_Field_Bas
 			return array();
 		}
 
-		$value = explode( ',', $value );
+		// Fresh form input is a CSV string, but the stored value is already an
+		// array of ints. Accept both shapes so re-saving doesn't pass an array
+		// to explode() (a TypeError on PHP 8).
+		if ( ! is_array( $value ) ) {
+			$value = explode( ',', $value );
+		}
 		$media = array();
 
 		foreach ( $value as $item ) {
