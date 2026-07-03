@@ -99,6 +99,20 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 		if ( ! is_array( $value ) ) {
 			return array();
 		}
+
+		// A container can legitimately reach sanitization with no declared
+		// sub-fields — e.g. a 'widget' field whose sub-widget class isn't
+		// available this request (that widget deactivated in SOWB), or a
+		// section declared without a 'fields' key. There is nothing to
+		// sanitize against and nothing to allowlist, so preserve the value
+		// as-is — matching this method's pre-strip degenerate behavior —
+		// rather than wiping a full sub-widget instance whose class is
+		// temporarily unavailable. Also avoids a PHP 8 TypeError from
+		// array_keys( null ) below.
+		if ( empty( $this->fields ) || ! is_array( $this->fields ) ) {
+			return $value;
+		}
+
 		/* @var $field_factory SiteOrigin_Widget_Field_Factory */
 		$field_factory = SiteOrigin_Widget_Field_Factory::single();
 
