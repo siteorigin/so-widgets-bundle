@@ -26,9 +26,9 @@ if ( ! empty( $instance['title'] ) ) {
 			tabindex="0"
 		>
 			<div class="sow-tabs-title <?php echo empty( $tab['after_title'] ) ? 'sow-tabs-title-icon-left' : 'sow-tabs-title-icon-right'; ?>">
-				<?php echo $tab['before_title']; ?>
+				<?php echo wp_kses_post( $tab['before_title'] ); ?>
 				<?php echo wp_kses_post( $tab['title'] ); ?>
-				<?php echo $tab['after_title']; ?>
+				<?php echo wp_kses_post( $tab['after_title'] ); ?>
 			</div>
 		</div>
 	<?php } ?>

@@ -26,9 +26,9 @@ if ( ! empty( $instance['title'] ) ) {
 					<div class="sow-accordion-panel-header-container"<?php if ( ! $title_has_native_heading ) { ?> role="heading" aria-level="<?php echo esc_attr( $title_level ); ?>"<?php } ?>>
 					<div class="sow-accordion-panel-header" tabindex="0" role="button" id="accordion-label-<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>" aria-controls="accordion-content-<?php echo sanitize_title_with_dashes( $panel['anchor'] ); ?>" aria-expanded="<?php echo $panel['initial_state'] == 'open' ? 'true' : 'false'; ?>">
 						<<?php echo esc_attr( $title_tag ); ?> class="sow-accordion-title <?php echo empty( $panel['after_title'] ) ? 'sow-accordion-title-icon-left' : 'sow-accordion-title-icon-right'; ?>">
-							<?php echo $panel['before_title']; ?>
+							<?php echo wp_kses_post( $panel['before_title'] ); ?>
 							<?php echo wp_kses_post( $panel['title'] ); ?>
-							<?php echo $panel['after_title']; ?>
+							<?php echo wp_kses_post( $panel['after_title'] ); ?>
 						</<?php echo esc_attr( $title_tag ); ?>>
 						<div class="sow-accordion-open-close-button">
 							<div class="sow-accordion-open-button">
