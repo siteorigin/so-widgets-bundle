@@ -15,6 +15,35 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 define( 'SOW_BUNDLE_VERSION', 'dev' );
 define( 'SOW_BUNDLE_BASE_FILE', __FILE__ );
 
+/**
+ * Version identifier for this plugin's field-sanitization SEMANTICS —
+ * i.e. what content a sanitizer allows through, not its code/bugfix
+ * history. Consumed by siteorigin-panels' Layout Block trust-signature
+ * scheme (see so-widgets-bundle's contribution to the
+ * `siteorigin_panels_sanitize_version` filter, in
+ * compat/compat.php) so a stale save-time signature can be detected
+ * and invalidated when this plugin's sanitization rules materially
+ * tighten.
+ *
+ * Bump this value ONLY when a field/widget sanitizer becomes MORE
+ * RESTRICTIVE in a security-relevant way (e.g. a previously-unfiltered
+ * field starts running wp_kses_post(), or a bypass is closed).
+ *
+ * NEVER bump it for idempotency fixes, bugfixes, or any behavior change
+ * that does not affect what content is allowed through.
+ *
+ * Bumping this invalidates EVERY existing siteorigin-panels Layout
+ * Block trust signature site-wide, with NO bulk remediation path: each
+ * affected post must be individually re-saved by its own author to
+ * regain trusted-render status (capability-gated sanitization is only
+ * meaningful under the real author's session, so there is no safe way
+ * to batch/cron re-sign on their behalf). This is an accepted,
+ * intentionally expensive cost for genuine security tightening — do
+ * not bump casually, and do not bump for anything covered by the
+ * "never" list above.
+ */
+define( 'SOW_SANITIZE_VERSION', '1' );
+
 // Allow JS suffix to be pre-set.
 if ( ! defined( 'SOW_BUNDLE_JS_SUFFIX' ) ) {
 	define( 'SOW_BUNDLE_JS_SUFFIX', '' );

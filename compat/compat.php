@@ -54,6 +54,30 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 		if ( function_exists( 'WC' ) ) {
 			add_filter( 'woocommerce_format_content', array( $this, 'woocommerce_shop_page_content' ), 10, 2 );
 		}
+
+		// Contribute this plugin's field-sanitization semantics version to
+		// Page Builder's Layout Block trust-signature scheme, so a signature
+		// computed before a security-relevant tightening of our own field
+		// sanitizers is correctly treated as stale. Registered unconditionally:
+		// apply_filters() on a filter tag that Page Builder never triggers
+		// (e.g. Page Builder inactive) is a harmless no-op, matching this
+		// plugin's existing pattern for other 'siteorigin_panels_*' filters
+		// (see so-widgets-bundle.php and base/inc/shortcode.php).
+		add_filter( 'siteorigin_panels_sanitize_version', array( $this, 'add_sanitize_version_signal' ) );
+	}
+
+	/**
+	 * Append this plugin's own field-sanitization semantics version to
+	 * Page Builder's composed 'siteorigin_panels_sanitize_version' filter
+	 * value, so its Layout Block trust-signature scheme can detect when
+	 * this plugin's sanitization rules have materially tightened.
+	 *
+	 * @param string $version
+	 *
+	 * @return string
+	 */
+	public function add_sanitize_version_signal( $version ) {
+		return $version . ';sowb:' . SOW_SANITIZE_VERSION;
 	}
 
 	public function get_active_builder() {
