@@ -819,19 +819,27 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		if ( ! empty( $form_options ) ) {
 			if ( isset( $_GET['fl_builder'] ) && is_array( $new_instance ) ) {
-				$key = array_keys( $new_instance )[0];
-				$new_instance = $this->update_fields(
-					$new_instance[ $key ],
-					$old_instance,
-					$form_options
-				);
-			} else {
-				$new_instance = $this->update_fields(
-					$new_instance,
-					$old_instance,
-					$form_options
-				);
+				// Beaver Builder wraps the submitted instance in an extra
+				// array level — unwrap it before migrating/sanitizing.
+				$new_instance = $new_instance[ array_keys( $new_instance )[0] ];
 			}
+
+			// Migrate any legacy instance shape BEFORE sanitizing: update()
+			// can receive stored instances directly (e.g. the block editor's
+			// render/save paths and widget previews) without widget()/form()
+			// having run modify_instance() first, and update_fields()'
+			// unknown-key strip would otherwise delete un-migrated legacy
+			// keys before modify_instance() could move their data into
+			// current declared fields. modify_instance() implementations are
+			// isset/empty-guarded no-ops on already-current instances, so
+			// this is safe to run on every save.
+			$new_instance = $this->modify_instance( $new_instance );
+
+			$new_instance = $this->update_fields(
+				$new_instance,
+				$old_instance,
+				$form_options
+			);
 		}
 
 		// Remove the old CSS, it'll be regenerated on page load.
