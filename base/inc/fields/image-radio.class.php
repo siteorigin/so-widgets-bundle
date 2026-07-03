@@ -50,10 +50,17 @@ class SiteOrigin_Widget_Field_Image_Radio extends SiteOrigin_Widget_Field_Base {
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
-		// When the options registry didn't populate this request, return the
-		// stored value unchanged instead of resetting it to default.
+		// When the options registry didn't populate this request, don't reset
+		// the stored value to default.
 		if ( empty( $this->options ) ) {
-			return $value;
+			// See select.class.php::sanitize_field_input() for full reasoning
+			// (same registry-empty gap, same fix). Image-radio values are
+			// always scalar (single selection, matched against an option key).
+			if ( $value === $this->old_value ) {
+				return $value;
+			}
+
+			return sanitize_text_field( $value );
 		}
 
 		$sanitized_value = $value;
