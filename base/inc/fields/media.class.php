@@ -179,6 +179,10 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 		return $instance;
 	}
 
+	public function get_related_instance_keys() {
+		return array( $this->get_fallback_field_name( $this->base_name ) );
+	}
+
 	public function get_fallback_field_name( $base_name ) {
 		$v_name = $base_name;
 
