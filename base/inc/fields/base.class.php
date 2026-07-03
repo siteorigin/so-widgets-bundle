@@ -476,6 +476,24 @@ abstract class SiteOrigin_Widget_Field_Base {
 	}
 
 	/**
+	 * Some field types write to one or more companion instance keys that
+	 * are siblings of, but not equal to, their own $field_name — e.g. a
+	 * media field's fallback URL or a tinymce field's selected-editor
+	 * mode. These keys are never declared in get_widget_form()'s
+	 * $form_options, so update_fields() / Container_Base's unknown-key
+	 * strip (see sanitize_field_input()) cannot recognize them as
+	 * legitimate through the form_options allowlist alone. Override this
+	 * method to return the exact sibling key name(s) this field instance
+	 * owns, so the strip can allowlist them too. Returns an empty array
+	 * by default (most fields have none).
+	 *
+	 * @return string[]
+	 */
+	public function get_related_instance_keys() {
+		return array();
+	}
+
+	/**
 	 * Occasionally it is necessary for a field to set a variable to be used in the front end. Override this function
 	 * and set any necessary values on the `javascript_variables` instance property.
 	 *
