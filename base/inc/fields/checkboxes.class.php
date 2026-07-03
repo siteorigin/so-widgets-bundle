@@ -39,10 +39,21 @@ class SiteOrigin_Widget_Field_Checkboxes extends SiteOrigin_Widget_Field_Base {
 			$value = array();
 		}
 
-		// When the options registry didn't populate this request, return the
-		// stored value unchanged instead of resetting valid values to default.
+		// When the options registry didn't populate this request, don't reset
+		// valid stored values to default.
 		if ( empty( $this->options ) ) {
-			return is_array( $value ) ? $value : array( $value );
+			// See select.class.php::sanitize_field_input() for full reasoning
+			// (same registry-empty gap, same fix). Checkboxes values are
+			// always an array (checkbox group) — preserve the existing
+			// scalar-to-array coercion for the untouched-resave path, and
+			// sanitize each element for the changed-value path.
+			$normalized_value = is_array( $value ) ? $value : array( $value );
+
+			if ( $normalized_value === $this->old_value ) {
+				return $normalized_value;
+			}
+
+			return array_map( 'sanitize_text_field', $normalized_value );
 		}
 
 		$values = is_array( $value ) ? $value : array( $value );

@@ -41,6 +41,23 @@ abstract class SiteOrigin_Widget_Field_Base {
 	 * @var array
 	 */
 	protected $javascript_variables;
+	/**
+	 * The value this field held in the previously-persisted widget
+	 * instance, for the CURRENT sanitize() call only. Set immediately
+	 * before sanitize_field_input() is invoked, so subclasses that need to
+	 * distinguish "value unchanged from what's already stored" from "value
+	 * changed" (e.g. when their own options/families registry is empty on
+	 * this request and they cannot validate against it) can read it
+	 * without widening the abstract sanitize_field_input( $value, $instance )
+	 * signature across all field subclasses. Null when unavailable (e.g.
+	 * this field is nested inside a repeater/tabs/section container, whose
+	 * SiteOrigin_Widget_Field_Container_Base::sanitize_field_input() does
+	 * not have a per-sub-field old value to pass through) — treat null as
+	 * "old value not reliably known", never as "old value is null".
+	 *
+	 * @var mixed
+	 */
+	protected $old_value;
 
 	/* ============================================================================================================== */
 	/* BASE FIELD CONFIGURATION PROPERTIES                                                                            */
@@ -352,6 +369,7 @@ abstract class SiteOrigin_Widget_Field_Base {
 			return '';
 		}
 
+		$this->old_value = $old_value;
 		$value = $this->sanitize_field_input( $value, $instance );
 
 		if ( isset( $this->sanitize ) && ! empty( $value ) ) {
