@@ -115,15 +115,20 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 		// value would fail the in_array() check below and get reset to default,
 		// corrupting good stored data.
 		if ( empty( $this->options ) ) {
-			// Can't validate against the registry this request. If this is an
-			// untouched re-save (new value matches what's already stored, or
-			// old value isn't reliably known because this field is nested in a
-			// container), pass through unchanged to avoid re-running
-			// sanitizers on their own stored output. Otherwise the value has
-			// genuinely changed and must not bypass sanitization entirely —
-			// apply a neutral floor. sanitize_text_field() (not sanitize_key())
-			// is required here: real stored option keys in this codebase
-			// include dotted-decimal strings (e.g. '0.5', '1.33' in
+			// Can't validate against the registry this request. Only pass
+			// through unchanged when the new value is CONFIRMED equal to
+			// what's already stored ($this->old_value) — an untouched
+			// re-save, where skipping sanitization avoids re-running
+			// sanitizers on their own stored output. Any other case —
+			// including a genuinely changed value, or the old value not
+			// being reliably known at all (e.g. this field is nested inside
+			// a container, where $this->old_value is always null) — falls
+			// through to the neutral sanitize_text_field() floor below.
+			// Treating "unknown" the same as "unchanged" would reopen the
+			// unsanitized-pass-through bypass this branch exists to close.
+			// sanitize_text_field() (not sanitize_key()) is required here:
+			// real stored option keys in this codebase include
+			// dotted-decimal strings (e.g. '0.5', '1.33' in
 			// widgets/social-media-buttons/social-media-buttons.php) that
 			// sanitize_key() would corrupt by stripping the '.'.
 			if ( $value === $this->old_value ) {
