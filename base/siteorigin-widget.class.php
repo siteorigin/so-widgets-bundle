@@ -819,19 +819,27 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 
 		if ( ! empty( $form_options ) ) {
 			if ( isset( $_GET['fl_builder'] ) && is_array( $new_instance ) ) {
-				$key = array_keys( $new_instance )[0];
-				$new_instance = $this->update_fields(
-					$new_instance[ $key ],
-					$old_instance,
-					$form_options
-				);
-			} else {
-				$new_instance = $this->update_fields(
-					$new_instance,
-					$old_instance,
-					$form_options
-				);
+				// Beaver Builder wraps the submitted instance in an extra
+				// array level — unwrap it before migrating/sanitizing.
+				$new_instance = $new_instance[ array_keys( $new_instance )[0] ];
 			}
+
+			// Migrate any legacy instance shape BEFORE sanitizing: update()
+			// can receive stored instances directly (e.g. the block editor's
+			// render/save paths and widget previews) without widget()/form()
+			// having run modify_instance() first, and update_fields()'
+			// unknown-key strip would otherwise delete un-migrated legacy
+			// keys before modify_instance() could move their data into
+			// current declared fields. modify_instance() implementations are
+			// isset/empty-guarded no-ops on already-current instances, so
+			// this is safe to run on every save.
+			$new_instance = $this->modify_instance( $new_instance );
+
+			$new_instance = $this->update_fields(
+				$new_instance,
+				$old_instance,
+				$form_options
+			);
 		}
 
 		// Remove the old CSS, it'll be regenerated on page load.
@@ -867,6 +875,25 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				);
 				$new_instance = $field->sanitize_instance( $new_instance );
 			}
+
+			// Strip any instance key that isn't a declared form field, a
+			// field-declared companion key (e.g. a media field's fallback URL,
+			// a tinymce field's selected-editor mode), or known plugin
+			// bookkeeping. An unrecognized key was never routed through any
+			// field's sanitize(), so it must not be allowed to persist
+			// unsanitized (e.g. injected via a crafted save payload).
+			$known_keys = array_keys( $form_options );
+
+			foreach ( $this->fields as $field ) {
+				$known_keys = array_merge( $known_keys, $field->get_related_instance_keys() );
+			}
+
+			$known_keys = array_merge(
+				$known_keys,
+				array( '_sow_form_id', '_sow_form_timestamp', 'panels_info' )
+			);
+
+			$new_instance = array_intersect_key( $new_instance, array_flip( $known_keys ) );
 
 			// Let other plugins also sanitize the instance
 			$new_instance = apply_filters( 'siteorigin_widgets_sanitize_instance', $new_instance, $form_options, $this );

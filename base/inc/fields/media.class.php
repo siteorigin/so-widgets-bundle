@@ -179,12 +179,25 @@ class SiteOrigin_Widget_Field_Media extends SiteOrigin_Widget_Field_Base {
 		return $instance;
 	}
 
+	public function get_related_instance_keys() {
+		return array( $this->get_fallback_field_name( $this->base_name ) );
+	}
+
 	public function get_fallback_field_name( $base_name ) {
 		$v_name = $base_name;
 
 		if ( strpos( $v_name, '][' ) !== false ) {
-			// Remove this splitter
-			$v_name = substr( $v_name, strpos( $v_name, '][' ) + 2 );
+			// Remove everything up to the LAST splitter: the stored companion
+			// key is always the final segment + '_fallback' regardless of
+			// nesting depth (render-path instances are created with unprefixed
+			// names, so the posted key never carries container prefixes).
+			// strrpos, not strpos — a base_name nested two or more containers
+			// deep (e.g. 'frames][background][image') contains multiple
+			// splitters, and taking the first would yield a key like
+			// 'background][image_fallback' that never matches the real stored
+			// key. Matches get_selected_editor_field_name() in
+			// tinymce.class.php.
+			$v_name = substr( $v_name, strrpos( $v_name, '][' ) + 2 );
 		}
 
 		return $v_name . '_fallback';

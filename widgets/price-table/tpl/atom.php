@@ -14,7 +14,7 @@ $initial_button_attrs = $button_attrs;
 
 <?php
 if ( ! empty( $title ) ) {
-	echo $before_title . $title . $after_title;
+	echo $before_title . wp_kses_post( $title ) . $after_title;
 }
 ?>
 
@@ -62,7 +62,7 @@ if ( ! empty( $title ) ) {
 								$icon_styles = array();
 
 								if ( ! empty( $feature['icon_color'] ) ) {
-									$icon_styles[] = 'color: ' . $feature['icon_color'];
+									$icon_styles[] = 'color: ' . esc_attr( $feature['icon_color'] );
 								}
 								echo siteorigin_widget_get_icon( $feature['icon_new'], $icon_styles );
 								?>

@@ -26,6 +26,15 @@ if ( ! empty( $instance['title'] ) ) {
 			tabindex="0"
 		>
 			<div class="sow-tabs-title <?php echo empty( $tab['after_title'] ) ? 'sow-tabs-title-icon-left' : 'sow-tabs-title-icon-right'; ?>">
+				<?php
+				// before_title/after_title carry plugin-generated icon markup
+				// (filter-owned slots, unconditionally reset in
+				// get_template_variables() before the filter runs — never
+				// instance data). Deliberately NOT passed through
+				// wp_kses_post(): kses's attribute-value handling strips the
+				// Private Use Area glyph entities in data-sow-icon="&#x...;",
+				// blanking every font icon.
+				?>
 				<?php echo $tab['before_title']; ?>
 				<?php echo wp_kses_post( $tab['title'] ); ?>
 				<?php echo $tab['after_title']; ?>
