@@ -102,6 +102,8 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 		/* @var $field_factory SiteOrigin_Widget_Field_Factory */
 		$field_factory = SiteOrigin_Widget_Field_Factory::single();
 
+		$known_keys = array_keys( $this->fields );
+
 		foreach ( $this->fields as $sub_field_name => $sub_field_options ) {
 			/* @var $sub_field SiteOrigin_Widget_Field_Base */
 			if ( ! empty( $this->sub_fields ) && ! empty( $this->sub_fields[$sub_field_name] ) ) {
@@ -116,7 +118,23 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 			}
 			$value[$sub_field_name] = $sub_field->sanitize( isset( $value[$sub_field_name] ) ? $value[$sub_field_name] : null, $value );
 			$value = $sub_field->sanitize_instance( $value );
+
+			// Collect companion keys from the sub-field instance actually
+			// used for this row. This must happen inside the loop:
+			// $this->sub_fields is only populated by the render path
+			// (create_and_render_sub_fields()), so on a save-only request
+			// the instances created above never enter that cache and a
+			// post-loop scan of $this->sub_fields would miss them.
+			$known_keys = array_merge( $known_keys, $sub_field->get_related_instance_keys() );
 		}
+
+		// See SiteOrigin_Widget::update_fields() for the top-level
+		// equivalent and full reasoning. Strip any sibling key in this
+		// row/section that isn't a declared sub-field, a sub-field-declared
+		// companion key, or the container's own state-tracking key.
+		$known_keys[] = 'so_field_container_state';
+
+		$value = array_intersect_key( $value, array_flip( $known_keys ) );
 
 		return $value;
 	}
