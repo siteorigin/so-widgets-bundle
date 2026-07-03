@@ -113,9 +113,26 @@ class SiteOrigin_Widget_Field_Select extends SiteOrigin_Widget_Field_Base {
 	protected function sanitize_field_input( $value, $instance ) {
 		// When the options registry didn't populate this request, every stored
 		// value would fail the in_array() check below and get reset to default,
-		// corrupting good stored data. Return the value unchanged instead.
+		// corrupting good stored data.
 		if ( empty( $this->options ) ) {
-			return $value;
+			// Can't validate against the registry this request. If this is an
+			// untouched re-save (new value matches what's already stored, or
+			// old value isn't reliably known because this field is nested in a
+			// container), pass through unchanged to avoid re-running
+			// sanitizers on their own stored output. Otherwise the value has
+			// genuinely changed and must not bypass sanitization entirely —
+			// apply a neutral floor. sanitize_text_field() (not sanitize_key())
+			// is required here: real stored option keys in this codebase
+			// include dotted-decimal strings (e.g. '0.5', '1.33' in
+			// widgets/social-media-buttons/social-media-buttons.php) that
+			// sanitize_key() would corrupt by stripping the '.'.
+			if ( $value === $this->old_value ) {
+				return $value;
+			}
+
+			return is_array( $value )
+				? array_map( 'sanitize_text_field', $value )
+				: sanitize_text_field( $value );
 		}
 
 		$values = is_array( $value ) ? $value : array( $value );
