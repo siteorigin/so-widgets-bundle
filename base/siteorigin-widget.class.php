@@ -868,6 +868,25 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 				$new_instance = $field->sanitize_instance( $new_instance );
 			}
 
+			// Strip any instance key that isn't a declared form field, a
+			// field-declared companion key (e.g. a media field's fallback URL,
+			// a tinymce field's selected-editor mode), or known plugin
+			// bookkeeping. An unrecognized key was never routed through any
+			// field's sanitize(), so it must not be allowed to persist
+			// unsanitized (e.g. injected via a crafted save payload).
+			$known_keys = array_keys( $form_options );
+
+			foreach ( $this->fields as $field ) {
+				$known_keys = array_merge( $known_keys, $field->get_related_instance_keys() );
+			}
+
+			$known_keys = array_merge(
+				$known_keys,
+				array( '_sow_form_id', '_sow_form_timestamp', 'panels_info' )
+			);
+
+			$new_instance = array_intersect_key( $new_instance, array_flip( $known_keys ) );
+
 			// Let other plugins also sanitize the instance
 			$new_instance = apply_filters( 'siteorigin_widgets_sanitize_instance', $new_instance, $form_options, $this );
 			$new_instance = apply_filters( 'siteorigin_widgets_sanitize_instance_' . $this->id_base, $new_instance, $form_options, $this );
