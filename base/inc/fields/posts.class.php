@@ -36,13 +36,7 @@ class SiteOrigin_Widget_Field_Posts extends SiteOrigin_Widget_Field_Container_Ba
 			$type_options['_all'] = __( 'All', 'so-widgets-bundle' );
 		}
 
-		$do_post_type_permission_check = apply_filters( 'siteorigin_widgets_post_selector_post_type_permission_check', true );
-
 		foreach ( $types as $id => $type ) {
-			if ( $do_post_type_permission_check && ! siteorigin_widget_user_can_edit_post_type( $id ) ) {
-				continue;
-			}
-
 			if (
 				empty( $this->post_types ) ||
 				in_array( $id, $this->post_types )
