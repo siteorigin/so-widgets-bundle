@@ -128,12 +128,6 @@ class SiteOrigin_Widgets_Bundle_Actions {
 
 		$post_types = apply_filters( 'siteorigin_widgets_search_posts_post_types', $post_types );
 
-		// Ensure the user can edit this post type.
-		foreach ( $post_types as $key => $post_type ) {
-			if ( ! siteorigin_widget_user_can_edit_post_type( $post_type ) ) {
-				unset( $post_types[ $key ] );
-			}
-		}
 		$post_types = "'" . implode( "', '", array_map( 'esc_sql', $post_types ) ) . "'";
 
 		$ordered_by = self::get_search_posts_order_by();
