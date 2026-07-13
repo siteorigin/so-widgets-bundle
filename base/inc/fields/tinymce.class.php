@@ -582,6 +582,10 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		return $instance;
 	}
 
+	public function get_related_instance_keys() {
+		return array( $this->get_selected_editor_field_name( $this->base_name ) );
+	}
+
 	public function get_selected_editor( $instance ) {
 		$selected_editor = null;
 		$selected_editor_name = $this->get_selected_editor_field_name( $this->base_name );

@@ -54,6 +54,53 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 		if ( function_exists( 'WC' ) ) {
 			add_filter( 'woocommerce_format_content', array( $this, 'woocommerce_shop_page_content' ), 10, 2 );
 		}
+
+		// Contribute this plugin's field-sanitization semantics version to
+		// Page Builder's Layout Block trust-signature scheme, so a signature
+		// computed before a security-relevant tightening of our own field
+		// sanitizers is correctly treated as stale. Registered unconditionally:
+		// apply_filters() on a filter tag that Page Builder never triggers
+		// (e.g. Page Builder inactive) is a harmless no-op, matching this
+		// plugin's existing pattern for other 'siteorigin_panels_*' filters
+		// (see so-widgets-bundle.php and base/inc/shortcode.php).
+		add_filter( 'siteorigin_panels_sanitize_version', array( $this, 'add_sanitize_version_signal' ) );
+	}
+
+	/**
+	 * Append this plugin's own field-sanitization semantics version to
+	 * Page Builder's composed 'siteorigin_panels_sanitize_version' filter
+	 * value, so its Layout Block trust-signature scheme can detect when
+	 * this plugin's sanitization rules have materially tightened.
+	 *
+	 * @param string $version
+	 *
+	 * @return string
+	 */
+	public function add_sanitize_version_signal( $version ) {
+		// The '1' below is the version identifier for this plugin's
+		// field-sanitization SEMANTICS — i.e. what content a sanitizer
+		// allows through, not its code/bugfix history. Consumed by
+		// siteorigin-panels' Layout Block trust-signature scheme so a stale
+		// save-time signature can be detected and invalidated when this
+		// plugin's sanitization rules materially tighten.
+		//
+		// Bump this value ONLY when a field/widget sanitizer becomes MORE
+		// RESTRICTIVE in a security-relevant way (e.g. a previously-unfiltered
+		// field starts running wp_kses_post(), or a bypass is closed).
+		//
+		// NEVER bump it for idempotency fixes, bugfixes, or any behavior
+		// change that does not affect what content is allowed through.
+		//
+		// Bumping this invalidates EVERY existing siteorigin-panels Layout
+		// Block trust signature site-wide, with NO bulk remediation path:
+		// each affected post must be individually re-saved by its own author
+		// to regain trusted-render status (capability-gated sanitization is
+		// only meaningful under the real author's session, so there is no
+		// safe way to batch/cron re-sign on their behalf). This is an
+		// accepted, intentionally expensive cost for genuine security
+		// tightening — do not bump casually, and do not bump for anything
+		// covered by the "never" list above.
+		return $version . ';sowb:1';
 	}
 
 	public function get_active_builder() {
