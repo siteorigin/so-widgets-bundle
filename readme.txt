@@ -109,6 +109,16 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 
 == Changelog ==
 
+= 1.74.0 - 13 July 2026 =
+* Accordion, Tabs: Reset filter-owned title slots at render and escaped title output in templates.
+* Posts Field: Restored listing of all public post types in the Post Type selector regardless of the current user's edit capability.
+* Price Table: Escaped title and icon color style output in the template.
+* General: Added a neutral sanitization floor for select, radio, image radio, and checkboxes fields when the options list is unavailable, so stored values are no longer reset.
+* General: Stripped unrecognized keys from widget instances on save so only declared fields and known companion keys persist.
+* General: Made media, TinyMCE, and container field sanitization more robust across nested and repeater contexts.
+* General: Contributed a field sanitization version signal to Page Builder to keep Layout Block trust signatures accurate.
+* General: Updated dependencies, including lodash-es 4.18.1, basic-ftp 5.2.2, and ip-address 10.2.0.
+
 = 1.73.2 - 01 July 2026 =
 * Blog: Fixed font field initialization lag by lazy-populating font selects on focus while preserving the saved value on save.
 * Video: Removed the hard-coded sandbox from cached oEmbed output and added the siteorigin_widgets_sow-video_oembed_iframe_sandbox filter to control iframe sandbox attributes.
