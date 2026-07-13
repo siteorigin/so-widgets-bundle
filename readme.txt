@@ -117,7 +117,6 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 * General: Stripped unrecognized keys from widget instances on save so only declared fields and known companion keys persist.
 * General: Made media, TinyMCE, and container field sanitization more robust across nested and repeater contexts.
 * General: Contributed a field sanitization version signal to Page Builder to keep Layout Block trust signatures accurate.
-* General: Updated dependencies, including lodash-es 4.18.1, basic-ftp 5.2.2, and ip-address 10.2.0.
 
 = 1.73.2 - 01 July 2026 =
 * Blog: Fixed font field initialization lag by lazy-populating font selects on focus while preserving the saved value on save.
