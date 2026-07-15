@@ -103,6 +103,19 @@ class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_I
 			unset( $instance[ $unit_name ] );
 		}
 
+		// Fall back to the unit already embedded in the stored value (re-save case).
+		if ( empty( $unit ) ) {
+			$parsed = $this->get_render_values( $value );
+
+			if ( ! empty( $parsed['unit'] ) ) {
+				$units = ! empty( $this->units ) && is_array( $this->units ) ? $this->units : siteorigin_widgets_get_measurements_list();
+
+				if ( in_array( $parsed['unit'], $units ) ) {
+					$unit = $parsed['unit'];
+				}
+			}
+		}
+
 		// Sensible default, if we somehow end up without a unit.
 		if ( empty( $unit ) ) {
 			$unit = empty( $this->default_unit ) ? 'px' : $this->default_unit;
