@@ -250,8 +250,8 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 
 		if ( ! empty( $instance['size_external'] ) && $instance['size_external'] == 'custom_size' ) {
 			$external_size = array(
-				'width' => $instance['size_external_width'],
-				'height' => $instance['size_external_height'],
+				'width'  => ! empty( $instance['size_external_width'] )  ? $instance['size_external_width']  : '',
+				'height' => ! empty( $instance['size_external_height'] ) ? $instance['size_external_height'] : '',
 			);
 		}
 
