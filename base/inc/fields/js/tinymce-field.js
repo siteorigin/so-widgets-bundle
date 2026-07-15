@@ -564,7 +564,19 @@
 		const $container = $field.find( '.siteorigin-widget-tinymce-container' );
 		const settings = $.extend( true, {}, $container.data( 'editorSettings' ) || {} );
 
+		// A host environment can disable the rich (visual) editor entirely — e.g. a
+		// theme that suppresses TinyMCE on a maintenance/landing page. In that case
+		// the localized editor settings arrive with no `tinymce` config and every
+		// `settings.tinymce.*` dereference below would throw
+		// `TypeError: Cannot read properties of undefined (reading '...')`.
+		// Compute the invariant once and use it to guard all three places that read
+		// `settings.tinymce`: the content_css merge, the wpautop read, and the
+		// wpEditor.initialize() calls. When false we skip visual-editor setup and
+		// leave the plain Code textarea in place.
+		const hasTinyMCE = !! ( settings && settings.tinymce );
+
 		if (
+			hasTinyMCE &&
 			window.top.tinyMCEPreInit &&
 			window.top.tinyMCEPreInit.mceInit &&
 			window.top.tinyMCEPreInit.mceInit.hasOwnProperty( 'content' )
@@ -586,7 +598,7 @@
 		}
 
 		let $wpautopToggleField;
-		if ( settings.wpautopToggleField ) {
+		if ( hasTinyMCE && settings.wpautopToggleField ) {
 			const $widgetForm = $container.closest( '.siteorigin-widget-form' );
 
 			$wpautopToggleField = $widgetForm.find( settings.wpautopToggleField );
@@ -796,22 +808,49 @@
 
 		$field.data( 'sowb-tinymce-init-timeout', initTimeoutId );
 
-		// Wait for textarea to be visible before initialization.
-		if ( $textarea.is( ':visible' ) ) {
-			wpEditor.initialize( id, settings );
-		} else {
-			const intervalId = setInterval( function() {
-				if ( $textarea.is( ':visible' ) ) {
-					const pollEditor = resolveWpEditor();
-					if ( pollEditor ) {
-						pollEditor.initialize( id, settings );
+		if ( hasTinyMCE ) {
+			// Wait for textarea to be visible before initialization.
+			if ( $textarea.is( ':visible' ) ) {
+				wpEditor.initialize( id, settings );
+			} else {
+				const intervalId = setInterval( function() {
+					if ( $textarea.is( ':visible' ) ) {
+						const pollEditor = resolveWpEditor();
+						if ( pollEditor ) {
+							pollEditor.initialize( id, settings );
+						}
+						clearInterval( intervalId );
+						$field.removeData( 'sowb-tinymce-visibility-poll' );
 					}
-					clearInterval( intervalId );
-					$field.removeData( 'sowb-tinymce-visibility-poll' );
-				}
-			}, 500 );
+				}, 500 );
 
-			$field.data( 'sowb-tinymce-visibility-poll', intervalId );
+				$field.data( 'sowb-tinymce-visibility-poll', intervalId );
+			}
+		} else {
+			// No visual editor available for this field (host disabled rich editing).
+			// We never call wpEditor.initialize(), so TinyMCE's `init` event — the
+			// success-path resolver at ~line 713 — will never fire. Mirror that
+			// handler's cleanup exactly so the init-pending promise is resolved, the
+			// initializing lock is released, and the 5 s safety timeout created just
+			// above is cleared. Without this, sowbGetTinyMCEInitPromise() would hang
+			// forever and stall the save-bridge TinyMCE flusher.
+			const skipInitTimeout = $field.data( 'sowb-tinymce-init-timeout' );
+			if ( skipInitTimeout ) {
+				clearTimeout( skipInitTimeout );
+				$field.removeData( 'sowb-tinymce-init-timeout' );
+			}
+
+			if ( _tinymceInitPending[ id ] ) {
+				_tinymceInitPending[ id ].resolve();
+			}
+
+			$field.removeData( 'sowb-tinymce-initializing' );
+			$field.removeData( 'sowb-tinymce-initializing-id' );
+
+			// The top-document setup listener bound at ~line 698 is keyed to the same
+			// namespace and only fires on a real TinyMCE init; remove it too so it
+			// does not accumulate across re-setups of a rich-editing-disabled field.
+			$( window.top.document ).off( 'tinymce-editor-setup' + fieldEventNamespace );
 		}
 
 		$field
