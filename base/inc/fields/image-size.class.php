@@ -129,4 +129,22 @@ class SiteOrigin_Widget_Field_Image_Size extends SiteOrigin_Widget_Field_Select 
 
 		return $base_name;
 	}
+
+	public function get_related_instance_keys() {
+		if ( empty( $this->custom_size ) ) {
+			return array();
+		}
+
+		$prefix = $this->get_custom_size_setting_prefix( $this->base_name );
+		$keys = array(
+			$prefix . '_width',
+			$prefix . '_height',
+		);
+
+		if ( ! empty( $this->custom_size_enforce ) ) {
+			$keys[] = $prefix . '_enforce';
+		}
+
+		return $keys;
+	}
 }
