@@ -94,20 +94,28 @@ class SiteOrigin_Widget_Field_Measurement extends SiteOrigin_Widget_Field_Text_I
 		$default_parts = $this->get_render_values( $this->default );
 		$unit = $default_parts['unit'];
 
+		$unit_posted = false;
+
 		if ( isset( $instance[ $unit_name ] ) ) {
 			$units = ! empty( $this->units ) && is_array( $this->units ) ? $this->units : siteorigin_widgets_get_measurements_list();
 
 			if ( in_array( $instance[ $unit_name ], $units ) ) {
 				$unit = $instance[ $unit_name ];
+				$unit_posted = true;
 			}
 			unset( $instance[ $unit_name ] );
 		}
 
-		// Fall back to the unit already embedded in the stored value (re-save case).
-		if ( empty( $unit ) ) {
+		// Recover the unit embedded in the stored value on re-save. Without a
+		// posted unit companion key, $unit is pre-seeded from the field default,
+		// which may itself carry a unit (e.g. '38px'). In that case the empty()
+		// guard alone never fires, so a re-saved value like '5em' would be forced
+		// back to the default's unit. Recover the embedded unit whenever no unit
+		// was posted and the value carries a different allowed unit.
+		if ( ! $unit_posted ) {
 			$parsed = $this->get_render_values( $value );
 
-			if ( ! empty( $parsed['unit'] ) ) {
+			if ( ! empty( $parsed['unit'] ) && $parsed['unit'] !== $unit ) {
 				$units = ! empty( $this->units ) && is_array( $this->units ) ? $this->units : siteorigin_widgets_get_measurements_list();
 
 				if ( in_array( $parsed['unit'], $units ) ) {
