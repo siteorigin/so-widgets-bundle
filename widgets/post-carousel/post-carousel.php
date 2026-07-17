@@ -466,12 +466,49 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		return $instance;
 	}
 
+	/**
+	 * Gets the image size dimensions used to size the carousel thumbnails.
+	 *
+	 * The base carousel renders each thumbnail as a CSS background image on an
+	 * empty anchor, so its box dimensions come entirely from the selected image
+	 * size. 'Full' isn't a registered image size, so the lookup returns null and
+	 * the thumbnail would collapse to 0x0. Fall back to the default carousel size
+	 * so the box always has real dimensions; the full-resolution image URL is
+	 * still requested unchanged in the template. If the default size can't be
+	 * resolved either, fall through to its registered dimensions so the box is
+	 * never sized from empty values.
+	 *
+	 * @param string $image_size The selected image size identifier.
+	 *
+	 * @return array Size config with non-empty width and height.
+	 */
+	private function get_carousel_image_size( $image_size ) {
+		$size = siteorigin_widgets_get_image_size( $image_size );
+
+		if ( empty( $size['width'] ) || empty( $size['height'] ) ) {
+			$size = siteorigin_widgets_get_image_size( 'sow-carousel-default' );
+		}
+
+		// Guard against the default size not being registered yet, so the box
+		// is never sized from empty dimensions. Matches the values registered
+		// in sow_carousel_register_image_sizes().
+		if ( empty( $size['width'] ) || empty( $size['height'] ) ) {
+			$size = array(
+				'width'  => 272,
+				'height' => 182,
+				'crop'   => true,
+			);
+		}
+
+		return $size;
+	}
+
 	public function get_less_variables( $instance ) {
 		if ( empty( $instance ) ) {
 			return array();
 		}
 
-		$size = siteorigin_widgets_get_image_size( $instance['image_size'] );
+		$size = $this->get_carousel_image_size( $instance['image_size'] );
 
 		$thumb_width = '';
 		$thumb_height = '';
@@ -553,7 +590,7 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 		$carousel_settings['item_overflow'] = true;
 		$carousel_settings = apply_filters( 'siteorigin_widgets_post_carousel_settings_frontend', $carousel_settings, $instance );
 
-		$size = siteorigin_widgets_get_image_size( $instance['image_size'] );
+		$size = $this->get_carousel_image_size( $instance['image_size'] );
 
 		$navigation = 'title';
 
