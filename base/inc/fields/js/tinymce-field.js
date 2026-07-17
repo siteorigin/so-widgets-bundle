@@ -564,7 +564,35 @@
 		const $container = $field.find( '.siteorigin-widget-tinymce-container' );
 		const settings = $.extend( true, {}, $container.data( 'editorSettings' ) || {} );
 
+		// Two separate invariants gate visual-editor setup:
+		//
+		// 1. hasTinyMCE — does this field even have a `tinymce` config? Guards the
+		//    two places that dereference `settings.tinymce.*` directly (the
+		//    content_css merge and the wpautop read). Those only need the settings
+		//    object; they do not touch the TinyMCE library.
+		//
+		// 2. canInitEditor — can we actually initialise a visual editor here? When a
+		//    host filters `user_can_richedit()` to false (e.g. Mesmerize Companion on
+		//    a maintainable page), WordPress core does not print the TinyMCE library
+		//    (`window.tinymce` stays undefined) even though `wp.editor` still loads
+		//    and `settings.tinymce` is still present. Calling `wpEditor.initialize()`
+		//    then reaches core editor.js which does `window.tinymce.translate(...)`
+		//    and throws `Cannot read properties of undefined (reading 'translate')`.
+		//    So the initialize() gate must additionally confirm the library is
+		//    actually loaded and usable — mirroring exactly what core dereferences.
+		//    Note `window.tinymce` can arrive late (footer scripts), so the poll
+		//    branch below re-evaluates this at poll time rather than trusting only
+		//    this initial reading.
+		const hasTinyMCE = !! ( settings && settings.tinymce );
+		const isTinyMCELibraryReady = function() {
+			return typeof window.tinymce !== 'undefined' &&
+				window.tinymce &&
+				typeof window.tinymce.translate === 'function';
+		};
+		const canInitEditor = hasTinyMCE && isTinyMCELibraryReady();
+
 		if (
+			hasTinyMCE &&
 			window.top.tinyMCEPreInit &&
 			window.top.tinyMCEPreInit.mceInit &&
 			window.top.tinyMCEPreInit.mceInit.hasOwnProperty( 'content' )
@@ -586,7 +614,7 @@
 		}
 
 		let $wpautopToggleField;
-		if ( settings.wpautopToggleField ) {
+		if ( hasTinyMCE && settings.wpautopToggleField ) {
 			const $widgetForm = $container.closest( '.siteorigin-widget-form' );
 
 			$wpautopToggleField = $widgetForm.find( settings.wpautopToggleField );
@@ -796,18 +824,70 @@
 
 		$field.data( 'sowb-tinymce-init-timeout', initTimeoutId );
 
+		// Runs when we decide NOT to initialise a visual editor for this field (the
+		// TinyMCE library is unavailable, so calling wpEditor.initialize() would throw
+		// inside core's `window.tinymce.translate(...)`). Because initialize() is never
+		// called, TinyMCE's `init` event — the success-path resolver at ~line 713 —
+		// will never fire, so we must mirror that handler's cleanup exactly: resolve
+		// the init-pending promise, release the initializing lock, clear the 5 s safety
+		// timeout, cancel any visibility poll, and drop the top-document setup listener.
+		// Without this, sowbGetTinyMCEInitPromise() would hang forever and stall the
+		// save-bridge TinyMCE flusher. The Code textarea is left in place, so the field
+		// still works in Code mode.
+		const finishWithoutEditor = function() {
+			const pendingPoll = $field.data( 'sowb-tinymce-visibility-poll' );
+			if ( pendingPoll ) {
+				clearInterval( pendingPoll );
+				$field.removeData( 'sowb-tinymce-visibility-poll' );
+			}
+
+			const skipInitTimeout = $field.data( 'sowb-tinymce-init-timeout' );
+			if ( skipInitTimeout ) {
+				clearTimeout( skipInitTimeout );
+				$field.removeData( 'sowb-tinymce-init-timeout' );
+			}
+
+			if ( _tinymceInitPending[ id ] ) {
+				_tinymceInitPending[ id ].resolve();
+			}
+
+			$field.removeData( 'sowb-tinymce-initializing' );
+			$field.removeData( 'sowb-tinymce-initializing-id' );
+
+			// The top-document setup listener bound at ~line 698 is keyed to the same
+			// namespace and only fires on a real TinyMCE init; remove it too so it
+			// does not accumulate across re-setups of a rich-editing-disabled field.
+			$( window.top.document ).off( 'tinymce-editor-setup' + fieldEventNamespace );
+		};
+
 		// Wait for textarea to be visible before initialization.
 		if ( $textarea.is( ':visible' ) ) {
-			wpEditor.initialize( id, settings );
+			if ( canInitEditor ) {
+				wpEditor.initialize( id, settings );
+			} else {
+				// Visible now, but the TinyMCE library is not loaded (host disabled
+				// rich editing). Don't call initialize() — go straight to Code-only.
+				finishWithoutEditor();
+			}
 		} else {
 			const intervalId = setInterval( function() {
-				if ( $textarea.is( ':visible' ) ) {
-					const pollEditor = resolveWpEditor();
-					if ( pollEditor ) {
-						pollEditor.initialize( id, settings );
-					}
-					clearInterval( intervalId );
-					$field.removeData( 'sowb-tinymce-visibility-poll' );
+				if ( ! $textarea.is( ':visible' ) ) {
+					return;
+				}
+
+				// The textarea is now visible. window.tinymce can load late (footer
+				// scripts), so re-evaluate library readiness at poll time rather than
+				// trusting the up-front reading. If it is ready, initialise; if it is
+				// still unavailable (this bug: richedit off suppresses it permanently),
+				// give up and clean up rather than spinning forever.
+				clearInterval( intervalId );
+				$field.removeData( 'sowb-tinymce-visibility-poll' );
+
+				const pollEditor = resolveWpEditor();
+				if ( pollEditor && hasTinyMCE && isTinyMCELibraryReady() ) {
+					pollEditor.initialize( id, settings );
+				} else {
+					finishWithoutEditor();
 				}
 			}, 500 );
 

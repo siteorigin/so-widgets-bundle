@@ -56,8 +56,8 @@
 			}
 
 			@media (max-width: @responsive_breakpoint) {
-				// If no responsive height is set, remove slider height
-				& when not ( isnumber( @slide_height_responsive ) ) {
+				// If neither a desktop nor a responsive height is set, remove slider height.
+				& when not ( isnumber( @slide_height_responsive ) ) and not ( isnumber( @slide_height ) ) {
 					height: auto;
 				}
 

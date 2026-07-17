@@ -512,7 +512,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			if ( ! empty( $instance['layout']['desktop'] ) ) {
 				$settings = $instance['layout']['desktop'];
 
-				$meas_options['slide_height'] = ! empty( $settings['height'] ) ? $settings['height'] : '';
+				$meas_options['slide_height'] = ( ! empty( $settings['height'] ) && (float) $settings['height'] != 0 ) ? $settings['height'] : '';
 				$meas_options['slide_padding'] = ! empty( $settings['padding'] ) ? $settings['padding'] : '';
 				$meas_options['slide_padding_extra_top'] = ! empty( $settings['padding_extra_top'] ) ? $settings['padding_extra_top'] : '';
 				$meas_options['slide_padding_sides'] = ! empty( $settings['padding_sides'] ) ? $settings['padding_sides'] : '';
@@ -521,7 +521,7 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 			if ( ! empty( $instance['layout']['mobile'] ) ) {
 				$settings = $instance['layout']['mobile'];
-				$meas_options['slide_height_responsive'] = ! empty( $settings['height_responsive'] ) ? $settings['height_responsive'] : '';
+				$meas_options['slide_height_responsive'] = ( ! empty( $settings['height_responsive'] ) && (float) $settings['height_responsive'] != 0 ) ? $settings['height_responsive'] : '';
 
 				if ( isset( $settings['padding'] ) ) {
 					$meas_options['slide_padding_responsive'] = ! empty( $settings['padding'] ) ? $settings['padding'] : '0px';
