@@ -9,6 +9,11 @@
  *
  *   - sowb/widget-get    (readonly) — lists a post's standalone widget blocks
  *                         with stable widget_index targeting.
+ *   - sowb/widget-update (write)    — replaces one widget block's instance,
+ *                         routed through the untrusted sanitize chokepoint
+ *                         (single update() pass + forced kses floor +
+ *                         widgetMarkup regeneration); ambiguity is declined,
+ *                         never guessed.
  *
  * Core ships ZERO AI vendor logic: no API keys, model calls, or prompts. An
  * ability here is capability registration against existing sanitized seams —
@@ -126,6 +131,59 @@ class SiteOrigin_Widgets_Bundle_Abilities {
 				),
 			)
 		);
+
+		wp_register_ability(
+			'sowb/widget-update',
+			array(
+				'label'               => __( 'Update a SiteOrigin widget block', 'so-widgets-bundle' ),
+				'description'         => __( "Replaces the instance data of ONE standalone SiteOrigin widget block, selected by widget_index (from widget-get). widget_data must be the COMPLETE replacement instance — it is sanitized through the widget's own sanitizer, unconditionally kses-floored regardless of the caller's capabilities, and the block's cached markup is regenerated from the floored result. When a post has multiple widget blocks, widget_index is required; if it is missing or out of range the call declines as 'widget-ambiguous' rather than guessing. This ability never deletes widgets and never changes a block's widget type.", 'so-widgets-bundle' ),
+				'category'            => 'so-widgets-bundle',
+				'input_schema'        => array(
+					'type'                 => 'object',
+					'properties'           => array(
+						'post_id'      => array(
+							'type'        => 'integer',
+							'description' => __( 'Post ID containing the widget block to update.', 'so-widgets-bundle' ),
+							'minimum'     => 1,
+						),
+						'widget_data'  => array(
+							'type'        => 'object',
+							'description' => __( 'The complete replacement widget instance, as read from widget-get.', 'so-widgets-bundle' ),
+						),
+						'widget_index' => array(
+							'type'        => 'integer',
+							'description' => __( 'The 0-based index (from widget-get) of the widget block to write. Optional for a single-widget post (defaults to 0); required when the post has multiple widget blocks.', 'so-widgets-bundle' ),
+							'minimum'     => 0,
+						),
+						'widget_class' => array(
+							'type'        => 'string',
+							'description' => __( 'Optional assertion: the widget class the caller believes it is updating. Declined on mismatch with the target block. Never used to change the block type.', 'so-widgets-bundle' ),
+						),
+					),
+					'required'             => array( 'post_id', 'widget_data' ),
+					'additionalProperties' => false,
+				),
+				'output_schema'       => array(
+					'type'       => 'object',
+					'properties' => array(
+						'post_id'      => array( 'type' => 'integer' ),
+						'updated'      => array( 'type' => 'boolean' ),
+						'widget_index' => array( 'type' => array( 'integer', 'null' ) ),
+						'status'       => array(
+							'type' => 'string',
+							'enum' => array( 'ok', 'widget-ambiguous', 'unsupported', 'not-found' ),
+						),
+						'message'      => array( 'type' => 'string' ),
+						'widget_data'  => array( 'type' => 'object' ),
+					),
+				),
+				'permission_callback' => array( $this, 'widget_update_permission' ),
+				'execute_callback'    => array( $this, 'widget_update' ),
+				'meta'                => array(
+					'show_in_rest' => true,
+				),
+			)
+		);
 	}
 
 	/**
@@ -175,6 +233,265 @@ class SiteOrigin_Widgets_Bundle_Abilities {
 		}
 
 		return SiteOrigin_Widgets_Bundle_AI_Exposure::single()->read_widgets( $post_id );
+	}
+
+	/**
+	 * Permission check for sowb/widget-update.
+	 *
+	 * @param array $input Ability input — expects post_id.
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function widget_update_permission( $input ) {
+		$post_id = isset( $input['post_id'] ) ? (int) $input['post_id'] : 0;
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return new WP_Error(
+				'sowb_cannot_update_widget',
+				__( 'Sorry, you are not allowed to update the widgets of this post.', 'so-widgets-bundle' )
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Execute sowb/widget-update.
+	 *
+	 * Replaces one widget block's instance. The write is surgical: only the
+	 * target block's attributes are mutated; sibling blocks flow through
+	 * serialize_blocks() untouched. The replacement instance is origin-
+	 * untrusted regardless of the credential carrying the request — it routes
+	 * through sanitize_widget_block_untrusted() (single update() pass, forced
+	 * kses floor, markup regeneration) before persisting. Never throws;
+	 * declines are structured status arrays, and a WP_Error is returned only
+	 * from the capability re-check.
+	 *
+	 * @param array $input Ability input — expects post_id, widget_data;
+	 *                     optional widget_index, widget_class.
+	 *
+	 * @return array|WP_Error
+	 */
+	public function widget_update( $input ) {
+		$post_id = isset( $input['post_id'] ) ? (int) $input['post_id'] : 0;
+		$widget_index = isset( $input['widget_index'] ) && is_numeric( $input['widget_index'] ) ?
+			(int) $input['widget_index'] :
+			null;
+
+		// Defense in depth for direct in-process callers.
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return new WP_Error(
+				'sowb_cannot_update_widget',
+				__( 'Sorry, you are not allowed to update the widgets of this post.', 'so-widgets-bundle' )
+			);
+		}
+
+		// Normalize and validate the replacement instance. Present-but-wrong
+		// type is declined rather than coerced to array() — silently
+		// collapsing would wipe the widget.
+		$widget_data = isset( $input['widget_data'] ) ? $input['widget_data'] : null;
+
+		// Full-depth: a nested stdClass inside an array-shaped instance must
+		// also be coerced, or it would sail past the array-recursing floor.
+		if ( is_object( $widget_data ) || is_array( $widget_data ) ) {
+			$widget_data = self::normalize_widget_data_deep( $widget_data );
+		}
+
+		if ( ! is_array( $widget_data ) ) {
+			return $this->update_result( $post_id, false, $widget_index, 'unsupported', __( 'The widget_data must be provided as a complete object.', 'so-widgets-bundle' ) );
+		}
+
+		if ( empty( $widget_data ) ) {
+			return $this->update_result( $post_id, false, $widget_index, 'unsupported', __( 'The widget_data must be the complete replacement instance; this ability does not delete widgets.', 'so-widgets-bundle' ) );
+		}
+
+		$post = get_post( $post_id );
+
+		if ( empty( $post ) ) {
+			return $this->update_result( $post_id, false, $widget_index, 'not-found', __( 'Post not found.', 'so-widgets-bundle' ) );
+		}
+
+		if ( wp_is_post_revision( $post ) ) {
+			return $this->update_result( $post_id, false, $widget_index, 'unsupported', __( 'Revisions cannot be targeted.', 'so-widgets-bundle' ) );
+		}
+
+		$exposure = SiteOrigin_Widgets_Bundle_AI_Exposure::single();
+
+		if ( empty( $post->post_content ) || ! has_blocks( $post->post_content ) ) {
+			return $this->update_result( $post_id, false, $widget_index, 'unsupported', __( "This post's content does not contain blocks.", 'so-widgets-bundle' ) );
+		}
+
+		$entries = $exposure->get_qualifying_widget_blocks( $post );
+
+		if ( empty( $entries ) ) {
+			$message = $exposure->post_has_unscanned_refs( $post ) ?
+				__( "No targetable SiteOrigin widget blocks in this post's content. It contains reusable-block references (core/block), which cannot be targeted; edit the reusable block itself.", 'so-widgets-bundle' ) :
+				__( 'No SiteOrigin widget blocks found in this post.', 'so-widgets-bundle' );
+
+			return $this->update_result( $post_id, false, $widget_index, 'unsupported', $message );
+		}
+
+		// Ambiguity rules — decline, never guess.
+		$count = count( $entries );
+
+		if ( $count === 1 ) {
+			if ( $widget_index !== null && $widget_index !== 0 ) {
+				return $this->update_result( $post_id, false, $widget_index, 'widget-ambiguous', __( 'This post has a single widget block; widget_index must be 0 or omitted.', 'so-widgets-bundle' ) );
+			}
+
+			$widget_index = 0;
+		} else {
+			if ( $widget_index === null || $widget_index < 0 || $widget_index >= $count ) {
+				return $this->update_result(
+					$post_id,
+					false,
+					$widget_index,
+					'widget-ambiguous',
+					sprintf(
+						__( 'This post has %1$d widget blocks; a valid widget_index is required. Valid indices: 0-%2$d.', 'so-widgets-bundle' ),
+						$count,
+						$count - 1
+					)
+				);
+			}
+		}
+
+		$entry = $entries[ $widget_index ];
+
+		// The widget class always comes from the TARGET block; the input
+		// widget_class is an optional assertion, never a selector.
+		$target_class = $entry['widget_class'];
+
+		if ( empty( $target_class ) ) {
+			return $this->update_result( $post_id, false, $widget_index, 'unsupported', __( "The target block's widget type could not be determined; the widget may not be installed.", 'so-widgets-bundle' ) );
+		}
+
+		if (
+			! empty( $input['widget_class'] ) &&
+			strcasecmp( (string) $input['widget_class'], $target_class ) !== 0
+		) {
+			return $this->update_result(
+				$post_id,
+				false,
+				$widget_index,
+				'unsupported',
+				sprintf(
+					__( 'widget_class does not match the target block (expected %s).', 'so-widgets-bundle' ),
+					$target_class
+				)
+			);
+		}
+
+		if ( ! class_exists( 'SiteOrigin_Widgets_Bundle_Widget_Block' ) ) {
+			return $this->update_result( $post_id, false, $widget_index, 'unsupported', __( 'The widget block subsystem is not loaded.', 'so-widgets-bundle' ) );
+		}
+
+		// Surgical write: descend the shared walk's path chain by reference so
+		// only the target block's attrs are mutated.
+		$blocks = parse_blocks( $post->post_content );
+		$target = &$blocks;
+
+		foreach ( $entry['path'] as $i => $key ) {
+			if ( $i === 0 ) {
+				$target = &$blocks[ $key ];
+			} else {
+				$target = &$target['innerBlocks'][ $key ];
+			}
+		}
+
+		if ( ! isset( $target['attrs'] ) || ! is_array( $target['attrs'] ) ) {
+			$target['attrs'] = array();
+		}
+
+		$target['attrs']['widgetClass'] = $target_class;
+		$target['attrs']['widgetData'] = $widget_data;
+
+		$sanitized = SiteOrigin_Widgets_Bundle_Widget_Block::single()->sanitize_widget_block_untrusted( $target['attrs'] );
+
+		if ( is_wp_error( $sanitized ) ) {
+			return $this->update_result( $post_id, false, $widget_index, 'unsupported', $sanitized->get_error_message() );
+		}
+
+		$target['attrs'] = $sanitized;
+		unset( $target );
+
+		// wp_update_post() runs wp_unslash() over its input; without wp_slash()
+		// every backslash serialize_blocks() emits in JSON-encoded attributes
+		// would be stripped, corrupting all block content.
+		$result = wp_update_post(
+			array(
+				'ID'           => $post->ID,
+				'post_content' => wp_slash( serialize_blocks( $blocks ) ),
+			),
+			true
+		);
+
+		if ( empty( $result ) || is_wp_error( $result ) ) {
+			return $this->update_result( $post_id, false, $widget_index, 'unsupported', __( 'The widget could not be saved.', 'so-widgets-bundle' ) );
+		}
+
+		return $this->update_result(
+			$post_id,
+			true,
+			$widget_index,
+			'ok',
+			'',
+			isset( $sanitized['widgetData'] ) && is_array( $sanitized['widgetData'] ) ? $sanitized['widgetData'] : array()
+		);
+	}
+
+	/**
+	 * Build the widget-update result payload (shared by success and declines).
+	 *
+	 * The persisted widget_data is returned on success so the caller learns
+	 * what sanitization changed (unknown keys stripped, HTML floored) without
+	 * a follow-up get.
+	 *
+	 * @param int      $post_id The target post ID.
+	 * @param bool     $updated Whether the write persisted.
+	 * @param int|null $widget_index The resolved target index, when known.
+	 * @param string   $status One of ok|widget-ambiguous|unsupported|not-found.
+	 * @param string   $message Human-readable decline reason; empty on success.
+	 * @param array    $widget_data The persisted post-sanitize instance.
+	 *
+	 * @return array
+	 */
+	private function update_result( $post_id, $updated, $widget_index, $status, $message, $widget_data = array() ) {
+		return array(
+			'post_id' => (int) $post_id,
+			'updated' => (bool) $updated,
+			'widget_index' => $widget_index,
+			'status' => $status,
+			'message' => $message,
+			'widget_data' => $widget_data,
+		);
+	}
+
+	/**
+	 * Full-depth object-to-array coercion for an inbound widget instance.
+	 *
+	 * A widget instance is one widget's tree of scalars and arrays, so
+	 * full-depth coercion cannot corrupt a legitimate structure — and it fully
+	 * closes the stdClass gap: kses_deep() recurses arrays only, so an
+	 * object-shaped subtree would otherwise sail past the floor unfloored.
+	 * Direct casts, no JSON round-trip (encoding-lossless).
+	 *
+	 * @param mixed $value The inbound value.
+	 *
+	 * @return mixed
+	 */
+	public static function normalize_widget_data_deep( $value ) {
+		if ( is_object( $value ) ) {
+			$value = get_object_vars( $value );
+		}
+
+		if ( is_array( $value ) ) {
+			foreach ( $value as $key => $item ) {
+				$value[ $key ] = self::normalize_widget_data_deep( $item );
+			}
+		}
+
+		return $value;
 	}
 }
 
