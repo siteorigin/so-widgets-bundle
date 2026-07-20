@@ -11,7 +11,8 @@
 	},
 	"scripts": {
 		"test": [
-			"phpunit"
+			"phpunit",
+			"phpunit -c phpunit-widget.xml"
 		]
 	}
 }
