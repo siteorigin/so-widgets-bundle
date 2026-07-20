@@ -123,6 +123,15 @@ class Abilities_IdentityWidgetStub extends \SiteOrigin_Widget {
 	public function widget( $args, $instance ) {
 		echo '<div class="sow-rendered">' . ( isset( $instance['content'] ) ? $instance['content'] : '' ) . '</div>';
 	}
+
+	public function form_options( $parent = false ) {
+		return array(
+			'content' => array(
+				'type' => 'tinymce',
+				'label' => 'Content',
+			),
+		);
+	}
 }
 
 /**
@@ -257,6 +266,10 @@ class AbilitiesTest extends TestCase {
 			require_once dirname( dirname( __DIR__ ) ) . '/compat/block-editor/ai-exposure.php';
 		}
 
+		if ( ! class_exists( 'SiteOrigin_Widgets_Bundle_Widget_Describer', false ) ) {
+			require_once dirname( dirname( __DIR__ ) ) . '/compat/block-editor/widget-describer.php';
+		}
+
 		if ( ! class_exists( 'SiteOrigin_Widgets_Bundle_Abilities', false ) ) {
 			require_once dirname( dirname( __DIR__ ) ) . '/compat/block-editor/abilities.php';
 		}
@@ -320,9 +333,18 @@ class AbilitiesTest extends TestCase {
 		$this->register_abilities();
 
 		$this->assertSame(
-			array( 'sowb/widget-get', 'sowb/widget-update' ),
+			array( 'sowb/widget-get', 'sowb/widget-update', 'sowb/widget-describe' ),
 			array_keys( $GLOBALS['abilities_registered'] )
 		);
+	}
+
+	public function test_widget_describe_registration_readonly() {
+		$this->register_abilities();
+
+		$describe = $GLOBALS['abilities_registered']['sowb/widget-describe'];
+		$this->assertTrue( $describe['meta']['readonly'] );
+		$this->assertSame( 'so-widgets-bundle', $describe['category'] );
+		$this->assertSame( array( 'widget' ), $describe['input_schema']['required'] );
 	}
 
 	public function test_widget_get_registration_meta_and_category() {
@@ -660,6 +682,42 @@ class AbilitiesTest extends TestCase {
 			array( $this->sowb_block( 'Abilities_Test_Widget', array( 'content' => $tricky ), array( 'widgetMarkup' => '<div class="sow-rendered">' . $tricky . '</div>', 'widgetIcons' => array() ) ) )
 		);
 		$this->assertSame( $expected, $this->updated_post['post_content'] );
+	}
+
+	// ---- widget-describe ----
+
+	public function test_describe_permission_denied_without_edit_posts() {
+		Functions\when( 'current_user_can' )->justReturn( false );
+
+		$abilities = $this->abilities();
+
+		$this->assertInstanceOf( \WP_Error::class, $abilities->widget_describe_permission( array( 'widget' => 'X' ) ) );
+		$this->assertInstanceOf( \WP_Error::class, $abilities->widget_describe( array( 'widget' => 'X' ) ) );
+	}
+
+	public function test_describe_unresolvable_widget_is_not_found() {
+		$result = $this->abilities()->widget_describe( array( 'widget' => 'Nonexistent_Widget_Class' ) );
+
+		$this->assertInstanceOf( \WP_Error::class, $result );
+		$this->assertSame( 'sowb_widget_not_found', $result->get_error_code() );
+	}
+
+	public function test_describe_resolves_class_and_block_name_input() {
+		$this->register_identity_widget();
+
+		// describe() reports the resolved instance's real class; in tests the
+		// factory key maps to the stub's FQCN.
+		$stub_class = Abilities_IdentityWidgetStub::class;
+
+		$by_class = $this->abilities()->widget_describe( array( 'widget' => 'Abilities_Test_Widget' ) );
+		$this->assertIsArray( $by_class );
+		$this->assertSame( $stub_class, $by_class['widget_class'] );
+		$this->assertSame( 'string', $by_class['schema']['properties']['content']['type'] );
+		$this->assertTrue( $by_class['schema']['properties']['content']['x-sowb-text'] );
+
+		$by_block = $this->abilities()->widget_describe( array( 'widget' => 'sowb/abilities-test-widget' ) );
+		$this->assertIsArray( $by_block );
+		$this->assertSame( $stub_class, $by_block['widget_class'] );
 	}
 
 	public function test_update_reports_failure_when_post_update_fails() {

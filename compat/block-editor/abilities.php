@@ -14,6 +14,9 @@
  *                         (single update() pass + forced kses floor +
  *                         widgetMarkup regeneration); ambiguity is declined,
  *                         never guessed.
+ *   - sowb/widget-describe (readonly) — translates a widget's form_options()
+ *                         into a JSON-schema description of its editable
+ *                         instance fields.
  *
  * Core ships ZERO AI vendor logic: no API keys, model calls, or prompts. An
  * ability here is capability registration against existing sanitized seams —
@@ -180,6 +183,42 @@ class SiteOrigin_Widgets_Bundle_Abilities {
 				'permission_callback' => array( $this, 'widget_update_permission' ),
 				'execute_callback'    => array( $this, 'widget_update' ),
 				'meta'                => array(
+					'show_in_rest' => true,
+				),
+			)
+		);
+
+		wp_register_ability(
+			'sowb/widget-describe',
+			array(
+				'label'               => __( 'Describe a SiteOrigin widget', 'so-widgets-bundle' ),
+				'description'         => __( "Describes a SiteOrigin widget's editable instance fields as a JSON schema, so a caller can construct a valid widget_data payload for widget-update. Accepts a widget PHP class name or a sowb/ block name. Fields marked x-sowb-text (text, textarea, tinymce) are the intended targets for content rewriting. State-dependent option lists (posts, taxonomies) are not enumerated.", 'so-widgets-bundle' ),
+				'category'            => 'so-widgets-bundle',
+				'input_schema'        => array(
+					'type'                 => 'object',
+					'properties'           => array(
+						'widget' => array(
+							'type'        => 'string',
+							'description' => __( 'Widget PHP class name (e.g. SiteOrigin_Widget_Testimonial_Widget) or block name (e.g. sowb/siteorigin-widget-testimonial-widget).', 'so-widgets-bundle' ),
+						),
+					),
+					'required'             => array( 'widget' ),
+					'additionalProperties' => false,
+				),
+				'output_schema'       => array(
+					'type'       => 'object',
+					'properties' => array(
+						'widget_class' => array( 'type' => 'string' ),
+						'block_name'   => array( 'type' => 'string' ),
+						'name'         => array( 'type' => 'string' ),
+						'description'  => array( 'type' => 'string' ),
+						'schema'       => array( 'type' => 'object' ),
+					),
+				),
+				'permission_callback' => array( $this, 'widget_describe_permission' ),
+				'execute_callback'    => array( $this, 'widget_describe' ),
+				'meta'                => array(
+					'readonly'     => true,
 					'show_in_rest' => true,
 				),
 			)
@@ -438,6 +477,50 @@ class SiteOrigin_Widgets_Bundle_Abilities {
 			'',
 			isset( $sanitized['widgetData'] ) && is_array( $sanitized['widgetData'] ) ? $sanitized['widgetData'] : array()
 		);
+	}
+
+	/**
+	 * Permission check for sowb/widget-describe.
+	 *
+	 * Post-agnostic: describe reads code-defined widget schemas, not post
+	 * content, so a general editing capability suffices — a deliberate
+	 * difference from get/update's per-post `edit_post` checks.
+	 *
+	 * @param array $input Ability input.
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function widget_describe_permission( $input ) {
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return new WP_Error(
+				'sowb_cannot_describe_widgets',
+				__( 'Sorry, you are not allowed to describe widgets.', 'so-widgets-bundle' )
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Execute sowb/widget-describe. Never throws.
+	 *
+	 * @param array $input Ability input — expects widget (class or block name).
+	 *
+	 * @return array|WP_Error Describe payload, or WP_Error
+	 *                        'sowb_widget_not_found' / 'sowb_cannot_describe_widgets'.
+	 */
+	public function widget_describe( $input ) {
+		// Defense in depth for direct in-process callers.
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return new WP_Error(
+				'sowb_cannot_describe_widgets',
+				__( 'Sorry, you are not allowed to describe widgets.', 'so-widgets-bundle' )
+			);
+		}
+
+		$widget = isset( $input['widget'] ) ? (string) $input['widget'] : '';
+
+		return SiteOrigin_Widgets_Bundle_Widget_Describer::single()->describe( $widget );
 	}
 
 	/**
