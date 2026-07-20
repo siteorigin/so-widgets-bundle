@@ -23,6 +23,7 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 		// Abilities registry.
 		if ( function_exists( 'register_block_type' ) ) {
 			require_once plugin_dir_path( __FILE__ ) . 'block-editor/ai-exposure.php';
+			require_once plugin_dir_path( __FILE__ ) . 'block-editor/abilities.php';
 		}
 	}
 
