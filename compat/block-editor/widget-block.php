@@ -7,6 +7,18 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	private $so_widgets = array();
 
 	/**
+	 * When true, `get_widget_preview()` applies an unconditional `wp_kses_post()`
+	 * floor to the post-update() instance — regardless of the current user's
+	 * `unfiltered_html` capability — and returns that floored instance as
+	 * `widgetData` instead of the raw input. Set only by
+	 * `sanitize_widget_block_untrusted()` for origin-untrusted (AI) writes.
+	 *
+	 * Deliberately private with no filter: third-party code must not be able to
+	 * toggle a security floor.
+	 */
+	private $force_kses_floor = false;
+
+	/**
 	 * Get the singleton instance
 	 *
 	 * @return SiteOrigin_Widgets_Bundle_Widget_Block
@@ -847,6 +859,13 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			}
 			/* @var $widget SiteOrigin_Widget */
 			$instance = $widget->update( $widget_data, $widget_data );
+
+			// Origin-untrusted writes are floored BEFORE rendering so the
+			// regenerated widgetMarkup cache is built from floored data.
+			if ( $this->force_kses_floor ) {
+				$instance = self::kses_deep( $instance );
+			}
+
 			$widget->widget( array(), $instance );
 			$rendered_widget = array();
 			$rendered_widget['html'] = ob_get_clean();
@@ -902,11 +921,122 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		return array(
 			'widgetClass' => $widget_class,
-			'widgetData' => $widget_data,
+			// Untrusted writes persist the post-update(), floored instance;
+			// the normal path keeps its existing pre-update behavior.
+			'widgetData' => $this->force_kses_floor ? $instance : $widget_data,
 			'widgetMarkup' => $rendered_widget['widgetMarkup'],
 			'html' => $rendered_widget['html'],
-			'widgetIcons' => isset( $rendered_widget['css'] ) ? $rendered_widget['widgetIcons'] : array(),
+			'widgetIcons' => isset( $rendered_widget['widgetIcons'] ) ? $rendered_widget['widgetIcons'] : array(),
 		);
+	}
+
+	/**
+	 * Recursively apply `wp_kses_post()` to every string leaf of a value.
+	 *
+	 * Non-string scalars pass through untouched; arrays are recursed. Needs no
+	 * hydrated widget registry, so it is a safe universal floor for
+	 * origin-untrusted content.
+	 *
+	 * @param mixed $value The value to floor.
+	 *
+	 * @return mixed The floored value.
+	 */
+	public static function kses_deep( $value ) {
+		if ( is_string( $value ) ) {
+			return wp_kses_post( $value );
+		}
+
+		if ( is_array( $value ) ) {
+			foreach ( $value as $key => $item ) {
+				$value[ $key ] = self::kses_deep( $item );
+			}
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Sanitize an origin-untrusted (AI-supplied) widget block's attributes.
+	 *
+	 * Runs the widget's update() exactly once, applies an unconditional
+	 * `wp_kses_post()` floor to the post-update instance — regardless of the
+	 * current credential's `unfiltered_html` capability — and regenerates the
+	 * `widgetMarkup`/`widgetIcons` caches FROM the floored instance. The
+	 * regenerated markup is the block's trust artifact (widget blocks carry no
+	 * HMAC signature; regeneration-at-save plays that role).
+	 *
+	 * Unlike `sanitize_block()`, the returned attributes preserve `anchor`,
+	 * `className` and any other original attributes, and persist the
+	 * post-update instance rather than the raw input.
+	 *
+	 * @param array $attrs Block attrs with widgetClass and the replacement widgetData set.
+	 *
+	 * @return array|WP_Error The new attrs array, or a WP_Error on failure.
+	 */
+	public function sanitize_widget_block_untrusted( $attrs ) {
+		$previous = $this->force_kses_floor;
+		$ob_level = ob_get_level();
+		$this->force_kses_floor = true;
+
+		try {
+			$preview = $this->get_widget_preview( $attrs, false );
+		} finally {
+			// Restore the prior value (not hard false) so re-entrant calls
+			// keep their own floor state.
+			$this->force_kses_floor = $previous;
+
+			// get_widget_preview() opens an output buffer around the widget
+			// render; if update()/widget() throws, that buffer leaks. Close
+			// any buffers this call opened.
+			while ( ob_get_level() > $ob_level ) {
+				ob_end_clean();
+			}
+		}
+
+		if ( is_wp_error( $preview ) ) {
+			return $preview;
+		}
+
+		if ( empty( $preview ) ) {
+			return new WP_Error(
+				'sowb_invalid_widget_data',
+				__( 'Invalid Widgets Bundle data', 'so-widgets-bundle' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		return array_merge(
+			$attrs,
+			array(
+				'widgetClass' => $preview['widgetClass'],
+				'widgetData' => $preview['widgetData'],
+				'widgetMarkup' => $preview['widgetMarkup'],
+				'widgetIcons' => $preview['widgetIcons'],
+			)
+		);
+	}
+
+	/**
+	 * Resolve the widget class for a block from its attributes, falling back
+	 * to deriving it from the block name.
+	 *
+	 * @param array  $attrs The block attributes.
+	 * @param string $block_name The block name (e.g. `sowb/siteorigin-widget-hero-widget`).
+	 *
+	 * @return string|null The widget class, or null when unresolvable.
+	 */
+	public function resolve_widget_class( $attrs, $block_name ) {
+		if ( ! empty( $attrs['widgetClass'] ) ) {
+			return $attrs['widgetClass'];
+		}
+
+		if ( empty( $block_name ) ) {
+			return null;
+		}
+
+		$found = $this->find_widget_class_by_block_name( $block_name );
+
+		return empty( $found ) ? null : $found;
 	}
 
 	public function block_migration_consent() {
