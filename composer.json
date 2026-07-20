@@ -1,0 +1,17 @@
+{
+	"description": "Dev-only test harness. phpunit ^12.2 requires PHP 8.3+; production code must remain compatible with the readme.txt PHP floor.",
+	"autoload-dev": {
+		"psr-4": {
+			"SiteOrigin\\Tests\\": "tests/phpunit/"
+		}
+	},
+	"require-dev": {
+		"brain/monkey": "~2.6.2",
+		"phpunit/phpunit": "^12.2"
+	},
+	"scripts": {
+		"test": [
+			"phpunit"
+		]
+	}
+}

@@ -17,6 +17,12 @@ tmp
 
 .cursorrules
 .claude/
+
+# Composer (dev-only test harness).
+/vendor/
+
+# Pipeline plan workspace — never committed.
+docs/plans/
 # Playwright.
 tests/cache
 tests/results
