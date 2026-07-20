@@ -14,6 +14,16 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 
 	public function __construct() {
 		add_action( 'init' , array( $this, 'init' ) );
+
+		// AI exposure (shared widget-block reader + REST route) and the
+		// Abilities API registrations load at plugin-file include time — NOT
+		// inside the init-hooked init() method — so the
+		// `wp_abilities_api_categories_init` / `wp_abilities_api_init` hooks
+		// exist before any consumer can trigger the lazily-initialized
+		// Abilities registry.
+		if ( function_exists( 'register_block_type' ) ) {
+			require_once plugin_dir_path( __FILE__ ) . 'block-editor/ai-exposure.php';
+		}
 	}
 
 	public function init() {
