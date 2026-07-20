@@ -30,9 +30,7 @@ if ( ! class_exists( 'WP_Error', false ) ) {
 }
 
 if ( ! function_exists( 'is_wp_error' ) ) {
-	function is_wp_error( $thing ) {
-		return $thing instanceof \WP_Error;
-	}
+	eval( 'function is_wp_error( $thing ) { return $thing instanceof \WP_Error; }' );
 }
 
 if ( ! class_exists( 'SiteOrigin_Widget', false ) ) {
