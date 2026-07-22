@@ -426,14 +426,26 @@ class SiteOrigin_Widgets_Bundle_Abilities {
 		}
 
 		// Surgical write: descend the shared walk's path chain by reference so
-		// only the target block's attrs are mutated.
+		// only the target block's attrs are mutated. The path was produced by
+		// get_qualifying_widget_blocks() over THIS SAME parse of $post above,
+		// so it is always in range; the isset guards below are defensive belt
+		// against any future divergence between the walk and this descent, and
+		// decline rather than emit an undefined-index notice.
 		$blocks = parse_blocks( $post->post_content );
 		$target = &$blocks;
 
 		foreach ( $entry['path'] as $i => $key ) {
 			if ( $i === 0 ) {
+				if ( ! isset( $blocks[ $key ] ) ) {
+					return $this->update_result( $post_id, false, $widget_index, 'unsupported', __( 'The target widget block could not be located.', 'so-widgets-bundle' ) );
+				}
+
 				$target = &$blocks[ $key ];
 			} else {
+				if ( ! isset( $target['innerBlocks'][ $key ] ) ) {
+					return $this->update_result( $post_id, false, $widget_index, 'unsupported', __( 'The target widget block could not be located.', 'so-widgets-bundle' ) );
+				}
+
 				$target = &$target['innerBlocks'][ $key ];
 			}
 		}
