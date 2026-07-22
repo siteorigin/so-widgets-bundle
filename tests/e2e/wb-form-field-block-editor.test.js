@@ -1028,6 +1028,78 @@ test.describe( 'TinyMCE serializer init guard', () => {
 		}
 	} );
 
+	test( 'flusher keeps the textarea intact when editor init is incomplete', async ( { page } ) => {
+		const blockName = 'sowb/siteorigin-widget-editor-widget';
+		const marker = `WB flusher guard ${ Date.now() }`;
+		const { admin, post, requestUtils } = await setupPublishedPostEditor( page, 'WB flusher guard' );
+		try {
+			const widget = await addBlock( admin, blockName, 120 );
+			const tinymceField = await getField( widget, 'tinymce', true );
+			const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+			await visualBody.click();
+			await visualBody.pressSequentially( marker );
+			await expect( visualBody ).toContainText( marker );
+
+			// Sync editor -> textarea, force the crash state, then run the
+			// snapshot/flush path (the pre-save bridge's route) and assert the
+			// flusher did NOT overwrite the textarea with the crashed editor's
+			// empty content.
+			let result;
+			try {
+				result = await page.evaluate( () => {
+					const canvas = document.querySelector( 'iframe[name="editor-canvas"]' );
+					const doc = canvas && canvas.contentDocument ? canvas.contentDocument : document;
+					const blockEl = doc.querySelector( '.wp-block[data-type="sowb/siteorigin-widget-editor-widget"]' );
+					const scope = blockEl || doc;
+					const ta = scope.querySelector( 'textarea.wp-editor-area[id^="widget-sow-editor"]' );
+					if ( ! ta ) {
+						return { ok: false, reason: 'lookup returned no textarea in the widget block scope' };
+					}
+					const win = ta.ownerDocument.defaultView;
+					const tmce = win.tinymce || window.tinymce;
+					const editor = tmce ? tmce.get( ta.id ) : null;
+					if ( ! editor ) {
+						return { ok: false, reason: 'lookup returned undefined editor for id ' + ta.id };
+					}
+					editor.save();
+					const taBefore = ta.value;
+					try {
+						editor.initialized = false;
+						editor.getContent = function () {
+							return '';
+						};
+					} catch ( e ) {
+						return { ok: false, reason: 'assignment threw: ' + e.message };
+					}
+					const form = scope.querySelector( '.siteorigin-widget-form.siteorigin-widget-form-main' );
+					const sowbFormsRef = win.sowbForms || window.sowbForms;
+					if ( ! form || ! sowbFormsRef || typeof sowbFormsRef.getWidgetFormSnapshot !== 'function' ) {
+						return { ok: false, reason: 'form or sowbForms.getWidgetFormSnapshot unavailable' };
+					}
+					return sowbFormsRef.getWidgetFormSnapshot( form ).then( function ( snapshot ) {
+						return { ok: true, taBefore: taBefore, taAfter: ta.value, snapshotText: snapshot ? snapshot.text : null };
+					} );
+				} );
+			} catch ( e ) {
+				result = { ok: false, reason: 'evaluate threw: ' + e.message };
+			}
+			test.skip( ! result.ok, 'reason: ' + ( result.reason || '' ) );
+			expect( result.taBefore ).toContain( marker );
+			// The flusher must not have wiped the textarea...
+			expect( result.taAfter ).toContain( marker );
+			// ...and the snapshot must carry the preserved content.
+			expect( result.snapshotText ).toContain( marker );
+		} finally {
+			await requestUtils.rest( {
+				method: 'DELETE',
+				path: `/wp/v2/posts/${ post.id }`,
+				params: {
+					force: true,
+				},
+			} ).catch( () => {} );
+		}
+	} );
+
 	test( 'serializer captures live unsaved visual-mode typing from a healthy editor', async ( { page } ) => {
 		const blockName = 'sowb/siteorigin-widget-editor-widget';
 		const marker = `WB live typing ${ Date.now() }`;
