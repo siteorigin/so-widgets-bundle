@@ -980,6 +980,20 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		try {
 			$preview = $this->get_widget_preview( $attrs, false );
+		} catch ( Throwable $e ) {
+			// A widget's update()/render chain can throw on incomplete
+			// instances (e.g. a DivisionByZeroError in LESS variable
+			// generation when a partial payload omits a value a widget
+			// assumes). An origin-untrusted caller must get a structured
+			// decline, never a fatal.
+			return new WP_Error(
+				'sowb_widget_sanitize_failed',
+				sprintf(
+					__( 'The widget could not process the supplied data: %s', 'so-widgets-bundle' ),
+					$e->getMessage()
+				),
+				array( 'status' => 400 )
+			);
 		} finally {
 			// Restore the prior value (not hard false) so re-entrant calls
 			// keep their own floor state.

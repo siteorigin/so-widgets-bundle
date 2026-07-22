@@ -336,19 +336,19 @@ class WidgetBlockChokepointTest extends TestCase {
 		$this->assertFalse( $this->flag_value( $block ) );
 	}
 
-	public function test_flag_restored_when_update_throws() {
+	public function test_update_throw_becomes_wp_error_and_flag_restored() {
+		// A widget whose update()/render chain throws (e.g. a
+		// DivisionByZeroError in LESS variable generation on a partial
+		// instance) must be caught and returned as a structured WP_Error, not
+		// allowed to fatal the request. The flag is still restored.
 		$widget = new Chokepoint_ThrowingWidgetStub();
 		$this->register_widget( 'Chokepoint_Test_Widget', $widget );
 
 		$block = $this->widget_block();
+		$result = $block->sanitize_widget_block_untrusted( $this->attrs() );
 
-		try {
-			$block->sanitize_widget_block_untrusted( $this->attrs() );
-			$this->fail( 'Expected the widget update exception to propagate.' );
-		} catch ( \RuntimeException $e ) {
-			// Expected.
-		}
-
+		$this->assertInstanceOf( \WP_Error::class, $result );
+		$this->assertSame( 'sowb_widget_sanitize_failed', $result->get_error_code() );
 		$this->assertFalse( $this->flag_value( $block ) );
 	}
 
