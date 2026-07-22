@@ -1858,7 +1858,17 @@ var sowbForms = window.sowbForms || {};
 						editor = fieldTinyMCE.get( $$.attr( 'id' ) );
 					}
 
-					if ( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
+					if (
+						editor !== null &&
+						typeof( editor.getContent ) === "function" &&
+						!editor.isHidden() &&
+						// Never trust an editor whose initialization did not
+						// complete (e.g. a TinyMCE plugin threw during init):
+						// its getContent() returns '' while the textarea still
+						// holds the saved content. TinyMCE sets `initialized`
+						// only after the init event fires.
+						editor.initialized
+					) {
 						fieldValue = sowbForms.sanitizeTinyMCEContent( editor.getContent() );
 					}
 					else {
