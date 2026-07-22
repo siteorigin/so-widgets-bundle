@@ -944,3 +944,120 @@ test(
 		}
 	}
 );
+
+test.describe( 'TinyMCE serializer init guard', () => {
+	test( 'serializer keeps tinymce content when editor init is incomplete', async ( { page } ) => {
+		const blockName = 'sowb/siteorigin-widget-editor-widget';
+		const marker = `WB serializer guard ${ Date.now() }`;
+		const { admin, post, requestUtils } = await setupPublishedPostEditor( page, 'WB serializer guard' );
+		try {
+			const widget = await addBlock( admin, blockName, 120 );
+			expect( await findDirectBlockState( page, blockName ) ).not.toBeNull();
+
+			const tinymceField = await getField( widget, 'tinymce', true );
+			const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+			await visualBody.click();
+			await visualBody.pressSequentially( marker );
+			await expect( visualBody ).toContainText( marker );
+
+			// Sync editor -> textarea, then force the crash state (visible
+			// instance, empty content, init incomplete) exactly as the
+			// serializer sees it.
+			let mutation;
+			try {
+				mutation = await page.evaluate( () => {
+					const canvas = document.querySelector( 'iframe[name="editor-canvas"]' );
+					const doc = canvas && canvas.contentDocument ? canvas.contentDocument : document;
+					// Scope to the widget block's own form, not the whole
+					// document — metabox forms (e.g. Page Builder's) can also
+					// contain wp-editor-area textareas.
+					const blockEl = doc.querySelector( '.wp-block[data-type="sowb/siteorigin-widget-editor-widget"]' );
+					const scope = blockEl || doc;
+					const ta = scope.querySelector( 'textarea.wp-editor-area[id^="widget-sow-editor"]' );
+					if ( ! ta ) {
+						return { ok: false, reason: 'lookup returned no textarea in the widget block scope' };
+					}
+					const win = ta.ownerDocument.defaultView;
+					const tmce = win.tinymce || window.tinymce;
+					const editor = tmce ? tmce.get( ta.id ) : null;
+					if ( ! editor ) {
+						return { ok: false, reason: 'lookup returned undefined editor for id ' + ta.id };
+					}
+					editor.save(); // Persist typed content into the textarea (the saved-truth source).
+					try {
+						editor.initialized = false;
+						editor.getContent = function () {
+							return '';
+						};
+					} catch ( e ) {
+						return { ok: false, reason: 'assignment threw: ' + e.message };
+					}
+					const refetch = tmce.get( ta.id );
+					if ( refetch !== editor || refetch.getContent() !== '' || refetch.initialized !== false ) {
+						return { ok: false, reason: 're-fetch shadow not visible: getContent()=' + refetch.getContent() + ' initialized=' + refetch.initialized };
+					}
+					return { ok: true, taValue: ta.value };
+				} );
+			} catch ( e ) {
+				mutation = { ok: false, reason: 'evaluate threw: ' + e.message };
+			}
+			// Conditional skip (documented stable API in the installed
+			// @playwright/test 1.55.1): aborts the test as SKIPPED before any
+			// expect() so a failed mutation never surfaces as an assertion
+			// failure.
+			test.skip( ! mutation.ok, 'reason: ' + ( mutation.reason || '' ) );
+			expect( mutation.taValue ).toContain( marker );
+
+			// Any other field's change event triggers full form serialization.
+			const form = widget.locator( '.siteorigin-widget-form.siteorigin-widget-form-main' );
+			const titleInput = form.locator( 'input[name$="[title]"]' ).first();
+			test.skip( ( await titleInput.count() ) === 0, 'reason: no [title] input in the Editor widget form' );
+			await titleInput.fill( 'changed title' );
+			await titleInput.dispatchEvent( 'change' );
+
+			const postChange = await findDirectBlockState( page, blockName );
+			expect( postChange.attributes.widgetData.text ).toContain( marker );
+		} finally {
+			await requestUtils.rest( {
+				method: 'DELETE',
+				path: `/wp/v2/posts/${ post.id }`,
+				params: {
+					force: true,
+				},
+			} ).catch( () => {} );
+		}
+	} );
+
+	test( 'serializer captures live unsaved visual-mode typing from a healthy editor', async ( { page } ) => {
+		const blockName = 'sowb/siteorigin-widget-editor-widget';
+		const marker = `WB live typing ${ Date.now() }`;
+		const { admin, post, requestUtils } = await setupPublishedPostEditor( page, 'WB live typing' );
+		try {
+			const widget = await addBlock( admin, blockName, 120 );
+			const tinymceField = await getField( widget, 'tinymce', true );
+			const visualBody = tinymceField.frameLocator( 'iframe' ).locator( 'body' );
+			await visualBody.click();
+			await visualBody.pressSequentially( marker );
+			await expect( visualBody ).toContainText( marker );
+
+			// NO editor.save() here: the textarea is deliberately stale. The
+			// editor-first read must still capture the live typed content.
+			const form = widget.locator( '.siteorigin-widget-form.siteorigin-widget-form-main' );
+			const titleInput = form.locator( 'input[name$="[title]"]' ).first();
+			test.skip( ( await titleInput.count() ) === 0, 'reason: no [title] input in the Editor widget form' );
+			await titleInput.fill( 'changed title' );
+			await titleInput.dispatchEvent( 'change' );
+
+			const postChange = await findDirectBlockState( page, blockName );
+			expect( postChange.attributes.widgetData.text ).toContain( marker );
+		} finally {
+			await requestUtils.rest( {
+				method: 'DELETE',
+				path: `/wp/v2/posts/${ post.id }`,
+				params: {
+					force: true,
+				},
+			} ).catch( () => {} );
+		}
+	} );
+} );
