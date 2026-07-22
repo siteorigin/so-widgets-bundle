@@ -1780,7 +1780,16 @@ var sowbForms = window.sowbForms || {};
 						(
 							typeof editor.isHidden !== 'function' ||
 							! editor.isHidden()
-						)
+						) &&
+						// Never flush an editor whose initialization did not
+						// complete: the field's init promise (see
+						// tinymce-field.js) resolves after a timeout even when
+						// TinyMCE's init event never fired (e.g. a TinyMCE
+						// plugin threw during init), and getContent() on such
+						// an instance returns '' while the textarea still
+						// holds the saved content — writing that back would
+						// destroy the saved-truth source.
+						editor.initialized
 					) {
 						$textarea.val( sowbForms.sanitizeTinyMCEContent( editor.getContent() ) );
 					} else {
@@ -1858,7 +1867,17 @@ var sowbForms = window.sowbForms || {};
 						editor = fieldTinyMCE.get( $$.attr( 'id' ) );
 					}
 
-					if ( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
+					if (
+						editor !== null &&
+						typeof( editor.getContent ) === "function" &&
+						!editor.isHidden() &&
+						// Never trust an editor whose initialization did not
+						// complete (e.g. a TinyMCE plugin threw during init):
+						// its getContent() returns '' while the textarea still
+						// holds the saved content. TinyMCE sets `initialized`
+						// only after the init event fires.
+						editor.initialized
+					) {
 						fieldValue = sowbForms.sanitizeTinyMCEContent( editor.getContent() );
 					}
 					else {
