@@ -167,7 +167,7 @@ const getIframeWidgetFormValues = async ( page, clientId ) => {
 
 		const $form = frameJQuery( frameDocument )
 			.find( `[data-block="${ blockClientId }"]` )
-			.find( '.siteorigin-widget-form.siteorigin-widget-form-main' );
+			.find( '.siteorigin-widget-form.siteorigin-widget-form-main[data-class]' );
 
 		return {
 			formCount: $form.length,
@@ -183,7 +183,7 @@ const setIframeImageFieldValue = async ( page, clientId, attachmentId ) => {
 			const frameWindow = iframe && iframe.contentWindow ? iframe.contentWindow : window;
 			const frameDocument = frameWindow.document;
 			const form = frameDocument
-				.querySelector( `[data-block="${ blockClientId }"] .siteorigin-widget-form.siteorigin-widget-form-main` );
+				.querySelector( `[data-block="${ blockClientId }"] .siteorigin-widget-form.siteorigin-widget-form-main[data-class]` );
 
 			if ( ! form ) {
 				return null;
@@ -243,7 +243,7 @@ const reopenSavedWidgetForm = async ( page, admin, blockName ) => {
 	await admin.editor.selectBlocks( widget );
 	await widget.click();
 
-	const form = widget.locator( '.siteorigin-widget-form.siteorigin-widget-form-main' );
+	const form = widget.locator( '.siteorigin-widget-form.siteorigin-widget-form-main[data-class]' );
 	if ( await form.isVisible().catch( () => false ) ) {
 		return widget;
 	}
@@ -1009,7 +1009,7 @@ test.describe( 'TinyMCE serializer init guard', () => {
 			expect( mutation.taValue ).toContain( marker );
 
 			// Any other field's change event triggers full form serialization.
-			const form = widget.locator( '.siteorigin-widget-form.siteorigin-widget-form-main' );
+			const form = widget.locator( '.siteorigin-widget-form.siteorigin-widget-form-main[data-class]' );
 			const titleInput = form.locator( 'input[name$="[title]"]' ).first();
 			test.skip( ( await titleInput.count() ) === 0, 'reason: no [title] input in the Editor widget form' );
 			await titleInput.fill( 'changed title' );
@@ -1071,7 +1071,7 @@ test.describe( 'TinyMCE serializer init guard', () => {
 					} catch ( e ) {
 						return { ok: false, reason: 'assignment threw: ' + e.message };
 					}
-					const form = scope.querySelector( '.siteorigin-widget-form.siteorigin-widget-form-main' );
+					const form = scope.querySelector( '.siteorigin-widget-form.siteorigin-widget-form-main[data-class]' );
 					const sowbFormsRef = win.sowbForms || window.sowbForms;
 					if ( ! form || ! sowbFormsRef || typeof sowbFormsRef.getWidgetFormSnapshot !== 'function' ) {
 						return { ok: false, reason: 'form or sowbForms.getWidgetFormSnapshot unavailable' };
@@ -1114,7 +1114,7 @@ test.describe( 'TinyMCE serializer init guard', () => {
 
 			// NO editor.save() here: the textarea is deliberately stale. The
 			// editor-first read must still capture the live typed content.
-			const form = widget.locator( '.siteorigin-widget-form.siteorigin-widget-form-main' );
+			const form = widget.locator( '.siteorigin-widget-form.siteorigin-widget-form-main[data-class]' );
 			const titleInput = form.locator( 'input[name$="[title]"]' ).first();
 			test.skip( ( await titleInput.count() ) === 0, 'reason: no [title] input in the Editor widget form' );
 			await titleInput.fill( 'changed title' );
