@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 1.74.2 - 23 July 2026 =
+* Post Carousel: Fixed thumbnails collapsing when the Full image size was selected by falling back to the default box dimensions.
+* General: Fixed widget content being lost when saving in the Block Editor while the visual editor had not finished initializing.
+* General: Preserved a measurement field's unit on re-save when the field's default value already carried a unit.
+
 = 1.74.1 - 17 July 2026 =
 * Hero, Layout Slider: Fixed empty or zero mobile height so the slide inherits the desktop height instead of collapsing.
 * Image: Preserved custom image size dimensions on save so manually entered width and height are retained.
