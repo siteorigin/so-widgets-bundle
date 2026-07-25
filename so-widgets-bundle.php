@@ -72,7 +72,7 @@ class SiteOrigin_Widgets_Bundle {
 		// Actions for clearing widget cache.
 		add_action( 'switch_theme', array( $this, 'clear_widget_cache' ) );
 		add_action( 'activated_plugin', array( $this, 'clear_widget_cache' ) );
-		add_action( 'upgrader_process_complete', array( $this, 'clear_widget_cache' ) );
+		add_action( 'upgrader_process_complete', array( $this, 'clear_widget_cache' ), 10, 2 );
 
 		// These filters are used to activate any widgets that are missing.
 		add_filter( 'siteorigin_panels_data', array( $this, 'load_missing_widgets' ) );
@@ -149,8 +149,21 @@ class SiteOrigin_Widgets_Bundle {
 	 * @action upgrader_process_complete Occurs after any theme, plugin or the WordPress core is updated to a new version.
 	 * @action switch_theme Occurs after switching to a different theme.
 	 * @action activated_plugin Occurs after a plugin has been activated.
+	 *
+	 * @param $upgrader The upgrader instance, when called by upgrader_process_complete.
+	 * @param $hook_extra Details of the update, when called by upgrader_process_complete.
 	 */
-	public function clear_widget_cache() {
+	public function clear_widget_cache( $upgrader = null, $hook_extra = array() ) {
+		// Translation and core updates can't affect the generated CSS, so
+		// there's no reason to clear it for them. Anything else, including a
+		// direct call with no update details, still clears.
+		if (
+			! empty( $hook_extra['type'] ) &&
+			in_array( $hook_extra['type'], array( 'translation', 'core' ), true )
+		) {
+			return;
+		}
+
 		// Remove all cached CSS for SiteOrigin Widgets.
 
 		require_once ABSPATH . 'wp-admin/includes/file.php';
