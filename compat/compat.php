@@ -29,8 +29,8 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 
 		// These actions handle alerting cache plugins that they need to regenerate a page cache.
 		if ( apply_filters( 'siteorigin_widgets_load_cache_compatibility', true ) ) {
-			add_action( 'siteorigin_widgets_stylesheet_deleted', array( $this, 'clear_page_cache' ) );
-			add_action( 'siteorigin_widgets_stylesheet_added', array( $this, 'clear_page_cache' ) );
+			add_action( 'siteorigin_widgets_stylesheet_deleted', array( $this, 'clear_page_cache' ), 10, 2 );
+			add_action( 'siteorigin_widgets_stylesheet_added', array( $this, 'clear_page_cache' ), 10, 2 );
 			add_action( 'siteorigin_widgets_stylesheet_cleared', array( $this, 'clear_all_cache' ) );
 		}
 
@@ -132,49 +132,100 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 	}
 
 	/**
+	 * Work out which post a generated stylesheet belongs to.
+	 *
+	 * The widget instance is authoritative. We only fall back to parsing the
+	 * filename because the stylesheet actions can be fired without one.
+	 *
+	 * @param $name The name of the stylesheet file.
+	 * @param $instance The current instance of the related widget.
+	 *
+	 * @return int|bool The post id, or false if it can't be determined.
+	 */
+	private function get_cache_post_id( $name, $instance = array() ) {
+		if (
+			is_array( $instance ) &&
+			! empty( $instance['panels_info']['post_id'] ) &&
+			is_numeric( $instance['panels_info']['post_id'] )
+		) {
+			$id = (int) $instance['panels_info']['post_id'];
+
+			return get_post_status( $id ) ? $id : false;
+		}
+
+		// Stylesheets are named {id_base}-{style}-{hash}[-{post_id}].css and
+		// the post id is only added for widgets in a Page Builder post, so
+		// most filenames end in a hash rather than an id.
+		$segments = explode( '-', basename( $name, '.css' ) );
+		$last = end( $segments );
+
+		// ctype_digit() rejects both the hash and values like '1e5', which
+		// is_numeric() would accept as a number.
+		if ( $last === '' || ! ctype_digit( $last ) ) {
+			return false;
+		}
+
+		// A hash made up entirely of digits would get this far, so only purge
+		// once we know the id belongs to a real post.
+		$id = (int) $last;
+
+		return get_post_status( $id ) ? $id : false;
+	}
+
+	/**
 	 * Tell cache plugins that they need to regenerate a page cache.
 	 *
 	 * @param $name The name of the file that's been deleted.
 	 * @param $instance The current instance of the related widget.
 	 */
 	public function clear_page_cache( $name, $instance = array() ) {
-		$id = explode( '-', $name );
-		$id = end( $id );
-		$id = explode( '.', $id )[0];
+		// Not every stylesheet action passes an instance. WordPress pads the
+		// missing argument with null, which skips the default above.
+		if ( ! is_array( $instance ) ) {
+			$instance = array();
+		}
 
-		if ( is_numeric( $id ) ) {
-			if ( function_exists( 'w3tc_flush_post' ) ) {
-				w3tc_flush_post( $id );
-			}
+		$id = $this->get_cache_post_id( $name, $instance );
 
-			if ( class_exists( 'Swift_Performance_Cache' ) ) {
-				Swift_Performance_Cache::clear_post_cache( $id );
-			}
+		if ( $id === false ) {
+			return;
+		}
 
-			if ( class_exists( '\Hummingbird\\WP_Hummingbird' ) ) {
-				do_action( 'wphb_clear_page_cache', $id );
-			}
+		if ( function_exists( 'w3tc_flush_post' ) ) {
+			w3tc_flush_post( $id );
+		}
 
-			if ( function_exists( 'breeze_varnish_purge_cache' ) ) {
-				breeze_varnish_purge_cache( get_the_permalink( $id ) );
-			}
+		if ( class_exists( 'Swift_Performance_Cache' ) ) {
+			Swift_Performance_Cache::clear_post_cache( $id );
+		}
 
-			// Use LiteSpeed's purge action rather than sending an
-			// x-litespeed-purge header ourselves. The action stores the purge
-			// in a queue when headers have already been sent, or when running
-			// under cron or WP-CLI, so it still works during plugin updates.
-			// A raw header has no such fallback and is silently dropped.
-			if ( defined( 'LSCWP_V' ) || function_exists( 'run_litespeed_cache' ) ) {
-				do_action( 'litespeed_purge_post', $id );
-			}
+		if ( class_exists( '\Hummingbird\\WP_Hummingbird' ) ) {
+			do_action( 'wphb_clear_page_cache', $id );
+		}
 
-			if ( function_exists( 'rocket_clean_post' ) ) {
-				rocket_clean_post( $id );
-			}
+		if ( function_exists( 'breeze_varnish_purge_cache' ) ) {
+			$permalink = get_the_permalink( $id );
 
-			if ( class_exists( 'WP_Optimize' ) ) {
-				WPO_Page_Cache::instance()->delete_single_post_cache( $id );
+			if ( ! empty( $permalink ) ) {
+				breeze_varnish_purge_cache( $permalink );
 			}
+		}
+
+		// Use LiteSpeed's purge action rather than sending an
+		// x-litespeed-purge header ourselves. The action stores the purge
+		// in a queue when headers have already been sent, or when running
+		// under cron or WP-CLI, so it still works during plugin updates.
+		// A raw header has no such fallback and is silently dropped.
+		if ( defined( 'LSCWP_V' ) || function_exists( 'run_litespeed_cache' ) ) {
+			do_action( 'litespeed_purge_post', $id );
+		}
+
+		if ( function_exists( 'rocket_clean_post' ) ) {
+			rocket_clean_post( $id );
+		}
+
+		if ( class_exists( 'WP_Optimize' ) ) {
+			WPO_Page_Cache::instance()->delete_single_post_cache( $id );
 		}
 	}
 
