@@ -66,6 +66,7 @@ module.exports = {
             'widgets/**/styles/*.less',                           // All the widgets' runtime .less files.
             '!{build,build/**}',                                  // Ignore build/ and contents
 			'!{node_modules,node_modules/**}',                    // Ignore node_modules/ and contents.
+			'!{vendor,vendor/**}',                                // Ignore Composer dev dependencies.
 			'!{tests,tests/**}',                                  // Ignore tests/ and contents.
             '!{docs,docs/**}',                                    // Ignore docs/ (internal plans/research, never shipped)
             '!{tmp,tmp/**}',                                      // Ignore tmp/ and contents
@@ -76,13 +77,17 @@ module.exports = {
             '!.editorconfig',                                     // Ignore .editorconfig file. Only for development.
             '!base/inc/installer/inc/github-plugin-updater.php',  // Exclude Installer's  Updater.
             '!{package.json,package-lock.json}',                  // Exclude node package files.
+            '!{composer.json,composer.lock}',                     // Exclude composer package files.
+            '!phpunit.xml',                                       // Exclude PHPUnit config. Only for development.
         ]
     },
     pot: {
         src: [
             '**/*.php',                         // All the PHP files.
             '!tmp/**/*.php',                    // Ignore tmp/ and contents.
-            '!dist/**/*.php'                    // Ignore dist/ and contents.
+            '!dist/**/*.php',                   // Ignore dist/ and contents.
+            '!vendor/**/*.php',                 // Ignore Composer dev dependencies.
+            '!tests/**/*.php'                   // Ignore tests/ and contents.
         ],
         textdomain: 'so-widgets-bundle',
         destFile: 'so-widgets-bundle.pot',
