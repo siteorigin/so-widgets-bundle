@@ -159,12 +159,13 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 				breeze_varnish_purge_cache( get_the_permalink( $id ) );
 			}
 
-			if ( function_exists( 'run_litespeed_cache' ) ) {
-				$url = parse_url( get_the_permalink( $id ) );
-
-				if ( ! empty( $url ) ) {
-					header( 'x-litespeed-purge: ' . $url['path'] );
-				}
+			// Use LiteSpeed's purge action rather than sending an
+			// x-litespeed-purge header ourselves. The action stores the purge
+			// in a queue when headers have already been sent, or when running
+			// under cron or WP-CLI, so it still works during plugin updates.
+			// A raw header has no such fallback and is silently dropped.
+			if ( defined( 'LSCWP_V' ) || function_exists( 'run_litespeed_cache' ) ) {
+				do_action( 'litespeed_purge_post', $id );
 			}
 
 			if ( function_exists( 'rocket_clean_post' ) ) {
@@ -197,8 +198,11 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 			Breeze_PurgeCache::breeze_cache_flush();
 		}
 
-		if ( function_exists( 'run_litespeed_cache' ) && ! headers_sent() ) {
-			header( 'x-litespeed-purge: *' );
+		// See the note in clear_page_cache(): the purge action queues itself
+		// when a header can't be relied on, which is the case during the
+		// AJAX, cron, and WP-CLI requests that plugin updates run in.
+		if ( defined( 'LSCWP_V' ) || function_exists( 'run_litespeed_cache' ) ) {
+			do_action( 'litespeed_purge_all' );
 		}
 
 		if ( function_exists( 'rocket_clean_domain' ) && function_exists( 'rocket_clean_minify' ) ) {
