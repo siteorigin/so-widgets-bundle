@@ -191,6 +191,14 @@ div.siteorigin-widget-form {
 			min-height: 30px;
 		}
 
+		// Iris sizes palette swatches as picker width divided by the palette count,
+		// so a small custom palette produces oversized blocks. Iris sets the size
+		// inline, so the cap needs !important.
+		.iris-picker .iris-palette {
+			max-width: 28px !important;
+			max-height: 28px !important;
+		}
+
 		textarea.siteorigin-widget-code-input {
 			font-family: "Courier New", Courier, monospace;
 		}
