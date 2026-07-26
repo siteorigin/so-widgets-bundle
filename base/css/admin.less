@@ -1120,6 +1120,17 @@ div.siteorigin-widget-form {
 				vertical-align: middle;
 			}
 
+			// The color picker result button renders at 32px (border + padding), so
+			// raise the wrapped input and clear button to match it.
+			.wp-picker-container {
+				.wp-color-result,
+				.wp-picker-clear,
+				input.siteorigin-widget-input-color {
+					min-height: 32px;
+					vertical-align: middle;
+				}
+			}
+
 			input[type=checkbox] {
 				width: 16px;
 				height: 16px;
