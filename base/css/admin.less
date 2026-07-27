@@ -191,6 +191,14 @@ div.siteorigin-widget-form {
 			min-height: 30px;
 		}
 
+		// Iris sizes palette swatches as picker width divided by the palette count,
+		// so a small custom palette produces oversized blocks. Iris sets the size
+		// inline, so the cap needs !important.
+		.iris-picker .iris-palette {
+			max-width: 28px !important;
+			max-height: 28px !important;
+		}
+
 		textarea.siteorigin-widget-code-input {
 			font-family: "Courier New", Courier, monospace;
 		}
@@ -1118,6 +1126,17 @@ div.siteorigin-widget-form {
 				line-height: 2;
 				min-height: 30px;
 				vertical-align: middle;
+			}
+
+			// The color picker result button renders at 32px (border + padding), so
+			// raise the wrapped input and clear button to match it.
+			.wp-picker-container {
+				.wp-color-result,
+				.wp-picker-clear,
+				input.siteorigin-widget-input-color {
+					min-height: 32px;
+					vertical-align: middle;
+				}
 			}
 
 			input[type=checkbox] {

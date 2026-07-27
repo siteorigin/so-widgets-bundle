@@ -349,30 +349,30 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 		) );
 
 		$colors = array(
-			'header_color'               => $instance['design']['header']['background_color'],
-			'featured_header_color'      => $instance['design']['header']['featured_background_color'],
-			'header_text_color'         => $instance['design']['header']['color'],
-			'featured_header_text_color' => $instance['design']['header']['featured_color'],
+			'header_color'               => $instance['design']['header']['background_color'] ?? '',
+			'featured_header_color'      => $instance['design']['header']['featured_background_color'] ?? '',
+			'header_text_color'         => $instance['design']['header']['color'] ?? '',
+			'featured_header_text_color' => $instance['design']['header']['featured_color'] ?? '',
 
-			'feature_text_color'          => $instance['design']['feature']['color'],
+			'feature_text_color'          => $instance['design']['feature']['color'] ?? '',
 
-			'button_container_color'               => $instance['design']['button']['container_color'],
-			'button_background_color'      => $instance['design']['button']['background_color'],
-			'featured_button_background_color'      => $instance['design']['button']['featured_background_color'],
+			'button_container_color'               => $instance['design']['button']['container_color'] ?? '',
+			'button_background_color'      => $instance['design']['button']['background_color'] ?? '',
+			'featured_button_background_color'      => $instance['design']['button']['featured_background_color'] ?? '',
 		);
 
 		if ( ! class_exists( 'SiteOrigin_Widgets_Color_Object' ) ) {
 			require plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . 'base/inc/color.php';
 		}
 
-		if ( ! empty( $instance['design']['button']['background_color'] ) ) {
-			$color = new SiteOrigin_Widgets_Color_Object( $instance['design']['button']['background_color'] );
+		if ( ! empty( $colors['button_background_color'] ) ) {
+			$color = new SiteOrigin_Widgets_Color_Object( $colors['button_background_color'] );
 			$color->lum += ( $color->lum > 0.75 ? - 0.5 : 0.8 );
 			$colors['button_text_color'] = $color->hex;
 		}
 
-		if ( ! empty( $instance['design']['button']['featured_background_color'] ) ) {
-			$color = new SiteOrigin_Widgets_Color_Object( $instance['design']['button']['featured_background_color'] );
+		if ( ! empty( $colors['featured_button_background_color'] ) ) {
+			$color = new SiteOrigin_Widgets_Color_Object( $colors['featured_button_background_color'] );
 			$color->lum += ( $color->lum > 0.75 ? - 0.5 : 0.8 );
 			$colors['featured_button_text_color'] = $color->hex;
 		}

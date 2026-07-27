@@ -51,6 +51,7 @@ var sowbForms = window.sowbForms || {};
 	const repeaterImmediateSetupFieldSelector = [
 		'.siteorigin-widget-field-type-media',
 		'.siteorigin-widget-field-type-multiple_media',
+		'.siteorigin-widget-field-type-icon',
 	].join( ', ' );
 
 	sowbForms.sanitizeTinyMCEContent = function( content ) {
