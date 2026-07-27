@@ -29,8 +29,8 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 
 		// These actions handle alerting cache plugins that they need to regenerate a page cache.
 		if ( apply_filters( 'siteorigin_widgets_load_cache_compatibility', true ) ) {
-			add_action( 'siteorigin_widgets_stylesheet_deleted', array( $this, 'clear_page_cache' ), 10, 2 );
-			add_action( 'siteorigin_widgets_stylesheet_added', array( $this, 'clear_page_cache' ), 10, 2 );
+			add_action( 'siteorigin_widgets_stylesheet_deleted', array( $this, 'clear_page_cache' ) );
+			add_action( 'siteorigin_widgets_stylesheet_added', array( $this, 'clear_page_cache' ) );
 			add_action( 'siteorigin_widgets_stylesheet_cleared', array( $this, 'clear_all_cache' ) );
 		}
 
@@ -134,25 +134,16 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 	/**
 	 * Work out which post a generated stylesheet belongs to.
 	 *
-	 * The widget instance is authoritative. We only fall back to parsing the
-	 * filename because the stylesheet actions can be fired without one.
+	 * The filename is the only record of this. save_css() appends the current
+	 * post id as the file is written, and the widget instance doesn't carry it:
+	 * Page Builder's panels_info holds the widget's position in the layout
+	 * (grid, cell, id, style), never the post it belongs to.
 	 *
 	 * @param $name The name of the stylesheet file.
-	 * @param $instance The current instance of the related widget.
 	 *
 	 * @return int|bool The post id, or false if it can't be determined.
 	 */
-	private function get_cache_post_id( $name, $instance = array() ) {
-		if (
-			is_array( $instance ) &&
-			! empty( $instance['panels_info']['post_id'] ) &&
-			is_numeric( $instance['panels_info']['post_id'] )
-		) {
-			$id = (int) $instance['panels_info']['post_id'];
-
-			return get_post_status( $id ) ? $id : false;
-		}
-
+	private function get_cache_post_id( $name ) {
 		// Stylesheets are named {id_base}-{style}-{hash}[-{post_id}].css and
 		// the post id is only added for widgets in a Page Builder post, so
 		// most filenames end in a hash rather than an id.
@@ -176,16 +167,9 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 	 * Tell cache plugins that they need to regenerate a page cache.
 	 *
 	 * @param $name The name of the file that's been deleted.
-	 * @param $instance The current instance of the related widget.
 	 */
-	public function clear_page_cache( $name, $instance = array() ) {
-		// Not every stylesheet action passes an instance. WordPress pads the
-		// missing argument with null, which skips the default above.
-		if ( ! is_array( $instance ) ) {
-			$instance = array();
-		}
-
-		$id = $this->get_cache_post_id( $name, $instance );
+	public function clear_page_cache( $name ) {
+		$id = $this->get_cache_post_id( $name );
 
 		if ( $id === false ) {
 			return;
