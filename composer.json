@@ -1,0 +1,12 @@
+{
+  "autoload": {
+      "psr-4": {
+          "SiteOrigin\\Tests\\": "tests/"
+      }
+  },
+  "require-dev": {
+    "php": ">=8.3",
+    "brain/monkey": "~2.6.2",
+    "phpunit/phpunit": "^12.2"
+  }
+}

@@ -6,6 +6,8 @@ node_modules/
 dist/
 npm-debug.log
 tmp
+vendor/
+.phpunit.result.cache
 
 # Ignore all styles compiled from LESS files
 *.css
