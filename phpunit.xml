@@ -1,8 +1,18 @@
 <?xml version="1.0"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd" bootstrap="tests/bootstrap.php">
-    <testsuites>
-        <testsuite name="SiteOrigin Widgets Bundle Tests">
-            <directory>./tests</directory>
-        </testsuite>
-    </testsuites>
+	<testsuites>
+		<testsuite name="SiteOrigin Widgets Bundle Tests">
+			<directory>./tests</directory>
+			<!-- ./tests recurses, so exclude the harness suite below to avoid running
+			     its cases twice in one process. -->
+			<exclude>./tests/phpunit</exclude>
+		</testsuite>
+		<testsuite name="SiteOrigin Widgets Bundle AI Abilities Tests">
+			<directory>./tests/phpunit</directory>
+			<!-- The widget-chain suite loads the REAL SiteOrigin_Widget base class and
+			     real field classes; incompatible in-process with the AbilitiesTest
+			     SiteOrigin_Widget shim. Runs separately via phpunit-widget.xml. -->
+			<exclude>./tests/phpunit/widget</exclude>
+		</testsuite>
+	</testsuites>
 </phpunit>
