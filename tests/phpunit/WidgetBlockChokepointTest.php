@@ -137,11 +137,7 @@ class WidgetBlockChokepointTest extends TestCase {
 		// wp_kses_post(): emulate the relevant behaviour — strip <script>
 		// elements and on* event-handler attributes carrying the XSS payload.
 		Functions\when( 'wp_kses_post' )->alias(
-			function ( $value ) {
-				$value = preg_replace( '#<script\b[^>]*>.*?</script>#is', '', (string) $value );
-
-				return preg_replace( '/\s*on\w+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $value );
-			}
+			array( \SiteOrigin\Tests\KsesEmulation::class, 'filter' )
 		);
 
 		// Icon collection reads the global styles queue.

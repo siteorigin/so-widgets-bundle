@@ -77,12 +77,13 @@ function is_user_logged_in() {
 	return ! empty( $GLOBALS['sowb_test_logged_in'] );
 }
 
-// wp_kses_post(): emulate the relevant behaviour — strip <script> elements
-// and on* event-handler attributes (same emulation as the default suite).
-function wp_kses_post( $value ) {
-	$value = preg_replace( '#<script\b[^>]*>.*?</script>#is', '', (string) $value );
+// wp_kses_post(): one shared emulation for every suite — see
+// SiteOrigin\Tests\KsesEmulation for what it does and does not guarantee.
+// Notably it DOES strip iframes, which the previous two-regex stub did not.
+require_once __DIR__ . '/KsesEmulation.php';
 
-	return preg_replace( '/\s*on\w+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $value );
+function wp_kses_post( $value ) {
+	return \SiteOrigin\Tests\KsesEmulation::filter( $value );
 }
 
 function sanitize_text_field( $value ) {
