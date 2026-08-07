@@ -1672,6 +1672,42 @@ const sowbCanvasCloneElements = [
 	'#so-tabs-field-js',
 	'#so-tinymce-field-js',
 	'#so-toggle-field-js',
+
+	// Page Builder, for the builder field ('type' => 'builder'). Its stylesheet
+	// already reached the canvas but its script did not, so the Open Builder
+	// button rendered and did nothing. Dependencies first (see
+	// siteorigin-panels/inc/admin.php:509 for the declared list) - the jQuery UI
+	// and colour-picker handles it also needs are cloned further up.
+	'#backbone-js',
+	'#plupload-js',
+	'#so-panels-admin-js-extra',
+	'#so-panels-admin-js',
+
+	// Page Builder's dialog templates (siteorigin-panels/tpl/js-templates.php),
+	// without which the dialog has nothing to render.
+	'#siteorigin-panels-dialog',
+	'#siteorigin-panels-dialog-tab',
+	'#siteorigin-panels-dialog-builder',
+	'#siteorigin-panels-dialog-row',
+	'#siteorigin-panels-dialog-row-cell-preview',
+	'#siteorigin-panels-dialog-widget',
+	'#siteorigin-panels-dialog-widgets',
+	'#siteorigin-panels-dialog-widgets-widget',
+	'#siteorigin-panels-dialog-widget-sidebar-widget',
+	'#siteorigin-panels-dialog-history',
+	'#siteorigin-panels-dialog-history-entry',
+	'#siteorigin-panels-dialog-prebuilt',
+	'#siteorigin-panels-dialog-prebuilt-importexport',
+	'#siteorigin-panels-builder',
+	'#siteorigin-panels-builder-row',
+	'#siteorigin-panels-builder-cell',
+	'#siteorigin-panels-builder-widget',
+	'#siteorigin-panels-context-menu',
+	'#siteorigin-panels-context-menu-section',
+	'#siteorigin-panels-directory-items',
+	'#siteorigin-panels-directory-enable',
+	'#siteorigin-panels-live-editor',
+	'#siteorigin-panels-add-layout-block-button',
 ];
 
 const sowbNormalizeAssetUrl = ( value, baseHref ) => {
