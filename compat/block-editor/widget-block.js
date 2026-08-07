@@ -1588,11 +1588,17 @@ const sowbCanvasCloneElements = [
 	'#jquery-core-js',
 	'#jquery-migrate-js',
 	'#underscore-js',
-	'#editor-js-after',
 	'#wp-tinymce-js',
 	'#utils-js',
+	// Order matters: WordPress emits `-extra` (localization) before a script and
+	// `-after` following it, and both are inline, so they execute the instant
+	// they are appended rather than waiting on the external file. Cloning
+	// `#editor-js-after` ahead of `#editor-js` therefore ran it against a
+	// window where wp.editor did not exist yet, throwing before the rest of the
+	// list — including jQuery's dependants — could be cloned.
 	'#editor-js-extra',
 	'#editor-js',
+	'#editor-js-after',
 	'#quicktags-js-extra',
 	'#quicktags-js',
 	'#wp-block-library-js-before',
