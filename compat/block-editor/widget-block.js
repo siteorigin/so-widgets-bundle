@@ -1590,12 +1590,17 @@ const sowbCanvasCloneElements = [
 	'#underscore-js',
 	'#wp-tinymce-js',
 	'#utils-js',
-	// Order matters: WordPress emits `-extra` (localization) before a script and
-	// `-after` following it, and both are inline, so they execute the instant
-	// they are appended rather than waiting on the external file. Cloning
-	// `#editor-js-after` ahead of `#editor-js` therefore ran it against a
-	// window where wp.editor did not exist yet, throwing before the rest of the
-	// list — including jQuery's dependants — could be cloned.
+	// WordPress emits `-extra` (localization) before a script and `-after`
+	// following it. Cloning `#editor-js-after` ahead of `#editor-js` put them in
+	// the wrong relative order, so it ran against a window with no wp.editor and
+	// the throw aborted the walk before jQuery's dependants were cloned.
+	//
+	// This corrects the ORDER only. It does not sequence them: the loop appends
+	// synchronously, and an inline script executes on append rather than waiting
+	// for the external file it depends on. Every inline entry in this list has
+	// that same exposure, which is why sowbEnsureEditorJs() exists as a retry.
+	// A real fix would chain each inline script off its external partner's load
+	// event.
 	'#editor-js-extra',
 	'#editor-js',
 	'#editor-js-after',
@@ -1679,6 +1684,12 @@ const sowbCanvasCloneElements = [
 	// siteorigin-panels/inc/admin.php:509 for the declared list) - the jQuery UI
 	// and colour-picker handles it also needs are cloned further up.
 	'#backbone-js',
+	// moxiejs before plupload: WordPress registers plupload with a hard moxiejs
+	// dependency (wp-includes/script-loader.php:1043-1044), and plupload.js
+	// leaves window.plupload undefined if mOxie is absent. Cloning plupload
+	// alone would break Page Builder's import and upload flows inside the
+	// canvas while everything else appeared to work.
+	'#moxiejs-js',
 	'#plupload-js',
 	'#so-panels-admin-js-extra',
 	'#so-panels-admin-js',
