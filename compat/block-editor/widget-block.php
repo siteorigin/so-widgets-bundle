@@ -675,8 +675,12 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		// The render flag skips render time sanitization of stored values, so it
 		// must never outlive this render — clean it up even if a widget throws,
-		// along with every other resource this render acquires.
-		$ob_level = ob_get_level();
+		// along with every other resource this render acquires. Track the anchor
+		// filter and prior anchor so a nested render of the same widget does not
+		// tear down an outer render's wrapper id.
+		$ob_level            = ob_get_level();
+		$anchor_filter_added = false;
+		$prev_widget_anchor  = $this->widgetAnchor;
 		try {
 			ob_start();
 
@@ -710,6 +714,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				if ( ! empty( $block_content['anchor'] ) ) {
 					$this->widgetAnchor = $block_content['anchor'];
 					add_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10, 3 );
+					$anchor_filter_added = true;
 				}
 
 				/* @var $widget SiteOrigin_Widget */
@@ -749,9 +754,12 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				}
 			}
 
-			if ( ! empty( $block_content['anchor'] ) ) {
+			// Only tear down the anchor filter this invocation added, and put the
+			// anchor back to what it was, so a nested render cannot strip an
+			// outer render's wrapper id.
+			if ( $anchor_filter_added ) {
 				remove_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10 );
-				$this->widgetAnchor = null;
+				$this->widgetAnchor = $prev_widget_anchor;
 			}
 
 			remove_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
