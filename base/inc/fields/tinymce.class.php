@@ -565,8 +565,14 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		// When rendering the block we keep the stored value as is — checking the
 		// current user here would apply the viewer's capability to it, stripping
 		// admin-authored markup (e.g. iframes) for logged out visitors.
+		// wp_pre_kses_block_attributes() is the core save-time sanitizer that
+		// guarantee rests on; where a very old core lacks it, keep the old
+		// render-time behaviour.
 		if (
-			! empty( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] ) ||
+			(
+				! empty( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] ) &&
+				function_exists( 'wp_pre_kses_block_attributes' )
+			) ||
 			current_user_can( 'unfiltered_html' )
 		) {
 			$sanitized_value = $value;
