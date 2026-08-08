@@ -1591,16 +1591,15 @@ const sowbCanvasCloneElements = [
 	'#wp-tinymce-js',
 	'#utils-js',
 	// WordPress emits `-extra` (localization) before a script and `-after`
-	// following it. Cloning `#editor-js-after` ahead of `#editor-js` put them in
-	// the wrong relative order, so it ran against a window with no wp.editor and
-	// the throw aborted the walk before jQuery's dependants were cloned.
+	// following it, so this list keeps them in that order.
 	//
-	// This corrects the ORDER only. It does not sequence them: the loop appends
-	// synchronously, and an inline script executes on append rather than waiting
-	// for the external file it depends on. Every inline entry in this list has
-	// that same exposure, which is why sowbEnsureEditorJs() exists as a retry.
-	// A real fix would chain each inline script off its external partner's load
-	// event.
+	// Order is all this does. It does not sequence them: the loop appends
+	// synchronously and an appended inline script runs immediately rather than
+	// waiting for the external file it depends on. When one throws, the
+	// exception is reported to the canvas window and does not propagate back
+	// out of appendChild(), so the walk carries on - the script simply had no
+	// effect. sowbEnsureIframeOldEditorApi() re-injects editor-js for exactly
+	// that case.
 	'#editor-js-extra',
 	'#editor-js',
 	'#editor-js-after',
