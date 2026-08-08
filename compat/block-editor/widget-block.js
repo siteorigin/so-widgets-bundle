@@ -2525,7 +2525,12 @@ const sowbMaybeSetupSiteEditorAssets = ( frame = null ) => {
 	// Last, so Page Builder's dialog templates are already in the canvas. This
 	// covers the case where so-panels-admin was present before the walk, so no
 	// load event fires for the clone.
-	sowbEnsureCanvasBuilderFields( currentFrame.contentWindow );
+	try {
+		sowbEnsureCanvasBuilderFields( currentFrame.contentWindow );
+	} catch ( e ) {
+		// Ignore cross-window errors (e.g. iframe detached between the
+		// initial check and this call).
+	}
 };
 
 /**
