@@ -561,7 +561,14 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 			$value = wpautop( $value );
 		}
 
-		if ( current_user_can( 'unfiltered_html' ) ) {
+		// Widget block content is sanitized at save under the user who saved it.
+		// When rendering the block we keep the stored value as is — checking the
+		// current user here would apply the viewer's capability to it, stripping
+		// admin-authored markup (e.g. iframes) for logged out visitors.
+		if (
+			! empty( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] ) ||
+			current_user_can( 'unfiltered_html' )
+		) {
 			$sanitized_value = $value;
 		} else {
 			$sanitized_value = wp_kses_post( $value );
