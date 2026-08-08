@@ -2385,7 +2385,15 @@ const sowbCanvasIsReadyForAssetClone = ( frame, sourceDoc ) => {
  * @returns {boolean} True when Page Builder was available to set fields up.
  */
 const sowbEnsureCanvasBuilderFields = ( canvasWindow ) => {
-	const canvasJQuery = canvasWindow && canvasWindow.jQuery;
+	let canvasJQuery;
+
+	try {
+		canvasJQuery = canvasWindow && canvasWindow.jQuery;
+	} catch ( e ) {
+		// Ignore cross-window errors (e.g. iframe detached or navigated
+		// between the caller's checks and this read).
+		return false;
+	}
 
 	if (
 		! canvasJQuery ||
