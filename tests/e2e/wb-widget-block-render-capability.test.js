@@ -62,12 +62,16 @@ test(
 
 			// The REST save pre-renders widgetMarkup, so the GET above serves the
 			// stored markup. A POST forces the live render path — the one that
-			// re-sanitized stored values with the viewer's capability.
+			// re-sanitized stored values with the viewer's capability. Assert an
+			// actual iframe element, not just the string, so escaped output such
+			// as &lt;iframe cannot pass.
 			const slowPath = await anonContext.request.post( post.link, {
 				form: { wb_render_capability_probe: '1' },
 			} );
 			const slowPathHtml = await slowPath.text();
-			expect( slowPathHtml ).toContain( 'iframe src="https://example.com/frame"' );
+			expect( slowPathHtml ).toMatch(
+				/<iframe[^>]*\ssrc="https:\/\/example\.com\/frame"/
+			);
 
 			await anonContext.close();
 		} finally {
@@ -142,6 +146,73 @@ test(
 				} ).catch( () => {} );
 			}
 
+			if ( author ) {
+				await requestUtils.rest( {
+					method: 'DELETE',
+					path: `/wp/v2/users/${ author.id }`,
+					params: { force: true, reassign: 1 },
+				} ).catch( () => {} );
+			}
+		}
+	}
+);
+
+test(
+	'Block renderer preview cannot supply unsaved widgetData to the render path.',
+	async () => {
+		// render_widget_block() sets the render flag that skips sanitization, so
+		// any render caller that carries unsaved request attributes must not
+		// reach it. The block does not register widgetData/widgetClass server
+		// side, so the core block-renderer schema rejects them before render.
+		const requestUtils = await setupRequestUtils();
+		const suffix = Date.now();
+		let author = null;
+
+		try {
+			author = await requestUtils.rest( {
+				method: 'POST',
+				path: '/wp/v2/users',
+				params: {
+					username: `wbcap-prev-${ suffix }`,
+					email: `wbcap-prev-${ suffix }@example.com`,
+					password: `wbcap-prev-${ suffix }!A1`,
+					roles: [ 'author' ],
+				},
+			} );
+
+			const appPassword = await requestUtils.rest( {
+				method: 'POST',
+				path: `/wp/v2/users/${ author.id }/application-passwords`,
+				params: { name: 'wbcap-preview-e2e' },
+			} );
+
+			const auth = 'Basic ' + Buffer.from(
+				`${ author.username }:${ appPassword.password }`
+			).toString( 'base64' );
+
+			const response = await fetch(
+				`${ process.env.WP_BASE_URL }wp-json/wp/v2/block-renderer/sowb/siteorigin-widget-editor-widget?context=edit`,
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json', Authorization: auth },
+					body: JSON.stringify( {
+						attributes: {
+							widgetClass: 'SiteOrigin_Widget_Editor_Widget',
+							widgetData: {
+								text: '<script>alert(1)</script>',
+								text_selected_editor: 'tinymce',
+								autop: false,
+							},
+						},
+					} ),
+				}
+			);
+
+			// Schema validation rejects the unsaved attributes; render never runs.
+			expect( response.status ).toBe( 400 );
+			const body = await response.json();
+			expect( JSON.stringify( body ) ).not.toContain( '<script>alert(1)' );
+		} finally {
 			if ( author ) {
 				await requestUtils.rest( {
 					method: 'DELETE',
