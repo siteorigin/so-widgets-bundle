@@ -673,7 +673,9 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 
 		// The render flag skips render time sanitization of stored values, so it
-		// must never outlive this render — clean it up even if a widget throws.
+		// must never outlive this render — clean it up even if a widget throws,
+		// along with every other resource this render acquires.
+		$ob_level = ob_get_level();
 		try {
 			ob_start();
 
@@ -717,10 +719,6 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					'before_title' => '<h3 class="widget-title">',
 					'after_title' => '</h3>',
 				), $instance );
-
-				if ( ! empty( $block_content['anchor'] ) ) {
-					remove_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10 );
-				}
 			} else {
 				$widget->generate_and_enqueue_instance_styles( $instance );
 				$widget->enqueue_frontend_scripts( $instance );
@@ -741,6 +739,16 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 			$rendered_widget = ob_get_clean();
 		} finally {
+			// On the success path ob_get_clean() already popped the buffer.
+			while ( ob_get_level() > $ob_level ) {
+				ob_end_clean();
+			}
+
+			if ( ! empty( $block_content['anchor'] ) ) {
+				remove_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10 );
+				$this->widgetAnchor = null;
+			}
+
 			remove_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
 			unset( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
 		}
