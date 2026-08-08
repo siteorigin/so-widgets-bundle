@@ -2138,6 +2138,12 @@ const sowbCloneElementToCanvas = ( $canvasBody, element, $source ) => {
 		if ( scriptCloneKey && canvasWindow ) {
 			clonedElement.addEventListener( 'load', () => {
 				delete canvasWindow.sowbScriptClonePending[ scriptCloneKey ];
+
+				// Forms that finished setting up before Page Builder landed
+				// skipped their builder fields, and nothing else retries them.
+				if ( scriptCloneKey === 'id:so-panels-admin-js' ) {
+					sowbEnsureCanvasBuilderFields( canvasWindow );
+				}
 			}, { once: true } );
 			clonedElement.addEventListener( 'error', () => {
 				delete canvasWindow.sowbScriptClonePending[ scriptCloneKey ];
@@ -2366,6 +2372,45 @@ const sowbCanvasIsReadyForAssetClone = ( frame, sourceDoc ) => {
 };
 
 /**
+ * Sets up any builder fields Page Builder had not loaded in time to handle.
+ *
+ * siteorigin-widget-admin reaches the canvas through its <head>, while
+ * so-panels-admin arrives only through the clone walk, so a form can finish
+ * setting up while soPanelsSetupBuilderWidget is still undefined. The check in
+ * base/js/admin.js is a bare `if` with no retry, so those fields would stay
+ * dead for the rest of the page.
+ *
+ * @param {Window} canvasWindow The canvas iframe's window.
+ *
+ * @returns {boolean} True when Page Builder was available to set fields up.
+ */
+const sowbEnsureCanvasBuilderFields = ( canvasWindow ) => {
+	const canvasJQuery = canvasWindow && canvasWindow.jQuery;
+
+	if (
+		! canvasJQuery ||
+		typeof canvasJQuery.fn.soPanelsSetupBuilderWidget === 'undefined'
+	) {
+		return false;
+	}
+
+	canvasJQuery( '.siteorigin-widget-field-type-builder > .siteorigin-page-builder-field' ).each( function() {
+		const $field = canvasJQuery( this );
+
+		// Only fields Page Builder has never set up. Page Builder skips these
+		// itself, but checking here keeps an open dialog or an unsaved edit
+		// out of the call entirely.
+		if ( $field.data( 'soPanelsBuilderWidgetInitialized' ) ) {
+			return;
+		}
+
+		$field.soPanelsSetupBuilderWidget( { builderType: $field.data( 'type' ) } );
+	} );
+
+	return true;
+};
+
+/**
  * Sets up assets required for the Site Editor iframe.
  *
  * This function ensures that necessary HTML templates, scripts, and styles are copied
@@ -2445,6 +2490,11 @@ const sowbMaybeSetupSiteEditorAssets = ( frame = null ) => {
 		// Ignore cross-window errors (e.g. iframe detached between the
 		// initial check and the assignment).
 	}
+
+	// Last, so Page Builder's dialog templates are already in the canvas. This
+	// covers the case where so-panels-admin was present before the walk, so no
+	// load event fires for the clone.
+	sowbEnsureCanvasBuilderFields( currentFrame.contentWindow );
 };
 
 /**
