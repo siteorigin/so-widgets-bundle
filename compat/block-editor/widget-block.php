@@ -668,6 +668,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			return $class_names;
 		};
 
+		$had_render_flag = ! empty( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
 		$GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] = true;
 		$instance = $block_content['widgetData'];
 		add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
@@ -739,9 +740,13 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 			$rendered_widget = ob_get_clean();
 		} finally {
-			// On the success path ob_get_clean() already popped the buffer.
+			// On the success path ob_get_clean() already popped the buffer. A
+			// non removable buffer opened by widget code cannot be discarded —
+			// stop rather than loop on it.
 			while ( ob_get_level() > $ob_level ) {
-				ob_end_clean();
+				if ( ! @ob_end_clean() ) {
+					break;
+				}
 			}
 
 			if ( ! empty( $block_content['anchor'] ) ) {
@@ -750,7 +755,12 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			}
 
 			remove_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $add_custom_class_name );
-			unset( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
+
+			// Restore rather than unset, so a nested render cannot clear the
+			// flag for a still active outer render.
+			if ( ! $had_render_flag ) {
+				unset( $GLOBALS['SITEORIGIN_WIDGET_BLOCK_RENDER'] );
+			}
 		}
 
 		return $rendered_widget;
