@@ -9,6 +9,17 @@ const {
 	setupRequestUtils,
 } = common;
 
+// Join a REST path to WP_BASE_URL for the raw fetch() calls that carry their
+// own auth. Normalizing the base to end in a slash keeps this correct for both
+// a root install (CI default, no trailing slash) and a subdirectory install.
+const restUrl = ( relativePath ) => {
+	const base = process.env.WP_BASE_URL.endsWith( '/' )
+		? process.env.WP_BASE_URL
+		: `${ process.env.WP_BASE_URL }/`;
+
+	return new URL( relativePath, base ).toString();
+};
+
 // Mirror serialize_block_attributes() so seeded content matches what the
 // block editor stores. Quotes stay as JSON escapes; none of these can
 // produce the comment terminator.
@@ -110,7 +121,7 @@ test(
 				params: { name: 'wbcap-e2e' },
 			} );
 
-			const response = await fetch( `${ process.env.WP_BASE_URL }/wp-json/wp/v2/posts`, {
+			const response = await fetch( restUrl( 'wp-json/wp/v2/posts' ), {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -191,7 +202,7 @@ test(
 			).toString( 'base64' );
 
 			const response = await fetch(
-				`${ process.env.WP_BASE_URL }wp-json/wp/v2/block-renderer/sowb/siteorigin-widget-editor-widget?context=edit`,
+				restUrl( 'wp-json/wp/v2/block-renderer/sowb/siteorigin-widget-editor-widget?context=edit' ),
 				{
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json', Authorization: auth },
@@ -209,8 +220,15 @@ test(
 			);
 
 			// Schema validation rejects the unsaved attributes; render never runs.
+			// Pin the actual boundary: the widgetData/widgetClass properties are
+			// refused because they are not registered server side.
 			expect( response.status ).toBe( 400 );
 			const body = await response.json();
+			expect( body.code ).toBe( 'rest_invalid_param' );
+			expect( body.data?.params?.attributes ).toMatch( /widgetClass/ );
+			expect( body.data?.details?.attributes?.code ).toBe(
+				'rest_additional_properties_forbidden'
+			);
 			expect( JSON.stringify( body ) ).not.toContain( '<script>alert(1)' );
 		} finally {
 			if ( author ) {
