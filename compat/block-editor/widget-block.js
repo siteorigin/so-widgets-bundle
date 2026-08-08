@@ -1834,6 +1834,8 @@ const sowbIsScriptHandleLoadedInWindow = ( targetWindow, scriptId ) => {
 			return !! targetWindow.QTags;
 		case 'underscore-js':
 			return !! targetWindow._;
+		case 'backbone-js':
+			return !! targetWindow.Backbone;
 		default:
 			return false;
 	}
@@ -2274,6 +2276,96 @@ const sowbCloneTinyMCEExternalPluginAssets = ( $canvasBody, sourceDoc ) => {
 };
 
 /**
+ * Handles the first wave of cloned scripts reads at evaluation time.
+ *
+ * Each is waited on only when it cannot be cloned from the source document,
+ * so under SCRIPT_DEBUG - where every handle emits with its own id - none of
+ * them is ever waited on.
+ *
+ * @type {string[]}
+ */
+const sowbCanvasBaseDependencies = [
+	'jquery-core-js',
+	'jquery-ui-core-js',
+	'jquery-ui-mouse-js',
+	'underscore-js',
+	'backbone-js',
+];
+
+/**
+ * Lists the dependencies the clone walk can neither supply nor find.
+ *
+ * @param {Window}   canvasWindow The canvas iframe's window.
+ * @param {Document} sourceDoc    The document the walk clones from.
+ *
+ * @returns {string[]} Script ids that are missing and cannot be cloned.
+ */
+const sowbCanvasUnclonableDependencies = ( canvasWindow, sourceDoc ) => {
+	return sowbCanvasBaseDependencies.filter( ( scriptId ) => {
+		return ! sowbGetElementById( sourceDoc, scriptId ) &&
+			! sowbIsScriptHandleLoadedInWindow( canvasWindow, scriptId );
+	} );
+};
+
+/**
+ * Decides whether the canvas is ready for the clone walk.
+ *
+ * WordPress concatenates core scripts into load-scripts.php, and those bundle
+ * elements carry no id, so `#jquery-core-js` does not exist in the source
+ * document on a default install and jQuery cannot be cloned. The canvas loads
+ * its own copy in its <head>, asynchronously, while this runs from a React ref
+ * that fires first - so without a wait every cloned script that needs jQuery
+ * evaluates against a window that has none.
+ *
+ * sowbCloneElementToCanvas() dedupes by id against the whole canvas document,
+ * so a script appended too early can never be replaced. That is why this gates
+ * the walk rather than retrying it afterwards.
+ *
+ * Fails open: once the budget is spent the walk runs regardless, which is the
+ * behaviour that shipped before this gate existed.
+ *
+ * @param {HTMLIFrameElement} frame     The editor canvas iframe.
+ * @param {Document}          sourceDoc The document the walk clones from.
+ *
+ * @returns {boolean} True to walk now, false when a retry has been scheduled.
+ */
+const sowbCanvasIsReadyForAssetClone = ( frame, sourceDoc ) => {
+	const canvasWindow = frame && frame.contentWindow;
+
+	if (
+		! canvasWindow ||
+		sowbCanvasUnclonableDependencies( canvasWindow, sourceDoc ).length === 0
+	) {
+		return true;
+	}
+
+	// One timer and one budget per canvas. This is called at least twice per
+	// widget block and once per block, and they all share a single wait.
+	if ( canvasWindow.sowbCanvasCloneWaitTimer ) {
+		return false;
+	}
+
+	const attempts = canvasWindow.sowbCanvasCloneWaitAttempts || 0;
+	if ( attempts >= 20 ) {
+		return true;
+	}
+
+	canvasWindow.sowbCanvasCloneWaitAttempts = attempts + 1;
+	canvasWindow.sowbCanvasCloneWaitTimer = canvasWindow.setTimeout( () => {
+		// Cleared before re-entering. Clearing afterwards would leave the
+		// re-entrant call seeing a live timer, so it would return without
+		// scheduling and the wait would end after a single tick.
+		canvasWindow.sowbCanvasCloneWaitTimer = 0;
+
+		if ( frame.isConnected && frame.contentWindow === canvasWindow ) {
+			sowbMaybeSetupSiteEditorAssets( frame );
+		}
+	}, 250 );
+
+	return false;
+};
+
+/**
  * Sets up assets required for the Site Editor iframe.
  *
  * This function ensures that necessary HTML templates, scripts, and styles are copied
@@ -2328,7 +2420,15 @@ const sowbMaybeSetupSiteEditorAssets = ( frame = null ) => {
 		sourceDoc = document;
 	}
 
+	// Copies plain values and needs no jQuery, so it runs while we wait.
 	sowbEnsureIframeEditorGlobals( currentFrame );
+
+	// Everything below appends to the canvas under a dedupe that is permanent,
+	// so none of it may run before the canvas can evaluate what it appends.
+	if ( ! sowbCanvasIsReadyForAssetClone( currentFrame, sourceDoc ) ) {
+		return;
+	}
+
 	sowbCloneElementsToCanvas( $canvasBody, sourceDoc );
 	sowbCloneTinyMCEExternalPluginAssets( $canvasBody, sourceDoc );
 	sowbEnsureIframeOldEditorApi( currentFrame );
