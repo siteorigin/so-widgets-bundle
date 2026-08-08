@@ -2299,17 +2299,29 @@ const sowbCanvasBaseDependencies = [
 ];
 
 /**
- * Lists the dependencies the clone walk can neither supply nor find.
+ * Lists the dependencies that are neither live in the canvas nor ours to clone.
+ *
+ * A handle counts as ours to clone only when the source document has it AND the
+ * canvas does not already hold that id: sowbCloneElementToCanvas() dedupes by
+ * id, so a copy the canvas is still loading silently cancels our clone and the
+ * walk would carry on without the dependency it thought it was supplying.
  *
  * @param {Window}   canvasWindow The canvas iframe's window.
  * @param {Document} sourceDoc    The document the walk clones from.
+ * @param {Document} canvasDoc    The canvas iframe's document.
  *
- * @returns {string[]} Script ids that are missing and cannot be cloned.
+ * @returns {string[]} Script ids the walk must wait for.
  */
-const sowbCanvasUnclonableDependencies = ( canvasWindow, sourceDoc ) => {
+const sowbCanvasUnclonableDependencies = ( canvasWindow, sourceDoc, canvasDoc ) => {
 	return sowbCanvasBaseDependencies.filter( ( scriptId ) => {
-		return ! sowbGetElementById( sourceDoc, scriptId ) &&
-			! sowbIsScriptHandleLoadedInWindow( canvasWindow, scriptId );
+		if ( sowbIsScriptHandleLoadedInWindow( canvasWindow, scriptId ) ) {
+			return false;
+		}
+
+		return ! (
+			sowbGetElementById( sourceDoc, scriptId ) &&
+			! sowbGetElementById( canvasDoc, scriptId )
+		);
 	} );
 };
 
@@ -2336,11 +2348,22 @@ const sowbCanvasUnclonableDependencies = ( canvasWindow, sourceDoc ) => {
  * @returns {boolean} True to walk now, false when a retry has been scheduled.
  */
 const sowbCanvasIsReadyForAssetClone = ( frame, sourceDoc ) => {
-	const canvasWindow = frame && frame.contentWindow;
+	let canvasWindow;
+	let canvasDoc;
+
+	try {
+		canvasWindow = frame && frame.contentWindow;
+		canvasDoc = frame && frame.contentDocument;
+	} catch ( e ) {
+		// Ignore cross-window errors and let the walk proceed as it did
+		// before this gate existed.
+		return true;
+	}
 
 	if (
 		! canvasWindow ||
-		sowbCanvasUnclonableDependencies( canvasWindow, sourceDoc ).length === 0
+		! canvasDoc ||
+		sowbCanvasUnclonableDependencies( canvasWindow, sourceDoc, canvasDoc ).length === 0
 	) {
 		return true;
 	}
