@@ -368,6 +368,21 @@ var sowbForms = window.sowbForms || {};
 			// Set up any color fields.
 			$fields.find( '> .siteorigin-widget-input-color' ).each( function() {
 				var $colorField = $( this );
+
+				// Without the WP color picker (e.g. inside Beaver Builder), fall
+				// back to a native color input. Native color inputs only accept
+				// #rrggbb and coerce anything else — an empty value, shorthand
+				// #rgb, or an rgba() alpha value — to #000000, which Beaver
+				// Builder would then save over the stored value. So only upgrade
+				// fields already holding a full hex colour, and leave the rest as
+				// plain text inputs so their value is preserved.
+				if ( typeof $.fn.wpColorPicker !== 'function' ) {
+					if ( /^#[0-9a-f]{6}$/i.test( $colorField.val() ) ) {
+						$colorField.attr( 'type', 'color' );
+					}
+					return;
+				}
+
 				var colorResult = ''
 				var alphaImage = '';
 
@@ -400,11 +415,9 @@ var sowbForms = window.sowbForms || {};
 					$colorFieldOptions.palettes = $colorField.data( 'palettes' );
 				}
 
-				if ( typeof $.fn.wpColorPicker === 'function' ) {
-					$colorField.wpColorPicker( $colorFieldOptions );
-					if ( $colorField.data( 'alpha-enabled' ) ) {
-						$colorField.on( 'change', handleAlphaDefault ).trigger( 'change' );
-					}
+				$colorField.wpColorPicker( $colorFieldOptions );
+				if ( $colorField.data( 'alpha-enabled' ) ) {
+					$colorField.on( 'change', handleAlphaDefault ).trigger( 'change' );
 				}
 			} );
 
