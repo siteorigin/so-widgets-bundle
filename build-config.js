@@ -75,10 +75,12 @@ module.exports = {
             '!readme.txt',                                        // Not the readme.txt file. It is copied by the 'version' task.
             '!readme.md',                                         // Ignore the readme.md file. It is for the github repo.
             '!.editorconfig',                                     // Ignore .editorconfig file. Only for development.
+            '!CLAUDE.md',                                         // Ignore the agent router. Development tooling, never shipped.
+            '!{tasks,tasks/**}',                                  // Ignore tasks/ (local run records)
             '!base/inc/installer/inc/github-plugin-updater.php',  // Exclude Installer's  Updater.
             '!{package.json,package-lock.json}',                  // Exclude node package files.
             '!{composer.json,composer.lock}',                     // Exclude composer package files.
-            '!phpunit.xml',                                       // Exclude PHPUnit config. Only for development.
+            '!phpunit*.xml',                                      // Exclude PHPUnit configs (phpunit.xml, phpunit-widget.xml). Development only.
         ]
     },
     pot: {

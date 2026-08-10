@@ -1,12 +1,22 @@
 {
-  "autoload": {
-      "psr-4": {
-          "SiteOrigin\\Tests\\": "tests/"
-      }
-  },
-  "require-dev": {
-    "php": ">=8.3",
-    "brain/monkey": "~2.6.2",
-    "phpunit/phpunit": "^12.2"
-  }
+	"description": "Dev-only test harness. phpunit ^12.2 requires PHP 8.3+; production code must remain compatible with the readme.txt PHP floor.",
+	"autoload-dev": {
+		"psr-4": {
+			"SiteOrigin\\Tests\\": [
+				"tests/",
+				"tests/phpunit/"
+			]
+		}
+	},
+	"require-dev": {
+		"php": ">=8.3",
+		"brain/monkey": "~2.6.2",
+		"phpunit/phpunit": "^12.2"
+	},
+	"scripts": {
+		"test": [
+			"phpunit",
+			"phpunit -c phpunit-widget.xml"
+		]
+	}
 }
