@@ -402,7 +402,11 @@ abstract class SiteOrigin_Widget_Field_Base {
 				default:
 					// This isn't a built in sanitization. Maybe it's handled elsewhere.
 					if ( is_callable( $this->sanitize ) ) {
-						$value = call_user_func( $this->sanitize, $value, $old_value );
+						if ( $this->sanitize_callback_accepts_old_value( $this->sanitize ) ) {
+							$value = call_user_func( $this->sanitize, $value, $old_value );
+						} else {
+							$value = call_user_func( $this->sanitize, $value );
+						}
 					} elseif ( is_string( $this->sanitize ) ) {
 						$value = apply_filters( 'siteorigin_widgets_sanitize_field_' . $this->sanitize, $value );
 					}
@@ -411,6 +415,36 @@ abstract class SiteOrigin_Widget_Field_Base {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Whether the given callable declares a second required parameter, meaning
+	 * it can safely receive $old_value. Only callables that genuinely require
+	 * it are passed it — one-argument callables (e.g. 'intval', whose second
+	 * parameter is the optional $base) would otherwise be invoked with a null
+	 * second argument, which is deprecated in PHP 8.1+ and, in intval's case,
+	 * silently changes the result by treating the old value as the base.
+	 *
+	 * @param callable $callable A PHP callable.
+	 * @return bool
+	 */
+	private function sanitize_callback_accepts_old_value( $callable ) {
+		try {
+			if ( is_array( $callable ) ) {
+				$reflection = new ReflectionMethod( $callable[0], $callable[1] );
+			} elseif ( is_string( $callable ) && strpos( $callable, '::' ) !== false ) {
+				$parts = explode( '::', $callable, 2 );
+				$reflection = new ReflectionMethod( $parts[0], $parts[1] );
+			} elseif ( is_object( $callable ) ) {
+				$reflection = new ReflectionMethod( $callable, '__invoke' );
+			} else {
+				$reflection = new ReflectionFunction( $callable );
+			}
+
+			return $reflection->getNumberOfRequiredParameters() >= 2;
+		} catch ( ReflectionException $e ) {
+			return false;
+		}
 	}
 
 	/**
