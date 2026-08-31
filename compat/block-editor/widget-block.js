@@ -1911,6 +1911,14 @@ const sowbEnsureIframeOldEditorApi = ( frame ) => {
 		return;
 	}
 
+	// The retry script below is appended under the same permanent dedupe as
+	// the clone walk, so it must not land in a canvas that cannot evaluate
+	// it yet. The gate schedules its own retry, and the form setup that
+	// called this re-runs each tick, so deferring here self-heals.
+	if ( ! sowbCanvasIsReadyForAssetClone( frame, sowbGetEditorAssetSourceDocument() ) ) {
+		return;
+	}
+
 	if (
 		iframeWindow.sowbEditorJsRetryPending ||
 		(
