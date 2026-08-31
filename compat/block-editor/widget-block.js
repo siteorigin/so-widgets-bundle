@@ -2336,11 +2336,18 @@ const sowbCanvasUnclonableDependencies = ( canvasWindow, sourceDoc, canvasDoc ) 
  * evaluates against a window that has none.
  *
  * sowbCloneElementToCanvas() dedupes by id against the whole canvas document,
- * so a script appended too early can never be replaced. That is why this gates
- * the walk rather than retrying it afterwards.
+ * so a script appended too early can never be replaced. That is why the walk
+ * never runs before the canvas holds its dependencies and its body: cloning
+ * into a canvas that cannot evaluate the clones is worse than not cloning,
+ * because the failed nodes block every later attempt.
  *
- * Fails open: once the budget is spent the walk runs regardless, which is the
- * behaviour that shipped before this gate existed.
+ * There is no budget. Ready is observable, so the wait polls until the
+ * dependencies and the body exist, however long that takes. A canvas document
+ * that finishes loading without them gets one console.warn naming the missing
+ * handles, and the poll continues so a dependency arriving late by any route
+ * is still picked up. A canvas still loading after twenty ticks gets one
+ * "still waiting" warn. Wait state lives on the iframe element, per canvas
+ * document, so the about:blank to blob navigation cannot discard it.
  *
  * @param {HTMLIFrameElement} frame     The editor canvas iframe.
  * @param {Document}          sourceDoc The document the walk clones from.
@@ -2360,33 +2367,102 @@ const sowbCanvasIsReadyForAssetClone = ( frame, sourceDoc ) => {
 		return true;
 	}
 
-	if (
-		! canvasWindow ||
-		! canvasDoc ||
-		sowbCanvasUnclonableDependencies( canvasWindow, sourceDoc, canvasDoc ).length === 0
-	) {
+	if ( ! canvasWindow || ! canvasDoc ) {
 		return true;
 	}
 
-	// One timer and one budget per canvas. This is called at least twice per
-	// widget block and once per block, and they all share a single wait.
-	if ( canvasWindow.sowbCanvasCloneWaitTimer ) {
+	// Wait state is per canvas document, kept on the iframe element rather
+	// than the canvas window: the element survives the about:blank to blob
+	// navigation that silently discards anything stored on the window. A new
+	// document gets a fresh cycle and fresh diagnostics.
+	if ( ! frame.sowbCanvasCloneWait || frame.sowbCanvasCloneWait.doc !== canvasDoc ) {
+		frame.sowbCanvasCloneWait = {
+			doc: canvasDoc,
+			attempts: 0,
+			completeMissSince: 0,
+			stallWarned: false,
+			terminalWarned: false,
+		};
+	}
+	const wait = frame.sowbCanvasCloneWait;
+
+	const missing = sowbCanvasUnclonableDependencies( canvasWindow, sourceDoc, canvasDoc );
+
+	// Ready means the dependencies have evaluated AND the body Gutenberg
+	// portals in on load exists - the walk appends there. This runs before
+	// the caller's own body check, so a not-ready verdict keeps the retry
+	// ticking instead of dying against a body-less document.
+	if ( missing.length === 0 && canvasDoc.body ) {
+		return true;
+	}
+
+	// The document finished loading, so the dependencies were either in its
+	// head or they are not coming at all. Warn once per document and keep
+	// polling - the check above picks up a dependency arriving late by any
+	// route. Two qualifiers: the pre-navigation about:blank document also
+	// reports complete, so it never counts; and a healthy canvas can report
+	// complete shortly before its scripts finish evaluating, so the warn
+	// waits for the miss to hold for a full second first.
+	if (
+		missing.length > 0 &&
+		canvasDoc.readyState === 'complete' &&
+		canvasDoc.URL !== 'about:blank'
+	) {
+		if ( ! wait.completeMissSince ) {
+			wait.completeMissSince = Date.now();
+		}
+
+		// Only the editor canvas is worth a diagnostic. The resolver also
+		// hands this gate Gutenberg's transient preview iframes, which never
+		// load these dependencies and disappear on their own.
+		if (
+			! wait.terminalWarned &&
+			frame.name === 'editor-canvas' &&
+			Date.now() - wait.completeMissSince >= 1000
+		) {
+			wait.terminalWarned = true;
+			console.warn(
+				'SiteOrigin Widgets: editor canvas finished loading without ' +
+				missing.join( ', ' ) +
+				'. Widget asset cloning is deferred until they are available.'
+			);
+		}
+	}
+
+	// One tick chain per canvas element. This is called at least twice per
+	// widget block and once per block, and they all share a single wait. The
+	// lock sits before the counting so attempts counts ticks, not callers.
+	if ( frame.sowbCanvasCloneWaitTimer ) {
 		return false;
 	}
 
-	const attempts = canvasWindow.sowbCanvasCloneWaitAttempts || 0;
-	if ( attempts >= 20 ) {
-		return true;
+	wait.attempts++;
+
+	if (
+		wait.attempts >= 20 &&
+		! wait.stallWarned &&
+		! wait.terminalWarned &&
+		frame.name === 'editor-canvas' &&
+		canvasDoc.readyState !== 'complete'
+	) {
+		wait.stallWarned = true;
+		console.warn(
+			'SiteOrigin Widgets: still waiting for the editor canvas to load ' +
+			( missing.length ? missing.join( ', ' ) : 'its body' ) + '.'
+		);
 	}
 
-	canvasWindow.sowbCanvasCloneWaitAttempts = attempts + 1;
-	canvasWindow.sowbCanvasCloneWaitTimer = canvasWindow.setTimeout( () => {
+	// The timer belongs to the window that owns the iframe element, never the
+	// canvas window - a timer on the canvas window is discarded when its
+	// about:blank document navigates to the real canvas, stranding the wait.
+	const ownerWindow = ( frame.ownerDocument && frame.ownerDocument.defaultView ) || window;
+	frame.sowbCanvasCloneWaitTimer = ownerWindow.setTimeout( () => {
 		// Cleared before re-entering. Clearing afterwards would leave the
 		// re-entrant call seeing a live timer, so it would return without
 		// scheduling and the wait would end after a single tick.
-		canvasWindow.sowbCanvasCloneWaitTimer = 0;
+		frame.sowbCanvasCloneWaitTimer = 0;
 
-		if ( frame.isConnected && frame.contentWindow === canvasWindow ) {
+		if ( frame.isConnected ) {
 			sowbMaybeSetupSiteEditorAssets( frame );
 		}
 	}, 250 );
@@ -2473,12 +2549,6 @@ const sowbMaybeSetupSiteEditorAssets = ( frame = null ) => {
 		return;
 	}
 
-	const $canvasBody = jQuery( iframeDocument ).find( 'body' );
-
-	if ( $canvasBody.length === 0 ) {
-		return;
-	}
-
 	// When this helper runs from INSIDE the iframe (the IIFE branch at the
 	// bottom of widget-block.js), the source <script>/<link> nodes live in
 	// the parent admin document, not in this script's own document. Read
@@ -2501,7 +2571,16 @@ const sowbMaybeSetupSiteEditorAssets = ( frame = null ) => {
 
 	// Everything below appends to the canvas under a dedupe that is permanent,
 	// so none of it may run before the canvas can evaluate what it appends.
+	// The gate requires the canvas body too, so it runs before the body check
+	// below: its not-ready verdict keeps its own retry ticking, where a bare
+	// return against a body-less document would end the wait for good.
 	if ( ! sowbCanvasIsReadyForAssetClone( currentFrame, sourceDoc ) ) {
+		return;
+	}
+
+	const $canvasBody = jQuery( iframeDocument ).find( 'body' );
+
+	if ( $canvasBody.length === 0 ) {
 		return;
 	}
 
