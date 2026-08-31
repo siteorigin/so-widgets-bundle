@@ -2292,9 +2292,11 @@ const sowbCloneTinyMCEExternalPluginAssets = ( $canvasBody, sourceDoc ) => {
 /**
  * Handles the first wave of cloned scripts reads at evaluation time.
  *
- * Each is waited on only when it cannot be cloned from the source document,
- * so under SCRIPT_DEBUG - where every handle emits with its own id - none of
- * them is ever waited on.
+ * Each is waited on only when it is neither live in the canvas window nor
+ * ours to clone from the source document. Under SCRIPT_DEBUG every handle
+ * emits with its own id, so most are clonable and never waited on - except
+ * while the canvas's own copy of a handle is still loading, since a handle
+ * the canvas already holds is not ours to clone.
  *
  * @type {string[]}
  */
@@ -2535,9 +2537,7 @@ const sowbEnsureCanvasBuilderFields = ( canvasWindow ) => {
  * The function performs the following steps:
  * 1. Resolves the current Site Editor iframe and confirms it is accessible.
  * 2. Copies elements specified in `sowbCanvasCloneElements` to the iframe's canvas body.
- * 3. Copies elements specified in `sowbCanvasRemoveElements` to the iframe's canvas body
- *    and removes the originals from the main document.
- * 4. Sets the `ajaxurl` variable in the iframe's `contentWindow` for AJAX requests if it
+ * 3. Sets the `ajaxurl` variable in the iframe's `contentWindow` for AJAX requests if it
  *    is not already defined.
  */
 const sowbMaybeSetupSiteEditorAssets = ( frame = null ) => {
