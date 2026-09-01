@@ -2372,8 +2372,8 @@ const sowbCanvasIsReadyForAssetClone = ( frame, sourceDoc ) => {
 		canvasWindow = frame && frame.contentWindow;
 		canvasDoc = frame && frame.contentDocument;
 	} catch ( e ) {
-		// Ignore cross-window errors and let the walk proceed as it did
-		// before this gate existed.
+		// A frame this code cannot read is not gateable; report ready and let
+		// the caller take its own fallback path.
 		return true;
 	}
 
