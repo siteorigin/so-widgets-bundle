@@ -1588,11 +1588,21 @@ const sowbCanvasCloneElements = [
 	'#jquery-core-js',
 	'#jquery-migrate-js',
 	'#underscore-js',
-	'#editor-js-after',
 	'#wp-tinymce-js',
 	'#utils-js',
+	// WordPress emits `-extra` (localization) before a script and `-after`
+	// following it, so this list keeps them in that order.
+	//
+	// Order is all this does. It does not sequence them: the loop appends
+	// synchronously and an appended inline script runs immediately rather than
+	// waiting for the external file it depends on. When one throws, the
+	// exception is reported to the canvas window and does not propagate back
+	// out of appendChild(), so the walk carries on - the script simply had no
+	// effect. sowbEnsureIframeOldEditorApi() re-injects editor-js for exactly
+	// that case.
 	'#editor-js-extra',
 	'#editor-js',
+	'#editor-js-after',
 	'#quicktags-js-extra',
 	'#quicktags-js',
 	'#wp-block-library-js-before',
@@ -1666,6 +1676,48 @@ const sowbCanvasCloneElements = [
 	'#so-tabs-field-js',
 	'#so-tinymce-field-js',
 	'#so-toggle-field-js',
+
+	// Page Builder, for the builder field ('type' => 'builder'). Its stylesheet
+	// already reached the canvas but its script did not, so the Open Builder
+	// button rendered and did nothing. Dependencies first (see
+	// siteorigin-panels/inc/admin.php:509 for the declared list) - the jQuery UI
+	// and colour-picker handles it also needs are cloned further up.
+	'#backbone-js',
+	// moxiejs before plupload: WordPress registers plupload with a hard moxiejs
+	// dependency (wp-includes/script-loader.php:1043-1044), and plupload.js
+	// leaves window.plupload undefined if mOxie is absent. Cloning plupload
+	// alone would break Page Builder's import and upload flows inside the
+	// canvas while everything else appeared to work.
+	'#moxiejs-js',
+	'#plupload-js',
+	'#so-panels-admin-js-extra',
+	'#so-panels-admin-js',
+
+	// Page Builder's dialog templates (siteorigin-panels/tpl/js-templates.php),
+	// without which the dialog has nothing to render.
+	'#siteorigin-panels-dialog',
+	'#siteorigin-panels-dialog-tab',
+	'#siteorigin-panels-dialog-builder',
+	'#siteorigin-panels-dialog-row',
+	'#siteorigin-panels-dialog-row-cell-preview',
+	'#siteorigin-panels-dialog-widget',
+	'#siteorigin-panels-dialog-widgets',
+	'#siteorigin-panels-dialog-widgets-widget',
+	'#siteorigin-panels-dialog-widget-sidebar-widget',
+	'#siteorigin-panels-dialog-history',
+	'#siteorigin-panels-dialog-history-entry',
+	'#siteorigin-panels-dialog-prebuilt',
+	'#siteorigin-panels-dialog-prebuilt-importexport',
+	'#siteorigin-panels-builder',
+	'#siteorigin-panels-builder-row',
+	'#siteorigin-panels-builder-cell',
+	'#siteorigin-panels-builder-widget',
+	'#siteorigin-panels-context-menu',
+	'#siteorigin-panels-context-menu-section',
+	'#siteorigin-panels-directory-items',
+	'#siteorigin-panels-directory-enable',
+	'#siteorigin-panels-live-editor',
+	'#siteorigin-panels-add-layout-block-button',
 ];
 
 const sowbNormalizeAssetUrl = ( value, baseHref ) => {
@@ -1782,6 +1834,8 @@ const sowbIsScriptHandleLoadedInWindow = ( targetWindow, scriptId ) => {
 			return !! targetWindow.QTags;
 		case 'underscore-js':
 			return !! targetWindow._;
+		case 'backbone-js':
+			return !! targetWindow.Backbone;
 		default:
 			return false;
 	}
@@ -1854,6 +1908,14 @@ const sowbEnsureIframeOldEditorApi = ( frame ) => {
 	}
 
 	if ( frame.contentDocument.getElementById( 'sowb-editor-js-retry' ) ) {
+		return;
+	}
+
+	// The retry script below is appended under the same permanent dedupe as
+	// the clone walk, so it must not land in a canvas that cannot evaluate
+	// it yet. The gate schedules its own retry, and the form setup that
+	// called this re-runs each tick, so deferring here self-heals.
+	if ( ! sowbCanvasIsReadyForAssetClone( frame, sowbGetEditorAssetSourceDocument() ) ) {
 		return;
 	}
 
@@ -2084,6 +2146,12 @@ const sowbCloneElementToCanvas = ( $canvasBody, element, $source ) => {
 		if ( scriptCloneKey && canvasWindow ) {
 			clonedElement.addEventListener( 'load', () => {
 				delete canvasWindow.sowbScriptClonePending[ scriptCloneKey ];
+
+				// Forms that finished setting up before Page Builder landed
+				// skipped their builder fields, and nothing else retries them.
+				if ( scriptCloneKey === 'id:so-panels-admin-js' ) {
+					sowbEnsureCanvasBuilderFields( canvasWindow );
+				}
 			}, { once: true } );
 			clonedElement.addEventListener( 'error', () => {
 				delete canvasWindow.sowbScriptClonePending[ scriptCloneKey ];
@@ -2222,6 +2290,244 @@ const sowbCloneTinyMCEExternalPluginAssets = ( $canvasBody, sourceDoc ) => {
 };
 
 /**
+ * Handles the first wave of cloned scripts reads at evaluation time.
+ *
+ * Each is waited on only when it is neither live in the canvas window nor
+ * ours to clone from the source document. Under SCRIPT_DEBUG every handle
+ * emits with its own id, so most are clonable and never waited on - except
+ * while the canvas's own copy of a handle is still loading, since a handle
+ * the canvas already holds is not ours to clone.
+ *
+ * @type {string[]}
+ */
+const sowbCanvasBaseDependencies = [
+	'jquery-core-js',
+	'jquery-ui-core-js',
+	'jquery-ui-mouse-js',
+	'underscore-js',
+	'backbone-js',
+];
+
+/**
+ * Lists the dependencies that are neither live in the canvas nor ours to clone.
+ *
+ * A handle counts as ours to clone only when the source document has it AND the
+ * canvas does not already hold that id: sowbCloneElementToCanvas() dedupes by
+ * id, so a copy the canvas is still loading silently cancels our clone and the
+ * walk would carry on without the dependency it thought it was supplying.
+ *
+ * @param {Window}   canvasWindow The canvas iframe's window.
+ * @param {Document} sourceDoc    The document the walk clones from.
+ * @param {Document} canvasDoc    The canvas iframe's document.
+ *
+ * @returns {string[]} Script ids the walk must wait for.
+ */
+const sowbCanvasUnclonableDependencies = ( canvasWindow, sourceDoc, canvasDoc ) => {
+	return sowbCanvasBaseDependencies.filter( ( scriptId ) => {
+		if ( sowbIsScriptHandleLoadedInWindow( canvasWindow, scriptId ) ) {
+			return false;
+		}
+
+		return ! (
+			sowbGetElementById( sourceDoc, scriptId ) &&
+			! sowbGetElementById( canvasDoc, scriptId )
+		);
+	} );
+};
+
+/**
+ * Decides whether the canvas is ready for the clone walk.
+ *
+ * WordPress concatenates core scripts into load-scripts.php, and those bundle
+ * elements carry no id, so `#jquery-core-js` does not exist in the source
+ * document on a default install and jQuery cannot be cloned. The canvas loads
+ * its own copy in its <head>, asynchronously, while this runs from a React ref
+ * that fires first - so without a wait every cloned script that needs jQuery
+ * evaluates against a window that has none.
+ *
+ * sowbCloneElementToCanvas() dedupes by id against the whole canvas document,
+ * so a script appended too early can never be replaced. That is why the walk
+ * never runs before the canvas holds its dependencies and its body: cloning
+ * into a canvas that cannot evaluate the clones is worse than not cloning,
+ * because the failed nodes block every later attempt.
+ *
+ * There is no budget. Ready is observable, so the wait polls until the
+ * dependencies and the body exist, however long that takes. A canvas document
+ * that finishes loading without them gets one console.warn naming the missing
+ * handles, and the poll continues so a dependency arriving late by any route
+ * is still picked up. A canvas still loading after twenty ticks gets one
+ * "still waiting" warn. Wait state lives on the iframe element, per canvas
+ * document, so the about:blank to blob navigation cannot discard it.
+ *
+ * @param {HTMLIFrameElement} frame     The editor canvas iframe.
+ * @param {Document}          sourceDoc The document the walk clones from.
+ *
+ * @returns {boolean} True to walk now, false when a retry has been scheduled.
+ */
+const sowbCanvasIsReadyForAssetClone = ( frame, sourceDoc ) => {
+	let canvasWindow;
+	let canvasDoc;
+
+	try {
+		canvasWindow = frame && frame.contentWindow;
+		canvasDoc = frame && frame.contentDocument;
+	} catch ( e ) {
+		// A frame this code cannot read is not gateable; report ready and let
+		// the caller take its own fallback path.
+		return true;
+	}
+
+	if ( ! canvasWindow || ! canvasDoc ) {
+		return true;
+	}
+
+	// Wait state is per canvas document, kept on the iframe element rather
+	// than the canvas window: the element survives the about:blank to blob
+	// navigation that silently discards anything stored on the window. A new
+	// document gets a fresh cycle and fresh diagnostics.
+	if ( ! frame.sowbCanvasCloneWait || frame.sowbCanvasCloneWait.doc !== canvasDoc ) {
+		frame.sowbCanvasCloneWait = {
+			doc: canvasDoc,
+			attempts: 0,
+			completeMissSince: 0,
+			stallWarned: false,
+			terminalWarned: false,
+		};
+	}
+	const wait = frame.sowbCanvasCloneWait;
+
+	const missing = sowbCanvasUnclonableDependencies( canvasWindow, sourceDoc, canvasDoc );
+
+	// Ready means the dependencies have evaluated AND the body Gutenberg
+	// portals in on load exists - the walk appends there. This runs before
+	// the caller's own body check, so a not-ready verdict keeps the retry
+	// ticking instead of dying against a body-less document.
+	if ( missing.length === 0 && canvasDoc.body ) {
+		return true;
+	}
+
+	// The document finished loading, so the dependencies were either in its
+	// head or they are not coming at all. Warn once per document and keep
+	// polling - the check above picks up a dependency arriving late by any
+	// route. Two qualifiers: the pre-navigation about:blank document also
+	// reports complete, so it never counts; and a healthy canvas can report
+	// complete shortly before its scripts finish evaluating, so the warn
+	// waits for the miss to hold for a full second first.
+	if (
+		missing.length > 0 &&
+		canvasDoc.readyState === 'complete' &&
+		canvasDoc.URL !== 'about:blank'
+	) {
+		if ( ! wait.completeMissSince ) {
+			wait.completeMissSince = Date.now();
+		}
+
+		// Only the editor canvas is worth a diagnostic. The resolver also
+		// hands this gate Gutenberg's transient preview iframes, which never
+		// load these dependencies and disappear on their own.
+		if (
+			! wait.terminalWarned &&
+			frame.name === 'editor-canvas' &&
+			Date.now() - wait.completeMissSince >= 1000
+		) {
+			wait.terminalWarned = true;
+			console.warn(
+				'SiteOrigin Widgets: editor canvas finished loading without ' +
+				missing.join( ', ' ) +
+				'. Widget asset cloning is deferred until they are available.'
+			);
+		}
+	}
+
+	// One tick chain per canvas element. This is called at least twice per
+	// widget block and once per block, and they all share a single wait. The
+	// lock sits before the counting so attempts counts ticks, not callers.
+	if ( frame.sowbCanvasCloneWaitTimer ) {
+		return false;
+	}
+
+	wait.attempts++;
+
+	if (
+		wait.attempts >= 20 &&
+		! wait.stallWarned &&
+		! wait.terminalWarned &&
+		frame.name === 'editor-canvas' &&
+		canvasDoc.readyState !== 'complete'
+	) {
+		wait.stallWarned = true;
+		console.warn(
+			'SiteOrigin Widgets: still waiting for the editor canvas to load ' +
+			( missing.length ? missing.join( ', ' ) : 'its body' ) + '.'
+		);
+	}
+
+	// The timer belongs to the window that owns the iframe element, never the
+	// canvas window - a timer on the canvas window is discarded when its
+	// about:blank document navigates to the real canvas, stranding the wait.
+	const ownerWindow = ( frame.ownerDocument && frame.ownerDocument.defaultView ) || window;
+	frame.sowbCanvasCloneWaitTimer = ownerWindow.setTimeout( () => {
+		// Cleared before re-entering. Clearing afterwards would leave the
+		// re-entrant call seeing a live timer, so it would return without
+		// scheduling and the wait would end after a single tick.
+		frame.sowbCanvasCloneWaitTimer = 0;
+
+		if ( frame.isConnected ) {
+			sowbMaybeSetupSiteEditorAssets( frame );
+		}
+	}, 250 );
+
+	return false;
+};
+
+/**
+ * Sets up any builder fields Page Builder had not loaded in time to handle.
+ *
+ * siteorigin-widget-admin reaches the canvas through its <head>, while
+ * so-panels-admin arrives only through the clone walk, so a form can finish
+ * setting up while soPanelsSetupBuilderWidget is still undefined. The check in
+ * base/js/admin.js is a bare `if` with no retry, so those fields would stay
+ * dead for the rest of the page.
+ *
+ * @param {Window} canvasWindow The canvas iframe's window.
+ *
+ * @returns {boolean} True when Page Builder was available to set fields up.
+ */
+const sowbEnsureCanvasBuilderFields = ( canvasWindow ) => {
+	let canvasJQuery;
+
+	try {
+		canvasJQuery = canvasWindow && canvasWindow.jQuery;
+	} catch ( e ) {
+		// Ignore cross-window errors (e.g. iframe detached or navigated
+		// between the caller's checks and this read).
+		return false;
+	}
+
+	if (
+		! canvasJQuery ||
+		typeof canvasJQuery.fn.soPanelsSetupBuilderWidget === 'undefined'
+	) {
+		return false;
+	}
+
+	canvasJQuery( '.siteorigin-widget-field-type-builder > .siteorigin-page-builder-field' ).each( function() {
+		const $field = canvasJQuery( this );
+
+		// Only fields Page Builder has never set up. Page Builder skips these
+		// itself, but checking here keeps an open dialog or an unsaved edit
+		// out of the call entirely.
+		if ( $field.data( 'soPanelsBuilderWidgetInitialized' ) ) {
+			return;
+		}
+
+		$field.soPanelsSetupBuilderWidget( { builderType: $field.data( 'type' ) } );
+	} );
+
+	return true;
+};
+
+/**
  * Sets up assets required for the Site Editor iframe.
  *
  * This function ensures that necessary HTML templates, scripts, and styles are copied
@@ -2231,9 +2537,7 @@ const sowbCloneTinyMCEExternalPluginAssets = ( $canvasBody, sourceDoc ) => {
  * The function performs the following steps:
  * 1. Resolves the current Site Editor iframe and confirms it is accessible.
  * 2. Copies elements specified in `sowbCanvasCloneElements` to the iframe's canvas body.
- * 3. Copies elements specified in `sowbCanvasRemoveElements` to the iframe's canvas body
- *    and removes the originals from the main document.
- * 4. Sets the `ajaxurl` variable in the iframe's `contentWindow` for AJAX requests if it
+ * 3. Sets the `ajaxurl` variable in the iframe's `contentWindow` for AJAX requests if it
  *    is not already defined.
  */
 const sowbMaybeSetupSiteEditorAssets = ( frame = null ) => {
@@ -2250,12 +2554,6 @@ const sowbMaybeSetupSiteEditorAssets = ( frame = null ) => {
 			currentFrame.contentWindow.document
 		);
 	} catch ( e ) {
-		return;
-	}
-
-	const $canvasBody = jQuery( iframeDocument ).find( 'body' );
-
-	if ( $canvasBody.length === 0 ) {
 		return;
 	}
 
@@ -2276,7 +2574,24 @@ const sowbMaybeSetupSiteEditorAssets = ( frame = null ) => {
 		sourceDoc = document;
 	}
 
+	// Copies plain values and needs no jQuery, so it runs while we wait.
 	sowbEnsureIframeEditorGlobals( currentFrame );
+
+	// Everything below appends to the canvas under a dedupe that is permanent,
+	// so none of it may run before the canvas can evaluate what it appends.
+	// The gate requires the canvas body too, so it runs before the body check
+	// below: its not-ready verdict keeps its own retry ticking, where a bare
+	// return against a body-less document would end the wait for good.
+	if ( ! sowbCanvasIsReadyForAssetClone( currentFrame, sourceDoc ) ) {
+		return;
+	}
+
+	const $canvasBody = jQuery( iframeDocument ).find( 'body' );
+
+	if ( $canvasBody.length === 0 ) {
+		return;
+	}
+
 	sowbCloneElementsToCanvas( $canvasBody, sourceDoc );
 	sowbCloneTinyMCEExternalPluginAssets( $canvasBody, sourceDoc );
 	sowbEnsureIframeOldEditorApi( currentFrame );
@@ -2292,6 +2607,16 @@ const sowbMaybeSetupSiteEditorAssets = ( frame = null ) => {
 	} catch ( e ) {
 		// Ignore cross-window errors (e.g. iframe detached between the
 		// initial check and the assignment).
+	}
+
+	// Last, so Page Builder's dialog templates are already in the canvas. This
+	// covers the case where so-panels-admin was present before the walk, so no
+	// load event fires for the clone.
+	try {
+		sowbEnsureCanvasBuilderFields( currentFrame.contentWindow );
+	} catch ( e ) {
+		// Ignore cross-window errors (e.g. iframe detached between the
+		// initial check and this call).
 	}
 };
 
