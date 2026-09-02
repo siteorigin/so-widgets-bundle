@@ -115,9 +115,18 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			) {
 				$instance['text'] = $this->process_more_quicktag( $instance['text'] );
 			}
-		}
 
-		$instance['text'] = do_shortcode( shortcode_unautop( $instance['text'] ) );
+			// Only run shortcodes when rendering for the front end. Page Builder's
+			// post content copy is a mirror of the layout, and executing shortcodes
+			// while it's generated bakes their output into post_content — a form
+			// shortcode, for example, is stored as rendered placeholder markup that
+			// displays broken (without its plugin's JS/CSS) wherever the mirror is
+			// shown, and plugins that check post_content with has_shortcode() to
+			// decide whether to enqueue their assets no longer find their shortcode.
+			// Keeping the shortcode intact lets it render normally, through
+			// the_content, when the copied content is displayed.
+			$instance['text'] = do_shortcode( shortcode_unautop( $instance['text'] ) );
+		}
 
 		return array(
 			'text' => $instance['text'],
