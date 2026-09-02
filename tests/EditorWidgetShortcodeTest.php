@@ -3,27 +3,10 @@
 use Brain\Monkey\Functions;
 use SiteOrigin\Tests\SiteOriginTests;
 
-/**
- * Minimal stand-ins so widgets/editor/editor.php can be required outside
- * WordPress. The Editor widget only needs a parent with a constructor and
- * is_preview(); siteorigin_widget_register() is called at the top level of the
- * file, as it's written to run inside WordPress.
- */
-// PriceTableLessVariablesTest declares a leaner SiteOrigin_Widget stub behind
-// the same guard. This file loads first alphabetically, so this stub - which
-// also provides is_preview() and the six-argument constructor the widget's
-// parent call needs - is the one that wins. Both suites depend on that order.
-if ( ! class_exists( 'SiteOrigin_Widget' ) ) {
-	class SiteOrigin_Widget {
-		public function __construct( $id = '', $name = '', $widget_options = array(), $control_options = array(), $form_options = array(), $base_folder = false ) {
-		}
-
-		public function is_preview() {
-			return false;
-		}
-	}
-}
-
+// The SiteOrigin_Widget stand-in lives in bootstrap.php, where it loads
+// before any test file regardless of order. siteorigin_widget_register() is
+// called at the top level of editor.php, as it's written to run inside
+// WordPress.
 if ( ! function_exists( 'siteorigin_widget_register' ) ) {
 	function siteorigin_widget_register() {
 		return true;
@@ -80,10 +63,14 @@ class EditorWidgetShortcodeTest extends SiteOriginTests {
 	}
 
 	public function test_front_end_render_executes_shortcodes() {
-		Functions\when( 'shortcode_unautop' )->returnArg();
+		// The stub tags its output so do_shortcode() must receive the
+		// unautop'd text, not the raw instance text.
+		Functions\when( 'shortcode_unautop' )->alias(
+			fn( $text ) => 'unautop(' . $text . ')'
+		);
 		Functions\expect( 'do_shortcode' )
 			->once()
-			->with( 'Intro text [ninja_forms id=1]' )
+			->with( 'unautop(Intro text [ninja_forms id=1])' )
 			->andReturn( 'Intro text <div class="rendered-form"></div>' );
 
 		$variables = $this->widget()->get_template_variables( $this->instance(), array() );
