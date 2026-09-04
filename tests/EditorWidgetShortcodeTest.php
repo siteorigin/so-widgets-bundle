@@ -106,4 +106,45 @@ class EditorWidgetShortcodeTest extends SiteOriginTests {
 
 		$this->assertSame( 'Intro text [ninja_forms id=1]', $variables['text'] );
 	}
+
+	// Page Builder's opt-out filter returns false for a site that wants baked
+	// shortcode output in its post content copy; every other tag passes through.
+	private function opt_out_of_keeping_shortcodes(): void {
+		Functions\when( 'apply_filters' )->alias(
+			fn( $tag, $value ) => $tag === 'siteorigin_panels_post_content_keep_shortcodes' ? false : $value
+		);
+	}
+
+	public function test_keep_shortcodes_opt_out_executes_shortcodes_in_post_content_render() {
+		$GLOBALS['SITEORIGIN_PANELS_POST_CONTENT_RENDER'] = true;
+		$this->opt_out_of_keeping_shortcodes();
+
+		Functions\when( 'shortcode_unautop' )->alias(
+			fn( $text ) => 'unautop(' . $text . ')'
+		);
+		Functions\expect( 'do_shortcode' )
+			->once()
+			->with( 'unautop(Intro text [ninja_forms id=1])' )
+			->andReturn( 'Intro text <div class="rendered-form"></div>' );
+		// The opt-out re-enables shortcodes only; the rest of the front-end
+		// pipeline still stays off during the post content render.
+		Functions\expect( 'wpautop' )->never();
+
+		$instance = array_merge( $this->instance(), array( 'autop' => true ) );
+		$variables = $this->widget()->get_template_variables( $instance, array() );
+
+		$this->assertSame( 'Intro text <div class="rendered-form"></div>', $variables['text'] );
+	}
+
+	public function test_keep_shortcodes_opt_out_does_not_affect_legacy_cache_render() {
+		$GLOBALS['SITEORIGIN_PANELS_CACHE_RENDER'] = true;
+		$this->opt_out_of_keeping_shortcodes();
+
+		Functions\expect( 'do_shortcode' )->never();
+		Functions\expect( 'shortcode_unautop' )->never();
+
+		$variables = $this->widget()->get_template_variables( $this->instance(), array() );
+
+		$this->assertSame( 'Intro text [ninja_forms id=1]', $variables['text'] );
+	}
 }
