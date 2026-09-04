@@ -21,6 +21,26 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		'support@siteorigin.com',
 	);
 
+	/**
+	 * The design sections that should always be treated as arrays.
+	 *
+	 * Corrupt or legacy widget instances can save these as strings (e.g. from an
+	 * older widget version, or a manual edit), which causes a "Cannot access offset
+	 * of type string on string" TypeError when the contact form widget's design
+	 * variables are generated. Normalising them to arrays keeps lookups such as
+	 * $instance['design']['fields']['font'] from crashing on PHP 8+.
+	 */
+	const DESIGN_SECTIONS = array(
+		'container',
+		'labels',
+		'fields',
+		'descriptions',
+		'errors',
+		'submit',
+		'focus',
+		'success',
+	);
+
 	public function __construct() {
 		parent::__construct(
 			'sow-contact-form',
@@ -1185,10 +1205,29 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	/**
+	 * Ensure the design sections are valid arrays.
+	 *
+	 * @param array $design The raw widget 'design' instance value.
+	 *
+	 * @return array The design with each section guaranteed to be an array.
+	 */
+	private function normalize_design_sections( $design ) {
+		foreach ( self::DESIGN_SECTIONS as $section ) {
+			if ( ! isset( $design[ $section ] ) || ! is_array( $design[ $section ] ) ) {
+				$design[ $section ] = array();
+			}
+		}
+
+		return $design;
+	}
+
 	public function get_less_variables( $instance ) {
 		if ( empty( $instance['design'] ) ) {
 			return;
 		}
+
+		$instance['design'] = $this->normalize_design_sections( $instance['design'] );
 
 		if ( empty( $instance['design']['labels']['font'] ) ) {
 			$instance['design']['labels'] = array( 'font' => '' );
