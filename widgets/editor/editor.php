@@ -124,7 +124,18 @@ class SiteOrigin_Widget_Editor_Widget extends SiteOrigin_Widget {
 			// shown, and plugins that check post_content with has_shortcode() to
 			// decide whether to enqueue their assets no longer find their shortcode.
 			// Keeping the shortcode intact lets it render normally, through
-			// the_content, when the copied content is displayed.
+			// the_content, when the copied content is displayed. A site can opt
+			// back into baked output through Page Builder's
+			// `siteorigin_panels_post_content_keep_shortcodes` filter, handled below.
+			$instance['text'] = do_shortcode( shortcode_unautop( $instance['text'] ) );
+		} elseif (
+			// Page Builder consults this filter before its post content render and
+			// executes shortcodes itself when it returns false. Follow the same
+			// decision so both plugins agree on what the mirror contains. The
+			// legacy cache render has no such switch and always keeps shortcodes.
+			empty( $GLOBALS[ 'SITEORIGIN_PANELS_CACHE_RENDER' ] ) &&
+			! (bool) apply_filters( 'siteorigin_panels_post_content_keep_shortcodes', true )
+		) {
 			$instance['text'] = do_shortcode( shortcode_unautop( $instance['text'] ) );
 		}
 
