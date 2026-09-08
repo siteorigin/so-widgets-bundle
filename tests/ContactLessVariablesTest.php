@@ -67,8 +67,15 @@ class ContactLessVariablesTest extends SiteOriginTests {
 	protected function setUp(): void {
 		parent::setUp();
 
+		// The real helper looks the value up as an array key, so handing it a
+		// non-scalar is a fatal on PHP 8. Mirror that here: a permissive stub would
+		// hide exactly the bug this suite is meant to catch.
 		Functions\when( 'siteorigin_widget_get_font' )->alias(
-			function () {
+			function ( $font_value = '' ) {
+				if ( ! is_scalar( $font_value ) ) {
+					throw new \TypeError( 'Cannot access offset of type ' . gettype( $font_value ) . ' in isset or empty' );
+				}
+
 				return array(
 					'family'     => '',
 					'weight'     => '',
@@ -317,6 +324,10 @@ class ContactLessVariablesTest extends SiteOriginTests {
 		$this->assertIsString( $html );
 		$this->assertStringContainsString( 'sow-form-field', $html );
 		$this->assertStringContainsString( 'Your Name', $html );
+
+		// No malformed shape carries a usable label position, so every one of them
+		// must fall back to the documented default rather than emit an empty class.
+		$this->assertStringContainsString( 'sow-form-field-label-above', $html );
 	}
 
 	/**
@@ -363,6 +374,13 @@ class ContactLessVariablesTest extends SiteOriginTests {
 		foreach ( self::SECTIONS as $section ) {
 			$shapes[ "section $section empty string" ] = array( array( $section => '' ) );
 			$shapes[ "section $section string" ]       = array( array( $section => 'corrupt-string' ) );
+		}
+
+		// A leaf value can be malformed even when its section is a proper array.
+		// Font values are the ones that reach a helper which uses them as a key.
+		foreach ( array( 'labels', 'fields', 'success' ) as $section ) {
+			$shapes[ "section $section font empty array" ] = array( array( $section => array( 'font' => array() ) ) );
+			$shapes[ "section $section font array" ]       = array( array( $section => array( 'font' => array( 'Arial' ) ) ) );
 		}
 
 		return $shapes;

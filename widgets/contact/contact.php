@@ -1213,6 +1213,21 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	/**
+	 * Read a font value that is safe to hand to siteorigin_widget_get_font().
+	 *
+	 * The font helper uses the value as an array key, which is a fatal on PHP 8 if
+	 * a stored instance holds an array there. Only a scalar can name a font, so
+	 * anything else is treated as no font at all.
+	 *
+	 * @param mixed $value The stored font value.
+	 *
+	 * @return string
+	 */
+	private function font_value( $value ) {
+		return is_scalar( $value ) ? (string) $value : '';
+	}
+
+	/**
 	 * Ensure the design sections are valid arrays.
 	 *
 	 * A section absent from the submitted form is stored as an empty string, and
@@ -1248,8 +1263,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		if ( empty( $instance['design']['labels']['font'] ) ) {
 			$instance['design']['labels'] = array( 'font' => '' );
 		}
-		$label_font = siteorigin_widget_get_font( $instance['design']['labels']['font'] ?? '' );
-		$field_font = siteorigin_widget_get_font( $instance['design']['fields']['font'] ?? '' );
+		$label_font = siteorigin_widget_get_font( $this->font_value( $instance['design']['labels']['font'] ?? '' ) );
+		$field_font = siteorigin_widget_get_font( $this->font_value( $instance['design']['fields']['font'] ?? '' ) );
 
 		$label_position = $instance['design']['labels']['position'] ?? '';
 
@@ -1352,7 +1367,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 
 		$success_message_font = siteorigin_widget_get_font(
-			! empty( $instance['design']['success']['font'] ) ? $instance['design']['success']['font'] : ''
+			$this->font_value( $instance['design']['success']['font'] ?? '' )
 		);
 
 		if ( ! empty( $success_message_font ) && is_array( $success_message_font ) ) {
