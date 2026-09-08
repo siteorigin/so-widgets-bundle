@@ -1213,31 +1213,21 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	/**
-	 * Read a font value that is safe to hand to siteorigin_widget_get_font().
+	 * Ensure the design is shaped the way every reader of it assumes.
 	 *
-	 * The font helper uses the value as an array key, which is a fatal on PHP 8 if
-	 * a stored instance holds an array there. Only a scalar can name a font, so
-	 * anything else is treated as no font at all.
+	 * Two guarantees, both needed. Each section is an array: a section absent from
+	 * the submitted form is stored as an empty string, and the design itself can
+	 * arrive that way too. Each value inside a section is a scalar: the design form
+	 * offers only colours, measurements, selects, sliders, fonts and checkboxes, so
+	 * an array or object there is meaningless, and the values are used as array keys
+	 * and concatenated into CSS, both of which are fatal on PHP 8 for a non-scalar.
 	 *
-	 * @param mixed $value The stored font value.
-	 *
-	 * @return string
-	 */
-	private function font_value( $value ) {
-		return is_scalar( $value ) ? (string) $value : '';
-	}
-
-	/**
-	 * Ensure the design sections are valid arrays.
-	 *
-	 * A section absent from the submitted form is stored as an empty string, and
-	 * the design itself can arrive the same way, so the value is repaired once
-	 * here rather than at every point that reads it. Keys the widget does not own,
-	 * such as the section container state, are left as they are.
+	 * Keys the widget does not own, such as the section container state, keep their
+	 * value.
 	 *
 	 * @param mixed $design The raw widget 'design' instance value.
 	 *
-	 * @return array The design with each section guaranteed to be an array.
+	 * @return array The design with each section an array of scalars.
 	 */
 	private function normalize_design_sections( $design ) {
 		if ( ! is_array( $design ) ) {
@@ -1247,6 +1237,14 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		foreach ( self::DESIGN_SECTIONS as $section ) {
 			if ( ! isset( $design[ $section ] ) || ! is_array( $design[ $section ] ) ) {
 				$design[ $section ] = array();
+
+				continue;
+			}
+
+			foreach ( $design[ $section ] as $setting => $value ) {
+				if ( ! is_scalar( $value ) && ! is_null( $value ) ) {
+					$design[ $section ][ $setting ] = '';
+				}
 			}
 		}
 
@@ -1263,8 +1261,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		if ( empty( $instance['design']['labels']['font'] ) ) {
 			$instance['design']['labels'] = array( 'font' => '' );
 		}
-		$label_font = siteorigin_widget_get_font( $this->font_value( $instance['design']['labels']['font'] ?? '' ) );
-		$field_font = siteorigin_widget_get_font( $this->font_value( $instance['design']['fields']['font'] ?? '' ) );
+		$label_font = siteorigin_widget_get_font( $instance['design']['labels']['font'] ?? '' );
+		$field_font = siteorigin_widget_get_font( $instance['design']['fields']['font'] ?? '' );
 
 		$label_position = $instance['design']['labels']['position'] ?? '';
 
@@ -1367,7 +1365,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 
 		$success_message_font = siteorigin_widget_get_font(
-			$this->font_value( $instance['design']['success']['font'] ?? '' )
+			$instance['design']['success']['font'] ?? ''
 		);
 
 		if ( ! empty( $success_message_font ) && is_array( $success_message_font ) ) {

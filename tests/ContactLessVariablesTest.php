@@ -377,10 +377,27 @@ class ContactLessVariablesTest extends SiteOriginTests {
 		}
 
 		// A leaf value can be malformed even when its section is a proper array.
-		// Font values are the ones that reach a helper which uses them as a key.
+		// The design form offers only scalars, so an array or object here is
+		// meaningless, and both are fatal downstream: fonts are used as an array
+		// key, and measurements are concatenated into CSS.
 		foreach ( array( 'labels', 'fields', 'success' ) as $section ) {
 			$shapes[ "section $section font empty array" ] = array( array( $section => array( 'font' => array() ) ) );
 			$shapes[ "section $section font array" ]       = array( array( $section => array( 'font' => array( 'Arial' ) ) ) );
+		}
+
+		foreach ( array(
+			'fields border_radius' => array( 'fields' => array( 'border_radius' => null ) ),
+			'submit border_radius' => array( 'submit' => array( 'border_radius' => null ) ),
+			'submit gradient'      => array( 'submit' => array( 'background_gradient' => null ) ),
+			'submit highlight'     => array( 'submit' => array( 'inset_highlight' => null ) ),
+			'labels position'      => array( 'labels' => array( 'position' => null ) ),
+			'container background' => array( 'container' => array( 'background' => null ) ),
+		) as $name => $template ) {
+			$section = key( $template );
+			$setting = key( $template[ $section ] );
+
+			$shapes[ "leaf $name array" ]  = array( array( $section => array( $setting => array( 'x' ) ) ) );
+			$shapes[ "leaf $name object" ] = array( array( $section => array( $setting => new \stdClass() ) ) );
 		}
 
 		return $shapes;
