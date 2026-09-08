@@ -164,10 +164,11 @@ class ContactLessVariablesTest extends SiteOriginTests {
 			)
 		);
 
-		// Normalising missing sections to empty arrays means the reads resolve
-		// to null (rather than throwing an offset-of-string TypeError).
-		$this->assertSame( null, $vars['field_font_size'] );
-		$this->assertSame( null, $vars['container_background'] );
+		// Every design lookup coalesces, so a missing section resolves to an
+		// empty string rather than throwing an offset-of-string TypeError.
+		$this->assertSame( '', $vars['field_font_size'] );
+		$this->assertSame( '', $vars['container_background'] );
+		$this->assertSame( array(), $this->php_errors );
 	}
 
 	/**

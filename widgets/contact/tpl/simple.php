@@ -3,9 +3,9 @@ $captcha_name = $this->name_from_label( 'really-simple-captcha' );
 ?>
 
 <div class="sow-form-field sow-form-field-captcha">
-	<?php if ( $instance['design']['labels']['position'] != 'below' ) { ?>
+	<?php if ( ( $instance['design']['labels']['position'] ?? '' ) != 'below' ) { ?>
 		<label
-			class="sow-form-field-label-<?php echo esc_attr( $instance['design']['labels']['position'] != 'inside' ? $instance['design']['labels']['position'] : 'above' ); ?>"
+			class="sow-form-field-label-<?php echo esc_attr( ( $instance['design']['labels']['position'] ?? '' ) != 'inside' ? ( $instance['design']['labels']['position'] ?? '' ) : 'above' ); ?>"
 			for="<?php echo esc_attr( $captcha_name ); ?>"
 		>
 			<strong>
@@ -34,7 +34,7 @@ $captcha_name = $this->name_from_label( 'really-simple-captcha' );
 			class="sow-text-field"
 		>
 	</span>
-	<?php if ( $instance['design']['labels']['position'] == 'below' ) { ?>
+	<?php if ( ( $instance['design']['labels']['position'] ?? '' ) == 'below' ) { ?>
 		<label
 			class="sow-form-field-label-left"
 			for="<?php echo esc_attr( $captcha_name ); ?>"

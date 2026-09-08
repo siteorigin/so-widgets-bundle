@@ -1232,10 +1232,10 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		if ( empty( $instance['design']['labels']['font'] ) ) {
 			$instance['design']['labels'] = array( 'font' => '' );
 		}
-		$label_font = siteorigin_widget_get_font( $instance['design']['labels']['font'] );
-		$field_font = siteorigin_widget_get_font( $instance['design']['fields']['font'] );
+		$label_font = siteorigin_widget_get_font( $instance['design']['labels']['font'] ?? '' );
+		$field_font = siteorigin_widget_get_font( $instance['design']['fields']['font'] ?? '' );
 
-		$label_position = $instance['design']['labels']['position'];
+		$label_position = $instance['design']['labels']['position'] ?? '';
 
 		if ( $label_position != 'left' && $label_position != 'right' ) {
 			$label_position = 'default';
@@ -1243,67 +1243,67 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		$vars = array(
 			// All the container variables.
-			'container_background'       => $instance['design']['container']['background'],
-			'container_padding'          => $instance['design']['container']['padding'],
-			'container_border_color'     => $instance['design']['container']['border_color'],
-			'container_border_width'     => $instance['design']['container']['border_width'],
-			'container_border_style'     => $instance['design']['container']['border_style'],
+			'container_background'       => $instance['design']['container']['background'] ?? '',
+			'container_padding'          => $instance['design']['container']['padding'] ?? '',
+			'container_border_color'     => $instance['design']['container']['border_color'] ?? '',
+			'container_border_width'     => $instance['design']['container']['border_width'] ?? '',
+			'container_border_style'     => $instance['design']['container']['border_style'] ?? '',
 
 			// Field labels
 			'label_font_family'          => $label_font['family'],
-			'label_font_size'            => $instance['design']['labels']['size'],
-			'label_font_color'           => $instance['design']['labels']['color'],
+			'label_font_size'            => $instance['design']['labels']['size'] ?? '',
+			'label_font_color'           => $instance['design']['labels']['color'] ?? '',
 			'label_position'             => $label_position,
-			'label_width'                => $instance['design']['labels']['width'],
-			'label_align'                => $instance['design']['labels']['align'],
+			'label_width'                => $instance['design']['labels']['width'] ?? '',
+			'label_align'                => $instance['design']['labels']['align'] ?? '',
 
 			// Fields
 			'field_font_family'          => $field_font['family'],
-			'field_font_size'            => $instance['design']['fields']['font_size'],
-			'field_font_color'           => $instance['design']['fields']['color'],
-			'field_margin'               => $instance['design']['fields']['multi_margin'],
-			'field_padding'              => $instance['design']['fields']['padding'],
+			'field_font_size'            => $instance['design']['fields']['font_size'] ?? '',
+			'field_font_color'           => $instance['design']['fields']['color'] ?? '',
+			'field_margin'               => $instance['design']['fields']['multi_margin'] ?? '',
+			'field_padding'              => $instance['design']['fields']['padding'] ?? '',
 			'field_max_width'            => ! empty( $instance['design']['fields']['max_width'] ) ? $instance['design']['fields']['max_width'] : '',
-			'field_height'               => $instance['design']['fields']['height'],
+			'field_height'               => $instance['design']['fields']['height'] ?? '',
 			'field_height_textarea'      => ! empty( $instance['design']['fields']['height_textarea'] ) ? $instance['design']['fields']['height_textarea'] : '',
-			'field_background'           => $instance['design']['fields']['background'],
-			'field_border_radius'        => $instance['design']['fields']['border_radius'] . 'px',
+			'field_background'           => $instance['design']['fields']['background'] ?? '',
+			'field_border_radius'        => ( $instance['design']['fields']['border_radius'] ?? '' ) . 'px',
 
 			// Field descriptions
-			'description_font_size'      => $instance['design']['descriptions']['size'],
-			'description_font_color'     => $instance['design']['descriptions']['color'],
-			'description_font_style'     => $instance['design']['descriptions']['style'],
+			'description_font_size'      => $instance['design']['descriptions']['size'] ?? '',
+			'description_font_color'     => $instance['design']['descriptions']['color'] ?? '',
+			'description_font_style'     => $instance['design']['descriptions']['style'] ?? '',
 			'description_top_margin'     => ! empty( $instance['design']['descriptions']['top_margin'] ) ? $instance['design']['descriptions']['top_margin'] : '',
 
 			// The error message styles
-			'error_background'           => $instance['design']['errors']['background'],
-			'error_border'               => $instance['design']['errors']['border_color'],
-			'error_text'                 => $instance['design']['errors']['text_color'],
-			'error_padding'              => $instance['design']['errors']['padding'],
-			'error_margin'               => $instance['design']['errors']['margin'],
+			'error_background'           => $instance['design']['errors']['background'] ?? '',
+			'error_border'               => $instance['design']['errors']['border_color'] ?? '',
+			'error_text'                 => $instance['design']['errors']['text_color'] ?? '',
+			'error_padding'              => $instance['design']['errors']['padding'] ?? '',
+			'error_margin'               => $instance['design']['errors']['margin'] ?? '',
 
 			// The submit button
-			'submit_background_color'       => $instance['design']['submit']['background_color'],
+			'submit_background_color'       => $instance['design']['submit']['background_color'] ?? '',
 			'submit_background_color_hover' => ! empty( $instance['design']['submit']['background_color_hover'] ) ? $instance['design']['submit']['background_color_hover'] : '',
-			'submit_background_gradient'    => $instance['design']['submit']['background_gradient'] . '%',
-			'submit_border_color'           => $instance['design']['submit']['border_color'],
+			'submit_background_gradient'    => ( $instance['design']['submit']['background_gradient'] ?? '' ) . '%',
+			'submit_border_color'           => $instance['design']['submit']['border_color'] ?? '',
 			'submit_border_color_hover'     => ! empty( $instance['design']['submit']['border_color_hover'] ) ? $instance['design']['submit']['border_color_hover'] : '',
-			'submit_border_style'           => $instance['design']['submit']['border_style'],
-			'submit_border_width'           => $instance['design']['submit']['border_width'],
-			'submit_border_radius'          => $instance['design']['submit']['border_radius'] . 'px',
-			'submit_text_color'             => $instance['design']['submit']['text_color'],
+			'submit_border_style'           => $instance['design']['submit']['border_style'] ?? '',
+			'submit_border_width'           => $instance['design']['submit']['border_width'] ?? '',
+			'submit_border_radius'          => ( $instance['design']['submit']['border_radius'] ?? '' ) . 'px',
+			'submit_text_color'             => $instance['design']['submit']['text_color'] ?? '',
 			'submit_text_color_hover'       => ! empty( $instance['design']['submit']['text_color_hover'] ) ? $instance['design']['submit']['text_color_hover'] : '',
-			'submit_font_size'              => $instance['design']['submit']['font_size'],
-			'submit_weight'                 => $instance['design']['submit']['weight'],
-			'submit_padding'                => $instance['design']['submit']['padding'],
+			'submit_font_size'              => $instance['design']['submit']['font_size'] ?? '',
+			'submit_weight'                 => $instance['design']['submit']['weight'] ?? '',
+			'submit_padding'                => $instance['design']['submit']['padding'] ?? '',
 			'submit_width'                  => ! empty( $instance['design']['submit']['width'] ) ? $instance['design']['submit']['width'] : '',
 			'submit_align'                  => ! empty( $instance['design']['submit']['align'] ) ? $instance['design']['submit']['align'] : '',
-			'submit_inset_highlight'        => $instance['design']['submit']['inset_highlight'] . '%',
+			'submit_inset_highlight'        => ( $instance['design']['submit']['inset_highlight'] ?? '' ) . '%',
 
 			// Input focus styles
-			'outline_style'              => $instance['design']['focus']['style'],
-			'outline_color'              => $instance['design']['focus']['color'],
-			'outline_width'              => $instance['design']['focus']['width'],
+			'outline_style'              => $instance['design']['focus']['style'] ?? '',
+			'outline_color'              => $instance['design']['focus']['color'] ?? '',
+			'outline_width'              => $instance['design']['focus']['width'] ?? '',
 
 			// Success message styles.
 			'success_font_size'          => ! empty( $instance['design']['success']['font_size'] ) ? $instance['design']['success']['font_size'] : '',
@@ -1400,7 +1400,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	public function render_form_fields( $fields, $result, $instance ) {
 		$errors = ! empty( $result['errors'] ) ? $result['errors'] : array();
 
-		$label_position = $instance['design']['labels']['position'];
+		$label_position = $instance['design']['labels']['position'] ?? '';
 		$valid_positions = array('above', 'below', 'left', 'right', 'inside');
 		if ( ! in_array( $label_position, $valid_positions ) ) {
 			$label_position = 'above'; // Default value.
