@@ -5,7 +5,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use SiteOrigin\Tests\SiteOriginTests;
 
 /**
- * Unit tests for SiteOrigin_Widgets_ContactForm_Widget::get_less_variables().
+ * Unit tests for the Contact Form widget's handling of malformed design data.
  *
  * contact.php registers itself by calling siteorigin_widget_register() while
  * the file is being required, and the widget constructor resolves its plugin
@@ -29,30 +29,14 @@ if ( ! defined( 'SOW_BUNDLE_BASE_FILE' ) ) {
 }
 
 /**
- * contact.php registers a filter hook at the top level (line 2143) while the
- * file is being required, before any test has a chance to set Brain Monkey up.
- * add_filter has to exist as a real function by then — the same pattern
- * CacheCompatTest uses for add_action().
+ * contact.php registers a filter hook at the top level while the file is being
+ * required, before any test has a chance to set Brain Monkey up. add_filter has
+ * to exist as a real function by then — the same pattern CacheCompatTest uses
+ * for add_action().
  */
 if ( ! function_exists( 'add_filter' ) ) {
 	function add_filter() {
 		return true;
-	}
-}
-
-/**
- * Minimal stand-in for the widget base class. get_less_variables() reads no
- * base-class state beyond get_global_settings(), so a small parent keeps the
- * test free of WordPress.
- */
-if ( ! class_exists( 'SiteOrigin_Widget' ) ) {
-	class SiteOrigin_Widget {
-		public function __construct() {
-		}
-
-		public function get_global_settings() {
-			return array();
-		}
 	}
 }
 
@@ -61,6 +45,20 @@ if ( ! class_exists( 'SiteOrigin_Widgets_ContactForm_Widget' ) ) {
 }
 
 class ContactLessVariablesTest extends SiteOriginTests {
+	/**
+	 * The design sections the widget owns.
+	 */
+	private const SECTIONS = array(
+		'container',
+		'labels',
+		'fields',
+		'descriptions',
+		'errors',
+		'submit',
+		'focus',
+		'success',
+	);
+
 	/**
 	 * PHP errors captured while the code under test runs.
 	 */
@@ -79,6 +77,34 @@ class ContactLessVariablesTest extends SiteOriginTests {
 				);
 			}
 		);
+
+		Functions\when( 'wp_get_current_user' )->alias(
+			function () {
+				return (object) array( 'user_email' => 'current@example.com' );
+			}
+		);
+
+		Functions\when( 'apply_filters' )->returnArg( 2 );
+		Functions\when( 'wp_kses_post' )->returnArg();
+		Functions\when( 'esc_url' )->returnArg();
+		Functions\when( 'sanitize_html_class' )->returnArg();
+		Functions\when( 'siteorigin_sanitize_attribute_key' )->returnArg();
+		Functions\when( 'sanitize_title' )->returnArg();
+		Functions\when( 'wp_nonce_field' )->justReturn( '' );
+		Functions\when( 'checked' )->justReturn( '' );
+		Functions\when( 'selected' )->justReturn( '' );
+		Functions\when( 'add_query_arg' )->returnArg();
+		Functions\when( 'esc_textarea' )->returnArg();
+
+		// name_from_label() builds ids against a global register; reset it so the
+		// ids a test sees do not depend on the tests that ran before it.
+		$GLOBALS['field_ids'] = array();
+	}
+
+	protected function tearDown(): void {
+		unset( $GLOBALS['field_ids'] );
+
+		parent::tearDown();
 	}
 
 	private function widget() {
@@ -86,10 +112,31 @@ class ContactLessVariablesTest extends SiteOriginTests {
 	}
 
 	/**
-	 * Runs get_less_variables() while recording warnings, notices, and
-	 * deprecations so tests can assert the guards keep it silent.
+	 * A complete instance, so a case can only fail on the design shape under
+	 * test rather than on an unrelated missing key. settings.to and settings.from
+	 * are populated so modify_instance() does not reach for the current user or
+	 * the server name.
 	 */
-	private function get_less_variables_capturing_errors( $instance ) {
+	private function base_instance() {
+		return array(
+			'title'    => 'Contact',
+			'settings' => array(
+				'to'                       => 'to@example.com',
+				'from'                     => 'from@example.com',
+				'required_field_indicator' => false,
+				'on_click'                 => '',
+			),
+			'fields'   => array(
+				array( 'type' => 'text', 'label' => 'Your Name' ),
+			),
+		);
+	}
+
+	/**
+	 * Runs a callable while recording warnings, notices and deprecations, so a
+	 * test can assert the guards keep the whole call silent.
+	 */
+	private function capturing_errors( callable $fn ) {
 		$this->php_errors = array();
 
 		set_error_handler(
@@ -102,10 +149,18 @@ class ContactLessVariablesTest extends SiteOriginTests {
 		);
 
 		try {
-			return $this->widget()->get_less_variables( $instance );
+			return $fn();
 		} finally {
 			restore_error_handler();
 		}
+	}
+
+	private function get_less_variables_capturing_errors( $instance ) {
+		return $this->capturing_errors(
+			function () use ( $instance ) {
+				return $this->widget()->get_less_variables( $instance );
+			}
+		);
 	}
 
 	public function test_instance_without_design_returns_without_errors() {
@@ -120,30 +175,7 @@ class ContactLessVariablesTest extends SiteOriginTests {
 	}
 
 	public function test_valid_design_returns_expected_vars() {
-		$vars = $this->get_less_variables_capturing_errors(
-			array(
-				'design' => array(
-					'container' => array(
-						'background' => '#f2f2f2',
-					),
-					'labels' => array(
-						'font'    => 'Arial',
-						'size'    => '16px',
-						'color'   => '#333333',
-						'position' => 'above',
-					),
-					'fields' => array(
-						'font'          => 'Georgia',
-						'font_size'     => '14px',
-						'color'         => '#000000',
-						'border_radius' => 3,
-					),
-					'submit' => array(
-						'border_radius' => 3,
-					),
-				),
-			)
-		);
+		$vars = $this->get_less_variables_capturing_errors( $this->healthy_instance() );
 
 		$this->assertSame( '#f2f2f2', $vars['container_background'] );
 		$this->assertSame( '16px', $vars['label_font_size'] );
@@ -151,6 +183,7 @@ class ContactLessVariablesTest extends SiteOriginTests {
 		$this->assertSame( '3px', $vars['field_border_radius'] );
 		$this->assertSame( '3px', $vars['submit_border_radius'] );
 		$this->assertSame( 'default', $vars['label_position'] );
+		$this->assertSame( array(), $this->php_errors );
 	}
 
 	public function test_missing_design_sections_yield_empty_without_errors() {
@@ -172,54 +205,227 @@ class ContactLessVariablesTest extends SiteOriginTests {
 	}
 
 	/**
-	 * A design section saved as a string (from a corrupt or legacy instance)
-	 * must not throw a "Cannot access offset of type string on string"
-	 * TypeError. Note: under this fix such sections resolve to empty, and reads
-	 * of missing sub-keys may still emit "Undefined array key" warnings — those
-	 * are out of scope here. The goal is only to prevent the fatal.
+	 * Every malformed shape a stored design can take, through every method that
+	 * reads it. A section absent from the submitted form is stored as an empty
+	 * string, and the design itself arrives that way too, so both forms are
+	 * covered for the whole design and for each section individually.
 	 */
-	#[DataProvider( 'corrupt_sections' )]
-	public function test_corrupt_section_as_string_does_not_fatal( $section ) {
-		$instance = array(
-			'design' => array(
-				'labels' => array(
-					'font' => '',
-				),
-				'fields' => array(
-					'font' => '',
-				),
-			),
-		);
+	#[DataProvider( 'corrupt_shapes' )]
+	public function test_corrupt_design_never_fatals_in_get_less_variables( $design ) {
+		$instance = $this->instance_with_design( $design );
 
-		// Set only the section under test to a corrupt string value.
-		$instance['design'][ $section ] = 'corrupt-string';
+		$throwable = null;
 
-		$exception = null;
 		try {
 			$this->get_less_variables_capturing_errors( $instance );
 		} catch ( \Throwable $e ) {
-			$exception = $e;
+			$throwable = $e;
 		}
 
-		$this->assertNull( $exception, 'get_less_variables() threw: ' . ( $exception ? $exception->getMessage() : '' ) );
+		$this->assertNull( $throwable, 'get_less_variables() threw: ' . ( $throwable ? $throwable->getMessage() : '' ) );
+		$this->assertSame( array(), $this->php_errors );
 	}
 
-	public static function corrupt_sections() {
-		$cases = array();
+	#[DataProvider( 'corrupt_shapes' )]
+	public function test_corrupt_design_never_fatals_in_modify_instance( $design ) {
+		$instance = $this->instance_with_design( $design );
 
-		foreach ( array(
-			'container',
-			'labels',
-			'fields',
-			'descriptions',
-			'errors',
-			'submit',
-			'focus',
-			'success',
-		) as $section ) {
-			$cases[ $section ] = array( $section );
+		$throwable = null;
+		$modified  = null;
+
+		try {
+			$modified = $this->capturing_errors(
+				function () use ( $instance ) {
+					return $this->widget()->modify_instance( $instance );
+				}
+			);
+		} catch ( \Throwable $e ) {
+			$throwable = $e;
 		}
 
-		return $cases;
+		$this->assertNull( $throwable, 'modify_instance() threw: ' . ( $throwable ? $throwable->getMessage() : '' ) );
+		$this->assertSame( array(), $this->php_errors );
+
+		// A design that was set is repaired; absent and null are left as found,
+		// because every read of them coalesces.
+		if ( isset( $instance['design'] ) ) {
+			$this->assertIsArray( $modified['design'] );
+
+			foreach ( self::SECTIONS as $section ) {
+				$this->assertIsArray(
+					$modified['design'][ $section ],
+					"design.$section should have been normalised to an array"
+				);
+			}
+		} elseif ( array_key_exists( 'design', $instance ) ) {
+			$this->assertNull( $modified['design'] );
+		} else {
+			$this->assertArrayNotHasKey( 'design', $modified );
+		}
+	}
+
+	#[DataProvider( 'corrupt_shapes' )]
+	public function test_corrupt_design_never_fatals_in_render_form_fields( $design ) {
+		$instance = $this->instance_with_design( $design );
+
+		$throwable = null;
+
+		try {
+			$this->capturing_errors(
+				function () use ( $instance ) {
+					ob_start();
+
+					try {
+						$this->widget()->render_form_fields( $instance['fields'], array(), $instance );
+					} finally {
+						ob_end_clean();
+					}
+				}
+			);
+		} catch ( \Throwable $e ) {
+			$throwable = $e;
+		}
+
+		$this->assertNull( $throwable, 'render_form_fields() threw: ' . ( $throwable ? $throwable->getMessage() : '' ) );
+		$this->assertSame( array(), $this->php_errors );
+	}
+
+	/**
+	 * The section container state is written into design by the form itself and
+	 * is legitimately a string. Normalisation must leave keys it does not own.
+	 */
+	public function test_normalisation_preserves_keys_the_widget_does_not_own() {
+		$instance                                       = $this->base_instance();
+		$instance['design']                             = array( 'labels' => '' );
+		$instance['design']['so_field_container_state'] = 'closed';
+
+		$modified = $this->widget()->modify_instance( $instance );
+
+		$this->assertSame( 'closed', $modified['design']['so_field_container_state'] );
+		$this->assertIsArray( $modified['design']['labels'] );
+	}
+
+	/**
+	 * A fully populated design must be returned untouched, so an unchanged widget
+	 * keeps its style hash and does not regenerate its CSS.
+	 */
+	public function test_healthy_design_is_returned_unchanged() {
+		$instance = $this->healthy_instance();
+
+		$modified = $this->widget()->modify_instance( $instance );
+
+		$this->assertSame( $instance['design'], $modified['design'] );
+	}
+
+	public static function corrupt_shapes() {
+		$shapes = array(
+			'design absent'       => array( '__ABSENT__' ),
+			'design null'         => array( null ),
+			'design empty string' => array( '' ),
+			'design empty array'  => array( array() ),
+			'design zero string'  => array( '0' ),
+			'design string'       => array( 'corrupt-string' ),
+		);
+
+		foreach ( self::SECTIONS as $section ) {
+			$shapes[ "section $section empty string" ] = array( array( $section => '' ) );
+			$shapes[ "section $section string" ]       = array( array( $section => 'corrupt-string' ) );
+		}
+
+		return $shapes;
+	}
+
+	private function instance_with_design( $design ) {
+		$instance = $this->base_instance();
+
+		if ( $design === '__ABSENT__' ) {
+			unset( $instance['design'] );
+
+			return $instance;
+		}
+
+		$instance['design'] = $design;
+
+		return $instance;
+	}
+
+	/**
+	 * An instance whose design carries a value for every key the widget reads.
+	 */
+	private function healthy_instance() {
+		$instance = $this->base_instance();
+
+		$instance['design'] = array(
+			'container'    => array(
+				'background'   => '#f2f2f2',
+				'padding'      => '10px',
+				'border_color' => '#c0c0c0',
+				'border_width' => '1px',
+				'border_style' => 'solid',
+			),
+			'labels'       => array(
+				'font'     => 'Arial',
+				'size'     => '16px',
+				'color'    => '#000000',
+				'position' => 'above',
+				'width'    => '120px',
+				'align'    => 'left',
+			),
+			'fields'       => array(
+				'font'            => '',
+				'font_size'       => '14px',
+				'color'           => '#333333',
+				'multi_margin'    => '0px 0px 15px 0px',
+				'padding'         => '10px',
+				'height'          => '40px',
+				'background'      => '#ffffff',
+				'border_radius'   => '3',
+				'max_width'       => '',
+				'height_textarea' => '',
+			),
+			'descriptions' => array(
+				'size'  => '12px',
+				'color' => '#666666',
+				'style' => 'italic',
+			),
+			'errors'       => array(
+				'background'   => '#fce4e4',
+				'border_color' => '#cc0000',
+				'text_color'   => '#cc0000',
+				'padding'      => '10px',
+				'margin'       => '10px',
+			),
+			'submit'       => array(
+				'background_color'   => '#eeeeee',
+				'background_gradient' => '10',
+				'border_color'       => '#cccccc',
+				'border_style'       => 'solid',
+				'border_width'       => '1px',
+				'border_radius'      => '3',
+				'text_color'         => '#000000',
+				'font_size'          => '14px',
+				'weight'             => 'normal',
+				'padding'            => '10px',
+				'inset_highlight'    => '50',
+				'styled'             => true,
+			),
+			'focus'        => array(
+				'style' => 'solid',
+				'color' => '#3498db',
+				'width' => '2px',
+			),
+			'success'      => array(
+				'font_size'        => '14px',
+				'color'            => '#000000',
+				'background_color' => '#eafae4',
+				'padding'          => '10px',
+				'border_width'     => '1px',
+				'border_color'     => '#5cb85c',
+				'border_style'     => 'solid',
+				'font'             => '',
+			),
+		);
+
+		return $instance;
 	}
 }
