@@ -4,7 +4,7 @@ $captcha_name = $this->name_from_label( 'really-simple-captcha' );
 // Resolve the label position the same way render_form_fields() does, so the
 // captcha lines up with the fields above it and never emits a bare class name
 // when the stored value is missing or malformed.
-$captcha_label_position = $instance['design']['labels']['position'] ?? '';
+$captcha_label_position = $this->design_setting( $instance, 'labels', 'position' );
 
 if ( ! in_array( $captcha_label_position, array( 'above', 'below', 'left', 'right', 'inside' ), true ) ) {
 	$captcha_label_position = 'above';

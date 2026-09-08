@@ -369,6 +369,8 @@ class ContactLessVariablesTest extends SiteOriginTests {
 			'design empty array'  => array( array() ),
 			'design zero string'  => array( '0' ),
 			'design string'       => array( 'corrupt-string' ),
+			'design bool'         => array( true ),
+			'design object'       => array( new \stdClass() ),
 		);
 
 		foreach ( self::SECTIONS as $section ) {
@@ -384,6 +386,11 @@ class ContactLessVariablesTest extends SiteOriginTests {
 			$shapes[ "section $section font empty array" ] = array( array( $section => array( 'font' => array() ) ) );
 			$shapes[ "section $section font array" ]       = array( array( $section => array( 'font' => array( 'Arial' ) ) ) );
 		}
+
+		// A boolean position used to pass the renderer's non-strict validation,
+		// because true loosely equals every non-empty string.
+		$shapes['labels position bool']  = array( array( 'labels' => array( 'position' => true ) ) );
+		$shapes['submit styled object']  = array( array( 'submit' => array( 'styled' => new \stdClass() ) ) );
 
 		foreach ( array(
 			'fields border_radius' => array( 'fields' => array( 'border_radius' => null ) ),

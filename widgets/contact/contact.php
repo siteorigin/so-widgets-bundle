@@ -1213,6 +1213,34 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	}
 
 	/**
+	 * Read a single design setting safely from an unrepaired instance.
+	 *
+	 * The templates run after the siteorigin_widgets_instance filters, which are
+	 * public and can hand back a design of any shape, so they cannot assume
+	 * modify_instance() left one behind. Null coalescing is not enough on its own:
+	 * it tests with isset(), which still throws for an object standing where an
+	 * array is expected.
+	 *
+	 * @param array  $instance The widget instance.
+	 * @param string $section  The design section to read from.
+	 * @param string $setting  The setting within that section.
+	 * @param mixed  $default  Returned when the value is missing or not a scalar.
+	 *
+	 * @return mixed
+	 */
+	public function design_setting( $instance, $section, $setting, $default = '' ) {
+		$design = is_array( $instance ) && isset( $instance['design'] ) ? $instance['design'] : null;
+
+		if ( ! is_array( $design ) || ! isset( $design[ $section ] ) || ! is_array( $design[ $section ] ) ) {
+			return $default;
+		}
+
+		$value = $design[ $section ][ $setting ] ?? $default;
+
+		return is_scalar( $value ) ? $value : $default;
+	}
+
+	/**
 	 * Read a design value that is about to be used as a string.
 	 *
 	 * Some design values are looked up as an array key or concatenated into a CSS
@@ -1445,7 +1473,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		$label_position = $instance['design']['labels']['position'] ?? '';
 		$valid_positions = array('above', 'below', 'left', 'right', 'inside');
-		if ( ! in_array( $label_position, $valid_positions ) ) {
+		if ( ! in_array( $label_position, $valid_positions, true ) ) {
 			$label_position = 'above'; // Default value.
 		}
 
