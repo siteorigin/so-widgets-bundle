@@ -19,6 +19,8 @@ vendor/
 
 .cursorrules
 .claude/
+docs/plans/
+tasks/runs/
 # Playwright.
 tests/cache
 tests/results

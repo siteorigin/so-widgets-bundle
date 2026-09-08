@@ -24,3 +24,19 @@ if ( ! function_exists( 'add_action' ) ) {
 		return true;
 	}
 }
+
+/**
+ * Stand-in for the widget base class, shared by every test file. Provides the
+ * six-argument constructor and is_preview() - the widest contract any widget
+ * under test needs.
+ */
+if ( ! class_exists( 'SiteOrigin_Widget' ) ) {
+	class SiteOrigin_Widget {
+		public function __construct( $id = '', $name = '', $widget_options = array(), $control_options = array(), $form_options = array(), $base_folder = false ) {
+		}
+
+		public function is_preview() {
+			return false;
+		}
+	}
+}
