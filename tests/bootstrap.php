@@ -27,8 +27,9 @@ if ( ! function_exists( 'add_action' ) ) {
 
 /**
  * Stand-in for the widget base class, shared by every test file. Provides the
- * six-argument constructor and is_preview() - the widest contract any widget
- * under test needs.
+ * six-argument constructor, is_preview() and get_global_settings() - the widest
+ * contract any widget under test needs. Widgets read global settings while
+ * building their LESS variables, so the stand-in answers with an empty set.
  */
 if ( ! class_exists( 'SiteOrigin_Widget' ) ) {
 	class SiteOrigin_Widget {
@@ -37,6 +38,10 @@ if ( ! class_exists( 'SiteOrigin_Widget' ) ) {
 
 		public function is_preview() {
 			return false;
+		}
+
+		public function get_global_settings() {
+			return array();
 		}
 	}
 }
