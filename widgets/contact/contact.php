@@ -1060,6 +1060,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 		}
 
+		// Repair the stored value here so the form, the templates and the style
+		// generation all receive well-formed sections.
+		if ( isset( $instance['design'] ) ) {
+			$instance['design'] = $this->normalize_design_sections( $instance['design'] );
+		}
+
 		if (
 			! empty( $instance['design'] ) &&
 			! empty( $instance['design']['fields'] ) &&
@@ -1208,11 +1214,20 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	/**
 	 * Ensure the design sections are valid arrays.
 	 *
-	 * @param array $design The raw widget 'design' instance value.
+	 * A section absent from the submitted form is stored as an empty string, and
+	 * the design itself can arrive the same way, so the value is repaired once
+	 * here rather than at every point that reads it. Keys the widget does not own,
+	 * such as the section container state, are left as they are.
+	 *
+	 * @param mixed $design The raw widget 'design' instance value.
 	 *
 	 * @return array The design with each section guaranteed to be an array.
 	 */
 	private function normalize_design_sections( $design ) {
+		if ( ! is_array( $design ) ) {
+			$design = array();
+		}
+
 		foreach ( self::DESIGN_SECTIONS as $section ) {
 			if ( ! isset( $design[ $section ] ) || ! is_array( $design[ $section ] ) ) {
 				$design[ $section ] = array();
@@ -1399,6 +1414,12 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 */
 	public function render_form_fields( $fields, $result, $instance ) {
 		$errors = ! empty( $result['errors'] ) ? $result['errors'] : array();
+
+		// This method is public, so it can be called with an instance that has not
+		// passed through modify_instance().
+		if ( isset( $instance['design'] ) ) {
+			$instance['design'] = $this->normalize_design_sections( $instance['design'] );
+		}
 
 		$label_position = $instance['design']['labels']['position'] ?? '';
 		$valid_positions = array('above', 'below', 'left', 'right', 'inside');
