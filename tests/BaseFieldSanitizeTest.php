@@ -83,6 +83,23 @@ if ( ! class_exists( 'SiteOrigin_Test_Field_Sanitize_Recorder' ) ) {
 	}
 }
 
+/**
+ * Answers any method name through __call(), so array( $obj, 'anything' ) is
+ * callable but new ReflectionMethod( $obj, 'anything' ) throws. Records the
+ * arguments it was handed so a test can see exactly what sanitize() passed.
+ */
+if ( ! class_exists( 'SiteOrigin_Test_Field_Sanitize_Magic_Recorder' ) ) {
+	class SiteOrigin_Test_Field_Sanitize_Magic_Recorder {
+		public $args = array();
+
+		public function __call( $name, $args ) {
+			$this->args = $args;
+
+			return $args[0];
+		}
+	}
+}
+
 class BaseFieldSanitizeTest extends SiteOriginTests {
 	/**
 	 * PHP errors captured while the code under test runs.
@@ -322,5 +339,23 @@ class BaseFieldSanitizeTest extends SiteOriginTests {
 				array( $recorder, 'sanitize_reserved_post_types' ),
 			),
 		);
+	}
+
+	/**
+	 * A callable that is_callable() but cannot be reflected (a method only
+	 * __call() answers) falls back to develop behaviour: both arguments.
+	 */
+	public function test_unreflectable_callable_receives_old_value() {
+		$recorder = new SiteOrigin_Test_Field_Sanitize_Magic_Recorder();
+
+		list( $result, $errors ) = $this->sanitize_capturing_errors(
+			$this->field_with_sanitizer( array( $recorder, 'not_a_real_method' ) ),
+			'abc',
+			'old-value'
+		);
+
+		$this->assertSame( array(), $errors );
+		$this->assertSame( 'abc', $result );
+		$this->assertSame( array( 'abc', 'old-value' ), $recorder->args );
 	}
 }
