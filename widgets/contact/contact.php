@@ -1060,8 +1060,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 		}
 
-		// Repair the stored value here so the form, the templates and the style
-		// generation all receive well-formed sections.
+		// Repair a design that is present, so callers running through here receive
+		// well-formed sections. A design that is absent or null is left as it is,
+		// and every lookup coalesces, so neither shape needs one.
 		if ( isset( $instance['design'] ) ) {
 			$instance['design'] = $this->normalize_design_sections( $instance['design'] );
 		}
