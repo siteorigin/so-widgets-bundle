@@ -27,8 +27,9 @@ if ( ! function_exists( 'add_action' ) ) {
 
 /**
  * Stand-in for the widget base class, shared by every test file. Provides the
- * six-argument constructor and is_preview() - the widest contract any widget
- * under test needs.
+ * six-argument constructor, is_preview(), get_global_settings() and
+ * get_style_hash() - the widest contract any widget under test needs. Widgets read global settings while
+ * building their LESS variables, so the stand-in answers with an empty set.
  */
 if ( ! class_exists( 'SiteOrigin_Widget' ) ) {
 	class SiteOrigin_Widget {
@@ -37,6 +38,24 @@ if ( ! class_exists( 'SiteOrigin_Widget' ) ) {
 
 		public function is_preview() {
 			return false;
+		}
+
+		public function get_global_settings() {
+			return array();
+		}
+
+		/**
+		 * Mirrors SiteOrigin_Widget::get_style_hash() in base/siteorigin-widget.class.php
+		 * for a widget that builds its hash from get_less_variables(): the first
+		 * twelve characters of the md5 of the JSON-encoded variables and the widget
+		 * version. The filters the real method applies are omitted, which is what
+		 * the hash probes do too.
+		 */
+		public function get_style_hash( $instance ) {
+			$vars    = $this->get_less_variables( $instance );
+			$version = property_exists( $this, 'version' ) ? $this->version : '';
+
+			return substr( md5( json_encode( $vars ) . $version ), 0, 12 );
 		}
 	}
 }
