@@ -1248,12 +1248,17 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	 * object there, and neither carries any meaning for a colour, a measurement or a
 	 * font name, so anything that is not a scalar reads as absent.
 	 *
+	 * Scalars pass through with their type intact. Blank measurement and colour
+	 * fields are stored as false, and the style hash is built from these values,
+	 * so casting them would change the hash of every valid design and make every
+	 * site regenerate its CSS once.
+	 *
 	 * @param mixed $value The stored design value.
 	 *
-	 * @return string
+	 * @return scalar
 	 */
 	private function style_value( $value ) {
-		return is_scalar( $value ) ? (string) $value : '';
+		return is_scalar( $value ) ? $value : '';
 	}
 
 	/**
@@ -1302,7 +1307,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 		$label_position = $this->style_value( $instance['design']['labels']['position'] ?? '' );
 
-		if ( $label_position != 'left' && $label_position != 'right' ) {
+		if ( $label_position !== 'left' && $label_position !== 'right' ) {
 			$label_position = 'default';
 		}
 
@@ -1328,9 +1333,9 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'field_font_color'           => $this->style_value( $instance['design']['fields']['color'] ?? '' ),
 			'field_margin'               => $this->style_value( $instance['design']['fields']['multi_margin'] ?? '' ),
 			'field_padding'              => $this->style_value( $instance['design']['fields']['padding'] ?? '' ),
-			'field_max_width'            => $this->style_value( $instance['design']['fields']['max_width'] ?? '' ),
+			'field_max_width'            => $this->style_value( $instance['design']['fields']['max_width'] ?? '' ) ?: '',
 			'field_height'               => $this->style_value( $instance['design']['fields']['height'] ?? '' ),
-			'field_height_textarea'      => $this->style_value( $instance['design']['fields']['height_textarea'] ?? '' ),
+			'field_height_textarea'      => $this->style_value( $instance['design']['fields']['height_textarea'] ?? '' ) ?: '',
 			'field_background'           => $this->style_value( $instance['design']['fields']['background'] ?? '' ),
 			'field_border_radius'        => $this->style_value( $instance['design']['fields']['border_radius'] ?? '' ) . 'px',
 
@@ -1338,7 +1343,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'description_font_size'      => $this->style_value( $instance['design']['descriptions']['size'] ?? '' ),
 			'description_font_color'     => $this->style_value( $instance['design']['descriptions']['color'] ?? '' ),
 			'description_font_style'     => $this->style_value( $instance['design']['descriptions']['style'] ?? '' ),
-			'description_top_margin'     => $this->style_value( $instance['design']['descriptions']['top_margin'] ?? '' ),
+			'description_top_margin'     => $this->style_value( $instance['design']['descriptions']['top_margin'] ?? '' ) ?: '',
 
 			// The error message styles
 			'error_background'           => $this->style_value( $instance['design']['errors']['background'] ?? '' ),
@@ -1349,20 +1354,20 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 
 			// The submit button
 			'submit_background_color'       => $this->style_value( $instance['design']['submit']['background_color'] ?? '' ),
-			'submit_background_color_hover' => $this->style_value( $instance['design']['submit']['background_color_hover'] ?? '' ),
+			'submit_background_color_hover' => $this->style_value( $instance['design']['submit']['background_color_hover'] ?? '' ) ?: '',
 			'submit_background_gradient'    => $this->style_value( $instance['design']['submit']['background_gradient'] ?? '' ) . '%',
 			'submit_border_color'           => $this->style_value( $instance['design']['submit']['border_color'] ?? '' ),
-			'submit_border_color_hover'     => $this->style_value( $instance['design']['submit']['border_color_hover'] ?? '' ),
+			'submit_border_color_hover'     => $this->style_value( $instance['design']['submit']['border_color_hover'] ?? '' ) ?: '',
 			'submit_border_style'           => $this->style_value( $instance['design']['submit']['border_style'] ?? '' ),
 			'submit_border_width'           => $this->style_value( $instance['design']['submit']['border_width'] ?? '' ),
 			'submit_border_radius'          => $this->style_value( $instance['design']['submit']['border_radius'] ?? '' ) . 'px',
 			'submit_text_color'             => $this->style_value( $instance['design']['submit']['text_color'] ?? '' ),
-			'submit_text_color_hover'       => $this->style_value( $instance['design']['submit']['text_color_hover'] ?? '' ),
+			'submit_text_color_hover'       => $this->style_value( $instance['design']['submit']['text_color_hover'] ?? '' ) ?: '',
 			'submit_font_size'              => $this->style_value( $instance['design']['submit']['font_size'] ?? '' ),
 			'submit_weight'                 => $this->style_value( $instance['design']['submit']['weight'] ?? '' ),
 			'submit_padding'                => $this->style_value( $instance['design']['submit']['padding'] ?? '' ),
-			'submit_width'                  => $this->style_value( $instance['design']['submit']['width'] ?? '' ),
-			'submit_align'                  => $this->style_value( $instance['design']['submit']['align'] ?? '' ),
+			'submit_width'                  => $this->style_value( $instance['design']['submit']['width'] ?? '' ) ?: '',
+			'submit_align'                  => $this->style_value( $instance['design']['submit']['align'] ?? '' ) ?: '',
 			'submit_inset_highlight'        => $this->style_value( $instance['design']['submit']['inset_highlight'] ?? '' ) . '%',
 
 			// Input focus styles
@@ -1371,13 +1376,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			'outline_width'              => $this->style_value( $instance['design']['focus']['width'] ?? '' ),
 
 			// Success message styles.
-			'success_font_size'          => $this->style_value( $instance['design']['success']['font_size'] ?? '' ),
-			'success_color'              => $this->style_value( $instance['design']['success']['color'] ?? '' ),
-			'success_background_color'   => $this->style_value( $instance['design']['success']['background_color'] ?? '' ),
-			'success_padding'            => $this->style_value( $instance['design']['success']['padding'] ?? '' ),
-			'success_border_width'       => $this->style_value( $instance['design']['success']['border_width'] ?? '' ),
-			'success_border_color'       => $this->style_value( $instance['design']['success']['border_color'] ?? '' ),
-			'success_border_style'       => $this->style_value( $instance['design']['success']['border_style'] ?? '' ),
+			'success_font_size'          => $this->style_value( $instance['design']['success']['font_size'] ?? '' ) ?: '',
+			'success_color'              => $this->style_value( $instance['design']['success']['color'] ?? '' ) ?: '',
+			'success_background_color'   => $this->style_value( $instance['design']['success']['background_color'] ?? '' ) ?: '',
+			'success_padding'            => $this->style_value( $instance['design']['success']['padding'] ?? '' ) ?: '',
+			'success_border_width'       => $this->style_value( $instance['design']['success']['border_width'] ?? '' ) ?: '',
+			'success_border_color'       => $this->style_value( $instance['design']['success']['border_color'] ?? '' ) ?: '',
+			'success_border_style'       => $this->style_value( $instance['design']['success']['border_style'] ?? '' ) ?: '',
 		);
 
 		// Ensure all border values exist before setting border
