@@ -418,19 +418,30 @@ abstract class SiteOrigin_Widget_Field_Base {
 	}
 
 	/**
-	 * Whether the given callable declares a second required parameter, meaning
-	 * it can safely receive $old_value. Only callables that genuinely require
-	 * it are passed it — one-argument callables (e.g. 'intval', whose second
-	 * parameter is the optional $base) would otherwise be invoked with a null
-	 * second argument, which is deprecated in PHP 8.1+ and, in intval's case,
-	 * silently changes the result by treating the old value as the base.
+	 * Whether $old_value can be passed to the given callable sanitizer.
+	 *
+	 * PHP ignores surplus arguments to user-defined functions, so every user
+	 * callable keeps receiving both the value and $old_value, exactly as it
+	 * always has. The only callables that cannot take a second argument are
+	 * internal PHP functions with fewer than two required parameters: passing
+	 * $old_value to them either binds it to an unrelated optional parameter
+	 * (e.g. 'intval', where it becomes $base, deprecated on null and wrong on
+	 * a real value) or throws ArgumentCountError (e.g. 'strlen'). Those get
+	 * the value only. Internal functions that require two parameters still
+	 * receive both.
+	 *
+	 * If the callable cannot be reflected, both arguments are passed.
 	 *
 	 * @param callable $callable A PHP callable.
 	 * @return bool
 	 */
 	private function sanitize_callback_accepts_old_value( $callable ) {
 		try {
-			if ( is_array( $callable ) ) {
+			if ( $callable instanceof Closure ) {
+				// Closures (including Closure::fromCallable() and first-class
+				// callables wrapping internal functions) reflect as functions.
+				$reflection = new ReflectionFunction( $callable );
+			} elseif ( is_array( $callable ) ) {
 				$reflection = new ReflectionMethod( $callable[0], $callable[1] );
 			} elseif ( is_string( $callable ) && strpos( $callable, '::' ) !== false ) {
 				$parts = explode( '::', $callable, 2 );
@@ -441,9 +452,12 @@ abstract class SiteOrigin_Widget_Field_Base {
 				$reflection = new ReflectionFunction( $callable );
 			}
 
-			return $reflection->getNumberOfRequiredParameters() >= 2;
+			return ! (
+				$reflection->isInternal() &&
+				$reflection->getNumberOfRequiredParameters() < 2
+			);
 		} catch ( ReflectionException $e ) {
-			return false;
+			return true;
 		}
 	}
 
