@@ -215,15 +215,35 @@ class ContactLessVariablesTest extends SiteOriginTests {
 		$instance = $this->instance_with_design( $design );
 
 		$throwable = null;
+		$vars      = null;
 
 		try {
-			$this->get_less_variables_capturing_errors( $instance );
+			$vars = $this->get_less_variables_capturing_errors( $instance );
 		} catch ( \Throwable $e ) {
 			$throwable = $e;
 		}
 
 		$this->assertNull( $throwable, 'get_less_variables() threw: ' . ( $throwable ? $throwable->getMessage() : '' ) );
 		$this->assertSame( array(), $this->php_errors );
+
+		// Silence alone would also be satisfied by a method that bailed out and
+		// returned nothing, so assert the variables it is supposed to produce.
+		if ( empty( $instance['design'] ) ) {
+			// The existing early return: nothing to build variables from.
+			$this->assertNull( $vars );
+
+			return;
+		}
+
+		$this->assertIsArray( $vars );
+
+		foreach ( array( 'container_background', 'field_font_size', 'label_font_size', 'outline_style' ) as $key ) {
+			$this->assertArrayHasKey( $key, $vars );
+			$this->assertSame( '', $vars[ $key ], "$key should fall back to an empty string" );
+		}
+
+		// Values built by concatenation keep their unit rather than becoming empty.
+		$this->assertSame( 'px', $vars['field_border_radius'] );
 	}
 
 	#[DataProvider( 'corrupt_shapes' )]
@@ -269,14 +289,17 @@ class ContactLessVariablesTest extends SiteOriginTests {
 		$instance = $this->instance_with_design( $design );
 
 		$throwable = null;
+		$html      = null;
 
 		try {
-			$this->capturing_errors(
+			$html = $this->capturing_errors(
 				function () use ( $instance ) {
 					ob_start();
 
 					try {
 						$this->widget()->render_form_fields( $instance['fields'], array(), $instance );
+
+						return ob_get_contents();
 					} finally {
 						ob_end_clean();
 					}
@@ -288,6 +311,12 @@ class ContactLessVariablesTest extends SiteOriginTests {
 
 		$this->assertNull( $throwable, 'render_form_fields() threw: ' . ( $throwable ? $throwable->getMessage() : '' ) );
 		$this->assertSame( array(), $this->php_errors );
+
+		// A method that rendered nothing would also be silent, so assert the field
+		// reached the markup and carried a label position class.
+		$this->assertIsString( $html );
+		$this->assertStringContainsString( 'sow-form-field', $html );
+		$this->assertStringContainsString( 'Your Name', $html );
 	}
 
 	/**
@@ -306,8 +335,12 @@ class ContactLessVariablesTest extends SiteOriginTests {
 	}
 
 	/**
-	 * A fully populated design must be returned untouched, so an unchanged widget
-	 * keeps its style hash and does not regenerate its CSS.
+	 * A fully populated design must be returned untouched, so normalisation cannot
+	 * disturb a widget that was already well formed.
+	 *
+	 * The style hash this protects is built by the widget base class, which these
+	 * unit tests stand in for rather than load, so hash equality is proven outside
+	 * the suite against a real install.
 	 */
 	public function test_healthy_design_is_returned_unchanged() {
 		$instance = $this->healthy_instance();
