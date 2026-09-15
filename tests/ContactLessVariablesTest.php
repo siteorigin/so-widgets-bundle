@@ -193,6 +193,20 @@ class ContactLessVariablesTest extends SiteOriginTests {
 		$this->assertSame( array(), $this->php_errors );
 	}
 
+	/**
+	 * A design as the form actually stores it: blank measurement and colour fields
+	 * are false, sliders are floats and the checkbox is a bool. The LESS variables
+	 * must come out exactly as the branch produced them before the guards were
+	 * added, type for type, because the style hash is built from this array and
+	 * any change to it makes every site regenerate its CSS.
+	 */
+	public function test_stored_design_keeps_its_less_variables() {
+		$vars = $this->get_less_variables_capturing_errors( $this->stored_instance() );
+
+		$this->assertSame( array(), $this->php_errors );
+		$this->assertSame( $this->stored_instance_less_variables(), $vars );
+	}
+
 	public function test_missing_design_sections_yield_empty_without_errors() {
 		$vars = $this->get_less_variables_capturing_errors(
 			array(
@@ -422,6 +436,178 @@ class ContactLessVariablesTest extends SiteOriginTests {
 		$instance['design'] = $design;
 
 		return $instance;
+	}
+
+	/**
+	 * An instance shaped the way a real save stores it. Measurement and colour
+	 * fields left blank are stored as false, sliders as floats, the checkbox as a
+	 * bool, and every section carries its container state.
+	 */
+	private function stored_instance() {
+		$instance = $this->base_instance();
+
+		$instance['design'] = array(
+			'container'                => array(
+				'background'               => '#f2f2f2',
+				'padding'                  => '10px',
+				'border_color'             => '#c0c0c0',
+				'border_width'             => '1px',
+				'border_style'             => 'solid',
+				'so_field_container_state' => 'closed',
+			),
+			'labels'                   => array(
+				'font'                     => 'default',
+				'size'                     => false,
+				'color'                    => false,
+				'position'                 => 'above',
+				'width'                    => false,
+				'align'                    => 'left',
+				'so_field_container_state' => 'closed',
+			),
+			'fields'                   => array(
+				'font'                     => 'default',
+				'font_size'                => false,
+				'color'                    => false,
+				'multi_margin'             => '0px 0px 15px 0px',
+				'padding'                  => false,
+				'max_width'                => false,
+				'height'                   => false,
+				'height_textarea'          => false,
+				'background'               => false,
+				'border_color'             => '#c0c0c0',
+				'border_width'             => '1px',
+				'border_style'             => 'solid',
+				'border_radius'            => 0.0,
+				'so_field_container_state' => 'closed',
+			),
+			'descriptions'             => array(
+				'size'                     => '0.9em',
+				'color'                    => '#999999',
+				'style'                    => 'italic',
+				'top_margin'               => '0.2em',
+				'so_field_container_state' => 'closed',
+			),
+			'errors'                   => array(
+				'background'               => '#fce4e5',
+				'border_color'             => '#ec666a',
+				'text_color'               => '#ec666a',
+				'padding'                  => '5px',
+				'margin'                   => '10px',
+				'so_field_container_state' => 'closed',
+			),
+			'submit'                   => array(
+				'styled'                   => true,
+				'background_color'         => '#eeeeee',
+				'background_color_hover'   => false,
+				'background_gradient'      => 10.0,
+				'border_color'             => '#989a9c',
+				'border_color_hover'       => false,
+				'border_style'             => 'solid',
+				'border_width'             => '1px',
+				'border_radius'            => 3.0,
+				'text_color'               => '#5a5a5a',
+				'text_color_hover'         => false,
+				'font_size'                => false,
+				'weight'                   => '500',
+				'padding'                  => '10px',
+				'width'                    => false,
+				'align'                    => 'left',
+				'inset_highlight'          => 50.0,
+				'so_field_container_state' => 'closed',
+			),
+			'focus'                    => array(
+				'style'                    => 'solid',
+				'color'                    => false,
+				'width'                    => '1px',
+				'so_field_container_state' => 'closed',
+			),
+			'success'                  => array(
+				'font'                     => 'default',
+				'font_size'                => false,
+				'color'                    => false,
+				'background_color'         => false,
+				'padding'                  => false,
+				'border_width'             => false,
+				'border_color'             => false,
+				'border_style'             => 'solid',
+				'so_field_container_state' => 'closed',
+			),
+			'so_field_container_state' => 'open',
+		);
+
+		return $instance;
+	}
+
+	/**
+	 * What get_less_variables() produced for stored_instance() at 19820b78, the
+	 * branch head before the design guards were added, with the same font stub.
+	 *
+	 * Raw reads keep the stored false; the values that carried an ! empty() guard
+	 * yield ''; concatenated values carry their unit even when the source is 0.
+	 */
+	private function stored_instance_less_variables() {
+		return array(
+			'container_background'          => '#f2f2f2',
+			'container_padding'             => '10px',
+			'container_border_color'        => '#c0c0c0',
+			'container_border_width'        => '1px',
+			'container_border_style'        => 'solid',
+			'label_font_family'             => '',
+			'label_font_size'               => false,
+			'label_font_color'              => false,
+			'label_position'                => 'default',
+			'label_width'                   => false,
+			'label_align'                   => 'left',
+			'field_font_family'             => '',
+			'field_font_size'               => false,
+			'field_font_color'              => false,
+			'field_margin'                  => '0px 0px 15px 0px',
+			'field_padding'                 => false,
+			'field_max_width'               => '',
+			'field_height'                  => false,
+			'field_height_textarea'         => '',
+			'field_background'              => false,
+			'field_border_radius'           => '0px',
+			'description_font_size'         => '0.9em',
+			'description_font_color'        => '#999999',
+			'description_font_style'        => 'italic',
+			'description_top_margin'        => '0.2em',
+			'error_background'              => '#fce4e5',
+			'error_border'                  => '#ec666a',
+			'error_text'                    => '#ec666a',
+			'error_padding'                 => '5px',
+			'error_margin'                  => '10px',
+			'submit_background_color'       => '#eeeeee',
+			'submit_background_color_hover' => '',
+			'submit_background_gradient'    => '10%',
+			'submit_border_color'           => '#989a9c',
+			'submit_border_color_hover'     => '',
+			'submit_border_style'           => 'solid',
+			'submit_border_width'           => '1px',
+			'submit_border_radius'          => '3px',
+			'submit_text_color'             => '#5a5a5a',
+			'submit_text_color_hover'       => '',
+			'submit_font_size'              => false,
+			'submit_weight'                 => '500',
+			'submit_padding'                => '10px',
+			'submit_width'                  => '',
+			'submit_align'                  => 'left',
+			'submit_inset_highlight'        => '50%',
+			'outline_style'                 => 'solid',
+			'outline_color'                 => false,
+			'outline_width'                 => '1px',
+			'success_font_size'             => '',
+			'success_color'                 => '',
+			'success_background_color'      => '',
+			'success_padding'               => '',
+			'success_border_width'          => '',
+			'success_border_color'          => '',
+			'success_border_style'          => 'solid',
+			'field_border'                  => '1px #c0c0c0 solid',
+			'success_font_family'           => '',
+			'success_font_weight'           => '',
+			'success_font_style'            => '',
+		);
 	}
 
 	/**
