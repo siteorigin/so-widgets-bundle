@@ -70,18 +70,38 @@ class ContactLessVariablesTest extends SiteOriginTests {
 		// The real helper looks the value up as an array key, so handing it a
 		// non-scalar is a fatal on PHP 8. Mirror that here: a permissive stub would
 		// hide exactly the bug this suite is meant to catch.
+		//
+		// The values it returns mirror siteorigin_widget_get_font() in base/base.php
+		// without the enqueue side effects: a web-safe name maps to its stack,
+		// 'default' to 'default', 'Family:weight' splits into family, weight,
+		// weight_raw and style, and anything else is a custom family. The style
+		// hash assertions depend on this being faithful, because the font family
+		// is part of the hashed variables.
 		Functions\when( 'siteorigin_widget_get_font' )->alias(
 			function ( $font_value = '' ) {
 				if ( ! is_scalar( $font_value ) ) {
 					throw new \TypeError( 'Cannot access offset of type ' . gettype( $font_value ) . ' in isset or empty' );
 				}
 
-				return array(
-					'family'     => '',
-					'weight'     => '',
-					'weight_raw' => '',
-					'style'      => '',
+				$web_safe = array(
+					'Arial'   => 'Arial, Helvetica Neue, Helvetica, sans-serif',
+					'default' => 'default',
 				);
+
+				if ( isset( $web_safe[ $font_value ] ) ) {
+					return array( 'family' => $web_safe[ $font_value ] );
+				}
+
+				$font_parts = explode( ':', $font_value );
+				$font       = array( 'family' => $font_parts[0] );
+
+				if ( count( $font_parts ) > 1 ) {
+					$font['weight']     = $font_parts[1];
+					$font['weight_raw'] = filter_var( $font['weight'], FILTER_SANITIZE_NUMBER_INT );
+					$font['style']      = ! is_numeric( $font['weight'] ) || $font['weight'] == 'italic' ? 'italic' : '';
+				}
+
+				return $font;
 			}
 		);
 
@@ -124,7 +144,7 @@ class ContactLessVariablesTest extends SiteOriginTests {
 	 * are populated so modify_instance() does not reach for the current user or
 	 * the server name.
 	 */
-	private function base_instance() {
+	private static function base_instance() {
 		return array(
 			'title'    => 'Contact',
 			'settings' => array(
@@ -201,10 +221,42 @@ class ContactLessVariablesTest extends SiteOriginTests {
 	 * any change to it makes every site regenerate its CSS.
 	 */
 	public function test_stored_design_keeps_its_less_variables() {
-		$vars = $this->get_less_variables_capturing_errors( $this->stored_instance() );
+		$vars = $this->get_less_variables_capturing_errors( self::stored_instance() );
 
 		$this->assertSame( array(), $this->php_errors );
 		$this->assertSame( $this->stored_instance_less_variables(), $vars );
+	}
+
+	/**
+	 * The hash itself, not only its inputs. Both literals are what
+	 * get_style_hash() returned at 19820b78 for the same fixtures, measured
+	 * against the real install with the five contact filters removed. A widget
+	 * whose hash moves regenerates its CSS on every site that stores that shape.
+	 */
+	#[DataProvider( 'stored_design_hashes' )]
+	public function test_stored_design_keeps_its_style_hash( $instance, $hash ) {
+		$this->assertSame(
+			$hash,
+			$this->capturing_errors(
+				function () use ( $instance ) {
+					return $this->widget()->get_style_hash( $instance );
+				}
+			)
+		);
+		$this->assertSame( array(), $this->php_errors );
+	}
+
+	public static function stored_design_hashes() {
+		$left = self::stored_instance();
+
+		$left['design']['labels']['position']     = 'left';
+		$left['design']['labels']['font']         = 'Roboto:700';
+		$left['design']['fields']['border_width'] = false;
+
+		return array(
+			'labels above, default fonts, field border' => array( self::stored_instance(), '2cebac97cd02' ),
+			'labels left, Roboto:700, no field border'  => array( $left, '96deef3b8c7f' ),
+		);
 	}
 
 	public function test_missing_design_sections_yield_empty_without_errors() {
@@ -349,7 +401,7 @@ class ContactLessVariablesTest extends SiteOriginTests {
 	 * is legitimately a string. Normalisation must leave keys it does not own.
 	 */
 	public function test_normalisation_preserves_keys_the_widget_does_not_own() {
-		$instance                                       = $this->base_instance();
+		$instance                                       = self::base_instance();
 		$instance['design']                             = array( 'labels' => '' );
 		$instance['design']['so_field_container_state'] = 'closed';
 
@@ -425,7 +477,7 @@ class ContactLessVariablesTest extends SiteOriginTests {
 	}
 
 	private function instance_with_design( $design ) {
-		$instance = $this->base_instance();
+		$instance = self::base_instance();
 
 		if ( $design === '__ABSENT__' ) {
 			unset( $instance['design'] );
@@ -443,8 +495,8 @@ class ContactLessVariablesTest extends SiteOriginTests {
 	 * fields left blank are stored as false, sliders as floats, the checkbox as a
 	 * bool, and every section carries its container state.
 	 */
-	private function stored_instance() {
-		$instance = $this->base_instance();
+	private static function stored_instance() {
+		$instance = self::base_instance();
 
 		$instance['design'] = array(
 			'container'                => array(
@@ -540,7 +592,9 @@ class ContactLessVariablesTest extends SiteOriginTests {
 
 	/**
 	 * What get_less_variables() produced for stored_instance() at 19820b78, the
-	 * branch head before the design guards were added, with the same font stub.
+	 * branch head before the design guards were added, measured against the real
+	 * install with the five contact filters removed. The font stub reproduces
+	 * the real helper's values, so this array and its hash are the same in both.
 	 *
 	 * Raw reads keep the stored false; the values that carried an ! empty() guard
 	 * yield ''; concatenated values carry their unit even when the source is 0.
@@ -552,13 +606,13 @@ class ContactLessVariablesTest extends SiteOriginTests {
 			'container_border_color'        => '#c0c0c0',
 			'container_border_width'        => '1px',
 			'container_border_style'        => 'solid',
-			'label_font_family'             => '',
+			'label_font_family'             => 'default',
 			'label_font_size'               => false,
 			'label_font_color'              => false,
 			'label_position'                => 'default',
 			'label_width'                   => false,
 			'label_align'                   => 'left',
-			'field_font_family'             => '',
+			'field_font_family'             => 'default',
 			'field_font_size'               => false,
 			'field_font_color'              => false,
 			'field_margin'                  => '0px 0px 15px 0px',
@@ -604,7 +658,7 @@ class ContactLessVariablesTest extends SiteOriginTests {
 			'success_border_color'          => '',
 			'success_border_style'          => 'solid',
 			'field_border'                  => '1px #c0c0c0 solid',
-			'success_font_family'           => '',
+			'success_font_family'           => 'default',
 			'success_font_weight'           => '',
 			'success_font_style'            => '',
 		);
@@ -614,7 +668,7 @@ class ContactLessVariablesTest extends SiteOriginTests {
 	 * An instance whose design carries a value for every key the widget reads.
 	 */
 	private function healthy_instance() {
-		$instance = $this->base_instance();
+		$instance = self::base_instance();
 
 		$instance['design'] = array(
 			'container'    => array(
