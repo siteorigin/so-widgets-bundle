@@ -402,7 +402,11 @@ abstract class SiteOrigin_Widget_Field_Base {
 				default:
 					// This isn't a built in sanitization. Maybe it's handled elsewhere.
 					if ( is_callable( $this->sanitize ) ) {
-						$value = call_user_func( $this->sanitize, $value, $old_value );
+						if ( $this->sanitize_callback_accepts_old_value( $this->sanitize ) ) {
+							$value = call_user_func( $this->sanitize, $value, $old_value );
+						} else {
+							$value = call_user_func( $this->sanitize, $value );
+						}
 					} elseif ( is_string( $this->sanitize ) ) {
 						$value = apply_filters( 'siteorigin_widgets_sanitize_field_' . $this->sanitize, $value );
 					}
@@ -411,6 +415,50 @@ abstract class SiteOrigin_Widget_Field_Base {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Whether $old_value can be passed to the given callable sanitizer.
+	 *
+	 * PHP ignores surplus arguments to user-defined functions, so every user
+	 * callable keeps receiving both the value and $old_value, exactly as it
+	 * always has. The only callables that cannot take a second argument are
+	 * internal PHP functions with fewer than two required parameters: passing
+	 * $old_value to them either binds it to an unrelated optional parameter
+	 * (e.g. 'intval', where it becomes $base, deprecated on null and wrong on
+	 * a real value) or throws ArgumentCountError (e.g. 'strlen'). Those get
+	 * the value only. Internal functions that require two parameters still
+	 * receive both.
+	 *
+	 * If the callable cannot be reflected, both arguments are passed.
+	 *
+	 * @param callable $callable A PHP callable.
+	 * @return bool
+	 */
+	private function sanitize_callback_accepts_old_value( $callable ) {
+		try {
+			if ( $callable instanceof Closure ) {
+				// Closures (including Closure::fromCallable() and first-class
+				// callables wrapping internal functions) reflect as functions.
+				$reflection = new ReflectionFunction( $callable );
+			} elseif ( is_array( $callable ) ) {
+				$reflection = new ReflectionMethod( $callable[0], $callable[1] );
+			} elseif ( is_string( $callable ) && strpos( $callable, '::' ) !== false ) {
+				$parts = explode( '::', $callable, 2 );
+				$reflection = new ReflectionMethod( $parts[0], $parts[1] );
+			} elseif ( is_object( $callable ) ) {
+				$reflection = new ReflectionMethod( $callable, '__invoke' );
+			} else {
+				$reflection = new ReflectionFunction( $callable );
+			}
+
+			return ! (
+				$reflection->isInternal() &&
+				$reflection->getNumberOfRequiredParameters() < 2
+			);
+		} catch ( ReflectionException $e ) {
+			return true;
+		}
 	}
 
 	/**
