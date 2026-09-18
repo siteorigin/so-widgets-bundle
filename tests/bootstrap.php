@@ -50,7 +50,7 @@ if ( ! class_exists( 'WP_Widget' ) ) {
 		public $option_name;
 		public $widget_options;
 		public $control_options;
-		public $number = 2;
+		public $number = false;
 		public $id;
 
 		public function __construct( $id_base, $name, $widget_options = array(), $control_options = array() ) {

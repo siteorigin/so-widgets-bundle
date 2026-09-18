@@ -2,11 +2,14 @@
 /**
  * Fake of wp-admin/includes/file.php for the unit suite.
  *
- * SiteOrigin_Widget::delete_css() and save_css() require this file through
- * ABSPATH and then call WP_Filesystem(). Returning true with an inert
- * filesystem object lets both methods run to the end, which is what puts
+ * SiteOrigin_Widget::delete_css() requires this file through ABSPATH and
+ * then calls WP_Filesystem(). Returning true with an inert filesystem
+ * object lets delete_css() run to the end, which is what puts
  * get_style_hash() and get_less_variables() on the save path under test.
  * Returning false would skip them and the tests would prove nothing.
+ * save_css() is not reachable in the suite: it builds the CSS through the
+ * LESS compiler and the plugin directory helpers before it touches the
+ * filesystem, and the render tests run under the preview flag that skips it.
  */
 if ( ! class_exists( 'SiteOrigin_Test_Filesystem' ) ) {
 	class SiteOrigin_Test_Filesystem {

@@ -113,9 +113,11 @@ class SiteOriginTests extends FrameworkTestCase {
 		Functions\when( 'apply_filters' )->returnArg( 2 );
 
 		// Sanitizers the field classes run on save. WordPress's own are
-		// pass-throughs (the tests assert shape, not escaping); the plugin
-		// helpers from base/base.php, which cannot be loaded without the rest
-		// of the plugin, mirror the real implementation where it is pure.
+		// pass-throughs: the suite does not load WordPress, so KSES, wpautop
+		// and capability checks cannot run here, and the widget tests assert
+		// the shape of stored data, never its escaping. The plugin helpers
+		// from base/base.php, which cannot be loaded without the rest of the
+		// plugin, mirror the real implementation where it is pure.
 		Functions\when( 'wp_kses_post' )->returnArg();
 		Functions\when( 'sanitize_text_field' )->alias(
 			function ( $value ) {
@@ -188,8 +190,13 @@ class SiteOriginTests extends FrameworkTestCase {
 				}
 
 				$web_safe = array(
-					'Arial'   => 'Arial, Helvetica Neue, Helvetica, sans-serif',
-					'default' => 'default',
+					'Arial'           => 'Arial, Helvetica Neue, Helvetica, sans-serif',
+					'Courier New'     => 'Courier New, Courier, Lucida Sans Typewriter, Lucida Typewriter, monospace',
+					'Georgia'         => 'Georgia, Times, Times New Roman, serif',
+					'Helvetica Neue'  => 'Helvetica Neue, Helvetica, Arial, sans-serif',
+					'Lucida Grande'   => 'Lucida Grande, Lucida Sans Unicode, Lucida Sans, Geneva, Verdana, sans-serif',
+					'Times New Roman' => 'Times New Roman, Times, Baskerville, Georgia, serif',
+					'default'         => 'default',
 				);
 
 				if ( isset( $web_safe[ $font_value ] ) ) {
