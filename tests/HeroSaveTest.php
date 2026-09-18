@@ -34,7 +34,7 @@ class HeroSaveTest extends SiteOriginTests {
 	public function test_saving_the_stored_instance_repairs_its_empty_sections() {
 		$instance = self::stored_instance();
 
-		list( $stored ) = $this->run_capturing_errors(
+		list( $stored, $errors ) = $this->run_capturing_errors(
 			fn() => $this->widget()->update( $instance, $instance )
 		);
 
@@ -42,6 +42,7 @@ class HeroSaveTest extends SiteOriginTests {
 		$this->assertIsArray( $stored['layout'] );
 		$this->assertIsArray( $stored['frames'][0]['buttons'][0]['button']['button_icon'] );
 		$this->assertSame( $instance['frames'][0]['content'], $stored['frames'][0]['content'] );
+		$this->assertSame( array(), $errors, 'the save path must be silent as well as non-fatal' );
 	}
 
 	public function test_a_second_save_of_sanitised_output_is_byte_identical() {

@@ -130,6 +130,7 @@ class SiteOriginTests extends FrameworkTestCase {
 		Functions\when( 'sow_esc_url_raw' )->returnArg();
 		Functions\when( 'siteorigin_sanitize_json' )->returnArg();
 		Functions\when( 'is_admin' )->justReturn( false );
+		Functions\when( 'get_bloginfo' )->justReturn( '' );
 		// An empty font family list makes the font field keep the regex-cleaned
 		// value instead of validating it against Google Fonts.
 		Functions\when( 'siteorigin_widgets_font_families' )->justReturn( array() );
