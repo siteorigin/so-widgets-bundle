@@ -53,6 +53,13 @@ class ContactSaveTest extends SiteOriginTests {
 
 		$this->assertIsArray( $stored['design']['success'] );
 		$this->assertSame( $this->success_keys(), array_keys( $stored['design']['success'] ) );
+
+		// The same shape a submission with the section present but blank stores.
+		$blank = self::stored_instance();
+		$blank['design']['success'] = array_fill_keys( $this->success_keys(), '' );
+		$from_blank = $this->update_silently( $blank, self::stored_instance() );
+
+		$this->assertSame( $from_blank['design']['success'], $stored['design']['success'] );
 	}
 
 	public function test_a_stored_empty_success_section_saves_as_an_array() {

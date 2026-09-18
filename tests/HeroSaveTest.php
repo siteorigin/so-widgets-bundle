@@ -23,16 +23,13 @@ class HeroSaveTest extends SiteOriginTests {
 		return json_decode( file_get_contents( __DIR__ . '/fixtures/instances/hero-empty-design.json' ), true );
 	}
 
-	public function test_the_stored_shape_is_the_one_that_fataled() {
+	public function test_saving_the_stored_instance_repairs_its_empty_sections() {
 		$instance = self::stored_instance();
 
+		// The fixture must still be the shape that fataled.
 		$this->assertSame( '', $instance['design'] );
 		$this->assertSame( '', $instance['layout'] );
 		$this->assertSame( '', $instance['frames'][0]['buttons'][0]['button']['button_icon'] );
-	}
-
-	public function test_saving_the_stored_instance_repairs_its_empty_sections() {
-		$instance = self::stored_instance();
 
 		list( $stored, $errors ) = $this->run_capturing_errors(
 			fn() => $this->widget()->update( $instance, $instance )

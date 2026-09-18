@@ -182,11 +182,20 @@ class WidgetUpdateSavePathTest extends SiteOriginTests {
 
 	public static function untouched_container_values() {
 		return array(
-			'arrays' => array( null ),
+			'arrays' => array( "\0keep" ),
+			'null' => array( null ),
 			'non-empty string' => array( 'not-an-array' ),
 			'zero' => array( 0 ),
 			'false' => array( false ),
+			'object' => array( (object) array( 'text' => 'x' ) ),
 		);
+	}
+
+	private function normalize( $widget, $instance ) {
+		$method = new ReflectionMethod( $widget, 'normalize_container_values' );
+		$method->setAccessible( true );
+
+		return $method->invoke( $widget, $widget->form_options(), $instance );
 	}
 
 	/**
@@ -197,17 +206,28 @@ class WidgetUpdateSavePathTest extends SiteOriginTests {
 	public function test_normaliser_leaves_every_other_value_identical( $value ) {
 		$instance = $this->complete_instance();
 
-		if ( $value !== null ) {
+		if ( $value !== "\0keep" ) {
 			foreach ( array( 'design', 'shadow', 'items', 'button' ) as $key ) {
 				$instance[ $key ] = $value;
 			}
 		}
 
 		$widget = $this->widget();
-		$method = new ReflectionMethod( $widget, 'normalize_container_values' );
-		$method->setAccessible( true );
 
-		$this->assertSame( $instance, $method->invoke( $widget, $widget->form_options(), $instance ) );
+		$this->assertSame( $instance, $this->normalize( $widget, $instance ) );
+	}
+
+	/**
+	 * A container the instance lacks stays absent: the normaliser repairs
+	 * shape, it never supplies defaults.
+	 */
+	public function test_normaliser_adds_no_key_to_a_partial_instance() {
+		$instance = array( 'title' => 'Hello', 'design' => '' );
+
+		$this->assertSame(
+			array( 'title' => 'Hello', 'design' => array() ),
+			$this->normalize( $this->widget(), $instance )
+		);
 	}
 
 	public function test_widget_render_normalises_the_instance_it_reads() {
@@ -231,7 +251,10 @@ class WidgetUpdateSavePathTest extends SiteOriginTests {
 	 * The form's instance filter fires after the instance is normalised,
 	 * migrated and defaulted, and before any markup is rendered; the
 	 * assertion is made there and the render is cut short with a sentinel,
-	 * so the admin form's markup dependencies stay out of the suite.
+	 * so the admin form's markup dependencies stay out of the suite. The
+	 * repeater is the container to watch: add_defaults() repairs an
+	 * empty-string section on its own but leaves an empty-string repeater
+	 * as it is, so only the normaliser can turn it into an array here.
 	 */
 	public function test_form_normalises_the_instance_it_reads() {
 		$seen = null;
@@ -246,12 +269,16 @@ class WidgetUpdateSavePathTest extends SiteOriginTests {
 			}
 		);
 
+		$instance = $this->with_empty( 'items' );
+		$instance['design'] = '';
+
 		try {
-			$this->widget()->form( $this->with_empty( 'design' ) );
+			$this->widget()->form( $instance );
 		} catch ( RuntimeException $e ) {
 			$this->assertSame( 'stop before rendering', $e->getMessage() );
 		}
 
+		$this->assertSame( array(), $seen['items'] );
 		$this->assertIsArray( $seen['design'] );
 		$this->assertSame( array( 'color' => '' ), $seen['design']['box'] );
 	}
@@ -280,6 +307,17 @@ class WidgetUpdateSavePathTest extends SiteOriginTests {
 			array( 'after_update' => 1, 'after_render' => 2 ),
 			array( 'after_update' => $after_update, 'after_render' => $after_render )
 		);
+
+		// Repairing an empty-string container must not add a call either.
+		SiteOrigin_Test_Widget::$form_filter_calls = 0;
+		$widget = $this->widget();
+		$this->run_capturing_errors( fn() => $widget->update( $this->with_empty( 'button' ), $this->with_empty( 'design' ) ) );
+		$this->assertSame( 1, SiteOrigin_Test_Widget::$form_filter_calls );
+
+		ob_start();
+		$this->run_capturing_errors( fn() => $widget->widget( array(), $this->with_empty( 'button' ) ) );
+		ob_end_clean();
+		$this->assertSame( 2, SiteOrigin_Test_Widget::$form_filter_calls );
 	}
 
 	public function test_stylesheet_deleted_hook_receives_a_normalised_instance() {

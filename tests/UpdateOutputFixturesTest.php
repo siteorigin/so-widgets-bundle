@@ -13,6 +13,18 @@ if ( ! class_exists( 'SiteOrigin_Widget_Hero_Widget' ) ) {
 	require __DIR__ . '/../widgets/hero/hero.php';
 }
 
+foreach ( array(
+	'SiteOrigin_Widget_Anything_Carousel_Widget' => 'anything-carousel/anything-carousel.php',
+	'SiteOrigin_Widgets_Testimonials_Widget' => 'testimonial/testimonial.php',
+	'SiteOrigin_Widget_LayoutSlider_Widget' => 'layout-slider/layout-slider.php',
+	'SiteOrigin_Widget_GoogleMap_Widget' => 'google-map/google-map.php',
+	'SiteOrigin_Widget_SocialMediaButtons_Widget' => 'social-media-buttons/social-media-buttons.php',
+) as $class => $file ) {
+	if ( ! class_exists( $class ) ) {
+		require __DIR__ . '/../widgets/' . $file;
+	}
+}
+
 /**
  * Pins what SiteOrigin_Widget::update() stores for a fixed set of instances.
  *
@@ -101,10 +113,26 @@ class UpdateOutputFixturesTest extends SiteOriginTests {
 
 	/**
 	 * Each row: fixture name, widget class, instance, and the container key
-	 * paths (dot separated) that hold an empty string.
+	 * paths (dot separated) that hold an empty string. A null instance means
+	 * the widget's complete instance (every declared field at its default),
+	 * built inside the test because data providers run before the WordPress
+	 * stubs the widget constructors need are in place.
 	 */
 	public static function fixtures() {
-		return array(
+		$rows = array();
+
+		foreach ( array(
+			'hero' => 'SiteOrigin_Widget_Hero_Widget',
+			'anything-carousel' => 'SiteOrigin_Widget_Anything_Carousel_Widget',
+			'testimonial' => 'SiteOrigin_Widgets_Testimonials_Widget',
+			'layout-slider' => 'SiteOrigin_Widget_LayoutSlider_Widget',
+			'google-map' => 'SiteOrigin_Widget_GoogleMap_Widget',
+			'social-media-buttons' => 'SiteOrigin_Widget_SocialMediaButtons_Widget',
+		) as $name => $class ) {
+			$rows[ "$name, complete" ] = array( "$name-complete", $class, null, array() );
+		}
+
+		return $rows + array(
 			'test widget, complete' => array(
 				'test-widget-complete', 'SiteOrigin_Test_Widget', self::test_widget_complete(), array(),
 			),
@@ -138,6 +166,10 @@ class UpdateOutputFixturesTest extends SiteOriginTests {
 	#[DataProvider( 'fixtures' )]
 	public function test_update_output_matches_the_captured_baseline( $name, $class, $instance, $empty_paths ) {
 		$widget = new $class();
+
+		if ( $instance === null ) {
+			$instance = self::complete_instance( $widget );
+		}
 
 		list( $output, $errors ) = $this->run_capturing_errors(
 			function () use ( $widget, $instance ) {
@@ -197,6 +229,17 @@ class UpdateOutputFixturesTest extends SiteOriginTests {
 			return;
 		}
 
+		foreach ( $empty_paths as $path ) {
+			$value = $output;
+
+			foreach ( explode( '.', $path ) as $key ) {
+				$this->assertArrayHasKey( $key, $value, "expected '$path' in the stored output" );
+				$value = $value[ $key ];
+			}
+
+			$this->assertIsArray( $value, "'$path' must be stored as an array" );
+		}
+
 		$diff = array();
 		self::diff_paths( $baseline[ $name ], $output, '', $diff );
 
@@ -211,6 +254,37 @@ class UpdateOutputFixturesTest extends SiteOriginTests {
 
 			$this->assertTrue( $inside, "update() output differs from the baseline at '$path', outside the empty-string containers." );
 		}
+	}
+
+	/**
+	 * Every declared field at its default, with one defaulted row in every
+	 * repeater at any depth: add_defaults() alone never creates a repeater,
+	 * and an absent repeater is exactly the shape whose stored value the
+	 * change under test moves.
+	 */
+	private static function complete_instance( $widget ) {
+		$form = $widget->form_options();
+
+		return self::fill_repeaters( $widget, $form, $widget->add_defaults( $form, array() ) );
+	}
+
+	private static function fill_repeaters( $widget, $form, $instance ) {
+		foreach ( $form as $id => $field ) {
+			if ( ! is_array( $field ) || empty( $field['type'] ) ) {
+				continue;
+			}
+
+			if ( $field['type'] === 'repeater' ) {
+				$fields = $field['fields'] ?? array();
+				$row    = self::fill_repeaters( $widget, $fields, $widget->add_defaults( $fields, array() ) );
+
+				$instance[ $id ] = array( $row );
+			} elseif ( in_array( $field['type'], array( 'section', 'toggle' ), true ) && isset( $instance[ $id ] ) && is_array( $instance[ $id ] ) ) {
+				$instance[ $id ] = self::fill_repeaters( $widget, $field['fields'] ?? array(), $instance[ $id ] );
+			}
+		}
+
+		return $instance;
 	}
 
 	private static function diff_paths( $a, $b, $prefix, &$acc ) {
