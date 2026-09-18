@@ -161,9 +161,11 @@ class SiteOriginTests extends FrameworkTestCase {
 	 * Mock siteorigin_widget_get_font(), which widgets call while building
 	 * their LESS variables and so while computing their style hash.
 	 *
-	 * The real helper looks the value up as an array key, so handing it a
-	 * non-scalar is a fatal on PHP 8. Mirror that here: a permissive stub would
-	 * hide exactly the bug the widget suites are meant to catch.
+	 * The real helper looks the value up as an array key, so handing it an
+	 * array or object is a fatal on PHP 8. Mirror that here: a permissive stub
+	 * would hide exactly the bug the widget suites are meant to catch. A null
+	 * is a valid array key and the real helper returns an empty family for it
+	 * (with a deprecation notice from explode()), so null is treated as ''.
 	 *
 	 * The values it returns mirror siteorigin_widget_get_font() in base/base.php
 	 * without the enqueue side effects: a web-safe name maps to its stack,
@@ -175,8 +177,13 @@ class SiteOriginTests extends FrameworkTestCase {
 	private function mock_font_helper() {
 		Functions\when( 'siteorigin_widget_get_font' )->alias(
 			function ( $font_value = '' ) {
-				if ( ! is_scalar( $font_value ) ) {
+				if ( is_array( $font_value ) || is_object( $font_value ) ) {
 					throw new \TypeError( 'Cannot access offset of type ' . gettype( $font_value ) . ' in isset or empty' );
+				}
+
+				if ( is_null( $font_value ) ) {
+					trigger_error( 'explode(): Passing null to parameter #2 ($string) of type string is deprecated', E_USER_DEPRECATED );
+					$font_value = '';
 				}
 
 				$web_safe = array(

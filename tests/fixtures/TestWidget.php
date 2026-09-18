@@ -168,5 +168,12 @@ if ( ! class_exists( 'SiteOrigin_Test_Widget' ) ) {
 		public function get_template_variables( $instance, $args ) {
 			return array( 'instance' => $instance );
 		}
+
+		/**
+		 * Renders without a template file, so widget() can run in the suite.
+		 */
+		public function get_html_content( $instance, $args, $template_vars, $css_name ) {
+			return '<p>' . esc_html( $instance['title'] ?? '' ) . '</p>';
+		}
 	}
 }

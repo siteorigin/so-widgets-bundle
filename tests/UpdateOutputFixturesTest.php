@@ -177,11 +177,31 @@ class UpdateOutputFixturesTest extends SiteOriginTests {
 			return;
 		}
 
+		if ( isset( $baseline[ $name ]['__throwable'] ) ) {
+			// The baseline fataled on this shape, so there is no stored output
+			// to compare against: the requirement is that it now stores, with
+			// every empty-string container repaired to an array.
+			$this->assertArrayNotHasKey( '__throwable', $output );
+
+			foreach ( $empty_paths as $path ) {
+				$value = $output;
+
+				foreach ( explode( '.', $path ) as $key ) {
+					$this->assertArrayHasKey( $key, $value, "expected '$path' in the stored output" );
+					$value = $value[ $key ];
+				}
+
+				$this->assertIsArray( $value, "'$path' must be stored as an array" );
+			}
+
+			return;
+		}
+
 		$diff = array();
 		self::diff_paths( $baseline[ $name ], $output, '', $diff );
 
 		foreach ( $diff as $path ) {
-			$inside = false;
+			$inside = $path === '__errors';
 
 			foreach ( $empty_paths as $allowed ) {
 				if ( $path === $allowed || strpos( $path, $allowed . '.' ) === 0 ) {
