@@ -27,17 +27,6 @@ if ( ! defined( 'SOW_BUNDLE_BASE_FILE' ) ) {
 	define( 'SOW_BUNDLE_BASE_FILE', __DIR__ . '/../so-widgets-bundle.php' );
 }
 
-/**
- * Minimal stand-in for the widget base class. get_less_variables() reads no
- * base-class state, so an empty parent keeps the test free of WordPress.
- */
-if ( ! class_exists( 'SiteOrigin_Widget' ) ) {
-	class SiteOrigin_Widget {
-		public function __construct() {
-		}
-	}
-}
-
 if ( ! class_exists( 'SiteOrigin_Widget_PriceTable_Widget' ) ) {
 	require __DIR__ . '/../widgets/price-table/price-table.php';
 }

@@ -231,6 +231,10 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 	public function modify_instance( $instance ) {
 		if ( ! empty( $instance['networks'] ) ) {
 			foreach ( $instance['networks'] as $name => $network ) {
+				if ( ! is_array( $network ) || ! isset( $network['name'] ) ) {
+					continue;
+				}
+
 				if ( $network['name'] == 'envelope' ) {
 					$network['name'] = 'email';
 				}
@@ -316,10 +320,10 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			return;
 		}
 
-		$design = $instance['design'];
-		$m = $design['margin'];
+		$design = $instance['design'] ?? array();
+		$m = $design['margin'] ?? '';
 		$top = $right = $bottom = $left = $m . 'em';
-		switch ( $design['align'] ) {
+		switch ( $design['align'] ?? '' ) {
 			case 'left':
 				$left = '0';
 				break;
@@ -338,10 +342,10 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		$breakpoint = $this->get_global_settings( 'responsive_breakpoint' );
 
 		return array(
-			'icon_size'             => $design['icon_size'] . 'em',
-			'rounding'              => $design['rounding'] . 'em',
-			'padding'               => $design['padding'] . 'em',
-			'align'                 => $design['align'],
+			'icon_size'             => ( $design['icon_size'] ?? '' ) . 'em',
+			'rounding'              => ( $design['rounding'] ?? '' ) . 'em',
+			'padding'               => ( $design['padding'] ?? '' ) . 'em',
+			'align'                 => $design['align'] ?? '',
 			'mobile_align'          => ! empty( $design['mobile_align'] ) ? $design['mobile_align'] : '',
 			'responsive_breakpoint' => ! empty( $breakpoint ) ? $breakpoint : '',
 			'margin'                => $margin,
@@ -362,7 +366,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 				$call .= ! empty( $network['icon_color_hover'] ) ? ', @icon_color_hover:' . $network['icon_color_hover'] : $icon_color_hover_fallback;
 				$call .= ! empty( $network['button_color_hover'] ) ? ', @button_color_hover:' . $network['button_color_hover'] : $button_color_hover_fallback;
 
-				if ( $instance['design']['theme'] == 'wire' ) {
+				if ( ( $instance['design']['theme'] ?? '' ) == 'wire' ) {
 					$call .= ! empty( $network['border_color'] ) ? ', @border_color:' . $network['border_color'] : '';
 					$border_hover_color_fallback = ! empty( $network['border_color'] ) ? ', @border_hover_color:' . $network['border_color'] : ", @border_hover_color: ''";
 					$call .= ! empty( $network['border_hover_color'] ) ? ', @border_hover_color:' . $network['border_hover_color'] : $border_hover_color_fallback;
@@ -392,6 +396,10 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 		$network_classes = array();
 
 		foreach ( $networks as &$network ) {
+			if ( ! is_array( $network ) || ! isset( $network['name'] ) ) {
+				continue;
+			}
+
 			$name = $network['name'];
 
 			if ( ! isset( $network_classes[ $name ] ) ) {
