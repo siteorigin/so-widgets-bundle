@@ -1,0 +1,437 @@
+{
+    "contact-complete": {
+        "title": "Contact Us",
+        "settings": {
+            "to": "",
+            "from": "wordpress@localhost",
+            "default_subject": "",
+            "subject_prefix": "",
+            "success_message": "<p>Thanks for contacting us. We'll get back to you shortly.</p>\n",
+            "success_message_selected_editor": "tinymce",
+            "submit_text": "Contact Us",
+            "submit_id": "",
+            "required_field_indicator_message": "Fields marked with * are required",
+            "so_field_container_state": "closed",
+            "required_field_indicator": "",
+            "log_ip_address": "",
+            "on_click": ""
+        },
+        "fields": [
+            {
+                "type": "name",
+                "label": "Your Name",
+                "description": "",
+                "required": {
+                    "required": true,
+                    "missing_message": "Please enter your name",
+                    "so_field_container_state": "open"
+                },
+                "options": [],
+                "multiple_select": ""
+            },
+            {
+                "type": "email",
+                "label": "Your Email",
+                "description": "",
+                "required": {
+                    "required": true,
+                    "missing_message": "Please enter a valid email address",
+                    "so_field_container_state": "open"
+                },
+                "options": [],
+                "multiple_select": ""
+            },
+            {
+                "type": "subject",
+                "label": "Subject",
+                "description": "",
+                "required": {
+                    "required": true,
+                    "missing_message": "Please enter a subject",
+                    "so_field_container_state": "open"
+                },
+                "options": [],
+                "multiple_select": ""
+            },
+            {
+                "type": "textarea",
+                "label": "Message",
+                "description": "",
+                "required": {
+                    "required": true,
+                    "missing_message": "Please write something",
+                    "so_field_container_state": "open"
+                },
+                "options": [],
+                "multiple_select": ""
+            }
+        ],
+        "spam": {
+            "recaptcha": {
+                "site_key": "",
+                "secret_key": "",
+                "theme": "light",
+                "type": "image",
+                "size": "normal",
+                "so_field_container_state": "open",
+                "use_captcha": "",
+                "site_key_v3": "",
+                "secret_key_v3": ""
+            },
+            "akismet": {
+                "use_akismet": true,
+                "spam_action": "error",
+                "so_field_container_state": "open"
+            },
+            "so_field_container_state": "closed",
+            "honeypot": "",
+            "browser_check": "",
+            "simple": {
+                "enabled": "",
+                "background": "",
+                "color": ""
+            }
+        },
+        "design": {
+            "container": {
+                "background": "",
+                "padding": "0px",
+                "border_color": "#ffffff",
+                "border_width": "0px",
+                "border_style": "none",
+                "so_field_container_state": "closed"
+            },
+            "labels": {
+                "font": "default",
+                "size": "",
+                "color": "",
+                "position": "above",
+                "width": "",
+                "align": "left",
+                "so_field_container_state": "closed"
+            },
+            "fields": {
+                "font": "default",
+                "font_size": "",
+                "color": "",
+                "padding": "",
+                "max_width": "",
+                "height": "",
+                "height_textarea": "",
+                "background": "",
+                "border_color": "#c0c0c0",
+                "border_width": "1px",
+                "border_style": "solid",
+                "border_radius": "",
+                "so_field_container_state": "closed",
+                "multi_margin": "0px 0px 15px 0px"
+            },
+            "descriptions": {
+                "size": "0.9em",
+                "color": "#999999",
+                "style": "italic",
+                "so_field_container_state": "closed",
+                "top_margin": ""
+            },
+            "errors": {
+                "background": "#fce4e5",
+                "border_color": "#ec666a",
+                "text_color": "#ec666a",
+                "padding": "5px",
+                "margin": "10px",
+                "so_field_container_state": "closed"
+            },
+            "submit": {
+                "background_color": "#eeeeee",
+                "background_gradient": "",
+                "border_color": "#989a9c",
+                "border_style": "solid",
+                "border_width": "1px",
+                "border_radius": "",
+                "text_color": "#5a5a5a",
+                "font_size": "",
+                "weight": "500",
+                "padding": "15px",
+                "width": "",
+                "align": "left",
+                "inset_highlight": "",
+                "so_field_container_state": "closed",
+                "styled": "",
+                "background_color_hover": "",
+                "border_color_hover": "",
+                "text_color_hover": ""
+            },
+            "focus": {
+                "style": "solid",
+                "color": "",
+                "width": "1px",
+                "so_field_container_state": "closed"
+            },
+            "so_field_container_state": "open",
+            "success": {
+                "font": "default",
+                "font_size": "",
+                "color": "#ffffff",
+                "background_color": "#4caf50",
+                "padding": "15px",
+                "border_color": "",
+                "border_width": "",
+                "border_style": "solid"
+            }
+        },
+        "_sow_form_id": "562e687f3231b",
+        "display_title": ""
+    },
+    "contact-empty-success": {
+        "title": "Contact Us",
+        "settings": {
+            "to": "",
+            "from": "wordpress@localhost",
+            "default_subject": "",
+            "subject_prefix": "",
+            "success_message": "<p>Thanks for contacting us. We'll get back to you shortly.</p>\n",
+            "success_message_selected_editor": "tinymce",
+            "submit_text": "Contact Us",
+            "submit_id": "",
+            "required_field_indicator_message": "Fields marked with * are required",
+            "so_field_container_state": "closed",
+            "required_field_indicator": "",
+            "log_ip_address": "",
+            "on_click": ""
+        },
+        "fields": [
+            {
+                "type": "name",
+                "label": "Your Name",
+                "description": "",
+                "required": {
+                    "required": true,
+                    "missing_message": "Please enter your name",
+                    "so_field_container_state": "open"
+                },
+                "options": [],
+                "multiple_select": ""
+            },
+            {
+                "type": "email",
+                "label": "Your Email",
+                "description": "",
+                "required": {
+                    "required": true,
+                    "missing_message": "Please enter a valid email address",
+                    "so_field_container_state": "open"
+                },
+                "options": [],
+                "multiple_select": ""
+            },
+            {
+                "type": "subject",
+                "label": "Subject",
+                "description": "",
+                "required": {
+                    "required": true,
+                    "missing_message": "Please enter a subject",
+                    "so_field_container_state": "open"
+                },
+                "options": [],
+                "multiple_select": ""
+            },
+            {
+                "type": "textarea",
+                "label": "Message",
+                "description": "",
+                "required": {
+                    "required": true,
+                    "missing_message": "Please write something",
+                    "so_field_container_state": "open"
+                },
+                "options": [],
+                "multiple_select": ""
+            }
+        ],
+        "spam": {
+            "recaptcha": {
+                "site_key": "",
+                "secret_key": "",
+                "theme": "light",
+                "type": "image",
+                "size": "normal",
+                "so_field_container_state": "open",
+                "use_captcha": "",
+                "site_key_v3": "",
+                "secret_key_v3": ""
+            },
+            "akismet": {
+                "use_akismet": true,
+                "spam_action": "error",
+                "so_field_container_state": "open"
+            },
+            "so_field_container_state": "closed",
+            "honeypot": "",
+            "browser_check": "",
+            "simple": {
+                "enabled": "",
+                "background": "",
+                "color": ""
+            }
+        },
+        "design": {
+            "container": {
+                "background": "",
+                "padding": "0px",
+                "border_color": "#ffffff",
+                "border_width": "0px",
+                "border_style": "none",
+                "so_field_container_state": "closed"
+            },
+            "labels": {
+                "font": "default",
+                "size": "",
+                "color": "",
+                "position": "above",
+                "width": "",
+                "align": "left",
+                "so_field_container_state": "closed"
+            },
+            "fields": {
+                "font": "default",
+                "font_size": "",
+                "color": "",
+                "padding": "",
+                "max_width": "",
+                "height": "",
+                "height_textarea": "",
+                "background": "",
+                "border_color": "#c0c0c0",
+                "border_width": "1px",
+                "border_style": "solid",
+                "border_radius": "",
+                "so_field_container_state": "closed",
+                "multi_margin": "0px 0px 15px 0px"
+            },
+            "descriptions": {
+                "size": "0.9em",
+                "color": "#999999",
+                "style": "italic",
+                "so_field_container_state": "closed",
+                "top_margin": ""
+            },
+            "errors": {
+                "background": "#fce4e5",
+                "border_color": "#ec666a",
+                "text_color": "#ec666a",
+                "padding": "5px",
+                "margin": "10px",
+                "so_field_container_state": "closed"
+            },
+            "submit": {
+                "background_color": "#eeeeee",
+                "background_gradient": "",
+                "border_color": "#989a9c",
+                "border_style": "solid",
+                "border_width": "1px",
+                "border_radius": "",
+                "text_color": "#5a5a5a",
+                "font_size": "",
+                "weight": "500",
+                "padding": "15px",
+                "width": "",
+                "align": "left",
+                "inset_highlight": "",
+                "so_field_container_state": "closed",
+                "styled": "",
+                "background_color_hover": "",
+                "border_color_hover": "",
+                "text_color_hover": ""
+            },
+            "focus": {
+                "style": "solid",
+                "color": "",
+                "width": "1px",
+                "so_field_container_state": "closed"
+            },
+            "so_field_container_state": "open",
+            "success": {
+                "font": "",
+                "font_size": "",
+                "color": "",
+                "background_color": "",
+                "padding": "",
+                "border_color": "",
+                "border_width": "",
+                "border_style": ""
+            }
+        },
+        "_sow_form_id": "562e687f3231b",
+        "display_title": ""
+    },
+    "hero-empty-design": {
+        "__throwable": "TypeError: Cannot access offset of type string on string"
+    },
+    "test-widget-complete": {
+        "title": "Hello",
+        "design": {
+            "text": "body",
+            "box": {
+                "color": "#123456"
+            }
+        },
+        "shadow": {
+            "color": "#000000",
+            "so_field_container_state": "open"
+        },
+        "items": [
+            {
+                "text": "one",
+                "meta": {
+                    "note": "a"
+                }
+            },
+            {
+                "text": "two",
+                "meta": {
+                    "note": "b"
+                }
+            }
+        ],
+        "button": {
+            "icon": {
+                "name": "star"
+            }
+        },
+        "query": "post_type=post"
+    },
+    "test-widget-empty-containers": {
+        "__throwable": "TypeError: Cannot access offset of type string on string"
+    },
+    "test-widget-false-containers": {
+        "title": "Hello",
+        "design": [],
+        "shadow": [],
+        "items": [],
+        "button": [],
+        "query": "post_type=post",
+        "__errors": [
+            "Trying to access array offset on false",
+            "Trying to access array offset on null"
+        ]
+    },
+    "test-widget-string-containers": {
+        "__throwable": "TypeError: Cannot access offset of type string on string",
+        "__errors": [
+            "foreach() argument must be of type array|object, string given"
+        ]
+    },
+    "test-widget-zero-containers": {
+        "title": "Hello",
+        "design": [],
+        "shadow": [],
+        "items": [],
+        "button": [],
+        "query": "post_type=post",
+        "__errors": [
+            "Trying to access array offset on int",
+            "Trying to access array offset on null"
+        ]
+    }
+}

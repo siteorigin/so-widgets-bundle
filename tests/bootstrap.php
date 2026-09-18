@@ -2,60 +2,99 @@
 /**
  * PHPUnit bootstrap.
  *
- * Loading the autoloader here pulls in Patchwork (via Brain Monkey) before any
- * test file is read. Brain Monkey can only redefine a function if Patchwork was
- * loaded first, so anything that defines WordPress functions has to come after
- * this point.
+ * Brain Monkey can only redefine a function whose defining file Patchwork
+ * rewrote as it was included, and the Composer autoloader does not load
+ * Patchwork itself (Brain Monkey pulls it in lazily from its first setUp()).
+ * So Patchwork is required explicitly here, before any file that declares a
+ * WordPress function; a function declared earlier, or in this bootstrap file
+ * itself, throws DefinedTooEarly when a test tries to mock it.
  */
 
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/antecedent/patchwork/Patchwork.php';
 
 /**
- * Plugin files call add_action() at the top level, as they're written to run
- * inside WordPress. That happens while the file is being required, before any
- * test has had a chance to set Brain Monkey up, so add_action has to exist as a
- * real function by then.
- *
- * Declaring it here, after the autoloader, means Patchwork is already in place
- * and Brain Monkey can still redefine it for the tests that assert on hooks.
+ * WordPress functions plugin files call while being required.
  */
-if ( ! function_exists( 'add_action' ) ) {
-	function add_action() {
-		return true;
+require_once __DIR__ . '/fixtures/wp-stubs.php';
+
+if ( ! defined( 'ABSPATH' ) ) {
+	// Points at the fixture tree so the base class's
+	// require_once ABSPATH . 'wp-admin/includes/file.php' resolves to a fake
+	// filesystem instead of WordPress.
+	define( 'ABSPATH', __DIR__ . '/fixtures/wp/' );
+}
+
+if ( ! defined( 'SOW_BUNDLE_BASE_FILE' ) ) {
+	define( 'SOW_BUNDLE_BASE_FILE', __DIR__ . '/../so-widgets-bundle.php' );
+}
+
+if ( ! defined( 'SOW_BUNDLE_JS_SUFFIX' ) ) {
+	define( 'SOW_BUNDLE_JS_SUFFIX', '' );
+}
+
+if ( ! defined( 'SOW_BUNDLE_VERSION' ) ) {
+	define( 'SOW_BUNDLE_VERSION', 'dev' );
+}
+
+/**
+ * Stand-in for WordPress's WP_Widget, the parent of SiteOrigin_Widget. Carries
+ * the properties the base class reads and the two field-naming helpers that
+ * SiteOrigin_Widget::so_get_field_name() / so_get_field_id() build on, with
+ * the same output as WordPress.
+ */
+if ( ! class_exists( 'WP_Widget' ) ) {
+	class WP_Widget {
+		public $id_base;
+		public $name;
+		public $option_name;
+		public $widget_options;
+		public $control_options;
+		public $number = 2;
+		public $id;
+
+		public function __construct( $id_base, $name, $widget_options = array(), $control_options = array() ) {
+			$this->id_base         = strtolower( $id_base );
+			$this->name            = $name;
+			$this->option_name     = 'widget_' . $this->id_base;
+			$this->widget_options  = array_merge(
+				array(
+					'classname'                   => $this->option_name,
+					'customize_selective_refresh' => false,
+				),
+				(array) $widget_options
+			);
+			$this->control_options = array_merge( array( 'id_base' => $this->id_base ), (array) $control_options );
+		}
+
+		public function get_field_name( $field_name ) {
+			$pos = strpos( $field_name, '[' );
+
+			if ( false !== $pos ) {
+				$field_name = '[' . substr_replace( $field_name, '][', $pos, strlen( '[' ) );
+			} else {
+				$field_name = '[' . $field_name . ']';
+			}
+
+			return 'widget-' . $this->id_base . '[' . $this->number . ']' . $field_name;
+		}
+
+		public function get_field_id( $field_name ) {
+			$field_name = str_replace( array( '[]', '[', ']' ), array( '', '-', '' ), $field_name );
+			$field_name = trim( $field_name, '-' );
+
+			return 'widget-' . $this->id_base . '-' . $this->number . '-' . $field_name;
+		}
 	}
 }
 
 /**
- * Stand-in for the widget base class, shared by every test file. Provides the
- * six-argument constructor, is_preview(), get_global_settings() and
- * get_style_hash() - the widest contract any widget under test needs. Widgets read global settings while
- * building their LESS variables, so the stand-in answers with an empty set.
+ * The real widget base class and the field machinery update() depends on. The
+ * class loader autoloads every SiteOrigin_Widget_Field_* class from
+ * base/inc/fields on first use.
  */
-if ( ! class_exists( 'SiteOrigin_Widget' ) ) {
-	class SiteOrigin_Widget {
-		public function __construct( $id = '', $name = '', $widget_options = array(), $control_options = array(), $form_options = array(), $base_folder = false ) {
-		}
-
-		public function is_preview() {
-			return false;
-		}
-
-		public function get_global_settings() {
-			return array();
-		}
-
-		/**
-		 * Mirrors SiteOrigin_Widget::get_style_hash() in base/siteorigin-widget.class.php
-		 * for a widget that builds its hash from get_less_variables(): the first
-		 * twelve characters of the md5 of the JSON-encoded variables and the widget
-		 * version. The filters the real method applies are omitted, which is what
-		 * the hash probes do too.
-		 */
-		public function get_style_hash( $instance ) {
-			$vars    = $this->get_less_variables( $instance );
-			$version = property_exists( $this, 'version' ) ? $this->version : '';
-
-			return substr( md5( json_encode( $vars ) . $version ), 0, 12 );
-		}
-	}
-}
+require_once __DIR__ . '/../base/inc/fields/siteorigin-widget-field-class-loader.class.php';
+SiteOrigin_Widget_Field_Class_Loader::single();
+require_once __DIR__ . '/../base/inc/fields/factory.class.php';
+require_once __DIR__ . '/../base/inc/array-utils.php';
+require_once __DIR__ . '/../base/siteorigin-widget.class.php';

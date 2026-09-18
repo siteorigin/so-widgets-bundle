@@ -67,44 +67,6 @@ class ContactLessVariablesTest extends SiteOriginTests {
 	protected function setUp(): void {
 		parent::setUp();
 
-		// The real helper looks the value up as an array key, so handing it a
-		// non-scalar is a fatal on PHP 8. Mirror that here: a permissive stub would
-		// hide exactly the bug this suite is meant to catch.
-		//
-		// The values it returns mirror siteorigin_widget_get_font() in base/base.php
-		// without the enqueue side effects: a web-safe name maps to its stack,
-		// 'default' to 'default', 'Family:weight' splits into family, weight,
-		// weight_raw and style, and anything else is a custom family. The style
-		// hash assertions depend on this being faithful, because the font family
-		// is part of the hashed variables.
-		Functions\when( 'siteorigin_widget_get_font' )->alias(
-			function ( $font_value = '' ) {
-				if ( ! is_scalar( $font_value ) ) {
-					throw new \TypeError( 'Cannot access offset of type ' . gettype( $font_value ) . ' in isset or empty' );
-				}
-
-				$web_safe = array(
-					'Arial'   => 'Arial, Helvetica Neue, Helvetica, sans-serif',
-					'default' => 'default',
-				);
-
-				if ( isset( $web_safe[ $font_value ] ) ) {
-					return array( 'family' => $web_safe[ $font_value ] );
-				}
-
-				$font_parts = explode( ':', $font_value );
-				$font       = array( 'family' => $font_parts[0] );
-
-				if ( count( $font_parts ) > 1 ) {
-					$font['weight']     = $font_parts[1];
-					$font['weight_raw'] = filter_var( $font['weight'], FILTER_SANITIZE_NUMBER_INT );
-					$font['style']      = ! is_numeric( $font['weight'] ) || $font['weight'] == 'italic' ? 'italic' : '';
-				}
-
-				return $font;
-			}
-		);
-
 		Functions\when( 'wp_get_current_user' )->alias(
 			function () {
 				return (object) array( 'user_email' => 'current@example.com' );

@@ -1,0 +1,71 @@
+{
+    "frames": [
+        {
+            "content": "<h1 style=\"text-align: center\">Riester Rente</h1>\n<p style=\"text-align: center\">Hohe staatliche F\u00f6rderung durch Zulagen und Steuervorteil mit lebenslanger Altersrente!</p>\n<p style=\"text-align: center\">[buttons]</p>",
+            "content_selected_editor": "html",
+            "buttons": [
+                {
+                    "button": {
+                        "text": "Beratung vereinbaren",
+                        "url": "/kontakt",
+                        "new_window": false,
+                        "design": {
+                            "theme": "wire",
+                            "button_color": "#ffffff",
+                            "text_color": "#000000",
+                            "hover": true,
+                            "width": "",
+                            "hover_background_color": "",
+                            "hover_text_color": "",
+                            "font": "",
+                            "font_size": "",
+                            "icon_size": "",
+                            "padding": "",
+                            "rounding": ""
+                        },
+                        "download": "",
+                        "button_icon": "",
+                        "attributes": ""
+                    }
+                }
+            ],
+            "background": {
+                "color": "#142660",
+                "opacity": 60,
+                "size": "full",
+                "image_type": "fixed",
+                "image": "",
+                "alt": "",
+                "url": "",
+                "new_window": "",
+                "videos": "",
+                "loop_background_videos": "",
+                "background_video_opacity": ""
+            },
+            "autop": "",
+            "content_animation": ""
+        }
+    ],
+    "controls": {
+        "fitvids": true,
+        "autoplay": "",
+        "autoplay_hover": "",
+        "speed": "",
+        "timeout": "",
+        "nav_color_hex": "",
+        "nav_style": "",
+        "nav_size": "",
+        "nav_always_show_desktop": "",
+        "nav_always_show_mobile": "",
+        "nav_align": "",
+        "swipe": "",
+        "unmute": "",
+        "unmute_position": "",
+        "background_video_mobile": "",
+        "use_anchor_tags": "",
+        "anchor": ""
+    },
+    "layout": "",
+    "design": "",
+    "_sow_form_timestamp": 1789403220346
+}
