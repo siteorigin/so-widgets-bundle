@@ -115,7 +115,8 @@ The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets
 * Editor: Fixed shortcodes being executed and stored when Page Builder copied a layout into the post content. Shortcodes now run only when the widget renders on the front end.
 * Widget Block: Fixed admin-authored rich content, such as iframes, being stripped for logged-out visitors.
 * Block Editor: Fixed the Open Builder button doing nothing when jQuery had not loaded in the editor canvas.
-* Block Editor: Fixed the icon picker not initializing in newly added or copied repeater items, and aligned color picker heights and palette swatch sizes with the editor.
+* Block Editor: Fixed the icon picker not initializing in newly added or copied repeater items in the block editor canvas, and aligned color picker heights and palette swatch sizes with the editor.
+* Image: Fixed the Image Shape section storing an empty shape when enabled without choosing one, so the default Circle mask now renders, and widgets already saved that way render without a re-save.
 * Beaver Builder: Color fields fall back to a native color input when the WordPress color picker is not available.
 * General: Fixed a PHP 8.1 deprecation notice when a field used a single-argument sanitizer such as intval.
 * General: Generated CSS is no longer cleared when only translations or WordPress core are updated.
