@@ -1,5 +1,18 @@
 == Changelog ==
 
+= 1.74.3 - 18 September 2026 =
+* General: Fixed saving a page failing with "Cannot access offset of type string on string" when a widget had a design or settings section stored as an empty string. Section, toggle and repeater fields now store an array when left empty, existing widgets are repaired on their next save, and the Hero, Anything Carousel, Testimonial, Layout Slider, Google Maps, Social Media Buttons and Price Table widgets read their settings safely.
+* Contact Form: Fixed a fatal error when a design section held a stored string instead of an array. Existing style hashes are kept, so generated CSS is not rebuilt on every site; the 1.74.3 beta.3 build regenerated it.
+* Editor: Fixed shortcodes being executed and stored when Page Builder copied a layout into the post content. Shortcodes now run only when the widget renders on the front end.
+* Widget Block: Fixed admin-authored rich content, such as iframes, being stripped for logged-out visitors.
+* Block Editor: Fixed the Open Builder button doing nothing when jQuery had not loaded in the editor canvas.
+* Block Editor: Fixed the icon picker not initializing in newly added or copied repeater items in the block editor canvas, and aligned color picker heights and palette swatch sizes with the editor.
+* Image: Fixed the Image Shape section storing an empty shape when enabled without choosing one, so the default Circle mask now renders, and widgets already saved that way render without a re-save.
+* Beaver Builder: Color fields fall back to a native color input when the WordPress color picker is not available.
+* General: Fixed a PHP 8.1 deprecation notice when a field used a single-argument sanitizer such as intval.
+* General: Generated CSS is no longer cleared when only translations or WordPress core are updated.
+* LiteSpeed Cache: Page and site purges use the LiteSpeed purge action, so they also work during plugin updates, cron and WP-CLI requests where a response header is dropped.
+
 = 1.74.2 - 23 July 2026 =
 * Post Carousel: Fixed thumbnails collapsing when the Full image size was selected by falling back to the default box dimensions.
 * General: Fixed widget content being lost when saving in the Block Editor while the visual editor had not finished initializing.

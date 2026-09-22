@@ -42,6 +42,22 @@ class SiteOrigin_Widget_Field_Image_Shape extends SiteOrigin_Widget_Field_Base {
 		<?php
 	}
 
+	/**
+	 * The picker's hidden input is only populated when the user clicks a
+	 * shape, so an enabled section saved on its default preview submits ''.
+	 * The base sanitize() returns '' early for an empty value and would
+	 * skip the circle default below, leaving is_valid_shape() to fail at
+	 * render. Normalise an empty value to the circle the picker previews,
+	 * then let the base class run the usual sanitize path on it.
+	 */
+	public function sanitize( $value, $instance = array(), $old_value = null ) {
+		if ( $value === '' || is_null( $value ) ) {
+			$value = 'circle';
+		}
+
+		return parent::sanitize( $value, $instance, $old_value );
+	}
+
 	protected function sanitize_field_input( $value, $instance ) {
 		if (
 			empty( $value ) ||

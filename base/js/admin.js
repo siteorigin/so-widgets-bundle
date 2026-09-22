@@ -119,6 +119,25 @@ var sowbForms = window.sowbForms || {};
 		if ( $allFields.length > 0 ) {
 			const clientId = $container.closest( '[data-block]' ).attr( 'data-block' ) || null;
 			$( document ).trigger( 'sowrepeaterfieldsadded', [ $allFields, clientId ] );
+
+			// When the form lives in the block editor canvas iframe, this script
+			// and its jQuery are the iframe's own, so the trigger above never
+			// reaches the widget block script listening on the top document.
+			// Fire it there too, with the top window's jQuery, so the block
+			// re-sends the form init message that initialises fields the
+			// iframe-bound handlers cannot (the icon field binds
+			// sowsetupformfield only outside an iframe).
+			if ( window.top !== window.self ) {
+				try {
+					const topJQuery = window.top.jQuery;
+
+					if ( topJQuery && topJQuery !== $ ) {
+						topJQuery( window.top.document ).trigger( 'sowrepeaterfieldsadded', [ $allFields, clientId ] );
+					}
+				} catch ( e ) {
+					// A cross-origin top window is out of reach; nothing else to do.
+				}
+			}
 		}
 	};
 
