@@ -500,8 +500,8 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		}
 
 		// Slider navigation controls
-		$less['nav_color_hex'] = $instance['controls']['nav_color_hex'];
-		$less['nav_size'] = $instance['controls']['nav_size'];
+		$less['nav_color_hex'] = $instance['controls']['nav_color_hex'] ?? '';
+		$less['nav_size'] = $instance['controls']['nav_size'] ?? '';
 		$less['nav_align'] = ! empty( $instance['controls']['nav_align'] ) ? $instance['controls']['nav_align'] : 'right';
 
 		// Measurement field type options
@@ -549,8 +549,8 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 			}
 		}
 
-		$meas_options['heading_size'] = $instance['design']['heading_size'];
-		$meas_options['text_size'] = $instance['design']['text_size'];
+		$meas_options['heading_size'] = $instance['design']['heading_size'] ?? '';
+		$meas_options['text_size'] = $instance['design']['text_size'] ?? '';
 
 		foreach ( $meas_options as $key => $val ) {
 			$less[ $key ] = $this->add_default_measurement_unit( $val );
@@ -558,15 +558,15 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 
 		$less['vertically_align'] = empty( $instance['layout']['vertically_align'] ) ? 'false' : 'true';
 
-		$less['heading_shadow'] = (int) $instance['design']['heading_shadow'];
-		$less['heading_color'] = $instance['design']['heading_color'];
+		$less['heading_shadow'] = (int) ( $instance['design']['heading_shadow'] ?? 0 );
+		$less['heading_color'] = $instance['design']['heading_color'] ?? '';
 		$less['text_shadow'] = isset( $instance['design']['text_shadow'] ) ? (float) $instance['design']['text_shadow'] : 25;
-		$less['text_color'] = $instance['design']['text_color'];
+		$less['text_color'] = $instance['design']['text_color'] ?? '';
 
 		$less['link_color'] = ! empty( $instance['design']['link_color'] ) ? $instance['design']['link_color'] : '';
 		$less['link_color_hover'] = ! empty( $instance['design']['link_color_hover'] ) ? $instance['design']['link_color_hover'] : '';
 
-		$heading_font = siteorigin_widget_get_font( $instance['design']['heading_font'] );
+		$heading_font = siteorigin_widget_get_font( $instance['design']['heading_font'] ?? '' );
 		$less['heading_font'] = $heading_font['family'];
 
 		if ( ! empty( $heading_font['weight'] ) ) {

@@ -659,7 +659,7 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 	public function get_less_variables( $instance ) {
 		$global_settings = $this->get_global_settings();
 		$less_variables = array(
-			'height' => $instance['settings']['height'] . 'px',
+			'height' => ( $instance['settings']['height'] ?? '' ) . 'px',
 			'map_consent' => ! empty( $global_settings['map_consent'] ),
 			'responsive_breakpoint' => ! empty( $global_settings['responsive_breakpoint'] ) ? $global_settings['responsive_breakpoint'] : '780',
 		);

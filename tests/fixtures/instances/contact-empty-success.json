@@ -1,0 +1,214 @@
+{
+    "title": "Contact Us",
+    "settings": {
+        "to": "",
+        "from": "wordpress@layouts.siteorigin.com",
+        "default_subject": "",
+        "subject_prefix": "",
+        "success_message": "<p>Thanks for contacting us. We'll get back to you shortly.</p>\n",
+        "success_message_selected_editor": "tinymce",
+        "submit_text": "Contact Us",
+        "submit_id": "",
+        "onclick": "",
+        "required_field_indicator_message": "Fields marked with * are required",
+        "so_field_container_state": "closed",
+        "required_field_indicator": "",
+        "log_ip_address": "",
+        "on_click": ""
+    },
+    "fields": [
+        {
+            "type": "name",
+            "label": "Your Name",
+            "description": "",
+            "required": {
+                "required": true,
+                "missing_message": "Please enter your name",
+                "so_field_container_state": "open"
+            },
+            "options": [],
+            "multiple_select": "",
+            "merge_tag": "",
+            "location_options": "",
+            "datetime_options": "",
+            "builder_options": ""
+        },
+        {
+            "type": "email",
+            "label": "Your Email",
+            "description": "",
+            "required": {
+                "required": true,
+                "missing_message": "Please enter a valid email address",
+                "so_field_container_state": "open"
+            },
+            "options": [],
+            "multiple_select": "",
+            "merge_tag": "",
+            "location_options": "",
+            "datetime_options": "",
+            "builder_options": ""
+        },
+        {
+            "type": "subject",
+            "label": "Subject",
+            "description": "",
+            "required": {
+                "required": true,
+                "missing_message": "Please enter a subject",
+                "so_field_container_state": "open"
+            },
+            "options": [],
+            "multiple_select": "",
+            "merge_tag": "",
+            "location_options": "",
+            "datetime_options": "",
+            "builder_options": ""
+        },
+        {
+            "type": "textarea",
+            "label": "Message",
+            "description": "",
+            "required": {
+                "required": true,
+                "missing_message": "Please write something",
+                "so_field_container_state": "open"
+            },
+            "options": [],
+            "multiple_select": "",
+            "merge_tag": "",
+            "location_options": "",
+            "datetime_options": "",
+            "builder_options": ""
+        }
+    ],
+    "spam": {
+        "recaptcha": {
+            "site_key": "",
+            "secret_key": "",
+            "theme": "light",
+            "type": "image",
+            "size": "normal",
+            "so_field_container_state": "open",
+            "use_captcha": "",
+            "site_key_v3": "",
+            "secret_key_v3": ""
+        },
+        "akismet": {
+            "use_akismet": true,
+            "spam_action": "error",
+            "so_field_container_state": "open"
+        },
+        "so_field_container_state": "closed",
+        "honeypot": "",
+        "browser_check": "",
+        "simple": {
+            "enabled": "",
+            "background": "",
+            "color": ""
+        },
+        "cf_turnstile": ""
+    },
+    "design": {
+        "container": {
+            "background": "",
+            "padding": "0px",
+            "padding_unit": "px",
+            "border_color": "#ffffff",
+            "border_width": "0px",
+            "border_width_unit": "px",
+            "border_style": "none",
+            "so_field_container_state": "closed"
+        },
+        "labels": {
+            "font": "default",
+            "size": "",
+            "size_unit": "px",
+            "color": "",
+            "position": "above",
+            "width": "",
+            "width_unit": "px",
+            "align": "left",
+            "so_field_container_state": "closed"
+        },
+        "fields": {
+            "font": "default",
+            "font_size": "",
+            "font_size_unit": "px",
+            "color": "",
+            "margin": false,
+            "margin_unit": "px",
+            "padding": "",
+            "padding_unit": "px",
+            "max_width": "",
+            "max_width_unit": "px",
+            "height": "",
+            "height_unit": "px",
+            "height_textarea": "",
+            "height_textarea_unit": "px",
+            "background": "",
+            "border_color": "#c0c0c0",
+            "border_width": "1px",
+            "border_width_unit": "px",
+            "border_style": "solid",
+            "border_radius": "",
+            "so_field_container_state": "closed",
+            "multi_margin": ""
+        },
+        "descriptions": {
+            "size": "0.9em",
+            "size_unit": "em",
+            "color": "#999999",
+            "style": "italic",
+            "so_field_container_state": "closed"
+        },
+        "errors": {
+            "background": "#fce4e5",
+            "border_color": "#ec666a",
+            "text_color": "#ec666a",
+            "padding": "5px",
+            "padding_unit": "px",
+            "margin": "10px",
+            "margin_unit": "px",
+            "so_field_container_state": "closed"
+        },
+        "submit": {
+            "background_color": "#eeeeee",
+            "background_gradient": "",
+            "border_color": "#989a9c",
+            "border_style": "solid",
+            "border_width": "1px",
+            "border_width_unit": "px",
+            "border_radius": "",
+            "text_color": "#5a5a5a",
+            "font_size": "",
+            "font_size_unit": "px",
+            "weight": "500",
+            "padding": "15px",
+            "padding_unit": "px",
+            "width": "",
+            "width_unit": "px",
+            "align": "left",
+            "inset_highlight": "",
+            "so_field_container_state": "closed",
+            "styled": "",
+            "background_color_hover": "",
+            "border_color_hover": "",
+            "text_color_hover": ""
+        },
+        "focus": {
+            "style": "solid",
+            "color": "",
+            "width": "1px",
+            "width_unit": "px",
+            "so_field_container_state": "closed"
+        },
+        "so_field_container_state": "open",
+        "success": ""
+    },
+    "_sow_form_id": "562e687f3231b",
+    "_sow_form_timestamp": "1623421740044",
+    "display_title": "",
+    "use_auto_responder": "",
+    "auto_responder": ""
+}

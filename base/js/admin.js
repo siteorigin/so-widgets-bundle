@@ -51,6 +51,7 @@ var sowbForms = window.sowbForms || {};
 	const repeaterImmediateSetupFieldSelector = [
 		'.siteorigin-widget-field-type-media',
 		'.siteorigin-widget-field-type-multiple_media',
+		'.siteorigin-widget-field-type-icon',
 	].join( ', ' );
 
 	sowbForms.sanitizeTinyMCEContent = function( content ) {
@@ -118,6 +119,25 @@ var sowbForms = window.sowbForms || {};
 		if ( $allFields.length > 0 ) {
 			const clientId = $container.closest( '[data-block]' ).attr( 'data-block' ) || null;
 			$( document ).trigger( 'sowrepeaterfieldsadded', [ $allFields, clientId ] );
+
+			// When the form lives in the block editor canvas iframe, this script
+			// and its jQuery are the iframe's own, so the trigger above never
+			// reaches the widget block script listening on the top document.
+			// Fire it there too, with the top window's jQuery, so the block
+			// re-sends the form init message that initialises fields the
+			// iframe-bound handlers cannot (the icon field binds
+			// sowsetupformfield only outside an iframe).
+			if ( window.top !== window.self ) {
+				try {
+					const topJQuery = window.top.jQuery;
+
+					if ( topJQuery && topJQuery !== $ ) {
+						topJQuery( window.top.document ).trigger( 'sowrepeaterfieldsadded', [ $allFields, clientId ] );
+					}
+				} catch ( e ) {
+					// A cross-origin top window is out of reach; nothing else to do.
+				}
+			}
 		}
 	};
 
@@ -367,6 +387,21 @@ var sowbForms = window.sowbForms || {};
 			// Set up any color fields.
 			$fields.find( '> .siteorigin-widget-input-color' ).each( function() {
 				var $colorField = $( this );
+
+				// Without the WP color picker (e.g. inside Beaver Builder), fall
+				// back to a native color input. Native color inputs only accept
+				// #rrggbb and coerce anything else — an empty value, shorthand
+				// #rgb, or an rgba() alpha value — to #000000, which Beaver
+				// Builder would then save over the stored value. So only upgrade
+				// fields already holding a full hex colour, and leave the rest as
+				// plain text inputs so their value is preserved.
+				if ( typeof $.fn.wpColorPicker !== 'function' ) {
+					if ( /^#[0-9a-f]{6}$/i.test( $colorField.val() ) ) {
+						$colorField.attr( 'type', 'color' );
+					}
+					return;
+				}
+
 				var colorResult = ''
 				var alphaImage = '';
 
@@ -399,11 +434,9 @@ var sowbForms = window.sowbForms || {};
 					$colorFieldOptions.palettes = $colorField.data( 'palettes' );
 				}
 
-				if ( typeof $.fn.wpColorPicker === 'function' ) {
-					$colorField.wpColorPicker( $colorFieldOptions );
-					if ( $colorField.data( 'alpha-enabled' ) ) {
-						$colorField.on( 'change', handleAlphaDefault ).trigger( 'change' );
-					}
+				$colorField.wpColorPicker( $colorFieldOptions );
+				if ( $colorField.data( 'alpha-enabled' ) ) {
+					$colorField.on( 'change', handleAlphaDefault ).trigger( 'change' );
 				}
 			} );
 

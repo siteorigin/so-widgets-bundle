@@ -95,6 +95,21 @@ abstract class SiteOrigin_Widget_Field_Container_Base extends SiteOrigin_Widget_
 		}
 	}
 
+	/**
+	 * A container that is absent from the submitted instance, or submitted
+	 * empty, must store the same shape as one submitted with nothing filled
+	 * in: an array. The base sanitize() returns '' for an empty or null value
+	 * before sanitize_field_input() runs, which is right for a scalar field
+	 * but would store a string where widget code expects an array.
+	 */
+	public function sanitize( $value, $instance = array(), $old_value = null ) {
+		if ( $value === '' || is_null( $value ) ) {
+			$value = array();
+		}
+
+		return parent::sanitize( $value, $instance, $old_value );
+	}
+
 	protected function sanitize_field_input( $value, $instance ) {
 		if ( ! is_array( $value ) ) {
 			return array();

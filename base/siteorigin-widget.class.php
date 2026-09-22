@@ -168,6 +168,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$form_options = $this->modify_form( $this->form_options );
 		}
 
+		$instance = $this->normalize_container_values( $form_options, $instance );
 		$instance = $this->modify_instance( $instance );
 
 		// Filter the instance
@@ -395,6 +396,69 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	}
 
 	/**
+	 * Replace every container value (section, toggle, widget, repeater, and
+	 * each repeater row) that is stored as an empty string with an empty
+	 * array, so widget code that reads into a container never dereferences a
+	 * string. Earlier versions stored '' for a container that was absent from
+	 * the submitted instance, and that shape persists in saved data.
+	 *
+	 * Only '' is touched: no key is added, no default applied, and no value
+	 * of any other type changed, so an instance without an empty-string
+	 * container comes back identical. Runs no callbacks; a widget field's
+	 * own form is not walked, because the sub-widget normalises its own
+	 * instance when it renders or saves.
+	 */
+	protected function normalize_container_values( $form, $instance, $level = 0 ) {
+		if ( $level > 10 || ! is_array( $instance ) || ! is_array( $form ) ) {
+			return $instance;
+		}
+
+		foreach ( $form as $id => $field ) {
+			if (
+				! is_array( $field ) ||
+				! isset( $field['type'] ) ||
+				! isset( $instance[ $id ] )
+			) {
+				continue;
+			}
+
+			if ( $field['type'] === 'repeater' ) {
+				if ( $instance[ $id ] === '' ) {
+					$instance[ $id ] = array();
+				}
+
+				if ( is_array( $instance[ $id ] ) ) {
+					foreach ( $instance[ $id ] as $i => $row ) {
+						if ( $row === '' ) {
+							$instance[ $id ][ $i ] = array();
+						}
+
+						$instance[ $id ][ $i ] = $this->normalize_container_values(
+							$field['fields'] ?? array(),
+							$instance[ $id ][ $i ],
+							$level + 1
+						);
+					}
+				}
+			} elseif ( $field['type'] === 'section' || $field['type'] === 'toggle' ) {
+				if ( $instance[ $id ] === '' ) {
+					$instance[ $id ] = array();
+				}
+
+				$instance[ $id ] = $this->normalize_container_values(
+					$field['fields'] ?? array(),
+					$instance[ $id ],
+					$level + 1
+				);
+			} elseif ( $field['type'] === 'widget' && $instance[ $id ] === '' ) {
+				$instance[ $id ] = array();
+			}
+		}
+
+		return $instance;
+	}
+
+	/**
 	 * Add default values to the instance.
 	 */
 	public function add_defaults( $form, $instance = array(), $level = 0 ) {
@@ -512,6 +576,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$form_options = $this->get_form( $form_type );
 		}
 
+		$instance = $this->normalize_container_values( $form_options, $instance );
 		$instance = $this->modify_instance( $instance );
 		$instance = $this->add_defaults( $form_options, $instance );
 
@@ -833,6 +898,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			// current declared fields. modify_instance() implementations are
 			// isset/empty-guarded no-ops on already-current instances, so
 			// this is safe to run on every save.
+			$new_instance = $this->normalize_container_values( $form_options, $new_instance );
 			$new_instance = $this->modify_instance( $new_instance );
 
 			$new_instance = $this->update_fields(
@@ -842,9 +908,15 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			);
 		}
 
-		// Remove the old CSS, it'll be regenerated on page load.
+		// Remove the old CSS, it'll be regenerated on page load. The stored
+		// instance is read here without add_defaults(), so its containers are
+		// normalised first for the same reason they are before sanitizing.
 		if ( $form_type == 'widget' ) {
-			$this->delete_css( $this->modify_instance( $old_instance ) );
+			$this->delete_css(
+				$this->modify_instance(
+					$this->normalize_container_values( $form_options, $old_instance )
+				)
+			);
 		}
 
 		if ( $new_instance !== $old_instance ) {

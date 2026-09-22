@@ -280,25 +280,31 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 			return array();
 		}
 
+		// Per row counts are integer sliders with a minimum of 1; a missing
+		// value must not divide by zero.
+		$per_line = max( 1, (int) ( $instance['settings']['per_line'] ?? 1 ) );
+		$tablet_per_line = max( 1, (int) ( $instance['settings']['responsive']['tablet']['per_line'] ?? 1 ) );
+		$mobile_per_line = max( 1, (int) ( $instance['settings']['responsive']['mobile']['per_line'] ?? 1 ) );
+
 		return array(
-			'image_size' => (int) $instance['design']['image']['image_size'] . 'px',
-			'testimonial_size' => round( 100 / $instance['settings']['per_line'], 4 ) . '%',
-			'testimonial_padding' => (int) $instance['design']['padding'] . 'px',
-			'testimonial_background' => $instance['design']['colors']['testimonial_background'],
+			'image_size' => (int) ( $instance['design']['image']['image_size'] ?? 0 ) . 'px',
+			'testimonial_size' => round( 100 / $per_line, 4 ) . '%',
+			'testimonial_padding' => (int) ( $instance['design']['padding'] ?? 0 ) . 'px',
+			'testimonial_background' => $instance['design']['colors']['testimonial_background'] ?? '',
 			'equalize_testimonial_height' => ! empty( $instance['design']['equalize_testimonial_height'] ) ? 'true' : 'false',
 
 			// The text block.
-			'text_border_radius' => (int) $instance['design']['border_radius'] . 'px',
-			'text_background' => $instance['design']['colors']['text_background'],
-			'text_color' => $instance['design']['colors']['text_color'],
+			'text_border_radius' => (int) ( $instance['design']['border_radius'] ?? 0 ) . 'px',
+			'text_background' => $instance['design']['colors']['text_background'] ?? '',
+			'text_color' => $instance['design']['colors']['text_color'] ?? '',
 
 			// All the responsive sizes.
-			'tablet_testimonial_size' => round( 100 / $instance['settings']['responsive']['tablet']['per_line'], 4 ) . '%',
-			'tablet_image_size' => (int) $instance['settings']['responsive']['tablet']['image_size'] . 'px',
-			'tablet_width' => (int) $instance['settings']['responsive']['tablet']['width'] . 'px',
-			'mobile_testimonial_size' => round( 100 / $instance['settings']['responsive']['mobile']['per_line'], 4 ) . '%',
-			'mobile_image_size' => (int) $instance['settings']['responsive']['mobile']['image_size'] . 'px',
-			'mobile_width' => (int) $instance['settings']['responsive']['mobile']['width'] . 'px',
+			'tablet_testimonial_size' => round( 100 / $tablet_per_line, 4 ) . '%',
+			'tablet_image_size' => (int) ( $instance['settings']['responsive']['tablet']['image_size'] ?? 0 ) . 'px',
+			'tablet_width' => (int) ( $instance['settings']['responsive']['tablet']['width'] ?? 0 ) . 'px',
+			'mobile_testimonial_size' => round( 100 / $mobile_per_line, 4 ) . '%',
+			'mobile_image_size' => (int) ( $instance['settings']['responsive']['mobile']['image_size'] ?? 0 ) . 'px',
+			'mobile_width' => (int) ( $instance['settings']['responsive']['mobile']['width'] ?? 0 ) . 'px',
 		);
 	}
 

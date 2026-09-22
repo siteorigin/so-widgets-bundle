@@ -21,6 +21,26 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		'support@siteorigin.com',
 	);
 
+	/**
+	 * The design sections that should always be treated as arrays.
+	 *
+	 * Corrupt or legacy widget instances can save these as strings (e.g. from an
+	 * older widget version, or a manual edit), which causes a "Cannot access offset
+	 * of type string on string" TypeError when the contact form widget's design
+	 * variables are generated. Normalising them to arrays keeps lookups such as
+	 * $instance['design']['fields']['font'] from crashing on PHP 8+.
+	 */
+	const DESIGN_SECTIONS = array(
+		'container',
+		'labels',
+		'fields',
+		'descriptions',
+		'errors',
+		'submit',
+		'focus',
+		'success',
+	);
+
 	public function __construct() {
 		parent::__construct(
 			'sow-contact-form',
@@ -1040,6 +1060,13 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 			}
 		}
 
+		// Repair a design that is present, so callers running through here receive
+		// well-formed sections. A design that is absent or null is left as it is,
+		// and every lookup coalesces, so neither shape needs one.
+		if ( isset( $instance['design'] ) ) {
+			$instance['design'] = $this->normalize_design_sections( $instance['design'] );
+		}
+
 		if (
 			! empty( $instance['design'] ) &&
 			! empty( $instance['design']['fields'] ) &&
@@ -1185,105 +1212,187 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		);
 	}
 
+	/**
+	 * Read a single design setting safely from an unrepaired instance.
+	 *
+	 * The templates run after the siteorigin_widgets_instance filters, which are
+	 * public and can hand back a design of any shape, so they cannot assume
+	 * modify_instance() left one behind. Null coalescing is not enough on its own:
+	 * it tests with isset(), which still throws for an object standing where an
+	 * array is expected.
+	 *
+	 * @param array  $instance The widget instance.
+	 * @param string $section  The design section to read from.
+	 * @param string $setting  The setting within that section.
+	 * @param mixed  $default  Returned when the value is missing or not a scalar.
+	 *
+	 * @return mixed
+	 */
+	public function design_setting( $instance, $section, $setting, $default = '' ) {
+		$design = is_array( $instance ) && isset( $instance['design'] ) ? $instance['design'] : null;
+
+		if ( ! is_array( $design ) || ! isset( $design[ $section ] ) || ! is_array( $design[ $section ] ) ) {
+			return $default;
+		}
+
+		$value = $design[ $section ][ $setting ] ?? $default;
+
+		return is_scalar( $value ) ? $value : $default;
+	}
+
+	/**
+	 * Read a design value that is about to be used as a string.
+	 *
+	 * Some design values are looked up as an array key or concatenated into a CSS
+	 * value. Both are fatal on PHP 8 when a stored instance holds an array or an
+	 * object there, and neither carries any meaning for a colour, a measurement or a
+	 * font name, so anything that is not a scalar reads as absent.
+	 *
+	 * Scalars pass through with their type intact. Blank measurement and colour
+	 * fields are stored as false, and the style hash is built from these values,
+	 * so casting them would change the hash of every valid design and make every
+	 * site regenerate its CSS once.
+	 *
+	 * @param mixed $value The stored design value.
+	 *
+	 * @return scalar
+	 */
+	private function style_value( $value ) {
+		return is_scalar( $value ) ? $value : '';
+	}
+
+	/**
+	 * Ensure the design is shaped the way every reader of it assumes.
+	 *
+	 * A section absent from the submitted form is stored as an empty string, and the
+	 * design itself can arrive that way too, so the value is repaired once here
+	 * rather than at every point that reads it.
+	 *
+	 * Values inside a section are left exactly as they are, including arrays: other
+	 * plugins add their own fields to these sections through the form-extension
+	 * filters, and this runs before sanitization, so discarding what it does not
+	 * recognise would destroy their data. Readers that cannot accept a non-scalar
+	 * guard themselves, via style_value().
+	 *
+	 * @param mixed $design The raw widget 'design' instance value.
+	 *
+	 * @return array The design with each section guaranteed to be an array.
+	 */
+	private function normalize_design_sections( $design ) {
+		if ( ! is_array( $design ) ) {
+			$design = array();
+		}
+
+		foreach ( self::DESIGN_SECTIONS as $section ) {
+			if ( ! isset( $design[ $section ] ) || ! is_array( $design[ $section ] ) ) {
+				$design[ $section ] = array();
+			}
+		}
+
+		return $design;
+	}
+
 	public function get_less_variables( $instance ) {
 		if ( empty( $instance['design'] ) ) {
 			return;
 		}
 
+		$instance['design'] = $this->normalize_design_sections( $instance['design'] );
+
 		if ( empty( $instance['design']['labels']['font'] ) ) {
 			$instance['design']['labels'] = array( 'font' => '' );
 		}
-		$label_font = siteorigin_widget_get_font( $instance['design']['labels']['font'] );
-		$field_font = siteorigin_widget_get_font( $instance['design']['fields']['font'] );
+		$label_font = siteorigin_widget_get_font( $this->style_value( $instance['design']['labels']['font'] ?? '' ) );
+		$field_font = siteorigin_widget_get_font( $this->style_value( $instance['design']['fields']['font'] ?? '' ) );
 
-		$label_position = $instance['design']['labels']['position'];
+		$label_position = $this->style_value( $instance['design']['labels']['position'] ?? '' );
 
-		if ( $label_position != 'left' && $label_position != 'right' ) {
+		if ( $label_position !== 'left' && $label_position !== 'right' ) {
 			$label_position = 'default';
 		}
 
 		$vars = array(
 			// All the container variables.
-			'container_background'       => $instance['design']['container']['background'],
-			'container_padding'          => $instance['design']['container']['padding'],
-			'container_border_color'     => $instance['design']['container']['border_color'],
-			'container_border_width'     => $instance['design']['container']['border_width'],
-			'container_border_style'     => $instance['design']['container']['border_style'],
+			'container_background'       => $this->style_value( $instance['design']['container']['background'] ?? '' ),
+			'container_padding'          => $this->style_value( $instance['design']['container']['padding'] ?? '' ),
+			'container_border_color'     => $this->style_value( $instance['design']['container']['border_color'] ?? '' ),
+			'container_border_width'     => $this->style_value( $instance['design']['container']['border_width'] ?? '' ),
+			'container_border_style'     => $this->style_value( $instance['design']['container']['border_style'] ?? '' ),
 
 			// Field labels
 			'label_font_family'          => $label_font['family'],
-			'label_font_size'            => $instance['design']['labels']['size'],
-			'label_font_color'           => $instance['design']['labels']['color'],
+			'label_font_size'            => $this->style_value( $instance['design']['labels']['size'] ?? '' ),
+			'label_font_color'           => $this->style_value( $instance['design']['labels']['color'] ?? '' ),
 			'label_position'             => $label_position,
-			'label_width'                => $instance['design']['labels']['width'],
-			'label_align'                => $instance['design']['labels']['align'],
+			'label_width'                => $this->style_value( $instance['design']['labels']['width'] ?? '' ),
+			'label_align'                => $this->style_value( $instance['design']['labels']['align'] ?? '' ),
 
 			// Fields
 			'field_font_family'          => $field_font['family'],
-			'field_font_size'            => $instance['design']['fields']['font_size'],
-			'field_font_color'           => $instance['design']['fields']['color'],
-			'field_margin'               => $instance['design']['fields']['multi_margin'],
-			'field_padding'              => $instance['design']['fields']['padding'],
-			'field_max_width'            => ! empty( $instance['design']['fields']['max_width'] ) ? $instance['design']['fields']['max_width'] : '',
-			'field_height'               => $instance['design']['fields']['height'],
-			'field_height_textarea'      => ! empty( $instance['design']['fields']['height_textarea'] ) ? $instance['design']['fields']['height_textarea'] : '',
-			'field_background'           => $instance['design']['fields']['background'],
-			'field_border_radius'        => $instance['design']['fields']['border_radius'] . 'px',
+			'field_font_size'            => $this->style_value( $instance['design']['fields']['font_size'] ?? '' ),
+			'field_font_color'           => $this->style_value( $instance['design']['fields']['color'] ?? '' ),
+			'field_margin'               => $this->style_value( $instance['design']['fields']['multi_margin'] ?? '' ),
+			'field_padding'              => $this->style_value( $instance['design']['fields']['padding'] ?? '' ),
+			'field_max_width'            => $this->style_value( $instance['design']['fields']['max_width'] ?? '' ) ?: '',
+			'field_height'               => $this->style_value( $instance['design']['fields']['height'] ?? '' ),
+			'field_height_textarea'      => $this->style_value( $instance['design']['fields']['height_textarea'] ?? '' ) ?: '',
+			'field_background'           => $this->style_value( $instance['design']['fields']['background'] ?? '' ),
+			'field_border_radius'        => $this->style_value( $instance['design']['fields']['border_radius'] ?? '' ) . 'px',
 
 			// Field descriptions
-			'description_font_size'      => $instance['design']['descriptions']['size'],
-			'description_font_color'     => $instance['design']['descriptions']['color'],
-			'description_font_style'     => $instance['design']['descriptions']['style'],
-			'description_top_margin'     => ! empty( $instance['design']['descriptions']['top_margin'] ) ? $instance['design']['descriptions']['top_margin'] : '',
+			'description_font_size'      => $this->style_value( $instance['design']['descriptions']['size'] ?? '' ),
+			'description_font_color'     => $this->style_value( $instance['design']['descriptions']['color'] ?? '' ),
+			'description_font_style'     => $this->style_value( $instance['design']['descriptions']['style'] ?? '' ),
+			'description_top_margin'     => $this->style_value( $instance['design']['descriptions']['top_margin'] ?? '' ) ?: '',
 
 			// The error message styles
-			'error_background'           => $instance['design']['errors']['background'],
-			'error_border'               => $instance['design']['errors']['border_color'],
-			'error_text'                 => $instance['design']['errors']['text_color'],
-			'error_padding'              => $instance['design']['errors']['padding'],
-			'error_margin'               => $instance['design']['errors']['margin'],
+			'error_background'           => $this->style_value( $instance['design']['errors']['background'] ?? '' ),
+			'error_border'               => $this->style_value( $instance['design']['errors']['border_color'] ?? '' ),
+			'error_text'                 => $this->style_value( $instance['design']['errors']['text_color'] ?? '' ),
+			'error_padding'              => $this->style_value( $instance['design']['errors']['padding'] ?? '' ),
+			'error_margin'               => $this->style_value( $instance['design']['errors']['margin'] ?? '' ),
 
 			// The submit button
-			'submit_background_color'       => $instance['design']['submit']['background_color'],
-			'submit_background_color_hover' => ! empty( $instance['design']['submit']['background_color_hover'] ) ? $instance['design']['submit']['background_color_hover'] : '',
-			'submit_background_gradient'    => $instance['design']['submit']['background_gradient'] . '%',
-			'submit_border_color'           => $instance['design']['submit']['border_color'],
-			'submit_border_color_hover'     => ! empty( $instance['design']['submit']['border_color_hover'] ) ? $instance['design']['submit']['border_color_hover'] : '',
-			'submit_border_style'           => $instance['design']['submit']['border_style'],
-			'submit_border_width'           => $instance['design']['submit']['border_width'],
-			'submit_border_radius'          => $instance['design']['submit']['border_radius'] . 'px',
-			'submit_text_color'             => $instance['design']['submit']['text_color'],
-			'submit_text_color_hover'       => ! empty( $instance['design']['submit']['text_color_hover'] ) ? $instance['design']['submit']['text_color_hover'] : '',
-			'submit_font_size'              => $instance['design']['submit']['font_size'],
-			'submit_weight'                 => $instance['design']['submit']['weight'],
-			'submit_padding'                => $instance['design']['submit']['padding'],
-			'submit_width'                  => ! empty( $instance['design']['submit']['width'] ) ? $instance['design']['submit']['width'] : '',
-			'submit_align'                  => ! empty( $instance['design']['submit']['align'] ) ? $instance['design']['submit']['align'] : '',
-			'submit_inset_highlight'        => $instance['design']['submit']['inset_highlight'] . '%',
+			'submit_background_color'       => $this->style_value( $instance['design']['submit']['background_color'] ?? '' ),
+			'submit_background_color_hover' => $this->style_value( $instance['design']['submit']['background_color_hover'] ?? '' ) ?: '',
+			'submit_background_gradient'    => $this->style_value( $instance['design']['submit']['background_gradient'] ?? '' ) . '%',
+			'submit_border_color'           => $this->style_value( $instance['design']['submit']['border_color'] ?? '' ),
+			'submit_border_color_hover'     => $this->style_value( $instance['design']['submit']['border_color_hover'] ?? '' ) ?: '',
+			'submit_border_style'           => $this->style_value( $instance['design']['submit']['border_style'] ?? '' ),
+			'submit_border_width'           => $this->style_value( $instance['design']['submit']['border_width'] ?? '' ),
+			'submit_border_radius'          => $this->style_value( $instance['design']['submit']['border_radius'] ?? '' ) . 'px',
+			'submit_text_color'             => $this->style_value( $instance['design']['submit']['text_color'] ?? '' ),
+			'submit_text_color_hover'       => $this->style_value( $instance['design']['submit']['text_color_hover'] ?? '' ) ?: '',
+			'submit_font_size'              => $this->style_value( $instance['design']['submit']['font_size'] ?? '' ),
+			'submit_weight'                 => $this->style_value( $instance['design']['submit']['weight'] ?? '' ),
+			'submit_padding'                => $this->style_value( $instance['design']['submit']['padding'] ?? '' ),
+			'submit_width'                  => $this->style_value( $instance['design']['submit']['width'] ?? '' ) ?: '',
+			'submit_align'                  => $this->style_value( $instance['design']['submit']['align'] ?? '' ) ?: '',
+			'submit_inset_highlight'        => $this->style_value( $instance['design']['submit']['inset_highlight'] ?? '' ) . '%',
 
 			// Input focus styles
-			'outline_style'              => $instance['design']['focus']['style'],
-			'outline_color'              => $instance['design']['focus']['color'],
-			'outline_width'              => $instance['design']['focus']['width'],
+			'outline_style'              => $this->style_value( $instance['design']['focus']['style'] ?? '' ),
+			'outline_color'              => $this->style_value( $instance['design']['focus']['color'] ?? '' ),
+			'outline_width'              => $this->style_value( $instance['design']['focus']['width'] ?? '' ),
 
 			// Success message styles.
-			'success_font_size'          => ! empty( $instance['design']['success']['font_size'] ) ? $instance['design']['success']['font_size'] : '',
-			'success_color'              => ! empty( $instance['design']['success']['color'] ) ? $instance['design']['success']['color'] : '',
-			'success_background_color'   => ! empty( $instance['design']['success']['background_color'] ) ? $instance['design']['success']['background_color'] : '',
-			'success_padding'            => ! empty( $instance['design']['success']['padding'] ) ? $instance['design']['success']['padding'] : '',
-			'success_border_width'       => ! empty( $instance['design']['success']['border_width'] ) ? $instance['design']['success']['border_width'] : '',
-			'success_border_color'       => ! empty( $instance['design']['success']['border_color'] ) ? $instance['design']['success']['border_color'] : '',
-			'success_border_style'       => ! empty( $instance['design']['success']['border_style'] ) ? $instance['design']['success']['border_style'] : '',
+			'success_font_size'          => $this->style_value( $instance['design']['success']['font_size'] ?? '' ) ?: '',
+			'success_color'              => $this->style_value( $instance['design']['success']['color'] ?? '' ) ?: '',
+			'success_background_color'   => $this->style_value( $instance['design']['success']['background_color'] ?? '' ) ?: '',
+			'success_padding'            => $this->style_value( $instance['design']['success']['padding'] ?? '' ) ?: '',
+			'success_border_width'       => $this->style_value( $instance['design']['success']['border_width'] ?? '' ) ?: '',
+			'success_border_color'       => $this->style_value( $instance['design']['success']['border_color'] ?? '' ) ?: '',
+			'success_border_style'       => $this->style_value( $instance['design']['success']['border_style'] ?? '' ) ?: '',
 		);
 
 		// Ensure all border values exist before setting border
 		// to prevent potential CSS error.
 		if (
-			! empty( $instance['design']['fields']['border_color'] ) &&
-			! empty( $instance['design']['fields']['border_width'] ) &&
-			! empty( $instance['design']['fields']['border_style'] )
+			! empty( $this->style_value( $instance['design']['fields']['border_color'] ?? '' ) ) &&
+			! empty( $this->style_value( $instance['design']['fields']['border_width'] ?? '' ) ) &&
+			! empty( $this->style_value( $instance['design']['fields']['border_style'] ?? '' ) )
 		) {
-			$vars['field_border'] = $instance['design']['fields']['border_width'] . ' ' . $instance['design']['fields']['border_color'] . ' ' . $instance['design']['fields']['border_style'];
+			$vars['field_border'] = $this->style_value( $instance['design']['fields']['border_width'] ?? '' ) . ' ' . $this->style_value( $instance['design']['fields']['border_color'] ?? '' ) . ' ' . $this->style_value( $instance['design']['fields']['border_style'] ?? '' );
 		}
 
 		if ( ! empty( $label_font['weight'] ) ) {
@@ -1297,7 +1406,7 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 
 		$success_message_font = siteorigin_widget_get_font(
-			! empty( $instance['design']['success']['font'] ) ? $instance['design']['success']['font'] : ''
+			$this->style_value( $instance['design']['success']['font'] ?? '' )
 		);
 
 		if ( ! empty( $success_message_font ) && is_array( $success_message_font ) ) {
@@ -1361,9 +1470,15 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 	public function render_form_fields( $fields, $result, $instance ) {
 		$errors = ! empty( $result['errors'] ) ? $result['errors'] : array();
 
-		$label_position = $instance['design']['labels']['position'];
+		// This method is public, so it can be called with an instance that has not
+		// passed through modify_instance().
+		if ( isset( $instance['design'] ) ) {
+			$instance['design'] = $this->normalize_design_sections( $instance['design'] );
+		}
+
+		$label_position = $instance['design']['labels']['position'] ?? '';
 		$valid_positions = array('above', 'below', 'left', 'right', 'inside');
-		if ( ! in_array( $label_position, $valid_positions ) ) {
+		if ( ! in_array( $label_position, $valid_positions, true ) ) {
 			$label_position = 'above'; // Default value.
 		}
 

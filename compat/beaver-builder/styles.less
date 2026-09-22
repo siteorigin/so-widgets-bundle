@@ -42,6 +42,26 @@
 
 		input.siteorigin-widget-input-color {
 			height: inherit !important;
+
+			// Only the native color input becomes a swatch. Values the JS guard
+			// leaves as a plain text input (empty, shorthand #rgb, rgba()) keep
+			// the normal text-field styling so they stay readable and editable.
+			&[type="color"] {
+				border: none;
+				height: 20px !important;
+				padding: 0;
+				width: 40px;
+
+				&::-moz-color-swatch-wrapper,
+				&::-webkit-color-swatch-wrapper {
+					padding: 0;
+				}
+
+				&::-moz-color-swatch,
+				&::-webkit-color-swatch {
+					border: none;
+				}
+			}
 		}
 
 		input.siteorigin-widget-input-measurement {

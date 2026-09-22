@@ -1,11 +1,20 @@
 <?php
 $captcha_name = $this->name_from_label( 'really-simple-captcha' );
+
+// Resolve the label position the same way render_form_fields() does, so the
+// captcha lines up with the fields above it and never emits a bare class name
+// when the stored value is missing or malformed.
+$captcha_label_position = $this->design_setting( $instance, 'labels', 'position' );
+
+if ( ! in_array( $captcha_label_position, array( 'above', 'below', 'left', 'right', 'inside' ), true ) ) {
+	$captcha_label_position = 'above';
+}
 ?>
 
 <div class="sow-form-field sow-form-field-captcha">
-	<?php if ( $instance['design']['labels']['position'] != 'below' ) { ?>
+	<?php if ( $captcha_label_position != 'below' ) { ?>
 		<label
-			class="sow-form-field-label-<?php echo esc_attr( $instance['design']['labels']['position'] != 'inside' ? $instance['design']['labels']['position'] : 'above' ); ?>"
+			class="sow-form-field-label-<?php echo esc_attr( $captcha_label_position != 'inside' ? $captcha_label_position : 'above' ); ?>"
 			for="<?php echo esc_attr( $captcha_name ); ?>"
 		>
 			<strong>
@@ -34,7 +43,7 @@ $captcha_name = $this->name_from_label( 'really-simple-captcha' );
 			class="sow-text-field"
 		>
 	</span>
-	<?php if ( $instance['design']['labels']['position'] == 'below' ) { ?>
+	<?php if ( $captcha_label_position == 'below' ) { ?>
 		<label
 			class="sow-form-field-label-left"
 			for="<?php echo esc_attr( $captcha_name ); ?>"

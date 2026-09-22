@@ -6,7 +6,8 @@
   },
   "scripts": {
     "tests": "node ./tests/scripts/run-playwright.js",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:unit": "vendor/bin/phpunit"
   },
   "repository": {
     "type": "git",

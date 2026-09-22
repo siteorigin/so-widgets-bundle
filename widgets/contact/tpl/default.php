@@ -77,7 +77,7 @@ if ( is_array( $result ) && $result['status'] == 'success' ) {
 
 		<div class="sow-submit-wrapper 
 		<?php
-		if ( $instance['design']['submit']['styled'] ) {
+		if ( $this->design_setting( $instance, 'submit', 'styled', false ) ) {
 			echo 'sow-submit-styled';
 		}
 		?>

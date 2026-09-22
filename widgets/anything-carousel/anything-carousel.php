@@ -266,23 +266,23 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 		}
 
 		$less_vars = array(
-			'item_title_tag' => $instance['design']['item_title']['tag'],
-			'item_title_font_size' => $instance['design']['item_title']['size'],
-			'item_title_color' => $instance['design']['item_title']['color'],
-			'bottom_margin' => $instance['design']['item_title']['bottom_margin'],
+			'item_title_tag' => $instance['design']['item_title']['tag'] ?? '',
+			'item_title_font_size' => $instance['design']['item_title']['size'] ?? '',
+			'item_title_color' => $instance['design']['item_title']['color'] ?? '',
+			'bottom_margin' => $instance['design']['item_title']['bottom_margin'] ?? '',
 
-			'item_size' => $instance['design']['item']['size'],
-			'item_color' => $instance['design']['item']['color'],
-			'item_margin' => $instance['design']['item']['margin'],
+			'item_size' => $instance['design']['item']['size'] ?? '',
+			'item_color' => $instance['design']['item']['color'] ?? '',
+			'item_margin' => $instance['design']['item']['margin'] ?? '',
 
-			'navigation_arrow_color' => $instance['design']['navigation']['arrow_color'],
-			'navigation_arrow_color_hover' => $instance['design']['navigation']['arrow_color_hover'],
-			'navigation_arrow_margin' => $instance['design']['navigation']['arrow_margin'],
-			'navigation_dots_color' => $instance['design']['navigation']['dots_color'],
-			'navigation_dots_color_hover' => $instance['design']['navigation']['dots_color_hover'],
+			'navigation_arrow_color' => $instance['design']['navigation']['arrow_color'] ?? '',
+			'navigation_arrow_color_hover' => $instance['design']['navigation']['arrow_color_hover'] ?? '',
+			'navigation_arrow_margin' => $instance['design']['navigation']['arrow_margin'] ?? '',
+			'navigation_dots_color' => $instance['design']['navigation']['dots_color'] ?? '',
+			'navigation_dots_color_hover' => $instance['design']['navigation']['dots_color_hover'] ?? '',
 		);
 
-		$item_title_font = siteorigin_widget_get_font( $instance['design']['item_title']['font'] );
+		$item_title_font = siteorigin_widget_get_font( $instance['design']['item_title']['font'] ?? '' );
 		$less_vars['item_title_font'] = $item_title_font['family'];
 
 		if ( ! empty( $item_title_font['weight'] ) ) {
@@ -290,7 +290,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 			$less_vars['item_title_font_weight'] = $item_title_font['weight_raw'];
 		}
 
-		$item_font = siteorigin_widget_get_font( $instance['design']['item']['font'] );
+		$item_font = siteorigin_widget_get_font( $instance['design']['item']['font'] ?? '' );
 		$less_vars['item_font'] = $item_font['family'];
 
 		if ( ! empty( $item_font['weight'] ) ) {
@@ -306,7 +306,7 @@ class SiteOrigin_Widget_Anything_Carousel_Widget extends SiteOrigin_Widget_Base_
 	public function get_template_variables( $instance, $args ) {
 		$carousel_settings = $this->carousel_settings_template_variables( $instance['carousel_settings'], false );
 		$arrows_location = ! empty( $instance['design']['navigation']['arrows_location'] ) ? $instance['design']['navigation']['arrows_location'] : 'left_right';
-		$carousel_settings['adaptive_height'] = $instance['carousel_settings']['adaptive_height'];
+		$carousel_settings['adaptive_height'] = $instance['carousel_settings']['adaptive_height'] ?? '';
 		$carousel_settings['appendDots'] = $arrows_location === 'bottom_right';
 
 		return array(
