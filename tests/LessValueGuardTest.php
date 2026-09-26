@@ -205,18 +205,33 @@ class LessValueGuardTest extends TestCase {
 		return $notices;
 	}
 
-	public function test_refusal_is_silent_without_debug() {
-		$this->assertFalse( defined( 'SITEORIGIN_WIDGETS_DEBUG' ) );
-		$this->assertSame( array(), $this->refusal_notices() );
-	}
-
 	/**
-	 * The debug constant can't be undefined once set, so this runs in its own process.
+	 * The debug constant can't be undefined once set, so these run in their own processes.
 	 */
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
+	public function test_refusal_is_silent_without_debug() {
+		if ( ! defined( 'SITEORIGIN_WIDGETS_DEBUG' ) ) {
+			define( 'SITEORIGIN_WIDGETS_DEBUG', false );
+		}
+
+		if ( SITEORIGIN_WIDGETS_DEBUG ) {
+			$this->markTestSkipped( 'SITEORIGIN_WIDGETS_DEBUG is already on in this environment.' );
+		}
+
+		$this->assertSame( array(), $this->refusal_notices() );
+	}
+
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
 	public function test_refusal_raises_a_notice_when_debugging() {
-		define( 'SITEORIGIN_WIDGETS_DEBUG', true );
+		if ( ! defined( 'SITEORIGIN_WIDGETS_DEBUG' ) ) {
+			define( 'SITEORIGIN_WIDGETS_DEBUG', true );
+		}
+
+		if ( ! SITEORIGIN_WIDGETS_DEBUG ) {
+			$this->markTestSkipped( 'SITEORIGIN_WIDGETS_DEBUG is already off in this environment.' );
+		}
 
 		$this->assertSame(
 			array( 'SiteOrigin Widgets: LESS value "icon_color" in sow-test was skipped (resource read).' ),
