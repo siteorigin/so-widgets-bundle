@@ -53,11 +53,11 @@ class LessValueSubstitutionTest extends SiteOriginTests {
 	private function compile( $value ) {
 		$widget = new SiteOrigin_Less_Value_Test_Widget();
 		$widget->value = $value;
-		$css = $widget->get_instance_css( array() );
+		$css = preg_replace( '/^\.so-widget-so-less-value-test-default-[0-9a-f]{12} /m', '', $widget->get_instance_css( array() ), -1, $rules );
 
-		$this->assertSame( 1, substr_count( $css, '{' ), $css );
+		$this->assertSame( 1, $rules, $css );
 
-		return preg_replace( '/^\.so-widget-so-less-value-test-default-[0-9a-f]{12} /', '', $css );
+		return $css;
 	}
 
 	private static function css( $property_value ) {
@@ -180,6 +180,7 @@ class LessValueSubstitutionTest extends SiteOriginTests {
 			'block'                  => array( '{ @import "probe.less"; }' ),
 			'extra statement'        => array( 'red; @extra: blue' ),
 			'important'              => array( 'red !important' ),
+			'closed ruleset'         => array( 'red;} .marker { a: b; } .x { b: c' ),
 		);
 	}
 
