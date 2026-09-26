@@ -435,7 +435,7 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 	 *
 	 * @return array|false The network with refused colors removed, or false if its class is refused.
 	 */
-	private function less_check_network( $network ) {
+	protected function less_check_network( $network ) {
 		$check = SiteOrigin_Widgets_Less_Value_Guard::check_mixin_argument( 'name', $network['css_class_name'] ?? '' );
 
 		if ( $check !== true ) {
