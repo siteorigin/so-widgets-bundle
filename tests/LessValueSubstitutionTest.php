@@ -48,12 +48,16 @@ class LessValueSubstitutionTest extends SiteOriginTests {
 
 	/**
 	 * Compile a value, and return the CSS without the widget's instance selector.
+	 * The CSS must hold exactly one rule.
 	 */
 	private function compile( $value ) {
 		$widget = new SiteOrigin_Less_Value_Test_Widget();
 		$widget->value = $value;
+		$css = $widget->get_instance_css( array() );
 
-		return preg_replace( '/^\.so-widget-so-less-value-test-default-[0-9a-f]{12} /m', '', $widget->get_instance_css( array() ) );
+		$this->assertSame( 1, substr_count( $css, '{' ), $css );
+
+		return preg_replace( '/^\.so-widget-so-less-value-test-default-[0-9a-f]{12} /', '', $css );
 	}
 
 	private static function css( $property_value ) {
