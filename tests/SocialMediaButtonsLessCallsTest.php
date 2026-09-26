@@ -10,8 +10,8 @@ if ( ! class_exists( 'SiteOrigin_Widget_SocialMediaButtons_Widget' ) ) {
 /**
  * Unit tests for SiteOrigin_Widget_SocialMediaButtons_Widget::less_generate_calls_to().
  *
- * The expected calls for ordinary networks are the calls develop built before
- * the network values were checked.
+ * Each case asserts every call built, so a network value can neither add an
+ * argument nor add a statement after the call.
  */
 class SocialMediaButtonsLessCallsTest extends SiteOriginTests {
 	protected function setUp(): void {

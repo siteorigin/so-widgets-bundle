@@ -36,8 +36,8 @@ if ( ! class_exists( 'SiteOrigin_Less_Value_Test_Widget' ) ) {
 /**
  * Unit tests for the setting value check in SiteOrigin_Widget::get_instance_css().
  *
- * The expected output of every ordinary value is the CSS that develop compiled
- * before the check was added, so each case pins that output as unchanged.
+ * Every case asserts the whole compiled CSS, so a value can neither change
+ * the property it is written into nor add a rule, import or directive.
  */
 class LessValueSubstitutionTest extends SiteOriginTests {
 	protected function setUp(): void {
@@ -46,18 +46,22 @@ class LessValueSubstitutionTest extends SiteOriginTests {
 		Functions\when( 'apply_filters' )->returnArg( 2 );
 	}
 
+	/**
+	 * Compile a value, and return the CSS without the widget's instance selector.
+	 */
 	private function compile( $value ) {
 		$widget = new SiteOrigin_Less_Value_Test_Widget();
 		$widget->value = $value;
-		$css = $widget->get_instance_css( array() );
 
-		$this->assertSame( 1, preg_match( '/\.out \{\n  p: (.*);\n\}/', $css, $match ), $css );
+		return preg_replace( '/^\.so-widget-so-less-value-test-default-[0-9a-f]{12} /m', '', $widget->get_instance_css( array() ) );
+	}
 
-		return $match[1];
+	private static function css( $property_value ) {
+		return ".out {\n  p: $property_value;\n}";
 	}
 
 	/**
-	 * Values from past breakages, with the CSS develop compiled for each.
+	 * Values from past breakages, with the CSS each compiles to.
 	 */
 	public static function ordinary_values() {
 		return array(
@@ -140,11 +144,11 @@ class LessValueSubstitutionTest extends SiteOriginTests {
 
 	#[DataProvider( 'ordinary_values' )]
 	public function test_ordinary_value_compiles_unchanged( $value, $expected ) {
-		$this->assertSame( $expected, $this->compile( $value ) );
+		$this->assertSame( self::css( $expected ), $this->compile( $value ) );
 	}
 
 	/**
-	 * preg_replace() read these as backreferences; the callback keeps them literal.
+	 * Values that a preg_replace() replacement string would read as backreferences.
 	 */
 	public static function literal_values() {
 		return array(
@@ -157,7 +161,7 @@ class LessValueSubstitutionTest extends SiteOriginTests {
 
 	#[DataProvider( 'literal_values' )]
 	public function test_dollar_and_backslash_stay_literal( $value ) {
-		$this->assertSame( $value, $this->compile( $value ) );
+		$this->assertSame( self::css( $value ), $this->compile( $value ) );
 	}
 
 	/**
@@ -176,6 +180,6 @@ class LessValueSubstitutionTest extends SiteOriginTests {
 
 	#[DataProvider( 'refused_values' )]
 	public function test_refused_value_keeps_the_template_default( $value ) {
-		$this->assertSame( 'template-default', $this->compile( $value ) );
+		$this->assertSame( self::css( 'template-default' ), $this->compile( $value ) );
 	}
 }
