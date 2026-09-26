@@ -44,16 +44,8 @@ class SiteOrigin_Widgets_Less_Value_Guard {
 			return $rule;
 		}
 
-		if (
-			! $rule instanceof Less_Tree_Rule ||
-			$rule->name !== self::PROBE_VARIABLE ||
-			! empty( $rule->important )
-		) {
+		if ( ! $rule instanceof Less_Tree_Rule || ! empty( $rule->important ) ) {
 			return 'not one declaration';
-		}
-
-		if ( ! $rule->value instanceof Less_Tree_Value && ! $rule->value instanceof Less_Tree_Anonymous ) {
-			return 'not one value';
 		}
 
 		return self::find_denied( $rule->value );
