@@ -12,13 +12,14 @@ if ( ! class_exists( 'SiteOrigin_Widgets_Less_Value_Guard' ) ) {
 /**
  * Unit tests for SiteOrigin_Widgets_Less_Value_Guard.
  *
- * Each refusal case asserts the exact reason, so removing one check from the
- * guard fails the cases that check owns. No case reads a file: the guard only
- * parses, and the paths named here do not exist.
+ * Each refusal case asserts the exact reason, which ties every check to the
+ * values it refuses. No case reads a file: the guard only parses, and the
+ * paths named here do not exist.
  */
 class LessValueGuardTest extends TestCase {
 	/**
-	 * Values from past breakages and ordinary setting values.
+	 * Ordinary setting values: icon glyphs, ampersands, units, fonts,
+	 * gradients, calc(), var(), colors and url()s.
 	 */
 	public static function ordinary_values() {
 		return array(
@@ -211,27 +212,15 @@ class LessValueGuardTest extends TestCase {
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
 	public function test_refusal_is_silent_without_debug() {
-		if ( ! defined( 'SITEORIGIN_WIDGETS_DEBUG' ) ) {
-			define( 'SITEORIGIN_WIDGETS_DEBUG', false );
-		}
-
-		if ( SITEORIGIN_WIDGETS_DEBUG ) {
-			$this->markTestSkipped( 'SITEORIGIN_WIDGETS_DEBUG is already on in this environment.' );
-		}
-
+		$this->assertFalse( defined( 'SITEORIGIN_WIDGETS_DEBUG' ), 'The test bootstrap must not define SITEORIGIN_WIDGETS_DEBUG.' );
 		$this->assertSame( array(), $this->refusal_notices() );
 	}
 
 	#[RunInSeparateProcess]
 	#[PreserveGlobalState( false )]
 	public function test_refusal_raises_a_notice_when_debugging() {
-		if ( ! defined( 'SITEORIGIN_WIDGETS_DEBUG' ) ) {
-			define( 'SITEORIGIN_WIDGETS_DEBUG', true );
-		}
-
-		if ( ! SITEORIGIN_WIDGETS_DEBUG ) {
-			$this->markTestSkipped( 'SITEORIGIN_WIDGETS_DEBUG is already off in this environment.' );
-		}
+		$this->assertFalse( defined( 'SITEORIGIN_WIDGETS_DEBUG' ), 'The test bootstrap must not define SITEORIGIN_WIDGETS_DEBUG.' );
+		define( 'SITEORIGIN_WIDGETS_DEBUG', true );
 
 		$this->assertSame(
 			array( 'SiteOrigin Widgets: LESS value "icon_color" in sow-test was skipped (resource read).' ),

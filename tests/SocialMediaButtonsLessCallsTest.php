@@ -7,6 +7,17 @@ if ( ! class_exists( 'SiteOrigin_Widget_SocialMediaButtons_Widget' ) ) {
 	require __DIR__ . '/../widgets/social-media-buttons/social-media-buttons.php';
 }
 
+if ( ! class_exists( 'SiteOrigin_Unchecked_Networks_Test_Widget' ) ) {
+	/**
+	 * Skips the per-value checks, so only the whole-call check guards a call.
+	 */
+	class SiteOrigin_Unchecked_Networks_Test_Widget extends SiteOrigin_Widget_SocialMediaButtons_Widget {
+		protected function less_check_network( $network ) {
+			return $network;
+		}
+	}
+}
+
 /**
  * Unit tests for SiteOrigin_Widget_SocialMediaButtons_Widget::less_generate_calls_to().
  *
@@ -20,8 +31,8 @@ class SocialMediaButtonsLessCallsTest extends SiteOriginTests {
 		Functions\when( 'apply_filters' )->returnArg( 2 );
 	}
 
-	private function calls( $networks, $theme = 'atom' ) {
-		$widget = new SiteOrigin_Widget_SocialMediaButtons_Widget();
+	private function calls( $networks, $theme = 'atom', $widget = null ) {
+		$widget = $widget ?? new SiteOrigin_Widget_SocialMediaButtons_Widget();
 
 		return $widget->less_generate_calls_to(
 			array(
@@ -151,6 +162,42 @@ class SocialMediaButtonsLessCallsTest extends SiteOriginTests {
 						'icon_color' => 'transparent',
 					),
 				)
+			)
+		);
+	}
+
+	public function test_whole_call_check_drops_a_call_with_other_arguments() {
+		$this->assertSame(
+			'.m( @name:facebook-0, @icon_color:#fff, @icon_color_hover:#fff);',
+			$this->calls(
+				array(
+					array(
+						'name'         => 'instagram',
+						'button_color' => 'red, @icon_color:blue',
+					),
+					array(
+						'name'       => 'facebook',
+						'icon_color' => '#fff',
+					),
+				),
+				'atom',
+				new SiteOrigin_Unchecked_Networks_Test_Widget()
+			)
+		);
+	}
+
+	public function test_whole_call_check_drops_a_call_with_an_added_statement() {
+		$this->assertSame(
+			'',
+			$this->calls(
+				array(
+					array(
+						'name'       => 'facebook',
+						'icon_color' => 'red); .marker { a: b; } .m( @name: z',
+					),
+				),
+				'atom',
+				new SiteOrigin_Unchecked_Networks_Test_Widget()
 			)
 		);
 	}
