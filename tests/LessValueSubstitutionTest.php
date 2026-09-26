@@ -61,7 +61,8 @@ class LessValueSubstitutionTest extends SiteOriginTests {
 	}
 
 	/**
-	 * Values from past breakages, with the CSS each compiles to.
+	 * Ordinary values: icon glyphs, ampersands, units, fonts, gradients,
+	 * calc(), var(), colors and url()s, with the CSS each compiles to.
 	 */
 	public static function ordinary_values() {
 		return array(
