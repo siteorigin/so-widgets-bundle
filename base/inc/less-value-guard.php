@@ -141,7 +141,8 @@ class SiteOrigin_Widgets_Less_Value_Guard {
 			// raises PHP 8.2 dynamic property deprecations.
 			@$parser->parse( '.sow-less-probe{' . $less . '}' );
 			$rules = $parser->get_rules();
-		} catch ( Exception $e ) {
+		} catch ( Throwable $e ) {
+			// less.php throws Error, not only Less_Exception_Parser, on some malformed input.
 			return 'parse error';
 		}
 
