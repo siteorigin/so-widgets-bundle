@@ -145,7 +145,9 @@ class SiteOrigin_Widgets_Less_Value_Guard {
 	private static function parse_single_node( $less ) {
 		try {
 			$parser = new SiteOrigin_Widgets_Less_Value_Parser( array( 'relativeUrls' => false ) );
-			$parser->parse( '.sow-less-probe{' . $less . '}' );
+			// Silenced like the compile call in get_instance_css(), as less.php
+			// raises PHP 8.2 dynamic property deprecations.
+			@$parser->parse( '.sow-less-probe{' . $less . '}' );
 			$rules = $parser->get_rules();
 		} catch ( Exception $e ) {
 			return 'parse error';
