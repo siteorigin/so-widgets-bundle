@@ -1,6 +1,7 @@
 <?php
 
 use Brain\Monkey\Functions;
+use PHPUnit\Framework\Attributes\DataProvider;
 use SiteOrigin\Tests\SiteOriginTests;
 
 if ( ! class_exists( 'SiteOrigin_Premium_Teaser_Test_Widget' ) ) {
@@ -131,5 +132,47 @@ class PremiumTeaserTest extends SiteOriginTests {
 		$widget->display_teaser_message();
 
 		$this->assertSame( '', ob_get_clean() );
+	}
+
+	/**
+	 * Every widget file that defines get_form_teaser(), with its class.
+	 */
+	public static function teaser_widgets() {
+		$widgets = array();
+
+		foreach ( glob( __DIR__ . '/../widgets/*/*.php' ) as $file ) {
+			$source = file_get_contents( $file );
+
+			if (
+				strpos( $source, 'function get_form_teaser' ) !== false &&
+				preg_match( '/^class (\w+)/m', $source, $match )
+			) {
+				$widgets[ basename( $file, '.php' ) ] = array( $file, $match[1] );
+			}
+		}
+
+		return $widgets;
+	}
+
+	/**
+	 * Each widget shows at most three teasers, and every teaser links to
+	 * Premium through premium_url() in a new tab with rel="noopener noreferrer".
+	 */
+	#[DataProvider( 'teaser_widgets' )]
+	public function test_widget_teasers_use_the_helper( $file, $class ) {
+		require_once $file;
+
+		$widget  = ( new ReflectionClass( $class ) )->newInstanceWithoutConstructor();
+		$teasers = (array) $widget->get_form_teaser();
+
+		$this->assertNotEmpty( $teasers );
+		$this->assertLessThanOrEqual( 3, count( $teasers ) );
+
+		foreach ( $teasers as $teaser ) {
+			$this->assertMatchesRegularExpression(
+				'#<a href="https://siteorigin\.com/downloads/premium/\?featured_plugin=so-widgets-bundle&amp;featured_addon=plugin%2F[a-z-]+" target="_blank" rel="noopener noreferrer">SiteOrigin Premium</a>#',
+				$teaser
+			);
+		}
 	}
 }

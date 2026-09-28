@@ -435,20 +435,17 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add a Lightbox to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lightbox" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/lightbox'
 			),
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add a beautiful and customizable text overlay with animations to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/image-overlay" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/image-overlay'
 			),
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add multiple Image Grid frames in one go with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/multiple-media" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/multiple-media'
 			),
 		);
 	}

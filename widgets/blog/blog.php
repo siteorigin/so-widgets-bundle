@@ -1677,10 +1677,9 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				__( 'Add a Load More button, infinite scroll or Ajax Previous and Next links to the Blog Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 				'plugin/blog'
 			),
-			sprintf(
+			$this->premium_teaser(
 				__( 'Adjust the post Read More link text and choose a custom post date format with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/blog" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/blog'
 			),
 			$this->premium_teaser(
 				__( 'Show related posts after your content, styled by the Blog Widget, with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),

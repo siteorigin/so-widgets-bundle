@@ -631,20 +631,17 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 		}
 
 		return array(
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add multiple Hero frames in one go with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/multiple-media" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/multiple-media'
 			),
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add Hero frame content animation effects with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/hero" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/hero'
 			),
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add parallax and fixed background images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/parallax-sliders" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/parallax-sliders'
 			),
 		);
 	}

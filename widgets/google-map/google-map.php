@@ -986,15 +986,13 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
-			sprintf(
+			$this->premium_teaser(
 				__( 'Get additional map consent design settings with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/map-styles" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/map-styles'
 			),
-			sprintf(
+			$this->premium_teaser(
 				__( 'Get a curated list of predefined map styles with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/map-styles" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/map-styles'
 			),
 			$this->premium_teaser(
 				__( 'Add many map markers at once by pasting a list of addresses with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),

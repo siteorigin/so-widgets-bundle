@@ -283,10 +283,9 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
-			sprintf(
+			$this->premium_teaser(
 				__( 'Get more customization options and the ability to use widgets and layouts as your tabs content with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tabs" target="_blank">',
-				'</a>'
+				'plugin/tabs'
 			),
 			$this->premium_teaser(
 				__( 'Choose Google Fonts and font sizes for your tab titles and content with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),

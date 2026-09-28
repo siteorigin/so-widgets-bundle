@@ -462,10 +462,9 @@ class SiteOrigin_Widget_PriceTable_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add a Price Table feature tooltip with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tooltip" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/tooltip'
 			),
 		);
 	}

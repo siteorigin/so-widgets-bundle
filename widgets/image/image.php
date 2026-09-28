@@ -417,15 +417,13 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add a Lightbox to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lightbox" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/lightbox'
 			),
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add a beautiful and customizable text overlay with animations to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/image-overlay" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/image-overlay'
 			),
 			$this->premium_teaser(
 				__( 'Get more image shapes, custom shapes and shadow effects with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
