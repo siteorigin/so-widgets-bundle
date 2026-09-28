@@ -78,8 +78,8 @@ const heroBlock = ( frames ) => widgetBlock( blockNameForClass( HERO ), {
 	widgetData: { frames },
 } );
 
-// The seeded Editor text uses the HTML editor, so the widget's update() does
-// not re-run wpautop on it and saved text is compared byte for byte.
+// Seeds pin the Editor's text mode to HTML, so the stored text never depends
+// on the default editor, and saved text is compared byte for byte.
 const SEEDED_TEXT = '<p>Intro</p><iframe src="https://www.youtube.com/embed/x"></iframe>[sowb_e2e_probe]';
 const editorSeed = ( overrides = {} ) => editorBlock( {
 	title: 'Seed',
