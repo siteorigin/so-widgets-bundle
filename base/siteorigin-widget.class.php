@@ -1075,6 +1075,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			require plugin_dir_path( __FILE__ ) . 'inc/less-functions.php';
 		}
 
+		if ( ! class_exists( 'SiteOrigin_Widgets_Less_Value_Guard' ) ) {
+			require plugin_dir_path( __FILE__ ) . 'inc/less-value-guard.php';
+		}
+
 		if ( !method_exists( $this, 'get_less_content' ) ) {
 			$style_name = $this->get_style_name( $instance );
 
@@ -1114,7 +1118,22 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					continue;
 				}
 
-				$less = preg_replace( '/\@' . preg_quote( $name ) . ' *\:.*?;/', '@' . $name . ': ' . $value . ';', $less );
+				$check = SiteOrigin_Widgets_Less_Value_Guard::check_variable( $value );
+
+				if ( $check !== true ) {
+					// Skip the value so the template default applies.
+					SiteOrigin_Widgets_Less_Value_Guard::refused( $this, $name, $check );
+					continue;
+				}
+
+				// A callback keeps $ and \ in the value literal.
+				$less = preg_replace_callback(
+					'/\@' . preg_quote( $name ) . ' *\:.*?;/',
+					function () use ( $name, $value ) {
+						return '@' . $name . ': ' . $value . ';';
+					},
+					$less
+				);
 			}
 		}
 
