@@ -863,81 +863,109 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 
 		// This ensures styles are added inline.
 		add_filter( 'siteorigin_widgets_is_preview', '__return_true' );
+
+		// Everything this preview sets up is torn down in the finally block, so
+		// a widget that throws cannot leave the preview flag, the anchor filter
+		// or an open output buffer behind. The flag and anchor are restored
+		// rather than cleared, so a nested preview cannot reset an outer one.
+		$had_preview_flag    = array_key_exists( 'SO_WIDGETS_BUNDLE_PREVIEW_RENDER', $GLOBALS );
+		$prev_preview_flag   = $had_preview_flag ? $GLOBALS['SO_WIDGETS_BUNDLE_PREVIEW_RENDER'] : null;
+		$ob_level            = ob_get_level();
+		$anchor_filter_added = false;
+		$prev_widget_anchor  = $this->widgetAnchor;
+
 		$GLOBALS[ 'SO_WIDGETS_BUNDLE_PREVIEW_RENDER' ] = true;
 
-		$valid_widget_class = ! empty( $widget ) &&
-							  is_object( $widget ) &&
-							  is_subclass_of( $widget, 'SiteOrigin_Widget' );
+		try {
+			$valid_widget_class = ! empty( $widget ) &&
+								  is_object( $widget ) &&
+								  is_subclass_of( $widget, 'SiteOrigin_Widget' );
 
-		if ( $valid_widget_class && ! empty( $widget_data ) ) {
-			ob_start();
-			// Add anchor to widget wrapper.
-			if ( ! empty( $block['anchor'] ) ) {
-				$this->widgetAnchor = $block['anchor'];
-				add_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10, 3 );
-			}
-			/* @var $widget SiteOrigin_Widget */
-			$instance = $widget->update( $widget_data, $widget_data );
-			$widget->widget( array(), $instance );
-			$rendered_widget = array();
-			$rendered_widget['html'] = ob_get_clean();
+			if ( $valid_widget_class && ! empty( $widget_data ) ) {
+				ob_start();
+				// Add anchor to widget wrapper.
+				if ( ! empty( $block['anchor'] ) ) {
+					$this->widgetAnchor = $block['anchor'];
+					add_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10, 3 );
+					$anchor_filter_added = true;
+				}
+				/* @var $widget SiteOrigin_Widget */
+				$instance = $widget->update( $widget_data, $widget_data );
+				$widget->widget( array(), $instance );
+				$rendered_widget = array();
+				$rendered_widget['html'] = ob_get_clean();
 
-			if ( ! empty( $block['anchor'] ) ) {
-				remove_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10 );
-			}
+				// Check if this widget loaded any icons, and if it has, store them.
+				$styles = wp_styles();
 
-			// Check if this widget loaded any icons, and if it has, store them.
-			$styles = wp_styles();
+				if ( ! empty( $styles->queue ) ) {
+					$rendered_widget['widgetIcons'] = array();
 
-			if ( ! empty( $styles->queue ) ) {
-				$rendered_widget['widgetIcons'] = array();
-
-				foreach ( $styles->queue as $style ) {
-					if ( strpos( $style, 'siteorigin-widget-icon-font' ) !== false ) {
-						$rendered_widget['widgetIcons'][] = $style;
+					foreach ( $styles->queue as $style ) {
+						if ( strpos( $style, 'siteorigin-widget-icon-font' ) !== false ) {
+							$rendered_widget['widgetIcons'][] = $style;
+						}
 					}
 				}
+			} else {
+				if ( empty( $valid_widget_class ) ) {
+					$rendered_widget = new WP_Error(
+						400,
+						'Invalid or missing widget class: ' . $widget_class,
+						array(
+							'status' => 400,
+						)
+					);
+				} elseif ( empty( $widget_data ) ) {
+					$rendered_widget = new WP_Error(
+						400,
+						'Unable to render preview. Invalid or missing widget data.',
+						array(
+							'status' => 400,
+						)
+					);
+				}
 			}
-		} else {
-			if ( empty( $valid_widget_class ) ) {
-				$rendered_widget = new WP_Error(
-					400,
-					'Invalid or missing widget class: ' . $widget_class,
-					array(
-						'status' => 400,
-					)
-				);
-			} elseif ( empty( $widget_data ) ) {
-				$rendered_widget = new WP_Error(
-					400,
-					'Unable to render preview. Invalid or missing widget data.',
-					array(
-						'status' => 400,
-					)
-				);
+
+			if ( $just_html || is_wp_error( $rendered_widget ) ) {
+				return $rendered_widget;
+			}
+
+			// If there's a style tag, we can't set set widgetMarkup.
+			if ( strpos( $rendered_widget['html'], '<style' ) !== false ) {
+				$rendered_widget['widgetMarkup'] = '';
+			} else {
+				$rendered_widget['widgetMarkup'] = $rendered_widget['html'];
+			}
+
+			return array(
+				'widgetClass' => $widget_class,
+				'widgetData' => $widget_data,
+				'widgetMarkup' => $rendered_widget['widgetMarkup'],
+				'html' => $rendered_widget['html'],
+				'widgetIcons' => isset( $rendered_widget['css'] ) ? $rendered_widget['widgetIcons'] : array(),
+			);
+		} finally {
+			// On the success path ob_get_clean() already popped the buffer. A
+			// non removable buffer opened by widget code cannot be discarded,
+			// so stop rather than loop on it.
+			while ( ob_get_level() > $ob_level ) {
+				if ( ! @ob_end_clean() ) {
+					break;
+				}
+			}
+
+			if ( $anchor_filter_added ) {
+				remove_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10 );
+				$this->widgetAnchor = $prev_widget_anchor;
+			}
+
+			if ( $had_preview_flag ) {
+				$GLOBALS['SO_WIDGETS_BUNDLE_PREVIEW_RENDER'] = $prev_preview_flag;
+			} else {
+				unset( $GLOBALS['SO_WIDGETS_BUNDLE_PREVIEW_RENDER'] );
 			}
 		}
-
-		unset( $GLOBALS['SO_WIDGETS_BUNDLE_PREVIEW_RENDER'] );
-
-		if ( $just_html || is_wp_error( $rendered_widget ) ) {
-			return $rendered_widget;
-		}
-
-		// If there's a style tag, we can't set set widgetMarkup.
-		if ( strpos( $rendered_widget['html'], '<style' ) !== false ) {
-			$rendered_widget['widgetMarkup'] = '';
-		} else {
-			$rendered_widget['widgetMarkup'] = $rendered_widget['html'];
-		}
-
-		return array(
-			'widgetClass' => $widget_class,
-			'widgetData' => $widget_data,
-			'widgetMarkup' => $rendered_widget['widgetMarkup'],
-			'html' => $rendered_widget['html'],
-			'widgetIcons' => isset( $rendered_widget['css'] ) ? $rendered_widget['widgetIcons'] : array(),
-		);
 	}
 
 	public function block_migration_consent() {
