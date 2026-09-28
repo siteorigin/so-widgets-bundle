@@ -288,10 +288,9 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tabs" target="_blank">',
 				'</a>'
 			),
-			sprintf(
-				__( 'Use Google Fonts right inside the Tabs Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/web-font-selector" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+			$this->premium_teaser(
+				__( 'Choose Google Fonts and font sizes for your tab titles and content with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'plugin/tabs'
 			),
 		);
 	}
