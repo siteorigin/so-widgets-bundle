@@ -292,6 +292,10 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 				__( 'Choose Google Fonts and font sizes for your tab titles and content with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 				'plugin/tabs'
 			),
+			$this->premium_teaser(
+				__( 'Link straight to a tab with an anchor ID with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'plugin/anchor-id'
+			),
 		);
 	}
 }

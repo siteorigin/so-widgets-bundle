@@ -432,6 +432,10 @@ class SiteOrigin_Widget_Image_Widget extends SiteOrigin_Widget {
 				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tooltip" target="_blank" rel="noopener noreferrer">',
 				'</a>'
 			),
+			$this->premium_teaser(
+				__( 'Get more image shapes, custom shapes and shadow effects with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'plugin/image-shape'
+			),
 		);
 	}
 }

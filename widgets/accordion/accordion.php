@@ -331,6 +331,10 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/accordion" target="_blank" rel="noopener noreferrer">',
 				'</a>'
 			),
+			$this->premium_teaser(
+				__( 'Link straight to an accordion panel with an anchor ID with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'plugin/anchor-id'
+			),
 		);
 	}
 }

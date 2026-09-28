@@ -1682,6 +1682,10 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/blog" target="_blank" rel="noopener noreferrer">',
 				'</a>'
 			),
+			$this->premium_teaser(
+				__( 'Show related posts after your content, styled by the Blog Widget, with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'plugin/related-posts'
+			),
 		);
 	}
 }

@@ -2192,6 +2192,10 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/contact-log" target="_blank" rel="noopener noreferrer">',
 				'</a>'
 			),
+			$this->premium_teaser(
+				__( 'Add Cloudflare Turnstile spam protection to your contact forms with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'plugin/cf-turnstile'
+			),
 		);
 	}
 }

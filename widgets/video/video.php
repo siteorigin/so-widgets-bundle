@@ -399,6 +399,17 @@ class SiteOrigin_Widget_Video_Widget extends SiteOrigin_Widget {
 
 		return $instance;
 	}
+
+	public function get_form_teaser() {
+		if ( class_exists( 'SiteOrigin_Premium' ) ) {
+			return false;
+		}
+
+		return $this->premium_teaser(
+			__( 'Block YouTube and Vimeo embeds until visitors agree to load them with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+			'plugin/embed-blocker'
+		);
+	}
 }
 
 siteorigin_widget_register( 'video', __FILE__, 'SiteOrigin_Widget_Video_Widget' );

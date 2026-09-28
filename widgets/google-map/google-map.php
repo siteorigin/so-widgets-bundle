@@ -996,10 +996,9 @@ class SiteOrigin_Widget_GoogleMap_Widget extends SiteOrigin_Widget {
 				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/map-styles" target="_blank" rel="noopener noreferrer">',
 				'</a>'
 			),
-			sprintf(
-				__( 'Use Google Fonts right inside the Google Maps Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/web-font-selector" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+			$this->premium_teaser(
+				__( 'Add many map markers at once by pasting a list of addresses with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'plugin/bulk-address'
 			),
 		);
 	}

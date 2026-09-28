@@ -494,13 +494,23 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 			return false;
 		}
 
-		return array(
+		$teasers = array(
 			sprintf(
 				__( 'Add a beautiful tooltip to the Button Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tooltip" target="_blank" rel="noopener noreferrer">',
 				'</a>'
 			),
 		);
+
+		// The Lightbox Builder builds its content with Page Builder.
+		if ( class_exists( 'SiteOrigin_Panels' ) ) {
+			$teasers[] = $this->premium_teaser(
+				__( 'Open a lightbox built with Page Builder from a button with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'plugin/lightbox-builder'
+			);
+		}
+
+		return $teasers;
 	}
 }
 
