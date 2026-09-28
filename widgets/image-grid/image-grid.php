@@ -446,11 +446,6 @@ class SiteOrigin_Widgets_ImageGrid_Widget extends SiteOrigin_Widget {
 				'</a>'
 			),
 			sprintf(
-				__( 'Add an image title tooltip with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tooltip" target="_blank" rel="noopener noreferrer">',
-				'</a>'
-			),
-			sprintf(
 				__( 'Add multiple Image Grid frames in one go with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/multiple-media" target="_blank" rel="noopener noreferrer">',
 				'</a>'
