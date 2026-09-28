@@ -529,7 +529,7 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 				'plugin/parallax-sliders'
 			),
 			$this->premium_teaser(
-				__( 'Link straight to a slide with an anchor ID with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				__( 'Link straight to a slide using an anchor ID with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 				'plugin/anchor-id'
 			),
 		);

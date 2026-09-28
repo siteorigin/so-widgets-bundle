@@ -292,7 +292,7 @@ class SiteOrigin_Widget_Tabs_Widget extends SiteOrigin_Widget {
 				'plugin/tabs'
 			),
 			$this->premium_teaser(
-				__( 'Link straight to a tab with an anchor ID with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				__( 'Link straight to a tab using an anchor ID with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 				'plugin/anchor-id'
 			),
 		);

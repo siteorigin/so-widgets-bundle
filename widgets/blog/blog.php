@@ -1682,7 +1682,7 @@ class SiteOrigin_Widget_Blog_Widget extends SiteOrigin_Widget {
 				'plugin/blog'
 			),
 			$this->premium_teaser(
-				__( 'Show related posts after your content, styled by the Blog Widget, with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				__( 'Show related posts after your content using Blog Widget layouts with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 				'plugin/related-posts'
 			),
 		);

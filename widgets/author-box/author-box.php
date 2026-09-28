@@ -377,7 +377,7 @@ class SiteOrigin_Widget_Author_Box_Widget extends SiteOrigin_Widget {
 
 		return array(
 			$this->premium_teaser(
-				__( 'Show author boxes on your posts automatically, with recent posts and social buttons, using %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				__( 'Add author boxes to your posts automatically, including recent posts and social buttons, with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 				'plugin/author-box'
 			),
 		);

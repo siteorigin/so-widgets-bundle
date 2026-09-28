@@ -330,7 +330,7 @@ class SiteOrigin_Widget_Accordion_Widget extends SiteOrigin_Widget {
 				'plugin/accordion'
 			),
 			$this->premium_teaser(
-				__( 'Link straight to an accordion panel with an anchor ID with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				__( 'Link straight to an accordion panel using an anchor ID with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 				'plugin/anchor-id'
 			),
 		);

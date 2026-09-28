@@ -504,7 +504,7 @@ class SiteOrigin_Widget_Button_Widget extends SiteOrigin_Widget {
 		// The Lightbox Builder builds its content with Page Builder.
 		if ( class_exists( 'SiteOrigin_Panels' ) ) {
 			$teasers[] = $this->premium_teaser(
-				__( 'Open a lightbox built with Page Builder from a button with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				__( 'Get the Lightbox Builder widget, a button that opens Page Builder content in a lightbox, with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 				'plugin/lightbox-builder'
 			);
 		}

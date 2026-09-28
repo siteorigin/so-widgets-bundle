@@ -30,6 +30,18 @@ if ( ! class_exists( 'SiteOrigin_Premium_Teaser_Test_Widget' ) ) {
  * The Premium URL helper and the upgrade teaser filter.
  */
 class PremiumTeaserTest extends SiteOriginTests {
+	/**
+	 * The SiteOrigin Premium plugin addons a teaser may feature.
+	 */
+	private const ADDONS = array(
+		'accordion', 'anchor-id', 'author-box', 'blog', 'bulk-address',
+		'carousel', 'cf-turnstile', 'contact-form-fields', 'contact-log', 'cta',
+		'embed-blocker', 'hero', 'image-overlay', 'image-shape', 'lightbox',
+		'lightbox-builder', 'lottie-player', 'map-styles', 'multiple-media',
+		'parallax-sliders', 'related-posts', 'social-widgets', 'tabs',
+		'testimonial', 'tooltip', 'web-font-selector',
+	);
+
 	private $filters = array();
 
 	protected function setUp(): void {
@@ -170,7 +182,7 @@ class PremiumTeaserTest extends SiteOriginTests {
 
 		foreach ( $teasers as $teaser ) {
 			$this->assertMatchesRegularExpression(
-				'#<a href="https://siteorigin\.com/downloads/premium/\?featured_plugin=so-widgets-bundle&amp;featured_addon=plugin%2F[a-z-]+" target="_blank" rel="noopener noreferrer">SiteOrigin Premium</a>#',
+				'#<a href="https://siteorigin\.com/downloads/premium/\?featured_plugin=so-widgets-bundle&amp;featured_addon=plugin%2F(' . implode( '|', self::ADDONS ) . ')" target="_blank" rel="noopener noreferrer">SiteOrigin Premium</a>#',
 				$teaser
 			);
 		}
