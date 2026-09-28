@@ -306,10 +306,9 @@ class SiteOrigin_Widget_Cta_Widget extends SiteOrigin_Widget {
 			return false;
 		}
 
-		return sprintf(
-			__( 'Get more font customization options with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/cta" target="_blank" rel="noopener noreferrer">',
-			'</a>'
+		return $this->premium_teaser(
+			__( 'Add an image, vertical content alignment and padding to the Call To Action Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+			'plugin/cta'
 		);
 	}
 }

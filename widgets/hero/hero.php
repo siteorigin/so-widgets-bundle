@@ -646,11 +646,6 @@ class SiteOrigin_Widget_Hero_Widget extends SiteOrigin_Widget_Base_Slider {
 				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/parallax-sliders" target="_blank" rel="noopener noreferrer">',
 				'</a>'
 			),
-			sprintf(
-				__( 'Use Google Fonts right inside the Hero Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/web-font-selector" target="_blank" rel="noopener noreferrer">',
-				'</a>'
-			),
 		);
 	}
 }

@@ -376,11 +376,6 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 				'</a>'
 			),
 			sprintf(
-				__( 'Add a beautiful and customizable text overlay with animations to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/image-overlay" target="_blank" rel="noopener noreferrer">',
-				'</a>'
-			),
-			sprintf(
 				__( 'Add multiple Slider frames in one go with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
 				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/multiple-media" target="_blank" rel="noopener noreferrer">',
 				'</a>'
