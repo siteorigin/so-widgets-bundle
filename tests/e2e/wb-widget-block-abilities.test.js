@@ -503,6 +503,21 @@ test( 'for a user without unfiltered_html, an update matches a core save', async
 	// The response reports the value after core's save filter.
 	expect( dataA ).toEqual( await storedWidgetData( fx, draftA ) );
 	expect( dataA.text ).toBe( textA );
+
+	// A saved value the chokepoint keeps but core's save filter changes: the
+	// link field keeps a bare `&`, and the content KSES encodes it.
+	const url = 'https://example.com/?a=1&b=2';
+	const draftC = await fx.seed( widgetBlock( blockNameForClass( HEADLINE ), {
+		widgetClass: HEADLINE,
+		widgetData: {
+			headline: { text: 'Headline', destination_url: url },
+			sub_headline: { text: 'Sub headline' },
+		},
+	} ), { author: auth.contributor.id } );
+
+	const dataC = await expectOk( await widgetUpdate( auth.contributor, { post_id: draftC, widget_data: { headline: { text: 'T' } } } ), draftC );
+	expect( dataC.headline.destination_url ).not.toBe( url );
+	expect( dataC.headline.destination_url ).toContain( '&amp;' );
 } );
 
 test( 'object values are normalised and floored', async () => {
@@ -591,22 +606,40 @@ test( 'an inactive widget is never updated or activated', async ( { page } ) => 
 test( 'a write the saved content does not confirm is reported as readback-failed', async () => {
 	// Blocks are seeded with no whitespace between them, so no freeform block
 	// sits between them and a shifted sibling lands on the target's path.
+	// Each variant defeats one read-back check while the others still match.
 	const variants = [
 		{
-			// The target is removed and a different block shifts into its path.
+			// The target is removed and a different block shifts into its
+			// path: the block name and the entry count differ.
 			content: [ editorSeed(), headlineBlock() ].join( '' ),
-			remaining: [ blockNameForClass( HEADLINE ) ],
+			marker: 'SOWB_E2E_DROP_BLOCK',
+			expected: [ { name: blockNameForClass( HEADLINE ), path: [ 0 ] } ],
 		},
 		{
 			// A same-type sibling shifts into the target's path, with the same
-			// block name and class: only the entry count shows the change.
+			// block name and class: only the entry count differs.
 			content: [ editorSeed( { title: 'A' } ), editorSeed( { title: 'B' } ) ].join( '' ),
-			remaining: [ blockNameForClass( EDITOR ) ],
+			marker: 'SOWB_E2E_DROP_BLOCK',
+			expected: [ { name: blockNameForClass( EDITOR ), path: [ 0 ] } ],
 		},
 		{
 			// The only widget block is removed.
 			content: editorSeed(),
-			remaining: [],
+			marker: 'SOWB_E2E_DROP_BLOCK',
+			expected: [],
+		},
+		{
+			// The target moves into a Group block: only the path differs.
+			content: editorSeed(),
+			marker: 'SOWB_E2E_WRAP_BLOCK',
+			expected: [ { name: blockNameForClass( EDITOR ), path: [ 0, 0 ] } ],
+		},
+		{
+			// The target is stored under another block name with the same
+			// widget class: only the block name differs.
+			content: editorSeed(),
+			marker: 'SOWB_E2E_RENAME_BLOCK',
+			expected: [ { name: 'sowb/widget-block', path: [ 0 ] } ],
 		},
 	];
 
@@ -615,21 +648,21 @@ test( 'a write the saved content does not confirm is reported as readback-failed
 		const response = await widgetUpdate( auth.admin, {
 			post_id: postId,
 			widget_index: 0,
-			widget_data: { title: 'SOWB_E2E_DROP_BLOCK' },
+			widget_data: { title: variant.marker },
 		} );
+		const label = `${ variant.marker } ${ variant.expected.length }`;
 
-		expect( response.status ).toBe( 200 );
-		expect( response.body.updated ).toBe( true );
-		expect( response.body.status, JSON.stringify( response.body ) ).toBe( 'readback-failed' );
-		expect( response.body.widget_data ).toEqual( {} );
+		expect( response.status, label ).toBe( 200 );
+		expect( response.body.updated, label ).toBe( true );
+		expect( response.body.status, `${ label } ${ JSON.stringify( response.body ) }` ).toBe( 'readback-failed' );
+		expect( response.body.widget_data, label ).toEqual( {} );
 
-		// The write happened: the marked block is gone, and any sibling now
-		// sits on the target's path.
+		// The write happened, and the save filter changed the target.
 		const entries = widgetEntries( ( await fx.stored( postId ) ).blocks );
-		expect( entries.map( ( entry ) => entry.block.blockName ) ).toEqual( variant.remaining );
+		expect( entries.map( ( entry ) => ( { name: entry.block.blockName, path: entry.path } ) ), label ).toEqual( variant.expected );
 
-		if ( entries.length ) {
-			expect( entries[ 0 ].path ).toEqual( [ 0 ] );
+		for ( const entry of entries ) {
+			expect( entry.block.attrs.widgetClass, label ).toBe( entry.block.blockName === blockNameForClass( HEADLINE ) ? HEADLINE : EDITOR );
 		}
 	}
 } );

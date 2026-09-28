@@ -119,20 +119,86 @@ function sowb_e2e_probe_drop_blocks( $blocks, $marker ) {
 }
 
 /**
- * A real save filter that removes widget blocks carrying the
- * SOWB_E2E_DROP_BLOCK marker, as another plugin changing content on save
- * might.
+ * Whether a block is a widget block whose widgetData contains a marker.
+ */
+function sowb_e2e_probe_is_marked( $block, $marker ) {
+	return ! empty( $block['blockName'] ) &&
+		strpos( $block['blockName'], 'sowb/' ) === 0 &&
+		isset( $block['attrs']['widgetData'] ) &&
+		sowb_e2e_probe_contains( $block['attrs']['widgetData'], $marker );
+}
+
+/**
+ * Replace every marked widget block, at any depth, with the result of a
+ * callback. The callback returns one block, so innerContent stays valid.
+ */
+function sowb_e2e_probe_map_marked( $blocks, $marker, $callback ) {
+	foreach ( $blocks as $index => $block ) {
+		if ( sowb_e2e_probe_is_marked( $block, $marker ) ) {
+			$blocks[ $index ] = $callback( $block );
+			continue;
+		}
+
+		if ( ! empty( $block['innerBlocks'] ) ) {
+			$blocks[ $index ]['innerBlocks'] = sowb_e2e_probe_map_marked( $block['innerBlocks'], $marker, $callback );
+		}
+	}
+
+	return $blocks;
+}
+
+/**
+ * Real save filters that change marked widget blocks, as another plugin
+ * changing content on save might:
+ *
+ * - SOWB_E2E_DROP_BLOCK removes the block.
+ * - SOWB_E2E_WRAP_BLOCK moves the block into a Group block.
+ * - SOWB_E2E_RENAME_BLOCK stores the block as a legacy sowb/widget-block
+ *   with the same widget class.
  */
 add_filter(
 	'wp_insert_post_data',
 	function ( $data ) {
 		$content = wp_unslash( $data['post_content'] );
 
-		if ( strpos( $content, 'SOWB_E2E_DROP_BLOCK' ) === false ) {
+		if ( strpos( $content, 'SOWB_E2E_' ) === false ) {
 			return $data;
 		}
 
-		$blocks = sowb_e2e_probe_drop_blocks( parse_blocks( $content ), 'SOWB_E2E_DROP_BLOCK' );
+		$blocks = parse_blocks( $content );
+
+		if ( strpos( $content, 'SOWB_E2E_DROP_BLOCK' ) !== false ) {
+			$blocks = sowb_e2e_probe_drop_blocks( $blocks, 'SOWB_E2E_DROP_BLOCK' );
+		}
+
+		if ( strpos( $content, 'SOWB_E2E_WRAP_BLOCK' ) !== false ) {
+			$blocks = sowb_e2e_probe_map_marked(
+				$blocks,
+				'SOWB_E2E_WRAP_BLOCK',
+				function ( $block ) {
+					return array(
+						'blockName' => 'core/group',
+						'attrs' => array(),
+						'innerBlocks' => array( $block ),
+						'innerHTML' => '<div class="wp-block-group"></div>',
+						'innerContent' => array( '<div class="wp-block-group">', null, '</div>' ),
+					);
+				}
+			);
+		}
+
+		if ( strpos( $content, 'SOWB_E2E_RENAME_BLOCK' ) !== false ) {
+			$blocks = sowb_e2e_probe_map_marked(
+				$blocks,
+				'SOWB_E2E_RENAME_BLOCK',
+				function ( $block ) {
+					$block['blockName'] = 'sowb/widget-block';
+
+					return $block;
+				}
+			);
+		}
+
 		$data['post_content'] = wp_slash( serialize_blocks( $blocks ) );
 
 		return $data;
