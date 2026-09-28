@@ -14,6 +14,13 @@ class SiteOrigin_Widgets_Bundle_Compatibility {
 
 	public function __construct() {
 		add_action( 'init' , array( $this, 'init' ) );
+
+		// The widget block reader and abilities load at include time, not on
+		// init, so their hooks exist before the Abilities API registry is
+		// first built.
+		if ( function_exists( 'register_block_type' ) ) {
+			require_once plugin_dir_path( __FILE__ ) . 'block-editor/ai-exposure.php';
+		}
 	}
 
 	public function init() {
