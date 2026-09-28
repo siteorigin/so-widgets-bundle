@@ -501,10 +501,9 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
-			sprintf(
-				__( 'Add an feature icon title tooltip with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tooltip" target="_blank">',
-				'</a>'
+			$this->premium_teaser(
+				__( 'Add tooltips to your feature icons with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'plugin/tooltip'
 			),
 		);
 	}
