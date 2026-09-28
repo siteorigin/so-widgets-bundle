@@ -45,8 +45,9 @@ function sowb_e2e_probe_contains( $value, $marker ) {
 
 /**
  * Markers in a widget instance trigger test behaviour in the sanitize
- * filter: SOWB_E2E_NESTED_OBJECT adds an object value, and SOWB_E2E_THROW
- * throws.
+ * filter: SOWB_E2E_NESTED_OBJECT adds an object value, SOWB_E2E_THROW
+ * throws, and SOWB_E2E_MOVE_TITLE in the title copies the title into the
+ * text field, as a migration that moves a saved value to a new field would.
  */
 add_filter(
 	'siteorigin_widgets_sanitize_instance',
@@ -64,6 +65,15 @@ add_filter(
 					)
 				),
 			);
+		}
+
+		if (
+			is_array( $instance ) &&
+			isset( $instance['title'] ) &&
+			is_string( $instance['title'] ) &&
+			strpos( $instance['title'], 'SOWB_E2E_MOVE_TITLE' ) !== false
+		) {
+			$instance['text'] = $instance['title'];
 		}
 
 		return $instance;

@@ -482,6 +482,30 @@ test( 'a value the caller supplies is floored, even when it matches stored conte
 	expect( echoedData.text ).not.toMatch( PROBE_SHORTCODE );
 } );
 
+test( 'a saved value that update() moves into another field is floored', async () => {
+	// The fixture's sanitize filter copies a title holding SOWB_E2E_MOVE_TITLE
+	// into the text field, as a migration that moves a saved value would. The
+	// patch supplies no string, so the pre-floor never sees the moved value:
+	// only preservation bound to the field path keeps the saved shortcode from
+	// running in the text field, which the Editor widget passes to
+	// do_shortcode().
+	const title = 'SOWB_E2E_MOVE_TITLE [sowb_e2e_probe]';
+	const postId = await fx.seed( editorSeed( { title } ), { author: adminId } );
+
+	const data = await expectOk( await widgetUpdate( auth.admin, { post_id: postId, widget_data: { autop: false } } ), postId );
+
+	// Saved content in its own field is kept.
+	expect( data.title ).toBe( title );
+
+	// The move happened, and the moved copy is floored.
+	expect( data.text ).toContain( 'SOWB_E2E_MOVE_TITLE' );
+	expect( data.text ).toContain( FULL_WIDTH_PROBE );
+	expect( data.text ).not.toMatch( PROBE_SHORTCODE );
+
+	const attrs = widgetEntries( ( await fx.stored( postId ) ).blocks )[ 0 ].block.attrs;
+	expect( attrs.widgetMarkup ).not.toContain( PROBE_RAN );
+} );
+
 test( 'for a user without unfiltered_html, an update matches a core save', async () => {
 	const seeded = editorSeed( { text: '<p>Intro</p><iframe src="https://www.youtube.com/embed/x"></iframe>' } );
 	const draftA = await fx.seed( seeded, { author: auth.contributor.id } );
