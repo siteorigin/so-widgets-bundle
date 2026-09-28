@@ -18,7 +18,6 @@ const {
 } = require( '@playwright/test' );
 
 const {
-	doLogin,
 	setupRequestUtils,
 	soGoTo,
 } = require( 'siteorigin-tests-common/playwright/common' );
@@ -41,6 +40,7 @@ const {
 	installFixture,
 	isCardActive,
 	login,
+	loginPage,
 	newVisitor,
 	paragraph,
 	removeFixture,
@@ -307,7 +307,7 @@ test( 'a post another user has open in the editor is declined as locked', async 
 	const postId = await fx.seed( editorSeed(), { author: auth.contributor.id } );
 
 	// A real editor page load sets the admin's edit lock.
-	await doLogin( page );
+	await loginPage( page );
 	await soGoTo( page, `wp-admin/post.php?post=${ postId }&action=edit` );
 	await page.waitForLoadState( 'load' );
 	await page.close();
@@ -553,7 +553,7 @@ test( 'a widget that throws is declined and leaves no global state behind', asyn
 } );
 
 test( 'an inactive widget is never updated or activated', async ( { page } ) => {
-	await doLogin( page );
+	await loginPage( page );
 	await soGoTo( page, WIDGETS_ADMIN );
 	const initial = await isCardActive( page, 'headline' );
 

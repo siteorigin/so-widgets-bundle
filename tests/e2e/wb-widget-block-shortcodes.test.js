@@ -22,7 +22,6 @@ const {
 } = require( '@playwright/test' );
 
 const {
-	doLogin,
 	setupRequestUtils,
 	soGoTo,
 } = require( 'siteorigin-tests-common/playwright/common' );
@@ -40,6 +39,7 @@ const {
 	installFixture,
 	isCardActive,
 	login,
+	loginPage,
 	removeFixture,
 	setWidgetActive,
 	storedWidgetData,
@@ -227,7 +227,7 @@ test.beforeAll( async ( { browser } ) => {
 	fx = fixture( admin );
 
 	page = await browser.newPage();
-	await doLogin( page );
+	await loginPage( page );
 	await soGoTo( page, WIDGETS_ADMIN );
 
 	// Activate every widget, recording the initial state to restore later.

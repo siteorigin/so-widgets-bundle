@@ -19,7 +19,6 @@ const {
 } = require( '@playwright/test' );
 
 const {
-	doLogin,
 	soGoTo,
 } = require( 'siteorigin-tests-common/playwright/common' );
 
@@ -77,6 +76,22 @@ const login = async ( username, password ) => {
 		nonce: ( await nonceResponse.text() ).trim(),
 		username,
 	};
+};
+
+/**
+ * Log the admin in on a browser page, by copying the cookies of a login
+ * request into the page's context. The login form is not driven, so no
+ * focus or navigation race can leave the page logged out.
+ */
+const loginPage = async ( page ) => {
+	const session = await login( process.env.WP_USERNAME, process.env.WP_PASSWORD );
+
+	try {
+		const { cookies } = await session.context.storageState();
+		await page.context().addCookies( cookies );
+	} finally {
+		await session.context.dispose();
+	}
 };
 
 /**
@@ -271,7 +286,7 @@ const installFixture = async ( browser, requestUtils ) => {
 	const page = await browser.newPage();
 
 	try {
-		await doLogin( page );
+		await loginPage( page );
 		await soGoTo( page, 'wp-admin/plugin-install.php?tab=upload' );
 		await page.setInputFiles( '#pluginzip', zipPath );
 		await Promise.all( [
@@ -522,6 +537,7 @@ module.exports = {
 	installFixture,
 	isCardActive,
 	login,
+	loginPage,
 	newVisitor,
 	paragraph,
 	removeFixture,
