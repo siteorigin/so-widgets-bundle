@@ -589,15 +589,18 @@ test( 'an inactive widget is never updated or activated', async ( { page } ) => 
 } );
 
 test( 'a write the saved content does not confirm is reported as readback-failed', async () => {
+	// Blocks are seeded with no whitespace between them, so no freeform block
+	// sits between them and a shifted sibling lands on the target's path.
 	const variants = [
 		{
 			// The target is removed and a different block shifts into its path.
-			content: [ editorSeed(), headlineBlock() ].join( '\n' ),
+			content: [ editorSeed(), headlineBlock() ].join( '' ),
 			remaining: [ blockNameForClass( HEADLINE ) ],
 		},
 		{
-			// A same-type sibling shifts into the target's path.
-			content: [ editorSeed( { title: 'A' } ), editorSeed( { title: 'B' } ) ].join( '\n' ),
+			// A same-type sibling shifts into the target's path, with the same
+			// block name and class: only the entry count shows the change.
+			content: [ editorSeed( { title: 'A' } ), editorSeed( { title: 'B' } ) ].join( '' ),
 			remaining: [ blockNameForClass( EDITOR ) ],
 		},
 		{
@@ -620,9 +623,14 @@ test( 'a write the saved content does not confirm is reported as readback-failed
 		expect( response.body.status, JSON.stringify( response.body ) ).toBe( 'readback-failed' );
 		expect( response.body.widget_data ).toEqual( {} );
 
-		// The write happened: the marked block is gone.
+		// The write happened: the marked block is gone, and any sibling now
+		// sits on the target's path.
 		const entries = widgetEntries( ( await fx.stored( postId ) ).blocks );
 		expect( entries.map( ( entry ) => entry.block.blockName ) ).toEqual( variant.remaining );
+
+		if ( entries.length ) {
+			expect( entries[ 0 ].path ).toEqual( [ 0 ] );
+		}
 	}
 } );
 
