@@ -1,10 +1,24 @@
 <?php
 
+require_once __DIR__ . '/widget-block-untrusted.php';
+
 class SiteOrigin_Widgets_Bundle_Widget_Block {
 	public $widgetAnchor;
 	public $widgetBlocks = array();
 	public $hasMigrationConsent = false;
 	private $so_widgets = array();
+
+	/**
+	 * Context for a write of untrusted widget data, or null for a normal save.
+	 *
+	 * When set, it is array( 'stored' => array, 'supplied' => array[] ): the
+	 * stored instance before the write, and the paths of every field the
+	 * caller supplied. Only sanitize_widget_block_untrusted() sets it. It is
+	 * private with no filter and no setter, so other code cannot change it.
+	 *
+	 * @var array|null
+	 */
+	private $untrusted_write = null;
 
 	/**
 	 * Get the singleton instance
@@ -855,9 +869,12 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$widget_class = empty( $block['widgetClass'] ) ? '' : $block['widgetClass'];
 		$widget_data = empty( $block['widgetData'] ) ? array() : $block['widgetData'];
 
+		$untrusted = $this->untrusted_write !== null;
+
 		$widget = SiteOrigin_Widgets_Widget_Manager::get_widget_instance( $widget_class );
-		// Attempt to activate the widget if it's not already active.
-		if ( ! empty( $widget_class ) && empty( $widget ) ) {
+		// Attempt to activate the widget if it's not already active. An
+		// untrusted write never activates a widget; it only uses loaded ones.
+		if ( ! $untrusted && ! empty( $widget_class ) && empty( $widget ) ) {
 			$widget = SiteOrigin_Widgets_Bundle::single()->load_missing_widget( false, $widget_class );
 		}
 
@@ -891,6 +908,19 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				}
 				/* @var $widget SiteOrigin_Widget */
 				$instance = $widget->update( $widget_data, $widget_data );
+
+				// Untrusted data is normalised and floored before it is
+				// rendered, so the cached markup is built from floored data.
+				if ( $untrusted ) {
+					$instance = SiteOrigin_Widgets_Bundle_Untrusted_Widget_Data::normalize( $instance );
+
+					if ( ! is_array( $instance ) || empty( $instance ) ) {
+						throw new UnexpectedValueException( 'The widget returned an empty instance.' );
+					}
+
+					$instance = $this->floor_untrusted_instance( $instance );
+				}
+
 				$widget->widget( array(), $instance );
 				$rendered_widget = array();
 				$rendered_widget['html'] = ob_get_clean();
@@ -938,6 +968,16 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				$rendered_widget['widgetMarkup'] = $rendered_widget['html'];
 			}
 
+			if ( $untrusted ) {
+				return array(
+					'widgetClass' => $widget_class,
+					'widgetData' => $instance,
+					'widgetMarkup' => $rendered_widget['widgetMarkup'],
+					'html' => $rendered_widget['html'],
+					'widgetIcons' => isset( $rendered_widget['widgetIcons'] ) ? $rendered_widget['widgetIcons'] : array(),
+				);
+			}
+
 			return array(
 				'widgetClass' => $widget_class,
 				'widgetData' => $widget_data,
@@ -966,6 +1006,221 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 				unset( $GLOBALS['SO_WIDGETS_BUNDLE_PREVIEW_RENDER'] );
 			}
 		}
+	}
+
+	/**
+	 * Floor one untrusted string: HTML allowed in post content only, and no
+	 * shortcode, literal or encoded.
+	 *
+	 * KSES runs first, so its entity normalisation cannot undo the
+	 * neutralising.
+	 *
+	 * @param string $text The text.
+	 *
+	 * @return string
+	 */
+	public static function floor_string( $text ) {
+		return SiteOrigin_Widgets_Bundle_Untrusted_Widget_Data::neutralize_shortcodes( wp_kses_post( $text ) );
+	}
+
+	/**
+	 * Floor every string of a patch.
+	 *
+	 * @param mixed $value The normalised value.
+	 *
+	 * @return mixed
+	 */
+	private static function floor_strings_deep( $value ) {
+		if ( is_string( $value ) ) {
+			return self::floor_string( $value );
+		}
+
+		if ( is_array( $value ) ) {
+			foreach ( $value as $key => $item ) {
+				$value[ $key ] = self::floor_strings_deep( $item );
+			}
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Floor a widget instance produced from untrusted data.
+	 *
+	 * A string is kept unchanged only when the caller did not supply a value
+	 * at its path, and the stored instance holds the identical string at the
+	 * same path. That is the saved content, still in its own field. Every
+	 * other string is floored: supplied values, values moved to a new path,
+	 * and values the widget's update() or a sanitize filter created or
+	 * changed.
+	 *
+	 * @param mixed $value The normalised instance, or a part of it.
+	 * @param array $path  Keys that lead to $value.
+	 *
+	 * @return mixed
+	 */
+	private function floor_untrusted_instance( $value, array $path = array() ) {
+		if ( is_string( $value ) ) {
+			if ( ! SiteOrigin_Widgets_Bundle_Untrusted_Widget_Data::paths_overlap( $path, $this->untrusted_write['supplied'] ) ) {
+				$found = false;
+				$stored = SiteOrigin_Widgets_Bundle_Untrusted_Widget_Data::get_path( $this->untrusted_write['stored'], $path, $found );
+
+				if ( $found && is_string( $stored ) && $stored === $value ) {
+					return $value;
+				}
+			}
+
+			return self::floor_string( $value );
+		}
+
+		if ( is_array( $value ) ) {
+			foreach ( $value as $key => $item ) {
+				$item_path = $path;
+				$item_path[] = $key;
+				$value[ $key ] = $this->floor_untrusted_instance( $item, $item_path );
+			}
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Apply untrusted widget data to a widget block's attributes.
+	 *
+	 * The patch holds only the fields to change. It merges into the stored
+	 * instance field by field, so omitted fields keep their stored value.
+	 * Every supplied string is floored before the widget sees it, the widget's
+	 * update() runs once, and its result is floored again (see
+	 * floor_untrusted_instance()) before the markup cache is rebuilt from it.
+	 * The widget must be active; it is never activated here.
+	 *
+	 * @param array $attrs Target block attrs (widgetClass, stored widgetData, anchor, className, ...).
+	 * @param mixed $patch Fields to change (array or object).
+	 *
+	 * @return array|WP_Error New attrs. WP_Error codes: sowb_widget_data_invalid (400),
+	 *         sowb_widget_unavailable (404), sowb_widget_sanitize_failed (400), sowb_invalid_widget_data (400),
+	 *         or a WP_Error from get_widget_preview().
+	 */
+	public function sanitize_widget_block_untrusted( array $attrs, $patch ) {
+		$invalid = new WP_Error(
+			'sowb_widget_data_invalid',
+			__( 'The widget_data must be a non-empty object whose field names contain only letters, digits, underscores and hyphens, nested no deeper than the allowed limit.', 'so-widgets-bundle' ),
+			array( 'status' => 400 )
+		);
+
+		try {
+			$patch = SiteOrigin_Widgets_Bundle_Untrusted_Widget_Data::normalize( $patch );
+
+			if ( ! is_array( $patch ) || empty( $patch ) ) {
+				return $invalid;
+			}
+
+			SiteOrigin_Widgets_Bundle_Untrusted_Widget_Data::assert_patch_keys( $patch );
+		} catch ( Throwable $e ) {
+			return $invalid;
+		}
+
+		$widget_class = isset( $attrs['widgetClass'] ) && is_string( $attrs['widgetClass'] ) ? $attrs['widgetClass'] : '';
+		$active = false;
+
+		if ( $widget_class !== '' && class_exists( 'SiteOrigin_Widgets_Abilities' ) ) {
+			foreach ( SiteOrigin_Widgets_Abilities::single()->get_active_widgets() as $entry ) {
+				if ( $entry['class'] === $widget_class ) {
+					$active = true;
+					break;
+				}
+			}
+		}
+
+		if ( ! $active ) {
+			return new WP_Error(
+				'sowb_widget_unavailable',
+				__( 'This widget is not an active SiteOrigin Widgets Bundle widget. Call sowb/widget-list for the available widgets. A site administrator can activate widgets at Plugins > SiteOrigin Widgets.', 'so-widgets-bundle' ),
+				array( 'status' => 404 )
+			);
+		}
+
+		$patch = self::floor_strings_deep( $patch );
+
+		try {
+			$stored = SiteOrigin_Widgets_Bundle_Untrusted_Widget_Data::normalize(
+				isset( $attrs['widgetData'] ) ? $attrs['widgetData'] : array()
+			);
+		} catch ( Throwable $e ) {
+			$stored = array();
+		}
+
+		if ( ! is_array( $stored ) ) {
+			$stored = array();
+		}
+
+		$merged = SiteOrigin_Widgets_Bundle_Untrusted_Widget_Data::merge( $stored, $patch );
+
+		$previous_context = $this->untrusted_write;
+		$this->untrusted_write = array(
+			'stored' => $stored,
+			'supplied' => SiteOrigin_Widgets_Bundle_Untrusted_Widget_Data::leaf_paths( $patch ),
+		);
+
+		try {
+			$preview = $this->get_widget_preview(
+				array_merge( $attrs, array( 'widgetData' => $merged ) ),
+				false
+			);
+		} catch ( Throwable $e ) {
+			return new WP_Error(
+				'sowb_widget_sanitize_failed',
+				__( 'The widget could not process the supplied data.', 'so-widgets-bundle' ),
+				array( 'status' => 400 )
+			);
+		} finally {
+			$this->untrusted_write = $previous_context;
+		}
+
+		if ( is_wp_error( $preview ) ) {
+			return $preview;
+		}
+
+		if ( empty( $preview ) ) {
+			return new WP_Error(
+				'sowb_invalid_widget_data',
+				__( 'Invalid Widgets Bundle data', 'so-widgets-bundle' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		return array_merge(
+			$attrs,
+			array(
+				'widgetClass' => $preview['widgetClass'],
+				'widgetData' => $preview['widgetData'],
+				'widgetMarkup' => $preview['widgetMarkup'],
+				'widgetIcons' => $preview['widgetIcons'],
+			)
+		);
+	}
+
+	/**
+	 * Resolve the widget class for a block from its attributes, falling back
+	 * to deriving it from the block name.
+	 *
+	 * @param array  $attrs The block attributes.
+	 * @param string $block_name The block name (e.g. `sowb/siteorigin-widget-hero-widget`).
+	 *
+	 * @return string|null The widget class, or null when unresolvable.
+	 */
+	public function resolve_widget_class( $attrs, $block_name ) {
+		if ( ! empty( $attrs['widgetClass'] ) ) {
+			return $attrs['widgetClass'];
+		}
+
+		if ( empty( $block_name ) ) {
+			return null;
+		}
+
+		$found = $this->find_widget_class_by_block_name( $block_name );
+
+		return empty( $found ) ? null : $found;
 	}
 
 	public function block_migration_consent() {
