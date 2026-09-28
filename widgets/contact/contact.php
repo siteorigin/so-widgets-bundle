@@ -1751,7 +1751,10 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					if ( ! is_numeric( $value ) ) {
 						$errors[ $field_name ] = __( 'Invalid number.', 'so-widgets-bundle' );
 					} else {
-						$email_fields[ $field['type'] ] = $value;
+						$email_fields['message'][] = array(
+							'label' => $field['label'],
+							'value' => $value,
+						);
 					}
 					break;
 
