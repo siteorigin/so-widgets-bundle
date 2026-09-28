@@ -346,15 +346,9 @@ class SiteOrigin_Widgets_Testimonials_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
-			sprintf(
-				__( 'Get more testimonial font customization options with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/testimonial" target="_blank" rel="noopener noreferrer">',
-				'</a>'
-			),
-			sprintf(
-				__( 'Use Google Fonts right inside the Testimonials Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/web-font-selector" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+			$this->premium_teaser(
+				__( 'Choose Google Fonts and font sizes for testimonial titles, names, locations and text with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'plugin/testimonial'
 			),
 		);
 	}

@@ -525,25 +525,17 @@ class SiteOrigin_Widget_Simple_Masonry_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add a Lightbox to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lightbox" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/lightbox'
 			),
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add a beautiful and customizable text overlay with animations to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/image-overlay" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/image-overlay'
 			),
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add multiple Simple Masonry frames in one go with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/multiple-media" target="_blank" rel="noopener noreferrer">',
-				'</a>'
-			),
-			sprintf(
-				__( 'Add an image title tooltip with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tooltip" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/multiple-media'
 			),
 		);
 	}

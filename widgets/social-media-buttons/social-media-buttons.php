@@ -534,10 +534,9 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			return false;
 		}
 
-		return sprintf(
+		return $this->premium_teaser(
 			__( 'Add custom social networks with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/social-widgets" target="_blank" rel="noopener noreferrer">',
-			'</a>'
+			'plugin/social-widgets'
 		);
 	}
 }

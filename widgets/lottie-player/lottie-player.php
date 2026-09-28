@@ -104,10 +104,9 @@ class SiteOrigin_Widget_Lottie_Player_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
-			sprintf(
-				__( 'Customize and enhance your Lottie Player with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lottie-player" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+			$this->premium_teaser(
+				__( 'Play Lottie animations on scroll, hover, click or cursor movement with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'plugin/lottie-player'
 			),
 		);
 	}
