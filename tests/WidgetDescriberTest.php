@@ -290,6 +290,35 @@ class WidgetDescriberTest extends SiteOriginTests {
 		$this->assertArrayNotHasKey( 'icon_fallback', $properties );
 	}
 
+	public function test_measurement_pattern_matches_stored_values() {
+		$schema = $this->describer()->translate_field( array(
+			'type' => 'measurement',
+			'units' => array( 'px', 'em' ),
+		) );
+		$pattern = '/' . str_replace( '/', '\\/', $schema['pattern'] ) . '/';
+
+		foreach ( array( '-5px', '1.5em', '0' ) as $value ) {
+			$this->assertSame( 1, preg_match( $pattern, $value ), $value );
+		}
+
+		foreach ( array( '...px', '5pxx' ) as $value ) {
+			$this->assertSame( 0, preg_match( $pattern, $value ), $value );
+		}
+	}
+
+	public function test_select_default_uses_the_same_string_value_as_its_enum() {
+		$schema = self::as_json_array( $this->describer()->translate_field( array(
+			'type' => 'select',
+			'options' => array( 10 => 'Ten' ),
+			'default' => 10,
+		) ) );
+
+		$this->assertSame( 'string', $schema['type'] );
+		$this->assertSame( array( '10' ), $schema['enum'] );
+		$this->assertSame( '10', $schema['default'] );
+		$this->assertContains( $schema['default'], $schema['enum'], true );
+	}
+
 	public function test_an_empty_form_encodes_properties_as_an_object() {
 		$schema = $this->describer()->get_schema( new SiteOrigin_Describer_Empty_Widget() );
 
