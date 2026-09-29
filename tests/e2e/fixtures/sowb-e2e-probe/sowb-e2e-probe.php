@@ -165,6 +165,7 @@ function sowb_e2e_probe_map_marked( $blocks, $marker, $callback ) {
  * - SOWB_E2E_WRAP_BLOCK moves the block into a Group block.
  * - SOWB_E2E_RENAME_BLOCK stores the block as a legacy sowb/widget-block
  *   with the same widget class.
+ * - SOWB_E2E_CHANGE_CLASS stores an Editor block with the Headline class.
  */
 add_filter(
 	'wp_insert_post_data',
@@ -203,6 +204,18 @@ add_filter(
 				'SOWB_E2E_RENAME_BLOCK',
 				function ( $block ) {
 					$block['blockName'] = 'sowb/widget-block';
+
+					return $block;
+				}
+			);
+		}
+
+		if ( strpos( $content, 'SOWB_E2E_CHANGE_CLASS' ) !== false ) {
+			$blocks = sowb_e2e_probe_map_marked(
+				$blocks,
+				'SOWB_E2E_CHANGE_CLASS',
+				function ( $block ) {
+					$block['attrs']['widgetClass'] = 'SiteOrigin_Widget_Headline_Widget';
 
 					return $block;
 				}

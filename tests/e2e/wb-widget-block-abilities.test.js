@@ -665,6 +665,14 @@ test( 'a write the saved content does not confirm is reported as readback-failed
 			marker: 'SOWB_E2E_RENAME_BLOCK',
 			expected: [ { name: 'sowb/widget-block', path: [ 0 ] } ],
 		},
+		{
+			// The target keeps its path, block name and entry count: only
+			// the widget class differs.
+			content: editorSeed(),
+			marker: 'SOWB_E2E_CHANGE_CLASS',
+			expected: [ { name: blockNameForClass( EDITOR ), path: [ 0 ] } ],
+			expectedClass: HEADLINE,
+		},
 	];
 
 	for ( const variant of variants ) {
@@ -686,7 +694,7 @@ test( 'a write the saved content does not confirm is reported as readback-failed
 		expect( entries.map( ( entry ) => ( { name: entry.block.blockName, path: entry.path } ) ), label ).toEqual( variant.expected );
 
 		for ( const entry of entries ) {
-			expect( entry.block.attrs.widgetClass, label ).toBe( entry.block.blockName === blockNameForClass( HEADLINE ) ? HEADLINE : EDITOR );
+			expect( entry.block.attrs.widgetClass, label ).toBe( variant.expectedClass || ( entry.block.blockName === blockNameForClass( HEADLINE ) ? HEADLINE : EDITOR ) );
 		}
 	}
 } );
