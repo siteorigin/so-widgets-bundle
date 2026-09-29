@@ -306,6 +306,19 @@ class WidgetDescriberTest extends SiteOriginTests {
 		}
 	}
 
+	public function test_select_default_uses_the_same_string_value_as_its_enum() {
+		$schema = self::as_json_array( $this->describer()->translate_field( array(
+			'type' => 'select',
+			'options' => array( 10 => 'Ten' ),
+			'default' => 10,
+		) ) );
+
+		$this->assertSame( 'string', $schema['type'] );
+		$this->assertSame( array( '10' ), $schema['enum'] );
+		$this->assertSame( '10', $schema['default'] );
+		$this->assertContains( $schema['default'], $schema['enum'], true );
+	}
+
 	public function test_an_empty_form_encodes_properties_as_an_object() {
 		$schema = $this->describer()->get_schema( new SiteOrigin_Describer_Empty_Widget() );
 

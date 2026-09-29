@@ -294,7 +294,7 @@ class SiteOrigin_Widgets_Widget_Describer {
 		}
 
 		if ( isset( $field['default'] ) && is_scalar( $field['default'] ) ) {
-			$schema['default'] = $field['default'];
+			$schema['default'] = $type === 'select' ? (string) $field['default'] : $field['default'];
 		}
 
 		return $schema;
