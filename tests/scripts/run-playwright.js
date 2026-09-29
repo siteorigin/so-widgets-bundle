@@ -18,9 +18,25 @@ const run = async () => {
 		await startPlayground( buildSuccessful );
 	}
 
-	await execAsync( 'npx', [ 'npm', 'run', 'test:e2e' ] );
+	// The ability specs share site state, so they run as a second pass in
+	// their own one-worker project (see playwright.config.js), after the
+	// other specs. Both passes always run; either failing fails the run.
+	const passes = [
+		[ '--project="Google Chrome"' ],
+		[ '--project=abilities' ],
+	];
+	let failed = false;
 
-	process.exit( 0 );
+	for ( const args of passes ) {
+		try {
+			await execAsync( 'npx', [ 'npm', 'run', 'test:e2e', '--', ...args ] );
+		} catch ( error ) {
+			console.error( `Playwright pass ${ args.join( ' ' ) } failed:`, error.message );
+			failed = true;
+		}
+	}
+
+	process.exit( failed ? 1 : 0 );
 };
 
 run().catch( ( error ) => {
