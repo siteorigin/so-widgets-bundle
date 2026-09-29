@@ -211,7 +211,10 @@ class SiteOrigin_Widgets_Widget_Describer {
 				$schema = array( 'type' => 'string' );
 
 				if ( ! empty( $units ) ) {
-					$schema['pattern'] = '^[0-9.]+(' . implode( '|', array_map( 'preg_quote', $units ) ) . ')$';
+					// The field stores its input as a float followed by an allowed unit.
+					// Also allow the unitless zero accepted by measurement controls.
+					$number = '(?:0|-?(?:[1-9][0-9]*(?:\.[0-9]*[1-9])?|0\.[0-9]*[1-9]))';
+					$schema['pattern'] = '^(?:0|' . $number . '(' . implode( '|', array_map( 'preg_quote', $units ) ) . '))$';
 				}
 				break;
 

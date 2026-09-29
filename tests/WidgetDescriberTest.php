@@ -290,6 +290,22 @@ class WidgetDescriberTest extends SiteOriginTests {
 		$this->assertArrayNotHasKey( 'icon_fallback', $properties );
 	}
 
+	public function test_measurement_pattern_matches_stored_values() {
+		$schema = $this->describer()->translate_field( array(
+			'type' => 'measurement',
+			'units' => array( 'px', 'em' ),
+		) );
+		$pattern = '/' . str_replace( '/', '\\/', $schema['pattern'] ) . '/';
+
+		foreach ( array( '-5px', '1.5em', '0' ) as $value ) {
+			$this->assertSame( 1, preg_match( $pattern, $value ), $value );
+		}
+
+		foreach ( array( '...px', '5pxx' ) as $value ) {
+			$this->assertSame( 0, preg_match( $pattern, $value ), $value );
+		}
+	}
+
 	public function test_an_empty_form_encodes_properties_as_an_object() {
 		$schema = $this->describer()->get_schema( new SiteOrigin_Describer_Empty_Widget() );
 
