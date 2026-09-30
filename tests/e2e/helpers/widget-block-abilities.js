@@ -288,6 +288,7 @@ const installFixture = async ( browser, requestUtils ) => {
 	try {
 		await loginPage( page );
 		await soGoTo( page, 'wp-admin/plugin-install.php?tab=upload' );
+		await page.locator( '#pluginzip' ).waitFor( { state: 'attached' } );
 		await page.setInputFiles( '#pluginzip', zipPath );
 		await Promise.all( [
 			page.waitForNavigation(),
