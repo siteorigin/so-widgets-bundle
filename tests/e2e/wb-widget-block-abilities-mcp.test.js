@@ -1,13 +1,14 @@
 /**
- * The sowb/widget-list and sowb/widget-describe abilities through the
- * WordPress MCP adapter's default server (HTTP transport).
+ * The sowb/widget-get and sowb/widget-update abilities through the WordPress
+ * MCP adapter's default server (HTTP transport).
  *
  * The adapter exposes an ability only when its meta marks it public to MCP,
- * so this file fails if the abilities lose their `mcp.public` flag.
+ * so this file fails if either ability loses its `mcp.public` flag.
  *
  * The adapter is not on wordpress.org. When the site does not have it, this
  * file downloads the pinned release, installs it through the plugin upload
- * screen, and removes it again afterwards. An install or activation failure
+ * screen, and removes it again afterwards. The sowb-e2e-probe fixture plugin
+ * is installed and removed the same way. An install or activation failure
  * fails the file; it never skips.
  */
 const fs = require( 'fs' );
@@ -16,70 +17,36 @@ const path = require( 'path' );
 
 const {
 	expect,
-	request,
-	test
+	test,
 } = require( '@playwright/test' );
-
-const common = require( 'siteorigin-tests-common/playwright/common' );
 
 const {
 	setupRequestUtils,
 	soGoTo,
-} = common;
+} = require( 'siteorigin-tests-common/playwright/common' );
 
-const { loginPage } = require( './helpers/widget-block-abilities' );
+const {
+	FULL_WIDTH_PROBE,
+	PROBE_SHORTCODE,
+	blockNameForClass,
+	createUserSession,
+	deleteUsers,
+	fixture,
+	installFixture,
+	login,
+	loginPage,
+	removeFixture,
+	siteUrl,
+	storedWidgetData,
+	widgetBlock,
+} = require( './helpers/widget-block-abilities' );
 
 test.describe.configure( { mode: 'serial' } );
 
 const ADAPTER_ZIP = 'https://github.com/WordPress/mcp-adapter/releases/download/v0.6.1/mcp-adapter.zip';
 const ADAPTER_PLUGIN = 'mcp-adapter/mcp-adapter';
 const MCP_ENDPOINT = 'wp-json/mcp/mcp-adapter-default-server';
-
-// Join a path to WP_BASE_URL. Normalizing the base to end in a slash keeps
-// this correct for a root install and a subdirectory install.
-const siteUrl = ( relativePath ) => {
-	const base = process.env.WP_BASE_URL.endsWith( '/' )
-		? process.env.WP_BASE_URL
-		: `${ process.env.WP_BASE_URL }/`;
-
-	return new URL( relativePath, base ).toString();
-};
-
-/**
- * Log a user in with a cookie session of its own and fetch a REST nonce.
- * Cookie auth works on every environment; application passwords are
- * unavailable on a non-HTTPS site that is not a local environment, such as
- * Playground.
- *
- * @return {Promise<{context: import('@playwright/test').APIRequestContext, nonce: string}>}
- */
-const login = async ( username, password ) => {
-	const context = await request.newContext( {
-		baseURL: siteUrl( '' ),
-		ignoreHTTPSErrors: true,
-	} );
-
-	// The login form needs the test cookie set by a first visit.
-	await context.get( 'wp-login.php' );
-	const response = await context.post( 'wp-login.php', {
-		form: {
-			log: username,
-			pwd: password,
-			testcookie: '1',
-			'wp-submit': 'Log In',
-		},
-		maxRedirects: 0,
-	} );
-	expect( response.status(), `login ${ username }` ).toBe( 302 );
-
-	const nonceResponse = await context.get( 'wp-admin/admin-ajax.php?action=rest-nonce' );
-	expect( nonceResponse.ok(), `nonce ${ username }` ).toBe( true );
-
-	return {
-		context,
-		nonce: ( await nonceResponse.text() ).trim(),
-	};
-};
+const EDITOR = 'SiteOrigin_Widget_Editor_Widget';
 
 /**
  * Open an MCP session on the default server as the given user.
@@ -174,55 +141,39 @@ const execute = ( mcp, abilityName, parameters ) => mcp.callTool( 'mcp-adapter-e
 } );
 
 /**
- * The error message of a failed tools/call. The v0.6.1 adapter turns the
- * execute tool's { success: false, error } wrapper into a tool error
- * (isError with the message as text); the wrapper form is accepted too. A
- * failure never carries ability data.
+ * Assert that a tools/call failed and carried no ability data. The v0.6.1
+ * adapter turns a failed execute into a tool error (isError with the message
+ * as text); a JSON-RPC error and the { success: false } wrapper are accepted
+ * too.
+ *
+ * @return {string} The raw response, for message checks.
  */
-const toolFailure = ( rpc ) => {
-	expect( rpc.error, JSON.stringify( rpc.error ) ).toBeUndefined();
+const expectToolFailure = ( rpc ) => {
+	const raw = JSON.stringify( rpc );
+	let failed = !! rpc.error || rpc.result?.isError === true;
 
-	if ( rpc.result.isError === true ) {
-		expect( rpc.result.structuredContent ?? null ).toBeNull();
-
-		return rpc.result.content[ 0 ].text;
+	if ( ! failed ) {
+		const payload = rpc.result.structuredContent || JSON.parse( rpc.result.content[ 0 ].text );
+		expect( payload.success, raw ).not.toBe( true );
+		expect( payload.data, raw ).toBeUndefined();
+		failed = payload.success === false;
+	} else if ( rpc.result ) {
+		expect( rpc.result.structuredContent ?? null, raw ).toBeNull();
 	}
 
-	const payload = toolPayload( rpc );
-	expect( payload.success ).toBe( false );
-	expect( payload.data ).toBeUndefined();
+	expect( failed, raw ).toBe( true );
 
-	return payload.error;
+	return raw;
 };
 
 let requestUtils;
+let fx;
+let postId;
 const sessions = {};
 const createdUsers = [];
 const adapterState = {
 	installedByTest: false,
 	priorStatus: null,
-};
-
-/**
- * Create a user with the given role and log it in.
- */
-const createUserSession = async ( role ) => {
-	const suffix = `${ Date.now() }-${ Math.floor( Math.random() * 1e6 ) }`;
-	const username = `sowb-mcp-${ role }-${ suffix }`;
-	const password = `sowb-mcp-${ suffix }!A1`;
-	const user = await requestUtils.rest( {
-		method: 'POST',
-		path: '/wp/v2/users',
-		params: {
-			username,
-			email: `${ username }@example.com`,
-			password,
-			roles: [ role ],
-		},
-	} );
-	createdUsers.push( user );
-
-	return login( username, password );
 };
 
 const findAdapter = async () => {
@@ -264,7 +215,7 @@ const installAdapter = async ( browser ) => {
 };
 
 test.beforeAll( async ( { browser } ) => {
-	test.setTimeout( 180_000 );
+	test.setTimeout( 240_000 );
 	requestUtils = await setupRequestUtils();
 
 	let adapter = await findAdapter();
@@ -287,8 +238,17 @@ test.beforeAll( async ( { browser } ) => {
 		expect( activated.status ).toBe( 'active' );
 	}
 
-	sessions.contributor = await createUserSession( 'contributor' );
-	sessions.subscriber = await createUserSession( 'subscriber' );
+	await installFixture( browser, requestUtils );
+
+	sessions.admin = await login( process.env.WP_USERNAME, process.env.WP_PASSWORD );
+	sessions.contributor = await createUserSession( requestUtils, 'contributor', createdUsers );
+	sessions.subscriber = await createUserSession( requestUtils, 'subscriber', createdUsers );
+	fx = fixture( sessions.admin );
+
+	postId = await fx.seed( widgetBlock( blockNameForClass( EDITOR ), {
+		widgetClass: EDITOR,
+		widgetData: { title: 'MCP seed', text: '<p>Seed</p>', text_selected_editor: 'html', autop: true },
+	} ), { author: sessions.contributor.id } );
 } );
 
 test.afterAll( async () => {
@@ -300,13 +260,8 @@ test.afterAll( async () => {
 		return;
 	}
 
-	for ( const user of createdUsers ) {
-		await requestUtils.rest( {
-			method: 'DELETE',
-			path: `/wp/v2/users/${ user.id }`,
-			params: { force: true, reassign: 1 },
-		} ).catch( () => {} );
-	}
+	await deleteUsers( requestUtils, createdUsers );
+	await removeFixture( requestUtils );
 
 	if ( adapterState.priorStatus && adapterState.priorStatus !== 'active' ) {
 		await requestUtils.rest( {
@@ -324,56 +279,57 @@ test.afterAll( async () => {
 	}
 } );
 
-test( 'a contributor discovers and executes both abilities over MCP', async () => {
+test( 'a contributor discovers, reads and updates their own draft over MCP', async () => {
 	const mcp = await openMcpSession( sessions.contributor );
 
 	try {
 		const discovered = toolPayload( await mcp.callTool( 'mcp-adapter-discover-abilities', {} ) );
 		const names = discovered.abilities.map( ( ability ) => ability.name );
-		expect( names ).toContain( 'sowb/widget-list' );
-		expect( names ).toContain( 'sowb/widget-describe' );
+		expect( names ).toContain( 'sowb/widget-get' );
+		expect( names ).toContain( 'sowb/widget-update' );
 
-		const list = toolPayload( await execute( mcp, 'sowb/widget-list', {} ) );
-		expect( list.success ).toBe( true );
-		expect( list.data.widgets ).toContainEqual( expect.objectContaining( {
-			id: 'hero',
-			class: 'SiteOrigin_Widget_Hero_Widget',
+		const get = toolPayload( await execute( mcp, 'sowb/widget-get', { post_id: postId } ) );
+		expect( get.success ).toBe( true );
+		expect( get.data.widgets ).toContainEqual( expect.objectContaining( {
+			widget_index: 0,
+			widget_class: EDITOR,
+			block_name: blockNameForClass( EDITOR ),
 		} ) );
 
-		const describe = toolPayload( await execute( mcp, 'sowb/widget-describe', { widget: 'hero' } ) );
-		expect( describe.success ).toBe( true );
-		expect( describe.data.schema.properties.frames ).toBeDefined();
+		const update = toolPayload( await execute( mcp, 'sowb/widget-update', {
+			post_id: postId,
+			widget_data: { title: '<script>x()</script>[sowb_e2e_probe]' },
+		} ) );
+		expect( update.success, JSON.stringify( update ) ).toBe( true );
+		expect( update.data.status, JSON.stringify( update.data ) ).toBe( 'ok' );
 
-		// The describe callback's WP_Error reaches the client as a failure
-		// carrying its message.
-		const unknown = toolFailure( await execute( mcp, 'sowb/widget-describe', { widget: 'Not_A_Widget' } ) );
-		expect( typeof unknown ).toBe( 'string' );
-		expect( unknown ).toContain( 'sowb/widget-list' );
+		const stored = await storedWidgetData( fx, postId );
+		expect( update.data.widget_data ).toEqual( stored );
+		expect( stored.title.toLowerCase() ).not.toContain( '<script' );
+		expect( stored.title ).toContain( FULL_WIDTH_PROBE );
+		expect( stored.title ).not.toMatch( PROBE_SHORTCODE );
 	} finally {
 		await mcp.close();
 	}
 } );
 
-test( 'a subscriber cannot describe a widget over MCP', async () => {
+test( 'a subscriber cannot update a widget over MCP', async () => {
+	const before = await fx.stored( postId );
 	const mcp = await openMcpSession( sessions.subscriber );
 
 	try {
-		const rpc = await execute( mcp, 'sowb/widget-describe', { widget: 'hero' } );
+		const raw = expectToolFailure( await execute( mcp, 'sowb/widget-update', {
+			post_id: postId,
+			widget_data: { title: 'Subscriber' },
+		} ) );
 
-		let failed = !! rpc.error || rpc.result?.isError === true;
-
-		if ( ! failed ) {
-			const payload = rpc.result.structuredContent || JSON.parse( rpc.result.content[ 0 ].text );
-			expect( payload.success ).not.toBe( true );
-			failed = payload.success === false;
-		}
-
-		expect( failed, JSON.stringify( rpc ) ).toBe( true );
-		// Denied by the ability's own edit_posts check.
-		expect( JSON.stringify( rpc ) ).toContain( 'not allowed to read SiteOrigin widgets' );
-		expect( JSON.stringify( rpc ) ).not.toContain( '"schema"' );
-		expect( JSON.stringify( rpc ) ).not.toContain( '"frames"' );
+		// Denied by the ability's own edit_post check.
+		expect( raw ).toContain( 'not allowed to update the widgets of this post' );
+		expect( raw ).not.toContain( '"widget_data"' );
 	} finally {
 		await mcp.close();
 	}
+
+	const after = await fx.stored( postId );
+	expect( after.content ).toBe( before.content );
 } );
