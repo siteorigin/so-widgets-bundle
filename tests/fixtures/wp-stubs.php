@@ -51,6 +51,12 @@ if ( ! function_exists( 'siteorigin_widget_register' ) ) {
  */
 if ( ! class_exists( 'SiteOrigin_Widgets_Bundle' ) ) {
 	class SiteOrigin_Widgets_Bundle {
+		public $test_widgets_list = array();
+
+		public function get_widgets_list() {
+			return $this->test_widgets_list;
+		}
+
 		public static function single() {
 			static $single;
 
