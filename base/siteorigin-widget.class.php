@@ -674,6 +674,7 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	 */
 	public function display_teaser_message() {
 		if (
+			$this->display_siteorigin_premium_teaser() &&
 			method_exists( $this, 'get_form_teaser' ) &&
 			( $teaser = $this->get_form_teaser() )
 		) {
@@ -722,6 +723,49 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 	public function display_siteorigin_premium_teaser() {
 		return apply_filters( 'siteorigin_premium_upgrade_teaser', true ) &&
 			! defined( 'SITEORIGIN_PREMIUM_VERSION' );
+	}
+
+	/**
+	 * Get the SiteOrigin Premium URL, optionally featuring an addon.
+	 *
+	 * Adds the affiliate ID from the `siteorigin_premium_affiliate_id` filter,
+	 * the same way Page Builder does.
+	 *
+	 * @param string $featured_addon The addon to feature, e.g. `plugin/tabs`.
+	 *
+	 * @return string The unescaped URL.
+	 */
+	public static function premium_url( $featured_addon = '' ) {
+		$url = 'https://siteorigin.com/downloads/premium/?featured_plugin=so-widgets-bundle';
+
+		if ( ! empty( $featured_addon ) ) {
+			$url = add_query_arg( 'featured_addon', urlencode( $featured_addon ), $url );
+		}
+
+		$ref = apply_filters( 'siteorigin_premium_affiliate_id', '' );
+
+		if ( ! empty( $ref ) ) {
+			$url = add_query_arg( 'ref', urlencode( $ref ), $url );
+		}
+
+		return $url;
+	}
+
+	/**
+	 * Build a teaser message with a link to SiteOrigin Premium.
+	 *
+	 * @param string $message        A translated message with two `%s` placeholders
+	 *                               that wrap the link text.
+	 * @param string $featured_addon The addon to feature, e.g. `plugin/tabs`.
+	 *
+	 * @return string The teaser message HTML.
+	 */
+	public function premium_teaser( $message, $featured_addon = '' ) {
+		return sprintf(
+			$message,
+			'<a href="' . esc_url( self::premium_url( $featured_addon ) ) . '" target="_blank" rel="noopener noreferrer">',
+			'</a>'
+		);
 	}
 
 	public function scripts_loading_message() {
@@ -1075,6 +1119,10 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			require plugin_dir_path( __FILE__ ) . 'inc/less-functions.php';
 		}
 
+		if ( ! class_exists( 'SiteOrigin_Widgets_Less_Value_Guard' ) ) {
+			require plugin_dir_path( __FILE__ ) . 'inc/less-value-guard.php';
+		}
+
 		if ( !method_exists( $this, 'get_less_content' ) ) {
 			$style_name = $this->get_style_name( $instance );
 
@@ -1114,7 +1162,22 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					continue;
 				}
 
-				$less = preg_replace( '/\@' . preg_quote( $name ) . ' *\:.*?;/', '@' . $name . ': ' . $value . ';', $less );
+				$check = SiteOrigin_Widgets_Less_Value_Guard::check_variable( $value );
+
+				if ( $check !== true ) {
+					// Skip the value so the template default applies.
+					SiteOrigin_Widgets_Less_Value_Guard::refused( $this, $name, $check );
+					continue;
+				}
+
+				// A callback keeps $ and \ in the value literal.
+				$less = preg_replace_callback(
+					'/\@' . preg_quote( $name ) . ' *\:.*?;/',
+					function () use ( $name, $value ) {
+						return '@' . $name . ': ' . $value . ';';
+					},
+					$less
+				);
 			}
 		}
 

@@ -13,6 +13,7 @@ require plugin_dir_path( __FILE__ ) . 'inc/actions.php';
 require plugin_dir_path( __FILE__ ) . 'inc/shortcode.php';
 require plugin_dir_path( __FILE__ ) . 'inc/video.php';
 require plugin_dir_path( __FILE__ ) . 'inc/routes/sowb-rest-routes.php';
+require plugin_dir_path( __FILE__ ) . 'inc/abilities.php';
 require plugin_dir_path( __FILE__ ) . 'inc/shapes/shapes.php';
 
 // Load the Installer if it's not already active.

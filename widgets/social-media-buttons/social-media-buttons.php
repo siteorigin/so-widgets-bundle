@@ -353,30 +353,121 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 	}
 
 	public function less_generate_calls_to( $instance, $args ) {
+		if ( ! class_exists( 'SiteOrigin_Widgets_Less_Value_Guard' ) ) {
+			require_once plugin_dir_path( SOW_BUNDLE_BASE_FILE ) . 'base/inc/less-value-guard.php';
+		}
+
 		$networks = $this->get_instance_networks( $instance );
 		$calls    = array();
 
 		foreach ( $networks as $network ) {
 			if ( ! empty( $network['name'] ) ) {
-				$icon_color_hover_fallback = ! empty( $network['icon_color'] ) ? ', @icon_color_hover:' . $network['icon_color'] : '';
-				$button_color_hover_fallback = ! empty( $network['button_color'] ) ? ', @button_color_hover:' . $network['button_color'] : '';
-				$call = $args[0] . '( @name:' . $network['css_class_name'];
-				$call .= ! empty( $network['icon_color'] ) ? ', @icon_color:' . $network['icon_color'] : '';
-				$call .= ! empty( $network['button_color'] ) ? ', @button_color:' . $network['button_color'] : '';
-				$call .= ! empty( $network['icon_color_hover'] ) ? ', @icon_color_hover:' . $network['icon_color_hover'] : $icon_color_hover_fallback;
-				$call .= ! empty( $network['button_color_hover'] ) ? ', @button_color_hover:' . $network['button_color_hover'] : $button_color_hover_fallback;
+				// Check values before the hover fallbacks copy them.
+				$network = $this->less_check_network( $network );
+
+				if ( empty( $network ) ) {
+					continue;
+				}
+
+				$arguments = array( 'name' => $network['css_class_name'] );
+
+				if ( ! empty( $network['icon_color'] ) ) {
+					$arguments['icon_color'] = $network['icon_color'];
+				}
+
+				if ( ! empty( $network['button_color'] ) ) {
+					$arguments['button_color'] = $network['button_color'];
+				}
+
+				if ( ! empty( $network['icon_color_hover'] ) ) {
+					$arguments['icon_color_hover'] = $network['icon_color_hover'];
+				} elseif ( ! empty( $network['icon_color'] ) ) {
+					$arguments['icon_color_hover'] = $network['icon_color'];
+				}
+
+				if ( ! empty( $network['button_color_hover'] ) ) {
+					$arguments['button_color_hover'] = $network['button_color_hover'];
+				} elseif ( ! empty( $network['button_color'] ) ) {
+					$arguments['button_color_hover'] = $network['button_color'];
+				}
 
 				if ( ( $instance['design']['theme'] ?? '' ) == 'wire' ) {
-					$call .= ! empty( $network['border_color'] ) ? ', @border_color:' . $network['border_color'] : '';
-					$border_hover_color_fallback = ! empty( $network['border_color'] ) ? ', @border_hover_color:' . $network['border_color'] : ", @border_hover_color: ''";
-					$call .= ! empty( $network['border_hover_color'] ) ? ', @border_hover_color:' . $network['border_hover_color'] : $border_hover_color_fallback;
+					if ( ! empty( $network['border_color'] ) ) {
+						$arguments['border_color'] = $network['border_color'];
+					}
+
+					if ( ! empty( $network['border_hover_color'] ) ) {
+						$arguments['border_hover_color'] = $network['border_hover_color'];
+					} elseif ( ! empty( $network['border_color'] ) ) {
+						$arguments['border_hover_color'] = $network['border_color'];
+					} else {
+						$arguments['border_hover_color'] = "''";
+					}
 				}
-				$call .= ');';
-				$calls[] = $call;
+
+				$pairs = array();
+
+				foreach ( $arguments as $name => $value ) {
+					$pairs[] = '@' . $name . ':' . $value;
+				}
+
+				$call = '( ' . implode( ', ', $pairs ) . ');';
+
+				// Check the whole call still holds exactly the arguments written.
+				$check = SiteOrigin_Widgets_Less_Value_Guard::check_mixin_call( $call, array_keys( $arguments ) );
+
+				if ( $check !== true ) {
+					SiteOrigin_Widgets_Less_Value_Guard::refused( $this, 'networks', $check );
+					continue;
+				}
+
+				$calls[] = $args[0] . $call;
 			}
 		}
 
 		return implode( "\n", $calls );
+	}
+
+	/**
+	 * Check the network values written into LESS mixin calls.
+	 *
+	 * @param array $network The network.
+	 *
+	 * @return array|false The network with refused colors removed, or false if its class is refused.
+	 */
+	protected function less_check_network( $network ) {
+		$check = SiteOrigin_Widgets_Less_Value_Guard::check_mixin_argument( 'name', $network['css_class_name'] ?? '' );
+
+		if ( $check !== true ) {
+			SiteOrigin_Widgets_Less_Value_Guard::refused( $this, 'css_class_name', $check );
+
+			return false;
+		}
+
+		$fields = array(
+			'icon_color',
+			'button_color',
+			'icon_color_hover',
+			'button_color_hover',
+			'border_color',
+			'border_hover_color',
+		);
+
+		foreach ( $fields as $field ) {
+			if ( empty( $network[ $field ] ) ) {
+				continue;
+			}
+
+			$check = SiteOrigin_Widgets_Less_Value_Guard::check_mixin_argument( $field, $network[ $field ] );
+
+			if ( $check !== true ) {
+				// Remove the color so the template default applies.
+				SiteOrigin_Widgets_Less_Value_Guard::refused( $this, $field, $check );
+				$network[ $field ] = '';
+			}
+		}
+
+		return $network;
 	}
 
 	public function get_template_variables( $instance, $args ) {
@@ -443,10 +534,9 @@ class SiteOrigin_Widget_SocialMediaButtons_Widget extends SiteOrigin_Widget {
 			return false;
 		}
 
-		return sprintf(
+		return $this->premium_teaser(
 			__( 'Add custom social networks with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/social-widgets" target="_blank" rel="noopener noreferrer">',
-			'</a>'
+			'plugin/social-widgets'
 		);
 	}
 }

@@ -102,10 +102,9 @@ class SiteOrigin_Widget_Icon_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add an icon title tooltip with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/tooltip" target="_blank">',
-				'</a>'
+				'plugin/tooltip'
 			),
 		);
 	}

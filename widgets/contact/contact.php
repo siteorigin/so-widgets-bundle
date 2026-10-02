@@ -1751,7 +1751,10 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					if ( ! is_numeric( $value ) ) {
 						$errors[ $field_name ] = __( 'Invalid number.', 'so-widgets-bundle' );
 					} else {
-						$email_fields[ $field['type'] ] = $value;
+						$email_fields['message'][] = array(
+							'label' => $field['label'],
+							'value' => $value,
+						);
 					}
 					break;
 
@@ -2179,15 +2182,17 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		}
 
 		return array(
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add a form autoresponder and additional fields, including a date and time picker with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/contact-form-fields" target="_blank">',
-				'</a>'
+				'plugin/contact-form-fields'
 			),
-			sprintf(
-				__( 'Use Google Fonts right inside the Contact Form Widget with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/contact-form-fields" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+			$this->premium_teaser(
+				__( 'Keep a searchable record of every message sent through your contact forms, with CSV export, using %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'plugin/contact-log'
+			),
+			$this->premium_teaser(
+				__( 'Add Cloudflare Turnstile spam protection to your contact forms with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'plugin/cf-turnstile'
 			),
 		);
 	}

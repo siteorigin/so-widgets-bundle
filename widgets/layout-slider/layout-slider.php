@@ -520,15 +520,17 @@ class SiteOrigin_Widget_LayoutSlider_Widget extends SiteOrigin_Widget_Base_Slide
 		}
 
 		return array(
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add multiple Layout Slider frames in one go with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/multiple-media" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/multiple-media'
 			),
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add parallax and fixed background images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/parallax-sliders" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/parallax-sliders'
+			),
+			$this->premium_teaser(
+				__( 'Link straight to a slide using an anchor ID with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
+				'plugin/anchor-id'
 			),
 		);
 	}

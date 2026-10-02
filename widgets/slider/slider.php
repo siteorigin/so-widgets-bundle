@@ -370,25 +370,17 @@ class SiteOrigin_Widget_Slider_Widget extends SiteOrigin_Widget_Base_Slider {
 		}
 
 		return array(
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add a Lightbox to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/lightbox" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/lightbox'
 			),
-			sprintf(
-				__( 'Add a beautiful and customizable text overlay with animations to your images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/image-overlay" target="_blank" rel="noopener noreferrer">',
-				'</a>'
-			),
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add multiple Slider frames in one go with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/multiple-media" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/multiple-media'
 			),
-			sprintf(
+			$this->premium_teaser(
 				__( 'Add parallax and fixed background images with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-				'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/parallax-sliders" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+				'plugin/parallax-sliders'
 			),
 		);
 	}

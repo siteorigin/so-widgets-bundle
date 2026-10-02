@@ -645,10 +645,9 @@ class SiteOrigin_Widget_PostCarousel_Widget extends SiteOrigin_Widget_Base_Carou
 			return false;
 		}
 
-		return sprintf(
+		return $this->premium_teaser(
 			__( 'Get access to additional carousel themes with %sSiteOrigin Premium%s', 'so-widgets-bundle' ),
-			'<a href="https://siteorigin.com/downloads/premium/?featured_addon=plugin/carousel" target="_blank" rel="noopener noreferrer">',
-			'</a>'
+			'plugin/carousel'
 		);
 	}
 
