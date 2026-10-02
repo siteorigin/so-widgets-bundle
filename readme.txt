@@ -1,7 +1,7 @@
 === SiteOrigin Widgets Bundle ===
 Tags: widgets, blocks, contact form, blog, slider
 Requires at least: 4.2
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.0.0
 Stable tag: trunk
 Build time: unbuilt
@@ -108,6 +108,16 @@ SiteOrigin Premium includes access to our professional email support service, pe
 The Widgets Bundle global interface is available at Plugins > SiteOrigin Widgets. Widgets can be enabled or disabled as needed. If a widget offers global settings, you can access those via the Settings button next to each applicable widget.
 
 == Changelog ==
+
+= 1.75.0 - 02 October 2026 =
+* Contact Form: Fixed Number field values being left out of the email. They are now listed under the field label with the other message fields.
+* Social Media Buttons: Added a check on network colors and class names before the button CSS is generated. A color that is not valid falls back to the default.
+* General: Added a check on widget style values before they are compiled into CSS. A value that is not valid is skipped and the widget default applies.
+* General: Refreshed the SiteOrigin Premium teasers in widget forms. Each teaser names a feature its addon adds, each widget has up to three, and new teasers cover the Contact Log, Cloudflare Turnstile, Image Shape, Anchor ID, Bulk Addresses, Related Posts, Lightbox Builder and Embed Blocker Addons.
+* General: Set Tested up to WordPress (WP) 7.1.
+* Developer: Added WordPress Abilities API support for WordPress 6.9 and later: `sowb/widget-list`, `sowb/widget-describe`, `sowb/widget-get` and `sowb/widget-update`. The update ability writes draft and pending posts only.
+* Developer: Added the read-only REST route `sowb/v1/posts/{id}/widgets`, which lists the Widgets Bundle blocks in a post.
+* Developer: Widget form teasers now honor the `siteorigin_premium_upgrade_teaser` filter, and teaser links include the `siteorigin_premium_affiliate_id` filter value.
 
 = 1.74.3 - 18 September 2026 =
 * General: Fixed saving a page failing with "Cannot access offset of type string on string" when a widget had a design or settings section stored as an empty string. Section, toggle and repeater fields now store an array when left empty, existing widgets are repaired on their next save, and the Hero, Anything Carousel, Testimonial, Layout Slider, Google Maps, Social Media Buttons and Price Table widgets read their settings safely.
