@@ -1430,14 +1430,17 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		return empty( $single ) ? $single = new self() : $single;
 	}
 
+	private function sanitize_label( $label ) {
+		return sanitize_title( str_replace( ' ', '-', strtolower( $label ) ) );
+	}
+
 	public function name_from_label(
 		$label,
 		$post_vars = array()
 	) {
 		$it = 1;
 
-		$label = str_replace( ' ', '-', strtolower( $label ) );
-		$label = sanitize_title( $label );
+		$label = $this->sanitize_label( $label );
 
 		// Is this a form submission?
 		if ( ! empty( $post_vars ) ) {
@@ -1515,7 +1518,8 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 		$indicate_required_fields,
 		$i = 0
 	) {
-		$field_name = $this->name_from_label( ! empty( $field['label'] ) ? $field['label'] : $i );
+		$raw_label = ! empty( $field['label'] ) ? $field['label'] : $i;
+		$field_name = $this->name_from_label( $raw_label );
 
 		$field_id = 'sow-contact-form-field-' . $field_name;
 
@@ -1546,10 +1550,27 @@ class SiteOrigin_Widgets_ContactForm_Widget extends SiteOrigin_Widget {
 					$label .= '*';
 				}
 
-				if ( is_array( $errors ) && ! empty( $errors[ $field_name ] ) ) {
+				$error = is_array( $errors ) && ! empty( $errors[ $field_name ] ) ? $errors[ $field_name ] : '';
+
+				// An empty checkbox, radio or multiple select submits no key, so
+				// validation reports it under the bare label.
+				if (
+					empty( $error ) &&
+					is_array( $errors ) &&
+					(
+						$field['type'] == 'checkboxes' ||
+						$field['type'] == 'radio' ||
+						( $field['type'] == 'select' && ! empty( $field['multiple_select'] ) )
+					)
+				) {
+					$bare_name = $this->sanitize_label( $raw_label );
+					$error = ! empty( $errors[ $bare_name ] ) ? $errors[ $bare_name ] : '';
+				}
+
+				if ( ! empty( $error ) ) {
 					?>
 	                <div class="sow-error">
-						<?php echo wp_kses_post( $errors[ $field_name ] ); ?>
+						<?php echo wp_kses_post( $error ); ?>
 	                </div>
 					<?php
 				}
