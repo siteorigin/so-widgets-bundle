@@ -33,6 +33,29 @@ class SiteOrigin_Widget_Field_Color extends SiteOrigin_Widget_Field_Text_Input_B
 			$data_attributes['default-color'] = $this->default;
 		}
 
+		// Hide the palettes entirely when the field sets palettes to false.
+		if ( $this->palettes === false ) {
+			$data_attributes['palettes'] = 'false';
+		} else {
+			$data_attributes = $this->get_palette_data_attributes( $data_attributes );
+		}
+
+		if ( ! empty( $this->alpha ) ) {
+			$data_attributes['alpha-enabled'] = 'true';
+			$data_attributes['alpha-color-type'] = 'hex';
+		}
+
+		return $data_attributes;
+	}
+
+	/**
+	 * Add the field's palettes, and any from the siteorigin_widget_color_palette filter.
+	 *
+	 * @param array $data_attributes The input's data attributes.
+	 *
+	 * @return array The data attributes with the palettes added.
+	 */
+	private function get_palette_data_attributes( $data_attributes ) {
 		// Allow developers to add custom colors using a filter, and field options.
 		$this->palettes = array_merge(
 			apply_filters( 'siteorigin_widget_color_palette', array() ),
@@ -50,11 +73,6 @@ class SiteOrigin_Widget_Field_Color extends SiteOrigin_Widget_Field_Text_Input_B
 			} else {
 				$data_attributes['palettes'] = $this->palettes;
 			}
-		}
-
-		if ( ! empty( $this->alpha ) ) {
-			$data_attributes['alpha-enabled'] = 'true';
-			$data_attributes['alpha-color-type'] = 'hex';
 		}
 
 		return $data_attributes;
