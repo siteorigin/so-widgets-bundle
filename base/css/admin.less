@@ -206,6 +206,12 @@ div.siteorigin-widget-form {
 		select {
 			min-width: 150px;
 
+			// WordPress draws the dropdown arrow 8px to 24px from the right,
+			// so leave a gap between the text and the arrow.
+			&:not([multiple]) {
+				padding-right: 32px;
+			}
+
 			@media (max-width: 680px) {
 				max-width: none;
 				width: 100%;
