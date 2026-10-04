@@ -576,6 +576,11 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 			$form_options = $this->get_form( $form_type );
 		}
 
+		// A new widget has no saved values, other than the keys that page builders and this form add.
+		$is_new_instance = is_array( $instance ) ?
+			empty( array_diff_key( $instance, array_flip( array( 'panels_info', '_sow_form_id', '_sow_form_timestamp' ) ) ) ) :
+			empty( $instance );
+
 		$instance = $this->normalize_container_values( $form_options, $instance );
 		$instance = $this->modify_instance( $instance );
 		$instance = $this->add_defaults( $form_options, $instance );
@@ -607,7 +612,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		?>
 		<div class="siteorigin-widget-form siteorigin-widget-form-main siteorigin-widget-form-main-<?php echo esc_attr( $class_name ); ?>"
 			 id="<?php echo $form_id; ?>" data-class="<?php echo esc_attr( $this->widget_class ); ?>"
-			 data-id-base="<?php echo esc_attr( $this->id_base ); ?>" style="display: none">
+			 data-id-base="<?php echo esc_attr( $this->id_base ); ?>"
+			 <?php if ( $is_new_instance ) { ?>data-new-instance="1"<?php } ?>
+			 style="display: none">
 			<?php
 			$this->display_teaser_message();
 		/* @var $field_factory SiteOrigin_Widget_Field_Factory */
