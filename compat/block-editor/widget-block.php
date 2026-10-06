@@ -962,6 +962,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		$ob_level            = ob_get_level();
 		$anchor_filter_added = false;
 		$prev_widget_anchor  = $this->widgetAnchor;
+		$class_filter        = null;
 
 		$GLOBALS[ 'SO_WIDGETS_BUNDLE_PREVIEW_RENDER' ] = true;
 
@@ -978,6 +979,16 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 					add_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10, 3 );
 					$anchor_filter_added = true;
 				}
+
+				// Add Additional CSS classes to the wrapper, so cached markup has them.
+				$class_name = self::get_valid_wrapper_attr( $block, 'className' );
+				if ( $class_name !== null ) {
+					$class_filter = function ( $class_names ) use ( $class_name ) {
+						return array_merge( $class_names, explode( ' ', $class_name ) );
+					};
+					add_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $class_filter );
+				}
+
 				/* @var $widget SiteOrigin_Widget */
 				$instance = $widget->update( $widget_data, $widget_data );
 
@@ -1070,6 +1081,10 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			if ( $anchor_filter_added ) {
 				remove_filter( 'siteorigin_widgets_wrapper_id_' . $widget->id_base, array( $this, 'add_widget_id' ), 10 );
 				$this->widgetAnchor = $prev_widget_anchor;
+			}
+
+			if ( $class_filter ) {
+				remove_filter( 'siteorigin_widgets_wrapper_classes_' . $widget->id_base, $class_filter );
 			}
 
 			if ( $had_preview_flag ) {
