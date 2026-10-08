@@ -1134,12 +1134,17 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	/**
 	 * Floor a widget instance produced from untrusted data.
 	 *
-	 * A string is kept unchanged only when the caller did not supply a value
-	 * at its path, and the stored instance holds the identical string at the
-	 * same path. That is the saved content, still in its own field. Every
-	 * other string is floored: supplied values, values moved to a new path,
-	 * and values the widget's update() or a sanitize filter created or
-	 * changed.
+	 * Fields the caller did not supply keep their stored value. Where no
+	 * supplied path overlaps a path, and the stored instance holds a leaf (a
+	 * non-array value or an empty array) at it, the stored leaf is returned
+	 * exactly, whatever update() made of it. This is decided from the stored
+	 * instance and the supplied paths alone, both taken before update() ran.
+	 *
+	 * Only paths update() still outputs are walked, so keys it drops stay
+	 * dropped. _sow_form_timestamp keeps update()'s value, as it marks this
+	 * write. Every other string is floored: supplied values, and values
+	 * update() or a sanitize filter created at a path the stored instance
+	 * does not hold.
 	 *
 	 * @param mixed $value The normalised instance, or a part of it.
 	 * @param array $path  Keys that lead to $value.
@@ -1147,16 +1152,19 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	 * @return mixed
 	 */
 	private function floor_untrusted_instance( $value, array $path = array() ) {
-		if ( is_string( $value ) ) {
-			if ( ! SiteOrigin_Widgets_Bundle_Untrusted_Widget_Data::paths_overlap( $path, $this->untrusted_write['supplied'] ) ) {
-				$found = false;
-				$stored = SiteOrigin_Widgets_Bundle_Untrusted_Widget_Data::get_path( $this->untrusted_write['stored'], $path, $found );
+		if (
+			$path !== array( '_sow_form_timestamp' ) &&
+			! SiteOrigin_Widgets_Bundle_Untrusted_Widget_Data::paths_overlap( $path, $this->untrusted_write['supplied'] )
+		) {
+			$found = false;
+			$stored = SiteOrigin_Widgets_Bundle_Untrusted_Widget_Data::get_path( $this->untrusted_write['stored'], $path, $found );
 
-				if ( $found && is_string( $stored ) && $stored === $value ) {
-					return $value;
-				}
+			if ( $found && ( ! is_array( $stored ) || empty( $stored ) ) ) {
+				return $stored;
 			}
+		}
 
+		if ( is_string( $value ) ) {
 			return self::floor_string( $value );
 		}
 
@@ -1177,7 +1185,8 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	 * The patch holds only the fields to change. It merges into the stored
 	 * instance field by field, so omitted fields keep their stored value.
 	 * Every supplied string is floored before the widget sees it, the widget's
-	 * update() runs once, and its result is floored again (see
+	 * update() runs once, and in its result omitted fields get their stored
+	 * value back and every other string is floored again (see
 	 * floor_untrusted_instance()) before the markup cache is rebuilt from it.
 	 * The widget must be active; it is never activated here.
 	 *
