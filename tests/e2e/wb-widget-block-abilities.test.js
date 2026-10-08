@@ -465,6 +465,39 @@ test( 'saved content in fields the patch omits is kept byte for byte', async () 
 	expect( rendered.body.content.rendered.split( PROBE_RAN ) ).toHaveLength( 2 );
 } );
 
+test( 'omitted fields keep their stored value when update() would reshape them', async () => {
+	// In TinyMCE mode the Editor's update() runs wpautop() and balanceTags()
+	// on the text, and the checkbox field turns 1 into true. Omitted fields
+	// still keep their stored value. Keys update() drops stay dropped, and
+	// _sow_form_timestamp takes update()'s value.
+	positiveControl = true;
+	const text = 'First line\n\nSecond line<iframe src="https://www.youtube.com/embed/x"></iframe>[sowb_e2e_probe]';
+	const postId = await fx.seed( editorSeed( {
+		text,
+		text_selected_editor: 'tinymce',
+		autop: 1,
+		sowb_undeclared: 'x',
+		_sow_form_timestamp: 1,
+	} ), { author: adminId } );
+
+	const data = await expectOk( await widgetUpdate( auth.admin, { post_id: postId, widget_data: { title: 'New' } } ), postId );
+	expect( data.title ).toBe( 'New' );
+	expect( data.text ).toBe( text );
+	expect( data.autop ).toBe( 1 );
+	expect( data ).not.toHaveProperty( 'sowb_undeclared' );
+	expect( typeof data._sow_form_timestamp ).toBe( 'number' );
+	expect( data._sow_form_timestamp ).toBeGreaterThan( 1 );
+
+	const attrs = widgetEntries( ( await fx.stored( postId ) ).blocks )[ 0 ].block.attrs;
+	expect( attrs.widgetMarkup ).toContain( '<iframe' );
+
+	// Positive control: the saved shortcode is live, so the probe detects runs.
+	await fx.resetProbe();
+	const rendered = await call( auth.admin, 'GET', `wp-json/wp/v2/posts/${ postId }?context=edit` );
+	expect( rendered.status ).toBe( 200 );
+	expect( rendered.body.content.rendered.split( PROBE_RAN ) ).toHaveLength( 2 );
+} );
+
 test( 'a value the caller supplies is floored, even when it matches stored content', async () => {
 	// A shortcode in the saved title does not make the same text safe in
 	// another field.
