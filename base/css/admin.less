@@ -864,10 +864,14 @@ div.siteorigin-widget-form {
 			}
 
 			.select-content-button {
-				line-height: 28px;
+				// WordPress 7.1 made admin buttons and inputs 40px tall. Centre the label
+				// in whatever height the flex row gives the button, instead of a fixed line-height.
+				align-items: center;
+				display: inline-flex;
+				justify-content: center;
 				min-height: 30px;
-				width: 120px;
 				text-align: center;
+				width: 120px;
 			}
 
 			.content-no-results {
@@ -1177,7 +1181,6 @@ div.siteorigin-widget-form {
 					color: #2271b1;
 					box-shadow: unset;
 					font-size: 13px;
-					height: 28px;
 				}
 			}
 
@@ -1229,10 +1232,6 @@ div.siteorigin-widget-form {
 			select.siteorigin-widget-input, {
 				line-height: 2;
 			}
-		}
-
-		div.siteorigin-widget-field.siteorigin-widget-field-type-link .select-content-button {
-			line-height: 28px;
 		}
 
 		a.siteorigin-widget-preview-button.button-secondary,
