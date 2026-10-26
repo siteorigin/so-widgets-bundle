@@ -166,6 +166,17 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 								'type' => 'color',
 								'label' => __( 'Color', 'so-widgets-bundle' ),
 							),
+							'margin_top' => array(
+								'type' => 'measurement',
+								'label' => __( 'Top margin', 'so-widgets-bundle' ),
+								'units' => array( 'px', 'em', 'rem' ),
+							),
+							'margin_bottom' => array(
+								'type' => 'measurement',
+								'label' => __( 'Bottom margin', 'so-widgets-bundle' ),
+								'units' => array( 'px', 'em', 'rem' ),
+								'description' => __( 'The space below the title. A paragraph at the start of the text can add its own top margin.', 'so-widgets-bundle' ),
+							),
 						),
 					),
 
@@ -422,6 +433,14 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 					}
 				}
 			}
+		}
+
+		if ( ! empty( $fonts['title_options']['margin_top'] ) ) {
+			$less_vars['title_margin_top'] = $fonts['title_options']['margin_top'];
+		}
+
+		if ( ! empty( $fonts['title_options']['margin_bottom'] ) ) {
+			$less_vars['title_margin_bottom'] = $fonts['title_options']['margin_bottom'];
 		}
 
 		$less_vars['container_size'] = $instance['container_size'];

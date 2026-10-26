@@ -145,4 +145,81 @@ class FeaturesSpacingTest extends SiteOriginTests {
 		$this->assertSame( $fixture['layouts'][ $key ]['less_variables'], $actual['less_variables'] );
 		$this->assertSame( $fixture['layouts'][ $key ]['css'], $actual['css'] );
 	}
+
+	private static function with_title_margins( $top, $bottom ) {
+		return self::instance(
+			array(
+				'fonts' => array(
+					'title_options' => array(
+						'margin_top' => $top,
+						'margin_bottom' => $bottom,
+					),
+				),
+			)
+		);
+	}
+
+	/**
+	 * The declarations of the first rule whose selector ends with $selector.
+	 */
+	private function rule( $css, $selector ) {
+		$this->assertSame( 1, preg_match( '/' . preg_quote( $selector, '/' ) . ' \{([^{}]*)\}/', $css, $match ), $selector . ' in ' . $css );
+
+		return trim( $match[1] );
+	}
+
+	public function test_title_bottom_margin_only_sets_the_bottom_of_the_title() {
+		$css = $this->css( self::with_title_margins( false, '8px' ) );
+		$title = $this->rule( $css, '.sow-features-feature .sow-features-feature-title' );
+
+		$this->assertStringContainsString( 'margin-bottom: 8px;', $title );
+		$this->assertStringNotContainsString( 'margin-top', $title );
+		$this->assertSame( 'margin: 1em 0;', $this->rule( $css, '.sow-features-feature h5' ) );
+	}
+
+	public function test_title_top_margin_only_sets_the_top_of_the_title() {
+		$css = $this->css( self::with_title_margins( '0.5em', false ) );
+		$title = $this->rule( $css, '.sow-features-feature .sow-features-feature-title' );
+
+		$this->assertStringContainsString( 'margin-top: 0.5em;', $title );
+		$this->assertStringNotContainsString( 'margin-bottom', $title );
+	}
+
+	public function test_zero_title_margin_is_kept() {
+		$instance = self::with_title_margins( '0px', '0px' );
+		$vars = $this->widget()->get_less_variables( $instance );
+		$title = $this->rule( $this->css( $instance ), '.sow-features-feature .sow-features-feature-title' );
+
+		$this->assertSame( '0px', $vars['title_margin_top'] );
+		$this->assertSame( '0px', $vars['title_margin_bottom'] );
+		$this->assertStringContainsString( 'margin-top: 0px;', $title );
+		$this->assertStringContainsString( 'margin-bottom: 0px;', $title );
+	}
+
+	public function test_empty_title_margins_add_no_variable_and_no_declaration() {
+		foreach ( array( false, '', null ) as $empty ) {
+			$instance = self::with_title_margins( $empty, $empty );
+			$vars = $this->widget()->get_less_variables( $instance );
+			$title = $this->rule( $this->css( $instance ), '.sow-features-feature .sow-features-feature-title' );
+
+			$this->assertArrayNotHasKey( 'title_margin_top', $vars );
+			$this->assertArrayNotHasKey( 'title_margin_bottom', $vars );
+			$this->assertStringNotContainsString( 'margin', $title );
+		}
+	}
+
+	public function test_title_margin_fields_are_measurements_in_the_title_group() {
+		$form = $this->widget()->get_widget_form();
+		$fields = $form['fonts']['fields']['title_options']['fields'];
+
+		$this->assertSame( array( 'tag', 'font', 'size', 'color', 'margin_top', 'margin_bottom' ), array_keys( $fields ) );
+
+		foreach ( array( 'margin_top', 'margin_bottom' ) as $name ) {
+			$this->assertSame( 'measurement', $fields[ $name ]['type'] );
+			$this->assertSame( array( 'px', 'em', 'rem' ), $fields[ $name ]['units'] );
+			$this->assertArrayNotHasKey( 'default', $fields[ $name ] );
+		}
+
+		$this->assertNotEmpty( $fields['margin_bottom']['description'] );
+	}
 }
