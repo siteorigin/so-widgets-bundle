@@ -146,15 +146,18 @@ class FeaturesSpacingTest extends SiteOriginTests {
 		$this->assertSame( $fixture['layouts'][ $key ]['css'], $actual['css'] );
 	}
 
-	private static function with_title_margins( $top, $bottom ) {
+	private static function with_title_margins( $top, $bottom, $overrides = array() ) {
 		return self::instance(
-			array(
-				'fonts' => array(
-					'title_options' => array(
-						'margin_top' => $top,
-						'margin_bottom' => $bottom,
+			array_replace_recursive(
+				array(
+					'fonts' => array(
+						'title_options' => array(
+							'margin_top' => $top,
+							'margin_bottom' => $bottom,
+						),
 					),
 				),
+				$overrides
 			)
 		);
 	}
@@ -221,6 +224,44 @@ class FeaturesSpacingTest extends SiteOriginTests {
 		}
 
 		$this->assertNotEmpty( $fields['margin_bottom']['description'] );
+	}
+
+	/**
+	 * With the bottom aligned More link the text column is a flex container,
+	 * so the title and the text block are flex items. Their margins add up
+	 * instead of collapsing, and the first paragraph of the text keeps its
+	 * own top margin below the title.
+	 */
+	public function test_bottom_aligned_text_column_is_flex_so_margins_add() {
+		$css = $this->css( self::with_more_text( self::instance( array( 'more_text_bottom_align' => true ) ) ) );
+
+		$this->assertStringContainsString( '.sow-features-feature .textwidget { display: flex; flex-direction: column;', $css );
+	}
+
+	public function test_title_bottom_margin_is_the_whole_gap_to_a_text_that_starts_with_a_paragraph() {
+		foreach ( array( false, true ) as $bottom_align ) {
+			$css = $this->css( self::with_title_margins( null, '8px', array( 'more_text_bottom_align' => $bottom_align ) ) );
+			$rules = $this->rules( $css )['base'];
+			$first_paragraph = array_filter(
+				$rules,
+				function ( $rule ) {
+					return substr( $rule[0], -strlen( '.sow-features-feature-text > p:first-child' ) ) === '.sow-features-feature-text > p:first-child';
+				}
+			);
+
+			$this->assertCount( 1, $first_paragraph );
+			$this->assertSame( 'margin-top: 0;', reset( $first_paragraph )[1] );
+		}
+	}
+
+	public function test_zero_title_bottom_margin_also_clears_the_first_paragraph_margin() {
+		$this->assertStringContainsString( '.sow-features-feature-text > p:first-child { margin-top: 0; }', $this->css( self::with_title_margins( null, '0px' ) ) );
+	}
+
+	public function test_first_paragraph_margin_stays_when_the_title_bottom_margin_is_empty() {
+		foreach ( array( null, '' ) as $bottom ) {
+			$this->assertStringNotContainsString( 'p:first-child', $this->css( self::with_title_margins( '4px', $bottom, array() ) ) );
+		}
 	}
 
 	private static function with_icon_spacing( $spacing, $overrides = array() ) {

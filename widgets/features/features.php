@@ -175,7 +175,7 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 								'type' => 'measurement',
 								'label' => __( 'Bottom margin', 'so-widgets-bundle' ),
 								'units' => array( 'px', 'em', 'rem' ),
-								'description' => __( 'The space below the title. A paragraph at the start of the text can add its own top margin.', 'so-widgets-bundle' ),
+								'description' => __( 'The space between the title and the text. A paragraph at the start of the text adds no margin of its own.', 'so-widgets-bundle' ),
 							),
 						),
 					),

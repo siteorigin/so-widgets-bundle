@@ -275,6 +275,15 @@
 			margin-bottom: @title_margin_bottom;
 		}
 
+		// A set title Bottom margin is the whole gap to the text. Without
+		// this, the first paragraph adds its top margin (always so in the
+		// bottom aligned layout, where the title and text are flex items).
+		& when ( isnumber( @title_margin_bottom ) ) {
+			.sow-features-feature-text > p:first-child {
+				margin-top: 0;
+			}
+		}
+
 		& when ( @more_text_bottom_align = true ) {
 			&.sow-icon-container-position-right,
 			&.sow-icon-container-position-left {
