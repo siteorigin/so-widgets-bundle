@@ -5,6 +5,8 @@
 @title_font_style: default;
 @title_size: default;
 @title_color: default;
+@title_margin_top: default;
+@title_margin_bottom: default;
 @title_tag: h5;
 
 @text_font: default;
@@ -26,6 +28,8 @@
 @container_size: 84px;
 @icon_size: 24px;
 @use_icon_size: false;
+@icon_spacing: 10px;
+@icon_spacing_custom: false;
 @link_feature: default;
 @more_text_bottom_align: default;
 
@@ -86,10 +90,10 @@
 			text-align: center;
 
 			.sow-icon-container {
-				margin-bottom: 10px;
+				margin-bottom: @icon_spacing;
 
 				& when not ( @per_row = 1 ) and not ( @more_text_bottom_align = true ) {
-					margin: 0 auto 10px;
+					margin: 0 auto @icon_spacing;
 				}
 			}
 		}
@@ -98,7 +102,7 @@
 			align-items: flex-start;
 
 			.sow-icon-container {
-				margin-right: 10px;
+				margin-right: @icon_spacing;
 			}
 		}
 
@@ -106,7 +110,7 @@
 			align-items: flex-start;
 
 			.sow-icon-container {
-				margin-left: 10px;
+				margin-left: @icon_spacing;
 			}
 		}
 
@@ -133,12 +137,12 @@
 			}
 
 			&.sow-icon-container-position-right .sow-features-feature-right-left-container .sow-icon-container {
-				margin-right: 10px;
+				margin-right: @icon_spacing;
 				margin-left: 0;
 			}
 
 			&.sow-icon-container-position-left .sow-features-feature-right-left-container .sow-icon-container {
-				margin-left: 10px;
+				margin-left: @icon_spacing;
 				margin-right: 0;
 			}
 		}
@@ -148,7 +152,7 @@
 			text-align: center;
 
 			.sow-icon-container {
-				margin-top: 10px;
+				margin-top: @icon_spacing;
 			}
 		}
 
@@ -163,6 +167,16 @@
 						margin: auto;
 					}
 				}
+			}
+		}
+
+		& when ( @per_row = 1 ) and ( @icon_spacing_custom = true ) {
+			&.sow-icon-container-position-top .sow-icon-container {
+				margin-bottom: @icon_spacing;
+			}
+
+			&.sow-icon-container-position-bottom .sow-icon-container {
+				margin-top: @icon_spacing;
 			}
 		}
 
@@ -257,6 +271,18 @@
 			color: @title_color;
 			font-size: @title_size;
 			font-style: @title_font_style;
+			margin-top: @title_margin_top;
+			margin-bottom: @title_margin_bottom;
+		}
+
+		// A set title Bottom margin is the whole gap to the text. Without
+		// this, the first paragraph adds its top margin (always so in the
+		// bottom aligned layout, where the title and text are flex items).
+		// A feature with no title has no gap to set, so it keeps the margin.
+		& when ( isnumber( @title_margin_bottom ) ) {
+			.sow-features-feature-title + .sow-features-feature-text > p:first-child {
+				margin-top: 0;
+			}
 		}
 
 		& when ( @more_text_bottom_align = true ) {
@@ -362,6 +388,25 @@
 
 			.sow-icon-container-position-right .sow-icon-container {
 				margin-right: 0;
+			}
+
+			& when ( @icon_spacing_custom = true ) {
+				.sow-icon-container-position-left .sow-icon-container,
+				.sow-icon-container-position-right .sow-icon-container {
+					margin-bottom: @icon_spacing;
+				}
+
+				// The bottom aligned More link wraps the icon, and the
+				// desktop side margin of that wrapper rule is as specific.
+				& when ( @more_text_bottom_align = true ) {
+					.sow-icon-container-position-left .sow-features-feature-right-left-container .sow-icon-container {
+						margin-left: 0;
+					}
+
+					.sow-icon-container-position-right .sow-features-feature-right-left-container .sow-icon-container {
+						margin-right: 0;
+					}
+				}
 			}
 		}
 	}

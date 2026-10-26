@@ -166,6 +166,17 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 								'type' => 'color',
 								'label' => __( 'Color', 'so-widgets-bundle' ),
 							),
+							'margin_top' => array(
+								'type' => 'measurement',
+								'label' => __( 'Top margin', 'so-widgets-bundle' ),
+								'units' => array( 'px', 'em', 'rem' ),
+							),
+							'margin_bottom' => array(
+								'type' => 'measurement',
+								'label' => __( 'Bottom margin', 'so-widgets-bundle' ),
+								'units' => array( 'px', 'em', 'rem' ),
+								'description' => __( 'The space between the title and the text. A paragraph at the start of the text adds no margin of its own.', 'so-widgets-bundle' ),
+							),
 						),
 					),
 
@@ -236,6 +247,13 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 				'type' => 'checkbox',
 				'label' => __( 'Use icon size for custom icon', 'so-widgets-bundle' ),
 				'default' => false,
+			),
+
+			'icon_spacing' => array(
+				'type' => 'measurement',
+				'label' => __( 'Space between icon and text', 'so-widgets-bundle' ),
+				'units' => array( 'px', 'rem' ),
+				'description' => __( 'With the icon on top, the title\'s top margin adds to this space. Set the title\'s Top margin to 0 to use this value alone.', 'so-widgets-bundle' ),
 			),
 
 			'per_row' => array(
@@ -424,6 +442,14 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			}
 		}
 
+		if ( ! empty( $fonts['title_options']['margin_top'] ) ) {
+			$less_vars['title_margin_top'] = $fonts['title_options']['margin_top'];
+		}
+
+		if ( ! empty( $fonts['title_options']['margin_bottom'] ) ) {
+			$less_vars['title_margin_bottom'] = $fonts['title_options']['margin_bottom'];
+		}
+
 		$less_vars['container_size'] = $instance['container_size'];
 		$less_vars['icon_size'] = $instance['icon_size'];
 		$less_vars['title_tag'] = ! empty( $instance['fonts']['title_options']['tag'] ) ? $instance['fonts']['title_options']['tag'] : 'h5';
@@ -432,6 +458,12 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 		$less_vars['feature_spacing'] = ! empty( $instance['feature_spacing'] ) ? $instance['feature_spacing'] : '25px';
 		$less_vars['feature_spacing_mobile'] = ! empty( $instance['feature_spacing_mobile'] ) ? $instance['feature_spacing_mobile'] : '25px';
 		$less_vars['use_icon_size'] = empty( $instance['icon_size_custom'] ) ? 'false' : 'true';
+
+		// Set only when used, so the variables and style hash of a saved widget stay the same.
+		if ( ! empty( $instance['icon_spacing'] ) ) {
+			$less_vars['icon_spacing'] = $instance['icon_spacing'];
+			$less_vars['icon_spacing_custom'] = 'true';
+		}
 		$less_vars['link_feature'] = ! empty( $instance['link_feature'] );
 		$less_vars['more_text_bottom_align'] = ! empty( $instance['more_text_bottom_align'] ) ? 'true' : 'false';
 
