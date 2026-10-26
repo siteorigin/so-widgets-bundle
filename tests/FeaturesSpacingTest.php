@@ -424,45 +424,6 @@ class FeaturesSpacingTest extends SiteOriginTests {
 	}
 
 	/**
-	 * The value that wins for a property on the icon container inside the
-	 * right-left wrapper, in the stacked layout (list is responsive, the
-	 * media query is active): the highest specificity, then the later rule.
-	 */
-	private function winning_wrapper_icon_value( $css, $position, $property ) {
-		$rules = $this->rules( $css );
-		$best = null;
-		$order = 0;
-
-		foreach ( array_merge( $rules['base'], $rules['media'] ) as $rule ) {
-			$order++;
-
-			foreach ( explode( ',', $rule[0] ) as $selector ) {
-				$selector = trim( $selector );
-
-				if ( substr( $selector, -strlen( ' .sow-icon-container' ) ) !== ' .sow-icon-container' || strpos( $selector, '.sow-icon-container-position-' . $position ) === false ) {
-					continue;
-				}
-
-				if ( strpos( $selector, '.sow-features-responsive' ) !== false && strpos( $selector, '.sow-features-responsive' ) !== strpos( $selector, '.sow-features-list' ) + strlen( '.sow-features-list' ) ) {
-					continue;
-				}
-
-				if ( ! preg_match( '/(?:^|;|\s)' . preg_quote( $property, '/' ) . ':\s*([^;]+);?/', $rule[1] . ';', $m ) ) {
-					continue;
-				}
-
-				$key = array( self::specificity( $selector ), $order );
-
-				if ( $best === null || $key >= $best[0] ) {
-					$best = array( $key, trim( $m[1] ) );
-				}
-			}
-		}
-
-		return $best === null ? null : $best[1];
-	}
-
-	/**
 	 * XPath for the elements a simple selector matches: tag, classes,
 	 * :first-child, and the descendant, child and adjacent sibling
 	 * combinators. Returns null for any other syntax, so a selector this
@@ -630,13 +591,41 @@ class FeaturesSpacingTest extends SiteOriginTests {
 		$this->assertSame( 2, substr_count( $html, 'sow-features-feature-right-left-container' ) );
 	}
 
-	public function test_mobile_stacked_side_icon_in_the_wrapper_loses_its_side_margin_and_gets_the_spacing_below() {
-		$css = $this->css( self::with_more_text( self::with_icon_spacing( '20px', array( 'more_text_bottom_align' => true ) ) ) );
+	/**
+	 * The icon container of the left or right feature, inside the wrapper
+	 * that the bottom aligned More link adds.
+	 */
+	private static function wrapped_icon( DOMDocument $doc, $position ) {
+		$icon = ( new DOMXPath( $doc ) )->query( '//li[contains(@class, "sow-icon-container-position-' . $position . '")]/div[contains(@class, "sow-features-feature-right-left-container")]/div[contains(@class, "sow-icon-container")]' )->item( 0 );
+		self::assertNotNull( $icon, 'wrapped ' . $position . ' icon' );
 
-		$this->assertSame( '0', $this->winning_wrapper_icon_value( $css, 'left', 'margin-left' ) );
-		$this->assertSame( '0', $this->winning_wrapper_icon_value( $css, 'right', 'margin-right' ) );
-		$this->assertSame( '20px', $this->winning_wrapper_icon_value( $css, 'left', 'margin-bottom' ) );
-		$this->assertSame( '20px', $this->winning_wrapper_icon_value( $css, 'right', 'margin-bottom' ) );
+		return $icon;
+	}
+
+	public function test_side_icon_in_the_wrapper_has_the_spacing_beside_the_text_on_desktop() {
+		$instance = self::with_more_text( self::with_icon_spacing( '20px', array( 'more_text_bottom_align' => true ) ) );
+		$css = $this->css( $instance );
+		$doc = self::dom( $this->render( $instance ) );
+		$left = self::wrapped_icon( $doc, 'left' );
+		$right = self::wrapped_icon( $doc, 'right' );
+
+		$this->assertSame( '20px', $this->winning_value( $css, $doc, $left, 'margin-left', false ) );
+		$this->assertSame( '0', $this->winning_value( $css, $doc, $left, 'margin-right', false ) );
+		$this->assertSame( '20px', $this->winning_value( $css, $doc, $right, 'margin-right', false ) );
+		$this->assertSame( '0', $this->winning_value( $css, $doc, $right, 'margin-left', false ) );
+	}
+
+	public function test_mobile_stacked_side_icon_in_the_wrapper_loses_its_side_margin_and_gets_the_spacing_below() {
+		$instance = self::with_more_text( self::with_icon_spacing( '20px', array( 'more_text_bottom_align' => true ) ) );
+		$css = $this->css( $instance );
+		$doc = self::dom( $this->render( $instance ) );
+		$left = self::wrapped_icon( $doc, 'left' );
+		$right = self::wrapped_icon( $doc, 'right' );
+
+		$this->assertSame( '0', $this->winning_value( $css, $doc, $left, 'margin-left', true ) );
+		$this->assertSame( '0', $this->winning_value( $css, $doc, $right, 'margin-right', true ) );
+		$this->assertSame( '20px', $this->winning_value( $css, $doc, $left, 'margin-bottom', true ) );
+		$this->assertSame( '20px', $this->winning_value( $css, $doc, $right, 'margin-bottom', true ) );
 	}
 
 	public function test_empty_icon_spacing_adds_no_guarded_rule() {
