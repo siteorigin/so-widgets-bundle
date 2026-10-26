@@ -385,6 +385,18 @@
 				.sow-icon-container-position-right .sow-icon-container {
 					margin-bottom: @icon_spacing;
 				}
+
+				// The bottom aligned More link wraps the icon, and the
+				// desktop side margin of that wrapper rule is as specific.
+				& when ( @more_text_bottom_align = true ) {
+					.sow-icon-container-position-left .sow-features-feature-right-left-container .sow-icon-container {
+						margin-left: 0;
+					}
+
+					.sow-icon-container-position-right .sow-features-feature-right-left-container .sow-icon-container {
+						margin-right: 0;
+					}
+				}
 			}
 		}
 	}

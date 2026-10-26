@@ -339,6 +339,103 @@ class FeaturesSpacingTest extends SiteOriginTests {
 		$this->assertSame( '', $this->icon_declarations( $media, 'bottom' ) );
 	}
 
+	/**
+	 * The rendered list for an instance, so the wrapper markup is real.
+	 */
+	private function render( $instance ) {
+		Functions\when( 'esc_attr' )->returnArg();
+		Functions\when( 'esc_html' )->returnArg();
+		Functions\when( 'wp_kses_post' )->returnArg();
+		Functions\when( 'do_shortcode' )->returnArg();
+		Functions\when( 'sow_esc_url' )->returnArg();
+		Functions\when( 'siteorigin_widget_get_icon' )->justReturn( '<span class="sow-icon"></span>' );
+		Functions\when( 'siteorigin_widget_valid_tag' )->returnArg();
+		Functions\when( 'wp_enqueue_style' )->justReturn( null );
+
+		$instance += array(
+			'icon_size_unit' => 'px',
+			'icon_link' => false,
+			'title_link' => false,
+			'new_window' => false,
+		);
+		$widget = $this->widget();
+		$variables = $widget->get_template_variables( $instance, array() );
+
+		return ( function () use ( $widget, $instance, $variables ) {
+			extract( $variables );
+			ob_start();
+			include __DIR__ . '/../widgets/features/tpl/default.php';
+
+			return ob_get_clean();
+		} )->call( $widget );
+	}
+
+	private static function with_more_text( $instance ) {
+		foreach ( $instance['features'] as $i => $feature ) {
+			$instance['features'][ $i ]['more_text'] = 'Read more';
+		}
+
+		return $instance;
+	}
+
+	private static function specificity( $selector ) {
+		return preg_match_all( '/\.[\w-]+|:(?!:)[\w-]+/', $selector );
+	}
+
+	/**
+	 * The value that wins for a property on the icon container inside the
+	 * right-left wrapper, in the stacked layout (list is responsive, the
+	 * media query is active): the highest specificity, then the later rule.
+	 */
+	private function winning_wrapper_icon_value( $css, $position, $property ) {
+		$rules = $this->rules( $css );
+		$best = null;
+		$order = 0;
+
+		foreach ( array_merge( $rules['base'], $rules['media'] ) as $rule ) {
+			$order++;
+
+			foreach ( explode( ',', $rule[0] ) as $selector ) {
+				$selector = trim( $selector );
+
+				if ( substr( $selector, -strlen( ' .sow-icon-container' ) ) !== ' .sow-icon-container' || strpos( $selector, '.sow-icon-container-position-' . $position ) === false ) {
+					continue;
+				}
+
+				if ( strpos( $selector, '.sow-features-responsive' ) !== false && strpos( $selector, '.sow-features-responsive' ) !== strpos( $selector, '.sow-features-list' ) + strlen( '.sow-features-list' ) ) {
+					continue;
+				}
+
+				if ( ! preg_match( '/(?:^|;|\s)' . preg_quote( $property, '/' ) . ':\s*([^;]+);?/', $rule[1] . ';', $m ) ) {
+					continue;
+				}
+
+				$key = array( self::specificity( $selector ), $order );
+
+				if ( $best === null || $key >= $best[0] ) {
+					$best = array( $key, trim( $m[1] ) );
+				}
+			}
+		}
+
+		return $best === null ? null : $best[1];
+	}
+
+	public function test_bottom_aligned_more_link_puts_the_side_icons_in_a_wrapper() {
+		$html = $this->render( self::with_more_text( self::with_icon_spacing( '20px', array( 'more_text_bottom_align' => true ) ) ) );
+
+		$this->assertSame( 2, substr_count( $html, 'sow-features-feature-right-left-container' ) );
+	}
+
+	public function test_mobile_stacked_side_icon_in_the_wrapper_loses_its_side_margin_and_gets_the_spacing_below() {
+		$css = $this->css( self::with_more_text( self::with_icon_spacing( '20px', array( 'more_text_bottom_align' => true ) ) ) );
+
+		$this->assertSame( '0', $this->winning_wrapper_icon_value( $css, 'left', 'margin-left' ) );
+		$this->assertSame( '0', $this->winning_wrapper_icon_value( $css, 'right', 'margin-right' ) );
+		$this->assertSame( '20px', $this->winning_wrapper_icon_value( $css, 'left', 'margin-bottom' ) );
+		$this->assertSame( '20px', $this->winning_wrapper_icon_value( $css, 'right', 'margin-bottom' ) );
+	}
+
 	public function test_empty_icon_spacing_adds_no_guarded_rule() {
 		$one_per_row = $this->css( self::instance( array( 'per_row' => 1 ) ) );
 		$rules = $this->rules( $one_per_row );
