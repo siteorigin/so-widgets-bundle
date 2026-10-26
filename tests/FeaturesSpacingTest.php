@@ -245,7 +245,7 @@ class FeaturesSpacingTest extends SiteOriginTests {
 			$first_paragraph = array_filter(
 				$rules,
 				function ( $rule ) {
-					return substr( $rule[0], -strlen( '.sow-features-feature-text > p:first-child' ) ) === '.sow-features-feature-text > p:first-child';
+					return substr( $rule[0], -strlen( '.sow-features-feature-title + .sow-features-feature-text > p:first-child' ) ) === '.sow-features-feature-title + .sow-features-feature-text > p:first-child';
 				}
 			);
 
@@ -255,7 +255,7 @@ class FeaturesSpacingTest extends SiteOriginTests {
 	}
 
 	public function test_zero_title_bottom_margin_also_clears_the_first_paragraph_margin() {
-		$this->assertStringContainsString( '.sow-features-feature-text > p:first-child { margin-top: 0; }', $this->css( self::with_title_margins( null, '0px' ) ) );
+		$this->assertStringContainsString( '.sow-features-feature-title + .sow-features-feature-text > p:first-child { margin-top: 0; }', $this->css( self::with_title_margins( null, '0px' ) ) );
 	}
 
 	public function test_first_paragraph_margin_stays_when_the_title_bottom_margin_is_empty() {
@@ -460,6 +460,168 @@ class FeaturesSpacingTest extends SiteOriginTests {
 		}
 
 		return $best === null ? null : $best[1];
+	}
+
+	/**
+	 * XPath for the elements a simple selector matches: tag, classes,
+	 * :first-child, and the descendant, child and adjacent sibling
+	 * combinators. Returns null for any other syntax, so a selector this
+	 * does not understand never counts as a match.
+	 */
+	private static function selector_to_xpath( $selector ) {
+		$parts = preg_split( '/\s*([>+])\s*|\s+/', trim( $selector ), -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
+		$xpath = null;
+		$combinator = null;
+
+		foreach ( $parts as $part ) {
+			if ( $part === '>' || $part === '+' ) {
+				$combinator = $part;
+				continue;
+			}
+
+			if ( ! preg_match( '/^([a-z][a-z0-9]*)?((?:\.[\w-]+)*)((?::first-child)?)$/i', $part, $m ) ) {
+				return null;
+			}
+
+			$tests = array();
+
+			if ( $m[1] !== '' ) {
+				$tests[] = 'self::' . strtolower( $m[1] );
+			}
+
+			foreach ( array_filter( explode( '.', $m[2] ) ) as $class ) {
+				$tests[] = "contains(concat(' ', normalize-space(@class), ' '), ' " . $class . " ')";
+			}
+
+			if ( $m[3] !== '' ) {
+				$tests[] = 'not(preceding-sibling::*)';
+			}
+
+			if ( $xpath !== null ) {
+				$axis = array( '>' => 'parent::*', '+' => 'preceding-sibling::*[1]' );
+				$tests[] = ( $combinator === null ? 'ancestor::*' : $axis[ $combinator ] ) . '[' . $xpath . ']';
+			}
+
+			$xpath = $tests ? implode( ' and ', $tests ) : 'true()';
+			$combinator = null;
+		}
+
+		return $xpath;
+	}
+
+	private static function dom( $html ) {
+		$doc = new DOMDocument();
+		libxml_use_internal_errors( true );
+		$doc->loadHTML( '<?xml encoding="utf-8"?><html><body>' . $html . '</body></html>' );
+		libxml_clear_errors();
+
+		return $doc;
+	}
+
+	/**
+	 * Whether a selector matches the element.
+	 */
+	private static function selector_matches( DOMDocument $doc, DOMElement $element, $selector ) {
+		$xpath = self::selector_to_xpath( $selector );
+
+		if ( $xpath === null ) {
+			return false;
+		}
+
+		$found = ( new DOMXPath( $doc ) )->query( '//*[' . $xpath . ']' );
+
+		foreach ( $found as $node ) {
+			if ( $node->isSameNode( $element ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * The value that wins for a property on an element: among the rules
+	 * whose selector matches the element, the highest specificity, then the
+	 * later rule. $mobile adds the rules inside the media query, as when the
+	 * viewport is below the breakpoint. Null when no rule sets the property.
+	 */
+	private function winning_value( $css, DOMDocument $doc, DOMElement $element, $property, $mobile ) {
+		$rules = $this->rules( $css );
+		$best = null;
+		$order = 0;
+
+		foreach ( $mobile ? array_merge( $rules['base'], $rules['media'] ) : $rules['base'] as $rule ) {
+			$order++;
+
+			if ( ! preg_match( '/(?:^|;|\s)' . preg_quote( $property, '/' ) . ':\s*([^;]+);?/', $rule[1] . ';', $value ) ) {
+				continue;
+			}
+
+			foreach ( explode( ',', $rule[0] ) as $selector ) {
+				if ( ! self::selector_matches( $doc, $element, trim( $selector ) ) ) {
+					continue;
+				}
+
+				$key = array( self::specificity( $selector ), $order );
+
+				if ( $best === null || $key >= $best[0] ) {
+					$best = array( $key, trim( $value[1] ) );
+				}
+			}
+		}
+
+		return $best === null ? null : $best[1];
+	}
+
+	/**
+	 * The first paragraph of each feature's text, as a list of
+	 * array( has a title, paragraph element ).
+	 */
+	private static function first_paragraphs( DOMDocument $doc ) {
+		$out = array();
+
+		foreach ( $doc->getElementsByTagName( 'li' ) as $feature ) {
+			$title = ( new DOMXPath( $doc ) )->query( './/*[contains(@class, "sow-features-feature-title")]', $feature )->item( 0 );
+			$paragraph = ( new DOMXPath( $doc ) )->query( './/*[contains(@class, "sow-features-feature-text")]/p[1]', $feature )->item( 0 );
+			$out[] = array( $title !== null, $paragraph );
+		}
+
+		return $out;
+	}
+
+	private static function mixed_title_instance( $overrides = array() ) {
+		$instance = self::instance( $overrides );
+
+		foreach ( $instance['features'] as $i => $feature ) {
+			$instance['features'][ $i ]['text'] = '<p>Text ' . $feature['container_position'] . '</p>';
+
+			if ( $i % 2 ) {
+				$instance['features'][ $i ]['title'] = '';
+			}
+		}
+
+		return $instance;
+	}
+
+	/**
+	 * The title Bottom margin is the gap to the text, so it clears the
+	 * paragraph margin only for a feature that has a title. A feature with
+	 * no title keeps the paragraph margin.
+	 */
+	public function test_title_bottom_margin_clears_the_paragraph_margin_only_below_a_title() {
+		foreach ( array( false, true ) as $bottom_align ) {
+			$instance = self::mixed_title_instance( array( 'fonts' => array( 'title_options' => array( 'margin_bottom' => '8px' ) ), 'more_text_bottom_align' => $bottom_align ) );
+			$css = $this->css( $instance );
+			$doc = self::dom( $this->render( $instance ) );
+			$paragraphs = self::first_paragraphs( $doc );
+
+			$this->assertCount( 4, $paragraphs );
+			$this->assertSame( array( true, false, true, false ), array_column( $paragraphs, 0 ) );
+
+			foreach ( $paragraphs as $i => list( $has_title, $paragraph ) ) {
+				$this->assertSame( $has_title ? '0' : null, $this->winning_value( $css, $doc, $paragraph, 'margin-top', false ), 'first paragraph of feature ' . $i );
+			}
+		}
 	}
 
 	public function test_bottom_aligned_more_link_puts_the_side_icons_in_a_wrapper() {

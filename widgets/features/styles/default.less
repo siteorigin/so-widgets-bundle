@@ -278,8 +278,9 @@
 		// A set title Bottom margin is the whole gap to the text. Without
 		// this, the first paragraph adds its top margin (always so in the
 		// bottom aligned layout, where the title and text are flex items).
+		// A feature with no title has no gap to set, so it keeps the margin.
 		& when ( isnumber( @title_margin_bottom ) ) {
-			.sow-features-feature-text > p:first-child {
+			.sow-features-feature-title + .sow-features-feature-text > p:first-child {
 				margin-top: 0;
 			}
 		}
