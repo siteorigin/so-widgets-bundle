@@ -222,4 +222,130 @@ class FeaturesSpacingTest extends SiteOriginTests {
 
 		$this->assertNotEmpty( $fields['margin_bottom']['description'] );
 	}
+
+	private static function with_icon_spacing( $spacing, $overrides = array() ) {
+		return self::instance( array_replace_recursive( array( 'icon_spacing' => $spacing ), $overrides ) );
+	}
+
+	/**
+	 * Every compiled rule as selector => declarations, with the rules inside
+	 * the media query listed under "@media" and the rest under "base".
+	 */
+	private function rules( $css ) {
+		$media_start = strpos( $css, '@media (max-width' );
+		$base = $media_start === false ? $css : substr( $css, 0, $media_start );
+		$media = $media_start === false ? '' : substr( $css, $media_start );
+
+		return array(
+			'base' => $this->split_rules( $base ),
+			'media' => $this->split_rules( $media ),
+		);
+	}
+
+	private function split_rules( $css ) {
+		preg_match_all( '/([^{}]+)\{([^{}]*)\}/', $css, $matches, PREG_SET_ORDER );
+		$rules = array();
+
+		foreach ( $matches as $match ) {
+			$rules[] = array( trim( $match[1] ), trim( $match[2] ) );
+		}
+
+		return $rules;
+	}
+
+	/**
+	 * Declarations that apply to a position's icon container: the
+	 * declarations of every rule that names the position's class and ends in
+	 * the icon container, in order.
+	 */
+	private function icon_declarations( $rules, $position ) {
+		$out = array();
+
+		foreach ( $rules as $rule ) {
+			foreach ( explode( ',', $rule[0] ) as $selector ) {
+				$selector = trim( $selector );
+
+				if ( strpos( $selector, 'sow-icon-container-position-' . $position ) !== false && substr( $selector, -strlen( ' .sow-icon-container' ) ) === ' .sow-icon-container' ) {
+					$out[] = $rule[1];
+					break;
+				}
+			}
+		}
+
+		return implode( ' ', $out );
+	}
+
+	public function test_icon_spacing_field_is_a_measurement_after_the_custom_icon_size() {
+		$form = $this->widget()->get_widget_form();
+		$keys = array_keys( $form );
+		$field = $form['icon_spacing'];
+
+		$this->assertSame( array_search( 'icon_size_custom', $keys ) + 1, array_search( 'icon_spacing', $keys ) );
+		$this->assertSame( 'measurement', $field['type'] );
+		$this->assertSame( array( 'px', 'rem' ), $field['units'] );
+		$this->assertArrayNotHasKey( 'default', $field );
+		$this->assertNotEmpty( $field['description'] );
+	}
+
+	public function test_icon_spacing_is_passed_to_less_as_the_string_true() {
+		$vars = $this->widget()->get_less_variables( self::with_icon_spacing( '20px' ) );
+
+		$this->assertSame( '20px', $vars['icon_spacing'] );
+		$this->assertSame( 'true', $vars['icon_spacing_custom'] );
+	}
+
+	public function test_empty_icon_spacing_adds_no_variable() {
+		foreach ( array( false, '', null ) as $empty ) {
+			$vars = $this->widget()->get_less_variables( self::with_icon_spacing( $empty ) );
+
+			$this->assertArrayNotHasKey( 'icon_spacing', $vars );
+			$this->assertArrayNotHasKey( 'icon_spacing_custom', $vars );
+		}
+	}
+
+	public function test_icon_spacing_sets_the_text_side_gap_for_each_position() {
+		$rules = $this->rules( $this->css( self::with_icon_spacing( '20px' ) ) )['base'];
+
+		$this->assertStringContainsString( 'margin: 0 auto 20px;', $this->icon_declarations( $rules, 'top' ) );
+		$this->assertStringContainsString( 'margin-right: 20px;', $this->icon_declarations( $rules, 'right' ) );
+		$this->assertStringContainsString( 'margin-left: 20px;', $this->icon_declarations( $rules, 'left' ) );
+		$this->assertStringContainsString( 'margin-top: 20px;', $this->icon_declarations( $rules, 'bottom' ) );
+		$this->assertStringNotContainsString( '10px', $this->css( self::with_icon_spacing( '20px' ) ) );
+	}
+
+	public function test_icon_spacing_sets_the_gap_beside_the_text_with_the_bottom_aligned_more_link() {
+		$css = $this->css( self::with_icon_spacing( '20px', array( 'more_text_bottom_align' => true ) ) );
+
+		$this->assertStringNotContainsString( '10px', $css );
+		$this->assertStringContainsString( '.sow-icon-container-position-right .sow-features-feature-right-left-container .sow-icon-container { margin-right: 20px; margin-left: 0; }', $css );
+		$this->assertStringContainsString( '.sow-icon-container-position-left .sow-features-feature-right-left-container .sow-icon-container { margin-left: 20px; margin-right: 0; }', $css );
+	}
+
+	public function test_icon_spacing_applies_to_one_feature_per_row_after_the_auto_margin() {
+		$rules = $this->rules( $this->css( self::with_icon_spacing( '20px', array( 'per_row' => 1 ) ) ) )['base'];
+
+		$this->assertMatchesRegularExpression( '/margin: auto;.*margin-bottom: 20px;/', $this->icon_declarations( $rules, 'top' ) );
+		$this->assertMatchesRegularExpression( '/margin: auto;.*margin-top: 20px;/', $this->icon_declarations( $rules, 'bottom' ) );
+	}
+
+	public function test_icon_spacing_holds_on_mobile_for_left_and_right_icons() {
+		$media = $this->rules( $this->css( self::with_icon_spacing( '20px' ) ) )['media'];
+
+		foreach ( array( 'left', 'right' ) as $position ) {
+			$this->assertStringContainsString( 'margin-bottom: 20px;', $this->icon_declarations( $media, $position ) );
+		}
+
+		$this->assertSame( '', $this->icon_declarations( $media, 'top' ) );
+		$this->assertSame( '', $this->icon_declarations( $media, 'bottom' ) );
+	}
+
+	public function test_empty_icon_spacing_adds_no_guarded_rule() {
+		$one_per_row = $this->css( self::instance( array( 'per_row' => 1 ) ) );
+		$rules = $this->rules( $one_per_row );
+
+		$this->assertStringEndsWith( 'margin: auto;', $this->icon_declarations( $rules['base'], 'top' ) );
+		$this->assertStringEndsWith( 'margin: auto;', $this->icon_declarations( $rules['base'], 'bottom' ) );
+		$this->assertStringNotContainsString( 'margin-bottom', $this->icon_declarations( $rules['media'], 'left' ) );
+		$this->assertStringNotContainsString( 'margin-bottom', $this->icon_declarations( $rules['media'], 'right' ) );
+	}
 }
