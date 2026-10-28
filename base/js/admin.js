@@ -46,6 +46,7 @@ var sowbForms = window.sowbForms || {};
 	const repeaterVisibilitySensitiveFieldSelector = [
 		'.siteorigin-widget-field-type-tinymce',
 		'.siteorigin-widget-field-type-date-range',
+		'.siteorigin-widget-field-type-location',
 	].join( ', ' );
 
 	const repeaterImmediateSetupFieldSelector = [
