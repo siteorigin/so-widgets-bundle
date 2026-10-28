@@ -40,6 +40,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 		}
 
 		add_action( 'enqueue_block_assets', array( $this, 'enqueue_widget_block_editor_assets' ) );
+		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_customizer_widget_block_editor_assets' ) );
 
 		add_filter( 'siteorigin_panels_filter_content_enabled', array( $this, 'disable_panels_content_for_widget_blocks' ) );
 
@@ -372,17 +373,30 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 	}
 
 	/**
-	 * Enqueue block editor assets for SiteOrigin Widget Blocks.
-	 *
-	 * This method enqueues the necessary scripts and styles for the block editor.
-	 * It also localizes widget data for use in the editor.
+	 * Load Widget Block assets in the Customizer's block-based Widgets editor.
 	 */
-	public function enqueue_widget_block_editor_assets() {
+	public function enqueue_customizer_widget_block_editor_assets() {
+		global $pagenow;
+		if ( $pagenow !== 'customize.php' || ! function_exists( 'wp_use_widgets_block_editor' ) || ! wp_use_widgets_block_editor() ) {
+			return;
+		}
+
+		$this->enqueue_widget_block_editor_assets( true );
+	}
+
+	/**
+	 * Enqueue and localize the assets used to edit SiteOrigin Widget Blocks.
+	 *
+	 * @param bool $customizer Whether the Customizer Widgets editor is loading.
+	 */
+	public function enqueue_widget_block_editor_assets( $customizer = false ) {
 		$current_screen = function_exists( 'get_current_screen' ) ? get_current_screen() : false;
 
 		if (
-			empty( $current_screen ) ||
-			! in_array( $current_screen->base, array( 'post', 'site-editor', 'widgets' ) )
+			! $customizer && (
+				empty( $current_screen ) ||
+				! in_array( $current_screen->base, array( 'post', 'site-editor', 'widgets' ), true )
+			)
 		) {
 			return;
 		}
@@ -410,7 +424,7 @@ class SiteOrigin_Widgets_Bundle_Widget_Block {
 			array(
 				'sowb-register-widget-blocks',
 				// The WP 5.8 Widget Area requires a specific editor script to be used.
-				is_object( $current_screen ) && $current_screen->base == 'widgets' ? 'wp-edit-widgets' : 'wp-editor',
+				$customizer ? 'wp-customize-widgets' : ( $current_screen->base === 'widgets' ? 'wp-edit-widgets' : 'wp-editor' ),
 				'wp-blocks',
 				'wp-i18n',
 				'wp-element',

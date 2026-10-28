@@ -395,9 +395,15 @@
 		// the same block (React double-render / stale closures) don't stack up
 		// duplicate handlers on the same DOM node.
 		const changeNs = '.sowbBlock-' + props.clientId.replace( /-/g, '' );
+		// The Customizer can publish before a focused field emits change.
+		// Sync text inputs as they are edited so the setting is current.
+		const isCustomizerWidget = $mainForm.closest( '.customize-control-sidebar_block_editor' ).length > 0;
+		const formEvents = isCustomizerWidget ?
+			'change' + changeNs + ' input' + changeNs :
+			'change' + changeNs;
 		$mainForm
-			.off( 'change' + changeNs )
-			.on( 'change' + changeNs, function() {
+			.off( formEvents )
+			.on( formEvents, function() {
 				// Only react to changes once the form has been fully set up.
 				if ( ! $mainForm.data( 'sow-form-setup' ) ) {
 					return;
@@ -416,7 +422,17 @@
 				}
 
 				$mainForm.data( 'sowb-block-last-widget-data-json', widgetDataJson );
-				props.setAttributes( { widgetData: widgetData } );
+				if ( isCustomizerWidget && activeRequestRef.current && typeof activeRequestRef.current.abort === 'function' ) {
+					activeRequestRef.current.abort();
+					activeRequestRef.current = null;
+				}
+				// Publishing can beat the debounced preview request. Discard the
+				// old markup so the front end renders the updated widget data.
+				props.setAttributes( isCustomizerWidget ? {
+					widgetData: widgetData,
+					widgetMarkup: null,
+					widgetIcons: null,
+				} : { widgetData: widgetData } );
 
 				// Set up a preview debounce timer to prevent multiple requests.
 				var oldTimer = $mainForm.data( 'sowb-preview-timer' );

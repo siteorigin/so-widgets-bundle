@@ -752,7 +752,11 @@
 					$field.removeData( 'sowb-tinymce-initializing' );
 					$field.removeData( 'sowb-tinymce-initializing-id' );
 				} );
-				editor.on( 'change', function() {
+				// The Customizer may publish while the editor still has focus.
+				// Sync each input there rather than waiting for TinyMCE's change event.
+				const syncEvents = $field.closest( '.customize-control-sidebar_block_editor' ).length ?
+					'change input' : 'change';
+				editor.on( syncEvents, function() {
 					const ed = window.tinymce.get( id );
 					if ( ed ) {
 						const textareaNode = $textarea.get( 0 );
