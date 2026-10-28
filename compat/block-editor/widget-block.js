@@ -1559,26 +1559,120 @@ jQuery( function() {
 			return;
 		}
 		const originalSave = api.previewer.save;
+		const originalChangesetUpdate = api.requestChangesetUpdate;
 		let pendingSave = null;
+		let pendingKind = null;
+		let cancelPreparation = null;
+		let pendingAutosaveCall = null;
+		let unloading = false;
+		window.addEventListener( 'beforeunload', function() {
+			unloading = true;
+			if ( pendingKind === 'autosave' && cancelPreparation && pendingAutosaveCall ) {
+				const request = pendingAutosaveCall;
+				cancelPreparation();
+				try {
+					snapshotBeforeUnload();
+				} catch ( error ) {
+					console.error( 'SiteOrigin Widgets: unable to prepare widget forms before leaving', error );
+				}
+				originalChangesetUpdate.apply( request.context, request.args );
+			}
+			setTimeout( () => { unloading = false; }, 0 );
+		}, true );
 
-		api.previewer.save = function() {
+		// Core's beforeunload autosave cannot wait for an asynchronous snapshot.
+		const snapshotBeforeUnload = () => {
+			const select = wp.data.select( 'core/block-editor' );
+			if ( ! select || typeof select.getBlocks !== 'function' ) {
+				return;
+			}
+			const dispatch = wp.data.dispatch( 'core/block-editor' );
+			const updates = [];
+			for ( const block of sowbFindDirectWidgetBlocks( select.getBlocks() ) ) {
+				const $form = sowbGetBlockForm( block.clientId );
+				if ( ! $form.length || ! $form.data( 'sow-form-setup' ) ||
+					! $form.closest( '.customize-control-sidebar_block_editor' ).length ) {
+					continue;
+				}
+				const formWindow = sowbGetElementWindow( $form[0] );
+				$form.find( 'textarea.wp-editor-area' ).each( function() {
+					const id = jQuery( this ).data( 'tinymce-id' ) || this.id;
+					const editor = formWindow.tinymce && formWindow.tinymce.get( id );
+					if ( editor && editor.initialized &&
+						( typeof editor.isHidden !== 'function' || ! editor.isHidden() ) ) {
+						editor.save();
+					}
+				} );
+				const forms = formWindow.sowbForms || sowbForms;
+				const data = forms.getWidgetFormValues( $form );
+				if ( sowbHasWidgetDataSnapshot( data ) && JSON.stringify( data ) !== JSON.stringify( block.attributes.widgetData ) ) {
+					updates.push( { clientId: block.clientId, data } );
+				}
+			}
+			const apply = () => updates.forEach( ( update ) => dispatch.updateBlockAttributes( update.clientId, {
+				widgetData: update.data, widgetMarkup: null, widgetIcons: null,
+			} ) );
+			const flushSync = wp.element.flushSync || ( window.ReactDOM && window.ReactDOM.flushSync );
+			if ( flushSync ) {
+				flushSync( apply );
+			} else {
+				apply();
+			}
+		};
+
+		const prepareAndSave = function( original, context, args, isPublish ) {
 			if ( pendingSave ) {
-				return pendingSave.promise();
+				if ( isPublish && pendingKind === 'autosave' ) {
+					const waiting = jQuery.Deferred();
+					pendingSave.always( function() {
+						if ( unloading ) {
+							waiting.reject( 'cancelled' );
+							return;
+						}
+						prepareAndSave( original, context, args, true ).then(
+							function() { waiting.resolveWith( this, arguments ); },
+							function() { waiting.rejectWith( this, arguments ); }
+						);
+					} );
+					return waiting.promise();
+				}
+				return isPublish ? pendingSave.promise() : jQuery.Deferred().reject( 'already_processing' ).promise();
 			}
 
-			const previewer = this;
-			const args = arguments;
 			const deferred = jQuery.Deferred();
 			pendingSave = deferred;
+			pendingKind = isPublish ? 'publish' : 'autosave';
 			api.notifications.remove( 'sowb-widget-snapshot-error' );
-			api.state( 'saving' ).set( true );
+			if ( isPublish ) {
+				api.state( 'saving' ).set( true );
+			}
 			const lockedForms = [];
 			let cancelled = false;
+			let processingListener = null;
 			const unlockForms = () => {
 				lockedForms.forEach( ( form ) => form.removeAttribute( 'inert' ) );
+				if ( processingListener ) {
+					api.state( 'processing' ).unbind( processingListener );
+					processingListener = null;
+				}
 			};
 
 			const snapshotForms = async () => {
+				if ( isPublish && api.state( 'processing' ).get() !== 0 ) {
+					await new Promise( ( resolve ) => {
+						processingListener = function( value ) {
+							if ( value === 0 ) {
+								api.state( 'processing' ).unbind( processingListener );
+								processingListener = null;
+								resolve();
+							}
+						};
+						api.state( 'processing' ).bind( processingListener );
+					} );
+				}
+				if ( cancelled ) {
+					throw new Error( 'Widget form snapshot was cancelled.' );
+				}
 				const blockEditor = wp.data.select( 'core/block-editor' );
 				if ( ! blockEditor || typeof blockEditor.getBlocks !== 'function' ) {
 					return [];
@@ -1592,7 +1686,7 @@ jQuery( function() {
 						continue;
 					}
 					forms.push( { block, $form } );
-					if ( ! $form[0].hasAttribute( 'inert' ) ) {
+					if ( isPublish && ! $form[0].hasAttribute( 'inert' ) ) {
 						$form[0].setAttribute( 'inert', '' );
 						lockedForms.push( $form[0] );
 					}
@@ -1619,19 +1713,39 @@ jQuery( function() {
 			};
 
 			let timeout;
+			if ( ! isPublish ) {
+				pendingAutosaveCall = { context, args };
+				cancelPreparation = () => {
+					cancelled = true;
+					clearTimeout( timeout );
+					unlockForms();
+					pendingSave = null;
+					pendingKind = null;
+					cancelPreparation = null;
+					pendingAutosaveCall = null;
+					deferred.reject( 'cancelled' );
+				};
+			}
 			Promise.race( [
 				snapshotForms(),
 				new Promise( ( resolve, reject ) => {
 					timeout = setTimeout( () => reject( new Error( 'Widget form snapshot timed out.' ) ), 15000 );
 				} ),
 			] ).then( ( snapshots ) => {
+				if ( cancelled ) {
+					return;
+				}
 				clearTimeout( timeout );
+				cancelPreparation = null;
+				pendingAutosaveCall = null;
 				const select = wp.data.select( 'core/block-editor' );
 				const dispatch = wp.data.dispatch( 'core/block-editor' );
 				for ( const snapshot of snapshots ) {
 					const block = select.getBlock( snapshot.clientId );
 					if ( ! block || JSON.stringify( block.attributes.widgetData ) !== snapshot.previousData ) {
-						throw new Error( 'Widget changed while preparing to save.' );
+						const conflict = new Error( 'Widget changed while preparing to save.' );
+						conflict.sowbConflict = true;
+						throw conflict;
 					}
 				}
 				const flushSync = wp.element.flushSync || ( window.ReactDOM && window.ReactDOM.flushSync );
@@ -1653,26 +1767,84 @@ jQuery( function() {
 					applySnapshots();
 				}
 				unlockForms();
-				api.state( 'saving' ).set( false );
-				originalSave.apply( previewer, args ).then(
-					function() { pendingSave = null; deferred.resolveWith( this, arguments ); },
-					function() { pendingSave = null; deferred.rejectWith( this, arguments ); }
+				if ( isPublish ) {
+					api.state( 'saving' ).set( false );
+				}
+				original.apply( context, args ).then(
+					function() { pendingSave = null; pendingKind = null; deferred.resolveWith( this, arguments ); },
+					function() { pendingSave = null; pendingKind = null; deferred.rejectWith( this, arguments ); }
 				);
 			} ).catch( ( error ) => {
 				clearTimeout( timeout );
+				if ( cancelled ) {
+					return;
+				}
+				cancelPreparation = null;
+				pendingAutosaveCall = null;
+				if ( ! isPublish ) {
+					cancelled = true;
+					unlockForms();
+					original.apply( context, args ).then(
+						function() { pendingSave = null; pendingKind = null; deferred.resolveWith( this, arguments ); },
+						function() { pendingSave = null; pendingKind = null; deferred.rejectWith( this, arguments ); }
+					);
+					return;
+				}
 				pendingSave = null;
+				pendingKind = null;
 				cancelled = true;
 				unlockForms();
-				api.state( 'saving' ).set( false );
-				console.error( 'SiteOrigin Widgets: unable to prepare widget forms for publishing', error );
-				api.notifications.add( new api.Notification( 'sowb-widget-snapshot-error', {
-					type: 'error',
-					dismissible: true,
-					message: wp.i18n.__( 'The widget could not be prepared for saving. Please try again.', 'so-widgets-bundle' ),
-				} ) );
+				if ( isPublish ) {
+					api.state( 'saving' ).set( false );
+				}
+				if ( isPublish || ! error || ! error.sowbConflict ) {
+					console.error( 'SiteOrigin Widgets: unable to prepare widget forms for saving', error );
+					api.notifications.add( new api.Notification( 'sowb-widget-snapshot-error', {
+						type: 'error',
+						dismissible: true,
+						message: wp.i18n.__( 'The widget could not be prepared for saving. Please try again.', 'so-widgets-bundle' ),
+					} ) );
+				}
 				deferred.reject( error );
 			} );
 			return deferred.promise();
+		};
+
+		api.previewer.save = function() {
+			return prepareAndSave( originalSave, this, arguments, true );
+		};
+		api.requestChangesetUpdate = function( changes, args ) {
+			if ( unloading && pendingKind === 'autosave' && cancelPreparation ) {
+				cancelPreparation();
+			}
+			if ( unloading && args && args.autosave && ! pendingSave && api.state( 'processing' ).get() === 0 ) {
+				try {
+					snapshotBeforeUnload();
+				} catch ( error ) {
+					console.error( 'SiteOrigin Widgets: unable to prepare widget forms before leaving', error );
+				}
+				return originalChangesetUpdate.apply( this, arguments );
+			}
+			if ( pendingSave ) {
+				const context = this;
+				const argsForRequest = arguments;
+				const waiting = jQuery.Deferred();
+				pendingSave.always( function() {
+					if ( unloading ) {
+						waiting.reject( 'cancelled' );
+						return;
+					}
+					api.requestChangesetUpdate.apply( context, argsForRequest ).then(
+						function() { waiting.resolveWith( this, arguments ); },
+						function() { waiting.rejectWith( this, arguments ); }
+					);
+				} );
+				return waiting.promise();
+			}
+			if ( ! args || ! args.autosave || api.state( 'processing' ).get() !== 0 ) {
+				return originalChangesetUpdate.apply( this, arguments );
+			}
+			return prepareAndSave( originalChangesetUpdate, this, arguments, false );
 		};
 	}
 } );

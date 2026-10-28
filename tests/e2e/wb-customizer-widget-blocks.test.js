@@ -105,6 +105,9 @@ test( 'Saved SiteOrigin widget blocks can be edited and published in Customizer 
 	const originalDirectCta = `Customizer original direct CTA ${ suffix }`;
 	const directCta = `Customizer direct CTA ${ suffix }`;
 	const silentSubtitle = `Customizer silent subtitle ${ suffix }`;
+	const autosaveSubtitle = `Customizer autosaved subtitle ${ suffix }`;
+	const unloadSubtitle = `Customizer unload subtitle ${ suffix }`;
+	const pendingUnloadSubtitle = `Customizer pending unload subtitle ${ suffix }`;
 	const preservedTitle = `Customizer preserved title ${ suffix }`;
 	let post;
 	const widgets = [];
@@ -237,10 +240,52 @@ test( 'Saved SiteOrigin widget blocks can be edited and published in Customizer 
 		await directCtaForm.form.getByRole( 'textbox', { name: 'Title', exact: true } ).fill( directCta );
 		await expect.poll( async () => ( await getCtaAttributes() ).widgetData.title ).toBe( directCta );
 		await directCtaForm.form.getByRole( 'textbox', { name: 'Subtitle', exact: true } )
-			.evaluate( ( input, value ) => { input.value = value; }, silentSubtitle );
+			.evaluate( ( input, value ) => { input.value = value; }, autosaveSubtitle );
 		expect( ( await getCtaAttributes() ).widgetData.sub_title ).toBe( 'Preserved CTA subtitle' );
 
-		// A rejected snapshot must stop the Customizer save and tell the user.
+		// Autosaves use a different Customizer API from Publish. They must also
+		// capture values changed silently while the form is still open.
+		await expect.poll( () => page.evaluate( () => window.wp.customize.state( 'processing' ).get() ) ).toBe( 0 );
+		const autosaveResponse = page.waitForResponse( ( response ) => {
+			const data = new URLSearchParams( response.request().postData() || '' );
+			return response.url().includes( 'admin-ajax.php' ) &&
+				data.get( 'action' ) === 'customize_save' &&
+				data.get( 'customize_changeset_autosave' ) === 'true';
+		} );
+		const autosaveResult = page.evaluate( () => new Promise( ( resolve ) => {
+			window.wp.customize.requestChangesetUpdate( {}, { autosave: true } )
+				.done( () => resolve( true ) ).fail( () => resolve( false ) );
+		} ) );
+		const response = await autosaveResponse;
+		const autosaveData = new URLSearchParams( response.request().postData() );
+		const changeset = JSON.parse( autosaveData.get( 'customize_changeset_data' ) );
+		expect( JSON.stringify( changeset ) ).toContain( autosaveSubtitle );
+		expect( JSON.stringify( changeset ) ).toContain( directCta );
+		expect( ( await response.json() ).success ).toBe( true );
+		expect( await autosaveResult ).toBe( true );
+		await expect.poll( () => page.evaluate( () => window.wp.customize.state( 'processing' ).get() ) ).toBe( 0 );
+
+		// Core invokes an autosave synchronously from beforeunload.
+		await directCtaForm.form.getByRole( 'textbox', { name: 'Subtitle', exact: true } )
+			.evaluate( ( input, value ) => { input.value = value; }, unloadSubtitle );
+		const unloadResponse = page.waitForResponse( ( result ) => {
+			const data = new URLSearchParams( result.request().postData() || '' );
+			return result.url().includes( 'admin-ajax.php' ) &&
+				data.get( 'action' ) === 'customize_save' &&
+				data.get( 'customize_changeset_autosave' ) === 'true';
+		} );
+		await page.evaluate( () => window.dispatchEvent( new Event( 'beforeunload' ) ) );
+		const unloadSave = await unloadResponse;
+		const unloadData = new URLSearchParams( unloadSave.request().postData() );
+		expect( JSON.stringify( JSON.parse( unloadData.get( 'customize_changeset_data' ) ) ) ).toContain( unloadSubtitle );
+		expect( ( await unloadSave.json() ).success ).toBe( true );
+		await expect.poll( () => page.evaluate( () => window.wp.customize.state( 'processing' ).get() ) ).toBe( 0 );
+		await directCtaForm.form.getByRole( 'textbox', { name: 'Subtitle', exact: true } )
+			.evaluate( ( input, value ) => { input.value = value; }, silentSubtitle );
+		expect( ( await getCtaAttributes() ).widgetData.sub_title ).toBe( unloadSubtitle );
+
+		// An autosave snapshot failure still lets core save other settings.
+		// Publish must instead stop and tell the user.
 		await page.evaluate( () => {
 			window.sowbTestOriginalSnapshot = window.sowbForms.getWidgetFormSnapshot;
 			window.sowbForms.getWidgetFormSnapshot = () => Promise.reject( new Error( 'Snapshot test failure' ) );
@@ -254,17 +299,88 @@ test( 'Saved SiteOrigin widget blocks can be edited and published in Customizer 
 			}
 		};
 		page.on( 'request', countSaveRequest );
+		await expect.poll( () => page.evaluate( () => window.wp.customize.state( 'processing' ).get() ) ).toBe( 0 );
+		const fallbackResponse = page.waitForResponse( ( result ) => {
+			const data = new URLSearchParams( result.request().postData() || '' );
+			return result.url().includes( 'admin-ajax.php' ) && data.get( 'action' ) === 'customize_save' &&
+				data.get( 'customize_changeset_autosave' ) === 'true';
+		} );
+		const fallbackResult = page.evaluate( () => new Promise( ( resolve ) => {
+			window.wp.customize.requestChangesetUpdate( {}, { autosave: true, force: true } )
+				.done( () => resolve( true ) ).fail( () => resolve( false ) );
+		} ) );
+		expect( ( await ( await fallbackResponse ).json() ).success ).toBe( true );
+		expect( await fallbackResult ).toBe( true );
+		expect( saveRequests ).toBe( 1 );
+		await expect.poll( () => page.evaluate( () => window.wp.customize.state( 'processing' ).get() ) ).toBe( 0 );
 		await page.locator( '#save' ).click();
 		await expect( page.locator( '#customize-notifications-area' ).getByText( 'The widget could not be prepared for saving. Please try again.' ) ).toBeVisible();
-		expect( saveRequests ).toBe( 0 );
+		expect( saveRequests ).toBe( 1 );
 		page.off( 'request', countSaveRequest );
 		const afterRejectedSave = await requestUtils.rest( {
 			path: `/wp/v2/widgets/${ widgets[ 2 ].id }`,
 			params: { context: 'edit' },
 		} );
 		expect( afterRejectedSave.instance.raw.content ).not.toContain( silentSubtitle );
+		// Leaving during a stalled background snapshot must still submit the form.
+		await directCtaForm.form.getByRole( 'textbox', { name: 'Subtitle', exact: true } )
+			.evaluate( ( input, value ) => { input.value = value; }, pendingUnloadSubtitle );
+		await page.evaluate( () => {
+			window.sowbForms.getWidgetFormSnapshot = () => new Promise( ( resolve ) => {
+				window.sowbTestReleaseUnloadSnapshot = resolve;
+			} );
+			// Trigger the same background autosave path as core, which sets its
+			// internal updatePending flag until the request settles.
+			Object.defineProperty( document, 'hidden', { configurable: true, value: true } );
+			document.dispatchEvent( new Event( 'visibilitychange' ) );
+			delete document.hidden;
+		} );
+		await page.waitForFunction( () => !! window.sowbTestReleaseUnloadSnapshot );
+		const pendingUnloadResponse = page.waitForResponse( ( result ) => {
+			const data = new URLSearchParams( result.request().postData() || '' );
+			return result.url().includes( 'admin-ajax.php' ) && data.get( 'action' ) === 'customize_save' &&
+				data.get( 'customize_changeset_autosave' ) === 'true';
+		} );
+		await page.evaluate( () => window.dispatchEvent( new Event( 'beforeunload' ) ) );
+		const pendingUnloadSave = await pendingUnloadResponse;
+		const pendingUnloadData = new URLSearchParams( pendingUnloadSave.request().postData() );
+		expect( JSON.stringify( JSON.parse( pendingUnloadData.get( 'customize_changeset_data' ) ) ) ).toContain( pendingUnloadSubtitle );
+		expect( ( await pendingUnloadSave.json() ).success ).toBe( true );
+		await page.evaluate( () => window.sowbTestReleaseUnloadSnapshot( {} ) );
+		await expect.poll( () => page.evaluate( () => window.wp.customize.state( 'processing' ).get() ) ).toBe( 0 );
+		await directCtaForm.form.getByRole( 'textbox', { name: 'Subtitle', exact: true } )
+			.evaluate( ( input, value ) => { input.value = value; }, silentSubtitle );
+
+		await page.evaluate( () => {
+			const original = window.sowbTestOriginalSnapshot;
+			let first = true;
+			window.sowbForms.getWidgetFormSnapshot = function() {
+				const args = arguments;
+				if ( ! first ) {
+					return original.apply( this, args );
+				}
+				first = false;
+				window.sowbTestSnapshotStarted = true;
+				return new Promise( ( resolve ) => {
+					window.sowbTestReleaseSnapshot = () => resolve( original.apply( this, args ) );
+				} );
+			};
+			window.sowbTestAutosave = window.wp.customize.requestChangesetUpdate( {}, { autosave: true } );
+		} );
+		await page.waitForFunction( () => window.sowbTestSnapshotStarted );
+		const published = page.waitForResponse( ( result ) => {
+			const data = new URLSearchParams( result.request().postData() || '' );
+			return result.url().includes( 'admin-ajax.php' ) && data.get( 'action' ) === 'customize_save' &&
+				data.get( 'customize_changeset_status' ) === 'publish';
+		} );
+		await page.locator( '#save' ).click();
+		await page.evaluate( () => window.sowbTestReleaseSnapshot() );
+		expect( ( await ( await published ).json() ).success ).toBe( true );
+		await expect( page.locator( '#save' ) ).toBeDisabled( { timeout: 20000 } );
+		expect( await page.evaluate( () => new Promise( ( resolve ) => {
+			window.sowbTestAutosave.done( () => resolve( true ) ).fail( () => resolve( false ) );
+		} ) ) ).toBe( true );
 		await page.evaluate( () => { window.sowbForms.getWidgetFormSnapshot = window.sowbTestOriginalSnapshot; } );
-		await publishChanges( page );
 
 		const stored = await Promise.all( widgets.map( ( widget ) => requestUtils.rest( {
 			method: 'GET',
