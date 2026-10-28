@@ -63,10 +63,49 @@ const stubGoogleMapsApi = async ( page ) => {
 };
 
 /**
- * Saves a draft Page Builder page holding a Google Maps widget, reloads it
- * so the widget's form scripts are enqueued, and opens the widget's form.
+ * Saves the page as a draft and waits for the editor to load again.
+ */
+const saveDraft = async ( page ) => {
+	const navigated = page.waitForEvent( 'framenavigated', ( frame ) => frame === page.mainFrame() );
+	await page.locator( '#save-post' ).click();
+	await navigated;
+	await page.waitForLoadState();
+};
+
+/**
+ * Opens the form of the page's one Google Maps widget, with the stubbed API
+ * loaded.
  */
 const openGoogleMapsWidgetForm = async ( page ) => {
+	const builder = page.locator( '#siteorigin-panels-metabox' );
+	await expect( builder ).toBeVisible( { timeout: 20000 } );
+	await builder.locator( '.so-widget .title h4' ).click();
+
+	const form = page.locator( '.so-panels-dialog-edit-widget .siteorigin-widget-form-main-siteorigin-widget-googlemap-widget' );
+	await expect( form ).toBeVisible( { timeout: 20000 } );
+
+	// The Map center field initialising proves the stubbed API loaded.
+	await expect( form.locator( '.siteorigin-widget-field-map_center' ) ).toHaveAttribute( 'data-initialized', 'true', { timeout: 10000 } );
+
+	return form;
+};
+
+/**
+ * Closes the open widget dialog with its Done button.
+ */
+const closeWidgetDialog = async ( page ) => {
+	const doneButton = page.locator( '.so-panels-dialog-edit-widget' ).getByRole( 'button', { name: 'Done', exact: true } );
+	await expect( doneButton ).toBeVisible( { timeout: 20000 } );
+	await doneButton.click();
+	await expect( doneButton ).toBeHidden();
+};
+
+/**
+ * Creates a draft Page Builder page holding a Google Maps widget and returns
+ * its ID. The draft is saved and reloaded, so the widget's form scripts are
+ * enqueued; until then the form only asks for a save and reload.
+ */
+const createGoogleMapsPage = async ( page ) => {
 	await soGoTo( page, 'wp-admin/post-new.php?post_type=page' );
 
 	// A new page opens in the classic editor; switch it to Page Builder.
@@ -81,76 +120,99 @@ const openGoogleMapsWidgetForm = async ( page ) => {
 	await addDialog.locator( '.so-sidebar-search' ).fill( 'Google Maps' );
 	await addDialog.locator( '.widget-type', { hasText: 'SiteOrigin Google Maps' } ).click();
 
-	// Page Builder opens the edit dialog for a new widget. Its form asks for
-	// a save and reload first, as the page did not load the widget's scripts.
-	const editDialog = page.locator( '.so-panels-dialog-edit-widget' );
-	const doneButton = editDialog.getByRole( 'button', { name: 'Done', exact: true } );
-	await expect( doneButton ).toBeVisible( { timeout: 20000 } );
-	await doneButton.click();
-	await expect( doneButton ).toBeHidden();
+	// Page Builder opens the edit dialog for a new widget.
+	await closeWidgetDialog( page );
 
 	await page.locator( '#title' ).fill( 'WB Google Maps marker place' );
-	await page.locator( '#save-post' ).click();
-	await page.waitForURL( /post\.php\?post=\d+&action=edit/, { timeout: 20000 } );
+	await saveDraft( page );
 
-	const postId = Number( new URL( page.url() ).searchParams.get( 'post' ) );
+	return Number( new URL( page.url() ).searchParams.get( 'post' ) );
+};
 
-	await expect( builder ).toBeVisible( { timeout: 20000 } );
-	await builder.locator( '.so-widget .title h4' ).click();
+/**
+ * Returns the marker positions stored for the page's Google Maps widget, as
+ * Page Builder loaded them into the editor.
+ */
+const getStoredMarkerPositions = async ( page ) => {
+	const panelsData = JSON.parse( await page.locator( '#siteorigin-panels-metabox .siteorigin-panels-data-field' ).inputValue() );
+	const widget = panelsData.widgets.find( ( item ) => item.panels_info.class === 'SiteOrigin_Widget_GoogleMap_Widget' );
 
-	const form = editDialog.locator( '.siteorigin-widget-form-main-siteorigin-widget-googlemap-widget' );
-	await expect( form ).toBeVisible( { timeout: 20000 } );
+	return widget.markers.marker_positions;
+};
 
-	// The Map center field initialising proves the stubbed API loaded.
-	await expect( form.locator( '.siteorigin-widget-field-map_center' ) ).toHaveAttribute( 'data-initialized', 'true', { timeout: 10000 } );
+/**
+ * Returns the repeater items of the open form's Marker positions field.
+ */
+const getMarkerItems = async ( form ) => {
+	const markers = await openSection( 'markers', form );
 
-	return {
-		form,
-		postId,
-	};
+	return markers.locator( '.siteorigin-widget-field-marker_positions .siteorigin-widget-field-repeater > .siteorigin-widget-field-repeater-items > .siteorigin-widget-field-repeater-item' );
+};
+
+/**
+ * Expands a collapsed marker item with a click and returns its Place field,
+ * after checking that the field was not set up while the item was collapsed.
+ */
+const expandMarker = async ( item ) => {
+	const itemForm = item.locator( '> .siteorigin-widget-field-repeater-item-form' );
+	const place = item.locator( '.siteorigin-widget-field-type-location' );
+
+	await expect( itemForm ).toBeHidden();
+	await expect( place ).not.toHaveAttribute( 'data-initialized', 'true' );
+
+	await item.locator( '> .siteorigin-widget-field-repeater-item-top' ).click();
+	await expect( itemForm ).toBeVisible();
+
+	return place;
 };
 
 test.beforeEach( async ( { page } ) => {
 	await doLogin( page );
 } );
 
-test( 'Google Maps: a new marker\'s Place field initialises when expanded and saves the typed place', async ( { page } ) => {
+test( 'Google Maps: a marker\'s Place field initialises when its item is expanded, and the typed place is saved', async ( { page } ) => {
+	const placeName = 'Leeds Dock, Leeds';
+
 	await stubGoogleMapsApi( page );
 
 	const requestUtils = await setupRequestUtils();
 	let postId = 0;
 
 	try {
-		const opened = await openGoogleMapsWidgetForm( page );
-		postId = opened.postId;
+		postId = await createGoogleMapsPage( page );
 
-		const markers = await openSection( 'markers', opened.form );
+		// A newly added marker.
+		let form = await openGoogleMapsWidgetForm( page );
+		let items = await getMarkerItems( form );
 
-		const repeater = markers.locator( '.siteorigin-widget-field-marker_positions .siteorigin-widget-field-repeater' );
-		const items = repeater.locator( '> .siteorigin-widget-field-repeater-items > .siteorigin-widget-field-repeater-item' );
-		const before = await items.count();
+		await form.locator( '.siteorigin-widget-field-marker_positions .siteorigin-widget-field-repeater > .siteorigin-widget-field-repeater-add' ).click();
+		await expect( items ).toHaveCount( 1 );
 
-		await repeater.locator( '> .siteorigin-widget-field-repeater-add' ).click();
-		await expect( items ).toHaveCount( before + 1 );
-
-		const item = items.nth( before );
-		const itemForm = item.locator( '> .siteorigin-widget-field-repeater-item-form' );
-		const place = item.locator( '.siteorigin-widget-field-type-location' );
-
-		// A new item starts collapsed, so its Place field is not set up yet.
-		await expect( itemForm ).toBeHidden();
-		await expect( place ).not.toHaveAttribute( 'data-initialized', 'true' );
-
-		await item.locator( '> .siteorigin-widget-field-repeater-item-top' ).click();
-		await expect( itemForm ).toBeVisible();
-
+		let place = await expandMarker( items.first() );
 		await expect( place ).toHaveAttribute( 'data-initialized', 'true', { timeout: 10000 } );
 
 		const placeInput = place.locator( '.siteorigin-widget-location-input' );
-		await placeInput.fill( 'Leeds Dock, Leeds' );
+		await placeInput.fill( placeName );
 		await placeInput.press( 'Tab' );
 
-		await expect( place.locator( '.location-field-data' ) ).toHaveValue( JSON.stringify( { name: 'Leeds Dock, Leeds' } ) );
+		await expect( place.locator( '.location-field-data' ) ).toHaveValue( JSON.stringify( { name: placeName } ) );
+
+		await closeWidgetDialog( page );
+		await saveDraft( page );
+
+		expect( await getStoredMarkerPositions( page ) ).toEqual( [
+			expect.objectContaining( { place: { name: placeName } } ),
+		] );
+
+		// The saved marker, now an existing item that is collapsed when the
+		// form opens.
+		form = await openGoogleMapsWidgetForm( page );
+		items = await getMarkerItems( form );
+		await expect( items ).toHaveCount( 1 );
+
+		place = await expandMarker( items.first() );
+		await expect( place ).toHaveAttribute( 'data-initialized', 'true', { timeout: 10000 } );
+		await expect( place.locator( '.location-field-data' ) ).toHaveValue( JSON.stringify( { name: placeName } ) );
 	} finally {
 		if ( postId ) {
 			await requestUtils.rest( {
