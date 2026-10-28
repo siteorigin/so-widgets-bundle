@@ -195,10 +195,15 @@
 					previewInitialized: false,
 				} );
 
-				props.setAttributes( {
-					widgetMarkup: widgetPreview.html,
-					widgetIcons: widgetPreview.widgetIcons,
-				} );
+				// A preview can finish after the Customizer has published. Keep its
+				// markup local there so a late response cannot dirty the saved widget.
+				// The server renders the widget from widgetData when markup is absent.
+				if ( ! document.body.classList.contains( 'wp-customizer' ) ) {
+					props.setAttributes( {
+						widgetMarkup: widgetPreview.html,
+						widgetIcons: widgetPreview.widgetIcons,
+					} );
+				}
 			} )
 			.fail( ( response ) => {
 				if ( response && response.statusText === 'abort' ) {
@@ -675,10 +680,12 @@
 			const loadWidgetPreview = ! loadingWidgetPreview && ! editing;
 
 			if ( loadWidgetPreview ) {
-				props.setAttributes( {
-					widgetMarkup: null,
-					widgetIcons: null
-				} );
+				if ( ! document.body.classList.contains( 'wp-customizer' ) ) {
+					props.setAttributes( {
+						widgetMarkup: null,
+						widgetIcons: null
+					} );
+				}
 
 				sowbGenerateWidgetPreview(
 					props,
@@ -1507,7 +1514,15 @@ const sowbSnapshotBlockFormToAttributes = async ( props, $form = null ) => {
 		return null;
 	}
 
-	props.setAttributes( { widgetData } );
+	// Some fields are snapshotted without emitting an input or change event.
+	// If their values changed, the cached markup no longer represents the form.
+	const customizerDataChanged = $snapshotForm.closest( '.customize-control-sidebar_block_editor' ).length &&
+		JSON.stringify( widgetData ) !== JSON.stringify( props.attributes.widgetData );
+	props.setAttributes( customizerDataChanged ? {
+		widgetData,
+		widgetMarkup: null,
+		widgetIcons: null,
+	} : { widgetData } );
 
 	return widgetData;
 };

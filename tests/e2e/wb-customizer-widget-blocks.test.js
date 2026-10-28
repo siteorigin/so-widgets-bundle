@@ -25,8 +25,8 @@ const publishChanges = async ( page ) => {
 	await expect( publish ).toBeDisabled( { timeout: 20000 } );
 };
 
-const serializeWidgetBlock = ( name, widgetClass, widgetData ) => {
-	const attributes = JSON.stringify( { widgetClass, widgetData } )
+const serializeWidgetBlock = ( name, widgetClass, widgetData, extraAttributes = {} ) => {
+	const attributes = JSON.stringify( { widgetClass, widgetData, ...extraAttributes } )
 		.replace( /--/g, '\\u002d\\u002d' )
 		.replace( /</g, '\\u003c' )
 		.replace( />/g, '\\u003e' )
@@ -96,6 +96,7 @@ test( 'Saved SiteOrigin widget blocks can be edited and published in Customizer 
 	const preservedTitle = `Customizer preserved title ${ suffix }`;
 	let post;
 	const widgets = [];
+	let releasePreview;
 
 	try {
 		post = await requestUtils.createPost( {
@@ -111,11 +112,11 @@ test( 'Saved SiteOrigin widget blocks can be edited and published in Customizer 
 				text: `<p>${ originalText }</p>`,
 				autop: true,
 				text_selected_editor: 'tinymce',
-			} ),
+			}, { widgetMarkup: '<div>Stale cached widget markup</div>' } ),
 			serializeWidgetBlock( CTA_BLOCK, 'SiteOrigin_Widget_Cta_Widget', {
 				title: originalCta,
 				sub_title: 'Preserved CTA subtitle',
-			} ),
+			}, { widgetMarkup: '<div>Stale cached CTA markup</div>', widgetIcons: [ 'stale-icon' ] } ),
 		] ) {
 			widgets.push( await requestUtils.rest( {
 				method: 'POST',
@@ -140,9 +141,56 @@ test( 'Saved SiteOrigin widget blocks can be edited and published in Customizer 
 		const visualBody = editor.form.locator( '.siteorigin-widget-field-type-tinymce' )
 			.frameLocator( 'iframe' ).locator( 'body' );
 		await expect( visualBody ).toContainText( originalText );
+		await expect( page.locator( '#save' ) ).toBeDisabled();
+		// Hold the preview response so publishing happens while it is in flight.
+		// Fetch it first so the request has reached the server before we publish.
+		let previewStarted;
+		const previewInFlight = new Promise( ( resolve ) => { previewStarted = resolve; } );
+		const previewReleased = new Promise( ( resolve ) => { releasePreview = resolve; } );
+		let previewFinished;
+		const previewDone = new Promise( ( resolve ) => { previewFinished = resolve; } );
+		await page.route( '**/sowb/v1/widgets/previews*', async ( route ) => {
+			const data = new URLSearchParams( route.request().postData() || '' );
+			if ( ! ( data.get( 'widgetData[text]' ) || '' ).includes( editedText ) ) {
+				await route.continue();
+				return;
+			}
+			try {
+				const response = await route.fetch();
+				previewStarted();
+				await previewReleased;
+				await route.fulfill( { response } );
+				previewFinished();
+			} catch ( error ) {
+				previewFinished( error );
+			}
+		} );
+		await page.evaluate( ( marker ) => {
+			window.sowbTestPreviewCompleted = false;
+			window.jQuery( document ).on( 'ajaxSuccess.sowbTest', ( event, xhr, settings ) => {
+				const data = new URLSearchParams( settings.data || '' );
+				if ( settings.url.includes( 'sowb/v1/widgets/previews' ) &&
+					( data.get( 'widgetData[text]' ) || '' ).includes( marker ) ) {
+					window.sowbTestPreviewCompleted = true;
+					window.jQuery( document ).off( 'ajaxSuccess.sowbTest' );
+				}
+			} );
+		}, editedText );
 		await visualBody.fill( editedText );
+		await Promise.race( [ previewInFlight, page.waitForTimeout( 20000 ).then( () => {
+			throw new Error( 'Edited widget preview did not start.' );
+		} ) ] );
 		// Publish directly from the focused rich-text editor without opening Preview.
 		await publishChanges( page );
+		releasePreview();
+		expect( await previewDone ).toBeUndefined();
+		await page.waitForFunction( () => window.sowbTestPreviewCompleted );
+		const editorClientId = await editor.block.getAttribute( 'data-block' );
+		const attributesAfterPreview = await page.evaluate( ( clientId ) =>
+			window.wp.data.select( 'core/block-editor' ).getBlock( clientId ).attributes, editorClientId );
+		expect( attributesAfterPreview.widgetMarkup ).toBeFalsy();
+		await expect( page.locator( '#save' ) ).toBeDisabled();
+		await page.unroute( '**/sowb/v1/widgets/previews*' );
 		const editorSaved = await requestUtils.rest( {
 			path: `/wp/v2/widgets/${ widgets[ 0 ].id }`,
 			params: { context: 'edit' },
@@ -150,7 +198,20 @@ test( 'Saved SiteOrigin widget blocks can be edited and published in Customizer 
 		expect( editorSaved.instance.raw.content ).toContain( editedText );
 
 		const cta = await openWidgetForm( page, CTA_BLOCK, originalCta );
-		await cta.form.getByRole( 'textbox', { name: 'Title', exact: true } ).fill( editedCta );
+		const ctaClientId = await cta.block.getAttribute( 'data-block' );
+		const getCtaAttributes = () => page.evaluate( ( clientId ) =>
+			window.wp.data.select( 'core/block-editor' ).getBlock( clientId ).attributes, ctaClientId );
+		expect( ( await getCtaAttributes() ).widgetMarkup ).toContain( 'Stale cached CTA markup' );
+		// Simulate a field that updates its DOM value without notifying the form.
+		await cta.form.getByRole( 'textbox', { name: 'Title', exact: true } )
+			.evaluate( ( input, value ) => { input.value = value; }, editedCta );
+		expect( ( await getCtaAttributes() ).widgetData.title ).toBe( originalCta );
+		await expect( page.locator( '#save' ) ).toBeDisabled();
+		await page.getByRole( 'button', { name: 'Preview widget.', exact: true } ).click( { force: true } );
+		await expect.poll( async () => ( await getCtaAttributes() ).widgetData.title ).toBe( editedCta );
+		const ctaPreviewAttributes = await getCtaAttributes();
+		expect( ctaPreviewAttributes.widgetMarkup ).toBeFalsy();
+		expect( ctaPreviewAttributes.widgetIcons ).toBeFalsy();
 		await publishChanges( page );
 
 		const stored = await Promise.all( widgets.map( ( widget ) => requestUtils.rest( {
@@ -181,7 +242,15 @@ test( 'Saved SiteOrigin widget blocks can be edited and published in Customizer 
 			params: { context: 'edit' },
 		} );
 		expect( codeSaved.instance.raw.content ).toContain( codeText );
+		await page.goto( post.link );
+		await expect( page.locator( '.so-widget-sow-editor' ).filter( { hasText: codeText } ) ).toBeVisible();
+		await openCustomizer( page, sidebar, post.link );
+		const codeReopened = await openWidgetForm( page, EDITOR_BLOCK, codeText );
+		await expect( codeReopened.form.locator( 'textarea.wp-editor-area' ) ).toHaveValue( codeText );
 	} finally {
+		if ( releasePreview ) {
+			releasePreview();
+		}
 		for ( const widget of widgets ) {
 			await requestUtils.rest( {
 				method: 'DELETE',

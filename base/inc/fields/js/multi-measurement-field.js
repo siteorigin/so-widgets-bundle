@@ -75,6 +75,14 @@
 			return true;
 		}
 
+		// The Customizer may publish while a measurement input still has focus.
+		// Keep the serialized value current before the input event reaches the form.
+		if ( $$.closest( '.customize-control-sidebar_block_editor' ).length ) {
+			$valInputs.on( 'input', function() {
+				updateValue( $( this ) );
+			} );
+		}
+
 		$inputContainers.on( 'change', function( event ) {
 			const $valInput = $( event.currentTarget ).find( '> .sow-multi-measurement-input' );
 

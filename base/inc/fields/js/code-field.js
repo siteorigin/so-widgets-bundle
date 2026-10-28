@@ -259,6 +259,12 @@
 							},
 							set: function(data){
 								defaults.textarea.value = data;
+								// Behave prevents the browser's input event for its edits.
+								// The Customizer needs that event to save without waiting for blur.
+								if ( defaults.textarea.closest( '.customize-control-sidebar_block_editor' ) ) {
+									var view = defaults.textarea.ownerDocument.defaultView;
+									defaults.textarea.dispatchEvent( new view.Event( 'input', { bubbles: true } ) );
+								}
 							}
 						},
 						fenceRange: function(){
@@ -528,7 +534,7 @@
 								right = val.substring(pos),
 								edited = left + _char.open + _char.close + right;
 
-							defaults.textarea.value = edited;
+							utils.editor.set(edited);
 							utils.cursor.set(pos + 1);
 							utils._callHook('openChar:after');
 						},
