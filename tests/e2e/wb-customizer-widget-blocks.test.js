@@ -12,7 +12,7 @@ const {
 const EDITOR_BLOCK = 'sowb/siteorigin-widget-editor-widget';
 const CTA_BLOCK = 'sowb/siteorigin-widget-cta-widget';
 
-const publishChanges = async ( page ) => {
+const publishChanges = async ( page, keyboard = false ) => {
 	const publish = page.locator( '#save' );
 	await expect( publish ).toBeEnabled();
 	const saved = page.waitForResponse( ( response ) => {
@@ -20,7 +20,11 @@ const publishChanges = async ( page ) => {
 		return response.url().includes( 'admin-ajax.php' ) && data &&
 			new URLSearchParams( data ).get( 'action' ) === 'customize_save';
 	} );
-	await publish.click();
+	if ( keyboard ) {
+		await page.keyboard.press( 'ControlOrMeta+S' );
+	} else {
+		await publish.click();
+	}
 	expect( ( await ( await saved ).json() ).success ).toBe( true );
 	await expect( publish ).toBeDisabled( { timeout: 20000 } );
 };
@@ -69,6 +73,11 @@ const openWidgetForm = async ( page, blockName, marker ) => {
 	}, { timeout: 20000 } ).toBe( true );
 	const block = page.locator( `[data-block="${ clientId }"]` );
 	await block.click();
+	await expect.poll( () => page.evaluate( () =>
+		window.wp.data.select( 'core/block-editor' ).getSelectedBlockClientId() ) ).toBe( clientId );
+	await expect( page.getByRole( 'toolbar', { name: 'Block tools' } ).getByRole( 'button', {
+		name: blockName === CTA_BLOCK ? 'SiteOrigin Call To Action' : 'SiteOrigin Editor', exact: true,
+	} ) ).toBeVisible();
 	// The narrow Customizer panel can place the toolbar under its sticky header.
 	await page.getByRole( 'button', { name: 'Edit widget.', exact: true } ).click( { force: true } );
 	const form = block.locator( '.siteorigin-widget-form-main[data-class]' );
@@ -93,6 +102,9 @@ test( 'Saved SiteOrigin widget blocks can be edited and published in Customizer 
 	const editedText = `Customizer published editor ${ suffix }`;
 	const codeText = `Customizer published code ${ suffix }`;
 	const editedCta = `Customizer published CTA ${ suffix }`;
+	const originalDirectCta = `Customizer original direct CTA ${ suffix }`;
+	const directCta = `Customizer direct CTA ${ suffix }`;
+	const silentSubtitle = `Customizer silent subtitle ${ suffix }`;
 	const preservedTitle = `Customizer preserved title ${ suffix }`;
 	let post;
 	const widgets = [];
@@ -117,6 +129,10 @@ test( 'Saved SiteOrigin widget blocks can be edited and published in Customizer 
 				title: originalCta,
 				sub_title: 'Preserved CTA subtitle',
 			}, { widgetMarkup: '<div>Stale cached CTA markup</div>', widgetIcons: [ 'stale-icon' ] } ),
+			serializeWidgetBlock( CTA_BLOCK, 'SiteOrigin_Widget_Cta_Widget', {
+				title: originalDirectCta,
+				sub_title: 'Preserved CTA subtitle',
+			} ),
 		] ) {
 			widgets.push( await requestUtils.rest( {
 				method: 'POST',
@@ -198,7 +214,7 @@ test( 'Saved SiteOrigin widget blocks can be edited and published in Customizer 
 		expect( editorSaved.instance.raw.content ).toContain( editedText );
 
 		const cta = await openWidgetForm( page, CTA_BLOCK, originalCta );
-		const ctaClientId = await cta.block.getAttribute( 'data-block' );
+		let ctaClientId = await cta.block.getAttribute( 'data-block' );
 		const getCtaAttributes = () => page.evaluate( ( clientId ) =>
 			window.wp.data.select( 'core/block-editor' ).getBlock( clientId ).attributes, ctaClientId );
 		expect( ( await getCtaAttributes() ).widgetMarkup ).toContain( 'Stale cached CTA markup' );
@@ -214,13 +230,49 @@ test( 'Saved SiteOrigin widget blocks can be edited and published in Customizer 
 		expect( ctaPreviewAttributes.widgetIcons ).toBeFalsy();
 		await publishChanges( page );
 
+		// Enable Publish with a normal edit, then silently change another field.
+		// Saving must snapshot the open form without switching to Preview.
+		const directCtaForm = await openWidgetForm( page, CTA_BLOCK, originalDirectCta );
+		ctaClientId = await directCtaForm.block.getAttribute( 'data-block' );
+		await directCtaForm.form.getByRole( 'textbox', { name: 'Title', exact: true } ).fill( directCta );
+		await expect.poll( async () => ( await getCtaAttributes() ).widgetData.title ).toBe( directCta );
+		await directCtaForm.form.getByRole( 'textbox', { name: 'Subtitle', exact: true } )
+			.evaluate( ( input, value ) => { input.value = value; }, silentSubtitle );
+		expect( ( await getCtaAttributes() ).widgetData.sub_title ).toBe( 'Preserved CTA subtitle' );
+
+		// A rejected snapshot must stop the Customizer save and tell the user.
+		await page.evaluate( () => {
+			window.sowbTestOriginalSnapshot = window.sowbForms.getWidgetFormSnapshot;
+			window.sowbForms.getWidgetFormSnapshot = () => Promise.reject( new Error( 'Snapshot test failure' ) );
+		} );
+		let saveRequests = 0;
+		const countSaveRequest = ( request ) => {
+			const data = request.postData();
+			if ( request.url().includes( 'admin-ajax.php' ) && data &&
+				new URLSearchParams( data ).get( 'action' ) === 'customize_save' ) {
+				saveRequests++;
+			}
+		};
+		page.on( 'request', countSaveRequest );
+		await page.locator( '#save' ).click();
+		await expect( page.locator( '#customize-notifications-area' ).getByText( 'The widget could not be prepared for saving. Please try again.' ) ).toBeVisible();
+		expect( saveRequests ).toBe( 0 );
+		page.off( 'request', countSaveRequest );
+		const afterRejectedSave = await requestUtils.rest( {
+			path: `/wp/v2/widgets/${ widgets[ 2 ].id }`,
+			params: { context: 'edit' },
+		} );
+		expect( afterRejectedSave.instance.raw.content ).not.toContain( silentSubtitle );
+		await page.evaluate( () => { window.sowbForms.getWidgetFormSnapshot = window.sowbTestOriginalSnapshot; } );
+		await publishChanges( page );
+
 		const stored = await Promise.all( widgets.map( ( widget ) => requestUtils.rest( {
 			method: 'GET',
 			path: `/wp/v2/widgets/${ widget.id }`,
 			params: { context: 'edit' },
 		} ) ) );
 		const savedContent = stored.map( ( item ) => item.instance.raw.content ).join( '\n' );
-		for ( const marker of [ editedText, editedCta, preservedTitle, 'Preserved CTA subtitle' ] ) {
+		for ( const marker of [ editedText, directCta, preservedTitle, silentSubtitle ] ) {
 			expect( savedContent ).toContain( marker );
 		}
 		expect( savedContent ).not.toContain( originalText );
@@ -228,7 +280,7 @@ test( 'Saved SiteOrigin widget blocks can be edited and published in Customizer 
 
 		await page.goto( post.link );
 		await expect( page.locator( '.so-widget-sow-editor' ).filter( { hasText: editedText } ) ).toBeVisible();
-		await expect( page.locator( '.so-widget-sow-cta' ).filter( { hasText: editedCta } ) ).toBeVisible();
+		await expect( page.locator( '.so-widget-sow-cta' ).filter( { hasText: directCta } ) ).toContainText( silentSubtitle );
 		await openCustomizer( page, sidebar, post.link );
 		const reopened = await openWidgetForm( page, EDITOR_BLOCK, editedText );
 		await expect( reopened.form.locator( 'input[name$="[title]"]' ) ).toHaveValue( preservedTitle );
@@ -236,7 +288,8 @@ test( 'Saved SiteOrigin widget blocks can be edited and published in Customizer 
 			.frameLocator( 'iframe' ).locator( 'body' ) ).toContainText( editedText );
 		await reopened.form.locator( 'button.switch-html' ).click();
 		await reopened.form.locator( 'textarea.wp-editor-area' ).fill( codeText );
-		await publishChanges( page );
+		// Use the save shortcut while focus remains in the edited field.
+		await publishChanges( page, true );
 		const codeSaved = await requestUtils.rest( {
 			path: `/wp/v2/widgets/${ widgets[ 0 ].id }`,
 			params: { context: 'edit' },

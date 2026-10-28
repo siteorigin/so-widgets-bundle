@@ -1547,6 +1547,136 @@ const sowbCloneBlocksWithWidgetData = ( blocks, widgetDataByClientId ) => {
 	} );
 };
 
+// The Customizer does not run the post editor's preSavePost filter. Flush
+// open forms before its save starts, including fields that changed silently.
+jQuery( function() {
+	if ( ! document.body.classList.contains( 'wp-customizer' ) || typeof wp.customize !== 'function' ) {
+		return;
+	}
+	{
+		const api = wp.customize;
+		if ( ! api.previewer || typeof api.previewer.save !== 'function' ) {
+			return;
+		}
+		const originalSave = api.previewer.save;
+		let pendingSave = null;
+
+		api.previewer.save = function() {
+			if ( pendingSave ) {
+				return pendingSave.promise();
+			}
+
+			const previewer = this;
+			const args = arguments;
+			const deferred = jQuery.Deferred();
+			pendingSave = deferred;
+			api.notifications.remove( 'sowb-widget-snapshot-error' );
+			api.state( 'saving' ).set( true );
+			const lockedForms = [];
+			let cancelled = false;
+			const unlockForms = () => {
+				lockedForms.forEach( ( form ) => form.removeAttribute( 'inert' ) );
+			};
+
+			const snapshotForms = async () => {
+				const blockEditor = wp.data.select( 'core/block-editor' );
+				if ( ! blockEditor || typeof blockEditor.getBlocks !== 'function' ) {
+					return [];
+				}
+				const blocks = sowbFindDirectWidgetBlocks( blockEditor.getBlocks() );
+				const forms = [];
+				for ( const block of blocks ) {
+					const $form = sowbGetBlockForm( block.clientId );
+					if ( ! $form.length || ! $form.data( 'sow-form-setup' ) ||
+						! $form.closest( '.customize-control-sidebar_block_editor' ).length ) {
+						continue;
+					}
+					forms.push( { block, $form } );
+					if ( ! $form[0].hasAttribute( 'inert' ) ) {
+						$form[0].setAttribute( 'inert', '' );
+						lockedForms.push( $form[0] );
+					}
+				}
+				const snapshots = [];
+				for ( const { block, $form } of forms ) {
+					if ( cancelled ) {
+						throw new Error( 'Widget form snapshot was cancelled.' );
+					}
+					const widgetData = await sowbGetBlockFormSnapshot( $form );
+					if ( cancelled ) {
+						throw new Error( 'Widget form snapshot was cancelled.' );
+					}
+					if ( ! sowbHasWidgetDataSnapshot( widgetData ) ) {
+						throw new Error( 'Widget form snapshot is empty.' );
+					}
+					snapshots.push( {
+						clientId: block.clientId,
+						widgetData,
+						previousData: JSON.stringify( block.attributes.widgetData ),
+					} );
+				}
+				return snapshots;
+			};
+
+			let timeout;
+			Promise.race( [
+				snapshotForms(),
+				new Promise( ( resolve, reject ) => {
+					timeout = setTimeout( () => reject( new Error( 'Widget form snapshot timed out.' ) ), 15000 );
+				} ),
+			] ).then( ( snapshots ) => {
+				clearTimeout( timeout );
+				const select = wp.data.select( 'core/block-editor' );
+				const dispatch = wp.data.dispatch( 'core/block-editor' );
+				for ( const snapshot of snapshots ) {
+					const block = select.getBlock( snapshot.clientId );
+					if ( ! block || JSON.stringify( block.attributes.widgetData ) !== snapshot.previousData ) {
+						throw new Error( 'Widget changed while preparing to save.' );
+					}
+				}
+				const flushSync = wp.element.flushSync || ( window.ReactDOM && window.ReactDOM.flushSync );
+				const applySnapshots = () => {
+					for ( const snapshot of snapshots ) {
+						const block = select.getBlock( snapshot.clientId );
+						if ( block && JSON.stringify( block.attributes.widgetData ) !== JSON.stringify( snapshot.widgetData ) ) {
+							dispatch.updateBlockAttributes( snapshot.clientId, {
+								widgetData: snapshot.widgetData,
+								widgetMarkup: null,
+								widgetIcons: null,
+							} );
+						}
+					}
+				};
+				if ( flushSync ) {
+					flushSync( applySnapshots );
+				} else {
+					applySnapshots();
+				}
+				unlockForms();
+				api.state( 'saving' ).set( false );
+				originalSave.apply( previewer, args ).then(
+					function() { pendingSave = null; deferred.resolveWith( this, arguments ); },
+					function() { pendingSave = null; deferred.rejectWith( this, arguments ); }
+				);
+			} ).catch( ( error ) => {
+				clearTimeout( timeout );
+				pendingSave = null;
+				cancelled = true;
+				unlockForms();
+				api.state( 'saving' ).set( false );
+				console.error( 'SiteOrigin Widgets: unable to prepare widget forms for publishing', error );
+				api.notifications.add( new api.Notification( 'sowb-widget-snapshot-error', {
+					type: 'error',
+					dismissible: true,
+					message: wp.i18n.__( 'The widget could not be prepared for saving. Please try again.', 'so-widgets-bundle' ),
+				} ) );
+				deferred.reject( error );
+			} );
+			return deferred.promise();
+		};
+	}
+} );
+
 wp.hooks.addFilter(
 	'editor.preSavePost',
 	'sowb/direct-widget-block-save-bridge',
