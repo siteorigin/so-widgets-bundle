@@ -14,9 +14,13 @@ const ABILITIES_PROJECT = 'abilities';
 
 /**
  * The Features specs render in a second theme through core's theme preview.
- * Their setup project installs that theme once, before any spec, and its
- * teardown removes it when the setup installed it.
+ * They run in projects of their own, which depend on a setup project that
+ * installs that theme once, before any of them, and a teardown that removes
+ * it when the setup installed it. Firefox and WebKit run only the specs
+ * tagged @firefox or @webkit, which are Features specs.
  */
+const FEATURES_SPECS = /[\\/]wb-features-[^\\/]+\.test\.js$/;
+const FEATURES_PROJECT = 'Chrome Features';
 const FEATURES_SETUP_PROJECT = 'features setup';
 const FEATURES_TEARDOWN_PROJECT = 'features teardown';
 
@@ -36,7 +40,12 @@ config.projects = [
 	},
 	{
 		...browserProject,
-		testIgnore: ABILITY_SPECS,
+		testIgnore: [ ABILITY_SPECS, FEATURES_SPECS ],
+	},
+	{
+		...browserProject,
+		name: FEATURES_PROJECT,
+		testMatch: FEATURES_SPECS,
 		dependencies: [ FEATURES_SETUP_PROJECT ],
 	},
 	{
@@ -45,7 +54,6 @@ config.projects = [
 		testMatch: ABILITY_SPECS,
 		workers: 1,
 	},
-	// Firefox and Safari run only the specs tagged for them.
 	{
 		name: 'Firefox',
 		use: devices[ 'Desktop Firefox' ],

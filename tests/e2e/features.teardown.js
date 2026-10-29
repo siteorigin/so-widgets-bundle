@@ -7,7 +7,8 @@ const { setupRequestUtils } = require( 'siteorigin-tests-common/playwright/commo
 const { INSTALLED_THEMES_FILE, deleteTheme } = require( './helpers/features' );
 
 /**
- * Removes the preview themes that features.setup.js installed, and only those.
+ * Removes the preview themes that features.setup.js installed, and only
+ * those. The list is removed only once every theme on it is.
  */
 teardown( 'remove the Features preview themes the setup installed', async () => {
 	if ( ! fs.existsSync( INSTALLED_THEMES_FILE ) ) {

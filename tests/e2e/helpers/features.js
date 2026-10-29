@@ -93,6 +93,8 @@ const withPreview = ( link, theme ) => {
  */
 const openFeaturesPage = async ( browser, fixture, { width, theme = THEMES[ 0 ], height = 900, beforeLoad } ) => {
 	const context = await browser.newContext( {
+		// As the shared config's `use`, which a new context does not inherit.
+		ignoreHTTPSErrors: true,
 		viewport: { width, height },
 		storageState: theme.preview ? await fixture.requestUtils.request.storageState() : undefined,
 	} );
