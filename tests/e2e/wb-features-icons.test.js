@@ -232,7 +232,7 @@ test.describe( 'Features icon settings', { tag: [ '@firefox', '@webkit' ] }, () 
 		await page.context().close();
 
 		for ( const name of names ) {
-			expect( measured[ name ].length, name ).toBe( 2 );
+			expect( measured[ name ].map( ( f ) => f.position ), name ).toEqual( [ 'top', 'right' ] );
 
 			measured[ name ].forEach( ( f ) => CHECKS[ name ](
 				f,

@@ -13,9 +13,10 @@ const {
 
 /**
  * Measures the Features Responsive Breakpoint setting on a rendered page:
- * features stack below it and keep their row above it, at the default
- * (780px) and at a value saved through the widget's Settings dialog; with
- * responsive off they keep their row below it too. In each theme.
+ * features stack at it and keep their row a pixel above it, at the value
+ * the widget's Settings dialog shows (780px, the default, on a fresh site)
+ * and at a value saved through that dialog; with responsive off they keep
+ * their row at it too. In each theme.
  *
  * The setting is site-wide, so this file runs in order and restores the
  * value it found. The other Features specs measure only at 1280px and
@@ -78,11 +79,10 @@ const checkRow = ( list, message ) => {
 };
 
 /**
- * Opens the widget's Settings dialog on the Widgets page and saves the
- * breakpoint. `found` receives the value and unit the form showed, before
- * anything is written.
+ * Opens the widget's Settings dialog on the Widgets page and passes `use`
+ * the dialog's breakpoint field and unit.
  */
-const saveBreakpoint = async ( browser, featuresPage, { value, unit }, found = () => {} ) => {
+const withSettings = async ( browser, featuresPage, use ) => {
 	const context = await browser.newContext( {
 		ignoreHTTPSErrors: true,
 		storageState: await featuresPage.requestUtils.request.storageState(),
@@ -96,24 +96,35 @@ const saveBreakpoint = async ( browser, featuresPage, { value, unit }, found = (
 
 		const dialog = page.locator( '#sow-settings-dialog' );
 		const input = dialog.locator( 'input[name$="[responsive_breakpoint]"]' );
-		const select = dialog.locator( 'select[name$="[responsive_breakpoint_unit]"]' );
 
 		await input.waitFor();
 
-		found( { value: await input.inputValue(), unit: await select.inputValue() } );
-
-		await input.fill( String( value ) );
-		await select.selectOption( unit );
-
-		const saved = page.waitForResponse( ( response ) => response.url().includes( 'action=so_widgets_setting_save' ) );
-
-		await dialog.locator( '.so-save' ).click();
-
-		expect( ( await saved ).ok(), 'the Settings dialog saves' ).toBe( true );
+		return await use( { page, dialog, input, select: dialog.locator( 'select[name$="[responsive_breakpoint_unit]"]' ) } );
 	} finally {
 		await context.close();
 	}
 };
+
+const shown = async ( { input, select } ) => ( { value: await input.inputValue(), unit: await select.inputValue() } );
+
+const readBreakpoint = ( browser, featuresPage ) => withSettings( browser, featuresPage, shown );
+
+/**
+ * Saves the breakpoint. `found` receives the value and unit the dialog
+ * showed, before anything is written.
+ */
+const saveBreakpoint = ( browser, featuresPage, { value, unit }, found = () => {} ) => withSettings( browser, featuresPage, async ( settings ) => {
+	found( await shown( settings ) );
+
+	await settings.input.fill( String( value ) );
+	await settings.select.selectOption( unit );
+
+	const saved = settings.page.waitForResponse( ( response ) => response.url().includes( 'action=so_widgets_setting_save' ) );
+
+	await settings.dialog.locator( '.so-save' ).click();
+
+	expect( ( await saved ).ok(), 'the Settings dialog saves' ).toBe( true );
+} );
 
 test.describe( 'Features responsive breakpoint setting', { tag: [ '@firefox', '@webkit' ] }, () => {
 	let found;
@@ -124,8 +135,9 @@ test.describe( 'Features responsive breakpoint setting', { tag: [ '@firefox', '@
 		() => [ featuresBlock( widgetData( true ) ), featuresBlock( widgetData( false ) ) ].join( '\n\n' )
 	);
 
-	// A never saved setting is restored as the value its form showed, 780px,
-	// which is its default and renders the same CSS.
+	// A never saved setting is restored as the value its dialog showed,
+	// 780px, which is its default and renders the same CSS; the plugin has no
+	// way to delete the setting.
 	test.afterAll( async ( { browser } ) => {
 		if ( found ) {
 			await saveBreakpoint( browser, featuresPage, found );
@@ -141,20 +153,26 @@ test.describe( 'Features responsive breakpoint setting', { tag: [ '@firefox', '@
 		return { responsive, responsiveOff };
 	};
 
+	// The media queries are max-width and min-width of the breakpoint, so
+	// features stack at it and keep their row a pixel above it.
 	const checkBreakpoint = async ( browser, breakpoint ) => {
 		for ( const theme of THEMES ) {
-			const below = await measured( browser, breakpoint - 10, theme );
-			const above = await measured( browser, breakpoint + 20, theme );
+			const at = await measured( browser, breakpoint, theme );
+			const above = await measured( browser, breakpoint + 1, theme );
 			const message = ( width ) => `${ theme.name } at ${ width }px, breakpoint ${ breakpoint }px`;
 
-			checkStacked( below.responsive, message( breakpoint - 10 ) );
-			checkRow( below.responsiveOff, `responsive off, ${ message( breakpoint - 10 ) }` );
-			checkRow( above.responsive, message( breakpoint + 20 ) );
+			checkStacked( at.responsive, message( breakpoint ) );
+			checkRow( at.responsiveOff, `responsive off, ${ message( breakpoint ) }` );
+			checkRow( above.responsive, message( breakpoint + 1 ) );
 		}
 	};
 
-	test( 'the default breakpoint is 780px', async ( { browser } ) => {
-		await checkBreakpoint( browser, 780 );
+	test( 'features stack at the breakpoint the Settings dialog shows', async ( { browser } ) => {
+		const breakpoint = await readBreakpoint( browser, featuresPage );
+
+		expect( breakpoint.unit ).toBe( 'px' );
+
+		await checkBreakpoint( browser, Number( breakpoint.value ) );
 	} );
 
 	test( 'a breakpoint saved in the Settings dialog moves where features stack', async ( { browser } ) => {

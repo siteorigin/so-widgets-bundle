@@ -102,7 +102,7 @@ const rowSizes = ( perRow ) => {
  * Checks the rows: their sizes, the gap between features in a row and
  * between rows, equal widths, and where the last row starts.
  */
-const checkRows = ( m, { perRow, spacing, centred, fullWidth }, message ) => {
+const checkRows = ( m, { perRow, spacing, centred, fullWidth, featureWidth }, message ) => {
 	const rows = rowsOf( m.features );
 
 	expect.soft( m.features.length, `${ message }: features` ).toBe( COUNT );
@@ -118,7 +118,7 @@ const checkRows = ( m, { perRow, spacing, centred, fullWidth }, message ) => {
 		}
 	} );
 
-	m.features.forEach( ( f, i ) => expectNear( f.width, fullWidth ? m.list.width : m.features[ 0 ].width, `${ message }: width of feature ${ i + 1 }` ) );
+	m.features.forEach( ( f, i ) => expectNear( f.width, fullWidth ? m.list.width : featureWidth( m.list.width ), `${ message }: width of feature ${ i + 1 }` ) );
 
 	const last = rows[ rows.length - 1 ];
 	const lastLeft = last[ 0 ].left;
@@ -135,22 +135,26 @@ const checkRows = ( m, { perRow, spacing, centred, fullWidth }, message ) => {
  * The expected layout of a case at a width. Below the breakpoint a
  * responsive list stacks its features at full width with the mobile row
  * gap. A list with responsive off keeps its row size; with no mobile
- * spacing, its gaps are the feature spacing (#2403).
+ * spacing, its gaps are the feature spacing (#2403). A feature in a row is
+ * its share of the list less the column gap of the feature spacing, as
+ * calculate_feature_width() sets it.
  */
 const expected = ( name, width ) => {
 	const settings = CASES[ name ];
 	const spacing = settings.feature_spacing ? { row: 50, column: 50 } : SPACING;
 	const mobileSpacing = settings.feature_spacing_mobile === '' ? spacing : MOBILE_SPACING;
+	const share = Math.round( 100000 / settings.per_row ) / 1000;
+	const featureWidth = ( listWidth ) => listWidth * share / 100 - spacing.column;
 
 	if ( width > BREAKPOINT ) {
-		return { perRow: settings.per_row, spacing, centred: !! settings.center_items };
+		return { perRow: settings.per_row, spacing, centred: !! settings.center_items, featureWidth };
 	}
 
 	if ( settings.responsive !== false ) {
 		return { perRow: 1, spacing: mobileSpacing, fullWidth: true };
 	}
 
-	return { perRow: settings.per_row, spacing: mobileSpacing, centred: !! settings.center_items };
+	return { perRow: settings.per_row, spacing: mobileSpacing, centred: !! settings.center_items, featureWidth };
 };
 
 test.describe( 'Features layout settings', { tag: [ '@firefox', '@webkit' ] }, () => {
