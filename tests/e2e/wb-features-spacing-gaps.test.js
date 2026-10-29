@@ -9,6 +9,10 @@ const {
 	setupRequestUtils,
 } = common;
 
+const {
+	widgetBlock,
+} = require( './helpers/widget-block-abilities' );
+
 /**
  * Measures the Features spacing settings on a rendered page: a set "Space
  * between icon and text" is the distance from the icon container to the
@@ -18,20 +22,10 @@ const {
  * with bare text is measured from the text box.
  */
 
-// Mirror serialize_block_attributes() so the seeded content matches what the
-// block editor stores.
-const escapeBlockAttrs = ( attrs ) => JSON.stringify( attrs )
-	.replace( /--/g, '\\u002d\\u002d' )
-	.replace( /</g, '\\u003c' )
-	.replace( />/g, '\\u003e' )
-	.replace( /&/g, '\\u0026' );
-
-const featuresBlock = ( widgetData ) => `<!-- wp:sowb/siteorigin-widget-features-widget ${ escapeBlockAttrs( {
+const featuresBlock = ( widgetData ) => widgetBlock( 'sowb/siteorigin-widget-features-widget', {
 	widgetClass: 'SiteOrigin_Widget_Features_Widget',
 	widgetData,
-} ) } /-->`;
-
-const POSITIONS = [ 'top', 'right', 'bottom', 'left' ];
+} );
 
 const TEXTS = {
 	headingAndList: { title: true, text: '<h4>Heading</h4><p>Text</p><ul><li>End</li></ul>' },
@@ -43,22 +37,37 @@ const TEXTS = {
 	mixedEnd: { title: false, text: '<ul><li>One</li></ul>Outro' },
 };
 
-const TALL = '<p>A taller feature.</p><p>A taller feature.</p><p>A taller feature.</p>';
+/**
+ * A feature with more text than the others. It sits in the first row, with
+ * the top and bottom features, so a bottom aligned row is stretched; the
+ * features of the case itself keep the case's content.
+ */
+const tallFeature = ( more ) => ( {
+	icon: 'fontawesome-star',
+	container_color: '#404040',
+	container_position: 'right',
+	title: 'Tall feature',
+	text: '<p>A taller feature.</p><p>A taller feature.</p><p>A taller feature.</p><p>A taller feature.</p>',
+	more_text: more ? 'Read more' : '',
+	more_url: '',
+} );
+
+// The first row (at three per row) holds top, bottom and the tall feature.
+const FEATURE_ORDER = [ 'top', 'bottom', 'tall', 'right', 'left' ];
 
 /**
- * One Features widget: a feature per position. The right feature is the
- * tallest, so a bottom aligned row is stretched.
+ * One Features widget: a feature per position, plus the tall feature.
  */
 const widgetData = ( { text, iconSpacing = '', titleSpacing = '', perRow = 3, bottomAlign = false, more = false, responsive = true } ) => ( {
-	features: POSITIONS.map( ( position ) => ( {
+	features: FEATURE_ORDER.map( ( position ) => position === 'tall' ? tallFeature( more ) : {
 		icon: 'fontawesome-star',
 		container_color: '#404040',
 		container_position: position,
 		title: TEXTS[ text ].title ? `Feature ${ position }` : '',
-		text: position === 'right' ? TEXTS[ text ].text + TALL : TEXTS[ text ].text,
+		text: TEXTS[ text ].text,
 		more_text: more ? 'Read more' : '',
 		more_url: '',
-	} ) ),
+	} ),
 	fonts: {
 		title_options: {
 			tag: 'h5',
@@ -103,11 +112,21 @@ for ( const bottomAlign of [ false, true ] ) {
 const titleCases = [];
 
 for ( const titleSpacing of [ '8px', '0px', '0.5em' ] ) {
-	for ( const bottomAlign of [ false, true ] ) {
-		for ( const text of [ 'headingAndList', 'paragraphs', 'bareText', 'textOnly' ] ) {
-			// textOnly has no title; give it one here so the title meets a list.
-			titleCases.push( { titleSpacing, bottomAlign, text, forceTitle: text === 'textOnly' } );
+	for ( const perRow of [ 3, 1 ] ) {
+		for ( const bottomAlign of [ false, true ] ) {
+			for ( const more of [ false, true ] ) {
+				for ( const text of [ 'headingAndList', 'paragraphs', 'bareText', 'textOnly' ] ) {
+					// textOnly has no title; give it one here so the title meets a list.
+					titleCases.push( { titleSpacing, perRow, bottomAlign, more, text, forceTitle: text === 'textOnly' } );
+				}
+			}
 		}
+	}
+}
+
+for ( const bottomAlign of [ false, true ] ) {
+	for ( const more of [ false, true ] ) {
+		titleCases.push( { titleSpacing: '8px', perRow: 3, bottomAlign, more, text: 'headingAndList', forceTitle: false, responsive: false } );
 	}
 }
 
@@ -116,7 +135,7 @@ const titleWidgetData = ( c ) => {
 
 	if ( c.forceTitle ) {
 		data.features.forEach( ( feature ) => {
-			feature.title = `Feature ${ feature.container_position }`;
+			feature.title = feature.title || `Feature ${ feature.container_position }`;
 		} );
 	}
 
@@ -194,74 +213,83 @@ const measure = () => {
 
 const label = ( c, width, position ) => `${ JSON.stringify( c ) } at ${ width }, ${ position } icon`;
 
+const expectNear = ( value, expected, message ) => {
+	expect.soft( value, message ).toBeGreaterThanOrEqual( expected - 1 );
+	expect.soft( value, message ).toBeLessThanOrEqual( expected + 1 );
+};
+
+// Two pages keep each save within the REST request timeout.
+const PAGES = {
+	icon: {
+		cases: iconCases,
+		data: widgetData,
+		check: ( c, f, message ) => expectNear( f.iconGap, parseFloat( c.iconSpacing ), message ),
+	},
+	title: {
+		cases: titleCases,
+		data: titleWidgetData,
+		check: ( c, f, message ) => expectNear(
+			f.titleGap,
+			c.titleSpacing.endsWith( 'em' ) ? parseFloat( c.titleSpacing ) * f.titleFontSize : parseFloat( c.titleSpacing ),
+			message
+		),
+	},
+};
+
 test.describe( 'Features spacing settings', () => {
 	let requestUtils;
-	let page;
-	let pageId;
-	let pageLink;
 
 	test.beforeAll( async ( { browser }, testInfo ) => {
 		requestUtils = await setupRequestUtils( { browser }, testInfo );
 
-		const content = [
-			...iconCases.map( ( c ) => featuresBlock( widgetData( c ) ) ),
-			...titleCases.map( ( c ) => featuresBlock( titleWidgetData( c ) ) ),
-		].join( '\n\n' );
+		for ( const [ name, fixture ] of Object.entries( PAGES ) ) {
+			const created = await requestUtils.rest( {
+				method: 'POST',
+				path: '/wp/v2/pages',
+				data: {
+					title: `Features spacing gaps, ${ name } (e2e)`,
+					status: 'publish',
+					content: fixture.cases.map( ( c ) => featuresBlock( fixture.data( c ) ) ).join( '\n\n' ),
+				},
+			} );
 
-		const created = await requestUtils.rest( {
-			method: 'POST',
-			path: '/wp/v2/pages',
-			data: {
-				title: 'Features spacing gaps (e2e)',
-				status: 'publish',
-				content,
-			},
-		} );
-
-		pageId = created.id;
-		pageLink = created.link;
-	} );
-
-	test.afterAll( async () => {
-		if ( pageId ) {
-			await requestUtils.rest( {
-				method: 'DELETE',
-				path: `/wp/v2/pages/${ pageId }`,
-				params: { force: true },
-			} ).catch( () => {} );
+			fixture.id = created.id;
+			fixture.link = created.link;
 		}
 	} );
 
-	for ( const width of [ 1280, 390 ] ) {
-		test( `each set spacing is the gap it names at ${ width }px`, async ( { browser } ) => {
-			page = await browser.newPage( { viewport: { width, height: 900 } } );
-			await page.goto( pageLink );
-
-			const lists = await page.evaluate( measure );
-
-			expect( lists.length ).toBe( iconCases.length + titleCases.length );
-
-			lists.forEach( ( features ) => expect( features.length ).toBe( 4 ) );
-
-			iconCases.forEach( ( c, n ) => {
-				const expected = parseFloat( c.iconSpacing );
-
-				lists[ n ].forEach( ( f ) => {
-					expect.soft( f.iconGap, label( c, width, f.position ) ).toBeGreaterThanOrEqual( expected - 1 );
-					expect.soft( f.iconGap, label( c, width, f.position ) ).toBeLessThanOrEqual( expected + 1 );
+	test.afterAll( async () => {
+		for ( const fixture of Object.values( PAGES ) ) {
+			if ( fixture.id ) {
+				const deleted = await requestUtils.rest( {
+					method: 'DELETE',
+					path: `/wp/v2/pages/${ fixture.id }`,
+					params: { force: true },
 				} );
-			} );
 
-			titleCases.forEach( ( c, n ) => {
-				lists[ iconCases.length + n ].forEach( ( f ) => {
-					const expected = c.titleSpacing.endsWith( 'em' ) ? parseFloat( c.titleSpacing ) * f.titleFontSize : parseFloat( c.titleSpacing );
+				expect( deleted.deleted ).toBe( true );
+			}
+		}
+	} );
 
-					expect.soft( f.titleGap, label( c, width, f.position ) ).toBeGreaterThanOrEqual( expected - 1 );
-					expect.soft( f.titleGap, label( c, width, f.position ) ).toBeLessThanOrEqual( expected + 1 );
+	for ( const [ name, fixture ] of Object.entries( PAGES ) ) {
+		for ( const width of [ 1280, 390 ] ) {
+			test( `each set ${ name } spacing is the gap it names at ${ width }px`, async ( { browser } ) => {
+				const page = await browser.newPage( { viewport: { width, height: 900 } } );
+				await page.goto( fixture.link );
+
+				const lists = await page.evaluate( measure );
+
+				expect( lists.length ).toBe( fixture.cases.length );
+
+				lists.forEach( ( features ) => expect( features.length ).toBe( FEATURE_ORDER.length ) );
+
+				fixture.cases.forEach( ( c, n ) => {
+					lists[ n ].forEach( ( f ) => fixture.check( c, f, label( c, width, f.position ) ) );
 				} );
-			} );
 
-			await page.close();
-		} );
+				await page.close();
+			} );
+		}
 	}
 } );
