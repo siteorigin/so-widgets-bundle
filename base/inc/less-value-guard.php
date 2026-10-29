@@ -411,11 +411,7 @@ class SiteOrigin_Widgets_Less_Value_Guard {
 			}
 		}
 
-		if ( self::find_denied( $import->path ) !== true ) {
-			return false;
-		}
-
-		// An unquoted url() path is an Anonymous node, so its text is checked too.
+		// Only a plain path is allowed: quoted text, or the text of an unquoted url().
 		$path = $import->path instanceof Less_Tree_Url ? $import->path->value : $import->path;
 
 		if ( ! $path instanceof Less_Tree_Quoted && ! $path instanceof Less_Tree_Anonymous ) {
