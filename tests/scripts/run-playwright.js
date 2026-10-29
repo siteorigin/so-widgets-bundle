@@ -18,11 +18,14 @@ const run = async () => {
 		await startPlayground( buildSuccessful );
 	}
 
-	// The ability specs share site state, so they run as a second pass in
+	// The ability specs share site state, so they run as the last pass in
 	// their own one-worker project (see playwright.config.js), after the
-	// other specs. Both passes always run; either failing fails the run.
+	// other specs. Firefox and WebKit run only the specs tagged for them.
+	// Every pass always runs; any failing fails the run.
 	const passes = [
 		[ '--project="Google Chrome"' ],
+		[ '--project=Firefox' ],
+		[ '--project=WebKit' ],
 		[ '--project=abilities' ],
 	];
 	let failed = false;

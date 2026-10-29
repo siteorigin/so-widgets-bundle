@@ -1,4 +1,5 @@
 const path = require('path');
+const { devices } = require( '@playwright/test' );
 const config = require('siteorigin-tests-common/playwright/config');
 
 /**
@@ -43,6 +44,21 @@ config.projects = [
 		name: ABILITIES_PROJECT,
 		testMatch: ABILITY_SPECS,
 		workers: 1,
+	},
+	// Firefox and Safari run only the specs tagged for them.
+	{
+		name: 'Firefox',
+		use: devices[ 'Desktop Firefox' ],
+		grep: /@firefox/,
+		testIgnore: ABILITY_SPECS,
+		dependencies: [ FEATURES_SETUP_PROJECT ],
+	},
+	{
+		name: 'WebKit',
+		use: devices[ 'Desktop Safari' ],
+		grep: /@webkit/,
+		testIgnore: ABILITY_SPECS,
+		dependencies: [ FEATURES_SETUP_PROJECT ],
 	},
 ];
 

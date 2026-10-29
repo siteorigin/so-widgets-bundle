@@ -277,7 +277,7 @@ const PAGES = {
 for ( const [ name, fixture ] of Object.entries( PAGES ) ) {
 	// A describe block per page: after a failed test, the new worker saves
 	// only the pages still to measure.
-	test.describe( `Features ${ name } spacing setting`, () => {
+	test.describe( `Features ${ name } spacing setting`, { tag: [ '@firefox', '@webkit' ] }, () => {
 		const featuresPage = useFeaturesPage(
 			test,
 			`Features spacing gaps, ${ name } (e2e)`,
