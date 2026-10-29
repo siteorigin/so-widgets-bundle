@@ -180,22 +180,24 @@ class FeaturesSpacingTest extends SiteOriginTests {
 		$this->assertSame( 'margin: 1em 0;', $this->rule( $css, '.sow-features-feature h5' ) );
 	}
 
-	public function test_title_top_margin_only_sets_the_top_of_the_title() {
-		$css = $this->css( self::with_title_margins( '0.5em', false ) );
-		$title = $this->rule( $css, '.sow-features-feature .sow-features-feature-title' );
+	/**
+	 * The title Top margin field was removed before release. A widget saved
+	 * with a value emits no variable and no declaration for it.
+	 */
+	public function test_a_saved_title_top_margin_emits_nothing() {
+		$instance = self::with_title_margins( '0.5em', false );
+		$vars = $this->widget()->get_less_variables( $instance );
 
-		$this->assertStringContainsString( 'margin-top: 0.5em;', $title );
-		$this->assertStringNotContainsString( 'margin-bottom', $title );
+		$this->assertArrayNotHasKey( 'title_margin_top', $vars );
+		$this->assertStringNotContainsString( '0.5em', $this->css( $instance ) );
 	}
 
 	public function test_zero_title_margin_is_kept() {
-		$instance = self::with_title_margins( '0px', '0px' );
+		$instance = self::with_title_margins( false, '0px' );
 		$vars = $this->widget()->get_less_variables( $instance );
 		$title = $this->rule( $this->css( $instance ), '.sow-features-feature .sow-features-feature-title' );
 
-		$this->assertSame( '0px', $vars['title_margin_top'] );
 		$this->assertSame( '0px', $vars['title_margin_bottom'] );
-		$this->assertStringContainsString( 'margin-top: 0px;', $title );
 		$this->assertStringContainsString( 'margin-bottom: 0px;', $title );
 	}
 
@@ -211,19 +213,44 @@ class FeaturesSpacingTest extends SiteOriginTests {
 		}
 	}
 
-	public function test_title_margin_fields_are_measurements_in_the_title_group() {
+	public function test_title_spacing_field_is_a_measurement_in_the_title_group_with_no_description() {
 		$form = $this->widget()->get_widget_form();
 		$fields = $form['fonts']['fields']['title_options']['fields'];
+		$field = $fields['margin_bottom'];
 
-		$this->assertSame( array( 'tag', 'font', 'size', 'color', 'margin_top', 'margin_bottom' ), array_keys( $fields ) );
+		$this->assertSame( array( 'tag', 'font', 'size', 'color', 'margin_bottom' ), array_keys( $fields ) );
+		$this->assertSame( 'measurement', $field['type'] );
+		$this->assertSame( 'Space between title and text', $field['label'] );
+		$this->assertSame( array( 'px', 'em', 'rem' ), $field['units'] );
+		$this->assertArrayNotHasKey( 'default', $field );
+		$this->assertArrayNotHasKey( 'description', $field );
+	}
 
-		foreach ( array( 'margin_top', 'margin_bottom' ) as $name ) {
-			$this->assertSame( 'measurement', $fields[ $name ]['type'] );
-			$this->assertSame( array( 'px', 'em', 'rem' ), $fields[ $name ]['units'] );
-			$this->assertArrayNotHasKey( 'default', $fields[ $name ] );
+	/**
+	 * A set spacing field adds a variable with no LESS use, so the style hash
+	 * of the widget changes and its generated CSS file is rebuilt with the
+	 * spacing rules. An empty field adds nothing, so a saved widget keeps its
+	 * hash and its CSS file.
+	 */
+	public function test_a_set_spacing_field_changes_the_style_hash_and_an_empty_one_keeps_it() {
+		$widget = $this->widget();
+		$empty = self::instance();
+		$empty_vars = $widget->get_less_variables( $empty );
+
+		$this->assertArrayNotHasKey( 'spacing_rules', $empty_vars );
+		$this->assertSame( self::fixture()['layouts']['per row 3']['less_variables'], $empty_vars );
+
+		foreach ( array( self::with_icon_spacing( '20px' ), self::with_title_margins( false, '8px' ), self::with_icon_spacing( '0px' ) ) as $set ) {
+			$vars = $widget->get_less_variables( $set );
+			$this->assertSame( '2', $vars['spacing_rules'] );
+
+			// The hash the same instance had before the variable existed.
+			unset( $vars['spacing_rules'] );
+			$previous = substr( md5( json_encode( $vars ) . ( property_exists( $widget, 'version' ) ? $widget->version : '' ) ), 0, 12 );
+
+			$this->assertNotSame( $previous, $widget->get_style_hash( $set ) );
+			$this->assertNotSame( $widget->get_style_hash( $empty ), $widget->get_style_hash( $set ) );
 		}
-
-		$this->assertNotEmpty( $fields['margin_bottom']['description'] );
 	}
 
 	/**
@@ -316,16 +343,17 @@ class FeaturesSpacingTest extends SiteOriginTests {
 		return implode( ' ', $out );
 	}
 
-	public function test_icon_spacing_field_is_a_measurement_after_the_custom_icon_size() {
+	public function test_icon_spacing_field_is_a_measurement_after_the_custom_icon_size_with_no_description() {
 		$form = $this->widget()->get_widget_form();
 		$keys = array_keys( $form );
 		$field = $form['icon_spacing'];
 
 		$this->assertSame( array_search( 'icon_size_custom', $keys ) + 1, array_search( 'icon_spacing', $keys ) );
 		$this->assertSame( 'measurement', $field['type'] );
+		$this->assertSame( 'Space between icon and text', $field['label'] );
 		$this->assertSame( array( 'px', 'rem' ), $field['units'] );
 		$this->assertArrayNotHasKey( 'default', $field );
-		$this->assertNotEmpty( $field['description'] );
+		$this->assertArrayNotHasKey( 'description', $field );
 	}
 
 	public function test_icon_spacing_is_passed_to_less_as_the_string_true() {
