@@ -35,6 +35,36 @@ if ( ! class_exists( 'SiteOrigin_Less_Value_Test_Widget' ) ) {
 	}
 }
 
+if ( ! class_exists( 'SiteOrigin_Less_Values_Test_Widget' ) ) {
+	/**
+	 * A widget whose LESS and setting values a test sets.
+	 */
+	class SiteOrigin_Less_Values_Test_Widget extends SiteOrigin_Widget {
+		public $less = '';
+		public $values = array();
+
+		public function __construct() {
+			parent::__construct( 'so-less-values-test', 'LESS Values Test', array( 'has_preview' => false ), array(), false, __DIR__ );
+		}
+
+		public function get_widget_form() {
+			return array();
+		}
+
+		public function get_less_content( $instance ) {
+			return $this->less;
+		}
+
+		public function get_less_variables( $instance ) {
+			return $this->values;
+		}
+
+		public function get_style_name( $instance ) {
+			return 'default';
+		}
+	}
+}
+
 /**
  * Unit tests for the setting value check in SiteOrigin_Widget::get_instance_css().
  *
@@ -242,5 +272,74 @@ class LessValueSubstitutionTest extends SiteOriginTests {
 			$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$opens, $path );
 			$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$stats, $path );
 		}
+	}
+
+	/**
+	 * Compile LESS with several values, and return the CSS without the
+	 * widget's instance selector.
+	 */
+	private function compile_values( $less, $values ) {
+		$widget = new SiteOrigin_Less_Values_Test_Widget();
+		$widget->less = $less;
+		$widget->values = $values;
+
+		return preg_replace( '/^\.so-widget-so-less-values-test-default-[0-9a-f]{12} /m', '', $widget->get_instance_css( array() ) );
+	}
+
+	/**
+	 * Each value passes the check alone. Substituted one after the other, the
+	 * second would land inside the first and close its string.
+	 */
+	public function test_values_cannot_combine_into_a_file_read() {
+		$less = "@a: a-default;\n@b: b-default;\n.out { p: @a; q: @b; }\n";
+		$b = '" data-uri(\'' . SiteOrigin_Less_Canary_Stream::url() . '\') "';
+
+		foreach ( array( array( 'a' => '"q@b:;"', 'b' => $b ), array( 'b' => $b, 'a' => '"q@b:;"' ) ) as $values ) {
+			SiteOrigin_Less_Canary_Stream::reset();
+
+			$css = $this->compile_values( $less, $values );
+
+			$this->assertSame( ".out {\n  p: \"q@b:;\";\n  q: " . $b . ";\n}", $css, implode( ',', array_keys( $values ) ) );
+			$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$opens );
+			$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$stats );
+		}
+	}
+
+	public function test_value_is_not_searched_for_another_declaration() {
+		$this->assertSame(
+			".out {\n  p: \"@b: x;\";\n  q: 2;\n}",
+			$this->compile_values( "@a: 1;\n@b: 2;\n.out { p: @a; q: @b; }\n", array( 'a' => '"@b: x;"', 'b' => '2' ) )
+		);
+	}
+
+	public function test_name_that_prefixes_another_name() {
+		$less = "@a: 1;\n@a-b: 2;\n.out { p: @a; q: @a-b; }\n";
+
+		$this->assertSame( ".out {\n  p: 3;\n  q: 4;\n}", $this->compile_values( $less, array( 'a' => '3', 'a-b' => '4' ) ) );
+		$this->assertSame( ".out {\n  p: 3;\n  q: 4;\n}", $this->compile_values( $less, array( 'a-b' => '4', 'a' => '3' ) ) );
+		$this->assertSame( ".out {\n  p: 1;\n  q: 4;\n}", $this->compile_values( $less, array( 'a-b' => '4' ) ) );
+	}
+
+	public function test_every_declaration_of_a_name_is_replaced() {
+		$this->assertSame(
+			".out {\n  p: 5;\n}\n.in {\n  p: 5;\n}",
+			$this->compile_values( "@a: 1;\n.out { p: @a; }\n.in { @a: 2; p: @a; }\n", array( 'a' => '5' ) )
+		);
+	}
+
+	public function test_zero_empty_and_literal_values() {
+		$less = "@a: 1;\n@b: 2;\n@c: 3;\n@d: 4;\n@e: 5;\n@f: 6;\n.out { p: @a @b @c @d; q: @e; r: @f; }\n";
+
+		$this->assertSame(
+			".out {\n  p: 0 0 3 4;\n  q: \"$1\";\n  r: \"\\1\";\n}",
+			$this->compile_values( $less, array( 'a' => 0, 'b' => '0', 'c' => '', 'd' => false, 'e' => '"$1"', 'f' => '"\\1"' ) )
+		);
+	}
+
+	public function test_refused_value_beside_an_accepted_value() {
+		$this->assertSame(
+			".out {\n  p: 1;\n  q: 7;\n}",
+			$this->compile_values( "@a: 1;\n@b: 2;\n.out { p: @a; q: @b; }\n", array( 'a' => '1/* x */', 'b' => '7' ) )
+		);
 	}
 }

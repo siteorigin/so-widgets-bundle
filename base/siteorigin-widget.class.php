@@ -1163,6 +1163,9 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 		$less = apply_filters( 'siteorigin_widgets_less_vars_' . $this->id_base, $less, $vars, $instance, $this );
 
 		if ( ! empty( $vars ) ) {
+			$values = array();
+			$names = array();
+
 			foreach ( $vars as $name => $value ) {
 				// Ignore empty string, false and null values (but keep '0')
 				if ( $value === '' || $value === false || $value === null ) {
@@ -1177,11 +1180,17 @@ abstract class SiteOrigin_Widget extends WP_Widget {
 					continue;
 				}
 
-				// A callback keeps $ and \ in the value literal.
+				$values[ $name ] = $value;
+				$names[] = preg_quote( $name, '/' );
+			}
+
+			// One pass over the LESS, so a value is never searched for another
+			// variable's declaration. A callback keeps $ and \ in the value literal.
+			if ( ! empty( $values ) ) {
 				$less = preg_replace_callback(
-					'/\@' . preg_quote( $name ) . ' *\:.*?;/',
-					function () use ( $name, $value ) {
-						return '@' . $name . ': ' . $value . ';';
+					'/\@(' . implode( '|', $names ) . ') *\:.*?;/',
+					function ( $matches ) use ( $values ) {
+						return '@' . $matches[1] . ': ' . $values[ $matches[1] ] . ';';
 					},
 					$less
 				);
