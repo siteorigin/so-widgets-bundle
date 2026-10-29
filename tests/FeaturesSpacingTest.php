@@ -171,12 +171,15 @@ class FeaturesSpacingTest extends SiteOriginTests {
 		return trim( $match[1] );
 	}
 
-	public function test_title_bottom_margin_only_sets_the_bottom_of_the_title() {
+	/**
+	 * The title spacing is the bottom margin of a title that text follows. A
+	 * title with nothing after it keeps the margin of its tag.
+	 */
+	public function test_title_spacing_sets_the_bottom_of_a_title_that_text_follows() {
 		$css = $this->css( self::with_title_margins( false, '8px' ) );
-		$title = $this->rule( $css, '.sow-features-feature .sow-features-feature-title' );
 
-		$this->assertStringContainsString( 'margin-bottom: 8px;', $title );
-		$this->assertStringNotContainsString( 'margin-top', $title );
+		$this->assertStringNotContainsString( 'margin', $this->rule( $css, '.sow-features-feature .sow-features-feature-title' ) );
+		$this->assertSame( 'margin-bottom: 8px;', $this->rule( $css, '.sow-features-feature .sow-features-feature-title:not(:last-child)' ) );
 		$this->assertSame( 'margin: 1em 0;', $this->rule( $css, '.sow-features-feature h5' ) );
 	}
 
@@ -195,21 +198,23 @@ class FeaturesSpacingTest extends SiteOriginTests {
 	public function test_zero_title_margin_is_kept() {
 		$instance = self::with_title_margins( false, '0px' );
 		$vars = $this->widget()->get_less_variables( $instance );
-		$title = $this->rule( $this->css( $instance ), '.sow-features-feature .sow-features-feature-title' );
+		$title = $this->rule( $this->css( $instance ), '.sow-features-feature .sow-features-feature-title:not(:last-child)' );
 
 		$this->assertSame( '0px', $vars['title_margin_bottom'] );
-		$this->assertStringContainsString( 'margin-bottom: 0px;', $title );
+		$this->assertSame( 'margin-bottom: 0px;', $title );
 	}
 
 	public function test_empty_title_margins_add_no_variable_and_no_declaration() {
 		foreach ( array( false, '', null ) as $empty ) {
 			$instance = self::with_title_margins( $empty, $empty );
 			$vars = $this->widget()->get_less_variables( $instance );
-			$title = $this->rule( $this->css( $instance ), '.sow-features-feature .sow-features-feature-title' );
+			$css = $this->css( $instance );
 
 			$this->assertArrayNotHasKey( 'title_margin_top', $vars );
 			$this->assertArrayNotHasKey( 'title_margin_bottom', $vars );
-			$this->assertStringNotContainsString( 'margin', $title );
+			$this->assertStringNotContainsString( 'margin', $this->rule( $css, '.sow-features-feature .sow-features-feature-title' ) );
+			$this->assertStringNotContainsString( ':not(:last-child)', $css );
+			$this->assertStringNotContainsString( ':first-child', $css );
 		}
 	}
 
@@ -265,29 +270,122 @@ class FeaturesSpacingTest extends SiteOriginTests {
 		$this->assertStringContainsString( '.sow-features-feature .textwidget { display: flex; flex-direction: column;', $css );
 	}
 
-	public function test_title_bottom_margin_is_the_whole_gap_to_a_text_that_starts_with_a_paragraph() {
-		foreach ( array( false, true ) as $bottom_align ) {
-			$css = $this->css( self::with_title_margins( null, '8px', array( 'more_text_bottom_align' => $bottom_align ) ) );
-			$rules = $this->rules( $css )['base'];
-			$first_paragraph = array_filter(
-				$rules,
-				function ( $rule ) {
-					return substr( $rule[0], -strlen( '.sow-features-feature-title + .sow-features-feature-text > p:first-child' ) ) === '.sow-features-feature-title + .sow-features-feature-text > p:first-child';
-				}
-			);
+	/**
+	 * Texts that start with each kind of element, and with bare text, so the
+	 * first element the title meets is not always a paragraph.
+	 */
+	public static function text_starts() {
+		return array(
+			'paragraph' => array( '<p>Text</p><p>More</p>', 'p' ),
+			'heading' => array( '<h4>Heading</h4><p>Text</p>', 'h4' ),
+			'list' => array( '<ul><li>One</li></ul><p>Text</p>', 'ul' ),
+			'bare text' => array( 'Plain text', null ),
+		);
+	}
 
-			$this->assertCount( 1, $first_paragraph );
-			$this->assertSame( 'margin-top: 0;', reset( $first_paragraph )[1] );
+	/**
+	 * Four features, one per position, all with a title and the given text.
+	 */
+	private static function with_text( $text, $overrides = array() ) {
+		$instance = self::instance( $overrides );
+
+		foreach ( $instance['features'] as $i => $feature ) {
+			$instance['features'][ $i ]['text'] = $text;
+		}
+
+		return $instance;
+	}
+
+	/**
+	 * The title and the text's first element child (null for bare text) of
+	 * each rendered feature.
+	 */
+	private static function titles_and_first_elements( DOMDocument $doc ) {
+		$out = array();
+		$xpath = new DOMXPath( $doc );
+
+		foreach ( $xpath->query( '//li[contains(@class, "sow-features-feature ")]' ) as $feature ) {
+			$out[] = array(
+				$xpath->query( './/*[contains(@class, "sow-features-feature-title")]', $feature )->item( 0 ),
+				$xpath->query( './/*[contains(@class, "sow-features-feature-text")]/*[1]', $feature )->item( 0 ),
+				$xpath->query( './/*[contains(@class, "sow-features-feature-text")]', $feature )->item( 0 ),
+			);
+		}
+
+		return $out;
+	}
+
+	#[DataProvider( 'text_starts' )]
+	public function test_title_spacing_is_the_whole_gap_to_the_text_whatever_it_starts_with( $text, $first_tag ) {
+		foreach ( array( false, true ) as $bottom_align ) {
+			$instance = self::with_text( $text, array( 'fonts' => array( 'title_options' => array( 'margin_bottom' => '8px' ) ), 'more_text_bottom_align' => $bottom_align ) );
+			$css = $this->css( $instance );
+			$doc = self::dom( $this->render( $instance ) );
+			$features = self::titles_and_first_elements( $doc );
+
+			$this->assertCount( 4, $features );
+
+			foreach ( $features as $i => list( $title, $first, $text_box ) ) {
+				$this->assertSame( '8px', $this->winning_value( $css, $doc, $title, 'margin-bottom', false ), 'title of feature ' . $i );
+				$this->assertNull( $this->winning_value( $css, $doc, $text_box, 'margin-top', false ), 'text box of feature ' . $i );
+
+				if ( $first_tag === null ) {
+					$this->assertNull( $first );
+				} else {
+					$this->assertSame( $first_tag, $first->tagName );
+					$this->assertSame( '0', $this->winning_value( $css, $doc, $first, 'margin-top', false ), 'first element of feature ' . $i );
+				}
+			}
 		}
 	}
 
-	public function test_zero_title_bottom_margin_also_clears_the_first_paragraph_margin() {
-		$this->assertStringContainsString( '.sow-features-feature-title + .sow-features-feature-text > p:first-child { margin-top: 0; }', $this->css( self::with_title_margins( null, '0px' ) ) );
+	public function test_zero_title_spacing_also_clears_the_first_element_margin() {
+		$this->assertStringContainsString( '.sow-features-feature-title + .sow-features-feature-text > :first-child { margin-top: 0; }', $this->css( self::with_title_margins( null, '0px' ) ) );
 	}
 
-	public function test_first_paragraph_margin_stays_when_the_title_bottom_margin_is_empty() {
+	public function test_first_element_margin_stays_when_the_title_spacing_is_empty() {
 		foreach ( array( null, '' ) as $bottom ) {
-			$this->assertStringNotContainsString( 'p:first-child', $this->css( self::with_title_margins( '4px', $bottom, array() ) ) );
+			$this->assertStringNotContainsString( ':first-child', $this->css( self::with_title_margins( null, $bottom ) ) );
+		}
+	}
+
+	/**
+	 * A title with no text has no gap to set: it keeps the margin of its tag
+	 * (the h5 shorthand, which no longhand rule overrides), also with a bottom
+	 * icon, where the icon spacing sets the gap instead.
+	 */
+	public function test_title_only_feature_keeps_its_tag_margin_when_the_title_spacing_is_set() {
+		$instance = self::with_text( '', array( 'fonts' => array( 'title_options' => array( 'margin_bottom' => '8px' ) ) ) );
+		$css = $this->css( $instance );
+		$doc = self::dom( $this->render( $instance ) );
+		$features = self::titles_and_first_elements( $doc );
+
+		$this->assertCount( 4, $features );
+		$this->assertStringContainsString( 'sow-icon-container-position-bottom', $this->render( $instance ) );
+
+		foreach ( $features as $i => list( $title, $first, $text_box ) ) {
+			$this->assertNull( $text_box );
+			$this->assertNull( $this->winning_value( $css, $doc, $title, 'margin-bottom', false ), 'title of feature ' . $i );
+		}
+	}
+
+	public function test_text_only_feature_is_unchanged_by_the_title_spacing() {
+		$instance = self::with_text( '<h4>Heading</h4><p>Text</p>', array( 'fonts' => array( 'title_options' => array( 'margin_bottom' => '8px' ) ) ) );
+
+		foreach ( $instance['features'] as $i => $feature ) {
+			$instance['features'][ $i ]['title'] = '';
+		}
+
+		$css = $this->css( $instance );
+		$doc = self::dom( $this->render( $instance ) );
+		$features = self::titles_and_first_elements( $doc );
+
+		$this->assertCount( 4, $features );
+
+		foreach ( $features as $i => list( $title, $first, $text_box ) ) {
+			$this->assertNull( $title );
+			$this->assertSame( 'h4', $first->tagName );
+			$this->assertNull( $this->winning_value( $css, $doc, $first, 'margin-top', false ), 'first element of feature ' . $i );
 		}
 	}
 
@@ -447,15 +545,18 @@ class FeaturesSpacingTest extends SiteOriginTests {
 		return $instance;
 	}
 
+	/**
+	 * Classes and pseudo-classes, where :not() counts its argument only.
+	 */
 	private static function specificity( $selector ) {
-		return preg_match_all( '/\.[\w-]+|:(?!:)[\w-]+/', $selector );
+		return preg_match_all( '/\.[\w-]+|:(?!:|not\()[\w-]+/', $selector );
 	}
 
 	/**
 	 * XPath for the elements a simple selector matches: tag, classes,
-	 * :first-child, and the descendant, child and adjacent sibling
-	 * combinators. Returns null for any other syntax, so a selector this
-	 * does not understand never counts as a match.
+	 * :first-child, :last-child, :not() of either, and the descendant, child
+	 * and adjacent sibling combinators. Returns null for any other syntax, so
+	 * a selector this does not understand never counts as a match.
 	 */
 	private static function selector_to_xpath( $selector ) {
 		$parts = preg_split( '/\s*([>+])\s*|\s+/', trim( $selector ), -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
@@ -468,7 +569,7 @@ class FeaturesSpacingTest extends SiteOriginTests {
 				continue;
 			}
 
-			if ( ! preg_match( '/^([a-z][a-z0-9]*)?((?:\.[\w-]+)*)((?::first-child)?)$/i', $part, $m ) ) {
+			if ( ! preg_match( '/^([a-z][a-z0-9]*)?((?:\.[\w-]+)*)((?::(?:first-child|last-child|not\(:(?:first|last)-child\)))*)$/i', $part, $m ) ) {
 				return null;
 			}
 
@@ -482,8 +583,17 @@ class FeaturesSpacingTest extends SiteOriginTests {
 				$tests[] = "contains(concat(' ', normalize-space(@class), ' '), ' " . $class . " ')";
 			}
 
-			if ( $m[3] !== '' ) {
-				$tests[] = 'not(preceding-sibling::*)';
+			$pseudo_tests = array(
+				':first-child' => 'not(preceding-sibling::*)',
+				':last-child' => 'not(following-sibling::*)',
+				':not(:first-child)' => 'preceding-sibling::*',
+				':not(:last-child)' => 'following-sibling::*',
+			);
+
+			preg_match_all( '/:not\([^)]*\)|:[\w-]+/', $m[3], $pseudos );
+
+			foreach ( $pseudos[0] as $pseudo ) {
+				$tests[] = $pseudo_tests[ $pseudo ];
 			}
 
 			if ( $xpath !== null ) {

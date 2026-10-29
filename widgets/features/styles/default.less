@@ -270,15 +270,20 @@
 			color: @title_color;
 			font-size: @title_size;
 			font-style: @title_font_style;
-			margin-bottom: @title_margin_bottom;
 		}
 
-		// A set title Bottom margin is the whole gap to the text. Without
-		// this, the first paragraph adds its top margin (always so in the
-		// bottom aligned layout, where the title and text are flex items).
-		// A feature with no title has no gap to set, so it keeps the margin.
+		// A set title spacing is the whole gap to the text: it replaces the
+		// bottom margin of a title that text follows, and the first element
+		// of that text adds no top margin of its own (margins add instead of
+		// collapsing in the bottom aligned layout, where the title and text
+		// are flex items). A title with nothing after it has no gap to set,
+		// so it keeps the margin of its tag.
 		& when ( isnumber( @title_margin_bottom ) ) {
-			.sow-features-feature-title + .sow-features-feature-text > p:first-child {
+			.sow-features-feature-title:not(:last-child) {
+				margin-bottom: @title_margin_bottom;
+			}
+
+			.sow-features-feature-title + .sow-features-feature-text > :first-child {
 				margin-top: 0;
 			}
 		}
