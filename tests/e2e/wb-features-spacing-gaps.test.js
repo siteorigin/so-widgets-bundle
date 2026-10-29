@@ -35,7 +35,14 @@ const TEXTS = {
 	textOnly: { title: false, text: '<ul><li>Start</li></ul><p>Text</p><h4>End</h4>' },
 	mixedStart: { title: false, text: 'Intro<p>Next</p>' },
 	mixedEnd: { title: false, text: '<ul><li>One</li></ul>Outro' },
+	// With the More link on, a feature that holds only the link.
+	moreOnly: { title: false, text: '' },
 };
+
+/**
+ * A paragraph top margin, as many themes set; the test theme sets none.
+ */
+const THEME_MARGINS = '<!-- wp:html --><style>.sow-features-list p { margin-top: 1em; }</style><!-- /wp:html -->';
 
 /**
  * A feature with more text than the others. It sits in the first row, with
@@ -96,6 +103,10 @@ for ( const iconSpacing of [ '20px', '0px' ] ) {
 		for ( const bottomAlign of [ false, true ] ) {
 			for ( const more of [ false, true ] ) {
 				for ( const text of Object.keys( TEXTS ) ) {
+					if ( text === 'moreOnly' && ! more ) {
+						continue;
+					}
+
 					iconCases.push( { iconSpacing, perRow, bottomAlign, more, text } );
 				}
 			}
@@ -151,9 +162,10 @@ const measure = () => {
 	const box = ( el ) => el.getBoundingClientRect();
 
 	// The first or last element child, or the element itself when its
-	// content starts or ends with bare text.
+	// content starts or ends with bare text. An element with no height, as
+	// the content wrapper of a feature with only a More link, is skipped.
 	const edgeChild = ( el, first ) => {
-		const nodes = Array.from( el.childNodes ).filter( ( node ) => ! ( node.nodeType === 3 && ! node.textContent.trim() ) && node.nodeType !== 8 );
+		const nodes = Array.from( el.childNodes ).filter( ( node ) => ( node.nodeType === 3 && node.textContent.trim() ) || ( node.nodeType === 1 && box( node ).height > 0 ) );
 		const node = first ? nodes[ 0 ] : nodes[ nodes.length - 1 ];
 
 		return node && node.nodeType === 1 ? node : null;
@@ -218,12 +230,19 @@ const expectNear = ( value, expected, message ) => {
 	expect.soft( value, message ).toBeLessThanOrEqual( expected + 1 );
 };
 
-// Two pages keep each save within the REST request timeout.
+const checkIconGap = ( c, f, message ) => expectNear( f.iconGap, parseFloat( c.iconSpacing ), message );
+
+// Three pages keep each save within the REST request timeout.
 const PAGES = {
 	icon: {
-		cases: iconCases,
+		cases: iconCases.filter( ( c ) => c.perRow === 3 ),
 		data: widgetData,
-		check: ( c, f, message ) => expectNear( f.iconGap, parseFloat( c.iconSpacing ), message ),
+		check: checkIconGap,
+	},
+	'one per row icon': {
+		cases: iconCases.filter( ( c ) => c.perRow === 1 ),
+		data: widgetData,
+		check: checkIconGap,
 	},
 	title: {
 		cases: titleCases,
@@ -236,30 +255,30 @@ const PAGES = {
 	},
 };
 
-test.describe( 'Features spacing settings', () => {
-	let requestUtils;
+for ( const [ name, fixture ] of Object.entries( PAGES ) ) {
+	// A describe block per page: after a failed test, the new worker saves
+	// only the pages still to measure.
+	test.describe( `Features ${ name } spacing setting`, () => {
+		let requestUtils;
 
-	test.beforeAll( async ( { browser }, testInfo ) => {
-		requestUtils = await setupRequestUtils( { browser }, testInfo );
+		test.beforeAll( async ( { browser }, testInfo ) => {
+			requestUtils = await setupRequestUtils( { browser }, testInfo );
 
-		for ( const [ name, fixture ] of Object.entries( PAGES ) ) {
 			const created = await requestUtils.rest( {
 				method: 'POST',
 				path: '/wp/v2/pages',
 				data: {
 					title: `Features spacing gaps, ${ name } (e2e)`,
 					status: 'publish',
-					content: fixture.cases.map( ( c ) => featuresBlock( fixture.data( c ) ) ).join( '\n\n' ),
+					content: [ THEME_MARGINS, ...fixture.cases.map( ( c ) => featuresBlock( fixture.data( c ) ) ) ].join( '\n\n' ),
 				},
 			} );
 
 			fixture.id = created.id;
 			fixture.link = created.link;
-		}
-	} );
+		} );
 
-	test.afterAll( async () => {
-		for ( const fixture of Object.values( PAGES ) ) {
+		test.afterAll( async () => {
 			if ( fixture.id ) {
 				const deleted = await requestUtils.rest( {
 					method: 'DELETE',
@@ -269,10 +288,8 @@ test.describe( 'Features spacing settings', () => {
 
 				expect( deleted.deleted ).toBe( true );
 			}
-		}
-	} );
+		} );
 
-	for ( const [ name, fixture ] of Object.entries( PAGES ) ) {
 		for ( const width of [ 1280, 390 ] ) {
 			test( `each set ${ name } spacing is the gap it names at ${ width }px`, async ( { browser } ) => {
 				const page = await browser.newPage( { viewport: { width, height: 900 } } );
@@ -291,5 +308,5 @@ test.describe( 'Features spacing settings', () => {
 				await page.close();
 			} );
 		}
-	}
-} );
+	} );
+}
