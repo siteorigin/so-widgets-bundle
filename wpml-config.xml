@@ -4017,7 +4017,6 @@
       <fields-in-item items_of="panels">
         <field type="Accordion: Panel Title">title</field>
         <field type="Accordion: Panel Text" editor_type="VISUAL">content_text</field>
-        <field type="Accordion: Panel Layout">content_layout</field>
       </fields-in-item>
     </widget>
     <widget name="SiteOrigin_Widget_Anything_Carousel_Widget">
@@ -4027,8 +4026,13 @@
       <fields-in-item items_of="items">
         <field type="Anything Carousel: Panel Title">title</field>
         <field type="Anything Carousel: Panel Text" editor_type="VISUAL">content_text</field>
-        <field type="Anything Carousel: Panel Layout">content_layout</field>
       </fields-in-item>
+    </widget>
+    <widget name="SiteOrigin_Widget_Blog_Widget">
+      <fields>
+        <field type="Blog: Title">title</field>
+        <field type="Blog: Read More Text">settings>read_more_text</field>
+      </fields>
     </widget>
     <widget name="SiteOrigin_Widget_Button_Widget">
       <fields>
@@ -4044,6 +4048,7 @@
         <field type="Contact Form: Subject Prefix">settings>subject_prefix</field>
         <field type="Contact Form: Success Message">settings>success_message</field>
         <field type="Contact Form: Submit Text">settings>submit_text</field>
+        <field type="Contact Form: Required Field Indicator Message">settings>required_field_indicator_message</field>
       </fields>
       <fields-in-item items_of="fields">
         <field type="Contact Form: Field Label">label</field>
@@ -4056,8 +4061,8 @@
         <field type="Call to Action: Title">title</field>
         <field type="Call to Action: Subtitle">sub_title</field>
         <field type="Call to Action: Button Text">button>text</field>
-        <field type="Call to Action: Button URL" editor_type="LINK">button>destination_url</field>
-        <field type="Call to Action: Button Title">attributes>title</field>
+        <field type="Call to Action: Button URL" editor_type="LINK">button>url</field>
+        <field type="Call to Action: Button Title">button>attributes>title</field>
       </fields>
     </widget>
     <widget name="SiteOrigin_Widget_Editor_Widget">
@@ -4076,6 +4081,9 @@
       </fields-in-item>
     </widget>
     <widget name="SiteOrigin_Widget_GoogleMap_Widget">
+      <fields>
+        <field type="Map: Destination URL" editor_type="LINK">settings>destination_url</field>
+      </fields>
       <fields-in-item items_of="markers>marker_positions">
         <field type="Map Marker: Info" editor_type="VISUAL">info</field>
       </fields-in-item>
@@ -4091,6 +4099,8 @@
     <widget name="SiteOrigin_Widget_Hero_Widget">
       <fields-in-item items_of="frames">
         <field type="Hero: Content" editor_type="VISUAL">content</field>
+        <field type="Hero: Background Image Alt">background>alt</field>
+        <field type="Hero: Background URL" editor_type="LINK">background>url</field>
       </fields-in-item>
       <fields-in-item items_of="frames>buttons">
         <field type="Hero: Button Text">button>text</field>
@@ -4118,6 +4128,17 @@
         <field type="Image Grid: URL" editor_type="LINK">url</field>
       </fields-in-item>
     </widget>
+    <widget name="SiteOrigin_Widget_LayoutSlider_Widget">
+      <fields-in-item items_of="frames">
+        <field type="Layout Slider: Background Image Alt">background>alt</field>
+        <field type="Layout Slider: Background URL" editor_type="LINK">background>url</field>
+      </fields-in-item>
+    </widget>
+    <widget name="SiteOrigin_Widget_Lottie_Player_Widget">
+      <fields>
+        <field type="Lottie Player: Destination URL" editor_type="LINK">url</field>
+      </fields>
+    </widget>
     <widget name="SiteOrigin_Widget_PostCarousel_Widget">
       <fields>
         <field type="Post Carousel: Title">title</field>
@@ -4132,6 +4153,8 @@
         <field type="Price Table: Column Subtitle">subtitle</field>
         <field type="Price Table: Column Image Title">image_title</field>
         <field type="Price Table: Column Image Alt">image_alt</field>
+        <field type="Price Table: Column Price">price</field>
+        <field type="Price Table: Column Sale Price">sale_price</field>
         <field type="Price Table: Column Per">per</field>
         <field type="Price Table: Column Button Text">button</field>
         <field type="Price Table: Column Button URL" editor_type="LINK">url</field>
@@ -4141,9 +4164,15 @@
         <field type="Price Table: Feature Hover Text">hover</field>
       </fields-in-item>
     </widget>
+    <widget name="SiteOrigin_Widget_Recent_Posts_Widget">
+      <fields>
+        <field type="Recent Posts: Title">title</field>
+        <field type="Recent Posts: Read More Text">recent_settings>read_more_text</field>
+      </fields>
+    </widget>
     <widget name="SiteOrigin_Widget_Simple_Masonry_Widget">
       <fields>
-        <field type="Simple Masonry: Title">title</field>
+        <field type="Simple Masonry: Title">widget_title</field>
       </fields>
       <fields-in-item items_of="items">
         <field type="Simple Masonry: Item Title">title</field>
@@ -4171,7 +4200,6 @@
       <fields-in-item items_of="tabs">
         <field type="Tabs: Tab Title">title</field>
         <field type="Tabs: Tab Text" editor_type="VISUAL">content_text</field>
-        <field type="Tabs: Tab Layout">content_layout</field>
       </fields-in-item>
     </widget>
     <widget name="SiteOrigin_Widget_Taxonomy_Widget">
@@ -4185,6 +4213,8 @@
         <field type="Testimonials: Title">title</field>
       </fields>
       <fields-in-item items_of="testimonials">
+        <field type="Testimonials: Name">name</field>
+        <field type="Testimonials: Location">location</field>
         <field type="Testimonials: Text" editor_type="VISUAL">text</field>
         <field type="Testimonials: URL" editor_type="LINK">url</field>
       </fields-in-item>
@@ -4192,6 +4222,7 @@
     <widget name="SiteOrigin_Widget_Video_Widget">
       <fields>
         <field type="Video: Title">title</field>
+        <field type="Video: External Video URL">video>external_video</field>
       </fields>
     </widget>
   </siteorigin-widgets>
