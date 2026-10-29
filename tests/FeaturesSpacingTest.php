@@ -340,7 +340,7 @@ class FeaturesSpacingTest extends SiteOriginTests {
 	}
 
 	public function test_zero_title_spacing_also_clears_the_first_element_margin() {
-		$this->assertStringContainsString( '.sow-features-feature-title + .sow-features-feature-text > :first-child { margin-top: 0; }', $this->css( self::with_title_margins( null, '0px' ) ) );
+		$this->assertStringContainsString( '.sow-features-feature-title + .sow-features-feature-text > :first-child, .sow-features-list .sow-features-feature .sow-features-feature-title + .sow-features-feature-text > :first-child > :first-child { margin-top: 0; }', $this->css( self::with_title_margins( null, '0px' ) ) );
 	}
 
 	public function test_first_element_margin_stays_when_the_title_spacing_is_empty() {
@@ -978,5 +978,46 @@ class FeaturesSpacingTest extends SiteOriginTests {
 		$text = ( new DOMXPath( $doc ) )->query( '//li[contains(@class, "sow-icon-container-position-bottom")]/div[contains(@class, "textwidget")]' )->item( 0 );
 
 		$this->assertSame( '1', $this->winning_value( $css, $doc, $text, 'flex-grow', false ) );
+	}
+
+	/**
+	 * A theme margin on a list item at the edge of the text passes through the
+	 * list's own edge, so the item at each edge adds no margin either: below a
+	 * title, next to a top or bottom icon, and below a stacked icon on mobile.
+	 */
+	public function test_the_list_item_at_the_edge_of_the_text_adds_no_margin() {
+		$list = '<ul><li>One</li><li>Two</li></ul>';
+		$item = function ( DOMDocument $doc, $position, $first ) {
+			return ( new DOMXPath( $doc ) )->query( '//li[contains(@class, "sow-icon-container-position-' . $position . '")]//*[contains(@class, "sow-features-feature-text")]/' . ( $first ? 'ul[1]/li[1]' : 'ul[last()]/li[last()]' ) )->item( 0 );
+		};
+
+		foreach ( array( false, true ) as $bottom_align ) {
+			$instance = self::with_text( $list . '<p>Text</p>' . $list, array( 'icon_spacing' => '20px', 'more_text_bottom_align' => $bottom_align, 'fonts' => array( 'title_options' => array( 'margin_bottom' => '8px' ) ) ) );
+			$css = $this->css( $instance );
+			$doc = self::dom( $this->render( $instance ) );
+			$case = 'bottom align ' . ( $bottom_align ? 'on' : 'off' );
+
+			foreach ( $instance['features'] as $i => $feature ) {
+				$instance['features'][ $i ]['title'] = '';
+			}
+
+			$untitled_css = $this->css( $instance );
+			$untitled = self::dom( $this->render( $instance ) );
+
+			foreach ( array( 'top', 'right', 'bottom', 'left' ) as $position ) {
+				$this->assertSame( '0', $this->winning_value( $css, $doc, $item( $doc, $position, true ), 'margin-top', false ), "below the title, $position, $case" );
+			}
+
+			$this->assertSame( '0', $this->winning_value( $untitled_css, $untitled, $item( $untitled, 'top', true ), 'margin-top', false ), "top icon, $case" );
+			$this->assertSame( '0', $this->winning_value( $untitled_css, $untitled, $item( $untitled, 'bottom', false ), 'margin-bottom', false ), "bottom icon, $case" );
+
+			foreach ( array( 'left', 'right' ) as $position ) {
+				$this->assertSame( '0', $this->winning_value( $untitled_css, $untitled, $item( $untitled, $position, true ), 'margin-top', true ), "stacked $position icon, $case" );
+			}
+
+			if ( $bottom_align ) {
+				$this->assertSame( '0', $this->winning_value( $untitled_css, $untitled, $item( $untitled, 'bottom', true ), 'margin-top', true ), "bottom icon shown first on mobile, $case" );
+			}
+		}
 	}
 }
