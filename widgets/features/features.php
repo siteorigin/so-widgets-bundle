@@ -454,9 +454,9 @@ class SiteOrigin_Widget_Features_Widget extends SiteOrigin_Widget {
 			$less_vars['icon_spacing_custom'] = 'true';
 		}
 
-		// A spacing field puts rules in the CSS that an earlier build did not have. The
-		// variable has no LESS use; it changes the style hash, so the generated CSS file of
-		// a widget that sets a field is rebuilt with the current rules.
+		// A set spacing field adds rules to the CSS. This variable has no LESS use: it gives
+		// such a widget a style hash of its own, so its CSS file is compiled with those rules
+		// and never read from a file generated without them under the same hash.
 		if ( ! empty( $instance['icon_spacing'] ) || ! empty( $fonts['title_options']['margin_bottom'] ) ) {
 			$less_vars['spacing_rules'] = '2';
 		}

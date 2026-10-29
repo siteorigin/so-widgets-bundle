@@ -184,8 +184,8 @@ class FeaturesSpacingTest extends SiteOriginTests {
 	}
 
 	/**
-	 * The title Top margin field was removed before release. A widget saved
-	 * with a value emits no variable and no declaration for it.
+	 * The form has no title Top margin field. A widget that stores a value
+	 * under its key emits no variable and no declaration for it.
 	 */
 	public function test_a_saved_title_top_margin_emits_nothing() {
 		$instance = self::with_title_margins( '0.5em', false );
@@ -249,7 +249,7 @@ class FeaturesSpacingTest extends SiteOriginTests {
 			$vars = $widget->get_less_variables( $set );
 			$this->assertSame( '2', $vars['spacing_rules'] );
 
-			// The hash the same instance had before the variable existed.
+			// The hash of the same variables without spacing_rules.
 			unset( $vars['spacing_rules'] );
 			$previous = substr( md5( json_encode( $vars ) . ( property_exists( $widget, 'version' ) ? $widget->version : '' ) ), 0, 12 );
 
