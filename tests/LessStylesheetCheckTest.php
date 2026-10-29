@@ -430,8 +430,7 @@ class LessStylesheetCheckTest extends SiteOriginTests {
 
 	/**
 	 * Each bundled stylesheet passes the check after the widget's own import
-	 * expansion, and compiles without an error. Some hold only mixins, or only
-	 * rules for settings left empty here, so their CSS may be empty.
+	 * expansion, compiles without an error, and gives widget CSS.
 	 */
 	#[DataProvider( 'bundled_stylesheets' )]
 	public function test_bundled_stylesheet_passes( $file ) {
@@ -440,10 +439,17 @@ class LessStylesheetCheckTest extends SiteOriginTests {
 			return new SiteOrigin_Recording_LessC();
 		};
 
-		$this->compile( file_get_contents( $file ) );
+		$css = $this->compile( file_get_contents( $file ) );
 
 		$this->assertNotNull( SiteOrigin_Recording_LessC::$less, 'The stylesheet did not reach the compiler.' );
 		$this->assertNull( SiteOrigin_Recording_LessC::$error, 'The stylesheet did not compile.' );
 		$this->assertTrue( SiteOrigin_Widgets_Less_Value_Guard::check_stylesheet( SiteOrigin_Recording_LessC::$less ) );
+
+		// The Video widget's rules all depend on settings, which are empty here.
+		if ( basename( dirname( $file, 2 ) ) . '/' . basename( $file ) === 'video/default.less' ) {
+			$this->assertSame( '', $css );
+		} else {
+			$this->assertMatchesRegularExpression( '/^\.so-widget-so-less-stylesheet-test-default-[0-9a-f]{12} .*\{/m', $css );
+		}
 	}
 }
