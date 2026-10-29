@@ -37,7 +37,10 @@ const readInstalledThemes = () => {
 	try {
 		const installed = JSON.parse( fs.readFileSync( INSTALLED_THEMES_FILE, 'utf8' ) );
 
-		if ( installed && typeof installed === 'object' && ! Array.isArray( installed ) ) {
+		const valid = installed && typeof installed === 'object' && ! Array.isArray( installed ) &&
+			Object.values( installed ).every( ( slugs ) => Array.isArray( slugs ) && slugs.every( ( slug ) => typeof slug === 'string' ) );
+
+		if ( valid ) {
 			return installed;
 		}
 	} catch ( error ) {

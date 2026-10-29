@@ -83,8 +83,18 @@ const measure = async ( names ) => {
 			const t = li.querySelector( '.textwidget' ).getBoundingClientRect();
 			const f = {
 				position: li.className.match( /position-(\w+)/ )[ 1 ],
-				// Where the icon renders against the text.
-				side: ( c.bottom <= t.top + 1 && 'above' ) || ( c.right <= t.left + 1 && 'left' ) || ( c.left >= t.right - 1 && 'right' ) || ( c.top >= t.bottom - 1 && 'below' ) || 'overlapping',
+				// Where the icon renders against the text: on one side of it,
+				// and level with it on the other axis.
+				side: ( () => {
+					const level = c.top < t.bottom && c.bottom > t.top;
+					const aligned = c.left < t.right && c.right > t.left;
+
+					return ( c.bottom <= t.top + 1 && aligned && 'above' ) ||
+						( c.right <= t.left + 1 && level && 'left' ) ||
+						( c.left >= t.right - 1 && level && 'right' ) ||
+						( c.top >= t.bottom - 1 && aligned && 'below' ) ||
+						'misplaced';
+				} )(),
 				feature: box( li ),
 				container: box( container ),
 				glyph: before.content,
