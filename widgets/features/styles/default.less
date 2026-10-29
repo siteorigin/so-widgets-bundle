@@ -203,6 +203,16 @@
 				}
 			}
 
+			// A feature with only a More link has an empty content wrapper
+			// above the link, so the link meets a top icon. This rule stands
+			// alone: a browser without :has() drops it and keeps the link's
+			// own margin.
+			& when not ( @more_text_bottom_align = true ) {
+				&.sow-icon-container-position-top .textwidget > .sow-features-feature-content:first-child:not(:has(*)) + p.sow-more-text {
+					margin-top: 0;
+				}
+			}
+
 			// With no More link below it, the text stops growing, so a bottom
 			// icon sits the spacing below the text rather than at the foot of
 			// a feature that a taller neighbour stretches.
@@ -442,6 +452,14 @@
 					> .sow-features-feature-content:first-child > :first-child,
 					.sow-features-feature-text:first-child > :first-child,
 					.sow-features-feature-text:first-child > :first-child > li:first-child {
+						margin-top: 0;
+					}
+				}
+
+				// The same for a More link with nothing above it.
+				& when not ( @more_text_bottom_align = true ) {
+					.sow-icon-container-position-left .textwidget > .sow-features-feature-content:first-child:not(:has(*)) + p.sow-more-text,
+					.sow-icon-container-position-right .textwidget > .sow-features-feature-content:first-child:not(:has(*)) + p.sow-more-text {
 						margin-top: 0;
 					}
 				}

@@ -1056,4 +1056,58 @@ class FeaturesSpacingTest extends SiteOriginTests {
 			$this->assertNotSame( '0', $this->winning_value( $untitled_css, $untitled, $inner( $untitled, 'bottom', false ), 'margin-bottom', false ), "bottom icon, last, $case" );
 		}
 	}
+
+	/**
+	 * The rules that need :has(), as array( selector, declarations ), with
+	 * the rules inside the media query under "media".
+	 */
+	private function has_rules( $css ) {
+		$out = array( 'base' => array(), 'media' => array() );
+
+		foreach ( $this->rules( $css ) as $group => $rules ) {
+			foreach ( $rules as $rule ) {
+				if ( strpos( $rule[0], ':has(' ) !== false ) {
+					$out[ $group ][] = $rule;
+				}
+			}
+		}
+
+		return $out;
+	}
+
+	/**
+	 * A feature with only a More link has an empty content wrapper above the
+	 * link, so the link meets a top icon, or a stacked side icon on mobile,
+	 * and adds no top margin. The rule stands alone, as a browser without
+	 * :has() drops every selector in its list.
+	 */
+	public function test_a_more_link_with_nothing_above_it_adds_no_margin_below_the_icon() {
+		$has = $this->has_rules( $this->css( self::with_more_text( self::with_icon_spacing( '20px' ) ) ) );
+		$link = ' .textwidget > .sow-features-feature-content:first-child:not(:has(*)) + p.sow-more-text';
+
+		$this->assertCount( 1, $has['base'] );
+		$this->assertSame( '.sow-features-list .sow-features-feature.sow-icon-container-position-top' . $link, $has['base'][0][0] );
+		$this->assertSame( 'margin-top: 0;', $has['base'][0][1] );
+
+		$this->assertCount( 1, $has['media'] );
+		$this->assertSame(
+			'.sow-features-list.sow-features-responsive .sow-icon-container-position-left' . $link . ', .sow-features-list.sow-features-responsive .sow-icon-container-position-right' . $link,
+			preg_replace( '/^@media[^{]*\{\s*/', '', $has['media'][0][0] )
+		);
+		$this->assertSame( 'margin-top: 0;', $has['media'][0][1] );
+	}
+
+	/**
+	 * With the More link aligned to the bottom, a top icon has no content
+	 * wrapper, and the link of a stacked side icon keeps its automatic
+	 * margin. An empty icon spacing adds no rule either.
+	 */
+	public function test_no_has_rule_with_the_bottom_aligned_more_link_or_an_empty_icon_spacing() {
+		foreach ( array(
+			'bottom aligned' => self::with_icon_spacing( '20px', array( 'more_text_bottom_align' => true ) ),
+			'empty spacing' => self::instance(),
+		) as $case => $instance ) {
+			$this->assertStringNotContainsString( ':has(', $this->css( self::with_more_text( $instance ) ), $case );
+		}
+	}
 }
