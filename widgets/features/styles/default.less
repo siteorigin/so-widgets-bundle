@@ -182,7 +182,7 @@
 		// A set icon spacing is the whole gap between the icon and the text:
 		// the element that meets a top or bottom icon adds no margin of its
 		// own on that side. The text column is a flex item, so these margins
-		// add to the spacing instead of collapsing into it. The child at the
+		// add to the spacing instead of collapsing into it. A list item at the
 		// edge of that element is included, as a theme margin on a list item
 		// passes through the list's edge.
 		& when ( @icon_spacing_custom = true ) {
@@ -190,7 +190,7 @@
 				> :first-child,
 				> .sow-features-feature-content:first-child > :first-child,
 				.sow-features-feature-text:first-child > :first-child,
-				.sow-features-feature-text:first-child > :first-child > :first-child {
+				.sow-features-feature-text:first-child > :first-child > li:first-child {
 					margin-top: 0;
 				}
 			}
@@ -198,7 +198,7 @@
 			&.sow-icon-container-position-bottom .textwidget {
 				> :last-child,
 				> .sow-features-feature-text:last-child > :last-child,
-				> .sow-features-feature-text:last-child > :last-child > :last-child {
+				> .sow-features-feature-text:last-child > :last-child > li:last-child {
 					margin-bottom: 0;
 				}
 			}
@@ -308,7 +308,7 @@
 
 		// A set title spacing is the whole gap to the text: it replaces the
 		// bottom margin of a title that text follows, and the first element
-		// of that text, and its own first child, add no top margin (margins
+		// of that text, and a list item at its top, add no top margin (margins
 		// add instead of collapsing in the bottom aligned layout, where the
 		// title and text are flex items). A title with nothing after it has
 		// no gap to set, so it keeps the margin of its tag.
@@ -318,7 +318,7 @@
 			}
 
 			.sow-features-feature-title + .sow-features-feature-text > :first-child,
-			.sow-features-feature-title + .sow-features-feature-text > :first-child > :first-child {
+			.sow-features-feature-title + .sow-features-feature-text > :first-child > li:first-child {
 				margin-top: 0;
 			}
 		}
@@ -441,7 +441,7 @@
 					> :first-child,
 					> .sow-features-feature-content:first-child > :first-child,
 					.sow-features-feature-text:first-child > :first-child,
-					.sow-features-feature-text:first-child > :first-child > :first-child {
+					.sow-features-feature-text:first-child > :first-child > li:first-child {
 						margin-top: 0;
 					}
 				}
@@ -468,7 +468,7 @@
 					.sow-icon-container-position-bottom > p.sow-more-text,
 					.sow-icon-container-position-bottom > .textwidget:last-child > :first-child,
 					.sow-icon-container-position-bottom > .textwidget:last-child > .sow-features-feature-text:first-child > :first-child,
-					.sow-icon-container-position-bottom > .textwidget:last-child > .sow-features-feature-text:first-child > :first-child > :first-child {
+					.sow-icon-container-position-bottom > .textwidget:last-child > .sow-features-feature-text:first-child > :first-child > li:first-child {
 						margin-top: 0;
 					}
 				}

@@ -340,7 +340,7 @@ class FeaturesSpacingTest extends SiteOriginTests {
 	}
 
 	public function test_zero_title_spacing_also_clears_the_first_element_margin() {
-		$this->assertStringContainsString( '.sow-features-feature-title + .sow-features-feature-text > :first-child, .sow-features-list .sow-features-feature .sow-features-feature-title + .sow-features-feature-text > :first-child > :first-child { margin-top: 0; }', $this->css( self::with_title_margins( null, '0px' ) ) );
+		$this->assertStringContainsString( '.sow-features-feature-title + .sow-features-feature-text > :first-child, .sow-features-list .sow-features-feature .sow-features-feature-title + .sow-features-feature-text > :first-child > li:first-child { margin-top: 0; }', $this->css( self::with_title_margins( null, '0px' ) ) );
 	}
 
 	public function test_first_element_margin_stays_when_the_title_spacing_is_empty() {
@@ -1018,6 +1018,42 @@ class FeaturesSpacingTest extends SiteOriginTests {
 			if ( $bottom_align ) {
 				$this->assertSame( '0', $this->winning_value( $untitled_css, $untitled, $item( $untitled, 'bottom', true ), 'margin-top', true ), "bottom icon shown first on mobile, $case" );
 			}
+		}
+	}
+
+	/**
+	 * Only a list item is reset inside the element at the edge of the text: a
+	 * quote, figure or other box keeps the margins of its own content, as its
+	 * padding or border can hold them in.
+	 */
+	public function test_content_inside_a_box_at_the_edge_of_the_text_keeps_its_margin() {
+		$box = '<blockquote><h4>Quote</h4></blockquote>';
+		$inner = function ( DOMDocument $doc, $position, $first ) {
+			return ( new DOMXPath( $doc ) )->query( '//li[contains(@class, "sow-icon-container-position-' . $position . '")]//*[contains(@class, "sow-features-feature-text")]/' . ( $first ? 'blockquote[1]/h4' : 'blockquote[last()]/h4' ) )->item( 0 );
+		};
+
+		foreach ( array( false, true ) as $bottom_align ) {
+			$instance = self::with_text( $box . '<p>Text</p>' . $box, array( 'icon_spacing' => '20px', 'more_text_bottom_align' => $bottom_align, 'fonts' => array( 'title_options' => array( 'margin_bottom' => '8px' ) ) ) );
+			$css = $this->css( $instance );
+			$doc = self::dom( $this->render( $instance ) );
+			$case = 'bottom align ' . ( $bottom_align ? 'on' : 'off' );
+
+			foreach ( $instance['features'] as $i => $feature ) {
+				$instance['features'][ $i ]['title'] = '';
+			}
+
+			$untitled_css = $this->css( $instance );
+			$untitled = self::dom( $this->render( $instance ) );
+
+			foreach ( array( 'top', 'right', 'bottom', 'left' ) as $position ) {
+				$this->assertNotSame( '0', $this->winning_value( $css, $doc, $inner( $doc, $position, true ), 'margin-top', true ), "below the title, $position, $case" );
+			}
+
+			foreach ( array( 'top', 'left', 'right', 'bottom' ) as $position ) {
+				$this->assertNotSame( '0', $this->winning_value( $untitled_css, $untitled, $inner( $untitled, $position, true ), 'margin-top', true ), "$position icon, first, $case" );
+			}
+
+			$this->assertNotSame( '0', $this->winning_value( $untitled_css, $untitled, $inner( $untitled, 'bottom', false ), 'margin-bottom', false ), "bottom icon, last, $case" );
 		}
 	}
 }
