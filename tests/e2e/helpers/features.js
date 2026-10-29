@@ -1,3 +1,4 @@
+const fs = require( 'fs' );
 const path = require( 'path' );
 
 const { expect } = require( '@playwright/test' );
@@ -19,9 +20,26 @@ const THEMES = [
 ];
 
 /**
- * Where features.setup.js lists the themes it installed, for features.teardown.js.
+ * Where features.setup.js lists the themes it installs, per site, for
+ * features.teardown.js: `{ "<site URL>": [ "<slug>" ] }`.
  */
 const INSTALLED_THEMES_FILE = path.resolve( process.cwd(), 'tests/cache/features-installed-themes.json' );
+
+const readInstalledThemes = () => {
+	const installed = fs.existsSync( INSTALLED_THEMES_FILE ) ? JSON.parse( fs.readFileSync( INSTALLED_THEMES_FILE, 'utf8' ) ) : {};
+
+	return installed && typeof installed === 'object' && ! Array.isArray( installed ) ? installed : {};
+};
+
+const writeInstalledThemes = ( installed ) => {
+	fs.mkdirSync( path.dirname( INSTALLED_THEMES_FILE ), { recursive: true } );
+
+	if ( Object.keys( installed ).length ) {
+		fs.writeFileSync( INSTALLED_THEMES_FILE, JSON.stringify( installed ) );
+	} else if ( fs.existsSync( INSTALLED_THEMES_FILE ) ) {
+		fs.unlinkSync( INSTALLED_THEMES_FILE );
+	}
+};
 
 const featuresBlock = ( widgetData ) => widgetBlock( 'sowb/siteorigin-widget-features-widget', {
 	widgetClass: 'SiteOrigin_Widget_Features_Widget',
@@ -148,23 +166,31 @@ const themeAjax = async ( requestUtils, action, slug ) => {
 
 /**
  * Installs a theme the way Themes > Add New does, when it is missing. It
- * never activates it. Returns true when this call installed it.
+ * never activates it. `installing` runs before the install starts, so the
+ * caller can record it even if the install's outcome is unknown.
  */
-const ensureTheme = async ( requestUtils, slug ) => {
+const ensureTheme = async ( requestUtils, slug, installing = () => {} ) => {
 	if ( await themeInstalled( requestUtils, slug ) ) {
-		return false;
+		return;
 	}
+
+	installing( slug );
 
 	const result = await themeAjax( requestUtils, 'install-theme', slug );
 
 	if ( ! await themeInstalled( requestUtils, slug ) ) {
 		throw new Error( `Installing ${ slug } failed: ${ JSON.stringify( result ) }` );
 	}
-
-	return true;
 };
 
+/**
+ * Deletes a theme when it is installed.
+ */
 const deleteTheme = async ( requestUtils, slug ) => {
+	if ( ! await themeInstalled( requestUtils, slug ) ) {
+		return;
+	}
+
 	const result = await themeAjax( requestUtils, 'delete-theme', slug );
 
 	if ( await themeInstalled( requestUtils, slug ) ) {
@@ -173,12 +199,13 @@ const deleteTheme = async ( requestUtils, slug ) => {
 };
 
 module.exports = {
-	INSTALLED_THEMES_FILE,
 	THEMES,
 	deleteTheme,
 	ensureTheme,
 	expectNear,
 	featuresBlock,
 	openFeaturesPage,
+	readInstalledThemes,
 	useFeaturesPage,
+	writeInstalledThemes,
 };

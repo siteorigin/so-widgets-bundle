@@ -1,29 +1,32 @@
-const fs = require( 'fs' );
-
 const { test: teardown } = require( '@playwright/test' );
 
 const { setupRequestUtils } = require( 'siteorigin-tests-common/playwright/common' );
 
-const { INSTALLED_THEMES_FILE, deleteTheme } = require( './helpers/features' );
+const { deleteTheme, readInstalledThemes, writeInstalledThemes } = require( './helpers/features' );
 
 /**
- * Removes the preview themes that features.setup.js installed, and only
- * those. The list is removed only once every theme on it is.
+ * Removes the preview themes that features.setup.js listed for this site,
+ * and only those. A theme leaves the list once it is removed.
  */
 teardown( 'remove the Features preview themes the setup installed', async () => {
-	if ( ! fs.existsSync( INSTALLED_THEMES_FILE ) ) {
+	const site = process.env.WP_BASE_URL;
+	const installed = readInstalledThemes();
+
+	if ( ! installed[ site ] ) {
 		return;
 	}
 
-	const installed = JSON.parse( fs.readFileSync( INSTALLED_THEMES_FILE, 'utf8' ) );
+	const requestUtils = await setupRequestUtils();
 
-	if ( installed.length ) {
-		const requestUtils = await setupRequestUtils();
+	for ( const slug of [ ...installed[ site ] ] ) {
+		await deleteTheme( requestUtils, slug );
 
-		for ( const slug of installed ) {
-			await deleteTheme( requestUtils, slug );
+		installed[ site ] = installed[ site ].filter( ( s ) => s !== slug );
+
+		if ( ! installed[ site ].length ) {
+			delete installed[ site ];
 		}
-	}
 
-	fs.unlinkSync( INSTALLED_THEMES_FILE );
+		writeInstalledThemes( installed );
+	}
 } );
