@@ -1129,10 +1129,14 @@ class FeaturesSpacingTest extends SiteOriginTests {
 					$last = self::text_edge_element( $doc, 'bottom', false );
 
 					$this->assertSame( $tag, $last->tagName );
-					$margins[ $spacing ] = array(
-						$this->winning_value( $css, $doc, $last, 'margin-bottom', false ),
-						$this->winning_value( $css, $doc, $last, 'margin-bottom', true ),
-					);
+					$margins[ $spacing ] = array();
+
+					// Every property that can set the bottom margin.
+					foreach ( array( 'margin', 'margin-bottom', 'margin-block', 'margin-block-end' ) as $property ) {
+						foreach ( array( false, true ) as $mobile ) {
+							$margins[ $spacing ][] = $this->winning_value( $css, $doc, $last, $property, $mobile );
+						}
+					}
 				}
 
 				$this->assertSame( $margins[''], $margins['20px'], "$tag, per row $per_row" );
