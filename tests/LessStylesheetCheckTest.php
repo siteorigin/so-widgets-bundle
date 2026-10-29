@@ -53,15 +53,37 @@ if ( ! class_exists( 'SiteOrigin_Reduced_Less_Value_Guard' ) ) {
 
 if ( ! class_exists( 'SiteOrigin_Recording_LessC' ) ) {
 	/**
-	 * A compiler that keeps the LESS it is given, then compiles it.
+	 * A compiler that keeps the LESS it is given, compiles it, and keeps any
+	 * error, which get_instance_css() would otherwise turn into empty CSS.
 	 */
 	class SiteOrigin_Recording_LessC extends SiteOrigin_LessC {
 		public static $less = null;
+		public static $error = null;
 
 		public function compile( $string, $name = null ) {
 			self::$less = $string;
 
-			return parent::compile( $string, $name );
+			try {
+				return parent::compile( $string, $name );
+			} catch ( Throwable $e ) {
+				self::$error = $e;
+				throw $e;
+			}
+		}
+	}
+}
+
+if ( ! class_exists( 'SiteOrigin_Counting_Compiler' ) ) {
+	/**
+	 * A compiler from another source, which only counts its calls.
+	 */
+	class SiteOrigin_Counting_Compiler {
+		public static $calls = 0;
+
+		public function compile( $less ) {
+			self::$calls++;
+
+			return '.counted { p: 1; }';
 		}
 	}
 }
@@ -91,6 +113,8 @@ class LessStylesheetCheckTest extends SiteOriginTests {
 
 		SiteOrigin_Less_Canary_Stream::register();
 		SiteOrigin_Recording_LessC::$less = null;
+		SiteOrigin_Recording_LessC::$error = null;
+		SiteOrigin_Counting_Compiler::$calls = 0;
 	}
 
 	protected function tearDown(): void {
@@ -292,12 +316,22 @@ class LessStylesheetCheckTest extends SiteOriginTests {
 	}
 
 	#[DataProvider( 'file_reading_templates' )]
-	public function test_file_reading_template_is_refused_with_a_filtered_compiler( $less ) {
+	public function test_file_reading_template_never_reaches_a_filtered_compiler( $less ) {
 		$this->filters['siteorigin_widgets_less_compiler'] = function () {
-			return new SiteOrigin_LessC();
+			return new SiteOrigin_Counting_Compiler();
 		};
 
 		$this->assert_refused_without_reading( $this->compile( $less ) );
+		$this->assertSame( 0, SiteOrigin_Counting_Compiler::$calls );
+	}
+
+	public function test_accepted_stylesheet_reaches_a_filtered_compiler() {
+		$this->filters['siteorigin_widgets_less_compiler'] = function () {
+			return new SiteOrigin_Counting_Compiler();
+		};
+
+		$this->assertSame( '.counted { p: 1; }', $this->compile( ".out { p: 1; }\n" ) );
+		$this->assertSame( 1, SiteOrigin_Counting_Compiler::$calls );
 	}
 
 	public function test_local_import_added_by_a_styles_filter_is_refused() {
@@ -367,11 +401,28 @@ class LessStylesheetCheckTest extends SiteOriginTests {
 		$this->compile( '.out { p: data-uri("' . SiteOrigin_Less_Canary_Stream::url() . '"); }' );
 	}
 
+	/**
+	 * Every widget stylesheet, except partials that another stylesheet in the
+	 * same folder imports; those are checked through the stylesheets that
+	 * import them.
+	 */
 	public static function bundled_stylesheets() {
 		$cases = array();
 
-		foreach ( glob( __DIR__ . '/../widgets/*/styles/*.less' ) as $file ) {
-			$cases[ basename( dirname( $file, 2 ) ) . '/' . basename( $file ) ] = array( $file );
+		foreach ( glob( __DIR__ . '/../widgets/*/styles' ) as $dir ) {
+			$files = glob( $dir . '/*.less' );
+			$imported = array();
+
+			foreach ( $files as $file ) {
+				preg_match_all( '/^@import\s+"([\w\-]+)";/m', file_get_contents( $file ), $imports );
+				$imported = array_merge( $imported, $imports[1] );
+			}
+
+			foreach ( $files as $file ) {
+				if ( ! in_array( basename( $file, '.less' ), $imported, true ) ) {
+					$cases[ basename( dirname( $dir ) ) . '/' . basename( $file ) ] = array( $file );
+				}
+			}
 		}
 
 		return $cases;
@@ -379,7 +430,7 @@ class LessStylesheetCheckTest extends SiteOriginTests {
 
 	/**
 	 * Each bundled stylesheet passes the check after the widget's own import
-	 * expansion, and reaches the compiler. Some hold only mixins, or only
+	 * expansion, and compiles without an error. Some hold only mixins, or only
 	 * rules for settings left empty here, so their CSS may be empty.
 	 */
 	#[DataProvider( 'bundled_stylesheets' )]
@@ -392,6 +443,7 @@ class LessStylesheetCheckTest extends SiteOriginTests {
 		$this->compile( file_get_contents( $file ) );
 
 		$this->assertNotNull( SiteOrigin_Recording_LessC::$less, 'The stylesheet did not reach the compiler.' );
+		$this->assertNull( SiteOrigin_Recording_LessC::$error, 'The stylesheet did not compile.' );
 		$this->assertTrue( SiteOrigin_Widgets_Less_Value_Guard::check_stylesheet( SiteOrigin_Recording_LessC::$less ) );
 	}
 }

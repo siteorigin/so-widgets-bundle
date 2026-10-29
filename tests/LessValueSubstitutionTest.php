@@ -6,6 +6,26 @@ use SiteOrigin\Tests\SiteOriginTests;
 
 require_once __DIR__ . '/fixtures/less-canary-stream.php';
 
+if ( ! class_exists( 'SiteOrigin_Widget_GoogleMap_Widget' ) ) {
+	require __DIR__ . '/../widgets/google-map/google-map.php';
+}
+
+if ( ! class_exists( 'SiteOrigin_GoogleMap_Less_Test_Widget' ) ) {
+	/**
+	 * The Google Maps widget, with its global settings fixed so no option is read.
+	 */
+	class SiteOrigin_GoogleMap_Less_Test_Widget extends SiteOrigin_Widget_GoogleMap_Widget {
+		public function get_global_settings( $key = null ) {
+			$values = array(
+				'map_consent'           => false,
+				'responsive_breakpoint' => '780',
+			);
+
+			return ! empty( $key ) ? $values[ $key ] : $values;
+		}
+	}
+}
+
 if ( ! class_exists( 'SiteOrigin_Less_Value_Test_Widget' ) ) {
 	/**
 	 * A widget whose LESS writes one setting value into one property.
@@ -78,7 +98,8 @@ class LessValueSubstitutionTest extends SiteOriginTests {
 		Functions\when( 'apply_filters' )->returnArg( 2 );
 		SiteOrigin_Less_Canary_Stream::register();
 		$this->canary_file = tempnam( sys_get_temp_dir(), 'sow-canary-' );
-		file_put_contents( $this->canary_file, SiteOrigin_Less_Canary_Stream::CANARY );
+		$this->assertIsString( $this->canary_file );
+		$this->assertSame( strlen( SiteOrigin_Less_Canary_Stream::CANARY ), file_put_contents( $this->canary_file, SiteOrigin_Less_Canary_Stream::CANARY ) );
 		SiteOrigin_Less_Canary_Stream::reset();
 	}
 
@@ -267,6 +288,29 @@ class LessValueSubstitutionTest extends SiteOriginTests {
 		$css = $this->compile( sprintf( $template, SiteOrigin_Less_Canary_Stream::url() ) );
 
 		$this->assertSame( self::css( 'template-default' ), $css );
+		$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$opens );
+		$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$stats );
+	}
+
+	/**
+	 * The Google Maps widget's Height setting, through its own stylesheet.
+	 */
+	private function google_map_css( $height ) {
+		Functions\when( 'siteorigin_widget_get_plugin_dir_path' )->justReturn( __DIR__ . '/../widgets/google-map/' );
+		SiteOrigin_Less_Canary_Stream::reset();
+
+		return ( new SiteOrigin_GoogleMap_Less_Test_Widget() )->get_instance_css( array( 'settings' => array( 'height' => $height ) ) );
+	}
+
+	public function test_google_map_height_is_written_into_the_css() {
+		$this->assertMatchesRegularExpression( '/\.sow-google-map-canvas \{\n  height: 450px;/', $this->google_map_css( '450' ) );
+	}
+
+	public function test_file_reading_google_map_height_reads_nothing() {
+		$css = $this->google_map_css( "1/*\n@import (inline) url(" . SiteOrigin_Less_Canary_Stream::url() . ");\n*/" );
+
+		$this->assertMatchesRegularExpression( '/\.sow-google-map-canvas \{\n  height: 480px;/', $css );
+		$this->assertStringNotContainsString( SiteOrigin_Less_Canary_Stream::CANARY, $css );
 		$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$opens );
 		$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$stats );
 	}
