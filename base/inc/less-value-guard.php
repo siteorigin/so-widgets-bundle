@@ -17,9 +17,13 @@ class SiteOrigin_Widgets_Less_Value_Parser extends Less_Parser {
  * Checks a setting value before it is written into LESS source.
  *
  * The exact value is parsed by the bundled less.php inside an isolated probe.
- * The value is refused if it is not exactly one declaration (or one named
- * mixin argument) with one value, or if its parsed tree holds a construct
- * that reads a resource or references another variable.
+ * The value is refused if it holds a line break, if it is not exactly one
+ * declaration (or one named mixin argument) with one value, or if its parsed
+ * tree holds a comment, inline JavaScript, or a construct that reads a
+ * resource or references another variable.
+ *
+ * A line break would let a value start a line of its own in the widget's LESS,
+ * where get_instance_css() moves lines that start with @import.
  */
 class SiteOrigin_Widgets_Less_Value_Guard {
 	const PROBE_VARIABLE = '@sow-less-value';
@@ -135,6 +139,10 @@ class SiteOrigin_Widgets_Less_Value_Guard {
 	 * @return object|string The node, or the reason it was refused.
 	 */
 	private static function parse_single_node( $less ) {
+		if ( strpbrk( $less, "\n\r\x0B\x0C" ) !== false ) {
+			return 'line break';
+		}
+
 		try {
 			$parser = new SiteOrigin_Widgets_Less_Value_Parser( array( 'relativeUrls' => false ) );
 			// Silenced like the compile call in get_instance_css(), as less.php
@@ -143,6 +151,14 @@ class SiteOrigin_Widgets_Less_Value_Guard {
 			$rules = $parser->get_rules();
 		} catch ( Throwable $e ) {
 			// less.php throws Error, not only Less_Exception_Parser, on some malformed input.
+			return 'parse error';
+		}
+
+		// Another less.php, loaded first, may expose its tree in another shape.
+		if (
+			! is_array( $rules ) ||
+			( isset( $rules[0] ) && $rules[0] instanceof Less_Tree_Ruleset && ! is_array( $rules[0]->rules ) )
+		) {
 			return 'parse error';
 		}
 
@@ -181,6 +197,14 @@ class SiteOrigin_Widgets_Less_Value_Guard {
 
 			if ( $node instanceof Less_Tree_Variable ) {
 				return 'variable reference';
+			}
+
+			if ( $node instanceof Less_Tree_Comment ) {
+				return 'comment';
+			}
+
+			if ( $node instanceof Less_Tree_Javascript ) {
+				return 'javascript';
 			}
 
 			// Less_Tree_Quoted::compile() replaces @{name} with the variable.

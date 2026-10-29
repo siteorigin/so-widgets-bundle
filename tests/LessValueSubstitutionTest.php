@@ -4,6 +4,8 @@ use Brain\Monkey\Functions;
 use PHPUnit\Framework\Attributes\DataProvider;
 use SiteOrigin\Tests\SiteOriginTests;
 
+require_once __DIR__ . '/fixtures/less-canary-stream.php';
+
 if ( ! class_exists( 'SiteOrigin_Less_Value_Test_Widget' ) ) {
 	/**
 	 * A widget whose LESS writes one setting value into one property.
@@ -44,7 +46,23 @@ class LessValueSubstitutionTest extends SiteOriginTests {
 		parent::setUp();
 
 		Functions\when( 'apply_filters' )->returnArg( 2 );
+		SiteOrigin_Less_Canary_Stream::register();
+		$this->canary_file = tempnam( sys_get_temp_dir(), 'sow-canary-' );
+		file_put_contents( $this->canary_file, SiteOrigin_Less_Canary_Stream::CANARY );
+		SiteOrigin_Less_Canary_Stream::reset();
 	}
+
+	protected function tearDown(): void {
+		SiteOrigin_Less_Canary_Stream::unregister();
+		@unlink( $this->canary_file );
+
+		parent::tearDown();
+	}
+
+	/**
+	 * A physical canary file, removed after each test.
+	 */
+	private $canary_file;
 
 	/**
 	 * Compile a value, and return the CSS without the widget's instance selector.
@@ -187,5 +205,42 @@ class LessValueSubstitutionTest extends SiteOriginTests {
 	#[DataProvider( 'refused_values' )]
 	public function test_refused_value_keeps_the_template_default( $value ) {
 		$this->assertSame( self::css( 'template-default' ), $this->compile( $value ) );
+	}
+
+	/**
+	 * The counters move when the canary is read or probed, so a zero below
+	 * means nothing touched it.
+	 */
+	public function test_canary_wrapper_counts_opens_and_stats() {
+		$this->assertSame( SiteOrigin_Less_Canary_Stream::CANARY, file_get_contents( SiteOrigin_Less_Canary_Stream::url() ) );
+		$this->assertSame( 1, SiteOrigin_Less_Canary_Stream::$opens );
+
+		clearstatcache();
+		$this->assertTrue( file_exists( SiteOrigin_Less_Canary_Stream::url() ) );
+		$this->assertSame( 1, SiteOrigin_Less_Canary_Stream::$stats );
+	}
+
+	/**
+	 * Values that would have the compiler read a file, as a template for the path.
+	 */
+	public static function file_reading_values() {
+		return array(
+			'comment around an import'   => array( "1/*\n@import (inline) url(%s);\n*/" ),
+			'backticks around an import' => array( "`1\n@import (inline) url(%s);\n`" ),
+		);
+	}
+
+	#[DataProvider( 'file_reading_values' )]
+	public function test_file_reading_value_reads_nothing( $template ) {
+		foreach ( array( SiteOrigin_Less_Canary_Stream::url(), $this->canary_file ) as $path ) {
+			SiteOrigin_Less_Canary_Stream::reset();
+
+			$css = $this->compile( sprintf( $template, $path ) );
+
+			$this->assertSame( self::css( 'template-default' ), $css, $path );
+			$this->assertStringNotContainsString( SiteOrigin_Less_Canary_Stream::CANARY, $css, $path );
+			$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$opens, $path );
+			$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$stats, $path );
+		}
 	}
 }
