@@ -21,6 +21,8 @@ class LessForeignParserShapeTest extends TestCase {
 		eval(
 			'class Less_Version { const less_version = "0.0.0"; }
 			class Less_Tree_Ruleset { public $rules; }
+			class Less_Tree_Import {}
+			class Less_Tree_Call {}
 			class Less_Parser {
 				protected $rules;
 				public function __construct( $options = null ) {}
@@ -35,6 +37,7 @@ class LessForeignParserShapeTest extends TestCase {
 		$this->assertSame( 'parse error', SiteOrigin_Widgets_Less_Value_Guard::check_variable( '5em' ) );
 		$this->assertSame( 'parse error', SiteOrigin_Widgets_Less_Value_Guard::check_mixin_argument( 'icon_color', '#fff' ) );
 		$this->assertSame( 'parse error', SiteOrigin_Widgets_Less_Value_Guard::check_mixin_call( '( @name:facebook-0);', array( 'name' ) ) );
+		// The stand-in declares the node classes the check needs, so this reaches the tree checks.
 		$this->assertSame( 'parse error', SiteOrigin_Widgets_Less_Value_Guard::check_stylesheet( '.so-widget-test { p: 1; }' ) );
 	}
 

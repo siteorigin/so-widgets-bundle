@@ -356,6 +356,11 @@ class SiteOrigin_Widgets_Less_Value_Guard {
 				return 'unknown node';
 			}
 
+			// Another less.php, loaded first, may hold a ruleset's rules in another shape.
+			if ( $node instanceof Less_Tree_Ruleset && ! is_array( $node->rules ) ) {
+				return 'parse error';
+			}
+
 			if ( $node instanceof Less_Tree_Call ) {
 				// Less_Tree_Call lowercases the name, maps % to _percent, and
 				// maps hyphenated names such as data-uri to the method name.
@@ -393,8 +398,10 @@ class SiteOrigin_Widgets_Less_Value_Guard {
 	}
 
 	/**
-	 * Whether an import is a plain CSS import of a static remote URL, which
-	 * the compiler emits without resolving a local path or reading a file.
+	 * Whether an import is a plain CSS import of a static remote URL. The
+	 * compiler emits it without reading a file or calling realpath() on it;
+	 * it still checks whether the URL text exists as a path under the
+	 * document root and the import directories, as for every import.
 	 *
 	 * @param Less_Tree_Import $import The import.
 	 *

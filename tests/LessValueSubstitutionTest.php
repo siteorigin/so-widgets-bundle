@@ -262,16 +262,25 @@ class LessValueSubstitutionTest extends SiteOriginTests {
 
 	#[DataProvider( 'file_reading_values' )]
 	public function test_file_reading_value_reads_nothing( $template ) {
-		foreach ( array( SiteOrigin_Less_Canary_Stream::url(), $this->canary_file ) as $path ) {
-			SiteOrigin_Less_Canary_Stream::reset();
+		SiteOrigin_Less_Canary_Stream::reset();
 
-			$css = $this->compile( sprintf( $template, $path ) );
+		$css = $this->compile( sprintf( $template, SiteOrigin_Less_Canary_Stream::url() ) );
 
-			$this->assertSame( self::css( 'template-default' ), $css, $path );
-			$this->assertStringNotContainsString( SiteOrigin_Less_Canary_Stream::CANARY, $css, $path );
-			$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$opens, $path );
-			$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$stats, $path );
-		}
+		$this->assertSame( self::css( 'template-default' ), $css );
+		$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$opens );
+		$this->assertSame( 0, SiteOrigin_Less_Canary_Stream::$stats );
+	}
+
+	/**
+	 * The same values with a file on disk. Only the output is checked here;
+	 * the wrapper case above is the one that counts file access.
+	 */
+	#[DataProvider( 'file_reading_values' )]
+	public function test_file_reading_value_keeps_a_disk_file_out_of_the_css( $template ) {
+		$css = $this->compile( sprintf( $template, $this->canary_file ) );
+
+		$this->assertSame( self::css( 'template-default' ), $css );
+		$this->assertStringNotContainsString( SiteOrigin_Less_Canary_Stream::CANARY, $css );
 	}
 
 	/**
