@@ -202,6 +202,11 @@ const measure = () => {
 			// a feature with only a bottom aligned More link, gives the link.
 			const below = outerMore && ( box( outerMore ).top < t.top || ! textwidget.children.length ) ? outerMore : textEdge( textwidget, true );
 			out.iconGap = box( below ).top - i.bottom;
+			out.columnGap = t.top - i.bottom;
+
+			if ( outerMore ) {
+				out.moreToFoot = box( li ).bottom - box( outerMore ).bottom;
+			}
 		} else if ( i.top >= t.bottom - 1 ) {
 			// Icon below: the box right above it.
 			const above = outerMore ? outerMore : textEdge( textwidget, false );
@@ -234,12 +239,17 @@ const expectNear = ( value, expected, message ) => {
 /**
  * The bottom aligned More link of a top icon feature with nothing else sits
  * at the foot of a row that a taller feature stretches, as bottom align
- * intends; there the gap is not the spacing. Elsewhere it is.
+ * intends; there the spacing is the gap to the empty text column. Elsewhere
+ * it is the gap to the link.
  */
 const atTheFootOfAStretchedRow = ( c, f, width ) => c.text === 'moreOnly' && c.bottomAlign && f.position === 'top' && c.perRow > 1 && width > 520;
 
 const checkIconGap = ( c, f, message, width ) => {
 	if ( atTheFootOfAStretchedRow( c, f, width ) ) {
+		// The spacing sits above the empty text column, and the link at the
+		// foot of the row.
+		expectNear( f.columnGap, parseFloat( c.iconSpacing ), message );
+		expectNear( f.moreToFoot, 0, message );
 		expect.soft( f.iconGap, message ).toBeGreaterThan( parseFloat( c.iconSpacing ) + 1 );
 		return;
 	}
@@ -247,7 +257,13 @@ const checkIconGap = ( c, f, message, width ) => {
 	expectNear( f.iconGap, parseFloat( c.iconSpacing ), message );
 };
 
-// Three pages keep each save within the REST request timeout.
+const checkTitleGap = ( c, f, message ) => expectNear(
+	f.titleGap,
+	c.titleSpacing.endsWith( 'em' ) ? parseFloat( c.titleSpacing ) * f.titleFontSize : parseFloat( c.titleSpacing ),
+	message
+);
+
+// Four pages keep each save within the REST request timeout.
 const PAGES = {
 	icon: {
 		cases: iconCases.filter( ( c ) => c.perRow === 3 ),
@@ -260,13 +276,14 @@ const PAGES = {
 		check: checkIconGap,
 	},
 	title: {
-		cases: titleCases,
+		cases: titleCases.filter( ( c ) => c.perRow === 3 ),
 		data: titleWidgetData,
-		check: ( c, f, message ) => expectNear(
-			f.titleGap,
-			c.titleSpacing.endsWith( 'em' ) ? parseFloat( c.titleSpacing ) * f.titleFontSize : parseFloat( c.titleSpacing ),
-			message
-		),
+		check: checkTitleGap,
+	},
+	'one per row title': {
+		cases: titleCases.filter( ( c ) => c.perRow === 1 ),
+		data: titleWidgetData,
+		check: checkTitleGap,
 	},
 };
 
