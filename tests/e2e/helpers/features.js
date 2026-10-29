@@ -25,17 +25,37 @@ const THEMES = [
  */
 const INSTALLED_THEMES_FILE = path.resolve( process.cwd(), 'tests/cache/features-installed-themes.json' );
 
+/**
+ * An unreadable list reads as empty, with a warning: a theme it named is
+ * left installed rather than removed on a guess.
+ */
 const readInstalledThemes = () => {
-	const installed = fs.existsSync( INSTALLED_THEMES_FILE ) ? JSON.parse( fs.readFileSync( INSTALLED_THEMES_FILE, 'utf8' ) ) : {};
+	if ( ! fs.existsSync( INSTALLED_THEMES_FILE ) ) {
+		return {};
+	}
 
-	return installed && typeof installed === 'object' && ! Array.isArray( installed ) ? installed : {};
+	try {
+		const installed = JSON.parse( fs.readFileSync( INSTALLED_THEMES_FILE, 'utf8' ) );
+
+		if ( installed && typeof installed === 'object' && ! Array.isArray( installed ) ) {
+			return installed;
+		}
+	} catch ( error ) {
+		// Reported below.
+	}
+
+	console.warn( `Ignoring an unreadable ${ INSTALLED_THEMES_FILE }` );
+
+	return {};
 };
 
+// Written to a temporary file and renamed, so a reader never sees a partial list.
 const writeInstalledThemes = ( installed ) => {
 	fs.mkdirSync( path.dirname( INSTALLED_THEMES_FILE ), { recursive: true } );
 
 	if ( Object.keys( installed ).length ) {
-		fs.writeFileSync( INSTALLED_THEMES_FILE, JSON.stringify( installed ) );
+		fs.writeFileSync( `${ INSTALLED_THEMES_FILE }.tmp`, JSON.stringify( installed ) );
+		fs.renameSync( `${ INSTALLED_THEMES_FILE }.tmp`, INSTALLED_THEMES_FILE );
 	} else if ( fs.existsSync( INSTALLED_THEMES_FILE ) ) {
 		fs.unlinkSync( INSTALLED_THEMES_FILE );
 	}
