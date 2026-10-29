@@ -78,36 +78,41 @@ const checkRow = ( list, message ) => {
 };
 
 /**
- * Opens the widget's Settings dialog on the Widgets page, saves the
- * breakpoint, and returns the value and unit the form showed before.
+ * Opens the widget's Settings dialog on the Widgets page and saves the
+ * breakpoint. `found` receives the value and unit the form showed, before
+ * anything is written.
  */
-const saveBreakpoint = async ( browser, featuresPage, { value, unit } ) => {
-	const context = await browser.newContext( { storageState: await featuresPage.requestUtils.request.storageState() } );
-	const page = await context.newPage();
+const saveBreakpoint = async ( browser, featuresPage, { value, unit }, found = () => {} ) => {
+	const context = await browser.newContext( {
+		ignoreHTTPSErrors: true,
+		storageState: await featuresPage.requestUtils.request.storageState(),
+	} );
 
-	await page.goto( new URL( '/wp-admin/plugins.php?page=so-widgets-plugins', featuresPage.link ).toString() );
-	await page.locator( 'button.so-widget-settings[data-form-url*="features%2Ffeatures.php"]' ).click();
+	try {
+		const page = await context.newPage();
 
-	const dialog = page.locator( '#sow-settings-dialog' );
-	const input = dialog.locator( 'input[name$="[responsive_breakpoint]"]' );
-	const select = dialog.locator( 'select[name$="[responsive_breakpoint_unit]"]' );
+		await page.goto( new URL( '/wp-admin/plugins.php?page=so-widgets-plugins', featuresPage.link ).toString() );
+		await page.locator( 'button.so-widget-settings[data-form-url*="features%2Ffeatures.php"]' ).click();
 
-	await input.waitFor();
+		const dialog = page.locator( '#sow-settings-dialog' );
+		const input = dialog.locator( 'input[name$="[responsive_breakpoint]"]' );
+		const select = dialog.locator( 'select[name$="[responsive_breakpoint_unit]"]' );
 
-	const before = { value: await input.inputValue(), unit: await select.inputValue() };
+		await input.waitFor();
 
-	await input.fill( String( value ) );
-	await select.selectOption( unit );
+		found( { value: await input.inputValue(), unit: await select.inputValue() } );
 
-	const saved = page.waitForResponse( ( response ) => response.url().includes( 'action=so_widgets_setting_save' ) );
+		await input.fill( String( value ) );
+		await select.selectOption( unit );
 
-	await dialog.locator( '.so-save' ).click();
+		const saved = page.waitForResponse( ( response ) => response.url().includes( 'action=so_widgets_setting_save' ) );
 
-	expect( ( await saved ).ok(), 'the Settings dialog saves' ).toBe( true );
+		await dialog.locator( '.so-save' ).click();
 
-	await context.close();
-
-	return before;
+		expect( ( await saved ).ok(), 'the Settings dialog saves' ).toBe( true );
+	} finally {
+		await context.close();
+	}
 };
 
 test.describe( 'Features responsive breakpoint setting', { tag: [ '@firefox', '@webkit' ] }, () => {
@@ -153,7 +158,9 @@ test.describe( 'Features responsive breakpoint setting', { tag: [ '@firefox', '@
 	} );
 
 	test( 'a breakpoint saved in the Settings dialog moves where features stack', async ( { browser } ) => {
-		found = await saveBreakpoint( browser, featuresPage, { value: SAVED, unit: 'px' } );
+		await saveBreakpoint( browser, featuresPage, { value: SAVED, unit: 'px' }, ( value ) => {
+			found = value;
+		} );
 
 		await checkBreakpoint( browser, SAVED );
 	} );

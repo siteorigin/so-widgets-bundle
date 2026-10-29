@@ -116,7 +116,6 @@ const measure = ( names ) => {
 				feature: box( li ),
 				hitsOverlay: hit === overlay,
 				hit: hit && `${ hit.tagName }.${ hit.className }`,
-				name: overlay.textContent.trim(),
 				label: label && box( label ),
 			};
 		}
@@ -167,7 +166,6 @@ const CHECKS = {
 	},
 	overlay: ( m, url, message ) => {
 		checkOverlay( m, url, message, checkSameWindow );
-		expect.soft( m.overlay.name, `${ message }: overlay name` ).toBe( MORE );
 		expect.soft( m.overlay.label.width <= 1 && m.overlay.label.height <= 1, `${ message }: overlay label is visually hidden` ).toBe( true );
 	},
 	overlayNewWindow: ( m, url, message ) => {
@@ -200,6 +198,9 @@ function check3( m, url, message, check ) {
 	expect.soft( m.iconTag, `${ message }: icon container` ).toBe( 'A' );
 	expect.soft( m.anchors.length, `${ message }: anchors` ).toBe( 3 );
 }
+
+// A click that does not navigate fails within this time, naming the link.
+const NAVIGATION_TIMEOUT = 15000;
 
 /**
  * The links to click: the case, and the element in its first feature.
@@ -242,19 +243,26 @@ test.describe( 'Features link settings', { tag: [ '@firefox', '@webkit' ] }, () 
 		}
 	} );
 
-	const measured = async ( browser, width, theme ) => {
+	// `onPage` checks the open page before it closes.
+	const measured = async ( browser, width, theme, onPage = async () => {} ) => {
 		const page = await openFeaturesPage( browser, featuresPage, { width, theme } );
 		const result = await page.evaluate( measure, NAMES );
 
+		await onPage( page );
 		await page.context().close();
 
 		return result;
 	};
 
+	// The overlay of a case's first feature.
+	const overlayOf = ( page, name ) => page.locator( '.sow-features-list' ).nth( NAMES.indexOf( name ) ).locator( '.sow-features-feature-linked-column' ).first();
+
 	for ( const theme of THEMES ) {
 		for ( const width of [ 1280, 390 ] ) {
 			test( `links match their settings in the ${ theme.name } at ${ width }px`, async ( { browser } ) => {
-				const result = await measured( browser, width, theme );
+				const result = await measured( browser, width, theme, async ( page ) => {
+					await expect.soft( overlayOf( page, 'overlay' ), 'overlay name' ).toHaveAccessibleName( MORE );
+				} );
 
 				for ( const name of NAMES.filter( ( n ) => n !== 'overlayNoMoreText' ) ) {
 					CHECKS[ name ]( result[ name ], target.link, `${ name }, ${ theme.name } at ${ width }px`, width );
@@ -264,9 +272,9 @@ test.describe( 'Features link settings', { tag: [ '@firefox', '@webkit' ] }, () 
 			test( `a linked column with no More text has an accessible name in the ${ theme.name } at ${ width }px`, async ( { browser } ) => {
 				test.fail( true, 'https://github.com/siteorigin/so-widgets-bundle/issues/2481' );
 
-				const result = await measured( browser, width, theme );
-
-				expect( result.overlayNoMoreText.overlay.name ).not.toBe( '' );
+				await measured( browser, width, theme, async ( page ) => {
+					await expect( overlayOf( page, 'overlayNoMoreText' ) ).toHaveAccessibleName( /\S/, { timeout: 1000 } );
+				} );
 			} );
 
 			test( `each link lands on its URL in the ${ theme.name } at ${ width }px`, async ( { browser } ) => {
@@ -288,13 +296,17 @@ test.describe( 'Features link settings', { tag: [ '@firefox', '@webkit' ] }, () 
 					};
 
 					if ( click.popup ) {
-						const [ popup ] = await Promise.all( [ page.context().waitForEvent( 'page' ), doClick() ] );
+						const [ popup ] = await Promise.all( [ page.context().waitForEvent( 'page', { timeout: NAVIGATION_TIMEOUT } ), doClick() ] ).catch( ( error ) => {
+							throw new Error( `${ message }: no popup. ${ error.message }` );
+						} );
 
 						await popup.waitForLoadState();
 						await expect.soft( popup, message ).toHaveTitle( new RegExp( TARGET_TITLE.replace( /[()]/g, '\\$&' ) ) );
 						expect.soft( page.url(), `${ message }: the page stays` ).toBe( start );
 					} else {
-						await Promise.all( [ page.waitForURL( target.link ), doClick() ] );
+						await Promise.all( [ page.waitForURL( target.link, { timeout: NAVIGATION_TIMEOUT } ), doClick() ] ).catch( ( error ) => {
+							throw new Error( `${ message }: no navigation. ${ error.message }` );
+						} );
 						await expect.soft( page, message ).toHaveTitle( new RegExp( TARGET_TITLE.replace( /[()]/g, '\\$&' ) ) );
 					}
 
