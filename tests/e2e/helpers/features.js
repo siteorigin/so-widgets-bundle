@@ -88,14 +88,19 @@ const withPreview = ( link, theme ) => {
 /**
  * Opens `link` in a fresh context at the given width and theme. A preview
  * theme needs the login of the request utils; the active theme is viewed
- * logged out, with no admin bar. The caller closes `page.context()`.
+ * logged out, with no admin bar. `beforeLoad` receives the page before it
+ * loads, to route requests. The caller closes `page.context()`.
  */
-const openFeaturesPage = async ( browser, fixture, { width, theme = THEMES[ 0 ], height = 900 } ) => {
+const openFeaturesPage = async ( browser, fixture, { width, theme = THEMES[ 0 ], height = 900, beforeLoad } ) => {
 	const context = await browser.newContext( {
 		viewport: { width, height },
 		storageState: theme.preview ? await fixture.requestUtils.request.storageState() : undefined,
 	} );
 	const page = await context.newPage();
+
+	if ( beforeLoad ) {
+		await beforeLoad( page );
+	}
 
 	await page.goto( withPreview( fixture.link, theme ) );
 
