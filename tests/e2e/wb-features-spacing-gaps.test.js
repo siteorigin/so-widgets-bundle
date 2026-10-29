@@ -198,8 +198,9 @@ const measure = () => {
 		const t = box( textwidget );
 
 		if ( i.bottom <= t.top + 1 ) {
-			// Icon above: the next box below it.
-			const below = outerMore && box( outerMore ).top < t.top ? outerMore : textEdge( textwidget, true );
+			// Icon above: the next box below it. An empty text column, as in
+			// a feature with only a bottom aligned More link, gives the link.
+			const below = outerMore && ( box( outerMore ).top < t.top || ! textwidget.children.length ) ? outerMore : textEdge( textwidget, true );
 			out.iconGap = box( below ).top - i.bottom;
 		} else if ( i.top >= t.bottom - 1 ) {
 			// Icon below: the box right above it.
@@ -230,7 +231,21 @@ const expectNear = ( value, expected, message ) => {
 	expect.soft( value, message ).toBeLessThanOrEqual( expected + 1 );
 };
 
-const checkIconGap = ( c, f, message ) => expectNear( f.iconGap, parseFloat( c.iconSpacing ), message );
+/**
+ * The bottom aligned More link of a top icon feature with nothing else sits
+ * at the foot of a row that a taller feature stretches, as bottom align
+ * intends; there the gap is not the spacing. Elsewhere it is.
+ */
+const atTheFootOfAStretchedRow = ( c, f, width ) => c.text === 'moreOnly' && c.bottomAlign && f.position === 'top' && c.perRow > 1 && width > 520;
+
+const checkIconGap = ( c, f, message, width ) => {
+	if ( atTheFootOfAStretchedRow( c, f, width ) ) {
+		expect.soft( f.iconGap, message ).toBeGreaterThan( parseFloat( c.iconSpacing ) + 1 );
+		return;
+	}
+
+	expectNear( f.iconGap, parseFloat( c.iconSpacing ), message );
+};
 
 // Three pages keep each save within the REST request timeout.
 const PAGES = {
@@ -302,7 +317,7 @@ for ( const [ name, fixture ] of Object.entries( PAGES ) ) {
 				lists.forEach( ( features ) => expect( features.length ).toBe( FEATURE_ORDER.length ) );
 
 				fixture.cases.forEach( ( c, n ) => {
-					lists[ n ].forEach( ( f ) => fixture.check( c, f, label( c, width, f.position ) ) );
+					lists[ n ].forEach( ( f ) => fixture.check( c, f, label( c, width, f.position ), width ) );
 				} );
 
 				await page.close();
