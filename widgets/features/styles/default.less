@@ -179,6 +179,36 @@
 			}
 		}
 
+		// A set icon spacing is the whole gap between the icon and the text:
+		// the element that meets a top or bottom icon adds no margin of its
+		// own on that side. The text column is a flex item, so these margins
+		// add to the spacing instead of collapsing into it.
+		& when ( @icon_spacing_custom = true ) {
+			&.sow-icon-container-position-top .textwidget {
+				> :first-child,
+				> .sow-features-feature-content:first-child > :first-child,
+				.sow-features-feature-text:first-child > :first-child {
+					margin-top: 0;
+				}
+			}
+
+			&.sow-icon-container-position-bottom .textwidget {
+				> :last-child,
+				> .sow-features-feature-text:last-child > :last-child {
+					margin-bottom: 0;
+				}
+			}
+
+			// With no More link below it, the text stops growing, so a bottom
+			// icon sits the spacing below the text rather than at the foot of
+			// a feature that a taller neighbour stretches.
+			& when ( @more_text_bottom_align = true ) {
+				&.sow-icon-container-position-bottom > .textwidget:last-child {
+					flex-grow: 0;
+				}
+			}
+		}
+
 		.sow-features-feature-right-left-container {
 			display: flex;
 			flex-direction: inherit;

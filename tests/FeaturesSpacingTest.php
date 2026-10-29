@@ -775,4 +775,125 @@ class FeaturesSpacingTest extends SiteOriginTests {
 		$this->assertStringNotContainsString( 'margin-bottom', $this->icon_declarations( $rules['media'], 'left' ) );
 		$this->assertStringNotContainsString( 'margin-bottom', $this->icon_declarations( $rules['media'], 'right' ) );
 	}
+
+	public static function icon_text_cases() {
+		return array(
+			'paragraphs' => array( '<p>Text</p><p>More</p>', true ),
+			'heading at both ends' => array( '<h4>Heading</h4><p>Text</p><h4>End</h4>', true ),
+			'list at both ends' => array( '<ul><li>One</li></ul><p>Text</p><ul><li>Two</li></ul>', true ),
+			'bare text' => array( 'Plain text', true ),
+			'title only' => array( '', true ),
+			'text only' => array( '<h4>Heading</h4><p>Text</p><h4>End</h4>', false ),
+		);
+	}
+
+	/**
+	 * The element whose margin meets the icon of the feature at a top or
+	 * bottom position on desktop: the first (top) or last (bottom) element of
+	 * the text column, looking inside the content wrapper and the text box,
+	 * or the bottom aligned More link that sits between the text and a bottom
+	 * icon. Text that starts or ends with bare text gives the text box.
+	 */
+	private static function element_facing_the_icon( DOMDocument $doc, $position ) {
+		$xpath = new DOMXPath( $doc );
+		$feature = $xpath->query( '//li[contains(@class, "sow-icon-container-position-' . $position . '")]' )->item( 0 );
+		self::assertNotNull( $feature, $position . ' feature' );
+
+		if ( $position === 'bottom' ) {
+			$more = $xpath->query( './p[contains(@class, "sow-more-text")]', $feature )->item( 0 );
+
+			if ( $more !== null ) {
+				return $more;
+			}
+		}
+
+		$node = $xpath->query( './/div[contains(@class, "textwidget")]', $feature )->item( 0 );
+		$pick = $position === 'top' ? './*[1]' : './*[last()]';
+
+		while ( preg_match( '/\b(textwidget|sow-features-feature-content|sow-features-feature-text)\b/', $node->getAttribute( 'class' ) ) ) {
+			$child = $xpath->query( $pick, $node )->item( 0 );
+
+			if ( $child === null ) {
+				break;
+			}
+
+			$node = $child;
+		}
+
+		return $node;
+	}
+
+	/**
+	 * A set icon spacing is the whole gap to the text: the element that meets
+	 * a top or bottom icon adds no margin on that side, whatever the text
+	 * starts or ends with, with and without the More link, bottom aligned or
+	 * not, and with one or three features per row.
+	 */
+	#[DataProvider( 'icon_text_cases' )]
+	public function test_icon_spacing_is_the_whole_gap_to_the_text_for_top_and_bottom_icons( $text, $has_title ) {
+		foreach ( array( 3, 1 ) as $per_row ) {
+			foreach ( array( false, true ) as $bottom_align ) {
+				foreach ( array( false, true ) as $more ) {
+					$instance = self::with_text( $text, array( 'icon_spacing' => '20px', 'per_row' => $per_row, 'more_text_bottom_align' => $bottom_align ) );
+
+					foreach ( $instance['features'] as $i => $feature ) {
+						if ( ! $has_title ) {
+							$instance['features'][ $i ]['title'] = '';
+						}
+					}
+
+					if ( $more ) {
+						$instance = self::with_more_text( $instance );
+					}
+
+					$css = $this->css( $instance );
+					$doc = self::dom( $this->render( $instance ) );
+					$case = "per row $per_row, bottom align " . ( $bottom_align ? 'on' : 'off' ) . ', More ' . ( $more ? 'on' : 'off' );
+
+					foreach ( array( 'top' => 'margin-top', 'bottom' => 'margin-bottom' ) as $position => $property ) {
+						$element = self::element_facing_the_icon( $doc, $position );
+						$value = $this->winning_value( $css, $doc, $element, $property, false );
+
+						// The text box has no margin of its own, so no rule is as good as 0.
+						if ( strpos( $element->getAttribute( 'class' ), 'sow-features-feature-text' ) !== false && $value === null ) {
+							$value = '0';
+						}
+
+						$this->assertSame( '0', $value, "$position icon, {$element->tagName}, $case" );
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * With the More link aligned to the bottom, a bottom icon with no More
+	 * link above it sits the spacing below the text instead of at the foot of
+	 * a feature that a taller neighbour stretches.
+	 */
+	public function test_bottom_aligned_text_stops_growing_above_a_bottom_icon_with_no_more_link() {
+		foreach ( array( false, true ) as $more ) {
+			$instance = self::with_icon_spacing( '20px', array( 'more_text_bottom_align' => true ) );
+			$instance = $more ? self::with_more_text( $instance ) : $instance;
+			$css = $this->css( $instance );
+			$doc = self::dom( $this->render( $instance ) );
+			$xpath = new DOMXPath( $doc );
+
+			foreach ( array( 'top', 'bottom' ) as $position ) {
+				$text = $xpath->query( '//li[contains(@class, "sow-icon-container-position-' . $position . '")]/div[contains(@class, "textwidget")]' )->item( 0 );
+				$expected = $position === 'bottom' && ! $more ? '0' : '1';
+
+				$this->assertSame( $expected, $this->winning_value( $css, $doc, $text, 'flex-grow', false ), "$position icon, More " . ( $more ? 'on' : 'off' ) );
+			}
+		}
+	}
+
+	public function test_text_keeps_growing_above_a_bottom_icon_when_the_icon_spacing_is_empty() {
+		$instance = self::instance( array( 'more_text_bottom_align' => true ) );
+		$css = $this->css( $instance );
+		$doc = self::dom( $this->render( $instance ) );
+		$text = ( new DOMXPath( $doc ) )->query( '//li[contains(@class, "sow-icon-container-position-bottom")]/div[contains(@class, "textwidget")]' )->item( 0 );
+
+		$this->assertSame( '1', $this->winning_value( $css, $doc, $text, 'flex-grow', false ) );
+	}
 }
